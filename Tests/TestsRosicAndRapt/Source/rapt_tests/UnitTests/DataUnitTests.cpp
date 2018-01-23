@@ -34,12 +34,21 @@ bool float64x2UnitTest()
   //y.set1(6.0);
   //r &= y.get0() == 5.0;
   //r &= y.get1() == 6.0;
-  y.set(1.0, 2.0);
-  r &= y.get0() == 1.0;
-  r &= y.get1() == 2.0;
-  y.set(3.0);
-  r &= y.get0() == 3.0;
-  r &= y.get1() == 3.0;
+  y.set(1.0, 2.0); r &= y.get0() == 1.0; r &= y.get1() == 2.0;
+  y.set(3.0);      r &= y.get0() == 3.0; r &= y.get1() == 3.0;
+
+  // assignment and equality:
+  y = x12; r &= y.get0() == 1.0; r &= y.get1() == 2.0;
+  //r &= y == x12;
+
+  // binary arithmetic operators:
+  y = x12 + x34; r &= y.get0() == 4.0; r &= y.get1() == 6.0;
+  y = x34 - x12; r &= y.get0() == 2.0; r &= y.get1() == 2.0;
+  y = x12 * x34; r &= y.get0() == 3.0; r &= y.get1() == 8.0;
+  y = x34 / x12; r &= y.get0() == 3.0; r &= y.get1() == 2.0;
+
+
+
 	  
   return r;
 }

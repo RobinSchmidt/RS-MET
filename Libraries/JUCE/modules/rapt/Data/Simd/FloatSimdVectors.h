@@ -1,5 +1,5 @@
-#ifndef RAPT_FLOAT32X4_H_INCLUDED
-#define RAPT_FLOAT32X4_H_INCLUDED
+#ifndef RAPT_FLOATSIMDVECTORS_H_INCLUDED
+#define RAPT_FLOATSIMDVECTORS_H_INCLUDED
 
 /** This is datatype to represent 4 32-bit floating point numbers at once.
 \todo: 
@@ -206,10 +206,11 @@ public:
   }
 };
 
-inline rsFloat64x2& operator+(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(a, b)); }
-inline rsFloat64x2& operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_sub_pd(a, b)); }
-inline rsFloat64x2& operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(a, b)); }
-inline rsFloat64x2& operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(a, b)); }
+inline rsFloat64x2 operator+(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(a, b)); }
+inline rsFloat64x2 operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_sub_pd(a, b)); }
+inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(a, b)); }
+inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(a, b)); }
+  // declaring return values as rsFloat64x2& gives compiler warning (unit test passes anyway)
 
 inline rsFloat64x2& rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_min_pd(a, b)); }
 inline rsFloat64x2& rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_max_pd(a, b)); }
