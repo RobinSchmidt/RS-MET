@@ -4381,9 +4381,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
       <Filter>Juce Modules\rosic</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp">
-      <Filter>Juce Library Code</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_basics.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
@@ -6756,7 +6753,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\FloatSimdVectors.h">
       <Filter>Juce Modules\rapt\Data\Simd</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h">
@@ -8401,9 +8398,6 @@
       <Filter>Juce Modules\rosic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
-      <Filter>Juce Library Code</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h">
       <Filter>Juce Library Code</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">

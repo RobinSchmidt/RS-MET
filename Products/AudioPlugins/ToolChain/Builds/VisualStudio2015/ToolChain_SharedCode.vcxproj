@@ -3769,7 +3769,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_basics.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_devices.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_formats.cpp"/>
@@ -4562,7 +4561,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\FloatSimdVectors.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Data.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.h"/>
@@ -5111,7 +5110,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosicOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
