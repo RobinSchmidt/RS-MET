@@ -5,6 +5,7 @@ bool float64x2UnitTest()
 {
   bool r = true;      // test result
 
+
   // test constructors and getters:
   rsFloat64x2 x00;              // default constructor, two zeros
   r &= x00.get0() == 0.0;

@@ -134,40 +134,115 @@ protected:
 
 };
 
-
-
-
 //=================================================================================================
 
-class Float64x2
+/** A class for convenient handling of SIMD optimizations for a vector of two double-precision
+floating point numbers. 
+
+-not yet tested
+
+// see https://msdn.microsoft.com/de-de/library/tyy88x2a(v=vs.90).aspx
+// https://msdn.microsoft.com/de-de/library/9b07190d(v=vs.90).aspx
+
+*/
+
+class rsFloat64x2
 {
 public:
 
-  inline Float64x2() {} // maybe use _mm_setzero_pd() - but maybe it's better to leave it uninitialized
-  inline Float64x2(double a) : v(_mm_set1_pd(a)) {}
-  inline Float64x2(double a, double b) : v(_mm_setr_pd(a, b)) {}
-  inline Float64x2(const __m128d& rhs) : v(rhs) {}
+  /** \name Construction */
 
-  inline Float64x2& operator=(const __m128d& rhs) { v = rhs; return *this; }
+  /** Standard constructor. Initializes both elements to zero. */
+  inline rsFloat64x2() { v = _mm_setzero_pd(); }
+    // Maybe it's more efficient to leave it uninitiliazed? If so, get rid of the setzero.
 
+  /** Constructor to copy an existing pair of values. */
+  inline rsFloat64x2(const __m128d& rhs) : v(rhs) {}
+
+  /** Constructor that initializes both elements to the given value. */
+  inline rsFloat64x2(double a) : v(_mm_set1_pd(a)) {}
+
+  /** Constructor that initializes the elements from two doubles. */
+  inline rsFloat64x2(double a, double b) : v(_mm_setr_pd(a, b)) {}
+
+  /** Constructor that initializes the elements from a 2-value array of doubles. */
+  inline rsFloat64x2(double* values) 
+  { 
+    //*this = _mm_load_pd(values); // doesnt work
+    v = _mm_setr_pd(values[0], values[1]);
+  }
+
+
+  /** \name Setup */
+
+  /** Sets both elements to a. */
+  inline void set(double a) { v = _mm_set1_pd(a); }
+  // what's the difference between _mm_set1_pd and _mm_load1_pd? ...the latter takes a pointer?
+
+  /** Sets the first element to a and the second element to b. */
+  inline void set(double a, double b) { v = _mm_setr_pd(a, b); }
+
+
+  /** \name Inquiry */
+
+  // extract vector elements:
+  inline double get0() { double d; _mm_storel_pd(&d, v); return d; }  // lower (index 0)
+  inline double get1() { double d; _mm_storeh_pd(&d, v); return d; }  // upper (index 1)
+
+
+  /** \name Operators */
+
+  // arithmetic operators:
+  inline rsFloat64x2& operator+=(const rsFloat64x2& b) { v = _mm_add_pd(v, b); return *this; }
+  inline rsFloat64x2& operator-=(const rsFloat64x2& b) { v = _mm_sub_pd(v, b); return *this; }
+  inline rsFloat64x2& operator*=(const rsFloat64x2& b) { v = _mm_mul_pd(v, b); return *this; }
+  inline rsFloat64x2& operator/=(const rsFloat64x2& b) { v = _mm_div_pd(v, b); return *this; }
+
+  // unary minus (can we do better than that?):
+  inline rsFloat64x2 operator-() 
+  { 
+    static const __m128d zero = _mm_setzero_pd(); // maybe make static class member
+    return _mm_sub_pd(zero, v);
+  }
+
+  /** Assignment from __m128d. */
+  inline rsFloat64x2& operator=(const __m128d& rhs) { v = rhs; return *this; }
+
+  /** Conversion to __m128d. */
   inline operator __m128d() const { return v; }
 
-  //inline Float64x2& operator+=(const Float64x2& rhs) { *this = *this + rhs; return *this; }
+    
 
-  //private:
+
+private:
   __m128d v; // the value
-             //__declspec(align(16)) __m128d v; // the value
+  //__declspec(align(16)) __m128d v; // the value (define and ALIGN(N) macro for gcc/msc)
+
+  // Note: Subclassing __m128d (instead of having a member of that type) works with the MS compiler 
+  // but not with gcc. Apparently, MS allows primitive datatypes to be seen as classes while gcc 
+  // doesn't.
 };
-inline Float64x2 operator+(const Float64x2& lhs, const Float64x2& rhs)
-{
-  //Float64x2 r; r.v = _mm_add_pd(lhs.v, rhs.v); return r;
-  return _mm_add_pd(lhs.v, rhs.v);
-}
+
+
+
+// binary arithmetic operators:
+inline rsFloat64x2 operator+(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_add_pd(a, b); }
+inline rsFloat64x2 operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_sub_pd(a, b); }
+inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_mul_pd(a, b); }
+inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_div_pd(a, b); }
+// the binary operators with a scalar for the left or right hand side do not have to be defined due 
+// to implicit conversions
+
+// functions:
+inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_min_pd(a, b); }
+inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_max_pd(a, b); }
+inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
 
 
 
 
-#ifdef _MSC_VER 
+//#ifdef _MSC_VER 
+#ifdef UNDEFINED
 // It seems like on mac, it's not possible to subclass form a primitive datatype like __m128d, so
 // i guess, i have to rewite everything in terms of having a data member of type __m128d like 
 // above. Try, if the class above compiles on mac and if so, do the rewrite and run the unit tests
