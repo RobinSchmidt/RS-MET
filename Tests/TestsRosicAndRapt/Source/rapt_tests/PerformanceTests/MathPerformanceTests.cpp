@@ -68,7 +68,7 @@ void matrixAdressingTest()
 }
 
 
-
+/*
 // Just for testing having a __m128 member instead of subclassing - if it works better (faster) 
 // than the subclassing in rsFloat64x2, use that there, too.
 class Float64x2
@@ -95,6 +95,7 @@ inline Float64x2 operator+(const Float64x2& lhs, const Float64x2& rhs)
   //Float64x2 r; r.v = _mm_add_pd(lhs.v, rhs.v); return r;
   return _mm_add_pd(lhs.v, rhs.v);
 }
+*/
 void simdPerformanceFloat64x2()
 {
   // We compare computations with arrays of rsFloat64x2 of length N to corresponding computations

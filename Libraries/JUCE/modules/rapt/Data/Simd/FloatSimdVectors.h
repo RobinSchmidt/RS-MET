@@ -1,6 +1,8 @@
 #ifndef RAPT_FLOATSIMDVECTORS_H_INCLUDED
 #define RAPT_FLOATSIMDVECTORS_H_INCLUDED
 
+//=================================================================================================
+
 /** This is datatype to represent 4 32-bit floating point numbers at once.
 \todo: 
 -write some unit tests
@@ -132,6 +134,45 @@ protected:
 
 };
 
+
+
+
+//=================================================================================================
+
+class Float64x2
+{
+public:
+
+  inline Float64x2() {} // maybe use _mm_setzero_pd() - but maybe it's better to leave it uninitialized
+  inline Float64x2(double a) : v(_mm_set1_pd(a)) {}
+  inline Float64x2(double a, double b) : v(_mm_setr_pd(a, b)) {}
+  inline Float64x2(const __m128d& rhs) : v(rhs) {}
+
+  inline Float64x2& operator=(const __m128d& rhs) { v = rhs; return *this; }
+
+  inline operator __m128d() const { return v; }
+
+  //inline Float64x2& operator+=(const Float64x2& rhs) { *this = *this + rhs; return *this; }
+
+  //private:
+  __m128d v; // the value
+             //__declspec(align(16)) __m128d v; // the value
+};
+inline Float64x2 operator+(const Float64x2& lhs, const Float64x2& rhs)
+{
+  //Float64x2 r; r.v = _mm_add_pd(lhs.v, rhs.v); return r;
+  return _mm_add_pd(lhs.v, rhs.v);
+}
+
+
+
+
+#ifdef _MSC_VER 
+// It seems like on mac, it's not possible to subclass form a primitive datatype like __m128d, so
+// i guess, i have to rewite everything in terms of having a data member of type __m128d like 
+// above. Try, if the class above compiles on mac and if so, do the rewrite and run the unit tests
+// with the new implementation.
+
 //=================================================================================================
 
 /** A class for convenient handling of SIMD optimizations for a vector of two double-precision
@@ -231,6 +272,8 @@ inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return rs
 inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_max_pd(a, b)); }
 inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return rsFloat64x2(_mm_sqrt_pd(a)); }
   // declaring return values as rsFloat64x2& gives compiler warning (unit test passes anyway)
+
+#endif
 
 /*
 for implementing SIMD vectors, see:
