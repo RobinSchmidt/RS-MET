@@ -103,13 +103,13 @@ void simdPerformanceFloat64x2()
   typedef rsFloat64x2 doubleVec;
   //typedef Float64x2 doubleVec;
 
-  static const int N = 1000; // array length
+  static const int N = 5000; // array length
   double    x1s[2*N], x2s[2*N], ys[2*N]; // scalar arrays
   doubleVec x1v[N],   x2v[N],   yv[N];   // vector arrays
   //__declspec(align(16)) __m128d   x1m[N],   x2m[N],   ym[N];   // vector without wrapper
   __m128d   x1m[N],   x2m[N],   ym[N];   // vector without wrapper
 
-  ProcessorCycleCounter counter;
+  ProcessorCycleCounter2 counter;
   double cycles;
 
   // fill arrays with random values:
@@ -128,28 +128,38 @@ void simdPerformanceFloat64x2()
     x2m[n]     = _mm_setr_pd(x2s[2*n], x2s[2*n+1]);
   }
 
+  double k = 1.0/(2*N);
+  //k = 1; // test
+
   counter.init();
   for(n = 0; n < 2*N; n++)
     ys[n] = x1s[n] + x2s[n];
   cycles = (double)counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("binary add, scalar", cycles / (2*N));
-
-  counter.init();
-  for(n = 0; n < N; n++)
-    yv[n] = x1v[n] + x2v[n];
-  cycles = (double)counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("binary add, vector", cycles / (2*N));
+  printPerformanceTestResult("binary add, scalar", k*cycles);
 
   counter.init();
   for(n = 0; n < N; n++)
     ym[n] = _mm_add_pd(x1m[n], x2m[n]);
   cycles = (double)counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("binary add, vector, no wrapper", cycles / (2*N));
+  printPerformanceTestResult("binary add, vector, no wrapper", k*cycles);
+
+  counter.init();
+  for(n = 0; n < N; n++)
+    yv[n] = x1v[n] + x2v[n];
+  cycles = (double)counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("binary add, vector, wrapped", k*cycles);
 
   // damn! the vector class is actually twice as slow instead of twice as fast. WTF is going on?
   // maybe try using SSE instructions without wrapper - ok, without wrapper, the problem is the 
   // same - this is really weird, but at least, it means my wrapper code is not to blame, i even 
-  // set the arch:SSE2 flag (under code generation) - still no avail
+  // set the arch:SSE2 flag (under code generation) - still no avail - oh! but the compiler prints
+  // a warning that this option is ignored - maybe i need a better compiler? no -it seems the flags 
+  // are not supported anymore because they are active by default in x64 builds
+  // hmm...maybe try on gcc
+  // or maybe the performance counter does not work properly? we had problems measuring the 
+  // table-based sincos implementation, too
+  // The new counter produces counts that are around a factor of 100 less but the ratio remains the
+  // same.
 }
 
 void rsSinCos1(double x, double* s, double* c)
@@ -189,7 +199,7 @@ void sinCosPerformance()
 
   float x[N], ySin[N], yCos[N];
   rsArray::fillWithRandomValues(x, N, xMin, xMax, 0);
-  ProcessorCycleCounter counter;
+  ProcessorCycleCounter2 counter;
   int n;
 
   rsSinCosTableF table(1024);

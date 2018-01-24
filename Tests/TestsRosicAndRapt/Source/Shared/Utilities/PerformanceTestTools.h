@@ -5,6 +5,7 @@
 
 #ifdef _MSC_VER
 #include <intrin.h> // Or #include <ia32intrin.h> etc.
+#include <WTypesbase.h> 
 #endif
 
 void printPerformanceTestResult(const char *testName, double numCyclesPerOperation);
@@ -60,7 +61,32 @@ protected:
 
 };
 
+//=================================================================================================
 
+/** A cycle counter based on 
+https://msdn.microsoft.com/en-us/library/windows/desktop/dn553408(v=vs.85).aspx */
+
+class ProcessorCycleCounter2
+{
+
+public:
+
+  inline void init()
+  {  
+    QueryPerformanceCounter(&startTime);
+  }
+
+  inline LONGLONG getNumCyclesSinceInit()
+  {
+    QueryPerformanceCounter(&endTime);
+    return endTime.QuadPart - startTime.QuadPart;
+  }
+
+protected:
+
+  LARGE_INTEGER startTime, endTime;
+
+};
 
 
 
