@@ -67,14 +67,50 @@ void matrixAdressingTest()
   delete[] b;
 }
 
+
+
+// Just for testing having a __m128 member instead of subclassing - if it works better (faster) 
+// than the subclassing in rsFloat64x2, use that there, too.
+class Float64x2
+{
+public:
+
+  inline Float64x2() {} // maybe use _mm_setzero_pd() - but maybe it's better to leave it uninitialized
+  inline Float64x2(double a) : v(_mm_set1_pd(a)) {}
+  inline Float64x2(double a, double b) : v(_mm_setr_pd(a, b)) {}
+  inline Float64x2(const __m128d& rhs) : v(rhs) {}
+
+  inline Float64x2& operator=(const __m128d& rhs) { v = rhs; return *this; }
+
+  inline operator __m128d() const { return v; }
+
+  //inline Float64x2& operator+=(const Float64x2& rhs) { *this = *this + rhs; return *this; }
+
+//private:
+  __m128d v; // the value
+  //__declspec(align(16)) __m128d v; // the value
+};
+inline Float64x2 operator+(const Float64x2& lhs, const Float64x2& rhs)
+{
+  //Float64x2 r; r.v = _mm_add_pd(lhs.v, rhs.v); return r;
+  return _mm_add_pd(lhs.v, rhs.v);
+}
 void simdPerformanceFloat64x2()
 {
   // We compare computations with arrays of rsFloat64x2 of length N to corresponding computations
   // with arrays of double of length 2*N
 
-  static const int N = 20; // array length
-  rsFloat64x2 x1v[N],   x2v[N],   yv[N];   // vector arrays
-  double      x1s[2*N], x2s[2*N], ys[2*N]; // scalar arrays
+  typedef rsFloat64x2 doubleVec;
+  //typedef Float64x2 doubleVec;
+
+  static const int N = 1000; // array length
+  double    x1s[2*N], x2s[2*N], ys[2*N]; // scalar arrays
+  doubleVec x1v[N],   x2v[N],   yv[N];   // vector arrays
+  //__declspec(align(16)) __m128d   x1m[N],   x2m[N],   ym[N];   // vector without wrapper
+  __m128d   x1m[N],   x2m[N],   ym[N];   // vector without wrapper
+
+  ProcessorCycleCounter counter;
+  double cycles;
 
   // fill arrays with random values:
   rsNoiseGenerator<double> ng;
@@ -84,14 +120,36 @@ void simdPerformanceFloat64x2()
   {
     x1s[2*n]   = ng.getSample();
     x1s[2*n+1] = ng.getSample();
-    x1v[n]     = rsFloat64x2(x1s[2*n], x1s[2*n+1]);
+    x1v[n]     = doubleVec(x1s[2*n], x1s[2*n+1]);
+    x1m[n]     = _mm_setr_pd(x1s[2*n], x1s[2*n+1]);
     x2s[2*n]   = ng.getSample();
     x2s[2*n+1] = ng.getSample();
-    x2v[n]     = rsFloat64x2(x2s[2*n], x2s[2*n+1]);
+    x2v[n]     = doubleVec(x2s[2*n], x2s[2*n+1]);
+    x2m[n]     = _mm_setr_pd(x2s[2*n], x2s[2*n+1]);
   }
 
+  counter.init();
+  for(n = 0; n < 2*N; n++)
+    ys[n] = x1s[n] + x2s[n];
+  cycles = (double)counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("binary add, scalar", cycles / (2*N));
 
-  int dummy = 0;
+  counter.init();
+  for(n = 0; n < N; n++)
+    yv[n] = x1v[n] + x2v[n];
+  cycles = (double)counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("binary add, vector", cycles / (2*N));
+
+  counter.init();
+  for(n = 0; n < N; n++)
+    ym[n] = _mm_add_pd(x1m[n], x2m[n]);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("binary add, vector, no wrapper", cycles / (2*N));
+
+  // damn! the vector class is actually twice as slow instead of twice as fast. WTF is going on?
+  // maybe try using SSE instructions without wrapper - ok, without wrapper, the problem is the 
+  // same - this is really weird, but at least, it means my wrapper code is not to blame, i even 
+  // set the arch:SSE2 flag (under code generation) - still no avail
 }
 
 void rsSinCos1(double x, double* s, double* c)
