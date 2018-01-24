@@ -56,6 +56,10 @@ namespace rosic
 
     /** Sets a global gain value for the wet signal (in decibels). */
     void setWetLevel(double newLevel) { g = dB2amp(newLevel); calculateGainFactors(); }
+     //
+
+    /** Sets the input level for the signal that enters the delaylines in dB. */
+    void setDelayInputLevel(double newLevel) { wetInGain = dB2amp(newLevel); }
 
     /** Sets the feedback factor (as raw amplitude factor). */
     void setFeedbackFactor(double newFactor) { feedback = newFactor; }
@@ -171,7 +175,8 @@ namespace rosic
     double sampleRate;                    // the sample-rate
     double bpm;                           // tempo in beats per minute
     double feedback;                      // feedback factor
-    double g;                             // global gain factor
+    double g;                             // global gain factor - renameto wetOutGain or something
+    double wetInGain = 1.0;               // input gain factor for the delayline
     double pan;                           // pan user parameter (-1...+1)
     double dryWetRatio;                   // dry/wet ratio 0....1
     bool   tempoSync;                     // flag to indicate tempo-synchronization
@@ -194,7 +199,7 @@ namespace rosic
     double inM, y1, y2, yL, yR, tmp1, tmp2;
     if( trueStereoMode == false )
     {
-      inM = ONE_OVER_SQRT2 * (*inOutL + *inOutR);
+      inM = wetInGain * ONE_OVER_SQRT2 * (*inOutL + *inOutR);
       if( pingPongMode == false )
       {
         // mono/normal:
@@ -220,8 +225,8 @@ namespace rosic
     } 
     else 
     {
-      tmp1 = gLL*(*inOutL) + gRL*(*inOutR);
-      tmp2 = gLR*(*inOutL) + gRR*(*inOutR);
+      tmp1 = wetInGain * (gLL*(*inOutL) + gRL*(*inOutR));
+      tmp2 = wetInGain * (gLR*(*inOutL) + gRR*(*inOutR));
       if( stereoSwap == true )
         rsSwap(tmp1, tmp2);
       yL   = buffer1[tapOut];
