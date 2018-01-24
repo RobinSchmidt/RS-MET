@@ -7,9 +7,9 @@ bool float64x2UnitTest()
 
 
   // test constructors and getters:
-  rsFloat64x2 x00;              // default constructor, two zeros
-  r &= x00.get0() == 0.0;
-  r &= x00.get1() == 0.0;
+  //rsFloat64x2 x00;              // default constructor, two zeros
+  //r &= x00.get0() == 0.0;       // ...or actually no, we leave them uninitialized
+  //r &= x00.get1() == 0.0;
 
   rsFloat64x2 x11(1.0);         // construct from a double
   r &= x11.get0() == 1.0;
