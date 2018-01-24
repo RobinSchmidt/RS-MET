@@ -58,8 +58,8 @@ namespace rosic
     void setWetLevel(double newLevel) { g = dB2amp(newLevel); calculateGainFactors(); }
      //
 
-    /** Sets the input level for the signal that enters the delaylines in dB. */
-    void setDelayInputLevel(double newLevel) { wetInGain = dB2amp(newLevel); }
+    /** Sets the input gain for the signal that enters the delaylines as raw amplitude. */
+    void setDelayInputGain(double newGain) { wetInGain = newGain; }
 
     /** Sets the feedback factor (as raw amplitude factor). */
     void setFeedbackFactor(double newFactor) { feedback = newFactor; }
