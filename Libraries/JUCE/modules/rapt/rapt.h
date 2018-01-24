@@ -35,7 +35,7 @@
 #include <algorithm>
 #include <cstring>
 //#include <xmmintrin.h>
-//#include <pmmintrin.h>
+#include <emmintrin.h>    // SSE2
 
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
 #include "Data/Data.h"                   // data structures like arrays, lists, files, etc.

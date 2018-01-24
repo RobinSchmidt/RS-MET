@@ -41,7 +41,7 @@ public:
   inline void setShapeType(int newType) { shapeType = newType; }
 
   /** Some shapes have a numeric parameter which can be set via this function. */
-  inline void setShapeParameter(int newParameter) { shapeParam = newParam; }
+  inline void setShapeParameter(int newParam) { shapeParam = newParam; }
 
   /** Returns the x-coordinate of this node. */
   inline T getX() const { return x; }
@@ -85,6 +85,8 @@ class rsNodeBasedFunction
 {
 
 public:
+  
+  virtual ~rsNodeBasedFunction() {}
 
   //-----------------------------------------------------------------------------------------------
   // \name Node manipulation

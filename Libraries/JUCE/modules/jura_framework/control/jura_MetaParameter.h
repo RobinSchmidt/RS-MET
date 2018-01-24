@@ -68,6 +68,8 @@ class JUCE_API rsMetaParameterMapper : public RAPT::rsNodeBasedFunction<double>
 public:
 
   rsMetaParameterMapper();
+  
+  virtual ~rsMetaParameterMapper() {}
 
   // overriden from rsNodeBasedFunction to apply some restrictions:
   //size_t addNode(double x, double y) override;

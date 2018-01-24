@@ -56,7 +56,7 @@ public:
 
   /** Overrides Component::enablementChanged() in order to update our alphaMultiplier and trigger a
   repaint. */
-  virtual void enablementChanged();
+  virtual void enablementChanged() override;
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
