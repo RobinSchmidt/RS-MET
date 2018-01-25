@@ -70,7 +70,18 @@ void matrixAdressingTest()
   delete[] b;
 }
 
-
+// this doesn't work because the functions are all inlined, so we can't get a function pointer
+//inline void testPerformance(rsFloat64x2 (*func) (rsFloat64x2 x), const char* name, int N, rsFloat64x2 x)
+//{
+//  ProcessorCycleCounter counter;
+//  double cycles;
+//  double k = 1.0/(2*N);
+//  counter.init();
+//  for(int n = 0; n < N; n++)  x = func(x);
+//  cycles = (double)counter.getNumCyclesSinceInit();
+//  dontOptimize(&x);
+//  printPerformanceTestResult(name, k*cycles);
+//}
 void simdPerformanceFloat64x2()
 {
   static const int N = 5000;  // number of vector operations
@@ -163,43 +174,59 @@ void simdPerformanceFloat64x2()
   dontOptimize(&accuV);
   printPerformanceTestResult("vec1 = -vec1      ", k*cycles);
 
+
+  rsFloat64x2 x = 10.0;
+
   // clip:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = rsClip(accuV, -1.0, 1.0);
+  counter.init(); for(n = 0; n < N; n++) x = rsClip(x, -1.0, 1.0);
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("rsClip", k*cycles);
+  dontOptimize(&x); printPerformanceTestResult("clip", k*cycles);
 
   // abs:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = rsAbs(accuV);
+  counter.init(); for(n = 0; n < N; n++) x = rsAbs(x);
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("rsAbs ", k*cycles);
+  dontOptimize(&x); printPerformanceTestResult("abs ", k*cycles);
 
   // sign:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = rsSign(accuV);
+  counter.init(); for(n = 0; n < N; n++) x = rsSign(x);
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("rsSign", k*cycles);
+  dontOptimize(&x); printPerformanceTestResult("sign", k*cycles);
+
+  // sqrt:
+  counter.init(); for(n = 0; n < N; n++) x = rsSqrt(x);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&x); printPerformanceTestResult("sqrt", k*cycles);
+
+  // exp:
+  counter.init(); for(n = 0; n < N; n++) x = rsExp(x);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&x); printPerformanceTestResult("exp ", k*cycles);
+
+  // log:
+  counter.init(); for(n = 0; n < N; n++) x = rsLog(x);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&x); printPerformanceTestResult("log ", k*cycles);
 
   // sin:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = rsSin(accuV);
+  counter.init(); for(n = 0; n < N; n++) x = rsSin(x);
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("rsSin", k*cycles);
+  dontOptimize(&x); printPerformanceTestResult("sin ", k*cycles);
 
+  // cos:
+  counter.init(); for(n = 0; n < N; n++) x = rsCos(x);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&x); printPerformanceTestResult("cos ", k*cycles);
+
+  // tan:
+  counter.init(); for(n = 0; n < N; n++) x = rsTan(x);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&x); printPerformanceTestResult("tan ", k*cycles);
+
+
+
+  //testPerformance(&rsAbs, "rsAbs ", N, -10.0);
   // maybe factor into function: testFunctionApplication (should perhaps be inline, so as to not
   // disturb the results by function call overhead)
-
-
-
 
   // Results:
   // approximate relative costs of operations: we set the cost of 1 addition = 1
@@ -207,7 +234,7 @@ void simdPerformanceFloat64x2()
   // interesting: mul costs the same as add but sub is more expensive
   // is this true also for scalar double?
   // rsClip: 1, rsSign: 3.5, rsAbs: 4
-  // rsSin: 15,
+  // rsSqrt: 12.5, rsExp: 10, rsLog: 7, rsSin: 15, rsCos: 15, rsTan: 15
 }
 
 void rsSinCos1(double x, double* s, double* c)
