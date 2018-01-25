@@ -36,17 +36,19 @@ public:
   /** Returns our vector as array of 2 doubles. */
   inline double* asArray() { return (double*) &v; }
 
-  // inline double get(size_t i)  { return asArray()[i]; }
+  inline double get(size_t i)  { return asArray()[i]; }
 
   /** Returns the 1st value (index 0). */
   //inline double get0() { double d; _mm_storel_pd(&d, v); return d; }
-  inline double get0() { return asArray()[0]; }
-    // todo: performance test both versions
+  //inline double get0() { return asArray()[0]; }
+  inline double get0() { return get(0); }
+    // todo: performance test all versions
     // use get(0)
 
   /** Returns the 2nd value (index 1). */
   //inline double get1() { double d; _mm_storeh_pd(&d, v); return d; }
-  inline double get1() { return asArray()[1]; }
+  //inline double get1() { return asArray()[1]; }
+  inline double get1() { return get(1); }
 
 
 
@@ -59,10 +61,12 @@ public:
   /** Sets the first element to a and the second element to b. */
   inline void set(double a, double b) { v = _mm_setr_pd(a, b); }
 
+  inline void set(size_t i, double a)  { asArray()[i] = a; }
+  inline void set0(double a) { set(size_t(0), a); }
+  inline void set1(double a) { set(size_t(1), a); }
 
-  inline void set0(double a) { asArray()[0] = a; }
-
-  inline void set1(double a) { asArray()[1] = a; }
+  //inline void set0(double a) { asArray()[0] = a; }
+  //inline void set1(double a) { asArray()[1] = a; }
 
 
   /** \name Operators */
@@ -113,7 +117,12 @@ inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _m
 inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_max_pd(a, b); }
 inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
 
-// implement clip (based on min/max), abs/sign (based on bit-masks), asArray
+inline rsFloat64x2 rsClip(const rsFloat64x2& x, const rsFloat64x2& min, const rsFloat64x2& max)
+{ 
+  return rsMax(rsMin(x, max), min); 
+}
+
+// implement abs/sign (based on bit-masks)
 
 // todo: reduce_min, reduce_max, reduce_sum
 // for more inspiration, see:
