@@ -16,7 +16,7 @@ of the operations, you want to measure, are not used anywhere. Just pass your re
 function and the compiler can't optimze away your operations anymore. If the datatype of your 
 result does not support to be passed to cout via <<, you can just pass a pointer. */
 template<class T>
-inline void preventOptimization(T x)
+inline void dontOptimize(T x)
 {
   volatile bool f = false;
   if(f)

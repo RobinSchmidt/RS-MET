@@ -122,16 +122,18 @@ public:
   //inline rsFloat64x2 operator+(const rsFloat64x2& b) { return _mm_add_pd(v, b.v); }
     // nope - we define it outside the class because that allows lhs or rhs to be of scalar type
 
-  // unary minus:
-  inline rsFloat64x2 operator-() 
-  { 
-    return _mm_xor_pd(signBitOne(), v);
 
-    //return _mm_sub_pd(zero(), v); // alternative implementation
+  //// unary minus (commented out because the implementation outside the class turned out to be 
+  //// more efficient (suprisingly - maybe more tests are needed, why)
+  //inline rsFloat64x2 operator-() 
+  //{ 
+  //  return _mm_xor_pd(signBitOne(), v);
 
-    //static const __m128d zero = _mm_setzero_pd();
-    //return _mm_sub_pd(zero, v);
-  }
+  //  //return _mm_sub_pd(zero(), v); // alternative implementation
+
+  //  //static const __m128d zero = _mm_setzero_pd();
+  //  //return _mm_sub_pd(zero, v);
+  //}
 
   /** Assignment from __m128d. */
   inline rsFloat64x2& operator=(const __m128d& rhs) { v = rhs; return *this; }
@@ -158,6 +160,9 @@ inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { retur
 // the binary operators with a scalar for the left or right hand side do not have to be defined due 
 // to implicit conversions
 
+inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a; }
+
+
 // functions:
 inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_min_pd(a, b); }
 inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_max_pd(a, b); }
@@ -172,15 +177,20 @@ inline rsFloat64x2 rsBitAnd(const rsFloat64x2& a, const rsFloat64x2& b) { return
 inline rsFloat64x2 rsBitOr( const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_or_pd( a, b); }
 inline rsFloat64x2 rsBitXor(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_xor_pd(a, b); }
 
-inline rsFloat64x2 rsAbs(const rsFloat64x2& a)
-{
-  return rsBitAnd(a, rsFloat64x2::signBitZero());
-}
-
 inline rsFloat64x2 rsSign(const rsFloat64x2& a)
 {
   rsFloat64x2 signOnly = rsBitAnd(a, rsFloat64x2::signBitOne());
   return rsBitOr(signOnly, rsFloat64x2::one());
+}
+
+inline rsFloat64x2 rsAbs(const rsFloat64x2& a)
+{
+  //return a * rsSign(a);
+
+  return rsBitAnd(a, rsFloat64x2::signBitZero());
+
+  //static const rsFloat64x2 mask = rsFloat64x2::signBitZero();
+  //return rsBitAnd(a, mask);
 }
 
 // implement abs/sign (based on bit-masks)

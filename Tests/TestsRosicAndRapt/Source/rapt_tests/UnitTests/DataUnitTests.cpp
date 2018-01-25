@@ -1,6 +1,9 @@
 #include "DataUnitTests.h"
 using namespace RAPT;
 
+#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"
+// needed when it's commented out in rapt -> reduce build time during tweaking the class
+
 //double sum(double* a, size_t N)
 //{
 //  double accu = 0;

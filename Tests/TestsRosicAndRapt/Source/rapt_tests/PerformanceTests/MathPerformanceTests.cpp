@@ -1,6 +1,9 @@
 #include "MathPerformanceTests.h"
 using namespace RAPT;
 
+#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"
+// needed when it's commented out in rapt -> reduce build time during tweaking the class
+
 void matrixAdressingTest()
 {
   // Compares two matrix addressing schemes: using a flat array with pointer arithmetic vs. using
@@ -67,12 +70,15 @@ void matrixAdressingTest()
   delete[] b;
 }
 
+
 void simdPerformanceFloat64x2()
 {
-  static const int N = 1000;  // number of vector operations
+  static const int N = 5000;  // number of vector operations
 
+  double zeroS = 0.0;
   double oneS  = 1.0;
   double accuS = 0.0;
+  rsFloat64x2 zeroV = 0.0;
   rsFloat64x2 oneV  = 1.0;
   rsFloat64x2 accuV = 0.0;
 
@@ -90,7 +96,7 @@ void simdPerformanceFloat64x2()
   for(n = 0; n < 2*N; n++)
     accuS = accuS + oneS;
   cycles = (double)counter.getNumCyclesSinceInit();
-  preventOptimization(accuS);
+  dontOptimize(accuS);
   printPerformanceTestResult("scl1 = scl1 + scl2", k*cycles);
 
   // vector = vector + vector:
@@ -98,7 +104,7 @@ void simdPerformanceFloat64x2()
   for(n = 0; n < N; n++)
     accuV = accuV + oneV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  preventOptimization(&accuV);
+  dontOptimize(&accuV);
   printPerformanceTestResult("vec1 = vec1 + vec2", k*cycles);
 
   // vector = vector + scalar:
@@ -106,7 +112,7 @@ void simdPerformanceFloat64x2()
   for(n = 0; n < N; n++)
     accuV = accuV + oneS;
   cycles = (double)counter.getNumCyclesSinceInit();
-  preventOptimization(&accuV);
+  dontOptimize(&accuV);
   printPerformanceTestResult("vec1 = vec1 + scl2", k*cycles);
 
   // vector = scalar + vector:
@@ -114,25 +120,81 @@ void simdPerformanceFloat64x2()
   for(n = 0; n < N; n++)
     accuV = oneS + accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  preventOptimization(&accuV);
-  printPerformanceTestResult("vec1 = scl2 + vec1", k*cycles);
+  dontOptimize(&accuV);
+  printPerformanceTestResult("vec1 = scl1 + vec1", k*cycles);
 
-
-  /*
-  counter.init();
-  for(n = 0; n < 2*N; n++)
-    accuS += oneS;
-  cycles = (double)counter.getNumCyclesSinceInit();
-  dummyFunction(accuS);
-  printPerformanceTestResult("s1 += s2", k*cycles);
-
+  // vector = scalar - vector:
   counter.init();
   for(n = 0; n < N; n++)
-    accuV += oneV;
+    accuV = oneS - accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dummyFunction(accuV.get0());
-  printPerformanceTestResult("vec1 += vec2", k*cycles);
-  */
+  dontOptimize(&accuV);
+  printPerformanceTestResult("vec1 = scl1 - vec1", k*cycles);
+
+  // vector = vector - vector:
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = oneV - accuV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV);
+  printPerformanceTestResult("vec1 = vec2 - vec1", k*cycles);
+
+  // vector = vector * vector:
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = oneV * accuV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV);
+  printPerformanceTestResult("vec1 = vec2 * vec1", k*cycles);
+
+  // vector = vector / vector:
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = oneV / accuV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV);
+  printPerformanceTestResult("vec1 = vec2 / vec1", k*cycles);
+
+  // unary minus:
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = -accuV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV);
+  printPerformanceTestResult("vec1 = -vec1      ", k*cycles);
+
+  // clip:
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = rsClip(accuV, -1.0, 1.0);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV);
+  printPerformanceTestResult("rsClip", k*cycles);
+
+  // abs:
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = rsAbs(accuV);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV);
+  printPerformanceTestResult("rsAbs ", k*cycles);
+
+  // sign:
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = rsSign(accuV);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV);
+  printPerformanceTestResult("rsSign", k*cycles);
+  // maybe factor into function: testFunctionApplication (should perhaps be inline, so as to not
+  // disturb the results by function call overhead)
+
+  // Results:
+  // approximate relative costs of operations: we set the cost of 1 addition = 1
+  // add: 1, sub: 1.5, mul: 1, div: 19, unary minus: 1.5
+  // interesting: mul costs the same as add but sub is more expensive
+  // is this true also for scalar double?
+  // rsClip: 1, rsSign: 3.5, rsAbs: 4
 }
 
 void rsSinCos1(double x, double* s, double* c)

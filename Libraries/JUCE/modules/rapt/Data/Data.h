@@ -9,7 +9,7 @@ namespace RAPT
 #include "StandardContainerTools.h"
 
 #include "Simd/Float32x4.h"
-#include "Simd/Float64x2.h"
+//#include "Simd/Float64x2.h" // commented out for development to reduce build-time
 
 }
 
