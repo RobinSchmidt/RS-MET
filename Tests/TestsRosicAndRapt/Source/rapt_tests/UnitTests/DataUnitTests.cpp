@@ -1,6 +1,14 @@
 #include "DataUnitTests.h"
 using namespace RAPT;
 
+//double sum(double* a, size_t N)
+//{
+//  double accu = 0;
+//  for(size_t i = 0; i < N; i++)
+//    accu += a[i];
+//  return accu;
+//}
+
 bool float64x2UnitTest()
 {
   bool r = true;      // test result
@@ -71,5 +79,9 @@ bool float64x2UnitTest()
   y.set(1.0, 9.0);
   y = rsClip(y, 2.0, 7.0); r &= y.get0() == 2.0; r &= y.get1() == 7.0;
 	  
+  y.set(-2.0, -3.0);
+  y = rsAbs(y); r &= y.get0() == 2.0; r &= y.get1() == 3.0;
+
+
   return r;
 }

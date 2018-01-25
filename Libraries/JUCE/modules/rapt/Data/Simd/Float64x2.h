@@ -36,6 +36,7 @@ public:
   /** Returns our vector as array of 2 doubles. */
   inline double* asArray() { return (double*) &v; }
 
+  /** Returns the vector element with index i (valid indices are 0 and 1). */
   inline double get(size_t i)  { return asArray()[i]; }
 
   /** Returns the 1st value (index 0). */
@@ -61,12 +62,45 @@ public:
   /** Sets the first element to a and the second element to b. */
   inline void set(double a, double b) { v = _mm_setr_pd(a, b); }
 
+  /** Sets the vector element with index i (valid indices are 0 and 1). */
   inline void set(size_t i, double a)  { asArray()[i] = a; }
+
+
   inline void set0(double a) { set(size_t(0), a); }
   inline void set1(double a) { set(size_t(1), a); }
 
   //inline void set0(double a) { asArray()[0] = a; }
   //inline void set1(double a) { asArray()[1] = a; }
+
+
+
+  /** \name Constants */
+
+  inline static rsFloat64x2 zero() { static const __m128d z = _mm_setzero_pd(); return z; }
+
+  inline static rsFloat64x2 one()  { static const __m128d o = _mm_set1_pd(1.0); return o; }
+
+  /** Returns a vector that has for both scalars a one for the sign bit and the rest zeros. */
+  inline static rsFloat64x2 signBitOne()
+  {
+    static const long long i = 0x8000000000000000;
+    static const double    d = *((double*)(&i));
+    static const __m128d   r = _mm_set1_pd(d); 
+    return r;
+  }
+
+  /** Returns a vector that has for both scalars a zero for the sign bit and the rest ones. */
+  inline static rsFloat64x2 signBitZero()
+  {
+    static const long long i = 0x7fffffffffffffff;
+    static const double    d = *((double*)(&i));
+    static const __m128d   r = _mm_set1_pd(d); 
+    return r;
+  }
+
+
+  // 0x8000000000000000 (should have 1 only for the sign bit)
+  // 0x7fffffffffffffff (should have 0 only for the sign bit)
 
 
   /** \name Operators */
@@ -83,8 +117,10 @@ public:
   // unary minus:
   inline rsFloat64x2 operator-() 
   { 
-    static const __m128d zero = _mm_setzero_pd();
-    return _mm_sub_pd(zero, v);
+    return _mm_sub_pd(zero(), v);
+    //static const __m128d zero = _mm_setzero_pd();
+    //return _mm_sub_pd(zero, v);
+    // maybe we can use exor with a number that has only the sign-bit set
   }
 
   /** Assignment from __m128d. */
@@ -116,10 +152,19 @@ inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { retur
 inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_min_pd(a, b); }
 inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_max_pd(a, b); }
 inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
-
 inline rsFloat64x2 rsClip(const rsFloat64x2& x, const rsFloat64x2& min, const rsFloat64x2& max)
 { 
   return rsMax(rsMin(x, max), min); 
+}
+
+// not yet tested:
+inline rsFloat64x2 rsBitAnd(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_and_pd(a, b); }
+inline rsFloat64x2 rsBitOr( const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_or_pd( a, b); }
+inline rsFloat64x2 rsBitXor(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_xor_pd(a, b); }
+
+inline rsFloat64x2 rsAbs(const rsFloat64x2& a)
+{
+  return rsBitAnd(a, rsFloat64x2::signBitZero());
 }
 
 // implement abs/sign (based on bit-masks)
