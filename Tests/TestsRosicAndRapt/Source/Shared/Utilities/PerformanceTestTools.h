@@ -13,8 +13,8 @@ void printPerformanceTestResult(const char *testName, double numCyclesPerOperati
 /** Prevents the compiler from optimizing away the variable x. This is useful for performance 
 tests which could give completetly nonsensical results, if the compiler can detect that the results 
 of the operations, you want to measure, are not used anywhere. Just pass your results to this 
-function and the compiler can't optimze away your operations anymore. If the dataype of your result
-does not support to be passed to cout via <<, you can just pass a pointer. */
+function and the compiler can't optimze away your operations anymore. If the datatype of your 
+result does not support to be passed to cout via <<, you can just pass a pointer. */
 template<class T>
 inline void preventOptimization(T x)
 {
