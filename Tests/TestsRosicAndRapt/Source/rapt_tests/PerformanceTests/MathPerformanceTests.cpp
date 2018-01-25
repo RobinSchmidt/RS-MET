@@ -67,35 +67,6 @@ void matrixAdressingTest()
   delete[] b;
 }
 
-
-/*
-// Just for testing having a __m128 member instead of subclassing - if it works better (faster) 
-// than the subclassing in rsFloat64x2, use that there, too.
-class Float64x2
-{
-public:
-
-  inline Float64x2() {} // maybe use _mm_setzero_pd() - but maybe it's better to leave it uninitialized
-  inline Float64x2(double a) : v(_mm_set1_pd(a)) {}
-  inline Float64x2(double a, double b) : v(_mm_setr_pd(a, b)) {}
-  inline Float64x2(const __m128d& rhs) : v(rhs) {}
-
-  inline Float64x2& operator=(const __m128d& rhs) { v = rhs; return *this; }
-
-  inline operator __m128d() const { return v; }
-
-  //inline Float64x2& operator+=(const Float64x2& rhs) { *this = *this + rhs; return *this; }
-
-//private:
-  __m128d v; // the value
-  //__declspec(align(16)) __m128d v; // the value
-};
-inline Float64x2 operator+(const Float64x2& lhs, const Float64x2& rhs)
-{
-  //Float64x2 r; r.v = _mm_add_pd(lhs.v, rhs.v); return r;
-  return _mm_add_pd(lhs.v, rhs.v);
-}
-*/
 void simdPerformanceFloat64x2()
 {
   // We compare computations with arrays of rsFloat64x2 of length N to corresponding computations
@@ -104,13 +75,13 @@ void simdPerformanceFloat64x2()
   typedef rsFloat64x2 doubleVec;
   //typedef Float64x2 doubleVec;
 
-  static const int N = 5000; // array length
+  static const int N = 1000; // array length
   double    x1s[2*N], x2s[2*N], ys[2*N]; // scalar arrays
   doubleVec x1v[N],   x2v[N],   yv[N];   // vector arrays
   //__declspec(align(16)) __m128d   x1m[N],   x2m[N],   ym[N];   // vector without wrapper
   __m128d   x1m[N],   x2m[N],   ym[N];   // vector without wrapper
 
-  ProcessorCycleCounter2 counter;
+  ProcessorCycleCounter counter;
   double cycles;
 
   // fill arrays with random values:
@@ -150,6 +121,13 @@ void simdPerformanceFloat64x2()
   cycles = (double)counter.getNumCyclesSinceInit();
   printPerformanceTestResult("binary add, vector, wrapped", k*cycles);
 
+  // to make sure, the optimizer doesn't optimze away our arrays:
+  int index = (int)ng.getSample() + 100;
+  rsFloat64x2 test(ym[index]);
+  cout << ys[index];
+  cout << test.get0();
+  cout << yv[index].get0();
+
   // damn! the vector class is actually twice as slow instead of twice as fast. WTF is going on?
   // maybe try using SSE instructions without wrapper - ok, without wrapper, the problem is the 
   // same - this is really weird, but at least, it means my wrapper code is not to blame, i even 
@@ -161,6 +139,10 @@ void simdPerformanceFloat64x2()
   // table-based sincos implementation, too
   // The new counter produces counts that are around a factor of 100 less but the ratio remains the
   // same.
+  // When doing nothing with the arrays (such as printing some values), the compiler seems to 
+  // optimize them away (the figures are very different, when we output a value from the array 
+  // after the loops)....but still the SSE code is slower - maybe it's due to the array access
+  // operations - we should try loops without using arrays.
 }
 
 void rsSinCos1(double x, double* s, double* c)

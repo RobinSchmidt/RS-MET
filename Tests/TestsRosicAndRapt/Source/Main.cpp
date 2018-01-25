@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();
+  //runAllUnitTests();
   //mathUnitTests();
   //filterUnitTests();
 
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
   // Performance tests:
 
   //matrixAdressingTest();
-  //simdPerformanceFloat64x2();
+  simdPerformanceFloat64x2();
   //sinCosPerformance();
 
   //ladderPerformance();
