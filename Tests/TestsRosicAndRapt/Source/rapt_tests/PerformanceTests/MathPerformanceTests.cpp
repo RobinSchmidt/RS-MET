@@ -67,23 +67,9 @@ void matrixAdressingTest()
   delete[] b;
 }
 
-// should always return false but ensure the compiler/optimizer cannot figure this out
-bool falseFunction()
-{
-  rsNoiseGenerator<double> ng;
-  return ng.getSample() > 10; // always false because default range is -1..+1
-}
-// dummy function that could possibly do something with the passed value (but actually doesn't), 
-// but the compiler can't figure this out
-void dummyFunction(double x)
-{
-  if(falseFunction())
-    cout << x;
-}
-
 void simdPerformanceFloat64x2()
 {
-  static const int N = 2000;  // number of vector operations
+  static const int N = 1000;  // number of vector operations
 
   double oneS  = 1.0;
   double accuS = 0.0;
@@ -104,7 +90,7 @@ void simdPerformanceFloat64x2()
   for(n = 0; n < 2*N; n++)
     accuS = accuS + oneS;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dummyFunction(accuS);
+  preventOptimization(accuS);
   printPerformanceTestResult("scl1 = scl1 + scl2", k*cycles);
 
   // vector = vector + vector:
@@ -112,7 +98,7 @@ void simdPerformanceFloat64x2()
   for(n = 0; n < N; n++)
     accuV = accuV + oneV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dummyFunction(accuV.get0());
+  preventOptimization(&accuV);
   printPerformanceTestResult("vec1 = vec1 + vec2", k*cycles);
 
   // vector = vector + scalar:
@@ -120,7 +106,7 @@ void simdPerformanceFloat64x2()
   for(n = 0; n < N; n++)
     accuV = accuV + oneS;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dummyFunction(accuV.get0());
+  preventOptimization(&accuV);
   printPerformanceTestResult("vec1 = vec1 + scl2", k*cycles);
 
   // vector = scalar + vector:
@@ -128,7 +114,7 @@ void simdPerformanceFloat64x2()
   for(n = 0; n < N; n++)
     accuV = oneS + accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dummyFunction(accuV.get0());
+  preventOptimization(&accuV);
   printPerformanceTestResult("vec1 = scl2 + vec1", k*cycles);
 
 

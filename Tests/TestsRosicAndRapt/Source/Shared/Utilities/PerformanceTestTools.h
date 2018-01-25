@@ -10,6 +10,19 @@
 
 void printPerformanceTestResult(const char *testName, double numCyclesPerOperation);
 
+/** Prevents the compiler from optimizing away the variable x. This is useful for performance 
+tests which could give completetly nonsensical results, if the compiler can detect that the results 
+of the operations, you want to measure, are not used anywhere. Just pass your results to this 
+function and the compiler can't optimze away your operations anymore. If the dataype of your result
+does not support to be passed to cout via <<, you can just pass a pointer. */
+template<class T>
+inline void preventOptimization(T x)
+{
+  volatile bool f = false;
+  if(f)
+    cout << x;
+}
+
 /** This class implements a CPU cycle counter which is useful for performance tests. It does not 
 literally count but instead measure the time stamps before and after a sequence of commands. Works 
 only with MSVC at the moment. 

@@ -9,3 +9,4 @@ void printPerformanceTestResult(const char *name, double numCycles)
 
   // maybe the formatting can be refined...
 }
+

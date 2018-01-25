@@ -12,11 +12,10 @@ public:
 
   /** \name Construction */
 
-  /** Standard constructor. Initializes both elements to zero. */
+  /** Standard constructor. Leaves both elements uninitialized. */
   inline rsFloat64x2() { /*v = _mm_setzero_pd();*/ }
-    // Maybe it's more efficient to leave it uninitiliazed? If so, get rid of the setzero.
 
-  /** Constructor to copy an existing pair of values. */
+  /** Constructor to copy an existing __m128d pair of values. */
   inline rsFloat64x2(const __m128d& rhs) : v(rhs) {}
 
   /** Constructor that initializes both elements to the given value. */
@@ -104,6 +103,8 @@ inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
 // https://msdn.microsoft.com/de-de/library/9b07190d(v=vs.90).aspx
 // http://johanmabille.github.io/blog/2014/10/10/writing-c-plus-plus-wrappers-for-simd-intrinsics-3/
 // https://github.com/p12tic/libsimdpp 
+// https://github.com/VcDevel/Vc
+// https://github.com/NumScale/boost.simd
 
 
 
