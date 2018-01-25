@@ -51,6 +51,14 @@ public:
   //inline double get1() { return asArray()[1]; }
   inline double get1() { return get(1); }
 
+  /** Returns the sum of the values of both scalar elements in the vector. */
+  inline double getSum() { double* a = asArray(); return a[0]+a[1]; }
+
+  /** Returns the minimum of the values of both scalar elements in the vector. */
+  inline double getMin() { double* a = asArray(); return (a[0] < a[1]) ? a[0] : a[1]; }
+
+  /** Returns the maximum of the values of both scalar elements in the vector. */
+  inline double getMax() { double* a = asArray(); return (a[0] > a[1]) ? a[0] : a[1]; }
 
 
   /** \name Setup */
@@ -183,5 +191,8 @@ inline rsFloat64x2 rsSign(const rsFloat64x2& a)
 // https://github.com/p12tic/libsimdpp 
 // https://github.com/VcDevel/Vc
 // https://github.com/NumScale/boost.simd
+
+// for elementary math functions, see:
+// http://ito-lab.naist.jp/~n-sibata/pdfs/isc10simd.pdf
 
 #endif

@@ -69,7 +69,7 @@ bool float64x2UnitTest()
   y /= x34; r &= y.get0() ==  3.0; r &= y.get1() ==   4.0;
   y  = -y;  r &= y.get0() == -3.0; r &= y.get1() ==  -4.0;
 
-  // functions: sqrt, min, max, clip
+  // functions: sqrt, min, max, clip, abs, sign:
   y = x34 * x34;
   y = rsSqrt(y);       r &= y.get0() == 3.0; r &= y.get1() == 4.0;
   y = rsMin(x12, x34); r &= y.get0() == 1.0; r &= y.get1() == 2.0;
@@ -77,13 +77,21 @@ bool float64x2UnitTest()
   y = rsMax(x12, x34); r &= y.get0() == 3.0; r &= y.get1() == 4.0;
   y = rsMax(x34, x12); r &= y.get0() == 3.0; r &= y.get1() == 4.0;
   y.set(1.0, 9.0);
-  y = rsClip(y, 2.0, 7.0); r &= y.get0() == 2.0; r &= y.get1() == 7.0;
-	  
+  y = rsClip(y, 2.0, 7.0); r &= y.get0() == 2.0; r &= y.get1() == 7.0; 
   y.set(-2.0, -3.0);
   y = rsAbs(y); r &= y.get0() == 2.0; r &= y.get1() == 3.0;
-
   y.set(-2.0, 3.0);
   y = rsSign(y); r &= y.get0() == -1.0; r &= y.get1() == +1.0;
+
+  // reductions to scalar:
+  double s;
+  y.set(3.0, 5.0);
+  s = y.getSum(); r &= s == 8.0;
+  s = y.getMin(); r &= s == 3.0;
+  s = y.getMax(); r &= s == 5.0;
+
+
+  // math functions: fmod, exp, log, pow, sin, cos, tan, sinh, cosh, tanh
 
   return r;
 }
