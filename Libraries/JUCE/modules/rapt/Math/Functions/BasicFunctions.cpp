@@ -176,7 +176,7 @@ inline double rsLinToExp(double in, double inMin, double inMax, double outMin, d
   double tmp = (in - inMin) / (inMax - inMin);
 
   // map the tmp-value exponentially to the range outMin...outMax:
-  return outMin * exp(tmp * (log(outMax / outMin)));
+  return outMin * std::exp(tmp * (log(outMax / outMin)));
 }
 
 inline double rsLinToExpWithOffset(double in, double inMin, double inMax, double outMin,

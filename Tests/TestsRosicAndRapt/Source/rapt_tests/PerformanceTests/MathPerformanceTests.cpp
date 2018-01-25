@@ -1,7 +1,7 @@
 #include "MathPerformanceTests.h"
 using namespace RAPT;
 
-#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"
+//#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"
 // needed when it's commented out in rapt -> reduce build time during tweaking the class
 
 void matrixAdressingTest()
@@ -193,32 +193,32 @@ void simdPerformanceFloat64x2()
   dontOptimize(&x); printPerformanceTestResult("sign", k*cycles);
 
   // sqrt:
-  counter.init(); for(n = 0; n < N; n++) x = sqrt(x);
+  counter.init(); for(n = 0; n < N; n++) x = rsSqrt(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("sqrt", k*cycles);
 
   // exp:
-  counter.init(); for(n = 0; n < N; n++) x = exp(x);
+  counter.init(); for(n = 0; n < N; n++) x = rsExp(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("exp ", k*cycles);
 
   // log:
-  counter.init(); for(n = 0; n < N; n++) x = log(x);
+  counter.init(); for(n = 0; n < N; n++) x = rsLog(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("log ", k*cycles);
 
   // sin:
-  counter.init(); for(n = 0; n < N; n++) x = sin(x);
+  counter.init(); for(n = 0; n < N; n++) x = rsSin(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("sin ", k*cycles);
 
   // cos:
-  counter.init(); for(n = 0; n < N; n++) x = cos(x);
+  counter.init(); for(n = 0; n < N; n++) x = rsCos(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("cos ", k*cycles);
 
   // tan:
-  counter.init(); for(n = 0; n < N; n++) x = tan(x);
+  counter.init(); for(n = 0; n < N; n++) x = rsTan(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("tan ", k*cycles);
 

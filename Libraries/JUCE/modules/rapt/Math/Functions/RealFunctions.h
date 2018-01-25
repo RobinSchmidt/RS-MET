@@ -483,12 +483,12 @@ RS_INLINE double rsEvaluateQuartic(double x, double a0, double a1, double a2, do
 
 RS_INLINE double rsExp10(double x)
 {
-  return exp(LN10 * x);
+  return std::exp(LN10 * x);
 }
 
 RS_INLINE double rsExp2(double x)
 {
-  return exp(LN2 * x);
+  return std::exp(LN2 * x);
 }
 
 RS_INLINE double rsFoldOver(double x, double min, double max)
@@ -507,12 +507,12 @@ RS_INLINE double rsFrac(double x)
 
 RS_INLINE double rsGauss(double x, double mu, double sigma)
 {
-  return (1.0 / (rsSqrt(2*PI)*sigma)) * exp(-((x-mu)*(x-mu)) / (2*sigma*sigma));
+  return (1.0 / (rsSqrt(2*PI)*sigma)) * std::exp(-((x-mu)*(x-mu)) / (2*sigma*sigma));
 }
 
 RS_INLINE double rsLogistic(double x, double b)
 {
-  return 1.0 / (1 + exp(-b*x));
+  return 1.0 / (1 + std::exp(-b*x));
 }
 
 /*
@@ -534,7 +534,7 @@ RS_INLINE double rsLogB(double x, double b)
 
 RS_INLINE double rsMinkowski(double x, double mu, double sigma, double k)
 {
-  return (1 /(rsSqrt(2*PI)*sigma)) * exp(-(pow(fabs(x-mu), k))/(2*pow(sigma, k)));
+  return (1 /(rsSqrt(2*PI)*sigma)) * std::exp(-(pow(fabs(x-mu), k))/(2*pow(sigma, k)));
 }
 
 RS_INLINE double rsPowBipolar(double base, double exponent)
