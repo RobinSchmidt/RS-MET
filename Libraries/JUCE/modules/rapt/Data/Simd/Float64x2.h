@@ -34,7 +34,7 @@ public:
   /** \name Inquiry */
 
   /** Returns our vector as array of 2 doubles. */
-  inline double* asArray() { return (double*) &v; }
+  inline double* asArray() const { return (double*) &v; }
 
   /** Returns the vector element with index i (valid indices are 0 and 1). */
   inline double get(size_t i)  { return asArray()[i]; }
@@ -193,9 +193,16 @@ inline rsFloat64x2 rsAbs(const rsFloat64x2& a)
   //return rsBitAnd(a, mask);
 }
 
-// implement abs/sign (based on bit-masks)
+// math functions:
+inline rsFloat64x2 rsExp(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(exp(a[0]), exp(a[1])); }
+inline rsFloat64x2 rsLog(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(log(a[0]), log(a[1])); }
+inline rsFloat64x2 rsSin(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(sin(a[0]), sin(a[1])); }
+inline rsFloat64x2 rsCos(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(cos(a[0]), cos(a[1])); }
+inline rsFloat64x2 rsTan(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(tan(a[0]), tan(a[1])); }
+// todo: asin, acos, atan, atan2, sinh, cosh, tanh, asinh, acosh, atanh, pow, fmod, floor, ceil
 
-// todo: reduce_min, reduce_max, reduce_sum
+
+
 // for more inspiration, see:
 // https://msdn.microsoft.com/de-de/library/tyy88x2a(v=vs.90).aspx
 // https://msdn.microsoft.com/de-de/library/9b07190d(v=vs.90).aspx

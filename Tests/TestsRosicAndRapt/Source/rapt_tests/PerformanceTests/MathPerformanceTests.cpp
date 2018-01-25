@@ -186,15 +186,28 @@ void simdPerformanceFloat64x2()
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&accuV);
   printPerformanceTestResult("rsSign", k*cycles);
+
+  // sin:
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = rsSin(accuV);
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV);
+  printPerformanceTestResult("rsSin", k*cycles);
+
   // maybe factor into function: testFunctionApplication (should perhaps be inline, so as to not
   // disturb the results by function call overhead)
 
+
+
+
   // Results:
   // approximate relative costs of operations: we set the cost of 1 addition = 1
-  // add: 1, sub: 1.5, mul: 1, div: 19, unary minus: 1.5
+  // add: 1, sub: 1.5, mul: 1, div: 9.5, unary minus: 1.5
   // interesting: mul costs the same as add but sub is more expensive
   // is this true also for scalar double?
   // rsClip: 1, rsSign: 3.5, rsAbs: 4
+  // rsSin: 15,
 }
 
 void rsSinCos1(double x, double* s, double* c)
