@@ -125,10 +125,12 @@ public:
   // unary minus:
   inline rsFloat64x2 operator-() 
   { 
-    return _mm_sub_pd(zero(), v);
+    return _mm_xor_pd(signBitOne(), v);
+
+    //return _mm_sub_pd(zero(), v); // alternative implementation
+
     //static const __m128d zero = _mm_setzero_pd();
     //return _mm_sub_pd(zero, v);
-    // maybe we can use exor with a number that has only the sign-bit set
   }
 
   /** Assignment from __m128d. */
