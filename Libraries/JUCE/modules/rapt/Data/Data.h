@@ -8,7 +8,8 @@ namespace RAPT
 #include "MatrixTools.h"
 #include "StandardContainerTools.h"
 
-#include "Simd/FloatSimdVectors.h"
+#include "Simd/Float32x4.h"
+#include "Simd/Float64x2.h"
 
 }
 

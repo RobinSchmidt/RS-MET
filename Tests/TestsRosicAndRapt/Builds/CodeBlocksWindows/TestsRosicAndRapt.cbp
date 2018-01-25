@@ -523,7 +523,13 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Data/Simd/FloatSimdVectors.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float32x4.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
