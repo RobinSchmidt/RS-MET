@@ -157,43 +157,31 @@ inline rsFloat64x2 operator+(const rsFloat64x2& a, const rsFloat64x2& b) { retur
 inline rsFloat64x2 operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_sub_pd(a, b); }
 inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_mul_pd(a, b); }
 inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_div_pd(a, b); }
+inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a; } // unary minus
 // the binary operators with a scalar for the left or right hand side do not have to be defined due 
 // to implicit conversions
 
-inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a; }
-
-
-// functions:
+// limiting functions::
 inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_min_pd(a, b); }
 inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_max_pd(a, b); }
-inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
 inline rsFloat64x2 rsClip(const rsFloat64x2& x, const rsFloat64x2& min, const rsFloat64x2& max)
 { 
   return rsMax(rsMin(x, max), min); 
 }
 
-// not yet tested:
+// bit-manipulations and related functions:
 inline rsFloat64x2 rsBitAnd(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_and_pd(a, b); }
 inline rsFloat64x2 rsBitOr( const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_or_pd( a, b); }
 inline rsFloat64x2 rsBitXor(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_xor_pd(a, b); }
-
+inline rsFloat64x2 rsAbs(const rsFloat64x2& a) { return rsBitAnd(a, rsFloat64x2::signBitZero()); }
 inline rsFloat64x2 rsSign(const rsFloat64x2& a)
 {
   rsFloat64x2 signOnly = rsBitAnd(a, rsFloat64x2::signBitOne());
   return rsBitOr(signOnly, rsFloat64x2::one());
 }
 
-inline rsFloat64x2 rsAbs(const rsFloat64x2& a)
-{
-  //return a * rsSign(a);
-
-  return rsBitAnd(a, rsFloat64x2::signBitZero());
-
-  //static const rsFloat64x2 mask = rsFloat64x2::signBitZero();
-  //return rsBitAnd(a, mask);
-}
-
-// math functions:
+// math functions (except for sqrt, we need to fall back to the scalar versions):
+inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
 inline rsFloat64x2 rsExp(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(exp(a[0]), exp(a[1])); }
 inline rsFloat64x2 rsLog(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(log(a[0]), log(a[1])); }
 inline rsFloat64x2 rsSin(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(sin(a[0]), sin(a[1])); }
@@ -211,7 +199,7 @@ inline rsFloat64x2 rsTan(const rsFloat64x2& x) { double* a = x.asArray(); return
 // https://github.com/VcDevel/Vc
 // https://github.com/NumScale/boost.simd
 
-// for elementary math functions, see:
+// for evaluating elementary math functions without resorting to the scalar versions, see:
 // http://ito-lab.naist.jp/~n-sibata/pdfs/isc10simd.pdf
 
 #endif
