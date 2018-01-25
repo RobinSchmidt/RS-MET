@@ -193,32 +193,32 @@ void simdPerformanceFloat64x2()
   dontOptimize(&x); printPerformanceTestResult("sign", k*cycles);
 
   // sqrt:
-  counter.init(); for(n = 0; n < N; n++) x = rsSqrt(x);
+  counter.init(); for(n = 0; n < N; n++) x = sqrt(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("sqrt", k*cycles);
 
   // exp:
-  counter.init(); for(n = 0; n < N; n++) x = rsExp(x);
+  counter.init(); for(n = 0; n < N; n++) x = exp(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("exp ", k*cycles);
 
   // log:
-  counter.init(); for(n = 0; n < N; n++) x = rsLog(x);
+  counter.init(); for(n = 0; n < N; n++) x = log(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("log ", k*cycles);
 
   // sin:
-  counter.init(); for(n = 0; n < N; n++) x = rsSin(x);
+  counter.init(); for(n = 0; n < N; n++) x = sin(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("sin ", k*cycles);
 
   // cos:
-  counter.init(); for(n = 0; n < N; n++) x = rsCos(x);
+  counter.init(); for(n = 0; n < N; n++) x = cos(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("cos ", k*cycles);
 
   // tan:
-  counter.init(); for(n = 0; n < N; n++) x = rsTan(x);
+  counter.init(); for(n = 0; n < N; n++) x = tan(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("tan ", k*cycles);
 

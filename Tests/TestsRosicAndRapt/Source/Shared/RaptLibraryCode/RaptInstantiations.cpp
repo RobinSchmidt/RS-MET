@@ -24,6 +24,9 @@ code may also define its own instantiation file. */
 
 #include "../../../../../Libraries/JUCE/modules/rapt/rapt.cpp"
 
+#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"
+// needed when it's commented out in rapt -> reduce build time during tweaking the class
+
 // Basics:
 
 
@@ -54,6 +57,9 @@ template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float
 // Filters-Musical:
 template RAPT::rsSmoothingFilter<float, float>;
 template RAPT::rsLadderFilter<float, float>;
+template RAPT::rsLadderFilter<double, double>;
+template RAPT::rsLadderFilter<rsFloat64x2, double>;
+//template RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>; // not instantiable due to complex
 template RAPT::rsPhasorFilter<float, float>;
 template RAPT::rsPhasorStateMapper<float>;
 template RAPT::rsStateVariableFilter<float, float>; 

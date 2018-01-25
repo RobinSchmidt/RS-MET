@@ -75,7 +75,7 @@ bool float64x2UnitTest()
 
   // functions: sqrt, min, max, clip, abs, sign:
   y = x34 * x34;
-  y = rsSqrt(y);       r &= y.get0() == 3.0; r &= y.get1() == 4.0;
+  y = sqrt(y);         r &= y.get0() == 3.0; r &= y.get1() == 4.0;
   y = rsMin(x12, x34); r &= y.get0() == 1.0; r &= y.get1() == 2.0;
   y = rsMin(x34, x12); r &= y.get0() == 1.0; r &= y.get1() == 2.0;
   y = rsMax(x12, x34); r &= y.get0() == 3.0; r &= y.get1() == 4.0;

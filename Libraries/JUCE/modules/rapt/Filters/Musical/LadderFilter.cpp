@@ -165,7 +165,7 @@ template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::reset()
 {
   for(int i = 0; i < 5; i++) // later use: ArrayFunctions::clear(y, 5);
-    y[i] = 0;
+    y[i] = TSig(0);
 }
 
 // coefficient computations:
@@ -180,10 +180,13 @@ TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(TPar fb, TPar cosWc, TPar
 template<class TSig, class TPar>
 TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar cutoff)
 {
-  if(decay > 0.0)
-    return exp(-1/(decay*cutoff));
-  else
-    return 0.0;
+  return exp(-1/(decay*cutoff)); // does this return 0 for decay == 0? -> test
+
+  //if(decay > 0.0) // doesn't work with SIMD
+  //  return exp(-1/(decay*cutoff));
+  //else
+  //  return 0.0;
+
   // The time tr for a sinusoid at the cutoff frequency fc to complete a single roundtrip around 
   // the filter loop is given by tr = 1/fc. The amplitude of the sinusoid as function of t is given
   // by a(t) = r^(t/tr) = r^(t*fc). The decaytime is defined as the time instant where a(t) = 1/e, 

@@ -14,6 +14,9 @@ PhaseScopeBufferFFD typedef wouldn't exist. */
 #include "../../../../../Libraries/JUCE/modules/rapt/rapt.h"
 //using namespace RAPT;
 
+#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"
+// needed when it's commented out in rapt -> reduce build time during tweaking the class
+
 // Math:
 typedef RAPT::rsConicSection<float> rsConicSectionF;
 typedef RAPT::rsEllipse<float> rsEllipseF;
@@ -30,6 +33,9 @@ typedef RAPT::rsVector3D<float> rsVector3DF;
 // Filters-Musical:
 typedef RAPT::rsSmoothingFilter<float, float> rsSmoothingFilterFF;
 typedef RAPT::rsLadderFilter<float, float> rsLadderFilterFF;
+typedef RAPT::rsLadderFilter<double, double> rsLadderFilterDD;
+typedef RAPT::rsLadderFilter<rsFloat64x2, double> rsLadderFilterD2D;
+//typedef RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2> rsLadderFilterD2D2;
 typedef RAPT::rsPhasorFilter<float, float> rsPhasorFilterFF;
 typedef RAPT::rsPhasorStateMapper<float> rsPhasorStateMapperF;
 typedef RAPT::rsStateVariableFilter<float, float> rsStateVariableFilterFF; 
