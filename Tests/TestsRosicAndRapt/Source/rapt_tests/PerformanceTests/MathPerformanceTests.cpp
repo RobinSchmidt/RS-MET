@@ -67,11 +67,23 @@ void matrixAdressingTest()
   delete[] b;
 }
 
-
+// should always return false but ensure the compiler/optimizer cannot figure this out
+bool falseFunction()
+{
+  rsNoiseGenerator<double> ng;
+  return ng.getSample() > 10; // always false because default range is -1..+1
+}
+// dummy function that could possibly do something with the passed value (but actually doesn't), 
+// but the compiler can't figure this out
+void dummyFunction(double x)
+{
+  if(falseFunction())
+    cout << x;
+}
 
 void simdPerformanceFloat64x2()
 {
-  static const int N = 1000;  // number of vector operations
+  static const int N = 2000;  // number of vector operations
 
   double oneS  = 1.0;
   double accuS = 0.0;
@@ -83,108 +95,59 @@ void simdPerformanceFloat64x2()
   double k = 1.0/(2*N);
   int n;
 
+  // Print the number of cycles per scalar addition - in the case of vector types, we expect to see
+  // the number to be a factor 2 smaller than in the case of scalar types (because we get two 
+  // scalar additions for each vector addition):
+
+  // scalar = scalar + scalar:
   counter.init();
   for(n = 0; n < 2*N; n++)
     accuS = accuS + oneS;
   cycles = (double)counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("binary add, scalar", k*cycles);
+  dummyFunction(accuS);
+  printPerformanceTestResult("scl1 = scl1 + scl2", k*cycles);
 
+  // vector = vector + vector:
   counter.init();
   for(n = 0; n < N; n++)
     accuV = accuV + oneV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("binary add, vector", k*cycles);
+  dummyFunction(accuV.get0());
+  printPerformanceTestResult("vec1 = vec1 + vec2", k*cycles);
 
-  // Prevent compiler from optimizing out the accu variables (and thereby, measurement loops):
-  cout << accuS;
-  cout << accuV.get0();
-    // todo: use a dummyFunction that pretends to do something - for example, it could check for
-    // the existence of some file and print numbers only if the file exists - or anything, the 
-    // compiler is guaranteed to not be able to figure out at compile time but we know is false
-    // nevertheless
-
-  int dummy = 0;
-}
-
-/*
-void simdPerformanceFloat64x2()
-{
-  // We compare computations with arrays of rsFloat64x2 of length N to corresponding computations
-  // with arrays of double of length 2*N
-
-  typedef rsFloat64x2 doubleVec;
-  //typedef Float64x2 doubleVec;
-
-  static const int N = 1000; // array length
-  double    x1s[2*N], x2s[2*N], ys[2*N]; // scalar arrays
-  doubleVec x1v[N],   x2v[N],   yv[N];   // vector arrays
-  //__declspec(align(16)) __m128d   x1m[N],   x2m[N],   ym[N];   // vector without wrapper
-  __m128d   x1m[N],   x2m[N],   ym[N];   // vector without wrapper
-
-  ProcessorCycleCounter counter;
-  double cycles;
-
-  // fill arrays with random values:
-  rsNoiseGenerator<double> ng;
-  ng.setRange(-100, +100);
-  int n;
+  // vector = vector + scalar:
+  counter.init();
   for(n = 0; n < N; n++)
-  {
-    x1s[2*n]   = ng.getSample();
-    x1s[2*n+1] = ng.getSample();
-    x1v[n]     = doubleVec(x1s[2*n], x1s[2*n+1]);
-    x1m[n]     = _mm_setr_pd(x1s[2*n], x1s[2*n+1]);
-    x2s[2*n]   = ng.getSample();
-    x2s[2*n+1] = ng.getSample();
-    x2v[n]     = doubleVec(x2s[2*n], x2s[2*n+1]);
-    x2m[n]     = _mm_setr_pd(x2s[2*n], x2s[2*n+1]);
-  }
+    accuV = accuV + oneS;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dummyFunction(accuV.get0());
+  printPerformanceTestResult("vec1 = vec1 + scl2", k*cycles);
 
-  double k = 1.0/(2*N);
-  //k = 1; // test
+  // vector = scalar + vector:
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = oneS + accuV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dummyFunction(accuV.get0());
+  printPerformanceTestResult("vec1 = scl2 + vec1", k*cycles);
 
+
+  /*
   counter.init();
   for(n = 0; n < 2*N; n++)
-    ys[n] = x1s[n] + x2s[n];
+    accuS += oneS;
   cycles = (double)counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("binary add, scalar", k*cycles);
+  dummyFunction(accuS);
+  printPerformanceTestResult("s1 += s2", k*cycles);
 
   counter.init();
   for(n = 0; n < N; n++)
-    ym[n] = _mm_add_pd(x1m[n], x2m[n]);
+    accuV += oneV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("binary add, vector, no wrapper", k*cycles);
-
-  counter.init();
-  for(n = 0; n < N; n++)
-    yv[n] = x1v[n] + x2v[n];
-  cycles = (double)counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("binary add, vector, wrapped", k*cycles);
-
-  // to make sure, the optimizer doesn't optimze away our arrays:
-  int index = (int)ng.getSample() + 100;
-  rsFloat64x2 test(ym[index]);
-  cout << ys[index];
-  cout << test.get0();
-  cout << yv[index].get0();
-
-  // damn! the vector class is actually twice as slow instead of twice as fast. WTF is going on?
-  // maybe try using SSE instructions without wrapper - ok, without wrapper, the problem is the 
-  // same - this is really weird, but at least, it means my wrapper code is not to blame, i even 
-  // set the arch:SSE2 flag (under code generation) - still no avail - oh! but the compiler prints
-  // a warning that this option is ignored - maybe i need a better compiler? no -it seems the flags 
-  // are not supported anymore because they are active by default in x64 builds
-  // hmm...maybe try on gcc
-  // or maybe the performance counter does not work properly? we had problems measuring the 
-  // table-based sincos implementation, too
-  // The new counter produces counts that are around a factor of 100 less but the ratio remains the
-  // same.
-  // When doing nothing with the arrays (such as printing some values), the compiler seems to 
-  // optimize them away (the figures are very different, when we output a value from the array 
-  // after the loops)....but still the SSE code is slower - maybe it's due to the array access
-  // operations - we should try loops without using arrays.
+  dummyFunction(accuV.get0());
+  printPerformanceTestResult("vec1 += vec2", k*cycles);
+  */
 }
-*/
 
 void rsSinCos1(double x, double* s, double* c)
 {
