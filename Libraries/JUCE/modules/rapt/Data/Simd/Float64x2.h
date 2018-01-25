@@ -31,6 +31,24 @@ public:
     v = _mm_setr_pd(values[0], values[1]);
   }
 
+  /** \name Inquiry */
+
+  /** Returns our vector as array of 2 doubles. */
+  inline double* asArray() { return (double*) &v; }
+
+  // inline double get(size_t i)  { return asArray()[i]; }
+
+  /** Returns the 1st value (index 0). */
+  //inline double get0() { double d; _mm_storel_pd(&d, v); return d; }
+  inline double get0() { return asArray()[0]; }
+    // todo: performance test both versions
+    // use get(0)
+
+  /** Returns the 2nd value (index 1). */
+  //inline double get1() { double d; _mm_storeh_pd(&d, v); return d; }
+  inline double get1() { return asArray()[1]; }
+
+
 
   /** \name Setup */
 
@@ -42,11 +60,9 @@ public:
   inline void set(double a, double b) { v = _mm_setr_pd(a, b); }
 
 
-  /** \name Inquiry */
+  inline void set0(double a) { asArray()[0] = a; }
 
-  // extract vector elements:
-  inline double get0() { double d; _mm_storel_pd(&d, v); return d; }  // lower (index 0)
-  inline double get1() { double d; _mm_storeh_pd(&d, v); return d; }  // upper (index 1)
+  inline void set1(double a) { asArray()[1] = a; }
 
 
   /** \name Operators */
