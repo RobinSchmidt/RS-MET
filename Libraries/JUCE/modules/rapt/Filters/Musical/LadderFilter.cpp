@@ -103,10 +103,10 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
 {
   TPar w = 2 * TPar(PI) * frequency/sampleRate;
   std::complex<TPar> j(0, 1);                      // imaginary unit
-  std::complex<TPar> z = exp(j*w);                 // location in the z-plane
+  std::complex<TPar> z = rsExp(j*w);               // location in the z-plane
   std::complex<TPar> H = getTransferFunctionAt(z); // H(z) at our z
   H *= conj(H);                                    // magnitude-squared
-  return sqrt(H.real());                           // imaginary part should be zero anyway
+  return rsSqrt(H.real());                         // imaginary part should be zero anyway
 
   // I wonder, if a simpler formula is possible which avoids going through the complex transfer 
   // function -> computer algebra
@@ -180,7 +180,7 @@ TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(TPar fb, TPar cosWc, TPar
 template<class TSig, class TPar>
 TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar cutoff)
 {
-  return exp(-1/(decay*cutoff)); // does this return 0 for decay == 0? -> test
+  return rsExp(-1/(decay*cutoff)); // does this return 0 for decay == 0? -> test
 
   //if(decay > 0.0) // doesn't work with SIMD
   //  return exp(-1/(decay*cutoff));
@@ -207,9 +207,9 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *
 {
   TPar s, c, t;                     // sin(wc), cos(wc), tan((wc-PI)/4)
   //rsSinCos(wc, &s, &c);
-  s  = sin(wc);
-  c  = cos(wc);
-  t  = (TPar) tan(0.25*(wc-PI));
+  s  = rsSin(wc);
+  c  = rsCos(wc);
+  t  = (TPar) rsTan(0.25*(wc-PI));
   *a = t / (s-c*t);
   *b = 1 + *a;  
   *k = computeFeedbackFactor(fb, c, *a, *b);

@@ -1923,6 +1923,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\ComplexFloat64x2.h">
+      <Filter>Juce Modules\rapt\Data\Simd</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h">
       <Filter>Juce Modules\rapt\Data\Simd</Filter>
     </ClInclude>

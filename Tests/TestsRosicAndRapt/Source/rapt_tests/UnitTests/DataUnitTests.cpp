@@ -99,6 +99,7 @@ bool float64x2UnitTest()
   return r;
 }
 
+/*
 std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
 {
   // e^z = e^(a + i*b) = e^a * e^(i*b) = e^a * (cos(b) + i*sin(b))
@@ -115,6 +116,7 @@ std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
   return std::complex<rsFloat64x2>(vre, vim);
 }
 // this function needs testing - if it works, it may be moved to the library
+*/
 
 std::complex<double> get0(std::complex<rsFloat64x2> z)
 {
@@ -153,9 +155,9 @@ bool complexFloat64x2UnitTest()
   // complex<rsFloat64x2>
 
   // exponential function:
-  w0 = exp(z10);
-  w1 = exp(z11);
-  w  = exp(z1);
+  w0 = std::exp(z10);
+  w1 = std::exp(z11);
+  w  = rsExp(z1);
   r &= w0 == get0(w);
   r &= w1 == get1(w);
 

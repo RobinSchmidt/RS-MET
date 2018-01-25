@@ -10,6 +10,7 @@ namespace RAPT
 
 #include "Simd/Float32x4.h"
 #include "Simd/Float64x2.h"
+#include "Simd/ComplexFloat64x2.h"
 
 }
 

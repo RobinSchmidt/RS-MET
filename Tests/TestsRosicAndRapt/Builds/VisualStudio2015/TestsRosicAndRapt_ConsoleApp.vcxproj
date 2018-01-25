@@ -1665,6 +1665,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\ComplexFloat64x2.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float64x2.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h"/>

@@ -7,7 +7,7 @@ std::complex dont work anymore when the template parameter to std::complex is a 
 provide explicit specializations here. */
 
 /** Computes the complex exponential of z. */
-inline std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
+inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
 {
   // e^z = e^(a + i*b) = e^a * e^(i*b) = e^a * (cos(b) + i*sin(b))
   double* re = z.real().asArray();  // real parts
@@ -22,5 +22,19 @@ inline std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
   rsFloat64x2 vim(im0, im1);        // vector of resulting imag parts
   return std::complex<rsFloat64x2>(vre, vim);
 }
+
+inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) { return z; }
+
+/*
+inline std::complex<rsFloat64x2> operator==(
+  const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b) 
+{ 
+  double* are = a.real().asArray();
+  double* aim = a.imag().asArray();
+  double* bre = b.real().asArray();
+  double* bim = b.imag().asArray();
+  return (are[0] == bre[0]) && (aim[0] == bim[0]) && (are[1] == bre[1]) && (aim[1] == bim[1]);
+}
+*/
 
 #endif

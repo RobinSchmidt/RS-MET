@@ -159,6 +159,7 @@ inline rsFloat64x2 operator+(const rsFloat64x2& a, const rsFloat64x2& b) { retur
 inline rsFloat64x2 operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_sub_pd(a, b); }
 inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_mul_pd(a, b); }
 inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_div_pd(a, b); }
+inline rsFloat64x2 operator+(const rsFloat64x2& a) { return a; }                    // unary plus
 inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a; } // unary minus
 // the binary operators with a scalar for the left or right hand side do not have to be defined due 
 // to implicit conversions
