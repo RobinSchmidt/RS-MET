@@ -82,6 +82,8 @@ bool float64x2UnitTest()
   y.set(-2.0, -3.0);
   y = rsAbs(y); r &= y.get0() == 2.0; r &= y.get1() == 3.0;
 
+  y.set(-2.0, 3.0);
+  y = rsSign(y); r &= y.get0() == -1.0; r &= y.get1() == +1.0;
 
   return r;
 }

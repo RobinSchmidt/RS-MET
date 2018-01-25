@@ -76,20 +76,14 @@ public:
 
   /** \name Constants */
 
+  /** Returns a vector that has a zero for both scalar elements. */
   inline static rsFloat64x2 zero() { static const __m128d z = _mm_setzero_pd(); return z; }
 
+  /** Returns a vector that has a one for both scalar elements. */
   inline static rsFloat64x2 one()  { static const __m128d o = _mm_set1_pd(1.0); return o; }
 
-  /** Returns a vector that has for both scalars a one for the sign bit and the rest zeros. */
-  inline static rsFloat64x2 signBitOne()
-  {
-    static const long long i = 0x8000000000000000;
-    static const double    d = *((double*)(&i));
-    static const __m128d   r = _mm_set1_pd(d); 
-    return r;
-  }
-
-  /** Returns a vector that has for both scalars a zero for the sign bit and the rest ones. */
+  /** Returns a vector that has for both scalars a zero for the sign bit and the rest ones. This is
+  useful for implementing the abs function. */
   inline static rsFloat64x2 signBitZero()
   {
     static const long long i = 0x7fffffffffffffff;
@@ -98,9 +92,15 @@ public:
     return r;
   }
 
-
-  // 0x8000000000000000 (should have 1 only for the sign bit)
-  // 0x7fffffffffffffff (should have 0 only for the sign bit)
+  /** Returns a vector that has for both scalars a one for the sign bit and the rest zeros. This is 
+  useful for implementing the sign function. */
+  inline static rsFloat64x2 signBitOne()
+  {
+    static const long long i = 0x8000000000000000;
+    static const double    d = *((double*)(&i));
+    static const __m128d   r = _mm_set1_pd(d); 
+    return r;
+  }
 
 
   /** \name Operators */
@@ -165,6 +165,12 @@ inline rsFloat64x2 rsBitXor(const rsFloat64x2& a, const rsFloat64x2& b) { return
 inline rsFloat64x2 rsAbs(const rsFloat64x2& a)
 {
   return rsBitAnd(a, rsFloat64x2::signBitZero());
+}
+
+inline rsFloat64x2 rsSign(const rsFloat64x2& a)
+{
+  rsFloat64x2 signOnly = rsBitAnd(a, rsFloat64x2::signBitOne());
+  return rsBitOr(signOnly, rsFloat64x2::one());
 }
 
 // implement abs/sign (based on bit-masks)
