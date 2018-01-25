@@ -116,26 +116,48 @@ std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
 }
 // this function needs testing - if it works, it may be moved to the library
 
+std::complex<double> get0(std::complex<rsFloat64x2> z)
+{
+  double* re = z.real().asArray();
+  double* im = z.imag().asArray();
+  return std::complex<double>(re[0], im[0]);
+}
+
+std::complex<double> get1(std::complex<rsFloat64x2> z)
+{
+  double* re = z.real().asArray();
+  double* im = z.imag().asArray();
+  return std::complex<double>(re[1], im[1]);
+}
+
 bool complexFloat64x2UnitTest()
 {  
   bool r = true;      // test result
 
   // we have 4 complex numbers z1[0] = 1 + 3i, z1[1] = 2 + 4i, z2[0] = 5 + 7i, z2[1] = 6 + 8i:
+  std::complex<double> z10(1, 3), z11(2, 4), z20(5, 7), z21(6, 8), w0, w1;
   rsFloat64x2 re1(1, 2), im1(3, 4), re2(5, 6), im2(7, 8);
-  std::complex<rsFloat64x2> z1(re1, im1), z2(re2, im2);
-  std::complex<rsFloat64x2> z;  // for outputs
+  std::complex<rsFloat64x2> z1(re1, im1), z2(re2, im2), w;
+  //std::complex<rsFloat64x2> w; // for outputs
+  //std::complex<double> w0, w1;  
 
-  z = z1 + z2;
-  r &= z.real().get0() ==  6;
-  r &= z.imag().get0() == 10;
-  r &= z.real().get1() ==  8;
-  r &= z.imag().get1() == 12;
+  // addition:
+  w = z1 + z2;
+  r &= w.real().get0() ==  6;
+  r &= w.imag().get0() == 10;
+  r &= w.real().get1() ==  8;
+  r &= w.imag().get1() == 12;
 
   //z = std::exp(z1); // this doesn't work - it doesn't try to invoke the exp for rsFloat64x2
   // i think, we need to implement explicit specializations for the math functions for
   // complex<rsFloat64x2>
 
-  z = exp(z1); 
+  // exponential function:
+  w0 = exp(z10);
+  w1 = exp(z11);
+  w  = exp(z1);
+  r &= w0 == get0(w);
+  r &= w1 == get1(w);
 
   return r;
 }
