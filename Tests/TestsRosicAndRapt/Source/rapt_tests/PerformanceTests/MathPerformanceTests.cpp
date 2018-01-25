@@ -67,6 +67,46 @@ void matrixAdressingTest()
   delete[] b;
 }
 
+
+
+void simdPerformanceFloat64x2()
+{
+  static const int N = 1000;  // number of vector operations
+
+  double oneS  = 1.0;
+  double accuS = 0.0;
+  rsFloat64x2 oneV  = 1.0;
+  rsFloat64x2 accuV = 0.0;
+
+  ProcessorCycleCounter counter;
+  double cycles;
+  double k = 1.0/(2*N);
+  int n;
+
+  counter.init();
+  for(n = 0; n < 2*N; n++)
+    accuS = accuS + oneS;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("binary add, scalar", k*cycles);
+
+  counter.init();
+  for(n = 0; n < N; n++)
+    accuV = accuV + oneV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("binary add, vector", k*cycles);
+
+  // Prevent compiler from optimizing out the accu variables (and thereby, measurement loops):
+  cout << accuS;
+  cout << accuV.get0();
+    // todo: use a dummyFunction that pretends to do something - for example, it could check for
+    // the existence of some file and print numbers only if the file exists - or anything, the 
+    // compiler is guaranteed to not be able to figure out at compile time but we know is false
+    // nevertheless
+
+  int dummy = 0;
+}
+
+/*
 void simdPerformanceFloat64x2()
 {
   // We compare computations with arrays of rsFloat64x2 of length N to corresponding computations
@@ -144,6 +184,7 @@ void simdPerformanceFloat64x2()
   // after the loops)....but still the SSE code is slower - maybe it's due to the array access
   // operations - we should try loops without using arrays.
 }
+*/
 
 void rsSinCos1(double x, double* s, double* c)
 {
