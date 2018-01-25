@@ -4,5 +4,6 @@
 #include "../../Shared/Shared.h"
 
 bool float64x2UnitTest();
+bool complexFloat64x2UnitTest();
 
 #endif

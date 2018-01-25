@@ -17,9 +17,9 @@ bool runAllUnitTests()
 {
   bool passed = true;  // test result
 
-
   // Data:
-  passed &= runUnitTest(&float64x2UnitTest, "rsFloat64x2");
+  passed &= runUnitTest(&float64x2UnitTest,        "rsFloat64x2");
+  passed &= runUnitTest(&complexFloat64x2UnitTest, "std::complex<rsFloat64x2>");
 
   // Math:
   passed &= runUnitTest(&interpolatingFunctionUnitTest, "rsInterpolatingFunction");

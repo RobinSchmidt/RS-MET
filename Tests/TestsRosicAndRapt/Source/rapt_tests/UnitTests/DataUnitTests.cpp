@@ -94,8 +94,48 @@ bool float64x2UnitTest()
   s = y.getMin(); r &= s == 3.0;
   s = y.getMax(); r &= s == 5.0;
 
-
   // math functions: fmod, exp, log, pow, sin, cos, tan, sinh, cosh, tanh
+
+  return r;
+}
+
+std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
+{
+  // e^z = e^(a + i*b) = e^a * e^(i*b) = e^a * (cos(b) + i*sin(b))
+  double* re = z.real().asArray();  // real parts
+  double* im = z.imag().asArray();  // imag parts
+  double r0  = exp(re[0]);          // radius of 1st complex number
+  double r1  = exp(re[1]);          // radius of 2nd complex number
+  double re0 = r0 * cos(im[0]);     // real part of 1st complex number
+  double im0 = r0 * sin(im[0]);     // imag part of 1st complex number
+  double re1 = r1 * cos(im[1]);     // real part of 2nd complex number
+  double im1 = r1 * sin(im[1]);     // imag part of 2nd complex number
+  rsFloat64x2 vre(re0, re1);        // vector of resulting real parts
+  rsFloat64x2 vim(im0, im1);        // vector of resulting imag parts
+  return std::complex<rsFloat64x2>(vre, vim);
+}
+// this function needs testing - if it works, it may be moved to the library
+
+bool complexFloat64x2UnitTest()
+{  
+  bool r = true;      // test result
+
+  // we have 4 complex numbers z1[0] = 1 + 3i, z1[1] = 2 + 4i, z2[0] = 5 + 7i, z2[1] = 6 + 8i:
+  rsFloat64x2 re1(1, 2), im1(3, 4), re2(5, 6), im2(7, 8);
+  std::complex<rsFloat64x2> z1(re1, im1), z2(re2, im2);
+  std::complex<rsFloat64x2> z;  // for outputs
+
+  z = z1 + z2;
+  r &= z.real().get0() ==  6;
+  r &= z.imag().get0() == 10;
+  r &= z.real().get1() ==  8;
+  r &= z.imag().get1() == 12;
+
+  //z = std::exp(z1); // this doesn't work - it doesn't try to invoke the exp for rsFloat64x2
+  // i think, we need to implement explicit specializations for the math functions for
+  // complex<rsFloat64x2>
+
+  z = exp(z1); 
 
   return r;
 }
