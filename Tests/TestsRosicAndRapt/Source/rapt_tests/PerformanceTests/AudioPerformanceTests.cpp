@@ -4,22 +4,24 @@ using namespace RAPT;
 void ladderPerformance()
 {
   int numSamples = 50000;
-  typedef double Real;
+  //typedef double Real;
   //typedef float Real;
-  vector<Real> x = createNoise(numSamples, 0, Real(-1), Real(+1));
-
-  RAPT::rsLadderFilter<Real, Real> lf;
-  lf.setCutoff(1000);
-  lf.setResonance(0.5);
-
   ProcessorCycleCounter counter;
-  counter.init();
-  for(int n = 0; n < numSamples; n++)
-  {
-    x[n] = lf.getSample(x[n]);
-  }
+
+  // scalar-signal, scalar-coeffs:
+  vector<double> xs = createNoise(numSamples, 0, double(-1), double(+1));
+  vector<double> ys(numSamples);
+  RAPT::rsLadderFilter<double, double> filterSS;
+  filterSS.setCutoff(1000);
+  filterSS.setResonance(0.5);
+  counter.init(); 
+  for(int n = 0; n < numSamples; n++) ys[n] = filterSS.getSample(xs[n]);
   double cycles = (double) counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("RAPT::rsLadderFilter", cycles / (numSamples));
+  printPerformanceTestResult("rsLadderFilter<double double>", cycles / numSamples);
+
+  // vector-signal, scalar-coeffs:
+
+
 
   // Results:
   // double: with 1 / (1 + x^2) nonlinearity: 88 cycles, linear: 58 cycles, softClipHexic: 102
