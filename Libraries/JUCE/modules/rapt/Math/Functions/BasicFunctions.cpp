@@ -17,7 +17,7 @@ T rsAbs(T x)
 //http://stackoverflow.com/questions/1903954/is-there-a-standard-sign-function-signum-sgn-in-c-c
 
 template<class T>
-T rsClipToRange(T x, T min, T max)
+T rsClip(T x, T min, T max)
 {
   rsAssert(min <= max);
   if(x < min)
@@ -146,6 +146,8 @@ inline double rsIntegerPower(double x, int exponent)
   return accu;
 }
 
+/*
+// redundant with rsClip
 template <class T>
 inline T rsLimit(T x, T lowerBound, T upperBound)
 {
@@ -155,6 +157,7 @@ inline T rsLimit(T x, T lowerBound, T upperBound)
     return upperBound;
   return x;
 }
+*/
 
 /*
 inline double rsLinToLin(double in, double inMin, double inMax, double outMin, double outMax)

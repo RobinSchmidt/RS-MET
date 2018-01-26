@@ -488,8 +488,8 @@ void drawThickLine(rsImageF& img, float x0, float y0, float x1, float y1, float 
     d *= (abs(dx)+abs(dy))/L;
 
   // main loop:
-  xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start x-index 
-  xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end x-index
+  xs  = rsClip((int)floor(x0-d), 0, xMax);    // start x-index 
+  xe  = rsClip((int)ceil( x1+d), 0, xMax);    // end x-index
   dvy = (int)ceil(t2/A);                      // maximum vertical pixel distance from line
   for(x = xs; x <= xe; x++){                  // outer loop over x
     yf = a*x + b;                             // ideal y (float)

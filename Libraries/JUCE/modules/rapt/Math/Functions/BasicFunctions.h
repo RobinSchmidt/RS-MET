@@ -9,7 +9,7 @@ T rsAbs(T x);
 /** Clips the value x into the range min...max such that for the returned value y, we have:
 min <= y <= max  */
 template<class T>
-T rsClipToRange(T x, T min, T max);
+T rsClip(T x, T min = T(-1), T max = T(+1));
 
 ///** Adds the 2 (signed) 32 bit integer values and clips the result to the desired range.
 //Overflow is avoided by using 64-bit addition internally. */
@@ -62,8 +62,8 @@ inline int rsIntAndFracPart(double x, double &frac);
 inline double rsIntegerPower(double x, int exponent);
 
 /** Limits the value of an object.   ...redundant with clip */
-template <class T>
-inline T rsLimit(T x, T lowerBound, T upperBound);
+//template <class T>
+//inline T rsLimit(T x, T lowerBound, T upperBound);
 
 /** Converts a value between inMin and inMax into a value between outMin and outMax where the
 mapping is linear for the input and the output. Example: y = rsLinToLin(x, 0.0, 1.0, -96.0, 24.0)

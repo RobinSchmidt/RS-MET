@@ -37,7 +37,7 @@ template void RAPT::rsArray::fillWithRandomValues(float* x, int N, double min, d
 template void RAPT::rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 
 // Math:
-template int RAPT::rsLimit(int x, int min, int max);
+template int RAPT::rsClip(int x, int min, int max);
 template RAPT::rsConicSection<float>;
 template RAPT::rsEllipse<float>;
 template RAPT::rsNormalizedSigmoids<float>;

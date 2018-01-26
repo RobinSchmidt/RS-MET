@@ -211,10 +211,10 @@ void rsLineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, T
   d = w2;                                     // end-cap extension
   if(!roundCaps)
     d *= (std::abs(dx)+std::abs(dy))/L;
-  xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start of left cap (and overall line)
-  xel = rsLimit((int)ceil( x0+d), 0, xMax);   // end of left cap
-  xsr = rsLimit((int)floor(x1-d), 0, xMax);   // start of right cap
-  xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end of right cap (and overall line)
+  xs  = rsClip((int)floor(x0-d), 0, xMax);    // start of left cap (and overall line)
+  xel = rsClip((int)ceil( x0+d), 0, xMax);    // end of left cap
+  xsr = rsClip((int)floor(x1-d), 0, xMax);    // start of right cap
+  xe  = rsClip((int)ceil( x1+d), 0, xMax);    // end of right cap (and overall line)
   dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line
 }
 
