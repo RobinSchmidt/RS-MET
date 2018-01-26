@@ -78,6 +78,13 @@ public:
   /** Normalized arc-tangent function. */
   static T tanh(T x);
 
+  /** Uses a function f(x) = x + a*x^N where N should be an odd integer. This function is adjusted
+  such that its peak value is 1. Doing so puts the x-value of the peak at x = N/(N-1). The input is
+  clipped at this value (positive and negative) befor going into the polynomial. So, in the end, it
+  is a soft-clipper. The higher the exponent, the harde the clipping and the more linear the range 
+  aroundthe origin. */
+  static T clippedOddPower(T x, int N);
+
   /** A family of sigmoid curves with a parameter p, realizing the function: 
   y = x / (1 + |x|^p)^(1/p) = x * (1 + |x|^p)^(-1/p)
   The parameter p determines, how fast the saturation level will be reached. It should be p >= 1.

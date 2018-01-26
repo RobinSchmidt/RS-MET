@@ -114,8 +114,13 @@ T rsPositiveSigmoids<T>::softClipHexic(T x)
 // best
 // maybe, we can fid a formula for a, given N? 
 // we have f(x) = x + a*x^N, f'(x) = 1 + N*a*x^(N-1) and we want to find a such that f(x) = 1 when
-// f'(x) = 0. To find the peak p, we set f'(p) = 0 = 1 + N * a * p^(N-1), solving this for p gives
+// f'(x) = 0. To find the peak p, we set f'(p) = 0 = 1 + N*a*p^(N-1), solving this for p gives
 // p = (-1/(N*a))^(1/(N-1)) -> put this in f(p) = 1 ....
+// (-1/(N*a))^(1/(N-1)) + a * (-1/(N*a))^(N/(N-1)) = 1 ...solve for a
+// nah - it's simpler: solve f(p) = 1 for a and use that in f'(p) = 0, it gives
+// p = N/(N-1), a = (1-p)/p^N
+// oh - and we need to hardclip BEFORE the polynomial at x=p, not after at 1!!!
+// ok - implemented in rsNormalizedSigmoids<T>::clippedOddPower ...needs testing
 
 
 // maybe give other options for saturation-functions: sin, atan, x/(1+x), etc.
@@ -145,6 +150,17 @@ T rsNormalizedSigmoids<T>::tanh(T x)
   return ::tanh(x);
   //return rsTanh(x); // use the exp-based version later (more efficient), whe the real functions 
                     // have been added
+}
+
+template<class T>
+T rsNormalizedSigmoids<T>::clippedOddPower(T x, int N)
+{
+  T p = T(N) / T(N-1);
+  T a = (T(1)-p) / rsPow(p, N);
+  x = rsClip(x, -p, p);
+  return x - rsPow(x, N);
+  // this is a very inefficient prototype - todo: choose some power, like 5 or 9 (if N=(2^k)-1, the
+  // power can be evaluated by repetaed squaring) and precompute the p,a coeffs
 }
 
 template<class T>
