@@ -34,7 +34,7 @@ typedef RAPT::rsVector3D<float> rsVector3DF;
 typedef RAPT::rsSmoothingFilter<float, float> rsSmoothingFilterFF;
 typedef RAPT::rsLadderFilter<float, float> rsLadderFilterFF;
 typedef RAPT::rsLadderFilter<double, double> rsLadderFilterDD;
-typedef RAPT::rsLadderFilter<RAPT::rsFloat64x2, double> rsLadderFilterD2D;
+typedef RAPT::rsLadderFilter<rsFloat64x2, double> rsLadderFilterD2D;
 //typedef RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2> rsLadderFilterD2D2;
 typedef RAPT::rsPhasorFilter<float, float> rsPhasorFilterFF;
 typedef RAPT::rsPhasorStateMapper<float> rsPhasorStateMapperF;
