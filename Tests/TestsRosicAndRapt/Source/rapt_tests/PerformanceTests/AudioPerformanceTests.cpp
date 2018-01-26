@@ -3,7 +3,7 @@ using namespace RAPT;
 
 void ladderPerformance()
 {
-  int numSamples = 50000;
+  int numSamples = 20000;
   ProcessorCycleCounter counter;
   int n;
 
@@ -37,4 +37,7 @@ void ladderPerformance()
   // Results:
   // double: with 1 / (1 + x^2) nonlinearity: 88 cycles, linear: 58 cycles, softClipHexic: 102
   // for float, it seems to be about the same
+  // linear: 60 (scalar), 70 (vector)
+  // clip:   70-75 cycles (scalar and vector)
+  // div:    90 (scalar), 105 (vector)
 }

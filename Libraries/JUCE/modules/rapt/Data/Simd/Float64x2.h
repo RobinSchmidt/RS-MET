@@ -186,14 +186,14 @@ inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a
 // limiting functions::
 inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_min_pd(a, b); }
 inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_max_pd(a, b); }
-//inline rsFloat64x2 rsClip(const rsFloat64x2& x, const rsFloat64x2& min, const rsFloat64x2& max)
-//{ 
-//  return rsMax(rsMin(x, max), min); 
-//}
-inline rsFloat64x2 rsClip(rsFloat64x2 x, rsFloat64x2 min, rsFloat64x2 max)
+inline rsFloat64x2 rsClip(const rsFloat64x2& x, const rsFloat64x2& min, const rsFloat64x2& max)
 { 
   return rsMax(rsMin(x, max), min); 
 }
+//inline rsFloat64x2 rsClip(rsFloat64x2 x, rsFloat64x2 min, rsFloat64x2 max)
+//{ 
+//  return rsMax(rsMin(x, max), min); 
+//}
 
 // bit-manipulations and related functions:
 inline rsFloat64x2 rsBitAnd(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_and_pd(a, b); }

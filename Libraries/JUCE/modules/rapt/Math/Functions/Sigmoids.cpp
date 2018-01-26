@@ -106,6 +106,18 @@ T rsPositiveSigmoids<T>::softClipHexic(T x)
 // ...wolfram alpha doesn't understand your query, even if we set k=1 - maybe the s^6 terms are too
 // much, i.e. no analytic solution exists
 
+// what's also good is something like y = clip(x + a*x^N, -1, +1) where N is an odd number and a is
+// chosen such that the maximum is at y = 1, the higher the exponent, the more linear the range 
+// around the origin for example (factors have been eyballed)
+// y = x - 0.035*x^11, x - 0.043*x^9, x - 0.057*x^7, x - 0.082*x^5, x - 0.148*x^3
+// maybe n should be (2^k)+1 for fast evaluation by successive squaring, x^5 or x^9 seems to look 
+// best
+// maybe, we can fid a formula for a, given N? 
+// we have f(x) = x + a*x^N, f'(x) = 1 + N*a*x^(N-1) and we want to find a such that f(x) = 1 when
+// f'(x) = 0. To find the peak p, we set f'(p) = 0 = 1 + N * a * p^(N-1), solving this for p gives
+// p = (-1/(N*a))^(1/(N-1)) -> put this in f(p) = 1 ....
+
+
 // maybe give other options for saturation-functions: sin, atan, x/(1+x), etc.
 
 //-------------------------------------------------------------------------------------------------
