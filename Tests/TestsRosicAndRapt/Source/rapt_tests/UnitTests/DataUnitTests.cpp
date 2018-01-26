@@ -121,9 +121,22 @@ std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
 inline std::complex<rsFloat64x2> operator/(
   const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b) 
 { 
-  return a; 
-  //return z; 
+  double* reA = a.real().asArray();
+  double* imA = a.imag().asArray();
+  double* reB = b.real().asArray();
+  double* imB = b.imag().asArray();
+
+  double  s0  = 1.0 / (reB[0]*reB[0] + imB[0]*imB[0]);
+  double  re0 = s0  * (reA[0]*reB[0] + imA[0]*imB[0]);
+  double  im0 = s0  * (imA[0]*reB[0] - reA[0]*imB[0]);
+
+  double  s1  = 1.0 / (reB[1]*reB[1] + imB[1]*imB[1]);
+  double  re1 = s1  * (reA[1]*reB[1] + imA[1]*imB[1]);
+  double  im1 = s1  * (imA[1]*reB[1] - reA[1]*imB[1]);
+
+  return std::complex<rsFloat64x2>(rsFloat64x2(re0, re1), rsFloat64x2(im0, im1)); 
 }
+// todo: maybe provide optimized versions when left or right operant is real
 
 std::complex<double> get0(std::complex<rsFloat64x2> z)
 {
@@ -158,7 +171,10 @@ bool complexFloat64x2UnitTest()
   r &= w.imag().get1() == 12;
 
   // division:
-  w = z1 / z2;
+  //w = z1 / z2;
+  w = z2 / z1;  // nicer values
+  w = z2 / z2;
+  // test correctness of result
 
   //z = std::exp(z1); // this doesn't work - it doesn't try to invoke the exp for rsFloat64x2
   // i think, we need to implement explicit specializations for the math functions for
