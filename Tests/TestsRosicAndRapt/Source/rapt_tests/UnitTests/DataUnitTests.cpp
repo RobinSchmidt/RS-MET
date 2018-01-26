@@ -139,13 +139,14 @@ inline std::complex<rsFloat64x2> operator/(
 }
 // todo: maybe provide optimized versions when left or right operant is real
 */
-
+/*
 inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
   const std::complex<rsFloat64x2>& a) 
 { 
   *this = *this / a;
   return *this;
 }
+*/
 
 std::complex<double> get0(std::complex<rsFloat64x2> z)
 {

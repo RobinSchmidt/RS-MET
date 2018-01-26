@@ -27,6 +27,14 @@ inline std::complex<rsFloat64x2> operator/(
 }
 // \todo: provide optimized versions when left or right operand is real
 
+/** Divides a complex number in place by another complex number. */
+inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
+  const std::complex<rsFloat64x2>& a) 
+{ 
+  *this = *this / a;
+  return *this;
+}
+
 /** Computes the complex exponential of z. */
 inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
 {

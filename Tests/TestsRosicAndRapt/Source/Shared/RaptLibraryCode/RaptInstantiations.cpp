@@ -60,7 +60,7 @@ template RAPT::rsSmoothingFilter<float, float>;
 template RAPT::rsLadderFilter<float, float>;
 template RAPT::rsLadderFilter<double, double>;
 template RAPT::rsLadderFilter<rsFloat64x2, double>;
-//template RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>; // not instantiable due to complex
+template RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
 template RAPT::rsPhasorFilter<float, float>;
 template RAPT::rsPhasorStateMapper<float>;
 template RAPT::rsStateVariableFilter<float, float>; 
