@@ -6,6 +6,22 @@ imaginary parts are each a SIMD vector. For some reason, the standard library fu
 std::complex dont work anymore when the template parameter to std::complex is a SIMD type, so we 
 provide explicit specializations here. */
 
+/** Returns the first (index 0) complex number in the complex of simd vectors. */
+inline std::complex<double> get0(std::complex<rsFloat64x2> z)
+{
+  double* re = z.real().asArray();
+  double* im = z.imag().asArray();
+  return std::complex<double>(re[0], im[0]);
+}
+
+/** Returns the second (index 1) complex number in the complex of simd vectors. */
+inline std::complex<double> get1(std::complex<rsFloat64x2> z)
+{
+  double* re = z.real().asArray();
+  double* im = z.imag().asArray();
+  return std::complex<double>(re[1], im[1]);
+}
+
 /** Divides two complex numbers. */
 inline std::complex<rsFloat64x2> operator/(
   const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b) 
@@ -31,9 +47,11 @@ inline std::complex<rsFloat64x2> operator/(
 inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
   const std::complex<rsFloat64x2>& a) 
 { 
-  *this = *this / a;
-  return *this;
+  return *this = *this / a;
+  //return *this;
 }
+
+inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) { return z; }
 
 /** Computes the complex exponential of z. */
 inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
@@ -41,29 +59,15 @@ inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
   // e^z = e^(a + i*b) = e^a * e^(i*b) = e^a * (cos(b) + i*sin(b))
   double* re = z.real().asArray();  // real parts
   double* im = z.imag().asArray();  // imag parts
-  double r0  = exp(re[0]);          // radius of 1st complex number
-  double r1  = exp(re[1]);          // radius of 2nd complex number
-  double re0 = r0 * cos(im[0]);     // real part of 1st complex number
-  double im0 = r0 * sin(im[0]);     // imag part of 1st complex number
-  double re1 = r1 * cos(im[1]);     // real part of 2nd complex number
-  double im1 = r1 * sin(im[1]);     // imag part of 2nd complex number
+  double r0  = exp(re[0]);          // radius of 1st complex result
+  double r1  = exp(re[1]);          // radius of 2nd complex result
+  double re0 = r0 * cos(im[0]);     // real part of 1st complex result
+  double im0 = r0 * sin(im[0]);     // imag part of 1st complex result
+  double re1 = r1 * cos(im[1]);     // real part of 2nd complex result
+  double im1 = r1 * sin(im[1]);     // imag part of 2nd complex result
   rsFloat64x2 vre(re0, re1);        // vector of resulting real parts
   rsFloat64x2 vim(im0, im1);        // vector of resulting imag parts
   return std::complex<rsFloat64x2>(vre, vim);
 }
-
-inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) { return z; }
-
-/*
-inline std::complex<rsFloat64x2> operator==(
-  const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b) 
-{ 
-  double* are = a.real().asArray();
-  double* aim = a.imag().asArray();
-  double* bre = b.real().asArray();
-  double* bim = b.imag().asArray();
-  return (are[0] == bre[0]) && (aim[0] == bim[0]) && (are[1] == bre[1]) && (aim[1] == bim[1]);
-}
-*/
 
 #endif

@@ -94,72 +94,7 @@ bool float64x2UnitTest()
   s = y.getMin(); r &= s == 3.0;
   s = y.getMax(); r &= s == 5.0;
 
-  // math functions: fmod, exp, log, pow, sin, cos, tan, sinh, cosh, tanh
-
   return r;
-}
-
-/*
-std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
-{
-  // e^z = e^(a + i*b) = e^a * e^(i*b) = e^a * (cos(b) + i*sin(b))
-  double* re = z.real().asArray();  // real parts
-  double* im = z.imag().asArray();  // imag parts
-  double r0  = exp(re[0]);          // radius of 1st complex number
-  double r1  = exp(re[1]);          // radius of 2nd complex number
-  double re0 = r0 * cos(im[0]);     // real part of 1st complex number
-  double im0 = r0 * sin(im[0]);     // imag part of 1st complex number
-  double re1 = r1 * cos(im[1]);     // real part of 2nd complex number
-  double im1 = r1 * sin(im[1]);     // imag part of 2nd complex number
-  rsFloat64x2 vre(re0, re1);        // vector of resulting real parts
-  rsFloat64x2 vim(im0, im1);        // vector of resulting imag parts
-  return std::complex<rsFloat64x2>(vre, vim);
-}
-// this function needs testing - if it works, it may be moved to the library
-*/
-
-/*
-inline std::complex<rsFloat64x2> operator/(
-  const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b) 
-{ 
-  double* reA = a.real().asArray();
-  double* imA = a.imag().asArray();
-  double* reB = b.real().asArray();
-  double* imB = b.imag().asArray();
-
-  double  s0  = 1.0 / (reB[0]*reB[0] + imB[0]*imB[0]);
-  double  re0 = s0  * (reA[0]*reB[0] + imA[0]*imB[0]);
-  double  im0 = s0  * (imA[0]*reB[0] - reA[0]*imB[0]);
-
-  double  s1  = 1.0 / (reB[1]*reB[1] + imB[1]*imB[1]);
-  double  re1 = s1  * (reA[1]*reB[1] + imA[1]*imB[1]);
-  double  im1 = s1  * (imA[1]*reB[1] - reA[1]*imB[1]);
-
-  return std::complex<rsFloat64x2>(rsFloat64x2(re0, re1), rsFloat64x2(im0, im1)); 
-}
-// todo: maybe provide optimized versions when left or right operant is real
-*/
-/*
-inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
-  const std::complex<rsFloat64x2>& a) 
-{ 
-  *this = *this / a;
-  return *this;
-}
-*/
-
-std::complex<double> get0(std::complex<rsFloat64x2> z)
-{
-  double* re = z.real().asArray();
-  double* im = z.imag().asArray();
-  return std::complex<double>(re[0], im[0]);
-}
-
-std::complex<double> get1(std::complex<rsFloat64x2> z)
-{
-  double* re = z.real().asArray();
-  double* im = z.imag().asArray();
-  return std::complex<double>(re[1], im[1]);
 }
 
 bool complexFloat64x2UnitTest()
