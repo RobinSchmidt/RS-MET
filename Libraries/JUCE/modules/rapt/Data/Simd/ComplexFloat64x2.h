@@ -6,6 +6,7 @@ real and imaginary parts are each a SIMD vector. For some reason, the standard l
 std::complex dont work anymore when the template parameter to std::complex is a SIMD type, so we 
 provide explicit specializations here. */
 
+
 /** Computes the complex exponential of z. */
 inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
 {
@@ -24,6 +25,8 @@ inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
 }
 
 inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) { return z; }
+
+
 
 /*
 inline std::complex<rsFloat64x2> operator==(

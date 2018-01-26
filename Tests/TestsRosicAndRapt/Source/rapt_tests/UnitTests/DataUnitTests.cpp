@@ -118,6 +118,13 @@ std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
 // this function needs testing - if it works, it may be moved to the library
 */
 
+inline std::complex<rsFloat64x2> operator/(
+  const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b) 
+{ 
+  return a; 
+  //return z; 
+}
+
 std::complex<double> get0(std::complex<rsFloat64x2> z)
 {
   double* re = z.real().asArray();
@@ -149,6 +156,9 @@ bool complexFloat64x2UnitTest()
   r &= w.imag().get0() == 10;
   r &= w.real().get1() ==  8;
   r &= w.imag().get1() == 12;
+
+  // division:
+  w = z1 / z2;
 
   //z = std::exp(z1); // this doesn't work - it doesn't try to invoke the exp for rsFloat64x2
   // i think, we need to implement explicit specializations for the math functions for

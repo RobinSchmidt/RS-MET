@@ -124,6 +124,22 @@ public:
   //inline rsFloat64x2 operator+(const rsFloat64x2& b) { return _mm_add_pd(v, b.v); }
     // nope - we define it outside the class because that allows lhs or rhs to be of scalar type
 
+  // comparison operators (== and < are required for division with std::complex<rsFloat64x2>):
+  inline bool operator==(const rsFloat64x2& b) 
+  { 
+    double* A = asArray();
+    double* B = b.asArray();
+    return (A[0] == B[0]) && (A[1] == B[1]);
+  }
+
+  // this definition is a bit arbitrary - we need to figure out, if complex division works
+  inline bool operator<(const rsFloat64x2& b) 
+  { 
+    double* A = asArray();
+    double* B = b.asArray();
+    return (A[0] < B[0]) && (A[1] < B[1]);
+  }
+
 
   //// unary minus (commented out because the implementation outside the class turned out to be 
   //// more efficient (suprisingly - maybe more tests are needed, why)
@@ -163,6 +179,9 @@ inline rsFloat64x2 operator+(const rsFloat64x2& a) { return a; }                
 inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a; } // unary minus
 // the binary operators with a scalar for the left or right hand side do not have to be defined due 
 // to implicit conversions
+
+
+
 
 // limiting functions::
 inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_min_pd(a, b); }
