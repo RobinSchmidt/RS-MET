@@ -1,11 +1,31 @@
 #ifndef RAPT_COMPLEXFLOAT64X2_H_INCLUDED
 #define RAPT_COMPLEXFLOAT64X2_H_INCLUDED
 
-/** In this file are functions that implement some math functions for complex variables where the
-real and imaginary parts are each a SIMD vector. For some reason, the standard library functions of
+/** In this file are some operattors and functions for complex variables where the real and 
+imaginary parts are each a SIMD vector. For some reason, the standard library functions of 
 std::complex dont work anymore when the template parameter to std::complex is a SIMD type, so we 
 provide explicit specializations here. */
 
+/** Divides two complex numbers. */
+inline std::complex<rsFloat64x2> operator/(
+  const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b) 
+{ 
+  double* reA = a.real().asArray();
+  double* imA = a.imag().asArray();
+  double* reB = b.real().asArray();
+  double* imB = b.imag().asArray();
+
+  double  s0  = 1.0 / (reB[0]*reB[0] + imB[0]*imB[0]);
+  double  re0 = s0  * (reA[0]*reB[0] + imA[0]*imB[0]);
+  double  im0 = s0  * (imA[0]*reB[0] - reA[0]*imB[0]);
+
+  double  s1  = 1.0 / (reB[1]*reB[1] + imB[1]*imB[1]);
+  double  re1 = s1  * (reA[1]*reB[1] + imA[1]*imB[1]);
+  double  im1 = s1  * (imA[1]*reB[1] - reA[1]*imB[1]);
+
+  return std::complex<rsFloat64x2>(rsFloat64x2(re0, re1), rsFloat64x2(im0, im1)); 
+}
+// \todo: provide optimized versions when left or right operand is real
 
 /** Computes the complex exponential of z. */
 inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
@@ -25,8 +45,6 @@ inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
 }
 
 inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) { return z; }
-
-
 
 /*
 inline std::complex<rsFloat64x2> operator==(

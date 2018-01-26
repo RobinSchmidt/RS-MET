@@ -118,6 +118,7 @@ std::complex<rsFloat64x2> exp(std::complex<rsFloat64x2> z)
 // this function needs testing - if it works, it may be moved to the library
 */
 
+/*
 inline std::complex<rsFloat64x2> operator/(
   const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b) 
 { 
@@ -137,6 +138,14 @@ inline std::complex<rsFloat64x2> operator/(
   return std::complex<rsFloat64x2>(rsFloat64x2(re0, re1), rsFloat64x2(im0, im1)); 
 }
 // todo: maybe provide optimized versions when left or right operant is real
+*/
+
+inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
+  const std::complex<rsFloat64x2>& a) 
+{ 
+  *this = *this / a;
+  return *this;
+}
 
 std::complex<double> get0(std::complex<rsFloat64x2> z)
 {
@@ -171,10 +180,17 @@ bool complexFloat64x2UnitTest()
   r &= w.imag().get1() == 12;
 
   // division:
-  //w = z1 / z2;
-  w = z2 / z1;  // nicer values
   w = z2 / z2;
-  // test correctness of result
+  r &= w.real().get0() == 1;
+  r &= w.imag().get0() == 0;
+  r &= w.real().get1() == 1;
+  r &= w.imag().get1() == 0;
+  w   = z2;
+  w  /= z2;
+  r &= w.real().get0() == 1;
+  r &= w.imag().get0() == 0;
+  r &= w.real().get1() == 1;
+  r &= w.imag().get1() == 0;
 
   //z = std::exp(z1); // this doesn't work - it doesn't try to invoke the exp for rsFloat64x2
   // i think, we need to implement explicit specializations for the math functions for
