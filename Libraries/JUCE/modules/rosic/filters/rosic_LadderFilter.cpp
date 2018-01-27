@@ -1,6 +1,3 @@
-//#include "rosic_LadderFilter.h"
-//using namespace rosic;
-
 namespace rosic // temporary - for as long as there's a RAPT::LadderFilter class, too
 {               // maybe at some point, rename this class into rsLadderFilterDD as template
                 // instantiation of RAPT::rsLadderFilter<double, double>
@@ -8,7 +5,7 @@ namespace rosic // temporary - for as long as there's a RAPT::LadderFilter class
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-LadderFilter::LadderFilter()
+LadderFilterOld::LadderFilterOld()
 {
   parameters = new LadderFilterParameters;
   isMaster   = true;
@@ -37,7 +34,7 @@ LadderFilter::LadderFilter()
   reset();
 }
 
-LadderFilter::~LadderFilter()
+LadderFilterOld::~LadderFilterOld()
 {
   if(isMaster && parameters != NULL)
     delete parameters;
@@ -46,7 +43,7 @@ LadderFilter::~LadderFilter()
 //-------------------------------------------------------------------------------------------------
 // parameter settings:
 
-void LadderFilter::setSampleRate(double newSampleRate)
+void LadderFilterOld::setSampleRate(double newSampleRate)
 {
   if(newSampleRate > 0.0)
     parameters->sampleRate = newSampleRate;
@@ -57,7 +54,7 @@ void LadderFilter::setSampleRate(double newSampleRate)
     slaves[s]->calculateCoefficients();
 }
 
-void LadderFilter::setAllpassFreq(double newAllpassFreq)
+void LadderFilterOld::setAllpassFreq(double newAllpassFreq)
 {
   parameters->allpassFreq = newAllpassFreq;
   allpass.setCutoff(newAllpassFreq);
@@ -65,7 +62,7 @@ void LadderFilter::setAllpassFreq(double newAllpassFreq)
     slaves[s]->setAllpassFreq(newAllpassFreq);
 }
 
-void LadderFilter::setMakeUp(double newMakeUp, bool updateCoefficients)
+void LadderFilterOld::setMakeUp(double newMakeUp, bool updateCoefficients)
 {
   parameters->makeUp = newMakeUp;
 
@@ -77,17 +74,17 @@ void LadderFilter::setMakeUp(double newMakeUp, bool updateCoefficients)
   }
 }
 
-void LadderFilter::setDrive(double newDrive)
+void LadderFilterOld::setDrive(double newDrive)
 {
   parameters->driveFactor = dB2amp(newDrive);
 }
 
-void LadderFilter::setDcOffset(double newDcOffset)
+void LadderFilterOld::setDcOffset(double newDcOffset)
 {
   parameters->dcOffset = newDcOffset;
 }
 
-void LadderFilter::setOutputStage(int newOutputStage)
+void LadderFilterOld::setOutputStage(int newOutputStage)
 {
   if(newOutputStage >= 0 && newOutputStage <= 4)
     parameters->outputStage = newOutputStage;
@@ -95,13 +92,13 @@ void LadderFilter::setOutputStage(int newOutputStage)
     DEBUG_BREAK; // ouput stage must be in 0...4
 }
 
-void LadderFilter::setMode(int newMode)
+void LadderFilterOld::setMode(int newMode)
 {
   if(newMode >= 0 && newMode < LadderFilterParameters::NUM_MODES)
     parameters->mode = newMode;
 }
 
-void LadderFilter::setMorph(double newMorph)
+void LadderFilterOld::setMorph(double newMorph)
 {
   parameters->morph = newMorph;
 
@@ -162,7 +159,7 @@ c4 = [ 1 -1  1 -1  1];
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-Complex LadderFilter::getTransferFunctionAt(Complex z, bool withFeedback, bool /*withMakeUpBoost*/,
+Complex LadderFilterOld::getTransferFunctionAt(Complex z, bool withFeedback, bool /*withMakeUpBoost*/,
   bool withMakeUpGain, int stage)
 {
   Complex G1, G4, G, H;
@@ -192,7 +189,7 @@ Complex LadderFilter::getTransferFunctionAt(Complex z, bool withFeedback, bool /
   return H;
 }
 
-double LadderFilter::getMagnitudeAt(double frequency, bool withFeedback, bool withMakeUpBoost,
+double LadderFilterOld::getMagnitudeAt(double frequency, bool withFeedback, bool withMakeUpBoost,
   bool withMakeUpGain, int stage)
 {
   double omega = 2*PI*frequency / parameters->sampleRate;
@@ -203,7 +200,7 @@ double LadderFilter::getMagnitudeAt(double frequency, bool withFeedback, bool wi
   return H.getRadius();
 }
 
-void LadderFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins,
+void LadderFilterOld::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins,
   bool inDecibels, bool accumulate)
 {
   int k;
@@ -236,32 +233,32 @@ void LadderFilter::getMagnitudeResponse(double *frequencies, double *magnitudes,
   }
 }
 
-double LadderFilter::getCutoff()
+double LadderFilterOld::getCutoff()
 {
   return cutoff;
 }
 
-double LadderFilter::getResonance()
+double LadderFilterOld::getResonance()
 {
   return parameters->resonanceRaw;
 }
 
-double LadderFilter::getDrive()
+double LadderFilterOld::getDrive()
 {
   return amp2dB(parameters->driveFactor);
 }
 
-int LadderFilter::getOutputStage()
+int LadderFilterOld::getOutputStage()
 {
   return parameters->outputStage;
 }
 
-double LadderFilter::getAllpassFreq()
+double LadderFilterOld::getAllpassFreq()
 {
   return parameters->allpassFreq;
 }
 
-double LadderFilter::getMakeUp()
+double LadderFilterOld::getMakeUp()
 {
   return parameters->makeUp;
 }
@@ -269,7 +266,7 @@ double LadderFilter::getMakeUp()
 //-------------------------------------------------------------------------------------------------
 // master/slave config:
 
-void LadderFilter::addSlave(LadderFilter* newSlave)
+void LadderFilterOld::addSlave(LadderFilterOld* newSlave)
 {
   // add the new slave to the vector of slaves:
   slaves.push_back(newSlave);
@@ -298,7 +295,7 @@ void LadderFilter::addSlave(LadderFilter* newSlave)
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void LadderFilter::reset()
+void LadderFilterOld::reset()
 {
   allpass.resetBuffers();
   y1L   = 0.0;
@@ -317,7 +314,7 @@ void LadderFilter::reset()
 }
 
 
-double LadderFilter::getSampleTest(double in)
+double LadderFilterOld::getSampleTest(double in)
 {
   // hmm...maybe we must scale the internal states of the integrators also
   // maybe we need to take b into account
@@ -326,18 +323,13 @@ double LadderFilter::getSampleTest(double in)
   double y0L = parameters->driveFactor*in - k*yOldL + parameters->dcOffset;
   //double y0L = in;
 
-
   if(a1 != a1Old)
   {
     //double b0Old = 1.0+a1Old;
 
-
     // cutoff was changed - update internal states to preserve energy
     double scaler = 1.0;
     double offset = 0.0;
-
-
-
 
     /*
     double eOld, eNew, eG; // energy represented by integrator states
@@ -354,34 +346,22 @@ double LadderFilter::getSampleTest(double in)
 
     //scaler *= scaler;
 
-
-
-
-
     y1L = scaler*y1L + offset;
     y2L = scaler*y2L + offset;
     y3L = scaler*y3L + offset;
     y4L = scaler*y4L + offset;
-
-
-
   }
-
 
   //double b0 = 1.0;  // only during development
   //y1L = y0L - a1*y1L;
 
   //int dummy = 0;
 
-
-
   // cascade of 4 1st order sections:
   y1L = b0*y0L - a1*y1L;
   y2L = b0*y1L - a1*y2L;
   y3L = b0*y2L - a1*y3L;
   y4L = b0*y3L - a1*y4L;
-
-
 
   // test some scalings of the feedback value in order to counteract energy changes under
   // time-varying conditions:
@@ -395,8 +375,6 @@ double LadderFilter::getSampleTest(double in)
   }
   */
   yOldL = s * y4L;
-
-
 
   kOld  = k;
   a1Old = a1;

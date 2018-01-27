@@ -2578,8 +2578,8 @@ void FourPoleFilterModuleEditor::updateWidgetEnablement()
 //-------------------------------------------------------------------------------------------------
 // LadderFilter:
 
-LadderFilterAudioModule::LadderFilterAudioModule(CriticalSection *newPlugInLock, rosic::LadderFilter *newLadderFilterToWrap)
- : ModulatableAudioModule(newPlugInLock)
+LadderFilterAudioModule::LadderFilterAudioModule(CriticalSection *newPlugInLock, 
+  rosic::LadderFilterOld *newLadderFilterToWrap) : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
   jassert( newLadderFilterToWrap != NULL ); // you must pass a valid rosic-object
@@ -2605,31 +2605,31 @@ void LadderFilterAudioModule::createStaticParameters()
   p->addStringValue(juce::String(("Bandpass 12+6")));
   p->addStringValue(juce::String(("Morph Low/Band/High")));
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMode);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilterOld::setMode);
 
   p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setCutoff);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilterOld::setCutoff);
 
   p = new Param("Resonance", 0.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setResonanceInPercent);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilterOld::setResonanceInPercent);
 
   p = new Param("MakeUp", 0.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMakeUp);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilterOld::setMakeUp);
 
   p = new Param("Drive", -24.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setDrive);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilterOld::setDrive);
 
   p = new Param("Order", 0.0, 4.0, 4.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setOutputStage);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilterOld::setOutputStage);
 
   p = new Param("Morph", 0.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMorph);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilterOld::setMorph);
 
   /*
   p = new Parameter("Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);

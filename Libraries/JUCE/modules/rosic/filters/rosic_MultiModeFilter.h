@@ -289,7 +289,7 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // public data members:
 
-    LadderFilter ladderFilter;
+    LadderFilterOld ladderFilter;
     // A filter inspired by the famous Moog lowpass.
 
     FourPoleFilter twoStageBiquad;

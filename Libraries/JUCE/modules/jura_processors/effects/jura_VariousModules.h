@@ -476,11 +476,11 @@ class LadderFilterAudioModule : public ModulatableAudioModule
 {
   friend class LadderFilterModuleEditor;
 public:
-  LadderFilterAudioModule(CriticalSection *newPlugInLock, rosic::LadderFilter *newLadderFilterToWrap);
+  LadderFilterAudioModule(CriticalSection *newPlugInLock, rosic::LadderFilterOld *newLadderFilterToWrap);
   juce_UseDebuggingNewOperator;
 protected:
   virtual void createStaticParameters();
-  rosic::LadderFilter *wrappedLadderFilter;
+  rosic::LadderFilterOld *wrappedLadderFilter;
 };
 
 class LadderFilterModuleEditor : public AudioModuleEditor, public RComboBoxObserver

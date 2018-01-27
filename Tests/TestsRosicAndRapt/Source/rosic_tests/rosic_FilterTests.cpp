@@ -40,8 +40,6 @@ void writeImpulseResponseToFile(const char *path, T &module, int N, int fs, int 
   delete[] h;
 }
 
-
-
 void rotes::testLadderFilter()
 {
   double fs   = 44100;  // samplerate in Hz
@@ -49,17 +47,11 @@ void rotes::testLadderFilter()
   double fcLo = 250;    // 2nd cutoff frequency 
   double fSaw = 120;    // frequency of the input sawtooth - 120 seems to be a problem-freq
 
-
-
-
-  rosic::LadderFilter ladder;
+  rosic::LadderFilterOld ladder;
   ladder.setSampleRate(fs);
   ladder.setResonance(0.95);
   //ladder.setResonance(0.0);
   //ladder.setResonance(0.5);
-
-
-
 
   /*
   static const int N = 500;  

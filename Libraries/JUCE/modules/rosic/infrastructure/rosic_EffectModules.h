@@ -189,13 +189,13 @@ namespace rosic
     virtual void reset()       { Harmonics::reset();                 }
   };
 
-  class LadderFilterModule : public Module, public LadderFilter
+  class LadderFilterModule : public Module, public LadderFilterOld
   {
   public:
-    virtual void setSampleRate(double newSampleRate) { LadderFilter::setSampleRate(newSampleRate); }
+    virtual void setSampleRate(double newSampleRate) { LadderFilterOld::setSampleRate(newSampleRate); }
     virtual void processSampleFrame(double *inOutL, double *inOutR)
-    { LadderFilter::getSampleFrameStereo(inOutL, inOutR);         }
-    virtual void reset()       { LadderFilter::reset();                 }
+    { LadderFilterOld::getSampleFrameStereo(inOutL, inOutR);         }
+    virtual void reset()       { LadderFilterOld::reset();                 }
   };
 
   class LimiterModule : public Module, public Limiter
