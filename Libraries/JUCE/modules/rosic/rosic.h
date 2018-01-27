@@ -168,6 +168,7 @@
 #include "filters/rosic_FourPoleFilter.h"
 #include "filters/rosic_OnePoleFilter.h"
 #include "filters/rosic_OnePoleFilterStereo.h"
+#include "filters/rosic_LadderFilter.h"
 #include "filters/rosic_LadderFilterOld.h"
 #include "filters/rosic_LeakyIntegrator.h"
 #include "filters/rosic_PrototypeDesigner.h"

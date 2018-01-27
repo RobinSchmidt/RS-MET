@@ -3727,6 +3727,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_InfiniteImpulseResponseDesigner.cpp">
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilterOld.cpp">
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClCompile>
@@ -7702,6 +7705,9 @@
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_InfiniteImpulseResponseDesigner.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilter.h">
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilterOld.h">

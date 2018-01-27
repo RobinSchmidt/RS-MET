@@ -1,5 +1,5 @@
-#ifndef rosic_LadderFilter_h
-#define rosic_LadderFilter_h
+#ifndef rosic_LadderFilterOld_h
+#define rosic_LadderFilterOld_h
 
 namespace rosic
 {
@@ -488,4 +488,4 @@ INLINE void LadderFilterOld::getSampleFrameStereo(double *inOutL, double *inOutR
 
 }
 
-#endif // rosic_LadderFilter_h
+#endif // rosic_LadderFilterOld_h

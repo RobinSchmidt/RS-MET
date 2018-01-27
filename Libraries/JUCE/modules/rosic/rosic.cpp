@@ -119,6 +119,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "filters/rosic_FourPoleFilter.cpp"
 #include "filters/rosic_OnePoleFilter.cpp"
 #include "filters/rosic_OnePoleFilterStereo.cpp"
+#include "filters/rosic_LadderFilter.cpp"
 #include "filters/rosic_LadderFilterOld.cpp"
 #include "filters/rosic_LeakyIntegrator.cpp"
 #include "filters/rosic_LowpassHighpass.cpp"
