@@ -431,9 +431,6 @@
     <Filter Include="Juce Modules\rapt\Basics">
       <UniqueIdentifier>{9AE84EB0-035E-1970-2F86-4C4FA29240F9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Juce Modules\rapt\Data\Simd">
-      <UniqueIdentifier>{FCCD17E3-50FE-BEF2-F7D2-5A8F04CDD0F7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Juce Modules\rapt\Data">
       <UniqueIdentifier>{028E0D2A-C24C-7FAA-804B-C859F7FA2D49}</UniqueIdentifier>
     </Filter>
@@ -6756,15 +6753,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\ComplexFloat64x2.h">
-      <Filter>Juce Modules\rapt\Data\Simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h">
-      <Filter>Juce Modules\rapt\Data\Simd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float64x2.h">
-      <Filter>Juce Modules\rapt\Data\Simd</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h">
       <Filter>Juce Modules\rapt\Data</Filter>
     </ClInclude>
@@ -7397,6 +7385,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_WaveformDisplayBuffer.h">
       <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\ComplexFloat64x2.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float64x2.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalDefinitions.h">
       <Filter>Juce Modules\rosic\basics</Filter>

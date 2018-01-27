@@ -10,11 +10,13 @@ namespace RAPT
 
 }
 
+/*
 // maybe take them out of the namespace - maybe that also allows to get rid of the rs-prefixes in 
 // the math functions?
 #include "Simd/Float32x4.h"
 #include "Simd/Float64x2.h"
 #include "Simd/ComplexFloat64x2.h"
+*/
 
 
 

@@ -4564,9 +4564,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\ComplexFloat64x2.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float64x2.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Data.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.h"/>
@@ -4778,6 +4775,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_SpectrumAnalyzer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_TrackMeter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_WaveformDisplayBuffer.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\ComplexFloat64x2.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float64x2.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalDefinitions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_ChannelMatrix2x2.h"/>

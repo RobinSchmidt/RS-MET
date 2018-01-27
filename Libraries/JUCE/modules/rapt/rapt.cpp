@@ -32,6 +32,8 @@ think) */
 #include "Unfinished/Unfinished.cpp" 
 
 
+//void fixLinkerWarningDummyFunction() {} // dummy function to fix linker warning (duh!)
+                                          // nope - it actually adds a 2nd warning
 /*
 
 // We request some explicit instantiations here - later, when we add modules to the jura framework

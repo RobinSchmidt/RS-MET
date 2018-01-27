@@ -7,6 +7,8 @@ make use of the new SIMD-stuff
  arrange widgets like:
  Cutoff   Mode    Clip
  Reso     Morph   DC
+-ladder highpass responses look weird when reso is high (there seems to be something wrong about the
+ compensation gain?)
 -use the new ladder in LadderFilterAudioModule in VariousModules (this is the one used in 
  quadrifex)
 -base rosic::EngineersFilter on RAPT using <double, rsFloat64x2> for template parameters
