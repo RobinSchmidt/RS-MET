@@ -85,40 +85,48 @@ void Ladder::processBlock(double **inOutBuffer, int numChannels, int numSamples)
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
   {
-    inOutBuffer[0][n] = ladderL.getSample(inOutBuffer[0][n]);
-    inOutBuffer[1][n] = ladderR.getSample(inOutBuffer[1][n]);
+    wrappedLadder.getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+    //inOutBuffer[0][n] = ladderL.getSample(inOutBuffer[0][n]);
+    //inOutBuffer[1][n] = ladderR.getSample(inOutBuffer[1][n]);
   }
 }
 
 void Ladder::processStereoFrame(double *left, double *right)
 {
-  *left  = ladderL.getSample(*left);
-  *right = ladderR.getSample(*right);
+  wrappedLadder.getSampleFrameStereo(left, right);
+  //*left  = ladderL.getSample(*left);
+  //*right = ladderR.getSample(*right);
 }
 
 //-------------------------------------------------------------------------------------------------
 // parameter setters (callback targets for the Parameter objects):
 
 void Ladder::setSampleRate(double newSampleRate){
-  ladderL.setSampleRate(newSampleRate); 
-  ladderR.setSampleRate(newSampleRate);
+
+  wrappedLadder.setSampleRate(newSampleRate);
+  //ladderL.setSampleRate(newSampleRate); 
+  //ladderR.setSampleRate(newSampleRate);
 }
 void Ladder::setCutoff(double newCutoff){
   cutoff = newCutoff;
-  ladderL.setCutoff(freqFactorL * cutoff); 
-  ladderR.setCutoff(freqFactorR * cutoff);
+  wrappedLadder.setCutoff(cutoff); 
+  //ladderL.setCutoff(freqFactorL * cutoff); 
+  //ladderR.setCutoff(freqFactorR * cutoff);
 }
 void Ladder::setResonance(double newResonance){
-  ladderL.setResonance(newResonance);
-  ladderR.setResonance(newResonance);
+  wrappedLadder.setResonance(newResonance);
+  //ladderL.setResonance(newResonance);
+  //ladderR.setResonance(newResonance);
 }
 void Ladder::setMode(int newMode){
-  ladderL.setMode(newMode);
-  ladderR.setMode(newMode);
+  wrappedLadder.setMode(newMode);
+  //ladderL.setMode(newMode);
+  //ladderR.setMode(newMode);
 }
 void Ladder::reset(){
-  ladderL.reset();
-  ladderR.reset();
+  wrappedLadder.reset();
+  //ladderL.reset();
+  //ladderR.reset();
 }
 
 inline double pitchOffsetToFreqFactor(double pitchOffset){ // move to RAPT library, eventually
@@ -143,7 +151,8 @@ void Ladder::setMidSideMode(bool shouldBeInMidSideMode){
 
 double Ladder::getMagnitudeAt(double frequency)
 {
-  return ladderL.getMagnitudeResponseAt(frequency);
+  return wrappedLadder.getMagnitudeResponseAt(frequency);
+  //return ladderL.getMagnitudeResponseAt(frequency);
 }
 
 void Ladder::getMagnitudeResponse(const double *frequencies, double *magnitudes, int numBins,

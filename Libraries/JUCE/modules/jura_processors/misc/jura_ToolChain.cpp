@@ -118,7 +118,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   */
 
   node = new RTreeViewNode("Filters", -1, "Filters");
-  //node->addChildNode(new RTreeViewNode("Ladder",          i++));
+  node->addChildNode(new RTreeViewNode("Ladder",          i++));
   node->addChildNode(new RTreeViewNode("Equalizer",       i++));
   node->addChildNode(new RTreeViewNode("EngineersFilter", i++));
   //node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));

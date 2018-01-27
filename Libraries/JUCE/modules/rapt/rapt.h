@@ -64,6 +64,7 @@ typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
 
 typedef RAPT::rsSmoothingFilter<double, double> rsSmoothingFilterDD;
 typedef RAPT::rsLadderFilter<double, double> rsLadderDD;
+typedef RAPT::rsLadderFilter<rsFloat64x2, double> rsLadderD2D;
 
 typedef RAPT::rsRayBouncer<double> rsRayBouncerD;
 typedef RAPT::rsRayBouncerDriver<double> rsRayBouncerDriverD;

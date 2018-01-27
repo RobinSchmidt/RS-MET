@@ -65,7 +65,9 @@ protected:
   bool   midSideMode = false;
 
   // embedded core DSP objects from the RAPT library:
-  rsLadderDD ladderL, ladderR;
+  //rsLadderDD ladderL, ladderR;
+  rosic::rsLadderFilterStereo wrappedLadder;
+    // use the one with different cutoffs for the channels later (maybe)
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Ladder)
 };
