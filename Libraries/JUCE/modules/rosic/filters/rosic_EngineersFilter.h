@@ -1,5 +1,5 @@
-#ifndef rosic_EngineersFilter_h
-#define rosic_EngineersFilter_h
+#ifndef rosic_EngineersFilterOld_h
+#define rosic_EngineersFilterOld_h
 
 namespace rosic
 {
@@ -8,7 +8,7 @@ namespace rosic
 etc. You can create the standard lowpass, highpass, bandpass, bandreject  versions of all the 
 filters and also shelving and peaking versions. */
 
-class rsEngineersFilter : public rsBiquadCascadeStereo
+class rsEngineersFilterOld : public rsBiquadCascadeStereo
 {
 
 public:
@@ -17,7 +17,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  rsEngineersFilter();
+  rsEngineersFilterOld();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -111,8 +111,8 @@ protected:
 
   // make copy-constructor and assignment operator unavailable (move this idiom into a macro an 
   // use the macro everywhere, where an object is not trivially copyable):
-  rsEngineersFilter(const rsEngineersFilter&) = delete;
-  rsEngineersFilter& operator=(const rsEngineersFilter&) = delete;
+  rsEngineersFilterOld(const rsEngineersFilterOld&) = delete;
+  rsEngineersFilterOld& operator=(const rsEngineersFilterOld&) = delete;
 };
 
 }

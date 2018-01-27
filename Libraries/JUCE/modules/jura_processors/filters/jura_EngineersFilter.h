@@ -16,7 +16,7 @@ public:
   this AudioModule taking ownership (suitable, if the object already exists a smember of some 
   higher level dsp object). */
   EngineersFilterAudioModule(CriticalSection *newPlugInLock, 
-    rosic::rsEngineersFilter *sciFilterToWrap);
+    rosic::rsEngineersFilterOld *sciFilterToWrap);
 
   /** Constructor to use ehen there's no existing rosic::EngineersFilter object to be wrapped. in 
   this case, we'll create one here and take over ownership  (i.e. will also delete it in our 
@@ -50,7 +50,7 @@ protected:
 
   void createParameters();
 
-  rosic::rsEngineersFilter *wrappedEngineersFilter;
+  rosic::rsEngineersFilterOld *wrappedEngineersFilter;
   bool wrappedEngineersFilterIsOwned = false;
 
 
@@ -89,7 +89,7 @@ public:
   // setup:
 
   /** Passes a pointer the the actual rosic::EngineersFilter object which is to be edited. */
-  virtual void setEngineersFilterToEdit(rosic::rsEngineersFilter* newEngineersFilterToEdit);
+  virtual void setEngineersFilterToEdit(rosic::rsEngineersFilterOld* newEngineersFilterToEdit);
 
   // functions to assign the parameters, we observe (in order to update the plot) and possibly 
   // later also to manipulated them:
@@ -153,7 +153,7 @@ protected:
     XmlElement *targetSVG = NULL);
 
   /** Pointer to the actual rosic::EngineersFilter object which is being edited. */
-  rosic::rsEngineersFilter* sciFilterToEdit;
+  rosic::rsEngineersFilterOld* sciFilterToEdit;
 
   // the parameters which wil cause re-plotting and therefore must be listened to:
   //Parameter *lowFreqParameter, *lowSlopeParameter, *highFreqParameter, *highSlopeParameter;
