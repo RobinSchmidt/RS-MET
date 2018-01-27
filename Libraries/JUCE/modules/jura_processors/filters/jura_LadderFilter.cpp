@@ -4,7 +4,8 @@ Ladder::Ladder(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUs
   : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
-  setModuleTypeName("LadderFilter");
+  setModuleTypeName("Ladder");
+  //setModuleTypeName("LadderFilter");
   createStaticParameters();
 }
 
