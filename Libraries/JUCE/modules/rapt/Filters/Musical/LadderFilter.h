@@ -139,7 +139,7 @@ public:
   feedback gain k by which the output of a chain of 4 such one-pole units should be fed back into
   the first unit and a compensation gain g that compensates for the loss of DC gain when turning up
   the feedback. */
-  static void computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k, TPar *g);
+  static void computeCoeffs(TPar wc, TPar fb, TPar s, TPar *a, TPar *b, TPar *k, TPar *g);
   // todo: factor the function into a/b-computation, k-computation, g-computation - but leave 
   // this one as convenience function also
 
@@ -165,6 +165,7 @@ protected:
   TPar a, b;        // leaky integrator coefficients for a stage: y[n] = b*x[n] - a*y[n-1]
   TPar k;           // feedback gain
   TPar g;           // output gain
+  TPar s = 1;       // scaler for k in gain computation
   TPar cutoff;      // cutoff frequency in Hz
   TPar resonance;   // resonance 0..1
   TPar sampleRate;  // samplerate in Hz

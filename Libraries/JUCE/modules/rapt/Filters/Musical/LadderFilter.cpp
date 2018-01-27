@@ -44,21 +44,23 @@ void rsLadderFilter<TSig, TPar>::setMode(int newMode)
     mode = newMode;
     switch(mode)
     {
-    case FLAT:     setMixingCoefficients(1,  0,   0,   0,  0);  break;
-    case LP_6:     setMixingCoefficients(0,  1,   0,   0,  0);  break;
-    case LP_12:    setMixingCoefficients(0,  0,   1,   0,  0);  break;
-    case LP_18:    setMixingCoefficients(0,  0,   0,   1,  0);  break;
-    case LP_24:    setMixingCoefficients(0,  0,   0,   0,  1);  break;
-    case HP_6:     setMixingCoefficients(1, -1,   0,   0,  0);  break;
-    case HP_12:    setMixingCoefficients(1, -2,   1,   0,  0);  break;
-    case HP_18:    setMixingCoefficients(1, -3,   3,  -1,  0);  break;
-    case HP_24:    setMixingCoefficients(1, -4,   6,  -4,  1);  break;  
-    case BP_6_6:   setMixingCoefficients(0,  2,  -2,   0,  0);  break;
-    case BP_6_12:  setMixingCoefficients(0,  0,   3,  -3,  0);  break;
-    case BP_6_18:  setMixingCoefficients(0,  0,   0,   4, -4);  break;
-    case BP_12_6:  setMixingCoefficients(0,  3,  -6,   3,  0);  break;
-    case BP_12_12: setMixingCoefficients(0,  0,   4,  -8,  4);  break;
-    case BP_18_6:  setMixingCoefficients(0,  4, -12,  12, -4);  break;  
+    case FLAT:     { setMixingCoefficients(1,  0,   0,   0,  0); s = 0.5; } break;
+    case LP_6:     { setMixingCoefficients(0,  1,   0,   0,  0); s = 1.0; } break;
+    case LP_12:    { setMixingCoefficients(0,  0,   1,   0,  0); s = 1.0; } break;
+    case LP_18:    { setMixingCoefficients(0,  0,   0,   1,  0); s = 1.0; } break;
+    case LP_24:    { setMixingCoefficients(0,  0,   0,   0,  1); s = 1.0; } break;
+    case HP_6:     { setMixingCoefficients(1, -1,   0,   0,  0); s = 0.0; } break;
+    case HP_12:    { setMixingCoefficients(1, -2,   1,   0,  0); s = 0.0; } break;
+    case HP_18:    { setMixingCoefficients(1, -3,   3,  -1,  0); s = 0.0; } break;
+    case HP_24:    { setMixingCoefficients(1, -4,   6,  -4,  1); s = 0.0; } break;
+
+    // from here, s-values may not be optimal:
+    case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = 0.0; } break;  // try 0.5
+    case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = 0.0; } break; // 0.66
+    case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = 0.0; } break; // 0.75
+    case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = 0.0; } break; // 0.33
+    case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = 0.0; } break;  // 0.5
+    case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = 0.0; } break; // 0.25
 
     //// these additional modes were found in a thread on KVR: 
     // http://www.kvraudio.com/forum/viewtopic.php?&t=466588 
@@ -70,6 +72,7 @@ void rsLadderFilter<TSig, TPar>::setMode(int newMode)
 
     default:       setMixingCoefficients(0,  0,  0,  0,  0);  break; // out of range -> silence
     }
+    updateCoefficients();
   }
 }
 
@@ -196,11 +199,25 @@ TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar c
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k, 
+void rsLadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar s, TPar *a, TPar *b, TPar *k, 
   TPar *g)
 {
   computeCoeffs(wc, fb, a, b, k);
-  *g = 1 + *k; // this overall gain factor ensures unit gain at DC regardless of resonance
+  //*g = 1 + *k; // this overall gain factor ensures unit gain at DC regardless of resonance
+               // damn! this gain works only for the lowpass case...was it always like that?
+               // what about the old formula?
+  //*g = TPar(1);
+
+  *g = 1 + s * *k;
+
+  // 1+k is good for all lowpasses, 1 is good for all highpasses, the allpass needs 
+  // perhaps 1 + k/2
+
+  //// old formula - has the same problem:
+  //// evaluate the magnitude response at DC:
+  //TPar b0_4   = *b * *b * *b * *b;
+  //TPar dcGain = b0_4 / ((((*a + 4.0) * *a +6.0) * *a + 4.0) * *a + *k * b0_4 + 1.0);
+  //*g = 1 / dcGain;
 }
 
 template<class TSig, class TPar>
@@ -236,5 +253,5 @@ template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::updateCoefficients()
 {
   TPar wc = 2 * (TPar)PI * cutoff / sampleRate;
-  computeCoeffs(wc, resonance, &a, &b, &k, &g);
+  computeCoeffs(wc, resonance, s, &a, &b, &k, &g);
 }
