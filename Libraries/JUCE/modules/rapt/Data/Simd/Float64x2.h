@@ -41,6 +41,9 @@ public:
   /** Returns the vector element with index i (valid indices are 0 and 1). */
   inline double get(size_t i)  { return asArray()[i]; }
 
+  /** Writes the two double into v0 and v1. */
+  inline void get(double& v0, double& v1) { _mm_storel_pd(&v0, v); _mm_storeh_pd(&v1, v); }
+
   /** Returns the 1st value (index 0). */
   //inline double get0() { double d; _mm_storel_pd(&d, v); return d; }
   //inline double get0() { return asArray()[0]; }
@@ -114,6 +117,13 @@ public:
 
 
   /** \name Operators */
+
+  /** Allows the two double values to be accessed (for reading and writing) as if this would be an 
+  array of two doubles. Valid indices are 0 and 1. */
+  inline double& operator[](const int i) { return asArray()[i]; }
+    // maybe with this, we can get rid of set/get...hmm...but maybe not (or not just yet), they use 
+    // different operations - maybe they are faster? or safer (i.e. compatible with more 
+    // compilers? - test this first)
 
   // arithmetic operators:
   inline rsFloat64x2& operator+=(const rsFloat64x2& b) { v = _mm_add_pd(v, b); return *this; }

@@ -34,11 +34,18 @@ bool float64x2UnitTest()
   // construct from another instance:
   rsFloat64x2 y(x34); r &= y.get0() == 3.0; r &= y.get1() == 4.0;
 
-  // test setters:
+  // setters:
   y.set0(5.0);     r &= y.get0() == 5.0; r &= y.get1() == 4.0;
   y.set1(6.0);     r &= y.get0() == 5.0; r &= y.get1() == 6.0;
   y.set(1.0, 2.0); r &= y.get0() == 1.0; r &= y.get1() == 2.0;
   y.set(3.0);      r &= y.get0() == 3.0; r &= y.get1() == 3.0;
+
+  // array access operator:
+  y[0] = 1.0; y[1] = 2.0;  r &= y[0] == 1.0; r &= y[1] == 2.0;
+
+  // getter:
+  double v0, v1;
+  y.get(v0, v1); r &= v0 == 1.0; r &= v1 == 2.0;
 
   // assignment and equality:
   y = x12; r &= y.get0() == 1.0; r &= y.get1() == 2.0;
