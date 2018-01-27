@@ -104,14 +104,13 @@ void TestPluginAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
   }
   float *left  = buffer.getWritePointer(0);
   float *right = buffer.getWritePointer(1);
-  complex<double> tmp;
   for(int n = 0; n < buffer.getNumSamples(); n++)
   {
-    tmp.real((double)left[n]);      // Set up real...
-    tmp.imag((double)right[n]);     // ...and imaginary part of temporary variable from input.
-    tmp = ladder.getSample(tmp);    // Process one (stereo) sample frame at a time.
-    left[n]  = (float)tmp.real();   // Extract real...
-    right[n] = (float)tmp.imag();   // ...and imaginary part and write to output.
+    double tmpL = left[n];
+    double tmpR = right[n];
+    ladder.getSampleFrameStereo(&tmpL, &tmpR);
+    left[n]  = (float) tmpL;
+    right[n] = (float) tmpR;
   }
 }
 

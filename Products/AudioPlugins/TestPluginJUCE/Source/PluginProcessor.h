@@ -3,9 +3,6 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-#include <complex>    // abused for representing stereo signals
-using namespace std;
-
 
 /** A test plugin implementing a multimode ladder filter  */
 
@@ -64,14 +61,7 @@ public:
 protected:
 
   double cutoff, reso;  // mapped parameters - todo: use AudioProcessorParameter class
-
-  RAPT::rsLadderFilter<complex<double>, double> ladder;
-    // The embedded RAPT LadderFilter object - we use complex numbers for the signal type to 
-    // represent stereo signals (real part: left channel, imaginary part: right channel).
-    // ToDo: maybe use a different stereo-pair type later, based on a SIMD datatype that represents
-    // two doubles - should reduce processing cost by roughly 1/2? Maybe provide such a type in 
-    // RAPT - Float64X2 based on this __mm128 (or however it is called) instrinsic, maybe also 
-    // Float32X4 (4 single precision floats)
+  rosic::rsLadderFilterStereo ladder;
 
 private:
 
