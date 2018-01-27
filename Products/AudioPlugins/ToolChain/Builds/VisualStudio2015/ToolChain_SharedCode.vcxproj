@@ -3088,7 +3088,7 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilterDirectForm.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilter.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilterOld.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Equalizer.cpp">
@@ -4872,7 +4872,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticQuarterBandFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilterDirectForm.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilterOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Equalizer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EqualizerStereo.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FilterAnalyzer.h"/>

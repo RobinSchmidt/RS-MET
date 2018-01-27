@@ -168,7 +168,7 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 #include "filters/rosic_PoleZeroMapper.cpp"
 #include "filters/rosic_FilterCoefficientConverter.cpp"
 #include "filters/rosic_InfiniteImpulseResponseDesigner.cpp"
-#include "filters/rosic_EngineersFilter.cpp"
+#include "filters/rosic_EngineersFilterOld.cpp"
 #include "filters/rosic_LinkwitzRileyCrossOver.cpp"
 #include "filters/rosic_CrossOver4Way.cpp"
 #include "filters/rosic_DirectFormFilter.cpp"
