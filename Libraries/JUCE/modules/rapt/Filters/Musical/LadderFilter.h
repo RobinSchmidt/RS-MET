@@ -165,7 +165,7 @@ protected:
   TPar a, b;        // leaky integrator coefficients for a stage: y[n] = b*x[n] - a*y[n-1]
   TPar k;           // feedback gain
   TPar g;           // output gain
-  TPar s = 1;       // scaler for k in gain computation
+  TPar s = 1;       // scaler for k in gain computation - make user-parameter ("Fat"?)
   TPar cutoff;      // cutoff frequency in Hz
   TPar resonance;   // resonance 0..1
   TPar sampleRate;  // samplerate in Hz

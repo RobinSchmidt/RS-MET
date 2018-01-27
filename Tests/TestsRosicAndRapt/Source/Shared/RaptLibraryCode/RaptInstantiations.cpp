@@ -23,10 +23,13 @@ instantiates all templates for double. That file can be used by client code by d
 code may also define its own instantiation file. */
 
 #include "../../../../../Libraries/JUCE/modules/rapt/rapt.cpp"
+//#include "../../../../../Libraries/JUCE/modules/rosic/rosic.cpp"
 using namespace RAPT;
 
 //#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"
 // needed when it's commented out in rapt -> reduce build time during tweaking the class
+
+// we need to make sure to provide only instantiations that are not already there in rosic.cpp
 
 // Basics:
 
@@ -59,8 +62,8 @@ template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float
 template RAPT::rsSmoothingFilter<float, float>;
 template RAPT::rsLadderFilter<float, float>;
 template RAPT::rsLadderFilter<double, double>;
-template RAPT::rsLadderFilter<rsFloat64x2, double>;
-template RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
+//template RAPT::rsLadderFilter<rsFloat64x2, double>;
+//template RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
 template RAPT::rsPhasorFilter<float, float>;
 template RAPT::rsPhasorStateMapper<float>;
 template RAPT::rsStateVariableFilter<float, float>; 
