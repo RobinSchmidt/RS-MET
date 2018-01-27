@@ -59,6 +59,7 @@
 // depend on one or more modules that come before it but not vice versa - well, we'll see if that's
 // possible)
 
+/*
 // typedefs for convenience:
 typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
 
@@ -68,6 +69,7 @@ typedef RAPT::rsLadderFilter<rsFloat64x2, double> rsLadderD2D;
 
 typedef RAPT::rsRayBouncer<double> rsRayBouncerD;
 typedef RAPT::rsRayBouncerDriver<double> rsRayBouncerDriverD;
+*/
 
 
 #endif

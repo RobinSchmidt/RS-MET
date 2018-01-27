@@ -1,10 +1,11 @@
-#ifdef RAPT_H_INCLUDED
-/* When you add this cpp file to your project, you mustn't include it in a file where you've
-already included any other headers - just put it inside a file on its own, possibly with your config
-flags preceding it, but don't include anything else. That also includes avoiding any automatic prefix
-header files that the compiler may be using. */
-#error "Incorrect use of JUCE cpp file"
-#endif
+//#ifdef RAPT_H_INCLUDED
+///* When you add this cpp file to your project, you mustn't include it in a file where you've
+//already included any other headers - just put it inside a file on its own, possibly with your config
+//flags preceding it, but don't include anything else. That also includes avoiding any automatic prefix
+//header files that the compiler may be using. */
+//#error "Incorrect use of JUCE cpp file"
+//#endif
+// ...was copy/pasted from juce modules - doesn't apply to rapt due to use of templates
 
 #include "rapt.h"
 
@@ -30,6 +31,8 @@ think) */
 //#include "Instruments/Instruments.cpp"
 #include "Unfinished/Unfinished.cpp" 
 
+
+/*
 
 // We request some explicit instantiations here - later, when we add modules to the jura framework
 // which use these classes, they may be deleted. At the moment, they are needed for Elan's
@@ -86,4 +89,5 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 
 // hmm...it seems, we need all these explicit instantiations anyway - maybe clean up the build
 // system...rename the files to raptJuceModule.h/cpp
+*/
 

@@ -143,7 +143,8 @@ T rsSineIntegralViaContinuedFractions(T x)  // recommended for |x| > 3
   T xAbs = fabs(x);
   T a;
   std::complex<T> b(1.0, xAbs);
-  std::complex<T> c = 1.0 / RS_TINY;
+  //std::complex<T> c = 1.0 / RS_TINY;    // gives compiler warning
+  std::complex<T> c = 1.0 / 1.175494e-38; // == float minimum, fixes warning
   std::complex<T> d = 1.0 / b;
   std::complex<T> h = d;
   std::complex<T> cd;

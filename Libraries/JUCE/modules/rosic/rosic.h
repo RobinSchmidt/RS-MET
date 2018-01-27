@@ -384,6 +384,19 @@
 #include "instruments/rosic_WorkhorseVoice.h"
 #include "instruments/rosic_Workhorse.h"
 
+//=================================================================================================
+// typedefs for RAPT instantiations (for convenience):
+
+typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
+
+typedef RAPT::rsSmoothingFilter<double, double> rsSmoothingFilterDD;
+typedef RAPT::rsLadderFilter<double, double> rsLadderDD;
+typedef RAPT::rsLadderFilter<rsFloat64x2, double> rsLadderD2D;
+
+typedef RAPT::rsRayBouncer<double> rsRayBouncerD;
+typedef RAPT::rsRayBouncerDriver<double> rsRayBouncerDriverD;
+
+
 // restore warning level in msvc:
 #if defined _MSC_VER
 #pragma warning(pop)
