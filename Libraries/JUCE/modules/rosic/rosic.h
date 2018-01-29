@@ -177,6 +177,7 @@
 #include "filters/rosic_PrototypeDesigner.h"
 #include "filters/rosic_PoleZeroMapper.h"
 #include "filters/rosic_InfiniteImpulseResponseDesigner.h"
+#include "filters/rosic_EngineersFilter.h"
 #include "filters/rosic_EngineersFilterOld.h"
 #include "filters/rosic_EllipticSubBandFilter.h"
 #include "filters/rosic_EllipticSubBandFilterDirectForm.h"
