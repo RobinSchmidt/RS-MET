@@ -78,6 +78,7 @@ namespace jura
 #include "instruments/jura_Quadrigen.cpp" 
 #include "instruments/jura_Quadriga.cpp"
 #include "instruments/jura_Workhorse.cpp"
+#include "instruments/jura_NewSynth.cpp"
 
 #ifdef _MSC_VER
 #include "instruments/jura_Liberty.cpp" // not yet available on gcc 

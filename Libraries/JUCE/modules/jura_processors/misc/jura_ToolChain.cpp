@@ -52,6 +52,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   // instruments:
   if(type == "AcidDevil")     return new AciDevilAudioModule(     lock);
   if(type == "Straightliner") return new StraightlinerAudioModule(lock);
+  if(type == "NewSynth")      return new NewSynthAudioModule(     lock);
   if(type == "MagicCarpet")   return new MagicCarpetAudioModule(  lock);
   if(type == "SimpleSampler") return new SimpleSamplerAudioModule(lock);
   if(type == "KeyShot")       return new KeyShotAudioModule(      lock);
@@ -146,13 +147,14 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
-  bool showUnfinishedModules = false;
+  bool showUnfinishedModules = true;
   if(showUnfinishedModules)
   {
     node = new RTreeViewNode("UnderConstruction", -1, "UnderConstruction");
 #ifdef _MSC_VER
     node->addChildNode(new RTreeViewNode("Liberty", i++));     // not yet available on gcc
 #endif
+    node->addChildNode(new RTreeViewNode("NewSynth",  i++));
     //node->addChildNode(new RTreeViewNode("MagicCarpet",    i++));
     node->addChildNode(new RTreeViewNode("SimpleSampler",  i++));
     //node->addChildNode(new RTreeViewNode("KeyShot",        i++));
