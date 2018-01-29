@@ -4393,6 +4393,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_Polyphony.cpp">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
       <Filter>Juce Modules\rosic</Filter>
     </ClCompile>
@@ -8425,9 +8428,6 @@
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_Polyphony.h">
-      <Filter>Juce Modules\rosic\unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource .h">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource.h">

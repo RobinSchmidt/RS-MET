@@ -9,6 +9,15 @@ class rsDualFilter
 
 public:
 
+  /** Determines whether the output of the 1st filter or the output of the 2nd filter (or both) 
+  has a unit delay in the feedback path. */
+  enum delayConfigs
+  {
+    DELAY_FIRST = 0,
+    DELAY_SECOND,
+    DELAY_BOTH
+  };
+
 
 
   INLINE rsFloat64x2 getSample(rsFloat64x2 x)
@@ -32,16 +41,19 @@ public:
     return e*y1 + f*y2;
   }
 
+  /*
   INLINE void getSampleFrameStereo(double* left, double* right)
   {
     rsFloat64x2 tmp(*left, *right);
     *left  = tmp[0];
     *right = tmp[1];
   }
+  */
 
 protected:
 
-  rsPolyModule *filter1, *filter2;
+  int delayConfig = DELAY_BOTH;
+  rsPolyModule *filter1 = nullptr, *filter2 = nullptr;
   rsFloat64x2 y1, y2;
   double a, b, c, d, e, f;
 

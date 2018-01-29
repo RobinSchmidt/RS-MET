@@ -414,6 +414,11 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 #include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
                                                       // and VectorMixer
 
+#include "unfinished/rosic_Polyphony.cpp"
+#include "unfinished/rosic_QuadSource.cpp"
+#include "unfinished/rosic_DualFilter.cpp"
+#include "unfinished/rosic_NewSynth.cpp"
+
 // restore warning level in msvc:
 #if defined _MSC_VER
 #pragma warning(pop)
