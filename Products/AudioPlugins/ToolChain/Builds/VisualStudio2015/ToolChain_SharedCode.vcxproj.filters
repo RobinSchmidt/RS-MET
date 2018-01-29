@@ -626,6 +626,9 @@
     <Filter Include="Juce Modules\rosic\transforms">
       <UniqueIdentifier>{DD4EEF42-770F-71AE-01DC-2AB78CCFF66C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rosic\unfinished">
+      <UniqueIdentifier>{9EFDB94F-A6AB-973F-4E47-1E80F7AF012A}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rosic">
       <UniqueIdentifier>{0624B2DA-7EBA-9F95-A793-0F3B9F53A8DF}</UniqueIdentifier>
     </Filter>
@@ -4380,6 +4383,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_WaveletTransforms.cpp">
       <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_DualFilter.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_Polyphony.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
       <Filter>Juce Modules\rosic</Filter>
@@ -8405,6 +8417,21 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_WaveletTransforms.h">
       <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_DualFilter.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_Polyphony.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource .h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosicOld.h">
       <Filter>Juce Modules\rosic</Filter>

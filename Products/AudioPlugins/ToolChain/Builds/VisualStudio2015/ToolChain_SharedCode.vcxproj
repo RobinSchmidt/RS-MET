@@ -3772,6 +3772,15 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_WaveletTransforms.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_DualFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_Polyphony.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -5117,6 +5126,11 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_FourierTransformerRadix2.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_SpectralManipulator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_WaveletTransforms.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_DualFilter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_Polyphony.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource .h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosicOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
