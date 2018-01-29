@@ -52,6 +52,10 @@ public:
 
 protected:
 
+  /** Given x and y (in the range 0..1), this function computes our a,..,f coefficients (gains for
+  the inputs, feedback and outputs. */
+  void computeCoeffs(double x, double y);
+
   int delayConfig = DELAY_BOTH;
   rsPolyModule *filter1 = nullptr, *filter2 = nullptr;
   rsFloat64x2 y1, y2;
