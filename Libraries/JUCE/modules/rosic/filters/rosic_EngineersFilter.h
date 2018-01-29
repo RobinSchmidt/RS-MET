@@ -15,7 +15,8 @@ public:
 
   INLINE void getSampleFrameStereo(double* left, double* right)
   {
-    rsFloat64x2 tmp = getSample(rsFloat64x2(*left, *right));
+    //rsFloat64x2 tmp = getSample(rsFloat64x2(*left, *right));
+    rsFloat64x2 tmp = getSampleDirect2(rsFloat64x2(*left, *right));
     *left  = tmp[0];
     *right = tmp[1];
   }

@@ -44,8 +44,8 @@ void ladderPerformance()
 
 void engineersFilterPerformance()
 {
-  int numSamples = 20000;
-  int order      = 10;      
+  int numSamples = 10000;
+  int order      = 20;      
   ProcessorCycleCounter counter;
   double cycles;
   int n;
@@ -55,8 +55,10 @@ void engineersFilterPerformance()
 
   rosic::rsEngineersFilterOld filterScalar;
   filterScalar.setPrototypeOrder(order);
+  filterScalar.setMode(rsInfiniteImpulseResponseDesignerF::BANDPASS);
   counter.init(); 
-  for(n = 0; n < numSamples; n++) filterScalar.getSampleFrameDirect2(&xs[n], &xs[n]);
+  for(n = 0; n < numSamples; n++) 
+    filterScalar.getSampleFrameDirect1(&xs[n], &xs[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("rsEngineersFilterOld", cycles/numSamples);
 
@@ -64,8 +66,13 @@ void engineersFilterPerformance()
 
   rosic::rsEngineersFilterStereo filterVector;
   filterVector.setPrototypeOrder(order);
+  filterVector.setMode(rsInfiniteImpulseResponseDesignerF::BANDPASS);
   counter.init(); 
-  for(n = 0; n < numSamples; n++) filterVector.getSampleFrameStereo(&xs[n], &xs[n]);
+  for(n = 0; n < numSamples; n++) 
+    filterVector.getSampleFrameStereo(&xs[n], &xs[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("rsEngineersFilterStereo", cycles/numSamples);
+
+  // the performance gain is just a factor of 1.4, not 2...maybe try to have the filter coeffs of
+  // type rsFloar64x2 too?
 }

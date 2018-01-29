@@ -187,7 +187,9 @@ inline TSig rsBiquadCascade<TSig, TCoef>::getSampleDirect2(TSig in)
   for(int i = 0; i < numStages; i++)
   {
     // calculate current output-sample (y[n]) of BiQuad-stage i:
-    g = x - a1[i]*y1[i] - a2[i]*y2[i];
+    //g = x - a1[i]*y1[i] - a2[i]*y2[i];
+    g = x - (a1[i]*y1[i] + a2[i]*y2[i]);
+    //g = x + a1[i]*y1[i] + a2[i]*y2[i]; // this is wrong (a has wrong sign) - for performance test
     y = b0[i]*g + b1[i]*y1[i] + b2[i]*y2[i];
 
     // set g[n-1], g[n-2] for the next iteration:
