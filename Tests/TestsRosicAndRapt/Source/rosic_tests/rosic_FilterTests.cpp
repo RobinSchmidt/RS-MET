@@ -973,7 +973,7 @@ void rotes::testEngineersFilter()
   fillWithRangeLinear(timeAxis, numSamples, 0.0, numSamples-1);
 
   // create and set up the filter:
-  rsEngineersFilter filter;
+  rsEngineersFilterOld filter;
   filter.setSampleRate(fs);
   filter.setFrequency(fc);
   filter.setBandwidth(bw);

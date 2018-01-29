@@ -939,6 +939,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilterOld.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Equalizer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -964,6 +967,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilterOld.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LeakyIntegrator.cpp">
@@ -1665,9 +1671,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\ComplexFloat64x2.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float64x2.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Data.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.h"/>
@@ -1835,6 +1838,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_SpectrumAnalyzer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_TrackMeter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_WaveformDisplayBuffer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\ComplexFloat64x2.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float64x2.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalDefinitions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_ChannelMatrix2x2.h"/>
@@ -1930,6 +1936,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilterDirectForm.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilterOld.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Equalizer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EqualizerStereo.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FilterAnalyzer.h"/>
@@ -1939,6 +1946,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FourPoleFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_InfiniteImpulseResponseDesigner.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilterOld.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LeakyIntegrator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LinkwitzRileyCrossOver.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LowpassHighpass.h"/>

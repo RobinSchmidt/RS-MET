@@ -41,3 +41,31 @@ void ladderPerformance()
   // clip:   70-75 cycles (scalar and vector)
   // div:    90 (scalar), 105 (vector)
 }
+
+void engineersFilterPerformance()
+{
+  int numSamples = 20000;
+  int order      = 10;      
+  ProcessorCycleCounter counter;
+  double cycles;
+  int n;
+
+  // create input and allocate output signals:
+  vector<double> xs = createNoise(numSamples, 0, double(-1), double(+1));
+
+  rosic::rsEngineersFilterOld filterScalar;
+  filterScalar.setPrototypeOrder(order);
+  counter.init(); 
+  for(n = 0; n < numSamples; n++) filterScalar.getSampleFrameDirect2(&xs[n], &xs[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("rsEngineersFilterOld", cycles/numSamples);
+
+  xs = createNoise(numSamples, 0, double(-1), double(+1));
+
+  rosic::rsEngineersFilterStereo filterVector;
+  filterVector.setPrototypeOrder(order);
+  counter.init(); 
+  for(n = 0; n < numSamples; n++) filterVector.getSampleFrameStereo(&xs[n], &xs[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("rsEngineersFilterStereo", cycles/numSamples);
+}
