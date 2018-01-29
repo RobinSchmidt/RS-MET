@@ -121,7 +121,7 @@ public:
 
   /** Allows the two double values to be accessed (for reading and writing) as if this would be an 
   array of two doubles. Valid indices are 0 and 1. */
-  inline double& operator[](const int i) { return asArray()[i]; }
+  inline double& operator[](const int i) const { return asArray()[i]; }
     // maybe with this, we can get rid of set/get...hmm...but maybe not (or not just yet), they use 
     // different operations - maybe they are faster? or safer (i.e. compatible with more 
     // compilers? - test this first)
@@ -137,11 +137,12 @@ public:
 
   /** Comparison for equality. For two vectors to be considered equal, both scalar elements must be 
   equal. */
-  inline bool operator==(const rsFloat64x2& b) 
+  inline bool operator==(const rsFloat64x2& b) const
   { 
-    double* A = asArray();
-    double* B = b.asArray();
-    return (A[0] == B[0]) && (A[1] == B[1]);
+    return (this[0] == b[0]) && (this[1] == b[1]);
+    //double* A = asArray();
+    //double* B = b.asArray();
+    //return (A[0] == B[0]) && (A[1] == B[1]);
   }
 
   /** Comparison for "less-than". For a vector to be considered less than another vector, both 
@@ -150,11 +151,12 @@ public:
   (such as root finding) when the algorithm checks, whether a variable is within a given tolerance. 
   These checks will evaluate to true only when both elements are with the tolerance, which is 
   typically what is desired. */
-  inline bool operator<(const rsFloat64x2& b) 
+  inline bool operator<(const rsFloat64x2& b) const
   { 
-    double* A = asArray();
-    double* B = b.asArray();
-    return (A[0] < B[0]) && (A[1] < B[1]);
+    return (this[0] < b[0]) && (this[1] < b[1]);
+    //double* A = asArray();
+    //double* B = b.asArray();
+    //return (A[0] < B[0]) && (A[1] < B[1]);
   }
 
 
