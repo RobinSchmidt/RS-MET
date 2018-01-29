@@ -135,7 +135,8 @@ public:
   //inline rsFloat64x2 operator+(const rsFloat64x2& b) { return _mm_add_pd(v, b.v); }
     // nope - we define it outside the class because that allows lhs or rhs to be of scalar type
 
-  // comparison operators (== and < are required for division with std::complex<rsFloat64x2>):
+  /** Comparison for equality. For two vectors to be considered equal, both scalar elements must be 
+  equal. */
   inline bool operator==(const rsFloat64x2& b) 
   { 
     double* A = asArray();
@@ -143,7 +144,12 @@ public:
     return (A[0] == B[0]) && (A[1] == B[1]);
   }
 
-  // this definition is a bit arbitrary - we need to figure out, if complex division works
+  /** Comparison for "less-than". For a vector to be considered less than another vector, both 
+  scalar elements must be less than the corresponding elements in the other vector. This 
+  definition is a bit arbitrary, but it makes sense for convergence tests in numerical algorithms 
+  (such as root finding) when the algorithm checks, whether a variable is within a given tolerance. 
+  These checks will evaluate to true only when both elements are with the tolerance, which is 
+  typically what is desired. */
   inline bool operator<(const rsFloat64x2& b) 
   { 
     double* A = asArray();
@@ -190,9 +196,6 @@ inline rsFloat64x2 operator+(const rsFloat64x2& a) { return a; }                
 inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a; } // unary minus
 // the binary operators with a scalar for the left or right hand side do not have to be defined due 
 // to implicit conversions
-
-
-
 
 // limiting functions::
 inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_min_pd(a, b); }
