@@ -14,10 +14,10 @@ rsBiquadCascade<TSig, TCoef>::rsBiquadCascade(int newMaxNumStages)
   b0 = new TCoef[maxNumStages];
   b1 = new TCoef[maxNumStages];
   b2 = new TCoef[maxNumStages];
-  x1 = new TCoef[maxNumStages];
-  x2 = new TCoef[maxNumStages];
-  y1 = new TCoef[maxNumStages];
-  y2 = new TCoef[maxNumStages];
+  x1 = new TSig[maxNumStages];
+  x2 = new TSig[maxNumStages];
+  y1 = new TSig[maxNumStages];
+  y2 = new TSig[maxNumStages];
 
   initBiquadCoeffs();        
   reset();                   

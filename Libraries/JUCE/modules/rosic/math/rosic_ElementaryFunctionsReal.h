@@ -66,7 +66,7 @@ static long double inverseFactorials[numInverseFactorials] =
 
 /** Inverse hyperbolic cosine. The argument must be >= 1, for the general case use the complex version acosh_c defined in
 rosic_ComplexFunctions.h */
-INLINE double acosh(double x);
+//INLINE double acosh(double x);
 
 /** Symmetrized inverse hyperbolic cosine. */
 INLINE double acoshs(double x);
@@ -232,7 +232,7 @@ INLINE double zeroFunction(double x);
 
 //===============================================================================================
 //implementation:
-
+/*
 INLINE double acosh(double x)
 {
   if(x >= 1)
@@ -243,6 +243,7 @@ INLINE double acosh(double x)
     return 0.0;
   }
 }
+*/
 
 INLINE double acoshs(double x)
 {

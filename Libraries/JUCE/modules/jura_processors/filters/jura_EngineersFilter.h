@@ -16,7 +16,7 @@ public:
   this AudioModule taking ownership (suitable, if the object already exists a smember of some 
   higher level dsp object). */
   EngineersFilterAudioModule(CriticalSection *newPlugInLock, 
-    rosic::rsEngineersFilterOld *sciFilterToWrap);
+    rosic::rsEngineersFilterStereo *sciFilterToWrap);
 
   /** Constructor to use ehen there's no existing rosic::EngineersFilter object to be wrapped. in 
   this case, we'll create one here and take over ownership  (i.e. will also delete it in our 
@@ -37,7 +37,8 @@ public:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
-      wrappedEngineersFilter->getSampleFrameDirect1(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+      wrappedEngineersFilter->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+      //wrappedEngineersFilter->getSampleFrameDirect1(&inOutBuffer[0][n], &inOutBuffer[1][n]);
   }
 
   virtual void reset() override
@@ -50,7 +51,8 @@ protected:
 
   void createParameters();
 
-  rosic::rsEngineersFilterOld *wrappedEngineersFilter;
+  rosic::rsEngineersFilterStereo *wrappedEngineersFilter;
+  //rosic::rsEngineersFilterOld *wrappedEngineersFilter;
   bool wrappedEngineersFilterIsOwned = false;
 
 
@@ -89,7 +91,7 @@ public:
   // setup:
 
   /** Passes a pointer the the actual rosic::EngineersFilter object which is to be edited. */
-  virtual void setEngineersFilterToEdit(rosic::rsEngineersFilterOld* newEngineersFilterToEdit);
+  virtual void setEngineersFilterToEdit(rosic::rsEngineersFilterStereo* newEngineersFilterToEdit);
 
   // functions to assign the parameters, we observe (in order to update the plot) and possibly 
   // later also to manipulated them:
@@ -153,7 +155,7 @@ protected:
     XmlElement *targetSVG = NULL);
 
   /** Pointer to the actual rosic::EngineersFilter object which is being edited. */
-  rosic::rsEngineersFilterOld* sciFilterToEdit;
+  rosic::rsEngineersFilterStereo* sciFilterToEdit;
 
   // the parameters which wil cause re-plotting and therefore must be listened to:
   //Parameter *lowFreqParameter, *lowSlopeParameter, *highFreqParameter, *highSlopeParameter;

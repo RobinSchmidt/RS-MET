@@ -35,15 +35,17 @@ public:
   /** This is an enumeration of the available approximation methods. */
   enum approximationMethods
   {
-    BUTTERWORTH = 1,   ///< maximally flat at DC
+    //BUTTERWORTH = 1,   ///< maximally flat at DC
+    BUTTERWORTH = 0,   ///< maximally flat at DC
     CHEBYCHEV,         ///< equiripple in passband, monotonic in stopband
     INVERSE_CHEBYCHEV, ///< equiripple in stopband, monotonic in passband
     ELLIPTIC,          ///< equiripple in passband and stopband, maximally steep transition
     BESSEL,            ///< approximates linear phase
     PAPOULIS,          ///< maximizes steepness at cutoff (selectivity) under constraint of monotonicity
-    GAUSSIAN,          ///< smallest timelength*bandwidth product, good time response (no overshoot?)
     HALPERN,           ///< minimizes ratio of bandwidths at specified magnitudes (shaping factor) under constraint of monotonicity
                        ///< ...less steep at cutoff but steeper in stopband than Papoulis
+    GAUSSIAN,          ///< smallest timelength*bandwidth product, good time response (no overshoot?)
+
     NUM_APPROXIMATION_METHODS
   };
   // re-order: COINCINDENT_POLE, GAUSS, BESSEL, BUTTERWORTH, PAPOULIS <-?-> HALPERN, CHEBY1 <-?-> 

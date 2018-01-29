@@ -1,7 +1,7 @@
 // construction/destruction:
 
 EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugInLock, 
-  rosic::rsEngineersFilterOld *sciFilterToWrap)
+  rosic::rsEngineersFilterStereo *sciFilterToWrap)
  : AudioModule(newPlugInLock)
 {
   jassert(sciFilterToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -12,7 +12,7 @@ EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugI
 EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugInLock)
   : AudioModule(newPlugInLock)
 {
-  wrappedEngineersFilter = new rosic::rsEngineersFilterOld;
+  wrappedEngineersFilter = new rosic::rsEngineersFilterStereo;
   wrappedEngineersFilterIsOwned = true;
   init();
 }
@@ -41,7 +41,7 @@ void EngineersFilterAudioModule::createParameters()
   typedef MetaControlledParameter Param;
   Param* p;
 
-  typedef rosic::rsEngineersFilterOld EF;
+  typedef rosic::rsEngineersFilterStereo EF;
   EF* ef = wrappedEngineersFilter;
 
   //juce::Array<double> defaultValues;
@@ -66,8 +66,8 @@ void EngineersFilterAudioModule::createParameters()
   p->addStringValue("Elliptic");
   p->addStringValue("Bessel");
   p->addStringValue("Papoulis");
+  p->addStringValue("Halpern");
   //p->addStringValue("Gauss");
-  //p->addStringValue("Halpern");
   //p->addStringValue("Linkwitz/Riley");
   //p->addStringValue("Coincident Poles");
   addObservedParameter(p);
@@ -152,7 +152,7 @@ EngineersFilterPlotEditor::~EngineersFilterPlotEditor(void)
 // parameter-settings:
 
 void EngineersFilterPlotEditor::setEngineersFilterToEdit(
-  rosic::rsEngineersFilterOld* newEngineersFilterToEdit)
+  rosic::rsEngineersFilterStereo* newEngineersFilterToEdit)
 {
   sciFilterToEdit = newEngineersFilterToEdit;
 }
@@ -503,7 +503,7 @@ void EngineersFilterModuleEditor::updateWidgetVisibility()
   if( sciFilterModuleToEdit->wrappedEngineersFilter == NULL )
     return;
 
-  rosic::rsEngineersFilterOld* sf = sciFilterModuleToEdit->wrappedEngineersFilter;
+  rosic::rsEngineersFilterStereo* sf = sciFilterModuleToEdit->wrappedEngineersFilter;
   bandwidthSlider->setEnabled(sf->hasCurrentModeBandwidthParameter());
   gainSlider->setEnabled(     sf->hasCurrentModeGainParameter());
   rippleSlider->setEnabled(   sf->hasCurrentModeRippleParameter());
