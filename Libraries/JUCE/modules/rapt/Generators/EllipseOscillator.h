@@ -15,7 +15,13 @@ play with parameters:
 i think, it works as follows:
 -create x,y values on a circle (standard rotating phasor in the plane)
 -convert x,y to values on an arbitrary ellipse
--(-project onto the x- and y-axis (i.e. take the x- and y-value))...really? */
+-(-project onto the x- and y-axis (i.e. take the x- and y-value))...really? 
+
+the name is actually not really suitable - maybe rename to XoxosOscillator
+
+...and make an EllipseOscillator as well
+
+*/
 
 template<class T>
 class rsEllipseOscillator
@@ -25,11 +31,14 @@ public:
 
   inline void setA(T newA) { A = newA; }  // rename to setOffset
 
-  inline void setB(T newB) { B = newB; }  // rename to setRotation
+  //inline void setB(T newB) { B = newB; }  // rename to setRotation
 
   inline void setC(T newC) { C = newC; }  // rename to setScale
 
   inline void setOmega(T newOmega) { w = newOmega; }
+
+  inline void setRotationDegrees(T newRotation) { B = rsDegreeToRadiant(newRotation); }
+   // no - this is not a rotation...maybe phase-shift?
 
 
   inline void updatePhase()
@@ -57,8 +66,12 @@ public:
     T Ac = A + c;    // x += a -> shift x
     T Cs = C * s;    // y *= c -> scale y
 
+
     T scl = 1 / sqrt(Ac*Ac + Cs*Cs);  // normalizer
-    *x = scl*Ac*cB;  // rotate and
+    if(renorm != 1)
+      scl = pow(scl, renorm);
+
+    *x = scl*Ac*cB;  // phase(?) and
     *y = scl*Cs*sB;  // normalize
 
     updatePhase();
@@ -84,7 +97,9 @@ protected:
   // waveshape parameters:
   T A = 0; 
   T B = 0;
-  T C = 0;
+  T C = 1;
+
+  T renorm = 1;
 
   T mix = 0.5;
 };

@@ -38,7 +38,22 @@ public:
   }
 
 
+
+
   //setFrequencyScaleY, setFrequencyShiftY
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Audio Processing
+
+  inline void getSampleFrameStereo(double* left, double* right)
+  {
+    //*left = *right = amplitude * getSample(); return; // test
+
+    getSamplePair(left, right);
+    *left  *= amplitude;
+    *right *= amplitude;
+  }
 
 protected:
 
