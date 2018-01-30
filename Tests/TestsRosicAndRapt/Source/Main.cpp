@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();
+  //runAllUnitTests();
   //mathUnitTests();
   //filterUnitTests();
 
@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
   //bouncillator();
   //bouncillatorFormula();
   //rayBouncer();
-  //xoxosOsc();
+  xoxosOsc();
 
   // Graphics:
   //lineDrawing();
