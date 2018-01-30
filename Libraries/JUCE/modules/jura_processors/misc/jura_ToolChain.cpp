@@ -18,8 +18,9 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "MidiMonitor")   return new MidiMonitorAudioModule(  lock);
 
   // generators:
-  if(type == "Oscillator3D")   return new RotationOscillatorAudioModule(lock, metaMan, modMan);
-  if(type == "RayBouncer")     return new RayBouncerAudioModule(lock);
+  if(type == "EllipseOscillator") return new EllipseOscillatorAudioModule(lock);
+  if(type == "Oscillator3D")      return new RotationOscillatorAudioModule(lock, metaMan, modMan);
+  if(type == "RayBouncer")        return new RayBouncerAudioModule(lock);
   //if(type == "WaveOscillator") return new OscillatorStereoAudioModule(lock);
   //if(type == "FourOscSection") return new FourOscSectionAudioModule(lock);
 
@@ -106,8 +107,9 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
-  /*
+  
   node = new RTreeViewNode("Sources", -1, "Sources");
+  node->addChildNode(new RTreeViewNode("EllipseOscillator", i++));
   node->addChildNode(new RTreeViewNode("Oscillator3D",   i++));
   node->addChildNode(new RTreeViewNode("RayBouncer",     i++));
   node->addChildNode(new RTreeViewNode("WaveOscillator",  i++));  // 
@@ -116,7 +118,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //node->addChildNode(new RTreeViewNode("SamplePlayer",    i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
-  */
+ 
 
   node = new RTreeViewNode("Filters", -1, "Filters");
   node->addChildNode(new RTreeViewNode("Ladder",          i++));
