@@ -87,3 +87,14 @@ void AudioModuleFactory::registerModuleType(AudioModule* (*creatorFunction)(),
   else
     moduleInfos.push_back(AudioModuleInfo(typeName, creatorFunction, category));
 }
+
+AudioModule* AudioModuleFactory::createModule(const juce::String& type)
+{
+  for(size_t i = 0; i < moduleInfos.size(); i++)
+  {
+    if(moduleInfos[i].type == type)
+      return moduleInfos[i].createInstance();
+  }
+  jassertfalse;    // unknown module type requested
+  return nullptr;
+}

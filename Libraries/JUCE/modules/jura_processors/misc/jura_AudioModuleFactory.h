@@ -2,6 +2,21 @@
 #define jura_AudioModuleFactory_h
 
 
+/** Structure to represent properties of an AudioModule. Contains also a factory function to 
+create an instance of the module. */
+
+struct JUCE_API AudioModuleInfo
+{
+  AudioModuleInfo(const juce::String& typeName, AudioModule* (*creatorFunction)(),
+    const juce::String& categoryName)
+    : type(typeName), createInstance(creatorFunction), category(categoryName)
+  {}
+  juce::String type;
+  juce::String category;
+  AudioModule* (*createInstance)() = nullptr;
+};
+
+//=================================================================================================
 
 /** A class for creating objects of various subclasses of AudioModule based on a type string. It 
 can also translate back from a given subclass-pointer to the corresponding string and create a list
@@ -42,25 +57,19 @@ public:
   void registerModuleType(AudioModule* (*creatorFunction)(), 
     const juce::String& category = String::empty, const juce::String& typeName = String::empty); 
 
-  /** Returns an array of strings with all the available types of AudioModules that can be 
-  created. */
-  //static StringArray getAvailableModuleTypes();
+  /** Tries to find a module of given type in our registry of AudioModuleInfos and if it finds it,
+  it will return an instance of a module of that type. If the type is not found, it returns a 
+  nullptr. */
+  AudioModule* createModule(const juce::String& type);
 
-  CriticalSection* lock;
+  /** Returns a reference to our array of AudioModuleInfos. This is inquired by widgets that are
+  used to select a module. */
+  const std::vector<AudioModuleInfo>& getRegisteredModuleInfos() const { return moduleInfos; }
+
 
 protected:
 
-  /** Structure to represent properties of an AudioModule. */
-  struct JUCE_API AudioModuleInfo
-  {
-    AudioModuleInfo(const juce::String& typeName, AudioModule* (*creatorFunction)(),
-      const juce::String& categoryName)
-      : type(typeName), createInstance(creatorFunction), category(categoryName)
-    {}
-    juce::String type;
-    juce::String category;
-    AudioModule* (*createInstance)();
-  };
+  CriticalSection* lock;
 
   /** Our vector of module-infos (todo: maybe use a tree (by category)) */
   std::vector<AudioModuleInfo> moduleInfos;
