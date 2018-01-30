@@ -30,10 +30,17 @@ public:
   */
   static AudioModule* createModule(const juce::String& type, CriticalSection* lockToUse, 
     ModulationManager* modManager = nullptr, MetaParameterManager* metaManager = nullptr);
+  // deprecated
 
 
-  void registerModuleType(const juce::String& typeName, AudioModule* (*creatorFunction)(), 
-    const juce::String& category = String::empty);
+  /** Registers an AudioModule. You must pass a function that creates and returns the module and 
+  you can specify a category (this may be used in a tree-view selector widget). You may also 
+  optionally pass the type-name of the module. If you pass nothing, a module will be instatiated 
+  and getModuleTypeName will be called and the returned value will be used. If you do pass a 
+  string, it must match whatever getModuleTypeName returns (this is for optimization, to avoid
+  instantiating all modules just for the purpose of registering). */
+  void registerModuleType(AudioModule* (*creatorFunction)(), 
+    const juce::String& category = String::empty, const juce::String& typeName = String::empty); 
 
   /** Returns an array of strings with all the available types of AudioModules that can be 
   created. */

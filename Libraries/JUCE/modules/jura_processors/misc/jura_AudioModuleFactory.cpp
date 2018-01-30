@@ -68,8 +68,8 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   return new DummyModule(lock); // to avoid a crash when a user messes up an xml file
 }
 
-void AudioModuleFactory::registerModuleType(const juce::String& typeName, 
-  AudioModule* (*creatorFunction)(), const juce::String& category)
+void AudioModuleFactory::registerModuleType(AudioModule* (*creatorFunction)(), 
+  const juce::String& category, const juce::String& typeName)
 {
 #ifdef JUCE_DEBUG
   //AudioModule* m = creatorFunction(lock);
@@ -78,5 +78,12 @@ void AudioModuleFactory::registerModuleType(const juce::String& typeName,
   delete m;                                    // must match the module's type name (for recall)
 #endif
 
-  moduleInfos.push_back(AudioModuleInfo(typeName, creatorFunction, category));
+  if(typeName == String::empty)
+  {
+    AudioModule* m = creatorFunction();
+    moduleInfos.push_back(AudioModuleInfo(m->getModuleTypeName(), creatorFunction, category));
+    delete m; 
+  }
+  else
+    moduleInfos.push_back(AudioModuleInfo(typeName, creatorFunction, category));
 }
