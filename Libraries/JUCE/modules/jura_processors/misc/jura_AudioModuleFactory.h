@@ -1,6 +1,8 @@
 #ifndef jura_AudioModuleFactory_h
 #define jura_AudioModuleFactory_h
 
+
+
 /** A class for creating objects of various subclasses of AudioModule based on a type string. It 
 can also translate back from a given subclass-pointer to the corresponding string and create a list
 of all available types. 
@@ -38,6 +40,23 @@ public:
   //static StringArray getAvailableModuleTypes();
 
   CriticalSection* lock;
+
+protected:
+
+  /** Structure to represent properties of an AudioModule. */
+  struct JUCE_API AudioModuleInfo
+  {
+    AudioModuleInfo(const juce::String& typeName, AudioModule* (*creatorFunction)(),
+      const juce::String& categoryName)
+      : type(typeName), createInstance(creatorFunction), category(categoryName)
+    {}
+    juce::String type;
+    juce::String category;
+    AudioModule* (*createInstance)();
+  };
+
+  /** Our vector of module-infos (todo: maybe use a tree (by category)) */
+  std::vector<AudioModuleInfo> moduleInfos;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleFactory)
 };
