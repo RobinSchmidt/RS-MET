@@ -2170,6 +2170,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleFactory.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleSelector.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_ChannelMatrix2x2.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4577,6 +4580,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Straightliner.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Workhorse.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleFactory.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleSelector.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_ChannelMatrix2x2.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_DebugAudioModule.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_DspWorkbench.h"/>
