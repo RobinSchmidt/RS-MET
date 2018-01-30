@@ -534,7 +534,7 @@ void ToolChainEditor::updateSelectorArray()
 
   // add required selectors:
   while(numModules > numSelectors){
-    s = new AudioModuleSelector();
+    s = new AudioModuleSelector(&chain->moduleFactory);
     s->setInterceptsMouseClicks(false, false); // we handle them 1st and possibly pass them through
     s->selectItemFromText(chain->modules[numSelectors]->getModuleTypeName(), false);
     s->registerComboBoxObserver(this);

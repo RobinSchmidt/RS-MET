@@ -18,7 +18,7 @@ class JUCE_API AudioModuleFactory
 
 public:
 
-  AudioModuleFactory() {}
+  AudioModuleFactory() {} // pass the lock to use
 
   /** Creates and returns a pointer to an object of some subclass of AudioModule. Which subclass it 
   is, is determined by the passed String parameter. You must also pass the mutex lock object that 
@@ -29,9 +29,15 @@ public:
   static AudioModule* createModule(const juce::String& type, CriticalSection* lockToUse, 
     ModulationManager* modManager = nullptr, MetaParameterManager* metaManager = nullptr);
 
+
+  void registerModuleType(const juce::String& typeName, AudioModule* (*creatorFunction)(), 
+    const juce::String& category = String::empty);
+
   /** Returns an array of strings with all the available types of AudioModules that can be 
   created. */
   //static StringArray getAvailableModuleTypes();
+
+  CriticalSection* lock;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleFactory)
 };

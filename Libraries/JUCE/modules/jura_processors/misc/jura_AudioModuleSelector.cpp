@@ -1,6 +1,20 @@
-AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
+AudioModuleSelector::AudioModuleSelector(AudioModuleFactory* factoryToUse) : RComboBox("ModuleSelector")
 {
-  // populate the tree:
+  setAudioModuleFactory(factoryToUse);
+
+
+  //setSize(300, 300); // has no effect
+}
+
+void AudioModuleSelector::setAudioModuleFactory(AudioModuleFactory* newFactory)
+{
+  moduleFactory = newFactory;
+
+  // todo: update contents of dropdown menu...
+  
+  
+  // populate the tree (preliminary - to do: use moduleFactory object to figure out the available 
+  // modules (and their creation functions, categories, etc.)
 
   RTreeViewNode *node;
   int i = 1;           //  the index is actually not used, but we need it as dummy
@@ -87,14 +101,6 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
     popUpMenu->addTreeNodeItem(node);
   }
 
-  //setSize(300, 300); // has no effect
-}
-
-void AudioModuleSelector::setAudioModuleFactory(AudioModuleFactory* newFactory)
-{
-  moduleFactory = newFactory;
-
-  // todo: update contents of dropdown menu....
 }
 
 // The current release version includes:

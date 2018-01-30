@@ -8,7 +8,7 @@ class JUCE_API AudioModuleSelector : public RComboBox
 
 public:
 
-  AudioModuleSelector();
+  AudioModuleSelector(AudioModuleFactory* factoryToUse);
     // maybe let a factory to be passed to the constructor
 
   /** Sets the AudioModuleFactor object to be used. That determines the content of the dropdown 
