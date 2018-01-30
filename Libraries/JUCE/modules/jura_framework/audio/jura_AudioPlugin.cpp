@@ -24,7 +24,7 @@ AudioPlugin::AudioPlugin(int numParameters)
                                     .withOutput("Output", AudioChannelSet::stereo()))
 {
   ScopedLock sl(plugInLock);
-  processingPrecision = doublePrecision; // makes host call the double-precision process function
+  //setProcessingPrecision(doublePrecision); // nope - this is supposed to be called by th host
   initialiseJuce_GUI();  // why do we need this?
   //configureInsAndOuts();
   smoothingManager.setMutexLock(&plugInLock);
