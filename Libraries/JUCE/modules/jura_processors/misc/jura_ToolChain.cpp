@@ -94,7 +94,7 @@ bool ToolChain::isModuleOfType(int index, const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
   jassert(index >= 0 && index < size(modules)); // index out of range
-  return type == AudioModuleFactory::getModuleType(modules[index]);
+  return type == modules[index]->getModuleTypeName();
 }
 
 AudioModule* ToolChain::getModuleAt(int index)
@@ -288,7 +288,7 @@ XmlElement* ToolChain::getStateAsXml(const juce::String& stateName, bool markAsC
   XmlElement *xml = AudioModule::getStateAsXml(stateName, markAsClean); 
   xml->setAttribute("ActiveSlot", activeSlot+1);
   for(int i = 0; i < size(modules); i++){
-    juce::String typeString = AudioModuleFactory::getModuleType(modules[i]);
+    juce::String typeString = modules[i]->getModuleTypeName();
     XmlElement *child = new XmlElement("Slot");
     child->setAttribute("Type", typeString);
     //child->setAttribute("Bypass", isSlotBypassed(i)); // add later
@@ -418,7 +418,7 @@ void ToolChain::assignModulationSourceName(ModulationSource* source)
   {
     int slotIndex = find(modules, am);
     jassert(slotIndex >= 0); // something is wrong - the source is not in the modules array
-    name = "Slot" + String(slotIndex+1) + String("-") + AudioModuleFactory::getModuleType(am);
+    name = "Slot" + String(slotIndex+1) + String("-") + am->getModuleTypeName();
     source->setModulationSourceName(name);
   }
 }
@@ -536,8 +536,7 @@ void ToolChainEditor::updateSelectorArray()
   while(numModules > numSelectors){
     s = new AudioModuleSelector();
     s->setInterceptsMouseClicks(false, false); // we handle them 1st and possibly pass them through
-    s->selectItemFromText(
-      AudioModuleFactory::getModuleType(chain->modules[numSelectors]), false);
+    s->selectItemFromText(chain->modules[numSelectors]->getModuleTypeName(), false);
     s->registerComboBoxObserver(this);
     s->setDescriptionField(infoField); // somehow, this doesn't work
     addWidget(s);
@@ -552,7 +551,7 @@ void ToolChainEditor::updateSelectorArray()
 
   // let selectors reflect the selected module type and selector for highlight active slot
   for(int i = 0; i < numSelectors; i++)
-    selectors[i]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[i]), false);
+    selectors[i]->selectItemFromText(chain->modules[i]->getModuleTypeName(), false);
   updateActiveSelector();
 }
 

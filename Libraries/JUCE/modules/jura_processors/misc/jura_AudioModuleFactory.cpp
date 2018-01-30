@@ -67,10 +67,3 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
                   //return nullptr;
   return new DummyModule(lock); // to avoid a crash when a user messes up an xml file
 }
-
-juce::String AudioModuleFactory::getModuleType(AudioModule *m)
-{
-  return m->getModuleTypeName();
-  // replaces code below, needs testing, then old code can be deleted
-  // ...actually, this function itself is superfluous now
-}

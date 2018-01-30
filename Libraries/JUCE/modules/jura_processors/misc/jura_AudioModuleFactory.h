@@ -27,10 +27,6 @@ public:
   static AudioModule* createModule(const juce::String& type, CriticalSection* lockToUse, 
     ModulationManager* modManager = nullptr, MetaParameterManager* metaManager = nullptr);
 
-  /** Given a pointer to an object of some subclass of AudioModule, this function returns the
-  string that is used to identify the subclass. */
-  static juce::String getModuleType(AudioModule *module);
-
   /** Returns an array of strings with all the available types of AudioModules that can be 
   created. */
   //static StringArray getAvailableModuleTypes();
