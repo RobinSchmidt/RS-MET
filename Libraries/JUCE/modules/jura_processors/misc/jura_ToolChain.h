@@ -1,35 +1,6 @@
 #ifndef jura_ToolChain_h
 #define jura_ToolChain_h
   
-/** A do-nothing dummy AudioModule to be used as placeholder. 
-todo:
--rename to DummyAudioModule
--maybe move somewhere else in the library
--maybe override create editor to create a special kind of editor that says something like
- "Select Module - Editor will appear here"
-*/
-
-class JUCE_API DummyModule : public jura::AudioModule
-{
-public:
-  DummyModule(CriticalSection *lockToUse) : AudioModule(lockToUse) 
-  {
-    setModuleTypeName("None");
-  }
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
-  {
-    //// for debug:
-    //std::vector<double> left(numSamples), right(numSamples);
-    //for(int n = 0; n < numSamples; n++)
-    //{
-    //  left[n]  = inOutBuffer[0][n];
-    //  right[n] = inOutBuffer[1][n];
-    //}
-    //int dummy = 0;
-  }
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyModule)
-};
-
 //=================================================================================================
 
 class JUCE_API ToolChain; // forward declaration
