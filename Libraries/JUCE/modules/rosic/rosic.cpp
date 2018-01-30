@@ -418,6 +418,7 @@ template class RAPT::rsMultiBandSplitter<double, double>;
                                                       // and VectorMixer
 
 #include "unfinished/rosic_Polyphony.cpp"
+#include "unfinished/rosic_EllipseOscillator.cpp"
 #include "unfinished/rosic_QuadSource.cpp"
 #include "unfinished/rosic_DualFilter.cpp"
 #include "unfinished/rosic_NewSynth.cpp"

@@ -390,6 +390,7 @@
 
 // unfinished:
 #include "unfinished/rosic_Polyphony.h"
+#include "unfinished/rosic_EllipseOscillator.h"
 #include "unfinished/rosic_QuadSource.h"
 #include "unfinished/rosic_DualFilter.h"
 #include "unfinished/rosic_NewSynth.h"

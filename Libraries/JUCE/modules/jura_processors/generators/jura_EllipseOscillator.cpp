@@ -3,7 +3,7 @@ EllipseOscillatorAudioModule::EllipseOscillatorAudioModule(CriticalSection *lock
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
-  setModuleTypeName("EllipseOsc");
+  setModuleTypeName("EllipseOscillator");
   createParameters();
 }
 
@@ -17,14 +17,26 @@ void EllipseOscillatorAudioModule::createParameters()
   typedef ModulatableParameter Param;
   Param* p;
 
-  // Scale, Shift, Rotate, Renormalize, Mix, FreqScaleY, FreqShiftY
+  p = new Param("Tune", -60.0, +60.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<EO>(eo, &EO::setDetune);
 
-  p = new Param("Scale", 0.0, 2.0, 0.0, Parameter::LINEAR);
+  p = new Param("Shift", 0.0, 1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<EO>(eo, &EO::setA);
+
+  p = new Param("Scale", 0.0, 1.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<EO>(eo, &EO::setC);
 
-}
+  p = new Param("Rotation", -180.0, +180.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  //p->setValueChangeCallback<EO>(eo, &EO::setRotation);
 
+
+
+  // Renormalize, Mix, FreqScaleY, FreqShiftY
+}
 
 void EllipseOscillatorAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
@@ -38,7 +50,7 @@ void EllipseOscillatorAudioModule::processStereoFrame(double *left, double *righ
 
 void EllipseOscillatorAudioModule::setSampleRate(double newSampleRate)
 {
-  //oscCore.setSampleRate(newSampleRate);
+  oscCore.setSampleRate(newSampleRate);
 }
 
 void EllipseOscillatorAudioModule::reset()
@@ -48,6 +60,6 @@ void EllipseOscillatorAudioModule::reset()
 
 void EllipseOscillatorAudioModule::noteOn(int noteNumber, int velocity)
 {
-  //oscCore.setFrequency(pitchToFreq(noteNumber));
+  oscCore.setFrequency(pitchToFreq(noteNumber)); // preliminary - use tuning table
   oscCore.reset();
 }
