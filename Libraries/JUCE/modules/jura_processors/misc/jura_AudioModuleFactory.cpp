@@ -68,7 +68,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   return new DummyModule(lock); // to avoid a crash when a user messes up an xml file
 }
 
-void AudioModuleFactory::registerModuleType(AudioModule* (*creatorFunction)(), 
+void AudioModuleFactory::registerModuleType(std::function<AudioModule*(void)> creatorFunction, 
   const juce::String& category, const juce::String& typeName)
 {
 #ifdef JUCE_DEBUG
