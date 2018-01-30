@@ -18,6 +18,8 @@ class JUCE_API AudioModuleFactory
 
 public:
 
+  AudioModuleFactory() {}
+
   /** Creates and returns a pointer to an object of some subclass of AudioModule. Which subclass it 
   is, is determined by the passed String parameter. You must also pass the mutex lock object that 
   should be used by the AudioModule. You may also optionally pass a ModulationManager object that 

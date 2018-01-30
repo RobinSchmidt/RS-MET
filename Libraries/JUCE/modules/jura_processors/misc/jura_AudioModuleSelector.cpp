@@ -90,6 +90,13 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //setSize(300, 300); // has no effect
 }
 
+void AudioModuleSelector::setAudioModuleFactory(AudioModuleFactory* newFactory)
+{
+  moduleFactory = newFactory;
+
+  // todo: update contents of dropdown menu....
+}
+
 // The current release version includes:
 // Instruments:
 //   AcidDevil

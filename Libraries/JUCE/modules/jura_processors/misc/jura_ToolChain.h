@@ -201,6 +201,8 @@ protected:
   ModulationManager modManager;
   //rsSmoothingManager smoothingManager;
 
+  AudioModuleFactory moduleFactory;
+
   //std::vector<AudioModule*> modulators;
 
   int activeSlot = 0;            // slot for which the editor is currently shown 
