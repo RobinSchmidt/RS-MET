@@ -136,6 +136,7 @@ namespace jura
 #include "misc/jura_ChannelMatrix2x2.h"
 #include "misc/jura_DspWorkbench.h"
 #include "misc/jura_DebugAudioModule.h"
+#include "misc/jura_AudioModuleFactory.h"
 #include "misc/jura_ToolChain.h"
 
 }
