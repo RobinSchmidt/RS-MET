@@ -97,6 +97,9 @@ template class RAPT::rsPhasorStateMapper<double>;
 template class RAPT::rsRayBouncer<double>;
 template class RAPT::rsRayBouncerDriver<double>;
 template class RAPT::rsLissajousOscillator3D<double>;
+template class RAPT::rsEllipseOscillator<double>;
+
+
 
 template class RAPT::rsMultiBandSplitter<double, double>;
 

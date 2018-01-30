@@ -23,45 +23,70 @@ class rsEllipseOscillator
 
 public:
 
-  inline void setA(T newA) { a = newA; }  // rename to setOffset
+  inline void setA(T newA) { A = newA; }  // rename to setOffset
 
-  inline void setB(T newB) { b = newB; }  // rename to setRotation
+  inline void setB(T newB) { B = newB; }  // rename to setRotation
 
-  inline void setC(T newC) { c = newC; }  // rename to setScale
+  inline void setC(T newC) { C = newC; }  // rename to setScale
+
+  inline void setOmega(T newOmega) { w = newOmega; }
 
 
+  inline void updatePhase()
+  {
+    p += w;
+    while(p > 2*PI)
+      p -= 2*PI;
 
+    // maybe do also a wraparound at 0 -> allow negative frequencies
+  }
+
+  // maybe have a function that returns x and y separately - maybe that's useful as stero signal?
+  // if not, it is certainly helpful to figure out what the osc is doing - and then we can do 
+  // mid/side (re)mixing
+
+  inline void getSamplePair(T* x, T* y)
+  {
+    T c  = cos(p);  // x
+    T s  = sin(p);  // y
+
+    // precompute these:
+    T sB = sin(B);
+    T cB = cos(B);
+
+    T Ac = A + c;    // x += a -> shift x
+    T Cs = C * s;    // y *= c -> scale y
+
+    T scl = 1 / sqrt(Ac*Ac + Cs*Cs);  // normalizer
+    *x = scl*Ac*cB;  // rotate and
+    *y = scl*Cs*sB;  // normalize
+
+    updatePhase();
+  }
 
   inline T getSample()
   {
-    s  = sin(p);  // x
-    c  = cos(p);  // y
-
-    // precompute these:
-    T sb = sin(b);
-    T cb = cos(b);
-
-    T ac = a + c;    // x += a -> shift y
-    T cs = c * s;    // y *= c -> scale x
-
-    T a = 1 / sqrt(ac*ac + cs*cs);  // normalizer
-    T x = a*ac*cb;  // rotate and
-    T y = a*cs*sb;  // normalize
-
-    return x + y;   // use mix*x + (1-mix)*y
+    T x, y;
+    getSamplePair(&x, &y);
+    return 2*((1-mix)*x + mix*y); // precompute coeffs 2*(1-mix), 2*mix
+    //return x + y;   // use mix*x + (1-mix)*y
   }
+
+  inline void reset() { p = startPhase; }
 
 protected:
 
-  T p = 0;   // phase
-  T w = 0;   // normalied radian frequency
+  T startPhase = 0;  
+  T p = 0;   // current phase
+  T w = 0;   // normalized radian frequency
+  // have independent phases and frequencies for x and y
 
   // waveshape parameters:
-  T a = 0; 
-  T b = 0;
-  T c = 0;
+  T A = 0; 
+  T B = 0;
+  T C = 0;
 
-
+  T mix = 0.5;
 };
 
 #endif

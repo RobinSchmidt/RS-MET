@@ -268,15 +268,28 @@ void xoxosOsc()
   float A = 0.8f;              // -1..+1,      Upper/Lower Bias (?)
   float B = 0.5f;              // -PI..+PI     Left/Right Bias (?)
   float C = 0.5f;              // -inf..+inf   Upper/Lower Pinch (?)
+  float w = float(2*PI/T);
+
+  rosic::rsEllipseOscillator osc;
+  osc.setA(A);
+  osc.setB(B);
+  osc.setC(C);
+  osc.setOmega(w);
 
   // generate signals:
   float x[N], y[N], sum[N];
-  float w = float(2*PI/T);
   float sB = sin(B);
   float cB = cos(B);
   float s, c, Ac, Cs, a;
   for(int n = 0; n < N; n++)
   {
+    double xt, yt;
+    osc.getSamplePair(&xt, &yt);
+    x[n] = (float) xt;
+    y[n] = (float) yt;
+    sum[n] = x[n] + y[n];
+
+    /*
     s  = sin(w*n);
     c  = cos(w*n);
     Ac = A + c;
@@ -285,6 +298,7 @@ void xoxosOsc()
     x[n]   = a*Ac*cB;
     y[n]   = a*Cs*sB;
     sum[n] = x[n] + y[n]; // maybe it could be further flexibilized by taking a weighted sum?
+    */
   }
 
   // plot outputs:

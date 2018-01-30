@@ -5,6 +5,12 @@ namespace rosic
 {
 
 
+class rsEllipseOscillator : public RAPT::rsEllipseOscillator<double>
+{
+  // do the polyphony stuff here
+};
+
+
 class rsQuadSource
 {
 
