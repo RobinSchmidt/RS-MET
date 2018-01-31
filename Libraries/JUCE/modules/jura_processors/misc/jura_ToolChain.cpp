@@ -489,14 +489,39 @@ void ToolChain::populateModuleFactory()
   f.registerModuleType([](CS cs)->AM { return new EngineersFilterAudioModule(cs); }, s, "EngineersFilter");
   //f.registerModuleType([](CS cs)->AM { return new CrossOverAudioModule(cs);       }, s, "CrossOver");
 
+  s = "Dynamics";
+  f.registerModuleType([](CS cs)->AM { return new LimiterAudioModule(cs);   }, s, "Limiter");
+  //f.registerModuleType([](CS cs)->AM { return new MultiCompAudioModule(cs); }, s, "MultiComp");
 
-
+  s = "Effects";
+  f.registerModuleType([](CS cs)->AM { return new FuncShaperAudioModule(cs);   }, s, "FuncShaper");
+  //f.registerModuleType([](CS cs)->AM { return new NodeShaperAudioModule(cs);   }, s, "NodeShaper");
+  //f.registerModuleType([](CS cs)->AM { return new AlgoVerbAudioModule(cs);     }, s, "AlgoVerb");
+  f.registerModuleType([](CS cs)->AM { return new EchoLabAudioModule(cs);      }, s, "EchoLab");
+  //f.registerModuleType([](CS cs)->AM { return new PingPongEchoAudioModule(cs); }, s, "PingPongEcho");
+  f.registerModuleType([](CS cs)->AM { return new StereoDelayAudioModule(cs);  }, s, "StereoDelay");
+  //f.registerModuleType([](CS cs)->AM { return new PitchShifterAudioModule(cs); }, s, "PitchShifter");
+  f.registerModuleType([](CS cs)->AM { return new QuadrifexAudioModule(cs);    }, s, "Quadrifex");
+  //f.registerModuleType([](CS cs)->AM { return new DspWorkbenchAudioModule(cs); }, s, "DspWorkbench");
 
   s = "Analysis";
   f.registerModuleType([](CS cs)->AM { return new PhaseScope(cs); },               s, "Scope");
   f.registerModuleType([](CS cs)->AM { return new MultiAnalyzerAudioModule(cs); }, s, "MultiAnalyzer");
   f.registerModuleType([](CS cs)->AM { return new TrackMeterAudioModule(cs); },    s, "TrackMeter");
   f.registerModuleType([](CS cs)->AM { return new MidiMonitorAudioModule(cs); },   s, "MidiMonitor");
+
+  s = "Instruments";
+  f.registerModuleType([](CS cs)->AM { return new AciDevilAudioModule(cs);      }, s, "AcidDevil");
+  f.registerModuleType([](CS cs)->AM { return new StraightlinerAudioModule(cs); }, s, "Straightliner");
+  f.registerModuleType([](CS cs)->AM { return new NewSynthAudioModule(cs);      }, s, "NewSynth");
+  //f.registerModuleType([](CS cs)->AM { return new MagicCarpetAudioModule(cs);   }, s, "MagicCarpet");
+  //f.registerModuleType([](CS cs)->AM { return new SimpleSamplerAudioModule(cs); }, s, "SimpleSampler");
+  //f.registerModuleType([](CS cs)->AM { return new KeyShotAudioModule(cs);       }, s, "KeyShot");
+  //f.registerModuleType([](CS cs)->AM { return new QuadrigaAudioModule(cs);      }, s, "Quadriga");
+  //f.registerModuleType([](CS cs)->AM { return new WorkhorseAudioModule(cs);     }, s, "Workhorse");
+#ifdef _MSC_VER
+  //f.registerModuleType([](CS cs)->AM { return new LibertyAudioModule(cs);       }, s, "Liberty");
+#endif
 }
 
 //=================================================================================================
