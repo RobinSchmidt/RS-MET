@@ -13,5 +13,7 @@ void AudioModuleCreator::populateFactoryForToolChain(AudioModuleFactory* f, Crit
   f->registerModuleType([](CS cs)->AM { return new TrackMeterAudioModule(cs); },    s, "TrackMeter");
   f->registerModuleType([](CS cs)->AM { return new MidiMonitorAudioModule(cs); },   s, "MidiMonitor");
 
+  // maybe this can be made a member of ToolChain ...populateModuleFactory
+
 
 }

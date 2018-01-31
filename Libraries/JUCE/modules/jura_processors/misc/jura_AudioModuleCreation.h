@@ -41,6 +41,7 @@ class JUCE_API AudioModuleCreator
 
 public:
 
+  /*
   static DummyModule*      createDummyModule(CriticalSection* lock) { return new DummyModule(lock); }
   static DebugAudioModule* createDebugModule(CriticalSection* lock) { return new DebugAudioModule(lock); }
 
@@ -50,6 +51,7 @@ public:
   static TrackMeterAudioModule*    createTrackMeter(CriticalSection* lock)    { return new TrackMeterAudioModule(lock); }
   static MidiMonitorAudioModule*   createMidiMonitor(CriticalSection* lock)   { return new MidiMonitorAudioModule(lock); }
   // hmm...maybe use std::function and lambda functions
+  */
 
 
 

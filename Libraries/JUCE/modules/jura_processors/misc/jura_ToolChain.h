@@ -164,6 +164,9 @@ protected:
   /** Just some temporary throwaway code to figure out what is going wrong with the mod-system in
   Elan's SpiralGenerator. */
   void createDebugModSourcesAndTargets();
+
+  /** Populates our AudioModuleFactory with the modules that can be plugged in. */
+  void populateModuleFactory();
                      
 
   std::vector<AudioModule*> modules;
