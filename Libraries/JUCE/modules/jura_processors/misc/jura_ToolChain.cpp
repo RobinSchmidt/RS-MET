@@ -475,6 +475,23 @@ void ToolChain::populateModuleFactory()
   f.registerModuleType([](CS cs)->AM { return new DummyModule(cs); },      s, "DummyModule");
   f.registerModuleType([](CS cs)->AM { return new DebugAudioModule(cs); }, s, "DebugAudioModule");
 
+  s = "Sources";
+  f.registerModuleType([](CS cs)->AM { return new EllipseOscillatorAudioModule(cs);  }, s, "EllipseOscillator");
+  f.registerModuleType([](CS cs)->AM { return new RotationOscillatorAudioModule(cs); }, s, "Oscillator3D");
+  f.registerModuleType([](CS cs)->AM { return new RayBouncerAudioModule(cs);         }, s, "RayBouncer");
+  //f.registerModuleType([](CS cs)->AM { return new OscillatorStereoAudioModule(cs);   }, s, "WaveOscillator");
+  //f.registerModuleType([](CS cs)->AM { return new FourOscSectionAudioModule(cs);     }, s, "FourOscSection");
+
+  s = "Filters";
+  f.registerModuleType([](CS cs)->AM { return new EqualizerAudioModule(cs);       }, s, "Equalizer");
+  f.registerModuleType([](CS cs)->AM { return new Ladder(cs);                     }, s, "Ladder");
+  //f.registerModuleType([](CS cs)->AM { return new PhasorFilter(cs);               }, s, "PhasorFilter");
+  f.registerModuleType([](CS cs)->AM { return new EngineersFilterAudioModule(cs); }, s, "EngineersFilter");
+  //f.registerModuleType([](CS cs)->AM { return new CrossOverAudioModule(cs);       }, s, "CrossOver");
+
+
+
+
   s = "Analysis";
   f.registerModuleType([](CS cs)->AM { return new PhaseScope(cs); },               s, "Scope");
   f.registerModuleType([](CS cs)->AM { return new MultiAnalyzerAudioModule(cs); }, s, "MultiAnalyzer");
