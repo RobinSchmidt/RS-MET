@@ -96,4 +96,5 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type)
   }
   jassertfalse;    // unknown module type requested
   return nullptr;
+  //return new DummyModule(lock); // maybe... to avoid a crash when a user messes up an xml file
 }

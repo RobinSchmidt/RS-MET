@@ -8,10 +8,27 @@ AudioModuleSelector::AudioModuleSelector(AudioModuleFactory* factoryToUse) : RCo
 
 void AudioModuleSelector::setAudioModuleFactory(AudioModuleFactory* newFactory)
 {
+  /*
+  // new - under construction:
   moduleFactory = newFactory;
+  RComboBox::clear();
+  RTreeViewNode *node;
+  const std::vector<AudioModuleInfo>& infos = moduleFactory->getRegisteredModuleInfos();
+  for(size_t i = 0; i < infos.size(); i++)
+  {
+    AudioModuleInfo info = infos[i];
 
-  // todo: update contents of dropdown menu...
-  
+
+    // preliminary - gives a flat list without categories:
+    node = new RTreeViewNode(info.type, int(i+1));
+    popUpMenu->addTreeNodeItem(node); 
+
+    int dummy = 0;
+  }
+  */
+
+
+  // old:
   
   // populate the tree (preliminary - to do: use moduleFactory object to figure out the available 
   // modules (and their creation functions, categories, etc.)

@@ -2,13 +2,14 @@
 ToolChain::ToolChain(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse) 
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse/*, &modManager*/) // passing modManager causes access violation (not yet constructed)?
-  , modManager(lockToUse) // maybe pass the metaManagerToUse to this constructor call
+  , modManager(lockToUse), moduleFactory(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("ToolChain");
   modManager.setMetaParameterManager(metaManagerToUse);
   setModulationManager(&modManager);
   //createDebugModSourcesAndTargets(); // for debugging the mod-system
+  populateModuleFactory();
   addEmptySlot();
 }
 
@@ -488,6 +489,9 @@ void ToolChain::populateModuleFactory()
   //f.registerModuleType([](CS cs)->AM { return new PhasorFilter(cs);               }, s, "PhasorFilter");
   f.registerModuleType([](CS cs)->AM { return new EngineersFilterAudioModule(cs); }, s, "EngineersFilter");
   //f.registerModuleType([](CS cs)->AM { return new CrossOverAudioModule(cs);       }, s, "CrossOver");
+
+  s = "Modulators";
+  f.registerModuleType([](CS cs)->AM { return new BreakpointModulatorAudioModule(cs); }, s, "BreakpointModulator");
 
   s = "Dynamics";
   f.registerModuleType([](CS cs)->AM { return new LimiterAudioModule(cs);   }, s, "Limiter");

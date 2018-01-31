@@ -36,7 +36,9 @@ class JUCE_API AudioModuleFactory
 
 public:
 
-  AudioModuleFactory() {} // pass the lock to use
+  /** Constructor. You must pass the CriticalSection object that will be passed on to the 
+  constructors of the AudioModule objects that we create here. */
+  AudioModuleFactory(CriticalSection *lockToUse) : lock(lockToUse) {} 
 
   /** Creates and returns a pointer to an object of some subclass of AudioModule. Which subclass it 
   is, is determined by the passed String parameter. You must also pass the mutex lock object that 
@@ -70,6 +72,7 @@ public:
 
 protected:
 
+  /** Mutex to be passed to the AudioModule constructors. */
   CriticalSection* lock;
 
   /** Our vector of module-infos (todo: maybe use a tree (by category)) */
