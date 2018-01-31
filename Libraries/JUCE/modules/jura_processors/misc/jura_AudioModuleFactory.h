@@ -7,13 +7,14 @@ create an instance of the module. */
 
 struct JUCE_API AudioModuleInfo
 {
-  AudioModuleInfo(const juce::String& typeName, std::function<AudioModule*(void)> creatorFunction,
+  AudioModuleInfo(const juce::String& typeName, 
+    std::function<AudioModule*(CriticalSection*)> creatorFunction, 
     const juce::String& categoryName)
     : type(typeName), createInstance(creatorFunction), category(categoryName)
   {}
   juce::String type;
   juce::String category;
-  std::function<AudioModule*(void)> createInstance;
+  std::function<AudioModule*(CriticalSection*)> createInstance;
 };
 
 //=================================================================================================
@@ -54,7 +55,7 @@ public:
   and getModuleTypeName will be called and the returned value will be used. If you do pass a 
   string, it must match whatever getModuleTypeName returns (this is for optimization, to avoid
   instantiating all modules just for the purpose of registering). */
-  void registerModuleType(std::function<AudioModule*(void)> creatorFunction, 
+  void registerModuleType(std::function<AudioModule*(CriticalSection*)> creatorFunction, 
     const juce::String& category = String::empty, const juce::String& typeName = String::empty); 
 
   /** Tries to find a module of given type in our registry of AudioModuleInfos and if it finds it,
