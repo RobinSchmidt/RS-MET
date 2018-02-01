@@ -46,8 +46,8 @@ public:
   will be used for AudioModules with modulatable parameters. 
   ToDo: pass an optional MetaParameterManager the same way as the ModulationManager is passed.
   */
-  static AudioModule* createModule(const juce::String& type, CriticalSection* lockToUse, 
-    ModulationManager* modManager = nullptr, MetaParameterManager* metaManager = nullptr);
+  //static AudioModule* createModule(const juce::String& type, CriticalSection* lockToUse, 
+  //  ModulationManager* modManager = nullptr, MetaParameterManager* metaManager = nullptr);
   // deprecated
 
 
@@ -62,7 +62,7 @@ public:
 
   /** Tries to find a module of given type in our registry of AudioModuleInfos and if it finds it,
   it will return an instance of a module of that type. If the type is not found, it returns a 
-  nullptr. */
+  "Bypass" module. */
   AudioModule* createModule(const juce::String& type);
 
   /** Returns a reference to our array of AudioModuleInfos. This is inquired by widgets that are

@@ -1,3 +1,4 @@
+/*
 void AudioModuleCreator::populateFactoryForToolChain(AudioModuleFactory* f, CriticalSection* cs)
 {
   typedef CriticalSection* CS;
@@ -17,3 +18,4 @@ void AudioModuleCreator::populateFactoryForToolChain(AudioModuleFactory* f, Crit
 
 
 }
+*/

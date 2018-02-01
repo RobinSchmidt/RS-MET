@@ -1,3 +1,25 @@
+class JUCE_API DummyModule : public jura::AudioModule
+{
+public:
+  DummyModule(CriticalSection *lockToUse) : AudioModule(lockToUse) 
+  {
+    setModuleTypeName("None");
+  }
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
+  {
+    //// for debug:
+    //std::vector<double> left(numSamples), right(numSamples);
+    //for(int n = 0; n < numSamples; n++)
+    //{
+    //  left[n]  = inOutBuffer[0][n];
+    //  right[n] = inOutBuffer[1][n];
+    //}
+    //int dummy = 0;
+  }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyModule)
+};
+
+//=================================================================================================
 
 ToolChain::ToolChain(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse) 
@@ -28,7 +50,8 @@ void ToolChain::addEmptySlot()
 bool ToolChain::addModule(const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
-  AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager); // todo: pass the metaParamManager too
+  //AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager); // todo: pass the metaParamManager too
+  AudioModule *m = moduleFactory.createModule(type); // maybe we need to set up the managers?
   if(m){
     addModule(m);
     return true; 
@@ -72,7 +95,8 @@ void ToolChain::replaceModule(int index, const juce::String& type)
   jassert(index >= 0 && index < size(modules)); // index out of range
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     AudioModule* oldModule = modules[index];
-    AudioModule* newModule = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
+    //AudioModule* newModule = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
+    AudioModule* newModule =  moduleFactory.createModule(type); // maybe we need to set up the managers?
     newModule->setModuleName("Slot" + String(index+1) + "-" + type);
 
     setupManagers(newModule);
@@ -354,7 +378,8 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
     //// ToolChain presets - the EchoLab editro state is wrong after recall
 
     // new:
-    AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
+    //AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
+    AudioModule *m = moduleFactory.createModule(type);
     if(m != nullptr)
     {
       //m->setMetaParameterManager(metaParamManager);      // so, the meta-mapping gets recalled
@@ -473,7 +498,7 @@ void ToolChain::populateModuleFactory()
   AudioModuleFactory& f = moduleFactory;
 
   juce::String s = "";
-  f.registerModuleType([](CS cs)->AM { return new DummyModule(cs); },      s, "DummyModule");
+  f.registerModuleType([](CS cs)->AM { return new DummyModule(cs); },      s, "None");
   f.registerModuleType([](CS cs)->AM { return new DebugAudioModule(cs); }, s, "DebugAudioModule");
 
   s = "Sources";

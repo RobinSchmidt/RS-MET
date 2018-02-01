@@ -1,3 +1,4 @@
+/*
 AudioModule* AudioModuleFactory::createModule(const juce::String& type, CriticalSection *lock, 
   ModulationManager* modMan, MetaParameterManager* metaMan)
 {
@@ -67,6 +68,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
                   //return nullptr;
   return new DummyModule(lock); // to avoid a crash when a user messes up an xml file
 }
+*/
 
 void AudioModuleFactory::registerModuleType(std::function<AudioModule*(CriticalSection*)> creatorFunction, 
   const juce::String& category, const juce::String& typeName)
@@ -95,6 +97,9 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type)
       return moduleInfos[i].createInstance(lock);
   }
   jassertfalse;    // unknown module type requested
-  return nullptr;
-  //return new DummyModule(lock); // maybe... to avoid a crash when a user messes up an xml file
+  //return nullptr;
+  return new BypassAudioModule(lock); // to avoid a crash when loading a messed up xml file
+                                      // maybe have a special "Module Not Found" module that shows
+                                      // the name of the not found module and error text
+  //return new DummyModule(lock); // maybe... 
 }

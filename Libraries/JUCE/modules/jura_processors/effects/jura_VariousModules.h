@@ -20,7 +20,7 @@ templates (maybe with explicit specializations)?
 class BypassAudioModule : public AudioModule
 {
 public:
-  BypassAudioModule(CriticalSection *newPlugInLock, rosic::BypassModule *newBypassToWrap) 
+  BypassAudioModule(CriticalSection *newPlugInLock, rosic::BypassModule *newBypassToWrap = nullptr)
     : AudioModule(newPlugInLock) {}
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
   juce_UseDebuggingNewOperator;
