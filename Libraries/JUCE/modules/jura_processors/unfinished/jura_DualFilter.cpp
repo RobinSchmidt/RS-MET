@@ -36,4 +36,11 @@ void DualFilterEditor::resized()
   w = h;
   x = (getWidth() - w) / 2;
   vectorMixerEditor->setBounds(x, y, w, h);
+
+  w = vectorMixerEditor->getX() + 2;
+  leftEditor->setBounds(0, y, w, h);
+
+  x = vectorMixerEditor->getRight() - 2;
+  w = getWidth() - x;
+  rightEditor->setBounds(x, y, w, h);
 }
