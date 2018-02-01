@@ -6,6 +6,8 @@ public:
 
   QuadSourceAudioModule(CriticalSection *lockToUse, rosic::rsQuadSource* coreToUse);
 
+  AudioModuleEditor* createEditor() override;
+
 
 protected:
 

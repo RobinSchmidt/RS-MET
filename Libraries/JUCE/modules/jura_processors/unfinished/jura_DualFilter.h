@@ -6,6 +6,8 @@ public:
 
   DualFilterAudioModule(CriticalSection *lockToUse, rosic::rsDualFilter* coreToUse);
 
+  AudioModuleEditor* createEditor() override;
+
 protected:
 
   rosic::rsDualFilter* filterCore;

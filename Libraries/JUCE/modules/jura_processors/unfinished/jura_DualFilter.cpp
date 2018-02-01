@@ -5,6 +5,11 @@ DualFilterAudioModule::DualFilterAudioModule(
 
 }
 
+AudioModuleEditor* DualFilterAudioModule::createEditor()
+{
+  return new jura::DualFilterEditor(lock, this); // get rid of passing the lock
+}
+
 //=================================================================================================
 
 DualFilterEditor::DualFilterEditor(CriticalSection* lockToUse, DualFilterAudioModule* filterToEdit)
