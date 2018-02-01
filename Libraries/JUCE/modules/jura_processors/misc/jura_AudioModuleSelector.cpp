@@ -1,33 +1,36 @@
 AudioModuleSelector::AudioModuleSelector(AudioModuleFactory* factoryToUse) : RComboBox("ModuleSelector")
 {
   setAudioModuleFactory(factoryToUse);
-
-
-  //setSize(300, 300); // has no effect
 }
 
 void AudioModuleSelector::setAudioModuleFactory(AudioModuleFactory* newFactory)
 {
-  /*
-  // new - under construction:
   moduleFactory = newFactory;
   RComboBox::clear();
+  RTreeViewNode *parentNode = popUpMenu->getRootItem();
   RTreeViewNode *node;
   const std::vector<AudioModuleInfo>& infos = moduleFactory->getRegisteredModuleInfos();
-  for(size_t i = 0; i < infos.size(); i++)
-  {
+  for(size_t i = 0; i < infos.size(); i++) {
     AudioModuleInfo info = infos[i];
-
-
-    // preliminary - gives a flat list without categories:
-    node = new RTreeViewNode(info.type, int(i+1));
-    popUpMenu->addTreeNodeItem(node); 
-
-    int dummy = 0;
+    if(info.category == "")  { // uncategorized modules go into the top-level of the tree:
+      node = new RTreeViewNode(info.type, int(i+1));
+      popUpMenu->addTreeNodeItem(node); 
+    }
+    else {
+      if(parentNode->getText() != info.category) {
+        parentNode = popUpMenu->getItemByText(info.category);
+        if(parentNode == nullptr) { // node for this category doesn't exist yet - add it:
+          parentNode = new RTreeViewNode(info.category, -1, info.category);
+          parentNode->setOpen(false);
+          popUpMenu->addTreeNodeItem(parentNode);  
+        }
+      }
+      parentNode->addChildNode(new RTreeViewNode(info.type, int(i+1)));
+    }
   }
-  */
+  
 
-
+  /*
   // old:
   
   // populate the tree (preliminary - to do: use moduleFactory object to figure out the available 
@@ -117,6 +120,7 @@ void AudioModuleSelector::setAudioModuleFactory(AudioModuleFactory* newFactory)
     node->setOpen(false);
     popUpMenu->addTreeNodeItem(node);
   }
+  */
 
 }
 

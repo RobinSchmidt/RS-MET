@@ -100,10 +100,15 @@ RTreeViewNode* RPopUpMenu::getItemByIndex(int index) const
   if( index < 0 || index >= size(treeView->rootNode->childNodes) || treeView->rootNode == NULL )
   {
     jassertfalse;  // index out of range
-    return NULL;
+    return nullptr;
   }
   else
     return treeView->rootNode->childNodes[index];
+}
+
+RTreeViewNode* RPopUpMenu::getItemByText(const juce::String& itemText) const
+{
+  return treeView->rootNode->findNodeByText(itemText);
 }
 
 RTreeViewNode* RPopUpMenu::getSelectedItem() const

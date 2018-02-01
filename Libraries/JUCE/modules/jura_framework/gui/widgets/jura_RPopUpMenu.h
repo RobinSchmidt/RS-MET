@@ -123,9 +123,16 @@ public:
   tree view. */
   virtual int getNumSelectableItems() const { return rootNode->getNumLeafNodes(); }
 
-  /** Returns a (pointer to) the item with given index (if the index is out of range, a NULL 
-  pointer will be returned). */
+  /** Returns a pointer to the root node. */
+  virtual RTreeViewNode* getRootItem() const { return rootNode; }
+
+  /** Returns a (pointer to) the item with given index (if the index is out of range, a nullptr 
+  will be returned). */
   virtual RTreeViewNode* getItemByIndex(int index) const;
+
+  /** Returns a pointer to the node with given text, if such a node exists - otherwise, it will 
+  return a nullptr. */
+  virtual RTreeViewNode* getItemByText(const juce::String& itemText) const;
 
   /** Returns a (pointer to) the selected item if any, otherwise a NULL pointer will be 
   returned. */
