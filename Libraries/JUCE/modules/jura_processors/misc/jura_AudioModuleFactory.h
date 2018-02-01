@@ -1,6 +1,36 @@
 #ifndef jura_AudioModuleFactory_h
 #define jura_AudioModuleFactory_h
 
+/** A special dummy AudioModule type, an instance of which is returned by AudioModuleFactory when a 
+module type is requested that is unknown to the factory object. */
+
+class JUCE_API NotFoundAudioModule : public AudioModule
+{
+
+public:
+
+  NotFoundAudioModule(CriticalSection *lockToUse, 
+    const juce::String& errorText = "ERROR: Unknown module type")
+    : AudioModule(lockToUse) 
+  {
+    setModuleTypeName(errorText);
+    setModuleName(errorText);
+  }
+
+  // maybe override get/setState function setState just stores the passed xml and getState returns 
+  // it - this way, the settings are not lost when a module is not found
+
+  // todo: the error message should appear also in the AudioModuleSelector (currently, it appears
+  // only the editor headline)
+
+  // also, we should perhaps save the type-name of the requested module type here (for the state 
+  // xml stuff)
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotFoundAudioModule)
+};
+
+//=================================================================================================
+
 /** Structure to represent properties of an AudioModule. Contains also a factory function to 
 create an instance of the module. */
 
@@ -49,8 +79,8 @@ public:
     const juce::String& category = String::empty, const juce::String& typeName = String::empty); 
 
   /** Tries to find a module of given type in our registry of AudioModuleInfos and if it finds it,
-  it will return an instance of a module of that type. If the type is not found, it returns a 
-  "Bypass" module. */
+  it will return an instance of a module of that type. If the type is not found, it returns an 
+  instance of NotFoundAudioModule. */
   AudioModule* createModule(const juce::String& type);
 
   /** Returns a reference to our array of AudioModuleInfos. This is inquired by widgets that are

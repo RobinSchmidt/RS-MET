@@ -26,9 +26,5 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type)
       return moduleInfos[i].createInstance(lock);
   }
   jassertfalse;    // unknown module type requested
-  //return nullptr;
-  return new BypassAudioModule(lock); // to avoid a crash when loading a messed up xml file
-                                      // maybe have a special "Module Not Found" module that shows
-                                      // the name of the not found module and error text
-  //return new DummyModule(lock); // maybe... 
+  return new NotFoundAudioModule(lock);
 }
