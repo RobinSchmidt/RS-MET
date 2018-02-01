@@ -127,8 +127,6 @@ namespace jura
 #include "instruments/jura_Quadrigen.h"  // move to generators, requires to split relevant parts out of jura_VariousModules
 #include "instruments/jura_Quadriga.h"
 #include "instruments/jura_Workhorse.h"
-#include "instruments/jura_NewSynth.h"
-
 #ifdef _MSC_VER
 #include "instruments/jura_Liberty.h"    // romos currently doesn't compile on gcc
 #endif
@@ -137,6 +135,11 @@ namespace jura
 #include "misc/jura_DspWorkbench.h"
 #include "misc/jura_DebugAudioModule.h"
 #include "misc/jura_ToolChain.h"
+
+#include "unfinished/jura_QuadSource.h"
+#include "unfinished/jura_DualFilter.h"
+#include "unfinished/jura_PolyModulators.h"
+#include "unfinished/jura_NewSynth.h"
 
 }
 

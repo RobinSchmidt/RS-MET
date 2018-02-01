@@ -11,3 +11,16 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolyModulatorsAudioModule)
 };
+
+//=================================================================================================
+
+class JUCE_API PolyModulatorsEditor : public jura::AudioModuleEditor
+{
+
+public:
+
+protected:
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolyModulatorsEditor)
+};

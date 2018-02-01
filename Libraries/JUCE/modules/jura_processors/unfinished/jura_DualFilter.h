@@ -8,3 +8,16 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DualFilterAudioModule)
 };
+
+//=================================================================================================
+
+class JUCE_API DualFilterEditor : public jura::AudioModuleEditor
+{
+
+public:
+
+protected:
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DualFilterEditor)
+};

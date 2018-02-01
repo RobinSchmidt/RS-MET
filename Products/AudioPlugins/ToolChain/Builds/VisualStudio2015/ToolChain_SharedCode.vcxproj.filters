@@ -422,6 +422,9 @@
     <Filter Include="Juce Modules\jura_processors\tools">
       <UniqueIdentifier>{DAA66ECA-BEFB-EA83-4B6C-2B113E0B157D}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\jura_processors\unfinished">
+      <UniqueIdentifier>{E60E88F9-5A59-78AB-491A-03B5C5783828}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\jura_processors">
       <UniqueIdentifier>{4B2D04F3-BFD7-5757-84EA-3541AEABB839}</UniqueIdentifier>
     </Filter>
@@ -2761,9 +2764,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_MagicCarpet.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_NewSynth.cpp">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_PolyphonicInstrument.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
@@ -2817,6 +2817,18 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.cpp">
       <Filter>Juce Modules\jura_processors\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_DualFilter.cpp">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.cpp">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModulators.cpp">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_QuadSource.cpp">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.cpp">
       <Filter>Juce Modules\jura_processors</Filter>
@@ -6720,9 +6732,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_MagicCarpet.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_NewSynth.h">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_PolyphonicInstrument.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
@@ -6776,6 +6785,18 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.h">
       <Filter>Juce Modules\jura_processors\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_DualFilter.h">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.h">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModulators.h">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_QuadSource.h">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h">
       <Filter>Juce Modules\jura_processors</Filter>

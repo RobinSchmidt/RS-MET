@@ -79,7 +79,6 @@ namespace jura
 #include "instruments/jura_Quadrigen.cpp" 
 #include "instruments/jura_Quadriga.cpp"
 #include "instruments/jura_Workhorse.cpp"
-#include "instruments/jura_NewSynth.cpp"
 
 #ifdef _MSC_VER
 #include "instruments/jura_Liberty.cpp" // not yet available on gcc 
@@ -89,5 +88,10 @@ namespace jura
 #include "misc/jura_DspWorkbench.cpp"
 #include "misc/jura_DebugAudioModule.cpp"
 #include "misc/jura_ToolChain.cpp"
+
+#include "unfinished/jura_QuadSource.cpp"
+#include "unfinished/jura_DualFilter.cpp"
+#include "unfinished/jura_PolyModulators.cpp"
+#include "unfinished/jura_NewSynth.cpp"
 
 }
