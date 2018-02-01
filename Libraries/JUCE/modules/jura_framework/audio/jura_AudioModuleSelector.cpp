@@ -9,14 +9,11 @@ void AudioModuleSelector::setAudioModuleFactory(AudioModuleFactory* newFactory)
   moduleFactory = newFactory;
   RComboBox::clear();
   RTreeViewNode *parentNode = popUpMenu->getRootItem();
-  RTreeViewNode *node;
   const std::vector<AudioModuleInfo>& infos = moduleFactory->getRegisteredModuleInfos();
   for(size_t i = 0; i < infos.size(); i++) {
     AudioModuleInfo info = infos[i];
-    if(info.category == "")  { // uncategorized modules go into the top-level of the tree:
-      node = new RTreeViewNode(info.type, int(i+1));
-      popUpMenu->addTreeNodeItem(node); 
-    }
+    if(info.category == "")  // uncategorized modules go into the top-level of the tree:
+      popUpMenu->addTreeNodeItem(new RTreeViewNode(info.type, int(i+1))); 
     else {
       if(parentNode->getText() != info.category) {
         parentNode = popUpMenu->getItemByText(info.category);
