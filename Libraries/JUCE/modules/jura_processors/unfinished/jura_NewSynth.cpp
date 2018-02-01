@@ -25,7 +25,7 @@ NewSynthEditor::NewSynthEditor(CriticalSection* lockToUse, NewSynthAudioModule* 
   addChildEditor(sourceEditor = new QuadSourceEditor(lock, synthModule->sourceModule));
   addChildEditor(filterEditor = new DualFilterEditor(lock, synthModule->filterModule));
   addChildEditor(modulatorsEditor = new PolyModulatorsEditor(lock, synthModule->modulatorsModule));
-  setSize(720, 720);
+  setSize(720, 720+26); // 26 = bottom of preset section + 4
 }
 
 void NewSynthEditor::resized()
@@ -34,15 +34,14 @@ void NewSynthEditor::resized()
   AudioModuleEditor::resized();
 
   int x = 0;
-  //int y = getPresetSectionBottom();
-  int y = 0;
+  int y = getPresetSectionBottom()+4;
   int w = getWidth();
   int h = getHeight() - y;
 
   h = h/3;
-
-  sourceEditor->setBounds(x, y, w, h);
-  filterEditor->setBounds(x, y, w, h);
-  h = getHeight() - filterEditor->getBottom();
+  int dy = h-2;
+  sourceEditor->setBounds(x, y, w, h); y += dy;
+  filterEditor->setBounds(x, y, w, h); y += dy;
+  h = getHeight() - y;
   modulatorsEditor->setBounds(x, y, w, h);
 }
