@@ -1,6 +1,6 @@
 QuadSourceAudioModule::QuadSourceAudioModule(
-  CriticalSection *lockToUse, rosic::rsQuadSource* coreToUse)
-  : AudioModule(lockToUse), sourceCore(coreToUse)
+  CriticalSection *lockToUse/*, rosic::rsQuadSource* coreToUse*/)
+  : AudioModule(lockToUse)/*, sourceCore(coreToUse)*/
 {
   addChildAudioModule(topLeftModule     = new PolySlotAudioModule(lock));
   addChildAudioModule(topRightModule    = new PolySlotAudioModule(lock));

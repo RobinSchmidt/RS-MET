@@ -4,13 +4,13 @@ class JUCE_API DualFilterAudioModule : public jura::AudioModule // maybe rename 
 
 public:
 
-  DualFilterAudioModule(CriticalSection *lockToUse, rosic::rsDualFilter* coreToUse);
+  DualFilterAudioModule(CriticalSection *lockToUse/*, rosic::rsDualFilter* coreToUse*/);
 
   AudioModuleEditor* createEditor() override;
 
 protected:
 
-  rosic::rsDualFilter* filterCore;
+  //rosic::rsDualFilter* filterCore;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DualFilterAudioModule)
 };

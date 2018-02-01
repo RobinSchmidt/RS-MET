@@ -4,8 +4,8 @@ NewSynthAudioModule::NewSynthAudioModule(CriticalSection *lockToUse)
   : AudioModuleWithMidiIn(lockToUse)
 {
   setModuleTypeName("NewSynth");
-  addChildAudioModule(sourceModule = new QuadSourceAudioModule(lock, &synthCore.source));
-  addChildAudioModule(filterModule = new DualFilterAudioModule(lock, &synthCore.filter));
+  addChildAudioModule(sourceModule = new QuadSourceAudioModule(lock/*, &synthCore.source*/));
+  addChildAudioModule(filterModule = new DualFilterAudioModule(lock/*, &synthCore.filter*/));
   addChildAudioModule(modulatorsModule = new PolyModulatorsAudioModule(lock));
   //createParameters();
 }

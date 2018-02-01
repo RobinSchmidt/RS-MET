@@ -47,6 +47,9 @@ public:
 
   virtual void resized() override;
 
+  // maybe have the option for a tabbed gui, showing one of the 3 editors at a time - better for 
+  // smaller screens
+
 
 protected:
 
