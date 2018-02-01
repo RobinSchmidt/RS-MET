@@ -4,11 +4,10 @@ NewSynthAudioModule::NewSynthAudioModule(CriticalSection *lockToUse)
   : AudioModuleWithMidiIn(lockToUse)
 {
   setModuleTypeName("NewSynth");
-  //createParameters();
-
   addChildAudioModule(sourceModule = new QuadSourceAudioModule(lock, &synthCore.source));
   addChildAudioModule(filterModule = new DualFilterAudioModule(lock, &synthCore.filter));
   addChildAudioModule(modulatorsModule = new PolyModulatorsAudioModule(lock));
+  //createParameters();
 }
 
 //=================================================================================================
@@ -16,13 +15,11 @@ NewSynthAudioModule::NewSynthAudioModule(CriticalSection *lockToUse)
 NewSynthEditor::NewSynthEditor(CriticalSection* lockToUse, NewSynthAudioModule* synthToEdit)
   : AudioModuleEditor(lockToUse), synthModule(synthToEdit)
 {
-  /*
   ScopedLock scopedLock(*lock);
-  addChildEditor( sourceEditor = new QuadSourceEditor(lock) );
-  addChildEditor( filterEditor = new DualFilterEditor(lock) );
-  addChildEditor( modulatorsEditor = new PolyModulatorsEditor(lock) );
+  addChildEditor(sourceEditor = new QuadSourceEditor(lock, synthModule->sourceModule));
+  addChildEditor(filterEditor = new DualFilterEditor(lock, synthModule->filterModule));
+  addChildEditor(modulatorsEditor = new PolyModulatorsEditor(lock, synthModule->modulatorsModule));
   setSize(720, 720);
-  */
 }
 
 void NewSynthEditor::resized()

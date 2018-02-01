@@ -30,6 +30,7 @@ protected:
   // dsp core:
   rosic::rsNewSynth synthCore;
 
+  friend class NewSynthEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NewSynthAudioModule)
 };
 

@@ -4,3 +4,11 @@ QuadSourceAudioModule::QuadSourceAudioModule(
 {
 
 }
+
+//=================================================================================================
+
+QuadSourceEditor::QuadSourceEditor(CriticalSection* lockToUse, QuadSourceAudioModule* sourceToEdit)
+  : AudioModuleEditor(lockToUse), sourceModule(sourceToEdit)
+{
+
+}

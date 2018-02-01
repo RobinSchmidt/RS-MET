@@ -21,8 +21,11 @@ class JUCE_API PolyModulatorsEditor : public jura::AudioModuleEditor
 
 public:
 
+  PolyModulatorsEditor(CriticalSection* lockToUse, PolyModulatorsAudioModule* modulatorsToEdit);
+
 protected:
 
+  PolyModulatorsAudioModule* modulatorsModule;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolyModulatorsEditor)
 };

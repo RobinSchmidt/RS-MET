@@ -3,3 +3,12 @@ PolyModulatorsAudioModule::PolyModulatorsAudioModule(CriticalSection *lockToUse)
 {
 
 }
+
+//=================================================================================================
+
+PolyModulatorsEditor::PolyModulatorsEditor(
+  CriticalSection* lockToUse, PolyModulatorsAudioModule* modulatorsToEdit)
+  : AudioModuleEditor(lockToUse), modulatorsModule(modulatorsToEdit)
+{
+
+}

@@ -4,3 +4,11 @@ DualFilterAudioModule::DualFilterAudioModule(
 {
 
 }
+
+//=================================================================================================
+
+DualFilterEditor::DualFilterEditor(CriticalSection* lockToUse, DualFilterAudioModule* filterToEdit)
+  : AudioModuleEditor(lockToUse), filterModule(filterToEdit)
+{
+
+}
