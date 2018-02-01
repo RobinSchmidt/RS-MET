@@ -1,4 +1,5 @@
-AudioModuleSelector::AudioModuleSelector(AudioModuleFactory* factoryToUse) : RComboBox("ModuleSelector")
+AudioModuleSelector::AudioModuleSelector(AudioModuleFactory* factoryToUse) 
+  : RComboBox("ModuleSelector")
 {
   setAudioModuleFactory(factoryToUse);
 }

@@ -1,7 +1,6 @@
 #ifndef jura_AudioModuleFactory_h
 #define jura_AudioModuleFactory_h
 
-
 /** Structure to represent properties of an AudioModule. Contains also a factory function to 
 create an instance of the module. */
 
@@ -39,17 +38,6 @@ public:
   /** Constructor. You must pass the CriticalSection object that will be passed on to the 
   constructors of the AudioModule objects that we create here. */
   AudioModuleFactory(CriticalSection *lockToUse) : lock(lockToUse) {} 
-
-  /** Creates and returns a pointer to an object of some subclass of AudioModule. Which subclass it 
-  is, is determined by the passed String parameter. You must also pass the mutex lock object that 
-  should be used by the AudioModule. You may also optionally pass a ModulationManager object that 
-  will be used for AudioModules with modulatable parameters. 
-  ToDo: pass an optional MetaParameterManager the same way as the ModulationManager is passed.
-  */
-  //static AudioModule* createModule(const juce::String& type, CriticalSection* lockToUse, 
-  //  ModulationManager* modManager = nullptr, MetaParameterManager* metaManager = nullptr);
-  // deprecated
-
 
   /** Registers an AudioModule. You must pass a function that creates and returns the module and 
   you can specify a category (this may be used in a tree-view selector widget). You may also 

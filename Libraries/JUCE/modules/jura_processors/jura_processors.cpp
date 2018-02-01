@@ -90,7 +90,6 @@ namespace jura
 #include "misc/jura_DebugAudioModule.cpp"
 #include "misc/jura_AudioModuleFactory.cpp"
 #include "misc/jura_AudioModuleSelector.cpp"
-#include "misc/jura_AudioModuleCreation.cpp"
 #include "misc/jura_ToolChain.cpp"
 
 }

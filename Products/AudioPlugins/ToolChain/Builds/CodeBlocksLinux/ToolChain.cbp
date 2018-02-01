@@ -9312,18 +9312,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/jura_AudioModuleCreation.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/jura_AudioModuleCreation.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/jura_AudioModuleFactory.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
