@@ -528,6 +528,23 @@ void ToolChain::populateModuleFactory()
 #endif
 }
 
+// The current release version includes:
+// Instruments:
+//   AcidDevil
+//   Straightliner
+// Effects:
+//   FuncShaper
+//   EchoLab
+// Filters:
+//   Equalizer
+//   EngineersFilter
+// Dynamics:
+//   Limiter
+// Analyzers:
+//   Scope
+//   MultiAnalyzer
+//   MidiMonitor
+
 //=================================================================================================
 
 ToolChainEditor::ToolChainEditor(jura::ToolChain *moduleChainToEdit)

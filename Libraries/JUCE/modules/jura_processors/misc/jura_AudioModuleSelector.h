@@ -1,15 +1,17 @@
 #ifndef jura_AudioModuleSelector_h
 #define jura_AudioModuleSelector_h
 
-/** A widget class for selecting a specific type of AudioModule. */
+/** A widget class for selecting a specific type of AudioModule. This can be used for dynamically
+creating ("plugging in") AudioModules (like in ToolChain). */
 
 class JUCE_API AudioModuleSelector : public RComboBox
 {
 
 public:
 
+  /** Constructor. You must pass a pointer to an AudioModuleFactory object that will be used to 
+  populate the popup menu with the AudioModule types that can be created. */
   AudioModuleSelector(AudioModuleFactory* factoryToUse);
-    // maybe let a factory to be passed to the constructor
 
   /** Sets the AudioModuleFactor object to be used. That determines the content of the dropdown 
   menu. */
