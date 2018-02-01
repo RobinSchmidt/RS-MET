@@ -1,7 +1,6 @@
 #ifndef jura_NewSynth_h
 #define jura_NewSynth_h
 
-
 class JUCE_API NewSynthAudioModule : public jura::AudioModuleWithMidiIn
 {
 
