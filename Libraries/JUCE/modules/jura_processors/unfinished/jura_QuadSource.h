@@ -1,5 +1,5 @@
 
-class JUCE_API QuadSourceAudioModule : public jura::AudioModule
+class JUCE_API QuadSourceAudioModule : public jura::AudioModule // maybe rename to QuadPolySource
 {
 
 public:

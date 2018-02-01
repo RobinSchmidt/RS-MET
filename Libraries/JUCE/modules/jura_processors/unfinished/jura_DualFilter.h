@@ -1,5 +1,5 @@
 
-class JUCE_API DualFilterAudioModule : public jura::AudioModule
+class JUCE_API DualFilterAudioModule : public jura::AudioModule // maybe rename to DualPolyFilter
 {
 
 public:
