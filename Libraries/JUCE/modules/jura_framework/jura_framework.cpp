@@ -105,6 +105,8 @@ namespace jura
 #include "audio/jura_AudioSampleBufferFunctions.cpp"
 #include "audio/jura_ImmediatePlaybackAudioSource.cpp"
 #include "audio/jura_AudioModule.cpp" // needs editor stuff
+#include "audio/jura_AudioModuleFactory.cpp"
+#include "audio/jura_AudioModuleSelector.cpp"
 #include "audio/jura_AudioPlugin.cpp"
 
 }

@@ -88,8 +88,6 @@ namespace jura
 #include "misc/jura_ChannelMatrix2x2.cpp"
 #include "misc/jura_DspWorkbench.cpp"
 #include "misc/jura_DebugAudioModule.cpp"
-#include "misc/jura_AudioModuleFactory.cpp"
-#include "misc/jura_AudioModuleSelector.cpp"
 #include "misc/jura_ToolChain.cpp"
 
 }
