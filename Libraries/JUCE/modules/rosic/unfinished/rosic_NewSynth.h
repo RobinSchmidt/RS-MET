@@ -36,7 +36,7 @@ public:
     *right = tmp[1];
   }
 
-protected:
+//protected:
 
   rsQuadSource source;
   rsDualFilter filter;

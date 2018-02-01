@@ -22,6 +22,12 @@ public:
 
 protected:
 
+  // child modules:
+  QuadSourceAudioModule* sourceModule;
+  DualFilterAudioModule* filterModule;
+  PolyModulatorsAudioModule* modulatorsModule;
+
+  // dsp core:
   rosic::rsNewSynth synthCore;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NewSynthAudioModule)
@@ -34,8 +40,21 @@ class JUCE_API NewSynthEditor : public jura::AudioModuleEditor
 
 public:
 
+  NewSynthEditor(CriticalSection* lockToUse, NewSynthAudioModule* synthToEdit);
+
+
+  virtual void resized() override;
+
+
 protected:
 
+  // child editors:
+  QuadSourceEditor*     sourceEditor;
+  DualFilterEditor*     filterEditor;
+  PolyModulatorsEditor* modulatorsEditor;
+
+  // edited module
+  NewSynthAudioModule* synthModule;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NewSynthEditor)
 };

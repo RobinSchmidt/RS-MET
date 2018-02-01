@@ -7,6 +7,8 @@ class JUCE_API PolyModulatorsAudioModule : public jura::AudioModule
 
 public:
 
+  PolyModulatorsAudioModule(CriticalSection *lockToUse);
+
 protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolyModulatorsAudioModule)
