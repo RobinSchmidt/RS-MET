@@ -44,15 +44,15 @@ public:
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  virtual void getSampleFrameStereo(double *inOutL, double *inOutR)
-  {
-    wrappedStereoDelay->getSampleFrameStereo(inOutL, inOutL);
-  }
-
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
       wrappedStereoDelay->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  }
+
+  virtual void processStereoFrame(double *left, double *right) override
+  {
+    wrappedStereoDelay->getSampleFrameStereo(left, right);
   }
 
   //---------------------------------------------------------------------------------------------
