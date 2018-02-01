@@ -48,17 +48,12 @@ struct JUCE_API AudioModuleInfo
 
 //=================================================================================================
 
-/** A class for creating objects of various subclasses of AudioModule based on a type string. It 
-can also translate back from a given subclass-pointer to the corresponding string and create a list
-of all available types. 
-
-\todo: maybe make this an abstract factory - that way, the ToolChain could be parameterized
-with a factory object and could propagated up into jura_framework (next to AudioModule/AudioPlugin)
-without knowing about the actual kinds of AudioModule subclasses that are defined in the 
-jura_processors module. The actual Chainer plugin would then somehow need to get an object of a 
-subclass of AudioModuleFactory passed - and only that subclass woul know all the different kinds of 
-modules defined in jura_processors. the general chaining-logic could be made independent from the 
-concrete set of AudioModule types that can be created. */
+/** A class for creating objects of various subclasses of AudioModule based on a type string. 
+Before using it, you must register the AudioModule types that you want to be created. You can do 
+this by using registerModuleType. After registering your module types, you can call createModule 
+with a string representing the module type. This function will the return an instance of the 
+requested type (or an instance of a special NotFoundAudioModule, if the requested type is unknown 
+(i.e. was never registered)). */
 
 class JUCE_API AudioModuleFactory
 {
