@@ -11,6 +11,8 @@ public:
 
 protected:
 
+  PolySlotAudioModule *topLeftModule, *topRightModule, *bottomLeftModule, *bottomRightModule;
+  //VectorMixerAudioModule *vectorMixerModule;
   rosic::rsQuadSource* sourceCore;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(QuadSourceAudioModule)
@@ -27,7 +29,7 @@ public:
 
 protected:
 
-
+  PolySlotEditor *topLeftEditor, *topRightEditor, *bottomLeftEditor, *bottomRightEditor;
   QuadSourceAudioModule* sourceModule;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(QuadSourceEditor)

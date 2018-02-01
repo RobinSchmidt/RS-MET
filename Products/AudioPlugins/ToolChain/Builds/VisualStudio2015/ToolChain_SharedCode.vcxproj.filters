@@ -2824,13 +2824,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.cpp">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyFilter.cpp">
-      <Filter>Juce Modules\jura_processors\unfinished</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModulators.cpp">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolySource.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModule.cpp">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolySlot.cpp">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_QuadSource.cpp">
@@ -6798,13 +6798,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.h">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyFilter.h">
-      <Filter>Juce Modules\jura_processors\unfinished</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModulators.h">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolySource.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModule.h">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolySlot.h">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_QuadSource.h">
