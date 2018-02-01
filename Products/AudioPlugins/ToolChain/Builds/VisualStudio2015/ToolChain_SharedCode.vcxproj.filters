@@ -2401,6 +2401,15 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_ImmediatePlaybackAudioSource.cpp">
       <Filter>Juce Modules\jura_framework\audio</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolyModulators.cpp">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolyModule.cpp">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolySlot.cpp">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_AutomatableParameter.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
@@ -2822,15 +2831,6 @@
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.cpp">
-      <Filter>Juce Modules\jura_processors\unfinished</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModulators.cpp">
-      <Filter>Juce Modules\jura_processors\unfinished</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModule.cpp">
-      <Filter>Juce Modules\jura_processors\unfinished</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolySlot.cpp">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_QuadSource.cpp">
@@ -6369,6 +6369,15 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_ImmediatePlaybackAudioSource.h">
       <Filter>Juce Modules\jura_framework\audio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolyModulators.h">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolyModule.h">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolySlot.h">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_AutomatableParameter.h">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
@@ -6796,15 +6805,6 @@
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.h">
-      <Filter>Juce Modules\jura_processors\unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModulators.h">
-      <Filter>Juce Modules\jura_processors\unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModule.h">
-      <Filter>Juce Modules\jura_processors\unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolySlot.h">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_QuadSource.h">

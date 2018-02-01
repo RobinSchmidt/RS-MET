@@ -1789,6 +1789,15 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_ImmediatePlaybackAudioSource.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolyModulators.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolyModule.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolySlot.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_AutomatableParameter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2210,15 +2219,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModulators.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModule.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolySlot.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_QuadSource.cpp">
@@ -4466,6 +4466,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_AudioPlugin.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_AudioSampleBufferFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_ImmediatePlaybackAudioSource.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolyModulators.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolyModule.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_PolySlot.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_AutomatableParameter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.h"/>
@@ -4609,9 +4612,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_DualFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModulators.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolyModule.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_PolySlot.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_QuadSource.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioBasics.h"/>

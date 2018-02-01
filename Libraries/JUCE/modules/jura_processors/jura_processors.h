@@ -136,9 +136,6 @@ namespace jura
 #include "misc/jura_DebugAudioModule.h"
 #include "misc/jura_ToolChain.h"
 
-#include "unfinished/jura_PolyModule.h"
-#include "unfinished/jura_PolySlot.h"
-#include "unfinished/jura_PolyModulators.h"
 #include "unfinished/jura_QuadSource.h"
 #include "unfinished/jura_DualFilter.h"
 #include "unfinished/jura_NewSynth.h"
