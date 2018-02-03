@@ -259,6 +259,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>
@@ -1792,6 +1795,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_DualFilter.cpp">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_EllipseOscillator.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.cpp">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
@@ -1834,6 +1840,9 @@
       <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h">
@@ -3466,6 +3475,9 @@
       <Filter>Juce Modules\rosic\transforms</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_DualFilter.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_EllipseOscillator.h">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.h">

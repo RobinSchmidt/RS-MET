@@ -31,7 +31,7 @@ public:
 
   inline void setA(T newA) { A = newA; }  // rename to setOffset
 
-  //inline void setB(T newB) { B = newB; }  // rename to setRotation
+  inline void setB(T newB) { B = newB; }  // rename to setRotation
 
   inline void setC(T newC) { C = newC; }  // rename to setScale
 

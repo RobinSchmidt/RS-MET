@@ -154,6 +154,7 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.cpp"/>
@@ -1626,6 +1627,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_DualFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_EllipseOscillator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1650,6 +1654,7 @@
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.h"/>
@@ -2194,6 +2199,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_SpectralManipulator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_WaveletTransforms.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_DualFilter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_EllipseOscillator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_Polyphony.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource.h"/>

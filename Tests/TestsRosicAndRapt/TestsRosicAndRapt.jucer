@@ -35,6 +35,10 @@
                 file="Source/rapt_tests/PerformanceTests/MathPerformanceTests.cpp"/>
           <FILE id="hBoBzf" name="MathPerformanceTests.h" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/MathPerformanceTests.h"/>
+          <FILE id="Tt4cHh" name="MiscPerformanceTests.cpp" compile="1" resource="0"
+                file="Source/rapt_tests/PerformanceTests/MiscPerformanceTests.cpp"/>
+          <FILE id="zjflBD" name="MiscPerformanceTests.h" compile="0" resource="0"
+                file="Source/rapt_tests/PerformanceTests/MiscPerformanceTests.h"/>
         </GROUP>
         <GROUP id="{9B3DF9C6-510B-1467-E9E7-3E8187C592F8}" name="Experiments">
           <FILE id="jYh9KO" name="FilterExperiments.cpp" compile="1" resource="0"

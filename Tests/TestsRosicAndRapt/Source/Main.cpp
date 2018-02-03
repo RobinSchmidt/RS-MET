@@ -10,6 +10,7 @@ using namespace rotes;
 
 #include "rapt_tests/PerformanceTests/MathPerformanceTests.h"
 #include "rapt_tests/PerformanceTests/AudioPerformanceTests.h"
+#include "rapt_tests/PerformanceTests/MiscPerformanceTests.h"
 
 #include "rapt_tests/UnitTests/UnitTests.h"
 
@@ -84,6 +85,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Performance tests:
 
+  callbackPerformance();
   //matrixAdressingTest();
   //simdPerformanceFloat64x2();
   //sinCosPerformance();
@@ -124,7 +126,7 @@ int main(int argc, char* argv[])
   //bouncillator();
   //bouncillatorFormula();
   //rayBouncer();
-  xoxosOsc();
+  //xoxosOsc();
 
   // Graphics:
   //lineDrawing();
