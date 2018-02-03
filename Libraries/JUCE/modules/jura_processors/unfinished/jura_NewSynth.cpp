@@ -2,7 +2,7 @@
 
 NewSynthAudioModule::NewSynthAudioModule(CriticalSection *lockToUse) 
   : AudioModuleWithMidiIn(lockToUse), sourceFactory(lockToUse), filterFactory(lockToUse)
-  , modulatorFactory(lockToUse)
+  , modulatorFactory(lockToUse), modManager(lockToUse)
 {
   setModuleTypeName("NewSynth");
   addChildAudioModule(sourceModule = new QuadSourceAudioModule(lock/*, &synthCore.source*/));

@@ -2,6 +2,8 @@ DualFilterAudioModule::DualFilterAudioModule(
   CriticalSection *lockToUse/*, rosic::rsDualFilter* coreToUse*/)
   : AudioModule(lockToUse)/*, filterCore(coreToUse)*/
 {
+  setModuleTypeName("DualFilter");
+  setModuleName("Filters");
   addChildAudioModule(leftModule  = new PolySlotAudioModule(lock));
   addChildAudioModule(rightModule = new PolySlotAudioModule(lock));
   addChildAudioModule(vectorMixerModule = new PolyAudioModule(lock));
@@ -27,6 +29,7 @@ DualFilterEditor::DualFilterEditor(CriticalSection* lockToUse, DualFilterAudioMo
   addChildEditor(leftEditor  = new PolySlotEditor(lock, filterModule->leftModule));
   addChildEditor(rightEditor = new PolySlotEditor(lock, filterModule->rightModule));
   addChildEditor(vectorMixerEditor = new AudioModuleEditor(filterModule->vectorMixerModule));
+  //setPresetSectionPosition(INVISIBLE);
 }
 
 void DualFilterEditor::resized()

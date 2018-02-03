@@ -2,6 +2,8 @@ QuadSourceAudioModule::QuadSourceAudioModule(
   CriticalSection *lockToUse/*, rosic::rsQuadSource* coreToUse*/)
   : AudioModule(lockToUse)/*, sourceCore(coreToUse)*/
 {
+  setModuleTypeName("QuadSource");
+  setModuleName("Sources");
   addChildAudioModule(topLeftModule     = new PolySlotAudioModule(lock));
   addChildAudioModule(topRightModule    = new PolySlotAudioModule(lock));
   addChildAudioModule(bottomLeftModule  = new PolySlotAudioModule(lock));
@@ -33,6 +35,9 @@ QuadSourceEditor::QuadSourceEditor(CriticalSection* lockToUse, QuadSourceAudioMo
   addChildEditor(bottomLeftEditor  = new PolySlotEditor(lock, sourceModule->bottomLeftModule));
   addChildEditor(bottomRightEditor = new PolySlotEditor(lock, sourceModule->bottomRightModule));
   addChildEditor(vectorMixerEditor = new AudioModuleEditor(sourceModule->vectorMixerModule));
+  //setPresetSectionPosition(INVISIBLE);
+  setHeadlineStyle(SUB_HEADLINE); // headline doesn't seem to work - why?
+  setHeadlinePosition(TOP_LEFT);
 }
 
 void QuadSourceEditor::resized()

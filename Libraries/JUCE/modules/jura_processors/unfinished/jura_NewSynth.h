@@ -13,12 +13,18 @@ public:
 
   virtual void processBlock(double **inOut, int numChannels, int numSamples) override
   {
-    for(int n = 0; n < numSamples; n++)
-      synthCore.getSampleFrameStereo(&inOut[0][n], &inOut[1][n]);
+    sourceModule->processBlock(inOut, numChannels, numSamples);
+    filterModule->processBlock(inOut, numChannels, numSamples);
+    // todo: apply modulations and/or smoothing
+
+    //for(int n = 0; n < numSamples; n++)
+    //  synthCore.getSampleFrameStereo(&inOut[0][n], &inOut[1][n]);
   }
   virtual void processStereoFrame(double *left, double *right) override
   {
-    synthCore.getSampleFrameStereo(left, right);
+    sourceModule->processStereoFrame(left, right);
+    filterModule->processStereoFrame(left, right);
+    //synthCore.getSampleFrameStereo(left, right);
   }
 
 protected:
@@ -34,9 +40,12 @@ protected:
   // factory objects to create sources, filters and modulators:
   AudioModuleFactory sourceFactory, filterFactory, modulatorFactory;
 
+   
+  ModulationManager modManager; // use a PolyModulationManager
+
 
   // dsp core:
-  rosic::rsNewSynth synthCore; //...hmm...maybe get rid of this
+  //rosic::rsNewSynth synthCore; //...hmm...maybe get rid of this
 
   friend class NewSynthEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NewSynthAudioModule)

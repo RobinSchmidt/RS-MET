@@ -15,5 +15,5 @@ PolyModulatorsEditor::PolyModulatorsEditor(
   CriticalSection* lockToUse, PolyModulatorsAudioModule* modulatorsToEdit)
   : AudioModuleEditor(lockToUse), modulatorsModule(modulatorsToEdit)
 {
-
+  //setPresetSectionPosition(INVISIBLE);
 }

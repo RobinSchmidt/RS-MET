@@ -33,6 +33,7 @@ protected:
   PolyAudioModule* slotInsert = nullptr;  // wrapped/inserted module
   AudioModuleFactory* moduleFactory;      // to create and plug in a new module
 
+  friend class PolySlotEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolySlotAudioModule)
 };
 
@@ -45,12 +46,15 @@ public:
 
   PolySlotEditor(CriticalSection* lockToUse, PolySlotAudioModule* slotToEdit);
 
+  //virtual void paint(Graphics& g) override;
+  virtual void resized() override;
+
 protected:
 
 
-  PolySlotAudioModule* slotModule;      // slot module that wraps around the slot insert
-  AudioModuleEditor* slotInsertEditor;  // editor for plugged in module
-  AudioModuleSelector* moduleSelector;  // widget to plug in a new module into this slot
+  PolySlotAudioModule* slotModule;                // slot module that wraps around the slot insert
+  AudioModuleEditor* slotInsertEditor = nullptr;  // editor for plugged in module
+  AudioModuleSelector* moduleSelector;            // widget to plug in a new module into this slot
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolySlotEditor)
 };
