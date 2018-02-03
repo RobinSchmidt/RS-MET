@@ -24,7 +24,25 @@ AudioModuleEditor* NewSynthAudioModule::createEditor()
 
 void NewSynthAudioModule::populateModuleFactories()
 {
-  // something to do...
+  typedef CriticalSection* CS;
+  typedef AudioModule* AM;
+  CS cs = lock;
+  juce::String s;
+
+  AudioModuleFactory& sf = sourceFactory;
+  s = "";
+  sf.registerModuleType([](CS cs)->AM { return new DummyModule(cs); },      s, "None");
+  sf.registerModuleType([](CS cs)->AM { return new EllipseOscillatorAudioModule(cs);  }, s, "EllipseOscillator");
+
+  AudioModuleFactory& ff = filterFactory;
+  s = "";
+  ff.registerModuleType([](CS cs)->AM { return new DummyModule(cs); }, s, "None");
+  ff.registerModuleType([](CS cs)->AM { return new Ladder(cs);      }, s, "Ladder");
+
+  AudioModuleFactory& mf = modulatorFactory;
+  s = "";
+  mf.registerModuleType([](CS cs)->AM { return new DummyModule(cs); }, s, "None");
+  mf.registerModuleType([](CS cs)->AM { return new BreakpointModulatorAudioModule(cs); }, s, "BreakpointModulator");
 }
 
 //=================================================================================================
