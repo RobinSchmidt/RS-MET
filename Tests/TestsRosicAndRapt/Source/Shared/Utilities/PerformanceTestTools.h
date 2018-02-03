@@ -10,6 +10,12 @@
 
 void printPerformanceTestResult(const char *testName, double numCyclesPerOperation);
 
+/** Prints the memory occupation of the given object in bytes. */
+template<class T>
+void printMemoryOccupation(const char *name, T& object);
+
+void print(const char *name, int x);
+
 /** Prevents the compiler from optimizing away the variable x. This is useful for performance 
 tests which could give completetly nonsensical results, if the compiler can detect that the results 
 of the operations, you want to measure, are not used anywhere. Just pass your results to this 
