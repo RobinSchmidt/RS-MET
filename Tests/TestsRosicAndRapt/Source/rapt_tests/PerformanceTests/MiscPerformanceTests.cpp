@@ -15,6 +15,15 @@ public:
   }
 };
 
+class TestCalleeClass
+{
+public:
+  void callbackTarget(double x)
+  {
+    dontOptimize(x);
+  }
+};
+
 void callbackPerformance()
 {
   // compare the performance and memory occupation of various types of function-pointers: 
@@ -44,6 +53,16 @@ void callbackPerformance()
   printPerformanceTestResult("functor", cycles/numCalls);
   print("num bytes", sizeof(functor));
 
+  // member function pointer:
+  TestCalleeClass calleeObject;
+  SpecificMemberFunctionCallback1<TestCalleeClass, void, double>
+     memberFuncPtr(&calleeObject, &TestCalleeClass::callbackTarget);
+  counter.init(); 
+  for(n = 0; n < numCalls; n++) memberFuncPtr.call(x);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("member function pointer", cycles/numCalls);
+  print("num bytes", sizeof(functor));
+
   // std::function with lambda:
   std::function<void(double)> f;
   f = [] (double x) { dontOptimize(x); };
@@ -69,13 +88,22 @@ void callbackPerformance()
   printPerformanceTestResult("std::function with functor", cycles/numCalls);
   print("num bytes", sizeof(f));
 
+  // std::function with member function pointer:
+  f = memberFuncPtr;
+  counter.init(); 
+  for(n = 0; n < numCalls; n++) f(x);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("std::function with member pointer", cycles/numCalls);
+  print("num bytes", sizeof(f));
+
 
   // results:                  cycles  bytes
   // function pointer:         23       8
   // functor:                   4       1
-  // member function pointer:
+  // member function pointer:   8       1
   // std::function, lambda:    11      64
   // std::function, pointer:   26      64
   // std::function, functor:   11      64
+  // std::function, member:    11      64
 }
 

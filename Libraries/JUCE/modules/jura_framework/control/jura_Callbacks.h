@@ -44,6 +44,17 @@ public:
   SpecificMemberFunctionCallback1 to actually invoke some member-function of some specific class. */
   virtual ReturnType call(const ArgumentType argument) = 0;
 
+  /** Implement function call operator for allowing alternative syntax:
+  \code
+  myReturnValue = myCallback(myArgument);
+  \endcode
+  in place of:
+  \code
+  myReturnValue = myCallback.call(myArgument);
+  \endcode  
+  It makes it also possible to assign the callback object to a std::function. */
+  ReturnType operator()(ArgumentType argument) { return call(argument); }
+
 };
 
 //=================================================================================================

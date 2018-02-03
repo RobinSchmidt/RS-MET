@@ -1660,6 +1660,7 @@
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\MathExperiments.h"/>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.h"/>
     <ClInclude Include="..\..\Source\Shared\Shared.h"/>
     <ClInclude Include="..\..\Source\Shared\Utilities\FileWriting.h"/>
     <ClInclude Include="..\..\Source\Shared\Utilities\PerformanceTestTools.h"/>

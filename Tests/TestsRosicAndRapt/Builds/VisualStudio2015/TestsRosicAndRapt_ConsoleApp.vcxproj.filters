@@ -1860,6 +1860,9 @@
     <ClInclude Include="..\..\Source\Experiments\Experiments.h">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.h">
+      <Filter>TestsRosicAndRapt\Source\Shared</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Shared.h">
       <Filter>TestsRosicAndRapt\Source\Shared</Filter>
     </ClInclude>
