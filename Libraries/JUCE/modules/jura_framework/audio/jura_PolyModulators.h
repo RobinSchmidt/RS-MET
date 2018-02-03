@@ -2,7 +2,7 @@
 /** A polyphonic modulator section. The user can plug in an arbitrary number of modulator 
 modules. */
 
-class JUCE_API PolyModulatorsAudioModule : public jura::AudioModule
+class JUCE_API PolyModulatorsAudioModule : public jura::PolySlotAudioModule
 {
 
 public:

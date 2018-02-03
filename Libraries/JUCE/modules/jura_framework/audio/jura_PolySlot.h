@@ -10,14 +10,28 @@ public:
 
   AudioModuleEditor* createEditor() override;
 
+  /** Sets the factory object that is used to create the slot insert modules. */
+  void setModuleFactory(AudioModuleFactory* newFactory) { moduleFactory = newFactory; }
+
   // override get/setState functions to transparently delegate to the slotInsert (maybe adding some
   // additional infor, if necessarry)
 
-  // audio-processing functions should delegate to the slotInsert, too
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    if(slotInsert)
+      slotInsert->processBlock(inOutBuffer, numChannels, numSamples);
+  }
+
+  virtual void processStereoFrame(double *left, double *right) override
+  {
+    if(slotInsert)
+      slotInsert->processStereoFrame(left, right);
+  }
 
 protected:
 
-  PolyAudioModule* slotInsert = nullptr;
+  PolyAudioModule* slotInsert = nullptr;  // wrapped/inserted module
+  AudioModuleFactory* moduleFactory;      // to create and plug in a new module
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolySlotAudioModule)
 };
@@ -34,7 +48,9 @@ public:
 protected:
 
 
-  PolySlotAudioModule* slotModule;
+  PolySlotAudioModule* slotModule;      // slot module that wraps around the slot insert
+  AudioModuleEditor* slotInsertEditor;  // editor for plugged in module
+  AudioModuleSelector* moduleSelector;  // widget to plug in a new module into this slot
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolySlotEditor)
 };

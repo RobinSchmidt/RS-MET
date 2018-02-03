@@ -14,6 +14,14 @@ AudioModuleEditor* QuadSourceAudioModule::createEditor()
   return new jura::QuadSourceEditor(lock, this); // get rid of passing the lock
 }
 
+void QuadSourceAudioModule::setModuleFactory(AudioModuleFactory* newFactory)
+{
+  topLeftModule->setModuleFactory(newFactory);
+  topRightModule->setModuleFactory(newFactory);
+  bottomLeftModule->setModuleFactory(newFactory);
+  bottomRightModule->setModuleFactory(newFactory);
+}
+
 //=================================================================================================
 
 QuadSourceEditor::QuadSourceEditor(CriticalSection* lockToUse, QuadSourceAudioModule* sourceToEdit)

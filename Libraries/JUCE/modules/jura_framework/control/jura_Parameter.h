@@ -571,7 +571,8 @@ protected:
   // mapper object for mapping back and forth between normalized and actual value:
   rsParameterMapper* mapper = nullptr;
 
-  // the callback objects
+  // the callback objects (it sucks, to have several - maybe we can templatize the Parameter class
+  // on the type of the callback object?)
   GenericMemberFunctionCallback1<void, double> *valueChangeCallbackDouble = nullptr;
   GenericMemberFunctionCallback1<void, int>    *valueChangeCallbackInt    = nullptr;
   GenericMemberFunctionCallback1<void, bool>   *valueChangeCallbackBool   = nullptr;

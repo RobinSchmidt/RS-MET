@@ -1,5 +1,5 @@
 PolyModulatorsAudioModule::PolyModulatorsAudioModule(CriticalSection *lockToUse) 
-  : AudioModule(lockToUse)
+  : PolySlotAudioModule(lockToUse)
 {
 
 }

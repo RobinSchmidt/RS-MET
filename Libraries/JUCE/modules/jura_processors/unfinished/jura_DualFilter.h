@@ -8,6 +8,8 @@ public:
 
   AudioModuleEditor* createEditor() override;
 
+  void setModuleFactory(AudioModuleFactory* newFactory);
+
 protected:
 
   PolySlotAudioModule *leftModule, *rightModule;

@@ -158,11 +158,11 @@ namespace jura
 #include "audio/jura_AudioSampleBufferFunctions.h"
 #include "audio/jura_ImmediatePlaybackAudioSource.h"
 #include "audio/jura_AudioModule.h"
+#include "audio/jura_AudioModuleFactory.h"
+#include "audio/jura_AudioModuleSelector.h"
 #include "audio/jura_PolyModule.h"
 #include "audio/jura_PolySlot.h"
 #include "audio/jura_PolyModulators.h"
-#include "audio/jura_AudioModuleFactory.h"
-#include "audio/jura_AudioModuleSelector.h"
 #include "audio/jura_AudioPlugin.h"
 
 

@@ -1,12 +1,19 @@
 // construction/destruction:
 
 NewSynthAudioModule::NewSynthAudioModule(CriticalSection *lockToUse) 
-  : AudioModuleWithMidiIn(lockToUse)
+  : AudioModuleWithMidiIn(lockToUse), sourceFactory(lockToUse), filterFactory(lockToUse)
+  , modulatorFactory(lockToUse)
 {
   setModuleTypeName("NewSynth");
   addChildAudioModule(sourceModule = new QuadSourceAudioModule(lock/*, &synthCore.source*/));
   addChildAudioModule(filterModule = new DualFilterAudioModule(lock/*, &synthCore.filter*/));
   addChildAudioModule(modulatorsModule = new PolyModulatorsAudioModule(lock));
+
+  sourceModule->setModuleFactory(&sourceFactory);
+  filterModule->setModuleFactory(&filterFactory);
+  modulatorsModule->setModuleFactory(&modulatorFactory);
+
+  populateModuleFactories();
   //createParameters();
 }
 
@@ -15,6 +22,10 @@ AudioModuleEditor* NewSynthAudioModule::createEditor()
   return new jura::NewSynthEditor(lock, this); // get rid of passing the lock
 }
 
+void NewSynthAudioModule::populateModuleFactories()
+{
+  // something to do...
+}
 
 //=================================================================================================
 

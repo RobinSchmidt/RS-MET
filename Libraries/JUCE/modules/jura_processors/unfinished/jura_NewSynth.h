@@ -23,13 +23,20 @@ public:
 
 protected:
 
+  /** Populates the factory objects that create the actual modules. */
+  void populateModuleFactories();
+
   // child modules:
   QuadSourceAudioModule* sourceModule;
   DualFilterAudioModule* filterModule;
   PolyModulatorsAudioModule* modulatorsModule;
 
+  // factory objects to create sources, filters and modulators:
+  AudioModuleFactory sourceFactory, filterFactory, modulatorFactory;
+
+
   // dsp core:
-  rosic::rsNewSynth synthCore;
+  rosic::rsNewSynth synthCore; //...hmm...maybe get rid of this
 
   friend class NewSynthEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NewSynthAudioModule)
