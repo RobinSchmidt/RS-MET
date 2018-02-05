@@ -154,6 +154,7 @@ namespace jura
 #include "gui/dialogs/jura_RDialogBox.h"
 #include "gui/dialogs/jura_RMessageBox.h"
 #include "gui/dialogs/jura_ColourSchemeSetupDialog.h"
+#include "gui/dialogs/jura_ImageSavingDialog.h"
 
 #include "audio/jura_AudioSampleBufferFunctions.h"
 #include "audio/jura_ImmediatePlaybackAudioSource.h"

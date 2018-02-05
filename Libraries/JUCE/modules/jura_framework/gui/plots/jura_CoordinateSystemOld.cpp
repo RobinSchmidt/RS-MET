@@ -1289,12 +1289,12 @@ void CoordinateSystemOld::openExportDialog(int defaultWidth, int defaultHeight,
                                         const String &defaultFormat,
                                         const File& defaultTargetFile)
 {
-  jassertfalse; // the commented code below needs an update
+  //jassertfalse; // the commented code below needs an update
 
-  //ImageSavingDialog dialog(this, defaultWidth, defaultHeight, defaultFormat, defaultTargetFile);
-  //DialogWindow exportWindow(String("Export to Image or SVG Drawing"), Colours::white, true, true);
-  //exportWindow.showModalDialog(String("Export to Image or SVG Drawing"), &dialog, this, 
-  //  Colours::white, true, false, false);
+  ImageSavingDialog dialog(this, defaultWidth, defaultHeight, defaultFormat, defaultTargetFile);
+  DialogWindow exportWindow(String("Export to Image or SVG Drawing"), Colours::white, true, true);
+  exportWindow.showModalDialog(String("Export to Image or SVG Drawing"), &dialog, this, 
+    Colours::white, true, false, false);
 }
 
 void CoordinateSystemOld::updateBackgroundImage()
@@ -1641,11 +1641,12 @@ void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval,
                                           float lineThickness,
                                           Image* targetImage, XmlElement *targetSVG)
 {
-  g.setColour(gridColour);
-  jura::drawHorizontalGrid(g, coordinateMapper, interval, lineThickness);
+  // new:
+  //g.setColour(gridColour);
+  //jura::drawHorizontalGrid(g, coordinateMapper, interval, lineThickness);
 
 
-  /*
+  // old:
   if( exponentialSpacing == true )
   {
     jassert( interval >= 1.00001 );
@@ -1790,8 +1791,7 @@ void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval,
       String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
     targetSVG->addChildElement(gridPath);
   }
-
-  */
+  
 }
 
 void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval, 

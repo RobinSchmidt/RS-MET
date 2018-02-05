@@ -99,6 +99,7 @@ namespace jura
 #include "gui/dialogs/jura_RDialogBox.cpp"
 #include "gui/dialogs/jura_RMessageBox.cpp"
 #include "gui/dialogs/jura_ColourSchemeSetupDialog.cpp"
+#include "gui/dialogs/jura_ImageSavingDialog.cpp"
 
 #include "gui/editors/jura_Editor.cpp"
 
