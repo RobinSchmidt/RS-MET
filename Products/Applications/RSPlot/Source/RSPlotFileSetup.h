@@ -1,13 +1,6 @@
 #ifndef __JUCE_RSPLOTFILESETUP_JUCEHEADER__
 #define __JUCE_RSPLOTFILESETUP_JUCEHEADER__
 
-//#include "../../../rojue/misc/StateFileManager.h"
-//#include "../../../rojue/components/SymbolButton.h"
-//#include "../../../rojue/components/widgets/rojue_RButton.h"
-//#include "../../../rojue/components/widgets/rojue_RLabel.h"
-//#include "../../../rojue/components/widgets/rojue_RTextField.h"
-//using namespace rojue;
-
 #include "../JuceLibraryCode/JuceHeader.h"
 using namespace juce;
 using namespace jura;

@@ -21,27 +21,14 @@ This program can visualize mathematical functions based on an expression or impo
 #ifndef __JUCE_RSPLOTCONTENTCOMPONENT_JUCEHEADER__
 #define __JUCE_RSPLOTCONTENTCOMPONENT_JUCEHEADER__
 
-/*
-#include "../../../rosic/scripting/rosic_ExpressionEvaluator.h"
-#include "../../../rosic/math/rosic_SpecialFunctionsReal.h"
-
-#include "../../../rojue/components/coordinate_systems/rojue_CoordinateSystemZoomerOld.h"
-//#include "../../../rojue/components/coordinate_systems/CoordinateSystem3DZoomer.h"
-#include "../../../rojue/components/coordinate_systems/rojue_CurveFamilyPlotOld.h"
-//#include "../../../rojue/components/coordinate_systems/SurfacePlot.h"
-#include "../../../rojue/file_management/rojue_ImageFileManager.h"
-#include "../../../rojue/file_management/rojue_StateFileManager.h"
-//#include "../../../rojue/graphics/rojue_RLookAndFeel.h"
-*/
-
 #include "RSPlotAxesSetup.h"
 #include "RSPlotDataSetup.h"
 #include "RSPlotFileSetup.h"
 
 class RSPlotContentComponent : public Component, public StateFileManager, 
-  public ImageFileManager, public RButtonListener,
-  public ComboBoxListener, public LabelListener,
-  public SliderListener
+  public ImageFileManager, 
+  public RButtonListener, public RTextEntryFieldObserver,
+  public ComboBoxListener, public LabelListener, public SliderListener // get rid
 {  
 
 public:
@@ -85,6 +72,8 @@ public:
   virtual void labelTextChanged(Label *labelThatHasChanged); 
   /**< Implements the purely virtual labelTextChanged()-method of the 
        LablelListener base-class. */
+
+  virtual void textChanged(RTextEntryField *field) override;
 
   virtual void sliderValueChanged(Slider *sliderThatHasChanged); 
   /**< Implements the purely virtual sliderValueChanged()-method of the 

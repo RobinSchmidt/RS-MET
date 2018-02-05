@@ -41,11 +41,16 @@ RSPlotDataSetup::RSPlotDataSetup()
   xCurveLabel->setJustificationType(Justification::centredLeft);
   addAndMakeVisible( xCurveLabel );
 
+  xCurveEditLabel = new RTextEntryField("t;");
+  xCurveEditLabel->setJustification(Justification::centredLeft);
+  addWidget(xCurveEditLabel);
+  /*
   xCurveEditLabel = new Label( String(("xCurveEditLabel")), String(("t;")) );
   xCurveEditLabel->setJustificationType(Justification::centredLeft);
   xCurveEditLabel->setColour(Label::outlineColourId, Colours::black);
   xCurveEditLabel->setEditable(true, true);
   addAndMakeVisible( xCurveEditLabel );
+  */
 
   yCurveLabel = new Label( String(("yCurveLabel")), String(("y(x,t)=")) );
   yCurveLabel->setJustificationType(Justification::centredLeft);
@@ -288,15 +293,15 @@ void RSPlotDataSetup::setMinMaxT(double newMin, double newMax)
 
 //-------------------------------------------------------------------------------------------------
 // appearance:
-
+/*
 void RSPlotDataSetup::paint(Graphics& g)
 {
   g.fillAll(Colours::black);
 }
-
+*/
 void RSPlotDataSetup::resized()
 {
-  Component::resized();
+  Editor::resized();
 
   int xL, xR, yT, yB; // left, right, top and bottom for the child-component
   int w, h;           // width and height for the child component

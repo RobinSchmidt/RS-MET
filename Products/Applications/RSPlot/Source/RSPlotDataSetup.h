@@ -1,20 +1,12 @@
 #ifndef __JUCE_RSPLOTDATASETUP_JUCEHEADER__
 #define __JUCE_RSPLOTDATASETUP_JUCEHEADER__
 
-// old:
-//#include "../../../../third_party_code/juce/juce.h"
-//#include "../../../rojue/includesForRojue.h"
-
-//#include "../../../rojue/components/widgets/rojue_RButton.h"
-//#include "../../../rojue/components/widgets/rojue_RTextField.h"
-//using namespace rojue;
-
-
 #include "../JuceLibraryCode/JuceHeader.h"
 using namespace juce;
 using namespace jura;
 
-class RSPlotDataSetup	: public Component
+//class RSPlotDataSetup	: public Component
+class RSPlotDataSetup	: public Editor
 {
 
 public:
@@ -25,7 +17,7 @@ public:
   virtual ~RSPlotDataSetup();
   /**< Destructor. */
 
-  virtual void paint(Graphics& g) override;
+  //virtual void paint(Graphics& g) override;
   virtual void resized() override;
 
   //=============================================================================================
@@ -46,7 +38,8 @@ public:
   Label*            numCurvesLabel;
   Slider*           numCurvesSlider;
   Label*            xCurveLabel;
-  Label*            xCurveEditLabel;
+  //Label*            xCurveEditLabel;
+  RTextEntryField*  xCurveEditLabel;
   Label*            yCurveLabel;
   Label*            yCurveEditLabel;
 

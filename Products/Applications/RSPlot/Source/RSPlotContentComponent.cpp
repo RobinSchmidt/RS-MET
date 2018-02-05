@@ -111,7 +111,7 @@ RSPlotContentComponent::RSPlotContentComponent(
   dataSetup->dataSourceComboBox->addListener(this);
   dataSetup->typeOfDataComboBox->addListener(this);
   dataSetup->numCurvesSlider->addListener(this);
-  dataSetup->xCurveEditLabel->addListener(this);
+  dataSetup->xCurveEditLabel->registerTextEntryFieldObserver(this);
   dataSetup->yCurveEditLabel->addListener(this);
   dataSetup->aMinEditLabel->addListener(this);
   dataSetup->aSlider->addListener(this);
@@ -412,6 +412,17 @@ void RSPlotContentComponent::comboBoxChanged(ComboBox *comboBoxThatHasChanged)
   } // end of switch( currentPlotterComponent )
 }
 
+void RSPlotContentComponent::textChanged(RTextEntryField *field)
+{
+  if(field == dataSetup->xCurveEditLabel /*||
+    labelThatHasChanged == dataSetup->yCurveEditLabel ||
+    labelThatHasChanged == dataSetup->tMinEditLabel    ||
+    labelThatHasChanged == dataSetup->tMaxEditLabel*/)
+  {
+    calculateData();
+  }
+}
+
 void RSPlotContentComponent::labelTextChanged(Label *labelThatHasChanged)
 {
   double minValue, maxValue;
@@ -617,7 +628,7 @@ void RSPlotContentComponent::labelTextChanged(Label *labelThatHasChanged)
         curveFamilyPlot->setAngularFineGridInterval(
         axesSetup->angularFineGridIntervalLabel->getText().getDoubleValue());
 
-      else if( labelThatHasChanged == dataSetup->xCurveEditLabel ||
+      else if( /*labelThatHasChanged == dataSetup->xCurveEditLabel ||*/
         labelThatHasChanged == dataSetup->yCurveEditLabel ||
         labelThatHasChanged == dataSetup->tMinEditLabel    ||
                labelThatHasChanged == dataSetup->tMaxEditLabel       )
@@ -880,8 +891,11 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
 
  if( dataSetup->dataSourceComboBox->getText() == String(("Expression")) )
  {
-   dataSetup->xCurveEditLabel->setText(
-     xmlState.getStringAttribute(String(("xExpression")), String(("t;"))), NotificationType::sendNotification);
+   //dataSetup->xCurveEditLabel->setText(
+   //  xmlState.getStringAttribute(String(("xExpression")), String(("t;"))), NotificationType::sendNotification);
+
+   dataSetup->xCurveEditLabel->setText(xmlState.getStringAttribute("xExpression", "t;"));
+
    dataSetup->yCurveEditLabel->setText(
      xmlState.getStringAttribute(String(("yExpression")), String(("x;"))), NotificationType::sendNotification);
 
