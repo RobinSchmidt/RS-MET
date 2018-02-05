@@ -67,7 +67,8 @@ RSPlotFileSetup::~RSPlotFileSetup()
 
 void RSPlotFileSetup::paint(Graphics &g)
 {
-  g.fillAll(Colours::white);
+  g.fillAll(Colours::black);
+  //g.fillAll(Colours::white);
 }
 
 void RSPlotFileSetup::resized()

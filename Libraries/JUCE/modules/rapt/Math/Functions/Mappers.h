@@ -90,7 +90,7 @@ public:
   inline T getOutMaxY() const { return mapperY.getOutMax(); }
 
 
-protected:
+//protected:
 
   rsCoordinateMapper<T> mapperX, mapperY;
 

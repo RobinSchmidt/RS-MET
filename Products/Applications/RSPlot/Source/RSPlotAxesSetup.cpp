@@ -370,6 +370,11 @@ RSPlotAxesSetup::~RSPlotAxesSetup()
 //-------------------------------------------------------------------------------------------------
 // appearance:
 
+void RSPlotAxesSetup::paint(Graphics& g)
+{
+  g.fillAll(Colours::black);
+}
+
 void RSPlotAxesSetup::resized()
 {
   Component::resized();

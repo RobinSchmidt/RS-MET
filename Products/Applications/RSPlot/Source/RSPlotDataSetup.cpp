@@ -289,6 +289,11 @@ void RSPlotDataSetup::setMinMaxT(double newMin, double newMax)
 //-------------------------------------------------------------------------------------------------
 // appearance:
 
+void RSPlotDataSetup::paint(Graphics& g)
+{
+  g.fillAll(Colours::black);
+}
+
 void RSPlotDataSetup::resized()
 {
   Component::resized();

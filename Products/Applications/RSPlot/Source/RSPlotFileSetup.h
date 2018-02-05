@@ -23,11 +23,9 @@ public:
   virtual ~RSPlotFileSetup();
   /**< Destructor. */
 
-  virtual void paint(Graphics &g);
+  virtual void paint(Graphics &g) override;
+  virtual void resized() override;
 
-  virtual void resized();
-  /**< Overrides the resized()()-method of the Component base-class in order
-  to arrange the widgets according to the size. */
 
   //=============================================================================================
   juce_UseDebuggingNewOperator;

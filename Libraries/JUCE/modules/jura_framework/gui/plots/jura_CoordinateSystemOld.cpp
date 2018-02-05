@@ -238,6 +238,9 @@ void CoordinateSystemOld::mouseWheelMove(const MouseEvent &e, const MouseWheelDe
 
 void CoordinateSystemOld::resized()
 {
+  //coordinateMapper.setOutputRange(0, getWidth()-1, 0, getHeight()-1);
+  coordinateMapper.setOutputRange(0, getWidth()-1, -(getHeight()-1), 0); // or like this?
+
   updateScaleFactors();
   if(autoReRenderImage == true)
     updateBackgroundImage();
@@ -2750,6 +2753,13 @@ void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEl
 
 void CoordinateSystemOld::updateScaleFactors()
 {
+  coordinateMapper.mapperX.setLogScaled(logScaledX);  // logScaledX/Y are redundant here now
+  coordinateMapper.mapperY.setLogScaled(logScaledY);  // ...get rid of them
+  coordinateMapper.setInputRange(currentRange.getMinX(), currentRange.getMaxX(),
+    currentRange.getMinY(), currentRange.getMaxY());
+    // the currentRange member is actually also redundant now
+
+
   if( !logScaledX )
     scaleX = getWidth()  / (currentRange.getMaxX()-currentRange.getMinX()); 
   // scaling factor for linear plots
