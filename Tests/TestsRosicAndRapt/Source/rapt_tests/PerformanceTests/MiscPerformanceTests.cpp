@@ -35,13 +35,20 @@ void callbackPerformance()
   ProcessorCycleCounter counter;
   int n;
   double x = 1.0;
+  double cycles;
+
+  // calling the (inner) function itself (this is our baseline):
+  counter.init(); 
+  for(n = 0; n < numCalls; n++) dontOptimize(x);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("none", cycles/numCalls);
 
   // raw function pointer:
   void (*functionPointer) (double x);
   functionPointer = testFunction;
   counter.init(); 
   for(n = 0; n < numCalls; n++) functionPointer(x);
-  double cycles = (double) counter.getNumCyclesSinceInit();
+  cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("raw function pointer", cycles/numCalls);
   print("num bytes", sizeof(functionPointer));
 

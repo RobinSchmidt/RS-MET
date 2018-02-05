@@ -27,7 +27,7 @@ void QuadSourceAudioModule::setModuleFactory(AudioModuleFactory* newFactory)
 //=================================================================================================
 
 QuadSourceEditor::QuadSourceEditor(CriticalSection* lockToUse, QuadSourceAudioModule* sourceToEdit)
-  : AudioModuleEditor(lockToUse), sourceModule(sourceToEdit)
+  : AudioModuleEditor(sourceToEdit), sourceModule(sourceToEdit)
 {
   ScopedLock scopedLock(*lock);
   addChildEditor(topLeftEditor     = new PolySlotEditor(lock, sourceModule->topLeftModule));
@@ -35,9 +35,6 @@ QuadSourceEditor::QuadSourceEditor(CriticalSection* lockToUse, QuadSourceAudioMo
   addChildEditor(bottomLeftEditor  = new PolySlotEditor(lock, sourceModule->bottomLeftModule));
   addChildEditor(bottomRightEditor = new PolySlotEditor(lock, sourceModule->bottomRightModule));
   addChildEditor(vectorMixerEditor = new AudioModuleEditor(sourceModule->vectorMixerModule));
-  //setPresetSectionPosition(INVISIBLE);
-  setHeadlineStyle(SUB_HEADLINE); // headline doesn't seem to work - why?
-  setHeadlinePosition(TOP_LEFT);
 }
 
 void QuadSourceEditor::resized()

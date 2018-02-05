@@ -23,13 +23,12 @@ void DualFilterAudioModule::setModuleFactory(AudioModuleFactory* newFactory)
 //=================================================================================================
 
 DualFilterEditor::DualFilterEditor(CriticalSection* lockToUse, DualFilterAudioModule* filterToEdit)
-  : AudioModuleEditor(lockToUse), filterModule(filterToEdit)
+  : AudioModuleEditor(filterToEdit), filterModule(filterToEdit)
 {
   ScopedLock scopedLock(*lock);
   addChildEditor(leftEditor  = new PolySlotEditor(lock, filterModule->leftModule));
   addChildEditor(rightEditor = new PolySlotEditor(lock, filterModule->rightModule));
   addChildEditor(vectorMixerEditor = new AudioModuleEditor(filterModule->vectorMixerModule));
-  //setPresetSectionPosition(INVISIBLE);
 }
 
 void DualFilterEditor::resized()
