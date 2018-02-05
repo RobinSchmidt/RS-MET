@@ -111,4 +111,17 @@ JUCE_API void fitLineToRectangle(double &x1, double &y1, double &x2, double &y2,
 JUCE_API void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2,
   double xMin, double yMin, double xMax, double yMax);
 
+//=================================================================================================
+// functions for coordinate system drawing:
+
+JUCE_API void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper<double>& mapper, 
+  double spacing);
+
+JUCE_API void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper<double>& mapper, 
+  double spacing);
+
+
+
+
+
 #endif

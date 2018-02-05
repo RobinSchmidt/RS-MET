@@ -844,3 +844,17 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
     y1 = yOut;
   }
 }
+
+//=================================================================================================
+
+void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper<double>& mapper,
+  double spacing)
+{
+
+}
+
+void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper<double>& mapper,
+  double spacing)
+{
+
+}

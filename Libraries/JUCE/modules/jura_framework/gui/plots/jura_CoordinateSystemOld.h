@@ -684,6 +684,9 @@ protected:
   bool   logScaledRadius;
   double logBaseRadius;
 
+  // new - to be used soon in the drawing code:
+  RAPT::rsCoordinateMapper2D<double> coordinateMapper;
+
 
   //bool   valuePopup;
 

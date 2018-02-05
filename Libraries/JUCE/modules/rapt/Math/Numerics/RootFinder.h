@@ -30,7 +30,7 @@ public:
 
   /** Similar to bisection but doesn't use the midpoint of the current bracketing interval, but the
   point where a line between (xLeft,yLeft), (xRight,yRight) crosses the x-axis. Convergence is
-  typically (for smooth functions, that are well approxiamted by a line near the root) faster than
+  typically (for smooth functions, that are well approximated by a line near the root) faster than
   for bisection and convergence is guranteed. */
   static T falsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
 
