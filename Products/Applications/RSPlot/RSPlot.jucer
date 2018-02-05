@@ -30,9 +30,9 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2015 targetFolder="Builds/VisualStudio2015">
+    <VS2015 targetFolder="Builds/VisualStudio2015" windowsTargetPlatformVersion="8.1">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+        <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="NewProject"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
