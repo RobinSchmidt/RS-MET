@@ -44,23 +44,14 @@ RSPlotDataSetup::RSPlotDataSetup()
   xCurveEditLabel = new RTextEntryField("t;");
   xCurveEditLabel->setJustification(Justification::centredLeft);
   addWidget(xCurveEditLabel);
-  /*
-  xCurveEditLabel = new Label( String(("xCurveEditLabel")), String(("t;")) );
-  xCurveEditLabel->setJustificationType(Justification::centredLeft);
-  xCurveEditLabel->setColour(Label::outlineColourId, Colours::black);
-  xCurveEditLabel->setEditable(true, true);
-  addAndMakeVisible( xCurveEditLabel );
-  */
 
   yCurveLabel = new Label( String(("yCurveLabel")), String(("y(x,t)=")) );
   yCurveLabel->setJustificationType(Justification::centredLeft);
   addAndMakeVisible( yCurveLabel );
 
-  yCurveEditLabel = new Label( String(("yCurveEditLabel")), String(("x;")) );
-  yCurveEditLabel->setJustificationType(Justification::centredLeft);
-  yCurveEditLabel->setColour(Label::outlineColourId, Colours::black);
-  yCurveEditLabel->setEditable(true, true);
-  addAndMakeVisible( yCurveEditLabel );
+  yCurveEditLabel = new RTextEntryField("x;");
+  yCurveEditLabel->setJustification(Justification::centredLeft);
+  addWidget(yCurveEditLabel);
 
   //-----------------------------------------------------------------------------------------------
   // widgets for the parameters a,b,c,d:
@@ -164,21 +155,33 @@ RSPlotDataSetup::RSPlotDataSetup()
   tMinLabel->setJustificationType(Justification::centredLeft);
   addAndMakeVisible( tMinLabel );
 
+  /*
   tMinEditLabel = new Label( String(("tMinEditLabel")), String(("0")) );
   tMinEditLabel->setJustificationType(Justification::centredLeft);
   tMinEditLabel->setColour(Label::outlineColourId, Colours::black);
   tMinEditLabel->setEditable(true, true);
   addAndMakeVisible( tMinEditLabel );
+  */
+
+  tMinEditLabel = new RTextEntryField("0");
+  tMinEditLabel->setJustification(Justification::centredLeft);
+  addWidget(tMinEditLabel);
 
   tMaxLabel = new Label( String(("tMaxLabel")), String(("Max:")) );
   tMaxLabel->setJustificationType(Justification::centredLeft);
   addAndMakeVisible( tMaxLabel );
 
+  /*
   tMaxEditLabel = new Label( String(("tMaxEditLabel1")), String(("10")) );
   tMaxEditLabel->setJustificationType(Justification::centredLeft);
   tMaxEditLabel->setColour(Label::outlineColourId, Colours::black);
   tMaxEditLabel->setEditable(true, true);
   addAndMakeVisible( tMaxEditLabel );
+  */
+
+  tMaxEditLabel = new RTextEntryField("10");
+  tMaxEditLabel->setJustification(Justification::centredLeft);
+  addWidget(tMaxEditLabel);
 
   numSamplesLabel = new Label( String(("NumSamplesLabel")), String(("Samples:")) );
   numSamplesLabel->setJustificationType(Justification::centredLeft);
@@ -286,8 +289,8 @@ void RSPlotDataSetup::setMinMaxT(double newMin, double newMax)
 {
   if( newMin < newMax )
   {
-    tMinEditLabel->setText(String(newMin), NotificationType::dontSendNotification);
-    tMaxEditLabel->setText(String(newMax), NotificationType::dontSendNotification);
+    tMinEditLabel->setText(String(newMin));
+    tMaxEditLabel->setText(String(newMax));
   }
 }
 

@@ -112,7 +112,7 @@ RSPlotContentComponent::RSPlotContentComponent(
   dataSetup->typeOfDataComboBox->addListener(this);
   dataSetup->numCurvesSlider->addListener(this);
   dataSetup->xCurveEditLabel->registerTextEntryFieldObserver(this);
-  dataSetup->yCurveEditLabel->addListener(this);
+  dataSetup->yCurveEditLabel->registerTextEntryFieldObserver(this);
   dataSetup->aMinEditLabel->addListener(this);
   dataSetup->aSlider->addListener(this);
   dataSetup->aMaxEditLabel->addListener(this);
@@ -125,8 +125,8 @@ RSPlotContentComponent::RSPlotContentComponent(
   dataSetup->dMinEditLabel->addListener(this);
   dataSetup->dSlider->addListener(this);
   dataSetup->dMaxEditLabel->addListener(this);
-  dataSetup->tMinEditLabel->addListener(this);
-  dataSetup->tMaxEditLabel->addListener(this);
+  dataSetup->tMinEditLabel->registerTextEntryFieldObserver(this);
+  dataSetup->tMaxEditLabel->registerTextEntryFieldObserver(this);
   dataSetup->numSamplesSlider->addListener(this);
   dataSetup->tExponentialSpacingButton->addRButtonListener(this);
   dataSetup->loadButton->addRButtonListener(this);
@@ -414,10 +414,8 @@ void RSPlotContentComponent::comboBoxChanged(ComboBox *comboBoxThatHasChanged)
 
 void RSPlotContentComponent::textChanged(RTextEntryField *field)
 {
-  if(field == dataSetup->xCurveEditLabel /*||
-    labelThatHasChanged == dataSetup->yCurveEditLabel ||
-    labelThatHasChanged == dataSetup->tMinEditLabel    ||
-    labelThatHasChanged == dataSetup->tMaxEditLabel*/)
+  if(field == dataSetup->xCurveEditLabel || field == dataSetup->yCurveEditLabel ||
+    field  == dataSetup->tMinEditLabel   || field == dataSetup->tMaxEditLabel)
   {
     calculateData();
   }
@@ -627,15 +625,6 @@ void RSPlotContentComponent::labelTextChanged(Label *labelThatHasChanged)
       else if( labelThatHasChanged == axesSetup->angularFineGridIntervalLabel )
         curveFamilyPlot->setAngularFineGridInterval(
         axesSetup->angularFineGridIntervalLabel->getText().getDoubleValue());
-
-      else if( /*labelThatHasChanged == dataSetup->xCurveEditLabel ||*/
-        labelThatHasChanged == dataSetup->yCurveEditLabel ||
-        labelThatHasChanged == dataSetup->tMinEditLabel    ||
-               labelThatHasChanged == dataSetup->tMaxEditLabel       )
-      {
-        calculateData();
-      }
-
 
     } // end of case CURVE_FAMILY_PLOT:
     break;
@@ -896,8 +885,7 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
 
    dataSetup->xCurveEditLabel->setText(xmlState.getStringAttribute("xExpression", "t;"));
 
-   dataSetup->yCurveEditLabel->setText(
-     xmlState.getStringAttribute(String(("yExpression")), String(("x;"))), NotificationType::sendNotification);
+   dataSetup->yCurveEditLabel->setText(xmlState.getStringAttribute("yExpression", "x;"));
 
    min = xmlState.getDoubleAttribute(String(("aMin")),    0.0);
    max = xmlState.getDoubleAttribute(String(("aMax")),    1.0);

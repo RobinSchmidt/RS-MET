@@ -38,10 +38,9 @@ public:
   Label*            numCurvesLabel;
   Slider*           numCurvesSlider;
   Label*            xCurveLabel;
-  //Label*            xCurveEditLabel;
   RTextEntryField*  xCurveEditLabel;
   Label*            yCurveLabel;
-  Label*            yCurveEditLabel;
+  RTextEntryField*  yCurveEditLabel;
 
   // for the parameters:
   Label*            aLabel;
@@ -64,9 +63,9 @@ public:
   // for the minimum and maximum value of the parameter t
   Label*            samplingLabel;
   Label*            tMinLabel;
-  Label*            tMinEditLabel;
+  RTextEntryField*  tMinEditLabel;
   Label*            tMaxLabel;
-  Label*            tMaxEditLabel;
+  RTextEntryField*  tMaxEditLabel;
   //ToggleButton*     tExponentialSpacingButton;
 
   Label*            quickCalcLabel;
