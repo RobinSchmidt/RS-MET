@@ -853,15 +853,35 @@ void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& m
   float xL = (float) mapper.mapX(mapper.getInMinX());
   float xR = (float) mapper.mapX(mapper.getInMaxX());
   double y = spacing * floor(mapper.getInMinY() / spacing + 0.5);
+
   while(y < mapper.getInMaxY()) {
     float ym = (float) mapper.mapY(y);
     g.drawLine(xL, ym, xR, ym, thickness);
-    y += spacing;
-  }
+    y += spacing; // doesn't support log-spacing yet ...we should perhaps accumulate y in pixel
+  }               // coordinates
 }
 
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
-  double spacing)
+  double spacing, float thickness, Colour colour)
 {
+  // doesn't work yet because the mapper is not correctly set up for the SVG (it's set up for the
+  // Component in which it is called)
 
+  float xL = (float) mapper.mapX(mapper.getInMinX());
+  float xR = (float) mapper.mapX(mapper.getInMaxX());
+  double y = spacing * floor(mapper.getInMinY() / spacing + 0.5);
+
+  String gridPathDataString;
+  while(y < mapper.getInMaxY()) {
+    float ym = (float) mapper.mapY(y);
+    gridPathDataString += String("M ") + String(xL) + String(" ") + String(ym) + String(" ");
+    gridPathDataString += String("L ") + String(xR) + String(" ") + String(ym) + String(" ");
+    y += spacing;
+  }
+
+  XmlElement* gridPath = new XmlElement(String("path"));
+  gridPath->setAttribute(String("d"), gridPathDataString);
+  gridPath->setAttribute(String("style"), String("stroke-width: ") + String(thickness) + 
+    String("; stroke: #") + colour.toString().substring(2) + String(";") );
+  svg->addChildElement(gridPath);
 }

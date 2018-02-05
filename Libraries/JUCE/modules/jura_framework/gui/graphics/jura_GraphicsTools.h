@@ -118,7 +118,7 @@ JUCE_API void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<d
   double spacing, float thickness);
 
 JUCE_API void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
-  double spacing);
+  double spacing, float thickness, Colour colour);
 
 
 
