@@ -48,13 +48,58 @@
 #define JUCE_USE_DARK_SPLASH_SCREEN 1
 
 //==============================================================================
-#define JUCE_MODULE_AVAILABLE_juce_core                 1
-#define JUCE_MODULE_AVAILABLE_juce_data_structures      1
-#define JUCE_MODULE_AVAILABLE_juce_events               1
-#define JUCE_MODULE_AVAILABLE_juce_graphics             1
-#define JUCE_MODULE_AVAILABLE_juce_gui_basics           1
+#define JUCE_MODULE_AVAILABLE_juce_audio_basics          1
+#define JUCE_MODULE_AVAILABLE_juce_audio_formats         1
+#define JUCE_MODULE_AVAILABLE_juce_audio_processors      1
+#define JUCE_MODULE_AVAILABLE_juce_core                  1
+#define JUCE_MODULE_AVAILABLE_juce_data_structures       1
+#define JUCE_MODULE_AVAILABLE_juce_events                1
+#define JUCE_MODULE_AVAILABLE_juce_graphics              1
+#define JUCE_MODULE_AVAILABLE_juce_gui_basics            1
+#define JUCE_MODULE_AVAILABLE_juce_gui_extra             1
+#define JUCE_MODULE_AVAILABLE_jura_framework             1
+#define JUCE_MODULE_AVAILABLE_rapt                       1
+#define JUCE_MODULE_AVAILABLE_rosic                      1
 
 #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
+
+//==============================================================================
+// juce_audio_formats flags:
+
+#ifndef    JUCE_USE_FLAC
+ //#define JUCE_USE_FLAC 1
+#endif
+
+#ifndef    JUCE_USE_OGGVORBIS
+ //#define JUCE_USE_OGGVORBIS 1
+#endif
+
+#ifndef    JUCE_USE_MP3AUDIOFORMAT
+ //#define JUCE_USE_MP3AUDIOFORMAT 1
+#endif
+
+#ifndef    JUCE_USE_LAME_AUDIO_FORMAT
+ //#define JUCE_USE_LAME_AUDIO_FORMAT 1
+#endif
+
+#ifndef    JUCE_USE_WINDOWS_MEDIA_FORMAT
+ //#define JUCE_USE_WINDOWS_MEDIA_FORMAT 1
+#endif
+
+//==============================================================================
+// juce_audio_processors flags:
+
+#ifndef    JUCE_PLUGINHOST_VST
+ //#define JUCE_PLUGINHOST_VST 1
+#endif
+
+#ifndef    JUCE_PLUGINHOST_VST3
+ //#define JUCE_PLUGINHOST_VST3 1
+#endif
+
+#ifndef    JUCE_PLUGINHOST_AU
+ //#define JUCE_PLUGINHOST_AU 1
+#endif
 
 //==============================================================================
 // juce_core flags:
@@ -126,6 +171,17 @@
 
 #ifndef    JUCE_USE_XCURSOR
  //#define JUCE_USE_XCURSOR 1
+#endif
+
+//==============================================================================
+// juce_gui_extra flags:
+
+#ifndef    JUCE_WEB_BROWSER
+ //#define JUCE_WEB_BROWSER 1
+#endif
+
+#ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR
+ //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR 1
 #endif
 //==============================================================================
 #ifndef    JUCE_STANDALONE_APPLICATION
