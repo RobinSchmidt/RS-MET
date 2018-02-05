@@ -1116,7 +1116,8 @@ void RSPlotContentComponent::updateCalculatorResult()
 
   // get the string for x(t) from the editor-field:
   String xString = dataSetup->xCurveEditLabel->getText();
-  xString        = xString.upToFirstOccurrenceOf(String(("ß")), false, false);
+  //xString        = xString.upToFirstOccurrenceOf(String(("ß")), false, false); // triggers jassert
+  xString = xString.upToFirstOccurrenceOf(CharPointer_UTF8("ß"), false, false);
 
   // convert the juce-string to c-string:
   long  length = xString.length();
@@ -1148,7 +1149,8 @@ void RSPlotContentComponent::updateCalculatorResult()
   xVal = evaluator.evaluateExpression();
 
   String yString = dataSetup->yCurveEditLabel->getText();
-  yString        = yString.upToFirstOccurrenceOf(String(("ß")), false, false);
+  //yString = yString.upToFirstOccurrenceOf(String(("ß")), false, false);
+  yString = yString.upToFirstOccurrenceOf(CharPointer_UTF8("ß"), false, false);
   length = yString.length();
   char* yStringC = new char[length+1];
   yString.copyToUTF8(yStringC, length+1);
