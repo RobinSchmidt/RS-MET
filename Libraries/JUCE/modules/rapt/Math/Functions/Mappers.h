@@ -7,7 +7,7 @@ class rsMapper
 public:
 
   /** Subclasses need to override this function to perform the mapping. */
-  virtual T map(T x) = 0;
+  virtual T map(T x) const = 0;
 
   // maybe implement () operator (invkoes map)
 };
@@ -27,7 +27,7 @@ public:
 
   /** Subclasses must override this function to map the incoming xy-pair to the corresponding 
   outgoing pair. */
-  virtual void map(T *x, T *y) = 0;
+  virtual void map(T *x, T *y) const = 0;
 
 };
 
@@ -43,8 +43,8 @@ public:
   void setOutputRange(T newMin, T newMax);
   void setLogScaled(bool shoulBeLogScaled);
 
-  virtual T   map(T x) override;
-  virtual T unmap(T x);
+  virtual T   map(T x) const override;
+  virtual T unmap(T x) const;
 
   inline T getInMin()  const { return inMin;  }
   inline T getInMax()  const { return inMax;  }
@@ -71,13 +71,13 @@ public:
   void setInputRange( T minX, T maxX, T minY, T maxY);
   void setOutputRange(T minX, T maxX, T minY, T maxY);
 
-  virtual void   map(T *x, T *y) override;
-  virtual void unmap(T *x, T *y);
+  virtual void   map(T *x, T *y) const override;
+  virtual void unmap(T *x, T *y) const;
 
-  inline T   mapX(T x) { return mapperX.  map(x); }
-  inline T   mapY(T y) { return mapperY.  map(y); }
-  inline T unmapX(T x) { return mapperX.unmap(x); }
-  inline T unmapY(T y) { return mapperY.unmap(y); }
+  inline T   mapX(T x) const { return mapperX.  map(x); }
+  inline T   mapY(T y) const { return mapperY.  map(y); }
+  inline T unmapX(T x) const { return mapperX.unmap(x); }
+  inline T unmapY(T y) const { return mapperY.unmap(y); }
 
   inline T getInMinX()  const { return mapperX.getInMin();  }
   inline T getInMaxX()  const { return mapperX.getInMax();  }

@@ -239,7 +239,7 @@ void CoordinateSystemOld::mouseWheelMove(const MouseEvent &e, const MouseWheelDe
 void CoordinateSystemOld::resized()
 {
   //coordinateMapper.setOutputRange(0, getWidth()-1, 0, getHeight()-1);
-  coordinateMapper.setOutputRange(0, getWidth()-1, -(getHeight()-1), 0); // or like this?
+  coordinateMapper.setOutputRange(0, getWidth()-1, getHeight()-1, 0); // or like this?
 
   updateScaleFactors();
   if(autoReRenderImage == true)
@@ -1641,6 +1641,11 @@ void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval,
                                           float lineThickness,
                                           Image* targetImage, XmlElement *targetSVG)
 {
+  g.setColour(gridColour);
+  jura::drawHorizontalGrid(g, coordinateMapper, interval, lineThickness);
+
+
+  /*
   if( exponentialSpacing == true )
   {
     jassert( interval >= 1.00001 );
@@ -1785,6 +1790,8 @@ void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval,
       String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
     targetSVG->addChildElement(gridPath);
   }
+
+  */
 }
 
 void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval, 

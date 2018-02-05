@@ -847,13 +847,20 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
 
 //=================================================================================================
 
-void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper<double>& mapper,
-  double spacing)
+void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, float thickness)
 {
-
+  float xL = (float) mapper.mapX(mapper.getInMinX());
+  float xR = (float) mapper.mapX(mapper.getInMaxX());
+  double y = spacing * floor(mapper.getInMinY() / spacing + 0.5);
+  while(y < mapper.getInMaxY()) {
+    float ym = (float) mapper.mapY(y);
+    g.drawLine(xL, ym, xR, ym, thickness);
+    y += spacing;
+  }
 }
 
-void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper<double>& mapper,
+void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
   double spacing)
 {
 

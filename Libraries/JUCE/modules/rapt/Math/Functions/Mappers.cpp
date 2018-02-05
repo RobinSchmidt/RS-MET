@@ -19,7 +19,7 @@ void rsCoordinateMapper<T>::setLogScaled(bool shoulBeLogScaled)
 }
 
 template<class T>
-T rsCoordinateMapper<T>::map(T x)
+T rsCoordinateMapper<T>::map(T x) const
 {
   if(logScaled)
     return rsLinToExp(x, inMin, inMax, outMin, outMax);
@@ -27,7 +27,7 @@ T rsCoordinateMapper<T>::map(T x)
 }
 
 template<class T>
-T rsCoordinateMapper<T>::unmap(T x)
+T rsCoordinateMapper<T>::unmap(T x) const
 {
   if(logScaled)
     return rsExpToLin(x, outMin, outMax, inMin, inMax);
@@ -53,14 +53,14 @@ void rsCoordinateMapper2D<T>::setOutputRange(T minX, T maxX, T minY, T maxY)
 }
 
 template<class T>
-void rsCoordinateMapper2D<T>::map(T *x, T *y)
+void rsCoordinateMapper2D<T>::map(T *x, T *y) const
 {
   *x = mapX(*x);
   *y = mapY(*y);
 }
 
 template<class T>
-void rsCoordinateMapper2D<T>::unmap(T *x, T *y)
+void rsCoordinateMapper2D<T>::unmap(T *x, T *y) const
 {
   *x = unmapX(*x);
   *y = unmapY(*y);

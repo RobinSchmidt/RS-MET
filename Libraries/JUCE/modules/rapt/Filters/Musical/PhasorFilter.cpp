@@ -159,7 +159,7 @@ void rsPhasorStateMapper<T>::setPostNormalizeSaturation(T c)
 }
 
 template<class T>
-void rsPhasorStateMapper<T>::map(T *xInOut, T *yInOut)
+void rsPhasorStateMapper<T>::map(T *xInOut, T *yInOut) const
 {
   T x = *xInOut;
   T y = *yInOut;

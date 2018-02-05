@@ -121,7 +121,7 @@ public:
 
   /** \name Mapping */
 
-  virtual void map(T *x, T *y) override;
+  virtual void map(T *x, T *y) const override;
 
 protected:
 
