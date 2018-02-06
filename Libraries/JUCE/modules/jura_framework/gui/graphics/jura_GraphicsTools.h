@@ -134,6 +134,10 @@ JUCE_API void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<doub
 JUCE_API void drawVerticalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
 
+JUCE_API void drawAxisValuesX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double spacing, double yPosition, juce::String (*xToString) (double x), Colour textColor);
+
+
 //=================================================================================================
 // corresponding functions that create the svg elements instead of drawing to a Graphics object
 

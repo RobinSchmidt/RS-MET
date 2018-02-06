@@ -2381,6 +2381,31 @@ void CoordinateSystemOld::drawAxisLabelY(juce::Graphics &g, Image* targetImage, 
 
 void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
+  // new:
+  if( axisValuesPositionX == NO_ANNOTATION )
+    return;
+
+  double yPos = 0.0;
+  if( axisPositionX == BOTTOM )
+    yPos = coordinateMapper.unmapY(8);
+  else if( axisPositionX == TOP )
+    yPos = coordinateMapper.unmapY(getHeight()-8);  // should this be the other way around?
+  double spacing = verticalCoarseGridInterval;
+
+  if(targetSVG != nullptr)
+  {
+    //jura::drawAxisValuesX(targetSVG, coordinateMapper, spacing, yPos, stringConversionForAxisX,
+    //  plotColourScheme.axes);
+  }
+  else
+  {
+    g.setColour(plotColourScheme.axes);
+    jura::drawAxisValuesX(g, coordinateMapper, spacing, yPos, stringConversionForAxisX,
+      plotColourScheme.text);
+  }
+
+  /*
+  // old:
   if( logScaledX == true )
   {
     jassert( verticalCoarseGridInterval >= 1.00001 );
@@ -2581,6 +2606,7 @@ void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEl
       i++;
     }
   }
+  */
 }
 
 void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlElement *targetSVG)

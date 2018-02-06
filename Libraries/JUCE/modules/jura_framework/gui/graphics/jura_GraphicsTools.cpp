@@ -918,8 +918,28 @@ void drawVerticalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& map
   double x, dx; 
   initGridDrawing(mapper.mapperX, spacing, x, dx);
   while(x < mapper.getOutMaxX()) {
-    g.drawLine(float(x), yB, float(x), yT, thickness); // juce doc says, it's better to use fillRect
+    g.drawLine(float(x), yB, float(x), yT, thickness);
     x += dx; }
+}
+
+void drawAxisValuesX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, double yPos, juce::String (*xToString) (double x), Colour textColor)
+{
+  float  y = (float) mapper.mapY(yPos); // in pixels
+  double yt = y+8;                      // text-position
+  Justification just(Justification::centredBottom);
+  if(y > 10) { yt = y-8; just = Justification::centredTop; }
+  double x, dx;
+  initGridDrawing(mapper.mapperX, spacing, x, dx);
+
+  while(x < mapper.getOutMaxX()) 
+  {
+    g.drawLine(float(x), y-4.f, float(x), y+4.f, 1.f);
+    drawBitmapText(g, xToString(mapper.unmapX(x)), x-10, yt, 20, 20, &normalFont7px, just, 
+      textColor);
+
+    x += dx; 
+  }
 }
 
 //=================================================================================================
