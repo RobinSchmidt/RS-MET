@@ -150,6 +150,10 @@ JUCE_API void drawAxisValuesY(XmlElement* svg, const RAPT::rsCoordinateMapper2D<
   double spacing, double xPosition, juce::String (*yToString) (double y), Colour textColor);
 
 
+JUCE_API void drawVerticalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double spacing, float thickness, Colour colour);
+
+
 
 
 

@@ -1031,3 +1031,25 @@ void drawAxisValuesY(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& 
     addTextToSvgDrawing(svg, yToString(mapper.unmapY(y)), float(xt), float(y)+4.f, just, color);
     y += dy; }
 }
+
+void drawVerticalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, float thickness, Colour colour)
+{
+  float yB = (float) mapper.mapY(mapper.getInMinY());
+  float yT = (float) mapper.mapY(mapper.getInMaxY());
+  double x, dx; 
+  initGridDrawing(mapper.mapperX, spacing, x, dx);
+  String gridPathDataString;
+
+  while(x < mapper.getOutMaxX()) {
+    gridPathDataString += String("M ") + String(x) + String(" ") + String(yB) + String(" ");
+    gridPathDataString += String("L ") + String(x) + String(" ") + String(yT) + String(" ");
+    x += dx; }
+
+  // factor out (duplicated from drawHorizontalGrid):
+  XmlElement* gridPath = new XmlElement(String("path"));
+  gridPath->setAttribute(String("d"), gridPathDataString);
+  gridPath->setAttribute(String("style"), String("stroke-width: ") + String(thickness) + 
+    String("; stroke: #") + colour.toString().substring(2) + String(";") );
+  svg->addChildElement(gridPath);
+}

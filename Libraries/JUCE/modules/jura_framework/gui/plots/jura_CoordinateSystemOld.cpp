@@ -1827,9 +1827,7 @@ void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval,
   // new:
   g.setColour(gridColour);
   if(targetSVG != nullptr)
-  {
-    //jura::drawVerticalGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
-  }
+    jura::drawVerticalGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
   else
     jura::drawVerticalGrid(g, coordinateMapper, interval, lineThickness);
 
