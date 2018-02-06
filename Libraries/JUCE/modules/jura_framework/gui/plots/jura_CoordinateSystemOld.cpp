@@ -1664,10 +1664,10 @@ void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval,
 {
   // new:
   g.setColour(gridColour);
-  jura::drawHorizontalGrid(g, coordinateMapper, interval, lineThickness);
   if(targetSVG != nullptr)
     jura::drawHorizontalGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
-
+  else
+    jura::drawHorizontalGrid(g, coordinateMapper, interval, lineThickness);
 
   /*
   // old:
@@ -2577,13 +2577,25 @@ void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEl
   // new:
   if( axisValuesPositionY == NO_ANNOTATION )
     return;
+
   double xPos = 0.0; // allow for left or right, too
+  if( axisPositionY == LEFT )
+    xPos = coordinateMapper.unmapX(8);
+  else if( axisPositionY == RIGHT )
+    xPos = coordinateMapper.unmapX(getWidth()-8);
   double spacing = horizontalCoarseGridInterval;
-  g.setColour(plotColourScheme.axes);
-  jura::drawAxisValuesY(g, coordinateMapper, spacing, xPos, stringConversionForAxisY, 
-    plotColourScheme.text);
-  //if(targetSVG != nullptr)
-  //  jura::drawAxisValuesY(targetSVG, coordinateMapper, spacing, plotColourScheme.axes);
+
+  if(targetSVG != nullptr)
+  {
+    //jura::drawAxisValuesY(targetSVG, coordinateMapper, spacing, plotColourScheme.axes);
+  }
+  else
+  {
+    g.setColour(plotColourScheme.axes);
+    jura::drawAxisValuesY(g, coordinateMapper, spacing, xPos, stringConversionForAxisY,
+      plotColourScheme.text);
+  }
+
 
 
   /*

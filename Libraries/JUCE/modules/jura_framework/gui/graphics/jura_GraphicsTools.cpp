@@ -889,6 +889,8 @@ void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
   double y = spacing * floor(mapper.getInMinY() / spacing + 0.5); // still in model coords
 
   bool valuesLeft = true; // make this dependent on x
+  if(x < 10)
+    valuesLeft = false;
 
   while(y < mapper.getInMaxY()) 
   {
