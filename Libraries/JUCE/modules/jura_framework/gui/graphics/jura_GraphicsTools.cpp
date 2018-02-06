@@ -881,7 +881,7 @@ void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& m
   //  y += spacing; // doesn't support log-spacing yet ...we should perhaps accumulate y in pixel
   //}               // coordinates
 
-  // init:
+  // init (factor out, if possible):
   double y, dy;
   if(mapper.isLogScaledY())
   {
@@ -908,20 +908,46 @@ void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
   double spacing, double xPos, juce::String (*yToString) (double y), Colour textColor)
 {
   float  x = (float) mapper.mapX(xPos); // in pixels
-  double y = spacing * floor(mapper.getInMinY() / spacing + 0.5); // still in model coords
 
   // text-position:
   double xt = x+4; 
   Justification just(Justification::centredLeft);
   if(x > 10) { xt = x-25; just = Justification::centredRight; }
 
+  // init (factor out, if possible):
+  double y, dy;
+  if(mapper.isLogScaledY())
+  {
+    double k = ceil(RAPT::rsLogB(mapper.getInMinY(), spacing));
+    y  = pow(spacing, k);
+    y  = mapper.mapY(y);
+    dy = mapper.mapY(spacing) - mapper.mapY(1);
+  }
+  else
+  {
+    y  = spacing * floor(mapper.getInMinY() / spacing + 0.5);
+    y  = mapper.mapY(y);
+    dy = mapper.mapY(spacing) - mapper.mapY(0);
+  }
+
+  // loop:
+  while(y > mapper.getOutMaxY()) {
+    g.drawLine(x-4.f, float(y), x+4.f, float(y), 1.f); // juce doc says, it's better to use fillRect
+    drawBitmapText(g, yToString(mapper.unmapY(y)), xt, y-10, 20, 20, &normalFont7px, just, textColor);
+    y += dy;
+  }
+
+
+  /*
+  double y = spacing * floor(mapper.getInMinY() / spacing + 0.5); // still in model coords
   while(y < mapper.getInMaxY()) 
   {
     float ym = (float) mapper.mapY(y);
     g.drawLine(x-4.f, ym, x+4.f, ym, 1.f); // juce doc says, it's better to use fillRect
     drawBitmapText(g, yToString(y), xt, ym-10, 20, 20, &normalFont7px, just, textColor);
     y += spacing;                          // doesn't support log-spacing 
-  }  
+  } 
+  */
 }
 
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
