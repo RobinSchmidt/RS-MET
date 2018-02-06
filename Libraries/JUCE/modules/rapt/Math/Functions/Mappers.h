@@ -49,7 +49,7 @@ public:
   inline T getInMin()  const { return inMin;  }
   inline T getInMax()  const { return inMax;  }
   inline T getOutMin() const { return outMin; }
-  inline T getOutMax() const { return outMin; }
+  inline T getOutMax() const { return outMax; }
 
 protected:
 

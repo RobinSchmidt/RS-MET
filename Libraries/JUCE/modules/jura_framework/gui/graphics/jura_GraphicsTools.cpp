@@ -875,11 +875,19 @@ void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& m
   float xR = (float) mapper.mapX(mapper.getInMaxX());
   double y = spacing * floor(mapper.getInMinY() / spacing + 0.5);
 
-  while(y < mapper.getInMaxY()) {
-    float ym = (float) mapper.mapY(y);
-    g.drawLine(xL, ym, xR, ym, thickness); // juce doc says, it's better to use fillRect
-    y += spacing; // doesn't support log-spacing yet ...we should perhaps accumulate y in pixel
-  }               // coordinates
+  //while(y < mapper.getInMaxY()) {
+  //  float ym = (float) mapper.mapY(y);
+  //  g.drawLine(xL, ym, xR, ym, thickness); // juce doc says, it's better to use fillRect
+  //  y += spacing; // doesn't support log-spacing yet ...we should perhaps accumulate y in pixel
+  //}               // coordinates
+
+  y = mapper.mapY(y);
+  spacing = mapper.mapY(spacing) - mapper.mapY(0);
+  double maxY = mapper.getOutMaxY();
+  while(y > maxY) {                     // > because pixel y-axis goes down
+    g.drawLine(xL, float(y), xR, float(y), thickness); // juce doc says, it's better to use fillRect
+    y += spacing;
+  }
 }
 
 void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
