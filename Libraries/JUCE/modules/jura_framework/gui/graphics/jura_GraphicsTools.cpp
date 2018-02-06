@@ -846,7 +846,7 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
 }
 
 //=================================================================================================
-// coordinate system drawing stuff
+// coordinate system drawing:
 
 void drawBitmapText(Graphics &g, const String &text, double x, double y, double w, double h,
   BitmapFont const* font, Justification justification, Colour color)
@@ -910,26 +910,83 @@ void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
     y += dy; }
 }
 
+//=================================================================================================
+// coordinate system drawing for svg export:
+
+void addLineToSvgDrawing(XmlElement* svg, float x1, float y1, float x2, float y2,
+  float thickness, Colour color, bool withArrowHead)
+{
+  XmlElement* line = new XmlElement(String("line"));
+  line->setAttribute(String("x1"), x1);
+  line->setAttribute(String("y1"), y1);
+  if( withArrowHead == true && y1 == y2 )
+    line->setAttribute(String("x2"), x2-8);
+  else
+    line->setAttribute(String("x2"), x2);
+
+  if( withArrowHead == true && x1 == x2 )
+    line->setAttribute(String("y2"), y2+8);
+  else
+    line->setAttribute(String("y2"), y2);
+
+  line->setAttribute(String("style"), String("stroke-width: ") + String(thickness) + 
+    String("; stroke: #") + color.toString().substring(2) + String(";") );
+  svg->addChildElement(line);
+
+  if( withArrowHead == true )
+  {
+    XmlElement* triangle = new XmlElement(String("path"));
+
+    if( y1 == y2 ) // this is a horizontal rightward arrow 
+    {
+      triangle->setAttribute(String("d"), 
+        String("M ")   + String(x2-8) + String(" ") + String(y2-4) + 
+        String(", L ") + String(x2-8) + String(" ") + String(y2+4) + 
+        String(", L ") + String(x2)   + String(" ") + String(y2)   + 
+        String(", Z") );
+      triangle->setAttribute(String("style"), String("stroke: none, fill: #") 
+        + color.toString().substring(2) + String(";") );
+    }
+    else if( x1 == x2 ) // this is an upward verzical rightward arrow 
+    {
+      triangle->setAttribute(String("d"), 
+        String("M ")   + String(x2-4) + String(" ") + String(y2+8) + 
+        String(", L ") + String(x2+4) + String(" ") + String(y2+8) + 
+        String(", L ") + String(x2)   + String(" ") + String(y2)   + 
+        String(", Z") );
+      triangle->setAttribute(String("style"), String("stroke: none, fill: #") 
+        + color.toString().substring(2) + String(";") );
+    }
+    svg->addChildElement(triangle);
+  }
+}
+
+void addTextToSvgDrawing(XmlElement* svg, juce::String theText, float x, float y,
+  Justification justification, Colour color)
+{
+  XmlElement* textContainer = new XmlElement(String("text"));
+  XmlElement* text = XmlElement::createTextElement(theText);
+
+  String jString = String::empty;
+  if( justification.getFlags() == Justification::centredLeft )
+    jString = String("start");
+  else if( justification.getFlags() == Justification::centred )
+    jString = String("middle");
+  else if( justification.getFlags() == Justification::centredRight )
+    jString = String("end");
+
+  textContainer->setAttribute(String("x"), x);
+  textContainer->setAttribute(String("y"), y);
+  textContainer->setAttribute(String("style"), String("font-family: sans-serif;") +  
+    String(" font-size: 12px;") + String(" stroke: none;") + String(" fill: black;") +
+    String(" text-anchor: ") + jString + String(";") );
+  textContainer->addChildElement(text);
+  svg->addChildElement(textContainer);
+}
+
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
   double spacing, float thickness, Colour colour)
 {
-  /*
-  // doesn't work yet because the mapper is not correctly set up for the SVG (it's set up for the
-  // Component in which it is called)
-
-  float xL = (float) mapper.mapX(mapper.getInMinX());
-  float xR = (float) mapper.mapX(mapper.getInMaxX());
-  double y = spacing * floor(mapper.getInMinY() / spacing + 0.5);
-
-  String gridPathDataString;
-  while(y < mapper.getInMaxY()) {
-    float ym = (float) mapper.mapY(y);
-    gridPathDataString += String("M ") + String(xL) + String(" ") + String(ym) + String(" ");
-    gridPathDataString += String("L ") + String(xR) + String(" ") + String(ym) + String(" ");
-    y += spacing;
-  }
-  */
-
   float xL = (float) mapper.mapX(mapper.getInMinX());
   float xR = (float) mapper.mapX(mapper.getInMaxX());
   double y, dy; 
@@ -939,7 +996,6 @@ void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double
   while(y > mapper.getOutMaxY()) {
     gridPathDataString += String("M ") + String(xL) + String(" ") + String(y) + String(" ");
     gridPathDataString += String("L ") + String(xR) + String(" ") + String(y) + String(" ");
-    y += spacing;
     y += dy; }
 
   XmlElement* gridPath = new XmlElement(String("path"));
@@ -947,4 +1003,19 @@ void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double
   gridPath->setAttribute(String("style"), String("stroke-width: ") + String(thickness) + 
     String("; stroke: #") + colour.toString().substring(2) + String(";") );
   svg->addChildElement(gridPath);
+}
+
+void drawAxisValuesY(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, double xPos, juce::String (*yToString) (double y), Colour color)
+{
+  float  x = (float) mapper.mapX(xPos); // in pixels
+  double xt = x+8;                      // text-position...why not float?
+  Justification just(Justification::centredLeft);
+  if(x > 10) { xt = x-8; just = Justification::centredRight; }
+  double y, dy;
+  initGridDrawing(mapper.mapperY, spacing, y, dy);
+  while(y > mapper.getOutMaxY()) {
+    addLineToSvgDrawing(svg, x-4.f, float(y), x+4.f, float(y), 1.0, color, false);
+    addTextToSvgDrawing(svg, yToString(mapper.unmapY(y)), float(xt), float(y)+4.f, just, color);
+    y += dy; }
 }

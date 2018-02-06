@@ -120,7 +120,8 @@ JUCE_API void drawBitmapText(Graphics &g, const juce::String &text, double x, do
   double w, double h, BitmapFont const* font, Justification justification, Colour color);
   // this is specifically used in coordinate-system drawing - maybe make this more general, rename
 
-
+/** Draws equidistant horizontal grid-lines. The spacing must be given in model coordinates and 
+will be interpreted as a factor in the case of a logarithmic y-axis. */
 JUCE_API void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
 
@@ -129,8 +130,21 @@ color the Graphics object is set up to, values are drawn in textColor. */
 JUCE_API void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, double xPosition, juce::String (*yToString) (double y), Colour textColor);
 
+
+//=================================================================================================
+// corresponding functions that create the svg elements instead of drawing to a Graphics object
+
+JUCE_API void addLineToSvgDrawing(XmlElement* svg, float x1, float y1, float x2, float y2,
+  float thickness, Colour color, bool withArrowHead = false);
+
+JUCE_API void addTextToSvgDrawing(XmlElement* svg, juce::String text, float x, float y,
+  Justification justification, Colour color);
+
 JUCE_API void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness, Colour colour);
+
+JUCE_API void drawAxisValuesY(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double spacing, double xPosition, juce::String (*yToString) (double y), Colour textColor);
 
 
 

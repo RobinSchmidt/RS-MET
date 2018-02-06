@@ -2587,7 +2587,8 @@ void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEl
 
   if(targetSVG != nullptr)
   {
-    //jura::drawAxisValuesY(targetSVG, coordinateMapper, spacing, plotColourScheme.axes);
+    jura::drawAxisValuesY(targetSVG, coordinateMapper, spacing, xPos, stringConversionForAxisY,
+      plotColourScheme.axes);
   }
   else
   {
