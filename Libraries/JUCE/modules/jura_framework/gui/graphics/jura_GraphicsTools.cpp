@@ -863,6 +863,12 @@ void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& m
   // when exporting to an image, this doesn't work
 }
 
+void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, double xPosition)
+{
+
+}
+
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
   double spacing, float thickness, Colour colour)
 {

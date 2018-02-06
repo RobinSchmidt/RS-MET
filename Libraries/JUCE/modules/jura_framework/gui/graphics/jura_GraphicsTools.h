@@ -112,13 +112,19 @@ JUCE_API void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2
   double xMin, double yMin, double xMax, double yMax);
 
 //=================================================================================================
-// functions for coordinate system drawing:
+// functions for coordinate system drawing (they replace the old, clunky and inflexible member 
+// functions of CoordinateSystemOld):
 
 JUCE_API void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
 
+JUCE_API void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double spacing, double xPosition);
+
 JUCE_API void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness, Colour colour);
+
+
 
 
 

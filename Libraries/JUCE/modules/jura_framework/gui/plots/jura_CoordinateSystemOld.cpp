@@ -2574,6 +2574,17 @@ void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEl
 
 void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
+  // new:
+  double xPos = 0.0; // allow for left or right, too
+  double spacing = horizontalCoarseGridInterval;
+  g.setColour(plotColourScheme.axes);
+  jura::drawAxisValuesY(g, coordinateMapper, spacing, xPos);
+  //if(targetSVG != nullptr)
+  //  jura::drawAxisValuesY(targetSVG, coordinateMapper, spacing, plotColourScheme.axes);
+
+
+  /*
+  // old:
   if( logScaledY == true )
   {
     jassert( horizontalCoarseGridInterval >= 1.00001 );
@@ -2780,6 +2791,8 @@ void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEl
       i++;
     }  // end while
   }
+  */
+
 }
 
 void CoordinateSystemOld::updateScaleFactors()
