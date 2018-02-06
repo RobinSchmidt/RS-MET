@@ -913,6 +913,7 @@ void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
   double spacing, float thickness, Colour colour)
 {
+  /*
   // doesn't work yet because the mapper is not correctly set up for the SVG (it's set up for the
   // Component in which it is called)
 
@@ -927,6 +928,19 @@ void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double
     gridPathDataString += String("L ") + String(xR) + String(" ") + String(ym) + String(" ");
     y += spacing;
   }
+  */
+
+  float xL = (float) mapper.mapX(mapper.getInMinX());
+  float xR = (float) mapper.mapX(mapper.getInMaxX());
+  double y, dy; 
+  initGridDrawing(mapper.mapperY, spacing, y, dy);
+  String gridPathDataString;
+
+  while(y > mapper.getOutMaxY()) {
+    gridPathDataString += String("M ") + String(xL) + String(" ") + String(y) + String(" ");
+    gridPathDataString += String("L ") + String(xR) + String(" ") + String(y) + String(" ");
+    y += spacing;
+    y += dy; }
 
   XmlElement* gridPath = new XmlElement(String("path"));
   gridPath->setAttribute(String("d"), gridPathDataString);
