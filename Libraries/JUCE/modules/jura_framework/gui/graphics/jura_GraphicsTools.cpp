@@ -910,6 +910,18 @@ void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
     y += dy; }
 }
 
+void drawVerticalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, float thickness)
+{
+  float yB = (float) mapper.mapY(mapper.getInMinY());
+  float yT = (float) mapper.mapY(mapper.getInMaxY());
+  double x, dx; 
+  initGridDrawing(mapper.mapperX, spacing, x, dx);
+  while(x < mapper.getOutMaxX()) {
+    g.drawLine(float(x), yB, float(x), yT, thickness); // juce doc says, it's better to use fillRect
+    x += dx; }
+}
+
 //=================================================================================================
 // coordinate system drawing for svg export:
 

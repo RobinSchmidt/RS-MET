@@ -1824,6 +1824,18 @@ void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval,
                                         float lineThickness,
                                         Image* targetImage, XmlElement *targetSVG)
 {
+  // new:
+  g.setColour(gridColour);
+  if(targetSVG != nullptr)
+  {
+    //jura::drawVerticalGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
+  }
+  else
+    jura::drawVerticalGrid(g, coordinateMapper, interval, lineThickness);
+
+
+  /*
+  // old:
   if( exponentialSpacing == true )
   {
     jassert( interval >= 1.00001 );
@@ -1967,6 +1979,7 @@ void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval,
       + String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
     targetSVG->addChildElement(gridPath);
   }
+  */
 }
 
 void CoordinateSystemOld::drawRadialGrid(Graphics &g, double interval, 
