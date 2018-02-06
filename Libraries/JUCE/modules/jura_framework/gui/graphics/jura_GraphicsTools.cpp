@@ -1070,3 +1070,19 @@ void drawVerticalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>&
     String("; stroke: #") + colour.toString().substring(2) + String(";") );
   svg->addChildElement(gridPath);
 }
+
+void drawAxisValuesX(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, double yPos, juce::String (*xToString) (double x), Colour color)
+{
+  float y = (float) mapper.mapY(yPos); // in pixels
+  double x, dx;
+  initGridDrawing(mapper.mapperX, spacing, x, dx);
+  double yt = y+12; 
+  Justification just(Justification::centred);
+  if(y > mapper.getOutMinY() - 10) 
+    yt = y-28;
+  while(x < mapper.getOutMaxX()) {
+    addLineToSvgDrawing(svg, float(x), y-4.f, float(x), y+4.f, 1.f, color, false);
+    addTextToSvgDrawing(svg, xToString(mapper.unmapX(x)), float(x), float(yt), just, color);
+    x += dx; }
+}

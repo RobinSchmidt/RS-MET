@@ -2393,10 +2393,8 @@ void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEl
   double spacing = verticalCoarseGridInterval;
 
   if(targetSVG != nullptr)
-  {
-    //jura::drawAxisValuesX(targetSVG, coordinateMapper, spacing, yPos, stringConversionForAxisX,
-    //  plotColourScheme.axes);
-  }
+    jura::drawAxisValuesX(targetSVG, coordinateMapper, spacing, yPos, stringConversionForAxisX,
+      plotColourScheme.axes);
   else
   {
     g.setColour(plotColourScheme.axes);
