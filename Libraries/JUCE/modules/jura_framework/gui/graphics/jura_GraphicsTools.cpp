@@ -888,23 +888,16 @@ void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
   float  x = (float) mapper.mapX(xPos); // in pixels
   double y = spacing * floor(mapper.getInMinY() / spacing + 0.5); // still in model coords
 
-  bool valuesLeft = true; // make this dependent on x
-  if(x < 10)
-    valuesLeft = false;
+  // text-position:
+  double xt = x+4; 
+  Justification just(Justification::centredLeft);
+  if(x > 10) { xt = x-25; just = Justification::centredRight; }
 
   while(y < mapper.getInMaxY()) 
   {
     float ym = (float) mapper.mapY(y);
     g.drawLine(x-4.f, ym, x+4.f, ym, 1.f); // juce doc says, it's better to use fillRect
-
-    juce::String numStr = yToString(y);
-    if( valuesLeft )
-      drawBitmapText(g, numStr, (int)x-25, (int)ym-10, 20, 20, &normalFont7px, 
-        Justification::centredRight, textColor);
-    else
-      drawBitmapText(g, numStr, (int)x+4, (int)ym-10, 20, 20, &normalFont7px, 
-        Justification::centredLeft, textColor);
-
+    drawBitmapText(g, yToString(y), xt, ym-10, 20, 20, &normalFont7px, just, textColor);
     y += spacing;                          // doesn't support log-spacing 
   }  
 }
