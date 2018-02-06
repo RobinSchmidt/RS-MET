@@ -2387,9 +2387,9 @@ void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEl
 
   double yPos = 0.0;
   if( axisPositionX == BOTTOM )
-    yPos = coordinateMapper.unmapY(8);
+    yPos = coordinateMapper.unmapY(getHeight()-8);
   else if( axisPositionX == TOP )
-    yPos = coordinateMapper.unmapY(getHeight()-8);  // should this be the other way around?
+    yPos = coordinateMapper.unmapY(8);
   double spacing = verticalCoarseGridInterval;
 
   if(targetSVG != nullptr)
