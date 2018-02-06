@@ -868,86 +868,46 @@ void drawBitmapText(Graphics &g, const String &text, double x, double y, double 
   drawBitmapFontText(g, xInt, yInt, text, font, color, -1, justification);
 }
 
+void initGridDrawing(const RAPT::rsCoordinateMapper<double>& mapper, double spacing,
+  double& start, double& delta)
+{
+  if(mapper.isLogScaled()) {
+    double k = ceil(RAPT::rsLogB(mapper.getInMin(), spacing)) + 1;
+    start = pow(spacing, k);
+    start = mapper.map(start);
+    delta = mapper.map(spacing) - mapper.map(1); }
+  else {
+    start = spacing * floor(mapper.getInMin() / spacing + 0.5); // use ceil
+    start = mapper.map(start);
+    delta = mapper.map(spacing) - mapper.map(0); }
+}
+
 void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
   double spacing, float thickness)
 {
   float xL = (float) mapper.mapX(mapper.getInMinX());
   float xR = (float) mapper.mapX(mapper.getInMaxX());
-
-
-  //while(y < mapper.getInMaxY()) {
-  //  float ym = (float) mapper.mapY(y);
-  //  g.drawLine(xL, ym, xR, ym, thickness); // juce doc says, it's better to use fillRect
-  //  y += spacing; // doesn't support log-spacing yet ...we should perhaps accumulate y in pixel
-  //}               // coordinates
-
-  // init (factor out, if possible):
-  double y, dy;
-  if(mapper.isLogScaledY())
-  {
-    double k = ceil(RAPT::rsLogB(mapper.getInMinY(), spacing)) + 1;
-    y  = pow(spacing, k);
-    y  = mapper.mapY(y);
-    dy = mapper.mapY(spacing) - mapper.mapY(1);
-  }
-  else
-  {
-    y  = spacing * floor(mapper.getInMinY() / spacing + 0.5);
-    y  = mapper.mapY(y);
-    dy = mapper.mapY(spacing) - mapper.mapY(0);
-  }
-
-  // loop:
+  double y, dy; 
+  initGridDrawing(mapper.mapperY, spacing, y, dy);
   while(y > mapper.getOutMaxY()) {                     // > because pixel y-axis goes down
     g.drawLine(xL, float(y), xR, float(y), thickness); // juce doc says, it's better to use fillRect
-    y += dy;
-  }
+    y += dy; }
 }
 
 void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
   double spacing, double xPos, juce::String (*yToString) (double y), Colour textColor)
 {
   float  x = (float) mapper.mapX(xPos); // in pixels
-
-  // text-position:
-  double xt = x+4; 
+  double xt = x+4;                      // text-position
   Justification just(Justification::centredLeft);
   if(x > 10) { xt = x-25; just = Justification::centredRight; }
-
-  // init (factor out, if possible):
   double y, dy;
-  if(mapper.isLogScaledY())
-  {
-    double k = ceil(RAPT::rsLogB(mapper.getInMinY(), spacing)) + 1;
-    y  = pow(spacing, k);
-    y  = mapper.mapY(y);
-    dy = mapper.mapY(spacing) - mapper.mapY(1);
-  }
-  else
-  {
-    y  = spacing * floor(mapper.getInMinY() / spacing + 0.5);
-    y  = mapper.mapY(y);
-    dy = mapper.mapY(spacing) - mapper.mapY(0);
-  }
-
-  // loop:
-  while(y > mapper.getOutMaxY()) {
+  initGridDrawing(mapper.mapperY, spacing, y, dy);
+  while(y > mapper.getOutMaxY()) {                     // loop over the tics
     g.drawLine(x-4.f, float(y), x+4.f, float(y), 1.f); // juce doc says, it's better to use fillRect
-    drawBitmapText(g, yToString(mapper.unmapY(y)), xt, y-10, 20, 20, &normalFont7px, just, textColor);
-    y += dy;
-  }
-
-
-  /*
-  double y = spacing * floor(mapper.getInMinY() / spacing + 0.5); // still in model coords
-  while(y < mapper.getInMaxY()) 
-  {
-    float ym = (float) mapper.mapY(y);
-    g.drawLine(x-4.f, ym, x+4.f, ym, 1.f); // juce doc says, it's better to use fillRect
-    drawBitmapText(g, yToString(y), xt, ym-10, 20, 20, &normalFont7px, just, textColor);
-    y += spacing;                          // doesn't support log-spacing 
-  } 
-  */
+    drawBitmapText(g, yToString(mapper.unmapY(y)), xt, y-10, 20, 20, &normalFont7px, just, 
+      textColor);
+    y += dy; }
 }
 
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
