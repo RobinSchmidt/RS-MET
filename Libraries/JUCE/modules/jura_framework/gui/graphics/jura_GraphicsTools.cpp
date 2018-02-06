@@ -926,27 +926,17 @@ void drawAxisValuesX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
   double spacing, double yPos, juce::String (*xToString) (double x), Colour textColor)
 {
   float  y = (float) mapper.mapY(yPos); // in pixels
-
-  // positioning not yet perfect - see old code hwo to do it better
-
-  double yt = y+7; 
-  Justification just(Justification::centredTop);
-  if(y > mapper.getOutMinY() - 10) 
-  { 
-    yt = y-25; just = Justification::centredBottom; 
-  }
-
   double x, dx;
   initGridDrawing(mapper.mapperX, spacing, x, dx);
-
-  while(x < mapper.getOutMaxX()) 
-  {
+  double yt = y+4; 
+  Justification just(Justification::centred);
+  if(y > mapper.getOutMinY() - 10) 
+    yt = y-20;
+  while(x < mapper.getOutMaxX()) {
     g.drawLine(float(x), y-4.f, float(x), y+4.f, 1.f);
-    drawBitmapText(g, xToString(mapper.unmapX(x)), x-10, yt, 20, 20, &normalFont7px, just, 
+    drawBitmapText(g, xToString(mapper.unmapX(x)), x-32, yt, 64, 16, &normalFont7px, just, 
       textColor);
-
-    x += dx; 
-  }
+    x += dx; }
 }
 
 //=================================================================================================
