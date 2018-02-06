@@ -885,7 +885,7 @@ void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& m
   double y, dy;
   if(mapper.isLogScaledY())
   {
-    double k = ceil(RAPT::rsLogB(mapper.getInMinY(), spacing));
+    double k = ceil(RAPT::rsLogB(mapper.getInMinY(), spacing)) + 1;
     y  = pow(spacing, k);
     y  = mapper.mapY(y);
     dy = mapper.mapY(spacing) - mapper.mapY(1);
@@ -918,7 +918,7 @@ void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
   double y, dy;
   if(mapper.isLogScaledY())
   {
-    double k = ceil(RAPT::rsLogB(mapper.getInMinY(), spacing));
+    double k = ceil(RAPT::rsLogB(mapper.getInMinY(), spacing)) + 1;
     y  = pow(spacing, k);
     y  = mapper.mapY(y);
     dy = mapper.mapY(spacing) - mapper.mapY(1);

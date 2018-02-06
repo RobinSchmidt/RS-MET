@@ -22,7 +22,7 @@ template<class T>
 T rsCoordinateMapper<T>::map(T x) const
 {
   if(logScaled)
-    return rsLinToExp(x, inMin, inMax, outMin, outMax);
+    return rsExpToLin(x, inMin, inMax, outMin, outMax);
   return rsLinToLin(x, inMin, inMax, outMin, outMax);
 }
 
@@ -30,7 +30,7 @@ template<class T>
 T rsCoordinateMapper<T>::unmap(T x) const
 {
   if(logScaled)
-    return rsExpToLin(x, outMin, outMax, inMin, inMax);
+    return rsLinToExp(x, outMin, outMax, inMin, inMax);
   return rsLinToLin(x, outMin, outMax, inMin, inMax);
 }
 
