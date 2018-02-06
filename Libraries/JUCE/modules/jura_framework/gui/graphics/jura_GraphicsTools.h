@@ -113,13 +113,21 @@ JUCE_API void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2
 
 //=================================================================================================
 // functions for coordinate system drawing (they replace the old, clunky and inflexible member 
-// functions of CoordinateSystemOld):
+// functions of CoordinateSystemOld) ...maybe put into a class CoordinateSystemDrawer - more
+// convenient (the functions tend to have too many parameters):
+
+JUCE_API void drawBitmapText(Graphics &g, const juce::String &text, double x, double y,
+  double w, double h, BitmapFont const* font, Justification justification, Colour color);
+  // this is specifically used in coordinate-system drawing - maybe make this more general, rename
+
 
 JUCE_API void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
 
+/** Draws tick marks for the y-axis with values next to them. Tick marks are drawn in whatever 
+color the Graphics object is set up to, values are drawn in textColor. */
 JUCE_API void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
-  double spacing, double xPosition);
+  double spacing, double xPosition, juce::String (*yToString) (double y), Colour textColor);
 
 JUCE_API void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness, Colour colour);

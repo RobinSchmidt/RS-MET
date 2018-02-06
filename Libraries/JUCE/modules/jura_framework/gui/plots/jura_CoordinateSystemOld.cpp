@@ -2575,10 +2575,13 @@ void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEl
 void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
   // new:
+  if( axisValuesPositionY == NO_ANNOTATION )
+    return;
   double xPos = 0.0; // allow for left or right, too
   double spacing = horizontalCoarseGridInterval;
   g.setColour(plotColourScheme.axes);
-  jura::drawAxisValuesY(g, coordinateMapper, spacing, xPos);
+  jura::drawAxisValuesY(g, coordinateMapper, spacing, xPos, stringConversionForAxisY, 
+    plotColourScheme.text);
   //if(targetSVG != nullptr)
   //  jura::drawAxisValuesY(targetSVG, coordinateMapper, spacing, plotColourScheme.axes);
 

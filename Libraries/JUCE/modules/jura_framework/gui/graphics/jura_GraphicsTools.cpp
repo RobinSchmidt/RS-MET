@@ -846,6 +846,27 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
 }
 
 //=================================================================================================
+// coordinate system drawing stuff
+
+void drawBitmapText(Graphics &g, const String &text, double x, double y, double w, double h,
+  BitmapFont const* font, Justification justification, Colour color)
+{
+  int hFlags = justification.getOnlyHorizontalFlags();
+  if(justification.testFlags(hFlags & Justification::horizontallyCentred))
+    x = (x+x+w)/2.0; // average between x and x+w
+  else if(justification.testFlags(hFlags & Justification::right))
+    x = x+w;
+
+  int vFlags = justification.getOnlyVerticalFlags();
+  if(justification.testFlags(vFlags & Justification::verticallyCentred))
+    y = (y+y+h)/2.0;
+  else if(justification.testFlags(vFlags & Justification::bottom))
+    y = y+h;
+
+  int  xInt = roundFloatToInt((float)x);
+  int  yInt = roundFloatToInt((float)y);
+  drawBitmapFontText(g, xInt, yInt, text, font, color, -1, justification);
+}
 
 void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
   double spacing, float thickness)
@@ -859,14 +880,31 @@ void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& m
     g.drawLine(xL, ym, xR, ym, thickness); // juce doc says, it's better to use fillRect
     y += spacing; // doesn't support log-spacing yet ...we should perhaps accumulate y in pixel
   }               // coordinates
-
-  // when exporting to an image, this doesn't work
 }
 
 void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
-  double spacing, double xPosition)
+  double spacing, double xPos, juce::String (*yToString) (double y), Colour textColor)
 {
+  float  x = (float) mapper.mapX(xPos); // in pixels
+  double y = spacing * floor(mapper.getInMinY() / spacing + 0.5); // still in model coords
 
+  bool valuesLeft = true; // make this dependent on x
+
+  while(y < mapper.getInMaxY()) 
+  {
+    float ym = (float) mapper.mapY(y);
+    g.drawLine(x-4.f, ym, x+4.f, ym, 1.f); // juce doc says, it's better to use fillRect
+
+    juce::String numStr = yToString(y);
+    if( valuesLeft )
+      drawBitmapText(g, numStr, (int)x-25, (int)ym-10, 20, 20, &normalFont7px, 
+        Justification::centredRight, textColor);
+    else
+      drawBitmapText(g, numStr, (int)x+4, (int)ym-10, 20, 20, &normalFont7px, 
+        Justification::centredLeft, textColor);
+
+    y += spacing;                          // doesn't support log-spacing 
+  }  
 }
 
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,

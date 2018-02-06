@@ -628,6 +628,7 @@ protected:
   /** Draws a text on the Coordinatesystem using a BitmapFont. */
   virtual void drawBitmapText(Graphics &g, const juce::String &text, double x, double y,
     double w, double h, BitmapFont const* font, Justification justification);
+    // obsolete
 
   virtual void updateBackgroundImage();
   /**< Updates the image object (re-draws it). Will be called, when something about the
