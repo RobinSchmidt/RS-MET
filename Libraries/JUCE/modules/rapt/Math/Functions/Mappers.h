@@ -50,6 +50,7 @@ public:
   inline T getInMax()  const { return inMax;  }
   inline T getOutMin() const { return outMin; }
   inline T getOutMax() const { return outMax; }
+  inline bool isLogScaled() const { return logScaled; }
 
 protected:
 
@@ -83,11 +84,13 @@ public:
   inline T getInMaxX()  const { return mapperX.getInMax();  }
   inline T getOutMinX() const { return mapperX.getOutMin(); }
   inline T getOutMaxX() const { return mapperX.getOutMax(); }
+  inline bool isLogScaledX() const { return mapperX.isLogScaled(); }
 
   inline T getInMinY()  const { return mapperY.getInMin();  }
   inline T getInMaxY()  const { return mapperY.getInMax();  }
   inline T getOutMinY() const { return mapperY.getOutMin(); }
   inline T getOutMaxY() const { return mapperY.getOutMax(); }
+  inline bool isLogScaledY() const { return mapperY.isLogScaled(); }
 
 
 //protected:
