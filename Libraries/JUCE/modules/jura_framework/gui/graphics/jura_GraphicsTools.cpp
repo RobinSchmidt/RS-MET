@@ -856,9 +856,11 @@ void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& m
 
   while(y < mapper.getInMaxY()) {
     float ym = (float) mapper.mapY(y);
-    g.drawLine(xL, ym, xR, ym, thickness);
+    g.drawLine(xL, ym, xR, ym, thickness); // juce doc says, it's better to use fillRect
     y += spacing; // doesn't support log-spacing yet ...we should perhaps accumulate y in pixel
   }               // coordinates
+
+  // when exporting to an image, this doesn't work
 }
 
 void drawHorizontalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,

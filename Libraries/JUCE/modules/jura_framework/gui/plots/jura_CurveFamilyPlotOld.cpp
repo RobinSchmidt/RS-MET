@@ -131,6 +131,19 @@ void CurveFamilyPlotOld::paint(juce::Graphics &g)
                             0, 0, plotImage->getWidth(), plotImage->getHeight(), false);
   else
     g.fillAll(Colours::red);
+
+  /*
+  // test to see, where juce deems the pixel coordinates to be:
+  g.setColour(Colours::red);
+  //g.drawLine(10, 0, getWidth()-10, 0, 1.f); 
+  //g.drawLine(10, 0.5, getWidth()-10, 0.5, 1.f); 
+  g.drawLine(10, 10.5, getWidth()-10, 10.5, 1.f); 
+  g.drawLine(10, 100.0f, getWidth()-10, 100.0f, 1.f); 
+  g.drawLine(10, 200.5f, getWidth()-10, 200.5f, 1.f); 
+  // the lines at N+0.5 (for integer N) are 1 pixel wide, the lines at N are two pixels wide (and 
+  // the color is scaled down by 1/2), so it seems we should use the 0.5...width-0.5 instead of
+  // 0...width-1
+  */
 }
 
 void CurveFamilyPlotOld::updatePlotImage(bool redrawCoordinateSystem)
