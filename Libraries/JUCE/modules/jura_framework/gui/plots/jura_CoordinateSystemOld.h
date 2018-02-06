@@ -536,6 +536,13 @@ protected:
   /** Opens the PopupMenu that appears on right clicks. */
   void openRightClickPopupMenu();
 
+  /** Sets up the output range (i.e. the pixel width and height) in our coordinateMapper. If a 
+  non-nullptr is passed for targetImage, the image size will be used, else if a non-nullptr for
+  the targetSVG is passed, its size will be used (the xml should already have "width" and "height"
+  attributes), else this Component's size will be used. */
+  void updateCoordinateMapperOutputRange(Image* targetImage = nullptr, 
+    XmlElement* targetSVG = nullptr);
+
   virtual void drawCoordinateSystem(Graphics &g, Image* targetImage = NULL, 
     XmlElement* targetSVG = NULL);
   /**< Draws all the stuff either on the internal image which will be displayed as the components

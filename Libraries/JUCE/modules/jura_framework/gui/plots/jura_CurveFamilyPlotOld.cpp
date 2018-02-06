@@ -181,7 +181,7 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
   if( width < 1 || height < 1)  
     return NULL;
 
-  Image* thePlot = new Image(Image::RGB, width, height, true);
+  Image* thePlot = new Image(Image::RGB, width, height, true); // obsolete?
 
   // create a graphics object which is associated with the image to perform
   // the drawing-operations
@@ -191,6 +191,8 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
   XmlElement* theSVG = new XmlElement(String("svg"));
   theSVG->setAttribute(String("width"), width);
   theSVG->setAttribute(String("height"), height);
+
+  updateCoordinateMapperOutputRange(nullptr, theSVG);
 
   // fill the background:
   //g.fillAll(colourScheme.backgroundColour);

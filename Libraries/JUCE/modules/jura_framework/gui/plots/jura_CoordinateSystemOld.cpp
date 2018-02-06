@@ -238,8 +238,7 @@ void CoordinateSystemOld::mouseWheelMove(const MouseEvent &e, const MouseWheelDe
 
 void CoordinateSystemOld::resized()
 {
-  //coordinateMapper.setOutputRange(0, getWidth()-1, 0, getHeight()-1);
-  coordinateMapper.setOutputRange(0, getWidth()-1, getHeight()-1, 0); // or like this?
+  //coordinateMapper.setOutputRange(0, getWidth()-1, getHeight()-1, 0);
 
   updateScaleFactors();
   if(autoReRenderImage == true)
@@ -1510,12 +1509,38 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
   y = (float) yd;
 }
 
+void CoordinateSystemOld::updateCoordinateMapperOutputRange(Image* image, XmlElement* svg)
+{
+  double w = 0, h = 0;
+  if(image != nullptr)
+  {
+    w = image->getWidth();
+    h = image->getHeight();
+  }
+  else if(svg != nullptr)
+  {
+    w = svg->getDoubleAttribute("width", 0);
+    h = svg->getDoubleAttribute("height", 0);
+    jassert(w != 0 && h != 0); // svg must have width and height attributes
+  }
+  else
+  {
+    w = getWidth();
+    h = getHeight();
+  }
+
+  //coordinateMapper.setOutputRange(0, w-1, h-1, 0);
+  coordinateMapper.setOutputRange(0.5, w-0.5, h-0.5, 0.5);
+}
+
 //-------------------------------------------------------------------------------------------------
 // drawing functions
 
 void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, XmlElement *targetSVG)
 {
   g.setFont(Font(14));
+
+  updateCoordinateMapperOutputRange(targetImage, targetSVG);
 
   // draw the background:
   //g.fillAll(colourScheme.backgroundColour);
