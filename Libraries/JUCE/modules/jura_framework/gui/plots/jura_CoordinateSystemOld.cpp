@@ -1669,10 +1669,6 @@ void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval, Colour g
 
 void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
-  //jassertfalse; // needs update
-
-  //jura::drawAxisX(g, coordinateMapper, yPos);
-
   if( axisPositionX == INVISIBLE ) 
     return;
 
@@ -1681,7 +1677,6 @@ void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlEl
     yPos = coordinateMapper.unmapY(getHeight()-8);
   else if( axisPositionX == TOP )
     yPos = coordinateMapper.unmapY(8);
-  double spacing = verticalCoarseGridInterval;
 
   if(targetSVG != nullptr)
     jura::drawAxisX(targetSVG, coordinateMapper, yPos, axisLabelX, plotColourScheme.axes);
@@ -1690,80 +1685,30 @@ void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlEl
     g.setColour(plotColourScheme.axes);
     jura::drawAxisX(g, coordinateMapper, yPos, axisLabelX, plotColourScheme.text);
   }
-
-
-  /*
-  if( logScaledX == true )
-  {
-    jassert( verticalCoarseGridInterval >= 1.00001 );
-    if( verticalCoarseGridInterval < 1.00001 )
-      return;
-  }
-  else
-  {
-    jassert( verticalCoarseGridInterval >= 0.000001 );
-    // grid spacing must be > 0
-    if( verticalCoarseGridInterval < 0.000001 )
-      return;
-  }
-
-  if( axisPositionX == INVISIBLE ) 
-    return;
-
-  g.setColour(plotColourScheme.axes);
-
-  double startX, endX, startY = 0, endY;
-
-  startX = currentRange.getMinX();
-  endX	  = currentRange.getMaxX();
-  if( logScaledY )
-    startY = currentRange.getMinY();
-  else if( axisPositionX == ZERO )
-    startY = 0.0;
-  else if( axisPositionX == TOP ) 
-    startY = currentRange.getMaxY();
-  else if( axisPositionX == BOTTOM ) 
-    startY = currentRange.getMinY();
-  endY = startY;
-
-  // transform:
-  if( targetImage == NULL )
-  {
-    transformToComponentsCoordinates(startX, startY);
-    transformToComponentsCoordinates(endX, endY);
-  }
-  else
-  {
-    transformToImageCoordinates(startX, startY, targetImage);
-    transformToImageCoordinates(endX, endY, targetImage);
-  }
-
-  // include some margin for axes at the top and bottom:
-  if( axisPositionX == TOP )
-  {
-    startY += 8;
-    endY   += 8;
-  }
-  else if( axisPositionX == BOTTOM )
-  {
-    startY -= 8;
-    endY   -= 8;
-  }
-
-  // draw:
-  //g.drawArrow((float)startX, (float)startY, (float)endX, (float)endY, 
-  //  2.0, 8.0, 8.0);
-  //Line<float> line(
-  g.drawArrow(Line<float>((float)startX, (float)startY, (float)endX, (float)endY), 1.0, 6.0, 6.0);
-
-  if( targetSVG != NULL )
-    addLineToSvgDrawing(targetSVG, (float)startX, (float)startY, (float) endX, (float)endY, 2.0, 
-      plotColourScheme.axes, true);
-   */
 }
 
 void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
+  if( axisPositionX == INVISIBLE ) 
+    return;
+
+  double xPos = 0.0;
+  if( axisPositionY == LEFT )
+    xPos = coordinateMapper.unmapX(8);
+  else if( axisPositionY == RIGHT )
+    xPos = coordinateMapper.unmapX(getWidth()-8);
+
+  if(targetSVG != nullptr)
+  {
+    //jura::drawAxisY(targetSVG, coordinateMapper, xPos, axisLabelY, plotColourScheme.axes);
+  }
+  else 
+  {
+    g.setColour(plotColourScheme.axes);
+    jura::drawAxisY(g, coordinateMapper, xPos, axisLabelY, plotColourScheme.text);
+  }
+
+  /*
   if( logScaledY == true )
   {
     jassert( horizontalCoarseGridInterval >= 1.00001 );
@@ -1829,60 +1774,17 @@ void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlEl
 
   if( targetSVG != NULL )
     addLineToSvgDrawing(targetSVG, (float)startX, (float)startY, (float) endX, (float)endY, 2.0, plotColourScheme.axes, true);
+  */
 }
 
 void CoordinateSystemOld::drawAxisLabelX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
 
-  /*
-  if( axisLabelPositionX == NO_ANNOTATION ) 
-    return;
-
-  g.setColour(plotColourScheme.axes);
-
-  double posX, posY;
-
-  // position for the label on the x-axis:
-  posX = currentRange.getMaxX();
-  if( logScaledY )
-    posY = currentRange.getMinY();
-  else if( axisPositionX == ZERO )
-    posY = 0;
-  else if( axisPositionX == TOP )
-    posY = currentRange.getMaxY();
-  else if( axisPositionX == BOTTOM )
-    posY = currentRange.getMinY();
-
-  // transform coordinates:
-  if( targetImage == NULL )
-    transformToComponentsCoordinates(posX, posY);
-  else
-    transformToImageCoordinates(posX, posY, targetImage);
-
-  // include some margin for axes at the top and bottom:
-  posY += 2;
-  if( axisPositionX == TOP )
-    posY += 8;
-  else if( axisPositionX == BOTTOM || axisLabelPositionX == ABOVE_AXIS )
-    posY -= 28;
-
-  const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
-  drawBitmapText(g, axisLabelX, (int)posX-100, (int)posY, 96, 16, font, Justification::centredRight);
-
-  //drawBitmapText(g, axisLabelX, (int)posX-100, (int)posY, 96, 16, &boldFont10px,  Justification::centredRight);
-
-  //drawTextAt(g, axisLabelX
-  //posX -= valueFont->getTextPixelWidth(axisLabelX, valueFont->getDefaultKerning()) + 8;
-  //drawBitmapFontText(g, (int)posX-4, (int)posY-12, axisLabelX, *valueFont, colourScheme.axesColour, -1, 
-  //  Justification::centredRight);
-
-  if( targetSVG != NULL )
-    addTextToSvgDrawing(targetSVG, axisLabelX, (float) (posX-4), (float) (posY+16), Justification::centredRight);
-    */
 }
 
 void CoordinateSystemOld::drawAxisLabelY(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
+  /*
   if( axisLabelPositionY == NO_ANNOTATION )
     return;
 
@@ -1941,6 +1843,7 @@ void CoordinateSystemOld::drawAxisLabelY(juce::Graphics &g, Image* targetImage, 
       addTextToSvgDrawing(targetSVG, axisLabelY, 
       (float) posX, (float) posY+12, Justification::centredRight);
   }
+  */
 }
 
 void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlElement *targetSVG)

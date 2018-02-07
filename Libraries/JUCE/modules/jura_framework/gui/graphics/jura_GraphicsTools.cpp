@@ -992,7 +992,6 @@ void pixelCoordsForAxisX(const RAPT::rsCoordinateMapper2D<double>& mapper, float
   y  = (float) mapper.mapY(y); // y is input in model- and output in pixel coords
   xs = (float) mapper.getOutMinX();
   xe = (float) mapper.getOutMaxX();
-  yt;
   if(y > mapper.getOutMinY() - 10)  
     yt = y - 20; // label text above x-axis
   else
@@ -1008,6 +1007,38 @@ void drawAxisX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, do
   g.drawArrow(Line<float>(xs, y, xe, y), 1.0, 6.0, 6.0);
   static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
   drawBitmapText(g, label, xe-100, yt, 96, 16, font, Justification::centredRight, labelColor);
+}
+
+void pixelCoordsForAxisY(const RAPT::rsCoordinateMapper2D<double>& mapper, float& ys, float& ye, 
+  float& x, float& xt) 
+{
+  x  = (float) mapper.mapX(x);
+  ys = (float) mapper.getOutMinY();
+  ye = (float) mapper.getOutMaxY();
+  if(x < 10)  
+    xt = x + 8;  // label text right to y-axis
+  else
+    xt = x - 8;  // label text left to y-axis
+}
+
+void drawAxisY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, double xPos, 
+  const juce::String& label, Colour labelColor)
+{
+  float x = (float) xPos;
+  float ys, ye, xt;
+  pixelCoordsForAxisY(mapper, ys, ye, x, xt);
+  g.drawArrow(Line<float>(x, ys, x, ye), 1.0, 6.0, 6.0);
+
+  // label positioning may not yet be ideal in all circumstances:
+  int width = 100;
+  Justification just(Justification::centredRight);
+  if(x < width+8)
+    just = Justification::centredLeft;
+  else
+    xt -= width;
+
+  static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
+  drawBitmapText(g, label, xt, ye, width, 16, font, just, labelColor);
 }
 
 //=================================================================================================

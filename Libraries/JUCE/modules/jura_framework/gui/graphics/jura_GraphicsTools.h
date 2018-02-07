@@ -151,6 +151,10 @@ JUCE_API void drawAngularGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<doub
 JUCE_API void drawAxisX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double yPosition, const juce::String& label, Colour labelColor);
 
+/** Draws the y-axis for a coordinate system. */
+JUCE_API void drawAxisY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double xPosition, const juce::String& label, Colour labelColor);
+
 
 //=================================================================================================
 // corresponding functions that create the svg elements instead of drawing to a Graphics object
