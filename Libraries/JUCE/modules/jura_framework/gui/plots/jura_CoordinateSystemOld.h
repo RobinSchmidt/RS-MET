@@ -147,27 +147,6 @@ public:
   virtual void mouseMove(const MouseEvent& e);
   /**< Overrides mouseMove for displaying the inspection Label. */
 
-  virtual void mouseExit(const MouseEvent& e);
-  /**< Overrides mouseExit for displaying the inspection Label. */
-
-  virtual void mouseDrag(const MouseEvent& e);
-  /**< Overrides mouseDrag to let it be called by a CoordinateSystemZoomer (override it in
-  subclasses, if you want to respond to mouseDrag events). */
-
-  virtual void mouseUp(const MouseEvent& e);
-  /**< Overrides mouseUp to let it be called by a CoordinateSystemZoomer (override it in
-  subclasses, if you want to respond to mouseUp events). */
-
-  virtual void mouseDoubleClick(const MouseEvent& e);
-  /**< Overrides mouseDoubleClick to let it be called by a CoordinateSystemZoomer (override it in
-  subclasses, if you want to respond to mouseDoubleClick events). */
-
-  //virtual void mouseWheelMove(const MouseEvent &e, float wheelIncrementX, float wheelIncrementY);
-  virtual void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel);
-  /**< Overrides mouseWheelMove to let it be called by a CoordinateSystemZoomer (override it in
-  subclasses, if you want to respond to mouseWheelMove events). */
-
-
   virtual void resized();
   ///< Overrides the resized()-function of the component base-class.
 
@@ -609,6 +588,8 @@ protected:
   virtual void transformFromComponentsCoordinates(float &x, float &y);
   /**< Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (single precision version). */
+
+
 
 
   virtual void updateBackgroundImage();

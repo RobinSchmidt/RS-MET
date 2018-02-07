@@ -195,33 +195,9 @@ void CoordinateSystemOld::mouseMove(const MouseEvent &e)
   DescribedComponent::mouseMove(e);
 }
 
-void CoordinateSystemOld::mouseExit(const MouseEvent &e)
-{
-  DescribedComponent::mouseExit(e);
-}
-
-void CoordinateSystemOld::mouseDrag(const MouseEvent &e)
-{
-  Component::mouseDrag(e);
-}
-
-void CoordinateSystemOld::mouseUp(const MouseEvent &e)
-{
-  Component::mouseUp(e);
-}
-
-void CoordinateSystemOld::mouseDoubleClick(const MouseEvent &e)
-{
-  Component::mouseDoubleClick(e);
-}
-
-void CoordinateSystemOld::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
-{
-  Component::mouseWheelMove(e, wheel);
-}
-
 void CoordinateSystemOld::resized()
 {
+  // factor out into updateMapping
   updateScaleFactors();
   if(autoReRenderImage == true)
     updateBackgroundImage();
@@ -230,17 +206,8 @@ void CoordinateSystemOld::resized()
 void CoordinateSystemOld::paint(juce::Graphics &g)
 {
   if( backgroundImage != NULL )
-  {
-    g.drawImage(*backgroundImage, 0, 
-      0, 
-      getWidth(), 
-      getHeight(), 
-      0, 
-      0, 
-      backgroundImage->getWidth(), 
-      backgroundImage->getHeight(), 
-      false);
-  }
+    g.drawImage(*backgroundImage, 0, 0, getWidth(), getHeight(), 
+      0, 0, backgroundImage->getWidth(), backgroundImage->getHeight(), false);
   else
     g.fillAll(Colours::red);
 }
@@ -254,6 +221,7 @@ void CoordinateSystemOld::setMaximumRange(double newMinX, double newMaxX,
   maximumRange.setRangeX(newMinX, newMaxX);
   maximumRange.setRangeY(newMinY, newMaxY);
   currentRange.clipRange(maximumRange);
+
   updateScaleFactors();
   if(autoReRenderImage == true)
     updateBackgroundImage();
@@ -1180,6 +1148,7 @@ inline double logB(double x, double b)
   // temporary - remove and use the function from RAPT
   return log(x) / log(b);
 }
+
 void CoordinateSystemOld::transformToImageCoordinates(double &x, double &y, const Image* theImage)
 {
   if( theImage == NULL )
@@ -1312,6 +1281,7 @@ void CoordinateSystemOld::transformToComponentsCoordinates(float &x, float &y)
   y = (float) yd;
 }
 
+
 void CoordinateSystemOld::transformFromComponentsCoordinates(double &x, double &y)
 {
   if( logScaledX )
@@ -1336,6 +1306,7 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(double &x, double &
   }
 }
 
+
 void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
 {
   double xd = (double) x;
@@ -1344,6 +1315,7 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
   x = (float) xd;
   y = (float) yd;
 }
+
 
 void CoordinateSystemOld::updateCoordinateMapperOutputRange(Image* image, XmlElement* svg)
 {
