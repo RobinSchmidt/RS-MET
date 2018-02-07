@@ -1248,6 +1248,6 @@ void drawAxisY(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper
   pixelCoordsForAxisY(mapper, ys, ye, x, xt);
   addLineToSvgDrawing(svg, x, ys, x, ye, 2.0, color, true);
 
-  addTextToSvgDrawing(svg, label, xt-8, ye-4, Justification::centredRight, color); 
+  addTextToSvgDrawing(svg, label, xt-8, ye+12, Justification::centredRight, color); 
     // still wrongly positioned
 }

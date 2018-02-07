@@ -1550,11 +1550,11 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
   if( axisPositionY != INVISIBLE )
     drawAxisY(g, targetImage, targetSVG);
 
-  // draw the labels on the axes:
-  if( axisPositionX != INVISIBLE && axisLabelPositionX != NO_ANNOTATION )
-    drawAxisLabelX(g, targetImage, targetSVG);
-  if( axisPositionY != INVISIBLE && axisLabelPositionY != NO_ANNOTATION )
-    drawAxisLabelY(g, targetImage, targetSVG);
+  //// draw the labels on the axes:
+  //if( axisPositionX != INVISIBLE && axisLabelPositionX != NO_ANNOTATION )
+  //  drawAxisLabelX(g, targetImage, targetSVG);
+  //if( axisPositionY != INVISIBLE && axisLabelPositionY != NO_ANNOTATION )
+  //  drawAxisLabelY(g, targetImage, targetSVG);
 
   // draw the values on the axes:
   if( axisPositionX != INVISIBLE && axisValuesPositionX != NO_ANNOTATION )
@@ -1707,143 +1707,6 @@ void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlEl
     g.setColour(plotColourScheme.axes);
     jura::drawAxisY(g, coordinateMapper, xPos, axisLabelY, plotColourScheme.text);
   }
-
-  /*
-  if( logScaledY == true )
-  {
-    jassert( horizontalCoarseGridInterval >= 1.00001 );
-    if( horizontalCoarseGridInterval < 1.00001 )
-      return;
-  }
-  else
-  {
-    jassert( horizontalCoarseGridInterval >= 0.000001 );
-    // grid spacing must be > 0
-    if( horizontalCoarseGridInterval < 0.000001 )
-      return;
-  }
-
-  if( axisPositionY == INVISIBLE ) 
-    return;
-
-  g.setColour(plotColourScheme.axes);
-
-  double startX = 0, endX, startY, endY;
-
-  startY = currentRange.getMinY();
-  endY	  = currentRange.getMaxY();
-
-  if( logScaledX )
-    startX = currentRange.getMinX();
-  else if( axisPositionY == ZERO )
-    startX = 0.0;
-  else if( axisPositionY == LEFT ) 
-    startX = currentRange.getMinX();
-  else if( axisPositionY == RIGHT ) 
-    startX = currentRange.getMaxX();
-  endX = startX;
-
-  // transform:
-  if( targetImage == NULL )
-  {
-    transformToComponentsCoordinates(startX, startY);
-    transformToComponentsCoordinates(endX, endY);
-  }
-  else
-  {
-    transformToImageCoordinates(startX, startY, targetImage);
-    transformToImageCoordinates(endX, endY, targetImage);
-  }
-
-  // include some margin for axes at the left and right:
-  if( axisPositionY == LEFT )
-  {
-    startX += 8;
-    endX   += 8;
-  }
-  else if( axisPositionY == RIGHT )
-  {
-    startX -= 8;
-    endX   -= 8;
-  }
-
-  // draw:
-  //g.drawArrow((float)startX, (float)startY, (float)endX, (float)endY, 
-  //  2.0, 8.0, 8.0);
-  g.drawArrow(Line<float>((float)startX, (float)startY, (float)endX, (float)endY), 1.0, 6.0, 6.0);
-
-  if( targetSVG != NULL )
-    addLineToSvgDrawing(targetSVG, (float)startX, (float)startY, (float) endX, (float)endY, 2.0, plotColourScheme.axes, true);
-  */
-}
-
-void CoordinateSystemOld::drawAxisLabelX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
-{
-
-}
-
-void CoordinateSystemOld::drawAxisLabelY(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
-{
-  /*
-  if( axisLabelPositionY == NO_ANNOTATION )
-    return;
-
-  g.setColour(plotColourScheme.axes);
-
-  double posX, posY;
-
-  if( logScaledX )
-    posX = currentRange.getMinX();
-  else if( axisPositionY == ZERO )
-    posX = 0.0;
-  else if( axisPositionY == LEFT ) 
-    posX = currentRange.getMinX();
-  else if( axisPositionY == RIGHT ) 
-    posX = currentRange.getMaxX();
-
-  posY  = currentRange.getMaxY();
-
-  // transform coordinates:
-  if( targetImage == NULL )
-    transformToComponentsCoordinates(posX, posY);
-  else
-    transformToImageCoordinates(posX, posY, targetImage);
-
-  // include some margin for axes at the left and right:
-
-  const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
-  if( axisPositionY == LEFT || axisLabelPositionY == RIGHT_TO_AXIS )
-  {
-    posX += 8;
-    posY += 4;
-    drawBitmapText(g, axisLabelY, (int) posX, (int) posY, 512, 16, font, Justification::topLeft);
-
-    //g.drawText(axisLabelY, (int) posX, (int) posY, 512, 16, 
-    //  Justification::centredLeft, false);
-    //drawBitmapFontText(g, (int)posX, (int)posY+8, axisLabelY, *valueFont, colourScheme.axesColour, -1,  
-    //  Justification::centredLeft);
-
-    if( targetSVG != NULL )
-      addTextToSvgDrawing(targetSVG, axisLabelY, 
-      (float) posX, (float) posY+12, Justification::centredLeft);
-  }
-  else
-  {
-    if( axisPositionY == ZERO )
-      posX -=8;
-    else
-      posX -= 16;
-    posX -= 512;
-
-    //g.drawText(axisLabelY, (int) posX, (int) posY, 512, 16, 
-    //  Justification::centredRight, false);
-    drawBitmapFontText(g, (int)posX, (int)posY+8, axisLabelY, font, plotColourScheme.axes);
-    posX += 512;
-    if( targetSVG != NULL )
-      addTextToSvgDrawing(targetSVG, axisLabelY, 
-      (float) posX, (float) posY+12, Justification::centredRight);
-  }
-  */
 }
 
 void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlElement *targetSVG)

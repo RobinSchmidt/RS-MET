@@ -575,12 +575,6 @@ protected:
   virtual void drawAxisY(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the y-axis. Gets called by drawCoordinateSystem(). */
 
-  virtual void drawAxisLabelX(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
-  /**< Draws the x-axis' label. Gets called by drawCoordinateSystem(). */
-
-  virtual void drawAxisLabelY(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
-  /**< Draws the y-axis' label. Gets called by drawCoordinateSystem(). */
-
 
   virtual void drawAxisValuesX(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the numeric values at the x-axis. Gets called by drawCoordinateSystem(). */

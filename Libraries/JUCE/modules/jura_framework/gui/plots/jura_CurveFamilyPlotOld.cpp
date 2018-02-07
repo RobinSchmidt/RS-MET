@@ -233,11 +233,11 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
   if( axisPositionY != INVISIBLE )
     drawAxisY(g, thePlot, theSVG);
 
-  // draw the labels on the axes:
-  if( axisPositionX != INVISIBLE && axisLabelPositionX != NO_ANNOTATION )
-    drawAxisLabelX(g, thePlot, theSVG);
-  if( axisPositionY != INVISIBLE && axisLabelPositionY != NO_ANNOTATION )
-    drawAxisLabelY(g, thePlot, theSVG);
+  //// draw the labels on the axes:
+  //if( axisPositionX != INVISIBLE && axisLabelPositionX != NO_ANNOTATION )
+  //  drawAxisLabelX(g, thePlot, theSVG);
+  //if( axisPositionY != INVISIBLE && axisLabelPositionY != NO_ANNOTATION )
+  //  drawAxisLabelY(g, thePlot, theSVG);
 
   // draw the values on the axes:
   if( axisPositionX != INVISIBLE && axisValuesPositionX != NO_ANNOTATION )
@@ -304,11 +304,11 @@ Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
   if( axisPositionY != INVISIBLE )
     drawAxisY(g, thePlot);
 
-  // draw the labels on the axes:
-  if( axisPositionX != INVISIBLE && axisLabelPositionX != NO_ANNOTATION )
-    drawAxisLabelX(g, thePlot);
-  if( axisPositionY != INVISIBLE && axisLabelPositionY != NO_ANNOTATION )
-    drawAxisLabelY(g, thePlot);
+  //// draw the labels on the axes:
+  //if( axisPositionX != INVISIBLE && axisLabelPositionX != NO_ANNOTATION )
+  //  drawAxisLabelX(g, thePlot);
+  //if( axisPositionY != INVISIBLE && axisLabelPositionY != NO_ANNOTATION )
+  //  drawAxisLabelY(g, thePlot);
 
   // draw the values on the axes:
   if( axisPositionX != INVISIBLE && axisValuesPositionX != NO_ANNOTATION )
