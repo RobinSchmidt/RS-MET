@@ -38,11 +38,11 @@ public:
   virtual int getFontHeight()     const { return ascent+descent; }
   virtual int getFontAscent()     const { return ascent; }
   virtual int getFontDescent()    const { return descent; }
-  virtual int getDefaultKerning() const { return defaultKerning; }
+  virtual int getDefaultKerning() const { return defaultKerning; } // get
 
   /** Returns the width of the text (in pixels) when the text is rendered with this font at a
   given kerning. */
-  virtual int getTextPixelWidth(const juce::String& text, int kerning) const;
+  virtual int getTextPixelWidth(const juce::String& text, int kerning = 1) const;
 
   /** Returns the x coordinate (in pixels) of the (left side of) a glyph in some text when the
   text is rendered with this font at a given kerning. */
@@ -90,7 +90,7 @@ protected:
 
   virtual void createGlyphBitmaps();
 
-  int                 ascent, descent, defaultKerning;
+  int                 ascent, descent, defaultKerning; // replace defualtKerning by kerning
   static const int    numGlyphs = 256;
   ColourizableBitmap* glyphBitmaps[numGlyphs];
   int                 glyphWidths[numGlyphs];

@@ -610,22 +610,6 @@ protected:
   /**< Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (single precision version). */
 
-  virtual void addLineToSvgDrawing(XmlElement* theSVG, float x1, float y1, float x2, float y2,
-    float thickness, Colour colour, bool withArrowHead = false);
-  /**< Adds a line to an SVG drawing. */
-
-  virtual void addTextToSvgDrawing(XmlElement* theSVG, juce::String theText, float x, float y,
-    Justification justification = Justification::centredLeft);
-  /**< Adds text-string to an SVG drawing. */
-
-  /** Draws a text on the Coordinatesystem using a BitmapFont. */
-  virtual void drawBitmapText(Graphics &g, const juce::String &text, double x, double y,
-    double w, double h, BitmapFont const* font, Justification justification);
-    // obsolete
-
-
-
-
 
   virtual void updateBackgroundImage();
   /**< Updates the image object (re-draws it). Will be called, when something about the
@@ -695,10 +679,8 @@ protected:
   bool showPositionAsDescription;
   bool showPopUpOnRightClick;
 
-  int          captionPosition;
+  int captionPosition;
   juce::String captionString;
-  DrawableText caption;
-  /**< A caption for the CoordinateSystemOld to be used to describe what is shown. */
 
   Image*  backgroundImage;
   /**< This image will be used for the appearance of the coodinate system, it will be updated via
