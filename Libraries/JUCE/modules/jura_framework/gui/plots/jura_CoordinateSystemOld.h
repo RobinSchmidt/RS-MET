@@ -508,7 +508,7 @@ protected:
   /** Opens the PopupMenu that appears on right clicks. */
   void openRightClickPopupMenu();
 
-
+  /** Called whenever the input coordinate range changed to update the mapper */
   void updateMapping();
 
   /** Sets up the output range (i.e. the pixel width and height) in our coordinateMapper. If a 
@@ -616,11 +616,6 @@ protected:
   /**< The range- and maximum-range object for the coordinate system. */
 
   // maybe factor out into a PlotSettings class and have a member of that here
-  double scaleX;
-  double scaleY;
-  double pixelsPerIntervalX;
-  double pixelsPerIntervalY;
-
   int    axisPositionX;
   int    axisPositionY;
   int    axisLabelPositionX;

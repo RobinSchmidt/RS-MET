@@ -80,10 +80,6 @@ CoordinateSystemOld::CoordinateSystemOld(const String &newDescription)
   : DescribedComponent(newDescription) //RWidget(newDescription)
 {
   autoReRenderImage             = false;
-  scaleX                        =  1.0;
-  scaleY                        =  1.0;
-  pixelsPerIntervalX            =  100.0;
-  pixelsPerIntervalY            =  100.0;
   captionPosition               =  NO_CAPTION;
   axisPositionX                 =  ZERO;
   axisPositionY                 =  ZERO;
@@ -1202,38 +1198,8 @@ void CoordinateSystemOld::transformFromImageCoordinates(double &x, double &y, co
 
 void CoordinateSystemOld::transformToComponentsCoordinates(double &x, double &y)
 {
-  // transform the x,y values to coordinates inside this component:
-  if( logScaledX )
-  {
-    jassert( x > 0.0 && currentRange.getMinX() > 0.0 );
-    // caught a logarithm of a non-positive number
-    if( x <= 0.0 || currentRange.getMinX() <= 0.0 )
-      return;
-
-    x = pixelsPerIntervalX * logB((x/currentRange.getMinX()), logBaseX);
-  }
-  else
-  {
-    x -= currentRange.getMinX();	// shift origin left/right
-    x *= scaleX;	         // scale to fit width
-  }
-
-  if( logScaledY )
-  {
-    jassert( y > 0.0 && currentRange.getMinY() > 0.0 );
-    // caught a logarithm of a non-positive number
-    if( y <= 0.0 || currentRange.getMinY() <= 0.0 )
-      return;
-
-    y = pixelsPerIntervalY * logB((y/currentRange.getMinY()), logBaseY);
-  }
-  else
-  {
-    y -= currentRange.getMinY();	// shift origin up/down
-    y *= scaleY;	         // scale to fit height
-  }
-
-  y  = getHeight()-y;	   // invert (pixels begin at top-left)
+  x = coordinateMapper.mapX(x);
+  y = coordinateMapper.mapY(y);
 }
 
 void CoordinateSystemOld::transformToComponentsCoordinates(float &x, float &y)
@@ -1248,28 +1214,9 @@ void CoordinateSystemOld::transformToComponentsCoordinates(float &x, float &y)
 
 void CoordinateSystemOld::transformFromComponentsCoordinates(double &x, double &y)
 {
-  if( logScaledX )
-  {
-    x = currentRange.getMinX() * pow(logBaseX, (x/pixelsPerIntervalX));
-  }
-  else
-  {
-    x /= scaleX;             // scale to fit width
-    x += currentRange.getMinX();    // shift origin left/right
-  }
-
-  if( logScaledY )
-  {
-    y = currentRange.getMinY() * pow(logBaseY, (y/pixelsPerIntervalY));
-  }
-  else
-  {
-    y  = getHeight()-y; 
-    y /= scaleY;             // scale to fit height
-    y += currentRange.getMinY();    // shift origin up/down
-  }
+  x = coordinateMapper.unmapX(x);
+  y = coordinateMapper.unmapY(y);
 }
-
 
 void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
 {
@@ -1359,12 +1306,6 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
   if( axisPositionY != INVISIBLE )
     drawAxisY(g, targetImage, targetSVG);
 
-  //// draw the labels on the axes:
-  //if( axisPositionX != INVISIBLE && axisLabelPositionX != NO_ANNOTATION )
-  //  drawAxisLabelX(g, targetImage, targetSVG);
-  //if( axisPositionY != INVISIBLE && axisLabelPositionY != NO_ANNOTATION )
-  //  drawAxisLabelY(g, targetImage, targetSVG);
-
   // draw the values on the axes:
   if( axisPositionX != INVISIBLE && axisValuesPositionX != NO_ANNOTATION )
     drawAxisValuesX(g, targetImage, targetSVG);
@@ -1382,7 +1323,6 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
 void CoordinateSystemOld::drawCaption(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
   // needs test:
-  //g.setColour(plotColourScheme.axes);
   static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
   float w = (float) font->getTextPixelWidth(captionString);
   float h = (float) font->getFontHeight();
@@ -1404,9 +1344,6 @@ void CoordinateSystemOld::drawCaption(Graphics &g, Image* targetImage, XmlElemen
     }
     break;
   }
-
-  //drawBitmapText(Graphics &g, const juce::String &text, double x, double y,
-  //  double w, double h, BitmapFont const* font, Justification justification, Colour color);
 }
 
 void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval, bool exponentialSpacing, 
@@ -1544,42 +1481,6 @@ void CoordinateSystemOld::updateScaleFactors()
   coordinateMapper.setInputRange(currentRange.getMinX(), currentRange.getMaxX(),
     currentRange.getMinY(), currentRange.getMaxY());
     // the currentRange member is actually also redundant now
-
-  // maybe code below is obolete now (or soon):
-
-  if( !logScaledX )
-    scaleX = getWidth()  / (currentRange.getMaxX()-currentRange.getMinX()); 
-  // scaling factor for linear plots
-  else
-  {
-    jassert(((currentRange.getMaxX()/currentRange.getMinX()) > 0.0));
-      // caught a logarithm of a non-positive number, make sure that the 
-      // minimum and the maximum for the x-coordinate are both strictly positive
-      // for logarithmic axis-scaling
-
-      if( (currentRange.getMaxX()/currentRange.getMinX()) > 0.0 )
-        pixelsPerIntervalX = getWidth()/logB((currentRange.getMaxX()/currentRange.getMinX()), 
-        logBaseX);
-    // the number of pixels per interval for logarithmic plots - for
-    // logBase==2 this is the number of pixels per octave:
-      else
-        pixelsPerIntervalX = 50; // some arbitrary fallback-value
-  }
-  if( !logScaledY )
-    scaleY = getHeight() / (currentRange.getMaxY()-currentRange.getMinY());
-  else
-  {
-    jassert(((currentRange.getMaxY()/currentRange.getMinY()) > 0.0));
-      // caught a logarithm of a non-positive number, make sure that the 
-      // minimum and the maximum for the y-coordinate are both strictly positive
-      // for logarithmic axis-scaling
-
-      if( (currentRange.getMaxY()/currentRange.getMinY()) > 0.0 )
-        pixelsPerIntervalY = getHeight()/logB((currentRange.getMaxY()/currentRange.getMinY()), 
-        logBaseY);
-      else
-        pixelsPerIntervalY = 50; // some arbitrary fallback-value
-  }
 }
 
 // get rid of these:
