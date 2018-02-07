@@ -1700,7 +1700,7 @@ void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlEl
 
   if(targetSVG != nullptr)
   {
-    //jura::drawAxisY(targetSVG, coordinateMapper, xPos, axisLabelY, plotColourScheme.axes);
+    jura::drawAxisY(targetSVG, coordinateMapper, xPos, axisLabelY, plotColourScheme.axes);
   }
   else 
   {

@@ -1,7 +1,7 @@
 #ifndef jura_GraphicsTools_h
 #define jura_GraphicsTools_h
 
-// Maybe wrap these functions into a class at some point 
+// Maybe wrap these functions into a class rsDrawer at some point 
 
 /** Copies the pixel-data from one image into another. For this to work, the images must be 
 compatible (same dimensions and pixel-format). */
@@ -185,6 +185,10 @@ JUCE_API void drawAngularGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<
 
 JUCE_API void drawAxisX(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double yPosition, const juce::String& label, Colour color);
+
+JUCE_API void drawAxisY(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double xPosition, const juce::String& label, Colour color);
+
 
 
 #endif
