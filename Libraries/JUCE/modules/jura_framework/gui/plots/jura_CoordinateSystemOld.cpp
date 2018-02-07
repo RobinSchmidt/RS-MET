@@ -361,10 +361,8 @@ void CoordinateSystemOld::setCaption(const String &newCaption, int newPosition)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setAxisLabels(const String &newLabelX, 
-                                     const String &newLabelY, 
-                                     int newLabelPositionX,
-                                     int newLabelPositionY)
+void CoordinateSystemOld::setAxisLabels(const String &newLabelX, const String &newLabelY,              
+  int newLabelPositionX, int newLabelPositionY)
 {
   axisLabelX         = newLabelX;
   axisLabelY         = newLabelY;
@@ -374,8 +372,7 @@ void CoordinateSystemOld::setAxisLabels(const String &newLabelX,
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setAxisLabelX(const String& newLabelX, 
-                                     int newLabelPositionX)
+void CoordinateSystemOld::setAxisLabelX(const String& newLabelX, int newLabelPositionX)
 {
   axisLabelX         = newLabelX;
   axisLabelPositionX = newLabelPositionX;
@@ -383,8 +380,7 @@ void CoordinateSystemOld::setAxisLabelX(const String& newLabelX,
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setAxisLabelY(const String& newLabelY, 
-                                     int newLabelPositionY)
+void CoordinateSystemOld::setAxisLabelY(const String& newLabelY, int newLabelPositionY)
 {
   axisLabelY             = newLabelY;
   axisLabelPositionY = newLabelPositionY;
@@ -416,26 +412,30 @@ void CoordinateSystemOld::setAxisValuesPositionY(int newValuesPositionY)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setStringConversionForAxisX(String (*newConversionFunctionX) (double valueToBeConverted) )
+void CoordinateSystemOld::setStringConversionForAxisX(
+  String (*newConversionFunctionX) (double valueToBeConverted) )
 {
   stringConversionForAxisX = newConversionFunctionX;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setStringConversionForInfoLineX(String (*newConversionFunctionX) (double valueToBeConverted) )
+void CoordinateSystemOld::setStringConversionForInfoLineX(
+  String (*newConversionFunctionX) (double valueToBeConverted) )
 {
   stringConversionForInfoLineX = newConversionFunctionX;
 }
 
-void CoordinateSystemOld::setStringConversionForAxisY(String (*newConversionFunctionY) (double valueToBeConverted) )
+void CoordinateSystemOld::setStringConversionForAxisY(
+  String (*newConversionFunctionY) (double valueToBeConverted) )
 {
   stringConversionForAxisY = newConversionFunctionY;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setStringConversionForInfoLineY(String (*newConversionFunctionY) (double valueToBeConverted) )
+void CoordinateSystemOld::setStringConversionForInfoLineY(
+  String (*newConversionFunctionY) (double valueToBeConverted) )
 {
   stringConversionForInfoLineY = newConversionFunctionY;
 }
@@ -454,8 +454,7 @@ void CoordinateSystemOld::setHorizontalCoarseGridInterval(double newGridInterval
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setHorizontalCoarseGrid(double newGridInterval, 
-                                               bool   shouldBeVisible)
+void CoordinateSystemOld::setHorizontalCoarseGrid(double newGridInterval, bool   shouldBeVisible)
 {
   // for logarithmic scaling of an axis, we need the grid-intervals to be 
   // strictly greater than unity because the coordinate of a grid-line results
@@ -482,7 +481,6 @@ void CoordinateSystemOld::setHorizontalCoarseGrid(double newGridInterval,
 
   horizontalCoarseGridIsVisible = shouldBeVisible;
   horizontalCoarseGridInterval  = newGridInterval;
-
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -524,7 +522,6 @@ void CoordinateSystemOld::setHorizontalFineGrid(double newGridInterval,
 
   horizontalFineGridIsVisible = shouldBeVisible;
   horizontalFineGridInterval  = newGridInterval;
-
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -566,7 +563,6 @@ void CoordinateSystemOld::setVerticalCoarseGrid(double newGridInterval,
 
   verticalCoarseGridIsVisible = shouldBeVisible;
   verticalCoarseGridInterval  = newGridInterval;
-
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -608,7 +604,6 @@ void CoordinateSystemOld::setVerticalFineGrid(double newGridInterval,
 
   verticalFineGridIsVisible = shouldBeVisible;
   verticalFineGridInterval  = newGridInterval;
-
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -692,7 +687,6 @@ void CoordinateSystemOld::setRadialFineGrid(double newGridInterval,
 
   radialFineGridIsVisible     = shouldBeVisible;
   radialFineGridInterval = newGridInterval;
-
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -721,7 +715,6 @@ void CoordinateSystemOld::setAngularCoarseGrid(double newGridInterval,
 
   angularCoarseGridIsVisible = shouldBeVisible;
   angularCoarseGridInterval  = newGridInterval;
-
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -750,7 +743,6 @@ void CoordinateSystemOld::setAngularFineGrid(double newGridInterval,
 
   angularFineGridIsVisible     = shouldBeVisible;
   angularFineGridInterval = newGridInterval;
-
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -891,10 +883,7 @@ void CoordinateSystemOld::setupAxisX(double newMin, double newMax, bool shouldBe
   }
   verticalCoarseGridInterval = newCoarseGridInterval;
   verticalFineGridInterval   = newFineGridInterval;
-
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setupAxisY(double newMin, double newMax, bool shouldBeLogScaled, 
@@ -928,25 +917,17 @@ void CoordinateSystemOld::setupAxisY(double newMin, double newMax, bool shouldBe
   }
   horizontalCoarseGridInterval = newCoarseGridInterval;
   horizontalFineGridInterval   = newFineGridInterval;
-
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
-void CoordinateSystemOld::useLogarithmicScale(bool   shouldBeLogScaledX, 
-                                           bool   shouldBeLogScaledY, 
-                                           double newLogBaseX, 
-                                           double newLogBaseY)
+void CoordinateSystemOld::useLogarithmicScale(bool shouldBeLogScaledX, bool shouldBeLogScaledY,                      
+  double newLogBaseX, double newLogBaseY)
 {
   logScaledX = shouldBeLogScaledX;
   logScaledY = shouldBeLogScaledY;
   logBaseX     = newLogBaseX;
   logBaseY     = newLogBaseY;
-
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::useLogarithmicScaleX(bool   shouldBeLogScaledX, 
@@ -954,9 +935,7 @@ void CoordinateSystemOld::useLogarithmicScaleX(bool   shouldBeLogScaledX,
 {
   logScaledX = shouldBeLogScaledX;
   logBaseX     = newLogBaseX;
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 bool CoordinateSystemOld::isLogScaledX()
@@ -969,9 +948,7 @@ void CoordinateSystemOld::useLogarithmicScaleY(bool   shouldBeLogScaledY,
 {
   logScaledY = shouldBeLogScaledY;
   logBaseY     = newLogBaseY;
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 bool CoordinateSystemOld::isLogScaledY()
@@ -1211,7 +1188,6 @@ void CoordinateSystemOld::transformToComponentsCoordinates(float &x, float &y)
   y = (float) yd;
 }
 
-
 void CoordinateSystemOld::transformFromComponentsCoordinates(double &x, double &y)
 {
   x = coordinateMapper.unmapX(x);
@@ -1237,22 +1213,16 @@ void CoordinateSystemOld::updateMapping()
 void CoordinateSystemOld::updateCoordinateMapperOutputRange(Image* image, XmlElement* svg)
 {
   double w = 0, h = 0;
-  if(image != nullptr)
-  {
+  if(image != nullptr) {
     w = image->getWidth();
-    h = image->getHeight();
-  }
-  else if(svg != nullptr)
-  {
+    h = image->getHeight(); }
+  else if(svg != nullptr) {
     w = svg->getDoubleAttribute("width", 0);
     h = svg->getDoubleAttribute("height", 0);
-    jassert(w != 0 && h != 0); // svg must have width and height attributes
-  }
-  else
-  {
+    jassert(w != 0 && h != 0); } // svg must have width and height attributes
+  else {
     w = getWidth();
-    h = getHeight();
-  }
+    h = getHeight(); }
 
   //coordinateMapper.setOutputRange(0, w-1, h-1, 0);
   coordinateMapper.setOutputRange(0.5, w-0.5, h-0.5, 0.5);
