@@ -949,14 +949,42 @@ double getMaxRadius(const RAPT::rsCoordinateMapper2D<double>& mapper)
 void drawRadialGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
   double spacing, float thickness)
 {
-  int i = 1;
+  int i = 1; 
+  double radius = spacing; 
   double maxRadius = getMaxRadius(mapper);
-  double radius = spacing;
   while(radius <= maxRadius) {
     float xL = (float) mapper.mapX(-radius); float xR = (float) mapper.mapX(+radius);
     float yB = (float) mapper.mapY(-radius); float yT = (float) mapper.mapY(+radius);
     g.drawEllipse(xL, yT, xR-xL, yB-yT, thickness); // circle may deform into ellipse
     i++; radius = spacing * (double) i; }
+}
+
+void drawAngularGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, float thickness)
+{
+  spacing = spacing*(PI/180.0); // degree-to-radiant
+  double angle = 0.0;
+  double startX, endX, startY, endY;
+  int i = 0;
+  while(angle <= PI)
+  {
+    // factor out into angularGridLineEnpoints(angle, mapper, &xs, &ys, &xe, &ye): 
+    endX = cos(angle);
+    endY = sin(angle);
+    startX = -endX;
+    startY = -endY;
+    fitLineToRectangle(startX, startY, endX, endY, 
+      mapper.getInMinX(), mapper.getInMinY(), mapper.getInMaxX(), mapper.getInMaxY() );
+    startX = mapper.mapX(startX);
+    endX   = mapper.mapX(endX);
+    startY = mapper.mapY(startY);
+    endY   = mapper.mapY(endY);
+
+
+    g.drawLine((float)startX, (float)startY, (float)endX, (float)endY, thickness);
+    i++;
+    angle = spacing * (double) i;
+  }
 }
 
 //=================================================================================================

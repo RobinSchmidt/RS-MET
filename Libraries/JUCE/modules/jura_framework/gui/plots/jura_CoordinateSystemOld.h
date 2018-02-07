@@ -383,7 +383,7 @@ public:
     bool   shouldBeVisible);
   /**< Sets the interval and visibility of the angular fine grid. */
 
-  virtual void setAngleUnitToDegrees(bool shouldBeInDegrees = true);
+  //virtual void setAngleUnitToDegrees(bool shouldBeInDegrees = true);
   /**< Sets the unit of the angle (as used by the angular grid) to degrees. If
   false, radiant will be assumed. */
 
@@ -684,7 +684,7 @@ protected:
   double angularCoarseGridInterval;
   double angularFineGridInterval;
 
-  bool   angleIsInDegrees;
+  //bool   angleIsInDegrees;
 
   bool   logScaledX;
   double logBaseX;

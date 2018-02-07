@@ -139,6 +139,11 @@ JUCE_API void drawAxisValuesX(Graphics& g, const RAPT::rsCoordinateMapper2D<doub
 JUCE_API void drawRadialGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
 
+JUCE_API void drawAngularGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double spacing, float thickness);
+
+
+
 //=================================================================================================
 // corresponding functions that create the svg elements instead of drawing to a Graphics object
 

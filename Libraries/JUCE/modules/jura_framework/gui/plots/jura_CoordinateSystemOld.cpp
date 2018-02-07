@@ -120,7 +120,7 @@ CoordinateSystemOld::CoordinateSystemOld(const String &newDescription)
   angularCoarseGridInterval     =  15.0;  // 15 degrees
   angularFineGridInterval       =  5.0;   // 5 degrees
 
-  angleIsInDegrees              =  true;
+  //angleIsInDegrees              =  true;
 
   logScaledX	                  =  false;
   logBaseX	                    =  2.0;
@@ -861,10 +861,10 @@ void CoordinateSystemOld::setAngularFineGrid(double newGridInterval,
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setAngleUnitToDegrees(bool shouldBeInDegrees)
-{
-  angleIsInDegrees = shouldBeInDegrees;
-}
+//void CoordinateSystemOld::setAngleUnitToDegrees(bool shouldBeInDegrees)
+//{
+//  angleIsInDegrees = shouldBeInDegrees;
+//}
 
 bool CoordinateSystemOld::isHorizontalCoarseGridVisible() 
 { 
@@ -2078,6 +2078,16 @@ void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval,
                                        Image* targetImage, XmlElement *targetSVG)
 {
   g.setColour(gridColour);
+  if(targetSVG != nullptr)
+  {
+    //jura::drawAngularGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
+  }
+  else
+    jura::drawAngularGrid(g, coordinateMapper, interval, lineThickness);
+
+
+  /*
+  g.setColour(gridColour);
 
   double angleIntervalInRadiant;
   if( angleIsInDegrees )
@@ -2140,6 +2150,7 @@ void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval,
       + String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
     targetSVG->addChildElement(gridPath);
   }
+  */
 }
 
 void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
