@@ -1106,3 +1106,28 @@ void drawAxisValuesX(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& 
     addTextToSvgDrawing(svg, xToString(mapper.unmapX(x)), float(x), float(yt), just, color);
     x += dx; }
 }
+
+void drawRadialGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, float thickness, Colour color)
+{
+  int i = 1;
+  double maxRadius = getMaxRadius(mapper);
+  double radius = spacing;
+  float xC = (float) mapper.mapX(0);
+  float yC = (float) mapper.mapY(0);
+  while(radius <= maxRadius) 
+  {
+    float xL = (float) mapper.mapX(-radius); float xR = (float) mapper.mapX(+radius);
+    float yB = (float) mapper.mapY(-radius); float yT = (float) mapper.mapY(+radius);
+    XmlElement* ellipse = new XmlElement("ellipse"); // circle may deform into ellipse
+    ellipse->setAttribute("cx", xC);
+    ellipse->setAttribute("cy", yC);
+    ellipse->setAttribute("rx", xR-xL);
+    ellipse->setAttribute("ry", yB-yT);
+    ellipse->setAttribute("style", "stroke-width: " + String(thickness) + 
+      "; stroke: #" + color.toString().substring(2) + ";" + "fill: none;" );
+    svg->addChildElement(ellipse);
+    i++; 
+    radius = spacing * (double) i; 
+  }
+}

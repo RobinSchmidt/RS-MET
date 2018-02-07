@@ -136,11 +136,8 @@ JUCE_API void drawVerticalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<dou
 JUCE_API void drawAxisValuesX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, double yPosition, juce::String (*xToString) (double x), Colour textColor);
 
-
 JUCE_API void drawRadialGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
-
-
 
 //=================================================================================================
 // corresponding functions that create the svg elements instead of drawing to a Graphics object
@@ -163,6 +160,8 @@ JUCE_API void drawVerticalGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D
 JUCE_API void drawAxisValuesX(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, double yPosition, juce::String (*xToString) (double x), Colour textColor);
 
+JUCE_API void drawRadialGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double spacing, float thickness, Colour color);
 
 
 

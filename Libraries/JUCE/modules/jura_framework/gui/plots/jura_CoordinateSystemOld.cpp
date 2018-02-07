@@ -1980,14 +1980,17 @@ void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval,
   */
 }
 
-void CoordinateSystemOld::drawRadialGrid(Graphics &g, double interval, 
-                                      bool exponentialSpacing, 
-                                      Colour gridColour, 
-                                      float lineThickness,
-                                      Image* targetImage, XmlElement *targetSVG)
+void CoordinateSystemOld::drawRadialGrid(Graphics &g, double interval,
+  bool exponentialSpacing,
+  Colour gridColour,
+  float lineThickness,
+  Image* targetImage, XmlElement *targetSVG)
 {
   g.setColour(gridColour);
-  jura::drawRadialGrid(g, coordinateMapper, interval, lineThickness);
+  if(targetSVG != nullptr)
+    jura::drawRadialGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
+  else
+    jura::drawRadialGrid(g, coordinateMapper, interval, lineThickness);
 
 
 
