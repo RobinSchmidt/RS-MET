@@ -1074,6 +1074,12 @@ void CoordinateSystem::updateBackgroundImage()
 //-------------------------------------------------------------------------------------------------
 // coordinate transformations:
 
+inline double logB(double x, double b)
+{
+  // temporary - remove and use the function from RAPT
+  return log(x) / log(b);
+}
+
 void CoordinateSystem::transformToImageCoordinates(
   double &x, double &y, const Image* theImage) const
 {

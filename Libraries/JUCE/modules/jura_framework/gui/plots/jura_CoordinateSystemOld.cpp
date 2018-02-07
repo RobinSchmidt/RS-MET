@@ -1066,25 +1066,14 @@ void CoordinateSystemOld::updateBackgroundImage()
       return; // memory allocation failed
   }
 
-  // create a graphics object which is associated with the image to perform
-  // the drawing-operations
+  // create graphics object associated with the image and the draw on it:
   Graphics g(*backgroundImage);
-
   drawCoordinateSystem(g);
-
-  // trigger a repaint:
-  //repaint();
   repaintOnMessageThread();
 }
 
 //-------------------------------------------------------------------------------------------------
 // coordinate transformations:
-
-inline double logB(double x, double b)
-{
-  // temporary - remove and use the function from RAPT
-  return log(x) / log(b);
-}
 
 void CoordinateSystemOld::transformToImageCoordinates(double &x, double &y, const Image* theImage)
 {
@@ -1093,51 +1082,6 @@ void CoordinateSystemOld::transformToImageCoordinates(double &x, double &y, cons
   x = coordinateMapper.mapX(x);
   y = coordinateMapper.mapY(y);
   setupCoordinateMapper(coordinateMapper, this);
-
-  /*
-  // transform the x,y values to coordinates inside this component:
-  if( logScaledX )
-  {
-    jassert( x > 0.0 && currentRange.getMinX() > 0.0 );
-    // caught a logarithm of a non-positive number
-    if( x <= 0.0 || currentRange.getMinX() <= 0.0 )
-      return;
-
-    double imagePixelsPerIntervalX = 
-      theImage->getWidth()/logB((currentRange.getMaxX()/currentRange.getMinX()), logBaseX);
-
-    x = imagePixelsPerIntervalX * logB((x/currentRange.getMinX()), logBaseX);
-  }
-  else
-  {
-    double imageScaleX = theImage->getWidth()  / (currentRange.getMaxX()-currentRange.getMinX()); 
-
-    x -= currentRange.getMinX();	   // shift origin left/right
-    x *= imageScaleX;	       // scale to fit width
-  }
-
-  if( logScaledY )
-  {
-    jassert( y > 0.0 && currentRange.getMinY() > 0.0 );
-    // caught a logarithm of a non-positive number
-    if( y <= 0.0 || currentRange.getMinY() <= 0.0 )
-      return;
-
-    double imagePixelsPerIntervalY = 
-      theImage->getHeight()/logB((currentRange.getMaxY()/currentRange.getMinY()), logBaseY);
-
-    y = imagePixelsPerIntervalY * logB((y/currentRange.getMinY()), logBaseY);
-  }
-  else
-  {
-    double imageScaleY = theImage->getHeight() / (currentRange.getMaxY()-currentRange.getMinY());
-
-    y -= currentRange.getMinY();	// shift origin up/down
-    y *= imageScaleY;	         // scale to fit height
-  }
-
-  y  = theImage->getHeight()-y;	   // invert (pixels begin at top-left)
-  */
 }
 
 void CoordinateSystemOld::transformFromImageCoordinates(double &x, double &y, const Image *theImage)
@@ -1147,35 +1091,6 @@ void CoordinateSystemOld::transformFromImageCoordinates(double &x, double &y, co
   x = coordinateMapper.unmapX(x);
   y = coordinateMapper.unmapY(y);
   setupCoordinateMapper(coordinateMapper, this);
-
-
-  /*
-  if( logScaledX )
-  {
-    double imagePixelsPerIntervalX = 
-      theImage->getWidth()/logB((currentRange.getMaxX()/currentRange.getMinX()), logBaseX);
-    x = currentRange.getMinX() * pow(logBaseX, (x/imagePixelsPerIntervalX));
-  }
-  else
-  {
-    double imageScaleX = theImage->getWidth()  / (currentRange.getMaxX()-currentRange.getMinX());
-    x /= imageScaleX;              // scale to fit width
-    x += currentRange.getMinX();    // shift origin left/right
-  }
-  if( logScaledY )
-  {
-    double imagePixelsPerIntervalY = 
-      theImage->getHeight()/logB((currentRange.getMaxY()/currentRange.getMinY()), logBaseY);
-    y = currentRange.getMinY() * pow(logBaseY, (y/imagePixelsPerIntervalY));
-  }
-  else
-  {
-    double imageScaleY = theImage->getHeight() / (currentRange.getMaxY()-currentRange.getMinY());
-    y  = getHeight()-y; 
-    y /= imageScaleY;             // scale to fit height
-    y += currentRange.getMinY();    // shift origin up/down
-  }
-  */
 }
 
 void CoordinateSystemOld::transformToComponentsCoordinates(double &x, double &y)
@@ -1211,28 +1126,9 @@ void CoordinateSystemOld::updateMapping()
 
 void CoordinateSystemOld::updateCoordinateMapperOutputRange(Image* image, XmlElement* svg)
 {
-  if(image != nullptr)
-    setupCoordinateMapper(coordinateMapper, image);
-  else if(svg != nullptr)
-    setupCoordinateMapper(coordinateMapper, svg);
-  else
-    setupCoordinateMapper(coordinateMapper, this);
-
-  /*
-  double w = 0, h = 0;
-  if(image != nullptr) {
-    w = image->getWidth();
-    h = image->getHeight(); }
-  else if(svg != nullptr) {
-    w = svg->getDoubleAttribute("width", 0);
-    h = svg->getDoubleAttribute("height", 0);
-    jassert(w != 0 && h != 0); } // svg must have width and height attributes
-  else {
-    w = getWidth();
-    h = getHeight(); }
-  //coordinateMapper.setOutputRange(0, w-1, h-1, 0);
-  coordinateMapper.setOutputRange(0.5, w-0.5, h-0.5, 0.5);
-  */
+  if(image != nullptr)    setupCoordinateMapper(coordinateMapper, image);
+  else if(svg != nullptr) setupCoordinateMapper(coordinateMapper, svg);
+  else                    setupCoordinateMapper(coordinateMapper, this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1336,7 +1232,6 @@ void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval, bool 
 void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval, bool exponentialSpacing, 
   Colour gridColour, float lineThickness, Image* targetImage, XmlElement *targetSVG)
 {
-
   g.setColour(gridColour);
   if(targetSVG != nullptr)
     jura::drawVerticalGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
@@ -1433,21 +1328,21 @@ void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEl
   if( axisValuesPositionY == NO_ANNOTATION )
     return;
 
-  double xPos = 0.0; // allow for left or right, too
+  // factor out into getVerticalAxisPosition (maybe)
+  double xPos = 0.0;
   if( axisPositionY == LEFT )
     xPos = coordinateMapper.unmapX(8);
   else if( axisPositionY == RIGHT )
     xPos = coordinateMapper.unmapX(getWidth()-8);
-  double spacing = horizontalCoarseGridInterval;
 
-  if(targetSVG != nullptr){
-    jura::drawAxisValuesY(targetSVG, coordinateMapper, spacing, xPos, stringConversionForAxisY,
-      plotColourScheme.axes);
+  if(targetSVG != nullptr) {
+    jura::drawAxisValuesY(targetSVG, coordinateMapper, horizontalCoarseGridInterval, xPos, 
+      stringConversionForAxisY, plotColourScheme.axes);
   }
   else {
     g.setColour(plotColourScheme.axes);
-    jura::drawAxisValuesY(g, coordinateMapper, spacing, xPos, stringConversionForAxisY,
-      plotColourScheme.text);
+    jura::drawAxisValuesY(g, coordinateMapper, horizontalCoarseGridInterval, xPos, 
+      stringConversionForAxisY, plotColourScheme.text);
   }
 }
 
