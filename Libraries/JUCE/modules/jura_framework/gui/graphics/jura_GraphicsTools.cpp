@@ -986,19 +986,28 @@ void drawAngularGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
     i++; angle = spacing * (double) i; }
 }
 
+void pixelCoordsForAxisX(const RAPT::rsCoordinateMapper2D<double>& mapper, float& xs, float& xe, 
+  float& y, float& yt) 
+{
+  y  = (float) mapper.mapY(y); // y is input in model- and output in pixel coords
+  xs = (float) mapper.getOutMinX();
+  xe = (float) mapper.getOutMaxX();
+  yt;
+  if(y > mapper.getOutMinY() - 10)  
+    yt = y - 20; // label text above x-axis
+  else
+    yt = y + 4;  // label text below x-axis
+}
+
 void drawAxisX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, double yPos, 
   const juce::String& label, Colour labelColor)
 {
-  float y  = (float) mapper.mapY(yPos); // in pixels
-  float xs = (float) mapper.getOutMinX();
-  float xe = (float) mapper.getOutMaxX();
+  float y = (float) yPos;
+  float xs, xe, yt; // start/end x, y for text
+  pixelCoordsForAxisX(mapper, xs, xe, y, yt);
   g.drawArrow(Line<float>(xs, y, xe, y), 1.0, 6.0, 6.0);
-  if(y > mapper.getOutMinY() - 10)  
-    y -= 20; // label above x-axis
-  else
-    y += 4;  // label below x-axis
   static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
-  drawBitmapText(g, label, xe-100, y, 96, 16, font, Justification::centredRight, labelColor);
+  drawBitmapText(g, label, xe-100, yt, 96, 16, font, Justification::centredRight, labelColor);
 }
 
 //=================================================================================================
@@ -1188,4 +1197,14 @@ void drawAngularGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& 
   gridPath->setAttribute(String("style"), String("stroke-width: ") + String(thickness) 
     + String("; stroke: #") + color.toString().substring(2) + String(";") );
   svg->addChildElement(gridPath);
+}
+
+void drawAxisX(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double yPos, const juce::String& label, Colour color)
+{
+  float y = (float) yPos;
+  float xs, xe, yt; // start/end x, y for text
+  pixelCoordsForAxisX(mapper, xs, xe, y, yt);
+  addLineToSvgDrawing(svg, xs, y, xe, y, 2.0, color, true);
+  addTextToSvgDrawing(svg, label, xe-4, yt+8, Justification::centredRight, color);
 }

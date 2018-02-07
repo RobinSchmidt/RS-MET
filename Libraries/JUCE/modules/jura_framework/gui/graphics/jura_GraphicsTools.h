@@ -179,4 +179,8 @@ JUCE_API void drawRadialGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<d
 JUCE_API void drawAngularGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness, Colour color);
 
+JUCE_API void drawAxisX(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double yPosition, const juce::String& label, Colour color);
+
+
 #endif
