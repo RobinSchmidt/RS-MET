@@ -508,16 +508,6 @@ protected:
   /** Opens the PopupMenu that appears on right clicks. */
   void openRightClickPopupMenu();
 
-  /** Called whenever the input coordinate range changed to update the mapper */
-  void updateMapping();
-
-  /** Sets up the output range (i.e. the pixel width and height) in our coordinateMapper. If a 
-  non-nullptr is passed for targetImage, the image size will be used, else if a non-nullptr for
-  the targetSVG is passed, its size will be used (the xml should already have "width" and "height"
-  attributes), else this Component's size will be used. */
-  void updateCoordinateMapperOutputRange(Image* targetImage = nullptr, 
-    XmlElement* targetSVG = nullptr);
-
   virtual void drawCoordinateSystem(Graphics &g, Image* targetImage = NULL, 
     XmlElement* targetSVG = NULL);
   /**< Draws all the stuff either on the internal image which will be displayed as the components
@@ -594,15 +584,25 @@ protected:
 
 
 
-
-  virtual void updateBackgroundImage();
-  /**< Updates the image object (re-draws it). Will be called, when something about the
+  /** Updates the image object (re-draws it). Will be called, when something about the
   CoordinateSystemOld's appearance-settings was changed. */
+  virtual void updateBackgroundImage();
 
-  virtual void updateScaleFactors();
-  /**< Updates the scale-factors which are needed when transforming from the CoordinateSystemOld's
-  coordinates to Component's coordinates and vice versa. Will be called by setBounds(),
-  setRange() and useLogarithmicScale(). */
+  /** Called whenever the input coordinate range changed to update the mapper */
+  //void updateMapping();
+   // replaced by updateMapperInputRange
+
+  /** Sets up the output range (i.e. the pixel width and height) in our coordinateMapper. If a 
+  non-nullptr is passed for targetImage, the image size will be used, else if a non-nullptr for
+  the targetSVG is passed, its size will be used (the xml should already have "width" and "height"
+  attributes), else this Component's size will be used. */
+  void updateMapperOutputRange(Image* targetImage = nullptr, XmlElement* targetSVG = nullptr);
+
+  /** Updates the input range of our coordinate mapper. */
+  void updateMapperInputRange();
+
+
+
 
   double getPlotHeight(Image *targetImage = NULL);
   /**< Returns either the height of this component or the height of the image (if the pointer is

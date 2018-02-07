@@ -119,7 +119,7 @@ void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool delet
 void AudioModule::loadPreset(const juce::String& pathFromPresetFolder)
 {
   juce::String path = getPresetDirectory() + "/" + pathFromPresetFolder;
-  loadFile(File(path));
+  jassert(loadFile(File(path))); // such a preset file doesn't exist
 }
 
 /*

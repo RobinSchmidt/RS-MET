@@ -190,7 +190,8 @@ void CoordinateSystemOld::mouseMove(const MouseEvent &e)
 
 void CoordinateSystemOld::resized()
 {
-  updateMapping();
+  //updateMapperInputRange();
+  updateMapperOutputRange();
 }
 
 void CoordinateSystemOld::paint(juce::Graphics &g)
@@ -211,56 +212,56 @@ void CoordinateSystemOld::setMaximumRange(double newMinX, double newMaxX,
   maximumRange.setRangeX(newMinX, newMaxX);
   maximumRange.setRangeY(newMinY, newMaxY);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRange(CoordinateSystemRangeOld newMaximumRange)
 {
   maximumRange = newMaximumRange;
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeX(double newMinX, double newMaxX)
 {
   maximumRange.setRangeX(newMinX, newMaxX);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeY(double newMinY, double newMaxY)
 {
   maximumRange.setRangeY(newMinY, newMaxY);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeMinX(double newMinX)
 {
   maximumRange.setMinX(newMinX);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeMaxX(double newMaxX)
 {
   maximumRange.setMaxX(newMaxX);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeMinY(double newMinY)
 {
   maximumRange.setMinY(newMinY);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeMaxY(double newMaxY)
 {
   maximumRange.setMaxY(newMaxY);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRange(double newMinX, double newMaxX, 
@@ -269,56 +270,56 @@ void CoordinateSystemOld::setCurrentRange(double newMinX, double newMaxX,
   currentRange.setRangeX(newMinX, newMaxX);
   currentRange.setRangeY(newMinY, newMaxY);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRange(CoordinateSystemRangeOld newRange)
 {
   currentRange = newRange;
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeX(double newMinX, double newMaxX)
 {
   currentRange.setRangeX(newMinX, newMaxX);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeY(double newMinY, double newMaxY)
 {
   currentRange.setRangeY(newMinY, newMaxY);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeMinX(double newMinX)
 {
   currentRange.setMinX(newMinX);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeMaxX(double newMaxX)
 {
   currentRange.setMaxX(newMaxX);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeMinY(double newMinY)
 {
   currentRange.setMinY(newMinY);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeMaxY(double newMaxY)
 {
   currentRange.setMaxY(newMaxY);
   currentRange.clipRange(maximumRange);
-  updateMapping();
+  updateMapperInputRange();
 }
 
 String CoordinateSystemOld::getInfoLineForPixelPosition(int x, int y)
@@ -879,7 +880,7 @@ void CoordinateSystemOld::setupAxisX(double newMin, double newMax, bool shouldBe
   }
   verticalCoarseGridInterval = newCoarseGridInterval;
   verticalFineGridInterval   = newFineGridInterval;
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setupAxisY(double newMin, double newMax, bool shouldBeLogScaled, 
@@ -912,7 +913,7 @@ void CoordinateSystemOld::setupAxisY(double newMin, double newMax, bool shouldBe
   }
   horizontalCoarseGridInterval = newCoarseGridInterval;
   horizontalFineGridInterval   = newFineGridInterval;
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::useLogarithmicScale(bool shouldBeLogScaledX, bool shouldBeLogScaledY,                      
@@ -920,14 +921,14 @@ void CoordinateSystemOld::useLogarithmicScale(bool shouldBeLogScaledX, bool shou
 {
   logScaledX = shouldBeLogScaledX;
   logScaledY = shouldBeLogScaledY;
-  updateMapping();
+  updateMapperInputRange();
 }
 
 void CoordinateSystemOld::useLogarithmicScaleX(bool   shouldBeLogScaledX, 
                                             double newLogBaseX)
 {
   logScaledX = shouldBeLogScaledX;
-  updateMapping();
+  updateMapperInputRange();
 }
 
 bool CoordinateSystemOld::isLogScaledX()
@@ -939,7 +940,7 @@ void CoordinateSystemOld::useLogarithmicScaleY(bool   shouldBeLogScaledY,
                                             double newLogBaseY)
 {
   logScaledY = shouldBeLogScaledY;
-  updateMapping();
+  updateMapperInputRange();
 }
 
 bool CoordinateSystemOld::isLogScaledY()
@@ -1109,19 +1110,6 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
   y = (float) coordinateMapper.unmapY(y);
 }
 
-void CoordinateSystemOld::updateMapping()
-{
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
-}
-
-void CoordinateSystemOld::updateCoordinateMapperOutputRange(Image* image, XmlElement* svg)
-{
-  if(image != nullptr)    setupCoordinateMapper(coordinateMapper, image);
-  else if(svg != nullptr) setupCoordinateMapper(coordinateMapper, svg);
-  else                    setupCoordinateMapper(coordinateMapper, this);
-}
 
 //-------------------------------------------------------------------------------------------------
 // drawing functions
@@ -1130,7 +1118,7 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
 {
   g.setFont(Font(14));
 
-  updateCoordinateMapperOutputRange(targetImage, targetSVG);
+  //updateMapperOutputRange(targetImage, targetSVG);
 
   // draw the background:
   //g.fillAll(colourScheme.backgroundColour);
@@ -1338,13 +1326,33 @@ void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEl
   }
 }
 
-void CoordinateSystemOld::updateScaleFactors()
+//void CoordinateSystemOld::updateMapping()
+//{
+//  updateMapperInputRange();
+//  //if(autoReRenderImage == true)
+//  //  updateBackgroundImage();
+//}
+
+void CoordinateSystemOld::updateMapperOutputRange(Image* image, XmlElement* svg)
+{
+  if(image != nullptr)    setupCoordinateMapper(coordinateMapper, image);
+  else if(svg != nullptr) setupCoordinateMapper(coordinateMapper, svg);
+  else                    setupCoordinateMapper(coordinateMapper, this);
+
+  if(autoReRenderImage == true)
+    updateBackgroundImage();
+}
+
+void CoordinateSystemOld::updateMapperInputRange()
 {
   coordinateMapper.mapperX.setLogScaled(logScaledX);  // logScaledX/Y are redundant here now
   coordinateMapper.mapperY.setLogScaled(logScaledY);  // ...get rid of them
   coordinateMapper.setInputRange(currentRange.getMinX(), currentRange.getMaxX(),
     currentRange.getMinY(), currentRange.getMaxY());
     // the currentRange member is actually also redundant now
+
+  if(autoReRenderImage == true)
+    updateBackgroundImage();
 }
 
 // get rid of these:

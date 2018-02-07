@@ -192,7 +192,7 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
   theSVG->setAttribute(String("width"), width);
   theSVG->setAttribute(String("height"), height);
 
-  updateCoordinateMapperOutputRange(nullptr, theSVG);
+  updateMapperOutputRange(nullptr, theSVG);
 
   // fill the background:
   //g.fillAll(colourScheme.backgroundColour);
