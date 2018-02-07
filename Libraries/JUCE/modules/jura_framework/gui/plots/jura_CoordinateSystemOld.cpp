@@ -1181,11 +1181,8 @@ void CoordinateSystemOld::transformToComponentsCoordinates(double &x, double &y)
 
 void CoordinateSystemOld::transformToComponentsCoordinates(float &x, float &y)
 {
-  double xd = (double) x;
-  double yd = (double) y;
-  transformToComponentsCoordinates(xd, yd);
-  x = (float) xd;
-  y = (float) yd;
+  x = (float) coordinateMapper.mapX(x);
+  y = (float) coordinateMapper.mapY(y);
 }
 
 void CoordinateSystemOld::transformFromComponentsCoordinates(double &x, double &y)
@@ -1196,11 +1193,8 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(double &x, double &
 
 void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
 {
-  double xd = (double) x;
-  double yd = (double) y;
-  transformFromComponentsCoordinates(xd, yd);
-  x = (float) xd;
-  y = (float) yd;
+  x = (float) coordinateMapper.unmapX(x);
+  y = (float) coordinateMapper.unmapY(y);
 }
 
 void CoordinateSystemOld::updateMapping()
@@ -1475,59 +1469,43 @@ double CoordinateSystemOld::getPlotWidth(Image *targetImage)
 
 XmlElement* CoordinateSystemOld::getStateAsXml(const String& stateName) const
 {
-  XmlElement* xmlState = new XmlElement(stateName); 
+  XmlElement* xml = new XmlElement(stateName); 
   // the XmlElement which stores all the releveant state-information
 
-  xmlState->setAttribute(String("MinX"), currentRange.getMinX());
-  xmlState->setAttribute(String("MaxX"), currentRange.getMaxX());
-  xmlState->setAttribute(String("MinY"), currentRange.getMinY());
-  xmlState->setAttribute(String("MaxY"), currentRange.getMaxY());
+  xml->setAttribute(String("MinX"), currentRange.getMinX());
+  xml->setAttribute(String("MaxX"), currentRange.getMaxX());
+  xml->setAttribute(String("MinY"), currentRange.getMinY());
+  xml->setAttribute(String("MaxY"), currentRange.getMaxY());
 
-  xmlState->setAttribute(String("HorizontalCoarseGridIsVisible"),    
-    horizontalCoarseGridIsVisible);
-  xmlState->setAttribute(String("HorizontalCoarseGridInterval"),
-    horizontalCoarseGridInterval);
-  xmlState->setAttribute(String("HorizontalFineGridIsVisible"),      
-    horizontalFineGridIsVisible);
-  xmlState->setAttribute(String("HorizontalFineGridInterval"),  
-    horizontalFineGridInterval); 
-  xmlState->setAttribute(String("VerticalCoarseGridIsVisible"),    
-    verticalCoarseGridIsVisible);
-  xmlState->setAttribute(String("VerticalCoarseGridInterval"),
-    verticalCoarseGridInterval);
-  xmlState->setAttribute(String("VerticalFineGridIsVisible"),      
-    verticalFineGridIsVisible);
-  xmlState->setAttribute(String("VerticalFineGridInterval"),  
-    verticalFineGridInterval);
+  xml->setAttribute("HorizontalCoarseGridIsVisible", horizontalCoarseGridIsVisible);
+  xml->setAttribute("HorizontalCoarseGridInterval",  horizontalCoarseGridInterval);
+  xml->setAttribute("HorizontalFineGridIsVisible",   horizontalFineGridIsVisible);
+  xml->setAttribute("HorizontalFineGridInterval",    horizontalFineGridInterval); 
+  xml->setAttribute("VerticalCoarseGridIsVisible",   verticalCoarseGridIsVisible);
+  xml->setAttribute("VerticalCoarseGridInterval",    verticalCoarseGridInterval);
+  xml->setAttribute("VerticalFineGridIsVisible",     verticalFineGridIsVisible);
+  xml->setAttribute("VerticalFineGridInterval",      verticalFineGridInterval);
 
-  return xmlState;
+  return xml;
 }
 
-bool CoordinateSystemOld::setStateFromXml(const XmlElement &xmlState)
+bool CoordinateSystemOld::setStateFromXml(const XmlElement &xml)
 {
   bool success = true; // should report about success, not used yet
 
-  currentRange.setMinX( xmlState.getDoubleAttribute(String("MinX"),getCurrentRangeMinX()) );
-  currentRange.setMaxX( xmlState.getDoubleAttribute(String("MaxX"),getCurrentRangeMaxX()) );
-  currentRange.setMinY( xmlState.getDoubleAttribute(String("MinY"),getCurrentRangeMinY()) );
-  currentRange.setMaxY( xmlState.getDoubleAttribute(String("MaxY"),getCurrentRangeMaxY()) );
+  currentRange.setMinX( xml.getDoubleAttribute("MinX", getCurrentRangeMinX()) );
+  currentRange.setMaxX( xml.getDoubleAttribute("MaxX", getCurrentRangeMaxX()) );
+  currentRange.setMinY( xml.getDoubleAttribute("MinY", getCurrentRangeMinY()) );
+  currentRange.setMaxY( xml.getDoubleAttribute("MaxY", getCurrentRangeMaxY()) );
 
-  horizontalCoarseGridIsVisible = xmlState.getBoolAttribute(
-    String("HorizontalCoarseGridIsVisible"), isHorizontalCoarseGridVisible());
-  horizontalCoarseGridInterval = xmlState.getDoubleAttribute(
-    String("HorizontalCoarseGridInterval"), getHorizontalCoarseGridInterval());
-  horizontalFineGridIsVisible = xmlState.getBoolAttribute(
-    String("HorizontalFineGridIsVisible"), isHorizontalFineGridVisible());
-  horizontalFineGridInterval = xmlState.getDoubleAttribute(
-    String("HorizontalFineGridInterval"), getHorizontalFineGridInterval());
-  verticalCoarseGridIsVisible = xmlState.getBoolAttribute(
-    String("VerticalCoarseGridIsVisible"), isVerticalCoarseGridVisible());
-  verticalCoarseGridInterval = xmlState.getDoubleAttribute(
-    String("VerticalCoarseGridInterval"), getVerticalCoarseGridInterval());
-  verticalFineGridIsVisible = xmlState.getBoolAttribute(
-    String("VerticalFineGridIsVisible"), isVerticalFineGridVisible());
-  verticalFineGridInterval = xmlState.getDoubleAttribute(
-    String("VerticalFineGridInterval"), getVerticalFineGridInterval());
+  horizontalCoarseGridIsVisible = xml.getBoolAttribute(  "HorizontalCoarseGridIsVisible", isHorizontalCoarseGridVisible());
+  horizontalCoarseGridInterval  = xml.getDoubleAttribute("HorizontalCoarseGridInterval", getHorizontalCoarseGridInterval());
+  horizontalFineGridIsVisible   = xml.getBoolAttribute(  "HorizontalFineGridIsVisible", isHorizontalFineGridVisible());
+  horizontalFineGridInterval    = xml.getDoubleAttribute("HorizontalFineGridInterval", getHorizontalFineGridInterval());
+  verticalCoarseGridIsVisible   = xml.getBoolAttribute(  "VerticalCoarseGridIsVisible", isVerticalCoarseGridVisible());
+  verticalCoarseGridInterval    = xml.getDoubleAttribute("VerticalCoarseGridInterval", getVerticalCoarseGridInterval());
+  verticalFineGridIsVisible     = xml.getBoolAttribute(  "VerticalFineGridIsVisible", isVerticalFineGridVisible());
+  verticalFineGridInterval      = xml.getDoubleAttribute("VerticalFineGridInterval", getVerticalFineGridInterval());
 
   updateBackgroundImage();
   return success;
