@@ -116,9 +116,24 @@ JUCE_API void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2
 // functions of CoordinateSystemOld) ...maybe put into a class CoordinateSystemDrawer - more
 // convenient (the functions tend to have too many parameters):
 
+/** Sets up the output range of the passed coordinate mapper to the bounds of the given 
+component. */
+JUCE_API void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper, 
+  const Component* cmp);
+
+/** Sets up the output range of the passed coordinate mapper to the bounds of the given 
+image. */
+JUCE_API void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper, 
+  const Image* img);
+
+/** Sets up the output range of the passed coordinate mapper to the bounds of the given 
+svg xml element. The svg must have "width" and "height" attributes. */
+JUCE_API void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper, 
+  const XmlElement* svg);
+
+/** Specifically used in coordinate-system drawing - maybe make more general, rename. */
 JUCE_API void drawBitmapText(Graphics &g, const juce::String &text, double x, double y,
   double w, double h, BitmapFont const* font, Justification justification, Colour color);
-  // this is specifically used in coordinate-system drawing - maybe make this more general, rename
 
 /** Draws equidistant horizontal grid-lines. The spacing must be given in model coordinates and 
 will be interpreted as a factor in the case of a logarithmic y-axis. */
@@ -154,7 +169,6 @@ JUCE_API void drawAxisX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& m
 /** Draws the y-axis for a coordinate system. */
 JUCE_API void drawAxisY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double xPosition, const juce::String& label, Colour labelColor);
-
 
 //=================================================================================================
 // corresponding functions that create the svg elements instead of drawing to a Graphics object

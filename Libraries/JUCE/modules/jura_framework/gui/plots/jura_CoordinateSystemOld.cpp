@@ -1088,12 +1088,13 @@ inline double logB(double x, double b)
 
 void CoordinateSystemOld::transformToImageCoordinates(double &x, double &y, const Image* theImage)
 {
-  if( theImage == NULL )
-  {
-    transformToComponentsCoordinates(x, y);
-    return;
-  }
+  if( theImage == nullptr ) { transformToComponentsCoordinates(x, y); return; }
+  setupCoordinateMapper(coordinateMapper, theImage);  // not very elegant to set it back and forth
+  x = coordinateMapper.mapX(x);
+  y = coordinateMapper.mapY(y);
+  setupCoordinateMapper(coordinateMapper, this);
 
+  /*
   // transform the x,y values to coordinates inside this component:
   if( logScaledX )
   {
@@ -1136,16 +1137,19 @@ void CoordinateSystemOld::transformToImageCoordinates(double &x, double &y, cons
   }
 
   y  = theImage->getHeight()-y;	   // invert (pixels begin at top-left)
+  */
 }
 
 void CoordinateSystemOld::transformFromImageCoordinates(double &x, double &y, const Image *theImage)
 {
-  if( theImage == NULL )
-  {
-    transformFromComponentsCoordinates(x, y);
-    return;
-  }
+  if( theImage == NULL ) { transformFromComponentsCoordinates(x, y); return; }
+  setupCoordinateMapper(coordinateMapper, theImage);
+  x = coordinateMapper.unmapX(x);
+  y = coordinateMapper.unmapY(y);
+  setupCoordinateMapper(coordinateMapper, this);
 
+
+  /*
   if( logScaledX )
   {
     double imagePixelsPerIntervalX = 
@@ -1171,6 +1175,7 @@ void CoordinateSystemOld::transformFromImageCoordinates(double &x, double &y, co
     y /= imageScaleY;             // scale to fit height
     y += currentRange.getMinY();    // shift origin up/down
   }
+  */
 }
 
 void CoordinateSystemOld::transformToComponentsCoordinates(double &x, double &y)
@@ -1206,6 +1211,14 @@ void CoordinateSystemOld::updateMapping()
 
 void CoordinateSystemOld::updateCoordinateMapperOutputRange(Image* image, XmlElement* svg)
 {
+  if(image != nullptr)
+    setupCoordinateMapper(coordinateMapper, image);
+  else if(svg != nullptr)
+    setupCoordinateMapper(coordinateMapper, svg);
+  else
+    setupCoordinateMapper(coordinateMapper, this);
+
+  /*
   double w = 0, h = 0;
   if(image != nullptr) {
     w = image->getWidth();
@@ -1217,9 +1230,9 @@ void CoordinateSystemOld::updateCoordinateMapperOutputRange(Image* image, XmlEle
   else {
     w = getWidth();
     h = getHeight(); }
-
   //coordinateMapper.setOutputRange(0, w-1, h-1, 0);
   coordinateMapper.setOutputRange(0.5, w-0.5, h-0.5, 0.5);
+  */
 }
 
 //-------------------------------------------------------------------------------------------------
