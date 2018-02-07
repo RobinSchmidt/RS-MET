@@ -278,9 +278,6 @@ public:
   /** Sets up the colour-scheme from an XmlElement. */
   virtual void setColourSchemeFromXml(const XmlElement& xml);
 
-  /** Changes one of the colours for the graphs if a colour with this index exists (and returns
-  true in this case) - if the index is out of range, it does nothing and returns false. */
-  virtual bool changeGraphColour(int index, Colour newColour);
 
 
   virtual void setCaption(const juce::String &newCaption, int newPosition = TOP_CENTER);
@@ -382,10 +379,6 @@ public:
   virtual void setAngularFineGrid(double newGridInterval,
     bool   shouldBeVisible);
   /**< Sets the interval and visibility of the angular fine grid. */
-
-  //virtual void setAngleUnitToDegrees(bool shouldBeInDegrees = true);
-  /**< Sets the unit of the angle (as used by the angular grid) to degrees. If
-  false, radiant will be assumed. */
 
   virtual bool isHorizontalCoarseGridVisible();
   /**< Informs, if the horizontal coarse grid is visible. */
@@ -684,8 +677,6 @@ protected:
   double angularCoarseGridInterval;
   double angularFineGridInterval;
 
-  //bool   angleIsInDegrees;
-
   bool   logScaledX;
   double logBaseX;
   bool   logScaledY;
@@ -695,9 +686,6 @@ protected:
 
   // new - to be used soon in the drawing code:
   RAPT::rsCoordinateMapper2D<double> coordinateMapper;
-
-
-  //bool   valuePopup;
 
   bool useBitmapFont;
   bool showPositionAsDescription;
@@ -716,13 +704,11 @@ protected:
   bool autoReRenderImage;
   // see above
 
-
   // functions for converting coordinates into strings:
   juce::String (*stringConversionForAxisX)     (double valueToConvert);
   juce::String (*stringConversionForAxisY)     (double valueToConvert);
   juce::String (*stringConversionForInfoLineX) (double valueToConvert);
   juce::String (*stringConversionForInfoLineY) (double valueToConvert);
-
 
   // color-scheme management:
   PlotColourScheme   plotColourScheme;

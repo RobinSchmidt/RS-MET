@@ -1,7 +1,3 @@
-//#include "rojue_CoordinateSystemOld.h"
-//#include "../dialogs/rojue_ImageSavingDialog.h"
-//using namespace rojue;
-
 CoordinateSystemRangeOld::CoordinateSystemRangeOld(double initMinX, double initMaxX,
   double initMinY, double initMaxY)
 {
@@ -120,8 +116,6 @@ CoordinateSystemOld::CoordinateSystemOld(const String &newDescription)
   angularCoarseGridInterval     =  15.0;  // 15 degrees
   angularFineGridInterval       =  5.0;   // 5 degrees
 
-  //angleIsInDegrees              =  true;
-
   logScaledX	                  =  false;
   logBaseX	                    =  2.0;
   logScaledY	                  =  false;
@@ -230,16 +224,9 @@ void CoordinateSystemOld::mouseWheelMove(const MouseEvent &e, const MouseWheelDe
 {
   Component::mouseWheelMove(e, wheel);
 }
-//void CoordinateSystemOld::mouseWheelMove(const MouseEvent &e, float wheelIncrementX, 
-//                                      float wheelIncrementY)
-//{
-//  Component::mouseWheelMove(e, wheelIncrementX, wheelIncrementY);
-//}
 
 void CoordinateSystemOld::resized()
 {
-  //coordinateMapper.setOutputRange(0, getWidth()-1, getHeight()-1, 0);
-
   updateScaleFactors();
   if(autoReRenderImage == true)
     updateBackgroundImage();
@@ -437,20 +424,6 @@ void CoordinateSystemOld::setColourScheme(const PlotColourScheme& newColourSchem
 void CoordinateSystemOld::setColourSchemeFromXml(const XmlElement &xml)
 {
   //colourScheme.setColourSchemeFromXml(xml);
-}
-
-bool CoordinateSystemOld::changeGraphColour(int index, Colour newColour)
-{
-  /*
-  if( index < 0 || index >= colourScheme.plotColours.size() )
-    return false;
-  else
-  {
-    colourScheme.plotColours[index] = newColour;
-    return true;
-  }
-  */
-  return false;
 }
 
 void CoordinateSystemOld::setAutoReRendering(bool shouldAutomaticallyReRender)
@@ -861,11 +834,6 @@ void CoordinateSystemOld::setAngularFineGrid(double newGridInterval,
     updateBackgroundImage();
 }
 
-//void CoordinateSystemOld::setAngleUnitToDegrees(bool shouldBeInDegrees)
-//{
-//  angleIsInDegrees = shouldBeInDegrees;
-//}
-
 bool CoordinateSystemOld::isHorizontalCoarseGridVisible() 
 { 
   return horizontalCoarseGridIsVisible; 
@@ -1126,6 +1094,7 @@ void CoordinateSystemOld::openRightClickPopupMenu()
   */
 }
 
+// remove soon:
 void CoordinateSystemOld::addLineToSvgDrawing(XmlElement* theSVG, 
                                            float x1, float y1, float x2, float y2, float thickness, 
                                            Colour colour, bool withArrowHead)
@@ -1657,498 +1626,45 @@ void CoordinateSystemOld::drawCaption(Graphics &g, Image* targetImage, XmlElemen
   }
 }
 
-
-void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval,
-  bool exponentialSpacing, Colour gridColour, float lineThickness, Image* targetImage, 
-  XmlElement *targetSVG)
+void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval, bool exponentialSpacing, 
+  Colour gridColour, float lineThickness, Image* targetImage, XmlElement *targetSVG)
 {
-  // new:
   g.setColour(gridColour);
   if(targetSVG != nullptr)
     jura::drawHorizontalGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
   else
     jura::drawHorizontalGrid(g, coordinateMapper, interval, lineThickness);
-
-  /*
-  // old:
-  if( exponentialSpacing == true )
-  {
-    jassert( interval >= 1.00001 );
-    // grid spacing must be > 1 for exponentially spaced grid-lines
-    if( interval < 1.00001 )
-      return;
-  }
-  else
-  {
-    jassert( interval >= 0.000001 );
-    // grid spacing must be > 0
-    if( interval < 0.000001 )
-      return;
-  }
-
-  g.setColour(gridColour);
-
-  long	  i;
-  double	startX, endX, startY, endY;
-  double accumulator;
-
-  String gridPathDataString;
-
-  if( exponentialSpacing ) // draw grid with exponentially spaced lines
-  {
-    accumulator = interval*maximumRange.getMinY();
-    while( accumulator < maximumRange.getMaxY() )
-    {
-      startX = currentRange.getMinX();
-      endX   = currentRange.getMaxX();
-      startY = accumulator;
-      endY   = accumulator;
-
-      // transform:
-      if( targetImage == NULL )
-      {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
-      }
-      else
-      {
-        transformToImageCoordinates(startX, startY, targetImage);
-        transformToImageCoordinates(endX, endY, targetImage);
-      }
-
-      // draw:
-      g.drawLine((float)startX, (float)startY, (float)endX, (float)endY, 
-        lineThickness);
-
-      // add the line to the path which will be added to the SVG drawing:
-      if( targetSVG != NULL )
-      {
-        gridPathDataString += String("M ") + String(startX) + String(" ") 
-          + String(startY) + String(" ");
-        gridPathDataString += String("L ") + String(endX) + String(" ")   
-          + String(endY) + String(" ");
-      }
-
-      accumulator *= interval;
-    }
-  }
-  else // draw grid with linearly spaced lines
-  {
-    i = 0;
-    while( i*interval < currentRange.getMaxY() )
-    {
-      startX = currentRange.getMinX();
-      endX   = currentRange.getMaxX();
-      startY = i*interval;
-      endY   = i*interval;
-
-      // transform:
-      if( targetImage == NULL )
-      {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
-      }
-      else
-      {
-        transformToImageCoordinates(startX, startY, targetImage);
-        transformToImageCoordinates(endX, endY, targetImage);
-      }
-
-      // draw:
-      g.drawLine((float)startX, (float)startY, (float)endX, (float)endY, 
-        lineThickness);
-
-      // add the line to the path which will be added to the SVG drawing member:
-      if( targetSVG != NULL )
-      {
-        gridPathDataString += String("M ") + String(startX) + String(" ") 
-          + String(startY) + String(" ");
-        gridPathDataString += String("L ") + String(endX) + String(" ")   
-          + String(endY) + String(" ");
-      }
-
-      i++;
-    }
-    i = 1;
-    while( -i*interval > currentRange.getMinY() )
-    {
-      startX = currentRange.getMinX();
-      endX   = currentRange.getMaxX();
-      startY = -i*interval;
-      endY   = -i*interval;
-
-      // transform:
-      if( targetImage == NULL )
-      {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
-      }
-      else
-      {
-        transformToImageCoordinates(startX, startY, targetImage);
-        transformToImageCoordinates(endX, endY, targetImage);
-      }
-
-      // draw:
-      g.drawLine((float)startX, (float)startY, (float)endX, (float)endY, 
-        lineThickness);
-
-      // add the line to the path which will be added to the SVG drawing member:
-      if( targetSVG != NULL )
-      {
-        gridPathDataString += String("M ") + String(startX) + String(" ") 
-          + String(startY) + String(" ");
-        gridPathDataString += String("L ") + String(endX) + String(" ")   
-          + String(endY) + String(" ");
-      }
-
-      i++;
-    } // end while
-  } // end else
-
-
-  if( targetSVG != NULL )
-  {
-    XmlElement* gridPath = new XmlElement(String("path"));
-    gridPath->setAttribute(String("d"), gridPathDataString);
-    gridPath->setAttribute(String("style"), String("stroke-width: ") + String(lineThickness) + 
-      String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
-    targetSVG->addChildElement(gridPath);
-  }
-  */
 }
 
-void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval, 
-                                        bool exponentialSpacing, 
-                                        Colour gridColour, 
-                                        float lineThickness,
-                                        Image* targetImage, XmlElement *targetSVG)
+void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval, bool exponentialSpacing, 
+  Colour gridColour, float lineThickness, Image* targetImage, XmlElement *targetSVG)
 {
-  // new:
+
   g.setColour(gridColour);
   if(targetSVG != nullptr)
     jura::drawVerticalGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
   else
     jura::drawVerticalGrid(g, coordinateMapper, interval, lineThickness);
-
-
-  /*
-  // old:
-  if( exponentialSpacing == true )
-  {
-    jassert( interval >= 1.00001 );
-    // grid spacing must be > 1 for exponentially spaced grid-lines
-    if( interval < 1.00001 )
-      return;
-  }
-  else
-  {
-    jassert( interval >= 0.000001 );
-    // grid spacing must be > 0
-    if( interval < 0.000001 )
-      return;
-  }
-
-  g.setColour(gridColour);
-
-  int    	i; 
-  double	 startX, endX, startY, endY;
-  double  accumulator;
-
-  String gridPathDataString;
-
-  if( exponentialSpacing ) // draw grid with exponentially spaced lines
-  {
-    accumulator = interval*maximumRange.getMinX();
-    while( accumulator < maximumRange.getMaxX() )
-    {
-      startX = accumulator;
-      endX   = accumulator;
-      startY = currentRange.getMinY();
-      endY   = currentRange.getMaxY();
-
-      // transform:
-      if( targetImage == NULL )
-      {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
-      }
-      else
-      {
-        transformToImageCoordinates(startX, startY, targetImage);
-        transformToImageCoordinates(endX, endY, targetImage);
-      }
-
-      // draw:
-      g.drawLine((float)startX, (float)startY, (float)endX, (float)endY, 
-        lineThickness);
-
-      // add the line to the path which will be added to the SVG drawing:
-      if( targetSVG != NULL )
-      {
-        gridPathDataString += String("M ") + String(startX) + String(" ") 
-          + String(startY) + String(" ");
-        gridPathDataString += String("L ") + String(endX) + String(" ")   
-          + String(endY) + String(" ");
-      }
-
-      accumulator *= interval;
-    }
-  }
-  else // draw grid with linearly spaced lines
-  {
-    // draw vertical lines:
-    i = 0;
-    while( i*interval < currentRange.getMaxX() )
-    {
-      startX = i*interval;
-      endX   = i*interval;
-      startY = currentRange.getMinY();
-      endY   = currentRange.getMaxY();
-
-      // transform:
-      if( targetImage == NULL )
-      {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
-      }
-      else
-      {
-        transformToImageCoordinates(startX, startY, targetImage);
-        transformToImageCoordinates(endX, endY, targetImage);
-      }
-
-      // draw:
-      g.drawLine((float)startX, (float)startY, (float)endX, (float)endY, 
-        lineThickness);
-
-      // add the line to the path which will be added to the SVG drawing:
-      {
-        gridPathDataString += String("M ") + String(startX) + String(" ") 
-          + String(startY) + String(" ");
-        gridPathDataString += String("L ") + String(endX) + String(" ")   
-          + String(endY) + String(" ");
-      }
-
-      i++;
-    }
-    i = 1;
-    while( -i*interval > currentRange.getMinX() )
-    {
-      startX = -i*interval;
-      endX   = -i*interval;
-      startY = currentRange.getMinY();
-      endY   = currentRange.getMaxY();
-
-      // transform:
-      if( targetImage == NULL )
-      {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
-      }
-      else
-      {
-        transformToImageCoordinates(startX, startY, targetImage);
-        transformToImageCoordinates(endX, endY, targetImage);
-      }
-
-      // draw:
-      g.drawLine((float)startX, (float)startY, (float)endX, (float)endY, 
-        lineThickness);
-
-      // add the line to the path which will be added to the SVG drawing:
-      if( targetSVG != NULL )
-      {
-        gridPathDataString += String("M ") + String(startX) + String(" ") 
-          + String(startY) + String(" ");
-        gridPathDataString += String("L ") + String(endX) + String(" ")   
-          + String(endY) + String(" ");
-      }
-
-      i++;
-    } // end while
-  } // end else
-
-  if( targetSVG != NULL )
-  {
-    XmlElement* gridPath = new XmlElement(String("path"));
-    gridPath->setAttribute(String("d"), gridPathDataString);
-    gridPath->setAttribute(String("style"), String("stroke-width: ") + String(lineThickness) 
-      + String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
-    targetSVG->addChildElement(gridPath);
-  }
-  */
 }
 
-void CoordinateSystemOld::drawRadialGrid(Graphics &g, double interval,
-  bool exponentialSpacing,
-  Colour gridColour,
-  float lineThickness,
-  Image* targetImage, XmlElement *targetSVG)
+void CoordinateSystemOld::drawRadialGrid(Graphics &g, double interval, bool exponentialSpacing,
+  Colour gridColour, float lineThickness, Image* targetImage, XmlElement *targetSVG)
 {
   g.setColour(gridColour);
   if(targetSVG != nullptr)
     jura::drawRadialGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
   else
     jura::drawRadialGrid(g, coordinateMapper, interval, lineThickness);
-
-
-
-  /*
-  if( exponentialSpacing == true )
-  {
-    jassert( interval >= 1.00001 );
-    // grid spacing must be > 1 for exponentially spaced grid-lines
-    if( interval < 1.00001 )
-      return;
-  }
-  else
-  {
-    jassert( interval >= 0.000001 );
-    // grid spacing must be > 0
-    if( interval < 0.000001 )
-      return;
-  }
-
-  g.setColour(gridColour);
-
-  // calculate the radius of the largest circle to be drawn:
-  double xTmp = jmax(fabs(currentRange.getMinX()), fabs(currentRange.getMaxX()) );
-  double yTmp = jmax(fabs(currentRange.getMinY()), fabs(currentRange.getMaxY()) );
-  double maxRadius = sqrt(xTmp*xTmp + yTmp*yTmp);
-
-  // calculate the center-coordinates of the circles in terms of components
-  // coordinates:
-  double centerX = 0.0;
-  double centerY = 0.0;
-  double xScaler, yScaler;
-  if( targetImage == NULL )
-  {
-    xScaler = getWidth()  / (currentRange.getMaxX()-currentRange.getMinX());
-    yScaler = getHeight() / (currentRange.getMaxY()-currentRange.getMinY());
-    transformToComponentsCoordinates(centerX, centerY);
-  }
-  else
-  {
-    xScaler = targetImage->getWidth()  / (currentRange.getMaxX()-currentRange.getMinX());
-    yScaler = targetImage->getHeight() / (currentRange.getMaxY()-currentRange.getMinY());
-    transformToImageCoordinates(centerX, centerY, targetImage);
-  }
-
-  // draw the circles:
-  int    i       = 1;
-  double radius  = interval;
-  double xL, xR, yT, yB;
-  while( radius <= maxRadius )
-  {
-    // draw the circle (may deform to an ellipse depending on the scaling of the 
-    // axes):
-    xL = centerX - xScaler*radius;
-    xR = centerX + xScaler*radius;
-    yT = centerY - yScaler*radius;
-    yB = centerY + yScaler*radius;
-    g.drawEllipse((float)xL, (float)yT, (float)(xR-xL),(float)(yB-yT), 
-      lineThickness);
-
-    // add the circle to the svg-drawing:
-    if( targetSVG != NULL )
-    {
-      XmlElement* ellipse = new XmlElement(String("ellipse"));
-      ellipse->setAttribute(String("cx"), centerX);
-      ellipse->setAttribute(String("cy"), centerY);
-      ellipse->setAttribute(String("rx"), xScaler*radius);
-      ellipse->setAttribute(String("ry"), yScaler*radius);
-      ellipse->setAttribute(String("style"), 
-        String("stroke-width: ") + String(lineThickness) + 
-        String("; stroke: #") + gridColour.toString().substring(2) + String(";") + 
-        String("fill: none;") );
-      targetSVG->addChildElement(ellipse);
-    }
-
-    // calculate the next radius (in system-coordinates)
-    i++;
-    radius = interval * (double) i;
-  }
-  */
 }
 
-void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval,
-                                       Colour gridColour, 
-                                       float lineThickness,
-                                       Image* targetImage, XmlElement *targetSVG)
+void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval, Colour gridColour,                  
+  float lineThickness, Image* targetImage, XmlElement *targetSVG)
 {
   g.setColour(gridColour);
   if(targetSVG != nullptr)
     jura::drawAngularGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
   else
     jura::drawAngularGrid(g, coordinateMapper, interval, lineThickness);
-
-
-  /*
-  g.setColour(gridColour);
-
-  double angleIntervalInRadiant;
-  if( angleIsInDegrees )
-    angleIntervalInRadiant = interval*(PI/180.0);
-  else
-    angleIntervalInRadiant = interval;
-
-  String gridPathDataString;
-
-  double angle = 0.0;
-  double startX, endX, startY, endY;
-  int    i     = 0;
-  while( angle <= PI )
-  {
-    endX   = cos(angle);
-    endY   = sin(angle);
-    startX = -endX;
-    startY = -endY;
-
-    // prolong (or shorten) the line such that it fits into the currently visible rectangle:
-    fitLineToRectangle(startX, startY, endX, endY, currentRange.getMinX(), currentRange.getMinY(), 
-      currentRange.getMaxX(), currentRange.getMaxY() );
-
-    // transform:
-    if( targetImage == NULL )
-    {
-      transformToComponentsCoordinates(startX, startY);
-      transformToComponentsCoordinates(endX, endY);
-    }
-    else
-    {
-      transformToImageCoordinates(startX, startY, targetImage);
-      transformToImageCoordinates(endX, endY, targetImage);
-    }
-
-    // draw:
-    g.drawLine((float)startX, (float)startY, (float)endX, (float)endY, 
-      lineThickness);
-
-    // add the line to the SVG drawing:
-    if( targetSVG != NULL )
-    {
-
-      // add the line to the path which will be added to the SVG drawing member:
-      gridPathDataString += String("M ") + String(startX) + String(" ") 
-        + String(startY) + String(" ");
-      gridPathDataString += String("L ") + String(endX) + String(" ")   
-        + String(endY) + String(" ");
-    }
-
-    i++;
-    angle = angleIntervalInRadiant * (double) i;
-  }
-
-  if( targetSVG != NULL )
-  {
-    XmlElement* gridPath = new XmlElement(String("path"));
-    gridPath->setAttribute(String("d"), gridPathDataString);
-    gridPath->setAttribute(String("style"), String("stroke-width: ") + String(lineThickness) 
-      + String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
-    targetSVG->addChildElement(gridPath);
-  }
-  */
 }
 
 void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
@@ -2400,7 +1916,6 @@ void CoordinateSystemOld::drawAxisLabelY(juce::Graphics &g, Image* targetImage, 
 
 void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
-  // new:
   if( axisValuesPositionX == NO_ANNOTATION )
     return;
 
@@ -2414,221 +1929,15 @@ void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEl
   if(targetSVG != nullptr)
     jura::drawAxisValuesX(targetSVG, coordinateMapper, spacing, yPos, stringConversionForAxisX,
       plotColourScheme.axes);
-  else
-  {
+  else {
     g.setColour(plotColourScheme.axes);
     jura::drawAxisValuesX(g, coordinateMapper, spacing, yPos, stringConversionForAxisX,
       plotColourScheme.text);
   }
-
-  /*
-  // old:
-  if( logScaledX == true )
-  {
-    jassert( verticalCoarseGridInterval >= 1.00001 );
-    if( verticalCoarseGridInterval < 1.00001 )
-      return;
-  }
-  else
-  {
-    jassert( verticalCoarseGridInterval >= 0.000001 );
-    // grid spacing must be > 0
-    if( verticalCoarseGridInterval < 0.000001 )
-      return;
-  }
-
-  if( axisValuesPositionX == NO_ANNOTATION )
-    return;
-
-  g.setColour(plotColourScheme.axes);
-
-  long	  i;
-  double	posX, posY, value;
-  double accumulator;
-  String numberString;
-
-  // draw values on x-axis:
-  if(logScaledX)
-  {
-    posX	      = verticalCoarseGridInterval*maximumRange.getMinX();
-    accumulator = verticalCoarseGridInterval*maximumRange.getMinX();
-    while( accumulator < maximumRange.getMaxX() )
-    {
-      posX = value = accumulator;
-      if( logScaledY )
-        posY = currentRange.getMinY();
-      else
-      {
-        if( axisPositionX == ZERO )
-          posY = 0;
-        else if( axisPositionX == TOP )
-          posY = currentRange.getMaxY();
-        else if( axisPositionX == BOTTOM )
-          posY = currentRange.getMinY();
-      }
-
-      // transform:
-      if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
-      else
-        transformToImageCoordinates(posX, posY, targetImage);
-
-      // include some margin for axes at the top and bottom:
-      if( axisPositionX == TOP )
-        posY += 8;
-      if( axisPositionX == BOTTOM )
-        posY -= 8;
-
-      // draw a small line:
-      g.drawLine((float)posX, (float)(posY-4.0), (float)posX, (float)(posY+4.0), 
-        1.0);
-      if( targetSVG != NULL )
-        addLineToSvgDrawing(targetSVG, (float)posX, (float)(posY-4.0), (float)posX, (float)(posY+4.0), 1.0, 
-        plotColourScheme.axes, false);
-
-      // draw number:
-      numberString = stringConversionForAxisX(value);
-      if( axisValuesPositionX == ABOVE_AXIS || axisPositionX == BOTTOM )
-      {
-        drawBitmapText(g, numberString, posX-32, posY-20, 64, 16, &normalFont7px, Justification::centred);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, (float)(posX-32), (float)(posY-8), Justification::centred);
-      }
-      else
-      {
-        drawBitmapText(g, numberString, posX-32, posY+4, 64, 16, &normalFont7px, Justification::centred);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, (float)(posX-32), (float)(posY+16), Justification::centred);
-      }
-
-      accumulator *= verticalCoarseGridInterval;
-    }
-  }
-  else	 // x is linerarly scaled
-  {
-    if( axisPositionY == LEFT  || 
-      axisPositionY == RIGHT || 
-      axisPositionY == INVISIBLE)
-      i = 0;
-    else
-      i = 1;
-    while( i*verticalCoarseGridInterval < currentRange.getMaxX() )
-    {
-      posX = value = i*verticalCoarseGridInterval;
-      // "value" will not be transformed
-      if( logScaledY )
-        posY = currentRange.getMinY();
-      else
-      {
-        if( axisPositionX == ZERO )
-          posY = 0;
-        else if( axisPositionX == TOP )
-          posY = currentRange.getMaxY();
-        else if( axisPositionX == BOTTOM )
-          posY = currentRange.getMinY();
-      }
-
-      // transform coordinates:
-      if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
-      else
-        transformToImageCoordinates(posX, posY, targetImage);
-
-
-      // include some margin for axes at the top and bottom:
-      if( axisPositionX == TOP )
-        posY += 8;
-      if( axisPositionX == BOTTOM )
-        posY -= 8;
-
-      // draw a small line:
-      g.drawLine((float)posX, (float)(posY-4.0), (float)posX, (float)(posY+4.0), 
-        1.0);
-      if( targetSVG != NULL )
-        addLineToSvgDrawing(targetSVG, (float)posX, (float)(posY-4.0), (float)posX, (float)(posY+4.0), 1.0, 
-        plotColourScheme.axes, false);
-
-      // draw the number:
-      numberString = stringConversionForAxisX(value);
-      if( axisValuesPositionX == ABOVE_AXIS || axisPositionX == BOTTOM )
-      {
-        drawBitmapText(g, numberString, (int)posX-32, (int)posY-20, 64, 16, 
-          &normalFont7px, Justification::centred);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, 
-          (float)posX, (float)(posY-8), Justification::centred);
-      }
-      else
-      {
-        drawBitmapText(g, numberString, (int)posX-32, (int)posY+4, 64, 16, 
-          &normalFont7px, Justification::centred);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, 
-          (float)(posX), (float)(posY+16), Justification::centred);
-      }
-
-      i++;
-    }
-    i = 1;
-    while( -i*verticalCoarseGridInterval > currentRange.getMinX() )
-    {
-      posX = value = -i*verticalCoarseGridInterval; 
-      // "value" will not be transformed
-      if( logScaledY )
-        posY = currentRange.getMinY();
-      else
-      {
-        if( axisPositionX == ZERO )
-          posY = 0;
-        else if( axisPositionX == TOP )
-          posY = currentRange.getMaxY();
-        else if( axisPositionX == BOTTOM )
-          posY = currentRange.getMinY();
-      }
-
-      // transform coordinates:
-      if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
-      else
-        transformToImageCoordinates(posX, posY, targetImage);
-
-      // include some margin for axes at the top and bottom:
-      if( axisPositionX == TOP )
-        posY += 8;
-      if( axisPositionX == BOTTOM )
-        posY -= 8;
-
-      // draw a small line:
-      g.drawLine((float)posX, (float)(posY-4.0), (float)posX, (float)(posY+4.0), 
-        1.0);
-      if( targetSVG != NULL )
-        addLineToSvgDrawing(targetSVG, (float)posX, (float)(posY-4.0), (float)posX, (float)(posY+4.0), 1.0, 
-        plotColourScheme.axes, false);
-
-      // draw the number:
-      numberString = stringConversionForAxisX(value);
-      if( axisValuesPositionX == ABOVE_AXIS || axisPositionX == BOTTOM )
-      {
-        drawBitmapText(g, numberString, (int)posX-32, (int)posY-20, 64, 16, &normalFont7px, Justification::centred);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, (float)posX, (float)(posY-8), Justification::centred);
-      }
-      else
-      {
-        drawBitmapText(g, numberString, (int)posX-32, (int)posY+4, 64, 16, &normalFont7px, Justification::centred);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, (float)posX, (float)(posY+16), Justification::centred);
-      }
-
-      i++;
-    }
-  }
-  */
 }
 
 void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
-  // new:
   if( axisValuesPositionY == NO_ANNOTATION )
     return;
 
@@ -2639,230 +1948,15 @@ void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEl
     xPos = coordinateMapper.unmapX(getWidth()-8);
   double spacing = horizontalCoarseGridInterval;
 
-  if(targetSVG != nullptr)
-  {
+  if(targetSVG != nullptr){
     jura::drawAxisValuesY(targetSVG, coordinateMapper, spacing, xPos, stringConversionForAxisY,
       plotColourScheme.axes);
   }
-  else
-  {
+  else {
     g.setColour(plotColourScheme.axes);
     jura::drawAxisValuesY(g, coordinateMapper, spacing, xPos, stringConversionForAxisY,
       plotColourScheme.text);
   }
-
-
-
-  /*
-  // old:
-  if( logScaledY == true )
-  {
-    jassert( horizontalCoarseGridInterval >= 1.00001 );
-    if( horizontalCoarseGridInterval < 1.00001 )
-      return;
-  }
-  else
-  {
-    jassert( horizontalCoarseGridInterval >= 0.000001 );
-    // grid spacing must be > 0
-    if( horizontalCoarseGridInterval < 0.000001 )
-      return;
-  }
-
-  if( axisValuesPositionY == NO_ANNOTATION )
-    return;
-
-  g.setColour(plotColourScheme.axes);
-
-  long	  i;
-  double	posX, posY, value;
-  double accumulator;
-  String numberString;
-
-  // draw values on y-axis:
-  if(logScaledY)
-  {
-    posY	      = horizontalCoarseGridInterval*maximumRange.getMinY();
-    accumulator = horizontalCoarseGridInterval*maximumRange.getMinY();
-    while( accumulator < maximumRange.getMaxY() )
-    {
-      if( logScaledX )
-        posX = currentRange.getMinX();
-      else
-      {
-        if( axisPositionY == ZERO )
-          posX = 0.0;
-        else if( axisPositionY == LEFT ) 
-          posX = currentRange.getMinX();
-        else if( axisPositionY == RIGHT ) 
-          posX = currentRange.getMaxX();
-      }
-      posY = value = accumulator;
-
-      // transform:
-      if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
-      else
-        transformToImageCoordinates(posX, posY, targetImage);
-
-      // include some margin for axes at the left and right:
-      if( axisPositionY == LEFT )
-        posX += 8;
-      else if( axisPositionY == RIGHT )
-        posX -= 8;
-
-      // draw a small line:
-      g.drawLine((float)(posX-4.0), (float)posY, (float)(posX+4.0), (float)posY, 
-        1.0);
-      if( targetSVG != NULL )
-        addLineToSvgDrawing(targetSVG, (float)(posX-4.0), (float)posY, (float)(posX+4.0), (float)posY, 1.0, 
-        plotColourScheme.axes, false);
-
-      // draw number:
-      numberString = stringConversionForAxisY(value);
-      if( axisValuesPositionY == LEFT_TO_AXIS )
-      {
-        drawBitmapText(g, numberString, (int)posX-25, (int)posY-10, 20, 20, 
-          &normalFont7px, Justification::centredRight);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, 
-          (float)(posX+8), (float)(posY+4), Justification::centredLeft);
-      }
-      else
-      {
-        drawBitmapText(g, numberString, (int)posX+4, (int)posY-10, 20, 20, 
-          &normalFont7px, Justification::centredLeft);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, 
-          (float)(posX-8), (float)(posY+4), Justification::centredRight);
-      }
-
-      accumulator *= horizontalCoarseGridInterval;
-    }
-  }
-  else // y is linearly scaled
-  {
-    if( axisPositionX == TOP    || 
-      axisPositionX == BOTTOM || 
-      axisPositionX == INVISIBLE )
-      i = 0;
-    else
-      i = 1;
-    while( i*horizontalCoarseGridInterval < currentRange.getMaxY() )
-    {
-      if( logScaledX )
-        posX = currentRange.getMinX();
-      else
-      {
-        if( axisPositionY == ZERO )
-          posX = 0.0;
-        else if( axisPositionY == LEFT ) 
-          posX = currentRange.getMinX();
-        else if( axisPositionY == RIGHT ) 
-          posX = currentRange.getMaxX();
-      }
-      posY = value = i*horizontalCoarseGridInterval; 
-      // "value" will not be transformed
-
-      // transform coordinates:
-      if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
-      else
-        transformToImageCoordinates(posX, posY, targetImage);
-
-      // include some margin for axes at the left and right:
-      if( axisPositionY == LEFT )
-        posX += 8;
-      else if( axisPositionY == RIGHT )
-        posX -= 8;
-
-      // draw a small line:
-      g.drawLine((float)(posX-4.0), (float)posY, (float)(posX+4.0), (float)posY, 
-        1.0);
-      if( targetSVG != NULL )
-        addLineToSvgDrawing(targetSVG, (float)(posX-4.0), (float)posY, (float)(posX+4.0), (float)posY, 1.0, 
-        plotColourScheme.axes, false);
-
-      // draw number:
-      numberString = stringConversionForAxisY(value);
-      if( axisValuesPositionY == RIGHT_TO_AXIS || axisPositionY == LEFT )
-      {
-        drawBitmapText(g, numberString, (int)posX+8, (int)posY-10, 64, 20, 
-         &normalFont7px, Justification::centredLeft);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, 
-          (float)(posX+8), (float)(posY+4), Justification::centredLeft);
-      }
-      else
-      {
-        drawBitmapText(g, numberString, (int)posX-8-64, (int)posY-10, 64, 20, 
-          &normalFont7px, Justification::centredRight);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, 
-          (float)(posX-8), (float)(posY+4), Justification::centredRight);
-      }
-
-      i++;
-    }
-    i = 1;
-    while( -i*horizontalCoarseGridInterval > currentRange.getMinY() )
-    {
-      if( logScaledX )
-        posX = currentRange.getMinX();
-      else
-      {
-        if( axisPositionY == ZERO )
-          posX = 0.0;
-        else if( axisPositionY == LEFT ) 
-          posX = currentRange.getMinX();
-        else if( axisPositionY == RIGHT ) 
-          posX = currentRange.getMaxX();
-      }
-      posY = value = -i*horizontalCoarseGridInterval; // "value" will not be transformed
-
-      // transform coordinates:
-      if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
-      else
-        transformToImageCoordinates(posX, posY, targetImage);
-
-      // include some margin for axes at the left and right:
-      if( axisPositionY == LEFT )
-        posX += 8;
-      else if( axisPositionY == RIGHT )
-        posX -= 8;
-
-      // draw a small line:
-      g.drawLine((float)(posX-4.0), (float)posY, (float)(posX+4.0), (float)posY, 
-        1.0);
-      if( targetSVG != NULL )
-        addLineToSvgDrawing(targetSVG, (float)(posX-4.0), (float)posY, (float)(posX+4.0), (float)posY, 1.0, 
-        plotColourScheme.axes, false);
-
-      // draw number:
-      numberString = stringConversionForAxisY(value);
-      if( axisValuesPositionY == RIGHT_TO_AXIS || axisPositionY == LEFT )
-      {
-        drawBitmapText(g, numberString, (int)posX+8, (int)posY-10, 64, 20, 
-          &normalFont7px, Justification::centredLeft);
-        if( targetSVG != NULL )        
-          addTextToSvgDrawing(targetSVG, numberString, 
-          (float)(posX+8), (float)(posY+4), Justification::centredLeft);
-      }
-      else
-      {
-        drawBitmapText(g, numberString, (int)posX-8-64, (int)posY-10, 64, 20, 
-          &normalFont7px, Justification::centredRight);
-        if( targetSVG != NULL )
-          addTextToSvgDrawing(targetSVG, numberString, 
-          (float)(posX-8), (float)(posY+4), Justification::centredRight);
-      }
-
-      i++;
-    }  // end while
-  }
-  */
-
 }
 
 void CoordinateSystemOld::updateScaleFactors()
@@ -2873,6 +1967,7 @@ void CoordinateSystemOld::updateScaleFactors()
     currentRange.getMinY(), currentRange.getMaxY());
     // the currentRange member is actually also redundant now
 
+  // maybe code below is obolete now (or soon):
 
   if( !logScaledX )
     scaleX = getWidth()  / (currentRange.getMaxX()-currentRange.getMinX()); 
@@ -2909,6 +2004,7 @@ void CoordinateSystemOld::updateScaleFactors()
   }
 }
 
+// get rid of these:
 double CoordinateSystemOld::getPlotHeight(Image *targetImage)
 {
   if( targetImage == NULL )
