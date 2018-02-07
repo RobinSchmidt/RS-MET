@@ -508,6 +508,9 @@ protected:
   /** Opens the PopupMenu that appears on right clicks. */
   void openRightClickPopupMenu();
 
+
+  void updateMapping();
+
   /** Sets up the output range (i.e. the pixel width and height) in our coordinateMapper. If a 
   non-nullptr is passed for targetImage, the image size will be used, else if a non-nullptr for
   the targetSVG is passed, its size will be used (the xml should already have "width" and "height"

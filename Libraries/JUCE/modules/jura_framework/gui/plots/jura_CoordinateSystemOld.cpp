@@ -197,10 +197,7 @@ void CoordinateSystemOld::mouseMove(const MouseEvent &e)
 
 void CoordinateSystemOld::resized()
 {
-  // factor out into updateMapping
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::paint(juce::Graphics &g)
@@ -221,73 +218,56 @@ void CoordinateSystemOld::setMaximumRange(double newMinX, double newMaxX,
   maximumRange.setRangeX(newMinX, newMaxX);
   maximumRange.setRangeY(newMinY, newMaxY);
   currentRange.clipRange(maximumRange);
-
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setMaximumRange(CoordinateSystemRangeOld newMaximumRange)
 {
   maximumRange = newMaximumRange;
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setMaximumRangeX(double newMinX, double newMaxX)
 {
   maximumRange.setRangeX(newMinX, newMaxX);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setMaximumRangeY(double newMinY, double newMaxY)
 {
   maximumRange.setRangeY(newMinY, newMaxY);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setMaximumRangeMinX(double newMinX)
 {
   maximumRange.setMinX(newMinX);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setMaximumRangeMaxX(double newMaxX)
 {
   maximumRange.setMaxX(newMaxX);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setMaximumRangeMinY(double newMinY)
 {
   maximumRange.setMinY(newMinY);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setMaximumRangeMaxY(double newMaxY)
 {
   maximumRange.setMaxY(newMaxY);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setCurrentRange(double newMinX, double newMaxX, 
@@ -296,72 +276,56 @@ void CoordinateSystemOld::setCurrentRange(double newMinX, double newMaxX,
   currentRange.setRangeX(newMinX, newMaxX);
   currentRange.setRangeY(newMinY, newMaxY);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setCurrentRange(CoordinateSystemRangeOld newRange)
 {
   currentRange = newRange;
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setCurrentRangeX(double newMinX, double newMaxX)
 {
   currentRange.setRangeX(newMinX, newMaxX);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setCurrentRangeY(double newMinY, double newMaxY)
 {
   currentRange.setRangeY(newMinY, newMaxY);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setCurrentRangeMinX(double newMinX)
 {
   currentRange.setMinX(newMinX);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setCurrentRangeMaxX(double newMaxX)
 {
   currentRange.setMaxX(newMaxX);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setCurrentRangeMinY(double newMinY)
 {
   currentRange.setMinY(newMinY);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 void CoordinateSystemOld::setCurrentRangeMaxY(double newMaxY)
 {
   currentRange.setMaxY(newMaxY);
   currentRange.clipRange(maximumRange);
-  updateScaleFactors();
-  if(autoReRenderImage == true)
-    updateBackgroundImage();
+  updateMapping();
 }
 
 String CoordinateSystemOld::getInfoLineForPixelPosition(int x, int y)
@@ -1316,6 +1280,12 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
   y = (float) yd;
 }
 
+void CoordinateSystemOld::updateMapping()
+{
+  updateScaleFactors();
+  if(autoReRenderImage == true)
+    updateBackgroundImage();
+}
 
 void CoordinateSystemOld::updateCoordinateMapperOutputRange(Image* image, XmlElement* svg)
 {
