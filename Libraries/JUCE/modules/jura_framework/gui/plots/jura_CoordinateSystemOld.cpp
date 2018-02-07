@@ -1669,6 +1669,33 @@ void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval, Colour g
 
 void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
+  //jassertfalse; // needs update
+
+  //jura::drawAxisX(g, coordinateMapper, yPos);
+
+  if( axisPositionX == INVISIBLE ) 
+    return;
+
+  double yPos = 0.0;
+  if( axisPositionX == BOTTOM )
+    yPos = coordinateMapper.unmapY(getHeight()-8);
+  else if( axisPositionX == TOP )
+    yPos = coordinateMapper.unmapY(8);
+  double spacing = verticalCoarseGridInterval;
+
+  if(targetSVG != nullptr)
+  {
+    //jura::drawAxisValuesX(targetSVG, coordinateMapper, spacing, yPos, stringConversionForAxisX,
+    //  plotColourScheme.axes);
+  }
+  else 
+  {
+    g.setColour(plotColourScheme.axes);
+    jura::drawAxisX(g, coordinateMapper, yPos, axisLabelX, plotColourScheme.text);
+  }
+
+
+  /*
   if( logScaledX == true )
   {
     jassert( verticalCoarseGridInterval >= 1.00001 );
@@ -1733,7 +1760,9 @@ void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlEl
   g.drawArrow(Line<float>((float)startX, (float)startY, (float)endX, (float)endY), 1.0, 6.0, 6.0);
 
   if( targetSVG != NULL )
-    addLineToSvgDrawing(targetSVG, (float)startX, (float)startY, (float) endX, (float)endY, 2.0, plotColourScheme.axes, true);
+    addLineToSvgDrawing(targetSVG, (float)startX, (float)startY, (float) endX, (float)endY, 2.0, 
+      plotColourScheme.axes, true);
+   */
 }
 
 void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
@@ -1807,6 +1836,8 @@ void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlEl
 
 void CoordinateSystemOld::drawAxisLabelX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
+
+  /*
   if( axisLabelPositionX == NO_ANNOTATION ) 
     return;
 
@@ -1850,6 +1881,7 @@ void CoordinateSystemOld::drawAxisLabelX(juce::Graphics &g, Image* targetImage, 
 
   if( targetSVG != NULL )
     addTextToSvgDrawing(targetSVG, axisLabelX, (float) (posX-4), (float) (posY+16), Justification::centredRight);
+    */
 }
 
 void CoordinateSystemOld::drawAxisLabelY(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)

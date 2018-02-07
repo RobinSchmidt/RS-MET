@@ -986,6 +986,21 @@ void drawAngularGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
     i++; angle = spacing * (double) i; }
 }
 
+void drawAxisX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, double yPos, 
+  const juce::String& label, Colour labelColor)
+{
+  float y  = (float) mapper.mapY(yPos); // in pixels
+  float xs = (float) mapper.getOutMinX();
+  float xe = (float) mapper.getOutMaxX();
+  g.drawArrow(Line<float>(xs, y, xe, y), 1.0, 6.0, 6.0);
+  if(y > mapper.getOutMinY() - 10)  
+    y -= 20; // label above x-axis
+  else
+    y += 4;  // label below x-axis
+  static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
+  drawBitmapText(g, label, xe-100, y, 96, 16, font, Justification::centredRight, labelColor);
+}
+
 //=================================================================================================
 // coordinate system drawing for svg export:
 

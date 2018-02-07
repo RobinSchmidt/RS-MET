@@ -565,6 +565,7 @@ protected:
   /**< Draws an angular grid with a given interval in a given colour. Gets called by
   drawCoordinateSystem(). */
 
+
   virtual void drawCaption(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the caption/headline. Gets called by drawCoordinateSystem(). */
 
@@ -580,11 +581,16 @@ protected:
   virtual void drawAxisLabelY(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the y-axis' label. Gets called by drawCoordinateSystem(). */
 
+
   virtual void drawAxisValuesX(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the numeric values at the x-axis. Gets called by drawCoordinateSystem(). */
 
   virtual void drawAxisValuesY(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the numeric values at the y-axis. Gets called by drawCoordinateSystem(). */
+
+
+
+  // also to be obsolete soon:
 
   virtual void transformToImageCoordinates(double &x, double &y, const Image* theImage);
   /**< Function for converting the x- and y-coordinate values into the corresponding coordinates
@@ -622,6 +628,10 @@ protected:
   virtual void drawBitmapText(Graphics &g, const juce::String &text, double x, double y,
     double w, double h, BitmapFont const* font, Justification justification);
     // obsolete
+
+
+
+
 
   virtual void updateBackgroundImage();
   /**< Updates the image object (re-draws it). Will be called, when something about the

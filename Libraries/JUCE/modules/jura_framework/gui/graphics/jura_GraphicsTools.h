@@ -130,18 +130,26 @@ color the Graphics object is set up to, values are drawn in textColor. */
 JUCE_API void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, double xPosition, juce::String (*yToString) (double y), Colour textColor);
 
+/** Analog to drawHorizontalGrid. */
 JUCE_API void drawVerticalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
 
+/** Analog to drawAxisValuesY. */
 JUCE_API void drawAxisValuesX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, double yPosition, juce::String (*xToString) (double x), Colour textColor);
 
+/** Draws concentric circles centered at the origin of given spacing of the radii. */
 JUCE_API void drawRadialGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
 
+/** Draws straight lines that pass through the origin and extend over the visible range. The 
+spacing of the angles should be given in degrees. */
 JUCE_API void drawAngularGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
-
+ 
+/** Draws the x-axis for a coordinate system. */
+JUCE_API void drawAxisX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double yPosition, const juce::String& label, Colour labelColor);
 
 
 //=================================================================================================
