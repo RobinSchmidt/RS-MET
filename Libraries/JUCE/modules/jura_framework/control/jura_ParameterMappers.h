@@ -98,6 +98,8 @@ public:
     //return log(y/min) / (log(max/min)); 
   }
 
+  // \todo: optimize by precomputing log(max/min), 1/log(max/min), 1/min
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperExponential)
 };
 

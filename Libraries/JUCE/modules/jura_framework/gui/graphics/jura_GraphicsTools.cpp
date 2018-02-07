@@ -939,6 +939,26 @@ void drawAxisValuesX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapp
     x += dx; }
 }
 
+double getMaxRadius(const RAPT::rsCoordinateMapper2D<double>& mapper)
+{
+  double x = jmax(fabs(mapper.getInMinX()), fabs(mapper.getInMaxX()));
+  double y = jmax(fabs(mapper.getInMinY()), fabs(mapper.getInMaxY()));
+  return sqrt(x*x + y*y);
+}
+
+void drawRadialGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, float thickness)
+{
+  int i = 1;
+  double maxRadius = getMaxRadius(mapper);
+  double radius = spacing;
+  while(radius <= maxRadius) {
+    float xL = (float) mapper.mapX(-radius); float xR = (float) mapper.mapX(+radius);
+    float yB = (float) mapper.mapY(-radius); float yT = (float) mapper.mapY(+radius);
+    g.drawEllipse(xL, yT, xR-xL, yB-yT, thickness); // circle may deform into ellipse
+    i++; radius = spacing * (double) i; }
+}
+
 //=================================================================================================
 // coordinate system drawing for svg export:
 

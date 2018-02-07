@@ -130,12 +130,16 @@ color the Graphics object is set up to, values are drawn in textColor. */
 JUCE_API void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, double xPosition, juce::String (*yToString) (double y), Colour textColor);
 
-
 JUCE_API void drawVerticalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, float thickness);
 
 JUCE_API void drawAxisValuesX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, double yPosition, juce::String (*xToString) (double x), Colour textColor);
+
+
+JUCE_API void drawRadialGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
+  double spacing, float thickness);
+
 
 
 //=================================================================================================

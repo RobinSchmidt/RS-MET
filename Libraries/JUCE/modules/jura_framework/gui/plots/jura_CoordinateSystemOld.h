@@ -650,6 +650,7 @@ protected:
   CoordinateSystemRangeOld currentRange, maximumRange;
   /**< The range- and maximum-range object for the coordinate system. */
 
+  // maybe factor out into a PlotSettings class and have a member of that here
   double scaleX;
   double scaleY;
   double pixelsPerIntervalX;

@@ -1986,6 +1986,12 @@ void CoordinateSystemOld::drawRadialGrid(Graphics &g, double interval,
                                       float lineThickness,
                                       Image* targetImage, XmlElement *targetSVG)
 {
+  g.setColour(gridColour);
+  jura::drawRadialGrid(g, coordinateMapper, interval, lineThickness);
+
+
+
+  /*
   if( exponentialSpacing == true )
   {
     jassert( interval >= 1.00001 );
@@ -2060,6 +2066,7 @@ void CoordinateSystemOld::drawRadialGrid(Graphics &g, double interval,
     i++;
     radius = interval * (double) i;
   }
+  */
 }
 
 void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval,
