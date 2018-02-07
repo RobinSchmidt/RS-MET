@@ -645,11 +645,8 @@ protected:
   double angularFineGridInterval;
 
   bool   logScaledX;
-  double logBaseX;
   bool   logScaledY;
-  double logBaseY;
   bool   logScaledRadius;
-  double logBaseRadius;
 
   // new - to be used soon in the drawing code:
   RAPT::rsCoordinateMapper2D<double> coordinateMapper;

@@ -110,11 +110,8 @@ CoordinateSystemOld::CoordinateSystemOld(const String &newDescription)
   angularFineGridInterval       =  5.0;   // 5 degrees
 
   logScaledX	                  =  false;
-  logBaseX	                    =  2.0;
   logScaledY	                  =  false;
-  logBaseY	                    =  2.0;
   logScaledRadius               =  false;
-  logBaseRadius                 =  2.0;
 
   maximumRange.setRangeX(-2.2, 2.2);
   maximumRange.setRangeY(-2.2, 2.2);
@@ -873,7 +870,6 @@ void CoordinateSystemOld::setupAxisX(double newMin, double newMax, bool shouldBe
   maximumRange.setRangeX(newMin, newMax);
   currentRange.setRangeX(newMin, newMax);
   logScaledX = shouldBeLogScaled;
-  logBaseX     = newLogBase;
   if( newAxisPosition == INVISIBLE ||
       newAxisPosition == ZERO      ||
       newAxisPosition == TOP       ||
@@ -907,7 +903,6 @@ void CoordinateSystemOld::setupAxisY(double newMin, double newMax, bool shouldBe
   maximumRange.setRangeY(newMin, newMax);
   currentRange.setRangeY(newMin, newMax);
   logScaledY = shouldBeLogScaled;
-  logBaseY     = newLogBase;
   if( newAxisPosition == INVISIBLE ||
       newAxisPosition == ZERO      ||
       newAxisPosition == LEFT      ||
@@ -925,8 +920,6 @@ void CoordinateSystemOld::useLogarithmicScale(bool shouldBeLogScaledX, bool shou
 {
   logScaledX = shouldBeLogScaledX;
   logScaledY = shouldBeLogScaledY;
-  logBaseX     = newLogBaseX;
-  logBaseY     = newLogBaseY;
   updateMapping();
 }
 
@@ -934,7 +927,6 @@ void CoordinateSystemOld::useLogarithmicScaleX(bool   shouldBeLogScaledX,
                                             double newLogBaseX)
 {
   logScaledX = shouldBeLogScaledX;
-  logBaseX     = newLogBaseX;
   updateMapping();
 }
 
@@ -947,7 +939,6 @@ void CoordinateSystemOld::useLogarithmicScaleY(bool   shouldBeLogScaledY,
                                             double newLogBaseY)
 {
   logScaledY = shouldBeLogScaledY;
-  logBaseY     = newLogBaseY;
   updateMapping();
 }
 
@@ -1084,7 +1075,8 @@ void CoordinateSystemOld::transformToImageCoordinates(double &x, double &y, cons
   setupCoordinateMapper(coordinateMapper, this);
 }
 
-void CoordinateSystemOld::transformFromImageCoordinates(double &x, double &y, const Image *theImage)
+void CoordinateSystemOld::transformFromImageCoordinates(double &x, double &y, 
+  const Image *theImage)
 {
   if( theImage == NULL ) { transformFromComponentsCoordinates(x, y); return; }
   setupCoordinateMapper(coordinateMapper, theImage);
