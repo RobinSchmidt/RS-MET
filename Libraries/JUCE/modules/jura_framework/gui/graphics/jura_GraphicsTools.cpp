@@ -1153,3 +1153,24 @@ void drawRadialGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& m
     svg->addChildElement(ellipse);
     i++; radius = spacing * (double) i; }
 }
+
+void drawAngularGrid(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper,
+  double spacing, float thickness, Colour color)
+{
+  spacing = spacing*(PI/180.0); // degree-to-radiant
+  double angle = 0.0; int i = 0;
+  double startX, endX, startY, endY;
+  String pathString;
+  while(angle <= PI) 
+  {
+    angularLineEndPoints(angle, mapper, startX, startY, endX, endY);
+    pathString += String("M ") + String(startX) + String(" ") + String(startY) + String(" ");
+    pathString += String("L ") + String(endX) + String(" ")   + String(endY) + String(" ");
+    i++; angle = spacing * (double) i; 
+  }
+  XmlElement* gridPath = new XmlElement(String("path"));
+  gridPath->setAttribute(String("d"), pathString);
+  gridPath->setAttribute(String("style"), String("stroke-width: ") + String(thickness) 
+    + String("; stroke: #") + color.toString().substring(2) + String(";") );
+  svg->addChildElement(gridPath);
+}

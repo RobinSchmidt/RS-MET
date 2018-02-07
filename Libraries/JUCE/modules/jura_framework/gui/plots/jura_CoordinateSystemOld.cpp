@@ -2079,9 +2079,7 @@ void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval,
 {
   g.setColour(gridColour);
   if(targetSVG != nullptr)
-  {
-    //jura::drawAngularGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
-  }
+    jura::drawAngularGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
   else
     jura::drawAngularGrid(g, coordinateMapper, interval, lineThickness);
 
