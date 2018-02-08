@@ -11,8 +11,15 @@ rsPlotDrawer::rsPlotDrawer(const rsPlotSettings& plotSettings,
 
 void rsPlotDrawer::drawPlot(Graphics& g)
 {
-  // split into drawPlotBackground / drawPlotForeground
+  // this function doesn't make much sense anymore unless we use a template method approach to draw
+  // the data in between these two calls:
+  drawPlotBackground(g);
+  //drawPlotContent(g);  // could be a template method
+  drawPlotForeground(g);
+}
 
+void rsPlotDrawer::drawPlotBackground(Graphics& g)
+{
   // fine grids:
   if(settings.horizontalFineGridIsVisible) {
     g.setColour(colors.fineGrid);
@@ -58,11 +65,10 @@ void rsPlotDrawer::drawPlot(Graphics& g)
     g.setColour(colors.axes);
     jura::drawAxisValuesY(g, mapper, settings.horizontalCoarseGridInterval, 
       getVerticalAxisX(), settings.stringConversionForAxisY, colors.text); }
+}
 
-
-
-
-
+void rsPlotDrawer::drawPlotForeground(Graphics& g)
+{
   // caption/headline (positioning formulas needs test):
   static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
   float cw = (float) font->getTextPixelWidth(settings.captionString);
@@ -87,16 +93,6 @@ void rsPlotDrawer::drawPlot(Graphics& g)
   g.drawRect(float(x), float(y), float(w), float(h), 2.f);
 }
 
-void rsPlotDrawer::drawPlotBackground(Graphics& g)
-{
-
-}
-
-void rsPlotDrawer::drawPlotForeground(Graphics& g)
-{
-
-}
-
 void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, float* valuesX, float* valuesY)
 {
 
@@ -104,16 +100,36 @@ void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, float* valuesX, flo
 
 void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, float* valuesX, float* valuesY)
 {
+  //g.setColour(graphColor); should be done ouside
+  // todo: make dot-size adjustable, templatize to make it work for double (and maybe int), too
 
+  // make parameters - to be used to draw lines to x- and/or y-axis:
+  bool lineToAxisX = false;
+  bool lineToAxisY = false;
+  float x0 = (float) mapper.mapX(0);
+  float y0 = (float) mapper.mapY(0);
+
+  float x, y;	   // current x and y value
+  for(int i = 0; i < numValues; i++)
+  {
+    // read out the tables:
+    x = (float) mapper.mapX(valuesX[i]);
+    y = (float) mapper.mapY(valuesY[i]);
+
+    // add a dot at postion x, y:
+    g.fillEllipse(x-1, y-1, 3, 3);
+
+    // draw lines to x- and y-axis if the option is selected:
+    if(lineToAxisX) g.drawLine(x,  y, x, y0); // needs testing
+    if(lineToAxisY) g.drawLine(x0, y, x, y);
+  }
 }
 
 //-------------------------------------------------------------------------------------------------
 // SVG stuff:
 
-void rsPlotDrawer::drawPlot(XmlElement* svg)
+void rsPlotDrawer::drawPlotBackground(XmlElement* svg)
 {
-  setupMapper();
-
   // fine grids:
   if(settings.horizontalFineGridIsVisible)
     drawHorizontalGrid(svg, mapper, settings.horizontalFineGridInterval, 1.f, colors.fineGrid);
@@ -147,6 +163,23 @@ void rsPlotDrawer::drawPlot(XmlElement* svg)
     && settings.axisValuesPositionY != rsPlotSettings::NO_ANNOTATION) {
     drawAxisValuesY(svg, mapper, settings.horizontalCoarseGridInterval, 
       getVerticalAxisX(), settings.stringConversionForAxisY, colors.axes); }
+}
+
+void rsPlotDrawer::drawWithLines(XmlElement* svg, int numValues, float* valuesX, float* valuesY)
+{
+  String pathString;
+  for(int i = 0; i < numValues; i++)
+  {
+    float x = (float) mapper.mapX(valuesX[i]);
+    float y = (float) mapper.mapY(valuesY[i]);
+    pathString += String(x) + " " + String(y) + ", ";
+  }
+  Colour colour = Colours::black; // preliminary
+  XmlElement* curvePath = new XmlElement("polyline");
+  curvePath->setAttribute("points", pathString);
+  curvePath->setAttribute("style", "stroke-width: " + String(1.0) + "; stroke: #" 
+    + colour.toString().substring(2) + "; fill: none;" );
+  svg->addChildElement(curvePath);
 }
 
 //-------------------------------------------------------------------------------------------------

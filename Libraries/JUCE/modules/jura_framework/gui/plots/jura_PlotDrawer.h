@@ -35,8 +35,9 @@ public:
   /** Plots a curve by connecting the given datapoints with lines. */
   virtual void drawWithLines(Graphics& g, int numValues, float* valuesX, float* valuesY);
 
-  /** Draws the givne datapoints as dots like in a scatterplot. */
+  /** Draws the given datapoints as dots like in a scatterplot. */
   virtual void drawAsDots(Graphics& g, int numValues, float* valuesX, float* valuesY);
+    // not yet tested
 
   //virtual void drawFunction(std::function<double(double)> function, double increment = 1);
   // goes through the x-range with given increment (in pixels) and evaluates the given function
@@ -52,11 +53,14 @@ public:
 
   /** Analog to the other drawPlot version but draws onto an svg draing instead of a graphics 
   object. Useful for implementing export of plots to svg files. */
-  virtual void drawPlot(XmlElement* svg);
+  virtual void drawPlotBackground(XmlElement* svg);
    // maybe move into subclass rsPlotDrawerWithSvg...or something
    // maybe have a subclass that uses OpenGL
    // or have an (possibly abstract) rsPlotDrawer baseclass and rsPlotDrawerNative, 
    // rsPlotDrawerOpenGL, rsPlotDrawerSVG subclasses
+
+  virtual void drawWithLines(XmlElement* svg, int numValues, float* valuesX, float* valuesY);
+  // not yet tested
 
 
 protected:

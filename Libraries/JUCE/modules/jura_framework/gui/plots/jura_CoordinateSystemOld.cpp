@@ -1016,18 +1016,18 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
   // create drawer and draw:
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, w, h);
   if(targetSVG != nullptr)
-    drawer.drawPlot(targetSVG);
+    drawer.drawPlotBackground(targetSVG);
   else if(targetImage != nullptr) {
     Graphics g2(*targetImage);
     fillRectWithBilinearGradient(g2, 0, 0, targetImage->getWidth(), targetImage->getHeight(),
       plotColourScheme.topLeft, plotColourScheme.topRight, plotColourScheme.bottomLeft,
       plotColourScheme.bottomRight);
-    drawer.drawPlot(g2); }
+    drawer.drawPlotBackground(g2); }
   else {    
     fillRectWithBilinearGradient(g, 0, 0, getWidth(), getHeight(),
       plotColourScheme.topLeft, plotColourScheme.topRight, 
       plotColourScheme.bottomLeft, plotColourScheme.bottomRight);
-    drawer.drawPlot(g); }
+    drawer.drawPlotBackground(g); }
 }
 
 void CoordinateSystemOld::updateMapperOutputRange(Image* image, XmlElement* svg)

@@ -131,19 +131,6 @@ void CurveFamilyPlotOld::paint(juce::Graphics &g)
                             0, 0, plotImage->getWidth(), plotImage->getHeight(), false);
   else
     g.fillAll(Colours::red);
-
-  /*
-  // test to see, where juce deems the pixel coordinates to be:
-  g.setColour(Colours::red);
-  //g.drawLine(10, 0, getWidth()-10, 0, 1.f); 
-  //g.drawLine(10, 0.5, getWidth()-10, 0.5, 1.f); 
-  g.drawLine(10, 10.5, getWidth()-10, 10.5, 1.f); 
-  g.drawLine(10, 100.0f, getWidth()-10, 100.0f, 1.f); 
-  g.drawLine(10, 200.5f, getWidth()-10, 200.5f, 1.f); 
-  // the lines at N+0.5 (for integer N) are 1 pixel wide, the lines at N are two pixels wide (and 
-  // the color is scaled down by 1/2), so it seems we should use the 0.5...width-0.5 instead of
-  // 0...width-1
-  */
 }
 
 void CurveFamilyPlotOld::updatePlotImage(bool redrawCoordinateSystem)
@@ -175,6 +162,8 @@ void CurveFamilyPlotOld::updateBackgroundImage()
 
 XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
 {
+  jassertfalse; // needs update
+
   jassert( width  >= 1 );
   jassert( height >= 1);
     
@@ -195,63 +184,10 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
   updateMapperOutputRange(nullptr, theSVG);
 
   /*
-  // fill the background:
-  //g.fillAll(colourScheme.backgroundColour);
-
-  // draw the grids, if desired:
-  if( plotSettings.horizontalFineGridIsVisible )
-    drawHorizontalGrid(g, plotSettings.horizontalFineGridInterval, plotSettings.logScaledY, 
-      plotColourScheme.fineGrid, 1.0f, thePlot, theSVG);
-  if( plotSettings.verticalFineGridIsVisible )
-    drawVerticalGrid(g, plotSettings.verticalFineGridInterval, plotSettings.logScaledX, 
-      plotColourScheme.fineGrid, 1.0f, thePlot, theSVG);
-  if( plotSettings.radialFineGridIsVisible )
-    drawRadialGrid(g, plotSettings.radialFineGridInterval, plotSettings.logScaledRadius, 
-      plotColourScheme.fineGrid, 1.0f, thePlot, theSVG);
-  if( plotSettings.angularFineGridIsVisible )
-    drawAngularGrid(g, plotSettings.angularFineGridInterval, plotColourScheme.fineGrid, 1.0f, 
-      thePlot, theSVG);
-
-  if( plotSettings.horizontalCoarseGridIsVisible )
-    drawHorizontalGrid(g, plotSettings.horizontalCoarseGridInterval, plotSettings.logScaledY, 
-      plotColourScheme.coarseGrid, 1.0f, thePlot, theSVG);
-  if( plotSettings.verticalCoarseGridIsVisible )
-    drawVerticalGrid(g, plotSettings.verticalCoarseGridInterval, plotSettings.logScaledX, 
-      plotColourScheme.coarseGrid, 1.0f, thePlot, theSVG);
-  if( plotSettings.radialCoarseGridIsVisible )
-    drawRadialGrid(g, plotSettings.radialCoarseGridInterval, plotSettings.logScaledRadius, 
-      plotColourScheme.coarseGrid, 1.0f, thePlot, theSVG);
-  if( plotSettings.angularCoarseGridIsVisible )
-    drawAngularGrid(g, plotSettings.angularCoarseGridInterval, plotColourScheme.coarseGrid, 1.0f, 
-      thePlot, theSVG);
-
-
+  CoordinateSystemOld::drawCoordinateSystem...
   // draw the function family values:
   plotCurveFamily(g, thePlot, theSVG); 
-
-
-  // draw the coordinate system:
-  if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE )
-    drawAxisX(g, thePlot, theSVG);
-  if( plotSettings.axisPositionY != rsPlotSettings::INVISIBLE )
-    drawAxisY(g, thePlot, theSVG);
-
-  //// draw the labels on the axes:
-  //if( axisPositionX != INVISIBLE && axisLabelPositionX != NO_ANNOTATION )
-  //  drawAxisLabelX(g, thePlot, theSVG);
-  //if( axisPositionY != INVISIBLE && axisLabelPositionY != NO_ANNOTATION )
-  //  drawAxisLabelY(g, thePlot, theSVG);
-
-  // draw the values on the axes:
-  if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE && plotSettings.axisValuesPositionX != rsPlotSettings::NO_ANNOTATION )
-    drawAxisValuesX(g, thePlot, theSVG);
-  if( plotSettings.axisPositionY != rsPlotSettings::INVISIBLE && plotSettings.axisValuesPositionY != rsPlotSettings::NO_ANNOTATION )
-    drawAxisValuesY(g, thePlot, theSVG);
-
-  // draw the caption:
-  drawCaption(g, thePlot, theSVG);
   */
-
 
   return theSVG;
 }
@@ -261,79 +197,6 @@ Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
 {
   jassertfalse; // needs update or better be refactored away
   return nullptr;
-
-  /*
-  jassert(width  >= 1);
-  jassert(height >= 1);
-  if( width < 1 || height < 1)  
-    return NULL;
-
-  Image* thePlot = new Image(Image::RGB, width, height, true);
-
-  // create a graphics object which is associated with the image to perform
-  // the drawing-operations
-  Graphics g(*thePlot);
-
-  // fill the background:
-  //g.fillAll(colourScheme.backgroundColour);
-
-  CoordinateSystemOld::drawCoordinateSystem(g, thePlot);
-
-  // draw the grids, if desired:
-  if( horizontalFineGridIsVisible )
-    drawHorizontalGrid(g, horizontalFineGridInterval, logScaledY, plotColourScheme.fineGrid, 
-      1.0f, thePlot);
-  if( verticalFineGridIsVisible )
-    drawVerticalGrid(g, verticalFineGridInterval, logScaledX, plotColourScheme.fineGrid, 
-      1.0f, thePlot);
-  if( radialFineGridIsVisible )
-    drawRadialGrid(g, radialFineGridInterval, logScaledRadius, plotColourScheme.fineGrid, 
-      1.0f, thePlot);
-  if( angularFineGridIsVisible )
-    drawAngularGrid(g, angularFineGridInterval, plotColourScheme.fineGrid, 1.0f, thePlot);
-
-  if( horizontalCoarseGridIsVisible )
-    drawHorizontalGrid(g, horizontalCoarseGridInterval, logScaledY, plotColourScheme.coarseGrid, 
-      1.0f, thePlot);
-  if( verticalCoarseGridIsVisible )
-    drawVerticalGrid(g, verticalCoarseGridInterval, logScaledX, plotColourScheme.coarseGrid, 
-      1.0f, thePlot);
-  if( radialCoarseGridIsVisible )
-    drawRadialGrid(g, radialCoarseGridInterval, logScaledRadius, plotColourScheme.coarseGrid, 
-      1.0f, thePlot);
-  if( angularCoarseGridIsVisible )
-    drawAngularGrid(g, angularCoarseGridInterval, plotColourScheme.coarseGrid, 1.0f, thePlot);
-
-  // draw the function family values:
-  plotCurveFamily(g, thePlot, NULL); 
-
-  // draw the coordinate system:
-  if( axisPositionX != rsPlotSettings::INVISIBLE )
-    drawAxisX(g, thePlot);
-  if( axisPositionY != rsPlotSettings::INVISIBLE )
-    drawAxisY(g, thePlot);
-
-  //// draw the labels on the axes:
-  //if( axisPositionX != INVISIBLE && axisLabelPositionX != NO_ANNOTATION )
-  //  drawAxisLabelX(g, thePlot);
-  //if( axisPositionY != INVISIBLE && axisLabelPositionY != NO_ANNOTATION )
-  //  drawAxisLabelY(g, thePlot);
-
-  // draw the values on the axes:
-  if( axisPositionX != rsPlotSettings::INVISIBLE && axisValuesPositionX != rsPlotSettings::NO_ANNOTATION )
-    drawAxisValuesX(g, thePlot);
-  if( axisPositionY != rsPlotSettings::INVISIBLE && axisValuesPositionY != rsPlotSettings::NO_ANNOTATION )
-    drawAxisValuesY(g, thePlot);
-
-  // draw the caption:
-  drawCaption(g, thePlot, NULL);
-
-  // draw an outlining rectangle:
-  g.setColour(plotColourScheme.outline);
-  g.drawRect(0, 0, thePlot->getWidth(), thePlot->getHeight(), 1);
-
-  return thePlot;
-  */
 }
 
 void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlElement *targetSVG)
@@ -476,40 +339,7 @@ void CurveFamilyPlotOld::plotCurve(Graphics &g, Image* targetImage, XmlElement *
 
 void CurveFamilyPlotOld::plotFamilyValuesAsDots(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
-  /*
-  // make sure that the arrays are valid:
-  if( valuesX==NULL || valuesY==NULL )
-  return;
 
-  g.setColour(graphColor);
-
-  float x0 = 0.0;
-  float y0 = 0.0;
-  transformToComponentsCoordinates(x0, y0);
-  // transformed zero values for x and y, will be used to draw the lines to
-  // the x- and y-axes if this option is chosen
-
-  float x,y;	   // current x and y value
-  long	i;	   // counter through the values
-  for(i=0; i<numValues; i++)
-  {
-  //read out the tables:
-  x = valuesX[i];
-  y = valuesY[i];
-
-  //transform:
-  transformToComponentsCoordinates(x, y);
-
-  //add a dot at postion x,y:
-  g.fillEllipse(x-1, y-1, 3, 3);
-
-  // draw lines to x- and y-axis if the option is selected:
-  if( drawLineToXAxis )
-  g.drawLine(x, y, x, y0);
-  if( drawLineToYAxis )
-  g.drawLine(x0, y, x, y);
-  }
-  */
 }
 
 //-------------------------------------------------------------------------------------------------
