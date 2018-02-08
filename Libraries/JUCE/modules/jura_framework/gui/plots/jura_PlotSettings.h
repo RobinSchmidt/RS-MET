@@ -68,7 +68,8 @@ public:
   juce::String axisLabelY;
 
   // actually, they are redundant - we can use values of 0 for the corresponding intervals to turn 
-  // them off:
+  // them off - but no, it's more convenient to be able to set the spacing separately from the 
+  // visibility (it will be separate on a gui anyway):
   bool horizontalCoarseGridIsVisible;
   bool horizontalFineGridIsVisible;
   bool verticalCoarseGridIsVisible;

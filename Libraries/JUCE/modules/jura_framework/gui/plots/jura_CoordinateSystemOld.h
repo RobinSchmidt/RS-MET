@@ -129,7 +129,7 @@ public:
   virtual PlotColourScheme getPlotColourScheme() const { return plotColourScheme; }
 
   //-----------------------------------------------------------------------------------------------
-  // appearance:
+  // \name Appearance Setup
 
   /** Sets up the colour-scheme. */
   virtual void setColourScheme(const PlotColourScheme& newColourScheme);
@@ -143,108 +143,99 @@ public:
   /** Sets up the colour-scheme from an XmlElement. */
   virtual void setColourSchemeFromXml(const XmlElement& xml);
 
-
-
+  /** Sets up a caption for the CoordinateSystemOld and the position where it should appear. */
   virtual void setCaption(const juce::String &newCaption, 
     int newPosition = rsPlotSettings::TOP_CENTER);
-  /**< Sets up a caption for the CoordinateSystemOld and the position where it should appear. */
 
+  /** Sets the position of the x-axis. For possible values see enum positions. */
   virtual void setAxisPositionX(int newAxisPositionX);
-  /**< Sets the position of the x-axis. For possible values see
-  enum positions. */
 
+  /** Sets the position of the y-axis. For possible values see enum positions. */
   virtual void setAxisPositionY(int newAxisPositionY);
-  /**< Sets the position of the y-axis. For possible values see
-  enum positions. */
 
+  /** Sets up several x-axis parameters at once */
   virtual void setupAxisX(double newMin, double newMax, bool shouldBeLogScaled, double newLogBase,
     int newAxisPosition, double newCoarseGridInterval, double newFineGridInterval);
-  /**< Sets up several x-axis parameters at once */
 
+  /** Sets up several y-axis parameters at once */
   virtual void setupAxisY(double newMin, double newMax, bool shouldBeLogScaled, double newLogBase,
-    int newAxisPosition, double newCoarseGridInterval,
-    double newFineGridInterval);
-  /**< Sets up several y-axis parameters at once */
+    int newAxisPosition, double newCoarseGridInterval, double newFineGridInterval);
 
+  /** Sets the visibility of the horizontal coarse grid. */
   virtual void setHorizontalCoarseGridVisible(bool shouldBeVisible);
-  /**< Sets the visibility of the horizontal coarse grid. */
 
+  /** Sets the interval of the horizontal coarse grid. */
   virtual void setHorizontalCoarseGridInterval(double newGridInterval);
-  /**< Sets the interval of the horizontal coarse grid. */
 
-  virtual void setHorizontalCoarseGrid(double newGridInterval,
-    bool   shouldBeVisible);
-  /**< Sets the interval and visibility of the horizontal coarse grid. */
+  /** Sets the interval and visibility of the horizontal coarse grid. */
+  virtual void setHorizontalCoarseGrid(double newGridInterval, bool shouldBeVisible);
 
+  /** Sets the visibility of the horizontal fine grid. */
   virtual void setHorizontalFineGridVisible(bool shouldBeVisible);
-  /**< Sets the visibility of the horizontal fine grid. */
 
+  /** Sets the interval of the horizontal fine grid. */
   virtual void setHorizontalFineGridInterval(double newGridInterval);
-  /**< Sets the interval of the horizontal fine grid. */
 
-  virtual void setHorizontalFineGrid(double newGridInterval,
-    bool   shouldBeVisible);
-  /**< Sets the interval and visibility of the horizontal fine grid. */
+  /** Sets the interval and visibility of the horizontal fine grid. */
+  virtual void setHorizontalFineGrid(double newGridInterval, bool   shouldBeVisible);
 
+  /** Sets the visibility of the vertical coarse grid. */
   virtual void setVerticalCoarseGridVisible(bool shouldBeVisible);
-  /**< Sets the visibility of the vertical coarse grid. */
 
+  /** Sets the interval of the vertical coarse grid. */
   virtual void setVerticalCoarseGridInterval(double newGridInterval);
-  /**< Sets the interval of the vertical coarse grid. */
 
+  /** Sets the interval and visibility of the vertical coarse grid. */
   virtual void setVerticalCoarseGrid(double newGridInterval,
     bool   shouldBeVisible);
-  /**< Sets the interval and visibility of the vertical coarse grid. */
 
+  /** Sets the visibility of the vertical fine grid. */
   virtual void setVerticalFineGridVisible(bool shouldBeVisible);
-  /**< Sets the visibility of the vertical fine grid. */
 
+  /** Sets the interval of the vertical fine grid. */
   virtual void setVerticalFineGridInterval(double newGridInterval);
-  /**< Sets the interval of the vertical fine grid. */
 
-  virtual void setVerticalFineGrid(double newGridInterval,
-    bool   shouldBeVisible);
-  /**< Sets the interval and visibility of the vertical fine grid. */
+  /** Sets the interval and visibility of the vertical fine grid. */
+  virtual void setVerticalFineGrid(double newGridInterval, bool shouldBeVisible);
 
+  /** Sets the visibility of the radial coarse grid. */
   virtual void setRadialCoarseGridVisible(bool shouldBeVisible);
-  /**< Sets the visibility of the radial coarse grid. */
 
+  /** Sets the interval of the radial coarse grid. */
   virtual void setRadialCoarseGridInterval(double newGridInterval);
-  /**< Sets the interval of the radial coarse grid. */
 
-  virtual void setRadialCoarseGrid(double newGridInterval,
-    bool   shouldBeVisible);
-  /**< Sets the interval and visibility of the radial coarse grid. */
+  /** Sets the interval and visibility of the radial coarse grid. */
+  virtual void setRadialCoarseGrid(double newGridInterval, bool shouldBeVisible);
 
+  /** Sets the visibility of the radial fine grid. */
   virtual void setRadialFineGridVisible(bool shouldBeVisible);
-  /**< Sets the visibility of the radial fine grid. */
 
+  /** Sets the interval of the radial fine grid. */
   virtual void setRadialFineGridInterval(double newGridInterval);
-  /**< Sets the interval of the radial fine grid. */
 
-  virtual void setRadialFineGrid(double newGridInterval,
-    bool   shouldBeVisible);
-  /**< Sets the interval and visibility of the radial fine grid. */
+  /** Sets the interval and visibility of the radial fine grid. */
+  virtual void setRadialFineGrid(double newGridInterval, bool shouldBeVisible);
 
+  /** Sets the visibility of the angular coarse grid. */
   virtual void setAngularCoarseGridVisible(bool shouldBeVisible);
-  /**< Sets the visibility of the angular coarse grid. */
 
+  /** Sets the interval of the angular coarse grid. */
   virtual void setAngularCoarseGridInterval(double newGridInterval);
-  /**< Sets the interval of the angular coarse grid. */
 
-  virtual void setAngularCoarseGrid(double newGridInterval,
-    bool   shouldBeVisible);
-  /**< Sets the interval and visibility of the angular coarse grid. */
+  /** Sets the interval and visibility of the angular coarse grid. */
+  virtual void setAngularCoarseGrid(double newGridInterval, bool shouldBeVisible);
 
+  /** Sets the visibility of the angular fine grid. */
   virtual void setAngularFineGridVisible(bool shouldBeVisible);
-  /**< Sets the visibility of the angular fine grid. */
 
+  /** Sets the interval of the angular fine grid. */
   virtual void setAngularFineGridInterval(double newGridInterval);
-  /**< Sets the interval of the angular fine grid. */
 
-  virtual void setAngularFineGrid(double newGridInterval,
-    bool   shouldBeVisible);
-  /**< Sets the interval and visibility of the angular fine grid. */
+  /** Sets the interval and visibility of the angular fine grid. */
+  virtual void setAngularFineGrid(double newGridInterval, bool shouldBeVisible);
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Appearance Inquiry
 
   virtual bool isHorizontalCoarseGridVisible();
   /**< Informs, if the horizontal coarse grid is visible. */
@@ -520,14 +511,7 @@ protected:
   /**< Returns either the height of this component or the height of the image (if the pointer is
   non-NULL). */
 
-
   rsPlotSettings plotSettings;
-
-  /** The currently visible range and maximum range object for the plot. */
-  //rsPlotRange currentRange, maximumRange; // move to rsPlotSettings
-
-
-
 
 
   // new - to be used soon in the drawing code:
