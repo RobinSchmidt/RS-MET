@@ -1028,12 +1028,13 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
   //-------------------------------------------
   // old code below:
 
-
+  /*
   // draw the coordinate system:
   if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE )
     drawAxisX(g, targetImage, targetSVG);
   if( plotSettings.axisPositionY != rsPlotSettings::INVISIBLE )
     drawAxisY(g, targetImage, targetSVG);
+  */
 
   // draw the values on the axes:
   if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE && plotSettings.axisValuesPositionX != rsPlotSettings::NO_ANNOTATION )
@@ -1094,7 +1095,7 @@ double CoordinateSystemOld::getHorizontalAxisY()
     y = coordinateMapper.unmapY(jmin(8, getHeight()));
   return y;
 }
-
+/*
 void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
   if( plotSettings.axisPositionX == rsPlotSettings::INVISIBLE ) 
@@ -1127,6 +1128,7 @@ void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlEl
       plotColourScheme.text);
   }
 }
+*/
 
 void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {

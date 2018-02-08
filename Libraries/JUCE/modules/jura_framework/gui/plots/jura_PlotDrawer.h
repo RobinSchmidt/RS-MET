@@ -26,6 +26,14 @@ protected:
 
   void setupMapper(double x, double y, double w, double h);
 
+  /** Returns the x-coordinate for the y-axis in model coordinates. */
+  double getVerticalAxisX();
+
+  /** Returns the y-coordinate for the x-axis in model coordinates. */
+  double getHorizontalAxisY();
+
+
+
   const rsPlotSettings& settings;
   const PlotColourScheme& colors;
 

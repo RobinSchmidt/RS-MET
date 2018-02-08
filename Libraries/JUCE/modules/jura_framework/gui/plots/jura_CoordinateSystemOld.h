@@ -416,12 +416,12 @@ protected:
   /** Returns the y-coordinate for the x-axis in model coordinates. */
   double getHorizontalAxisY();
 
-  virtual void drawAxisX(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
+  //virtual void drawAxisX(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the x-axis. Gets called by drawCoordinateSystem(). */
 
-
-  virtual void drawAxisY(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
+  //virtual void drawAxisY(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the y-axis. Gets called by drawCoordinateSystem(). */
+
 
 
   virtual void drawAxisValuesX(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
