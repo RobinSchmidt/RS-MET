@@ -406,29 +406,8 @@ protected:
   an arbitrary image and an SVG compliant XmlElement (if both poiters are nonzero). */
 
 
-  virtual void drawCaption(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
+  //virtual void drawCaption(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the caption/headline. Gets called by drawCoordinateSystem(). */
-
-  /** Returns the x-coordinate for the y-axis in model coordinates. */
-  //double getVerticalAxisX();
-    // maybe this function should work in pixel coordinates
-
-  /** Returns the y-coordinate for the x-axis in model coordinates. */
-  //double getHorizontalAxisY();
-
-  //virtual void drawAxisX(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
-  /**< Draws the x-axis. Gets called by drawCoordinateSystem(). */
-
-  //virtual void drawAxisY(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
-  /**< Draws the y-axis. Gets called by drawCoordinateSystem(). */
-
-
-
-  //virtual void drawAxisValuesX(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
-  /**< Draws the numeric values at the x-axis. Gets called by drawCoordinateSystem(). */
-
-  //virtual void drawAxisValuesY(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
-  /**< Draws the numeric values at the y-axis. Gets called by drawCoordinateSystem(). */
 
 
 

@@ -55,7 +55,28 @@ void rsPlotDrawer::drawPlot(Graphics& g, double x, double y, double w, double h)
     jura::drawAxisValuesY(g, mapper, settings.horizontalCoarseGridInterval, 
       getVerticalAxisX(), settings.stringConversionForAxisY, colors.text); }
 
-  int dummy = 0;
+  // caption/headline (positioning formulas needs test):
+  static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
+  float cw = (float) font->getTextPixelWidth(settings.captionString);
+  float ch = (float) font->getFontHeight();
+  switch( settings.captionPosition )
+  {
+  case rsPlotSettings::NO_CAPTION: break;
+  case rsPlotSettings::TOP_CENTER: {
+    drawBitmapText(g, settings.captionString, x+0.5f*w-0.5f*cw, y+16, w, 16, font, 
+      Justification::centred, colors.text);
+  } break;
+  case rsPlotSettings::CENTER: {
+    float cx = (float) (x + (w-cw) * .5);
+    float cy = (float) (y + (h-ch) * .5);
+    drawBitmapText(g, settings.captionString, cx, cy, w, 16, font, 
+      Justification::topLeft, colors.text);
+  } break;
+  }
+
+  // outline:
+  g.setColour(colors.outline);
+  g.drawRect(x, y, w, h, 2);
 }
 
 void rsPlotDrawer::drawPlot(XmlElement* svg, double x, double y, double w, double h)
@@ -95,9 +116,6 @@ void rsPlotDrawer::drawPlot(XmlElement* svg, double x, double y, double w, doubl
     && settings.axisValuesPositionY != rsPlotSettings::NO_ANNOTATION) {
     drawAxisValuesY(svg, mapper, settings.horizontalCoarseGridInterval, 
       getVerticalAxisX(), settings.stringConversionForAxisY, colors.axes); }
-
-
-  int dummy = 0;
 }
 
 void rsPlotDrawer::setupMapper(double x, double y, double w, double h)

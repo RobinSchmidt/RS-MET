@@ -354,9 +354,18 @@ EngineersFilterModuleEditor::EngineersFilterModuleEditor(CriticalSection *newPlu
   createWidgets();
   updateWidgetsAccordingToState();
   //setSize(640, 300);
-  setSize(627, 291);
+
+
+  //setSize(627, 291);
    // w x h should be (N*11) x (M*25+66) for homogenous visual appearance of the grid. The plot will
    // then be (N*11) x (M*25). We choose N=57, M=9 here.
+
+  // the formula doesn't work anymore after refactoring the drawing code - figure out the new optimal
+  // setting..
+  // width 606, 617, 628 looks good - so it should should be N*11+1, for N=55, it's 606
+
+  setSize(628, 292);  // yep - looks perfect - figure out general formula
+
 }
 
 EngineersFilterModuleEditor::~EngineersFilterModuleEditor()
