@@ -43,8 +43,17 @@ void rsPlotDrawer::drawPlot(Graphics& g, double x, double y, double w, double h)
     drawAxisX(g, mapper, getHorizontalAxisY(), settings.axisLabelX, colors.text); }
   if(settings.axisPositionY != rsPlotSettings::INVISIBLE) {
     g.setColour(colors.axes);
-    jura::drawAxisY(g, mapper, getVerticalAxisX(), settings.axisLabelY, colors.text); }
-
+    drawAxisY(g, mapper, getVerticalAxisX(),   settings.axisLabelY, colors.text); }
+  if(settings.axisPositionX != rsPlotSettings::INVISIBLE 
+    && settings.axisValuesPositionX != rsPlotSettings::NO_ANNOTATION) {
+    g.setColour(colors.axes);
+    drawAxisValuesX(g, mapper, settings.verticalCoarseGridInterval, getHorizontalAxisY(), 
+      settings.stringConversionForAxisX, colors.text); }
+  if(settings.axisPositionY != rsPlotSettings::INVISIBLE 
+    && settings.axisValuesPositionY != rsPlotSettings::NO_ANNOTATION)  {
+    g.setColour(colors.axes);
+    jura::drawAxisValuesY(g, mapper, settings.horizontalCoarseGridInterval, 
+      getVerticalAxisX(), settings.stringConversionForAxisY, colors.text); }
 
   int dummy = 0;
 }
@@ -78,6 +87,14 @@ void rsPlotDrawer::drawPlot(XmlElement* svg, double x, double y, double w, doubl
     drawAxisX(svg, mapper, getHorizontalAxisY(), settings.axisLabelX, colors.axes);
   if(settings.axisPositionY != rsPlotSettings::INVISIBLE) 
     drawAxisY(svg, mapper, getVerticalAxisX(),   settings.axisLabelY, colors.axes);
+  if(settings.axisPositionX != rsPlotSettings::INVISIBLE 
+    && settings.axisValuesPositionX != rsPlotSettings::NO_ANNOTATION) {
+    drawAxisValuesX(svg, mapper, settings.verticalCoarseGridInterval, 
+      getHorizontalAxisY(), settings.stringConversionForAxisX, colors.axes); }
+  if(settings.axisPositionY != rsPlotSettings::INVISIBLE 
+    && settings.axisValuesPositionY != rsPlotSettings::NO_ANNOTATION) {
+    drawAxisValuesY(svg, mapper, settings.horizontalCoarseGridInterval, 
+      getVerticalAxisX(), settings.stringConversionForAxisY, colors.axes); }
 
 
   int dummy = 0;

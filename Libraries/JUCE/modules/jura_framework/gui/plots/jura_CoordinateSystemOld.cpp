@@ -1034,13 +1034,12 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
     drawAxisX(g, targetImage, targetSVG);
   if( plotSettings.axisPositionY != rsPlotSettings::INVISIBLE )
     drawAxisY(g, targetImage, targetSVG);
-  */
-
   // draw the values on the axes:
   if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE && plotSettings.axisValuesPositionX != rsPlotSettings::NO_ANNOTATION )
     drawAxisValuesX(g, targetImage, targetSVG);
   if( plotSettings.axisPositionY != rsPlotSettings::INVISIBLE && plotSettings.axisValuesPositionY != rsPlotSettings::NO_ANNOTATION )
     drawAxisValuesY(g, targetImage, targetSVG);
+  */
 
   // draw the caption:
   drawCaption(g, targetImage, targetSVG);
@@ -1076,6 +1075,7 @@ void CoordinateSystemOld::drawCaption(Graphics &g, Image* targetImage, XmlElemen
   }
 }
 
+/*
 double CoordinateSystemOld::getVerticalAxisX()
 {
   double x = 0.0;
@@ -1095,6 +1095,7 @@ double CoordinateSystemOld::getHorizontalAxisY()
     y = coordinateMapper.unmapY(jmin(8, getHeight()));
   return y;
 }
+*/
 /*
 void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
@@ -1129,7 +1130,7 @@ void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlEl
   }
 }
 */
-
+/*
 void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
   if( plotSettings.axisValuesPositionX == rsPlotSettings::NO_ANNOTATION )
@@ -1158,7 +1159,7 @@ void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEl
       getVerticalAxisX(), plotSettings.stringConversionForAxisY, plotColourScheme.text);
   }
 }
-
+*/
 void CoordinateSystemOld::updateMapperOutputRange(Image* image, XmlElement* svg)
 {
   if(image != nullptr)    setupCoordinateMapper(coordinateMapper, image);
