@@ -444,12 +444,12 @@ OscilloscopeDisplay::OscilloscopeDisplay(const juce::String& name)
 
 void OscilloscopeDisplay::setCurrentRangeX(double newMinX, double newMaxX)
 {
-  setCurrentRange(newMinX, newMaxX, currentRange.getMinY(), currentRange.getMaxY());
+  setCurrentRange(newMinX, newMaxX, plotSettings.currentRange.getMinY(), plotSettings.currentRange.getMaxY());
 }
 
 void OscilloscopeDisplay::setCurrentRangeY(double newMinY, double newMaxY)
 {
-  setCurrentRange(currentRange.getMinX(), currentRange.getMaxX(), newMinY, newMaxY);
+  setCurrentRange(plotSettings.currentRange.getMinX(), plotSettings.currentRange.getMaxX(), newMinY, newMaxY);
 }
 
 void OscilloscopeDisplay::setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY)
@@ -537,38 +537,38 @@ void OscilloscopeDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage,
 void OscilloscopeDisplay::adjustGrid()
 {
   // ahhemm...this code is pretty naive and it certainly can be done more clever
-  if( currentRange.getMaxX() > 1.1 )
+  if( plotSettings.currentRange.getMaxX() > 1.1 )
   {
     setVerticalCoarseGridInterval(1.0);
     setVerticalFineGridInterval(0.1);
     setStringConversionForAxisX(&valueToString0);
   }
-  else if( currentRange.getMaxX() > 0.11 )
+  else if( plotSettings.currentRange.getMaxX() > 0.11 )
   {
     setVerticalCoarseGridInterval(0.1);
     setVerticalFineGridInterval(0.01);
     setStringConversionForAxisX(&valueToString1);
   }
-  else if( currentRange.getMaxX() > 0.011 )
+  else if( plotSettings.currentRange.getMaxX() > 0.011 )
   {
     setVerticalCoarseGridInterval(0.01);
     setVerticalFineGridInterval(0.001);
     setStringConversionForAxisX(&valueToString2);
   }
-  else if( currentRange.getMaxX() > 0.0011 )
+  else if( plotSettings.currentRange.getMaxX() > 0.0011 )
   {
     setVerticalCoarseGridInterval(0.001);
     setVerticalFineGridInterval(0.0001);
     setStringConversionForAxisX(&valueToString3);
   }
-  else if( currentRange.getMaxX() > 0.00011 )
+  else if( plotSettings.currentRange.getMaxX() > 0.00011 )
   {
     setVerticalCoarseGridInterval(0.0001);
     setVerticalFineGridInterval(0.00001);
     setStringConversionForAxisX(&valueToString4);
   }
 
-  double yRange = currentRange.getMaxY() - currentRange.getMinY();
+  double yRange = plotSettings.currentRange.getMaxY() - plotSettings.currentRange.getMinY();
   if( yRange > 2.0 )
   {
     setHorizontalCoarseGrid(1.0, true);

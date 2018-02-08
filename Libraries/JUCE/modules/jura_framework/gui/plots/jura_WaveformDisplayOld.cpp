@@ -271,8 +271,8 @@ void WaveformDisplayOld::plotWaveform(Graphics &g, Image *targetImage, XmlElemen
   if( peakData == NULL || numSampleFrames <= 0 || numChannels <= 0 )
     return;
 
-  int firstVisibleFrame = (int) floor(currentRange.getMinX() * sampleRate);
-  int lastVisibleFrame  = (int) ceil(currentRange.getMaxX() * sampleRate);
+  int firstVisibleFrame = (int) floor(plotSettings.currentRange.getMinX() * sampleRate);
+  int lastVisibleFrame  = (int) ceil(plotSettings.currentRange.getMaxX() * sampleRate);
   firstVisibleFrame     = jlimit(0, numSampleFrames-1, firstVisibleFrame);
   lastVisibleFrame      = jlimit(0, numSampleFrames-1, lastVisibleFrame);
   int numVisibleFrames  = lastVisibleFrame - firstVisibleFrame;

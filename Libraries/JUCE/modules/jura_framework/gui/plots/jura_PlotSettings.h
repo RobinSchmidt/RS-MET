@@ -95,6 +95,9 @@ public:
   juce::String (*stringConversionForAxisX)     (double valueToConvert);
   juce::String (*stringConversionForAxisY)     (double valueToConvert);
 
+  /** The currently visible range and maximum range object for the plot. */
+  rsPlotRange currentRange, maximumRange;
+
 };
 
 #endif

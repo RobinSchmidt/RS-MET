@@ -55,31 +55,31 @@ public:
   virtual void setMaximumRangeY(double newMinY, double newMaxY);
   /**< Sets the maximum visible range for the y-axis. */
 
-  virtual rsPlotRange getMaximumRange() { return maximumRange; }
+  virtual rsPlotRange getMaximumRange() { return plotSettings.maximumRange; }
   /**< Returns the maximum for the currently visible range. */
 
   virtual void setMaximumRangeMinX(double newMinX);
   /**< Sets the minimum value for the range of x. */
 
-  virtual double getMaximumRangeMinX() { return maximumRange.getMinX(); }
+  virtual double getMaximumRangeMinX() { return plotSettings.maximumRange.getMinX(); }
   /**< Returns the minimum value for the range of x. */
 
   virtual void setMaximumRangeMaxX(double newMaxX);
   /**< Sets the maximum value for the range of x. */
 
-  virtual double getMaximumRangeMaxX() { return maximumRange.getMaxX(); }
+  virtual double getMaximumRangeMaxX() { return plotSettings.maximumRange.getMaxX(); }
   /**< Returns the maximum value for the range of x. */
 
   virtual void setMaximumRangeMinY(double newMinY);
   /**< Sets the minimum value for the range of y. */
 
-  virtual double getMaximumRangeMinY() { return maximumRange.getMinY(); }
+  virtual double getMaximumRangeMinY() { return plotSettings.maximumRange.getMinY(); }
   /**< Returns the minimum value for the range of y. */
 
   virtual void setMaximumRangeMaxY(double newMaxY);
   /**< Sets the maximum value for the range of y. */
 
-  virtual double getMaximumRangeMaxY() { return maximumRange.getMaxY(); }
+  virtual double getMaximumRangeMaxY() { return plotSettings.maximumRange.getMaxY(); }
   /**< Returns the maximum value for the range of y. */
 
   virtual void setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
@@ -95,31 +95,31 @@ public:
   virtual void setCurrentRangeY(double newMinY, double newMaxY);
   /**< Sets the currently visible range for the y-axis. */
 
-  virtual rsPlotRange getCurrentRange() { return currentRange; }
+  virtual rsPlotRange getCurrentRange() { return plotSettings.currentRange; }
   /**< Returns the currently visible range. */
 
   virtual void setCurrentRangeMinX(double newMinX);
   /**< Sets the minimum value of x. */
 
-  virtual double getCurrentRangeMinX() { return currentRange.getMinX(); }
+  virtual double getCurrentRangeMinX() { return plotSettings.currentRange.getMinX(); }
   /**< Returns the minimum value of x. */
 
   virtual void setCurrentRangeMaxX(double newMaxX);
   /**< Sets the maximum value of x. */
 
-  virtual double getCurrentRangeMaxX() { return currentRange.getMaxX(); }
+  virtual double getCurrentRangeMaxX() { return plotSettings.currentRange.getMaxX(); }
   /**< Returns the maximum value of x. */
 
   virtual void setCurrentRangeMinY(double newMinY);
   /**< Sets the minimum value of y. */
 
-  virtual double getCurrentRangeMinY() { return currentRange.getMinY(); }
+  virtual double getCurrentRangeMinY() { return plotSettings.currentRange.getMinY(); }
   /**< Returns the minimum value of y. */
 
   virtual void setCurrentRangeMaxY(double newMaxY);
   /**< Sets the maximum value of y. */
 
-  virtual double getCurrentRangeMaxY() { return currentRange.getMaxY(); }
+  virtual double getCurrentRangeMaxY() { return plotSettings.currentRange.getMaxY(); }
   /**< Returns the maximum value of y. */
 
   /** Returns a string that represents the info-line to be shown when mouse is over pixel (x,y). */
@@ -524,14 +524,15 @@ protected:
   rsPlotSettings plotSettings;
 
   /** The currently visible range and maximum range object for the plot. */
-  rsPlotRange currentRange, maximumRange; // move to rsPlotSettings
+  //rsPlotRange currentRange, maximumRange; // move to rsPlotSettings
 
 
 
 
 
   // new - to be used soon in the drawing code:
-  RAPT::rsCoordinateMapper2D<double> coordinateMapper;
+  RAPT::rsCoordinateMapper2D<double> coordinateMapper; // maybe move to rsPlotSettings..or rsPlotDrawer
+
 
   bool showPositionAsDescription;
   bool showPopUpOnRightClick;

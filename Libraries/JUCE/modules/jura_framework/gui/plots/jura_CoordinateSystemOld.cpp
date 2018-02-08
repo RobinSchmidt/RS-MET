@@ -5,11 +5,6 @@ CoordinateSystemOld::CoordinateSystemOld(const String &newDescription)
 {
   autoReRenderImage = false;
 
-  maximumRange.setRangeX(-2.2, 2.2);
-  maximumRange.setRangeY(-2.2, 2.2);
-  currentRange.setRangeX(-2.2, 2.2);
-  currentRange.setRangeY(-2.2, 2.2);
-
   // initialize the function-pointers for value->string conversion
   stringConversionForInfoLineX = &valueToString0;
   stringConversionForInfoLineY = &valueToString0;
@@ -96,116 +91,116 @@ void CoordinateSystemOld::paint(juce::Graphics &g)
 void CoordinateSystemOld::setMaximumRange(double newMinX, double newMaxX, 
                                        double newMinY, double newMaxY)
 {
-  maximumRange.setRangeX(newMinX, newMaxX);
-  maximumRange.setRangeY(newMinY, newMaxY);
-  currentRange.clipRange(maximumRange);
+  plotSettings.maximumRange.setRangeX(newMinX, newMaxX);
+  plotSettings.maximumRange.setRangeY(newMinY, newMaxY);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRange(rsPlotRange newMaximumRange)
 {
-  maximumRange = newMaximumRange;
-  currentRange.clipRange(maximumRange);
+  plotSettings.maximumRange = newMaximumRange;
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeX(double newMinX, double newMaxX)
 {
-  maximumRange.setRangeX(newMinX, newMaxX);
-  currentRange.clipRange(maximumRange);
+  plotSettings.maximumRange.setRangeX(newMinX, newMaxX);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeY(double newMinY, double newMaxY)
 {
-  maximumRange.setRangeY(newMinY, newMaxY);
-  currentRange.clipRange(maximumRange);
+  plotSettings.maximumRange.setRangeY(newMinY, newMaxY);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeMinX(double newMinX)
 {
-  maximumRange.setMinX(newMinX);
-  currentRange.clipRange(maximumRange);
+  plotSettings.maximumRange.setMinX(newMinX);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeMaxX(double newMaxX)
 {
-  maximumRange.setMaxX(newMaxX);
-  currentRange.clipRange(maximumRange);
+  plotSettings.maximumRange.setMaxX(newMaxX);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeMinY(double newMinY)
 {
-  maximumRange.setMinY(newMinY);
-  currentRange.clipRange(maximumRange);
+  plotSettings.maximumRange.setMinY(newMinY);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setMaximumRangeMaxY(double newMaxY)
 {
-  maximumRange.setMaxY(newMaxY);
-  currentRange.clipRange(maximumRange);
+  plotSettings.maximumRange.setMaxY(newMaxY);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRange(double newMinX, double newMaxX, 
                                        double newMinY, double newMaxY)
 {
-  currentRange.setRangeX(newMinX, newMaxX);
-  currentRange.setRangeY(newMinY, newMaxY);
-  currentRange.clipRange(maximumRange);
+  plotSettings.currentRange.setRangeX(newMinX, newMaxX);
+  plotSettings.currentRange.setRangeY(newMinY, newMaxY);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRange(rsPlotRange newRange)
 {
-  currentRange = newRange;
-  currentRange.clipRange(maximumRange);
+  plotSettings.currentRange = newRange;
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeX(double newMinX, double newMaxX)
 {
-  currentRange.setRangeX(newMinX, newMaxX);
-  currentRange.clipRange(maximumRange);
+  plotSettings.currentRange.setRangeX(newMinX, newMaxX);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeY(double newMinY, double newMaxY)
 {
-  currentRange.setRangeY(newMinY, newMaxY);
-  currentRange.clipRange(maximumRange);
+  plotSettings.currentRange.setRangeY(newMinY, newMaxY);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeMinX(double newMinX)
 {
-  currentRange.setMinX(newMinX);
-  currentRange.clipRange(maximumRange);
+  plotSettings.currentRange.setMinX(newMinX);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeMaxX(double newMaxX)
 {
-  currentRange.setMaxX(newMaxX);
-  currentRange.clipRange(maximumRange);
+  plotSettings.currentRange.setMaxX(newMaxX);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeMinY(double newMinY)
 {
-  currentRange.setMinY(newMinY);
-  currentRange.clipRange(maximumRange);
+  plotSettings.currentRange.setMinY(newMinY);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::setCurrentRangeMaxY(double newMaxY)
 {
-  currentRange.setMaxY(newMaxY);
-  currentRange.clipRange(maximumRange);
+  plotSettings.currentRange.setMaxY(newMaxY);
+  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
   updateMapperInputRange();
 }
 
@@ -755,8 +750,8 @@ void CoordinateSystemOld::setupAxisX(double newMin, double newMax, bool shouldBe
      (newCoarseGridInterval <= 1.000001 || newFineGridInterval <= 1.000001) )
     return;
 
-  maximumRange.setRangeX(newMin, newMax);
-  currentRange.setRangeX(newMin, newMax);
+  plotSettings.maximumRange.setRangeX(newMin, newMax);
+  plotSettings.currentRange.setRangeX(newMin, newMax);
   plotSettings.logScaledX = shouldBeLogScaled;
   if( newAxisPosition == rsPlotSettings::INVISIBLE ||
       newAxisPosition == rsPlotSettings::ZERO      ||
@@ -788,8 +783,8 @@ void CoordinateSystemOld::setupAxisY(double newMin, double newMax, bool shouldBe
      (newCoarseGridInterval <= 1.000001 || newFineGridInterval <= 1.000001) )
     return;
 
-  maximumRange.setRangeY(newMin, newMax);
-  currentRange.setRangeY(newMin, newMax);
+  plotSettings.maximumRange.setRangeY(newMin, newMax);
+  plotSettings.currentRange.setRangeY(newMin, newMax);
   plotSettings.logScaledY = shouldBeLogScaled;
   if( newAxisPosition == rsPlotSettings::INVISIBLE ||
       newAxisPosition == rsPlotSettings::ZERO      ||
@@ -1222,9 +1217,9 @@ void CoordinateSystemOld::updateMapperInputRange()
 {
   coordinateMapper.mapperX.setLogScaled(plotSettings.logScaledX);  // logScaledX/Y are redundant here now
   coordinateMapper.mapperY.setLogScaled(plotSettings.logScaledY);  // ...get rid of them
-  coordinateMapper.setInputRange(currentRange.getMinX(), currentRange.getMaxX(),
-    currentRange.getMinY(), currentRange.getMaxY());
-    // the currentRange member is actually also redundant now
+  coordinateMapper.setInputRange(
+    plotSettings.currentRange.getMinX(), plotSettings.currentRange.getMaxX(),
+    plotSettings.currentRange.getMinY(), plotSettings.currentRange.getMaxY());
 
   if(autoReRenderImage == true)
     updateBackgroundImage();

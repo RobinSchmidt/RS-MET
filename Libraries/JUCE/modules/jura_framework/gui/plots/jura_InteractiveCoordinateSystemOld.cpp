@@ -106,8 +106,8 @@ void InteractiveCoordinateSystemOld::drawLeftLocator(Graphics &g, float x, int a
   double x1, x2, y1, y2;
   x1 = x;
   x2 = x;
-  y1 = currentRange.getMinY();
-  y2 = currentRange.getMaxY();
+  y1 = plotSettings.currentRange.getMinY();
+  y2 = plotSettings.currentRange.getMaxY();
   transformToImageCoordinates(x1, y1, targetImage);
   transformToImageCoordinates(x2, y2, targetImage);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
@@ -124,8 +124,8 @@ void InteractiveCoordinateSystemOld::drawRightLocator(Graphics &g, float x, int 
   double x1, x2, y1, y2;
   x1 = x;
   x2 = x;
-  y1 = currentRange.getMinY();
-  y2 = currentRange.getMaxY();
+  y1 = plotSettings.currentRange.getMinY();
+  y2 = plotSettings.currentRange.getMaxY();
   transformToImageCoordinates(x1, y1, targetImage);
   transformToImageCoordinates(x2, y2, targetImage);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
@@ -142,8 +142,8 @@ void InteractiveCoordinateSystemOld::drawCurrentPositionLocator(Graphics &g, flo
   double x1, x2, y1, y2;
   x1 = x;
   x2 = x;
-  y1 = currentRange.getMinY();
-  y2 = currentRange.getMaxY();
+  y1 = plotSettings.currentRange.getMinY();
+  y2 = plotSettings.currentRange.getMaxY();
   transformToImageCoordinates(x1, y1, targetImage);
   transformToImageCoordinates(x2, y2, targetImage);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);

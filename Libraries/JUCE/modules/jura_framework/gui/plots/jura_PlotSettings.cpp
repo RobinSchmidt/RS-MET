@@ -1,5 +1,10 @@
 rsPlotSettings::rsPlotSettings()
 {
+  maximumRange.setRangeX(-2.2, 2.2);
+  maximumRange.setRangeY(-2.2, 2.2);
+  currentRange.setRangeX(-2.2, 2.2);
+  currentRange.setRangeY(-2.2, 2.2);
+
   // move initializations into header file:
 
   captionPosition               =  NO_CAPTION;
