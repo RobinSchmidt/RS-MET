@@ -198,29 +198,31 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
   //g.fillAll(colourScheme.backgroundColour);
 
   // draw the grids, if desired:
-  if( horizontalFineGridIsVisible )
-    drawHorizontalGrid(g, horizontalFineGridInterval, logScaledY, plotColourScheme.fineGrid, 1.0f, 
+  if( plotSettings.horizontalFineGridIsVisible )
+    drawHorizontalGrid(g, plotSettings.horizontalFineGridInterval, plotSettings.logScaledY, 
+      plotColourScheme.fineGrid, 1.0f, thePlot, theSVG);
+  if( plotSettings.verticalFineGridIsVisible )
+    drawVerticalGrid(g, plotSettings.verticalFineGridInterval, plotSettings.logScaledX, 
+      plotColourScheme.fineGrid, 1.0f, thePlot, theSVG);
+  if( plotSettings.radialFineGridIsVisible )
+    drawRadialGrid(g, plotSettings.radialFineGridInterval, plotSettings.logScaledRadius, 
+      plotColourScheme.fineGrid, 1.0f, thePlot, theSVG);
+  if( plotSettings.angularFineGridIsVisible )
+    drawAngularGrid(g, plotSettings.angularFineGridInterval, plotColourScheme.fineGrid, 1.0f, 
       thePlot, theSVG);
-  if( verticalFineGridIsVisible )
-    drawVerticalGrid(g, verticalFineGridInterval, logScaledX, plotColourScheme.fineGrid, 1.0f, 
-      thePlot, theSVG);
-  if( radialFineGridIsVisible )
-    drawRadialGrid(g, radialFineGridInterval, logScaledRadius, plotColourScheme.fineGrid, 1.0f, 
-      thePlot, theSVG);
-  if( angularFineGridIsVisible )
-    drawAngularGrid(g, angularFineGridInterval, plotColourScheme.fineGrid, 1.0f, thePlot, theSVG);
 
-  if( horizontalCoarseGridIsVisible )
-    drawHorizontalGrid(g, horizontalCoarseGridInterval, logScaledY, plotColourScheme.coarseGrid, 
-      1.0f, thePlot, theSVG);
-  if( verticalCoarseGridIsVisible )
-    drawVerticalGrid(g, verticalCoarseGridInterval, logScaledX, plotColourScheme.coarseGrid, 
-      1.0f, thePlot, theSVG);
-  if( radialCoarseGridIsVisible )
-    drawRadialGrid(g, radialCoarseGridInterval, logScaledRadius, plotColourScheme.coarseGrid, 
-      1.0f, thePlot, theSVG);
-  if( angularCoarseGridIsVisible )
-    drawAngularGrid(g, angularCoarseGridInterval, plotColourScheme.coarseGrid, 1.0f, thePlot, theSVG);
+  if( plotSettings.horizontalCoarseGridIsVisible )
+    drawHorizontalGrid(g, plotSettings.horizontalCoarseGridInterval, plotSettings.logScaledY, 
+      plotColourScheme.coarseGrid, 1.0f, thePlot, theSVG);
+  if( plotSettings.verticalCoarseGridIsVisible )
+    drawVerticalGrid(g, plotSettings.verticalCoarseGridInterval, plotSettings.logScaledX, 
+      plotColourScheme.coarseGrid, 1.0f, thePlot, theSVG);
+  if( plotSettings.radialCoarseGridIsVisible )
+    drawRadialGrid(g, plotSettings.radialCoarseGridInterval, plotSettings.logScaledRadius, 
+      plotColourScheme.coarseGrid, 1.0f, thePlot, theSVG);
+  if( plotSettings.angularCoarseGridIsVisible )
+    drawAngularGrid(g, plotSettings.angularCoarseGridInterval, plotColourScheme.coarseGrid, 1.0f, 
+      thePlot, theSVG);
 
 
   // draw the function family values:
@@ -228,9 +230,9 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
 
 
   // draw the coordinate system:
-  if( axisPositionX != INVISIBLE )
+  if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE )
     drawAxisX(g, thePlot, theSVG);
-  if( axisPositionY != INVISIBLE )
+  if( plotSettings.axisPositionY != rsPlotSettings::INVISIBLE )
     drawAxisY(g, thePlot, theSVG);
 
   //// draw the labels on the axes:
@@ -240,9 +242,9 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
   //  drawAxisLabelY(g, thePlot, theSVG);
 
   // draw the values on the axes:
-  if( axisPositionX != INVISIBLE && axisValuesPositionX != NO_ANNOTATION )
+  if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE && plotSettings.axisValuesPositionX != rsPlotSettings::NO_ANNOTATION )
     drawAxisValuesX(g, thePlot, theSVG);
-  if( axisPositionY != INVISIBLE && axisValuesPositionY != NO_ANNOTATION )
+  if( plotSettings.axisPositionY != rsPlotSettings::INVISIBLE && plotSettings.axisValuesPositionY != rsPlotSettings::NO_ANNOTATION )
     drawAxisValuesY(g, thePlot, theSVG);
 
   // draw the caption:
@@ -254,6 +256,10 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
 //  BAAHHH! code duplication smells bad!!! refactor this!
 Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
 {
+  jassertfalse; // needs update or better be refactored away
+  return nullptr;
+
+  /*
   jassert(width  >= 1);
   jassert(height >= 1);
   if( width < 1 || height < 1)  
@@ -299,9 +305,9 @@ Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
   plotCurveFamily(g, thePlot, NULL); 
 
   // draw the coordinate system:
-  if( axisPositionX != INVISIBLE )
+  if( axisPositionX != rsPlotSettings::INVISIBLE )
     drawAxisX(g, thePlot);
-  if( axisPositionY != INVISIBLE )
+  if( axisPositionY != rsPlotSettings::INVISIBLE )
     drawAxisY(g, thePlot);
 
   //// draw the labels on the axes:
@@ -311,9 +317,9 @@ Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
   //  drawAxisLabelY(g, thePlot);
 
   // draw the values on the axes:
-  if( axisPositionX != INVISIBLE && axisValuesPositionX != NO_ANNOTATION )
+  if( axisPositionX != rsPlotSettings::INVISIBLE && axisValuesPositionX != rsPlotSettings::NO_ANNOTATION )
     drawAxisValuesX(g, thePlot);
-  if( axisPositionY != INVISIBLE && axisValuesPositionY != NO_ANNOTATION )
+  if( axisPositionY != rsPlotSettings::INVISIBLE && axisValuesPositionY != rsPlotSettings::NO_ANNOTATION )
     drawAxisValuesY(g, thePlot);
 
   // draw the caption:
@@ -324,6 +330,7 @@ Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
   g.drawRect(0, 0, thePlot->getWidth(), thePlot->getHeight(), 1);
 
   return thePlot;
+  */
 }
 
 void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlElement *targetSVG)

@@ -1093,7 +1093,7 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   sampleDisplay->addChangeListener(this);
   sampleDisplay->setVerticalCoarseGrid(1.0,   false);
   sampleDisplay->setVerticalFineGrid(0.1,     false);
-  sampleDisplay->setAxisValuesPositionX(CoordinateSystemOld::INVISIBLE);
+  sampleDisplay->setAxisValuesPositionX(rsPlotSettings::INVISIBLE);
   sampleDisplay->setHorizontalCoarseGrid(1.0, true);
   sampleDisplay->setHorizontalFineGrid(0.1,   false);
   //sampleDisplay->setSampleRate(1.0);

@@ -504,8 +504,8 @@ WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugI
   waveformDisplay->setAxisLabels(juce::String(""), juce::String(""));
   waveformDisplay->setVerticalCoarseGrid(1.0, false);
   waveformDisplay->setHorizontalCoarseGrid(1.0, false);
-  waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
-  waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
+  waveformDisplay->setAxisPositionX(rsPlotSettings::INVISIBLE);
+  waveformDisplay->setAxisPositionY(rsPlotSettings::INVISIBLE);
   addPlot(waveformDisplay);
 
   addWidget( closeButton = new RButton(RButton::CLOSE) );
@@ -642,8 +642,8 @@ WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newP
   waveformDisplay->setAxisLabels(juce::String(""), juce::String(""));
   waveformDisplay->setVerticalCoarseGrid(1.0, false);
   waveformDisplay->setHorizontalCoarseGrid(1.0, false);
-  waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
-  waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
+  waveformDisplay->setAxisPositionX(rsPlotSettings::INVISIBLE);
+  waveformDisplay->setAxisPositionY(rsPlotSettings::INVISIBLE);
   addPlot(waveformDisplay);
 
   addWidget( editButton = new RButton(juce::String("Edit")) );

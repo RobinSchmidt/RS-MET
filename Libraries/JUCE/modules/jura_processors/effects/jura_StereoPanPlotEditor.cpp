@@ -15,7 +15,7 @@ StereoPanPlotEditor::StereoPanPlotEditor(const juce::String& name)
   setHorizontalCoarseGrid(1.0, true);
   setVerticalCoarseGrid(  1.0, true);
   //setHorizontalFineGrid(  0.1, false);
-  setAxisValuesPositionX(ABOVE_AXIS);
+  setAxisValuesPositionX(rsPlotSettings::ABOVE_AXIS);
   setAxisLabels(juce::String(""), juce::String(""));
 
   currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);

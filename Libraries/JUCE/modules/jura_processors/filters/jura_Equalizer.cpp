@@ -481,8 +481,8 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
   setHorizontalFineGrid(  1.0, false);
   setVerticalCoarseGridVisible( true);
   setVerticalFineGridVisible(   false);
-  CoordinateSystemOld::setAxisValuesPositionX(CoordinateSystemOld::ABOVE_AXIS);
-  CoordinateSystemOld::setAxisValuesPositionY(CoordinateSystemOld::RIGHT_TO_AXIS);
+  CoordinateSystemOld::setAxisValuesPositionX(rsPlotSettings::ABOVE_AXIS);
+  CoordinateSystemOld::setAxisValuesPositionY(rsPlotSettings::RIGHT_TO_AXIS);
   setAutoReRendering(true);
 
   currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);

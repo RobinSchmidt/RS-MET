@@ -21,11 +21,11 @@ ModulatorCurveEditor::ModulatorCurveEditor(const juce::String& name)
   setMaximumRange(-0.0, 3.0, 0.0, 1.0);
   setHorizontalCoarseGrid(1.0, false);
   setHorizontalFineGrid(0.25,  false);
-  setAxisValuesPositionX(CoordinateSystemOld::ABOVE_AXIS);
+  setAxisValuesPositionX(rsPlotSettings::ABOVE_AXIS);
   setAxisLabelX(juce::String::empty);
   setVerticalCoarseGrid(1.0,   false);
   setVerticalFineGrid(0.25,    false);
-  setAxisValuesPositionY(CoordinateSystemOld::RIGHT_TO_AXIS);
+  setAxisValuesPositionY(rsPlotSettings::RIGHT_TO_AXIS);
   setAxisLabelY(juce::String::empty);
   setStringConversionForAxisX(&valueToString0);
   setStringConversionForAxisY(&valueToString0);

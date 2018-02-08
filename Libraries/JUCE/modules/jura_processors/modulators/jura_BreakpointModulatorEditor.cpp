@@ -995,8 +995,8 @@ BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSecti
   plot->setAxisLabels("", "");
   plot->setVerticalCoarseGrid(1.0, false);
   plot->setHorizontalCoarseGrid(1.0, false);
-  plot->setAxisValuesPositionX(CoordinateSystemOld::INVISIBLE);
-  plot->setAxisValuesPositionY(CoordinateSystemOld::INVISIBLE);
+  plot->setAxisValuesPositionX(rsPlotSettings::INVISIBLE);
+  plot->setAxisValuesPositionY(rsPlotSettings::INVISIBLE);
   addPlot(plot);
 
   popUpEditor = new BreakpointModulatorEditor(lock, modulatorModuleToEdit);

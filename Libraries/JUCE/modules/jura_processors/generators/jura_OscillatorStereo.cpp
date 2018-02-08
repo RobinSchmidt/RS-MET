@@ -969,8 +969,8 @@ void OscillatorStereoEditor::createWidgets()
   addPlot( waveformDisplay = new WaveformDisplayOld() );
   waveformDisplay->setAutoReRendering(false);
   waveformDisplay->setDescription(juce::String("Click on the display to switch oscillator on/off"));
-  waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
-  waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
+  waveformDisplay->setAxisPositionX(rsPlotSettings::INVISIBLE);
+  waveformDisplay->setAxisPositionY(rsPlotSettings::INVISIBLE);
   waveformDisplay->setCurrentRangeY(-1.2, 1.2);
   waveformDisplay->setSampleRate(1.0);
   waveformDisplay->addMouseListener(this, true);
@@ -979,9 +979,9 @@ void OscillatorStereoEditor::createWidgets()
   addPlot( emptyDisplay = new CoordinateSystemOld() );
   emptyDisplay->setAutoReRendering(false);
   emptyDisplay->setDescription(waveformDisplay->getDescription());
-  emptyDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
-  emptyDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
-  emptyDisplay->setCaption(juce::String("Off"), CoordinateSystemOld::CENTER);
+  emptyDisplay->setAxisPositionX(rsPlotSettings::INVISIBLE);
+  emptyDisplay->setAxisPositionY(rsPlotSettings::INVISIBLE);
+  emptyDisplay->setCaption(juce::String("Off"), rsPlotSettings::CENTER);
   emptyDisplay->addMouseListener(this, true);
   emptyDisplay->setAutoReRendering(true);
 

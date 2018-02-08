@@ -48,7 +48,7 @@ void ModulatorCurveEditorMulti::setCurrentRangeX(double newMinX, double newMaxX)
   }
 }
 
-void ModulatorCurveEditorMulti::setCurrentRange(CoordinateSystemRangeOld newRange)
+void ModulatorCurveEditorMulti::setCurrentRange(rsPlotRange newRange)
 {
   if( newRange != getCurrentRange() )
   {
@@ -146,7 +146,7 @@ void ModulatorCurveEditorMulti::updateMaximumRange(bool alsoUpdateCurrentRange)
   if( alsoUpdateCurrentRange == true )
   {
     setAutoReRendering(false);
-    CoordinateSystemRangeOld range(minX-marginX, maxX+marginX, minY-marginY, maxY+marginY);
+    rsPlotRange range(minX-marginX, maxX+marginX, minY-marginY, maxY+marginY);
     setMaximumRange(range);
     setCurrentRange(range);
     //setMaximumRange(minX-marginX, maxX+marginX, minY-marginY, maxY+marginY);

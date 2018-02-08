@@ -11,11 +11,11 @@ SpectrumDisplayOld::SpectrumDisplayOld(const String& name)
   setVerticalFineGrid(pow(2.0, 1.0/3.0), false);
   setMaximumRange(15.625, 32000.0, -96.0, 6.0);
   setCurrentRange(15.625, 32000.0, -96.0, 6.0);
-  setAxisPositionX(CoordinateSystemOld::BOTTOM);
+  setAxisPositionX(rsPlotSettings::BOTTOM);
   setAxisLabelX(String::empty);
   useLogarithmicScaleX(true, 2.0);
-  setAxisPositionY(CoordinateSystemOld::LEFT);
-  setAxisValuesPositionY(LEFT);
+  setAxisPositionY(rsPlotSettings::LEFT);
+  setAxisValuesPositionY(rsPlotSettings::LEFT);
   setAxisLabelY(String::empty);
 
   //setStringConversionForInfoLineX(hertzToStringWithUnitTotal5);  
@@ -42,7 +42,7 @@ void SpectrumDisplayOld::useLogarithmicScaleX(bool shouldBeLogScaledX, double ne
     setVerticalCoarseGrid(2.0, true);
     setVerticalFineGrid(pow(2.0, 1.0/3.0), false);
     CurveFamilyPlotOld::useLogarithmicScaleX(true);
-    setAxisPositionY(CoordinateSystemOld::LEFT);
+    setAxisPositionY(rsPlotSettings::LEFT);
     setStringConversionForAxisX(&valueToString0);
   }
   else
@@ -52,7 +52,7 @@ void SpectrumDisplayOld::useLogarithmicScaleX(bool shouldBeLogScaledX, double ne
     setVerticalCoarseGrid(1000.0, true);
     setVerticalFineGrid(100.0, false);
     CurveFamilyPlotOld::useLogarithmicScaleX(false);
-    setAxisPositionY(CoordinateSystemOld::ZERO);
+    setAxisPositionY(rsPlotSettings::ZERO);
     setStringConversionForAxisX(&kiloToString0);
   }
 

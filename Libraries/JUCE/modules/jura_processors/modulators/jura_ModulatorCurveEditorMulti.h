@@ -40,7 +40,7 @@ public:
   virtual void setCurrentRangeX(double newMinX, double newMaxX);
 
   /** Overrides CoordinateSystem::setCurrentRange to update all the plot-data. */
-  virtual void setCurrentRange(CoordinateSystemRangeOld newRange);
+  virtual void setCurrentRange(rsPlotRange newRange);
 
   /** Clears the array of curve-coulours. */
   virtual void clearCurveColours();

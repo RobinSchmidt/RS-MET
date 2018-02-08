@@ -2461,13 +2461,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_ColourSchemeSetupDialog.cpp">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_ImageSavingDialog.cpp">
+      <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RDialogBox.cpp">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RMessageBox.cpp">
-      <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\rojue_ImageSavingDialog.cpp">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\editors\jura_Editor.cpp">
@@ -2555,6 +2555,15 @@
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.cpp">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotDrawer.cpp">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotRange.cpp">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotSettings.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.cpp">
@@ -6435,13 +6444,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_ColourSchemeSetupDialog.h">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_ImageSavingDialog.h">
+      <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RDialogBox.h">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RMessageBox.h">
-      <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\rojue_ImageSavingDialog.h">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\editors\jura_Editor.h">
@@ -6529,6 +6538,15 @@
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.h">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotDrawer.h">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotRange.h">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotSettings.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.h">

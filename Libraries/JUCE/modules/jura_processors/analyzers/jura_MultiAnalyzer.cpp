@@ -416,7 +416,7 @@ OscilloscopeDisplay::OscilloscopeDisplay(const juce::String& name)
   // perform some extra actions before rendering here
 
   // initialize the appearance settings:
-  setAxisPositionY(CoordinateSystemOld::ZERO);
+  setAxisPositionY(rsPlotSettings::ZERO);
 
   //setMaximumRange(-0.0375, 1.5, -1.5, 1.5);
   //setCurrentRange(-0.0375, 1.5, -1.5, 1.5);
@@ -429,7 +429,7 @@ OscilloscopeDisplay::OscilloscopeDisplay(const juce::String& name)
   setHorizontalFineGrid(0.1, true);
   setAxisLabelX(juce::String::empty);
   setAxisLabelY(juce::String::empty);
-  setAxisValuesPositionY(CoordinateSystemOld::RIGHT_TO_AXIS);
+  setAxisValuesPositionY(rsPlotSettings::RIGHT_TO_AXIS);
   //setAxisLabelX(juce::String(T("Time [seconds]")));
   //setAxisLabelY(juce::String(T("Amplitude")));
   setStringConversionForInfoLineX(&secondsToStringWithUnit4);

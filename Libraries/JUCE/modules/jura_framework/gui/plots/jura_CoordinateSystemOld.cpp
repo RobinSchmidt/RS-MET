@@ -3,39 +3,7 @@
 CoordinateSystemOld::CoordinateSystemOld(const String &newDescription) 
   : DescribedComponent(newDescription) //RWidget(newDescription)
 {
-  autoReRenderImage             = false;
-  captionPosition               =  NO_CAPTION;
-  axisPositionX                 =  ZERO;
-  axisPositionY                 =  ZERO;
-  axisLabelPositionX            =  ABOVE_AXIS;
-  axisLabelPositionY            =  RIGHT_TO_AXIS;
-  axisValuesPositionX           =  BELOW_AXIS;
-  axisValuesPositionY           =  LEFT_TO_AXIS;
-
-  axisLabelX                    =  String("x");
-  axisLabelY                    =  String("y");
-
-  horizontalCoarseGridIsVisible =  false;
-  horizontalFineGridIsVisible	  =  false;
-  verticalCoarseGridIsVisible   =  false;
-  verticalFineGridIsVisible	    =  false;
-  radialCoarseGridIsVisible     =  false;
-  radialFineGridIsVisible       =  false;
-  angularCoarseGridIsVisible    =  false;
-  angularFineGridIsVisible      =  false;
-
-  horizontalCoarseGridInterval  =  1.0;
-  horizontalFineGridInterval    =  0.1;
-  verticalCoarseGridInterval    =  1.0;
-  verticalFineGridInterval      =  0.1;
-  radialCoarseGridInterval      =  1.0;
-  radialFineGridInterval        =  0.1;
-  angularCoarseGridInterval     =  15.0;  // 15 degrees
-  angularFineGridInterval       =  5.0;   // 5 degrees
-
-  logScaledX	                  =  false;
-  logScaledY	                  =  false;
-  logScaledRadius               =  false;
+  autoReRenderImage = false;
 
   maximumRange.setRangeX(-2.2, 2.2);
   maximumRange.setRangeY(-2.2, 2.2);
@@ -43,8 +11,6 @@ CoordinateSystemOld::CoordinateSystemOld(const String &newDescription)
   currentRange.setRangeY(-2.2, 2.2);
 
   // initialize the function-pointers for value->string conversion
-  stringConversionForAxisX     = &valueToString0;
-  stringConversionForAxisY     = &valueToString0;
   stringConversionForInfoLineX = &valueToString0;
   stringConversionForInfoLineY = &valueToString0;
 
@@ -274,8 +240,8 @@ void CoordinateSystemOld::setAutoReRendering(bool shouldAutomaticallyReRender)
 
 void CoordinateSystemOld::setCaption(const String &newCaption, int newPosition)
 {
-  captionPosition = newPosition;
-  captionString   = newCaption;
+  plotSettings.captionPosition = newPosition;
+  plotSettings.captionString   = newCaption;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -283,37 +249,37 @@ void CoordinateSystemOld::setCaption(const String &newCaption, int newPosition)
 void CoordinateSystemOld::setAxisLabels(const String &newLabelX, const String &newLabelY,              
   int newLabelPositionX, int newLabelPositionY)
 {
-  axisLabelX         = newLabelX;
-  axisLabelY         = newLabelY;
-  axisLabelPositionX = newLabelPositionX;
-  axisLabelPositionY = newLabelPositionY;
+  plotSettings.axisLabelX         = newLabelX;
+  plotSettings.axisLabelY         = newLabelY;
+  plotSettings.axisLabelPositionX = newLabelPositionX;
+  plotSettings.axisLabelPositionY = newLabelPositionY;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setAxisLabelX(const String& newLabelX, int newLabelPositionX)
 {
-  axisLabelX         = newLabelX;
-  axisLabelPositionX = newLabelPositionX;
+  plotSettings.axisLabelX         = newLabelX;
+  plotSettings.axisLabelPositionX = newLabelPositionX;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setAxisLabelY(const String& newLabelY, int newLabelPositionY)
 {
-  axisLabelY             = newLabelY;
-  axisLabelPositionY = newLabelPositionY;
+  plotSettings.axisLabelY             = newLabelY;
+  plotSettings.axisLabelPositionY = newLabelPositionY;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setAxisValuesPositionX(int newValuesPositionX)
 {
-  if( newValuesPositionX == NO_ANNOTATION ||
-    newValuesPositionX == BELOW_AXIS    ||
-    newValuesPositionX == ABOVE_AXIS      )
+  if( newValuesPositionX == rsPlotSettings::NO_ANNOTATION ||
+    newValuesPositionX == rsPlotSettings::BELOW_AXIS    ||
+    newValuesPositionX == rsPlotSettings::ABOVE_AXIS      )
   {
-    axisValuesPositionX = newValuesPositionX;
+    plotSettings.axisValuesPositionX = newValuesPositionX;
   }
   if(autoReRenderImage == true)
     updateBackgroundImage();
@@ -321,11 +287,11 @@ void CoordinateSystemOld::setAxisValuesPositionX(int newValuesPositionX)
 
 void CoordinateSystemOld::setAxisValuesPositionY(int newValuesPositionY)
 {
-  if( newValuesPositionY == NO_ANNOTATION ||
-    newValuesPositionY == LEFT_TO_AXIS  ||
-    newValuesPositionY == RIGHT_TO_AXIS   )
+  if( newValuesPositionY == rsPlotSettings::NO_ANNOTATION ||
+    newValuesPositionY == rsPlotSettings::LEFT_TO_AXIS  ||
+    newValuesPositionY == rsPlotSettings::RIGHT_TO_AXIS   )
   {
-    axisValuesPositionY = newValuesPositionY;
+    plotSettings.axisValuesPositionY = newValuesPositionY;
   }
   if(autoReRenderImage == true)
     updateBackgroundImage();
@@ -334,7 +300,7 @@ void CoordinateSystemOld::setAxisValuesPositionY(int newValuesPositionY)
 void CoordinateSystemOld::setStringConversionForAxisX(
   String (*newConversionFunctionX) (double valueToBeConverted) )
 {
-  stringConversionForAxisX = newConversionFunctionX;
+  plotSettings.stringConversionForAxisX = newConversionFunctionX;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -348,7 +314,7 @@ void CoordinateSystemOld::setStringConversionForInfoLineX(
 void CoordinateSystemOld::setStringConversionForAxisY(
   String (*newConversionFunctionY) (double valueToBeConverted) )
 {
-  stringConversionForAxisY = newConversionFunctionY;
+  plotSettings.stringConversionForAxisY = newConversionFunctionY;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -361,14 +327,14 @@ void CoordinateSystemOld::setStringConversionForInfoLineY(
 
 void CoordinateSystemOld::setHorizontalCoarseGridVisible(bool shouldBeVisible)
 {
-  setHorizontalCoarseGrid(horizontalCoarseGridInterval, shouldBeVisible);
+  setHorizontalCoarseGrid(plotSettings.horizontalCoarseGridInterval, shouldBeVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setHorizontalCoarseGridInterval(double newGridInterval)
 {
-  setHorizontalCoarseGrid(newGridInterval, horizontalCoarseGridIsVisible);
+  setHorizontalCoarseGrid(newGridInterval, plotSettings.horizontalCoarseGridIsVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -381,12 +347,12 @@ void CoordinateSystemOld::setHorizontalCoarseGrid(double newGridInterval, bool  
   // would end up drawing an infinite number of grid-lines at the same 
   // coordinate with a unity-factor and denser and denser grid-lines when 
   // approaching zero with a factor lower than unity.
-  if( logScaledY )
+  if( plotSettings.logScaledY )
   {
     jassert(newGridInterval > 1.00001);
     if( newGridInterval <= 1.00001 )
     {
-      horizontalCoarseGridInterval = 2.0;
+      plotSettings.horizontalCoarseGridInterval = 2.0;
       return;
     }
   }
@@ -398,22 +364,22 @@ void CoordinateSystemOld::setHorizontalCoarseGrid(double newGridInterval, bool  
       return;
   }
 
-  horizontalCoarseGridIsVisible = shouldBeVisible;
-  horizontalCoarseGridInterval  = newGridInterval;
+  plotSettings.horizontalCoarseGridIsVisible = shouldBeVisible;
+  plotSettings.horizontalCoarseGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setHorizontalFineGridVisible(bool shouldBeVisible)
 {
-  setHorizontalFineGrid(horizontalFineGridInterval, shouldBeVisible);
+  setHorizontalFineGrid(plotSettings.horizontalFineGridInterval, shouldBeVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setHorizontalFineGridInterval(double newGridInterval)
 {
-  setHorizontalFineGrid(newGridInterval, horizontalFineGridIsVisible);
+  setHorizontalFineGrid(newGridInterval, plotSettings.horizontalFineGridIsVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -421,13 +387,13 @@ void CoordinateSystemOld::setHorizontalFineGridInterval(double newGridInterval)
 void CoordinateSystemOld::setHorizontalFineGrid(double newGridInterval, 
                                              bool   shouldBeVisible)
 {
-  if( logScaledY )
+  if( plotSettings.logScaledY )
   {
     jassert(newGridInterval > 1.00001);
     // for logarithmic scaling, we need the grid-intervals to be > 1
     if( newGridInterval <= 1.00001 )
     {
-      horizontalFineGridInterval = pow(2.0, 1.0/3.0);
+      plotSettings.horizontalFineGridInterval = pow(2.0, 1.0/3.0);
       return;
     }
   }
@@ -439,22 +405,22 @@ void CoordinateSystemOld::setHorizontalFineGrid(double newGridInterval,
       return;
   }
 
-  horizontalFineGridIsVisible = shouldBeVisible;
-  horizontalFineGridInterval  = newGridInterval;
+  plotSettings.horizontalFineGridIsVisible = shouldBeVisible;
+  plotSettings.horizontalFineGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setVerticalCoarseGridVisible(bool shouldBeVisible)
 {
-  setVerticalCoarseGrid(verticalCoarseGridInterval, shouldBeVisible);
+  setVerticalCoarseGrid(plotSettings.verticalCoarseGridInterval, shouldBeVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setVerticalCoarseGridInterval(double newGridInterval)
 {
-  setVerticalCoarseGrid(newGridInterval, verticalCoarseGridIsVisible);
+  setVerticalCoarseGrid(newGridInterval, plotSettings.verticalCoarseGridIsVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -462,13 +428,13 @@ void CoordinateSystemOld::setVerticalCoarseGridInterval(double newGridInterval)
 void CoordinateSystemOld::setVerticalCoarseGrid(double newGridInterval, 
                                              bool   shouldBeVisible)
 {
-  if( logScaledX )
+  if( plotSettings.logScaledX )
   {
     jassert(newGridInterval > 1.00001);
     // for logarithmic scaling, we need the grid-intervals to be > 1
     if( newGridInterval <= 1.00001 )
     {
-      verticalCoarseGridInterval = 2.0;
+      plotSettings.verticalCoarseGridInterval = 2.0;
       return;
     }
   }
@@ -480,22 +446,22 @@ void CoordinateSystemOld::setVerticalCoarseGrid(double newGridInterval,
       return;
   }
 
-  verticalCoarseGridIsVisible = shouldBeVisible;
-  verticalCoarseGridInterval  = newGridInterval;
+  plotSettings.verticalCoarseGridIsVisible = shouldBeVisible;
+  plotSettings.verticalCoarseGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setVerticalFineGridVisible(bool shouldBeVisible)
 {
-  setVerticalFineGrid(verticalFineGridInterval, shouldBeVisible);
+  setVerticalFineGrid(plotSettings.verticalFineGridInterval, shouldBeVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setVerticalFineGridInterval(double newGridInterval)
 {
-  setVerticalFineGrid(newGridInterval, verticalFineGridIsVisible);
+  setVerticalFineGrid(newGridInterval, plotSettings.verticalFineGridIsVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -503,13 +469,13 @@ void CoordinateSystemOld::setVerticalFineGridInterval(double newGridInterval)
 void CoordinateSystemOld::setVerticalFineGrid(double newGridInterval, 
                                            bool   shouldBeVisible)
 {
-  if( logScaledX )
+  if( plotSettings.logScaledX )
   {
     jassert(newGridInterval > 1.00001);
     // for logarithmic scaling, we need the grid-intervals to be > 1
     if( newGridInterval <= 1.00001 )
     {
-      verticalFineGridInterval = pow(2.0, 1.0/3.0);
+      plotSettings.verticalFineGridInterval = pow(2.0, 1.0/3.0);
       return;
     }
   }
@@ -521,22 +487,22 @@ void CoordinateSystemOld::setVerticalFineGrid(double newGridInterval,
       return;
   }
 
-  verticalFineGridIsVisible = shouldBeVisible;
-  verticalFineGridInterval  = newGridInterval;
+  plotSettings.verticalFineGridIsVisible = shouldBeVisible;
+  plotSettings.verticalFineGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setRadialCoarseGridVisible(bool shouldBeVisible)
 {
-  setRadialCoarseGrid(radialCoarseGridInterval, shouldBeVisible);
+  setRadialCoarseGrid(plotSettings.radialCoarseGridInterval, shouldBeVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setRadialCoarseGridInterval(double newGridInterval)
 {
-  setRadialCoarseGrid(newGridInterval, radialCoarseGridIsVisible);
+  setRadialCoarseGrid(newGridInterval, plotSettings.radialCoarseGridIsVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -544,13 +510,13 @@ void CoordinateSystemOld::setRadialCoarseGridInterval(double newGridInterval)
 void CoordinateSystemOld::setRadialCoarseGrid(double newGridInterval, 
                                            bool   shouldBeVisible)
 {
-  if( logScaledRadius )
+  if( plotSettings.logScaledRadius )
   {
     jassert(newGridInterval > 1.00001);
     // for logarithmic scaling, we need the grid-intervals to be > 1
     if( newGridInterval <= 1.00001 )
     {
-      radialCoarseGridInterval = 2.0;
+      plotSettings.radialCoarseGridInterval = 2.0;
       return;
     }
   }
@@ -562,8 +528,8 @@ void CoordinateSystemOld::setRadialCoarseGrid(double newGridInterval,
       return;
   }
 
-  radialCoarseGridIsVisible = shouldBeVisible;
-  radialCoarseGridInterval  = newGridInterval;
+  plotSettings.radialCoarseGridIsVisible = shouldBeVisible;
+  plotSettings.radialCoarseGridInterval  = newGridInterval;
 
   if(autoReRenderImage == true)
     updateBackgroundImage();
@@ -571,14 +537,14 @@ void CoordinateSystemOld::setRadialCoarseGrid(double newGridInterval,
 
 void CoordinateSystemOld::setRadialFineGridVisible(bool shouldBeVisible)
 {
-  setRadialFineGrid(radialFineGridInterval, shouldBeVisible);
+  setRadialFineGrid(plotSettings.radialFineGridInterval, shouldBeVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setRadialFineGridInterval(double newGridInterval)
 {
-  setRadialFineGrid(newGridInterval, radialFineGridIsVisible);
+  setRadialFineGrid(newGridInterval, plotSettings.radialFineGridIsVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -586,13 +552,13 @@ void CoordinateSystemOld::setRadialFineGridInterval(double newGridInterval)
 void CoordinateSystemOld::setRadialFineGrid(double newGridInterval, 
                                          bool   shouldBeVisible)
 {
-  if( logScaledRadius )
+  if( plotSettings.logScaledRadius )
   {
     jassert(newGridInterval > 1.00001);
     // for logarithmic scaling, we need the grid-intervals to be > 1
     if( newGridInterval <= 1.00001 )
     {
-      radialFineGridInterval = pow(2.0, 1.0/3.0);
+      plotSettings.radialFineGridInterval = pow(2.0, 1.0/3.0);
       return;
     }
   }
@@ -604,22 +570,22 @@ void CoordinateSystemOld::setRadialFineGrid(double newGridInterval,
       return;
   }
 
-  radialFineGridIsVisible     = shouldBeVisible;
-  radialFineGridInterval = newGridInterval;
+  plotSettings.radialFineGridIsVisible     = shouldBeVisible;
+  plotSettings.radialFineGridInterval = newGridInterval;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setAngularCoarseGridVisible(bool shouldBeVisible)
 {
-  setAngularCoarseGrid(angularCoarseGridInterval, shouldBeVisible);
+  setAngularCoarseGrid(plotSettings.angularCoarseGridInterval, shouldBeVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setAngularCoarseGridInterval(double newGridInterval)
 {
-  setAngularCoarseGrid(newGridInterval, angularCoarseGridIsVisible);
+  setAngularCoarseGrid(newGridInterval, plotSettings.angularCoarseGridIsVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -632,22 +598,22 @@ void CoordinateSystemOld::setAngularCoarseGrid(double newGridInterval,
   if( newGridInterval <= 0.000001 )
     return;
 
-  angularCoarseGridIsVisible = shouldBeVisible;
-  angularCoarseGridInterval  = newGridInterval;
+  plotSettings.angularCoarseGridIsVisible = shouldBeVisible;
+  plotSettings.angularCoarseGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setAngularFineGridVisible(bool shouldBeVisible)
 {
-  setAngularFineGrid(angularFineGridInterval, shouldBeVisible);
+  setAngularFineGrid(plotSettings.angularFineGridInterval, shouldBeVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 void CoordinateSystemOld::setAngularFineGridInterval(double newGridInterval)
 {
-  setAngularFineGrid(newGridInterval, angularFineGridIsVisible);
+  setAngularFineGrid(newGridInterval, plotSettings.angularFineGridIsVisible);
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
@@ -660,100 +626,100 @@ void CoordinateSystemOld::setAngularFineGrid(double newGridInterval,
   if( newGridInterval <= 0.000001 )
     return;
 
-  angularFineGridIsVisible     = shouldBeVisible;
-  angularFineGridInterval = newGridInterval;
+  plotSettings.angularFineGridIsVisible = shouldBeVisible;
+  plotSettings.angularFineGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
 
 bool CoordinateSystemOld::isHorizontalCoarseGridVisible() 
 { 
-  return horizontalCoarseGridIsVisible; 
+  return plotSettings.horizontalCoarseGridIsVisible; 
 }
 
 bool CoordinateSystemOld::isHorizontalFineGridVisible() 
 { 
-  return horizontalFineGridIsVisible; 
+  return plotSettings.horizontalFineGridIsVisible; 
 }
 
 bool CoordinateSystemOld::isVerticalCoarseGridVisible() 
 { 
-  return verticalCoarseGridIsVisible; 
+  return plotSettings.verticalCoarseGridIsVisible; 
 }
 
 bool CoordinateSystemOld::isVerticalFineGridVisible() 
 { 
-  return verticalFineGridIsVisible; 
+  return plotSettings.verticalFineGridIsVisible; 
 }
 
 bool CoordinateSystemOld::isRadialCoarseGridVisible() 
 { 
-  return radialCoarseGridIsVisible; 
+  return plotSettings.radialCoarseGridIsVisible; 
 }
 
 bool CoordinateSystemOld::isRadialFineGridVisible() 
 { 
-  return radialFineGridIsVisible; 
+  return plotSettings.radialFineGridIsVisible; 
 }
 
 bool CoordinateSystemOld::isAngularCoarseGridVisible() 
 { 
-  return angularCoarseGridIsVisible; 
+  return plotSettings.angularCoarseGridIsVisible; 
 }
 
 bool CoordinateSystemOld::isAngularFineGridVisible() 
 { 
-  return angularFineGridIsVisible; 
+  return plotSettings.angularFineGridIsVisible; 
 }
 
 double CoordinateSystemOld::getHorizontalCoarseGridInterval()
 {
-  return horizontalCoarseGridInterval;
+  return plotSettings.horizontalCoarseGridInterval;
 }
 
 double CoordinateSystemOld::getHorizontalFineGridInterval()
 {
-  return horizontalFineGridInterval;
+  return plotSettings.horizontalFineGridInterval;
 }
 
 double CoordinateSystemOld::getVerticalCoarseGridInterval()
 {
-  return verticalCoarseGridInterval;
+  return plotSettings.verticalCoarseGridInterval;
 }
 
 double CoordinateSystemOld::getVerticalFineGridInterval()
 {
-  return verticalFineGridInterval;
+  return plotSettings.verticalFineGridInterval;
 }
 
 double CoordinateSystemOld::getRadialCoarseGridInterval()
 {
-  return radialCoarseGridInterval;
+  return plotSettings.radialCoarseGridInterval;
 }
 
 double CoordinateSystemOld::getRadialFineGridInterval()
 {
-  return radialFineGridInterval;
+  return plotSettings.radialFineGridInterval;
 }
 
 double CoordinateSystemOld::getAngularCoarseGridInterval()
 {
-  return angularCoarseGridInterval;
+  return plotSettings.angularCoarseGridInterval;
 }
 
 double CoordinateSystemOld::getAngularFineGridInterval()
 {
-  return angularFineGridInterval;
+  return plotSettings.angularFineGridInterval;
 }
 
 void CoordinateSystemOld::setAxisPositionX(int newAxisPositionX)
 {
-  if( newAxisPositionX == INVISIBLE ||
-    newAxisPositionX == ZERO      ||
-    newAxisPositionX == TOP       ||
-    newAxisPositionX == BOTTOM       )
+  if( newAxisPositionX == rsPlotSettings::INVISIBLE ||
+    newAxisPositionX == rsPlotSettings::ZERO      ||
+    newAxisPositionX == rsPlotSettings::TOP       ||
+    newAxisPositionX == rsPlotSettings::BOTTOM       )
   {
-    axisPositionX = newAxisPositionX;
+    plotSettings.axisPositionX = newAxisPositionX;
     if(autoReRenderImage == true)
       updateBackgroundImage();
   }
@@ -761,12 +727,12 @@ void CoordinateSystemOld::setAxisPositionX(int newAxisPositionX)
 
 void CoordinateSystemOld::setAxisPositionY(int newAxisPositionY)
 {
-  if( newAxisPositionY == INVISIBLE ||
-    newAxisPositionY == ZERO      ||
-    newAxisPositionY == LEFT      ||
-    newAxisPositionY == RIGHT        )
+  if( newAxisPositionY == rsPlotSettings::INVISIBLE ||
+    newAxisPositionY == rsPlotSettings::ZERO      ||
+    newAxisPositionY == rsPlotSettings::LEFT      ||
+    newAxisPositionY == rsPlotSettings::RIGHT        )
   {
-    axisPositionY = newAxisPositionY;
+    plotSettings.axisPositionY = newAxisPositionY;
     if(autoReRenderImage == true)
       updateBackgroundImage();
   }
@@ -791,16 +757,16 @@ void CoordinateSystemOld::setupAxisX(double newMin, double newMax, bool shouldBe
 
   maximumRange.setRangeX(newMin, newMax);
   currentRange.setRangeX(newMin, newMax);
-  logScaledX = shouldBeLogScaled;
-  if( newAxisPosition == INVISIBLE ||
-      newAxisPosition == ZERO      ||
-      newAxisPosition == TOP       ||
-      newAxisPosition == BOTTOM       )
+  plotSettings.logScaledX = shouldBeLogScaled;
+  if( newAxisPosition == rsPlotSettings::INVISIBLE ||
+      newAxisPosition == rsPlotSettings::ZERO      ||
+      newAxisPosition == rsPlotSettings::TOP       ||
+      newAxisPosition == rsPlotSettings::BOTTOM       )
   {
-    axisPositionX = newAxisPosition;
+    plotSettings.axisPositionX = newAxisPosition;
   }
-  verticalCoarseGridInterval = newCoarseGridInterval;
-  verticalFineGridInterval   = newFineGridInterval;
+  plotSettings.verticalCoarseGridInterval = newCoarseGridInterval;
+  plotSettings.verticalFineGridInterval   = newFineGridInterval;
   updateMapperInputRange();
 }
 
@@ -824,49 +790,49 @@ void CoordinateSystemOld::setupAxisY(double newMin, double newMax, bool shouldBe
 
   maximumRange.setRangeY(newMin, newMax);
   currentRange.setRangeY(newMin, newMax);
-  logScaledY = shouldBeLogScaled;
-  if( newAxisPosition == INVISIBLE ||
-      newAxisPosition == ZERO      ||
-      newAxisPosition == LEFT      ||
-      newAxisPosition == RIGHT       )
+  plotSettings.logScaledY = shouldBeLogScaled;
+  if( newAxisPosition == rsPlotSettings::INVISIBLE ||
+      newAxisPosition == rsPlotSettings::ZERO      ||
+      newAxisPosition == rsPlotSettings::LEFT      ||
+      newAxisPosition == rsPlotSettings::RIGHT       )
   {
-    axisPositionY = newAxisPosition;
+    plotSettings.axisPositionY = newAxisPosition;
   }
-  horizontalCoarseGridInterval = newCoarseGridInterval;
-  horizontalFineGridInterval   = newFineGridInterval;
+  plotSettings.horizontalCoarseGridInterval = newCoarseGridInterval;
+  plotSettings.horizontalFineGridInterval   = newFineGridInterval;
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::useLogarithmicScale(bool shouldBeLogScaledX, bool shouldBeLogScaledY,                      
   double newLogBaseX, double newLogBaseY)
 {
-  logScaledX = shouldBeLogScaledX;
-  logScaledY = shouldBeLogScaledY;
+  plotSettings.logScaledX = shouldBeLogScaledX;
+  plotSettings.logScaledY = shouldBeLogScaledY;
   updateMapperInputRange();
 }
 
 void CoordinateSystemOld::useLogarithmicScaleX(bool   shouldBeLogScaledX, 
                                             double newLogBaseX)
 {
-  logScaledX = shouldBeLogScaledX;
+  plotSettings.logScaledX = shouldBeLogScaledX;
   updateMapperInputRange();
 }
 
 bool CoordinateSystemOld::isLogScaledX()
 {
-  return logScaledX;
+  return plotSettings.logScaledX;
 }
 
 void CoordinateSystemOld::useLogarithmicScaleY(bool   shouldBeLogScaledY, 
                                             double newLogBaseY)
 {
-  logScaledY = shouldBeLogScaledY;
+  plotSettings.logScaledY = shouldBeLogScaledY;
   updateMapperInputRange();
 }
 
 bool CoordinateSystemOld::isLogScaledY()
 {
-  return logScaledY;
+  return plotSettings.logScaledY;
 }
 
 /*
@@ -1056,34 +1022,34 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
   }
 
   // draw the grids, if desired:
-  if( horizontalFineGridIsVisible )
-    drawHorizontalGrid(g, horizontalFineGridInterval, logScaledY, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
-  if( verticalFineGridIsVisible )
-    drawVerticalGrid(g, verticalFineGridInterval, logScaledX, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
-  if( radialFineGridIsVisible )
-    drawRadialGrid(g, radialFineGridInterval, logScaledRadius, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
-  if( angularFineGridIsVisible )
-    drawAngularGrid(g, angularFineGridInterval, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
+  if( plotSettings.horizontalFineGridIsVisible )
+    drawHorizontalGrid(g, plotSettings.horizontalFineGridInterval, plotSettings.logScaledY, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
+  if( plotSettings.verticalFineGridIsVisible )
+    drawVerticalGrid(g, plotSettings.verticalFineGridInterval, plotSettings.logScaledX, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
+  if( plotSettings.radialFineGridIsVisible )
+    drawRadialGrid(g, plotSettings.radialFineGridInterval, plotSettings.logScaledRadius, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
+  if( plotSettings.angularFineGridIsVisible )
+    drawAngularGrid(g, plotSettings.angularFineGridInterval, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
 
-  if( horizontalCoarseGridIsVisible )
-    drawHorizontalGrid(g, horizontalCoarseGridInterval, logScaledY, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
-  if( verticalCoarseGridIsVisible )
-    drawVerticalGrid(g, verticalCoarseGridInterval, logScaledX, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
-  if( radialCoarseGridIsVisible )
-    drawRadialGrid(g, radialCoarseGridInterval, logScaledRadius, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
-  if( angularCoarseGridIsVisible )
-    drawAngularGrid(g, angularCoarseGridInterval, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
+  if( plotSettings.horizontalCoarseGridIsVisible )
+    drawHorizontalGrid(g, plotSettings.horizontalCoarseGridInterval, plotSettings.logScaledY, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
+  if( plotSettings.verticalCoarseGridIsVisible )
+    drawVerticalGrid(g, plotSettings.verticalCoarseGridInterval, plotSettings.logScaledX, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
+  if( plotSettings.radialCoarseGridIsVisible )
+    drawRadialGrid(g, plotSettings.radialCoarseGridInterval, plotSettings.logScaledRadius, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
+  if( plotSettings.angularCoarseGridIsVisible )
+    drawAngularGrid(g, plotSettings.angularCoarseGridInterval, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
 
   // draw the coordinate system:
-  if( axisPositionX != INVISIBLE )
+  if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE )
     drawAxisX(g, targetImage, targetSVG);
-  if( axisPositionY != INVISIBLE )
+  if( plotSettings.axisPositionY != rsPlotSettings::INVISIBLE )
     drawAxisY(g, targetImage, targetSVG);
 
   // draw the values on the axes:
-  if( axisPositionX != INVISIBLE && axisValuesPositionX != NO_ANNOTATION )
+  if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE && plotSettings.axisValuesPositionX != rsPlotSettings::NO_ANNOTATION )
     drawAxisValuesX(g, targetImage, targetSVG);
-  if( axisPositionY != INVISIBLE && axisValuesPositionY != NO_ANNOTATION )
+  if( plotSettings.axisPositionY != rsPlotSettings::INVISIBLE && plotSettings.axisValuesPositionY != rsPlotSettings::NO_ANNOTATION )
     drawAxisValuesY(g, targetImage, targetSVG);
 
   // draw the caption:
@@ -1098,23 +1064,23 @@ void CoordinateSystemOld::drawCaption(Graphics &g, Image* targetImage, XmlElemen
 {
   // needs test:
   static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
-  float w = (float) font->getTextPixelWidth(captionString);
+  float w = (float) font->getTextPixelWidth(plotSettings.captionString);
   float h = (float) font->getFontHeight();
-  switch( captionPosition )
+  switch( plotSettings.captionPosition )
   {
-  case NO_CAPTION: return;
-  case TOP_CENTER:
+  case rsPlotSettings::NO_CAPTION: return;
+  case rsPlotSettings::TOP_CENTER:
     {
-      drawBitmapText(g, captionString, 0.5f*getWidth()-0.5f*w, 16, getWidth(), 16, font, 
-        Justification::centred, plotColourScheme.text);
+      drawBitmapText(g, plotSettings.captionString, 0.5f*getWidth()-0.5f*w, 16, getWidth(), 16, 
+        font, Justification::centred, plotColourScheme.text);
     }
     break;
-  case CENTER:
+  case rsPlotSettings::CENTER:
     {
       float x = (float) (getWidth()  - w) * .5f;
       float y = (float) (getHeight() - h) * .5f;
-      drawBitmapText(g, captionString, x, y, getWidth(), 16, font, Justification::topLeft,
-        plotColourScheme.text);
+      drawBitmapText(g, plotSettings.captionString, x, y, getWidth(), 16, font, 
+        Justification::topLeft, plotColourScheme.text);
     }
     break;
   }
@@ -1163,9 +1129,9 @@ void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval, Colour g
 double CoordinateSystemOld::getVerticalAxisX()
 {
   double x = 0.0;
-  if( axisPositionY == LEFT )
+  if( plotSettings.axisPositionY == rsPlotSettings::LEFT )
     x = coordinateMapper.unmapX(jmin(8, getWidth())); // maybe use margin parameter instead of 8
-  else if( axisPositionY == RIGHT )
+  else if( plotSettings.axisPositionY == rsPlotSettings::RIGHT )
     x = coordinateMapper.unmapX(jmax(getWidth()-8, 0));
   return x;
 }
@@ -1173,70 +1139,72 @@ double CoordinateSystemOld::getVerticalAxisX()
 double CoordinateSystemOld::getHorizontalAxisY()
 {
   double y = 0.0;
-  if( axisPositionX == BOTTOM )
+  if( plotSettings.axisPositionX == rsPlotSettings::BOTTOM )
     y = coordinateMapper.unmapY(jmax(getHeight()-8, 0));
-  else if( axisPositionX == TOP )
+  else if( plotSettings.axisPositionX == rsPlotSettings::TOP )
     y = coordinateMapper.unmapY(jmin(8, getHeight()));
   return y;
 }
 
 void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
-  if( axisPositionX == INVISIBLE ) 
+  if( plotSettings.axisPositionX == rsPlotSettings::INVISIBLE ) 
     return;
   if(targetSVG != nullptr)
-    jura::drawAxisX(targetSVG, coordinateMapper, getHorizontalAxisY(), axisLabelX, 
+    jura::drawAxisX(targetSVG, coordinateMapper, getHorizontalAxisY(), plotSettings.axisLabelX, 
       plotColourScheme.axes);
   else 
   {
     g.setColour(plotColourScheme.axes);
-    jura::drawAxisX(g, coordinateMapper, getHorizontalAxisY(), axisLabelX, plotColourScheme.text);
+    jura::drawAxisX(g, coordinateMapper, getHorizontalAxisY(), plotSettings.axisLabelX, 
+      plotColourScheme.text);
   }
 }
 
 void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
-  if( axisPositionX == INVISIBLE ) 
+  if( plotSettings.axisPositionX == rsPlotSettings::INVISIBLE ) 
     return;
 
   if(targetSVG != nullptr)
   {
-    jura::drawAxisY(targetSVG, coordinateMapper, getVerticalAxisX(), axisLabelY, 
+    jura::drawAxisY(targetSVG, coordinateMapper, getVerticalAxisX(), plotSettings.axisLabelY, 
       plotColourScheme.axes);
   }
   else 
   {
     g.setColour(plotColourScheme.axes);
-    jura::drawAxisY(g, coordinateMapper, getVerticalAxisX(), axisLabelY, plotColourScheme.text);
+    jura::drawAxisY(g, coordinateMapper, getVerticalAxisX(),plotSettings. axisLabelY, 
+      plotColourScheme.text);
   }
 }
 
 void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
-  if( axisValuesPositionX == NO_ANNOTATION )
+  if( plotSettings.axisValuesPositionX == rsPlotSettings::NO_ANNOTATION )
     return;
   if(targetSVG != nullptr)
-    jura::drawAxisValuesX(targetSVG, coordinateMapper, verticalCoarseGridInterval, 
-      getHorizontalAxisY(), stringConversionForAxisX, plotColourScheme.axes);
+    jura::drawAxisValuesX(targetSVG, coordinateMapper, plotSettings.verticalCoarseGridInterval, 
+      getHorizontalAxisY(), plotSettings.stringConversionForAxisX, plotColourScheme.axes);
   else {
     g.setColour(plotColourScheme.axes);
-    jura::drawAxisValuesX(g, coordinateMapper, verticalCoarseGridInterval, getHorizontalAxisY(), 
-      stringConversionForAxisX, plotColourScheme.text);
+    jura::drawAxisValuesX(g, coordinateMapper, plotSettings.verticalCoarseGridInterval, 
+      getHorizontalAxisY(), plotSettings.stringConversionForAxisX, plotColourScheme.text);
   }
 }
 
 void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
-  if( axisValuesPositionY == NO_ANNOTATION )
+  if( plotSettings.axisValuesPositionY == rsPlotSettings::NO_ANNOTATION )
     return;
   if(targetSVG != nullptr) {
-    jura::drawAxisValuesY(targetSVG, coordinateMapper, horizontalCoarseGridInterval, 
-      getVerticalAxisX(), stringConversionForAxisY, plotColourScheme.axes);
+    jura::drawAxisValuesY(targetSVG, coordinateMapper, plotSettings.horizontalCoarseGridInterval, 
+      getVerticalAxisX(), plotSettings.stringConversionForAxisY, plotColourScheme.axes);
   }
   else {
     g.setColour(plotColourScheme.axes);
-    jura::drawAxisValuesY(g, coordinateMapper, horizontalCoarseGridInterval, getVerticalAxisX(), 
-      stringConversionForAxisY, plotColourScheme.text);
+    jura::drawAxisValuesY(g, coordinateMapper, plotSettings.horizontalCoarseGridInterval, 
+      getVerticalAxisX(), plotSettings.stringConversionForAxisY, plotColourScheme.text);
   }
 }
 
@@ -1252,8 +1220,8 @@ void CoordinateSystemOld::updateMapperOutputRange(Image* image, XmlElement* svg)
 
 void CoordinateSystemOld::updateMapperInputRange()
 {
-  coordinateMapper.mapperX.setLogScaled(logScaledX);  // logScaledX/Y are redundant here now
-  coordinateMapper.mapperY.setLogScaled(logScaledY);  // ...get rid of them
+  coordinateMapper.mapperX.setLogScaled(plotSettings.logScaledX);  // logScaledX/Y are redundant here now
+  coordinateMapper.mapperY.setLogScaled(plotSettings.logScaledY);  // ...get rid of them
   coordinateMapper.setInputRange(currentRange.getMinX(), currentRange.getMaxX(),
     currentRange.getMinY(), currentRange.getMaxY());
     // the currentRange member is actually also redundant now
@@ -1287,6 +1255,8 @@ XmlElement* CoordinateSystemOld::getStateAsXml(const String& stateName) const
   XmlElement* xml = new XmlElement(stateName); 
   // the XmlElement which stores all the releveant state-information
 
+  // move to rsPlotSettings:
+  /*
   xml->setAttribute(String("MinX"), currentRange.getMinX());
   xml->setAttribute(String("MaxX"), currentRange.getMaxX());
   xml->setAttribute(String("MinY"), currentRange.getMinY());
@@ -1300,6 +1270,7 @@ XmlElement* CoordinateSystemOld::getStateAsXml(const String& stateName) const
   xml->setAttribute("VerticalCoarseGridInterval",    verticalCoarseGridInterval);
   xml->setAttribute("VerticalFineGridIsVisible",     verticalFineGridIsVisible);
   xml->setAttribute("VerticalFineGridInterval",      verticalFineGridInterval);
+  */
 
   return xml;
 }
@@ -1308,6 +1279,8 @@ bool CoordinateSystemOld::setStateFromXml(const XmlElement &xml)
 {
   bool success = true; // should report about success, not used yet
 
+  // move to rsPlotSettings:
+  /*
   currentRange.setMinX( xml.getDoubleAttribute("MinX", getCurrentRangeMinX()) );
   currentRange.setMaxX( xml.getDoubleAttribute("MaxX", getCurrentRangeMaxX()) );
   currentRange.setMinY( xml.getDoubleAttribute("MinY", getCurrentRangeMinY()) );
@@ -1321,6 +1294,7 @@ bool CoordinateSystemOld::setStateFromXml(const XmlElement &xml)
   verticalCoarseGridInterval    = xml.getDoubleAttribute("VerticalCoarseGridInterval", getVerticalCoarseGridInterval());
   verticalFineGridIsVisible     = xml.getBoolAttribute(  "VerticalFineGridIsVisible", isVerticalFineGridVisible());
   verticalFineGridInterval      = xml.getDoubleAttribute("VerticalFineGridInterval", getVerticalFineGridInterval());
+  */
 
   updateBackgroundImage();
   return success;

@@ -17,31 +17,7 @@ class JUCE_API CoordinateSystemOld : virtual public DescribedComponent
 
 public:
 
-  enum captionPositions
-  {
-    NO_CAPTION = 0,
-    TOP_CENTER,
-    CENTER
-  };
 
-  enum axisPositions
-  {
-    INVISIBLE = 0,
-    ZERO,
-    LEFT,
-    RIGHT,
-    TOP,
-    BOTTOM
-  };
-
-  enum axisAnnotationPositions
-  {
-    NO_ANNOTATION = 0,
-    LEFT_TO_AXIS,
-    RIGHT_TO_AXIS,
-    ABOVE_AXIS,
-    BELOW_AXIS
-  };
 
   CoordinateSystemOld(const juce::String& newDescription = juce::String("some 2D widget"));
   virtual ~CoordinateSystemOld();
@@ -169,7 +145,8 @@ public:
 
 
 
-  virtual void setCaption(const juce::String &newCaption, int newPosition = TOP_CENTER);
+  virtual void setCaption(const juce::String &newCaption, 
+    int newPosition = rsPlotSettings::TOP_CENTER);
   /**< Sets up a caption for the CoordinateSystemOld and the position where it should appear. */
 
   virtual void setAxisPositionX(int newAxisPositionX);
@@ -341,13 +318,16 @@ public:
   /**< Informs, whether the y-axis is logarithmically scaled or not. */
 
   virtual void setAxisLabels(const juce::String &newLabelX, const juce::String &newLabelY,
-    int newLabelPositionX = ABOVE_AXIS, int newLabelPositionY = RIGHT_TO_AXIS);
+    int newLabelPositionX = rsPlotSettings::ABOVE_AXIS, 
+    int newLabelPositionY = rsPlotSettings::RIGHT_TO_AXIS);
   /**< Sets the labels for the axes and their position. */
 
-  virtual void setAxisLabelX(const juce::String &newLabelX, int newLabelPositionX = ABOVE_AXIS);
+  virtual void setAxisLabelX(const juce::String &newLabelX, 
+    int newLabelPositionX = rsPlotSettings::ABOVE_AXIS);
   /**< Sets the label for the x-axis and its position. */
 
-  virtual void setAxisLabelY(const juce::String &newLabelY, int newLabelPositionY = RIGHT_TO_AXIS);
+  virtual void setAxisLabelY(const juce::String &newLabelY, 
+    int newLabelPositionY = rsPlotSettings::RIGHT_TO_AXIS);
   /**< Sets the label for the y-axis and its position. */
 
   virtual void setAxisValuesPositionX(int newValuesPositionX);
@@ -539,41 +519,10 @@ protected:
   rsPlotSettings plotSettings;
 
   /** The currently visible range and maximum range object for the plot. */
-  rsPlotRange currentRange, maximumRange;
+  rsPlotRange currentRange, maximumRange; // move to rsPlotSettings
 
 
-  // maybe factor out into a PlotSettings class and have a member of that here
-  int    axisPositionX;
-  int    axisPositionY;
-  int    axisLabelPositionX;
-  int    axisLabelPositionY;
-  int    axisValuesPositionX;
-  int    axisValuesPositionY;
 
-  juce::String axisLabelX;
-  juce::String axisLabelY;
-
-  bool   horizontalCoarseGridIsVisible;
-  bool   horizontalFineGridIsVisible;
-  bool   verticalCoarseGridIsVisible;
-  bool   verticalFineGridIsVisible;
-  bool   radialCoarseGridIsVisible;
-  bool   radialFineGridIsVisible;
-  bool   angularCoarseGridIsVisible;
-  bool   angularFineGridIsVisible;
-
-  double horizontalCoarseGridInterval;
-  double horizontalFineGridInterval;
-  double verticalCoarseGridInterval;
-  double verticalFineGridInterval;
-  double radialCoarseGridInterval;
-  double radialFineGridInterval;
-  double angularCoarseGridInterval;
-  double angularFineGridInterval;
-
-  bool   logScaledX;
-  bool   logScaledY;
-  bool   logScaledRadius;
 
 
   // new - to be used soon in the drawing code:
@@ -582,8 +531,7 @@ protected:
   bool showPositionAsDescription;
   bool showPopUpOnRightClick;
 
-  int captionPosition;
-  juce::String captionString;
+
 
   Image*  backgroundImage;
   /**< This image will be used for the appearance of the coodinate system, it will be updated via
@@ -593,9 +541,7 @@ protected:
   bool autoReRenderImage;
   // see above
 
-  // functions for converting coordinates into strings:
-  juce::String (*stringConversionForAxisX)     (double valueToConvert);
-  juce::String (*stringConversionForAxisY)     (double valueToConvert);
+
   juce::String (*stringConversionForInfoLineX) (double valueToConvert);
   juce::String (*stringConversionForInfoLineY) (double valueToConvert);
 

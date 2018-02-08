@@ -307,13 +307,13 @@ void RSPlotContentComponent::comboBoxChanged(ComboBox *comboBoxThatHasChanged)
       {
         id = axesSetup->xPosComboBox->getSelectedId();
         if( id == 1 )
-          curveFamilyPlot->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
+          curveFamilyPlot->setAxisPositionX(rsPlotSettings::INVISIBLE);
         else if( id == 2 )
-          curveFamilyPlot->setAxisPositionX(CoordinateSystemOld::ZERO);
+          curveFamilyPlot->setAxisPositionX(rsPlotSettings::ZERO);
         else if( id == 3 )
-          curveFamilyPlot->setAxisPositionX(CoordinateSystemOld::TOP);
+          curveFamilyPlot->setAxisPositionX(rsPlotSettings::TOP);
         else if( id == 4 )
-          curveFamilyPlot->setAxisPositionX(CoordinateSystemOld::BOTTOM);
+          curveFamilyPlot->setAxisPositionX(rsPlotSettings::BOTTOM);
       }
 
 
@@ -322,13 +322,13 @@ void RSPlotContentComponent::comboBoxChanged(ComboBox *comboBoxThatHasChanged)
       {
         id = axesSetup->yPosComboBox->getSelectedId();
         if( id == 1 )
-          curveFamilyPlot->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
+          curveFamilyPlot->setAxisPositionY(rsPlotSettings::INVISIBLE);
         else if( id == 2 )
-          curveFamilyPlot->setAxisPositionY(CoordinateSystemOld::ZERO);
+          curveFamilyPlot->setAxisPositionY(rsPlotSettings::ZERO);
         else if( id == 3 )
-          curveFamilyPlot->setAxisPositionY(CoordinateSystemOld::LEFT);
+          curveFamilyPlot->setAxisPositionY(rsPlotSettings::LEFT);
         else if( id == 4 )
-          curveFamilyPlot->setAxisPositionY(CoordinateSystemOld::RIGHT);
+          curveFamilyPlot->setAxisPositionY(rsPlotSettings::RIGHT);
       }
 
       else if( comboBoxThatHasChanged == dataSetup->dataSourceComboBox )
@@ -800,13 +800,13 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
  logScale     = xmlState.getBoolAttribute(String(("xLogScale")), false);
  axisPosition = xmlState.getStringAttribute(String(("xAxisPosition")), String(("Zero")));
  if( axisPosition == String(("Invisible")) )
-   axisPositionIndex = CoordinateSystemOld::INVISIBLE;
+   axisPositionIndex = rsPlotSettings::INVISIBLE;
  else if( axisPosition == String(("Zero")) )
-   axisPositionIndex = CoordinateSystemOld::ZERO;
+   axisPositionIndex = rsPlotSettings::ZERO;
  else if( axisPosition == String(("Top")) )
-   axisPositionIndex = CoordinateSystemOld::TOP;
+   axisPositionIndex = rsPlotSettings::TOP;
  else if( axisPosition == String(("Bottom")) )
-   axisPositionIndex = CoordinateSystemOld::BOTTOM;
+   axisPositionIndex = rsPlotSettings::BOTTOM;
  axesSetup->xMinEditLabel->setText(String(min), NotificationType::dontSendNotification);
  axesSetup->xMaxEditLabel->setText(String(max), NotificationType::dontSendNotification);
  axesSetup->verticalCoarseGridIntervalLabel->setText(String(coarse), NotificationType::dontSendNotification);
@@ -829,13 +829,13 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
  logScale     = xmlState.getBoolAttribute(String(("yLogScale")), false);
  axisPosition = xmlState.getStringAttribute(String(("yPosPosition")), String(("Zero")));
  if( axisPosition == String(("Invisible")) )
-   axisPositionIndex = CoordinateSystemOld::INVISIBLE;
+   axisPositionIndex = rsPlotSettings::INVISIBLE;
  else if( axisPosition == String(("Zero")) )
-   axisPositionIndex = CoordinateSystemOld::ZERO;
+   axisPositionIndex = rsPlotSettings::ZERO;
  else if( axisPosition == String(("Left")) )
-   axisPositionIndex = CoordinateSystemOld::LEFT;
+   axisPositionIndex = rsPlotSettings::LEFT;
  else if( axisPosition == String(("Right")) )
-   axisPositionIndex = CoordinateSystemOld::RIGHT;
+   axisPositionIndex = rsPlotSettings::RIGHT;
  axesSetup->yMinEditLabel->setText(String(min), NotificationType::dontSendNotification);
  axesSetup->yMaxEditLabel->setText(String(max), NotificationType::dontSendNotification);
  axesSetup->horizontalCoarseGridIntervalLabel->setText(String(coarse), NotificationType::dontSendNotification);
