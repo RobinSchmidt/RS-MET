@@ -76,7 +76,7 @@ void rsPlotDrawer::drawPlot(Graphics& g, double x, double y, double w, double h)
 
   // outline:
   g.setColour(colors.outline);
-  g.drawRect(x, y, w, h, 2);
+  g.drawRect(float(x), float(y), float(w), float(h), 2.f);
 }
 
 void rsPlotDrawer::drawPlot(XmlElement* svg, double x, double y, double w, double h)

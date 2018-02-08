@@ -116,6 +116,8 @@ JUCE_API void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2
 // functions of CoordinateSystemOld) ...maybe put into a class CoordinateSystemDrawer - more
 // convenient (the functions tend to have too many parameters):
 
+// maybe move into rsPlotDrawer (maybe as as static functions)
+
 /** Sets up the output range of the passed coordinate mapper to the bounds of the given 
 component. */
 JUCE_API void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper, 

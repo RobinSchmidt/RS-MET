@@ -23,7 +23,8 @@ public:
   {
     coordinateSystemDemoContentComponent = 
       new RSPlotContentComponent(String(("RSPlot")));
-    setContentComponent(coordinateSystemDemoContentComponent);
+    setContentOwned(coordinateSystemDemoContentComponent, false);
+    //setContentComponent(coordinateSystemDemoContentComponent); // deprecated
 
     setResizable(true, true);
     setResizeLimits(800, 600, 40000, 30000);
@@ -157,6 +158,7 @@ public:
 
   }
 
+  /*
   virtual void unhandledException (const std::exception* e,
     const String& sourceFilename,
     const int lineNumber)
@@ -164,6 +166,7 @@ public:
     // this function was overriden by Robin Schmidt as a workaround to avoid
     // a myterious linker error in Visual C++ 2005 Express
   }
+  */
 
 };
 

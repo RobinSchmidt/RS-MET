@@ -79,11 +79,11 @@ ImageSavingDialog::ImageSavingDialog(CoordinateSystemOld *owner, int defaultWidt
   formatComboBox->addItem(String(("png")),        2);
   //formatComboBox->setSelectedId(2, true);
   if( defaultFormat == String(("svg")) )
-    formatComboBox->setSelectedId(1, true);
+    formatComboBox->setSelectedId(1);
   else if( defaultFormat == String(("png")) )
-    formatComboBox->setSelectedId(2, true);
+    formatComboBox->setSelectedId(2);
   else
-    formatComboBox->setSelectedId(2, true);
+    formatComboBox->setSelectedId(2);
   addAndMakeVisible(formatComboBox);
 
   saveButton = new TextButton(String(("Save")));

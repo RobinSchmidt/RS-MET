@@ -8,7 +8,7 @@ desired coordinate-system (which can be lin- or log-scaled).
 
 \todo:
 
--rename to rsPlot or rsPlotBase  */
+-rename to rsPlot, rsPlotBase or rsPlotComponent  */
 
 class JUCE_API CoordinateSystemOld : virtual public DescribedComponent
 {

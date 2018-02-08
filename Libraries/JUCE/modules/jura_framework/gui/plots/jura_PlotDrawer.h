@@ -20,6 +20,7 @@ public:
   /** Analog to the other drawPlot version but draws onto an svg draing instead of a graphics 
   object. Useful for implementing export of plots to svg files. */
   virtual void drawPlot(XmlElement* svg, double x, double y, double w, double h);
+   // maybe move into subclass rsPlotDrawerWithSvg...or something
 
 
 protected:
