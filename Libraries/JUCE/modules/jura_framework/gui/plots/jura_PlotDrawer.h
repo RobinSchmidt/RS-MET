@@ -36,13 +36,16 @@ public:
   template<class T>
   void drawWithLines(Graphics& g, int numValues, T* valuesX, T* valuesY);
 
-
-  virtual void fillFunction(Graphics& g, int numValues, float* valuesX, float* valuesY);
+  template<class T>
+  void fillFunction(Graphics& g, int numValues, T* valuesX, T* valuesY);
     // not yet tested, maybe factor out into rsDrawer
 
   /** Draws the given datapoints as dots like in a scatterplot. */
-  virtual void drawAsDots(Graphics& g, int numValues, float* valuesX, float* valuesY);
-    // not yet tested
+  template<class T>
+  void drawAsDots(Graphics& g, int numValues, T* valuesX, T* valuesY, float size = 5.f, 
+    bool stemsX = false, bool stemsY = false);
+    // not yet tested ...maybe factor out the stem-drawing into separate functions drawAsStemsX
+    // drawAsStemsY ..more modular
 
   //virtual void drawFunction(std::function<double(double)> function, double increment = 1);
   // goes through the x-range with given increment (in pixels) and evaluates the given function

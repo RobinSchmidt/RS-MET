@@ -103,11 +103,12 @@ void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, T* valuesX, T* valu
     float y1 = (float) mapper.mapY(valuesY[i]);
     float x2 = (float) mapper.mapX(valuesX[i+1]);
     float y2 = (float) mapper.mapY(valuesY[i+1]);
-    g.drawLine(x1, y1, x2, y2, thickness);
+    g.drawLine(x1, y1, x2, y2, thickness); // drawLine is more efficient than using a Path object
   }
 }
 
-void rsPlotDrawer::fillFunction(Graphics& g, int N, float* x, float* y)
+template<class T>
+void rsPlotDrawer::fillFunction(Graphics& g, int N, T* x, T* y)
 {
   // not yet tested
   Path path;
@@ -121,18 +122,20 @@ void rsPlotDrawer::fillFunction(Graphics& g, int N, float* x, float* y)
   g.fillPath(path);
 }
 
-void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, float* valuesX, float* valuesY)
+template<class T>
+void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, T* valuesX, T* valuesY, float size, 
+  bool stemsX, bool stemsY)
 {
   //g.setColour(graphColor); should be done ouside
   // todo: make dot-size adjustable, templatize to make it work for double (and maybe int), too
 
   // make parameters - to be used to draw lines to x- and/or y-axis:
-  bool lineToAxisX = false;
-  bool lineToAxisY = false;
+  //bool lineToAxisX = false;
+  //bool lineToAxisY = false;
   float x0 = (float) mapper.mapX(0);
   float y0 = (float) mapper.mapY(0);
 
-  float size  = 4.f; // make parameter
+  //float size  = 4.f; // make parameter
   float size2 = 0.5f * size;
 
   float x, y;	   // current x and y value
@@ -147,8 +150,8 @@ void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, float* valuesX, float*
     g.fillEllipse(x-size2, y-size2, size, size); // is this correct?
 
     // draw lines to x- and y-axis if the option is selected:
-    if(lineToAxisX) g.drawLine(x,  y, x, y0); // needs testing
-    if(lineToAxisY) g.drawLine(x0, y, x, y);
+    if(stemsX) g.drawLine(x,  y, x, y0); // needs testing
+    if(stemsY) g.drawLine(x0, y, x, y);
   }
 }
 

@@ -201,6 +201,9 @@ Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
 
 void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
+  if( familyValuesX == nullptr || familyValuesY == nullptr )
+    return;
+
   // new (does not yet support image or svg drawing)
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, getWidth(), getHeight());
   for(int k = 0; k < numCurves; k++) // or numCurvesToDraw?
@@ -209,11 +212,10 @@ void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlEle
     if( k != highlightedCurve || highlightedCurve == -1 )
       graphColour = graphColour.withMultipliedAlpha(0.5f);  
     g.setColour(graphColour); 
+    //drawer.fillFunction( g, numValues, familyValuesX[k], familyValuesY[k]); // test
     drawer.drawWithLines(g, numValues, familyValuesX[k], familyValuesY[k]);
+    //drawer.drawAsDots(   g, numValues, familyValuesX[k], familyValuesY[k], 5.f, true, false);
   }
-
-  int dummy = 0;
-
 
   // old:
   /*
