@@ -1,79 +1,3 @@
-CoordinateSystemRangeOld::CoordinateSystemRangeOld(double initMinX, double initMaxX,
-  double initMinY, double initMaxY)
-{
-  minX = initMinX;
-  maxX = initMaxX;
-  minY = initMinY;
-  maxY = initMaxY;
-}
-
-CoordinateSystemRangeOld::~CoordinateSystemRangeOld()
-{
-
-}
-
-void CoordinateSystemRangeOld::setMinX(double newMinX) 
-{ 
-  jassert(newMinX < maxX);
-    if( newMinX < maxX )
-      minX = newMinX;
-}
-
-void CoordinateSystemRangeOld::setMaxX(double newMaxX) 
-{ 
-  jassert(newMaxX > minX);
-    if( newMaxX > minX )
-      maxX = newMaxX;
-}
-
-void CoordinateSystemRangeOld::setRangeX(double newMinX, double newMaxX)
-{
-  jassert(newMaxX > newMinX);
-    if( newMaxX > newMinX )
-    {
-      minX = newMinX;
-      maxX = newMaxX;
-    }
-}
-
-void CoordinateSystemRangeOld::setMinY(double newMinY) 
-{ 
-  jassert(newMinY < maxY);
-    if( newMinY < maxY )
-      minY = newMinY;
-}
-
-void CoordinateSystemRangeOld::setMaxY(double newMaxY) 
-{ 
-  jassert(newMaxY > minY);
-    if( newMaxY > minY )
-      maxY = newMaxY;
-}
-
-void CoordinateSystemRangeOld::setRangeY(double newMinY, double newMaxY)
-{
-  jassert(newMaxY > newMinY);
-    if( newMaxY > newMinY )
-    {
-      minY = newMinY;
-      maxY = newMaxY;
-    }
-}
-
-void CoordinateSystemRangeOld::clipRange(CoordinateSystemRangeOld rangeToClipTo)
-{
-  if( minX < rangeToClipTo.getMinX() )
-    minX = rangeToClipTo.getMinX();
-  if( maxX > rangeToClipTo.getMaxX() )
-    maxX = rangeToClipTo.getMaxX();
-  if( minY < rangeToClipTo.getMinY() )
-    minY = rangeToClipTo.getMinY();
-  if( maxY > rangeToClipTo.getMaxY() )
-    maxY = rangeToClipTo.getMaxY();
-}
-
-//=================================================================================================
-
 // construction/destruction:
 
 CoordinateSystemOld::CoordinateSystemOld(const String &newDescription) 
@@ -214,7 +138,7 @@ void CoordinateSystemOld::setMaximumRange(double newMinX, double newMaxX,
   updateMapperInputRange();
 }
 
-void CoordinateSystemOld::setMaximumRange(CoordinateSystemRangeOld newMaximumRange)
+void CoordinateSystemOld::setMaximumRange(rsPlotRange newMaximumRange)
 {
   maximumRange = newMaximumRange;
   currentRange.clipRange(maximumRange);
@@ -272,7 +196,7 @@ void CoordinateSystemOld::setCurrentRange(double newMinX, double newMaxX,
   updateMapperInputRange();
 }
 
-void CoordinateSystemOld::setCurrentRange(CoordinateSystemRangeOld newRange)
+void CoordinateSystemOld::setCurrentRange(rsPlotRange newRange)
 {
   currentRange = newRange;
   currentRange.clipRange(maximumRange);

@@ -20,7 +20,7 @@ public:
   virtual ~WaveformDisplayOld();
   /**< Destructor. */
 
-  virtual CoordinateSystemRangeOld getMaximumMeaningfulRange(double relativeMarginLeft = 0.0,
+  virtual rsPlotRange getMaximumMeaningfulRange(double relativeMarginLeft = 0.0,
     double relativeMarginRight  = 0.0, double relativeMarginTop  = 0.0,
     double relativeMarginBottom = 0.0);
   /**< Returns an Rectangle wich encloses the curve. Optionally, a margin can

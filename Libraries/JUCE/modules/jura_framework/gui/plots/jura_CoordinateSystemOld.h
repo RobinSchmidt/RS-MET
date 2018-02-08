@@ -1,98 +1,13 @@
 #ifndef jura_CoordinateSystemOld_h
 #define jura_CoordinateSystemOld_h 
 
-
-// is this really the right file from the old codebase?
-// OK - yes - it seems, we have always used the ones with suffix "Old"
-
-/**
-
-This class represents the visible range for a CoordinateSystem (and is used inside this class).
-
-*/
-
-class JUCE_API CoordinateSystemRangeOld
-{
-
-public:
-
-  /** Standard Constructor. */
-  CoordinateSystemRangeOld(double initMinX = -2.2, double initMaxX = +2.2, 
-    double initMinY = -2.2, double initMaxY = +2.2);
-
-  /** Destructor. */
-  virtual ~CoordinateSystemRangeOld();  
-
-  /** Returns the minimum x-value. */
-  virtual double getMinX() const { return minX; }
-
-  /** Returns the maximum x-value. */
-  virtual double getMaxX() const { return maxX; }
-
-  /** Returns the minimum y-value. */
-  virtual double getMinY() const { return minY; }
-
-  /** Returns the maximum y-value. */
-  virtual double getMaxY() const { return maxY; }
-
-  /** Sets the minimum x-value. */
-  virtual void setMinX(double newMinX);
-
-  /** Sets the maximum x-value. */
-  virtual void setMaxX(double newMaxX);
-
-  /** Sets up the minimum and maximum value for x .*/
-  virtual void setRangeX(double newMinX, double newMaxX);
-
-  /** Sets the minimum y-value. */
-  virtual void setMinY(double newMinY);
-
-  /** Sets the maximum y-value. */
-  virtual void setMaxY(double newMaxY); 
-
-  /** Sets up the minimum and maximum value for y .*/
-  virtual void setRangeY(double newMinY, double newMaxY);
-
-  /** Lets the range represented by the member-variables be clipped to another range such that
-  the minima/maxima are no smaller/larger than those of the rangeToClipTo. */
-  virtual void clipRange(CoordinateSystemRangeOld rangeToClipTo);
-
-
-  /** Compares two ranges for equality. */
-  bool operator==(const CoordinateSystemRangeOld& r2) const  
-  {
-    if( r2.minX == minX && r2.maxX == maxX && r2.minY == minY && r2.maxY == maxY )
-      return true;
-    else
-      return false;
-  }
-
-  /** Compares two ranges for inequality. */
-  bool operator!=(const CoordinateSystemRangeOld& r2) const  
-  {
-    return !(*this == r2);
-  }
-
-protected:
-
-  double minX, maxX, minY, maxY;
-
-  juce_UseDebuggingNewOperator;
-};
-
-
-//=================================================================================================
-
 /** This class is a component, intended to be used as base-class for all components that need some
 underlying coordinate-system, such as function-plots, XY-pads, etc. It takes care of the coordinate
 axes, a coarse and a fine grid, conversion between component-coordinates and the coordinates in the
 desired coordinate-system (which can be lin- or log-scaled).
 
 \todo:
--factor out a CoordinateConverter2D class that contains all the math but is devoid of any drawing 
- operations
--actually, this needs only to be written for 1D and then 2 instances can be used, but we may use a 
- 2D wrapper and delegations
+
 -rename to Plot or PlotBase  */
 
 class JUCE_API CoordinateSystemOld : virtual public DescribedComponent
@@ -160,7 +75,7 @@ public:
   /**< Sets the maximum for the currently visible range. For logarithmic x- and/or y-axis-scaling,
   make sure that the respective minimum value is greater than zero! */
 
-  virtual void setMaximumRange(CoordinateSystemRangeOld newMaximumRange);
+  virtual void setMaximumRange(rsPlotRange newMaximumRange);
   /**< Sets the maximum for the currently visible range. */
 
   virtual void setMaximumRangeX(double newMinX, double newMaxX);
@@ -169,7 +84,7 @@ public:
   virtual void setMaximumRangeY(double newMinY, double newMaxY);
   /**< Sets the maximum visible range for the y-axis. */
 
-  virtual CoordinateSystemRangeOld getMaximumRange() { return maximumRange; }
+  virtual rsPlotRange getMaximumRange() { return maximumRange; }
   /**< Returns the maximum for the currently visible range. */
 
   virtual void setMaximumRangeMinX(double newMinX);
@@ -200,7 +115,7 @@ public:
   /**< Sets the currently visible range. For logarithmic x- and/or y-axis-scaling, make sure that
   the respective minimum value is greater than zero! */
 
-  virtual void setCurrentRange(CoordinateSystemRangeOld newRange);
+  virtual void setCurrentRange(rsPlotRange newRange);
   /**< Sets the currently visible range. */
 
   virtual void setCurrentRangeX(double newMinX, double newMaxX);
@@ -209,7 +124,7 @@ public:
   virtual void setCurrentRangeY(double newMinY, double newMaxY);
   /**< Sets the currently visible range for the y-axis. */
 
-  virtual CoordinateSystemRangeOld getCurrentRange() { return currentRange; }
+  virtual rsPlotRange getCurrentRange() { return currentRange; }
   /**< Returns the currently visible range. */
 
   virtual void setCurrentRangeMinX(double newMinX);
@@ -625,8 +540,9 @@ protected:
   /**< Returns either the height of this component or the height of the image (if the pointer is
   non-NULL). */
 
-  CoordinateSystemRangeOld currentRange, maximumRange;
-  /**< The range- and maximum-range object for the coordinate system. */
+  /** The currently visible range and maximum range object for the plot. */
+  rsPlotRange currentRange, maximumRange;
+
 
   // maybe factor out into a PlotSettings class and have a member of that here
   int    axisPositionX;

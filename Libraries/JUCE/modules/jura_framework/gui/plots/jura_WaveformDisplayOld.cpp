@@ -33,7 +33,7 @@ WaveformDisplayOld::~WaveformDisplayOld(void)
   //deleteAllChildren();
 }
 
-CoordinateSystemRangeOld WaveformDisplayOld::getMaximumMeaningfulRange(
+rsPlotRange WaveformDisplayOld::getMaximumMeaningfulRange(
   double relativeMarginLeft, double relativeMarginRight,
   double relativeMarginTop,  double relativeMarginBottom)
 {
@@ -51,7 +51,7 @@ CoordinateSystemRangeOld WaveformDisplayOld::getMaximumMeaningfulRange(
   if( relativeMarginBottom < 0.0 )
     relativeMarginBottom = 0.0;
 
-  CoordinateSystemRangeOld r = getMaximumRange();
+  rsPlotRange r = getMaximumRange();
 
   double minX   = 0.0;
   double maxX   = jmax(0.001, (double) (numSampleFrames-1) / sampleRate);

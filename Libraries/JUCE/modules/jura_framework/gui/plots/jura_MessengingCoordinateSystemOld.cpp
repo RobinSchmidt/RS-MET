@@ -16,7 +16,7 @@ MessengingCoordinateSystemOld::~MessengingCoordinateSystemOld()
 
 void MessengingCoordinateSystemOld::setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY)
 {
-  CoordinateSystemRangeOld r = getMaximumRange();
+  rsPlotRange r = getMaximumRange();
   if( newMinX != r.getMinX() || newMaxX != r.getMaxX() || newMinY != r.getMinY() || newMaxY != r.getMaxY() )
   {
     CoordinateSystemOld::setMaximumRange(newMinX, newMaxX, newMinY, newMaxY);
@@ -24,7 +24,7 @@ void MessengingCoordinateSystemOld::setMaximumRange(double newMinX, double newMa
   }
 }
 
-void MessengingCoordinateSystemOld::setMaximumRange(CoordinateSystemRangeOld newMaximumRange)
+void MessengingCoordinateSystemOld::setMaximumRange(rsPlotRange newMaximumRange)
 {
   if( newMaximumRange != getMaximumRange() )
   {
@@ -35,7 +35,7 @@ void MessengingCoordinateSystemOld::setMaximumRange(CoordinateSystemRangeOld new
 
 void MessengingCoordinateSystemOld::setMaximumRangeX(double newMinX, double newMaxX)
 {
-  CoordinateSystemRangeOld r = getMaximumRange();
+  rsPlotRange r = getMaximumRange();
   if( newMinX != r.getMinX() || newMaxX != r.getMaxX() )
   {
     CoordinateSystemOld::setMaximumRangeX(newMinX, newMaxX);
@@ -45,7 +45,7 @@ void MessengingCoordinateSystemOld::setMaximumRangeX(double newMinX, double newM
 
 void MessengingCoordinateSystemOld::setMaximumRangeY(double newMinY, double newMaxY)
 {
-  CoordinateSystemRangeOld r = getMaximumRange();
+  rsPlotRange r = getMaximumRange();
   if( newMinY != r.getMinY() || newMaxY != r.getMaxY() )
   {
     CoordinateSystemOld::setMaximumRangeY(newMinY, newMaxY);
@@ -91,7 +91,7 @@ void MessengingCoordinateSystemOld::setMaximumRangeMaxY(double newMaxY)
 
 void MessengingCoordinateSystemOld::setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY)
 {
-  CoordinateSystemRangeOld r = getCurrentRange();
+  rsPlotRange r = getCurrentRange();
   if( newMinX != r.getMinX() || newMaxX != r.getMaxX() || newMinY != r.getMinY() || newMaxY != r.getMaxY() )
   {
     CoordinateSystemOld::setCurrentRange(newMinX, newMaxX, newMinY, newMaxY);
@@ -99,7 +99,7 @@ void MessengingCoordinateSystemOld::setCurrentRange(double newMinX, double newMa
   }
 }
 
-void MessengingCoordinateSystemOld::setCurrentRange(CoordinateSystemRangeOld newCurrentRange)
+void MessengingCoordinateSystemOld::setCurrentRange(rsPlotRange newCurrentRange)
 {
   if( newCurrentRange != getCurrentRange() )
   {
@@ -110,7 +110,7 @@ void MessengingCoordinateSystemOld::setCurrentRange(CoordinateSystemRangeOld new
 
 void MessengingCoordinateSystemOld::setCurrentRangeX(double newMinX, double newMaxX)
 {
-  CoordinateSystemRangeOld r = getCurrentRange();
+  rsPlotRange r = getCurrentRange();
   if( newMinX != r.getMinX() || newMaxX != r.getMaxX() )
   {
     CoordinateSystemOld::setCurrentRangeX(newMinX, newMaxX);
@@ -120,7 +120,7 @@ void MessengingCoordinateSystemOld::setCurrentRangeX(double newMinX, double newM
 
 void MessengingCoordinateSystemOld::setCurrentRangeY(double newMinY, double newMaxY)
 {
-  CoordinateSystemRangeOld r = getCurrentRange();
+  rsPlotRange r = getCurrentRange();
   if( newMinY != r.getMinY() || newMaxY != r.getMaxY() )
   {
     CoordinateSystemOld::setCurrentRangeY(newMinY, newMaxY);

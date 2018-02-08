@@ -119,6 +119,7 @@ namespace jura
 
 // these should be renamed - get rid of the "Old" (but only when we have dragged over all other
 // subclasses):
+#include "gui/plots/jura_PlotRange.h"
 #include "gui/plots/jura_CoordinateSystemOld.h"
 #include "gui/plots/jura_InteractiveCoordinateSystemOld.h"
 #include "gui/plots/jura_MessengingCoordinateSystemOld.h"

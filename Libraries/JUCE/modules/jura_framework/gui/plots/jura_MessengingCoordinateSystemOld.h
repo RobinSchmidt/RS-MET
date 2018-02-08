@@ -46,6 +46,9 @@ Example:
 \todo: make some dedicated class CoordinateSystemOldListener or something - this callback-thing with the pointer to void as argument does
 not seem to work reliably (inherited sub-objects may have addresses other than expected)
 
+-rename to ObservablePlot
+
+
 */
 
 class MessengingCoordinateSystemOld : virtual public CoordinateSystemOld
@@ -63,7 +66,7 @@ public:
   // range-management:
 
   virtual void setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
-  virtual void setMaximumRange(CoordinateSystemRangeOld newMaximumRange);
+  virtual void setMaximumRange(rsPlotRange newMaximumRange);
   virtual void setMaximumRangeX(double newMinX, double newMaxX);
   virtual void setMaximumRangeY(double newMinY, double newMaxY);
   virtual void setMaximumRangeMinX(double newMinX);
@@ -72,7 +75,7 @@ public:
   virtual void setMaximumRangeMaxY(double newMaxY);
 
   virtual void setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
-  virtual void setCurrentRange(CoordinateSystemRangeOld newRange);
+  virtual void setCurrentRange(rsPlotRange newRange);
   virtual void setCurrentRangeX(double newMinX, double newMaxX);
   virtual void setCurrentRangeY(double newMinY, double newMaxY);
   virtual void setCurrentRangeMinX(double newMinX);
