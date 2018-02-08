@@ -992,7 +992,6 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
   y = (float) coordinateMapper.unmapY(y);
 }
 
-
 //-------------------------------------------------------------------------------------------------
 // drawing functions
 
@@ -1028,47 +1027,6 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
 
   //-------------------------------------------
   // old code below:
-
-  /*
-  g.setFont(Font(14));
-
-  //updateMapperOutputRange(targetImage, targetSVG);
-
-  // draw the background:
-  //g.fillAll(colourScheme.backgroundColour);
-  if( targetImage != NULL )
-  {
-    Graphics g2(*targetImage);
-    fillRectWithBilinearGradient(g2, 0, 0, targetImage->getWidth(), targetImage->getHeight(),
-      plotColourScheme.topLeft, plotColourScheme.topRight, plotColourScheme.bottomLeft, plotColourScheme.bottomRight);
-  }
-  else
-  {
-    fillRectWithBilinearGradient(g, 0, 0, getWidth(), getHeight(),
-      plotColourScheme.topLeft, plotColourScheme.topRight, plotColourScheme.bottomLeft, plotColourScheme.bottomRight);
-  }
-  */
-
-  // draw the grids, if desired:
-  /*
-  if( plotSettings.horizontalFineGridIsVisible )
-    drawHorizontalGrid(g, plotSettings.horizontalFineGridInterval, plotSettings.logScaledY, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
-  if( plotSettings.verticalFineGridIsVisible )
-    drawVerticalGrid(g, plotSettings.verticalFineGridInterval, plotSettings.logScaledX, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
-  if( plotSettings.radialFineGridIsVisible )
-    drawRadialGrid(g, plotSettings.radialFineGridInterval, plotSettings.logScaledRadius, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
-  if( plotSettings.angularFineGridIsVisible )
-    drawAngularGrid(g, plotSettings.angularFineGridInterval, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
-
-  if( plotSettings.horizontalCoarseGridIsVisible )
-    drawHorizontalGrid(g, plotSettings.horizontalCoarseGridInterval, plotSettings.logScaledY, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
-  if( plotSettings.verticalCoarseGridIsVisible )
-    drawVerticalGrid(g, plotSettings.verticalCoarseGridInterval, plotSettings.logScaledX, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
-  if( plotSettings.radialCoarseGridIsVisible )
-    drawRadialGrid(g, plotSettings.radialCoarseGridInterval, plotSettings.logScaledRadius, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
-  if( plotSettings.angularCoarseGridIsVisible )
-    drawAngularGrid(g, plotSettings.angularCoarseGridInterval, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
-  */
 
 
   // draw the coordinate system:
@@ -1115,46 +1073,6 @@ void CoordinateSystemOld::drawCaption(Graphics &g, Image* targetImage, XmlElemen
     }
     break;
   }
-}
-/*
-void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval, bool exponentialSpacing, 
-  Colour gridColour, float lineThickness, Image* targetImage, XmlElement *targetSVG)
-{
-  g.setColour(gridColour);
-  if(targetSVG != nullptr)
-    jura::drawHorizontalGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
-  else
-    jura::drawHorizontalGrid(g, coordinateMapper, interval, lineThickness);
-}
-*/
-void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval, bool exponentialSpacing, 
-  Colour gridColour, float lineThickness, Image* targetImage, XmlElement *targetSVG)
-{
-  g.setColour(gridColour);
-  if(targetSVG != nullptr)
-    jura::drawVerticalGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
-  else
-    jura::drawVerticalGrid(g, coordinateMapper, interval, lineThickness);
-}
-
-void CoordinateSystemOld::drawRadialGrid(Graphics &g, double interval, bool exponentialSpacing,
-  Colour gridColour, float lineThickness, Image* targetImage, XmlElement *targetSVG)
-{
-  g.setColour(gridColour);
-  if(targetSVG != nullptr)
-    jura::drawRadialGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
-  else
-    jura::drawRadialGrid(g, coordinateMapper, interval, lineThickness);
-}
-
-void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval, Colour gridColour,                  
-  float lineThickness, Image* targetImage, XmlElement *targetSVG)
-{
-  g.setColour(gridColour);
-  if(targetSVG != nullptr)
-    jura::drawAngularGrid(targetSVG, coordinateMapper, interval, lineThickness, gridColour);
-  else
-    jura::drawAngularGrid(g, coordinateMapper, interval, lineThickness);
 }
 
 double CoordinateSystemOld::getVerticalAxisX()

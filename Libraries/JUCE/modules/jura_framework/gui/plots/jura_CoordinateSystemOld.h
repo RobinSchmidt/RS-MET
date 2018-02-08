@@ -405,29 +405,6 @@ protected:
   content or on an arbitrary image (if only the first optional pointer argumnet is nonzero) or on
   an arbitrary image and an SVG compliant XmlElement (if both poiters are nonzero). */
 
-  //virtual void drawHorizontalGrid(Graphics &g, double interval,
-  //  bool exponentialSpacing, Colour gridColour, float lineThickness,
-  //  Image* targetImage = NULL, XmlElement* targetSVG = NULL);
-  /**< Draws a horizontal grid with a given interval in a given colour. Gets called by
-  drawCoordinateSystem(). */
-
-  virtual void drawVerticalGrid(Graphics &g, double interval,
-    bool exponentialSpacing, Colour gridColour, float lineThickness,
-    Image* targetImage = NULL, XmlElement* targetSVG = NULL);
-  /**< Draws a vertical grid with a given interval in a given colour. Gets called by
-  drawCoordinateSystem(). */
-
-  virtual void drawRadialGrid(Graphics &g, double interval, bool exponentialSpacing,
-    Colour gridColour, float lineThickness, Image* targetImage = NULL,
-    XmlElement* targetSVG = NULL);
-  /**< Draws a radial grid with a given interval in a given colour. Gets called by
-  drawCoordinateSystem(). */
-
-  virtual void drawAngularGrid(Graphics &g, double interval, Colour gridColour,
-    float lineThickness, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
-  /**< Draws an angular grid with a given interval in a given colour. Gets called by
-  drawCoordinateSystem(). */
-
 
   virtual void drawCaption(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the caption/headline. Gets called by drawCoordinateSystem(). */
