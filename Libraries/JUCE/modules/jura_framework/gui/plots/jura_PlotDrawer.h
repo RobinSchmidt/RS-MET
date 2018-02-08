@@ -24,6 +24,8 @@ protected:
   const rsPlotSettings& settings;
   const PlotColourScheme& colors;
 
+  RAPT::rsCoordinateMapper2D<double> mapper;
+
 };
 
 #endif

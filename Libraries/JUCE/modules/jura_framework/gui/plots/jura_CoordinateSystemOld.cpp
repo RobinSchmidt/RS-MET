@@ -1002,14 +1002,25 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
 
   if(targetSVG != nullptr)
   {
+    double w = targetSVG->getDoubleAttribute("width", 0);
+    double h = targetSVG->getDoubleAttribute("height", 0);
+    jassert(w != 0 && h != 0); // svg must have width and height attributes
+    //drawerSVG.drawPlot(targetSVG, 0, 0, w, h);
 
   }
   else if(targetImage != nullptr)
   {
-
+    Graphics g2(*targetImage);
+    fillRectWithBilinearGradient(g2, 0, 0, targetImage->getWidth(), targetImage->getHeight(),
+      plotColourScheme.topLeft, plotColourScheme.topRight, plotColourScheme.bottomLeft,
+      plotColourScheme.bottomRight);
+    drawer.drawPlot(g2, 0, 0, getWidth(), getHeight());
   }
   else
   {
+    fillRectWithBilinearGradient(g, 0, 0, getWidth(), getHeight(),
+      plotColourScheme.topLeft, plotColourScheme.topRight, 
+      plotColourScheme.bottomLeft, plotColourScheme.bottomRight);
     drawer.drawPlot(g, 0, 0, getWidth(), getHeight());
   }
 
@@ -1019,6 +1030,7 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
   //-------------------------------------------
   // old code below:
 
+  /*
   g.setFont(Font(14));
 
   //updateMapperOutputRange(targetImage, targetSVG);
@@ -1036,10 +1048,16 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
     fillRectWithBilinearGradient(g, 0, 0, getWidth(), getHeight(),
       plotColourScheme.topLeft, plotColourScheme.topRight, plotColourScheme.bottomLeft, plotColourScheme.bottomRight);
   }
+  */
 
   // draw the grids, if desired:
+  /*
   if( plotSettings.horizontalFineGridIsVisible )
     drawHorizontalGrid(g, plotSettings.horizontalFineGridInterval, plotSettings.logScaledY, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
+  */
+
+
+
   if( plotSettings.verticalFineGridIsVisible )
     drawVerticalGrid(g, plotSettings.verticalFineGridInterval, plotSettings.logScaledX, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
   if( plotSettings.radialFineGridIsVisible )
