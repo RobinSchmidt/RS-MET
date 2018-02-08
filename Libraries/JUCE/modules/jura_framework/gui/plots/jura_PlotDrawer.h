@@ -16,10 +16,15 @@ public:
   virtual void drawPlot(Graphics& g, double x, double y, double w, double h);
 
 
+  virtual void drawPlot(XmlElement* svg, double x, double y, double w, double h);
+
+
   //static void drawPlot(Graphics& g, const rsPlotSettings& settings, 
   //  const rsPlotColourScheme& colors, double x, double y, double w, double h);
 
 protected:
+
+  void setupMapper(double x, double y, double w, double h);
 
   const rsPlotSettings& settings;
   const PlotColourScheme& colors;

@@ -194,6 +194,7 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
 
   updateMapperOutputRange(nullptr, theSVG);
 
+  /*
   // fill the background:
   //g.fillAll(colourScheme.backgroundColour);
 
@@ -249,6 +250,8 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
 
   // draw the caption:
   drawCaption(g, thePlot, theSVG);
+  */
+
 
   return theSVG;
 }

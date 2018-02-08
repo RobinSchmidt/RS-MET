@@ -999,13 +999,12 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
 void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, XmlElement *targetSVG)
 {
   rsPlotDrawer drawer(plotSettings, plotColourScheme);
-
   if(targetSVG != nullptr)
   {
     double w = targetSVG->getDoubleAttribute("width", 0);
     double h = targetSVG->getDoubleAttribute("height", 0);
     jassert(w != 0 && h != 0); // svg must have width and height attributes
-    //drawerSVG.drawPlot(targetSVG, 0, 0, w, h);
+    drawer.drawPlot(targetSVG, 0, 0, w, h);
 
   }
   else if(targetImage != nullptr)
@@ -1056,8 +1055,6 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
     drawHorizontalGrid(g, plotSettings.horizontalFineGridInterval, plotSettings.logScaledY, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
   */
 
-
-
   if( plotSettings.verticalFineGridIsVisible )
     drawVerticalGrid(g, plotSettings.verticalFineGridInterval, plotSettings.logScaledX, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
   if( plotSettings.radialFineGridIsVisible )
@@ -1065,8 +1062,9 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
   if( plotSettings.angularFineGridIsVisible )
     drawAngularGrid(g, plotSettings.angularFineGridInterval, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
 
-  if( plotSettings.horizontalCoarseGridIsVisible )
-    drawHorizontalGrid(g, plotSettings.horizontalCoarseGridInterval, plotSettings.logScaledY, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
+  //if( plotSettings.horizontalCoarseGridIsVisible )
+  //  drawHorizontalGrid(g, plotSettings.horizontalCoarseGridInterval, plotSettings.logScaledY, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
+
   if( plotSettings.verticalCoarseGridIsVisible )
     drawVerticalGrid(g, plotSettings.verticalCoarseGridInterval, plotSettings.logScaledX, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
   if( plotSettings.radialCoarseGridIsVisible )
@@ -1119,7 +1117,7 @@ void CoordinateSystemOld::drawCaption(Graphics &g, Image* targetImage, XmlElemen
     break;
   }
 }
-
+/*
 void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval, bool exponentialSpacing, 
   Colour gridColour, float lineThickness, Image* targetImage, XmlElement *targetSVG)
 {
@@ -1129,7 +1127,7 @@ void CoordinateSystemOld::drawHorizontalGrid(Graphics &g, double interval, bool 
   else
     jura::drawHorizontalGrid(g, coordinateMapper, interval, lineThickness);
 }
-
+*/
 void CoordinateSystemOld::drawVerticalGrid(Graphics &g, double interval, bool exponentialSpacing, 
   Colour gridColour, float lineThickness, Image* targetImage, XmlElement *targetSVG)
 {
