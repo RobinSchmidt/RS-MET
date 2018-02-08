@@ -364,13 +364,18 @@ public:
   //-----------------------------------------------------------------------------------------------
   // state-management:
 
+
+  /** Creates an XmlElement from the current state and returns it. */
   virtual XmlElement* getStateAsXml(
     const juce::String& stateName = juce::String("CoordinateSystemState")) const;
-  /**< Creates an XmlElement from the current state and returns it. */
 
-  virtual bool setStateFromXml(const XmlElement &xmlState);
-  /**< Restores a state based on an XmlElement which should have been created
+  /** Restores a state based on an XmlElement which should have been created
   with the getStateAsXml()-function. */
+  virtual bool setStateFromXml(const XmlElement &xmlState);
+
+
+
+
 
   virtual XmlElement* getPlotAsSVG(int width, int height);
   /**< Returns the drawing as SVG compliant XmlElement. The caller must take care to delete the

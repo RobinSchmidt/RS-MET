@@ -38,3 +38,46 @@ rsPlotSettings::rsPlotSettings()
   stringConversionForAxisX     = &valueToString0;
   stringConversionForAxisY     = &valueToString0;
 }
+
+XmlElement* rsPlotSettings::getStateAsXml(const juce::String& name) const
+{
+  XmlElement* xml = new XmlElement(name); 
+  // the XmlElement which stores all the releveant state-information
+
+  /*
+  xml->setAttribute(String("MinX"), currentRange.getMinX());
+  xml->setAttribute(String("MaxX"), currentRange.getMaxX());
+  xml->setAttribute(String("MinY"), currentRange.getMinY());
+  xml->setAttribute(String("MaxY"), currentRange.getMaxY());
+  */
+
+  xml->setAttribute("HorizontalCoarseGridIsVisible", horizontalCoarseGridIsVisible);
+  xml->setAttribute("HorizontalCoarseGridInterval",  horizontalCoarseGridInterval);
+  xml->setAttribute("HorizontalFineGridIsVisible",   horizontalFineGridIsVisible);
+  xml->setAttribute("HorizontalFineGridInterval",    horizontalFineGridInterval); 
+  xml->setAttribute("VerticalCoarseGridIsVisible",   verticalCoarseGridIsVisible);
+  xml->setAttribute("VerticalCoarseGridInterval",    verticalCoarseGridInterval);
+  xml->setAttribute("VerticalFineGridIsVisible",     verticalFineGridIsVisible);
+  xml->setAttribute("VerticalFineGridInterval",      verticalFineGridInterval);
+
+  return xml;
+}
+
+void rsPlotSettings::setStateFromXml(const XmlElement &xml)
+{
+  /*
+  currentRange.setMinX( xml.getDoubleAttribute("MinX", getCurrentRangeMinX()) );
+  currentRange.setMaxX( xml.getDoubleAttribute("MaxX", getCurrentRangeMaxX()) );
+  currentRange.setMinY( xml.getDoubleAttribute("MinY", getCurrentRangeMinY()) );
+  currentRange.setMaxY( xml.getDoubleAttribute("MaxY", getCurrentRangeMaxY()) );
+  */
+
+  horizontalCoarseGridIsVisible = xml.getBoolAttribute(  "HorizontalCoarseGridIsVisible", false);
+  horizontalCoarseGridInterval  = xml.getDoubleAttribute("HorizontalCoarseGridInterval",  1);
+  horizontalFineGridIsVisible   = xml.getBoolAttribute(  "HorizontalFineGridIsVisible",   false);
+  horizontalFineGridInterval    = xml.getDoubleAttribute("HorizontalFineGridInterval",    0.1);
+  verticalCoarseGridIsVisible   = xml.getBoolAttribute(  "VerticalCoarseGridIsVisible",   false);
+  verticalCoarseGridInterval    = xml.getDoubleAttribute("VerticalCoarseGridInterval",    1);
+  verticalFineGridIsVisible     = xml.getBoolAttribute(  "VerticalFineGridIsVisible",     false);
+  verticalFineGridInterval      = xml.getDoubleAttribute("VerticalFineGridInterval",      0.1);
+}

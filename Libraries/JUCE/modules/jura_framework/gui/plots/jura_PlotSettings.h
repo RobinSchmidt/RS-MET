@@ -9,6 +9,22 @@ class JUCE_API rsPlotSettings
 
 public:
 
+
+
+  rsPlotSettings();
+
+
+  /** Creates an XmlElement from the current state and returns it. */
+  virtual XmlElement* getStateAsXml(const juce::String& name = juce::String("PlotSettings")) const;
+
+  /** Restores a state based on an XmlElement which should have been created
+  with the getStateAsXml()-function. */
+  virtual void setStateFromXml(const XmlElement &xml);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Enumerations
+
   enum captionPositions
   {
     NO_CAPTION = 0,
@@ -35,10 +51,8 @@ public:
     BELOW_AXIS
   };
 
-
-  rsPlotSettings();
-
-
+  //-----------------------------------------------------------------------------------------------
+  // \name Data
 
   int captionPosition;
   juce::String captionString;
