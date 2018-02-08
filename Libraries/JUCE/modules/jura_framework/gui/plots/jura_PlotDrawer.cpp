@@ -1,14 +1,16 @@
 rsPlotDrawer::rsPlotDrawer(const rsPlotSettings& plotSettings,
-  const PlotColourScheme& colorScheme)
+  const PlotColourScheme& colorScheme, double xLeft, double yTop, double width, double height)
   : settings(plotSettings), colors(colorScheme)
 {
-
+  x = xLeft;
+  y = yTop;
+  w = width;
+  h = height;
+  setupMapper();
 }
 
-void rsPlotDrawer::drawPlot(Graphics& g, double x, double y, double w, double h)
+void rsPlotDrawer::drawPlot(Graphics& g)
 {
-  setupMapper(x, y, w, h);
-
   // split into drawPlotBackground / drawPlotForeground
 
   // fine grids:
@@ -108,9 +110,9 @@ void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, float* valuesX, float*
 //-------------------------------------------------------------------------------------------------
 // SVG stuff:
 
-void rsPlotDrawer::drawPlot(XmlElement* svg, double x, double y, double w, double h)
+void rsPlotDrawer::drawPlot(XmlElement* svg)
 {
-  setupMapper(x, y, w, h);
+  setupMapper();
 
   // fine grids:
   if(settings.horizontalFineGridIsVisible)
@@ -149,7 +151,7 @@ void rsPlotDrawer::drawPlot(XmlElement* svg, double x, double y, double w, doubl
 
 //-------------------------------------------------------------------------------------------------
 
-void rsPlotDrawer::setupMapper(double x, double y, double w, double h)
+void rsPlotDrawer::setupMapper()
 {
   mapper.mapperX.setLogScaled(settings.logScaledX);
   mapper.mapperY.setLogScaled(settings.logScaledY);
