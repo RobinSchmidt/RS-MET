@@ -9,6 +9,8 @@ void rsPlotDrawer::drawPlot(Graphics& g, double x, double y, double w, double h)
 {
   setupMapper(x, y, w, h);
 
+  // split into drawPlotBackground / drawPlotForeground
+
   // fine grids:
   if(settings.horizontalFineGridIsVisible) {
     g.setColour(colors.fineGrid);
@@ -55,6 +57,10 @@ void rsPlotDrawer::drawPlot(Graphics& g, double x, double y, double w, double h)
     jura::drawAxisValuesY(g, mapper, settings.horizontalCoarseGridInterval, 
       getVerticalAxisX(), settings.stringConversionForAxisY, colors.text); }
 
+
+
+
+
   // caption/headline (positioning formulas needs test):
   static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
   float cw = (float) font->getTextPixelWidth(settings.captionString);
@@ -78,6 +84,29 @@ void rsPlotDrawer::drawPlot(Graphics& g, double x, double y, double w, double h)
   g.setColour(colors.outline);
   g.drawRect(float(x), float(y), float(w), float(h), 2.f);
 }
+
+void rsPlotDrawer::drawPlotBackground(Graphics& g)
+{
+
+}
+
+void rsPlotDrawer::drawPlotForeground(Graphics& g)
+{
+
+}
+
+void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, float* valuesX, float* valuesY)
+{
+
+}
+
+void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, float* valuesX, float* valuesY)
+{
+
+}
+
+//-------------------------------------------------------------------------------------------------
+// SVG stuff:
 
 void rsPlotDrawer::drawPlot(XmlElement* svg, double x, double y, double w, double h)
 {
@@ -117,6 +146,8 @@ void rsPlotDrawer::drawPlot(XmlElement* svg, double x, double y, double w, doubl
     drawAxisValuesY(svg, mapper, settings.horizontalCoarseGridInterval, 
       getVerticalAxisX(), settings.stringConversionForAxisY, colors.axes); }
 }
+
+//-------------------------------------------------------------------------------------------------
 
 void rsPlotDrawer::setupMapper(double x, double y, double w, double h)
 {
