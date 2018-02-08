@@ -848,18 +848,24 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
 //=================================================================================================
 // coordinate system drawing:
 
+void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper, double w, double h)
+{
+  //mapper.setOutputRange(0.5, w-0.5, h-0.5, 0.5); // inf/nan wehn w or h <= 1
+  mapper.setOutputRange(0.5, jmax(w-0.5, 1.0), jmax(h-0.5, 1.0), 0.5);
+}
+
 void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper, const Component* cmp)
 {
   int w = cmp->getWidth();
   int h = cmp->getHeight();
-  mapper.setOutputRange(0.5, w-0.5, h-0.5, 0.5);
+  setupCoordinateMapper(mapper, w, h);
 }
 
 void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper, const Image* img)
 {
   int w = img->getWidth();
   int h = img->getHeight();
-  mapper.setOutputRange(0.5, w-0.5, h-0.5, 0.5);
+  setupCoordinateMapper(mapper, w, h);
 }
 
 void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper, const XmlElement* svg)
@@ -867,7 +873,7 @@ void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper, const Xml
   double w = svg->getDoubleAttribute("width", 0);
   double h = svg->getDoubleAttribute("height", 0);
   jassert(w != 0 && h != 0); // svg must have width and height attributes
-  mapper.setOutputRange(0.5, w-0.5, h-0.5, 0.5);
+  setupCoordinateMapper(mapper, w, h);
 }
 
 void drawBitmapText(Graphics &g, const String &text, double x, double y, double w, double h,

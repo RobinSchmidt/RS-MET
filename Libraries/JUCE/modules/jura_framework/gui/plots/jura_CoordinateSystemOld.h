@@ -467,6 +467,11 @@ public:
     juce::String (*newConversionFunction) (double valueToBeConverted));
 
   //-----------------------------------------------------------------------------------------------
+  // new getters
+
+
+
+  //-----------------------------------------------------------------------------------------------
   // state-management:
 
   virtual XmlElement* getStateAsXml(
@@ -541,8 +546,16 @@ protected:
   virtual void drawCaption(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the caption/headline. Gets called by drawCoordinateSystem(). */
 
+  /** Returns the x-coordinate for the y-axis in model coordinates. */
+  double getVerticalAxisX();
+    // maybe this function should work in pixel coordinates
+
+  /** Returns the y-coordinate for the x-axis in model coordinates. */
+  double getHorizontalAxisY();
+
   virtual void drawAxisX(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the x-axis. Gets called by drawCoordinateSystem(). */
+
 
   virtual void drawAxisY(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
   /**< Draws the y-axis. Gets called by drawCoordinateSystem(). */

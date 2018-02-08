@@ -190,7 +190,6 @@ void CoordinateSystemOld::mouseMove(const MouseEvent &e)
 
 void CoordinateSystemOld::resized()
 {
-  //updateMapperInputRange();
   updateMapperOutputRange();
 }
 
@@ -1239,23 +1238,37 @@ void CoordinateSystemOld::drawAngularGrid(Graphics &g, double interval, Colour g
     jura::drawAngularGrid(g, coordinateMapper, interval, lineThickness);
 }
 
+double CoordinateSystemOld::getVerticalAxisX()
+{
+  double x = 0.0;
+  if( axisPositionY == LEFT )
+    x = coordinateMapper.unmapX(jmin(8, getWidth())); // maybe use margin parameter instead of 8
+  else if( axisPositionY == RIGHT )
+    x = coordinateMapper.unmapX(jmax(getWidth()-8, 0));
+  return x;
+}
+
+double CoordinateSystemOld::getHorizontalAxisY()
+{
+  double y = 0.0;
+  if( axisPositionX == BOTTOM )
+    y = coordinateMapper.unmapY(jmax(getHeight()-8, 0));
+  else if( axisPositionX == TOP )
+    y = coordinateMapper.unmapY(jmin(8, getHeight()));
+  return y;
+}
+
 void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
   if( axisPositionX == INVISIBLE ) 
     return;
-
-  double yPos = 0.0;
-  if( axisPositionX == BOTTOM )
-    yPos = coordinateMapper.unmapY(getHeight()-8);
-  else if( axisPositionX == TOP )
-    yPos = coordinateMapper.unmapY(8);
-
   if(targetSVG != nullptr)
-    jura::drawAxisX(targetSVG, coordinateMapper, yPos, axisLabelX, plotColourScheme.axes);
+    jura::drawAxisX(targetSVG, coordinateMapper, getHorizontalAxisY(), axisLabelX, 
+      plotColourScheme.axes);
   else 
   {
     g.setColour(plotColourScheme.axes);
-    jura::drawAxisX(g, coordinateMapper, yPos, axisLabelX, plotColourScheme.text);
+    jura::drawAxisX(g, coordinateMapper, getHorizontalAxisY(), axisLabelX, plotColourScheme.text);
   }
 }
 
@@ -1264,20 +1277,15 @@ void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlEl
   if( axisPositionX == INVISIBLE ) 
     return;
 
-  double xPos = 0.0;
-  if( axisPositionY == LEFT )
-    xPos = coordinateMapper.unmapX(8);
-  else if( axisPositionY == RIGHT )
-    xPos = coordinateMapper.unmapX(getWidth()-8);
-
   if(targetSVG != nullptr)
   {
-    jura::drawAxisY(targetSVG, coordinateMapper, xPos, axisLabelY, plotColourScheme.axes);
+    jura::drawAxisY(targetSVG, coordinateMapper, getVerticalAxisX(), axisLabelY, 
+      plotColourScheme.axes);
   }
   else 
   {
     g.setColour(plotColourScheme.axes);
-    jura::drawAxisY(g, coordinateMapper, xPos, axisLabelY, plotColourScheme.text);
+    jura::drawAxisY(g, coordinateMapper, getVerticalAxisX(), axisLabelY, plotColourScheme.text);
   }
 }
 
@@ -1285,21 +1293,13 @@ void CoordinateSystemOld::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEl
 {
   if( axisValuesPositionX == NO_ANNOTATION )
     return;
-
-  double yPos = 0.0;
-  if( axisPositionX == BOTTOM )
-    yPos = coordinateMapper.unmapY(getHeight()-8);
-  else if( axisPositionX == TOP )
-    yPos = coordinateMapper.unmapY(8);
-  double spacing = verticalCoarseGridInterval;
-
   if(targetSVG != nullptr)
-    jura::drawAxisValuesX(targetSVG, coordinateMapper, spacing, yPos, stringConversionForAxisX,
-      plotColourScheme.axes);
+    jura::drawAxisValuesX(targetSVG, coordinateMapper, verticalCoarseGridInterval, 
+      getHorizontalAxisY(), stringConversionForAxisX, plotColourScheme.axes);
   else {
     g.setColour(plotColourScheme.axes);
-    jura::drawAxisValuesX(g, coordinateMapper, spacing, yPos, stringConversionForAxisX,
-      plotColourScheme.text);
+    jura::drawAxisValuesX(g, coordinateMapper, verticalCoarseGridInterval, getHorizontalAxisY(), 
+      stringConversionForAxisX, plotColourScheme.text);
   }
 }
 
@@ -1307,31 +1307,16 @@ void CoordinateSystemOld::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEl
 {
   if( axisValuesPositionY == NO_ANNOTATION )
     return;
-
-  // factor out into getVerticalAxisPosition (maybe)
-  double xPos = 0.0;
-  if( axisPositionY == LEFT )
-    xPos = coordinateMapper.unmapX(8);
-  else if( axisPositionY == RIGHT )
-    xPos = coordinateMapper.unmapX(getWidth()-8);
-
   if(targetSVG != nullptr) {
-    jura::drawAxisValuesY(targetSVG, coordinateMapper, horizontalCoarseGridInterval, xPos, 
-      stringConversionForAxisY, plotColourScheme.axes);
+    jura::drawAxisValuesY(targetSVG, coordinateMapper, horizontalCoarseGridInterval, 
+      getVerticalAxisX(), stringConversionForAxisY, plotColourScheme.axes);
   }
   else {
     g.setColour(plotColourScheme.axes);
-    jura::drawAxisValuesY(g, coordinateMapper, horizontalCoarseGridInterval, xPos, 
+    jura::drawAxisValuesY(g, coordinateMapper, horizontalCoarseGridInterval, getVerticalAxisX(), 
       stringConversionForAxisY, plotColourScheme.text);
   }
 }
-
-//void CoordinateSystemOld::updateMapping()
-//{
-//  updateMapperInputRange();
-//  //if(autoReRenderImage == true)
-//  //  updateBackgroundImage();
-//}
 
 void CoordinateSystemOld::updateMapperOutputRange(Image* image, XmlElement* svg)
 {
