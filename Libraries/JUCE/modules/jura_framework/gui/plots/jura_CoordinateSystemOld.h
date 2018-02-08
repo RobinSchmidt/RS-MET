@@ -443,9 +443,6 @@ protected:
   CoordinateSystemOld's appearance-settings was changed. */
   virtual void updateBackgroundImage();
 
-  /** Called whenever the input coordinate range changed to update the mapper */
-  //void updateMapping();
-   // replaced by updateMapperInputRange
 
   /** Sets up the output range (i.e. the pixel width and height) in our coordinateMapper. If a 
   non-nullptr is passed for targetImage, the image size will be used, else if a non-nullptr for
@@ -455,7 +452,6 @@ protected:
 
   /** Updates the input range of our coordinate mapper. */
   void updateMapperInputRange();
-
 
 
 
@@ -471,12 +467,14 @@ protected:
 
 
   // new - to be used soon in the drawing code:
-  RAPT::rsCoordinateMapper2D<double> coordinateMapper; // maybe move to rsPlotSettings..or rsPlotDrawer
+  RAPT::rsCoordinateMapper2D<double> coordinateMapper; 
+    // get rid of that - it's handled in rsPlotDrawer now...o...but we need to map form 
+    // pixel-coordinates to component coordinates for node-editing..but maybe that can be handled
+    // in rsNodeEditor? i think, it has a mapper itself?
 
 
   bool showPositionAsDescription;
   bool showPopUpOnRightClick;
-
 
 
   Image*  backgroundImage;

@@ -1021,48 +1021,8 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
       plotColourScheme.bottomLeft, plotColourScheme.bottomRight);
     drawer.drawPlot(g, 0, 0, getWidth(), getHeight());
   }
-
-  int dummy = 0;
-
-
-  //-------------------------------------------
-  // old code below:
-
-  // draw the caption:
-  //drawCaption(g, targetImage, targetSVG);
-
-  // draw an outlining rectangle:
-  //g.setColour(plotColourScheme.outline);
-  //g.drawRect(0, 0, getWidth(), getHeight(), 2);
 }
 
-/*
-void CoordinateSystemOld::drawCaption(Graphics &g, Image* targetImage, XmlElement *targetSVG)
-{
-  // needs test:
-  static const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
-  float w = (float) font->getTextPixelWidth(plotSettings.captionString);
-  float h = (float) font->getFontHeight();
-  switch( plotSettings.captionPosition )
-  {
-  case rsPlotSettings::NO_CAPTION: return;
-  case rsPlotSettings::TOP_CENTER:
-    {
-      drawBitmapText(g, plotSettings.captionString, 0.5f*getWidth()-0.5f*w, 16, getWidth(), 16, 
-        font, Justification::centred, plotColourScheme.text);
-    }
-    break;
-  case rsPlotSettings::CENTER:
-    {
-      float x = (float) (getWidth()  - w) * .5f;
-      float y = (float) (getHeight() - h) * .5f;
-      drawBitmapText(g, plotSettings.captionString, x, y, getWidth(), 16, font, 
-        Justification::topLeft, plotColourScheme.text);
-    }
-    break;
-  }
-}
-*/
 void CoordinateSystemOld::updateMapperOutputRange(Image* image, XmlElement* svg)
 {
   if(image != nullptr)    setupCoordinateMapper(coordinateMapper, image);
