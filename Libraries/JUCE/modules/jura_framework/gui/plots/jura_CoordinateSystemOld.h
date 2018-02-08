@@ -8,7 +8,7 @@ desired coordinate-system (which can be lin- or log-scaled).
 
 \todo:
 
--rename to Plot or PlotBase  */
+-rename to rsPlot or rsPlotBase  */
 
 class JUCE_API CoordinateSystemOld : virtual public DescribedComponent
 {
@@ -44,29 +44,24 @@ public:
   };
 
   CoordinateSystemOld(const juce::String& newDescription = juce::String("some 2D widget"));
-  ///< Constructor.
-
   virtual ~CoordinateSystemOld();
-  ///< Destructor.
 
   //-----------------------------------------------------------------------------------------------
   // component-overrides:
 
-  virtual void mouseDown(const MouseEvent& e);
-  /**< Lets a context menu pop up when the right button is clicked to allow export of the content
+  /** Lets a context menu pop up when the right button is clicked to allow export of the content
   as image or svg drawing. */
+  virtual void mouseDown(const MouseEvent& e);
 
+  /** Overrides mouseEnter for displaying the inspection Label. */
   virtual void mouseEnter(const MouseEvent& e);
-  /**< Overrides mouseEnter for displaying the inspection Label. */
 
+  /** Overrides mouseMove for displaying the inspection Label. */
   virtual void mouseMove(const MouseEvent& e);
-  /**< Overrides mouseMove for displaying the inspection Label. */
+
 
   virtual void resized();
-  ///< Overrides the resized()-function of the component base-class.
-
   virtual void paint(Graphics &g);
-  ///< Overrides the paint-function of the component base-class.
 
   //-----------------------------------------------------------------------------------------------
   // range-management:
@@ -540,6 +535,9 @@ protected:
   /**< Returns either the height of this component or the height of the image (if the pointer is
   non-NULL). */
 
+
+  rsPlotSettings plotSettings;
+
   /** The currently visible range and maximum range object for the plot. */
   rsPlotRange currentRange, maximumRange;
 
@@ -577,10 +575,10 @@ protected:
   bool   logScaledY;
   bool   logScaledRadius;
 
+
   // new - to be used soon in the drawing code:
   RAPT::rsCoordinateMapper2D<double> coordinateMapper;
 
-  bool useBitmapFont;
   bool showPositionAsDescription;
   bool showPopUpOnRightClick;
 

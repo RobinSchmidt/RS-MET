@@ -812,7 +812,7 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
  axesSetup->verticalCoarseGridIntervalLabel->setText(String(coarse), NotificationType::dontSendNotification);
  axesSetup->verticalFineGridIntervalLabel->setText(String(fine), NotificationType::dontSendNotification);
  axesSetup->xLogScaleButton->setToggleState(logScale, false);
- axesSetup->xPosComboBox->setText(axisPosition, true);
+ axesSetup->xPosComboBox->setText(axisPosition);
  curveFamilyPlot->setupAxisX(min, max, logScale, 2.0, axisPositionIndex, coarse, fine);
  axesSetup->verticalCoarseGridButton->setToggleState(
    xmlState.getBoolAttribute(String(("VerticalCoarseGridIsVisible")), false), true);
@@ -841,7 +841,7 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
  axesSetup->horizontalCoarseGridIntervalLabel->setText(String(coarse), NotificationType::dontSendNotification);
  axesSetup->horizontalFineGridIntervalLabel->setText(String(fine), NotificationType::dontSendNotification);
  axesSetup->yLogScaleButton->setToggleState(logScale, false);
- axesSetup->yPosComboBox->setText(axisPosition, true);
+ axesSetup->yPosComboBox->setText(axisPosition);
  curveFamilyPlot->setupAxisY(min, max, logScale, 2.0, axisPositionIndex, coarse, fine);
  axesSetup->horizontalCoarseGridButton->setToggleState(
    xmlState.getBoolAttribute(String(("HorizontalCoarseGridIsVisible")), false), true);
@@ -872,9 +872,9 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
 
 
  dataSetup->dataSourceComboBox->setText(
-   xmlState.getStringAttribute(String(("DataSource")), String(("Expression"))), false); 
+   xmlState.getStringAttribute(String(("DataSource")), String(("Expression"))), NotificationType::dontSendNotification); 
  dataSetup->typeOfDataComboBox->setText(
-   xmlState.getStringAttribute(String(("DataType")), String(("Function"))), false); 
+   xmlState.getStringAttribute(String(("DataType")), String(("Function"))), NotificationType::dontSendNotification); 
  dataSetup->numCurvesSlider->setValue(
    xmlState.getIntAttribute(String(("NumCurves")), 1), NotificationType::sendNotification);
 

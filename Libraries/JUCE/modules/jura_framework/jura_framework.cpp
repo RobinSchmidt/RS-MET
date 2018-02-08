@@ -73,6 +73,8 @@ namespace jura
 #include "gui/widgets/widget_sets/jura_ColorMapLoader.cpp"
 
 #include "gui/plots/jura_PlotRange.cpp"
+#include "gui/plots/jura_PlotSettings.cpp"
+
 #include "gui/plots/jura_CoordinateSystemOld.cpp"
 #include "gui/plots/jura_InteractiveCoordinateSystemOld.cpp" 
 #include "gui/plots/jura_MessengingCoordinateSystemOld.cpp"

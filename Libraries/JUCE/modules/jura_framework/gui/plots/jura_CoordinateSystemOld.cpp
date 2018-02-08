@@ -48,8 +48,6 @@ CoordinateSystemOld::CoordinateSystemOld(const String &newDescription)
   stringConversionForInfoLineX = &valueToString0;
   stringConversionForInfoLineY = &valueToString0;
 
-  useBitmapFont = true;
-
   // initialize the component-size and the image-size to 1x1 pixels, without
   // such initializations, a JUCE-breakpoint will be triggered or other screws
   // happen:
