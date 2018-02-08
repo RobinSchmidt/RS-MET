@@ -121,6 +121,7 @@ namespace jura
 // subclasses):
 #include "gui/plots/jura_PlotRange.h"
 #include "gui/plots/jura_PlotSettings.h"
+#include "gui/plots/jura_PlotDrawer.h"
 
 #include "gui/plots/jura_CoordinateSystemOld.h"
 #include "gui/plots/jura_InteractiveCoordinateSystemOld.h"

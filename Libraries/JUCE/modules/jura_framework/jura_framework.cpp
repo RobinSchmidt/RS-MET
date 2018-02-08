@@ -74,6 +74,7 @@ namespace jura
 
 #include "gui/plots/jura_PlotRange.cpp"
 #include "gui/plots/jura_PlotSettings.cpp"
+#include "gui/plots/jura_PlotDrawer.cpp"
 
 #include "gui/plots/jura_CoordinateSystemOld.cpp"
 #include "gui/plots/jura_InteractiveCoordinateSystemOld.cpp" 

@@ -998,6 +998,27 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
 
 void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, XmlElement *targetSVG)
 {
+  rsPlotDrawer drawer(plotSettings, plotColourScheme);
+
+  if(targetSVG != nullptr)
+  {
+
+  }
+  else if(targetImage != nullptr)
+  {
+
+  }
+  else
+  {
+    drawer.drawPlot(g, 0, 0, getWidth(), getHeight());
+  }
+
+  int dummy = 0;
+
+
+  //-------------------------------------------
+  // old code below:
+
   g.setFont(Font(14));
 
   //updateMapperOutputRange(targetImage, targetSVG);
