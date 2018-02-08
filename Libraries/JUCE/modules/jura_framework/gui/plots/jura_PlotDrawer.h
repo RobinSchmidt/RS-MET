@@ -35,6 +35,10 @@ public:
   /** Plots a curve by connecting the given datapoints with lines. */
   virtual void drawWithLines(Graphics& g, int numValues, float* valuesX, float* valuesY);
 
+
+  virtual void filledFunction(Graphics& g, int numValues, float* valuesX, float* valuesY);
+    // not yet tested, maybe factor out into rsDrawer
+
   /** Draws the given datapoints as dots like in a scatterplot. */
   virtual void drawAsDots(Graphics& g, int numValues, float* valuesX, float* valuesY);
     // not yet tested

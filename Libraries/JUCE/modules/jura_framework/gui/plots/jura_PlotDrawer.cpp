@@ -95,7 +95,29 @@ void rsPlotDrawer::drawPlotForeground(Graphics& g)
 
 void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, float* valuesX, float* valuesY)
 {
+  float thickness = 2.f; // make parameter
+  for(int i = 0; i < numValues-1; i++) 
+  {
+    float x1 = (float) mapper.mapX(valuesX[i]);
+    float y1 = (float) mapper.mapY(valuesY[i]);
+    float x2 = (float) mapper.mapX(valuesX[i+1]);
+    float y2 = (float) mapper.mapY(valuesY[i+1]);
+    g.drawLine(x1, y1, x2, y2, thickness);
+  }
+}
 
+void rsPlotDrawer::filledFunction(Graphics& g, int N, float* x, float* y)
+{
+  // not yet tested
+  Path path;
+  path.startNewSubPath((float) mapper.mapX(x[0]), (float) mapper.mapY(y[0]));
+  for(int i = 1; i < N; i++)
+    path.lineTo((float) mapper.mapX(x[i]), (float) mapper.mapY(y[i]));
+  path.lineTo((float) mapper.mapX(x[N-1]), (float) mapper.mapY(0));
+  path.lineTo((float) mapper.mapX(x[0]),   (float) mapper.mapY(0));
+  path.lineTo((float) mapper.mapX(x[0]),   (float) mapper.mapY(y[0]));
+  path.closeSubPath();
+  g.fillPath(path);
 }
 
 void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, float* valuesX, float* valuesY)
@@ -109,6 +131,9 @@ void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, float* valuesX, float*
   float x0 = (float) mapper.mapX(0);
   float y0 = (float) mapper.mapY(0);
 
+  float size  = 4.f; // make parameter
+  float size2 = 0.5f * size;
+
   float x, y;	   // current x and y value
   for(int i = 0; i < numValues; i++)
   {
@@ -117,7 +142,8 @@ void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, float* valuesX, float*
     y = (float) mapper.mapY(valuesY[i]);
 
     // add a dot at postion x, y:
-    g.fillEllipse(x-1, y-1, 3, 3);
+    //g.fillEllipse(x-1, y-1, 3, 3); // is this correct?
+    g.fillEllipse(x-size2, y-size2, size, size); // is this correct?
 
     // draw lines to x- and y-axis if the option is selected:
     if(lineToAxisX) g.drawLine(x,  y, x, y0); // needs testing
