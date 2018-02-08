@@ -1053,8 +1053,6 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
   /*
   if( plotSettings.horizontalFineGridIsVisible )
     drawHorizontalGrid(g, plotSettings.horizontalFineGridInterval, plotSettings.logScaledY, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
-  */
-
   if( plotSettings.verticalFineGridIsVisible )
     drawVerticalGrid(g, plotSettings.verticalFineGridInterval, plotSettings.logScaledX, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
   if( plotSettings.radialFineGridIsVisible )
@@ -1062,15 +1060,16 @@ void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, 
   if( plotSettings.angularFineGridIsVisible )
     drawAngularGrid(g, plotSettings.angularFineGridInterval, plotColourScheme.fineGrid, 1.0f, targetImage, targetSVG);
 
-  //if( plotSettings.horizontalCoarseGridIsVisible )
-  //  drawHorizontalGrid(g, plotSettings.horizontalCoarseGridInterval, plotSettings.logScaledY, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
-
+  if( plotSettings.horizontalCoarseGridIsVisible )
+    drawHorizontalGrid(g, plotSettings.horizontalCoarseGridInterval, plotSettings.logScaledY, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
   if( plotSettings.verticalCoarseGridIsVisible )
     drawVerticalGrid(g, plotSettings.verticalCoarseGridInterval, plotSettings.logScaledX, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
   if( plotSettings.radialCoarseGridIsVisible )
     drawRadialGrid(g, plotSettings.radialCoarseGridInterval, plotSettings.logScaledRadius, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
   if( plotSettings.angularCoarseGridIsVisible )
     drawAngularGrid(g, plotSettings.angularCoarseGridInterval, plotColourScheme.coarseGrid, 1.0f, targetImage, targetSVG);
+  */
+
 
   // draw the coordinate system:
   if( plotSettings.axisPositionX != rsPlotSettings::INVISIBLE )
