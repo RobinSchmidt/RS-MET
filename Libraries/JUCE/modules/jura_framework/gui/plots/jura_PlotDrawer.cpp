@@ -93,7 +93,8 @@ void rsPlotDrawer::drawPlotForeground(Graphics& g)
   g.drawRect(float(x), float(y), float(w), float(h), 2.f);
 }
 
-void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, float* valuesX, float* valuesY)
+template<class T>
+void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, T* valuesX, T* valuesY)
 {
   float thickness = 2.f; // make parameter
   for(int i = 0; i < numValues-1; i++) 
@@ -106,7 +107,7 @@ void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, float* valuesX, flo
   }
 }
 
-void rsPlotDrawer::filledFunction(Graphics& g, int N, float* x, float* y)
+void rsPlotDrawer::fillFunction(Graphics& g, int N, float* x, float* y)
 {
   // not yet tested
   Path path;
