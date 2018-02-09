@@ -966,7 +966,7 @@ contextMenu->setVisible(false);
 
 void OscillatorStereoEditor::createWidgets()
 {
-  addPlot( waveformDisplay = new WaveformDisplayOld() );
+  addPlot( waveformDisplay = new rsWaveformPlot() );
   waveformDisplay->setAutoReRendering(false);
   waveformDisplay->setDescription(juce::String("Click on the display to switch oscillator on/off"));
   waveformDisplay->setAxisPositionX(rsPlotSettings::INVISIBLE);

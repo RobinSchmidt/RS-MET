@@ -1,9 +1,9 @@
-#ifndef jura_WaveformDisplayOld_h
-#define jura_WaveformDisplayOld_h
+#ifndef jura_rsWaveformPlot_h
+#define jura_rsWaveformPlot_h
 
 /** This class is intended to be used as a graphical display for a waveform.  */
 
-class WaveformDisplayOld : virtual public rsDataPlot //, public InteractiveCoordinateSystem
+class rsWaveformPlot : virtual public rsDataPlot
 {
 
 public:
@@ -14,10 +14,10 @@ public:
     SAMPLES
   };
 
-  WaveformDisplayOld(const juce::String& name = juce::String("WaveformDisplayOld"));
+  rsWaveformPlot(const juce::String& name = juce::String("rsWaveformPlot"));
   /**< Constructor. */
 
-  virtual ~WaveformDisplayOld();
+  virtual ~rsWaveformPlot();
   /**< Destructor. */
 
   virtual rsPlotRange getMaximumMeaningfulRange(double relativeMarginLeft = 0.0,

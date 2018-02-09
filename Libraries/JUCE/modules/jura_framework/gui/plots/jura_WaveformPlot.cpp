@@ -1,4 +1,4 @@
-WaveformDisplayOld::WaveformDisplayOld(const String& name)
+rsWaveformPlot::rsWaveformPlot(const String& name)
 : rsDataPlot(name)
 {
   sampleRate               = 44100.0;
@@ -26,14 +26,14 @@ WaveformDisplayOld::WaveformDisplayOld(const String& name)
   setMouseCursor(currentMouseCursor);
 }
 
-WaveformDisplayOld::~WaveformDisplayOld(void)
+rsWaveformPlot::~rsWaveformPlot(void)
 {
   if( peakData != NULL )
     delete[] peakData;
   //deleteAllChildren();
 }
 
-rsPlotRange WaveformDisplayOld::getMaximumMeaningfulRange(
+rsPlotRange rsWaveformPlot::getMaximumMeaningfulRange(
   double relativeMarginLeft, double relativeMarginRight,
   double relativeMarginTop,  double relativeMarginBottom)
 {
@@ -72,13 +72,13 @@ rsPlotRange WaveformDisplayOld::getMaximumMeaningfulRange(
   // this function needs some sophistication....
 }
 
-void WaveformDisplayOld::setSampleRate(double newSampleRate)
+void rsWaveformPlot::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
   repaint();
 }
 
-bool WaveformDisplayOld::setWaveform(double** newWaveformData, int newNumSampleFrames,
+bool rsWaveformPlot::setWaveform(double** newWaveformData, int newNumSampleFrames,
                                   int newNumChannels)
 {
   // copy the pointers into member variables:
@@ -99,7 +99,7 @@ bool WaveformDisplayOld::setWaveform(double** newWaveformData, int newNumSampleF
   if( peakData == NULL )
   {
     AlertWindow::showMessageBox(AlertWindow::WarningIcon, String("Memory Allocation Failed"),
-      String("Memory allocation failed in WaveformDisplayOld::setWaveform"), String("OK") );
+      String("Memory allocation failed in rsWaveformPlot::setWaveform"), String("OK") );
     numSampleFrames = 0;
     numChannels     = 0;
     return false;
@@ -127,7 +127,7 @@ bool WaveformDisplayOld::setWaveform(double** newWaveformData, int newNumSampleF
   return true;
 }
 
-bool WaveformDisplayOld::setWaveform(float** newWaveformData, int newNumSampleFrames,
+bool rsWaveformPlot::setWaveform(float** newWaveformData, int newNumSampleFrames,
                                   int newNumChannels)
 {
   // same procedure as the corresponding function for doubles:
@@ -142,7 +142,7 @@ bool WaveformDisplayOld::setWaveform(float** newWaveformData, int newNumSampleFr
   if( peakData == NULL )
   {
     AlertWindow::showMessageBox(AlertWindow::WarningIcon, String("Memory Allocation Failed"),
-      String("Memory allocation failed in WaveformDisplayOld::setWaveform"), String("OK") );
+      String("Memory allocation failed in rsWaveformPlot::setWaveform"), String("OK") );
     numSampleFrames = 0;
     numChannels     = 0;
     return false;
@@ -162,7 +162,7 @@ bool WaveformDisplayOld::setWaveform(float** newWaveformData, int newNumSampleFr
   return true;
 }
 
-bool WaveformDisplayOld::setWaveform(const AudioSampleBuffer& newWaveformBuffer)
+bool rsWaveformPlot::setWaveform(const AudioSampleBuffer& newWaveformBuffer)
 {
   // copy the pointers into member variables:
   numSampleFrames = newWaveformBuffer.getNumSamples();
@@ -204,7 +204,7 @@ bool WaveformDisplayOld::setWaveform(const AudioSampleBuffer& newWaveformBuffer)
   return true;
 }
 
-void WaveformDisplayOld::createDecimatedData()
+void rsWaveformPlot::createDecimatedData()
 {
   int peakArraySize     = 2*nextPowerOfTwo(numSampleFrames);
 
@@ -253,19 +253,19 @@ void WaveformDisplayOld::createDecimatedData()
 }
 
 /*
-void WaveformDisplayOld::paint(juce::Graphics &g)
+void rsWaveformPlot::paint(juce::Graphics &g)
 {
   CoordinateSystem::paint(g);
   plotWaveform(g);
 }
 */
 
-void WaveformDisplayOld::plotCurveFamily(Graphics &g, Image *targetImage, XmlElement *targetSVG)
+void rsWaveformPlot::plotCurveFamily(Graphics &g, Image *targetImage, XmlElement *targetSVG)
 {
   plotWaveform(g, targetImage, targetSVG);
 }
 
-void WaveformDisplayOld::plotWaveform(Graphics &g, Image *targetImage, XmlElement *targetSVG)
+void rsWaveformPlot::plotWaveform(Graphics &g, Image *targetImage, XmlElement *targetSVG)
 {
   // make sure that the arrays are valid:
   if( peakData == NULL || numSampleFrames <= 0 || numChannels <= 0 )
@@ -337,7 +337,7 @@ void WaveformDisplayOld::plotWaveform(Graphics &g, Image *targetImage, XmlElemen
   }
 }
 
-void WaveformDisplayOld::updateWaveformCurve()
+void rsWaveformPlot::updateWaveformCurve()
 {
   /*
   if( numSampleFrames == 0 || numChannels == 0 )

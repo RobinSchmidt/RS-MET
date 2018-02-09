@@ -88,7 +88,7 @@ KeyShotModuleEditor::KeyShotModuleEditor(CriticalSection *newPlugInLock,
   samplePlayerEditor->setActiveDirectory(getApplicationDirectory() + juce::String(T("/Samples")) );
   */
 
-  addAndMakeVisible( waveformDisplay = new WaveformDisplayOld() );  
+  addAndMakeVisible( waveformDisplay = new rsWaveformPlot() );  
   // todo: addPlot
 
   //ampEnvEditor = new BreakpointModulatorEditor(keyShotAudioModule->ampEnvModule);

@@ -398,7 +398,7 @@ CoordinateSystemRangeOld SamplePlayerEditorDisplay::getMaximumMeaningfulRange(
 double relativeMarginLeft, double relativeMarginRight,
 double relativeMarginTop,  double relativeMarginBottom)
 {
-return WaveformDisplayOld::getMaximumMeaningfulRange(relativeMarginLeft, relativeMarginRight,
+return rsWaveformPlot::getMaximumMeaningfulRange(relativeMarginLeft, relativeMarginRight,
 relativeMarginTop, relativeMarginBottom);
 }
 */

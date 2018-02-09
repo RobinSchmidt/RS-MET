@@ -87,7 +87,7 @@ protected:
   // the sub-editors:
   //SamplePlayerModuleEditor  *samplePlayerEditor;
   //DualWaveformDisplay       *waveformDisplay;
-  WaveformDisplayOld        *waveformDisplay;
+  rsWaveformPlot        *waveformDisplay;
   //BreakpointModulatorEditor *ampEnvEditor;
 
   // the tabber to choose which of the embedded module editors is shown:
