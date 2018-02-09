@@ -1,4 +1,16 @@
-make use of the new SIMD-stuff
+new plotting stuff:
+-we need to refactor it such that we can mix and match different functionalities like 
+ grid-snapping, zooming, etc without subclassing - the virtual baseclasses are a pita
+ -get rid of rsPlot baseclass in rsPlotEditor, use an rsGridSnapper object that doesn't derive from 
+  rsPlot
+ -get rid of rsObservablePlot - use a rsPlotRangeObserver that directly observes one or more
+  rsPlotRange obejcts
+ -maybe it's possible to factor out a class from rsPlot that contains all or most of the relevant
+  state but doesn't derive from juce::Component, we could then have the rsPlot class have a member
+  of that - this would allow to have more plotting functionality independent from Component
+  ...maybe a lot can be just moved over to rsPlotSettings
+ -maybe we should have a rsPlotSettingsObserver with callbacks 
+  plotMaximumRangeChanged, plotVisibleRangeChanged, plotAppearanceChanged
 
 Ladder:
 -implement new rsFunctionplot based on std::function

@@ -5,7 +5,7 @@
 #pragma warning(disable : 4250) // disable dominance warning in MSVC
 #endif
 
-
+// ToDo: make this class obsolete by having an rsPlotSettingsObserver
 
 class rsObservablePlot;
 

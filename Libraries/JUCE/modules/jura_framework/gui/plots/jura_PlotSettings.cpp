@@ -7,16 +7,16 @@ rsPlotSettings::rsPlotSettings()
 
   // move initializations into header file:
 
-  captionPosition               =  NO_CAPTION;
-  axisPositionX                 =  ZERO;
-  axisPositionY                 =  ZERO;
-  axisLabelPositionX            =  ABOVE_AXIS;
-  axisLabelPositionY            =  RIGHT_TO_AXIS;
-  axisValuesPositionX           =  BELOW_AXIS;
-  axisValuesPositionY           =  LEFT_TO_AXIS;
+  captionPosition     =  NO_CAPTION;
+  axisPositionX       =  ZERO;
+  axisPositionY       =  ZERO;
+  axisLabelPositionX  =  ABOVE_AXIS;
+  axisLabelPositionY  =  RIGHT_TO_AXIS;
+  axisValuesPositionX =  BELOW_AXIS;
+  axisValuesPositionY =  LEFT_TO_AXIS;
 
-  axisLabelX                    =  String("x");
-  axisLabelY                    =  String("y");
+  axisLabelX = String("x");
+  axisLabelY = String("y");
 
   horizontalCoarseGridIsVisible =  false;
   horizontalFineGridIsVisible	  =  false;
@@ -36,25 +36,45 @@ rsPlotSettings::rsPlotSettings()
   angularCoarseGridInterval     =  15.0;  // 15 degrees
   angularFineGridInterval       =  5.0;   // 5 degrees
 
-  logScaledX	                  =  false;
-  logScaledY	                  =  false;
-  logScaledRadius               =  false;
+  logScaledX	    =  false;
+  logScaledY	    =  false;
+  logScaledRadius =  false;
 
-  stringConversionForAxisX     = &valueToString0;
-  stringConversionForAxisY     = &valueToString0;
+  stringConversionForAxisX = &valueToString0;
+  stringConversionForAxisY = &valueToString0;
 }
+
+// observation:
+
+void rsPlotSettings::sendAppearenceChangeNotification()
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->rsPlotAppearanceChanged(this);
+}
+
+void rsPlotSettings::sendVisibleRangeChangeNotification()
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->rsPlotVisibleRangeChanged(this);
+}
+
+void rsPlotSettings::sendMaximumRangeChangeNotification()
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->rsPlotMaximumRangeChanged(this);
+}
+
+// state:
 
 XmlElement* rsPlotSettings::getStateAsXml(const juce::String& name) const
 {
   XmlElement* xml = new XmlElement(name); 
   // the XmlElement which stores all the releveant state-information
 
-  /*
-  xml->setAttribute(String("MinX"), currentRange.getMinX());
-  xml->setAttribute(String("MaxX"), currentRange.getMaxX());
-  xml->setAttribute(String("MinY"), currentRange.getMinY());
-  xml->setAttribute(String("MaxY"), currentRange.getMaxY());
-  */
+  xml->setAttribute("MinX", currentRange.getMinX());
+  xml->setAttribute("MaxX", currentRange.getMaxX());
+  xml->setAttribute("MinY", currentRange.getMinY());
+  xml->setAttribute("MaxY", currentRange.getMaxY());
 
   xml->setAttribute("HorizontalCoarseGridIsVisible", horizontalCoarseGridIsVisible);
   xml->setAttribute("HorizontalCoarseGridInterval",  horizontalCoarseGridInterval);
@@ -70,12 +90,10 @@ XmlElement* rsPlotSettings::getStateAsXml(const juce::String& name) const
 
 void rsPlotSettings::setStateFromXml(const XmlElement &xml)
 {
-  /*
-  currentRange.setMinX( xml.getDoubleAttribute("MinX", getCurrentRangeMinX()) );
-  currentRange.setMaxX( xml.getDoubleAttribute("MaxX", getCurrentRangeMaxX()) );
-  currentRange.setMinY( xml.getDoubleAttribute("MinY", getCurrentRangeMinY()) );
-  currentRange.setMaxY( xml.getDoubleAttribute("MaxY", getCurrentRangeMaxY()) );
-  */
+  currentRange.setMinX( xml.getDoubleAttribute("MinX", currentRange.getMinX()) );
+  currentRange.setMaxX( xml.getDoubleAttribute("MaxX", currentRange.getMaxX()) );
+  currentRange.setMinY( xml.getDoubleAttribute("MinY", currentRange.getMinY()) );
+  currentRange.setMaxY( xml.getDoubleAttribute("MaxY", currentRange.getMaxY()) );
 
   horizontalCoarseGridIsVisible = xml.getBoolAttribute(  "HorizontalCoarseGridIsVisible", false);
   horizontalCoarseGridInterval  = xml.getDoubleAttribute("HorizontalCoarseGridInterval",  1);

@@ -25,16 +25,16 @@ public:
 
   /** Lets a context menu pop up when the right button is clicked to allow export of the content
   as image or svg drawing. */
-  virtual void mouseDown(const MouseEvent& e);
+  virtual void mouseDown(const MouseEvent& e) override;
 
   /** Overrides mouseEnter for displaying the inspection Label. */
-  virtual void mouseEnter(const MouseEvent& e);
+  virtual void mouseEnter(const MouseEvent& e) override;
 
   /** Overrides mouseMove for displaying the inspection Label. */
-  virtual void mouseMove(const MouseEvent& e);
+  virtual void mouseMove(const MouseEvent& e) override;
 
-  virtual void resized();
-  virtual void paint(Graphics &g);
+  virtual void resized() override;
+  virtual void paint(Graphics &g) override;
 
   //-----------------------------------------------------------------------------------------------
   // range-management (split in range setup and range inquiry, inline inquiry functions):
