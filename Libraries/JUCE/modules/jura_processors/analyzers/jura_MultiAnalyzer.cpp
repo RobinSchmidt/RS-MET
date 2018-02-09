@@ -204,7 +204,8 @@ void SpectrumAnalyzerDisplay::updateBackgroundImage()
   CoordinateSystemOld::updateBackgroundImage();
 }
 
-void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage, XmlElement *targetSVG)
+void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage, 
+  XmlElement *targetSVG)
 {
   // make sure that the arrays are valid:
   if( familyValuesX == NULL || familyValuesY == NULL )
@@ -244,20 +245,14 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
       // get the lower frequency represented by this pixel column:
       x1 = (double) i;
       y1 = 0.0;
-      if( targetImage == NULL )
-        transformFromComponentsCoordinates(x1, y1);
-      else
-        transformFromImageCoordinates(x1, y1, targetImage);
+      transformFromComponentsCoordinates(x1, y1);
       lowFreq = x1;
 
       // find the upper frequency:
       i++;
       x2 = (double) i;
       y2 = 0.0;
-      if( targetImage == NULL )
-        transformFromComponentsCoordinates(x2, y2);
-      else
-        transformFromImageCoordinates(x2, y2, targetImage);
+      transformFromComponentsCoordinates(x2, y2);
       highFreq = x2;
 
       while( !getRepresentingBins(lowFreq, highFreq, k, minBin, maxBin)  &&  i < getWidth()-1  )
@@ -269,11 +264,7 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
         i++;
         x2 = (double) i;
         y2 = 0.0;
-        if( targetImage == NULL )
-          transformFromComponentsCoordinates(x2, y2);
-        else
-          transformFromImageCoordinates(x2, y2, targetImage);
-
+        transformFromComponentsCoordinates(x2, y2);
         highFreq = x2;
       }
 
@@ -287,18 +278,12 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
       x1 = jmax(1.0, familyValuesX[0][minBin]);
       y1 = familyValuesY[k][minBin];
       y1 = amp2dBWithCheck(y1, 0.00001);
-      if( targetImage == NULL )
-        transformToComponentsCoordinates(x1, y1);
-      else
-        transformToImageCoordinates(x1, y1, targetImage);
+      transformToComponentsCoordinates(x1, y1);
 
       x2 = jmax(1.0, familyValuesX[0][maxBin]);
       y2 = familyValuesY[k][maxBin];
       y2 = amp2dBWithCheck(y2, 0.00001);
-      if( targetImage == NULL )
-        transformToComponentsCoordinates(x2, y2);
-      else
-        transformToImageCoordinates(x2, y2, targetImage);
+      transformToComponentsCoordinates(x2, y2);
 
       if( minBin > maxBin )
       {
@@ -322,6 +307,7 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
       yOld = y2;
     }
 
+    /*
     // add the generated juce::String (which represents the curve) to the svg-drawing, if the respective
     // flag is true:
     if( targetSVG != NULL )
@@ -337,6 +323,7 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
         juce::String("; fill: none;") );
       targetSVG->addChildElement(curvePath);
     }
+    */
   }
 }
 
@@ -502,8 +489,8 @@ void OscilloscopeDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage,
       y1 = peakData[c][n];
       x2 = timeAxis[n+1];
       y2 = peakData[c][n+1];
-      transformToImageCoordinates(x1, y1, targetImage);
-      transformToImageCoordinates(x2, y2, targetImage);
+      transformToComponentsCoordinates(x1, y1);
+      transformToComponentsCoordinates(x2, y2);
       g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, 1.f);
       // uses a lot of CPU - try using a juce::Path - nah, Path uses even more
 

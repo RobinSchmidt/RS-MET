@@ -256,7 +256,7 @@ public:
 protected:
 
   virtual void plotCurveFamily(Graphics &g, juce::Image* targetImage = NULL, 
-    XmlElement *targetSVG = NULL);
+    XmlElement *targetSVG = NULL) override;
   /**< Overrides the plotCurveFamily()-function of the CurveFamilyPlot base-class. */
 
   virtual bool getRepresentingBins(double lowFreq, double highFreq, int k, 

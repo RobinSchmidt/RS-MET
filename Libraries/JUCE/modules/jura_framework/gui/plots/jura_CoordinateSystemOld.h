@@ -404,16 +404,7 @@ protected:
 
 
 
-
-  // also to be obsolete soon:
-
-  virtual void transformToImageCoordinates(double &x, double &y, const Image* theImage);
-  /**< Function for converting the x- and y-coordinate values into the corresponding coordinates
-  in an image. */
-
-  virtual void transformFromImageCoordinates(double &x, double &y, const Image* theImage);
-  /**< Function for converting the x- and y-coordinate values measured in the image's coordinate
-  system to the corresponding coordinates of our plot. */
+  // rename to toPixelCoords, fromPixelCoords
 
   virtual void transformToComponentsCoordinates(double &x, double &y);
   /**< Function for converting the x- and y-coordinate values into the corresponding coordinates in
@@ -447,15 +438,6 @@ protected:
   /** Updates the input range of our coordinate mapper. */
   void updateMapperInputRange();
 
-
-
-  //double getPlotHeight(Image *targetImage = NULL);
-  /**< Returns either the height of this component or the height of the image (if the pointer is
-  non-NULL). */
-
-  //double getPlotWidth(Image *targetImage = NULL);
-  /**< Returns either the height of this component or the height of the image (if the pointer is
-  non-NULL). */
 
   rsPlotSettings plotSettings;
 

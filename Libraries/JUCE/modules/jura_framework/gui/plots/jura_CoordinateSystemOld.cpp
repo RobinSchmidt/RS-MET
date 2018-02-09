@@ -937,7 +937,7 @@ void CoordinateSystemOld::updateBackgroundImage()
 
 //-------------------------------------------------------------------------------------------------
 // coordinate transformations:
-
+/*
 void CoordinateSystemOld::transformToImageCoordinates(double &x, double &y, const Image* theImage)
 {
   if( theImage == nullptr ) { transformToComponentsCoordinates(x, y); return; }
@@ -956,7 +956,7 @@ void CoordinateSystemOld::transformFromImageCoordinates(double &x, double &y,
   y = coordinateMapper.unmapY(y);
   setupCoordinateMapper(coordinateMapper, this);
 }
-
+*/
 void CoordinateSystemOld::transformToComponentsCoordinates(double &x, double &y)
 {
   x = coordinateMapper.mapX(x);
@@ -1012,25 +1012,6 @@ void CoordinateSystemOld::updateMapperInputRange()
   if(autoReRenderImage == true)
     updateBackgroundImage();
 }
-
-/*
-// get rid of these:
-double CoordinateSystemOld::getPlotHeight(Image *targetImage)
-{
-  if( targetImage == NULL )
-    return getHeight();
-  else
-    return targetImage->getHeight();
-}
-
-double CoordinateSystemOld::getPlotWidth(Image *targetImage)
-{
-  if( targetImage == NULL )
-    return getWidth();
-  else
-    return targetImage->getWidth();
-}
-*/
 
 //-------------------------------------------------------------------------------------------------
 // state-management (storing and recall), still incomplete:

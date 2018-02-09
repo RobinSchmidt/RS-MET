@@ -539,7 +539,7 @@ void CrossOverPlotEditor::drawSelectionIndicator(Graphics &g, juce::Image *targe
 
   double x = crossOverModuleToEdit->wrappedCrossOver->getCrossoverFrequency(selectedLevel, selectedIndex);
   double y = 0.0;
-  transformToImageCoordinates(x, y, targetImage);
+  transformToComponentsCoordinates(x, y);
   y = 2.f;
 
   //Colour c = g.getCurrentColour();
@@ -555,7 +555,7 @@ void CrossOverPlotEditor::drawVerticalLineAtFrequency(Graphics &g, juce::Image* 
 
   double x = frequency;
   double y = 0.0; 
-  transformToImageCoordinates(x, y, targetImage);
+  transformToComponentsCoordinates(x, y);
 
   if( treeLevel == 0 )
     y = 0.0;
@@ -579,7 +579,7 @@ void CrossOverPlotEditor::drawTriangleSwitchAtFrequency(Graphics &g, juce::Image
 
   double x = frequency;
   double y = 0.0; 
-  transformToImageCoordinates(x, y, targetImage);
+  transformToComponentsCoordinates(x, y);
 
   if( treeLevel == 0 )
     y = 0.0;

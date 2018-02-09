@@ -1042,7 +1042,7 @@ void ModulatorCurveEditor::plotBreakpoints(Graphics &g, juce::Image *targetImage
     //x = beatsToSeconds(x, modulator->getBeatsPerMinute());
     y = modulator->getBreakpointLevel(p);
     y = scale*y + offset;
-    transformToImageCoordinates(x, y, targetImage);
+    transformToComponentsCoordinates(x, y);
     if( p == selectedBreakpoint )
     {
       g.setColour(dotColour.withAlpha(0.5f));
@@ -1130,12 +1130,12 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
     x1 = modulator->getBreakpointTime(p);
     y1 = modulator->getBreakpointLevel(p);
     y1 = scale*y1 + offset;
-    transformToImageCoordinates(x1, y1, targetImage);
+    transformToComponentsCoordinates(x1, y1);
     p  = modulator->getLoopEndIndex();
     x2 = modulator->getBreakpointTime(p);
     y2 = modulator->getBreakpointLevel(p);
     y2 = scale*y2 + offset;
-    transformToImageCoordinates(x2, y2, targetImage);
+    transformToComponentsCoordinates(x2, y2);
     if( abs(y1-y2) < 0.00001 ) // equality check with margin
       g.setColour(matchedLoopConnectorColour);
     else

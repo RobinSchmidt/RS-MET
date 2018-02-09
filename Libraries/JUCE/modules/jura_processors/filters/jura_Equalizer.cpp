@@ -1056,7 +1056,7 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
     double globalGain = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
     x = equalizerModuleToEdit->wrappedEqualizerStereo->getBandFrequency(channel, i);
     y = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(channel, i) + globalGain;
-    transformToImageCoordinates(x, y, targetImage);
+    transformToComponentsCoordinates(x, y);
 
     g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius),
       (float) (2*dotRadius), (float) (2*dotRadius) );
@@ -1083,13 +1083,13 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
           ->getLowerBandedgeFrequency(channel, i);
         double y1 = equalizerModuleToEdit->wrappedEqualizerStereo
           ->getBandGain(channel, i) + globalGain;
-        transformToImageCoordinates(x1, y1, targetImage);
+        transformToComponentsCoordinates(x1, y1);
 
         double x2 = equalizerModuleToEdit->wrappedEqualizerStereo
           ->getUpperBandedgeFrequency(channel, i);
         double y2 = equalizerModuleToEdit->wrappedEqualizerStereo
           ->getBandGain(channel, i) + globalGain;
-        transformToImageCoordinates(x2, y2, targetImage);
+        transformToComponentsCoordinates(x2, y2);
 
         g.drawLine((float) x1, (float) y1, (float) x2, (float) y1, 2.0f);
         g.drawLine((float) x1, (float) (y1-5.0), (float) x1, (float) (y1+5.0), 2.0f);

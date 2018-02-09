@@ -1004,7 +1004,7 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
 
     double x = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
     double y = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(i);
-    transformToImageCoordinates(x, y, targetImage);
+    transformToComponentsCoordinates(x, y);
 
     if( !echoLabModuleToEdit->wrappedEchoLab->isDelayLineActive(i) )
     {
@@ -1014,7 +1014,7 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
 
       x  = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
       double y0 = 0.0;
-      transformToImageCoordinates(x, y0, targetImage);
+      transformToComponentsCoordinates(x, y0);
       g.drawLine((float) x, (float) y, (float) x, (float) y0, 2.f);
     }
     else
@@ -1032,7 +1032,7 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
       g.setColour(currentColour);
       x  = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
       double y0 = 0.0;
-      transformToImageCoordinates(x, y0, targetImage);
+      transformToComponentsCoordinates(x, y0);
       g.drawLine((float) x, (float) y, (float) x, (float) y0, 2.f);
 
       //g.setColour( curveColour );
@@ -1053,8 +1053,8 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
         y2 = yAccu;
         y0 = 0.0;
         x0 = x2; 
-        transformToImageCoordinates(x2, y2, targetImage);
-        transformToImageCoordinates(x0, y0, targetImage);
+        transformToComponentsCoordinates(x2, y2);
+        transformToComponentsCoordinates(x0, y0);
 
         g.setColour(currentColour.withMultipliedAlpha(0.75f));
 

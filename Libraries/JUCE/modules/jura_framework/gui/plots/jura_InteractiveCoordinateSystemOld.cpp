@@ -108,8 +108,8 @@ void InteractiveCoordinateSystemOld::drawLeftLocator(Graphics &g, float x, int a
   x2 = x;
   y1 = plotSettings.currentRange.getMinY();
   y2 = plotSettings.currentRange.getMaxY();
-  transformToImageCoordinates(x1, y1, targetImage);
-  transformToImageCoordinates(x2, y2, targetImage);
+  transformToComponentsCoordinates(x1, y1);
+  transformToComponentsCoordinates(x2, y2);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
   g.fillRect((float) x1, (float) (y2+1), 4.f, 8.f);
   drawTriangle(g, (float) (x1+4), (float) (y2+1), (float) (x1+4), 
@@ -126,16 +126,16 @@ void InteractiveCoordinateSystemOld::drawRightLocator(Graphics &g, float x, int 
   x2 = x;
   y1 = plotSettings.currentRange.getMinY();
   y2 = plotSettings.currentRange.getMaxY();
-  transformToImageCoordinates(x1, y1, targetImage);
-  transformToImageCoordinates(x2, y2, targetImage);
+  transformToComponentsCoordinates(x1, y1);
+  transformToComponentsCoordinates(x2, y2);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
   g.fillRect((float) (x1-4), (float) (y2+1), 4.f, 8.f);
   drawTriangle(g, (float) (x1-4), (float) (y2+1), (float) (x1-4), 
     (float) (y2+9), (float) (x1-4-4), (float) (y2+5), true);
 }
 
-void InteractiveCoordinateSystemOld::drawCurrentPositionLocator(Graphics &g, float x, 
-                                                             int arrowPosition, const Colour &locatorColour, Image *targetImage)
+void InteractiveCoordinateSystemOld::drawCurrentPositionLocator(Graphics &g, float x,                              
+  int arrowPosition, const Colour &locatorColour, Image *targetImage)
 {
   g.setColour(locatorColour);
 
@@ -144,8 +144,8 @@ void InteractiveCoordinateSystemOld::drawCurrentPositionLocator(Graphics &g, flo
   x2 = x;
   y1 = plotSettings.currentRange.getMinY();
   y2 = plotSettings.currentRange.getMaxY();
-  transformToImageCoordinates(x1, y1, targetImage);
-  transformToImageCoordinates(x2, y2, targetImage);
+  transformToComponentsCoordinates(x1, y1);
+  transformToComponentsCoordinates(x2, y2);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
 }
 

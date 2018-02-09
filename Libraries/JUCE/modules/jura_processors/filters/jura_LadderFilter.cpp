@@ -450,13 +450,8 @@ void LadderSpectrumEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage
 
   // determine the coordinates of the handle into image component coordinates (for export) or 
   // components coordinates for plot:
-  if( targetImage == NULL )
-    transformToComponentsCoordinates(x, y);
-  else
-    transformToImageCoordinates(x, y, targetImage);
-
+  transformToComponentsCoordinates(x, y);
   y = resoToY(resoParameter->getValue());  // ..now we assign also y
-
 
   // draw the handle and a crosshair:
   g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 

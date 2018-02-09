@@ -323,8 +323,8 @@ void WaveformDisplayOld::plotWaveform(Graphics &g, Image *targetImage, XmlElemen
       y2 = peakData[c*peakArraySize + readOffset+n+1];
 
       // transform:
-      transformToImageCoordinates(x1, y1, targetImage);
-      transformToImageCoordinates(x2, y2, targetImage);
+      transformToComponentsCoordinates(x1, y1);
+      transformToComponentsCoordinates(x2, y2);
 
       // draw:
       g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, 2.f);

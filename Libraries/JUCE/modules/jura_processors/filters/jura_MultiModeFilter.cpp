@@ -586,10 +586,7 @@ void MultiModeFreqResponseEditor::plotCurveFamily(Graphics &g, juce::Image* targ
 
   // determine the coordinates of the handle into image component coordinates (for export) or 
   // components coordinates for plot:
-  if( targetImage == NULL )
-    transformToComponentsCoordinates(x, y);
-  else
-    transformToImageCoordinates(x, y, targetImage);
+  transformToComponentsCoordinates(x, y);
 
   // y is now the gain in component's coordinates - if we do not have a peaking or shelving type,
   // we need to re-assign it to some value related to resonance or Q:
