@@ -216,7 +216,7 @@ protected:
   WaveformRendererEditor *rendererEditor;
 
   // plot and related stuff:
-  CurveFamilyPlotOld  *waveformDisplay;
+  rsDataPlot  *waveformDisplay;
   rsPlot *emptyDisplay;
   double *xValues, *yValuesL, *yValuesR;
   int    numSamplesInPlot;
@@ -284,7 +284,7 @@ protected:
   RButton    *editButton;
 
   // plot and related stuff:
-  CurveFamilyPlotOld  *waveformDisplay;
+  rsDataPlot  *waveformDisplay;
   rsPlot *emptyDisplay;
   double *xValues, *yValuesL, *yValuesR;
   int    numSamplesInPlot;

@@ -311,7 +311,7 @@ void EngineersFilterPlotEditor::plotCurveFamily(Graphics &g, juce::Image* target
   if( sciFilterToEdit == NULL )
     return;
 
-  CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG);
+  rsDataPlot::plotCurveFamily(g, targetImage, targetSVG);
 
   /*
   if( colourScheme.plotColours.size() < 3 )

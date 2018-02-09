@@ -504,7 +504,7 @@ void FuncShaperModuleEditor::createWidgets()
   s->setStringConversionFunction(&percentToStringWithUnit1);
 
   // initialize the plot:
-  shaperPlot = new CurveFamilyPlotOld();
+  shaperPlot = new rsDataPlot();
   shaperPlot->setCurrentRange(-1.5, +1.5, -1.5, +1.5);
   shaperPlot->setAxisLabelX("in");
   shaperPlot->setAxisLabelY("out");

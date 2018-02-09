@@ -499,7 +499,7 @@ WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugI
   xValues          = NULL;
   yValuesL         = NULL;
   yValuesR         = NULL;
-  waveformDisplay = new CurveFamilyPlotOld(juce::String("Plot"));
+  waveformDisplay = new rsDataPlot(juce::String("Plot"));
   waveformDisplay->setDescription(juce::String("Waveform"));
   waveformDisplay->setAxisLabels(juce::String(""), juce::String(""));
   waveformDisplay->setVerticalCoarseGrid(1.0, false);
@@ -637,7 +637,7 @@ WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newP
   xValues          = NULL;
   yValuesL         = NULL;
   yValuesR         = NULL;
-  waveformDisplay = new CurveFamilyPlotOld(juce::String("Plot"));
+  waveformDisplay = new rsDataPlot(juce::String("Plot"));
   waveformDisplay->setDescription(juce::String("Waveform"));
   waveformDisplay->setAxisLabels(juce::String(""), juce::String(""));
   waveformDisplay->setVerticalCoarseGrid(1.0, false);

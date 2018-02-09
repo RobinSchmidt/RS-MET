@@ -659,7 +659,7 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
   numValues = 0;
   xValues   = NULL;
   yValues   = NULL;
-  plot = new CurveFamilyPlotOld(juce::String(("Plot")));
+  plot = new rsDataPlot(juce::String(("Plot")));
   plot->setDescription(juce::String(("Shows the input-output transfer function")));
   plot->setAxisLabels(juce::String(("")), juce::String(("")));
   plot->setCurrentRange(-1.3, 1.3, -1.3, 1.3);

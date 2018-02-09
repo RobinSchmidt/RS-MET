@@ -396,7 +396,7 @@ bool SpectrumAnalyzerDisplay::getRepresentingBins(double lowFreq, double highFre
 
 
 OscilloscopeDisplay::OscilloscopeDisplay(const juce::String& name)
-  : CurveFamilyPlotOld(name)
+  : rsDataPlot(name)
 {
   setAutoReRendering(false);
   // we want to manually trigger the re-rendering of the background-image inside this class to avoid unnecesarry calls because we need to
@@ -461,7 +461,7 @@ void OscilloscopeDisplay::setWaveformData(int newNumSamples, int newNumChannels,
 /*
 void OscilloscopeDisplay::resized()
 {
-CurveFamilyPlotOld::resized();
+rsDataPlot::resized();
 updatePlotImage(true);
 }
 */

@@ -572,7 +572,7 @@ void EchoLabAudioModule::createParameters()
 
 EchoLabPlotEditor::EchoLabPlotEditor(CriticalSection *newPlugInLock, 
   EchoLabAudioModule* newEchoLabModuleToEdit) 
-  : CurveFamilyPlotOld(juce::String("EchoLabPlot"))
+  : rsDataPlot(juce::String("EchoLabPlot"))
   , InteractiveCoordinateSystemOld(juce::String("EchoLabPlot"))
 {
   setDescription("Left: insert or grab band-handle, right: remove band");
@@ -913,7 +913,7 @@ int EchoLabPlotEditor::getDragHandleAt(int x, int y)
 
 void EchoLabPlotEditor::resized()
 {
-  CurveFamilyPlotOld::resized();
+  rsDataPlot::resized();
 
   // (re) allocate and fill the arrays for the impulse-response plot
   numSamplesInPlot = getWidth();
@@ -971,8 +971,8 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
 {
   /*
   Colour defaultColour  = Colours::black;
-  //Colour selectedColour = CurveFamilyPlotOld::colourScheme.plotColours[0];
-  //Colour selectedColour = CurveFamilyPlotOld::colourScheme.curves; // preliminary
+  //Colour selectedColour = rsDataPlot::colourScheme.plotColours[0];
+  //Colour selectedColour = rsDataPlot::colourScheme.curves; // preliminary
   Colour selectedColour = Colours::red;
   //Colour graphColour = colourScheme.getCurveColour(index);  
   //g.setColour(graphColour); 

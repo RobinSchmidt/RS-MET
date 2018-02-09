@@ -310,7 +310,7 @@ protected:
   RButton *editButton;
 
   // plot and related stuff:
-  CurveFamilyPlotOld  *plot;
+  rsDataPlot  *plot;
   double *xValues, *yValues;
   int    numSamplesInPlot;
 

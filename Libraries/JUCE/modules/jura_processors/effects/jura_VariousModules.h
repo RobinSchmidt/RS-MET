@@ -199,7 +199,7 @@ protected:
   RComboBox *curveComboBox;
   ModulatableSlider *driveSlider, *dcSlider, *amountSlider, *outputLevelSlider;
   RSlider  *oversamplingSlider, *slopeSlider, *interceptSlider;
-  CurveFamilyPlotOld *plot;
+  rsDataPlot *plot;
   double *xValues, *yValues;
   int    numValues;
 };

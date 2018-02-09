@@ -178,7 +178,7 @@ protected:
   RButton *preFilterButton, *postFilterButton;
 
   // the function plot which plots the characteristic line:
-  CurveFamilyPlotOld* shaperPlot;
+  rsDataPlot* shaperPlot;
   double *xValues;
   double **yValues;
 

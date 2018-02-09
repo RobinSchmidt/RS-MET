@@ -6,7 +6,7 @@ Breakpoints can be created, removed and dragged around.
 
 \todo: implement new locking strategy and parameter handling */
 
-class JUCE_API ModulatorCurveEditor : virtual public CurveFamilyPlotOld,
+class JUCE_API ModulatorCurveEditor : virtual public rsDataPlot,
   virtual public InteractiveCoordinateSystemOld, public ParameterObserver,
   public ChangeBroadcaster
 {

@@ -3,7 +3,7 @@
 
 /** This class plots the curves for the pan law and lets the user adjust the pan-position. */
 
-class StereoPanPlotEditor : virtual public CurveFamilyPlotOld, public ParameterObserver, 
+class StereoPanPlotEditor : virtual public rsDataPlot, public ParameterObserver, 
   public ChangeBroadcaster
 {
 

@@ -36,7 +36,7 @@ RSPlotContentComponent::RSPlotContentComponent(
   addChildComponent(zoomer3D);
   */
 
-  curveFamilyPlot = new CurveFamilyPlotOld();
+  curveFamilyPlot = new rsDataPlot();
   curveFamilyPlot->setCurrentRange(-5.0, 5.0, -5.0, 5.0);
   curveFamilyPlot->setCurveFamilyValues(100, 1, xFamilyPointer, yFamilyPointer);
   addAndMakeVisible(curveFamilyPlot);

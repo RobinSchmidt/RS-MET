@@ -1,4 +1,4 @@
-CurveFamilyPlotOld::CurveFamilyPlotOld(const String& name)
+rsDataPlot::rsDataPlot(const String& name)
 : rsPlot(name)
 {
   numCurves		    = 0;
@@ -30,7 +30,7 @@ CurveFamilyPlotOld::CurveFamilyPlotOld(const String& name)
   */
 }
 
-CurveFamilyPlotOld::~CurveFamilyPlotOld()
+rsDataPlot::~rsDataPlot()
 {
   deleteAllChildren();
   if( plotImage != NULL )
@@ -40,7 +40,7 @@ CurveFamilyPlotOld::~CurveFamilyPlotOld()
 //-------------------------------------------------------------------------------------------------
 // data input:
 
-void CurveFamilyPlotOld::setCurveFamilyValues(int newNumValues, int newNumCurves, 
+void rsDataPlot::setCurveFamilyValues(int newNumValues, int newNumCurves, 
 					   double** newFamilyValuesX, double** newFamilyValuesY)
 {
   if( newNumValues != 0 && newNumCurves != 0 
@@ -64,7 +64,7 @@ void CurveFamilyPlotOld::setCurveFamilyValues(int newNumValues, int newNumCurves
   }
 }
 
-void CurveFamilyPlotOld::setCurveValues(int newNumValues, double* newValuesX, double* newValuesY)
+void rsDataPlot::setCurveValues(int newNumValues, double* newValuesX, double* newValuesY)
 {
   if( newNumValues != 0 && newValuesX != NULL && newValuesY != NULL )
   {
@@ -88,7 +88,7 @@ void CurveFamilyPlotOld::setCurveValues(int newNumValues, double* newValuesX, do
   }
 }
 
-void CurveFamilyPlotOld::setFunctionFamilyValues(int newNumValues, int newNumCurves, 
+void rsDataPlot::setFunctionFamilyValues(int newNumValues, int newNumCurves, 
 					      double* newValuesX, double** newFamilyValuesY)
 {
   if( newNumValues != 0 && newNumCurves != 0 
@@ -114,7 +114,7 @@ void CurveFamilyPlotOld::setFunctionFamilyValues(int newNumValues, int newNumCur
   }
 }
 
-void CurveFamilyPlotOld::setHighlightedCurve(int newHighlightedCurve)
+void rsDataPlot::setHighlightedCurve(int newHighlightedCurve)
 {
   if( newHighlightedCurve >= -1 )
     highlightedCurve = newHighlightedCurve;
@@ -123,7 +123,7 @@ void CurveFamilyPlotOld::setHighlightedCurve(int newHighlightedCurve)
 //-------------------------------------------------------------------------------------------------
 // drawing, painting:
 
-void CurveFamilyPlotOld::paint(juce::Graphics &g)
+void rsDataPlot::paint(juce::Graphics &g)
 {
   if( plotImage != NULL )
     g.drawImage(*plotImage, 0, 0, plotImage->getWidth(), plotImage->getHeight(), 
@@ -132,7 +132,7 @@ void CurveFamilyPlotOld::paint(juce::Graphics &g)
     g.fillAll(Colours::red);
 }
 
-void CurveFamilyPlotOld::updatePlotImage(bool redrawCoordinateSystem)
+void rsDataPlot::updatePlotImage(bool redrawCoordinateSystem)
 {
   if( getWidth() < 1 || getHeight() < 1 )
     return;
@@ -152,13 +152,13 @@ void CurveFamilyPlotOld::updatePlotImage(bool redrawCoordinateSystem)
   repaintOnMessageThread();
 }
 
-void CurveFamilyPlotOld::updateBackgroundImage()
+void rsDataPlot::updateBackgroundImage()
 {
   rsPlot::updateBackgroundImage();
   updatePlotImage(false);
 }
 
-XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
+XmlElement* rsDataPlot::getPlotAsSVG(int width, int height)
 {
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, width, height);
   XmlElement* svg = rsPlot::getPlotAsSVG(width, height);
@@ -171,7 +171,7 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
   return svg;
 }
 
-Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
+Image* rsDataPlot::getPlotAsImage(int width, int height)
 {
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, width, height);
   Image* img = rsPlot::getPlotAsImage(width, height);
@@ -185,7 +185,7 @@ Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
   return img;
 }
 
-void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlElement *targetSVG)
+void rsDataPlot::plotCurveFamily(Graphics &g, Image* targetImage, XmlElement *targetSVG)
 {
   if( familyValuesX == nullptr || familyValuesY == nullptr )
     return;
@@ -207,7 +207,7 @@ void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlEle
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void CurveFamilyPlotOld::resized()
+void rsDataPlot::resized()
 {
   rsPlot::resized();
   rsPlot::updateBackgroundImage();
@@ -220,7 +220,7 @@ void CurveFamilyPlotOld::resized()
     updatePlotImage(false);
 }
 
-void CurveFamilyPlotOld::invalidatePointers()
+void rsDataPlot::invalidatePointers()
 {
   numCurves	= 0;
   familyValuesX = NULL;

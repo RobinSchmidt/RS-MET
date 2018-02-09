@@ -274,7 +274,7 @@ protected:
 //===============================================================================================
 
 class OscilloscopeDisplay	: virtual public MessengingCoordinateSystemOld, 
-  virtual public CurveFamilyPlotOld
+  virtual public rsDataPlot
 {
 
 public:

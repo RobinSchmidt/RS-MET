@@ -566,7 +566,7 @@ void MultiModeFreqResponseEditor::plotCurveFamily(Graphics &g, juce::Image* targ
   if( filterToEdit == NULL )
     return;
 
-  CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG);
+  rsDataPlot::plotCurveFamily(g, targetImage, targetSVG);
 
 
   //Colour graphColour = colourScheme.curves; // preliminary

@@ -2,7 +2,7 @@
 // construction/destruction:
 
 ModulatorCurveEditor::ModulatorCurveEditor(const juce::String& name) 
-: CurveFamilyPlotOld(name), InteractiveCoordinateSystemOld(name)
+: rsDataPlot(name), InteractiveCoordinateSystemOld(name)
 {
   setDescription("Left-click: insert, right-click: remove, shift-drag: time-shifts subsequent breakpoints");
 
@@ -260,8 +260,8 @@ void ModulatorCurveEditor::setAllBreakpointShapeAmounts(double newShapeAmount,
 void ModulatorCurveEditor::setCurrentRangeX(double newMinX, double newMaxX)
 {
   setAutoReRendering(false);
-  CurveFamilyPlotOld::setCurrentRangeX(newMinX, newMaxX);
-  CurveFamilyPlotOld::updateBackgroundImage();
+  rsDataPlot::setCurrentRangeX(newMinX, newMaxX);
+  rsDataPlot::updateBackgroundImage();
   updatePlotCurveData(editedModulatorIndex, modulatorToEdit, true);
   setAutoReRendering(true);
 }
@@ -907,7 +907,7 @@ void ModulatorCurveEditor::mouseUp(const MouseEvent &e)
 
 void ModulatorCurveEditor::resized()
 {
-  CurveFamilyPlotOld::resized();
+  rsDataPlot::resized();
 
   // (re) allocate memory if necesarry fill the arrays for the magnitude plot
   if( numSamplesInPlot != getWidth()+2 )
@@ -1004,7 +1004,7 @@ void ModulatorCurveEditor::plotCurveFamily(Graphics &g, juce::Image *targetImage
 {
   // call the paint-method of the CurveFamilyPlot base class, which draws the axes, labels, grids,
   // the curves themselves etc.:
-  CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG);
+  rsDataPlot::plotCurveFamily(g, targetImage, targetSVG);
 
 
   // draw the dots and loop locators - \todo: choose colours:

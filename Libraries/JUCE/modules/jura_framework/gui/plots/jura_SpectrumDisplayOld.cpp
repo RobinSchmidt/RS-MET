@@ -1,6 +1,6 @@
 
 SpectrumDisplayOld::SpectrumDisplayOld(const String& name) 
-: CurveFamilyPlotOld(name)
+: rsDataPlot(name)
 {
   // initialize the appearance settings:
   setAutoReRendering(false);
@@ -41,7 +41,7 @@ void SpectrumDisplayOld::useLogarithmicScaleX(bool shouldBeLogScaledX, double ne
     setCurrentRange(15.625, 32000.0, -96.0, 6.0);
     setVerticalCoarseGrid(2.0, true);
     setVerticalFineGrid(pow(2.0, 1.0/3.0), false);
-    CurveFamilyPlotOld::useLogarithmicScaleX(true);
+    rsDataPlot::useLogarithmicScaleX(true);
     setAxisPositionY(rsPlotSettings::LEFT);
     setStringConversionForAxisX(&valueToString0);
   }
@@ -51,7 +51,7 @@ void SpectrumDisplayOld::useLogarithmicScaleX(bool shouldBeLogScaledX, double ne
     setCurrentRange(0.0, 21000.0, -96.0, 6.0);
     setVerticalCoarseGrid(1000.0, true);
     setVerticalFineGrid(100.0, false);
-    CurveFamilyPlotOld::useLogarithmicScaleX(false);
+    rsDataPlot::useLogarithmicScaleX(false);
     setAxisPositionY(rsPlotSettings::ZERO);
     setStringConversionForAxisX(&kiloToString0);
   }
@@ -63,13 +63,13 @@ void SpectrumDisplayOld::useLogarithmicScaleX(bool shouldBeLogScaledX, double ne
 void SpectrumDisplayOld::setSpectrum(int newNumBins, double *newBinFrequencies, 
   double *newBinMagnitudes)
 {
-  CurveFamilyPlotOld::setCurveValues(newNumBins, newBinFrequencies, newBinMagnitudes);
+  rsDataPlot::setCurveValues(newNumBins, newBinFrequencies, newBinMagnitudes);
 }
 
 void SpectrumDisplayOld::setSpectra(int newNumBins, int newNumSpectra, double* newBinFrequencies, 
   double** newBinMagnitudes)
 {
-  CurveFamilyPlotOld::setFunctionFamilyValues(newNumBins, newNumSpectra, newBinFrequencies, 
+  rsDataPlot::setFunctionFamilyValues(newNumBins, newNumSpectra, newBinFrequencies, 
     newBinMagnitudes);
 }
 

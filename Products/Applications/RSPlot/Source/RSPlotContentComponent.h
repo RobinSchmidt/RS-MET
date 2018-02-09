@@ -122,7 +122,7 @@ protected:
 
 
   // the components for the actual curve- and function-plots:
-  CurveFamilyPlotOld*          curveFamilyPlot;
+  rsDataPlot*          curveFamilyPlot;
   CoordinateSystemZoomerOld*   zoomer2D;    
   //SurfacePlot*              surfacePlot;
   //CoordinateSystem3DZoomer* zoomer3D;                

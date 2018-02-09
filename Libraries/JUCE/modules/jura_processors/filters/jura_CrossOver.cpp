@@ -476,7 +476,7 @@ void CrossOverPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   if( crossOverModuleToEdit == NULL )
     return;
 
-  CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG);
+  rsDataPlot::plotCurveFamily(g, targetImage, targetSVG);
   colourizeBackground(g, targetImage);
   g.setColour(plotColourScheme.getCurveColour(0));
   drawSelectionIndicator(g, targetImage);

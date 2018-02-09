@@ -1027,8 +1027,8 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   if( equalizerModuleToEdit == NULL )
     return;
 
-  CurveFamilyPlotOld::setNumCurves( equalizerModuleToEdit->getNumChannelsToPlot() );
-  CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG);
+  rsDataPlot::setNumCurves( equalizerModuleToEdit->getNumChannelsToPlot() );
+  rsDataPlot::plotCurveFamily(g, targetImage, targetSVG);
 
   double x, y;
 

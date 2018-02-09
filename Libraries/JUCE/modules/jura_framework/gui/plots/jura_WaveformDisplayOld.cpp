@@ -1,5 +1,5 @@
 WaveformDisplayOld::WaveformDisplayOld(const String& name)
-: CurveFamilyPlotOld(name)
+: rsDataPlot(name)
 {
   sampleRate               = 44100.0;
   timeFormat               = HOUR_MINUTE_SECOND;

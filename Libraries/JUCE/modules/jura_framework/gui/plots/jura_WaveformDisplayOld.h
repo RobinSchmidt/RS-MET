@@ -3,7 +3,7 @@
 
 /** This class is intended to be used as a graphical display for a waveform.  */
 
-class WaveformDisplayOld : virtual public CurveFamilyPlotOld //, public InteractiveCoordinateSystem
+class WaveformDisplayOld : virtual public rsDataPlot //, public InteractiveCoordinateSystem
 {
 
 public:
@@ -54,7 +54,7 @@ protected:
 
   virtual void plotCurveFamily(Graphics &g, Image *targetImage = NULL,
     XmlElement *targetSVG = NULL);
-  /**< Overrides CurveFamilyPlotOld::plotCurveFamily in order to call the plotWaveform() function. */
+  /**< Overrides rsDataPlot::plotCurveFamily in order to call the plotWaveform() function. */
 
   virtual void plotWaveform(Graphics &g, Image *targetImage = NULL,
     XmlElement *targetSVG = NULL);

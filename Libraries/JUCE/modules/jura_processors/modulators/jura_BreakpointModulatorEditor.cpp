@@ -990,7 +990,7 @@ BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSecti
   numSamplesInPlot = 0;
   xValues          = NULL;
   yValues          = NULL;
-  plot = new CurveFamilyPlotOld("Plot");
+  plot = new rsDataPlot("Plot");
   plot->setDescription("Envelope");
   plot->setAxisLabels("", "");
   plot->setVerticalCoarseGrid(1.0, false);

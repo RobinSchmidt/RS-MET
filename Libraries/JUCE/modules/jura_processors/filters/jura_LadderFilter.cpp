@@ -437,7 +437,7 @@ void LadderSpectrumEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage
   if(freqParameter == nullptr || resoParameter == nullptr) // pointers need to be assigned
     return;
 
-  CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG);
+  rsDataPlot::plotCurveFamily(g, targetImage, targetSVG);
 
   //Colour graphColour = colourScheme.curves; // preliminary
   //if( colourScheme.plotColours.size() > 0 )

@@ -7,13 +7,13 @@
 -rename to rsDataPlot (as opposed to rsFunctionPlot that uses a std::function)
 */
 
-class JUCE_API CurveFamilyPlotOld : virtual public rsPlot
+class JUCE_API rsDataPlot : virtual public rsPlot
 {
 
 public:
 
-  CurveFamilyPlotOld(const juce::String& name = juce::String("CurveFamilyPlotOld") );
-  virtual ~CurveFamilyPlotOld();
+  rsDataPlot(const juce::String& name = juce::String("rsDataPlot") );
+  virtual ~rsDataPlot();
 
   virtual void paint(Graphics &g) override;
   virtual void resized() override;
@@ -22,9 +22,9 @@ public:
   // data setup:
 
   /** Accepts the new function or curve values to be drawn. The data will NOT be copied into
-  internal buffers, an object of class "CurveFamilyPlotOld" will only hold pointers to the data. If
+  internal buffers, an object of class "rsDataPlot" will only hold pointers to the data. If
   the outlying class for some reason deletes the array in which the data is stored, it should call
-  invalidatePointers() - such that the "CurveFamilyPlotOld"-object does not try to aceess the
+  invalidatePointers() - such that the "rsDataPlot"-object does not try to aceess the
   array anymore. */
   virtual void setCurveFamilyValues(int newNumValues, int newNumCurves,
     double**  newFamilyValuesX, double** newFamilyValuesY);

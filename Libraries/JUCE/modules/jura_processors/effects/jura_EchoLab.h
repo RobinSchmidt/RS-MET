@@ -164,7 +164,7 @@ protected:
 /** This class plots a schematic impulse-response of a rosic::EchoLab object and allows for editing 
 parameters like the delay-time and gains. */
 
-class EchoLabPlotEditor	: virtual public CurveFamilyPlotOld, 
+class EchoLabPlotEditor	: virtual public rsDataPlot, 
   virtual public InteractiveCoordinateSystemOld, public ParameterObserver,
   public ChangeBroadcaster, public AudioModuleDeletionWatcher
 {

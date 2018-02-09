@@ -3,7 +3,7 @@
 
 /** This class is for plotting spectra and frequency responses. */
 
-class SpectrumDisplayOld : virtual public CurveFamilyPlotOld
+class SpectrumDisplayOld : virtual public rsDataPlot
 {
 
 public:

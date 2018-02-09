@@ -1,7 +1,7 @@
 
 
 StereoPanPlotEditor::StereoPanPlotEditor(const juce::String& name) 
-: CurveFamilyPlotOld(name)
+: rsDataPlot(name)
 {
   setDescription("Shows the curves for the pan-law - red: L->L, blue: R->R, green: R->L, brown: L->R");
 
@@ -141,7 +141,7 @@ void StereoPanPlotEditor::setupPanAccordingToMousePosition(double mouseX)
 
 void StereoPanPlotEditor::resized()
 {
-  CurveFamilyPlotOld::resized();
+  rsDataPlot::resized();
 
   // (re) allocate and fill the arrays for the magnitude plot
   numValues = getWidth();
@@ -212,7 +212,7 @@ void StereoPanPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   if( stereoPanToEdit == NULL )
     return;
 
-  CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG);
+  rsDataPlot::plotCurveFamily(g, targetImage, targetSVG);
 
   //if( colourScheme.plotColours.size() < 4 )
   //  return;

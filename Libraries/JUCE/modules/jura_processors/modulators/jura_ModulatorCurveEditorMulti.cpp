@@ -43,7 +43,7 @@ void ModulatorCurveEditorMulti::setCurrentRangeX(double newMinX, double newMaxX)
 {
   if( newMinX != getCurrentRangeMinX() || newMaxX != getCurrentRangeMaxX() )
   {
-    CurveFamilyPlotOld::setCurrentRangeX(newMinX, newMaxX);
+    rsDataPlot::setCurrentRangeX(newMinX, newMaxX);
     updateCurveDataForAllPlots(true, true);
   }
 }
@@ -52,7 +52,7 @@ void ModulatorCurveEditorMulti::setCurrentRange(rsPlotRange newRange)
 {
   if( newRange != getCurrentRange() )
   {
-    CurveFamilyPlotOld::setCurrentRange(newRange);
+    rsDataPlot::setCurrentRange(newRange);
     updateCurveDataForAllPlots(true, true);
   }
 }
@@ -91,7 +91,7 @@ Colour ModulatorCurveEditorMulti::getCurveColour(int index) const
 
 void ModulatorCurveEditorMulti::resized()
 {
-  CurveFamilyPlotOld::resized();
+  rsDataPlot::resized();
 
   // (re) allocate memory if necesarry fill the arrays for the magnitude plot
   if( numSamplesInPlot != getWidth()+2 )
@@ -161,7 +161,7 @@ void ModulatorCurveEditorMulti::updateMaximumRange(bool alsoUpdateCurrentRange)
 void ModulatorCurveEditorMulti::plotCurveFamily(Graphics &g, juce::Image *targetImage,
   XmlElement *targetSVG)
 {
-  CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG); // draws axes, labels, grids, curves
+  rsDataPlot::plotCurveFamily(g, targetImage, targetSVG); // draws axes, labels, grids, curves
 
   // draw the locators for all modulators but the breakpoint dots only for the focused one:
   modulators.getLock().enter();
