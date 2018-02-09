@@ -462,25 +462,25 @@ void LadderSpectrumEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage
   g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 
     (float) (2*dotRadius), (float) (2*dotRadius) );
   g.setColour(graphColour.withAlpha(0.4f));
-  float w = (float) getPlotWidth(targetImage);
-  float h = (float) getPlotHeight(targetImage);
+  float w = (float) getWidth();
+  float h = (float) getHeight();
   g.drawLine(       0,(float)y,        w, (float)y, 1.f);  // horizontal
   g.drawLine((float)x,       0, (float)x,        h, 1.f);  // vertical
 }
 
 // internal functions:
 
-double LadderSpectrumEditor::resoToY(double reso, juce::Image *targetImage)
+double LadderSpectrumEditor::resoToY(double reso)
 {
   double maxRes = resoParameter->getMaxValue();
-  double y = (1 - reso/maxRes) * getPlotHeight(targetImage);
+  double y = (1 - reso/maxRes) * getHeight();
   return y;
 }
 
-double LadderSpectrumEditor::yToReso(double y, juce::Image *targetImage)
+double LadderSpectrumEditor::yToReso(double y)
 {
   double maxRes = resoParameter->getMaxValue();
-  double reso = maxRes * ( 1.0 - y/getPlotHeight(targetImage) );    
+  double reso = maxRes * ( 1.0 - y/getHeight() );    
   return reso;
 }
 // maybe use not the full plot height but plotHeight - dotRadius or something - at very high and

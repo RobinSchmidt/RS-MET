@@ -129,19 +129,20 @@ protected:
   virtual void setupFilterAccordingToMousePosition(double mouseX, double mouseY);
 
   /** Overrides CurveFamilyPlot::plotCurveFamily in order to additionally draw the handle. */
-  virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL, XmlElement *targetSVG = NULL);
+  virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL, 
+    XmlElement *targetSVG = NULL) override;
 
   /** Converts a resonance value to an y-coordinate in components/image coordinates. */
-  double resoToY(double reso, juce::Image *targetImage = NULL);
+  double resoToY(double reso);
 
   /** Converts an y-coordinate in components/image coordinates to a resonance value. */
-  double yToReso(double y, juce::Image *targetImage = NULL);
+  double yToReso(double y);
 
   /** Converts a Q-value to an y-coordinate in components/image coordinates. */
-  double qToY(double q, juce::Image *targetImage = NULL);
+  double qToY(double q);
 
   /** Converts an y-coordinate in components/image coordinates to a Q-value. */
-  double yToQ(double y, juce::Image *targetImage = NULL);
+  double yToQ(double y);
 
   /** Radius of the dot-handle to be drawn. */
   float dotRadius;

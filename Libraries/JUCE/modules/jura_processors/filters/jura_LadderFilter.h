@@ -151,10 +151,10 @@ protected:
     XmlElement *targetSVG = NULL) override;
 
   /** Converts a resonance value to an y-coordinate in components/image coordinates. */
-  double resoToY(double reso, juce::Image *targetImage = NULL);
+  double resoToY(double reso);
 
   /** Converts an y-coordinate in components/image coordinates to a resonance value. */
-  double yToReso(double y, juce::Image *targetImage = NULL);
+  double yToReso(double y);
 
   /** Radius of the dot-handle to be drawn. */
   float dotRadius;

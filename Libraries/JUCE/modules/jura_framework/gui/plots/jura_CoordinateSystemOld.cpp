@@ -1013,6 +1013,7 @@ void CoordinateSystemOld::updateMapperInputRange()
     updateBackgroundImage();
 }
 
+/*
 // get rid of these:
 double CoordinateSystemOld::getPlotHeight(Image *targetImage)
 {
@@ -1029,6 +1030,7 @@ double CoordinateSystemOld::getPlotWidth(Image *targetImage)
   else
     return targetImage->getWidth();
 }
+*/
 
 //-------------------------------------------------------------------------------------------------
 // state-management (storing and recall), still incomplete:

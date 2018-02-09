@@ -594,22 +594,22 @@ void MultiModeFreqResponseEditor::plotCurveFamily(Graphics &g, juce::Image* targ
   // y is now the gain in component's coordinates - if we do not have a peaking or shelving type,
   // we need to re-assign it to some value related to resonance or Q:
   if( filterToEdit->getMode() == MultiModeFilterParameters::MOOGISH_LOWPASS )
-    y = (float) resoToY( filterToEdit->getResonance(), targetImage );
+    y = (float) resoToY( filterToEdit->getResonance());
   else if( filterToEdit->currentModeSupportsGain() ) 
   {
     // keep y to be the transformed gain
   }
   else if( filterToEdit->currentModeSupportsQ() ) 
-    y = (float) qToY( filterToEdit->getQ(), targetImage );
+    y = (float) qToY( filterToEdit->getQ());
   else  
-    y = (1.0/3.0) * getPlotHeight(targetImage);
+    y = (1.0/3.0) * getHeight();
 
   // draw the handle and a crosshair:
   g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 
     (float) (2*dotRadius), (float) (2*dotRadius) );
   g.setColour(graphColour.withAlpha(0.4f));
-  float w = (float) getPlotWidth(targetImage);
-  float h = (float) getPlotHeight(targetImage);
+  float w = (float) getWidth();
+  float h = (float) getHeight();
   g.drawLine(       0,(float)y,        w, (float)y, 1.f);  // horizontal
   g.drawLine((float)x,       0, (float)x,        h, 1.f);  // vertical
 }
@@ -617,27 +617,27 @@ void MultiModeFreqResponseEditor::plotCurveFamily(Graphics &g, juce::Image* targ
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-double MultiModeFreqResponseEditor::resoToY(double reso, juce::Image *targetImage)
+double MultiModeFreqResponseEditor::resoToY(double reso)
 {
-  return (1.0-0.01*reso) * getPlotHeight(targetImage);
+  return (1.0-0.01*reso) * getHeight();
   //return dotRadius + (1.0-0.01*reso) * (getHeight()-2.f*dotRadius);
 }
 
-double MultiModeFreqResponseEditor::yToReso(double y, juce::Image *targetImage)
+double MultiModeFreqResponseEditor::yToReso(double y)
 {
-  return 100.0 * ( 1.0 - y/getPlotHeight(targetImage) );
+  return 100.0 * ( 1.0 - y/getHeight() );
   //return 100.0 * ( 1.0 + (dotRadius-y) / (getHeight()-2.0*dotRadius) );
 }
 
-double MultiModeFreqResponseEditor::qToY(double q, juce::Image *targetImage)
+double MultiModeFreqResponseEditor::qToY(double q)
 {
-  return -expToLin(q, 0.5, 50.0, -getPlotHeight(targetImage), 0.0);
+  return -expToLin(q, 0.5, 50.0, -getHeight(), 0.0);
   //return 100.0;
 }
 
-double MultiModeFreqResponseEditor::yToQ(double y, juce::Image *targetImage)
+double MultiModeFreqResponseEditor::yToQ(double y)
 {
-  return linToExp(-y, -getPlotHeight(targetImage), 0.0, 0.5, 50.0);
+  return linToExp(-y, -getHeight(), 0.0, 0.5, 50.0);
 }
 
 //=================================================================================================
