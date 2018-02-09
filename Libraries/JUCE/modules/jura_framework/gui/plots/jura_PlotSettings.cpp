@@ -50,57 +50,57 @@ void rsPlotSettings::setMaximumRange(double newMinX, double newMaxX, double newM
 {
   maximumRange.setRangeX(newMinX, newMaxX);
   maximumRange.setRangeY(newMinY, newMaxY);
-  currentRange.clipRange(maximumRange); // if this clipping actually changes the visible range
-  sendMaximumRangeChangeNotification();              // we should send out a vsisbleRangeChangeNotification too
+  sendMaximumRangeChangeNotification();
+  clipVisibleToMaximumRange();
 }
 
 void rsPlotSettings::setMaximumRange(rsPlotRange newMaximumRange)
 {
   maximumRange = newMaximumRange;
-  currentRange.clipRange(maximumRange);
   sendMaximumRangeChangeNotification();
+  clipVisibleToMaximumRange();
 }
 
 void rsPlotSettings::setMaximumRangeX(double newMinX, double newMaxX)
 {
   maximumRange.setRangeX(newMinX, newMaxX);
-  currentRange.clipRange(maximumRange);
   sendMaximumRangeChangeNotification();
+  clipVisibleToMaximumRange();
 }
 
 void rsPlotSettings::setMaximumRangeY(double newMinY, double newMaxY)
 {
   maximumRange.setRangeY(newMinY, newMaxY);
-  currentRange.clipRange(maximumRange);
   sendMaximumRangeChangeNotification();
+  clipVisibleToMaximumRange();
 }
 
 void rsPlotSettings::setMaximumRangeMinX(double newMinX)
 {
   maximumRange.setMinX(newMinX);
-  currentRange.clipRange(maximumRange);
   sendMaximumRangeChangeNotification();
+  clipVisibleToMaximumRange();
 }
 
 void rsPlotSettings::setMaximumRangeMaxX(double newMaxX)
 {
   maximumRange.setMaxX(newMaxX);
-  currentRange.clipRange(maximumRange);
   sendMaximumRangeChangeNotification();
+  clipVisibleToMaximumRange();
 }
 
 void rsPlotSettings::setMaximumRangeMinY(double newMinY)
 {
   maximumRange.setMinY(newMinY);
-  currentRange.clipRange(maximumRange);
   sendMaximumRangeChangeNotification();
+  clipVisibleToMaximumRange();
 }
 
 void rsPlotSettings::setMaximumRangeMaxY(double newMaxY)
 {
   maximumRange.setMaxY(newMaxY);
-  currentRange.clipRange(maximumRange);
   sendMaximumRangeChangeNotification();
+  clipVisibleToMaximumRange();
 }
 
 void rsPlotSettings::setCurrentRange(double newMinX, double newMaxX, 
@@ -220,4 +220,10 @@ void rsPlotSettings::setStateFromXml(const XmlElement &xml)
   verticalCoarseGridInterval    = xml.getDoubleAttribute("VerticalCoarseGridInterval",    1);
   verticalFineGridIsVisible     = xml.getBoolAttribute(  "VerticalFineGridIsVisible",     false);
   verticalFineGridInterval      = xml.getDoubleAttribute("VerticalFineGridInterval",      0.1);
+}
+
+void rsPlotSettings::clipVisibleToMaximumRange()
+{
+  if(currentRange.clipRange(maximumRange))
+    sendVisibleRangeChangeNotification();
 }

@@ -82,46 +82,11 @@ void rsPlot::rsPlotVisibleRangeChanged(rsPlotSettings* plotSettings)
 }
 
 //-------------------------------------------------------------------------------------------------
-// range management:
+// range management (delegations):
 
 void rsPlot::setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY)
 {
   plotSettings.setMaximumRange(newMinX, newMaxX, newMinY, newMaxY);
-}
-
-void rsPlot::setMaximumRange(rsPlotRange newMaximumRange)
-{
-  plotSettings.setMaximumRange(newMaximumRange);
-}
-
-void rsPlot::setMaximumRangeX(double newMinX, double newMaxX)
-{
-  plotSettings.setMaximumRangeX(newMinX, newMaxX);
-}
-
-void rsPlot::setMaximumRangeY(double newMinY, double newMaxY)
-{
-  plotSettings.setMaximumRangeY(newMinY, newMaxY);
-}
-
-void rsPlot::setMaximumRangeMinX(double newMinX)
-{
-  plotSettings.setMaximumRangeMinX(newMinX);
-}
-
-void rsPlot::setMaximumRangeMaxX(double newMaxX)
-{
-  plotSettings.setMaximumRangeMaxX(newMaxX);
-}
-
-void rsPlot::setMaximumRangeMinY(double newMinY)
-{
-  plotSettings.setMaximumRangeMinY(newMinY);
-}
-
-void rsPlot::setMaximumRangeMaxY(double newMaxY)
-{
-  plotSettings.setMaximumRangeMaxY(newMaxY);
 }
 
 void rsPlot::setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY)
@@ -129,40 +94,23 @@ void rsPlot::setCurrentRange(double newMinX, double newMaxX, double newMinY, dou
   plotSettings.setCurrentRange(newMinX, newMaxX, newMinY, newMaxY);
 }
 
-void rsPlot::setCurrentRange(rsPlotRange newRange)
-{
-  plotSettings.setCurrentRange(newRange);
-}
+void rsPlot::setMaximumRange(rsPlotRange newRange) { plotSettings.setMaximumRange(newRange); }
+void rsPlot::setMaximumRangeX(double minX, double maxX) { plotSettings.setMaximumRangeX(minX, maxX); }
+void rsPlot::setMaximumRangeY(double minY, double maxY) { plotSettings.setMaximumRangeY(minY, maxY); }
+void rsPlot::setMaximumRangeMinX(double newMinX) { plotSettings.setMaximumRangeMinX(newMinX); }
+void rsPlot::setMaximumRangeMaxX(double newMaxX) { plotSettings.setMaximumRangeMaxX(newMaxX); }
+void rsPlot::setMaximumRangeMinY(double newMinY) { plotSettings.setMaximumRangeMinY(newMinY); }
+void rsPlot::setMaximumRangeMaxY(double newMaxY) { plotSettings.setMaximumRangeMaxY(newMaxY); }
 
-void rsPlot::setCurrentRangeX(double newMinX, double newMaxX)
-{
-  plotSettings.setCurrentRangeX(newMinX, newMaxX);
-}
+void rsPlot::setCurrentRange(rsPlotRange newRange) { plotSettings.setCurrentRange(newRange); }
+void rsPlot::setCurrentRangeX(double minX, double maxX) { plotSettings.setCurrentRangeX(minX, maxX); }
+void rsPlot::setCurrentRangeY(double minY, double maxY) { plotSettings.setCurrentRangeY(minY, maxY); }
+void rsPlot::setCurrentRangeMinX(double newMinX) { plotSettings.setCurrentRangeMinX(newMinX); }
+void rsPlot::setCurrentRangeMaxX(double newMaxX) { plotSettings.setCurrentRangeMaxX(newMaxX); }
+void rsPlot::setCurrentRangeMinY(double newMinY) { plotSettings.setCurrentRangeMinY(newMinY); }
+void rsPlot::setCurrentRangeMaxY(double newMaxY) { plotSettings.setCurrentRangeMaxY(newMaxY); }
 
-void rsPlot::setCurrentRangeY(double newMinY, double newMaxY)
-{
-  plotSettings.setCurrentRangeY(newMinY, newMaxY);
-}
 
-void rsPlot::setCurrentRangeMinX(double newMinX)
-{
-  plotSettings.setCurrentRangeMinX(newMinX);
-}
-
-void rsPlot::setCurrentRangeMaxX(double newMaxX)
-{
-  plotSettings.setCurrentRangeMaxX(newMaxX);
-}
-
-void rsPlot::setCurrentRangeMinY(double newMinY)
-{
-  plotSettings.setCurrentRangeMinY(newMinY);
-}
-
-void rsPlot::setCurrentRangeMaxY(double newMaxY)
-{
-  plotSettings.setCurrentRangeMaxY(newMaxY);
-}
 
 String rsPlot::getInfoLineForPixelPosition(int x, int y)
 {

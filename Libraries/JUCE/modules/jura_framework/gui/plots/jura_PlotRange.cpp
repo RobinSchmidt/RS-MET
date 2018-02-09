@@ -55,14 +55,12 @@ void rsPlotRange::setRangeY(double newMinY, double newMaxY)
   }
 }
 
-void rsPlotRange::clipRange(rsPlotRange rangeToClipTo)
+bool rsPlotRange::clipRange(rsPlotRange rangeToClipTo)
 {
-  if( minX < rangeToClipTo.getMinX() )
-    minX = rangeToClipTo.getMinX();
-  if( maxX > rangeToClipTo.getMaxX() )
-    maxX = rangeToClipTo.getMaxX();
-  if( minY < rangeToClipTo.getMinY() )
-    minY = rangeToClipTo.getMinY();
-  if( maxY > rangeToClipTo.getMaxY() )
-    maxY = rangeToClipTo.getMaxY();
+  bool clipped = false;
+  if(minX < rangeToClipTo.getMinX()) { minX = rangeToClipTo.getMinX(); clipped = true;  }
+  if(maxX > rangeToClipTo.getMaxX()) { maxX = rangeToClipTo.getMaxX(); clipped = true;  }
+  if(minY < rangeToClipTo.getMinY()) { minY = rangeToClipTo.getMinY(); clipped = true;  }
+  if(maxY > rangeToClipTo.getMaxY()) { maxY = rangeToClipTo.getMaxY(); clipped = true;  }
+  return clipped;
 }

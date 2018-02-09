@@ -218,6 +218,9 @@ protected:
   /** The currently visible range and maximum range object for the plot. */
   rsPlotRange currentRange, maximumRange;
 
+  /** Clips the visible range to the maximum available range. If the visible range actually changes
+  due to this, it will also send out a rsPlotVisibleRangeChanged notification. */
+  void clipVisibleToMaximumRange();
 
   /** Performs a sanity check */
   //void sanityCheckGridSpacing(double& coarse, bool logScaled);

@@ -43,8 +43,9 @@ public:
   void setRangeY(double newMinY, double newMaxY);
 
   /** Lets the range represented by the member-variables be clipped to another range such that
-  the minima/maxima are no smaller/larger than those of the rangeToClipTo. */
-  void clipRange(rsPlotRange rangeToClipTo);
+  the minima/maxima are no smaller/larger than those of the rangeToClipTo. The return value 
+  informs whether there actually some clipping took place. */
+  bool clipRange(rsPlotRange rangeToClipTo);
 
   /** Compares two ranges for equality. */
   bool operator==(const rsPlotRange& r2) const  
