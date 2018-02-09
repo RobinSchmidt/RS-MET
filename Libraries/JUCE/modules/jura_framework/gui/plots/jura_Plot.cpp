@@ -86,117 +86,82 @@ void rsPlot::rsPlotVisibleRangeChanged(rsPlotSettings* plotSettings)
 
 void rsPlot::setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY)
 {
-  plotSettings.maximumRange.setRangeX(newMinX, newMaxX);
-  plotSettings.maximumRange.setRangeY(newMinY, newMaxY);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setMaximumRange(newMinX, newMaxX, newMinY, newMaxY);
 }
 
 void rsPlot::setMaximumRange(rsPlotRange newMaximumRange)
 {
-  plotSettings.maximumRange = newMaximumRange;
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setMaximumRange(newMaximumRange);
 }
 
 void rsPlot::setMaximumRangeX(double newMinX, double newMaxX)
 {
-  plotSettings.maximumRange.setRangeX(newMinX, newMaxX);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setMaximumRangeX(newMinX, newMaxX);
 }
 
 void rsPlot::setMaximumRangeY(double newMinY, double newMaxY)
 {
-  plotSettings.maximumRange.setRangeY(newMinY, newMaxY);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setMaximumRangeY(newMinY, newMaxY);
 }
 
 void rsPlot::setMaximumRangeMinX(double newMinX)
 {
-  plotSettings.maximumRange.setMinX(newMinX);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setMaximumRangeMinX(newMinX);
 }
 
 void rsPlot::setMaximumRangeMaxX(double newMaxX)
 {
-  plotSettings.maximumRange.setMaxX(newMaxX);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setMaximumRangeMaxX(newMaxX);
 }
 
 void rsPlot::setMaximumRangeMinY(double newMinY)
 {
-  plotSettings.maximumRange.setMinY(newMinY);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setMaximumRangeMinY(newMinY);
 }
 
 void rsPlot::setMaximumRangeMaxY(double newMaxY)
 {
-  plotSettings.maximumRange.setMaxY(newMaxY);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setMaximumRangeMaxY(newMaxY);
 }
 
-void rsPlot::setCurrentRange(double newMinX, double newMaxX, 
-                                       double newMinY, double newMaxY)
+void rsPlot::setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY)
 {
-  plotSettings.currentRange.setRangeX(newMinX, newMaxX);
-  plotSettings.currentRange.setRangeY(newMinY, newMaxY);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setCurrentRange(newMinX, newMaxX, newMinY, newMaxY);
 }
 
 void rsPlot::setCurrentRange(rsPlotRange newRange)
 {
-  plotSettings.currentRange = newRange;
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setCurrentRange(newRange);
 }
 
 void rsPlot::setCurrentRangeX(double newMinX, double newMaxX)
 {
-  plotSettings.currentRange.setRangeX(newMinX, newMaxX);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setCurrentRangeX(newMinX, newMaxX);
 }
 
 void rsPlot::setCurrentRangeY(double newMinY, double newMaxY)
 {
-  plotSettings.currentRange.setRangeY(newMinY, newMaxY);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setCurrentRangeY(newMinY, newMaxY);
 }
 
 void rsPlot::setCurrentRangeMinX(double newMinX)
 {
-  plotSettings.currentRange.setMinX(newMinX);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setCurrentRangeMinX(newMinX);
 }
 
 void rsPlot::setCurrentRangeMaxX(double newMaxX)
 {
-  plotSettings.currentRange.setMaxX(newMaxX);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setCurrentRangeMaxX(newMaxX);
 }
 
 void rsPlot::setCurrentRangeMinY(double newMinY)
 {
-  plotSettings.currentRange.setMinY(newMinY);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setCurrentRangeMinY(newMinY);
 }
 
 void rsPlot::setCurrentRangeMaxY(double newMaxY)
 {
-  plotSettings.currentRange.setMaxY(newMaxY);
-  plotSettings.currentRange.clipRange(plotSettings.maximumRange);
-  updateMapperInputRange();
+  plotSettings.setCurrentRangeMaxY(newMaxY);
 }
 
 String rsPlot::getInfoLineForPixelPosition(int x, int y)
