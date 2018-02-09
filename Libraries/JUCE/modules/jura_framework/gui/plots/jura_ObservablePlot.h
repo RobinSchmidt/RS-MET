@@ -7,10 +7,10 @@
 
 
 
-class MessengingCoordinateSystemOld;
+class rsObservablePlot;
 
-/** This class is an observer for MessengingCoordinateSystemOld objects. Subclasses of this class have to override the callback function
-coordinateSystemChanged in order to respond to any changes in the observed MessengingCoordinateSystemOld object(s). */
+/** This class is an observer for rsObservablePlot objects. Subclasses of this class have to override the callback function
+coordinateSystemChanged in order to respond to any changes in the observed rsObservablePlot object(s). */
 
 class CoordinateSystemOldObserver
 {
@@ -19,9 +19,9 @@ public:
 
   virtual ~CoordinateSystemOldObserver() {}
 
-  /** This is the callback, you must override in order to respond to any changes in the observed MessengingCoordinateSystemOld
+  /** This is the callback, you must override in order to respond to any changes in the observed rsObservablePlot
   object(s). */
-  virtual void coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged) = 0;
+  virtual void coordinateSystemChanged(rsObservablePlot *coordinateSystemThatHasChanged) = 0;
 
   juce_UseDebuggingNewOperator;
 
@@ -39,8 +39,8 @@ multiple inheritance, make sure, that this class comes first - otherwise the att
 address in their changeListenerCallback functions.
 
 Example:
--good: class SpectrumDisplay	: public MessengingCoordinateSystemOld, public CurveFamilyPlot
--bad:  class SpectrumDisplay	: public CurveFamilyPlot, public MessengingCoordinateSystemOld
+-good: class SpectrumDisplay	: public rsObservablePlot, public CurveFamilyPlot
+-bad:  class SpectrumDisplay	: public CurveFamilyPlot, public rsObservablePlot
 
 
 \todo: make some dedicated class CoordinateSystemOldListener or something - this callback-thing with the pointer to void as argument does
@@ -51,7 +51,7 @@ not seem to work reliably (inherited sub-objects may have addresses other than e
 
 */
 
-class MessengingCoordinateSystemOld : virtual public rsPlot
+class rsObservablePlot : virtual public rsPlot
 {
 
 public:
@@ -59,8 +59,8 @@ public:
   //-------------------------------------------------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  MessengingCoordinateSystemOld(const juce::String &name = juce::String("MessangingCoordinateSytem"));
-  virtual ~MessengingCoordinateSystemOld();
+  rsObservablePlot(const juce::String &name = juce::String("MessangingCoordinateSytem"));
+  virtual ~rsObservablePlot();
 
   //-------------------------------------------------------------------------------------------------------------------------------------
   // range-management:
@@ -97,7 +97,7 @@ public:
   virtual void removeAllCoordinateSystemOldObservers();
 
   /** Calls CoordinateSystemOldObserver::coordinateSystemChanged for all our registered observers. */
-  virtual void sendCoordinateSystemChangedMessage(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged);
+  virtual void sendCoordinateSystemChangedMessage(rsObservablePlot *coordinateSystemThatHasChanged);
 
 
   juce_UseDebuggingNewOperator;

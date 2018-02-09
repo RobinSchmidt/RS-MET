@@ -230,7 +230,7 @@ protected:
 
 //=================================================================================================
 
-class SpectrumAnalyzerDisplay	: virtual public MessengingCoordinateSystemOld, 
+class SpectrumAnalyzerDisplay	: virtual public rsObservablePlot, 
   virtual public SpectrumDisplayOld
 {
 
@@ -273,8 +273,7 @@ protected:
 
 //===============================================================================================
 
-class OscilloscopeDisplay	: virtual public MessengingCoordinateSystemOld, 
-  virtual public rsDataPlot
+class OscilloscopeDisplay	: virtual public rsObservablePlot, virtual public rsDataPlot
 {
 
 public:
@@ -364,7 +363,7 @@ public:
   virtual ~OscilloscopeModuleEditor();
 
 
-  virtual void coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged);
+  virtual void coordinateSystemChanged(rsObservablePlot *coordinateSystemThatHasChanged);
   virtual void resized();
   virtual void updateWidgetsAccordingToState();
 
@@ -403,7 +402,7 @@ public:
   SpectrumAnalyzerModuleEditor(CriticalSection *newPlugInLock, SpectrumAnalyzerAudioModule* newSpectrumAnalyzerAudioModule);
 
   virtual void rButtonClicked(RButton *buttonThatWasClicked);
-  virtual void coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged);
+  virtual void coordinateSystemChanged(rsObservablePlot *coordinateSystemThatHasChanged);
   virtual void resized();
   virtual void updateWidgetsAccordingToState();
 

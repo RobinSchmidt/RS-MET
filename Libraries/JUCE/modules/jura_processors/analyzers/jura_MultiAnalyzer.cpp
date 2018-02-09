@@ -190,7 +190,7 @@ SpectrumAnalyzerDisplay::~SpectrumAnalyzerDisplay(void)
 void SpectrumAnalyzerDisplay::useLogarithmicScaleX(bool shouldBeLogScaledX, double newLogBase)
 {
   SpectrumDisplayOld::useLogarithmicScaleX(shouldBeLogScaledX, newLogBase);
-  MessengingCoordinateSystemOld::useLogarithmicScaleX(shouldBeLogScaledX);
+  rsObservablePlot::useLogarithmicScaleX(shouldBeLogScaledX);
 }
 
 void SpectrumAnalyzerDisplay::paint(juce::Graphics &g)
@@ -443,7 +443,7 @@ void OscilloscopeDisplay::setCurrentRange(double newMinX, double newMaxX, double
 {
   newMaxX = jlimit(0.0001, 1.5, newMaxX);
   newMinX = 0.0 - 0.025*newMaxX;
-  MessengingCoordinateSystemOld::setCurrentRange(newMinX, newMaxX, newMinY, newMaxY);
+  rsObservablePlot::setCurrentRange(newMinX, newMaxX, newMinY, newMaxY);
   adjustGrid();
   updateBackgroundImage();
   //repaint();
@@ -728,7 +728,7 @@ OscilloscopeModuleEditor::~OscilloscopeModuleEditor()
   */
 }
 
-void OscilloscopeModuleEditor::coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged)
+void OscilloscopeModuleEditor::coordinateSystemChanged(rsObservablePlot *coordinateSystemThatHasChanged)
 {
   if( oscilloscopeAudioModule == NULL )
     return;
@@ -887,7 +887,7 @@ void SpectrumAnalyzerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
     AudioModuleEditorAnimated::rButtonClicked(buttonThatWasClicked);
 }
 
-void SpectrumAnalyzerModuleEditor::coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged)
+void SpectrumAnalyzerModuleEditor::coordinateSystemChanged(rsObservablePlot *coordinateSystemThatHasChanged)
 {
   if( spectrumAnalyzerAudioModule == NULL )
     return;

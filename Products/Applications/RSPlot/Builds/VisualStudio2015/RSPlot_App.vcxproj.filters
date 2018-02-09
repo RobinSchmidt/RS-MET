@@ -2257,16 +2257,16 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_FunctionPlot.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_InteractiveCoordinateSystemOld.cpp">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_ObservablePlot.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_Plot.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotDrawer.cpp">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotEditor.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotRange.cpp">
@@ -2278,10 +2278,10 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotZoomer.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumPlot.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_WaveformDisplayOld.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_WaveformPlot.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\widget_sets\jura_ColorMapLoader.cpp">
@@ -5697,16 +5697,16 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_FunctionPlot.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_InteractiveCoordinateSystemOld.h">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_ObservablePlot.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_Plot.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotDrawer.h">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotEditor.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotRange.h">
@@ -5718,10 +5718,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotZoomer.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumPlot.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_WaveformDisplayOld.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_WaveformPlot.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\widget_sets\jura_ColorMapLoader.h">
