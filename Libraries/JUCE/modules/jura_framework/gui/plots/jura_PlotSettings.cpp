@@ -44,6 +44,123 @@ rsPlotSettings::rsPlotSettings()
   stringConversionForAxisY = &valueToString0;
 }
 
+// setup:
+
+void rsPlotSettings::setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY)
+{
+  maximumRange.setRangeX(newMinX, newMaxX);
+  maximumRange.setRangeY(newMinY, newMaxY);
+  currentRange.clipRange(maximumRange); // if this clipping actually changes the visible range
+  sendMaximumRangeChangeNotification();              // we should send out a vsisbleRangeChangeNotification too
+}
+
+void rsPlotSettings::setMaximumRange(rsPlotRange newMaximumRange)
+{
+  maximumRange = newMaximumRange;
+  currentRange.clipRange(maximumRange);
+  sendMaximumRangeChangeNotification();
+}
+
+void rsPlotSettings::setMaximumRangeX(double newMinX, double newMaxX)
+{
+  maximumRange.setRangeX(newMinX, newMaxX);
+  currentRange.clipRange(maximumRange);
+  sendMaximumRangeChangeNotification();
+}
+
+void rsPlotSettings::setMaximumRangeY(double newMinY, double newMaxY)
+{
+  maximumRange.setRangeY(newMinY, newMaxY);
+  currentRange.clipRange(maximumRange);
+  sendMaximumRangeChangeNotification();
+}
+
+void rsPlotSettings::setMaximumRangeMinX(double newMinX)
+{
+  maximumRange.setMinX(newMinX);
+  currentRange.clipRange(maximumRange);
+  sendMaximumRangeChangeNotification();
+}
+
+void rsPlotSettings::setMaximumRangeMaxX(double newMaxX)
+{
+  maximumRange.setMaxX(newMaxX);
+  currentRange.clipRange(maximumRange);
+  sendMaximumRangeChangeNotification();
+}
+
+void rsPlotSettings::setMaximumRangeMinY(double newMinY)
+{
+  maximumRange.setMinY(newMinY);
+  currentRange.clipRange(maximumRange);
+  sendMaximumRangeChangeNotification();
+}
+
+void rsPlotSettings::setMaximumRangeMaxY(double newMaxY)
+{
+  maximumRange.setMaxY(newMaxY);
+  currentRange.clipRange(maximumRange);
+  sendMaximumRangeChangeNotification();
+}
+
+void rsPlotSettings::setCurrentRange(double newMinX, double newMaxX, 
+  double newMinY, double newMaxY)
+{
+  currentRange.setRangeX(newMinX, newMaxX);
+  currentRange.setRangeY(newMinY, newMaxY);
+  currentRange.clipRange(maximumRange);
+  sendVisibleRangeChangeNotification();
+}
+
+void rsPlotSettings::setCurrentRange(rsPlotRange newRange)
+{
+  currentRange = newRange;
+  currentRange.clipRange(maximumRange);
+  sendVisibleRangeChangeNotification();
+}
+
+void rsPlotSettings::setCurrentRangeX(double newMinX, double newMaxX)
+{
+  currentRange.setRangeX(newMinX, newMaxX);
+  currentRange.clipRange(maximumRange);
+  sendVisibleRangeChangeNotification();
+}
+
+void rsPlotSettings::setCurrentRangeY(double newMinY, double newMaxY)
+{
+  currentRange.setRangeY(newMinY, newMaxY);
+  currentRange.clipRange(maximumRange);
+  sendVisibleRangeChangeNotification();
+}
+
+void rsPlotSettings::setCurrentRangeMinX(double newMinX)
+{
+  currentRange.setMinX(newMinX);
+  currentRange.clipRange(maximumRange);
+  sendVisibleRangeChangeNotification();
+}
+
+void rsPlotSettings::setCurrentRangeMaxX(double newMaxX)
+{
+  currentRange.setMaxX(newMaxX);
+  currentRange.clipRange(maximumRange);
+  sendVisibleRangeChangeNotification();
+}
+
+void rsPlotSettings::setCurrentRangeMinY(double newMinY)
+{
+  currentRange.setMinY(newMinY);
+  currentRange.clipRange(maximumRange);
+  sendVisibleRangeChangeNotification();
+}
+
+void rsPlotSettings::setCurrentRangeMaxY(double newMaxY)
+{
+  currentRange.setMaxY(newMaxY);
+  currentRange.clipRange(maximumRange);
+  sendVisibleRangeChangeNotification();
+}
+
 // observation:
 
 void rsPlotSettings::sendAppearenceChangeNotification()
