@@ -12,7 +12,6 @@ CoordinateSystemOld::CoordinateSystemOld(const String &newDescription)
   // initialize the component-size and the image-size to 1x1 pixels, without
   // such initializations, a JUCE-breakpoint will be triggered or other screws
   // happen:
-  backgroundImage = NULL;
   backgroundImage = new Image(Image::RGB, 1, 1, true);
   //backgroundImage->duplicateIfShared(); // nah - call this on the copies
   setBounds(0, 0, 1, 1);
@@ -26,26 +25,12 @@ CoordinateSystemOld::CoordinateSystemOld(const String &newDescription)
   setMouseCursor(currentMouseCursor);
   showPositionAsDescription = false;
   showPopUpOnRightClick     = false;
-
-  /*
-  // the Label for inspecting the current frequency ane level:
-  inspectionField = new TextEditor( String(T("inspectionField")) );
-  inspectionField->setBounds(4, 4, 120, 40);
-  inspectionField->setColour(TextEditor::backgroundColourId, Colours::white.withAlpha(0.7f) );
-  inspectionField->setColour(TextEditor::outlineColourId,    Colours::black );
-  inspectionField->setCaretVisible(false);
-  inspectionField->setScrollbarsShown(false);
-  inspectionField->setReadOnly(true);
-  inspectionField->setMultiLine(true);
-  addChildComponent( inspectionField );
-  */
 }
 
 CoordinateSystemOld::~CoordinateSystemOld()
 {
-  deleteAllChildren();
-  if( backgroundImage != NULL )
-    delete backgroundImage;
+  deleteAllChildren(); // ?  
+  delete backgroundImage;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -739,8 +724,6 @@ void CoordinateSystemOld::useLogarithmicScaleY(bool   shouldBeLogScaledY,
   plotSettings.logScaledY = shouldBeLogScaledY;
   updateMapperInputRange();
 }
-
-
 
 /*
 void CoordinateSystemOld::setValueFieldPopup(bool shouldPopUp)

@@ -39,85 +39,67 @@ public:
   //-----------------------------------------------------------------------------------------------
   // range-management (split in range setup and range inquiry, inline inquiry functions):
 
-  virtual void setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
-  /**< Sets the maximum for the currently visible range. For logarithmic x- and/or y-axis-scaling,
+  /** Sets the maximum for the currently visible range. For logarithmic x- and/or y-axis-scaling,
   make sure that the respective minimum value is greater than zero! */
+  virtual void setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
 
+  /** Sets the maximum for the currently visible range. */
   virtual void setMaximumRange(rsPlotRange newMaximumRange);
-  /**< Sets the maximum for the currently visible range. */
 
+  /** Sets the maximum visible range for the y-axis. */
   virtual void setMaximumRangeX(double newMinX, double newMaxX);
-  /**< Sets the maximum visible range for the y-axis. */
 
+  /** Sets the maximum visible range for the y-axis. */
   virtual void setMaximumRangeY(double newMinY, double newMaxY);
-  /**< Sets the maximum visible range for the y-axis. */
 
-  virtual rsPlotRange getMaximumRange() { return plotSettings.maximumRange; }
-  /**< Returns the maximum for the currently visible range. */
-
+  /** Sets the minimum value for the range of x. */
   virtual void setMaximumRangeMinX(double newMinX);
-  /**< Sets the minimum value for the range of x. */
 
-  virtual double getMaximumRangeMinX() { return plotSettings.maximumRange.getMinX(); }
-  /**< Returns the minimum value for the range of x. */
-
+  /** Sets the maximum value for the range of x. */
   virtual void setMaximumRangeMaxX(double newMaxX);
-  /**< Sets the maximum value for the range of x. */
 
-  virtual double getMaximumRangeMaxX() { return plotSettings.maximumRange.getMaxX(); }
-  /**< Returns the maximum value for the range of x. */
-
+  /** Sets the minimum value for the range of y. */
   virtual void setMaximumRangeMinY(double newMinY);
-  /**< Sets the minimum value for the range of y. */
 
-  virtual double getMaximumRangeMinY() { return plotSettings.maximumRange.getMinY(); }
-  /**< Returns the minimum value for the range of y. */
-
+  /** Sets the maximum value for the range of y. */
   virtual void setMaximumRangeMaxY(double newMaxY);
-  /**< Sets the maximum value for the range of y. */
 
-  virtual double getMaximumRangeMaxY() { return plotSettings.maximumRange.getMaxY(); }
-  /**< Returns the maximum value for the range of y. */
-
-  virtual void setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
-  /**< Sets the currently visible range. For logarithmic x- and/or y-axis-scaling, make sure that
+  /** Sets the currently visible range. For logarithmic x- and/or y-axis-scaling, make sure that
   the respective minimum value is greater than zero! */
+  virtual void setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
 
+  /** Sets the currently visible range. */
   virtual void setCurrentRange(rsPlotRange newRange);
-  /**< Sets the currently visible range. */
 
+  /** Sets the currently visible range for the y-axis. */
   virtual void setCurrentRangeX(double newMinX, double newMaxX);
-  /**< Sets the currently visible range for the y-axis. */
 
+  /** Sets the currently visible range for the y-axis. */
   virtual void setCurrentRangeY(double newMinY, double newMaxY);
-  /**< Sets the currently visible range for the y-axis. */
 
-  virtual rsPlotRange getCurrentRange() { return plotSettings.currentRange; }
-  /**< Returns the currently visible range. */
-
+  /** Sets the minimum value of x. */
   virtual void setCurrentRangeMinX(double newMinX);
-  /**< Sets the minimum value of x. */
 
-  virtual double getCurrentRangeMinX() { return plotSettings.currentRange.getMinX(); }
-  /**< Returns the minimum value of x. */
-
+  /** Sets the maximum value of x. */
   virtual void setCurrentRangeMaxX(double newMaxX);
-  /**< Sets the maximum value of x. */
 
-  virtual double getCurrentRangeMaxX() { return plotSettings.currentRange.getMaxX(); }
-  /**< Returns the maximum value of x. */
-
+  /** Sets the minimum value of y. */
   virtual void setCurrentRangeMinY(double newMinY);
-  /**< Sets the minimum value of y. */
 
-  virtual double getCurrentRangeMinY() { return plotSettings.currentRange.getMinY(); }
-  /**< Returns the minimum value of y. */
-
+  /** Sets the maximum value of y. */
   virtual void setCurrentRangeMaxY(double newMaxY);
-  /**< Sets the maximum value of y. */
 
-  virtual double getCurrentRangeMaxY() { return plotSettings.currentRange.getMaxY(); }
-  /**< Returns the maximum value of y. */
+
+  rsPlotRange getMaximumRange() const { return plotSettings.maximumRange; }
+  rsPlotRange getCurrentRange() const { return plotSettings.currentRange; }
+  double getMaximumRangeMinX() const { return plotSettings.maximumRange.getMinX(); }
+  double getMaximumRangeMaxX() const { return plotSettings.maximumRange.getMaxX(); }
+  double getMaximumRangeMinY() const { return plotSettings.maximumRange.getMinY(); }
+  double getMaximumRangeMaxY() const { return plotSettings.maximumRange.getMaxY(); }
+  double getCurrentRangeMinX() const { return plotSettings.currentRange.getMinX(); }
+  double getCurrentRangeMaxX() const { return plotSettings.currentRange.getMaxX(); }
+  double getCurrentRangeMinY() const { return plotSettings.currentRange.getMinY(); }
+  double getCurrentRangeMaxY() const { return plotSettings.currentRange.getMaxY(); }
 
   /** Returns a string that represents the info-line to be shown when mouse is over pixel (x,y). */
   virtual juce::String getInfoLineForPixelPosition(int x, int y);
@@ -357,39 +339,27 @@ protected:
   /** Draws the coordinate system background. */
   virtual void drawCoordinateSystem(Graphics &g);
 
-
-
-
-  //virtual void transformToComponentsCoordinates(double &x, double &y);
-  /**< Function for converting the x- and y-coordinate values into the corresponding coordinates in
-  the component (double precision version).*/
-
-  //virtual void transformToComponentsCoordinates(float &x, float &y);
-  /**< Function for converting the x- and y-coordinate values into the corresponding coordinates in
-  the component (single precision version).*/
-
-  //virtual void transformFromComponentsCoordinates(double &x, double &y);
-  /**< Function for converting the x- and y-coordinate values measured in the components coordinate
-  system to the corresponding coordinates of our plot (double precision version). */
-
-  //virtual void transformFromComponentsCoordinates(float &x, float &y);
-  /**< Function for converting the x- and y-coordinate values measured in the components coordinate
-  system to the corresponding coordinates of our plot (single precision version). */
-
   // convenience functions, rename to toPixelCoords, fromPixelCoords
 
+  /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
+  the component (double precision version).*/
   void transformToComponentsCoordinates(double &x, double &y)
   { x = coordinateMapper.mapX(x); y = coordinateMapper.mapY(y); }
 
+  /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
+  the component (single precision version).*/
   void transformToComponentsCoordinates(float &x, float &y)
   { x = (float) coordinateMapper.mapX(x); y = (float) coordinateMapper.mapY(y); }
 
+  /** Function for converting the x- and y-coordinate values measured in the components coordinate
+  system to the corresponding coordinates of our plot (double precision version). */
   void transformFromComponentsCoordinates(double &x, double &y)
   { x = coordinateMapper.unmapX(x); y = coordinateMapper.unmapY(y); }
 
+  /**< Function for converting the x- and y-coordinate values measured in the components coordinate
+  system to the corresponding coordinates of our plot (single precision version). */
   void transformFromComponentsCoordinates(float &x, float &y)
   { x = (float) coordinateMapper.unmapX(x); y = (float) coordinateMapper.unmapY(y); }
-
 
 
   /** Updates the image object (re-draws it). Will be called, when something about the
@@ -406,9 +376,7 @@ protected:
   /** Updates the input range of our coordinate mapper. */
   void updateMapperInputRange();
 
-
   rsPlotSettings plotSettings;
-
 
   // new - to be used soon in the drawing code:
   RAPT::rsCoordinateMapper2D<double> coordinateMapper; 
@@ -416,10 +384,8 @@ protected:
     // pixel-coordinates to component coordinates for node-editing..but maybe that can be handled
     // in rsNodeEditor? i think, it has a mapper itself?
 
-
   bool showPositionAsDescription;
   bool showPopUpOnRightClick;
-
 
   Image*  backgroundImage;
   /**< This image will be used for the appearance of the coodinate system, it will be updated via
