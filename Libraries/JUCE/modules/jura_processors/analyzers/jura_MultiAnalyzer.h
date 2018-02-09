@@ -380,7 +380,7 @@ protected:
   RNamedComboBox *syncModeComboBox;
 
   OscilloscopeDisplay       *oscilloscopeDisplay;
-  CoordinateSystemZoomerOld *oscilloscopeZoomer;
+  rsPlotZoomer *oscilloscopeZoomer;
 
 
   //// signal buffers for display:
@@ -419,7 +419,7 @@ protected:
   RNamedComboBox *fftSizeComboBox;
 
   SpectrumAnalyzerDisplay   *spectrumDisplay;
-  CoordinateSystemZoomerOld *spectrumZoomer;
+  rsPlotZoomer *spectrumZoomer;
 
 };
 

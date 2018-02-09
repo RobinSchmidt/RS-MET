@@ -1168,10 +1168,10 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
 
   snapToTimeGridButton->setToggleState(delayPlotEditor->isSnappingToFineGridX(), false);
 
-  delayPlotZoomer = new CoordinateSystemZoomerOld();
+  delayPlotZoomer = new rsPlotZoomer();
   //delayPlotZoomer->setRelativeMargins(5.0, 5.0, 10.0, 10.0);
   delayPlotZoomer->setDescriptionField(infoField, true);
-  delayPlotZoomer->setVerticalMouseWheelMode(CoordinateSystemZoomerOld::horizontalZoomViaVerticalMouseWheel);
+  delayPlotZoomer->setVerticalMouseWheelMode(rsPlotZoomer::horizontalZoomViaVerticalMouseWheel);
   addChildColourSchemeComponent(delayPlotZoomer);
   delayPlotZoomer->setCoordinateSystem(delayPlotEditor);
 

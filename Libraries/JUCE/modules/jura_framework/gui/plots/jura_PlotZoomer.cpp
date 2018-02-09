@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-CoordinateSystemZoomerOld::CoordinateSystemZoomerOld()
+rsPlotZoomer::rsPlotZoomer()
 {
   // init member variables:
   theCoordinateSystem     = NULL;
@@ -71,7 +71,7 @@ CoordinateSystemZoomerOld::CoordinateSystemZoomerOld()
   zoomToAllButtonXY->setClickingTogglesState(false);
 }
 
-CoordinateSystemZoomerOld::~CoordinateSystemZoomerOld()
+rsPlotZoomer::~rsPlotZoomer()
 {
   deleteAllChildren();
 }
@@ -79,7 +79,7 @@ CoordinateSystemZoomerOld::~CoordinateSystemZoomerOld()
 //-------------------------------------------------------------------------------------------------
 // parameter-settings:
 
-void CoordinateSystemZoomerOld::setCoordinateSystem(rsPlot *newSystemToBeShown)
+void rsPlotZoomer::setCoordinateSystem(rsPlot *newSystemToBeShown)
 {
   // assign the pointer to the new rsPlot:
   theCoordinateSystem = newSystemToBeShown;
@@ -91,12 +91,12 @@ void CoordinateSystemZoomerOld::setCoordinateSystem(rsPlot *newSystemToBeShown)
   updateScrollbars();
 }
 
-void CoordinateSystemZoomerOld::invalidateCoordinateSystemPointer()
+void rsPlotZoomer::invalidateCoordinateSystemPointer()
 {
   theCoordinateSystem = NULL;
 }
 
-void CoordinateSystemZoomerOld::setWidgetDescriptionField(RTextField* newDescriptionField)
+void rsPlotZoomer::setWidgetDescriptionField(RTextField* newDescriptionField)
 {
   zoomInButtonX->setDescriptionField(newDescriptionField);
   zoomOutButtonX->setDescriptionField(newDescriptionField);
@@ -107,12 +107,12 @@ void CoordinateSystemZoomerOld::setWidgetDescriptionField(RTextField* newDescrip
   zoomToAllButtonXY->setDescriptionField(newDescriptionField);
 }
 
-void CoordinateSystemZoomerOld::setVerticalMouseWheelMode(int newMode)
+void rsPlotZoomer::setVerticalMouseWheelMode(int newMode)
 {
   verticalMouseWheelMode = newMode;
 }
 
-void CoordinateSystemZoomerOld::setRelativeMargins(double newRelativeMarginLeft,                                        
+void rsPlotZoomer::setRelativeMargins(double newRelativeMarginLeft,                                        
   double newRelativeMarginRight, double newRelativeMarginTop, double newRelativeMarginBottom)
 {
   jassert(newRelativeMarginLeft   >= 0.0);
@@ -133,7 +133,7 @@ void CoordinateSystemZoomerOld::setRelativeMargins(double newRelativeMarginLeft,
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void CoordinateSystemZoomerOld::rButtonClicked(RButton* button)
+void rsPlotZoomer::rButtonClicked(RButton* button)
 {
   // check, if we have a valid pointer to a rsPlot:
   if( theCoordinateSystem == NULL ) 
@@ -155,7 +155,7 @@ void CoordinateSystemZoomerOld::rButtonClicked(RButton* button)
     zoomToAllXY();
 }
 
-void CoordinateSystemZoomerOld::scrollBarMoved(RScrollBar *scrollBarThatHasMoved, 
+void rsPlotZoomer::scrollBarMoved(RScrollBar *scrollBarThatHasMoved, 
   const double newRangeStart)
 {
   // check, if we have a valid pointer to a rsPlot:
@@ -183,10 +183,10 @@ void CoordinateSystemZoomerOld::scrollBarMoved(RScrollBar *scrollBarThatHasMoved
   }
 }
 
-//void CoordinateSystemZoomerOld::mouseWheelMove(const MouseEvent& e, 
+//void rsPlotZoomer::mouseWheelMove(const MouseEvent& e, 
 //                                            float wheelIncrementX, 
 //                                            float wheelIncrementY)
-void CoordinateSystemZoomerOld::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails &wheel)
+void rsPlotZoomer::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails &wheel)
 {
   // ToDo: the mouseEvent class has also such a thing as horizontal mouse-wheel events - someday
   // we may want to respond to those also...
@@ -242,7 +242,7 @@ void CoordinateSystemZoomerOld::mouseWheelMove(const MouseEvent& e, const MouseW
 }
 
 // forwarding of mouse-events to the rsPlot which are not handled by the zoomer:
-void CoordinateSystemZoomerOld::mouseMove(const MouseEvent& e) 
+void rsPlotZoomer::mouseMove(const MouseEvent& e) 
 { 
   if (theCoordinateSystem != NULL) 
   {
@@ -251,7 +251,7 @@ void CoordinateSystemZoomerOld::mouseMove(const MouseEvent& e)
   }
 }
 
-void CoordinateSystemZoomerOld::mouseEnter(const MouseEvent& e) 
+void rsPlotZoomer::mouseEnter(const MouseEvent& e) 
 { 
   if (theCoordinateSystem != NULL) 
   {
@@ -260,7 +260,7 @@ void CoordinateSystemZoomerOld::mouseEnter(const MouseEvent& e)
   }
 }
 
-void CoordinateSystemZoomerOld::mouseExit(const MouseEvent& e) 
+void rsPlotZoomer::mouseExit(const MouseEvent& e) 
 { 
   if (theCoordinateSystem != NULL) 
   {
@@ -269,7 +269,7 @@ void CoordinateSystemZoomerOld::mouseExit(const MouseEvent& e)
   }
 }
 
-void CoordinateSystemZoomerOld::mouseDown(const MouseEvent& e) 
+void rsPlotZoomer::mouseDown(const MouseEvent& e) 
 {
   // zoom to all on middle button
   if( e.mods.isMiddleButtonDown() )
@@ -281,7 +281,7 @@ void CoordinateSystemZoomerOld::mouseDown(const MouseEvent& e)
   }
 }
 
-void CoordinateSystemZoomerOld::mouseDrag(const MouseEvent& e) 
+void rsPlotZoomer::mouseDrag(const MouseEvent& e) 
 { 
   if (theCoordinateSystem != NULL) 
   {
@@ -290,7 +290,7 @@ void CoordinateSystemZoomerOld::mouseDrag(const MouseEvent& e)
   }
 }
 
-void CoordinateSystemZoomerOld::mouseUp(const MouseEvent& e) 
+void rsPlotZoomer::mouseUp(const MouseEvent& e) 
 { 
   if (theCoordinateSystem != NULL) 
   {
@@ -299,7 +299,7 @@ void CoordinateSystemZoomerOld::mouseUp(const MouseEvent& e)
   }
 }
 
-void CoordinateSystemZoomerOld::mouseDoubleClick(const MouseEvent& e) 
+void rsPlotZoomer::mouseDoubleClick(const MouseEvent& e) 
 { 
   if (theCoordinateSystem != NULL) 
   {
@@ -308,7 +308,7 @@ void CoordinateSystemZoomerOld::mouseDoubleClick(const MouseEvent& e)
   }
 }
 
-void CoordinateSystemZoomerOld::paint(Graphics &g)
+void rsPlotZoomer::paint(Graphics &g)
 {
 
 }
@@ -316,7 +316,7 @@ void CoordinateSystemZoomerOld::paint(Graphics &g)
 //-------------------------------------------------------------------------------------------------
 // manipulation of the coordinate-system:
 
-void CoordinateSystemZoomerOld::shiftX(double shiftAmount)
+void rsPlotZoomer::shiftX(double shiftAmount)
 {
   if( theCoordinateSystem == NULL ) 
     return;
@@ -353,7 +353,7 @@ void CoordinateSystemZoomerOld::shiftX(double shiftAmount)
   theCoordinateSystem->setCurrentRangeX(x1, x2);
 }
 
-void CoordinateSystemZoomerOld::shiftY(double shiftAmount)
+void rsPlotZoomer::shiftY(double shiftAmount)
 {
   if( theCoordinateSystem == NULL ) 
     return;
@@ -390,7 +390,7 @@ void CoordinateSystemZoomerOld::shiftY(double shiftAmount)
   theCoordinateSystem->setCurrentRangeY(y1, y2);
 }
 
-void CoordinateSystemZoomerOld::zoomX(double zoomFactor, double relativeCenter)
+void rsPlotZoomer::zoomX(double zoomFactor, double relativeCenter)
 {
   // check, if we have a valid pointer to a rsPlot:
   if( theCoordinateSystem == NULL ) 
@@ -430,7 +430,7 @@ void CoordinateSystemZoomerOld::zoomX(double zoomFactor, double relativeCenter)
   updateScrollbars();
 }
 
-void CoordinateSystemZoomerOld::zoomY(double zoomFactor, double relativeCenter)
+void rsPlotZoomer::zoomY(double zoomFactor, double relativeCenter)
 {
   double y1, y2, center, bottom, top;
 
@@ -465,7 +465,7 @@ void CoordinateSystemZoomerOld::zoomY(double zoomFactor, double relativeCenter)
   updateScrollbars();
 }
 
-void CoordinateSystemZoomerOld::zoomToAllX()
+void rsPlotZoomer::zoomToAllX()
 {
   if( theCoordinateSystem == NULL ) 
     return;
@@ -474,7 +474,7 @@ void CoordinateSystemZoomerOld::zoomToAllX()
   updateScrollbars();
 }
 
-void CoordinateSystemZoomerOld::zoomToAllY()
+void rsPlotZoomer::zoomToAllY()
 {
   if( theCoordinateSystem == NULL ) 
     return;
@@ -483,7 +483,7 @@ void CoordinateSystemZoomerOld::zoomToAllY()
   updateScrollbars();
 }
 
-void CoordinateSystemZoomerOld::zoomToAllXY()
+void rsPlotZoomer::zoomToAllXY()
 {
   // check, if we have a valid pointer to a rsPlot:
   if( theCoordinateSystem == NULL ) 
@@ -493,7 +493,7 @@ void CoordinateSystemZoomerOld::zoomToAllXY()
 }
 
 /*
-void CoordinateSystemZoomerOld::setCurrentRangeAndUpdateScrollBarsX(double newMinX, double newMaxX)
+void rsPlotZoomer::setCurrentRangeAndUpdateScrollBarsX(double newMinX, double newMaxX)
 {
   if( theCoordinateSystem == NULL ) 
     return;
@@ -508,19 +508,19 @@ void CoordinateSystemZoomerOld::setCurrentRangeAndUpdateScrollBarsX(double newMi
 //-------------------------------------------------------------------------------------------------
 // appearance-setup:
 
-void CoordinateSystemZoomerOld::hideScrollBarX(bool shouldBeHidden)
+void rsPlotZoomer::hideScrollBarX(bool shouldBeHidden)
 {
   scrollBarIsHiddenX = shouldBeHidden;
   scrollBarX->setVisible(!scrollBarIsHiddenX);
 }
 
-void CoordinateSystemZoomerOld::hideScrollBarY(bool shouldBeHidden)
+void rsPlotZoomer::hideScrollBarY(bool shouldBeHidden)
 {
   scrollBarIsHiddenY = shouldBeHidden;
   scrollBarY->setVisible(!scrollBarIsHiddenY);
 }
 
-void CoordinateSystemZoomerOld::alignWidgetsToCoordinateSystem()
+void rsPlotZoomer::alignWidgetsToCoordinateSystem()
 {
   // check, if we have a valid pointer to a rsPlot:
   if( theCoordinateSystem == NULL ) 
@@ -570,7 +570,7 @@ void CoordinateSystemZoomerOld::alignWidgetsToCoordinateSystem()
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void CoordinateSystemZoomerOld::updateScrollbars()
+void rsPlotZoomer::updateScrollbars()
 {
   if( theCoordinateSystem == NULL ) 
     return;
@@ -594,7 +594,7 @@ void CoordinateSystemZoomerOld::updateScrollbars()
   scrollBarY->setSingleStepSize(0.1*h);
 }
 
-double CoordinateSystemZoomerOld::transformToScrollBarCoordinateX(double x)
+double rsPlotZoomer::transformToScrollBarCoordinateX(double x)
 {
   if( theCoordinateSystem == NULL ) 
     return 0.0;
@@ -610,7 +610,7 @@ double CoordinateSystemZoomerOld::transformToScrollBarCoordinateX(double x)
   }
 }
 
-double CoordinateSystemZoomerOld::transformFromScrollBarCoordinateX(double x)
+double rsPlotZoomer::transformFromScrollBarCoordinateX(double x)
 {
   if( theCoordinateSystem == NULL ) 
     return 0.0;
@@ -626,7 +626,7 @@ double CoordinateSystemZoomerOld::transformFromScrollBarCoordinateX(double x)
   }
 }
 
-double CoordinateSystemZoomerOld::transformToScrollBarCoordinateY(double y)
+double rsPlotZoomer::transformToScrollBarCoordinateY(double y)
 {
   if( theCoordinateSystem == NULL ) 
     return 0.0;
@@ -642,7 +642,7 @@ double CoordinateSystemZoomerOld::transformToScrollBarCoordinateY(double y)
   }
 }
 
-double CoordinateSystemZoomerOld::transformFromScrollBarCoordinateY(double y)
+double rsPlotZoomer::transformFromScrollBarCoordinateY(double y)
 {
   if( theCoordinateSystem == NULL ) 
     return 0.0;

@@ -1,5 +1,5 @@
-#ifndef jura_CoordinateSystemZoomerOld_h
-#define jura_CoordinateSystemZoomerOld_h
+#ifndef jura_PlotZoomer_h
+#define jura_PlotZoomer_h
 
 /** This a class for a rsPlot with zooming and scrolling capabilities. It has a 
 pointer to the actual rsPlot (or some subclass thereof) object for which the zooming 
@@ -8,7 +8,7 @@ otherwise it will be NULL and emptyness will be shown.
 
 \todo: y-zoom on shift/or ctrl-wheel */
 
-class JUCE_API CoordinateSystemZoomerOld : public ColourSchemeComponent, public RButtonListener, 
+class JUCE_API rsPlotZoomer : public ColourSchemeComponent, public RButtonListener, 
   public RScrollBarListener
 {
 
@@ -26,10 +26,10 @@ public:
   };
 
   /** Constructor. */
-  CoordinateSystemZoomerOld();
+  rsPlotZoomer();
 
   /** Destructor. */
-  virtual ~CoordinateSystemZoomerOld();
+  virtual ~rsPlotZoomer();
 
   //-----------------------------------------------------------------------------------------------
   // setup:

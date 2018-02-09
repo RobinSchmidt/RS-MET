@@ -243,7 +243,7 @@ protected:
 
   // plot and related stuff:
   ModulatorCurveEditor*      breakpointEditor;
-  CoordinateSystemZoomerOld* breakpointZoomer;
+  rsPlotZoomer* breakpointZoomer;
 
   juce_UseDebuggingNewOperator;
 };

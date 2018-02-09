@@ -320,7 +320,7 @@ protected:
   EchoLabAudioModule *echoLabModuleToEdit;
 
   EchoLabPlotEditor         *delayPlotEditor;
-  CoordinateSystemZoomerOld *delayPlotZoomer;
+  rsPlotZoomer *delayPlotZoomer;
 
   RSlider           *dryWetSlider, *wetLevelSlider;
   RButton           *snapToTimeGridButton, *delaySyncButton;

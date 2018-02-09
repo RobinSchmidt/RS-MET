@@ -543,9 +543,9 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   addPlot(breakpointEditor);
 
   // create the zoomer for the breakpointEditor and associate it with the breakpointEditor:
-  breakpointZoomer = new CoordinateSystemZoomerOld();
+  breakpointZoomer = new rsPlotZoomer();
   breakpointZoomer->setRelativeMargins(5.0, 5.0, 10.0, 10.0);
-  breakpointZoomer->setVerticalMouseWheelMode(CoordinateSystemZoomerOld
+  breakpointZoomer->setVerticalMouseWheelMode(rsPlotZoomer
     ::horizontalZoomViaVerticalMouseWheel);
   addChildColourSchemeComponent(breakpointZoomer);
   breakpointZoomer->setCoordinateSystem(breakpointEditor);

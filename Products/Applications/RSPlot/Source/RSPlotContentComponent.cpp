@@ -41,11 +41,11 @@ RSPlotContentComponent::RSPlotContentComponent(
   curveFamilyPlot->setCurveFamilyValues(100, 1, xFamilyPointer, yFamilyPointer);
   addAndMakeVisible(curveFamilyPlot);
 
-  zoomer2D = new CoordinateSystemZoomerOld();
+  zoomer2D = new rsPlotZoomer();
   zoomer2D->setZoomerSize(16);
   zoomer2D->setRelativeMargins(0.0, 0.0, 0.0, 0.0);
   zoomer2D->setCoordinateSystem(curveFamilyPlot);
-  zoomer2D->setVerticalMouseWheelMode(CoordinateSystemZoomerOld::zoomViaVerticalMouseWheel);
+  zoomer2D->setVerticalMouseWheelMode(rsPlotZoomer::zoomViaVerticalMouseWheel);
   addAndMakeVisible(zoomer2D);
 
   // select the surface-plot component as current plotter by default:

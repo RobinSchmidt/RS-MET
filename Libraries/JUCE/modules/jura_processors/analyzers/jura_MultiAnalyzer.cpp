@@ -700,11 +700,11 @@ OscilloscopeModuleEditor::OscilloscopeModuleEditor(CriticalSection *newPlugInLoc
   addPlot( oscilloscopeDisplay = new OscilloscopeDisplay(juce::String("OscilloscopeDisplay")) );
   oscilloscopeDisplay->addCoordinateSystemOldObserver(this);
 
-  addChildColourSchemeComponent( oscilloscopeZoomer = new CoordinateSystemZoomerOld() );
+  addChildColourSchemeComponent( oscilloscopeZoomer = new rsPlotZoomer() );
   oscilloscopeZoomer->setZoomerSize(16);
   oscilloscopeZoomer->setCoordinateSystem(oscilloscopeDisplay);
   oscilloscopeZoomer->hideScrollBarX(true);
-  oscilloscopeZoomer->setVerticalMouseWheelMode(CoordinateSystemZoomerOld::horizontalZoomViaVerticalMouseWheel);
+  oscilloscopeZoomer->setVerticalMouseWheelMode(rsPlotZoomer::horizontalZoomViaVerticalMouseWheel);
 
   /*
   timeAxis = NULL;
@@ -868,10 +868,10 @@ SpectrumAnalyzerModuleEditor::SpectrumAnalyzerModuleEditor(CriticalSection *newP
   maxY = moduleToEdit->getParameterByName("MaxLevel")->getValue();
   spectrumDisplay->setCurrentRange(minX, maxX, minY, maxY);
 
-  addChildColourSchemeComponent( spectrumZoomer = new CoordinateSystemZoomerOld() );
+  addChildColourSchemeComponent( spectrumZoomer = new rsPlotZoomer() );
   spectrumZoomer->setZoomerSize(16);
   spectrumZoomer->setCoordinateSystem(spectrumDisplay);
-  spectrumZoomer->setVerticalMouseWheelMode(CoordinateSystemZoomerOld::horizontalZoomViaVerticalMouseWheel);
+  spectrumZoomer->setVerticalMouseWheelMode(rsPlotZoomer::horizontalZoomViaVerticalMouseWheel);
 
   updateWidgetsAccordingToState();
 }

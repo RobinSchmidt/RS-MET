@@ -1,11 +1,7 @@
-#ifndef jura_CurveFamilyPlotOld_h
-#define jura_CurveFamilyPlotOld_h
+#ifndef jura_DataPlot_h
+#define jura_DataPlot_h
 
-/** 
-
-\todo 
--rename to rsDataPlot (as opposed to rsFunctionPlot that uses a std::function)
-*/
+/** A subclass for plots that are based on data, i.e. arrays of x,y values. */
 
 class JUCE_API rsDataPlot : virtual public rsPlot
 {
@@ -97,6 +93,7 @@ protected:
 
   double*  valuesX1;	      // pointer to the first array of x-values
   double*  valuesY1;	      // pointer to the first array of x-values
+   // why do we need these? maybe get rid...
 
   //double**  decimatedValuesX;
   //double*** decimatedFamilyValuesY;
