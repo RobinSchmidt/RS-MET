@@ -51,6 +51,9 @@ public:
     BELOW_AXIS
   };
 
+  /** Performs a sanity check */
+  //void sanityCheckGridSpacing(double& coarse, bool logScaled);
+
   //-----------------------------------------------------------------------------------------------
   // \name Data
 

@@ -328,6 +328,10 @@ public:
 
 protected:
 
+  /** Performs a sanity check on the given fird-spacing interval and potentially re-adjusts it. You 
+  must tell, whether a log-spcing is used, because sane values are different in this case. */
+  void sanityCheckGridSpacing(double& spacing, bool logScaled);
+
   /** Opens the PopupMenu that appears on right clicks. */
   void openRightClickPopupMenu();
 

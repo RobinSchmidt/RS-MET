@@ -319,31 +319,9 @@ void CoordinateSystemOld::setHorizontalCoarseGridInterval(double newGridInterval
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setHorizontalCoarseGrid(double newGridInterval, bool   shouldBeVisible)
+void CoordinateSystemOld::setHorizontalCoarseGrid(double newGridInterval, bool shouldBeVisible)
 {
-  // for logarithmic scaling of an axis, we need the grid-intervals to be 
-  // strictly greater than unity because the coordinate of a grid-line results
-  // from the coordinate of the previous grid-line via multiplication - we 
-  // would end up drawing an infinite number of grid-lines at the same 
-  // coordinate with a unity-factor and denser and denser grid-lines when 
-  // approaching zero with a factor lower than unity.
-  if( plotSettings.logScaledY )
-  {
-    jassert(newGridInterval > 1.00001);
-    if( newGridInterval <= 1.00001 )
-    {
-      plotSettings.horizontalCoarseGridInterval = 2.0;
-      return;
-    }
-  }
-  else
-  {
-    jassert(newGridInterval > 0.000001); 
-    // grid-intervals must be > 0
-    if( newGridInterval <= 0.000001 )
-      return;
-  }
-
+  sanityCheckGridSpacing(newGridInterval, plotSettings.logScaledY);
   plotSettings.horizontalCoarseGridIsVisible = shouldBeVisible;
   plotSettings.horizontalCoarseGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
@@ -364,27 +342,9 @@ void CoordinateSystemOld::setHorizontalFineGridInterval(double newGridInterval)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setHorizontalFineGrid(double newGridInterval, 
-                                             bool   shouldBeVisible)
+void CoordinateSystemOld::setHorizontalFineGrid(double newGridInterval, bool shouldBeVisible)
 {
-  if( plotSettings.logScaledY )
-  {
-    jassert(newGridInterval > 1.00001);
-    // for logarithmic scaling, we need the grid-intervals to be > 1
-    if( newGridInterval <= 1.00001 )
-    {
-      plotSettings.horizontalFineGridInterval = pow(2.0, 1.0/3.0);
-      return;
-    }
-  }
-  else
-  {
-    jassert(newGridInterval > 0.000001); 
-    // grid-intervals must be > 0
-    if( newGridInterval <= 0.000001 )
-      return;
-  }
-
+  sanityCheckGridSpacing(newGridInterval, plotSettings.logScaledY);
   plotSettings.horizontalFineGridIsVisible = shouldBeVisible;
   plotSettings.horizontalFineGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
@@ -405,27 +365,9 @@ void CoordinateSystemOld::setVerticalCoarseGridInterval(double newGridInterval)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setVerticalCoarseGrid(double newGridInterval, 
-                                             bool   shouldBeVisible)
+void CoordinateSystemOld::setVerticalCoarseGrid(double newGridInterval, bool shouldBeVisible)
 {
-  if( plotSettings.logScaledX )
-  {
-    jassert(newGridInterval > 1.00001);
-    // for logarithmic scaling, we need the grid-intervals to be > 1
-    if( newGridInterval <= 1.00001 )
-    {
-      plotSettings.verticalCoarseGridInterval = 2.0;
-      return;
-    }
-  }
-  else
-  {
-    jassert(newGridInterval > 0.000001); 
-    // grid-intervals must be > 0
-    if( newGridInterval <= 0.000001 )
-      return;
-  }
-
+  sanityCheckGridSpacing(newGridInterval, plotSettings.logScaledX);
   plotSettings.verticalCoarseGridIsVisible = shouldBeVisible;
   plotSettings.verticalCoarseGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
@@ -446,27 +388,9 @@ void CoordinateSystemOld::setVerticalFineGridInterval(double newGridInterval)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setVerticalFineGrid(double newGridInterval, 
-                                           bool   shouldBeVisible)
+void CoordinateSystemOld::setVerticalFineGrid(double newGridInterval, bool shouldBeVisible)
 {
-  if( plotSettings.logScaledX )
-  {
-    jassert(newGridInterval > 1.00001);
-    // for logarithmic scaling, we need the grid-intervals to be > 1
-    if( newGridInterval <= 1.00001 )
-    {
-      plotSettings.verticalFineGridInterval = pow(2.0, 1.0/3.0);
-      return;
-    }
-  }
-  else
-  {
-    jassert(newGridInterval > 0.000001); 
-    // grid-intervals must be > 0
-    if( newGridInterval <= 0.000001 )
-      return;
-  }
-
+  sanityCheckGridSpacing(newGridInterval, plotSettings.logScaledX);
   plotSettings.verticalFineGridIsVisible = shouldBeVisible;
   plotSettings.verticalFineGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
@@ -487,27 +411,9 @@ void CoordinateSystemOld::setRadialCoarseGridInterval(double newGridInterval)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setRadialCoarseGrid(double newGridInterval, 
-                                           bool   shouldBeVisible)
+void CoordinateSystemOld::setRadialCoarseGrid(double newGridInterval, bool shouldBeVisible)
 {
-  if( plotSettings.logScaledRadius )
-  {
-    jassert(newGridInterval > 1.00001);
-    // for logarithmic scaling, we need the grid-intervals to be > 1
-    if( newGridInterval <= 1.00001 )
-    {
-      plotSettings.radialCoarseGridInterval = 2.0;
-      return;
-    }
-  }
-  else
-  {
-    jassert(newGridInterval > 0.000001); 
-    // grid-intervals must be > 0
-    if( newGridInterval <= 0.000001 )
-      return;
-  }
-
+  sanityCheckGridSpacing(newGridInterval, plotSettings.logScaledRadius);
   plotSettings.radialCoarseGridIsVisible = shouldBeVisible;
   plotSettings.radialCoarseGridInterval  = newGridInterval;
 
@@ -529,28 +435,10 @@ void CoordinateSystemOld::setRadialFineGridInterval(double newGridInterval)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setRadialFineGrid(double newGridInterval, 
-                                         bool   shouldBeVisible)
+void CoordinateSystemOld::setRadialFineGrid(double newGridInterval, bool shouldBeVisible)
 {
-  if( plotSettings.logScaledRadius )
-  {
-    jassert(newGridInterval > 1.00001);
-    // for logarithmic scaling, we need the grid-intervals to be > 1
-    if( newGridInterval <= 1.00001 )
-    {
-      plotSettings.radialFineGridInterval = pow(2.0, 1.0/3.0);
-      return;
-    }
-  }
-  else
-  {
-    jassert(newGridInterval > 0.000001); 
-    // grid-intervals must be > 0
-    if( newGridInterval <= 0.000001 )
-      return;
-  }
-
-  plotSettings.radialFineGridIsVisible     = shouldBeVisible;
+  sanityCheckGridSpacing(newGridInterval, plotSettings.logScaledRadius);
+  plotSettings.radialFineGridIsVisible = shouldBeVisible;
   plotSettings.radialFineGridInterval = newGridInterval;
   if(autoReRenderImage == true)
     updateBackgroundImage();
@@ -570,14 +458,9 @@ void CoordinateSystemOld::setAngularCoarseGridInterval(double newGridInterval)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setAngularCoarseGrid(double newGridInterval, 
-                                            bool   shouldBeVisible)
+void CoordinateSystemOld::setAngularCoarseGrid(double newGridInterval, bool shouldBeVisible)
 {
-  jassert(newGridInterval > 0.000001); 
-  // grid-intervals must be > 0
-  if( newGridInterval <= 0.000001 )
-    return;
-
+  sanityCheckGridSpacing(newGridInterval, false);
   plotSettings.angularCoarseGridIsVisible = shouldBeVisible;
   plotSettings.angularCoarseGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
@@ -598,14 +481,9 @@ void CoordinateSystemOld::setAngularFineGridInterval(double newGridInterval)
     updateBackgroundImage();
 }
 
-void CoordinateSystemOld::setAngularFineGrid(double newGridInterval, 
-                                          bool   shouldBeVisible)
+void CoordinateSystemOld::setAngularFineGrid(double newGridInterval, bool shouldBeVisible)
 {
-  jassert(newGridInterval > 0.000001); 
-  // grid-intervals must be > 0
-  if( newGridInterval <= 0.000001 )
-    return;
-
+  sanityCheckGridSpacing(newGridInterval, false);
   plotSettings.angularFineGridIsVisible = shouldBeVisible;
   plotSettings.angularFineGridInterval  = newGridInterval;
   if(autoReRenderImage == true)
@@ -728,9 +606,20 @@ void CoordinateSystemOld::setValueFieldPopup(bool shouldPopUp)
 }
 */
 
+void CoordinateSystemOld::sanityCheckGridSpacing(double& spacing, bool logScaled)
+{
+  if( logScaled ) {
+    jassert(spacing > 1.00001); // for logarithmic scaling, we need the grid-intervals to be > 1
+    if( spacing <= 1.00001 ) 
+      spacing = 2.0; }
+  else {
+    jassert(spacing > 0.000001); // grid-intervals must be > 0
+    if( spacing <= 0.000001 )
+      spacing = 1.0; }
+}
+
 //-------------------------------------------------------------------------------------------------
 // functions for drawing and/or exporting the shown content:
-
 void CoordinateSystemOld::openRightClickPopupMenu()
 {  
   //DEBUG_BREAK;
