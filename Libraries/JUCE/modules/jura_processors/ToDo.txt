@@ -11,6 +11,8 @@ new plotting stuff:
   ...maybe a lot can be just moved over to rsPlotSettings
  -maybe we should have a rsPlotSettingsObserver with callbacks 
   plotMaximumRangeChanged, plotVisibleRangeChanged, plotAppearanceChanged
+  todo: protect all variables there and access them in rsPlot only via setters and getters - this 
+  enforces the use of setters and hence can guarantee that callbacks are set out
 
 Ladder:
 -implement new rsFunctionplot based on std::function

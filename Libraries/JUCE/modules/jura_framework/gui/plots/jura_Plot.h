@@ -70,16 +70,16 @@ public:
   virtual void setCurrentRangeMinY(double newMinY);
   virtual void setCurrentRangeMaxY(double newMaxY);
 
-  rsPlotRange getMaximumRange() const { return plotSettings.maximumRange; }
-  rsPlotRange getCurrentRange() const { return plotSettings.currentRange; }
-  double getMaximumRangeMinX() const { return plotSettings.maximumRange.getMinX(); }
-  double getMaximumRangeMaxX() const { return plotSettings.maximumRange.getMaxX(); }
-  double getMaximumRangeMinY() const { return plotSettings.maximumRange.getMinY(); }
-  double getMaximumRangeMaxY() const { return plotSettings.maximumRange.getMaxY(); }
-  double getCurrentRangeMinX() const { return plotSettings.currentRange.getMinX(); }
-  double getCurrentRangeMaxX() const { return plotSettings.currentRange.getMaxX(); }
-  double getCurrentRangeMinY() const { return plotSettings.currentRange.getMinY(); }
-  double getCurrentRangeMaxY() const { return plotSettings.currentRange.getMaxY(); }
+  rsPlotRange getMaximumRange() const { return plotSettings.getMaximumRange(); }
+  rsPlotRange getCurrentRange() const { return plotSettings.getCurrentRange(); }
+  double getMaximumRangeMinX() const { return plotSettings.getMaximumRangeMinX(); }
+  double getMaximumRangeMaxX() const { return plotSettings.getMaximumRangeMaxX(); }
+  double getMaximumRangeMinY() const { return plotSettings.getMaximumRangeMinY(); }
+  double getMaximumRangeMaxY() const { return plotSettings.getMaximumRangeMaxY(); }
+  double getCurrentRangeMinX() const { return plotSettings.getCurrentRangeMinX(); }
+  double getCurrentRangeMaxX() const { return plotSettings.getCurrentRangeMaxX(); }
+  double getCurrentRangeMinY() const { return plotSettings.getCurrentRangeMinY(); }
+  double getCurrentRangeMaxY() const { return plotSettings.getCurrentRangeMaxY(); }
 
   /** Returns a string that represents the info-line to be shown when mouse is over pixel (x,y). */
   virtual juce::String getInfoLineForPixelPosition(int x, int y);

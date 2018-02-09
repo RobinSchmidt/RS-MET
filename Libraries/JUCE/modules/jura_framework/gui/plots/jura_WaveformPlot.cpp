@@ -271,8 +271,8 @@ void rsWaveformPlot::plotWaveform(Graphics &g, Image *targetImage, XmlElement *t
   if( peakData == NULL || numSampleFrames <= 0 || numChannels <= 0 )
     return;
 
-  int firstVisibleFrame = (int) floor(plotSettings.currentRange.getMinX() * sampleRate);
-  int lastVisibleFrame  = (int) ceil(plotSettings.currentRange.getMaxX() * sampleRate);
+  int firstVisibleFrame = (int) floor(plotSettings.getCurrentRangeMinX() * sampleRate);
+  int lastVisibleFrame  = (int) ceil(plotSettings.getCurrentRangeMaxX() * sampleRate);
   firstVisibleFrame     = jlimit(0, numSampleFrames-1, firstVisibleFrame);
   lastVisibleFrame      = jlimit(0, numSampleFrames-1, lastVisibleFrame);
   int numVisibleFrames  = lastVisibleFrame - firstVisibleFrame;

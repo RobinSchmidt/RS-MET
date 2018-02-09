@@ -106,8 +106,8 @@ void rsPlotEditor::drawLeftLocator(Graphics &g, float x, int arrowPosition,
   double x1, x2, y1, y2;
   x1 = x;
   x2 = x;
-  y1 = plotSettings.currentRange.getMinY();
-  y2 = plotSettings.currentRange.getMaxY();
+  y1 = plotSettings.getCurrentRangeMinY();
+  y2 = plotSettings.getCurrentRangeMaxY();
   transformToComponentsCoordinates(x1, y1);
   transformToComponentsCoordinates(x2, y2);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
@@ -124,8 +124,8 @@ void rsPlotEditor::drawRightLocator(Graphics &g, float x, int arrowPosition,
   double x1, x2, y1, y2;
   x1 = x;
   x2 = x;
-  y1 = plotSettings.currentRange.getMinY();
-  y2 = plotSettings.currentRange.getMaxY();
+  y1 = plotSettings.getCurrentRangeMinY();
+  y2 = plotSettings.getCurrentRangeMaxY();
   transformToComponentsCoordinates(x1, y1);
   transformToComponentsCoordinates(x2, y2);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
@@ -142,8 +142,8 @@ void rsPlotEditor::drawCurrentPositionLocator(Graphics &g, float x,
   double x1, x2, y1, y2;
   x1 = x;
   x2 = x;
-  y1 = plotSettings.currentRange.getMinY();
-  y2 = plotSettings.currentRange.getMaxY();
+  y1 = plotSettings.getCurrentRangeMinY();
+  y2 = plotSettings.getCurrentRangeMaxY();
   transformToComponentsCoordinates(x1, y1);
   transformToComponentsCoordinates(x2, y2);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);

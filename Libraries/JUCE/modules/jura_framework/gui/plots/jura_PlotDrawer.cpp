@@ -224,8 +224,8 @@ void rsPlotDrawer::setupMapper()
   mapper.mapperX.setLogScaled(settings.logScaledX);
   mapper.mapperY.setLogScaled(settings.logScaledY);
   mapper.setInputRange(
-    settings.currentRange.getMinX(), settings.currentRange.getMaxX(),
-    settings.currentRange.getMinY(), settings.currentRange.getMaxY());
+    settings.getCurrentRangeMinX(), settings.getCurrentRangeMaxX(),
+    settings.getCurrentRangeMinY(), settings.getCurrentRangeMaxY());
   mapper.setOutputRange(x+0.5, jmax(x+w-0.5, x+1.0), jmax(y+h-0.5, y+1.0), y+0.5);
 }
 

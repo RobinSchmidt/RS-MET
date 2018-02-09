@@ -211,15 +211,16 @@ public:
   juce::String (*stringConversionForAxisX) (double valueToConvert);
   juce::String (*stringConversionForAxisY) (double valueToConvert);
 
-  /** The currently visible range and maximum range object for the plot. */
-  rsPlotRange currentRange, maximumRange;
+
 
 protected:
 
+  /** The currently visible range and maximum range object for the plot. */
+  rsPlotRange currentRange, maximumRange;
+
+
   /** Performs a sanity check */
   //void sanityCheckGridSpacing(double& coarse, bool logScaled);
-
-
 
   std::vector<rsPlotSettingsObserver*> observers;
 

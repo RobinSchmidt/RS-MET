@@ -507,8 +507,8 @@ void rsPlot::setupAxisX(double newMin, double newMax, bool shouldBeLogScaled,
      (newCoarseGridInterval <= 1.000001 || newFineGridInterval <= 1.000001) )
     return;
 
-  plotSettings.maximumRange.setRangeX(newMin, newMax);
-  plotSettings.currentRange.setRangeX(newMin, newMax);
+  plotSettings.setMaximumRangeX(newMin, newMax);
+  plotSettings.setCurrentRangeX(newMin, newMax);
   plotSettings.logScaledX = shouldBeLogScaled;
   if( newAxisPosition == rsPlotSettings::INVISIBLE ||
       newAxisPosition == rsPlotSettings::ZERO      ||
@@ -539,8 +539,8 @@ void rsPlot::setupAxisY(double newMin, double newMax, bool shouldBeLogScaled,
      (newCoarseGridInterval <= 1.000001 || newFineGridInterval <= 1.000001) )
     return;
 
-  plotSettings.maximumRange.setRangeY(newMin, newMax);
-  plotSettings.currentRange.setRangeY(newMin, newMax);
+  plotSettings.setMaximumRangeY(newMin, newMax);
+  plotSettings.setCurrentRangeY(newMin, newMax);
   plotSettings.logScaledY = shouldBeLogScaled;
   if( newAxisPosition == rsPlotSettings::INVISIBLE ||
       newAxisPosition == rsPlotSettings::ZERO      ||
@@ -714,8 +714,8 @@ void rsPlot::updateMapperInputRange()
   coordinateMapper.mapperX.setLogScaled(plotSettings.logScaledX);
   coordinateMapper.mapperY.setLogScaled(plotSettings.logScaledY);
   coordinateMapper.setInputRange(
-    plotSettings.currentRange.getMinX(), plotSettings.currentRange.getMaxX(),
-    plotSettings.currentRange.getMinY(), plotSettings.currentRange.getMaxY());
+    getCurrentRangeMinX(), getCurrentRangeMaxX(),
+    getCurrentRangeMinY(), getCurrentRangeMaxY());
 
   if(autoReRenderImage == true)
     updateBackgroundImage();
