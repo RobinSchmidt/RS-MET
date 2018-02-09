@@ -17,13 +17,11 @@ class JUCE_API CoordinateSystemOld : virtual public DescribedComponent
 
 public:
 
-
-
   CoordinateSystemOld(const juce::String& newDescription = juce::String("some 2D widget"));
   virtual ~CoordinateSystemOld();
 
   //-----------------------------------------------------------------------------------------------
-  // component-overrides:
+  // \name Component overrides
 
   /** Lets a context menu pop up when the right button is clicked to allow export of the content
   as image or svg drawing. */
@@ -35,12 +33,11 @@ public:
   /** Overrides mouseMove for displaying the inspection Label. */
   virtual void mouseMove(const MouseEvent& e);
 
-
   virtual void resized();
   virtual void paint(Graphics &g);
 
   //-----------------------------------------------------------------------------------------------
-  // range-management:
+  // range-management (split in range setup and range inquiry, inline inquiry functions):
 
   virtual void setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
   /**< Sets the maximum for the currently visible range. For logarithmic x- and/or y-axis-scaling,
@@ -124,9 +121,6 @@ public:
 
   /** Returns a string that represents the info-line to be shown when mouse is over pixel (x,y). */
   virtual juce::String getInfoLineForPixelPosition(int x, int y);
-
-
-  virtual PlotColourScheme getPlotColourScheme() const { return plotColourScheme; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Appearance Setup
@@ -247,56 +241,26 @@ public:
   logarithm. */
   virtual void useLogarithmicScaleY(bool shouldBeLogScaledY, double newLogBaseY = 2.0);
 
-  //-----------------------------------------------------------------------------------------------
-  // \name Appearance Inquiry
-
-  bool isHorizontalCoarseGridVisible() { return plotSettings.horizontalCoarseGridIsVisible; }
-  bool isHorizontalFineGridVisible() {   return plotSettings.horizontalFineGridIsVisible; }
-  bool isVerticalCoarseGridVisible() {   return plotSettings.verticalCoarseGridIsVisible; }
-  bool isVerticalFineGridVisible() {     return plotSettings.verticalFineGridIsVisible; }
-  bool isRadialCoarseGridVisible() {     return plotSettings.radialCoarseGridIsVisible; }
-  bool isRadialFineGridVisible() {       return plotSettings.radialFineGridIsVisible; }
-  bool isAngularCoarseGridVisible() {    return plotSettings.angularCoarseGridIsVisible; }
-  bool isAngularFineGridVisible() {      return plotSettings.angularFineGridIsVisible; }
-
-  double getHorizontalCoarseGridInterval() { return plotSettings.horizontalCoarseGridInterval; }
-  double getHorizontalFineGridInterval() {   return plotSettings.horizontalFineGridInterval; }
-  double getVerticalCoarseGridInterval() {   return plotSettings.verticalCoarseGridInterval; }
-  double getVerticalFineGridInterval() {     return plotSettings.verticalFineGridInterval; }
-  double getRadialCoarseGridInterval() {     return plotSettings.radialCoarseGridInterval; }
-  double getRadialFineGridInterval() {       return plotSettings.radialFineGridInterval; }
-  double getAngularCoarseGridInterval() {    return plotSettings.angularCoarseGridInterval; }
-  double getAngularFineGridInterval() {      return plotSettings.angularFineGridInterval; }
-
-
-
-  virtual bool isLogScaledX();
-  /**< Informs, whether the x-axis is logarithmically scaled or not. */
-
-
-  virtual bool isLogScaledY();
-  /**< Informs, whether the y-axis is logarithmically scaled or not. */
-
+  /** Sets the labels for the axes and their position. */
   virtual void setAxisLabels(const juce::String &newLabelX, const juce::String &newLabelY,
     int newLabelPositionX = rsPlotSettings::ABOVE_AXIS, 
     int newLabelPositionY = rsPlotSettings::RIGHT_TO_AXIS);
-  /**< Sets the labels for the axes and their position. */
 
+  /** Sets the label for the x-axis and its position. */
   virtual void setAxisLabelX(const juce::String &newLabelX, 
     int newLabelPositionX = rsPlotSettings::ABOVE_AXIS);
-  /**< Sets the label for the x-axis and its position. */
 
+  /** Sets the label for the y-axis and its position. */
   virtual void setAxisLabelY(const juce::String &newLabelY, 
     int newLabelPositionY = rsPlotSettings::RIGHT_TO_AXIS);
-  /**< Sets the label for the y-axis and its position. */
 
+  /** Switches x-value annotation between below or above the x-axis
+  (or off). */
   virtual void setAxisValuesPositionX(int newValuesPositionX);
-  /**< Switches x-value annotation between below or above the x-axis
-  (or off). */
 
-  virtual void setAxisValuesPositionY(int newValuesPositionY);
-  /**< Switches y-value annotation between left to or right to the y-axis
+  /** Switches y-value annotation between left to or right to the y-axis
   (or off). */
+  virtual void setAxisValuesPositionY(int newValuesPositionY);
 
   /** This function is used to pass a function-pointer with the address of a function which has a 
   double-parameter and a juce::String as return-value. The function will be used to convert the 
@@ -316,14 +280,41 @@ public:
   virtual void setStringConversionForInfoLineY(
     juce::String (*newConversionFunction) (double valueToBeConverted));
 
+  /** With this function, the automatic re-rendering of the underlying image can be turned on or
+  off. If on (default), everytime you change a parameter which will change the appearance of
+  the CoordinateSystemOld, it will be re-rendered. However, when you want to change many
+  parameters at a time, this can be wasteful in terms of CPU-load. In these cases, it can be
+  useful to switch the automatic re-rendering temporarily off. */
+  virtual void setAutoReRendering(bool shouldAutomaticallyReRender);
+
   //-----------------------------------------------------------------------------------------------
-  // new getters
+  // \name Appearance Inquiry
 
+  PlotColourScheme getPlotColourScheme() const { return plotColourScheme; }
 
+  bool isHorizontalCoarseGridVisible() const { return plotSettings.horizontalCoarseGridIsVisible; }
+  bool isHorizontalFineGridVisible()   const { return plotSettings.horizontalFineGridIsVisible; }
+  bool isVerticalCoarseGridVisible()   const { return plotSettings.verticalCoarseGridIsVisible; }
+  bool isVerticalFineGridVisible()     const { return plotSettings.verticalFineGridIsVisible; }
+  bool isRadialCoarseGridVisible()     const { return plotSettings.radialCoarseGridIsVisible; }
+  bool isRadialFineGridVisible()       const { return plotSettings.radialFineGridIsVisible; }
+  bool isAngularCoarseGridVisible()    const { return plotSettings.angularCoarseGridIsVisible; }
+  bool isAngularFineGridVisible()      const { return plotSettings.angularFineGridIsVisible; }
+
+  double getHorizontalCoarseGridInterval() const { return plotSettings.horizontalCoarseGridInterval; }
+  double getHorizontalFineGridInterval()   const { return plotSettings.horizontalFineGridInterval; }
+  double getVerticalCoarseGridInterval()   const { return plotSettings.verticalCoarseGridInterval; }
+  double getVerticalFineGridInterval()     const { return plotSettings.verticalFineGridInterval; }
+  double getRadialCoarseGridInterval()     const { return plotSettings.radialCoarseGridInterval; }
+  double getRadialFineGridInterval()       const { return plotSettings.radialFineGridInterval; }
+  double getAngularCoarseGridInterval()    const { return plotSettings.angularCoarseGridInterval; }
+  double getAngularFineGridInterval()      const { return plotSettings.angularFineGridInterval; }
+
+  bool isLogScaledX() const { return plotSettings.logScaledX; }
+  bool isLogScaledY() const { return plotSettings.logScaledY; }
 
   //-----------------------------------------------------------------------------------------------
-  // state-management:
-
+  // \name State Management:
 
   /** Creates an XmlElement from the current state and returns it. */
   virtual XmlElement* getStateAsXml(
@@ -333,70 +324,77 @@ public:
   with the getStateAsXml()-function. */
   virtual bool setStateFromXml(const XmlElement &xmlState);
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Export:
 
-
-
-
-  virtual XmlElement* getPlotAsSVG(int width, int height);
-  /**< Returns the drawing as SVG compliant XmlElement. The caller must take care to delete the
+  /** Returns the drawing as SVG compliant XmlElement. The caller must take care to delete the
   pointer to the XmlElement when it's not needed anymore. */
+  virtual XmlElement* getPlotAsSVG(int width, int height);
 
-  virtual Image* getPlotAsImage(int width, int height);
-  /**< Renders the plot to an image object of given width and height. The caller must take care to
+  /** Renders the plot to an image object of given width and height. The caller must take care to
   delete the pointer to the image when it's not needed anymore. */
+  virtual Image* getPlotAsImage(int width, int height);
 
+  /** Opens a dialog window to export the content of the CoordinateSystemOld to a png-image file 
+  or svg vector drawing file. */
   virtual void openExportDialog(int defaultWidth, int defaultHeight, 
     const juce::String &defaultFormat, const juce::File& defaultTargetFile);
-  /**< Opens a dialog window to export the content of the CoordinateSystemOld to a png-image file 
-  or svg vector drawing file. */
 
-  virtual void setAutoReRendering(bool shouldAutomaticallyReRender);
-  /**< With this function, the automatic re-rendering of the underlying image can be turned on or
-  off. If on (default), everytime you change a parameter which will change the appearance of
-  the CoordinateSystemOld, it will be re-rendered. However, when you want to change many
-  parameters at a time, this can be wasteful in terms of CPU-load. In these cases, it can be
-  useful to switch the automatic re-rendering temporarily off. */
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc:
 
-  MouseCursor currentMouseCursor;
-  /**< We define a member for the mouse-cursor which is to be showed in order to let a
+  /** We define a member for the mouse-cursor which is to be showed in order to let a
   CoordinateSystemZoomer access this. This is required, because the zoomer object must be above
   the actual CoordinateSystemOld and therefore prevent the CoordinateSystemOld to set it's own
   MouseCursor. Instead we just assign the member mouse-cursor and let the zoomer retrieve it. */
+  MouseCursor currentMouseCursor;
 
 protected:
 
   /** Opens the PopupMenu that appears on right clicks. */
   void openRightClickPopupMenu();
 
-  /** Darws the coordinate system background. */
+  /** Draws the coordinate system background. */
   virtual void drawCoordinateSystem(Graphics &g);
 
 
 
-  // rename to toPixelCoords, fromPixelCoords
 
-  virtual void transformToComponentsCoordinates(double &x, double &y);
+  //virtual void transformToComponentsCoordinates(double &x, double &y);
   /**< Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (double precision version).*/
 
-  virtual void transformToComponentsCoordinates(float &x, float &y);
+  //virtual void transformToComponentsCoordinates(float &x, float &y);
   /**< Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (single precision version).*/
 
-  virtual void transformFromComponentsCoordinates(double &x, double &y);
+  //virtual void transformFromComponentsCoordinates(double &x, double &y);
   /**< Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (double precision version). */
 
-  virtual void transformFromComponentsCoordinates(float &x, float &y);
+  //virtual void transformFromComponentsCoordinates(float &x, float &y);
   /**< Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (single precision version). */
+
+  // convenience functions, rename to toPixelCoords, fromPixelCoords
+
+  void transformToComponentsCoordinates(double &x, double &y)
+  { x = coordinateMapper.mapX(x); y = coordinateMapper.mapY(y); }
+
+  void transformToComponentsCoordinates(float &x, float &y)
+  { x = (float) coordinateMapper.mapX(x); y = (float) coordinateMapper.mapY(y); }
+
+  void transformFromComponentsCoordinates(double &x, double &y)
+  { x = coordinateMapper.unmapX(x); y = coordinateMapper.unmapY(y); }
+
+  void transformFromComponentsCoordinates(float &x, float &y)
+  { x = (float) coordinateMapper.unmapX(x); y = (float) coordinateMapper.unmapY(y); }
 
 
 
   /** Updates the image object (re-draws it). Will be called, when something about the
   CoordinateSystemOld's appearance-settings was changed. */
   virtual void updateBackgroundImage();
-
 
   /** Sets up the output range (i.e. the pixel width and height) in our coordinateMapper. If a 
   non-nullptr is passed for targetImage, the image size will be used, else if a non-nullptr for
@@ -431,7 +429,6 @@ protected:
   bool autoReRenderImage;
   // see above
 
-
   juce::String (*stringConversionForInfoLineX) (double valueToConvert);
   juce::String (*stringConversionForInfoLineY) (double valueToConvert);
 
@@ -439,19 +436,7 @@ protected:
   PlotColourScheme   plotColourScheme;
   WidgetColourScheme popUpColourScheme;
 
-  //---------------------------------------------------------------------------------------------
-  // make obsolete inherited methods unavailable to client code:
-
-  /*
-  virtual void setColours(const Colour newBackgroundColour, const Colour newOutlineColour,
-    const Colour newHandleColour, const Colour newTextColour, const Colour newSpecialColour1,
-    const Colour newSpecialColour2) {};
-    */
-  //virtual void setColourScheme(const WidgetColourScheme& newColourScheme) {};
-  //virtual WidgetColourScheme getColourScheme() const { return RWidget::getColourScheme(); }
-
   juce_UseDebuggingNewOperator;
 };
-
 
 #endif

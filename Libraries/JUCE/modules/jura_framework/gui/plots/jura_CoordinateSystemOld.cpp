@@ -733,11 +733,6 @@ void CoordinateSystemOld::useLogarithmicScaleX(bool   shouldBeLogScaledX,
   updateMapperInputRange();
 }
 
-bool CoordinateSystemOld::isLogScaledX()
-{
-  return plotSettings.logScaledX;
-}
-
 void CoordinateSystemOld::useLogarithmicScaleY(bool   shouldBeLogScaledY, 
                                             double newLogBaseY)
 {
@@ -745,10 +740,7 @@ void CoordinateSystemOld::useLogarithmicScaleY(bool   shouldBeLogScaledY,
   updateMapperInputRange();
 }
 
-bool CoordinateSystemOld::isLogScaledY()
-{
-  return plotSettings.logScaledY;
-}
+
 
 /*
 void CoordinateSystemOld::setValueFieldPopup(bool shouldPopUp)
@@ -856,33 +848,6 @@ void CoordinateSystemOld::updateBackgroundImage()
 }
 
 //-------------------------------------------------------------------------------------------------
-// coordinate transformations:
-
-void CoordinateSystemOld::transformToComponentsCoordinates(double &x, double &y)
-{
-  x = coordinateMapper.mapX(x);
-  y = coordinateMapper.mapY(y);
-}
-
-void CoordinateSystemOld::transformToComponentsCoordinates(float &x, float &y)
-{
-  x = (float) coordinateMapper.mapX(x);
-  y = (float) coordinateMapper.mapY(y);
-}
-
-void CoordinateSystemOld::transformFromComponentsCoordinates(double &x, double &y)
-{
-  x = coordinateMapper.unmapX(x);
-  y = coordinateMapper.unmapY(y);
-}
-
-void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
-{
-  x = (float) coordinateMapper.unmapX(x);
-  y = (float) coordinateMapper.unmapY(y);
-}
-
-//-------------------------------------------------------------------------------------------------
 // drawing functions
 
 //void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, XmlElement *targetSVG)
@@ -904,8 +869,8 @@ void CoordinateSystemOld::updateMapperOutputRange(Image* image, XmlElement* svg)
 
 void CoordinateSystemOld::updateMapperInputRange()
 {
-  coordinateMapper.mapperX.setLogScaled(plotSettings.logScaledX);  // logScaledX/Y are redundant here now
-  coordinateMapper.mapperY.setLogScaled(plotSettings.logScaledY);  // ...get rid of them
+  coordinateMapper.mapperX.setLogScaled(plotSettings.logScaledX);
+  coordinateMapper.mapperY.setLogScaled(plotSettings.logScaledY);
   coordinateMapper.setInputRange(
     plotSettings.currentRange.getMinX(), plotSettings.currentRange.getMaxX(),
     plotSettings.currentRange.getMinY(), plotSettings.currentRange.getMaxY());
