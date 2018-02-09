@@ -868,6 +868,16 @@ void CoordinateSystemOld::openRightClickPopupMenu()
 
 Image* CoordinateSystemOld::getPlotAsImage(int width, int height)
 {
+  jassert(width  >= 1 && height >= 1);
+  if( width < 1 || height < 1) return nullptr;
+  rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, width, height);
+  Image* img = new Image(Image::RGB, width, height, true);
+  Graphics g(*img);
+  drawer.drawPlotBackground(g);
+  return img;
+
+  // old:
+  /*
   jassert(width  >= 1);
   jassert(height >= 1); 
   if( width < 1 || height < 1)  
@@ -876,11 +886,24 @@ Image* CoordinateSystemOld::getPlotAsImage(int width, int height)
   Graphics g(*thePlotImage);
   drawCoordinateSystem(g, thePlotImage);
   return thePlotImage;
+  */
+
 }
 
-// this needs to be refactored, maybe into a class rsPlotDrawerSvg:
 XmlElement* CoordinateSystemOld::getPlotAsSVG(int width, int height)
 {
+  jassert(width  >= 1 && height >= 1);
+  if( width < 1 || height < 1) return nullptr;
+  rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, width, height);
+
+  XmlElement* svg = new XmlElement(String("svg"));
+  svg->setAttribute("width", width);
+  svg->setAttribute("height", height);
+  drawer.drawPlotBackground(svg);
+  return svg;
+
+  // old:
+  /*
   jassert(width  >= 1);
   jassert(height >= 1);
   if( width < 1 || height < 1)
@@ -897,6 +920,7 @@ XmlElement* CoordinateSystemOld::getPlotAsSVG(int width, int height)
   drawCoordinateSystem(g, thePlotImage, theSVG);  // draw on the SVG
   delete thePlotImage;                            // delete the dummy image
   return theSVG;
+  */
 }
 
 void CoordinateSystemOld::openExportDialog(int defaultWidth, int defaultHeight, 

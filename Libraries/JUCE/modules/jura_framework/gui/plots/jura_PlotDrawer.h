@@ -28,6 +28,7 @@ public:
   /** Draws the grids, coordinate axes and axis annotations, i.e. everything that appears behind 
   the actual curves or scattered dots or whatever is going to be plotted to represent the data. */
   virtual void drawPlotBackground(Graphics& g);
+    // rename to drawBackground
 
   /** Draws the caption which should appear in front of the plotted curves. */
   virtual void drawPlotForeground(Graphics& g);
@@ -68,7 +69,7 @@ public:
    // rsPlotDrawerOpenGL, rsPlotDrawerSVG subclasses
 
   virtual void drawWithLines(XmlElement* svg, int numValues, float* valuesX, float* valuesY);
-  // not yet tested
+  // not yet tested, templatize...
 
 
 protected:

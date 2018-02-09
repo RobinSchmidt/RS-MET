@@ -162,8 +162,18 @@ void CurveFamilyPlotOld::updateBackgroundImage()
 
 XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
 {
-  jassertfalse; // needs update
+  rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, width, height);
+  XmlElement* svg = CoordinateSystemOld::getPlotAsSVG(width, height);
+  for(int k = 0; k < numCurves; k++)
+  {
+    //drawer.drawWithLines(svg, numValues, familyValuesX[k], familyValuesY[k]);
+    // what about color?
+  }
+  //drawer.drawForeground(svg);
+  return svg;
 
+
+  /*
   jassert( width  >= 1 );
   jassert( height >= 1);
     
@@ -183,20 +193,26 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
 
   updateMapperOutputRange(nullptr, theSVG);
 
-  /*
-  CoordinateSystemOld::drawCoordinateSystem...
-  // draw the function family values:
-  plotCurveFamily(g, thePlot, theSVG); 
-  */
+  //CoordinateSystemOld::drawCoordinateSystem...
+  //// draw the function family values:
+  //plotCurveFamily(g, thePlot, theSVG); 
 
   return theSVG;
+  */
 }
 
-//  BAAHHH! code duplication smells bad!!! refactor this!
 Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
 {
-  jassertfalse; // needs update or better be refactored away
-  return nullptr;
+  rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, width, height);
+  Image* img = CoordinateSystemOld::getPlotAsImage(width, height);
+  Graphics g(*img);
+  for(int k = 0; k < numCurves; k++)
+  {
+    drawer.drawWithLines(g, numValues, familyValuesX[k], familyValuesY[k]);
+    // preliminary, what about color? currently, the curve is black (on black background)
+  }
+  //drawer.drawForeground(g);
+  return img;
 }
 
 void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlElement *targetSVG)
