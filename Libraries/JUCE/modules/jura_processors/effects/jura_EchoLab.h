@@ -165,7 +165,7 @@ protected:
 parameters like the delay-time and gains. */
 
 class EchoLabPlotEditor	: virtual public rsDataPlot, 
-  virtual public InteractiveCoordinateSystemOld, public ParameterObserver,
+  virtual public rsPlotEditor, public ParameterObserver,
   public ChangeBroadcaster, public AudioModuleDeletionWatcher
 {
 

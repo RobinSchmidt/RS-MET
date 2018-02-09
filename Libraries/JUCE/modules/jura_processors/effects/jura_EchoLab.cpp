@@ -573,7 +573,7 @@ void EchoLabAudioModule::createParameters()
 EchoLabPlotEditor::EchoLabPlotEditor(CriticalSection *newPlugInLock, 
   EchoLabAudioModule* newEchoLabModuleToEdit) 
   : rsDataPlot(juce::String("EchoLabPlot"))
-  , InteractiveCoordinateSystemOld(juce::String("EchoLabPlot"))
+  , rsPlotEditor(juce::String("EchoLabPlot"))
 {
   setDescription("Left: insert or grab band-handle, right: remove band");
 

@@ -4,9 +4,15 @@
 /** This class is a rsPlot with an array CoordinatesystemControlHandles which - 
 in their simplest form - are just points/dots which can be created, dragged around and removed 
 by the mouse. It also provides some functionality which is likely to be useful for subclasses such 
-as a snapToGrid()-method. */
+as a snapToGrid()-method. 
 
-class JUCE_API InteractiveCoordinateSystemOld : virtual public rsPlot
+// todo: don't derive from rsPlot, instead make a class rsQuantizer with function
+double quantize(double x, double interval, double origin = 0) - more flexible...actually that
+doesn't even need a class, a mere function is enough
+
+*/
+
+class JUCE_API rsPlotEditor : virtual public rsPlot 
 {
 
 public:
@@ -23,10 +29,10 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  InteractiveCoordinateSystemOld(const juce::String& name);
+  rsPlotEditor(const juce::String& name);
 
   /** Destructor. */
-  virtual ~InteractiveCoordinateSystemOld();
+  virtual ~rsPlotEditor();
 
   //-----------------------------------------------------------------------------------------------
   // setup:

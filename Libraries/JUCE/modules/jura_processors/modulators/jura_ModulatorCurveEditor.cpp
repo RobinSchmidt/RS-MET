@@ -2,7 +2,7 @@
 // construction/destruction:
 
 ModulatorCurveEditor::ModulatorCurveEditor(const juce::String& name) 
-: rsDataPlot(name), InteractiveCoordinateSystemOld(name)
+: rsDataPlot(name), rsPlotEditor(name)
 {
   setDescription("Left-click: insert, right-click: remove, shift-drag: time-shifts subsequent breakpoints");
 
@@ -751,7 +751,7 @@ void ModulatorCurveEditor::mouseDown(const MouseEvent &e)
     // the user did a right-click into an empty area. in this case we fall back to the standard
     // InteactiveCoordinateSystem right-click behaviour (open the right-click context menu):
     if( breakpointWasRemoved == false )
-      InteractiveCoordinateSystemOld::mouseDown(e);
+      rsPlotEditor::mouseDown(e);
 
   } // end of else if( e.mods.isRightButtonDown() )
 
@@ -1080,7 +1080,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
   x1 = modulator->getBreakpointTime(p);
   if( fullHeight == true )
   {
-    drawLeftLocator(g, (float) x1, InteractiveCoordinateSystemOld::ARROW_AT_TOP, 
+    drawLeftLocator(g, (float) x1, rsPlotEditor::ARROW_AT_TOP, 
       locatorColour, targetImage);
   }
   y1 = modulator->getBreakpointLevel(p);
@@ -1092,7 +1092,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
   x1 = modulator->getBreakpointTime(p);
   if( fullHeight == true )
   {
-    drawRightLocator(g, (float) x1, InteractiveCoordinateSystemOld::ARROW_AT_TOP, 
+    drawRightLocator(g, (float) x1, rsPlotEditor::ARROW_AT_TOP, 
       locatorColour, targetImage);
   }
   y1 = modulator->getBreakpointLevel(p);
@@ -1110,7 +1110,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
     x1 = mouseX;
     y1 = mouseY;
     transformFromComponentsCoordinates(x1, y1);
-    drawLeftLocator(g, (float) x1, InteractiveCoordinateSystemOld::ARROW_AT_TOP, 
+    drawLeftLocator(g, (float) x1, rsPlotEditor::ARROW_AT_TOP, 
       locatorColour.withMultipliedAlpha(0.5f));
   }
   else if( locatorBeingDragged == LOOP_END_LOCATOR && modulator == modulatorToEdit )
@@ -1118,7 +1118,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
     x1 = mouseX;
     y1 = mouseY;
     transformFromComponentsCoordinates(x1, y1);
-    drawRightLocator(g, (float) x1, InteractiveCoordinateSystemOld::ARROW_AT_TOP, 
+    drawRightLocator(g, (float) x1, rsPlotEditor::ARROW_AT_TOP, 
       locatorColour.withMultipliedAlpha(0.5f));
   }
 

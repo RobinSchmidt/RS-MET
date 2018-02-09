@@ -5,7 +5,7 @@
 // construction/destruction:
 
 ModulatorCurveEditorMulti::ModulatorCurveEditorMulti(const juce::String& name)
-: InteractiveCoordinateSystemOld(name), ModulatorCurveEditor(name)
+: rsPlotEditor(name), ModulatorCurveEditor(name)
 {
   //editedModulatorIndex = -1;
 }

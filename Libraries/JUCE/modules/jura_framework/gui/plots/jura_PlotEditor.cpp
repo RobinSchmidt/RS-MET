@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-InteractiveCoordinateSystemOld::InteractiveCoordinateSystemOld(const String& name) 
+rsPlotEditor::rsPlotEditor(const String& name) 
 : rsPlot(name)
 {
   snapToCoarseGridX            =  false;
@@ -18,7 +18,7 @@ InteractiveCoordinateSystemOld::InteractiveCoordinateSystemOld(const String& nam
   setDescription("Some coordinate system widget.");
 }
 
-InteractiveCoordinateSystemOld::~InteractiveCoordinateSystemOld()
+rsPlotEditor::~rsPlotEditor()
 {
 
 }
@@ -26,27 +26,27 @@ InteractiveCoordinateSystemOld::~InteractiveCoordinateSystemOld()
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void InteractiveCoordinateSystemOld::mouseDown(const MouseEvent& e)
+void rsPlotEditor::mouseDown(const MouseEvent& e)
 {
   if( e.mods.isRightButtonDown() && showPopUpOnRightClick == true )
     openRightClickPopupMenu();
 }
 
 /*
-void InteractiveCoordinateSystemOld::mouseEnter(const MouseEvent& e)
+void rsPlotEditor::mouseEnter(const MouseEvent& e)
 {
   rsPlot::mouseEnter(e);
   RWidget::mouseEnter(e);
 }
 
-void InteractiveCoordinateSystemOld::mouseExit(const MouseEvent& e)
+void rsPlotEditor::mouseExit(const MouseEvent& e)
 {
   rsPlot::mouseExit(e);
   RWidget::mouseExit(e);
 }
 */
 
-void InteractiveCoordinateSystemOld::snapToCoarseGrid(double &x, double &y)
+void rsPlotEditor::snapToCoarseGrid(double &x, double &y)
 {
   // snap to the (coarse) grid of the coordinate system, if desired:
   double tmp;
@@ -68,7 +68,7 @@ void InteractiveCoordinateSystemOld::snapToCoarseGrid(double &x, double &y)
   }
 }
 
-void InteractiveCoordinateSystemOld::snapToFineGrid(double &x, double &y)
+void rsPlotEditor::snapToFineGrid(double &x, double &y)
 {
   // snap to the (fine) grid of the coordinate system, if desired:
   double tmp;
@@ -90,7 +90,7 @@ void InteractiveCoordinateSystemOld::snapToFineGrid(double &x, double &y)
   }
 }
 
-void InteractiveCoordinateSystemOld::snapToGrid(double &x, double &y)
+void rsPlotEditor::snapToGrid(double &x, double &y)
 {
   snapToFineGrid(x,y);
   snapToCoarseGrid(x,y);
@@ -98,7 +98,7 @@ void InteractiveCoordinateSystemOld::snapToGrid(double &x, double &y)
 
 //-----------------------------------------------------------------------------
 
-void InteractiveCoordinateSystemOld::drawLeftLocator(Graphics &g, float x, int arrowPosition, 
+void rsPlotEditor::drawLeftLocator(Graphics &g, float x, int arrowPosition, 
                                                   const Colour &locatorColour, Image *targetImage)
 {
   g.setColour(locatorColour);
@@ -116,7 +116,7 @@ void InteractiveCoordinateSystemOld::drawLeftLocator(Graphics &g, float x, int a
     (float) (y2+9), (float) (x1+4+4), (float) (y2+5), true);
 }
 
-void InteractiveCoordinateSystemOld::drawRightLocator(Graphics &g, float x, int arrowPosition, 
+void rsPlotEditor::drawRightLocator(Graphics &g, float x, int arrowPosition, 
                                                    const Colour &locatorColour, Image *targetImage)
 {
   g.setColour(locatorColour);
@@ -134,7 +134,7 @@ void InteractiveCoordinateSystemOld::drawRightLocator(Graphics &g, float x, int 
     (float) (y2+9), (float) (x1-4-4), (float) (y2+5), true);
 }
 
-void InteractiveCoordinateSystemOld::drawCurrentPositionLocator(Graphics &g, float x,                              
+void rsPlotEditor::drawCurrentPositionLocator(Graphics &g, float x,                              
   int arrowPosition, const Colour &locatorColour, Image *targetImage)
 {
   g.setColour(locatorColour);
@@ -151,7 +151,7 @@ void InteractiveCoordinateSystemOld::drawCurrentPositionLocator(Graphics &g, flo
 
 //-----------------------------------------------------------------------------
 
-XmlElement* InteractiveCoordinateSystemOld::getStateAsXml(const String& stateName) 
+XmlElement* rsPlotEditor::getStateAsXml(const String& stateName) 
 const
 {
   // initialize a new XmlElement with all the relevant data from the 
@@ -167,7 +167,7 @@ const
   return xmlState;
 }
 
-bool InteractiveCoordinateSystemOld::setStateFromXml(const XmlElement &xmlState)
+bool rsPlotEditor::setStateFromXml(const XmlElement &xmlState)
 {
   // restore all the relevant parameters inherited form the rsPlot 
   // base-class:
@@ -183,7 +183,7 @@ bool InteractiveCoordinateSystemOld::setStateFromXml(const XmlElement &xmlState)
 }
 
 
-void InteractiveCoordinateSystemOld::openRightClickPopupMenu()
+void rsPlotEditor::openRightClickPopupMenu()
 {
   jassertfalse;
   // the code below for opening the context menu is outdated - change it to deal with the new 
