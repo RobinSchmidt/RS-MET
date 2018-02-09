@@ -75,15 +75,14 @@ namespace jura
 #include "gui/plots/jura_PlotRange.cpp"
 #include "gui/plots/jura_PlotSettings.cpp"
 #include "gui/plots/jura_PlotDrawer.cpp"
-
 #include "gui/plots/jura_Plot.cpp"
-#include "gui/plots/jura_InteractiveCoordinateSystemOld.cpp" 
-#include "gui/plots/jura_MessengingCoordinateSystemOld.cpp"
+#include "gui/plots/jura_PlotEditor.cpp" 
+#include "gui/plots/jura_ObservablePlot.cpp"
 #include "gui/plots/jura_PlotZoomer.cpp"
 #include "gui/plots/jura_DataPlot.cpp"
 #include "gui/plots/jura_FunctionPlot.cpp" 
-#include "gui/plots/jura_SpectrumDisplayOld.cpp"
-#include "gui/plots/jura_WaveformDisplayOld.cpp"
+#include "gui/plots/jura_SpectrumPlot.cpp"
+#include "gui/plots/jura_WaveformPlot.cpp"
 
 // AudioBufferUser stuff (needed by waveform display)
 #include "audio/jura_AudioFileBuffer.cpp"  

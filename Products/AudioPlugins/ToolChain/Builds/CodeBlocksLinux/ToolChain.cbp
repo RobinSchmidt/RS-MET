@@ -8376,25 +8376,13 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_InteractiveCoordinateSystemOld.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_ObservablePlot.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_InteractiveCoordinateSystemOld.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_MessengingCoordinateSystemOld.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_MessengingCoordinateSystemOld.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_ObservablePlot.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -8419,6 +8407,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_PlotDrawer.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_PlotEditor.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_PlotEditor.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -8460,25 +8460,25 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_SpectrumDisplayOld.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_SpectrumPlot.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_SpectrumDisplayOld.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_SpectrumPlot.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_WaveformDisplayOld.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_WaveformPlot.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_WaveformDisplayOld.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_WaveformPlot.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
