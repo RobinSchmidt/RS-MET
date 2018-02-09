@@ -1,6 +1,12 @@
 #ifndef jura_CurveFamilyPlotOld_h
 #define jura_CurveFamilyPlotOld_h
 
+/** 
+
+\todo 
+-rename to rsDataPlot (as opposed to rsFunctionPlot that uses a std::function)
+*/
+
 class JUCE_API CurveFamilyPlotOld : virtual public CoordinateSystemOld
 {
 
@@ -76,9 +82,6 @@ protected:
   virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL,
     XmlElement *targetSVG = NULL);
 
-  /** Plots the curve with index 'index'. */
-  virtual void plotCurve(Graphics &g, juce::Image *targetImage, XmlElement *targetSV, int index);
-
 
   //OwnedArray<Colour> curveColours;	  // array which holds the colurs for the graphs
   //Colour  graphColour;
@@ -98,7 +101,7 @@ protected:
   //double**  decimatedValuesX;
   //double*** decimatedFamilyValuesY;
   // similar to the arrays above but with recursively decimated peak-data - 
-  // the first index represents the decimation level
+  // the first index represents the decimation level - maybe to this in subclass
 
   bool	  fillAreaUnderFunction;   // good for spectra
   bool    isFunctionFamily;

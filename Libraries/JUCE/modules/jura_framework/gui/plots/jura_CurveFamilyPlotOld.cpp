@@ -1,4 +1,3 @@
-
 CurveFamilyPlotOld::CurveFamilyPlotOld(const String& name)
 : CoordinateSystemOld(name)
 {
@@ -147,11 +146,10 @@ void CurveFamilyPlotOld::updatePlotImage(bool redrawCoordinateSystem)
 
   //copyImage(backgroundImage, plotImage);  // doesn't work anymore
   *plotImage = backgroundImage->createCopy(); // test - experimental - ok, seems to work
-  Graphics g(*plotImage);
-  plotCurveFamily(g); 
+  Graphics g(*plotImage);                     // but we should really copy only the data, not create
+  plotCurveFamily(g);                         // a new object
 
   repaintOnMessageThread();
-  //repaint();  
 }
 
 void CurveFamilyPlotOld::updateBackgroundImage()
@@ -205,118 +203,6 @@ void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlEle
   }
 
 }
-
-// can this be deleted now?
-void CurveFamilyPlotOld::plotCurve(Graphics &g, Image* targetImage, XmlElement *targetSVG, int index)
-{
-  int	   i;	// indices for the loops through the curves and through the values
-  double x, y;	// the current x- and y-value (in the current curve)
-
-  // make sure that the arrays are valid:
-  if( familyValuesX==NULL || familyValuesY==NULL )
-    return;
-
-  // create a mask to multiply the first index for the function-family plots:
-  int mask = 1;
-  if( isFunctionFamily )
-    mask = 0;
-
-  String curvePathDataString = String::empty;
-
-  // start values for a line segment:
-  x = familyValuesX[index*mask][0]; 
-  y = familyValuesY[index][0];
-
-  if( targetImage == NULL )
-    transformToComponentsCoordinates(x, y);
-  else
-    transformToImageCoordinates(x, y, targetImage);
-
-  // create a Path object for the actual plot:
-  Path	 funcPath;
-
-  // start the path at the first (transformed) data-point:
-  funcPath.startNewSubPath((float) x, (float) y);
-
-  // move the 'pen' for the svg-drawing to the start-position:
-  if( targetSVG != NULL )
-    curvePathDataString += String(x) + String(" ") + String(y) + String(", ");
-
-  for(i=1; i<numValues; i++)
-  {
-    // read out the tables:
-    x = familyValuesX[index*mask][i];
-    y = familyValuesY[index][i];
-
-    // transform:
-    if( targetImage == NULL )
-      transformToComponentsCoordinates(x, y);
-    else
-      transformToImageCoordinates(x, y, targetImage);
-
-    // add a line-segment to the transformed (x,y):
-    funcPath.lineTo((float) x, (float) y);
-
-    // add the line-segment the svg-drawing also:
-    if( targetSVG != NULL )
-      curvePathDataString += String(x) + String(" ") + String(y) + String(", ");
-  }
-
-  // set the colour for the current curve:
-  //Colour graphColour = getCurveColour(index);
-  //g.setColour(graphColour); 
-
-  // draw the path:
-  if(fillAreaUnderFunction)
-  {
-    // close the path:
-    x = familyValuesX[index*mask][numValues-1];
-    y = 0;
-    if( targetImage == NULL )
-      transformToComponentsCoordinates(x, y);
-    else
-      transformToImageCoordinates(x, y, targetImage);
-    funcPath.lineTo((float) x, (float) y);
-
-    x = familyValuesX[index*mask][0];
-    y = 0;
-    if( targetImage == NULL )
-      transformToComponentsCoordinates(x, y);
-    else
-      transformToImageCoordinates(x, y, targetImage);
-    funcPath.lineTo((float) x, (float) y);
-
-    x = familyValuesX[index*mask][0];
-    y = familyValuesY[index][0];
-    if( targetImage == NULL )
-      transformToComponentsCoordinates(x, y);
-    else
-      transformToImageCoordinates(x, y, targetImage);
-    funcPath.lineTo((float) x, (float) y);
-
-    funcPath.closeSubPath();
-
-    //g.setColour(graphColour);
-    g.fillPath(funcPath);
-  }
-  else
-  {
-    g.strokePath(funcPath, PathStrokeType(2.f));
-
-    if( targetSVG != NULL )
-    {
-      // create a XmlElement for the path, setup its attributes and add it ot the svg-drawing:
-      Colour colour = Colours::black; // preliminary
-      XmlElement* curvePath = new XmlElement(String("polyline"));
-      curvePath->setAttribute(String("points"), curvePathDataString);
-      curvePath->setAttribute(String("style"), String("stroke-width: ") + String(1.0) + 
-        String("; stroke: #") + colour.toString().substring(2) + 
-        String("; fill: none;") );
-      targetSVG->addChildElement(curvePath);
-    }
-  }
-}
-
 
 //-------------------------------------------------------------------------------------------------
 // others:
