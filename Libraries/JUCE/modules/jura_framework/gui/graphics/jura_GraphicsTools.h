@@ -113,7 +113,7 @@ JUCE_API void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2
 
 //=================================================================================================
 // functions for coordinate system drawing (they replace the old, clunky and inflexible member 
-// functions of CoordinateSystemOld) ...maybe put into a class CoordinateSystemDrawer - more
+// functions of rsPlot) ...maybe put into a class CoordinateSystemDrawer - more
 // convenient (the functions tend to have too many parameters):
 
 // maybe move into rsPlotDrawer (maybe as as static functions)

@@ -14,7 +14,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  ImageSavingDialog(CoordinateSystemOld *owner = NULL, int defaultWidth = 320,
+  ImageSavingDialog(rsPlot *owner = NULL, int defaultWidth = 320,
     int defaultHeight = 320, const String &defaultFormat = String("png"),
     const File& defaultTargetFile = File::nonexistent);
 
@@ -49,7 +49,7 @@ protected:
 
   void saveNow();
 
-  CoordinateSystemOld *ownerSystem;
+  rsPlot *ownerSystem;
 
   Label        *targetFileLabel;
   Label        *targetFileEditLabel;

@@ -1,12 +1,12 @@
 #ifndef jura_InteractiveCoordinateSystemOld_h
 #define jura_InteractiveCoordinateSystemOld_h
 
-/** This class is a CoordinateSystemOld with an array CoordinatesystemControlHandles which - 
+/** This class is a rsPlot with an array CoordinatesystemControlHandles which - 
 in their simplest form - are just points/dots which can be created, dragged around and removed 
 by the mouse. It also provides some functionality which is likely to be useful for subclasses such 
 as a snapToGrid()-method. */
 
-class JUCE_API InteractiveCoordinateSystemOld : virtual public CoordinateSystemOld
+class JUCE_API InteractiveCoordinateSystemOld : virtual public rsPlot
 {
 
 public:
@@ -73,17 +73,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   // others:
 
-  /** Overides the getStateAsXml()-method from the CoordinateSystemOld base-class. */
+  /** Overides the getStateAsXml()-method from the rsPlot base-class. */
   virtual XmlElement* getStateAsXml(
     const juce::String& stateName = juce::String("InteractiveCoordinateSystemOldState")) const;
 
-  /** Overwrites the setStateFromXml()-method from the CoordinateSystemOld base-class. */
+  /** Overwrites the setStateFromXml()-method from the rsPlot base-class. */
   virtual bool setStateFromXml(const XmlElement &xmlState);
 
 
 protected:
 
-  /** Overrides CoordinateSystemOld::openRightClickPopupMenu() to give more options. */
+  /** Overrides rsPlot::openRightClickPopupMenu() to give more options. */
   void openRightClickPopupMenu();
 
   /** Quantizes a point to the closest coarseGrid-position (either horizontally, vertically, both
@@ -97,7 +97,7 @@ protected:
   /** Just calls snapToFineGrid() and snapToCoarseGrid() (in that order). */
   virtual void snapToGrid(double &x, double &y);
 
-  /** Draws the control-handles on top of the CoordinateSystemOld which is should
+  /** Draws the control-handles on top of the rsPlot which is should
   be to be drawn before (in the paint()-method). */
   //virtual void drawControlHandles(Graphics &g);
 

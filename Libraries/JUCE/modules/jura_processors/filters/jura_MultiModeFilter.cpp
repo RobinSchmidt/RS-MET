@@ -349,7 +349,7 @@ void MultiModeFreqResponseEditor::mouseDown(const MouseEvent &e)
   // preliminray: do not open the MIDI-learn menu on right-button - show the image export menu 
   // instead (inherited behaviour from CoordinateSytem):
   if( e.mods.isRightButtonDown() )
-    CoordinateSystemOld::mouseDown(e);
+    rsPlot::mouseDown(e);
   else
   {
     // get the position of the event in components coordinates

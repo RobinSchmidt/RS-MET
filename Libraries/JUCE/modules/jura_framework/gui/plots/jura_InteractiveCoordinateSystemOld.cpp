@@ -2,7 +2,7 @@
 // construction/destruction:
 
 InteractiveCoordinateSystemOld::InteractiveCoordinateSystemOld(const String& name) 
-: CoordinateSystemOld(name)
+: rsPlot(name)
 {
   snapToCoarseGridX            =  false;
   snapToCoarseGridY            =  false;
@@ -35,13 +35,13 @@ void InteractiveCoordinateSystemOld::mouseDown(const MouseEvent& e)
 /*
 void InteractiveCoordinateSystemOld::mouseEnter(const MouseEvent& e)
 {
-  CoordinateSystemOld::mouseEnter(e);
+  rsPlot::mouseEnter(e);
   RWidget::mouseEnter(e);
 }
 
 void InteractiveCoordinateSystemOld::mouseExit(const MouseEvent& e)
 {
-  CoordinateSystemOld::mouseExit(e);
+  rsPlot::mouseExit(e);
   RWidget::mouseExit(e);
 }
 */
@@ -155,8 +155,8 @@ XmlElement* InteractiveCoordinateSystemOld::getStateAsXml(const String& stateNam
 const
 {
   // initialize a new XmlElement with all the relevant data from the 
-  // CoordinateSystemOld base-class:
-  XmlElement* xmlState = CoordinateSystemOld::getStateAsXml(stateName);
+  // rsPlot base-class:
+  XmlElement* xmlState = rsPlot::getStateAsXml(stateName);
 
   // add parameters which are specific to this subclass:
   xmlState->setAttribute("SnapToCoarseGridX", snapToCoarseGridX);
@@ -169,9 +169,9 @@ const
 
 bool InteractiveCoordinateSystemOld::setStateFromXml(const XmlElement &xmlState)
 {
-  // restore all the relevant parameters inherited form the CoordinateSystemOld 
+  // restore all the relevant parameters inherited form the rsPlot 
   // base-class:
-  bool success = CoordinateSystemOld::setStateFromXml(xmlState); 
+  bool success = rsPlot::setStateFromXml(xmlState); 
 
   // restore all the relevant parameters which are specific to this subclass:
   snapToCoarseGridX = xmlState.getBoolAttribute("SnapToCoarseGridX", false);

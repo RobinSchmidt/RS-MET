@@ -1092,10 +1092,10 @@ QuadrifexRoutingDiagram::QuadrifexRoutingDiagram(CriticalSection *newPlugInLock)
   for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++ )
     oldAlgorithmIndices[i] = algorithmIndices[i] = rosic::Quadrifex::BYPASS;
 
-  CoordinateSystemOld::setAxisPositionX(rsPlotSettings::INVISIBLE);
-  CoordinateSystemOld::setAxisPositionY(rsPlotSettings::INVISIBLE);
-  CoordinateSystemOld::setAxisValuesPositionX(rsPlotSettings::INVISIBLE);
-  CoordinateSystemOld::setAxisValuesPositionY(rsPlotSettings::INVISIBLE);
+  rsPlot::setAxisPositionX(rsPlotSettings::INVISIBLE);
+  rsPlot::setAxisPositionY(rsPlotSettings::INVISIBLE);
+  rsPlot::setAxisValuesPositionX(rsPlotSettings::INVISIBLE);
+  rsPlot::setAxisValuesPositionY(rsPlotSettings::INVISIBLE);
 }
 
 QuadrifexRoutingDiagram::~QuadrifexRoutingDiagram()
@@ -1223,7 +1223,7 @@ void QuadrifexRoutingDiagram::paint(Graphics &g)
 
   //RectangleComponent::paint(g);
 
-  CoordinateSystemOld::paint(g);
+  rsPlot::paint(g);
   drawRoutingDiagram(g);
 }
 

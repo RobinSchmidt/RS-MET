@@ -10,7 +10,7 @@ class PlotPreviewButton : public RButton
 
 public:
 
-  PlotPreviewButton(const juce::String& name, const CoordinateSystemOld* plotToPreview = NULL);
+  PlotPreviewButton(const juce::String& name, const rsPlot* plotToPreview = NULL);
 
   virtual ~PlotPreviewButton();
 

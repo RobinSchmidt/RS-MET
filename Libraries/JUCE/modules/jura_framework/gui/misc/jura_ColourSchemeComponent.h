@@ -11,7 +11,7 @@ pass this info through to child-component of class ColourSchemeComponent. */
 
 class RWidget;
 class WidgetSet;
-class CoordinateSystemOld;
+class rsPlot;
 // maybe we can get rid of them at some point
 
 class JUCE_API ColourSchemeComponent : public Component, virtual public DescribedItem
@@ -130,7 +130,7 @@ protected:
 
   /** Adds a CoordinateSystem (most often used for function-plots, etc.) to our array (and 
   optionally also adds the widget as child-component to this one). Similar to addWidget(). */
-  virtual void addPlot(CoordinateSystemOld* plotToAdd, bool addAsChildComponent = true, 
+  virtual void addPlot(rsPlot* plotToAdd, bool addAsChildComponent = true, 
     bool makeVisible = true);
 
   /** Adds a child-colourschem-component to this one. Using this method rather than Component's 
@@ -160,7 +160,7 @@ protected:
   // we maintain components that should adhere to the colour-schemes above as arrays:
   juce::Array<RWidget*>               widgets;
   juce::Array<WidgetSet*>             widgetSets;
-  juce::Array<CoordinateSystemOld*>   plots;
+  juce::Array<rsPlot*>   plots;
   juce::Array<ColourSchemeComponent*> childColourSchemeComponents;
   CriticalSection arrayLock; // used to access all the arrays
   // use std::vector, maybe have also arrays of non-owned widgets, etc. in order to allow client 

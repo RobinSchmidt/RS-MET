@@ -4,7 +4,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ImageSavingDialog::ImageSavingDialog(CoordinateSystemOld *owner, int defaultWidth, int defaultHeight, 
+ImageSavingDialog::ImageSavingDialog(rsPlot *owner, int defaultWidth, int defaultHeight, 
                                      const String &defaultFormat, const File &defaultTargetFile)
 {
   setSize(384, 52);

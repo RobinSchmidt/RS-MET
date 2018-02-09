@@ -777,12 +777,12 @@ void EchoLabPlotEditor::mouseMove(const MouseEvent &e)
   int dragHandle = getDragHandleAt(e.x, e.y);
   if( dragHandle == NONE )
   {
-    CoordinateSystemOld::currentMouseCursor = MouseCursor::NormalCursor; // in case there is a zoomer
+    rsPlot::currentMouseCursor = MouseCursor::NormalCursor; // in case there is a zoomer
     setMouseCursor(MouseCursor::NormalCursor);
   }
   else if( dragHandle == TIME_AND_GAIN )
   {
-    CoordinateSystemOld::currentMouseCursor = MouseCursor::PointingHandCursor; 
+    rsPlot::currentMouseCursor = MouseCursor::PointingHandCursor; 
     setMouseCursor(MouseCursor::PointingHandCursor);
   }
   //else if( dragHandle == BANDWIDTH_AND_GAIN_LEFT || dragHandle == BANDWIDTH_AND_GAIN_RIGHT )

@@ -195,13 +195,13 @@ void SpectrumAnalyzerDisplay::useLogarithmicScaleX(bool shouldBeLogScaledX, doub
 
 void SpectrumAnalyzerDisplay::paint(juce::Graphics &g)
 {
-  CoordinateSystemOld::paint(g);
+  rsPlot::paint(g);
   plotCurveFamily(g);
 }
 
 void SpectrumAnalyzerDisplay::updateBackgroundImage()
 {
-  CoordinateSystemOld::updateBackgroundImage();
+  rsPlot::updateBackgroundImage();
 }
 
 void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage, 

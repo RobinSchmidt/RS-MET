@@ -976,7 +976,7 @@ void OscillatorStereoEditor::createWidgets()
   waveformDisplay->addMouseListener(this, true);
   waveformDisplay->setAutoReRendering(true);
 
-  addPlot( emptyDisplay = new CoordinateSystemOld() );
+  addPlot( emptyDisplay = new rsPlot() );
   emptyDisplay->setAutoReRendering(false);
   emptyDisplay->setDescription(waveformDisplay->getDescription());
   emptyDisplay->setAxisPositionX(rsPlotSettings::INVISIBLE);

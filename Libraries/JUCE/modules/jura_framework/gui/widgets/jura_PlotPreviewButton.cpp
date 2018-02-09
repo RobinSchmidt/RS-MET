@@ -1,4 +1,4 @@
-PlotPreviewButton::PlotPreviewButton(const String& name, const CoordinateSystemOld* plotToPreview) 
+PlotPreviewButton::PlotPreviewButton(const String& name, const rsPlot* plotToPreview) 
 : RButton(name)
 {
   plotPreviewImage = NULL;

@@ -1,5 +1,5 @@
 CurveFamilyPlotOld::CurveFamilyPlotOld(const String& name)
-: CoordinateSystemOld(name)
+: rsPlot(name)
 {
   numCurves		    = 0;
   numCurvesToDraw	= 0;
@@ -139,7 +139,7 @@ void CurveFamilyPlotOld::updatePlotImage(bool redrawCoordinateSystem)
 
   // redraw the underlying CoordinateSystem if so chosen:
   if( redrawCoordinateSystem == true )
-    CoordinateSystemOld::updateBackgroundImage();
+    rsPlot::updateBackgroundImage();
 
   // the coordinate-system itself has been drawn on our (inherited) backgroundImage member variable
   // now we plot the curve(s) on top of that:
@@ -154,14 +154,14 @@ void CurveFamilyPlotOld::updatePlotImage(bool redrawCoordinateSystem)
 
 void CurveFamilyPlotOld::updateBackgroundImage()
 {
-  CoordinateSystemOld::updateBackgroundImage();
+  rsPlot::updateBackgroundImage();
   updatePlotImage(false);
 }
 
 XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
 {
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, width, height);
-  XmlElement* svg = CoordinateSystemOld::getPlotAsSVG(width, height);
+  XmlElement* svg = rsPlot::getPlotAsSVG(width, height);
   for(int k = 0; k < numCurves; k++)
   {
     drawer.drawWithLines(svg, numValues, familyValuesX[k], familyValuesY[k]);
@@ -174,7 +174,7 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
 Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
 {
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, width, height);
-  Image* img = CoordinateSystemOld::getPlotAsImage(width, height);
+  Image* img = rsPlot::getPlotAsImage(width, height);
   Graphics g(*img);
   for(int k = 0; k < numCurves; k++)
   {
@@ -209,8 +209,8 @@ void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlEle
 
 void CurveFamilyPlotOld::resized()
 {
-  CoordinateSystemOld::resized();
-  CoordinateSystemOld::updateBackgroundImage();
+  rsPlot::resized();
+  rsPlot::updateBackgroundImage();
 
   delete plotImage;
   plotImage = new Image(backgroundImage->getFormat(), backgroundImage->getWidth(), 

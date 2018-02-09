@@ -55,7 +55,7 @@ callback: xyPadChanged(double newX, double newY, bool xWasChanged, bool yWasChan
 
 */
 
-class VectorMixerPad	: virtual public CoordinateSystemOld, public ParameterObserver, 
+class VectorMixerPad	: virtual public rsPlot, public ParameterObserver, 
   public ChangeBroadcaster
 {
 

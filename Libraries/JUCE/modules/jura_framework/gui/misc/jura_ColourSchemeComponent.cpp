@@ -216,7 +216,7 @@ void ColourSchemeComponent::addWidgetSet(WidgetSet* widgetSetToAdd, bool addAsCh
   widgetSetToAdd->setColourScheme(widgetColourScheme);
 }
 
-void ColourSchemeComponent::addPlot(CoordinateSystemOld *plotToAdd, bool addAsChildComponent, 
+void ColourSchemeComponent::addPlot(rsPlot *plotToAdd, bool addAsChildComponent, 
                                     bool makeVisible)
 {
   ScopedLock scopedLock(arrayLock);

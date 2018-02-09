@@ -191,7 +191,7 @@ public:
   // public data members:
 
   WaveformDisplayOld                *waveformDisplay;
-  CoordinateSystemOld               *emptyDisplay;
+  rsPlot               *emptyDisplay;
   OscillatorStereoEditorContextMenu *contextMenu;
   //Viewport                          *contextMenuViewport;
 

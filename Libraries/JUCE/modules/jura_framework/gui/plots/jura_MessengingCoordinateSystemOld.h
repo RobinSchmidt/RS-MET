@@ -32,9 +32,9 @@ public:
 
 /**
 
-This class extends the CoordinateSystemOld class in auch a way as to broadcast change-messages, whenever a parameter (such as the visible
+This class extends the rsPlot class in auch a way as to broadcast change-messages, whenever a parameter (such as the visible
 range) changes. It is intended to be used for plugIns and applications that must be able to restore the appearance of the
-CoordinateSystemOld. If you derive your class from this virtual subclass and another (virtual) subclass of CoordinateSystemOld via
+rsPlot. If you derive your class from this virtual subclass and another (virtual) subclass of rsPlot via
 multiple inheritance, make sure, that this class comes first - otherwise the attached ChangeListeners will get a pointer with a wrong
 address in their changeListenerCallback functions.
 
@@ -51,7 +51,7 @@ not seem to work reliably (inherited sub-objects may have addresses other than e
 
 */
 
-class MessengingCoordinateSystemOld : virtual public CoordinateSystemOld
+class MessengingCoordinateSystemOld : virtual public rsPlot
 {
 
 public:

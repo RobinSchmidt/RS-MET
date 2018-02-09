@@ -79,9 +79,9 @@ CoordinateSystemZoomerOld::~CoordinateSystemZoomerOld()
 //-------------------------------------------------------------------------------------------------
 // parameter-settings:
 
-void CoordinateSystemZoomerOld::setCoordinateSystem(CoordinateSystemOld *newSystemToBeShown)
+void CoordinateSystemZoomerOld::setCoordinateSystem(rsPlot *newSystemToBeShown)
 {
-  // assign the pointer to the new CoordinateSystemOld:
+  // assign the pointer to the new rsPlot:
   theCoordinateSystem = newSystemToBeShown;
 
   // align the widgets:
@@ -135,7 +135,7 @@ void CoordinateSystemZoomerOld::setRelativeMargins(double newRelativeMarginLeft,
 
 void CoordinateSystemZoomerOld::rButtonClicked(RButton* button)
 {
-  // check, if we have a valid pointer to a CoordinateSystemOld:
+  // check, if we have a valid pointer to a rsPlot:
   if( theCoordinateSystem == NULL ) 
     return;
 
@@ -158,7 +158,7 @@ void CoordinateSystemZoomerOld::rButtonClicked(RButton* button)
 void CoordinateSystemZoomerOld::scrollBarMoved(RScrollBar *scrollBarThatHasMoved, 
   const double newRangeStart)
 {
-  // check, if we have a valid pointer to a CoordinateSystemOld:
+  // check, if we have a valid pointer to a rsPlot:
   if( theCoordinateSystem == NULL ) 
     return;
 
@@ -241,7 +241,7 @@ void CoordinateSystemZoomerOld::mouseWheelMove(const MouseEvent& e, const MouseW
   updateScrollbars();
 }
 
-// forwarding of mouse-events to the CoordinateSystemOld which are not handled by the zoomer:
+// forwarding of mouse-events to the rsPlot which are not handled by the zoomer:
 void CoordinateSystemZoomerOld::mouseMove(const MouseEvent& e) 
 { 
   if (theCoordinateSystem != NULL) 
@@ -347,7 +347,7 @@ void CoordinateSystemZoomerOld::shiftX(double shiftAmount)
     x2  = jlimit(0.0, 1.0, x2);
   }
 
-  // convert back to unnormalized coordinates and set up the CoordinateSystemOld's current range:
+  // convert back to unnormalized coordinates and set up the rsPlot's current range:
   x1 = transformFromScrollBarCoordinateX(x1);
   x2 = transformFromScrollBarCoordinateX(x2);
   theCoordinateSystem->setCurrentRangeX(x1, x2);
@@ -384,7 +384,7 @@ void CoordinateSystemZoomerOld::shiftY(double shiftAmount)
     y2  = jlimit(0.0, 1.0, y2);
   }
 
-  // convert back to unnormalized coordinates and set up the CoordinateSystemOld's current range:
+  // convert back to unnormalized coordinates and set up the rsPlot's current range:
   y1 = transformFromScrollBarCoordinateY(y1);
   y2 = transformFromScrollBarCoordinateY(y2);
   theCoordinateSystem->setCurrentRangeY(y1, y2);
@@ -392,7 +392,7 @@ void CoordinateSystemZoomerOld::shiftY(double shiftAmount)
 
 void CoordinateSystemZoomerOld::zoomX(double zoomFactor, double relativeCenter)
 {
-  // check, if we have a valid pointer to a CoordinateSystemOld:
+  // check, if we have a valid pointer to a rsPlot:
   if( theCoordinateSystem == NULL ) 
     return;
 
@@ -413,7 +413,7 @@ void CoordinateSystemZoomerOld::zoomX(double zoomFactor, double relativeCenter)
   x1     = center - left/zoomFactor;
   x2     = center + right/zoomFactor;
 
-  // convert back to unnormalized coordinates and set up the CoordinateSystemOld's current range:
+  // convert back to unnormalized coordinates and set up the rsPlot's current range:
   x1     = transformFromScrollBarCoordinateX(x1);
   x2     = transformFromScrollBarCoordinateX(x2);
 
@@ -422,7 +422,7 @@ void CoordinateSystemZoomerOld::zoomX(double zoomFactor, double relativeCenter)
   //theCoordinateSystem->autoReRenderImage = false;
   theCoordinateSystem->setCurrentRangeX(x1, x2);
   //theCoordinateSystem->autoReRenderImage = tmp;
-    // todo: when the CoordinateSystemOld itself checks whether or not there was an actual, 
+    // todo: when the rsPlot itself checks whether or not there was an actual, 
     // range-change, all that stuff except setCurrentRange may be strippedd off
 
 
@@ -449,7 +449,7 @@ void CoordinateSystemZoomerOld::zoomY(double zoomFactor, double relativeCenter)
   y1     = center - bottom/zoomFactor;
   y2     = center + top/zoomFactor;
 
-  // convert back to unnormalized coordinates and set up the CoordinateSystemOld's current range:
+  // convert back to unnormalized coordinates and set up the rsPlot's current range:
   y1     = transformFromScrollBarCoordinateY(y1);
   y2     = transformFromScrollBarCoordinateY(y2);
 
@@ -458,7 +458,7 @@ void CoordinateSystemZoomerOld::zoomY(double zoomFactor, double relativeCenter)
   //theCoordinateSystem->autoReRenderImage = false;
   theCoordinateSystem->setCurrentRangeY(y1, y2);
   //theCoordinateSystem->autoReRenderImage = tmp;
-    // todo: when the CoordinateSystemOld itself checks whether or not there was an actual, 
+    // todo: when the rsPlot itself checks whether or not there was an actual, 
     // range-change, all that stuff except setCurrentRange may be strippedd off
 
   // update the x-axis scrollbar according to the new zoom-level:
@@ -485,7 +485,7 @@ void CoordinateSystemZoomerOld::zoomToAllY()
 
 void CoordinateSystemZoomerOld::zoomToAllXY()
 {
-  // check, if we have a valid pointer to a CoordinateSystemOld:
+  // check, if we have a valid pointer to a rsPlot:
   if( theCoordinateSystem == NULL ) 
     return;
   theCoordinateSystem->setCurrentRange(theCoordinateSystem->getMaximumRange());
@@ -522,7 +522,7 @@ void CoordinateSystemZoomerOld::hideScrollBarY(bool shouldBeHidden)
 
 void CoordinateSystemZoomerOld::alignWidgetsToCoordinateSystem()
 {
-  // check, if we have a valid pointer to a CoordinateSystemOld:
+  // check, if we have a valid pointer to a rsPlot:
   if( theCoordinateSystem == NULL ) 
     return;
 

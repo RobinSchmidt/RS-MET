@@ -217,7 +217,7 @@ protected:
 
   // plot and related stuff:
   CurveFamilyPlotOld  *waveformDisplay;
-  CoordinateSystemOld *emptyDisplay;
+  rsPlot *emptyDisplay;
   double *xValues, *yValuesL, *yValuesR;
   int    numSamplesInPlot;
 
@@ -285,7 +285,7 @@ protected:
 
   // plot and related stuff:
   CurveFamilyPlotOld  *waveformDisplay;
-  CoordinateSystemOld *emptyDisplay;
+  rsPlot *emptyDisplay;
   double *xValues, *yValuesL, *yValuesR;
   int    numSamplesInPlot;
 

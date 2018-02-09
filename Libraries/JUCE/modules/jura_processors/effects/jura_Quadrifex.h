@@ -223,7 +223,7 @@ protected:
 /** This class ...  */
 
 class QuadrifexRoutingDiagram : /*public RectangleComponent,*/ public ChangeBroadcaster,
-  public CoordinateSystemOld
+  public rsPlot
 {
 
 public:

@@ -1,5 +1,5 @@
-#ifndef jura_CoordinateSystemOld_h
-#define jura_CoordinateSystemOld_h 
+#ifndef jura_Plot_h
+#define jura_Plot_h 
 
 /** This class is a component, intended to be used as base-class for all components that need some
 underlying coordinate-system, such as function-plots, XY-pads, etc. It takes care of the coordinate
@@ -10,15 +10,15 @@ desired coordinate-system (which can be lin- or log-scaled).
 
 -rename to rsPlot, rsPlotBase or rsPlotComponent  */
 
-class JUCE_API CoordinateSystemOld : virtual public DescribedComponent
+class JUCE_API rsPlot : virtual public DescribedComponent
 {
 
   friend class CoordinateSystemZoomer;
 
 public:
 
-  CoordinateSystemOld(const juce::String& newDescription = juce::String("some 2D widget"));
-  virtual ~CoordinateSystemOld();
+  rsPlot(const juce::String& newDescription = juce::String("some 2D widget"));
+  virtual ~rsPlot();
 
   //-----------------------------------------------------------------------------------------------
   // \name Component overrides
@@ -119,7 +119,7 @@ public:
   /** Sets up the colour-scheme from an XmlElement. */
   virtual void setColourSchemeFromXml(const XmlElement& xml);
 
-  /** Sets up a caption for the CoordinateSystemOld and the position where it should appear. */
+  /** Sets up a caption for the rsPlot and the position where it should appear. */
   virtual void setCaption(const juce::String &newCaption, 
     int newPosition = rsPlotSettings::TOP_CENTER);
 
@@ -259,7 +259,7 @@ public:
 
   /** With this function, the automatic re-rendering of the underlying image can be turned on or
   off. If on (default), everytime you change a parameter which will change the appearance of
-  the CoordinateSystemOld, it will be re-rendered. However, when you want to change many
+  the rsPlot, it will be re-rendered. However, when you want to change many
   parameters at a time, this can be wasteful in terms of CPU-load. In these cases, it can be
   useful to switch the automatic re-rendering temporarily off. */
   virtual void setAutoReRendering(bool shouldAutomaticallyReRender);
@@ -312,7 +312,7 @@ public:
   delete the pointer to the image when it's not needed anymore. */
   virtual Image* getPlotAsImage(int width, int height);
 
-  /** Opens a dialog window to export the content of the CoordinateSystemOld to a png-image file 
+  /** Opens a dialog window to export the content of the rsPlot to a png-image file 
   or svg vector drawing file. */
   virtual void openExportDialog(int defaultWidth, int defaultHeight, 
     const juce::String &defaultFormat, const juce::File& defaultTargetFile);
@@ -322,7 +322,7 @@ public:
 
   /** We define a member for the mouse-cursor which is to be showed in order to let a
   CoordinateSystemZoomer access this. This is required, because the zoomer object must be above
-  the actual CoordinateSystemOld and therefore prevent the CoordinateSystemOld to set it's own
+  the actual rsPlot and therefore prevent the rsPlot to set it's own
   MouseCursor. Instead we just assign the member mouse-cursor and let the zoomer retrieve it. */
   MouseCursor currentMouseCursor;
 
@@ -362,7 +362,7 @@ protected:
 
 
   /** Updates the image object (re-draws it). Will be called, when something about the
-  CoordinateSystemOld's appearance-settings was changed. */
+  rsPlot's appearance-settings was changed. */
   virtual void updateBackgroundImage();
 
   /** Sets up the output range (i.e. the pixel width and height) in our coordinateMapper. If a 

@@ -86,7 +86,7 @@ void VectorMixerAudioModule::initializeAutomatableParameters()
 
 
 VectorMixerPad::VectorMixerPad(rosic::VectorMixer* newVectorMixerToEdit, const juce::String& name) 
-  : CoordinateSystemOld(name)
+  : rsPlot(name)
 {
   setDescription("Drag around the dot to adjust the mix between the 4 signals");
 
@@ -207,7 +207,7 @@ void VectorMixerPad::mouseDown(const MouseEvent &e)
   // preliminray: do not open the MIDI-learn menu on right-button - show the image export menu 
   // instead (inherited behaviour from CoordinateSytem):
   if( e.mods.isRightButtonDown() )
-    CoordinateSystemOld::mouseDown(e);
+    rsPlot::mouseDown(e);
   else
   {
     // get the position of the event in components coordinates
@@ -344,13 +344,13 @@ void VectorMixerPad::setupVectorMixerAccordingToMousePosition(double mouseX, dou
 
 void VectorMixerPad::resized()
 {
-  CoordinateSystemOld::resized();
+  rsPlot::resized();
   updateBackgroundImage();
 }
 
 void VectorMixerPad::drawCoordinateSystem(Graphics &g)
 {
-  CoordinateSystemOld::drawCoordinateSystem(g);
+  rsPlot::drawCoordinateSystem(g);
 
   if( vectorMixerToEdit == NULL )
     return;

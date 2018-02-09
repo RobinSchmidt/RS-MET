@@ -1,8 +1,8 @@
 #ifndef jura_CoordinateSystemZoomerOld_h
 #define jura_CoordinateSystemZoomerOld_h
 
-/** This a class for a CoordinateSystemOld with zooming and scrolling capabilities. It has a 
-pointer to the actual CoordinateSystemOld (or some subclass thereof) object for which the zooming 
+/** This a class for a rsPlot with zooming and scrolling capabilities. It has a 
+pointer to the actual rsPlot (or some subclass thereof) object for which the zooming 
 and scrolling is required. This pointer needs to be set up via the setCoordinateSystem()-method -
 otherwise it will be NULL and emptyness will be shown.
 
@@ -34,11 +34,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // setup:
 
-  /** This function should be used to pass the CoordinateSystemOld-object (or an object of some 
+  /** This function should be used to pass the rsPlot-object (or an object of some 
   subclass thereof) which should be shown, zoomed and scrolled. */
-  virtual void setCoordinateSystem(CoordinateSystemOld* newSystemToBeShown);
+  virtual void setCoordinateSystem(rsPlot* newSystemToBeShown);
 
-  /** This function should be called when the CoordinateSystemOld, to which we hold a pointer here, 
+  /** This function should be called when the rsPlot, to which we hold a pointer here, 
   was deleted for some reason. */
   virtual void invalidateCoordinateSystemPointer();
 
@@ -87,7 +87,7 @@ public:
   virtual void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails &wheel);
 
   // additionally, we have to override all the other mouse-callbacks in order 
-  // to forward them to the CoordinateSystemOld:
+  // to forward them to the rsPlot:
   virtual void mouseMove       (const MouseEvent& e);
   virtual void mouseEnter      (const MouseEvent& e);
   virtual void mouseExit       (const MouseEvent& e);
@@ -101,12 +101,12 @@ public:
   virtual void paint(Graphics &g);
 
   //-----------------------------------------------------------------------------------------------
-  // CoordinateSystemOld manipulation:
+  // rsPlot manipulation:
 
-  /** Causes the CoordinateSystemOld to be shifted left or right and updates the scrollBarX. */
+  /** Causes the rsPlot to be shifted left or right and updates the scrollBarX. */
   virtual void shiftX(double shiftAmount);
 
-  /** Causes the CoordinateSystemOld to be shifted up or down and updates the scrollBarY. */
+  /** Causes the rsPlot to be shifted up or down and updates the scrollBarY. */
   virtual void shiftY(double shiftAmount);
 
   /** Zooms the x-coordinate in or out (according to whether the zoomFactor is larger or smaller
@@ -128,7 +128,7 @@ public:
   virtual void zoomToAllXY();
 
   /** Sets the current range and update the scrollbars, avoiding a double redraw. May be
-  deprecated when the CoordinateSystemOld only redraws itself on actual range-changes */
+  deprecated when the rsPlot only redraws itself on actual range-changes */
   //virtual void setCurrentRangeAndUpdateScrollBarsX(double newMinX, double newMaxX);
 
   /** @see setCurrentRangeAndUpdateScrollBarsX */
@@ -138,7 +138,7 @@ public:
   // mostly for internal use:
 
   /** Causes the widgets (the zoom-buttons and scrollbars) to align themselves according to the
-  position and size of the CoordinateSystemOld object, which is being manipulated */
+  position and size of the rsPlot object, which is being manipulated */
   virtual void alignWidgetsToCoordinateSystem();
 
   /** Updates the positions and sizes of the scrollbar thumbs. */
@@ -146,19 +146,19 @@ public:
 
 protected:
 
-  /** Transforms from an x-value given in the CoordinateSystemOld's coordinates to normalized
+  /** Transforms from an x-value given in the rsPlot's coordinates to normalized
   coordinates in the range 0...1 to be used by the horizontal scrollbar. */
   virtual double transformToScrollBarCoordinateX(double x);
 
-  /** Transforms from a normlized x-value in the range 0...1 to the CoordinateSystemOld's
+  /** Transforms from a normlized x-value in the range 0...1 to the rsPlot's
   coordinates. */
   virtual double transformFromScrollBarCoordinateX(double x);
 
-  /** Transforms from an y-value given in the CoordinateSystemOld's coordinates to normalized
+  /** Transforms from an y-value given in the rsPlot's coordinates to normalized
   coordinates in the range 0...1 to be used by the vertical scrollbar. */
   virtual double transformToScrollBarCoordinateY(double y);
 
-  /** Transforms from a normlized y-value in the range 0...1 to the CoordinateSystemOld's
+  /** Transforms from a normlized y-value in the range 0...1 to the rsPlot's
   coordinates. */
   virtual double transformFromScrollBarCoordinateY(double y);
 
@@ -166,7 +166,7 @@ protected:
   y-axis seperately. */
   double zoomFactorPerClickX, zoomFactorPerClickY;
 
-  /** The amount by which the CoordinateSystemOld is shifted left/right or up/down on one click on
+  /** The amount by which the rsPlot is shifted left/right or up/down on one click on
   an arrow-button on the scrollbar. */
   double shiftPerClickX, shiftPerClickY;
 
@@ -193,7 +193,7 @@ protected:
   Colour scrollBarThumbColour;
 
   // embedded components:
-  CoordinateSystemOld* theCoordinateSystem;
+  rsPlot* theCoordinateSystem;
   RButton*          zoomInButtonX;
   RButton*          zoomOutButtonX;
   RButton*          zoomToAllButtonX;

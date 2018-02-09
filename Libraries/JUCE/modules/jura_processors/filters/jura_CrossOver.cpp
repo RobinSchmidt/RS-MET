@@ -108,8 +108,8 @@ CrossOverPlotEditor::CrossOverPlotEditor(CriticalSection *newPlugInLock, CrossOv
   setHorizontalFineGrid(   3.0, false);
   setVerticalCoarseGridVisible( true);
   setVerticalFineGridVisible(   false);
-  CoordinateSystemOld::setAxisValuesPositionX(rsPlotSettings::ABOVE_AXIS);
-  CoordinateSystemOld::setAxisValuesPositionY(rsPlotSettings::RIGHT_TO_AXIS);
+  rsPlot::setAxisValuesPositionX(rsPlotSettings::ABOVE_AXIS);
+  rsPlot::setAxisValuesPositionY(rsPlotSettings::RIGHT_TO_AXIS);
   showPositionAsDescription = true;
   setAutoReRendering(true);
 

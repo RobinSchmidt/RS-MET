@@ -7,7 +7,7 @@
 -rename to rsDataPlot (as opposed to rsFunctionPlot that uses a std::function)
 */
 
-class JUCE_API CurveFamilyPlotOld : virtual public CoordinateSystemOld
+class JUCE_API CurveFamilyPlotOld : virtual public rsPlot
 {
 
 public:

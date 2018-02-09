@@ -1084,7 +1084,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
       locatorColour, targetImage);
   }
   y1 = modulator->getBreakpointLevel(p);
-  CoordinateSystemOld::transformToComponentsCoordinates(x1, y1);
+  rsPlot::transformToComponentsCoordinates(x1, y1);
   drawTriangle(g, (float)x1-4.f, (float)y1-6.f, (float)x1-4.f, (float)y1+6.f, (float)x1+6.f, 
                (float)y1, true); 
 
@@ -1096,7 +1096,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
       locatorColour, targetImage);
   }
   y1 = modulator->getBreakpointLevel(p);
-  CoordinateSystemOld::transformToComponentsCoordinates(x1, y1);
+  rsPlot::transformToComponentsCoordinates(x1, y1);
   drawTriangle(g, (float)x1-6.f, (float)y1, (float)x1+4.f, (float)y1-6.f, (float)x1+4.f, 
                (float)y1+6.f, true); 
 
