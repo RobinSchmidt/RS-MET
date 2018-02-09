@@ -1,5 +1,5 @@
-#ifndef jura_MessengingCoordinateSystemOld_h
-#define jura_MessengingCoordinateSystemOld_h
+#ifndef jura_ObservablePlot_h
+#define jura_ObservablePlot_h
 
 #if defined _MSC_VER
 #pragma warning(disable : 4250) // disable dominance warning in MSVC
@@ -9,18 +9,19 @@
 
 class rsObservablePlot;
 
-/** This class is an observer for rsObservablePlot objects. Subclasses of this class have to override the callback function
-coordinateSystemChanged in order to respond to any changes in the observed rsObservablePlot object(s). */
+/** This class is an observer for rsObservablePlot objects. Subclasses of this class have to 
+override the callback function coordinateSystemChanged in order to respond to any changes in the 
+observed rsObservablePlot object(s). */
 
-class CoordinateSystemOldObserver
+class rsPlotObserver
 {
 
 public:
 
-  virtual ~CoordinateSystemOldObserver() {}
+  virtual ~rsPlotObserver() {}
 
-  /** This is the callback, you must override in order to respond to any changes in the observed rsObservablePlot
-  object(s). */
+  /** This is the callback, you must override in order to respond to any changes in the observed 
+  rsObservablePlot object(s). */
   virtual void coordinateSystemChanged(rsObservablePlot *coordinateSystemThatHasChanged) = 0;
 
   juce_UseDebuggingNewOperator;
@@ -28,7 +29,7 @@ public:
 };
 
 
-//=======================================================================================================================================
+//=================================================================================================
 
 /**
 
@@ -46,8 +47,9 @@ Example:
 \todo: make some dedicated class CoordinateSystemOldListener or something - this callback-thing with the pointer to void as argument does
 not seem to work reliably (inherited sub-objects may have addresses other than expected)
 
--rename to ObservablePlot
-
+\todo
+-make a class rsPlotRangeObserver - it's better to observe the range itself, we can get rid of this
+ virtual inheritance stuff then (which is a pita)
 
 */
 
@@ -88,15 +90,15 @@ public:
   // others:
 
   /** Registers an observer which will get notified about changes. */
-  virtual void addCoordinateSystemOldObserver(CoordinateSystemOldObserver* observerToAdd);
+  virtual void addCoordinateSystemOldObserver(rsPlotObserver* observerToAdd);
 
   /** De-registers an observer. */
-  virtual void removeCoordinateSystemOldObserver(CoordinateSystemOldObserver* observerToRemove);
+  virtual void removeCoordinateSystemOldObserver(rsPlotObserver* observerToRemove);
 
   /** De-registers all observers. */
   virtual void removeAllCoordinateSystemOldObservers();
 
-  /** Calls CoordinateSystemOldObserver::coordinateSystemChanged for all our registered observers. */
+  /** Calls rsPlotObserver::coordinateSystemChanged for all our registered observers. */
   virtual void sendCoordinateSystemChangedMessage(rsObservablePlot *coordinateSystemThatHasChanged);
 
 
@@ -104,7 +106,7 @@ public:
 
 protected:
 
-  juce::Array<CoordinateSystemOldObserver*, CriticalSection> observers;
+  juce::Array<rsPlotObserver*, CriticalSection> observers;
 
 };
 

@@ -353,7 +353,7 @@ protected:
 
 /** GUI editor for the Oscilloscope */
 
-class OscilloscopeModuleEditor : public AudioModuleEditorAnimated, public CoordinateSystemOldObserver //, public RComboBoxObserver
+class OscilloscopeModuleEditor : public AudioModuleEditorAnimated, public rsPlotObserver //, public RComboBoxObserver
 {
 
 public:
@@ -394,7 +394,7 @@ protected:
 
 /** GUI editor for the SpectrumAnalyzer */
 
-class SpectrumAnalyzerModuleEditor : public AudioModuleEditorAnimated, public CoordinateSystemOldObserver
+class SpectrumAnalyzerModuleEditor : public AudioModuleEditorAnimated, public rsPlotObserver
 {
 
 public:

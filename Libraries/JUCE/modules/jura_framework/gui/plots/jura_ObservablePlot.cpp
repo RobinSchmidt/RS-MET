@@ -221,14 +221,14 @@ void rsObservablePlot::setCurrentRangeMaxY(double newMaxY)
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // others;
 
-void rsObservablePlot::addCoordinateSystemOldObserver(CoordinateSystemOldObserver* observerToAdd)
+void rsObservablePlot::addCoordinateSystemOldObserver(rsPlotObserver* observerToAdd)
 {
   observers.getLock().enter();
   observers.addIfNotAlreadyThere(observerToAdd);
   observers.getLock().exit();
 }
 
-void rsObservablePlot::removeCoordinateSystemOldObserver(CoordinateSystemOldObserver* observerToRemove)
+void rsObservablePlot::removeCoordinateSystemOldObserver(rsPlotObserver* observerToRemove)
 {
   observers.getLock().enter();
   observers.removeFirstMatchingValue(observerToRemove);
