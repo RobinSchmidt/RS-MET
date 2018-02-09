@@ -121,8 +121,7 @@ public:
   //virtual void updatePlot();
 
   /** Overrides the inherited method from the CoordinateSystem base-class. */
-  virtual void drawCoordinateSystem(Graphics &g, juce::Image* targetImage = NULL, 
-    XmlElement* targetSVG = NULL);
+  virtual void drawCoordinateSystem(Graphics &g) override;
 
 protected:
 

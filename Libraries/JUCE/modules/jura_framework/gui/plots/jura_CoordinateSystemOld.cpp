@@ -984,7 +984,8 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
 //-------------------------------------------------------------------------------------------------
 // drawing functions
 
-void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, XmlElement *targetSVG)
+//void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, XmlElement *targetSVG)
+void CoordinateSystemOld::drawCoordinateSystem(Graphics &g)
 {
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, getWidth(), getHeight());
   drawer.drawPlotBackground(g);

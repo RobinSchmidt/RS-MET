@@ -399,8 +399,11 @@ protected:
   /** Opens the PopupMenu that appears on right clicks. */
   void openRightClickPopupMenu();
 
-  virtual void drawCoordinateSystem(Graphics &g, Image* targetImage = NULL, 
-    XmlElement* targetSVG = NULL);
+
+  virtual void drawCoordinateSystem(Graphics &g);
+
+  //virtual void drawCoordinateSystem(Graphics &g, Image* targetImage = NULL, 
+  //  XmlElement* targetSVG = NULL);
   /**< Draws all the stuff either on the internal image which will be displayed as the components
   content or on an arbitrary image (if only the first optional pointer argumnet is nonzero) or on
   an arbitrary image and an SVG compliant XmlElement (if both poiters are nonzero). */

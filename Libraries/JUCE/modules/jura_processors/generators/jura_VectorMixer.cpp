@@ -348,21 +348,20 @@ void VectorMixerPad::resized()
   updateBackgroundImage();
 }
 
-void VectorMixerPad::drawCoordinateSystem(Graphics &g, juce::Image* targetImage, XmlElement *targetSVG)
+void VectorMixerPad::drawCoordinateSystem(Graphics &g)
 {
-  CoordinateSystemOld::drawCoordinateSystem(g, targetImage, targetSVG);
+  CoordinateSystemOld::drawCoordinateSystem(g);
 
   if( vectorMixerToEdit == NULL )
     return;
 
   // draw the dot-handle and a crosshair:
-  double x = vectorMixerToEdit->getX();
-  double y = vectorMixerToEdit->getY();
+  //double x = vectorMixerToEdit->getX();
+  //double y = vectorMixerToEdit->getY();
+  //transformToComponentsCoordinates(x, y);
 
-  if( targetImage == NULL )
-    transformToComponentsCoordinates(x, y);
-  else
-    transformToImageCoordinates(x, y, targetImage);
+  double x = coordinateMapper.mapX(vectorMixerToEdit->getX());
+  double y = coordinateMapper.mapY(vectorMixerToEdit->getY());
 
   g.setColour(dotColour);
   g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 
@@ -374,12 +373,6 @@ void VectorMixerPad::drawCoordinateSystem(Graphics &g, juce::Image* targetImage,
   float h = (float) getHeight();
   g.drawLine(       0,(float)y,        w, (float)y, 1.f);  // horizontal
   g.drawLine((float)x,       0, (float)x,        h, 1.f);  // vertical
-
-  //// old, buggy:
-  //float w = (float) getPlotWidth(targetImage);
-  //float h = (float) getPlotHeight(targetImage);
-  //g.drawLine(       0,(float)y,        w, (float)y, 1.f);  // horizontal
-  //g.drawLine((float)x,       0, (float)x,        h, 1.f);  // vertical
 }
 
 //=================================================================================================
