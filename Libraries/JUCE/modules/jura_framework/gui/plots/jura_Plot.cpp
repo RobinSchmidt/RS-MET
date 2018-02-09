@@ -70,11 +70,21 @@ void rsPlot::paint(juce::Graphics &g)
     g.fillAll(Colours::red);
 }
 
+void rsPlot::rsPlotAppearanceChanged(rsPlotSettings* plotSettings)
+{
+  if(autoReRenderImage == true)
+    updateBackgroundImage();
+}
+
+void rsPlot::rsPlotVisibleRangeChanged(rsPlotSettings* plotSettings)
+{
+  updateMapperInputRange();
+}
+
 //-------------------------------------------------------------------------------------------------
 // range management:
 
-void rsPlot::setMaximumRange(double newMinX, double newMaxX, 
-                                       double newMinY, double newMaxY)
+void rsPlot::setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY)
 {
   plotSettings.maximumRange.setRangeX(newMinX, newMaxX);
   plotSettings.maximumRange.setRangeY(newMinY, newMaxY);

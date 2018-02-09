@@ -10,7 +10,7 @@ desired coordinate-system (which can be lin- or log-scaled).
 
 -rename to rsPlot, rsPlotBase or rsPlotComponent  */
 
-class JUCE_API rsPlot : virtual public DescribedComponent
+class JUCE_API rsPlot : virtual public DescribedComponent, public rsPlotSettingsObserver
 {
 
   friend class CoordinateSystemZoomer;
@@ -35,6 +35,18 @@ public:
 
   virtual void resized() override;
   virtual void paint(Graphics &g) override;
+
+  //-----------------------------------------------------------------------------------------------
+  // \name rsPlotSettingsObserver overrides
+
+  /** Possibly triggers a re-rendering when the appearence stting has changed. */
+  virtual void rsPlotAppearanceChanged(rsPlotSettings* plotSettings) override;
+
+  /** Updates the input range of our coordinate mapper. */
+  virtual void rsPlotVisibleRangeChanged(rsPlotSettings* plotSettings) override;
+
+  /** Does nothing but needs to be overriden. */
+  virtual void rsPlotMaximumRangeChanged(rsPlotSettings* plotSettings) override {};
 
   //-----------------------------------------------------------------------------------------------
   // range-management (split in range setup and range inquiry, inline inquiry functions):
