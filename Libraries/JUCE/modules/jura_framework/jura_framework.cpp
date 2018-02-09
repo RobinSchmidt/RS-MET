@@ -76,11 +76,12 @@ namespace jura
 #include "gui/plots/jura_PlotSettings.cpp"
 #include "gui/plots/jura_PlotDrawer.cpp"
 
-#include "gui/plots/jura_CoordinateSystemOld.cpp"
+#include "gui/plots/jura_Plot.cpp"
 #include "gui/plots/jura_InteractiveCoordinateSystemOld.cpp" 
 #include "gui/plots/jura_MessengingCoordinateSystemOld.cpp"
-#include "gui/plots/jura_CoordinateSystemZoomerOld.cpp"
-#include "gui/plots/jura_CurveFamilyPlotOld.cpp" 
+#include "gui/plots/jura_PlotZoomer.cpp"
+#include "gui/plots/jura_DataPlot.cpp"
+#include "gui/plots/jura_FunctionPlot.cpp" 
 #include "gui/plots/jura_SpectrumDisplayOld.cpp"
 #include "gui/plots/jura_WaveformDisplayOld.cpp"
 

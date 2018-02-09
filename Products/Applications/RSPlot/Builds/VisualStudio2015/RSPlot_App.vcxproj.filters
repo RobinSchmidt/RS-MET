@@ -2251,19 +2251,19 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_WaveformDisplay.cpp">
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemOld.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_DataPlot.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemZoomerOld.cpp">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CurveFamilyPlotOld.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_FunctionPlot.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_InteractiveCoordinateSystemOld.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.cpp">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_Plot.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotDrawer.cpp">
@@ -2273,6 +2273,9 @@
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotSettings.cpp">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotZoomer.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.cpp">
@@ -5688,19 +5691,19 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_WaveformDisplay.h">
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemOld.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_DataPlot.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemZoomerOld.h">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CurveFamilyPlotOld.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_FunctionPlot.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_InteractiveCoordinateSystemOld.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.h">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_Plot.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotDrawer.h">
@@ -5710,6 +5713,9 @@
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotSettings.h">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_PlotZoomer.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.h">

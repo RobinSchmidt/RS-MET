@@ -122,14 +122,14 @@ namespace jura
 #include "gui/plots/jura_PlotRange.h"
 #include "gui/plots/jura_PlotSettings.h"
 #include "gui/plots/jura_PlotDrawer.h"
-
-#include "gui/plots/jura_CoordinateSystemOld.h"
-#include "gui/plots/jura_InteractiveCoordinateSystemOld.h"
-#include "gui/plots/jura_MessengingCoordinateSystemOld.h"
-#include "gui/plots/jura_CoordinateSystemZoomerOld.h"
-#include "gui/plots/jura_CurveFamilyPlotOld.h"
-#include "gui/plots/jura_SpectrumDisplayOld.h"
-#include "gui/plots/jura_WaveformDisplayOld.h"
+#include "gui/plots/jura_Plot.h"
+#include "gui/plots/jura_InteractiveCoordinateSystemOld.h"  // rename to PlotEditor
+#include "gui/plots/jura_MessengingCoordinateSystemOld.h"   // rename to ObservablePlot
+#include "gui/plots/jura_PlotZoomer.h"
+#include "gui/plots/jura_DataPlot.h"
+#include "gui/plots/jura_FunctionPlot.h"
+#include "gui/plots/jura_SpectrumDisplayOld.h"  // rename to SpectrumPlot
+#include "gui/plots/jura_WaveformDisplayOld.h"  // rename to WaveformPlot
 // after the plots, we may add some further plot-based widgets, such as XY-Pads, frequency-response
 // editors, etc.
 
