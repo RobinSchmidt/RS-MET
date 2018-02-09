@@ -627,86 +627,6 @@ void CoordinateSystemOld::setAngularFineGrid(double newGridInterval,
     updateBackgroundImage();
 }
 
-bool CoordinateSystemOld::isHorizontalCoarseGridVisible() 
-{ 
-  return plotSettings.horizontalCoarseGridIsVisible; 
-}
-
-bool CoordinateSystemOld::isHorizontalFineGridVisible() 
-{ 
-  return plotSettings.horizontalFineGridIsVisible; 
-}
-
-bool CoordinateSystemOld::isVerticalCoarseGridVisible() 
-{ 
-  return plotSettings.verticalCoarseGridIsVisible; 
-}
-
-bool CoordinateSystemOld::isVerticalFineGridVisible() 
-{ 
-  return plotSettings.verticalFineGridIsVisible; 
-}
-
-bool CoordinateSystemOld::isRadialCoarseGridVisible() 
-{ 
-  return plotSettings.radialCoarseGridIsVisible; 
-}
-
-bool CoordinateSystemOld::isRadialFineGridVisible() 
-{ 
-  return plotSettings.radialFineGridIsVisible; 
-}
-
-bool CoordinateSystemOld::isAngularCoarseGridVisible() 
-{ 
-  return plotSettings.angularCoarseGridIsVisible; 
-}
-
-bool CoordinateSystemOld::isAngularFineGridVisible() 
-{ 
-  return plotSettings.angularFineGridIsVisible; 
-}
-
-double CoordinateSystemOld::getHorizontalCoarseGridInterval()
-{
-  return plotSettings.horizontalCoarseGridInterval;
-}
-
-double CoordinateSystemOld::getHorizontalFineGridInterval()
-{
-  return plotSettings.horizontalFineGridInterval;
-}
-
-double CoordinateSystemOld::getVerticalCoarseGridInterval()
-{
-  return plotSettings.verticalCoarseGridInterval;
-}
-
-double CoordinateSystemOld::getVerticalFineGridInterval()
-{
-  return plotSettings.verticalFineGridInterval;
-}
-
-double CoordinateSystemOld::getRadialCoarseGridInterval()
-{
-  return plotSettings.radialCoarseGridInterval;
-}
-
-double CoordinateSystemOld::getRadialFineGridInterval()
-{
-  return plotSettings.radialFineGridInterval;
-}
-
-double CoordinateSystemOld::getAngularCoarseGridInterval()
-{
-  return plotSettings.angularCoarseGridInterval;
-}
-
-double CoordinateSystemOld::getAngularFineGridInterval()
-{
-  return plotSettings.angularFineGridInterval;
-}
-
 void CoordinateSystemOld::setAxisPositionX(int newAxisPositionX)
 {
   if( newAxisPositionX == rsPlotSettings::INVISIBLE ||
@@ -937,26 +857,7 @@ void CoordinateSystemOld::updateBackgroundImage()
 
 //-------------------------------------------------------------------------------------------------
 // coordinate transformations:
-/*
-void CoordinateSystemOld::transformToImageCoordinates(double &x, double &y, const Image* theImage)
-{
-  if( theImage == nullptr ) { transformToComponentsCoordinates(x, y); return; }
-  setupCoordinateMapper(coordinateMapper, theImage);  // not very elegant to set it back and forth
-  x = coordinateMapper.mapX(x);
-  y = coordinateMapper.mapY(y);
-  setupCoordinateMapper(coordinateMapper, this);
-}
 
-void CoordinateSystemOld::transformFromImageCoordinates(double &x, double &y, 
-  const Image *theImage)
-{
-  if( theImage == NULL ) { transformFromComponentsCoordinates(x, y); return; }
-  setupCoordinateMapper(coordinateMapper, theImage);
-  x = coordinateMapper.unmapX(x);
-  y = coordinateMapper.unmapY(y);
-  setupCoordinateMapper(coordinateMapper, this);
-}
-*/
 void CoordinateSystemOld::transformToComponentsCoordinates(double &x, double &y)
 {
   x = coordinateMapper.mapX(x);

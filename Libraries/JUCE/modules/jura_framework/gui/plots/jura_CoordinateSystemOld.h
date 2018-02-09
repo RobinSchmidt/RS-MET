@@ -234,76 +234,45 @@ public:
   /** Sets the interval and visibility of the angular fine grid. */
   virtual void setAngularFineGrid(double newGridInterval, bool shouldBeVisible);
 
+  /** Decides if either the x-axis or the y-axis or both should be logarithmically scaled and sets 
+  up the base for the logarithms. */
+  virtual void useLogarithmicScale(bool shouldBeLogScaledX, bool   shouldBeLogScaledY,
+    double newLogBaseX = 2.0, double newLogBaseY = 2.0);
+
+  /** Decides, if the x-axis should be logarithmically scaled and sets up the base for the 
+  logarithm. */
+  virtual void useLogarithmicScaleX(bool shouldBeLogScaledX, double newLogBaseX = 2.0);
+
+  /** Decides, if the y-axis should be logarithmically scaled and sets up the base for the 
+  logarithm. */
+  virtual void useLogarithmicScaleY(bool shouldBeLogScaledY, double newLogBaseY = 2.0);
+
   //-----------------------------------------------------------------------------------------------
   // \name Appearance Inquiry
 
-  virtual bool isHorizontalCoarseGridVisible();
-  /**< Informs, if the horizontal coarse grid is visible. */
+  bool isHorizontalCoarseGridVisible() { return plotSettings.horizontalCoarseGridIsVisible; }
+  bool isHorizontalFineGridVisible() {   return plotSettings.horizontalFineGridIsVisible; }
+  bool isVerticalCoarseGridVisible() {   return plotSettings.verticalCoarseGridIsVisible; }
+  bool isVerticalFineGridVisible() {     return plotSettings.verticalFineGridIsVisible; }
+  bool isRadialCoarseGridVisible() {     return plotSettings.radialCoarseGridIsVisible; }
+  bool isRadialFineGridVisible() {       return plotSettings.radialFineGridIsVisible; }
+  bool isAngularCoarseGridVisible() {    return plotSettings.angularCoarseGridIsVisible; }
+  bool isAngularFineGridVisible() {      return plotSettings.angularFineGridIsVisible; }
 
-  virtual bool isHorizontalFineGridVisible();
-  /**< Informs, if the horizontal fine grid is visible. */
+  double getHorizontalCoarseGridInterval() { return plotSettings.horizontalCoarseGridInterval; }
+  double getHorizontalFineGridInterval() {   return plotSettings.horizontalFineGridInterval; }
+  double getVerticalCoarseGridInterval() {   return plotSettings.verticalCoarseGridInterval; }
+  double getVerticalFineGridInterval() {     return plotSettings.verticalFineGridInterval; }
+  double getRadialCoarseGridInterval() {     return plotSettings.radialCoarseGridInterval; }
+  double getRadialFineGridInterval() {       return plotSettings.radialFineGridInterval; }
+  double getAngularCoarseGridInterval() {    return plotSettings.angularCoarseGridInterval; }
+  double getAngularFineGridInterval() {      return plotSettings.angularFineGridInterval; }
 
-  virtual bool isVerticalCoarseGridVisible();
-  /**< Informs, if the vertical coarse grid is visible. */
 
-  virtual bool isVerticalFineGridVisible();
-  /**< Informs, if the vertical fine grid is visible. */
-
-  virtual bool isRadialCoarseGridVisible();
-  /**< Informs, if the radial coarse grid is visible. */
-
-  virtual bool isRadialFineGridVisible();
-  /**< Informs, if the radial fine grid is visible. */
-
-  virtual bool isAngularCoarseGridVisible();
-  /**< Informs, if the angular coarse grid is visible. */
-
-  virtual bool isAngularFineGridVisible();
-  /**< Informs, if the angular fine grid is visible. */
-
-  virtual double getHorizontalCoarseGridInterval();
-  /**< Returns the interval of the horizontal coarse grid. */
-
-  virtual double getHorizontalFineGridInterval();
-  /**< Returns the interval of the horizontal fine grid. */
-
-  virtual double getVerticalCoarseGridInterval();
-  /**< Returns the interval of the vertical coarse grid. */
-
-  virtual double getVerticalFineGridInterval();
-  /**< Returns the interval of the vertical fine grid. */
-
-  virtual double getRadialCoarseGridInterval();
-  /**< Returns the interval of the radial coarse grid. */
-
-  virtual double getRadialFineGridInterval();
-  /**< Returns the interval of the radial fine grid. */
-
-  virtual double getAngularCoarseGridInterval();
-  /**< Returns the interval of the angular coarse grid. */
-
-  virtual double getAngularFineGridInterval();
-  /**< Returns the interval of the angular fine grid. */
-
-  virtual void useLogarithmicScale(bool   shouldBeLogScaledX,
-    bool   shouldBeLogScaledY,
-    double newLogBaseX = 2.0,
-    double newLogBaseY = 2.0);
-  /**< Decides if either the x-axis or the y-axis or both should be
-  logarithmically scaled and sets up the base for the logarithms. */
-
-  virtual void useLogarithmicScaleX(bool   shouldBeLogScaledX,
-    double newLogBaseX = 2.0);
-  /**< Decides, if the x-axis should be logarithmically scaled and sets up the
-  base for the logarithm. */
 
   virtual bool isLogScaledX();
   /**< Informs, whether the x-axis is logarithmically scaled or not. */
 
-  virtual void useLogarithmicScaleY(bool   shouldBeLogScaledY,
-    double newLogBaseY = 2.0);
-  /**< Decides, if the y-axis should be logarithmically scaled and sets up the
-  base for the logarithm. */
 
   virtual bool isLogScaledY();
   /**< Informs, whether the y-axis is logarithmically scaled or not. */
@@ -434,6 +403,7 @@ protected:
   the targetSVG is passed, its size will be used (the xml should already have "width" and "height"
   attributes), else this Component's size will be used. */
   void updateMapperOutputRange(Image* targetImage = nullptr, XmlElement* targetSVG = nullptr);
+    // get rid of the image and svg pointers - i think they serve no purpose anymore
 
   /** Updates the input range of our coordinate mapper. */
   void updateMapperInputRange();
