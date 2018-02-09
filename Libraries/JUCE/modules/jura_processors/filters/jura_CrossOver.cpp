@@ -415,7 +415,7 @@ void CrossOverPlotEditor::resized()
 {
   ScopedLock scopedLock(*plugInLock);
 
-  SpectrumDisplayOld::resized();
+  rsSpectrumPlot::resized();
 
   // (re) allocate and fill the arrays for the magnitude plot
   numBins = getWidth();

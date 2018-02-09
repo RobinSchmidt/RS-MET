@@ -174,7 +174,7 @@ parameters like the center frequencies.
 
 */
 
-class EqualizerPlotEditor	: virtual public SpectrumDisplayOld, public ParameterObserver, 
+class EqualizerPlotEditor	: virtual public rsSpectrumPlot, public ParameterObserver, 
   public ParameterSetObserver 
 {
 

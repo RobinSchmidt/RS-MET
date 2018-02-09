@@ -231,7 +231,7 @@ protected:
 //=================================================================================================
 
 class SpectrumAnalyzerDisplay	: virtual public rsObservablePlot, 
-  virtual public SpectrumDisplayOld
+  virtual public rsSpectrumPlot
 {
 
 public:

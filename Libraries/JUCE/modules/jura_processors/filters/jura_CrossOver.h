@@ -102,7 +102,7 @@ editing parameters like the cutoff frequencies.
 
 */
 
-class CrossOverPlotEditor	: virtual public SpectrumDisplayOld, public ParameterObserver, public ChangeBroadcaster
+class CrossOverPlotEditor	: virtual public rsSpectrumPlot, public ParameterObserver, public ChangeBroadcaster
 {
 
   /** Enumeration of the handles that can be grabbed and dragged by the mouse.  */

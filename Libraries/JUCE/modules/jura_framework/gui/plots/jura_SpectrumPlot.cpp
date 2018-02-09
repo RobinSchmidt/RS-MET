@@ -1,5 +1,5 @@
 
-SpectrumDisplayOld::SpectrumDisplayOld(const String& name) 
+rsSpectrumPlot::rsSpectrumPlot(const String& name) 
 : rsDataPlot(name)
 {
   // initialize the appearance settings:
@@ -26,12 +26,12 @@ SpectrumDisplayOld::SpectrumDisplayOld(const String& name)
   setAutoReRendering(true);
 }
 
-SpectrumDisplayOld::~SpectrumDisplayOld(void)
+rsSpectrumPlot::~rsSpectrumPlot(void)
 {
   deleteAllChildren();
 }
 
-void SpectrumDisplayOld::useLogarithmicScaleX(bool shouldBeLogScaledX, double newLogBase)
+void rsSpectrumPlot::useLogarithmicScaleX(bool shouldBeLogScaledX, double newLogBase)
 {
   setAutoReRendering(false);
 
@@ -60,13 +60,13 @@ void SpectrumDisplayOld::useLogarithmicScaleX(bool shouldBeLogScaledX, double ne
   setAutoReRendering(true);
 }
 
-void SpectrumDisplayOld::setSpectrum(int newNumBins, double *newBinFrequencies, 
+void rsSpectrumPlot::setSpectrum(int newNumBins, double *newBinFrequencies, 
   double *newBinMagnitudes)
 {
   rsDataPlot::setCurveValues(newNumBins, newBinFrequencies, newBinMagnitudes);
 }
 
-void SpectrumDisplayOld::setSpectra(int newNumBins, int newNumSpectra, double* newBinFrequencies, 
+void rsSpectrumPlot::setSpectra(int newNumBins, int newNumSpectra, double* newBinFrequencies, 
   double** newBinMagnitudes)
 {
   rsDataPlot::setFunctionFamilyValues(newNumBins, newNumSpectra, newBinFrequencies, 
@@ -74,13 +74,13 @@ void SpectrumDisplayOld::setSpectra(int newNumBins, int newNumSpectra, double* n
 }
 
 /*
-void SpectrumDisplayOld::mouseMove(const MouseEvent &e)
+void rsSpectrumPlot::mouseMove(const MouseEvent &e)
 {
   setDescription( getCoordinateStringAtPixelPosition(e.x, e.y) );
 }
 */
 
-void SpectrumDisplayOld::getDisplayedFrequencies(double *frequencies, int numBins)
+void rsSpectrumPlot::getDisplayedFrequencies(double *frequencies, int numBins)
 {
   double x, y;
   for(int i=0; i<numBins; i++)
@@ -94,7 +94,7 @@ void SpectrumDisplayOld::getDisplayedFrequencies(double *frequencies, int numBin
 }
 
 /*
-String SpectrumDisplayOld::getCoordinateStringAtPixelPosition(int x, int y)
+String rsSpectrumPlot::getCoordinateStringAtPixelPosition(int x, int y)
 {
   double frequency = (double) x;
   double level     = (double) y;

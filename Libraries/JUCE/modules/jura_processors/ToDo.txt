@@ -1,7 +1,8 @@
 make use of the new SIMD-stuff
--update TestPluginJUCE
--move SIMD wrapper classes to rosic
--move rapt-instantiation code to rosic
+
+Ladder:
+-implement new rsFunctionplot based on std::function
+-base make the freq-response editor/plot on that
 -make stereo-spread available again
  or: leave that stereo spread to another, more sophisticated version, instead add ClipLevel and DC
  arrange widgets like:
@@ -11,7 +12,7 @@ make use of the new SIMD-stuff
  compensation gain?)
 -use the new ladder in LadderFilterAudioModule in VariousModules (this is the one used in 
  quadrifex)
--base rosic::EngineersFilter on RAPT using <double, rsFloat64x2> for template parameters
+
 
 
 BUGS:

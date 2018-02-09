@@ -167,7 +167,7 @@ void MultiModeFilterAudioModule::createParameters()
 //=================================================================================================
 
 MultiModeFreqResponseEditor::MultiModeFreqResponseEditor(const juce::String& name) 
-  : SpectrumDisplayOld(name)
+  : rsSpectrumPlot(name)
 {
   setDescription("Drag around the node to adjust the filter's frequency and resonance, Q or gain");
 
@@ -513,7 +513,7 @@ void MultiModeFreqResponseEditor::setupFilterAccordingToMousePosition(double mou
 
 void MultiModeFreqResponseEditor::resized()
 {
-  SpectrumDisplayOld::resized();
+  rsSpectrumPlot::resized();
 
   // (re) allocate and fill the arrays for the magnitude plot
   numBins = getWidth();

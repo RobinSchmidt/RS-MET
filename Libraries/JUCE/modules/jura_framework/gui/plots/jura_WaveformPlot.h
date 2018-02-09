@@ -1,5 +1,5 @@
-#ifndef jura_rsWaveformPlot_h
-#define jura_rsWaveformPlot_h
+#ifndef jura_WaveformPlot_h
+#define jura_WaveformPlot_h
 
 /** This class is intended to be used as a graphical display for a waveform.  */
 

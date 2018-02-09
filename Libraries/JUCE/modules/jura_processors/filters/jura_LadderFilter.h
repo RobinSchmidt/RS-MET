@@ -75,7 +75,7 @@ protected:
 //=================================================================================================
 // the magnitude response plot/editor:
 
-class JUCE_API LadderSpectrumEditor : public SpectrumDisplayOld, public ParameterObserver, 
+class JUCE_API LadderSpectrumEditor : public rsSpectrumPlot, public ParameterObserver, 
   public ChangeBroadcaster // why is this a changeBroadcaster? may this be obsolete? all widgets
     // (i.e. the sliders and ths plot-editor) actually observe the Parameter object, so we should 
     // not need any other mechanism to sync the widgets

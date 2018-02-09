@@ -464,7 +464,7 @@ void EqualizerAudioModule::assignCallbacksForDynamicParameters()
 //=================================================================================================
 
 EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, EqualizerAudioModule* newEqualizerModuleToEdit)
-  : SpectrumDisplayOld(juce::String("EqualizerEditor"))
+  : rsSpectrumPlot(juce::String("EqualizerEditor"))
 {
   setDescription("Left: insert or grab band-handle, right: remove band");
 
@@ -982,7 +982,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
 
 void EqualizerPlotEditor::resized()
 {
-  SpectrumDisplayOld::resized();
+  rsSpectrumPlot::resized();
 
   // (re) allocate and fill the arrays for the magnitude plot
   numBins = getWidth();

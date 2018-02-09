@@ -170,7 +170,7 @@ void MultiAnalyzerAudioModule::initializeAutomatableParameters()
 
 //=================================================================================================
 
-SpectrumAnalyzerDisplay::SpectrumAnalyzerDisplay(const juce::String& name) : SpectrumDisplayOld(name)
+SpectrumAnalyzerDisplay::SpectrumAnalyzerDisplay(const juce::String& name) : rsSpectrumPlot(name)
 {
   setMaximumRange(15.625, 32000.0, -100.0, 10.0);
   setCurrentRange(15.625, 32000.0, -100.0, 10.0);
@@ -189,7 +189,7 @@ SpectrumAnalyzerDisplay::~SpectrumAnalyzerDisplay(void)
 
 void SpectrumAnalyzerDisplay::useLogarithmicScaleX(bool shouldBeLogScaledX, double newLogBase)
 {
-  SpectrumDisplayOld::useLogarithmicScaleX(shouldBeLogScaledX, newLogBase);
+  rsSpectrumPlot::useLogarithmicScaleX(shouldBeLogScaledX, newLogBase);
   rsObservablePlot::useLogarithmicScaleX(shouldBeLogScaledX);
 }
 

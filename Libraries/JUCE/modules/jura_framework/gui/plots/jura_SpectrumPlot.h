@@ -1,18 +1,18 @@
-#ifndef jura_SpectrumDisplayOld_h
-#define jura_SpectrumDisplayOld_h
+#ifndef jura_SpectrumPlot_h
+#define jura_SpectrumPlot_h
 
 /** This class is for plotting spectra and frequency responses. */
 
-class SpectrumDisplayOld : virtual public rsDataPlot
+class rsSpectrumPlot : virtual public rsDataPlot
 {
 
 public:
 
   /** Constructor. */
-  SpectrumDisplayOld(const juce::String& name = juce::String("SpectrumDisplay"));
+  rsSpectrumPlot(const juce::String& name = juce::String("SpectrumDisplay"));
 
   /** Destructor. */
-  virtual ~SpectrumDisplayOld();
+  virtual ~rsSpectrumPlot();
 
   /** Overrides the inherited function from CoordinateSystem in order to adjust the 
   grid-spacing. */

@@ -42,7 +42,7 @@ editing parameters like th cutoff frequency and resonance by dragging around som
 
 \todo: implement new locking strategy and parameter handling */
 
-class MultiModeFreqResponseEditor	: virtual public SpectrumDisplayOld, public ParameterObserver, 
+class MultiModeFreqResponseEditor	: virtual public rsSpectrumPlot, public ParameterObserver, 
   public ChangeBroadcaster
 {
 

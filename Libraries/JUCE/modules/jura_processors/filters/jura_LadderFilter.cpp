@@ -173,7 +173,7 @@ void Ladder::getMagnitudeResponse(const double *frequencies, double *magnitudes,
 // construction/destruction:
 
 LadderSpectrumEditor::LadderSpectrumEditor(const juce::String& name) 
-  : SpectrumDisplayOld(name)
+  : rsSpectrumPlot(name)
 {
   // nulling these pointers must occur before setting up the plot range:
   freqParameter = nullptr;
@@ -379,7 +379,7 @@ void LadderSpectrumEditor::setupFilterAccordingToMousePosition(double mouseX, do
 
 void LadderSpectrumEditor::resized()
 {
-  SpectrumDisplayOld::resized();
+  rsSpectrumPlot::resized();
 
   // (re) allocate and fill the arrays for the magnitude plot
   numBins = getWidth();

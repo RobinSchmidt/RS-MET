@@ -103,7 +103,7 @@ void EngineersFilterAudioModule::createParameters()
 //=================================================================================================
 
 EngineersFilterPlotEditor::EngineersFilterPlotEditor(const juce::String& name) 
-  : SpectrumDisplayOld(name)
+  : rsSpectrumPlot(name)
 {
   //setDescription("Drag vertical lines at the corner frequencies to adjust them.");
   setIsGuiElement(true);
@@ -187,7 +187,7 @@ void EngineersFilterPlotEditor::changeListenerCallback(ChangeBroadcaster *object
 
 void EngineersFilterPlotEditor::mouseMove(const MouseEvent &e)
 {
-  SpectrumDisplayOld::mouseMove(e);
+  rsSpectrumPlot::mouseMove(e);
 
   // ...we need some stuff from EasyQ here - maybe factor out a basclass 
   // FrequencyResponsePlotEditor
@@ -271,7 +271,7 @@ void EngineersFilterPlotEditor::setupFilterAccordingToMousePosition(double mouse
 
 void EngineersFilterPlotEditor::resized()
 {
-  SpectrumDisplayOld::resized();
+  rsSpectrumPlot::resized();
 
   // (re) allocate and fill the arrays for the magnitude plot
   numBins = getWidth();

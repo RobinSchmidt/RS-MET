@@ -64,7 +64,7 @@ protected:
 /** This class plots the frequency responses of a rosic::EngineersFilter object and allows for 
 editing parameters like the cutoff frequencies. */
 
-class EngineersFilterPlotEditor	: virtual public SpectrumDisplayOld, public ChangeBroadcaster 
+class EngineersFilterPlotEditor	: virtual public rsSpectrumPlot, public ChangeBroadcaster 
   , public ParameterObserver
 {
 
