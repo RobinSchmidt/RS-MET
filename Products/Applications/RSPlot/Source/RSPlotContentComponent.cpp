@@ -813,7 +813,7 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
  axesSetup->verticalFineGridIntervalLabel->setText(String(fine), NotificationType::dontSendNotification);
  axesSetup->xLogScaleButton->setToggleState(logScale, false);
  axesSetup->xPosComboBox->setText(axisPosition);
- curveFamilyPlot->setupAxisX(min, max, logScale, 2.0, axisPositionIndex, coarse, fine);
+ curveFamilyPlot->setupAxisX(min, max, logScale, axisPositionIndex, coarse, fine);
  axesSetup->verticalCoarseGridButton->setToggleState(
    xmlState.getBoolAttribute(String(("VerticalCoarseGridIsVisible")), false), true);
  axesSetup->verticalFineGridButton->setToggleState(
@@ -842,7 +842,7 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
  axesSetup->horizontalFineGridIntervalLabel->setText(String(fine), NotificationType::dontSendNotification);
  axesSetup->yLogScaleButton->setToggleState(logScale, false);
  axesSetup->yPosComboBox->setText(axisPosition);
- curveFamilyPlot->setupAxisY(min, max, logScale, 2.0, axisPositionIndex, coarse, fine);
+ curveFamilyPlot->setupAxisY(min, max, logScale, axisPositionIndex, coarse, fine);
  axesSetup->horizontalCoarseGridButton->setToggleState(
    xmlState.getBoolAttribute(String(("HorizontalCoarseGridIsVisible")), false), true);
  axesSetup->horizontalFineGridButton->setToggleState(

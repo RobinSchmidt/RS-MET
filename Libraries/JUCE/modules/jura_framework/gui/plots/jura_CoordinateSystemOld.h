@@ -130,11 +130,11 @@ public:
   virtual void setAxisPositionY(int newAxisPositionY);
 
   /** Sets up several x-axis parameters at once */
-  virtual void setupAxisX(double newMin, double newMax, bool shouldBeLogScaled, double newLogBase,
+  virtual void setupAxisX(double newMin, double newMax, bool shouldBeLogScaled,
     int newAxisPosition, double newCoarseGridInterval, double newFineGridInterval);
 
   /** Sets up several y-axis parameters at once */
-  virtual void setupAxisY(double newMin, double newMax, bool shouldBeLogScaled, double newLogBase,
+  virtual void setupAxisY(double newMin, double newMax, bool shouldBeLogScaled,
     int newAxisPosition, double newCoarseGridInterval, double newFineGridInterval);
 
   /** Sets the visibility of the horizontal coarse grid. */
@@ -153,7 +153,7 @@ public:
   virtual void setHorizontalFineGridInterval(double newGridInterval);
 
   /** Sets the interval and visibility of the horizontal fine grid. */
-  virtual void setHorizontalFineGrid(double newGridInterval, bool   shouldBeVisible);
+  virtual void setHorizontalFineGrid(double newGridInterval, bool shouldBeVisible);
 
   /** Sets the visibility of the vertical coarse grid. */
   virtual void setVerticalCoarseGridVisible(bool shouldBeVisible);
@@ -162,8 +162,7 @@ public:
   virtual void setVerticalCoarseGridInterval(double newGridInterval);
 
   /** Sets the interval and visibility of the vertical coarse grid. */
-  virtual void setVerticalCoarseGrid(double newGridInterval,
-    bool   shouldBeVisible);
+  virtual void setVerticalCoarseGrid(double newGridInterval, bool shouldBeVisible);
 
   /** Sets the visibility of the vertical fine grid. */
   virtual void setVerticalFineGridVisible(bool shouldBeVisible);
@@ -210,18 +209,14 @@ public:
   /** Sets the interval and visibility of the angular fine grid. */
   virtual void setAngularFineGrid(double newGridInterval, bool shouldBeVisible);
 
-  /** Decides if either the x-axis or the y-axis or both should be logarithmically scaled and sets 
-  up the base for the logarithms. */
-  virtual void useLogarithmicScale(bool shouldBeLogScaledX, bool   shouldBeLogScaledY,
-    double newLogBaseX = 2.0, double newLogBaseY = 2.0);
+  /** Decides if either the x-axis or the y-axis or both should be logarithmically scaled. */
+  virtual void useLogarithmicScale(bool shouldBeLogScaledX, bool shouldBeLogScaledY);
 
-  /** Decides, if the x-axis should be logarithmically scaled and sets up the base for the 
-  logarithm. */
-  virtual void useLogarithmicScaleX(bool shouldBeLogScaledX, double newLogBaseX = 2.0);
+  /** Decides, if the x-axis should be logarithmically scaled. */
+  virtual void useLogarithmicScaleX(bool shouldBeLogScaledX);
 
-  /** Decides, if the y-axis should be logarithmically scaled and sets up the base for the 
-  logarithm. */
-  virtual void useLogarithmicScaleY(bool shouldBeLogScaledY, double newLogBaseY = 2.0);
+  /** Decides, if the y-axis should be logarithmically scaled. */
+  virtual void useLogarithmicScaleY(bool shouldBeLogScaledY);
 
   /** Sets the labels for the axes and their position. */
   virtual void setAxisLabels(const juce::String &newLabelX, const juce::String &newLabelY,

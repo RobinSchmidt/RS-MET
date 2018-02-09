@@ -639,8 +639,7 @@ void CoordinateSystemOld::setAxisPositionY(int newAxisPositionY)
 }
 
 void CoordinateSystemOld::setupAxisX(double newMin, double newMax, bool shouldBeLogScaled, 
-  double newLogBase, int newAxisPosition, double newCoarseGridInterval, 
-  double newFineGridInterval)
+  int newAxisPosition, double newCoarseGridInterval, double newFineGridInterval)
 {
   // axis settings seem not to make sense
   jassert(newMin < newMax);
@@ -671,8 +670,7 @@ void CoordinateSystemOld::setupAxisX(double newMin, double newMax, bool shouldBe
 }
 
 void CoordinateSystemOld::setupAxisY(double newMin, double newMax, bool shouldBeLogScaled, 
-  double newLogBase, int newAxisPosition, double newCoarseGridInterval, 
-  double newFineGridInterval)
+  int newAxisPosition, double newCoarseGridInterval, double newFineGridInterval)
 {
   // axis settings seem not to make sense
   jassert(newMin < newMax);
@@ -703,23 +701,20 @@ void CoordinateSystemOld::setupAxisY(double newMin, double newMax, bool shouldBe
   updateMapperInputRange();
 }
 
-void CoordinateSystemOld::useLogarithmicScale(bool shouldBeLogScaledX, bool shouldBeLogScaledY,                      
-  double newLogBaseX, double newLogBaseY)
+void CoordinateSystemOld::useLogarithmicScale(bool shouldBeLogScaledX, bool shouldBeLogScaledY)
 {
   plotSettings.logScaledX = shouldBeLogScaledX;
   plotSettings.logScaledY = shouldBeLogScaledY;
   updateMapperInputRange();
 }
 
-void CoordinateSystemOld::useLogarithmicScaleX(bool   shouldBeLogScaledX, 
-                                            double newLogBaseX)
+void CoordinateSystemOld::useLogarithmicScaleX(bool shouldBeLogScaledX)
 {
   plotSettings.logScaledX = shouldBeLogScaledX;
   updateMapperInputRange();
 }
 
-void CoordinateSystemOld::useLogarithmicScaleY(bool   shouldBeLogScaledY, 
-                                            double newLogBaseY)
+void CoordinateSystemOld::useLogarithmicScaleY(bool shouldBeLogScaledY)
 {
   plotSettings.logScaledY = shouldBeLogScaledY;
   updateMapperInputRange();
