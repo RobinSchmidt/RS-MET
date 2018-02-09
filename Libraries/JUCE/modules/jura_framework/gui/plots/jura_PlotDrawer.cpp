@@ -20,6 +20,10 @@ void rsPlotDrawer::drawPlot(Graphics& g)
 
 void rsPlotDrawer::drawPlotBackground(Graphics& g)
 {
+  // background:
+  fillRectWithBilinearGradient(g, 0, 0, int(w), int(h),
+    colors.topLeft, colors.topRight, colors.bottomLeft, colors.bottomRight);
+
   // fine grids:
   if(settings.horizontalFineGridIsVisible) {
     g.setColour(colors.fineGrid);

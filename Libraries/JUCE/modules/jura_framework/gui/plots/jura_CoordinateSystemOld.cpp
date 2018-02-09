@@ -986,37 +986,8 @@ void CoordinateSystemOld::transformFromComponentsCoordinates(float &x, float &y)
 
 void CoordinateSystemOld::drawCoordinateSystem(Graphics &g, Image *targetImage, XmlElement *targetSVG)
 {
-  // not very elegant - try to refactor (it would be best to get rid of the image and svg 
-  // parameters)
-
-  // figure out desired width and height:
-  double w, h;
-  if(targetSVG != nullptr) {
-    double w = targetSVG->getDoubleAttribute("width", 0);
-    double h = targetSVG->getDoubleAttribute("height", 0);
-    jassert(w != 0 && h != 0); } // svg must have width and height attributes 
-  else if(targetImage != nullptr) {
-    w = targetImage->getWidth();
-    h = targetImage->getHeight(); }
-  else {    
-    w = getWidth();
-    h = getHeight(); }
-
-  // create drawer and draw:
-  rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, w, h);
-  if(targetSVG != nullptr)
-    drawer.drawPlotBackground(targetSVG);
-  else if(targetImage != nullptr) {
-    Graphics g2(*targetImage);
-    fillRectWithBilinearGradient(g2, 0, 0, targetImage->getWidth(), targetImage->getHeight(),
-      plotColourScheme.topLeft, plotColourScheme.topRight, plotColourScheme.bottomLeft,
-      plotColourScheme.bottomRight);
-    drawer.drawPlotBackground(g2); }
-  else {    
-    fillRectWithBilinearGradient(g, 0, 0, getWidth(), getHeight(),
-      plotColourScheme.topLeft, plotColourScheme.topRight, 
-      plotColourScheme.bottomLeft, plotColourScheme.bottomRight);
-    drawer.drawPlotBackground(g); }
+  rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, getWidth(), getHeight());
+  drawer.drawPlotBackground(g);
 }
 
 void CoordinateSystemOld::updateMapperOutputRange(Image* image, XmlElement* svg)
