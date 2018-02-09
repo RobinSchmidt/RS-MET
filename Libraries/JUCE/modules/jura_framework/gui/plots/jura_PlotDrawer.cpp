@@ -110,13 +110,13 @@ void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, T* valuesX, T* valu
 template<class T>
 void rsPlotDrawer::fillFunction(Graphics& g, int N, T* x, T* y)
 {
-  // not yet tested
+  T zero = 0;  // todo: allow a baseline other than zero
   Path path;
   path.startNewSubPath((float) mapper.mapX(x[0]), (float) mapper.mapY(y[0]));
   for(int i = 1; i < N; i++)
     path.lineTo((float) mapper.mapX(x[i]), (float) mapper.mapY(y[i]));
-  path.lineTo((float) mapper.mapX(x[N-1]), (float) mapper.mapY(0));
-  path.lineTo((float) mapper.mapX(x[0]),   (float) mapper.mapY(0));
+  path.lineTo((float) mapper.mapX(x[N-1]), (float) mapper.mapY(zero));
+  path.lineTo((float) mapper.mapX(x[0]),   (float) mapper.mapY(zero));
   path.lineTo((float) mapper.mapX(x[0]),   (float) mapper.mapY(y[0]));
   path.closeSubPath();
   g.fillPath(path);
@@ -195,7 +195,8 @@ void rsPlotDrawer::drawPlotBackground(XmlElement* svg)
       getVerticalAxisX(), settings.stringConversionForAxisY, colors.axes); }
 }
 
-void rsPlotDrawer::drawWithLines(XmlElement* svg, int numValues, float* valuesX, float* valuesY)
+template<class T>
+void rsPlotDrawer::drawWithLines(XmlElement* svg, int numValues, T* valuesX, T* valuesY)
 {
   String pathString;
   for(int i = 0; i < numValues; i++)

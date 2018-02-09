@@ -68,8 +68,8 @@ public:
    // or have an (possibly abstract) rsPlotDrawer baseclass and rsPlotDrawerNative, 
    // rsPlotDrawerOpenGL, rsPlotDrawerSVG subclasses
 
-  virtual void drawWithLines(XmlElement* svg, int numValues, float* valuesX, float* valuesY);
-  // not yet tested, templatize...
+  template<class T>
+  void drawWithLines(XmlElement* svg, int numValues, T* valuesX, T* valuesY);
 
 
 protected:

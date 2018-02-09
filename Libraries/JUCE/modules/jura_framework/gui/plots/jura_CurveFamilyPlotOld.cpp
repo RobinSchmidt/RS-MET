@@ -166,39 +166,11 @@ XmlElement* CurveFamilyPlotOld::getPlotAsSVG(int width, int height)
   XmlElement* svg = CoordinateSystemOld::getPlotAsSVG(width, height);
   for(int k = 0; k < numCurves; k++)
   {
-    //drawer.drawWithLines(svg, numValues, familyValuesX[k], familyValuesY[k]);
+    drawer.drawWithLines(svg, numValues, familyValuesX[k], familyValuesY[k]);
     // what about color?
   }
   //drawer.drawForeground(svg);
   return svg;
-
-
-  /*
-  jassert( width  >= 1 );
-  jassert( height >= 1);
-    
-  if( width < 1 || height < 1)  
-    return NULL;
-
-  Image* thePlot = new Image(Image::RGB, width, height, true); // obsolete?
-
-  // create a graphics object which is associated with the image to perform
-  // the drawing-operations
-  Graphics g(*thePlot);
-
-  // create an XmlElement to be used for the SVG drawing:
-  XmlElement* theSVG = new XmlElement(String("svg"));
-  theSVG->setAttribute(String("width"), width);
-  theSVG->setAttribute(String("height"), height);
-
-  updateMapperOutputRange(nullptr, theSVG);
-
-  //CoordinateSystemOld::drawCoordinateSystem...
-  //// draw the function family values:
-  //plotCurveFamily(g, thePlot, theSVG); 
-
-  return theSVG;
-  */
 }
 
 Image* CurveFamilyPlotOld::getPlotAsImage(int width, int height)
@@ -220,47 +192,21 @@ void CurveFamilyPlotOld::plotCurveFamily(Graphics &g, Image* targetImage, XmlEle
   if( familyValuesX == nullptr || familyValuesY == nullptr )
     return;
 
-  // new (does not yet support image or svg drawing)
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, getWidth(), getHeight());
   for(int k = 0; k < numCurves; k++) // or numCurvesToDraw?
   {
     Colour graphColour = getCurveColour(k);
-    if( k != highlightedCurve || highlightedCurve == -1 )
-      graphColour = graphColour.withMultipliedAlpha(0.5f);  
+    if( k != highlightedCurve && highlightedCurve != -1 )
+      graphColour = graphColour.withMultipliedAlpha(0.5f);  // maybe highlight by filling area?
     g.setColour(graphColour); 
     //drawer.fillFunction( g, numValues, familyValuesX[k], familyValuesY[k]); // test
     drawer.drawWithLines(g, numValues, familyValuesX[k], familyValuesY[k]);
     //drawer.drawAsDots(   g, numValues, familyValuesX[k], familyValuesY[k], 5.f, true, false);
   }
 
-  // old:
-  /*
-  Colour graphColour = getCurveColour(0);
-  g.setColour(graphColour); 
-  if( highlightedCurve == -1 )
-  {
-    for(int k=0; k<numCurves; k++)
-    {
-      graphColour = getCurveColour(k);
-      g.setColour(graphColour); 
-      plotCurve(g, targetImage, targetSVG, k);
-    }
-  }
-  else
-  {
-    for(int k=0; k<numCurves; k++)
-    {
-      graphColour = getCurveColour(k);
-      if( k != highlightedCurve )
-        graphColour = graphColour.withMultipliedAlpha(0.5f);  
-      g.setColour(graphColour); 
-      plotCurve(g, targetImage, targetSVG, k);
-    }
-  }
-  */
-
 }
 
+// can this be deleted now?
 void CurveFamilyPlotOld::plotCurve(Graphics &g, Image* targetImage, XmlElement *targetSVG, int index)
 {
   int	   i;	// indices for the loops through the curves and through the values
@@ -371,12 +317,6 @@ void CurveFamilyPlotOld::plotCurve(Graphics &g, Image* targetImage, XmlElement *
   }
 }
 
-/*
-void CurveFamilyPlotOld::plotFamilyValuesAsDots(Graphics &g, Image* targetImage, XmlElement *targetSVG)
-{
-
-}
-*/
 
 //-------------------------------------------------------------------------------------------------
 // others:

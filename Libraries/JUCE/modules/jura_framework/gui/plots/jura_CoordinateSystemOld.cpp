@@ -875,19 +875,6 @@ Image* CoordinateSystemOld::getPlotAsImage(int width, int height)
   Graphics g(*img);
   drawer.drawPlotBackground(g);
   return img;
-
-  // old:
-  /*
-  jassert(width  >= 1);
-  jassert(height >= 1); 
-  if( width < 1 || height < 1)  
-    return nullptr;
-  Image* thePlotImage = new Image(Image::RGB, width, height, true);
-  Graphics g(*thePlotImage);
-  drawCoordinateSystem(g, thePlotImage);
-  return thePlotImage;
-  */
-
 }
 
 XmlElement* CoordinateSystemOld::getPlotAsSVG(int width, int height)
@@ -895,37 +882,15 @@ XmlElement* CoordinateSystemOld::getPlotAsSVG(int width, int height)
   jassert(width  >= 1 && height >= 1);
   if( width < 1 || height < 1) return nullptr;
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, width, height);
-
   XmlElement* svg = new XmlElement(String("svg"));
   svg->setAttribute("width", width);
   svg->setAttribute("height", height);
   drawer.drawPlotBackground(svg);
   return svg;
-
-  // old:
-  /*
-  jassert(width  >= 1);
-  jassert(height >= 1);
-  if( width < 1 || height < 1)
-    return nullptr;
-
-  // we need dummy Image and Graphics objects:
-  Image* thePlotImage = new Image(Image::RGB, width, height, true);
-  Graphics g(*thePlotImage);
-
-  // create an XmlElement to be used for the SVG drawing:
-  XmlElement* theSVG = new XmlElement(String("svg"));
-  theSVG->setAttribute(String("width"), width);
-  theSVG->setAttribute(String("height"), height);
-  drawCoordinateSystem(g, thePlotImage, theSVG);  // draw on the SVG
-  delete thePlotImage;                            // delete the dummy image
-  return theSVG;
-  */
 }
 
 void CoordinateSystemOld::openExportDialog(int defaultWidth, int defaultHeight, 
-                                        const String &defaultFormat,
-                                        const File& defaultTargetFile)
+  const String &defaultFormat, const File& defaultTargetFile)
 {
   ImageSavingDialog dialog(this, defaultWidth, defaultHeight, defaultFormat, defaultTargetFile);
   DialogWindow exportWindow(String("Export to Image or SVG Drawing"), Colours::white, true, true);
