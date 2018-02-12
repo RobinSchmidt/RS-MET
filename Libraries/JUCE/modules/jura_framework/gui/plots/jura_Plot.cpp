@@ -25,6 +25,9 @@ rsPlot::rsPlot(const String &newDescription)
   setMouseCursor(currentMouseCursor);
   showPositionAsDescription = false;
   showPopUpOnRightClick     = false;
+
+
+  plotSettings.registerObserver(this);
 }
 
 rsPlot::~rsPlot()

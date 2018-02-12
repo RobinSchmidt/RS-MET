@@ -6,8 +6,8 @@ bool coordinateMapperUnitTest()
 
   rsCoordinateMapper2DF mapper;
 
-  mapper.setInputRange(0.125f, 8.f, -50.f, +50.f);
-  mapper.setOutputRange(0.f, 400.f, 200.f, 0.f); 
+  mapper.setInputRange( 0.125f, 8.f, -50.f, +50.f);
+  mapper.setOutputRange(0.f,  400.f, 200.f,   0.f); 
   mapper.mapperX.setLogScaled(true);
 
   float x, y;
