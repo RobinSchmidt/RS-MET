@@ -28,7 +28,14 @@ public:
 //=================================================================================================
 
 /** This class represents the settings for a plot, such as the ranges, the visibility of grids, 
-etc. */
+etc. 
+
+\todo: 
+-for the range setup, we may want to check, if the new settings are actually different from the old
+ settings and return early (and don't send notifications) to avoid unnecessary updates/computations
+ ->check when this happens, maybe it can be avoided at a higher level
+ 
+*/
 
 class JUCE_API rsPlotSettings
 {

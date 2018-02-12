@@ -16,6 +16,8 @@ new plotting stuff:
 -maybe rsPlot itself should be mix-in class that does not derive from Component, we could then 
  simply have an rsPlotComponent that derives from (Described)Component and rsPlot and serves the 
  samepurpose as the current rsPlot, rsDataPlot would also not be a component
+-in EqualizerPlotEditor there are a lot of redundant update notifications, leading to unnecessary 
+ computations - try to avoid them
 
 Ladder:
 -implement new rsFunctionplot based on std::function

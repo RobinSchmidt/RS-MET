@@ -37,6 +37,11 @@ public:
   template<class T>
   void drawWithLines(Graphics& g, int numValues, T* valuesX, T* valuesY);
 
+
+  template<class T>
+  void drawWithLines(Graphics& g, std::function<T(T)>& function, double increment = 1.0);
+
+
   template<class T>
   void fillFunction(Graphics& g, int numValues, T* valuesX, T* valuesY);
     // not yet tested, maybe factor out into rsDrawer
@@ -89,7 +94,7 @@ protected:
 
   RAPT::rsCoordinateMapper2D<double> mapper;
 
-  double x, y, w, h;  // drawing rectangle
+  double x, y, w, h;  // drawing rectangle in pixel coordinates...maybe rename
 
 };
 

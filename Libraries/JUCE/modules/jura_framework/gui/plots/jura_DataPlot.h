@@ -15,7 +15,7 @@ public:
   virtual void resized() override;
 
   //-----------------------------------------------------------------------------------------------
-  // data setup:
+  // \name Data setup:
 
   /** Accepts the new function or curve values to be drawn. The data will NOT be copied into
   internal buffers, an object of class "rsDataPlot" will only hold pointers to the data. If
@@ -52,7 +52,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  // plotting:
+  // \name Plotting:
 
   /** Returns the drawing as SVG compliant XmlElement. The caller must take care to delete the
   pointer to the XmlElement when it's not needed anymore. */
@@ -62,7 +62,8 @@ public:
   care to delete the image when it's not needed anymore. */
   juce::Image* getPlotAsImage(int width, int height) override;
 
-  /** Overrides the inherited method from the CoordinateSystem base-class. */
+  /** Overrides the inherited method from the rsPlot base-class. 
+  ...ooohh...no - this is wrong there is such baseclass method...we need to update the comment */
   virtual void updatePlotImage(bool redrawBackground = false);
 
   /** Overrides the inherited method from the CoordinateSystem base-class. */

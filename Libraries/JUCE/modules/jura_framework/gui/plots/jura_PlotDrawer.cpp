@@ -112,6 +112,23 @@ void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, T* valuesX, T* valu
 }
 
 template<class T>
+void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func, double inc)
+{
+  float thickness = 2.f; // make parameter
+  double x1 = x;
+  double y1 = mapper.mapY(func(mapper.unmapX(x1)));
+  double x2, y2;
+  while(x1 <= x+w)
+  {
+    x2 = x1 + inc;
+    y2 = mapper.mapY(func(mapper.unmapX(x2)));
+    g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, thickness);
+    x1 = x2;
+    y1 = y2;
+  }
+}
+
+template<class T>
 void rsPlotDrawer::fillFunction(Graphics& g, int N, T* x, T* y)
 {
   T zero = 0;  // todo: allow a baseline other than zero

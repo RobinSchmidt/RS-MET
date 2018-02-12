@@ -899,6 +899,12 @@ void drawBitmapText(Graphics &g, const String &text, double x, double y, double 
 void initGridDrawing(const RAPT::rsCoordinateMapper<double>& mapper, double spacing,
   double& start, double& delta)
 {
+  // todo: for log-scaling, the current formulas lead to frequencies that are powers of two when
+  // the freq-axis is log scaled with octave spacing, like ...,512,1024,2048,... but we want
+  // ...500,1000,2000,...
+  // i think, we need to define a grid anchor, like a = 1000, then compute the smallest integer k,
+  // such that a * b^k <= f_min, our start is then a * b^k for that found k
+
   if(mapper.isLogScaled()) {
     double k = ceil(RAPT::rsLogB(mapper.getInMin(), spacing)) + 1;
     start = pow(spacing, k);
