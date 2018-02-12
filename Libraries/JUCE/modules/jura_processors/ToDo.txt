@@ -13,6 +13,9 @@ new plotting stuff:
   plotMaximumRangeChanged, plotVisibleRangeChanged, plotAppearanceChanged
   todo: protect all variables there and access them in rsPlot only via setters and getters - this 
   enforces the use of setters and hence can guarantee that callbacks are set out
+-maybe rsPlot itself should be mix-in class that does not derive from Component, we could then 
+ simply have an rsPlotComponent that derives from (Described)Component and rsPlot and serves the 
+ samepurpose as the current rsPlot, rsDataPlot would also not be a component
 
 Ladder:
 -implement new rsFunctionplot based on std::function

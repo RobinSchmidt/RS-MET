@@ -333,12 +333,18 @@ protected:
   /** Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (double precision version). */
   void transformFromComponentsCoordinates(double &x, double &y)
-  { x = coordinateMapper.unmapX(x); y = coordinateMapper.unmapY(y); }
+  { 
+    x = coordinateMapper.unmapX(x); 
+    y = coordinateMapper.unmapY(y); 
+  }
 
   /**< Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (single precision version). */
   void transformFromComponentsCoordinates(float &x, float &y)
-  { x = (float) coordinateMapper.unmapX(x); y = (float) coordinateMapper.unmapY(y); }
+  { 
+    x = (float) coordinateMapper.unmapX(x); 
+    y = (float) coordinateMapper.unmapY(y); 
+  }
 
 
   /** Updates the image object (re-draws it). Will be called, when something about the

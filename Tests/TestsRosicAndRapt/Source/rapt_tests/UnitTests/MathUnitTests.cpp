@@ -1,5 +1,24 @@
 #include "MathUnitTests.h"
 
+bool coordinateMapperUnitTest()
+{
+  bool r = true;      // test result
+
+  rsCoordinateMapper2DF mapper;
+
+  mapper.setInputRange(0.125f, 8.f, -50.f, +50.f);
+  mapper.setOutputRange(0.f, 400.f, 200.f, 0.f); 
+  mapper.mapperX.setLogScaled(true);
+
+  float x, y;
+  x = mapper.mapX(1.f);      r &= x == 200.f;
+  x = mapper.unmapX(200.f);  r &= x == 1.f;
+  y = mapper.mapY(0.f);      r &= y == 100.f;
+  y = mapper.unmapY(100.f);  r &= y == 0.f;
+
+  return r;
+}
+
 bool interpolatingFunctionUnitTest()
 {	
   bool r = true;      // test result

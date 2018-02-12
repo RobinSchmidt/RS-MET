@@ -22,6 +22,7 @@ bool runAllUnitTests()
   passed &= runUnitTest(&complexFloat64x2UnitTest, "std::complex<rsFloat64x2>");
 
   // Math:
+  passed &= runUnitTest(&coordinateMapperUnitTest,      "rsCoordinateMapper2D");
   passed &= runUnitTest(&interpolatingFunctionUnitTest, "rsInterpolatingFunction");
   passed &= runUnitTest(&rootFinderUnitTest,            "rsRootFinder");
 

@@ -74,53 +74,53 @@ public:
 
   /** Sets the maximum for the currently visible range. For logarithmic x- and/or y-axis-scaling,
   make sure that the respective minimum value is greater than zero! */
-  virtual void setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
+  void setMaximumRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
 
   /** Sets the maximum for the currently visible range. */
-  virtual void setMaximumRange(rsPlotRange newMaximumRange);
+  void setMaximumRange(rsPlotRange newMaximumRange);
 
   /** Sets the maximum visible range for the y-axis. */
-  virtual void setMaximumRangeX(double newMinX, double newMaxX);
+  void setMaximumRangeX(double newMinX, double newMaxX);
 
   /** Sets the maximum visible range for the y-axis. */
-  virtual void setMaximumRangeY(double newMinY, double newMaxY);
+  void setMaximumRangeY(double newMinY, double newMaxY);
 
   /** Sets the minimum value for the range of x. */
-  virtual void setMaximumRangeMinX(double newMinX);
+  void setMaximumRangeMinX(double newMinX);
 
   /** Sets the maximum value for the range of x. */
-  virtual void setMaximumRangeMaxX(double newMaxX);
+  void setMaximumRangeMaxX(double newMaxX);
 
   /** Sets the minimum value for the range of y. */
-  virtual void setMaximumRangeMinY(double newMinY);
+  void setMaximumRangeMinY(double newMinY);
 
   /** Sets the maximum value for the range of y. */
-  virtual void setMaximumRangeMaxY(double newMaxY);
+  void setMaximumRangeMaxY(double newMaxY);
 
   /** Sets the currently visible range. For logarithmic x- and/or y-axis-scaling, make sure that
   the respective minimum value is greater than zero! */
-  virtual void setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
+  void setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
 
   /** Sets the currently visible range. */
-  virtual void setCurrentRange(rsPlotRange newRange);
+  void setCurrentRange(rsPlotRange newRange);
 
   /** Sets the currently visible range for the y-axis. */
-  virtual void setCurrentRangeX(double newMinX, double newMaxX);
+  void setCurrentRangeX(double newMinX, double newMaxX);
 
   /** Sets the currently visible range for the y-axis. */
-  virtual void setCurrentRangeY(double newMinY, double newMaxY);
+  void setCurrentRangeY(double newMinY, double newMaxY);
 
   /** Sets the minimum value of x. */
-  virtual void setCurrentRangeMinX(double newMinX);
+  void setCurrentRangeMinX(double newMinX);
 
   /** Sets the maximum value of x. */
-  virtual void setCurrentRangeMaxX(double newMaxX);
+  void setCurrentRangeMaxX(double newMaxX);
 
   /** Sets the minimum value of y. */
-  virtual void setCurrentRangeMinY(double newMinY);
+  void setCurrentRangeMinY(double newMinY);
 
   /** Sets the maximum value of y. */
-  virtual void setCurrentRangeMaxY(double newMaxY);
+  void setCurrentRangeMaxY(double newMaxY);
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry

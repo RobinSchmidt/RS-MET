@@ -26,6 +26,7 @@ Editor::~Editor()
 void Editor::setHeadlineText(const String& newHeadlineText)
 {
   headlineText = newHeadlineText;
+  repaint();
 }
 
 void Editor::setHeadlineStyle(int newHeadlineStyle)

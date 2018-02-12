@@ -3,6 +3,7 @@
 
 #include "../../Shared/Shared.h"
 
+bool coordinateMapperUnitTest();
 bool interpolatingFunctionUnitTest();
 bool rootFinderUnitTest();
 
