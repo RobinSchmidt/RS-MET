@@ -187,12 +187,14 @@ public:
   virtual ~rsLadderPlotEditor() {}
 
   virtual void parameterChanged(Parameter* p) override;
+  //virtual void paintOverChildren (Graphics& g) override;
   virtual void resized() override;
 
 protected:
 
   jura::Ladder* ladderToEdit; 
-  rsFunctionPlot freqRespPlot; // frequency response plot
+
+  rsFunctionPlot* freqRespPlot; // frequency response plot (maybe factor out a pointer to rsPlot)
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsLadderPlotEditor)
 };

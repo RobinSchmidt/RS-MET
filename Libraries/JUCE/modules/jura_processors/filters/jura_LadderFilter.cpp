@@ -492,20 +492,29 @@ rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladd
   setDotSize(8.f);
 
   // set up plot:
+  freqRespPlot = new rsFunctionPlot;
+  freqRespPlot->addMouseListener(this, true);
   //freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -60.0, 60.0);
-  freqRespPlot.addFunction([this](double f)->double { return ladderToEdit->getMagnitudeAt(f); } );
+  freqRespPlot->addFunction([this](double f)->double { return ladderToEdit->getMagnitudeAt(f); } );
     // maybe try to use a member-function pointer without lambda
+  //addPlot(freqRespPlot);
+
+  // we need to make sure to receive mouse-events that occur in the plot (child)
 }
 
 void rsLadderPlotEditor::parameterChanged(Parameter* p)
 {
   rsVectorPad::parameterChanged(p);
   //freqRespPlot.repaint();
+
+  // maybe we should not directly repaint - because often cutoff and reso will change 
+  // simultaneously and repainting directly would mean to repaint twice - once for each change
+  // ...maybe this can be done by using callAsync?
 }
 
 void rsLadderPlotEditor::resized()
 {
-  freqRespPlot.setBounds(0, 0, getWidth(), getHeight());
+  freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
 }
 
 
