@@ -487,16 +487,26 @@ double LadderSpectrumEditor::yToReso(double y)
 
 rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladder)
 {
-  // todo:
-  // -assign x/y parameters
-  // -register as observer
-  // -create and set up plot
-  // -replot on parameter change
+  assignParameterX(ladderToEdit->getParameterByName("Cutoff"));
+  assignParameterY(ladderToEdit->getParameterByName("Resonance"));
+  setDotSize(8.f);
+
+  // set up plot:
+  //freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -60.0, 60.0);
+  freqRespPlot.addFunction([this](double f)->double { return ladderToEdit->getMagnitudeAt(f); } );
+    // maybe try to use a member-function pointer without lambda
 }
 
+void rsLadderPlotEditor::parameterChanged(Parameter* p)
+{
+  rsVectorPad::parameterChanged(p);
+  //freqRespPlot.repaint();
+}
 
-
-
+void rsLadderPlotEditor::resized()
+{
+  freqRespPlot.setBounds(0, 0, getWidth(), getHeight());
+}
 
 
 
@@ -522,12 +532,20 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
 
   // create the widgets and assign the automatable parameters to them:
 
+  // old:
   frequencyResponseDisplay = new LadderSpectrumEditor("SpectrumEditor");
   frequencyResponseDisplay->setFilterToEdit(ladderToEdit);
   frequencyResponseDisplay->addChangeListener(this); // do we need this?
   frequencyResponseDisplay->assignParameterFreq( moduleToEdit->getParameterByName("Cutoff"));
   frequencyResponseDisplay->assignParameterReso( moduleToEdit->getParameterByName("Resonance"));
   addPlot( frequencyResponseDisplay );
+
+  // new:
+  plotEditor = new rsLadderPlotEditor(ladderToEdit);
+
+  addWidget(plotEditor);
+
+
 
   addWidget( cutoffSlider = new ModulatableSlider() );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
@@ -594,7 +612,9 @@ void LadderEditor::resized()
   y = getPresetSectionBottom();
 
   frequencyResponseDisplay->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
-  y = frequencyResponseDisplay->getBottom();
+
+  plotEditor->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
+  y = plotEditor->getBottom();
 
   cutoffSlider->setBounds(      4, y+4, w2-4, 16);
   resonanceSlider->setBounds(w2+4, y+4, w2-8, 16);

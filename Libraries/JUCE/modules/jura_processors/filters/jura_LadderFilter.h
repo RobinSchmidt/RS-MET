@@ -186,7 +186,8 @@ public:
   rsLadderPlotEditor(jura::Ladder* ladderModuleToEdit);
   virtual ~rsLadderPlotEditor() {}
 
-
+  virtual void parameterChanged(Parameter* p) override;
+  virtual void resized() override;
 
 protected:
 
@@ -214,7 +215,9 @@ protected:
 
   Ladder *ladderToEdit;
 
-  LadderSpectrumEditor *frequencyResponseDisplay; // rename to spectrumEditor
+  LadderSpectrumEditor *frequencyResponseDisplay; // old - delete when transition is done
+
+  rsLadderPlotEditor* plotEditor;   // the new plot editor
 
   //AutomatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
   ModulatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;

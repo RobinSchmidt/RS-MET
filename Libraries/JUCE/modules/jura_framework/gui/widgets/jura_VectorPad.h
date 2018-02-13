@@ -22,6 +22,9 @@ public:
   
   virtual void assignParameterY(Parameter* newParameterY);
 
+  /** Sets the size of the dot to be drawn at the current x/y position. */
+  void setDotSize(float newSize) { dotSize = newSize; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
 
