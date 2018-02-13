@@ -48,8 +48,13 @@ void rsVectorPad::paint(Graphics& g)
 
   //x = (float) RAPT::rsLinToLin(paramX->getValue(),  xMin, xMax, 0.0, double(getWidth()-1));
   //y = (float) RAPT::rsLinToLin(paramY->getValue(), yMin, yMax, double(getHeight()-1), 0.0);
-  x = (float) RAPT::rsLinToLin(paramX->getNormalizedValue(),  0, 1, 0.0, double(getWidth()-1));
-  y = (float) RAPT::rsLinToLin(paramY->getNormalizedValue(), 0, 1, double(getHeight()-1), 0.0);
+
+  //x = (float) RAPT::rsLinToLin(paramX->getNormalizedValue(),  0, 1, 0.0, double(getWidth()-1));
+  //y = (float) RAPT::rsLinToLin(paramY->getNormalizedValue(), 0, 1, double(getHeight()-1), 0.0);
+
+  x = (float) RAPT::rsLinToLin(paramX->getNormalizedValue(),  0, 1, 0.5, double(getWidth()-0.5));
+  y = (float) RAPT::rsLinToLin(paramY->getNormalizedValue(), 0, 1, double(getHeight()-0.5), 0.5);
+
     // maybe use a function normalizedToPixelCoords(&x, &y) . we should also use 
     // 0.5...getWidth()-0.5 to be consistent with the plots
 
@@ -76,8 +81,12 @@ void rsVectorPad::setParametersFromMouseEvent(const MouseEvent& e)
   double x, y;
   //x = RAPT::rsLinToLin(double(e.x), 0.0, double(getWidth()-1),  xMin, xMax);
   //y = RAPT::rsLinToLin(double(e.y), double(getHeight()-1), 0.0, yMin, yMax);
-  x = RAPT::rsLinToLin(double(e.x), 0.0, double(getWidth()-1),  0, 1);
-  y = RAPT::rsLinToLin(double(e.y), double(getHeight()-1), 0.0, 0, 1);
+  //x = RAPT::rsLinToLin(double(e.x), 0.0, double(getWidth()-1),  0, 1);
+  //y = RAPT::rsLinToLin(double(e.y), double(getHeight()-1), 0.0, 0, 1);
+
+  x = RAPT::rsLinToLin(double(e.x), 0.5, double(getWidth()-0.5),  0, 1);
+  y = RAPT::rsLinToLin(double(e.y), double(getHeight()-0.5), 0.5, 0, 1);
+
   setParametersXY(x, y);
 }
 

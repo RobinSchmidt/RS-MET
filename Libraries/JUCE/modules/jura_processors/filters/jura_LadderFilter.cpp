@@ -494,8 +494,13 @@ double LadderSpectrumEditor::yToReso(double y)
 rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladder)
 {
   freqRespPlot = new rsFunctionPlot;
-  freqRespPlot->addMouseListener(this, true);
-  freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -60.0, 60.0, 12);
+  //freqRespPlot->addMouseListener(this, true);
+
+  //freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -60.0, 60.0, 12);
+  freqRespPlot->setupForDecibelsAgainstLogFrequency(20.0, 20000.0, -60.0, 60.0, 12); 
+    // frequency range must match cutoff parameter range, otherwise the dot-handle and resonance 
+    // freq are out of sync
+
   freqRespPlot->addFunction([this](double f)->double { return ladderToEdit->getMagnitudeAt(f); } );    // maybe try to use a member-function pointer without lambda
   addPlot(freqRespPlot);
 
@@ -514,6 +519,7 @@ rsLadderPlotEditor::~rsLadderPlotEditor()
   delete vectorPad;
 }
 
+/*
 void rsLadderPlotEditor::parameterChanged(Parameter* p)
 {
   //rsVectorPad::parameterChanged(p);
@@ -523,6 +529,7 @@ void rsLadderPlotEditor::parameterChanged(Parameter* p)
   // simultaneously and repainting directly would mean to repaint twice - once for each change
   // ...maybe this can be done by using callAsync?
 }
+*/
 
 void rsLadderPlotEditor::resized()
 {
@@ -655,4 +662,5 @@ void LadderEditor::resized()
 void LadderEditor::rComboBoxChanged(RComboBox* comboBoxThatHasChanged)
 {
   //frequencyResponseDisplay->updatePlot();
+  plotEditor->repaint();
 }

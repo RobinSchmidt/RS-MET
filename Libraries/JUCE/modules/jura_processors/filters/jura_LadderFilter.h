@@ -178,7 +178,7 @@ protected:
 
 //=================================================================================================
 
-class JUCE_API rsLadderPlotEditor : public ColourSchemeComponent, public ParameterObserver
+class JUCE_API rsLadderPlotEditor : public ColourSchemeComponent/*, public ParameterObserver*/
 {
 
 public:
@@ -186,7 +186,7 @@ public:
   rsLadderPlotEditor(jura::Ladder* ladderModuleToEdit);
   virtual ~rsLadderPlotEditor();
 
-  virtual void parameterChanged(Parameter* p) override;
+  //virtual void parameterChanged(Parameter* p) override;
   //virtual void paintOverChildren (Graphics& g) override;
   virtual void resized() override;
 

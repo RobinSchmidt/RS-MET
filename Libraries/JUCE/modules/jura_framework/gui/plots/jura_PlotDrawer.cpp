@@ -147,12 +147,7 @@ template<class T>
 void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, T* valuesX, T* valuesY, float size, 
   bool stemsX, bool stemsY)
 {
-  //g.setColour(graphColor); should be done ouside
-  // todo: make dot-size adjustable, templatize to make it work for double (and maybe int), too
-
   // make parameters - to be used to draw lines to x- and/or y-axis:
-  //bool lineToAxisX = false;
-  //bool lineToAxisY = false;
   float x0 = (float) mapper.mapX(0);
   float y0 = (float) mapper.mapY(0);
 
@@ -167,11 +162,11 @@ void rsPlotDrawer::drawAsDots(Graphics& g, int numValues, T* valuesX, T* valuesY
     y = (float) mapper.mapY(valuesY[i]);
 
     // add a dot at postion x, y:
-    //g.fillEllipse(x-1, y-1, 3, 3); // is this correct?
-    g.fillEllipse(x-size2, y-size2, size, size); // is this correct?
+    g.fillEllipse(x-size2, y-size2, size, size);
 
-    // draw lines to x- and y-axis if the option is selected:
-    if(stemsX) g.drawLine(x,  y, x, y0); // needs testing
+    // draw lines to x- and y-axis if the option is selected (todo: move into separate function
+    // drawAsStemsToX, drawAsStemsToY):
+    if(stemsX) g.drawLine(x,  y, x, y0);
     if(stemsY) g.drawLine(x0, y, x, y);
   }
 }

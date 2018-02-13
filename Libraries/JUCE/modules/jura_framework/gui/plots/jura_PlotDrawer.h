@@ -37,18 +37,24 @@ public:
   template<class T>
   void drawWithLines(Graphics& g, int numValues, T* valuesX, T* valuesY);
 
-
+  /** Draws the given function by sampling it at x-values corresponding to each pixel's 
+  model-coordinate. You can also set a sampling finer or coarser sampling interval by passing a
+  (pixel) increment between sampling points other than unity. */
   template<class T>
   void drawWithLines(Graphics& g, std::function<T(T)>& function, double increment = 1.0);
+   // todo: allow to specify additional evaluation points - some functions may have special points
+   // like poles or zeros at which they should be evaluated, regardless whether or not a pixel
+   // sampling point falls on them in order to avoid graphical artifacts - maybe pass the in as a
+   // reference or pointer to a std::vector
 
-
+  /** Fills the area between the function given by the datapoints and the x-axis. */
   template<class T>
   void fillFunction(Graphics& g, int numValues, T* valuesX, T* valuesY);
     // not yet tested, maybe factor out into rsDrawer
 
   /** Draws the given datapoints as dots like in a scatterplot. */
   template<class T>
-  void drawAsDots(Graphics& g, int numValues, T* valuesX, T* valuesY, float size = 5.f, 
+  void drawAsDots(Graphics& g, int numValues, T* valuesX, T* valuesY, float dotSize = 5.f, 
     bool stemsX = false, bool stemsY = false);
     // not yet tested ...maybe factor out the stem-drawing into separate functions drawAsStemsX
     // drawAsStemsY ..more modular
