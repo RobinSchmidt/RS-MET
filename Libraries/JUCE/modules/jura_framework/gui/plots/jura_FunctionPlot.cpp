@@ -15,7 +15,9 @@ void rsFunctionPlot::paint(Graphics &g)
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, getWidth(), getHeight());
   for(size_t i = 0; i < functions.size(); i++)
   {
-    // todo: select color
+    // todo: select color ...maybe this should be done by a virtual function getGraphColor(int i)
+    // ...similar for the thickness getGraphThickness(int i) and maybe also a graph style (solid,
+    // dotted, dashed, filled, stems, etc.)
     drawer.drawWithLines(g, functions[i]);
   }
 }

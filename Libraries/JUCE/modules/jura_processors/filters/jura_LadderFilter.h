@@ -74,6 +74,8 @@ protected:
 
 //=================================================================================================
 // the magnitude response plot/editor:
+// this is the old, deprecated version - now we use the new rsLadderPlotEditor - when transition is 
+// finished, this old class can be deleted
 
 class JUCE_API LadderSpectrumEditor : public rsSpectrumPlot, public ParameterObserver, 
   public ChangeBroadcaster // why is this a changeBroadcaster? may this be obsolete? all widgets
@@ -172,6 +174,28 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LadderSpectrumEditor)
 };
+
+
+//=================================================================================================
+
+class JUCE_API rsLadderPlotEditor : public rsVectorPad
+{
+
+public:
+
+  rsLadderPlotEditor(jura::Ladder* ladderModuleToEdit);
+  virtual ~rsLadderPlotEditor() {}
+
+
+
+protected:
+
+  jura::Ladder* ladderToEdit; 
+  rsFunctionPlot freqRespPlot; // frequency response plot
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsLadderPlotEditor)
+};
+
 
 //=================================================================================================
 

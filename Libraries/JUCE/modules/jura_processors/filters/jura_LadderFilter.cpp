@@ -483,6 +483,31 @@ double LadderSpectrumEditor::yToReso(double y)
 // outside the visible area, which is not nice
 
 //=================================================================================================
+// the new plot editor that replaces the old (with hopefully less code):
+
+rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladder)
+{
+  // todo:
+  // -assign x/y parameters
+  // -register as observer
+  // -create and set up plot
+  // -replot on parameter change
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//=================================================================================================
 // the GUI editor class for the Ladder:
 
 LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(newLadderToEdit)
