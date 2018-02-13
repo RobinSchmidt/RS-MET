@@ -150,9 +150,15 @@ void Ladder::setMidSideMode(bool shouldBeInMidSideMode){
 
 // inquiry:
 
-double Ladder::getMagnitudeAt(double frequency)
+double Ladder::getMagnitudeAt(double frequency)  // rename to getDecibelsAt
 {
-  return wrappedLadder.getMagnitudeResponseAt(frequency);
+  //double level = amp2dBWithCheck(filterToEdit->getMagnitudeAt(freq), 0.000001);
+  //level        = clip(level, -120.0, +120.0);
+
+  double tmp = wrappedLadder.getMagnitudeResponseAt(frequency);
+  tmp = amp2dBWithCheck(tmp, 0.000001);
+  tmp = clip(tmp, -120.0, +120.0);
+  return tmp;
   //return ladderL.getMagnitudeResponseAt(frequency);
 }
 
