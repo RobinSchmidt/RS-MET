@@ -41,12 +41,18 @@ void rsVectorPad::parameterChanged(Parameter* p)
 
 void rsVectorPad::paint(Graphics& g)
 {
-  g.fillAll(getBackgroundColour());
+  if(paintBackground)
+    g.fillAll(getBackgroundColour());
   float x, y;
+
+
   //x = (float) RAPT::rsLinToLin(paramX->getValue(),  xMin, xMax, 0.0, double(getWidth()-1));
   //y = (float) RAPT::rsLinToLin(paramY->getValue(), yMin, yMax, double(getHeight()-1), 0.0);
   x = (float) RAPT::rsLinToLin(paramX->getNormalizedValue(),  0, 1, 0.0, double(getWidth()-1));
   y = (float) RAPT::rsLinToLin(paramY->getNormalizedValue(), 0, 1, double(getHeight()-1), 0.0);
+    // maybe use a function normalizedToPixelCoords(&x, &y) . we should also use 
+    // 0.5...getWidth()-0.5 to be consistent with the plots
+
   g.setColour(getHandleColour());
   g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
 }

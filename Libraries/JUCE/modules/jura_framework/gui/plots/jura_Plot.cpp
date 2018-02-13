@@ -605,7 +605,7 @@ void rsPlot::openExportDialog(int defaultWidth, int defaultHeight,
 
 void rsPlot::updateBackgroundImage()
 {
-  if( getWidth() < 1 || getHeight() < 1 )
+  if( getWidth() <= 1 || getHeight() <= 1 )
     return;
 
   // allocate memory for the first time:

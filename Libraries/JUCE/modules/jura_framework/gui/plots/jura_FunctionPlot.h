@@ -19,8 +19,17 @@ public:
   virtual void paint(Graphics &g) override;
   //virtual void resized() override;
 
-
+  /** Adds a function to be plotted. It will receive the x-value (in model-coordinates) and should
+  return the corresponding y-value (also in model-coordinates). For example, it could receive a 
+  frequency in Hz and output a magnitude level in decibels. */
   virtual void addFunction(std::function<double(double)> function);
+
+  /** Sets up the plot sttings for a nice looking frequency response plot with a logarithmic 
+  frequency axis (as x-axis) and a linear dB y-axis (of course, dB itself is a logarithmic measure,
+  "linear" here means that the dB values are shown lineraly, so it's also logarithmic amplitude 
+  axis at the end of the day). */
+  virtual void setupForDecibelsAgainstLogFrequency(double minFreq, double maxFreq, 
+    double minDb, double maxDb, double yGridSpacing = 6);
 
 
 protected:

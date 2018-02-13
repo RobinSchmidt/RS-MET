@@ -121,7 +121,7 @@ void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func, double 
   while(x1 <= x+w)
   {
     x2 = x1 + inc;
-    y2 = mapper.mapY(func(mapper.unmapX(x2)));
+    y2 = mapper.mapY(func(mapper.unmapX(x2))); // maybe we should clip it?
     g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, thickness);
     x1 = x2;
     y1 = y2;

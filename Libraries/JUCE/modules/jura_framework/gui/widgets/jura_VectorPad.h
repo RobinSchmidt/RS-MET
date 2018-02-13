@@ -25,6 +25,12 @@ public:
   /** Sets the size of the dot to be drawn at the current x/y position. */
   void setDotSize(float newSize) { dotSize = newSize; }
 
+  /** Decides whether or not the background should be filled with the background color (inherited
+  for RWidget). You may want to set this to false, if you want to show a plot behind the handle. 
+  When false, the background will be transparent and a plot behind the widget will show 
+  through. */
+  void setPaintBackground(bool shouldPaint) { paintBackground = shouldPaint; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
 
@@ -47,8 +53,8 @@ protected:
   Parameter *paramX = nullptr, *paramY = nullptr;
 
   double xMin = -1, xMax = +1, yMin = -1, yMax = +1;
-
   float dotSize = 16;
+  bool paintBackground = true;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsVectorPad)
 };

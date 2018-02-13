@@ -487,24 +487,30 @@ double LadderSpectrumEditor::yToReso(double y)
 
 rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladder)
 {
-  assignParameterX(ladderToEdit->getParameterByName("Cutoff"));
-  assignParameterY(ladderToEdit->getParameterByName("Resonance"));
-  setDotSize(8.f);
-
-  // set up plot:
   freqRespPlot = new rsFunctionPlot;
   freqRespPlot->addMouseListener(this, true);
-  //freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -60.0, 60.0);
-  freqRespPlot->addFunction([this](double f)->double { return ladderToEdit->getMagnitudeAt(f); } );
-    // maybe try to use a member-function pointer without lambda
-  //addPlot(freqRespPlot);
+  freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -60.0, 60.0, 12);
+  freqRespPlot->addFunction([this](double f)->double { return ladderToEdit->getMagnitudeAt(f); } );    // maybe try to use a member-function pointer without lambda
+  addPlot(freqRespPlot);
 
-  // we need to make sure to receive mouse-events that occur in the plot (child)
+
+  vectorPad = new rsVectorPad;
+  vectorPad->assignParameterX(ladderToEdit->getParameterByName("Cutoff"));
+  vectorPad->assignParameterY(ladderToEdit->getParameterByName("Resonance"));
+  vectorPad->setPaintBackground(false);
+  vectorPad->setDotSize(8.f);
+  addWidget(vectorPad);
+}
+
+rsLadderPlotEditor::~rsLadderPlotEditor()
+{
+  delete freqRespPlot;
+  delete vectorPad;
 }
 
 void rsLadderPlotEditor::parameterChanged(Parameter* p)
 {
-  rsVectorPad::parameterChanged(p);
+  //rsVectorPad::parameterChanged(p);
   //freqRespPlot.repaint();
 
   // maybe we should not directly repaint - because often cutoff and reso will change 
@@ -515,6 +521,7 @@ void rsLadderPlotEditor::parameterChanged(Parameter* p)
 void rsLadderPlotEditor::resized()
 {
   freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
+  vectorPad->setBounds(   0, 0, getWidth(), getHeight());
 }
 
 
@@ -541,6 +548,7 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
 
   // create the widgets and assign the automatable parameters to them:
 
+  /*
   // old:
   frequencyResponseDisplay = new LadderSpectrumEditor("SpectrumEditor");
   frequencyResponseDisplay->setFilterToEdit(ladderToEdit);
@@ -548,13 +556,12 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   frequencyResponseDisplay->assignParameterFreq( moduleToEdit->getParameterByName("Cutoff"));
   frequencyResponseDisplay->assignParameterReso( moduleToEdit->getParameterByName("Resonance"));
   addPlot( frequencyResponseDisplay );
+  */
 
   // new:
   plotEditor = new rsLadderPlotEditor(ladderToEdit);
-
-  addWidget(plotEditor);
-
-
+  addChildColourSchemeComponent(plotEditor);
+  //addWidget(plotEditor);
 
   addWidget( cutoffSlider = new ModulatableSlider() );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
@@ -597,7 +604,8 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   // set up the widgets:
   updateWidgetsAccordingToState();
 
-  setSize(420, 240);  
+  setSize(430, 251);  
+  //setSize(420, 240);
   // There's a bug somewhere - if we request a size of 400 x 300, the widgets become invisible.
   // I guess, 400 x 300 is the size, it already has by default, and when we set it again to this 
   // size, it will be recognized that nothing changed and some update function is not being called
@@ -620,7 +628,7 @@ void LadderEditor::resized()
 
   y = getPresetSectionBottom();
 
-  frequencyResponseDisplay->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
+  //frequencyResponseDisplay->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
 
   plotEditor->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
   y = plotEditor->getBottom();
@@ -640,5 +648,5 @@ void LadderEditor::resized()
 
 void LadderEditor::rComboBoxChanged(RComboBox* comboBoxThatHasChanged)
 {
-  frequencyResponseDisplay->updatePlot();
+  //frequencyResponseDisplay->updatePlot();
 }
