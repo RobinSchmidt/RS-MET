@@ -141,8 +141,7 @@ void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func,
   size_t is  = 0;                 // index of special value
   double xsm = specialValues[is]; // current special value
   double x1p = x;
-  double x1m = mapper.unmapX(x1p);
-  double y1p = mapper.mapY(func(x1m));
+  double y1p = mapper.mapY(func( mapper.unmapX(x1p) ));
   double x2p, x2m, y2p;
   while(x1p <= x+w)
   {
@@ -161,6 +160,10 @@ void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func,
         xsm = INF;
       x1p = xsp; 
       y1p = ysp;
+
+      // debug-stuff:
+      //g.drawLine(0, ysp, 500, ysp, 1.f);
+      //continue; // test
     }
 
     y2p = mapper.mapY(func(x2m));
@@ -168,7 +171,6 @@ void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func,
     x1p = x2p;
     y1p = y2p;
   }
-
 }
 
 template<class T>

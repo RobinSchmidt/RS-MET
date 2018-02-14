@@ -198,7 +198,7 @@ LadderSpectrumEditor::LadderSpectrumEditor(const juce::String& name)
   // set up the plot range:
   setMaximumRange(15.625, 32000.0, -60.0, 60.0);
   setCurrentRange(15.625, 32000.0, -60.0, 60.0);
-  setHorizontalCoarseGrid(12.0, false);
+  setHorizontalCoarseGrid(12.0, true);
   setHorizontalFineGrid(   3.0, false);
   setVerticalCoarseGridVisible( false);
   setVerticalFineGridVisible(   false);
@@ -527,6 +527,18 @@ void rsLadderPlotEditor::parameterChanged(Parameter* p)
   // (make sure that this happens before the plot is drawn - ...yes, it does - good)
 
   freqRespPlot->setSpecialEvaluationPoint(0, 0, cutoffParam->getValue());
+    // problem: the frequency at which the spectal peak occurs is slightly below the resonance
+    // frequency. For resonances close to 1 (but not quite there, like 0.98 or 0.99), we get an
+    // apparent peak-amplitude the goes up and down when sweeping the cutoff
+    // solution: don't use the resonance-frequency but the spectral peak frequency as special
+    // evaluation point...but i don't have a formula for that...might be complicated..we need a 
+    // magnitude responce expression that avoids complex numbers, find the derivative and set it to 
+    // zero
+    // a simple workaround would be to not additionally evaluate the function at the special point
+    // but replace the sampling point that is closest (as we did before)
+    // or maybe we can find an approximate formula for the ratio peakFreq/resoFreq as function of
+    // resonance by looking at data and fitting a function...or maybe we can derive an exact 
+    // formula for the analog prototype and use that as approximation for the digital model
 
   int dummy = 0;
 
@@ -648,7 +660,7 @@ void LadderEditor::resized()
 
   y = getPresetSectionBottom();
 
-  frequencyResponseDisplay->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
+  //frequencyResponseDisplay->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
 
   plotEditor->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
   y = plotEditor->getBottom();
