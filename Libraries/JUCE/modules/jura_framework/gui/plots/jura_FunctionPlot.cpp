@@ -40,12 +40,12 @@ void rsFunctionPlot::setSpecialEvaluationPoint(size_t funcIndex, size_t pointInd
   specialPoints[funcIndex][pointIndex] = xValue;
 }
 
-Colour rsFunctionPlot::getGraphColour(int index)
+Colour rsFunctionPlot::getGraphColor(size_t index)
 {
   return Colours::white;  // preliminary
 }
 
-float rsFunctionPlot::getGraphThickness(int index)
+float rsFunctionPlot::getGraphThickness(size_t index)
 {
   return 2.f;
 }
@@ -61,7 +61,7 @@ void rsFunctionPlot::paint(Graphics &g)
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, getWidth(), getHeight());
   for(size_t i = 0; i < functions.size(); i++)
   {
-    g.setColour(getGraphcColour(i));
+    g.setColour(getGraphColor(i));
     if(specialPoints.size() <= i)
       drawer.drawWithLines(g, functions[i], 1.0, getGraphThickness(i));
     else

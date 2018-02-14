@@ -168,9 +168,9 @@ void Ladder::getMagnitudeResponse(const double *frequencies, double *magnitudes,
   int i;
   for(i = 0; i < numBins; i++)
     magnitudes[i] = getMagnitudeAt(frequencies[i]);
-  if(inDecibels)
-    for(i = 0; i < numBins; i++)
-      magnitudes[i] = amp2dBWithCheck(magnitudes[i], 1.e-6);
+  //if(inDecibels) // is already in dB now
+  //  for(i = 0; i < numBins; i++)
+  //    magnitudes[i] = amp2dBWithCheck(magnitudes[i], 1.e-6);
 }
 
 //=================================================================================================
@@ -648,7 +648,7 @@ void LadderEditor::resized()
 
   y = getPresetSectionBottom();
 
-  //frequencyResponseDisplay->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
+  frequencyResponseDisplay->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
 
   plotEditor->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
   y = plotEditor->getBottom();
@@ -668,6 +668,6 @@ void LadderEditor::resized()
 
 void LadderEditor::rComboBoxChanged(RComboBox* comboBoxThatHasChanged)
 {
-  //frequencyResponseDisplay->updatePlot();
+  frequencyResponseDisplay->updatePlot();
   plotEditor->repaint();
 }

@@ -43,9 +43,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  virtual Colour getGraphColour(int index);
+  virtual Colour getGraphColor(size_t index);
 
-  virtual float getGraphThickness(int index);
+  virtual float getGraphThickness(size_t index);
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
