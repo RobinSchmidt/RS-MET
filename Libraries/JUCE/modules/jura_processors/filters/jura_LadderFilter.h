@@ -178,7 +178,7 @@ protected:
 
 //=================================================================================================
 
-class JUCE_API rsLadderPlotEditor : public ColourSchemeComponent/*, public ParameterObserver*/
+class JUCE_API rsLadderPlotEditor : public ColourSchemeComponent, public ParameterObserver
 {
 
 public:
@@ -186,7 +186,7 @@ public:
   rsLadderPlotEditor(jura::Ladder* ladderModuleToEdit);
   virtual ~rsLadderPlotEditor();
 
-  //virtual void parameterChanged(Parameter* p) override;
+  virtual void parameterChanged(Parameter* p) override;
   //virtual void paintOverChildren (Graphics& g) override;
   virtual void resized() override;
 
@@ -194,7 +194,7 @@ protected:
 
   jura::Ladder* ladderToEdit; 
 
-
+  Parameter* cutoffParam;
   rsFunctionPlot* freqRespPlot; // frequency response plot (maybe factor out a pointer to rsPlot)
   rsVectorPad*    vectorPad;    // for the handle, overlaid over the plot
 

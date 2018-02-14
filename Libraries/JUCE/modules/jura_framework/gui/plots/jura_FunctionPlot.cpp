@@ -28,6 +28,13 @@ void rsFunctionPlot::setupForDecibelsAgainstLogFrequency(double minFreq, double 
   setStringConversionForInfoLineY(decibelsToStringWithUnit2);
 }
 
+void rsFunctionPlot::setSpecialEvaluationPoint(size_t funcIndex, size_t pointIndex, double xValue)
+{
+  jassert(funcIndex  < specialPoints.size());            // funcIndex out of range
+  jassert(pointIndex < specialPoints[funcIndex].size()); // pointIndex out of range
+  specialPoints[funcIndex][pointIndex] = xValue;
+}
+
 void rsFunctionPlot::paint(Graphics &g)
 {
   rsPlot::paint(g); // draws background (axes, grids, etc.)
@@ -43,6 +50,10 @@ void rsFunctionPlot::paint(Graphics &g)
     // todo: select color ...maybe this should be done by a virtual function getGraphColor(int i)
     // ...similar for the thickness getGraphThickness(int i) and maybe also a graph style (solid,
     // dotted, dashed, filled, stems, etc.)
-    drawer.drawWithLines(g, functions[i]);
+
+    if(specialPoints.size() <= i)
+      drawer.drawWithLines(g, functions[i]);
+    else
+      drawer.drawWithLines(g, functions[i], specialPoints[i]);
   }
 }

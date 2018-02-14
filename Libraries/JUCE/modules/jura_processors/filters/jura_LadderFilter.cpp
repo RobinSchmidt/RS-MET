@@ -495,18 +495,18 @@ rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladd
 {
   freqRespPlot = new rsFunctionPlot;
   //freqRespPlot->addMouseListener(this, true);
-
   //freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -60.0, 60.0, 12);
   freqRespPlot->setupForDecibelsAgainstLogFrequency(20.0, 20000.0, -60.0, 60.0, 12); 
     // frequency range must match cutoff parameter range, otherwise the dot-handle and resonance 
     // freq are out of sync
-
   freqRespPlot->addFunction([this](double f)->double { return ladderToEdit->getMagnitudeAt(f); } );    // maybe try to use a member-function pointer without lambda
   addPlot(freqRespPlot);
 
+  cutoffParam = ladderToEdit->getParameterByName("Cutoff");
+  cutoffParam->registerParameterObserver(this);
 
   vectorPad = new rsVectorPad;
-  vectorPad->assignParameterX(ladderToEdit->getParameterByName("Cutoff"));
+  vectorPad->assignParameterX(cutoffParam);
   vectorPad->assignParameterY(ladderToEdit->getParameterByName("Resonance"));
   vectorPad->setPaintBackground(false);
   vectorPad->setDotSize(8.f);
@@ -515,13 +515,20 @@ rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladd
 
 rsLadderPlotEditor::~rsLadderPlotEditor()
 {
+  cutoffParam->deRegisterParameterObserver(this);
   delete freqRespPlot;
   delete vectorPad;
 }
 
-/*
 void rsLadderPlotEditor::parameterChanged(Parameter* p)
 {
+  // todo: retriev the current cutoff frequnecy and use it as special evaluation point for the plot
+  // (make sure that this happens before the plot is drawn - ...yes, it does - good)
+
+  //freqRespPlot->setSpecialEvaluationPoint(0, 0, cutoffParam->getValue());
+
+  int dummy = 0;
+
   //rsVectorPad::parameterChanged(p);
   //freqRespPlot.repaint();
 
@@ -529,7 +536,6 @@ void rsLadderPlotEditor::parameterChanged(Parameter* p)
   // simultaneously and repainting directly would mean to repaint twice - once for each change
   // ...maybe this can be done by using callAsync?
 }
-*/
 
 void rsLadderPlotEditor::resized()
 {

@@ -131,8 +131,8 @@ void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func, double 
 }
 
 template<class T>
-void drawWithLines(Graphics& g, std::function<T(T)>& func, const std::vector<T>& specialValues, 
-  double inc, float thickness)
+void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func, 
+  const std::vector<T>& specialValues, double inc, float thickness)
 {
   if(specialValues.size() == 0)
     drawWithLines(g, func, inc, thickness);

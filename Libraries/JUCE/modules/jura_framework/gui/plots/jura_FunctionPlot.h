@@ -24,6 +24,9 @@ public:
   frequency in Hz and output a magnitude level in decibels. */
   virtual void addFunction(std::function<double(double)> function);
 
+
+  virtual void setSpecialEvaluationPoint(size_t funcIndex, size_t pointIndex, double xValue);
+
   /** Sets up the plot sttings for a nice looking frequency response plot with a logarithmic 
   frequency axis (as x-axis) and a linear dB y-axis (of course, dB itself is a logarithmic measure,
   "linear" here means that the dB values are shown lineraly, so it's also logarithmic amplitude 
@@ -35,6 +38,7 @@ public:
 protected:
 
   std::vector<std::function<double(double)>> functions;
+  std::vector<std::vector<double>> specialPoints;
 
 };
 
