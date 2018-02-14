@@ -120,7 +120,7 @@ void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func, double 
   while(x1 <= x+w)
   {
     x2 = x1 + inc;
-    y2 = mapper.mapY(func(mapper.unmapX(x2))); // maybe we should clip it?
+    y2 = mapper.mapY(func(mapper.unmapX(x2)));
     g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, thickness);
     x1 = x2;
     y1 = y2;
@@ -137,8 +137,27 @@ void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func,
   if(specialValues.size() == 0)
     drawWithLines(g, func, inc, thickness);
 
+  // suffixes: p: pixel-coordinate, m: model-coordinate
+  double xsm = specialValues[0]; // current special value
+  double x1p = x;
+  double x1m = mapper.unmapX(x1p);
+  double y1p = mapper.mapY(func(x1m));
+  double x2p, x2m, y2p;
+  while(x1p <= x+w)
+  {
+    x2p = x1p + inc;
+    x2m = mapper.unmapX(x2p);
+    if(x2m >= xsm)
+    {
+      // draw lines to and from additional datapoint
+      //...
+    }
+    y2p = mapper.mapY(func(x2m));
+    g.drawLine((float)x1p, (float)y1p, (float)x2p, (float)y2p, thickness);
+    x1p = x2p;
+    y1p = y2p;
+  }
 
-  int dummy = 0;
 }
 
 template<class T>
