@@ -2,7 +2,13 @@
 #define jura_VectorPad_h  
 
 
-/** This is a class for ... */
+/** This is a class for controlling two parameters at once with the position of a dot in a 2D 
+coordinate system.
+
+todo: let client code restrict the usable range such that the extreme values of the parameters
+do not necessarily coincide with the component edges but are somehwat more inside. This is useful
+hen a coordinate system is displayed in the background whose extreme values should not be somehwat
+beyond the parameter range limits. */
 
 class JUCE_API rsVectorPad : public RWidget
 {

@@ -41,11 +41,19 @@ public:
   model-coordinate. You can also set a sampling finer or coarser sampling interval by passing a
   (pixel) increment between sampling points other than unity. */
   template<class T>
-  void drawWithLines(Graphics& g, std::function<T(T)>& function, double increment = 1.0);
-   // todo: allow to specify additional evaluation points - some functions may have special points
-   // like poles or zeros at which they should be evaluated, regardless whether or not a pixel
-   // sampling point falls on them in order to avoid graphical artifacts - maybe pass the in as a
-   // reference or pointer to a std::vector
+  void drawWithLines(Graphics& g, std::function<T(T)>& function, double increment = 1.0, 
+    float thickness = 2.f);
+
+  /** Like drawWithLines drawWithLines(Graphics&, std::function<T(T)>&, double, float), but with an
+  additional array of special x-values at which the function should be evaluated, regardless 
+  whether or not one of the regular sampling points falls onto one of them. The idea is that some 
+  function may have special key values, such as poles (resonances) or zeros (notches) at which we
+  always want a datapoint because otherwise, there will be artifacts in the graphical 
+  representation (such as showing a resonance with wrong amplitude). */
+  template<class T>
+  void drawWithLines(Graphics& g, std::function<T(T)>& function, 
+    const std::vector<T>& specialValues, double increment = 1.0, float thickness = 2.f);
+
 
   /** Fills the area between the function given by the datapoints and the x-axis. */
   template<class T>

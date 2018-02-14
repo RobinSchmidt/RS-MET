@@ -112,9 +112,8 @@ void rsPlotDrawer::drawWithLines(Graphics& g, int numValues, T* valuesX, T* valu
 }
 
 template<class T>
-void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func, double inc)
+void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func, double inc, float thickness)
 {
-  float thickness = 2.f; // make parameter
   double x1 = x;
   double y1 = mapper.mapY(func(mapper.unmapX(x1)));
   double x2, y2;
@@ -126,6 +125,20 @@ void rsPlotDrawer::drawWithLines(Graphics& g, std::function<T(T)>& func, double 
     x1 = x2;
     y1 = y2;
   }
+  // maybe try to optimize with a function iterator that creates successive x-coordinates (in model
+  // coordinates), saves one unmapX operation per pixel at the cost of a function iterator update 
+  // (which is cheaper)
+}
+
+template<class T>
+void drawWithLines(Graphics& g, std::function<T(T)>& func, const std::vector<T>& specialValues, 
+  double inc, float thickness)
+{
+  if(specialValues.size() == 0)
+    drawWithLines(g, func, inc, thickness);
+
+
+  int dummy = 0;
 }
 
 template<class T>
