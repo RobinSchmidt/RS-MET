@@ -525,7 +525,7 @@ void rsLadderPlotEditor::parameterChanged(Parameter* p)
   // todo: retriev the current cutoff frequnecy and use it as special evaluation point for the plot
   // (make sure that this happens before the plot is drawn - ...yes, it does - good)
 
-  //freqRespPlot->setSpecialEvaluationPoint(0, 0, cutoffParam->getValue());
+  freqRespPlot->setSpecialEvaluationPoint(0, 0, cutoffParam->getValue());
 
   int dummy = 0;
 

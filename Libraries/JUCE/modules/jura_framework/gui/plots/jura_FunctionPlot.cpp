@@ -30,8 +30,13 @@ void rsFunctionPlot::setupForDecibelsAgainstLogFrequency(double minFreq, double 
 
 void rsFunctionPlot::setSpecialEvaluationPoint(size_t funcIndex, size_t pointIndex, double xValue)
 {
-  jassert(funcIndex  < specialPoints.size());            // funcIndex out of range
-  jassert(pointIndex < specialPoints[funcIndex].size()); // pointIndex out of range
+  //jassert(funcIndex  < specialPoints.size());            // funcIndex out of range
+  //jassert(pointIndex < specialPoints[funcIndex].size()); // pointIndex out of range
+
+  while(funcIndex >= specialPoints.size())
+    specialPoints.push_back(std::vector<double>());
+  while(pointIndex >= specialPoints[funcIndex].size())
+    specialPoints[funcIndex].push_back(0.0);
   specialPoints[funcIndex][pointIndex] = xValue;
 }
 
