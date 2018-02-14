@@ -48,12 +48,10 @@ public:
 
   // for the magnitude plot/editor later...
   double getCutoff()    { return cutoff; }
-  double getResonance() { return 0.0;    }  // preliminary
+  //double getResonance() { return 0.0;    }  // preliminary
 
   double getMagnitudeAt(double frequency); // returns the magnitude at the given frequency
 
-  void getMagnitudeResponse(const double *frequencies, double *magnitudes, int numBins, 
-    bool inDecibels = true);
 
 protected:
 
@@ -64,117 +62,12 @@ protected:
   double freqFactorR = 1.0;
   bool   midSideMode = false;
 
-  // embedded core DSP objects from the RAPT library:
-  //rsLadderDD ladderL, ladderR;
+  // embedded core DSP objects from the rosic library:
   rosic::rsLadderFilterStereo wrappedLadder;
     // use the one with different cutoffs for the channels later (maybe)
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Ladder)
 };
-
-//=================================================================================================
-// the magnitude response plot/editor:
-// this is the old, deprecated version - now we use the new rsLadderPlotEditor - when transition is 
-// finished, this old class can be deleted
-
-class JUCE_API LadderSpectrumEditor : public rsSpectrumPlot, public ParameterObserver, 
-  public ChangeBroadcaster // why is this a changeBroadcaster? may this be obsolete? all widgets
-    // (i.e. the sliders and ths plot-editor) actually observe the Parameter object, so we should 
-    // not need any other mechanism to sync the widgets
-{
-
-public:
-
-  //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
-
-  /** Constructor. */
-  LadderSpectrumEditor(const juce::String& name = juce::String("LadderSpectrumEditor"));   
-
-  /** Destructor. */
-  virtual ~LadderSpectrumEditor(); 
-
-  //-----------------------------------------------------------------------------------------------
-  // setup:
-
-  /** Passes a pointer the the actual rosic::MoogyFilter object which is to be edited. Make 
-  sure to call this function again with a NULL-pointer when the object get deleted for some 
-  reason. */
-  virtual void setFilterToEdit(jura::Ladder* newFilterToEdit);
-
-  /** Assigns a Parameter object to the frequency (horizontal axis) for observation and 
-  manipulation. */
-  virtual void assignParameterFreq(Parameter* parameterToAssign);
-
-  /** Assigns a Parameter object to the resonance (vertical axis) for observation and 
-  manipulation. */
-  virtual void assignParameterReso(Parameter* parameterToAssign);
-
-  /** Un-Assigns a previously Parameter object to the horizontal axis. */
-  virtual void unAssignParameterFreq();
-
-  /** Un-Assigns a previously Parameter object to the verical axis. */
-  virtual void unAssignParameterReso();
-
-  //-----------------------------------------------------------------------------------------------
-  // callbacks:
-
-  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
-  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) override;
-
-  /** This method is called when one of the assigned rosic::AutomatableParameters has been changed.
-  We override it here in the subclass to do the actual GUI update. */
-  virtual void updateWidgetFromAssignedParameter(bool sendMessage = false);
-
-  /** Overrides the changeListenerCallback in order to receive messages which this object sends 
-  to itself. */
-  virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
-
-  /** Overrides mouseDown for adjusting the frequency and resonance and lets a context menu pop up 
-  when the right button is clicked for MIDI-learn functionality. */
-  virtual void mouseDown(const MouseEvent& e) override;
-
-  /** Overrides mouseDrag for adjusting the frequency and resonance. */
-  virtual void mouseDrag(const MouseEvent& e) override;
-
-  /** Overrides the resized-method. */
-  virtual void resized() override;
-
-  /** Updates the frequency response plot. */
-  virtual void updatePlot();
-
-protected:
-
-  /** Does the setup of the filter according to some new mouse position) */
-  virtual void setupFilterAccordingToMousePosition(double mouseX, double mouseY);
-
-  /** Overrides CurveFamilyPlot::plotCurveFamily in order to additionally draw the handle. */
-  virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL, 
-    XmlElement *targetSVG = NULL) override;
-
-  /** Converts a resonance value to an y-coordinate in components/image coordinates. */
-  double resoToY(double reso);
-
-  /** Converts an y-coordinate in components/image coordinates to a resonance value. */
-  double yToReso(double y);
-
-  /** Radius of the dot-handle to be drawn. */
-  float dotRadius;
-
-  /** Pointer to the actual jura::Ladder object which is being edited. */
-  jura::Ladder* filterToEdit;
-
-  // the parameters which wil cause re-plotting and therefore must be listened to:
-  Parameter* freqParameter;
-  Parameter* resoParameter;
-
-  // magnitude response display stuff:
-  int    numBins;
-  double *frequencies, *magnitudes;
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LadderSpectrumEditor)
-};
-
 
 //=================================================================================================
 
@@ -187,7 +80,6 @@ public:
   virtual ~rsLadderPlotEditor();
 
   virtual void parameterChanged(Parameter* p) override;
-  //virtual void paintOverChildren (Graphics& g) override;
   virtual void resized() override;
 
 protected:
@@ -201,7 +93,6 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsLadderPlotEditor)
 };
-
 
 //=================================================================================================
 
@@ -219,16 +110,9 @@ public:
 protected:
 
   Ladder *ladderToEdit;
-
-  LadderSpectrumEditor *frequencyResponseDisplay; // old - delete when transition is done
-
-  rsLadderPlotEditor* plotEditor;   // the new plot editor
-
-  //AutomatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
+  rsLadderPlotEditor* plotEditor;
   ModulatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
   AutomatableComboBox *modeComboBox;
-  //RComboBox *modeComboBox;
-  //RButton *invertButton;  
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LadderEditor)
 };

@@ -1,11 +1,9 @@
-
 Ladder::Ladder(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse,
   ModulationManager* modManagerToUse) 
   : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("Ladder");
-  //setModuleTypeName("LadderFilter");
   createStaticParameters();
 }
 
@@ -62,12 +60,6 @@ void Ladder::createStaticParameters()
   p->addStringValue("Bandpass 18/6 dB/oct");
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setMode);
-
-  //// make sure that the parameters are initially in sync with the audio engine:
-  //for(int i = 0; i < (int)parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true); // do we need this?
-  // replace this loop by a call to:
-  //resetParametersToDefaultValues();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -85,50 +77,22 @@ void Ladder::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
-  {
     wrappedLadder.getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
-    //inOutBuffer[0][n] = ladderL.getSample(inOutBuffer[0][n]);
-    //inOutBuffer[1][n] = ladderR.getSample(inOutBuffer[1][n]);
-  }
 }
 
 void Ladder::processStereoFrame(double *left, double *right)
 {
   wrappedLadder.getSampleFrameStereo(left, right);
-  //*left  = ladderL.getSample(*left);
-  //*right = ladderR.getSample(*right);
 }
 
 //-------------------------------------------------------------------------------------------------
 // parameter setters (callback targets for the Parameter objects):
 
-void Ladder::setSampleRate(double newSampleRate){
-
-  wrappedLadder.setSampleRate(newSampleRate);
-  //ladderL.setSampleRate(newSampleRate); 
-  //ladderR.setSampleRate(newSampleRate);
-}
-void Ladder::setCutoff(double newCutoff){
-  cutoff = newCutoff;
-  wrappedLadder.setCutoff(cutoff); 
-  //ladderL.setCutoff(freqFactorL * cutoff); 
-  //ladderR.setCutoff(freqFactorR * cutoff);
-}
-void Ladder::setResonance(double newResonance){
-  wrappedLadder.setResonance(newResonance);
-  //ladderL.setResonance(newResonance);
-  //ladderR.setResonance(newResonance);
-}
-void Ladder::setMode(int newMode){
-  wrappedLadder.setMode(newMode);
-  //ladderL.setMode(newMode);
-  //ladderR.setMode(newMode);
-}
-void Ladder::reset(){
-  wrappedLadder.reset();
-  //ladderL.reset();
-  //ladderR.reset();
-}
+void Ladder::setSampleRate(double newSampleRate){ wrappedLadder.setSampleRate(newSampleRate); }
+void Ladder::setCutoff(double newCutoff)        { cutoff = newCutoff; wrappedLadder.setCutoff(cutoff); }
+void Ladder::setResonance(double newResonance)  { wrappedLadder.setResonance(newResonance); }
+void Ladder::setMode(int newMode)               { wrappedLadder.setMode(newMode); }
+void Ladder::reset(){ wrappedLadder.reset(); }
 
 inline double pitchOffsetToFreqFactor(double pitchOffset){ // move to RAPT library, eventually
   return exp(0.057762265046662109118102676788181 * pitchOffset);
@@ -152,345 +116,14 @@ void Ladder::setMidSideMode(bool shouldBeInMidSideMode){
 
 double Ladder::getMagnitudeAt(double frequency)  // rename to getDecibelsAt
 {
-  //double level = amp2dBWithCheck(filterToEdit->getMagnitudeAt(freq), 0.000001);
-  //level        = clip(level, -120.0, +120.0);
-
   double tmp = wrappedLadder.getMagnitudeResponseAt(frequency);
   tmp = amp2dBWithCheck(tmp, 0.000001);
   tmp = clip(tmp, -120.0, +120.0);
   return tmp;
-  //return ladderL.getMagnitudeResponseAt(frequency);
-}
-
-void Ladder::getMagnitudeResponse(const double *frequencies, double *magnitudes, int numBins,
-  bool inDecibels)
-{
-  int i;
-  for(i = 0; i < numBins; i++)
-    magnitudes[i] = getMagnitudeAt(frequencies[i]);
-  //if(inDecibels) // is already in dB now
-  //  for(i = 0; i < numBins; i++)
-  //    magnitudes[i] = amp2dBWithCheck(magnitudes[i], 1.e-6);
 }
 
 //=================================================================================================
-// LadderSpectrumEditor:
-
-// construction/destruction:
-
-LadderSpectrumEditor::LadderSpectrumEditor(const juce::String& name) 
-  : rsSpectrumPlot(name)
-{
-  // nulling these pointers must occur before setting up the plot range:
-  freqParameter = nullptr;
-  resoParameter = nullptr;
-  filterToEdit  = nullptr;
-
-  // this stuff will be (re-) allocated in resized():
-  numBins     = 0;
-  frequencies = NULL;
-  magnitudes  = NULL;
-
-
-  setDescription("Drag around the node to adjust the filter's frequency and resonance");
-  ParameterObserver::setIsGuiElement(true);
-
-  // set up the plot range:
-  setMaximumRange(15.625, 32000.0, -60.0, 60.0);
-  setCurrentRange(15.625, 32000.0, -60.0, 60.0);
-  setHorizontalCoarseGrid(12.0, true);
-  setHorizontalFineGrid(   3.0, false);
-  setVerticalCoarseGridVisible( false);
-  setVerticalFineGridVisible(   false);
-
-  plotColourScheme.setCurveColouringStrategy(PlotColourScheme::UNIFORM);
-
-  currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);
-  setMouseCursor(currentMouseCursor);
-
-  dotRadius = 5.f;
-
-  // activate automation for this ParameterObserver:
-  ParameterObserver::setLocalAutomationSwitch(true);
-}
-
-LadderSpectrumEditor::~LadderSpectrumEditor(void)
-{
-  // remove ourselves as listeners from the Parameter objects, such that they do not try to notify 
-  // a nonexistent listener:
-  ParameterObserver::setLocalAutomationSwitch(false);
-  if( freqParameter != NULL )
-    freqParameter->deRegisterParameterObserver(this);
-  if( resoParameter != NULL )
-    resoParameter->deRegisterParameterObserver(this);
-
-  deleteAndZero(frequencies);
-  deleteAndZero(magnitudes);
-}
-
-//-------------------------------------------------------------------------------------------------
-// parameter-settings:
-
-void LadderSpectrumEditor::setFilterToEdit(jura::Ladder* newFilterToEdit)
-{
-  filterToEdit = newFilterToEdit;
-}
-
-void LadderSpectrumEditor::assignParameterFreq(Parameter *parameterToAssign)
-{
-  freqParameter = parameterToAssign;
-  if( freqParameter != NULL )
-    freqParameter->registerParameterObserver(this);
-}
-
-void LadderSpectrumEditor::assignParameterReso(Parameter *parameterToAssign)
-{
-  resoParameter = parameterToAssign;
-  if( resoParameter != NULL )
-    resoParameter->registerParameterObserver(this);
-}
-
-void LadderSpectrumEditor::unAssignParameterFreq()
-{
-  if( freqParameter != NULL )
-    freqParameter->deRegisterParameterObserver(this);
-  freqParameter = NULL;
-}
-
-void LadderSpectrumEditor::unAssignParameterReso()
-{
-  if( resoParameter != NULL )
-    resoParameter->deRegisterParameterObserver(this);
-  resoParameter = NULL;
-}
-
-void LadderSpectrumEditor::parameterChanged(Parameter* parameterThatHasChanged)
-{
-  //// old code:
-  //// send out a change-message: 
-  //sendChangeMessage(); // ? why that?
-  ////updatePlot();
-
-  // new:
-  updatePlot();
-}
-
-void LadderSpectrumEditor::parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted)
-{
-  // clear reference to parameter that will be deleted
-}
-
-void LadderSpectrumEditor::updateWidgetFromAssignedParameter(bool sendMessage)
-{
-  updatePlot();
-  if( sendMessage == true )
-    sendChangeMessage();
-}
-
-//-------------------------------------------------------------------------------------------------
-// callbacks:
-
-void LadderSpectrumEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
-{
-  // temporarily switch the wantsAutomationNotification flag from the ParameterObserver base 
-  // class off to avoid circular notifications and updates:
-  setLocalAutomationSwitch(false);
-
-    // ?? what is this good for ?? we don't send out any messages here... fihure out in debugger
-
-  // call the method which updates the widget:
-  updatePlot();
-  //updateWidgetFromAssignedParameter(false);
-
-  // switch the wantsAutomationNotification flag on again:  
-  setLocalAutomationSwitch(true);
-}
-
-void LadderSpectrumEditor::mouseDown(const MouseEvent &e)
-{
-  if( filterToEdit == NULL )
-    return;
-
-  // preliminary: do not open the MIDI-learn menu on right-button - show the image export menu 
-  // instead (inherited behaviour from CoordinateSytem):
-  if( e.mods.isRightButtonDown() )
-    rsPlot::mouseDown(e);
-  else
-  {
-    // get the position of the event in components coordinates
-    double x = e.getMouseDownX();
-    double y = e.getMouseDownY();
-
-    setupFilterAccordingToMousePosition(x, y);
-
-    // send out a change-message:
-    sendChangeMessage();
-  }
-}
-
-void LadderSpectrumEditor::mouseDrag(const juce::MouseEvent &e)
-{
-  if( filterToEdit == NULL )
-    return;
-
-  /*
-  if( e.mods.isRightButtonDown() && xParameter != NULL && yParameter != NULL )
-  {
-  // ignore mouse drags whne the right button is down and we have assigned automatable 
-  // parameters because in that case, the right click is used for opening the MIDI-learn popup
-  }
-  else...
-  */
-
-  // get the position of the event in components coordinates
-  double x = e.getMouseDownX() + e.getDistanceFromDragStartX();
-  double y = e.getMouseDownY() + e.getDistanceFromDragStartY();
-
-  setupFilterAccordingToMousePosition(x, y);
-
-  // send out a change-message:
-  sendChangeMessage();
-}
-
-void LadderSpectrumEditor::setupFilterAccordingToMousePosition(double mouseX, double mouseY)
-{
-  if( filterToEdit == NULL )
-    return;
-
-  // get the position of the event in components coordinates
-  double x = mouseX;
-  double y = mouseY;
-
-  // convert them into a frequency and resonance/q/gain value:
-  double gain = y;
-  transformFromComponentsCoordinates(x, gain);
-  gain = clip(gain, -60.0, 30.0);
-  double freq = x;
-  double reso = yToReso(y);
-
-  // restrict ranges (ToDo: actually the filter should take care of the itself....):
-  //freq = clip(freq, 20.0, 20000.0);
-  //reso = clip(reso,  0.0,     1.0);   // change the upper limit later...
-
-  // set up the filter and raise automation events to update other widgets that represent the
-  // parameters:
-  if(freqParameter != NULL)
-    freqParameter->setValue(freq, true, true);
-  if(resoParameter != NULL)
-    resoParameter->setValue(reso, true, true);
-}
-
-//-------------------------------------------------------------------------------------------------
-// drawing:
-
-void LadderSpectrumEditor::resized()
-{
-  rsSpectrumPlot::resized();
-
-  // (re) allocate and fill the arrays for the magnitude plot
-  numBins = getWidth();
-  if( frequencies == NULL )
-    delete[] frequencies;
-  if( magnitudes == NULL )
-    delete[] magnitudes;
-  frequencies = new double[numBins];
-  magnitudes  = new double[numBins];
-  getDisplayedFrequencies(frequencies, numBins);
-  for(int i = 0; i < numBins; i++)
-    magnitudes[i]  = 0.0;
-  updatePlot();
-}
-
-inline void clipBuffer(double *buffer, int length, double min, double max)
-{
-  for(int i = 0; i < length; i++)
-    buffer[i] = clip(buffer[i], min, max);
-}
-void LadderSpectrumEditor::updatePlot()
-{
-  if( filterToEdit == nullptr || freqParameter == nullptr )
-    return;
-
-  // fill the magnitude array with the magnitudes:
-  filterToEdit->getMagnitudeResponse(frequencies, magnitudes, numBins, true);
-  clipBuffer(magnitudes, numBins, -120.0, 120.0);
-
-  // We overwrite the magnitude value at the bin closest to the cutoff-frequency with the magnitude 
-  // at the exact cutoff frequency. This avoids some graphic artifacts when sweeping cutoff at high
-  // resonance (the peak jumps up and down, depending on how close the bin center is to the actual
-  // cutoff/resonance frequency):
-  double freq  = freqParameter->getValue();
-  //double level = amp2dBWithCheck(filterToEdit->getMagnitudeAt(freq), 0.000001);
-  double level = filterToEdit->getMagnitudeAt(freq);
-  level        = clip(level, -120.0, +120.0);
-  for(int bin = 0; bin < numBins-1; bin++)
-  {
-    if( frequencies[bin] < freq && frequencies[bin+1] > freq )
-    {
-      if( fabs(frequencies[bin]-freq) <= fabs(frequencies[bin+1]-freq) ) // lower bin is closer
-        magnitudes[bin]   = level;
-      else                                                               // upper bin is closer
-        magnitudes[bin+1] = level;
-    }
-  }
-
-  setSpectrum(numBins, frequencies, magnitudes);
-  //repaint();
-}
-
-void LadderSpectrumEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, 
-  XmlElement *targetSVG)
-{
-  if(freqParameter == nullptr || resoParameter == nullptr) // pointers need to be assigned
-    return;
-
-  rsDataPlot::plotCurveFamily(g, targetImage, targetSVG);
-
-  //Colour graphColour = colourScheme.curves; // preliminary
-  //if( colourScheme.plotColours.size() > 0 )
-  //  graphColour = colourScheme.plotColours[0];
-  Colour graphColour = plotColourScheme.getCurveColour(0);  
-  //g.setColour(graphColour); 
-
-  double x = freqParameter->getValue();    // frequency in Hz
-  double y = 0;                            // dummy, for the moment
-
-  // determine the coordinates of the handle into image component coordinates (for export) or 
-  // components coordinates for plot:
-  transformToComponentsCoordinates(x, y);
-  y = resoToY(resoParameter->getValue());  // ..now we assign also y
-
-  // draw the handle and a crosshair:
-  g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 
-    (float) (2*dotRadius), (float) (2*dotRadius) );
-  g.setColour(graphColour.withAlpha(0.4f));
-  float w = (float) getWidth();
-  float h = (float) getHeight();
-  g.drawLine(       0,(float)y,        w, (float)y, 1.f);  // horizontal
-  g.drawLine((float)x,       0, (float)x,        h, 1.f);  // vertical
-}
-
-// internal functions:
-
-double LadderSpectrumEditor::resoToY(double reso)
-{
-  double maxRes = resoParameter->getMaxValue();
-  double y = (1 - reso/maxRes) * getHeight();
-  return y;
-}
-
-double LadderSpectrumEditor::yToReso(double y)
-{
-  double maxRes = resoParameter->getMaxValue();
-  double reso = maxRes * ( 1.0 - y/getHeight() );    
-  return reso;
-}
-// maybe use not the full plot height but plotHeight - dotRadius or something - at very high and
-// low resonances, we have to go to the border of the plot with the mouse and half of the dot goes
-// outside the visible area, which is not nice
-
-//=================================================================================================
-// the new plot editor that replaces the old (with hopefully less code):
+// rsLadderPlotEditor:
 
 rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladder)
 {
@@ -527,49 +160,10 @@ rsLadderPlotEditor::~rsLadderPlotEditor()
 
 void rsLadderPlotEditor::parameterChanged(Parameter* p)
 {
-  // todo: retriev the current cutoff frequnecy and use it as special evaluation point for the plot
-  // (make sure that this happens before the plot is drawn - ...yes, it does - good)
-
   double resoFreq = cutoffParam->getValue();
   double reso     = resoParam->getValue();
-  double peakFreq = resoFreq;
-  peakFreq *= pow(reso, 0.25);   // formula found be trial and error
-
+  double peakFreq = resoFreq * pow(reso, 0.25);  // formula found by trial and error
   freqRespPlot->setSpecialEvaluationPoint(0, 0, peakFreq);
-    // problem: the frequency at which the spectal peak occurs is slightly below the resonance
-    // frequency. For resonances close to 1 (but not quite there, like 0.98 or 0.99), we get an
-    // apparent peak-amplitude the goes up and down when sweeping the cutoff
-    // solution: don't use the resonance-frequency but the spectral peak frequency as special
-    // evaluation point...but i don't have a formula for that...might be complicated..we need a 
-    // magnitude responce expression that avoids complex numbers, find the derivative and set it to 
-    // zero
-    // a simple workaround would be to not additionally evaluate the function at the special point
-    // but replace the sampling point that is closest (as we did before)
-    // or maybe we can find an approximate formula for the ratio peakFreq/resoFreq as function of
-    // resonance by looking at data and fitting a function...or maybe we can derive an exact 
-    // formula for the analog prototype and use that as approximation for the digital model
-
-
-    // from the RSPlot settings for the moog magnitude response
-    // H = wc^4 / sqrt((k^2+2*k+1)*wc^8+(4-12*k)*w^2*wc^6+(2*k+6)*w^4*wc^4+4*w^6*wc^2+w^8)
-    // let: wc = 1 and take the square:
-    // H^2 = 1 / (k^2+2*k+1) + (4-12*k)*w^2 + (2*k+6)*w^4 + 4*w^6 + w^8
-    // take reciprocal:
-    // f(w) = (k^2+2*k+1) + (4-12*k)*w^2 + (2*k+6)*w^4 + 4*w^6 + w^8
-    // take derivative:
-    // f'(w) = 2*(4-12*k)*w + 4*(2*k+6)*w^3 + 6*4*w^5 + 8*w^7
-
-    // hmm...per trial and error, it seems like f(peak) = f(res) * k^(1/4)
-    // maybe try it
-
-  int dummy = 0;
-
-  //rsVectorPad::parameterChanged(p);
-  //freqRespPlot.repaint();
-
-  // maybe we should not directly repaint - because often cutoff and reso will change 
-  // simultaneously and repainting directly would mean to repaint twice - once for each change
-  // ...maybe this can be done by using callAsync?
 }
 
 void rsLadderPlotEditor::resized()
@@ -578,44 +172,19 @@ void rsLadderPlotEditor::resized()
   vectorPad->setBounds(   0, 0, getWidth(), getHeight());
 }
 
-
-
-
-
-
-
-
-
-
 //=================================================================================================
-// the GUI editor class for the Ladder:
+// LadderEditor:
 
 LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(newLadderToEdit)
 {
   ScopedLock scopedLock(*lock);
-  // maybe we should avoid this lock here and instead have a function that connects the widgets 
-  // with the parameters where we acquire the lock - but maybe not
 
   // assign the pointer to the edited object:
   jassert(newLadderToEdit != nullptr ); // you must pass a valid module here
   ladderToEdit = newLadderToEdit;
 
-  // create the widgets and assign the automatable parameters to them:
-
-  // new:
   plotEditor = new rsLadderPlotEditor(ladderToEdit);
   addChildColourSchemeComponent(plotEditor);
-  //addWidget(plotEditor);
-
-  // old:
-  frequencyResponseDisplay = new LadderSpectrumEditor("SpectrumEditor");
-  frequencyResponseDisplay->setFilterToEdit(ladderToEdit);
-  frequencyResponseDisplay->addChangeListener(this); // do we need this?
-  frequencyResponseDisplay->assignParameterFreq( moduleToEdit->getParameterByName("Cutoff"));
-  frequencyResponseDisplay->assignParameterReso( moduleToEdit->getParameterByName("Resonance"));
-  addPlot( frequencyResponseDisplay );
-
-
 
   addWidget( cutoffSlider = new ModulatableSlider() );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
@@ -648,13 +217,6 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
    // the combobox here...
    // maybe, we can allow also different modes for the two filters and different resonances
 
-  // change to midSideButton
-  //addWidget( invertButton = new RButton(juce::String(T("Invert"))) );
-  //invertButton->assignParameter( pitchShifterModuleToEdit->getParameterByName(T("Invert")) );
-  //invertButton->setDescription(juce::String(T("Invert polarity of wet (shifted) signal")));
-  //invertButton->setDescriptionField(infoField);
-  //invertButton->setClickingTogglesState(true);
-
   // set up the widgets:
   updateWidgetsAccordingToState();
 
@@ -681,9 +243,6 @@ void LadderEditor::resized()
   int h  = getHeight();
 
   y = getPresetSectionBottom();
-
-  //frequencyResponseDisplay->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
-
   plotEditor->setBounds(x, y+4, w, h-y-2*20-8); // 2*20 for 2 widget-rows below it
   y = plotEditor->getBottom();
 
@@ -694,14 +253,9 @@ void LadderEditor::resized()
 
   modeComboBox->setBounds(   4, y+4, w2-4, 16);
   spreadSlider->setBounds(w2+4, y+4, w2-8, 16);
-
-  //y = modeComboBox->getBottom(); 
-
-  // maybe here, we somehow have to also resize our wrapper, if any
 }
 
 void LadderEditor::rComboBoxChanged(RComboBox* comboBoxThatHasChanged)
 {
-  frequencyResponseDisplay->updatePlot();
   plotEditor->repaint();
 }
