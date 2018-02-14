@@ -194,7 +194,8 @@ protected:
 
   jura::Ladder* ladderToEdit; 
 
-  Parameter* cutoffParam;
+  Parameter *cutoffParam, *resoParam;
+
   rsFunctionPlot* freqRespPlot; // frequency response plot (maybe factor out a pointer to rsPlot)
   rsVectorPad*    vectorPad;    // for the handle, overlaid over the plot
 

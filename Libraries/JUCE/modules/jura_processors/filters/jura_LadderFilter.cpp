@@ -506,9 +506,12 @@ rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladd
   cutoffParam = ladderToEdit->getParameterByName("Cutoff");
   cutoffParam->registerParameterObserver(this);
 
+  resoParam = ladderToEdit->getParameterByName("Resonance");
+  resoParam->registerParameterObserver(this);
+
   vectorPad = new rsVectorPad;
   vectorPad->assignParameterX(cutoffParam);
-  vectorPad->assignParameterY(ladderToEdit->getParameterByName("Resonance"));
+  vectorPad->assignParameterY(resoParam);
   vectorPad->setPaintBackground(false);
   vectorPad->setDotSize(8.f);
   addWidget(vectorPad);
@@ -517,6 +520,7 @@ rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladd
 rsLadderPlotEditor::~rsLadderPlotEditor()
 {
   cutoffParam->deRegisterParameterObserver(this);
+  resoParam->deRegisterParameterObserver(this);
   delete freqRespPlot;
   delete vectorPad;
 }
@@ -526,7 +530,12 @@ void rsLadderPlotEditor::parameterChanged(Parameter* p)
   // todo: retriev the current cutoff frequnecy and use it as special evaluation point for the plot
   // (make sure that this happens before the plot is drawn - ...yes, it does - good)
 
-  freqRespPlot->setSpecialEvaluationPoint(0, 0, cutoffParam->getValue());
+  double resoFreq = cutoffParam->getValue();
+  double reso     = resoParam->getValue();
+  double peakFreq = resoFreq;
+  peakFreq *= pow(reso, 0.25);   // formula found be trial and error
+
+  freqRespPlot->setSpecialEvaluationPoint(0, 0, peakFreq);
     // problem: the frequency at which the spectal peak occurs is slightly below the resonance
     // frequency. For resonances close to 1 (but not quite there, like 0.98 or 0.99), we get an
     // apparent peak-amplitude the goes up and down when sweeping the cutoff
@@ -539,6 +548,19 @@ void rsLadderPlotEditor::parameterChanged(Parameter* p)
     // or maybe we can find an approximate formula for the ratio peakFreq/resoFreq as function of
     // resonance by looking at data and fitting a function...or maybe we can derive an exact 
     // formula for the analog prototype and use that as approximation for the digital model
+
+
+    // from the RSPlot settings for the moog magnitude response
+    // H = wc^4 / sqrt((k^2+2*k+1)*wc^8+(4-12*k)*w^2*wc^6+(2*k+6)*w^4*wc^4+4*w^6*wc^2+w^8)
+    // let: wc = 1 and take the square:
+    // H^2 = 1 / (k^2+2*k+1) + (4-12*k)*w^2 + (2*k+6)*w^4 + 4*w^6 + w^8
+    // take reciprocal:
+    // f(w) = (k^2+2*k+1) + (4-12*k)*w^2 + (2*k+6)*w^4 + 4*w^6 + w^8
+    // take derivative:
+    // f'(w) = 2*(4-12*k)*w + 4*(2*k+6)*w^3 + 6*4*w^5 + 8*w^7
+
+    // hmm...per trial and error, it seems like f(peak) = f(res) * k^(1/4)
+    // maybe try it
 
   int dummy = 0;
 
