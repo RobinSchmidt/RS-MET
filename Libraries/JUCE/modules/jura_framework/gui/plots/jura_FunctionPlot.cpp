@@ -40,6 +40,16 @@ void rsFunctionPlot::setSpecialEvaluationPoint(size_t funcIndex, size_t pointInd
   specialPoints[funcIndex][pointIndex] = xValue;
 }
 
+Colour rsFunctionPlot::getGraphColour(int index)
+{
+  return Colours::white;  // preliminary
+}
+
+float rsFunctionPlot::getGraphThickness(int index)
+{
+  return 2.f;
+}
+
 void rsFunctionPlot::paint(Graphics &g)
 {
   rsPlot::paint(g); // draws background (axes, grids, etc.)
@@ -51,14 +61,11 @@ void rsFunctionPlot::paint(Graphics &g)
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, getWidth(), getHeight());
   for(size_t i = 0; i < functions.size(); i++)
   {
-    g.setColour(Colours::white); // preliminary
-    // todo: select color ...maybe this should be done by a virtual function getGraphColor(int i)
-    // ...similar for the thickness getGraphThickness(int i) and maybe also a graph style (solid,
-    // dotted, dashed, filled, stems, etc.)
-
+    g.setColour(getGraphcColour(i));
     if(specialPoints.size() <= i)
-      drawer.drawWithLines(g, functions[i]);
+      drawer.drawWithLines(g, functions[i], 1.0, getGraphThickness(i));
     else
-      drawer.drawWithLines(g, functions[i], specialPoints[i]);
+      drawer.drawWithLines(g, functions[i], specialPoints[i], 1.0, getGraphThickness(i));
+    // maybe change order of thickness and increment - thickness is more likely to be customized
   }
 }

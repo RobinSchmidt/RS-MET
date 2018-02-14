@@ -420,7 +420,8 @@ void LadderSpectrumEditor::updatePlot()
   // resonance (the peak jumps up and down, depending on how close the bin center is to the actual
   // cutoff/resonance frequency):
   double freq  = freqParameter->getValue();
-  double level = amp2dBWithCheck(filterToEdit->getMagnitudeAt(freq), 0.000001);
+  //double level = amp2dBWithCheck(filterToEdit->getMagnitudeAt(freq), 0.000001);
+  double level = filterToEdit->getMagnitudeAt(freq);
   level        = clip(level, -120.0, +120.0);
   for(int bin = 0; bin < numBins-1; bin++)
   {
@@ -567,7 +568,11 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
 
   // create the widgets and assign the automatable parameters to them:
 
-  /*
+  // new:
+  plotEditor = new rsLadderPlotEditor(ladderToEdit);
+  addChildColourSchemeComponent(plotEditor);
+  //addWidget(plotEditor);
+
   // old:
   frequencyResponseDisplay = new LadderSpectrumEditor("SpectrumEditor");
   frequencyResponseDisplay->setFilterToEdit(ladderToEdit);
@@ -575,12 +580,8 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   frequencyResponseDisplay->assignParameterFreq( moduleToEdit->getParameterByName("Cutoff"));
   frequencyResponseDisplay->assignParameterReso( moduleToEdit->getParameterByName("Resonance"));
   addPlot( frequencyResponseDisplay );
-  */
 
-  // new:
-  plotEditor = new rsLadderPlotEditor(ladderToEdit);
-  addChildColourSchemeComponent(plotEditor);
-  //addWidget(plotEditor);
+
 
   addWidget( cutoffSlider = new ModulatableSlider() );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );

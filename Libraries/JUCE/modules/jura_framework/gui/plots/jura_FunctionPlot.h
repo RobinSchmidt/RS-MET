@@ -16,15 +16,21 @@ public:
   rsFunctionPlot() {}
   virtual ~rsFunctionPlot() {}
 
-  virtual void paint(Graphics &g) override;
-  //virtual void resized() override;
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   /** Adds a function to be plotted. It will receive the x-value (in model-coordinates) and should
   return the corresponding y-value (also in model-coordinates). For example, it could receive a 
   frequency in Hz and output a magnitude level in decibels. */
   virtual void addFunction(std::function<double(double)> function);
 
-
+  /** When plotting a function, we sample the function output at x-values that correspond to the 
+  pixel x-coordinates. For some functions with certain localized features such as poles/resonances 
+  or zeros/notches, our sampling may miss these features leading to artifacts in the plot, such as 
+  a wrong resonance amplitude. With this function, you can set some additional evaluation points 
+  that may not be covered (well enough) by the regular smapling. */
   virtual void setSpecialEvaluationPoint(size_t funcIndex, size_t pointIndex, double xValue);
 
   /** Sets up the plot sttings for a nice looking frequency response plot with a logarithmic 
@@ -33,6 +39,21 @@ public:
   axis at the end of the day). */
   virtual void setupForDecibelsAgainstLogFrequency(double minFreq, double maxFreq, 
     double minDb, double maxDb, double yGridSpacing = 6);
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  virtual Colour getGraphColour(int index);
+
+  virtual float getGraphThickness(int index);
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
+
+  virtual void paint(Graphics &g) override;
+  //virtual void resized() override;
+
+
 
 
 protected:

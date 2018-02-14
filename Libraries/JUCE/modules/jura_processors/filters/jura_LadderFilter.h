@@ -219,7 +219,7 @@ protected:
 
   Ladder *ladderToEdit;
 
-  //LadderSpectrumEditor *frequencyResponseDisplay; // old - delete when transition is done
+  LadderSpectrumEditor *frequencyResponseDisplay; // old - delete when transition is done
 
   rsLadderPlotEditor* plotEditor;   // the new plot editor
 
