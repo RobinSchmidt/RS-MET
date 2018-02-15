@@ -28,6 +28,17 @@ public:
   
   virtual void assignParameterY(Parameter* newParameterY);
 
+  /** Sets margins in pixels (with respect to the Components bounds) for which the min/max values
+  of the parameter will be attained. For example with all margins equal to 10, the minimum value
+  for x will be attained at x = 10 pixels and the maximum at x = width-10 pxiels. */
+  void setMargins(double left, double right, double top, double bottom)
+  {
+    leftMargin   = left;
+    rightMargin  = right;
+    topMargin    = top;
+    bottomMargin = bottom;
+  }
+
   /** Sets the size of the dot to be drawn at the current x/y position. */
   void setDotSize(float newSize) { dotSize = newSize; }
 

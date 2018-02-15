@@ -43,14 +43,8 @@ void rsVectorPad::paint(Graphics& g)
 {
   if(paintBackground)
     g.fillAll(getBackgroundColour());
-  float x, y;
-
-  x = (float) RAPT::rsLinToLin(paramX->getNormalizedValue(),  0, 1, 0.5, double(getWidth()-0.5));
-  y = (float) RAPT::rsLinToLin(paramY->getNormalizedValue(), 0, 1, double(getHeight()-0.5), 0.5);
-
-    // maybe use a function normalizedToPixelCoords(&x, &y) . we should also use 
-    // 0.5...getWidth()-0.5 to be consistent with the plots
-
+  float x = (float) normalizedToPixelX(paramX->getNormalizedValue()); 
+  float y = (float) normalizedToPixelY(paramY->getNormalizedValue()); 
   g.setColour(getHandleColour());
   g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
 }
@@ -71,33 +65,27 @@ void rsVectorPad::mouseDrag(const MouseEvent& e)
 
 double rsVectorPad::pixelToNormalizedX(double x)
 {
-  // todo: use margins, clip
-  return RAPT::rsLinToLin(x, 0.5, getWidth()-0.5,  0, 1);
+  return RAPT::rsLinToLin(x, leftMargin + 0.5, getWidth() - rightMargin - 0.5, 0, 1);
 }
 
 double rsVectorPad::pixelToNormalizedY(double y)
 {
-  return RAPT::rsLinToLin(y, getHeight()-0.5, 0.5, 0, 1);
+  return RAPT::rsLinToLin(y, getHeight() - bottomMargin - 0.5, topMargin + 0.5, 0, 1);
 }
 
 double rsVectorPad::normalizedToPixelX(double x)
 {
-  return RAPT::rsLinToLin(x, 0, 1, 0.5, getWidth()-0.5);
+  return RAPT::rsLinToLin(x, 0, 1, leftMargin + 0.5, getWidth() - rightMargin - 0.5);
 }
 
 double rsVectorPad::normalizedToPixelY(double y)
 {
-  return RAPT::rsLinToLin(y, 0, 1, getHeight()-0.5, 0.5);
+  return RAPT::rsLinToLin(y, 0, 1, getHeight() - bottomMargin - 0.5, topMargin + 0.5);
 }
 
 void rsVectorPad::setParametersFromMouseEvent(const MouseEvent& e)
 {
-  double x, y;
-
-  x = RAPT::rsLinToLin(double(e.x), 0.5, double(getWidth()-0.5),  0, 1);
-  y = RAPT::rsLinToLin(double(e.y), double(getHeight()-0.5), 0.5, 0, 1);
-
-  setParametersXY(x, y);
+  setParametersXY(pixelToNormalizedX(e.x), pixelToNormalizedY(e.y));
 }
 
 void rsVectorPad::setParametersXY(double x, double y) // rename to setNormalizedParameters

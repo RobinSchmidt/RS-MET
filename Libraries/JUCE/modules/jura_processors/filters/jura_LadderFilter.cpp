@@ -150,6 +150,7 @@ rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladd
   vectorPad->assignParameterY(resoParam);
   vectorPad->setPaintBackground(false);
   vectorPad->setDotSize(8.f);
+  vectorPad->setMargins(20, 40, 20, 40); // preliminary
   addWidget(vectorPad);
 }
 
