@@ -39,6 +39,25 @@ void rsVectorPad::parameterChanged(Parameter* p)
   repaintOnMessageThread();
 }
 
+void rsVectorPad::adjustMarginsToPlotX(rsPlot* plot)
+{
+
+  int dummy = 0;
+}
+
+void rsVectorPad::setBackgroundPlot(rsPlot* newBackgroundPlot)
+{
+  jassertfalse; // not yet implemented
+  /*
+  if(backgroundPlot != nullptr)
+    backgroundPlot->getPlotSettings()->deRegisterObserver(this);
+  backgroundPlot = newBackgroundPlot;
+  adjustMarginsToPlot(backgroundPlot);
+  if(backgroundPlot != nullptr)
+    backgroundPlot->getPlotSettings()->registerObserver(this);
+  */
+}
+
 void rsVectorPad::paint(Graphics& g)
 {
   if(paintBackground)

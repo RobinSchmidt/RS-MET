@@ -249,6 +249,8 @@ public:
 
   PlotColourScheme getPlotColourScheme() const { return plotColourScheme; }
 
+  const rsPlotSettings* getPlotSettings() const { return &plotSettings; }
+
   bool isHorizontalCoarseGridVisible() const { return plotSettings.horizontalCoarseGridIsVisible; }
   bool isHorizontalFineGridVisible()   const { return plotSettings.horizontalFineGridIsVisible; }
   bool isVerticalCoarseGridVisible()   const { return plotSettings.verticalCoarseGridIsVisible; }

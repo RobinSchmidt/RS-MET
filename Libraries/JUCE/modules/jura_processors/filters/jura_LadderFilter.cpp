@@ -150,7 +150,7 @@ rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladd
   vectorPad->assignParameterY(resoParam);
   vectorPad->setPaintBackground(false);
   vectorPad->setDotSize(8.f);
-  vectorPad->setMargins(20, 40, 20, 40); // preliminary
+  //vectorPad->setMargins(20, 40, 20, 40); // preliminary
   addWidget(vectorPad);
 }
 
@@ -175,6 +175,7 @@ void rsLadderPlotEditor::resized()
 {
   freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
   vectorPad->setBounds(   0, 0, getWidth(), getHeight());
+  vectorPad->adjustMarginsToPlotX(freqRespPlot);
 }
 
 //=================================================================================================
