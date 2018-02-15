@@ -50,6 +50,14 @@ public:
   
 protected:
 
+  // conversion between pixel coordinates and normalized parameter value:
+  virtual double pixelToNormalizedX(double x);
+  virtual double pixelToNormalizedY(double y);
+  virtual double normalizedToPixelX(double x);
+  virtual double normalizedToPixelY(double y);
+
+
+
   void setParametersFromMouseEvent(const MouseEvent& e);
 
   void setParametersXY(double x, double y);
@@ -59,6 +67,9 @@ protected:
   Parameter *paramX = nullptr, *paramY = nullptr;
 
   double xMin = -1, xMax = +1, yMin = -1, yMax = +1;
+
+  double leftMargin = 0, rightMargin = 0, topMargin = 0, bottomMargin = 0;
+
   float dotSize = 16;
   bool paintBackground = true;
 

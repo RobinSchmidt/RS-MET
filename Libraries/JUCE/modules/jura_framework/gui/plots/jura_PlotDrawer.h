@@ -15,8 +15,8 @@ public:
   /** Starts a new polyline at given x,y (in model coordinates). */
   void startPolyLine(double x, double y)
   {
-    xOld = mapper.mapX(x);
-    yOld = mapper.mapY(y);
+    xOld = (float)mapper.mapX(x);
+    yOld = (float)mapper.mapY(y);
   }
 
   /** Draws a line from the previous line endpoint (or polyline start point) to the given x,y (in
@@ -26,8 +26,8 @@ public:
     x = mapper.mapX(x);
     y = mapper.mapY(y);
     gfx.drawLine((float)xOld, (float)yOld, (float)x, (float)y, thickness);
-    xOld = x;
-    yOld = y;
+    xOld = (float)x;
+    yOld = (float)y;
   }
 
 protected:

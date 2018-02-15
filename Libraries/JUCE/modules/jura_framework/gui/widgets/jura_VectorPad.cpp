@@ -45,13 +45,6 @@ void rsVectorPad::paint(Graphics& g)
     g.fillAll(getBackgroundColour());
   float x, y;
 
-
-  //x = (float) RAPT::rsLinToLin(paramX->getValue(),  xMin, xMax, 0.0, double(getWidth()-1));
-  //y = (float) RAPT::rsLinToLin(paramY->getValue(), yMin, yMax, double(getHeight()-1), 0.0);
-
-  //x = (float) RAPT::rsLinToLin(paramX->getNormalizedValue(),  0, 1, 0.0, double(getWidth()-1));
-  //y = (float) RAPT::rsLinToLin(paramY->getNormalizedValue(), 0, 1, double(getHeight()-1), 0.0);
-
   x = (float) RAPT::rsLinToLin(paramX->getNormalizedValue(),  0, 1, 0.5, double(getWidth()-0.5));
   y = (float) RAPT::rsLinToLin(paramY->getNormalizedValue(), 0, 1, double(getHeight()-0.5), 0.5);
 
@@ -76,13 +69,30 @@ void rsVectorPad::mouseDrag(const MouseEvent& e)
   setParametersFromMouseEvent(e);
 }
 
+double rsVectorPad::pixelToNormalizedX(double x)
+{
+  // todo: use margins, clip
+  return RAPT::rsLinToLin(x, 0.5, getWidth()-0.5,  0, 1);
+}
+
+double rsVectorPad::pixelToNormalizedY(double y)
+{
+  return RAPT::rsLinToLin(y, getHeight()-0.5, 0.5, 0, 1);
+}
+
+double rsVectorPad::normalizedToPixelX(double x)
+{
+  return RAPT::rsLinToLin(x, 0, 1, 0.5, getWidth()-0.5);
+}
+
+double rsVectorPad::normalizedToPixelY(double y)
+{
+  return RAPT::rsLinToLin(y, 0, 1, getHeight()-0.5, 0.5);
+}
+
 void rsVectorPad::setParametersFromMouseEvent(const MouseEvent& e)
 {
   double x, y;
-  //x = RAPT::rsLinToLin(double(e.x), 0.0, double(getWidth()-1),  xMin, xMax);
-  //y = RAPT::rsLinToLin(double(e.y), double(getHeight()-1), 0.0, yMin, yMax);
-  //x = RAPT::rsLinToLin(double(e.x), 0.0, double(getWidth()-1),  0, 1);
-  //y = RAPT::rsLinToLin(double(e.y), double(getHeight()-1), 0.0, 0, 1);
 
   x = RAPT::rsLinToLin(double(e.x), 0.5, double(getWidth()-0.5),  0, 1);
   y = RAPT::rsLinToLin(double(e.y), double(getHeight()-0.5), 0.5, 0, 1);
