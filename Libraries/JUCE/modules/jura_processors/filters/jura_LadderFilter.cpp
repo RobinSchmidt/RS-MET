@@ -89,10 +89,13 @@ void Ladder::processStereoFrame(double *left, double *right)
 // parameter setters (callback targets for the Parameter objects):
 
 void Ladder::setSampleRate(double newSampleRate){ wrappedLadder.setSampleRate(newSampleRate); }
+void Ladder::reset(){ wrappedLadder.reset(); }
+
+// get rid of these:
 void Ladder::setCutoff(double newCutoff)        { cutoff = newCutoff; wrappedLadder.setCutoff(cutoff); }
 void Ladder::setResonance(double newResonance)  { wrappedLadder.setResonance(newResonance); }
 void Ladder::setMode(int newMode)               { wrappedLadder.setMode(newMode); }
-void Ladder::reset(){ wrappedLadder.reset(); }
+
 
 inline double pitchOffsetToFreqFactor(double pitchOffset){ // move to RAPT library, eventually
   return exp(0.057762265046662109118102676788181 * pitchOffset);
@@ -114,7 +117,7 @@ void Ladder::setMidSideMode(bool shouldBeInMidSideMode){
 
 // inquiry:
 
-double Ladder::getMagnitudeAt(double frequency)  // rename to getDecibelsAt
+double Ladder::getDecibelsAt(double frequency)  // rename to getDecibelsAt
 {
   double tmp = wrappedLadder.getMagnitudeResponseAt(frequency);
   tmp = amp2dBWithCheck(tmp, 0.000001);
@@ -133,7 +136,7 @@ rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladd
   freqRespPlot->setupForDecibelsAgainstLogFrequency(20.0, 20000.0, -60.0, 60.0, 12); 
     // frequency range must match cutoff parameter range, otherwise the dot-handle and resonance 
     // freq are out of sync
-  freqRespPlot->addFunction([this](double f)->double { return ladderToEdit->getMagnitudeAt(f); } );    // maybe try to use a member-function pointer without lambda
+  freqRespPlot->addFunction([this](double f)->double { return ladderToEdit->getDecibelsAt(f); } );    // maybe try to use a member-function pointer without lambda
   addPlot(freqRespPlot);
 
   cutoffParam = ladderToEdit->getParameterByName("Cutoff");
@@ -163,6 +166,7 @@ void rsLadderPlotEditor::parameterChanged(Parameter* p)
   double resoFreq = cutoffParam->getValue();
   double reso     = resoParam->getValue();
   double peakFreq = resoFreq * pow(reso, 0.25);  // formula found by trial and error
+  peakFreq = jmax(peakFreq, 20.0);               // avoid NaN in drawing code
   freqRespPlot->setSpecialEvaluationPoint(0, 0, peakFreq);
 }
 

@@ -1,6 +1,46 @@
 #ifndef jura_PlotDrawer_h
 #define jura_PlotDrawer_h
 
+/** A class to simplify line-drawing (not yet tested). */
+
+class JUCE_API rsPolyLineDrawer
+{
+
+public:
+
+  rsPolyLineDrawer(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& coordinateMapper, 
+    float lineThickness) : gfx(g), mapper(coordinateMapper), thickness(lineThickness)
+  {}
+
+  /** Starts a new polyline at given x,y (in model coordinates). */
+  void startPolyLine(double x, double y)
+  {
+    xOld = mapper.mapX(x);
+    yOld = mapper.mapY(y);
+  }
+
+  /** Draws a line from the previous line endpoint (or polyline start point) to the given x,y (in
+  model coordinates). */
+  void lineTo(double x, double y)
+  {
+    x = mapper.mapX(x);
+    y = mapper.mapY(y);
+    gfx.drawLine((float)xOld, (float)yOld, (float)x, (float)y, thickness);
+    xOld = x;
+    yOld = y;
+  }
+
+protected:
+
+  Graphics& gfx;
+  const RAPT::rsCoordinateMapper2D<double>& mapper;
+  float xOld, yOld;
+  float thickness;
+
+};
+
+//=================================================================================================
+
 /** This class is used for drawing a plot. Simply create one on the stack and call drawPlot to do 
 the actual drawing */
 

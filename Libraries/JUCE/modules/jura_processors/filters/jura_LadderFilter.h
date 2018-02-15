@@ -47,10 +47,10 @@ public:
   void setMidSideMode(bool shouldBeInMidSideMode);
 
   // for the magnitude plot/editor later...
-  double getCutoff()    { return cutoff; }
+  //double getCutoff()    { return cutoff; }
   //double getResonance() { return 0.0;    }  // preliminary
 
-  double getMagnitudeAt(double frequency); // returns the magnitude at the given frequency
+  double getDecibelsAt(double frequency); // returns the magnitude at the given frequency
 
 
 protected:
