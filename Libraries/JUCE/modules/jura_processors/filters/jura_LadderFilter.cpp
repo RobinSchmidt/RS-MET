@@ -132,8 +132,8 @@ rsLadderPlotEditor::rsLadderPlotEditor(jura::Ladder* ladder) : ladderToEdit(ladd
 {
   freqRespPlot = new rsFunctionPlot;
   //freqRespPlot->addMouseListener(this, true);
-  //freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -60.0, 60.0, 12);
-  freqRespPlot->setupForDecibelsAgainstLogFrequency(20.0, 20000.0, -60.0, 60.0, 12); 
+  freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -60.0, 60.0, 12);
+  //freqRespPlot->setupForDecibelsAgainstLogFrequency(20.0, 20000.0, -60.0, 60.0, 12); 
     // frequency range must match cutoff parameter range, otherwise the dot-handle and resonance 
     // freq are out of sync
   freqRespPlot->addFunction([this](double f)->double { return ladderToEdit->getDecibelsAt(f); } );    // maybe try to use a member-function pointer without lambda

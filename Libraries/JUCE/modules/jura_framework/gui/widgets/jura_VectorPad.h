@@ -57,7 +57,8 @@ public:
   parameter corresponds to the respective pixel positions in the plot that represent those
   values. For example, if you have a frequency response plot from 15.625 to 32000 Hz and a 
   frequency parameter that goes from 20 to 20000 Hz, you will need appropriate margins for the
-  x-value of the handle. */
+  x-value of the handle. This is meant to be used when the plot is used as the background for
+  this vector pad. */
   void adjustMarginsToPlotX(rsPlot* plot);
 
   /** Like adjustMarginsToPlotX but for the y-coordinate. */

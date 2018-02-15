@@ -41,8 +41,31 @@ void rsVectorPad::parameterChanged(Parameter* p)
 
 void rsVectorPad::adjustMarginsToPlotX(rsPlot* plot)
 {
+  // retrieve min/max values of paramX and map them to pixel positions according to the mapper
+  // in the plot, from the pixel-positions, compute the margins
 
-  int dummy = 0;
+  jassert(getBounds() == plot->getBounds()); // makes sense only when plot is used as background
+
+  double x = paramX->getMinValue();
+  x = plot->getCoordinateMapper()->mapX(x);
+  leftMargin = x - 0.5;
+
+  x = paramX->getMaxValue();
+  x = plot->getCoordinateMapper()->mapX(x);
+  rightMargin = getWidth() - x - 0.5;
+}
+
+void rsVectorPad::adjustMarginsToPlotY(rsPlot* plot)
+{
+  jassert(getBounds() == plot->getBounds()); // makes sense only when plot is used as background
+
+  double y = paramY->getMinValue();
+  y = plot->getCoordinateMapper()->mapY(y);
+  bottomMargin = getHeight() - y - 0.5;
+
+  y = paramY->getMaxValue();
+  y = plot->getCoordinateMapper()->mapY(y);
+  topMargin = y - 0.5;
 }
 
 void rsVectorPad::setBackgroundPlot(rsPlot* newBackgroundPlot)

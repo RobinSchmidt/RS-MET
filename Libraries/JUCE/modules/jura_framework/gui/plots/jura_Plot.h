@@ -248,7 +248,7 @@ public:
   // \name Appearance Inquiry
 
   PlotColourScheme getPlotColourScheme() const { return plotColourScheme; }
-
+  const RAPT::rsCoordinateMapper2D<double>* getCoordinateMapper() const { return &coordinateMapper; }
   const rsPlotSettings* getPlotSettings() const { return &plotSettings; }
 
   bool isHorizontalCoarseGridVisible() const { return plotSettings.horizontalCoarseGridIsVisible; }
