@@ -1,8 +1,8 @@
 #ifndef GlobalDefinitions_h
 #define GlobalDefinitions_h
 
-//#include <float.h>
-//#include <xmmintrin.h>
+namespace rosic
+{
 
 /** This file contains a bunch of useful macros which are not wrapped into the
 rosic namespace to facilitate their global use. */
@@ -34,9 +34,9 @@ rosic namespace to facilitate their global use. */
 */
 
 #ifdef LINUX
-  #define ASM(x) asm("(x)");
+#define ASM(x) asm("(x)");
 #else
-  #define ASM(x) __asm x
+#define ASM(x) __asm x
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -74,21 +74,21 @@ typedef void(*FunctionPointerIntIntDoubleToVoid) (int, int, double);
 
 // doubles, aligned at 64-bit (8 byte) boundaries:
 #ifdef _MSC_VER
-typedef __declspec( align(8) ) double doubleA;
+typedef __declspec(align(8)) double doubleA;
 #else
 typedef double doubleA; // something to do here...
 #endif
 
 // doubles, aligned at 128-bit (16 byte) boundaries:
 #ifdef _MSC_VER
-typedef __declspec( align(16) ) double doubleA16;
+typedef __declspec(align(16)) double doubleA16;
 #else
 typedef double doubleA16;
 #endif
 
 // integers, aligned at 64-bit (8 byte) boundaries:
 #ifdef _MSC_VER
-typedef __declspec( align(8) ) int intA;
+typedef __declspec(align(8)) int intA;
 #else
 typedef int intA;
 #endif
@@ -150,22 +150,18 @@ static const double INF     =  std::numeric_limits<double>::infinity();
 static const double NEG_INF = -std::numeric_limits<double>::infinity();
 static const double INDEF   =  std::numeric_limits<double>::quiet_NaN();
 
-
-
-
-
 //-------------------------------------------------------------------------------------------------
 // debug stuff:
 
 // this will try to break the debugger if one is currently hosting this app:
 #ifdef _DEBUG
 
-  #ifdef _MSC_VER
-    #pragma intrinsic (__debugbreak)
-    #define DEBUG_BREAK __debugbreak();
-  #else
-    #define DEBUG_BREAK {}  // preliminary
-  #endif
+#ifdef _MSC_VER
+#pragma intrinsic (__debugbreak)
+#define DEBUG_BREAK __debugbreak();
+#else
+#define DEBUG_BREAK {}  // preliminary
+#endif
 
 #define DEBUG_HOOK { int debugDummy = 0; } // hook that can be placed for setting breakpoints
 
@@ -230,5 +226,6 @@ static const double INDEF   =  std::numeric_limits<double>::quiet_NaN();
 //clip the signal at a specified threshold:
 #define CLIP(signal, thresh) {if(signal > thresh) signal=thresh; else if(signal < (-thresh)) signal=-thresh;}
 
+}
 
 #endif
