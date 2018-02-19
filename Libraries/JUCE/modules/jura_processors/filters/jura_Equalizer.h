@@ -312,6 +312,48 @@ protected:
 
 //=================================================================================================
 
+
+
+class rsEqualizerNodeEditor : public rsNodeEditor
+{
+
+public:
+
+  rsEqualizerNodeEditor();
+
+protected:
+
+  EqualizerAudioModule* equalizerModule;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsEqualizerNodeEditor)
+};
+
+/** New version of EqualizerPlotEditor based on new plotting facilities and rsNodeEditor.*/
+
+class rsEqualizerPlotEditor : public ColourSchemeComponent
+{
+
+public:
+
+  rsEqualizerPlotEditor();
+
+protected:
+
+
+  EqualizerAudioModule* equalizerModule;
+  rsFunctionPlot*       freqRespPlot;
+  rsNodeEditor*         nodeEditor;
+  //rsEqualizerNodeEditor* eqNodeEditor;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsEqualizerPlotEditor)
+};
+
+// maybe we need a class rsNodeEditorObserver with callbacks nodeChanged(int index), 
+// nodeWasAdded(int index), nodeWillBeRemoved(int index) then derive rsEqualizerPlotEditor from
+// rsNodeEditorObserver and have a rsNodeEditor member that is being observed
+
+//=================================================================================================
+
 class EqualizerModuleEditor : public AudioModuleEditor, public RComboBoxObserver, 
   public ParameterSetObserver 
 {

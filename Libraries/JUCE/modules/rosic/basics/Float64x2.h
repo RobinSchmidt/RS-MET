@@ -149,7 +149,7 @@ public:
   scalar elements must be less than the corresponding elements in the other vector. This 
   definition is a bit arbitrary, but it makes sense for convergence tests in numerical algorithms 
   (such as root finding) when the algorithm checks, whether a variable is within a given tolerance. 
-  These checks will evaluate to true only when both elements are with the tolerance, which is 
+  These checks will evaluate to true only when both elements are within the tolerance, which is 
   typically what is desired. */
   inline bool operator<(const rsFloat64x2& b) const
   { 
