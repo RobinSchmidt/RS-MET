@@ -236,6 +236,26 @@ int rsNodeEditor::nodeChanged(int i)
   return i;
 }
 
+// observation:
+
+void rsNodeEditor::sendNodeAddNotification(int nodeIndex)
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->nodeWasAdded(this, nodeIndex);
+}
+
+void rsNodeEditor::sendNodeRemoveNotification(int nodeIndex)
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->nodeWillBeRemoved(this, nodeIndex);
+}
+
+void rsNodeEditor::sendNodeMoveNotification(int nodeIndex)
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->nodeWasMoved(this, nodeIndex);
+}
+
 // misc:
 
 void rsNodeEditor::drawNodes(Graphics& g)

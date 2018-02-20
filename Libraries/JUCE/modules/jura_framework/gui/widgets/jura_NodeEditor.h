@@ -67,7 +67,39 @@ protected:
   rsNodeEditor* nodeEditor;                       // editor which edits this node 
                                                   // todo: maybe allow more than one editor
 
+  // maybe let nodes have additional "features" associated with parameters, such as a bandwidth for
+  // an eq-band, a slope, a shape, whatever ....maybe express this by a vector of additional 
+  // parameters
+  // std::vector<Parameter*> nodeParams;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsDraggableNode)
+};
+
+//=================================================================================================
+
+/** Baseclass for classes that must keep track of the state of an rsNodeEditor object. */
+
+class JUCE_API rsNodeEditorObserver
+{
+
+public:
+
+  virtual ~rsNodeEditorObserver() {}
+
+  /** Callback that will be called after a new node was added. */
+  virtual void nodeWasAdded(rsNodeEditor* editor, int nodeIndex) = 0;
+
+  /** Callback that will be called before an existing node will be removed. */
+  virtual void nodeWillBeRemoved(rsNodeEditor* editor, int nodeIndex) = 0;
+
+  /** Callback that will be called after an existing node was moved. Your subclass may choose to
+  not override this, if it is already an observer of the parameters associated with the node's x/y
+  coordinates. */
+  virtual void nodeWasMoved(rsNodeEditor* editor, int nodeIndex) {};
+
+  // virtual void nodeParameterChanged(rsNodeEditor* editor, int nodeIndex, int paramIndex) {}
+  // ...maybe
+
 };
 
 //=================================================================================================
@@ -173,6 +205,19 @@ public:
   virtual int nodeChanged(int nodeIndex);
 
   //-----------------------------------------------------------------------------------------------
+  // \name Oberservation
+
+  void registerObserver(rsNodeEditorObserver* obs) { appendIfNotAlreadyThere(observers, obs); }
+
+  void deregisterObserver(rsNodeEditorObserver* obs) { removeFirstOccurrence(observers, obs); }
+
+  void sendNodeAddNotification(int nodeIndex);
+
+  void sendNodeRemoveNotification(int nodeIndex);
+
+  void sendNodeMoveNotification(int nodeIndex);
+
+  //-----------------------------------------------------------------------------------------------
   // \name Misc
 
   /** Darws all the nodes. You may want to override it if you need special drawing. */
@@ -181,9 +226,13 @@ public:
   
 protected:
 
+
+
   std::vector<rsDraggableNode*> nodes;
   int draggedNodeIndex = -1;  // -1 is code for "none"
   float dotSize = 8;
+
+  std::vector<rsNodeEditorObserver*> observers;
 
   RAPT::rsCoordinateMapper2D<double> xyMapper; // converts to/from pixel-coodinates
 
