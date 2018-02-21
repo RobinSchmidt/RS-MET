@@ -429,6 +429,11 @@ void EqualizerAudioModule::getMagnitudeResponse(int channel, double *frequencies
   wrappedEqualizerStereo->getMagnitudeResponse(channel, frequencies, magnitudes, numBins);
 }
 
+double EqualizerAudioModule::getDecibelsAt(int channel, double frequency)
+{
+  return 0; // preliminary
+}
+
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
 
@@ -1163,6 +1168,36 @@ void EqualizerPlotEditor::xyToFrequencyAndGain(double &x, double &y)
   g                -= globalGain;
   x                 = f;
   y                 = g;
+}
+
+//=================================================================================================
+
+rsEqualizerPlotEditor::rsEqualizerPlotEditor(EqualizerAudioModule* eqModule) 
+  : equalizerModule(eqModule)
+{
+  freqRespPlot = new rsFunctionPlot;
+  freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -24.0, 24.0, 6);
+  freqRespPlot->addFunction([this](double f)->double { return equalizerModule->getDecibelsAt(0, f); });
+  freqRespPlot->addFunction([this](double f)->double { return equalizerModule->getDecibelsAt(1, f); });
+  addPlot(freqRespPlot);
+
+  nodeEditor = new rsNodeEditor;
+  addWidget(nodeEditor);
+}
+
+void rsEqualizerPlotEditor::nodeWasAdded(rsNodeEditor* editor, int nodeIndex)
+{
+
+}
+
+void rsEqualizerPlotEditor::nodeWillBeRemoved(rsNodeEditor* editor, int nodeIndex)
+{
+
+}
+
+void rsEqualizerPlotEditor::nodeWasMoved(rsNodeEditor* editor, int nodeIndex)
+{
+
 }
 
 //=================================================================================================

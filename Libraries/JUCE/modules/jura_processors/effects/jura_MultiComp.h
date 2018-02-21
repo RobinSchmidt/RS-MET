@@ -46,6 +46,31 @@ protected:
 
 //=================================================================================================
 
+/** Plot editor for the multiband compressor. Allows to select a band by clicking into the 
+rectangular area in the frequency response plot that represents that band,... */
+
+class JUCE_API MultiCompPlotEditor : public ColourSchemeComponent /*, public ParameterObserver*/
+{
+
+public:
+
+  MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompModuleToEdit);
+  virtual ~MultiCompPlotEditor();
+
+  //virtual void parameterChanged(Parameter* p) override;
+  virtual void resized() override;
+
+protected:
+
+  jura::MultiCompAudioModule* multiCompModule; 
+
+  rsFunctionPlot* freqRespPlot;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiCompPlotEditor)
+};
+
+//=================================================================================================
+
 class MultiCompModuleEditor : public AudioModuleEditor, public RComboBoxObserver
 {
 

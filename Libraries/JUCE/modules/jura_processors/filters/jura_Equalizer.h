@@ -119,6 +119,10 @@ public:
   /** Writes the magnitude response at the given frequencies into the passed array. */
   virtual void getMagnitudeResponse(int channel, double *frequencies, double *magnitudes, 
     int numBins);
+ 
+  /** Returns the magnitude response expressed in decibels of the given channel at the given 
+  frequency. */  
+  double getDecibelsAt(int channel, double frequency);
 
   //-----------------------------------------------------------------------------------------------
   // audio processing:
@@ -312,30 +316,36 @@ protected:
 
 //=================================================================================================
 
-
+/** New version - not yet used. */
 
 class rsEqualizerNodeEditor : public rsNodeEditor
 {
 
 public:
 
-  rsEqualizerNodeEditor();
+  //rsEqualizerNodeEditor(EqualizerAudioModule* eqModule);
+  //rsEqualizerNodeEditor();
 
 protected:
 
-  EqualizerAudioModule* equalizerModule;
+  //EqualizerAudioModule* equalizerModule;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsEqualizerNodeEditor)
 };
 
 /** New version of EqualizerPlotEditor based on new plotting facilities and rsNodeEditor.*/
 
-class rsEqualizerPlotEditor : public ColourSchemeComponent
+class rsEqualizerPlotEditor : public ColourSchemeComponent, public rsNodeEditorObserver
 {
 
 public:
 
-  rsEqualizerPlotEditor();
+  rsEqualizerPlotEditor(EqualizerAudioModule* eqModule);
+
+  // overrides:
+  virtual void nodeWasAdded(rsNodeEditor* editor, int nodeIndex) override;
+  virtual void nodeWillBeRemoved(rsNodeEditor* editor, int nodeIndex) override;
+  virtual void nodeWasMoved(rsNodeEditor* editor, int nodeIndex) override;
 
 protected:
 

@@ -50,7 +50,8 @@ public:
   //double getCutoff()    { return cutoff; }
   //double getResonance() { return 0.0;    }  // preliminary
 
-  double getDecibelsAt(double frequency); // returns the magnitude at the given frequency
+  /** Returns the magnitude response expressed in decibels at the given frequency. */
+  double getDecibelsAt(double frequency); 
 
 
 protected:
