@@ -67,6 +67,12 @@ void MultiCompAudioModule::createParameters()
   getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
 }
 
+void MultiCompAudioModule::parameterChanged(Parameter* p)
+{
+  ModulatableAudioModule::parameterChanged(p);
+  sendChangeMessage();
+}
+
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   for(int n = 0; n < numSamples; n++)
@@ -99,6 +105,7 @@ MultiCompPlotEditor::MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompMo
   : multiCompModule(multiCompModuleToEdit)
 
 {
+  multiCompModule->addChangeListener(this);
   multiCompCore = multiCompModule->getCore();
 
   freqRespPlot = new rsFunctionPlot;
@@ -109,10 +116,19 @@ MultiCompPlotEditor::MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompMo
   addPlot(freqRespPlot);
 }
 
+MultiCompPlotEditor::~MultiCompPlotEditor()
+{
+  multiCompModule->removeChangeListener(this);
+}
+
+void MultiCompPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
+{
+  repaint();
+}
+
 void MultiCompPlotEditor::mouseDown(const MouseEvent& e)
 {
   // select band whose rectangle contains the mouse-event
-  repaint(); // test
 }
 
 void MultiCompPlotEditor::paintOverChildren(Graphics& g)
@@ -124,6 +140,7 @@ void MultiCompPlotEditor::paintOverChildren(Graphics& g)
   g.setColour(Colours::white);
   for(int i = 0; i < multiCompCore->getNumberOfBands(); i++)
   {
+    double freq = multiCompCore->getSplitFrequency(i); // debug
     float x = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(i));
     g.drawLine(x, y1, x, y2, 2.f);
   }

@@ -2,7 +2,7 @@
 #define jura_MultiComp_h
 
 
-class JUCE_API MultiCompAudioModule : public jura::ModulatableAudioModule
+class JUCE_API MultiCompAudioModule : public jura::ModulatableAudioModule, public ChangeBroadcaster
 {
 
 public:
@@ -13,6 +13,8 @@ public:
   /** Creates the static parameters for this module (i.e. parameters that are not created
   dynamically and are thus always there). */
   virtual void createParameters();
+
+  virtual void parameterChanged(Parameter* p) override;
 
   void selectBand(int bandToSelect) { selectedBand = bandToSelect; }
 
@@ -52,15 +54,16 @@ protected:
 /** Plot editor for the multiband compressor. Allows to select a band by clicking into the 
 rectangular area in the frequency response plot that represents that band,... */
 
-class JUCE_API MultiCompPlotEditor : public ColourSchemeComponent /*, public ParameterObserver*/
+class JUCE_API MultiCompPlotEditor : public ColourSchemeComponent, public ChangeListener
 {
 
 public:
 
   MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompModuleToEdit);
-  virtual ~MultiCompPlotEditor() {}
+  virtual ~MultiCompPlotEditor();
 
   //virtual void parameterChanged(Parameter* p) override;
+  virtual void changeListenerCallback(ChangeBroadcaster* source) override;
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void paintOverChildren(Graphics& g) override;
   virtual void resized() override;
