@@ -133,13 +133,16 @@ void MultiCompPlotEditor::mouseDown(const MouseEvent& e)
 
 void MultiCompPlotEditor::paintOverChildren(Graphics& g)
 {
+  int numBands = multiCompCore->getNumberOfBands();
+
   // highlight rectangle of selected band:
   int selected = multiCompModule->getSelectedBand();
-
-  // todo: when selected == 0 or selected == numBands (-1?), we need to do soemthing special
-  float x1 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected-1));
-  float x2 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected));
-
+  float x1 = 0.f;
+  float x2 = (float) getWidth();
+  if(selected > 0)
+    x1 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected-1));
+  if(selected < numBands-1)
+    x2 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected));
   g.setColour(Colours::red.withAlpha(0.25f));
   //g.setColour(Colours::magenta.withAlpha(0.25f));
   g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
@@ -148,9 +151,8 @@ void MultiCompPlotEditor::paintOverChildren(Graphics& g)
   // draw vertical lines at split frequencies:
   float y1 = 0.f;
   float y2 = (float) getHeight();
-  int numBands = multiCompCore->getNumberOfBands(); // for debug 
   g.setColour(Colours::white);
-  for(int i = 0; i < multiCompCore->getNumberOfBands()-1; i++)
+  for(int i = 0; i < numBands-1; i++)
   {
     double freq = multiCompCore->getSplitFrequency(i); // debug
     float x = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(i));
