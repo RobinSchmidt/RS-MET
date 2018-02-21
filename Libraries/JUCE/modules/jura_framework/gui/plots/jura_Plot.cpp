@@ -119,7 +119,7 @@ String rsPlot::getInfoLineForPixelPosition(int x, int y)
 {
   double xd = (double) x;
   double yd = (double) y;
-  transformFromComponentsCoordinates(xd, yd);
+  fromPixelCoordinates(xd, yd);
   String xString = stringConversionForInfoLineX(xd);
   String yString = stringConversionForInfoLineY(yd);
   return xString + String(", ") + yString;

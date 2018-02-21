@@ -245,14 +245,14 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
       // get the lower frequency represented by this pixel column:
       x1 = (double) i;
       y1 = 0.0;
-      transformFromComponentsCoordinates(x1, y1);
+      fromPixelCoordinates(x1, y1);
       lowFreq = x1;
 
       // find the upper frequency:
       i++;
       x2 = (double) i;
       y2 = 0.0;
-      transformFromComponentsCoordinates(x2, y2);
+      fromPixelCoordinates(x2, y2);
       highFreq = x2;
 
       while( !getRepresentingBins(lowFreq, highFreq, k, minBin, maxBin)  &&  i < getWidth()-1  )
@@ -264,7 +264,7 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
         i++;
         x2 = (double) i;
         y2 = 0.0;
-        transformFromComponentsCoordinates(x2, y2);
+        fromPixelCoordinates(x2, y2);
         highFreq = x2;
       }
 

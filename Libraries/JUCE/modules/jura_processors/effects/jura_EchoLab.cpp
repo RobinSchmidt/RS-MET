@@ -801,7 +801,7 @@ void EchoLabPlotEditor::mouseDown(const MouseEvent &e)
       // create a new delayline and mark it selected:
       double t = e.x;
       double g = e.y;
-      transformFromComponentsCoordinates(t, g);
+      fromPixelCoordinates(t, g);
       echoLabModuleToEdit->addDelayLine(t, g);
       selectDelayLine(echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines()-1);
       currentlyDraggedHandle = TIME_AND_GAIN;
@@ -837,7 +837,7 @@ void EchoLabPlotEditor::mouseDrag(const juce::MouseEvent &e)
 
   x = rosic::clip(x, 0.0, (double) getWidth());
   y = rosic::clip(y, 0.0, (double) getHeight());      
-  transformFromComponentsCoordinates(x, y);
+  fromPixelCoordinates(x, y);
 
   snapToGrid(x,y); // will snap only when activated
 

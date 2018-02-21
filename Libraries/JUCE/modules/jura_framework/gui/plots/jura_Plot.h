@@ -302,26 +302,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Misc:
 
-  /** We define a member for the mouse-cursor which is to be showed in order to let a
-  CoordinateSystemZoomer access this. This is required, because the zoomer object must be above
-  the actual rsPlot and therefore prevent the rsPlot to set it's own
-  MouseCursor. Instead we just assign the member mouse-cursor and let the zoomer retrieve it. */
-  MouseCursor currentMouseCursor;
-
-protected:
-
-  /** Performs a sanity check on the given fird-spacing interval and potentially re-adjusts it. You 
-  must tell, whether a log-spcing is used, because sane values are different in this case. */
-  void sanityCheckGridSpacing(double& spacing, bool logScaled);
-
-  /** Opens the PopupMenu that appears on right clicks. */
-  void openRightClickPopupMenu();
-
-  /** Draws the coordinate system background. */
-  virtual void drawCoordinateSystem(Graphics &g);
-
-  // convenience functions, rename to toPixelCoords, fromPixelCoords
-
   /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (double precision version).*/
   void toPixelCoordinates(double &x, double &y)
@@ -334,20 +314,38 @@ protected:
 
   /** Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (double precision version). */
-  void transformFromComponentsCoordinates(double &x, double &y)
+  void fromPixelCoordinates(double &x, double &y)
   { 
     x = coordinateMapper.unmapX(x); 
     y = coordinateMapper.unmapY(y); 
   }
 
-  /**< Function for converting the x- and y-coordinate values measured in the components coordinate
+  /** Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (single precision version). */
-  void transformFromComponentsCoordinates(float &x, float &y)
+  void fromPixelCoordinates(float &x, float &y)
   { 
     x = (float) coordinateMapper.unmapX(x); 
     y = (float) coordinateMapper.unmapY(y); 
   }
 
+  /** We define a member for the mouse-cursor which is to be showed in order to let a
+  CoordinateSystemZoomer access this. This is required, because the zoomer object must be above
+  the actual rsPlot and therefore prevent the rsPlot to set it's own
+  MouseCursor. Instead we just assign the member mouse-cursor and let the zoomer retrieve it. */
+  MouseCursor currentMouseCursor;
+
+
+protected:
+
+  /** Performs a sanity check on the given fird-spacing interval and potentially re-adjusts it. You 
+  must tell, whether a log-spcing is used, because sane values are different in this case. */
+  void sanityCheckGridSpacing(double& spacing, bool logScaled);
+
+  /** Opens the PopupMenu that appears on right clicks. */
+  void openRightClickPopupMenu();
+
+  /** Draws the coordinate system background. */
+  virtual void drawCoordinateSystem(Graphics &g);
 
   /** Updates the image object (re-draws it). Will be called, when something about the
   rsPlot's appearance-settings was changed. */

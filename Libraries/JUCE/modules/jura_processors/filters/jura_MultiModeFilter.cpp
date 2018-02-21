@@ -472,7 +472,7 @@ void MultiModeFreqResponseEditor::setupFilterAccordingToMousePosition(double mou
 
   // convert them into a frequency and resonance/q/gain value:
   double gain = y;
-  transformFromComponentsCoordinates(x, gain);
+  fromPixelCoordinates(x, gain);
   gain = clip(gain, -60.0, 30.0);
   double freq = x;
   double reso = yToReso(y);

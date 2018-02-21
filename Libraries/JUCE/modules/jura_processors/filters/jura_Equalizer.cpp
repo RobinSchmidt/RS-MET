@@ -849,7 +849,7 @@ void EqualizerPlotEditor::mouseDrag(const juce::MouseEvent &e)
 
   x = rosic::clip(x, 0.0, (double) getWidth());
   y = rosic::clip(y, 0.0, (double) getHeight());
-  transformFromComponentsCoordinates(x, y);
+  fromPixelCoordinates(x, y);
 
   if( currentlyDraggedHandle == FREQUENCY_AND_GAIN )
   {
@@ -1164,7 +1164,7 @@ void EqualizerPlotEditor::xyToFrequencyAndGain(double &x, double &y)
   double globalGain = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
   double f          = x;
   double g          = y;
-  transformFromComponentsCoordinates(f, g);
+  fromPixelCoordinates(f, g);
   g                -= globalGain;
   x                 = f;
   y                 = g;

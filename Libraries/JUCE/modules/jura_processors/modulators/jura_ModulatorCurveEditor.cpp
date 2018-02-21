@@ -688,7 +688,7 @@ void ModulatorCurveEditor::mouseDown(const MouseEvent &e)
     {
       double newX = (double) mouseX;
       double newY = (double) mouseY;
-      transformFromComponentsCoordinates(newX, newY);
+      fromPixelCoordinates(newX, newY);
 
       newY = (newY-offset) / scale;
 
@@ -787,7 +787,7 @@ void ModulatorCurveEditor::mouseDrag(const MouseEvent &e)
   {
     x = (double) mouseX;
     y = (double) mouseY;
-    transformFromComponentsCoordinates(x,y);
+    fromPixelCoordinates(x,y);
 
     // take scale and shift into account:
     double scale  = modulatorToEdit->getScaleFactor();
@@ -1109,7 +1109,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
   {
     x1 = mouseX;
     y1 = mouseY;
-    transformFromComponentsCoordinates(x1, y1);
+    fromPixelCoordinates(x1, y1);
     drawLeftLocator(g, (float) x1, rsPlotEditor::ARROW_AT_TOP, 
       locatorColour.withMultipliedAlpha(0.5f));
   }
@@ -1117,7 +1117,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
   {
     x1 = mouseX;
     y1 = mouseY;
-    transformFromComponentsCoordinates(x1, y1);
+    fromPixelCoordinates(x1, y1);
     drawRightLocator(g, (float) x1, rsPlotEditor::ARROW_AT_TOP, 
       locatorColour.withMultipliedAlpha(0.5f));
   }

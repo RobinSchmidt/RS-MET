@@ -257,7 +257,7 @@ void EngineersFilterPlotEditor::setupFilterAccordingToMousePosition(double mouse
 {
   double freq  = mouseX;
   double dummy = mouseY;
-  transformFromComponentsCoordinates(freq, dummy);
+  fromPixelCoordinates(freq, dummy);
 
   /*
   if( currentlyDraggedHandle == LOW_MID && lowFreqParameter != NULL )

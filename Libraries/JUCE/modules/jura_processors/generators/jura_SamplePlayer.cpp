@@ -722,7 +722,7 @@ void SamplePlayerEditorDisplay::mouseDrag(const MouseEvent &e)
   // get the position of the event in system coordinates (seconds for the x-axis):
   double x = (double) mouseX;
   double y = (double) mouseY;
-  transformFromComponentsCoordinates(x, y);
+  fromPixelCoordinates(x, y);
 
   x *=  samplePlayerToEdit->parameters->getRecordingSampleRate();
 

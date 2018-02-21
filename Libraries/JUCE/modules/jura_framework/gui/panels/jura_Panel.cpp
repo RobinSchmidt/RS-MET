@@ -265,7 +265,7 @@ void Panel::toPixelCoordinates(float &x, float &y) const
   y = (float) yd;
 }
 
-void Panel::transformFromComponentsCoordinates(double &x, double &y) const
+void Panel::fromPixelCoordinates(double &x, double &y) const
 {
   x /= scaleX;                    // scale to fit width
   x += currentRange.getMinX();    // shift origin left/right
@@ -274,11 +274,11 @@ void Panel::transformFromComponentsCoordinates(double &x, double &y) const
   y += currentRange.getMinY();    // shift origin up/down
 }
 
-void Panel::transformFromComponentsCoordinates(float &x, float &y) const
+void Panel::fromPixelCoordinates(float &x, float &y) const
 {
   double xd = (double) x;
   double yd = (double) y;
-  transformFromComponentsCoordinates(xd, yd);
+  fromPixelCoordinates(xd, yd);
   x = (float) xd;
   y = (float) yd;
 }

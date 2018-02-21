@@ -87,7 +87,7 @@ void rsSpectrumPlot::getDisplayedFrequencies(double *frequencies, int numBins)
   {
     x = (double) i * getWidth() / (double) numBins;
     y = 1.0; // only a dummy
-    transformFromComponentsCoordinates(x, y);
+    fromPixelCoordinates(x, y);
 
     frequencies[i] = x;
   }
@@ -98,7 +98,7 @@ String rsSpectrumPlot::getCoordinateStringAtPixelPosition(int x, int y)
 {
   double frequency = (double) x;
   double level     = (double) y;
-  transformFromComponentsCoordinates(frequency, level);
+  fromPixelCoordinates(frequency, level);
   String fString = hertzToStringWithUnitTotal5(frequency);
   String aString = decibelsToStringWithUnit2(level);
   return fString + String(T(", ")) + aString;

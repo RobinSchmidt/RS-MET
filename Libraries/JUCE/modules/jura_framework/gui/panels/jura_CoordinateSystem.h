@@ -423,11 +423,11 @@ protected:
 
   /** Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (double precision version). */
-  void transformFromComponentsCoordinates(double &x, double &y) const override;
+  void fromPixelCoordinates(double &x, double &y) const override;
 
   /** Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (single precision version). */
-  void transformFromComponentsCoordinates(float &x, float &y) const override;
+  void fromPixelCoordinates(float &x, float &y) const override;
 
   /** Adds a line to an SVG drawing. */
   virtual void addLineToSvgDrawing(XmlElement* theSVG, float x1, float y1, float x2, float y2,

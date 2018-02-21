@@ -401,7 +401,7 @@ void CrossOverPlotEditor::setupFilterAccordingToMousePosition(double mouseX, dou
   double freq  = restrictDragHandleX(mouseX, currentlyDraggedHandle);  
   double dummy = mouseY;
 
-  transformFromComponentsCoordinates(freq, dummy);
+  fromPixelCoordinates(freq, dummy);
 
   if( currentlyDraggedHandle == FREQUENCY_1_1 && freq11Parameter != NULL ) 
     freq11Parameter->setValue(freq, true, true);

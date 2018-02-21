@@ -129,7 +129,7 @@ void CoordinateSystem::mouseMove(const MouseEvent &e)
     // get frequency and amplitude-level at the current mouse-position:
     double x = e.x;
     double y = e.y;
-    transformFromComponentsCoordinates(x, y);
+    fromPixelCoordinates(x, y);
 
     // pass the strings to the inspectionLabel:
     inspectionField->setText(String("x=") + String(x) + String::charToString('\n') +
@@ -1138,7 +1138,7 @@ void CoordinateSystem::transformFromImageCoordinates(
 {
   if( theImage == NULL )
   {
-    transformFromComponentsCoordinates(x, y);
+    fromPixelCoordinates(x, y);
     return;
   }
 
@@ -1214,7 +1214,7 @@ void CoordinateSystem::toPixelCoordinates(float &x, float &y) const
   y = (float) yd;
 }
 
-void CoordinateSystem::transformFromComponentsCoordinates(double &x, double &y) const
+void CoordinateSystem::fromPixelCoordinates(double &x, double &y) const
 {
   if( logScaledX )
   {
@@ -1238,11 +1238,11 @@ void CoordinateSystem::transformFromComponentsCoordinates(double &x, double &y) 
   }
 }
 
-void CoordinateSystem::transformFromComponentsCoordinates(float &x, float &y) const
+void CoordinateSystem::fromPixelCoordinates(float &x, float &y) const
 {
   double xd = (double) x;
   double yd = (double) y;
-  transformFromComponentsCoordinates(xd, yd);
+  fromPixelCoordinates(xd, yd);
   x = (float) xd;
   y = (float) yd;
 }

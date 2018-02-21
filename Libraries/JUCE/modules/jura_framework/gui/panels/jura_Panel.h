@@ -165,11 +165,11 @@ public:
 
   /** Function for converting the x- and y-coordinate values measured in the components
   coordinate system to the corresponding coordinates of our plot (double precision version). */
-  virtual void transformFromComponentsCoordinates(double &x, double &y) const;
+  virtual void fromPixelCoordinates(double &x, double &y) const;
 
   /** Function for converting the x- and y-coordinate values measured in the components
   coordinate system to the corresponding coordinates of our plot (single precision version). */
-  virtual void transformFromComponentsCoordinates(float &x, float &y) const;
+  virtual void fromPixelCoordinates(float &x, float &y) const;
 
   //---------------------------------------------------------------------------------------------
   // callbacks:

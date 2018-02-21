@@ -328,7 +328,7 @@ void VectorMixerPad::setupVectorMixerAccordingToMousePosition(double mouseX, dou
   double y = mouseY;
 
   // convert them into the vectorMixer's coordinates:
-  transformFromComponentsCoordinates(x, y);
+  fromPixelCoordinates(x, y);
 
   // set up the VectorMixer and raise automation events to update other widgets that represent the
   // parameters:
