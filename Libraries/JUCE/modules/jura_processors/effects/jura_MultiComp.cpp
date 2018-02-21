@@ -78,7 +78,7 @@ int MultiCompAudioModule::getBandContainingFrequency(double freq)
   for(int i = 0; i < multiCompCore.getNumberOfBands()-1; i++)
     if(multiCompCore.getSplitFrequency(i) > freq)
       return i;
-  return 0;
+  return multiCompCore.getNumberOfBands()-1;
 }
 
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
@@ -141,6 +141,8 @@ void MultiCompPlotEditor::mouseDown(const MouseEvent& e)
   int index = multiCompModule->getBandContainingFrequency(freq);
   Parameter* p = multiCompModule->getParameterByName("SelectedBand");
   p->setValue(index, true, true);
+
+  // maybe de-select, if the click was in the currently selected band, so we can have no selection
 }
 
 void MultiCompPlotEditor::paintOverChildren(Graphics& g)

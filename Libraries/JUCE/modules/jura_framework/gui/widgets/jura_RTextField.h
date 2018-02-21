@@ -51,16 +51,16 @@ public:
   // callbacks:
 
   /** Overrides assignParameter() inherited from RWidget in order to update the text. */
-  virtual void assignParameter(Parameter* parameterToAssign);
+  virtual void assignParameter(Parameter* parameterToAssign) override;
 
   /** Overrides parameterChanged() inherited from RWidget in order to update the text. */
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   /** Overrides updateWidgetFromAssignedParameter() inherited from RWidget. */
-  virtual void updateWidgetFromAssignedParameter(bool sendChangeMessage = false);
+  virtual void updateWidgetFromAssignedParameter(bool sendChangeMessage = false) override;
 
   /** Paints the text field. */
-  virtual void paint(Graphics& g);
+  virtual void paint(Graphics& g) override;
 
 protected:
 

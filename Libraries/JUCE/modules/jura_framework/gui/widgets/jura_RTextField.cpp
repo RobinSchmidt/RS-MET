@@ -11,8 +11,6 @@ RTextField::RTextField(const juce::String& initialText) : justification(Justific
 void RTextField::setText(const juce::String &newText) 
 { 
   text = newText; 
-
-  //deferredRepaint(); // doesn't work yet
   repaintOnMessageThread();
   //repaint();
 }

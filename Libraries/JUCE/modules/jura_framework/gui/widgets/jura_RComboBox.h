@@ -89,6 +89,8 @@ public:
   are defined in the Parameter. */
   virtual void assignParameter(Parameter* parameterToAssign) override;
 
+  //virtual void parameterChanged(Parameter* p) override;
+
   /** Sets the maximum width and height for the popup menu that appears on clicking. */
   virtual void setMaxPopUpSize(int newMaxWidth, int newMaxHeight)
   {
