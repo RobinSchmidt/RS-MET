@@ -95,6 +95,34 @@ AudioModuleEditor* MultiCompAudioModule::createEditor()
 
 //=================================================================================================
 
+MultiCompPlotEditor::MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompModuleToEdit)
+  : multiCompModule(multiCompModuleToEdit)
+
+{
+  freqRespPlot = new rsFunctionPlot;
+  freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -48.0, 12.0, 6);
+  //for(int i = 0; i < multiCompModule->getMaxNumBands; i++)
+  //  freqRespPlot->addFunction([this](double f)->double { return multiCompModule->getDecibelsAt(i, f); });
+  addPlot(freqRespPlot);
+}
+
+void MultiCompPlotEditor::mouseDown(const MouseEvent& e)
+{
+  // select band whose rectangle contains the mouse-event
+}
+
+void MultiCompPlotEditor::paint(Graphics& g)
+{
+  // draw vertical lines at split frequencies
+}
+
+void MultiCompPlotEditor::resized()
+{
+  freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
+}
+
+//=================================================================================================
+
 MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModuleToEdit)
   : AudioModuleEditor(multiCompModuleToEdit)
 {

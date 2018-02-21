@@ -55,9 +55,11 @@ class JUCE_API MultiCompPlotEditor : public ColourSchemeComponent /*, public Par
 public:
 
   MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompModuleToEdit);
-  virtual ~MultiCompPlotEditor();
+  virtual ~MultiCompPlotEditor() {}
 
   //virtual void parameterChanged(Parameter* p) override;
+  virtual void mouseDown(const MouseEvent& e) override;
+  virtual void paint(Graphics& g) override;
   virtual void resized() override;
 
 protected:
