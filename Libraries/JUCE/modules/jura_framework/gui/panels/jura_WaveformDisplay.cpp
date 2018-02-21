@@ -208,8 +208,8 @@ void WaveformDisplay::plotWaveform(Image *targetImage)
       //bufferToUse->getMinMaxSamples(c, nMin, nMax-nMin+1, y1, y2);
       bufferToUse->getMinMaxSamplesWithoutLock(c, nMin, nMax-nMin+1, y1, y2);
 
-      transformToComponentsCoordinates(x1, y1);
-      transformToComponentsCoordinates(x2, y2);
+      toPixelCoordinates(x1, y1);
+      toPixelCoordinates(x2, y2);
       g.drawLine((float)x1, (float)y1, (float)x2, (float)y2);
 
       tSec += tSecInc;

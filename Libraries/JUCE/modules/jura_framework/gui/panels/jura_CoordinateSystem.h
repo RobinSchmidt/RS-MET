@@ -415,11 +415,11 @@ protected:
 
   /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (double precision version).*/
-  void transformToComponentsCoordinates(double &x, double &y) const override;
+  void toPixelCoordinates(double &x, double &y) const override;
 
   /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (single precision version).*/
-  void transformToComponentsCoordinates(float &x, float &y) const override;
+  void toPixelCoordinates(float &x, float &y) const override;
 
   /** Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (double precision version). */

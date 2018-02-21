@@ -522,7 +522,7 @@ int ModulatorCurveEditor::whatIsUnderTheMouseCursor(const MouseEvent &e)
     pointX = modulatorToEdit->getBreakpointTime(p);
     pointY = modulatorToEdit->getBreakpointLevel(p);
     pointY = scale*pointY + offset;
-    transformToComponentsCoordinates(pointX, pointY);
+    toPixelCoordinates(pointX, pointY);
 
     // measure the distance of the point to the location of the mouse-down event:
     double d = sqrt( (mouseX-pointX)*(mouseX-pointX) + (mouseY-pointY)*(mouseY-pointY)    );
@@ -544,8 +544,8 @@ int ModulatorCurveEditor::whatIsUnderTheMouseCursor(const MouseEvent &e)
   double x2 = modulatorToEdit->getBreakpointTime(p2);
   double y1 = 0.0; // dummy
   double y2 = 0.0; // dummy
-  transformToComponentsCoordinates(x1, y1);
-  transformToComponentsCoordinates(x2, y2);
+  toPixelCoordinates(x1, y1);
+  toPixelCoordinates(x2, y2);
 
   if( abs(x1+2-mouseX) <= 4.0   &&
       modulatorToEdit->getLoopMode() != rosic::BreakpointModulator::NO_LOOP )
@@ -612,7 +612,7 @@ void ModulatorCurveEditor::mouseDown(const MouseEvent &e)
       pointX = modulatorToEdit->getBreakpointTime(p);
       pointY = modulatorToEdit->getBreakpointLevel(p);
       pointY = scale*pointY + offset;
-      transformToComponentsCoordinates(pointX, pointY);
+      toPixelCoordinates(pointX, pointY);
 
       // measure the distance of the point to the location of the 
       // mouse-down event:
@@ -655,7 +655,7 @@ void ModulatorCurveEditor::mouseDown(const MouseEvent &e)
       p = modulatorToEdit->getLoopStartIndex();
       pointX = modulatorToEdit->getBreakpointTime(p);
       pointY = range.getMaxY();
-      transformToComponentsCoordinates(pointX, pointY);
+      toPixelCoordinates(pointX, pointY);
 
       if( abs(pointX+4-mouseX) <= 4.0 &&
         abs(pointY+5-mouseY) <= 4.0 &&
@@ -669,7 +669,7 @@ void ModulatorCurveEditor::mouseDown(const MouseEvent &e)
       p = modulatorToEdit->getLoopEndIndex();
       pointX = modulatorToEdit->getBreakpointTime(p);
       pointY = range.getMaxY();
-      transformToComponentsCoordinates(pointX, pointY);
+      toPixelCoordinates(pointX, pointY);
 
       if( abs(pointX-4-mouseX) <= 4.0 &&
         abs(pointY+5-mouseY) <= 4.0 &&
@@ -717,7 +717,7 @@ void ModulatorCurveEditor::mouseDown(const MouseEvent &e)
       pointX = modulatorToEdit->getBreakpointTime(p);
       pointY = modulatorToEdit->getBreakpointLevel(p);
       pointY = scale*pointY + offset;
-      transformToComponentsCoordinates(pointX, pointY);
+      toPixelCoordinates(pointX, pointY);
 
       // measure the distance of the point to the location of the 
       // mouse-down event:
@@ -822,7 +822,7 @@ void ModulatorCurveEditor::mouseDrag(const MouseEvent &e)
     {
       x = modulatorToEdit->getBreakpointTime(p);
       y = 0.f;
-      transformToComponentsCoordinates(x,y);
+      toPixelCoordinates(x,y);
       if( abs(mouseX-x) < minDistance )
       {
         minDistance = abs(mouseX-x);
@@ -846,7 +846,7 @@ void ModulatorCurveEditor::mouseDrag(const MouseEvent &e)
     {
       x = modulatorToEdit->getBreakpointTime(p);
       y = 0.f;
-      transformToComponentsCoordinates(x,y);
+      toPixelCoordinates(x,y);
       if( abs(mouseX-x) < minDistance )
       {
         minDistance = abs(mouseX-x);
@@ -1042,7 +1042,7 @@ void ModulatorCurveEditor::plotBreakpoints(Graphics &g, juce::Image *targetImage
     //x = beatsToSeconds(x, modulator->getBeatsPerMinute());
     y = modulator->getBreakpointLevel(p);
     y = scale*y + offset;
-    transformToComponentsCoordinates(x, y);
+    toPixelCoordinates(x, y);
     if( p == selectedBreakpoint )
     {
       g.setColour(dotColour.withAlpha(0.5f));
@@ -1084,7 +1084,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
       locatorColour, targetImage);
   }
   y1 = modulator->getBreakpointLevel(p);
-  rsPlot::transformToComponentsCoordinates(x1, y1);
+  rsPlot::toPixelCoordinates(x1, y1);
   drawTriangle(g, (float)x1-4.f, (float)y1-6.f, (float)x1-4.f, (float)y1+6.f, (float)x1+6.f, 
                (float)y1, true); 
 
@@ -1096,7 +1096,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
       locatorColour, targetImage);
   }
   y1 = modulator->getBreakpointLevel(p);
-  rsPlot::transformToComponentsCoordinates(x1, y1);
+  rsPlot::toPixelCoordinates(x1, y1);
   drawTriangle(g, (float)x1-6.f, (float)y1, (float)x1+4.f, (float)y1-6.f, (float)x1+4.f, 
                (float)y1+6.f, true); 
 
@@ -1130,12 +1130,12 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
     x1 = modulator->getBreakpointTime(p);
     y1 = modulator->getBreakpointLevel(p);
     y1 = scale*y1 + offset;
-    transformToComponentsCoordinates(x1, y1);
+    toPixelCoordinates(x1, y1);
     p  = modulator->getLoopEndIndex();
     x2 = modulator->getBreakpointTime(p);
     y2 = modulator->getBreakpointLevel(p);
     y2 = scale*y2 + offset;
-    transformToComponentsCoordinates(x2, y2);
+    toPixelCoordinates(x2, y2);
     if( abs(y1-y2) < 0.00001 ) // equality check with margin
       g.setColour(matchedLoopConnectorColour);
     else

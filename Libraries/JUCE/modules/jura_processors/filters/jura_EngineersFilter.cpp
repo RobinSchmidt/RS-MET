@@ -237,10 +237,10 @@ int EngineersFilterPlotEditor::getDragHandleAt(int x, int y)
   // get the x-positions of the two vertical lines (in pixels):
   double xLowMid  = sciFilterToEdit->getLowMidFreq();
   double yDummy   = 0.0;
-  transformToComponentsCoordinates(xLowMid, yDummy);
+  toPixelCoordinates(xLowMid, yDummy);
   double xMidHigh = sciFilterToEdit->getMidHighFreq();
   yDummy = 0.0;
-  transformToComponentsCoordinates(xMidHigh, yDummy);
+  toPixelCoordinates(xMidHigh, yDummy);
 
   // ckeck, if the passed x,y coordinates are near one of these vertical lines:
   double margin = 4.0;
@@ -323,7 +323,7 @@ void EngineersFilterPlotEditor::plotCurveFamily(Graphics &g, juce::Image* target
   double x = sciFilterToEdit->getLowMidFreq();
   double y = 0.0;
   if( targetImage == NULL )
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
   else
   transformToImageCoordinates(x, y, targetImage);
   //g.setColour(rojue::getMixedColour(colourScheme.plotColours[0], colourScheme.plotColours[1]));
@@ -334,7 +334,7 @@ void EngineersFilterPlotEditor::plotCurveFamily(Graphics &g, juce::Image* target
   x = sciFilterToEdit->getMidHighFreq();
   y = 0.0;
   if( targetImage == NULL )
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
   else
   transformToImageCoordinates(x, y, targetImage);
   //g.setColour(rojue::getMixedColour(colourScheme.plotColours[1], colourScheme.plotColours[2]));

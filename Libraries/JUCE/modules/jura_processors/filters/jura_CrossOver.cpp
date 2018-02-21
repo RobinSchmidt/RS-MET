@@ -376,15 +376,15 @@ int CrossOverPlotEditor::getDragHandleAt(int x, int y)
   // get the x-positions of the vertical lines (in pixels):
   double x11    = crossOverModuleToEdit->wrappedCrossOver->getCrossoverFrequency(0, 0);
   double yDummy = 0.0;
-  transformToComponentsCoordinates(x11, yDummy);
+  toPixelCoordinates(x11, yDummy);
 
   double x21 = crossOverModuleToEdit->wrappedCrossOver->getCrossoverFrequency(1, 0);
   yDummy = 0.0;
-  transformToComponentsCoordinates(x21, yDummy);
+  toPixelCoordinates(x21, yDummy);
 
   double x22 = crossOverModuleToEdit->wrappedCrossOver->getCrossoverFrequency(1, 1);
   yDummy = 0.0;
-  transformToComponentsCoordinates(x22, yDummy);
+  toPixelCoordinates(x22, yDummy);
 
   // ckeck, if the passed x,y coordinates are near one of these vertical lines:
   double margin = 4.0;
@@ -539,7 +539,7 @@ void CrossOverPlotEditor::drawSelectionIndicator(Graphics &g, juce::Image *targe
 
   double x = crossOverModuleToEdit->wrappedCrossOver->getCrossoverFrequency(selectedLevel, selectedIndex);
   double y = 0.0;
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
   y = 2.f;
 
   //Colour c = g.getCurrentColour();
@@ -555,7 +555,7 @@ void CrossOverPlotEditor::drawVerticalLineAtFrequency(Graphics &g, juce::Image* 
 
   double x = frequency;
   double y = 0.0; 
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
 
   if( treeLevel == 0 )
     y = 0.0;
@@ -579,7 +579,7 @@ void CrossOverPlotEditor::drawTriangleSwitchAtFrequency(Graphics &g, juce::Image
 
   double x = frequency;
   double y = 0.0; 
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
 
   if( treeLevel == 0 )
     y = 0.0;
@@ -624,7 +624,7 @@ double CrossOverPlotEditor::getDragHandleX(int dragHandleIndex)
   case FREQUENCY_2_1: x = crossOverModuleToEdit->wrappedCrossOver->getCrossoverFrequency(1, 0); break;
   case FREQUENCY_2_2: x = crossOverModuleToEdit->wrappedCrossOver->getCrossoverFrequency(1, 1); break;
   }
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
   return x;
 }
 

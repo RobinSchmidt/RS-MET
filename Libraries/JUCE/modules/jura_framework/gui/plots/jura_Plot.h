@@ -324,12 +324,12 @@ protected:
 
   /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (double precision version).*/
-  void transformToComponentsCoordinates(double &x, double &y)
+  void toPixelCoordinates(double &x, double &y)
   { x = coordinateMapper.mapX(x); y = coordinateMapper.mapY(y); }
 
   /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (single precision version).*/
-  void transformToComponentsCoordinates(float &x, float &y)
+  void toPixelCoordinates(float &x, float &y)
   { x = (float) coordinateMapper.mapX(x); y = (float) coordinateMapper.mapY(y); }
 
   /** Function for converting the x- and y-coordinate values measured in the components coordinate

@@ -1085,7 +1085,7 @@ void CoordinateSystem::transformToImageCoordinates(
 {
   if( theImage == NULL )
   {
-    transformToComponentsCoordinates(x, y);
+    toPixelCoordinates(x, y);
     return;
   }
 
@@ -1169,7 +1169,7 @@ void CoordinateSystem::transformFromImageCoordinates(
   }
 }
 
-void CoordinateSystem::transformToComponentsCoordinates(double &x, double &y) const
+void CoordinateSystem::toPixelCoordinates(double &x, double &y) const
 {
   // transform the x,y values to coordinates inside this component:
   if( logScaledX )
@@ -1205,11 +1205,11 @@ void CoordinateSystem::transformToComponentsCoordinates(double &x, double &y) co
   y  = getHeight()-y;	   // invert (pixels begin at top-left)
 }
 
-void CoordinateSystem::transformToComponentsCoordinates(float &x, float &y) const
+void CoordinateSystem::toPixelCoordinates(float &x, float &y) const
 {
   double xd = (double) x;
   double yd = (double) y;
-  transformToComponentsCoordinates(xd, yd);
+  toPixelCoordinates(xd, yd);
   x = (float) xd;
   y = (float) yd;
 }
@@ -1406,8 +1406,8 @@ void CoordinateSystem::drawHorizontalGrid(Graphics &g, double interval,
       // transform:
       if( targetImage == NULL )
       {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
+        toPixelCoordinates(startX, startY);
+        toPixelCoordinates(endX, endY);
       }
       else
       {
@@ -1444,8 +1444,8 @@ void CoordinateSystem::drawHorizontalGrid(Graphics &g, double interval,
       // transform:
       if( targetImage == NULL )
       {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
+        toPixelCoordinates(startX, startY);
+        toPixelCoordinates(endX, endY);
       }
       else
       {
@@ -1479,8 +1479,8 @@ void CoordinateSystem::drawHorizontalGrid(Graphics &g, double interval,
       // transform:
       if( targetImage == NULL )
       {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
+        toPixelCoordinates(startX, startY);
+        toPixelCoordinates(endX, endY);
       }
       else
       {
@@ -1558,8 +1558,8 @@ void CoordinateSystem::drawVerticalGrid(Graphics &g, double interval,
       // transform:
       if( targetImage == NULL )
       {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
+        toPixelCoordinates(startX, startY);
+        toPixelCoordinates(endX, endY);
       }
       else
       {
@@ -1597,8 +1597,8 @@ void CoordinateSystem::drawVerticalGrid(Graphics &g, double interval,
       // transform:
       if( targetImage == NULL )
       {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
+        toPixelCoordinates(startX, startY);
+        toPixelCoordinates(endX, endY);
       }
       else
       {
@@ -1631,8 +1631,8 @@ void CoordinateSystem::drawVerticalGrid(Graphics &g, double interval,
       // transform:
       if( targetImage == NULL )
       {
-        transformToComponentsCoordinates(startX, startY);
-        transformToComponentsCoordinates(endX, endY);
+        toPixelCoordinates(startX, startY);
+        toPixelCoordinates(endX, endY);
       }
       else
       {
@@ -1704,7 +1704,7 @@ void CoordinateSystem::drawRadialGrid(Graphics &g, double interval,
   {
     xScaler = getWidth()  / (currentRange.getMaxX()-currentRange.getMinX());
     yScaler = getHeight() / (currentRange.getMaxY()-currentRange.getMinY());
-    transformToComponentsCoordinates(centerX, centerY);
+    toPixelCoordinates(centerX, centerY);
   }
   else
   {
@@ -1781,8 +1781,8 @@ void CoordinateSystem::drawAngularGrid(Graphics &g, double interval,
     // transform:
     if( targetImage == NULL )
     {
-      transformToComponentsCoordinates(startX, startY);
-      transformToComponentsCoordinates(endX, endY);
+      toPixelCoordinates(startX, startY);
+      toPixelCoordinates(endX, endY);
     }
     else
     {
@@ -1857,8 +1857,8 @@ void CoordinateSystem::drawAxisX(juce::Graphics &g, Image* targetImage, XmlEleme
   // transform:
   if( targetImage == NULL )
   {
-    transformToComponentsCoordinates(startX, startY);
-    transformToComponentsCoordinates(endX, endY);
+    toPixelCoordinates(startX, startY);
+    toPixelCoordinates(endX, endY);
   }
   else
   {
@@ -1926,8 +1926,8 @@ void CoordinateSystem::drawAxisY(juce::Graphics &g, Image* targetImage, XmlEleme
   // transform:
   if( targetImage == NULL )
   {
-    transformToComponentsCoordinates(startX, startY);
-    transformToComponentsCoordinates(endX, endY);
+    toPixelCoordinates(startX, startY);
+    toPixelCoordinates(endX, endY);
   }
   else
   {
@@ -1978,7 +1978,7 @@ void CoordinateSystem::drawAxisLabelX(juce::Graphics &g, Image* targetImage, Xml
 
   // transform coordinates:
   if( targetImage == NULL )
-    transformToComponentsCoordinates(posX, posY);
+    toPixelCoordinates(posX, posY);
   else
     transformToImageCoordinates(posX, posY, targetImage);
 
@@ -2025,7 +2025,7 @@ void CoordinateSystem::drawAxisLabelY(juce::Graphics &g, Image* targetImage, Xml
 
   // transform coordinates:
   if( targetImage == NULL )
-    transformToComponentsCoordinates(posX, posY);
+    toPixelCoordinates(posX, posY);
   else
     transformToImageCoordinates(posX, posY, targetImage);
 
@@ -2114,7 +2114,7 @@ void CoordinateSystem::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEleme
 
       // transform:
       if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
+        toPixelCoordinates(posX, posY);
       else
         transformToImageCoordinates(posX, posY, targetImage);
 
@@ -2178,7 +2178,7 @@ void CoordinateSystem::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEleme
 
       // transform coordinates:
       if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
+        toPixelCoordinates(posX, posY);
       else
         transformToImageCoordinates(posX, posY, targetImage);
 
@@ -2235,7 +2235,7 @@ void CoordinateSystem::drawAxisValuesX(Graphics &g, Image* targetImage, XmlEleme
 
       // transform coordinates:
       if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
+        toPixelCoordinates(posX, posY);
       else
         transformToImageCoordinates(posX, posY, targetImage);
 
@@ -2323,7 +2323,7 @@ void CoordinateSystem::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEleme
 
       // transform:
       if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
+        toPixelCoordinates(posX, posY);
       else
         transformToImageCoordinates(posX, posY, targetImage);
 
@@ -2387,7 +2387,7 @@ void CoordinateSystem::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEleme
 
       // transform coordinates:
       if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
+        toPixelCoordinates(posX, posY);
       else
         transformToImageCoordinates(posX, posY, targetImage);
 
@@ -2442,7 +2442,7 @@ void CoordinateSystem::drawAxisValuesY(Graphics &g, Image* targetImage, XmlEleme
 
       // transform coordinates:
       if( targetImage == NULL )
-        transformToComponentsCoordinates(posX, posY);
+        toPixelCoordinates(posX, posY);
       else
         transformToImageCoordinates(posX, posY, targetImage);
 

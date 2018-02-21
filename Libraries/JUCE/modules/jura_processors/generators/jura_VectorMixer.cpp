@@ -358,7 +358,7 @@ void VectorMixerPad::drawCoordinateSystem(Graphics &g)
   // draw the dot-handle and a crosshair:
   //double x = vectorMixerToEdit->getX();
   //double y = vectorMixerToEdit->getY();
-  //transformToComponentsCoordinates(x, y);
+  //toPixelCoordinates(x, y);
 
   double x = coordinateMapper.mapX(vectorMixerToEdit->getX());
   double y = coordinateMapper.mapY(vectorMixerToEdit->getY());

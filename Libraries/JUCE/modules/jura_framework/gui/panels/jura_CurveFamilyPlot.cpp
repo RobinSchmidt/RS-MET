@@ -346,7 +346,7 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
   y = familyValuesY[index][0];
 
   if( targetImage == NULL )
-    transformToComponentsCoordinates(x, y);
+    toPixelCoordinates(x, y);
   else
     transformToImageCoordinates(x, y, targetImage);
 
@@ -368,7 +368,7 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
 
     // transform:
     if( targetImage == NULL )
-      transformToComponentsCoordinates(x, y);
+      toPixelCoordinates(x, y);
     else
       transformToImageCoordinates(x, y, targetImage);
 
@@ -392,7 +392,7 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
     x = familyValuesX[index*mask][numValues-1];
     y = 0;
     if( targetImage == NULL )
-      transformToComponentsCoordinates(x, y);
+      toPixelCoordinates(x, y);
     else
       transformToImageCoordinates(x, y, targetImage);
     funcPath.lineTo((float) x, (float) y);
@@ -400,7 +400,7 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
     x = familyValuesX[index*mask][0];
     y = 0;
     if( targetImage == NULL )
-      transformToComponentsCoordinates(x, y);
+      toPixelCoordinates(x, y);
     else
       transformToImageCoordinates(x, y, targetImage);
     funcPath.lineTo((float) x, (float) y);
@@ -408,7 +408,7 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
     x = familyValuesX[index*mask][0];
     y = familyValuesY[index][0];
     if( targetImage == NULL )
-      transformToComponentsCoordinates(x, y);
+      toPixelCoordinates(x, y);
     else
       transformToImageCoordinates(x, y, targetImage);
     funcPath.lineTo((float) x, (float) y);
@@ -446,7 +446,7 @@ void CurveFamilyPlot::plotFamilyValuesAsDots(Graphics &g, Image* targetImage, Xm
 
   float x0 = 0.0;
   float y0 = 0.0;
-  transformToComponentsCoordinates(x0, y0);
+  toPixelCoordinates(x0, y0);
   // transformed zero values for x and y, will be used to draw the lines to
   // the x- and y-axes if this option is chosen
 
@@ -459,7 +459,7 @@ void CurveFamilyPlot::plotFamilyValuesAsDots(Graphics &g, Image* targetImage, Xm
   y = valuesY[i];
 
   //transform:
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
 
   //add a dot at postion x,y:
   g.fillEllipse(x-1, y-1, 3, 3);

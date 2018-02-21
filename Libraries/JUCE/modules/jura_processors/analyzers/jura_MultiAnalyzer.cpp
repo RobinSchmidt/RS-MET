@@ -278,12 +278,12 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
       x1 = jmax(1.0, familyValuesX[0][minBin]);
       y1 = familyValuesY[k][minBin];
       y1 = amp2dBWithCheck(y1, 0.00001);
-      transformToComponentsCoordinates(x1, y1);
+      toPixelCoordinates(x1, y1);
 
       x2 = jmax(1.0, familyValuesX[0][maxBin]);
       y2 = familyValuesY[k][maxBin];
       y2 = amp2dBWithCheck(y2, 0.00001);
-      transformToComponentsCoordinates(x2, y2);
+      toPixelCoordinates(x2, y2);
 
       if( minBin > maxBin )
       {
@@ -491,8 +491,8 @@ void OscilloscopeDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage,
       y1 = peakData[c][n];
       x2 = timeAxis[n+1];
       y2 = peakData[c][n+1];
-      transformToComponentsCoordinates(x1, y1);
-      transformToComponentsCoordinates(x2, y2);
+      toPixelCoordinates(x1, y1);
+      toPixelCoordinates(x2, y2);
       g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, 1.f);
       // uses a lot of CPU - try using a juce::Path - nah, Path uses even more
 

@@ -323,8 +323,8 @@ void rsWaveformPlot::plotWaveform(Graphics &g, Image *targetImage, XmlElement *t
       y2 = peakData[c*peakArraySize + readOffset+n+1];
 
       // transform:
-      transformToComponentsCoordinates(x1, y1);
-      transformToComponentsCoordinates(x2, y2);
+      toPixelCoordinates(x1, y1);
+      toPixelCoordinates(x2, y2);
 
       // draw:
       g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, 2.f);

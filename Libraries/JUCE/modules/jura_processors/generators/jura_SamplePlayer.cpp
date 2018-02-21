@@ -616,10 +616,10 @@ void SamplePlayerEditorDisplay::paint(juce::Graphics &g)
 
   // gray out the area before the start sample and after the end sample:
   g.setColour( Colours::lightgrey.withAlpha(0.5f) );
-  transformToComponentsCoordinates(xGrayL, y);
+  toPixelCoordinates(xGrayL, y);
   g.fillRect(0.f, 0.f, (float) xGrayL, (float) getHeight() );
   y = 0.0;
-  transformToComponentsCoordinates(xGrayR, y);
+  toPixelCoordinates(xGrayR, y);
   g.fillRect((float) xGrayR, 0.f, (float) getWidth(), (float) getHeight() );
 
   //g.fillAll(Colours::grey.withAlpha(0.5f));
@@ -650,10 +650,10 @@ int SamplePlayerEditorDisplay::whatIsUnderTheMouseCursor(const MouseEvent &e)
   double y2 = 0.0; // dummy
   double y3 = 0.0; // dummy
   double y4 = 0.0; // dummy
-  transformToComponentsCoordinates(x1, y1);
-  transformToComponentsCoordinates(x2, y2);
-  transformToComponentsCoordinates(x3, y3);
-  transformToComponentsCoordinates(x4, y4);
+  toPixelCoordinates(x1, y1);
+  toPixelCoordinates(x2, y2);
+  toPixelCoordinates(x3, y3);
+  toPixelCoordinates(x4, y4);
 
 
   if( abs(x3+2-mouseX) <= 4.0 &&

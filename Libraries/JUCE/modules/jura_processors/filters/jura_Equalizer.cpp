@@ -620,7 +620,7 @@ int EqualizerPlotEditor::getBandIndexAtPixelPosition(int x, int y)
     double xi = equalizerModuleToEdit->wrappedEqualizerStereo->getBandFrequency(equalizerModuleToEdit->selectedChannel, i);
     double yi = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(equalizerModuleToEdit->selectedChannel, i);
     yi       += globalGain;
-    transformToComponentsCoordinates(xi, yi);
+    toPixelCoordinates(xi, yi);
     double d = sqrt( (xi-xd)*(xi-xd) + (yi-yd)*(yi-yd) );
     if( d <= dotRadius )
       return i;
@@ -633,7 +633,7 @@ int EqualizerPlotEditor::getBandIndexAtPixelPosition(int x, int y)
       double yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
         equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex);
       yt       += globalGain;
-      transformToComponentsCoordinates(xt, yt);
+      toPixelCoordinates(xt, yt);
       if( euclideanDistance(xt, yt, xd, yd) < 3.0 )
         return i;
 
@@ -643,7 +643,7 @@ int EqualizerPlotEditor::getBandIndexAtPixelPosition(int x, int y)
       yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
         equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex);
       yt       += globalGain;
-      transformToComponentsCoordinates(xt, yt);
+      toPixelCoordinates(xt, yt);
       if( euclideanDistance(xt, yt, xd, yd) < 3.0 )
         return i;
     }
@@ -930,7 +930,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
       equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex);
     yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
       equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex) + globalGain;
-    transformToComponentsCoordinates(xt, yt);
+    toPixelCoordinates(xt, yt);
     if( euclideanDistance(xt, yt, xd, yd) < 3.0 )
       return BANDWIDTH_AND_GAIN_LEFT;
 
@@ -939,7 +939,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
       equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex);
     yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
       equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex) + globalGain;
-    transformToComponentsCoordinates(xt, yt);
+    toPixelCoordinates(xt, yt);
     if( euclideanDistance(xt, yt, xd, yd) < 3.0 )
       return BANDWIDTH_AND_GAIN_RIGHT;
   }
@@ -951,7 +951,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
       equalizerModuleToEdit->selectedChannel, i);
     yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
       equalizerModuleToEdit->selectedChannel, i) + globalGain;
-    transformToComponentsCoordinates(xt, yt);
+    toPixelCoordinates(xt, yt);
     if( euclideanDistance(xt, yt, xd, yd) < 4.0 )
       return FREQUENCY_AND_GAIN;
   }
@@ -963,7 +963,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
       equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex);
     yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
       equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex) + globalGain;
-    transformToComponentsCoordinates(xt, yt);
+    toPixelCoordinates(xt, yt);
     if( fabs(yt-yd) <= 2.0 )
       return GAIN;
 
@@ -975,7 +975,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
   // check if y is over the global gain line:
   xt = 1000.0;                            // dummy;
   yt = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
-  transformToComponentsCoordinates(xt, yt);
+  toPixelCoordinates(xt, yt);
   if( fabs(y-yt) < 4.0 )
     return GLOBALGAIN_LINE;
 
@@ -1043,7 +1043,7 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   g.setColour(curveColour);
   y = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
   x = 1000.0;
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
   const float dashLengths[2] = {4.f, 6.f};
   g.drawDashedLine(Line<float>(0.f, (float) y, (float) getWidth(), (float) y), dashLengths, 2, 2.f);
 
@@ -1061,7 +1061,7 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
     double globalGain = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
     x = equalizerModuleToEdit->wrappedEqualizerStereo->getBandFrequency(channel, i);
     y = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(channel, i) + globalGain;
-    transformToComponentsCoordinates(x, y);
+    toPixelCoordinates(x, y);
 
     g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius),
       (float) (2*dotRadius), (float) (2*dotRadius) );
@@ -1088,13 +1088,13 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
           ->getLowerBandedgeFrequency(channel, i);
         double y1 = equalizerModuleToEdit->wrappedEqualizerStereo
           ->getBandGain(channel, i) + globalGain;
-        transformToComponentsCoordinates(x1, y1);
+        toPixelCoordinates(x1, y1);
 
         double x2 = equalizerModuleToEdit->wrappedEqualizerStereo
           ->getUpperBandedgeFrequency(channel, i);
         double y2 = equalizerModuleToEdit->wrappedEqualizerStereo
           ->getBandGain(channel, i) + globalGain;
-        transformToComponentsCoordinates(x2, y2);
+        toPixelCoordinates(x2, y2);
 
         g.drawLine((float) x1, (float) y1, (float) x2, (float) y1, 2.0f);
         g.drawLine((float) x1, (float) (y1-5.0), (float) x1, (float) (y1+5.0), 2.0f);

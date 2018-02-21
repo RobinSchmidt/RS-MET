@@ -247,7 +247,7 @@ void Panel::drawComponent(Image* imageToDrawOnto)
 //-------------------------------------------------------------------------------------------------
 // coordinate transformations:
 
-void Panel::transformToComponentsCoordinates(double &x, double &y) const
+void Panel::toPixelCoordinates(double &x, double &y) const
 {
   x -= currentRange.getMinX();	 // shift origin left/right
   x *= scaleX;	                 // scale to fit width
@@ -256,11 +256,11 @@ void Panel::transformToComponentsCoordinates(double &x, double &y) const
   y  = getHeight()-y;	           // invert (pixels begin at top-left)
 }
 
-void Panel::transformToComponentsCoordinates(float &x, float &y) const
+void Panel::toPixelCoordinates(float &x, float &y) const
 {
   double xd = (double) x;
   double yd = (double) y;
-  transformToComponentsCoordinates(xd, yd);
+  toPixelCoordinates(xd, yd);
   x = (float) xd;
   y = (float) yd;
 }

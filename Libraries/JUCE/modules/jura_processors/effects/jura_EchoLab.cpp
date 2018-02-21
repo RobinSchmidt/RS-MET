@@ -726,7 +726,7 @@ int EchoLabPlotEditor::getIndexAtPixelPosition(int x, int y)
   {
     double xi = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
     double yi = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(i);
-    transformToComponentsCoordinates(xi, yi);
+    toPixelCoordinates(xi, yi);
     double d = sqrt( (xi-xd)*(xi-xd) + (yi-yd)*(yi-yd) );
     if( d <= dotRadius )
       return i;
@@ -900,7 +900,7 @@ int EchoLabPlotEditor::getDragHandleAt(int x, int y)
   {
     xt = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
     yt = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(i);
-    transformToComponentsCoordinates(xt, yt);
+    toPixelCoordinates(xt, yt);
     if( euclideanDistance(xt, yt, xd, yd) < 4.0 )
       return TIME_AND_GAIN;
   }
@@ -1004,7 +1004,7 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
 
     double x = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
     double y = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(i);
-    transformToComponentsCoordinates(x, y);
+    toPixelCoordinates(x, y);
 
     if( !echoLabModuleToEdit->wrappedEchoLab->isDelayLineActive(i) )
     {
@@ -1014,7 +1014,7 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
 
       x  = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
       double y0 = 0.0;
-      transformToComponentsCoordinates(x, y0);
+      toPixelCoordinates(x, y0);
       g.drawLine((float) x, (float) y, (float) x, (float) y0, 2.f);
     }
     else
@@ -1032,7 +1032,7 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
       g.setColour(currentColour);
       x  = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
       double y0 = 0.0;
-      transformToComponentsCoordinates(x, y0);
+      toPixelCoordinates(x, y0);
       g.drawLine((float) x, (float) y, (float) x, (float) y0, 2.f);
 
       //g.setColour( curveColour );
@@ -1053,8 +1053,8 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
         y2 = yAccu;
         y0 = 0.0;
         x0 = x2; 
-        transformToComponentsCoordinates(x2, y2);
-        transformToComponentsCoordinates(x0, y0);
+        toPixelCoordinates(x2, y2);
+        toPixelCoordinates(x0, y0);
 
         g.setColour(currentColour.withMultipliedAlpha(0.75f));
 

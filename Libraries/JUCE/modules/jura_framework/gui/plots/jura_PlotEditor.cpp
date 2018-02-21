@@ -108,8 +108,8 @@ void rsPlotEditor::drawLeftLocator(Graphics &g, float x, int arrowPosition,
   x2 = x;
   y1 = plotSettings.getCurrentRangeMinY();
   y2 = plotSettings.getCurrentRangeMaxY();
-  transformToComponentsCoordinates(x1, y1);
-  transformToComponentsCoordinates(x2, y2);
+  toPixelCoordinates(x1, y1);
+  toPixelCoordinates(x2, y2);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
   g.fillRect((float) x1, (float) (y2+1), 4.f, 8.f);
   drawTriangle(g, (float) (x1+4), (float) (y2+1), (float) (x1+4), 
@@ -126,8 +126,8 @@ void rsPlotEditor::drawRightLocator(Graphics &g, float x, int arrowPosition,
   x2 = x;
   y1 = plotSettings.getCurrentRangeMinY();
   y2 = plotSettings.getCurrentRangeMaxY();
-  transformToComponentsCoordinates(x1, y1);
-  transformToComponentsCoordinates(x2, y2);
+  toPixelCoordinates(x1, y1);
+  toPixelCoordinates(x2, y2);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
   g.fillRect((float) (x1-4), (float) (y2+1), 4.f, 8.f);
   drawTriangle(g, (float) (x1-4), (float) (y2+1), (float) (x1-4), 
@@ -144,8 +144,8 @@ void rsPlotEditor::drawCurrentPositionLocator(Graphics &g, float x,
   x2 = x;
   y1 = plotSettings.getCurrentRangeMinY();
   y2 = plotSettings.getCurrentRangeMaxY();
-  transformToComponentsCoordinates(x1, y1);
-  transformToComponentsCoordinates(x2, y2);
+  toPixelCoordinates(x1, y1);
+  toPixelCoordinates(x2, y2);
   g.drawLine((float) x1, (float) (y1-1), (float) x2, (float) (y2+1), 2.0);
 }
 

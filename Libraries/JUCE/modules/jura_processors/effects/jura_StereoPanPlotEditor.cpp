@@ -228,33 +228,33 @@ void StereoPanPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   //g.setColour(Colour(0xff505050));
   double x = spTmp.getPanoramaPosition();
   double y = 0.0;
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
   g.drawLine((float) x, 0.f, (float) x, (float) getHeight(), 2.0);
 
   if( spTmp.doesPanLawApplyCrossMix() )
   {
     x = spTmp.getPanoramaPosition();
     y = spTmp.getRightToLeftGain();
-    transformToComponentsCoordinates(x, y);
+    toPixelCoordinates(x, y);
     //g.setColour(colourScheme.plotColours[2]); 
     g.fillRect(float(x-4), float(y-4), 8.f, 8.f);
 
     x = spTmp.getPanoramaPosition();
     y = spTmp.getLeftToRightGain();
-    transformToComponentsCoordinates(x, y);
+    toPixelCoordinates(x, y);
     //g.setColour(colourScheme.plotColours[3]);
     g.fillRect(float(x-4), float(y-4), 8.f, 8.f);
 
   }
   x = spTmp.getPanoramaPosition();
   y = spTmp.getLeftToLeftGain();
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
   //g.setColour(colourScheme.plotColours[0]);
   g.fillEllipse(float(x-3), float(y-3), 6.f, 6.f);
 
   x = spTmp.getPanoramaPosition();
   y = spTmp.getRightToRightGain();
-  transformToComponentsCoordinates(x, y);
+  toPixelCoordinates(x, y);
   //g.setColour(colourScheme.plotColours[1]);
   g.fillEllipse(float(x-3), float(y-3), 6.f, 6.f);
 }
