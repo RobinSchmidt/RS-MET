@@ -133,20 +133,32 @@ void MultiCompPlotEditor::mouseDown(const MouseEvent& e)
 
 void MultiCompPlotEditor::paintOverChildren(Graphics& g)
 {
+  // highlight rectangle of selected band:
+  int selected = multiCompModule->getSelectedBand();
+
+  // todo: when selected == 0 or selected == numBands (-1?), we need to do soemthing special
+  float x1 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected-1));
+  float x2 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected));
+
+  g.setColour(Colours::red.withAlpha(0.25f));
+  //g.setColour(Colours::magenta.withAlpha(0.25f));
+  g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
+
+
   // draw vertical lines at split frequencies:
   float y1 = 0.f;
   float y2 = (float) getHeight();
   int numBands = multiCompCore->getNumberOfBands(); // for debug 
   g.setColour(Colours::white);
-  for(int i = 0; i < multiCompCore->getNumberOfBands(); i++)
+  for(int i = 0; i < multiCompCore->getNumberOfBands()-1; i++)
   {
     double freq = multiCompCore->getSplitFrequency(i); // debug
     float x = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(i));
     g.drawLine(x, y1, x, y2, 2.f);
   }
 
-  // highlight rectangle of selected band:
-
+  // todo: maybe give all bands a color (going through the rainbow) and just use a higher alpha
+  // for the selected band (that may look nice)
 }
 
 void MultiCompPlotEditor::resized()
