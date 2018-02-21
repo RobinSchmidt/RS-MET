@@ -73,6 +73,14 @@ void MultiCompAudioModule::parameterChanged(Parameter* p)
   sendChangeMessage();
 }
 
+int MultiCompAudioModule::getBandContainingFrequency(double freq)
+{
+  for(int i = 0; i < multiCompCore.getNumberOfBands()-1; i++)
+    if(multiCompCore.getSplitFrequency(i) > freq)
+      return i;
+  return 0;
+}
+
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   for(int n = 0; n < numSamples; n++)
@@ -128,7 +136,11 @@ void MultiCompPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
 
 void MultiCompPlotEditor::mouseDown(const MouseEvent& e)
 {
-  // select band whose rectangle contains the mouse-event
+  // select band whose rectangle contains the mouse-event:
+  double freq = freqRespPlot->fromPixelX(e.x);
+  int index = multiCompModule->getBandContainingFrequency(freq);
+  Parameter* p = multiCompModule->getParameterByName("SelectedBand");
+  p->setValue(index, true, true);
 }
 
 void MultiCompPlotEditor::paintOverChildren(Graphics& g)

@@ -18,9 +18,11 @@ public:
 
   void selectBand(int bandToSelect) { selectedBand = bandToSelect; }
 
-  int getSelectedBand() { return selectedBand; }
+  int getSelectedBand() const { return selectedBand; }
 
-  int getMaxNumBands() { return maxNumBands; }
+  int getMaxNumBands() const { return maxNumBands; }
+
+  int getBandContainingFrequency(double freq);
 
   /** Returns a pointer to our core DSP object. */
   rosic::rsMultiBandCompressor* getCore() { return &multiCompCore; }
