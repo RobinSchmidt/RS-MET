@@ -99,6 +99,8 @@ MultiCompPlotEditor::MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompMo
   : multiCompModule(multiCompModuleToEdit)
 
 {
+  multiCompCore = multiCompModule->getCore();
+
   freqRespPlot = new rsFunctionPlot;
   freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -48.0, 12.0, 6);
   //for(int i = 0; i < multiCompModule->getMaxNumBands; i++)
@@ -113,7 +115,7 @@ void MultiCompPlotEditor::mouseDown(const MouseEvent& e)
 
 void MultiCompPlotEditor::paint(Graphics& g)
 {
-  // draw vertical lines at split frequencies
+  // draw vertical lines at split frequencies, highlight rectangle of selected band
 }
 
 void MultiCompPlotEditor::resized()

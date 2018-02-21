@@ -20,6 +20,9 @@ public:
 
   int getMaxNumBands() { return maxNumBands; }
 
+  /** Returns a pointer to our core DSP object. */
+  rosic::rsMultiBandCompressor* getCore() { return &multiCompCore; }
+
   // overriden from AudioModule baseclass:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
@@ -64,6 +67,7 @@ public:
 
 protected:
 
+  rosic::rsMultiBandCompressor* multiCompCore;
   jura::MultiCompAudioModule* multiCompModule; 
 
   rsFunctionPlot* freqRespPlot;

@@ -45,8 +45,11 @@ public:
   //---------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  /** Retruns the number of bands that are currently active. */
+  int getNumberOfBands() const { return numBands; }
+
   /** Returns the maximum number of bands that is supported. */
-  int getMaxNumberOfBands() { return maxNumBands; }
+  int getMaxNumberOfBands() const { return maxNumBands; }
 
   /** Returns the upper cutoff frequency for the band with given index. */
   double getSplitFrequency(int index) { return splitterL.getSplitFrequency(index); }
