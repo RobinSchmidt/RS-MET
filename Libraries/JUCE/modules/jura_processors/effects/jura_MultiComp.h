@@ -62,7 +62,7 @@ public:
 
   //virtual void parameterChanged(Parameter* p) override;
   virtual void mouseDown(const MouseEvent& e) override;
-  virtual void paint(Graphics& g) override;
+  virtual void paintOverChildren(Graphics& g) override;
   virtual void resized() override;
 
 protected:

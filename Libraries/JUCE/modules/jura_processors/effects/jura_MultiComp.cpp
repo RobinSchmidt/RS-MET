@@ -105,17 +105,31 @@ MultiCompPlotEditor::MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompMo
   freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -48.0, 12.0, 6);
   //for(int i = 0; i < multiCompModule->getMaxNumBands; i++)
   //  freqRespPlot->addFunction([this](double f)->double { return multiCompModule->getDecibelsAt(i, f); });
+  freqRespPlot->addMouseListener(this, true);
   addPlot(freqRespPlot);
 }
 
 void MultiCompPlotEditor::mouseDown(const MouseEvent& e)
 {
   // select band whose rectangle contains the mouse-event
+  repaint(); // test
 }
 
-void MultiCompPlotEditor::paint(Graphics& g)
+void MultiCompPlotEditor::paintOverChildren(Graphics& g)
 {
-  // draw vertical lines at split frequencies, highlight rectangle of selected band
+  // draw vertical lines at split frequencies:
+  float y1 = 0.f;
+  float y2 = (float) getHeight();
+  int numBands = multiCompCore->getNumberOfBands(); // for debug 
+  g.setColour(Colours::white);
+  for(int i = 0; i < multiCompCore->getNumberOfBands(); i++)
+  {
+    float x = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(i));
+    g.drawLine(x, y1, x, y2, 2.f);
+  }
+
+  // highlight rectangle of selected band:
+
 }
 
 void MultiCompPlotEditor::resized()

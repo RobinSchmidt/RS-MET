@@ -302,6 +302,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Misc:
 
+
+  inline double toPixelX(double x)   const { return coordinateMapper.mapX(x); }
+  inline double toPixelY(double y)   const { return coordinateMapper.mapY(y); }
+  inline double fromPixelX(double x) const { return coordinateMapper.unmapX(x); }
+  inline double fromPixelY(double y) const { return coordinateMapper.unmapY(y); }
+
   /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (double precision version).*/
   void toPixelCoordinates(double &x, double &y)
