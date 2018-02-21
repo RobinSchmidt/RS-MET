@@ -131,14 +131,11 @@ void RComboBox::assignParameter(Parameter* parameterToAssign)
   }
 }
 
-/*
 void RComboBox::parameterChanged(Parameter* p)
 {
   RTextField::parameterChanged(p);
-  //selectItemFromText(RTextField::getText(), true);
-    // this does not work yet
+  selectItemByIndex((int)p->getValue(), true);
 }
-*/
 
 //-------------------------------------------------------------------------------------------------
 // inquiry:

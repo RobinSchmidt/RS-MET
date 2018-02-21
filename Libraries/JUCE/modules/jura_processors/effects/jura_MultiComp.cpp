@@ -157,7 +157,8 @@ void MultiCompPlotEditor::paintOverChildren(Graphics& g)
     x1 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected-1));
   if(selected < numBands-1)
     x2 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected));
-  g.setColour(Colours::red.withAlpha(0.25f));
+  //g.setColour(Colours::red.withAlpha(0.25f));
+  g.setColour(Colours::lightblue.withAlpha(0.25f)); // preliminary
   //g.setColour(Colours::magenta.withAlpha(0.25f));
   g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
 
@@ -165,10 +166,10 @@ void MultiCompPlotEditor::paintOverChildren(Graphics& g)
   // draw vertical lines at split frequencies:
   float y1 = 0.f;
   float y2 = (float) getHeight();
-  g.setColour(Colours::white);
+  g.setColour(Colours::white); // preliminary
   for(int i = 0; i < numBands-1; i++)
   {
-    double freq = multiCompCore->getSplitFrequency(i); // debug
+    //double freq = multiCompCore->getSplitFrequency(i); // debug
     float x = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(i));
     g.drawLine(x, y1, x, y2, 2.f);
   }
@@ -274,7 +275,6 @@ void MultiCompModuleEditor::resized()
   x = getWidth() / 2 + 4;
   for(int k = 0; k < multiCompModule->getMaxNumBands(); k++)
   {
-    //y = getPresetSectionBottom() + 4;
     y = plotEditor->getBottom() + 4;
     splitFreqSliders[k]->setBounds(x, y, w, h); y += d;
     thresholdSliders[k]->setBounds(x, y, w, h); y += d;
