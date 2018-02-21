@@ -520,7 +520,7 @@ void ToolChain::populateModuleFactory()
 
   s = "Dynamics";
   f.registerModuleType([](CS cs)->AM { return new LimiterAudioModule(cs);   }, s, "Limiter");
-  //f.registerModuleType([](CS cs)->AM { return new MultiCompAudioModule(cs); }, s, "MultiComp");
+  f.registerModuleType([](CS cs)->AM { return new MultiCompAudioModule(cs); }, s, "MultiComp");
 
   s = "Effects";
   f.registerModuleType([](CS cs)->AM { return new FuncShaperAudioModule(cs);   }, s, "FuncShaper");

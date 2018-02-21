@@ -306,7 +306,7 @@ void ColourSchemeComponent::paintOverChildren(Graphics &g)
   }
 
 #if JUCE_DEBUG
-  bool showSize = true; // set to true, if you want to figure out ideal gui sizes
+  bool showSize = false; // set to true, if you want to figure out ideal gui sizes
   if(showSize)
   {
     int w = 80;

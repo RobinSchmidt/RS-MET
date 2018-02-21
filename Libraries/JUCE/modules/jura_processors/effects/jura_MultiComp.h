@@ -94,6 +94,7 @@ protected:
   MultiCompAudioModule *multiCompModule;
 
   // widgets:
+  MultiCompPlotEditor* plotEditor;
   RSlider *numBandsSlider;
   std::vector<RSlider*> splitFreqSliders, thresholdSliders, ratioSliders, attackSliders, 
     releaseSliders;

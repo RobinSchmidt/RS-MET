@@ -131,13 +131,16 @@ MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModu
   //setHeadlineText("MultiComp");
   createWidgets();
   updateWidgetVisibility();
-  setSize(400, 100);
+  setSize(595, 301);
 }
 
 void MultiCompModuleEditor::createWidgets()
 {
   RSlider *s;
   RComboBox *c;
+
+  plotEditor = new MultiCompPlotEditor(multiCompModule);
+  addChildColourSchemeComponent(plotEditor);
 
   addWidget( s = numBandsSlider = new RSlider );
   s->assignParameter( multiCompModule->getParameterByName("NumBands") );
@@ -193,8 +196,12 @@ void MultiCompModuleEditor::rComboBoxChanged(RComboBox* box)
 void MultiCompModuleEditor::resized()
 {
   AudioModuleEditor::resized();
-  int x = 4;
+
   int y = getPresetSectionBottom() + 4;
+  plotEditor->setBounds(0, y, getWidth(), getHeight()-110);
+  y = plotEditor->getBottom() + 4;
+
+  int x = 4;
   int w = getWidth() / 2 - 8;
   int h = 16;
   int d = h-2;
@@ -206,7 +213,8 @@ void MultiCompModuleEditor::resized()
   x = getWidth() / 2 + 4;
   for(int k = 0; k < multiCompModule->getMaxNumBands(); k++)
   {
-    y = getPresetSectionBottom() + 4;
+    //y = getPresetSectionBottom() + 4;
+    y = plotEditor->getBottom() + 4;
     splitFreqSliders[k]->setBounds(x, y, w, h); y += d;
     thresholdSliders[k]->setBounds(x, y, w, h); y += d;
     ratioSliders[k]    ->setBounds(x, y, w, h); y += d;
