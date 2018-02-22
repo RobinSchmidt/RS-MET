@@ -9,12 +9,19 @@ class JUCE_API MultiBandEffect : public jura::ModulatableAudioModule, public Cha
 
 public:
 
-  MultiBandEffect(CriticalSection *lockToUse,
-    MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
+  MultiBandEffect(CriticalSection *lockToUse, rosic::rsMultiBandEffect* effectCore, 
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr);
+
+  virtual void createParameters();
+
 
 
 protected:
 
+  rosic::rsMultiBandEffect* core;
+
+  int maxNumBands  =  0;  // assigned in constructor
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffect)
 };
@@ -76,7 +83,7 @@ protected:
 
   rosic::rsMultiBandCompressor multiCompCore;
 
-  int maxNumBands  =  0;  // assigned in constructor
+
   int selectedBand =  0;  // -1 is code for "None"
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiCompAudioModule)

@@ -1,21 +1,24 @@
-MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
+MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse, rosic::rsMultiBandEffect* effectCore,
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
+  , core(effectCore)
 {
   ScopedLock scopedLock(*lock);
-  //maxNumBands = core.getMaxNumberOfBands();
-  //createParameters();
+  maxNumBands = core->getMaxNumberOfBands();
+  createParameters();
 }
 
+void MultiBandEffect::createParameters()
+{
 
 
-
+}
 
 //=================================================================================================
 
 MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
-  : MultiBandEffect(lockToUse, metaManagerToUse, modManagerToUse)
+  : MultiBandEffect(lockToUse, &multiCompCore, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("MultiComp");
