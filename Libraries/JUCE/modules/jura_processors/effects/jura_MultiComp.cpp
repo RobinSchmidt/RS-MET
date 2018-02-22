@@ -1,14 +1,19 @@
-MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse, rosic::rsMultiBandEffect* effectCore,
+MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
-  , core(effectCore)
 {
-  ScopedLock scopedLock(*lock);
-  maxNumBands = core->getMaxNumberOfBands();
-  createParameters();
+  //ScopedLock scopedLock(*lock);
 }
 
-void MultiBandEffect::createParameters()
+void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
+{
+  ScopedLock scopedLock(*lock);
+  core = effectCore;
+  maxNumBands = core->getMaxNumberOfBands();
+  createSplittingParameters();
+}
+
+void MultiBandEffect::createSplittingParameters()
 {
   ScopedLock scopedLock(*lock);
 
@@ -18,6 +23,37 @@ void MultiBandEffect::createParameters()
   typedef Parameter Param;
   Param* p;
 
+  p = new Param("NumBands", 1.0, maxNumBands, 1.0, Parameter::INTEGER); // use 1 as default later
+  addObservedParameter(p);
+  p->setValueChangeCallback<MBE>(mbe, &MBE::setNumberOfBands);
+
+  p = new Param("SelectedBand", 0.0, maxNumBands-1, 0.0, Parameter::STRING);
+  p->addNumericStringValues(1, 16);
+  addObservedParameter(p);
+  p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::selectBand);
+
+  p = new Param("SplitMode", 0.0, 2.0, 0.0, Parameter::STRING);
+  p->addStringValue("Steep Lowpass");
+  p->addStringValue("Steep Highpass");
+  //p->addStringValue("Binary Tree"); // doesn't work yet
+  addObservedParameter(p);
+  p->setValueChangeCallback<MBE>(mbe, &MBE::setSplitMode);
+
+
+  // create per-band parameters:
+  for(int i = 0; i < maxNumBands; i++)
+  {
+    // todo use std::function with lambda functions for callbacks
+
+    juce::String idxStr = juce::String(i+1);
+
+    p = new Param("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, Parameter::EXPONENTIAL);
+    p->setValue(mbe->getSplitFrequency(i), false, false);
+    addObservedParameter(p);
+    p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
+  }
+
+  getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
 }
 
 void MultiBandEffect::parameterChanged(Parameter* p)
@@ -38,15 +74,15 @@ int MultiBandEffect::getBandContainingFrequency(double freq)
 
 MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
-  : MultiBandEffect(lockToUse, &multiCompCore, metaManagerToUse, modManagerToUse)
+  : MultiBandEffect(lockToUse,  metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("MultiComp");
-  maxNumBands = multiCompCore.getMaxNumberOfBands();
-  createParameters();
+  MultiBandEffect::setEffectCore(&multiCompCore);
+  createCompressionParameters();
 }
 
-void MultiCompAudioModule::createParameters()
+void MultiCompAudioModule::createCompressionParameters()
 {
   ScopedLock scopedLock(*lock);
 
@@ -57,33 +93,12 @@ void MultiCompAudioModule::createParameters()
   typedef Parameter Param;
   Param* p;
 
-  p = new Param("NumBands", 1.0, maxNumBands, 1.0, Parameter::INTEGER); // use 1 as default later
-  addObservedParameter(p);
-  p->setValueChangeCallback<MBC>(mbc, &MBC::setNumberOfBands);
-
-  p = new Param("SelectedBand", 0.0, maxNumBands-1, 0.0, Parameter::STRING);
-  p->addNumericStringValues(1, 16);
-  addObservedParameter(p);
-  p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::selectBand);
-
-  p = new Param("SplitMode", 0.0, 2.0, 0.0, Parameter::STRING);
-  p->addStringValue("Steep Lowpass");
-  p->addStringValue("Steep Highpass");
-  //p->addStringValue("Binary Tree"); // doesn't work yet
-  addObservedParameter(p);
-  p->setValueChangeCallback<MBC>(mbc, &MBC::setSplitMode);
-
   // create per-band parameters:
   for(int i = 0; i < maxNumBands; i++)
   {
     // todo use std::function with lambda functions for callbacks
 
     juce::String idxStr = juce::String(i+1);
-
-    p = new Param("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, Parameter::EXPONENTIAL);
-    p->setValue(mbc->getSplitFrequency(i), false, false);
-    addObservedParameter(p);
-    p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setSplitFreq);
 
     p = new Param("Threshold" + idxStr, -60.0, 0.0, 0.0, Parameter::LINEAR); // in dB
     addObservedParameter(p);
@@ -102,7 +117,7 @@ void MultiCompAudioModule::createParameters()
     p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setRelease);
   }
 
-  getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
+  //getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
 }
 
 

@@ -9,11 +9,15 @@ class JUCE_API MultiBandEffect : public jura::ModulatableAudioModule, public Cha
 
 public:
 
-  MultiBandEffect(CriticalSection *lockToUse, rosic::rsMultiBandEffect* effectCore, 
-    MetaParameterManager* metaManagerToUse = nullptr, 
+  MultiBandEffect(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr, 
     ModulationManager* modManagerToUse = nullptr);
 
-  virtual void createParameters();
+  /** Subclasses should call this *once* in their constructor with a pointer to the concrete 
+  multiband effect (subclass). This will also create the splitting-related parameters */
+  void setEffectCore( rosic::rsMultiBandEffect* effectCore);
+
+  /** Creates the parameters related to the band-splitting. Called from setEffectCore. */
+  virtual void createSplittingParameters();
 
   virtual void parameterChanged(Parameter* p) override;
 
@@ -25,9 +29,11 @@ public:
 
   int getBandContainingFrequency(double freq);
 
+  void setSplitFreq(double newFreq) { core->setSplitFrequency(selectedBand, newFreq); }
+
 protected:
 
-  rosic::rsMultiBandEffect* core;
+  rosic::rsMultiBandEffect* core = nullptr;
 
   int maxNumBands  =  0;  // assigned in constructor
   int selectedBand =  0;  // -1 is code for "None"
@@ -35,13 +41,12 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffect)
 };
 
-
 //=================================================================================================
 
 /** Multiband compressor with up to 16 bands. 
 
 todo: 
- -factor out a class MultiBandEffect (in jura and rosic (done) )
+ -factor out a class MultiBandEffect (in jura (done) and rosic (done) )
  -write the plot-editor for that baseclass
  -ensure that the split frequencies are always sorted from low to high
  -restrict ranges for the split-freqs according to the neighbours
@@ -57,13 +62,8 @@ public:
   MultiCompAudioModule(CriticalSection *lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
 
-  /** Creates the static parameters for this module (i.e. parameters that are not created
-  dynamically and are thus always there). */
-  virtual void createParameters();
-
-
-
-
+  /** Creates the per band compression parameters (threshold, ratio, attack, release). */
+  virtual void createCompressionParameters();
 
   /** Returns a pointer to our core DSP object. */
   rosic::rsMultiBandCompressor* getCore() { return &multiCompCore; }
@@ -76,7 +76,6 @@ public:
   AudioModuleEditor* createEditor() override;
 
   // target functions for the per-band parameter callbacks:
-  void setSplitFreq(double newFreq)      { multiCompCore.setSplitFrequency(selectedBand, newFreq);      }
   void setThreshold(double newThreshold) { multiCompCore.setThreshold(     selectedBand, newThreshold); }
   void setRatio(    double newRatio)     { multiCompCore.setRatio(         selectedBand, newRatio);     }
   void setAttack(   double newAttack)    { multiCompCore.setAttackTime(    selectedBand, newAttack);    }
