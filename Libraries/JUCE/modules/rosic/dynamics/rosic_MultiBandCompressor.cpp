@@ -3,6 +3,41 @@ rsMultiBandEffect::rsMultiBandEffect()
 
 }
 
+// setup:
+
+void rsMultiBandEffect::setSampleRate(double newSampleRate)
+{
+  splitterL.setSampleRate(newSampleRate);
+  splitterR.setSampleRate(newSampleRate);
+}
+
+void rsMultiBandEffect::setNumberOfBands(int newNumber)
+{
+  numBands = newNumber;
+  splitterL.setNumberOfActiveBands(newNumber);
+  splitterR.setNumberOfActiveBands(newNumber);
+}
+
+void rsMultiBandEffect::setSplitMode(int newMode)
+{
+  splitterL.setSplitMode(newMode);
+  splitterR.setSplitMode(newMode);
+}
+
+void rsMultiBandEffect::setSplitFrequency(int bandIndex, double newFrequency)
+{
+  splitterL.setSplitFrequency(bandIndex, newFrequency);
+  splitterR.setSplitFrequency(bandIndex, newFrequency);
+}
+
+// processing:
+
+void rsMultiBandEffect::reset()
+{
+  splitterL.reset();
+  splitterR.reset();
+}
+
 //=================================================================================================
 
 rsMultiBandCompressor::rsMultiBandCompressor() 
@@ -29,29 +64,9 @@ rsMultiBandCompressor::~rsMultiBandCompressor()
 
 void rsMultiBandCompressor::setSampleRate(double newSampleRate)
 {
-  splitterL.setSampleRate(newSampleRate);
-  splitterR.setSampleRate(newSampleRate);
+  rsMultiBandEffect::setSampleRate(newSampleRate);
   for(int k = 0; k < maxNumBands; k++)
     compressors[k]->setSampleRate(newSampleRate);
-}
-
-void rsMultiBandCompressor::setNumberOfBands(int newNumber)
-{
-  numBands = newNumber;
-  splitterL.setNumberOfActiveBands(newNumber);
-  splitterR.setNumberOfActiveBands(newNumber);
-}
-
-void rsMultiBandCompressor::setSplitMode(int newMode)
-{
-  splitterL.setSplitMode(newMode);
-  splitterR.setSplitMode(newMode);
-}
-
-void rsMultiBandCompressor::setSplitFrequency(int bandIndex, double newFrequency)
-{
-  splitterL.setSplitFrequency(bandIndex, newFrequency);
-  splitterR.setSplitFrequency(bandIndex, newFrequency);
 }
 
 void rsMultiBandCompressor::setThreshold(int bandIndex, double newThreshold)
@@ -76,8 +91,7 @@ void rsMultiBandCompressor::setReleaseTime(int bandIndex, double newReleaseTime)
 
 void rsMultiBandCompressor::reset()
 {
-  splitterL.reset();
-  splitterR.reset();
+  rsMultiBandEffect::reset();
   for(int k = 0; k < maxNumBands; k++)
     compressors[k]->reset();
 }

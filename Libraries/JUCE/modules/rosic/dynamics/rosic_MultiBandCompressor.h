@@ -14,8 +14,40 @@ public:
   /** Constructor. */
   rsMultiBandEffect();
 
+  //---------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setSampleRate(double newSampleRate);
+
+  void setNumberOfBands(int newNumber);
+
+  void setSplitMode(int newMode);
+
+  void setSplitFrequency(int bandIndex, double newFrequency);
+
+  //---------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Retruns the number of bands that are currently active. */
+  int getNumberOfBands() const { return numBands; }
+
+  /** Returns the maximum number of bands that is supported. */
+  int getMaxNumberOfBands() const { return maxNumBands; }
+
+  /** Returns the upper cutoff frequency for the band with given index. */
+  double getSplitFrequency(int index) { return splitterL.getSplitFrequency(index); }
+
+  //---------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  void reset();
+
 protected:
 
+  RAPT::rsMultiBandSplitter<double, double> splitterL, splitterR;
+  std::vector<double> tmpL, tmpR; // temporary buffers
+  int numBands = 1;
+  int maxNumBands = 16; // preliminary - make indefinite in the future
 
 };
 
@@ -44,12 +76,6 @@ public:
 
   void setSampleRate(double newSampleRate);
 
-  void setNumberOfBands(int newNumber);
-
-  void setSplitMode(int newMode);
-
-  void setSplitFrequency(int bandIndex, double newFrequency);
-
   void setThreshold(int bandIndex, double newThreshold);
 
   void setRatio(int bandIndex, double newRatio);
@@ -57,18 +83,6 @@ public:
   void setAttackTime(int bandIndex, double newAttackTime);
 
   void setReleaseTime(int bandIndex, double newReleaseTime);
-
-  //---------------------------------------------------------------------------------------------
-  /** \name Inquiry */
-
-  /** Retruns the number of bands that are currently active. */
-  int getNumberOfBands() const { return numBands; }
-
-  /** Returns the maximum number of bands that is supported. */
-  int getMaxNumberOfBands() const { return maxNumBands; }
-
-  /** Returns the upper cutoff frequency for the band with given index. */
-  double getSplitFrequency(int index) { return splitterL.getSplitFrequency(index); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -82,11 +96,8 @@ public:
 
 protected:
 
-  RAPT::rsMultiBandSplitter<double, double> splitterL, splitterR;
   std::vector<Compressor*> compressors;
-  std::vector<double> tmpL, tmpR; // temporary buffers
-  int numBands = 1;
-  int maxNumBands = 16; // preliminary - make indefinite in the future
+
 };
 
 //-----------------------------------------------------------------------------------------------
