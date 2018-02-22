@@ -10,8 +10,28 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse, rosic::rsMultiBandE
 
 void MultiBandEffect::createParameters()
 {
+  ScopedLock scopedLock(*lock);
 
+  typedef rosic::rsMultiBandEffect MBE;
+  MBE* mbe = core;
 
+  typedef Parameter Param;
+  Param* p;
+
+}
+
+void MultiBandEffect::parameterChanged(Parameter* p)
+{
+  ModulatableAudioModule::parameterChanged(p);
+  sendChangeMessage();
+}
+
+int MultiBandEffect::getBandContainingFrequency(double freq)
+{
+  for(int i = 0; i < core->getNumberOfBands()-1; i++)
+    if(core->getSplitFrequency(i) > freq)
+      return i;
+  return core->getNumberOfBands()-1;
 }
 
 //=================================================================================================
@@ -85,19 +105,7 @@ void MultiCompAudioModule::createParameters()
   getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
 }
 
-void MultiCompAudioModule::parameterChanged(Parameter* p)
-{
-  ModulatableAudioModule::parameterChanged(p);
-  sendChangeMessage();
-}
 
-int MultiCompAudioModule::getBandContainingFrequency(double freq)
-{
-  for(int i = 0; i < multiCompCore.getNumberOfBands()-1; i++)
-    if(multiCompCore.getSplitFrequency(i) > freq)
-      return i;
-  return multiCompCore.getNumberOfBands()-1;
-}
 
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {

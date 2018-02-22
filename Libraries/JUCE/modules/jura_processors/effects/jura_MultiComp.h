@@ -15,13 +15,22 @@ public:
 
   virtual void createParameters();
 
+  virtual void parameterChanged(Parameter* p) override;
 
+  void selectBand(int bandToSelect) { selectedBand = bandToSelect; }
+
+  int getSelectedBand() const { return selectedBand; }
+
+  int getMaxNumBands() const { return maxNumBands; }
+
+  int getBandContainingFrequency(double freq);
 
 protected:
 
   rosic::rsMultiBandEffect* core;
 
   int maxNumBands  =  0;  // assigned in constructor
+  int selectedBand =  0;  // -1 is code for "None"
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffect)
 };
@@ -52,15 +61,9 @@ public:
   dynamically and are thus always there). */
   virtual void createParameters();
 
-  virtual void parameterChanged(Parameter* p) override;
 
-  void selectBand(int bandToSelect) { selectedBand = bandToSelect; }
 
-  int getSelectedBand() const { return selectedBand; }
 
-  int getMaxNumBands() const { return maxNumBands; }
-
-  int getBandContainingFrequency(double freq);
 
   /** Returns a pointer to our core DSP object. */
   rosic::rsMultiBandCompressor* getCore() { return &multiCompCore; }
@@ -82,9 +85,6 @@ public:
 protected:
 
   rosic::rsMultiBandCompressor multiCompCore;
-
-
-  int selectedBand =  0;  // -1 is code for "None"
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiCompAudioModule)
 };
