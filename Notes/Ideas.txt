@@ -71,5 +71,12 @@ protected:
 -the overall design goal is to have a framework within which polyphonic 
  instruments can be built without storing any data redundantly
 
+ fourier synthesis of a hilbert curve:
+ https://www.reddit.com/r/visualizedmath/comments/7xtxgb/hilbert_curve/
+ http://www4.ncsu.edu/~njrose/pdfFiles/HilbertCurve.pdf
+ http://www.fundza.com/algorithmic/space_filling/hilbert/basics/index.html
+ https://en.wikipedia.org/wiki/Hilbert_curve
+ https://en.wikipedia.org/wiki/Moore_curve
+ https://github.com/adishavit/hilbert
 
  

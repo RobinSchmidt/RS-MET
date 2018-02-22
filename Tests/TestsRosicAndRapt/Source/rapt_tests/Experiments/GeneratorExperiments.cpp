@@ -248,6 +248,59 @@ void rayBouncer()
   plt.plot();
 }
 
+
+// from https://en.wikipedia.org/wiki/Hilbert_curve
+void rot(int n, int *x, int *y, int rx, int ry) //rotate/flip a quadrant appropriately
+{
+  if (ry == 0) {
+    if (rx == 1) {
+      *x = n-1 - *x;
+      *y = n-1 - *y;
+    }
+    //Swap x and y
+    int t  = *x;
+    *x = *y;
+    *y = t;
+  }
+}
+int xy2d (int n, int x, int y)           // convert (x,y) to d
+{
+  int rx, ry, s, d=0;
+  for (s=n/2; s>0; s/=2) {
+    rx = (x & s) > 0;
+    ry = (y & s) > 0;
+    d += s * s * ((3 * rx) ^ ry);
+    rot(s, &x, &y, rx, ry);
+  }
+  return d;
+}
+void d2xy(int n, int d, int *x, int *y)  // convert d to (x,y)
+{
+  int rx, ry, s, t=d;
+  *x = *y = 0;
+  for (s=1; s<n; s*=2) {
+    rx = 1 & (t/2);
+    ry = 1 & (t ^ rx);
+    rot(s, x, y, rx, ry);
+    *x += s * rx;
+    *y += s * ry;
+    t /= 4;
+  }
+}
+void hilbertCurve()
+{
+  int order = 4;
+  int n = (int) pow(4, order); // wiki says, it could be a power of 2 (but then it'a not a square)
+
+  std::vector<int> x(n), y(n);
+  for(int d = 0; d < n; d++)
+    d2xy(n, d, &x[d], &y[d]);
+
+  GNUPlotter plt;
+  plt.addDataArrays(n, &x[0], &y[0]);
+  plt.plot();
+}
+
 void xoxosOsc()
 {
   // Oscillator based on an ellipse in the xy-plane
