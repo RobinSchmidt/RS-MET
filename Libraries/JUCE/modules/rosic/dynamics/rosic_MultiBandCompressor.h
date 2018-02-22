@@ -40,6 +40,29 @@ public:
   //---------------------------------------------------------------------------------------------
   /** \name Processing */
 
+  /** Splits an incoming stereo signal into "numBands" bands and fills our member arrays 
+  tmpL, tmpR with the individual band outputs. Subclasses are supposed to call this before 
+  processing each band. */
+  INLINE void split(double *inOutL, double *inOutR)
+  {
+    splitterL.processSampleFrame(*inOutL, &tmpL[0]);
+    splitterR.processSampleFrame(*inOutR, &tmpR[0]);
+  }
+
+  /** Recombines the bands from our member arrays tmpL, tmpR into the outputs. Subclasses are 
+  supposed to call this after processing each indiviudal band to produce the final recombined
+  output. */
+  INLINE void recombine(double *inOutL, double *inOutR)
+  {
+    *inOutL = *inOutR = 0;
+    for(int k = 0; k < numBands; k++)
+    {
+      *inOutL += tmpL[k];
+      *inOutR += tmpR[k];
+    }
+  }
+
+  /** Resets the states of the band-splitting filters. */
   void reset();
 
 protected:
@@ -105,21 +128,10 @@ protected:
 
 INLINE void rsMultiBandCompressor::getSampleFrameStereo(double *inOutL, double *inOutR)
 {
-  // split inputs into frequency bands:
-  splitterL.processSampleFrame(*inOutL, &tmpL[0]);
-  splitterR.processSampleFrame(*inOutR, &tmpR[0]);
-
-  // compress individual bands:
-  for(int k = 0; k < numBands; k++)
+  split(inOutL, inOutR);
+  for(int k = 0; k < numBands; k++)  // compress individual bands
     compressors[k]->getSampleFrameStereo(&tmpL[k], &tmpR[k]);
-
-  // recombine compressed bands into output:
-  *inOutL = *inOutR = 0;
-  for(int k = 0; k < numBands; k++)
-  {
-    *inOutL += tmpL[k];
-    *inOutR += tmpR[k];
-  }
+  recombine(inOutL, inOutR);
 }
 
 }

@@ -1,6 +1,14 @@
 rsMultiBandEffect::rsMultiBandEffect()
 {
+  tmpL.resize(maxNumBands);
+  tmpR.resize(maxNumBands);
 
+  // init splitter frequencies for 16 bands (15 frequencies):
+  vector<double> splitFreqs = { 60, 90, 135, 200, 300, 450, 675, 1000, 1500, 2200, 3000, 4500, 
+    6000, 9000, 13000 }; 
+  splitterL.setSplitFrequencies(splitFreqs);
+  splitterR.setSplitFrequencies(splitFreqs);
+  setNumberOfBands(16);
 }
 
 // setup:
@@ -42,18 +50,9 @@ void rsMultiBandEffect::reset()
 
 rsMultiBandCompressor::rsMultiBandCompressor() 
 {
-  tmpL.resize(maxNumBands);
-  tmpR.resize(maxNumBands);
   compressors.resize(maxNumBands);
   for(int k = 0; k < maxNumBands; k++)
     compressors[k] = new rosic::Compressor;
-
-  // init splitter frequencies for 16 bands (15 frequencies):
-  vector<double> splitFreqs = { 60, 90, 135, 200, 300, 450, 675, 1000, 1500, 2200, 3000, 4500, 
-    6000, 9000, 13000 }; 
-  splitterL.setSplitFrequencies(splitFreqs);
-  splitterR.setSplitFrequencies(splitFreqs);
-  setNumberOfBands(16);
 }
 
 rsMultiBandCompressor::~rsMultiBandCompressor()
