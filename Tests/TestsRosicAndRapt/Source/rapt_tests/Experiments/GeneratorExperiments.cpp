@@ -1,5 +1,6 @@
 #include "GeneratorExperiments.h"
 using namespace RAPT;
+//using namespace rosic;
 
 void particleForceDistanceLaw()
 {
@@ -336,13 +337,13 @@ void getDxDy(int& dx, int& dy, int i, int n) //
 
   // hmm...maybe it's easier to use the current x,y coordinates as input values too?
 
-  // works for n=16 ...but does it generalize?
+  // works for n=16 ...but does it generalize? nope!
 
   dx = dy = 0;
   int n2 = n /2;
   //int n4 = n2/2;
 
-  if(i % 4 == 0)       { dx = -1; dy =  0; }  // left
+  if     (i % 4 == 0)  { dx = -1; dy =  0; }  // left
   else if(i % 4 == 1)  { dx =  0; dy = +1; }  // up
   else if(i % 4 == 2)  { dx = +1; dy =  0; }  // right
   else if(i % 4 == 3)  { dx =  0; dy = +1; }  // up
@@ -354,31 +355,58 @@ void getDxDy(int& dx, int& dy, int i, int n) //
 
 void hilbertCurve()
 {
-  int order = 2;
+  int order = 3;
   int n = (int) pow(4, order); // wiki says, it could be a power of 2 (but then it'a not a square)
   int max = (int) pow(2, order);
 
   std::vector<int> x(n), y(n);
+  int i;
+  for(i = 0; i < n; i++)
+    d2xy(n, i, &x[i], &y[i]);
+
+  //// turn Hilbert curve into (closed) Moore curve (doesnt work yet):
+  //if(rsIsEven(order))
+  //{
+  //  rosic::add(&x[0], 1, &x[0], n);
+  //  for(i = 0; i < n; i++)
+  //  {
+  //    if(x[i] <= max/2) x[i] =   max/4 - (x[i] -   max/4); // left side
+  //    else              x[i] = 3*max/4 - (x[i] - 3*max/4); // right side
+  //  }
+  //  //rosic::add(&y[0], 1, &y[0], n);
+  //  //for(i = 0; i < n; i++)
+  //  //{
+  //  //  if(y[i] <= max/2) y[i] =   max/4 - (y[i] -   max/4);
+  //  //  else              y[i] = 3*max/4 - (y[i] - 3*max/4);
+  //  //}
+
+  //}
+  //else
+  //{
+
+  //}
+
   //for(int d = 0; d < n; d++)
-  //  d2xy(n, d, &x[d], &y[d]);
+  //  d2xym(n, d, &x[d], &y[d]);
 
-  for(int d = 0; d < n; d++)
-    d2xym(n, d, &x[d], &y[d]);
+  //// experimental - try to make a Moore curve (closed Hilbert curve - works only for order 2)
+  //int xi = 0, yi = 0;
+  //int dx = 0, dy = 0;
+  //for(int i = 0; i < n; i++)
+  //{
+  //  x[i] = xi; y[i] = yi;
+  //  getDxDy(dx, dy, i, n);
+  //  xi += dx; yi += dy;
+  //}
 
-  // experimental - try to make a Moore curve (closed Hilbert curve)
-  int xi = 0, yi = 0;
-  int dx = 0, dy = 0;
-  for(int i = 0; i < n; i++)
-  {
-    x[i] = xi; y[i] = yi;
-    getDxDy(dx, dy, i, n);
-    xi += dx; yi += dy;
-  }
+  // maybe to make a Moore curve, we just create a regular Hilbert curve and reflect left and right 
+  // halves around their center axes? ...or in this implementation we must actually reflect top and
+  // bottom halves when order is odd, or reflect left/right when order is even
 
 
   GNUPlotter plt;
   plt.addDataArrays(n, &x[0], &y[0]);
-  plt.setRange(-1, max, -1, max);
+  plt.setRange(-1, max+1, -1, max+1);
   plt.setPixelSize(400, 400);
   plt.addCommand("set size square");  // set aspect ratio to 1:1
   plt.plot();
@@ -392,6 +420,13 @@ void hilbertCurve()
   // https://github.com/adishavit/hilbert
   // https://marcin-chwedczuk.github.io/iterative-algorithm-for-drawing-hilbert-curve
   // http://wwwmayr.informatik.tu-muenchen.de/konferenzen/Jass05/courses/2/Valgaerts/Valgaerts_paper.pdf
+  // http://people.csail.mit.edu/jaffer/Geometry/HSFC
+  // https://arxiv.org/pdf/1211.0175.pdf
+  // http://www.dcs.bbk.ac.uk/~jkl/thesis.pdf
+  // http://www.fractalcurves.com/Taxonomy.html
+  // http://archive.org/stream/BrainfillingCurves-AFractalBestiary/BrainFilling#page/n27/mode/2up
+
+  // maybe i should implement a Lindenmayer system ("L-system")
 }
 
 void xoxosOsc()

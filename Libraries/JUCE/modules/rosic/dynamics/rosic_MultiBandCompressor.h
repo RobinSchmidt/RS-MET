@@ -4,20 +4,36 @@
 namespace rosic
 {
 
+/** Baseclass for multiband effects such as multiband-compressors, -distortion. etc. */
+
+class rsMultiBandEffect
+{
+
+public:
+
+  /** Constructor. */
+  rsMultiBandEffect();
+
+protected:
+
+
+};
+
+//=================================================================================================
+
 /** A multiband compressor with an arbitrary number of bands and perfect reconstruction, i.e. with 
 neutral settings, it will be totally transparent (up to roundoff error) and not color the signal in
 any way. */
 
-class rsMultiBandCompressor
+class rsMultiBandCompressor : public rsMultiBandEffect
 {
 
 public:
 
   //---------------------------------------------------------------------------------------------
-/** \name Construction/Destruction */
+  /** \name Construction/Destruction */
 
-  /** Constructor - constructs a dynamics processor with a given maximum number of samples
-  lookahead. */
+  /** Constructor. */
   rsMultiBandCompressor();
 
   /** Destructor */

@@ -1,3 +1,10 @@
+rsMultiBandEffect::rsMultiBandEffect()
+{
+
+}
+
+//=================================================================================================
+
 rsMultiBandCompressor::rsMultiBandCompressor() 
 {
   tmpL.resize(maxNumBands);
