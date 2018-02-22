@@ -1,17 +1,40 @@
 #ifndef jura_MultiComp_h
 #define jura_MultiComp_h
 
+
+/** Baseclass for multiband effects. */
+
+class JUCE_API MultiBandEffect : public jura::ModulatableAudioModule, public ChangeBroadcaster
+{
+
+public:
+
+  MultiBandEffect(CriticalSection *lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
+
+
+protected:
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffect)
+};
+
+
+
+
+
+//=================================================================================================
+
 /** Multiband compressor with up to 16 bands. 
 
 todo: 
- -factor out a class MultiBandEffect (in jura and rosic)
+ -factor out a class MultiBandEffect (in jura and rosic (done) )
  -write the plot-editor for that baseclass
  -ensure that the split frequencies are always sorted from low to high
  -restrict ranges for the split-freqs according to the neighbours
   (maybe do these things in rosic::MultiBandEffect)
 
 */
-
 
 class JUCE_API MultiCompAudioModule : public jura::ModulatableAudioModule, public ChangeBroadcaster
 {

@@ -1,3 +1,18 @@
+MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
+  : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
+{
+  ScopedLock scopedLock(*lock);
+  //maxNumBands = core.getMaxNumberOfBands();
+  //createParameters();
+}
+
+
+
+
+
+//=================================================================================================
+
 MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
