@@ -291,6 +291,7 @@ void hilbertCurve()
 {
   int order = 4;
   int n = (int) pow(4, order); // wiki says, it could be a power of 2 (but then it'a not a square)
+  int max = (int) pow(2, order);
 
   std::vector<int> x(n), y(n);
   for(int d = 0; d < n; d++)
@@ -298,6 +299,9 @@ void hilbertCurve()
 
   GNUPlotter plt;
   plt.addDataArrays(n, &x[0], &y[0]);
+  plt.setRange(-1, max, -1, max);
+  plt.setPixelSize(400, 400);
+  plt.addCommand("set size square");  // set aspect ratio to 1:1
   plt.plot();
 }
 
