@@ -20,9 +20,6 @@ protected:
 };
 
 
-
-
-
 //=================================================================================================
 
 /** Multiband compressor with up to 16 bands. 
@@ -36,7 +33,7 @@ todo:
 
 */
 
-class JUCE_API MultiCompAudioModule : public jura::ModulatableAudioModule, public ChangeBroadcaster
+class JUCE_API MultiCompAudioModule : public jura::MultiBandEffect
 {
 
 public:

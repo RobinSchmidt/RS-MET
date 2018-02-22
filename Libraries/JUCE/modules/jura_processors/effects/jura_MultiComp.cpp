@@ -15,7 +15,7 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
 
 MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
-  : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
+  : MultiBandEffect(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("MultiComp");
