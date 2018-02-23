@@ -337,6 +337,7 @@ void lindenmayer()
   //lr.getMooreCurve(4, x, y);
   //lr.get32SegmentCurve(2, x, y);
   lr.getQuadraticKochIsland(3, x, y);
+  lr.getSquareCurve(4, x, y);
 
   // plot:
   GNUPlotter plt;

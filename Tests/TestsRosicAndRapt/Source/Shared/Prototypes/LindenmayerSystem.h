@@ -127,8 +127,9 @@ public:
   // some more curves taken from: http://mathforum.org/advanced/robertd/lsys2d.html
 
   void get32SegmentCurve(int order, std::vector<double>& x, std::vector<double>& y);
-
   void getQuadraticKochIsland(int order, std::vector<double>& x, std::vector<double>& y);
+
+  void getSquareCurve(int order, std::vector<double>& x, std::vector<double>& y);
 
 
   // maybe have a "numPoints" parameter that is used for resampling the resulting curve to a given

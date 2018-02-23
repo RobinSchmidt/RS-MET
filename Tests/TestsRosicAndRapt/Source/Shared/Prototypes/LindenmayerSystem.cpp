@@ -104,6 +104,8 @@ void LindenmayerRenderer::getKochSnowflake(int N, std::vector<double>& x, std::v
 {
   clearRules();
   addRule('F', "F+F--F+F");
+
+  // factor out into function render(seed, angle, ..)
   std::string str = apply("F--F--F", N);
   render(str, 60, x, y);
   // hmm... an order 1 snowflake is not centered after normalizing - maybe we should have different 
@@ -134,6 +136,14 @@ void LindenmayerRenderer::getQuadraticKochIsland(int N,
   clearRules();
   addRule('F', "F-F+F+FFF-F-F+F");
   std::string str = apply("F+F+F+F", N);
+  render(str, 90, x, y);
+}
+
+void LindenmayerRenderer::getSquareCurve(int N, std::vector<double>& x, std::vector<double>& y)
+{
+  clearRules();
+  addRule('X', "XF-F+F-XF+F+XF-F+F-X");
+  std::string str = apply("F+XF+F+XF", N);
   render(str, 90, x, y);
 }
 
