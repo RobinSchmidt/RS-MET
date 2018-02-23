@@ -15,16 +15,14 @@ void Snowflake::createParameters()
   typedef Parameter Param;
   Param* p;
 
-
+  p = new Param("Iterations", 0, 10, 0, Parameter::INTEGER);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setNumIterations);
 
   /*
-  p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<EO>(eo, &EO::setAmplitude);
-
   p = new Param("Tune", -60.0, +60.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<EO>(eo, &EO::setDetune);
+  p->setValueChangeCallback<SF>(sf, &SF::setDetune);
   */
 }
 

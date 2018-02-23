@@ -23,9 +23,24 @@ public:
   /** Sets the frequency (in Hz) of the sine to be generated. */
   void setFrequency(double newFrequency);
 
+  /** Sets the number of iterations for the L-system. */
+  void setNumIterations(int newNumIterations) { numIterations = newNumIterations; }
+
+
+  void clearRules() { renderer.clearRules(); }
+
+  void addRule(char input, const std::string& output) { renderer.addRule(input, output); }
+
+  void setSeed(const std::string& newSeed) { seed = newSeed; }
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
+
+  /** Renders the wavetable and updates related variables. */
+  void updateWaveTable();
 
   /** Calculates one output-sample frame at a time. */
   INLINE void getSampleFrameStereo(double *outL, double *outR)
@@ -41,6 +56,9 @@ protected:
   std::vector<double> x, y;
 
   LindenmayerRenderer renderer;
+
+  int numIterations = 0;
+  std::string seed;
 
 };
 

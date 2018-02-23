@@ -28,4 +28,36 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Snowflake)
 };
 
+//=================================================================================================
+
+class JUCE_API SnowflakePlot2D
+{
+
+};
+
+class JUCE_API SnowflakePlot1D
+{
+
+};
+
+//=================================================================================================
+
+class JUCE_API SnowflakeEditor : public AudioModuleEditor
+{
+
+public:
+
+  SnowflakeEditor(jura::Snowflake *snowFlakeToEdit);
+  virtual void resized() override;
+
+protected:
+
+  jura::Snowflake *snowflakeModule;
+
+  //AutomatableSlider *frequencySlider;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SnowflakeEditor)
+};
+
+
 #endif

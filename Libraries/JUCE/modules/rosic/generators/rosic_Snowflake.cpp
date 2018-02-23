@@ -7,3 +7,8 @@ void Snowflake::setFrequency(double newFrequency)
 {
 
 }
+
+void Snowflake::updateWaveTable()
+{
+
+}
