@@ -429,6 +429,28 @@ void hilbertCurve()
   // maybe i should implement a Lindenmayer system ("L-system")
 }
 
+void lindenmayer()
+{
+  // Tests a Lindenmayer system that produces a Moore curve.
+  // see: https://en.wikipedia.org/wiki/Moore_curve
+
+  int order = 1; // order of the Moore curve
+
+  // set up the L-system:
+  LindenmayerSystem ls;
+  ls.addRule('L', "-RF+LFL+FR-");
+  ls.addRule('R', "+LF-RFR-FL+");
+  std::string seed = "LFL+F+LFL";
+
+  // iterate the L-system:
+  std::string result = ls.apply(seed, order);
+
+  // translate the result string into a Moore curve:
+
+
+  int dummy = 0;
+}
+
 void xoxosOsc()
 {
   // Oscillator based on an ellipse in the xy-plane

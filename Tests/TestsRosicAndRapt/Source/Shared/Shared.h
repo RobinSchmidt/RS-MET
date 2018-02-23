@@ -8,6 +8,8 @@
 #include "Utilities/FileWriting.h"
 #include "Utilities/PerformanceTestTools.h"
 
+#include "Prototypes/LindenmayerSystem.h"
+
 //#include "rosic/rosic.h"
 
 // for testing the callback performance (this is actually in jura, but anyway):
