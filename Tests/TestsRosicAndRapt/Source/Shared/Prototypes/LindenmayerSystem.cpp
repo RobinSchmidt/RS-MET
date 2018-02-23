@@ -128,6 +128,15 @@ void LindenmayerRenderer::get32SegmentCurve(int N, std::vector<double>& x, std::
   render(str, 90, x, y);
 }
 
+void LindenmayerRenderer::getQuadraticKochIsland(int N, 
+  std::vector<double>& x, std::vector<double>& y)
+{
+  clearRules();
+  addRule('F', "F-F+F+FFF-F-F+F");
+  std::string str = apply("F+F+F+F", N);
+  render(str, 90, x, y);
+}
+
 void LindenmayerRenderer::render(const std::string& str, double angle,
   std::vector<double>& x, std::vector<double>& y)
 {
