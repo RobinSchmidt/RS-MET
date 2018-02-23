@@ -104,10 +104,8 @@ void LindenmayerRenderer::getKochSnowflake(int N, std::vector<double>& x, std::v
 {
   clearRules();
   addRule('F', "F+F--F+F");
+  render("F--F--F", 60, N, x, y);
 
-  // factor out into function render(seed, angle, ..)
-  std::string str = apply("F--F--F", N);
-  render(str, 60, x, y);
   // hmm... an order 1 snowflake is not centered after normalizing - maybe we should have different 
   // normalization modes (center, dcFree, etc.), centering could be based on center of gravity or 
   // something
@@ -118,16 +116,14 @@ void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vect
   clearRules();
   addRule('L', "-RF+LFL+FR-");
   addRule('R', "+LF-RFR-FL+");
-  std::string str = apply("LFL+F+LFL", N);
-  render(str, 90, x, y);
+  render("LFL+F+LFL", 90, N, x, y);
 }
 
 void LindenmayerRenderer::get32SegmentCurve(int N, std::vector<double>& x, std::vector<double>& y)
 {
   clearRules();
   addRule('F', "-F+F-F-F+F+FF-F+F+FF+F-F-FF+FF-FF+F+F-FF-F-F+FF-F-F+F+F-F+");
-  std::string str = apply("F+F+F+F", N);
-  render(str, 90, x, y);
+  render("F+F+F+F", 90, N, x, y);
 }
 
 void LindenmayerRenderer::getQuadraticKochIsland(int N, 
@@ -135,19 +131,24 @@ void LindenmayerRenderer::getQuadraticKochIsland(int N,
 {
   clearRules();
   addRule('F', "F-F+F+FFF-F-F+F");
-  std::string str = apply("F+F+F+F", N);
-  render(str, 90, x, y);
+  render("F+F+F+F", 90, N, x, y);
 }
 
 void LindenmayerRenderer::getSquareCurve(int N, std::vector<double>& x, std::vector<double>& y)
 {
   clearRules();
   addRule('X', "XF-F+F-XF+F+XF-F+F-X");
-  std::string str = apply("F+XF+F+XF", N);
-  render(str, 90, x, y);
+  render("F+XF+F+XF", 90, N, x, y);
 }
 
-void LindenmayerRenderer::render(const std::string& str, double angle,
+void LindenmayerRenderer::render(const std::string& seed, double angle, int order, 
+  std::vector<double>& x, std::vector<double>& y)
+{
+  std::string str = apply(seed, order);
+  translate(str, angle, x, y);
+}
+
+void LindenmayerRenderer::translate(const std::string& str, double angle,
   std::vector<double>& x, std::vector<double>& y)
 {
   turtleGraphics.init(0, 0, 1, 0);

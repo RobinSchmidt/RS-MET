@@ -135,9 +135,12 @@ public:
   // maybe have a "numPoints" parameter that is used for resampling the resulting curve to a given
   // number of points (by linear interpolation)
 
+  void render(const std::string& seed, double angle, int order, 
+    std::vector<double>& x, std::vector<double>& y);
+
   /** Renders the given Lindenmayer string into a sequence of points using the given turning 
   angle. */
-  void render(const std::string& str, double angle, 
+  void translate(const std::string& str, double angle, 
     std::vector<double>& x, std::vector<double>& y);
 
   /** Normalizes the xy coordinates such that both x and y are free of DC (centered around 0) and
