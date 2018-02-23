@@ -434,29 +434,46 @@ void lindenmayer()
   // Tests a Lindenmayer system that produces a Moore curve.
   // see: https://en.wikipedia.org/wiki/Moore_curve
 
-  int order = 5; // order of the Moore curve
+  int order = 4; // order of the Moore curve (for audio, up to 5 makes sense)
+  int max = (int) pow(2, order+1);
 
   // set up the L-system:
   LindenmayerSystem ls;
   ls.addRule('L', "-RF+LFL+FR-");
   ls.addRule('R', "+LF-RFR-FL+");
-  std::string seed = "LFL+F+LFL";
+  std::string seed = "LFL+F+LFL"; // original Moore curve
+  //std::string seed = "LFL+LR+F+RL+LFL";
 
   // iterate the L-system:
   std::string result = ls.apply(seed, order);
 
   // translate the result string into a Moore curve:
   TurtleGraphics tg;
+  tg.init(0, max/2-1, 1, 0);
   std::vector<double> x, y;
   tg.translate(result, x, y);
 
   // plot:
   GNUPlotter plt;
+
+  //// 1D:
+  //plt.addDataArrays(x.size(), &x[0]);
+  //plt.addDataArrays(y.size(), &y[0]);
+
+  // 2D:
   plt.addDataArrays(x.size(), &x[0], &y[0]);
-  //plt.setRange(-1, max+1, -1, max+1);
+  plt.setRange(-1, max, -1, max);
   plt.setPixelSize(400, 400);
   plt.addCommand("set size square");  // set aspect ratio to 1:1
+
   plt.plot();
+
+  // other closed curves that can be generated:
+  // https://en.wikipedia.org/wiki/Koch_snowflake
+  // http://mathforum.org/advanced/robertd/lsys2d.html (many curves with L-system rules)
+
+  // not sure, if doable by L-system:
+  // https://en.wikipedia.org/wiki/Sierpi%C5%84ski_curve
 }
 
 void xoxosOsc()

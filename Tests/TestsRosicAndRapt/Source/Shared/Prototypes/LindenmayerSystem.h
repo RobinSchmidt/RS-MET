@@ -57,6 +57,8 @@ class TurtleGraphics
 
 public:
 
+  void init(double x, double y, double dx, double dy);
+
   void goForward();
 
   void turnLeft();

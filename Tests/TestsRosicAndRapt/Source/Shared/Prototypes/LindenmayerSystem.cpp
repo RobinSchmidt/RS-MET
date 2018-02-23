@@ -32,6 +32,14 @@ std::string LindenmayerSystem::apply(const std::string& s, int num)
 
 //=================================================================================================
 
+void TurtleGraphics::init(double _x, double _y, double _dx, double _dy)
+{
+  x  = _x;
+  y  = _y;
+  dx = _dx;
+  dy = _dy;
+}
+
 void TurtleGraphics::goForward()
 {
   x += dx;
