@@ -113,6 +113,9 @@ public:
   /** Turns normalization on/off. The normalization also includes DC removal. */
   void setNormalization(bool shouldNormalize) { normalize = shouldNormalize; }
 
+
+
+
   /** Produces the array of verices for a Koch snowflake of given order.
   see: https://en.wikipedia.org/wiki/Koch_snowflake */
   void getKochSnowflake(int order, std::vector<double>& x, std::vector<double>& y);
@@ -128,6 +131,11 @@ public:
 
   // maybe have a "numPoints" parameter that is used for resampling the resulting curve to a given
   // number of points (by linear interpolation)
+
+  /** Renders the given Lindenmayer string into a sequence of points using the given turning 
+  angle. */
+  void render(const std::string& str, double angle, 
+    std::vector<double>& x, std::vector<double>& y);
 
   /** Normalizes the xy coordinates such that both x and y are free of DC (centered around 0) and
   the maximum absolute value is 1 (this second step is done by finding the maximum absolute value

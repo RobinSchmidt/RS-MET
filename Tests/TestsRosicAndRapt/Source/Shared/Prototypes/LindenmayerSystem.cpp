@@ -105,15 +105,10 @@ void LindenmayerRenderer::getKochSnowflake(int N, std::vector<double>& x, std::v
   clearRules();
   addRule('F', "F+F--F+F");
   std::string str = apply("F--F--F", N);
-
-  turtleGraphics.init(0, 0, 1, 0);
-  turtleGraphics.setAngle(60);
-  turtleGraphics.translate(str, x, y);
-
-  if(normalize) 
-    normalizeXY(x, y); 
-  // hmm... an order 1 snowflake is not centered - maybe we should have different normalization 
-  // modes (center, dcFree, etc.), centering could be based on center of gravity or something
+  render(str, 60, x, y);
+  // hmm... an order 1 snowflake is not centered after normalizing - maybe we should have different 
+  // normalization modes (center, dcFree, etc.), centering could be based on center of gravity or 
+  // something
 }
 
 void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vector<double>& y)
@@ -122,13 +117,7 @@ void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vect
   addRule('L', "-RF+LFL+FR-");
   addRule('R', "+LF-RFR-FL+");
   std::string str = apply("LFL+F+LFL", N);
-
-  turtleGraphics.init(0, 0, 1, 0);
-  turtleGraphics.setAngle(90);
-  turtleGraphics.translate(str, x, y);
-
-  if(normalize) 
-    normalizeXY(x, y);
+  render(str, 90, x, y);
 }
 
 void LindenmayerRenderer::get32SegmentCurve(int N, std::vector<double>& x, std::vector<double>& y)
@@ -136,11 +125,15 @@ void LindenmayerRenderer::get32SegmentCurve(int N, std::vector<double>& x, std::
   clearRules();
   addRule('F', "-F+F-F-F+F+FF-F+F+FF+F-F-FF+FF-FF+F+F-FF-F-F+FF-F-F+F+F-F+");
   std::string str = apply("F+F+F+F", N);
+  render(str, 90, x, y);
+}
 
+void LindenmayerRenderer::render(const std::string& str, double angle,
+  std::vector<double>& x, std::vector<double>& y)
+{
   turtleGraphics.init(0, 0, 1, 0);
-  turtleGraphics.setAngle(90);
+  turtleGraphics.setAngle(angle);
   turtleGraphics.translate(str, x, y);
-
   if(normalize) 
     normalizeXY(x, y);
 }
