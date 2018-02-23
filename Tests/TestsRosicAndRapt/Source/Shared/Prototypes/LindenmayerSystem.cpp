@@ -131,6 +131,20 @@ void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vect
     normalizeXY(x, y);
 }
 
+void LindenmayerRenderer::get32SegmentCurve(int N, std::vector<double>& x, std::vector<double>& y)
+{
+  clearRules();
+  addRule('F', "-F+F-F-F+F+FF-F+F+FF+F-F-FF+FF-FF+F+F-FF-F-F+FF-F-F+F+F-F+");
+  std::string str = apply("F+F+F+F", N);
+
+  turtleGraphics.init(0, 0, 1, 0);
+  turtleGraphics.setAngle(90);
+  turtleGraphics.translate(str, x, y);
+
+  if(normalize) 
+    normalizeXY(x, y);
+}
+
 void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double>& y)
 {
   int N = (int)x.size();
@@ -145,3 +159,12 @@ void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double
   rosic::scale(&x[0], &x[0], N, scl);
   rosic::scale(&y[0], &y[0], N, scl);
 }
+
+// other closed curves that can be generated:
+// http://mathforum.org/advanced/robertd/lsys2d.html (many curves with L-system rules)
+// http://www.kevs3d.co.uk/dev/lsystems/ (applet with examples)
+
+// https://www.cut-the-knot.org/do_you_know/hilbert.shtml
+
+// not sure, if doable by L-system:
+// https://en.wikipedia.org/wiki/Sierpi%C5%84ski_curve

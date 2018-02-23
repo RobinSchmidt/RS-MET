@@ -334,8 +334,8 @@ void lindenmayer()
 
   // uncomment the curve, you want to render:
   //lr.getKochSnowflake(3, x, y);
-  lr.getMooreCurve(4, x, y);
-
+  //lr.getMooreCurve(4, x, y);
+  lr.get32SegmentCurve(2, x, y);
 
   // plot:
   GNUPlotter plt;
@@ -351,15 +351,6 @@ void lindenmayer()
   plt.addCommand("set size square");  // set aspect ratio to 1:1
 
   plt.plot();
-
-  // other closed curves that can be generated:
-  // http://mathforum.org/advanced/robertd/lsys2d.html (many curves with L-system rules)
-  // http://www.kevs3d.co.uk/dev/lsystems/ (applet with examples)
-
-  // https://www.cut-the-knot.org/do_you_know/hilbert.shtml
-
-  // not sure, if doable by L-system:
-  // https://en.wikipedia.org/wiki/Sierpi%C5%84ski_curve
 }
 
 void xoxosOsc()
