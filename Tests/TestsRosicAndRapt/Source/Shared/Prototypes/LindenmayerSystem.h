@@ -135,7 +135,10 @@ public:
   // maybe have a "numPoints" parameter that is used for resampling the resulting curve to a given
   // number of points (by linear interpolation)
 
-  void render(const std::string& seed, double angle, int order, 
+  /** Given our set of rules, this function iteratively applies the text-replacement up to the 
+  given order and then renders the resulting string into a sequence of x,y points using turtle
+  graphics with given angle. */
+  void render(const std::string& seed, int order, double angle, 
     std::vector<double>& x, std::vector<double>& y);
 
   /** Renders the given Lindenmayer string into a sequence of points using the given turning 
