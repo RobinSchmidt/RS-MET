@@ -9,7 +9,7 @@ class rsRotationXY
 
 public:
 
-  rsRotationXY(T angle)
+  rsRotationXY(T angle = 0)
   {
     r = angle;
     updateCoeffs();

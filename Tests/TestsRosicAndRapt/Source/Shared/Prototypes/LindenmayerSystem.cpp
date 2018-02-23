@@ -32,6 +32,17 @@ std::string LindenmayerSystem::apply(const std::string& s, int num)
 
 //=================================================================================================
 
+void TurtleGraphics::setAngle(double degrees)
+{
+  double radians = RAPT::rsDegreeToRadiant(degrees);
+  //long double factor =  (PI / 180.0);
+  //double radians = (double) (factor * (long double) degrees);
+  rotLeft.setAngle(  radians);
+  rotRight.setAngle(-radians);
+  // entries of the rotation matrices that should be 0 are at 6.123e-17 - probably not an issue in 
+  // practice but not nice - maybe clamp to zero anything below 1.e-16
+}
+
 void TurtleGraphics::init(double _x, double _y, double _dx, double _dy)
 {
   x  = _x;
@@ -48,17 +59,18 @@ void TurtleGraphics::goForward()
 
 void TurtleGraphics::turnLeft()
 {
-  // todo: use left/right rotation matrices with adjustable angle (currently we turn 90°)
-  double tx = dx;
-  dx = -dy;
-  dy =  tx;
+  rotLeft.apply(&dx, &dy);
+  //double tx = dx;
+  //dx = -dy;
+  //dy =  tx;
 }
 
 void TurtleGraphics::turnRight()
 {
-  double tx = dx;
-  dx =  dy;
-  dy = -tx;
+  rotRight.apply(&dx, &dy);
+  //double tx = dx;
+  //dx =  dy;
+  //dy = -tx;
 }
 
 void TurtleGraphics::translate(const std::string& str, 
@@ -76,6 +88,8 @@ void TurtleGraphics::translate(const std::string& str,
       turnLeft();
     if(str[i] == '-')   
       turnRight();
+    if(str[i] == 'f')    // this is nonstandard, standard would be to go forward but avoid
+      goForward();       // drawing a line (that cannot expressed here)
     if(str[i] == 'F') { 
       goForward(); 
       vx.push_back(x); 

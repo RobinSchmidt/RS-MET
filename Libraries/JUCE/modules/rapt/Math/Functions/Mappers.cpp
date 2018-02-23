@@ -22,16 +22,16 @@ template<class T>
 T rsCoordinateMapper<T>::map(T x) const
 {
   if(logScaled)
-    return rsExpToLin(x, inMin, inMax, outMin, outMax);
-  return rsLinToLin(x, inMin, inMax, outMin, outMax);
+    return (T)rsExpToLin(x, inMin, inMax, outMin, outMax);
+  return (T)rsLinToLin(x, inMin, inMax, outMin, outMax);
 }
 
 template<class T>
 T rsCoordinateMapper<T>::unmap(T x) const
 {
   if(logScaled)
-    return rsLinToExp(x, outMin, outMax, inMin, inMax);
-  return rsLinToLin(x, outMin, outMax, inMin, inMax);
+    return (T)rsLinToExp(x, outMin, outMax, inMin, inMax);
+  return (T)rsLinToLin(x, outMin, outMax, inMin, inMax);
 }
 
 // todo: get rid of code duplication and optimize (precompute coeffs)

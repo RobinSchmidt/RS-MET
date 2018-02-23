@@ -1,8 +1,9 @@
 #ifndef LindenmayerSystem_h
 #define LindenmayerSystem_h
 
-#include <vector>
-#include <string>
+//#include <vector>
+//#include <string>
+#include "rosic/rosic.h"
 
 /** Implements a Lindenmayer system (aka L-system). This is a system that iteratively replaces 
 certain characters in a string by replacement strings according to a set of replacement rules. 
@@ -53,6 +54,8 @@ protected:
 /** Implements a "turtle graphics" drawer that can be used to translate strings produced by a
 Lindenmayer system into 2D drawings (i.e. a sequence of points in the xy-plane).
 
+todo: maybe make a 3D version
+
 References:
 https://en.wikipedia.org/wiki/Turtle_graphics  */
 
@@ -61,12 +64,22 @@ class TurtleGraphics
 
 public:
 
+  /** Creates a new TurtleGraphics object using the given angle (in degrees, default is 90°) */
+  TurtleGraphics(double angle = 90) { setAngle(angle); }
+
+  /** Sets the turning angle in degrees. */
+  void setAngle(double degrees);
+
+  /** Initializes position (x,y) and direction vector (dx,dy). */
   void init(double x, double y, double dx, double dy);
 
+  /** Moves the turtle one step into the current direction. */
   void goForward();
 
+  /** Turns the direction vector to the left. */
   void turnLeft();
 
+  /** Turns the direction vector to the right. */
   void turnRight();
 
   /** Translates the given string into arrays of x,y coordinates of vertices. */
@@ -76,6 +89,8 @@ protected:
 
   double  x = 0,  y = 0;  // current position
   double dx = 1, dy = 0;  // direction vector
+
+  RAPT::rsRotationXY<double> rotLeft, rotRight;
 
 };
 

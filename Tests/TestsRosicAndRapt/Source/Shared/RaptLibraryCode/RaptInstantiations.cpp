@@ -42,6 +42,7 @@ template void RAPT::rsArray::fillWithRandomValues(double* x, int N, double min, 
 // Math:
 template int RAPT::rsClip(int x, int min, int max);
 template RAPT::rsConicSection<float>;
+template RAPT::rsRotationXY<double>;
 
 template RAPT::rsCoordinateMapper<float>;
 template RAPT::rsCoordinateMapper<double>;

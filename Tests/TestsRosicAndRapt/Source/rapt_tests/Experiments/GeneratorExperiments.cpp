@@ -462,7 +462,7 @@ void lindenmayer()
   //plt.addDataArrays(y.size(), &y[0]);
 
   // 2D:
-  plt.addDataArrays(x.size(), &x[0], &y[0]);
+  plt.addDataArrays((int)x.size(), &x[0], &y[0]);
   plt.setRange(-1, max, -1, max);
   plt.setPixelSize(400, 400);
   plt.addCommand("set size square");  // set aspect ratio to 1:1
