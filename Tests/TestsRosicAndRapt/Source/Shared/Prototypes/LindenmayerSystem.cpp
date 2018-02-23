@@ -29,3 +29,52 @@ std::string LindenmayerSystem::apply(const std::string& s, int num)
     r = apply(r);
   return r; 
 }
+
+//=================================================================================================
+
+void TurtleGraphics::goForward()
+{
+  x += dx;
+  y += dy;
+}
+
+void TurtleGraphics::turnLeft()
+{
+  // todo: use left/right rotation matrices with adjustable angle (currently we turn 90°)
+  double tx = dx;
+  dx = -dy;
+  dy =  tx;
+}
+
+void TurtleGraphics::turnRight()
+{
+  double tx = dx;
+  dx =  dy;
+  dy = -tx;
+}
+
+void TurtleGraphics::translate(const std::string& str, 
+  std::vector<double>& vx, std::vector<double>& vy)
+{
+  // clear and add initial vertex:
+  vx.clear();
+  vy.clear();
+  vx.push_back(x); 
+  vy.push_back(y); 
+
+  // loop through the string and add vertices as needed:
+  for(int i = 0; i < str.size(); i++)
+  {
+    if(str[i] == '+')   
+      turnLeft();
+    if(str[i] == '-')   
+      turnRight();
+    if(str[i] == 'F') { 
+      goForward(); 
+      vx.push_back(x); 
+      vy.push_back(y); 
+    }
+  }
+
+  int dummy = 0;
+}

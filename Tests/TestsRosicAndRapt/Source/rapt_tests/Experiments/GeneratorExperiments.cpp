@@ -434,7 +434,7 @@ void lindenmayer()
   // Tests a Lindenmayer system that produces a Moore curve.
   // see: https://en.wikipedia.org/wiki/Moore_curve
 
-  int order = 1; // order of the Moore curve
+  int order = 5; // order of the Moore curve
 
   // set up the L-system:
   LindenmayerSystem ls;
@@ -446,9 +446,17 @@ void lindenmayer()
   std::string result = ls.apply(seed, order);
 
   // translate the result string into a Moore curve:
+  TurtleGraphics tg;
+  std::vector<double> x, y;
+  tg.translate(result, x, y);
 
-
-  int dummy = 0;
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays(x.size(), &x[0], &y[0]);
+  //plt.setRange(-1, max+1, -1, max+1);
+  plt.setPixelSize(400, 400);
+  plt.addCommand("set size square");  // set aspect ratio to 1:1
+  plt.plot();
 }
 
 void xoxosOsc()

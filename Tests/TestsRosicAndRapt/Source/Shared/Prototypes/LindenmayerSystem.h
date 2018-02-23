@@ -7,16 +7,14 @@
 /** Implements a Lindenmayer system (aka L-system). This is a system that iteratively replaces 
 certain characters in a string by replacement strings according to a set of replacement rules. 
 When the resulting strings are translated to graphics by interpreting some of the characters as 
-drawing commands (such as 'F': go forward, '+': turn right, '-': turn left), curves with 
+drawing commands (such as 'F': go forward, '+': turn left, '-': turn right), curves with 
 self-similar features can be generated.
 
 References:
 https://de.wikipedia.org/wiki/Lindenmayer-System
 https://en.wikipedia.org/wiki/L-system
 http://algorithmicbotany.org/papers/abop/abop-ch1.pdf
-http://www.abrazol.com/books/patterngen/  
-
-*/
+http://www.abrazol.com/books/patterngen/  */
 
 class LindenmayerSystem
 {
@@ -46,8 +44,34 @@ protected:
 
 };
 
+//=================================================================================================
 
+/** Implements a "turtle graphics" drawer that can be used to translate strings produced by a
+Lindenmayer system into 2D drawings.
 
+References:
+https://en.wikipedia.org/wiki/Turtle_graphics  */
+
+class TurtleGraphics
+{
+
+public:
+
+  void goForward();
+
+  void turnLeft();
+
+  void turnRight();
+
+  /** Translates the given string into arrays of x,y coordinates of vertices. */
+  void translate(const std::string& str, std::vector<double>& vx, std::vector<double>& vy);
+
+protected:
+
+  double  x = 0,  y = 0;  // current position
+  double dx = 1, dy = 0;  // direction vector
+
+};
 
 
 #endif
