@@ -8,7 +8,7 @@
 #include "Utilities/FileWriting.h"
 #include "Utilities/PerformanceTestTools.h"
 
-#include "Prototypes/LindenmayerSystem.h"
+//#include "Prototypes/LindenmayerSystem.h"
 
 //#include "rosic/rosic.h"
 

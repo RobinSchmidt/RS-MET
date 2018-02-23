@@ -330,10 +330,10 @@ void lindenmayer()
   // Uses a Lindenmayer system to produce various 2D curves.
   
   std::vector<double> x, y;
-  LindenmayerRenderer lr;
+  rosic::LindenmayerRenderer lr;
 
   // uncomment the curve, you want to render:
-  //lr.getKochSnowflake(3, x, y);
+  lr.getKochSnowflake(4, x, y);
   //lr.getMooreCurve(4, x, y);
   //lr.get32SegmentCurve(2, x, y);
   //lr.getQuadraticKochIsland(3, x, y);
@@ -341,7 +341,7 @@ void lindenmayer()
   //lr.getSierpinskiTriangle(6, x, y);
 
   //lr.getSierpinskiTriangle2(2, x, y); // doesn't work
-  lr.getPleasantError(3, x, y);
+  //lr.getPleasantError(3, x, y);
 
   // plot 2D:
   GNUPlotter plt2;

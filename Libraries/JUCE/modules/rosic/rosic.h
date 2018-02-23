@@ -260,6 +260,7 @@
 #include "rendering/rosic_WaveformBuffer.h"
 #include "rendering/rosic_WaveformRenderer.h"
 #include "rendering/rosic_NonRealtimeProcesses.h"
+#include "rendering/rosic_LindenmayerSystem.h"
 
 // some more complex generators/modulators that need includes from rendering:
 #include "generators/rosic_WaveTable.h"              // needs WaveformRenderer

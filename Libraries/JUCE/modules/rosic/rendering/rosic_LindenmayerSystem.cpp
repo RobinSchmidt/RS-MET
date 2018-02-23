@@ -1,4 +1,4 @@
-#include "LindenmayerSystem.h"
+//#include "LindenmayerSystem.h"
 
 void LindenmayerSystem::addRule(char input, const std::string& output)
 {

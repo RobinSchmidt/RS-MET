@@ -168,7 +168,6 @@
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\LindenmayerSystem.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp"/>
@@ -1091,6 +1090,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1577,6 +1579,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AlgorithmicWaveformRenderer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_LindenmayerSystem.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_MultiSegmentWaveformRenderer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1671,7 +1676,6 @@
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\LindenmayerSystem.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h"/>
@@ -2009,6 +2013,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SamplePlayer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.h"/>
@@ -2182,6 +2187,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_VectorMixer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AdditveWaveformRenderer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AlgorithmicWaveformRenderer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_LindenmayerSystem.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_MultiSegmentWaveformRenderer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_NonRealtimeProcesses.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_StandardWaveformRenderer.h"/>

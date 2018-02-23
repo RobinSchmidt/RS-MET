@@ -301,9 +301,6 @@
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\LindenmayerSystem.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
@@ -1261,6 +1258,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.cpp">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.cpp">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClCompile>
@@ -1747,6 +1747,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AlgorithmicWaveformRenderer.cpp">
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_LindenmayerSystem.cpp">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_MultiSegmentWaveformRenderer.cpp">
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClCompile>
@@ -1892,9 +1895,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\LindenmayerSystem.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
@@ -2907,6 +2907,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.h">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.h">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClInclude>
@@ -3424,6 +3427,9 @@
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AlgorithmicWaveformRenderer.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_LindenmayerSystem.h">
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_MultiSegmentWaveformRenderer.h">

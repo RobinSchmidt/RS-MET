@@ -313,16 +313,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/LindenmayerSystem.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-    </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/LindenmayerSystem.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/Shared/Prototypes/ParticleBouncer.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -4293,6 +4283,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/generators/rosic_Snowflake.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/generators/rosic_Snowflake.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rosic/generators/rosic_SuperOscillator.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -6316,6 +6318,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rosic/rendering/rosic_AlgorithmicWaveformRenderer.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/rendering/rosic_LindenmayerSystem.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/rendering/rosic_LindenmayerSystem.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

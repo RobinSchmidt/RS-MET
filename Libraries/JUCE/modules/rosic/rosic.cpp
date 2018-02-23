@@ -217,6 +217,7 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 #include "rendering/rosic_StandardWaveformRenderer.cpp"
 #include "rendering/rosic_WaveformBuffer.cpp"
 #include "rendering/rosic_WaveformRenderer.cpp"
+#include "rendering/rosic_LindenmayerSystem.cpp"
 
 // generators
 #include "generators/rosic_MipMappedWaveTable.cpp"
