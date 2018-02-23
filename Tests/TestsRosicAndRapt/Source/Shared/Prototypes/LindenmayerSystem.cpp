@@ -150,6 +150,31 @@ void LindenmayerRenderer::getSierpinskiTriangle(int N,
   render("FXF--FF--FF", N, 60, x, y);
 }
 
+void LindenmayerRenderer::getSierpinskiTriangle2(int N, 
+  std::vector<double>& x, std::vector<double>& y)
+{
+  clearRules();
+  addRule('F', "F-G+F+G-F");      // F=F-G+F+G-F
+  addRule('G', "GG");             // G=GG
+  render("F-G-G", N, 120, x, y);  // seed = F-G-G
+  // does not work. it was taken from http://www.kevs3d.co.uk/dev/lsystems/ i thought, maybe the
+  // rendere there interprets G as drawing command, but replacing it with X there changed nothing
+  // (it still works there)
+}
+
+void LindenmayerRenderer::getPleasantError(int N, std::vector<double>& x, std::vector<double>& y)
+{
+  clearRules();
+  addRule('F', "F-F++F+F-F-F");         // original
+  //addRule('F', "F-F++F+F-F-F+F-F");     // variation 1
+  //addRule('F', "F-F++F+F-F-F-F+F");
+  //addRule('F', "F-F++F+F-F-F+F+F-F-F");
+  //addRule('F', "F-F++F+F-F-F-F-F+F+F");
+  render("F-F-F-F-F", N, 72, x, y);
+  // hmm...it seems, i need to code a module where the user can enter L-system rules, axioms, etc.
+  // i cannot hardcode all interesting curves - maybe it should be possible to detune left/right
+}
+
 void LindenmayerRenderer::render(const std::string& seed, int order, double angle, 
   std::vector<double>& x, std::vector<double>& y)
 {

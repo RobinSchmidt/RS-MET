@@ -338,22 +338,24 @@ void lindenmayer()
   //lr.get32SegmentCurve(2, x, y);
   //lr.getQuadraticKochIsland(3, x, y);
   //lr.getSquareCurve(4, x, y);
-  lr.getSierpinskiTriangle(6, x, y);
+  //lr.getSierpinskiTriangle(6, x, y);
 
-  // plot:
-  GNUPlotter plt;
+  //lr.getSierpinskiTriangle2(2, x, y); // doesn't work
+  lr.getPleasantError(3, x, y);
 
-  //// 1D:
-  //plt.addDataArrays(x.size(), &x[0]);
-  //plt.addDataArrays(y.size(), &y[0]);
+  // plot 2D:
+  GNUPlotter plt2;
+  plt2.addDataArrays((int)x.size(), &x[0], &y[0]);
+  plt2.setRange(-1.1, +1.1, -1.1, 1.1);
+  plt2.setPixelSize(600, 600);
+  plt2.addCommand("set size square");  // set aspect ratio to 1:1
+  plt2.plot();
 
-  // 2D:
-  plt.addDataArrays((int)x.size(), &x[0], &y[0]);
-  plt.setRange(-1.1, +1.1, -1.1, 1.1);
-  plt.setPixelSize(400, 400);
-  plt.addCommand("set size square");  // set aspect ratio to 1:1
-
-  plt.plot();
+  // plot 1D:
+  GNUPlotter plt1;
+  plt1.addDataArrays(x.size(), &x[0]);
+  plt1.addDataArrays(y.size(), &y[0]);
+  plt1.plot();
 }
 
 void xoxosOsc()

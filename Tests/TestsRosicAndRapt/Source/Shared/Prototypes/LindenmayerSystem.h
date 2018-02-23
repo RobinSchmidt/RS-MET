@@ -124,12 +124,16 @@ public:
   see: https://en.wikipedia.org/wiki/Moore_curve */
   void getMooreCurve(int order, std::vector<double>& x, std::vector<double>& y);
 
-  // some more curves taken from: http://mathforum.org/advanced/robertd/lsys2d.html
-
+  // closed curves taken from: http://mathforum.org/advanced/robertd/lsys2d.html
   void get32SegmentCurve(int order, std::vector<double>& x, std::vector<double>& y);
   void getQuadraticKochIsland(int order, std::vector<double>& x, std::vector<double>& y);
   void getSquareCurve(int order, std::vector<double>& x, std::vector<double>& y);
   void getSierpinskiTriangle(int order, std::vector<double>& x, std::vector<double>& y);
+
+  // closed curves taken from http://www.kevs3d.co.uk/dev/lsystems/
+  void getSierpinskiTriangle2(int order, std::vector<double>& x, std::vector<double>& y);
+    // this doesn't work - why?
+  void getPleasantError(int order, std::vector<double>& x, std::vector<double>& y);
 
 
   // maybe have a "numPoints" parameter that is used for resampling the resulting curve to a given
