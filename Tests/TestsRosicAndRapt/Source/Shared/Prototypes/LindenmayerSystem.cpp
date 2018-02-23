@@ -141,6 +141,15 @@ void LindenmayerRenderer::getSquareCurve(int N, std::vector<double>& x, std::vec
   render("F+XF+F+XF", 90, N, x, y);
 }
 
+void LindenmayerRenderer::getSierpinskiTriangle(int N, 
+  std::vector<double>& x, std::vector<double>& y)
+{
+  clearRules();
+  addRule('F', "FF");
+  addRule('X', "--FXF++FXF++FXF--");
+  render("FXF--FF--FF", 60, N, x, y);
+}
+
 void LindenmayerRenderer::render(const std::string& seed, double angle, int order, 
   std::vector<double>& x, std::vector<double>& y)
 {
