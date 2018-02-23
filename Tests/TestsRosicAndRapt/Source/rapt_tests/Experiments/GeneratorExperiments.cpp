@@ -328,7 +328,6 @@ void hilbertCurve()
 void lindenmayerKoch()
 {
   // Uses a Lindenmayer system to produce a Koch snowflake.
-  // https://en.wikipedia.org/wiki/Koch_snowflake#Representation_as_Lindenmayer_system
 
   std::vector<double> x, y;
   LindenmayerRenderer lr;
@@ -343,6 +342,7 @@ void lindenmayerKoch()
 
   // 2D:
   plt.addDataArrays((int)x.size(), &x[0], &y[0]);
+  plt.setRange(-1.1, +1.1, -1.1, 1.1);
   plt.setPixelSize(400, 400);
   plt.addCommand("set size square");  // set aspect ratio to 1:1
 
@@ -352,29 +352,7 @@ void lindenmayerKoch()
 void lindenmayerMoore()
 {
   // Uses a Lindenmayer system to produce a Moore curve.
-  // see: https://en.wikipedia.org/wiki/Moore_curve
-
-  /*
-  int order = 4; // order of the Moore curve (for audio, up to 5 makes sense)
-  int max = (int) pow(2, order+1);
-
-  // set up the L-system:
-  LindenmayerSystem ls;
-  ls.addRule('L', "-RF+LFL+FR-");
-  ls.addRule('R', "+LF-RFR-FL+");
-  std::string seed = "LFL+F+LFL"; // original Moore curve
-
-  // iterate the L-system:
-  std::string result = ls.apply(seed, order);
-
-  // translate the result string into a Moore curve:
-  TurtleGraphics tg;
-  tg.init(0, max/2-1, 1, 0);
-  std::vector<double> x, y;
-  tg.translate(result, x, y);
-  */
-
-
+  
   std::vector<double> x, y;
   LindenmayerRenderer lr;
   lr.getMooreCurve(4, x, y);
@@ -388,7 +366,7 @@ void lindenmayerMoore()
 
   // 2D:
   plt.addDataArrays((int)x.size(), &x[0], &y[0]);
-  //plt.setRange(-1, max, -1, max);
+  plt.setRange(-1.1, +1.1, -1.1, 1.1);
   plt.setPixelSize(400, 400);
   plt.addCommand("set size square");  // set aspect ratio to 1:1
 

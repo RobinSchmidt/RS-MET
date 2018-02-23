@@ -111,7 +111,9 @@ void LindenmayerRenderer::getKochSnowflake(int N, std::vector<double>& x, std::v
   turtleGraphics.translate(str, x, y);
 
   if(normalize) 
-    normalizeXY(x, y);
+    normalizeXY(x, y); 
+  // hmm... an order 1 snowflake is not centered - maybe we should have different normalization 
+  // modes (center, dcFree, etc.), centering could be based on center of gravity or something
 }
 
 void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vector<double>& y)
@@ -131,5 +133,15 @@ void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vect
 
 void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double>& y)
 {
+  int N = (int)x.size();
 
+  rosic::removeMean(&x[0], N);
+  rosic::removeMean(&y[0], N);
+
+  double maxX = rosic::maxAbs(&x[0], N);
+  double maxY = rosic::maxAbs(&y[0], N);
+  double scl  = 1.0 / max(maxX, maxY);
+
+  rosic::scale(&x[0], &x[0], N, scl);
+  rosic::scale(&y[0], &y[0], N, scl);
 }

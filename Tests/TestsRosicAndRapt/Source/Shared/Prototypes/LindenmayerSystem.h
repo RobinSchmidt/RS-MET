@@ -113,9 +113,12 @@ public:
   /** Turns normalization on/off. The normalization also includes DC removal. */
   void setNormalization(bool shouldNormalize) { normalize = shouldNormalize; }
 
-
+  /** Produces the array of verices for a Koch snowflake of given order.
+  see: https://en.wikipedia.org/wiki/Koch_snowflake */
   void getKochSnowflake(int order, std::vector<double>& x, std::vector<double>& y);
 
+  /** Produces the array of verices for a Moore curve of given order. 
+  see: https://en.wikipedia.org/wiki/Moore_curve */
   void getMooreCurve(int order, std::vector<double>& x, std::vector<double>& y);
 
   // maybe have a "numPoints" parameter that is used for resampling the resulting curve to a given
