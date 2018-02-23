@@ -264,6 +264,7 @@
 
 // some more complex generators/modulators that need includes from rendering:
 #include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
+#include "generators/rosic_Snowflake.h"              // needs LindenmayerSystem
 #include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
 #include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
 #include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator

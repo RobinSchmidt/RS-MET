@@ -1,10 +1,6 @@
 #ifndef rosic_LindenmayerSystem_h
 #define rosic_LindenmayerSystem_h
 
-//#include <vector>
-//#include <string>
-//#include "rosic/rosic.h"
-
 namespace rosic
 {
 

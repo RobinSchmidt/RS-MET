@@ -1,18 +1,13 @@
 #ifndef jura_Snowflake_h
 #define jura_Snowflake_h
 
-
 class JUCE_API Snowflake : public jura::AudioModuleWithMidiIn
 {
 
 public:
 
-  Snowflake(CriticalSection *lockToUse,
-    MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
-    // maybe make a constructor without the managers
+  Snowflake(CriticalSection *lockToUse);
 
-  /** Creates the static parameters for this module (i.e. parameters that are not created
-  dynamically and are thus always there). */
   virtual void createParameters();
 
   // overriden from AudioModule baseclass:
@@ -22,9 +17,13 @@ public:
   virtual void reset() override;
   virtual void noteOn(int noteNumber, int velocity) override;
 
+  // override set/getXml to store strings for rules and seed
+
 protected:
 
-  //rosic::Snowflake oscCore;
+  rosic::Snowflake core;
+
+  juce::String rules, seed;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Snowflake)
 };

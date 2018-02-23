@@ -2152,6 +2152,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_SamplePlayer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_Snowflake.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3280,6 +3283,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3764,6 +3770,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AlgorithmicWaveformRenderer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_LindenmayerSystem.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_MultiSegmentWaveformRenderer.cpp">
@@ -4601,6 +4610,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_OscillatorStereo.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_RayBouncer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_SamplePlayer.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_Snowflake.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorSamplePlayer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_AciDevil.h"/>
@@ -4996,6 +5006,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SamplePlayer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.h"/>
@@ -5169,6 +5180,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_VectorMixer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AdditveWaveformRenderer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AlgorithmicWaveformRenderer.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_LindenmayerSystem.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_MultiSegmentWaveformRenderer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_NonRealtimeProcesses.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_StandardWaveformRenderer.h"/>
