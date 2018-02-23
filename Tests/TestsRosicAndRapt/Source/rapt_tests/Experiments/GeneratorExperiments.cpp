@@ -330,19 +330,9 @@ void lindenmayerKoch()
   // Uses a Lindenmayer system to produce a Koch snowflake.
   // https://en.wikipedia.org/wiki/Koch_snowflake#Representation_as_Lindenmayer_system
 
-  int order = 3;
-
-  // set up and run the L-system:
-  LindenmayerSystem ls;
-  ls.addRule('F', "F+F--F+F");
-  std::string result = ls.apply("F--F--F", order);
-
-  // translate into curve:
-  TurtleGraphics tg;
-  tg.setAngle(60);
-  tg.init(0, 0, 1, 0);
   std::vector<double> x, y;
-  tg.translate(result, x, y);
+  LindenmayerRenderer lr;
+  lr.getKochSnowflake(3, x, y);
 
   // plot:
   GNUPlotter plt;
@@ -357,10 +347,6 @@ void lindenmayerKoch()
   plt.addCommand("set size square");  // set aspect ratio to 1:1
 
   plt.plot();
-
-  // todo: factor out a LindenmayerRenderer class that encapsulates creation of the string, 
-  // translation into a sequence of points and have functions for generating some standard curves, 
-  // like: ls.getKochSnowFlake(order, x, y), getMooreCurve(order, x, y), etc.
 }
 
 void lindenmayerMoore()

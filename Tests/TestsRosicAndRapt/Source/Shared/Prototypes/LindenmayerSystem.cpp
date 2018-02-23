@@ -108,7 +108,15 @@ void TurtleGraphics::translate(const std::string& str,
 
 void LindenmayerRenderer::getKochSnowflake(int N, std::vector<double>& x, std::vector<double>& y)
 {
+  clearRules();
+  addRule('F', "F+F--F+F");
+  std::string result = apply("F--F--F", N);
 
+  turtleGraphics.init(0, 0, 1, 0);
+  turtleGraphics.setAngle(60);
+  turtleGraphics.translate(result, x, y);
+
+  // ...normalize
 }
 
 void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vector<double>& y)
