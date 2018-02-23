@@ -249,7 +249,6 @@ void rayBouncer()
   plt.plot();
 }
 
-
 // from https://en.wikipedia.org/wiki/Hilbert_curve
 void rot(int n, int *x, int *y, int rx, int ry) //rotate/flip a quadrant appropriately
 {
@@ -283,75 +282,11 @@ void d2xy(int n, int d, int *x, int *y)  // convert d to (x,y)
     rx = 1 & (t/2);
     ry = 1 & (t ^ rx);
     rot(s, x, y, rx, ry);    
-    //rot(s, x, y, ry, rx);  // wrong, but might be interesting for audio
     *x += s * rx;
     *y += s * ry;
     t /= 4;
   }
 }
-
-// modified variant (for closed loop - doesn't work yet):
-void rotm(int n, int *x, int *y, int rx, int ry)
-{
-  if (ry == 1) {         // 0 
-    if (rx == 1) {       // 1
-      *x = n-1 - *x;
-      *y = n-1 - *y;
-    }
-
-    ////Swap x and y
-    //int t  = *x;
-    //*x = *y;
-    //*y = t;
-
-  }
-}
-void d2xym(int n, int d, int *x, int *y) 
-{
-  int rx, ry, s, t=d;
-  *x = *y = 0;
-  //*x = (int) sqrt(n);
-  for(s=1; s<n; s*=2)   // loop over the steps (this is a shlemiel algo :-O)
-  {
-    //rx = 1 & (t/2);
-    //ry = 1 & (t ^ rx);
-    //rotm(s, x, y, rx, ry);
-
-    ry = 1 & (t/2);
-    rx = 1 & (t ^ ry);
-    rot(s, x, y, ry, rx);
-
-    *x += s * rx;
-    *y += s * ry;
-    t /= 4;
-  }
-}
-
-void getDxDy(int& dx, int& dy, int i, int n) //
-{
-  // dx and dy can both be -1, 0, +1, the tricky part is figure out which values they should
-  // have as function of i and n, for order k = 2, n = 4^k = 16, we should have:
-  //  i: 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
-  // dx: -1  0   1   0   -1  0   1   1   1   0  -1  0   1   0   -1  -1 
-  // dy: 0   1   0   1   0   1   0   0   0   -1 0   -1  0   -1  0   0 
-
-  // hmm...maybe it's easier to use the current x,y coordinates as input values too?
-
-  // works for n=16 ...but does it generalize? nope!
-
-  dx = dy = 0;
-  int n2 = n /2;
-  //int n4 = n2/2;
-
-  if     (i % 4 == 0)  { dx = -1; dy =  0; }  // left
-  else if(i % 4 == 1)  { dx =  0; dy = +1; }  // up
-  else if(i % 4 == 2)  { dx = +1; dy =  0; }  // right
-  else if(i % 4 == 3)  { dx =  0; dy = +1; }  // up
-
-  if(i == n2-1) { dx = 1;   dy = 0;   }       // this is also a swap of dx,dy
-  if(i >= n2)   { dx = -dx; dy = -dy; }
-}
-
 
 void hilbertCurve()
 {
@@ -363,46 +298,6 @@ void hilbertCurve()
   int i;
   for(i = 0; i < n; i++)
     d2xy(n, i, &x[i], &y[i]);
-
-  //// turn Hilbert curve into (closed) Moore curve (doesnt work yet):
-  //if(rsIsEven(order))
-  //{
-  //  rosic::add(&x[0], 1, &x[0], n);
-  //  for(i = 0; i < n; i++)
-  //  {
-  //    if(x[i] <= max/2) x[i] =   max/4 - (x[i] -   max/4); // left side
-  //    else              x[i] = 3*max/4 - (x[i] - 3*max/4); // right side
-  //  }
-  //  //rosic::add(&y[0], 1, &y[0], n);
-  //  //for(i = 0; i < n; i++)
-  //  //{
-  //  //  if(y[i] <= max/2) y[i] =   max/4 - (y[i] -   max/4);
-  //  //  else              y[i] = 3*max/4 - (y[i] - 3*max/4);
-  //  //}
-
-  //}
-  //else
-  //{
-
-  //}
-
-  //for(int d = 0; d < n; d++)
-  //  d2xym(n, d, &x[d], &y[d]);
-
-  //// experimental - try to make a Moore curve (closed Hilbert curve - works only for order 2)
-  //int xi = 0, yi = 0;
-  //int dx = 0, dy = 0;
-  //for(int i = 0; i < n; i++)
-  //{
-  //  x[i] = xi; y[i] = yi;
-  //  getDxDy(dx, dy, i, n);
-  //  xi += dx; yi += dy;
-  //}
-
-  // maybe to make a Moore curve, we just create a regular Hilbert curve and reflect left and right 
-  // halves around their center axes? ...or in this implementation we must actually reflect top and
-  // bottom halves when order is odd, or reflect left/right when order is even
-
 
   GNUPlotter plt;
   plt.addDataArrays(n, &x[0], &y[0]);
@@ -430,9 +325,47 @@ void hilbertCurve()
   // maybe i should implement a Lindenmayer system ("L-system")
 }
 
-void lindenmayer()
+void lindenmayerKoch()
 {
-  // Tests a Lindenmayer system that produces a Moore curve.
+  // Uses a Lindenmayer system to produce a Koch snowflake.
+  // https://en.wikipedia.org/wiki/Koch_snowflake#Representation_as_Lindenmayer_system
+
+  int order = 3;
+
+  // set up and run the L-system:
+  LindenmayerSystem ls;
+  ls.addRule('F', "F+F--F+F");
+  std::string result = ls.apply("F--F--F", order);
+
+  // translate into curve:
+  TurtleGraphics tg;
+  tg.setAngle(60);
+  tg.init(0, 0, 1, 0);
+  std::vector<double> x, y;
+  tg.translate(result, x, y);
+
+  // plot:
+  GNUPlotter plt;
+
+  //// 1D:
+  //plt.addDataArrays(x.size(), &x[0]);
+  //plt.addDataArrays(y.size(), &y[0]);
+
+  // 2D:
+  plt.addDataArrays((int)x.size(), &x[0], &y[0]);
+  plt.setPixelSize(400, 400);
+  plt.addCommand("set size square");  // set aspect ratio to 1:1
+
+  plt.plot();
+
+  // todo: factor out a LindenmayerRenderer class that encapsulates creation of the string, 
+  // translation into a sequence of points and have functions for generating some standard curves, 
+  // like: ls.getKochSnowFlake(order, x, y), getMooreCurve(order, x, y), etc.
+}
+
+void lindenmayerMoore()
+{
+  // Uses a Lindenmayer system to produce a Moore curve.
   // see: https://en.wikipedia.org/wiki/Moore_curve
 
   int order = 4; // order of the Moore curve (for audio, up to 5 makes sense)
@@ -443,7 +376,6 @@ void lindenmayer()
   ls.addRule('L', "-RF+LFL+FR-");
   ls.addRule('R', "+LF-RFR-FL+");
   std::string seed = "LFL+F+LFL"; // original Moore curve
-  //std::string seed = "LFL+LR+F+RL+LFL";
 
   // iterate the L-system:
   std::string result = ls.apply(seed, order);
@@ -470,7 +402,6 @@ void lindenmayer()
   plt.plot();
 
   // other closed curves that can be generated:
-  // https://en.wikipedia.org/wiki/Koch_snowflake
   // http://mathforum.org/advanced/robertd/lsys2d.html (many curves with L-system rules)
   // http://www.kevs3d.co.uk/dev/lsystems/ (applet with examples)
 
