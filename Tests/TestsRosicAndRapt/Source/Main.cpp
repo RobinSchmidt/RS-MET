@@ -127,8 +127,7 @@ int main(int argc, char* argv[])
   //bouncillatorFormula();
   //rayBouncer();
   //hilbertCurve();
-  lindenmayerKoch();
-  //lindenmayerMoore();
+  lindenmayer();
   //xoxosOsc();
 
   // Graphics:

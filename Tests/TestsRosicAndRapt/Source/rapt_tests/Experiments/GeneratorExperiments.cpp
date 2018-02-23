@@ -325,37 +325,17 @@ void hilbertCurve()
   // maybe i should implement a Lindenmayer system ("L-system")
 }
 
-void lindenmayerKoch()
+void lindenmayer()
 {
-  // Uses a Lindenmayer system to produce a Koch snowflake.
-
-  std::vector<double> x, y;
-  LindenmayerRenderer lr;
-  lr.getKochSnowflake(3, x, y);
-
-  // plot:
-  GNUPlotter plt;
-
-  //// 1D:
-  //plt.addDataArrays(x.size(), &x[0]);
-  //plt.addDataArrays(y.size(), &y[0]);
-
-  // 2D:
-  plt.addDataArrays((int)x.size(), &x[0], &y[0]);
-  plt.setRange(-1.1, +1.1, -1.1, 1.1);
-  plt.setPixelSize(400, 400);
-  plt.addCommand("set size square");  // set aspect ratio to 1:1
-
-  plt.plot();
-}
-
-void lindenmayerMoore()
-{
-  // Uses a Lindenmayer system to produce a Moore curve.
+  // Uses a Lindenmayer system to produce various 2D curves.
   
   std::vector<double> x, y;
   LindenmayerRenderer lr;
+
+  // uncomment the curve, you want to render:
+  //lr.getKochSnowflake(3, x, y);
   lr.getMooreCurve(4, x, y);
+
 
   // plot:
   GNUPlotter plt;

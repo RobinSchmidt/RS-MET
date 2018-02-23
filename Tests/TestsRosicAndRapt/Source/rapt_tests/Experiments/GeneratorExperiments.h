@@ -11,8 +11,7 @@ void bouncillator();
 void bouncillatorFormula();
 void rayBouncer();
 void hilbertCurve();
-void lindenmayerKoch();
-void lindenmayerMoore();
+void lindenmayer();
 void xoxosOsc();
 
 
