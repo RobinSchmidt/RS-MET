@@ -6,6 +6,12 @@ void LindenmayerSystem::addRule(char input, const std::string& output)
   ruleOutputs.push_back(output);
 }
 
+void LindenmayerSystem::clearRules()
+{
+  ruleInputs.clear();
+  ruleOutputs.clear();
+}
+
 std::string LindenmayerSystem::apply(char c)
 {
   for(size_t i = 0; i < ruleInputs.size(); i++)
@@ -96,4 +102,21 @@ void TurtleGraphics::translate(const std::string& str,
       vy.push_back(y); 
     }
   }
+}
+
+//=================================================================================================
+
+void LindenmayerRenderer::getKochSnowflake(int N, std::vector<double>& x, std::vector<double>& y)
+{
+
+}
+
+void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vector<double>& y)
+{
+
+}
+
+void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double>& y)
+{
+
 }

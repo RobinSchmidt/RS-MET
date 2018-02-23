@@ -28,6 +28,9 @@ public:
   /** Adds a replacement rule to our set of rules.  */
   void addRule(char input, const std::string& output);
 
+  /** Clears the set of replacement rules. */
+  void clearRules();
+
   /** Applies the set of replacement rules to the given character. If a matching rule-input 
   character is found, it returns the corresponding output string, otherwise the character itself
   will be returned as string of length 1. */
@@ -91,6 +94,43 @@ protected:
   double dx = 1, dy = 0;  // direction vector
 
   RAPT::rsRotationXY<double> rotLeft, rotRight;
+
+};
+
+//=================================================================================================
+
+/** Encapsulates a LindenmayerSytem (as baseclass) and a TurtleGraphics object (as member) to make
+rendering of L-system generatad point-sequences more convenient. */
+
+class LindenmayerRenderer : public LindenmayerSystem
+{
+
+public:
+
+  /** Sets the turning angle for the turtle graphics renderer. */
+  void setAngle(double degrees) { turtleGraphics.setAngle(degrees); }
+
+  /** Turns normalization on/off. The normalization also includes DC removal. */
+  void setNormalization(bool shouldNormalize) { normalize = shouldNormalize; }
+
+
+  void getKochSnowflake(int order, std::vector<double>& x, std::vector<double>& y);
+
+  void getMooreCurve(int order, std::vector<double>& x, std::vector<double>& y);
+
+  // maybe have a "numPoints" parameter that is used for resampling the resulting curve to a given
+  // number of points (by linear interpolation)
+
+  /** Normalizes the xy coordinates such that both x and y are free of DC (centered around 0) and
+  the maximum absolute value is 1 (this second step is done by finding the maximum absolute value
+  of both vectors and scaling both by the same value - in order to preserve the aspect ratio). */
+  void normalizeXY(std::vector<double>& x, std::vector<double>& y);
+
+protected:
+
+  TurtleGraphics turtleGraphics;
+
+  bool normalize = true;
 
 };
 
