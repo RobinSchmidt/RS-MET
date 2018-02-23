@@ -354,6 +354,7 @@ void lindenmayerMoore()
   // Uses a Lindenmayer system to produce a Moore curve.
   // see: https://en.wikipedia.org/wiki/Moore_curve
 
+  /*
   int order = 4; // order of the Moore curve (for audio, up to 5 makes sense)
   int max = (int) pow(2, order+1);
 
@@ -371,6 +372,12 @@ void lindenmayerMoore()
   tg.init(0, max/2-1, 1, 0);
   std::vector<double> x, y;
   tg.translate(result, x, y);
+  */
+
+
+  std::vector<double> x, y;
+  LindenmayerRenderer lr;
+  lr.getMooreCurve(4, x, y);
 
   // plot:
   GNUPlotter plt;
@@ -381,7 +388,7 @@ void lindenmayerMoore()
 
   // 2D:
   plt.addDataArrays((int)x.size(), &x[0], &y[0]);
-  plt.setRange(-1, max, -1, max);
+  //plt.setRange(-1, max, -1, max);
   plt.setPixelSize(400, 400);
   plt.addCommand("set size square");  // set aspect ratio to 1:1
 

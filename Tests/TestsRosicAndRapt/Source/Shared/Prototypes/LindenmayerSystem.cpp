@@ -66,17 +66,11 @@ void TurtleGraphics::goForward()
 void TurtleGraphics::turnLeft()
 {
   rotLeft.apply(&dx, &dy);
-  //double tx = dx;
-  //dx = -dy;
-  //dy =  tx;
 }
 
 void TurtleGraphics::turnRight()
 {
   rotRight.apply(&dx, &dy);
-  //double tx = dx;
-  //dx =  dy;
-  //dy = -tx;
 }
 
 void TurtleGraphics::translate(const std::string& str, 
@@ -110,18 +104,29 @@ void LindenmayerRenderer::getKochSnowflake(int N, std::vector<double>& x, std::v
 {
   clearRules();
   addRule('F', "F+F--F+F");
-  std::string result = apply("F--F--F", N);
+  std::string str = apply("F--F--F", N);
 
   turtleGraphics.init(0, 0, 1, 0);
   turtleGraphics.setAngle(60);
-  turtleGraphics.translate(result, x, y);
+  turtleGraphics.translate(str, x, y);
 
-  // ...normalize
+  if(normalize) 
+    normalizeXY(x, y);
 }
 
 void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vector<double>& y)
 {
+  clearRules();
+  addRule('L', "-RF+LFL+FR-");
+  addRule('R', "+LF-RFR-FL+");
+  std::string str = apply("LFL+F+LFL", N);
 
+  turtleGraphics.init(0, 0, 1, 0);
+  turtleGraphics.setAngle(90);
+  turtleGraphics.translate(str, x, y);
+
+  if(normalize) 
+    normalizeXY(x, y);
 }
 
 void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double>& y)
