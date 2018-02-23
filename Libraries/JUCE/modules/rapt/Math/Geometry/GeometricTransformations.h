@@ -1,6 +1,42 @@
 #ifndef RAPT_GEOMETRICTRANSFORMATIONS_H_INCLUDED
 #define RAPT_GEOMETRICTRANSFORMATIONS_H_INCLUDED
 
+/** A class for 2D rotations. */
+
+template<class T>
+class rsRotationXY
+{
+
+public:
+
+  rsRotationXY(T angle)
+  {
+    r = angle;
+    updateCoeffs();
+  }
+
+  void setAngle(T newAngle)
+  {
+    r = newAngle;
+    updateCoeffs();
+  }
+
+  /** Applies the rotation matrix to the coordinate values. */
+  void apply(T* x, T* y);
+
+
+protected:
+
+  /** Updates the rotation matrix coefficients. */
+  void updateCoeffs();
+
+  T r;              // rotation angle (around z-axis)
+  T xx, xy, yx, yy; // matrix coeffs
+
+};
+
+//=================================================================================================
+
 /** A class for 3D rotations. You can set up the rotation angles around the 3 coordinate axes x, y 
 and z and apply the rotation to a vector via the apply function. The rotations are applied in the 
 order: x y z. The order is important because rotations are not commutative. */

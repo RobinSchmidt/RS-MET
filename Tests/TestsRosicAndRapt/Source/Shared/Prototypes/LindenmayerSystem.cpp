@@ -71,8 +71,7 @@ void TurtleGraphics::translate(const std::string& str,
   vy.push_back(y); 
 
   // loop through the string and add vertices as needed:
-  for(int i = 0; i < str.size(); i++)
-  {
+  for(int i = 0; i < str.size(); i++) {
     if(str[i] == '+')   
       turnLeft();
     if(str[i] == '-')   
@@ -83,6 +82,4 @@ void TurtleGraphics::translate(const std::string& str,
       vy.push_back(y); 
     }
   }
-
-  int dummy = 0;
 }

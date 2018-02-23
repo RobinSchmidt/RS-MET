@@ -1,4 +1,29 @@
 template<class T>
+void rsRotationXY<T>::apply(T* x, T* y)
+{
+  // temporaries:
+  T X = *x; 
+  T Y = *y; 
+
+  // new vector is given by matrix-vector product:
+  *x = xx*X + xy*Y;    // |x| = |xx xy| * |X|
+  *y = yx*X + yy*Y;    // |y|   |yx yy|   |Y|
+}
+
+template<class T>
+void rsRotationXY<T>::updateCoeffs()
+{
+  T s = sin(r); 
+  T c = cos(r);
+  xx =  c;
+  xy = -s;
+  yx =  s;
+  yy =  c;
+}
+
+//=================================================================================================
+
+template<class T>
 void rsRotationXYZ<T>::apply(T* x, T* y, T* z)
 {
   // temporaries:

@@ -425,6 +425,7 @@ void hilbertCurve()
   // http://www.dcs.bbk.ac.uk/~jkl/thesis.pdf
   // http://www.fractalcurves.com/Taxonomy.html
   // http://archive.org/stream/BrainfillingCurves-AFractalBestiary/BrainFilling#page/n27/mode/2up
+  // http://www.diss.fu-berlin.de/diss/servlets/MCRFileNodeServlet/FUDISS_derivate_000000003494/2_kap2.pdf?hosts=
 
   // maybe i should implement a Lindenmayer system ("L-system")
 }
@@ -471,6 +472,9 @@ void lindenmayer()
   // other closed curves that can be generated:
   // https://en.wikipedia.org/wiki/Koch_snowflake
   // http://mathforum.org/advanced/robertd/lsys2d.html (many curves with L-system rules)
+  // http://www.kevs3d.co.uk/dev/lsystems/ (applet with examples)
+
+  // https://www.cut-the-knot.org/do_you_know/hilbert.shtml
 
   // not sure, if doable by L-system:
   // https://en.wikipedia.org/wiki/Sierpi%C5%84ski_curve

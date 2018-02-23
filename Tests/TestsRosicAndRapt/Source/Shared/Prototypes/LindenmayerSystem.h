@@ -14,7 +14,10 @@ References:
 https://de.wikipedia.org/wiki/Lindenmayer-System
 https://en.wikipedia.org/wiki/L-system
 http://algorithmicbotany.org/papers/abop/abop-ch1.pdf
-http://www.abrazol.com/books/patterngen/  */
+http://www.abrazol.com/books/patterngen/  
+http://www.sidefx.com/docs/houdini/nodes/sop/lsystem.html
+http://www.sccg.sk/~smolenova/elearning/ks_fmfiuk06.pdf
+*/
 
 class LindenmayerSystem
 {
@@ -33,7 +36,8 @@ public:
   std::string apply(const std::string& input);
 
   /** Iteratively applies the set of replacement rules the given number of times and returns the 
-  result. */
+  result. In L-system jargon, the "input" string is also called "axiom" and the numberOfTimes is 
+  called order. */
   std::string apply(const std::string& input, int numberOfTimes);
 
 
@@ -47,7 +51,7 @@ protected:
 //=================================================================================================
 
 /** Implements a "turtle graphics" drawer that can be used to translate strings produced by a
-Lindenmayer system into 2D drawings.
+Lindenmayer system into 2D drawings (i.e. a sequence of points in the xy-plane).
 
 References:
 https://en.wikipedia.org/wiki/Turtle_graphics  */
