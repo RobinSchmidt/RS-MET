@@ -174,31 +174,31 @@ void LindenmayerRenderer::getPleasantError(int N, std::vector<double>& x, std::v
 void LindenmayerRenderer::render(const std::string& seed, int order, double angle, 
   std::vector<double>& x, std::vector<double>& y)
 {
-  std::string str = apply(seed, order);
-  translate(str, angle, x, y);
+  turtleGraphics.setAngle(angle);
+  render(seed, order, x, y);
 }
 
 void LindenmayerRenderer::translate(const std::string& str, double angle,
   std::vector<double>& x, std::vector<double>& y)
 {
   turtleGraphics.setAngle(angle);
-  turtleGraphics.init(0, 0, 1, 0);
-  turtleGraphics.translate(str, x, y);
-  if(normalize) 
-    normalizeXY(x, y);
+  translate(str, x, y);
 }
 
 void LindenmayerRenderer::render(const std::string& seed, int order, 
   std::vector<double>& x, std::vector<double>& y)
 {
-
+  std::string str = apply(seed, order);
+  translate(str, x, y);
 }
 
 void LindenmayerRenderer::translate(const std::string& str, 
   std::vector<double>& x, std::vector<double>& y)
 {
-
-
+  turtleGraphics.init(0, 0, 1, 0);
+  turtleGraphics.translate(str, x, y);
+  if(normalize) 
+    normalizeXY(x, y);
 }
 
 void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double>& y)

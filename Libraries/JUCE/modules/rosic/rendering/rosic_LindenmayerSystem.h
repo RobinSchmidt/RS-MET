@@ -152,6 +152,7 @@ public:
   angle. */
   void translate(const std::string& str, double angle,
     std::vector<double>& x, std::vector<double>& y);
+  // maybe get rid of the render/translate functions that take an angle parameter
 
 
 

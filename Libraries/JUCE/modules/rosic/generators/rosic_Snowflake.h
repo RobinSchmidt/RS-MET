@@ -43,24 +43,32 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  /** Renders the wavetable and updates related variables. */
-  void updateWaveTable();
-
   /** Calculates one output-sample frame at a time. */
   INLINE void getSampleFrameStereo(double *outL, double *outR)
   {
 
   }
 
-  void reset() {}
-   // not yet implemented
+  void reset();
+
 
 protected:
+
+  /** Renders the wavetable and updates related variables. */
+  void updateWaveTable();
+
+  /** Updates the wavetable increment according to desired frequency, sample rate and wavetable 
+  length. */
+  void updateIncrement();
 
   std::vector<double> x, y;       // rendered (wave)tables for x (left) and y (right)
   LindenmayerRenderer renderer;
   int numIterations = 0;
   std::string seed;
+  double pos = 0;                 // position in wavetable
+  double inc = 0;                 // wavetable increment
+  double frequency  = 0;
+  double sampleRate = 1;
 
 };
 
