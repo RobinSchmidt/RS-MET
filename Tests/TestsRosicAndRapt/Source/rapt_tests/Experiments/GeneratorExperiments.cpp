@@ -333,7 +333,7 @@ void lindenmayer()
   rosic::LindenmayerRenderer lr;
 
   // uncomment the curve, you want to render:
-  lr.getKochSnowflake(4, x, y);
+  //lr.getKochSnowflake(4, x, y);
   //lr.getMooreCurve(4, x, y);
   //lr.get32SegmentCurve(2, x, y);
   //lr.getQuadraticKochIsland(3, x, y);
@@ -342,6 +342,15 @@ void lindenmayer()
 
   //lr.getSierpinskiTriangle2(2, x, y); // doesn't work
   //lr.getPleasantError(3, x, y);
+
+  // some of my own experiments:
+  //lr.clearRules(); lr.addRule('F', "F+F-F-FF+F+F-F"); lr.render("F+F+F+F", 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FF+F+F-F"); lr.render("F+F+F+F", 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-F-FF+F+F-F"); lr.render("F+F+F+F", 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FF+FF+FF-F"); lr.render("F+F+F+F", 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+F-F-FF+FF+FF-F"); lr.render("F+F+F+F", 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+F-F"); lr.render("F+F+F+F", 4, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFFF+F+FF-F"); lr.render("F+F+F+F", 3, 90, x, y);
 
   // plot 2D:
   GNUPlotter plt2;
