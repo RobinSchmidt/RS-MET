@@ -154,8 +154,15 @@ void LindenmayerRenderer::getSierpinskiTriangle2(int N,
   addRule('G', "GG");             // G=GG
   render("F-G-G", N, 120, x, y);  // seed = F-G-G
   // does not work. it was taken from http://www.kevs3d.co.uk/dev/lsystems/ i thought, maybe the
-  // rendere there interprets G as drawing command, but replacing it with X there changed nothing
+  // renderer there interprets G as drawing command, but replacing it with X there changed nothing
   // (it still works there)
+  // wikipedia says the same - is my implementaion flawed?
+  // https://en.wikipedia.org/wiki/L-system#Example_5:_Sierpinski_triangle
+  // variables: F G
+  // constants: + -
+  // start:     F-G-G
+  // rules:     (F = F-G+F+G-F), (G = GG)
+  // angle:     120°
 }
 
 void LindenmayerRenderer::getPleasantError(int N, std::vector<double>& x, std::vector<double>& y)

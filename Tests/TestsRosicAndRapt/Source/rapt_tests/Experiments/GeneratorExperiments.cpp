@@ -343,7 +343,8 @@ void lindenmayer()
   //lr.getSierpinskiTriangle2(2, x, y); // doesn't work
   //lr.getPleasantError(3, x, y);
 
-  // some of my own experiments:
+  // some of my own experiments - get rid of passing the angle to each call of render, call
+  // setAngle once instead (after setting the seed)
 
   // shapes based on a triangle seed:
   std::string seed = "F+F+F";

@@ -19,6 +19,17 @@ public:
 
   // override set/getXml to store strings for rules and seed
 
+  /** Sets the seed (i.e. "axiom") for the L-system. */
+  void setSeed(const juce::String& newSeed);
+
+  /** Sets the string containing the L-system rules and returns whether or not this was sucessful. 
+  It may fail, if the string is malformed in which case and empty set of rules will be used by 
+  default. */
+  bool setRules(const juce::String& newRules);
+
+  /** Returns true, if the given string with L-system rules is properly formed. */
+  bool validateRuleString(const juce::String& newRules);
+
 protected:
 
   rosic::Snowflake core;
@@ -48,6 +59,9 @@ class JUCE_API SnowflakeEditor : public AudioModuleEditor
 public:
 
   SnowflakeEditor(jura::Snowflake *snowFlakeToEdit);
+
+  void createWidgets();
+
   virtual void resized() override;
 
 protected:
