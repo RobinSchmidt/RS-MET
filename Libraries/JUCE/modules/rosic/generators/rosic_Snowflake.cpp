@@ -1,7 +1,7 @@
 Snowflake::Snowflake()
 {
   // init to order 4 Koch snowflake:
-  seed = "F--F--F";
+  axiom = "F--F--F";
   clearRules();
   addRule('F', "F+F--F+F");
   numIterations = 4;
@@ -20,6 +20,11 @@ void Snowflake::setFrequency(double newFrequency)
   updateIncrement();
 }
 
+void Snowflake::setRotation(double newRotation)
+{
+  rotator.setAngle((PI/180) * newRotation);
+}
+
 void Snowflake::setNumIterations(int newNumIterations) 
 { 
   numIterations = newNumIterations; 
@@ -28,7 +33,7 @@ void Snowflake::setNumIterations(int newNumIterations)
 
 void Snowflake::updateWaveTable()
 {
-  renderer.render(seed, numIterations, x, y);
+  renderer.render(axiom, numIterations, x, y);
   tableLength = x.size()-1;
   updateIncrement();
   reset();

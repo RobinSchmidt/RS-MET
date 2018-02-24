@@ -26,12 +26,22 @@ void Snowflake::createParameters()
   // maybe limit the order by a heuristic estimation of the resulting length of the string and/or
   // the number of points. it should be some kind of exponential growth a * exp(b*order) + c, maybe
   // the a,b,c parameters can be estimated by checking the lengths after the 1st 3 iterations
+  // ...or maybe it makes more sense to model it as a * b^order + c, a should be proportional (or
+  // equal?) to the number of edges in the initiator and b the number of edges in the generator?
+  // ...but that works only for simple one-rule systems that only involve F
 
-  p = new Param("Angle", 0, 360, 0, Parameter::LINEAR, 0.01);
+  p = new Param("TurningAngle", 0, 360, 0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setAngle);
   p->setValue(60, true, true); // Koch snowflake needs 60°
 
+  p = new Param("Amplitude", -1, 1, 1, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setAmplitude);
+
+  p = new Param("Rotation", -180, 180, 0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setRotation);
 
   /*
   p = new Param("Tune", -60.0, +60.0, 0.0, Parameter::LINEAR);
@@ -73,8 +83,10 @@ void Snowflake::noteOn(int noteNumber, int velocity)
 
 void Snowflake::setAxiom(const juce::String& newAxiom)
 {
+  if(axiom == newAxiom)
+    return;
   axiom = newAxiom;
-  core.setSeed(axiom.toStdString());
+  core.setAxiom(axiom.toStdString());
   core.updateWaveTable();
 }
 
@@ -171,10 +183,24 @@ void SnowflakeEditor::createWidgets()
   s->setStringConversionFunction(&valueToString0);
 
   addWidget( sliderAngle = s = new Sld );
-  s->assignParameter( p = snowflakeModule->getParameterByName("Angle") );
+  s->assignParameter( p = snowflakeModule->getParameterByName("TurningAngle") );
   s->setDescription("Turning angle of turtle graphics");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
+
+
+  addWidget( sliderAmplitude = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("Amplitude") );
+  s->setDescription("Amplitude of output signal");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString2);
+
+  addWidget( sliderRotation = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("Rotation") );
+  s->setDescription("Rotation applied to xy coordinates");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString2);
+
 }
 
 void SnowflakeEditor::resized()
@@ -203,6 +229,9 @@ void SnowflakeEditor::resized()
   sliderAngle->setBounds(x, y, w, wh); y += dy;
 
   // put result (2D and 1D plots here)
+
+  sliderAmplitude->setBounds(x, y, w, wh); y += dy;
+  sliderRotation->setBounds(x, y, w, wh); y += dy;
 }
 
 void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)

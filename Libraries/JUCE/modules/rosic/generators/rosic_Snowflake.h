@@ -24,8 +24,18 @@ public:
   /** Sets the sample-rate. */
   void setSampleRate(double newSampleRate);
 
-  /** Sets the frequency (in Hz) of the sine to be generated. */
+  /** Sets the frequency (in Hz) of the signal to be generated. */
   void setFrequency(double newFrequency);
+
+  /** Sets the amplitude (as raw factor). */
+  void setAmplitude(double newAmplitude) { amplitude = newAmplitude; }
+
+  /** Sets a rotation angle (in degrees) to be applied to the produced xy coordinate pair. */
+  void setRotation(double newRotation);
+
+  //void addStereoDetune(double newDetune);
+
+  //void addStereoFrequencyOffset(double newOffset);
 
   /** Sets the number of iterations for the L-system. */
   void setNumIterations(int newNumIterations);
@@ -40,8 +50,7 @@ public:
   void addRule(char input, const std::string& output) { renderer.addRule(input, output); }
 
   /** Sets the seed (aka "axiom") for the L-system. */
-  void setSeed(const std::string& newSeed) { seed = newSeed; }
-    // rename to setAxiom
+  void setAxiom(const std::string& newAxiom) { axiom = newAxiom; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -55,9 +64,10 @@ public:
     int iPos = floorInt(pos);
     double fPos = pos - iPos;
 
-    // linear interpolation:
-    *outL = (1-fPos)*x[iPos] + fPos*x[iPos+1];
-    *outR = (1-fPos)*y[iPos] + fPos*y[iPos+1];
+    // linear interpolation, gain and rotation:
+    *outL = amplitude * ((1-fPos)*x[iPos] + fPos*x[iPos+1]);
+    *outR = amplitude * ((1-fPos)*y[iPos] + fPos*y[iPos+1]);
+    rotator.apply(outL, outR);
 
     // increment and wraparound:
     pos += inc;
@@ -77,11 +87,15 @@ protected:
   void updateIncrement();
 
   std::vector<double> x, y;       // rendered (wave)tables for x (left) and y (right)
+
   LindenmayerRenderer renderer;
+  RAPT::rsRotationXY<double> rotator;
+
   int numIterations = 0;
-  std::string seed;
+  std::string axiom;
   double pos = 0;                 // position in wavetable
   double inc = 0;                 // wavetable increment
+  double amplitude  = 1;
   double frequency  = 0;
   double sampleRate = 1;
   int tableLength = 0;            // not including the last sample (which repeats the 1st)

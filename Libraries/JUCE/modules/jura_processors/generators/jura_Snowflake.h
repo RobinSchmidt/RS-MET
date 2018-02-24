@@ -82,8 +82,7 @@ protected:
 
   jura::Snowflake *snowflakeModule;
 
-  RSlider *sliderIterations, *sliderAngle;
-
+  RSlider *sliderIterations, *sliderAngle, *sliderAmplitude, *sliderRotation;
   RTextField  *axiomLabel,  *rulesLabel;
   RTextEditor *axiomEditor, *rulesEditor;
 
