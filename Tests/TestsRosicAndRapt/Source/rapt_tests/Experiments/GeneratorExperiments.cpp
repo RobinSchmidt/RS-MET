@@ -344,13 +344,35 @@ void lindenmayer()
   //lr.getPleasantError(3, x, y);
 
   // some of my own experiments:
-  //lr.clearRules(); lr.addRule('F', "F+F-F-FF+F+F-F"); lr.render("F+F+F+F", 3, 90, x, y);
-  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FF+F+F-F"); lr.render("F+F+F+F", 3, 90, x, y);
-  //lr.clearRules(); lr.addRule('F', "F+FF-F-FF+F+F-F"); lr.render("F+F+F+F", 3, 90, x, y);
-  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FF+FF+FF-F"); lr.render("F+F+F+F", 3, 90, x, y);
-  //lr.clearRules(); lr.addRule('F', "F+F-F-FF+FF+FF-F"); lr.render("F+F+F+F", 3, 90, x, y);
-  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+F-F"); lr.render("F+F+F+F", 4, 90, x, y);
-  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFFF+F+FF-F"); lr.render("F+F+F+F", 3, 90, x, y);
+
+  // shapes based on a triangle seed:
+  std::string seed = "F+F+F";
+  //lr.clearRules(); lr.addRule('F', "F+F-F"); lr.render(seed, 7, 120, x, y); // sort of triangular grid
+  lr.clearRules(); lr.addRule('F', "F+F-FF"); lr.render(seed, 6, 120, x, y); // thin spiral arms
+  //lr.clearRules(); lr.addRule('F', "F+F-F+"); lr.render(seed, 8, 120, x, y); 
+  //lr.clearRules(); lr.addRule('F', "F+F-F-F"); lr.render(seed, 5, 120, x, y); 
+
+  // shapes based on a square seed:
+  seed = "F+F+F+F";
+  //lr.clearRules(); lr.addRule('F', "F+F-F-FF+F+F-F"); lr.render(seed, 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FF+F+F-F"); lr.render(seed, 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-F-FF+F+F-F"); lr.render(seed, 4, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FF+FF+FF-F"); lr.render(seed, 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+F-F-FF+FF+FF-F"); lr.render(seed, 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+F-F"); lr.render(seed, 4, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFFF+F+FF-F"); lr.render(seed, 3, 90, x, y);
+
+  // shapes based on an octagon seed:
+  seed = "F+F+F+F+F+F+F+F";
+  //lr.clearRules(); lr.addRule('F', "F+F---FF+++F-"); lr.render(seed, 5, 45, x, y);
+  //lr.clearRules(); lr.addRule('F', "+F---FF+++F-"); lr.render(seed, 5, 45, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+F---FF+++F-"); lr.render(seed, 5, 45, x, y);
+  //lr.clearRules(); lr.addRule('F', "+F--F"); lr.render(seed, 8, 45, x, y);
+  //lr.clearRules(); lr.addRule('F', "+F--F+"); lr.render(seed, 7, 45, x, y); // flowerish
+  //lr.clearRules(); lr.addRule('F', "+FF--FF+"); lr.render(seed, 5, 45, x, y); 
+
+
+
 
   // plot 2D:
   GNUPlotter plt2;
