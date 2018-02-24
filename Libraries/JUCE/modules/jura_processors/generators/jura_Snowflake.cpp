@@ -27,7 +27,7 @@ void Snowflake::createParameters()
   // the number of points. it should be some kind of exponential growth a * exp(b*order) + c, maybe
   // the a,b,c parameters can be estimated by checking the lengths after the 1st 3 iterations
 
-  p = new Param("Angle", 0, 360, 0, Parameter::LINEAR);
+  p = new Param("Angle", 0, 360, 0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setAngle);
   p->setValue(60, true, true); // Koch snowflake needs 60°
@@ -38,6 +38,11 @@ void Snowflake::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setDetune);
   */
+}
+
+AudioModuleEditor* Snowflake::createEditor()
+{
+  return new SnowflakeEditor(this);
 }
 
 void Snowflake::processBlock(double **inOutBuffer, int numChannels, int numSamples)
@@ -95,7 +100,23 @@ SnowflakeEditor::SnowflakeEditor(jura::Snowflake *snowFlake) : AudioModuleEditor
 
 void SnowflakeEditor::createWidgets()
 {
+  typedef RSlider Sld;
+  Sld* s;
+  Parameter* p;
 
+  addWidget( sliderIterations = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("Iterations") );
+  //s->setSliderName("Iterations");
+  s->setDescription("Number of L-system iterations");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString0);
+
+  addWidget( sliderAngle = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("Angle") );
+  //s->setSliderName("Angle");
+  s->setDescription("Turning angle of turtle graphics");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString2);
 }
 
 void SnowflakeEditor::resized()
@@ -104,6 +125,11 @@ void SnowflakeEditor::resized()
   int m  = 4; // margin
   int x  = m;
   int y  = getPresetSectionBottom() + m;
+  int w  = getWidth() - 2*m;
+  int h  = getHeight();
+  int wh = 16;   // widget height
+  int dy = wh-2; // delta-y between widgets
 
-  //...
+  sliderIterations->setBounds(x, y, w, wh); y += dy;
+  sliderAngle->setBounds(x, y, w, wh); y += dy;
 }

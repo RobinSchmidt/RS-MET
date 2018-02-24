@@ -11,6 +11,7 @@ public:
   virtual void createParameters();
 
   // overriden from AudioModule baseclass:
+  AudioModuleEditor* createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override;
@@ -52,6 +53,15 @@ class JUCE_API SnowflakePlot1D
 };
 
 //=================================================================================================
+
+/** Editor for the Snowflake AudioModule.
+todo:
+-add plots for:
+ -initiator curve (axiom)
+ -generator curves (rules)
+ -resulting curve in 2D
+ -resulting x,y signals
+*/
 
 class JUCE_API SnowflakeEditor : public AudioModuleEditor
 {
