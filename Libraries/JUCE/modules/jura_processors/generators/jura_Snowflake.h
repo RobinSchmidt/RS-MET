@@ -17,6 +17,9 @@ public:
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
   virtual void noteOn(int noteNumber, int velocity) override;
+  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+    bool markAsClean) override;
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   // override set/getXml to store strings for rules and seed
 

@@ -81,6 +81,26 @@ void Snowflake::noteOn(int noteNumber, int velocity)
   //oscCore.reset();
 }
 
+void Snowflake::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  bool markAsClean)
+{
+  core.setNumIterations(0); // avoid excessive re-rendering
+  String tmp = xmlState.getStringAttribute("Axiom");
+  setAxiom(tmp);
+  tmp = xmlState.getStringAttribute("Rules");
+  setRules(tmp);
+  AudioModuleWithMidiIn::setStateFromXml(xmlState, stateName, markAsClean); 
+  // calls core->setNumIteration which triggers re-rendering
+}
+
+XmlElement* Snowflake::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  XmlElement* xml = AudioModuleWithMidiIn::getStateAsXml(stateName, markAsClean);
+  xml->setAttribute("Axiom", axiom);
+  xml->setAttribute("Rules", rules);
+  return xml;
+}
+
 void Snowflake::setAxiom(const juce::String& newAxiom)
 {
   if(axiom == newAxiom)
@@ -110,6 +130,8 @@ bool Snowflake::setRules(const juce::String& newRules)
   while(done == false)
   {
     String rule = tmp.upToFirstOccurrenceOf(";", false, false);
+    if(rule.length() < 2)
+      break;
     jassert(rule[1] == '='); // malformed rule (should be ruled out by validation)
     char input = rule[0];
     String output = rule.substring(2);
@@ -124,6 +146,8 @@ bool Snowflake::setRules(const juce::String& newRules)
 bool Snowflake::validateRuleString(const juce::String& newRules)
 {
   String tmp = newRules.removeCharacters(" \n"); // remove space and newline
+  if(tmp.length() == 0) return true;             // empty string is valid
+  if(tmp.length() == 1) return false;            // 1-element string is never valid
   bool done = false;
   while(done == false)
   {
