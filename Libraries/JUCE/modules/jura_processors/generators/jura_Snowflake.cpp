@@ -16,7 +16,7 @@ void Snowflake::createParameters()
   Param* p;
 
   // init to Koch snowflake:
-  seed  = "F--F--F";
+  axiom = "F--F--F";
   rules = "F = F+F--F+F";
 
   p = new Param("Iterations", 0, 10, 0, Parameter::INTEGER);
@@ -71,9 +71,9 @@ void Snowflake::noteOn(int noteNumber, int velocity)
   //oscCore.reset();
 }
 
-void Snowflake::setSeed(const juce::String& newSeed)
+void Snowflake::setAxiom(const juce::String& newAxiom)
 {
-  seed = newSeed;
+  axiom = newAxiom;
   // translate to std::string and pass to core
 }
 
@@ -107,19 +107,21 @@ void SnowflakeEditor::createWidgets()
   Parameter* p;
 
   addWidget( axiomLabel = l = new Lbl("Axiom:") );
-  l->setDescription("Axiom (aka initiator, seed) for L-system");
+  l->setDescription("L-system axiom (aka initiator, seed)");
   l->setDescriptionField(infoField);
 
   addWidget( axiomEditor = new RTextEditor );
+  axiomEditor->setText(snowflakeModule->getAxiom(), false);
   axiomEditor->addListener(this);
   axiomEditor->setDescription(axiomLabel->getDescription());
   axiomEditor->setDescriptionField(infoField);
 
   addWidget( rulesLabel = l = new Lbl("Rules:") );
-  l->setDescription("Rules (aka generator(s), productions) for L-system");
+  l->setDescription("L-system rules (aka generator(s), productions, semicolon separated)");
   l->setDescriptionField(infoField);
 
   addWidget( rulesEditor = new RTextEditor );
+  rulesEditor->setText(snowflakeModule->getRules(), false);
   rulesEditor->setMultiLine(true);
   rulesEditor->setReturnKeyStartsNewLine(true);
   rulesEditor->addListener(this);
@@ -167,7 +169,16 @@ void SnowflakeEditor::resized()
   // put result (2D and 1D plots here)
 }
 
-void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& editor)
+void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)
 {
-
+  if(&ed == axiomEditor)
+    snowflakeModule->setAxiom(ed.getText());
+  else if(&ed == rulesEditor)
+  {
+    bool rulesValid = snowflakeModule->setRules(ed.getText());
+    //if(!rulesValid)
+    //  ed->indicateInvalidText(true);
+    //else
+    //  ed->indicateInvalidText(false);
+  }
 }

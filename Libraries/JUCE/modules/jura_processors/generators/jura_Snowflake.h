@@ -20,11 +20,8 @@ public:
 
   // override set/getXml to store strings for rules and seed
 
-  /** Sets the seed (i.e. "axiom") for the L-system. */
-  void setSeed(const juce::String& newSeed);
-   // maybe call it "axiom" for consistency with L-system terminology, we may also want to 
-   // introduce randomization later for which we will also need a seed so it's a good idea to
-   // reserve the "seed" term for that
+  /** Sets the axiom (i.e. seed") for the L-system. */
+  void setAxiom(const juce::String& newAxiom);
 
   /** Sets the string containing the L-system rules and returns whether or not this was sucessful. 
   It may fail, if the string is malformed in which case and empty set of rules will be used by 
@@ -34,11 +31,14 @@ public:
   /** Returns true, if the given string with L-system rules is properly formed. */
   bool validateRuleString(const juce::String& newRules);
 
+  juce::String getAxiom() { return axiom; }
+  juce::String getRules() { return rules; }
+
 protected:
 
   rosic::Snowflake core;
 
-  juce::String rules, seed;
+  juce::String axiom, rules;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Snowflake)
 };
