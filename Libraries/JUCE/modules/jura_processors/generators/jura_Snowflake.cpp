@@ -74,17 +74,51 @@ void Snowflake::noteOn(int noteNumber, int velocity)
 void Snowflake::setAxiom(const juce::String& newAxiom)
 {
   axiom = newAxiom;
-  // translate to std::string and pass to core
+  core.setSeed(axiom.toStdString());
 }
 
 bool Snowflake::setRules(const juce::String& newRules)
 {
+  String tmp = newRules.removeCharacters(" \n"); // remove space and newline
+  if(!validateRuleString(tmp))
+    return false;
 
+  // Check if new rule-string represents the same set of rules and exit early, if so. It may differ 
+  // in terms of spaces, newlines, etc. but that doesn't require re-parsing/re-rendering). We do 
+  // this, because this function seems to be called back excessively often.
+  bool exitEarly = tmp == rules.removeCharacters(" \n");
+  rules = newRules; // we store the rule-string with spaces and newlines here
+  if(exitEarly)
+    return true; 
+
+  // parse tmp-string and add one rule at a time:
+  core.clearRules();
+  bool done = false;
+  while(done == false)
+  {
+    String rule = tmp.upToFirstOccurrenceOf(";", false, false);
+    jassert(rule[1] == '='); // malformed rule (should be ruled out by validation)
+    char input = rule[0];
+    String output = rule.substring(2);
+    core.addRule(input, output.toStdString());
+    tmp = tmp.fromFirstOccurrenceOf(";", false, false);
+    done = tmp.length() == 0;
+  }
   return true;
 }
 
 bool Snowflake::validateRuleString(const juce::String& newRules)
 {
+  String tmp = newRules.removeCharacters(" \n"); // remove space and newline
+  bool done = false;
+  while(done == false)
+  {
+    String rule = tmp.upToFirstOccurrenceOf(";", false, false);
+    if(rule[1] != '=')
+      return false;
+    tmp = tmp.fromFirstOccurrenceOf(";", false, false);
+    done = tmp.length() == 0;
+  }
   return true;
 }
 
@@ -95,7 +129,7 @@ SnowflakeEditor::SnowflakeEditor(jura::Snowflake *snowFlake) : AudioModuleEditor
   ScopedLock scopedLock(*lock);
   snowflakeModule = snowFlake;
   createWidgets();
-  setSize(300, 200);
+  setSize(400, 200);
 }
 
 void SnowflakeEditor::createWidgets()

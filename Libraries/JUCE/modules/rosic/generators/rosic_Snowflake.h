@@ -39,6 +39,7 @@ public:
 
   /** Sets the seed (aka "axiom") for the L-system. */
   void setSeed(const std::string& newSeed) { seed = newSeed; }
+    // rename to setAxiom
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
