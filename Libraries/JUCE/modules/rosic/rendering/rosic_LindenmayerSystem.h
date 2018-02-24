@@ -153,6 +153,14 @@ public:
   void translate(const std::string& str, double angle,
     std::vector<double>& x, std::vector<double>& y);
 
+
+
+  void render(const std::string& seed, int order, std::vector<double>& x, std::vector<double>& y);
+
+  void translate(const std::string& str, std::vector<double>& x, std::vector<double>& y);
+
+
+
   /** Normalizes the xy coordinates such that both x and y are free of DC (centered around 0) and
   the maximum absolute value is 1 (this second step is done by finding the maximum absolute value
   of both vectors and scaling both by the same value - in order to preserve the aspect ratio). */

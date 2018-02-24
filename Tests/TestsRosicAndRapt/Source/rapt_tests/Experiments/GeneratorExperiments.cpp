@@ -333,7 +333,7 @@ void lindenmayer()
   rosic::LindenmayerRenderer lr;
 
   // uncomment the curve, you want to render:
-  lr.getKochSnowflake(4, x, y);
+  //lr.getKochSnowflake(4, x, y);
   //lr.getMooreCurve(4, x, y);
   //lr.get32SegmentCurve(2, x, y);
   //lr.getQuadraticKochIsland(3, x, y);
@@ -362,7 +362,7 @@ void lindenmayer()
   //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFFF+F+FF-F"); lr.render(seed, 3, 90, x, y);
   //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+F-F"); lr.render(seed, 4, 90, x, y);   // nice
   //lr.clearRules(); lr.addRule('F', "F+FF-FF-FfF+F+F-F"); lr.render(seed, 4, 90, x, y);
-  //lr.clearRules(); lr.addRule('F', "f+FF-FF-FFF+F+F-F"); lr.render(seed, 4, 90, x, y); 
+  lr.clearRules(); lr.addRule('F', "f+FF-FF-FFF+F+F-F"); lr.render(seed, 4, 90, x, y); 
   //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+f+F-F"); lr.render(seed, 4, 90, x, y);
   //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+f-F"); lr.render(seed, 4, 90, x, y); // swastika?
   //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+F-f"); lr.render(seed, 4, 90, x, y);

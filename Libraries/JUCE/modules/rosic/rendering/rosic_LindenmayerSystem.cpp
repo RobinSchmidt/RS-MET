@@ -181,11 +181,24 @@ void LindenmayerRenderer::render(const std::string& seed, int order, double angl
 void LindenmayerRenderer::translate(const std::string& str, double angle,
   std::vector<double>& x, std::vector<double>& y)
 {
-  turtleGraphics.init(0, 0, 1, 0);
   turtleGraphics.setAngle(angle);
+  turtleGraphics.init(0, 0, 1, 0);
   turtleGraphics.translate(str, x, y);
   if(normalize) 
     normalizeXY(x, y);
+}
+
+void LindenmayerRenderer::render(const std::string& seed, int order, 
+  std::vector<double>& x, std::vector<double>& y)
+{
+
+}
+
+void LindenmayerRenderer::translate(const std::string& str, 
+  std::vector<double>& x, std::vector<double>& y)
+{
+
+
 }
 
 void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double>& y)
@@ -194,10 +207,10 @@ void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double
 
   // remove mean:
   bool loop = true;  // make member
-  if(loop == true) { // we need to ignore 0th element in mean computation
-    double m;        // because it's repeated at the end
-    m = mean(&x[1], N-1); add(&x[0], -m, &x[0], N);
-    m = mean(&y[1], N-1); add(&y[0], -m, &y[0], N); }
+  if(loop == true) { // we need to ignore last element in mean computation
+    double m;        // because it just repeats the first and is irrelevant
+    m = mean(&x[0], N-1); add(&x[0], -m, &x[0], N);
+    m = mean(&y[0], N-1); add(&y[0], -m, &y[0], N); }
   else {
     removeMean(&x[0], N);
     removeMean(&y[0], N); }

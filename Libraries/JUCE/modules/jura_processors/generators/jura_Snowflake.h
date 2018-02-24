@@ -54,7 +54,10 @@ protected:
 
   jura::Snowflake *snowflakeModule;
 
-  //AutomatableSlider *frequencySlider;
+  RSlider *sliderIterations, *sliderAngle;
+
+  RTextField  *seedLabel,  *rulesLabel;
+  RTextEditor *seedEditor, *rulesEditor;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SnowflakeEditor)
 };

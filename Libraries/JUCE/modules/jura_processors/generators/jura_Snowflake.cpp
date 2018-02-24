@@ -19,6 +19,10 @@ void Snowflake::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setNumIterations);
 
+  p = new Param("Angle", 0, 360, 0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setAngle);
+
   /*
   p = new Param("Tune", -60.0, +60.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
