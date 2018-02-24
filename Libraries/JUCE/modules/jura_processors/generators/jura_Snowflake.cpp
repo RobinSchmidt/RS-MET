@@ -100,20 +100,40 @@ SnowflakeEditor::SnowflakeEditor(jura::Snowflake *snowFlake) : AudioModuleEditor
 
 void SnowflakeEditor::createWidgets()
 {
+  typedef RTextField Lbl;
   typedef RSlider Sld;
   Sld* s;
+  Lbl* l;
   Parameter* p;
+
+  addWidget( axiomLabel = l = new Lbl("Axiom:") );
+  l->setDescription("Axiom (aka initiator, seed) for L-system");
+  l->setDescriptionField(infoField);
+
+  addWidget( axiomEditor = new RTextEditor );
+  axiomEditor->addListener(this);
+  axiomEditor->setDescription(axiomLabel->getDescription());
+  axiomEditor->setDescriptionField(infoField);
+
+  addWidget( rulesLabel = l = new Lbl("Rules:") );
+  l->setDescription("Rules (aka generator(s), productions) for L-system");
+  l->setDescriptionField(infoField);
+
+  addWidget( rulesEditor = new RTextEditor );
+  rulesEditor->setMultiLine(true);
+  rulesEditor->setReturnKeyStartsNewLine(true);
+  rulesEditor->addListener(this);
+  rulesEditor->setDescription(rulesLabel->getDescription());
+  rulesEditor->setDescriptionField(infoField);
 
   addWidget( sliderIterations = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("Iterations") );
-  //s->setSliderName("Iterations");
   s->setDescription("Number of L-system iterations");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString0);
 
   addWidget( sliderAngle = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("Angle") );
-  //s->setSliderName("Angle");
   s->setDescription("Turning angle of turtle graphics");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
@@ -127,9 +147,27 @@ void SnowflakeEditor::resized()
   int y  = getPresetSectionBottom() + m;
   int w  = getWidth() - 2*m;
   int h  = getHeight();
-  int wh = 16;   // widget height
-  int dy = wh-2; // delta-y between widgets
+  int wh = 16;    // widget height
+  int dy = wh+2;  // delta-y between widgets
+
+  int lw = 48; // label width
+  axiomLabel->setBounds( x,    y, lw,   wh);
+  axiomEditor->setBounds(x+lw, y, w-lw, wh);
+  y += dy;
+
+  rulesLabel->setBounds( x,    y, lw,   3*wh);
+  rulesEditor->setBounds(x+lw, y, w-lw, 3*wh);
+  y += 3*dy;
+
+  // put initiator and generator plots here
 
   sliderIterations->setBounds(x, y, w, wh); y += dy;
   sliderAngle->setBounds(x, y, w, wh); y += dy;
+
+  // put result (2D and 1D plots here)
+}
+
+void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& editor)
+{
+
 }

@@ -96,6 +96,8 @@ void TurtleGraphics::translate(const std::string& str,
       vy.push_back(y); 
     }
   }
+  // maybe use '[' to push and ']' to pop x,y,dx,dy on a stack as described here:
+  // https://en.wikipedia.org/wiki/L-system#Example_2:_Fractal_(binary)_tree
 }
 
 //=================================================================================================

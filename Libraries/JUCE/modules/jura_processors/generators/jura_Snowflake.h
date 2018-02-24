@@ -22,6 +22,9 @@ public:
 
   /** Sets the seed (i.e. "axiom") for the L-system. */
   void setSeed(const juce::String& newSeed);
+   // maybe call it "axiom" for consistency with L-system terminology, we may also want to 
+   // introduce randomization later for which we will also need a seed so it's a good idea to
+   // reserve the "seed" term for that
 
   /** Sets the string containing the L-system rules and returns whether or not this was sucessful. 
   It may fail, if the string is malformed in which case and empty set of rules will be used by 
@@ -63,7 +66,7 @@ todo:
  -resulting x,y signals
 */
 
-class JUCE_API SnowflakeEditor : public AudioModuleEditor
+class JUCE_API SnowflakeEditor : public AudioModuleEditor, public RTextEditorListener
 {
 
 public:
@@ -73,6 +76,7 @@ public:
   void createWidgets();
 
   virtual void resized() override;
+  virtual void rTextEditorTextChanged(RTextEditor& editor) override;
 
 protected:
 
@@ -80,8 +84,11 @@ protected:
 
   RSlider *sliderIterations, *sliderAngle;
 
-  RTextField  *seedLabel,  *rulesLabel;
-  RTextEditor *seedEditor, *rulesEditor;
+  RTextField  *axiomLabel,  *rulesLabel;
+  RTextEditor *axiomEditor, *rulesEditor;
+  //RTextEntryField* axiomField;
+
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SnowflakeEditor)
 };
