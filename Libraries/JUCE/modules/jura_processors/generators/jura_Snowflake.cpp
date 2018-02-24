@@ -75,6 +75,7 @@ void Snowflake::setAxiom(const juce::String& newAxiom)
 {
   axiom = newAxiom;
   core.setSeed(axiom.toStdString());
+  core.updateWaveTable();
 }
 
 bool Snowflake::setRules(const juce::String& newRules)
@@ -104,6 +105,7 @@ bool Snowflake::setRules(const juce::String& newRules)
     tmp = tmp.fromFirstOccurrenceOf(";", false, false);
     done = tmp.length() == 0;
   }
+  core.updateWaveTable();
   return true;
 }
 

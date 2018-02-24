@@ -16,6 +16,8 @@ class Snowflake
 
 public:
 
+  Snowflake();
+
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
@@ -26,7 +28,7 @@ public:
   void setFrequency(double newFrequency);
 
   /** Sets the number of iterations for the L-system. */
-  void setNumIterations(int newNumIterations) { numIterations = newNumIterations; }
+  void setNumIterations(int newNumIterations);
 
   /** Sets the turning angle for the turtle-graphics interpreter. */
   void setAngle(double newAngle) { renderer.setAngle(newAngle); }
@@ -47,16 +49,28 @@ public:
   /** Calculates one output-sample frame at a time. */
   INLINE void getSampleFrameStereo(double *outL, double *outR)
   {
+    if(tableLength < 2) return;
 
+    // integer and fractional part of position:
+    int iPos = floorInt(pos);
+    double fPos = pos - iPos;
+
+    // linear interpolation:
+    *outL = (1-fPos)*x[iPos] + fPos*x[iPos+1];
+    *outR = (1-fPos)*y[iPos] + fPos*y[iPos+1];
+
+    // increment and wraparound:
+    pos += inc;
+    while(pos >= tableLength)
+      pos -= tableLength;
   }
 
   void reset();
 
-
-protected:
-
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
+
+protected:
 
   /** Updates the wavetable increment according to desired frequency, sample rate and wavetable 
   length. */
@@ -70,6 +84,7 @@ protected:
   double inc = 0;                 // wavetable increment
   double frequency  = 0;
   double sampleRate = 1;
+  int tableLength = 0;            // not including the last sample (which repeats the 1st)
 
 };
 
