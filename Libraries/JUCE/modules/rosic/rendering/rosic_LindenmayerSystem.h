@@ -134,6 +134,10 @@ public:
     // this doesn't work - why?
   void getPleasantError(int order, std::vector<double>& x, std::vector<double>& y);
 
+  // see also here - there seems to be an L-system in inkscape - maybe i can figure out why the
+  // 2nd sierpinske triangle doesn't work by looking at what inkscape does
+  //https://thebrickinthesky.wordpress.com/2013/03/17/l-systems-and-penrose-p3-in-inkscape/
+
 
   // maybe have a "numPoints" parameter that is used for resampling the resulting curve to a given
   // number of points (by linear interpolation)

@@ -333,7 +333,7 @@ void lindenmayer()
   rosic::LindenmayerRenderer lr;
 
   // uncomment the curve, you want to render:
-  //lr.getKochSnowflake(4, x, y);
+  lr.getKochSnowflake(4, x, y);
   //lr.getMooreCurve(4, x, y);
   //lr.get32SegmentCurve(2, x, y);
   //lr.getQuadraticKochIsland(3, x, y);
@@ -348,7 +348,7 @@ void lindenmayer()
   // shapes based on a triangle seed:
   std::string seed = "F+F+F";
   //lr.clearRules(); lr.addRule('F', "F+F-F"); lr.render(seed, 7, 120, x, y); // sort of triangular grid
-  lr.clearRules(); lr.addRule('F', "F+F-FF"); lr.render(seed, 6, 120, x, y); // thin spiral arms
+  //lr.clearRules(); lr.addRule('F', "F+F-FF"); lr.render(seed, 6, 120, x, y); // thin spiral arms
   //lr.clearRules(); lr.addRule('F', "F+F-F+"); lr.render(seed, 8, 120, x, y); 
   //lr.clearRules(); lr.addRule('F', "F+F-F-F"); lr.render(seed, 5, 120, x, y); 
 
@@ -359,8 +359,20 @@ void lindenmayer()
   //lr.clearRules(); lr.addRule('F', "F+FF-F-FF+F+F-F"); lr.render(seed, 4, 90, x, y);
   //lr.clearRules(); lr.addRule('F', "F+FF-FF-FF+FF+FF-F"); lr.render(seed, 3, 90, x, y);
   //lr.clearRules(); lr.addRule('F', "F+F-F-FF+FF+FF-F"); lr.render(seed, 3, 90, x, y);
-  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+F-F"); lr.render(seed, 4, 90, x, y);
   //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFFF+F+FF-F"); lr.render(seed, 3, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+F-F"); lr.render(seed, 4, 90, x, y);   // nice
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FfF+F+F-F"); lr.render(seed, 4, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "f+FF-FF-FFF+F+F-F"); lr.render(seed, 4, 90, x, y); 
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+f+F-F"); lr.render(seed, 4, 90, x, y);
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+f-F"); lr.render(seed, 4, 90, x, y); // swastika?
+  //lr.clearRules(); lr.addRule('F', "F+FF-FF-FFF+F+F-f"); lr.render(seed, 4, 90, x, y);
+
+  // shapes based on sort of s-shape seed:
+  seed = "F+F-FF+FF+F+F-FF+FF";
+  //lr.clearRules(); lr.addRule('F', "F+F-F-FF+F+F-F"); lr.render(seed, 3, 90, x, y); 
+  //lr.clearRules(); lr.addRule('F', "F+f-F-FF+f+F-F"); lr.render(seed, 4, 90, x, y); 
+  //lr.clearRules(); lr.addRule('F', "F+F-F"); lr.render(seed, 5, 90, x, y); 
+  //lr.clearRules(); lr.addRule('F', "+F-f-F+"); lr.render(seed, 8, 90, x, y); // digital noise
 
   // shapes based on an octagon seed:
   seed = "F+F+F+F+F+F+F+F";
@@ -370,6 +382,20 @@ void lindenmayer()
   //lr.clearRules(); lr.addRule('F', "+F--F"); lr.render(seed, 8, 45, x, y);
   //lr.clearRules(); lr.addRule('F', "+F--F+"); lr.render(seed, 7, 45, x, y); // flowerish
   //lr.clearRules(); lr.addRule('F', "+FF--FF+"); lr.render(seed, 5, 45, x, y); 
+
+  // attempt to do a sierpinski triangle (using 60°) - not very successfuly yet:
+  seed = "F++F++F";
+  //lr.clearRules(); lr.addRule('F', "+F-F+F-F"); lr.render(seed, 5, 60, x, y); // nope, but cool hexgonal shape
+  //lr.clearRules(); lr.addRule('F', "+F-F+F-F+"); lr.render(seed, 6, 60, x, y);
+  //lr.clearRules(); lr.addRule('F', "+F--F+F--F"); lr.render(seed, 5, 60, x, y); 
+  //lr.clearRules(); lr.addRule('F', "+F--F++F--F"); lr.render(seed, 2, 60, x, y); 
+  //lr.clearRules(); lr.addRule('F', "+F--F++F--F--FF"); lr.render(seed, 4, 60, x, y); 
+
+  seed = "FX++FX++FX";
+  //lr.clearRules(); lr.addRule('X', "+FX++FX++FX+"); lr.render(seed, 4, 60, x, y); 
+  //lr.clearRules(); lr.addRule('F', "X"); lr.addRule('X', "FX++FX++FX"); lr.render(seed, 4, 60, x, y); 
+
+  // strategies for variation: replace a single F with f in a good looking pic
 
 
 

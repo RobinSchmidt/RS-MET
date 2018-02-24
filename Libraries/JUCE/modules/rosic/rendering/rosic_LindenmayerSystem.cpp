@@ -105,10 +105,6 @@ void LindenmayerRenderer::getKochSnowflake(int N, std::vector<double>& x, std::v
   clearRules();
   addRule('F', "F+F--F+F");
   render("F--F--F", N, 60, x, y);
-
-  // hmm... an order 1 snowflake is not centered after normalizing - maybe we should have different 
-  // normalization modes (center, dcFree, etc.), centering could be based on center of gravity or 
-  // something
 }
 
 void LindenmayerRenderer::getMooreCurve(int N, std::vector<double>& x, std::vector<double>& y)
@@ -196,15 +192,22 @@ void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double
 {
   int N = (int)x.size();
 
-  rosic::removeMean(&x[0], N);
-  rosic::removeMean(&y[0], N);
+  // remove mean:
+  bool loop = true;  // make member
+  if(loop == true) { // we need to ignore 0th element in mean computation
+    double m;        // because it's repeated at the end
+    m = mean(&x[1], N-1); add(&x[0], -m, &x[0], N);
+    m = mean(&y[1], N-1); add(&y[0], -m, &y[0], N); }
+  else {
+    removeMean(&x[0], N);
+    removeMean(&y[0], N); }
 
-  double maxX = rosic::maxAbs(&x[0], N);
-  double maxY = rosic::maxAbs(&y[0], N);
-  double scl  = 1.0 / max(maxX, maxY);
-
-  rosic::scale(&x[0], &x[0], N, scl);
-  rosic::scale(&y[0], &y[0], N, scl);
+  // adjust maximum:
+  double maxX = maxAbs(&x[0], N);
+  double maxY = maxAbs(&y[0], N);
+  double scl = 1.0 / max(maxX, maxY);
+  scale(&x[0], &x[0], N, scl);
+  scale(&y[0], &y[0], N, scl);
 }
 
 // other closed curves that can be generated:
