@@ -92,8 +92,13 @@ void Snowflake::setStateFromXml(const XmlElement& xmlState, const juce::String& 
   setAxiom(tmp);
   tmp = xmlState.getStringAttribute("Rules");
   setRules(tmp);
+
   AudioModuleWithMidiIn::setStateFromXml(xmlState, stateName, markAsClean); 
-  // calls core->setNumIteration which triggers re-rendering
+    // this calls core->setNumIterations which triggers re-rendering...but not always - not when 
+    // the number of iterations does not change from one patch to the next, so we trigger 
+    // re-rendering (it may result in updating the wavetable twice - maybe try to optimize):
+  core.setNumIterations((int)getParameterByName("Iterations")->getValue());
+  //core.updateWaveTable(); 
 }
 
 XmlElement* Snowflake::getStateAsXml(const juce::String& stateName, bool markAsClean)

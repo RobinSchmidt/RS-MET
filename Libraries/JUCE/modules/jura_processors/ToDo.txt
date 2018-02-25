@@ -35,6 +35,16 @@ Ladder:
 
 
 BUGS:
+Snowflake:
+-when number of iterations is the same in subsequent presets, it uses 0...seems like the core is not 
+ updated
+
+RTextEditor seems to have problems with whitespace - as soon as there are whitespaces in the text,
+cursor position via mouse and also left/right arrows is messed up try with text: A B C D E F G
+it seems, BitmapFont::xToGlyphIndex does not get the complete string as argument? try with
+"AB" vs "A B" 
+-seems like the text-editor tokenizens the string using whitespace as separator
+
 
 
 -add features to automation setup: meta slider, attachment menu, sliders for node x,y, smoothing
