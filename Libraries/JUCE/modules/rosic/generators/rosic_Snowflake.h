@@ -41,7 +41,7 @@ public:
   void setNumIterations(int newNumIterations);
 
   /** Sets the turning angle for the turtle-graphics interpreter. */
-  void setAngle(double newAngle) { renderer.setAngle(newAngle); }
+  void setAngle(double newAngle);
 
   /** Clears the set of L-system rules. */
   void clearRules() { renderer.clearRules(); }

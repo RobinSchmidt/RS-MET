@@ -28,7 +28,16 @@ void Snowflake::setRotation(double newRotation)
 void Snowflake::setNumIterations(int newNumIterations) 
 { 
   numIterations = newNumIterations; 
-  updateWaveTable(); 
+  updateWaveTable();
+}
+
+void Snowflake::setAngle(double newAngle) 
+{ 
+  renderer.setAngle(newAngle); 
+  updateWaveTable();
+  // todo: make the angle modulatable - don't re-render the table but only render the L-system 
+  // output string, reduce it to the relevant characters and render one point at a time instead of
+  // pre-rendering a wavetable
 }
 
 void Snowflake::updateWaveTable()

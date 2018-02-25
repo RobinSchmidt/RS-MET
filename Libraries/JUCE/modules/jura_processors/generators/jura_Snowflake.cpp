@@ -278,3 +278,10 @@ void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)
     //  ed->indicateInvalidText(false);
   }
 }
+
+void SnowflakeEditor::updateWidgetsAccordingToState()
+{
+  AudioModuleEditor::updateWidgetsAccordingToState();
+  axiomEditor->setText(snowflakeModule->getAxiom(), false);
+  rulesEditor->setText(snowflakeModule->getRules(), false);
+}

@@ -1,7 +1,7 @@
 #ifndef jura_Snowflake_h
 #define jura_Snowflake_h
 
-class JUCE_API Snowflake : public jura::AudioModuleWithMidiIn
+class JUCE_API Snowflake : public jura::AudioModuleWithMidiIn, public ChangeBroadcaster
 {
 
 public:
@@ -80,6 +80,9 @@ public:
 
   virtual void resized() override;
   virtual void rTextEditorTextChanged(RTextEditor& editor) override;
+  virtual void updateWidgetsAccordingToState() override;
+
+  //virtual void changeListenerCallback(ChangeBroadcaster* source) override;
 
 protected:
 
