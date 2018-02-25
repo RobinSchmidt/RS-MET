@@ -67,11 +67,13 @@ void Snowflake::processStereoFrame(double *left, double *right)
 
 void Snowflake::setSampleRate(double newSampleRate)
 {
+  ScopedLock scopedLock(*lock);
   core.setSampleRate(newSampleRate);
 }
 
 void Snowflake::reset()
 {
+  ScopedLock scopedLock(*lock);
   core.reset();
 }
 
@@ -84,6 +86,7 @@ void Snowflake::noteOn(int noteNumber, int velocity)
 void Snowflake::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
+  ScopedLock scopedLock(*lock);
   core.setNumIterations(0); // avoid excessive re-rendering
   String tmp = xmlState.getStringAttribute("Axiom");
   setAxiom(tmp);
@@ -95,6 +98,7 @@ void Snowflake::setStateFromXml(const XmlElement& xmlState, const juce::String& 
 
 XmlElement* Snowflake::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
+  ScopedLock scopedLock(*lock);
   XmlElement* xml = AudioModuleWithMidiIn::getStateAsXml(stateName, markAsClean);
   xml->setAttribute("Axiom", axiom);
   xml->setAttribute("Rules", rules);
@@ -103,6 +107,7 @@ XmlElement* Snowflake::getStateAsXml(const juce::String& stateName, bool markAsC
 
 void Snowflake::setAxiom(const juce::String& newAxiom)
 {
+  ScopedLock scopedLock(*lock);
   if(axiom == newAxiom)
     return;
   axiom = newAxiom;
@@ -112,6 +117,7 @@ void Snowflake::setAxiom(const juce::String& newAxiom)
 
 bool Snowflake::setRules(const juce::String& newRules)
 {
+  ScopedLock scopedLock(*lock);
   String tmp = newRules.removeCharacters(" \n"); // remove space and newline
   if(!validateRuleString(tmp))
     return false;
@@ -172,6 +178,7 @@ SnowflakeEditor::SnowflakeEditor(jura::Snowflake *snowFlake) : AudioModuleEditor
 
 void SnowflakeEditor::createWidgets()
 {
+  ScopedLock scopedLock(*lock);
   typedef RTextField Lbl;
   typedef RSlider Sld;
   Sld* s;
