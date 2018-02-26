@@ -59,6 +59,8 @@ public:
   INLINE void getSampleFrameStereo(double *outL, double *outR)
   {
     if(tableLength < 2) return;
+    if(!tableUpToDate) updateWaveTable();
+    if(!incUpToDate) updateIncrement();
 
     // integer and fractional part of position:
     int iPos = floorInt(pos);
@@ -99,6 +101,15 @@ protected:
   double frequency  = 0;
   double sampleRate = 1;
   int tableLength = 0;            // not including the last sample (which repeats the 1st)
+
+
+  std::atomic_bool tableUpToDate = false;
+  std::atomic_bool incUpToDate = false;
+  // this is a new way of dealing with updating internal variables - it avoids redundant 
+  // recalculations when sereval parameters change at once and allows the re-calculation to be
+  // done in a thread-safe way in the audio thread - the gui thread just atomically sets these
+  // flags...maybe if we do it everywhere like this, we can even get rid of locking in 
+  // jura::Parameter...that would be great!!
 
 };
 

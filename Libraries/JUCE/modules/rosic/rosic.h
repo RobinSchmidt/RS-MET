@@ -46,6 +46,7 @@
 //#include <functional>
 //#include <limits.h>
 #include <limits>
+#include <atomic>
 //#include <stdio.h>
 //#include <new>
 //#include <iterator>

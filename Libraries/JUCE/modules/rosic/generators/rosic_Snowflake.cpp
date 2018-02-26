@@ -45,7 +45,8 @@ void Snowflake::setAngle(double newAngle)
 void Snowflake::updateWaveTable()
 {
   renderer.render(axiom, numIterations, x, y);
-  tableLength = x.size()-1;
+  tableLength = (int)x.size()-1;
+  tableUpToDate = true;
   updateIncrement();
   reset();
 }
@@ -58,4 +59,6 @@ void Snowflake::reset()
 void Snowflake::updateIncrement()
 {
   inc = tableLength * frequency / sampleRate; // avoid division
+
+  incUpToDate = true;
 }

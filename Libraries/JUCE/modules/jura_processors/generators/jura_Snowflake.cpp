@@ -205,8 +205,8 @@ void SnowflakeEditor::createWidgets()
   l->setDescriptionField(infoField);
 
   addWidget( rulesEditor = new RTextEditor );
-  rulesEditor->setText(snowflakeModule->getRules(), false);
   rulesEditor->setMultiLine(true);
+  rulesEditor->setText(snowflakeModule->getRules(), false);
   rulesEditor->setReturnKeyStartsNewLine(true);
   rulesEditor->addListener(this);
   rulesEditor->setDescription(rulesLabel->getDescription());
