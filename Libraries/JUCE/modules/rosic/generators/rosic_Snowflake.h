@@ -44,13 +44,13 @@ public:
   void setAngle(double newAngle);
 
   /** Clears the set of L-system rules. */
-  void clearRules() { renderer.clearRules(); }
+  void clearRules();
 
   /** Adds an L-system rule. */
-  void addRule(char input, const std::string& output) { renderer.addRule(input, output); }
+  void addRule(char input, const std::string& output);
 
   /** Sets the seed (aka "axiom") for the L-system. */
-  void setAxiom(const std::string& newAxiom) { axiom = newAxiom; }
+  void setAxiom(const std::string& newAxiom);
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

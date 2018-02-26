@@ -11,13 +11,15 @@ Snowflake::Snowflake()
 void Snowflake::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
-  updateIncrement();
+  incUpToDate = false;
+  //updateIncrement();
 }
 
 void Snowflake::setFrequency(double newFrequency)
 {
   frequency = newFrequency;
-  updateIncrement();
+  incUpToDate = false;
+  //updateIncrement();
 }
 
 void Snowflake::setRotation(double newRotation)
@@ -27,8 +29,11 @@ void Snowflake::setRotation(double newRotation)
 
 void Snowflake::setNumIterations(int newNumIterations) 
 { 
+  if(newNumIterations == numIterations)
+    return;
   numIterations = newNumIterations; 
-  updateWaveTable();
+  tableUpToDate = false; 
+  //updateWaveTable();
   // maybe don't update here, instead set a "dirty" flag, check it in getSample and update the
   // table there
 }
@@ -36,10 +41,29 @@ void Snowflake::setNumIterations(int newNumIterations)
 void Snowflake::setAngle(double newAngle) 
 { 
   renderer.setAngle(newAngle); 
-  updateWaveTable();
+  tableUpToDate = false; 
+  //updateWaveTable();
   // todo: make the angle modulatable - don't re-render the table but only render the L-system 
   // output string, reduce it to the relevant characters and render one point at a time instead of
   // pre-rendering a wavetable
+}
+
+void Snowflake::clearRules() 
+{ 
+  renderer.clearRules(); 
+  tableUpToDate = false; 
+}
+
+void Snowflake::Snowflake::addRule(char input, const std::string& output) 
+{ 
+  renderer.addRule(input, output); 
+  tableUpToDate = false; 
+}
+
+void Snowflake::setAxiom(const std::string& newAxiom) 
+{ 
+  axiom = newAxiom; 
+  tableUpToDate = false; 
 }
 
 void Snowflake::updateWaveTable()
@@ -59,6 +83,5 @@ void Snowflake::reset()
 void Snowflake::updateIncrement()
 {
   inc = tableLength * frequency / sampleRate; // avoid division
-
   incUpToDate = true;
 }
