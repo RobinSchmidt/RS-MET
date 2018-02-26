@@ -112,6 +112,11 @@ Ideas:
   definition by the colon, but they make it more readable...but maybe newlines could also be used
   A: F=F-G+F+G-F; G=GG
   B: G=F
+ -maybe this best realized by making a class LindenmayerSystemSet
+-allow the left hand sides of rules to be strings instead of characters. this allows a context 
+ sensitive replacement, for example a rule +F+=+F-F-F+ means: replace F by F-F-F, if the F is 
+ between + and + (the surrounding "context" plusses appear in the rhs, too - so the rule won't 
+ have them removed them in the output string)
 
 
 see here for inspiration for new curves
