@@ -64,8 +64,8 @@ public:
     double fPos = pos - iPos;
 
     // linear interpolation, gain and rotation:
-    *outL = amplitude * ((1-fPos)*x[iPos] + fPos*x[iPos+1]);
-    *outR = amplitude * ((1-fPos)*y[iPos] + fPos*y[iPos+1]);
+    *outL = amplitude * ((1-fPos)*tableX[iPos] + fPos*tableX[iPos+1]);
+    *outR = amplitude * ((1-fPos)*tableY[iPos] + fPos*tableY[iPos+1]);
     rotator.apply(outL, outR);
 
     // increment and wraparound:
@@ -85,29 +85,37 @@ protected:
   length. */
   void updateIncrement();
 
-  // maybe get rid of that - switch to on-the-fly rendering (pre-render only the string)
-  std::vector<double> x, y;       // rendered (wave)tables for x (left) and y (right)
-  LindenmayerRenderer renderer;
+  LindenmayerRenderer renderer; 
+  // replace by LindenmayerSystem and TurtleGraphics for preparing for on-the-fly rendering
 
-  // stuff for on-the fly rendering:
+  std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
+  int tableLength = 0;            // not including the last sample (which repeats the 1st)
+  // maybe get rid of that - switch to on-the-fly rendering (pre-render only the string), but 
+  // delete only after good testing...or maybe keep it in a SnowflakePrototype class?
+
+
+  LindenmayerSystem lindSys;
+  TurtleGraphics turtle;
+
+
+  int numIterations = 0; // replace by iteratorString or applicatorString (a string like AAABBAC)
+  std::string axiom;
+
+
+  // stuff for on-the fly rendering (not yet used):
   std::string lindenmayerResult;  // output string of Lindenmayer system
   std::string turtleCommands;     // only the turtle commands from lindenmayerResult 
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
   int numPoints = 0;              // number of 'F's in turtleCommands (+1? or -1?)
 
+  RAPT::rsRotationXY<double> rotator; // for rotating final x,y coordinates
 
-
-  RAPT::rsRotationXY<double> rotator;
-
-  int numIterations = 0;
-  std::string axiom;
-  double pos = 0;                 // position in wavetable
+  double pos = 0;                 // position in wavetable / string
   double inc = 0;                 // wavetable increment
   double amplitude  = 1;
   double frequency  = 0;
   double sampleRate = 1;
-  int tableLength = 0;            // not including the last sample (which repeats the 1st)
 
 
   std::atomic_bool tableUpToDate = false; // maybe rename to tableReady

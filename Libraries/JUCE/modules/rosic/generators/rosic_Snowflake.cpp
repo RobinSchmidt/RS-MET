@@ -40,9 +40,12 @@ void Snowflake::setNumIterations(int newNumIterations)
 
 void Snowflake::setAngle(double newAngle) 
 { 
-  renderer.setAngle(newAngle); 
+  turtle.setAngle(newAngle);
+
+  renderer.setAngle(newAngle); // old
   tableUpToDate = false; 
-  //updateWaveTable();
+
+
   // todo: make the angle modulatable - don't re-render the table but only render the L-system 
   // output string, reduce it to the relevant characters and render one point at a time instead of
   // pre-rendering a wavetable
@@ -50,12 +53,18 @@ void Snowflake::setAngle(double newAngle)
 
 void Snowflake::clearRules() 
 { 
+  lindSys.clearRules(); 
+  // turtleCommandsUpToDate = false;
+
   renderer.clearRules(); 
   tableUpToDate = false; 
 }
 
 void Snowflake::Snowflake::addRule(char input, const std::string& output) 
 { 
+  lindSys.addRule(input, output);
+  // turtleCommandsUpToDate = false;
+
   renderer.addRule(input, output); 
   tableUpToDate = false; 
 }
@@ -63,13 +72,14 @@ void Snowflake::Snowflake::addRule(char input, const std::string& output)
 void Snowflake::setAxiom(const std::string& newAxiom) 
 { 
   axiom = newAxiom; 
+  // turtleCommandsUpToDate = false;
   tableUpToDate = false; 
 }
 
 void Snowflake::updateWaveTable()
 {
-  renderer.render(axiom, numIterations, x, y);
-  tableLength = (int)x.size()-1;
+  renderer.render(axiom, numIterations, tableX, tableY);
+  tableLength = (int)tableX.size()-1;
   tableUpToDate = true;
   updateIncrement();
   reset();
@@ -111,6 +121,11 @@ Ideas:
 -make rotation angle quantizable to a set of numbers that the user can enter, for example
  120,90,72,60,45,36,30,24,22.5,20,15,12,10
 -have different loop modes: forward, backward, alternating (avoids jumps for non-closed curves)
+ -maybe in backward passes, (optionally) interpret angles as their negative (necessarry to actually
+  "go back")
+-maybe have an additional string of turtle commands that can be applied after each cycle has passed
+ (empty by default)...or maybe even different command strings to be applied after different numbers 
+ of cycles ..this defines the "turn/wrap around behavior"
 -instead of having a single L-system, have a set of them, maybe named A,B,C,.., then instead of 
  setting a number of iterations, use a string AAABBCCA to mean: apply A 3 times, then B 2 times, 
  then  C 2 times then A once, allow also syntax like A3B2C2A1
@@ -127,9 +142,11 @@ Ideas:
  between + and + (the surrounding "context" plusses appear in the rhs, too - so the rule won't 
  have them removed them in the output string)
 -maybe rename the "Axiom" back to "Seed"
+-interpolation modes: left, right, nearest, linear, cubic
 
 -call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
- Lindenmayer/Turtle grammar Fractal Definition Language (FDL)
+ Lindenmayer/Turtle grammar Fractal Definition Language (FDL) or mayb fractal geometric synthesis
+ language (FGSL)
 -write a tutorial:
  1: Turtle Graphics
  2: Lindenmayer Systems
