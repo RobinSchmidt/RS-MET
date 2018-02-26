@@ -85,3 +85,36 @@ void Snowflake::updateIncrement()
   inc = tableLength * frequency / sampleRate; // avoid division
   incUpToDate = true;
 }
+
+/*
+Ideas: 
+
+-make TurningAngle modulatable
+ -optionally compensate for changes in turning-angle by a rotation of the whole image, i.e. rotate
+  image by -TurningAngle ..or maybe -compensationAmount*TurningAngle
+ -requires to not pre-render a wavetable but only render the L-system output string and interpret 
+  it on the fly (the string should be stripped from meaningless characters, retaining only F,+,- 
+  before)
+ -may require to compute shift and scale (to remove DC and normalize) when a new angle is set up
+  -maybe these values should be precomputes for various angles, for example 0,5,10,15,.. and 
+   interpolation be used (to avoid to expensively compute the actually desired value whenever the
+   angle changes)
+-make rotation angle quantizable to a set of numbers that the user can enter, for example
+ 120,90,72,60,45,36,30,24,22.5,20,15,12,10
+-have different loop modes: forward, backward, alternating (avoids jumps for non-closed curves)
+-instead of having a single L-system, have a set of them, maybe named A,B,C,.., then instead of 
+ setting a number of iterations, use a string AAABBCCA to mean: apply A 3 times, then B 2 times, 
+ then  C 2 times then A once, allow also syntax like A3B2C2A1
+ -on wikipedia, there's a sierpinski triangle version that requires G to interpreted like F - this
+  could be realized by defining:
+  axiom: F-G-G, rules: (A: F=F-G+F+G-F; G=GG) (B: G=F) and then doing AAAB (or A3B) for 3rd order
+  ...maybe the parser doesn't have to care about the parentheses - it may separate the system
+  definition by the colon, but they make it more readable...but maybe newlines could also be used
+  A: F=F-G+F+G-F; G=GG
+  B: G=F
+
+
+see here for inspiration for new curves
+https://www.youtube.com/watch?v=RU0wScIj36o&t=53s
+
+*/

@@ -173,6 +173,10 @@ void LindenmayerRenderer::getSierpinskiTriangle2(int N,
   // start:     F-G-G
   // rules:     (F = F-G+F+G-F), (G = GG)
   // angle:     120°
+  // ahhh...it says: "Here, F and G both mean "draw forward""
+  // maybe we need a post-processing stage that can replace strings with other strings in the final 
+  // result ...or maybe that's too complicated - it would be sufficient to have a list of 
+  // characters that should draw a line, by default, it contains only 'F'
 }
 
 void LindenmayerRenderer::getPleasantError(int N, std::vector<double>& x, std::vector<double>& y)

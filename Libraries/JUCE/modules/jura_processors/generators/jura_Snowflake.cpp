@@ -87,7 +87,7 @@ void Snowflake::setStateFromXml(const XmlElement& xmlState, const juce::String& 
   bool markAsClean)
 {
   ScopedLock scopedLock(*lock);
-  //core.setNumIterations(0); // avoid excessive re-rendering - get rid
+  core.setNumIterations(0); // avoid excessive re-rendering of complicated tables
   String tmp = xmlState.getStringAttribute("Axiom");
   setAxiom(tmp);
   tmp = xmlState.getStringAttribute("Rules");
@@ -97,7 +97,7 @@ void Snowflake::setStateFromXml(const XmlElement& xmlState, const juce::String& 
     // this calls core->setNumIterations which triggers re-rendering...but not always - not when 
     // the number of iterations does not change from one patch to the next, so we trigger 
     // re-rendering (it may result in updating the wavetable twice - maybe try to optimize):
-  //core.setNumIterations((int)getParameterByName("Iterations")->getValue()); // get rid
+  core.setNumIterations((int)getParameterByName("Iterations")->getValue());
 }
 
 XmlElement* Snowflake::getStateAsXml(const juce::String& stateName, bool markAsClean)
