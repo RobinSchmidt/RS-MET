@@ -85,9 +85,19 @@ protected:
   length. */
   void updateIncrement();
 
+  // maybe get rid of that - switch to on-the-fly rendering (pre-render only the string)
   std::vector<double> x, y;       // rendered (wave)tables for x (left) and y (right)
-
   LindenmayerRenderer renderer;
+
+  // stuff for on-the fly rendering:
+  std::string lindenmayerResult;  // output string of Lindenmayer system
+  std::string turtleCommands;     // only the turtle commands from lindenmayerResult 
+  double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
+  double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
+  int numPoints = 0;              // number of 'F's in turtleCommands (+1? or -1?)
+
+
+
   RAPT::rsRotationXY<double> rotator;
 
   int numIterations = 0;

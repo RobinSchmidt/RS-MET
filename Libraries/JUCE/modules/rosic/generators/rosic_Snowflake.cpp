@@ -126,6 +126,7 @@ Ideas:
  sensitive replacement, for example a rule +F+=+F-F-F+ means: replace F by F-F-F, if the F is 
  between + and + (the surrounding "context" plusses appear in the rhs, too - so the rule won't 
  have them removed them in the output string)
+-maybe rename the "Axiom" back to "Seed"
 
 -call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
  Lindenmayer/Turtle grammar Fractal Definition Language (FDL)
