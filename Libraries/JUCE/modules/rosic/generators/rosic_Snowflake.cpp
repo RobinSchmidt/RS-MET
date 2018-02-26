@@ -127,6 +127,22 @@ Ideas:
  between + and + (the surrounding "context" plusses appear in the rhs, too - so the rule won't 
  have them removed them in the output string)
 
+-call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
+ Lindenmayer/Turtle grammar Fractal Definition Language (FDL)
+-write a tutorial:
+ 1: Turtle Graphics
+ 2: Lindenmayer Systems
+ 3: Fractal Definition Language
+  3.1: Extensions to Turtle Syntax
+  3.2: Extensions to Lindenmayer Syntax
+ 4: Fractal Geometry Synthesis
+  4.1: Turning Angle Modulation ...maybe allow Step Size Modulation, too?
+  4.2: Loop Modes
+  4.3: Normalization Modes
+  4.5: Subtractive Post Processing
+   4.5.1 Regular Musical Filters
+   4.5.2 Linear Phase Filters
+
 
 see here for inspiration for new curves
 https://www.youtube.com/watch?v=RU0wScIj36o&t=53s
