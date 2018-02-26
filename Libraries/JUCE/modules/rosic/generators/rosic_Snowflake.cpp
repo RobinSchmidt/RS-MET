@@ -99,6 +99,15 @@ Ideas:
   -maybe these values should be precomputes for various angles, for example 0,5,10,15,.. and 
    interpolation be used (to avoid to expensively compute the actually desired value whenever the
    angle changes)
+-allow a turtle syntax like +30 or -45 to mean: turn 30° left or 45° right (instead of whatever 
+ value the turtle drawer is set to)
+ -allows an initiator to use different angles than the generator(s) - for example, start with a 
+  pentagon and replace edges with something triangular (as in the koch snowflake)
+ -to make that more efficiently parsable in realtime, replace the + by P and the - by M in the 
+  realtime-parsed string - avoids to check, if next char is a number whenever a + or - is 
+  encountered, P and M indicate that is is, + and - indicate that it isn't, maybe allow rational
+  numbers to be entered, like 20/3 for 6.66666° but also allow to use decimal dot (for numerator
+  and denominator), assume /1 when a / is encountered with any number thereafter
 -make rotation angle quantizable to a set of numbers that the user can enter, for example
  120,90,72,60,45,36,30,24,22.5,20,15,12,10
 -have different loop modes: forward, backward, alternating (avoids jumps for non-closed curves)
