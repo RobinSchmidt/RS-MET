@@ -98,6 +98,14 @@ void TurtleGraphics::translate(const std::string& str,
   }
   // maybe use '[' to push and ']' to pop x,y,dx,dy on a stack as described here:
   // https://en.wikipedia.org/wiki/L-system#Example_2:_Fractal_(binary)_tree
+  // maybe use commands like +30F-45F to turn 30° left, go forward, turn 45° right, go forward
+  // ...so whenever a number comes after a + or -, don't use the default angle that is set up but 
+  // the angle given/ by that number - maybe don't call standard turnLeft but a turnLeftBy(angle)
+  // function, same for right - but the same effect can be also achieved by using 15 degrees
+  // and doing ++F---F, so maybe it doens't really formally extend the possibilities - but some
+  // things could be expressed more conveniently...one could use a pentagonal initiator with 
+  // triangular generators - expressing this with +++++..., would require to set the angle to 2°
+  // and using an excessive number of +ses
 }
 
 //=================================================================================================

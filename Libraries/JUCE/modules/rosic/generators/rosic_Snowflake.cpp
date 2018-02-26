@@ -29,6 +29,8 @@ void Snowflake::setNumIterations(int newNumIterations)
 { 
   numIterations = newNumIterations; 
   updateWaveTable();
+  // maybe don't update here, instead set a "dirty" flag, check it in getSample and update the
+  // table there
 }
 
 void Snowflake::setAngle(double newAngle) 
