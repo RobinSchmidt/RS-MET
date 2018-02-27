@@ -116,7 +116,7 @@ void Snowflake::setAxiom(const juce::String& newAxiom)
     return;
   axiom = newAxiom;
   core.setAxiom(axiom.toStdString());
-  core.updateWaveTable();
+  //core.updateWaveTable();
 }
 
 bool Snowflake::setRules(const juce::String& newRules)
@@ -134,7 +134,7 @@ bool Snowflake::setRules(const juce::String& newRules)
   if(exitEarly)
     return true; 
 
-  // parse tmp-string and add one rule at a time:
+  // parse tmp-string and add one rule at a time (maybe move the parsing into rosic::Snowflake):
   core.clearRules();
   bool done = false;
   while(done == false)
@@ -149,7 +149,7 @@ bool Snowflake::setRules(const juce::String& newRules)
     tmp = tmp.fromFirstOccurrenceOf(";", false, false);
     done = tmp.length() == 0;
   }
-  core.updateWaveTable();
+  //core.updateWaveTable();
   return true;
 }
 
