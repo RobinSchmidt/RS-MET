@@ -104,18 +104,47 @@ void Snowflake::reset()
 
   // used in on-the-fly synthesis:
   commandIndex = 0;
-  x[0] = 0;
-  y[0] = 0;
-  getNextPoint(&x[1], &y[1]);
-  //turtle.evaluateCommand(turtleCommands, 0
+  updateRealtimePoints(commandIndex);
+
+  //x[0] = 0;
+  //y[0] = 0;
+  //getNextPoint(&x[1], &y[1]);
+  ////turtle.evaluateCommand(turtleCommands, 0
 }
 
-void Snowflake::getNextPoint(double* x, double* y)
+void Snowflake::updateRealtimePoints(int targetCommandIndex)
 {
   if(turtleCommands.size() == 0)
+  {
+    x[0] = y[0] = x[1] = y[1] = 0;
     return;
+  }
   // maybe check also if numPoints >= 1 (i.e. there is at least one 'F' - because if not, we may
   // hang up in an infinite loop
+
+  int i = commandIndex;
+  while(i <= targetCommandIndex)
+  {
+    bool draw = turtle.interpretCharacter(turtleCommands[i]);
+    if(draw)
+    {
+      x[0] = turtle.getStartX();
+      y[0] = turtle.getStartY();
+      x[1] = turtle.getEndX();
+      y[1] = turtle.getEndY();
+      break;
+    }
+    i++;
+    if(i >= turtleCommands.size())
+      i = 0;
+  }
+  commandIndex = i;
+}
+
+/*
+void Snowflake::getNextPoint(double* x, double* y)
+{
+
   
 
   int i = commandIndex;
@@ -133,6 +162,7 @@ void Snowflake::getNextPoint(double* x, double* y)
   // maybe return true or false dependning on whether a line should or shouldn't be drawn (i.e. an
   // 'F' or 'f' is encountered)
 }
+*/
 
 void Snowflake::updateIncrement()
 {

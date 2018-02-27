@@ -91,16 +91,39 @@ public:
 
   INLINE void getFrameOnTheFly(double *outL, double *outR)
   {
+    if(!commandsReady) updateTurtleCommands();
+    if(!incUpToDate) updateIncrement();
 
+    int iPos = floorInt(pos);
+    double fPos = pos - iPos;
+    if(iPos > commandIndex)
+      updateRealtimePoints(iPos); // may later also update cubic interpolation coeffs, so they 
+                                  // don't need to be recomputed as long as we are traversing the
+                                  // the same line/curve segment
+
+    // later, switch other interpolation method here:
+    *outL = amplitude * ((1-fPos)*x[0] + fPos*x[1]);
+    *outR = amplitude * ((1-fPos)*y[0] + fPos*y[1]);
+    rotator.apply(outL, outR);
+
+    // increment and wraparound:
+    pos += inc;
+    while(pos >= (numPoints-1))  // is -1 correct?
+      pos -= (numPoints-1);
   }
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
   unnormalized coordinates). */
   void reset();
 
+  /**  */
+  void updateRealtimePoints(int targetCommandIndex);
+
   /** Returns the next point in the sequence of turtle generated points (used internally in 
   on-the-fly synthesis). */
-  void getNextPoint(double* x, double* y); 
+  //void getNextPoint(double* x, double* y); // maybe get rid
+
+
 
 
   /** Renders the wavetable and updates related variables. */
