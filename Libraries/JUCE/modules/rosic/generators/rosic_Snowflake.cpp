@@ -98,8 +98,40 @@ void Snowflake::updateTurtleCommands()
 
 void Snowflake::reset()
 {
-  pos = 0;
   turtle.init(0, 0, 1, 0);
+
+  pos = 0; // used in table-based synthesis
+
+  // used in on-the-fly synthesis:
+  commandIndex = 0;
+  x[0] = 0;
+  y[0] = 0;
+  getNextPoint(&x[1], &y[1]);
+  //turtle.evaluateCommand(turtleCommands, 0
+}
+
+void Snowflake::getNextPoint(double* x, double* y)
+{
+  if(turtleCommands.size() == 0)
+    return;
+  // maybe check also if numPoints >= 1 (i.e. there is at least one 'F' - because if not, we may
+  // hang up in an infinite loop
+  
+
+  int i = commandIndex;
+  while(! (turtleCommands[i] == 'F' || turtleCommands[i] == 'f') )
+  {
+    i++;
+    if(i >= turtleCommands.size())
+      i = 0;
+  }
+
+  // an 'F' or 'f' was found at i
+
+  commandIndex = i;
+
+  // maybe return true or false dependning on whether a line should or shouldn't be drawn (i.e. an
+  // 'F' or 'f' is encountered)
 }
 
 void Snowflake::updateIncrement()
