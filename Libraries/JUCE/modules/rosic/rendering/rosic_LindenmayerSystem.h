@@ -97,6 +97,21 @@ public:
   of occurrences of characters that generate a new point (plus one for the initial point (0,0)). */
   int getNumberOfPoints(const std::string& commandString);
 
+  /** Returns the current x-coordinate. */
+  double getX() { return x; }
+
+  /** Returns the current y-coordinate. */
+  double getY() { return y; }
+
+  // maybe we need getStartX, getEndX, getStartY, getEndY
+
+  /** Interprets the command given by character c. This may lead to a change of our internal 
+  state, i.e. either (x,y) is changed (in case of 'F' or 'f') or (dx,dy) is changed (in case of
+  '+' or '-'). For other characters, nothing happens. The return value informs whether of not an
+  edge should be drawn to the new point (i.e. whether the character was an 'F'). If so, you may 
+  retrieve the new point via getX, getY and draw a line to it. */
+  bool interpretCommand(char c);
+
 
 protected:
 

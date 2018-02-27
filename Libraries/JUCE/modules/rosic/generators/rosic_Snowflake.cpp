@@ -189,7 +189,7 @@ Ideas:
 -interpolation modes: left, right, nearest, linear, cubic
 
 -call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
- Lindenmayer/Turtle grammar Fractal Definition Language (FDL) or mayb fractal geometric synthesis
+ Lindenmayer/Turtle grammar Fractal Definition Language (FDL) or maybe fractal geometric synthesis
  language (FGSL)
 -write a tutorial:
  1: Turtle Graphics
