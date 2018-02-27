@@ -87,14 +87,14 @@ bool rotes::testSnowflake()
   sf.setFrequency(0.2*1/4); // inc = frequency*tableLength/sampleRate = 0.2 
 
   // create on-the-fly output:
-  sf.reset();
   sf.setUseTable(false);
+  sf.reset();
   for(n = 0; n < N; n++)
     sf.getSampleFrameStereo(&xf[n], &yf[n]);
 
   // create table-based output:
-  sf.reset();
   sf.setUseTable(true);
+  sf.reset();
   for(n = 0; n < N; n++)
     sf.getSampleFrameStereo(&xt[n], &yt[n]);
 

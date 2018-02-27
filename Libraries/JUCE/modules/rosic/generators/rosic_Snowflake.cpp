@@ -126,6 +126,9 @@ void Snowflake::updateRealtimePoints(int targetCommandIndex)
   while(i <= targetCommandIndex)
   {
     bool draw = turtle.interpretCharacter(turtleCommands[i]);
+    i++;
+    if(i >= turtleCommands.size())
+      i = 0;
     if(draw)
     {
       x[0] = turtle.getStartX();
@@ -134,9 +137,6 @@ void Snowflake::updateRealtimePoints(int targetCommandIndex)
       y[1] = turtle.getEndY();
       break;
     }
-    i++;
-    if(i >= turtleCommands.size())
-      i = 0;
   }
   commandIndex = i;
 }
