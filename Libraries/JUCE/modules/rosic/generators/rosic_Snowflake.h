@@ -79,20 +79,9 @@ public:
     double fPos = pos - iPos;
 
     // linear interpolation, gain and rotation:
-
-    //*outL = amplitude * ((1-fPos)*tableX[iPos] + fPos*tableX[iPos+1]);
-    //*outR = amplitude * ((1-fPos)*tableY[iPos] + fPos*tableY[iPos+1]);
     *outL = normalizer * amplitude * ((1-fPos)*tableX[iPos] + fPos*tableX[iPos+1] - meanX);
     *outR = normalizer * amplitude * ((1-fPos)*tableY[iPos] + fPos*tableY[iPos+1] - meanY);
-
     rotator.apply(outL, outR);
-
-    /*
-    // increment and wraparound:
-    pos += inc;
-    while(pos >= tableLength)
-      pos -= tableLength;
-    */
 
     // increment and wraparound:
     pos += inc;
@@ -124,10 +113,17 @@ public:
     while(pos >= numLines)
       pos -= numLines;
   }
+  // get rid of the duplications with getFrameViaTable
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
   unnormalized coordinates). */
   void reset();
+
+
+protected:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
 
   /** Updates the buffers that store past and future points between which we interpolate during
   realtime traversal of the curve. */
@@ -139,8 +135,6 @@ public:
   /** Updates our string of turtle-graphics drawing commands. */
   void updateTurtleCommands();
 
-protected:
-
   /** Updates the wavetable increment according to desired frequency, sample rate and wavetable 
   length. */
   void updateIncrement();
@@ -149,45 +143,40 @@ protected:
   angle settings. */
   void updateMeanAndNormalizer();
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Data
 
-
-  // replace by LindenmayerSystem and TurtleGraphics for preparing for on-the-fly rendering
-  //LindenmayerRenderer renderer;  // get rid, use lindSys to render the table
-
-  std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
-  //int tableLength = 0;            // not including the last sample (which repeats the 1st)
-  bool useTable = true;
-  // maybe get rid of that - switch to on-the-fly rendering (pre-render only the string), but 
-  // delete only after good testing...or maybe keep it in a SnowflakePrototype class?
-
-
-  LindenmayerSystem lindSys;
-  TurtleGraphics turtle;
-
-  int numIterations = 0; // replace by iteratorString or applicatorString (a string like AAABBAC)
-  std::string axiom;
-
-
-  // stuff for on-the fly rendering (not yet used):
-  std::string lindenmayerResult;  // output string of Lindenmayer system
-  std::string turtleCommands;     // only the turtle commands from lindenmayerResult 
+  // state for on-the fly rendering:
+  double pos = 0;                 // position in wavetable / string
+  double inc = 0;                 // wavetable increment
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
   int numLines = 0;               // number of 'F's in turtleCommands
   int lineIndex = 0;              // index of current line
   int commandIndex = 0;           // index in the list of turtle-commands
-  double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to
-                                  // maybe apply a DC blocking filter to these x,y states
+  double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
+  std::string lindenmayerResult;  // output string of Lindenmayer system
+  std::string turtleCommands;     // only the turtle commands from lindenmayerResult 
 
-  RAPT::rsRotationXY<double> rotator; // for rotating final x,y coordinates
 
-  double pos = 0;                 // position in wavetable / string
-  double inc = 0;                 // wavetable increment
+  // parameters:
   double amplitude  = 1;
   double frequency  = 0;
   double sampleRate = 1;
   double angle      = 0;
 
+  // rendering objects and related variables:
+  LindenmayerSystem lindSys;
+  TurtleGraphics turtle;
+  RAPT::rsRotationXY<double> rotator; // for rotating final x,y coordinates
+  int numIterations = 0; // replace by iteratorString or applicatorString (a string like AAABBAC)
+  std::string axiom;
+
+  // for optional table-based synthesis (maybe at some point we can drop that?)
+  std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
+  bool useTable = true;
+
+  // flags to indicate whether or not various rendering state variables are up to date:
   std::atomic_bool commandsReady = false; // flag to indicate that "turtleCommands" is up to date
   std::atomic_bool tableUpToDate = false; // maybe rename to tableReady ...get rid
   std::atomic_bool incUpToDate = false;
