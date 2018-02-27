@@ -70,6 +70,11 @@ int main(int argc, char* argv[])
   //testPoleZeroMapping();
   //highOrderFilterPolesAndZeros();
 
+  // Genrators:
+  //testOscillatorStereo();
+  //testLorentzSystem();
+  testSnowflake();
+
 
   //===============================================================================================
   // RAPT tests:
@@ -127,7 +132,7 @@ int main(int argc, char* argv[])
   //bouncillatorFormula();
   //rayBouncer();
   //hilbertCurve();
-  lindenmayer();
+  //lindenmayer();
   //xoxosOsc();
 
   // Graphics:

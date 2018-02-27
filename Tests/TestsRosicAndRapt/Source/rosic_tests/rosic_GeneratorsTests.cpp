@@ -3,6 +3,7 @@ using namespace rotes;
 
 //#include "rosic/rosic.h"
 #include "../Shared/Plotting/rosic_Plotter.h"
+#include "../Shared/Plotting/GNUPlotter.h"
 using namespace rosic;
 
 void rotes::testOscillatorStereo()
@@ -66,4 +67,46 @@ void rotes::testLorentzSystem()
 
   rosic::fillWithIndex(t, N);
   Plotter::plotData(N, t, x, y, z);
+}
+
+bool rotes::testSnowflake()
+{
+  rosic::Snowflake sf;
+
+  int N = 500;  // number of samples
+  int n;      // sample index
+
+  std::vector<double> xt(N), yt(N), xf(N), yf(N); // table-based and on-the-fly generated outputs
+
+  // create a unit square:
+  sf.clearRules();
+  sf.setAxiom("F+F+F+F");
+  sf.setNumIterations(0);
+  sf.setAngle(90);
+  sf.setSampleRate(1.0);
+  sf.setFrequency(0.2*1/4); // inc = frequency*tableLength/sampleRate = 0.2 
+
+  // create on-the-fly output:
+  sf.reset();
+  sf.setUseTable(false);
+  for(n = 0; n < N; n++)
+    sf.getSampleFrameStereo(&xf[n], &yf[n]);
+
+  // create table-based output:
+  sf.reset();
+  sf.setUseTable(true);
+  for(n = 0; n < N; n++)
+    sf.getSampleFrameStereo(&xt[n], &yt[n]);
+
+
+  GNUPlotter plt;
+  plt.setRange(-1.1, +1.1, -1.1, +1.1);
+  plt.setPixelSize(400, 400);
+  plt.addCommand("set size square");
+  plt.addDataArrays(N, &xt[0], &yt[0]);
+  plt.addDataArrays(N, &xf[0], &yf[0]);
+  plt.plot();
+
+
+  return false;
 }
