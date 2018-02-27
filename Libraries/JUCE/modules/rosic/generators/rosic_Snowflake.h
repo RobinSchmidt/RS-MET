@@ -72,7 +72,7 @@ public:
   {
     if(!tableUpToDate) updateWaveTable();
     if(!incUpToDate) updateIncrement();
-    if(tableLength < 2) return;
+    if(numLines < 2) return;
 
     // integer and fractional part of position:
     int iPos = floorInt(pos);
@@ -87,10 +87,17 @@ public:
 
     rotator.apply(outL, outR);
 
+    /*
     // increment and wraparound:
     pos += inc;
     while(pos >= tableLength)
       pos -= tableLength;
+    */
+
+    // increment and wraparound:
+    pos += inc;
+    while(pos >= numLines)
+      pos -= numLines;
   }
 
   INLINE void getFrameOnTheFly(double *outL, double *outR)
@@ -122,7 +129,8 @@ public:
   unnormalized coordinates). */
   void reset();
 
-  /**  */
+  /** Updates the buffers that store past and future points between which we interpolate during
+  realtime traversal of the curve. */
   void updateRealtimePoints(int targetCommandIndex);
 
   /** Renders the wavetable and updates related variables. */
@@ -136,7 +144,9 @@ protected:
   /** Updates the wavetable increment according to desired frequency, sample rate and wavetable 
   length. */
   void updateIncrement();
-
+   
+  /** Updates our meanX, meanY, normalizer members according to the current turtleCommands and 
+  angle settings. */
   void updateMeanAndNormalizer();
 
 
@@ -145,7 +155,7 @@ protected:
   //LindenmayerRenderer renderer;  // get rid, use lindSys to render the table
 
   std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
-  int tableLength = 0;            // not including the last sample (which repeats the 1st)
+  //int tableLength = 0;            // not including the last sample (which repeats the 1st)
   bool useTable = true;
   // maybe get rid of that - switch to on-the-fly rendering (pre-render only the string), but 
   // delete only after good testing...or maybe keep it in a SnowflakePrototype class?
@@ -163,8 +173,8 @@ protected:
   std::string turtleCommands;     // only the turtle commands from lindenmayerResult 
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
-  //int numPoints  = 0;             // number of 'F's in turtleCommands + 1
   int numLines = 0;               // number of 'F's in turtleCommands
+  int lineIndex = 0;              // index of current line
   int commandIndex = 0;           // index in the list of turtle-commands
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to
                                   // maybe apply a DC blocking filter to these x,y states

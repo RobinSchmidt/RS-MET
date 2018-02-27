@@ -10,14 +10,14 @@ Snowflake::Snowflake()
   // tableLength = 768, numPoints = 769 - is this right? hmm - the last point in the table doesn't 
   // count so maybe yes
 
-
   //// init to unit square:
   //angle = 90;
   //axiom = "F+F+F+F";
   //clearRules();
   //numIterations = 0;
-  //updateTurtleCommands();
-  //updateWaveTable();
+
+  updateTurtleCommands();
+  updateWaveTable();
 }
 
 void Snowflake::setSampleRate(double newSampleRate)
@@ -50,7 +50,6 @@ void Snowflake::setAngle(double newAngle)
 {
   angle = newAngle;
   turtle.setAngle(angle);
-  //renderer.setAngle(angle); // old
   updateMeanAndNormalizer();
   tableUpToDate = false; 
 }
@@ -59,7 +58,6 @@ void Snowflake::clearRules()
 { 
   lindSys.clearRules(); 
   commandsReady = false;
-  //renderer.clearRules(); 
   tableUpToDate = false; 
 }
 
@@ -67,7 +65,6 @@ void Snowflake::Snowflake::addRule(char input, const std::string& output)
 { 
   lindSys.addRule(input, output);
   commandsReady = false;
-  //renderer.addRule(input, output); 
   tableUpToDate = false; 
 }
 
@@ -80,20 +77,17 @@ void Snowflake::setAxiom(const std::string& newAxiom)
 
 void Snowflake::updateWaveTable()
 {
-  //renderer.render(axiom, numIterations, tableX, tableY); //old
-
-  // new:
   if(!commandsReady)
-    updateTurtleCommands();  // update means and normalizer, too
+    updateTurtleCommands();  // updates also mean values, normalizer, increment and resets
 
   TurtleGraphics tmpTurtle;
   tmpTurtle.setAngle(angle);
   tmpTurtle.translate(turtleCommands, tableX, tableY);
 
-  tableLength = (int)tableX.size()-1;
+  //tableLength = (int)tableX.size()-1;  // == numLines
   tableUpToDate = true;
-  updateIncrement();
-  reset();
+  //updateIncrement();
+  //reset();
 }
 
 void Snowflake::updateTurtleCommands()
@@ -110,28 +104,19 @@ void Snowflake::updateTurtleCommands()
 void Snowflake::reset()
 {
   turtle.init(0, 0, 1, 0);
-
-  pos = 0; // used in table-based synthesis
-
-  // used in on-the-fly synthesis:
+  pos = 0;
   commandIndex = 0;
+  lineIndex = 0;
   updateRealtimePoints(commandIndex);
-
-  //x[0] = 0;
-  //y[0] = 0;
-  //getNextPoint(&x[1], &y[1]);
-  ////turtle.evaluateCommand(turtleCommands, 0
 }
 
 void Snowflake::updateRealtimePoints(int targetCommandIndex)
 {
-  if(turtleCommands.size() == 0)
+  if(numLines == 0)
   {
     x[0] = y[0] = x[1] = y[1] = 0;
     return;
   }
-  // maybe check also if numPoints >= 1 (i.e. there is at least one 'F' - because if not, we may
-  // hang up in an infinite loop
 
   int i = commandIndex;
   while(i <= targetCommandIndex)
@@ -154,7 +139,8 @@ void Snowflake::updateRealtimePoints(int targetCommandIndex)
 
 void Snowflake::updateIncrement()
 {
-  inc = tableLength * frequency / sampleRate; // avoid division
+  //inc = tableLength * frequency / sampleRate; // avoid division
+  inc = numLines * frequency / sampleRate; // avoid division
   incUpToDate = true;
 }
 
