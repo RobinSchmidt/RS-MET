@@ -1,20 +1,20 @@
 Snowflake::Snowflake()
 {
-  // init to order 4 Koch snowflake:
-   angle = 60;
-  axiom = "F--F--F";
-  clearRules();
-  addRule('F', "F+F--F+F");
-  numIterations = 4;
+  //// init to order 4 Koch snowflake:
+  //angle = 60;
+  //axiom = "F--F--F";
+  //clearRules();
+  //addRule('F', "F+F--F+F");
+  //numIterations = 4;
 
   // tableLength = 768, numPoints = 769 - is this right? hmm - the last point in the table doesn't 
   // count so maybe yes
 
-  //// init to unit square:
-  //angle = 90;
-  //axiom = "F+F+F+F";
-  //clearRules();
-  //numIterations = 0;
+  // init to unit square:
+  angle = 90;
+  axiom = "F+F+F+F";
+  clearRules();
+  numIterations = 0;
 
   updateTurtleCommands();
   updateWaveTable();
@@ -84,10 +84,7 @@ void Snowflake::updateWaveTable()
   tmpTurtle.setAngle(angle);
   tmpTurtle.translate(turtleCommands, tableX, tableY);
 
-  //tableLength = (int)tableX.size()-1;  // == numLines
   tableUpToDate = true;
-  //updateIncrement();
-  //reset();
 }
 
 void Snowflake::updateTurtleCommands()
@@ -106,18 +103,45 @@ void Snowflake::reset()
   turtle.init(0, 0, 1, 0);
   pos = 0;
   commandIndex = 0;
-  lineIndex = 0;
-  updateRealtimePoints(commandIndex);
+
+  lineIndex = -1;
+  goToLineSegment(0);
+
+
+  //lineIndex = 0;
+  //updateRealtimePoints(commandIndex);
 }
 
-void Snowflake::updateRealtimePoints(int targetCommandIndex)
+void Snowflake::goToLineSegment(int targetLineIndex)
 {
-  if(numLines == 0)
-  {
+  if(numLines == 0) {
     x[0] = y[0] = x[1] = y[1] = 0;
     return;
   }
 
+  while(lineIndex != targetLineIndex)
+  {
+    bool xyUpdated = false;
+    while(xyUpdated == false) {
+      bool draw = turtle.interpretCharacter(turtleCommands[commandIndex]);
+      commandIndex++;
+      if(commandIndex == turtleCommands.size())
+        commandIndex = 0;
+      if(draw) {
+        x[0] = turtle.getStartX();
+        y[0] = turtle.getStartY();
+        x[1] = turtle.getEndX();
+        y[1] = turtle.getEndY();
+        xyUpdated = true;
+      }
+    }
+    lineIndex++;
+    if(lineIndex == numLines)
+      lineIndex = 0;
+  }
+  int dummy = 0;
+
+  /*
   int i = commandIndex;
   while(i <= targetCommandIndex)
   {
@@ -135,6 +159,7 @@ void Snowflake::updateRealtimePoints(int targetCommandIndex)
     }
   }
   commandIndex = i;
+  */
 }
 
 void Snowflake::updateIncrement()

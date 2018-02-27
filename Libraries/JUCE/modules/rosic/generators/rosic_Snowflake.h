@@ -33,8 +33,8 @@ public:
   /** Selects whether or not a precomputed (wave) table should be used or samples should be 
   computed from the turtle commands on the fly. The behavior is a bit different in both cases.
   Using a table, the 'f' turtle command does not behave properly and turn angle modulation is
-  prohibitively expensive. On the other hand, the table-based implementation is generally more
-  efficient (well, it should be - verify this). */
+  prohibitively expensive. On the other hand, the table-based implementation allows fo stereo
+  detuning and should be generally more efficient (verify this). */
   void setUseTable(bool shouldUseTable) { useTable = shouldUseTable; }
 
   //void addStereoDetune(double newDetune);
@@ -94,18 +94,16 @@ public:
     if(!commandsReady) updateTurtleCommands();
     if(!incUpToDate) updateIncrement();
 
-    // no - this is wrong - the integer part of the position does NOT correspond to a commandIndex
-    // it corresponds to a lineIndex
     int iPos = floorInt(pos);
     double fPos = pos - iPos;
-    if(iPos > commandIndex)
-      updateRealtimePoints(iPos); // may later also update cubic interpolation coeffs, so they 
-                                  // don't need to be recomputed as long as we are traversing the
-                                  // the same line/curve segment
+    if(iPos != lineIndex)
+      goToLineSegment(iPos); // may later also update cubic interpolation coeffs, so they 
+      // don't need to be recomputed as long as we are traversing the
+      // the same line/curve segment, maybe rename to goToLineSegment
 
     // later, switch other interpolation method here:
-    *outL = amplitude * ((1-fPos)*x[0] + fPos*x[1]);
-    *outR = amplitude * ((1-fPos)*y[0] + fPos*y[1]);
+    *outL = normalizer * amplitude * ((1-fPos)*x[0] + fPos*x[1] - meanX);
+    *outR = normalizer * amplitude * ((1-fPos)*y[0] + fPos*y[1] - meanY);
     rotator.apply(outL, outR);
 
     // increment and wraparound:
@@ -127,7 +125,8 @@ protected:
 
   /** Updates the buffers that store past and future points between which we interpolate during
   realtime traversal of the curve. */
-  void updateRealtimePoints(int targetCommandIndex);
+  void goToLineSegment(int targetLineIndex);
+  //void updateRealtimePoints(int targetCommandIndex);
 
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();

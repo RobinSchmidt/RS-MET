@@ -98,6 +98,8 @@ bool rotes::testSnowflake()
   for(n = 0; n < N; n++)
     sf.getSampleFrameStereo(&xt[n], &yt[n]);
 
+  // xt should equal xf, same for yt,yf - check this and use it as return value
+
 
   GNUPlotter plt;
   plt.setRange(-1.1, +1.1, -1.1, +1.1);
