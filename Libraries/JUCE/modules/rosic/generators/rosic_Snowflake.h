@@ -30,6 +30,13 @@ public:
   /** Sets a rotation angle (in degrees) to be applied to the produced xy coordinate pair. */
   void setRotation(double newRotation);
 
+  /** Selects whether or not a precomputed (wave) table should be used or samples should be 
+  computed from the turtle commands on the fly. The behavior is a bit different in both cases.
+  Using a table, the 'f' turtle command does not behave properly and turn angle modulation is
+  prohibitively expensive. On the other hand, the table-based implementation is generally more
+  efficient (well, it should be - verify this). */
+  void setUseTable(bool shouldUseTable) { useTable = shouldUseTable; }
+
   //void addStereoDetune(double newDetune);
 
   //void addStereoFrequencyOffset(double newOffset);
@@ -55,6 +62,14 @@ public:
   /** Calculates one output-sample frame at a time. */
   INLINE void getSampleFrameStereo(double *outL, double *outR)
   {
+    if(useTable)
+      getFrameViaTable(outL, outR);
+    else
+      getFrameOnTheFly(outL, outR);
+  }
+
+  INLINE void getFrameViaTable(double *outL, double *outR)
+  {
     if(!tableUpToDate) updateWaveTable();
     if(!incUpToDate) updateIncrement();
     if(tableLength < 2) return;
@@ -74,6 +89,13 @@ public:
       pos -= tableLength;
   }
 
+  INLINE void getFrameOnTheFly(double *outL, double *outR)
+  {
+
+  }
+
+
+
   void reset();
 
   /** Renders the wavetable and updates related variables. */
@@ -92,6 +114,7 @@ protected:
   LindenmayerRenderer renderer; 
   std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
   int tableLength = 0;            // not including the last sample (which repeats the 1st)
+  bool useTable = true;
   // maybe get rid of that - switch to on-the-fly rendering (pre-render only the string), but 
   // delete only after good testing...or maybe keep it in a SnowflakePrototype class?
 
@@ -110,6 +133,7 @@ protected:
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
   int numPoints = 0;              // number of 'F's in turtleCommands (+1? or -1?)
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to
+                                  // maybe apply a DC blocking filter to these x,y states
 
   RAPT::rsRotationXY<double> rotator; // for rotating final x,y coordinates
 

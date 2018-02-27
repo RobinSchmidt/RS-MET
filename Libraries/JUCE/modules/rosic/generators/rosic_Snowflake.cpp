@@ -172,6 +172,8 @@ Ideas:
   4.5: Subtractive Post Processing
    4.5.1 Regular Musical Filters
    4.5.2 Linear Phase Filters
+  4.6: Rational Numbers and Harmonics
+   4.5.2 Number of Segments (N) vs Segment Length (L)
 
 
 see here for inspiration for new curves
