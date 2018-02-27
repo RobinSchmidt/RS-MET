@@ -147,13 +147,12 @@ std::string TurtleGraphics::extractCommands(const std::string& s)
   return tmp;
 }
 
-int TurtleGraphics::getNumberOfPoints(const std::string& s)
+int TurtleGraphics::getNumberOfLines(const std::string& s)
 {
-  int np = 1; // for the initial (0,0)
+  int n = 0;
   for(int i = 0; i < s.size(); i++)
-    if(s[i] == 'F')
-      np++;
-  return np;
+    if(s[i] == 'F') n++;
+  return n;
 }
 
 //=================================================================================================

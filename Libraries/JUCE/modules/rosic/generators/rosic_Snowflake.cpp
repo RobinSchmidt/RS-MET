@@ -100,7 +100,7 @@ void Snowflake::updateTurtleCommands()
 {
   lindenmayerResult = lindSys.apply(axiom, numIterations);
   turtleCommands = turtle.extractCommands(lindenmayerResult);
-  numPoints = turtle.getNumberOfPoints(turtleCommands); // maybe use number of lines (one less)
+  numLines = turtle.getNumberOfLines(turtleCommands); 
   updateMeanAndNormalizer();
   commandsReady = true;
   updateIncrement();
@@ -183,10 +183,8 @@ void Snowflake::updateMeanAndNormalizer()
       sumY += y;
     }
   }
-
-  meanX = sumX / (numPoints-1); // use numLines = numPoints-1
-  meanY = sumY / (numPoints-1);
-
+  meanX = sumX / numLines;
+  meanY = sumY / numLines;
   minX -= meanX; maxX -= meanX;
   minY -= meanY; maxY -= meanY;
   maxX  = rmax(fabs(minX), fabs(maxX));

@@ -98,6 +98,8 @@ public:
     if(!commandsReady) updateTurtleCommands();
     if(!incUpToDate) updateIncrement();
 
+    // no - this is wrong - the integer part of the position does NOT correspond to a commandIndex
+    // it corresponds to a lineIndex
     int iPos = floorInt(pos);
     double fPos = pos - iPos;
     if(iPos > commandIndex)
@@ -112,8 +114,8 @@ public:
 
     // increment and wraparound:
     pos += inc;
-    while(pos >= (numPoints-1))  // is -1 correct?
-      pos -= (numPoints-1);
+    while(pos >= numLines)
+      pos -= numLines;
   }
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
@@ -161,7 +163,8 @@ protected:
   std::string turtleCommands;     // only the turtle commands from lindenmayerResult 
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
-  int numPoints  = 0;             // number of 'F's in turtleCommands (+1? or -1?)
+  //int numPoints  = 0;             // number of 'F's in turtleCommands + 1
+  int numLines = 0;               // number of 'F's in turtleCommands
   int commandIndex = 0;           // index in the list of turtle-commands
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to
                                   // maybe apply a DC blocking filter to these x,y states

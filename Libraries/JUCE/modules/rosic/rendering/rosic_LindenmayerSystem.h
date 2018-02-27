@@ -93,9 +93,10 @@ public:
   std::string extractCommands(const std::string& str);
 
   /** Given a string that supposedly contains drawing commands, this function returns the number of
-  output points in the drawing, that this string would produce. It actually just counts the number 
-  of occurrences of characters that generate a new point (plus one for the initial point (0,0)). */
-  int getNumberOfPoints(const std::string& commandString);
+  output lines in the drawing, that this string would produce. It just counts the number of 
+  occurrences of characters that draw a line. */
+  int getNumberOfLines(const std::string& commandString);
+
 
   /** Returns the current x-coordinate. */
   double getX() { return x; }
