@@ -150,7 +150,7 @@ Ideas:
   it on the fly (the string should be stripped from meaningless characters, retaining only F,+,- 
   before)
  -may require to compute shift and scale (to remove DC and normalize) when a new angle is set up
-  -maybe these values should be precomputes for various angles, for example 0,5,10,15,.. and 
+  -maybe these values should be precomputed for various angles, for example 0,5,10,15,.. and 
    interpolation be used (to avoid to expensively compute the actually desired value whenever the
    angle changes)
 -allow a turtle syntax like +30 or -45 to mean: turn 30° left or 45° right (instead of whatever 
@@ -161,18 +161,22 @@ Ideas:
   realtime-parsed string - avoids to check, if next char is a number whenever a + or - is 
   encountered, P and M indicate that is is, + and - indicate that it isn't, maybe allow rational
   numbers to be entered, like 20/3 for 6.66666° but also allow to use decimal dot (for numerator
-  and denominator), assume /1 when a / is encountered with any number thereafter
+  and denominator), assume /1 when a / is encountered without any number thereafter
 -make rotation angle quantizable to a set of numbers that the user can enter, for example
  120,90,72,60,45,36,30,24,22.5,20,15,12,10
 -have different loop modes: forward, backward, alternating (avoids jumps for non-closed curves)
  -maybe in backward passes, (optionally) interpret angles as their negative (necessarry to actually
   "go back")
+-have a "reset" parameter that determines the number of cycles (through the command list) after 
+ which the turtle state is reset into its initial state, interpret "0" as "never" - relevant for
+ on-the-fly rendering with "weird" turn angles
 -maybe have an additional string of turtle commands that can be applied after each cycle has passed
  (empty by default)...or maybe even different command strings to be applied after different numbers 
  of cycles ..this defines the "turn/wrap around behavior"
 -instead of having a single L-system, have a set of them, maybe named A,B,C,.., then instead of 
  setting a number of iterations, use a string AAABBCCA to mean: apply A 3 times, then B 2 times, 
- then  C 2 times then A once, allow also syntax like A3B2C2A1
+ then  C 2 times then A once, allow also syntax like A3B2C2A1, where the final 1 is optional
+ ...maybe allow also things like (AABA)^2 (BBA^3)...or ((AABA)2(BBA)3)2
  -on wikipedia, there's a sierpinski triangle version that requires G to interpreted like F - this
   could be realized by defining:
   axiom: F-G-G, rules: (A: F=F-G+F+G-F; G=GG) (B: G=F) and then doing AAAB (or A3B) for 3rd order
@@ -187,6 +191,11 @@ Ideas:
  have them removed them in the output string)
 -maybe rename the "Axiom" back to "Seed"
 -interpolation modes: left, right, nearest, linear, cubic
+-allow a traversal speed (or better: duration/length) to be associated with each point (i.e. the 
+ line segment that goes toward that point)...like  a normal 'F' would assume 1, an 'f' would 
+ assume '0', but we could also have F2 to let it take 2 time units to traverse the segment
+ the incremrent computation would then not use "numPoints" as multiplier but 
+ sum-of-traversal-durations
 
 -call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
  Lindenmayer/Turtle grammar Fractal Definition Language (FDL) or maybe fractal geometric synthesis
