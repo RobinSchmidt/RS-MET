@@ -127,7 +127,8 @@ protected:
   double dx = 1, dy = 0;  // direction vector
 
 
-  RAPT::rsRotationXY<double> rotLeft, rotRight;
+  RAPT::rsRotationXY<double> rotLeft, rotRight; // use one, have functions apply, applyInverse
+                                                // save sin/cos computation when angle changes
 
 };
 

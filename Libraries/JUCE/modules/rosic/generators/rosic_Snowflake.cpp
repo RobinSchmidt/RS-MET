@@ -1,20 +1,22 @@
 Snowflake::Snowflake()
 {
-  //// init to order 4 Koch snowflake:
-  //angle = 60;
-  //axiom = "F--F--F";
-  //clearRules();
-  //addRule('F', "F+F--F+F");
-  //numIterations = 4;
+  // init to order 4 Koch snowflake:
+  angle = 60;
+  turtle.setAngle(angle);
+  axiom = "F--F--F";
+  clearRules();
+  addRule('F', "F+F--F+F");
+  numIterations = 4;
 
   // tableLength = 768, numPoints = 769 - is this right? hmm - the last point in the table doesn't 
   // count so maybe yes
 
-  // init to unit square:
-  angle = 90;
-  axiom = "F+F+F+F";
-  clearRules();
-  numIterations = 0;
+  //// init to unit square:
+  //angle = 90;
+  //turtle.setAngle(angle);
+  //axiom = "F+F+F+F";
+  //clearRules();
+  //numIterations = 0;
 
   updateTurtleCommands();
   updateWaveTable();
@@ -103,16 +105,11 @@ void Snowflake::reset()
   turtle.init(0, 0, 1, 0);
   pos = 0;
   commandIndex = 0;
-
   lineIndex = -1;
   goToLineSegment(0);
-
-
-  //lineIndex = 0;
-  //updateRealtimePoints(commandIndex);
 }
 
-void Snowflake::goToLineSegment(int targetLineIndex)
+void Snowflake::goToLineSegment(int targetLineIndex, double fractionalPart)
 {
   if(numLines == 0) {
     x[0] = y[0] = x[1] = y[1] = 0;
@@ -137,29 +134,14 @@ void Snowflake::goToLineSegment(int targetLineIndex)
     }
     lineIndex++;
     if(lineIndex == numLines)
-      lineIndex = 0;
-  }
-  int dummy = 0;
-
-  /*
-  int i = commandIndex;
-  while(i <= targetCommandIndex)
-  {
-    bool draw = turtle.interpretCharacter(turtleCommands[i]);
-    i++;
-    if(i >= turtleCommands.size())
-      i = 0;
-    if(draw)
     {
-      x[0] = turtle.getStartX();
-      y[0] = turtle.getStartY();
-      x[1] = turtle.getEndX();
-      y[1] = turtle.getEndY();
-      break;
+      lineIndex = 0;
+      reset(); 
+      pos = fractionalPart;
+       // todo: make reset optional, or reset after a certain number of cycles...we may need
+       // to advance a little bit - the reset may occur in between samples
     }
   }
-  commandIndex = i;
-  */
 }
 
 void Snowflake::updateIncrement()

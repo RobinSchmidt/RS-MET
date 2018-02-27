@@ -97,7 +97,7 @@ public:
     int iPos = floorInt(pos);
     double fPos = pos - iPos;
     if(iPos != lineIndex)
-      goToLineSegment(iPos); // may later also update cubic interpolation coeffs, so they 
+      goToLineSegment(iPos, fPos); // may later also update cubic interpolation coeffs, so they 
       // don't need to be recomputed as long as we are traversing the
       // the same line/curve segment, maybe rename to goToLineSegment
 
@@ -125,7 +125,7 @@ protected:
 
   /** Updates the buffers that store past and future points between which we interpolate during
   realtime traversal of the curve. */
-  void goToLineSegment(int targetLineIndex);
+  void goToLineSegment(int targetLineIndex, double fractionalPart = 0);
   //void updateRealtimePoints(int targetCommandIndex);
 
   /** Renders the wavetable and updates related variables. */

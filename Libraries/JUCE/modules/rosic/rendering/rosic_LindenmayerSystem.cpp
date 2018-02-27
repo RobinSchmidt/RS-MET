@@ -44,7 +44,7 @@ void TurtleGraphics::setAngle(double degrees)
   //long double factor =  (PI / 180.0);
   //double radians = (double) (factor * (long double) degrees);
   rotLeft.setAngle(  radians);
-  rotRight.setAngle(-radians);
+  rotRight.setAngle(-radians); // get rid, implement applyInverse
   // entries of the rotation matrices that should be 0 are at 6.123e-17 - probably not an issue in 
   // practice but not nice - maybe clamp to zero anything below 1.e-16
 }
@@ -75,7 +75,7 @@ void TurtleGraphics::turnLeft()
 
 void TurtleGraphics::turnRight()
 {
-  rotRight.apply(&dx, &dy);
+  rotRight.apply(&dx, &dy); // use rotation.applyInverse
 }
 
 void TurtleGraphics::translate(const std::string& str, 
@@ -88,30 +88,12 @@ void TurtleGraphics::translate(const std::string& str,
   vy.push_back(getY()); 
 
   // loop through the string and add vertices as needed:
-  for(int i = 0; i < str.size(); i++) 
-  {
-    if(interpretCharacter(str[i]))
-    {
+  for(int i = 0; i < str.size(); i++) {
+    if(interpretCharacter(str[i])) {
       vx.push_back(getX()); 
       vy.push_back(getY()); 
     }
-
-    /*
-    // maybe factor this out into an interpretCharacter(char c) function for on-the-fly use:
-    if(str[i] == '+')   
-      turnLeft();
-    if(str[i] == '-')   
-      turnRight();
-    if(str[i] == 'f')    // this is nonstandard, standard would be to go forward but avoid
-      goForward();       // drawing a line (that cannot expressed here)
-    if(str[i] == 'F') { 
-      goForward(); 
-      vx.push_back(x); 
-      vy.push_back(y); 
-    }
-    */
   }
-
 }
 
 bool TurtleGraphics::interpretCharacter(char c)
@@ -123,7 +105,6 @@ bool TurtleGraphics::interpretCharacter(char c)
   //if(c == 'G') { goForward(); return true;  }
   //if(c == '[') { pushState(); return false; }
   //if(c == ']') { popState();  return false; }
-
   return false;
 
   // maybe use '[' to push and ']' to pop x,y,dx,dy on a stack as described here:
