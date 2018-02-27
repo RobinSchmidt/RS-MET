@@ -87,6 +87,17 @@ public:
   /** Translates the given string into arrays of x,y coordinates of vertices. */
   void translate(const std::string& str, std::vector<double>& vx, std::vector<double>& vy);
 
+  /** Given a string that may contain drawing commands, this function returns a string that 
+  contains only those drawing commands. It may be used to "clean up" a raw output string from a 
+  Lindenmayer system, i.e. to strip off the symbols that would be ignored anyway. */
+  std::string extractCommands(const std::string& str);
+
+  /** Given a string that supposedly contains drawing commands, this function returns the number of
+  output points in the drawing, that this string would produce. It actually just counts the number 
+  of occurrences of characters that generate a new point (plus one for the initial point (0,0)). */
+  int getNumberOfPoints(const std::string& commandString);
+
+
 protected:
 
   double  x = 0, y = 0;  // current position

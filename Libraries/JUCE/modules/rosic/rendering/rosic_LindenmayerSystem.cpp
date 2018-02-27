@@ -84,6 +84,7 @@ void TurtleGraphics::translate(const std::string& str,
 
   // loop through the string and add vertices as needed:
   for(int i = 0; i < str.size(); i++) {
+    // maybe factor this out into an interpretCharacter(char c) function for on-the-fly use:
     if(str[i] == '+')   
       turnLeft();
     if(str[i] == '-')   
@@ -106,6 +107,24 @@ void TurtleGraphics::translate(const std::string& str,
   // things could be expressed more conveniently...one could use a pentagonal initiator with 
   // triangular generators - expressing this with +++++..., would require to set the angle to 2°
   // and using an excessive number of +ses
+}
+
+std::string TurtleGraphics::extractCommands(const std::string& s)
+{
+  std::string tmp;
+  for(int i = 0; i < s.size(); i++)
+    if(s[i] == '+' || s[i] == '-' || s[i] == 'F' || s[i] == 'f')
+      tmp += s[i];
+  return tmp;
+}
+
+int TurtleGraphics::getNumberOfPoints(const std::string& s)
+{
+  int np = 1; // for the initial (0,0)
+  for(int i = 0; i < s.size(); i++)
+    if(s[i] == 'F')
+      np++;
+  return np;
 }
 
 //=================================================================================================

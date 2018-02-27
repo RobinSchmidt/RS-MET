@@ -79,15 +79,17 @@ public:
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
 
+  /** Updates our string of turtle-graphics drawing commands. */
+  void updateTurtleCommands();
+
 protected:
 
   /** Updates the wavetable increment according to desired frequency, sample rate and wavetable 
   length. */
   void updateIncrement();
 
-  LindenmayerRenderer renderer; 
   // replace by LindenmayerSystem and TurtleGraphics for preparing for on-the-fly rendering
-
+  LindenmayerRenderer renderer; 
   std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
   int tableLength = 0;            // not including the last sample (which repeats the 1st)
   // maybe get rid of that - switch to on-the-fly rendering (pre-render only the string), but 
@@ -96,7 +98,6 @@ protected:
 
   LindenmayerSystem lindSys;
   TurtleGraphics turtle;
-
 
   int numIterations = 0; // replace by iteratorString or applicatorString (a string like AAABBAC)
   std::string axiom;
@@ -108,6 +109,7 @@ protected:
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
   int numPoints = 0;              // number of 'F's in turtleCommands (+1? or -1?)
+  double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to
 
   RAPT::rsRotationXY<double> rotator; // for rotating final x,y coordinates
 
@@ -117,8 +119,8 @@ protected:
   double frequency  = 0;
   double sampleRate = 1;
 
-
-  std::atomic_bool tableUpToDate = false; // maybe rename to tableReady
+  std::atomic_bool commandsReady = false; // flag to indicate that "turtleCommands" is up to date
+  std::atomic_bool tableUpToDate = false; // maybe rename to tableReady ...get rid
   std::atomic_bool incUpToDate = false;
   // this is a new way of dealing with updating internal variables - it avoids redundant 
   // recalculations when sereval parameters change at once and allows the re-calculation to be

@@ -12,14 +12,14 @@ void Snowflake::createParameters()
   typedef rosic::Snowflake SF;
   SF* sf = &core;
 
-  typedef Parameter Param;
+  typedef ModulatableParameter Param;
   Param* p;
 
   // init to Koch snowflake:
   axiom = "F--F--F";
   rules = "F = F+F--F+F";
 
-  p = new Param("Iterations", 0, 10, 0, Parameter::INTEGER);
+  p = new Param("Iterations", 0, 10, 0, Parameter::INTEGER); // should not be modulatable
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setNumIterations);
   p->setValue(4, true, true); // initial order is 4
@@ -184,7 +184,8 @@ void SnowflakeEditor::createWidgets()
 {
   ScopedLock scopedLock(*lock);
   typedef RTextField Lbl;
-  typedef RSlider Sld;
+  //typedef RSlider Sld;
+  typedef ModulatableSlider Sld;
   Sld* s;
   Lbl* l;
   Parameter* p;

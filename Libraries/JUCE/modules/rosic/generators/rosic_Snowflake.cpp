@@ -5,21 +5,23 @@ Snowflake::Snowflake()
   clearRules();
   addRule('F', "F+F--F+F");
   numIterations = 4;
+  updateTurtleCommands();
   updateWaveTable();
+
+  // tableLength = 768, numPoints = 769 - is this right? hmm - the last point in the table doesn't 
+  // count so maybe yes
 }
 
 void Snowflake::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
   incUpToDate = false;
-  //updateIncrement();
 }
 
 void Snowflake::setFrequency(double newFrequency)
 {
   frequency = newFrequency;
   incUpToDate = false;
-  //updateIncrement();
 }
 
 void Snowflake::setRotation(double newRotation)
@@ -32,10 +34,8 @@ void Snowflake::setNumIterations(int newNumIterations)
   if(newNumIterations == numIterations)
     return;
   numIterations = newNumIterations; 
+  commandsReady = false;
   tableUpToDate = false; 
-  //updateWaveTable();
-  // maybe don't update here, instead set a "dirty" flag, check it in getSample and update the
-  // table there
 }
 
 void Snowflake::setAngle(double newAngle) 
@@ -54,7 +54,7 @@ void Snowflake::setAngle(double newAngle)
 void Snowflake::clearRules() 
 { 
   lindSys.clearRules(); 
-  // turtleCommandsUpToDate = false;
+  commandsReady = false;
 
   renderer.clearRules(); 
   tableUpToDate = false; 
@@ -63,7 +63,7 @@ void Snowflake::clearRules()
 void Snowflake::Snowflake::addRule(char input, const std::string& output) 
 { 
   lindSys.addRule(input, output);
-  // turtleCommandsUpToDate = false;
+  commandsReady = false;
 
   renderer.addRule(input, output); 
   tableUpToDate = false; 
@@ -73,6 +73,7 @@ void Snowflake::setAxiom(const std::string& newAxiom)
 { 
   axiom = newAxiom; 
   // turtleCommandsUpToDate = false;
+  commandsReady = false;
   tableUpToDate = false; 
 }
 
@@ -85,9 +86,20 @@ void Snowflake::updateWaveTable()
   reset();
 }
 
+void Snowflake::updateTurtleCommands()
+{
+  lindenmayerResult = lindSys.apply(axiom, numIterations);
+  turtleCommands = turtle.extractCommands(lindenmayerResult);
+  numPoints = turtle.getNumberOfPoints(turtleCommands);
+  commandsReady = true;
+  updateIncrement();
+  reset();
+}
+
 void Snowflake::reset()
 {
   pos = 0;
+  turtle.init(0, 0, 1, 0);
 }
 
 void Snowflake::updateIncrement()
