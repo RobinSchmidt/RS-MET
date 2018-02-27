@@ -1,15 +1,23 @@
 Snowflake::Snowflake()
 {
   // init to order 4 Koch snowflake:
+   angle = 60;
   axiom = "F--F--F";
   clearRules();
   addRule('F', "F+F--F+F");
   numIterations = 4;
-  updateTurtleCommands();
-  updateWaveTable();
 
   // tableLength = 768, numPoints = 769 - is this right? hmm - the last point in the table doesn't 
   // count so maybe yes
+
+
+  //// init to unit square:
+  //angle = 90;
+  //axiom = "F+F+F+F";
+  //clearRules();
+  //numIterations = 0;
+  //updateTurtleCommands();
+  //updateWaveTable();
 }
 
 void Snowflake::setSampleRate(double newSampleRate)
@@ -39,24 +47,19 @@ void Snowflake::setNumIterations(int newNumIterations)
 }
 
 void Snowflake::setAngle(double newAngle) 
-{ 
-  turtle.setAngle(newAngle);
-
-  renderer.setAngle(newAngle); // old
+{
+  angle = newAngle;
+  turtle.setAngle(angle);
+  //renderer.setAngle(angle); // old
+  updateMeanAndNormalizer();
   tableUpToDate = false; 
-
-
-  // todo: make the angle modulatable - don't re-render the table but only render the L-system 
-  // output string, reduce it to the relevant characters and render one point at a time instead of
-  // pre-rendering a wavetable
 }
 
 void Snowflake::clearRules() 
 { 
   lindSys.clearRules(); 
   commandsReady = false;
-
-  renderer.clearRules(); 
+  //renderer.clearRules(); 
   tableUpToDate = false; 
 }
 
@@ -64,22 +67,29 @@ void Snowflake::Snowflake::addRule(char input, const std::string& output)
 { 
   lindSys.addRule(input, output);
   commandsReady = false;
-
-  renderer.addRule(input, output); 
+  //renderer.addRule(input, output); 
   tableUpToDate = false; 
 }
 
 void Snowflake::setAxiom(const std::string& newAxiom) 
 { 
   axiom = newAxiom; 
-  // turtleCommandsUpToDate = false;
   commandsReady = false;
   tableUpToDate = false; 
 }
 
 void Snowflake::updateWaveTable()
 {
-  renderer.render(axiom, numIterations, tableX, tableY);
+  //renderer.render(axiom, numIterations, tableX, tableY); //old
+
+  // new:
+  if(!commandsReady)
+    updateTurtleCommands();  // update means and normalizer, too
+
+  TurtleGraphics tmpTurtle;
+  tmpTurtle.setAngle(angle);
+  tmpTurtle.translate(turtleCommands, tableX, tableY);
+
   tableLength = (int)tableX.size()-1;
   tableUpToDate = true;
   updateIncrement();
@@ -90,7 +100,8 @@ void Snowflake::updateTurtleCommands()
 {
   lindenmayerResult = lindSys.apply(axiom, numIterations);
   turtleCommands = turtle.extractCommands(lindenmayerResult);
-  numPoints = turtle.getNumberOfPoints(turtleCommands);
+  numPoints = turtle.getNumberOfPoints(turtleCommands); // maybe use number of lines (one less)
+  updateMeanAndNormalizer();
   commandsReady = true;
   updateIncrement();
   reset();
@@ -141,34 +152,48 @@ void Snowflake::updateRealtimePoints(int targetCommandIndex)
   commandIndex = i;
 }
 
-/*
-void Snowflake::getNextPoint(double* x, double* y)
-{
-
-  
-
-  int i = commandIndex;
-  while(! (turtleCommands[i] == 'F' || turtleCommands[i] == 'f') )
-  {
-    i++;
-    if(i >= turtleCommands.size())
-      i = 0;
-  }
-
-  // an 'F' or 'f' was found at i
-
-  commandIndex = i;
-
-  // maybe return true or false dependning on whether a line should or shouldn't be drawn (i.e. an
-  // 'F' or 'f' is encountered)
-}
-*/
-
 void Snowflake::updateIncrement()
 {
   inc = tableLength * frequency / sampleRate; // avoid division
   incUpToDate = true;
 }
+
+void Snowflake::updateMeanAndNormalizer()
+{
+  // run through all turtle commands once, thereby keep track of the mean and min/max values
+  // and then set our meanX, meanY, normalizer members
+
+  double minX = 0, maxX = 0, minY = 0, maxY = 0, sumX = 0, sumY = 0;
+  TurtleGraphics tmpTurtle;
+  tmpTurtle.setAngle(angle);
+  tmpTurtle.init();
+  int N = (int) turtleCommands.size();
+  for(int i = 0; i < N; i++)
+  {
+    bool lineDrawn = tmpTurtle.interpretCharacter(turtleCommands[i]);
+    if( lineDrawn == true )
+    {
+      double x = tmpTurtle.getX();
+      double y = tmpTurtle.getY();
+      minX  = rmin(minX, x);
+      maxX  = rmax(maxX, x);
+      minY  = rmin(minY, y);
+      maxY  = rmax(maxY, y);
+      sumX += x;
+      sumY += y;
+    }
+  }
+
+  meanX = sumX / (numPoints-1); // use numLines = numPoints-1
+  meanY = sumY / (numPoints-1);
+
+  minX -= meanX; maxX -= meanX;
+  minY -= meanY; maxY -= meanY;
+  maxX  = rmax(fabs(minX), fabs(maxX));
+  maxY  = rmax(fabs(minY), fabs(maxY));
+  normalizer = 1.0 / rmax(maxX, maxY);
+}
+
 
 /*
 Ideas: 

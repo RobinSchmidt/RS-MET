@@ -73,7 +73,7 @@ public:
   void setAngle(double degrees);
 
   /** Initializes position (x,y) and direction vector (dx,dy). */
-  void init(double x, double y, double dx, double dy, bool keepOldCoordsAsStart = false);
+  void init(double x = 0, double y = 0, double dx = 1, double dy = 0, bool keepOldCoordsAsStart = false);
 
   /** Moves the turtle one step into the current direction. */
   void goForward();

@@ -79,8 +79,12 @@ public:
     double fPos = pos - iPos;
 
     // linear interpolation, gain and rotation:
-    *outL = amplitude * ((1-fPos)*tableX[iPos] + fPos*tableX[iPos+1]);
-    *outR = amplitude * ((1-fPos)*tableY[iPos] + fPos*tableY[iPos+1]);
+
+    //*outL = amplitude * ((1-fPos)*tableX[iPos] + fPos*tableX[iPos+1]);
+    //*outR = amplitude * ((1-fPos)*tableY[iPos] + fPos*tableY[iPos+1]);
+    *outL = normalizer * amplitude * ((1-fPos)*tableX[iPos] + fPos*tableX[iPos+1] - meanX);
+    *outR = normalizer * amplitude * ((1-fPos)*tableY[iPos] + fPos*tableY[iPos+1] - meanY);
+
     rotator.apply(outL, outR);
 
     // increment and wraparound:
@@ -119,13 +123,6 @@ public:
   /**  */
   void updateRealtimePoints(int targetCommandIndex);
 
-  /** Returns the next point in the sequence of turtle generated points (used internally in 
-  on-the-fly synthesis). */
-  //void getNextPoint(double* x, double* y); // maybe get rid
-
-
-
-
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
 
@@ -138,10 +135,13 @@ protected:
   length. */
   void updateIncrement();
 
+  void updateMeanAndNormalizer();
+
 
 
   // replace by LindenmayerSystem and TurtleGraphics for preparing for on-the-fly rendering
-  LindenmayerRenderer renderer;  // get rid, use lindSys to render the table
+  //LindenmayerRenderer renderer;  // get rid, use lindSys to render the table
+
   std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
   int tableLength = 0;            // not including the last sample (which repeats the 1st)
   bool useTable = true;
@@ -173,6 +173,7 @@ protected:
   double amplitude  = 1;
   double frequency  = 0;
   double sampleRate = 1;
+  double angle      = 0;
 
   std::atomic_bool commandsReady = false; // flag to indicate that "turtleCommands" is up to date
   std::atomic_bool tableUpToDate = false; // maybe rename to tableReady ...get rid
