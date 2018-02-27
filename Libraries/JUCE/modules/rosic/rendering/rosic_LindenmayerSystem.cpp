@@ -49,8 +49,11 @@ void TurtleGraphics::setAngle(double degrees)
   // practice but not nice - maybe clamp to zero anything below 1.e-16
 }
 
-void TurtleGraphics::init(double _x, double _y, double _dx, double _dy)
+void TurtleGraphics::init(double _x, double _y, double _dx, double _dy, bool keepOldXY)
 {
+  if(keepOldXY) { xo = x; yo = y; } // either keep current position in old position (xo,yo) (to
+  else          { xo = 0; yo = 0; } // draw a connection) or reset them to 0 as well
+
   x  = _x;
   y  = _y;
   dx = _dx;
@@ -59,6 +62,8 @@ void TurtleGraphics::init(double _x, double _y, double _dx, double _dy)
 
 void TurtleGraphics::goForward()
 {
+  xo = x;
+  yo = y;
   x += dx;
   y += dy;
 }
@@ -79,11 +84,19 @@ void TurtleGraphics::translate(const std::string& str,
   // clear and add initial vertex:
   vx.clear();
   vy.clear();
-  vx.push_back(x); 
-  vy.push_back(y); 
+  vx.push_back(getX()); 
+  vy.push_back(getY()); 
 
   // loop through the string and add vertices as needed:
-  for(int i = 0; i < str.size(); i++) {
+  for(int i = 0; i < str.size(); i++) 
+  {
+    if(interpretCharacter(str[i]))
+    {
+      vx.push_back(getX()); 
+      vy.push_back(getY()); 
+    }
+
+    /*
     // maybe factor this out into an interpretCharacter(char c) function for on-the-fly use:
     if(str[i] == '+')   
       turnLeft();
@@ -96,7 +109,23 @@ void TurtleGraphics::translate(const std::string& str,
       vx.push_back(x); 
       vy.push_back(y); 
     }
+    */
   }
+
+}
+
+bool TurtleGraphics::interpretCharacter(char c)
+{
+  if(c == 'F') { goForward(); return true;  }
+  if(c == '+') { turnLeft();  return false; }
+  if(c == '-') { turnRight(); return false; }
+  if(c == 'f') { goForward(); return false; }
+  //if(c == 'G') { goForward(); return true;  }
+  //if(c == '[') { pushState(); return false; }
+  //if(c == ']') { popState();  return false; }
+
+  return false;
+
   // maybe use '[' to push and ']' to pop x,y,dx,dy on a stack as described here:
   // https://en.wikipedia.org/wiki/L-system#Example_2:_Fractal_(binary)_tree
   // maybe use commands like +30F-45F to turn 30° left, go forward, turn 45° right, go forward
@@ -113,7 +142,7 @@ std::string TurtleGraphics::extractCommands(const std::string& s)
 {
   std::string tmp;
   for(int i = 0; i < s.size(); i++)
-    if(s[i] == '+' || s[i] == '-' || s[i] == 'F' || s[i] == 'f')
+    if(s[i] == '+' || s[i] == '-' || s[i] == 'F' || s[i] == 'f') // maybe factor into isCommand(char c)
       tmp += s[i];
   return tmp;
 }
