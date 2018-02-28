@@ -78,6 +78,16 @@ void TurtleGraphics::turnRight()
   rotRight.apply(&dx, &dy); // use rotation.applyInverse
 }
 
+void TurtleGraphics::pushState()
+{
+
+}
+
+void TurtleGraphics::popState()
+{
+
+}
+
 void TurtleGraphics::translate(const std::string& str, 
   std::vector<double>& vx, std::vector<double>& vy)
 {
@@ -103,8 +113,8 @@ bool TurtleGraphics::interpretCharacter(char c)
   if(c == '-') { turnRight(); return false; }
   if(c == 'f') { goForward(); return false; }
   if(c == 'G') { goForward(); return true;  }
-  //if(c == '[') { pushState(); return false; }
-  //if(c == ']') { popState();  return false; }
+  if(c == '[') { pushState(); return false; }
+  if(c == ']') { popState();  return false; }
   return false;
 
   // maybe use '[' to push and ']' to pop x,y,dx,dy on a stack as described here:
@@ -123,9 +133,13 @@ std::string TurtleGraphics::extractCommands(const std::string& s)
 {
   std::string tmp;
   for(int i = 0; i < s.size(); i++)
-    if(s[i] == '+' || s[i] == '-' || s[i] == 'F' || s[i] == 'f' || s[i] == 'G') // maybe factor into isCommand(char c)
-      tmp += s[i];
+    if(isCommand(s[i])) tmp += s[i];
   return tmp;
+}
+
+bool TurtleGraphics::isCommand(char c)
+{
+  return c == '+' || c == '-' || c == 'F' || c == 'f' || c == 'G' || c == '[' || c == ']';
 }
 
 int TurtleGraphics::getNumberOfLines(const std::string& s)

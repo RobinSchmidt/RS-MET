@@ -84,6 +84,10 @@ public:
   /** Turns the direction vector to the right. */
   void turnRight();
 
+  void pushState();
+
+  void popState();
+
   /** Translates the given string into arrays of x,y coordinates of vertices. */
   void translate(const std::string& str, std::vector<double>& vx, std::vector<double>& vy);
 
@@ -92,9 +96,12 @@ public:
   Lindenmayer system, i.e. to strip off the symbols that would be ignored anyway. */
   std::string extractCommands(const std::string& str);
 
+  /** Returns true, if the given character is a drawing command */
+  bool isCommand(char c);
+
   /** Given a string that supposedly contains drawing commands, this function returns the number of
   output lines in the drawing, that this string would produce. It just counts the number of 
-  occurrences of characters that draw a line. */
+  occurrences of characters that draw a line, i.e 'F' and 'G'. */
   int getNumberOfLines(const std::string& commandString);
 
 
