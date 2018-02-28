@@ -102,7 +102,7 @@ bool TurtleGraphics::interpretCharacter(char c)
   if(c == '+') { turnLeft();  return false; }
   if(c == '-') { turnRight(); return false; }
   if(c == 'f') { goForward(); return false; }
-  //if(c == 'G') { goForward(); return true;  }
+  if(c == 'G') { goForward(); return true;  }
   //if(c == '[') { pushState(); return false; }
   //if(c == ']') { popState();  return false; }
   return false;
@@ -123,7 +123,7 @@ std::string TurtleGraphics::extractCommands(const std::string& s)
 {
   std::string tmp;
   for(int i = 0; i < s.size(); i++)
-    if(s[i] == '+' || s[i] == '-' || s[i] == 'F' || s[i] == 'f') // maybe factor into isCommand(char c)
+    if(s[i] == '+' || s[i] == '-' || s[i] == 'F' || s[i] == 'f' || s[i] == 'G') // maybe factor into isCommand(char c)
       tmp += s[i];
   return tmp;
 }
@@ -132,7 +132,7 @@ int TurtleGraphics::getNumberOfLines(const std::string& s)
 {
   int n = 0;
   for(int i = 0; i < s.size(); i++)
-    if(s[i] == 'F') n++;
+    if(s[i] == 'F' || s[i] == 'G') n++;
   return n;
 }
 
@@ -188,23 +188,9 @@ void LindenmayerRenderer::getSierpinskiTriangle2(int N,
   std::vector<double>& x, std::vector<double>& y)
 {
   clearRules();
-  addRule('F', "F-G+F+G-F");      // F=F-G+F+G-F
-  addRule('G', "GG");             // G=GG
-  render("F-G-G", N, 120, x, y);  // seed = F-G-G
-  // does not work. it was taken from http://www.kevs3d.co.uk/dev/lsystems/ i thought, maybe the
-  // renderer there interprets G as drawing command, but replacing it with X there changed nothing
-  // (it still works there)
-  // wikipedia says the same - is my implementaion flawed?
-  // https://en.wikipedia.org/wiki/L-system#Example_5:_Sierpinski_triangle
-  // variables: F G
-  // constants: + -
-  // start:     F-G-G
-  // rules:     (F = F-G+F+G-F), (G = GG)
-  // angle:     120°
-  // ahhh...it says: "Here, F and G both mean "draw forward""
-  // maybe we need a post-processing stage that can replace strings with other strings in the final 
-  // result ...or maybe that's too complicated - it would be sufficient to have a list of 
-  // characters that should draw a line, by default, it contains only 'F'
+  addRule('F', "F-G+F+G-F");
+  addRule('G', "GG");
+  render("F-G-G", N, 120, x, y);
 }
 
 void LindenmayerRenderer::getPleasantError(int N, std::vector<double>& x, std::vector<double>& y)
