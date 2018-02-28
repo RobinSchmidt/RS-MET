@@ -51,8 +51,8 @@ void TurtleGraphics::setAngle(double degrees)
 
 void TurtleGraphics::init(double _x, double _y, double _dx, double _dy, bool keepOldXY)
 {
-  if(keepOldXY) { xo = x; yo = y; } // either keep current position in old position (xo,yo) (to
-  else          { xo = 0; yo = 0; } // draw a connection) or reset them to 0 as well
+  if(keepOldXY) { xo =  x; yo = y; } // either keep current position in old position (xo,yo) (to
+  else          { xo = _x; _y = 0; } // draw a connection) or reset them to given values as well
 
   x  = _x;
   y  = _y;
@@ -87,7 +87,7 @@ void TurtleGraphics::pushState()
 
 void TurtleGraphics::popState()
 {
-  rsAssert(stateStack.size() > 0);
+  //rsAssert(stateStack.size() > 0); // may happen during editing the rules
   if(stateStack.size() == 0)
     return;
   TurtleState s = RAPT::rsGetAndRemoveLast(stateStack);

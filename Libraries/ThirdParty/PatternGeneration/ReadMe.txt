@@ -1,5 +1,6 @@
 These are the files that belong to the Book "Pattern Generation for 
-Computational Art" which can be also obtained from:
+Computational Art" by Stefan and Richard Hollos. They can be obtained from the 
+book's website:
 
 http://abrazol.com/books/patterngen/
 http://abrazol.com/books/patterngen/#node_software
