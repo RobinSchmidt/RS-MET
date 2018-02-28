@@ -160,42 +160,28 @@ void Snowflake::goToNextLineSegment()
 {
   updateXY();
   lineIndex++;
-  if(lineIndex == numLines) 
-  {
-    lineIndex = 0;   // it's weird and dirty that we need to set it to -1 instead of 0
+  if(lineIndex == numLines) {
+    lineIndex = 0;
     cycleCount++;
-    if(cyclicReset != 0 && cycleCount >= cyclicReset) // 1st condition to avoid spurious resets when going
-    {
+    if(cyclicReset == 0)
+      cycleCount = 0;
+    else if(cycleCount >= cyclicReset) {
+      cycleCount = 0;
       resetTurtle();
-      cycleCount = 0;
       updateXY();
-
-
-      //resetTurtle();                                   // through 0 when going when running for ages
-      //cycleCount = 0;
     }
-    else
-    {
-      cycleCount = 0;
-      updateXY(); // nope, doesn't help - makes it worse
-
-      //commandIndex = 0;
-      // something is wrong here - when reset is off, there are artifacts
-      // maybe the turtle needs to store x,y in xo,yo?
-      // ...or maybe we need to "flush" the remaining commands on the turtle
-
-    }
-
-    // make reset of the turtle optional, or reset after a certain number of cycles, 0: never
-    // reset. the turtle is free running in this case. when the angle is slightly off the perfect
-    // value, the picture rotates - but we need to make sure to define axioms in a way that they
-    // head into the same direction as in the beginning after completing the cycle, for example
-    // "F--F--F--" instead of "F--F--F" for the initial triangle for the koch snowflake
-
-    // maybe have a soft-reset parameter that resets only partially (i.e. interpolates between
-    // current and initial state )
   }
 }
+
+
+// make reset of the turtle optional, or reset after a certain number of cycles, 0: never
+// reset. the turtle is free running in this case. when the angle is slightly off the perfect
+// value, the picture rotates - but we need to make sure to define axioms in a way that they
+// head into the same direction as in the beginning after completing the cycle, for example
+// "F--F--F--" instead of "F--F--F" for the initial triangle for the koch snowflake
+// maybe have a soft-reset parameter that resets only partially (i.e. interpolates between
+// current and initial state )
+
 
 void Snowflake::updateXY()  // // rename to drawNextLineToBuffer
 {
