@@ -77,7 +77,7 @@ bool rotes::testSnowflake()
   sf.setSampleRate(1.0);
   sf.setFrequency(0.35 / 4); // inc = frequency*numLines/sampleRate
 
-  int N = 30;  // number of samples
+  int N = 13;  // number of samples
   int n;         // sample index
   std::vector<double> xt(N), yt(N), xf(N), yf(N); // table-based and on-the-fly generated outputs
 
@@ -116,11 +116,16 @@ bool rotes::testSnowflake()
   sf.updateAllInternals();
 
   sf.setUseTable(false);
+
   sf.reset();
   sf.setResetAfterCycles(1);  // reset after each cycle
-  for(n = 0; n < N; n++) sf.getSampleFrameStereo(&x1[n], &y1[n]);
+  for(n = 0; n < N; n++) 
+    sf.getSampleFrameStereo(&x1[n], &y1[n]);
+
+  sf.reset();
   sf.setResetAfterCycles(0);  // never reset
-  for(n = 0; n < N; n++) sf.getSampleFrameStereo(&x0[n], &y0[n]);
+  for(n = 0; n < N; n++) 
+    sf.getSampleFrameStereo(&x0[n], &y0[n]);
 
 
   GNUPlotter plt;
