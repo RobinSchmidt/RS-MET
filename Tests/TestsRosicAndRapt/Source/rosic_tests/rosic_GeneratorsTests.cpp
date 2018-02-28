@@ -77,7 +77,7 @@ bool rotes::testSnowflake()
   sf.setSampleRate(1.0);
   sf.setFrequency(0.35 / 4); // inc = frequency*numLines/sampleRate
 
-  int N = 13;  // number of samples
+  int N = 60;  // number of samples
   int n;         // sample index
   std::vector<double> xt(N), yt(N), xf(N), yf(N); // table-based and on-the-fly generated outputs
 
@@ -104,7 +104,7 @@ bool rotes::testSnowflake()
   }
 
   // compare outputs with and without reset in on-the-fly mode (there are some audible buzzy 
-  // artifacts when reset is off):
+  // artifacts when reset is off - it should be equal up to numerical roundoff - but isn't):
 
   std::vector<double> x0(N), y0(N), x1(N), y1(N); // reset modes 0 (never) and 1 (each cycle)
 

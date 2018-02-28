@@ -32,10 +32,12 @@ void Snowflake::setRotation(double newRotation)
 void Snowflake::setResetAfterCycles(int numCycles) 
 { 
   cyclicReset = numCycles; 
-  cycleCount = 0; 
+
+
+  //cycleCount = 0; 
   // resetting the cycle count is required here because we may be running since ages without reset 
   // and it could be at -2341234 or something - and we don't want to wait that long for the next 
-  // reset
+  // reset ...nope - not anymore - it's clamped to 0 now when resetting is off
 }
 
 void Snowflake::setNumIterations(int newNumIterations) 
@@ -110,15 +112,23 @@ void Snowflake::reset()
 {
   pos = 0;
   resetTurtle();
-  lineIndex = -1;
-  goToLineSegment(0);
+  cycleCount = 0;
+  lineIndex = -1;     // try to rewrite the code, so we can set it to 0 here - i think it's only there
+                      // because goToLineSegment initially increments it but...
+
+  goToLineSegment(0); 
+  // ..but why is this needed? ...a...i think, because the turtle must draw the first
+  // line (update x,y buffers) ...maybe we can just call updateXY and get rid of
+  // the call above?
+
+
 }
+
 
 void Snowflake::resetTurtle()
 {
   commandIndex = 0;
   turtle.init(0, 0, 1, 0);
-  cycleCount = 0;
 }
 
 void Snowflake::goToLineSegment(int targetLineIndex)
@@ -146,6 +156,43 @@ void Snowflake::goToLineSegment(int targetLineIndex)
 
 void Snowflake::goToNextLineSegment()
 {
+  updateXY();
+  lineIndex++;
+  if(lineIndex == numLines) 
+  {
+    lineIndex = -1;   // it's weird and dirty that we need to set it to -1 instead of 0
+    cycleCount++;
+    if(cyclicReset != 0 && cycleCount >= cyclicReset) // 1st condition to avoid spurious resets when going
+    {
+      resetTurtle();                                   // through 0 when going when running for ages
+      cycleCount = 0;
+    }
+    else
+    {
+      cycleCount = 0;
+
+      //updateXY(); // nope, doesn't help - makes it worse
+
+      //commandIndex = 0;
+      // something is wrong here - when reset is off, there are artifacts
+      // maybe the turtle needs to store x,y in xo,yo?
+      // ...or maybe we need to "flush" the remaining commands on the turtle
+
+    }
+
+    // make reset of the turtle optional, or reset after a certain number of cycles, 0: never
+    // reset. the turtle is free running in this case. when the angle is slightly off the perfect
+    // value, the picture rotates - but we need to make sure to define axioms in a way that they
+    // head into the same direction as in the beginning after completing the cycle, for example
+    // "F--F--F--" instead of "F--F--F" for the initial triangle for the koch snowflake
+
+    // maybe have a soft-reset parameter that resets only partially (i.e. interpolates between
+    // current and initial state )
+  }
+}
+
+void Snowflake::updateXY()
+{
   bool xyUpdated = false;
   while(xyUpdated == false) {
     bool draw = turtle.interpretCharacter(turtleCommands[commandIndex]);
@@ -159,24 +206,6 @@ void Snowflake::goToNextLineSegment()
       y[1] = turtle.getEndY();
       xyUpdated = true;
     }
-  }
-
-  lineIndex++;
-  if(lineIndex == numLines) 
-  {
-    lineIndex = -1;
-    cycleCount++;
-    if(cyclicReset != 0 && cycleCount >= cyclicReset) // 1st condition to avoid spurious resets when going
-      resetTurtle();  // resets cycleCount            // through 0 when going when running for ages
-
-    // make reset of the turtle optional, or reset after a certain number of cycles, 0: never
-    // reset. the turtle is free running in this case. when the angle is slightly off the perfect
-    // value, the picture rotates - but we need to make sure to define axioms in a way that they
-    // head into the same direction as in the beginning after completing the cycle, for example
-    // "F--F--F--" instead of "F--F--F" for the initial triangle for the koch snowflake
-
-    // maybe have a soft-reset parameter that resets only partially (i.e. interpolates between
-    // current and initial state )
   }
 }
 

@@ -144,6 +144,8 @@ protected:
   including a wraparound. */
   void goToNextLineSegment();
 
+  void updateXY();
+
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
 
