@@ -1,0 +1,16 @@
+; 1-bit 3-positions
+;state 0 = start
+;state 1 = have a 0 at a position 0 modulo 3
+;state 2 = have a 0 at a position 1 modulo 3
+;state 3 = have a 0 at a position 2 modulo 3
+;state 4 = have a 1 at a position 0 modulo 3
+;state 5 = have a 1 at a position 1 modulo 3
+;state 6 = have a 1 at a position 2 modulo 3
+7 2
+0 1 4
+1 2 5 +F
+2 3 6 -F-F
+3 1 4 -F
+4 2 5 -FF
+5 3 6 +F+F
+6 1 4 +FF

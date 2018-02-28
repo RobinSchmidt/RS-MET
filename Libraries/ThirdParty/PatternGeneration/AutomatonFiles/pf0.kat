@@ -1,0 +1,5 @@
+; Paper folding
+3 2
+0 2 1 F
+1 2 1 +F
+2 2 1 -F

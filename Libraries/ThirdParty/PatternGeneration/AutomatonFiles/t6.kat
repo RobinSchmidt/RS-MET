@@ -1,0 +1,12 @@
+; counts runs up to length 2
+;state 0 = start
+;state 1 = have a 0 with run count 1
+;state 2 = have a 1 with run count 1
+;state 3 = have a 0 with run count 2
+;state 4 = have a 1 with run count 2
+5 2
+0 1 2
+1 3 2 F++F++F++F
+2 1 4 -FF+FFFF+FF
+3 1 2 FF-FF+FF
+4 1 2 f
