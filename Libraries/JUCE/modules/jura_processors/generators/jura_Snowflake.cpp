@@ -16,7 +16,7 @@ void Snowflake::createParameters()
   Param* p;
 
   // init to Koch snowflake:
-  axiom = "F--F--F";
+  axiom = "F--F--F--";
   rules = "F = F+F--F+F";
 
   p = new Param("Iterations", 0, 10, 0, Parameter::INTEGER); // should not be modulatable
@@ -30,7 +30,7 @@ void Snowflake::createParameters()
   // equal?) to the number of edges in the initiator and b the number of edges in the generator?
   // ...but that works only for simple one-rule systems that only involve F
 
-  p = new Param("TurningAngle", 0, 360, 0, Parameter::LINEAR, 0.01);
+  p = new Param("TurningAngle", 0, 360, 0, Parameter::LINEAR); // rename to TurnAngle
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setAngle);
   p->setValue(60, true, true); // Koch snowflake needs 60°
@@ -42,6 +42,14 @@ void Snowflake::createParameters()
   p = new Param("Rotation", -180, 180, 0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setRotation);
+
+  p = new Param("CyclicReset", 0, 10, 1, Parameter::INTEGER);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setResetAfterCycles);
+
+  p = new Param("UseTable", 0, 1, 0, Parameter::BOOLEAN);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setUseTable);
 
   /*
   p = new Param("Tune", -60.0, +60.0, 0.0, Parameter::LINEAR);
@@ -80,7 +88,7 @@ void Snowflake::reset()
 void Snowflake::noteOn(int noteNumber, int velocity)
 {
   core.setFrequency(pitchToFreq(noteNumber)); // preliminary - use tuning table
-  //oscCore.reset();
+  core.reset();
 }
 
 void Snowflake::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
@@ -237,6 +245,11 @@ void SnowflakeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
+  addWidget( sliderReset = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("CyclicReset") );
+  s->setDescription("Number of cycles after which turtle resets (0 for never)");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString0);
 }
 
 void SnowflakeEditor::resized()
@@ -268,6 +281,7 @@ void SnowflakeEditor::resized()
 
   sliderAmplitude->setBounds(x, y, w, wh); y += dy;
   sliderRotation->setBounds(x, y, w, wh); y += dy;
+  sliderReset->setBounds(x, y, w, wh); y += dy;
 }
 
 void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)

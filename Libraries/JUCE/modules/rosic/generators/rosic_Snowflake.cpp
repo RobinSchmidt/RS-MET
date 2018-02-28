@@ -1,22 +1,12 @@
 Snowflake::Snowflake()
 {
   // init to order 4 Koch snowflake:
-  angle = 60;
-  turtle.setAngle(angle);
-  axiom = "F--F--F";
+  turnAngle = 60;
+  turtle.setAngle(turnAngle);
+  axiom = "F--F--F--";
   clearRules();
   addRule('F', "F+F--F+F");
   numIterations = 4;
-
-  // tableLength = 768, numPoints = 769 - is this right? hmm - the last point in the table doesn't 
-  // count so maybe yes
-
-  //// init to unit square:
-  //angle = 90;
-  //turtle.setAngle(angle);
-  //axiom = "F+F+F+F";
-  //clearRules();
-  //numIterations = 0;
 
   updateTurtleCommands();
   updateWaveTable();
@@ -39,6 +29,15 @@ void Snowflake::setRotation(double newRotation)
   rotator.setAngle((PI/180) * newRotation);
 }
 
+void Snowflake::setResetAfterCycles(int numCycles) 
+{ 
+  cyclicReset = numCycles; 
+  cycleCount = 0; 
+  // resetting the cycle count is required here because we may be running since ages without reset 
+  // and it could be at -2341234 or something - and we don't want to wait that long for the next 
+  // reset
+}
+
 void Snowflake::setNumIterations(int newNumIterations) 
 { 
   if(newNumIterations == numIterations)
@@ -50,8 +49,8 @@ void Snowflake::setNumIterations(int newNumIterations)
 
 void Snowflake::setAngle(double newAngle) 
 {
-  angle = newAngle;
-  turtle.setAngle(angle);
+  turnAngle = newAngle;
+  turtle.setAngle(turnAngle);
   updateMeanAndNormalizer();
   tableUpToDate = false; 
 }
@@ -90,7 +89,7 @@ void Snowflake::updateWaveTable()
     updateTurtleCommands();  // updates also mean values, normalizer, increment and resets
 
   TurtleGraphics tmpTurtle;
-  tmpTurtle.setAngle(angle);
+  tmpTurtle.setAngle(turnAngle);
   tmpTurtle.translate(turtleCommands, tableX, tableY);
 
   tableUpToDate = true;
@@ -110,71 +109,96 @@ void Snowflake::updateTurtleCommands()
 void Snowflake::reset()
 {
   pos = 0;
-  turtle.init(0, 0, 1, 0);
-  commandIndex = 0;
+  resetTurtle();
   lineIndex = -1;
   goToLineSegment(0);
 }
 
+void Snowflake::resetTurtle()
+{
+  commandIndex = 0;
+  turtle.init(0, 0, 1, 0);
+  cycleCount = 0;
+}
+
 void Snowflake::goToLineSegment(int targetLineIndex)
 {
-  if(numLines == 0) {
-    x[0] = y[0] = x[1] = y[1] = 0;
-    return;
+  if(numLines == 0) { x[0] = y[0] = x[1] = y[1] = 0; return; }
+  if(useTable)
+  {
+    //lineIndex = targetLineIndex;
+    //x[0] = tableX[lineIndex];
+    //y[0] = tableY[lineIndex];
+    //x[1] = tableX[lineIndex+1];
+    //y[1] = tableY[lineIndex+1];
+    // not yet used - maybe we don't need it, if we want to doe special things in wavetable mode
+    // such as stereo detuning - if that's useless, uncomment code above and refactor the
+    // getSampleFrame... fucntions
+  }
+  else
+  {
+    while(lineIndex != targetLineIndex)
+      goToNextLineSegment(); // increments lineIndex with wrap around
   }
 
-  while(lineIndex != targetLineIndex)
-  {
-    // factor out into goToNextLine:
-    bool xyUpdated = false;
-    while(xyUpdated == false) {
-      bool draw = turtle.interpretCharacter(turtleCommands[commandIndex]);
-      commandIndex++;
-      if(commandIndex == turtleCommands.size())
-        commandIndex = 0;
-      if(draw) {
-        x[0] = turtle.getStartX();
-        y[0] = turtle.getStartY();
-        x[1] = turtle.getEndX();
-        y[1] = turtle.getEndY();
-        xyUpdated = true;
-      }
-    }
+  // later: update interpolator coeffs here according to x,y buffers
+}
 
-    lineIndex++;
-    if(lineIndex == numLines)
-    {
-      turtle.init(0, 0, 1, 0);
-      commandIndex = 0;  // should that not be the case anyway?
-      lineIndex = -1;
-       // todo: make reset optional, or reset after a certain number of cycles...we may need
-       // to advance a little bit - the reset may occur in between samples
+void Snowflake::goToNextLineSegment()
+{
+  bool xyUpdated = false;
+  while(xyUpdated == false) {
+    bool draw = turtle.interpretCharacter(turtleCommands[commandIndex]);
+    commandIndex++;
+    if(commandIndex == turtleCommands.size())
+      commandIndex = 0;
+    if(draw) {
+      x[0] = turtle.getStartX();
+      y[0] = turtle.getStartY();
+      x[1] = turtle.getEndX();
+      y[1] = turtle.getEndY();
+      xyUpdated = true;
     }
+  }
+
+  lineIndex++;
+  if(lineIndex == numLines) 
+  {
+    lineIndex = -1;
+    cycleCount++;
+    if(cyclicReset != 0 && cycleCount >= cyclicReset) // 1st condition to avoid spurious resets when going
+      resetTurtle();  // resets cycleCount            // through 0 when going when running for ages
+
+    // make reset of the turtle optional, or reset after a certain number of cycles, 0: never
+    // reset. the turtle is free running in this case. when the angle is slightly off the perfect
+    // value, the picture rotates - but we need to make sure to define axioms in a way that they
+    // head into the same direction as in the beginning after completing the cycle, for example
+    // "F--F--F--" instead of "F--F--F" for the initial triangle for the koch snowflake
+
+    // maybe have a soft-reset parameter that resets only partially (i.e. interpolates between
+    // current and initial state )
   }
 }
 
 void Snowflake::updateIncrement()
 {
-  //inc = tableLength * frequency / sampleRate; // avoid division
   inc = numLines * frequency / sampleRate; // avoid division
   incUpToDate = true;
 }
 
 void Snowflake::updateMeanAndNormalizer()
 {
-  // run through all turtle commands once, thereby keep track of the mean and min/max values
-  // and then set our meanX, meanY, normalizer members
+  // run through all turtle commands once, thereby keep track of the mean and min/max values of the
+  // generated curve, then set our meanX, meanY, normalizer members accordingly
 
   double minX = 0, maxX = 0, minY = 0, maxY = 0, sumX = 0, sumY = 0;
   TurtleGraphics tmpTurtle;
-  tmpTurtle.setAngle(angle);
+  tmpTurtle.setAngle(turnAngle);
   tmpTurtle.init();
   int N = (int) turtleCommands.size();
-  for(int i = 0; i < N; i++)
-  {
+  for(int i = 0; i < N; i++) {
     bool lineDrawn = tmpTurtle.interpretCharacter(turtleCommands[i]);
-    if( lineDrawn == true )
-    {
+    if( lineDrawn == true )  {
       double x = tmpTurtle.getX();
       double y = tmpTurtle.getY();
       minX  = rmin(minX, x);
@@ -185,8 +209,9 @@ void Snowflake::updateMeanAndNormalizer()
       sumY += y;
     }
   }
-  meanX = sumX / numLines;
-  meanY = sumY / numLines;
+  double tmp = 1.0 / numLines; // maybe have a member for that (optimization)
+  meanX = sumX * tmp;
+  meanY = sumY * tmp;
   minX -= meanX; maxX -= meanX;
   minY -= meanY; maxY -= meanY;
   maxX  = rmax(fabs(minX), fabs(maxX));
@@ -247,14 +272,14 @@ Ideas:
 -maybe rename the "Axiom" back to "Seed"
 -interpolation modes: left, right, nearest, linear, cubic
 -allow a traversal speed (or better: duration/length) to be associated with each point (i.e. the 
- line segment that goes toward that point)...like  a normal 'F' would assume 1, an 'f' would 
- assume '0', but we could also have F2 to let it take 2 time units to traverse the segment
- the incremrent computation would then not use "numPoints" as multiplier but 
- sum-of-traversal-durations
+ line segment that goes toward that point)...like a normal 'F' would assume 1, an 'f' would 
+ assume '0', but we could also have F2 to let it take 2 time units to traverse the segment or 
+ 1/3 to take one thrid of the time unit, the increment computation would then not use "numLines" 
+ as multiplier but sum-of-traversal-durations
 
 -call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
  Lindenmayer/Turtle grammar Fractal Definition Language (FDL) or maybe fractal geometric synthesis
- language (FGSL)
+ language (FGSL)...or maybe Fractal Pattern Synthesis
 -write a tutorial:
  1: Turtle Graphics
  2: Lindenmayer Systems

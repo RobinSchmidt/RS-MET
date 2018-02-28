@@ -30,6 +30,12 @@ public:
   /** Sets a rotation angle (in degrees) to be applied to the produced xy coordinate pair. */
   void setRotation(double newRotation);
 
+  /** Sets the number of cycles, the turtle has to run trough its command-string before it 
+  will be reset into its initial state. When 0 is passed, the turtle will not reset at all, i.e.
+  it is in free running mode. A free running turtle makes the picture rotate. A value of 1, i.e.
+  resetting after every cycle, is equivalent to wavetable mode. */
+  void setResetAfterCycles(int numCycles);
+
   /** Selects whether or not a precomputed (wave) table should be used or samples should be 
   computed from the turtle commands on the fly. The behavior is a bit different in both cases.
   Using a table, the 'f' turtle command does not behave properly and turn angle modulation is
@@ -128,10 +134,15 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
-  /** Updates the buffers that store past and future points between which we interpolate during
-  realtime traversal of the curve. */
+  void resetTurtle();
+
+  /** Makes the buffers x[0],x[1],y[0],y[1] etc. reflect the line endpoints of the given index for
+  the target line. */
   void goToLineSegment(int targetLineIndex);
-  //void updateRealtimePoints(int targetCommandIndex);
+
+  /** Goes form the current line segment (defined by member lineIndex) to the next, possibly 
+  including a wraparound. */
+  void goToNextLineSegment();
 
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
@@ -158,16 +169,17 @@ protected:
   int numLines = 0;               // number of 'F's in turtleCommands
   int lineIndex = 0;              // index of current line
   int commandIndex = 0;           // index in the list of turtle-commands
+  int cycleCount = 0;
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
   std::string lindenmayerResult;  // output string of Lindenmayer system
   std::string turtleCommands;     // only the turtle commands from lindenmayerResult 
 
-
   // parameters:
-  double amplitude  = 1;
-  double frequency  = 0;
-  double sampleRate = 1;
-  double angle      = 0;
+  double amplitude   = 1;
+  double frequency   = 0;
+  double sampleRate  = 1;
+  double turnAngle   = 0;
+  int    cyclicReset = 1;
 
   // rendering objects and related variables:
   LindenmayerSystem lindSys;
