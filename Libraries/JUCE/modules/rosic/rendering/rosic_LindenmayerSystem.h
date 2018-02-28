@@ -84,8 +84,10 @@ public:
   /** Turns the direction vector to the right. */
   void turnRight();
 
+  /** Pushes the current state of the turtle onto a stack for branching. */
   void pushState();
 
+  /** Pops the most topmost state form the stack and sets the turtle state accordingly. */
   void popState();
 
   /** Translates the given string into arrays of x,y coordinates of vertices. */
@@ -103,7 +105,6 @@ public:
   output lines in the drawing, that this string would produce. It just counts the number of 
   occurrences of characters that draw a line, i.e 'F' and 'G'. */
   int getNumberOfLines(const std::string& commandString);
-
 
   /** Returns the current x-coordinate. */
   double getX() { return x; }
@@ -128,15 +129,21 @@ public:
 
 protected:
 
-  // wrap into struct TurtleState (for easy push/pop-branching later)
-  double xo = 0, yo = 0;  // old position (from one step before);
   double x  = 0, y  = 0;  // current position
   double dx = 1, dy = 0;  // direction vector
+  double xo = 0, yo = 0;  // old position (from one step before)
 
+  /** Structure to store and retrieve the current state of the turtle.  */
+  struct TurtleState
+  {
+    TurtleState(double _x, double _y, double _dx, double _dy, double _xo, double _yo)
+      : x(_x), y(_y), dx(_dx), dy(_dy), xo(_xo), yo(_yo) {}
+    double x, y, dx, dy, xo, yo;
+  };
 
+  std::vector<TurtleState> stateStack;
   RAPT::rsRotationXY<double> rotLeft, rotRight; // use one, have functions apply, applyInverse
                                                 // save sin/cos computation when angle changes
-
 };
 
 //=================================================================================================

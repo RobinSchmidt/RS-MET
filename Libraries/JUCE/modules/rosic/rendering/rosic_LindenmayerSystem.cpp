@@ -58,6 +58,8 @@ void TurtleGraphics::init(double _x, double _y, double _dx, double _dy, bool kee
   y  = _y;
   dx = _dx;
   dy = _dy;
+
+  stateStack.clear();
 }
 
 void TurtleGraphics::goForward()
@@ -80,12 +82,18 @@ void TurtleGraphics::turnRight()
 
 void TurtleGraphics::pushState()
 {
-
+  stateStack.push_back(TurtleState(x, y, dx, dy, xo, yo));
 }
 
 void TurtleGraphics::popState()
 {
-
+  rsAssert(stateStack.size() > 0);
+  if(stateStack.size() == 0)
+    return;
+  TurtleState s = RAPT::rsGetAndRemoveLast(stateStack);
+  x  = s.x;   y = s.y;
+  dx = s.dx; dy = s.dy;
+  xo = s.xo; yo = s.yo;
 }
 
 void TurtleGraphics::translate(const std::string& str, 
@@ -117,8 +125,6 @@ bool TurtleGraphics::interpretCharacter(char c)
   if(c == ']') { popState();  return false; }
   return false;
 
-  // maybe use '[' to push and ']' to pop x,y,dx,dy on a stack as described here:
-  // https://en.wikipedia.org/wiki/L-system#Example_2:_Fractal_(binary)_tree
   // maybe use commands like +30F-45F to turn 30° left, go forward, turn 45° right, go forward
   // ...so whenever a number comes after a + or -, don't use the default angle that is set up but 
   // the angle given/ by that number - maybe don't call standard turnLeft but a turnLeftBy(angle)
