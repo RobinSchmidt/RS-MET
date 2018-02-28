@@ -77,6 +77,13 @@ void Snowflake::setAxiom(const std::string& newAxiom)
   tableUpToDate = false; 
 }
 
+void Snowflake::updateAllInternals()
+{
+  if(!commandsReady) updateTurtleCommands();
+  if(!incUpToDate)   updateIncrement();
+  if(!tableUpToDate) updateWaveTable();
+}
+
 void Snowflake::updateWaveTable()
 {
   if(!commandsReady)
@@ -102,14 +109,14 @@ void Snowflake::updateTurtleCommands()
 
 void Snowflake::reset()
 {
-  turtle.init(0, 0, 1, 0);
   pos = 0;
+  turtle.init(0, 0, 1, 0);
   commandIndex = 0;
   lineIndex = -1;
   goToLineSegment(0);
 }
 
-void Snowflake::goToLineSegment(int targetLineIndex, double fractionalPart)
+void Snowflake::goToLineSegment(int targetLineIndex)
 {
   if(numLines == 0) {
     x[0] = y[0] = x[1] = y[1] = 0;
@@ -118,6 +125,7 @@ void Snowflake::goToLineSegment(int targetLineIndex, double fractionalPart)
 
   while(lineIndex != targetLineIndex)
   {
+    // factor out into goToNextLine:
     bool xyUpdated = false;
     while(xyUpdated == false) {
       bool draw = turtle.interpretCharacter(turtleCommands[commandIndex]);
@@ -132,12 +140,13 @@ void Snowflake::goToLineSegment(int targetLineIndex, double fractionalPart)
         xyUpdated = true;
       }
     }
+
     lineIndex++;
     if(lineIndex == numLines)
     {
-      lineIndex = 0;
-      reset(); 
-      pos = fractionalPart;
+      turtle.init(0, 0, 1, 0);
+      commandIndex = 0;  // should that not be the case anyway?
+      lineIndex = -1;
        // todo: make reset optional, or reset after a certain number of cycles...we may need
        // to advance a little bit - the reset may occur in between samples
     }

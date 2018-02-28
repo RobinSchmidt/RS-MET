@@ -56,6 +56,11 @@ public:
   /** Sets the seed (aka "axiom") for the L-system. */
   void setAxiom(const std::string& newAxiom);
 
+  /** Updates all internal variables, so they reflect the user settings. Client code normally 
+  doesn't have to care, because it does this automatically, when necessary. But sometimes it's
+  useful for debugging to call this manually. */
+  void updateAllInternals();
+
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
@@ -97,7 +102,7 @@ public:
     int iPos = floorInt(pos);
     double fPos = pos - iPos;
     if(iPos != lineIndex)
-      goToLineSegment(iPos, fPos); // may later also update cubic interpolation coeffs, so they 
+      goToLineSegment(iPos); // may later also update cubic interpolation coeffs, so they 
       // don't need to be recomputed as long as we are traversing the
       // the same line/curve segment, maybe rename to goToLineSegment
 
@@ -125,7 +130,7 @@ protected:
 
   /** Updates the buffers that store past and future points between which we interpolate during
   realtime traversal of the curve. */
-  void goToLineSegment(int targetLineIndex, double fractionalPart = 0);
+  void goToLineSegment(int targetLineIndex);
   //void updateRealtimePoints(int targetCommandIndex);
 
   /** Renders the wavetable and updates related variables. */
@@ -173,7 +178,7 @@ protected:
 
   // for optional table-based synthesis (maybe at some point we can drop that?)
   std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
-  bool useTable = true;
+  bool useTable = false;
 
   // flags to indicate whether or not various rendering state variables are up to date:
   std::atomic_bool commandsReady = false; // flag to indicate that "turtleCommands" is up to date

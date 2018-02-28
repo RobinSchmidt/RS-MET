@@ -73,7 +73,7 @@ bool rotes::testSnowflake()
 {
   rosic::Snowflake sf;
 
-  int N = 1000;  // number of samples
+  int N = 50;  // number of samples
   int n;         // sample index
 
   std::vector<double> xt(N), yt(N), xf(N), yf(N); // table-based and on-the-fly generated outputs
@@ -83,8 +83,9 @@ bool rotes::testSnowflake()
   //sf.setAxiom("F+F+F+F");
   //sf.setNumIterations(0);
   //sf.setAngle(90);
-  sf.setSampleRate(44100.0);
-  sf.setFrequency(100); // inc = frequency*tableLength/sampleRate
+  sf.setSampleRate(1.0);
+  sf.setFrequency(0.35 / 4); // inc = frequency*numLines/sampleRate
+  sf.updateAllInternals();
 
   // create on-the-fly output:
   sf.setUseTable(false);
@@ -99,12 +100,21 @@ bool rotes::testSnowflake()
     sf.getSampleFrameStereo(&xt[n], &yt[n]);
 
   // xt should equal xf, same for yt,yf - check this and use it as return value
+  double xError = 0, yError = 0;
+  for(n = 0; n < N; n++)
+  {
+    xError = rmax(xError, fabs(xt[n]-xf[n]));
+    yError = rmax(yError, fabs(yt[n]-yf[n]));
+    rsAssert(xError == 0 && yError == 0);
+  }
+
+  
 
 
   GNUPlotter plt;
-  //plt.setRange(-1.1, +1.1, -1.1, +1.1);
-  //plt.setPixelSize(400, 400);
-  //plt.addCommand("set size square");
+  plt.setRange(-1.1, +1.1, -1.1, +1.1);
+  plt.setPixelSize(400, 400);
+  plt.addCommand("set size square");
   plt.addDataArrays(N, &xt[0], &yt[0]);
   plt.addDataArrays(N, &xf[0], &yf[0]);
   plt.plot();
