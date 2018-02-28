@@ -77,7 +77,7 @@ bool rotes::testSnowflake()
   sf.setSampleRate(1.0);
   sf.setFrequency(0.35 / 4); // inc = frequency*numLines/sampleRate
 
-  int N = 60;  // number of samples
+  int N = 1000;  // number of samples
   int n;         // sample index
   std::vector<double> xt(N), yt(N), xf(N), yf(N); // table-based and on-the-fly generated outputs
 

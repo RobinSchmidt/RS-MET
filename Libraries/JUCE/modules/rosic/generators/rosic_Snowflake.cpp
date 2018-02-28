@@ -111,19 +111,21 @@ void Snowflake::updateTurtleCommands()
 void Snowflake::reset()
 {
   pos = 0;
-  resetTurtle();
   cycleCount = 0;
-  lineIndex = -1;     // try to rewrite the code, so we can set it to 0 here - i think it's only there
-                      // because goToLineSegment initially increments it but...
+  resetTurtle();
+  updateXY();      // rename to drawNextLineToBuffer
+  lineIndex = 0;
 
-  goToLineSegment(0); 
+
+  //lineIndex = -1;     // try to rewrite the code, so we can set it to 0 here - i think it's only there
+                      // because goToLineSegment initially increments it but...
+  //goToLineSegment(0); 
   // ..but why is this needed? ...a...i think, because the turtle must draw the first
   // line (update x,y buffers) ...maybe we can just call updateXY and get rid of
   // the call above?
 
 
 }
-
 
 void Snowflake::resetTurtle()
 {
@@ -160,18 +162,22 @@ void Snowflake::goToNextLineSegment()
   lineIndex++;
   if(lineIndex == numLines) 
   {
-    lineIndex = -1;   // it's weird and dirty that we need to set it to -1 instead of 0
+    lineIndex = 0;   // it's weird and dirty that we need to set it to -1 instead of 0
     cycleCount++;
     if(cyclicReset != 0 && cycleCount >= cyclicReset) // 1st condition to avoid spurious resets when going
     {
-      resetTurtle();                                   // through 0 when going when running for ages
+      resetTurtle();
       cycleCount = 0;
+      updateXY();
+
+
+      //resetTurtle();                                   // through 0 when going when running for ages
+      //cycleCount = 0;
     }
     else
     {
       cycleCount = 0;
-
-      //updateXY(); // nope, doesn't help - makes it worse
+      updateXY(); // nope, doesn't help - makes it worse
 
       //commandIndex = 0;
       // something is wrong here - when reset is off, there are artifacts
@@ -191,7 +197,7 @@ void Snowflake::goToNextLineSegment()
   }
 }
 
-void Snowflake::updateXY()
+void Snowflake::updateXY()  // // rename to drawNextLineToBuffer
 {
   bool xyUpdated = false;
   while(xyUpdated == false) {
