@@ -1,11 +1,13 @@
 Fractal Pattern Synthesis 
 =========================
 
+In this tutorial, I describe the application of a paradigm, which is widely known in the world of computer graphics and theoretical biology, to the synthesis of audio signals.
+
  
 Turtle Graphics
 ---------------
  
-Turtle Graphics is a term for a conceptual plotting system where we imagine a virtual pen that responds to commands, thereby drawing a picture. For some less than obvious reason, this pen is envisioned as a turtle. The commands that this turtle can respond to involve at least a command for moving one unit forward while drawing a line, one for turning left and one for turning right. Many implementations also offer a command to move a step forward without drawing a line. These commands are normally single characters, typically `F`to move forward while drawing, `f` to move forward without drawing and `+` and `-` to turn one angular unit left or right respectively.
+Turtle Graphics is a term for a conceptual line drawing system where we imagine a virtual pen that responds to commands, thereby drawing a picture. For some less than obvious reason, this pen is envisioned as a turtle. The commands that this turtle can respond to involve at least a command for moving one unit forward while drawing a line, one for turning left and one for turning right. Many implementations also offer a command to move a step forward without drawing a line. These commands are normally single characters, typically `F` to move forward while drawing, `f` to move forward without drawing and `+`, `-` to turn one angular unit left or right respectively.
 
 The step size for forward steps and the turning angle are parameters that are typically set up once and for all in advance. At any moment, the turtle has a state consisting of its current position and the direction it is heading towards. Initially, this position is typically the origin `(x,y) = (0,0)` and the direction is given by the x-axis `(dx,dy) = (1,0)`. Starting from this initial state and assuming the angle increment to be set to 90°, the turtle can now interpret a string of commands. For example, `FF+F-FF` would mean to  draw two units to the right, turn to the left (heading upwards now), draw one line segment upward, turn to the right and draw another two line segments rightward.
 
@@ -24,13 +26,29 @@ Depending on the concrete implementation, the drawing system may involve more co
 Lindenmayer Systems
 ------------------- 
 
-A Lindenmayer system, for short L-system, is a string rewriting system that can be used to generate strings that can be fed into a turtle graphics system in order to produce attractive drawings. Originally, these systems were conceived by theoretical botanist Aristid Lindenmayer to model the development of plants. An L-system consists of an initial string, known as "axiom" (I prefer to call it seed) and a set of replacement rules. A replacement rule, also know as production rule or just production, consists of a "predecessor" character and a "successor" string. For example, a rule: `F = F+F` would replace every occurrence of `F` inside a string to which it is applied by `F+F`. A Lindenmayer system applies the set of production rules to the initial string, then to the output of that application and so on - as often as desired. We can see that the number of `F`s doubles in each iteration which means, our initial string will grow exponentially with the number of iterations.
+A Lindenmayer system, for short L-system, is a string rewriting system that can be used to generate strings that can be fed into a turtle graphics system in order to produce attractive drawings. Originally, these systems were conceived by theoretical botanist Aristid Lindenmayer to model the development of plants. An L-system consists of an initial string, known as "axiom" (I prefer to call it seed) and a set of replacement rules. A replacement rule, also known as production rule or just production, consists of a "predecessor" character and a "successor" string. For example, a rule: `F = F+F`, when applied to a string, would replace every occurrence of `F` by `F+F`. A Lindenmayer system applies the set of production rules to the initial string, then to the output of that application and so on - as often as desired. We can see that the number of `F`s doubles in each iteration which means, our initial string will grow exponentially with the number of iterations. All rules that can possibly be applied to a string are applied in parallel. This reflects the way in which plants grow by cell division and distinguishes an L-system from another widely used class of formal languages - namely Chomsky grammars - which apply one rule at a time in a single iteration.
+
+For example, consider the simple L-system:
+
+Axiom: A
+Rules: A = BA, B = AB
+
+The string would develop as follows:
+
+0: A
+1: BA
+2: ABBA (thank you for the music!)
+2: BAABABBA
+3: ABBABAABBAABABBA
+4: BAABABBAABBABAABABBABAABBAABABBA
+
+etc. With more complex sets of rules and/or more complex seeds, the resulting strings can get an interesting and complex internal structure.
 
 
 Generation of Fractals
 ----------------------
 
-A turtle graphics interpreter and Lindenmayer systems are the two basic ingredients that we need to produce line drawings with self-similar ("fractal") features. It's intutively obvious that the results will show self-similarity, because in the iterative application of the L-system rules, smaller parts (typically `F`orward lines) are replaced by more complex structures, inside of which in the next iterations again the forward lines are replaced by the same structures and so on.
+A turtle graphics interpreter and Lindenmayer systems are the two basic ingredients that we need to produce line drawings with self-similar ("fractal") features. The strategy is - if that isn't already obvious - to use a Lindenmayer system to produce a string that contains turtle commands and throw that string at out turtle graphics interpreter. The turtle will respond only to the command characters and ignore all other characters in the string. It's intutively obvious that the results will show self-similarity, because in the iterative application of the L-system rules, smaller parts (typically `F`orward lines) are replaced by more complex structures, inside of which in the next iterations again the forward lines are replaced by the same structures and so on.
 
 
 
