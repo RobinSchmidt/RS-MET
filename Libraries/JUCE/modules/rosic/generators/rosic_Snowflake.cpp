@@ -329,6 +329,11 @@ Ideas:
  etc. (the latter could split into "Christoffel Words", "Paper Folding", etc.)
 -the turtle could interpret '*' as "multiply speed by factor" (which is a (realtime) parameter) and 
  '/' as "divide speed by factor" (or maybe the speed should increase decreas linearly?)
+-in free-running mode, a turn angle that is slightly off some ideal value leads to rotating image 
+ -maybe this can be simulated in wavetable mode, by modulating the increments for x,y in a particular 
+  way - maybe modulate incX in any way and modulate incY according to the condition that 
+  (incX^2 + incY) = const = 2 * inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it 
+  renormalizes the implied "turtle" step size...i think...maybe try it
  
 
 -call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 

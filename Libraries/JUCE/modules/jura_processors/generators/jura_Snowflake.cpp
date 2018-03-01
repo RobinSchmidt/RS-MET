@@ -19,7 +19,7 @@ void Snowflake::createParameters()
   axiom = "F--F--F--";
   rules = "F = F+F--F+F";
 
-  p = new Param("Iterations", 0, 10, 0, Parameter::INTEGER); // should not be modulatable
+  p = new Param("Iterations", 0, 10, 0, Parameter::INTEGER, 1); // should not be modulatable
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setNumIterations);
   p->setValue(4, true, true); // initial order is 4
@@ -43,7 +43,7 @@ void Snowflake::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setRotation);
 
-  p = new Param("CyclicReset", 0, 10, 1, Parameter::INTEGER);
+  p = new Param("CyclicReset", 0, 10, 1, Parameter::INTEGER, 1);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setResetAfterCycles);
 

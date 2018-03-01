@@ -9,14 +9,26 @@ When left and right channel are interpreted as x,y coordinates and plotted, the 
 show a self-similar character. The Koch snowflake is one simple example of such a curve. 
 
 References:
-(1) Pattern Generation for Computational Art (Stefan and Richard Hollos)
-
-*/
+PGCA: Pattern Generation for Computational Art (Stefan and Richard Hollos)
+LSFP: Lindenmayer Systems, Fractals and Plants (Prusinkiewicz, Hanan)
+ABoP: The Algorithmic Beauty of Plants (Prusinkiewicz, Lindenmayer)  */
 
 class Snowflake
 {
 
 public:
+
+  /** Enumeration of different the ways that can be used to interpolate between the sequence of 
+  points that the turtle generates. */
+  enum interpolationModes
+  {
+    LEFT_NEIGHBOUR,
+    RIGHT_NEIGHBOUR,
+    NEAREST_NEIGHBOUR,
+    LINEAR,
+    CUBIC,               // cubic hermite - matches slopes at datapoints
+    QUARTIC              // like cubic and normalizes integral to be the same as in linear
+  };
 
   Snowflake();
 
@@ -41,6 +53,10 @@ public:
   resetting after every cycle, is equivalent to wavetable mode. */
   void setResetAfterCycles(int numCycles);
 
+  /** Sets the method that is used to interpolate between the sequence of points that the turtle 
+  generates. */
+  void setInterpolationMode(int newMode) { interpolation = newMode; }
+
   /** Selects whether or not a precomputed (wave) table should be used or samples should be 
   computed from the turtle commands on the fly. The behavior is a bit different in both cases.
   Using a table, the 'f' turtle command does not behave properly and turn angle modulation is
@@ -48,9 +64,9 @@ public:
   detuning and should be generally more efficient (verify this). */
   void setUseTable(bool shouldUseTable) { useTable = shouldUseTable; }
 
-  //void addStereoDetune(double newDetune);
-
-  //void addStereoFrequencyOffset(double newOffset);
+  //void setStereoDetune(double newDetune);
+  //void setStereoFrequencyOffset(double newOffset);
+  // these are relevant only in table-mode - maybe use the regular wavetable oscillator
 
   /** Sets the number of iterations for the L-system. */
   void setNumIterations(int newNumIterations);
@@ -117,9 +133,10 @@ public:
       // don't need to be recomputed as long as we are traversing the
       // the same line/curve segment, maybe rename to goToLineSegment
 
-    // later, switch other interpolation method here:
-    *outL = normalizer * amplitude * ((1-fPos)*x[0] + fPos*x[1] - meanX);
-    *outR = normalizer * amplitude * ((1-fPos)*y[0] + fPos*y[1] - meanY);
+    // read out buffered line segment (x[], y[] members) with interpolation:
+    interpolate(outL, outR, fPos);
+    *outL = normalizer * amplitude * (*outL - meanX);
+    *outR = normalizer * amplitude * (*outR - meanY);
     rotator.apply(outL, outR);
 
     // increment and wraparound:
@@ -138,6 +155,31 @@ protected:
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
+
+  void interpolate(double *left, double *right, double frac)
+  {
+    switch(interpolation)
+    {
+    case LEFT_NEIGHBOUR: {
+      *left  = x[0];
+      *right = y[0]; } break;
+    case RIGHT_NEIGHBOUR: {
+      *left  = x[1];
+      *right = y[1]; } break;
+    case NEAREST_NEIGHBOUR: {
+      if(frac >= 0.5) { *left = x[0]; *right = y[0]; }
+      else            { *left = x[1]; *right = y[1]; } } break;
+    case LINEAR: {
+      *left  = (1-frac)*x[0] + frac*x[1];
+      *right = (1-frac)*y[0] + frac*y[1]; } break;
+    default: {
+      *left  = 0;
+      *right = 0;
+      rsAssertFalse; } // unknown interpolation setting 
+    }
+    // or maybe call the 1st three floor, ceil, round, ..at least on the GUI
+  }
+
 
   void resetTurtle();
 
@@ -182,11 +224,12 @@ protected:
   std::string turtleCommands;     // only the turtle commands from lindenmayerResult 
 
   // parameters:
-  double amplitude   = 1;
-  double frequency   = 0;
-  double sampleRate  = 1;
-  double turnAngle   = 0;
-  int    cyclicReset = 1;
+  double amplitude     = 1;
+  double frequency     = 0;
+  double sampleRate    = 1;
+  double turnAngle     = 0;
+  int    cyclicReset   = 1;
+  int    interpolation = LINEAR;
 
   // rendering objects and related variables:
   LindenmayerSystem lindSys;
