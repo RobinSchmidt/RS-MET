@@ -100,48 +100,13 @@ public:
       getFrameOnTheFly(outL, outR);
   }
 
-  INLINE void getFrameViaTable(double *outL, double *outR)
+  INLINE void getFrameInternal(double *outL, double *outR)
   {
-    if(!tableUpToDate) updateWaveTable();
-    if(!incUpToDate) updateIncrement();
-    if(numLines < 2) return;
-
-
     // integer and fractional part of position:
     int iPos = floorInt(pos);
     double fPos = pos - iPos;
-
-    // new:
     if(iPos != lineIndex)
       goToLineSegment(iPos);
-    interpolate(outL, outR, fPos);
-    *outL = normalizer * amplitude * (*outL - meanX);
-    *outR = normalizer * amplitude * (*outR - meanY);
-    rotator.apply(outL, outR);
-
-    //// old:
-    //// linear interpolation, gain and rotation:
-    //*outL = normalizer * amplitude * ((1-fPos)*tableX[iPos] + fPos*tableX[iPos+1] - meanX);
-    //*outR = normalizer * amplitude * ((1-fPos)*tableY[iPos] + fPos*tableY[iPos+1] - meanY);
-    //rotator.apply(outL, outR);
-
-    // increment and wraparound:
-    pos += inc;
-    while(pos >= numLines)
-      pos -= numLines;
-  }
-
-  INLINE void getFrameOnTheFly(double *outL, double *outR)
-  {
-    if(!commandsReady) updateTurtleCommands();
-    if(!incUpToDate) updateIncrement();
-    if(numLines < 1) return;
-
-    int iPos = floorInt(pos);
-    double fPos = pos - iPos;
-    if(iPos != lineIndex)
-      goToLineSegment(iPos); 
-
 
     // read out buffered line segment (x[], y[] members) with interpolation:
     interpolate(outL, outR, fPos);
@@ -154,7 +119,27 @@ public:
     while(pos >= numLines)
       pos -= numLines;
   }
-  // get rid of the duplications with getFrameViaTable
+
+  // refactor to get rid of these two functions:
+  INLINE void getFrameViaTable(double *outL, double *outR)
+  {
+    if(!tableUpToDate) updateWaveTable();
+    if(!incUpToDate) updateIncrement();
+    if(numLines < 2) return;
+
+    getFrameInternal(outL, outR);
+  }
+
+  INLINE void getFrameOnTheFly(double *outL, double *outR)
+  {
+    if(!commandsReady) updateTurtleCommands();
+    if(!incUpToDate) updateIncrement();
+    if(numLines < 1) return;
+
+    getFrameInternal(outL, outR);
+  }
+
+
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
   unnormalized coordinates). */
