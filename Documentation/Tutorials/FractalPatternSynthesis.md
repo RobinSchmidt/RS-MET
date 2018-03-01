@@ -1,11 +1,15 @@
- Turtle Graphics
- ==============================================================================
+Fractal Pattern Synthesis 
+=========================
+
+ 
+Turtle Graphics
+---------------
  
 Turtle Graphics is a term for a conceptual plotting system where we imagine a virtual pen that responds to commands, thereby drawing a picture. For some less than obvious reason, this pen is envisioned as a turtle. The commands that this turtle can respond to involve at least a command for moving one unit forward while drawing a line, one for turning left and one for turning right. Many implementations also offer a command to move a step forward without drawing a line. These commands are normally single characters, typically `F`to move forward while drawing, `f` to move forward without drawing and `+` and `-` to turn one angular unit left or right respectively.
 
 The step size for forward steps and the turning angle are parameters that are typically set up once and for all in advance. At any moment, the turtle has a state consisting of its current position and the direction it is heading towards. Initially, this position is typically the origin `(x,y) = (0,0)` and the direction is given by the x-axis `(dx,dy) = (1,0)`. Starting from this initial state and assuming the angle increment to be set to 90°, the turtle can now interpret a string of commands. For example, `FF+F-FF` would mean to  draw two units to the right, turn to the left (heading upwards now), draw one line segment upward, turn to the right and draw another two line segments rightward.
 
-Another useful operation is to store the current state (position and direction), draw something, and then come back to the stored state and draw soemthing else. If this is supported, storing the state is typically invoked by the command `[` and restoring the the turtle from most recently stored state that was not yet retrieved by `]`. In summary, a typical turtle graphics system will respond to the following commands:
+Another useful operation is to store the current state (position and direction), draw something, and then come back to the stored state and draw soemthing else. If this is supported, storing the state is typically invoked by the command `[` and restoring the turtle from most recently stored state that was not yet retrieved by `]`. In summary, a typical turtle graphics system will respond to the following commands:
 
  * `F` Move a step forward while drawing a line
  * `f` Move forward without drawing a line
@@ -18,47 +22,42 @@ Depending on the concrete implementation, the drawing system may involve more co
 
 
 
-
-
-
-
-
- 
- 
- Lindenmayer Systems
- ==============================================================================
+Lindenmayer Systems
+-------------------
  
  
  
- Fractal Synthesis Language
- ==============================================================================
- 
- To build a musical sound synthesis algorithms from the concepts above
- 
- Extensions to Turtle Syntax
- ---------------------------
  
  
- Extensions to Lindenmayer Syntax
- --------------------------------
+ 
+Fractal Synthesis Language
+--------------------------
+ 
+To build a musical sound synthesis algorithms from the concepts above
+ 
+###Extensions to Turtle Syntax
+ 
+ 
+###Extensions to Lindenmayer Syntax
   
   
- Fractal Pattern Synthesis
- ==========================
+Fractal Pattern Synthesis
+-------------------------
  
  
- Curve Traversal
- ---------------
+###Curve Traversal
  
- ###Cyclic Resets (or not)
- 
- 
- ###Loop Modes
+#####Cyclic Resets (or not)
  
  
-   
+#####Loop Modes
  
- Turning Angle Modulation ...maybe allow Step Size Modulation, too?
+ 
+=====================================
+
+ 
+ 
+Turning Angle Modulation ...maybe allow Step Size Modulation, too?
  
  
 
