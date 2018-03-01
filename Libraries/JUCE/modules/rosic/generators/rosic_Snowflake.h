@@ -8,6 +8,8 @@ namespace rosic
 When left and right channel are interpreted as x,y coordinates and plotted, the resulting curves 
 show a self-similar character. The Koch snowflake is one simple example of such a curve. 
 
+todo factor out a TurtleSynthesizer class - most of this class is generally about turtle-synthesis
+
 References:
 PGCA: Pattern Generation for Computational Art (Stefan and Richard Hollos)
 LSFP: Lindenmayer Systems, Fractals and Plants (Prusinkiewicz, Hanan)
@@ -94,14 +96,12 @@ public:
   /** Calculates one output-sample frame at a time. */
   INLINE void getSampleFrameStereo(double *outL, double *outR)
   {
-    if(useTable)
-      getFrameViaTable(outL, outR);
-    else
-      getFrameOnTheFly(outL, outR);
-  }
+    // some checks (optimize - have a single readyToPlay flag so we only need one check here):
+    if(!commandsReady)              updateTurtleCommands();
+    if(numLines < 1)                return;
+    if(!tableUpToDate && useTable)  updateWaveTable();
+    if(!incUpToDate)                updateIncrement();
 
-  INLINE void getFrameInternal(double *outL, double *outR)
-  {
     // integer and fractional part of position:
     int iPos = floorInt(pos);
     double fPos = pos - iPos;
@@ -119,27 +119,6 @@ public:
     while(pos >= numLines)
       pos -= numLines;
   }
-
-  // refactor to get rid of these two functions:
-  INLINE void getFrameViaTable(double *outL, double *outR)
-  {
-    if(!tableUpToDate) updateWaveTable();
-    if(!incUpToDate) updateIncrement();
-    if(numLines < 2) return;
-
-    getFrameInternal(outL, outR);
-  }
-
-  INLINE void getFrameOnTheFly(double *outL, double *outR)
-  {
-    if(!commandsReady) updateTurtleCommands();
-    if(!incUpToDate) updateIncrement();
-    if(numLines < 1) return;
-
-    getFrameInternal(outL, outR);
-  }
-
-
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
   unnormalized coordinates). */
