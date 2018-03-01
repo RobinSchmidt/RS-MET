@@ -125,6 +125,7 @@ public:
   {
     if(!commandsReady) updateTurtleCommands();
     if(!incUpToDate) updateIncrement();
+    if(numLines < 1) return;
 
     int iPos = floorInt(pos);
     double fPos = pos - iPos;

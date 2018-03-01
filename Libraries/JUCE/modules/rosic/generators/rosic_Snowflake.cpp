@@ -115,16 +115,6 @@ void Snowflake::reset()
   resetTurtle();
   updateXY();      // rename to drawNextLineToBuffer
   lineIndex = 0;
-
-
-  //lineIndex = -1;     // try to rewrite the code, so we can set it to 0 here - i think it's only there
-                      // because goToLineSegment initially increments it but...
-  //goToLineSegment(0); 
-  // ..but why is this needed? ...a...i think, because the turtle must draw the first
-  // line (update x,y buffers) ...maybe we can just call updateXY and get rid of
-  // the call above?
-
-
 }
 
 void Snowflake::resetTurtle()
@@ -185,6 +175,8 @@ void Snowflake::goToNextLineSegment()
 
 void Snowflake::updateXY()  // // rename to drawNextLineToBuffer
 {
+  if(turtleCommands.size() == 0)
+    return;
   bool xyUpdated = false;
   while(xyUpdated == false) {
     bool draw = turtle.interpretCharacter(turtleCommands[commandIndex]);
@@ -230,7 +222,7 @@ void Snowflake::updateMeanAndNormalizer()
       sumY += y;
     }
   }
-  double tmp = 1.0 / numLines; // maybe have a member for that (optimization)
+  double tmp = 1.0 / max(numLines, 1); // maybe have a member for that (optimization)
   meanX = sumX * tmp;
   meanY = sumY * tmp;
   minX -= meanX; maxX -= meanX;
@@ -332,8 +324,9 @@ Ideas:
 -in free-running mode, a turn angle that is slightly off some ideal value leads to rotating image 
  -maybe this can be simulated in wavetable mode, by modulating the increments for x,y in a particular 
   way - maybe modulate incX in any way and modulate incY according to the condition that 
-  (incX^2 + incY) = const = 2 * inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it 
-  renormalizes the implied "turtle" step size...i think...maybe try it
+  incX^2 + incY^2 = const = 2*inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it 
+  renormalizes the implied "turtle" step size...i think...maybe try it..or maybe not modulate it 
+  but just set it to that value?
  
 
 -call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
