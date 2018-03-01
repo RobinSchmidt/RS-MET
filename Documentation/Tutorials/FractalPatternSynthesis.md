@@ -21,39 +21,40 @@ Another useful operation is to store the current state (position and direction),
 Depending on the concrete implementation, the drawing system may involve more commands, for example to increase or decrease the forward step size and turning angle, change line thickness, color, etc. It is also possible to have turtle that moves around in 3 dimensions (it has probably left the beach and reached the water now).
 
 
-
 Lindenmayer Systems
--------------------
+------------------- 
+
+A Lindenmayer system, for short L-system, is a string rewriting system that can be used to generate strings that can be fed into a turtle graphics system in order to produce attractive drawings. Originally, these systems were conceived by theoretical botanist Aristid Lindenmayer to model the development of plants. An L-system consists of an initial string, known as "axiom" (I prefer to call it seed) and a set of replacement rules. A replacement rule, also know as production rule or just production, consists of "predecessor" character and a "successor" string. For example, a rule: `F = F+F` would replace every occurrence of `F` inside a string to which it is applied by `F+F`. A Lindemayer system applies the set of production rules iteratively to the initial string, then to the output of that application and so on - as often as desired. We can see that the number of `F`s doubles in each iteration which means, our initial string will grow exponentially with the number of iterations.
+
+
  
  
- 
- 
- 
+_______________________________________________________________________________
+stuff below is just a skeleton and snippets
  
 Fractal Synthesis Language
 --------------------------
  
 To build a musical sound synthesis algorithms from the concepts above
  
-###Extensions to Turtle Syntax
+### Extensions to Turtle Syntax
  
  
-###Extensions to Lindenmayer Syntax
+### Extensions to Lindenmayer Syntax
   
   
 Fractal Pattern Synthesis
 -------------------------
  
  
-###Curve Traversal
+### Curve Traversal
  
-#####Cyclic Resets (or not)
- 
- 
-#####Loop Modes
+##### Cyclic Resets (or not)
  
  
-=====================================
+##### Loop Modes
+ 
+ 
 
  
  
