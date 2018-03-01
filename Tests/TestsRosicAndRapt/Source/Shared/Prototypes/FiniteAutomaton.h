@@ -26,9 +26,10 @@ public:
   that is associated with the new state. */
   std::string readSymbol(char c);
 
-  /** Translates the given string input string to the corresponding output string. This can also be 
-  called in the middle of another translation without affecting our state. */
-  std::string translate(const std::string& input);
+  /** Translates the given string input string to the corresponding output string. You may 
+  optionally pass an initial state at which to start translation (which is zero by default) This 
+  function can also be called in the middle of another translation without affecting our state. */
+  std::string translate(const std::string& input, int initialState = 0);
 
   /** Resets the current state into the start state (index 0). */
   void reset() { state = 0; }
@@ -37,12 +38,14 @@ protected:
 
   std::vector<std::string> stateNames;
   std::vector<std::string> stateOutputs;
-  std::vector<char> alphabet; // input alphabet
+  //std::vector<char> alphabet;        // input alphabet
+  //std::vector<int> acceptingStates;  // if running through a word ends up in one of these, the word is accepted
   //rsMatrix<int> transitions;
   int numStates = 0;
   int numSymbols = 0;
 
   int state = 0;
+
 
 };
 
