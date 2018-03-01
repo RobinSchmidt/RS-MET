@@ -301,6 +301,9 @@
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
@@ -1895,6 +1898,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>

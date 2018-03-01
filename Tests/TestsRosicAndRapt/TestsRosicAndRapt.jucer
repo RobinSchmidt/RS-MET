@@ -97,6 +97,10 @@
           <FILE id="pVGgqG" name="rosic_Plotter.h" compile="0" resource="0" file="Source/Shared/Plotting/rosic_Plotter.h"/>
         </GROUP>
         <GROUP id="{809E6B65-DC9E-FA2F-B4F0-C29F9B4AED03}" name="Prototypes">
+          <FILE id="BiN3xa" name="FiniteAutomaton.cpp" compile="1" resource="0"
+                file="Source/Shared/Prototypes/FiniteAutomaton.cpp"/>
+          <FILE id="siWyu0" name="FiniteAutomaton.h" compile="0" resource="0"
+                file="Source/Shared/Prototypes/FiniteAutomaton.h"/>
           <FILE id="kZGzyT" name="ParticleBouncer.cpp" compile="1" resource="0"
                 file="Source/Shared/Prototypes/ParticleBouncer.cpp"/>
           <FILE id="TSNqal" name="ParticleBouncer.h" compile="0" resource="0"

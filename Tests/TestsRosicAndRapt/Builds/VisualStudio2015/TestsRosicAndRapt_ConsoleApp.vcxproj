@@ -168,6 +168,7 @@
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp"/>
@@ -1676,6 +1677,7 @@
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h"/>
