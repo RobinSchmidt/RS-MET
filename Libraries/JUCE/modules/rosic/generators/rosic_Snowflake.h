@@ -106,14 +106,24 @@ public:
     if(!incUpToDate) updateIncrement();
     if(numLines < 2) return;
 
+
     // integer and fractional part of position:
     int iPos = floorInt(pos);
     double fPos = pos - iPos;
 
-    // linear interpolation, gain and rotation:
-    *outL = normalizer * amplitude * ((1-fPos)*tableX[iPos] + fPos*tableX[iPos+1] - meanX);
-    *outR = normalizer * amplitude * ((1-fPos)*tableY[iPos] + fPos*tableY[iPos+1] - meanY);
+    // new:
+    if(iPos != lineIndex)
+      goToLineSegment(iPos);
+    interpolate(outL, outR, fPos);
+    *outL = normalizer * amplitude * (*outL - meanX);
+    *outR = normalizer * amplitude * (*outR - meanY);
     rotator.apply(outL, outR);
+
+    //// old:
+    //// linear interpolation, gain and rotation:
+    //*outL = normalizer * amplitude * ((1-fPos)*tableX[iPos] + fPos*tableX[iPos+1] - meanX);
+    //*outR = normalizer * amplitude * ((1-fPos)*tableY[iPos] + fPos*tableY[iPos+1] - meanY);
+    //rotator.apply(outL, outR);
 
     // increment and wraparound:
     pos += inc;
@@ -130,9 +140,8 @@ public:
     int iPos = floorInt(pos);
     double fPos = pos - iPos;
     if(iPos != lineIndex)
-      goToLineSegment(iPos); // may later also update cubic interpolation coeffs, so they 
-      // don't need to be recomputed as long as we are traversing the
-      // the same line/curve segment, maybe rename to goToLineSegment
+      goToLineSegment(iPos); 
+
 
     // read out buffered line segment (x[], y[] members) with interpolation:
     interpolate(outL, outR, fPos);

@@ -128,11 +128,12 @@ void Snowflake::goToLineSegment(int targetLineIndex)
   if(numLines == 0) { x[0] = y[0] = x[1] = y[1] = 0; return; }
   if(useTable)
   {
-    //lineIndex = targetLineIndex;
-    //x[0] = tableX[lineIndex];
-    //y[0] = tableY[lineIndex];
-    //x[1] = tableX[lineIndex+1];
-    //y[1] = tableY[lineIndex+1];
+    lineIndex = targetLineIndex;
+    x[0] = tableX[lineIndex];
+    y[0] = tableY[lineIndex];
+    x[1] = tableX[lineIndex+1];
+    y[1] = tableY[lineIndex+1];
+
     // not yet used - maybe we don't need it, if we want to doe special things in wavetable mode
     // such as stereo detuning - if that's useless, uncomment code above and refactor the
     // getSampleFrame... fucntions
@@ -173,7 +174,7 @@ void Snowflake::goToNextLineSegment()
 // current and initial state )
 
 
-void Snowflake::updateXY()  // // rename to drawNextLineToBuffer
+void Snowflake::updateXY()  // // rename to drawNextLineToBuffer or updateLineBuffer
 {
   if(turtleCommands.size() == 0)
     return;
