@@ -220,6 +220,12 @@ protected:
   std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
 
 
+  rsEngineersFilterStereo turtleLowpass; 
+    // lowpass applied to turtle output for anti-aliasing ...check, if the filter coeffs have the
+    // correct limit, i.e. go into bypass mode when cutoff == fs/2
+
+
+
 
   // flags to indicate whether or not various rendering state variables are up to date:
   std::atomic_bool commandsReady = false; // flag to indicate that "turtleCommands" is up to date

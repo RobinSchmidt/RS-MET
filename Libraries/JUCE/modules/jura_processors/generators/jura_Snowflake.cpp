@@ -299,7 +299,7 @@ void SnowflakeEditor::resized()
   sliderReset->setBounds(x, y, w, wh); y += dy;
 
   // experimental
-  //buttonAntiAlias->setBounds(x, y, w, wh); y += dy;
+  buttonAntiAlias->setBounds(x, y, w, wh); y += dy;
 }
 
 void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)
