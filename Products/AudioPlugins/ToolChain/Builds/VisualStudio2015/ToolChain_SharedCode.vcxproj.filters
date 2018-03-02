@@ -3898,13 +3898,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.cpp">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.cpp">
-      <Filter>Juce Modules\rosic\generators</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.cpp">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TurtleSource.cpp">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.cpp">
@@ -7947,13 +7947,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.h">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.h">
-      <Filter>Juce Modules\rosic\generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.h">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TurtleSource.h">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.h">

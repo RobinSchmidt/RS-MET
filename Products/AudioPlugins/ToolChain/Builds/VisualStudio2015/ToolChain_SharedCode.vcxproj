@@ -3283,13 +3283,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TurtleSource.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.cpp">
@@ -5006,9 +5006,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SamplePlayer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TurtleSource.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_WaveTable.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_EffectModules.h"/>
