@@ -237,6 +237,7 @@ void SnowflakeEditor::createWidgets()
   s->setDescription("Number of L-system iterations");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString0);
+  s->addListener(this); // to update the numLines field
 
   addWidget( numLinesLabel = l = new Lbl("") );
   l->setDescription("Number of turtle graphic lines for current settings");
@@ -281,6 +282,7 @@ void SnowflakeEditor::createWidgets()
 
 void SnowflakeEditor::resized()
 {
+  ScopedLock scopedLock(*lock);
   AudioModuleEditor::resized();
   int m  = 4; // margin
   int x  = m;
@@ -321,6 +323,7 @@ void SnowflakeEditor::resized()
 
 void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)
 {
+  ScopedLock scopedLock(*lock);
   if(&ed == axiomEditor)
     snowflakeModule->setAxiom(ed.getText());
   else if(&ed == rulesEditor)
@@ -334,8 +337,14 @@ void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)
   updateNumTurtleLinesField();
 }
 
+void SnowflakeEditor::rSliderValueChanged(RSlider* slider)
+{
+  updateNumTurtleLinesField(); // it's the numIterationsSlider (the only one, we listen to)
+}
+
 void SnowflakeEditor::updateWidgetsAccordingToState()
 {
+  ScopedLock scopedLock(*lock);
   AudioModuleEditor::updateWidgetsAccordingToState();
   axiomEditor->setText(snowflakeModule->getAxiom(), false);
   rulesEditor->setText(snowflakeModule->getRules(), false);
@@ -344,5 +353,6 @@ void SnowflakeEditor::updateWidgetsAccordingToState()
 
 void SnowflakeEditor::updateNumTurtleLinesField()
 {
+  ScopedLock scopedLock(*lock);
   numLinesLabel->setText(String(snowflakeModule->getNumTurtleLines()) + " Lines");
 }

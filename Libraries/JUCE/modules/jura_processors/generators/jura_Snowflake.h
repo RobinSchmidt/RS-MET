@@ -77,7 +77,8 @@ OR:
    of the rule, like A=AF+FA-BF+ ..or whatever the rule is (use semi-transparent text)
 */
 
-class JUCE_API SnowflakeEditor : public AudioModuleEditor, public RTextEditorListener
+class JUCE_API SnowflakeEditor : public AudioModuleEditor, public RTextEditorListener, 
+  public RSliderListener
 {
 
 public:
@@ -88,6 +89,7 @@ public:
 
   virtual void resized() override;
   virtual void rTextEditorTextChanged(RTextEditor& editor) override;
+  virtual void rSliderValueChanged(RSlider* slider) override;
   virtual void updateWidgetsAccordingToState() override;
 
   void updateNumTurtleLinesField();
