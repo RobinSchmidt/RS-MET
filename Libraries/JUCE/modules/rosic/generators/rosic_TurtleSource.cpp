@@ -46,6 +46,11 @@ void TurtleSource::setResetAfterCycles(int numCycles)
   cyclicReset = numCycles; 
 }
 
+void TurtleSource::setResetAfterLines(int numLines)
+{
+
+}
+
 void TurtleSource::setAngle(double newAngle) 
 {
   turnAngle = newAngle;

@@ -6,7 +6,7 @@ namespace rosic
 
 /** Snowflake is a turtle graphics based sound generator that uses Lindenmayer systems to generate
 the turtle commands. The resulting curves show a self-similar character. The Koch snowflake is one 
-simple example of such a curve. 
+simple and famous example of such a curve and gave this generator its name. 
 
 References:
 PGCA: Pattern Generation for Computational Art (Stefan and Richard Hollos)

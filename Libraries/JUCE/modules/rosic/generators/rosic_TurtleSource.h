@@ -47,9 +47,21 @@ public:
 
   /** Sets the number of cycles, the turtle has to run trough its command-string before it 
   will be reset into its initial state. When 0 is passed, the turtle will not reset at all, i.e.
-  it is in free running mode. A free running turtle makes the picture rotate. A value of 1, i.e.
-  resetting after every cycle, is equivalent to wavetable mode. */
+  it is in free running mode. A free running turtle can make a rotating picture, if the turtle 
+  ends up in the (almost) the same position after one cycle but heads toward a sligtly different 
+  direction tha when starting the cycle.
+  
+  todo: let the user set up a number of lines after which to reset - that number may or may not a 
+  multiple of the number of lines in the drawing (if it is, it corresponds to resetting after a 
+  number of cycles). */
   void setResetAfterCycles(int numCycles);
+
+  /** Sets the number of lines that the turtle generates before it is reset into its initila state.
+  This resetting works in addition to the one effected by setResetAfterCycles...  */
+  void setResetAfterLines(int numLines);
+    // not yet implemented
+    // can this be made a continuous parameter?
+
 
   /** Sets the method that is used to interpolate between the sequence of points that the turtle 
   generates. */
@@ -111,6 +123,8 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
+  /** Reads out our line-segment buffer with interpolation and assigns the output for left and 
+  right channel accordingly. */
   void interpolate(double *left, double *right, double frac)
   {
     switch(interpolation)
@@ -135,7 +149,9 @@ protected:
     // or maybe call the 1st three floor, ceil, round, ..at least on the GUI
   }
 
-
+  /** Resets only the turtle into its initial state, leaving the other state variables as is. Used
+  internally in reset (which resets everything)) and for resetting after a number of lines has been
+  rendered. */
   void resetTurtle();
 
   /** Makes the buffers x[0],x[1],y[0],y[1] etc. reflect the line endpoints of the given index for
