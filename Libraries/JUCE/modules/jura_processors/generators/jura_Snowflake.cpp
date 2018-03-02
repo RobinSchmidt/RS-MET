@@ -48,7 +48,7 @@ void Snowflake::createParameters()
   p->setValueChangeCallback<SF>(sf, &SF::setResetAfterCycles);
     // reanme to curveCountReset
 
-  p = new Param("LineCountReset", 0, 1000, 0, Parameter::INTEGER, 1);
+  p = new Param("LineCountReset", 0, 5000, 0, Parameter::INTEGER, 1);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setResetAfterLines);
 

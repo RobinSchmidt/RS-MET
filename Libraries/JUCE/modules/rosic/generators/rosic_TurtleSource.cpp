@@ -105,6 +105,16 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
 void TurtleSource::goToNextLineSegment()
 {
   updateXY();
+
+  if(lineCountReset != 0) {
+    lineCount++;
+    if(lineCount >= lineCountReset) { // >= not ==, bcs we may get beyond when user adjusts it
+      lineCount = 0;
+      resetTurtle();
+      updateXY(); 
+    }
+  }
+
   lineIndex++;
   if(lineIndex == numLines) {
     lineIndex = 0;
