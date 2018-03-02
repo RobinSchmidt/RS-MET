@@ -48,7 +48,7 @@ void TurtleSource::setResetAfterCycles(int numCycles)
 
 void TurtleSource::setResetAfterLines(int numLines)
 {
-
+  lineCountReset = numLines;
 }
 
 void TurtleSource::setAngle(double newAngle) 
@@ -231,54 +231,55 @@ Ideas:
 
 -make TurningAngle modulatable
 -optionally compensate for changes in turning-angle by a rotation of the whole image, i.e. rotate
-image by -TurningAngle ..or maybe -compensationAmount*TurningAngle
+ image by -TurningAngle ..or maybe -compensationAmount*TurningAngle
 -requires to not pre-render a wavetable but only render the L-system output string and interpret 
-it on the fly (the string should be stripped from meaningless characters, retaining only F,+,- 
-before)
+ it on the fly (the string should be stripped from meaningless characters, retaining only F,+,- 
+ before)
 -may require to compute shift and scale (to remove DC and normalize) when a new angle is set up
 -maybe these values should be precomputed for various angles, for example 0,5,10,15,.. and 
-interpolation be used (to avoid to expensively compute the actually desired value whenever the
-angle changes)
+ interpolation be used (to avoid to expensively compute the actually desired value whenever the
+ angle changes)
 -allow a turtle syntax like +30 or -45 to mean: turn 30° left or 45° right (instead of whatever 
-value the turtle drawer is set to)
+ value the turtle drawer is set to)
 -make rotation angle quantizable to a set of numbers that the user can enter, for example
-120,90,72,60,45,36,30,24,22.5,20,15,12,10
+ 120,90,72,60,45,36,30,24,22.5,20,15,12,10
 -have different loop modes: forward, backward, alternating (avoids jumps for non-closed curves)
 -maybe in backward passes, (optionally) interpret angles as their negative (necessarry to actually
-"go back")
+ "go back")
 -maybe have an additional string of turtle commands that can be applied after each cycle has passed
-(empty by default)...or maybe even different command strings to be applied after different numbers 
-of cycles ..this defines the "turn/wrap around behavior"
+ (empty by default)...or maybe even different command strings to be applied after different numbers 
+ of cycles ..this defines the "turn/wrap around behavior"
 -interpolation modes: left, right, nearest, linear, cubic
 -allow a traversal speed (or better: duration/length) to be associated with each point (i.e. the 
-line segment that goes toward that point)...like a normal 'F' would assume 1, an 'f' would 
-assume '0', but we could also have F2 to let it take 2 time units to traverse the segment or 
-1/3 to take one thrid of the time unit, the increment computation would then not use "numLines" 
-as multiplier but sum-of-traversal-duration
+ line segment that goes toward that point)...like a normal 'F' would assume 1, an 'f' would 
+ assume '0', but we could also have F2 to let it take 2 time units to traverse the segment or 
+ 1/3 to take one thrid of the time unit, the increment computation would then not use "numLines" 
+ as multiplier but sum-of-traversal-duration
 -optionally "upsample" the turtle commands like F+F-FF -> x3 -> FFF+FFF-FFFFFF, this givens a finer
-resulution of lines. by itself, it's useless but now we apply additional bending inside ths line
-(like turning by a few degrees after each F)
+ resulution of lines. by itself, it's useless but now we apply additional bending inside ths line
+ (like turning by a few degrees after each F)
 -randomize turn angles, user can set seed and distribution (uniform, bell, bimodal, etc.)
 -randomize step lengths
 -maybe let the turle have scaleX, scaleY members that are applied in each step - these can be 
-modulated and/or randomized
+ modulated and/or randomized
 -have a fine turning angle delta (maybe 0 to 10%) with keytracking
 -DC blocker and leveller may replace or complement normalization (it doesn't always wrk right, 
-especially in free running mode)
+ especially in free running mode)
 -maybe, as (pseudo) anti-alias strategy, we should use a fixed internal sample-rate that is some 
-multiple of the signal frequency. technically, the signal would still produce alias frequencies, 
-but they would be harmonically related to the signal frequency and therefor much less annoying, 
-maybe even beneficial
+ multiple of the signal frequency. technically, the signal would still produce alias frequencies, 
+ but they would be harmonically related to the signal frequency and therefore much less annoying, 
+ maybe even beneficial
+ -maybe this is a good opportunity to write a resampler class for arbitrary ratios
 -the turtle could interpret '*' as "multiply speed by factor" (which is a (realtime) parameter) and 
 '/' as "divide speed by factor" (or maybe the speed should increase decreas linearly?)
 -in free-running mode, a turn angle that is slightly off some ideal value leads to rotating image 
 -maybe this can be simulated in wavetable mode, by modulating the increments for x,y in a particular 
-way - maybe modulate incX in any way and modulate incY according to the condition that 
-incX^2 + incY^2 = const = 2*inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it 
-renormalizes the implied "turtle" step size...i think...maybe try it..or maybe not modulate it 
-but just set it to that value?
+ way - maybe modulate incX in any way and modulate incY according to the condition that 
+ incX^2 + incY^2 = const = 2*inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it 
+ renormalizes the implied "turtle" step size...i think...maybe try it..or maybe not modulate it 
+ but just set it to that value?
 -make the reset not necessarily a whole number of curve traversals - reset after any number of 
-line-segments
+ line-segments
 -provide soft-reset (interpolate between current turtle state and initial state)
 
 */

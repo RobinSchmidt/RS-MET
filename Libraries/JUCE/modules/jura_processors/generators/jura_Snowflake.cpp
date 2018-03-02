@@ -46,6 +46,11 @@ void Snowflake::createParameters()
   p = new Param("CyclicReset", 0, 10, 1, Parameter::INTEGER, 1);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setResetAfterCycles);
+    // reanme to curveCountReset
+
+  p = new Param("LineCountReset", 0, 1000, 0, Parameter::INTEGER, 1);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setResetAfterLines);
 
   p = new Param("UseTable", 0, 1, 0, Parameter::BOOLEAN);
   addObservedParameter(p);
@@ -251,14 +256,17 @@ void SnowflakeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
-  addWidget( sliderReset = s = new Sld );
+  addWidget( sliderCycleReset = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("CyclicReset") );
   s->setDescription("Number of cycles after which turtle resets (0 for never)");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString0);
 
-
-
+  addWidget( sliderLineReset = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("LineCountReset") );
+  s->setDescription("Number of lines after which turtle resets (0 for never)");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString0);
 
   addWidget( buttonAntiAlias = b = new Btn("AntiAlias") );
   b->assignParameter(snowflakeModule->getParameterByName("AntiAlias"));
@@ -294,9 +302,10 @@ void SnowflakeEditor::resized()
 
   // put result (2D and 1D plots here)
 
-  sliderAmplitude->setBounds(x, y, w, wh); y += dy;
-  sliderRotation->setBounds(x, y, w, wh); y += dy;
-  sliderReset->setBounds(x, y, w, wh); y += dy;
+  sliderAmplitude->setBounds( x, y, w, wh); y += dy;
+  sliderRotation->setBounds(  x, y, w, wh); y += dy;
+  sliderCycleReset->setBounds(x, y, w, wh); y += dy;
+  sliderLineReset->setBounds( x, y, w, wh); y += dy;
 
   // experimental
   buttonAntiAlias->setBounds(x, y, w, wh); y += dy;

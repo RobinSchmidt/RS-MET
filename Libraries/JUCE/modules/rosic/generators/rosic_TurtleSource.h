@@ -56,11 +56,11 @@ public:
   number of cycles). */
   void setResetAfterCycles(int numCycles);
 
-  /** Sets the number of lines that the turtle generates before it is reset into its initila state.
+  /** Sets the number of lines that the turtle generates before it is reset into its initial state.
   This resetting works in addition to the one effected by setResetAfterCycles...  */
   void setResetAfterLines(int numLines);
     // not yet implemented
-    // can this be made a continuous parameter?
+    // can this be made a continuous parameter? maybe even modulatable?
 
 
   /** Sets the method that is used to interpolate between the sequence of points that the turtle 
@@ -183,22 +183,24 @@ protected:
   double inc = 0;                 // wavetable increment
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
-  int numLines = 0;               // number of 'F's in turtleCommands
-  int lineIndex = 0;              // index of current line
+  int numLines     = 0;           // number of 'F's in turtleCommands
+  int lineIndex    = 0;           // index of current line
   int commandIndex = 0;           // index in the list of turtle-commands
-  int cycleCount = 0;
+  int cycleCount   = 0;           // counter for generated runs through the curve
+  int lineCount    = 0;           // counter for generated lines
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
   std::string turtleCommands;     // drawing commands for the turtle
 
   // parameters:
-  double amplitude     = 1;
-  double frequency     = 0;
-  double sampleRate    = 1;
-  double turnAngle     = 0;
-  int    cyclicReset   = 1;
-  int    interpolation = LINEAR;
-  bool   antiAlias     = false;
-  bool   useTable      = false;
+  double amplitude      = 1;
+  double frequency      = 0;
+  double sampleRate     = 1;
+  double turnAngle      = 0;
+  int    cyclicReset    = 1;
+  int    lineCountReset = 0; // can this be made continuous, i.e. a double?
+  int    interpolation  = LINEAR;
+  bool   antiAlias      = false;
+  bool   useTable       = false;
 
   // rendering objects and related variables:
   TurtleGraphics turtle;
