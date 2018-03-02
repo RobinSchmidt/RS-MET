@@ -37,6 +37,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
+  /** Sets the string of turtle graphics commands to be used to produce ("draw") the output 
+  signal. */
+  void setTurtleCommands(const std::string& commands);
+
   /** Sets the sample-rate. */
   void setSampleRate(double newSampleRate);
 
@@ -66,17 +70,20 @@ public:
   detuning and should be generally more efficient (verify this). */
   void setUseTable(bool shouldUseTable) { useTable = shouldUseTable; }
 
+  /** Experimental feature.. */
   void setAntiAlias(bool shouldAntiAlias) { antiAlias = shouldAntiAlias; }
 
   //void setStereoDetune(double newDetune);
   //void setStereoFrequencyOffset(double newOffset);
   // these are relevant only in table-mode - maybe use the regular wavetable oscillator
 
-  /** Sets the number of iterations for the L-system. */
-  void setNumIterations(int newNumIterations);
+
 
   /** Sets the turning angle for the turtle-graphics interpreter. */
   void setAngle(double newAngle);
+
+  /** Sets the number of iterations for the L-system. */
+  void setNumIterations(int newNumIterations);
 
   /** Clears the set of L-system rules. */
   void clearRules();
@@ -236,6 +243,17 @@ protected:
   // done in a thread-safe way in the audio thread - the gui thread just atomically sets these
   // flags...maybe if we do it everywhere like this, we can even get rid of locking in 
   // jura::Parameter...that would be great!!
+
+};
+
+//=================================================================================================
+
+class Snowflake2 : public Snowflake // rename to snowflake later and original snowflake to TurtleSource
+{
+
+public:
+
+protected:
 
 };
 

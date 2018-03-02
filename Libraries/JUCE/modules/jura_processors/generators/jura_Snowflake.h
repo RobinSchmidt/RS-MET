@@ -39,7 +39,7 @@ public:
 
 protected:
 
-  rosic::Snowflake core;
+  rosic::Snowflake2 core;
 
   juce::String axiom, rules;
 
