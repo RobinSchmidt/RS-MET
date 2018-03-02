@@ -223,7 +223,7 @@ void Snowflake::updateMeanAndNormalizer()
       sumY += y;
     }
   }
-  double tmp = 1.0 / max(numLines, 1); // maybe have a member for that (optimization)
+  double tmp = 1.0 / (numLines+1); // maybe have a member for that (optimization)
   meanX = sumX * tmp;
   meanY = sumY * tmp;
   minX -= meanX; maxX -= meanX;

@@ -1,7 +1,7 @@
 Fractal Pattern Synthesis 
 =========================
 
-In this tutorial, I describe the application of a paradigm, which is widely known in the world of computer graphics and theoretical biology, to the synthesis of audio signals.
+In this tutorial, I describe the application of a paradigm - which is widely known in the world of computer graphics and theoretical biology - to the synthesis of audio signals.
 
  
 Turtle Graphics
@@ -9,7 +9,7 @@ Turtle Graphics
  
 Turtle Graphics is a term for a conceptual line drawing system where we imagine a virtual pen that responds to commands, thereby drawing a picture. For some less than obvious reason, this pen is envisioned as a turtle. The commands that this turtle can respond to involve at least a command for moving one unit forward while drawing a line, one for turning left and one for turning right. Many implementations also offer a command to move a step forward without drawing a line. These commands are normally single characters, typically `F` to move forward while drawing, `f` to move forward without drawing and `+`, `-` to turn one angular unit left or right respectively.
 
-The step size for forward steps and the turning angle are parameters that are typically set up once and for all in advance. At any moment, the turtle has a state consisting of its current position and the direction it is heading towards. Initially, this position is typically the origin `(x,y) = (0,0)` and the direction is given by the x-axis `(dx,dy) = (1,0)`. Starting from this initial state and assuming the angle increment to be set to 90°, the turtle can now interpret a string of commands. For example, `FF+F-FF` would mean to  draw two units to the right, turn to the left (heading upwards now), draw one line segment upward, turn to the right and draw another two line segments rightward.
+The step size for forward steps and the turning angle are parameters that are typically set up once and for all in advance. At any moment, the turtle has a state consisting of its current position and the direction it is heading towards. Initially, this position is typically the origin `(x,y) = (0,0)` and the direction is given by the x-axis `(dx,dy) = (1,0)`. Starting from this initial state, the turtle can now interpret a string of commands and leave a trail of lines. For example, assuming the angle increment being set to 90°, `FF+F-FF` would mean to  draw two units to the right, turn to the left (heading upwards now), draw one line segment upward, turn to the right and draw another two line segments rightward.
 
 Another useful operation is to store the current state (position and direction), draw something, and then come back to the stored state and draw soemthing else. If this is supported, storing the state is typically invoked by the command `[` and restoring the turtle from most recently stored state that was not yet retrieved by `]`. In summary, a typical turtle graphics system will respond to the following commands:
 
@@ -30,7 +30,7 @@ A Lindenmayer system, for short L-system, is a string rewriting system that was 
 
 For example, consider the simple L-system:
 
-Axiom: A
+Axiom: A  
 Rules: A = BA, B = AB
 
 The string would develop as follows:
