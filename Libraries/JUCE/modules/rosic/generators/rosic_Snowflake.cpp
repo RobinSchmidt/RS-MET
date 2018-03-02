@@ -49,6 +49,12 @@ void Snowflake::updateAllInternals()
   if(!tableUpToDate) updateWaveTable();
 }
 
+int Snowflake::getNumTurtleLines()
+{
+  if(!commandsReady) updateTurtleCommands();
+  return numLines;
+}
+
 void Snowflake::updateTurtleCommands()
 {
   lindenmayerResult = lindSys.apply(axiom, numIterations);

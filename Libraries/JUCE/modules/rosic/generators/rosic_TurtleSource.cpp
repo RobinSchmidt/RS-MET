@@ -59,6 +59,11 @@ void TurtleSource::setAngle(double newAngle)
   tableUpToDate = false; 
 }
 
+int TurtleSource::getNumTurtleLines()
+{
+  return numLines;
+}
+
 void TurtleSource::updateWaveTable()
 {
   TurtleGraphics tmpTurtle;
@@ -273,8 +278,10 @@ Ideas:
 -maybe let the turle have scaleX, scaleY members that are applied in each step - these can be 
  modulated and/or randomized
 -have a fine turning angle delta (maybe 0 to 10%) with keytracking
--DC blocker and leveller may replace or complement normalization (it doesn't always wrk right, 
- especially in free running mode)
+-DC blocker and leveller may replace or complement normalization (it doesn't always work right, 
+ especially in free running mode and turning angle modulation is prohibitively expensive with it)
+ ...maybe we could handle it in ModulationTarget by defining an update-interval (by default, 1 
+ sample but could also be something like 100 or 1000 samples - greatly reduces modulation costs)
 -maybe, as (pseudo) anti-alias strategy, we should use a fixed internal sample-rate that is some 
  multiple of the signal frequency. technically, the signal would still produce alias frequencies, 
  but they would be harmonically related to the signal frequency and therefore much less annoying, 
@@ -288,8 +295,16 @@ Ideas:
  incX^2 + incY^2 = const = 2*inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it 
  renormalizes the implied "turtle" step size...i think...maybe try it..or maybe not modulate it 
  but just set it to that value?
--make the reset not necessarily a whole number of curve traversals - reset after any number of 
- line-segments
 -provide soft-reset (interpolate between current turtle state and initial state)
+-provide independent resets for turtle position and direction
+-maybe the line count reset can be made continuous by alternating between floor and ceil of the 
+ given number...or maybe by just comparing "pos" to lineCountReset in getSampleFrame?
+ -maybe then it can be expressed also as fraction of the cycle-Length?
+ -maybe then the cyclic reset can be continuous? too
+ -maybe we can then have an arbitrary number of independent reset-counters?
+-the reset intervals need keytracking because otherwise the speed of the "modulation" depends on
+ the note (and is unpleasantly fast for higher notes)
+-when the lineReset is less than numLines, the pitch goes up - avoid this
+-print the number of lines onto the gui
 
 */

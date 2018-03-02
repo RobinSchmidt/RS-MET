@@ -20,6 +20,9 @@ public:
 
   Snowflake();
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
   /** Clears the set of L-system rules. */
   void clearRules();
 
@@ -36,6 +39,14 @@ public:
   doesn't have to care, because it does this automatically, when necessary. But sometimes it's
   useful for debugging to call this manually. */
   void updateAllInternals();
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  /** Returns the number of lines that the trutel would produce according to the current command 
+  string. */
+  int getNumTurtleLines() override;
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

@@ -85,6 +85,13 @@ public:
   void setAngle(double newAngle);
 
   //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  /** Returns the number of lines that the trutel would produce according to the current command 
+  string. */
+  virtual int getNumTurtleLines();
+
+  //-----------------------------------------------------------------------------------------------
   // \name Processing
 
   /** Calculates one output-sample frame at a time. */

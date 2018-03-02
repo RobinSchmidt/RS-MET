@@ -51,6 +51,7 @@ void Snowflake::createParameters()
   p = new Param("LineCountReset", 0, 5000, 0, Parameter::INTEGER, 1);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setResetAfterLines);
+  // would benefit from keytracking
 
   p = new Param("UseTable", 0, 1, 0, Parameter::BOOLEAN);
   addObservedParameter(p);
@@ -237,12 +238,15 @@ void SnowflakeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString0);
 
+  addWidget( numLinesLabel = l = new Lbl("") );
+  l->setDescription("Number of turtle graphic lines for current settings");
+  l->setDescriptionField(infoField);
+
   addWidget( sliderAngle = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("TurningAngle") );
   s->setDescription("Turning angle of turtle graphics");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
-
 
   addWidget( sliderAmplitude = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("Amplitude") );
@@ -297,7 +301,11 @@ void SnowflakeEditor::resized()
 
   // put initiator and generator plots here
 
-  sliderIterations->setBounds(x, y, w, wh); y += dy;
+  sliderIterations->setBounds(x, y, w-80, wh);
+  int tmp = sliderIterations->getRight()+4;
+  numLinesLabel->setBounds(tmp, y, w-tmp-4, wh); y += dy;
+
+
   sliderAngle->setBounds(x, y, w, wh); y += dy;
 
   // put result (2D and 1D plots here)
@@ -323,6 +331,7 @@ void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)
     //else
     //  ed->indicateInvalidText(false);
   }
+  updateNumTurtleLinesField();
 }
 
 void SnowflakeEditor::updateWidgetsAccordingToState()
@@ -330,4 +339,10 @@ void SnowflakeEditor::updateWidgetsAccordingToState()
   AudioModuleEditor::updateWidgetsAccordingToState();
   axiomEditor->setText(snowflakeModule->getAxiom(), false);
   rulesEditor->setText(snowflakeModule->getRules(), false);
+  updateNumTurtleLinesField();
+}
+
+void SnowflakeEditor::updateNumTurtleLinesField()
+{
+  numLinesLabel->setText(String(snowflakeModule->getNumTurtleLines()) + " Lines");
 }

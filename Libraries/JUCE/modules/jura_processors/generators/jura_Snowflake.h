@@ -34,8 +34,9 @@ public:
   /** Returns true, if the given string with L-system rules is properly formed. */
   bool validateRuleString(const juce::String& newRules);
 
-  juce::String getAxiom() { return axiom; }
-  juce::String getRules() { return rules; }
+  juce::String getAxiom() const { return axiom; }
+  juce::String getRules() const { return rules; }
+  int getNumTurtleLines() { return core.getNumTurtleLines(); }
 
 protected:
 
@@ -89,6 +90,8 @@ public:
   virtual void rTextEditorTextChanged(RTextEditor& editor) override;
   virtual void updateWidgetsAccordingToState() override;
 
+  void updateNumTurtleLinesField();
+
   //virtual void changeListenerCallback(ChangeBroadcaster* source) override;
 
 protected:
@@ -99,6 +102,8 @@ protected:
     *sliderLineReset;
   RTextField  *axiomLabel,  *rulesLabel;
   RTextEditor *axiomEditor, *rulesEditor;
+  RTextField  *numLinesLabel;  
+
 
   RButton *buttonAntiAlias;
 
