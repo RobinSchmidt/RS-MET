@@ -1,4 +1,4 @@
-Snowflake::Snowflake()
+TurtleSource::TurtleSource()
 {
   // init to square:
   turnAngle = 90;
@@ -15,7 +15,7 @@ Snowflake::Snowflake()
   turtleLowpass.setMode(RAPT::rsInfiniteImpulseResponseDesigner<double>::LOWPASS);
 }
 
-void Snowflake::setTurtleCommands(const std::string& commands)
+void TurtleSource::setTurtleCommands(const std::string& commands)
 {
   turtleCommands = commands;
   numLines = turtle.getNumberOfLines(turtleCommands); 
@@ -24,29 +24,29 @@ void Snowflake::setTurtleCommands(const std::string& commands)
   reset();
 }
 
-void Snowflake::setSampleRate(double newSampleRate)
+void TurtleSource::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
   incUpToDate = false;
 }
 
-void Snowflake::setFrequency(double newFrequency)
+void TurtleSource::setFrequency(double newFrequency)
 {
   frequency = newFrequency;
   incUpToDate = false;
 }
 
-void Snowflake::setRotation(double newRotation)
+void TurtleSource::setRotation(double newRotation)
 {
   rotator.setAngle((PI/180) * newRotation);
 }
 
-void Snowflake::setResetAfterCycles(int numCycles) 
+void TurtleSource::setResetAfterCycles(int numCycles) 
 { 
   cyclicReset = numCycles; 
 }
 
-void Snowflake::setAngle(double newAngle) 
+void TurtleSource::setAngle(double newAngle) 
 {
   turnAngle = newAngle;
   turtle.setAngle(turnAngle);
@@ -54,20 +54,15 @@ void Snowflake::setAngle(double newAngle)
   tableUpToDate = false; 
 }
 
-void Snowflake::updateWaveTable()
+void TurtleSource::updateWaveTable()
 {
-  //if(!commandsReady)
-  //  updateTurtleCommands();  // updates also mean values, normalizer, increment and resets
-
   TurtleGraphics tmpTurtle;
   tmpTurtle.setAngle(turnAngle);
   tmpTurtle.translate(turtleCommands, tableX, tableY);
-
   tableUpToDate = true;
 }
 
-
-void Snowflake::reset()
+void TurtleSource::reset()
 {
   pos = 0;
   cycleCount = 0;
@@ -76,13 +71,13 @@ void Snowflake::reset()
   lineIndex = 0;
 }
 
-void Snowflake::resetTurtle()
+void TurtleSource::resetTurtle()
 {
   commandIndex = 0;
   turtle.init(0, 0, 1, 0);
 }
 
-void Snowflake::goToLineSegment(int targetLineIndex)
+void TurtleSource::goToLineSegment(int targetLineIndex)
 {
   if(numLines == 0) { x[0] = y[0] = x[1] = y[1] = 0; return; }
   if(useTable)
@@ -102,7 +97,7 @@ void Snowflake::goToLineSegment(int targetLineIndex)
   // later: update interpolator coeffs here according to x,y buffers
 }
 
-void Snowflake::goToNextLineSegment()
+void TurtleSource::goToNextLineSegment()
 {
   updateXY();
   lineIndex++;
@@ -127,7 +122,7 @@ void Snowflake::goToNextLineSegment()
 // maybe have a soft-reset parameter that resets only partially (i.e. interpolates between
 // current and initial state )
 
-void Snowflake::updateXY()  // // rename to drawNextLineToBuffer or updateLineBuffer
+void TurtleSource::updateXY()  // // rename to drawNextLineToBuffer or updateLineBuffer
 {
   if(turtleCommands.size() == 0)
     return;
@@ -180,14 +175,14 @@ void Snowflake::updateXY()  // // rename to drawNextLineToBuffer or updateLineBu
   }
 }
 
-void Snowflake::updateIncrement()
+void TurtleSource::updateIncrement()
 {
   inc = numLines * frequency / sampleRate; // avoid division
   turtleLowpass.setSampleRate(rmin(1/inc, 1.1)); // use 1.0 later
   incUpToDate = true;
 }
 
-void Snowflake::updateMeanAndNormalizer()
+void TurtleSource::updateMeanAndNormalizer()
 {
   // run through all turtle commands once, thereby keep track of the mean and min/max values of the
   // generated curve, then set our meanX, meanY, normalizer members accordingly
@@ -228,7 +223,7 @@ void Snowflake::updateMeanAndNormalizer()
 
 //=================================================================================================
 
-Snowflake2::Snowflake2()
+Snowflake::Snowflake()
 {
   // init to order 4 Koch snowflake:
   turnAngle = 60;
@@ -242,28 +237,28 @@ Snowflake2::Snowflake2()
   updateWaveTable();
 }
 
-void Snowflake2::clearRules() 
+void Snowflake::clearRules() 
 { 
   lindSys.clearRules(); 
   commandsReady = false;
   tableUpToDate = false; 
 }
 
-void Snowflake2::addRule(char input, const std::string& output) 
+void Snowflake::addRule(char input, const std::string& output) 
 { 
   lindSys.addRule(input, output);
   commandsReady = false;
   tableUpToDate = false; 
 }
 
-void Snowflake2::setAxiom(const std::string& newAxiom) 
+void Snowflake::setAxiom(const std::string& newAxiom) 
 { 
   axiom = newAxiom; 
   commandsReady = false;
   tableUpToDate = false; 
 }
 
-void Snowflake2::setNumIterations(int newNumIterations) 
+void Snowflake::setNumIterations(int newNumIterations) 
 { 
   if(newNumIterations == numIterations)
     return;
@@ -272,14 +267,14 @@ void Snowflake2::setNumIterations(int newNumIterations)
   tableUpToDate = false; 
 }
 
-void Snowflake2::updateAllInternals()
+void Snowflake::updateAllInternals()
 {
   if(!commandsReady) updateTurtleCommands();
   if(!incUpToDate)   updateIncrement();
   if(!tableUpToDate) updateWaveTable();
 }
 
-void Snowflake2::updateTurtleCommands()
+void Snowflake::updateTurtleCommands()
 {
   lindenmayerResult = lindSys.apply(axiom, numIterations);
   setTurtleCommands(turtle.extractCommands(lindenmayerResult));

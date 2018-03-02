@@ -39,7 +39,7 @@ public:
 
 protected:
 
-  rosic::Snowflake2 core;
+  rosic::Snowflake core;
 
   juce::String axiom, rules;
 
@@ -67,6 +67,13 @@ todo:
  -generator curves (rules)
  -resulting curve in 2D
  -resulting x,y signals
+OR:
+ -add a ScopeDisplay that shows the axiom and rules when no note is played and (optionally) shows 
+  the realtime output when a note is played. scope widgets can be overlaid over the display when
+  the mouse is over the display
+  -subdivide the scope screen into a grid of squares, 2x2, 3x3, 4x4 - whatever is necessary to show
+   the axiom plus all rules - use one little square for each rule, overlay the plot with the string
+   of the rule, like A=AF+FA-BF+ ..or whatever the rule is (use semi-transparent text)
 */
 
 class JUCE_API SnowflakeEditor : public AudioModuleEditor, public RTextEditorListener
