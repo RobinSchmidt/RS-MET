@@ -92,6 +92,8 @@ protected:
   RTextField  *axiomLabel,  *rulesLabel;
   RTextEditor *axiomEditor, *rulesEditor;
 
+  RButton *buttonAntiAlias;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SnowflakeEditor)
 };
 

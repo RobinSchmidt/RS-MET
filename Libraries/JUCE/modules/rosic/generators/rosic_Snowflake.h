@@ -66,6 +66,8 @@ public:
   detuning and should be generally more efficient (verify this). */
   void setUseTable(bool shouldUseTable) { useTable = shouldUseTable; }
 
+  void setAntiAlias(bool shouldAntiAlias) { antiAlias = shouldAntiAlias; }
+
   //void setStereoDetune(double newDetune);
   //void setStereoFrequencyOffset(double newOffset);
   // these are relevant only in table-mode - maybe use the regular wavetable oscillator
@@ -204,6 +206,8 @@ protected:
   double turnAngle     = 0;
   int    cyclicReset   = 1;
   int    interpolation = LINEAR;
+  bool   antiAlias     = false;
+  bool   useTable      = false;
 
   // rendering objects and related variables:
   LindenmayerSystem lindSys;
@@ -214,7 +218,8 @@ protected:
 
   // for optional table-based synthesis (maybe at some point we can drop that?)
   std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
-  bool useTable = false;
+
+
 
   // flags to indicate whether or not various rendering state variables are up to date:
   std::atomic_bool commandsReady = false; // flag to indicate that "turtleCommands" is up to date

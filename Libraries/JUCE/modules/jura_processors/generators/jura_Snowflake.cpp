@@ -51,6 +51,11 @@ void Snowflake::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setUseTable);
 
+
+  p = new Param("AntiAlias", 0, 1, 0, Parameter::BOOLEAN);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setAntiAlias);
+
   /*
   p = new Param("Tune", -60.0, +60.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
@@ -192,10 +197,11 @@ void SnowflakeEditor::createWidgets()
 {
   ScopedLock scopedLock(*lock);
   typedef RTextField Lbl;
-  //typedef RSlider Sld;
+  typedef RButton Btn;
   typedef ModulatableSlider Sld;
   Sld* s;
   Lbl* l;
+  Btn* b;
   Parameter* p;
 
   addWidget( axiomLabel = l = new Lbl("Axiom:") );
@@ -250,6 +256,15 @@ void SnowflakeEditor::createWidgets()
   s->setDescription("Number of cycles after which turtle resets (0 for never)");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString0);
+
+
+
+
+  addWidget( buttonAntiAlias = b = new Btn("AntiAlias") );
+  b->assignParameter(snowflakeModule->getParameterByName("AntiAlias"));
+  b->setDescription("Simple experimental anti-aliasing");
+  b->setDescriptionField(infoField);
+  b->setClickingTogglesState(true);
 }
 
 void SnowflakeEditor::resized()
@@ -282,6 +297,9 @@ void SnowflakeEditor::resized()
   sliderAmplitude->setBounds(x, y, w, wh); y += dy;
   sliderRotation->setBounds(x, y, w, wh); y += dy;
   sliderReset->setBounds(x, y, w, wh); y += dy;
+
+  // experimental
+  //buttonAntiAlias->setBounds(x, y, w, wh); y += dy;
 }
 
 void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)

@@ -134,9 +134,10 @@ void Snowflake::goToLineSegment(int targetLineIndex)
     x[1] = tableX[lineIndex+1];
     y[1] = tableY[lineIndex+1];
 
-    // not yet used - maybe we don't need it, if we want to doe special things in wavetable mode
-    // such as stereo detuning - if that's useless, uncomment code above and refactor the
-    // getSampleFrame... fucntions
+
+
+
+
   }
   else
   {
@@ -185,10 +186,38 @@ void Snowflake::updateXY()  // // rename to drawNextLineToBuffer or updateLineBu
     if(commandIndex == turtleCommands.size())
       commandIndex = 0;
     if(draw) {
-      x[0] = turtle.getStartX();
-      y[0] = turtle.getStartY();
-      x[1] = turtle.getEndX();
-      y[1] = turtle.getEndY();
+
+      if(!antiAlias)
+      {
+        x[0] = turtle.getStartX();
+        y[0] = turtle.getStartY();
+        x[1] = turtle.getEndX();
+        y[1] = turtle.getEndY();
+      }
+      else
+      {
+        // experimental:
+        double k = 0.9*inc / (numLines+1); // or maybe make the factor 0.9 a parameter
+        x[0] = x[1];
+        y[0] = y[1];
+        x[1] = (1-k)*turtle.getEndX() + k*x[0];
+        y[1] = (1-k)*turtle.getEndY() + k*y[0];
+        // ...but it deosn't seem to work well anyway ...maybe the turtle should apply a lowpass
+        // internally - in each step, instead of setting x += dx, 
+        // set x = lowpass.getSample(x+dx) ...the turtle could use a bessel lowpass ...make a class
+        // FilteredTurtle...do things like turtle.setSmoothing/Lowpass
+      }
+
+      // maybe update the 0th entries like that (written out only for x):
+      // i = lineIndex;
+      // x[0] = x[1];
+      // x[1] = tableX[i+1];
+      // later, we can insert an averagin lowpass by replacing the x[1] update:
+      // x[1] = (1-k)*tableX[i+1] + k*x[0]
+      // where k is a coefficient between 0 and 0.5 - it should be 0 at low frequencies (low 
+      // increments) and 0.5 at inc=1, maybe just use k = 0.5*inc - this would be a simple 
+      // anti-aliasing  - we would read out the turtle output with some amount of averaging
+
       xyUpdated = true;
     }
   }

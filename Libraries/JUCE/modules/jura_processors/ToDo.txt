@@ -35,9 +35,9 @@ Ladder:
 
 
 BUGS:
-Snowflake:
--when number of iterations is the same in subsequent presets, it uses 0...seems like the core is not 
- updated
+-run standalone, plug in a scope, enlarge editor and then try to overwrite a preset - crash or hang
+ could it be some memory bug related to the image buffer? ..or maybe it's just unresponsive becuase 
+ the drawing code drains the cpu so much?
 
 RTextEditor seems to have problems with whitespace - as soon as there are whitespaces in the text,
 cursor position via mouse and also left/right arrows is messed up try with text: A B C D E F G
