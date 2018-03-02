@@ -1,14 +1,9 @@
 Snowflake::Snowflake()
 {
-  // init to order 4 Koch snowflake:
-  turnAngle = 60;
+  // init to square:
+  turnAngle = 90;
   turtle.setAngle(turnAngle);
-  axiom = "F--F--F--";
-  clearRules();
-  addRule('F', "F+F--F+F");
-  numIterations = 4;
-
-  updateTurtleCommands();
+  setTurtleCommands("F+F+F+F+");
   updateWaveTable();
 
   // experimental:
@@ -49,21 +44,6 @@ void Snowflake::setRotation(double newRotation)
 void Snowflake::setResetAfterCycles(int numCycles) 
 { 
   cyclicReset = numCycles; 
-
-
-  //cycleCount = 0; 
-  // resetting the cycle count is required here because we may be running since ages without reset 
-  // and it could be at -2341234 or something - and we don't want to wait that long for the next 
-  // reset ...nope - not anymore - it's clamped to 0 now when resetting is off
-}
-
-void Snowflake::setNumIterations(int newNumIterations) 
-{ 
-  if(newNumIterations == numIterations)
-    return;
-  numIterations = newNumIterations; 
-  commandsReady = false;
-  tableUpToDate = false; 
 }
 
 void Snowflake::setAngle(double newAngle) 
@@ -74,38 +54,10 @@ void Snowflake::setAngle(double newAngle)
   tableUpToDate = false; 
 }
 
-void Snowflake::clearRules() 
-{ 
-  lindSys.clearRules(); 
-  commandsReady = false;
-  tableUpToDate = false; 
-}
-
-void Snowflake::Snowflake::addRule(char input, const std::string& output) 
-{ 
-  lindSys.addRule(input, output);
-  commandsReady = false;
-  tableUpToDate = false; 
-}
-
-void Snowflake::setAxiom(const std::string& newAxiom) 
-{ 
-  axiom = newAxiom; 
-  commandsReady = false;
-  tableUpToDate = false; 
-}
-
-void Snowflake::updateAllInternals()
-{
-  if(!commandsReady) updateTurtleCommands();
-  if(!incUpToDate)   updateIncrement();
-  if(!tableUpToDate) updateWaveTable();
-}
-
 void Snowflake::updateWaveTable()
 {
-  if(!commandsReady)
-    updateTurtleCommands();  // updates also mean values, normalizer, increment and resets
+  //if(!commandsReady)
+  //  updateTurtleCommands();  // updates also mean values, normalizer, increment and resets
 
   TurtleGraphics tmpTurtle;
   tmpTurtle.setAngle(turnAngle);
@@ -114,25 +66,6 @@ void Snowflake::updateWaveTable()
   tableUpToDate = true;
 }
 
-void Snowflake::updateTurtleCommands()
-{
-  lindenmayerResult = lindSys.apply(axiom, numIterations);
-
-  // new:
-  setTurtleCommands(turtle.extractCommands(lindenmayerResult));
-
-  // old:
-  /*
-  turtleCommands = turtle.extractCommands(lindenmayerResult);
-  numLines = turtle.getNumberOfLines(turtleCommands); 
-  updateMeanAndNormalizer();
-  updateIncrement();
-  reset();
-  */
-
-
-  commandsReady = true;
-}
 
 void Snowflake::reset()
 {
@@ -186,7 +119,6 @@ void Snowflake::goToNextLineSegment()
   }
 }
 
-
 // make reset of the turtle optional, or reset after a certain number of cycles, 0: never
 // reset. the turtle is free running in this case. when the angle is slightly off the perfect
 // value, the picture rotates - but we need to make sure to define axioms in a way that they
@@ -194,7 +126,6 @@ void Snowflake::goToNextLineSegment()
 // "F--F--F--" instead of "F--F--F" for the initial triangle for the koch snowflake
 // maybe have a soft-reset parameter that resets only partially (i.e. interpolates between
 // current and initial state )
-
 
 void Snowflake::updateXY()  // // rename to drawNextLineToBuffer or updateLineBuffer
 {
@@ -295,6 +226,67 @@ void Snowflake::updateMeanAndNormalizer()
   // in realtime (but not oversampled)
 }
 
+//=================================================================================================
+
+Snowflake2::Snowflake2()
+{
+  // init to order 4 Koch snowflake:
+  turnAngle = 60;
+  turtle.setAngle(turnAngle);
+  axiom = "F--F--F--";
+  clearRules();
+  addRule('F', "F+F--F+F");
+  numIterations = 4;
+
+  updateTurtleCommands();
+  updateWaveTable();
+}
+
+void Snowflake2::clearRules() 
+{ 
+  lindSys.clearRules(); 
+  commandsReady = false;
+  tableUpToDate = false; 
+}
+
+void Snowflake2::addRule(char input, const std::string& output) 
+{ 
+  lindSys.addRule(input, output);
+  commandsReady = false;
+  tableUpToDate = false; 
+}
+
+void Snowflake2::setAxiom(const std::string& newAxiom) 
+{ 
+  axiom = newAxiom; 
+  commandsReady = false;
+  tableUpToDate = false; 
+}
+
+void Snowflake2::setNumIterations(int newNumIterations) 
+{ 
+  if(newNumIterations == numIterations)
+    return;
+  numIterations = newNumIterations; 
+  commandsReady = false;
+  tableUpToDate = false; 
+}
+
+void Snowflake2::updateAllInternals()
+{
+  if(!commandsReady) updateTurtleCommands();
+  if(!incUpToDate)   updateIncrement();
+  if(!tableUpToDate) updateWaveTable();
+}
+
+void Snowflake2::updateTurtleCommands()
+{
+  lindenmayerResult = lindSys.apply(axiom, numIterations);
+  setTurtleCommands(turtle.extractCommands(lindenmayerResult));
+  commandsReady = true;
+}
+
+//=================================================================================================
 
 /*
 Bugs:

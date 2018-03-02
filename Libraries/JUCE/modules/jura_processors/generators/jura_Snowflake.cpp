@@ -9,7 +9,7 @@ void Snowflake::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  typedef rosic::Snowflake SF;
+  typedef rosic::Snowflake2 SF;
   SF* sf = &core;
 
   typedef ModulatableParameter Param;

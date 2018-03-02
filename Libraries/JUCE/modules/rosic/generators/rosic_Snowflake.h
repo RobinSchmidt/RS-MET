@@ -77,27 +77,8 @@ public:
   //void setStereoFrequencyOffset(double newOffset);
   // these are relevant only in table-mode - maybe use the regular wavetable oscillator
 
-
-
   /** Sets the turning angle for the turtle-graphics interpreter. */
   void setAngle(double newAngle);
-
-  /** Sets the number of iterations for the L-system. */
-  void setNumIterations(int newNumIterations);
-
-  /** Clears the set of L-system rules. */
-  void clearRules();
-
-  /** Adds an L-system rule. */
-  void addRule(char input, const std::string& output);
-
-  /** Sets the seed (aka "axiom") for the L-system. */
-  void setAxiom(const std::string& newAxiom);
-
-  /** Updates all internal variables, so they reflect the user settings. Client code normally 
-  doesn't have to care, because it does this automatically, when necessary. But sometimes it's
-  useful for debugging to call this manually. */
-  void updateAllInternals();
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -106,7 +87,6 @@ public:
   INLINE void getSampleFrameStereo(double *outL, double *outR)
   {
     // some checks (optimize - have a single readyToPlay flag so we only need one check here):
-    if(!commandsReady)              updateTurtleCommands();
     if(numLines < 1)                return;
     if(!tableUpToDate && useTable)  updateWaveTable();
     if(!incUpToDate)                updateIncrement();
@@ -179,9 +159,6 @@ protected:
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
 
-  /** Updates our string of turtle-graphics drawing commands. */
-  void updateTurtleCommands();
-
   /** Updates the wavetable increment according to desired frequency, sample rate and wavetable 
   length. */
   void updateIncrement();
@@ -203,7 +180,7 @@ protected:
   int commandIndex = 0;           // index in the list of turtle-commands
   int cycleCount = 0;
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
-  std::string lindenmayerResult;  // output string of Lindenmayer system
+
   std::string turtleCommands;     // only the turtle commands from lindenmayerResult 
 
   // parameters:
@@ -217,25 +194,20 @@ protected:
   bool   useTable      = false;
 
   // rendering objects and related variables:
-  LindenmayerSystem lindSys;
   TurtleGraphics turtle;
   RAPT::rsRotationXY<double> rotator; // for rotating final x,y coordinates
-  int numIterations = 0; // replace by iteratorString or applicatorString (a string like AAABBAC)
-  std::string axiom;
+
 
   // for optional table-based synthesis (maybe at some point we can drop that?)
   std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
-
 
   rsEngineersFilterStereo turtleLowpass; 
     // lowpass applied to turtle output for anti-aliasing ...check, if the filter coeffs have the
     // correct limit, i.e. go into bypass mode when cutoff == fs/2
 
 
-
-
   // flags to indicate whether or not various rendering state variables are up to date:
-  std::atomic_bool commandsReady = false; // flag to indicate that "turtleCommands" is up to date
+
   std::atomic_bool tableUpToDate = false; // maybe rename to tableReady ...get rid
   std::atomic_bool incUpToDate = false;
   // this is a new way of dealing with updating internal variables - it avoids redundant 
@@ -253,7 +225,46 @@ class Snowflake2 : public Snowflake // rename to snowflake later and original sn
 
 public:
 
+  Snowflake2();
+
+  /** Clears the set of L-system rules. */
+  void clearRules();
+
+  /** Adds an L-system rule. */
+  void addRule(char input, const std::string& output);
+
+  /** Sets the seed (aka "axiom") for the L-system. */
+  void setAxiom(const std::string& newAxiom);
+
+  /** Sets the number of iterations for the L-system. */
+  void setNumIterations(int newNumIterations);
+
+  /** Updates all internal variables, so they reflect the user settings. Client code normally 
+  doesn't have to care, because it does this automatically, when necessary. But sometimes it's
+  useful for debugging to call this manually. */
+  void updateAllInternals();
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Calculates one output-sample frame at a time. */
+  INLINE void getSampleFrameStereo(double *outL, double *outR)
+  {
+    if(!commandsReady)  
+      updateTurtleCommands();
+    Snowflake::getSampleFrameStereo(outL, outR);
+  }
+
 protected:
+
+  /** Updates our string of turtle-graphics drawing commands. */
+  void updateTurtleCommands();
+
+  LindenmayerSystem lindSys;
+  std::string axiom;
+  int numIterations = 0; // replace by iteratorString or applicatorString (a string like AAABBAC)
+  std::string lindenmayerResult;          // output string of Lindenmayer system
+  std::atomic_bool commandsReady = false; // flag to indicate that "turtleCommands" is up to date
 
 };
 
