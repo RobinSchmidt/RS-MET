@@ -268,7 +268,7 @@
 #include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
 
 #include "generators/rosic_TurtleSource.h"           // move up to other generators when Snowflake class is in its own file
-//#include "generators/rosic_Snowflake.h"              // needs LindenmayerSystem
+#include "generators/rosic_Snowflake.h"              // needs LindenmayerSystem
 
 #include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
 #include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator

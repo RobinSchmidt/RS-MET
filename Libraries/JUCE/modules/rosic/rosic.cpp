@@ -240,7 +240,7 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 #include "generators/rosic_TestGenerator.cpp"
 #include "generators/rosic_WaveTable.cpp"
 #include "generators/rosic_TurtleSource.cpp"
-//#include "generators/rosic_Snowflake.cpp" 
+#include "generators/rosic_Snowflake.cpp" 
 
 // modulators
 //#include "modulators/MagicCarpetModulator.cpp" // needs MagicCarpetDefinitions.h - where is this? legacy?

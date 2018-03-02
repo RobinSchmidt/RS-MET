@@ -221,203 +221,59 @@ void TurtleSource::updateMeanAndNormalizer()
   // in realtime (but not oversampled)
 }
 
-//=================================================================================================
-
-Snowflake::Snowflake()
-{
-  // init to order 4 Koch snowflake:
-  turnAngle = 60;
-  turtle.setAngle(turnAngle);
-  axiom = "F--F--F--";
-  clearRules();
-  addRule('F', "F+F--F+F");
-  numIterations = 4;
-
-  updateTurtleCommands();
-  updateWaveTable();
-}
-
-void Snowflake::clearRules() 
-{ 
-  lindSys.clearRules(); 
-  commandsReady = false;
-  tableUpToDate = false; 
-}
-
-void Snowflake::addRule(char input, const std::string& output) 
-{ 
-  lindSys.addRule(input, output);
-  commandsReady = false;
-  tableUpToDate = false; 
-}
-
-void Snowflake::setAxiom(const std::string& newAxiom) 
-{ 
-  axiom = newAxiom; 
-  commandsReady = false;
-  tableUpToDate = false; 
-}
-
-void Snowflake::setNumIterations(int newNumIterations) 
-{ 
-  if(newNumIterations == numIterations)
-    return;
-  numIterations = newNumIterations; 
-  commandsReady = false;
-  tableUpToDate = false; 
-}
-
-void Snowflake::updateAllInternals()
-{
-  if(!commandsReady) updateTurtleCommands();
-  if(!incUpToDate)   updateIncrement();
-  if(!tableUpToDate) updateWaveTable();
-}
-
-void Snowflake::updateTurtleCommands()
-{
-  lindenmayerResult = lindSys.apply(axiom, numIterations);
-  setTurtleCommands(turtle.extractCommands(lindenmayerResult));
-  commandsReady = true;
-}
-
-//=================================================================================================
-
 /*
-Bugs:
--empty seed: crash (just delete the seed in InitSquare)...seems also to happen when there's no 'F'
- in the seed, i was trying to enter this example from the Book Lindenmayer Systems, Fractals and plants
- ? : ?X ? ?X
- p : X ? XFX ? ?XFX
- ...LSFP, page 73...there are more designs - harvest them
- empty seed bug is fixed
-
-Ideas: 
+Ideas:
 
 -make TurningAngle modulatable
- -optionally compensate for changes in turning-angle by a rotation of the whole image, i.e. rotate
-  image by -TurningAngle ..or maybe -compensationAmount*TurningAngle
- -requires to not pre-render a wavetable but only render the L-system output string and interpret 
-  it on the fly (the string should be stripped from meaningless characters, retaining only F,+,- 
-  before)
- -may require to compute shift and scale (to remove DC and normalize) when a new angle is set up
-  -maybe these values should be precomputed for various angles, for example 0,5,10,15,.. and 
-   interpolation be used (to avoid to expensively compute the actually desired value whenever the
-   angle changes)
+-optionally compensate for changes in turning-angle by a rotation of the whole image, i.e. rotate
+image by -TurningAngle ..or maybe -compensationAmount*TurningAngle
+-requires to not pre-render a wavetable but only render the L-system output string and interpret 
+it on the fly (the string should be stripped from meaningless characters, retaining only F,+,- 
+before)
+-may require to compute shift and scale (to remove DC and normalize) when a new angle is set up
+-maybe these values should be precomputed for various angles, for example 0,5,10,15,.. and 
+interpolation be used (to avoid to expensively compute the actually desired value whenever the
+angle changes)
 -allow a turtle syntax like +30 or -45 to mean: turn 30° left or 45° right (instead of whatever 
- value the turtle drawer is set to)
- -allows an initiator to use different angles than the generator(s) - for example, start with a 
-  pentagon and replace edges with something triangular (as in the koch snowflake)
- -to make that more efficiently parsable in realtime, replace the + by P and the - by M in the 
-  realtime-parsed string - avoids to check, if next char is a number whenever a + or - is 
-  encountered, P and M indicate that is is, + and - indicate that it isn't, maybe allow rational
-  numbers to be entered, like 20/3 for 6.66666° but also allow to use decimal dot (for numerator
-  and denominator), assume /1 when a / is encountered without any number thereafter
+value the turtle drawer is set to)
 -make rotation angle quantizable to a set of numbers that the user can enter, for example
- 120,90,72,60,45,36,30,24,22.5,20,15,12,10
+120,90,72,60,45,36,30,24,22.5,20,15,12,10
 -have different loop modes: forward, backward, alternating (avoids jumps for non-closed curves)
- -maybe in backward passes, (optionally) interpret angles as their negative (necessarry to actually
-  "go back")
+-maybe in backward passes, (optionally) interpret angles as their negative (necessarry to actually
+"go back")
 -maybe have an additional string of turtle commands that can be applied after each cycle has passed
- (empty by default)...or maybe even different command strings to be applied after different numbers 
- of cycles ..this defines the "turn/wrap around behavior"
--instead of having a single L-system, have a set of them, maybe named A,B,C,.., then instead of 
- setting a number of iterations, use a string AAABBCCA to mean: apply A 3 times, then B 2 times, 
- then  C 2 times then A once, allow also syntax like A3B2C2A1, where the final 1 is optional
- ...maybe allow also things like (AABA)^2 (BBA^3)...or ((AABA)2(BBA)3)2
- -on wikipedia, there's a sierpinski triangle version that requires G to interpreted like F - this
-  could be realized by defining:
-  axiom: F-G-G, rules: (A: F=F-G+F+G-F; G=GG) (B: G=F) and then doing AAAB (or A3B) for 3rd order
-  ...maybe the parser doesn't have to care about the parentheses - it may separate the system
-  definition by the colon, but they make it more readable...but maybe newlines could also be used
-  A: F=F-G+F+G-F; G=GG
-  B: G=F
- -maybe this best realized by making a class LindenmayerSystemSet
--allow the left hand sides of rules to be strings instead of characters. this allows a context 
- sensitive replacement, for example a rule +F+=+F-F-F+ means: replace F by F-F-F, if the F is 
- between + and + (the surrounding "context" plusses appear in the rhs, too - so the rule won't 
- have them removed them in the output string), or +F+ = +FF+: "make a line twice as long, if it is 
- between two turns" - but it's more general than context sesintive replacement of F, we could also
- replace it by +F+ = -FF-, for example
--maybe rename the "Axiom" back to "Seed"
+(empty by default)...or maybe even different command strings to be applied after different numbers 
+of cycles ..this defines the "turn/wrap around behavior"
 -interpolation modes: left, right, nearest, linear, cubic
 -allow a traversal speed (or better: duration/length) to be associated with each point (i.e. the 
- line segment that goes toward that point)...like a normal 'F' would assume 1, an 'f' would 
- assume '0', but we could also have F2 to let it take 2 time units to traverse the segment or 
- 1/3 to take one thrid of the time unit, the increment computation would then not use "numLines" 
- as multiplier but sum-of-traversal-duration
+line segment that goes toward that point)...like a normal 'F' would assume 1, an 'f' would 
+assume '0', but we could also have F2 to let it take 2 time units to traverse the segment or 
+1/3 to take one thrid of the time unit, the increment computation would then not use "numLines" 
+as multiplier but sum-of-traversal-duration
 -optionally "upsample" the turtle commands like F+F-FF -> x3 -> FFF+FFF-FFFFFF, this givens a finer
- resulution of lines. by itself, it's useless but now we apply additional bending inside ths line
- (like turning by a few degrees after each F)
+resulution of lines. by itself, it's useless but now we apply additional bending inside ths line
+(like turning by a few degrees after each F)
 -randomize turn angles, user can set seed and distribution (uniform, bell, bimodal, etc.)
 -randomize step lengths
 -maybe let the turle have scaleX, scaleY members that are applied in each step - these can be 
- modulated and/or randomized
+modulated and/or randomized
 -have a fine turning angle delta (maybe 0 to 10%) with keytracking
 -DC blocker and leveller may replace or complement normalization (it doesn't always wrk right, 
- especially in free running mode)
--maybe allow for a non-integer number of iterations, 3.7 would crossfade between the result from
- 3 and 4 iterations with weights 0.3 and 0.7 - maybe we should precompute and store the strings
- for all orders up to something (don't recompute strings on the fly when the user modulates 
- numIterations)
+especially in free running mode)
 -maybe, as (pseudo) anti-alias strategy, we should use a fixed internal sample-rate that is some 
- multiple of the signal frequency. technically, the signal would still produce alias frequencies, 
- but they would be harmonically related to the signal frequency and therefor much less annoying, 
- maybe even beneficial
--the whole generator could have different modes: "L-System" (or "Lindenmayer"), Finite Automaton, 
- etc. (the latter could split into "Christoffel Words", "Paper Folding", etc.)
--add a post processing stage that takes the output string S from the L-system, automaton, etc. and 
- applies a transformation like S = S+S+S+. maybe with this, the pseudo-koch curves in PGCA on pages
- 183ff can be turned into closed triangular shaped loops
+multiple of the signal frequency. technically, the signal would still produce alias frequencies, 
+but they would be harmonically related to the signal frequency and therefor much less annoying, 
+maybe even beneficial
 -the turtle could interpret '*' as "multiply speed by factor" (which is a (realtime) parameter) and 
- '/' as "divide speed by factor" (or maybe the speed should increase decreas linearly?)
+'/' as "divide speed by factor" (or maybe the speed should increase decreas linearly?)
 -in free-running mode, a turn angle that is slightly off some ideal value leads to rotating image 
- -maybe this can be simulated in wavetable mode, by modulating the increments for x,y in a particular 
-  way - maybe modulate incX in any way and modulate incY according to the condition that 
-  incX^2 + incY^2 = const = 2*inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it 
-  renormalizes the implied "turtle" step size...i think...maybe try it..or maybe not modulate it 
-  but just set it to that value?
+-maybe this can be simulated in wavetable mode, by modulating the increments for x,y in a particular 
+way - maybe modulate incX in any way and modulate incY according to the condition that 
+incX^2 + incY^2 = const = 2*inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it 
+renormalizes the implied "turtle" step size...i think...maybe try it..or maybe not modulate it 
+but just set it to that value?
 -make the reset not necessarily a whole number of curve traversals - reset after any number of 
- line-segments
+line-segments
 -provide soft-reset (interpolate between current turtle state and initial state)
- 
-
-
-
--call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
- Lindenmayer/Turtle grammar Fractal Definition Language (FDL) or maybe fractal geometric synthesis
- language (FGSL)...or maybe Fractal Pattern Synthesis
--write a tutorial:
- 1: Turtle Graphics
- 2: Lindenmayer Systems
- 3: Fractal Definition Language
-  3.1: Extensions to Turtle Syntax
-  3.2: Extensions to Lindenmayer Syntax
- 4: Fractal Geometry Synthesis
-  4.1: Turning Angle Modulation ...maybe allow Step Size Modulation, too?
-  4.2: Loop Modes
-  4.3: Normalization Modes
-  4.5: Subtractive Post Processing
-   4.5.1 Regular Musical Filters
-   4.5.2 Linear Phase Filters
-  4.6: Rational Numbers and Harmonics
-   4.5.2 Number of Segments (N) vs Segment Length (L)
-
-Sound Design Guide:
--if you want the free-running behavior to match the reset-mode, you need to make sure that the
- turtle heads into the same direction as initially after it completed a cycle around the seed, i.e,
- for a square seed (at 90°) don't use F+F+F+F but F+F+F+F+, the additionla plus at the end makes 
- the turtle look to the right again after completing the square
--an turn angle sligtly off from the ideal value lets the picture slowly rotate in free-running mode
--rules with branches create nice overtone structures (branches introduce discontinuities in the 
- waveshape)
--to analyze a patch:
- -stop rotation (if any) by setting turning angle to precise value and/or use resetting
- -turn the numIterations to zero to see the seed
- -turn it to 1 to see the rule, maybe use a simple 'F' seed to see the pure rule
-
-
-see here for inspiration for new curves
-https://www.youtube.com/watch?v=RU0wScIj36o&t=53s
 
 */

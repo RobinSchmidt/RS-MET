@@ -3898,6 +3898,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.cpp">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.cpp">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClCompile>
@@ -4397,6 +4400,9 @@
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_StandardWaveformRenderer.cpp">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_TurtleGraphics.cpp">
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_WaveformBuffer.cpp">
@@ -7947,6 +7953,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.h">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.h">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClInclude>
@@ -8479,6 +8488,9 @@
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_StandardWaveformRenderer.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_TurtleGraphics.h">
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_WaveformBuffer.h">
