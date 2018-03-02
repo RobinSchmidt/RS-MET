@@ -239,7 +239,6 @@
 #include "generators/rosic_SuperOscillator.h"
 #include "generators/rosic_TestGenerator.h"
 
-
 // modulators:
 //#include "generators/rosic_MagicCarpetModulator.h"
 #include "modulators/rosic_AmpEnvRc.h"
@@ -262,14 +261,13 @@
 #include "rendering/rosic_WaveformBuffer.h"
 #include "rendering/rosic_WaveformRenderer.h"
 #include "rendering/rosic_NonRealtimeProcesses.h"
+#include "rendering/rosic_TurtleGraphics.h"
 #include "rendering/rosic_LindenmayerSystem.h"
 
 // some more complex generators/modulators that need includes from rendering:
 #include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
-
-#include "generators/rosic_TurtleSource.h"           // move up to other generators when Snowflake class is in its own file
-#include "generators/rosic_Snowflake.h"              // needs LindenmayerSystem
-
+#include "generators/rosic_TurtleSource.h"           // needs TurtleGraphics
+#include "generators/rosic_Snowflake.h"              // needs TurtleSource and LindenmayerSystem
 #include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
 #include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
 #include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
