@@ -1100,6 +1100,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TurtleSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1592,6 +1595,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_StandardWaveformRenderer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_TurtleGraphics.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_WaveformBuffer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2018,6 +2024,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Snowflake.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TurtleSource.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_WaveTable.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_EffectModules.h"/>
@@ -2193,6 +2200,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_MultiSegmentWaveformRenderer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_NonRealtimeProcesses.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_StandardWaveformRenderer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_TurtleGraphics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_WaveformBuffer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_WaveformRenderer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\scripting\bindings\rosic_asSineOscillatorStereo.h"/>

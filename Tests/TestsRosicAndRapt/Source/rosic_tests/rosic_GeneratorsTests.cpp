@@ -151,7 +151,8 @@ void rotes::testSnowflakeResetting()
 
   // create a snowflake that produces a Moore curve:
   rosic::Snowflake sf;
-  sf.setAxiom("LFL+F+LFL+F");
+  sf.clearRules();
+  sf.setAxiom("LFL+F+LFL+F+");
   sf.addRule('L', "-RF+LFL+FR-");
   sf.addRule('R', "+LF-RFR-FL+");
   sf.setAngle(90);
@@ -159,23 +160,46 @@ void rotes::testSnowflakeResetting()
 
   // these are the parameters, on which this modulation frequency depends - tweak them:
   sf.setResetAfterCycles(1);
-  sf.setResetAfterLines(63);   
+  sf.setResetAfterLines(63);
   sf.setNumIterations(2);    // 0->4, 1->16, 2->64, 3->256, 4->1024
   sf.setSampleRate(8192.0);
-  sf.setFrequency(64.0);
+  sf.setFrequency(32.0);
+  sf.updateAllInternals();
+
 
   // create test output
   int N = 8192;  // number of samples  
   int n;         // sample index
-  std::vector<double> x(N), y(N); 
-  for(n = 0; n < N; n++) 
+  std::vector<double> x(N), y(N), r(N);
+  for(n = 0; n < N; n++)
+  {
     sf.getSampleFrameStereo(&x[n], &y[n]);
+    if(sf.getLineCount() == 0)
+      r[n] = 1;
+  }
+
+  std::vector<int> lineCountResets;
+  for(n = 1; n < N; n++) {
+    if(r[n] == 1 && r[n-1] == 0)
+      lineCountResets.push_back(n); }
+
+
+
+  rosic::writeToStereoWaveFile("MooreCurveResetting.wav", &x[0], &y[0], N, 8192, 16);
 
   // plot left and right signal aginst sample index:
   GNUPlotter plt;
-  plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays(N, &y[0]);
+  //plt.addDataArrays(N, &x[0]);
+  //plt.addDataArrays(N, &y[0]);
+  plt.addDataArrays(N, &r[0]); // samples, weher lineCount == 0
   plt.plot();
+
+  // Observations:
+  // Notation: L: num lines, C: cycle count reset interval, R: line count reset interval, 
+  // f: frequency, fs: sample rate, P: reset period
+  // Resets due to lineCount 
+  // L=64, C=1, f=32, fs=8192
+  // R=63  R=64 -> P=256, R=65 -> P=260, R=66 -> P=264,
 
   /*
   -that seems to depend on the difference between (a multiple of) numLines and lineCountReset 

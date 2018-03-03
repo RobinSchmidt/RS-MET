@@ -93,6 +93,10 @@ public:
   string. */
   virtual int getNumTurtleLines();
 
+  /** Returns the number of lines produced since the last reset of lineCount. (mostly for figuring
+  out resetting behavior) */
+  int getLineCount() const { return lineCount; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
