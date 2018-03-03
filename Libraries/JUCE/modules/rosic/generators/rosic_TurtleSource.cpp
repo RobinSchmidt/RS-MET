@@ -46,9 +46,19 @@ void TurtleSource::setResetAfterCycles(int numCycles)
   cyclicReset = numCycles; 
 }
 
-void TurtleSource::setResetAfterLines(int numLines)
+void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
 {
-  lineCountReset = numLines;
+  lineCountReset      = numLines;
+  lineCountResetFloor = (int) lineCountReset;
+  lineCountResetFrac  = lineCountReset - lineCountResetFloor; 
+
+  // maybe factor out:
+  if(lineCountResetErr > 0.5) {
+    lineCountResetAlt  = lineCountResetFloor+1;
+    lineCountResetErr -= 1.0; }
+  else
+    lineCountResetAlt  = lineCountResetFloor;
+
 }
 
 void TurtleSource::setAngle(double newAngle) 
@@ -111,14 +121,41 @@ void TurtleSource::goToNextLineSegment()
 {
   updateXY();
 
-  if(lineCountReset != 0) {
+  if(lineCountReset != 0) 
+  {
     lineCount++;
-    if(lineCount >= lineCountReset) { // >= not ==, bcs we may get beyond when user adjusts it
+
+    // old:
+    //if(lineCount >= lineCountReset) { // >= not ==, bcs we may get beyond when user adjusts it
+    //  lineCount = 0;
+    //  resetTurtle();
+    //  updateXY(); 
+    //}
+
+    // new:
+    if(lineCount >= lineCountResetAlt) { // >= not ==, bcs we may get beyond when user adjusts it
       lineCount = 0;
       resetTurtle();
       updateXY(); 
+
+      lineCountResetErr += lineCountResetFrac;
+
+    // maybe factor out:
+      if(lineCountResetErr > 0.5) {
+        lineCountResetAlt  = lineCountResetFloor+1;
+        lineCountResetErr -= 1.0;
+      }
+      else
+        lineCountResetAlt  = lineCountResetFloor;
+
     }
+
+
+
+
   }
+
+
 
   lineIndex++;
   if(lineIndex == numLines) {

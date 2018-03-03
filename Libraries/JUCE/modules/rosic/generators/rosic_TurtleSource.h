@@ -58,9 +58,8 @@ public:
 
   /** Sets the number of lines that the turtle generates before it is reset into its initial state.
   This resetting works in addition to the one effected by setResetAfterCycles...  */
-  void setResetAfterLines(int numLines);
-    // not yet implemented
-    // can this be made a continuous parameter? maybe even modulatable?
+  void setResetAfterLines(double numLines);
+
 
 
   /** Sets the method that is used to interpolate between the sequence of points that the turtle 
@@ -162,7 +161,7 @@ protected:
   void resetTurtle();
 
   /** Makes the buffers x[0],x[1],y[0],y[1] etc. reflect the line endpoints of the given index for
-  the target line. */
+  the target line.  */
   void goToLineSegment(int targetLineIndex);
 
   /** Goes form the current line segment (defined by member lineIndex) to the next, possibly 
@@ -204,10 +203,22 @@ protected:
   double sampleRate     = 1;
   double turnAngle      = 0;
   int    cyclicReset    = 1;
-  int    lineCountReset = 0; // can this be made continuous, i.e. a double?
   int    interpolation  = LINEAR;
   bool   antiAlias      = false;
   bool   useTable       = false;
+
+
+  double lineCountReset      = 0;  // can this be made continuous, i.e. a double?
+  double lineCountResetFrac  = 0;  // fractional part
+  double lineCountResetErr   = 0;  // accumulates error
+  int    lineCountResetFloor = 0;
+  int    lineCountResetAlt   = 0;  // alternates between lineCountResetFloor and 
+                                   // lineCountResetFloor+1 to allow
+
+
+  //double lineCountResetFracSum = 0; // sum of fractional parts (mod 1)
+  //int    lineCountResetAddOneOrZero = 0;
+
 
   // rendering objects and related variables:
   TurtleGraphics turtle;

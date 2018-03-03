@@ -48,7 +48,7 @@ void Snowflake::createParameters()
   p->setValueChangeCallback<SF>(sf, &SF::setResetAfterCycles);
     // reanme to curveCountReset
 
-  p = new Param("LineCountReset", 0, 5000, 0, Parameter::INTEGER, 1);
+  p = new Param("LineCountReset", 0, 5000, 0, Parameter::LINEAR, 0);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setResetAfterLines);
   // would benefit from keytracking
@@ -271,7 +271,7 @@ void SnowflakeEditor::createWidgets()
   s->assignParameter( p = snowflakeModule->getParameterByName("LineCountReset") );
   s->setDescription("Number of lines after which turtle resets (0 for never)");
   s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString0);
+  s->setStringConversionFunction(&valueToString3);
 
   addWidget( buttonAntiAlias = b = new Btn("AntiAlias") );
   b->assignParameter(snowflakeModule->getParameterByName("AntiAlias"));
