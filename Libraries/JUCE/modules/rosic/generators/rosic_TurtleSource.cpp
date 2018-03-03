@@ -20,6 +20,7 @@ void TurtleSource::setTurtleCommands(const std::string& commands)
   turtleCommands = commands;
   numLines = turtle.getNumberOfLines(turtleCommands); 
   updateMeanAndNormalizer();
+  updateResetterVariables();
   updateIncrement();
   reset();
 }
@@ -27,12 +28,14 @@ void TurtleSource::setTurtleCommands(const std::string& commands)
 void TurtleSource::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
+  updateResetterVariables();
   incUpToDate = false;
 }
 
 void TurtleSource::setFrequency(double newFrequency)
 {
   frequency = newFrequency;
+  updateResetterVariables();
   incUpToDate = false;
 }
 
@@ -48,6 +51,7 @@ void TurtleSource::setResetAfterCycles(int numCycles)
 
 void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
 {
+  /*
   lineCountReset      = numLines;
   lineCountResetFloor = (int) lineCountReset;
   lineCountResetFrac  = lineCountReset - lineCountResetFloor; 
@@ -60,16 +64,19 @@ void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
     lineCountResetAlt  = lineCountResetFloor;
 
   incUpToDate = false; // because computing the inc uses min(numLines, lineCountReset)
+  */
 }
 
 void TurtleSource::setResetRatio(double newRatio)
 {
   resetRatio = newRatio;
+  updateResetterVariables();
 }
 
 void TurtleSource::setResetRatioOffsetOverInc(double newValue)
 {
-  resetOffset = newValue; 
+  resetOffset = newValue;
+  updateResetterVariables();
 }
 
 void TurtleSource::setAngle(double newAngle) 
@@ -234,6 +241,37 @@ void TurtleSource::updateXY()  // // rename to drawNextLineToBuffer or updateLin
       xyUpdated = true;
     }
   }
+}
+
+void TurtleSource::updateResetterVariables()
+{
+  //lineCountReset = (resetRatio + resetOffset * sampleRate/frequency ) * numLines; 
+  //lineCountReset = (resetRatio + resetOffset/frequency ) * numLines; 
+    // verify this formula - does it give a useful parametrization for the user?
+
+  lineCountReset  = resetRatio * numLines; 
+  lineCountReset += resetOffset * numLines/frequency; // no sample-rate?
+   //...okay...this sounds good - but it would be better, if we could scale it such that the 
+   // apparent modulation frequency is eneterd in Hz...or maybe it is already?
+
+
+
+
+  lineCountResetFloor = (int) lineCountReset;
+  lineCountResetFrac  = lineCountReset - lineCountResetFloor; 
+  lineCountResetErr   = -lineCountResetFrac; // it should start at 0, but in the next statement, frac gets added
+
+
+  // maybe factor out (it's used in goToNextLineSegment in the same form):
+  lineCountResetErr += lineCountResetFrac; // to make it the same as in goToNextLineSegment (for factoring out later)
+  if(lineCountResetErr > 0.5) {
+    lineCountResetAlt  = lineCountResetFloor+1;
+    lineCountResetErr -= 1.0; }
+  else
+    lineCountResetAlt  = lineCountResetFloor;
+
+
+  incUpToDate = false; // because computing the inc uses min(numLines, lineCountReset)
 }
 
 void TurtleSource::updateIncrement()

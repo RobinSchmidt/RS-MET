@@ -194,6 +194,10 @@ protected:
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
 
+  /** Updates internal resetter variables according to the resetter user parameters, numLines, 
+  frequency (and sampleRate?) */
+  void updateResetterVariables();
+
   /** Updates the wavetable increment according to desired frequency, sample rate and wavetable 
   length. */
   void updateIncrement();
