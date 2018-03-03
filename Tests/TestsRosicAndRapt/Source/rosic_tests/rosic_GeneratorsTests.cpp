@@ -160,10 +160,10 @@ void rotes::testSnowflakeResetting()
 
   // these are the parameters, on which this modulation frequency depends - tweak them:
   sf.setResetAfterCycles(1);
-  sf.setResetAfterLines(63);
+  sf.setResetAfterLines(66);
   sf.setNumIterations(2);    // 0->4, 1->16, 2->64, 3->256, 4->1024
   sf.setSampleRate(8192.0);
-  sf.setFrequency(32.0);
+  sf.setFrequency(24.0);
   sf.updateAllInternals();
 
 
@@ -185,7 +185,7 @@ void rotes::testSnowflakeResetting()
 
 
 
-  rosic::writeToStereoWaveFile("MooreCurveResetting.wav", &x[0], &y[0], N, 8192, 16);
+  //rosic::writeToStereoWaveFile("MooreCurveResetting.wav", &x[0], &y[0], N, 8192, 16);
 
   // plot left and right signal aginst sample index:
   GNUPlotter plt;
@@ -198,8 +198,11 @@ void rotes::testSnowflakeResetting()
   // Notation: L: num lines, C: cycle count reset interval, R: line count reset interval, 
   // f: frequency, fs: sample rate, P: reset period
   // Resets due to lineCount 
-  // L=64, C=1, f=32, fs=8192
-  // R=63  R=64 -> P=256, R=65 -> P=260, R=66 -> P=264,
+  // fs=8192, L=64, C=1, f=32: R=63: P=k*256, R=64: P=k*256, R=65: P=k*260, R=66: P=k*264, k int
+  // fs=8192, L=64, C=1, f=24: R=63: P=342,683,1024,1366,1707,2048,2390,2731,3072,3414
+  //                           R=64: dito
+  //                           R=65: P=347,694,1040,1387,1734,2080,2427,2774,3120,3467
+  //                           R=66:
 
   /*
   -that seems to depend on the difference between (a multiple of) numLines and lineCountReset 
@@ -209,4 +212,21 @@ void rotes::testSnowflakeResetting()
       speed = k * (numLines-resetInterval) * noteFreq?
       that k depends in some way on the ratio resetInterval/numLines - maybe gcd/lcm is involved?
    */
+
+  // or: speed = modFreq = fm = noteFreq * F(resetInterval R, numLines L, cycleResetInterval C), 
+  // assume C = const
+  // fm = f * F(R,L) - we want a formula for F(R,L), the formula has to involve max(R,L) and R-L
+  // fm ?= a * f * abs(L-max(R,L))
+
+  // ...naah - i think we need a resetIntervalInSeconds = sampleRate / (resetFreqFactor * noteFreqinHz)
+  // and compute the resetInterval as numLines*resetIntervalInSeconds
+  // ...or something
+
+  // give the user a parameter p, when p=0 then R=inf, when p=1 then R=L -> R = L/p ...but that
+  // doesn't involve the note-frequency ...actually we want also, when inc increases, that the 
+  // difference between R and (some multiple of) L decreases, let D = R-L (or L-R), we want
+  // D = const/f
+
+  // no - we should have R = p*L and p should have keytracking like:
+  // p(key) = p0 + k*(key-referenceKey)
 }

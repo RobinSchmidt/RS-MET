@@ -85,6 +85,8 @@ bool TurtleGraphics::interpretCharacter(char c)
   if(c == ']') { popState();  return false; }
   return false;
 
+  // write performance test and check, if a switch statement is faster
+
   // maybe use commands like +30F-45F to turn 30° left, go forward, turn 45° right, go forward
   // ...so whenever a number comes after a + or -, don't use the default angle that is set up but 
   // the angle given/ by that number - maybe don't call standard turnLeft but a turnLeftBy(angle)

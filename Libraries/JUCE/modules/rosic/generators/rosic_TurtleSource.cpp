@@ -350,6 +350,17 @@ Ideas:
   note, the faster, so 
   speed = k * (numLines-resetInterval) * noteFreq?
   that k depends in some way on the ratio resetInterval/numLines - maybe gcd/lcm is involved?
+  OR: have two params: resetInterval = numLines * (param1 + param2/inc)
+-have 2 or three of these reset parameters Reset1, Reset2, Reset3 -> can replace the old
+ CyclicReset paremeter -> nice complex buzzing sounds
+-maybe make a dedicated ResetManager class that can support an arbitrary number of independent
+ reset counters
+-maybe reset or don't reset when the counter has reached its limit, depending the value of a 
+ binary sequence ("reset sequence"). see PGCA for generation methods for binary sequences. also,
+ L-system output can be used, interpreting '+' as '1' and '-' as '0'...or a dedicated L-system,
+ producing 0s and 1s directly can be set up
+ -maybe, it can produce more instructions than just "reset" and "don't reset", like "half reset"
+  "set to" or whatever (then, the sequence wouldn't be binary anymore)
 
 
 
