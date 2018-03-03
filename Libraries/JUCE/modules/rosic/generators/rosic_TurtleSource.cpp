@@ -59,7 +59,17 @@ void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
   else
     lineCountResetAlt  = lineCountResetFloor;
 
-  incUpToDate = false;
+  incUpToDate = false; // because computing the inc uses min(numLines, lineCountReset)
+}
+
+void TurtleSource::setResetRatio(double newRatio)
+{
+  resetRatio = newRatio;
+}
+
+void TurtleSource::setResetRatioOffsetOverInc(double newValue)
+{
+  resetOffset = newValue; 
 }
 
 void TurtleSource::setAngle(double newAngle) 
@@ -131,15 +141,18 @@ void TurtleSource::goToNextLineSegment()
       resetTurtle();
       updateXY(); 
 
+      // we (possibly) alternate between floor and ceil of the non-integer lineCountReset setting 
+      // in an appropriate way (by keeping track of an accumulated fractional error), such that the 
+      // desired non-integer reset interval is attained on the average (maybe factor out):
       lineCountResetErr += lineCountResetFrac;
-
-      // maybe factor out:
       if(lineCountResetErr > 0.5) {
         lineCountResetAlt  = lineCountResetFloor+1;
         lineCountResetErr -= 1.0;
       }
       else
         lineCountResetAlt  = lineCountResetFloor;
+
+
     }
   }
 
@@ -236,6 +249,7 @@ void TurtleSource::updateIncrement()
 
 
 
+  // turtle.setBackwardMode(inc < 0);
 
   turtleLowpass.setSampleRate(rmin(1/inc, 1.1)); // use 1.0 later
   incUpToDate = true;
@@ -361,7 +375,9 @@ Ideas:
  producing 0s and 1s directly can be set up
  -maybe, it can produce more instructions than just "reset" and "don't reset", like "half reset"
   "set to" or whatever (then, the sequence wouldn't be binary anymore)
-
+-allow for reversal of readout direction - allow negative frequencies/increments
+ -introduce backward-mode to TurtleGraphics: subtracts dx,dy (do the turns also need to be 
+  reversed? ...maybe, maybe not - try it: just draw F+F and go back - see, if we end up at (0,0))
 
 
 */

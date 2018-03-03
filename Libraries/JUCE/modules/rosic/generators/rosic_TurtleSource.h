@@ -64,6 +64,13 @@ public:
   void setResetAfterLines(double numLines);
 
 
+  // under construction - to compute resetInterval = numLines * (param1 + param2/inc):
+  void setResetRatio(double newRatio);               // param1
+  void setResetRatioOffsetOverInc(double newValue);  // param2 - find better name
+  // replace by an array of independent resetters, maybe factor resetting out into a class 
+  // ResetManager
+
+
 
   /** Sets the method that is used to interpolate between the sequence of points that the turtle 
   generates. */
@@ -120,10 +127,7 @@ public:
     *outR = normalizer * amplitude * (*outR - meanY);
     rotator.apply(outL, outR);
 
-    // increment and wraparound:
-    pos += inc;
-    while(pos >= numLines)
-      pos -= numLines;
+    updatePosition();
   }
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
@@ -136,9 +140,19 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
+  /** Updates our readout position variable by incrementing it and taking care of the required 
+  wraparound(s). */
+  INLINE void updatePosition()
+  {
+    // increment and wraparound:
+    pos += inc;
+    while(pos >= numLines) pos -= numLines;
+    //while(pos <  0)        pos += numLines; // uncomment later, when we allow negative inc
+  }
+
   /** Reads out our line-segment buffer with interpolation and assigns the output for left and 
   right channel accordingly. */
-  void interpolate(double *left, double *right, double frac)
+  INLINE void interpolate(double *left, double *right, double frac)
   {
     switch(interpolation)
     {
@@ -215,12 +229,17 @@ protected:
   bool   useTable       = false;
 
 
-  //double lineCountResetNorm  = 0;  // normalized between 0..1, 1 -> lineCountReset = numLines
+  // user parameters for reset:
+  double resetRatio  = 1;
+  double resetOffset = 0;  // this one gets frequency scaled
+
+  // internal parameter for reset:
   double lineCountReset      = 0;  // number of lines aftre which to reset
   double lineCountResetFrac  = 0;  // fractional part
   double lineCountResetErr   = 0;  // accumulates fractional error
   int    lineCountResetFloor = 0;
   int    lineCountResetAlt   = 0;  // alternates between floor and ceil
+
 
 
 

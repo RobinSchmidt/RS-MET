@@ -100,11 +100,15 @@ protected:
 
   jura::Snowflake *snowflakeModule;
 
-  RSlider *sliderIterations, *sliderAngle, *sliderAmplitude, *sliderRotation, *sliderCycleReset,
-    *sliderLineReset;
   RTextField  *axiomLabel,  *rulesLabel;
   RTextEditor *axiomEditor, *rulesEditor;
   RTextField  *numLinesLabel;  
+
+  RSlider *sliderIterations, *sliderAngle, *sliderAmplitude, *sliderRotation, *sliderCycleReset,
+    *sliderLineReset;
+
+  RSlider *sliderResetRatio1, *sliderResetOffset1;
+
 
 
   RButton *buttonAntiAlias;

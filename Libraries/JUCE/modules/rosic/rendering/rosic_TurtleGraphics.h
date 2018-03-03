@@ -29,6 +29,8 @@ public:
   /** Moves the turtle one step into the current direction. */
   void goForward();
 
+  void goBackward();
+
   /** Turns the direction vector to the left. */
   void turnLeft();
 
@@ -84,7 +86,7 @@ protected:
   double dx = 1, dy = 0;  // direction vector
   double xo = 0, yo = 0;  // old position (from one step before)
 
-                          /** Structure to store and retrieve the current state of the turtle.  */
+  /** Structure to store and retrieve the current state of the turtle.  */
   struct TurtleState
   {
     TurtleState(double _x, double _y, double _dx, double _dy, double _xo, double _yo)
@@ -92,9 +94,13 @@ protected:
     double x, y, dx, dy, xo, yo;
   };
 
+
+  bool backwardMode = false;;
   std::vector<TurtleState> stateStack;
-  RAPT::rsRotationXY<double> rotLeft, rotRight; // use one, have functions apply, applyInverse
-                                                // save sin/cos computation when angle changes
+  RAPT::rsRotationXY<double> rotLeft, rotRight; 
+   // use one, have functions apply, applyInverse -> saves one sin/cos computation when angle 
+   // changes, maybe an optimized rotoation class can be made using rsFloat64x2, computing
+   // y = a*x + b*swap(x) where x,y are simd vectors and swap swaps its elements
 };
 
 }

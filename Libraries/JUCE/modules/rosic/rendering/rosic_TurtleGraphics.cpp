@@ -30,6 +30,14 @@ void TurtleGraphics::goForward()
   y += dy;
 }
 
+void TurtleGraphics::goBackward()
+{
+  xo = x;
+  yo = y;
+  x -= dx;
+  y -= dy;
+}
+
 void TurtleGraphics::turnLeft()
 {
   rotLeft.apply(&dx, &dy);

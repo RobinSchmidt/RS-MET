@@ -43,6 +43,21 @@ void Snowflake::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setRotation);
 
+
+
+  p = new Param("ResetRatio1", 0, 16, 1, Parameter::LINEAR);  // maybe use a saturating scaling function
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setResetRatio);
+
+  p = new Param("ResetOffset1", -1, +1, 0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setResetRatioOffsetOverInc);
+
+  // have at least one more pair of reset-ratio/offset a parameters, and maybe a third
+
+
+
+  // these two may be obsolete soon:
   p = new Param("CyclicReset", 0, 10, 1, Parameter::INTEGER, 1);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setResetAfterCycles);
@@ -52,6 +67,8 @@ void Snowflake::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setResetAfterLines);
   // would benefit from keytracking
+
+
 
   p = new Param("UseTable", 0, 1, 0, Parameter::BOOLEAN);
   addObservedParameter(p);
@@ -261,6 +278,27 @@ void SnowflakeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
+
+
+  //RSlider *sliderResetRatio1, *sliderResetOffset1;
+
+
+  addWidget( sliderResetRatio1 = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("ResetRatio1") );
+  s->setDescription("Number of cycles after which turtle resets (0 for never)");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget( sliderResetOffset1 = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("ResetOffset1") );
+  s->setDescription("Frequency dependent offset for ResetRatio1");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+
+
+
+
   addWidget( sliderCycleReset = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("CyclicReset") );
   s->setDescription("Number of cycles after which turtle resets (0 for never)");
@@ -272,6 +310,9 @@ void SnowflakeEditor::createWidgets()
   s->setDescription("Number of lines after which turtle resets (0 for never)");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
+
+
+
 
   addWidget( buttonAntiAlias = b = new Btn("AntiAlias") );
   b->assignParameter(snowflakeModule->getParameterByName("AntiAlias"));
@@ -314,10 +355,16 @@ void SnowflakeEditor::resized()
 
   sliderAmplitude->setBounds( x, y, w, wh); y += dy;
   sliderRotation->setBounds(  x, y, w, wh); y += dy;
+
+  // new:
+  sliderResetRatio1->setBounds(x,  y, w, wh); y += dy;
+  sliderResetOffset1->setBounds(x, y, w, wh); y += dy;
+
+  // old - remove when reset-ratio/offset works:
   sliderCycleReset->setBounds(x, y, w, wh); y += dy;
   sliderLineReset->setBounds( x, y, w, wh); y += dy;
 
-  // experimental
+  // experimental:
   buttonAntiAlias->setBounds(x, y, w, wh); y += dy;
 }
 
