@@ -45,11 +45,15 @@ void Snowflake::createParameters()
 
 
 
-  p = new Param("ResetRatio1", 0, 16, 1, Parameter::LINEAR);  // maybe use a saturating scaling function
+  p = new Param("ResetRatio1", 0, 16, 1, Parameter::LINEAR); 
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setResetRatio);
+  // maybe use a saturating scaling function ...or let the user enter the reciprocal value -> reset
+  // interval goes to infinity when 0 is entered -> correct limit (0 means never)...so, it would 
+  // become actually a reset frequency (scaler) that is eneterd here - not a cycle-length scaler
 
-  p = new Param("ResetOffset1", -1, +1, 0, Parameter::LINEAR);
+
+  p = new Param("ResetOffset1", -10, +10, 0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setResetRatioOffsetOverInc);
 

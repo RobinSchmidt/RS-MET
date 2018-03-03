@@ -249,17 +249,27 @@ void TurtleSource::updateResetterVariables()
   //lineCountReset = (resetRatio + resetOffset/frequency ) * numLines; 
     // verify this formula - does it give a useful parametrization for the user?
 
-  lineCountReset  = resetRatio * numLines; 
+  //lineCountReset  = resetRatio * numLines; 
+
+  lineCountReset  = numLines / resetRatio; 
   lineCountReset += resetOffset * numLines/frequency; // no sample-rate?
    //...okay...this sounds good - but it would be better, if we could scale it such that the 
-   // apparent modulation frequency is eneterd in Hz...or maybe it is already?
+   // apparent modulation frequency is eneterd in Hz...or maybe it is already?...yes - it seems so
 
 
 
 
-  lineCountResetFloor = (int) lineCountReset;
-  lineCountResetFrac  = lineCountReset - lineCountResetFloor; 
-  lineCountResetErr   = -lineCountResetFrac; // it should start at 0, but in the next statement, frac gets added
+  if(lineCountReset >= 2147483647) {  // 2^31-1
+    lineCountReset      = 0.0;
+    lineCountResetFloor = 0;
+    lineCountResetFrac  = 0.0;
+    lineCountResetErr   = 0.0; }
+  else
+  {
+    lineCountResetFloor = (int)lineCountReset;
+    lineCountResetFrac  = lineCountReset - lineCountResetFloor;
+    lineCountResetErr   = -lineCountResetFrac; // it should start at 0, but in the next statement, frac gets added
+  }
 
 
   // maybe factor out (it's used in goToNextLineSegment in the same form):
@@ -284,6 +294,8 @@ void TurtleSource::updateIncrement()
     inc = numLines * frequency / sampleRate;
   else
     inc = rmin(lineCountReset, double(numLines)) * frequency / sampleRate;
+
+  // hmm...the pitch goes down when ratio is below 1 (and the old, cyclic reset is off)
 
 
 
