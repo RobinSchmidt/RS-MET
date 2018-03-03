@@ -57,7 +57,10 @@ public:
   void setResetAfterCycles(int numCycles);
 
   /** Sets the number of lines that the turtle generates before it is reset into its initial state.
-  This resetting works in addition to the one effected by setResetAfterCycles...  */
+  This resetting works in addition to the one effected by setResetAfterCycles. The number of lines
+  given here does not need to be an integer. If it's 100.5, the actual counter will alternately 
+  count up to 100 and 101, if it's 100.25 it will count to 100 3 times, then once to 101 and so 
+  on. */
   void setResetAfterLines(double numLines);
 
 
@@ -208,16 +211,16 @@ protected:
   bool   useTable       = false;
 
 
-  double lineCountReset      = 0;  // can this be made continuous, i.e. a double?
+  //double lineCountResetNorm  = 0;  // normalized between 0..1, 1 -> lineCountReset = numLines
+  double lineCountReset      = 0;  // number of lines aftre which to reset
   double lineCountResetFrac  = 0;  // fractional part
-  double lineCountResetErr   = 0;  // accumulates error
+  double lineCountResetErr   = 0;  // accumulates fractional error
   int    lineCountResetFloor = 0;
-  int    lineCountResetAlt   = 0;  // alternates between lineCountResetFloor and 
-                                   // lineCountResetFloor+1 to allow
+  int    lineCountResetAlt   = 0;  // alternates between floor and ceil
 
 
-  //double lineCountResetFracSum = 0; // sum of fractional parts (mod 1)
-  //int    lineCountResetAddOneOrZero = 0;
+
+
 
 
   // rendering objects and related variables:

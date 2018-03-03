@@ -59,6 +59,7 @@ void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
   else
     lineCountResetAlt  = lineCountResetFloor;
 
+  incUpToDate = false;
 }
 
 void TurtleSource::setAngle(double newAngle) 
@@ -125,14 +126,6 @@ void TurtleSource::goToNextLineSegment()
   {
     lineCount++;
 
-    // old:
-    //if(lineCount >= lineCountReset) { // >= not ==, bcs we may get beyond when user adjusts it
-    //  lineCount = 0;
-    //  resetTurtle();
-    //  updateXY(); 
-    //}
-
-    // new:
     if(lineCount >= lineCountResetAlt) { // >= not ==, bcs we may get beyond when user adjusts it
       lineCount = 0;
       resetTurtle();
@@ -140,19 +133,14 @@ void TurtleSource::goToNextLineSegment()
 
       lineCountResetErr += lineCountResetFrac;
 
-    // maybe factor out:
+      // maybe factor out:
       if(lineCountResetErr > 0.5) {
         lineCountResetAlt  = lineCountResetFloor+1;
         lineCountResetErr -= 1.0;
       }
       else
         lineCountResetAlt  = lineCountResetFloor;
-
     }
-
-
-
-
   }
 
 
@@ -160,6 +148,7 @@ void TurtleSource::goToNextLineSegment()
   lineIndex++;
   if(lineIndex == numLines) {
     lineIndex = 0;
+
     cycleCount++;
     if(cyclicReset == 0)
       cycleCount = 0;
@@ -168,6 +157,8 @@ void TurtleSource::goToNextLineSegment()
       resetTurtle();
       updateXY();
     }
+
+
   }
 }
 
@@ -234,7 +225,18 @@ void TurtleSource::updateXY()  // // rename to drawNextLineToBuffer or updateLin
 
 void TurtleSource::updateIncrement()
 {
-  inc = numLines * frequency / sampleRate; // avoid division
+  // old:
+  //inc = numLines * frequency / sampleRate; // avoid division
+
+  // new:
+  if(lineCountReset == 0)
+    inc = numLines * frequency / sampleRate;
+  else
+    inc = rmin(lineCountReset, double(numLines)) * frequency / sampleRate;
+
+
+
+
   turtleLowpass.setSampleRate(rmin(1/inc, 1.1)); // use 1.0 later
   incUpToDate = true;
 }
@@ -341,7 +343,6 @@ Ideas:
  -maybe we can then have an arbitrary number of independent reset-counters?
 -the reset intervals need keytracking because otherwise the speed of the "modulation" depends on
  the note (and is unpleasantly fast for higher notes)
--when the lineReset is less than numLines, the pitch goes up - avoid this
--print the number of lines onto the gui
+-ideal would be a parameter that the user can set up in terms of the modulation speed
 
 */
