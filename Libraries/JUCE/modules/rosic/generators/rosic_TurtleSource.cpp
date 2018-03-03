@@ -343,6 +343,14 @@ Ideas:
  -maybe we can then have an arbitrary number of independent reset-counters?
 -the reset intervals need keytracking because otherwise the speed of the "modulation" depends on
  the note (and is unpleasantly fast for higher notes)
--ideal would be a parameter that the user can set up in terms of the modulation speed
+-ideal would be a parameter that the user can set up in terms of the modulation speed 
+ -that seems to depend on the difference between (a multiple of) numLines and lineCountReset 
+  if lineCountReset is close to a multiple of numLines, modulation is slow - but the multiple
+  can also be 1.5 ...but also, the higher the multiple, the slower and the higher the played
+  note, the faster, so 
+  speed = k * (numLines-resetInterval) * noteFreq?
+  that k depends in some way on the ratio resetInterval/numLines - maybe gcd/lcm is involved?
+
+
 
 */

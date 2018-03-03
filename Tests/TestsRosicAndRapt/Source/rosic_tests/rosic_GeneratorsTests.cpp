@@ -138,9 +138,51 @@ bool rotes::testSnowflake()
 
   plt.addDataArrays(N, &x0[0], &y0[0]);
   plt.addDataArrays(N, &x1[0], &y1[0]);
-
   plt.plot();
 
 
   return testResult;
+}
+
+void rotes::testSnowflakeResetting()
+{
+  // We test how the apparent "modulation" frequency depends on the reset interval, number of
+  // turtle lines and signal frequency
+
+  // create a snowflake that produces a Moore curve:
+  rosic::Snowflake sf;
+  sf.setAxiom("LFL+F+LFL+F");
+  sf.addRule('L', "-RF+LFL+FR-");
+  sf.addRule('R', "+LF-RFR-FL+");
+  sf.setAngle(90);
+  sf.setUseTable(false);
+
+  // these are the parameters, on which this modulation frequency depends - tweak them:
+  sf.setResetAfterCycles(1);
+  sf.setResetAfterLines(63);   
+  sf.setNumIterations(2);    // 0->4, 1->16, 2->64, 3->256, 4->1024
+  sf.setSampleRate(8192.0);
+  sf.setFrequency(64.0);
+
+  // create test output
+  int N = 8192;  // number of samples  
+  int n;         // sample index
+  std::vector<double> x(N), y(N); 
+  for(n = 0; n < N; n++) 
+    sf.getSampleFrameStereo(&x[n], &y[n]);
+
+  // plot left and right signal aginst sample index:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays(N, &y[0]);
+  plt.plot();
+
+  /*
+  -that seems to depend on the difference between (a multiple of) numLines and lineCountReset 
+    if lineCountReset is close to a multiple of numLines, modulation is slow - but the multiple
+      can also be 1.5 ...but also, the higher the multiple, the slower and the higher the played
+      note, the faster, so 
+      speed = k * (numLines-resetInterval) * noteFreq?
+      that k depends in some way on the ratio resetInterval/numLines - maybe gcd/lcm is involved?
+   */
 }
