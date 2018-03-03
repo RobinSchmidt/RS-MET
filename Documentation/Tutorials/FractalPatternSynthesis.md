@@ -93,65 +93,12 @@ Now that we understand how to make  fractal line drawings, the final step is to 
 
 ### Closed Loops and Free Running Turtles
 
-First, we want to look at how we can make sure that the starting point of the curve coincides with the endpoint. One simple way to ensure that is to use a seed that itself describes a closed curve.
+First, we want to look at how we can make sure that the starting point of the curve coincides with the endpoint. One simple way to ensure that is to use a seed that itself describes a closed curve. Assuming that the turn angle is set to 90°, a command string like `F+F+F+F` would draw a square. the endpoint of the turtle would coincide with the start point, so wa have a closed curve. There's a little catch here, when we use this for sound sysnthesis. In the creation of graphical drawings, we usually trace out the curve just once - so in this setting, the string above would be good enough. But in sound synthesis, we'll trace out the curve again and again. Note that, after tracing out the curve, the turtle will be looking into the downward direction instead of rightward, as it initially did. So if we let the turtle run a second time to the command string without resetting it's state before, we'll draw a second square below the first. In the third run, we'll draw a third square left to the second and in the fourth run we'll draw a fourth square on top of the third. Only after these four runs, the turtle will be again in it's initial position *and* head into its initial direction. This can be useful, but you should be aware of it. If you want to trace out the same initilal square again and again, one way to fix it would be to reset the turtle state to the initial state after each run through the curve or to append another `+` to our command string, so it would become `F+F+F+F+`. You need to watch out for this when using L-system definitions that you grab somehwere form the web or book. There, a graphical setting is assumed in which the curve is traced out just once anyway, so there's no consideration of this effect.
 
 
 
 
 
 
-points to make:
--different constructions/curves with equal looking shapes (order of traversal matters)
 
 
-_______________________________________________________________________________
-stuff below is just a skeleton and snippets
- 
-Fractal Synthesis Language
---------------------------
- 
-To build a musical sound synthesis algorithms from the concepts above
- 
-### Extensions to Turtle Syntax
- 
- 
-### Extensions to Lindenmayer Syntax
-  
-  
-Fractal Pattern Synthesis
--------------------------
- 
- 
-### Curve Traversal
- 
-##### Cyclic Resets (or not)
- 
- 
-##### Loop Modes
- 
-Turning Angle Modulation ...maybe allow Step Size Modulation, too?
- 
-  4.3: Normalization Modes
-  4.5: Subtractive Post Processing
-   4.5.1 Regular Musical Filters
-   4.5.2 Linear Phase Filters
-  4.6: Rational Numbers and Harmonics
-   4.5.2 Number of Segments (N) vs Segment Length (L)
-
-Sound Design Guide:
--if you want the free-running behavior to match the reset-mode, you need to make sure that the
- turtle heads into the same direction as initially after it completed a cycle around the seed, i.e,
- for a square seed (at 90°) don't use F+F+F+F but F+F+F+F+, the additionla plus at the end makes 
- the turtle look to the right again after completing the square
--an turn angle sligtly off from the ideal value lets the picture slowly rotate in free-running mode
--rules with branches create nice overtone structures (branches introduce discontinuities in the 
- waveshape)
--to analyze a patch:
- -stop rotation (if any) by setting turning angle to precise value and/or use resetting
- -turn the numIterations to zero to see the seed
- -turn it to 1 to see the rule, maybe use a simple 'F' seed to see the pure rule
- 
- 
- just for refernece while writing this
- http://commonmark.org/help/
- https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
