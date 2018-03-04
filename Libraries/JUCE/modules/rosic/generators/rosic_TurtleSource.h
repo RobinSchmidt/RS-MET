@@ -24,16 +24,22 @@ public:
   reached. The return value informs, whether or nor a rest occurred. */
   bool tick();
 
-  void setParametersZero();
+  //void setParametersZero();
+
+  void setParametersToOffMode();
 
   void setStateZero();
+
+  double getInterval() { return interval; }
 
 protected:
 
   void updateJitteringLimit();
 
+  static const int maxInterval = INT_MAX-1; // does it work at that value or do we need a margin?
+
   // counter parameter variables:
-  //double interval;   // time interval after which to periodically reset ...actually redundant -> get rid
+  double interval;   // time interval after which to periodically reset, redundant but kept for optimization
   int    intPart;    // integer part of interval
   double fracPart;   // fractional part of interval
 
@@ -106,6 +112,13 @@ public:
   on. */
   void setResetAfterLines(double numLines);
 
+  // under construction - to compute resetInterval = numLines * (param1 + param2/inc):
+  void setResetRatio(double newRatio);               // param1
+  void setResetRatioOffsetOverInc(double newValue);  // param2 - find better name
+  // replace by an array of independent resetters, maybe factor resetting out into a class 
+  // ResetManager
+
+
 
   void setResetRatio1( double newRatio)  { setResetRatio( 0, newRatio);  }
   void setResetOffset1(double newOffset) { setResetOffset(0, newOffset); }
@@ -117,11 +130,7 @@ public:
   void setResetRatio( int index, double newRatio);
   void setResetOffset(int index, double newValue);
 
-  // under construction - to compute resetInterval = numLines * (param1 + param2/inc):
-  void setResetRatio(double newRatio);               // param1
-  void setResetRatioOffsetOverInc(double newValue);  // param2 - find better name
-  // replace by an array of independent resetters, maybe factor resetting out into a class 
-  // ResetManager
+
 
 
 
@@ -279,8 +288,8 @@ protected:
 
   // parameters:
   double amplitude      = 1;
-  double frequency      = 0;
-  double sampleRate     = 1;
+  double frequency      = 100;
+  double sampleRate     = 44100;
   double turnAngle      = 0;
   int    cyclicReset    = 1;
   int    interpolation  = LINEAR;
@@ -296,16 +305,16 @@ protected:
   ResetCounter resetCounters[numResetters];
 
 
-  // user parameters for reset:
-  double resetRatio  = 1;
-  double resetOffset = 0;  // this one gets frequency scaled
+  //// user parameters for reset:
+  //double resetRatio  = 1;
+  //double resetOffset = 0;  // this one gets frequency scaled
 
-  // internal parameter for reset:
-  double lineCountReset      = 0;  // number of lines aftre which to reset
-  double lineCountResetFrac  = 0;  // fractional part
-  double lineCountResetErr   = 0;  // accumulates fractional error
-  int    lineCountResetFloor = 0;
-  int    lineCountResetAlt   = 0;  // alternates between floor and ceil
+  //// internal parameter for reset:
+  //double lineCountReset      = 0;  // number of lines aftre which to reset
+  //double lineCountResetFrac  = 0;  // fractional part
+  //double lineCountResetErr   = 0;  // accumulates fractional error
+  //int    lineCountResetFloor = 0;
+  //int    lineCountResetAlt   = 0;  // alternates between floor and ceil
 
 
 

@@ -1,15 +1,15 @@
 ResetCounter::ResetCounter()
 {
-  setParametersZero();
+  setParametersToOffMode();
   setStateZero(); 
 }
 
 void ResetCounter::setInterval(double t)
 {
-  if(t >= 2147483647)    // values > 2^31-1 can't be represented by 32 bit ints - turn counter off
-    setParametersZero();
+  if(t >= maxInterval)
+    setParametersToOffMode();
   else {
-    //interval = t; 
+    interval = t; 
     intPart  = (int)t;
     fracPart = t - intPart; 
   }
@@ -18,6 +18,8 @@ void ResetCounter::setInterval(double t)
 
 bool ResetCounter::tick()
 {
+  if(intPart == maxInterval)
+    return false; // counter is off 
   counter++;
   if(counter >= jitteringLimit) { // >= not ==, bcs we may get beyond when user adjusts it
     counter = 0;
@@ -28,10 +30,10 @@ bool ResetCounter::tick()
   return false;
 }
 
-void ResetCounter::setParametersZero()
+void ResetCounter::setParametersToOffMode()
 {
-  //interval = 0;
-  intPart  = 0;
+  interval = INF;
+  intPart  = maxInterval;
   fracPart = 0;
 }
 
@@ -61,8 +63,10 @@ TurtleSource::TurtleSource()
   setTurtleCommands("F+F+F+F+");
   updateWaveTable();
 
-  for(int i = 0; i < numResetters; i++) {
-    setResetRatio( i, 1);
+  setResetRatio( 0, 1);   // first resetter resets after each cycle by default
+  setResetOffset(0, 0);
+  for(int i = 1; i < numResetters; i++) {
+    setResetRatio( i, 0); // other resetters are off by default
     setResetOffset(i, 0);
   }
 
@@ -130,26 +134,25 @@ void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
 void TurtleSource::setResetRatio(int i, double newRatio)
 {
   resetRatios[i] = newRatio;
-  resetCounters[i].setInterval(numLines * (1/resetRatios[i] + resetOffsets[i]/frequency));
-  incUpToDate = false; // because computing the inc uses min(numLines, lineCountReset)
+  updateResetterVariables(); // maybe we don't need to update all resetters - have a function
+                             // that only updates one particular resetter
 }
 
 void TurtleSource::setResetOffset(int i, double newOffset)
 {
   resetOffsets[i] = newOffset;
-  resetCounters[i].setInterval(numLines * (1/resetRatios[i] + resetOffsets[i]/frequency));
-  incUpToDate = false;
+  updateResetterVariables();
 }
 
 void TurtleSource::setResetRatio(double newRatio)
 {
-  resetRatio = newRatio;
+  //resetRatio = newRatio;
   updateResetterVariables();
 }
 
 void TurtleSource::setResetRatioOffsetOverInc(double newValue)
 {
-  resetOffset = newValue;
+  //resetOffset = newValue;
   updateResetterVariables();
 }
 
@@ -213,6 +216,17 @@ void TurtleSource::goToNextLineSegment()
 {
   updateXY();
 
+  bool reset = false;
+  for(int i = 0; i < numResetters; i++)
+    reset |= resetCounters[i].tick();
+  if(reset)
+  {
+    resetTurtle();
+    updateXY(); 
+  }
+
+
+  /*
   if(lineCountReset != 0) 
   {
     lineCount++;
@@ -232,10 +246,9 @@ void TurtleSource::goToNextLineSegment()
       }
       else
         lineCountResetAlt  = lineCountResetFloor;
-
-
     }
   }
+  */
 
 
 
@@ -320,12 +333,7 @@ void TurtleSource::updateXY()  // // rename to drawNextLineToBuffer or updateLin
 // obsolete soon:
 void TurtleSource::updateResetterVariables()
 {
-  //lineCountReset = (resetRatio + resetOffset * sampleRate/frequency ) * numLines; 
-  //lineCountReset = (resetRatio + resetOffset/frequency ) * numLines; 
-    // verify this formula - does it give a useful parametrization for the user?
-
-  //lineCountReset  = resetRatio * numLines; 
-
+  /*
   lineCountReset  = numLines / resetRatio; 
   lineCountReset += resetOffset * numLines/frequency; // no sample-rate?
    //...okay...this sounds good - but it would be better, if we could scale it such that the 
@@ -343,7 +351,6 @@ void TurtleSource::updateResetterVariables()
     lineCountResetErr   = -lineCountResetFrac; // it should start at 0, but in the next statement, frac gets added
   }
 
-
   // maybe factor out (it's used in goToNextLineSegment in the same form):
   lineCountResetErr += lineCountResetFrac; // to make it the same as in goToNextLineSegment (for factoring out later)
   if(lineCountResetErr > 0.5) {
@@ -351,21 +358,33 @@ void TurtleSource::updateResetterVariables()
     lineCountResetErr -= 1.0; }
   else
     lineCountResetAlt  = lineCountResetFloor;
+    */
 
+  for(int i = 0; i < numResetters; i++)
+  {
+    double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/frequency);
+    resetCounters[i].setInterval(interval);
+  }
 
-  incUpToDate = false; // because computing the inc uses min(numLines, lineCountReset)
+  incUpToDate = false; // because computing the inc uses min(numLines, minResetInterval)
 }
 
 void TurtleSource::updateIncrement()
 {
-  // old:
+  // older:
   //inc = numLines * frequency / sampleRate; // avoid division
 
+  //// old:
+  //if(lineCountReset == 0)
+  //  inc = numLines * frequency / sampleRate;
+  //else
+  //  inc = rmin(lineCountReset, double(numLines)) * frequency / sampleRate;
+
   // new:
-  if(lineCountReset == 0)
-    inc = numLines * frequency / sampleRate;
-  else
-    inc = rmin(lineCountReset, double(numLines)) * frequency / sampleRate;
+  double minLength = double(numLines);
+  for(int i = 0; i < numResetters; i++)
+    minLength = rmin(minLength, resetCounters[i].getInterval());
+  inc = minLength * frequency / sampleRate;
 
   // hmm...the pitch goes down when ratio is below 1 (and the old, cyclic reset is off)
   // ...ahh - i think that's ok and expected - we should use a direction fix in the axiom to 
@@ -419,6 +438,10 @@ void TurtleSource::updateMeanAndNormalizer()
 }
 
 /*
+BUGS:
+-the pitch is resetting mode is not the same as in free-runing mode for closed curves - test
+ with patch BuzzingTriangles (maybe add ++ to axiom, if necessarry) 
+
 Ideas:
 
 -make TurningAngle modulatable
