@@ -144,6 +144,15 @@ bool rotes::testSnowflake()
   return testResult;
 }
 
+bool rotes::testResetter()
+{
+  bool result = true;
+
+
+
+  return result;
+}
+
 void rotes::testSnowflakeResetting()
 {
   // We test how the apparent "modulation" frequency depends on the reset interval, number of

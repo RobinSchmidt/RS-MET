@@ -74,7 +74,8 @@ int main(int argc, char* argv[])
   //testOscillatorStereo();
   //testLorentzSystem();
   //testSnowflake();
-  testSnowflakeResetting();
+  testResetter();
+  //testSnowflakeResetting();
 
 
   //===============================================================================================

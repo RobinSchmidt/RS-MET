@@ -527,6 +527,10 @@ Ideas:
   reversed? ...maybe, maybe not - try it: just draw F+F and go back - see, if we end up at (0,0))
 -have multiple resetters and reversers that all work independently from each other - the ratios of
  them will probably be useful parameters for sound design
+-have a start-phase/pos parameter (modulatable) - modulating it and reset interval at the same time
+ (but with different modulators) will give interesting sounds
+-Let the turtle interpret '|': turn around (180°), g: forward without line, B,b: backward with and 
+ without line
 
 
 */

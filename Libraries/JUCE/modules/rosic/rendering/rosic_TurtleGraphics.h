@@ -31,11 +31,14 @@ public:
 
   void goBackward();
 
-  /** Turns the direction vector to the left. */
+  /** Turns the direction vector to the left by the turn angle. */
   void turnLeft();
 
-  /** Turns the direction vector to the right. */
+  /** Turns the direction vector to the right by the turn angle. */
   void turnRight();
+
+  /** Turns the direction around by 180°. */
+  void turnAround();
 
   /** Pushes the current state of the turtle onto a stack for branching. */
   void pushState();

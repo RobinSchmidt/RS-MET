@@ -9,6 +9,7 @@ namespace rotes
   void testOscillatorStereo();
   void testLorentzSystem();
   bool testSnowflake();
+  bool testResetter();
   void testSnowflakeResetting();
 
 

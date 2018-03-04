@@ -48,6 +48,12 @@ void TurtleGraphics::turnRight()
   rotRight.apply(&dx, &dy); // use rotation.applyInverse
 }
 
+void TurtleGraphics::turnAround()
+{
+  dx = -dx;
+  dy = -dy;
+}
+
 void TurtleGraphics::pushState()
 {
   stateStack.push_back(TurtleState(x, y, dx, dy, xo, yo));
@@ -84,16 +90,18 @@ void TurtleGraphics::translate(const std::string& str,
 
 bool TurtleGraphics::interpretCharacter(char c)
 {
-  if(c == 'F') { goForward(); return true;  }
-  if(c == '+') { turnLeft();  return false; }
-  if(c == '-') { turnRight(); return false; }
-  if(c == 'f') { goForward(); return false; }
-  if(c == 'G') { goForward(); return true;  }
-  if(c == '[') { pushState(); return false; }
-  if(c == ']') { popState();  return false; }
+  if(c == 'F') { goForward();  return true;  }
+  if(c == '+') { turnLeft();   return false; }
+  if(c == '-') { turnRight();  return false; }
+  if(c == '|') { turnAround(); return false; }
+  if(c == 'f') { goForward();  return false; }
+  if(c == 'G') { goForward();  return true;  }
+  if(c == '[') { pushState();  return false; }
+  if(c == ']') { popState();   return false; }
   return false;
 
-  // write performance test and check, if a switch statement is faster
+  // write performance test and check, if a switch statement is faster...or maybe make a table
+  // that maps characters to a member function pointer (non-command chars map to a dummy function)
 
   // maybe use commands like +30F-45F to turn 30° left, go forward, turn 45° right, go forward
   // ...so whenever a number comes after a + or -, don't use the default angle that is set up but 
@@ -115,7 +123,7 @@ std::string TurtleGraphics::extractCommands(const std::string& s)
 
 bool TurtleGraphics::isCommand(char c)
 {
-  return c == '+' || c == '-' || c == 'F' || c == 'f' || c == 'G' || c == '[' || c == ']';
+  return c=='+' || c=='-' || c=='F' || c=='f' || c=='G' || c=='[' || c==']' || c=='|';
 }
 
 int TurtleGraphics::getNumberOfLines(const std::string& s)
