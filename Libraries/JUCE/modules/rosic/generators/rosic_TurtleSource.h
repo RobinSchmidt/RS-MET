@@ -28,7 +28,8 @@ public:
 
   void setParametersToOffMode();
 
-  void setStateZero();
+  /** Resets the internal state of the counter. */
+  void reset();
 
   double getInterval() { return interval; }
 

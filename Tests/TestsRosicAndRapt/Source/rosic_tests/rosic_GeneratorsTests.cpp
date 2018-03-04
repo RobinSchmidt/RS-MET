@@ -144,9 +144,39 @@ bool rotes::testSnowflake()
   return testResult;
 }
 
+void fillResetInstantArray(rosic::ResetCounter& rc, int* r, int N)
+{
+  int i = 0;      // counts iterations/ticks
+  int j = 0;      // counts resets
+  rc.reset();
+  while(true) {
+    if(rc.tick()) {
+      r[j] = i;
+      j++;
+      if(j == N)
+        break;
+    }
+    i++;
+  }
+}
+
 bool rotes::testResetter()
 {
   bool result = true;
+
+  static const int N = 10;
+  int r[N];   // reset instants
+  rosic::ResetCounter rc;
+
+  rc.setInterval(5.0);
+  fillResetInstantArray(rc, r, N);
+
+  // check, if resets occur at expected times:
+  int i;
+  for(i = 0; i < N; i++)
+  {
+
+  }
 
 
 

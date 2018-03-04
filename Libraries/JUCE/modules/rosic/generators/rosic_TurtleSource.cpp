@@ -1,7 +1,7 @@
 ResetCounter::ResetCounter()
 {
   setParametersToOffMode();
-  setStateZero(); 
+  reset(); 
 }
 
 void ResetCounter::setInterval(double t)
@@ -37,7 +37,7 @@ void ResetCounter::setParametersToOffMode()
   fracPart = 0;
 }
 
-void ResetCounter::setStateZero()
+void ResetCounter::reset()
 {
   counter = 0;
   errAccu = 0;
