@@ -296,6 +296,8 @@ void TurtleSource::updateIncrement()
     inc = rmin(lineCountReset, double(numLines)) * frequency / sampleRate;
 
   // hmm...the pitch goes down when ratio is below 1 (and the old, cyclic reset is off)
+  // ...ahh - i think that's ok and expected - we should use a direction fix in the axiom to 
+  // avoid this
 
 
 
@@ -428,6 +430,8 @@ Ideas:
 -allow for reversal of readout direction - allow negative frequencies/increments
  -introduce backward-mode to TurtleGraphics: subtracts dx,dy (do the turns also need to be 
   reversed? ...maybe, maybe not - try it: just draw F+F and go back - see, if we end up at (0,0))
+-have multiple resetters and reversers that all work independently from each other - the ratios of
+ them will probably be useful parameters for sound design
 
 
 */
