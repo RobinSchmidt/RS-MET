@@ -1,3 +1,60 @@
+MultiResetCounter::MultiResetCounter()
+{
+  for(int i = 0; i < numResetters; i++) {
+    setParametersZero(i);
+    setStateZero(i); 
+  }
+}
+
+void MultiResetCounter::setResetInterval(int i, double t)
+{
+  if(t >= 2147483647)    // values > 2^31-1 can't be represented by 32 bit ints - turn counter off
+    setParametersZero(i);
+  else {
+    intervals[i] = t; 
+    intParts[i]  = (int)t;
+    fracParts[i] = t - intParts[i]; 
+  }
+  updateAlternator(i);
+}
+
+bool MultiResetCounter::tick(int i)
+{
+  counters[i]++;
+  if(counters[i] >= alternators[i]) { // >= not ==, bcs we may get beyond when user adjusts it
+    counters[i] = 0;
+    errAccus[i] += fracParts[i];
+    updateAlternator(i);
+    return true;
+  }
+  return false;
+}
+
+void MultiResetCounter::setParametersZero(int i)
+{
+  intervals[i] = 0;
+  intParts[i]  = 0;
+  fracParts[i] = 0;
+}
+
+void MultiResetCounter::setStateZero(int i)
+{
+  errAccus[i]    = 0;
+  alternators[i] = 0; 
+  counters[i]    = 0;
+}
+
+void MultiResetCounter::updateAlternator(int i)
+{
+  if(errAccus[i] > 0.5) {
+    alternators[i]  = intParts[i]+1;
+    errAccus[i] -= 1.0; }
+  else
+    alternators[i] = intParts[i];
+}
+
+//=================================================================================================
+
 TurtleSource::TurtleSource()
 {
   // init to square:
