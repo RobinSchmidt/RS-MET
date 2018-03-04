@@ -1,56 +1,54 @@
-MultiResetCounter::MultiResetCounter()
+ResetCounter::ResetCounter()
 {
-  for(int i = 0; i < numResetters; i++) {
-    setParametersZero(i);
-    setStateZero(i); 
-  }
+  setParametersZero();
+  setStateZero(); 
 }
 
-void MultiResetCounter::setResetInterval(int i, double t)
+void ResetCounter::setResetInterval(double t)
 {
   if(t >= 2147483647)    // values > 2^31-1 can't be represented by 32 bit ints - turn counter off
-    setParametersZero(i);
+    setParametersZero();
   else {
-    intervals[i] = t; 
-    intParts[i]  = (int)t;
-    fracParts[i] = t - intParts[i]; 
+    interval = t; 
+    intPart  = (int)t;
+    fracPart = t - intPart; 
   }
-  updateAlternator(i);
+  updateJitteringLimit();
 }
 
-bool MultiResetCounter::tick(int i)
+bool ResetCounter::tick()
 {
-  counters[i]++;
-  if(counters[i] >= alternators[i]) { // >= not ==, bcs we may get beyond when user adjusts it
-    counters[i] = 0;
-    errAccus[i] += fracParts[i];
-    updateAlternator(i);
+  counter++;
+  if(counter >= jitteringLimit) { // >= not ==, bcs we may get beyond when user adjusts it
+    counter = 0;
+    errAccu += fracPart;
+    updateJitteringLimit();
     return true;
   }
   return false;
 }
 
-void MultiResetCounter::setParametersZero(int i)
+void ResetCounter::setParametersZero()
 {
-  intervals[i] = 0;
-  intParts[i]  = 0;
-  fracParts[i] = 0;
+  interval = 0;
+  intPart  = 0;
+  fracPart = 0;
 }
 
-void MultiResetCounter::setStateZero(int i)
+void ResetCounter::setStateZero()
 {
-  errAccus[i]    = 0;
-  alternators[i] = 0; 
-  counters[i]    = 0;
+  counter = 0;
+  errAccu = 0;
+  jitteringLimit = 0; 
 }
 
-void MultiResetCounter::updateAlternator(int i)
+void ResetCounter::updateJitteringLimit()
 {
-  if(errAccus[i] > 0.5) {
-    alternators[i]  = intParts[i]+1;
-    errAccus[i] -= 1.0; }
+  if(errAccu > 0.5) {
+    jitteringLimit = intPart+1;
+    errAccu -= 1.0; }
   else
-    alternators[i] = intParts[i];
+    jitteringLimit = intPart;
 }
 
 //=================================================================================================

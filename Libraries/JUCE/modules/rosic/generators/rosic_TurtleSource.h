@@ -4,46 +4,43 @@
 namespace rosic
 {
 
-/** A class for managing multiple counters the count up to some upper limit and then reset to 
-zero. They are meant to be used in a real time turtle graphics driver to reset the turtle's state
-periodically. */
+/** A class for counting up to some upper limit and then reset to zero. Meant to be used in a real 
+time turtle graphics driver to reset the turtle's state periodically. */
 
-class MultiResetCounter
+class ResetCounter
 {
 
 public:
 
-  MultiResetCounter();
+  ResetCounter();
 
-  /** Sets the reset interval for the counter with given index. The interval does not have to be 
-  an integer. If it has a fractional part, this class will internally manage to appropriately 
-  alternate between the floor and ceiling of the desired interval so as to give an average reset 
-  interval equal to the desired value. */
-  void setResetInterval(int counterIndex, double newInterval);
+  /** Sets the reset interval for the counter. The interval does not have to be an integer. If it 
+  has a fractional part, this class will internally manage to appropriately alternate between the 
+  floor and ceiling of the desired interval so as to give an average reset interval equal to the 
+  desired value. */
+  void setResetInterval(double newInterval);
 
   /** Counts one unit up for the given counter and possibly resets it to zero, when the limit is 
   reached. The return value informs, whether or nor a rest occurred. */
-  bool tick(int counterIndex);
+  bool tick();
 
-  void setParametersZero(int counterIndex);
+  void setParametersZero();
 
-  void setStateZero(int counterIndex);
+  void setStateZero();
 
 protected:
 
-  void updateAlternator(int counterIndex);
-
-  static const int numResetters = 2;
+  void updateJitteringLimit();
 
   // counter parameter variables:
-  double intervals[numResetters];   // time interval(s) after which to periodically reset ...actually redundant -> get rid
-  int    intParts[numResetters];    // integer parts of intervals
-  double fracParts[numResetters];   // fractional parts of intervals
+  double interval;   // time interval after which to periodically reset ...actually redundant -> get rid
+  int    intPart;    // integer part of interval
+  double fracPart;   // fractional part of interval
 
   // counter state variables:
-  double errAccus[numResetters];    // accumulated fractional errors
-  int    alternators[numResetters]; // alternates between floor and ceil of intervals..maybe rename to limitFlipper, limitJitterer or jitteringLimit or jitterer
-  int    counters[numResetters];    // the actual counters
+  double errAccu;        // accumulated fractional error
+  int    jitteringLimit; // alternates between floor and ceil of interval
+  int    counter;        // the actual counter
 
 };
 
