@@ -4,12 +4,12 @@ ResetCounter::ResetCounter()
   setStateZero(); 
 }
 
-void ResetCounter::setResetInterval(double t)
+void ResetCounter::setInterval(double t)
 {
   if(t >= 2147483647)    // values > 2^31-1 can't be represented by 32 bit ints - turn counter off
     setParametersZero();
   else {
-    interval = t; 
+    //interval = t; 
     intPart  = (int)t;
     fracPart = t - intPart; 
   }
@@ -30,7 +30,7 @@ bool ResetCounter::tick()
 
 void ResetCounter::setParametersZero()
 {
-  interval = 0;
+  //interval = 0;
   intPart  = 0;
   fracPart = 0;
 }
@@ -60,6 +60,11 @@ TurtleSource::TurtleSource()
   turtle.setAngle(turnAngle);
   setTurtleCommands("F+F+F+F+");
   updateWaveTable();
+
+  for(int i = 0; i < numResetters; i++) {
+    setResetRatio( i, 1);
+    setResetOffset(i, 0);
+  }
 
   // experimental:
   turtleLowpass.setSampleRate(1.1); // later try 1.0
@@ -120,6 +125,20 @@ void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
 
   incUpToDate = false; // because computing the inc uses min(numLines, lineCountReset)
   */
+}
+
+void TurtleSource::setResetRatio(int i, double newRatio)
+{
+  resetRatios[i] = newRatio;
+  resetCounters[i].setInterval(numLines * (1/resetRatios[i] + resetOffsets[i]/frequency));
+  incUpToDate = false; // because computing the inc uses min(numLines, lineCountReset)
+}
+
+void TurtleSource::setResetOffset(int i, double newOffset)
+{
+  resetOffsets[i] = newOffset;
+  resetCounters[i].setInterval(numLines * (1/resetRatios[i] + resetOffsets[i]/frequency));
+  incUpToDate = false;
 }
 
 void TurtleSource::setResetRatio(double newRatio)
@@ -298,6 +317,7 @@ void TurtleSource::updateXY()  // // rename to drawNextLineToBuffer or updateLin
   }
 }
 
+// obsolete soon:
 void TurtleSource::updateResetterVariables()
 {
   //lineCountReset = (resetRatio + resetOffset * sampleRate/frequency ) * numLines; 
@@ -310,9 +330,6 @@ void TurtleSource::updateResetterVariables()
   lineCountReset += resetOffset * numLines/frequency; // no sample-rate?
    //...okay...this sounds good - but it would be better, if we could scale it such that the 
    // apparent modulation frequency is eneterd in Hz...or maybe it is already?...yes - it seems so
-
-
-
 
   if(lineCountReset >= 2147483647) {  // 2^31-1
     lineCountReset      = 0.0;

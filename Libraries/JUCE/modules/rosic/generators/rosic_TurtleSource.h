@@ -18,7 +18,7 @@ public:
   has a fractional part, this class will internally manage to appropriately alternate between the 
   floor and ceiling of the desired interval so as to give an average reset interval equal to the 
   desired value. */
-  void setResetInterval(double newInterval);
+  void setInterval(double newInterval);
 
   /** Counts one unit up for the given counter and possibly resets it to zero, when the limit is 
   reached. The return value informs, whether or nor a rest occurred. */
@@ -33,7 +33,7 @@ protected:
   void updateJitteringLimit();
 
   // counter parameter variables:
-  double interval;   // time interval after which to periodically reset ...actually redundant -> get rid
+  //double interval;   // time interval after which to periodically reset ...actually redundant -> get rid
   int    intPart;    // integer part of interval
   double fracPart;   // fractional part of interval
 
@@ -107,11 +107,23 @@ public:
   void setResetAfterLines(double numLines);
 
 
+  void setResetRatio1( double newRatio)  { setResetRatio( 0, newRatio);  }
+  void setResetOffset1(double newOffset) { setResetOffset(0, newOffset); }
+
+  void setResetRatio2( double newRatio)  { setResetRatio( 1, newRatio);  }
+  void setResetOffset2(double newOffset) { setResetOffset(1, newOffset); }
+
+  // move to protected:
+  void setResetRatio( int index, double newRatio);
+  void setResetOffset(int index, double newValue);
+
   // under construction - to compute resetInterval = numLines * (param1 + param2/inc):
   void setResetRatio(double newRatio);               // param1
   void setResetRatioOffsetOverInc(double newValue);  // param2 - find better name
   // replace by an array of independent resetters, maybe factor resetting out into a class 
   // ResetManager
+
+
 
 
 
@@ -274,6 +286,14 @@ protected:
   int    interpolation  = LINEAR;
   bool   antiAlias      = false;
   bool   useTable       = false;
+
+
+
+  // new resetter stuff:
+  static const int numResetters = 2;
+  double resetRatios[numResetters];
+  double resetOffsets[numResetters];
+  ResetCounter resetCounters[numResetters];
 
 
   // user parameters for reset:
