@@ -164,7 +164,7 @@ bool rotes::testResetter()
 {
   bool result = true;
 
-  static const int N = 10;
+  static const int N = 15;
   int r[N];   // reset instants
   rosic::ResetCounter rc;
 
@@ -178,7 +178,13 @@ bool rotes::testResetter()
 
   }
 
+  rc.setInterval(5.5);
+  fillResetInstantArray(rc, r, N);
+  // difference between entries should alternate between 5 and 6: 5,6,5,6,5,6,...
 
+  rc.setInterval(5.25);  
+  fillResetInstantArray(rc, r, N);
+  // difference between entries tould follow the pattern: 5,5,5,6,5,5,5,6,...
 
   return result;
 }
