@@ -32,8 +32,13 @@ void Snowflake::createParameters()
 
   p = new Param("TurningAngle", 0, 360, 0, Parameter::LINEAR); // rename to TurnAngle
   addObservedParameter(p);
-  p->setValueChangeCallback<SF>(sf, &SF::setAngle);
+  p->setValueChangeCallback<SF>(sf, &SF::setTurnAngle);
   p->setValue(60, true, true); // Koch snowflake needs 60°
+
+  p = new Param("Skew", 0, 360, 0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setSkew);
+
 
   p = new Param("Amplitude", -1, 1, 1, Parameter::LINEAR);
   addObservedParameter(p);
@@ -44,29 +49,34 @@ void Snowflake::createParameters()
   p->setValueChangeCallback<SF>(sf, &SF::setRotation);
 
 
-
   p = new Param("ResetRatio1", 0, 16, 1, Parameter::LINEAR); 
   addObservedParameter(p);
-  //p->setValueChangeCallback<SF>(sf, &SF::setResetRatio);
   p->setValueChangeCallback<SF>(sf, &SF::setResetRatio1);
 
   p = new Param("ResetOffset1", -10, +10, 0, Parameter::LINEAR);
   addObservedParameter(p);
-  //p->setValueChangeCallback<SF>(sf, &SF::setResetRatioOffsetOverInc);
   p->setValueChangeCallback<SF>(sf, &SF::setResetOffset1);
 
 
-
-  // these two may be obsolete soon:
-  p = new Param("CyclicReset", 0, 10, 1, Parameter::INTEGER, 1);
+  p = new Param("ResetRatio2", 0, 16, 0, Parameter::LINEAR); 
   addObservedParameter(p);
-  p->setValueChangeCallback<SF>(sf, &SF::setResetAfterCycles);
-    // reanme to curveCountReset
+  p->setValueChangeCallback<SF>(sf, &SF::setResetRatio2);
 
-  p = new Param("LineCountReset", 0, 5000, 0, Parameter::LINEAR, 0);
+  p = new Param("ResetOffset2", -10, +10, 0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<SF>(sf, &SF::setResetAfterLines);
-  // would benefit from keytracking
+  p->setValueChangeCallback<SF>(sf, &SF::setResetOffset2);
+
+
+  //// these two may be obsolete soon:
+  //p = new Param("CyclicReset", 0, 10, 1, Parameter::INTEGER, 1);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<SF>(sf, &SF::setResetAfterCycles);
+  //  // reanme to curveCountReset
+
+  //p = new Param("LineCountReset", 0, 5000, 0, Parameter::LINEAR, 0);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<SF>(sf, &SF::setResetAfterLines);
+  //// would benefit from keytracking
 
 
 
@@ -142,6 +152,20 @@ XmlElement* Snowflake::getStateAsXml(const juce::String& stateName, bool markAsC
   XmlElement* xml = AudioModuleWithMidiIn::getStateAsXml(stateName, markAsClean);
   xml->setAttribute("Axiom", axiom);
   xml->setAttribute("Rules", rules);
+  return xml;
+}
+
+XmlElement Snowflake::convertXmlStateIfNecessary(const XmlElement& inputXml)
+{
+  XmlElement xml = inputXml;
+
+  double val;	
+  val = xml.getDoubleAttribute("CyclicReset", 1.0);
+  xml.removeAttribute("CyclicReset");
+  xml.setAttribute("ResetRatio1", rosic::round(val));
+
+  xml.removeAttribute("LineCountReset");
+
   return xml;
 }
 
@@ -262,9 +286,16 @@ void SnowflakeEditor::createWidgets()
 
   addWidget( sliderAngle = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("TurningAngle") );
-  s->setDescription("Turning angle of turtle graphics");
+  s->setDescription("Turn angle of turtle graphics");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
+
+  addWidget( sliderSkew = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("Skew") );
+  s->setDescription("Offset between left and right turn angle");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString2);
+
 
   addWidget( sliderAmplitude = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("Amplitude") );
@@ -280,12 +311,12 @@ void SnowflakeEditor::createWidgets()
 
 
 
-  //RSlider *sliderResetRatio1, *sliderResetOffset1;
 
+  // maybe use a loop:
 
   addWidget( sliderResetRatio1 = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("ResetRatio1") );
-  s->setDescription("Number of cycles after which turtle resets (0 for never)");
+  s->setDescription("Frequency for resetting the turtle as factor for note-frequency");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
@@ -295,10 +326,22 @@ void SnowflakeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
+  addWidget( sliderResetRatio2 = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("ResetRatio2") );
+  s->setDescription("Frequency for resetting the turtle as factor for note-frequency");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget( sliderResetOffset2 = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("ResetOffset2") );
+  s->setDescription("Frequency dependent offset for ResetRatio1");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 
 
 
 
+  /*
   addWidget( sliderCycleReset = s = new Sld );
   s->assignParameter( p = snowflakeModule->getParameterByName("CyclicReset") );
   s->setDescription("Number of cycles after which turtle resets (0 for never)");
@@ -310,6 +353,7 @@ void SnowflakeEditor::createWidgets()
   s->setDescription("Number of lines after which turtle resets (0 for never)");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
+  */
 
 
 
@@ -350,6 +394,8 @@ void SnowflakeEditor::resized()
 
 
   sliderAngle->setBounds(x, y, w, wh); y += dy;
+  
+  //sliderSkew->setBounds(x, y, w, wh); y += dy;
 
   // put result (2D and 1D plots here)
 
@@ -360,9 +406,12 @@ void SnowflakeEditor::resized()
   sliderResetRatio1->setBounds(x,  y, w, wh); y += dy;
   sliderResetOffset1->setBounds(x, y, w, wh); y += dy;
 
+  sliderResetRatio2->setBounds(x,  y, w, wh); y += dy;
+  sliderResetOffset2->setBounds(x, y, w, wh); y += dy;
+
   // old - remove when reset-ratio/offset works:
-  sliderCycleReset->setBounds(x, y, w, wh); y += dy;
-  sliderLineReset->setBounds( x, y, w, wh); y += dy;
+  //sliderCycleReset->setBounds(x, y, w, wh); y += dy;
+  //sliderLineReset->setBounds( x, y, w, wh); y += dy;
 
   // experimental:
   buttonAntiAlias->setBounds(x, y, w, wh); y += dy;

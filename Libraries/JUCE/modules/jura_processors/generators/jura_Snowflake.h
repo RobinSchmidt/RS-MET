@@ -17,9 +17,11 @@ public:
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
   virtual void noteOn(int noteNumber, int velocity) override;
+
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
+  virtual XmlElement convertXmlStateIfNecessary(const XmlElement& xmlState) override;
 
   // override set/getXml to store strings for rules and seed
 
@@ -104,10 +106,10 @@ protected:
   RTextEditor *axiomEditor, *rulesEditor;
   RTextField  *numLinesLabel;  
 
-  RSlider *sliderIterations, *sliderAngle, *sliderAmplitude, *sliderRotation, *sliderCycleReset,
-    *sliderLineReset;
+  RSlider *sliderIterations, *sliderAngle, *sliderSkew, *sliderAmplitude, *sliderRotation;
+    //*sliderCycleReset, *sliderLineReset;
 
-  RSlider *sliderResetRatio1, *sliderResetOffset1;
+  RSlider *sliderResetRatio1, *sliderResetOffset1, *sliderResetRatio2, *sliderResetOffset2;
 
 
 

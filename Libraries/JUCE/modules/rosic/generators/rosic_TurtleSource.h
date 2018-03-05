@@ -120,14 +120,14 @@ public:
   // ResetManager
 
 
-
+  // these functions are only to provide appropriate callback targets - maybe handle this in 
+  // jura::Snowflake...
   void setResetRatio1( double newRatio)  { setResetRatio( 0, newRatio);  }
   void setResetOffset1(double newOffset) { setResetOffset(0, newOffset); }
-
   void setResetRatio2( double newRatio)  { setResetRatio( 1, newRatio);  }
   void setResetOffset2(double newOffset) { setResetOffset(1, newOffset); }
 
-  // move to protected:
+  // ....and keep only these here:
   void setResetRatio( int index, double newRatio);
   void setResetOffset(int index, double newValue);
 
@@ -156,7 +156,9 @@ public:
   // these are relevant only in table-mode - maybe use the regular wavetable oscillator
 
   /** Sets the turning angle for the turtle-graphics interpreter. */
-  void setAngle(double newAngle);
+  void setTurnAngle(double newAngle);
+
+  void setSkew(double newAngle);
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -292,6 +294,7 @@ protected:
   double frequency      = 100;
   double sampleRate     = 44100;
   double turnAngle      = 0;
+  double skew           = 0;
   int    cyclicReset    = 1;
   int    interpolation  = LINEAR;
   bool   antiAlias      = false;

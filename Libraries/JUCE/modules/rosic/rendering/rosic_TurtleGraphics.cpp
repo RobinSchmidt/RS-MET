@@ -1,12 +1,13 @@
 void TurtleGraphics::setAngle(double degrees)
 {
-  double radians = RAPT::rsDegreeToRadiant(degrees);
-  //long double factor =  (PI / 180.0);
-  //double radians = (double) (factor * (long double) degrees);
-  rotLeft.setAngle(  radians);
-  rotRight.setAngle(-radians); // get rid, implement applyInverse
-                               // entries of the rotation matrices that should be 0 are at 6.123e-17 - probably not an issue in 
-                               // practice but not nice - maybe clamp to zero anything below 1.e-16
+  angle = degrees;
+  updateRotations();
+}
+
+void TurtleGraphics::setAngleDelta(double degrees)
+{
+  angleDelta = degrees;
+  updateRotations();
 }
 
 void TurtleGraphics::init(double _x, double _y, double _dx, double _dy, bool keepOldXY)
@@ -132,4 +133,14 @@ int TurtleGraphics::getNumberOfLines(const std::string& s)
   for(int i = 0; i < s.size(); i++)
     if(s[i] == 'F' || s[i] == 'G') n++;
   return n;
+}
+
+void TurtleGraphics::updateRotations()
+{
+  double a = RAPT::rsDegreeToRadiant(angle);
+  double d = RAPT::rsDegreeToRadiant(angleDelta);
+  rotLeft.setAngle(  a + d);
+  rotRight.setAngle(-a + d); 
+  // entries of the rotation matrices that should be 0 are at 6.123e-17 - probably not an issue in                     
+  // practice but not nice - maybe clamp to zero anything below 1.e-16
 }

@@ -156,10 +156,18 @@ void TurtleSource::setResetRatioOffsetOverInc(double newValue)
   updateResetterVariables();
 }
 
-void TurtleSource::setAngle(double newAngle) 
+void TurtleSource::setTurnAngle(double newAngle) 
 {
   turnAngle = newAngle;
   turtle.setAngle(turnAngle);
+  updateMeanAndNormalizer();
+  tableUpToDate = false; 
+}
+
+void TurtleSource::setSkew(double newAngle)
+{
+  skew = newAngle;
+  turtle.setAngleDelta(skew);
   updateMeanAndNormalizer();
   tableUpToDate = false; 
 }

@@ -20,15 +20,23 @@ public:
   /** Creates a new TurtleGraphics object using the given angle (in degrees, default is 90°) */
   TurtleGraphics(double angle = 90) { setAngle(angle); }
 
-  /** Sets the turning angle in degrees. */
+  /** Sets the turn angle in degrees. */
   void setAngle(double degrees);
+
+  /** Sets an offset to the the turn angle (in degrees) that is applied to both left and right 
+  rotations with the same sign.  */
+  void setAngleDelta(double degrees);
+
+  // maybe have alternating angles: at even step numbers use angle+offset and at odd step numbers
+  // angle-offset -> should turn a square into a parallelogram
 
   /** Initializes position (x,y) and direction vector (dx,dy). */
   void init(double x = 0, double y = 0, double dx = 1, double dy = 0, bool keepOldCoordsAsStart = false);
 
-  /** Moves the turtle one step into the current direction. */
+  /** Moves the turtle one step forward into the current direction. */
   void goForward();
 
+  /** Moves the turtle one step backward. */
   void goBackward();
 
   /** Turns the direction vector to the left by the turn angle. */
@@ -85,6 +93,10 @@ public:
 
 protected:
 
+  /** Updates the rotation matrices according to angle and angleDelta. */
+  void updateRotations();
+
+  // state variables:
   double x  = 0, y  = 0;  // current position
   double dx = 1, dy = 0;  // direction vector
   double xo = 0, yo = 0;  // old position (from one step before)
@@ -98,6 +110,7 @@ protected:
   };
 
 
+  double angle = 90, angleDelta = 0;
   bool backwardMode = false;;
   std::vector<TurtleState> stateStack;
   RAPT::rsRotationXY<double> rotLeft, rotRight; 
