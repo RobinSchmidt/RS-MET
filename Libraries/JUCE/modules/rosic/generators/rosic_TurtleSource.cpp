@@ -190,6 +190,7 @@ void TurtleSource::reset()
   pos = 0;
   cycleCount = 0;
   resetTurtle();
+  resetCounters();
   updateXY();      // rename to drawNextLineToBuffer
   lineIndex = 0;
 }
@@ -198,6 +199,12 @@ void TurtleSource::resetTurtle()
 {
   commandIndex = 0;
   turtle.init(0, 0, 1, 0);
+}
+
+void TurtleSource::resetCounters()
+{
+  for(int i = 0; i < numResetters; i++)
+    resetters[i].reset();
 }
 
 void TurtleSource::goToLineSegment(int targetLineIndex)
@@ -226,7 +233,7 @@ void TurtleSource::goToNextLineSegment()
 
   bool reset = false;
   for(int i = 0; i < numResetters; i++)
-    reset |= resetCounters[i].tick();
+    reset |= resetters[i].tick();
   if(reset)
   {
     resetTurtle();
@@ -371,7 +378,7 @@ void TurtleSource::updateResetterVariables()
   for(int i = 0; i < numResetters; i++)
   {
     double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/frequency);
-    resetCounters[i].setInterval(interval);
+    resetters[i].setInterval(interval);
   }
 
   incUpToDate = false; // because computing the inc uses min(numLines, minResetInterval)
@@ -391,7 +398,7 @@ void TurtleSource::updateIncrement()
   // new:
   double minLength = double(numLines);
   for(int i = 0; i < numResetters; i++)
-    minLength = rmin(minLength, resetCounters[i].getInterval());
+    minLength = rmin(minLength, resetters[i].getInterval());
   inc = minLength * frequency / sampleRate;
 
   // hmm...the pitch goes down when ratio is below 1 (and the old, cyclic reset is off)
@@ -449,6 +456,7 @@ void TurtleSource::updateMeanAndNormalizer()
 BUGS:
 -the pitch is resetting mode is not the same as in free-runing mode for closed curves - test
  with patch BuzzingTriangles (maybe add ++ to axiom, if necessarry) 
+-drawing a square with resetting draws only 3 edges - the last edge is missing - off-by-1 error?
 
 Ideas:
 

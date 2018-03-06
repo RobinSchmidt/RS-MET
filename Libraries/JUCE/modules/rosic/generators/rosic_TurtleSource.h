@@ -248,6 +248,9 @@ protected:
   rendered. */
   void resetTurtle();
 
+  /** Resets our counters that are used for triggering resets of the turtle drawing algo. */
+  void resetCounters();
+
   /** Makes the buffers x[0],x[1],y[0],y[1] etc. reflect the line endpoints of the given index for
   the target line.  */
   void goToLineSegment(int targetLineIndex);
@@ -306,7 +309,7 @@ protected:
   static const int numResetters = 2;
   double resetRatios[numResetters];
   double resetOffsets[numResetters];
-  ResetCounter resetCounters[numResetters];
+  ResetCounter resetters[numResetters];
 
 
   //// user parameters for reset:
