@@ -108,6 +108,7 @@ void TurtleSource::setRotation(double newRotation)
   rotator.setAngle((PI/180) * newRotation);
 }
 
+  /*
 void TurtleSource::setResetAfterCycles(int numCycles) 
 { 
   cyclicReset = numCycles; 
@@ -115,7 +116,7 @@ void TurtleSource::setResetAfterCycles(int numCycles)
 
 void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
 {
-  /*
+
   lineCountReset      = numLines;
   lineCountResetFloor = (int) lineCountReset;
   lineCountResetFrac  = lineCountReset - lineCountResetFloor; 
@@ -128,8 +129,9 @@ void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
     lineCountResetAlt  = lineCountResetFloor;
 
   incUpToDate = false; // because computing the inc uses min(numLines, lineCountReset)
-  */
+
 }
+  */
 
 void TurtleSource::setResetRatio(int i, double newRatio)
 {
@@ -268,9 +270,11 @@ void TurtleSource::goToNextLineSegment()
 
 
   lineIndex++;
-  if(lineIndex == numLines) {
+  if(lineIndex >= numLines) {
     lineIndex = 0;
 
+    /*
+    // obsolete:
     cycleCount++;
     if(cyclicReset == 0)
       cycleCount = 0;
@@ -279,6 +283,7 @@ void TurtleSource::goToNextLineSegment()
       resetTurtle();
       updateXY();
     }
+    */
 
 
   }
@@ -378,6 +383,7 @@ void TurtleSource::updateResetterVariables()
   for(int i = 0; i < numResetters; i++)
   {
     double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/frequency);
+    //double interval = (numLines+1) * (1/resetRatios[i] + resetOffsets[i]/frequency);
     resetters[i].setInterval(interval);
   }
 
@@ -460,7 +466,6 @@ BUGS:
 
 Ideas:
 
--make TurningAngle modulatable
 -optionally compensate for changes in turning-angle by a rotation of the whole image, i.e. rotate
  image by -TurningAngle ..or maybe -compensationAmount*TurningAngle
 -requires to not pre-render a wavetable but only render the L-system output string and interpret 

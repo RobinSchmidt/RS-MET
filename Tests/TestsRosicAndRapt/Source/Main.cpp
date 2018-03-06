@@ -73,8 +73,8 @@ int main(int argc, char* argv[])
   // Genrators:
   //testOscillatorStereo();
   //testLorentzSystem();
-  //testSnowflake();
-  testResetter();
+  testSnowflake();
+  //testResetter();
   //testSnowflakeResetting();
 
 

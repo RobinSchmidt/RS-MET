@@ -112,7 +112,7 @@ bool rotes::testSnowflake()
   sf.clearRules();
   sf.setAxiom("F+F+F+F+");
   sf.setNumIterations(0);
-  sf.setAngle(90);
+  sf.setTurnAngle(90);
   sf.updateAllInternals();
 
   sf.setUseTable(false);
@@ -200,7 +200,7 @@ void rotes::testSnowflakeResetting()
   sf.setAxiom("LFL+F+LFL+F+");
   sf.addRule('L', "-RF+LFL+FR-");
   sf.addRule('R', "+LF-RFR-FL+");
-  sf.setAngle(90);
+  sf.setTurnAngle(90);
   sf.setUseTable(false);
 
   // these are the parameters, on which this modulation frequency depends - tweak them:

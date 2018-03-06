@@ -104,14 +104,14 @@ public:
   todo: let the user set up a number of lines after which to reset - that number may or may not a 
   multiple of the number of lines in the drawing (if it is, it corresponds to resetting after a 
   number of cycles). */
-  void setResetAfterCycles(int numCycles);
+  //void setResetAfterCycles(int numCycles);
 
   /** Sets the number of lines that the turtle generates before it is reset into its initial state.
   This resetting works in addition to the one effected by setResetAfterCycles. The number of lines
   given here does not need to be an integer. If it's 100.5, the actual counter will alternately 
   count up to 100 and 101, if it's 100.25 it will count to 100 3 times, then once to 101 and so 
   on. */
-  void setResetAfterLines(double numLines);
+  //void setResetAfterLines(double numLines);
 
   // under construction - to compute resetInterval = numLines * (param1 + param2/inc):
   void setResetRatio(double newRatio);               // param1
