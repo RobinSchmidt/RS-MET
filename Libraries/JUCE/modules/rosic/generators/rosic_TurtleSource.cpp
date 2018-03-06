@@ -108,31 +108,6 @@ void TurtleSource::setRotation(double newRotation)
   rotator.setAngle((PI/180) * newRotation);
 }
 
-  /*
-void TurtleSource::setResetAfterCycles(int numCycles) 
-{ 
-  cyclicReset = numCycles; 
-}
-
-void TurtleSource::setResetAfterLines(double numLines)  // doule take a double
-{
-
-  lineCountReset      = numLines;
-  lineCountResetFloor = (int) lineCountReset;
-  lineCountResetFrac  = lineCountReset - lineCountResetFloor; 
-
-  // maybe factor out:
-  if(lineCountResetErr > 0.5) {
-    lineCountResetAlt  = lineCountResetFloor+1;
-    lineCountResetErr -= 1.0; }
-  else
-    lineCountResetAlt  = lineCountResetFloor;
-
-  incUpToDate = false; // because computing the inc uses min(numLines, lineCountReset)
-
-}
-  */
-
 void TurtleSource::setResetRatio(int i, double newRatio)
 {
   resetRatios[i] = newRatio;
@@ -143,18 +118,6 @@ void TurtleSource::setResetRatio(int i, double newRatio)
 void TurtleSource::setResetOffset(int i, double newOffset)
 {
   resetOffsets[i] = newOffset;
-  updateResetterVariables();
-}
-
-void TurtleSource::setResetRatio(double newRatio)
-{
-  //resetRatio = newRatio;
-  updateResetterVariables();
-}
-
-void TurtleSource::setResetRatioOffsetOverInc(double newValue)
-{
-  //resetOffset = newValue;
   updateResetterVariables();
 }
 
@@ -193,7 +156,7 @@ void TurtleSource::reset()
   cycleCount = 0;
   resetTurtle();
   resetCounters();
-  updateXY();      // rename to drawNextLineToBuffer
+  updateLineBuffer();
   lineIndex = 0;
 }
 
@@ -231,73 +194,20 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
 
 void TurtleSource::goToNextLineSegment()
 {
-  updateXY();
-
+  updateLineBuffer();
   bool reset = false;
   for(int i = 0; i < numResetters; i++)
     reset |= resetters[i].tick();
-  if(reset)
-  {
+  if(reset) {
     resetTurtle();
-    updateXY(); 
+    updateLineBuffer(); 
   }
-
-
-  /*
-  if(lineCountReset != 0) 
-  {
-    lineCount++;
-
-    if(lineCount >= lineCountResetAlt) { // >= not ==, bcs we may get beyond when user adjusts it
-      lineCount = 0;
-      resetTurtle();
-      updateXY(); 
-
-      // we (possibly) alternate between floor and ceil of the non-integer lineCountReset setting 
-      // in an appropriate way (by keeping track of an accumulated fractional error), such that the 
-      // desired non-integer reset interval is attained on the average (maybe factor out):
-      lineCountResetErr += lineCountResetFrac;
-      if(lineCountResetErr > 0.5) {
-        lineCountResetAlt  = lineCountResetFloor+1;
-        lineCountResetErr -= 1.0;
-      }
-      else
-        lineCountResetAlt  = lineCountResetFloor;
-    }
-  }
-  */
-
-
-
   lineIndex++;
-  if(lineIndex >= numLines) {
+  if(lineIndex >= numLines)
     lineIndex = 0;
-
-    /*
-    // obsolete:
-    cycleCount++;
-    if(cyclicReset == 0)
-      cycleCount = 0;
-    else if(cycleCount >= cyclicReset) {
-      cycleCount = 0;
-      resetTurtle();
-      updateXY();
-    }
-    */
-
-
-  }
 }
 
-// make reset of the turtle optional, or reset after a certain number of cycles, 0: never
-// reset. the turtle is free running in this case. when the angle is slightly off the perfect
-// value, the picture rotates - but we need to make sure to define axioms in a way that they
-// head into the same direction as in the beginning after completing the cycle, for example
-// "F--F--F--" instead of "F--F--F" for the initial triangle for the koch snowflake
-// maybe have a soft-reset parameter that resets only partially (i.e. interpolates between
-// current and initial state )
-
-void TurtleSource::updateXY()  // // rename to drawNextLineToBuffer or updateLineBuffer
+void TurtleSource::updateLineBuffer()
 {
   if(turtleCommands.size() == 0)
     return;
@@ -350,58 +260,18 @@ void TurtleSource::updateXY()  // // rename to drawNextLineToBuffer or updateLin
   }
 }
 
-// obsolete soon:
 void TurtleSource::updateResetterVariables()
 {
-  /*
-  lineCountReset  = numLines / resetRatio; 
-  lineCountReset += resetOffset * numLines/frequency; // no sample-rate?
-   //...okay...this sounds good - but it would be better, if we could scale it such that the 
-   // apparent modulation frequency is eneterd in Hz...or maybe it is already?...yes - it seems so
-
-  if(lineCountReset >= 2147483647) {  // 2^31-1
-    lineCountReset      = 0.0;
-    lineCountResetFloor = 0;
-    lineCountResetFrac  = 0.0;
-    lineCountResetErr   = 0.0; }
-  else
-  {
-    lineCountResetFloor = (int)lineCountReset;
-    lineCountResetFrac  = lineCountReset - lineCountResetFloor;
-    lineCountResetErr   = -lineCountResetFrac; // it should start at 0, but in the next statement, frac gets added
-  }
-
-  // maybe factor out (it's used in goToNextLineSegment in the same form):
-  lineCountResetErr += lineCountResetFrac; // to make it the same as in goToNextLineSegment (for factoring out later)
-  if(lineCountResetErr > 0.5) {
-    lineCountResetAlt  = lineCountResetFloor+1;
-    lineCountResetErr -= 1.0; }
-  else
-    lineCountResetAlt  = lineCountResetFloor;
-    */
-
   for(int i = 0; i < numResetters; i++)
   {
     double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/frequency);
-    //double interval = (numLines+1) * (1/resetRatios[i] + resetOffsets[i]/frequency);
     resetters[i].setInterval(interval);
   }
-
   incUpToDate = false; // because computing the inc uses min(numLines, minResetInterval)
 }
 
 void TurtleSource::updateIncrement()
 {
-  // older:
-  //inc = numLines * frequency / sampleRate; // avoid division
-
-  //// old:
-  //if(lineCountReset == 0)
-  //  inc = numLines * frequency / sampleRate;
-  //else
-  //  inc = rmin(lineCountReset, double(numLines)) * frequency / sampleRate;
-
-  // new:
   double minLength = double(numLines);
   for(int i = 0; i < numResetters; i++)
     minLength = rmin(minLength, resetters[i].getInterval());
@@ -410,8 +280,6 @@ void TurtleSource::updateIncrement()
   // hmm...the pitch goes down when ratio is below 1 (and the old, cyclic reset is off)
   // ...ahh - i think that's ok and expected - we should use a direction fix in the axiom to 
   // avoid this
-
-
 
   // turtle.setBackwardMode(inc < 0);
 
@@ -461,8 +329,10 @@ void TurtleSource::updateMeanAndNormalizer()
 /*
 BUGS:
 -the pitch is resetting mode is not the same as in free-runing mode for closed curves - test
- with patch BuzzingTriangles (maybe add ++ to axiom, if necessarry) 
--drawing a square with resetting draws only 3 edges - the last edge is missing - off-by-1 error?
+ with patch BuzzingTriangles (maybe add ++ to axiom, if necessarry) ...still true?
+-in resetting mode, there's a click at the beginning of a note, in free-running mode, there's no 
+ such click
+
 
 Ideas:
 
@@ -520,23 +390,6 @@ Ideas:
 -provide independent resets for turtle position and direction
 -maybe the line count reset can be made continuous by alternating between floor and ceil of the 
  given number...or maybe by just comparing "pos" to lineCountReset in getSampleFrame?
- -maybe then it can be expressed also as fraction of the cycle-Length?
- -maybe then the cyclic reset can be continuous? too
- -maybe we can then have an arbitrary number of independent reset-counters?
--the reset intervals need keytracking because otherwise the speed of the "modulation" depends on
- the note (and is unpleasantly fast for higher notes)
--ideal would be a parameter that the user can set up in terms of the modulation speed 
- -that seems to depend on the difference between (a multiple of) numLines and lineCountReset 
-  if lineCountReset is close to a multiple of numLines, modulation is slow - but the multiple
-  can also be 1.5 ...but also, the higher the multiple, the slower and the higher the played
-  note, the faster, so 
-  speed = k * (numLines-resetInterval) * noteFreq?
-  that k depends in some way on the ratio resetInterval/numLines - maybe gcd/lcm is involved?
-  OR: have two params: resetInterval = numLines * (param1 + param2/inc)
--have 2 or three of these reset parameters Reset1, Reset2, Reset3 -> can replace the old
- CyclicReset paremeter -> nice complex buzzing sounds
--maybe make a dedicated ResetManager class that can support an arbitrary number of independent
- reset counters
 -maybe reset or don't reset when the counter has reached its limit, depending the value of a 
  binary sequence ("reset sequence"). see PGCA for generation methods for binary sequences. also,
  L-system output can be used, interpreting '+' as '1' and '-' as '0'...or a dedicated L-system,

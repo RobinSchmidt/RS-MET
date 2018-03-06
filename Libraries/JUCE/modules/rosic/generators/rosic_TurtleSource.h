@@ -113,11 +113,11 @@ public:
   on. */
   //void setResetAfterLines(double numLines);
 
-  // under construction - to compute resetInterval = numLines * (param1 + param2/inc):
-  void setResetRatio(double newRatio);               // param1
-  void setResetRatioOffsetOverInc(double newValue);  // param2 - find better name
-  // replace by an array of independent resetters, maybe factor resetting out into a class 
-  // ResetManager
+  //// under construction - to compute resetInterval = numLines * (param1 + param2/inc):
+  //void setResetRatio(double newRatio);               // param1
+  //void setResetRatioOffsetOverInc(double newValue);  // param2 - find better name
+  //// replace by an array of independent resetters, maybe factor resetting out into a class 
+  //// ResetManager
 
 
   // these functions are only to provide appropriate callback targets - maybe handle this in 
@@ -259,7 +259,9 @@ protected:
   including a wraparound. */
   void goToNextLineSegment();
 
-  void updateXY();
+  /** Updates the x,y array the hold the endpoint of the line that is currently being drawn, i.e. 
+  the points between which we currently interpolate. */
+  void updateLineBuffer();
 
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
@@ -303,31 +305,11 @@ protected:
   bool   antiAlias      = false;
   bool   useTable       = false;
 
-
-
   // new resetter stuff:
   static const int numResetters = 2;
   double resetRatios[numResetters];
   double resetOffsets[numResetters];
   ResetCounter resetters[numResetters];
-
-
-  //// user parameters for reset:
-  //double resetRatio  = 1;
-  //double resetOffset = 0;  // this one gets frequency scaled
-
-  //// internal parameter for reset:
-  //double lineCountReset      = 0;  // number of lines aftre which to reset
-  //double lineCountResetFrac  = 0;  // fractional part
-  //double lineCountResetErr   = 0;  // accumulates fractional error
-  //int    lineCountResetFloor = 0;
-  //int    lineCountResetAlt   = 0;  // alternates between floor and ceil
-
-
-
-
-
-
 
   // rendering objects and related variables:
   TurtleGraphics turtle;
