@@ -169,7 +169,7 @@ public:
 
   /** Returns the number of lines produced since the last reset of lineCount. (mostly for figuring
   out resetting behavior) */
-  int getLineCount() const { return lineCount; }
+  //int getLineCount() const { return lineCount; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -266,9 +266,8 @@ protected:
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
 
-  /** Updates internal resetter variables according to the resetter user parameters, numLines, 
-  frequency (and sampleRate?) */
-  void updateResetterVariables();
+  /** Updates the resetters according to the resetter user parameters. */
+  void updateResetters();
 
   /** Updates the wavetable increment according to desired frequency, sample rate and wavetable 
   length. */
@@ -289,8 +288,8 @@ protected:
   int numLines     = 0;           // number of 'F's in turtleCommands
   int lineIndex    = 0;           // index of current line
   int commandIndex = 0;           // index in the list of turtle-commands
-  int cycleCount   = 0;           // counter for generated runs through the curve
-  int lineCount    = 0;           // counter for generated lines
+  //int cycleCount   = 0;           // counter for generated runs through the curve
+  //int lineCount    = 0;           // counter for generated lines
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
   std::string turtleCommands;     // drawing commands for the turtle
 

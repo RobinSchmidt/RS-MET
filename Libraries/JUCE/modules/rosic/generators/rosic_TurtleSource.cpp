@@ -84,7 +84,7 @@ void TurtleSource::setTurtleCommands(const std::string& commands)
   turtleCommands = commands;
   numLines = turtle.getNumberOfLines(turtleCommands); 
   updateMeanAndNormalizer();
-  updateResetterVariables();
+  updateResetters();
   updateIncrement();
   reset();
 }
@@ -92,14 +92,14 @@ void TurtleSource::setTurtleCommands(const std::string& commands)
 void TurtleSource::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
-  updateResetterVariables();
+  updateResetters();
   incUpToDate = false;
 }
 
 void TurtleSource::setFrequency(double newFrequency)
 {
   frequency = newFrequency;
-  updateResetterVariables();
+  updateResetters();
   incUpToDate = false;
 }
 
@@ -111,14 +111,14 @@ void TurtleSource::setRotation(double newRotation)
 void TurtleSource::setResetRatio(int i, double newRatio)
 {
   resetRatios[i] = newRatio;
-  updateResetterVariables(); // maybe we don't need to update all resetters - have a function
-                             // that only updates one particular resetter
+  updateResetters(); // maybe we don't need to update all resetters - have a function
+                     // that only updates one particular resetter
 }
 
 void TurtleSource::setResetOffset(int i, double newOffset)
 {
   resetOffsets[i] = newOffset;
-  updateResetterVariables();
+  updateResetters();
 }
 
 void TurtleSource::setTurnAngle(double newAngle) 
@@ -153,7 +153,6 @@ void TurtleSource::updateWaveTable()
 void TurtleSource::reset()
 {
   pos = 0;
-  cycleCount = 0;
   resetTurtle();
   resetCounters();
   updateLineBuffer();
@@ -260,7 +259,7 @@ void TurtleSource::updateLineBuffer()
   }
 }
 
-void TurtleSource::updateResetterVariables()
+void TurtleSource::updateResetters()
 {
   for(int i = 0; i < numResetters; i++)
   {
