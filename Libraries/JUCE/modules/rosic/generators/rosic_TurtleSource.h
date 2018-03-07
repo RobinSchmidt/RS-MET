@@ -289,8 +289,11 @@ protected:
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
-  int numLines     = 0;           // number of 'F's in turtleCommands
-  int lineIndex    = 0;           // index of current line
+
+  int numLines       = 0;         // number of 'F's in turtleCommands
+  int lineIndex      = 0;         // index of current line
+  int startLineIndex = 0;
+
   std::string turtleCommands;          // string of drawing commands for the turtle
   int commandIndex = 0;                // current index in the list of turtle-commands
   int startCommandIndex = 0;           // index of the first command to be executed after reset

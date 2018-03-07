@@ -35,10 +35,13 @@ void Snowflake::createParameters()
   p->setValueChangeCallback<SF>(sf, &SF::setTurnAngle);
   p->setValue(60, true, true); // Koch snowflake needs 60°
 
-  p = new Param("Skew", 0, 360, 0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<SF>(sf, &SF::setSkew);
+  //p = new Param("Skew", 0, 360, 0, Parameter::LINEAR);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<SF>(sf, &SF::setSkew);
 
+  p = new Param("Start", 0, 1, 0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setStartPosition);
 
   p = new Param("Amplitude", -1, 1, 1, Parameter::LINEAR);
   addObservedParameter(p);
@@ -290,11 +293,17 @@ void SnowflakeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
-  addWidget( sliderSkew = s = new Sld );
-  s->assignParameter( p = snowflakeModule->getParameterByName("Skew") );
-  s->setDescription("Offset between left and right turn angle");
+  addWidget( sliderStart = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("Start") );
+  s->setDescription("Normalized start position in cycle");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
+
+  //addWidget( sliderSkew = s = new Sld );
+  //s->assignParameter( p = snowflakeModule->getParameterByName("Skew") );
+  //s->setDescription("Offset between left and right turn angle");
+  //s->setDescriptionField(infoField);
+  //s->setStringConversionFunction(&valueToString2);
 
 
   addWidget( sliderAmplitude = s = new Sld );
@@ -394,6 +403,7 @@ void SnowflakeEditor::resized()
 
 
   sliderAngle->setBounds(x, y, w, wh); y += dy;
+  sliderStart->setBounds(x, y, w, wh); y += dy;
   
   //sliderSkew->setBounds(x, y, w, wh); y += dy;
 

@@ -112,6 +112,8 @@ void TurtleSource::setRotation(double newRotation)
 void TurtleSource::setStartPosition(double newPosition)
 {
   startPos = newPosition;
+  startLineIndex = (int) (startPos*numLines);
+  startCommandIndex = lineCommandIndices[startLineIndex];
 }
 
 void TurtleSource::setResetRatio(int i, double newRatio)
