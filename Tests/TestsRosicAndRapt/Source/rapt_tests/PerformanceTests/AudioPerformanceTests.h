@@ -5,5 +5,7 @@
 
 void ladderPerformance();
 void engineersFilterPerformance();
+void turtleGraphicsPerformance();
+
 
 #endif

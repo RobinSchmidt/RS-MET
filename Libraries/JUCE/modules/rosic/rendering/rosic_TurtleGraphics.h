@@ -65,6 +65,9 @@ public:
   /** Returns true, if the given character is a drawing command */
   bool isCommand(char c);
 
+  /** Returns true, if the given character is a command that draws a line, i.e. 'F' or 'G'. */
+  bool isLineCommand(char c);
+
   /** Given a string that supposedly contains drawing commands, this function returns the number of
   output lines in the drawing, that this string would produce. It just counts the number of 
   occurrences of characters that draw a line, i.e 'F' and 'G'. */

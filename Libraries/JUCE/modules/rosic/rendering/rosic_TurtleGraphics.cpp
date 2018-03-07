@@ -87,6 +87,26 @@ void TurtleGraphics::translate(const std::string& str,
       vy.push_back(getY()); 
     }
   }
+  
+  /*
+  // try, if it is faster to pre-compute and pre-allocate the number of lines (given that the 
+  // vectors vx, vy already have enough capacity - i.e. they have reserved enough memory via 
+  // reserve() but the size() is still lower than the reserved number):
+  int numLines = getNumberOfLines(str);
+  vx.resize(numLines+1);
+  vy.resize(numLines+1);
+  vx[0] = getX();
+  vy[0] = getY();
+  int j = 1;
+  for(int i = 0; i < str.size(); i++) {
+    if(interpretCharacter(str[i])) {
+      vx[j] = getX(); 
+      vy[j] = getY();
+      j++;
+    }
+  }
+  // hmm...doesn't seem to make much difference
+  */
 }
 
 bool TurtleGraphics::interpretCharacter(char c)
@@ -127,11 +147,17 @@ bool TurtleGraphics::isCommand(char c)
   return c=='+' || c=='-' || c=='F' || c=='f' || c=='G' || c=='[' || c==']' || c=='|';
 }
 
+bool TurtleGraphics::isLineCommand(char c)
+{
+  return c == 'F' || c == 'G';
+}
+
 int TurtleGraphics::getNumberOfLines(const std::string& s)
 {
   int n = 0;
   for(int i = 0; i < s.size(); i++)
-    if(s[i] == 'F' || s[i] == 'G') n++;
+    if(isLineCommand(s[i])) n++;
+    //if(s[i] == 'F' || s[i] == 'G') n++;
   return n;
 }
 

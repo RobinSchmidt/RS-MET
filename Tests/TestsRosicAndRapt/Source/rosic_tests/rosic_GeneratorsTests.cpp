@@ -118,12 +118,12 @@ bool rotes::testSnowflake()
   sf.setUseTable(false);
 
   sf.reset();
-  sf.setResetAfterCycles(1);  // reset after each cycle
+  sf.setResetRatio(0, 1);  // reset after each cycle
   for(n = 0; n < N; n++) 
     sf.getSampleFrameStereo(&x1[n], &y1[n]);
 
   sf.reset();
-  sf.setResetAfterCycles(0);  // never reset
+  sf.setResetRatio(0, 0);  // never reset
   for(n = 0; n < N; n++) 
     sf.getSampleFrameStereo(&x0[n], &y0[n]);
 
@@ -192,7 +192,7 @@ bool rotes::testResetter()
 void rotes::testSnowflakeResetting()
 {
   // We test how the apparent "modulation" frequency depends on the reset interval, number of
-  // turtle lines and signal frequency
+  // turtle lines and signal frequency..ok - this is done - this experiment can actually be deleted
 
   // create a snowflake that produces a Moore curve:
   rosic::Snowflake sf;
@@ -204,14 +204,14 @@ void rotes::testSnowflakeResetting()
   sf.setUseTable(false);
 
   // these are the parameters, on which this modulation frequency depends - tweak them:
-  sf.setResetAfterCycles(1);
-  sf.setResetAfterLines(66);
+  sf.setResetRatio(0, 1);
+  //sf.setResetAfterLines(66);
   sf.setNumIterations(2);    // 0->4, 1->16, 2->64, 3->256, 4->1024
   sf.setSampleRate(8192.0);
   sf.setFrequency(24.0);
   sf.updateAllInternals();
 
-
+  /*
   // create test output
   int N = 8192;  // number of samples  
   int n;         // sample index
@@ -228,8 +228,6 @@ void rotes::testSnowflakeResetting()
     if(r[n] == 1 && r[n-1] == 0)
       lineCountResets.push_back(n); }
 
-
-
   //rosic::writeToStereoWaveFile("MooreCurveResetting.wav", &x[0], &y[0], N, 8192, 16);
 
   // plot left and right signal aginst sample index:
@@ -238,6 +236,8 @@ void rotes::testSnowflakeResetting()
   //plt.addDataArrays(N, &y[0]);
   plt.addDataArrays(N, &r[0]); // samples, weher lineCount == 0
   plt.plot();
+  */
+
 
   // Observations:
   // Notation: L: num lines, C: cycle count reset interval, R: line count reset interval, 

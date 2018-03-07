@@ -83,6 +83,7 @@ void TurtleSource::setTurtleCommands(const std::string& commands)
 {
   turtleCommands = commands;
   numLines = turtle.getNumberOfLines(turtleCommands); 
+  updateLineCommandIndices();
   updateMeanAndNormalizer();
   updateResetters();
   updateIncrement();
@@ -108,17 +109,21 @@ void TurtleSource::setRotation(double newRotation)
   rotator.setAngle((PI/180) * newRotation);
 }
 
+void TurtleSource::setStartPosition(double newPosition)
+{
+  startPos = newPosition;
+}
+
 void TurtleSource::setResetRatio(int i, double newRatio)
 {
   resetRatios[i] = newRatio;
-  updateResetters(); // maybe we don't need to update all resetters - have a function
-                     // that only updates one particular resetter
+  updateResetter(i);
 }
 
 void TurtleSource::setResetOffset(int i, double newOffset)
 {
   resetOffsets[i] = newOffset;
-  updateResetters();
+  updateResetter(i);
 }
 
 void TurtleSource::setTurnAngle(double newAngle) 
@@ -150,6 +155,18 @@ void TurtleSource::updateWaveTable()
   tableUpToDate = true;
 }
 
+void TurtleSource::updateLineCommandIndices()
+{
+  lineCommandIndices.resize(numLines);
+  int j = 0;
+  for(int i = 0; i < turtleCommands.size(); i++) {
+    if(turtle.isLineCommand(turtleCommands[i])) {
+      lineCommandIndices[j] = i;
+      j++;
+    }
+  }
+}
+
 void TurtleSource::reset()
 {
   pos = 0;
@@ -163,6 +180,11 @@ void TurtleSource::resetTurtle()
 {
   commandIndex = 0;
   turtle.init(0, 0, 1, 0);
+  // todo: use startPos, read out the table at the position corresponding to startPos (with linear
+  // interpolation...or maybe rounding is better?), set dx,dy to the differences between the two
+  // neighbouring points...oh...and also find the command-index that corresponds to the line 
+  // segment...hmm...but how? maybe we need to keep a table of command-indices (indexed by 
+  // line-number)
 }
 
 void TurtleSource::resetCounters()
@@ -262,10 +284,13 @@ void TurtleSource::updateLineBuffer()
 void TurtleSource::updateResetters()
 {
   for(int i = 0; i < numResetters; i++)
-  {
-    double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/frequency);
-    resetters[i].setInterval(interval);
-  }
+    updateResetter(i);
+}
+
+void TurtleSource::updateResetter(int i)
+{
+  double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/frequency);
+  resetters[i].setInterval(interval);
   incUpToDate = false; // because computing the inc uses min(numLines, minResetInterval)
 }
 
@@ -404,6 +429,10 @@ Ideas:
  (but with different modulators) will give interesting sounds
 -Let the turtle interpret '|': turn around (180°), g: forward without line, B,b: backward with and 
  without line
+-maybe dc-subtraction, normalization, rotation can be applied already to the content of the
+ line buffer - that would make sounds where inc < 1 faster to compute and sounds where inc > 1 
+ slower...hmm...the latter part seems bad, since they are already slow to compute...
+ so maybe it's not a good idea
 
 
 */

@@ -50,6 +50,9 @@ protected:
   int    counter;        // the actual counter
 
 };
+// maybe it can be implemented much simpler by just using double for the counter and limit - why
+// do i make it more complicated than necessary? ...maybe implement an alternative counter and do
+// unit- and performance tests
 
 
 //=================================================================================================
@@ -95,29 +98,15 @@ public:
   /** Sets a rotation angle (in degrees) to be applied to the produced xy coordinate pair. */
   void setRotation(double newRotation);
 
-  /** Sets the number of cycles, the turtle has to run trough its command-string before it 
-  will be reset into its initial state. When 0 is passed, the turtle will not reset at all, i.e.
-  it is in free running mode. A free running turtle can make a rotating picture, if the turtle 
-  ends up in the (almost) the same position after one cycle but heads toward a sligtly different 
-  direction tha when starting the cycle.
-  
-  todo: let the user set up a number of lines after which to reset - that number may or may not a 
-  multiple of the number of lines in the drawing (if it is, it corresponds to resetting after a 
-  number of cycles). */
-  //void setResetAfterCycles(int numCycles);
-
-  /** Sets the number of lines that the turtle generates before it is reset into its initial state.
-  This resetting works in addition to the one effected by setResetAfterCycles. The number of lines
-  given here does not need to be an integer. If it's 100.5, the actual counter will alternately 
-  count up to 100 and 101, if it's 100.25 it will count to 100 3 times, then once to 101 and so 
-  on. */
-  //void setResetAfterLines(double numLines);
-
-  //// under construction - to compute resetInterval = numLines * (param1 + param2/inc):
-  //void setResetRatio(double newRatio);               // param1
-  //void setResetRatioOffsetOverInc(double newValue);  // param2 - find better name
-  //// replace by an array of independent resetters, maybe factor resetting out into a class 
-  //// ResetManager
+  /** Sets the starting position within the curve as normalized value between 0 and 1. The value, 
+  you give here, will be quantized to the start of the nearest line segment and a new setting will 
+  take effect on the next reset. */
+  void setStartPosition(double newPosition);
+  // not yet implemented...maybe it's not a good idea to round to the next integer line position
+  // because when combining outputs of 2 L-systems with different numbers of iterations, they may
+  // fall out of sync...maybe, we even have to do something more to make sure that line segments
+  // in the lower order system are synced to corresponding sets of line segments in the higher 
+  // order system (via keeping track of which commands spawned which child commands)
 
 
   // these functions are only to provide appropriate callback targets - maybe handle this in 
@@ -128,14 +117,20 @@ public:
   void setResetOffset2(double newOffset) { setResetOffset(1, newOffset); }
 
   // ....and keep only these here:
+
+  /** Sets the reset interval as a ratio with respect to the length of the cycle (i.e. the number 
+  of lines). If there are 100 lines and this parameter is set to 1, the turtle drawer will be 
+  reset into its initial state after drawing 100 lines. If it's set to 0, it will never reset, i.e.
+  it set the turtle into free-running mode. In general, it will reset after numLines/ratio. If this 
+  results in a non-integer number, we will use jittering to attain the desired interval on the 
+  average. For example, if numLines/ratio = 100.25 when there are 100 lines, it will reset after 
+  100 lines 3 times, then once after 101 lines and so on. */
   void setResetRatio( int index, double newRatio);
-  void setResetOffset(int index, double newValue);
 
-
-
-
-
-
+  /** Sets a frequency dependent offset to the ratio that is set up by setResetRatio. The frequency
+  scaling ha the effect that the apparent modulation frequency resulting for the offset will stay
+  constant across the keyboard. */
+  void setResetOffset(int index, double newOffset);
 
   /** Sets the method that is used to interpolate between the sequence of points that the turtle 
   generates. */
@@ -158,12 +153,12 @@ public:
   /** Sets the turning angle for the turtle-graphics interpreter. */
   void setTurnAngle(double newAngle);
 
-  void setSkew(double newAngle);
+  void setSkew(double newAngle); // nope - that doesn't work as expected
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  /** Returns the number of lines that the trutel would produce according to the current command 
+  /** Returns the number of lines that the turtle would produce according to the current command 
   string. */
   virtual int getNumTurtleLines();
 
@@ -255,22 +250,29 @@ protected:
   the target line.  */
   void goToLineSegment(int targetLineIndex);
 
-  /** Goes form the current line segment (defined by member lineIndex) to the next, possibly 
+  /** Goes from the current line segment (defined by member lineIndex) to the next, possibly 
   including a wraparound. */
   void goToNextLineSegment();
 
-  /** Updates the x,y array the hold the endpoint of the line that is currently being drawn, i.e. 
+  /** Updates the x,y arrays that hold the endpoint of the line that is currently being drawn, i.e. 
   the points between which we currently interpolate. */
   void updateLineBuffer();
 
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
 
-  /** Updates the resetters according to the resetter user parameters. */
+  /** Updates our array of indices of the line-drawing commands inside the turtle command 
+  string. */
+  void updateLineCommandIndices();
+
+  /** Updates all the resetters. */
   void updateResetters();
 
-  /** Updates the wavetable increment according to desired frequency, sample rate and wavetable 
-  length. */
+  /** Updates the resetter with the given index according to the resetter user parameters. */
+  void updateResetter(int index);
+
+  /** Updates the wavetable increment according to desired frequency, sample rate and number of 
+  lines. */
   void updateIncrement();
    
   /** Updates our meanX, meanY, normalizer members according to the current turtleCommands and 
@@ -283,15 +285,16 @@ protected:
   // state for on-the fly rendering:
   double pos = 0;                 // position in wavetable / string
   double inc = 0;                 // wavetable increment
+  double startPos = 0;            // start position, normalized to 0..1
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
+  double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
   int numLines     = 0;           // number of 'F's in turtleCommands
   int lineIndex    = 0;           // index of current line
-  int commandIndex = 0;           // index in the list of turtle-commands
-  //int cycleCount   = 0;           // counter for generated runs through the curve
-  //int lineCount    = 0;           // counter for generated lines
-  double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
-  std::string turtleCommands;     // drawing commands for the turtle
+  std::string turtleCommands;          // string of drawing commands for the turtle
+  int commandIndex = 0;                // current index in the list of turtle-commands
+  int startCommandIndex = 0;           // index of the first command to be executed after reset
+  std::vector<int> lineCommandIndices; // indices for the line commands
 
   // parameters:
   double amplitude      = 1;
@@ -304,11 +307,12 @@ protected:
   bool   antiAlias      = false;
   bool   useTable       = false;
 
-  // new resetter stuff:
+  // resetters:
   static const int numResetters = 2;
   double resetRatios[numResetters];
   double resetOffsets[numResetters];
   ResetCounter resetters[numResetters];
+  // todo: have also reversers that switch periodically between forward and backward drawing
 
   // rendering objects and related variables:
   TurtleGraphics turtle;

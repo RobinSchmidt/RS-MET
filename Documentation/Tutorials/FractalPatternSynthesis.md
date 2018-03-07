@@ -103,6 +103,25 @@ First, we want to look at how we can make sure that the starting point of the cu
 As mentioned in the previous section, it may be useful to reset the turtle's state after each run through the curve. But this is only the simplest strategy to reset the state and there's much more to say about it. In fact, I consider the resetting strategy as one of the major sound design parameters of this synthesis method.
 
 
+### Extensions to Turtle Syntax
+
+In addition to the standard turtle graphics commands mentioned earlier, the implementation in Snowflake supports `G` as an alternative line drawing command for `F` and `|` for a 180° turn.
+
+ToDo:  
+  
+-support `g` as alternative for `f` and `B` for drawing a line backwards (maybe also `b` for going backwards without drawing)
+-support `+30` etc. to mean turn 30 degrees left, regardless what the global turn angle setting is
+-support `*` and `/` to mean multiply or divide step length by a factor (which is another global parameter)
+-support `*2`, `/2` etc to mean: multiply or divide step length by 2, regardless what the global multiplication factor is
+-support `F2` to mean: draw two line segments forward
+
+
+### Extensions to Lindenmayer Syntax
+
+ToDo:  
+-allow user to define a set of named rule-sets, for example A: F = F+F; B: = F = F-F and instead of specifying a number of iterations, the user specifies an iteration/application string like AABBBA which means: apply A 3 times, then B two times then A once. support also a syntax like A3B2A
+
+
 
 
 

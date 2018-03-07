@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
   // Genrators:
   //testOscillatorStereo();
   //testLorentzSystem();
-  testSnowflake();
+  //testSnowflake();
   //testResetter();
   //testSnowflakeResetting();
 
@@ -99,6 +99,7 @@ int main(int argc, char* argv[])
 
   //ladderPerformance();
   //engineersFilterPerformance();
+  turtleGraphicsPerformance();
 
 
   //-----------------------------------------------------------------------------------------------

@@ -76,3 +76,24 @@ void engineersFilterPerformance()
   // the performance gain is just a factor of 1.4, not 2...maybe try to have the filter coeffs of
   // type rsFloar64x2 too?
 }
+
+void turtleGraphicsPerformance()
+{
+  //rosic::TurtleGraphics tg;
+  rosic::LindenmayerRenderer lr;
+  //int order = 5;
+  std::vector<double> x, y;
+
+  ProcessorCycleCounter counter;
+  double cycles;
+
+  counter.init(); 
+  lr.getMooreCurve(4, x, y);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("Moore Curve 4, 1st time", cycles); // around 500 000
+
+  counter.init(); 
+  lr.getMooreCurve(4, x, y);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("Moore Curve 4, 2nd time", cycles); // around 350 000
+}
