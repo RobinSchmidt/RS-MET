@@ -161,14 +161,15 @@ XmlElement* Snowflake::getStateAsXml(const juce::String& stateName, bool markAsC
 XmlElement Snowflake::convertXmlStateIfNecessary(const XmlElement& inputXml)
 {
   XmlElement xml = inputXml;
+    double val;
 
-  double val;	
-  val = xml.getDoubleAttribute("CyclicReset", 1.0);
+  if(!xml.hasAttribute("ResetRatio1")) {
+    val = xml.getDoubleAttribute("CyclicReset", 1.0);
+    xml.setAttribute("ResetRatio1", rosic::round(val));
+  }
+
   xml.removeAttribute("CyclicReset");
-  xml.setAttribute("ResetRatio1", rosic::round(val));
-
   xml.removeAttribute("LineCountReset");
-
   return xml;
 }
 

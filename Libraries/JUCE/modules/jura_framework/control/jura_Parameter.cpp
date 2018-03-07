@@ -400,7 +400,10 @@ void Parameter::recallFromXml(const XmlElement& xml)
     if(isStringParameter())
       setStringValue(xml.getStringAttribute(getName(), getDefaultStringValue()), true, true);
     else
-      setValue(xml.getDoubleAttribute(getName(), getDefaultValue()), true, true); 
+    {
+      double dbg = xml.getDoubleAttribute(getName(), INF);
+      setValue(xml.getDoubleAttribute(getName(), getDefaultValue()), true, true);
+    }
   }
 }
 
