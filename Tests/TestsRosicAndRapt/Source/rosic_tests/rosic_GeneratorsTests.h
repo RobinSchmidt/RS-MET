@@ -10,7 +10,7 @@ namespace rotes
   void testLorentzSystem();
   bool testSnowflake();
   bool testResetter();
-  void testSnowflakeResetting();
+  void testTurtleReverse();
 
 
 }

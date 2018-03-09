@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
   //testLorentzSystem();
   //testSnowflake();
   //testResetter();
-  //testSnowflakeResetting();
+  testTurtleReverse();
 
 
   //===============================================================================================
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 
   //ladderPerformance();
   //engineersFilterPerformance();
-  turtleGraphicsPerformance();
+  //turtleGraphicsPerformance();
 
 
   //-----------------------------------------------------------------------------------------------
