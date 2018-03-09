@@ -419,6 +419,10 @@ BUGS:
  such click
 -when start-position is > 0 and the number of iterations is reduced, we may get access violations
  (i think, it tries to reset to a line-number that has become invalid)
+-for the AlienFace patch, start-point modulation gives chaotic behavior. May this have to do with
+ the state-stack? If so, what can be done - maybe just disable start-point modulation when the 
+ rules and/or axiom contains '[', ']'? ...may this mess up reversal behavior, too?
+ ...maybe disable the feature for now...doesn't seem to be very useful anyway
 
 
 Ideas:

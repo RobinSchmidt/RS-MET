@@ -404,8 +404,8 @@ void SnowflakeEditor::resized()
 
 
   sliderAngle->setBounds(x, y, w, wh); y += dy;
-  sliderStart->setBounds(x, y, w, wh); y += dy;
-  
+
+  //sliderStart->setBounds(x, y, w, wh); y += dy; // doesn't seem to be very useful and creates problems
   //sliderSkew->setBounds(x, y, w, wh); y += dy;
 
   // put result (2D and 1D plots here)
