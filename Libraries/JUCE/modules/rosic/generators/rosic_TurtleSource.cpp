@@ -331,6 +331,44 @@ void TurtleSource::updateIncrement()
 
 void TurtleSource::updateMeanAndNormalizer()
 {
+  if(!tableUpToDate)
+    updateWaveTable();
+
+  double minX = 0, maxX = 0, minY = 0, maxY = 0, sumX = 0, sumY = 0;
+  int N = (int) tableX.size();
+  for(int i = 0; i < N; i++) {
+    double x = tableX[i];
+    double y = tableY[i];
+    minX  = rmin(minX, x);
+    maxX  = rmax(maxX, x);
+    minY  = rmin(minY, y);
+    maxY  = rmax(maxY, y);
+    sumX += x;
+    sumY += y;
+  }
+  double tmp = 1.0 / (numLines+1); // maybe have a member for that (optimization)
+  meanX = sumX * tmp;
+  meanY = sumY * tmp;
+  minX -= meanX; maxX -= meanX;
+  minY -= meanY; maxY -= meanY;
+  maxX  = rmax(fabs(minX), fabs(maxX));
+  maxY  = rmax(fabs(minY), fabs(maxY));
+  normalizer = 1.0 / rmax(maxX, maxY);
+
+  // in free running mode, this so computed mean is sometimes (often) wrong because one cycle is 
+  // only part (for example half) of a larger shape - in this case, we would need the mean over two 
+  // cycles ...maybe we can somehow deduce the symmetry in order to compute a better mean? maybe we
+  // should offer different normalization modes...maybe have a highpass and leveller running on it
+  // in realtime (but not oversampled)
+
+  // maybe don't use the "mean" but the "center" defined as (min+max)/2 -> avoids computations and 
+  // is probably just as good (especially, when a DC blocking filter is used later anyway)
+}
+
+/*
+// old version - avoids creating the table:
+void TurtleSource::updateMeanAndNormalizer()
+{
   // run through all turtle commands once, thereby keep track of the mean and min/max values of the
   // generated curve, then set our meanX, meanY, normalizer members accordingly
 
@@ -367,6 +405,7 @@ void TurtleSource::updateMeanAndNormalizer()
   // should offer different normalization modes...maybe have a highpass and leveller running on it
   // in realtime (but not oversampled)
 }
+*/
 
 /*
 BUGS:
