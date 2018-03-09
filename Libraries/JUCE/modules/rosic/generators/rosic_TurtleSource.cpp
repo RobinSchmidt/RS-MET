@@ -176,27 +176,29 @@ void TurtleSource::reset()
   resetCounters();
   updateLineBuffer();
 
-  lineIndex = 0; // shouldn't this be done in resetTurtle? ...but this gives a hang
+  // old:
+  //lineIndex = 0; // shouldn't this be done in resetTurtle? ...but this gives a hang
 
-  //lineIndex = startLineIndex; // new
+  // new:
+  lineIndex = startLineIndex;
 }
 
 void TurtleSource::resetTurtle()
 {
-  // old:
-  commandIndex = 0;
-  turtle.init(0, 0, 1, 0);
+  //// old:
+  //commandIndex = 0;
+  //turtle.init(0, 0, 1, 0);
 
-  /*
   // new:
+  if(!tableUpToDate)
+    updateWaveTable();
   int i = startLineIndex;
   commandIndex = lineCommandIndices[i];
-  double x0 = tableX[i]; // table may not yet be up to date
+  double x0 = tableX[i];
   double y0 = tableY[i];
   double x1 = tableX[i+1];
   double y1 = tableY[i+1];
   turtle.init(x0, y0, x1-x0, y1-y0);
-  */
 
   // todo: use startPos, read out the table at the position corresponding to startPos (with linear
   // interpolation...or maybe rounding is better?), set dx,dy to the differences between the two
