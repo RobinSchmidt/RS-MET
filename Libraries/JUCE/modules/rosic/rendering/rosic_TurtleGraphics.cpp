@@ -27,26 +27,40 @@ void TurtleGraphics::goForward()
 {
   xo = x;
   yo = y;
-  x += dx;
-  y += dy;
+  if(!reverseMode) { // maybe use a forwardMode flag to avoid negations in "normal" mode (optimization)
+    x += dx;
+    y += dy; }
+  else {
+    x -= dx;
+    y -= dy; }
 }
 
 void TurtleGraphics::goBackward()
 {
   xo = x;
   yo = y;
-  x -= dx;
-  y -= dy;
+  if(!reverseMode) {
+    x -= dx;
+    y -= dy; }
+  else {
+    x += dx;
+    y += dy; }
 }
 
 void TurtleGraphics::turnLeft()
 {
-  rotLeft.apply(&dx, &dy);
+  if(!reverseMode)
+    rotLeft.apply(&dx, &dy);
+  else
+    rotRight.apply(&dx, &dy);
 }
 
 void TurtleGraphics::turnRight()
 {
-  rotRight.apply(&dx, &dy); // use rotation.applyInverse
+  if(!reverseMode)
+    rotRight.apply(&dx, &dy); // use rotation.applyInverse
+  else
+    rotLeft.apply(&dx, &dy);
 }
 
 void TurtleGraphics::turnAround()
@@ -58,6 +72,8 @@ void TurtleGraphics::turnAround()
 void TurtleGraphics::pushState()
 {
   stateStack.push_back(TurtleState(x, y, dx, dy, xo, yo));
+
+  // i think, in reverse mode, we should swap push/pop operations, too
 }
 
 void TurtleGraphics::popState()
@@ -65,6 +81,8 @@ void TurtleGraphics::popState()
   //rsAssert(stateStack.size() > 0); // may happen during editing the rules
   if(stateStack.size() == 0)
     return;
+
+  // factor out into setState(TurtleState& s):
   TurtleState s = RAPT::rsGetAndRemoveLast(stateStack);
   x  = s.x;   y = s.y;
   dx = s.dx; dy = s.dy;

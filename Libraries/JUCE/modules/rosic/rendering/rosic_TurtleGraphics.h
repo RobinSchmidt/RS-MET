@@ -27,6 +27,11 @@ public:
   rotations with the same sign.  */
   void setAngleDelta(double degrees);
 
+  /** Sets the turtle in a mode where it runs backwards. Encountering a command for a forward step 
+  will result in a backward step. Interpretations of turn commands and state-stack opreations are
+  also modified. */
+  void setReverseMode(bool shouldRunBackward) { reverseMode = shouldRunBackward; }
+
   // maybe have alternating angles: at even step numbers use angle+offset and at odd step numbers
   // angle-offset -> should turn a square into a parallelogram
 
@@ -114,7 +119,7 @@ protected:
 
 
   double angle = 90, angleDelta = 0;
-  bool backwardMode = false;;
+  bool reverseMode = false; 
   std::vector<TurtleState> stateStack;
   RAPT::rsRotationXY<double> rotLeft, rotRight; 
    // use one, have functions apply, applyInverse -> saves one sin/cos computation when angle 
