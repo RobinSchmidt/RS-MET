@@ -113,6 +113,8 @@ void TurtleSource::setStartPosition(double newPosition)
 {
   startPos = newPosition;
   startLineIndex = (int) (startPos*numLines);
+  if(startLineIndex >= numLines)
+    startLineIndex -= numLines;
   startCommandIndex = lineCommandIndices[startLineIndex];
 }
 
@@ -415,6 +417,8 @@ BUGS:
  with patch BuzzingTriangles (maybe add ++ to axiom, if necessarry) ...still true?
 -in resetting mode, there's a click at the beginning of a note, in free-running mode, there's no 
  such click
+-when start-position is > 0 and the number of iterations is reduced, we may get access violations
+ (i think, it tries to reset to a line-number that has become invalid)
 
 
 Ideas:
