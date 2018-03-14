@@ -227,36 +227,68 @@ void rotes::testTurtleReverse()
   plt.plot();
 }
 
+
+void setupTurtleSource(rosic::TurtleSource& ts)
+{
+  // used to set up a TurtleSource to specific settings (the idea is to call it for two objects to
+  // make sure, they have the same settings)
+
+
+  //ts.setTurtleCommands("F+F+F+F+F+");  // regular pentagon
+  //ts.setTurnAngle(72);
+
+  ts.setTurtleCommands("F+F+F+F+");   // square
+  ts.setTurnAngle(90);
+
+  //ts.setTurtleCommands("F+F+F+");   // triangle
+  //ts.setTurnAngle(120);
+
+  //ts.setTurtleCommands("F+F+");   // just forward/backward
+  //ts.setTurnAngle(180);
+
+  //ts.setTurtleCommands("FF");
+  //ts.setTurnAngle(0);
+  //// a simple "F" doesn't work right in forward mode, "FF" works right in forward but not reverse 
+  //// mode
+
+  ts.setSampleRate(1);
+  ts.setFrequency(0.05);
+  ts.setResetRatio(0, 0); // no reset
+  ts.setUseTable(true);
+}
 void rotes::testTurtleSource()
 {
   int N = 100; // number of samples
 
-  // draw a regular pentagon:
-  rosic::TurtleSource ts;
-  ts.setTurtleCommands("F+F+F+F+F+");
-  ts.setTurnAngle(72);
-  ts.setSampleRate(1);
-  ts.setFrequency(0.1);
-  ts.setResetRatio(0, 0); // no reset
-  //ts.setUseTable(true);
+  // set up two TurtleSource objects with the same settings, the only difference being that one 
+  // uses the table and the other one doesn't:
+  rosic::TurtleSource ts1, ts2;
+  setupTurtleSource(ts1);
+  setupTurtleSource(ts2);
+  ts1.setUseTable(true);
 
-  std::vector<double> x(N), y(N);
+  std::vector<double> x1(N), y1(N), x2(N), y2(N);
   int n;
 
   // forward:
   for(n = 0; n < N/2; n++)
-    ts.getSampleFrameStereo(&x[n], &y[n]);
+  {
+    ts1.getSampleFrameStereo(&x1[n], &y1[n]);
+  }
 
   // backward:
-  ts.setFrequencyScaler(-1.0);  
+  ts1.setFrequencyScaler(-1.0);
+  ts2.setFrequencyScaler(-1.0);  
   for(n = N/2; n < N; n++)
-    ts.getSampleFrameStereo(&x[n], &y[n]);
+  {
+    ts1.getSampleFrameStereo(&x1[n], &y1[n]);
+  }
 
 
   // plot:
   GNUPlotter plt;
   //plt.addDataArrays(N, &x[0], &y[0]);
-  plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays(N, &y[0]);
+  plt.addDataArrays(N, &x1[0]);
+  plt.addDataArrays(N, &y1[0]);
   plt.plot();
 }

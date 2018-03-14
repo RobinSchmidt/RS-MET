@@ -290,10 +290,20 @@ void TurtleSource::updateLineBuffer()
 
       if(!antiAlias)
       {
-        x[0] = turtle.getStartX();
-        y[0] = turtle.getStartY();
-        x[1] = turtle.getEndX();
-        y[1] = turtle.getEndY();
+        if(reverse) // do we have to reverse the line buffer in reverse mode?
+        {
+          x[1] = turtle.getStartX();
+          y[1] = turtle.getStartY();
+          x[0] = turtle.getEndX();
+          y[0] = turtle.getEndY();
+        }
+        else
+        {
+          x[0] = turtle.getStartX();
+          y[0] = turtle.getStartY();
+          x[1] = turtle.getEndX();
+          y[1] = turtle.getEndY();
+        }
       }
       else
       {
@@ -355,7 +365,7 @@ void TurtleSource::updateIncrement()
 
   reverse = inc < 0.0;
   turtle.setReverseMode(reverse);
-  turtleLowpass.setSampleRate(rmin(1/inc, 1.1)); // use 1.0 later
+  turtleLowpass.setSampleRate(rmin(1/fabs(inc), 1.1)); // use 1.0 later
   incUpToDate = true;
 }
 
