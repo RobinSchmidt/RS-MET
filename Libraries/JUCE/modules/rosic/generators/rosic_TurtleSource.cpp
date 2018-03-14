@@ -104,6 +104,11 @@ void TurtleSource::setFrequency(double newFrequency)
   incUpToDate = false;
 }
 
+void TurtleSource::setFrequencyScaler(double newScaler)
+{
+
+}
+
 void TurtleSource::setRotation(double newRotation)
 {
   rotator.setAngle((PI/180) * newRotation);

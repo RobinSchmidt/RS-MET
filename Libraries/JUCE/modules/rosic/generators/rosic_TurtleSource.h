@@ -92,6 +92,10 @@ public:
   /** Sets the frequency (in Hz) of the signal to be generated. */
   void setFrequency(double newFrequency);
 
+  /** Sets a scale factor for the frequency to be generated (mainly for testing stuff - maybe 
+  remove in final version) */
+  void setFrequencyScaler(double newScaler);
+
   /** Sets the amplitude (as raw factor). */
   void setAmplitude(double newAmplitude) { amplitude = newAmplitude; }
 

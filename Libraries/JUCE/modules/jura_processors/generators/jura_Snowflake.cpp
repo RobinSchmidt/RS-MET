@@ -83,10 +83,13 @@ void Snowflake::createParameters()
 
 
 
+  p = new Param("FreqScaler", -8, +8, 0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setFrequencyScaler);
+
   p = new Param("UseTable", 0, 1, 0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setUseTable);
-
 
   p = new Param("AntiAlias", 0, 1, 0, Parameter::BOOLEAN);
   addObservedParameter(p);
@@ -373,6 +376,12 @@ void SnowflakeEditor::createWidgets()
   b->setDescription("Simple experimental anti-aliasing");
   b->setDescriptionField(infoField);
   b->setClickingTogglesState(true);
+
+  addWidget( buttonUseTable = b = new Btn("UseTable") );
+  b->assignParameter(snowflakeModule->getParameterByName("UseTable"));
+  b->setDescription("Use pre-rendered wavetable");
+  b->setDescriptionField(infoField);
+  b->setClickingTogglesState(true);
 }
 
 void SnowflakeEditor::resized()
@@ -425,7 +434,11 @@ void SnowflakeEditor::resized()
   //sliderLineReset->setBounds( x, y, w, wh); y += dy;
 
   // experimental:
-  buttonAntiAlias->setBounds(x, y, w, wh); y += dy;
+  y += dy;
+  int bw = 60; // button-width
+  buttonAntiAlias->setBounds(x,      y, bw, wh); 
+  buttonUseTable-> setBounds(x+bw+m, y, bw, wh); 
+  y += dy;
 }
 
 void SnowflakeEditor::rTextEditorTextChanged(RTextEditor& ed)
