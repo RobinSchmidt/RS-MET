@@ -238,7 +238,7 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
     while(lineIndex != targetLineIndex)
       goToNextLineSegment(); // increments lineIndex with wrap around
 
-    //rsAssert(checkIndexConsistency()); // for debug
+    rsAssert(checkIndexConsistency()); // for debug
   }
 
   // later: update interpolator coeffs here according to x,y buffers (but maybe only if inc > 1 in
@@ -411,8 +411,8 @@ bool TurtleSource::checkIndexConsistency()
 {
   // find target command index:
   int tmp = lineCommandIndices[lineIndex];
-  if(reverse) tmp -= 1;
-  else        tmp += 1;
+  if(reverse) tmp -= 1;  // in reverse mode, it should be before the 'F' for current line
+  else        tmp += 1;  // and in normal mode directly after the 'F'
 
   // ...with wrap around:
   int size = (int)turtleCommands.size();
@@ -420,7 +420,9 @@ bool TurtleSource::checkIndexConsistency()
   if(tmp < 0)      tmp += size;
 
   // check and return result:
-  return tmp == lineCommandIndices[lineIndex];
+  bool result = commandIndex == tmp;
+  rsAssert(result);
+  return result;
 }
 
 /*
