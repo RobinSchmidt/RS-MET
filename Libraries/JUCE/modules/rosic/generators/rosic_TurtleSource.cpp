@@ -106,7 +106,9 @@ void TurtleSource::setFrequency(double newFrequency)
 
 void TurtleSource::setFrequencyScaler(double newScaler)
 {
-
+  freqScaler = newScaler;
+  updateResetters();
+  incUpToDate = false;
 }
 
 void TurtleSource::setRotation(double newRotation)
@@ -316,7 +318,7 @@ void TurtleSource::updateResetters()
 
 void TurtleSource::updateResetter(int i)
 {
-  double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/frequency);
+  double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
   resetters[i].setInterval(interval);
   incUpToDate = false; // because computing the inc uses min(numLines, minResetInterval)
 }
@@ -326,7 +328,7 @@ void TurtleSource::updateIncrement()
   double minLength = double(numLines);
   for(int i = 0; i < numResetters; i++)
     minLength = rmin(minLength, resetters[i].getInterval());
-  inc = minLength * frequency / sampleRate;
+  inc = minLength * freqScaler * frequency / sampleRate;
 
   // hmm...the pitch goes down when ratio is below 1 (and the old, cyclic reset is off)
   // ...ahh - i think that's ok and expected - we should use a direction fix in the axiom to 

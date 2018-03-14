@@ -83,7 +83,7 @@ void Snowflake::createParameters()
 
 
 
-  p = new Param("FreqScaler", -8, +8, 0, Parameter::LINEAR);
+  p = new Param("FreqScaler", -8, +8, 1, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setFrequencyScaler);
 
@@ -369,7 +369,11 @@ void SnowflakeEditor::createWidgets()
   */
 
 
-
+  addWidget( sliderFreqScaler = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("FreqScaler") );
+  s->setDescription("Scale factor for frequency");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 
   addWidget( buttonAntiAlias = b = new Btn("AntiAlias") );
   b->assignParameter(snowflakeModule->getParameterByName("AntiAlias"));
@@ -435,6 +439,7 @@ void SnowflakeEditor::resized()
 
   // experimental:
   y += dy;
+  sliderFreqScaler->setBounds(x, y, w, wh); y += dy;
   int bw = 60; // button-width
   buttonAntiAlias->setBounds(x,      y, bw, wh); 
   buttonUseTable-> setBounds(x+bw+m, y, bw, wh); 

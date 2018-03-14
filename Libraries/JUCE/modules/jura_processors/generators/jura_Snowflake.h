@@ -111,7 +111,7 @@ protected:
 
   RSlider *sliderResetRatio1, *sliderResetOffset1, *sliderResetRatio2, *sliderResetOffset2;
 
-  RSlider *sliderFreqFactor; // maybe use this just for development and remove later
+  RSlider *sliderFreqScaler; // maybe use this just for development and remove later
   RButton *buttonAntiAlias, *buttonUseTable;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SnowflakeEditor)

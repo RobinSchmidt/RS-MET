@@ -306,6 +306,7 @@ protected:
   // parameters:
   double amplitude      = 1;
   double frequency      = 100;
+  double freqScaler     = 1;
   double sampleRate     = 44100;
   double turnAngle      = 0;
   double skew           = 0;
