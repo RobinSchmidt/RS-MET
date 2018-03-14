@@ -213,7 +213,7 @@ protected:
     // increment and wraparound:
     pos += inc;
     while(pos >= numLines) pos -= numLines;
-    //while(pos <  0)        pos += numLines; // uncomment later, when we allow negative inc
+    while(pos <  0)        pos += numLines;
   }
 
   /** Reads out our line-segment buffer with interpolation and assigns the output for left and 

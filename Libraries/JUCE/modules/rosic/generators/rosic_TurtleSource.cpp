@@ -239,7 +239,8 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
       goToNextLineSegment(); // increments lineIndex with wrap around
   }
 
-  // later: update interpolator coeffs here according to x,y buffers
+  // later: update interpolator coeffs here according to x,y buffers (but maybe only if inc > 1 in
+  // which case the same set of coeffs may be used more than once)
 }
 
 void TurtleSource::goToNextLineSegment()
@@ -420,6 +421,9 @@ void TurtleSource::updateMeanAndNormalizer()
 
 /*
 BUGS:
+-BuzzingTriangles patch is different in table-mode vs non-table-mode - aahhh - i think, it is 
+ because in non-table mode, and 'f' leads to a jump in position and in table-mode, the point is not
+ being drawn...needs fix - in table-mode, we also need a jump...but is that possible?
 -the pitch is resetting mode is not the same as in free-runing mode for closed curves - test
  with patch BuzzingTriangles (maybe add ++ to axiom, if necessarry) ...still true?
 -in resetting mode, there's a click at the beginning of a note, in free-running mode, there's no 
