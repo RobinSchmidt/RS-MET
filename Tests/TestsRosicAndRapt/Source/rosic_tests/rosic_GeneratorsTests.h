@@ -11,6 +11,7 @@ namespace rotes
   bool testSnowflake();
   bool testResetter();
   void testTurtleReverse();
+  void testTurtleSource();
 
 
 }

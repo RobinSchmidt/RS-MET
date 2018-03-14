@@ -226,3 +226,36 @@ void rotes::testTurtleReverse()
   plt.addDataArrays(N, &y[0]);
   plt.plot();
 }
+
+void rotes::testTurtleSource()
+{
+  int N = 1000; // number of samples
+
+  // draw a regular pentagon:
+  rosic::TurtleSource ts;
+  ts.setTurtleCommands("F+F+F+F+F+");
+  ts.setTurnAngle(72);
+  ts.setSampleRate(1);
+  ts.setFrequency(0.01);
+  ts.setResetRatio(0, 0); // no reset
+
+  std::vector<double> x(N), y(N);
+  int n;
+
+  // forward:
+  for(n = 0; n < N/2; n++)
+    ts.getSampleFrameStereo(&x[n], &y[n]);
+
+  // backward:
+  ts.setFrequencyScaler(-1.0);  
+  for(n = N/2; n < N; n++)
+    ts.getSampleFrameStereo(&x[n], &y[n]);
+
+
+  // plot:
+  GNUPlotter plt;
+  //plt.addDataArrays(N, &x[0], &y[0]);
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays(N, &y[0]);
+  plt.plot();
+}

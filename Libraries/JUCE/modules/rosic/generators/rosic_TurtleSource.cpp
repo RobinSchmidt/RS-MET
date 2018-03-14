@@ -253,7 +253,10 @@ void TurtleSource::goToNextLineSegment()
     resetTurtle();
     updateLineBuffer(); 
   }
-  lineIndex++;
+
+
+
+  lineIndex++; // we should decrement in reverse mode
   if(lineIndex >= numLines)
     lineIndex = 0;
 }
@@ -335,8 +338,7 @@ void TurtleSource::updateIncrement()
   // ...ahh - i think that's ok and expected - we should use a direction fix in the axiom to 
   // avoid this
 
-  // turtle.setBackwardMode(inc < 0);
-
+  turtle.setReverseMode(inc < 0.0);
   turtleLowpass.setSampleRate(rmin(1/inc, 1.1)); // use 1.0 later
   incUpToDate = true;
 }
