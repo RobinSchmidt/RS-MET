@@ -296,6 +296,7 @@ protected:
 
   int numLines       = 0;         // number of 'F's in turtleCommands
   int lineIndex      = 0;         // index of current line
+  //int lineInc        = 1;         // increment to go from current to next line (+1 or -1)
   int startLineIndex = 0;
 
   std::string turtleCommands;          // string of drawing commands for the turtle
@@ -314,6 +315,7 @@ protected:
   int    interpolation  = LINEAR;
   bool   antiAlias      = false;
   bool   useTable       = false;
+  bool   reverse        = false;
 
   // resetters:
   static const int numResetters = 2;

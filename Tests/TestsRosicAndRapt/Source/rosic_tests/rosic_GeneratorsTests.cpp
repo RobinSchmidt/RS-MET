@@ -229,15 +229,16 @@ void rotes::testTurtleReverse()
 
 void rotes::testTurtleSource()
 {
-  int N = 1000; // number of samples
+  int N = 100; // number of samples
 
   // draw a regular pentagon:
   rosic::TurtleSource ts;
   ts.setTurtleCommands("F+F+F+F+F+");
   ts.setTurnAngle(72);
   ts.setSampleRate(1);
-  ts.setFrequency(0.01);
+  ts.setFrequency(0.1);
   ts.setResetRatio(0, 0); // no reset
+  //ts.setUseTable(true);
 
   std::vector<double> x(N), y(N);
   int n;

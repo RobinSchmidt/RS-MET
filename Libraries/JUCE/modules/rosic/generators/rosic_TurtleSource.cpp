@@ -251,14 +251,19 @@ void TurtleSource::goToNextLineSegment()
     reset |= resetters[i].tick();
   if(reset) {
     resetTurtle();
-    updateLineBuffer(); 
+    updateLineBuffer();
   }
 
-
-
-  lineIndex++; // we should decrement in reverse mode
-  if(lineIndex >= numLines)
-    lineIndex = 0;
+  if(reverse) {
+    lineIndex--;
+    if(lineIndex < 0)
+      lineIndex = numLines-1; 
+  }
+  else {
+    lineIndex++;
+    if(lineIndex >= numLines)
+      lineIndex = 0; 
+  }
 }
 
 void TurtleSource::updateLineBuffer()
@@ -268,9 +273,19 @@ void TurtleSource::updateLineBuffer()
   bool xyUpdated = false;
   while(xyUpdated == false) {
     bool draw = turtle.interpretCharacter(turtleCommands[commandIndex]);
-    commandIndex++;
-    if(commandIndex == turtleCommands.size())
-      commandIndex = 0;
+
+    // increment or decrement command index:
+    if(reverse) {
+      commandIndex--;
+      if(commandIndex < 0)
+        commandIndex = turtleCommands.size()-1;
+    }
+    else {
+      commandIndex++;
+      if(commandIndex == turtleCommands.size())
+        commandIndex = 0;
+    }
+
     if(draw) {
 
       if(!antiAlias)
@@ -338,7 +353,8 @@ void TurtleSource::updateIncrement()
   // ...ahh - i think that's ok and expected - we should use a direction fix in the axiom to 
   // avoid this
 
-  turtle.setReverseMode(inc < 0.0);
+  reverse = inc < 0.0;
+  turtle.setReverseMode(reverse);
   turtleLowpass.setSampleRate(rmin(1/inc, 1.1)); // use 1.0 later
   incUpToDate = true;
 }
