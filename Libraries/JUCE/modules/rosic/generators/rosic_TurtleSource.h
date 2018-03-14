@@ -179,7 +179,7 @@ public:
     // some checks (optimize - have a single readyToPlay flag so we only need one check here):
     if(numLines < 1)                return;
     if(!tableUpToDate && useTable)  updateWaveTable();
-    if(!incUpToDate)                updateIncrement();
+    //if(!incUpToDate)                updateIncrement();
 
     // integer and fractional part of position:
     int iPos = floorInt(pos);
@@ -192,6 +192,9 @@ public:
     *outL = normalizer * amplitude * (*outL - meanX);
     *outR = normalizer * amplitude * (*outR - meanY);
     rotator.apply(outL, outR);
+
+    if(!incUpToDate)      // test: update increment here instead of at the beginning of the 
+      updateIncrement();  // function - right before using it
 
     updatePosition();
   }
@@ -282,6 +285,9 @@ protected:
   /** Updates our meanX, meanY, normalizer members according to the current turtleCommands and 
   angle settings. */
   void updateMeanAndNormalizer();
+
+  /** Only for debugging - checks, if the lineIndex and commandIndex are in sync. */
+  bool checkIndexConsistency();
 
   //-----------------------------------------------------------------------------------------------
   // \name Data

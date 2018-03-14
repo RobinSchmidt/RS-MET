@@ -237,6 +237,8 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
   {
     while(lineIndex != targetLineIndex)
       goToNextLineSegment(); // increments lineIndex with wrap around
+
+    //rsAssert(checkIndexConsistency()); // for debug
   }
 
   // later: update interpolator coeffs here according to x,y buffers (but maybe only if inc > 1 in
@@ -278,7 +280,7 @@ void TurtleSource::updateLineBuffer()
     if(reverse) {
       commandIndex--;
       if(commandIndex < 0)
-        commandIndex = turtleCommands.size()-1;
+        commandIndex = (int)turtleCommands.size()-1;
     }
     else {
       commandIndex++;
@@ -403,6 +405,22 @@ void TurtleSource::updateMeanAndNormalizer()
 
   // maybe don't use the "mean" but the "center" defined as (min+max)/2 -> avoids computations and 
   // is probably just as good (especially, when a DC blocking filter is used later anyway)
+}
+
+bool TurtleSource::checkIndexConsistency()
+{
+  // find target command index:
+  int tmp = lineCommandIndices[lineIndex];
+  if(reverse) tmp -= 1;
+  else        tmp += 1;
+
+  // ...with wrap around:
+  int size = (int)turtleCommands.size();
+  if(tmp >= size)  tmp -= size;
+  if(tmp < 0)      tmp += size;
+
+  // check and return result:
+  return tmp == lineCommandIndices[lineIndex];
 }
 
 /*
