@@ -421,6 +421,10 @@ void TurtleSource::updateMeanAndNormalizer()
 
 /*
 BUGS:
+-reverse seems to work even though we don't switch the turtle into reverse mode - why? ...maybe we 
+ need a more asymmetric shape (like - a pentagon, and see, if it switches upside down?) - pentagon
+ works too, but when the turn angle is 74 (and reset is off), it doesn't work anymore
+-in non-table mode, there's a click at the beginning (try with InitSquare patch)
 -BuzzingTriangles patch is different in table-mode vs non-table-mode - aahhh - i think, it is 
  because in non-table mode, and 'f' leads to a jump in position and in table-mode, the point is not
  being drawn...needs fix - in table-mode, we also need a jump...but is that possible?
