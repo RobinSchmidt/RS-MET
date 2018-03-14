@@ -192,6 +192,24 @@ void TurtleSource::reset()
   lineIndex = startLineIndex;
 }
 
+bool TurtleSource::checkIndexConsistency()
+{
+  // find target command index:
+  int tmp = lineCommandIndices[lineIndex];
+  if(reverse) tmp -= 1;  // in reverse mode, it should be before the 'F' for current line
+  else        tmp += 1;  // and in normal mode directly after the 'F'
+
+  // ...with wrap around:
+  int size = (int)turtleCommands.size();
+  if(tmp >= size)  tmp -= size;
+  if(tmp < 0)      tmp += size;
+
+  // check and return result:
+  bool result = commandIndex == tmp;
+  rsAssert(result);
+  return result;
+}
+
 void TurtleSource::resetTurtle()
 {
   //// old:
@@ -232,13 +250,20 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
     y[0] = tableY[lineIndex];
     x[1] = tableX[lineIndex+1];
     y[1] = tableY[lineIndex+1];
+    // if we want anti-aliasing, we would actually also have to go through the intermediate 
+    // segments and filter while reading out the table
   }
   else
   {
     while(lineIndex != targetLineIndex)
       goToNextLineSegment(); // increments lineIndex with wrap around
 
-    rsAssert(checkIndexConsistency()); // for debug
+    // maybe do it like this:
+    // lineIndex = targetLineIndex;
+    // goToCommand(lineCommandIndices[lineIndex]);
+    // but from where do i invoke the resetters then? maybe from getSampleFrame? may make more
+    // sense anyway - reset instants are then not restricted to occur after a number of lines
+    // has been drawn
   }
 
   // later: update interpolator coeffs here according to x,y buffers (but maybe only if inc > 1 in
@@ -407,23 +432,6 @@ void TurtleSource::updateMeanAndNormalizer()
   // is probably just as good (especially, when a DC blocking filter is used later anyway)
 }
 
-bool TurtleSource::checkIndexConsistency()
-{
-  // find target command index:
-  int tmp = lineCommandIndices[lineIndex];
-  if(reverse) tmp -= 1;  // in reverse mode, it should be before the 'F' for current line
-  else        tmp += 1;  // and in normal mode directly after the 'F'
-
-  // ...with wrap around:
-  int size = (int)turtleCommands.size();
-  if(tmp >= size)  tmp -= size;
-  if(tmp < 0)      tmp += size;
-
-  // check and return result:
-  bool result = commandIndex == tmp;
-  rsAssert(result);
-  return result;
-}
 
 /*
 // old version - avoids creating the table:

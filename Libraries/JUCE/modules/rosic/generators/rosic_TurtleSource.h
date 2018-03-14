@@ -204,6 +204,11 @@ public:
   void reset();
 
 
+
+  /** Only for debugging - checks, if the lineIndex and commandIndex are in sync. */
+  bool checkIndexConsistency();
+
+
 protected:
 
   //-----------------------------------------------------------------------------------------------
@@ -285,9 +290,6 @@ protected:
   /** Updates our meanX, meanY, normalizer members according to the current turtleCommands and 
   angle settings. */
   void updateMeanAndNormalizer();
-
-  /** Only for debugging - checks, if the lineIndex and commandIndex are in sync. */
-  bool checkIndexConsistency();
 
   //-----------------------------------------------------------------------------------------------
   // \name Data
