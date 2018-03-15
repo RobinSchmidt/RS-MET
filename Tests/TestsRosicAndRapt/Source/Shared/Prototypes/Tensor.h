@@ -5,17 +5,22 @@
 
 /** Implements a simple proof-of-concept class for tensors 
 
-A tensor can be seen as an n-dimensional array of values. Here, n is the number of indices which is
-not to be confused with the dimensionality of the underlying vector space - which is the number of 
-values over which each of the indices can run. For example, 3x3 matrix is a 2-dimensional array (2 
-indices) where each index runs over 3 values.
+A tensor can be seen as an n-dimensional array of values. Here, n is called the "rank" of the 
+tensor and it is the number of indices. This is not to be confused with the dimensionality of the 
+underlying vector space - which is the number of values over which each of the indices can run. For
+example, 3x3 matrix is a 2-dimensional array (2 indices) where each index runs over 3 values. Such 
+a matrix could represent a tensor of rank 2. Tensors are always (hyper) cubical in shape - which in 
+the case of rank 2 boils down to a square matrix - a 2x3 matrix, for example, can not be 
+interpreted as tensor.
 
-A tensor can also be interpreted as a linear function that takes a list of vectors and/or covectors 
-as inputs and produces a scalar as result. If normal vectors are column-vectors, covectors can be 
-seen as row-vectors - they are also functions that take one vector as input and produce a scalar, 
-which in this case, is basically the familiar scalar product.
+A tensor can also be interpreted as a function that takes a list of vectors and/or covectors as 
+inputs and produces a scalar as result. This function is linear in all its inputs. If normal 
+vectors are represented column-vectors, covectors can be seen as row-vectors - they are also 
+functions that take one vector as input and produce a scalar, which in this case, is basically the 
+familiar scalar product. Covectors live in a vector space that is dual to the regular space in 
+which the vectors live. 
 
-...tbc...
+...tbc...upper/lower indices (contravariant/covariant)
 
 */
 
@@ -24,8 +29,12 @@ class Tensor
 
 public:
 
+  Tensor(int numDimensions, int numSuperscripts, int numSubscripts);
+
   //-----------------------------------------------------------------------------------------------
   // \name Setup
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -63,32 +72,34 @@ public:
   retrieve the the component with exchanged indices, you'll get the same value as without 
   exchange. Also, when you exchange two vectors/covectors in an input list at these indices, the 
   result of applying the tensor to the input list will be the same. */
-  bool isSymmetric(int index1, int index2);
+  bool isSymmetric(int index1, int index2) const;
 
   /** Returns true, of the tensor is anti symmetric with respect to the given pair of indices. When 
   you retrieve the the component with exchanged indices, you'll get the negative of the value without 
   exchange.*/
-  bool isAntiSymmetric(int index1, int index2);
+  bool isAntiSymmetric(int index1, int index2) const;
 
   // getSymmetricPart, getAntiSymmetricPart
   // maybe have simplified versions for rank2 tensors
 
 
 
-  //double at
+  //double at(/*list of indices*/);
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Operations
   
-  Tensor contract(const Tensor& A, int index);
+  Tensor contract(const Tensor& A, int index) const;
   
-  Tensor outerProduct(const Tensor& A, const Tensor& B);
+  Tensor outerProduct(const Tensor& A, const Tensor& B) const;
   
-  Tensor innerProduct(const Tensor& A, const Tensor& B);
+  Tensor innerProduct(const Tensor& A, const Tensor& B) const;
 
-  // double apply(list of vectors and/or covectors); 
+  // double apply(/*list of vectors and/or covectors*/); 
   // should produce a scalar for a given input list of vectors and or covectors...maybe have a 
   // generalized version that returns a tensor of any rank (the tensor is applied only partially)
+  // raiseIndex(int index, const Tensor& metric); lowerIndex(...)
   
   // operators: +,-,==,unary-, element access (i,j,k,...)
 
@@ -96,9 +107,9 @@ public:
 
 protected:
 
-  int rank;                    // number of indices of the tensor
-  int dim;                     // number of dimensions of the (co)vector space
-  std::vector<double> v;       // holds the values as flat array (size = dim^rank)
+  int rank = 0;                // number of indices of the tensor
+  int dim = 1;                 // number of dimensions of the (co)vector space
+  std::vector<double> values;  // holds the values as flat array (size = dim^rank)
   std::vector<bool> subscript; // indicates if a particular index is a subscript
   
 };
