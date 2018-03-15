@@ -310,6 +310,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClCompile>
@@ -1270,6 +1273,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.cpp">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TurtleSource - Copy.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TurtleSource.cpp">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClCompile>
@@ -1912,6 +1918,9 @@
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h">

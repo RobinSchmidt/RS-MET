@@ -349,6 +349,16 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/Shared/Prototypes/Tensor.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+    </Unit>
+    <Unit filename="../../Source/Shared/Prototypes/Tensor.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/rosic_tests/rosic_AnalysisTests.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -4324,6 +4334,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rosic/generators/rosic_TestGenerator.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/generators/rosic_TurtleSource - Copy.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

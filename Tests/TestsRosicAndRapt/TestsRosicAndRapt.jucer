@@ -110,6 +110,8 @@
           <FILE id="wa7Bex" name="ParticleSystem.h" compile="0" resource="0"
                 file="Source/Shared/Prototypes/ParticleSystem.h"/>
           <FILE id="cwWYDw" name="ReadMe.txt" compile="0" resource="1" file="Source/Shared/Prototypes/ReadMe.txt"/>
+          <FILE id="u50Oe6" name="Tensor.cpp" compile="1" resource="0" file="Source/Shared/Prototypes/Tensor.cpp"/>
+          <FILE id="FEh1t3" name="Tensor.h" compile="0" resource="0" file="Source/Shared/Prototypes/Tensor.h"/>
         </GROUP>
       </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">
