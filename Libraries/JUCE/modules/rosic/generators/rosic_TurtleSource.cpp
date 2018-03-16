@@ -322,6 +322,18 @@ void TurtleSource::goToCommand(int targetCommandIndex)
         x[1] = turtle.getEndX();
         y[1] = turtle.getEndY();
       }
+      
+     
+      /*
+      // test - don't reverse line-buffer - nope, seems wrong:
+      x[0] = turtle.getStartX();
+      y[0] = turtle.getStartY();
+      x[1] = turtle.getEndX();
+      y[1] = turtle.getEndY();
+      */
+      
+
+
       // todo: take anti-alias flag into account - if it's false, it may actually suffice to fill
       // the x,y arrays after leaving the loop...hmm...maybe we can generally fill them after the 
       // loop keeping track only of soem temporary variables here
@@ -332,6 +344,7 @@ void TurtleSource::goToCommand(int targetCommandIndex)
   int dummy = 0;
 }
 
+/*
 // may be obsolete, when goToCommand is finished:
 void TurtleSource::goToNextLineSegment()
 {
@@ -430,6 +443,7 @@ void TurtleSource::updateLineBuffer()
     }
   }
 }
+*/
 
 void TurtleSource::updateResetters()
 {

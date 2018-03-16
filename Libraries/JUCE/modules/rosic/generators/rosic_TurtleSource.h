@@ -179,7 +179,7 @@ public:
     // some checks (optimize - have a single readyToPlay flag so we only need one check here):
     if(numLines < 1)                return;
     if(!tableUpToDate && useTable)  updateWaveTable();
-    //if(!incUpToDate)                updateIncrement();
+    if(!incUpToDate)                updateIncrement();
 
     // integer and fractional part of position:
     int iPos = floorInt(pos);
@@ -193,8 +193,9 @@ public:
     *outR = normalizer * amplitude * (*outR - meanY);
     rotator.apply(outL, outR);
 
-    if(!incUpToDate)      // test: update increment here instead of at the beginning of the 
-      updateIncrement();  // function - right before using it
+    //if(!incUpToDate)      // test: update increment here instead of at the beginning of the 
+    //  updateIncrement();  // function - right before using it - nope: reverse flag may then
+                            // be wrong inside goToLineSegment
 
     updatePosition();
   }
@@ -269,11 +270,11 @@ protected:
 
   /** Goes from the current line segment (defined by member lineIndex) to the next, possibly 
   including a wraparound. */
-  void goToNextLineSegment();
+  //void goToNextLineSegment();
 
   /** Updates the x,y arrays that hold the endpoint of the line that is currently being drawn, i.e. 
   the points between which we currently interpolate. */
-  void updateLineBuffer();
+  //void updateLineBuffer();
 
 
 

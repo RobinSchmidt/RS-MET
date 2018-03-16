@@ -271,13 +271,20 @@ void rotes::testTurtleSource()
   double err;
   double tol = 1.e-14;
 
+  // fo a simpler test, starting already in reverse mode:
+  ts1.setFrequencyScaler(-1.0);
+  ts2.setFrequencyScaler(-1.0);  
+  // it already get wrong at sample index 1 - the lineBuffers x,y are wrong in ts2
+
   // forward:
   for(n = 0; n < N/2; n++)
   {
     ts1.getSampleFrameStereo(&x1[n], &y1[n]);
     ts2.getSampleFrameStereo(&x2[n], &y2[n]);
+
     err = rmax(fabs(x2[n]-x1[n]), fabs(y2[n]-y1[n]));
-    rsAssert(err < tol);
+    rsAssert(ts2.checkIndexConsistency());
+    //rsAssert(err < tol);
   }
 
   // backward:
@@ -285,28 +292,24 @@ void rotes::testTurtleSource()
   ts2.setFrequencyScaler(-1.0);  
   for(n = N/2; n < N; n++)
   {
-    ts1.getSampleFrameStereo(&x1[n], &y1[n]); // at n=50: lineIndex goes from 1 to 2 in ts1 and ts2
-    ts2.getSampleFrameStereo(&x2[n], &y2[n]); // but i think, it should go to 0 in both cases ..or no
+    ts1.getSampleFrameStereo(&x1[n], &y1[n]);
+    ts2.getSampleFrameStereo(&x2[n], &y2[n]);
 
-    //rsAssert(ts2.checkIndexConsistency());
-    err = rmax(fabs(x2[n]-x1[n]), fabs(y2[n]-y1[n])); // it used the old increment in the call before
+    err = rmax(fabs(x2[n]-x1[n]), fabs(y2[n]-y1[n]));
+    rsAssert(ts2.checkIndexConsistency());
     //rsAssert(err < tol);
   }
 
-  // i think, the error may be that when the direction is switched, the command-index gets out of 
-  // sync...or does it? hmmm... not sure
-  // yes - it has just drawn line with index 2 and is now at the '+' behind it, then it encounters
-  // a decrement and sees the 'F' for line with index 2 again - but it should actually now jump 
-  // over this and go to line index 1...but should't the while(lineIndex != targetLineIndex) ensure
-  // jumping over this line 2?
-
+  // make a simpler experiment: let the turtles start in reverse mode (don't switch mode during
+  // run - it's already wrong when doing this) ...perhaps it starts out with a wrong reverse-flag?
 
   // plot:
   GNUPlotter plt;
-  //plt.addDataArrays(N, &x[0], &y[0]);
-  plt.addDataArrays(N, &x1[0]);
-  plt.addDataArrays(N, &y1[0]);
-  plt.addDataArrays(N, &x2[0]);
-  plt.addDataArrays(N, &y2[0]);
+  //plt.addDataArrays(N, &x1[0], &y1[0]);
+  plt.addDataArrays(N, &x2[0], &y2[0]);
+  //plt.addDataArrays(N, &x1[0]);
+  //plt.addDataArrays(N, &y1[0]);
+  //plt.addDataArrays(N, &x2[0]);
+  //plt.addDataArrays(N, &y2[0]);
   plt.plot();
 }
