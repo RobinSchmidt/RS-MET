@@ -184,64 +184,89 @@ void TurtleSource::reset()
   resetTurtle();
   resetCounters();
   lineIndex = startLineIndex;
-  //updateLineBuffer(); // was called before using goToCommand
+
+  //commandIndex = lineCommandIndices[lineIndex];
   goToCommand(lineCommandIndices[lineIndex]);
+
+  updateLineBufferFromTurtle();
 }
 
 bool TurtleSource::checkIndexConsistency()
 {
   return commandIndex == lineCommandIndices[lineIndex];
+}
 
-  /*
-  // old:
-  // find target command index:
-  int tmp = lineCommandIndices[lineIndex];
-  if(reverse) tmp -= 1;  // in reverse mode, it should be before the 'F' for current line
-  else        tmp += 1;  // and in normal mode directly after the 'F'
+bool TurtleSource::isInInitialState()
+{
+  bool r = true;
 
-  // ...with wrap around:
-  int size = (int)turtleCommands.size();
-  if(tmp >= size)  tmp -= size;
-  if(tmp < 0)      tmp += size;
+  r &= lineIndex == 0;
+  r &= commandIndex == lineCommandIndices[lineIndex];
 
-  // check and return result:
-  bool result = commandIndex == tmp;
-  rsAssert(result);
-  return result;
-  */
+  // check line buffer and turtle state:
+  double xs, ys, xe, ye;
+  xs = tableX[0];
+  ys = tableY[0];
+  xe = tableX[1];
+  ye = tableY[1];
+  if(reverse) {
+    swap(xs, xe);
+    swap(ys, ye); }
+  r &= x[0] == xs;
+  r &= y[0] == ys;
+  r &= x[1] == xe;
+  r &= y[1] == ye;
+  r &= turtle.getStartX() == xs;
+  r &= turtle.getStartY() == ys;
+  r &= turtle.getEndX()   == xe;
+  r &= turtle.getEndY()   == ye;
+
+  return r;
 }
 
 void TurtleSource::resetTurtle()
 {
-  //// old (before introducing startLineIndex):
-  //commandIndex = 0;
-  //turtle.init(0, 0, 1, 0);
+  //// test:
+  //turtle.init(0, 0, 1, 0); 
+  //return; 
 
+
+
+  
   // new since introducing startLineIndex:
   if(!tableUpToDate)
     updateWaveTable();
   int i = startLineIndex;
   commandIndex = lineCommandIndices[i];
+  lineIndex = i;
+
   double x0 = tableX[i];
   double y0 = tableY[i];
   double x1 = tableX[i+1];
   double y1 = tableY[i+1];
   turtle.init(x0, y0, x1-x0, y1-y0);
 
-  // newly added since switching to use of goToCommand:
 
-  lineIndex = i;
 
-  // place the commandIndex directly before (or after) the first line command to be executed 
-  // because, in goToCommand the will be incremented or decremented *before* any command is 
-  // executed:
-  //commandIndex -= 1;
+  // initialization in reverse mode is still buggy
+
   //if(reverse)
-  //  commandIndex += 2;
+  //{
+  //  int j = i-1;
+  //  if(j < 0) j += numLines;
+  //  x1 = tableX[j];
+  //  y1 = tableY[j];
+  //  turtle.init(x1, y1, x0-x1, y0-y1);
+  //}
+  //else
+  //turtle.init(x0, y0, x1-x0, y1-y0);
 
-  // ...but we can also do it like this:
+  //if(reverse)
+  //  turtle.init(x1, y1, x0-x1, y0-y1);
+
   turtle.interpretCharacter(turtleCommands[commandIndex]);
   updateLineBufferFromTurtle();
+  
 
   // todo: use startPos, read out the table at the position corresponding to startPos (with linear
   // interpolation...or maybe rounding is better?), set dx,dy to the differences between the two
@@ -574,9 +599,9 @@ void TurtleSource::updateMeanAndNormalizer()
 
 /*
 BUGS:
--reverse seems to work even though we don't switch the turtle into reverse mode - why? ...maybe we 
- need a more asymmetric shape (like - a pentagon, and see, if it switches upside down?) - pentagon
- works too, but when the turn angle is 74 (and reset is off), it doesn't work anymore
+-in reverse mode, the picture is shifted when a new note is started (something wrong with reset?)
+ -it always shifts to the left, it seems to shift less when there are more lines
+-the resetting does not seem to work anymore (wrong interval?)...maybe move it to getSample anyway
 -in non-table mode, there's a click at the beginning (try with InitSquare patch)
 -BuzzingTriangles patch is different in table-mode vs non-table-mode - aahhh - i think, it is 
  because in non-table mode, and 'f' leads to a jump in position and in table-mode, the point is not

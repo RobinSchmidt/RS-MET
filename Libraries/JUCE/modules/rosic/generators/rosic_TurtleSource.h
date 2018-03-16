@@ -204,10 +204,14 @@ public:
   unnormalized coordinates). */
   void reset();
 
-
+  //-----------------------------------------------------------------------------------------------
+  // \name Debugging
 
   /** Only for debugging - checks, if the lineIndex and commandIndex are in sync. */
   bool checkIndexConsistency();
+
+  /** Checks, if the object in the state, it is supposed to be after calling reset() */
+  bool isInInitialState();
 
 
 protected:

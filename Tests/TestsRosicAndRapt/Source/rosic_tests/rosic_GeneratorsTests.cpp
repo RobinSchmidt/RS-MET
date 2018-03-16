@@ -326,72 +326,17 @@ void rotes::testTurtleSource()
   setupTurtleSource(ts1);
   setupTurtleSource(ts2);
 
+  ts1.reset(); result &= ts1.isInInitialState();
+  ts2.reset(); result &= ts2.isInInitialState();
+
   result &= runTurtleTest(ts1, ts2, N, true);
   ts1.setFrequencyScaler(-1.0);
   ts2.setFrequencyScaler(-1.0);
   result &= runTurtleTest(ts1, ts2, N, true);
 
-  // maybe for the first line to be drawn into a buffer, we should skip initial direction change
-  // commands? ...there's definitley something wrong about the intial turtle state or initial line
-  // being drawn in reverse mode
-  // when we run through a froward section before, the ts2 output is below the ts1 output, when we
-  // don't do it, it is above
-  // can we reproduce the problem only with a TurtleGraphics object when it has initial direction
-  // changes?
-  // in the plugin, there's also a click when the direction changes (maybe because the mean values
-  // are wrong in the reverse case as a result of starting off in the wrong direction?)
-  // i think, before the very first line is drawn after a direction change from forward to backward
-  // (maybe also the other way around?) the TurteGraphics state needs to backtrack one position
-  // to xo,yo?
-
-
-
-  /*
-  std::vector<double> x1(N), y1(N), x2(N), y2(N);
-  int n;
-  double err;
-  double tol = 1.e-14;
-
-  // for a simpler test, starting already in reverse mode:
-  ts1.setFrequencyScaler(-1.0);
-  ts2.setFrequencyScaler(-1.0);  
-  // it already get wrong at sample index 1 - the lineBuffers x,y are wrong in ts2
-
-  // forward:
-  for(n = 0; n < N/2; n++)
-  {
-    ts1.getSampleFrameStereo(&x1[n], &y1[n]);
-    ts2.getSampleFrameStereo(&x2[n], &y2[n]);
-
-    err = rmax(fabs(x2[n]-x1[n]), fabs(y2[n]-y1[n]));
-    rsAssert(ts2.checkIndexConsistency());
-    //rsAssert(err < tol);
-  }
-
-  // backward:
-  ts1.setFrequencyScaler(-1.0);
-  ts2.setFrequencyScaler(-1.0);  
-  for(n = N/2; n < N; n++)
-  {
-    ts1.getSampleFrameStereo(&x1[n], &y1[n]);
-    ts2.getSampleFrameStereo(&x2[n], &y2[n]);
-
-    err = rmax(fabs(x2[n]-x1[n]), fabs(y2[n]-y1[n]));
-    rsAssert(ts2.checkIndexConsistency());
-    //rsAssert(err < tol);
-  }
-
-  // make a simpler experiment: let the turtles start in reverse mode (don't switch mode during
-  // run - it's already wrong when doing this) ...perhaps it starts out with a wrong reverse-flag?
-
-  // plot:
-  GNUPlotter plt;
-  //plt.addDataArrays(N, &x1[0], &y1[0]);
-  plt.addDataArrays(N, &x2[0], &y2[0]);
-  //plt.addDataArrays(N, &x1[0]);
-  //plt.addDataArrays(N, &y1[0]);
-  //plt.addDataArrays(N, &x2[0]);
-  //plt.addDataArrays(N, &y2[0]);
-  plt.plot();
-  */
+  ts1.reset(); result &= ts1.isInInitialState();
+  ts2.reset(); result &= ts2.isInInitialState();
+  result &= runTurtleTest(ts1, ts2, N, true);
+    // the result ist shifted (i think, only the x-values)
+    // maybe in resetTurtle(), we need to init the turtle differently when in reverse mode
 }
