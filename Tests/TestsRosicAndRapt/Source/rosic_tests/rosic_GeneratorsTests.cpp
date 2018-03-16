@@ -277,7 +277,7 @@ void rotes::testTurtleSource()
     ts1.getSampleFrameStereo(&x1[n], &y1[n]);
     ts2.getSampleFrameStereo(&x2[n], &y2[n]);
     err = rmax(fabs(x2[n]-x1[n]), fabs(y2[n]-y1[n]));
-    //rsAssert(err < tol);
+    rsAssert(err < tol);
   }
 
   // backward:

@@ -183,17 +183,17 @@ void TurtleSource::reset()
   pos = 0;
   resetTurtle();
   resetCounters();
-  updateLineBuffer();
-
-  // old:
-  //lineIndex = 0; // shouldn't this be done in resetTurtle? ...but this gives a hang
-
-  // new:
   lineIndex = startLineIndex;
+  //updateLineBuffer(); // was called before using goToCommand
+  goToCommand(lineCommandIndices[lineIndex]);
 }
 
 bool TurtleSource::checkIndexConsistency()
 {
+  return commandIndex == lineCommandIndices[lineIndex];
+
+  /*
+  // old:
   // find target command index:
   int tmp = lineCommandIndices[lineIndex];
   if(reverse) tmp -= 1;  // in reverse mode, it should be before the 'F' for current line
@@ -208,15 +208,16 @@ bool TurtleSource::checkIndexConsistency()
   bool result = commandIndex == tmp;
   rsAssert(result);
   return result;
+  */
 }
 
 void TurtleSource::resetTurtle()
 {
-  //// old:
+  //// old (before introducing startLineIndex):
   //commandIndex = 0;
   //turtle.init(0, 0, 1, 0);
 
-  // new:
+  // new since introducing startLineIndex:
   if(!tableUpToDate)
     updateWaveTable();
   int i = startLineIndex;
@@ -226,6 +227,15 @@ void TurtleSource::resetTurtle()
   double x1 = tableX[i+1];
   double y1 = tableY[i+1];
   turtle.init(x0, y0, x1-x0, y1-y0);
+
+  // newly added since switching to use of goToCommand:
+  // place the commandIndex directly before (or after) the first line command to be executed 
+  // because, in goToCommand the will be incremented or decremented *before* any command is 
+  // executed:
+  lineIndex = i;
+  commandIndex -= 1;
+  if(reverse)
+    commandIndex += 2;
 
   // todo: use startPos, read out the table at the position corresponding to startPos (with linear
   // interpolation...or maybe rounding is better?), set dx,dy to the differences between the two
@@ -255,16 +265,21 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
   }
   else
   {
-    // old:
-    while(lineIndex != targetLineIndex)
-      goToNextLineSegment(); // increments lineIndex with wrap around
+    //// old (before using goToCommand):
+    //while(lineIndex != targetLineIndex)
+    //  goToNextLineSegment(); // increments lineIndex with wrap around
 
-    //// new:
-    //lineIndex = targetLineIndex;
-    //goToCommand(lineCommandIndices[lineIndex]);
-    // but from where do i invoke the resetters then? maybe from getSampleFrame? may make more
-    // sense anyway - reset instants are then not restricted to occur after a number of lines
-    // has been drawn
+    // new:
+    lineIndex = targetLineIndex;
+    bool reset = false;
+    for(int i = 0; i < numResetters; i++)
+      reset |= resetters[i].tick();
+    if(reset)
+      resetTurtle();
+    goToCommand(lineCommandIndices[lineIndex]);
+    // maybe invoke resetting from getSampleFrame - may make more sense anyway - reset instants are
+    // then not restricted to occur after a number of lines has been drawn (we need to adapt the 
+    // reset-intervals then)
   }
 
   // later: update interpolator coeffs here according to x,y buffers (but maybe only if inc > 1 in
@@ -273,6 +288,45 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
 
 void TurtleSource::goToCommand(int targetCommandIndex)
 {
+  if(turtleCommands.size() == 0)
+    return;
+
+  while(commandIndex != targetCommandIndex)
+  {
+    // increment or decrement command index:
+    if(reverse) {
+      commandIndex--;
+      if(commandIndex < 0)
+        commandIndex = (int)turtleCommands.size()-1;
+    }
+    else {
+      commandIndex++;
+      if(commandIndex == turtleCommands.size())
+        commandIndex = 0;
+    }
+
+    bool lineDrawn = turtle.interpretCharacter(turtleCommands[commandIndex]);
+    if(lineDrawn)
+    {
+      if(reverse) // do we have to reverse the line buffer in reverse mode?
+      {
+        x[1] = turtle.getStartX();
+        y[1] = turtle.getStartY();
+        x[0] = turtle.getEndX();
+        y[0] = turtle.getEndY();
+      }
+      else
+      {
+        x[0] = turtle.getStartX();
+        y[0] = turtle.getStartY();
+        x[1] = turtle.getEndX();
+        y[1] = turtle.getEndY();
+      }
+      // todo: take anti-alias flag into account - if it's false, it may actually suffice to fill
+      // the x,y arrays after leaving the loop...hmm...maybe we can generally fill them after the 
+      // loop keeping track only of soem temporary variables here
+    }
+  }
 
 
   int dummy = 0;
@@ -302,7 +356,8 @@ void TurtleSource::goToNextLineSegment()
   }
 }
 
-// may be obsolete, when goToCommand is finished:
+// may be obsolete, when goToCommand is finished (we need to drag over the unfinished anti-alias 
+// code, too):
 void TurtleSource::updateLineBuffer()
 {
   if(turtleCommands.size() == 0)
