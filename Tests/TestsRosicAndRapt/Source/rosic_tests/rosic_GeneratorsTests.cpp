@@ -255,23 +255,69 @@ void setupTurtleSource(rosic::TurtleSource& ts)
   ts.setFrequency(0.05);
   ts.setResetRatio(0, 0); // no reset
 }
+
+bool runTurtleTest(rosic::TurtleSource& ts1, rosic::TurtleSource& ts2, int numSamples, 
+  bool plot = false)
+{
+  // compares the output of two TurtleSource objects and returns true, if they are almost equal
+
+  int N = numSamples;
+  std::vector<double> x1(N), y1(N), x2(N), y2(N);
+  int n;
+  double err;
+  double tol = 1.e-14;
+  bool result = true;
+
+  for(n = 0; n < N; n++)
+  {
+    ts1.getSampleFrameStereo(&x1[n], &y1[n]);
+    ts2.getSampleFrameStereo(&x2[n], &y2[n]);
+    err = rmax(fabs(x2[n]-x1[n]), fabs(y2[n]-y1[n]));
+    //rsAssert(ts2.checkIndexConsistency());
+
+    result &= err <= tol;
+    //rsAssert(result);
+  }
+
+  if(plot)
+  {
+    GNUPlotter plt;
+    //plt.addDataArrays(N, &x1[0], &y1[0]);
+    //plt.addDataArrays(N, &x2[0], &y2[0]);
+    plt.addDataArrays(N, &x1[0]);
+    plt.addDataArrays(N, &y1[0]);
+    plt.addDataArrays(N, &x2[0]);
+    plt.addDataArrays(N, &y2[0]);
+    plt.plot();
+  }
+
+  return result;
+}
+
 void rotes::testTurtleSource()
 {
   int N = 100; // number of samples
+  bool result = true;
 
   // set up two TurtleSource objects with the same settings, the only difference being that one 
   // uses the table and the other one doesn't:
   rosic::TurtleSource ts1, ts2;
-  setupTurtleSource(ts1);
-  setupTurtleSource(ts2);
   ts1.setUseTable(true);
 
+  setupTurtleSource(ts1);
+  setupTurtleSource(ts2);
+  ts1.setFrequencyScaler(-1.0);
+  ts2.setFrequencyScaler(-1.0);
+  result &= runTurtleTest(ts1, ts2, N, true);
+
+
+  /*
   std::vector<double> x1(N), y1(N), x2(N), y2(N);
   int n;
   double err;
   double tol = 1.e-14;
 
-  // fo a simpler test, starting already in reverse mode:
+  // for a simpler test, starting already in reverse mode:
   ts1.setFrequencyScaler(-1.0);
   ts2.setFrequencyScaler(-1.0);  
   // it already get wrong at sample index 1 - the lineBuffers x,y are wrong in ts2
@@ -312,4 +358,5 @@ void rotes::testTurtleSource()
   //plt.addDataArrays(N, &x2[0]);
   //plt.addDataArrays(N, &y2[0]);
   plt.plot();
+  */
 }
