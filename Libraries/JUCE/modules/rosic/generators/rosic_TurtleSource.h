@@ -237,7 +237,10 @@ public:
     for(int i = 0; i < numResetters; i++)
       shouldReset |= resetters[i].tick();
     if(shouldReset)
-      resetLineIndex(); // maybe we should pass fPos and set pos to that value
+    {
+      resetLineIndex(0); // maybe we should pass fPos and set pos to that value
+      //resetLineIndex(fPos); // ...hmm..nope
+    }
   }
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
@@ -296,7 +299,8 @@ protected:
   }
 
   /** Resets the state such that the 1st line will be drawn next. */
-  void resetLineIndex();
+  void resetLineIndex(double fracPos);
+    // maybe call it resetPhase
 
   /** Resets only the turtle into its initial state, leaving the other state variables as is. Used
   internally in reset (which resets everything)) and for resetting after a number of lines has been
