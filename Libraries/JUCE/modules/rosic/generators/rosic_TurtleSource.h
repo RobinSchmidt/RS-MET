@@ -54,6 +54,39 @@ protected:
 // do i make it more complicated than necessary? ...maybe implement an alternative counter and do
 // unit- and performance tests
 
+// ...maybe like this:
+
+class ResetCounter2
+{
+
+public:
+
+  void setInterval(double newInterval) { interval = newInterval; }
+
+  void setIncrement(double newIncrement) { inc = newIncrement; }
+
+  double getInterval() const { return interval; }
+
+  void reset() { pos = 0; }
+
+  bool tick()
+  {
+    pos += inc;
+    if(pos >= interval) {
+      pos -= interval;
+      return true; 
+    }
+    return false;
+  }
+
+protected:
+
+  double interval = 1;
+  double inc = 1;
+  double pos = 0;
+
+};
+
 
 //=================================================================================================
 
@@ -198,6 +231,13 @@ public:
                             // be wrong inside goToLineSegment
 
     updatePosition();
+
+    // handle periodic resetting:
+    bool shouldReset = false;
+    for(int i = 0; i < numResetters; i++)
+      shouldReset |= resetters[i].tick();
+    if(shouldReset)
+      resetLineIndex(); // maybe we should pass fPos and set pos to that value
   }
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
@@ -255,6 +295,9 @@ protected:
     // or maybe call the 1st three floor, ceil, round, ..at least on the GUI
   }
 
+  /** Resets the state such that the 1st line will be drawn next. */
+  void resetLineIndex();
+
   /** Resets only the turtle into its initial state, leaving the other state variables as is. Used
   internally in reset (which resets everything)) and for resetting after a number of lines has been
   rendered. */
@@ -262,6 +305,8 @@ protected:
 
   /** Resets our counters that are used for triggering resets of the turtle drawing algo. */
   void resetCounters();
+
+
 
   /** Makes the buffers x[0],x[1],y[0],y[1] etc. reflect the line endpoints of the given index for
   the target line.  */
@@ -345,7 +390,8 @@ protected:
   static const int numResetters = 2;
   double resetRatios[numResetters];
   double resetOffsets[numResetters];
-  ResetCounter resetters[numResetters];
+  ResetCounter2 resetters[numResetters];
+  //ResetCounter resetters[numResetters]; // old
   // todo: have also reversers that switch periodically between forward and backward drawing
 
   // rendering objects and related variables:

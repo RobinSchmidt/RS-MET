@@ -180,19 +180,8 @@ void TurtleSource::updateLineCommandIndices()
 
 void TurtleSource::reset()
 {
-  pos = 0;
-  resetTurtle();
+  resetLineIndex();
   resetCounters();
-  lineIndex = startLineIndex;
-
-  if(useTable)
-    updateLineBufferFromTable();
-  else
-  {
-    //commandIndex = lineCommandIndices[lineIndex];
-    goToCommand(lineCommandIndices[lineIndex]);
-    updateLineBufferFromTurtle();
-  }
 }
 
 bool TurtleSource::checkIndexConsistency()
@@ -232,6 +221,21 @@ bool TurtleSource::isInInitialState()
   return r;
 }
 
+void TurtleSource::resetLineIndex()
+{
+  pos = 0;
+  lineIndex = startLineIndex;
+  if(useTable)
+    updateLineBufferFromTable();
+  else
+  {
+    resetTurtle();
+    //commandIndex = lineCommandIndices[lineIndex];
+    goToCommand(lineCommandIndices[lineIndex]);
+    updateLineBufferFromTurtle();
+  }
+}
+
 void TurtleSource::resetTurtle()
 {
   //// test:
@@ -240,9 +244,6 @@ void TurtleSource::resetTurtle()
   //// when doing this plot 3 is right and 1,2 are wrong, when not doing it, it's the other
   //// way around
 
-
-
-  
   // new since introducing startLineIndex:
   if(!tableUpToDate)
     updateWaveTable();
@@ -256,18 +257,10 @@ void TurtleSource::resetTurtle()
   double y1 = tableY[i+1];
   turtle.init(x0, y0, x1-x0, y1-y0);
 
-
-
   // initialization in reverse mode may still by buggy
   // this seems to magically work - at least with the test project, but i don't know why:
   if(reverse)
-  {
-    //turtle.init(x1, y1, x0-x1, y0-y1);
-    turtle.init(0, 0, 1, 0); 
     return;
-  }
-
-
 
   turtle.interpretCharacter(turtleCommands[commandIndex]);
   updateLineBufferFromTurtle();
@@ -300,15 +293,23 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
   else
   {
     lineIndex = targetLineIndex;
-    bool reset = false;
-    for(int i = 0; i < numResetters; i++)
-      reset |= resetters[i].tick();
-    if(reset)
-      resetTurtle();
-    goToCommand(lineCommandIndices[lineIndex]);
+
+    // new:
+    goToCommand(lineCommandIndices[lineIndex]); 
+
+    //// old:
+    //bool reset = false;
+    //for(int i = 0; i < numResetters; i++)
+    //  reset |= resetters[i].tick();
+    //if(reset)
+    //  resetTurtle();
+    //else
+    //  goToCommand(lineCommandIndices[lineIndex]);
     // maybe invoke resetting from getSampleFrame - may make more sense anyway - reset instants are
     // then not restricted to occur after a number of lines has been drawn (we need to adapt the 
     // reset-intervals then)..also, we may want to have resetting in table-mode, too
+    // actually, it's wrong here anyway - we would have to do as mayn reset as the difference 
+    // between targetLineIndex and lineIndex
   }
 
   // later: update interpolator coeffs here according to x,y buffers (but maybe only if inc > 1 in
@@ -380,108 +381,6 @@ void TurtleSource::updateLineBufferFromTable()
   y[1] = tableY[i+1];
 }
 
-
-/*
-// may be obsolete, when goToCommand is finished:
-void TurtleSource::goToNextLineSegment()
-{
-  updateLineBuffer();
-  bool reset = false;
-  for(int i = 0; i < numResetters; i++)
-    reset |= resetters[i].tick();
-  if(reset) {
-    resetTurtle();
-    updateLineBuffer();
-  }
-
-  if(reverse) {
-    lineIndex--;
-    if(lineIndex < 0)
-      lineIndex = numLines-1; 
-  }
-  else {
-    lineIndex++;
-    if(lineIndex >= numLines)
-      lineIndex = 0; 
-  }
-}
-
-// may be obsolete, when goToCommand is finished (we need to drag over the unfinished anti-alias 
-// code, too):
-void TurtleSource::updateLineBuffer()
-{
-  if(turtleCommands.size() == 0)
-    return;
-  bool xyUpdated = false;
-  while(xyUpdated == false) {
-    bool draw = turtle.interpretCharacter(turtleCommands[commandIndex]);
-
-    // increment or decrement command index:
-    if(reverse) {
-      commandIndex--;
-      if(commandIndex < 0)
-        commandIndex = (int)turtleCommands.size()-1;
-    }
-    else {
-      commandIndex++;
-      if(commandIndex == turtleCommands.size())
-        commandIndex = 0;
-    }
-
-    if(draw) {
-
-      if(!antiAlias)
-      {
-        if(reverse) // do we have to reverse the line buffer in reverse mode?
-        {
-          x[1] = turtle.getStartX();
-          y[1] = turtle.getStartY();
-          x[0] = turtle.getEndX();
-          y[0] = turtle.getEndY();
-        }
-        else
-        {
-          x[0] = turtle.getStartX();
-          y[0] = turtle.getStartY();
-          x[1] = turtle.getEndX();
-          y[1] = turtle.getEndY();
-        }
-      }
-      else
-      {
-        //// experimental anti aliasing:
-        //double k = 0.9*inc / (numLines+1); // or maybe make the factor 0.9 a parameter
-        //k = 0;
-        //x[0] = x[1];
-        //y[0] = y[1];
-        //x[1] = (1-k)*turtle.getEndX() + k*x[0];
-        //y[1] = (1-k)*turtle.getEndY() + k*y[0];
-
-        x[0] = x[1];
-        y[0] = y[1];
-        x[1] = turtle.getEndX();
-        y[1] = turtle.getEndY();
-        turtleLowpass.getSampleFrameStereo(&x[1], &y[1]);
-        // hmm - with FourArmAlien, it sounds worse with anti-aliasing - we need to create an 
-        // experiment for this - also compare it to using oversampling
-        // ...with HexaGrid, the anti aliasing improves the sound
-
-        // ...but it deosn't seem to work well anyway ...maybe the turtle should apply a lowpass
-        // internally - in each step, instead of setting x += dx, 
-        // set x = lowpass.getSample(x+dx) ...the turtle could use a bessel lowpass ...make a class
-        // FilteredTurtle...do things like turtle.setSmoothing/Lowpass
-        // when inc>1, we are actually stepping over multiple trurtle-genertated line segments in 
-        // each sample - so the turtle produces an oversampled output with respect to our sample 
-        // rate ..instead of the simple averaging above, we could do:
-        // x[1] = turtleLowpass.getSample(turtle.getEndX());
-      }
-
-      xyUpdated = true;
-    }
-  }
-}
-*/
-
 void TurtleSource::updateResetters()
 {
   for(int i = 0; i < numResetters; i++)
@@ -491,6 +390,7 @@ void TurtleSource::updateResetters()
 void TurtleSource::updateResetter(int i)
 {
   double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
+  //double interval = (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
   resetters[i].setInterval(interval);
   incUpToDate = false; // because computing the inc uses min(numLines, minResetInterval)
 }
@@ -499,14 +399,16 @@ void TurtleSource::updateIncrement()
 {
   double oldInc = inc;
 
+  // old (before dragging reset into getSample):
   double minLength = double(numLines);
   for(int i = 0; i < numResetters; i++)
     minLength = rmin(minLength, resetters[i].getInterval());
   inc = minLength * freqScaler * frequency / sampleRate;
 
-  // hmm...the pitch goes down when ratio is below 1 (and the old, cyclic reset is off)
-  // ...ahh - i think that's ok and expected - we should use a direction fix in the axiom to 
-  // avoid this
+  // new:
+  for(int i = 0; i < numResetters; i++)
+    resetters[i].setIncrement(inc);
+
 
   reverse = inc < 0.0;
 
@@ -602,6 +504,7 @@ void TurtleSource::updateMeanAndNormalizer()
 BUGS:
 -in reverse mode, the picture is shifted when a new note is started (something wrong with reset?)
  -it always shifts to the left, it seems to shift less when there are more lines
+ -seems to be fixed - but i don't know, why it works
 -the resetting does not seem to work anymore (wrong interval?)...maybe move it to getSample anyway
 -in non-table mode, there's a click at the beginning (try with InitSquare patch)
 -BuzzingTriangles patch is different in table-mode vs non-table-mode - aahhh - i think, it is 
