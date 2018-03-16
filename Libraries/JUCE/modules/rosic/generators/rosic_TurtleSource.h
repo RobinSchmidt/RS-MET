@@ -272,6 +272,8 @@ protected:
 
   void updateLineBufferFromTurtle();
 
+  void updateLineBufferFromTable();
+
 
 
   /** Goes from the current line segment (defined by member lineIndex) to the next, possibly 

@@ -337,6 +337,6 @@ void rotes::testTurtleSource()
   ts1.reset(); result &= ts1.isInInitialState();
   ts2.reset(); result &= ts2.isInInitialState();
   result &= runTurtleTest(ts1, ts2, N, true);
-    // the result ist shifted (i think, only the x-values)
+    // the result ist shifted (i think, only the x-values - maybe bcs dy is initially 0?)
     // maybe in resetTurtle(), we need to init the turtle differently when in reverse mode
 }

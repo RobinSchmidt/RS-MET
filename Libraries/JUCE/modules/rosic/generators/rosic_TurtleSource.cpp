@@ -185,10 +185,14 @@ void TurtleSource::reset()
   resetCounters();
   lineIndex = startLineIndex;
 
-  //commandIndex = lineCommandIndices[lineIndex];
-  goToCommand(lineCommandIndices[lineIndex]);
-
-  updateLineBufferFromTurtle();
+  if(useTable)
+    updateLineBufferFromTable();
+  else
+  {
+    //commandIndex = lineCommandIndices[lineIndex];
+    goToCommand(lineCommandIndices[lineIndex]);
+    updateLineBufferFromTurtle();
+  }
 }
 
 bool TurtleSource::checkIndexConsistency()
@@ -209,7 +213,7 @@ bool TurtleSource::isInInitialState()
   ys = tableY[0];
   xe = tableX[1];
   ye = tableY[1];
-  if(reverse) {
+  if(reverse && !useTable) {
     swap(xs, xe);
     swap(ys, ye); }
   r &= x[0] == xs;
@@ -221,6 +225,10 @@ bool TurtleSource::isInInitialState()
   r &= turtle.getEndX()   == xe;
   r &= turtle.getEndY()   == ye;
 
+  // actually, it seems wrong to me that that the entries of the line-buffers should be swapped in
+  // reverse mode - after all, we could switch between forward and reverse mode multiple times 
+  // within one line segment in which case we would just go back and forth in the same line buffer
+
   return r;
 }
 
@@ -229,6 +237,8 @@ void TurtleSource::resetTurtle()
   //// test:
   //turtle.init(0, 0, 1, 0); 
   //return; 
+  //// when doing this plot 3 is right and 1,2 are wrong, when not doing it, it's the other
+  //// way around
 
 
 
@@ -248,21 +258,16 @@ void TurtleSource::resetTurtle()
 
 
 
-  // initialization in reverse mode is still buggy
+  // initialization in reverse mode may still by buggy
+  // this seems to magically work - at least with the test project, but i don't know why:
+  if(reverse)
+  {
+    //turtle.init(x1, y1, x0-x1, y0-y1);
+    turtle.init(0, 0, 1, 0); 
+    return;
+  }
 
-  //if(reverse)
-  //{
-  //  int j = i-1;
-  //  if(j < 0) j += numLines;
-  //  x1 = tableX[j];
-  //  y1 = tableY[j];
-  //  turtle.init(x1, y1, x0-x1, y0-y1);
-  //}
-  //else
-  //turtle.init(x0, y0, x1-x0, y1-y0);
 
-  //if(reverse)
-  //  turtle.init(x1, y1, x0-x1, y0-y1);
 
   turtle.interpretCharacter(turtleCommands[commandIndex]);
   updateLineBufferFromTurtle();
@@ -284,23 +289,16 @@ void TurtleSource::resetCounters()
 void TurtleSource::goToLineSegment(int targetLineIndex)
 {
   if(numLines == 0) { x[0] = y[0] = x[1] = y[1] = 0; return; }
+
   if(useTable)
   {
     lineIndex = targetLineIndex;
-    x[0] = tableX[lineIndex];
-    y[0] = tableY[lineIndex];
-    x[1] = tableX[lineIndex+1];
-    y[1] = tableY[lineIndex+1];
+    updateLineBufferFromTable();
     // if we want anti-aliasing, we would actually also have to go through the intermediate 
-    // segments and filter while reading out the table
+    // segments and filter while reading out the table and filter during this process
   }
   else
   {
-    //// old (before using goToCommand):
-    //while(lineIndex != targetLineIndex)
-    //  goToNextLineSegment(); // increments lineIndex with wrap around
-
-    // new:
     lineIndex = targetLineIndex;
     bool reset = false;
     for(int i = 0; i < numResetters; i++)
@@ -310,7 +308,7 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
     goToCommand(lineCommandIndices[lineIndex]);
     // maybe invoke resetting from getSampleFrame - may make more sense anyway - reset instants are
     // then not restricted to occur after a number of lines has been drawn (we need to adapt the 
-    // reset-intervals then)
+    // reset-intervals then)..also, we may want to have resetting in table-mode, too
   }
 
   // later: update interpolator coeffs here according to x,y buffers (but maybe only if inc > 1 in
@@ -344,11 +342,6 @@ void TurtleSource::goToCommand(int targetCommandIndex)
     // loop keeping track only of some temporary variables here
 
   }
-
-
-
-
-  int dummy = 0;
 }
 
 void TurtleSource::updateLineBufferFromTurtle()
@@ -367,6 +360,7 @@ void TurtleSource::updateLineBufferFromTurtle()
     x[1] = turtle.getEndX();
     y[1] = turtle.getEndY();
   }
+  
 
   /*
   // test - don't reverse line-buffer - nope, seems wrong:
@@ -375,8 +369,15 @@ void TurtleSource::updateLineBufferFromTurtle()
   x[1] = turtle.getEndX();
   y[1] = turtle.getEndY();
   */
+}
 
-
+void TurtleSource::updateLineBufferFromTable()
+{
+  int i = lineIndex;
+  x[0] = tableX[i];
+  y[0] = tableY[i];
+  x[1] = tableX[i+1];
+  y[1] = tableY[i+1];
 }
 
 
@@ -508,8 +509,8 @@ void TurtleSource::updateIncrement()
   // avoid this
 
   reverse = inc < 0.0;
-  turtle.setReverseMode(reverse);
 
+  turtle.setReverseMode(reverse);
   if(inc*oldInc < 0)    // a direction change occured...
     turtle.backtrack(); // ...turtle needs to set its position back to the start of current line
 
