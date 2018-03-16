@@ -266,6 +266,8 @@ protected:
   /** Goes to the command with given index in our string of turtleCommands. */
   void goToCommand(int targetCommandIndex);
 
+  void updateLineBufferFromTurtle();
+
 
 
   /** Goes from the current line segment (defined by member lineIndex) to the next, possibly 

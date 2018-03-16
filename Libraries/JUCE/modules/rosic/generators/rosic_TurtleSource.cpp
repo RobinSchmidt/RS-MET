@@ -229,13 +229,19 @@ void TurtleSource::resetTurtle()
   turtle.init(x0, y0, x1-x0, y1-y0);
 
   // newly added since switching to use of goToCommand:
+
+  lineIndex = i;
+
   // place the commandIndex directly before (or after) the first line command to be executed 
   // because, in goToCommand the will be incremented or decremented *before* any command is 
   // executed:
-  lineIndex = i;
-  commandIndex -= 1;
-  if(reverse)
-    commandIndex += 2;
+  //commandIndex -= 1;
+  //if(reverse)
+  //  commandIndex += 2;
+
+  // ...but we can also do it like this:
+  turtle.interpretCharacter(turtleCommands[commandIndex]);
+  updateLineBufferFromTurtle();
 
   // todo: use startPos, read out the table at the position corresponding to startPos (with linear
   // interpolation...or maybe rounding is better?), set dx,dy to the differences between the two
@@ -307,42 +313,47 @@ void TurtleSource::goToCommand(int targetCommandIndex)
 
     bool lineDrawn = turtle.interpretCharacter(turtleCommands[commandIndex]);
     if(lineDrawn)
-    {
-      if(reverse) // do we have to reverse the line buffer in reverse mode?
-      {
-        x[1] = turtle.getStartX();
-        y[1] = turtle.getStartY();
-        x[0] = turtle.getEndX();
-        y[0] = turtle.getEndY();
-      }
-      else
-      {
-        x[0] = turtle.getStartX();
-        y[0] = turtle.getStartY();
-        x[1] = turtle.getEndX();
-        y[1] = turtle.getEndY();
-      }
-      
-     
-      /*
-      // test - don't reverse line-buffer - nope, seems wrong:
-      x[0] = turtle.getStartX();
-      y[0] = turtle.getStartY();
-      x[1] = turtle.getEndX();
-      y[1] = turtle.getEndY();
-      */
-      
+      updateLineBufferFromTurtle();
+    // todo: take anti-alias flag into account - if it's false, it may actually suffice to update
+    // the line buffers after leaving the loop...hmm...maybe we can generally fill them after the 
+    // loop keeping track only of some temporary variables here
 
-
-      // todo: take anti-alias flag into account - if it's false, it may actually suffice to fill
-      // the x,y arrays after leaving the loop...hmm...maybe we can generally fill them after the 
-      // loop keeping track only of soem temporary variables here
-    }
   }
+
+
 
 
   int dummy = 0;
 }
+
+void TurtleSource::updateLineBufferFromTurtle()
+{
+  if(reverse) // do we have to reverse the line buffer in reverse mode?
+  {
+    x[1] = turtle.getStartX();
+    y[1] = turtle.getStartY();
+    x[0] = turtle.getEndX();
+    y[0] = turtle.getEndY();
+  }
+  else
+  {
+    x[0] = turtle.getStartX();
+    y[0] = turtle.getStartY();
+    x[1] = turtle.getEndX();
+    y[1] = turtle.getEndY();
+  }
+
+  /*
+  // test - don't reverse line-buffer - nope, seems wrong:
+  x[0] = turtle.getStartX();
+  y[0] = turtle.getStartY();
+  x[1] = turtle.getEndX();
+  y[1] = turtle.getEndY();
+  */
+
+
+}
+
 
 /*
 // may be obsolete, when goToCommand is finished:
@@ -460,6 +471,8 @@ void TurtleSource::updateResetter(int i)
 
 void TurtleSource::updateIncrement()
 {
+  double oldInc = inc;
+
   double minLength = double(numLines);
   for(int i = 0; i < numResetters; i++)
     minLength = rmin(minLength, resetters[i].getInterval());
@@ -471,6 +484,11 @@ void TurtleSource::updateIncrement()
 
   reverse = inc < 0.0;
   turtle.setReverseMode(reverse);
+
+  if(inc*oldInc < 0)    // a direction change occured...
+    turtle.backtrack(); // ...turtle needs to set its position back to the start of current line
+
+
   turtleLowpass.setSampleRate(rmin(1/fabs(inc), 1.1)); // use 1.0 later
   incUpToDate = true;
 }

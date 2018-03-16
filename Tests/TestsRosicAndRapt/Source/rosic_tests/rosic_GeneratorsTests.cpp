@@ -233,18 +233,28 @@ void setupTurtleSource(rosic::TurtleSource& ts)
   // used to set up a TurtleSource to specific settings (the idea is to call it for two objects to
   // make sure, they have the same settings)
 
+  //ts.setTurtleCommands("F");
+  //ts.setTurnAngle(0);
 
-  //ts.setTurtleCommands("F+F+F+F+F+");  // regular pentagon
-  //ts.setTurnAngle(72);
+  //ts.setTurtleCommands("F+");   // just forward/backward
+  //ts.setTurnAngle(180);
 
-  ts.setTurtleCommands("F+F+F+F+");   // square
-  ts.setTurnAngle(90);
+  //ts.setTurtleCommands("F+F+");   // just forward/backward
+  //ts.setTurnAngle(180);
 
   //ts.setTurtleCommands("F+F+F+");   // triangle
   //ts.setTurnAngle(120);
 
-  //ts.setTurtleCommands("F+F+");   // just forward/backward
-  //ts.setTurnAngle(180);
+  //ts.setTurtleCommands("F+F+F+F+");   // square
+  //ts.setTurnAngle(90);
+
+  //ts.setTurtleCommands("F+F+F+F+F+");  // pentagon
+  //ts.setTurnAngle(72);
+
+
+  ts.setTurtleCommands("F+F+F+F+F+F+F+F+");   // octagon
+  ts.setTurnAngle(45);
+
 
   //ts.setTurtleCommands("FF");
   //ts.setTurnAngle(0);
@@ -252,8 +262,13 @@ void setupTurtleSource(rosic::TurtleSource& ts)
   //// mode
 
   ts.setSampleRate(1);
-  ts.setFrequency(0.05);
+  //ts.setFrequency(0.05);
+  ts.setFrequency(0.125);
+  //ts.setFrequency(0.25);
+  //ts.setFrequency(0.5);
+  //ts.setFrequency(1.0);
   ts.setResetRatio(0, 0); // no reset
+  //ts.setResetRatio(0, 2); // reset after 2 cycles
 }
 
 bool runTurtleTest(rosic::TurtleSource& ts1, rosic::TurtleSource& ts2, int numSamples, 
@@ -282,12 +297,16 @@ bool runTurtleTest(rosic::TurtleSource& ts1, rosic::TurtleSource& ts2, int numSa
   if(plot)
   {
     GNUPlotter plt;
+
     //plt.addDataArrays(N, &x1[0], &y1[0]);
     //plt.addDataArrays(N, &x2[0], &y2[0]);
+    //plt.setRange(-2, 2, -2, 2);
+
     plt.addDataArrays(N, &x1[0]);
     plt.addDataArrays(N, &y1[0]);
     plt.addDataArrays(N, &x2[0]);
     plt.addDataArrays(N, &y2[0]);
+
     plt.plot();
   }
 
@@ -296,7 +315,7 @@ bool runTurtleTest(rosic::TurtleSource& ts1, rosic::TurtleSource& ts2, int numSa
 
 void rotes::testTurtleSource()
 {
-  int N = 100; // number of samples
+  int N = 20; // number of samples
   bool result = true;
 
   // set up two TurtleSource objects with the same settings, the only difference being that one 
@@ -306,9 +325,25 @@ void rotes::testTurtleSource()
 
   setupTurtleSource(ts1);
   setupTurtleSource(ts2);
+
+  result &= runTurtleTest(ts1, ts2, N, true);
   ts1.setFrequencyScaler(-1.0);
   ts2.setFrequencyScaler(-1.0);
   result &= runTurtleTest(ts1, ts2, N, true);
+
+  // maybe for the first line to be drawn into a buffer, we should skip initial direction change
+  // commands? ...there's definitley something wrong about the intial turtle state or initial line
+  // being drawn in reverse mode
+  // when we run through a froward section before, the ts2 output is below the ts1 output, when we
+  // don't do it, it is above
+  // can we reproduce the problem only with a TurtleGraphics object when it has initial direction
+  // changes?
+  // in the plugin, there's also a click when the direction changes (maybe because the mean values
+  // are wrong in the reverse case as a result of starting off in the wrong direction?)
+  // i think, before the very first line is drawn after a direction change from forward to backward
+  // (maybe also the other way around?) the TurteGraphics state needs to backtrack one position
+  // to xo,yo?
+
 
 
   /*

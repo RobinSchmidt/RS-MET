@@ -59,6 +59,9 @@ public:
   /** Pops the most topmost state form the stack and sets the turtle state accordingly. */
   void popState();
 
+  /** Backtracks the turtle position one step */
+  void backtrack() { x = xo; y = yo; }
+
   /** Translates the given string into arrays of x,y coordinates of vertices. */
   void translate(const std::string& str, std::vector<double>& vx, std::vector<double>& vy);
 
