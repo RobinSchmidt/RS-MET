@@ -262,6 +262,11 @@ protected:
   the target line.  */
   void goToLineSegment(int targetLineIndex);
 
+  /** Goes to the command with given index in our string of turtleCommands. */
+  void goToCommand(int targetCommandIndex);
+
+
+
   /** Goes from the current line segment (defined by member lineIndex) to the next, possibly 
   including a wraparound. */
   void goToNextLineSegment();
@@ -269,6 +274,8 @@ protected:
   /** Updates the x,y arrays that hold the endpoint of the line that is currently being drawn, i.e. 
   the points between which we currently interpolate. */
   void updateLineBuffer();
+
+
 
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();

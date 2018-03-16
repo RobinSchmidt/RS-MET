@@ -5,7 +5,7 @@
 
 /** Implements a simple proof-of-concept class for tensors 
 
-A tensor can be seen as an n-dimensional array of values. Here, n is called the "rank" of the 
+A tensor can be seen as an r-dimensional array of values. Here, r is called the "rank" of the 
 tensor and it is the number of indices. This is not to be confused with the dimensionality of the 
 underlying vector space - which is the number of values over which each of the indices can run. For
 example, 3x3 matrix is a 2-dimensional array (2 indices) where each index runs over 3 values. Such 
@@ -20,7 +20,12 @@ functions that take one vector as input and produce a scalar, which in this case
 familiar scalar product. Covectors live in a vector space that is dual to the regular space in 
 which the vectors live. 
 
-...tbc...upper/lower indices (contravariant/covariant)
+In tensors, there are two kinds of indices: upper and lower, i.e. superscripts and subscripts. The 
+upper indices are also called contravariant and the lower indices covariant. It is sometimes 
+convenient to split the total rank of a tensor into an upper and lower part such that r = m+n and
+the pair of upper/lower ranks is written as (m,n). A vector has a single upper index and a covector
+has a single lower index. In this notation, they have ranks (1,0) or (0,1) respectively.
+
 
 */
 
@@ -90,15 +95,25 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Operations
   
-  Tensor contract(const Tensor& A, int index) const;
-  
+  /** A contraction is an operation on a tensor that returns a tensor of lower rank. The number of
+  superscripts and the number of subscripts each derease by one. A contraction must always involve
+  a superscript and a subscript ... */
+  Tensor contract(int index1, int index2) const;
+
+  /** An outer product between two tensors of rank (m,n) and (p,q) yields a tensor of rank 
+  (m+p.n+q). */
   Tensor outerProduct(const Tensor& A, const Tensor& B) const;
   
-  Tensor innerProduct(const Tensor& A, const Tensor& B) const;
+  /** .... An inner product between two tensors can be seen as an outer product followed by a 
+  contraction. */
+  Tensor innerProduct(const Tensor& A, const Tensor& B, int indexA, int indexB) const;
+   // not yet sure, if the signature should be like that
 
   // double apply(/*list of vectors and/or covectors*/); 
   // should produce a scalar for a given input list of vectors and or covectors...maybe have a 
   // generalized version that returns a tensor of any rank (the tensor is applied only partially)
+  // we may need to have a way to pass in a special placeholder tensor for empty slots in the input
+  // list
   // raiseIndex(int index, const Tensor& metric); lowerIndex(...)
   
   // operators: +,-,==,unary-, element access (i,j,k,...)
@@ -113,5 +128,7 @@ protected:
   std::vector<bool> subscript; // indicates if a particular index is a subscript
   
 };
+
+
 
 #endif

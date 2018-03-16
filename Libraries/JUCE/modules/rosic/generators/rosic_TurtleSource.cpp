@@ -255,12 +255,13 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
   }
   else
   {
+    // old:
     while(lineIndex != targetLineIndex)
       goToNextLineSegment(); // increments lineIndex with wrap around
 
-    // maybe do it like this:
-    // lineIndex = targetLineIndex;
-    // goToCommand(lineCommandIndices[lineIndex]);
+    //// new:
+    //lineIndex = targetLineIndex;
+    //goToCommand(lineCommandIndices[lineIndex]);
     // but from where do i invoke the resetters then? maybe from getSampleFrame? may make more
     // sense anyway - reset instants are then not restricted to occur after a number of lines
     // has been drawn
@@ -270,6 +271,14 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
   // which case the same set of coeffs may be used more than once)
 }
 
+void TurtleSource::goToCommand(int targetCommandIndex)
+{
+
+
+  int dummy = 0;
+}
+
+// may be obsolete, when goToCommand is finished:
 void TurtleSource::goToNextLineSegment()
 {
   updateLineBuffer();
@@ -293,6 +302,7 @@ void TurtleSource::goToNextLineSegment()
   }
 }
 
+// may be obsolete, when goToCommand is finished:
 void TurtleSource::updateLineBuffer()
 {
   if(turtleCommands.size() == 0)
