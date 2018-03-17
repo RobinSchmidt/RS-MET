@@ -144,6 +144,7 @@ public:
   // fall out of sync...maybe, we even have to do something more to make sure that line segments
   // in the lower order system are synced to corresponding sets of line segments in the higher 
   // order system (via keeping track of which commands spawned which child commands)
+  // maybe replace by setPhaseOffset and allow more direct phase-modulation
 
 
   // these functions are only to provide appropriate callback targets - maybe handle this in 
@@ -215,8 +216,9 @@ public:
     if(!incUpToDate)                updateIncrement(); // must be done before goToLineSegment
 
     // integer and fractional part of position:
-    int iPos = floorInt(pos);
-    double fPos = pos - iPos;
+    double linePos = pos*numLines;
+    int iPos = floorInt(linePos);
+    double fPos = linePos - iPos;
     if(iPos != lineIndex)
       goToLineSegment(iPos);
 
@@ -269,8 +271,8 @@ protected:
   {
     // increment and wraparound:
     pos += inc;
-    while(pos >= numLines) pos -= numLines;
-    while(pos <  0)        pos += numLines;
+    while(pos >= 1) pos -= 1;
+    while(pos <  0) pos += 1;
   }
 
   /** Reads out our line-segment buffer with interpolation and assigns the output for left and 
@@ -359,7 +361,6 @@ protected:
 
   int numLines       = 0;         // number of 'F's in turtleCommands
   int lineIndex      = 0;         // index of current line
-  //int lineInc        = 1;         // increment to go from current to next line (+1 or -1)
   int startLineIndex = 0;
 
   std::string turtleCommands;          // string of drawing commands for the turtle
@@ -374,7 +375,6 @@ protected:
   double sampleRate     = 44100;
   double turnAngle      = 0;
   double skew           = 0;
-  //int    cyclicReset    = 1;
   int    interpolation  = LINEAR;
   bool   antiAlias      = false;
   bool   useTable       = false;

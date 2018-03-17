@@ -373,8 +373,8 @@ void TurtleSource::updateResetters()
 
 void TurtleSource::updateResetter(int i)
 {
-  double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
-  //double interval = (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
+  //double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
+  double interval = (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
   resetters[i].setInterval(interval);
   incUpToDate = false; // because computing the inc uses min(numLines, minResetInterval)
 }
@@ -382,9 +382,7 @@ void TurtleSource::updateResetter(int i)
 void TurtleSource::updateIncrement()
 {
   double oldInc = inc;
-
-  // old (before dragging reset into getSample):
-  double minLength = double(numLines);
+  double minLength = 1;
   for(int i = 0; i < numResetters; i++)
     minLength = rmin(minLength, resetters[i].getInterval());
   inc = minLength * freqScaler * frequency / sampleRate;
