@@ -101,6 +101,8 @@
                 file="Source/Shared/Prototypes/FiniteAutomaton.cpp"/>
           <FILE id="siWyu0" name="FiniteAutomaton.h" compile="0" resource="0"
                 file="Source/Shared/Prototypes/FiniteAutomaton.h"/>
+          <FILE id="nOJxxx" name="Ideas.cpp" compile="1" resource="0" file="Source/Shared/Prototypes/Ideas.cpp"/>
+          <FILE id="vFcTlP" name="Ideas.h" compile="0" resource="0" file="Source/Shared/Prototypes/Ideas.h"/>
           <FILE id="kZGzyT" name="ParticleBouncer.cpp" compile="1" resource="0"
                 file="Source/Shared/Prototypes/ParticleBouncer.cpp"/>
           <FILE id="TSNqal" name="ParticleBouncer.h" compile="0" resource="0"

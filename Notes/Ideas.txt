@@ -70,6 +70,7 @@ protected:
  SynthVoice's oscVoice, filterVoice, envVoice, etc. objects
 -the overall design goal is to have a framework within which polyphonic 
  instruments can be built without storing any data redundantly
+ 
 
 
  
