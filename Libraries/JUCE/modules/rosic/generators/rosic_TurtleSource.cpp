@@ -116,6 +116,7 @@ void TurtleSource::setRotation(double newRotation)
   rotator.setAngle((PI/180) * newRotation);
 }
 
+/*
 void TurtleSource::setStartPosition(double newPosition)
 {
   startPos = newPosition;
@@ -124,6 +125,7 @@ void TurtleSource::setStartPosition(double newPosition)
     startLineIndex -= numLines;
   startCommandIndex = lineCommandIndices[startLineIndex];
 }
+*/
 
 void TurtleSource::setResetRatio(int i, double newRatio)
 {
@@ -224,7 +226,7 @@ bool TurtleSource::isInInitialState()
 void TurtleSource::resetPhase()
 {
   pos = 0;
-  lineIndex = startLineIndex;
+  lineIndex = 0;
   if(useTable)
     updateLineBufferFromTable();
   else
@@ -246,7 +248,7 @@ void TurtleSource::resetTurtle()
   // new since introducing startLineIndex:
   if(!tableUpToDate)
     updateWaveTable();
-  int i = startLineIndex;
+  int i = 0;
   commandIndex = lineCommandIndices[i];
   lineIndex = i;
 

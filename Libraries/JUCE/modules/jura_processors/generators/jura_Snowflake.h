@@ -106,7 +106,7 @@ protected:
   RTextEditor *axiomEditor, *rulesEditor;
   RTextField  *numLinesLabel;  
 
-  RSlider *sliderIterations, *sliderAngle, *sliderStart, *sliderSkew, *sliderAmplitude, 
+  RSlider *sliderIterations, *sliderAngle, *sliderPhase, *sliderSkew, *sliderAmplitude, 
     *sliderRotation;
 
   RSlider *sliderResetRatio1, *sliderResetOffset1, *sliderResetRatio2, *sliderResetOffset2;

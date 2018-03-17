@@ -138,13 +138,15 @@ public:
   /** Sets the starting position within the curve as normalized value between 0 and 1. The value, 
   you give here, will be quantized to the start of the nearest line segment and a new setting will 
   take effect on the next reset. */
-  void setStartPosition(double newPosition);
+  //void setStartPosition(double newPosition);
   // not yet implemented...maybe it's not a good idea to round to the next integer line position
   // because when combining outputs of 2 L-systems with different numbers of iterations, they may
   // fall out of sync...maybe, we even have to do something more to make sure that line segments
   // in the lower order system are synced to corresponding sets of line segments in the higher 
   // order system (via keeping track of which commands spawned which child commands)
   // maybe replace by setPhaseOffset and allow more direct phase-modulation
+
+  void setPhaseOffset(double newOffset) { phaseOffset = (1.0/360.0) * newOffset; }
 
 
   // these functions are only to provide appropriate callback targets - maybe handle this in 
@@ -354,14 +356,15 @@ protected:
   // state for on-the fly rendering:
   double pos = 0;                 // position in wavetable / string
   double inc = 0;                 // wavetable increment
-  double startPos = 0;            // start position, normalized to 0..1
+  double phaseOffset = 0;         // offset added to current phase for phase-modulation
+  //double startPos = 0;            // start position, normalized to 0..1
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
 
   int numLines       = 0;         // number of 'F's in turtleCommands
   int lineIndex      = 0;         // index of current line
-  int startLineIndex = 0;
+  //int startLineIndex = 0;
 
   std::string turtleCommands;          // string of drawing commands for the turtle
   int commandIndex = 0;                // current index in the list of turtle-commands

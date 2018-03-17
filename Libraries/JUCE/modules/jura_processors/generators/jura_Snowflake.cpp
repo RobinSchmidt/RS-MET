@@ -39,13 +39,17 @@ void Snowflake::createParameters()
   //addObservedParameter(p);
   //p->setValueChangeCallback<SF>(sf, &SF::setSkew);
 
-  p = new Param("Start", 0, 1, 0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<SF>(sf, &SF::setStartPosition);
+  //p = new Param("Start", 0, 1, 0, Parameter::LINEAR); // obsolete
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<SF>(sf, &SF::setStartPosition);
 
   p = new Param("Amplitude", -1, 1, 1, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<SF>(sf, &SF::setAmplitude);
+
+  p = new Param("Phase", -180, 180, 0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SF>(sf, &SF::setPhaseOffset);
 
   p = new Param("Rotation", -180, 180, 0, Parameter::LINEAR);
   addObservedParameter(p);
@@ -297,9 +301,9 @@ void SnowflakeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
-  addWidget( sliderStart = s = new Sld );
-  s->assignParameter( p = snowflakeModule->getParameterByName("Start") );
-  s->setDescription("Normalized start position in cycle");
+  addWidget( sliderPhase = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("Phase") );
+  s->setDescription("Phase offset in cycle");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString2);
 
@@ -418,13 +422,13 @@ void SnowflakeEditor::resized()
 
   sliderAngle->setBounds(x, y, w, wh); y += dy;
 
-  //sliderStart->setBounds(x, y, w, wh); y += dy; // doesn't seem to be very useful and creates problems
   //sliderSkew->setBounds(x, y, w, wh); y += dy;
 
   // put result (2D and 1D plots here)
 
-  sliderAmplitude->setBounds( x, y, w, wh); y += dy;
-  sliderRotation->setBounds(  x, y, w, wh); y += dy;
+  sliderAmplitude->setBounds(x, y, w, wh); y += dy;
+  sliderPhase    ->setBounds(x, y, w, wh); y += dy;
+  sliderRotation ->setBounds(x, y, w, wh); y += dy;
 
   // new:
   sliderResetRatio1->setBounds(x,  y, w, wh); y += dy;
