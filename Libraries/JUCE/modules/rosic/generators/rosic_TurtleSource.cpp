@@ -408,12 +408,19 @@ void TurtleSource::updateMeanAndNormalizer()
     maxX  = rmax(maxX, x);
     minY  = rmin(minY, y);
     maxY  = rmax(maxY, y);
-    sumX += x;
-    sumY += y;
+    //sumX += x;
+    //sumY += y;
   }
-  double tmp = 1.0 / (numLines+1); // maybe have a member for that (optimization)
-  meanX = sumX * tmp;
-  meanY = sumY * tmp;
+
+  // old:
+  //double tmp = 1.0 / (numLines+1); // maybe have a member for that (optimization)
+  //meanX = sumX * tmp;
+  //meanY = sumY * tmp;
+
+  // new (if we keep this, rename mean to center):
+  meanX = 0.5*(minX+maxX);
+  meanY = 0.5*(minY+maxY);
+
   minX -= meanX; maxX -= meanX;
   minY -= meanY; maxY -= meanY;
   maxX  = rmax(fabs(minX), fabs(maxX));
