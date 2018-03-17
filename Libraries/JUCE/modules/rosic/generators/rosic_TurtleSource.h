@@ -212,7 +212,7 @@ public:
     // some checks (optimize - have a single readyToPlay flag so we only need one check here):
     if(numLines < 1)                return;
     if(!tableUpToDate && useTable)  updateWaveTable();
-    if(!incUpToDate)                updateIncrement();
+    if(!incUpToDate)                updateIncrement(); // must be done before goToLineSegment
 
     // integer and fractional part of position:
     int iPos = floorInt(pos);
@@ -226,10 +226,6 @@ public:
     *outR = normalizer * amplitude * (*outR - meanY);
     rotator.apply(outL, outR);
 
-    //if(!incUpToDate)      // test: update increment here instead of at the beginning of the 
-    //  updateIncrement();  // function - right before using it - nope: reverse flag may then
-                            // be wrong inside goToLineSegment
-
     updatePosition();
 
     // handle periodic resetting:
@@ -238,6 +234,14 @@ public:
       shouldReset |= resetters[i].tick();
     if(shouldReset)
       resetPhase();
+
+    //// todo:
+    //// handle periodic direction reversal:
+    //bool shouldReverse = false;
+    //for(int i = 0; i < numReversers i++)
+    //  shouldReverse |= reversers[i].tick();
+    //if(shouldReverse)
+    //  reverseDirection();
   }
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
@@ -306,8 +310,6 @@ protected:
   /** Resets our counters that are used for triggering resets of the turtle drawing algo. */
   void resetCounters();
 
-
-
   /** Makes the buffers x[0],x[1],y[0],y[1] etc. reflect the line endpoints of the given index for
   the target line.  */
   void goToLineSegment(int targetLineIndex);
@@ -315,21 +317,13 @@ protected:
   /** Goes to the command with given index in our string of turtleCommands. */
   void goToCommand(int targetCommandIndex);
 
+  /** Updates the x,y arrays that hold the endpoint of the line that is currently being drawn, i.e. 
+  the points between which we currently interpolate from the TurtleGraphics object. */
   void updateLineBufferFromTurtle();
 
-  void updateLineBufferFromTable();
-
-
-
-  /** Goes from the current line segment (defined by member lineIndex) to the next, possibly 
-  including a wraparound. */
-  //void goToNextLineSegment();
-
   /** Updates the x,y arrays that hold the endpoint of the line that is currently being drawn, i.e. 
-  the points between which we currently interpolate. */
-  //void updateLineBuffer();
-
-
+  the points between which we currently interpolate from the pre-computed wavetable. */
+  void updateLineBufferFromTable();
 
   /** Renders the wavetable and updates related variables. */
   void updateWaveTable();
@@ -380,7 +374,7 @@ protected:
   double sampleRate     = 44100;
   double turnAngle      = 0;
   double skew           = 0;
-  int    cyclicReset    = 1;
+  //int    cyclicReset    = 1;
   int    interpolation  = LINEAR;
   bool   antiAlias      = false;
   bool   useTable       = false;
@@ -391,13 +385,11 @@ protected:
   double resetRatios[numResetters];
   double resetOffsets[numResetters];
   ResetCounter2 resetters[numResetters];
-  //ResetCounter resetters[numResetters]; // old
   // todo: have also reversers that switch periodically between forward and backward drawing
 
   // rendering objects and related variables:
   TurtleGraphics turtle;
   RAPT::rsRotationXY<double> rotator; // for rotating final x,y coordinates
-
 
   // for optional table-based synthesis (maybe at some point we can drop that?)
   std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
@@ -405,7 +397,6 @@ protected:
   rsEngineersFilterStereo turtleLowpass; 
     // lowpass applied to turtle output for anti-aliasing ...check, if the filter coeffs have the
     // correct limit, i.e. go into bypass mode when cutoff == fs/2
-
 
   // flags to indicate whether or not various rendering state variables are up to date:
 

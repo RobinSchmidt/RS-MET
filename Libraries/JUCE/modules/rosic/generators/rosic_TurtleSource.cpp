@@ -270,6 +270,7 @@ void TurtleSource::resetTurtle()
   // neighbouring points...oh...and also find the command-index that corresponds to the line 
   // segment...hmm...but how? maybe we need to keep a table of command-indices (indexed by 
   // line-number)
+  // ...or maybe it's better to modulate the phase/position in getSample
 }
 
 void TurtleSource::resetCounters()
@@ -292,23 +293,7 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
   else
   {
     lineIndex = targetLineIndex;
-
-    // new:
     goToCommand(lineCommandIndices[lineIndex]); 
-
-    //// old:
-    //bool reset = false;
-    //for(int i = 0; i < numResetters; i++)
-    //  reset |= resetters[i].tick();
-    //if(reset)
-    //  resetTurtle();
-    //else
-    //  goToCommand(lineCommandIndices[lineIndex]);
-    // maybe invoke resetting from getSampleFrame - may make more sense anyway - reset instants are
-    // then not restricted to occur after a number of lines has been drawn (we need to adapt the 
-    // reset-intervals then)..also, we may want to have resetting in table-mode, too
-    // actually, it's wrong here anyway - we would have to do as mayn reset as the difference 
-    // between targetLineIndex and lineIndex
   }
 
   // later: update interpolator coeffs here according to x,y buffers (but maybe only if inc > 1 in
