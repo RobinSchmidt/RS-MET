@@ -180,7 +180,7 @@ void TurtleSource::updateLineCommandIndices()
 
 void TurtleSource::reset()
 {
-  resetLineIndex(0);
+  resetPhase();
   resetCounters();
 }
 
@@ -221,9 +221,9 @@ bool TurtleSource::isInInitialState()
   return r;
 }
 
-void TurtleSource::resetLineIndex(double fracPos)
+void TurtleSource::resetPhase()
 {
-  pos = fracPos;
+  pos = 0;
   lineIndex = startLineIndex;
   if(useTable)
     updateLineBufferFromTable();
