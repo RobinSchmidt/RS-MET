@@ -116,17 +116,6 @@ void TurtleSource::setRotation(double newRotation)
   rotator.setAngle((PI/180) * newRotation);
 }
 
-/*
-void TurtleSource::setStartPosition(double newPosition)
-{
-  startPos = newPosition;
-  startLineIndex = (int) (startPos*numLines);
-  if(startLineIndex >= numLines)
-    startLineIndex -= numLines;
-  startCommandIndex = lineCommandIndices[startLineIndex];
-}
-*/
-
 void TurtleSource::setResetRatio(int i, double newRatio)
 {
   resetRatios[i] = newRatio;
@@ -485,6 +474,12 @@ void TurtleSource::updateMeanAndNormalizer()
 */
 
 /*
+Features to do:
+-periodic direction reversal
+-anti-aliasing
+-continuous number of iterations (maybe do it in Snowflake)
+
+
 BUGS:
 -in reverse mode, the picture is shifted when a new note is started (something wrong with reset?)
  -it always shifts to the left, it seems to shift less when there are more lines
