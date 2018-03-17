@@ -209,6 +209,14 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
+  double getLinePosition(double normalizedPosition)
+  {
+    double tmp = normalizedPosition + phaseOffset;
+    while(tmp >= 1) tmp -= 1;
+    while(tmp <  0) tmp += 1;
+    return tmp*numLines;
+  }
+
   /** Calculates one output-sample frame at a time. */
   INLINE void getSampleFrameStereo(double *outL, double *outR)
   {
@@ -218,7 +226,8 @@ public:
     if(!incUpToDate)                updateIncrement(); // must be done before goToLineSegment
 
     // integer and fractional part of position:
-    double linePos = pos*numLines;
+    //double linePos = pos*numLines;
+    double linePos = getLinePosition(pos);
     int iPos = floorInt(linePos);
     double fPos = linePos - iPos;
     if(iPos != lineIndex)
