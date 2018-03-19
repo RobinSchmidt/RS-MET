@@ -237,13 +237,12 @@ public:
     if(shouldReset)
       resetPhase();
 
-    //// todo:
-    //// handle periodic direction reversal:
-    //bool shouldReverse = false;
-    //for(int i = 0; i < numReversers i++)
-    //  shouldReverse |= reversers[i].tick();
-    //if(shouldReverse)
-    //  reverseDirection();
+    // handle periodic direction reversal:
+    bool shouldReverse = false;
+    for(int i = 0; i < numReversers; i++)
+      shouldReverse |= reversers[i].tick();
+    if(shouldReverse)
+      reverseDirection();
   }
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in 
@@ -344,8 +343,8 @@ protected:
   void updateReversers();
   void updateReverser(int index);
 
-  void changeReadDirection();
-  void updateReadDirection();
+  void reverseDirection();
+  void updateDirection();
 
 
   /** Updates the wavetable increment according to desired frequency, sample rate and number of 

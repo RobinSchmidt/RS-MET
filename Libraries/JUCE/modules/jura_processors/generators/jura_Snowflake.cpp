@@ -67,7 +67,6 @@ void Snowflake::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<SFM>(this, &SFM::setResetOffset1);
 
-
   p = new Param("ResetRatio2", 0, 16, 0, Parameter::LINEAR); 
   addObservedParameter(p);
   p->setValueChangeCallback<SFM>(this, &SFM::setResetRatio2);
@@ -77,16 +76,16 @@ void Snowflake::createParameters()
   p->setValueChangeCallback<SFM>(this, &SFM::setResetOffset2);
 
 
-  //// these two may be obsolete soon:
-  //p = new Param("CyclicReset", 0, 10, 1, Parameter::INTEGER, 1);
-  //addObservedParameter(p);
-  //p->setValueChangeCallback<SF>(sf, &SF::setResetAfterCycles);
-  //  // reanme to curveCountReset
 
-  //p = new Param("LineCountReset", 0, 5000, 0, Parameter::LINEAR, 0);
-  //addObservedParameter(p);
-  //p->setValueChangeCallback<SF>(sf, &SF::setResetAfterLines);
-  //// would benefit from keytracking
+
+  p = new Param("ReverseRatio1", 0, 16, 0, Parameter::LINEAR); 
+  addObservedParameter(p);
+  p->setValueChangeCallback<SFM>(this, &SFM::setReverseRatio1);
+
+  p = new Param("ReverseOffset1", -10, +10, 0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SFM>(this, &SFM::setReverseOffset1);
+
 
 
 
@@ -360,20 +359,19 @@ void SnowflakeEditor::createWidgets()
 
 
 
-
-  /*
-  addWidget( sliderCycleReset = s = new Sld );
-  s->assignParameter( p = snowflakeModule->getParameterByName("CyclicReset") );
-  s->setDescription("Number of cycles after which turtle resets (0 for never)");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString0);
-
-  addWidget( sliderLineReset = s = new Sld );
-  s->assignParameter( p = snowflakeModule->getParameterByName("LineCountReset") );
-  s->setDescription("Number of lines after which turtle resets (0 for never)");
+  addWidget( sliderReverseRatio1 = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("ReverseRatio1") );
+  s->setDescription("Frequency for reseversing direction as factor for note-frequency");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
-  */
+
+  addWidget( sliderReverseOffset1 = s = new Sld );
+  s->assignParameter( p = snowflakeModule->getParameterByName("ReverseOffset1") );
+  s->setDescription("Frequency dependent offset for ReverseRatio1");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+
 
 
   addWidget( sliderFreqScaler = s = new Sld );
@@ -433,16 +431,16 @@ void SnowflakeEditor::resized()
   sliderPhase    ->setBounds(x, y, w, wh); y += dy;
   sliderRotation ->setBounds(x, y, w, wh); y += dy;
 
-  // new:
-  sliderResetRatio1->setBounds(x,  y, w, wh); y += dy;
-  sliderResetOffset1->setBounds(x, y, w, wh); y += dy;
 
-  sliderResetRatio2->setBounds(x,  y, w, wh); y += dy;
+  sliderResetRatio1->setBounds( x, y, w, wh); y += dy;
+  sliderResetOffset1->setBounds(x, y, w, wh); y += dy;
+  sliderResetRatio2->setBounds( x, y, w, wh); y += dy;
   sliderResetOffset2->setBounds(x, y, w, wh); y += dy;
 
-  // old - remove when reset-ratio/offset works:
-  //sliderCycleReset->setBounds(x, y, w, wh); y += dy;
-  //sliderLineReset->setBounds( x, y, w, wh); y += dy;
+  sliderReverseRatio1->setBounds( x, y, w, wh); y += dy;
+  sliderReverseOffset1->setBounds(x, y, w, wh); y += dy;
+
+
 
   // experimental:
   y += dy;

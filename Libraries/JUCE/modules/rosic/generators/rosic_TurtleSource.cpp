@@ -192,6 +192,7 @@ void TurtleSource::reset()
   resetPhase();
   resetCounters();
   reverseFlipFlop = false;
+  updateDirection();
 }
 
 bool TurtleSource::checkIndexConsistency()
@@ -395,10 +396,10 @@ void TurtleSource::updateReverser(int i)
   incUpToDate = false;
 }
 
-void TurtleSource::changeReadDirection()
+void TurtleSource::reverseDirection()
 {
   reverseFlipFlop = !reverseFlipFlop;
-  updateReadDirection();
+  updateDirection();
 }
 
 bool xor(bool a, bool b) // move somewhere else
@@ -406,10 +407,16 @@ bool xor(bool a, bool b) // move somewhere else
   return (a || b) && !(a && b); // can this be optimized?
 }
 
-void TurtleSource::updateReadDirection()
+void TurtleSource::updateDirection()
 {
   bool oldReverse = reverse;
-  reverse = xor(reverseFlipFlop, (inc < 0));
+
+  //reverse = xor(reverseFlipFlop, (inc < 0));
+
+  reverse = xor(reverseFlipFlop, (freqScaler*frequency < 0));
+  if(reverse && inc > 0 || !reverse && inc < 0) // can this be optimized?
+    inc = -inc;
+
   turtle.setReverseMode(reverse);
   if(xor(reverse, oldReverse))  // a direction change occured - turtle needs to set its position
     turtle.backtrack();         // back to the start of current line
@@ -421,6 +428,8 @@ void TurtleSource::updateIncrement()
   double minLength = 1;
   for(int i = 0; i < numResetters; i++)
     minLength = rmin(minLength, resetters[i].getInterval());
+  for(int i = 0; i < numReversers; i++)
+    minLength = rmin(minLength, 2*reversers[i].getInterval());
   inc = minLength * freqScaler * frequency / sampleRate;
 
   for(int i = 0; i < numResetters; i++)
@@ -431,7 +440,7 @@ void TurtleSource::updateIncrement()
 
 
   // new:
-  updateReadDirection();
+  updateDirection();
 
   /*
   // old:

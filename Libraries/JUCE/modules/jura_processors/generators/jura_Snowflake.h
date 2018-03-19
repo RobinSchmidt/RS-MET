@@ -30,6 +30,9 @@ public:
   void setResetRatio2( double newRatio)  { core.setResetRatio( 1, newRatio);  }
   void setResetOffset2(double newOffset) { core.setResetOffset(1, newOffset); }
 
+  void setReverseRatio1( double newRatio)  { core.setReverseRatio( 0, newRatio);  }
+  void setReverseOffset1(double newOffset) { core.setReverseOffset(0, newOffset); }
+
 
   /** Sets the axiom (i.e. seed") for the L-system. */
   void setAxiom(const juce::String& newAxiom);
@@ -115,7 +118,8 @@ protected:
   RSlider *sliderIterations, *sliderAngle, *sliderPhase, *sliderSkew, *sliderAmplitude, 
     *sliderRotation;
 
-  RSlider *sliderResetRatio1, *sliderResetOffset1, *sliderResetRatio2, *sliderResetOffset2;
+  RSlider *sliderResetRatio1,   *sliderResetOffset1,   *sliderResetRatio2,   *sliderResetOffset2;
+  RSlider *sliderReverseRatio1, *sliderReverseOffset1, *sliderReverseRatio2, *sliderReverseOffset2;
 
   RSlider *sliderFreqScaler; // maybe use this just for development and remove later
   RButton *buttonAntiAlias, *buttonUseTable;
