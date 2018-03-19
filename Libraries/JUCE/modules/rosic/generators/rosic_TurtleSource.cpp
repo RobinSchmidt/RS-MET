@@ -394,6 +394,25 @@ void TurtleSource::updateReverser(int i)
   incUpToDate = false;
 }
 
+void TurtleSource::changeReadDirection()
+{
+  reverseFlipFlop = !reverseFlipFlop;
+  updateReadDirection();
+}
+
+bool xor(bool a, bool b)
+{
+  return (a || b) && !(a && b); // can this be optimized?
+}
+
+void TurtleSource::updateReadDirection()
+{
+  bool oldReverse = reverse;
+  reverse = xor(reverseFlipFlop, (inc < 0));
+  if(xor(reverse, oldReverse))  // a direction change occured - turtle needs to set its position
+    turtle.backtrack();         // back to the start of current line
+}
+
 void TurtleSource::updateIncrement()
 {
   double oldInc = inc;

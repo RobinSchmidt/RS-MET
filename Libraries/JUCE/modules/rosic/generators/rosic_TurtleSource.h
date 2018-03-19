@@ -344,6 +344,9 @@ protected:
   void updateReversers();
   void updateReverser(int index);
 
+  void changeReadDirection();
+  void updateReadDirection();
+
 
   /** Updates the wavetable increment according to desired frequency, sample rate and number of 
   lines. */
@@ -366,6 +369,7 @@ protected:
   int numLines  = 0;              // number of 'F's in turtleCommands
   int lineIndex = 0;              // index of current line
   bool reverse  = false;          // indicates that we are currently reading turtle commands backwards
+  bool reverseFlipFlop = false;
 
   std::string turtleCommands;          // string of drawing commands for the turtle
   int commandIndex = 0;                // current index in the list of turtle-commands
