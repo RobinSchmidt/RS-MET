@@ -206,6 +206,7 @@ bool TurtleSource::isInInitialState()
 
   r &= lineIndex == 0;
   r &= commandIndex == lineCommandIndices[lineIndex];
+  r &= reverseFlipFlop == false;
 
   // check line buffer and turtle state:
   double xs, ys, xe, ye;
@@ -391,9 +392,11 @@ void TurtleSource::updateReversers()
 
 void TurtleSource::updateReverser(int i)
 {
-  double interval = (1/reverseRatios[i] + reverseOffsets[i]/(freqScaler*frequency));
+  double interval = 0.5*(1/reverseRatios[i] + reverseOffsets[i]/(freqScaler*frequency));
   reversers[i].setInterval(interval);
   incUpToDate = false;
+
+  // 0.5 * because the resulting periodicity is twice the interval of reversals
 }
 
 void TurtleSource::reverseDirection()
@@ -428,15 +431,19 @@ void TurtleSource::updateIncrement()
   double minLength = 1;
   for(int i = 0; i < numResetters; i++)
     minLength = rmin(minLength, resetters[i].getInterval());
+
   for(int i = 0; i < numReversers; i++)
-    minLength = rmin(minLength, 2*reversers[i].getInterval());
+    minLength = rmin(minLength, 2*reversers[i].getInterval()); 
+
+     
+
   inc = minLength * freqScaler * frequency / sampleRate;
 
   for(int i = 0; i < numResetters; i++)
-    resetters[i].setIncrement(inc);
+    resetters[i].setIncrement(fabs(inc));
 
   for(int i = 0; i < numReversers; i++)
-    reversers[i].setIncrement(inc);
+    reversers[i].setIncrement(fabs(inc));
 
 
   // new:

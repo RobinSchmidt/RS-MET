@@ -315,7 +315,7 @@ bool runTurtleTest(rosic::TurtleSource& ts1, rosic::TurtleSource& ts2, int numSa
 
 void rotes::testTurtleSource()
 {
-  int N = 20; // number of samples
+  int N = 100; // number of samples
   bool result = true;
 
   // set up two TurtleSource objects with the same settings, the only difference being that one 
@@ -339,4 +339,12 @@ void rotes::testTurtleSource()
   result &= runTurtleTest(ts1, ts2, N, true);
     // the result ist shifted (i think, only the x-values - maybe bcs dy is initially 0?)
     // maybe in resetTurtle(), we need to init the turtle differently when in reverse mode
+
+  double reverseRatio = 1.0;
+  ts1.setReverseRatio(0, reverseRatio);
+  ts2.setReverseRatio(0, reverseRatio);
+  ts1.reset(); result &= ts1.isInInitialState();
+  ts2.reset(); result &= ts2.isInInitialState();
+  result &= runTurtleTest(ts1, ts2, N, true);
+
 }
