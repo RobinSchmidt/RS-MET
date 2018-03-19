@@ -152,6 +152,14 @@ public:
   constant across the keyboard. */
   void setResetOffset(int index, double newOffset);
 
+  // under constrcution:
+  void setReverseRatio( int index, double newRatio);
+  void setReverseOffset(int index, double newOffset);
+
+
+
+
+
   /** Sets the method that is used to interpolate between the sequence of points that the turtle 
   generates. */
   void setInterpolationMode(int newMode) { interpolation = newMode; }
@@ -332,6 +340,11 @@ protected:
   /** Updates the resetter with the given index according to the resetter user parameters. */
   void updateResetter(int index);
 
+
+  void updateReversers();
+  void updateReverser(int index);
+
+
   /** Updates the wavetable increment according to desired frequency, sample rate and number of 
   lines. */
   void updateIncrement();
@@ -350,9 +363,9 @@ protected:
   double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
   double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
   double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
-
-  int numLines       = 0;         // number of 'F's in turtleCommands
-  int lineIndex      = 0;         // index of current line
+  int numLines  = 0;              // number of 'F's in turtleCommands
+  int lineIndex = 0;              // index of current line
+  bool reverse  = false;          // indicates that we are currently reading turtle commands backwards
 
   std::string turtleCommands;          // string of drawing commands for the turtle
   int commandIndex = 0;                // current index in the list of turtle-commands
@@ -369,14 +382,20 @@ protected:
   int    interpolation  = LINEAR;
   bool   antiAlias      = false;
   bool   useTable       = false;
-  bool   reverse        = false;
 
   // resetters:
   static const int numResetters = 2;
   double resetRatios[numResetters];
   double resetOffsets[numResetters];
   ResetCounter2 resetters[numResetters];
-  // todo: have also reversers that switch periodically between forward and backward drawing
+
+  // reversers:
+  static const int numReversers = 2;
+  double reverseRatios[numReversers];
+  double reverseOffsets[numReversers];
+  ResetCounter2 reversers[numReversers];
+
+
 
   // rendering objects and related variables:
   TurtleGraphics turtle;

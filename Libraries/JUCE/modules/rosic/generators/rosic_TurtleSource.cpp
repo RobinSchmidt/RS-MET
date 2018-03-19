@@ -128,6 +128,18 @@ void TurtleSource::setResetOffset(int i, double newOffset)
   updateResetter(i);
 }
 
+void TurtleSource::setReverseRatio(int i, double newRatio)
+{
+  reverseRatios[i] = newRatio;
+  updateReverser(i);
+}
+
+void TurtleSource::setReverseOffset(int i, double newOffset)
+{
+  reverseOffsets[i] = newOffset;
+  updateReverser(i);
+}
+
 void TurtleSource::setTurnAngle(double newAngle) 
 {
   turnAngle = newAngle;
@@ -364,10 +376,22 @@ void TurtleSource::updateResetters()
 
 void TurtleSource::updateResetter(int i)
 {
-  //double interval = numLines * (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
   double interval = (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
   resetters[i].setInterval(interval);
   incUpToDate = false; // because computing the inc uses min(numLines, minResetInterval)
+}
+
+void TurtleSource::updateReversers()
+{
+  for(int i = 0; i < numReversers; i++)
+    updateReverser(i);
+}
+
+void TurtleSource::updateReverser(int i)
+{
+  double interval = (1/reverseRatios[i] + reverseOffsets[i]/(freqScaler*frequency));
+  reversers[i].setInterval(interval);
+  incUpToDate = false;
 }
 
 void TurtleSource::updateIncrement()
