@@ -70,6 +70,12 @@ TurtleSource::TurtleSource()
     setResetOffset(i, 0);
   }
 
+  // reversers are all off by default:
+  for(int i = 0; i < numReversers; i++) {
+    setReverseRatio( i, 0);
+    setReverseOffset(i, 0);
+  }
+
   // experimental:
   turtleLowpass.setSampleRate(1.1); // later try 1.0
   turtleLowpass.setFrequency(0.5); // check out, if 0.5 leads to bypass coeffs
@@ -185,6 +191,7 @@ void TurtleSource::reset()
 {
   resetPhase();
   resetCounters();
+  reverseFlipFlop = false;
 }
 
 bool TurtleSource::checkIndexConsistency()
@@ -266,20 +273,14 @@ void TurtleSource::resetTurtle()
 
   turtle.interpretCharacter(turtleCommands[commandIndex]);
   updateLineBufferFromTurtle();
-  
-
-  // todo: use startPos, read out the table at the position corresponding to startPos (with linear
-  // interpolation...or maybe rounding is better?), set dx,dy to the differences between the two
-  // neighbouring points...oh...and also find the command-index that corresponds to the line 
-  // segment...hmm...but how? maybe we need to keep a table of command-indices (indexed by 
-  // line-number)
-  // ...or maybe it's better to modulate the phase/position in getSample
 }
 
 void TurtleSource::resetCounters()
 {
   for(int i = 0; i < numResetters; i++)
     resetters[i].reset();
+  for(int i = 0; i < numReversers; i++)
+    reversers[i].reset();
 }
 
 void TurtleSource::goToLineSegment(int targetLineIndex)
@@ -400,7 +401,7 @@ void TurtleSource::changeReadDirection()
   updateReadDirection();
 }
 
-bool xor(bool a, bool b)
+bool xor(bool a, bool b) // move somewhere else
 {
   return (a || b) && !(a && b); // can this be optimized?
 }
@@ -409,6 +410,7 @@ void TurtleSource::updateReadDirection()
 {
   bool oldReverse = reverse;
   reverse = xor(reverseFlipFlop, (inc < 0));
+  turtle.setReverseMode(reverse);
   if(xor(reverse, oldReverse))  // a direction change occured - turtle needs to set its position
     turtle.backtrack();         // back to the start of current line
 }
@@ -421,16 +423,23 @@ void TurtleSource::updateIncrement()
     minLength = rmin(minLength, resetters[i].getInterval());
   inc = minLength * freqScaler * frequency / sampleRate;
 
-  // new:
   for(int i = 0; i < numResetters; i++)
     resetters[i].setIncrement(inc);
 
+  for(int i = 0; i < numReversers; i++)
+    reversers[i].setIncrement(inc);
 
+
+  // new:
+  updateReadDirection();
+
+  /*
+  // old:
   reverse = inc < 0.0;
-
   turtle.setReverseMode(reverse);
   if(inc*oldInc < 0)    // a direction change occured...
     turtle.backtrack(); // ...turtle needs to set its position back to the start of current line
+  */
 
 
   turtleLowpass.setSampleRate(rmin(1/fabs(inc), 1.1)); // use 1.0 later
