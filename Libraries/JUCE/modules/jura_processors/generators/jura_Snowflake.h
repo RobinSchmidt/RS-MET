@@ -25,6 +25,12 @@ public:
 
   // override set/getXml to store strings for rules and seed
 
+  void setResetRatio1( double newRatio)  { core.setResetRatio( 0, newRatio);  }
+  void setResetOffset1(double newOffset) { core.setResetOffset(0, newOffset); }
+  void setResetRatio2( double newRatio)  { core.setResetRatio( 1, newRatio);  }
+  void setResetOffset2(double newOffset) { core.setResetOffset(1, newOffset); }
+
+
   /** Sets the axiom (i.e. seed") for the L-system. */
   void setAxiom(const juce::String& newAxiom);
 

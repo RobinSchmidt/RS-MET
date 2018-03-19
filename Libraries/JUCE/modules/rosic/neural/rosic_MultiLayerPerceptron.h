@@ -17,6 +17,12 @@ namespace rosic
   GradientBasedMinimizer class (which realizes the required optimization algorithms in a generic 
   way).
 
+  for inspiration how to use it for audio and datasets for learning:
+  https://magenta.tensorflow.org/nsynth
+  https://magenta.tensorflow.org/datasets/nsynth
+  https://arxiv.org/pdf/1704.01279.pdf
+
+
   */
 
   class MultiLayerPerceptron  

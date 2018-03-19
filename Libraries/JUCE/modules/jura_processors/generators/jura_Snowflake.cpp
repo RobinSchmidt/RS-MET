@@ -9,6 +9,9 @@ void Snowflake::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
+
+  typedef jura::Snowflake SFM;
+
   typedef rosic::Snowflake SF;
   SF* sf = &core;
 
@@ -58,20 +61,20 @@ void Snowflake::createParameters()
 
   p = new Param("ResetRatio1", 0, 16, 1, Parameter::LINEAR); 
   addObservedParameter(p);
-  p->setValueChangeCallback<SF>(sf, &SF::setResetRatio1);
+  p->setValueChangeCallback<SFM>(this, &SFM::setResetRatio1);
 
   p = new Param("ResetOffset1", -10, +10, 0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<SF>(sf, &SF::setResetOffset1);
+  p->setValueChangeCallback<SFM>(this, &SFM::setResetOffset1);
 
 
   p = new Param("ResetRatio2", 0, 16, 0, Parameter::LINEAR); 
   addObservedParameter(p);
-  p->setValueChangeCallback<SF>(sf, &SF::setResetRatio2);
+  p->setValueChangeCallback<SFM>(this, &SFM::setResetRatio2);
 
   p = new Param("ResetOffset2", -10, +10, 0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<SF>(sf, &SF::setResetOffset2);
+  p->setValueChangeCallback<SFM>(this, &SFM::setResetOffset2);
 
 
   //// these two may be obsolete soon:

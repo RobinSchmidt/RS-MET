@@ -13,13 +13,23 @@
  -maybe these functions can be extended to take a 3rd argument c for the correlation between 
   a and b
   -and(a,b,c) should reduce to the form above when c=0: and(a,b,0) = a*b
-   when c = +1: and(a=1,b=0,+1) = and(a=0,b=1,+1) = 0
+   when c = +1: and(a=1,b=0,+1) = and(a=0,b=1,+1) = 0, and(a=1,b=1,+1) = a = b
    when c = -1: and(a=1,b=1,-1) = and(a=0,b=0,-1) = 0
    ...maybe we can find more conditions that must hold and derive a general formula for and(a,b,c)
+   maybe and(a,b,c) = a*b-c*xor(a,b) or  and(a,b,c) = a*b-c*a*b*xor(a,b)?
+   -check, if the result is always in 0..1
+   -run numeric simulations using data of correlated 0s and 1s produced by some algorithm and 
+    check, if the results predicted by the formula match the simulation result
   -when a formula for "and" is established, a formula for "or" can be derived from 
    or(a,b) = not(and(not(a),not(b)))
   -maybe it should also output two new correlation values for (a,result), (b,result) as side 
    results
+  -maybe, as a further generalization, not only (symmetric) correlations can be used but 
+   conditional probabilities...maybe a correlation can be seen as a pair of symmetric conditational
+   probabilities, where C = P(A|B) = P(B|A) but in general, these two conditional probabilities
+   can be different -> look up - if that's the case, maybe bayes rule can be used for and(a,b)?
+  -consider an example: produce random number x in 0..1, let: A: x < 0.5, B: 0.3 < x < 0.6,
+   -> P(A)=0.5, P(B)=0.3, P(A|B)=1/3, P(B|A)=2/5=0.4 -> what's the correlation C(A,B)?
  -maybe a class for such variables can be written, using operators "*" for "and" and "+" for "or"
   -can we then also derive meaningful formulas for "/" and "-"?
  -...maybe using p,q instead of a,b is a nicer convention

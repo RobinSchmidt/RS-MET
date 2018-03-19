@@ -138,15 +138,6 @@ public:
   /** Sets a phase offset in degrees. Can be used for phase-modulation. */
   void setPhaseOffset(double newOffset) { phaseOffset = (1.0/360.0) * newOffset; }
 
-  // these functions are only to provide appropriate callback targets - maybe handle this in 
-  // jura::Snowflake...
-  void setResetRatio1( double newRatio)  { setResetRatio( 0, newRatio);  }
-  void setResetOffset1(double newOffset) { setResetOffset(0, newOffset); }
-  void setResetRatio2( double newRatio)  { setResetRatio( 1, newRatio);  }
-  void setResetOffset2(double newOffset) { setResetOffset(1, newOffset); }
-
-  // ....and keep only these here:
-
   /** Sets the reset interval as a ratio with respect to the length of the cycle (i.e. the number 
   of lines). If there are 100 lines and this parameter is set to 1, the turtle drawer will be 
   reset into its initial state after drawing 100 lines. If it's set to 0, it will never reset, i.e.

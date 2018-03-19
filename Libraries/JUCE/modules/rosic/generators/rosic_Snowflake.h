@@ -35,6 +35,15 @@ public:
   /** Sets the number of iterations for the L-system. */
   void setNumIterations(int newNumIterations);
 
+  /** Sets the amount of detail to be prduced in the line-drawing from 0 to 100 percent. 0 uses
+  and L-system with 0 iterations, 100 an L-system with an iteration number equal to what is set up 
+  by setNumIterations. Non-integer values will result in a crossfade between 2 numbes of 
+  iterations. For example, when setNumIterations is set to 10, detail to 35%, you'll get a 50/50
+  corssfade between 3 and and 4 iterations. */
+  void setDetailAmount(double newAmount);
+   // not yet implemented - it's complicated - we may need to always run at least 2 turtles, maybe 
+   // even numIterations turtles....
+
   /** Updates all internal variables, so they reflect the user settings. Client code normally 
   doesn't have to care, because it does this automatically, when necessary. But sometimes it's
   useful for debugging to call this manually. */
