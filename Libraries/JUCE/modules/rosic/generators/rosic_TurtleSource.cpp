@@ -467,30 +467,20 @@ void TurtleSource::updateMeanAndNormalizer()
   if(!tableUpToDate)
     updateWaveTable();
 
-  double minX = 0, maxX = 0, minY = 0, maxY = 0, sumX = 0, sumY = 0;
+  double minX = 0, maxX = 0, minY = 0, maxY = 0;
   int N = (int) tableX.size();
   for(int i = 0; i < N; i++) {
-    double x = tableX[i];
-    double y = tableY[i];
-    minX  = rmin(minX, x);
-    maxX  = rmax(maxX, x);
-    minY  = rmin(minY, y);
-    maxY  = rmax(maxY, y);
-    //sumX += x;
-    //sumY += y;
+    minX  = rmin(minX, tableX[i]);
+    maxX  = rmax(maxX, tableX[i]);
+    minY  = rmin(minY, tableY[i]);
+    maxY  = rmax(maxY, tableY[i]);
   }
 
-  // old:
-  //double tmp = 1.0 / (numLines+1); // maybe have a member for that (optimization)
-  //meanX = sumX * tmp;
-  //meanY = sumY * tmp;
+  centerX = 0.5*(minX+maxX);
+  centerY = 0.5*(minY+maxY);
 
-  // new (if we keep this, rename mean to center):
-  meanX = 0.5*(minX+maxX);
-  meanY = 0.5*(minY+maxY);
-
-  minX -= meanX; maxX -= meanX;
-  minY -= meanY; maxY -= meanY;
+  minX -= centerX; maxX -= centerX;
+  minY -= centerY; maxY -= centerY;
   maxX  = rmax(fabs(minX), fabs(maxX));
   maxY  = rmax(fabs(minY), fabs(maxY));
   normalizer = 1.0 / rmax(maxX, maxY);

@@ -20,6 +20,9 @@
    -check, if the result is always in 0..1
    -run numeric simulations using data of correlated 0s and 1s produced by some algorithm and 
     check, if the results predicted by the formula match the simulation result
+   -hmm.actually in leupold 2, p355, there is a formula: 
+    P(A and B) = P(A|B) * P(B) = P(B|A) * P(A)...well, kinda obvious..so it seems like it's enough 
+    to know either P(A|B) or P(B|A) along with P(A),P(B) to compute P(A and B)
   -when a formula for "and" is established, a formula for "or" can be derived from 
    or(a,b) = not(and(not(a),not(b)))
   -maybe it should also output two new correlation values for (a,result), (b,result) as side 
@@ -53,6 +56,14 @@
  -the cells could be initialized with random values, maybe with an optional "balancing" of 
   0s and 1s: just count the 1s, and if there are n too many, change n randomly chosen 1-cells to 0
   (or the other way around)
+
+
+-parametric equations:
+ 4-leaf clover: 
+ r\left(\theta\right)=3\left(1+0.3\sin^2\left(4\theta\right)\right)\sqrt[4]{\cos^2\left(2\theta\right)}
+ \left(\cos\left(t\right)\cdot r\left(t\right),\ \sin\left(t\right)\cdot r\left(t\right)\right)
+ https://www.desmos.com/calculator/hgg7kzkswn
+
 */
 
 #endif

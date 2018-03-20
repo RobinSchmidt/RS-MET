@@ -224,8 +224,8 @@ public:
 
     // read out buffered line segment (x[], y[] members) with interpolation:
     interpolate(outL, outR, fPos);
-    *outL = normalizer * amplitude * (*outL - meanX);
-    *outR = normalizer * amplitude * (*outR - meanY);
+    *outL = normalizer * amplitude * (*outL - centerX);
+    *outR = normalizer * amplitude * (*outR - centerY);
     rotator.apply(outL, outR);
 
     updatePosition();
@@ -362,14 +362,15 @@ protected:
   double pos = 0;                 // position in wavetable / string
   double inc = 0;                 // wavetable increment
   double phaseOffset = 0;         // offset added to current phase for phase-modulation
-  double meanX = 0, meanY = 0;    // mean values of x,y coordinates in one cycle
-  double normalizer = 1;          // scales outputs such that -1 <= x,y <= +1 for all points
-  double x[2], y[2];              // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
-  int numLines  = 0;              // number of 'F's in turtleCommands
-  int lineIndex = 0;              // index of current line
   bool reverse  = false;          // indicates that we are currently reading turtle commands backwards
   bool reverseFlipFlop = false;
 
+  // state variables, that need to be upped to arrays in subclass TurtleSourceMulti:
+  double centerX = 0, centerY = 0; // center values of x,y coordinates in one cycle
+  double normalizer = 1;           // scales outputs such that -1 <= x,y <= +1 for all points
+  double x[2], y[2];               // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
+  int numLines  = 0;               // number of 'F's in turtleCommands
+  int lineIndex = 0;               // index of current line
   std::string turtleCommands;          // string of drawing commands for the turtle
   int commandIndex = 0;                // current index in the list of turtle-commands
   int startCommandIndex = 0;           // index of the first command to be executed after reset
@@ -420,6 +421,23 @@ protected:
   // done in a thread-safe way in the audio thread - the gui thread just atomically sets these
   // flags...maybe if we do it everywhere like this, we can even get rid of locking in 
   // jura::Parameter...that would be great!!
+
+};
+
+//=================================================================================================
+
+/** Subclass of TurtleSource that allows to run multiple TurtleSources in parallel and mix their
+outputs. The idea is to have several related command-strings, for example obtained by using the 
+same L-system with different numbers of iterations, and mix them to adjust the level of detail. */
+
+class TurtleSourceMulti : public TurtleSource
+{
+
+public:
+
+protected:
+
+
 
 };
 
