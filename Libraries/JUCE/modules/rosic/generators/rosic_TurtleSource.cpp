@@ -413,13 +413,9 @@ bool xor(bool a, bool b) // move somewhere else
 void TurtleSource::updateDirection()
 {
   bool oldReverse = reverse;
-
-  //reverse = xor(reverseFlipFlop, (inc < 0));
-
   reverse = xor(reverseFlipFlop, (freqScaler*frequency < 0));
   if(reverse && inc > 0 || !reverse && inc < 0) // can this be optimized?
     inc = -inc;
-
   turtle.setReverseMode(reverse);
   if(xor(reverse, oldReverse))  // a direction change occured - turtle needs to set its position
     turtle.backtrack();         // back to the start of current line
@@ -495,61 +491,19 @@ void TurtleSource::updateMeanAndNormalizer()
   // is probably just as good (especially, when a DC blocking filter is used later anyway)
 }
 
-
-/*
-// old version - avoids creating the table:
-void TurtleSource::updateMeanAndNormalizer()
-{
-  // run through all turtle commands once, thereby keep track of the mean and min/max values of the
-  // generated curve, then set our meanX, meanY, normalizer members accordingly
-
-  double minX = 0, maxX = 0, minY = 0, maxY = 0, sumX = 0, sumY = 0;
-  TurtleGraphics tmpTurtle;
-  tmpTurtle.setAngle(turnAngle);
-  tmpTurtle.init();
-  int N = (int) turtleCommands.size();
-  for(int i = 0; i < N; i++) {
-    bool lineDrawn = tmpTurtle.interpretCharacter(turtleCommands[i]);
-    if( lineDrawn == true )  {
-      double x = tmpTurtle.getX();
-      double y = tmpTurtle.getY();
-      minX  = rmin(minX, x);
-      maxX  = rmax(maxX, x);
-      minY  = rmin(minY, y);
-      maxY  = rmax(maxY, y);
-      sumX += x;
-      sumY += y;
-    }
-  }
-  double tmp = 1.0 / (numLines+1); // maybe have a member for that (optimization)
-  meanX = sumX * tmp;
-  meanY = sumY * tmp;
-  minX -= meanX; maxX -= meanX;
-  minY -= meanY; maxY -= meanY;
-  maxX  = rmax(fabs(minX), fabs(maxX));
-  maxY  = rmax(fabs(minY), fabs(maxY));
-  normalizer = 1.0 / rmax(maxX, maxY);
-
-  // in free running mode, this so computed mean is sometimes (often) wrong because one cycle is 
-  // only part (for example half) of a larger shape - in this case, we would need the mean over two 
-  // cycles ...maybe we can somehow deduce the symmetry in order to compute a better mean? maybe we
-  // should offer different normalization modes...maybe have a highpass and leveller running on it
-  // in realtime (but not oversampled)
-}
-*/
-
 /*
 Features to do:
--periodic direction reversal
 -anti-aliasing
--continuous number of iterations (maybe do it in Snowflake)
+-continuous number of iterations (do it in Snowflake)
+ -we need TurtleSourceMulti that 
+  either: runs all turtles in parallel to ensure that they all stay in sync (expensive)
+  or: only run two turtles at a time and figure out a way to meaningfully initialize the state when
+  we have to switch on a new turtle (like from the pair 2/3 to 3/4, we have to switch on 4)
+  -for initialization of turtle 4 we may use its stored table and/or the state of "neighbour" 
+   turtle 3
 
 
 BUGS:
--in reverse mode, the picture is shifted when a new note is started (something wrong with reset?)
- -it always shifts to the left, it seems to shift less when there are more lines
- -seems to be fixed - but i don't know, why it works
--the resetting does not seem to work anymore (wrong interval?)...maybe move it to getSample anyway
 -in non-table mode, there's a click at the beginning (try with InitSquare patch)
 -BuzzingTriangles patch is different in table-mode vs non-table-mode - aahhh - i think, it is 
  because in non-table mode, and 'f' leads to a jump in position and in table-mode, the point is not
@@ -560,10 +514,7 @@ BUGS:
  such click
 -when start-position is > 0 and the number of iterations is reduced, we may get access violations
  (i think, it tries to reset to a line-number that has become invalid)
--for the AlienFace patch, start-point modulation gives chaotic behavior. May this have to do with
- the state-stack? If so, what can be done - maybe just disable start-point modulation when the 
- rules and/or axiom contains '[', ']'? ...may this mess up reversal behavior, too?
- ...maybe disable the feature for now...doesn't seem to be very useful anyway
+
 
 
 Ideas:

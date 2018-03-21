@@ -152,13 +152,11 @@ public:
   constant across the keyboard. */
   void setResetOffset(int index, double newOffset);
 
-  // under constrcution:
+  /** Analog to setResetRatio, but for triggering periodic readout direction reversal. */
   void setReverseRatio( int index, double newRatio);
+
+  /** Analog to setResetOffset. */
   void setReverseOffset(int index, double newOffset);
-
-
-
-
 
   /** Sets the method that is used to interpolate between the sequence of points that the turtle 
   generates. */
@@ -339,13 +337,18 @@ protected:
   /** Updates the resetter with the given index according to the resetter user parameters. */
   void updateResetter(int index);
 
-
+  /** Analog to updateResetters. */
   void updateReversers();
+
+  /** Analog to updateResetter. */
   void updateReverser(int index);
 
+  /** Changes the readout direction. */
   void reverseDirection();
-  void updateDirection();
 
+  /** Updates our reverse flag and inc variable to be consistent with the currently desired readout 
+  direction. */
+  void updateDirection();
 
   /** Updates the wavetable increment according to desired frequency, sample rate and number of 
   lines. */
@@ -365,7 +368,7 @@ protected:
   bool reverse  = false;          // indicates that we are currently reading turtle commands backwards
   bool reverseFlipFlop = false;
 
-  // state variables, that need to be upped to arrays in subclass TurtleSourceMulti:
+  // state variables and objects, that need to be upped to arrays in subclass TurtleSourceMulti:
   double centerX = 0, centerY = 0; // center values of x,y coordinates in one cycle
   double normalizer = 1;           // scales outputs such that -1 <= x,y <= +1 for all points
   double x[2], y[2];               // x[0]: point we come from, x[1]: point we go to, maybe apply a DC blocking filter to these x,y states
@@ -375,6 +378,11 @@ protected:
   int commandIndex = 0;                // current index in the list of turtle-commands
   int startCommandIndex = 0;           // index of the first command to be executed after reset
   std::vector<int> lineCommandIndices; // indices for the line commands
+  std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)                            
+  TurtleGraphics turtle;  
+  rsEngineersFilterStereo turtleLowpass; 
+  // lowpass applied to turtle output for anti-aliasing ...check, if the filter coeffs have the
+  // correct limit, i.e. go into bypass mode when cutoff == fs/2
 
   // parameters:
   double amplitude      = 1;
@@ -399,21 +407,10 @@ protected:
   double reverseOffsets[numReversers];
   ResetCounter2 reversers[numReversers];
 
-
-
-  // rendering objects and related variables:
-  TurtleGraphics turtle;
-  RAPT::rsRotationXY<double> rotator; // for rotating final x,y coordinates
-
-  // for optional table-based synthesis (maybe at some point we can drop that?)
-  std::vector<double> tableX, tableY;  // rendered (wave)tables for x (left) and y (right)
-
-  rsEngineersFilterStereo turtleLowpass; 
-    // lowpass applied to turtle output for anti-aliasing ...check, if the filter coeffs have the
-    // correct limit, i.e. go into bypass mode when cutoff == fs/2
+  // for rotating final x,y coordinates:
+  RAPT::rsRotationXY<double> rotator; 
 
   // flags to indicate whether or not various rendering state variables are up to date:
-
   std::atomic_bool tableUpToDate = false; // maybe rename to tableReady ...get rid
   std::atomic_bool incUpToDate = false;
   // this is a new way of dealing with updating internal variables - it avoids redundant 
@@ -428,7 +425,8 @@ protected:
 
 /** Subclass of TurtleSource that allows to run multiple TurtleSources in parallel and mix their
 outputs. The idea is to have several related command-strings, for example obtained by using the 
-same L-system with different numbers of iterations, and mix them to adjust the level of detail. */
+same L-system with different numbers of iterations, and mix them to adjust the level of detail 
+continuously. */
 
 class TurtleSourceMulti : public TurtleSource
 {
@@ -436,8 +434,6 @@ class TurtleSourceMulti : public TurtleSource
 public:
 
 protected:
-
-
 
 };
 
