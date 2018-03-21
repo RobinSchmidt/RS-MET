@@ -38,6 +38,11 @@ void rsMultiBandEffect::setSplitFrequency(int bandIndex, double newFrequency)
   splitterR.setSplitFrequency(bandIndex, newFrequency);
 }
 
+double rsMultiBandEffect::getDecibelsAt(int index, double frequency)
+{
+  return 0; // not yet implemented
+}
+
 // processing:
 
 void rsMultiBandEffect::reset()

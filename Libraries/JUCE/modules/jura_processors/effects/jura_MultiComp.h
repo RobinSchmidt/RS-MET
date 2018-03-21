@@ -85,6 +85,7 @@ todo:
  -ensure that the split frequencies are always sorted from low to high
  -restrict ranges for the split-freqs according to the neighbours
   (maybe do these things in rosic::MultiBandEffect)
+ -plot frequency responses: rosic::rsMultiBandEffect::getMagnitudeAt(index, freq)
 
 */
 

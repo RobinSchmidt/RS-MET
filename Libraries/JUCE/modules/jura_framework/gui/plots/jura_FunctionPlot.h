@@ -40,6 +40,11 @@ public:
   virtual void setupForDecibelsAgainstLogFrequency(double minFreq, double maxFreq, 
     double minDb, double maxDb, double yGridSpacing = 6);
 
+  /** Sets the number of functions that should be shown in the plot. The idea is that you may not 
+  want to show all of those functions that have been added via addFunction all the time but only 
+  the first few. */
+  virtual void setNumFunctionsToPlot(size_t newNumber) { numFunctionsToPlot = newNumber; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
@@ -60,6 +65,7 @@ protected:
 
   std::vector<std::function<double(double)>> functions;
   std::vector<std::vector<double>> specialPoints;
+  size_t numFunctionsToPlot = 0;
 
 };
 

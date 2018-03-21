@@ -2,6 +2,7 @@
 void rsFunctionPlot::addFunction(std::function<double(double)> function)
 {
   append(functions, function);
+  numFunctionsToPlot = functions.size();
 }
 
 void rsFunctionPlot::setupForDecibelsAgainstLogFrequency(double minFreq, double maxFreq,
@@ -58,8 +59,9 @@ void rsFunctionPlot::paint(Graphics &g)
   // member, so we don't have to create a new object in each subclass in order to do the subclass
   // specific additional drawing
 
+  size_t numFuncs = jmin(functions.size(), numFunctionsToPlot);
   rsPlotDrawer drawer(plotSettings, plotColourScheme, 0, 0, getWidth(), getHeight());
-  for(size_t i = 0; i < functions.size(); i++)
+  for(size_t i = 0; i < numFuncs; i++)
   {
     g.setColour(getGraphColor(i));
     if(specialPoints.size() <= i)

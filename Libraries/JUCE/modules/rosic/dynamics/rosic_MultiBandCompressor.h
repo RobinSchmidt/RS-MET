@@ -37,6 +37,10 @@ public:
   /** Returns the upper cutoff frequency for the band with given index. */
   double getSplitFrequency(int index) { return splitterL.getSplitFrequency(index); }
 
+  /** Returns the magnitude response in decibels for the band with given index at the given 
+  frequency. */
+  double getDecibelsAt(int index, double frequency);
+
   //---------------------------------------------------------------------------------------------
   /** \name Processing */
 

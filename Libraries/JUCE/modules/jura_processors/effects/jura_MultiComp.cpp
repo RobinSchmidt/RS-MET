@@ -81,8 +81,10 @@ MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
 
   freqRespPlot = new rsFunctionPlot;
   freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -48.0, 12.0, 6);
-  //for(int i = 0; i < multiCompModule->getMaxNumBands; i++)
-  //  freqRespPlot->addFunction([this](double f)->double { return multiCompModule->getDecibelsAt(i, f); });
+
+  for(int i = 0; i < core->getMaxNumberOfBands(); i++)
+    freqRespPlot->addFunction([=](double f)->double { return core->getDecibelsAt(i, f); });
+
   freqRespPlot->addMouseListener(this, true);
   addPlot(freqRespPlot);
 }
@@ -94,6 +96,7 @@ MultiBandPlotEditor::~MultiBandPlotEditor()
 
 void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
 {
+  freqRespPlot->setNumFunctionsToPlot(core->getNumberOfBands());
   repaint();
 }
 
