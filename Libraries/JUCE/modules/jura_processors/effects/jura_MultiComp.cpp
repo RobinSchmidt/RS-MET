@@ -72,6 +72,82 @@ int MultiBandEffect::getBandContainingFrequency(double freq)
 
 //=================================================================================================
 
+MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
+  : module(moduleToEdit)
+
+{
+  module->addChangeListener(this);
+  core = module->getCore();
+
+  freqRespPlot = new rsFunctionPlot;
+  freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -48.0, 12.0, 6);
+  //for(int i = 0; i < multiCompModule->getMaxNumBands; i++)
+  //  freqRespPlot->addFunction([this](double f)->double { return multiCompModule->getDecibelsAt(i, f); });
+  freqRespPlot->addMouseListener(this, true);
+  addPlot(freqRespPlot);
+}
+
+MultiBandPlotEditor::~MultiBandPlotEditor()
+{
+  module->removeChangeListener(this);
+}
+
+void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
+{
+  repaint();
+}
+
+void MultiBandPlotEditor::mouseDown(const MouseEvent& e)
+{
+  // select band whose rectangle contains the mouse-event:
+  double freq = freqRespPlot->fromPixelX(e.x);
+  int index = module->getBandContainingFrequency(freq);
+  Parameter* p = module->getParameterByName("SelectedBand");
+  p->setValue(index, true, true);
+
+  // maybe de-select, if the click was in the currently selected band, so we can have no selection
+}
+
+void MultiBandPlotEditor::paintOverChildren(Graphics& g)
+{
+  int numBands = core->getNumberOfBands();
+
+  // highlight rectangle of selected band:
+  int selected = module->getSelectedBand();
+  float x1 = 0.f;
+  float x2 = (float) getWidth();
+  if(selected > 0)
+    x1 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(selected-1));
+  if(selected < numBands-1)
+    x2 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(selected));
+  //g.setColour(Colours::red.withAlpha(0.25f));
+  g.setColour(Colours::lightblue.withAlpha(0.25f)); // preliminary
+                                                    //g.setColour(Colours::magenta.withAlpha(0.25f));
+  g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
+
+
+  // draw vertical lines at split frequencies:
+  float y1 = 0.f;
+  float y2 = (float) getHeight();
+  g.setColour(Colours::white); // preliminary
+  for(int i = 0; i < numBands-1; i++)
+  {
+    //double freq = core->getSplitFrequency(i); // debug
+    float x = (float)freqRespPlot->toPixelX(core->getSplitFrequency(i));
+    g.drawLine(x, y1, x, y2, 2.f);
+  }
+
+  // todo: maybe give all bands a color (going through the rainbow) and just use a higher alpha
+  // for the selected band (that may look nice)
+}
+
+void MultiBandPlotEditor::resized()
+{
+  freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
+}
+
+//=================================================================================================
+
 MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : MultiBandEffect(lockToUse,  metaManagerToUse, modManagerToUse)
@@ -120,8 +196,6 @@ void MultiCompAudioModule::createCompressionParameters()
   //getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
 }
 
-
-
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   for(int n = 0; n < numSamples; n++)
@@ -151,77 +225,10 @@ AudioModuleEditor* MultiCompAudioModule::createEditor()
 //=================================================================================================
 
 MultiCompPlotEditor::MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompModuleToEdit)
-  : multiCompModule(multiCompModuleToEdit)
+  : MultiBandPlotEditor(multiCompModuleToEdit), multiCompModule(multiCompModuleToEdit)
 
 {
-  multiCompModule->addChangeListener(this);
-  multiCompCore = multiCompModule->getCore();
 
-  freqRespPlot = new rsFunctionPlot;
-  freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -48.0, 12.0, 6);
-  //for(int i = 0; i < multiCompModule->getMaxNumBands; i++)
-  //  freqRespPlot->addFunction([this](double f)->double { return multiCompModule->getDecibelsAt(i, f); });
-  freqRespPlot->addMouseListener(this, true);
-  addPlot(freqRespPlot);
-}
-
-MultiCompPlotEditor::~MultiCompPlotEditor()
-{
-  multiCompModule->removeChangeListener(this);
-}
-
-void MultiCompPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
-{
-  repaint();
-}
-
-void MultiCompPlotEditor::mouseDown(const MouseEvent& e)
-{
-  // select band whose rectangle contains the mouse-event:
-  double freq = freqRespPlot->fromPixelX(e.x);
-  int index = multiCompModule->getBandContainingFrequency(freq);
-  Parameter* p = multiCompModule->getParameterByName("SelectedBand");
-  p->setValue(index, true, true);
-
-  // maybe de-select, if the click was in the currently selected band, so we can have no selection
-}
-
-void MultiCompPlotEditor::paintOverChildren(Graphics& g)
-{
-  int numBands = multiCompCore->getNumberOfBands();
-
-  // highlight rectangle of selected band:
-  int selected = multiCompModule->getSelectedBand();
-  float x1 = 0.f;
-  float x2 = (float) getWidth();
-  if(selected > 0)
-    x1 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected-1));
-  if(selected < numBands-1)
-    x2 = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(selected));
-  //g.setColour(Colours::red.withAlpha(0.25f));
-  g.setColour(Colours::lightblue.withAlpha(0.25f)); // preliminary
-  //g.setColour(Colours::magenta.withAlpha(0.25f));
-  g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
-
-
-  // draw vertical lines at split frequencies:
-  float y1 = 0.f;
-  float y2 = (float) getHeight();
-  g.setColour(Colours::white); // preliminary
-  for(int i = 0; i < numBands-1; i++)
-  {
-    //double freq = multiCompCore->getSplitFrequency(i); // debug
-    float x = (float)freqRespPlot->toPixelX(multiCompCore->getSplitFrequency(i));
-    g.drawLine(x, y1, x, y2, 2.f);
-  }
-
-  // todo: maybe give all bands a color (going through the rainbow) and just use a higher alpha
-  // for the selected band (that may look nice)
-}
-
-void MultiCompPlotEditor::resized()
-{
-  freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
 }
 
 //=================================================================================================

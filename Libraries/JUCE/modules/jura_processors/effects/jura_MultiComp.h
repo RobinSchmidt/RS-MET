@@ -31,6 +31,9 @@ public:
 
   void setSplitFreq(double newFreq) { core->setSplitFrequency(selectedBand, newFreq); }
 
+  /** Returns a pointer to our core DSP object. */
+  rosic::rsMultiBandEffect* getCore() { return core; }
+
 protected:
 
   rosic::rsMultiBandEffect* core = nullptr;
@@ -71,17 +74,14 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandPlotEditor)
 };
 
-
-
-
 //=================================================================================================
 
 /** Multiband compressor with up to 16 bands. 
 
 todo: 
  -factor out a class MultiBandEffect (in jura (done) and rosic (done) )
- -write the plot-editor for the MultiBandEffect baseclass (stub done)
- -derive MultiCompPlotEditor from that
+ -write the plot-editor for the MultiBandEffect baseclass (done)
+ -derive MultiCompPlotEditor from that (done)
  -ensure that the split frequencies are always sorted from low to high
  -restrict ranges for the split-freqs according to the neighbours
   (maybe do these things in rosic::MultiBandEffect)
@@ -100,7 +100,7 @@ public:
   virtual void createCompressionParameters();
 
   /** Returns a pointer to our core DSP object. */
-  rosic::rsMultiBandCompressor* getCore() { return &multiCompCore; }
+  rosic::rsMultiBandCompressor* getMultiCompCore() { return &multiCompCore; }
 
   // overriden from AudioModule baseclass:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
@@ -124,29 +124,20 @@ protected:
 
 //=================================================================================================
 
-/** Plot editor for the multiband compressor. Allows to select a band by clicking into the 
-rectangular area in the frequency response plot that represents that band,... */
+/** Plot editor for the multiband compressor. */
 
-class JUCE_API MultiCompPlotEditor : public ColourSchemeComponent, public ChangeListener
+class JUCE_API MultiCompPlotEditor : public MultiBandPlotEditor
 {
 
 public:
 
   MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompModuleToEdit);
-  virtual ~MultiCompPlotEditor();
-
-  //virtual void parameterChanged(Parameter* p) override;
-  virtual void changeListenerCallback(ChangeBroadcaster* source) override;
-  virtual void mouseDown(const MouseEvent& e) override;
-  virtual void paintOverChildren(Graphics& g) override;
-  virtual void resized() override;
+  //virtual ~MultiCompPlotEditor();
 
 protected:
 
   rosic::rsMultiBandCompressor* multiCompCore;
   jura::MultiCompAudioModule* multiCompModule; 
-
-  rsFunctionPlot* freqRespPlot;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiCompPlotEditor)
 };
