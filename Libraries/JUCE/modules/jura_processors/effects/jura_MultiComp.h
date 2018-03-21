@@ -43,11 +43,45 @@ protected:
 
 //=================================================================================================
 
+/** Plot editor for multiband effects. Allows to select a band by clicking into the rectangular 
+area in the frequency response plot that represents that band, change split frequencies by dragging
+vertical line, etc. */
+
+class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public ChangeListener
+{
+
+public:
+
+  MultiBandPlotEditor(jura::MultiBandEffect* multiBandEffectModuleToEdit);
+  virtual ~MultiBandPlotEditor();
+
+  //virtual void parameterChanged(Parameter* p) override;
+  virtual void changeListenerCallback(ChangeBroadcaster* source) override;
+  virtual void mouseDown(const MouseEvent& e) override;
+  virtual void paintOverChildren(Graphics& g) override;
+  virtual void resized() override;
+
+protected:
+
+  rosic::rsMultiBandEffect* core;
+  jura::MultiBandEffect* module; 
+
+  rsFunctionPlot* freqRespPlot;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandPlotEditor)
+};
+
+
+
+
+//=================================================================================================
+
 /** Multiband compressor with up to 16 bands. 
 
 todo: 
  -factor out a class MultiBandEffect (in jura (done) and rosic (done) )
- -write the plot-editor for that baseclass
+ -write the plot-editor for the MultiBandEffect baseclass (stub done)
+ -derive MultiCompPlotEditor from that
  -ensure that the split frequencies are always sorted from low to high
  -restrict ranges for the split-freqs according to the neighbours
   (maybe do these things in rosic::MultiBandEffect)
