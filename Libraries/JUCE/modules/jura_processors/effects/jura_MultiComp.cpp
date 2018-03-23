@@ -43,7 +43,9 @@ void MultiBandEffect::createSplittingParameters()
   // create per-band parameters:
   for(int i = 0; i < maxNumBands; i++)
   {
-    // todo use std::function with lambda functions for callbacks
+    // todo use std::function with lambda functions for callbacks because when doing it like below
+    // all parameters use the same callback (and the dispatch is done based on our selectedBand 
+    // member) - but this is not suitable for allowing automation
 
     juce::String idxStr = juce::String(i+1);
 
@@ -59,7 +61,23 @@ void MultiBandEffect::createSplittingParameters()
 void MultiBandEffect::parameterChanged(Parameter* p)
 {
   ModulatableAudioModule::parameterChanged(p);
+
+  jassert(areBandsInIncreasingOrder(false)); // for debug
+
   sendChangeMessage();
+}
+
+void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
+{
+  core->setSplitFrequency(bandIndex, newFreq);
+  // todo: ensure that bands remain ordered - restrict possible value...we also need to update the
+  // corresponding parameter
+}
+
+void MultiBandEffect::setSplitFreq(double newFreq) 
+{ 
+  setSplitFreq(selectedBand, newFreq);
+  //core->setSplitFrequency(selectedBand, newFreq);
 }
 
 int MultiBandEffect::getBandContainingFrequency(double freq)
@@ -68,6 +86,22 @@ int MultiBandEffect::getBandContainingFrequency(double freq)
     if(core->getSplitFrequency(i) > freq)
       return i;
   return core->getNumberOfBands()-1;
+}
+
+bool isLess(double x, double y, bool strictly)
+{
+  if(strictly)
+    return x < y;
+  else
+    return x <= y;
+}
+
+bool MultiBandEffect::areBandsInIncreasingOrder(bool strictly)
+{
+  for(int i = 1; i < core->getNumberOfBands()-1; i++)
+    if(!isLess(core->getSplitFrequency(i-1), core->getSplitFrequency(i), strictly))
+      return false;
+  return true;
 }
 
 //=================================================================================================
@@ -125,7 +159,7 @@ void MultiBandPlotEditor::paintOverChildren(Graphics& g)
     x2 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(selected));
   //g.setColour(Colours::red.withAlpha(0.25f));
   g.setColour(Colours::lightblue.withAlpha(0.25f)); // preliminary
-                                                    //g.setColour(Colours::magenta.withAlpha(0.25f));
+  //g.setColour(Colours::magenta.withAlpha(0.25f));
   g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
 
 

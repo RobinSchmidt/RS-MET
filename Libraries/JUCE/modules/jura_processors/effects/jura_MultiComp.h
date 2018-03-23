@@ -23,16 +23,30 @@ public:
 
   void selectBand(int bandToSelect) { selectedBand = bandToSelect; }
 
+
+  /** Sets the splitting frequency for the band with given index to the given frequency. */
+  void setSplitFreq(int bandIndex, double newFreq);
+
+  /** Sets the splitting frequency for the selected band to the given frequency. */
+  void setSplitFreq(double newFreq);
+
+
+
+
   int getSelectedBand() const { return selectedBand; }
 
   int getMaxNumBands() const { return maxNumBands; }
 
   int getBandContainingFrequency(double freq);
 
-  void setSplitFreq(double newFreq) { core->setSplitFrequency(selectedBand, newFreq); }
+
 
   /** Returns a pointer to our core DSP object. */
   rosic::rsMultiBandEffect* getCore() { return core; }
+
+  /** Returns true, if the splitting frequencies between the bands are in (strictly) increasing 
+  order. */
+  bool areBandsInIncreasingOrder(bool strictly = false);
 
 protected:
 
