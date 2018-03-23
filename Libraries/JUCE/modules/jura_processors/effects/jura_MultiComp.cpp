@@ -25,7 +25,8 @@ void MultiBandEffect::createSplittingParameters()
 
   p = new Param("NumBands", 1.0, maxNumBands, 1.0, Parameter::INTEGER); // use 1 as default later
   addObservedParameter(p);
-  p->setValueChangeCallback<MBE>(mbe, &MBE::setNumberOfBands);
+  //p->setValueChangeCallback<MBE>(mbe, &MBE::setNumberOfBands);
+  p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setNumBands);
 
   p = new Param("SelectedBand", 0.0, maxNumBands-1, 0.0, Parameter::STRING);
   p->addNumericStringValues(1, 16);
@@ -53,6 +54,8 @@ void MultiBandEffect::createSplittingParameters()
     p->setValue(mbe->getSplitFrequency(i), false, false);
     addObservedParameter(p);
     p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
+
+    splitFreqParams.push_back(p);
   }
 
   getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
@@ -61,10 +64,13 @@ void MultiBandEffect::createSplittingParameters()
 void MultiBandEffect::parameterChanged(Parameter* p)
 {
   ModulatableAudioModule::parameterChanged(p);
-
-  jassert(areBandsInIncreasingOrder(false)); // for debug
-
   sendChangeMessage();
+}
+
+void MultiBandEffect::setNumBands(int newNumBands)
+{
+  core->setNumberOfBands(newNumBands);
+  jassert(areBandsInIncreasingOrder(false)); // for debug
 }
 
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
@@ -72,12 +78,19 @@ void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
   core->setSplitFrequency(bandIndex, newFreq);
   // todo: ensure that bands remain ordered - restrict possible value...we also need to update the
   // corresponding parameter
+
+  jassert(areBandsInIncreasingOrder(false)); // for debug
 }
 
 void MultiBandEffect::setSplitFreq(double newFreq) 
 { 
   setSplitFreq(selectedBand, newFreq);
   //core->setSplitFrequency(selectedBand, newFreq);
+}
+
+Parameter* MultiBandEffect::getSplitFreqParam(int bandIndex)
+{
+  return splitFreqParams[bandIndex];
 }
 
 int MultiBandEffect::getBandContainingFrequency(double freq)

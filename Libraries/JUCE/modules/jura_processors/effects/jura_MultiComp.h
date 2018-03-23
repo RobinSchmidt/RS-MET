@@ -24,6 +24,9 @@ public:
   void selectBand(int bandToSelect) { selectedBand = bandToSelect; }
 
 
+  /** Sets the number of (active) bands. */
+  void setNumBands(int newNumBands);
+
   /** Sets the splitting frequency for the band with given index to the given frequency. */
   void setSplitFreq(int bandIndex, double newFreq);
 
@@ -31,6 +34,8 @@ public:
   void setSplitFreq(double newFreq);
 
 
+  /** Returns a pointer to the parameter for the splitting frequency with given index. */
+  Parameter* getSplitFreqParam(int bandIndex);
 
 
   int getSelectedBand() const { return selectedBand; }
@@ -54,6 +59,8 @@ protected:
 
   int maxNumBands  =  0;  // assigned in constructor
   int selectedBand =  0;  // -1 is code for "None"
+
+  std::vector<Parameter*> splitFreqParams;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffect)
 };
