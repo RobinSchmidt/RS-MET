@@ -21,6 +21,22 @@ public:
 
   void setNumberOfBands(int newNumber);
 
+  /** Adds a new band after the band at the given index. If the index is that of the last band, 
+  the new band will become the last band, otherwise, it will be inserted between index and index+1.
+  In the latter case, it will probably make sense, if the new frequency is somewhere between those 
+  of the bands at index and index+1 - however, this class actually doesn't care about that. */
+  void insertBand(int index, double splitFrequency); 
+  // not yet implemented
+
+  /** Removes the band with the given index. The frequency range that was occupied by this band 
+  will then either be covered by the former left or right neighbour band, depending on the second
+  boolean parameter. When the first ot last band is removed, the second or second-to-last will 
+  become the new first or last band. When there is only a single band, this function will have no 
+  effect (you can't remove all bands - there's always at least one). */
+  void removeBand(int index, bool mergeWithRightNeighbour = false);
+  // not yet implemented
+
+
   void setSplitMode(int newMode);
 
   void setSplitFrequency(int bandIndex, double newFrequency);

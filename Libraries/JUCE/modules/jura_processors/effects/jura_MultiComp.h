@@ -2,7 +2,30 @@
 #define jura_MultiComp_h
 
 
-/** Baseclass for multiband effects. */
+/** Baseclass for multiband effects. 
+
+todo: 
+
+-ensure that the split frequencies are always sorted from low to high
+-restrict ranges for the split-freqs according to the neighbours
+ (maybe do these things in rosic::MultiBandEffect)
+OR: forget about that sorting and:
+-let the user add remove bands via right-clcik context menu with items:
+ -add: splits the band inside which the click occurred into two, settings are copied into the
+  new band
+ -remove: deletes the band in which the click occurred - either the left or the right neighbour
+  can cover the range where the band was...so maybe have: merge with left / merge with right
+ -the NumBands slider is useless then
+ -the band selection menu is superfluous - maybe we should just display and ifo such as
+  Band: 2/5 when the 2nd of 5 bands is selected
+ -we somehow need the ability to insert/remove bands in rosic::rsMultiBandEffect
+  void insertBand(int indexOfLeftNeighbour), void removeBand(int index, bool mergeWithRightNeighbour)
+  
+
+-plot frequency responses: rosic::rsMultiBandEffect::getMagnitudeAt(index, freq)
+
+
+*/
 
 class JUCE_API MultiBandEffect : public jura::ModulatableAudioModule, public ChangeBroadcaster
 {
@@ -39,8 +62,8 @@ public:
 
 
   int getSelectedBand() const { return selectedBand; }
-
-  int getMaxNumBands() const { return maxNumBands; }
+  int getNumBands()     const { return core->getNumberOfBands(); }
+  int getMaxNumBands()  const { return maxNumBands; }
 
   int getBandContainingFrequency(double freq);
 
@@ -97,18 +120,7 @@ protected:
 
 //=================================================================================================
 
-/** Multiband compressor with up to 16 bands. 
-
-todo: 
- -factor out a class MultiBandEffect (in jura (done) and rosic (done) )
- -write the plot-editor for the MultiBandEffect baseclass (done)
- -derive MultiCompPlotEditor from that (done)
- -ensure that the split frequencies are always sorted from low to high
- -restrict ranges for the split-freqs according to the neighbours
-  (maybe do these things in rosic::MultiBandEffect)
- -plot frequency responses: rosic::rsMultiBandEffect::getMagnitudeAt(index, freq)
-
-*/
+/** Multiband compressor with up to 16 bands. */
 
 class JUCE_API MultiCompAudioModule : public jura::MultiBandEffect
 {

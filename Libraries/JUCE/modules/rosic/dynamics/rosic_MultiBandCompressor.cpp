@@ -26,6 +26,16 @@ void rsMultiBandEffect::setNumberOfBands(int newNumber)
   splitterR.setNumberOfActiveBands(newNumber);
 }
 
+void rsMultiBandEffect::insertBand(int index, double splitFreq);
+{
+
+}
+
+void rsMultiBandEffect::removeBand(int index, bool mergeRight)
+{
+
+}
+
 void rsMultiBandEffect::setSplitMode(int newMode)
 {
   splitterL.setSplitMode(newMode);

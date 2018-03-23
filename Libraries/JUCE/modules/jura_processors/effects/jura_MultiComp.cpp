@@ -75,9 +75,20 @@ void MultiBandEffect::setNumBands(int newNumBands)
 
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 {
-  core->setSplitFrequency(bandIndex, newFreq);
-  // todo: ensure that bands remain ordered - restrict possible value...we also need to update the
-  // corresponding parameter
+  // we limit the new splitFreq such that bands remain ordered with ascending frequencies
+  int numBands = getNumBands();
+  if(bandIndex < getNumBands()-1) {
+    double freqLimit = core->getSplitFrequency(bandIndex+1); // freq of right neighbour
+    if(newFreq > freqLimit)
+      getSplitFreqParam(bandIndex)->setValue(freqLimit, true, true);
+    else
+      core->setSplitFrequency(bandIndex, newFreq);
+  }
+  else
+    core->setSplitFrequency(bandIndex, newFreq); // topmost band has no limit
+
+  // somehow, we must also make sure sure that the topmost band has a freq of 20000 (it's the 
+  // highpass band and actually has not lowpass cutoff at all)
 
   jassert(areBandsInIncreasingOrder(false)); // for debug
 }
@@ -85,7 +96,6 @@ void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 void MultiBandEffect::setSplitFreq(double newFreq) 
 { 
   setSplitFreq(selectedBand, newFreq);
-  //core->setSplitFrequency(selectedBand, newFreq);
 }
 
 Parameter* MultiBandEffect::getSplitFreqParam(int bandIndex)
