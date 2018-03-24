@@ -87,10 +87,15 @@ public:
 
 protected:
 
+  /** Initializes our indices array from 0...maxNumBands-1. */
+  void initIndices();
+
   RAPT::rsMultiBandSplitter<double, double> splitterL, splitterR;
   std::vector<double> tmpL, tmpR; // temporary buffers
   int numBands = 1;
   int maxNumBands = 16; // preliminary - make indefinite in the future
+  std::vector<int> indices; // for re-ordering the bands (necessarry to allow the user to randomly
+                            // insert and/or remove bands at will while still keeping them sorted)
 
 };
 
@@ -141,6 +146,8 @@ protected:
 
   std::vector<Compressor*> compressors;
 
+
+
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -150,7 +157,10 @@ INLINE void rsMultiBandCompressor::getSampleFrameStereo(double *inOutL, double *
 {
   split(inOutL, inOutR);
   for(int k = 0; k < numBands; k++)  // compress individual bands
-    compressors[k]->getSampleFrameStereo(&tmpL[k], &tmpR[k]);
+  {
+    //compressors[k]->getSampleFrameStereo(&tmpL[k], &tmpR[k]);
+    compressors[indices[k]]->getSampleFrameStereo(&tmpL[k], &tmpR[k]);
+  }
   recombine(inOutL, inOutR);
 }
 
