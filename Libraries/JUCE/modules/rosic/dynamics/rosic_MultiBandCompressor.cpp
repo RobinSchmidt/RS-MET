@@ -2,8 +2,8 @@ rsMultiBandEffect::rsMultiBandEffect()
 {
   tmpL.resize(maxNumBands);
   tmpR.resize(maxNumBands);
-  indices.resize(maxNumBands);
-  initIndices();
+  //indices.resize(maxNumBands);
+  //initIndices();
 
   // init splitter frequencies for 16 bands (15 frequencies):
   vector<double> splitFreqs = { 60, 90, 135, 200, 300, 450, 675, 1000, 1500, 2200, 3000, 4500, 
@@ -28,12 +28,19 @@ void rsMultiBandEffect::setNumberOfBands(int newNumber)
   splitterR.setNumberOfActiveBands(newNumber);
 }
 
-void rsMultiBandEffect::insertBand(int index, double splitFreq)
+void rsMultiBandEffect::insertBand(int i, double splitFreq)
 {
+  if(numBands == maxNumBands)
+    return; // maybe return false?
 
+  //numBands++;
+
+  // increment number of active bands N
+  // shift all bands from i to N one position up in the array
+  // set frequency of band i to the splitFreq
 }
 
-void rsMultiBandEffect::removeBand(int index, bool mergeRight)
+void rsMultiBandEffect::removeBand(int i, bool mergeRight)
 {
 
 }
@@ -63,11 +70,12 @@ void rsMultiBandEffect::reset()
   splitterR.reset();
 }
 
+/*
 void rsMultiBandEffect::initIndices()
 {
   fillWithIndex(&indices[0], (int)indices.size());
 }
-
+*/
 //=================================================================================================
 
 rsMultiBandCompressor::rsMultiBandCompressor() 

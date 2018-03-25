@@ -58,6 +58,19 @@
   (or the other way around)
 
 
+Graph synth:
+-there's a set of N vertices all of which have: 
+ -x,y position
+ -a list of connected other vertices, this list may contain duplications, for example, vertex 2 
+  could have the list [0, 1, 4, 1]
+ -a state k that indicates at which point in the list we currently are
+-the vertices are traversed with uniform speed, adjusted so as to give the desired frequency
+-when we arrive at vertex i, we look at list[k] for the next vertex to visit and increment the 
+ state k (with wraparound) - when we arrive at the vertetex the next time, we will head for 
+ list[k+1]
+-maybe the vertices themselves could move around in space (this needs to be updated only as often 
+ as we visit a vertex)
+
 -parametric equations:
  4-leaf clover: 
  r\left(\theta\right)=3\left(1+0.3\sin^2\left(4\theta\right)\right)\sqrt[4]{\cos^2\left(2\theta\right)}

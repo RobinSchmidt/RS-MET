@@ -9,6 +9,22 @@ void rsTwoBandSplitter<TSig, TPar>::setOmega(TPar newOmega)
   // Formulas from DAFX, page 40.
 }
 
+template<class TSig, class TPar>
+void rsTwoBandSplitter<TSig, TPar>::copySettingsFrom(const rsTwoBandSplitter& s)
+{
+  w  = s.w; 
+  b0 = s.b0; 
+  b1 = s.b1;
+  a1 = s.a1;
+}
+
+template<class TSig, class TPar>
+void rsTwoBandSplitter<TSig, TPar>::copyStateFrom(const rsTwoBandSplitter& s)
+{
+  x1 = s.x1;
+  y1 = s.y1; 
+}
+
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>
@@ -55,8 +71,33 @@ void rsMultiBandSplitter<TSig, TPar>::addBand(TPar splitFrequency)
 {
   rsTwoBandSplitter<TSig, TPar>* splitter = new rsTwoBandSplitter<TSig, TPar>;
   splitter->setOmega(TPar(2*PI)*splitFrequency/sampleRate);
-  splitFreqs.push_back(splitFrequency); // later: insert sorted
-  splitters.push_back(splitter);        // here too
+  splitters.push_back(splitter);        // later: insert sorted
+  splitFreqs.push_back(splitFrequency); // here too
+
+}
+
+template<class TSig, class TPar>
+void rsMultiBandSplitter<TSig, TPar>::insertBand(int index, TPar splitFrequency)
+{
+  rsTwoBandSplitter<TSig, TPar>* splitter = new rsTwoBandSplitter<TSig, TPar>;
+  splitter->setOmega(TPar(2*PI)*splitFrequency/sampleRate);
+  rsInsert(splitters,  splitter,       index);
+  rsInsert(splitFreqs, splitFrequency, index);
+}
+
+template<class TSig, class TPar>
+void rsMultiBandSplitter<TSig, TPar>::removeBand(int index, bool mergeWithRightNeighbour)
+{
+  rsRemove(splitters,  index);
+  rsRemove(splitFreqs, index);
+}
+
+template<class TSig, class TPar>
+void rsMultiBandSplitter<TSig, TPar>::copyBandSettings(int src, int dst, bool copyState)
+{
+  splitters[dst]->copySettingsFrom(*splitters[src]);
+  if(copyState)
+    splitters[dst]->copyStateFrom(*splitters[src]);
 }
 
 template<class TSig, class TPar>

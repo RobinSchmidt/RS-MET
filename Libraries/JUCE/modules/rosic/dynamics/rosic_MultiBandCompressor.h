@@ -4,6 +4,7 @@
 namespace rosic
 {
 
+
 /** Baseclass for multiband effects such as multiband-compressors, -distortion. etc. */
 
 class rsMultiBandEffect
@@ -63,23 +64,36 @@ public:
   /** Splits an incoming stereo signal into "numBands" bands and fills our member arrays 
   tmpL, tmpR with the individual band outputs. Subclasses are supposed to call this before 
   processing each band. */
-  INLINE void split(double *inOutL, double *inOutR)
+  INLINE void split(double *inL, double *inR)
   {
-    splitterL.processSampleFrame(*inOutL, &tmpL[0]);
-    splitterR.processSampleFrame(*inOutR, &tmpR[0]);
+    // old:
+    splitterL.processSampleFrame(*inL, &tmpL[0]);
+    splitterR.processSampleFrame(*inR, &tmpR[0]);
+
+    //// new:
+    //rsFloat64x2 in(*inL, *inR);
+    //splitter.processSampleFrame(in, &tmp[0]);
   }
 
   /** Recombines the bands from our member arrays tmpL, tmpR into the outputs. Subclasses are 
   supposed to call this after processing each indiviudal band to produce the final recombined
   output. */
-  INLINE void recombine(double *inOutL, double *inOutR)
+  INLINE void recombine(double *outL, double *outR)
   {
-    *inOutL = *inOutR = 0;
+    // old:
+    *outL = *outR = 0;
     for(int k = 0; k < numBands; k++)
     {
-      *inOutL += tmpL[k];
-      *inOutR += tmpR[k];
+      *outL += tmpL[k];
+      *outR += tmpR[k];
     }
+
+    //// new:
+    //rsFloat64x2 out(0, 0);
+    //for(int k = 0; k < numBands; k++)
+    //  out += tmp[k];
+    //*outL = out[0];
+    //*outR = out[1];
   }
 
   /** Resets the states of the band-splitting filters. */
@@ -88,14 +102,30 @@ public:
 protected:
 
   /** Initializes our indices array from 0...maxNumBands-1. */
-  void initIndices();
+  //void initIndices();
 
+  /** Returns pointer to the output of k-th band for left channel (supposed to bew used by subclass
+  to access individual band signals after splitting). */
+  inline double* getLeft( int bandIndex) { return &tmpL[bandIndex]; }
+
+  /** Like getLeft, but for right channel. */
+  inline double* getRight(int bandIndex) { return &tmpR[bandIndex]; }
+
+
+
+  // old - non-SSE (delete when not needed anymore):
   RAPT::rsMultiBandSplitter<double, double> splitterL, splitterR;
   std::vector<double> tmpL, tmpR; // temporary buffers
+
+  // new - with SSE:
+  RAPT::rsMultiBandSplitter<rsFloat64x2, double> splitter;
+  std::vector<rsFloat64x2> tmp;
+
+
   int numBands = 1;
   int maxNumBands = 16; // preliminary - make indefinite in the future
-  std::vector<int> indices; // for re-ordering the bands (necessarry to allow the user to randomly
-                            // insert and/or remove bands at will while still keeping them sorted)
+  //std::vector<int> indices; // for re-ordering the bands (necessarry to allow the user to randomly
+  //                          // insert and/or remove bands at will while still keeping them sorted)
 
 };
 
@@ -159,7 +189,7 @@ INLINE void rsMultiBandCompressor::getSampleFrameStereo(double *inOutL, double *
   for(int k = 0; k < numBands; k++)  // compress individual bands
   {
     //compressors[k]->getSampleFrameStereo(&tmpL[k], &tmpR[k]);
-    compressors[indices[k]]->getSampleFrameStereo(&tmpL[k], &tmpR[k]);
+    compressors[k]->getSampleFrameStereo(getLeft(k), getRight(k));
   }
   recombine(inOutL, inOutR);
 }

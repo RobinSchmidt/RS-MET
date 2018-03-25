@@ -19,6 +19,12 @@ public:
 
   //void setOrder(int newOrder); // to be added later
 
+  /** Copies the settings (split frequency and coeffs) from another splitter. */
+  void copySettingsFrom(const rsTwoBandSplitter& splitter);
+
+  /** Copies the state (past in/out samples) from another splitter. */
+  void copyStateFrom(const rsTwoBandSplitter& splitter);
+
   /** Returns the normalized radian frequency at which the split occurs. */
   TPar getOmega() const { return w; }
 
@@ -26,6 +32,8 @@ public:
   void reset() { x1 = y1 = 0; }
 
 
+
+  /** Produces one output sample at a time. */
   inline TSig getLowpassSample(TSig in)
   {
     y1 = b0*in + b1*x1 - a1*y1;
@@ -95,6 +103,16 @@ public:
 
   /** Adds a new band with the given splitting frequency. */
   void addBand(TPar splitFrequency);
+
+
+  void insertBand(int index, TPar splitFrequency); // not yet tested
+  void removeBand(int index, bool mergeWithRightNeighbour = false); // not yet tested
+
+  /** Copies the settings of the band with index src into the band with index dst. When copyState is 
+  true, the filter's state variables will also be copied. This function is for facilitating the 
+  insertion and removal of bands by an outside class. */
+  void copyBandSettings(int src, int dst, bool copyState = true);
+
 
 
   //void setSlopeAccumulationMode(int newMode) { mode = newMode; }

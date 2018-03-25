@@ -20,6 +20,12 @@ inline void rsAppend(std::vector<T>& v, T newElement)
 }
 
 template<class T>
+inline void rsInsert(std::vector<T>& v, T& newElement, size_t index)
+{
+  v.insert(v.begin() + index, newElement);
+}
+
+template<class T>
 inline void rsRemove(std::vector<T>& v, size_t index)
 {
   v.erase(v.begin() + index);
