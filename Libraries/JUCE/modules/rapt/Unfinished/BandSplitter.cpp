@@ -47,23 +47,39 @@ void rsMultiBandSplitter<TSig, TPar>::setSplitFrequency(int bandIndex, TPar newF
   splitters[bandIndex]->setOmega(TPar(2*PI)*newFreq/sampleRate);
 }
 
+// given n, this function returns a number r which is power-of-2-minus-1 such that r >= n
+inline size_t newPowerOfTwoMinusOne(size_t n)
+{
+  size_t r = 1;
+  while(r-1 < n)
+    r *= 2;
+  return r-1;
+}
+
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::setSplitFrequencies(const std::vector<TPar>& newFrequencies)
 {
-  splitFreqs = newFrequencies;
-  updateSplitters();
+  //// old:
+  //splitFreqs = newFrequencies;
+  //updateSplitters();
 
-  //// it's not always necessarry to clear and create everything anew - optimize this later
-  //clearArrays();
-  //for(int i = 0; i < newFrequencies.size(); i++)
-  //  addBand(newFrequencies[i]);
+  // new (needs testing):
+  if(newFrequencies.size() > splitFreqs.size()) {
+    size_t newSize = newPowerOfTwoMinusOne(newFrequencies.size());
+    splitFreqs.resize(newSize);
+  }
+  for(size_t i = 0; i < newFrequencies.size(); i++)
+    splitFreqs[i] = newFrequencies[i];
+  numActiveBands = (int)newFrequencies.size()+1;
+  updateSplitters();
 }
 
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::setNumberOfActiveBands(int newNumber)
 {
-  rsAssert(newNumber <= getNumBands());
-  numActiveBands = newNumber;
+  rsAssert(newNumber <= getNumAvailableBands());
+  if(newNumber <= getNumAvailableBands())
+    numActiveBands = newNumber;
 }
 
 template<class TSig, class TPar>
@@ -110,7 +126,7 @@ void rsMultiBandSplitter<TSig, TPar>::reset()
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::setNumberOfBands(int newNumBands)
 {
-  int oldNumBands = getNumBands();
+  int oldNumBands = getNumAvailableBands();
   if(newNumBands == oldNumBands)
     return; // nothing to do
   if(newNumBands > oldNumBands)
@@ -139,6 +155,21 @@ void rsMultiBandSplitter<TSig, TPar>::clearArrays()
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::updateSplitters()
 {
+  int k;
+  if(splitters.size() < splitFreqs.size())
+    for(k = 0; k < splitters.size(); k++)
+      delete splitters[k];
+
+  splitters.resize(splitFreqs.size());
+
+  for(k = 0; k < splitters.size(); k++) {
+    splitters[k] = new rsTwoBandSplitter<TSig, TPar>;
+    splitters[k]->setOmega(TPar(2*PI)*splitFreqs[k]/sampleRate);
+  }
+
+
+  /*
+  // old:
   // delete superfluous splitters:
   for(size_t i = splitFreqs.size(); i < splitters.size(); i++)
     delete splitters[i];
@@ -151,4 +182,7 @@ void rsMultiBandSplitter<TSig, TPar>::updateSplitters()
       splitters[k] = new rsTwoBandSplitter<TSig, TPar>;
     splitters[k]->setOmega(TPar(2*PI)*splitFreqs[k]/sampleRate);
   }
+
+  numActiveBands = getNumAvailableBands();
+  */
 }

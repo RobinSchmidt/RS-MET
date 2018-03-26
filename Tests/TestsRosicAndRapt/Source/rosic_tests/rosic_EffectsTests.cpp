@@ -124,6 +124,8 @@ bool rotes::testMultiComp()
 
   rosic::rsMultiBandCompressor mbc;
   double tol = 1.e-14;
+
+  //result &= mbc.getNumberOfBands() == 1;
   result &= testInOutEqual(mbc, N, tol);
 
   return result;

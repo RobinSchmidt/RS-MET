@@ -78,6 +78,9 @@ public:
   /** Destructor. Clears array of bandsplitter objects. */
   ~rsMultiBandSplitter();
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
   /** Sets up the sample rate. */
   void setSampleRate(TPar newSampleRate);
 
@@ -93,6 +96,7 @@ public:
   will their split frequencies evenly distributed on a log-frequency scale between the old topmost
   split-frequency and the Nyquist frequency. */
   void setNumberOfBands(int newNumber);
+  //void setNumberOfBands(int newNumber);
     // rename to setNumberOfAvailableBands
 
   /** Sometimes it may be convenient (or more efficient) to not change the arrays of splitters 
@@ -119,7 +123,15 @@ public:
 
   void setSplitMode(int newMode) { mode = newMode; }
 
-  int getNumBands() { return (int)splitters.size() + 1; }
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  /** Returns the number of available bands, i.e. the maximum number of bands that is supported. */
+  int getNumAvailableBands() { return (int)splitters.size() + 1; }
+
+  /** Returns the number of bands that are currently in use. */
+  int getNumActiveBands() { return numActiveBands; }
+
 
   /** Returns the upper cutoff frequency for the band with given index. */
   TPar getSplitFrequency(int index) 
@@ -130,9 +142,8 @@ public:
       return 0;
   }
 
-  /** Resets the states of the band-splitter filters. */
-  void reset();
-
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
 
   /** Produces one output sample frame. The frequency bands are in ascending order (from lowpass 
   through the various bandpasses up to highpass). The caller must make sure that the output array 
@@ -153,9 +164,17 @@ public:
         splitters[k]->getSamplePair(in, &in, &outs[k+1]);
       outs[0] = in;
     } break;
+
+
+    // currently assumes numBands to be a power of 2 - not yet usable - maybe, we can keep using 
+    // this code (without access violations) even, when splitters.size() is less than numBands as 
+    // long as splitters.capacity() is larger?
+    // maybe handle this by ensuring that the number of available bands is always a  power of two
+    // the number of active bands can be less in which case the excess (available) bands are summed
+    // into the topmost active band
     case BINARY_TREE:
     {
-      int numBands = getNumBands(); // currently assumes numBands to be a power of 2
+      int numBands = getNumAvailableBands();
       int inc = numBands;
       outs[0] = in;
       while(inc > 1){
@@ -172,6 +191,9 @@ public:
     } break;
     }
   }
+
+  /** Resets the states of the band-splitter filters. */
+  void reset();
 
 protected:
 

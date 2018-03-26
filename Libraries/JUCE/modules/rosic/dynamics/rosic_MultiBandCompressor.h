@@ -21,6 +21,7 @@ public:
   void setSampleRate(double newSampleRate);
 
   void setNumberOfBands(int newNumber);
+    // get rid of this
 
   /** Adds a new band after the band at the given index. If the index is that of the last band, 
   the new band will become the last band, otherwise, it will be inserted between index and index+1.
