@@ -5,6 +5,7 @@ rsMultiBandEffect::rsMultiBandEffect()
   //indices.resize(maxNumBands);
   //initIndices();
 
+
   // init splitter frequencies for 16 bands (15 frequencies):
   vector<double> splitFreqs = { 60, 90, 135, 200, 300, 450, 675, 1000, 1500, 2200, 3000, 4500, 
     6000, 9000, 13000 }; 

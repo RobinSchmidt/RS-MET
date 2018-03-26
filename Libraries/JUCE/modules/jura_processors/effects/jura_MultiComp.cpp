@@ -25,7 +25,6 @@ void MultiBandEffect::createSplittingParameters()
 
   p = new Param("NumBands", 1.0, maxNumBands, 1.0, Parameter::INTEGER); // use 1 as default later
   addObservedParameter(p);
-  //p->setValueChangeCallback<MBE>(mbe, &MBE::setNumberOfBands);
   p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setNumBands);
 
   p = new Param("SelectedBand", 0.0, maxNumBands-1, 0.0, Parameter::STRING);

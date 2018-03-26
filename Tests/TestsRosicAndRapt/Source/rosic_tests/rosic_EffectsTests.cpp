@@ -128,6 +128,15 @@ bool rotes::testMultiComp()
   //result &= mbc.getNumberOfBands() == 1;
   result &= testInOutEqual(mbc, N, tol);
 
+  // todo: 
+  // rsBandSplitter:
+  //  -remove setNumberOfbands, setNumberOfActiveBands, addBand
+  //  -implement insertBand, removeBand
+  // rsMultiBandEffect:
+  //  -implement insertBand, removeBand
+  // rsMultiBandCompressor:
+  //  -override insertBand, removeBand
+
   return result;
 }
 

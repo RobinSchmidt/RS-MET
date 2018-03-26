@@ -50,6 +50,12 @@ public:
   /** Sets the number of (active) bands. */
   void setNumBands(int newNumBands);
 
+
+  void insertBand(int index, double splitFrequency); 
+
+  void removeBand(int index, bool mergeWithRightNeighbour = false);
+
+
   /** Sets the splitting frequency for the band with given index to the given frequency. */
   void setSplitFreq(int bandIndex, double newFreq);
 

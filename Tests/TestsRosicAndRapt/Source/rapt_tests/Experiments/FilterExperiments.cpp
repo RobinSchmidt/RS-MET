@@ -56,7 +56,7 @@ void bandSplittingMultiWay()
     for(k = 0; k < numBands; k++)
       xr += y[k][n];
     float error = x[n] - xr;
-    int dummy = 0;
+    rsAssert(fabs(error) < 1.e-7);
   }
 
   // write outputs to files:
