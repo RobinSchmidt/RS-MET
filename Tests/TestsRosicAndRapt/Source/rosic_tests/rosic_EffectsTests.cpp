@@ -94,10 +94,27 @@ bool rotes::testFeedbackDelayNetwork()
   return result;
 }
 
+template<class Effect>
+bool testInOutEqual(Effect& eff, int numSamples, double tolerance)
+{
+  bool result = true;
+  RAPT::rsNoiseGenerator<double> ng;
+  double xL, xR, yL, yR;
+  for(int n = 0; n < numSamples; n++)
+  {
+    yL = xL = ng.getSample();
+    yR = xR = ng.getSample();
+    eff.getSampleFrameStereo(&yL, &yR);
+    result &= isCloseTo(yL, xL, tolerance);
+    result &= isCloseTo(yR, xR, tolerance);
+    rsAssert(result == true);
+  }
+  return result;
+}
 
 bool rotes::testMultiComp()
 {  
-  // We check the multiband band compressor wi th neutral compressor settings for each band and 
+  // We check the multiband band compressor with neutral compressor settings for each band and 
   // various splitting configurations. In any case, the output signal should equal the input
   // signal.
 
@@ -105,22 +122,9 @@ bool rotes::testMultiComp()
 
   int N = 200;  // number of samples
 
-  RAPT::rsNoiseGenerator<double> ng;
   rosic::rsMultiBandCompressor mbc;
-  mbc.setSampleRate(44100);
-
-  int n;
   double tol = 1.e-14;
-  double xL, xR, yL, yR;
-  for(n = 0; n < N; n++)
-  {
-    yL = xL = ng.getSample();
-    yR = xR = ng.getSample();
-    mbc.getSampleFrameStereo(&yL, &yR);
-    result &= isCloseTo(yL, xL, tol);
-    result &= isCloseTo(yR, xR, tol);
-    rsAssert(result == true);
-  }
+  result &= testInOutEqual(mbc, N, tol);
 
   return result;
 }
