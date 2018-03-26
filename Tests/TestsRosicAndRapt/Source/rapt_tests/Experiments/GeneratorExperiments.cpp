@@ -411,8 +411,8 @@ void lindenmayer()
 
   // plot 1D:
   GNUPlotter plt1;
-  plt1.addDataArrays(x.size(), &x[0]);
-  plt1.addDataArrays(y.size(), &y[0]);
+  plt1.addDataArrays((int)x.size(), &x[0]);
+  plt1.addDataArrays((int)y.size(), &y[0]);
   plt1.plot();
 }
 
@@ -448,7 +448,7 @@ void xoxosOsc()
   float x[N], y[N], sum[N];
   float sB = sin(B);
   float cB = cos(B);
-  float s, c, Ac, Cs, a;
+  //float s, c, Ac, Cs, a;
   for(int n = 0; n < N; n++)
   {
     double xt, yt;

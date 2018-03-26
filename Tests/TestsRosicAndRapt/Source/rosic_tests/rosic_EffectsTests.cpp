@@ -87,18 +87,41 @@ bool rotes::testFeedbackDelayNetwork()
   //Plotter::plotData(N, t, hL);
 
 
-    
   rosic::writeToStereoWaveFile("d:\\TmpData\\FDNImpulseResponse.wav", hL, hR, N, 44100, 16);
-
-
 
   delete[] hL;
   delete[] hR;
-
-
-
-
   return result;
 }
 
+
+bool rotes::testMultiComp()
+{  
+  // We check the multiband band compressor wi th neutral compressor settings for each band and 
+  // various splitting configurations. In any case, the output signal should equal the input
+  // signal.
+
+  bool result = true;
+
+  int N = 200;  // number of samples
+
+  RAPT::rsNoiseGenerator<double> ng;
+  rosic::rsMultiBandCompressor mbc;
+  mbc.setSampleRate(44100);
+
+  int n;
+  double tol = 1.e-14;
+  double xL, xR, yL, yR;
+  for(n = 0; n < N; n++)
+  {
+    yL = xL = ng.getSample();
+    yR = xR = ng.getSample();
+    mbc.getSampleFrameStereo(&yL, &yR);
+    result &= isCloseTo(yL, xL, tol);
+    result &= isCloseTo(yR, xR, tol);
+    rsAssert(result == true);
+  }
+
+  return result;
+}
 

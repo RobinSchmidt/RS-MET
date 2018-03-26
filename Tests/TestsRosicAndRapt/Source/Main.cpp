@@ -46,6 +46,9 @@ int main(int argc, char* argv[])
   // Basics:
 
   // Effects:
+  //testFastGeneralizedHadamardTransform();
+  //testFeedbackDelayNetwork();
+  testMultiComp();
 
   // File:
 
@@ -76,7 +79,7 @@ int main(int argc, char* argv[])
   //testSnowflake();
   //testResetter();
   //testTurtleReverse();
-  testTurtleSource();
+  //testTurtleSource();
 
 
   //===============================================================================================

@@ -8,6 +8,7 @@ namespace rotes
 
   bool testFastGeneralizedHadamardTransform();
   bool testFeedbackDelayNetwork();
+  bool testMultiComp();
 
 }
 

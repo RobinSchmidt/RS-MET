@@ -236,9 +236,12 @@ void rotes::testLinLogEquationSolver()
   double a = -10.0;
   double b = -2.0;
   int n;
-  double x[N], xLin[N], xLog[N], y[N], yLin[N], yLog[N], f[N];
 
-  /*
+
+  //double x[N], xLin[N], xLog[N], y[N], yLin[N], yLog[N], f[N];
+  double x[N], y[N], yLin[N], yLog[N];
+
+
   // y as function of x:
   rosic::fillWithRangeLinear(x, N, xMin, xMax);
   for(n = 0; n < N; n++)
@@ -248,8 +251,8 @@ void rotes::testLinLogEquationSolver()
     y[n]    = yLin[n] + yLog[n];  // the sum of both parts (the objective function)
   }
   //Plotter::plotData(N, x, y, yLin, yLog);
-  Plotter::plotData(N, x, y);
-  */
+  //Plotter::plotData(N, x, y);
+
 
 
   
@@ -288,11 +291,8 @@ void rotes::testLinLogEquationSolverOld()
   double xMin = 0.01;
   double xMax = 10.0;
   int n;
-  double x[N], xLin[N], xLog[N], y[N], yLin[N], yLog[N], f[N];
-
-  
-
-
+  //double x[N], xLin[N], xLog[N], y[N], yLin[N], yLog[N], f[N];
+  double x[N], y[N], yLin[N], yLog[N];
   
   // y as function of x:
   rosic::fillWithRangeLinear(x, N, xMin, xMax);
@@ -304,8 +304,6 @@ void rotes::testLinLogEquationSolverOld()
   }
   Plotter::plotData(N, x, y, yLin, yLog);
   
-  
-
   /*
   // x as function of y:
   rosic::fillWithRangeLinear(y, N, -50, 50);
