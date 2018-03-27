@@ -9,7 +9,7 @@ of the product/company, the role of my code within it, etc.
 The codebase ist structured as follows: 
 
 In the "Libraries" folder, there is a JUCE folder which contains a "modules"
-subfolder. In addition to the modules that are part of JUCE the distribution, 
+subfolder. In addition to the modules that are part of the JUCE distribution, 
 it contains some additional modules. These are my own ones and on these, 
 all the actual products are based. The rapt module (Rob's Audio Processing 
 Templates) is a template based library with rather low level DSP code. The 
@@ -22,9 +22,12 @@ plugins (such as oscillators, filters, effects, etc.).
 
 The most important project that can actually be built by itself is in:
 Products/AudioPlugins/ToolChain/
-The code in this project is trivial because all the actual code is in the 
-library. The other products that can be built are mostly for development and 
-testing.
+ToolChain is a plugin that is actually many plugins in one. You can create a 
+chain of several sound processors (which i internally call AudioModules) that 
+were previously distributed as plugins in their own right. Project management 
+is just sooo much easier when everything is lumped into a single project. The 
+code in this project is trivial because all the actual code is in the library. 
+The other projects that can be built are mostly for development and testing.
 
 
 
