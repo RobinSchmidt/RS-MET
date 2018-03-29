@@ -148,6 +148,7 @@ MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
 MultiBandPlotEditor::~MultiBandPlotEditor()
 {
   module->removeChangeListener(this);
+  delete bandPopup;
 }
 
 void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
@@ -156,15 +157,26 @@ void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
   repaint();
 }
 
+void MultiBandPlotEditor::rPopUpMenuChanged(RPopUpMenu* menu)
+{
+
+  int dummy = 0;
+}
+
 void MultiBandPlotEditor::mouseDown(const MouseEvent& e)
 {
-  // select band whose rectangle contains the mouse-event:
-  double freq = freqRespPlot->fromPixelX(e.x);
+  double freq = freqRespPlot->fromPixelX(e.x); 
   int index = module->getBandContainingFrequency(freq);
-  Parameter* p = module->getParameterByName("SelectedBand");
-  p->setValue(index, true, true);
 
-  // maybe de-select, if the click was in the currently selected band, so we can have no selection
+  if(e.mods.isLeftButtonDown()) {
+    // select band whose rectangle contains the mouse-event:
+    Parameter* p = module->getParameterByName("SelectedBand");
+    p->setValue(index, true, true);
+    // todo: maybe de-select, if the click was in the currently selected band, so we can have no 
+    // selection
+  }
+  else if(e.mods.isRightButtonDown())
+    openRightClickMenu();
 }
 
 void MultiBandPlotEditor::paintOverChildren(Graphics& g)
@@ -203,6 +215,28 @@ void MultiBandPlotEditor::paintOverChildren(Graphics& g)
 void MultiBandPlotEditor::resized()
 {
   freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
+}
+
+void MultiBandPlotEditor::openRightClickMenu()
+{
+  // create popup, if necessary:
+  if(bandPopup == nullptr)
+  {
+    bandPopup = new RPopUpMenu(this);
+    bandPopup->registerPopUpMenuObserver(this);
+    bandPopup->setDismissOnFocusLoss(true);
+    bandPopup->addItem(1, "Add band");
+    bandPopup->addItem(2, "Remove band");
+
+  }
+
+    
+  // make sure, that selection is cleared
+
+  // show it:
+  int w = bandPopup->getRequiredWidth(true);
+  int h = bandPopup->getRequiredHeight(true);
+  bandPopup->showAtMousePosition(true, w, h); // showModally = true
 }
 
 //=================================================================================================

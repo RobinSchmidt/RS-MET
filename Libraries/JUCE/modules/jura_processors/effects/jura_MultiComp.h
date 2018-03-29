@@ -100,7 +100,8 @@ protected:
 area in the frequency response plot that represents that band, change split frequencies by dragging
 vertical line, etc. */
 
-class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public ChangeListener
+class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public ChangeListener, 
+  public RPopUpMenuObserver
 {
 
 public:
@@ -110,16 +111,21 @@ public:
 
   //virtual void parameterChanged(Parameter* p) override;
   virtual void changeListenerCallback(ChangeBroadcaster* source) override;
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void paintOverChildren(Graphics& g) override;
   virtual void resized() override;
 
 protected:
 
+  virtual void openRightClickMenu();
+
   rosic::rsMultiBandEffect* core;
   jura::MultiBandEffect* module; 
 
   rsFunctionPlot* freqRespPlot;
+
+  RPopUpMenu *bandPopup = nullptr; // created when needed the first time
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandPlotEditor)
 };
@@ -209,6 +215,9 @@ protected:
   RSlider *numBandsSlider;
   std::vector<RSlider*> splitFreqSliders, thresholdSliders, ratioSliders, attackSliders, 
     releaseSliders;
+
+  //RButton *addBandButton, *removeBandButton;
+
   //std::vector<RButton*> editButtons, soloButtons, muteButtons;
   RComboBox *splitModeBox, *bandSelectBox;
 

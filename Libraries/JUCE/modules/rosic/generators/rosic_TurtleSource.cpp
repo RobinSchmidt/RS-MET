@@ -177,7 +177,8 @@ void TurtleSource::updateWaveTable()
 
 void TurtleSource::updateLineCommandIndices()
 {
-  lineCommandIndices.resize(numLines);
+  //lineCommandIndices.resize(numLines);
+  lineCommandIndices.resize(rmax(numLines,1));
   int j = 0;
   for(int i = 0; i < turtleCommands.size(); i++) {
     if(turtle.isLineCommand(turtleCommands[i])) {
