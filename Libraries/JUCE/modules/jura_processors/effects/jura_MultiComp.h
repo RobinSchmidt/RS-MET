@@ -48,7 +48,7 @@ public:
 
 
   /** Sets the number of (active) bands. */
-  void setNumBands(int newNumBands);
+  //void setNumBands(int newNumBands);
 
 
   void insertBand(int index, double splitFrequency); 
@@ -223,7 +223,7 @@ protected:
 
   // widgets:
   MultiCompPlotEditor* plotEditor;
-  RSlider *numBandsSlider; // remove
+  //RSlider *numBandsSlider; // remove
   std::vector<RSlider*> splitFreqSliders, thresholdSliders, ratioSliders, attackSliders, 
     releaseSliders;
 

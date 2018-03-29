@@ -23,9 +23,11 @@ void MultiBandEffect::createSplittingParameters()
   typedef Parameter Param;
   Param* p;
 
+  /*
   p = new Param("NumBands", 1.0, maxNumBands, 1.0, Parameter::INTEGER); // use 1 as default later
   addObservedParameter(p);
   p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setNumBands);
+  */
 
   p = new Param("SelectedBand", 0.0, maxNumBands-1, 0.0, Parameter::STRING);
   p->addNumericStringValues(1, 16);
@@ -40,6 +42,7 @@ void MultiBandEffect::createSplittingParameters()
   p->setValueChangeCallback<MBE>(mbe, &MBE::setSplitMode);
 
 
+  /*
   // create per-band parameters:
   for(int i = 0; i < maxNumBands; i++)
   {
@@ -56,6 +59,7 @@ void MultiBandEffect::createSplittingParameters()
 
     splitFreqParams.push_back(p);
   }
+  */
 
   getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
 }
@@ -65,13 +69,13 @@ void MultiBandEffect::parameterChanged(Parameter* p)
   ModulatableAudioModule::parameterChanged(p);
   sendChangeMessage();
 }
-
+/*
 void MultiBandEffect::setNumBands(int newNumBands)
 {
   core->setNumberOfBands(newNumBands);
   jassert(areBandsInIncreasingOrder(false)); // for debug
 }
-
+*/
 void MultiBandEffect::insertBand(int index, double splitFrequency)
 {
   // insert band to core
@@ -364,12 +368,14 @@ void MultiCompModuleEditor::createWidgets()
   plotEditor = new MultiCompPlotEditor(multiCompModule);
   addChildColourSchemeComponent(plotEditor);
 
+  /*
   addWidget( s = numBandsSlider = new RSlider );
   s->assignParameter( multiCompModule->getParameterByName("NumBands") );
   s->setSliderName("NumBands");
   s->setDescription("Number of frequency bands");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString0);
+  */
 
   addWidget( c = bandSelectBox = new RComboBox() );
   c->assignParameter( multiCompModule->getParameterByName("SelectedBand") );
@@ -382,6 +388,7 @@ void MultiCompModuleEditor::createWidgets()
   c->setDescription("Mode of the band-splitting");
   c->setDescriptionField(infoField);
 
+  /*
   // per band widgets:
   int maxNumBands = multiCompModule->getMaxNumBands();
   splitFreqSliders.resize(maxNumBands);
@@ -408,6 +415,7 @@ void MultiCompModuleEditor::createWidgets()
     addWidget( s = releaseSliders[k] = new RSlider );
     s->assignParameter( multiCompModule->getParameterByName("Release" + idxStr) );
   }
+  */
 }
 
 void MultiCompModuleEditor::rComboBoxChanged(RComboBox* box)
@@ -428,10 +436,11 @@ void MultiCompModuleEditor::resized()
   int h = 16;
   int d = h-2;
 
-  numBandsSlider->setBounds(x, y, w, h); y += d;
+  //numBandsSlider->setBounds(x, y, w, h); y += d;
   bandSelectBox ->setBounds(x, y, w, h); y += d;
   splitModeBox  ->setBounds(x, y, w, h); y += d;
 
+  /*
   x = getWidth() / 2 + 4;
   for(int k = 0; k < multiCompModule->getMaxNumBands(); k++)
   {
@@ -442,10 +451,12 @@ void MultiCompModuleEditor::resized()
     attackSliders[k]   ->setBounds(x, y, w, h); y += d;
     releaseSliders[k]  ->setBounds(x, y, w, h); y += d;
   }
+  */
 }
 
 void MultiCompModuleEditor::updateWidgetVisibility()
 {
+  /*
   int k;
   for(k = 0; k < multiCompModule->getMaxNumBands(); k++)
   {
@@ -461,4 +472,5 @@ void MultiCompModuleEditor::updateWidgetVisibility()
   ratioSliders[k]    ->setVisible(true);
   attackSliders[k]   ->setVisible(true);
   releaseSliders[k]  ->setVisible(true);
+  */
 }
