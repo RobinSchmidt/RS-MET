@@ -106,6 +106,8 @@ class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public Change
 
 public:
 
+
+
   MultiBandPlotEditor(jura::MultiBandEffect* multiBandEffectModuleToEdit);
   virtual ~MultiBandPlotEditor();
 
@@ -126,6 +128,15 @@ protected:
   rsFunctionPlot* freqRespPlot;
 
   RPopUpMenu *bandPopup = nullptr; // created when needed the first time
+  enum popUpIds
+  {
+    ADD_BAND = 1,
+    REMOVE_BAND
+  };
+
+
+
+  double freqAtMouse = 0;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandPlotEditor)
 };
@@ -212,7 +223,7 @@ protected:
 
   // widgets:
   MultiCompPlotEditor* plotEditor;
-  RSlider *numBandsSlider;
+  RSlider *numBandsSlider; // remove
   std::vector<RSlider*> splitFreqSliders, thresholdSliders, ratioSliders, attackSliders, 
     releaseSliders;
 

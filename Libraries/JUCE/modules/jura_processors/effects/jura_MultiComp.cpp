@@ -72,6 +72,24 @@ void MultiBandEffect::setNumBands(int newNumBands)
   jassert(areBandsInIncreasingOrder(false)); // for debug
 }
 
+void MultiBandEffect::insertBand(int index, double splitFrequency)
+{
+  // insert band to core
+  // create parameters for band
+  // notify gui (and create widgets there)
+
+  int dummy = 0;
+}
+
+void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour)
+{
+  // notify gui to remove widgets
+  // remove band parameters
+  // remove band from core
+
+  int dummy = 0;
+}
+
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 {
   // we limit the new splitFreq such that bands remain ordered with ascending frequencies
@@ -159,17 +177,21 @@ void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
 
 void MultiBandPlotEditor::rPopUpMenuChanged(RPopUpMenu* menu)
 {
-
-  int dummy = 0;
+  int index = module->getBandContainingFrequency(freqAtMouse);
+  switch(bandPopup->getSelectedIdentifier())
+  {
+  case ADD_BAND:    module->insertBand(index, freqAtMouse);  break;
+  case REMOVE_BAND: module->removeBand(index, false);        break;
+  }
 }
 
 void MultiBandPlotEditor::mouseDown(const MouseEvent& e)
 {
-  double freq = freqRespPlot->fromPixelX(e.x); 
-  int index = module->getBandContainingFrequency(freq);
+  freqAtMouse = freqRespPlot->fromPixelX(e.x); 
 
   if(e.mods.isLeftButtonDown()) {
     // select band whose rectangle contains the mouse-event:
+    int index = module->getBandContainingFrequency(freqAtMouse);
     Parameter* p = module->getParameterByName("SelectedBand");
     p->setValue(index, true, true);
     // todo: maybe de-select, if the click was in the currently selected band, so we can have no 
@@ -225,17 +247,14 @@ void MultiBandPlotEditor::openRightClickMenu()
     bandPopup = new RPopUpMenu(this);
     bandPopup->registerPopUpMenuObserver(this);
     bandPopup->setDismissOnFocusLoss(true);
-    bandPopup->addItem(1, "Add band");
-    bandPopup->addItem(2, "Remove band");
-
+    bandPopup->addItem(ADD_BAND,    "Add band");
+    bandPopup->addItem(REMOVE_BAND, "Remove band");
   }
-
-    
-  // make sure, that selection is cleared
 
   // show it:
   int w = bandPopup->getRequiredWidth(true);
   int h = bandPopup->getRequiredHeight(true);
+  bandPopup->selectItemByIndex(-1, false);    // select nothing - maybe write a specific fiuntion for that
   bandPopup->showAtMousePosition(true, w, h); // showModally = true
 }
 
