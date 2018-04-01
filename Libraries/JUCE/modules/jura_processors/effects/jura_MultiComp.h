@@ -253,9 +253,13 @@ public:
   MultiCompModuleEditor(MultiCompAudioModule* multiCompModuleToEdit);
 
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
+
   virtual void bandWasInserted(MultiBandEffect* mbe, int index) override;
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
   virtual void bandWasSelected(MultiBandEffect* mbe, int index) override;
+
+  virtual void addBandWidgets(int index);
+  virtual void removeBandWidgets(int index);
 
   virtual void resized() override;
 

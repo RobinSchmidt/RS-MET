@@ -18,10 +18,6 @@ void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
   addObservedParameter(p);
   p->setValueChangeCallback<rosic::rsMultiBandEffect>(
     core, &rosic::rsMultiBandEffect::setSplitMode);
-
-
-  //maxNumBands = core->getMaxNumberOfBands();
-  //createSplittingParameters();
 }
 
 void MultiBandEffect::parameterChanged(Parameter* p)
@@ -41,7 +37,7 @@ void MultiBandEffect::insertBand(int index, double splitFrequency, bool sendNoti
 void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification)
 {
   if(sendNotification)
-    sendBandRemoveNotification(index);  // notify gui (to removing widgets)
+    sendBandRemoveNotification(index);  // notify gui (for removing widgets)
   removeSplitFreqParam(index);
   core->removeBand(index);
 }
@@ -185,7 +181,6 @@ void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)
   // update selection highlighting
   freqRespPlot->setNumFunctionsToPlot(core->getNumberOfBands());
   repaint();
-
 }
 
 void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
@@ -273,7 +268,7 @@ void MultiBandPlotEditor::openRightClickMenu()
   // show it:
   int w = bandPopup->getRequiredWidth(true);
   int h = bandPopup->getRequiredHeight(true);
-  bandPopup->selectItemByIndex(-1, false);    // select nothing - maybe write a specific fiuntion for that
+  bandPopup->selectItemByIndex(-1, false);    // select nothing - maybe write a specific fucntion for that
   bandPopup->showAtMousePosition(true, w, h); // showModally = true
 }
 
@@ -387,20 +382,10 @@ MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModu
 
 void MultiCompModuleEditor::createWidgets()
 {
-  //RSlider *s;
   RComboBox *c;
 
   plotEditor = new MultiCompPlotEditor(multiCompModule);
   addChildColourSchemeComponent(plotEditor);
-
-  /*
-  addWidget( s = numBandsSlider = new RSlider );
-  s->assignParameter( multiCompModule->getParameterByName("NumBands") );
-  s->setSliderName("NumBands");
-  s->setDescription("Number of frequency bands");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString0);
-  */
 
   /*
   addWidget( c = bandSelectBox = new RComboBox() );
@@ -414,35 +399,6 @@ void MultiCompModuleEditor::createWidgets()
   c->assignParameter( multiCompModule->getParameterByName("SplitMode") );
   c->setDescription("Mode of the band-splitting");
   c->setDescriptionField(infoField);
-
-  /*
-  // per band widgets:
-  int maxNumBands = multiCompModule->getMaxNumBands();
-  splitFreqSliders.resize(maxNumBands);
-  thresholdSliders.resize(maxNumBands);
-  ratioSliders.resize(maxNumBands);
-  attackSliders.resize(maxNumBands);
-  releaseSliders.resize(maxNumBands);
-  for(int k = 0; k < multiCompModule->getMaxNumBands(); k++)
-  {
-    juce::String idxStr = juce::String(k+1);
-
-    addWidget( s = splitFreqSliders[k] = new RSlider );
-    s->assignParameter( multiCompModule->getParameterByName("SplitFrequency" + idxStr) );
-
-    addWidget( s = thresholdSliders[k] = new RSlider );
-    s->assignParameter( multiCompModule->getParameterByName("Threshold" + idxStr) );
-
-    addWidget( s = ratioSliders[k] = new RSlider );
-    s->assignParameter( multiCompModule->getParameterByName("Ratio" + idxStr) );
-
-    addWidget( s = attackSliders[k] = new RSlider );
-    s->assignParameter( multiCompModule->getParameterByName("Attack" + idxStr) );
-
-    addWidget( s = releaseSliders[k] = new RSlider );
-    s->assignParameter( multiCompModule->getParameterByName("Release" + idxStr) );
-  }
-  */
 }
 
 void MultiCompModuleEditor::rComboBoxChanged(RComboBox* box)
@@ -452,17 +408,52 @@ void MultiCompModuleEditor::rComboBoxChanged(RComboBox* box)
 
 void MultiCompModuleEditor::bandWasInserted(MultiBandEffect* mbe, int index)
 {
-  // add widgets for new band
+  addBandWidgets(index);
 }
 
 void MultiCompModuleEditor::bandWillBeRemoved(MultiBandEffect* mbe, int index)
 {
-  // remove widgets for to-be-removed band
+  removeBandWidgets(index);
 }
 
 void MultiCompModuleEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 {
   updateWidgetVisibility();
+}
+
+void MultiCompModuleEditor::addBandWidgets(int i)
+{
+  juce::String idxStr = juce::String(i+1);
+  RSlider *s;
+
+  addWidget(s = new RSlider);
+  insert(splitFreqSliders, s, i);
+  s->assignParameter( multiCompModule->getParameterByName("SplitFrequency" + idxStr) );
+
+  addWidget( s = new RSlider );
+  insert(thresholdSliders, s, i);
+  s->assignParameter( multiCompModule->getParameterByName("Threshold" + idxStr) );
+
+  addWidget( s = new RSlider );
+  insert(ratioSliders, s, i);
+  s->assignParameter( multiCompModule->getParameterByName("Ratio" + idxStr) );
+
+  addWidget( s = new RSlider );
+  insert(attackSliders, s, i);
+  s->assignParameter( multiCompModule->getParameterByName("Attack" + idxStr) );
+
+  addWidget( s = new RSlider );
+  insert(releaseSliders, s, i);
+  s->assignParameter( multiCompModule->getParameterByName("Release" + idxStr) );
+}
+
+void MultiCompModuleEditor::removeBandWidgets(int i)
+{
+  remove(splitFreqSliders, i); removeWidget(splitFreqSliders[i], true, true);
+  remove(thresholdSliders, i); removeWidget(thresholdSliders[i], true, true);
+  remove(ratioSliders,     i); removeWidget(ratioSliders[i],     true, true);
+  remove(attackSliders,    i); removeWidget(attackSliders[i],    true, true);
+  remove(releaseSliders,   i); removeWidget(releaseSliders[i],   true, true);
 }
 
 void MultiCompModuleEditor::resized()
@@ -482,9 +473,8 @@ void MultiCompModuleEditor::resized()
   //bandSelectBox ->setBounds(x, y, w, h); y += d;
   splitModeBox  ->setBounds(x, y, w, h); y += d;
 
-  /*
   x = getWidth() / 2 + 4;
-  for(int k = 0; k < multiCompModule->getMaxNumBands(); k++)
+  for(int k = 0; k < multiCompModule->getNumBands(); k++)
   {
     y = plotEditor->getBottom() + 4;
     splitFreqSliders[k]->setBounds(x, y, w, h); y += d;
@@ -493,14 +483,12 @@ void MultiCompModuleEditor::resized()
     attackSliders[k]   ->setBounds(x, y, w, h); y += d;
     releaseSliders[k]  ->setBounds(x, y, w, h); y += d;
   }
-  */
 }
 
 void MultiCompModuleEditor::updateWidgetVisibility()
 {
-  /*
   int k;
-  for(k = 0; k < multiCompModule->getMaxNumBands(); k++)
+  for(k = 0; k < multiCompModule->getNumBands(); k++)
   {
     splitFreqSliders[k]->setVisible(false);
     thresholdSliders[k]->setVisible(false);
@@ -514,5 +502,4 @@ void MultiCompModuleEditor::updateWidgetVisibility()
   ratioSliders[k]    ->setVisible(true);
   attackSliders[k]   ->setVisible(true);
   releaseSliders[k]  ->setVisible(true);
-  */
 }
