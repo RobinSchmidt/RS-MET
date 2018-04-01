@@ -2,6 +2,25 @@
 #define jura_MultiComp_h
 
 
+class MultiBandEffect;
+
+/** Baseclass for classes that must keep track of the state of a MultiBandEffect object. */
+
+class JUCE_API MultiBandEffectObserver
+{
+
+public:
+
+  virtual void bandWasInserted(MultiBandEffect* mbe, int index) = 0;
+
+  virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) = 0;
+
+  virtual void bandWasSelected(MultiBandEffect* mbe, int index) = 0;
+
+};
+
+//=================================================================================================
+
 /** Baseclass for multiband effects. 
 
 todo: 
@@ -41,6 +60,17 @@ public:
 
   /** Creates the parameters related to the band-splitting. Called from setEffectCore. */
   virtual void createSplittingParameters();
+
+
+  virtual void registerMultiBandObserver(MultiBandEffectObserver *obs)
+  {
+    appendIfNotAlreadyThere(observers, obs);
+  }
+
+  virtual void deRegisterMultiBandObserver(MultiBandEffectObserver *obs)
+  {
+    removeFirstOccurrence(observers, obs);
+  }
 
   virtual void parameterChanged(Parameter* p) override;
 
@@ -84,12 +114,20 @@ public:
 
 protected:
 
+  void sendBandInsertNotification(int index);
+  void sendBandRemoveNotification(int index);
+  void sendBandSelectNotification(int index);
+
+
+
   rosic::rsMultiBandEffect* core = nullptr;
 
   int maxNumBands  =  0;  // assigned in constructor
   int selectedBand =  0;  // -1 is code for "None"
 
   std::vector<Parameter*> splitFreqParams;
+
+  std::vector<MultiBandEffectObserver*> observers;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffect)
 };

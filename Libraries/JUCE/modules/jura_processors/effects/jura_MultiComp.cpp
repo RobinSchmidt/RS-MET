@@ -148,6 +148,24 @@ bool MultiBandEffect::areBandsInIncreasingOrder(bool strictly)
   return true;
 }
 
+void MultiBandEffect::sendBandInsertNotification(int index)
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->bandWasInserted(this, index);
+}
+
+void MultiBandEffect::sendBandRemoveNotification(int index)
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->bandWillBeRemoved(this, index);
+}
+
+void MultiBandEffect::sendBandSelectNotification(int index)
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->bandWasSelected(this, index);
+}
+
 //=================================================================================================
 
 MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
@@ -362,7 +380,7 @@ MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModu
 
 void MultiCompModuleEditor::createWidgets()
 {
-  RSlider *s;
+  //RSlider *s;
   RComboBox *c;
 
   plotEditor = new MultiCompPlotEditor(multiCompModule);
