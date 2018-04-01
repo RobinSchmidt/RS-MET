@@ -74,38 +74,44 @@ void MultiBandEffect::parameterChanged(Parameter* p)
   sendChangeMessage();
 }
 
-/*
-void MultiBandEffect::setNumBands(int newNumBands)
+void MultiBandEffect::insertBand(int index, double splitFrequency, bool sendNotification)
 {
-  core->setNumberOfBands(newNumBands);
-  jassert(areBandsInIncreasingOrder(false)); // for debug
-}
-*/
-
-void MultiBandEffect::insertBand(int index, double splitFrequency)
-{
-  // todo:
-  // insert band to core
-  // create parameters for band
-
-  sendBandInsertNotification(index);  // notify gui (for creating widgets)
+  core->insertBand(index, splitFrequency);
+  addSplitFreqParam(index, splitFrequency);
+  if(sendNotification)
+    sendBandInsertNotification(index);  // notify gui (for creating widgets)
 }
 
-void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour)
+void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification)
 {
-  sendBandRemoveNotification(index);  // notify gui (to removing widgets)
+  if(sendNotification)
+    sendBandRemoveNotification(index);  // notify gui (to removing widgets)
 
   // todo:
   // remove band parameters
   // remove band from core
 }
 
-void MultiBandEffect::selectBand(int bandToSelect) 
+void MultiBandEffect::selectBand(int bandToSelect, bool sendNotification) 
 { 
   selectedBand = bandToSelect; 
-  sendBandSelectNotification(selectedBand);
+  if(sendNotification)
+    sendBandSelectNotification(selectedBand);
 }
 
+void MultiBandEffect::addSplitFreqParam(int index, double freq)
+{
+  juce::String idxStr = juce::String(index+1);
+  Parameter* p = new Parameter("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, 
+    Parameter::EXPONENTIAL);
+  p->setValue(freq, false, false);
+  addObservedParameter(p);
+
+  p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
+   // i think, this is wrong - we need a lambda here
+
+  insert(splitFreqParams, p, index);
+}
 
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 {
@@ -233,8 +239,8 @@ void MultiBandPlotEditor::rPopUpMenuChanged(RPopUpMenu* menu)
   int index = module->getBandContainingFrequency(freqAtMouse);
   switch(bandPopup->getSelectedIdentifier())
   {
-  case ADD_BAND:    module->insertBand(index, freqAtMouse);  break;
-  case REMOVE_BAND: module->removeBand(index, false);        break;
+  case ADD_BAND:    module->insertBand(index, freqAtMouse, true);  break;
+  case REMOVE_BAND: module->removeBand(index, false, true);        break;
   }
 }
 
@@ -320,11 +326,12 @@ MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse,
   ScopedLock scopedLock(*lock);
   setModuleTypeName("MultiComp");
   MultiBandEffect::setEffectCore(&multiCompCore);
-  createCompressionParameters();
+  //createCompressionParameters();
 }
 
 void MultiCompAudioModule::createCompressionParameters()
 {
+  /*
   ScopedLock scopedLock(*lock);
 
   typedef rosic::rsMultiBandCompressor MBC;
@@ -333,6 +340,7 @@ void MultiCompAudioModule::createCompressionParameters()
   //typedef ModulatableParameter Param;
   typedef Parameter Param;
   Param* p;
+  */
 
   /*
   // create per-band parameters:

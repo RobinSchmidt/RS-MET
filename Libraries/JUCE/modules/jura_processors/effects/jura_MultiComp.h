@@ -74,12 +74,13 @@ public:
 
   virtual void parameterChanged(Parameter* p) override;
 
-  /** Sets the number of (active) bands. */
-  //void setNumBands(int newNumBands);
 
-  void insertBand(int index, double splitFrequency); 
-  void removeBand(int index, bool mergeWithRightNeighbour = false);
-  void selectBand(int bandToSelect);
+  virtual void insertBand(int index, double splitFrequency, bool sendNotification); 
+  virtual void removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification);
+  virtual void selectBand(int bandToSelect, bool sendNotification);
+
+
+  void addSplitFreqParam(int index, double freq);
 
   /** Sets the splitting frequency for the band with given index to the given frequency. */
   void setSplitFreq(int bandIndex, double newFreq);
@@ -94,10 +95,7 @@ public:
 
   int getSelectedBand() const { return selectedBand; }
   int getNumBands()     const { return core->getNumberOfBands(); }
-  //int getMaxNumBands()  const { return maxNumBands; }
-
   int getBandContainingFrequency(double freq);
-
 
 
   /** Returns a pointer to our core DSP object. */
