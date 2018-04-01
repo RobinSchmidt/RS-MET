@@ -9,10 +9,22 @@ void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
 {
   ScopedLock scopedLock(*lock);
   core = effectCore;
-  maxNumBands = core->getMaxNumberOfBands();
-  createSplittingParameters();
+
+  // doing this here is a bit dirty:
+  Parameter* p = new Parameter("SplitMode", 0.0, 2.0, 0.0, Parameter::STRING);
+  p->addStringValue("Steep Lowpass");
+  p->addStringValue("Steep Highpass");
+  //p->addStringValue("Binary Tree"); // doesn't work yet
+  addObservedParameter(p);
+  p->setValueChangeCallback<rosic::rsMultiBandEffect>(
+    core, &rosic::rsMultiBandEffect::setSplitMode);
+
+
+  //maxNumBands = core->getMaxNumberOfBands();
+  //createSplittingParameters();
 }
 
+/*
 void MultiBandEffect::createSplittingParameters()
 {
   ScopedLock scopedLock(*lock);
@@ -23,26 +35,17 @@ void MultiBandEffect::createSplittingParameters()
   typedef Parameter Param;
   Param* p;
 
-  /*
   p = new Param("NumBands", 1.0, maxNumBands, 1.0, Parameter::INTEGER); // use 1 as default later
   addObservedParameter(p);
   p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setNumBands);
-  */
 
+  // doesn't need to be a parameter:
   p = new Param("SelectedBand", 0.0, maxNumBands-1, 0.0, Parameter::STRING);
   p->addNumericStringValues(1, 16);
   addObservedParameter(p);
   p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::selectBand);
 
-  p = new Param("SplitMode", 0.0, 2.0, 0.0, Parameter::STRING);
-  p->addStringValue("Steep Lowpass");
-  p->addStringValue("Steep Highpass");
-  //p->addStringValue("Binary Tree"); // doesn't work yet
-  addObservedParameter(p);
-  p->setValueChangeCallback<MBE>(mbe, &MBE::setSplitMode);
 
-
-  /*
   // create per-band parameters:
   for(int i = 0; i < maxNumBands; i++)
   {
@@ -59,16 +62,18 @@ void MultiBandEffect::createSplittingParameters()
 
     splitFreqParams.push_back(p);
   }
-  */
 
-  getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
+
+  //getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
 }
+*/
 
 void MultiBandEffect::parameterChanged(Parameter* p)
 {
   ModulatableAudioModule::parameterChanged(p);
   sendChangeMessage();
 }
+
 /*
 void MultiBandEffect::setNumBands(int newNumBands)
 {
@@ -329,6 +334,7 @@ void MultiCompAudioModule::createCompressionParameters()
   typedef Parameter Param;
   Param* p;
 
+  /*
   // create per-band parameters:
   for(int i = 0; i < maxNumBands; i++)
   {
@@ -352,6 +358,7 @@ void MultiCompAudioModule::createCompressionParameters()
     addObservedParameter(p);
     p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setRelease);
   }
+  */
 
   //getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
 }
@@ -421,11 +428,13 @@ void MultiCompModuleEditor::createWidgets()
   s->setStringConversionFunction(&valueToString0);
   */
 
+  /*
   addWidget( c = bandSelectBox = new RComboBox() );
   c->assignParameter( multiCompModule->getParameterByName("SelectedBand") );
   c->setDescription("Select band to edit");
   c->setDescriptionField(infoField);
   c->registerComboBoxObserver(this);
+  */
 
   addWidget( c = splitModeBox = new RComboBox() );
   c->assignParameter( multiCompModule->getParameterByName("SplitMode") );
@@ -496,7 +505,7 @@ void MultiCompModuleEditor::resized()
   int d = h-2;
 
   //numBandsSlider->setBounds(x, y, w, h); y += d;
-  bandSelectBox ->setBounds(x, y, w, h); y += d;
+  //bandSelectBox ->setBounds(x, y, w, h); y += d;
   splitModeBox  ->setBounds(x, y, w, h); y += d;
 
   /*

@@ -59,7 +59,7 @@ public:
   void setEffectCore( rosic::rsMultiBandEffect* effectCore);
 
   /** Creates the parameters related to the band-splitting. Called from setEffectCore. */
-  virtual void createSplittingParameters();
+  //virtual void createSplittingParameters();
 
 
   virtual void registerMultiBandObserver(MultiBandEffectObserver *obs)
@@ -94,7 +94,7 @@ public:
 
   int getSelectedBand() const { return selectedBand; }
   int getNumBands()     const { return core->getNumberOfBands(); }
-  int getMaxNumBands()  const { return maxNumBands; }
+  //int getMaxNumBands()  const { return maxNumBands; }
 
   int getBandContainingFrequency(double freq);
 
@@ -117,7 +117,7 @@ protected:
 
   rosic::rsMultiBandEffect* core = nullptr;
 
-  int maxNumBands  =  0;  // assigned in constructor
+  //int maxNumBands  =  0;  // assigned in constructor
   int selectedBand =  0;  // -1 is code for "None"
 
   std::vector<Parameter*> splitFreqParams;
