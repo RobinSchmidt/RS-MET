@@ -61,6 +61,10 @@ public:
   virtual void removeObservedParameter(Parameter *parameterToRemove, bool deleteObject);
   // rename to removeParameter
 
+  /** Removes a parameter with given name from our array and optionally deletes the object. */
+  virtual void removeParameter(const juce::String& name, bool deleteObject);
+
+
   /** Removes all the pointers to the observed parameters and optionally deletes the objects 
   themselves. */
   virtual void removeAllObservedParameters(bool deleteObjects);

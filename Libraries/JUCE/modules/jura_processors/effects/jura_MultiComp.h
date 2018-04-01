@@ -79,8 +79,9 @@ public:
   virtual void removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification);
   virtual void selectBand(int bandToSelect, bool sendNotification);
 
-
   void addSplitFreqParam(int index, double freq);
+  void removeSplitFreqParam(int index);
+
 
   /** Sets the splitting frequency for the band with given index to the given frequency. */
   void setSplitFreq(int bandIndex, double newFreq);
@@ -191,8 +192,12 @@ public:
   MultiCompAudioModule(CriticalSection *lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
 
-  /** Creates the per band compression parameters (threshold, ratio, attack, release). */
-  virtual void createCompressionParameters();
+
+  virtual void insertBand(int index, double splitFrequency, bool sendNotification) override; 
+  virtual void removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification) override;
+
+  void addCompressionParams(int index);
+  void removeCompressionParams(int index);
 
   /** Returns a pointer to our core DSP object. */
   rosic::rsMultiBandCompressor* getMultiCompCore() { return &multiCompCore; }

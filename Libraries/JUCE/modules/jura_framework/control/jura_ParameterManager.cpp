@@ -87,6 +87,12 @@ void ParameterManager::removeObservedParameter(Parameter *parameterToRemove, boo
   }
 }
 
+void ParameterManager::removeParameter(const juce::String& name, bool deleteObject)
+{
+  ScopedLock scopedLock(*lock);
+  removeObservedParameter(getParameterByName(name), deleteObject);
+}
+
 void ParameterManager::removeAllObservedParameters(bool deleteObjects)
 {
   ScopedPointerLock scopedLock(lock);

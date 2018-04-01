@@ -24,50 +24,6 @@ void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
   //createSplittingParameters();
 }
 
-/*
-void MultiBandEffect::createSplittingParameters()
-{
-  ScopedLock scopedLock(*lock);
-
-  typedef rosic::rsMultiBandEffect MBE;
-  MBE* mbe = core;
-
-  typedef Parameter Param;
-  Param* p;
-
-  p = new Param("NumBands", 1.0, maxNumBands, 1.0, Parameter::INTEGER); // use 1 as default later
-  addObservedParameter(p);
-  p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setNumBands);
-
-  // doesn't need to be a parameter:
-  p = new Param("SelectedBand", 0.0, maxNumBands-1, 0.0, Parameter::STRING);
-  p->addNumericStringValues(1, 16);
-  addObservedParameter(p);
-  p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::selectBand);
-
-
-  // create per-band parameters:
-  for(int i = 0; i < maxNumBands; i++)
-  {
-    // todo use std::function with lambda functions for callbacks because when doing it like below
-    // all parameters use the same callback (and the dispatch is done based on our selectedBand 
-    // member) - but this is not suitable for allowing automation
-
-    juce::String idxStr = juce::String(i+1);
-
-    p = new Param("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, Parameter::EXPONENTIAL);
-    p->setValue(mbe->getSplitFrequency(i), false, false);
-    addObservedParameter(p);
-    p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
-
-    splitFreqParams.push_back(p);
-  }
-
-
-  //getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
-}
-*/
-
 void MultiBandEffect::parameterChanged(Parameter* p)
 {
   ModulatableAudioModule::parameterChanged(p);
@@ -86,10 +42,8 @@ void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool s
 {
   if(sendNotification)
     sendBandRemoveNotification(index);  // notify gui (to removing widgets)
-
-  // todo:
-  // remove band parameters
-  // remove band from core
+  removeSplitFreqParam(index);
+  core->removeBand(index);
 }
 
 void MultiBandEffect::selectBand(int bandToSelect, bool sendNotification) 
@@ -111,6 +65,12 @@ void MultiBandEffect::addSplitFreqParam(int index, double freq)
    // i think, this is wrong - we need a lambda here
 
   insert(splitFreqParams, p, index);
+}
+
+void MultiBandEffect::removeSplitFreqParam(int i)
+{
+  delete splitFreqParams[i];
+  remove(splitFreqParams, i);
 }
 
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
@@ -326,49 +286,55 @@ MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse,
   ScopedLock scopedLock(*lock);
   setModuleTypeName("MultiComp");
   MultiBandEffect::setEffectCore(&multiCompCore);
-  //createCompressionParameters();
 }
 
-void MultiCompAudioModule::createCompressionParameters()
+void MultiCompAudioModule::insertBand(int i, double splitFreq, bool sendNotification)
 {
-  /*
-  ScopedLock scopedLock(*lock);
+  MultiBandEffect::insertBand(i, splitFreq, false);
+  addCompressionParams(i);
+  if(sendNotification)  
+    sendBandInsertNotification(i); 
+}
 
-  typedef rosic::rsMultiBandCompressor MBC;
-  MBC* mbc = &multiCompCore;
+void MultiCompAudioModule::removeBand(int i, bool mergeWithRightNeighbour, bool sendNotification)
+{
+  MultiBandEffect::removeBand(i, mergeWithRightNeighbour, sendNotification);
+  removeCompressionParams(i);
+}
 
-  //typedef ModulatableParameter Param;
+void MultiCompAudioModule::addCompressionParams(int i)
+{
   typedef Parameter Param;
   Param* p;
-  */
 
-  /*
-  // create per-band parameters:
-  for(int i = 0; i < maxNumBands; i++)
-  {
-    // todo use std::function with lambda functions for callbacks
+  // todo use std::function with lambda functions for callbacks
 
-    juce::String idxStr = juce::String(i+1);
+  juce::String idxStr = juce::String(i+1);
 
-    p = new Param("Threshold" + idxStr, -60.0, 0.0, 0.0, Parameter::LINEAR); // in dB
-    addObservedParameter(p);
-    p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setThreshold);
+  p = new Param("Threshold" + idxStr, -60.0, 0.0, 0.0, Parameter::LINEAR); // in dB
+  addObservedParameter(p);
+  p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setThreshold);
 
-    p = new Param("Ratio" + idxStr, 1.0, 100.0, 1.0, Parameter::EXPONENTIAL);
-    addObservedParameter(p);
-    p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setRatio);
+  p = new Param("Ratio" + idxStr, 1.0, 100.0, 1.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setRatio);
 
-    p = new Param("Attack" + idxStr, 0.1, 1000.0, 10.0, Parameter::EXPONENTIAL);
-    addObservedParameter(p);
-    p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setAttack);
+  p = new Param("Attack" + idxStr, 0.1, 1000.0, 10.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setAttack);
 
-    p = new Param("Release" + idxStr, 0.1, 1000.0, 100.0, Parameter::EXPONENTIAL);
-    addObservedParameter(p);
-    p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setRelease);
-  }
-  */
+  p = new Param("Release" + idxStr, 0.1, 1000.0, 100.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setRelease);
+}
 
-  //getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
+void MultiCompAudioModule::removeCompressionParams(int i)
+{
+  juce::String idxStr = juce::String(i+1);
+  removeParameter("Threshold" + idxStr, true);
+  removeParameter("Ratio"     + idxStr, true);
+  removeParameter("Attack"    + idxStr, true);
+  removeParameter("Release"   + idxStr, true);
 }
 
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
