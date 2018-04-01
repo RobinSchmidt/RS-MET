@@ -74,17 +74,12 @@ public:
 
   virtual void parameterChanged(Parameter* p) override;
 
-  void selectBand(int bandToSelect) { selectedBand = bandToSelect; }
-
-
   /** Sets the number of (active) bands. */
   //void setNumBands(int newNumBands);
 
-
   void insertBand(int index, double splitFrequency); 
-
   void removeBand(int index, bool mergeWithRightNeighbour = false);
-
+  void selectBand(int bandToSelect);
 
   /** Sets the splitting frequency for the band with given index to the given frequency. */
   void setSplitFreq(int bandIndex, double newFreq);
@@ -138,8 +133,8 @@ protected:
 area in the frequency response plot that represents that band, change split frequencies by dragging
 vertical line, etc. */
 
-class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public ChangeListener, 
-  public RPopUpMenuObserver
+class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public ChangeListener, // ChangeListener obsolete?
+  public RPopUpMenuObserver,  public MultiBandEffectObserver
 {
 
 public:
@@ -149,9 +144,16 @@ public:
   MultiBandPlotEditor(jura::MultiBandEffect* multiBandEffectModuleToEdit);
   virtual ~MultiBandPlotEditor();
 
+
+
   //virtual void parameterChanged(Parameter* p) override;
+  virtual void bandWasInserted(MultiBandEffect* mbe, int index) override;
+  virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
+  virtual void bandWasSelected(MultiBandEffect* mbe, int index) override;
+
   virtual void changeListenerCallback(ChangeBroadcaster* source) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void paintOverChildren(Graphics& g) override;
   virtual void resized() override;
@@ -239,7 +241,8 @@ protected:
 
 //=================================================================================================
 
-class MultiCompModuleEditor : public AudioModuleEditor, public RComboBoxObserver
+class MultiCompModuleEditor : public AudioModuleEditor, public RComboBoxObserver, 
+  public MultiBandEffectObserver
 {
 
 public:
@@ -247,6 +250,10 @@ public:
   MultiCompModuleEditor(MultiCompAudioModule* multiCompModuleToEdit);
 
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
+  virtual void bandWasInserted(MultiBandEffect* mbe, int index) override;
+  virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
+  virtual void bandWasSelected(MultiBandEffect* mbe, int index) override;
+
   virtual void resized() override;
 
 protected:

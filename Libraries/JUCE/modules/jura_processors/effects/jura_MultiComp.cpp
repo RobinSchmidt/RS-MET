@@ -76,23 +76,31 @@ void MultiBandEffect::setNumBands(int newNumBands)
   jassert(areBandsInIncreasingOrder(false)); // for debug
 }
 */
+
 void MultiBandEffect::insertBand(int index, double splitFrequency)
 {
+  // todo:
   // insert band to core
   // create parameters for band
-  // notify gui (and create widgets there)
 
-  int dummy = 0;
+  sendBandInsertNotification(index);  // notify gui (for creating widgets)
 }
 
 void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour)
 {
-  // notify gui to remove widgets
+  sendBandRemoveNotification(index);  // notify gui (to removing widgets)
+
+  // todo:
   // remove band parameters
   // remove band from core
-
-  int dummy = 0;
 }
+
+void MultiBandEffect::selectBand(int bandToSelect) 
+{ 
+  selectedBand = bandToSelect; 
+  sendBandSelectNotification(selectedBand);
+}
+
 
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 {
@@ -189,6 +197,24 @@ MultiBandPlotEditor::~MultiBandPlotEditor()
 {
   module->removeChangeListener(this);
   delete bandPopup;
+}
+
+void MultiBandPlotEditor::bandWasInserted(MultiBandEffect* mbe, int index)
+{
+  // insert new graph into plot
+}
+
+void MultiBandPlotEditor::bandWillBeRemoved(MultiBandEffect* mbe, int index)
+{
+  // remove graph from plot
+}
+
+void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)
+{
+  // update selection highlighting
+  freqRespPlot->setNumFunctionsToPlot(core->getNumberOfBands());
+  repaint();
+
 }
 
 void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
@@ -437,6 +463,21 @@ void MultiCompModuleEditor::createWidgets()
 }
 
 void MultiCompModuleEditor::rComboBoxChanged(RComboBox* box)
+{
+  updateWidgetVisibility();
+}
+
+void MultiCompModuleEditor::bandWasInserted(MultiBandEffect* mbe, int index)
+{
+  // add widgets for new band
+}
+
+void MultiCompModuleEditor::bandWillBeRemoved(MultiBandEffect* mbe, int index)
+{
+  // remove widgets for to-be-removed band
+}
+
+void MultiCompModuleEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 {
   updateWidgetVisibility();
 }
