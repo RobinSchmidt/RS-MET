@@ -153,8 +153,8 @@ MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
   freqRespPlot = new rsFunctionPlot;
   freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -48.0, 12.0, 6);
 
-  for(int i = 0; i < core->getMaxNumberOfBands(); i++)
-    freqRespPlot->addFunction([=](double f)->double { return core->getDecibelsAt(i, f); });
+  //for(int i = 0; i < core->getMaxNumberOfBands(); i++)
+  //  freqRespPlot->addFunction([=](double f)->double { return core->getDecibelsAt(i, f); });
 
   freqRespPlot->addMouseListener(this, true);
   addPlot(freqRespPlot);
@@ -166,14 +166,16 @@ MultiBandPlotEditor::~MultiBandPlotEditor()
   delete bandPopup;
 }
 
-void MultiBandPlotEditor::bandWasInserted(MultiBandEffect* mbe, int index)
+void MultiBandPlotEditor::bandWasInserted(MultiBandEffect* mbe, int i)
 {
   // insert new graph into plot
+  //freqRespPlot->addFunction([=](double f)->double { return core->getDecibelsAt(i, f); });
+  //freqRespPlot->insertFunction(i, [=](double f)->double { return core->getDecibelsAt(i, f); });
 }
 
-void MultiBandPlotEditor::bandWillBeRemoved(MultiBandEffect* mbe, int index)
+void MultiBandPlotEditor::bandWillBeRemoved(MultiBandEffect* mbe, int i)
 {
-  // remove graph from plot
+  //freqRespPlot->removeFunction(i);  // remove graph from plot
 }
 
 void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)

@@ -20,7 +20,7 @@ public:
 
   void setSampleRate(double newSampleRate);
 
-  void setNumberOfBands(int newNumber);
+  //void setNumberOfBands(int newNumber);
     // get rid of this
 
   /** Adds a new band after the band at the given index. If the index is that of the last band, 
@@ -50,7 +50,7 @@ public:
   int getNumberOfBands() const { return numBands; }
 
   /** Returns the maximum number of bands that is supported. */
-  int getMaxNumberOfBands() const { return maxNumBands; }
+  //int getMaxNumberOfBands() const { return maxNumBands; }
 
   /** Returns the upper cutoff frequency for the band with given index. */
   double getSplitFrequency(int index) { return splitterL.getSplitFrequency(index); }
@@ -124,7 +124,8 @@ protected:
 
 
   int numBands = 1;
-  int maxNumBands = 16; // preliminary - make indefinite in the future
+
+  //int maxNumBands = 16; // preliminary - make indefinite in the future
   //std::vector<int> indices; // for re-ordering the bands (necessarry to allow the user to randomly
   //                          // insert and/or remove bands at will while still keeping them sorted)
 
@@ -162,6 +163,10 @@ public:
   void setAttackTime(int bandIndex, double newAttackTime);
 
   void setReleaseTime(int bandIndex, double newReleaseTime);
+
+  void insertBand(int index, double splitFrequency); 
+
+  void removeBand(int index, bool mergeWithRightNeighbour = false);
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
