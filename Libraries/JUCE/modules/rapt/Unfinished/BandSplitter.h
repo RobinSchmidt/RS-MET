@@ -127,10 +127,10 @@ public:
   // \name Inquiry
 
   /** Returns the number of available bands, i.e. the maximum number of bands that is supported. */
-  int getNumAvailableBands() { return (int)splitters.size() + 1; }
+  int getNumAvailableBands() const { return (int)splitters.size() + 1; }
 
   /** Returns the number of bands that are currently in use. */
-  int getNumActiveBands() { return numActiveBands; }
+  int getNumActiveBands() const { return numActiveBands; }
 
 
   /** Returns the upper cutoff frequency for the band with given index. */

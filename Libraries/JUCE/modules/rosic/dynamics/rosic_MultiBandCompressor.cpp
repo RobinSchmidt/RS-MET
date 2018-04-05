@@ -1,23 +1,6 @@
 rsMultiBandEffect::rsMultiBandEffect()
 {
   initBands();
-
-  /*
-  tmpL.resize(maxNumBands);
-  tmpR.resize(maxNumBands);
-  //indices.resize(maxNumBands);
-  //initIndices();
-  */
-
-
-  /*
-  // init splitter frequencies for 16 bands (15 frequencies):
-  vector<double> splitFreqs = { 60, 90, 135, 200, 300, 450, 675, 1000, 1500, 2200, 3000, 4500, 
-    6000, 9000, 13000 }; 
-  splitterL.setSplitFrequencies(splitFreqs);
-  splitterR.setSplitFrequencies(splitFreqs);
-  setNumberOfBands(16);
-  */
 }
 
 // setup:
@@ -25,66 +8,34 @@ rsMultiBandEffect::rsMultiBandEffect()
 void rsMultiBandEffect::setSampleRate(double newSampleRate)
 {
   splitter.setSampleRate(newSampleRate);
-  splitterL.setSampleRate(newSampleRate);
-  splitterR.setSampleRate(newSampleRate);
 }
-
-/*
-void rsMultiBandEffect::setNumberOfBands(int newNumber)
-{
-  numBands = newNumber;
-  splitterL.setNumberOfActiveBands(newNumber);
-  splitterR.setNumberOfActiveBands(newNumber);
-}
-*/
 
 void rsMultiBandEffect::insertBand(int i, double splitFreq)
 {
-  numBands++;
   splitter.insertBand(i, splitFreq);
-  splitterL.insertBand(i, splitFreq);
-  splitterR.insertBand(i, splitFreq);
-  tmp.resize(numBands);
-  tmpL.resize(numBands);
-  tmpR.resize(numBands);
+  tmp.resize(getNumberOfBands());
 }
 
 void rsMultiBandEffect::removeBand(int i, bool mergeRight)
 {
-  numBands--;
   splitter.removeBand(i, mergeRight);
-  splitterL.removeBand(i, mergeRight);
-  splitterR.removeBand(i, mergeRight);
-  tmp.resize(numBands);
-  tmpL.resize(numBands);
-  tmpR.resize(numBands);
+  tmp.resize(getNumberOfBands());
 }
 
 void rsMultiBandEffect::setSplitMode(int newMode)
 {
   splitter.setSplitMode(newMode);
-  splitterL.setSplitMode(newMode);
-  splitterR.setSplitMode(newMode);
 }
 
 void rsMultiBandEffect::setSplitFrequency(int bandIndex, double newFrequency)
 {
   splitter.setSplitFrequency(bandIndex, newFrequency);
-  splitterL.setSplitFrequency(bandIndex, newFrequency);
-  splitterR.setSplitFrequency(bandIndex, newFrequency);
 }
 
 void rsMultiBandEffect::initBands()
 {
-  numBands = 1;
-
-  splitter.setNumberOfActiveBands(numBands);
-  splitterL.setNumberOfActiveBands(numBands);
-  splitterR.setNumberOfActiveBands(numBands);
-
-  tmp.resize(numBands);
-  tmpL.resize(numBands);
-  tmpR.resize(numBands);
+  splitter.setNumberOfActiveBands(1);
+  tmp.resize(1);
 }
 
 double rsMultiBandEffect::getDecibelsAt(int index, double frequency)
@@ -97,16 +48,8 @@ double rsMultiBandEffect::getDecibelsAt(int index, double frequency)
 void rsMultiBandEffect::reset()
 {
   splitter.reset();
-  splitterL.reset();
-  splitterR.reset();
 }
 
-/*
-void rsMultiBandEffect::initIndices()
-{
-  fillWithIndex(&indices[0], (int)indices.size());
-}
-*/
 //=================================================================================================
 
 rsMultiBandCompressor::rsMultiBandCompressor() 
