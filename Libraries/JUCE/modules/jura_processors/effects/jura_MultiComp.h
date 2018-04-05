@@ -202,6 +202,8 @@ public:
   virtual void insertBand(int index, double splitFrequency, bool sendNotification) override; 
   virtual void removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification) override;
 
+
+  void createBandParams();
   void addCompressionParams(int index);
   void removeCompressionParams(int index);
 
@@ -264,6 +266,8 @@ public:
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
   virtual void bandWasSelected(MultiBandEffect* mbe, int index) override;
 
+
+
   virtual void addBandWidgets(int index);
   virtual void removeBandWidgets(int index);
 
@@ -273,6 +277,11 @@ protected:
 
 
   virtual void createWidgets();
+
+  /** Creates the per-band widgets, if necessarry. */
+  virtual void createBandWidgets();
+
+
 
   /** Makes currently required widgets visible and currently not required widgets invisible. */
   virtual void updateWidgetVisibility();

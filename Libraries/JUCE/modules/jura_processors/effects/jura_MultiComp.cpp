@@ -283,6 +283,7 @@ MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse,
   ScopedLock scopedLock(*lock);
   setModuleTypeName("MultiComp");
   MultiBandEffect::setEffectCore(&multiCompCore);
+  createBandParams();
 }
 
 void MultiCompAudioModule::insertBand(int i, double splitFreq, bool sendNotification)
@@ -297,6 +298,13 @@ void MultiCompAudioModule::removeBand(int i, bool mergeWithRightNeighbour, bool 
 {
   MultiBandEffect::removeBand(i, mergeWithRightNeighbour, sendNotification);
   removeCompressionParams(i);
+}
+
+void MultiCompAudioModule::createBandParams()
+{
+  // todo: add a parameter set (freq, threshold, ratio, etc.) for each of the bands 
+
+  int dummy = 0;
 }
 
 void MultiCompAudioModule::addCompressionParams(int i)
@@ -401,6 +409,18 @@ void MultiCompModuleEditor::createWidgets()
   c->assignParameter( multiCompModule->getParameterByName("SplitMode") );
   c->setDescription("Mode of the band-splitting");
   c->setDescriptionField(infoField);
+
+  createBandWidgets();
+}
+
+void MultiCompModuleEditor::createBandWidgets()
+{
+  size_t numWidgetSets = splitFreqSliders.size();
+  size_t numBands = multiCompModule->getNumBands();
+  while(numWidgetSets < numBands) {
+    addBandWidgets((int)numWidgetSets);
+    numWidgetSets++; 
+  }
 }
 
 void MultiCompModuleEditor::rComboBoxChanged(RComboBox* box)
@@ -490,8 +510,7 @@ void MultiCompModuleEditor::resized()
 void MultiCompModuleEditor::updateWidgetVisibility()
 {
   int k;
-  for(k = 0; k < multiCompModule->getNumBands(); k++)
-  {
+  for(k = 0; k < multiCompModule->getNumBands(); k++) {
     splitFreqSliders[k]->setVisible(false);
     thresholdSliders[k]->setVisible(false);
     ratioSliders[k]    ->setVisible(false);
@@ -499,9 +518,11 @@ void MultiCompModuleEditor::updateWidgetVisibility()
     releaseSliders[k]  ->setVisible(false);
   }
   k = multiCompModule->getSelectedBand();
-  splitFreqSliders[k]->setVisible(true);
-  thresholdSliders[k]->setVisible(true);
-  ratioSliders[k]    ->setVisible(true);
-  attackSliders[k]   ->setVisible(true);
-  releaseSliders[k]  ->setVisible(true);
+  if(k >= 0) {
+    splitFreqSliders[k]->setVisible(true);
+    thresholdSliders[k]->setVisible(true);
+    ratioSliders[k]->setVisible(true);
+    attackSliders[k]->setVisible(true);
+    releaseSliders[k]->setVisible(true);
+  }
 }
