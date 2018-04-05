@@ -99,13 +99,17 @@ void rsMultiBandSplitter<TSig, TPar>::insertBand(int index, TPar splitFrequency)
   splitter->setOmega(TPar(2*PI)*splitFrequency/sampleRate);
   rsInsert(splitters,  splitter,       index);
   rsInsert(splitFreqs, splitFrequency, index);
+  numActiveBands++;
 }
 
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::removeBand(int index, bool mergeWithRightNeighbour)
 {
+  numActiveBands--;
   rsRemove(splitters,  index);
   rsRemove(splitFreqs, index);
+
+
   // maybe we need to update a splitFreq?
 }
 

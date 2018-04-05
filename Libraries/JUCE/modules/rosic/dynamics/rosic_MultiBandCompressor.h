@@ -77,9 +77,9 @@ public:
     splitterL.processSampleFrame(*inL, &tmpL[0]);
     splitterR.processSampleFrame(*inR, &tmpR[0]);
 
-    //// new:
-    //rsFloat64x2 in(*inL, *inR);
-    //splitter.processSampleFrame(in, &tmp[0]);
+    // new:
+    rsFloat64x2 in(*inL, *inR);
+    splitter.processSampleFrame(in, &tmp[0]);
   }
 
   /** Recombines the bands from our member arrays tmpL, tmpR into the outputs. Subclasses are 
@@ -95,12 +95,12 @@ public:
       *outR += tmpR[k];
     }
 
-    //// new:
-    //rsFloat64x2 out(0, 0);
-    //for(int k = 0; k < numBands; k++)
-    //  out += tmp[k];
-    //*outL = out[0];
-    //*outR = out[1];
+    // new:
+    rsFloat64x2 out(0, 0);
+    for(int k = 0; k < numBands; k++)
+      out += tmp[k];
+    *outL = out[0];
+    *outR = out[1];
   }
 
   /** Resets the states of the band-splitting filters. */
@@ -113,10 +113,12 @@ protected:
 
   /** Returns pointer to the output of k-th band for left channel (supposed to be used by subclass
   to access individual band signals after splitting). */
-  inline double* getLeft( int bandIndex) { return &tmpL[bandIndex]; }
+  //inline double* getLeft( int bandIndex) { return &tmpL[bandIndex]; }
+  inline double* getLeft( int bandIndex) { return &tmp[bandIndex][0]; }
 
   /** Like getLeft, but for right channel. */
-  inline double* getRight(int bandIndex) { return &tmpR[bandIndex]; }
+  //inline double* getRight(int bandIndex) { return &tmpR[bandIndex]; }
+  inline double* getRight(int bandIndex) { return &tmp[bandIndex][1]; }
 
 
 
@@ -206,7 +208,7 @@ INLINE void rsMultiBandCompressor::getSampleFrameStereo(double *inOutL, double *
   for(int k = 0; k < numBands; k++)  // compress individual bands
   {
     //compressors[k]->getSampleFrameStereo(&tmpL[k], &tmpR[k]);
-    compressors[k]->getSampleFrameStereo(getLeft(k), getRight(k));
+    //compressors[k]->getSampleFrameStereo(getLeft(k), getRight(k));
   }
   recombine(inOutL, inOutR);
 }

@@ -209,7 +209,7 @@ protected:
   TPar sampleRate = 44100;
 
   int mode = ACCUMULATE_INTO_HIGHPASS;
-  int numActiveBands = 1;
+  int numActiveBands = 1; // make sure, that this is always right - or better: get rid of it
 
 };
 
