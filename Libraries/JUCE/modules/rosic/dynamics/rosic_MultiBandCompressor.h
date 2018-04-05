@@ -111,7 +111,7 @@ protected:
   /** Initializes our indices array from 0...maxNumBands-1. */
   //void initIndices();
 
-  /** Returns pointer to the output of k-th band for left channel (supposed to bew used by subclass
+  /** Returns pointer to the output of k-th band for left channel (supposed to be used by subclass
   to access individual band signals after splitting). */
   inline double* getLeft( int bandIndex) { return &tmpL[bandIndex]; }
 

@@ -106,6 +106,7 @@ void rsMultiBandSplitter<TSig, TPar>::removeBand(int index, bool mergeWithRightN
 {
   rsRemove(splitters,  index);
   rsRemove(splitFreqs, index);
+  // maybe we need to update a splitFreq?
 }
 
 template<class TSig, class TPar>

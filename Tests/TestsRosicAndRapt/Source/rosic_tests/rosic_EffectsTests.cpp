@@ -125,17 +125,51 @@ bool rotes::testMultiComp()
   rosic::rsMultiBandCompressor mbc;
   double tol = 1.e-14;
 
-  //result &= mbc.getNumberOfBands() == 1;
+  result &= mbc.getNumberOfBands() == 1;
+  result &= testInOutEqual(mbc, N, tol);
+
+  mbc.insertBand(0, 8000.0);  // maybe pass only the frequency, not the index, 
+                              // maybe rename addSplit, maybe define splitters in terms of the 
+                              // highpass freq (allows to have 0 freq, when numBands == 1)
+
+  result &= mbc.getNumberOfBands() == 2;
+  result &= testInOutEqual(mbc, N, tol);
+
+  mbc.insertBand(0, 4000.0);
+  result &= mbc.getNumberOfBands() == 3;
+  result &= testInOutEqual(mbc, N, tol);
+
+
+  mbc.insertBand(0, 2000.0);
+  result &= mbc.getNumberOfBands() == 4;
+  result &= testInOutEqual(mbc, N, tol);
+
+  mbc.insertBand(0, 1000.0);
+  result &= mbc.getNumberOfBands() == 5;
+  result &= testInOutEqual(mbc, N, tol);
+
+  mbc.insertBand(0, 500.0);
+  result &= mbc.getNumberOfBands() == 6;
+  result &= testInOutEqual(mbc, N, tol);
+
+  mbc.insertBand(0, 250.0);
+  result &= mbc.getNumberOfBands() == 7;
+  result &= testInOutEqual(mbc, N, tol);
+
+  mbc.insertBand(0, 125.0);
+  result &= mbc.getNumberOfBands() == 8;
+  result &= testInOutEqual(mbc, N, tol);
+
+  mbc.insertBand(0, 62.5);
+  result &= mbc.getNumberOfBands() == 9;
   result &= testInOutEqual(mbc, N, tol);
 
   // todo: 
-  // rsBandSplitter:
-  //  -remove setNumberOfbands, setNumberOfActiveBands, addBand
-  //  -implement insertBand, removeBand
-  // rsMultiBandEffect:
-  //  -implement insertBand, removeBand
-  // rsMultiBandCompressor:
-  //  -override insertBand, removeBand
+  // -use loop for adding bands 
+  // -test removing bands (also using a loop)
+
+
+
 
   return result;
 }

@@ -40,19 +40,24 @@ void rsMultiBandEffect::setNumberOfBands(int newNumber)
 
 void rsMultiBandEffect::insertBand(int i, double splitFreq)
 {
-  //if(numBands == maxNumBands)
-  //  return; // maybe return false?
-
-  //numBands++;
-
-  // increment number of active bands N
-  // shift all bands from i to N one position up in the array
-  // set frequency of band i to the splitFreq
+  numBands++;
+  splitter.insertBand(i, splitFreq);
+  splitterL.insertBand(i, splitFreq);
+  splitterR.insertBand(i, splitFreq);
+  tmp.resize(numBands);
+  tmpL.resize(numBands);
+  tmpR.resize(numBands);
 }
 
 void rsMultiBandEffect::removeBand(int i, bool mergeRight)
 {
-
+  numBands--;
+  splitter.removeBand(i, mergeRight);
+  splitterL.removeBand(i, mergeRight);
+  splitterR.removeBand(i, mergeRight);
+  tmp.resize(numBands);
+  tmpL.resize(numBands);
+  tmpR.resize(numBands);
 }
 
 void rsMultiBandEffect::setSplitMode(int newMode)
@@ -72,6 +77,11 @@ void rsMultiBandEffect::setSplitFrequency(int bandIndex, double newFrequency)
 void rsMultiBandEffect::initBands()
 {
   numBands = 1;
+
+  splitter.setNumberOfActiveBands(numBands);
+  splitterL.setNumberOfActiveBands(numBands);
+  splitterR.setNumberOfActiveBands(numBands);
+
   tmp.resize(numBands);
   tmpL.resize(numBands);
   tmpR.resize(numBands);
