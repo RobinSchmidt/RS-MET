@@ -1,5 +1,7 @@
 rsMultiBandEffect::rsMultiBandEffect()
 {
+  initBands();
+
   /*
   tmpL.resize(maxNumBands);
   tmpR.resize(maxNumBands);
@@ -67,6 +69,14 @@ void rsMultiBandEffect::setSplitFrequency(int bandIndex, double newFrequency)
   splitterR.setSplitFrequency(bandIndex, newFrequency);
 }
 
+void rsMultiBandEffect::initBands()
+{
+  numBands = 1;
+  tmp.resize(numBands);
+  tmpL.resize(numBands);
+  tmpR.resize(numBands);
+}
+
 double rsMultiBandEffect::getDecibelsAt(int index, double frequency)
 {
   return 0; // not yet implemented
@@ -91,15 +101,12 @@ void rsMultiBandEffect::initIndices()
 
 rsMultiBandCompressor::rsMultiBandCompressor() 
 {
-  compressors.resize(getNumberOfBands());      // should be initially 1
-  for(size_t k = 0; k < compressors.size(); k++)
-    compressors[k] = new rosic::Compressor;
+  initBands();
 }
 
 rsMultiBandCompressor::~rsMultiBandCompressor()
 {
-  for(size_t k = 0; k < compressors.size(); k++)
-    delete compressors[k];
+  clearCompressors();
 }
 
 void rsMultiBandCompressor::setSampleRate(double newSampleRate)
@@ -144,9 +151,25 @@ void rsMultiBandCompressor::removeBand(int i, bool mergeRight)
   // maybe adjust splitFreq of splitter i or i-1?
 }
 
+void rsMultiBandCompressor::initBands()
+{
+  rsMultiBandEffect::initBands();
+  clearCompressors();
+  compressors.resize(getNumberOfBands());      // should be initially 1
+  for(size_t k = 0; k < compressors.size(); k++)
+    compressors[k] = new rosic::Compressor;
+}
+
 void rsMultiBandCompressor::reset()
 {
   rsMultiBandEffect::reset();
   for(size_t k = 0; k < compressors.size(); k++)
     compressors[k]->reset();
+}
+
+void rsMultiBandCompressor::clearCompressors()
+{
+  for(size_t k = 0; k < compressors.size(); k++)
+    delete compressors[k];
+  compressors.resize(0);
 }

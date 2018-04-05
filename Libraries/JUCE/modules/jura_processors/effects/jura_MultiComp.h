@@ -11,11 +11,17 @@ class JUCE_API MultiBandEffectObserver
 
 public:
 
+  /** Called after a new band was inserted. */
   virtual void bandWasInserted(MultiBandEffect* mbe, int index) = 0;
 
+  /** Called before a band will be removed. */
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) = 0;
 
+  /** Called after another band was selected. */
   virtual void bandWasSelected(MultiBandEffect* mbe, int index) = 0;
+
+  /** Called after the state was completely changed, for example due to preset recall. */
+  //virtual void totalRefreshNeeded(MultiBandEffect* mbe);
 
 };
 

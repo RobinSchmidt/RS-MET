@@ -38,10 +38,16 @@ public:
   void removeBand(int index, bool mergeWithRightNeighbour = false);
   // not yet implemented
 
+  /** Initializes the splitter and array for splitter output. After init, the MultiBandEffect will 
+  have one single band. */
+  void initBands();
+
 
   void setSplitMode(int newMode);
 
   void setSplitFrequency(int bandIndex, double newFrequency);
+
+
 
   //---------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -168,6 +174,8 @@ public:
 
   void removeBand(int index, bool mergeWithRightNeighbour = false);
 
+  void initBands();
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
@@ -179,6 +187,9 @@ public:
   //===============================================================================================
 
 protected:
+
+  /** Clears our "compressors" array. */
+  void clearCompressors();
 
   std::vector<Compressor*> compressors;
 
