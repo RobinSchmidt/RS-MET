@@ -112,9 +112,14 @@ public:
   /** Returns a pointer to our core DSP object. */
   rosic::rsMultiBandEffect* getCore() { return core; }
 
+
+  // debug functions:
+
   /** Returns true, if the splitting frequencies between the bands are in (strictly) increasing 
   order. */
   bool areBandsInIncreasingOrder(bool strictly = false);
+
+
 
 protected:
 
@@ -189,6 +194,45 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandPlotEditor)
 };
 
+
+
+//=================================================================================================
+
+/** Experimental datastructure to hold the parameters of a single band of a multiband 
+compressor.*/
+
+class JUCE_API BandCompParameterSet // public BandParameterSet (todo:...has only freq param)
+{
+
+public:
+
+  BandCompParameterSet(rosic::rsMultiBandCompressor* core);
+  virtual ~BandCompParameterSet();
+
+  virtual void setBandIndex(int newIndex);
+   // should update bandIndex, names of the parameters and callbacks
+
+  int getBandIndex() const { return bandIndex; }
+
+
+  // callback target functions:
+  void setSplitFreq(double newFreq)    { compCore->setSplitFrequency(bandIndex, newFreq);    }
+  void setThreshold(double newThresh)  { compCore->setThreshold(     bandIndex, newThresh);  }
+  void setRatio(    double newRatio)   { compCore->setRatio(         bandIndex, newRatio);   } 
+  void setAttack(   double newAttack)  { compCore->setAttackTime(    bandIndex, newAttack);  } 
+  void setRelease(  double newRelease) { compCore->setReleaseTime(   bandIndex, newRelease); } 
+
+  //void dummyCallback(double newValue) {} // used when bandIndex is set to -1
+
+protected:
+
+  Parameter *freq, *thresh, *ratio, *att, *rel; 
+
+  int bandIndex = -1;
+  rosic::rsMultiBandCompressor* compCore;
+
+};
+
 //=================================================================================================
 
 /** Multiband compressor with up to 16 bands. */
@@ -228,7 +272,11 @@ public:
 
 protected:
 
+  //bool checkParameterNames
+
   rosic::rsMultiBandCompressor multiCompCore;
+
+  std::vector<BandCompParameterSet*> bandParamSets; // not yet used
 
   int numCompParamSets = 0;
 
@@ -264,6 +312,7 @@ class MultiCompModuleEditor : public AudioModuleEditor, public RComboBoxObserver
 public:
 
   MultiCompModuleEditor(MultiCompAudioModule* multiCompModuleToEdit);
+  virtual ~MultiCompModuleEditor();
 
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
 

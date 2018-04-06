@@ -418,10 +418,17 @@ MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModu
 {
   ScopedLock scopedLock(*lock);
   multiCompModule = multiCompModuleToEdit;
+  multiCompModule->registerMultiBandObserver(this);
+
   //setHeadlineText("MultiComp");
   createWidgets();
   updateWidgetVisibility();
   setSize(595, 301);
+}
+
+MultiCompModuleEditor::~MultiCompModuleEditor()
+{
+  multiCompModule->deRegisterMultiBandObserver(this);
 }
 
 void MultiCompModuleEditor::createWidgets()
@@ -533,7 +540,7 @@ void MultiCompModuleEditor::resized()
   for(int k = 0; k < multiCompModule->getNumBands(); k++)
   {
     y = plotEditor->getBottom() + 4;
-    splitFreqSliders[k]->setBounds(x, y, w, h); y += d;
+    splitFreqSliders[k]->setBounds(x, y, w, h); y += d; // maybe position them below the splitModeBox
     thresholdSliders[k]->setBounds(x, y, w, h); y += d;
     ratioSliders[k]    ->setBounds(x, y, w, h); y += d;
     attackSliders[k]   ->setBounds(x, y, w, h); y += d;
