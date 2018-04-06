@@ -85,6 +85,8 @@ void MultiBandEffect::removeSplitFreqParam(int i)
 
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 {
+  if(bandIndex < 0)  return;  // kludge
+
   // we limit the new splitFreq such that bands remain ordered with ascending frequencies
   int numBands = getNumBands();
   if(bandIndex < getNumBands()-1) {
@@ -161,7 +163,9 @@ MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
   : module(moduleToEdit)
 
 {
-  module->addChangeListener(this);
+  module->addChangeListener(this); // obsolete?
+  module->registerMultiBandObserver(this);
+
   core = module->getCore();
 
   freqRespPlot = new rsFunctionPlot;
@@ -176,7 +180,8 @@ MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
 
 MultiBandPlotEditor::~MultiBandPlotEditor()
 {
-  module->removeChangeListener(this);
+  module->removeChangeListener(this); // obsolete?
+  module->registerMultiBandObserver(this);
   delete bandPopup;
 }
 
@@ -241,16 +246,19 @@ void MultiBandPlotEditor::paintOverChildren(Graphics& g)
 
   // highlight rectangle of selected band:
   int selected = module->getSelectedBand();
-  float x1 = 0.f;
-  float x2 = (float) getWidth();
-  if(selected > 0)
-    x1 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(selected-1));
-  if(selected < numBands-1)
-    x2 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(selected));
-  //g.setColour(Colours::red.withAlpha(0.25f));
-  g.setColour(Colours::lightblue.withAlpha(0.25f)); // preliminary
-  //g.setColour(Colours::magenta.withAlpha(0.25f));
-  g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
+  if(selected >= 0)
+  {
+    float x1 = 0.f;
+    float x2 = (float)getWidth();
+    if(selected > 0)
+      x1 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(selected-1));
+    if(selected < numBands-1)
+      x2 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(selected));
+    //g.setColour(Colours::red.withAlpha(0.25f));
+    g.setColour(Colours::lightblue.withAlpha(0.25f)); // preliminary
+    //g.setColour(Colours::magenta.withAlpha(0.25f));
+    g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
+  }
 
 
   // draw vertical lines at split frequencies:

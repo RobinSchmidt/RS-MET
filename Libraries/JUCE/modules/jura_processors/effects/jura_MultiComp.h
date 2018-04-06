@@ -126,8 +126,7 @@ protected:
 
   rosic::rsMultiBandEffect* core = nullptr;
 
-  //int maxNumBands  =  0;  // assigned in constructor
-  int selectedBand =  0;  // -1 is code for "None"
+  int selectedBand =  -1;  // -1 is code for "None"
 
   std::vector<Parameter*> splitFreqParams;
 
@@ -221,11 +220,11 @@ public:
   virtual void reset() override;
   AudioModuleEditor* createEditor() override;
 
-  // target functions for the per-band parameter callbacks:
-  void setThreshold(double newThreshold) { multiCompCore.setThreshold(     selectedBand, newThreshold); }
-  void setRatio(    double newRatio)     { multiCompCore.setRatio(         selectedBand, newRatio);     }
-  void setAttack(   double newAttack)    { multiCompCore.setAttackTime(    selectedBand, newAttack);    }
-  void setRelease(  double newRelease)   { multiCompCore.setReleaseTime(   selectedBand, newRelease);   }
+  // target functions for the per-band parameter callbacks (the "if"s are kludgy):
+  void setThreshold(double newThreshold) { if(selectedBand >= 0) multiCompCore.setThreshold(     selectedBand, newThreshold); }
+  void setRatio(    double newRatio)     { if(selectedBand >= 0) multiCompCore.setRatio(         selectedBand, newRatio);     }
+  void setAttack(   double newAttack)    { if(selectedBand >= 0) multiCompCore.setAttackTime(    selectedBand, newAttack);    }
+  void setRelease(  double newRelease)   { if(selectedBand >= 0) multiCompCore.setReleaseTime(   selectedBand, newRelease);   }
 
 protected:
 
