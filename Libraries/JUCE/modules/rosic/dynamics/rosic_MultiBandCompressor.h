@@ -52,6 +52,7 @@ public:
 
   /** Returns the upper cutoff frequency for the band with given index. */
   double getSplitFrequency(int index) { return splitter.getSplitFrequency(index); }
+    // maybe the lower (highpass) frequency would be better?
 
   /** Returns the magnitude response in decibels for the band with given index at the given 
   frequency. */

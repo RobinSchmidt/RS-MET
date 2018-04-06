@@ -18,6 +18,8 @@ void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
   addObservedParameter(p);
   p->setValueChangeCallback<rosic::rsMultiBandEffect>(
     core, &rosic::rsMultiBandEffect::setSplitMode);
+
+  createSplitFreqParams();
 }
 
 void MultiBandEffect::parameterChanged(Parameter* p)
@@ -47,6 +49,18 @@ void MultiBandEffect::selectBand(int bandToSelect, bool sendNotification)
   selectedBand = bandToSelect; 
   if(sendNotification)
     sendBandSelectNotification(selectedBand);
+}
+
+void MultiBandEffect::createSplitFreqParams()
+{
+  // clearSlpitFreqParams(); // ...maybe later
+  size_t numParams = splitFreqParams.size();
+  size_t numBands = getNumBands();
+  while(numParams < numBands) {
+    addSplitFreqParam((int)numParams, getSplitFreq((int)numParams));
+    numParams++; }
+
+  jassert(areBandsInIncreasingOrder(false)); // for debug
 }
 
 void MultiBandEffect::addSplitFreqParam(int index, double freq)
@@ -208,10 +222,14 @@ void MultiBandPlotEditor::mouseDown(const MouseEvent& e)
   if(e.mods.isLeftButtonDown()) {
     // select band whose rectangle contains the mouse-event:
     int index = module->getBandContainingFrequency(freqAtMouse);
-    Parameter* p = module->getParameterByName("SelectedBand");
-    p->setValue(index, true, true);
-    // todo: maybe de-select, if the click was in the currently selected band, so we can have no 
-    // selection
+    if(index == module->getSelectedBand())
+      module->selectBand(-1, true); // de-select, when a band is clicked again
+    else
+      module->selectBand(index, true);
+
+    // old (we don't have a Parameter for this anymore):
+    //Parameter* p = module->getParameterByName("SelectedBand");
+    //p->setValue(index, true, true);
   }
   else if(e.mods.isRightButtonDown())
     openRightClickMenu();
@@ -302,9 +320,13 @@ void MultiCompAudioModule::removeBand(int i, bool mergeWithRightNeighbour, bool 
 
 void MultiCompAudioModule::createBandParams()
 {
-  // todo: add a parameter set (freq, threshold, ratio, etc.) for each of the bands 
-
-  int dummy = 0;
+  // add a parameter set (freq, threshold, ratio, etc.) for each of the bands 
+  createSplitFreqParams(); 
+  while(numCompParamSets < getNumBands())
+    addCompressionParams((int)numCompParamSets); 
+  
+  // is the index right? maybe we nee to check of each index, if a parameter set for that index 
+  // exists? ...when removing bands the parameter indices are not updated...that is wrong...
 }
 
 void MultiCompAudioModule::addCompressionParams(int i)
@@ -331,6 +353,8 @@ void MultiCompAudioModule::addCompressionParams(int i)
   p = new Param("Release" + idxStr, 0.1, 1000.0, 100.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setRelease);
+
+  numCompParamSets++;
 }
 
 void MultiCompAudioModule::removeCompressionParams(int i)
@@ -340,6 +364,8 @@ void MultiCompAudioModule::removeCompressionParams(int i)
   removeParameter("Ratio"     + idxStr, true);
   removeParameter("Attack"    + idxStr, true);
   removeParameter("Release"   + idxStr, true);
+
+  numCompParamSets++;
 }
 
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)

@@ -85,6 +85,7 @@ public:
   virtual void removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification);
   virtual void selectBand(int bandToSelect, bool sendNotification);
 
+  void createSplitFreqParams();
   void addSplitFreqParam(int index, double freq);
   void removeSplitFreqParam(int index);
 
@@ -98,6 +99,9 @@ public:
 
   /** Returns a pointer to the parameter for the splitting frequency with given index. */
   Parameter* getSplitFreqParam(int bandIndex);
+
+  /** Returns the upper cutoff frequency for the band with given index. */
+  double getSplitFreq(int bandIndex) const { return core->getSplitFrequency(bandIndex); }
 
 
   int getSelectedBand() const { return selectedBand; }
@@ -226,6 +230,8 @@ public:
 protected:
 
   rosic::rsMultiBandCompressor multiCompCore;
+
+  int numCompParamSets = 0;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiCompAudioModule)
 };

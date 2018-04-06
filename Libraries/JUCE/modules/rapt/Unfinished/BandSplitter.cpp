@@ -43,6 +43,9 @@ void rsMultiBandSplitter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::setSplitFrequency(int bandIndex, TPar newFreq)
 {
+  if(bandIndex <= getNumActiveBands()-1)
+    return;  // a bit kludgy to avoid crash on MultiComp startup
+
   splitFreqs[bandIndex] = newFreq;
   splitters[bandIndex]->setOmega(TPar(2*PI)*newFreq/sampleRate);
 }
