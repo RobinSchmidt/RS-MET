@@ -940,15 +940,24 @@ void CompShaperModuleEditor::resized()
 //-------------------------------------------------------------------------------------------------
 // Compressor:
 
-CompressorAudioModule::CompressorAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeCompressor *newCompressorToWrap)
+CompressorAudioModule::CompressorAudioModule(CriticalSection *newPlugInLock, 
+  rosic::SoftKneeCompressor *newCompressorToWrap)
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
-  jassert( newCompressorToWrap != NULL ); // you must pass a valid rosic-object
-  wrappedCompressor = newCompressorToWrap;
+  if(newCompressorToWrap != nullptr)
+    wrappedCompressor = newCompressorToWrap;
+  else {
+    wrappedCompressor = new rosic::SoftKneeCompressor;
+    wrappedCompressorIsOwned = true; }
   setModuleTypeName("Compressor");
   createStaticParameters();
+}
+
+CompressorAudioModule::~CompressorAudioModule()
+{
+  if(wrappedCompressorIsOwned)
+    delete wrappedCompressor;
 }
 
 void CompressorAudioModule::createStaticParameters()

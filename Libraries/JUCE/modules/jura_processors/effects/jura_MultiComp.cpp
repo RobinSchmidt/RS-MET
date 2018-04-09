@@ -1,8 +1,20 @@
 MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
+  , perBandModuleFactory(lockToUse)
 {
-  //ScopedLock scopedLock(*lock);
+  ScopedLock scopedLock(*lock);
+
+  // register the module types that can be used per band (maybe factor out):
+  typedef CriticalSection* CS;
+  typedef AudioModule* AM;
+  CS cs = lock;
+  AudioModuleFactory& f = perBandModuleFactory;
+
+  juce::String s = "";
+  f.registerModuleType([](CS cs)->AM { return new CompressorAudioModule(cs); }, s, "Compressor");
+  //f.registerModuleType([](CS cs)->AM { return new FuncShaperAudioModule(cs); }, s, "FuncShaper");
+  // ...
 }
 
 void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
@@ -567,3 +579,49 @@ void MultiCompModuleEditor::updateWidgetVisibility()
     releaseSliders[k]->setVisible(true);
   }
 }
+
+/*
+some thoughts:
+
+MultiBandEffect baseclass:
+-each band except the last has a split-freq parameter (for convenience, the last may also have one
+ but that is just a dummy - and may need a dummy callback target)
+-split-freq parameters are managed in the MultiBandEffect baseclass, this class is also responsible
+ for keeping the constraint of ascending split-freqs
+-when a band is inserted, all split-freq params above the position of the new band need to be 
+ renamed (say from SplitFreq3 to SplitFreq4) and their callbacks must be updated (using a lamda 
+ function that calls the setSplitFreq function of the core with an appropriate band index)
+-when a band is removed, all split-freq params above the removed need to be renamed (splitFreq4 -> 
+ SplitFreq3) and callbacks must be updated
+-when a parameter is renamed because of insert/remove actions, its widget should reflect that 
+ (respond parameterNameChanged callback?)
+-the MultiBandPlot accesses the split-freq parameters (for setting and getting)
+
+MultiComp subclass:
+-each band has a set of compression parameters (Threshold, Ratio, Attack, Release)
+-when a band is inserted or removed, similar renamings and callback reassignments as for the 
+ split-freq parameters have to take place - for this, we override insertBand and removeBand, call 
+ the baseclass code there and then do the additional updates
+ -maybe these updates can be done in BandCompParameterSet::setBandIndex
+ -or maybe a full single-band compressor AudioModule (with its own parameter set and editor) can be 
+  created for each band compressor? ...that would be great!
+ 
+-maybe the MultiBandEffect class should hold an array std::vector<AudioModule*> perBandModules
+-MultiComp would then override insertBand/removeBand and create a new CompressorAudioModule for 
+ each band
+-the wrapped rosic::Compressor should not be owned by the jura::Compressor
+-a class MultiBandEditor should show the sub-editor of the currently selected per-band module
+-the renamings in inserBand/removeBand would then apply to whole modules
+-it even could be delegated to MultiBandEffect baseclass: updateNames(String& effectName, int index)
+-then, callbacks would not have to re-assigned
+
+OR: templatize the MultiBandEffect class on the type of the effect such that MultiBandCompressor 
+ just becomes a template instantiation MultiBandEffect<Compressor>
+
+
+
+
+
+
+
+*/

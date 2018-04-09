@@ -240,11 +240,14 @@ protected:
 class CompressorAudioModule : public ModulatableAudioModule
 {
 public:
-  CompressorAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeCompressor *newCompressorToWrap);
+  CompressorAudioModule(CriticalSection *newPlugInLock, 
+    rosic::SoftKneeCompressor *newCompressorToWrap = nullptr);
+  virtual ~CompressorAudioModule();
   juce_UseDebuggingNewOperator;
 protected:
   virtual void createStaticParameters();
   rosic::SoftKneeCompressor *wrappedCompressor;
+  bool wrappedCompressorIsOwned = false;
 };
 
 class CompressorModuleEditor : public AudioModuleEditor

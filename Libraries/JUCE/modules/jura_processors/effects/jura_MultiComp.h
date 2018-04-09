@@ -60,9 +60,21 @@ public:
   MultiBandEffect(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr, 
     ModulationManager* modManagerToUse = nullptr);
 
+  /*
+  // overriden from AudioModule baseclass:
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
+  virtual void processStereoFrame(double *left, double *right) override;
+  virtual void setSampleRate(double newSampleRate) override;
+  virtual void reset() override;
+  AudioModuleEditor* createEditor() override;
+  */
+
+
+
   /** Subclasses should call this *once* in their constructor with a pointer to the concrete 
   multiband effect (subclass). This will also create the splitting-related parameters */
   void setEffectCore( rosic::rsMultiBandEffect* effectCore);
+    // obsolete
 
   /** Creates the parameters related to the band-splitting. Called from setEffectCore. */
   //virtual void createSplittingParameters();
@@ -83,8 +95,12 @@ public:
 
   virtual void insertBand(int index, double splitFrequency, bool sendNotification); 
   virtual void removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification);
+  // ...must rename split-freq parameters and re-assign their callbacks
+
+
   virtual void selectBand(int bandToSelect, bool sendNotification);
 
+  // get rid of these (handle in subclass):
   void createSplitFreqParams();
   void addSplitFreqParam(int index, double freq);
   void removeSplitFreqParam(int index);
@@ -99,6 +115,7 @@ public:
 
   /** Returns a pointer to the parameter for the splitting frequency with given index. */
   Parameter* getSplitFreqParam(int bandIndex);
+    // make purely virtual, override in MultiComp
 
   /** Returns the upper cutoff frequency for the band with given index. */
   double getSplitFreq(int bandIndex) const { return core->getSplitFrequency(bandIndex); }
@@ -127,15 +144,17 @@ protected:
   void sendBandRemoveNotification(int index);
   void sendBandSelectNotification(int index);
 
-
-
-  rosic::rsMultiBandEffect* core = nullptr;
-
   int selectedBand =  -1;  // -1 is code for "None"
-
-  std::vector<Parameter*> splitFreqParams;
-
+  std::vector<Parameter*> splitFreqParams; 
   std::vector<MultiBandEffectObserver*> observers;
+
+  // todo: don't use this anymore:
+  rosic::rsMultiBandEffect* core = nullptr; // ...or have a direct member and use only the splitting
+                                            // functionality
+
+  // ...instead use that:
+  AudioModuleFactory perBandModuleFactory;
+  std::vector<AudioModule*> perBandModules;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffect)
 };
@@ -186,8 +205,6 @@ protected:
     ADD_BAND = 1,
     REMOVE_BAND
   };
-
-
 
   double freqAtMouse = 0;
 
@@ -248,6 +265,7 @@ public:
 
   virtual void insertBand(int index, double splitFrequency, bool sendNotification) override; 
   virtual void removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification) override;
+    // ...must rename band compression parameters and re-assign callbacks
 
 
   void createBandParams();
