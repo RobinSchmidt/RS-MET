@@ -5,6 +5,8 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
 {
   ScopedLock scopedLock(*lock);
 
+  setModuleTypeName("MultiBandEffect");
+
   // register the module types that can be used per band (maybe factor out):
   typedef CriticalSection* CS;
   typedef AudioModule* AM;
@@ -15,10 +17,50 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
   f.registerModuleType([](CS cs)->AM { return new CompressorAudioModule(cs); }, s, "Compressor");
   //f.registerModuleType([](CS cs)->AM { return new FuncShaperAudioModule(cs); }, s, "FuncShaper");
   // ...
-
   setEffectType("Compressor");
+
+
+  // create parameters (factor out):
+  Parameter* p = new Parameter("SplitMode", 0.0, 2.0, 0.0, Parameter::STRING);
+  p->addStringValue("Steep Lowpass");
+  p->addStringValue("Steep Highpass");
+  //p->addStringValue("Binary Tree"); // doesn't work yet
+  addObservedParameter(p);
+  p->setValueChangeCallback<rosic::rsMultiBandEffect>(
+    &core, &rosic::rsMultiBandEffect::setSplitMode);
+  createSplitFreqParams();
 }
 
+void MultiBandEffect::processBlock(double **inOutBuffer, int numChannels, int numSamples)
+{
+
+}
+
+void MultiBandEffect::processStereoFrame(double *left, double *right)
+{
+
+}
+
+void MultiBandEffect::setSampleRate(double newSampleRate)
+{
+  core.setSampleRate(newSampleRate);
+  for(size_t i = 0; i < perBandModules.size(); i++)
+    perBandModules[i]->setSampleRate(newSampleRate);
+}
+
+void MultiBandEffect::reset()
+{
+  core.reset();
+  for(size_t i = 0; i < perBandModules.size(); i++)
+    perBandModules[i]->reset();;
+}
+
+AudioModuleEditor* MultiBandEffect::createEditor()
+{
+  return new MultiBandEffectEditor(this);
+}
+
+/*
 void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
 {
   ScopedLock scopedLock(*lock);
@@ -35,6 +77,7 @@ void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
 
   createSplitFreqParams();
 }
+*/
 
 void MultiBandEffect::setEffectType(const juce::String& typeString)
 {
@@ -55,7 +98,7 @@ void MultiBandEffect::parameterChanged(Parameter* p)
 
 void MultiBandEffect::insertBand(int index, double splitFrequency, bool sendNotification)
 {
-  core->insertBand(index, splitFrequency);
+  core.insertBand(index, splitFrequency);
   addSplitFreqParam(index, splitFrequency); // rename to insertSplitFreqParam
   insertBandEffect(index);
   if(sendNotification)
@@ -68,7 +111,7 @@ void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool s
     sendBandRemoveNotification(index);  // notify gui (for removing widgets)
   removeSplitFreqParam(index);
   removeBandEffect(index);
-  core->removeBand(index);
+  core.removeBand(index);
 }
 
 void MultiBandEffect::selectBand(int bandToSelect, bool sendNotification) 
@@ -117,14 +160,14 @@ void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
   // we limit the new splitFreq such that bands remain ordered with ascending frequencies
   int numBands = getNumBands();
   if(bandIndex < getNumBands()-1) {
-    double freqLimit = core->getSplitFrequency(bandIndex+1); // freq of right neighbour
+    double freqLimit = core.getSplitFrequency(bandIndex+1); // freq of right neighbour
     if(newFreq > freqLimit)
       getSplitFreqParam(bandIndex)->setValue(freqLimit, true, true);
     else
-      core->setSplitFrequency(bandIndex, newFreq);
+      core.setSplitFrequency(bandIndex, newFreq);
   }
   else
-    core->setSplitFrequency(bandIndex, newFreq); // topmost band has no limit
+    core.setSplitFrequency(bandIndex, newFreq); // topmost band has no limit
 
   // somehow, we must also make sure sure that the topmost band has a freq of 20000 (it's the 
   // highpass band and actually has not lowpass cutoff at all)
@@ -144,10 +187,10 @@ Parameter* MultiBandEffect::getSplitFreqParam(int bandIndex)
 
 int MultiBandEffect::getBandContainingFrequency(double freq)
 {
-  for(int i = 0; i < core->getNumberOfBands()-1; i++)
-    if(core->getSplitFrequency(i) > freq)
+  for(int i = 0; i < core.getNumberOfBands()-1; i++)
+    if(core.getSplitFrequency(i) > freq)
       return i;
-  return core->getNumberOfBands()-1;
+  return core.getNumberOfBands()-1;
 }
 
 std::vector<juce::String> MultiBandEffect::getAvailableEffectTypes()
@@ -165,8 +208,8 @@ bool isLess(double x, double y, bool strictly)
 
 bool MultiBandEffect::areBandsInIncreasingOrder(bool strictly)
 {
-  for(int i = 1; i < core->getNumberOfBands()-1; i++)
-    if(!isLess(core->getSplitFrequency(i-1), core->getSplitFrequency(i), strictly))
+  for(int i = 1; i < core.getNumberOfBands()-1; i++)
+    if(!isLess(core.getSplitFrequency(i-1), core.getSplitFrequency(i), strictly))
       return false;
   return true;
 }
@@ -431,7 +474,7 @@ MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse,
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("MultiComp");
-  MultiBandEffect::setEffectCore(&multiCompCore);
+  //MultiBandEffect::setEffectCore(&multiCompCore);
   createBandParams();
 }
 

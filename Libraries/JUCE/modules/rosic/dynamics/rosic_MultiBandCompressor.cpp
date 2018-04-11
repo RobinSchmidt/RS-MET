@@ -38,7 +38,7 @@ void rsMultiBandEffect::initBands()
   tmp.resize(1);
 }
 
-double rsMultiBandEffect::getDecibelsAt(int index, double frequency)
+double rsMultiBandEffect::getDecibelsAt(int index, double frequency) const
 {
   return 0; // not yet implemented
 }

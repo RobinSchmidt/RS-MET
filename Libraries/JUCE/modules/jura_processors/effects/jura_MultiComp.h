@@ -60,20 +60,19 @@ public:
   MultiBandEffect(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr, 
     ModulationManager* modManagerToUse = nullptr);
 
-  /*
+ 
   // overriden from AudioModule baseclass:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
   AudioModuleEditor* createEditor() override;
-  */
 
 
 
   /** Subclasses should call this *once* in their constructor with a pointer to the concrete 
   multiband effect (subclass). This will also create the splitting-related parameters */
-  void setEffectCore( rosic::rsMultiBandEffect* effectCore);
+  //void setEffectCore( rosic::rsMultiBandEffect* effectCore);
     // obsolete
 
   /** Sets the type of the effect that shall be applied to each band. The argument should be one of
@@ -122,11 +121,11 @@ public:
     // make purely virtual, override in MultiComp
 
   /** Returns the upper cutoff frequency for the band with given index. */
-  double getSplitFreq(int bandIndex) const { return core->getSplitFrequency(bandIndex); }
+  double getSplitFreq(int bandIndex) const { return core.getSplitFrequency(bandIndex); }
 
 
   int getSelectedBand() const { return selectedBand; }
-  int getNumBands()     const { return core->getNumberOfBands(); }
+  int getNumBands()     const { return core.getNumberOfBands(); }
   int getBandContainingFrequency(double freq);
 
 
@@ -135,7 +134,7 @@ public:
   std::vector<juce::String> getAvailableEffectTypes();
 
   /** Returns a pointer to our core DSP object. */
-  rosic::rsMultiBandEffect* getCore() { return core; }
+  rosic::rsMultiBandEffect* getCore() { return &core; }
 
 
   // debug functions:
@@ -165,8 +164,10 @@ protected:
   std::vector<MultiBandEffectObserver*> observers;
 
   // todo: don't use this anymore:
-  rosic::rsMultiBandEffect* core = nullptr; // ...or have a direct member and use only the splitting
-                                            // functionality
+  //rosic::rsMultiBandEffect* core = nullptr; // ...or have a direct member and use only the splitting
+  //                                          // functionality
+
+  rosic::rsMultiBandEffect core;
 
   // ...instead use that:
   AudioModuleFactory perBandModuleFactory;

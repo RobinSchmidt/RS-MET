@@ -521,7 +521,7 @@ void ToolChain::populateModuleFactory()
 
   s = "Dynamics";
   f.registerModuleType([](CS cs)->AM { return new LimiterAudioModule(cs);   }, s, "Limiter");
-  f.registerModuleType([](CS cs)->AM { return new MultiCompAudioModule(cs); }, s, "MultiComp");
+  //f.registerModuleType([](CS cs)->AM { return new MultiCompAudioModule(cs); }, s, "MultiComp");
 
   s = "Effects";
   f.registerModuleType([](CS cs)->AM { return new FuncShaperAudioModule(cs);   }, s, "FuncShaper");
@@ -533,6 +533,7 @@ void ToolChain::populateModuleFactory()
   //f.registerModuleType([](CS cs)->AM { return new PitchShifterAudioModule(cs); }, s, "PitchShifter");
   f.registerModuleType([](CS cs)->AM { return new QuadrifexAudioModule(cs);    }, s, "Quadrifex");
   //f.registerModuleType([](CS cs)->AM { return new DspWorkbenchAudioModule(cs); }, s, "DspWorkbench");
+  f.registerModuleType([](CS cs)->AM { return new MultiBandEffect(cs); }, s, "MultiBandEffect");
 
   s = "Analysis";
   f.registerModuleType([](CS cs)->AM { return new PhaseScope(cs); },               s, "Scope");

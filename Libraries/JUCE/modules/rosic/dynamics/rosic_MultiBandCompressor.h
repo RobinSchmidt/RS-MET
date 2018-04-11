@@ -51,12 +51,12 @@ public:
   //int getNumberOfBands() const { return numBands; }
 
   /** Returns the upper cutoff frequency for the band with given index. */
-  double getSplitFrequency(int index) { return splitter.getSplitFrequency(index); }
+  double getSplitFrequency(int index) const { return splitter.getSplitFrequency(index); }
     // maybe the lower (highpass) frequency would be better?
 
   /** Returns the magnitude response in decibels for the band with given index at the given 
   frequency. */
-  double getDecibelsAt(int index, double frequency);
+  double getDecibelsAt(int index, double frequency) const;
 
   //---------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -82,18 +82,17 @@ public:
     *outR = out[1];
   }
 
-  /** Resets the states of the band-splitting filters. */
-  void reset();
-
-protected:
-
-
   /** Returns pointer to the output of k-th band for left channel (supposed to be used by subclass
   to access individual band signals after splitting). */
   inline double* getLeft( int bandIndex) { return &tmp[bandIndex][0]; }
 
   /** Like getLeft, but for right channel. */
   inline double* getRight(int bandIndex) { return &tmp[bandIndex][1]; }
+
+  /** Resets the states of the band-splitting filters. */
+  void reset();
+
+protected:
 
 
   RAPT::rsMultiBandSplitter<rsFloat64x2, double> splitter;
