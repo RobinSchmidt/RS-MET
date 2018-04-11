@@ -237,18 +237,18 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // Compressor:
 
-class CompressorAudioModule : public ModulatableAudioModule
+class CompressorAudioModule : public ModulatableAudioModule // make baseclass DynamicsAudioModule
 {
 public:
   CompressorAudioModule(CriticalSection *newPlugInLock, 
     rosic::SoftKneeCompressor *newCompressorToWrap = nullptr);
   virtual ~CompressorAudioModule();
-  /*
+
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
   AudioModuleEditor* createEditor() override;
-  */
+
 protected:
   virtual void createStaticParameters();
   rosic::SoftKneeCompressor *wrappedCompressor;

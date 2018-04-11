@@ -231,15 +231,15 @@ void MultiBandEffect::sendBandSelectNotification(int index)
 void MultiBandEffect::insertBandEffect(int i)
 {
   AudioModule* m = perBandModuleFactory.createModule(effectTypeString);
-  // maybe we need to include the band-index in the module name, so it can be identified for
-  // automation and modulation
   insert(perBandModules, m, i);
+  updateBandModuleNames();
 }
 
 void MultiBandEffect::removeBandEffect(int i)
 {
   delete perBandModules[i];
   remove(perBandModules, i);
+  updateBandModuleNames();
 }
 
 void MultiBandEffect::clearBandEffects()
@@ -250,6 +250,14 @@ void MultiBandEffect::clearBandEffects()
     delete perBandModules[i];
   }
   perBandModules.clear();
+}
+
+void MultiBandEffect::updateBandModuleNames()
+{
+  for(int i = 0; i < perBandModules.size(); i++)
+    perBandModules[i]->setModuleName(effectTypeString + String(i+1));
+
+  // we need to update the splitFreq parameter names, too
 }
 
 //=================================================================================================

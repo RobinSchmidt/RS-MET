@@ -960,6 +960,26 @@ CompressorAudioModule::~CompressorAudioModule()
     delete wrappedCompressor;
 }
 
+void CompressorAudioModule::processStereoFrame(double *left, double *right)
+{
+  wrappedCompressor->getSampleFrameStereo(left, right);
+}
+
+void CompressorAudioModule::setSampleRate(double newSampleRate)
+{
+  wrappedCompressor->setSampleRate(newSampleRate);
+}
+
+void CompressorAudioModule::reset()
+{
+  wrappedCompressor->reset();
+}
+
+AudioModuleEditor* CompressorAudioModule::createEditor()
+{
+  return new CompressorModuleEditor(lock, this);
+}
+
 void CompressorAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
@@ -1110,11 +1130,13 @@ CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, C
   limitButton->setDescriptionField(infoField);
   limitButton->setClickingTogglesState(true);
 
+  /*
   addWidget( antiAliasButton = new RButton(juce::String(("AntiAlias"))) );
   antiAliasButton->assignParameter( moduleToEdit->getParameterByName(("AntiAlias")) );
   antiAliasButton->setDescription(juce::String(("AntiAliasing")));
   antiAliasButton->setDescriptionField(infoField);
   antiAliasButton->setClickingTogglesState(true);
+  */
 }
 
 void CompressorModuleEditor::resized()

@@ -140,6 +140,9 @@ protected:
   /** Removes all per-band effects. */
   void clearBandEffects();
 
+  /** Makes sure that the module for each band has the correct moduleName. */
+  void updateBandModuleNames();
+
 
   rosic::rsMultiBandEffect core;
 
