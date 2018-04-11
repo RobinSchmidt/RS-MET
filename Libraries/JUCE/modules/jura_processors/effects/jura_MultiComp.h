@@ -76,6 +76,10 @@ public:
   void setEffectCore( rosic::rsMultiBandEffect* effectCore);
     // obsolete
 
+  /** Sets the type of the effect that shall be applied to each band. The argument should be one of
+  the strings returned by getAvailableEffectTypes(). */
+  void setEffectType(const juce::String& typeString); 
+
   /** Creates the parameters related to the band-splitting. Called from setEffectCore. */
   //virtual void createSplittingParameters();
 
@@ -126,6 +130,10 @@ public:
   int getBandContainingFrequency(double freq);
 
 
+  /** Returns an array of strings of names of the available effect types. The elements of this 
+  array can be used as arguments for setEffectType. */
+  std::vector<juce::String> getAvailableEffectTypes();
+
   /** Returns a pointer to our core DSP object. */
   rosic::rsMultiBandEffect* getCore() { return core; }
 
@@ -144,6 +152,14 @@ protected:
   void sendBandRemoveNotification(int index);
   void sendBandSelectNotification(int index);
 
+  /** Inserts a new per band effect module to the array at the given index. */
+  void insertBandEffect(int index);
+
+  /** Removes a per band effect module from the array at the givne index (and deletes the 
+  object). */
+  void removeBandEffect(int index);
+
+
   int selectedBand =  -1;  // -1 is code for "None"
   std::vector<Parameter*> splitFreqParams; 
   std::vector<MultiBandEffectObserver*> observers;
@@ -155,6 +171,7 @@ protected:
   // ...instead use that:
   AudioModuleFactory perBandModuleFactory;
   std::vector<AudioModule*> perBandModules;
+  juce::String effectTypeString;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffect)
 };

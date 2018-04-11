@@ -82,6 +82,8 @@ public:
   used to select a module. */
   const std::vector<AudioModuleInfo>& getRegisteredModuleInfos() const { return moduleInfos; }
 
+  /** Returns an array containing the type strings of the registered module types. */
+  std::vector<String> getRegisteredModuleTypes() const;
 
 protected:
 

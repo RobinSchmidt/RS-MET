@@ -15,6 +15,8 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
   f.registerModuleType([](CS cs)->AM { return new CompressorAudioModule(cs); }, s, "Compressor");
   //f.registerModuleType([](CS cs)->AM { return new FuncShaperAudioModule(cs); }, s, "FuncShaper");
   // ...
+
+  setEffectType("Compressor");
 }
 
 void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
@@ -34,6 +36,17 @@ void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
   createSplitFreqParams();
 }
 
+void MultiBandEffect::setEffectType(const juce::String& typeString)
+{
+  if(typeString != effectTypeString)
+  {
+    effectTypeString = typeString;
+    // todo: 
+    // -replace modules in all pre-band slots with the new selected type
+    // -notify gui about that change, so it can replace the editors
+  }
+}
+
 void MultiBandEffect::parameterChanged(Parameter* p)
 {
   ModulatableAudioModule::parameterChanged(p);
@@ -43,7 +56,8 @@ void MultiBandEffect::parameterChanged(Parameter* p)
 void MultiBandEffect::insertBand(int index, double splitFrequency, bool sendNotification)
 {
   core->insertBand(index, splitFrequency);
-  addSplitFreqParam(index, splitFrequency);
+  addSplitFreqParam(index, splitFrequency); // rename to insertSplitFreqParam
+  insertBandEffect(index);
   if(sendNotification)
     sendBandInsertNotification(index);  // notify gui (for creating widgets)
 }
@@ -53,6 +67,7 @@ void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool s
   if(sendNotification)
     sendBandRemoveNotification(index);  // notify gui (for removing widgets)
   removeSplitFreqParam(index);
+  removeBandEffect(index);
   core->removeBand(index);
 }
 
@@ -135,6 +150,11 @@ int MultiBandEffect::getBandContainingFrequency(double freq)
   return core->getNumberOfBands()-1;
 }
 
+std::vector<juce::String> MultiBandEffect::getAvailableEffectTypes()
+{
+  return perBandModuleFactory.getRegisteredModuleTypes();
+}
+
 bool isLess(double x, double y, bool strictly)
 {
   if(strictly)
@@ -167,6 +187,18 @@ void MultiBandEffect::sendBandSelectNotification(int index)
 {
   for(size_t i = 0; i < observers.size(); i++)
     observers[i]->bandWasSelected(this, index);
+}
+
+void MultiBandEffect::insertBandEffect(int i)
+{
+  AudioModule* m = perBandModuleFactory.createModule(effectTypeString);
+  insert(perBandModules, m, i);
+}
+
+void MultiBandEffect::removeBandEffect(int i)
+{
+  delete perBandModules[i];
+  remove(perBandModules, i);
 }
 
 //=================================================================================================

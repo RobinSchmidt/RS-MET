@@ -28,3 +28,11 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type)
   jassertfalse;    // unknown module type requested
   return new NotFoundAudioModule(lock);
 }
+
+std::vector<String> AudioModuleFactory::getRegisteredModuleTypes() const
+{
+  std::vector<String> s;
+  for(size_t i = 0; i < moduleInfos.size(); i++)
+    s.push_back(moduleInfos[i].type);
+  return s;
+}
