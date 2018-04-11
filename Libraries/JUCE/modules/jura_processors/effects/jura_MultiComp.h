@@ -188,12 +188,8 @@ class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public Change
 
 public:
 
-
-
   MultiBandPlotEditor(jura::MultiBandEffect* multiBandEffectModuleToEdit);
   virtual ~MultiBandPlotEditor();
-
-
 
   //virtual void parameterChanged(Parameter* p) override;
   virtual void bandWasInserted(MultiBandEffect* mbe, int index) override;
@@ -227,6 +223,74 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandPlotEditor)
 };
+
+//=================================================================================================
+
+/** Editor for a generic mutiband effect. */
+
+class JUCE_API MultiBandEffectEditor : public AudioModuleEditor, public MultiBandEffectObserver
+{
+
+public:
+
+
+  MultiBandEffectEditor(MultiBandEffect* effect);
+  virtual ~MultiBandEffectEditor();
+
+  //virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
+  virtual void resized() override;
+
+  virtual void bandWasInserted(MultiBandEffect* mbe, int index) override;
+  virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
+  virtual void bandWasSelected(MultiBandEffect* mbe, int index) override;
+
+  virtual void insertBandEditor(int index);
+  virtual void removeBandEditor(int index);
+
+
+protected:
+
+  /** Makes currently required sub-editor not required editors invisible. */
+  virtual void updateEditorVisibility();
+
+  /** Creates the global (not per-band) widgets. */
+  virtual void createWidgets();
+
+  /** Creates the per-band sub editors, if necessarry. */
+  virtual void createBandEditors();
+
+  /** Deletes all the per-band su editors. */
+  virtual void clearBandEditors();
+
+
+  // widgets:
+  MultiBandPlotEditor* plotEditor;
+  std::vector<RSlider*> splitFreqSliders;
+  RComboBox *splitModeBox, *bandSelectBox, *effectSelectBox;
+
+
+  MultiBandEffect* effectToEdit;            // pointer to the edited multiband effect
+  std::vector<AudioModule*> perBandEditors; // sub editor array (one editor for each band)
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffectEditor)
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

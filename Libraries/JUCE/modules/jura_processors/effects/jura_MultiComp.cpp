@@ -346,6 +346,85 @@ void MultiBandPlotEditor::openRightClickMenu()
 
 //=================================================================================================
 
+MultiBandEffectEditor::MultiBandEffectEditor(MultiBandEffect* effect) : AudioModuleEditor(effect)
+{
+  ScopedLock scopedLock(*lock);
+  effectToEdit = effect;
+  effectToEdit->registerMultiBandObserver(this);
+  //setHeadlineText("MultiBandEffect");
+  createWidgets();
+  createBandEditors();
+  updateEditorVisibility();
+  setSize(595, 301);
+}
+
+MultiBandEffectEditor::~MultiBandEffectEditor()
+{
+  effectToEdit->deRegisterMultiBandObserver(this);
+  clearBandEditors();
+}
+
+void MultiBandEffectEditor::resized()
+{
+
+}
+
+void MultiBandEffectEditor::bandWasInserted(MultiBandEffect* mbe, int index)
+{
+
+}
+
+void MultiBandEffectEditor::bandWillBeRemoved(MultiBandEffect* mbe, int index)
+{
+
+}
+
+void MultiBandEffectEditor::bandWasSelected(MultiBandEffect* mbe, int index)
+{
+
+}
+
+void MultiBandEffectEditor::insertBandEditor(int index)
+{
+
+}
+
+void MultiBandEffectEditor::removeBandEditor(int index)
+{
+
+}
+
+void MultiBandEffectEditor::updateEditorVisibility()
+{
+
+}
+
+void MultiBandEffectEditor::createWidgets()
+{
+
+}
+
+void MultiBandEffectEditor::createBandEditors()
+{
+
+}
+
+void MultiBandEffectEditor::clearBandEditors()
+{
+
+}
+
+
+
+
+
+
+
+
+
+
+//=================================================================================================
+
 MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : MultiBandEffect(lockToUse,  metaManagerToUse, modManagerToUse)
