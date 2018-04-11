@@ -27,30 +27,16 @@ public:
 
 //=================================================================================================
 
-/** Baseclass for multiband effects. 
+/** A general multiband effect in which the type of the effect which should be applied to each band 
+can be selected. ...tbc
 
 todo: 
-
--ensure that the split frequencies are always sorted from low to high
--restrict ranges for the split-freqs according to the neighbours
- (maybe do these things in rosic::MultiBandEffect)
-OR: forget about that sorting and:
--let the user add remove bands via right-clcik context menu with items:
- -add: splits the band inside which the click occurred into two, settings are copied into the
-  new band
- -remove: deletes the band in which the click occurred - either the left or the right neighbour
-  can cover the range where the band was...so maybe have: merge with left / merge with right
- -the NumBands slider is useless then
- -the band selection menu is superfluous - maybe we should just display and ifo such as
-  Band: 2/5 when the 2nd of 5 bands is selected
- -we somehow need the ability to insert/remove bands in rosic::rsMultiBandEffect
-  void insertBand(int indexOfLeftNeighbour), void removeBand(int index, bool mergeWithRightNeighbour)
-  
-
--plot frequency responses: rosic::rsMultiBandEffect::getMagnitudeAt(index, freq)
-
-
-*/
+-check that the required split-freq parameters and their widgets are handled correctly
+-Compressor needs to override createEditor, process...
+-the per-band effects need the index in their name Compressor1, Compressor2, etc.
+-implement state recall
+-implement switching the type of effect
+-plot frequency responses: rosic::rsMultiBandEffect::getMagnitudeAt(index, freq) */
 
 class JUCE_API MultiBandEffect : public jura::ModulatableAudioModule, public ChangeBroadcaster
 {
@@ -226,7 +212,6 @@ class JUCE_API MultiBandEffectEditor : public AudioModuleEditor, public MultiBan
 
 public:
 
-
   MultiBandEffectEditor(MultiBandEffect* effect);
   virtual ~MultiBandEffectEditor();
 
@@ -237,11 +222,14 @@ public:
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
   virtual void bandWasSelected(MultiBandEffect* mbe, int index) override;
 
-  virtual void insertBandEditor(int index);
-  virtual void removeBandEditor(int index);
-
 
 protected:
+
+  /** Inserts a new per band effect editor for given index. */
+  virtual void insertBandEditor(int index);
+
+  /** Removes the per band effect editor at given index. */
+  virtual void removeBandEditor(int index);
 
   /** Makes currently required sub-editor not required editors invisible. */
   virtual void updateEditorVisibility();
@@ -255,11 +243,16 @@ protected:
   /** Deletes all the per-band sub editors. */
   virtual void clearBandEditors();
 
+  /** Sets up positions of all per band editors. */
+  virtual void positionBandEditors();
+
+  /** Sets up position of the band effect editor with given index. */
+  virtual void positionBandEditor(int index);
 
   // widgets:
   MultiBandPlotEditor* plotEditor;
+  RComboBox *effectSelectBox, *splitModeBox;
   std::vector<RSlider*> splitFreqSliders;
-  RComboBox *splitModeBox, *effectSelectBox;
 
 
   MultiBandEffect* effectToEdit;                  // pointer to the edited multiband effect
@@ -285,7 +278,8 @@ protected:
 
 
 
-
+// code below is obsolete, but we may want to do a dedicated MultiBandCompressor in which the 
+// threshold/ratio parameters can be adjusted from the plot
 
 //=================================================================================================
 

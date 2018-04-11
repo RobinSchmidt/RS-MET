@@ -243,25 +243,31 @@ public:
   CompressorAudioModule(CriticalSection *newPlugInLock, 
     rosic::SoftKneeCompressor *newCompressorToWrap = nullptr);
   virtual ~CompressorAudioModule();
-  juce_UseDebuggingNewOperator;
+  /*
+  virtual void processStereoFrame(double *left, double *right) override;
+  virtual void setSampleRate(double newSampleRate) override;
+  virtual void reset() override;
+  AudioModuleEditor* createEditor() override;
+  */
 protected:
   virtual void createStaticParameters();
   rosic::SoftKneeCompressor *wrappedCompressor;
   bool wrappedCompressorIsOwned = false;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CompressorAudioModule)
 };
 
 class CompressorModuleEditor : public AudioModuleEditor
 {
 public:
   CompressorModuleEditor(CriticalSection *newPlugInLock, CompressorAudioModule* newCompressorAudioModule);
-  virtual void resized();
-  juce_UseDebuggingNewOperator;
+  virtual void resized() override;
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
   ModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
     *outLevelSlider, *dryWetSlider, *thresholdSlider, *ratioSlider, *kneeSlider;
   RButton *autoGainButton, *limitButton, *antiAliasButton;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CompressorModuleEditor)
 };
 
 //-----------------------------------------------------------------------------------------------

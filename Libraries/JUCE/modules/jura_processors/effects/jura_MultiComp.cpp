@@ -4,7 +4,6 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
   , perBandModuleFactory(lockToUse)
 {
   ScopedLock scopedLock(*lock);
-
   setModuleTypeName("MultiBandEffect");
 
   // register the module types that can be used per band (maybe factor out):
@@ -407,7 +406,8 @@ MultiBandEffectEditor::MultiBandEffectEditor(MultiBandEffect* effect) : AudioMod
   createWidgets();
   createBandEditors();
   updateEditorVisibility();
-  setSize(595, 301);
+  //setSize(595, 301);
+  setSize(595, 420);
 }
 
 MultiBandEffectEditor::~MultiBandEffectEditor()
@@ -421,11 +421,12 @@ void MultiBandEffectEditor::resized()
   AudioModuleEditor::resized();
 
   int y = getPresetSectionBottom() + 4;
-  plotEditor->setBounds(0, y, getWidth(), getHeight()-110);
+  //plotEditor->setBounds(0, y, getWidth(), getHeight()-110); // 595 x 191 -> ideal
+  plotEditor->setBounds(0, y, getWidth(), 191);
   y = plotEditor->getBottom() + 4;
 
   int x = 4;
-  int w = getWidth() / 2 - 8;
+  int w = getWidth() / 3 - 8;
   int h = 16;
   int d = h-2;
 
@@ -434,7 +435,7 @@ void MultiBandEffectEditor::resized()
   for(size_t i = 0; i < splitFreqSliders.size(); i++) {
     splitFreqSliders[i]->setBounds(x, y, w, h); y += d; }
 
-  // ...position sub-editors
+  positionBandEditors();
 }
 
 void MultiBandEffectEditor::rComboBoxChanged(RComboBox* comboBoxThatHasChanged)
@@ -462,6 +463,7 @@ void MultiBandEffectEditor::insertBandEditor(int i)
   AudioModuleEditor* e = effectToEdit->getBandEffect(i)->createEditor();
   addChildEditor(e);
   insert(perBandEditors, e, i);
+  positionBandEditor(i);
 }
 
 void MultiBandEffectEditor::removeBandEditor(int i)
@@ -488,16 +490,16 @@ void MultiBandEffectEditor::createWidgets()
   plotEditor = new MultiBandPlotEditor(effectToEdit);
   addChildColourSchemeComponent(plotEditor);
 
-  addWidget( c = splitModeBox = new RComboBox() );
-  c->assignParameter( effectToEdit->getParameterByName("SplitMode") );
-  c->setDescription("Mode of the band-splitting");
-  c->setDescriptionField(infoField);
-
   addWidget( c = effectSelectBox = new RComboBox() );
   c->setDescription("Effect type to be applied to each band");
   c->setDescriptionField(infoField);
   // populate box with available effect types
   //c->addListener(this);
+
+  addWidget( c = splitModeBox = new RComboBox() );
+  c->assignParameter( effectToEdit->getParameterByName("SplitMode") );
+  c->setDescription("Mode of the band-splitting");
+  c->setDescriptionField(infoField);
 
   //createSplitFreqSliders
 }
@@ -513,6 +515,25 @@ void MultiBandEffectEditor::clearBandEditors()
   while(perBandEditors.size() > 0)
     removeBandEditor((int)perBandEditors.size()-1);
 }
+
+void MultiBandEffectEditor::positionBandEditors()
+{
+  for(size_t i = 0; i < perBandEditors.size(); i++)
+    positionBandEditor((int)i);
+}
+
+void MultiBandEffectEditor::positionBandEditor(int i)
+{
+  int x = effectSelectBox->getRight() + 4;
+  int y = plotEditor->getBottom();
+  int w = getWidth()  - x;
+  int h = getHeight() - y;
+  perBandEditors[i]->setBounds(x, y, w, h);
+}
+
+
+
+
 
 
 
