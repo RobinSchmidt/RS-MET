@@ -59,8 +59,8 @@ public:
 
   MultiBandEffect(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr, 
     ModulationManager* modManagerToUse = nullptr);
+  virtual ~MultiBandEffect();
 
- 
   // overriden from AudioModule baseclass:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
@@ -68,42 +68,34 @@ public:
   virtual void reset() override;
   AudioModuleEditor* createEditor() override;
 
+  virtual void parameterChanged(Parameter* p) override;
 
+  /** Creates the parameters related to the band-splitting. Called from setEffectCore. */
+  //virtual void createSplittingParameters();
 
-  /** Subclasses should call this *once* in their constructor with a pointer to the concrete 
-  multiband effect (subclass). This will also create the splitting-related parameters */
-  //void setEffectCore( rosic::rsMultiBandEffect* effectCore);
-    // obsolete
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  virtual void registerMultiBandObserver(MultiBandEffectObserver *obs)
+  { 
+    appendIfNotAlreadyThere(observers, obs); 
+  }
+
+  virtual void deRegisterMultiBandObserver(MultiBandEffectObserver *obs)
+  { 
+    removeFirstOccurrence(observers, obs); 
+  }
 
   /** Sets the type of the effect that shall be applied to each band. The argument should be one of
   the strings returned by getAvailableEffectTypes(). */
   void setEffectType(const juce::String& typeString); 
 
-  /** Creates the parameters related to the band-splitting. Called from setEffectCore. */
-  //virtual void createSplittingParameters();
-
-
-  virtual void registerMultiBandObserver(MultiBandEffectObserver *obs)
-  {
-    appendIfNotAlreadyThere(observers, obs);
-  }
-
-  virtual void deRegisterMultiBandObserver(MultiBandEffectObserver *obs)
-  {
-    removeFirstOccurrence(observers, obs);
-  }
-
-  virtual void parameterChanged(Parameter* p) override;
-
 
   virtual void insertBand(int index, double splitFrequency, bool sendNotification); 
   virtual void removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification);
   // ...must rename split-freq parameters and re-assign their callbacks
-
-
   virtual void selectBand(int bandToSelect, bool sendNotification);
 
-  // get rid of these (handle in subclass):
   void createSplitFreqParams();
   void addSplitFreqParam(int index, double freq);
   void removeSplitFreqParam(int index);
@@ -115,10 +107,11 @@ public:
   /** Sets the splitting frequency for the selected band to the given frequency. */
   void setSplitFreq(double newFreq);
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
   /** Returns a pointer to the parameter for the splitting frequency with given index. */
   Parameter* getSplitFreqParam(int bandIndex);
-    // make purely virtual, override in MultiComp
 
   /** Returns the upper cutoff frequency for the band with given index. */
   double getSplitFreq(int bandIndex) const { return core.getSplitFrequency(bandIndex); }
@@ -131,18 +124,18 @@ public:
 
   /** Returns an array of strings of names of the available effect types. The elements of this 
   array can be used as arguments for setEffectType. */
-  std::vector<juce::String> getAvailableEffectTypes();
+  std::vector<juce::String> getAvailableEffectTypes() const;
 
-  /** Returns a pointer to our core DSP object. */
+  /** Returns a pointer to our rosic::rsMultiBandEffect object that is responsible for the 
+  bandsplitting. */
   rosic::rsMultiBandEffect* getCore() { return &core; }
 
-
-  // debug functions:
+  /** Returns a pointer to the effect module for the given band. */
+  jura::AudioModule* getBandEffect(int index) const { return perBandModules[index]; }
 
   /** Returns true, if the splitting frequencies between the bands are in (strictly) increasing 
-  order. */
+  order. Used for debugging. */
   bool areBandsInIncreasingOrder(bool strictly = false);
-
 
 
 protected:
@@ -158,18 +151,16 @@ protected:
   object). */
   void removeBandEffect(int index);
 
+  /** Removes all per-band effects. */
+  void clearBandEffects();
+
+
+  rosic::rsMultiBandEffect core;
 
   int selectedBand =  -1;  // -1 is code for "None"
   std::vector<Parameter*> splitFreqParams; 
   std::vector<MultiBandEffectObserver*> observers;
 
-  // todo: don't use this anymore:
-  //rosic::rsMultiBandEffect* core = nullptr; // ...or have a direct member and use only the splitting
-  //                                          // functionality
-
-  rosic::rsMultiBandEffect core;
-
-  // ...instead use that:
   AudioModuleFactory perBandModuleFactory;
   std::vector<AudioModule*> perBandModules;
   juce::String effectTypeString;
@@ -229,7 +220,8 @@ protected:
 
 /** Editor for a generic mutiband effect. */
 
-class JUCE_API MultiBandEffectEditor : public AudioModuleEditor, public MultiBandEffectObserver
+class JUCE_API MultiBandEffectEditor : public AudioModuleEditor, public MultiBandEffectObserver,
+  public RComboBoxObserver
 {
 
 public:
@@ -238,8 +230,8 @@ public:
   MultiBandEffectEditor(MultiBandEffect* effect);
   virtual ~MultiBandEffectEditor();
 
-  //virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
   virtual void resized() override;
+  virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
 
   virtual void bandWasInserted(MultiBandEffect* mbe, int index) override;
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
@@ -260,18 +252,18 @@ protected:
   /** Creates the per-band sub editors, if necessarry. */
   virtual void createBandEditors();
 
-  /** Deletes all the per-band su editors. */
+  /** Deletes all the per-band sub editors. */
   virtual void clearBandEditors();
 
 
   // widgets:
   MultiBandPlotEditor* plotEditor;
   std::vector<RSlider*> splitFreqSliders;
-  RComboBox *splitModeBox, *bandSelectBox, *effectSelectBox;
+  RComboBox *splitModeBox, *effectSelectBox;
 
 
-  MultiBandEffect* effectToEdit;            // pointer to the edited multiband effect
-  std::vector<AudioModule*> perBandEditors; // sub editor array (one editor for each band)
+  MultiBandEffect* effectToEdit;                  // pointer to the edited multiband effect
+  std::vector<AudioModuleEditor*> perBandEditors; // sub editor array (one editor for each band)
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffectEditor)

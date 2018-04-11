@@ -29,16 +29,32 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
   p->setValueChangeCallback<rosic::rsMultiBandEffect>(
     &core, &rosic::rsMultiBandEffect::setSplitMode);
   createSplitFreqParams();
+
+  insertBandEffect(0);
+}
+
+MultiBandEffect::~MultiBandEffect()
+{
+  clearBandEffects();
 }
 
 void MultiBandEffect::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
-
+  jassert(numChannels == 2);
+  for(int n = 0; n < numSamples; n++)
+    processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  // todo: optimize to avoid calling processStereoFrame each sample...maybe use internal buffers 
+  // and let the splitter/core fill them, then pass the buffers to the per-band modules for 
+  // processing
 }
 
 void MultiBandEffect::processStereoFrame(double *left, double *right)
 {
-
+  jassert(perBandModules.size() == getNumBands());
+  core.split(left, right);
+  for(int k = 0; k < getNumBands(); k++)  // process individual bands
+    perBandModules[k]->processStereoFrame(left, right);
+  core.recombine(left, right);
 }
 
 void MultiBandEffect::setSampleRate(double newSampleRate)
@@ -59,25 +75,6 @@ AudioModuleEditor* MultiBandEffect::createEditor()
 {
   return new MultiBandEffectEditor(this);
 }
-
-/*
-void MultiBandEffect::setEffectCore(rosic::rsMultiBandEffect* effectCore)
-{
-  ScopedLock scopedLock(*lock);
-  core = effectCore;
-
-  // doing this here is a bit dirty:
-  Parameter* p = new Parameter("SplitMode", 0.0, 2.0, 0.0, Parameter::STRING);
-  p->addStringValue("Steep Lowpass");
-  p->addStringValue("Steep Highpass");
-  //p->addStringValue("Binary Tree"); // doesn't work yet
-  addObservedParameter(p);
-  p->setValueChangeCallback<rosic::rsMultiBandEffect>(
-    core, &rosic::rsMultiBandEffect::setSplitMode);
-
-  createSplitFreqParams();
-}
-*/
 
 void MultiBandEffect::setEffectType(const juce::String& typeString)
 {
@@ -193,7 +190,7 @@ int MultiBandEffect::getBandContainingFrequency(double freq)
   return core.getNumberOfBands()-1;
 }
 
-std::vector<juce::String> MultiBandEffect::getAvailableEffectTypes()
+std::vector<juce::String> MultiBandEffect::getAvailableEffectTypes() const
 {
   return perBandModuleFactory.getRegisteredModuleTypes();
 }
@@ -235,6 +232,8 @@ void MultiBandEffect::sendBandSelectNotification(int index)
 void MultiBandEffect::insertBandEffect(int i)
 {
   AudioModule* m = perBandModuleFactory.createModule(effectTypeString);
+  // maybe we need to include the band-index in the module name, so it can be identified for
+  // automation and modulation
   insert(perBandModules, m, i);
 }
 
@@ -242,6 +241,16 @@ void MultiBandEffect::removeBandEffect(int i)
 {
   delete perBandModules[i];
   remove(perBandModules, i);
+}
+
+void MultiBandEffect::clearBandEffects()
+{
+  for(int i = 0; i < perBandModules.size(); i++)
+  {
+    sendBandRemoveNotification(i);
+    delete perBandModules[i];
+  }
+  perBandModules.clear();
 }
 
 //=================================================================================================
@@ -268,7 +277,7 @@ MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
 MultiBandPlotEditor::~MultiBandPlotEditor()
 {
   module->removeChangeListener(this); // obsolete?
-  module->registerMultiBandObserver(this);
+  module->deRegisterMultiBandObserver(this);
   delete bandPopup;
 }
 
@@ -404,60 +413,106 @@ MultiBandEffectEditor::MultiBandEffectEditor(MultiBandEffect* effect) : AudioMod
 MultiBandEffectEditor::~MultiBandEffectEditor()
 {
   effectToEdit->deRegisterMultiBandObserver(this);
-  clearBandEditors();
+  //clearBandEditors();
 }
 
 void MultiBandEffectEditor::resized()
 {
+  AudioModuleEditor::resized();
 
+  int y = getPresetSectionBottom() + 4;
+  plotEditor->setBounds(0, y, getWidth(), getHeight()-110);
+  y = plotEditor->getBottom() + 4;
+
+  int x = 4;
+  int w = getWidth() / 2 - 8;
+  int h = 16;
+  int d = h-2;
+
+  effectSelectBox->setBounds(x, y, w, h); y += d;
+  splitModeBox   ->setBounds(x, y, w, h); y += d;
+  for(size_t i = 0; i < splitFreqSliders.size(); i++) {
+    splitFreqSliders[i]->setBounds(x, y, w, h); y += d; }
+
+  // ...position sub-editors
+}
+
+void MultiBandEffectEditor::rComboBoxChanged(RComboBox* comboBoxThatHasChanged)
+{
+  // respond to selection of new per-band effect type
 }
 
 void MultiBandEffectEditor::bandWasInserted(MultiBandEffect* mbe, int index)
 {
-
+  insertBandEditor(index);
 }
 
 void MultiBandEffectEditor::bandWillBeRemoved(MultiBandEffect* mbe, int index)
 {
-
+  removeBandEditor(index);
 }
 
 void MultiBandEffectEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 {
-
+  updateEditorVisibility();
 }
 
-void MultiBandEffectEditor::insertBandEditor(int index)
+void MultiBandEffectEditor::insertBandEditor(int i)
 {
-
+  AudioModuleEditor* e = effectToEdit->getBandEffect(i)->createEditor();
+  addChildEditor(e);
+  insert(perBandEditors, e, i);
 }
 
-void MultiBandEffectEditor::removeBandEditor(int index)
+void MultiBandEffectEditor::removeBandEditor(int i)
 {
-
+  AudioModuleEditor* e = perBandEditors[i];
+  remove(perBandEditors, i);
+  removeChildEditor(e, true);
 }
 
 void MultiBandEffectEditor::updateEditorVisibility()
 {
-
+  for(size_t i = 0; i < perBandEditors.size(); i++)
+    perBandEditors[i]->setVisible(false);
+  int selected = effectToEdit->getSelectedBand();
+  jassert(selected < (int)perBandEditors.size());   // no editor for selected band available
+  if(selected >= 0)
+    perBandEditors[selected]->setVisible(true);
 }
 
 void MultiBandEffectEditor::createWidgets()
 {
+  RComboBox *c;
 
+  plotEditor = new MultiBandPlotEditor(effectToEdit);
+  addChildColourSchemeComponent(plotEditor);
+
+  addWidget( c = splitModeBox = new RComboBox() );
+  c->assignParameter( effectToEdit->getParameterByName("SplitMode") );
+  c->setDescription("Mode of the band-splitting");
+  c->setDescriptionField(infoField);
+
+  addWidget( c = effectSelectBox = new RComboBox() );
+  c->setDescription("Effect type to be applied to each band");
+  c->setDescriptionField(infoField);
+  // populate box with available effect types
+  //c->addListener(this);
+
+  //createSplitFreqSliders
 }
 
 void MultiBandEffectEditor::createBandEditors()
 {
-
+  for(size_t i = 0; i < effectToEdit->getNumBands(); i++)
+    insertBandEditor((int)i);
 }
 
 void MultiBandEffectEditor::clearBandEditors()
 {
-
+  while(perBandEditors.size() > 0)
+    removeBandEditor((int)perBandEditors.size()-1);
 }
-
-
 
 
 
