@@ -31,9 +31,9 @@ public:
 can be selected. ...tbc
 
 todo: 
+-when the rightmost band is selected, it shows the gui for Compressor1
+-split-freq sliders are not shown
 -check that the required split-freq parameters and their widgets are handled correctly
--Compressor needs to override createEditor, process...
--the per-band effects need the index in their name Compressor1, Compressor2, etc.
 -implement state recall
 -implement switching the type of effect
 -plot frequency responses: rosic::rsMultiBandEffect::getMagnitudeAt(index, freq) */

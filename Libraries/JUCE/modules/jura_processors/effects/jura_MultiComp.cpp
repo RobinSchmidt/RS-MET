@@ -136,10 +136,10 @@ void MultiBandEffect::createSplitFreqParams()
   jassert(areBandsInIncreasingOrder(false)); // for debug
 }
 
-void MultiBandEffect::addSplitFreqParam(int index, double freq)
+void MultiBandEffect::addSplitFreqParam(int i, double freq)
 {
   ScopedLock scopedLock(*lock);
-  juce::String idxStr = juce::String(index+1);
+  juce::String idxStr = juce::String(i+1);
   Parameter* p = new Parameter("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, 
     Parameter::EXPONENTIAL);
   p->setValue(freq, false, false);
@@ -147,8 +147,13 @@ void MultiBandEffect::addSplitFreqParam(int index, double freq)
 
   //p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
    // i think, this is wrong - we need a lambda here
+  //p->setValueChangeCallback([this](double v)->void { return this->setSplitFreq(i, v); });
+  //p->setValueChangeCallback([=](double v)->void { return this->setSplitFreq(i, v); });
+  //p->setValueChangeCallback([=](double v)->void { return setSplitFreq(i, v); });
+  //p->setValueChangeCallback([=](double v)->void { setSplitFreq(i, v); });
+  p->setValueChangeCallback([=](double v){ setSplitFreq(i, v); });
 
-  insert(splitFreqParams, p, index);
+  insert(splitFreqParams, p, i);
 }
 
 void MultiBandEffect::removeSplitFreqParam(int i)
@@ -167,9 +172,19 @@ void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
   // we limit the new splitFreq such that bands remain ordered with ascending frequencies
   int numBands = getNumBands();
   if(bandIndex < getNumBands()-1) {
+
     double freqLimit = core.getSplitFrequency(bandIndex+1); // freq of right neighbour
+      // ..that's the upper limit - what about the lower limit?
+
+    //core.setSplitFrequency(bandIndex, newFreq); // test
+
     if(newFreq > freqLimit)
-      getSplitFreqParam(bandIndex)->setValue(freqLimit, true, true);
+    {
+      //getSplitFreqParam(bandIndex)->setValue(freqLimit, true, true); // stack overflow here?
+
+      getSplitFreqParam(bandIndex)->setValue(freqLimit, true, false); // don't call callbacks
+      core.setSplitFrequency(bandIndex, freqLimit);
+    }
     else
       core.setSplitFrequency(bandIndex, newFreq);
   }
