@@ -157,6 +157,7 @@ void MultiBandEffect::addSplitFreqParam(int i, double freq)
   //p->setValueChangeCallback([=](double v)->void { return setSplitFreq(i, v); });
   //p->setValueChangeCallback([=](double v)->void { setSplitFreq(i, v); });
   p->setValueChangeCallback([=](double v){ setSplitFreq(i, v); });
+   // maybe we need to re-assign all callbacks
 
   insert(splitFreqParams, p, i);
 }
@@ -166,6 +167,8 @@ void MultiBandEffect::removeSplitFreqParam(int i)
   ScopedLock scopedLock(*lock);
   delete splitFreqParams[i];
   remove(splitFreqParams, i);
+
+   // re-assign all callbacks
 }
 
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
@@ -496,6 +499,7 @@ void MultiBandEffectEditor::resized()
     splitFreqSliders[i]->setBounds(x, y, w, h); y += d; }
 
   positionBandEditors();
+  updateSplitSliderPositions();
 }
 
 void MultiBandEffectEditor::rComboBoxChanged(RComboBox* comboBoxThatHasChanged)
@@ -533,10 +537,6 @@ void MultiBandEffectEditor::insertBandEditor(int i)
   addChildEditor(e);
   insert(perBandEditors, e, i);
   positionBandEditor(i);
-
-  RSlider* s = new RSlider;
-  addWidget(s);
-  insert(splitFreqSliders, s, i);
 }
 
 void MultiBandEffectEditor::removeBandEditor(int i)
@@ -548,8 +548,6 @@ void MultiBandEffectEditor::removeBandEditor(int i)
 
 void MultiBandEffectEditor::updateEditorVisibility()
 {
-  //updateEditorNames(); // a bit dirty to do this here - will be done unnecessarily often
-
   for(size_t i = 0; i < perBandEditors.size(); i++)
     perBandEditors[i]->setVisible(false);
   int selected = effectToEdit->getSelectedBand();
@@ -582,7 +580,7 @@ void MultiBandEffectEditor::createWidgets()
   c->setDescription("Mode of the band-splitting");
   c->setDescriptionField(infoField);
 
-  //createSplitFreqSliders
+  updateSplitSliders();
 }
 
 void MultiBandEffectEditor::createBandEditors()
@@ -614,14 +612,40 @@ void MultiBandEffectEditor::positionBandEditor(int i)
 
 void MultiBandEffectEditor::updateSplitSliders()
 {
-  // todo:
-  // -make sure the number of split-sliders matches the number of split parameters
-  // -connect sliders to their corresponding parameters
-  // -set up positions of sliders
+  RSlider *s;
+  int numBands  = effectToEdit->getNumBands();
+  int numSplits = numBands-1;
+
+  // make sure that number of split-sliders matches number of split-parameters:
+  while(splitFreqSliders.size() > numSplits) {
+    s = getAndRemoveLast(splitFreqSliders);
+    removeWidget(s, true, true); 
+  }
+  while(splitFreqSliders.size() < numSplits) {
+    s = new RSlider;
+    addWidget(s);
+    append(splitFreqSliders, s); 
+  }
+
+  // (re)assign parameters to sliders and update slider positions:
+  for(int i = 0; i < numSplits; i++)
+    splitFreqSliders[i]->assignParameter(
+      effectToEdit->getParameterByName("SplitFrequency" + String(i+1)));
+  updateSplitSliderPositions();
 }
 
-
-
+void MultiBandEffectEditor::updateSplitSliderPositions()
+{
+  int x  = splitModeBox->getX();
+  int y  = splitModeBox->getBottom() + 4;
+  int w  = splitModeBox->getWidth();
+  int h  = 16;
+  int dy = h-2;
+  for(size_t i = 0; i < splitFreqSliders.size(); i++) {
+    splitFreqSliders[i]->setBounds(x, y, w, h);
+    y += dy;
+  }
+}
 
 
 

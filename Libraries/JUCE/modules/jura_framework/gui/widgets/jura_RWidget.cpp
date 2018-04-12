@@ -50,6 +50,10 @@ RWidget::~RWidget()
 
 void RWidget::assignParameter(Parameter *parameterToAssign)
 {
+  if(assignedParameter == parameterToAssign)
+    return; // nothing to do
+
+
   if( assignedParameter != NULL )
     assignedParameter->deRegisterParameterObserver(this);
 

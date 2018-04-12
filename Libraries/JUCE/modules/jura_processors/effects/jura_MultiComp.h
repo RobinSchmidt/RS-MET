@@ -266,6 +266,10 @@ protected:
   connecting the to their parameters and setting up their positions. */
   virtual void updateSplitSliders();
 
+  virtual void updateSplitSliderPositions();
+
+
+
   // widgets:
   MultiBandPlotEditor* plotEditor;
   RComboBox *effectSelectBox, *splitModeBox;
