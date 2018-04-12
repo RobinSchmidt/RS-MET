@@ -517,12 +517,20 @@ void MultiBandEffectEditor::removeBandEditor(int i)
 
 void MultiBandEffectEditor::updateEditorVisibility()
 {
+  updateEditorNames(); // a bit dirty to do this here - will be done unnecessarily often
+
   for(size_t i = 0; i < perBandEditors.size(); i++)
     perBandEditors[i]->setVisible(false);
   int selected = effectToEdit->getSelectedBand();
   jassert(selected < (int)perBandEditors.size());   // no editor for selected band available
   if(selected >= 0)
     perBandEditors[selected]->setVisible(true);
+}
+
+void MultiBandEffectEditor::updateEditorNames()
+{
+  for(int i = 0; i < (int)perBandEditors.size(); i++)
+    perBandEditors[i]->setHeadlineText(effectToEdit->getBandEffect(i)->getModuleName());
 }
 
 void MultiBandEffectEditor::createWidgets()

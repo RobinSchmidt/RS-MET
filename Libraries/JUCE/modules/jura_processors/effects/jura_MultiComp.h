@@ -31,8 +31,8 @@ public:
 can be selected. ...tbc
 
 todo: 
--when the rightmost band is selected, it shows the gui for Compressor1
 -split-freq sliders are not shown
+-we may need to acquire the lock all the editor member functions
 -check that the required split-freq parameters and their widgets are handled correctly
 -implement state recall
 -implement switching the type of effect
@@ -236,6 +236,10 @@ protected:
 
   /** Makes currently required sub-editor not required editors invisible. */
   virtual void updateEditorVisibility();
+
+  /** Updates the names of the editors according to the module names (the names may change at 
+  runtime due to addition and removal of bands). */
+  virtual void updateEditorNames();
 
   /** Creates the global (not per-band) widgets. */
   virtual void createWidgets();
