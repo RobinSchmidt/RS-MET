@@ -58,6 +58,7 @@ void MultiBandEffect::processStereoFrame(double *left, double *right)
 
 void MultiBandEffect::setSampleRate(double newSampleRate)
 {
+  ScopedLock scopedLock(*lock);
   core.setSampleRate(newSampleRate);
   for(size_t i = 0; i < perBandModules.size(); i++)
     perBandModules[i]->setSampleRate(newSampleRate);
@@ -65,6 +66,7 @@ void MultiBandEffect::setSampleRate(double newSampleRate)
 
 void MultiBandEffect::reset()
 {
+  ScopedLock scopedLock(*lock);
   core.reset();
   for(size_t i = 0; i < perBandModules.size(); i++)
     perBandModules[i]->reset();;
@@ -77,6 +79,7 @@ AudioModuleEditor* MultiBandEffect::createEditor()
 
 void MultiBandEffect::setEffectType(const juce::String& typeString)
 {
+  ScopedLock scopedLock(*lock);
   if(typeString != effectTypeString)
   {
     effectTypeString = typeString;
@@ -94,6 +97,7 @@ void MultiBandEffect::parameterChanged(Parameter* p)
 
 void MultiBandEffect::insertBand(int index, double splitFrequency, bool sendNotification)
 {
+  ScopedLock scopedLock(*lock);
   core.insertBand(index, splitFrequency);
   addSplitFreqParam(index, splitFrequency); // rename to insertSplitFreqParam
   insertBandEffect(index);
@@ -103,6 +107,7 @@ void MultiBandEffect::insertBand(int index, double splitFrequency, bool sendNoti
 
 void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification)
 {
+  ScopedLock scopedLock(*lock);
   if(sendNotification)
     sendBandRemoveNotification(index);  // notify gui (for removing widgets)
   removeSplitFreqParam(index);
@@ -112,6 +117,7 @@ void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool s
 
 void MultiBandEffect::selectBand(int bandToSelect, bool sendNotification) 
 { 
+  ScopedLock scopedLock(*lock);
   selectedBand = bandToSelect; 
   if(sendNotification)
     sendBandSelectNotification(selectedBand);
@@ -119,6 +125,7 @@ void MultiBandEffect::selectBand(int bandToSelect, bool sendNotification)
 
 void MultiBandEffect::createSplitFreqParams()
 {
+  ScopedLock scopedLock(*lock);
   // clearSlpitFreqParams(); // ...maybe later
   size_t numParams = splitFreqParams.size();
   size_t numBands = getNumBands();
@@ -131,13 +138,14 @@ void MultiBandEffect::createSplitFreqParams()
 
 void MultiBandEffect::addSplitFreqParam(int index, double freq)
 {
+  ScopedLock scopedLock(*lock);
   juce::String idxStr = juce::String(index+1);
   Parameter* p = new Parameter("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, 
     Parameter::EXPONENTIAL);
   p->setValue(freq, false, false);
   addObservedParameter(p);
 
-  p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
+  //p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
    // i think, this is wrong - we need a lambda here
 
   insert(splitFreqParams, p, index);
@@ -145,12 +153,15 @@ void MultiBandEffect::addSplitFreqParam(int index, double freq)
 
 void MultiBandEffect::removeSplitFreqParam(int i)
 {
+  ScopedLock scopedLock(*lock);
   delete splitFreqParams[i];
   remove(splitFreqParams, i);
 }
 
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 {
+  ScopedLock scopedLock(*lock);
+
   if(bandIndex < 0)  return;  // kludge
 
   // we limit the new splitFreq such that bands remain ordered with ascending frequencies
@@ -173,16 +184,19 @@ void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 
 void MultiBandEffect::setSplitFreq(double newFreq) 
 { 
+  ScopedLock scopedLock(*lock);
   setSplitFreq(selectedBand, newFreq);
 }
 
 Parameter* MultiBandEffect::getSplitFreqParam(int bandIndex)
 {
+  ScopedLock scopedLock(*lock);
   return splitFreqParams[bandIndex];
 }
 
 int MultiBandEffect::getBandContainingFrequency(double freq)
 {
+  ScopedLock scopedLock(*lock);
   for(int i = 0; i < core.getNumberOfBands()-1; i++)
     if(core.getSplitFrequency(i) > freq)
       return i;
@@ -204,6 +218,7 @@ bool isLess(double x, double y, bool strictly)
 
 bool MultiBandEffect::areBandsInIncreasingOrder(bool strictly)
 {
+  ScopedLock scopedLock(*lock);
   for(int i = 1; i < core.getNumberOfBands()-1; i++)
     if(!isLess(core.getSplitFrequency(i-1), core.getSplitFrequency(i), strictly))
       return false;
@@ -230,6 +245,7 @@ void MultiBandEffect::sendBandSelectNotification(int index)
 
 void MultiBandEffect::insertBandEffect(int i)
 {
+  ScopedLock scopedLock(*lock);
   AudioModule* m = perBandModuleFactory.createModule(effectTypeString);
   insert(perBandModules, m, i);
   updateBandModuleNames();
@@ -237,6 +253,7 @@ void MultiBandEffect::insertBandEffect(int i)
 
 void MultiBandEffect::removeBandEffect(int i)
 {
+  ScopedLock scopedLock(*lock);
   delete perBandModules[i];
   remove(perBandModules, i);
   updateBandModuleNames();
@@ -244,6 +261,7 @@ void MultiBandEffect::removeBandEffect(int i)
 
 void MultiBandEffect::clearBandEffects()
 {
+  ScopedLock scopedLock(*lock);
   for(int i = 0; i < perBandModules.size(); i++)
   {
     sendBandRemoveNotification(i);
@@ -254,6 +272,7 @@ void MultiBandEffect::clearBandEffects()
 
 void MultiBandEffect::updateBandModuleNames()
 {
+  ScopedLock scopedLock(*lock);
   for(int i = 0; i < perBandModules.size(); i++)
     perBandModules[i]->setModuleName(effectTypeString + String(i+1));
 
