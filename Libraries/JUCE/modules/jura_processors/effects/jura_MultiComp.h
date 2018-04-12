@@ -17,6 +17,9 @@ public:
   /** Called before a band will be removed. */
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) = 0;
 
+  /** Called after a band has been removed. */
+  virtual void bandWasRemoved(MultiBandEffect* mbe, int index) = 0;
+
   /** Called after another band was selected. */
   virtual void bandWasSelected(MultiBandEffect* mbe, int index) = 0;
 
@@ -127,7 +130,8 @@ public:
 protected:
 
   void sendBandInsertNotification(int index);
-  void sendBandRemoveNotification(int index);
+  void sendBandRemovePreNotification(int index);
+  void sendBandRemovePostNotification(int index);
   void sendBandSelectNotification(int index);
 
   /** Inserts a new per band effect module to the array at the given index. */
@@ -173,9 +177,10 @@ public:
   virtual ~MultiBandPlotEditor();
 
   //virtual void parameterChanged(Parameter* p) override;
-  virtual void bandWasInserted(MultiBandEffect* mbe, int index) override;
+  virtual void bandWasInserted(  MultiBandEffect* mbe, int index) override;
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
-  virtual void bandWasSelected(MultiBandEffect* mbe, int index) override;
+  virtual void bandWasRemoved(   MultiBandEffect* mbe, int index) override;
+  virtual void bandWasSelected(  MultiBandEffect* mbe, int index) override;
 
   virtual void changeListenerCallback(ChangeBroadcaster* source) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
@@ -221,9 +226,10 @@ public:
   virtual void resized() override;
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
 
-  virtual void bandWasInserted(MultiBandEffect* mbe, int index) override;
+  virtual void bandWasInserted(  MultiBandEffect* mbe, int index) override;
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
-  virtual void bandWasSelected(MultiBandEffect* mbe, int index) override;
+  virtual void bandWasRemoved(   MultiBandEffect* mbe, int index) override;
+  virtual void bandWasSelected(  MultiBandEffect* mbe, int index) override;
 
 
 protected:
@@ -256,14 +262,17 @@ protected:
   /** Sets up position of the band effect editor with given index. */
   virtual void positionBandEditor(int index);
 
+  /** Updates the array of our split-frequency sliders, possibly adding or removing some, 
+  connecting the to their parameters and setting up their positions. */
+  virtual void updateSplitSliders();
+
   // widgets:
   MultiBandPlotEditor* plotEditor;
   RComboBox *effectSelectBox, *splitModeBox;
-  std::vector<RSlider*> splitFreqSliders;
-
-
-  MultiBandEffect* effectToEdit;                  // pointer to the edited multiband effect
+  std::vector<RSlider*> splitFreqSliders;         // sliders for splitting frequencies
   std::vector<AudioModuleEditor*> perBandEditors; // sub editor array (one editor for each band)
+  MultiBandEffect* effectToEdit;                  // pointer to the edited multiband effect
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffectEditor)
@@ -398,8 +407,7 @@ protected:
 
 //=================================================================================================
 
-class MultiCompModuleEditor : public AudioModuleEditor, public RComboBoxObserver, 
-  public MultiBandEffectObserver
+class MultiCompModuleEditor : public MultiBandEffectEditor
 {
 
 public:

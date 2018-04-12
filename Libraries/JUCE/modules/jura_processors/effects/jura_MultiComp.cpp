@@ -108,11 +108,16 @@ void MultiBandEffect::insertBand(int index, double splitFrequency, bool sendNoti
 void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification)
 {
   ScopedLock scopedLock(*lock);
+
   if(sendNotification)
-    sendBandRemoveNotification(index);  // notify gui (for removing widgets)
+    sendBandRemovePreNotification(index);  // notify gui (for removing widgets)
+
   removeSplitFreqParam(index);
   removeBandEffect(index);
   core.removeBand(index);
+
+  if(sendNotification)
+    sendBandRemovePostNotification(index);
 }
 
 void MultiBandEffect::selectBand(int bandToSelect, bool sendNotification) 
@@ -246,10 +251,16 @@ void MultiBandEffect::sendBandInsertNotification(int index)
     observers[i]->bandWasInserted(this, index);
 }
 
-void MultiBandEffect::sendBandRemoveNotification(int index)
+void MultiBandEffect::sendBandRemovePreNotification(int index)
 {
   for(size_t i = 0; i < observers.size(); i++)
     observers[i]->bandWillBeRemoved(this, index);
+}
+
+void MultiBandEffect::sendBandRemovePostNotification(int index)
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->bandWasRemoved(this, index);
 }
 
 void MultiBandEffect::sendBandSelectNotification(int index)
@@ -279,8 +290,9 @@ void MultiBandEffect::clearBandEffects()
   ScopedLock scopedLock(*lock);
   for(int i = 0; i < perBandModules.size(); i++)
   {
-    sendBandRemoveNotification(i);
+    sendBandRemovePreNotification(i);
     delete perBandModules[i];
+    sendBandRemovePostNotification(i);
   }
   perBandModules.clear();
 }
@@ -327,11 +339,17 @@ void MultiBandPlotEditor::bandWasInserted(MultiBandEffect* mbe, int i)
   // insert new graph into plot
   //freqRespPlot->addFunction([=](double f)->double { return core->getDecibelsAt(i, f); });
   //freqRespPlot->insertFunction(i, [=](double f)->double { return core->getDecibelsAt(i, f); });
+  repaint();
 }
 
 void MultiBandPlotEditor::bandWillBeRemoved(MultiBandEffect* mbe, int i)
 {
   //freqRespPlot->removeFunction(i);  // remove graph from plot
+}
+
+void MultiBandPlotEditor::bandWasRemoved(MultiBandEffect* mbe, int i)
+{
+  repaint();
 }
 
 void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)
@@ -341,7 +359,7 @@ void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)
   repaint();
 }
 
-void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source)
+void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source) // obsolete?
 {
   freqRespPlot->setNumFunctionsToPlot(core->getNumberOfBands());
   repaint();
@@ -488,11 +506,20 @@ void MultiBandEffectEditor::rComboBoxChanged(RComboBox* comboBoxThatHasChanged)
 void MultiBandEffectEditor::bandWasInserted(MultiBandEffect* mbe, int index)
 {
   insertBandEditor(index);
+  updateEditorNames();
+  updateSplitSliders();
 }
 
 void MultiBandEffectEditor::bandWillBeRemoved(MultiBandEffect* mbe, int index)
 {
   removeBandEditor(index);
+}
+
+void MultiBandEffectEditor::bandWasRemoved(MultiBandEffect* mbe, int i)
+{
+  updateEditorNames();
+  updateSplitSliders();
+  updateEditorVisibility();
 }
 
 void MultiBandEffectEditor::bandWasSelected(MultiBandEffect* mbe, int index)
@@ -506,6 +533,10 @@ void MultiBandEffectEditor::insertBandEditor(int i)
   addChildEditor(e);
   insert(perBandEditors, e, i);
   positionBandEditor(i);
+
+  RSlider* s = new RSlider;
+  addWidget(s);
+  insert(splitFreqSliders, s, i);
 }
 
 void MultiBandEffectEditor::removeBandEditor(int i)
@@ -517,7 +548,7 @@ void MultiBandEffectEditor::removeBandEditor(int i)
 
 void MultiBandEffectEditor::updateEditorVisibility()
 {
-  updateEditorNames(); // a bit dirty to do this here - will be done unnecessarily often
+  //updateEditorNames(); // a bit dirty to do this here - will be done unnecessarily often
 
   for(size_t i = 0; i < perBandEditors.size(); i++)
     perBandEditors[i]->setVisible(false);
@@ -579,6 +610,14 @@ void MultiBandEffectEditor::positionBandEditor(int i)
   int w = getWidth()  - x;
   int h = getHeight() - y;
   perBandEditors[i]->setBounds(x, y, w, h);
+}
+
+void MultiBandEffectEditor::updateSplitSliders()
+{
+  // todo:
+  // -make sure the number of split-sliders matches the number of split parameters
+  // -connect sliders to their corresponding parameters
+  // -set up positions of sliders
 }
 
 
@@ -706,7 +745,7 @@ MultiCompPlotEditor::MultiCompPlotEditor(jura::MultiCompAudioModule* multiCompMo
 //=================================================================================================
 
 MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModuleToEdit)
-  : AudioModuleEditor(multiCompModuleToEdit)
+  : MultiBandEffectEditor(multiCompModuleToEdit)
 {
   ScopedLock scopedLock(*lock);
   multiCompModule = multiCompModuleToEdit;
