@@ -34,9 +34,10 @@ public:
 can be selected. ...tbc
 
 todo: 
--split-freq sliders are not shown
+-BUG: create 4 bands, remove 1st - there are now 3 bands but the 1st has wrong split freq (even 
+ though its split-freq slider is correct)...i think, when removing a band, we also need to update
+ the split-frequencies in the audio engine
 -we may need to acquire the lock all the editor member functions
--check that the required split-freq parameters and their widgets are handled correctly
 -implement state recall
 -implement switching the type of effect
 -plot frequency responses: rosic::rsMultiBandEffect::getMagnitudeAt(index, freq) */
