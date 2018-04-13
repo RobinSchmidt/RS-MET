@@ -36,7 +36,8 @@ can be selected. ...tbc
 todo: 
 -BUG: create 4 bands, remove 1st - there are now 3 bands but the 1st has wrong split freq (even 
  though its split-freq slider is correct)...i think, when removing a band, we also need to update
- the split-frequencies in the audio engine
+ the split-frequencies in the audio engine ...seems fixed
+-BUG: crash when removing the very last band
 -we may need to acquire the lock all the editor member functions
 -implement state recall
 -implement switching the type of effect

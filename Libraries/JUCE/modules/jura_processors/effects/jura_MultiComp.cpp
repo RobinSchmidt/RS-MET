@@ -112,9 +112,11 @@ void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool s
   if(sendNotification)
     sendBandRemovePreNotification(index);  // notify gui (for removing widgets)
 
-  removeSplitFreqParam(index);
+
   removeBandEffect(index);
   core.removeBand(index);
+  removeSplitFreqParam(index); // must be done after core.removeBand
+
 
   if(sendNotification)
     sendBandRemovePostNotification(index);
