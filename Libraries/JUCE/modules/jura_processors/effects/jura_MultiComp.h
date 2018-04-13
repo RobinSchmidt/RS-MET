@@ -170,7 +170,11 @@ protected:
 
 /** Plot editor for multiband effects. Allows to select a band by clicking into the rectangular 
 area in the frequency response plot that represents that band, change split frequencies by dragging
-vertical line, etc. */
+vertical line, etc. 
+
+todo:
+-maybe it needs to connect to the split-freq parameters
+*/
 
 class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public ChangeListener, // ChangeListener obsolete?
   public RPopUpMenuObserver,  public MultiBandEffectObserver

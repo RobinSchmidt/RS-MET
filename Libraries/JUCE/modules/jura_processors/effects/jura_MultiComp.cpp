@@ -128,13 +128,17 @@ void MultiBandEffect::selectBand(int bandToSelect, bool sendNotification)
     sendBandSelectNotification(selectedBand);
 }
 
-
-
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 {
   ScopedLock scopedLock(*lock);
 
   if(bandIndex < 0)  return;  // kludge
+
+  // preliminary - no limits...but maybe keep it unlimited:
+  core.setSplitFrequency(bandIndex, newFreq);
+  sendChangeMessage();
+  return;
+
 
   // we limit the new splitFreq such that bands remain ordered with ascending frequencies
   int numBands = getNumBands();
@@ -207,18 +211,15 @@ bool MultiBandEffect::areBandsInIncreasingOrder(bool strictly)
   return true;
 }
 
-
-
-
-// split-freq param handling - todo: must rename split-freq parameters and re-assign their callbacks
+// split-freq param handling:
 
 void MultiBandEffect::createSplitFreqParams()
 {
   ScopedLock scopedLock(*lock);
-  // clearSlpitFreqParams(); // ...maybe later
+  // clearSplitFreqParams(); // ...maybe later
   size_t numParams = splitFreqParams.size();
-  size_t numBands = getNumBands();
-  while(numParams < numBands) {
+  size_t numSplits = getNumBands()-1;
+  while(numParams < numSplits) {
     addSplitFreqParam((int)numParams, getSplitFreq((int)numParams));
     numParams++; }
 
@@ -233,26 +234,11 @@ void MultiBandEffect::clearSplitFreqParams()
 void MultiBandEffect::addSplitFreqParam(int i, double freq)
 {
   ScopedLock scopedLock(*lock);
-
-  juce::String idxStr = juce::String(i+1);
-  Parameter* p = new Parameter("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, 
-    Parameter::EXPONENTIAL); // name not yet needed here
-
-
+  Parameter* p = new Parameter("", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL); // name assigned later
   p->setValue(freq, false, false);
   addObservedParameter(p);
-
-  //p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
-  // i think, this is wrong - we need a lambda here
-  //p->setValueChangeCallback([this](double v)->void { return this->setSplitFreq(i, v); });
-  //p->setValueChangeCallback([=](double v)->void { return this->setSplitFreq(i, v); });
-  //p->setValueChangeCallback([=](double v)->void { return setSplitFreq(i, v); });
-  //p->setValueChangeCallback([=](double v)->void { setSplitFreq(i, v); });
-  p->setValueChangeCallback([=](double v){ setSplitFreq(i, v); });
-  // maybe we need to re-assign all callbacks
-
   insert(splitFreqParams, p, i);
-  //updateSplitFreqParamNamesAndCallbacks();
+  updateSplitFreqParamNamesAndCallbacks();
 }
 
 void MultiBandEffect::removeSplitFreqParam(int i)
@@ -260,16 +246,15 @@ void MultiBandEffect::removeSplitFreqParam(int i)
   ScopedLock scopedLock(*lock);
   delete splitFreqParams[i];
   remove(splitFreqParams, i);
-  //updateSplitFreqParamNamesAndCallbacks();
+  updateSplitFreqParamNamesAndCallbacks();
 }
 
 void MultiBandEffect::updateSplitFreqParamNamesAndCallbacks()
 {
-  for(size_t i = 0; i < splitFreqParams.size(); i++)
-  {
+  for(size_t i = 0; i < splitFreqParams.size(); i++){
     Parameter* p = splitFreqParams[i];
     p->setName("SplitFrequency" + String(i+1));
-    p->setValueChangeCallback([=](double v){ setSplitFreq((int)i, v); });
+    p->setValueChangeCallback([=](double v){ setSplitFreq((int)i, v); }); 
   }
   // gui needs to be notified to update slider-names...or maybe it can update them inside a 
   // callback that is already being called...
@@ -342,7 +327,7 @@ MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
   : module(moduleToEdit)
 
 {
-  module->addChangeListener(this); // obsolete?
+  module->addChangeListener(this); // obsolete? ..currently used for repainting when freq changes - later connect to the parameters directly
   module->registerMultiBandObserver(this);
 
   core = module->getCore();
