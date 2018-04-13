@@ -128,48 +128,7 @@ void MultiBandEffect::selectBand(int bandToSelect, bool sendNotification)
     sendBandSelectNotification(selectedBand);
 }
 
-void MultiBandEffect::createSplitFreqParams()
-{
-  ScopedLock scopedLock(*lock);
-  // clearSlpitFreqParams(); // ...maybe later
-  size_t numParams = splitFreqParams.size();
-  size_t numBands = getNumBands();
-  while(numParams < numBands) {
-    addSplitFreqParam((int)numParams, getSplitFreq((int)numParams));
-    numParams++; }
 
-  jassert(areBandsInIncreasingOrder(false)); // for debug
-}
-
-void MultiBandEffect::addSplitFreqParam(int i, double freq)
-{
-  ScopedLock scopedLock(*lock);
-  juce::String idxStr = juce::String(i+1);
-  Parameter* p = new Parameter("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, 
-    Parameter::EXPONENTIAL);
-  p->setValue(freq, false, false);
-  addObservedParameter(p);
-
-  //p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
-   // i think, this is wrong - we need a lambda here
-  //p->setValueChangeCallback([this](double v)->void { return this->setSplitFreq(i, v); });
-  //p->setValueChangeCallback([=](double v)->void { return this->setSplitFreq(i, v); });
-  //p->setValueChangeCallback([=](double v)->void { return setSplitFreq(i, v); });
-  //p->setValueChangeCallback([=](double v)->void { setSplitFreq(i, v); });
-  p->setValueChangeCallback([=](double v){ setSplitFreq(i, v); });
-   // maybe we need to re-assign all callbacks
-
-  insert(splitFreqParams, p, i);
-}
-
-void MultiBandEffect::removeSplitFreqParam(int i)
-{
-  ScopedLock scopedLock(*lock);
-  delete splitFreqParams[i];
-  remove(splitFreqParams, i);
-
-   // re-assign all callbacks
-}
 
 void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 {
@@ -246,6 +205,74 @@ bool MultiBandEffect::areBandsInIncreasingOrder(bool strictly)
     if(!isLess(core.getSplitFrequency(i-1), core.getSplitFrequency(i), strictly))
       return false;
   return true;
+}
+
+
+
+
+// split-freq param handling - todo: must rename split-freq parameters and re-assign their callbacks
+
+void MultiBandEffect::createSplitFreqParams()
+{
+  ScopedLock scopedLock(*lock);
+  // clearSlpitFreqParams(); // ...maybe later
+  size_t numParams = splitFreqParams.size();
+  size_t numBands = getNumBands();
+  while(numParams < numBands) {
+    addSplitFreqParam((int)numParams, getSplitFreq((int)numParams));
+    numParams++; }
+
+  jassert(areBandsInIncreasingOrder(false)); // for debug
+}
+
+void MultiBandEffect::clearSplitFreqParams()
+{
+  // 
+}
+
+void MultiBandEffect::addSplitFreqParam(int i, double freq)
+{
+  ScopedLock scopedLock(*lock);
+
+  juce::String idxStr = juce::String(i+1);
+  Parameter* p = new Parameter("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, 
+    Parameter::EXPONENTIAL); // name not yet needed here
+
+
+  p->setValue(freq, false, false);
+  addObservedParameter(p);
+
+  //p->setValueChangeCallback<MultiBandEffect>(this, &MultiBandEffect::setSplitFreq);
+  // i think, this is wrong - we need a lambda here
+  //p->setValueChangeCallback([this](double v)->void { return this->setSplitFreq(i, v); });
+  //p->setValueChangeCallback([=](double v)->void { return this->setSplitFreq(i, v); });
+  //p->setValueChangeCallback([=](double v)->void { return setSplitFreq(i, v); });
+  //p->setValueChangeCallback([=](double v)->void { setSplitFreq(i, v); });
+  p->setValueChangeCallback([=](double v){ setSplitFreq(i, v); });
+  // maybe we need to re-assign all callbacks
+
+  insert(splitFreqParams, p, i);
+  //updateSplitFreqParamNamesAndCallbacks();
+}
+
+void MultiBandEffect::removeSplitFreqParam(int i)
+{
+  ScopedLock scopedLock(*lock);
+  delete splitFreqParams[i];
+  remove(splitFreqParams, i);
+  //updateSplitFreqParamNamesAndCallbacks();
+}
+
+void MultiBandEffect::updateSplitFreqParamNamesAndCallbacks()
+{
+  for(size_t i = 0; i < splitFreqParams.size(); i++)
+  {
+    Parameter* p = splitFreqParams[i];
+    p->setName("SplitFrequency" + String(i+1));
+    p->setValueChangeCallback([=](double v){ setSplitFreq((int)i, v); });
+  }
+  // gui needs to be notified to update slider-names...or maybe it can update them inside a 
+  // callback that is already being called...
 }
 
 void MultiBandEffect::sendBandInsertNotification(int index)

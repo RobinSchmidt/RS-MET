@@ -12,6 +12,10 @@ GUI components. Of each such font subclass, there's a single global object.
 
 */
 
+// test-texts:
+// the quick brown fox jumps over the lazy dog
+// sphinx of black quartz, judge my vow
+
 class JUCE_API BitmapFont //: public Font
 {
 

@@ -82,12 +82,7 @@ public:
 
   virtual void insertBand(int index, double splitFrequency, bool sendNotification); 
   virtual void removeBand(int index, bool mergeWithRightNeighbour, bool sendNotification);
-  // ...must rename split-freq parameters and re-assign their callbacks
   virtual void selectBand(int bandToSelect, bool sendNotification);
-
-  void createSplitFreqParams();
-  void addSplitFreqParam(int index, double freq);
-  void removeSplitFreqParam(int index);
 
 
   /** Sets the splitting frequency for the band with given index to the given frequency. */
@@ -129,6 +124,16 @@ public:
 
 protected:
 
+  // parameter management:
+  void createSplitFreqParams();
+  void clearSplitFreqParams();
+  void addSplitFreqParam(int index, double freq);
+  void removeSplitFreqParam(int index);
+  void updateSplitFreqParamNamesAndCallbacks();
+
+
+
+  // notification senders:
   void sendBandInsertNotification(int index);
   void sendBandRemovePreNotification(int index);
   void sendBandRemovePostNotification(int index);
