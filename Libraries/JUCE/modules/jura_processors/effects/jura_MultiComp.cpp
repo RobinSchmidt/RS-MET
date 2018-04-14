@@ -43,7 +43,7 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
 
 MultiBandEffect::~MultiBandEffect()
 {
-  clearBandEffects();
+  clearBandEffects(true);
 }
 
 void MultiBandEffect::processBlock(double **inOutBuffer, int numChannels, int numSamples)
@@ -58,7 +58,6 @@ void MultiBandEffect::processBlock(double **inOutBuffer, int numChannels, int nu
 
 void MultiBandEffect::processStereoFrame(double *left, double *right)
 {
-
   jassert(perBandModules.size() == getNumBands());
   core.split(left, right);
   for(int k = 0; k < getNumBands(); k++)  // process individual bands
@@ -102,41 +101,55 @@ void MultiBandEffect::setEffectType(const juce::String& typeString)
 void MultiBandEffect::setStateFromXml(const XmlElement& xml, const juce::String& stateName,
   bool markAsClean)
 {
+  ScopedLock scopedLock(*lock);
+
   sendClearBandsNotification(); // gui will delete all editors and split-freq sliders
-
-
-  int dbg = getNumBands(); // for debug
-
-
-  clearSplitFreqParams();
-
-  clearBandEffects();
-  core.initBands(0);
-
-  dbg = getNumBands(); // for debug
-
-  /*
 
 
   size_t numBands = xml.getIntAttribute("NumBands", 1);
   //effectTypeString = xml.getStringAttribute("EffectType", "Gain");
   effectTypeString = xml.getStringAttribute("EffectType", "Compressor");
 
-  for(size_t i = 0; i < numBands; i++) {
-    double freq = xml.getDoubleAttribute("SplitFrequency" + String(i+1), 1000);
+
+
+  int dbg = getNumBands(); // for debug
+
+  clearSplitFreqParams();
+  clearBandEffects(false); // don't notify gui, because it already has deleted the editors
+  core.initBands(0);       // may be redundant
+
+  dbg = getNumBands();     // for debug
+
+
+
+
+  // needs test:
+  //insertBand(0, 0, false);
+  core.initBands(1);
+  insertBandEffect(0);
+  dbg = getNumBands(); // for debug
+
+
+
+  for(size_t i = 1; i < numBands; i++) {
+    double freq = xml.getDoubleAttribute("SplitFrequency" + String(i), 1000);
     insertBand((int)i, freq, false);
   }
-  // this is wrong: there is one split-frequency less than the number of bands
 
+  /*
+  core.initBands(1);
+  insertBandEffect(0);
+  createSplitFreqParams();
   */
 
-
+  // maybe get rid of support of 0 bands
 
   sendTotalRefreshNotification(); // gui will create new editors and split-freq sliders
 }
 
 XmlElement* MultiBandEffect::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
+  ScopedLock scopedLock(*lock);
   XmlElement* xml = ModulatableAudioModule::getStateAsXml(stateName, markAsClean);
   xml->setAttribute("NumBands",   getNumBands());
   xml->setAttribute("EffectType", effectTypeString);
@@ -419,14 +432,14 @@ void MultiBandEffect::removeBandEffect(int i)
   updateBandModuleNames();
 }
 
-void MultiBandEffect::clearBandEffects()
+void MultiBandEffect::clearBandEffects(bool notify)
 {
   ScopedLock scopedLock(*lock);
   for(int i = 0; i < perBandModules.size(); i++)
   {
-    sendBandRemovePreNotification(i);  // maybe don't send notifications here
+    if(notify) sendBandRemovePreNotification(i);  // maybe generally don't send notifications here
     delete perBandModules[i];
-    sendBandRemovePostNotification(i);
+    if(notify) sendBandRemovePostNotification(i);
   }
   perBandModules.clear();
 }

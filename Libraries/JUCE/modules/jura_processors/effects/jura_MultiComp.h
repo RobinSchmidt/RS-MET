@@ -177,7 +177,7 @@ protected:
   void removeBandEffect(int index);
 
   /** Removes all per-band effects. */
-  void clearBandEffects();
+  void clearBandEffects(bool callRemoveNotification);
 
   /** Makes sure that the module for each band has the correct moduleName. */
   void updateBandModuleNames();
