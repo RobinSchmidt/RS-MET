@@ -59,7 +59,13 @@ public:
   virtual void reset() override;
   AudioModuleEditor* createEditor() override;
 
+  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+    bool markAsClean) override;
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
+
   virtual void parameterChanged(Parameter* p) override;
+
+
 
   /** Creates the parameters related to the band-splitting. Called from setEffectCore. */
   //virtual void createSplittingParameters();

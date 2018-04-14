@@ -89,6 +89,19 @@ void MultiBandEffect::setEffectType(const juce::String& typeString)
   }
 }
 
+void MultiBandEffect::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  bool markAsClean)
+{
+  ModulatableAudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+}
+
+void MultiBandEffect::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  XmlElement xml = ModulatableAudioModule::getStateAsXml(stateName, markAsClean);
+  return xml;
+}
+
+
 void MultiBandEffect::parameterChanged(Parameter* p)
 {
   ModulatableAudioModule::parameterChanged(p);
@@ -315,6 +328,10 @@ void MultiBandEffect::insertBandEffect(int i)
   // todo (maybe): copy effect settings from the current i-th band-effect (or i-1 or i+1 th?)
   // such that the new band starts with the same settings as the old band from which it was split
   // off
+
+  // we don't make it a child module, because in the child-module array, the band-modules may have
+  // a messed up order due to the user possibly inserting and removing bands randomly - but we need
+  // an ordered array for state storage and recall
 
   insert(perBandModules, m, i);
   updateBandModuleNames();
