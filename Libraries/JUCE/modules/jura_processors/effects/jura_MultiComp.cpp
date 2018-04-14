@@ -109,12 +109,30 @@ void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool s
 {
   ScopedLock scopedLock(*lock);
 
+  if(getNumBands() == 1)
+    return;
+
+  // preliminary - disallow deletion of last bad (would lead to crash):
+  if(index >= getNumBands()-1)
+  {
+    jassertfalse;
+    return;
+  }
+
+
+  selectBand(-1, true); // preliminary...
+  // ...perhaps late do something more sophisticated, like:
+  //if(selectedBand == index || selectedBand == getNumBands()-1)
+  //  selectBand(-1, true);
+  //if(index < selectedBand)
+  //  selectBand(selectedBand-1, true);
+
+
   if(sendNotification)
     sendBandRemovePreNotification(index);  // notify gui (for removing widgets)
 
-
   removeBandEffect(index);
-  core.removeBand(index);
+  core.removeBand(index);      // crashes whe last band is removed
   removeSplitFreqParam(index); // must be done after core.removeBand
 
 
@@ -464,6 +482,8 @@ void MultiBandPlotEditor::openRightClickMenu()
     bandPopup->addItem(ADD_BAND,    "Add band");
     bandPopup->addItem(REMOVE_BAND, "Remove band");
   }
+
+  // todo: when numBands == 1, gray out the Remove band option
 
   // show it:
   int w = bandPopup->getRequiredWidth(true);
