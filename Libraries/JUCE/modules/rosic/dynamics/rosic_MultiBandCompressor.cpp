@@ -35,7 +35,8 @@ void rsMultiBandEffect::setSplitFrequency(int bandIndex, double newFrequency)
 void rsMultiBandEffect::initBands(int numberOfBands)
 {
   splitter.setNumberOfActiveBands(numberOfBands);
-  tmp.resize(numberOfBands);
+  //tmp.resize(numberOfBands);
+  tmp.resize(max(1, numberOfBands)); // at least 1 to avoid access violations
   // more to do, if numberOfBands > 1?
 }
 

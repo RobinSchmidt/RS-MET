@@ -58,6 +58,7 @@ void MultiBandEffect::processBlock(double **inOutBuffer, int numChannels, int nu
 
 void MultiBandEffect::processStereoFrame(double *left, double *right)
 {
+
   jassert(perBandModules.size() == getNumBands());
   core.split(left, right);
   for(int k = 0; k < getNumBands(); k++)  // process individual bands
@@ -103,16 +104,18 @@ void MultiBandEffect::setStateFromXml(const XmlElement& xml, const juce::String&
 {
   sendClearBandsNotification(); // gui will delete all editors and split-freq sliders
 
-  /*
+
   int dbg = getNumBands(); // for debug
 
-  clearBandEffects();
+
   clearSplitFreqParams();
+
+  clearBandEffects();
   core.initBands(0);
 
   dbg = getNumBands(); // for debug
 
-
+  /*
 
 
   size_t numBands = xml.getIntAttribute("NumBands", 1);

@@ -150,8 +150,11 @@ public:
   is at least as long as the number of bands. */
   void processSampleFrame(TSig in, TSig* outs)
   {
+    //if(numActiveBands == 0)
+    //  return;
+
     //int numSplitters = (int) splitters.size(); // use getNumActiveBands
-    int numSplitters = numActiveBands - 1;
+    int numSplitters = numActiveBands - 1; // assume numActiveBands >= 1
     switch(mode)
     {
     case ACCUMULATE_INTO_HIGHPASS: {   // slope accumulates into highpass band

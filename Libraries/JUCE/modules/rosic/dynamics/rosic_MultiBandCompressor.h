@@ -68,7 +68,10 @@ public:
   INLINE void split(double *inL, double *inR)
   {
     rsFloat64x2 in(*inL, *inR);
-    splitter.processSampleFrame(in, &tmp[0]);
+    if(splitter.getNumActiveBands() == 0)
+      tmp[0] = in;
+    else
+      splitter.processSampleFrame(in, &tmp[0]);
   }
 
   /** Recombines the bands from our member arrays tmpL, tmpR into the outputs. Subclasses are 
@@ -76,8 +79,16 @@ public:
   output. */
   INLINE void recombine(double *outL, double *outR)
   {
-    rsFloat64x2 out(0, 0);
-    for(int k = 0; k < getNumberOfBands(); k++)
+    //// old - does not support 0 bands:
+    //rsFloat64x2 out(0, 0);
+    //for(int k = 0; k < getNumberOfBands(); k++)
+    //  out += tmp[k];
+    //*outL = out[0];
+    //*outR = out[1];
+
+    // new:
+    rsFloat64x2 out(*outL, *outR);
+    for(int k = 1; k < getNumberOfBands(); k++)
       out += tmp[k];
     *outL = out[0];
     *outR = out[1];
