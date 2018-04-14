@@ -92,12 +92,22 @@ void MultiBandEffect::setEffectType(const juce::String& typeString)
 void MultiBandEffect::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
+  sendClearBandsNotification(); // gui will delete all editors and split-freq sliders
+  clearSplitFreqParams();
+  clearBandEffects();
+
+
   ModulatableAudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+    // sets the split-frequencies
+
+  sendTotalRefreshNotification(); // gui will create new editors and split-freq sliders
 }
 
 XmlElement* MultiBandEffect::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   XmlElement* xml = ModulatableAudioModule::getStateAsXml(stateName, markAsClean);
+  xml->setAttribute("NumBands",   getNumBands());
+  xml->setAttribute("EffectType", effectTypeString);
   for(size_t i = 0; i < perBandModules.size(); i++) {
     String name = perBandModules[i]->getModuleName();
     XmlElement* child = perBandModules[i]->getStateAsXml(name, markAsClean);
@@ -324,6 +334,18 @@ void MultiBandEffect::sendBandSelectNotification(int index)
     observers[i]->bandWasSelected(this, index);
 }
 
+void MultiBandEffect::sendClearBandsNotification()
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->allBandsWillBeRemoved(this);
+}
+
+void MultiBandEffect::sendTotalRefreshNotification()
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->totalRefreshNeeded(this);
+}
+
 void MultiBandEffect::insertBandEffect(int i)
 {
   ScopedLock scopedLock(*lock);
@@ -354,7 +376,7 @@ void MultiBandEffect::clearBandEffects()
   ScopedLock scopedLock(*lock);
   for(int i = 0; i < perBandModules.size(); i++)
   {
-    sendBandRemovePreNotification(i);
+    sendBandRemovePreNotification(i);  // maybe don't send notifications here
     delete perBandModules[i];
     sendBandRemovePostNotification(i);
   }
@@ -421,6 +443,16 @@ void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)
   // update selection highlighting
   freqRespPlot->setNumFunctionsToPlot(core->getNumberOfBands());
   repaint();
+}
+
+void MultiBandPlotEditor::allBandsWillBeRemoved(MultiBandEffect* mbe)
+{
+
+}
+
+void MultiBandPlotEditor::totalRefreshNeeded(MultiBandEffect* mbe)
+{
+
 }
 
 void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source) // obsolete?
@@ -592,6 +624,16 @@ void MultiBandEffectEditor::bandWasRemoved(MultiBandEffect* mbe, int i)
 void MultiBandEffectEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 {
   updateEditorVisibility();
+}
+
+void MultiBandEffectEditor::allBandsWillBeRemoved(MultiBandEffect* mbe)
+{
+  // clearEditorsAndSplitSliders();
+}
+
+void MultiBandEffectEditor::totalRefreshNeeded(MultiBandEffect* mbe)
+{
+  // createEditorsAndSplitSliders();
 }
 
 void MultiBandEffectEditor::insertBandEditor(int i)

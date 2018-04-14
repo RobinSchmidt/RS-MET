@@ -24,8 +24,14 @@ public:
   /** Called after another band was selected. */
   virtual void bandWasSelected(MultiBandEffect* mbe, int index) = 0;
 
-  /** Called after the state was completely changed, for example due to preset recall. */
-  //virtual void totalRefreshNeeded(MultiBandEffect* mbe);
+  /** Called before all of the band effects and splitters will be removed. An observer should 
+  invalidate all its references to per-band effects and split-frequency parameters and possibly 
+  even delete associated objects (like editors and widgets). The main purpose is to empty the 
+  editor before a new preset is being loaded. */
+  virtual void allBandsWillBeRemoved(MultiBandEffect* mbe) = 0;
+
+  /** Called after the state was completely changed, for example after a preset recall. */
+  virtual void totalRefreshNeeded(MultiBandEffect* mbe) = 0;
 
 };
 
@@ -147,6 +153,10 @@ protected:
   void sendBandRemovePreNotification(int index);
   void sendBandRemovePostNotification(int index);
   void sendBandSelectNotification(int index);
+  void sendClearBandsNotification();
+  void sendTotalRefreshNotification();
+
+
 
   /** Inserts a new per band effect module to the array at the given index. */
   void insertBandEffect(int index);
@@ -195,10 +205,15 @@ public:
   virtual ~MultiBandPlotEditor();
 
   //virtual void parameterChanged(Parameter* p) override;
+
+  // MultiBandEffectObserver overrides:
   virtual void bandWasInserted(  MultiBandEffect* mbe, int index) override;
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
   virtual void bandWasRemoved(   MultiBandEffect* mbe, int index) override;
   virtual void bandWasSelected(  MultiBandEffect* mbe, int index) override;
+  virtual void allBandsWillBeRemoved(MultiBandEffect* mbe) override;
+  virtual void totalRefreshNeeded(MultiBandEffect* mbe) override;
+
 
   virtual void changeListenerCallback(ChangeBroadcaster* source) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
@@ -244,10 +259,13 @@ public:
   virtual void resized() override;
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
 
+  // MultiBandEffectObserver overrides:
   virtual void bandWasInserted(  MultiBandEffect* mbe, int index) override;
   virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
   virtual void bandWasRemoved(   MultiBandEffect* mbe, int index) override;
   virtual void bandWasSelected(  MultiBandEffect* mbe, int index) override;
+  virtual void allBandsWillBeRemoved(MultiBandEffect* mbe) override;
+  virtual void totalRefreshNeeded(MultiBandEffect* mbe) override;
 
 
 protected:
