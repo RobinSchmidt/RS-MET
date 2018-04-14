@@ -98,9 +98,13 @@ void MultiBandEffect::setStateFromXml(const XmlElement& xmlState, const juce::St
 XmlElement* MultiBandEffect::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   XmlElement* xml = ModulatableAudioModule::getStateAsXml(stateName, markAsClean);
+  for(size_t i = 0; i < perBandModules.size(); i++) {
+    String name = perBandModules[i]->getModuleName();
+    XmlElement* child = perBandModules[i]->getStateAsXml(name, markAsClean);
+    xml->addChildElement(child);
+  }
   return xml;
 }
-
 
 void MultiBandEffect::parameterChanged(Parameter* p)
 {
