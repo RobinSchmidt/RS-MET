@@ -98,6 +98,9 @@ void MultiBandEffect::parameterChanged(Parameter* p)
 void MultiBandEffect::insertBand(int index, double splitFrequency, bool sendNotification)
 {
   ScopedLock scopedLock(*lock);
+
+  selectBand(-1, true); // preliminary - avoid weirdness
+
   core.insertBand(index, splitFrequency);
   addSplitFreqParam(index, splitFrequency); // rename to insertSplitFreqParam
   insertBandEffect(index);
@@ -308,6 +311,11 @@ void MultiBandEffect::insertBandEffect(int i)
 {
   ScopedLock scopedLock(*lock);
   AudioModule* m = perBandModuleFactory.createModule(effectTypeString);
+
+  // todo (maybe): copy effect settings from the current i-th band-effect (or i-1 or i+1 th?)
+  // such that the new band starts with the same settings as the old band from which it was split
+  // off
+
   insert(perBandModules, m, i);
   updateBandModuleNames();
 }
