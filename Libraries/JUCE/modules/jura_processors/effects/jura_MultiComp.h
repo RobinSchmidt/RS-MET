@@ -45,6 +45,8 @@ todo:
  though its split-freq slider is correct)...i think, when removing a band, we also need to update
  the split-frequencies in the audio engine ...seems fixed
 -BUG: crash when removing the very last band
+-i think, we need to allow 0 bands in the core - this will be interpreted a bypass
+
 -we may need to acquire the lock all the editor member functions
 -implement state recall
 -implement switching the type of effect
@@ -116,8 +118,17 @@ public:
   double getSplitFreq(int bandIndex) const { return core.getSplitFrequency(bandIndex); }
 
 
+  
   int getSelectedBand() const { return selectedBand; }
-  int getNumBands()     const { return core.getNumberOfBands(); }
+
+  /** Returns the number of bands. This can be zero in which case there is no effect at all. If it 
+  is one, we have have a regular, single broadband effect. */
+  int getNumBands() const;
+
+  /** Returns the number of frequency splitters which is max(0, getNumBands()-1). */
+  int getNumSplits() const;
+
+
   int getBandContainingFrequency(double freq);
 
 

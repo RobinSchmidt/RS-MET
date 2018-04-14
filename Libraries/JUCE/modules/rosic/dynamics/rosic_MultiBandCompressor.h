@@ -33,9 +33,10 @@ public:
   effect (you can't remove all bands - there's always at least one). */
   void removeBand(int index, bool mergeWithRightNeighbour = false);
 
-  /** Initializes the splitter and array for splitter output. After init, the MultiBandEffect will 
-  have one single band. */
-  void initBands();
+  /** Initializes the splitter and array for splitter output. 
+  
+  old: After init, the MultiBandEffect will have one single band. */
+  void initBands(int numberOfBands);
 
 
   void setSplitMode(int newMode);

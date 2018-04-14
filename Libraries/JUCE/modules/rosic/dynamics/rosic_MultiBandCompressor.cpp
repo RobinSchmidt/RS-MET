@@ -1,6 +1,6 @@
 rsMultiBandEffect::rsMultiBandEffect()
 {
-  initBands();
+  initBands(1);
 }
 
 // setup:
@@ -32,10 +32,11 @@ void rsMultiBandEffect::setSplitFrequency(int bandIndex, double newFrequency)
   splitter.setSplitFrequency(bandIndex, newFrequency);
 }
 
-void rsMultiBandEffect::initBands()
+void rsMultiBandEffect::initBands(int numberOfBands)
 {
-  splitter.setNumberOfActiveBands(1);
-  tmp.resize(1);
+  splitter.setNumberOfActiveBands(numberOfBands);
+  tmp.resize(numberOfBands);
+  // more to do, if numberOfBands > 1?
 }
 
 double rsMultiBandEffect::getDecibelsAt(int index, double frequency) const
@@ -106,7 +107,7 @@ void rsMultiBandCompressor::removeBand(int i, bool mergeRight)
 
 void rsMultiBandCompressor::initBands()
 {
-  rsMultiBandEffect::initBands();
+  rsMultiBandEffect::initBands(1);
   clearCompressors();
   compressors.resize(getNumberOfBands());      // should be initially 1
   for(size_t k = 0; k < compressors.size(); k++)

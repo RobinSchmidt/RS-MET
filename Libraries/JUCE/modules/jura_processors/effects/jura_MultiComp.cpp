@@ -13,6 +13,9 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
   AudioModuleFactory& f = perBandModuleFactory;
 
   juce::String s = "";
+  //f.registerModuleType([](CS cs)->AM { return new GainAudioModule(cs); }, s, "StereoPan"); // good for testing the system
+  // Noisifier -> nice effect, Tremolo, Vibrato, WaveShaper
+
   f.registerModuleType([](CS cs)->AM { return new CompressorAudioModule(cs); }, s, "Compressor");
   //f.registerModuleType([](CS cs)->AM { return new FuncShaperAudioModule(cs); }, s, "FuncShaper");
   // ...
@@ -27,9 +30,15 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
   addObservedParameter(p);
   p->setValueChangeCallback<rosic::rsMultiBandEffect>(
     &core, &rosic::rsMultiBandEffect::setSplitMode);
+
+
+  // maybe remove this and start with 0 bands? ...but maybe not
+  core.initBands(1);
+  insertBandEffect(0);
   createSplitFreqParams();
 
-  insertBandEffect(0);
+
+  int numBands = getNumBands(); // for debug
 }
 
 MultiBandEffect::~MultiBandEffect()
@@ -89,16 +98,36 @@ void MultiBandEffect::setEffectType(const juce::String& typeString)
   }
 }
 
-void MultiBandEffect::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+void MultiBandEffect::setStateFromXml(const XmlElement& xml, const juce::String& stateName,
   bool markAsClean)
 {
   sendClearBandsNotification(); // gui will delete all editors and split-freq sliders
-  clearSplitFreqParams();
+
+  /*
+  int dbg = getNumBands(); // for debug
+
   clearBandEffects();
+  clearSplitFreqParams();
+  core.initBands(0);
+
+  dbg = getNumBands(); // for debug
 
 
-  ModulatableAudioModule::setStateFromXml(xmlState, stateName, markAsClean);
-    // sets the split-frequencies
+
+
+  size_t numBands = xml.getIntAttribute("NumBands", 1);
+  //effectTypeString = xml.getStringAttribute("EffectType", "Gain");
+  effectTypeString = xml.getStringAttribute("EffectType", "Compressor");
+
+  for(size_t i = 0; i < numBands; i++) {
+    double freq = xml.getDoubleAttribute("SplitFrequency" + String(i+1), 1000);
+    insertBand((int)i, freq, false);
+  }
+  // this is wrong: there is one split-frequency less than the number of bands
+
+  */
+
+
 
   sendTotalRefreshNotification(); // gui will create new editors and split-freq sliders
 }
@@ -139,8 +168,9 @@ void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool s
 {
   ScopedLock scopedLock(*lock);
 
-  if(getNumBands() == 1)
-    return;
+  //if(getNumBands() == 1)  return;  // no...only return at 0
+  if(getNumBands() == 0)  return;
+    
 
   // preliminary - disallow deletion of last bad (would lead to crash):
   if(index >= getNumBands()-1)
@@ -191,8 +221,8 @@ void MultiBandEffect::setSplitFreq(int bandIndex, double newFreq)
 
 
   // we limit the new splitFreq such that bands remain ordered with ascending frequencies
-  int numBands = getNumBands();
-  if(bandIndex < getNumBands()-1) {
+  int numSplits = getNumSplits();
+  if(bandIndex < numSplits) {
 
     double freqLimit = core.getSplitFrequency(bandIndex+1); // freq of right neighbour
       // ..that's the upper limit - what about the lower limit?
@@ -228,6 +258,20 @@ Parameter* MultiBandEffect::getSplitFreqParam(int bandIndex)
 {
   ScopedLock scopedLock(*lock);
   return splitFreqParams[bandIndex];
+}
+
+int MultiBandEffect::getNumBands() const 
+{ 
+  ScopedLock scopedLock(*lock);
+  jassert(core.getNumberOfBands() == perBandModules.size()); // if they don't match, something is wrong
+  return core.getNumberOfBands(); 
+  //return perBandModules.size(); 
+}
+
+int MultiBandEffect::getNumSplits() const
+{
+  ScopedLock scopedLock(*lock);
+  return jmax(0, getNumBands()-1);
 }
 
 int MultiBandEffect::getBandContainingFrequency(double freq)
@@ -268,7 +312,8 @@ void MultiBandEffect::createSplitFreqParams()
   ScopedLock scopedLock(*lock);
   // clearSplitFreqParams(); // ...maybe later
   size_t numParams = splitFreqParams.size();
-  size_t numSplits = getNumBands()-1;
+  size_t numSplits = getNumSplits();
+
   while(numParams < numSplits) {
     addSplitFreqParam((int)numParams, getSplitFreq((int)numParams));
     numParams++; }
@@ -447,12 +492,12 @@ void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 
 void MultiBandPlotEditor::allBandsWillBeRemoved(MultiBandEffect* mbe)
 {
-
+  repaint();
 }
 
 void MultiBandPlotEditor::totalRefreshNeeded(MultiBandEffect* mbe)
 {
-
+  repaint();
 }
 
 void MultiBandPlotEditor::changeListenerCallback(ChangeBroadcaster* source) // obsolete?
@@ -628,12 +673,13 @@ void MultiBandEffectEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 
 void MultiBandEffectEditor::allBandsWillBeRemoved(MultiBandEffect* mbe)
 {
-  // clearEditorsAndSplitSliders();
+  clearBandEditors();
 }
 
 void MultiBandEffectEditor::totalRefreshNeeded(MultiBandEffect* mbe)
 {
-  // createEditorsAndSplitSliders();
+  createBandEditors();
+  updateSplitSliders();
 }
 
 void MultiBandEffectEditor::insertBandEditor(int i)
@@ -718,8 +764,8 @@ void MultiBandEffectEditor::positionBandEditor(int i)
 void MultiBandEffectEditor::updateSplitSliders()
 {
   RSlider *s;
-  int numBands  = effectToEdit->getNumBands();
-  int numSplits = numBands-1;
+  //int numBands  = effectToEdit->getNumBands();
+  int numSplits = effectToEdit->getNumSplits();
 
   // make sure that number of split-sliders matches number of split-parameters:
   while(splitFreqSliders.size() > numSplits) {
