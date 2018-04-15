@@ -145,6 +145,8 @@ public:
   order. Used for debugging. */
   bool areBandsInIncreasingOrder(bool strictly = false);
 
+  /** Returns true, if the band is given index is removable (for technical reasons, the rightmost
+  band is not removable - todo: lift that restriction). */
   bool isBandRemovable(int index);
 
 
@@ -234,6 +236,10 @@ protected:
   the index of the band inside of which the mouse-click occured (required because available options 
   may be different for different bands) */
   virtual void openRightClickMenu(int bandIndex);
+
+  /** Refreshes the content of our freqRespPlot member, i.e. the frequency response curves. */
+  virtual void refreshFunctionsToPlot();
+
 
   rosic::rsMultiBandEffect* core;
   jura::MultiBandEffect* module; 

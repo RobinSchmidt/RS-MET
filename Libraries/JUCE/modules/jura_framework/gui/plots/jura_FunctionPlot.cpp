@@ -1,3 +1,9 @@
+void rsFunctionPlot::init()
+{
+  functions.clear();
+  specialPoints.clear();
+  numFunctionsToPlot = 0;
+}
 
 void rsFunctionPlot::addFunction(std::function<double(double)> function)
 {

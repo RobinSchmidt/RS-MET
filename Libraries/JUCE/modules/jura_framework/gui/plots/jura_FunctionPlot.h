@@ -21,6 +21,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
+  /** Puts the object back into it's initial state which it has after construction. */
+  virtual void init();
+
   /** Adds a function to be plotted. It will receive the x-value (in model-coordinates) and should
   return the corresponding y-value (also in model-coordinates). For example, it could receive a 
   frequency in Hz and output a magnitude level in decibels. */

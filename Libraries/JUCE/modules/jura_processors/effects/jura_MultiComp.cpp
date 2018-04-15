@@ -497,7 +497,7 @@ void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 
 void MultiBandPlotEditor::allBandsWillBeRemoved(MultiBandEffect* mbe)
 {
-  repaint();
+  repaint(); //?
 }
 
 void MultiBandPlotEditor::totalRefreshNeeded(MultiBandEffect* mbe)
@@ -605,6 +605,14 @@ void MultiBandPlotEditor::openRightClickMenu(int bandIndex)
   int h = bandPopup->getRequiredHeight(true);
   bandPopup->selectItemByIndex(-1, false);    // select nothing - maybe write a specific fucntion for that
   bandPopup->showAtMousePosition(true, w, h); // showModally = true
+}
+
+void MultiBandPlotEditor::refreshFunctionsToPlot()
+{
+  freqRespPlot->init();
+  for(int i = 0; i < core->getNumberOfBands(); i++)
+    freqRespPlot->addFunction([=](double f)->double { return core->getDecibelsAt(i, f); });
+  repaint();
 }
 
 //=================================================================================================
