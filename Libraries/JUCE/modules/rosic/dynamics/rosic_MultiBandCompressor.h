@@ -85,6 +85,7 @@ public:
     //  out += tmp[k];
     //*outL = out[0];
     //*outR = out[1];
+    // maybe get rid of support of 0 bands again (not needed anymore)
 
     // new:
     rsFloat64x2 out(*outL, *outR);
