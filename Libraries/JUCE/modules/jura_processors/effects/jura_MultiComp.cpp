@@ -118,6 +118,7 @@ void MultiBandEffect::setStateFromXml(const XmlElement& xml, const juce::String&
   clearBandEffects(false); // don't notify gui, because it already has deleted the editors
   core.initBands(0);       // may be redundant
 
+
   dbg = getNumBands();     // for debug
 
 
@@ -127,20 +128,17 @@ void MultiBandEffect::setStateFromXml(const XmlElement& xml, const juce::String&
   //insertBand(0, 0, false);
   core.initBands(1);
   insertBandEffect(0);
+  createSplitFreqParams();
   dbg = getNumBands(); // for debug
 
 
 
   for(size_t i = 1; i < numBands; i++) {
     double freq = xml.getDoubleAttribute("SplitFrequency" + String(i), 1000);
-    insertBand((int)i, freq, false);
+    insertBand((int)(i-1), freq, false);
   }
 
-  /*
-  core.initBands(1);
-  insertBandEffect(0);
-  createSplitFreqParams();
-  */
+  // todo: restore the states of the per-band modules
 
   // maybe get rid of support of 0 bands
 
