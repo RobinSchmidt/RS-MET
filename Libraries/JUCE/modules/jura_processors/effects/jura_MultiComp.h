@@ -145,6 +145,8 @@ public:
   order. Used for debugging. */
   bool areBandsInIncreasingOrder(bool strictly = false);
 
+  bool isBandRemovable(int index);
+
 
 protected:
 
@@ -228,7 +230,10 @@ public:
 
 protected:
 
-  virtual void openRightClickMenu();
+  /** Opens the right-click context menu for inserting and removing bands. It takes as parameter 
+  the index of the band inside of which the mouse-click occured (required because available options 
+  may be different for different bands) */
+  virtual void openRightClickMenu(int bandIndex);
 
   rosic::rsMultiBandEffect* core;
   jura::MultiBandEffect* module; 
@@ -242,7 +247,7 @@ protected:
     REMOVE_BAND
   };
 
-  double freqAtMouse = 0;
+  double freqAtMouse = 0; // why is this a member
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandPlotEditor)
 };

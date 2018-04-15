@@ -305,6 +305,11 @@ bool MultiBandEffect::areBandsInIncreasingOrder(bool strictly)
   return true;
 }
 
+bool MultiBandEffect::isBandRemovable(int index)
+{
+  return index < getNumBands()-1;
+}
+
 // split-freq param handling:
 
 void MultiBandEffect::createSplitFreqParams()
@@ -518,11 +523,12 @@ void MultiBandPlotEditor::rPopUpMenuChanged(RPopUpMenu* menu)
 
 void MultiBandPlotEditor::mouseDown(const MouseEvent& e)
 {
-  freqAtMouse = freqRespPlot->fromPixelX(e.x); 
+  freqAtMouse = freqRespPlot->fromPixelX(e.x);   
+  int index = module->getBandContainingFrequency(freqAtMouse);
 
   if(e.mods.isLeftButtonDown()) {
     // select band whose rectangle contains the mouse-event:
-    int index = module->getBandContainingFrequency(freqAtMouse);
+
     if(index == module->getSelectedBand())
       module->selectBand(-1, true); // de-select, when a band is clicked again
     else
@@ -533,7 +539,7 @@ void MultiBandPlotEditor::mouseDown(const MouseEvent& e)
     //p->setValue(index, true, true);
   }
   else if(e.mods.isRightButtonDown())
-    openRightClickMenu();
+    openRightClickMenu(index);
 }
 
 void MultiBandPlotEditor::paintOverChildren(Graphics& g)
@@ -577,7 +583,7 @@ void MultiBandPlotEditor::resized()
   freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
 }
 
-void MultiBandPlotEditor::openRightClickMenu()
+void MultiBandPlotEditor::openRightClickMenu(int bandIndex)
 {
   // create popup, if necessary:
   if(bandPopup == nullptr)
@@ -589,7 +595,10 @@ void MultiBandPlotEditor::openRightClickMenu()
     bandPopup->addItem(REMOVE_BAND, "Remove band");
   }
 
-  // todo: when numBands == 1, gray out the Remove band option
+  if(module->isBandRemovable(bandIndex))
+    bandPopup->setItemEnabled(REMOVE_BAND, true);
+  else
+    bandPopup->setItemEnabled(REMOVE_BAND, false); // doesn't work - why? bug?
 
   // show it:
   int w = bandPopup->getRequiredWidth(true);
