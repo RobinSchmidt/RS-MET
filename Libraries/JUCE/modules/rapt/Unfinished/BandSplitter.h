@@ -216,4 +216,41 @@ protected:
 
 };
 
+//=================================================================================================
+/* Ideas
+
+To make it more general in order to allow each 2-way splitter to be any kind of splitter (FIR, 
+Linkwitz/Riley, perfect-reconstruction-IIR and maybe more) and also to allow each splitter to be
+of a different kind than the others, maybe we could devise a suitable datastructure to encapsulate
+the nesting of splitters together with compensation allpasses and delays.
+
+maybe like this:
+
+template<class TSig, class TPar>
+class BandSplitterBase
+{
+public:
+
+  virtual int getNumOutputBands() = 0;
+  virtual void split(TSig in, TSig* bandOuts) = 0;
+  virtual void recombine(TSig* bandIns, TSig* sum) = 0;
+
+  // used for compensation delays and allpasses :
+
+  // Returns the amount of delay that this splitter subclass produces.
+  virtual int getDelay() { return 0; }
+
+  // Returns the order of the allpass that will be inflicted on the recombined signal.
+  virtual int getAllpassOrder() { return 0; }
+
+  // Fills the given array with the allpass poles. Should be of length equal to the return value of 
+  // getAllpassOrder()
+  virtual void getAllpassPoles(std::complex<TPar>* poles) {}
+};
+
+
+
+
+*/
+
 #endif
