@@ -67,13 +67,11 @@ public:
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
   AudioModuleEditor* createEditor() override;
-
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   virtual void parameterChanged(Parameter* p) override;
-
 
 
   /** Creates the parameters related to the band-splitting. Called from setEffectCore. */
@@ -117,8 +115,7 @@ public:
   /** Returns the upper cutoff frequency for the band with given index. */
   double getSplitFreq(int bandIndex) const { return core.getSplitFrequency(bandIndex); }
 
-
-  
+  /** Returns index of the band that is currently selected (-1, if none). */
   int getSelectedBand() const { return selectedBand; }
 
   /** Returns the number of bands. This can be zero in which case there is no effect at all. If it 
@@ -128,9 +125,10 @@ public:
   /** Returns the number of frequency splitters which is max(0, getNumBands()-1). */
   int getNumSplits() const;
 
-
+  /** Returns the band that contains the given frequency (assumes ordered, non-overlapping 
+  bands ...todo: somehow it should work reasonably also with unordered and/or overlapping 
+  bands). */
   int getBandContainingFrequency(double freq);
-
 
   /** Returns an array of strings of names of the available effect types. The elements of this 
   array can be used as arguments for setEffectType. */
@@ -157,8 +155,6 @@ protected:
   void removeSplitFreqParam(int index);
   void updateSplitFreqParamNamesAndCallbacks();
 
-
-
   // notification senders:
   void sendBandInsertNotification(int index);
   void sendBandRemovePreNotification(int index);
@@ -166,8 +162,6 @@ protected:
   void sendBandSelectNotification(int index);
   void sendClearBandsNotification();
   void sendTotalRefreshNotification();
-
-
 
   /** Inserts a new per band effect module to the array at the given index. */
   void insertBandEffect(int index);
@@ -225,10 +219,9 @@ public:
   virtual void allBandsWillBeRemoved(MultiBandEffect* mbe) override;
   virtual void totalRefreshNeeded(MultiBandEffect* mbe) override;
 
-
+  // other callbacks:
   virtual void changeListenerCallback(ChangeBroadcaster* source) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
-
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void paintOverChildren(Graphics& g) override;
   virtual void resized() override;
@@ -313,9 +306,8 @@ protected:
   connecting the to their parameters and setting up their positions. */
   virtual void updateSplitSliders();
 
+  /** Updates the bounds of the sliders for the split frequencies. */
   virtual void updateSplitSliderPositions();
-
-
 
   // widgets:
   MultiBandPlotEditor* plotEditor;
@@ -323,8 +315,6 @@ protected:
   std::vector<RSlider*> splitFreqSliders;         // sliders for splitting frequencies
   std::vector<AudioModuleEditor*> perBandEditors; // sub editor array (one editor for each band)
   MultiBandEffect* effectToEdit;                  // pointer to the edited multiband effect
-
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffectEditor)
 };

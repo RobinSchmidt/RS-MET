@@ -36,9 +36,7 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
   core.initBands(1);
   insertBandEffect(0);
   createSplitFreqParams();
-
-
-  int numBands = getNumBands(); // for debug
+  // maybe factor out into init-function (it's called in the same sequence in setState)
 }
 
 MultiBandEffect::~MultiBandEffect()
@@ -95,6 +93,8 @@ void MultiBandEffect::setEffectType(const juce::String& typeString)
     // todo: 
     // -replace modules in all pre-band slots with the new selected type
     // -notify gui about that change, so it can replace the editors
+    // -or: allow the type of effect only to be changed when the number of bands is 0
+    // -maybe have a clear button that completely deletes all bands
   }
 }
 
@@ -105,11 +105,9 @@ void MultiBandEffect::setStateFromXml(const XmlElement& xml, const juce::String&
 
   sendClearBandsNotification(); // gui will delete all editors and split-freq sliders
 
-
   size_t numBands = xml.getIntAttribute("NumBands", 1);
   //effectTypeString = xml.getStringAttribute("EffectType", "Gain");
   effectTypeString = xml.getStringAttribute("EffectType", "Compressor");
-
 
   clearSplitFreqParams();
   clearBandEffects(false); // don't notify gui, because it already has deleted the editors
@@ -127,8 +125,6 @@ void MultiBandEffect::setStateFromXml(const XmlElement& xml, const juce::String&
     if(childXml != nullptr)
       perBandModules[i]->setStateFromXml(*childXml, "", markAsClean);
   }
-
-  
 
   sendTotalRefreshNotification(); // gui will create new editors and split-freq sliders
 }
