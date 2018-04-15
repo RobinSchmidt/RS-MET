@@ -59,7 +59,7 @@ void MultiBandEffect::processStereoFrame(double *left, double *right)
   jassert(perBandModules.size() == getNumBands());
   core.split(left, right);
   for(int k = 0; k < getNumBands(); k++)  // process individual bands
-    perBandModules[k]->processStereoFrame(left, right);
+    perBandModules[k]->processStereoFrame(core.getLeft(k), core.getRight(k));
   core.recombine(left, right);
 }
 
