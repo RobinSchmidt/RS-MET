@@ -227,29 +227,96 @@ the nesting of splitters together with compensation allpasses and delays.
 maybe like this:
 
 template<class TSig, class TPar>
-class BandSplitterBase
+class rsBandSplitterBase
 {
 public:
 
-  virtual int getNumOutputBands() = 0;
-  virtual void split(TSig in, TSig* bandOuts) = 0;
-  virtual void recombine(TSig* bandIns, TSig* sum) = 0;
+  virtual int getNumBands() const = 0;
+  virtual void split(TSig in, TSig* bandOuts) const = 0;
+  virtual void recombine(TSig* bandIns, TSig* sum) const = 0;
 
   // used for compensation delays and allpasses :
 
   // Returns the amount of delay that this splitter subclass produces.
-  virtual int getDelay() { return 0; }
+  virtual int getDelay() const { return 0; }
 
   // Returns the order of the allpass that will be inflicted on the recombined signal.
-  virtual int getAllpassOrder() { return 0; }
+  virtual int getAllpassOrder() const { return 0; }
 
   // Fills the given array with the allpass poles. Should be of length equal to the return value of 
   // getAllpassOrder()
-  virtual void getAllpassPoles(std::complex<TPar>* poles) {}
+  virtual void getAllpassPoles(std::complex<TPar>* poles) const {}
+
+  // maybe it's too restrictive to require the compensation filter to be an allpass - allow any 
+  // kind of compensation filter
+};
+
+class rsBandSplitterTwoWay : public rsBandSplitterBase
+{
+public:
+  virtual int getNumBands() const override { return 2; }
+};
+
+class rsBandSplitCompensationFilter
+{
+// must implement an integer delayline and a chain of allpass filters
+}
+
+class rsBandSplitter : public rsBandSplitterBase
+{
+public:
+
+  virtual int getNumBands() const override; // recursively calls getNumBands on nested splitters
+  virtual void split(TSig in, TSig* bandOuts) const override;
+  virtual void recombine(TSig* bandIns, TSig* sum) const override;
+
+  virtual int getDelay() const override;
+  virtual int getAllpassOrder() const override;
+  virtual void getAllpassPoles(std::complex<TPar>* poles) const override;
+
+
+  virtual void split(TSig in, TSig* bandOuts) const override
+  {
+    // apply twoWaySplitter to produce low and high band
+    // pass these signals to splitterLow and splitterHigh
+  }
+
+  virtual void recombine(TSig* bandIns, TSig* sum) const override
+  {
+    // obtain recombinded low and high band from splitterLow, splitterHigh
+    // apply compensation filters
+    // add results and store in sum
+  }
+
+protected:
+
+  rsBandSplitterTwoWay* twoWaySplitter;
+  rsBandSplitter *splitterLow, *splitterHigh;
+  rsBandSplitCompensationFilter compensationFilterLow, compensationFilterHigh;
+
 };
 
 
+// the actual splitting filter classes:
+class rsBansSplitterTwoWayPerfect : public rsBandSplitterTwoWay
+{
+  // implements perfect reconstruction IIR band splitter
+};
 
+class rsBandSplitterTwoWayLinear : public rsBandSplitterTwoWay
+{
+  // implements linear phase FIR band splitter
+public:
+  virtual int getDelay() const override;
+};
+
+class rsBandSplitterTwoWayLinkwitzRiley : public rsBandSplitterTwoWay
+{
+  // implements Linkwitz/Riley band splitter
+public:
+  virtual int getAllpassOrder() const override;
+  virtual void getAllpassPoles(std::complex<TPar>* poles) const override;
+};
 
 */
 

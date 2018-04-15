@@ -79,17 +79,9 @@ public:
   output. */
   INLINE void recombine(double *outL, double *outR)
   {
-    //// old - does not support 0 bands:
-    //rsFloat64x2 out(0, 0);
-    //for(int k = 0; k < getNumberOfBands(); k++)
-    //  out += tmp[k];
-    //*outL = out[0];
-    //*outR = out[1];
-    // maybe get rid of support of 0 bands again (not needed anymore)
-
-    // new:
-    rsFloat64x2 out(*outL, *outR);
-    for(int k = 1; k < getNumberOfBands(); k++)
+    if(getNumberOfBands() == 0) return; // bypassed, also needed to avoid access violation
+    rsFloat64x2 out(0, 0);
+    for(int k = 0; k < getNumberOfBands(); k++)
       out += tmp[k];
     *outL = out[0];
     *outR = out[1];

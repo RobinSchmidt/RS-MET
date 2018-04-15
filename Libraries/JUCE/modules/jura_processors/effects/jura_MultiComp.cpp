@@ -103,6 +103,8 @@ void MultiBandEffect::setStateFromXml(const XmlElement& xml, const juce::String&
 {
   ScopedLock scopedLock(*lock);
 
+  selectBand(-1, true); 
+
   sendClearBandsNotification(); // gui will delete all editors and split-freq sliders
 
   size_t numBands = xml.getIntAttribute("NumBands", 1);
@@ -672,12 +674,14 @@ void MultiBandEffectEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 void MultiBandEffectEditor::allBandsWillBeRemoved(MultiBandEffect* mbe)
 {
   clearBandEditors();
+  updateEditorVisibility();
 }
 
 void MultiBandEffectEditor::totalRefreshNeeded(MultiBandEffect* mbe)
 {
   createBandEditors();
   updateSplitSliders();
+  updateEditorVisibility();
 }
 
 void MultiBandEffectEditor::insertBandEditor(int i)

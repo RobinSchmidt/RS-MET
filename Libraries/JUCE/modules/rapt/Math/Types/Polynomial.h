@@ -183,6 +183,7 @@ public:
   /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
   \f[ x_0 = -\frac{b}{a} \f] */
   static T getRootOfLinearEquation(T a, T b);
+    // rename to rootLinear
 
   /** Computes the two roots of the quadratic equation: \f[ a x^2 + b x + c = 0 \f] which are
   given by: \f[ x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a} \f] and stores the result in two-element
@@ -196,6 +197,19 @@ public:
   two-element array (or a one-element array, when b is also zero). */
   static std::vector<std::complex<T>> getRootsOfCubicEquation(T a, T b, T c, 
     T d);
+
+
+  /** Computes the two roots of the quadratic equation: \f[ a x^2 + b x + c = 0 \f] and stores them
+  in x1, x2. When the equation has two real roots, they will be returned in ascending order, i.e. 
+  x1 < x2. In case of a (real) double root, we'll have x1 == x2 and when the roots of the equation 
+  are actually complex, the outputs will also be equal and contain the real part of the complex 
+  conjugate pair. */
+  static void rootsQuadraticReal(T a, T b, T c, T* x1, T* x2);
+
+  //static void rootsQuadraticComplex(T a, T b, T c, std::complex<T>* x1, std::complex<T>* x2);
+  // implement rootsQuadraticReal, rootsQuadraticComplex, rootsCubicReal, rootsCubicComplex
+  // rootsQuarticReal, rootsQuarticComplex
+  //
 
   /** Iteratively improves an initial estimate for the root of the cubic equation:
   \f[ a x^3 + b x^2 + c x + d = 0               \f]

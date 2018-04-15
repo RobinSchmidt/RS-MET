@@ -629,6 +629,22 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
 
   return roots;
 }
+// this is a mess - use formulas from
+// http://mathworld.wolfram.com/CubicFormula.html
+// eq. 54..56
+
+template<class T>
+void rsPolynomial<T>::rootsQuadraticReal(T a, T b, T c, T* x1, T* x2)
+{
+  // Solutions: x1,x2 = (-b +- sqrt(b^2-4*a*c)) / (2*a):
+  T s = T(1) / (2*a);         // scaler
+  T d = b*b - 4*a*c;          // discriminant
+  d   = sqrt(rsMax(d, T(0))); // we return the real part of the complex conjugate pair in case...
+  *x1 = (-b-d) * s;           // ...of a negative discriminant, we return the roots in ascending...
+  *x2 = (-b+d) * s;           // order, so the one with minus in the formula comes first
+}
+// is the formula (numerically) the same as the pq-formula? if not, which one is better -> test
+
 
 template<class T>
 T rsPolynomial<T>::getCubicRootNear(T x, T a, T b, T c, T d,
