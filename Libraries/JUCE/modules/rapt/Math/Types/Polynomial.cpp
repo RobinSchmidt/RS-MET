@@ -41,6 +41,7 @@ void rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T
   rsArray::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
 }
 
+
 template <class T>
 void rsPolynomial<T>::multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)
 {
@@ -92,18 +93,19 @@ void rsPolynomial<T>::polyCoeffsForNegativeArgument(T *a, T *am, int N)
 template <class T>
 void rsPolynomial<T>::polyCoeffsForShiftedArgument(T *a, T *as, int N, T x0)
 {
+  rsUint32 Nu = rsUint32(N); // used to fix warnings
   rsUint32 numLines = N+1;
   rsUint32 length   = (numLines*(numLines+1))/2;
   rsUint32 *pt = new rsUint32[length];
   rsCreatePascalTriangle(pt, numLines);
   T *x0n = new T[N+1];  // +- x0^n
   x0n[0] = 1.0;
-  for(rsUint32 n = 1; n <= N; n++)
+  for(rsUint32 n = 1; n <= Nu; n++)
     x0n[n] = -x0 * x0n[n-1];
-  for(rsUint32 n = 0; n <= N; n++)
+  for(rsUint32 n = 0; n <= Nu; n++)
   {
     as[n] = 0.0;
-    for(rsUint32 k = n; k <= N; k++)
+    for(rsUint32 k = n; k <= Nu; k++)
       as[n] += rsPascalTriangle(pt, k, k-n) * x0n[k-n] * a[k];
   }
   delete[] pt;
@@ -135,7 +137,7 @@ void rsPolynomial<T>::polyFiniteDifference(T *a, T *ad, int N, int direction, T 
 
   // actual coefficient computation for ad:
   rsArray::fillWithZeros(ad, N);
-  for(unsigned int n = 0; n <= N; n++)
+  for(unsigned int n = 0; n <= (rsUint32)N; n++)
   {
     for(unsigned int k = 1; k <= n; k++)
       ad[n-k] += a[n] * rsPascalTriangle(binomCoeffs, n, k) * hk[k];
@@ -517,8 +519,8 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfQuadraticEquation(
   }
 
   std::vector<std::complex<T>> roots(2); // array to be returned
-  T D      = b*b - 4.0*a*c;  // discriminant
-  T factor = 1.0 / (2.0*a);  // common factor that appears everywhere
+  T D      = b*b - T(4)*a*c;   // discriminant
+  T factor = T(1) / (T(2)*a);  // common factor that appears everywhere
   if( D > 0.0 )
   {
     // D > 0: two distinct real roots:
@@ -556,8 +558,8 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
 
   // compute p,q as in the Bronstein page 40, Eq. 1.154c and the offset for the substitution
   // y = x + b/(3*a):
-  T p = (3.0*a*c-b*b)/(9.0*a*a);
-  T q = (b*b*b)/(27.0*a*a*a) - (b*c)/(6.0*a*a) + d/(2.0*a);
+  T p = (T(3)*a*c-b*b)/(T(9)*a*a);
+  T q = (b*b*b)/(T(27)*a*a*a) - (b*c)/(T(6)*a*a) + d/(T(2)*a);
 
   T u, r, D, phi, ch, sh, re, im, tmp;
 
@@ -569,7 +571,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
   else if( p != 0.0 && q == 0.0 )
   {
     y[2] = 0.0;                       // a real root at y=0 and ...
-    u    = -3.0*p;
+    u    = -T(3)*p;
     if( u > 0.0 )
     {
       tmp  =  rsSqrt(u);
@@ -587,19 +589,19 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
   }
   else if( p == 0.0 && q != 0.0 )
   {
-    u = -2.0*q;
+    u = -T(2)*q;
     if( u > 0.0 )
     {
-      tmp  = pow(u, 1.0/3.0);
+      tmp  = pow(u, T(1.0/3.0));
       y[2] = tmp;                     // a real root at a positive y or ...
-      phi  = (2.0/3.0)*PI;
+      phi  = T((2.0/3.0)*PI);
       // checked with x^3+3*x^2+3*x
     }
     else // u < 0.0
     {
-      tmp  = pow(-u, 1.0/3.0);
+      tmp  = pow(-u, T(1.0/3.0));
       y[2] = -tmp;                    // ... a real root at a negative y and ...
-      phi  = PI/3.0;
+      phi  = T(PI/3.0);
       // checked with x^3+3*x^2+3*x+10
     }
     rsSinCos(phi, &im, &re);
@@ -613,11 +615,11 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
     r = rsSign(q) * rsSqrt(fabs(p));
     if( p > 0.0 )
     {
-      phi       = rsAsinh( q/(r*r*r) );
+      phi = rsAsinh( q/(r*r*r) );
       rsSinhCosh(phi/T(3), &sh, &ch);
-      y[0] = std::complex<T>(r*sh,  rsSqrt(3.0)*r*ch);
-      y[1] = std::complex<T>(r*sh, -rsSqrt(3.0)*r*ch);
-      y[2] = -2.0*r*sh;
+      y[0] = std::complex<T>(r*sh,  rsSqrt(T(3))*r*ch);
+      y[1] = std::complex<T>(r*sh, -rsSqrt(T(3))*r*ch);
+      y[2] = -T(2)*r*sh;
       // checked with y = (x-i)*(x+i)*(x-1) = x^3-x^2+x-1
     }
     else // p < 0.0
@@ -627,24 +629,24 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
       {
         phi  = rsAcosh( q/(r*r*r) );
         rsSinhCosh(phi/T(3), &sh, &ch);
-        y[0] = std::complex<T>(r*ch,  rsSqrt(3.0)*r*sh);
-        y[1] = std::complex<T>(r*ch, -rsSqrt(3.0)*r*sh);
-        y[2] = -2.0*r*ch;
+        y[0] = std::complex<T>(r*ch,  rsSqrt(T(3))*r*sh);
+        y[1] = std::complex<T>(r*ch, -rsSqrt(T(3))*r*sh);
+        y[2] = -T(2)*r*ch;
         // checked with y = (x-i)*(x+i)*(x-3) = x^3-3*x^2+x-3
       }
       else // D <= 0.0
       {
         phi  = acos( q/(r*r*r) );
-        y[0] =  2.0*r*cos(PI/3.0 + phi/3.0);
-        y[1] =  2.0*r*cos(PI/3.0 - phi/3.0);
-        y[2] = -2.0*r*cos(         phi/3.0);       // three distinct real roots
+        y[0] =  T(2)*r*cos(T(PI/3.0 + phi/3.0));
+        y[1] =  T(2)*r*cos(T(PI/3.0 - phi/3.0));
+        y[2] = -T(2)*r*cos(T(         phi/3.0));       // three distinct real roots
         // checked
       }
     }
   }
 
   // obtain the results for the original equation (back-substitution):
-  T s = b/(3.0*a);
+  T s = b/(T(3)*a);
   roots[0] = y[0]-s;
   roots[1] = y[1]-s;
   roots[2] = y[2]-s;
@@ -684,14 +686,14 @@ T rsPolynomial<T>::getCubicRootNear(T x, T a, T b, T c, T d,
   T f, df, xNew;
 
   f    = ((a*x+b)*x+c)*x+d;
-  df   = (3.0*a*x+2.0*b)*x+c;
+  df   = (T(3)*a*x+T(2)*b)*x+c;
   xNew = x - f/df;
   int i = 1;
   while( xNew != x && i < maxIterations )
   {
     x    = xNew;
     f    = ((a*x+b)*x+c)*x+d;
-    df   = (3.0*a*x+2.0*b)*x+c;
+    df   = (T(3)*a*x+T(2)*b)*x+c;
     xNew = x - f/df;
     i++;
   }
@@ -746,16 +748,16 @@ void rsPolynomial<T>::rsCubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy)
   a[0] = y[0];
   a[1] = dy[0];
   a[2] = 3*(y[1]-a[1]-a[0])-dy[1]+a[1];
-  a[3] = (1.0/3.0)*(dy[1]-2*a[2]-a[1]);
+  a[3] = T(1.0/3.0)*(dy[1]-2*a[2]-a[1]);
 }
 
 template<class T>
 void rsPolynomial<T>::rsCubicCoeffsFourPoints(T *a, T *y)
 {
   a[0] = y[0];
-  a[2] = 0.5*(y[-1]+y[1]-2*a[0]);
-  a[3] = (1.0/6.0)*(y[2]-y[1]+y[-1]-a[0]-4*a[2]);
-  a[1] = 0.5*(y[1]-y[-1]-2*a[3]);
+  a[2] = T(0.5)*(y[-1]+y[1]-2*a[0]);
+  a[3] = T(1.0/6.0)*(y[2]-y[1]+y[-1]-a[0]-4*a[2]);
+  a[1] = T(0.5)*(y[1]-y[-1]-2*a[3]);
 }
 
 template<class T>
@@ -820,7 +822,7 @@ void rsPolynomial<T>::fitQuadratic(T *a, T *x, T *y)
 template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, T *y)
 {
-  a[2] = 0.5*(y[0]+y[2])-y[1];
+  a[2] = T(0.5)*(y[0]+y[2])-y[1];
   a[1] = y[1]-y[0]-a[2];
   a[0] = y[0];
 }
@@ -973,8 +975,7 @@ void rsPolynomial<T>::rsJacobiPolynomialRecursionCoeffs(int n, T a, T b, T *w0, 
 }
 
 template<class T>
-void rsPolynomial<T>::rsJacobiPolynomialRecursion(T *c, int n, T *c1, T *c2, T a,
-  T b)
+void rsPolynomial<T>::rsJacobiPolynomialRecursion(T *c, int n, T *c1, T *c2, T a, T b)
 {
   // initialization:
   if( n == 0 )
@@ -984,8 +985,8 @@ void rsPolynomial<T>::rsJacobiPolynomialRecursion(T *c, int n, T *c1, T *c2, T a
   }
   if( n == 1 )
   {
-    c[0] = 0.5*(a-b);
-    c[1] = 0.5*(a+b+2);
+    c[0] = T(0.5)*(a-b);
+    c[1] = T(0.5)*(a+b+2);
     return;
   }
 

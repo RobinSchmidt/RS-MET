@@ -705,8 +705,8 @@ T rsSinh(T x)
 template<class T>
 void rsSinhCosh(T x, T *s, T *c)
 {
-  T ep = 0.5*exp(x);
-  T em = 0.25/ep;
+  T ep = T(0.5)*exp(x);
+  T em = T(0.25)/ep;
   *s   = ep-em;
   *c   = ep+em;
 }

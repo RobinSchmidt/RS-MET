@@ -177,6 +177,7 @@ bool polynomialRootsUnitTest()
   r &= cr1 == C(2, -1);
   r &= cr2 == C(2, +1);
 
+  // todo: fix warnings, implement cubic qnd quartic formulas
   
   // quartic p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52,  roots: 2+3i, 2-3i, -1, 4
 
