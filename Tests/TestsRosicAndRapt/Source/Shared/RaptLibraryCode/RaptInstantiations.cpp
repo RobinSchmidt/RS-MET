@@ -40,6 +40,8 @@ template void RAPT::rsArray::fillWithRandomValues(float* x, int N, double min, d
 template void RAPT::rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 
 // Math:
+//template RAPT::rsPolynomial<float>; // does not yet compile - needs some updates
+
 template int RAPT::rsClip(int x, int min, int max);
 template RAPT::rsConicSection<float>;
 template RAPT::rsRotationXY<double>;

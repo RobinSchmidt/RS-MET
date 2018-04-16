@@ -206,7 +206,11 @@ public:
   conjugate pair. */
   static void rootsQuadraticReal(T a, T b, T c, T* x1, T* x2);
 
-  //static void rootsQuadraticComplex(T a, T b, T c, std::complex<T>* x1, std::complex<T>* x2);
+  static void rootsQuadraticComplex(std::complex<T> a, std::complex<T> b, std::complex<T> c, 
+    std::complex<T>* x1, std::complex<T>* x2);
+  // todo: make optimized version for real coefficients
+
+
   // implement rootsQuadraticReal, rootsQuadraticComplex, rootsCubicReal, rootsCubicComplex
   // rootsQuarticReal, rootsQuarticComplex
   //

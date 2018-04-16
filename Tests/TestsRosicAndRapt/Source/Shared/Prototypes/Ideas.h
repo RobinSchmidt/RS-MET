@@ -77,6 +77,33 @@ Graph synth:
  \left(\cos\left(t\right)\cdot r\left(t\right),\ \sin\left(t\right)\cdot r\left(t\right)\right)
  https://www.desmos.com/calculator/hgg7kzkswn
 
+Implicit equation solver:
+-finds a set of solutions to the implicit equation f(x,y) = 0, i.e. fills x,y arrays with solutions
+ to this equation
+-each solution is constructed from an initial point x0,y0 in such a way that the distance between
+ x0,y0 and the point x,y on the curve that satisfies f(x,y) = 0 is minimized
+-the initial points x0,y0 for filling the array can be constructed by some formula, for example, we 
+ could use points on the unit circle or unit square
+-definet the square of the distance between (x,y) and (x0,y0) as: 
+ d2(x,y) := (x-x0)^2 + (y-y0)^2
+-partial derivatives of d2 with respect to x and y are given by: dx = 2(x-x0), dy = 2(y-y0)
+-or solution must satisfy the equation: F(x,y) := f(x,y) + dx^2 + dy^2 = 0, or:
+ F(x,y) = f(x,y) + 4*((x-x0)^2 + (y-y0)^2)
+-use 2D Newton iteration to solve F(x,y) = 0 using x0, y0 as initial guess
+-actually, the factor 4 in this equation could be any nonzero factor, maybe it makes sense
+ check, how the factor influences the convergence of the iteration, maybe it could be an optional
+ parameter to the routine that defaults to 4...or maybe some other experimentally determined value
+ that most often leads to fastest convergence
+
+Equation synth ("Equator", "Formula..", "Solv..."):
+-use a func-shape like input to let the user define signal shapes via equations
+-user can select between parametric, implicit and differential equations
+ 
+
+
+
+
+
 */
 
 #endif
