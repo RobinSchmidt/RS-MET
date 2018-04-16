@@ -252,7 +252,7 @@ void rsPolynomial<T>::integratePolynomialWithPolynomialLimits(T *p, int pN, T *a
 template<class T>
 bool rsPolynomial<T>::rsPolynomialBaseChange(T **Q, T *a, T **R, T *b, int order)
 {
-  return rsChangeOfBasisRowWise(Q, R, a, b, order+1);
+  return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, order+1);
 }
 
 // end of being moved from .h file
@@ -780,7 +780,7 @@ template<class T>
 void rsPolynomial<T>::rsInterpolatingPolynomial(T *a, T *x, T *y, int N)
 {
   T **A = rsVandermondeMatrix(x, N);
-  rsSolveLinearSystem(A, a, y, N);
+  rsLinearAlgebra::rsSolveLinearSystem(A, a, y, N);
   rsArray::deAllocateSquareArray2D(A, N);
 
   // For higher order polynomials, this simple and direct approach may become numerically ill

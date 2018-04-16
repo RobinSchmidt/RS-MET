@@ -103,7 +103,7 @@ namespace jura
 #include "generators/jura_VectorSamplePlayer.h"
 #include "generators/jura_RayBouncer.h"
 #include "generators/jura_Snowflake.h"
-
+ 
 #include "effects/jura_Enveloper.h"
 #include "effects/jura_FuncShaper.h"
 #include "effects/jura_NodeShaper.h"
@@ -116,7 +116,7 @@ namespace jura
 #include "effects/jura_Quadrifex.h"
 #include "effects/jura_Moduluxury.h"
 #include "effects/jura_StereoDelay.h"
-#include "effects/jura_MultiComp.h"
+#include "effects/jura_MultiBandEffect.h"
 
 #include "instruments/jura_AcidSequencer.h"  // maybe move to a "sequencers" folder someday
 #include "instruments/jura_AciDevil.h"

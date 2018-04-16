@@ -68,7 +68,7 @@ namespace jura
 #include "effects/jura_Quadrifex.cpp"
 #include "effects/jura_Moduluxury.cpp"
 #include "effects/jura_StereoDelay.cpp"
-#include "effects/jura_MultiComp.cpp"
+#include "effects/jura_MultiBandEffect.cpp"
 
 #include "instruments/jura_AcidSequencer.cpp"
 #include "instruments/jura_AciDevil.cpp"

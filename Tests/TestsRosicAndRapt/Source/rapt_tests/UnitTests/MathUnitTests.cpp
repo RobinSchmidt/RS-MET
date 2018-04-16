@@ -165,19 +165,17 @@ bool polynomialRootsUnitTest()
   typedef std::complex<float> C;
 
   float rr1, rr2;                // real roots
-  //std::complex<float> cr1, cr2;  // complex roots
+  std::complex<float> cr1, cr2;  // complex roots
 
   // 3*x^2 - 9*x + 6, roots: 1, 2
   P::rootsQuadraticReal(3, -9, 6, &rr1, &rr2);
   r &= rr1 == 1.f;
   r &= rr2 == 2.f;
 
-  /*
   // 3*x^2 - 12*x + 15, roots: 2-i, 2+i
   P::rootsQuadraticComplex(3, -12, 15, &cr1, &cr2);
   r &= cr1 == C(2, -1);
   r &= cr2 == C(2, +1);
-  */
 
   
   // quartic p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52,  roots: 2+3i, 2-3i, -1, 4

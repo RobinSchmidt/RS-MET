@@ -84,7 +84,7 @@ Implicit equation solver:
  x0,y0 and the point x,y on the curve that satisfies f(x,y) = 0 is minimized
 -the initial points x0,y0 for filling the array can be constructed by some formula, for example, we 
  could use points on the unit circle or unit square
--definet the square of the distance between (x,y) and (x0,y0) as: 
+-define the square of the distance between (x,y) and (x0,y0) as: 
  d2(x,y) := (x-x0)^2 + (y-y0)^2
 -partial derivatives of d2 with respect to x and y are given by: dx = 2(x-x0), dy = 2(y-y0)
 -or solution must satisfy the equation: F(x,y) := f(x,y) + dx^2 + dy^2 = 0, or:
@@ -94,10 +94,15 @@ Implicit equation solver:
  check, how the factor influences the convergence of the iteration, maybe it could be an optional
  parameter to the routine that defaults to 4...or maybe some other experimentally determined value
  that most often leads to fastest convergence
+-..oh - but Newton iteration needs a formula for the gradient of F(x,y)...maybe we need a numerical
+ approximation of that...or maybe an entirely different 2D root-finding algorithm can be used
 
 Equation synth ("Equator", "Formula..", "Solv..."):
 -use a func-shape like input to let the user define signal shapes via equations
 -user can select between parametric, implicit and differential equations
+-maybe the parametric and implicit solvers can run in realtime (the differential solver must run in
+ realtime anyway, i guess), so the user can manipulate in realtime some constants in his equations
+ -the implicit solver could use initial points on a (phase-shaped) unit circle
  
 
 

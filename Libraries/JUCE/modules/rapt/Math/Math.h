@@ -6,6 +6,9 @@ namespace RAPT
   
 // make a nested namespace Math
 
+#include "Misc/LinearAlgebra.h"
+#include "Misc/Statistics.h"
+
 #include "Functions/BasicFunctions.h"
 #include "Functions/IntegerFunctions.h"
 #include "Functions/NodeBasedFunction.h"
@@ -30,8 +33,6 @@ namespace RAPT
 
 #include "Numerics/RootFinder.h"
 // todo: Optimizer, CurveFitter, Interpolator, Differentiator, Integrator, InitialValueSolver, 
-
-#include "Misc/Statistics.h"
 
 }
 

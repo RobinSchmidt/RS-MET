@@ -3,6 +3,9 @@
 namespace RAPT
 {
 
+#include "Misc/LinearAlgebra.cpp"
+#include "Misc/Statistics.cpp"
+
 #include "Functions/BasicFunctions.cpp"
 #include "Functions/IntegerFunctions.cpp"
 #include "Functions/NodeBasedFunction.cpp"
@@ -22,8 +25,6 @@ namespace RAPT
 #include "Geometry/ConicSection.cpp"
 #include "Geometry/Ellipse.cpp"
 #include "Geometry/GeometricTransformations.cpp"
-
-#include "Misc/Statistics.cpp"
 
 #include "Numerics/RootFinder.cpp"
 
