@@ -199,18 +199,16 @@ public:
     T d);
 
 
-  /** Computes the two roots of the quadratic equation: \f[ a x^2 + b x + c = 0 \f] and stores them
-  in x1, x2. When the equation has two real roots, they will be returned in ascending order, i.e. 
-  x1 < x2. In case of a (real) double root, we'll have x1 == x2 and when the roots of the equation 
-  are actually complex, the outputs will also be equal and contain the real part of the complex 
-  conjugate pair. */
-  static void rootsQuadraticReal(T a, T b, T c, T* x1, T* x2);
+  /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and 
+  stores them in r1, r2. When the equation has two distinct real roots, they will be returned in 
+  ascending order, i.e. r1 < r2. In case of a (real) double root, we'll have r1 == r2 and when the 
+  roots of the equation are actually complex, the outputs will also be equal and contain the real 
+  part of the complex conjugate pair. */
+  static void rootsQuadraticReal(T a0, T a1, T a2, T* r1, T* r2);
 
-  static void rootsQuadraticComplex(std::complex<T> a, std::complex<T> b, std::complex<T> c, 
+  static void rootsQuadraticComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2, 
     std::complex<T>* x1, std::complex<T>* x2);
   // todo: make optimized version for real coefficients
-  // maybe rename parameters into a0, a1, a2 - needs re-ordering, too - for consistency with cubic,
-  // quartic and general case
 
 
   static void rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2, 

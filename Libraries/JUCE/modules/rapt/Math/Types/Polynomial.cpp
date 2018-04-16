@@ -658,7 +658,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
 // eq. 54..56
 
 template<class T>
-void rsPolynomial<T>::rootsQuadraticReal(T a, T b, T c, T* x1, T* x2)
+void rsPolynomial<T>::rootsQuadraticReal(T c, T b, T a, T* x1, T* x2)
 {
   // Solutions: x1,x2 = (-b +- sqrt(b^2-4*a*c)) / (2*a):
   T s = T(1) / (2*a);         // scaler
@@ -670,8 +670,8 @@ void rsPolynomial<T>::rootsQuadraticReal(T a, T b, T c, T* x1, T* x2)
 // is the formula (numerically) the same as the pq-formula? if not, which one is better -> test
 
 template<class T>
-void rsPolynomial<T>::rootsQuadraticComplex(std::complex<T> a, std::complex<T> b, 
-  std::complex<T> c, std::complex<T>* x1, std::complex<T>* x2)
+void rsPolynomial<T>::rootsQuadraticComplex(std::complex<T> c, std::complex<T> b, 
+  std::complex<T> a, std::complex<T>* x1, std::complex<T>* x2)
 {
   std::complex<T> s = T(1) / (T(2)*a);
   std::complex<T> d = sqrt(b*b - T(4)*a*c); // sqrt of discriminant

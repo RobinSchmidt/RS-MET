@@ -27,7 +27,7 @@ void rsConicSection<T>::lineIntersectionParameter(T x, T dx, T y, T dy, T* t1, T
   T b = 2*A*x*dx + B*(x*dy+y*dx) + 2*C*y*dy + D*dx + E*dy;
   T c = A*x*x + B*x*y + C*y*y + D*x + E*y + F;
   //rsSolveQuadraticEquation(a, b, c, t1, t2);
-  rsPolynomial<T>::rootsQuadraticReal(a, b, c, t1, t2);
+  rsPolynomial<T>::rootsQuadraticReal(c, b, a, t1, t2);
 }
 
 template<class T>
