@@ -166,6 +166,7 @@ bool polynomialRootsUnitTest()
 
   float rr1, rr2;                     // real roots
   std::complex<float> cr1, cr2, cr3;  // complex roots
+  float d; // discriminant
 
   // 6 - 9*x + 3*x^2 , roots: 1, 2
   P::rootsQuadraticReal(6, -9, 3, &rr1, &rr2);
@@ -180,20 +181,44 @@ bool polynomialRootsUnitTest()
   r &= rr1 == 2;
   r &= rr2 == 2;
 
-  // -18 + 33*x - 18*x^2 + 3*x^3, roots: 1, 2, 3
+  // x^3 - x, roots: -1, 0, +1, d = 4
+  d = P::discriminant(0,  -1, 0, 1);
+  P::rootsCubicComplex(0, -1, 0, 1, &cr1, &cr2, &cr3);
+  r &= d   == 4;
+  r &= cr1 == C(-1, 0);
+  r &= cr2 == C( 0, 0);
+  r &= cr3 == C(+1, 0);
+  // has roundoff error, otherwise ok
+
+  // x^3 + x, roots: 0, -i, +i, d = -4
+  d = P::discriminant( 0, 1, 0, 1);
+  P::rootsCubicComplex(0, 1, 0, 1, &cr1, &cr2, &cr3);
+  r &= d   == -4;
+  r &= cr1 == C(0,  0);
+  r &= cr2 == C(0, -1);
+  r &= cr3 == C(0, +1);
+  // totally wrong complex roots
+
+  // -18 + 33*x - 18*x^2 + 3*x^3, roots: 1, 2, 3, d = 324
+  d = P::discriminant( -18, 33, -18, 3);
   P::rootsCubicComplex(-18, 33, -18, 3, &cr1, &cr2, &cr3);
+  r &= d   == 324;
   r &= cr1 == C(1, 0);
   r &= cr2 == C(2, 0);
   r &= cr3 == C(3, 0);
 
-  // -6 + 15*x - 12*x^2 + 3*x^3, roots: 1, 1, 2
+  // -6 + 15*x - 12*x^2 + 3*x^3, roots: 1, 1, 2, d = 0
+  d = P::discriminant( -6, 15, -12, 3);
   P::rootsCubicComplex(-6, 15, -12, 3, &cr1, &cr2, &cr3);
+  r &= d   == 0;
   r &= cr1 == C(1, 0);
   r &= cr2 == C(1, 0);
   r &= cr3 == C(2, 0);
 
-  // -15 + 27*x - 15*x^2 + 3*x^3, roots: 1, 2-i, 2+i
+  // -15 + 27*x - 15*x^2 + 3*x^3, roots: 1, 2-i, 2+i, d = -1296
+  d = P::discriminant( -15, 27, -15, 3);
   P::rootsCubicComplex(-15, 27, -15, 3, &cr1, &cr2, &cr3);
+  r &= d   == -1296;
   r &= cr1 == C(1,  0);
   r &= cr2 == C(2, -1);
   r &= cr3 == C(2, +1);

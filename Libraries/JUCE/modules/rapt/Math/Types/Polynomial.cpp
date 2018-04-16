@@ -679,6 +679,12 @@ void rsPolynomial<T>::rootsQuadraticComplex(std::complex<T> c, std::complex<T> b
   *x2 = (-b+d) * s;
 }
 
+template<class T>
+T rsPolynomial<T>::discriminant(T d, T c, T b, T a)
+{
+  return b*b*c*c - T(4)*(a*c*c*c + b*b*b*d) - T(27)*a*a*d*d + T(18)*a*b*c*d;
+}
+
 template<class T> 
 T rsCubeRoot(T x)
 {
@@ -689,7 +695,7 @@ template<class T>
 void rsPolynomial<T>::rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2,
   std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3)
 {
-  rsAssert(false); // does not yet work - produces wrong results when roots are not real
+  //rsAssert(false); // does not yet work - produces wrong results when roots are not real
   // formulas from http://mathworld.wolfram.com/CubicFormula.html
 
   // intermediate variables:

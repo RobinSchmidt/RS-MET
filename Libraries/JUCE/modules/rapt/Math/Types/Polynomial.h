@@ -210,6 +210,10 @@ public:
     std::complex<T>* x1, std::complex<T>* x2);
   // todo: make optimized version for real coefficients
 
+  /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f]. 
+  D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide, 
+  D < 0: 1 real root and 2 complex conjugate roots */
+  static T discriminant(T a0, T a1, T a2, T a3);
 
   static void rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2, 
     std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3);
