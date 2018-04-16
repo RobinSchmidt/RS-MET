@@ -679,6 +679,37 @@ void rsPolynomial<T>::rootsQuadraticComplex(std::complex<T> a, std::complex<T> b
   *x2 = (-b+d) * s;
 }
 
+template<class T> 
+T rsCubeRoot(T x)
+{
+  return pow(x, T(1.0/3.0));
+}
+
+template<class T>
+void rsPolynomial<T>::rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2,
+  std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3)
+{
+  // formula from http://mathworld.wolfram.com/CubicFormula.html
+
+  // intermediate variables:
+  std::complex<T> q, r, d, s, t, u, v, w; // maybe can use less intermediate variables by re-using
+  q = T(1) / a3; a0 *= q; a1 *= q; a2 *= q;  // make monic (such that a3 == 1)
+  q = (T(3)*a1 - a2*a2) * T(1.0/9.0);
+  r = (T(9)*a2*a1 - T(27)*a0 - T(2)*a2*a2*a2) * T(1.0/54.0);
+  d = q*q*q + r*r;     // determinant
+  d = sqrt(d);         // we actually need the square root of it
+  s = rsCubeRoot(r+d);
+  t = rsCubeRoot(r-d);
+  u = -a2*T(1.0/3.0);
+  v = (s+t) * T(0.5);
+  w = (s-t) * (T(0.5*sqrt(3.0)) * std::complex<T>(0, 1)); // factor is constant - optimize
+
+  // roots:
+  *r1 = u - v + w;
+  *r2 = u - v - w;
+  *r3 = u + v + v;
+}
+
 template<class T>
 T rsPolynomial<T>::getCubicRootNear(T x, T a, T b, T c, T d,
                                 T min, T max, int maxIterations)

@@ -209,7 +209,13 @@ public:
   static void rootsQuadraticComplex(std::complex<T> a, std::complex<T> b, std::complex<T> c, 
     std::complex<T>* x1, std::complex<T>* x2);
   // todo: make optimized version for real coefficients
+  // maybe rename parameters into a0, a1, a2 - needs re-ordering, too - for consistency with cubic,
+  // quartic and general case
 
+
+  static void rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2, 
+    std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3);
+  // under construction
 
   // implement rootsQuadraticReal, rootsQuadraticComplex, rootsCubicReal, rootsCubicComplex
   // rootsQuarticReal, rootsQuarticComplex

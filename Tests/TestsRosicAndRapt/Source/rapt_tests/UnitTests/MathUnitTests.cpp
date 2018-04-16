@@ -164,8 +164,8 @@ bool polynomialRootsUnitTest()
   typedef RAPT::rsPolynomial<float> P;
   typedef std::complex<float> C;
 
-  float rr1, rr2;                // real roots
-  std::complex<float> cr1, cr2;  // complex roots
+  float rr1, rr2;                     // real roots
+  std::complex<float> cr1, cr2, cr3;  // complex roots
 
   // 3*x^2 - 9*x + 6, roots: 1, 2
   P::rootsQuadraticReal(3, -9, 6, &rr1, &rr2);
@@ -176,6 +176,23 @@ bool polynomialRootsUnitTest()
   P::rootsQuadraticComplex(3, -12, 15, &cr1, &cr2);
   r &= cr1 == C(2, -1);
   r &= cr2 == C(2, +1);
+  P::rootsQuadraticReal(3, -12, 15, &rr1, &rr2); // should give real parts
+  r &= rr1 == 2;
+  r &= rr2 == 2;
+
+  // -18 + 33*x - 18*x^2 + 3*x^3, roots: 1, 2, 3
+  P::rootsCubicComplex(-18, 33, -18, 3, &cr1, &cr2, &cr3);
+  r &= cr1 == C(1, 0);
+  r &= cr2 == C(2, 0);
+  r &= cr3 == C(3, 0);
+
+  // -15 + 27*x - 15*x^2 + 3*x^3, roots: 1, 2-i, 2+i
+  P::rootsCubicComplex(-15, 27, -15, 3, &cr1, &cr2, &cr3);
+  r &= cr1 == C(1, 0);
+  r &= cr2 == C(2, -1);
+  r &= cr3 == C(2, +1);
+
+
 
   // todo: fix warnings, implement cubic qnd quartic formulas
   
