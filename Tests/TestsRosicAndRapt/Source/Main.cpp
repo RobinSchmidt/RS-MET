@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
   // Effects:
   //testFastGeneralizedHadamardTransform();
   //testFeedbackDelayNetwork();
-  testMultiComp();
+  //testMultiComp();
 
   // File:
 
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();
+  runAllUnitTests();
   //mathUnitTests();
   //filterUnitTests();
 

@@ -6,5 +6,6 @@
 bool coordinateMapperUnitTest();
 bool interpolatingFunctionUnitTest();
 bool rootFinderUnitTest();
+bool polynomialRootsUnitTest();
 
 #endif

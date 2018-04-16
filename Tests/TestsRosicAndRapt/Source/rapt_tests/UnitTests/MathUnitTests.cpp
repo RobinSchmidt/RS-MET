@@ -157,4 +157,26 @@ bool rootFinderUnitTest()
   return r;
 }
 
+bool polynomialRootsUnitTest()
+{
+  bool r = true;
 
+  typedef RAPT::rsPolynomial<float> P;
+
+  float rr1, rr2;  // real roots
+  //std::complex<float> cr1, cr2, cr3, cr4;  // complex roots
+
+  // p(x) = 3*x^2 - 9*x + 6, roots: 1, 2
+  P::rootsQuadraticReal(3, -9, 6, &rr1, &rr2);
+  r &= rr1 == 1.f;
+  r &= rr2 == 2.f;
+
+
+
+
+
+  
+  // quartic p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52,  roots: 2+3i, 2-3i, -1, 4
+
+  return r;
+}
