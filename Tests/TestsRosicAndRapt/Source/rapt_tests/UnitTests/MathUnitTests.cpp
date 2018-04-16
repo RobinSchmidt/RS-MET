@@ -186,11 +186,18 @@ bool polynomialRootsUnitTest()
   r &= cr2 == C(2, 0);
   r &= cr3 == C(3, 0);
 
+  // -6 + 15*x - 12*x^2 + 3*x^3, roots: 1, 1, 2
+  P::rootsCubicComplex(-6, 15, -12, 3, &cr1, &cr2, &cr3);
+  r &= cr1 == C(1, 0);
+  r &= cr2 == C(1, 0);
+  r &= cr3 == C(2, 0);
+
   // -15 + 27*x - 15*x^2 + 3*x^3, roots: 1, 2-i, 2+i
   P::rootsCubicComplex(-15, 27, -15, 3, &cr1, &cr2, &cr3);
-  r &= cr1 == C(1, 0);
+  r &= cr1 == C(1,  0);
   r &= cr2 == C(2, -1);
   r &= cr3 == C(2, +1);
+  // gives the wrong result - it's not even a real root and a complex conjugate pair
 
 
 

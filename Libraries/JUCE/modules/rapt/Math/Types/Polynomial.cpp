@@ -689,14 +689,15 @@ template<class T>
 void rsPolynomial<T>::rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2,
   std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3)
 {
-  // formula from http://mathworld.wolfram.com/CubicFormula.html
+  rsAssert(false); // does not yet work - produces wrong results when roots are not real
+  // formulas from http://mathworld.wolfram.com/CubicFormula.html
 
   // intermediate variables:
   std::complex<T> q, r, d, s, t, u, v, w; // maybe can use less intermediate variables by re-using
   q = T(1) / a3; a0 *= q; a1 *= q; a2 *= q;  // make monic (such that a3 == 1)
   q = (T(3)*a1 - a2*a2) * T(1.0/9.0);
   r = (T(9)*a2*a1 - T(27)*a0 - T(2)*a2*a2*a2) * T(1.0/54.0);
-  d = q*q*q + r*r;     // determinant
+  d = q*q*q + r*r;     // discriminant
   d = sqrt(d);         // we actually need the square root of it
   s = rsCubeRoot(r+d);
   t = rsCubeRoot(r-d);
