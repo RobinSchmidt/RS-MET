@@ -120,7 +120,7 @@ ToDo:
 ### Extensions to Lindenmayer Syntax
 
 ToDo:  
--allow user to define a set of named rule-sets, for example A: F = F+F; B: F = F-F and instead of specifying a number of iterations, the user specifies an iteration/application string like AABBBA which means: apply A 3 times, then B two times then A once. support also a syntax like A2B3A  
+-allow user to define a set of named rule-sets, for example A: F = F+F; B: F = F-F and instead of specifying a number of iterations, the user specifies an iteration/application string like AABBBA which means: apply A two times, then B three times then A once. support also a syntax like A2B3A  
 
 
 

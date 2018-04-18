@@ -157,6 +157,43 @@ bool rootFinderUnitTest()
   return r;
 }
 
+//// cube root
+//float cbrt(float x)
+//{
+//  return pow(x, float(1.0/3.0));
+//}
+
+// finds one solution to the equation z^3 = p*z + q
+float cubicRootPQ(float p, float q)
+{
+  float q2 = q/2;
+  float p3 = p/3;
+  float r  = sqrt(q2*q2 - p3*p3*p3);
+  return cbrt(q2+r) + cbrt(q2-r);
+}
+
+// finds one solution to the equation a * z^3 + b * z^2 + c*z + d = 0
+float cubicRoot(float d, float c, float b, float a)
+{
+  //float b2 = b*b, a2 = a*a;
+  //return cubicRootPQ((b2/a2-3*c/a)/3, -2*b2*b/(27*a2*a) + b*c/(2*a2) - d/a);
+  //// maybe simplify by first dividing out "a" from b,c,d
+
+  float ai = 1/a; b *= ai; c *= ai; d *= ai;  // make monic (normalize a to 1)
+  float b2 = b*b;
+  return cubicRootPQ((b2-3*c)*(1.0/3.0), -b2*b*(2.0/27.0) + 0.5*b*c - d);
+
+  // formula was found via http://sagecell.sagemath.org/ using as input:
+  // var("a b c d z")
+  // f(x) = a*x^3 + b*x^2 + c*x + d
+  // g = f.subs(x = z - b/(3*a))
+  // h = g/a
+  // h.collect(z)
+  //
+  // which gives the output:
+  // z^3 - 1/3*z*(b^2/a^2 - 3*c/a) + 2/27*b^3/a^3 - 1/3*b*c/a^2 + d/a
+}
+
 bool polynomialRootsUnitTest()
 {
   bool r = true;
@@ -198,6 +235,12 @@ bool polynomialRootsUnitTest()
   r &= cr2 == C(0, -1);
   r &= cr3 == C(0, +1);
   // totally wrong complex roots
+
+  float test; 
+  test = cubicRootPQ(-1, 0);    // should find root at 0
+  test = cubicRoot(0, 1, 0, 1); // this too
+
+
 
   // -18 + 33*x - 18*x^2 + 3*x^3, roots: 1, 2, 3, d = 324
   d = P::discriminant( -18, 33, -18, 3);
