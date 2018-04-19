@@ -2,6 +2,7 @@
 #define RAPT_MATHUNITTESTS_H
 
 //#include "../../Shared/Shared.h"
+#include "Math/LinearAlgebraUnitTests.h"
 #include "Math/PolynomialUnitTests.h"
 
 bool coordinateMapperUnitTest();

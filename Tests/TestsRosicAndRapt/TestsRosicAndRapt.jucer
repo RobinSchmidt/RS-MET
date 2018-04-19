@@ -10,6 +10,10 @@
       <GROUP id="{86EEC43B-AEDF-BBF9-BF97-B91B0A6A75D6}" name="rapt_tests">
         <GROUP id="{DC26DB91-6388-5853-E13D-90EAAE45AFD9}" name="UnitTests">
           <GROUP id="{59E203FE-103B-3F2C-9162-9ECEFBF76A2E}" name="Math">
+            <FILE id="Ha7ugR" name="LinearAlgebraUnitTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/LinearAlgebraUnitTests.cpp"/>
+            <FILE id="ZW6tY0" name="LinearAlgebraUnitTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/LinearAlgebraUnitTests.h"/>
             <FILE id="zV7XPL" name="PolynomialUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.cpp"/>
             <FILE id="i9HPey" name="PolynomialUnitTests.h" compile="0" resource="0"
