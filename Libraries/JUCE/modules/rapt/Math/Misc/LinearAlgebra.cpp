@@ -45,9 +45,9 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
     biggest = 0.0;
     for(j = i; j < N; j++)
     {
-      if(rsAbs(A[j][i]) > biggest)
+      if(abs(A[j][i]) > biggest)
       {
-        biggest = rsAbs(A[j][i]);
+        biggest = abs(A[j][i]);
         p       = j;
       }
     }
@@ -288,11 +288,11 @@ template<class T>
 bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(T **A, T **B, T **C, int N)
 {
   T **Bi;
-  rsAllocateMatrix(Bi, N, N);
-  rsCopyMatrix(B, Bi, N, N);
+  MatrixTools::rsAllocateMatrix(Bi, N, N);
+  MatrixTools::rsCopyMatrix(B, Bi, N, N);
   bool result = rsInvertMatrix(Bi, N);  // Bi = B^-1
-  rsMatrixMultiply(Bi, A, C, N, N, N);  // C  = B^-1 * A
-  rsDeAllocateMatrix(Bi, N, N);
+  MatrixTools::rsMatrixMultiply(Bi, A, C, N, N, N);  // C  = B^-1 * A
+  MatrixTools::rsDeAllocateMatrix(Bi, N, N);
   return result;
 }
 
@@ -300,11 +300,11 @@ template<class T>
 bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(T **A, T **B, T **C, int N)
 {
   T **Bi;
-  rsAllocateMatrix(Bi, N, N);
-  rsTransposeSquareArray(B, Bi, N);
+  MatrixTools::rsAllocateMatrix(Bi, N, N);
+  rsArray::transposeSquareArray(B, Bi, N);
   bool result = rsInvertMatrix(Bi, N);                 // Bi = B^-T
-  rsMatrixMultiplySecondTransposed(Bi, A, C, N, N, N); // C  = B^-T * A^T
-  rsDeAllocateMatrix(Bi, N, N);
+  MatrixTools::rsMatrixMultiplySecondTransposed(Bi, A, C, N, N, N); // C  = B^-T * A^T
+  MatrixTools::rsDeAllocateMatrix(Bi, N, N);
   return result;
 
   // alternative algorithm:

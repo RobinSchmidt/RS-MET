@@ -31,17 +31,30 @@ using namespace RAPT;
 
 // we need to make sure to provide only instantiations that are not already there in rosic.cpp
 
+typedef std::complex<double> cmplxD;
+
 // Basics:
 
 
 // Data:
-template void RAPT::rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
-template void RAPT::rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed);
+template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
+template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed);
+template void rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
+template void rsArray::deConvolve(double *y, int yLength, double *h, int hLength, double *x);
+template void rsArray::sequenceSqrt(double *y, int yLength, double *x);
+template void rsArray::transposeSquareArray(double **in, double **out, int size);
 
-template void RAPT::rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
-template void RAPT::rsArray::deConvolve(double *y, int yLength, double *h, int hLength, double *x);
-template void RAPT::rsArray::sequenceSqrt(double *y, int yLength, double *x);
 
+
+template void MatrixTools::rsInitMatrix(double** A, int N, int M, double value);
+template void MatrixTools::rsCopyMatrix(double** source, double **destination, int N, int M);
+template bool MatrixTools::rsAreMatricesApproximatelyEqual(double **A, double **B, int N, int M, double tol);
+
+template void MatrixTools::rsMatrixMultiply(double **A, double **B, double **C, int N, int M, int P);
+template void MatrixTools::rsMatrixMultiplyFirstTransposed(double **A, double **B, double **C, int N, int M, int P);
+template void MatrixTools::rsMatrixMultiplySecondTransposed(double **A, double **B, double **C, int N, int M, int P);
+template void MatrixTools::rsMatrixMultiplyBothTransposed(double **A, double **B, double **C, int N, int M, int P);
+template void MatrixTools::rsMatrixInPlaceMultiply(double **A, double **B, int N, int M);
 
 
 
@@ -57,6 +70,12 @@ template bool rsLinearAlgebra::rsChangeOfBasisColumnWise(double **A, double **B,
   double *vb, int N);
 template bool rsLinearAlgebra::rsChangeOfBasisRowWise(double **A, double **B, double *va, 
   double *vb, int N);
+template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, double **B, double **C, int N);
+template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
+
+
+template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, cmplxD *b, int N);
+
 
 
 template RAPT::rsPolynomial<float>;
