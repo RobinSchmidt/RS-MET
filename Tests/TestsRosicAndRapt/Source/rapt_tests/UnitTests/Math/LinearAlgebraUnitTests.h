@@ -3,7 +3,8 @@
 
 #include "../../../Shared/Shared.h"
 
-bool testLinearAlgebra(std::string &reportString);
+//bool testLinearAlgebra(std::string &reportString);
+bool testLinearAlgebra();
 
 bool testLinearSystem2x2(std::string &reportString);
 bool testLinearSystem3x3(std::string &reportString);

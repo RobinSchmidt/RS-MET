@@ -172,12 +172,12 @@ void TurtleSource::updateWaveTable()
   TurtleGraphics tmpTurtle;
   tmpTurtle.setAngle(turnAngle);
   tmpTurtle.translate(turtleCommands, tableX, tableY);
-  rsAssert(tableX.size() == tableY.size());           // tables for x and y must have same size
+  RS_ASSERT(tableX.size() == tableY.size());           // tables for x and y must have same size
   while(tableX.size() < 2) { 
     tableX.push_back(0);
     tableY.push_back(0); 
   }
-  rsAssert(tableX.size() >= 2 && tableY.size() >= 2); // tables need to have at least 2 values
+  RS_ASSERT(tableX.size() >= 2 && tableY.size() >= 2); // tables need to have at least 2 values
   tableUpToDate = true;
 }
 

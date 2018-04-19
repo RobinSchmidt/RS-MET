@@ -263,7 +263,7 @@ bool rsLinearAlgebra::rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int 
 {
   // coordinates of v in canonical basis:
   T *ve = new T[N];
-  rsMatrixVectorMultiply(A, va, ve, N, N);
+  MatrixTools::rsMatrixVectorMultiply(A, va, ve, N, N);
 
   // coordinates of v in basis B: A * va = ve = B * vb
   bool result = rsSolveLinearSystem(B, vb, ve, N);

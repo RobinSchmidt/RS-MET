@@ -18,12 +18,12 @@
   #else
     #define RS_DEBUG_BREAK __builtin_trap();  // preliminary - gcc only
   #endif
-  #define rsAssert(expression) { if (! (expression)) RS_DEBUG_BREAK }
+  #define RS_ASSERT(expression) { if (! (expression)) RS_DEBUG_BREAK }
 #else
   #define RS_DEBUG_BREAK { }
-  #define rsAssert(expression) { }
+  #define RS_ASSERT(expression) { }
 #endif
-#define rsAssertFalse rsAssert(false) 
+#define RS_ASSERT_FALSE RS_ASSERT(false) 
 
 // bit twiddling:
 /*

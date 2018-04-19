@@ -37,15 +37,28 @@ using namespace RAPT;
 // Data:
 template void RAPT::rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void RAPT::rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed);
-template void RAPT::rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 
+template void RAPT::rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 template void RAPT::rsArray::deConvolve(double *y, int yLength, double *h, int hLength, double *x);
 template void RAPT::rsArray::sequenceSqrt(double *y, int yLength, double *x);
 
 
 
+
 // Math:
 //template RAPT::rsLinearAlgebra<float>; // doens't work bcs the template parameters are decalred in the member functions
+template void rsLinearAlgebra::rsSolveLinearSystem2x2(const double A[2][2], double x[2], const double y[2]);
+template void rsLinearAlgebra::rsSolveLinearSystem3x3(const double A[3][3], double x[3], const double y[3]);
+template bool rsLinearAlgebra::rsSolveLinearSystem(double **A, double *x, double *b, int N);
+template bool rsLinearAlgebra::rsInvertMatrix(double **A, int N);
+template bool rsLinearAlgebra::rsSolveTridiagonalSystem(double *lowerDiagonal, double *mainDiagonal, 
+  double *upperDiagonal, double *rightHandSide, double *solution, int N);
+template bool rsLinearAlgebra::rsChangeOfBasisColumnWise(double **A, double **B, double *va, 
+  double *vb, int N);
+template bool rsLinearAlgebra::rsChangeOfBasisRowWise(double **A, double **B, double *va, 
+  double *vb, int N);
+
+
 template RAPT::rsPolynomial<float>;
 template RAPT::rsPolynomial<double>;
 //template RAPT::rsPolynomial<int>; // template doesn'T compile with int

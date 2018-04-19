@@ -4,6 +4,8 @@ using namespace rotes;
 #include "rosic/rosic.h"
 using namespace rosic;
 
+using namespace RAPT;
+
 bool rotes::testFastGeneralizedHadamardTransform()
 {
   bool result = true;

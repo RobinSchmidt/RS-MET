@@ -293,7 +293,7 @@ protected:
     default: {
       *left  = 0;
       *right = 0;
-      rsAssertFalse; } // unknown interpolation setting 
+      RS_ASSERT_FALSE; } // unknown interpolation setting 
     }
     // or maybe call the 1st three floor, ceil, round, ..at least on the GUI
   }

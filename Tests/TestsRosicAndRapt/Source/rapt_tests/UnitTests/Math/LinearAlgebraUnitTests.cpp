@@ -2,9 +2,10 @@
 
 using namespace RAPT;
 
-bool testLinearAlgebra(std::string &reportString)
+//bool testLinearAlgebra(std::string &reportString)
+bool testLinearAlgebra()
 {
-  std::string testName = "LinearAlgebra";
+  std::string reportString = "LinearAlgebra"; // dummy-string - delete later
   bool testResult = true;
 
   testResult &= testLinearSystem2x2(      reportString);

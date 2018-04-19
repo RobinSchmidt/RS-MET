@@ -1,5 +1,7 @@
 #include "UnitTests.h"
 
+using namespace RAPT;
+
 /*
 template<class T>
 template<class S>
@@ -35,8 +37,11 @@ bool runAllUnitTests()
   passed &= runUnitTest(&interpolatingFunctionUnitTest, "rsInterpolatingFunction");
   passed &= runUnitTest(&rootFinderUnitTest,            "rsRootFinder");
 
+  //passed &= runUnitTest(&testLinearAlgebra,             "rsLinearAlgebra");
 
-  passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding");
+
+  //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial");
+  passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial
 
 
 

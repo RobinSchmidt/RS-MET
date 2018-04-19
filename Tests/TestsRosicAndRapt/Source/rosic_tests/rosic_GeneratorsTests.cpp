@@ -5,6 +5,7 @@ using namespace rotes;
 #include "../Shared/Plotting/rosic_Plotter.h"
 #include "../Shared/Plotting/GNUPlotter.h"
 using namespace rosic;
+using namespace RAPT;
 
 void rotes::testOscillatorStereo()
 {

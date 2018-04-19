@@ -1,5 +1,5 @@
 #include "FilterExperiments.h"
-//using namespace RAPT;
+using namespace RAPT;
 
 void bandSplittingTwoWay()
 {

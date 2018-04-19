@@ -183,6 +183,14 @@ float cubicRoot(float d, float c, float b, float a)
   float ai = 1/a; b *= ai; c *= ai; d *= ai;  // make monic (normalize a to 1)
   float b2 = b*b;
   return cubicRootPQ((b2-3*c)*(1.0/3.0), -b2*b*(2.0/27.0) + 0.5*b*c - d);
+
+  // Formulas for p,q  were found with sage via:
+  // var("a b c d z")                # declare symbolic variables
+  // f(x) = a*x^3 + b*x^2 + c*x + d  # define a symbolic function
+  // g = f.subs(x = z - b/(3*a))     # substitue z-b/(3*a) for x, removes x^2 term
+  // h = g/a                         # divide resulting expression by a
+  // h = h.collect(z)                # collect terms with respect to z
+  // h.coefficients(z)               # gives coefficients for powers of z
 }
 
 void cubicRoots(float d, float c, float b, float a, std::complex<float>* r1,
