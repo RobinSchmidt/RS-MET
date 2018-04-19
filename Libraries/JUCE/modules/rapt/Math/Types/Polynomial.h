@@ -374,11 +374,11 @@ public:
 
   // comment this function, maybe use a more efficent algorithm if all
   // poles are simple, (see also Experiments - there's something said about that)
-  static void rsPartialFractionExpansion(
-    std::complex<T> *numerator, int numeratorOrder,
-    std::complex<T> *denominator, int denominatorOrder,
-    std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
-    std::complex<T> *pfeCoeffs);
+  //static void rsPartialFractionExpansion(
+  //  std::complex<T> *numerator, int numeratorOrder,
+  //  std::complex<T> *denominator, int denominatorOrder,
+  //  std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
+  //  std::complex<T> *pfeCoeffs);
 
   //===============================================================================================
   /** \name Non-static member functions and operators */

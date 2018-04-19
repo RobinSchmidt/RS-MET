@@ -2,6 +2,9 @@
 
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math">
+      <UniqueIdentifier>{C2424CEF-CE1B-9274-05DD-B7C280A6F9DA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\rapt_tests\UnitTests">
       <UniqueIdentifier>{0550E67E-B4D1-8EDC-927C-A4870DB3B36F}</UniqueIdentifier>
     </Filter>
@@ -238,6 +241,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
@@ -1851,6 +1857,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClInclude>

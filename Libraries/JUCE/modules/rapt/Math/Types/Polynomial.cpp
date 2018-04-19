@@ -1193,6 +1193,7 @@ void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
   delete [] a;
 }
 
+/*
 template<class T>
 void rsPolynomial<T>::rsPartialFractionExpansion(
   std::complex<T> *numerator,   int numeratorOrder,
@@ -1200,9 +1201,8 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs)
 {
-  rsAssert(false); // code below needs update - doesn't compile in TestsRosicAndRapt
+  //rsAssert(false); // code below needs update - doesn't compile in TestsRosicAndRapt
 
-  /*
   // sanity check for inputs:
   rsAssert(numeratorOrder < denominatorOrder);
   rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denominatorOrder);
@@ -1212,7 +1212,7 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   rsArray::scale(denominator, denominatorOrder+1, T(1)/denominator[denominatorOrder]);
 
   // establish coefficient matrix:
-  std::complex<T> **A; rsAllocateSquareArray2D(A, denominatorOrder);
+  std::complex<T> **A; rsArray::allocateSquareArray2D(A, denominatorOrder);
   std::complex<T> *tmp = new std::complex<T>[denominatorOrder+1]; // deflated denominator
   std::complex<T> remainder;                                   // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++)
@@ -1230,13 +1230,13 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   // solve the linear system using an appropriately zero-padded numerator as RHS:
   rsArray::copyBuffer(numerator, tmp, numeratorOrder+1);
   rsArray::fillWithZeros(&tmp[numeratorOrder+1], denominatorOrder-(numeratorOrder+1));
-  rsSolveLinearSystem(A, pfeCoeffs, tmp, denominatorOrder);
+  rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denominatorOrder);
 
   // clean up:
-  rsDeAllocateSquareArray2D(A, denominatorOrder);
+  rsArray::deAllocateSquareArray2D(A, denominatorOrder);
   delete[] tmp;
-  */
 }
+*/
 
 //=================================================================================================
 // member functions
@@ -1290,7 +1290,8 @@ division: can be reduced to multiplication: R = P/Q, U = S/T
  -> W = R/U = (P/Q) / (S/T) = (P*T)/(Q*S)
  W.num = P*T; W.den = Q*S
  -maybe it can then be reduced to lowest terms - divide out common roots in numerator and denominator
-  (we should have a function "reduce" for that)
+  (we should have a function "reduce" for that that implements a polynomial gcd algorithm - or it 
+  can be based on a linear-factor decomposition)
  -or maybe it should first find the roots
 
 */

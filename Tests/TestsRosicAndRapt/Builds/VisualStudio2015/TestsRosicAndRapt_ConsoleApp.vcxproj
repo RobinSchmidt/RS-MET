@@ -147,6 +147,9 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.cpp"/>
@@ -1671,6 +1674,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_rosic.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.h"/>
