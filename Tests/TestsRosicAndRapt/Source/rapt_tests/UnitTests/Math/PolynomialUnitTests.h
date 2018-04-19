@@ -4,7 +4,8 @@
 //#include "../../UnitTestUtilities.h"
 #include "../../../Shared/Shared.h"
 
-bool testPolynomial(std::string &reportString);
+//bool testPolynomial(std::string &reportString);
+bool testPolynomial();
 
 // polynomial algorithms:
 

@@ -2,9 +2,10 @@
 
 using namespace RAPT;
 
-bool testPolynomial(std::string &reportString)
+//bool testPolynomial(std::string &reportString)
+bool testPolynomial()
 {
-  std::string testName = "Polynomial";
+  std::string reportString = "Polynomial"; // dummy -> remove
   bool testResult = true;
 
   testResult &= testConvolution(                              reportString);

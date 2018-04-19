@@ -37,10 +37,9 @@ bool runAllUnitTests()
   passed &= runUnitTest(&interpolatingFunctionUnitTest, "rsInterpolatingFunction");
   passed &= runUnitTest(&rootFinderUnitTest,            "rsRootFinder");
 
-  //passed &= runUnitTest(&testLinearAlgebra,             "rsLinearAlgebra");
+  passed &= runUnitTest(&testLinearAlgebra,             "rsLinearAlgebra");
+  passed &= runUnitTest(&testPolynomial,                "rsPolynomial");
 
-
-  //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial");
   passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial
 
 

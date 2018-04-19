@@ -1217,12 +1217,6 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs)
 {
-  rsAssert(false); // code below needs update - doesn't compile in TestsRosicAndRapt
-                   // the code itself compiles now but triggers error in
-                   // rsSolveLinearSystemInPlace
-
- 
-  /*
   // sanity check for inputs:
   rsAssert(numeratorOrder < denominatorOrder);
   rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denominatorOrder);
@@ -1255,7 +1249,6 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   // clean up:
   rsArray::deAllocateSquareArray2D(A, denominatorOrder);
   delete[] tmp;
-  */
 }
 
 //=================================================================================================
