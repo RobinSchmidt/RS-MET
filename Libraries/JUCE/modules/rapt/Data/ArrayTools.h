@@ -2,7 +2,8 @@
 #define RAPT_ARRAYTOOLS_H_INCLUDED
 
 /** A collection of functions that operate on 1-dimensional arrays. 
-\todo get rid of the rs-prefixes, rename file 
+\todo get rid of the rs-prefixes, rename to rsArrayTools or let the template-parameter apply
+ot the whole class...but this may result in excessive code to be generated
 */
 
 class rsArray
@@ -53,11 +54,11 @@ public:
 
   /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
   template <class T>
-  static bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
+  static inline bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
 
   /** Checks, if the two buffers are elementwise equal. */
   template <class T>
-  static bool areBuffersEqual(T *buffer1, T *buffer2, int length);
+  static inline bool areBuffersEqual(T *buffer1, T *buffer2, int length);
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward
   shifts use negative values for numPositions. If the absolute value of 'numPositions' is greater
@@ -302,11 +303,11 @@ public:
 
   /** Returns true, if the passed buffer has only zero values, false otherwise. */
   template <class T>
-  static bool isAllZeros(T *buffer, int length);
+  static inline bool isAllZeros(T *buffer, int length);
 
   /** Returns true, if the passed buffer has values equal to the given value, false otherwise. */
   template <class T>
-  static bool isFilledWithValue(T *buffer, int length, T value);
+  static inline bool isFilledWithValue(T *buffer, int length, T value);
 
   /** Returns true if the value in array x at position n is larger than its left and right 
   neighbour (the caller must be sure, that n-1, n, n+1 are valid array indices). */
@@ -506,5 +507,48 @@ public:
   static  void weightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, T weight2);
 
 };
+
+//=================================================================================================
+// inlined implementations
+
+template <class T>
+inline bool rsArray::areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance)
+{
+  for(int i = 0; i < length; i++)
+  {
+    if(rsAbs(buffer1[i]-buffer2[i]) > tolerance)
+      return false;
+  }
+  return true;
+}
+
+template <class T>
+inline bool rsArray::areBuffersEqual(T *buffer1, T *buffer2, int length)
+{
+  for(int i = 0; i < length; i++)
+  {
+    if(buffer1[i] != buffer2[i])
+      return false;
+  }
+  return true;
+}
+
+template <class T>
+inline bool rsArray::isAllZeros(T *buffer, int length)
+{
+  return isFilledWithValue(buffer, length, T(0));
+}
+
+template <class T>
+inline bool rsArray::isFilledWithValue(T *buffer, int length, T value)
+{
+  for(int n = 0; n < length; n++)
+  {
+    if(buffer[n] != value)
+      return false;
+  }
+  return true;
+}
+
 
 #endif

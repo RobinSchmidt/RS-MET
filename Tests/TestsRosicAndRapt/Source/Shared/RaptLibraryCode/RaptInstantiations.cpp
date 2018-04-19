@@ -39,6 +39,11 @@ template void RAPT::rsArray::fillWithRangeLinear(float* x, int N, float min, flo
 template void RAPT::rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed);
 template void RAPT::rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 
+template void RAPT::rsArray::deConvolve(double *y, int yLength, double *h, int hLength, double *x);
+template void RAPT::rsArray::sequenceSqrt(double *y, int yLength, double *x);
+
+
+
 // Math:
 //template RAPT::rsLinearAlgebra<float>; // doens't work bcs the template parameters are decalred in the member functions
 template RAPT::rsPolynomial<float>;

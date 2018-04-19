@@ -1,6 +1,8 @@
 #ifndef RAPT_INTEGERFUNCTIONS_H_INCLUDED
 #define RAPT_INTEGERFUNCTIONS_H_INCLUDED
 
+// wrap functions into class rsIntFuncs, make similar classes rsRealFuncs, rsComplexFuncs
+
 /** Calculates the binomial coefficient n over k. */
 template<class TUInt>
 TUInt rsBinomialCoefficient(TUInt n, TUInt k);
@@ -118,7 +120,7 @@ RS_INLINE TInt rsNormalizedValueToIndex(float normalizedValue, TInt numIndices);
 
 /** Power function for unsigned integers. */
 template<class TUInt>
-TUInt rsPowInt(TUInt base, TUInt exponent);
+RS_INLINE TUInt rsPowInt(TUInt base, TUInt exponent);
 
 /** Product of all integers between min and max (min and max inclusive). It is templated so it
 may be used for different types of integers (signed/unsigned, long/short, etc.).
@@ -203,6 +205,17 @@ RS_INLINE TInt rsNormalizedValueToIndex(float normalizedValue, TInt numIndices)
 {
   return (TInt)floor(normalizedValue * numIndices);
 }
+
+template<class TUInt>
+RS_INLINE TUInt rsPowInt(TUInt base, TUInt exponent)
+{
+  TUInt result = 1;
+  for(TUInt p = 1; p <= exponent; p++)
+    result *= base;
+  return result;
+  // in RSLib MathBasics.inl, there's a better algorithm for that
+}
+
 
 template <class T>
 RS_INLINE T rsProduct(T min, T max)

@@ -2,7 +2,7 @@
 
 // these files are not all compiled all by themselves separately in order to reduce the number of 
 // compilation unit to improve build time:
-//#include "Math/PolynomialUnitTests.cpp" 
+#include "Math/PolynomialUnitTests.cpp" 
 
 bool coordinateMapperUnitTest()
 {

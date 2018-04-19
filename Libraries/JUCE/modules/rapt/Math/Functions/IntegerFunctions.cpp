@@ -157,15 +157,6 @@ TUInt rsLcm(TUInt m, TUInt n)
   return n*m / rsGcd(n, m);
 }
 
-template<class TUInt>
-TUInt rsPowInt(TUInt base, TUInt exponent)
-{
-  TUInt result = 1;
-  for(TUInt p = 1; p <= exponent; p++)
-    result *= base;
-  return result;
-  //...i think, in RSLib there's a better algorithm for that
-}
 
 template<class TInt>
 void rsStirlingNumbersFirstKind(TInt **s, TInt nMax)

@@ -3,6 +3,7 @@
 
 /** A collection of functions for basic handling 2-dimensional arrays (i.e. matrices). Fancy linear 
 algebra stuff is not included here - this is part of the math module. */
+// rename to rsMatrixTools
 
 class MatrixTools
 {

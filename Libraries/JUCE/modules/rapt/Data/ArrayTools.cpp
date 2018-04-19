@@ -80,27 +80,7 @@ void rsArray::applyFunction(T *inBuffer, T *outBuffer, int length, T (*f) (T))
     outBuffer[i] = f(inBuffer[i]);
 }
 
-template <class T>
-bool rsArray::areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance)
-{
-  for(int i = 0; i < length; i++)
-  {
-    if(rsAbs(buffer1[i]-buffer2[i]) > tolerance)
-      return false;
-  }
-  return true;
-}
 
-template <class T>
-bool rsArray::areBuffersEqual(T *buffer1, T *buffer2, int length)
-{
-  for(int i = 0; i < length; i++)
-  {
-    if(buffer1[i] != buffer2[i])
-      return false;
-  }
-  return true;
-}
 
 template <class T>
 void rsArray::circularShift(T *buffer, int length, int numPositions)
@@ -755,17 +735,6 @@ T rsArray::interpolateClamped(T *y, int N, double n)
   return (1-nf)*y[ni] + nf*y[ni+1];
 }
 
-template <class T>
-bool rsArray::isFilledWithValue(T *buffer, int length, T value)
-{
-  for(int n = 0; n < length; n++)
-  {
-    if(buffer[n] != value)
-      return false;
-  }
-  return true;
-}
-
 template<class T>
 bool rsArray::isPeak(T *x, int n)
 {
@@ -818,11 +787,6 @@ int rsArray::findPeakOrValleyLeft(T *x, int N, int n0)
   return nL;
 }
 
-template <class T>
-bool rsArray::isAllZeros(T *buffer, int length)
-{
-  return rsIsFilledWithValue(buffer, length, T(0));
-}
 
 template <class T>
 void rsArray::leftShift(T *buffer, int length, int numPlaces)
