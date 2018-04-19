@@ -12,7 +12,7 @@ public:
   // todo:  have a std::vector<T> member for the coeffs and define operators
 
 
-
+  //===============================================================================================
   /** \name Static functions for computing with coefficient arrays */
 
   /** Evaluates the polynomial defined by the array of roots "r" at argument "x". */
@@ -217,7 +217,7 @@ public:
 
   static void rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2, 
     std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3);
-  // under construction
+  // under construction - does not yet work
 
   // implement rootsQuadraticReal, rootsQuadraticComplex, rootsCubicReal, rootsCubicComplex
   // rootsQuarticReal, rootsQuarticComplex
@@ -352,9 +352,11 @@ public:
   maxOrder+1 (same as the outer). You may also use a square matrix for convenience - then unused
   elements will not be touched in this case. */
   static void rsJacobiPolynomials(T **c, T a, T b, int maxOrder);
+    // rename to jacobi
 
   /** Analog to rsJacobiPolynomialRecursion */
   static void rsLegendrePolynomialRecursion(T *a, int n, T *a1, T *a2);
+   // rename to legendreRecursion
 
   // todo: void chebychevPolynomial(T *a, int order);
 
@@ -363,6 +365,7 @@ public:
   when monotonicity is assumed. \todo: check if these properties are actually true. Such 
   polynomials are used in Papoulis filters. */
   static void maximumSlopeMonotonicPolynomial(T *a, int N);
+    // rename to maxSlopeMonotonic
 
 
   // \todo for Halpern filters:
@@ -376,6 +379,42 @@ public:
     std::complex<T> *denominator, int denominatorOrder,
     std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
     std::complex<T> *pfeCoeffs);
+
+  //===============================================================================================
+  /** \name Non-static member functions and operators */
+
+  rsPolynomial(int order = 0, bool initWithZeros = true);
+
+
+  /** Returns the maximum order that this poloynomial may have which is the length of the 
+  coefficient array minus one. When there a re trailing zero coefficients, the actual degree of
+  the polynomial is lower. */
+  int getMaxOrder() const { return (int)coeffs.size()-1; }
+  // int getOrder()
+  // should take into account traling zeros ..or maybe have a boolean flag 
+  // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
+  // value - client code must be explicit
+
+  /** Adds two polynomials */
+  rsPolynomial<T> operator+(const rsPolynomial<T>& q)
+  { 
+    rsPolynomial<T> r(rsMax(getMaxOrder(), q.getMaxOrder()), true);
+
+    // something to do
+
+    return r;
+  }
+
+
+
+    // maybe we whould take into account the possibility of trailing zero coeffs?
+    // maybe have two functions: degreeMax, 
+
+
+
+protected:
+
+  std::vector<T> coeffs;
 
 };
 

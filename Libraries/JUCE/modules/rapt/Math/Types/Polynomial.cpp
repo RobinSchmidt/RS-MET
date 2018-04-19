@@ -1238,6 +1238,17 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   */
 }
 
+//=================================================================================================
+// member functions
+
+template<class T>
+rsPolynomial<T>::rsPolynomial(int order, bool initWithZeros)
+{
+  coeffs.resize(order+1);
+  if(initWithZeros)
+    rsArray::fillWithZeros(&coeffs[0], order+1);
+}
+
 
 /*
 todo: define the set of rational functions R(x) = P(x)/Q(x) where P, Q are polynomials

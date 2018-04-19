@@ -175,23 +175,21 @@ float cubicRootPQ(float p, float q)
 // finds one solution to the equation a * z^3 + b * z^2 + c*z + d = 0
 float cubicRoot(float d, float c, float b, float a)
 {
-  //float b2 = b*b, a2 = a*a;
-  //return cubicRootPQ((b2/a2-3*c/a)/3, -2*b2*b/(27*a2*a) + b*c/(2*a2) - d/a);
-  //// maybe simplify by first dividing out "a" from b,c,d
-
   float ai = 1/a; b *= ai; c *= ai; d *= ai;  // make monic (normalize a to 1)
   float b2 = b*b;
   return cubicRootPQ((b2-3*c)*(1.0/3.0), -b2*b*(2.0/27.0) + 0.5*b*c - d);
+}
 
-  // formula was found via http://sagecell.sagemath.org/ using as input:
-  // var("a b c d z")
-  // f(x) = a*x^3 + b*x^2 + c*x + d
-  // g = f.subs(x = z - b/(3*a))
-  // h = g/a
-  // h.collect(z)
-  //
-  // which gives the output:
-  // z^3 - 1/3*z*(b^2/a^2 - 3*c/a) + 2/27*b^3/a^3 - 1/3*b*c/a^2 + d/a
+void cubicRoots(float d, float c, float b, float a, std::complex<float>* r1,
+  std::complex<float>* r2, std::complex<float>* r3)
+{
+  float rr = cubicRoot(d, c, b, a); // find real root
+  *r2 = rr;
+  float cof[4] = {d, c, b, a };     // collect coeffs into array
+  float rem;                        // dummy for remainder
+  //RAPT::rsPolynomial<float>::dividePolynomialByMonomialInPlace(cof, 4, rr, &rem); // causes crash
+  //RAPT::rsPolynomial<float>::rootsQuadraticComplex(cof[0], cof[1], cof[2], r1, r3);
+  int dummy = 0;
 }
 
 bool polynomialRootsUnitTest()
@@ -240,6 +238,8 @@ bool polynomialRootsUnitTest()
   test = cubicRootPQ(-1, 0);    // should find root at 0
   test = cubicRoot(0, 1, 0, 1); // this too
 
+  test = cubicRootPQ(2, 4);  // should be 2
+  cubicRoots(-8, -4, 0, 2, &cr1, &cr2, &cr3); // roots: 2, -1-i, -1+i
 
 
   // -18 + 33*x - 18*x^2 + 3*x^3, roots: 1, 2, 3, d = 324
