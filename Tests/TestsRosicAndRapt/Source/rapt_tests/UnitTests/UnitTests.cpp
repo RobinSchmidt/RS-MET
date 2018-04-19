@@ -25,6 +25,8 @@ bool runAllUnitTests()
   passed &= runUnitTest(&coordinateMapperUnitTest,      "rsCoordinateMapper2D");
   passed &= runUnitTest(&interpolatingFunctionUnitTest, "rsInterpolatingFunction");
   passed &= runUnitTest(&rootFinderUnitTest,            "rsRootFinder");
+
+
   passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding");
 
 

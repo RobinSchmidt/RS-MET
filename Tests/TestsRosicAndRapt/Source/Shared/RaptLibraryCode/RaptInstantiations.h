@@ -19,6 +19,11 @@ PhaseScopeBufferFFD typedef wouldn't exist. */
 // needed when it's commented out in rapt -> reduce build time during tweaking the class
 
 // Math:
+
+typedef RAPT::rsPolynomial<float> rsPolynomialF;
+typedef RAPT::rsPolynomial<double> rsPolynomialD;
+//typedef RAPT::rsPolynomial<int> rsPolynomialI;
+
 typedef RAPT::rsConicSection<float> rsConicSectionF;
 typedef RAPT::rsEllipse<float> rsEllipseF;
 

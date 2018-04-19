@@ -42,6 +42,9 @@ template void RAPT::rsArray::fillWithRandomValues(double* x, int N, double min, 
 // Math:
 //template RAPT::rsLinearAlgebra<float>; // doens't work bcs the template parameters are decalred in the member functions
 template RAPT::rsPolynomial<float>;
+template RAPT::rsPolynomial<double>;
+//template RAPT::rsPolynomial<int>; // template doesn'T compile with int
+
 
 template int RAPT::rsClip(int x, int min, int max);
 template RAPT::rsConicSection<float>;
