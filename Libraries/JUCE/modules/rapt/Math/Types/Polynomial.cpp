@@ -62,6 +62,23 @@ void rsPolynomial<T>::dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q
   rsArray::fillWithZeros(&r[dOrder], pOrder-dOrder+1);
 }
 
+
+template<class T>
+template<class S>
+void rsPolynomial<T>::dividePolynomialByMonomialInPlace(S *dividendAndResult, int dividendOrder,
+  S x0, S *remainder)
+{
+  *remainder = dividendAndResult[dividendOrder];
+  dividendAndResult[dividendOrder] = T(0);
+  for(int i=dividendOrder-1; i>=0; i--)
+  {
+    S swap               = dividendAndResult[i];
+    dividendAndResult[i] = *remainder;
+    *remainder           = swap + *remainder*x0;
+  }
+}
+
+/*
 template <class T>
 void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder,
   T x0, T *remainder)
@@ -75,7 +92,7 @@ void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, in
     *remainder           = swap + *remainder*x0;
   }
 }
-
+*/
 template <class T>
 void rsPolynomial<T>::polyCoeffsForNegativeArgument(T *a, T *am, int N)
 {
@@ -1193,7 +1210,6 @@ void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
   delete [] a;
 }
 
-/*
 template<class T>
 void rsPolynomial<T>::rsPartialFractionExpansion(
   std::complex<T> *numerator,   int numeratorOrder,
@@ -1201,8 +1217,12 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs)
 {
-  //rsAssert(false); // code below needs update - doesn't compile in TestsRosicAndRapt
+  rsAssert(false); // code below needs update - doesn't compile in TestsRosicAndRapt
+                   // the code itself compiles now but triggers error in
+                   // rsSolveLinearSystemInPlace
 
+ 
+  /*
   // sanity check for inputs:
   rsAssert(numeratorOrder < denominatorOrder);
   rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denominatorOrder);
@@ -1235,8 +1255,8 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   // clean up:
   rsArray::deAllocateSquareArray2D(A, denominatorOrder);
   delete[] tmp;
+  */
 }
-*/
 
 //=================================================================================================
 // member functions

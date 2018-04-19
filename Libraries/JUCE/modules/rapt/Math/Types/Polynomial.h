@@ -62,8 +62,13 @@ public:
 
   /** Divides the dividend by the monomial factor (x-x0) and stores the result in the same array
   again. The remainder (which is just a numerical value) will be stored in 'remainder'. */
-  static void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, T x0, 
-    T *remainder);
+  template<class S>
+  static void dividePolynomialByMonomialInPlace(S *dividendAndResult, int dividendOrder, S x0, 
+    S *remainder);
+
+  //static void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, T x0, 
+  //  T *remainder);
+
 
   /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "am") the coefficients for
@@ -374,11 +379,11 @@ public:
 
   // comment this function, maybe use a more efficent algorithm if all
   // poles are simple, (see also Experiments - there's something said about that)
-  //static void rsPartialFractionExpansion(
-  //  std::complex<T> *numerator, int numeratorOrder,
-  //  std::complex<T> *denominator, int denominatorOrder,
-  //  std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
-  //  std::complex<T> *pfeCoeffs);
+  static void rsPartialFractionExpansion(
+    std::complex<T> *numerator, int numeratorOrder,
+    std::complex<T> *denominator, int denominatorOrder,
+    std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
+    std::complex<T> *pfeCoeffs);
 
   //===============================================================================================
   /** \name Non-static member functions and operators */

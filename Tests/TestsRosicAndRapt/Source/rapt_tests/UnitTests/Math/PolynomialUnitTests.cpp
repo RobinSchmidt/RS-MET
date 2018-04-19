@@ -342,8 +342,8 @@ bool testPolynomialDivision(std::string &reportString)
 
   // p(x)/d(x) = q(x) + r(x)/d(x)
 
-  testResult &= rsAreBuffersEqual(q, qq, 4);
-  testResult &= rsAreBuffersEqual(r, rr, 5);
+  testResult &= rsArray::areBuffersEqual(q, qq, 4);
+  testResult &= rsArray::areBuffersEqual(r, rr, 5);
 
   return testResult;
 }
@@ -474,13 +474,13 @@ bool testPolynomialFiniteDifference(std::string &reportString)
   rsPolynomialD::polyFiniteDifference(a, ad, order, 1, h);
   for(n = 0; n < numValues; n++)
     yfc[n] = rsPolynomialD::evaluatePolynomialAt(x[n], ad, order-1);
-  testResult &= rsAreBuffersEqual(yf, yfc, numValues-1);
+  testResult &= rsArray::areBuffersEqual(yf, yfc, numValues-1);
 
   // check backward difference:
   rsPolynomialD::polyFiniteDifference(a, ad, order, -1, h);
   for(n = 0; n < numValues; n++)
     ybc[n] = rsPolynomialD::evaluatePolynomialAt(x[n], ad, order-1);
-  testResult &= rsAreBuffersEqual(&yb[1], &ybc[1], numValues-1);
+  testResult &= rsArray::areBuffersEqual(&yb[1], &ybc[1], numValues-1);
 
   return testResult;
 }
@@ -542,8 +542,8 @@ bool testPolynomialWeightedSum(std::string &reportString)
   testResult &= (r[5] ==   4);
 
   // use a truncated polynomial for p (such that p and q are of the same order):
-  rsFillWithZeros(r, rN+1);
-  weightedSumOfPolynomials(p, qN, 2.0, q, qN, 3.0, r);
+  rsArray::fillWithZeros(r, rN+1);
+  rsPolynomialD::weightedSumOfPolynomials(p, qN, 2.0, q, qN, 3.0, r);
   testResult &= (r[0] ==  12);
   testResult &= (r[1] == -11);
   testResult &= (r[2] ==  28);
@@ -638,16 +638,17 @@ bool testPolynomialRootFinder(std::string &reportString)
 
   // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 as test function
   double a1[5] = {-52, -23, 21, -7, 1};
-  rsComplexDbl r1[4];
-  findPolynomialRoots(a1, 4, r1);
+  //rsComplexDbl r1[4];
+  std::complex<double> r1[4];
+  rsPolynomialD::findPolynomialRoots(a1, 4, r1);
 
   static const int maxN     = 20;
   static const int numTests = 1000;
   double range = 10.0;                // range for the real and imaginary parts of the roots
   double tol   = 5.e-8;               // tolerance
-  rsComplexDbl a[maxN+1];             // polynomial coefficients
-  rsComplexDbl rTrue[maxN];           // true roots
-  rsComplexDbl rFound[maxN];          // roots that were found
+  std::complex<double> a[maxN+1];     // polynomial coefficients
+  std::complex<double> rTrue[maxN];   // true roots
+  std::complex<double> rFound[maxN];  // roots that were found
   rsRandomUniform(-range, range, 0);  // set seed
   int i, j, k;
   for(i = 1; i <= numTests; i++)
@@ -658,15 +659,15 @@ bool testPolynomialRootFinder(std::string &reportString)
     // generate a bunch of random roots:
     for(k = 0; k < N; k++)
     {
-      rTrue[k].re = rsRandomUniform(-range, range);
-      rTrue[k].im = rsRandomUniform(-range, range);
+      rTrue[k].real(rsRandomUniform(-range, range));
+      rTrue[k].imag(rsRandomUniform(-range, range));
     }
 
     // obtain polynomial coeffs:
-    rootsToCoeffs(rTrue, a, N);
+    rsPolynomialD::rootsToCoeffs(rTrue, a, N);
 
     // find the roots:
-    findPolynomialRoots(a, N, rFound);
+    rsPolynomialD::findPolynomialRoots(a, N, rFound);
 
     // try to find a matching root in the found roots for each of the true roots:
     for(j = 0; j < N; j++)
@@ -674,7 +675,7 @@ bool testPolynomialRootFinder(std::string &reportString)
       bool matchFound = false;
       for(k = 0; k < N; k++)
       {
-        if( (rFound[j]-rTrue[k]).getRadius() < tol )
+        if( abs(rFound[j]-rTrue[k]) < tol )
         {
           matchFound = true;
           break;
@@ -694,10 +695,10 @@ bool testPartialFractionExpansion(std::string &reportString)
   bool testResult = true;
 
   // local variables:
-  rsComplexDbl n[9], d[9], p[9]; // numerator, denominator, poles
-  rsComplexDbl a[9];             // partial fraction expansion coefficients
-  int m[9];                      // multiplicities
-  rsComplexDbl j(0.0, 1.0);      // imaginary unit
+  std::complex<double> n[9], d[9], p[9]; // numerator, denominator, poles
+  std::complex<double> a[9];             // partial fraction expansion coefficients
+  int m[9];                              // multiplicities
+  std::complex<double> j(0.0, 1.0);      // imaginary unit
   int numeratorOrder, denominatorOrder, numPoles;
   double tol = 1.e-14;
 
@@ -712,12 +713,12 @@ bool testPartialFractionExpansion(std::string &reportString)
   d[0] = -75;  d[1] = 125;  d[2] = -22; d[3] = -30; d[4] =  1; d[5] = 1;
   p[0] = -5; p[1] = -3; p[2] = +1; p[3] =  5;
   m[0] =  1; m[1] =  1; m[2] =  2; m[3] =  1;
-  rsPartialFractionExpansion(n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
-  testResult &= (a[0]-3.0).getRadius() < tol;
-  testResult &= (a[1]+4.0).getRadius() < tol;
-  testResult &= (a[2]-2.0).getRadius() < tol;
-  testResult &= (a[3]-5.0).getRadius() < tol;
-  testResult &= (a[4]+3.0).getRadius() < tol;
+  rsPolynomialD::rsPartialFractionExpansion(n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
+  testResult &= abs(a[0]-3.0) < tol;
+  testResult &= abs(a[1]+4.0) < tol;
+  testResult &= abs(a[2]-2.0) < tol;
+  testResult &= abs(a[3]-5.0) < tol;
+  testResult &= abs(a[4]+3.0) < tol;
 
   // 2nd test, has numeratorOrder < denominatorOrder-1 (needs zero padding of RHS), has also a
   // double root:
@@ -730,10 +731,10 @@ bool testPartialFractionExpansion(std::string &reportString)
   d[0] =  2; d[1] =  5; d[2] = 4; d[3] = 1;
   p[0] = -2; p[1] = -1;
   m[0] =  1; m[1] =  2;
-  rsPartialFractionExpansion(n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
-  testResult &= (a[0]-2.0).getRadius() < tol;
-  testResult &= (a[1]+2.0).getRadius() < tol;
-  testResult &= (a[2]-1.0).getRadius() < tol;
+  rsPolynomialD::rsPartialFractionExpansion(n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
+  testResult &= abs(a[0]-2.0) < tol;
+  testResult &= abs(a[1]+2.0) < tol;
+  testResult &= abs(a[2]-1.0) < tol;
 
   // \todo: check a couple of other cases, one where the denominator is not monic is still missing
 
@@ -746,8 +747,8 @@ bool testPolynomialBaseChange(std::string &reportString)
   bool testResult = true;
 
   static const int N = 7; // polynomial order
-  double **Q; rsAllocateSquareArray2D(Q, N+1);
-  double **R; rsAllocateSquareArray2D(R, N+1);
+  double **Q; rsArray::allocateSquareArray2D(Q, N+1);
+  double **R; rsArray::allocateSquareArray2D(R, N+1);
   double  *a = new double[N+1];
   double  *b = new double[N+1];
 
@@ -766,7 +767,7 @@ bool testPolynomialBaseChange(std::string &reportString)
   }
 
   // get the expansion coeffs in terms of R-polynomials:
-  rsPolynomialBaseChange(Q, a, R, b, N);
+  rsPolynomialD::rsPolynomialBaseChange(Q, a, R, b, N);
 
   // select a value for the argument:
   double x = 2.0;
@@ -774,17 +775,17 @@ bool testPolynomialBaseChange(std::string &reportString)
   // compute y in terms of Q-polynomials:
   double yQ = 0.0;
   for(i = 0; i <= N; i++)
-    yQ += a[i] * evaluatePolynomialAt(x, Q[i], N);
+    yQ += a[i] * rsPolynomialD::evaluatePolynomialAt(x, Q[i], N);
 
   // compute y in terms of R-polynomials:
   double yR = 0.0;
   for(i = 0; i <= N; i++)
-    yR += b[i] * evaluatePolynomialAt(x, R[i], N);
+    yR += b[i] * rsPolynomialD::evaluatePolynomialAt(x, R[i], N);
 
   testResult &= rsIsCloseTo(yQ, yR, 1.e-11);
 
-  rsDeAllocateSquareArray2D(Q, N+1);
-  rsDeAllocateSquareArray2D(R, N+1);
+  rsArray::deAllocateSquareArray2D(Q, N+1);
+  rsArray::deAllocateSquareArray2D(R, N+1);
   delete[] a;
   delete[] b;
 
@@ -793,7 +794,7 @@ bool testPolynomialBaseChange(std::string &reportString)
 
 void rsPowersToChebychev(double *a, double *b, int N)
 {
-  rsFillWithZeros(b, N+1);
+  rsArray::fillWithZeros(b, N+1);
   double tmp, tmp2;         // temporary values
   int k, i;                 // loop indices
   int s = 0;                // recursion stage
@@ -823,7 +824,7 @@ void rsChebychevToPowers(double *b, double *a, int N)
 {
   double tmp, tmp2;
   double *bb = new double[N+1]; // use a tmp-buffer, because it will be modified
-  rsCopyBuffer(b, bb, N+1);
+  rsArray::copyBuffer(b, bb, N+1);
   int k, i;
 
   // this is basically rsPowersToChebychev run backwards:
@@ -933,7 +934,7 @@ bool testPowersChebychevExpansionConversion(std::string &reportString)
     B[s][i] = 0.5*B[s-1][i-1];  // i == s+1 here
     */
   }
-  rsCopyBuffer(B[N-1], b, N+1);
+  rsArray::copyBuffer(B[N-1], b, N+1);
   // looks plausible and seems to work in this case
 
 
@@ -1029,7 +1030,7 @@ bool testPolynomialRecursion(std::string &reportString)
 
   // compute coefficient arrays for higher orders recursively:
   for(n = 2; n < N; n++)
-    rsPolynomialRecursion(pa[n], w0, n, pa[n-1], w1, w1x, pa[n-2], w2);
+    rsPolynomialD::rsPolynomialRecursion(pa[n], w0, n, pa[n-1], w1, w1x, pa[n-2], w2);
 
   // P2(x) = 5 + 2x + 3x^2:
   testResult &= a[2][0]==5 && a[2][1]==2 && a[2][2]==3;
@@ -1042,15 +1043,15 @@ bool testPolynomialRecursion(std::string &reportString)
 
   // in-place application - 1st input is reused as output:
   double t1[5], t2[5];
-  rsCopyBuffer(a[2], t2, 5);
-  rsCopyBuffer(a[3], t1, 5);
-  rsPolynomialRecursion(t1, w0, 4, t1, w1, w1x, t2, w2);
-  testResult &= rsAreBuffersEqual(a[4], t1, 5);
+  rsArray::copyBuffer(a[2], t2, 5);
+  rsArray::copyBuffer(a[3], t1, 5);
+  rsPolynomialD::rsPolynomialRecursion(t1, w0, 4, t1, w1, w1x, t2, w2);
+  testResult &= rsArray::areBuffersEqual(a[4], t1, 5);
 
   // in-place application - 2nd input is reused as output:
-  rsCopyBuffer(a[3], t1, 5);
-  rsPolynomialRecursion(t2, w0, 4, t1, w1, w1x, t2, w2);
-  testResult &= rsAreBuffersEqual(a[4], t2, 5);
+  rsArray::copyBuffer(a[3], t1, 5);
+  rsPolynomialD::rsPolynomialRecursion(t2, w0, 4, t1, w1, w1x, t2, w2);
+  testResult &= rsArray::areBuffersEqual(a[4], t2, 5);
 
   return testResult;
 }
@@ -1073,7 +1074,7 @@ bool testJacobiPolynomials(std::string &reportString)
     pc[n] = &c[n][0];
 
   // gnereate the coefficient arrays:
-  rsJacobiPolynomials(&pc[0], a, b, maxOrder);
+  rsPolynomialD::rsJacobiPolynomials(&pc[0], a, b, maxOrder);
 
   // check coefficients:
   testResult &= c[0][0]==1;
@@ -1092,12 +1093,12 @@ bool testJacobiPolynomials(std::string &reportString)
   // L1 and L2 now contain Legendre polynomials of orders 0 and 1, we compute Legendre polynomial 
   // of successively higher orders using recursion, using the two arrays alternately for the 
   // in-plce computed results:
-  rsLegendrePolynomialRecursion(L1, 2, L2, L1);
-  rsLegendrePolynomialRecursion(L2, 3, L1, L2);
-  rsLegendrePolynomialRecursion(L1, 4, L2, L1);
-  rsLegendrePolynomialRecursion(L2, 5, L1, L2);
-  rsLegendrePolynomialRecursion(L1, 6, L2, L1);
-  rsLegendrePolynomialRecursion(L2, 7, L1, L2);
+  rsPolynomialD::rsLegendrePolynomialRecursion(L1, 2, L2, L1);
+  rsPolynomialD::rsLegendrePolynomialRecursion(L2, 3, L1, L2);
+  rsPolynomialD::rsLegendrePolynomialRecursion(L1, 4, L2, L1);
+  rsPolynomialD::rsLegendrePolynomialRecursion(L2, 5, L1, L2);
+  rsPolynomialD::rsLegendrePolynomialRecursion(L1, 6, L2, L1);
+  rsPolynomialD::rsLegendrePolynomialRecursion(L2, 7, L1, L2);
 
   // check, if the 7th order Legendre coefficients are correct:
   testResult &= L2[0]==0 && L2[1]==-2.1875 && L2[2]==0  && L2[3]==19.6875 && L2[4]==0
@@ -1114,11 +1115,11 @@ bool testPolynomialOperators(std::string &reportString)
   static const int N1 = 3;
   static const int N2 = 4;
 
-  int a1[N1+1] = {7, 5, 3, 2};
-  int a2[N2+1] = {23, 19, 17, 13, 11};
+  double a1[N1+1] = {7, 5, 3, 2};
+  double a2[N2+1] = {23, 19, 17, 13, 11};
 
-  rsPolynomial<int> P1(a1, N1);
-  rsPolynomial<int> P2(a2, N2);
+  //rsPolynomialD P1(a1, N1);
+  //rsPolynomialD P2(a2, N2);
 
   return testResult;
 }

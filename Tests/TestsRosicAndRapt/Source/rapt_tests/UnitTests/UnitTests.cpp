@@ -1,5 +1,14 @@
 #include "UnitTests.h"
 
+/*
+template<class T>
+template<class S>
+void Foo<T>::bar(S x)
+{
+
+}
+*/
+
 bool runUnitTest(bool (*test)(), const string& name)
 {
   //cout << "Testing: " + name + ": ";
