@@ -1,11 +1,11 @@
 template<class T>
-rsMatrix<T>::rsMatrix(size_t numRows, size_t numColumns)
+rsMatrixNew<T>::rsMatrixNew(size_t numRows, size_t numColumns)
 {
   setSize(numRows, numColumns);
 }
 
 template<class T>
-void rsMatrix<T>::setSize(size_t numRows, size_t numColumns)
+void rsMatrixNew<T>::setSize(size_t numRows, size_t numColumns)
 {
   this->N = numRows;
   this->M = numColumns;

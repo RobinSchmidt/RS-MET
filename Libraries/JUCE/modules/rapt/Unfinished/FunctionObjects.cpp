@@ -1,31 +1,24 @@
-/*
-#include <limits>
-
-#include "rosic_FunctionObjects.h"
-#include "../math/rosic_PolynomialAlgorithms.h"
-using namespace rosic;
-*/
-
-using namespace RSLib;
-
 //=================================================================================================
 // class UnivariateScalarFunction  
 
 //-------------------------------------------------------------------------------------------------    
 // evaluation:
 
-double UnivariateScalarFunction::getFirstDerivativeAt(double x)
+template<class T>
+T UnivariateScalarFunction<T>::getFirstDerivativeAt(T x)
 {
   return approximateDerivativeAt(x, 1, rsMax(0.001*x, 1.e-14));
 }
 
-double UnivariateScalarFunction::getSecondDerivativeAt(double x)
+template<class T>
+T UnivariateScalarFunction<T>::getSecondDerivativeAt(T x)
 {
-  double eps = rsMax(0.001*x, 1.e-14);
+  T eps = rsMax(0.001*x, 1.e-14);
   return (getFirstDerivativeAt(x+eps) - getFirstDerivativeAt(x-eps)) / (2*eps);
 }
 
-double UnivariateScalarFunction::approximateDerivativeAt(double x, int order, double eps)
+template<class T>
+T UnivariateScalarFunction<T>::approximateDerivativeAt(T x, int order, T eps)
 {
   if( order == 0 )
     return getValueAt(x);
@@ -36,23 +29,24 @@ double UnivariateScalarFunction::approximateDerivativeAt(double x, int order, do
   }
 }
 
-double UnivariateScalarFunction::findRootViaRidders(double xL, double xU)
+template<class T>
+T UnivariateScalarFunction<T>::findRootViaRidders(T xL, T xU)
 {
   // it doesn't always converge - maybe we should use a relative error criterion in the while-loop,
   // i.e., instead of checking while( xU-xL > tol && i <= iMax ), we could check 
   // while( xU-xL > tol && i <= iMax ). in this case, xM needs to be initialized before we enter 
   // the loop
 
-  const double tol  = 10*std::numeric_limits<double>::epsilon(); 
+  const T tol  = 10*std::numeric_limits<T>::epsilon(); 
   const int    iMax = 1000;    // maximum number of iterations
-  double fL = getValueAt(xL);  // function value at lower bound
-  double fU = getValueAt(xU);  // function value at upper bound
-  double fM;                   // function value at midpoint
-  double xM;                   // midpoint of interval  (initialization unnecessary)
-  //double xM = 0.5*(xL+xU);     // midpoint of interval - init, if relative error is used
-  double xN;                   // new x-value (to replace xL or xH)
-  double fN;                   // new function value (to replace fL or fU)
-  double sq;                   // square root in the denominator
+  T fL = getValueAt(xL);  // function value at lower bound
+  T fU = getValueAt(xU);  // function value at upper bound
+  T fM;                   // function value at midpoint
+  T xM;                   // midpoint of interval  (initialization unnecessary)
+  //T xM = 0.5*(xL+xU);     // midpoint of interval - init, if relative error is used
+  T xN;                   // new x-value (to replace xL or xH)
+  T fN;                   // new function value (to replace fL or fU)
+  T sq;                   // square root in the denominator
   int    i  = 0;               // iteration counter
 
   bool upward = false;         // flag to distinguish between upward and downward zero crossings
@@ -144,16 +138,17 @@ double UnivariateScalarFunction::findRootViaRidders(double xL, double xU)
   return 0.0; 
 }
 
-double UnivariateScalarFunction::findRootViaNewtonNonRobust(double x)
+template<class T>
+T UnivariateScalarFunction<T>::findRootViaNewtonNonRobust(T x)
 {
   // why is this "NonRobust" and hwo can it be made robust?
 
-  const double tol  = std::numeric_limits<double>::epsilon(); 
+  const T tol  = std::numeric_limits<T>::epsilon(); 
   const int    iMax = 1000;    // maximum number of iterations - todo: pass as parameter
-  double f, f1;                // f(x), f'(x)
+  T f, f1;                // f(x), f'(x)
 
-  //double d = 2*tol;            // delta for next iteration, initializer only to enter the loop
-  double d = 2*rsAbs(x)*tol;    // delta for next iteration, initializer only to enter the loop
+  //T d = 2*tol;            // delta for next iteration, initializer only to enter the loop
+  T d = 2*rsAbs(x)*tol;    // delta for next iteration, initializer only to enter the loop
 
   int    i = 0;                // iteration counter
 
@@ -172,13 +167,14 @@ double UnivariateScalarFunction::findRootViaNewtonNonRobust(double x)
   return x;
 }
 
-double UnivariateScalarFunction::findRootViaChebychevNonRobust(double x)
+template<class T>
+T UnivariateScalarFunction<T>::findRootViaChebychevNonRobust(T x)
 {
   // \todo: here, we should also use a relative-error based stopping criterion...
 
-  const double eps = std::numeric_limits<double>::epsilon(); 
-  double f, f1, f2;  // f(x), f'(x), f''(x)
-  double d = 2*eps;  
+  const T eps = std::numeric_limits<T>::epsilon(); 
+  T f, f1, f2;  // f(x), f'(x), f''(x)
+  T d = 2*eps;  
   int i    = 0;    
   int iMax = 1000; 
   while( fabs(d) > eps && i <= iMax )
@@ -204,9 +200,9 @@ double UnivariateScalarFunction::findRootViaChebychevNonRobust(double x)
 //-------------------------------------------------------------------------------------------------    
 // construction/destruction:
 
-
-UnivariateScalarFunctionViaPointer::UnivariateScalarFunctionViaPointer(
-  double (*functionToUse)(double), double (*derivativeToUse)(double))
+template<class T>
+UnivariateScalarFunctionViaPointer<T>::UnivariateScalarFunctionViaPointer(
+  T (*functionToUse)(T), T (*derivativeToUse)(T))
 {
   rsAssert( functionToUse != NULL );
   functionPointer   = functionToUse;
@@ -216,12 +212,14 @@ UnivariateScalarFunctionViaPointer::UnivariateScalarFunctionViaPointer(
 //-------------------------------------------------------------------------------------------------    
 // evaluation:
 
-double UnivariateScalarFunctionViaPointer::getValueAt(double x)
+template<class T>
+T UnivariateScalarFunctionViaPointer<T>::getValueAt(T x)
 {
   return functionPointer(x);
 }
 
-double UnivariateScalarFunctionViaPointer::getFirstDerivativeAt(double x)
+template<class T>
+T UnivariateScalarFunctionViaPointer<T>::getFirstDerivativeAt(T x)
 {
   if( derivativePointer != NULL )
     return derivativePointer(x);
@@ -235,11 +233,11 @@ double UnivariateScalarFunctionViaPointer::getFirstDerivativeAt(double x)
 
 //-------------------------------------------------------------------------------------------------    
 // construction/destruction:
-
-Polynomial::Polynomial(const unsigned int initOrder, const double* const initCoeffs)
+/*
+Polynomial::Polynomial(const unsigned int initOrder, const T* const initCoeffs)
 {
   order  = initOrder;
-  coeffs = new double[order+1];
+  coeffs = new T[order+1];
   if( initCoeffs != NULL )
     setCoefficients(initCoeffs);
   else
@@ -260,7 +258,7 @@ void Polynomial::zeroCoefficients()
     coeffs[k] = 0.0;
 }
 
-void Polynomial::setCoefficients(const double* const newCoeffs)
+void Polynomial::setCoefficients(const T* const newCoeffs)
 {
   for(unsigned int k = 0; k <= order; k++)
     coeffs[k] = newCoeffs[k];
@@ -269,25 +267,25 @@ void Polynomial::setCoefficients(const double* const newCoeffs)
 //-------------------------------------------------------------------------------------------------    
 // inquiry:
 
-double Polynomial::getValueAt(double x)
+T Polynomial::getValueAt(T x)
 {
-  return evaluatePolynomialAt(x, coeffs, order);
+  return rsPolynomial<T>::evaluatePolynomialAt(x, coeffs, order);
 }
 
-double Polynomial::getFirstDerivativeAt(double x)
+T Polynomial::getFirstDerivativeAt(T x)
 {
-  double f[2];  // f(x), f'(x)
-  evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 1); // maybe optimize
+  T f[2];  // f(x), f'(x)
+  rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 1); // maybe optimize
   return f[1];
 }
 
-double Polynomial::getSecondDerivativeAt(double x)
+T Polynomial::getSecondDerivativeAt(T x)
 {
-  double f[3];  // f(x), f'(x), f''(x)
-  evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 2); // maybe optimize
+  T f[3];  // f(x), f'(x), f''(x)
+  rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 2); // maybe optimize
   return f[2];
 }
-
+*/
 
 
 //=================================================================================================
@@ -296,12 +294,14 @@ double Polynomial::getSecondDerivativeAt(double x)
 //-------------------------------------------------------------------------------------------------    
 // construction/destruction:
 
-MultivariateScalarFunction::MultivariateScalarFunction(int numInputs)
+template<class T>
+MultivariateScalarFunction<T>::MultivariateScalarFunction(int numInputs)
 {
   this->numInputs = numInputs;
 }
 
-MultivariateScalarFunction::~MultivariateScalarFunction()
+template<class T>
+MultivariateScalarFunction<T>::~MultivariateScalarFunction()
 {
 
 }
@@ -313,23 +313,26 @@ MultivariateScalarFunction::~MultivariateScalarFunction()
 //-------------------------------------------------------------------------------------------------    
 // construction/destruction:
 
-MultivariateErrorFunction::MultivariateErrorFunction()
+template<class T>
+MultivariateErrorFunction<T>::MultivariateErrorFunction()
 {
 
 }
 
-MultivariateErrorFunction::~MultivariateErrorFunction()
+template<class T>
+MultivariateErrorFunction<T>::~MultivariateErrorFunction()
 {
 
 }
 
-rsVectorDbl MultivariateErrorFunction::getGradient(rsVectorDbl p)
+template<class T>
+rsVectorDbl MultivariateErrorFunction<T>::getGradient(rsVectorDbl p)
 {
   rsVectorDbl g(p.dim);     // gradient vector to be computed
-  double eps = 0.00001;     // epsilon for the approximation
-  double pTmp;              // for temporary storage
-  double ep;                // error at p[i] + eps
-  double em;                // error at p[i] - eps
+  T eps = 0.00001;     // epsilon for the approximation
+  T pTmp;              // for temporary storage
+  T ep;                // error at p[i] + eps
+  T em;                // error at p[i] - eps
   for(int i=0; i<p.dim; i++)
   {
     pTmp   = p.v[i];
@@ -343,10 +346,11 @@ rsVectorDbl MultivariateErrorFunction::getGradient(rsVectorDbl p)
   return g;
 }
 
-rsVectorDbl MultivariateErrorFunction::getVectorTimesHessianApproximate(rsVectorDbl p, 
+template<class T>
+rsVectorDbl MultivariateErrorFunction<T>::getVectorTimesHessianApproximate(rsVectorDbl p, 
   rsVectorDbl v)
 {
-  double eps  = 0.00001;                     // epsilon for the approximation (ad hoc - use 
+  T eps  = 0.00001;                     // epsilon for the approximation (ad hoc - use 
                                              // something more meaningful and/or have a parameter)
   eps        /= v.getEuclideanNorm();        // ...should be normalized by ||v||
   rsVectorDbl gp   = getGradient(p + eps*v); // gradient at p + eps*v
@@ -360,7 +364,8 @@ rsVectorDbl MultivariateErrorFunction::getVectorTimesHessianApproximate(rsVector
 //-------------------------------------------------------------------------------------------------    
 // construction/destruction:
 
-QuadraticTestErrorFunction::QuadraticTestErrorFunction()
+template<class T>
+QuadraticTestErrorFunction<T>::QuadraticTestErrorFunction()
 {
   // example form the paper An Introduction to tze Conjugate Gradient Method Without the Agonizing 
   // pain:
@@ -398,7 +403,8 @@ QuadraticTestErrorFunction::QuadraticTestErrorFunction()
   */
 }
 
-QuadraticTestErrorFunction::~QuadraticTestErrorFunction()
+template<class T>
+QuadraticTestErrorFunction<T>::~QuadraticTestErrorFunction()
 {
 
 }
@@ -408,9 +414,11 @@ QuadraticTestErrorFunction::~QuadraticTestErrorFunction()
 
 //-------------------------------------------------------------------------------------------------    
 // construction/destruction:
-
-MultivariateVectorFunction::MultivariateVectorFunction(int numInputs, int numOutputs)
+/*
+template<class T>
+MultivariateVectorFunction<T>::MultivariateVectorFunction(int numInputs, int numOutputs)
 {
   this->numInputs  = numInputs;
   this->numOutputs = numOutputs;
 }
+*/

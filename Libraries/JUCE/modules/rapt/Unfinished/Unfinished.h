@@ -9,10 +9,9 @@ namespace RAPT
 
 #include "BandSplitter.h"
 
-
 #include "Vector.h"
-//#include "Matrix.h"
-//#include "FunctionObjects.h"
+#include "Matrix.h"
+#include "FunctionObjects.h"
 //#include "GradientBasedMinimizer.h"
 //#include "MultiLayerPerceptron.h"
 

@@ -1,17 +1,11 @@
-#ifndef RS_MATRIX_H
-#define RS_MATRIX_H
+#ifndef RAPT_MATRIX_H_INCLUDED
+#define RAPT_MATRIX_H_INCLUDED
 
-namespace RSLib
-{
-
-  /**
-
-  This is a class for representing matrices and doing mathematical operations with them. To make
-  the class fast, no consistency checking is done in the mathematical operators. You must ensure
-  yourself that the input arguments are compatible - for example don't try to add two matrices of
-  different dimensionality or multiply an n times m matrix with a q times p matrix when m != q.
-
-
+  /** This is a class for representing matrices and doing mathematical operations with them. To 
+  make the class fast, no consistency checking is done in the mathematical operators. You must 
+  ensure yourself that the input arguments are compatible - for example don't try to add two 
+  matrices of different dimensionality or multiply an n times m matrix with a q times p matrix when
+  m != q.
 
   \todo: optimize: Avoid excessive deep-copying of the 2D arrays by defining an rsMatrixData class
   and keeping a reference (pointer) to an object of that class in the actual rsMatrix class.
@@ -37,789 +31,787 @@ namespace RSLib
 
   */
 
-  template<class T>
-  class rsMatrix
+template<class T>
+class rsMatrix
+{
+
+public:
+
+
+
+  /** \name Construction/Destruction */
+
+  /** Default constructor - constructs a matrix with zero rows, zero colums and NULL pointers. */
+  rsMatrix();
+    // not tested
+
+  /** Constructor. You must pass the number of rows and colums here. */
+  rsMatrix(int numRows, int numColumns, bool initElementsWithZeros = false);
+    // not tested
+
+  /** Constructor. You must pass the number of rows and colums here and the values to intialize
+  the matix. */
+  rsMatrix(int numRows, int numColumns, T **values);
+    // not tested
+
+  /** Copy constructor. It only copies the value of the pointer to the data and increases its
+  reference-count. No deep coping is taking place because that would lead to excessive overhead
+  in function and operator calls.
+  \todo: maybe make protected
+  */
+  rsMatrix(const rsMatrix& other);
+
+
+  /** Returns a square matrix with diagonal elements given by 'scalarValue' and zero off-diagonal
+  elements. */
+  static rsMatrix scalarMatrix(T scalarValue, int dimension)
   {
-
-  public:
-
-
-
-    /** \name Construction/Destruction */
-
-    /** Default constructor - constructs a matrix with zero rows, zero colums and NULL pointers. */
-    rsMatrix();
-      // not tested
-
-    /** Constructor. You must pass the number of rows and colums here. */
-    rsMatrix(int numRows, int numColumns, bool initElementsWithZeros = false);
-      // not tested
-
-    /** Constructor. You must pass the number of rows and colums here and the values to intialize
-    the matix. */
-    rsMatrix(int numRows, int numColumns, T **values);
-      // not tested
-
-    /** Copy constructor. It only copies the value of the pointer to the data and increases its
-    reference-count. No deep coping is taking place because that would lead to excessive overhead
-    in function and operator calls.
-    \todo: maybe make protected
-    */
-    rsMatrix(const rsMatrix& other);
-
-
-    /** Returns a square matrix with diagonal elements given by 'scalarValue' and zero off-diagonal
-    elements. */
-    static rsMatrix scalarMatrix(T scalarValue, int dimension)
+    rsMatrix result(dimension, dimension);
+    for(int r=0; r<dimension; r++)  // use rsInitMatrix instead
     {
-      rsMatrix result(dimension, dimension);
-      for(int r=0; r<dimension; r++)  // use rsInitMatrix instead
-      {
-        for(int c=0; c<dimension; c++)
-          result.m[r][c] = 0.0;
-      }
-      for(int r=0; r<dimension; r++)
-        result.m[r][r] = scalarValue;
-      return result;
+      for(int c=0; c<dimension; c++)
+        result.m[r][c] = 0.0;
     }
-      // not tested
-
-    /** Returns a square matrix with diagonal elements given by the array 'diagonalValues' and zero
-    off-diagonal elements. The array is assumed to contain a number of elements equal to
-    'dimension'. */
-    static rsMatrix diagonalMatrix(T *diagonalValues, int dimension)
-    {
-      rsMatrix result(dimension, dimension);
-      for(int r=0; r<dimension; r++)
-      {
-        for(int c=0; c<dimension; c++)
-          result.m[r][c] = 0.0;
-      }
-      for(int r=0; r<dimension; r++)
-        result.m[r][r] = diagonalValues[r];
-      return result;
-    }
-    // untested
-
-    /** Destructor. */
-    ~rsMatrix();
-
-
-    /** \name Manipulations */
-
-    /** Sets up the size of the matrix (number of rows and columns). */
-    void setSize(int newNumRows, int newNumColumns)
-    {
-      if( newNumRows == getNumRows() && newNumColumns == getNumColumns() )
-        return;
-      else
-      {
-        data->numReferences -= 1;
-        if( data->numReferences == 0 )
-          delete data;
-        data = new rsMatrixData<T>(newNumRows, newNumColumns);
-        data->numReferences = 1;
-      }
-    }
-    // untested
-
-    /** Sets one of the matrix elements. */
-    void set(int row, int column, T newValue)
-    {
-      rsAssert( row < data->numRows && column < data->numColumns ); // invalid row or column index
-
-      if( data->numReferences > 1 )
-        makeDeepCopy();
-
-      data->m[row][column] = newValue;
-    }
-
-    /** Transposes this matrix (exchanges the roles of rows and columns). */
-    void transpose()
-    {
-      rsMatrixData<T>* newData = new rsMatrixData<T>(data->numColumns, data->numRows);
-      for(int i = 0; i < data->numRows; i++)
-      {
-        for(int j = 0; j < data->numColumns; j++)
-          newData->m[j][i] = data->m[i][j];
-      }
-      updateDataPointer(newData);
-    }
-
-    /** Assigns random values between 'min' and 'max' to each element. */
-    void randomizeElements(T min, T max)
-    {
-      //if( data->numReferences > 1 )
-      //  makeDeepCopy();
-
-      makeDeepCopyIfNecessary();// it's actually not necessary to copy the old values - get rid of it
-
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          data->m[r][c] = rsRandomUniform(min, max);
-      }
-    }
-    // untested
-
-    /** Initializes all elements with zero values. */
-    // \todo use rsInitMatrix
-    void initWithZeros()
-    {
-      if( data->numReferences > 1 )
-        makeDeepCopy();  // it's actually not necessary to copy the old values - get rid of it
-
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          data->m[r][c] = 0.0;
-      }
-    }
-    // untested
-
-    /** Initializes all elements with the sum of their row- and column indices. */
-    // why is this useful?
-    void initWithIndexSum()
-    {
-      if( data->numReferences > 1 )
-        makeDeepCopy();  // it's actually not necessary to copy the old values - get rid of it
-
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          data->m[r][c] = r+c;
-      }
-    }
-    // untested
-
-    /** Applies the passed function to each element of the matrix. */
-    void applyFunction( T (*f) (T) )
-    {
-      if( data->numReferences > 1 )
-        makeDeepCopy(); // maybe we can avoid the copying by directly setting the values of the new
-                        // matrix to the function values
-
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          data->m[r][c] = f(data->m[r][c]);
-      }
-    }
-
-
-    /** \name Inquiry */
-
-    int getNumRows() const
-    {
-      return data->numRows;
-    }
-
-    int getNumColumns() const
-    {
-      return data->numColumns;
-    }
-
-    int getNumElements() const
-    {
-      return data->numRows * data->numColumns;
-    }
-
-    bool isSquare() const
-    {
-      return data->numRows == data->numColumns;
-    }
-
-
-    /** Returns a pointer to the actual underlying data.
-    \todo: it's kinda dangerous and bad style to let client code access (and possibly modify) this
-    data - find a better solution. Returning a const pointer somehow doesn't work in conjunction
-    with rsSolveLinearSystem - check why and fix it. */
-    T** getDataPointer() const
-    {
-      return data->m;
-    }
-
-    // getRank, getConditionNumber, getTrace, getDeterminant, getFrobeniusNorm, getEuclideanNorm
-
-    //rsMatrix getSubMatrix(int fromRow, int toRow, int fromColumn, int toColumn);
-    //rsMatrix withRemovedRow(int rowToRemove);
-    //rsMatrix withRemovedColumn(int columnToRemove);
-
-
-    /** \name Operators */
-
-    /** Accesses the element at given index-pair for reading and writing. */
-    T& operator()(const int i, const int j) const
-    {
-      return data->m[i][j];
-    }
-
-    ///** Accesses the element at given index-pair for reading. */
-    //const T& operator()(const int i, const int j) const
-    //{
-    //  return data->m[i][j];
-    //}
-
-
-
-    /** Assigns one matrix with another one. */
-    rsMatrix& operator=(const rsMatrix& m2)
-    {
-      updateDataPointer(m2.data);
-      return *this;
-    }
-
-    /** Compares two matrices for equality. */
-    bool operator==(const rsMatrix& m2) const
-    {
-      if( data->numRows != m2.data->numRows || data->numColumns != m2.data->numColumns )
-        return false;
-      else
-      {
-        for(int r = 0; r < data->numRows; r++)
-        {
-          for(int c = 0; c < data->numColumns; c++)
-          {
-            if( data->m[r][c] != m2.data->m[r][c] )
-              return false;
-          }
-        }
-        // use rsAreBuffersEqual
-      }
-      return true;
-    }
-
-    /** Compares two matrices for inequality. */
-    bool operator!=(const rsMatrix& m2) const
-    {
-      return !(*this == m2);
-    }
-
-    /** Defines the negative of a matrix. */
-    rsMatrix operator-()
-    {
-      rsMatrix result(data->numRows, data->numColumns);
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          result.data->m[r][c] = -data->m[r][c];
-      } // use rsNegateBuffer
-      return result;
-    }
-
-    /** Adds another matrix to this matrix and returns the result. */
-    rsMatrix& operator+=(const rsMatrix &m2)
-    {
-      rsAssert( data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns ); // matrices incompatible
-      makeDeepCopyIfNecessary();
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          data->m[r][c] += m2.data->m[r][c];
-      } // use rsAddBuffers, make deep copy
-      return *this;
-    }
-
-    /** Adds a scalar to this matrix and returns the result. */
-    rsMatrix& operator+=(const T &x)
-    {
-      makeDeepCopyIfNecessary();
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          data->m[r][c] += x;
-      }
-      return *this;
-    }
-
-    /** Subtracts another matrix from this matrix and returns the result. */
-    rsMatrix& operator-=(const rsMatrix &m2)
-    {
-      rsAssert( data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns ); // matrices incompatible
-      makeDeepCopyIfNecessary();
-      rsSubtract(data->mFlat, m2.data->mFlat, data->mFlat, getNumElements());
-      return *this;
-
-      /*
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          data->m[r][c] -= m2.data->m[r][c];
-      }
-      return *this;
-      */
-    }
-
-    /** Subtracts a scalar from this matrix and returns the result. */
-    rsMatrix& operator-=(const T &x)
-    {
-      /*
-      makeDeepCopyIfNecessary();
-      rsSubtract(data->mFlat, getNumElements(), x);
-      return *this;
-      */
-
-      makeDeepCopyIfNecessary();
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          data->m[r][c] -= x;
-      }
-      return *this;
-    }
-
-    /** Right-multiplies this matrix with another matrix and returns the result. */
-    rsMatrix& operator*=(const rsMatrix &m2)
-    {
-      rsAssert( data->numColumns == m2.data->numRows );  // matrices incompatible
-
-      if( m2.isSquare() && data->numReferences == 1 )
-        rsMatrixInPlaceMultiply(data->m, m2.data->m, data->numRows, data->numColumns);
-      else
-      {
-        rsMatrixData<T> *newData = new rsMatrixData<T>(getNumRows(), m2.getNumColumns());
-
-        rsMatrixMultiply(data->m, m2.data->m, newData->m,
-          data->numRows, data->numColumns, m2.data->numColumns);
-
-        updateDataPointer(newData);
-
-        /*
-        data->numReferences -= 1;
-        if( data->numReferences == 0 )
-          delete data;
-        data = newData;
-        data->numReferences = 1;
-          // maybe these 5 lines can be put into a function updateDataPointer(oldData, newData)
-          */
-      }
-
-      return *this;
-    }
-
-    /** Multiplies this matrix by a scalar and returns the result. */
-    rsMatrix& operator*=(const T &x)
-    {
-      makeDeepCopyIfNecessary();
-      rsScale(data->mFlat, getNumElements(), x);
-      return *this;
-    }
-
-    /** Divides this matrix by a scalar and returns the result. */
-    rsMatrix& operator/=(const T &x)
-    {
-      makeDeepCopyIfNecessary();
-      rsScale(data->mFlat, getNumElements(), T(1)/x);
-      return *this;
-    }
-
-    /** Adds two matrices. */
-    rsMatrix operator+(const rsMatrix &m2)
-    {
-      rsAssert( data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns ); // matrices incompatible
-      rsMatrix result(data->numRows, data->numColumns);
-      rsAdd(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
-      return result;
-    }
-
-    /** Adds a matrix and a scalar. */
-    rsMatrix operator+(const T &x)
-    {
-      rsMatrix result(data->numRows, data->numColumns);
-      rsAdd(data->mFlat, x, result.data->mFlat, getNumElements());
-      return result;
-    }
-
-    /** Subtracts two matrices. */
-    rsMatrix operator-(const rsMatrix &m2)
-    {
-      rsAssert( data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns ); // matrices incompatible
-      rsMatrix result(data->numRows, data->numColumns);
-      rsSubtract(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
-      return result;
-    }
-
-    /** Subtracts a scalar from a matrix. */
-    rsMatrix operator-(const T &x)
-    {
-      rsMatrix result(data->numRows, data->numColumns);
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          result.data->m[r][c] = data->m[r][c] - x;
-      }
-      return result;
-    }
-
-    /** Multiplies a matrix and a scalar. */
-    rsMatrix operator*(const T &x)
-    {
-      rsMatrix result(data->numRows, data->numColumns);
-      rsScale(data->mFlat, result.data->mFlat, getNumElements(), x);
-      return result;
-    }
-
-    /** Multiplies two matrices. */
-    rsMatrix operator*(const rsMatrix &m2)
-    {
-      rsAssert( data->numColumns == m2.data->numRows );  // matrices incompatible
-      rsMatrix result(data->numRows, m2.data->numColumns);
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < m2.data->numColumns; c++)
-        {
-          result.data->m[r][c] = 0.0;
-          for(int k = 0; k < data->numColumns; k++)
-            result.data->m[r][c] += data->m[r][k] * m2.data->m[k][c];
-        }
-      } // use rsMatrixMultiply
-      return result;
-    }
-
-    /** Divides a matrix by a scalar. */
-    rsMatrix operator/(const T &x)
-    {
-      T scale = 1.0 / x;
-      rsMatrix result(data->numRows, data->numColumns);
-      for(int r = 0; r < data->numRows; r++)
-      {
-        for(int c = 0; c < data->numColumns; c++)
-          result.data->m[r][c] = data->m[r][c] * scale;
-      }
-      return result;
-    }
-
-
-    /** \name Decompositions */
-
-    /** Returns the the singular value decomposition of this matrix (lets denote it by A) such that
-    A = U * S * V' where U and V are orthogonal matrices (U' * U = E, V' * V = E) and S is a
-    diagonal matrix with positive or zero elements (the singular values). The singular values are
-    ordered such that S[0][0] >= S[1][1] >= ...  */
-    void getSingularValueDecomposition(rsMatrix *U, rsMatrix *S, rsMatrix *V);
-
-    // getEigenDecomposition, getLowerUpperDecomposition, ...
-
-
-    //---------------------------------------------------------------------------------------------
-    // others:
-
-
-
-
-    /** Prints the values to the standard output - mainly for debugging purposes. */
-    void print();
-
-
-
-  protected:
-
-
-    /** Class for holding the actual data for the rsMatrix class. This has been factored out to
-    facilitate sharing data between rsMatrix objects and, most importantly, to avoid excessive
-    deep copying of data in assignment-operations and matrix-valued function return values by
-    (re)assigning only pointers.
-
-    \todo - move the implementation into the .inl file
-
-    */
-
-    //template<class TT>
-    template<class>
-    class rsMatrixData
-    {
-      rsMatrixData(int numRows, int numColumns)
-      {
-        this->numRows    = numRows;
-        this->numColumns = numColumns;
-        numReferences    = 0;
-        m                = nullptr;
-        mFlat            = nullptr;
-        allocateMemory();
-      }
-
-      ~rsMatrixData()
-      {
-        freeMemory();
-      }
-
-      void allocateMemory()
-      {
-        if( numRows > 0 && numColumns > 0 )
-        {
-          mFlat = new T[numRows*numColumns];
-          m     = new T*[numRows];
-          for(int i = 0; i < numRows; i++)
-            m[i] = &mFlat[i*numColumns];
-        }
-      }
-
-      void freeMemory()
-      {
-        delete[] m;
-        delete[] mFlat;
-        m     = nullptr;
-        mFlat = nullptr;
-      }
-
-      rsMatrixData<T>* getDeepCopy()
-      {
-        rsMatrixData<T>* copy = new rsMatrixData<T>(numRows, numColumns);
-        memcpy(mFlat, copy->mFlat, numRows*numColumns*sizeof(T));
-        for(int i = 0; i < numRows; i++)
-          copy->m[i] = &copy->mFlat[i*numColumns];
-        return copy;
-      }
-
-      //void addReference();
-      //void removeReference
-
-      int numRows;
-      int numColumns;
-      int numReferences;
-       // \todo maybe use rsUint32 instead of int
-
-      T **m;     // 2D pointer to the values: 1st index is the row, 2nd index the column.
-      T *mFlat;  // matrix as flat array - to facilitate contiguous memory allocation
-
-      friend class rsMatrix;
-    };
-
-
-    /** Creates a deep copy of the actual data, re-adjusts our pointer to the copy and decrements
-    the reference counter of the original data. */
-    void makeDeepCopy();
-
-    RS_INLINE void makeDeepCopyIfNecessary();
-
-    void updateDataPointer(rsMatrixData<T> *newData);
-
-
-    rsMatrixData<T> *data;
-
-
-    /** Copy constructor. It should not be used by client code but is needed internally for
-    matrix-valued return values of functions and operators. It only copies the value of the pointer
-    to the data and increases its reference-count. No deep coping is taking place because that
-    would lead to excessive overhead in function and operator calls. */
-    //rsMatrix(const rsMatrix& other);
-      // untested
-
-    /*
-    // friend functions:
-    friend RS_INLINE rsMatrix<T> trans(const rsMatrix<T>& A);
-    friend RS_INLINE rsMatrix<T> outerProduct(const rsVector<T> &a, const rsVector<T> &b);
-
-    // friend operators:
-    friend RS_INLINE rsMatrix<T> operator+(const T &x, const rsMatrix<T> &m);
-    friend RS_INLINE rsMatrix<T> operator-(const T &x, const rsMatrix<T> &m);
-    friend RS_INLINE rsMatrix<T> operator*(const T &x, const rsMatrix<T> &m);
-    friend RS_INLINE rsVector<T> operator*(const rsMatrix<T> &A, const rsVector<T> &b);
-    friend RS_INLINE rsMatrix<T> operator*(const rsVector<T> &b, const rsMatrix<T> &A);
-    */
-
-
-  }; // end of class rsMatrix
-
-  // some binary operators are defined outside the class such that the left hand operand does
-  // not necesarrily need to be of class rsMatrix
-  // \todo: maybe get rid of the inlining
-
-  /** Adds a scalar and a matrix. */
-  template<class T>
-  RS_INLINE rsMatrix<T> operator+(const T &x, const rsMatrix<T> &m)
-  {
-    rsMatrix<T> result(m.getNumRows(), m.getNumColumns());
-    for(int r = 0; r < m.getNumRows(); r++)
-    {
-      for(int c = 0; c < m.getNumColumns(); c++)
-      {
-        //result.m[r][c] = m.m[r][c] + x;
-        result.set(r,c, m(r,c) + x); // maybe we need setUnsafe
-      }
-    }
+    for(int r=0; r<dimension; r++)
+      result.m[r][r] = scalarValue;
     return result;
   }
+    // not tested
 
-  /** Subtracts a matrix from a scalar. */
-  template<class T>
-  RS_INLINE rsMatrix<T> operator-(const T &x, const rsMatrix<T> &m)
+  /** Returns a square matrix with diagonal elements given by the array 'diagonalValues' and zero
+  off-diagonal elements. The array is assumed to contain a number of elements equal to
+  'dimension'. */
+  static rsMatrix diagonalMatrix(T *diagonalValues, int dimension)
   {
-    rsMatrix<T> result(m.getNumRows(), m.getNumColumns());
-    for(int r = 0; r < m.getNumRows(); r++)
+    rsMatrix result(dimension, dimension);
+    for(int r=0; r<dimension; r++)
     {
-      for(int c = 0; c < m.getNumColumns(); c++)
-      {
-        //result.m[r][c] = x - m.m[r][c];
-        result.set(r,c, x - m(r,c)); // maybe we need setUnsafe
-      }
+      for(int c=0; c<dimension; c++)
+        result.m[r][c] = 0.0;
     }
+    for(int r=0; r<dimension; r++)
+      result.m[r][r] = diagonalValues[r];
     return result;
-  }
-
-  /** Multiplies a scalar and a matrix. */
-  template<class T>
-  RS_INLINE rsMatrix<T> operator*(const T &x, const rsMatrix<T> &m)
-  {
-    rsMatrix<T> result(m.getNumRows(), m.getNumColumns());
-    for(int r = 0; r < m.getNumRows(); r++)
-    {
-      for(int c = 0; c < m.getNumColumns(); c++)
-      {
-        //result.m[r][c] = x * m.m[r][c];
-        result.set(r,c, x * m(r,c));  // use setUnsafe, rename m to A
-      }
-    }
-    return result;
-
-    /*
-    rsMatrix<T> result(m.numRows, m.numColumns);
-    for(int r=0; r<m.numRows; r++)
-    {
-      for(int c=0; c<m.numColumns; c++)
-        result.m[r][c] = x * m.m[r][c];
-    }
-    return result;
-    */
-  }
-
-  /** Returns matrix A transposed. */
-  template<class T>
-  RS_INLINE rsMatrix<T> trans(const rsMatrix<T>& A)
-  {
-    rsMatrix<T> B(A.getNumColumns(), A.getNumRows());
-    for(int r = 0; r < B.getNumRows(); r++)
-    {
-      for(int c = 0; c < B.getNumColumns(); c++)
-      {
-        B.set(r,c, A(c,r));  // use setUnsafe
-        //B.m[r][c] = A.m[c][r];
-      }
-    }
-    return B;
-
-
-    /*
-    rsMatrix<T> B(A.numColumns, A.numRows);
-    for(int r=0; r<B.numRows; r++)
-    {
-      for(int c=0; c<B.numColumns; c++)
-        B.m[r][c] = A.m[c][r];
-    }
-    return B;
-    */
-  }
-
-
-
-  // matrix/vector functions:
-
-
-  /** Left-multiplies a vector by a matrix such that c = A*b with A being the input matrix, b being
-  the input vector and c being the output vector. Thus, b is interpreted as a column-vector and the
-  number of columns in the matrix A must equal the number of elements in the vector b. The result
-  will be a vector with the number rows of A as its dimensionality. */
-  template<class T>
-  RS_INLINE rsVector<T> operator*(const rsMatrix<T> &A, const rsVector<T> &b)
-  {
-    rsAssert( A.getNumColumns() == b.dim );  // matrix and vector incompatible
-    rsVector<T> c(A.getNumRows());
-    for(int i = 0; i < A.getNumRows(); i++)
-    {
-      c.v[i] = 0.0;
-      for(int j = 0; j < A.getNumColumns(); j++)
-        c.v[i] += A(i,j) * b.v[j];
-    }
-    return c;
-
-
-    /*
-    rsAssert( A.data->numColumns == b.dim );  // matrix and vector incompatible
-    rsVector<T> c(A.data->numRows);
-    for(int i = 0; i < A.data->numRows; i++)
-    {
-      c.v[i] = 0.0;
-      for(int j = 0; j < A.data->numColumns; j++)
-        c.v[i] += A.data->m[i][j] * b.v[j];
-    }
-    return c;
-    */
   }
   // untested
 
-  /** Right-multiplies a transposed vector by a matrix such that c = b^T * A with A being the input
-  matrix, b being the input vector and c being the output vector. Thus, b is interpreted as a
-  row-vector and the number of rows in the matrix A must equal the number of elements in the
-  vector b. The result will be a matrix consisting of one row and a number of columns equal to the
-  dimenstionality of the vector b. */
-  template<class T>
-  RS_INLINE rsMatrix<T> operator*(const rsVector<T> &b, const rsMatrix<T> &A)
-  {
-    rsAssert( A.numRows == b.dim );  // matrix and vector incompatible
-    rsMatrix<T> C(1, b.dim);
-    for(int i=0; i<C.numColumns; i++)
-    {
-      C.m[0][i] = 0.0;
-      for(int j=0; j<b.dim; j++)
-        C.m[0][i] += b.v[j] * A.m[j][i];
-    }
-    return C;
-  }
-      // not tested
+  /** Destructor. */
+  ~rsMatrix();
 
-  /** Computes the outer product a * b^T between two vectors (which should have the same
-  dimensionality) - the result is a square matrix. Note that the outer product is not
-  commutative, specifically a * b^T == (b * a^T)^T. */
-  template<class T>
-  RS_INLINE rsMatrix<T> outerProduct(const rsVector<T> &a, const rsVector<T> &b)
+
+  /** \name Manipulations */
+
+  /** Sets up the size of the matrix (number of rows and columns). */
+  void setSize(int newNumRows, int newNumColumns)
   {
-    rsAssert( a.dim == b.dim );   // vectors incopatible
-    rsMatrix<T> result(a.dim, a.dim);
-    for(int i=0; i<result.numRows; i++)
+    if(newNumRows == getNumRows() && newNumColumns == getNumColumns())
+      return;
+    else
     {
-      for(int j=0; j<result.numColumns; j++)
-        result.m[i][j] = a.v[i] * b.v[j];
+      data->numReferences -= 1;
+      if(data->numReferences == 0)
+        delete data;
+      data = new rsMatrixData<T>(newNumRows, newNumColumns);
+      data->numReferences = 1;
+    }
+  }
+  // untested
+
+  /** Sets one of the matrix elements. */
+  void set(int row, int column, T newValue)
+  {
+    rsAssert(row < data->numRows && column < data->numColumns); // invalid row or column index
+
+    if(data->numReferences > 1)
+      makeDeepCopy();
+
+    data->m[row][column] = newValue;
+  }
+
+  /** Transposes this matrix (exchanges the roles of rows and columns). */
+  void transpose()
+  {
+    rsMatrixData<T>* newData = new rsMatrixData<T>(data->numColumns, data->numRows);
+    for(int i = 0; i < data->numRows; i++)
+    {
+      for(int j = 0; j < data->numColumns; j++)
+        newData->m[j][i] = data->m[i][j];
+    }
+    updateDataPointer(newData);
+  }
+
+  /** Assigns random values between 'min' and 'max' to each element. */
+  void randomizeElements(T min, T max)
+  {
+    //if( data->numReferences > 1 )
+    //  makeDeepCopy();
+
+    makeDeepCopyIfNecessary();// it's actually not necessary to copy the old values - get rid of it
+
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        data->m[r][c] = rsRandomUniform(min, max);
+    }
+  }
+  // untested
+
+  /** Initializes all elements with zero values. */
+  // \todo use rsInitMatrix
+  void initWithZeros()
+  {
+    if(data->numReferences > 1)
+      makeDeepCopy();  // it's actually not necessary to copy the old values - get rid of it
+
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        data->m[r][c] = 0.0;
+    }
+  }
+  // untested
+
+  /** Initializes all elements with the sum of their row- and column indices. */
+  // why is this useful?
+  void initWithIndexSum()
+  {
+    if(data->numReferences > 1)
+      makeDeepCopy();  // it's actually not necessary to copy the old values - get rid of it
+
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        data->m[r][c] = r+c;
+    }
+  }
+  // untested
+
+  /** Applies the passed function to each element of the matrix. */
+  void applyFunction(T (*f) (T))
+  {
+    if(data->numReferences > 1)
+      makeDeepCopy(); // maybe we can avoid the copying by directly setting the values of the new
+                      // matrix to the function values
+
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        data->m[r][c] = f(data->m[r][c]);
+    }
+  }
+
+
+  /** \name Inquiry */
+
+  int getNumRows() const
+  {
+    return data->numRows;
+  }
+
+  int getNumColumns() const
+  {
+    return data->numColumns;
+  }
+
+  int getNumElements() const
+  {
+    return data->numRows * data->numColumns;
+  }
+
+  bool isSquare() const
+  {
+    return data->numRows == data->numColumns;
+  }
+
+
+  /** Returns a pointer to the actual underlying data.
+  \todo: it's kinda dangerous and bad style to let client code access (and possibly modify) this
+  data - find a better solution. Returning a const pointer somehow doesn't work in conjunction
+  with rsSolveLinearSystem - check why and fix it. */
+  T** getDataPointer() const
+  {
+    return data->m;
+  }
+
+  // getRank, getConditionNumber, getTrace, getDeterminant, getFrobeniusNorm, getEuclideanNorm
+
+  //rsMatrix getSubMatrix(int fromRow, int toRow, int fromColumn, int toColumn);
+  //rsMatrix withRemovedRow(int rowToRemove);
+  //rsMatrix withRemovedColumn(int columnToRemove);
+
+
+  /** \name Operators */
+
+  /** Accesses the element at given index-pair for reading and writing. */
+  T& operator()(const int i, const int j) const
+  {
+    return data->m[i][j];
+  }
+
+  ///** Accesses the element at given index-pair for reading. */
+  //const T& operator()(const int i, const int j) const
+  //{
+  //  return data->m[i][j];
+  //}
+
+
+
+  /** Assigns one matrix with another one. */
+  rsMatrix& operator=(const rsMatrix& m2)
+  {
+    updateDataPointer(m2.data);
+    return *this;
+  }
+
+  /** Compares two matrices for equality. */
+  bool operator==(const rsMatrix& m2) const
+  {
+    if(data->numRows != m2.data->numRows || data->numColumns != m2.data->numColumns)
+      return false;
+    else
+    {
+      for(int r = 0; r < data->numRows; r++)
+      {
+        for(int c = 0; c < data->numColumns; c++)
+        {
+          if(data->m[r][c] != m2.data->m[r][c])
+            return false;
+        }
+      }
+      // use rsAreBuffersEqual
+    }
+    return true;
+  }
+
+  /** Compares two matrices for inequality. */
+  bool operator!=(const rsMatrix& m2) const
+  {
+    return !(*this == m2);
+  }
+
+  /** Defines the negative of a matrix. */
+  rsMatrix operator-()
+  {
+    rsMatrix result(data->numRows, data->numColumns);
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        result.data->m[r][c] = -data->m[r][c];
+    } // use rsNegateBuffer
+    return result;
+  }
+
+  /** Adds another matrix to this matrix and returns the result. */
+  rsMatrix& operator+=(const rsMatrix &m2)
+  {
+    rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
+    makeDeepCopyIfNecessary();
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        data->m[r][c] += m2.data->m[r][c];
+    } // use rsAddBuffers, make deep copy
+    return *this;
+  }
+
+  /** Adds a scalar to this matrix and returns the result. */
+  rsMatrix& operator+=(const T &x)
+  {
+    makeDeepCopyIfNecessary();
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        data->m[r][c] += x;
+    }
+    return *this;
+  }
+
+  /** Subtracts another matrix from this matrix and returns the result. */
+  rsMatrix& operator-=(const rsMatrix &m2)
+  {
+    rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
+    makeDeepCopyIfNecessary();
+    rsSubtract(data->mFlat, m2.data->mFlat, data->mFlat, getNumElements());
+    return *this;
+
+    /*
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        data->m[r][c] -= m2.data->m[r][c];
+    }
+    return *this;
+    */
+  }
+
+  /** Subtracts a scalar from this matrix and returns the result. */
+  rsMatrix& operator-=(const T &x)
+  {
+    /*
+    makeDeepCopyIfNecessary();
+    rsSubtract(data->mFlat, getNumElements(), x);
+    return *this;
+    */
+
+    makeDeepCopyIfNecessary();
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        data->m[r][c] -= x;
+    }
+    return *this;
+  }
+
+  /** Right-multiplies this matrix with another matrix and returns the result. */
+  rsMatrix& operator*=(const rsMatrix &m2)
+  {
+    rsAssert(data->numColumns == m2.data->numRows);  // matrices incompatible
+
+    if(m2.isSquare() && data->numReferences == 1)
+      rsMatrixInPlaceMultiply(data->m, m2.data->m, data->numRows, data->numColumns);
+    else
+    {
+      rsMatrixData<T> *newData = new rsMatrixData<T>(getNumRows(), m2.getNumColumns());
+
+      rsMatrixMultiply(data->m, m2.data->m, newData->m,
+        data->numRows, data->numColumns, m2.data->numColumns);
+
+      updateDataPointer(newData);
+
+      /*
+      data->numReferences -= 1;
+      if( data->numReferences == 0 )
+        delete data;
+      data = newData;
+      data->numReferences = 1;
+        // maybe these 5 lines can be put into a function updateDataPointer(oldData, newData)
+        */
+    }
+
+    return *this;
+  }
+
+  /** Multiplies this matrix by a scalar and returns the result. */
+  rsMatrix& operator*=(const T &x)
+  {
+    makeDeepCopyIfNecessary();
+    rsScale(data->mFlat, getNumElements(), x);
+    return *this;
+  }
+
+  /** Divides this matrix by a scalar and returns the result. */
+  rsMatrix& operator/=(const T &x)
+  {
+    makeDeepCopyIfNecessary();
+    rsScale(data->mFlat, getNumElements(), T(1)/x);
+    return *this;
+  }
+
+  /** Adds two matrices. */
+  rsMatrix operator+(const rsMatrix &m2)
+  {
+    rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
+    rsMatrix result(data->numRows, data->numColumns);
+    rsArray::add(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
+    return result;
+  }
+
+  /** Adds a matrix and a scalar. */
+  rsMatrix operator+(const T &x)
+  {
+    rsMatrix result(data->numRows, data->numColumns);
+    rsArray::add(data->mFlat, x, result.data->mFlat, getNumElements());
+    return result;
+  }
+
+  /** Subtracts two matrices. */
+  rsMatrix operator-(const rsMatrix &m2)
+  {
+    rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
+    rsMatrix result(data->numRows, data->numColumns);
+    rsArray::subtract(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
+    return result;
+  }
+
+  /** Subtracts a scalar from a matrix. */
+  rsMatrix operator-(const T &x)
+  {
+    rsMatrix result(data->numRows, data->numColumns);
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        result.data->m[r][c] = data->m[r][c] - x;
     }
     return result;
   }
-      // not tested
 
-  // typedefs for explicit instantiations:
-  typedef rsMatrix<double> RSLib_API rsMatrixDbl;
+  /** Multiplies a matrix and a scalar. */
+  rsMatrix operator*(const T &x)
+  {
+    rsMatrix result(data->numRows, data->numColumns);
+    rsArray::scale(data->mFlat, result.data->mFlat, getNumElements(), x);
+    return result;
+  }
+
+  /** Multiplies two matrices. */
+  rsMatrix operator*(const rsMatrix &m2)
+  {
+    rsAssert(data->numColumns == m2.data->numRows);  // matrices incompatible
+    rsMatrix result(data->numRows, m2.data->numColumns);
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < m2.data->numColumns; c++)
+      {
+        result.data->m[r][c] = 0.0;
+        for(int k = 0; k < data->numColumns; k++)
+          result.data->m[r][c] += data->m[r][k] * m2.data->m[k][c];
+      }
+    } // use rsMatrixMultiply
+    return result;
+  }
+
+  /** Divides a matrix by a scalar. */
+  rsMatrix operator/(const T &x)
+  {
+    T scale = 1.0 / x;
+    rsMatrix result(data->numRows, data->numColumns);
+    for(int r = 0; r < data->numRows; r++)
+    {
+      for(int c = 0; c < data->numColumns; c++)
+        result.data->m[r][c] = data->m[r][c] * scale;
+    }
+    return result;
+  }
 
 
-  /*
-  Note:
-  There was a design decision to be made with regard to when we want to invoke deep copying and
-  when only shallow copying. There are 3 possibilities worth to consider: (1) deep copying in
-  copy-constructor and assignment operator, (2) deep copying in assignment operator, shallow
-  copying in copy-constructor, (3) shallow copying in assignment operator and copy-constructor. In
-  scenario (1), we would be free to let client code manipulate matrix elements at will without
-  checking any reference counter, because each matrix object would have its own unique data. In
-  scenario (2), we could make the copy-constructor unaccessible from client code which ensures that
-  it will only be used for function/operator return values, so an operator call as in A+B would
-  avoid copying but an assigment afterwards as in C = A+B would still copy data. We could still
-  let client code manipulate matrix-data at will without checking a reference counter. In scenario
-  (3), we would avoid as much copying as possible, but after a statement like B = A, A and B would
-  reference the same data internally, so in order to let client code modify B but leave A
-  untouched, we would have to check a reference counter in any attempt to modify B (or A) and if
-  its > 1, we would need to make a deep copy at the moment of the manipluation. Since it is
-  supposed to be much more common to have more assignments involving matrix-objects than to
-  manipulate matrix elements directly, it has been opted for variant (3) - so operator/function
-  returns and assignments will be fast, but write access for single elements (via the set-function)
-  might be somewhat slow.
+  /** \name Decompositions */
 
-  Maybe provide a setUnsafe function which avoids reference-counter checking (and possibly the
-  creation of a deep copy) and is therefore fast but unsafe. Client code which uses this function
-  should be sure, that the side effect of altering other matrix-objects which reference  the same
-  data may occur.
+  /** Returns the the singular value decomposition of this matrix (lets denote it by A) such that
+  A = U * S * V' where U and V are orthogonal matrices (U' * U = E, V' * V = E) and S is a
+  diagonal matrix with positive or zero elements (the singular values). The singular values are
+  ordered such that S[0][0] >= S[1][1] >= ...  */
+  void getSingularValueDecomposition(rsMatrix *U, rsMatrix *S, rsMatrix *V);
 
-  This strategy could be applied to other data-heavy classes as well. It could be considered a
-  pattern, maybe "Lazy Deep Copy" pattern or something. Maybe it already exists - look up the
-  literature (maybe "Lazy Initialization")
+  // getEigenDecomposition, getLowerUpperDecomposition, ...
+
+
+  //---------------------------------------------------------------------------------------------
+  // others:
+
+
+
+
+  /** Prints the values to the standard output - mainly for debugging purposes. */
+  void print();
+
+
+
+protected:
+
+
+  /** Class for holding the actual data for the rsMatrix class. This has been factored out to
+  facilitate sharing data between rsMatrix objects and, most importantly, to avoid excessive
+  deep copying of data in assignment-operations and matrix-valued function return values by
+  (re)assigning only pointers.
+
+  \todo - move the implementation into the .inl file
 
   */
 
+  //template<class TT>
+  template<class>
+  class rsMatrixData
+  {
+    rsMatrixData(int numRows, int numColumns)
+    {
+      this->numRows    = numRows;
+      this->numColumns = numColumns;
+      numReferences    = 0;
+      m                = nullptr;
+      mFlat            = nullptr;
+      allocateMemory();
+    }
+
+    ~rsMatrixData()
+    {
+      freeMemory();
+    }
+
+    void allocateMemory()
+    {
+      if(numRows > 0 && numColumns > 0)
+      {
+        mFlat = new T[numRows*numColumns];
+        m     = new T*[numRows];
+        for(int i = 0; i < numRows; i++)
+          m[i] = &mFlat[i*numColumns];
+      }
+    }
+
+    void freeMemory()
+    {
+      delete[] m;
+      delete[] mFlat;
+      m     = nullptr;
+      mFlat = nullptr;
+    }
+
+    rsMatrixData<T>* getDeepCopy()
+    {
+      rsMatrixData<T>* copy = new rsMatrixData<T>(numRows, numColumns);
+      memcpy(mFlat, copy->mFlat, numRows*numColumns*sizeof(T));
+      for(int i = 0; i < numRows; i++)
+        copy->m[i] = &copy->mFlat[i*numColumns];
+      return copy;
+    }
+
+    //void addReference();
+    //void removeReference
+
+    int numRows;
+    int numColumns;
+    int numReferences;
+     // \todo maybe use rsUint32 instead of int
+
+    T **m;     // 2D pointer to the values: 1st index is the row, 2nd index the column.
+    T *mFlat;  // matrix as flat array - to facilitate contiguous memory allocation
+
+    friend class rsMatrix;
+  };
+
+
+  /** Creates a deep copy of the actual data, re-adjusts our pointer to the copy and decrements
+  the reference counter of the original data. */
+  void makeDeepCopy();
+
+  RS_INLINE void makeDeepCopyIfNecessary();
+
+  void updateDataPointer(rsMatrixData<T> *newData);
+
+
+  rsMatrixData<T> *data;
+
+
+  /** Copy constructor. It should not be used by client code but is needed internally for
+  matrix-valued return values of functions and operators. It only copies the value of the pointer
+  to the data and increases its reference-count. No deep coping is taking place because that
+  would lead to excessive overhead in function and operator calls. */
+  //rsMatrix(const rsMatrix& other);
+    // untested
+
+  /*
+  // friend functions:
+  friend RS_INLINE rsMatrix<T> trans(const rsMatrix<T>& A);
+  friend RS_INLINE rsMatrix<T> outerProduct(const rsVector<T> &a, const rsVector<T> &b);
+
+  // friend operators:
+  friend RS_INLINE rsMatrix<T> operator+(const T &x, const rsMatrix<T> &m);
+  friend RS_INLINE rsMatrix<T> operator-(const T &x, const rsMatrix<T> &m);
+  friend RS_INLINE rsMatrix<T> operator*(const T &x, const rsMatrix<T> &m);
+  friend RS_INLINE rsVector<T> operator*(const rsMatrix<T> &A, const rsVector<T> &b);
+  friend RS_INLINE rsMatrix<T> operator*(const rsVector<T> &b, const rsMatrix<T> &A);
+  */
+
+
+}; // end of class rsMatrix
+
+// some binary operators are defined outside the class such that the left hand operand does
+// not necesarrily need to be of class rsMatrix
+// \todo: maybe get rid of the inlining
+
+/** Adds a scalar and a matrix. */
+template<class T>
+RS_INLINE rsMatrix<T> operator+(const T &x, const rsMatrix<T> &m)
+{
+  rsMatrix<T> result(m.getNumRows(), m.getNumColumns());
+  for(int r = 0; r < m.getNumRows(); r++)
+  {
+    for(int c = 0; c < m.getNumColumns(); c++)
+    {
+      //result.m[r][c] = m.m[r][c] + x;
+      result.set(r, c, m(r, c) + x); // maybe we need setUnsafe
+    }
+  }
+  return result;
 }
+
+/** Subtracts a matrix from a scalar. */
+template<class T>
+RS_INLINE rsMatrix<T> operator-(const T &x, const rsMatrix<T> &m)
+{
+  rsMatrix<T> result(m.getNumRows(), m.getNumColumns());
+  for(int r = 0; r < m.getNumRows(); r++)
+  {
+    for(int c = 0; c < m.getNumColumns(); c++)
+    {
+      //result.m[r][c] = x - m.m[r][c];
+      result.set(r, c, x - m(r, c)); // maybe we need setUnsafe
+    }
+  }
+  return result;
+}
+
+/** Multiplies a scalar and a matrix. */
+template<class T>
+RS_INLINE rsMatrix<T> operator*(const T &x, const rsMatrix<T> &m)
+{
+  rsMatrix<T> result(m.getNumRows(), m.getNumColumns());
+  for(int r = 0; r < m.getNumRows(); r++)
+  {
+    for(int c = 0; c < m.getNumColumns(); c++)
+    {
+      //result.m[r][c] = x * m.m[r][c];
+      result.set(r, c, x * m(r, c));  // use setUnsafe, rename m to A
+    }
+  }
+  return result;
+
+  /*
+  rsMatrix<T> result(m.numRows, m.numColumns);
+  for(int r=0; r<m.numRows; r++)
+  {
+    for(int c=0; c<m.numColumns; c++)
+      result.m[r][c] = x * m.m[r][c];
+  }
+  return result;
+  */
+}
+
+/** Returns matrix A transposed. */
+template<class T>
+RS_INLINE rsMatrix<T> trans(const rsMatrix<T>& A)
+{
+  rsMatrix<T> B(A.getNumColumns(), A.getNumRows());
+  for(int r = 0; r < B.getNumRows(); r++)
+  {
+    for(int c = 0; c < B.getNumColumns(); c++)
+    {
+      B.set(r, c, A(c, r));  // use setUnsafe
+      //B.m[r][c] = A.m[c][r];
+    }
+  }
+  return B;
+
+
+  /*
+  rsMatrix<T> B(A.numColumns, A.numRows);
+  for(int r=0; r<B.numRows; r++)
+  {
+    for(int c=0; c<B.numColumns; c++)
+      B.m[r][c] = A.m[c][r];
+  }
+  return B;
+  */
+}
+
+
+
+// matrix/vector functions:
+
+
+/** Left-multiplies a vector by a matrix such that c = A*b with A being the input matrix, b being
+the input vector and c being the output vector. Thus, b is interpreted as a column-vector and the
+number of columns in the matrix A must equal the number of elements in the vector b. The result
+will be a vector with the number rows of A as its dimensionality. */
+template<class T>
+RS_INLINE rsVector<T> operator*(const rsMatrix<T> &A, const rsVector<T> &b)
+{
+  rsAssert(A.getNumColumns() == b.dim);  // matrix and vector incompatible
+  rsVector<T> c(A.getNumRows());
+  for(int i = 0; i < A.getNumRows(); i++)
+  {
+    c.v[i] = 0.0;
+    for(int j = 0; j < A.getNumColumns(); j++)
+      c.v[i] += A(i, j) * b.v[j];
+  }
+  return c;
+
+
+  /*
+  rsAssert( A.data->numColumns == b.dim );  // matrix and vector incompatible
+  rsVector<T> c(A.data->numRows);
+  for(int i = 0; i < A.data->numRows; i++)
+  {
+    c.v[i] = 0.0;
+    for(int j = 0; j < A.data->numColumns; j++)
+      c.v[i] += A.data->m[i][j] * b.v[j];
+  }
+  return c;
+  */
+}
+// untested
+
+/** Right-multiplies a transposed vector by a matrix such that c = b^T * A with A being the input
+matrix, b being the input vector and c being the output vector. Thus, b is interpreted as a
+row-vector and the number of rows in the matrix A must equal the number of elements in the
+vector b. The result will be a matrix consisting of one row and a number of columns equal to the
+dimenstionality of the vector b. */
+template<class T>
+RS_INLINE rsMatrix<T> operator*(const rsVector<T> &b, const rsMatrix<T> &A)
+{
+  rsAssert(A.numRows == b.dim);  // matrix and vector incompatible
+  rsMatrix<T> C(1, b.dim);
+  for(int i=0; i<C.numColumns; i++)
+  {
+    C.m[0][i] = 0.0;
+    for(int j=0; j<b.dim; j++)
+      C.m[0][i] += b.v[j] * A.m[j][i];
+  }
+  return C;
+}
+    // not tested
+
+/** Computes the outer product a * b^T between two vectors (which should have the same
+dimensionality) - the result is a square matrix. Note that the outer product is not
+commutative, specifically a * b^T == (b * a^T)^T. */
+template<class T>
+RS_INLINE rsMatrix<T> outerProduct(const rsVector<T> &a, const rsVector<T> &b)
+{
+  rsAssert(a.dim == b.dim);   // vectors incopatible
+  rsMatrix<T> result(a.dim, a.dim);
+  for(int i=0; i<result.numRows; i++)
+  {
+    for(int j=0; j<result.numColumns; j++)
+      result.m[i][j] = a.v[i] * b.v[j];
+  }
+  return result;
+}
+    // not tested
+
+// typedefs for explicit instantiations:
+typedef rsMatrix<double> rsMatrixDbl;
+
+
+/*
+Note:
+There was a design decision to be made with regard to when we want to invoke deep copying and
+when only shallow copying. There are 3 possibilities worth to consider: (1) deep copying in
+copy-constructor and assignment operator, (2) deep copying in assignment operator, shallow
+copying in copy-constructor, (3) shallow copying in assignment operator and copy-constructor. In
+scenario (1), we would be free to let client code manipulate matrix elements at will without
+checking any reference counter, because each matrix object would have its own unique data. In
+scenario (2), we could make the copy-constructor unaccessible from client code which ensures that
+it will only be used for function/operator return values, so an operator call as in A+B would
+avoid copying but an assigment afterwards as in C = A+B would still copy data. We could still
+let client code manipulate matrix-data at will without checking a reference counter. In scenario
+(3), we would avoid as much copying as possible, but after a statement like B = A, A and B would
+reference the same data internally, so in order to let client code modify B but leave A
+untouched, we would have to check a reference counter in any attempt to modify B (or A) and if
+its > 1, we would need to make a deep copy at the moment of the manipluation. Since it is
+supposed to be much more common to have more assignments involving matrix-objects than to
+manipulate matrix elements directly, it has been opted for variant (3) - so operator/function
+returns and assignments will be fast, but write access for single elements (via the set-function)
+might be somewhat slow.
+
+Maybe provide a setUnsafe function which avoids reference-counter checking (and possibly the
+creation of a deep copy) and is therefore fast but unsafe. Client code which uses this function
+should be sure, that the side effect of altering other matrix-objects which reference  the same
+data may occur.
+
+This strategy could be applied to other data-heavy classes as well. It could be considered a
+pattern, maybe "Lazy Deep Copy" pattern or something. Maybe it already exists - look up the
+literature (maybe "Lazy Initialization")
+
+*/
 
 #endif

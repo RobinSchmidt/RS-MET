@@ -50,7 +50,8 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 //template double RAPT::rsLinToLin(double x, double inMin, double inMax, double outMin, double outMax);
 
 template class RAPT::rsMatrixView<double>;
-template class RAPT::rsMatrix<double>;
+template class RAPT::rsMatrixNew<double>;
+
 template class RAPT::rsNodeBasedFunction<double>;
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;

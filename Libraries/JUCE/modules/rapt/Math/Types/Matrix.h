@@ -50,7 +50,7 @@ protected:
 /** This is a class for representing matrices and doing mathematical operations with them. */
 
 template<class T>
-class rsMatrix : public rsMatrixView<T>
+class rsMatrixNew : public rsMatrixView<T>
 {
 
 public:
@@ -59,7 +59,7 @@ public:
 
 
   /** Standard constructor. You must pass the initial number of rows and columns */
-  rsMatrix(size_t numRows = 0, size_t numColumns = 0);
+  rsMatrixNew(size_t numRows = 0, size_t numColumns = 0);
   //rsMatrix(size_t numRows = 1, size_t numColumns = 1); // leads to memory leaks
 
  
@@ -71,7 +71,7 @@ public:
 
 
   /** Destructor. */
-  ~rsMatrix() {}
+  ~rsMatrixNew() {}
 
 
   /** \name Setup */

@@ -1,13 +1,4 @@
-#ifndef RS_MATRIX_INL
-#define RS_MATRIX_INL
-
-using namespace RSLib;
-
-
-
-
-
-    
+#    
 /*
 // doesn't compile in VC - why? ...i have dragged it into the header file, for the time being
 template<class T>
@@ -42,16 +33,6 @@ void rsMatrix<T>::rsMatrixData<T>::freeMemory()
   delete[] mFlat;
 }
 */
-
-
-
-
-
-
-
-
-
-
 
 //=================================================================================================
 
@@ -209,5 +190,3 @@ void rsMatrix<T>::print()
     printf("%s", "\n");
   }
 }
-
-#endif
