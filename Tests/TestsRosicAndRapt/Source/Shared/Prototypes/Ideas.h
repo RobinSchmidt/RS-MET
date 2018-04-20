@@ -105,7 +105,31 @@ Equation synth ("Equator", "Formula..", "Solv..."):
  -the implicit solver could use initial points on a (phase-shaped) unit circle
  
 
+Neural Network Synthesizer ("Cortex")
+-use a delayline of length L where L is the length of one cycle of the signal
+-use M read pointers, placed strategically in the delayline, for example at m*(L/M), M = 1,..,M
+-the output at sample instant n is obtained as a function f(...) of the M delayline outputs. this
+ function wll be realized by a neural network
+-for a strictly periodic waveform, we could use M = 1 and use the delayline output with delay L 
+ as is (our f(...) must be capable of being an identity function..could be difficual with neural 
+ networks)
+-in order to simulate damping from one cycle to the next, each read pointer could take a weigthed
+ sum of 2 or 3 samples around delay L
+-to build models, we can analyze samples recorded at various pitches, the pitch could be one of the
+ network inputs, so we continuously interpolate between pitches
+-maybe the time should also be a network input
+-this may require an ordering of the neuron and/or synapases...or maybe obtain the model for the 
+ highest pitch first (this should be the simplest model), then use the network weights as initial
+ guess for the next lower pitch and so on
+-to analyze a sample, maybe go through the cycles from right to left (because later cycles are 
+ simpler than earlier ones)
 
+-make a general Analysis -> Visualize/Edit -> Resynthesis GUI/module framework in TooChain which
+ can be used for neural, modal, spectral, etc. modeling
+
+
+
+Scripting Synthesizer ("Synthax")
 
 
 

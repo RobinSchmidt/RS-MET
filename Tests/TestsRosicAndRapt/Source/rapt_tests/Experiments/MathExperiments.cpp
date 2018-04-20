@@ -167,7 +167,7 @@ double productLog(const double z)
       return w;
   }
 
-  rsAssertFalse; // no convergeance
+  rsAssertFalse(); // no convergeance
   return 0.0;
 }
 void productLogPlot()

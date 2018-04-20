@@ -39,8 +39,7 @@ bool runAllUnitTests()
 
   passed &= runUnitTest(&testLinearAlgebra,             "rsLinearAlgebra");
   passed &= runUnitTest(&testPolynomial,                "rsPolynomial");
-
-  passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial
+  //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial
 
 
 

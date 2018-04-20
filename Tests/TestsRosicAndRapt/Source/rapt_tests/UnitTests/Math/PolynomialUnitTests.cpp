@@ -327,7 +327,10 @@ bool testPolynomialDivision(std::string &reportString)
   std::string testName = "PolynomialDivision";
   bool testResult = true;
 
-  // establish denominator d, quotient q and remainder d:
+  // given a polynomial p and a divisor polynomial d, polynomial division finds two polynomials
+  // q (quotient) and r (remainder) such that p = d*q + r
+
+  // establish denominator d, quotient q and remainder r:
   double d[6] = {2, -1, 5,  7, -3, 2};  // d(x) = 2*x^5 - 3*x^4 + 7*x^3 + 5*x^2 - 1*x^1 + 2*x^0
   double q[4] = {2, -3, 6,  2};         // q(x) =                 2*x^3 + 6*x^2 - 3*x^1 + 2*x^0
   double r[5] = {3,  1, 4, -5, 3};      // r(x) =         3*x^4 - 5*x^3 + 4*x^2 + 1*x^1 - 3*x^0
