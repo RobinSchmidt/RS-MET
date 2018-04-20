@@ -553,10 +553,16 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter - Copy.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FunctionObjects.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
@@ -2193,10 +2199,16 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter - Copy.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FunctionObjects.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h">
