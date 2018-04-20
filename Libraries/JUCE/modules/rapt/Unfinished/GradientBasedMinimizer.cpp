@@ -1,9 +1,8 @@
-using namespace RSLib;
-
 //-------------------------------------------------------------------------------------------------    
 // construction/destruction:
 
-GradientBasedMinimizer::GradientBasedMinimizer()
+template<class T>
+GradientBasedMinimizer<T>::GradientBasedMinimizer()
 {
   functionToMinimize   = NULL;
   algorithm            = SCALED_CONJUGATE_GRADIENT;
@@ -18,7 +17,8 @@ GradientBasedMinimizer::GradientBasedMinimizer()
   betaFormula          = POLAK_RIBIERE;
 }
 
-GradientBasedMinimizer::~GradientBasedMinimizer()
+template<class T>
+GradientBasedMinimizer<T>::~GradientBasedMinimizer()
 {
 
 }
@@ -26,8 +26,9 @@ GradientBasedMinimizer::~GradientBasedMinimizer()
 //-------------------------------------------------------------------------------------------------    
 // optimization:
 
-rsVectorDbl GradientBasedMinimizer::minimizeFunction(MultivariateErrorFunction *functionToMinimize,                                            
-  rsVectorDbl initialGuess)
+template<class T>
+rsVectorDbl GradientBasedMinimizer<T>::minimizeFunction(
+  MultivariateErrorFunction<T> *functionToMinimize, rsVectorDbl initialGuess)
 {
   if( functionToMinimize == NULL )
     return initialGuess;
@@ -46,7 +47,8 @@ rsVectorDbl GradientBasedMinimizer::minimizeFunction(MultivariateErrorFunction *
   return p;
 }
 
-void GradientBasedMinimizer::minimizeViaGradientDescent()
+template<class T>
+void GradientBasedMinimizer<T>::minimizeViaGradientDescent()
 { 
   stepsize     = 0.1;                                  // ad-hoc - use something better
   g            = functionToMinimize->getGradient(p);   // gradient
@@ -71,21 +73,22 @@ void GradientBasedMinimizer::minimizeViaGradientDescent()
   printEndInfo();
 }
 
-void GradientBasedMinimizer::minimizeViaBoldDriverWithMomentum()
+template<class T>
+void GradientBasedMinimizer<T>::minimizeViaBoldDriverWithMomentum()
 {
   stepsize      = 0.2;                                  // initial stepsize
-  double rho    = 1.01;                                 // growth factor for the stepsize
-  double sigma  = 0.95;                                 // decay factor for the stepsize
-  double mu     = momentum;                             // momentum constant
+  T rho         = 1.01;                                 // growth factor for the stepsize
+  T sigma       = 0.95;                                 // decay factor for the stepsize
+  T mu          = momentum;                             // momentum constant
   g             = functionToMinimize->getGradient(p);   // gradient
   rsVectorDbl d = -g;                                   // current direction
   d.initWithZeros();
   e            = functionToMinimize->getValue(p);
-  double eOld  = e;
+  T eOld  = e;
   converged    = false;
   step         = 0;
   rsVectorDbl pTmp;
-  double eTmp;
+  T eTmp;
   printStartInfo();
   while( converged == false && step <= maxNumSteps )
   {
@@ -128,15 +131,16 @@ void GradientBasedMinimizer::minimizeViaBoldDriverWithMomentum()
   printEndInfo();
 }
 
-void GradientBasedMinimizer::minimizeViaConjugateGradient()
+template<class T>
+void GradientBasedMinimizer<T>::minimizeViaConjugateGradient()
 {
   rsVectorDbl gOld;         // gradient from previous iteration
   rsVectorDbl gTmp;         // for temporary storage of a gradient vector
   rsVectorDbl d;            // current direction
   rsVectorDbl dtH;          // approximation of d^T * H (with Hessian matrix H)
-  double eps = 0.0001;      // epsilon for approximating d^T * H
-  double eps2;              // epsilon scaled by norm of direction vector
-  double beta;              // weight for the old direction
+  T eps = 0.0001;           // epsilon for approximating d^T * H
+  T eps2;                   // epsilon scaled by norm of direction vector
+  T beta;                   // weight for the old direction
   g = functionToMinimize->getGradient(p);
   d = -g;
   converged    = false;
@@ -182,20 +186,21 @@ void GradientBasedMinimizer::minimizeViaConjugateGradient()
   printEndInfo();
 }
 
-void GradientBasedMinimizer::minimizeViaScaledConjugateGradient()
+template<class T>
+void GradientBasedMinimizer<T>::minimizeViaScaledConjugateGradient()
 {
   rsVectorDbl gOld;         // gradient from previous iteration
   rsVectorDbl gTmp;         // for temporary storage of a gradient vector
   rsVectorDbl d;            // current direction
   rsVectorDbl dtH;          // approximation of d^T * H (with Hessian matrix H)
-  double eNew;              // error at the new p where we (possibly) go to
-  double eps = 0.0001;      // epsilon for approximating d^T * H
-  double eps2;              // epsilon scaled by norm of direction vector
-  double beta;              // weight for the old direction
-  double lambda = 0.1;      // scale factor for the unit matrix
-  double delta;             // denominator in equation for alpha - should be > 0
-  double Delta;             // comparison parameter between predicted and actual error decrease
-  double norm;              // Euclidean norm of current direction vector
+  T eNew;                   // error at the new p where we (possibly) go to
+  T eps = 0.0001;           // epsilon for approximating d^T * H
+  T eps2;                   // epsilon scaled by norm of direction vector
+  T beta;                   // weight for the old direction
+  T lambda = 0.1;           // scale factor for the unit matrix
+  T delta;                  // denominator in equation for alpha - should be > 0
+  T Delta;                  // comparison parameter between predicted and actual error decrease
+  T norm;                   // Euclidean norm of current direction vector
   bool   success = true;    // flag to indicate a successful step - if false in some iteration, we 
                             // re-use the gradient and error value from the previous iteration
   g = functionToMinimize->getGradient(p);
@@ -302,7 +307,8 @@ void GradientBasedMinimizer::minimizeViaScaledConjugateGradient()
 //-------------------------------------------------------------------------------------------------
 // printing:
 
-void GradientBasedMinimizer::printStartInfo()
+template<class T>
+void GradientBasedMinimizer<T>::printStartInfo()
 {
   if( printInfo == true )
   {
@@ -325,7 +331,8 @@ void GradientBasedMinimizer::printStartInfo()
   }
 }
 
-void GradientBasedMinimizer::printProgressInfo()
+template<class T>
+void GradientBasedMinimizer<T>::printProgressInfo()
 {
   if( printInfo == true )
   {
@@ -342,7 +349,8 @@ void GradientBasedMinimizer::printProgressInfo()
   }
 }
 
-void GradientBasedMinimizer::printEndInfo()
+template<class T>
+void GradientBasedMinimizer<T>::printEndInfo()
 {
   if( printInfo == true )
   {

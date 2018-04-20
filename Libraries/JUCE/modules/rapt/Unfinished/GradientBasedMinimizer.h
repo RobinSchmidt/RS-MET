@@ -33,7 +33,7 @@ if that makes sense ..do these changes after unit tests are in place...make it p
 re-interpret a std::vector as a matrix and as a set of matrices (have a class rsMatrixSet, use
 it to represent neural network synaptic layers). */
 
-
+template<class T>
 class GradientBasedMinimizer
 {
 
@@ -73,7 +73,7 @@ public:
   /** Sets the threshold for the norm of the gradient (divided by its dimensionality) - if it
   falls below this value in the optimization algorithm, the algorithm will be considered to have
   converged and return. */
-  virtual void setConvergenceThreshold(double newThreshold)
+  virtual void setConvergenceThreshold(T newThreshold)
   {
     convergenceThreshold = newThreshold;
   }
@@ -97,7 +97,7 @@ in cases where it doesn't converge. */
 
   /** Sets the momentum constant for algorithms that use momentum. The value should be between
   0.0 (inclusive) and 1.0 (exclusive). */
-  virtual void setMomentum(double newMomentum)
+  virtual void setMomentum(T newMomentum)
   {
     rsAssert(newMomentum >= 0.0 && newMomentum < 1.0, "Momentum out of range");
     momentum = rsClipToRange(newMomentum, 0.0, 1.0);
@@ -107,7 +107,7 @@ in cases where it doesn't converge. */
   // inquiry - not really useful - get rid of them:
 
   /** Returns the threshold for convergence. @see: setConvergenceThreshold */
-  virtual double getConvergenceThreshold() const { return convergenceThreshold; }
+  virtual T getConvergenceThreshold() const { return convergenceThreshold; }
 
   /** Sets the maximum number of steps. @see: setMaxNumSteps */
   virtual int getMaxNumSteps() const { return maxNumSteps; }
@@ -119,14 +119,14 @@ in cases where it doesn't converge. */
   virtual int getBetaFormula() const { return betaFormula; }
 
   /** Returns the momentum constant. @see: setMomentum */
-  virtual double getMomentum() const { return momentum; }
+  virtual T getMomentum() const { return momentum; }
 
   //---------------------------------------------------------------------------------------------
   // optimization:
 
   /** Minimizes the function 'functionToMinimize' starting at the 'initialGuess' and returns the
   result. */
-  virtual rsVectorDbl minimizeFunction(MultivariateErrorFunction *functionToMinimize,
+  virtual rsVectorDbl minimizeFunction(MultivariateErrorFunction<T> *functionToMinimize,
     rsVectorDbl initialGuess);
 
   //=============================================================================================
@@ -173,10 +173,10 @@ protected:
   int betaFormula;             // formula for beta in the conjugate gradient algoritm
   bool converged;              // convergence flag
   bool printInfo;              // flag to indicate to print information to the standard output
-  double e;                    // error function value
-  double stepsize;             // stepsize 
-  double momentum;             // momentum constant for algorithms that use it
-  double convergenceThreshold; // threshold (for the normalized gradient norm) for considering 
+  T e;                         // error function value
+  T stepsize;                  // stepsize 
+  T momentum;                  // momentum constant for algorithms that use it
+  T convergenceThreshold;      // threshold (for the normalized gradient norm) for considering 
                                // the minimization as converged
   rsVectorDbl p;               // parameter vector
   rsVectorDbl g;               // gradient vector
