@@ -388,6 +388,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1797,8 +1800,10 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FunctionObjects.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\Image.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImageDrawer.h"/>

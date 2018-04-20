@@ -562,6 +562,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
@@ -2208,10 +2211,16 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Vector.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h">

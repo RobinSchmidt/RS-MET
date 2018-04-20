@@ -632,7 +632,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
     r = rsSign(q) * rsSqrt(fabs(p));
     if( p > 0.0 )
     {
-      phi = rsAsinh( q/(r*r*r) );
+      phi = (T)rsAsinh( q/(r*r*r) );
       rsSinhCosh(phi/T(3), &sh, &ch);
       y[0] = std::complex<T>(r*sh,  rsSqrt(T(3))*r*ch);
       y[1] = std::complex<T>(r*sh, -rsSqrt(T(3))*r*ch);
@@ -644,7 +644,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
       D = q*q + p*p*p;
       if( D > 0.0 )
       {
-        phi  = rsAcosh( q/(r*r*r) );
+        phi  = (T)rsAcosh( q/(r*r*r) );
         rsSinhCosh(phi/T(3), &sh, &ch);
         y[0] = std::complex<T>(r*ch,  rsSqrt(T(3))*r*sh);
         y[1] = std::complex<T>(r*ch, -rsSqrt(T(3))*r*sh);
@@ -705,7 +705,8 @@ T rsPolynomial<T>::discriminant(T d, T c, T b, T a)
 template<class T> 
 T rsCubeRoot(T x)
 {
-  return pow(x, T(1.0/3.0));
+  //return cbrt(x);
+  return pow(x, T(1)/T(3));
 }
 
 template<class T>

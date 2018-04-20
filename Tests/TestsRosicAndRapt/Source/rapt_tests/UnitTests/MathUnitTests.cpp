@@ -182,7 +182,7 @@ float cubicRoot(float d, float c, float b, float a)
 {
   float ai = 1/a; b *= ai; c *= ai; d *= ai;  // make monic (normalize a to 1)
   float b2 = b*b;
-  return cubicRootPQ((b2-3*c)*(1.0/3.0), -b2*b*(2.0/27.0) + 0.5*b*c - d);
+  return cubicRootPQ((b2-3*c)*(1.f/3.f), -b2*b*(2.f/27.f) + 0.5f*b*c - d);
 
   // Formulas for p,q  were found with sage via:
   // var("a b c d z")                # declare symbolic variables
@@ -199,7 +199,7 @@ void cubicRoots(float d, float c, float b, float a, std::complex<float>* r1,
   float rr = cubicRoot(d, c, b, a); // find real root
   *r2 = rr;
   float cof[4] = {d, c, b, a };     // collect coeffs into array
-  float rem;                        // dummy for remainder
+  //float rem;                        // dummy for remainder
   //RAPT::rsPolynomial<float>::dividePolynomialByMonomialInPlace(cof, 4, rr, &rem); // causes crash
   //RAPT::rsPolynomial<float>::rootsQuadraticComplex(cof[0], cof[1], cof[2], r1, r3);
   int dummy = 0;

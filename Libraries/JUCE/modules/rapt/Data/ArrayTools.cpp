@@ -921,7 +921,7 @@ template <class T1, class T2, class TR>
 void rsArray::multiply(T1 *buffer1, T2 *buffer2, TR *result, int length)
 {
   for(int i = 0; i < length; i++)
-    result[i] = buffer1[i] * buffer2[i];
+    result[i] = TR(buffer1[i] * buffer2[i]);
 }
 
 template<class T>
