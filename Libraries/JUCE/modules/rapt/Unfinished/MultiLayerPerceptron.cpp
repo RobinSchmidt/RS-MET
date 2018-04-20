@@ -1,9 +1,8 @@
-using namespace RSLib;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-MultiLayerPerceptron::MultiLayerPerceptron(int numInputs, int numOutputs, int numHiddenLayers, 
+template<class T>
+MultiLayerPerceptron<T>::MultiLayerPerceptron(int numInputs, int numOutputs, int numHiddenLayers, 
                                            int *numNeuronsInHiddenLayers)
 {
   activationFunctionIndex = LINEAR_RATIONAL;
@@ -43,7 +42,8 @@ MultiLayerPerceptron::MultiLayerPerceptron(int numInputs, int numOutputs, int nu
   initializeWeightsRandomly(-1.0, +1.0, 1);
 }
 
-MultiLayerPerceptron::~MultiLayerPerceptron()
+template<class T>
+MultiLayerPerceptron<T>::~MultiLayerPerceptron()
 {
   delete[] z;
   delete[] w;
@@ -52,13 +52,15 @@ MultiLayerPerceptron::~MultiLayerPerceptron()
 //-------------------------------------------------------------------------------------------------
 // parameter settings:
 
-void MultiLayerPerceptron::setActivationFunction(int newActivationFunction)
+template<class T>
+void MultiLayerPerceptron<T>::setActivationFunction(int newActivationFunction)
 {
   if( newActivationFunction >= 0 && newActivationFunction < NUM_ACTIVATION_FUNCTIONS )
     activationFunctionIndex = newActivationFunction;
 }
 
-void MultiLayerPerceptron::setWeightVector(const rsVectorDbl &newWeightVector)
+template<class T>
+void MultiLayerPerceptron<T>::setWeightVector(const rsVectorDbl &newWeightVector)
 {
   int i = 0;
   for(int layer=0; layer < numWeightLayers; layer++)
@@ -85,12 +87,14 @@ void MultiLayerPerceptron::setWeightVector(const rsVectorDbl &newWeightVector)
   }
 }
 
-void MultiLayerPerceptron::saveStateToFile(char *fileName)
+template<class T>
+void MultiLayerPerceptron<T>::saveStateToFile(char *fileName)
 {
   //....
 }
 
-void MultiLayerPerceptron::loadStateFromFile(char *fileName)
+template<class T>
+void MultiLayerPerceptron<T>::loadStateFromFile(char *fileName)
 {
   //....
 }
@@ -98,7 +102,8 @@ void MultiLayerPerceptron::loadStateFromFile(char *fileName)
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-rsVectorDbl MultiLayerPerceptron::getWeightsAsVector()
+template<class T>
+rsVectorDbl MultiLayerPerceptron<T>::getWeightsAsVector()
 {
   rsVectorDbl wv(numWeights);
   vectorizeWeightMatrices(w, &wv);
@@ -108,7 +113,8 @@ rsVectorDbl MultiLayerPerceptron::getWeightsAsVector()
 //-------------------------------------------------------------------------------------------------
 // computation:
 
-void MultiLayerPerceptron::setInput(const rsVectorDbl &xIn)
+template<class T>
+void MultiLayerPerceptron<T>::setInput(const rsVectorDbl &xIn)
 {
   // copy input vector into member x:
   for(int i=0; i<numInputs; i++)
@@ -118,7 +124,8 @@ void MultiLayerPerceptron::setInput(const rsVectorDbl &xIn)
   }
 }
 
-void MultiLayerPerceptron::forwardPropagate()
+template<class T>
+void MultiLayerPerceptron<T>::forwardPropagate()
 {
   int i;
   for(i=1; i<numWeightLayers; i++)
@@ -138,12 +145,14 @@ void MultiLayerPerceptron::forwardPropagate()
     y.v[j] = z[i].v[j+1];
 }
 
-rsVectorDbl MultiLayerPerceptron::getOutput()
+template<class T>
+rsVectorDbl MultiLayerPerceptron<T>::getOutput()
 {
   return y;
 }
 
-void MultiLayerPerceptron::computeNetworkOutput(double *xIn, double *yOut)
+template<class T>
+void MultiLayerPerceptron<T>::computeNetworkOutput(T *xIn, T *yOut)
 {
   // todo: optimize this function - get rid of some overhead due to absorbing the biases into the
   // weight matrices
@@ -155,23 +164,26 @@ void MultiLayerPerceptron::computeNetworkOutput(double *xIn, double *yOut)
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void MultiLayerPerceptron::initializeWeightsToZeros()
+template<class T>
+void MultiLayerPerceptron<T>::initializeWeightsToZeros()
 {
   for(int i=0; i<numWeightLayers; i++)
     w[i].initWithZeros();
 }
 
-void MultiLayerPerceptron::initializeWeightsRandomly(double min, double max, int seed)
+template<class T>
+void MultiLayerPerceptron<T>::initializeWeightsRandomly(T min, T max, int seed)
 {
-  double dummy = rsRandomUniform(min, max, seed); // init PNRG
+  T dummy = rsRandomUniform(min, max, seed); // init PNRG
   for(int i=0; i<numWeightLayers; i++)
   {
     w[i].randomizeElements(min, max);
-    w[i] /= sqrt((double)z[i].dim);
+    w[i] /= sqrt((T)z[i].dim);
   }
 }
 
-void MultiLayerPerceptron::printWeights()
+template<class T>
+void MultiLayerPerceptron<T>::printWeights()
 {
   printf("%s", "Multilayer Perceptron - weight matrices:  \n");
   printf("%s", "\n");
@@ -182,7 +194,8 @@ void MultiLayerPerceptron::printWeights()
   }
 }
 
-void MultiLayerPerceptron::printActivations()
+template<class T>
+void MultiLayerPerceptron<T>::printActivations()
 {
   for(int i=0; i<=numWeightLayers; i++)
     z[i].print();
@@ -191,13 +204,15 @@ void MultiLayerPerceptron::printActivations()
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void MultiLayerPerceptron::forEachWeight( double (*f) (double) )
+template<class T>
+void MultiLayerPerceptron<T>::forEachWeight( T (*f) (T) )
 {
   for(int i=0; i<numWeightLayers; i++)
     w[i].applyFunction(f);
 }
 
-void MultiLayerPerceptron::computeNumberOfWeights()
+template<class T>
+void MultiLayerPerceptron<T>::computeNumberOfWeights()
 {
   numWeights = 0; 
   for(int layer=0; layer < numWeightLayers; layer++)
@@ -207,7 +222,8 @@ void MultiLayerPerceptron::computeNumberOfWeights()
   }
 }
 
-void MultiLayerPerceptron::vectorizeWeightMatrices(rsMatrixDbl *weightMatrices, rsVectorDbl *weightVector)
+template<class T>
+void MultiLayerPerceptron<T>::vectorizeWeightMatrices(rsMatrixDbl *weightMatrices, rsVectorDbl *weightVector)
 {
   weightVector->setDimensionality(numWeights);
   int i = 0;
@@ -228,12 +244,15 @@ void MultiLayerPerceptron::vectorizeWeightMatrices(rsMatrixDbl *weightMatrices, 
 
 //=================================================================================================
 
-double zeroValue(double x)    { return 0.0; }
+template<class T>
+T zeroValue(T x)    { return 0.0; }
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-MultiLayerPerceptronErrorFunction::MultiLayerPerceptronErrorFunction(MultiLayerPerceptron *mlpToTrain)
+template<class T>
+MultiLayerPerceptronErrorFunction<T>::MultiLayerPerceptronErrorFunction(
+  MultiLayerPerceptron<T> *mlpToTrain)
 {
   mlp = mlpToTrain;
 
@@ -254,7 +273,8 @@ MultiLayerPerceptronErrorFunction::MultiLayerPerceptronErrorFunction(MultiLayerP
   nTrain = 0;
 }
 
-MultiLayerPerceptronErrorFunction::~MultiLayerPerceptronErrorFunction()
+template<class T>
+MultiLayerPerceptronErrorFunction<T>::~MultiLayerPerceptronErrorFunction()
 {
   delete[] dwn;
   delete[] dwN;
@@ -264,7 +284,9 @@ MultiLayerPerceptronErrorFunction::~MultiLayerPerceptronErrorFunction()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void MultiLayerPerceptronErrorFunction::setTrainingData(rsVectorDbl *inputs, rsVectorDbl *targets, int numPatterns)
+template<class T>
+void MultiLayerPerceptronErrorFunction<T>::setTrainingData(rsVectorDbl *inputs, rsVectorDbl *targets, 
+  int numPatterns)
 {
   xTrain = inputs;
   yTrain = targets;
@@ -274,16 +296,18 @@ void MultiLayerPerceptronErrorFunction::setTrainingData(rsVectorDbl *inputs, rsV
 //-------------------------------------------------------------------------------------------------
 // overrides:
 
-double MultiLayerPerceptronErrorFunction::getValue(rsVectorDbl p)
+template<class T>
+T MultiLayerPerceptronErrorFunction<T>::getValue(rsVectorDbl p)
 {
   rsVectorDbl pTmp = mlp->getWeightsAsVector();
   mlp->setWeightVector(p);
-  double result = getTrainingError();
+  T result = getTrainingError();
   mlp->setWeightVector(pTmp);
   return result;
 }
 
-rsVectorDbl MultiLayerPerceptronErrorFunction::getGradient(rsVectorDbl p)
+template<class T>
+rsVectorDbl MultiLayerPerceptronErrorFunction<T>::getGradient(rsVectorDbl p)
 {
   // set passed weight vector (remember current state for restoring it afterwards):
   rsVectorDbl pTmp = mlp->getWeightsAsVector();
@@ -309,7 +333,8 @@ rsVectorDbl MultiLayerPerceptronErrorFunction::getGradient(rsVectorDbl p)
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void MultiLayerPerceptronErrorFunction::printPatternGradient()
+template<class T>
+void MultiLayerPerceptronErrorFunction<T>::printPatternGradient()
 {
   printf("%s", "Multilayer Perceptron Trainer - gradient matrices:  \n");
   printf("%s", "\n");
@@ -323,12 +348,13 @@ void MultiLayerPerceptronErrorFunction::printPatternGradient()
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void MultiLayerPerceptronErrorFunction::computePatternGradientByWeightPerturbation(const rsVectorDbl& yTarget)
+template<class T>
+void MultiLayerPerceptronErrorFunction<T>::computePatternGradientByWeightPerturbation(const rsVectorDbl& yTarget)
 {
   mlp->forwardPropagate();  // to obtain y, in case this has not already been done
-  double eps   = 0.00001;   // epsilon
-  double error = getPatternError(yTarget);
-  double errorPerturbed, tmp;
+  T eps   = 0.00001;   // epsilon
+  T error = getPatternError(yTarget);
+  T errorPerturbed, tmp;
   rsMatrixDbl *w, *dw1;
   for(int layer = 0; layer < mlp->numWeightLayers; layer++)
   {
@@ -357,7 +383,8 @@ void MultiLayerPerceptronErrorFunction::computePatternGradientByWeightPerturbati
   mlp->forwardPropagate();      // restore the y with unperturbed weights
 }
 
-void MultiLayerPerceptronErrorFunction::computePatternGradient(const rsVectorDbl& yTarget)
+template<class T>
+void MultiLayerPerceptronErrorFunction<T>::computePatternGradient(const rsVectorDbl& yTarget)
 {
   computeDeltas(yTarget);
   for(int layer=0; layer<mlp->numWeightLayers; layer++)
@@ -376,7 +403,8 @@ void MultiLayerPerceptronErrorFunction::computePatternGradient(const rsVectorDbl
   }
 }
 
-void MultiLayerPerceptronErrorFunction::computeDeltas(const rsVectorDbl& yTarget)
+template<class T>
+void MultiLayerPerceptronErrorFunction<T>::computeDeltas(const rsVectorDbl& yTarget)
 {
   int numNeurons;     // number of neurons (excluding bias) of current layer
   int layer, j, k;    // indices
@@ -418,7 +446,7 @@ void MultiLayerPerceptronErrorFunction::computeDeltas(const rsVectorDbl& yTarget
     {
       // form the weighted sum, k runs over targets nodes, start at k=1 because 
       // da->v[k]==0 for k==0:
-      double sum = 0.0;
+      T sum = 0.0;
       for(k=1; k<numTargetNodes; k++) 
         sum += (*w)(k,j) * da->v[k];
 
@@ -429,15 +457,17 @@ void MultiLayerPerceptronErrorFunction::computeDeltas(const rsVectorDbl& yTarget
   }
 }
 
-double MultiLayerPerceptronErrorFunction::getPatternError(const rsVectorDbl& yTarget)
+template<class T>
+T MultiLayerPerceptronErrorFunction<T>::getPatternError(const rsVectorDbl& yTarget)
 {
   // \todo: implement other error functions by using a switch statement
   return 0.5 * (mlp->y - yTarget).getSquaredNorm();
 }
 
-double MultiLayerPerceptronErrorFunction::getTrainingError()
+template<class T>
+T MultiLayerPerceptronErrorFunction<T>::getTrainingError()
 {
-  double sum = 0.0;
+  T sum = 0.0;
   for(int p=0; p<nTrain; p++)
   {
     mlp->setInput(xTrain[p]); 
@@ -448,7 +478,8 @@ double MultiLayerPerceptronErrorFunction::getTrainingError()
   return sum;
 }
 
-rsVectorDbl MultiLayerPerceptronErrorFunction::getPatternGradient()
+template<class T>
+rsVectorDbl MultiLayerPerceptronErrorFunction<T>::getPatternGradient()
 {
   rsVectorDbl gv(mlp->numWeights);
   mlp->vectorizeWeightMatrices(dwn, &gv);
@@ -459,7 +490,8 @@ rsVectorDbl MultiLayerPerceptronErrorFunction::getPatternGradient()
 
 // construction/destruction:
 
-MultiLayerPerceptronTrainer::MultiLayerPerceptronTrainer(MultiLayerPerceptron *mlpToTrain)
+template<class T>
+MultiLayerPerceptronTrainer<T>::MultiLayerPerceptronTrainer(MultiLayerPerceptron<T> *mlpToTrain)
 {
   mlp = mlpToTrain;
 
@@ -480,7 +512,8 @@ MultiLayerPerceptronTrainer::MultiLayerPerceptronTrainer(MultiLayerPerceptron *m
   nTrain = 0;
 }
 
-MultiLayerPerceptronTrainer::~MultiLayerPerceptronTrainer()
+template<class T>
+MultiLayerPerceptronTrainer<T>::~MultiLayerPerceptronTrainer()
 {
   delete[] dwn;
   delete[] dwN;
@@ -490,7 +523,9 @@ MultiLayerPerceptronTrainer::~MultiLayerPerceptronTrainer()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void MultiLayerPerceptronTrainer::setTrainingData(rsVectorDbl *inputs, rsVectorDbl *targets, int numPatterns)
+template<class T>
+void MultiLayerPerceptronTrainer<T>::setTrainingData(rsVectorDbl *inputs, rsVectorDbl *targets,
+  int numPatterns)
 {
   xTrain = inputs;
   yTrain = targets;
@@ -504,17 +539,20 @@ void MultiLayerPerceptronTrainer::setTrainingData(rsVectorDbl *inputs, rsVectorD
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void MultiLayerPerceptronTrainer::initializeWeightsToZeros()
+template<class T>
+void MultiLayerPerceptronTrainer<T>::initializeWeightsToZeros()
 {
   
 }
 
-void MultiLayerPerceptronTrainer::initializeWeightsRandomly(double min, double max, int seed)
+template<class T>
+void MultiLayerPerceptronTrainer<T>::initializeWeightsRandomly(T min, T max, int seed)
 {
 
 }
 
-void MultiLayerPerceptronTrainer::printPatternGradient()
+template<class T>
+void MultiLayerPerceptronTrainer<T>::printPatternGradient()
 {
   printf("%s", "Multilayer Perceptron Trainer - gradient matrices:  \n");
   printf("%s", "\n");
@@ -528,12 +566,13 @@ void MultiLayerPerceptronTrainer::printPatternGradient()
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void MultiLayerPerceptronTrainer::computePatternGradientByWeightPerturbation(const rsVectorDbl& yTarget)
+template<class T>
+void MultiLayerPerceptronTrainer<T>::computePatternGradientByWeightPerturbation(const rsVectorDbl& yTarget)
 {
   mlp->forwardPropagate();  // to obtain y, in case this has not already been done
-  double eps   = 0.000001;  // epsilon
-  double error = computePatternError(yTarget);
-  double errorPerturbed, tmp;
+  T eps   = 0.000001;  // epsilon
+  T error = computePatternError(yTarget);
+  T errorPerturbed, tmp;
   rsMatrixDbl *w, *dw1;
   for(int layer = 0; layer < mlp->numWeightLayers; layer++)
   {
@@ -562,7 +601,8 @@ void MultiLayerPerceptronTrainer::computePatternGradientByWeightPerturbation(con
   mlp->forwardPropagate();      // restore the y with unperturbed weights
 }
 
-void MultiLayerPerceptronTrainer::computePatternGradient(const rsVectorDbl& yTarget)
+template<class T>
+void MultiLayerPerceptronTrainer<T>::computePatternGradient(const rsVectorDbl& yTarget)
 {
   computeDeltas(yTarget);
   for(int layer=0; layer<mlp->numWeightLayers; layer++)
@@ -581,7 +621,8 @@ void MultiLayerPerceptronTrainer::computePatternGradient(const rsVectorDbl& yTar
   }
 }
 
-void MultiLayerPerceptronTrainer::computeDeltas(const rsVectorDbl& yTarget)
+template<class T>
+void MultiLayerPerceptronTrainer<T>::computeDeltas(const rsVectorDbl& yTarget)
 {
   int numNeurons;     // number of neurons (excluding bias) of current layer
   int layer, /*i,*/ j, k; // indices
@@ -597,9 +638,9 @@ void MultiLayerPerceptronTrainer::computeDeltas(const rsVectorDbl& yTarget)
   dc->v[0]   = 0.0;                    // delta for a bias node is zero
   for(k=0; k<numNeurons; k++)  
   {
-    //double delta = mlp->y->v[k] - yTarget[k-1]; 
+    //T delta = mlp->y->v[k] - yTarget[k-1]; 
     //dc->v[k] = mlp->y->v[k] - yTarget[k-1];     // (1),Eq.4.41
-    //double delta = mlp->y->v[k] - yTarget[k]; 
+    //T delta = mlp->y->v[k] - yTarget[k]; 
     dc->v[k+1] = mlp->y.v[k] - yTarget.v[k];     // (1),Eq.4.41
       // this has to be modified for nonlinear output units and/or different error functions - the 
       // general expression would be (1),Eq.4.30: dE/dy[k] * g'(a[k])
@@ -625,22 +666,23 @@ void MultiLayerPerceptronTrainer::computeDeltas(const rsVectorDbl& yTarget)
     for(j=1; j<numSourceNodes; j++)  
     {
       // form the weighted sum:
-      double sum = 0.0;
+      T sum = 0.0;
       for(k=1; k<numTargetNodes; k++)  // k runs over targets nodes, start at k=1 because da->v[k]==0 for k==0
         sum += (*w)(k,j) * da->v[k];
 
       // multiply the sum by the derivative of the activation to obtain the delta:
-      double factor = activationDerivative(z->v[j]);
+      T factor = activationDerivative(z->v[j]);
       dc->v[j]      = factor * sum;           // (1),Eq.4.36    
     }
   }
 }
 
-double MultiLayerPerceptronTrainer::computePatternError(const rsVectorDbl& yTarget)
+template<class T>
+T MultiLayerPerceptronTrainer<T>::computePatternError(const rsVectorDbl& yTarget)
 {
   // todo: implement other error functions by using a switch statement
-  double result = 0.0;
-  double tmp;
+  T result = 0.0;
+  T tmp;
   for(int i=0; i<mlp->numOutputs; i++)
   {
     tmp     = mlp->y.v[i] - yTarget.v[i];
@@ -650,10 +692,10 @@ double MultiLayerPerceptronTrainer::computePatternError(const rsVectorDbl& yTarg
   return 0.5*result;
 }
 
-rsVectorDbl MultiLayerPerceptronTrainer::getPatternGradient()
+template<class T>
+rsVectorDbl MultiLayerPerceptronTrainer<T>::getPatternGradient()
 {
   rsVectorDbl gv(mlp->numWeights);
   mlp->vectorizeWeightMatrices(dwn, &gv);
   return gv;
 }
-

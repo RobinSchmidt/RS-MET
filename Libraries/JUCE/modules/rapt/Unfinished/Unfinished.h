@@ -13,7 +13,7 @@ namespace RAPT
 #include "Matrix.h"
 #include "FunctionObjects.h"
 #include "GradientBasedMinimizer.h"
-//#include "MultiLayerPerceptron.h"
+#include "MultiLayerPerceptron.h"
 
 }
 

@@ -380,9 +380,9 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 #include "numerical/rosic_GradientBasedMinimizer.cpp"
 
 // neural
-#include "neural/rosic_MultiLayerPerceptron.cpp"
-#include "neural/rosic_MultiLayerPerceptronErrorFunction.cpp"
-#include "neural/rosic_MultiLayerPerceptronTrainer.cpp"
+//#include "neural/rosic_MultiLayerPerceptron.cpp"
+//#include "neural/rosic_MultiLayerPerceptronErrorFunction.cpp"
+//#include "neural/rosic_MultiLayerPerceptronTrainer.cpp"
 
 // sequencing
 #include "sequencing/rosic_AcidPattern.cpp"

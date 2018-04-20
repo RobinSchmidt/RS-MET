@@ -140,9 +140,9 @@
 #include "numerical/rosic_GradientBasedMinimizer.h"
 
 // neural:
-#include "neural/rosic_MultiLayerPerceptron.h"
-#include "neural/rosic_MultiLayerPerceptronErrorFunction.h"
-#include "neural/rosic_MultiLayerPerceptronTrainer.h"
+//#include "neural/rosic_MultiLayerPerceptron.h"
+//#include "neural/rosic_MultiLayerPerceptronErrorFunction.h"
+//#include "neural/rosic_MultiLayerPerceptronTrainer.h"
 
 // filters:
 #include "filters/rosic_BiquadDesigner.h"

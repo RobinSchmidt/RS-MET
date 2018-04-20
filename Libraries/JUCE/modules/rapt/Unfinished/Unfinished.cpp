@@ -8,6 +8,6 @@ namespace RAPT
 #include "Matrix.cpp"
 #include "FunctionObjects.cpp"
 #include "GradientBasedMinimizer.cpp"
-//#include "MultiLayerPerceptron.cpp"
+#include "MultiLayerPerceptron.cpp"
 
 }
