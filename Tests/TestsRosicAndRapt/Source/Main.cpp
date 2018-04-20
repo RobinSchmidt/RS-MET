@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
 
   // Filter:
   //bandSplittingTwoWay();
-  bandSplittingMultiWay();
+  //bandSplittingMultiWay();
   //bandSplittingTreeAlgo();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
