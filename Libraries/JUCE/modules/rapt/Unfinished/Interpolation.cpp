@@ -1,14 +1,14 @@
-using namespace RSLib;
 
-void RSLib::rsCubicSplineCoeffsFourPoints(double *a, double *y)
+
+void rsCubicSplineCoeffsFourPoints(double *a, double *y)
 {
   double s[2];
   s[0] = 0.5*(y[1]-y[-1]); // left slope 
   s[1] = 0.5*(y[2]-y[0]);  // right slope
-  rsCubicCoeffsTwoPointsAndDerivatives(a, y, s);
+  rsPolynomial<double>::rsCubicCoeffsTwoPointsAndDerivatives(a, y, s);
 }
 
-void RSLib::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
+void fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
   double yd2, double *a3, double *a2, double *a1, double *a0)
 {
   *a3 = -( x2*(yd2+yd1) + x1*(-yd2-yd1) - 2*y2 + 2*y1 );
@@ -29,7 +29,7 @@ void RSLib::fitCubicWithDerivative(double x1, double x2, double y1, double y2, d
   // maybe precompute x1*x1*x1, x2*x2*x2 for optimization
 }
 
-void RSLib::fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, double yd1, double *a3, 
+void fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, double yd1, double *a3, 
   double *a2, double *a1, double *a0)
 {
   *a2 = -yd1-2*yd0+3*y1-3*y0;
@@ -41,8 +41,8 @@ void RSLib::fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, doubl
   // performance tests to check
 }
 
-void RSLib::fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, double yd1, double ydd0, double ydd1, double *a5, double *a4,
-                                            double *a3, double *a2, double *a1, double *a0)
+void fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, double yd1, double ydd0, 
+  double ydd1, double *a5, double *a4, double *a3, double *a2, double *a1, double *a0)
 {
   *a0 = y0;
   *a1 = yd0;
@@ -52,7 +52,7 @@ void RSLib::fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, do
   *a5 = (ydd1-6*yd1+12*y1-2*(*a2)-6*(*a1)-12*(*a0))/2;
 }
 
-void RSLib::getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
+void getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
 {
   int n, i, j;
 
@@ -82,11 +82,11 @@ void RSLib::getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
   }
 
   // solve the linear system and cleanup:
-  RSLib::rsSolveLinearSystem(A.getDataPointer(), &a[M+1], k, M+1);
+  rsLinearAlgebra::rsSolveLinearSystem(A.getDataPointer(), &a[M+1], k, M+1);
   delete[] k;
 }
 
-void RSLib::getHermiteCoeffs1(double *y0, double *y1, double *a)
+void getHermiteCoeffs1(double *y0, double *y1, double *a)
 {
   a[0] = y0[0];     // a0 = y(0)
   a[1] = y0[1];     // a1 = y'(0)
@@ -98,7 +98,7 @@ void RSLib::getHermiteCoeffs1(double *y0, double *y1, double *a)
   a[3] = k2 - 2*k1;
 }
 
-void RSLib::getHermiteCoeffs2(double *y0, double *y1, double *a)
+void getHermiteCoeffs2(double *y0, double *y1, double *a)
 {
   a[0] = y0[0];     // a0 = y(0)
   a[1] = y0[1];     // a1 = y'(0)
@@ -113,7 +113,7 @@ void RSLib::getHermiteCoeffs2(double *y0, double *y1, double *a)
   a[5] =  (k3-6*k2+12*k1)/2;
 }
 
-void RSLib::getHermiteCoeffs3(double *y0, double *y1, double *a)
+void getHermiteCoeffs3(double *y0, double *y1, double *a)
 {
   a[0] = y0[0];     // a0 = y(0)
   a[1] = y0[1];     // a1 = y'(0)
@@ -133,12 +133,12 @@ void RSLib::getHermiteCoeffs3(double *y0, double *y1, double *a)
   a[7] = -(-k4+12*k3-60*k2+120*k1)/6;
 }
 
-double RSLib::getDelayedSampleLinear(double d, double *y)
+double getDelayedSampleLinear(double d, double *y)
 {
   return (1.0-d)*y[0] + d*y[-1];
 }
 
-double RSLib::getDelayedSampleAsymmetricHermite1(double d, double *y, double shape)
+double getDelayedSampleAsymmetricHermite1(double d, double *y, double shape)
 {
   double y0[2], y1[2], a[4];
 
@@ -158,7 +158,7 @@ double RSLib::getDelayedSampleAsymmetricHermite1(double d, double *y, double sha
   return a[0] + a[1]*x + a[2]*x*x + a[3]*x*x*x;  // optimize this
 }
 
-double RSLib::getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, double shape)
+double getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, double shape)
 {
   int N = 2*M+1;
   int i, j;
@@ -193,7 +193,7 @@ double RSLib::getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, dou
 
   // evaluate:
   double x = 1.0 - d;
-  double result = RSLib::evaluatePolynomialAt(x, a, N);
+  double result = rsPolynomial<double>::evaluatePolynomialAt(x, a, N);
 
   // cleanup and return result:
   delete[] y0;
@@ -203,9 +203,9 @@ double RSLib::getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, dou
   return result;
 }
 
-void RSLib::fitCubicThroughFourPoints(double x0, double y0, double x1, double y1, double x2,
-                                      double y2, double x3, double y3, double *a, double *b,
-                                      double *c, double *d)
+void fitCubicThroughFourPoints(double x0, double y0, double x1, double y1, double x2,
+                               double y2, double x3, double y3, double *a, double *b,
+                               double *c, double *d)
 {
   // powers of the input value x:
   double x02 = x0*x0;    // x0^2
