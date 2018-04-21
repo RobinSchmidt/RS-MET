@@ -1,9 +1,7 @@
-using namespace RSLib;
-
-
-void RSLib::rsNumericDerivative(double *x, double *y, double *yd, int N, bool extrapolateEnds)
+template<class T>
+void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds)
 {
-  double dxl, dxr, dx, a, b; 
+  T dxl, dxr, dx, a, b; 
 
   for(int n = 1; n < N-1; n++)
   {

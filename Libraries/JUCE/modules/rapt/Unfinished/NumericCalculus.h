@@ -1,7 +1,7 @@
 #ifndef RAPT_NUMERICCALCULUS_H
 #define RAPT_NUMERICCALCULUS_H
 
-// todo: templatize, wrap into class
+// todo: wrap into class
 
 /** Given an array of strictly monotonically increasing but not necessarily equidistant abscissa
 values in x and corresponding function values in y, this function fills the array yd with a
@@ -21,8 +21,8 @@ linear extrapolation of the inner derivative values for the endpoints yd[0] and 
 otherwise it will use the (divided) forward difference at 0 and the backward difference at
 N-1. In a test with a sine function, the extrapolation gave more accurate reults at the
 endpoints compared to simple differences, so it's probably better to use extrapolation. */
-void rsNumericDerivative(double *x, double *y, double *yd, int N,
-  bool extrapolateEnds = true);
+template<class T>
+void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds = true);
 
 // maybe make the function a template, possibly even with different template types for 
 // x, y, yd so it can be used for complex or multivariate data as well (in the latter case
