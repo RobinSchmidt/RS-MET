@@ -51,7 +51,7 @@ public:
   void normalize()
   {
     std::complex<T> s, phi;
-    s = 1.0 / rsSqrtC(getDeterminant());
+    s = 1.0 / sqrt(getDeterminant());
     a *= s;
     b *= s;
     c *= s;
@@ -88,16 +88,17 @@ public:
   be collapsed the single point \f$ a/c \f$ by application of the trnasformation. */
   bool isSingular() const
   {
-    return getDeterminant() == 0;
+    return getDeterminant() == std::complex<T>(0,0);
   }
 
   /** Returns true when this Moebius transform is an identity transformation. The condition for
   this to be the case is \f$ a = d \neq 0, b = c = 0 \f$. */
   bool isIdentity() const
   {
-    if(b != 0 || c != 0 || a != d)
+    std::complex<T> O(0, 0); // zero, for comparison
+    if(b != O || c != O || a != O)
       return false;
-    if(a == 0)
+    if(a == O)
       return false;
     return true;
   }

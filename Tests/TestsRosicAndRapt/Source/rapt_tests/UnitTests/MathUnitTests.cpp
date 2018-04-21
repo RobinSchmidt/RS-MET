@@ -11,7 +11,7 @@
 // under construction:
 #include "Math/DifferentialEquationTests.cpp"
 #include "Math/IntegerFunctionTests.cpp"
-//#include "Math/MoebiusTransformTests.cpp"
+#include "Math/MoebiusTransformTests.cpp"
 //#include "Math/NumberTheoryTests.cpp"
 //#include "Math/RealFunctionFunctionTests.cpp"
 //#include "Math/TransformsTests.cpp"

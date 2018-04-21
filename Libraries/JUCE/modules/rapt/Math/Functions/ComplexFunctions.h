@@ -159,4 +159,14 @@ purely real. */
 template<class T>
 bool rsAreAllValuesReal(std::complex<T> *z, int length, T relativeTolerance = T(0));
 
+/* Computes the 2 roots (zeros) of the quadratic equation x^2 + p*x + q = 0. */
+template<class T>
+inline void solveQuadraticEquation(std::complex<T> p, std::complex<T> q,
+  std::complex<T> &root1, std::complex<T> &root2)
+{
+  std::complex<T> tmp = sqrt(0.25*p*p - q);
+  root1 = -0.5*p + tmp;
+  root2 = -0.5*p - tmp;
+}
+
 #endif
