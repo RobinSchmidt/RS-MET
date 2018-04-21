@@ -1,7 +1,7 @@
 #ifndef RS_MATRIXTESTS_H
 #define RS_MATRIXTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testMatrix(std::string &reportString);
 

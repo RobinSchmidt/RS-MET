@@ -1,7 +1,7 @@
 #ifndef RS_MISCMATHTESTS_H
 #define RS_MISCMATHTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testMiscMath(std::string &reportString);
 
