@@ -83,6 +83,20 @@ template RAPT::rsPolynomial<float>;
 template RAPT::rsPolynomial<double>;
 //template RAPT::rsPolynomial<int>; // template doesn't compile with int
 
+template RAPT::UnivariateScalarFunction<double>;
+template RAPT::UnivariateScalarFunctionViaPointer<double>;
+template RAPT::QuadraticTestErrorFunction<double>;
+
+template RAPT::GradientBasedMinimizer<double>;
+
+template RAPT::MultiLayerPerceptron<double>;
+template RAPT::MultiLayerPerceptronErrorFunction<double>;
+template RAPT::MultiLayerPerceptronTrainer<double>;
+
+template bool RAPT::rsFitSumOfExponentials(double* y, int numValues, double* A, double* a, 
+  int numExponentials);
+
+
 
 template int RAPT::rsClip(int x, int min, int max);
 template RAPT::rsConicSection<float>;

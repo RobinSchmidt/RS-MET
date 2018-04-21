@@ -8,6 +8,7 @@ namespace RAPT
 
 #include "Misc/LinearAlgebra.h"
 #include "Misc/Statistics.h"
+#include "Misc/CurveFitting.h"
 
 #include "Functions/BasicFunctions.h"
 #include "Functions/IntegerFunctions.h"

@@ -117,7 +117,7 @@ void GradientBasedMinimizer<T>::minimizeViaBoldDriverWithMomentum()
       stepsize *= sigma;                           // decrease stepsize
       d         = -g;                              // reset direction to the negative gradient
     }
-    stepsize  = rsClipToRange(stepsize, 0.000001, 100.0); // ad-hoc - use something more scientific
+    stepsize  = rsClip(stepsize, 0.000001, 100.0); // ad-hoc - use something more scientific
     eOld = e;
 
     // evaluate gradient for next iteration:
@@ -264,7 +264,7 @@ void GradientBasedMinimizer<T>::minimizeViaScaledConjugateGradient()
         lambda *= 0.5;
       else if( Delta < 0.25 )
         lambda *= 4.0;
-      lambda  = rsClipToRange(lambda, DBL_MIN, DBL_MAX);
+      lambda  = rsClip(lambda, DBL_MIN, DBL_MAX);
 
       success = true;
     }
@@ -275,7 +275,7 @@ void GradientBasedMinimizer<T>::minimizeViaScaledConjugateGradient()
       // we don't actually perform the step - instead we jump out of the current iteration, such 
       // that the next iteration will attempt the step with the new value value of lambda:
       lambda *= 4.0;
-      lambda  = rsClipToRange(lambda, DBL_MIN, DBL_MAX);
+      lambda  = rsClip(lambda, DBL_MIN, DBL_MAX);
       success = false;
       step++;
       if( printInfo == true )

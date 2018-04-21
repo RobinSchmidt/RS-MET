@@ -5,6 +5,7 @@ namespace RAPT
 
 #include "Misc/LinearAlgebra.cpp"
 #include "Misc/Statistics.cpp"
+#include "Misc/CurveFitting.cpp"
 
 #include "Functions/BasicFunctions.cpp"
 #include "Functions/IntegerFunctions.cpp"

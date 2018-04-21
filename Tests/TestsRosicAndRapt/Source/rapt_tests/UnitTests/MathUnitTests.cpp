@@ -4,10 +4,9 @@
 // compilation unit to improve build time:
 #include "Math/LinearAlgebraUnitTests.cpp" // produces linker errors
 #include "Math/PolynomialUnitTests.cpp" 
-
 #include "Math/VectorUnitTests.cpp"
 #include "Math/MatrixUnitTests.cpp"
-//#include "Math/MiscMathUnitTests.cpp" // needs curve fitting
+#include "Math/MiscMathUnitTests.cpp"
 
 bool coordinateMapperUnitTest()
 {

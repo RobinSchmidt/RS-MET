@@ -108,7 +108,7 @@ public:
 
   //=============================================================================================
 
-protected:
+//protected: // temporaly made public because the friend decalarations below don't compile
 
   /** Applies the selected activation function to some value x and returns the result. */
   inline T activationFunction(T x) const;
@@ -279,12 +279,13 @@ protected:
 template<class T>
 T MultiLayerPerceptronErrorFunction<T>::activationDerivative(T z)
 {
+  typedef MultiLayerPerceptron<T> MLP;
   T gp;
   switch(mlp->activationFunctionIndex)
   {
-  case MultiLayerPerceptron::LOGISTIC:        gp = z * (1.0-z);         break; // g' = g * (1-g)
-  case MultiLayerPerceptron::TANH:            gp = 1.0 - z*z;           break; // g' = 1 - g^2
-  case MultiLayerPerceptron::LINEAR_RATIONAL: gp = 1.0-fabs(z); gp*=gp; break; // g' = (1-|g|)^2
+  case MLP::LOGISTIC:        gp = z * (1.0-z);         break; // g' = g * (1-g)
+  case MLP::TANH:            gp = 1.0 - z*z;           break; // g' = 1 - g^2
+  case MLP::LINEAR_RATIONAL: gp = 1.0-fabs(z); gp*=gp; break; // g' = (1-|g|)^2
   }
   return gp;
 }
@@ -402,20 +403,21 @@ protected:
 template<class T>
 T MultiLayerPerceptronTrainer<T>::activationDerivative(T z)
 {
+  typedef MultiLayerPerceptron<T> MLP;
   T gp;
   switch(mlp->activationFunctionIndex)
   {
-  case MultiLayerPerceptron::LOGISTIC:
+  case MLP::LOGISTIC:
   {
     gp  = z * (1.0-z);     // g' = g * (1-g)
   }
   break;
-  case MultiLayerPerceptron::TANH:
+  case MLP::TANH:
   {
     gp  = 1.0 - z*z;       // g' = 1 - g^2
   }
   break;
-  case MultiLayerPerceptron::LINEAR_RATIONAL:
+  case MLP::LINEAR_RATIONAL:
   {
     gp  = 1.0 - fabs(z);   // g' = (1 - |g|)^2
     gp *= gp;

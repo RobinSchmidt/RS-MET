@@ -100,7 +100,7 @@ in cases where it doesn't converge. */
   virtual void setMomentum(T newMomentum)
   {
     rsAssert(newMomentum >= 0.0 && newMomentum < 1.0, "Momentum out of range");
-    momentum = rsClipToRange(newMomentum, 0.0, 1.0);
+    momentum = rsClip(newMomentum, 0.0, 1.0);
   }
 
   //---------------------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ protected:
   virtual void printEndInfo();
 
   // pointer to the objective function to be minimized:
-  MultivariateErrorFunction *functionToMinimize;
+  MultivariateErrorFunction<T> *functionToMinimize;
 
   int algorithm;               // choice of the optimization algorithm
   int maxNumSteps;             // maximum number of steps
