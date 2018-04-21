@@ -241,6 +241,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\IntegerFunctionTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\LinearAlgebraUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClCompile>
@@ -250,7 +256,19 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\RealFunctionTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\TransformsTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.cpp">
@@ -568,16 +586,34 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FourierTransformer.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FunctionObjects.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Interpolation.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumberTheory.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumericCalculus.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Statistics.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Transforms.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
@@ -1881,6 +1917,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\IntegerFunctionTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\LinearAlgebraUnitTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClInclude>
@@ -1890,7 +1932,19 @@
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\RealFunctionTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\TransformsTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.h">
@@ -2229,16 +2283,37 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\DifferentialEquationSystem.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FourierTransformer.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FunctionObjects.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Interpolation.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumberTheory.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumericCalculus.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Statistics.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Transforms.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h">

@@ -10,6 +10,14 @@
       <GROUP id="{86EEC43B-AEDF-BBF9-BF97-B91B0A6A75D6}" name="rapt_tests">
         <GROUP id="{DC26DB91-6388-5853-E13D-90EAAE45AFD9}" name="UnitTests">
           <GROUP id="{59E203FE-103B-3F2C-9162-9ECEFBF76A2E}" name="Math">
+            <FILE id="NL3RXL" name="DifferentialEquationTests.cpp" compile="0"
+                  resource="0" file="Source/rapt_tests/UnitTests/Math/DifferentialEquationTests.cpp"/>
+            <FILE id="xPAWuH" name="DifferentialEquationTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/DifferentialEquationTests.h"/>
+            <FILE id="DD9otD" name="IntegerFunctionTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/IntegerFunctionTests.cpp"/>
+            <FILE id="D1decq" name="IntegerFunctionTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/IntegerFunctionTests.h"/>
             <FILE id="Ha7ugR" name="LinearAlgebraUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/LinearAlgebraUnitTests.cpp"/>
             <FILE id="ZW6tY0" name="LinearAlgebraUnitTests.h" compile="0" resource="0"
@@ -22,10 +30,26 @@
                   file="Source/rapt_tests/UnitTests/Math/MiscMathUnitTests.cpp"/>
             <FILE id="LJDPuO" name="MiscMathUnitTests.h" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/MiscMathUnitTests.h"/>
+            <FILE id="d9myjd" name="MoebiusTransformTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/MoebiusTransformTests.cpp"/>
+            <FILE id="OsYAgi" name="MoebiusTransformTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/MoebiusTransformTests.h"/>
+            <FILE id="zZEdCa" name="NumberTheoryTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/NumberTheoryTests.cpp"/>
+            <FILE id="IDBCHE" name="NumberTheoryTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/NumberTheoryTests.h"/>
             <FILE id="zV7XPL" name="PolynomialUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.cpp"/>
             <FILE id="i9HPey" name="PolynomialUnitTests.h" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.h"/>
+            <FILE id="Zbcbws" name="RealFunctionTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/RealFunctionTests.cpp"/>
+            <FILE id="Mc3xKP" name="RealFunctionTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/RealFunctionTests.h"/>
+            <FILE id="geyTkM" name="TransformsTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/TransformsTests.cpp"/>
+            <FILE id="tXvg7O" name="TransformsTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/TransformsTests.h"/>
             <FILE id="Zhdjdh" name="VectorUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/VectorUnitTests.cpp"/>
             <FILE id="eibJXp" name="VectorUnitTests.h" compile="0" resource="0"

@@ -1,7 +1,9 @@
 #ifndef RAPT_LINE2D_H_INCLUDED
 #define RAPT_LINE2D_H_INCLUDED
 
-/** This is a class for dealing with two-dimensional lines. */
+/** This is a class for dealing with two-dimensional lines. 
+\tod0: drag over code from RSLib
+*/
 
 template<class T>
 class rsLine2D

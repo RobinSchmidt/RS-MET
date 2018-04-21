@@ -147,6 +147,12 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\IntegerFunctionTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\LinearAlgebraUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -156,7 +162,19 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\RealFunctionTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\TransformsTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.cpp">
@@ -394,16 +412,34 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FourierTransformer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FunctionObjects.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Interpolation.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumberTheory.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumericCalculus.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Statistics.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Transforms.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
@@ -1698,10 +1734,16 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_rosic.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\IntegerFunctionTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\LinearAlgebraUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MatrixUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\RealFunctionTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\TransformsTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h"/>
@@ -1814,10 +1856,17 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\DifferentialEquationSystem.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FourierTransformer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FunctionObjects.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Interpolation.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumberTheory.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumericCalculus.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Statistics.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Transforms.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h"/>
