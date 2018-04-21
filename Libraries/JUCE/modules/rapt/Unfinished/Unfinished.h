@@ -15,12 +15,13 @@ namespace RAPT
 #include "GradientBasedMinimizer.h"
 #include "MultiLayerPerceptron.h"
 
+// for these, updates/adaptions for RAPT are under construction:
 #include "DifferentialEquationSystem.h"
 #include "FourierTransformer.h"
 #include "Interpolation.h"
 #include "NumberTheory.h"
 #include "NumericCalculus.h"
-//#include "Transforms.h"
+#include "Transforms.h"
 //#include "Statistics.h"  // merge with the Statistics.h aleady present in the Math folder
 
 
