@@ -1,7 +1,7 @@
 #ifndef RS_DIFFERENTIALEQUATIONTESTS_H
 #define RS_DIFFERENTIALEQUATIONTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testDifferentialEquationSystem(std::string &reportString);
 

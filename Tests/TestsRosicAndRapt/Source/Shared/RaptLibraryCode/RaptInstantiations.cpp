@@ -38,6 +38,8 @@ typedef std::complex<double> cmplxD;
 
 // Data:
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
+template void rsArray::fillWithRangeLinear(int* x, int N, int min, int max);
+
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed);
 template void rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 template void rsArray::deConvolve(double *y, int yLength, double *h, int hLength, double *x);
@@ -96,6 +98,12 @@ template RAPT::MultiLayerPerceptronTrainer<double>;
 template bool RAPT::rsFitSumOfExponentials(double* y, int numValues, double* A, double* a, 
   int numExponentials);
 
+template rsUint32 RAPT::rsBinomialCoefficient(rsUint32 n, rsUint32 k);
+template rsUint32 RAPT::rsBinomialCoefficientUpTo20(rsUint32 n, rsUint32 k);
+template int RAPT::rsMultinomialCoefficient(int* n, int k);
+template rsUint32 RAPT::rsMultinomialCoefficient(rsUint32* n, rsUint32 k);
+template rsUint32 RAPT::rsMultinomialCoefficientUpTo12(rsUint32* n, rsUint32 k);
+template int RAPT::rsLeviCivita(int indices[], int N);
 
 
 template int RAPT::rsClip(int x, int min, int max);

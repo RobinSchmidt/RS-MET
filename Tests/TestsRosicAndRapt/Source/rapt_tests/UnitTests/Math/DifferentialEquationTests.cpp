@@ -306,6 +306,6 @@ bool testDifferentialEquationSystem(std::string &reportString)
 
   testTestSystem1();
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }

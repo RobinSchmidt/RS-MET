@@ -1,11 +1,11 @@
-template <class T>
-T rsAbs(T x)
-{
-  if(x < rsZeroValue(x))
-    return -x;
-  else
-    return  x;
-}
+//template <class T>
+//T rsAbs(T x)
+//{
+//  if(x < rsZeroValue(x))
+//    return -x;
+//  else
+//    return  x;
+//}
 //inline double  rsAbs(double  x) { return fabs(x); }
 //inline float   rsAbs(float   x) { return fabs(x); }
 //inline rsInt8  rsAbs(rsInt8  x) { return  abs(x); }
@@ -312,11 +312,11 @@ inline T rsSquare(T x)
 //  in2   = tmp;
 //}
 
-template<class T>
-inline T rsUnityValue(T value)
-{
-  return T(1);
-}
+//template<class T>
+//inline T rsUnityValue(T value)
+//{
+//  return T(1);
+//}
 
 template <class T>
 inline void rsSortAscending(T &in1, T &in2)
@@ -351,9 +351,9 @@ inline double rsZeroFunction(double x)
   return x = 0.0;
 }
 
-template<class T>
-inline T rsZeroValue(T /*value*/)
-{
-  return T(0);
-}
+//template<class T>
+//inline T rsZeroValue(T /*value*/)
+//{
+//  return T(0);
+//}
 

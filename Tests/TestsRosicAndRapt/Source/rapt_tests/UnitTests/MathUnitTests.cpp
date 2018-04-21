@@ -8,6 +8,15 @@
 #include "Math/MatrixUnitTests.cpp"
 #include "Math/MiscMathUnitTests.cpp"
 
+// under construction:
+#include "Math/DifferentialEquationTests.cpp"
+#include "Math/IntegerFunctionTests.cpp"
+//#include "Math/MoebiusTransformTests.cpp"
+//#include "Math/NumberTheoryTests.cpp"
+//#include "Math/RealFunctionFunctionTests.cpp"
+//#include "Math/TransformsTests.cpp"
+//#include "Math/StatisticsTests.cpp"  // there is no such file - why?
+
 bool coordinateMapperUnitTest()
 {
   bool r = true;      // test result

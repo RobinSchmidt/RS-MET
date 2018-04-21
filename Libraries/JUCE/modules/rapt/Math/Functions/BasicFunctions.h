@@ -3,8 +3,8 @@
 
 /** Returns the absolute value of the input argument. It is intended to replace the standard
 "abs" and "fabs" c-functions where genericity is desired. */
-template <class T>
-T rsAbs(T x);
+//template <class T>
+//T rsAbs(T x);
 
 /** Clips the value x into the range min...max such that for the returned value y, we have:
 min <= y <= max  */
