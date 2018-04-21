@@ -10,12 +10,12 @@ namespace RAPT
 #include "GradientBasedMinimizer.cpp"
 #include "MultiLayerPerceptron.cpp"
 
-#include "FourierTransformer.cpp" // needs templatizations to avoid linker errors
+#include "FourierTransformer.cpp"
 #include "Interpolation.cpp"
 #include "NumberTheory.cpp"
 #include "NumericCalculus.cpp"
 #include "Transforms.cpp"
-//#include "Statistics.cpp"  // merge with the Statistics.cpp aleady present in the Math folder
+#include "Statistics.cpp"  // merge with the Statistics.cpp aleady present in the Math folder
 
 
 }

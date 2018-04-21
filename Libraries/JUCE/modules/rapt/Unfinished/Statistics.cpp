@@ -38,7 +38,7 @@ void rsCrossCorrelationFFT(T x[], T y[], int N, T r[])
 }
 
 template<class T>
-void rsCrossCorrelation(T x[], T y[], int N, T r[], bool removeBias = false)
+void rsCrossCorrelation(T x[], T y[], int N, T r[], bool removeBias)
 {
   if(N < 64) // ad hoc - measure at which point FFT becomes more efficient
     rsCrossCorrelationDirect(x, y, N, r);
@@ -116,10 +116,3 @@ T rsStretchedCrossCorrelation(T *x, int Nx, T *y, int Ny)
     return 0;
   return xy / sqrt(xx*yy);
 }
-
-
-// \todo explicit template instantiations for float and double
-//....
-
-
-#endif

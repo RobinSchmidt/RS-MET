@@ -31,8 +31,7 @@ void rsAutoCorrelationFFT(T x[], int N, T r[]);
 
 /** Given a biased sample (cross- or auto-) correlation sequence of length N in x, this function
 removes the bias of the estimate and stores the result in r (which may point to the same array
-as x). @see crossCorrelation
-*/
+as x). @see crossCorrelation */
 template<class T>
 void rsRemoveCorrelationBias(T x[], int N, T r[]);
 
@@ -47,11 +46,12 @@ T rsCrossCorrelation(T *x, int Nx, T *y, int Ny);
 
 /** Given two arrays x and y of lengths Nx and Ny, this function computes the cross-correlation
 between the arrays where the shorter one of the arrays is first stretched to the length of the
-longer one by means of linear interpolation. This might be a good measure of shape similarity
-of two arrays regardless of their overall lengths (i.e. a length-invariant shape-similarity
-measure). An array with a certain shape and another array with a compressed or stretched version
-of the same shape should have a "stretched" correlation value of 1 (up to error due to linear
-interpolation). */
+longer one by means of linear interpolation. This might be a good measure of signal shape 
+similarity of two arrays regardless of their overall lengths (i.e. a length-invariant 
+shape-similarity measure). An array with a certain shape and another array with a compressed or 
+stretched version of the same shape should have a "stretched" correlation value of 1 (up to error 
+due to linear interpolation). Computation of the linearly interpolated values is done on the fly
+without need for a temporary buffer for the stretched signal. */
 template<class T>
 T rsStretchedCrossCorrelation(T *x, int Nx, T *y, int Ny);
 
