@@ -6,6 +6,7 @@ block has to be a power of 2. */
 
 // todo: templatize
 
+template<class T>
 class rsFourierTransformerRadix2
 {
 
@@ -156,6 +157,7 @@ algorithms (although the implicit constants are larger than for radix-2 algorith
 
 \todo implement normalization */
 
+template<class T>
 class rsFourierTransformerBluestein
 {
 

@@ -1,9 +1,9 @@
-#include "OouraFFT/fft4g.c"
-using namespace RSLib;
+#include "OouraFFT/fft4g.cpp"
 
 // construction/destruction:
 
-rsFourierTransformerRadix2::rsFourierTransformerRadix2()
+template<class T>
+rsFourierTransformerRadix2<T>::rsFourierTransformerRadix2()
 {
   N                   = 0;
   logN                = 0;
@@ -17,7 +17,8 @@ rsFourierTransformerRadix2::rsFourierTransformerRadix2()
   setBlockSize(256);
 }
 
-rsFourierTransformerRadix2::~rsFourierTransformerRadix2()
+template<class T>
+rsFourierTransformerRadix2<T>::~rsFourierTransformerRadix2()
 {
   // free dynamically allocated memory:
   if( w != NULL )
@@ -30,7 +31,8 @@ rsFourierTransformerRadix2::~rsFourierTransformerRadix2()
 
 // setup:
 
-void rsFourierTransformerRadix2::setBlockSize(int newBlockSize)
+template<class T>
+void rsFourierTransformerRadix2<T>::setBlockSize(int newBlockSize)
 {
   // check new blocksize for validity:
   if( newBlockSize >= 2 && rsIsPowerOfTwo(newBlockSize) )
@@ -61,7 +63,8 @@ void rsFourierTransformerRadix2::setBlockSize(int newBlockSize)
     RS_DEBUG_BREAK; // this class can only deal with blocksizes >= 2 that are a power of two
 }
 
-void rsFourierTransformerRadix2::setDirection(int newDirection)
+template<class T>
+void rsFourierTransformerRadix2<T>::setDirection(int newDirection)
 {
   if( newDirection >= FORWARD && newDirection <= INVERSE )
   {
@@ -77,7 +80,8 @@ void rsFourierTransformerRadix2::setDirection(int newDirection)
     RS_DEBUG_BREAK; // passed int-parameter does not correspond to any meaningful enum-field
 }
 
-void rsFourierTransformerRadix2::setNormalizationMode(int newNormalizationMode)
+template<class T>
+void rsFourierTransformerRadix2<T>::setNormalizationMode(int newNormalizationMode)
 {
   if( newNormalizationMode >= NORMALIZE_ON_FORWARD_TRAFO && 
       newNormalizationMode <= ORTHONORMAL_TRAFO )
@@ -98,11 +102,13 @@ void rsFourierTransformerRadix2::setRealSignalMode(bool willBeUsedForRealSignals
 
 // signal processing:
 
-void rsFourierTransformerRadix2::transformComplexBufferInPlace(rsComplexDbl *buffer)
+template<class T>
+void rsFourierTransformerRadix2<T>::transformComplexBufferInPlace(rsComplexDbl *buffer)
 {
   // retrieve the adresses of the real part of the first array entries in order to treat the 
   // Complex arrays as arrays of two successive double-numbers:
-  double* d_buffer = &(buffer[0].re);
+  //double* d_buffer = &(buffer[0].real());
+  double* d_buffer = (double*) &buffer[0];
 
   // normalize the FFT-input, if required:
   if( normalizationFactor != 1.0 )
@@ -120,13 +126,14 @@ void rsFourierTransformerRadix2::transformComplexBufferInPlace(rsComplexDbl *buf
   cdft(2*N, sign, d_buffer, ip, w);
 }
 
-void rsFourierTransformerRadix2::transformComplexBuffer(rsComplexDbl *inBuffer, 
+template<class T>
+void rsFourierTransformerRadix2<T>::transformComplexBuffer(rsComplexDbl *inBuffer, 
                                                         rsComplexDbl *outBuffer)
 {
   // retrieve the adresses of the real part of the first array entries in order to treat the 
   // Complex arrays as arrays of two successive double-numbers:
-  double* d_inBuffer  = &(inBuffer[0].re);
-  double* d_outBuffer = &(outBuffer[0].re);
+  double* d_inBuffer  = (double*) &inBuffer[0];
+  double* d_outBuffer = (double*) &outBuffer[0];
 
   // copy the input into the output for the in-place routine (thereby normalize, if necesarry):
   int n;
@@ -152,13 +159,14 @@ void rsFourierTransformerRadix2::transformComplexBuffer(rsComplexDbl *inBuffer,
 
 // convenience functions for real signals:
 
-void rsFourierTransformerRadix2::transformRealSignal(double *inSignal, rsComplexDbl *outSpectrum)
+template<class T>
+void rsFourierTransformerRadix2<T>::transformRealSignal(double *inSignal, rsComplexDbl *outSpectrum)
 {
   setDirection(FORWARD);
 
   // retrieve the adress of the real part of the first array entry of the output array in order to
   // treat the Complex array as array of two successive double-numbers:
-  double* d_outBuffer = &(outSpectrum[0].re);
+  double* d_outBuffer = (double*) &outSpectrum[0];
 
   // copy the input into the output for the in-place routine (thereby normalize, if necesarry):
   int n;
@@ -182,13 +190,15 @@ void rsFourierTransformerRadix2::transformRealSignal(double *inSignal, rsComplex
     d_outBuffer[n] = -d_outBuffer[n];
 }
 
-void rsFourierTransformerRadix2::transformRealSignal(double *signal, double *reAndIm)
+template<class T>
+void rsFourierTransformerRadix2<T>::transformRealSignal(double *signal, double *reAndIm)
 {
   rsComplexDbl* c_reAndIm = (rsComplexDbl*) &(reAndIm[0]);
   transformRealSignal(signal, c_reAndIm);
 }
 
-void rsFourierTransformerRadix2::getRealSignalMagnitudesAndPhases(double *signal, 
+template<class T>
+void rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(double *signal, 
                                                                   double *magnitudes, 
                                                                   double *phases)
 {
@@ -196,11 +206,11 @@ void rsFourierTransformerRadix2::getRealSignalMagnitudesAndPhases(double *signal
 
   // store the two purely real transform values at DC and Nyquist-frequency in the first fields of 
   // the magnitude- and phase- arrays respectively:
-  magnitudes[0] = tmpBuffer[0].re;
-  phases[0]     = tmpBuffer[0].im;
+  magnitudes[0] = tmpBuffer[0].real();
+  phases[0]     = tmpBuffer[0].real();
 
   // fill the rest of the array with the magnitudes and phases of the regular bins:
-  double* dBuffer = &(tmpBuffer[0].re);
+  double* dBuffer = (double*) &tmpBuffer[0];
   double  re, im;
   int     k;
   for(k=1; k<N/2; k++)
@@ -215,12 +225,13 @@ void rsFourierTransformerRadix2::getRealSignalMagnitudesAndPhases(double *signal
   }
 }
 
-void rsFourierTransformerRadix2::getRealSignalMagnitudes(double *signal, double *magnitudes)
+template<class T>
+void rsFourierTransformerRadix2<T>::getRealSignalMagnitudes(double *signal, double *magnitudes)
 {
   transformRealSignal(signal, tmpBuffer);
-  magnitudes[0] = tmpBuffer[0].re;
+  magnitudes[0] = tmpBuffer[0].real();
 
-  double* dBuffer = &(tmpBuffer[0].re);
+  double* dBuffer = (double*) &tmpBuffer[0];
   double  re, im;
   int     k;
   for(k=1; k<N/2; k++)
@@ -231,14 +242,15 @@ void rsFourierTransformerRadix2::getRealSignalMagnitudes(double *signal, double 
   }
 }
 
-void rsFourierTransformerRadix2::transformSymmetricSpectrum(rsComplexDbl *inSpectrum, 
+template<class T>
+void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(rsComplexDbl *inSpectrum, 
                                                             double *outSignal)
 {
   setDirection(INVERSE);
 
   // retrieve the adress of the real part of the first array entry of the output array in order to
   // treat the Complex array as array of two successive double-numbers:
-  double* d_inBuffer = &(inSpectrum[0].re);
+  double* d_inBuffer = (double*) &inSpectrum[0];
 
   // copy the input into the output for the in-place routine (thereby normalize, if necesarry):
   int n;
@@ -262,21 +274,23 @@ void rsFourierTransformerRadix2::transformSymmetricSpectrum(rsComplexDbl *inSpec
   rdft(N, -1, outSignal, ip, w);
 }
 
-void rsFourierTransformerRadix2::transformSymmetricSpectrum(double *reAndIm, double *signal)
+template<class T>
+void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(double *reAndIm, double *signal)
 {
   rsComplexDbl* c_reAndIm = (rsComplexDbl*) &(reAndIm[0]);
   transformSymmetricSpectrum(c_reAndIm, signal);
 }
 
-void rsFourierTransformerRadix2::getRealSignalFromMagnitudesAndPhases(double *magnitudes, 
+template<class T>
+void rsFourierTransformerRadix2<T>::getRealSignalFromMagnitudesAndPhases(double *magnitudes, 
                                                                       double *phases, 
                                                                       double *signal)
 {
-  tmpBuffer[0].re = magnitudes[0];
-  tmpBuffer[0].im = phases[0];
+  tmpBuffer[0].real(magnitudes[0]);
+  tmpBuffer[0].real(phases[0]);      // ?BUG? should it be assigned to imag?
 
   int k;
-  double* dBuffer = &(tmpBuffer[0].re);
+  double* dBuffer = (double*) &tmpBuffer[0];
   double  s, c;
   for(k=1; k<N/2; k++)
   {
@@ -290,7 +304,8 @@ void rsFourierTransformerRadix2::getRealSignalFromMagnitudesAndPhases(double *ma
 
 // pre-calculations:
 
-void rsFourierTransformerRadix2::updateNormalizationFactor()
+template<class T>
+void rsFourierTransformerRadix2<T>::updateNormalizationFactor()
 {
   if( (normalizationMode == NORMALIZE_ON_FORWARD_TRAFO && direction == FORWARD) ||
       (normalizationMode == NORMALIZE_ON_INVERSE_TRAFO && direction == INVERSE)    )
@@ -309,7 +324,8 @@ void rsFourierTransformerRadix2::updateNormalizationFactor()
 
 // construction/destruction:
 
-rsFourierTransformerBluestein::rsFourierTransformerBluestein()
+template<class T>
+rsFourierTransformerBluestein<T>::rsFourierTransformerBluestein()
 {
   h                     = NULL;
   c                     = NULL;
@@ -322,7 +338,8 @@ rsFourierTransformerBluestein::rsFourierTransformerBluestein()
   blockSizeIsPowerOfTwo = false;
 }
 
-rsFourierTransformerBluestein::~rsFourierTransformerBluestein()
+template<class T>
+rsFourierTransformerBluestein<T>::~rsFourierTransformerBluestein()
 {
   if( h != NULL )
     delete[] h;
@@ -334,7 +351,8 @@ rsFourierTransformerBluestein::~rsFourierTransformerBluestein()
 
 // parameter settings:
 
-void rsFourierTransformerBluestein::setBlockSize(int newBlockSize)
+template<class T>
+void rsFourierTransformerBluestein<T>::setBlockSize(int newBlockSize)
 {
   // check new blocksize for validity and update our related member variables when it is valid (and 
   // different from the old one):
@@ -361,7 +379,8 @@ void rsFourierTransformerBluestein::setBlockSize(int newBlockSize)
   }
 }
 
-void rsFourierTransformerBluestein::setDirection(int newDirection)
+template<class T>
+void rsFourierTransformerBluestein<T>::setDirection(int newDirection)
 {
   if( newDirection >= rsFourierTransformerRadix2::FORWARD && 
       newDirection <= rsFourierTransformerRadix2::INVERSE )
@@ -382,7 +401,8 @@ void rsFourierTransformerBluestein::setDirection(int newDirection)
     rsError("passed int-parameter does not correspond to any meaningful enum-field");
 }
 
-void rsFourierTransformerBluestein::setNormalizationMode(int newNormalizationMode)
+template<class T>
+void rsFourierTransformerBluestein<T>::setNormalizationMode(int newNormalizationMode)
 {
   if( newNormalizationMode >= rsFourierTransformerRadix2::NORMALIZE_ON_FORWARD_TRAFO && 
       newNormalizationMode <= rsFourierTransformerRadix2::ORTHONORMAL_TRAFO )
@@ -396,7 +416,8 @@ void rsFourierTransformerBluestein::setNormalizationMode(int newNormalizationMod
 
 // signal processing:
 
-void rsFourierTransformerBluestein::transformComplexBufferInPlace(rsComplexDbl *buffer)
+template<class T>
+void rsFourierTransformerBluestein<T>::transformComplexBufferInPlace(rsComplexDbl *buffer)
 {
   // use the embedded FourierTransformerRadix2-object directly on the input data for the special 
   // case where the blockSize is a power of two:
@@ -454,7 +475,8 @@ void rsFourierTransformerBluestein::transformComplexBufferInPlace(rsComplexDbl *
   // That's it! Bluestein-FFT done.
 }
 
-void rsFourierTransformerBluestein::transformComplexBuffer(rsComplexDbl *inBuffer, 
+template<class T>
+void rsFourierTransformerBluestein<T>::transformComplexBuffer(rsComplexDbl *inBuffer, 
   rsComplexDbl *outBuffer)
 {
   // copy the inBuffer into the outBuffer...
@@ -467,7 +489,8 @@ void rsFourierTransformerBluestein::transformComplexBuffer(rsComplexDbl *inBuffe
 
 // pre-calculations:
 
-void rsFourierTransformerBluestein::generateChirp()
+template<class T>
+void rsFourierTransformerBluestein<T>::generateChirp()
 {
   if( h != NULL )
     delete[] h;
@@ -480,9 +503,9 @@ void rsFourierTransformerBluestein::generateChirp()
   double  theta = 2.0 * PI / (double) N;
   rsComplexDbl w_N;
   if( direction == rsFourierTransformerRadix2::FORWARD )
-    w_N = rsExpC(rsComplexDbl(0.0, -theta));
+    w_N = exp(rsComplexDbl(0.0, -theta));
   else
-    w_N = rsExpC(rsComplexDbl(0.0, theta));
+    w_N = exp(rsComplexDbl(0.0, theta));
 
   // compute the first N h-values and the corresponding c-values (their complex conjugates):
   int     n;  
@@ -490,8 +513,8 @@ void rsFourierTransformerBluestein::generateChirp()
   for(n = 0; n < N; n++) 
   {
     exponent = rsComplexDbl(-0.5*n*n, 0.0);
-    h[n]     = rsPowC(w_N, exponent);
-    c[n]     = h[n].getConjugate();
+    h[n]     = pow(w_N, exponent);
+    c[n]     = conj(h[n]);
   }
 
   // cyclically wrap the h-sequence to fill up the remaining M-N values:
@@ -507,7 +530,8 @@ void rsFourierTransformerBluestein::generateChirp()
   transformerRadix2.transformComplexBufferInPlace(h);
 }
 
-void rsFourierTransformerBluestein::updateNormalizationFactor()
+template<class T>
+void rsFourierTransformerBluestein<T>::updateNormalizationFactor()
 {
   if( (normalizationMode == rsFourierTransformerRadix2::NORMALIZE_ON_FORWARD_TRAFO && 
        direction == rsFourierTransformerRadix2::FORWARD) ||

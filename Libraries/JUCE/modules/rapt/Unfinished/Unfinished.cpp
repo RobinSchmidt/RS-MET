@@ -10,8 +10,7 @@ namespace RAPT
 #include "GradientBasedMinimizer.cpp"
 #include "MultiLayerPerceptron.cpp"
 
-//#include "DifferentialEquationSystem.cpp"
-//#include "FourierTransformer.cpp"
+#include "FourierTransformer.cpp" // needs templatizations to avoid linker errors
 //#include "Interpolation.cpp"
 //#include "NumberTheory.cpp"
 //#include "NumericCalculus.cpp"

@@ -409,6 +409,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\OouraFFT\fft4g.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
