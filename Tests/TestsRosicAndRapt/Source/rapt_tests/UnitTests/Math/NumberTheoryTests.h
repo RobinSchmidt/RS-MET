@@ -1,7 +1,7 @@
 #ifndef RS_NUMBERTHEORYTESTS_H
 #define RS_NUMBERTHEORYTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testNumberTheory(std::string &reportString);
 

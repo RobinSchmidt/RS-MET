@@ -36,9 +36,9 @@ bool testPrimeTableGeneration(std::string &reportString)
                      941,947,953,967,971,977,983,991,997};
 
   rsUint32 i;
-  rsArray<rsUint32> pa;
+  std::vector<rsUint32> pa;
   rsFindPrimesUpTo(pa, (rsUint32)1000);
-  testResult &= pa.getNumElements() == (rsInt32)np;
+  testResult &= pa.size() == (rsInt32)np;
   for(i = 0; i < np; i++)
     testResult &= pa[i] == tp[i];
 
@@ -66,19 +66,11 @@ bool testPrimeTableGeneration(std::string &reportString)
   delete[] p2;
 */
 
-
-
-
-
-
-
   // suppose, we want to find all primes between 20000 and 21000
   // the table with number, multiples of which should be crossed out should have its largest
   // element >= 21000-20000 = 1000
   // 131 * 157 = 20567
   // or 41*43 = 1763 -> find all primes between 1700 and 1800
-
-
 
   // just for fun:
   //rsFindPrimesUpTo(pa, (rsUint32)1000000);
@@ -97,12 +89,12 @@ bool testPrimeFactorization(std::string &reportString)
   bool testResult = true;
 
   rsUint32 x;
-  rsArray<rsUint32> p, f, e;
+  std::vector<rsUint32> p, f, e;
 
 
   x = 507996720; // = 2^4 * 3^2 * 5^1 * 7^3 * 11^2 * 17^1
   rsPrimeFactors(x, f, e);
-  testResult &= f.getNumElements() == 6;
+  testResult &= f.size() == 6;
   testResult &= f[0] ==  2 && e[0] == 4;
   testResult &= f[1] ==  3 && e[1] == 2;
   testResult &= f[2] ==  5 && e[2] == 1;
@@ -112,7 +104,7 @@ bool testPrimeFactorization(std::string &reportString)
 
   x = 431985125; // = 5^3 * 11^2 * 13^4
   rsPrimeFactors(x, f, e);
-  testResult &= f.getNumElements() == 3;
+  testResult &= f.size() == 3;
   testResult &= f[0] ==  5 && e[0] == 3;
   testResult &= f[1] == 11 && e[1] == 2;
   testResult &= f[2] == 13 && e[2] == 4;

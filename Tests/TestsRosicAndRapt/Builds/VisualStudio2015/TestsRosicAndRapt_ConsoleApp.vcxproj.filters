@@ -592,6 +592,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Flags.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FourierTransformer.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
@@ -2290,6 +2293,9 @@
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\DifferentialEquationSystem.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Flags.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FourierTransformer.h">

@@ -80,6 +80,11 @@ namespace RSLib
       // magnitude (squared) response - wolfram alpha can solve this integral for specific values
       // for numPasses (M) and order (N), but not for general N,M - maybe we need to tell it to
       // assume N and M to be positive integers.....
+      // the integral of 1/(1+x^N) from 0 to inf is pi / (N*sin(pi/N)) (try with sympy gamma for 
+      // N=20 or N=21)
+      // to find the inetgral, we must first find the partial frcation expansion of 
+      // 1/(x^N+1)^M - i think, the roots are given by the N-th roots of -1, each with 
+      // multiplicity M
 
 
     // \todo write a function: absoluteBandwidthToRingingTime

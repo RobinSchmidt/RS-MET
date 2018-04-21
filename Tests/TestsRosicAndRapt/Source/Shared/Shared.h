@@ -25,5 +25,15 @@ inline bool detectMemoryLeaks()
 #endif
 }
 
+// get rid of that:
+inline void appendTestResultToReport(std::string &reportString, const std::string &nameOfTest, 
+  bool result)
+{
+  if( result == true )
+    reportString += nameOfTest + ": OK \n";
+  else
+    reportString += nameOfTest + ": !!! FAILED !!!\n";
+}
+
 
 #endif
