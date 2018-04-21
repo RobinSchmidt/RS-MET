@@ -66,21 +66,21 @@ void smbFft(T *fftBuffer, long fftFrameSize, long sign)
 }
 
 template<class T>
-void rsDFT(rsComplex<T> *x, int N)
+void rsDFT(std::complex<T> *x, int N)
 {
-  rsComplex<T> *X = new rsComplex<T>[N];
+  std::complex<T> *X = new std::complex<T>[N];
   for(int k = 0; k < N; k++)
   {
     X[k] = 0;
     for(int n = 0; n < N; n++)
-      X[k] += x[n]*rsExpC(rsComplex<T>(T(0), T(-2.0*PI*n*k/N)));
+      X[k] += x[n]*rsExpC(std::complex<T>(T(0), T(-2.0*PI*n*k/N)));
   }
   rsCopyBuffer(X, x, N);
   delete[] X;
 }
 
 template<class T>
-void rsFFT(rsComplex<T> *a, int N)
+void rsFFT(std::complex<T> *a, int N)
 {
   if(rsIsPowerOfTwo(N))
     rsRadix2FFT(a, N);
@@ -92,7 +92,7 @@ void rsFFT(rsComplex<T> *a, int N)
 }
 
 template<class T>
-void rsIFFT(rsComplex<T> *a, int N)
+void rsIFFT(std::complex<T> *a, int N)
 {
   // see "Understanding Digital Signal Processing", page 427:
   rsConjugate(a, N);
@@ -106,9 +106,9 @@ void rsIFFT(rsComplex<T> *a, int N)
 }
 
 template<class T>
-void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases = NULL)
+void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases)
 {
-  rsComplex<T> *tmp = new rsComplex<T>[N];
+  std::complex<T> *tmp = new std::complex<T>[N];
 
   rsConvertBuffer(signal, tmp, N);
   rsFFT(tmp, N);
@@ -127,7 +127,7 @@ void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases = NULL)
 }
 
 template<class T>
-void rsRadix2FFT(rsComplex<T> *a, int N)
+void rsRadix2FFT(std::complex<T> *a, int N)
 {
   // The algorithm was ported from algorithm 4.2 in the book "Inside the FFT black box" and 
   // then simplified. All twiddle factors are computed on the fly via recursion.
@@ -136,10 +136,10 @@ void rsRadix2FFT(rsComplex<T> *a, int N)
   int h  = N/2;     // HalfSize -> distance between butterflied values?
   int jf;           // JFirst
   int jl;           // JLast
-  rsComplex<T> tmp; // Temp
+  std::complex<T> tmp; // Temp
 
-  rsComplex<T> wj;  // W (current twiddle factor), maybe rename to wjk or wkj
-  rsComplex<T> wm = rsExpC(rsComplex<T>(T(0), T(-2.0*PI/N))); // multiplier for twiddle factor 
+  std::complex<T> wj;  // W (current twiddle factor), maybe rename to wjk or wkj
+  std::complex<T> wm = rsExpC(std::complex<T>(T(0), T(-2.0*PI/N))); // multiplier for twiddle factor 
 
   // \todo use setRadiusAndAngle for initializing wm (more efficient), we also do not need to 
   // include the ComplexFunctions.inl
@@ -151,7 +151,7 @@ void rsRadix2FFT(rsComplex<T> *a, int N)
   {
     for(int k = 0; k < np; k++)     // loop over the sub-FFTs
     {
-      wj = rsComplexDbl(1.0, 0.0);  // init twiddle factor for current sub-FFT
+      wj = std::complexDbl(1.0, 0.0);  // init twiddle factor for current sub-FFT
       jf = 2*k*h;                   // first index for k-th sub-FFT
       jl = jf+h-1;                  // last index for k-th sub-FFT
       for(int j = jf; j <= jl; j++) // loop over the values
@@ -172,7 +172,7 @@ void rsRadix2FFT(rsComplex<T> *a, int N)
 
 /*
 template<class T>
-void rsBluesteinFFT(rsComplex<T> *a, int N)
+void rsBluesteinFFT(std::complex<T> *a, int N)
 {
   rsError("Not yet implemented.");
 }
