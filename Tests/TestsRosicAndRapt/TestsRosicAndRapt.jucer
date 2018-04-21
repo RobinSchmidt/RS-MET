@@ -14,10 +14,22 @@
                   file="Source/rapt_tests/UnitTests/Math/LinearAlgebraUnitTests.cpp"/>
             <FILE id="ZW6tY0" name="LinearAlgebraUnitTests.h" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/LinearAlgebraUnitTests.h"/>
+            <FILE id="Xo7cmF" name="MatrixUnitTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/MatrixUnitTests.cpp"/>
+            <FILE id="lNCyVk" name="MatrixUnitTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/MatrixUnitTests.h"/>
+            <FILE id="lNpazT" name="MiscMathUnitTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/MiscMathUnitTests.cpp"/>
+            <FILE id="LJDPuO" name="MiscMathUnitTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/MiscMathUnitTests.h"/>
             <FILE id="zV7XPL" name="PolynomialUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.cpp"/>
             <FILE id="i9HPey" name="PolynomialUnitTests.h" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.h"/>
+            <FILE id="Zhdjdh" name="VectorUnitTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/VectorUnitTests.cpp"/>
+            <FILE id="eibJXp" name="VectorUnitTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/VectorUnitTests.h"/>
           </GROUP>
           <FILE id="crSQKa" name="DataUnitTests.cpp" compile="1" resource="0"
                 file="Source/rapt_tests/UnitTests/DataUnitTests.cpp"/>

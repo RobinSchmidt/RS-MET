@@ -5,6 +5,10 @@
 #include "Math/LinearAlgebraUnitTests.h"
 #include "Math/PolynomialUnitTests.h"
 
+#include "Math/VectorUnitTests.h"
+//#include "Math/MatrixUnitTests.h"
+//#include "Math/MiscMathUnitTests.h"
+
 bool coordinateMapperUnitTest();
 bool interpolatingFunctionUnitTest();
 bool rootFinderUnitTest();

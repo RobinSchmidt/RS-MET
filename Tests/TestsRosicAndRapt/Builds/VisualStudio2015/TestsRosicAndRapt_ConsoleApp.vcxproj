@@ -150,7 +150,16 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\LinearAlgebraUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\MatrixUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp"/>
@@ -1687,7 +1696,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\LinearAlgebraUnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MatrixUnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.h"/>
