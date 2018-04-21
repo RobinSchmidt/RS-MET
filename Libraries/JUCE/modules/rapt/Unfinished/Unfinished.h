@@ -18,7 +18,7 @@ namespace RAPT
 #include "DifferentialEquationSystem.h"
 #include "FourierTransformer.h"
 #include "Interpolation.h"
-//#include "NumberTheory.h"
+#include "NumberTheory.h"
 //#include "NumericCalculus.h"
 //#include "Statistics.h"  // merge with the Statistics.h aleady present in the Math folder
 //#include "Transforms.h"
