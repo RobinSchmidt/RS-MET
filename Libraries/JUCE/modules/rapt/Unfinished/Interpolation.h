@@ -6,7 +6,8 @@
 /** Computes coefficients for a cubic polynomial that goes through the 4 points (-1,y[-1]),
 (0,y[0]), (1,y[1]), (2,y[2]) that will have matched 1st derivatives when used on successive
 positions in an y-array. [TEST THIS! it has not yet been tested] */
-void rsCubicSplineCoeffsFourPoints(double *a, double *y);
+template<class T>
+void rsCubicSplineCoeffsFourPoints(T *a, T *y);
 
 /** Fits a cubic polynomial of the form:
 \f[ f(x) = a3*x^3 + a2*x^2 + a1*x + a0  \f]
@@ -14,21 +15,24 @@ to two points (x1,y1), (x2,y2) and matches values of the derivative (given by yd
 points.
 \todo change order of a coeffs - but make sure that all client code using this is updated
 accordingly. or maybe pass an array a[4] - this will force client code to be updated  */
-void fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
-  double yd2, double *a3, double *a2, double *a1, double *a0);
+template<class T>
+void fitCubicWithDerivative(T x1, T x2, T y1, T y2, T yd1,
+  T yd2, T *a3, T *a2, T *a1, T *a0);
 
 /** Similar to fitCubicWithDerivative, but the x-coodinates of the two points are fixed at x0=0,
 x1=1 such that we fit the points (0,y0), (1,y1) and match values of the derivative (given by yd0,
 yd1) there. This simplifies the computation a lot compared to the general case. */
-void fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, double yd1,
-  double *a3, double *a2, double *a1, double *a0);
+template<class T>
+void fitCubicWithDerivativeFixedX(T y0, T y1, T yd0, T yd1,
+  T *a3, T *a2, T *a1, T *a0);
 
 /** Similar to fitCubicWithDerivativeFixedX, but fits a quintic (5th order) polynomial in order
 to additionaly match desired values for the 2nd derivatives (given by ydd0, ydd1) at the sample
 points. */
-void fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, double yd1,
-  double ydd0, double ydd1, double *a5, double *a4, double *a3, double *a2, double *a1,
-  double *a0);
+template<class T>
+void fitQuinticWithDerivativesFixedX(T y0, T y1, T yd0, T yd1,
+  T ydd0, T ydd1, T *a5, T *a4, T *a3, T *a2, T *a1,
+  T *a0);
 
 /** Computes coefficients for a polynomial that passes through the points (x0 = 0, y0[0]),
 (x1 = 1, y1[0]) and in addition to passing through these points, it also matches a number "M" of
@@ -38,16 +42,20 @@ return the computed 2*M+2 polynomial coefficients for the polynomial of order 2*
 y0: (M+1)-element array containing y(0), y'(0), y''(0), y'''(0), etc.
 y1: (M+1)-element array containing y(1), y'(1), y''(1), y'''(1), etc.
 a:  (2*M+2)-element array for returning a0, a1, a2, a3, a4, a5, a6, a7, etc.  */
-void getHermiteCoeffsM(double *y0, double *y1, double *a, int M);
+template<class T>
+void getHermiteCoeffsM(T *y0, T *y1, T *a, int M);
 
 /** Optimized version of getHermiteCoeffsM for the case M == 1. */
-void getHermiteCoeffs1(double *y0, double *y1, double *a);
+template<class T>
+void getHermiteCoeffs1(T *y0, T *y1, T *a);
 
 /** Optimized version of getHermiteCoeffsM for the case M == 2. */
-void getHermiteCoeffs2(double *y0, double *y1, double *a);
+template<class T>
+void getHermiteCoeffs2(T *y0, T *y1, T *a);
 
 /** Optimized version of getHermiteCoeffsM for the case M == 3. */
-void getHermiteCoeffs3(double *y0, double *y1, double *a);
+template<class T>
+void getHermiteCoeffs3(T *y0, T *y1, T *a);
 
 /** Computes a delayed sample with a fractional delay of "d" (0 <= d <= 1) behind y[0]. To
 compute the output value, the function uses y[0], y[-1], y[-2], ..., y[-(M+1)] to obtain finite
@@ -58,15 +66,18 @@ time impulse response of the interpolator is asymmetric due to the way in which 
 are approximated (using only past values). The "shape" parameter controls, which value will
 actually be used for  the desired derivative by multiplying the raw finite difference
 approximation for the n-th derivative by shape^n.  */
-double getDelayedSampleAsymmetricHermiteM(double d, double *y, int M,
-  double shape = 1.0);
+template<class T>
+T getDelayedSampleAsymmetricHermiteM(T d, T *y, int M,
+  T shape = 1.0);
 
 /** Optimized version of getDelayedSampleAsymmetricHermiteM for the case M == 1. */
-double getDelayedSampleAsymmetricHermite1(double d, double *y, double shape = 1.0);
+template<class T>
+T getDelayedSampleAsymmetricHermite1(T d, T *y, T shape = 1.0);
 
 /** Computes a delayed sample with a fractional delay of "d" (0 <= d <= 1) behind y[0] by
 linearly interpolating between y[0] and y[-1]. */
-double getDelayedSampleLinear(double d, double *y);
+template<class T>
+T getDelayedSampleLinear(T d, T *y);
 
 // \todo make symmetric versions for Hermite interpolators (using symmetric finite differences),
 // make similar functions for Lagrange interpolation and sinc-interpolation
@@ -74,8 +85,9 @@ double getDelayedSampleLinear(double d, double *y);
 /** Fits a cubic polynomial of the form:
 \f[ f(x) = a*x^3 + b*x^2 + c*x + d  \f]
 to four points (x0,y0), (x1,y1),(x2,y2), (x3,y3)  */
-void fitCubicThroughFourPoints(double x0, double y0, double x1, double y1, double x2,
-  double y2, double x3, double y3, double *a, double *b, double *c, double *d);
+template<class T>
+void fitCubicThroughFourPoints(T x0, T y0, T x1, T y1, T x2,
+  T y2, T x3, T y3, T *a, T *b, T *c, T *d);
 
 /** Given two x-axis values x1, x2 and the corresponding y-axis values y1, y2, this function
 returns the y-value corresponding to x by linearly interpolating between x1, x2. If x is outside

@@ -1,15 +1,16 @@
 
-
-void rsCubicSplineCoeffsFourPoints(double *a, double *y)
+template<class T>
+void rsCubicSplineCoeffsFourPoints(T *a, T *y)
 {
-  double s[2];
+  T s[2];
   s[0] = 0.5*(y[1]-y[-1]); // left slope 
   s[1] = 0.5*(y[2]-y[0]);  // right slope
-  rsPolynomial<double>::rsCubicCoeffsTwoPointsAndDerivatives(a, y, s);
+  rsPolynomial<T>::rsCubicCoeffsTwoPointsAndDerivatives(a, y, s);
 }
 
-void fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
-  double yd2, double *a3, double *a2, double *a1, double *a0)
+template<class T>
+void fitCubicWithDerivative(T x1, T x2, T y1, T y2, T yd1,
+  T yd2, T *a3, T *a2, T *a1, T *a0)
 {
   *a3 = -( x2*(yd2+yd1) + x1*(-yd2-yd1) - 2*y2 + 2*y1 );
   *a2 = x1*(x2*(yd2-yd1)-3*y2) + (x2*x2)*(yd2+2*yd1) + (x1*x1)*(-2*yd2-yd1)
@@ -20,7 +21,7 @@ void fitCubicWithDerivative(double x1, double x2, double y1, double y2, double y
   *a0 = (x1*x1)*((x2*x2)*(yd2-yd1)-3*x2*y2) + (x1*x1*x1)*(y2-x2*yd2) + x1*(x2*x2*x2)*yd1
        + (3*x1*(x2*x2)-(x2*x2*x2))*y1;
 
-  double scaler = 1.0 / ( -(x2*x2*x2) + 3*x1*(x2*x2) - 3*x1*x1*x2 + (x1*x1*x1) );
+  T scaler = 1.0 / ( -(x2*x2*x2) + 3*x1*(x2*x2) - 3*x1*x1*x2 + (x1*x1*x1) );
   *a3 *= scaler;
   *a2 *= scaler;
   *a1 *= scaler;
@@ -29,8 +30,9 @@ void fitCubicWithDerivative(double x1, double x2, double y1, double y2, double y
   // maybe precompute x1*x1*x1, x2*x2*x2 for optimization
 }
 
-void fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, double yd1, double *a3, 
-  double *a2, double *a1, double *a0)
+template<class T>
+void fitCubicWithDerivativeFixedX(T y0, T y1, T yd0, T yd1, T *a3, 
+  T *a2, T *a1, T *a0)
 {
   *a2 = -yd1-2*yd0+3*y1-3*y0;
   *a3 = yd1+yd0-2*y1+2*y0;
@@ -41,8 +43,9 @@ void fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, double yd1, 
   // performance tests to check
 }
 
-void fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, double yd1, double ydd0, 
-  double ydd1, double *a5, double *a4, double *a3, double *a2, double *a1, double *a0)
+template<class T>
+void fitQuinticWithDerivativesFixedX(T y0, T y1, T yd0, T yd1, T ydd0, 
+  T ydd1, T *a5, T *a4, T *a3, T *a2, T *a1, T *a0)
 {
   *a0 = y0;
   *a1 = yd0;
@@ -52,7 +55,8 @@ void fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, double yd
   *a5 = (ydd1-6*yd1+12*y1-2*(*a2)-6*(*a1)-12*(*a0))/2;
 }
 
-void getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
+template<class T>
+void getHermiteCoeffsM(T *y0, T *y1, T *a, int M)
 {
   int n, i, j;
 
@@ -65,7 +69,7 @@ void getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
   }
 
   // establish right hand side (vector k):
-  double *k = new double[M+1];
+  T *k = new T[M+1];
   for(n = 0; n <= M; n++)
   {
     k[n] = y1[n];
@@ -86,34 +90,37 @@ void getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
   delete[] k;
 }
 
-void getHermiteCoeffs1(double *y0, double *y1, double *a)
+template<class T>
+void getHermiteCoeffs1(T *y0, T *y1, T *a)
 {
   a[0] = y0[0];     // a0 = y(0)
   a[1] = y0[1];     // a1 = y'(0)
 
-  double k1 = y1[0] - a[1] - a[0];
-  double k2 = y1[1] - a[1];
+  T k1 = y1[0] - a[1] - a[0];
+  T k2 = y1[1] - a[1];
 
   a[2] = 3*k1 - k2;
   a[3] = k2 - 2*k1;
 }
 
-void getHermiteCoeffs2(double *y0, double *y1, double *a)
+template<class T>
+void getHermiteCoeffs2(T *y0, T *y1, T *a)
 {
   a[0] = y0[0];     // a0 = y(0)
   a[1] = y0[1];     // a1 = y'(0)
   a[2] = y0[2]/2;   // a2 = y''(0)/2
 
-  double k1 = y1[0] - a[2]  - a[1] - a[0];
-  double k2 = y1[1] - y0[2] - a[1];
-  double k3 = y1[2] - y0[2];
+  T k1 = y1[0] - a[2]  - a[1] - a[0];
+  T k2 = y1[1] - y0[2] - a[1];
+  T k3 = y1[2] - y0[2];
 
   a[3] =  (k3-8*k2+20*k1)/2;
   a[4] =  -k3+7*k2-15*k1;
   a[5] =  (k3-6*k2+12*k1)/2;
 }
 
-void getHermiteCoeffs3(double *y0, double *y1, double *a)
+template<class T>
+void getHermiteCoeffs3(T *y0, T *y1, T *a)
 {
   a[0] = y0[0];     // a0 = y(0)
   a[1] = y0[1];     // a1 = y'(0)
@@ -121,10 +128,10 @@ void getHermiteCoeffs3(double *y0, double *y1, double *a)
   a[3] = y0[3]/6;   // a3 = y'''(0)/6
 
   // can be streamlined, using: 2*a2 = y''(0), 6*a3 = y'''(0)
-  double k1 = y1[0] -   a[3] -   a[2] - a[1] - a[0];
-  double k2 = y1[1] - 3*a[3] - 2*a[2] - a[1];
-  double k3 = y1[2] - 6*a[3] - 2*a[2];
-  double k4 = y1[3] - 6*a[3];
+  T k1 = y1[0] -   a[3] -   a[2] - a[1] - a[0];
+  T k2 = y1[1] - 3*a[3] - 2*a[2] - a[1];
+  T k3 = y1[2] - 6*a[3] - 2*a[2];
+  T k4 = y1[3] - 6*a[3];
 
   // maybe reorder summands so as to get rid of the unary minus(es):
   a[4] =  (-k4+15*k3-90*k2+210*k1)/6;
@@ -133,14 +140,16 @@ void getHermiteCoeffs3(double *y0, double *y1, double *a)
   a[7] = -(-k4+12*k3-60*k2+120*k1)/6;
 }
 
-double getDelayedSampleLinear(double d, double *y)
+template<class T>
+T getDelayedSampleLinear(T d, T *y)
 {
   return (1.0-d)*y[0] + d*y[-1];
 }
 
-double getDelayedSampleAsymmetricHermite1(double d, double *y, double shape)
+template<class T>
+T getDelayedSampleAsymmetricHermite1(T d, T *y, T shape)
 {
-  double y0[2], y1[2], a[4];
+  T y0[2], y1[2], a[4];
 
   // desired signal values at endpoints:
   y0[0] = y[-1];
@@ -154,25 +163,26 @@ double getDelayedSampleAsymmetricHermite1(double d, double *y, double shape)
   getHermiteCoeffs1(y0, y1, a);
 
   // evaluate:
-  double x = 1.0 - d;
+  T x = 1.0 - d;
   return a[0] + a[1]*x + a[2]*x*x + a[3]*x*x*x;  // optimize this
 }
 
-double getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, double shape)
+template<class T>
+T getDelayedSampleAsymmetricHermiteM(T d, T *y, int M, T shape)
 {
   int N = 2*M+1;
   int i, j;
 
   /*
-  double *y0   = (double*) alloca((M+1)*sizeof(double));
-  double *y1   = (double*) alloca((M+1)*sizeof(double));
-  double *yTmp = (double*) alloca((M+2)*sizeof(double));
-  double *a    = (double*) alloca((N+1)*sizeof(double));
+  T *y0   = (T*) alloca((M+1)*sizeof(T));
+  T *y1   = (T*) alloca((M+1)*sizeof(T));
+  T *yTmp = (T*) alloca((M+2)*sizeof(T));
+  T *a    = (T*) alloca((N+1)*sizeof(T));
   */
-  double *y0   = new double[M+1];
-  double *y1   = new double[M+1];
-  double *yTmp = new double[M+2];
-  double *a    = new double[N+1];
+  T *y0   = new T[M+1];
+  T *y1   = new T[M+1];
+  T *yTmp = new T[M+2];
+  T *a    = new T[N+1];
 
   // create desired signal values and derivatives at the endpoints:
   y0[0] = y[-1];
@@ -192,8 +202,8 @@ double getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, double sha
   getHermiteCoeffsM(y0, y1, a, M);
 
   // evaluate:
-  double x = 1.0 - d;
-  double result = rsPolynomial<double>::evaluatePolynomialAt(x, a, N);
+  T x = 1.0 - d;
+  T result = rsPolynomial<T>::evaluatePolynomialAt(x, a, N);
 
   // cleanup and return result:
   delete[] y0;
@@ -203,35 +213,36 @@ double getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, double sha
   return result;
 }
 
-void fitCubicThroughFourPoints(double x0, double y0, double x1, double y1, double x2,
-                               double y2, double x3, double y3, double *a, double *b,
-                               double *c, double *d)
+template<class T>
+void fitCubicThroughFourPoints(T x0, T y0, T x1, T y1, T x2,
+                               T y2, T x3, T y3, T *a, T *b,
+                               T *c, T *d)
 {
   // powers of the input value x:
-  double x02 = x0*x0;    // x0^2
-  double x12 = x1*x1;    // x1^2
-  double x22 = x2*x2;    // x2^2
-  double x32 = x3*x3;    // x3^2
-  double x03 = x0*x02;   // x0^3
-  double x13 = x1*x12;   // x1^3
-  double x23 = x2*x22;   // x2^3
-  double x33 = x3*x32;   // x3^3
+  T x02 = x0*x0;    // x0^2
+  T x12 = x1*x1;    // x1^2
+  T x22 = x2*x2;    // x2^2
+  T x32 = x3*x3;    // x3^2
+  T x03 = x0*x02;   // x0^3
+  T x13 = x1*x12;   // x1^3
+  T x23 = x2*x22;   // x2^3
+  T x33 = x3*x32;   // x3^3
 
   // some common subexpressions:
-  double k1  = (x13*(y3-y2)-x23*y3+x33*y2+(x23-x33)*y1);
-  double k2  = (x23*y3-x33*y2);
-  double k3  = (x2*x33-x23*x3);
-  double k4  = (x32*y2-x22*y3);
-  double k5  = (x12*(x33-x23)-x22*x33+x23*x32+x13*(x22-x32));
-  double k6  = (x2*y3+x1*(y2-y3)-x3*y2+(x3-x2)*y1);
-  double k7  = (x22*x33-x23*x32);
-  double k8  = (x2*x32-x22*x3);
-  double k9  = (x3*y2-x2*y3);
-  double k10 = (x22*y3-x32*y2);
-  double k11 = (x23*x3-x2*x33);
+  T k1  = (x13*(y3-y2)-x23*y3+x33*y2+(x23-x33)*y1);
+  T k2  = (x23*y3-x33*y2);
+  T k3  = (x2*x33-x23*x3);
+  T k4  = (x32*y2-x22*y3);
+  T k5  = (x12*(x33-x23)-x22*x33+x23*x32+x13*(x22-x32));
+  T k6  = (x2*y3+x1*(y2-y3)-x3*y2+(x3-x2)*y1);
+  T k7  = (x22*x33-x23*x32);
+  T k8  = (x2*x32-x22*x3);
+  T k9  = (x3*y2-x2*y3);
+  T k10 = (x22*y3-x32*y2);
+  T k11 = (x23*x3-x2*x33);
 
   // a scaler that applies to all coefficients:
-  double scaler = 1.0 / (x0*k5+x1*k7+x02*(x2*x33+x1*(x23-x33)+x13*(x3-x2)-x23*x3)+x12*k11+
+  T scaler = 1.0 / (x0*k5+x1*k7+x02*(x2*x33+x1*(x23-x33)+x13*(x3-x2)-x23*x3)+x12*k11+
     x03*(x1*(x32-x22)-x2*x32+x22*x3+x12*(x2-x3))+x13*k8);
 
   // the coefficients themselves:

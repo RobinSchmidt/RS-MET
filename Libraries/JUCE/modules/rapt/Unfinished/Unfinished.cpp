@@ -11,7 +11,7 @@ namespace RAPT
 #include "MultiLayerPerceptron.cpp"
 
 #include "FourierTransformer.cpp" // needs templatizations to avoid linker errors
-//#include "Interpolation.cpp"
+#include "Interpolation.cpp"
 //#include "NumberTheory.cpp"
 //#include "NumericCalculus.cpp"
 //#include "Transforms.cpp"
