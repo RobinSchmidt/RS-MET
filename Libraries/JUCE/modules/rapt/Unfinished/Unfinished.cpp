@@ -15,7 +15,8 @@ namespace RAPT
 //#include "Interpolation.cpp"
 //#include "NumberTheory.cpp"
 //#include "NumericCalculus.cpp"
-//#include "Statistics.cpp"  // merge with the Statistics.cpp aleady present in the Math folder
 //#include "Transforms.cpp"
+//#include "Statistics.cpp"  // merge with the Statistics.cpp aleady present in the Math folder
+
 
 }
