@@ -1,4 +1,4 @@
-#include "MiscMathTests.h"
+#include "MiscMathUnitTests.h"
 
 bool testMiscMath(std::string &reportString)
 {
@@ -11,8 +11,6 @@ bool testMiscMath(std::string &reportString)
   //testResult &= testMultiLayerPerceptronOld(  reportString);
   //testResult &= testMultiLayerPerceptron(     reportString);
 
-
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -41,7 +39,6 @@ bool testExponentialCurveFitting(std::string &reportString)
   for(n = 0; n < N; n++)
     testResult &= (yc[n] == y[n]);
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -73,7 +70,6 @@ bool testRootFinding(std::string &reportString)
   //r = sine.findRootViaRidders(3.1, 3.2);
   //r = sine.findRootViaRidders(2.5, 3.5);
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -115,8 +111,6 @@ bool testGradientBasedOptimization(std::string &reportString)
   xFinal = minimizer.minimizeFunction(&error, xInit);
   testResult &= (xFinal-xMin).getEuclideanNorm() < tol;
 
-
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -221,14 +215,10 @@ bool testMultiLayerPerceptronOld(std::string &reportString)
     int dummy = 0;
   }
   //Plotter::plotData(N, xTest, yTest);
-
     
   printf("%s", "\n Press Key \n");
   getchar();
 
-
-
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -309,10 +299,5 @@ bool testMultiLayerPerceptron(std::string &reportString)
   rsVectorDbl w = mlpTrainer.minimizeFunction(&mlpError, mlp.getWeightsAsVector());
   mlp.setWeightVector(w);  // set up the network with the optimal weight-vector
 
-
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
-
-
-

@@ -511,6 +511,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.cpp">
       <Filter>Juce Modules\rapt\Math\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.cpp">
+      <Filter>Juce Modules\rapt\Math\Misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.cpp">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClCompile>
@@ -2168,6 +2171,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h">
       <Filter>Juce Modules\rapt\Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.h">
+      <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.h">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
