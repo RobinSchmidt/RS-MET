@@ -98,12 +98,12 @@ T rsApplyChineseRemainderTheorem(T* remainders, T* weights, T modulus, rsUint32 
 /** Given a set of remainders (i.e. numbers modulo some modulus) and the corresponding moduli
 (which are assumed to be pairwise coprime - i.e. no pair has a common divisor other than 1),
 this function returns the solution R to the set of equations: R % m[i] == r[i]. The solution
-is actually a whole equivalence of numbers which are congruent modulo M, where M is the product
-of the moduli. The function returns the smallest positive representative. It's a convenience
-function, using rsChineseRemainderWeights and rsApplyChineseRemainderTheorem, thereby merging the
-precomputations and the actual application into one call. If the theorem is to be applied to
-different sets of remainders with respect to the same set of moduli and efficiency is a concern,
-you should do the precomputaion (of the weights) only once. */
+is actually a whole equivalence class of numbers which are congruent modulo M, where M is the 
+product of the moduli. The function returns the smallest positive representative. It's a 
+convenience function, using rsChineseRemainderWeights and rsApplyChineseRemainderTheorem, thereby 
+merging the precomputations and the actual application into one call. If the theorem is to be 
+applied to different sets of remainders with respect to the same set of moduli and efficiency is 
+a concern, you should do the precomputaion (of the weights) only once. */
 template <class T>
 T rsChineseRemainderTheorem(T* remainders, T* moduli, rsUint32 count);
 

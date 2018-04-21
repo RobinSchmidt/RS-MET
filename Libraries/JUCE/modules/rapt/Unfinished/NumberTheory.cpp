@@ -1,11 +1,5 @@
-#ifndef RS_NUMBERTHEORY_INL
-#define RS_NUMBERTHEORY_INL
-
-#include "NumberTheory.h"
-using namespace RSLib;
-
 template <class T>
-T RSLib::rsIntSqrt(T x)
+T rsIntSqrt(T x)
 {
   T y(1);
   for(T k = x; k != 0; k /= 4)
@@ -20,7 +14,7 @@ T RSLib::rsIntSqrt(T x)
 }
 
 template<class T>
-void RSLib::rsFindPrimesUpTo(rsArray<T> &primes, T upperLimit)
+void rsFindPrimesUpTo(std::vector<T> &primes, T upperLimit)
 {
   // sieve of Eratosthenes for odd numbers of the form 2*i+1:
   rsFlagArray primeFlags(upperLimit/2);
@@ -62,7 +56,7 @@ inline rsUint32 rsFirstIndexWithMultipleOf(T p, T start)
   return i;
 }
 template<class T>
-void RSLib::rsGetPrimeFlags(bool *primeFlags, T start, rsUint32 numFlags, T *primeTable)
+void rsGetPrimeFlags(bool *primeFlags, T start, rsUint32 numFlags, T *primeTable)
 {
   memset(primeFlags, 1, numFlags*sizeof(bool));
   rsUint32 flagIndex;
@@ -88,8 +82,8 @@ void RSLib::rsGetPrimeFlags(bool *primeFlags, T start, rsUint32 numFlags, T *pri
 }
 
 template<class T>
-rsUint32 RSLib::rsAppendFlaggedPrimes(bool *primeFlags, T start, rsUint32 numFlags, T *primeTable,
-                                      rsUint32 writeStart, rsUint32 tableLength)
+rsUint32 rsAppendFlaggedPrimes(bool *primeFlags, T start, rsUint32 numFlags, T *primeTable,
+                               rsUint32 writeStart, rsUint32 tableLength)
 {
   rsUint32 np = writeStart;
   for(rsUint32 i = 0; i < numFlags && np < tableLength; i++)
@@ -101,7 +95,7 @@ rsUint32 RSLib::rsAppendFlaggedPrimes(bool *primeFlags, T start, rsUint32 numFla
 }
 
 template<class T>
-void RSLib::rsFillPrimeTable(T *primes, rsUint32 numPrimes, rsUint32 bufferSize)
+void rsFillPrimeTable(T *primes, rsUint32 numPrimes, rsUint32 bufferSize)
 {
   if( bufferSize == 0 )
     bufferSize = 32768;
@@ -124,7 +118,8 @@ void RSLib::rsFillPrimeTable(T *primes, rsUint32 numPrimes, rsUint32 bufferSize)
 }
 
 template<class T>
-void RSLib::rsPrimeFactors(T x, rsArray<T>& factors, rsArray<T>& exponents, rsArray<T> *primeTable)
+void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents, 
+  std::vector<T> *primeTable)
 {
   T limit = rsIntSqrt(x);
 
@@ -174,7 +169,7 @@ void RSLib::rsPrimeFactors(T x, rsArray<T>& factors, rsArray<T>& exponents, rsAr
 }
 
 template<class T>
-void RSLib::rsEGCD(T x, T y, T& a, T& b, T& g)
+void rsEGCD(T x, T y, T& a, T& b, T& g)
 {
   T q, u, v, w, a1, b1, g1;
   bool swap = false;
@@ -197,7 +192,7 @@ void RSLib::rsEGCD(T x, T y, T& a, T& b, T& g)
 }
 
 template <class T>
-T RSLib::rsModularPow(const T& base, const T& modulus, rsUint64 exponent)
+T rsModularPow(const T& base, const T& modulus, rsUint64 exponent)
 {
   T result = rsUnityValue(base);
   T square(base);
@@ -214,7 +209,7 @@ T RSLib::rsModularPow(const T& base, const T& modulus, rsUint64 exponent)
 }
 
 template <class T>
-T RSLib::rsModularInverse(const T& x, const T& m)
+T rsModularInverse(const T& x, const T& m)
 {
   T a, b, g;
   rsEGCD(x, m, a, b, g);
@@ -230,7 +225,7 @@ T RSLib::rsModularInverse(const T& x, const T& m)
 }
 
 template <class T>
-T RSLib::rsPrimeModularInverse(const T& x, const T& p)
+T rsPrimeModularInverse(const T& x, const T& p)
 {
   return rsModularPow(x, p, p-2);
   // To make it applicable also for nonprime moduli, we could use totient(p)-1 instead of p-2 for
@@ -240,7 +235,7 @@ T RSLib::rsPrimeModularInverse(const T& x, const T& p)
 }
 
 template <class T>
-T RSLib::rsPrimeModularInverse2(const T& x, const T& m)
+T rsPrimeModularInverse2(const T& x, const T& m)
 {
   T z = x % m;
   T a(1);
@@ -259,7 +254,7 @@ T RSLib::rsPrimeModularInverse2(const T& x, const T& m)
 }
 
 template <class T>
-T RSLib::rsChineseRemainderWeights(T* m, T* w, rsUint32 count)
+T rsChineseRemainderWeights(T* m, T* w, rsUint32 count)
 {
   T M = rsProduct(m, count);
   T Mi;
@@ -272,13 +267,13 @@ T RSLib::rsChineseRemainderWeights(T* m, T* w, rsUint32 count)
 }
 
 template <class T>
-T RSLib::rsApplyChineseRemainderTheorem(T* r, T* w, T M, rsUint32 count)
+T rsApplyChineseRemainderTheorem(T* r, T* w, T M, rsUint32 count)
 {
   return rsWeightedSum(w, r, count) % M;
 }
 
 template <class T>
-T RSLib::rsChineseRemainderTheorem(T* r, T* m, rsUint32 count)
+T rsChineseRemainderTheorem(T* r, T* m, rsUint32 count)
 {
   T *w = new T[count];
   T  M = rsChineseRemainderWeights(m, w, count);
@@ -286,5 +281,3 @@ T RSLib::rsChineseRemainderTheorem(T* r, T* m, rsUint32 count)
   delete[] w;
   return R;
 }
-
-#endif
