@@ -1,15 +1,15 @@
 #include "MiscMathUnitTests.h"
 
-bool testMiscMath(std::string &reportString)
+bool testMiscMath()
 {
-  std::string testName = "MiscMath";
+  std::string dummy;
   bool testResult = true;
 
-  testResult &= testExponentialCurveFitting(  reportString);
-  testResult &= testRootFinding(              reportString);
-  testResult &= testGradientBasedOptimization(reportString);
-  //testResult &= testMultiLayerPerceptronOld(  reportString);
-  //testResult &= testMultiLayerPerceptron(     reportString);
+  testResult &= testExponentialCurveFitting(  dummy);
+  testResult &= testRootFinding(              dummy);
+  testResult &= testGradientBasedOptimization(dummy);
+  //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
+  //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
 
   return testResult;
 }
@@ -89,7 +89,7 @@ bool testGradientBasedOptimization(std::string &reportString)
   // create the error function object:
   QuadraticTestErrorFunction<double> error;
   double aMin[2]  = { 2, -2};  // x = [ 2, -2] is the desired minimum
-  double aInit[2] = {-2, -2};  // x = [-2, -2] is ithe intial guess
+  double aInit[2] = {-2, -2};  // x = [-2, -2] is the intial guess
   rsVectorDbl xMin( 2, aMin);
   rsVectorDbl xInit(2, aInit);
   rsVectorDbl xFinal;
@@ -165,13 +165,13 @@ bool testMultiLayerPerceptronOld(std::string &reportString)
   // create the minimizer and minimize the training error:
   GradientBasedMinimizer<double> mlpTrainer;
   mlpTrainer.setPrintInfo(true);
-  //mlpTrainer.setAlgorithm(GradientBasedMinimizer::GRADIENT_DESCENT);
-  //mlpTrainer.setAlgorithm(GradientBasedMinimizer::BOLD_DRIVER_WITH_MOMENTUM);
-  //mlpTrainer.setAlgorithm(GradientBasedMinimizer::CONJUGATE_GRADIENT);
+  //mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::GRADIENT_DESCENT);
+  //mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::BOLD_DRIVER_WITH_MOMENTUM);
+  //mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::CONJUGATE_GRADIENT);
   mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::SCALED_CONJUGATE_GRADIENT);
-  //mlpTrainer.setBetaFormula(GradientBasedMinimizer::POLAK_RIBIERE);
-  //mlpTrainer.setBetaFormula(GradientBasedMinimizer::FLETCHER_REEVES);
-  //mlpTrainer.setBetaFormula(GradientBasedMinimizer::HESTENES_STIEFEL);
+  //mlpTrainer.setBetaFormula(GradientBasedMinimizer<double>::POLAK_RIBIERE);
+  //mlpTrainer.setBetaFormula(GradientBasedMinimizer<double>::FLETCHER_REEVES);
+  //mlpTrainer.setBetaFormula(GradientBasedMinimizer<double>::HESTENES_STIEFEL);
   rsVectorDbl w = mlpTrainer.minimizeFunction(&mlpError, mlp.getWeightsAsVector());
   mlp.setWeightVector(w);
 
@@ -294,8 +294,8 @@ bool testMultiLayerPerceptron(std::string &reportString)
   mlpTrainer.setPrintInfo(true);
   //mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::GRADIENT_DESCENT);
   //mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::BOLD_DRIVER_WITH_MOMENTUM);
-  mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::CONJUGATE_GRADIENT);
-  //mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::SCALED_CONJUGATE_GRADIENT);
+  //mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::CONJUGATE_GRADIENT);
+  mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::SCALED_CONJUGATE_GRADIENT);
   rsVectorDbl w = mlpTrainer.minimizeFunction(&mlpError, mlp.getWeightsAsVector());
   mlp.setWeightVector(w);  // set up the network with the optimal weight-vector
 

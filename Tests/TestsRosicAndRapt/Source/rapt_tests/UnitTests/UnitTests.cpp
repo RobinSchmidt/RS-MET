@@ -39,7 +39,7 @@ bool runAllUnitTests()
 
   passed &= runUnitTest(&testVector,                    "rsVector");
   passed &= runUnitTest(&testMatrix,                    "rsMatrix");
-
+  passed &= runUnitTest(&testMiscMath,                  "misc math");
 
   passed &= runUnitTest(&testLinearAlgebra,             "rsLinearAlgebra");
   passed &= runUnitTest(&testPolynomial,                "rsPolynomial");
