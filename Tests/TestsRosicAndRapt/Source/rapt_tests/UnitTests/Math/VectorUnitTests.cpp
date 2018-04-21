@@ -1,4 +1,4 @@
-#include "VectorTests.h"
+#include "VectorUnitTests.h"
 
   
 rsVectorDbl dummy(const rsVectorDbl &v)
@@ -60,13 +60,9 @@ bool testVector(std::string &reportString)
   testResult &= r[1] == pow(3.0, 11.0);
   testResult &= r[2] == pow(5.0, 13.0);
 
-
-    
   //rsVectorDbl v3(1, a1);
   //r = dummy(v3);
 
-
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
