@@ -9,7 +9,7 @@ rsVectorDbl dummy(const rsVectorDbl &v)
   return r;
 }
 
-bool testVector(std::string &reportString)
+bool testVector()
 {
   std::string testName = "rsVector";
   bool testResult = true;

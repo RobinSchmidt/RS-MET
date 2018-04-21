@@ -3,6 +3,6 @@
 
 #include "../../../Shared/Shared.h"
 
-bool testVector(std::string &reportString);
+bool testVector();
 
 #endif

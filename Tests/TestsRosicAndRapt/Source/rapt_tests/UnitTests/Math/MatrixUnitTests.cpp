@@ -1,15 +1,15 @@
 #include "MatrixUnitTests.h"
 
-bool testMatrix(std::string &reportString)
+bool testMatrix()
 {
-  std::string testName = "rsMatrix";
+  std::string dummy;
   bool testResult = true;
 
   //rsMatrixDbl A(2, 3, true);
   //A = A + 2.0;
 
 
-  testResult &= testMatrixArithmetic(reportString);
+  testResult &= testMatrixArithmetic(dummy);
   //...
 
   return testResult;

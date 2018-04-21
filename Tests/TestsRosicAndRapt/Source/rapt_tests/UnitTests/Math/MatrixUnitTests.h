@@ -3,7 +3,7 @@
 
 #include "../../../Shared/Shared.h"
 
-bool testMatrix(std::string &reportString);
+bool testMatrix();
 
 bool testMatrixArithmetic(std::string &reportString);
 
