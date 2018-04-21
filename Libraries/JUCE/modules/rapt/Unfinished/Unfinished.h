@@ -22,7 +22,7 @@ namespace RAPT
 #include "NumberTheory.h"
 #include "NumericCalculus.h"
 #include "Transforms.h"
-//#include "Statistics.h"  // merge with the Statistics.h aleady present in the Math folder
+#include "Statistics.h"  // merge with the Statistics.h aleady present in the Math folder
 
 
 }
