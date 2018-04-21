@@ -56,7 +56,7 @@ void rsFourierTransformerRadix2<T>::setBlockSize(int newBlockSize)
 
       if( tmpBuffer != NULL )
         delete[] tmpBuffer;
-      tmpBuffer = new rsComplexDbl[N];
+      tmpBuffer = new std::complex<T>[N];
     }
   }
   else if( !rsIsPowerOfTwo(newBlockSize) || newBlockSize <= 1 )
@@ -103,7 +103,7 @@ void rsFourierTransformerRadix2::setRealSignalMode(bool willBeUsedForRealSignals
 // signal processing:
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformComplexBufferInPlace(rsComplexDbl *buffer)
+void rsFourierTransformerRadix2<T>::transformComplexBufferInPlace(std::complex<T> *buffer)
 {
   // retrieve the adresses of the real part of the first array entries in order to treat the 
   // Complex arrays as arrays of two successive T-numbers:
@@ -127,8 +127,8 @@ void rsFourierTransformerRadix2<T>::transformComplexBufferInPlace(rsComplexDbl *
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformComplexBuffer(rsComplexDbl *inBuffer, 
-                                                        rsComplexDbl *outBuffer)
+void rsFourierTransformerRadix2<T>::transformComplexBuffer(std::complex<T> *inBuffer, 
+                                                        std::complex<T> *outBuffer)
 {
   // retrieve the adresses of the real part of the first array entries in order to treat the 
   // Complex arrays as arrays of two successive T-numbers:
@@ -160,7 +160,7 @@ void rsFourierTransformerRadix2<T>::transformComplexBuffer(rsComplexDbl *inBuffe
 // convenience functions for real signals:
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformRealSignal(T *inSignal, rsComplexDbl *outSpectrum)
+void rsFourierTransformerRadix2<T>::transformRealSignal(T *inSignal, std::complex<T> *outSpectrum)
 {
   setDirection(FORWARD);
 
@@ -193,7 +193,7 @@ void rsFourierTransformerRadix2<T>::transformRealSignal(T *inSignal, rsComplexDb
 template<class T>
 void rsFourierTransformerRadix2<T>::transformRealSignal(T *signal, T *reAndIm)
 {
-  rsComplexDbl* c_reAndIm = (rsComplexDbl*) &(reAndIm[0]);
+  std::complex<T>* c_reAndIm = (std::complex<T>*) &(reAndIm[0]);
   transformRealSignal(signal, c_reAndIm);
 }
 
@@ -243,7 +243,7 @@ void rsFourierTransformerRadix2<T>::getRealSignalMagnitudes(T *signal, T *magnit
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(rsComplexDbl *inSpectrum, 
+void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(std::complex<T> *inSpectrum, 
                                                             T *outSignal)
 {
   setDirection(INVERSE);
@@ -277,7 +277,7 @@ void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(rsComplexDbl *inS
 template<class T>
 void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(T *reAndIm, T *signal)
 {
-  rsComplexDbl* c_reAndIm = (rsComplexDbl*) &(reAndIm[0]);
+  std::complex<T>* c_reAndIm = (std::complex<T>*) &(reAndIm[0]);
   transformSymmetricSpectrum(c_reAndIm, signal);
 }
 
@@ -375,7 +375,7 @@ void rsFourierTransformerBluestein<T>::setBlockSize(int newBlockSize)
     // free old and allocate new memory for the internal buffer of size M:
     if( y != NULL )
       delete[] y;
-    y = new rsComplexDbl[M];
+    y = new std::complex<T>[M];
   }
 }
 
@@ -417,7 +417,7 @@ void rsFourierTransformerBluestein<T>::setNormalizationMode(int newNormalization
 // signal processing:
 
 template<class T>
-void rsFourierTransformerBluestein<T>::transformComplexBufferInPlace(rsComplexDbl *buffer)
+void rsFourierTransformerBluestein<T>::transformComplexBufferInPlace(std::complex<T> *buffer)
 {
   // use the embedded FourierTransformerRadix2-object directly on the input data for the special 
   // case where the blockSize is a power of two:
@@ -448,7 +448,7 @@ void rsFourierTransformerBluestein<T>::transformComplexBufferInPlace(rsComplexDb
   }
   // ...and pad the rest of the y-buffer (elements N...M-1) with zeros:
   for(n=N; n<M; n++)
-    y[n] = rsComplexDbl(0.0, 0.0);
+    y[n] = std::complex<T>(0.0, 0.0);
 
   // compute the radix-2 FFT of size M of the so defined y-buffer:
   transformerRadix2.setDirection(rsFourierTransformerRadix2::FORWARD);
@@ -476,8 +476,8 @@ void rsFourierTransformerBluestein<T>::transformComplexBufferInPlace(rsComplexDb
 }
 
 template<class T>
-void rsFourierTransformerBluestein<T>::transformComplexBuffer(rsComplexDbl *inBuffer, 
-  rsComplexDbl *outBuffer)
+void rsFourierTransformerBluestein<T>::transformComplexBuffer(std::complex<T> *inBuffer, 
+  std::complex<T> *outBuffer)
 {
   // copy the inBuffer into the outBuffer...
   for(int n=0; n<N; n++)
@@ -494,25 +494,25 @@ void rsFourierTransformerBluestein<T>::generateChirp()
 {
   if( h != NULL )
     delete[] h;
-  h = new rsComplexDbl[M];
+  h = new std::complex<T>[M];
 
   if( c != NULL )
     delete[] c;
-  c = new rsComplexDbl[N];
+  c = new std::complex<T>[N];
 
   T  theta = 2.0 * PI / (T) N;
-  rsComplexDbl w_N;
+  std::complex<T> w_N;
   if( direction == rsFourierTransformerRadix2::FORWARD )
-    w_N = exp(rsComplexDbl(0.0, -theta));
+    w_N = exp(std::complex<T>(0.0, -theta));
   else
-    w_N = exp(rsComplexDbl(0.0, theta));
+    w_N = exp(std::complex<T>(0.0, theta));
 
   // compute the first N h-values and the corresponding c-values (their complex conjugates):
   int     n;  
-  rsComplexDbl exponent;
+  std::complex<T> exponent;
   for(n = 0; n < N; n++) 
   {
-    exponent = rsComplexDbl(-0.5*n*n, 0.0);
+    exponent = std::complex<T>(-0.5*n*n, 0.0);
     h[n]     = pow(w_N, exponent);
     c[n]     = conj(h[n]);
   }

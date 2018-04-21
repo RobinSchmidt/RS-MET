@@ -4,13 +4,9 @@
 /** This class performs a fast Fourier Transform on a block of complex numbers. The length of the 
 block has to be a power of 2. */
 
-// todo: templatize
-
 template<class T>
 class rsFourierTransformerRadix2
 {
-
-  typedef std::complex<T> rsComplexDbl; // get rid...
 
 public:
 
@@ -64,18 +60,18 @@ public:
   /** Transforms a buffer of complex numbers into its (forward or inverse) fourier transform.
   The inBuffer will remain intact. Both, inBuffer and outBuffer must be of the size which was
   specified when setting up the blockSize with setBlockSize(). */
-  void transformComplexBuffer(rsComplexDbl *inBuffer, rsComplexDbl *outBuffer);
+  void transformComplexBuffer(std::complex<T> *inBuffer, std::complex<T> *outBuffer);
 
   /** Does the same thing as transformComplexBuffer but performes in-place calculation
   (overwrites the input buffer). */
-  void transformComplexBufferInPlace(rsComplexDbl *buffer);
+  void transformComplexBufferInPlace(std::complex<T> *buffer);
 
   /** Transforms a real signal into its corresponding (conjugate symmetric) complex spectrum
   using an algorithm which exploits the symmetries for more efficiency. When the input array is
   an array of Ts of length N, the output array will be an array of complex numbers (class
   Complex) of length N/2 with the (purely real) transform value of bin N/2 stored in the
   imaginary part of the first array entry (outSpectrum[0].im = real(N/2)). */
-  void transformRealSignal(T *inSignal, rsComplexDbl *outSpectrum);
+  void transformRealSignal(T *inSignal, std::complex<T> *outSpectrum);
 
   /** Calculates real and imaginary part of the spectrum as interleaved T buffer:
   buf[2]=re[1], buf[3]=im[1], buf[4]=re[2], buf[5]=im[2],... in general: buf[2*k]=re[k],
@@ -98,7 +94,7 @@ public:
 
   /** Transforms a complex conjugate symmetric spectrum (i.e. a spectrum of a real signal) into
   the corresponding real signal. */
-  void transformSymmetricSpectrum(rsComplexDbl *inSpectrum, T *outSignal);
+  void transformSymmetricSpectrum(std::complex<T> *inSpectrum, T *outSignal);
 
   /** Calculates a time signal from and interleaved buffer containing the real and imaginary
   parts of the positive frequencies (the negative frequencies are assumed to be conjugate
@@ -144,7 +140,7 @@ protected:
   int    *ip;                  /**< Work area for bit-reversal (index pointer?). */
 
   // our own temporary storage area:
-  rsComplexDbl* tmpBuffer;
+  std::complex<T>* tmpBuffer;
 
 };
 
@@ -160,8 +156,6 @@ algorithms (although the implicit constants are larger than for radix-2 algorith
 template<class T>
 class rsFourierTransformerBluestein
 {
-
-  typedef std::complex<T> rsComplexDbl; // get rid...
 
 public:
 
@@ -196,11 +190,11 @@ public:
   /** Transforms a buffer of complex numbers into its (forward or inverse) fourier transform.
   The inBuffer will remain intact. Both, inBuffer and outBuffer must be of the size which was
   specified when setting up the blockSize with setBlockSize(). */
-  void transformComplexBuffer(rsComplexDbl *inBuffer, rsComplexDbl *outBuffer);
+  void transformComplexBuffer(std::complex<T> *inBuffer, std::complex<T> *outBuffer);
 
   /** Does the same thing as transformComplexBuffer but performes in-place calculation
   (overwrites the input buffer). */
-  void transformComplexBufferInPlace(rsComplexDbl *buffer);
+  void transformComplexBufferInPlace(std::complex<T> *buffer);
 
   //=============================================================================================
 
@@ -215,9 +209,9 @@ protected:
   normalizationMode. */
   void updateNormalizationFactor();
 
-  rsComplexDbl *h;        /**< The spectrum of the of the h-values. */
-  rsComplexDbl *c;        /**< The modulating chirp-signal. */
-  rsComplexDbl *y;        /**< Internal buffer of size M. */
+  std::complex<T> *h;        /**< The spectrum of the of the h-values. */
+  std::complex<T> *c;        /**< The modulating chirp-signal. */
+  std::complex<T> *y;        /**< Internal buffer of size M. */
 
   int N;                  /**< The blocksize of the Bluestein-FFT. */
   int M;                  /**< The enlarged blocksize for the embedded radix-2 FFT. M ist the
