@@ -77,10 +77,11 @@ template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, doubl
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, cmplxD *b, int N);
 
 
+template RAPT::rsMatrix<double>;
 
 template RAPT::rsPolynomial<float>;
 template RAPT::rsPolynomial<double>;
-//template RAPT::rsPolynomial<int>; // template doesn'T compile with int
+//template RAPT::rsPolynomial<int>; // template doesn't compile with int
 
 
 template int RAPT::rsClip(int x, int min, int max);

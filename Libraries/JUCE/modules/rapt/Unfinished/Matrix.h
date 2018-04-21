@@ -70,10 +70,10 @@ public:
     for(int r=0; r<dimension; r++)  // use rsInitMatrix instead
     {
       for(int c=0; c<dimension; c++)
-        result.m[r][c] = 0.0;
+        result(r,c) = 0.0;
     }
     for(int r=0; r<dimension; r++)
-      result.m[r][r] = scalarValue;
+      result(r,r) = scalarValue;
     return result;
   }
     // not tested
@@ -87,10 +87,10 @@ public:
     for(int r=0; r<dimension; r++)
     {
       for(int c=0; c<dimension; c++)
-        result.m[r][c] = 0.0;
+        result(r,c) = 0.0;
     }
     for(int r=0; r<dimension; r++)
-      result.m[r][r] = diagonalValues[r];
+      result(r,r) = diagonalValues[r];
     return result;
   }
   // untested
@@ -331,7 +331,7 @@ public:
   {
     rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
     makeDeepCopyIfNecessary();
-    rsSubtract(data->mFlat, m2.data->mFlat, data->mFlat, getNumElements());
+    rsArray::subtract(data->mFlat, m2.data->mFlat, data->mFlat, getNumElements());
     return *this;
 
     /*
@@ -368,12 +368,12 @@ public:
     rsAssert(data->numColumns == m2.data->numRows);  // matrices incompatible
 
     if(m2.isSquare() && data->numReferences == 1)
-      rsMatrixInPlaceMultiply(data->m, m2.data->m, data->numRows, data->numColumns);
+      MatrixTools::rsMatrixInPlaceMultiply(data->m, m2.data->m, data->numRows, data->numColumns);
     else
     {
       rsMatrixData<T> *newData = new rsMatrixData<T>(getNumRows(), m2.getNumColumns());
 
-      rsMatrixMultiply(data->m, m2.data->m, newData->m,
+      MatrixTools::rsMatrixMultiply(data->m, m2.data->m, newData->m,
         data->numRows, data->numColumns, m2.data->numColumns);
 
       updateDataPointer(newData);
@@ -395,7 +395,7 @@ public:
   rsMatrix& operator*=(const T &x)
   {
     makeDeepCopyIfNecessary();
-    rsScale(data->mFlat, getNumElements(), x);
+    rsArray::scale(data->mFlat, getNumElements(), x);
     return *this;
   }
 
@@ -403,7 +403,7 @@ public:
   rsMatrix& operator/=(const T &x)
   {
     makeDeepCopyIfNecessary();
-    rsScale(data->mFlat, getNumElements(), T(1)/x);
+    rsArray::scale(data->mFlat, getNumElements(), T(1)/x);
     return *this;
   }
 
@@ -490,7 +490,7 @@ public:
   A = U * S * V' where U and V are orthogonal matrices (U' * U = E, V' * V = E) and S is a
   diagonal matrix with positive or zero elements (the singular values). The singular values are
   ordered such that S[0][0] >= S[1][1] >= ...  */
-  void getSingularValueDecomposition(rsMatrix *U, rsMatrix *S, rsMatrix *V);
+  //void getSingularValueDecomposition(rsMatrix *U, rsMatrix *S, rsMatrix *V);
 
   // getEigenDecomposition, getLowerUpperDecomposition, ...
 

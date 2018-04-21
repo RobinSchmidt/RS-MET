@@ -6,7 +6,7 @@
 #include "Math/PolynomialUnitTests.cpp" 
 
 #include "Math/VectorUnitTests.cpp"
-//#include "Math/MatrixUnitTests.cpp"
+#include "Math/MatrixUnitTests.cpp"
 //#include "Math/MiscMathUnitTests.cpp"
 
 bool coordinateMapperUnitTest()

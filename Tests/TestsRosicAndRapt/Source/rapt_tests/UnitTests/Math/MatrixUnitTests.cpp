@@ -1,4 +1,4 @@
-#include "MatrixTests.h"
+#include "MatrixUnitTests.h"
 
 bool testMatrix(std::string &reportString)
 {
@@ -12,7 +12,6 @@ bool testMatrix(std::string &reportString)
   testResult &= testMatrixArithmetic(reportString);
   //...
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -248,6 +247,12 @@ bool testMatrixMul()
   return testResult;
 }
 
+template<class T>
+T square(T x)
+{
+  return x*x;
+}
+ 
 bool testMatrixArithmetic(std::string &reportString)
 {
   std::string testName = "MatrixArithmetic";
@@ -269,8 +274,6 @@ bool testMatrixArithmetic(std::string &reportString)
   testResult &= A(0,0) ==  4 && A(0,1) ==   9 && A(0,2) ==  25;
   testResult &= A(1,0) == 49 && A(1,1) == 121 && A(1,2) == 169;   
 
-
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
