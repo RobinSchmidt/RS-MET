@@ -42,16 +42,16 @@ void rsFourierTransformerRadix2<T>::setBlockSize(int newBlockSize)
     if( newBlockSize != N )
     {
       N    = newBlockSize;
-      logN = (int) floor( rsLog2((double) N + 0.5 ) );
+      logN = (int) floor( rsLog2((T) N + 0.5 ) );
       updateNormalizationFactor();
 
       if( w != NULL )
         delete[] w;
-      w    = new double[2*N];
+      w    = new T[2*N];
 
       if( ip != NULL )
         delete[] ip;
-      ip    = new int[(int) ceil(4.0+rsSqrt((double)N))];
+      ip    = new int[(int) ceil(4.0+rsSqrt((T)N))];
       ip[0] = 0; // indicate that re-initialization is necesarry
 
       if( tmpBuffer != NULL )
@@ -106,9 +106,9 @@ template<class T>
 void rsFourierTransformerRadix2<T>::transformComplexBufferInPlace(rsComplexDbl *buffer)
 {
   // retrieve the adresses of the real part of the first array entries in order to treat the 
-  // Complex arrays as arrays of two successive double-numbers:
-  //double* d_buffer = &(buffer[0].real());
-  double* d_buffer = (double*) &buffer[0];
+  // Complex arrays as arrays of two successive T-numbers:
+  //T* d_buffer = &(buffer[0].real());
+  T* d_buffer = (T*) &buffer[0];
 
   // normalize the FFT-input, if required:
   if( normalizationFactor != 1.0 )
@@ -131,9 +131,9 @@ void rsFourierTransformerRadix2<T>::transformComplexBuffer(rsComplexDbl *inBuffe
                                                         rsComplexDbl *outBuffer)
 {
   // retrieve the adresses of the real part of the first array entries in order to treat the 
-  // Complex arrays as arrays of two successive double-numbers:
-  double* d_inBuffer  = (double*) &inBuffer[0];
-  double* d_outBuffer = (double*) &outBuffer[0];
+  // Complex arrays as arrays of two successive T-numbers:
+  T* d_inBuffer  = (T*) &inBuffer[0];
+  T* d_outBuffer = (T*) &outBuffer[0];
 
   // copy the input into the output for the in-place routine (thereby normalize, if necesarry):
   int n;
@@ -160,13 +160,13 @@ void rsFourierTransformerRadix2<T>::transformComplexBuffer(rsComplexDbl *inBuffe
 // convenience functions for real signals:
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformRealSignal(double *inSignal, rsComplexDbl *outSpectrum)
+void rsFourierTransformerRadix2<T>::transformRealSignal(T *inSignal, rsComplexDbl *outSpectrum)
 {
   setDirection(FORWARD);
 
   // retrieve the adress of the real part of the first array entry of the output array in order to
-  // treat the Complex array as array of two successive double-numbers:
-  double* d_outBuffer = (double*) &outSpectrum[0];
+  // treat the Complex array as array of two successive T-numbers:
+  T* d_outBuffer = (T*) &outSpectrum[0];
 
   // copy the input into the output for the in-place routine (thereby normalize, if necesarry):
   int n;
@@ -191,16 +191,16 @@ void rsFourierTransformerRadix2<T>::transformRealSignal(double *inSignal, rsComp
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformRealSignal(double *signal, double *reAndIm)
+void rsFourierTransformerRadix2<T>::transformRealSignal(T *signal, T *reAndIm)
 {
   rsComplexDbl* c_reAndIm = (rsComplexDbl*) &(reAndIm[0]);
   transformRealSignal(signal, c_reAndIm);
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(double *signal, 
-                                                                  double *magnitudes, 
-                                                                  double *phases)
+void rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(T *signal, 
+                                                                  T *magnitudes, 
+                                                                  T *phases)
 {
   transformRealSignal(signal, tmpBuffer);
 
@@ -210,8 +210,8 @@ void rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(double *sig
   phases[0]     = tmpBuffer[0].real();
 
   // fill the rest of the array with the magnitudes and phases of the regular bins:
-  double* dBuffer = (double*) &tmpBuffer[0];
-  double  re, im;
+  T* dBuffer = (T*) &tmpBuffer[0];
+  T  re, im;
   int     k;
   for(k=1; k<N/2; k++)
   {
@@ -226,13 +226,13 @@ void rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(double *sig
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::getRealSignalMagnitudes(double *signal, double *magnitudes)
+void rsFourierTransformerRadix2<T>::getRealSignalMagnitudes(T *signal, T *magnitudes)
 {
   transformRealSignal(signal, tmpBuffer);
   magnitudes[0] = tmpBuffer[0].real();
 
-  double* dBuffer = (double*) &tmpBuffer[0];
-  double  re, im;
+  T* dBuffer = (T*) &tmpBuffer[0];
+  T  re, im;
   int     k;
   for(k=1; k<N/2; k++)
   {
@@ -244,13 +244,13 @@ void rsFourierTransformerRadix2<T>::getRealSignalMagnitudes(double *signal, doub
 
 template<class T>
 void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(rsComplexDbl *inSpectrum, 
-                                                            double *outSignal)
+                                                            T *outSignal)
 {
   setDirection(INVERSE);
 
   // retrieve the adress of the real part of the first array entry of the output array in order to
-  // treat the Complex array as array of two successive double-numbers:
-  double* d_inBuffer = (double*) &inSpectrum[0];
+  // treat the Complex array as array of two successive T-numbers:
+  T* d_inBuffer = (T*) &inSpectrum[0];
 
   // copy the input into the output for the in-place routine (thereby normalize, if necesarry):
   int n;
@@ -275,23 +275,23 @@ void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(rsComplexDbl *inS
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(double *reAndIm, double *signal)
+void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(T *reAndIm, T *signal)
 {
   rsComplexDbl* c_reAndIm = (rsComplexDbl*) &(reAndIm[0]);
   transformSymmetricSpectrum(c_reAndIm, signal);
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::getRealSignalFromMagnitudesAndPhases(double *magnitudes, 
-                                                                      double *phases, 
-                                                                      double *signal)
+void rsFourierTransformerRadix2<T>::getRealSignalFromMagnitudesAndPhases(T *magnitudes, 
+                                                                      T *phases, 
+                                                                      T *signal)
 {
   tmpBuffer[0].real(magnitudes[0]);
   tmpBuffer[0].real(phases[0]);      // ?BUG? should it be assigned to imag?
 
   int k;
-  double* dBuffer = (double*) &tmpBuffer[0];
-  double  s, c;
+  T* dBuffer = (T*) &tmpBuffer[0];
+  T  s, c;
   for(k=1; k<N/2; k++)
   {
     rsSinCos(phases[k], &s, &c);
@@ -310,11 +310,11 @@ void rsFourierTransformerRadix2<T>::updateNormalizationFactor()
   if( (normalizationMode == NORMALIZE_ON_FORWARD_TRAFO && direction == FORWARD) ||
       (normalizationMode == NORMALIZE_ON_INVERSE_TRAFO && direction == INVERSE)    )
   {
-    normalizationFactor = 1.0 / (double) N;
+    normalizationFactor = 1.0 / (T) N;
   }
   else if( normalizationMode == ORTHONORMAL_TRAFO )
   {
-    normalizationFactor = 1.0 / rsSqrt((double) N);
+    normalizationFactor = 1.0 / rsSqrt((T) N);
   }
   else
     normalizationFactor = 1.0;
@@ -500,7 +500,7 @@ void rsFourierTransformerBluestein<T>::generateChirp()
     delete[] c;
   c = new rsComplexDbl[N];
 
-  double  theta = 2.0 * PI / (double) N;
+  T  theta = 2.0 * PI / (T) N;
   rsComplexDbl w_N;
   if( direction == rsFourierTransformerRadix2::FORWARD )
     w_N = exp(rsComplexDbl(0.0, -theta));
@@ -538,11 +538,11 @@ void rsFourierTransformerBluestein<T>::updateNormalizationFactor()
       (normalizationMode == rsFourierTransformerRadix2::NORMALIZE_ON_INVERSE_TRAFO && 
        direction == rsFourierTransformerRadix2::INVERSE)    )
   {
-    normalizationFactor = 1.0 / (double) N;
+    normalizationFactor = 1.0 / (T) N;
   }
   else if( normalizationMode == rsFourierTransformerRadix2::ORTHONORMAL_TRAFO )
   {
-    normalizationFactor = 1.0 / sqrt((double) N);
+    normalizationFactor = 1.0 / sqrt((T) N);
   }
   else
     normalizationFactor = 1.0;

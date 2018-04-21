@@ -10,7 +10,7 @@ template<class T>
 class rsFourierTransformerRadix2
 {
 
-  typedef std::complex<double> rsComplexDbl; // get rid...
+  typedef std::complex<T> rsComplexDbl; // get rid...
 
 public:
 
@@ -72,52 +72,52 @@ public:
 
   /** Transforms a real signal into its corresponding (conjugate symmetric) complex spectrum
   using an algorithm which exploits the symmetries for more efficiency. When the input array is
-  an array of doubles of length N, the output array will be an array of complex numbers (class
+  an array of Ts of length N, the output array will be an array of complex numbers (class
   Complex) of length N/2 with the (purely real) transform value of bin N/2 stored in the
   imaginary part of the first array entry (outSpectrum[0].im = real(N/2)). */
-  void transformRealSignal(double *inSignal, rsComplexDbl *outSpectrum);
+  void transformRealSignal(T *inSignal, rsComplexDbl *outSpectrum);
 
-  /** Calculates real and imaginary part of the spectrum as interleaved double buffer:
+  /** Calculates real and imaginary part of the spectrum as interleaved T buffer:
   buf[2]=re[1], buf[3]=im[1], buf[4]=re[2], buf[5]=im[2],... in general: buf[2*k]=re[k],
   buf[2k+1]=im[k], k=1,..,(N/2)-1 where N is the FFT-size. The first two elements of the buffer
   have a special meaning: buf[0] is the (purely real) DC and buf[1] is the (purely real)
   coefficient for the Nyquist frequency. The other fields contain the real and imaginary parts of
   the positive frequencies only (interleaved) because the negative frequencies are redundant
   (they are conjugate symmetric). */
-  void transformRealSignal(double *signal, double *reAndIm);
+  void transformRealSignal(T *signal, T *reAndIm);
 
   /** Calculates spectral magnitudes and phases from a signal, where *signal should be of
   length N, where N is the block-size as chosen with setBlockSize() *magnitudes and *phases
   should be of length N/2. The first values of the output arrays have a special meaning:
   magnitudes[0] is the (purely real) DC and phases[0] is the (purely real) coefficient for the
   Nyquist frequency. */
-  void getRealSignalMagnitudesAndPhases(double *signal, double *magnitudes, double *phases);
+  void getRealSignalMagnitudesAndPhases(T *signal, T *magnitudes, T *phases);
 
   /** Calculates the magnitudes only from a signal (useful for analyzer-stuff). */
-  void getRealSignalMagnitudes(double *signal, double *magnitudes);
+  void getRealSignalMagnitudes(T *signal, T *magnitudes);
 
   /** Transforms a complex conjugate symmetric spectrum (i.e. a spectrum of a real signal) into
   the corresponding real signal. */
-  void transformSymmetricSpectrum(rsComplexDbl *inSpectrum, double *outSignal);
+  void transformSymmetricSpectrum(rsComplexDbl *inSpectrum, T *outSignal);
 
   /** Calculates a time signal from and interleaved buffer containing the real and imaginary
   parts of the positive frequencies (the negative frequencies are assumed to be conjugate
   symmetric). */
-  void transformSymmetricSpectrum(double *reAndIm, double *signal);
+  void transformSymmetricSpectrum(T *reAndIm, T *signal);
 
   /** Calculates a real time signal from its magnitudes and phases, *magnitudes and *phases
   should be of length N/2, *signal is of length N where N is the block-size as chosen with
   setBlockSize(). The first values of the input arrays have a special meaning: magnitudes[0] is
   the (purely real) DC and phases[0] is the (purely real) coefficient for the Nyquist
   frequency. */
-  void getRealSignalFromMagnitudesAndPhases(double *magnitudes, double *phases, double *signal);
+  void getRealSignalFromMagnitudesAndPhases(T *magnitudes, T *phases, T *signal);
 
 
   /** \name Static Member Functions */
 
   /** Returns the physical frequency in Hz that corresponds to the given 'binIndex' for a given
   'fftSize' and 'sampleRate'. */
-  static double binIndexToFrequency(int binIndex, int fftSize, double sampleRate)
+  static T binIndexToFrequency(int binIndex, int fftSize, T sampleRate)
   {
     return binIndex*sampleRate/fftSize;
   }
@@ -137,10 +137,10 @@ protected:
   int    logN;                 /**< Base 2 logarithm of the blocksize. */
   int    direction;            /**< The direction of the transform (@see: directions). */
   int    normalizationMode;    /**< The normalization mode (@see: normalizationModes. */
-  double normalizationFactor;  /**< The normalization factor (can be 1, 1/N or 1/sqrt(N)). */
+  T normalizationFactor;  /**< The normalization factor (can be 1, 1/N or 1/sqrt(N)). */
 
   // work-area stuff for Ooura's fft-routines:
-  double *w;                   /**< Table of the twiddle-factors. */
+  T *w;                   /**< Table of the twiddle-factors. */
   int    *ip;                  /**< Work area for bit-reversal (index pointer?). */
 
   // our own temporary storage area:
@@ -161,7 +161,7 @@ template<class T>
 class rsFourierTransformerBluestein
 {
 
-  typedef std::complex<double> rsComplexDbl; // get rid...
+  typedef std::complex<T> rsComplexDbl; // get rid...
 
 public:
 
@@ -226,7 +226,7 @@ protected:
   int direction;          /**< The direction of the transform (@see: directions). */
   int normalizationMode;  /**< The normalization mode (@see: normalizationModes. */
 
-  double normalizationFactor;
+  T normalizationFactor;
 
   bool blockSizeIsPowerOfTwo;
   /**< Indicates if we have the special case of a power of two blocksize - in this case, the
