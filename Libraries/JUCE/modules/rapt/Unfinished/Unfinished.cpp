@@ -17,7 +17,7 @@ namespace RAPT
 #include "Transforms.cpp"
 #include "Statistics.cpp"  // merge with the Statistics.cpp aleady present in the Math folder
 
-//#include "GeometricFunctions.cpp"
+#include "GeometricFunctions.cpp"
 
 
 }

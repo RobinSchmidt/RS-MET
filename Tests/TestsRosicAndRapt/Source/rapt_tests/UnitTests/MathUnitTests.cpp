@@ -17,6 +17,10 @@
 #include "Math/TransformsTests.cpp"
 //#include "Math/StatisticsTests.cpp"  // there is no such file - why?
 
+//#include "Math/Point2DTests.cpp"
+//#include "Math/Polygon2DTests.cpp"
+//#include "Math/Triangle2DTests.cpp"
+
 bool coordinateMapperUnitTest()
 {
   bool r = true;      // test result

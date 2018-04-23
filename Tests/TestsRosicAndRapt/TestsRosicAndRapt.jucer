@@ -38,6 +38,13 @@
                   file="Source/rapt_tests/UnitTests/Math/NumberTheoryTests.cpp"/>
             <FILE id="IDBCHE" name="NumberTheoryTests.h" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/NumberTheoryTests.h"/>
+            <FILE id="yckbdr" name="Point2DTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/Point2DTests.cpp"/>
+            <FILE id="QBKrae" name="Point2DTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/Math/Point2DTests.h"/>
+            <FILE id="ePu0n6" name="Polygon2DTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/Polygon2DTests.cpp"/>
+            <FILE id="VgUVvv" name="Polygon2DTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/Polygon2DTests.h"/>
             <FILE id="zV7XPL" name="PolynomialUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.cpp"/>
             <FILE id="i9HPey" name="PolynomialUnitTests.h" compile="0" resource="0"
@@ -50,6 +57,10 @@
                   file="Source/rapt_tests/UnitTests/Math/TransformsTests.cpp"/>
             <FILE id="tXvg7O" name="TransformsTests.h" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/TransformsTests.h"/>
+            <FILE id="fD3ILC" name="Triangle2DTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/Triangle2DTests.cpp"/>
+            <FILE id="psaRTZ" name="Triangle2DTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/Triangle2DTests.h"/>
             <FILE id="Zhdjdh" name="VectorUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/VectorUnitTests.cpp"/>
             <FILE id="eibJXp" name="VectorUnitTests.h" compile="0" resource="0"

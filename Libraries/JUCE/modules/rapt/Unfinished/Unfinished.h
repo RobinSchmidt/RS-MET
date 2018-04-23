@@ -27,7 +27,7 @@ namespace RAPT
 
 // for these, updates/adaptions for RAPT are under construction:
 
-//#include "GeometricFunctions.h"
+#include "GeometricFunctions.h"
 #include "Point2D.h"
 #include "Polygon2D.h"
 #include "Rectangle2D.h"

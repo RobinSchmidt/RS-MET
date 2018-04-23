@@ -168,6 +168,12 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\Point2DTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\Polygon2DTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -175,6 +181,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\TransformsTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\Triangle2DTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.cpp">
@@ -1751,9 +1760,12 @@
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Point2DTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Polygon2DTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\RealFunctionTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\TransformsTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Triangle2DTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h"/>
