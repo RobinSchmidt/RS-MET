@@ -3,7 +3,7 @@
 
 #include "../../../Shared/Shared.h"
 
-bool testNumberTheory(std::string &reportString);
+bool testNumberTheory();
 
 bool testPrimeTableGeneration(std::string &reportString);
 bool testPrimeFactorization(  std::string &reportString);

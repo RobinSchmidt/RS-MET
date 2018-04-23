@@ -2,17 +2,18 @@
 
 typedef std::complex<double> rsComplexDbl; // get rid
 
-bool testRealFunctions(std::string &reportString)
+bool testRealFunctions()
 {
   std::string testName = "rsRealFunctions";
+  std::string dummy;
   bool testResult = true;
 
-  testResult &= testAbsAndSign(         reportString);
-  testResult &= testHyperbolicFunctions(reportString);
-  testResult &= testSinc(               reportString);
-  testResult &= testFunctionIterators(  reportString);
+  testResult &= testAbsAndSign(         dummy);
+  testResult &= testHyperbolicFunctions(dummy);
+  testResult &= testSinc(               dummy);
+  testResult &= testFunctionIterators(  dummy);
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 

@@ -3,7 +3,7 @@
 
 #include "../../../Shared/Shared.h"
 
-bool testTransforms(std::string &reportString);
+bool testTransforms();
 
 bool testSmbFFT(std::string &reportString);
 bool testRsFFT( std::string &reportString);

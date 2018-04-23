@@ -289,7 +289,7 @@ void testTestSystem1()
 }
 
 
-bool testDifferentialEquationSystem(std::string &reportString)
+bool testDifferentialEquationSystem()
 {
   std::string testName = "DifferentialEquationSystem";
   bool testResult = true;

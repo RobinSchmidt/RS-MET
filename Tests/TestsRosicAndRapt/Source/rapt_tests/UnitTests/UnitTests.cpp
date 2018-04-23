@@ -20,7 +20,7 @@ bool runUnitTest(bool (*test)(), const string& name)
   if(passed)
     cout << "Passed\n";
   else
-    cout << "Failed\n";
+    cout << "!!!!----Failed----!!!!\n";
   return passed;
 }
 
@@ -33,17 +33,26 @@ bool runAllUnitTests()
   passed &= runUnitTest(&complexFloat64x2UnitTest, "std::complex<rsFloat64x2>");
 
   // Math:
-  passed &= runUnitTest(&coordinateMapperUnitTest,      "rsCoordinateMapper2D");
-  passed &= runUnitTest(&interpolatingFunctionUnitTest, "rsInterpolatingFunction");
-  passed &= runUnitTest(&rootFinderUnitTest,            "rsRootFinder");
+  passed &= runUnitTest(&coordinateMapperUnitTest,       "rsCoordinateMapper2D");
+  passed &= runUnitTest(&interpolatingFunctionUnitTest,  "rsInterpolatingFunction");
+  passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
 
-  passed &= runUnitTest(&testVector,                    "rsVector");
-  passed &= runUnitTest(&testMatrix,                    "rsMatrix");
-  passed &= runUnitTest(&testMiscMath,                  "misc math");
+  passed &= runUnitTest(&testVector,                     "rsVector");
+  passed &= runUnitTest(&testMatrix,                     "rsMatrix");
+  passed &= runUnitTest(&testMiscMath,                   "misc math");
+  passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");
+  passed &= runUnitTest(&testPolynomial,                 "rsPolynomial");
+  //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial  
 
-  passed &= runUnitTest(&testLinearAlgebra,             "rsLinearAlgebra");
-  passed &= runUnitTest(&testPolynomial,                "rsPolynomial");
-  //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial
+  passed &= runUnitTest(&testDifferentialEquationSystem, "rsDifferentialEquationSystem");
+  passed &= runUnitTest(&testIntegerFunctions,           "integer functions");
+  passed &= runUnitTest(&testMoebiusTransform,           "rsMoebiusTransform");
+  passed &= runUnitTest(&testNumberTheory,               "number theory"); 
+  passed &= runUnitTest(&testRealFunctions,              "real functions"); 
+  passed &= runUnitTest(&testTransforms,                 "transforms");
+
+
+
 
 
 

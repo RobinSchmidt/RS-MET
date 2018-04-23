@@ -3,7 +3,7 @@
 
 #include "../../../Shared/Shared.h"
 
-bool testDifferentialEquationSystem(std::string &reportString);
+bool testDifferentialEquationSystem();
 
 
 #endif

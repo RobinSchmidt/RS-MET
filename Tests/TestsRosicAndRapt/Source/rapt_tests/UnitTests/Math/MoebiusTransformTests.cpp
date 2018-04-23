@@ -1,6 +1,6 @@
 #include "MoebiusTransformTests.h"
 
-bool testMoebiusTransform(std::string &reportString)
+bool testMoebiusTransform()
 {
   std::string testName = "rsMoebiusTransform";
   bool testResult = true;

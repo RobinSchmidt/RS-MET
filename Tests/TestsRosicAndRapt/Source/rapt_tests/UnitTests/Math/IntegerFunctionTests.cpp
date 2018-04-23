@@ -1,15 +1,16 @@
 #include "IntegerFunctionTests.h"
 
-bool testIntegerFunctions(std::string &reportString)
+bool testIntegerFunctions()
 {
   std::string testName = "rsIntegerFunctions";
+  std::string dummy;
   bool testResult = true;
 
-  testResult &= testIntAbs(reportString);
-  testResult &= testBinomialCoefficients(reportString);
-  testResult &= testMultinomialCoefficients(reportString);
-  testResult &= testMultinomialFormula(reportString);
-  testResult &= testLeviCivita(reportString);
+  testResult &= testIntAbs(dummy);
+  testResult &= testBinomialCoefficients(dummy);
+  testResult &= testMultinomialCoefficients(dummy);
+  testResult &= testMultinomialFormula(dummy);
+  testResult &= testLeviCivita(dummy);
 
   //appendTestResultToReport(reportString, testName, testResult);
   return testResult;

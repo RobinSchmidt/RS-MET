@@ -3,7 +3,7 @@
 
 #include "../../../Shared/Shared.h"
 
-bool testIntegerFunctions(std::string &reportString);
+bool testIntegerFunctions();
 
 bool testIntAbs(std::string &reportString);
 bool testBinomialCoefficients(std::string &reportString);

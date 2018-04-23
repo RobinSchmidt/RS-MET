@@ -1,15 +1,16 @@
 #include "NumberTheoryTests.h"
 
-bool testNumberTheory(std::string &reportString)
+bool testNumberTheory()
 {
   std::string testName = "NumberTheory";
+  std::string dummy;
   bool testResult = true;
 
-  testResult &= testPrimeTableGeneration(reportString);
-  testResult &= testPrimeFactorization(  reportString);
-  testResult &= testNumberTheoryMisc(    reportString);
+  testResult &= testPrimeTableGeneration(dummy);
+  testResult &= testPrimeFactorization(  dummy);
+  testResult &= testNumberTheoryMisc(    dummy);
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 

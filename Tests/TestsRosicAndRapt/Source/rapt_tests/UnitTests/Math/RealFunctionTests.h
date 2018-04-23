@@ -3,7 +3,8 @@
 
 #include "../../../Shared/Shared.h"
 
-bool testRealFunctions(std::string &reportString);
+bool testRealFunctions();
+
 bool testAbsAndSign(std::string &reportString);
 bool testHyperbolicFunctions(std::string &reportString);
 bool testSinc(std::string &reportString);

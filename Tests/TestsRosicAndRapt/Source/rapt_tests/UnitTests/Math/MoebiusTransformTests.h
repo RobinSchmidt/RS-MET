@@ -5,6 +5,6 @@
 
 // move to MiscMathUnitTests
 
-bool testMoebiusTransform(std::string &reportString);
+bool testMoebiusTransform();
 
 #endif

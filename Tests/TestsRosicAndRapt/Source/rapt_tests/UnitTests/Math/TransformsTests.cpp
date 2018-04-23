@@ -11,17 +11,18 @@ void interleaveWithZeros(T *x, T *y, int xLength, int factor)
 }
 // move into the RSCore library
 
-bool testTransforms(std::string &reportString)
+bool testTransforms()
 {
   std::string testName = "Transforms";
+  std::string dummy; 
   bool testResult = true;
 
   // test FFT routines:
-  testResult &= testSmbFFT(reportString);
-  testResult &= testRsFFT(reportString);
-  testResult &= testFourierTransformerRadix2(reportString);
+  testResult &= testSmbFFT(dummy);
+  testResult &= testRsFFT(dummy);
+  testResult &= testFourierTransformerRadix2(dummy);
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
