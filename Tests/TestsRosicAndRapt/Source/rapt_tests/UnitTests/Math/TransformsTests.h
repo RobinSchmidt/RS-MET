@@ -1,7 +1,7 @@
 #ifndef RS_TRANSFORMSTESTS_H
 #define RS_TRANSFORMSTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testTransforms(std::string &reportString);
 

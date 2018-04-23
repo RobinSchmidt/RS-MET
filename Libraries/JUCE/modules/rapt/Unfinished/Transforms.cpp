@@ -73,9 +73,9 @@ void rsDFT(std::complex<T> *x, int N)
   {
     X[k] = 0;
     for(int n = 0; n < N; n++)
-      X[k] += x[n]*rsExpC(std::complex<T>(T(0), T(-2.0*PI*n*k/N)));
+      X[k] += x[n]*exp(std::complex<T>(T(0), T(-2.0*PI*n*k/N)));
   }
-  rsCopyBuffer(X, x, N);
+  rsArray::copyBuffer(X, x, N);
   delete[] X;
 }
 
@@ -98,7 +98,7 @@ void rsIFFT(std::complex<T> *a, int N)
   rsConjugate(a, N);
   rsFFT(a, N);
   rsConjugate(a, N);
-  rsScale(a, N, T(1)/N);
+  rsArray::scale(a, N, T(1)/N);
   // \todo check, if this works for arbitrary (non power-of-two) N
   // shouldn't it be possible to just use a "sign" in the core FFt routine that just switches the
   // exponent of the twiddle factor to be positive or negative (->more efficient, we don't need to
@@ -132,14 +132,13 @@ void rsRadix2FFT(std::complex<T> *a, int N)
   // The algorithm was ported from algorithm 4.2 in the book "Inside the FFT black box" and 
   // then simplified. All twiddle factors are computed on the fly via recursion.
 
-  int np = 1;       // NumOfProblems
-  int h  = N/2;     // HalfSize -> distance between butterflied values?
-  int jf;           // JFirst
-  int jl;           // JLast
+  int np = 1;          // NumOfProblems
+  int h  = N/2;        // HalfSize -> distance between butterflied values?
+  int jf;              // JFirst
+  int jl;              // JLast
   std::complex<T> tmp; // Temp
-
   std::complex<T> wj;  // W (current twiddle factor), maybe rename to wjk or wkj
-  std::complex<T> wm = rsExpC(std::complex<T>(T(0), T(-2.0*PI/N))); // multiplier for twiddle factor 
+  std::complex<T> wm = exp(std::complex<T>(T(0), T(-2.0*PI/N))); // multiplier for twiddle factor 
 
   // \todo use setRadiusAndAngle for initializing wm (more efficient), we also do not need to 
   // include the ComplexFunctions.inl
@@ -149,25 +148,25 @@ void rsRadix2FFT(std::complex<T> *a, int N)
 
   while(h > 0)
   {
-    for(int k = 0; k < np; k++)     // loop over the sub-FFTs
+    for(int k = 0; k < np; k++)        // loop over the sub-FFTs
     {
-      wj = std::complexDbl(1.0, 0.0);  // init twiddle factor for current sub-FFT
-      jf = 2*k*h;                   // first index for k-th sub-FFT
-      jl = jf+h-1;                  // last index for k-th sub-FFT
-      for(int j = jf; j <= jl; j++) // loop over the values
+      wj = std::complex<T>(1.0, 0.0);  // init twiddle factor for current sub-FFT
+      jf = 2*k*h;                      // first index for k-th sub-FFT
+      jl = jf+h-1;                     // last index for k-th sub-FFT
+      for(int j = jf; j <= jl; j++)    // loop over the values
       {
         tmp    = a[j];
-        a[j]   =     tmp+a[j+h];    // upper wing of Gentleman-Sande butterfly
-        a[j+h] = wj*(tmp-a[j+h]);   // lower wing
-        wj *= wm;                   // update twiddle factor for next iteration
+        a[j]   =     tmp+a[j+h];       // upper wing of Gentleman-Sande butterfly
+        a[j+h] = wj*(tmp-a[j+h]);      // lower wing
+        wj *= wm;                      // update twiddle factor for next iteration
       }
     }
     np *= 2;  // next stage has twice as much sub-FFTs
-    h  /= 2;  // distance between butterflied values halves
+    h  /= 2;  // distance between butterflied values halves - maybe use bit-shift
     wm *= wm; // twiddle factor rotates twice as fast in next stage
   }
 
-  rsOrderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
+  rsArray::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
 }
 
 /*

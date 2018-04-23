@@ -46,6 +46,8 @@ template void rsArray::deConvolve(double *y, int yLength, double *h, int hLength
 template void rsArray::sequenceSqrt(double *y, int yLength, double *x);
 template void rsArray::transposeSquareArray(double **in, double **out, int size);
 
+template float rsArray::maxDeviation(float *buffer1, float *buffer2, int length);
+template void rsArray::convertBuffer(std::complex<double> *source, std::complex<double> *destination, int length);
 
 
 template void MatrixTools::rsInitMatrix(double** A, int N, int M, double value);
@@ -108,12 +110,18 @@ template void RAPT::rsPrimeFactors(rsUint32 x, std::vector<rsUint32>& factors,
   std::vector<rsUint32>& exponents, std::vector<rsUint32>* primeTable);
 
 template void RAPT::rsEGCD(int x, int y, int& a, int& b, int& g);
-
 template int RAPT::rsModularInverse(const int& x, const int& m);
 template int RAPT::rsPrimeModularInverse(const int& x, const int& p);
 template int RAPT::rsPrimeModularInverse2(const int& x, const int& p);
 template int RAPT::rsChineseRemainderTheorem(int* remainders, int* moduli, rsUint32 count);
 //template rsUint32 RAPT::rsChineseRemainderTheorem(rsUint32* remainders, rsUint32* moduli, rsUint32 count);
+
+template void RAPT::smbFft(float *fftBuffer, long fftFrameSize, long sign);
+template void RAPT::rsDFT(std::complex<double> *buffer, int N);
+template void RAPT::rsFFT(std::complex<double> *buffer, int N);
+template void RAPT::rsIFFT(std::complex<double> *buffer, int N);
+template void RAPT::rsCrossCorrelation(float x[], float y[], int N, float r[], bool removeBias);
+template void RAPT::rsAutoCorrelationFFT(float x[], int N, float r[]);
 
 
 template RAPT::rsSineIterator<double>;
@@ -142,6 +150,7 @@ template RAPT::rsSinCosTable<float>;
 template RAPT::rsSinCosTable<double>;
 template RAPT::rsVector3D<float>;
 
+template RAPT::rsFourierTransformerRadix2<double>;
 
 template void RAPT::rsStatistics::linearRegression(int N, float* x, float* y, float& a, float& b);
 template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float* y);

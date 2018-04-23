@@ -14,7 +14,7 @@
 #include "Math/MoebiusTransformTests.cpp"
 #include "Math/NumberTheoryTests.cpp"
 #include "Math/RealFunctionTests.cpp"
-//#include "Math/TransformsTests.cpp"
+#include "Math/TransformsTests.cpp"
 //#include "Math/StatisticsTests.cpp"  // there is no such file - why?
 
 bool coordinateMapperUnitTest()

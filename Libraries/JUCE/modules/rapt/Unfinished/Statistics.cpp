@@ -1,3 +1,5 @@
+
+
 template<class T>
 void rsCrossCorrelationDirect(T x[], T y[], int N, T r[])
 {
@@ -15,10 +17,10 @@ void rsCrossCorrelationFFT(T x[], T y[], int N, T r[])
   // create zero-padded sequences such that no foldover occurs (use a power of 2 for the FFT) and
   // obtain the two FFT spectra:
   int Np = 2*rsNextPowerOfTwo(N);
-  rsComplex<T> *X = new rsComplex<T>[Np];
-  rsComplex<T> *Y = new rsComplex<T>[Np];
-  rsConvertBuffer(x, X, N);
-  rsConvertBuffer(y, Y, N);
+  std::complex<T> *X = new std::complex<T>[Np];
+  std::complex<T> *Y = new std::complex<T>[Np];
+  rsArray::convertBuffer(x, X, N);
+  rsArray::convertBuffer(y, Y, N);
   rsFFT(X, Np);
   rsFFT(Y, Np);
 
@@ -32,7 +34,7 @@ void rsCrossCorrelationFFT(T x[], T y[], int N, T r[])
   // obtain cross correlation by IFFT, copy to output and cleanup:
   rsIFFT(X, Np);
   for(n = 0; n < N; n++)
-    r[n] = X[n].re;
+    r[n] = X[n].real();
   delete[] X;
   delete[] Y;
 }
@@ -53,18 +55,18 @@ template<class T>
 void rsAutoCorrelationFFT(T x[], int N, T r[])
 {
   int Np = 2*rsNextPowerOfTwo(N);
-  rsComplex<T> *X = new rsComplex<T>[Np];
-  rsConvertBuffer(x, X, N);
+  std::complex<T> *X = new std::complex<T>[Np];
+  rsArray::convertBuffer(x, X, N);
   rsFFT(X, Np);
   int n;
   X[0] = X[0] * X[0];
   for(n = 1; n < Np; n++)
-    X[n] = X[n] * X[n].getConjugate();
+    X[n] = X[n] * conj(X[n]);
   // We can't use X[n]*X[Np-n] because the X-array is getting messed inside the loop itself, so
   // we use Eq.12.0.11 as is.
   rsIFFT(X, Np);
   for(n = 0; n < N; n++)
-    r[n] = X[n].re;
+    r[n] = X[n].real();
   delete[] X;
 }
 

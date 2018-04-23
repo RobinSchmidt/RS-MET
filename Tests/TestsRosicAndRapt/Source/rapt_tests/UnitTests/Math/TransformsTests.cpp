@@ -1,9 +1,11 @@
 #include "TransformsTests.h"
 
+typedef std::complex<double> rsComplexDbl;
+
 template<class T>
 void interleaveWithZeros(T *x, T *y, int xLength, int factor)
 {
-  rsFillWithZeros(y, factor*xLength);
+  rsArray::fillWithZeros(y, factor*xLength);
   for(int i = 0; i < xLength; i++)
     y[factor*i] = x[i];
 }
@@ -75,7 +77,7 @@ bool testSmbFFT(std::string &reportString)
   // run FFT, calculate numerical error and check if below some margin:
   interleaveWithZeros(x, X, N, 2);
   smbFft(X, N, -1);
-  double error = rsMaxDeviation(X, T, 2*N);
+  double error = rsArray::maxDeviation(X, T, 2*N);
   testResult &= (error < 1.e-6);  // a rather large margin is required
 
   appendTestResultToReport(reportString, testName, testResult);
@@ -97,8 +99,8 @@ bool testRsFFT(std::string &reportString)
   int n;
   for(n = 0; n < N; n++)
   {
-    x[n].re = (1.0/(n+1)-0.25);
-    x[n].im = (1.0/(n+1)-0.10);
+    x[n].real(1.0/(n+1)-0.25);
+    x[n].imag(1.0/(n+1)-0.10);
   }
 
   // create target spectrum:
@@ -120,30 +122,30 @@ bool testRsFFT(std::string &reportString)
   T[15] = rsComplexDbl( 0.578246697705605, 2.112908873015884);
 
   // compute spectrum via FFT:
-  rsCopyBuffer(x, X, N);
+  rsArray::copyBuffer(x, X, N);
   rsFFT(X, N);
 
   // check maximum deviation between target- and computed spectrum:
   double error = 0.0;
   for(n = 0; n < N; n++)
-    error = rsMax(error, (T[n]-X[n]).getRadius());
+    error = rsMax(error, abs(T[n]-X[n]));
   testResult &= (error < 1.e-15);
 
   // compute and check spectrum via DFT:
-  rsCopyBuffer(x, X, N);
+  rsArray::copyBuffer(x, X, N);
   rsDFT(X, N);
   error = 0.0;
   for(n = 0; n < N; n++)
-    error = rsMax(error, (T[n]-X[n]).getRadius());
+    error = rsMax(error, abs(T[n]-X[n]));
   testResult &= (error < 1.e-14); // needs more tolerance than FFT
 
   // check a forward/inverse turnaround cycle:
-  rsCopyBuffer(x, y, N);
+  rsArray::copyBuffer(x, y, N);
   rsFFT( y, N);
   rsIFFT(y, N);
   error = 0.0;
   for(n = 0; n < N; n++)
-    error = rsMax(error, (x[n]-y[n]).getRadius());
+    error = rsMax(error, abs(x[n]-y[n]));
   testResult &= (error < 1.e-15);
 
   appendTestResultToReport(reportString, testName, testResult);
@@ -160,29 +162,31 @@ bool testFourierTransformerRadix2(std::string &reportString)
   rsComplexDbl T[N];        // target spectrum
   rsComplexDbl X[N];        // computed spectrum
 
+  typedef rsFourierTransformerRadix2<double> FT;
+
   // create test signal:
   int n;
   for(n = 0; n < N; n++)
   {
-    x[n].re = 1.0/(n+1) - 0.05;
-    x[n].im = 1.0/(n+1) - 0.07;
+    x[n].real(1.0/(n+1) - 0.05);
+    x[n].imag(1.0/(n+1) - 0.07);
   }
 
   // create target spectrum (we assume here that rsFFT computes a correct result):
-  rsConvertBuffer(x, T, N);
+  rsArray::convertBuffer(x, T, N);
   rsFFT(T, N);
 
   // create the rsFourierTransformerRadix2 object, set it up and let it compute the spectrum:
-  rsFourierTransformerRadix2 ft;
+  FT ft;
   ft.setBlockSize(N);
-  ft.setDirection(rsFourierTransformerRadix2::FORWARD);
-  ft.setNormalizationMode(rsFourierTransformerRadix2::NORMALIZE_ON_INVERSE_TRAFO);
+  ft.setDirection(FT::FORWARD);
+  ft.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO);
   ft.transformComplexBuffer(x, X);
 
   // check maximum deviation between target- and computed spectrum:
   double error = 0.0;
   for(n = 0; n < N; n++)
-    error = rsMax(error, (T[n]-X[n]).getRadius());
+    error = rsMax(error, abs(T[n]-X[n]));
   testResult &= (error < 1.e-13); // in MSVC, we can use 1.e-14 -> it's more precise there
 
   appendTestResultToReport(reportString, testName, testResult);
@@ -260,18 +264,18 @@ bool testFitQuadratic(std::string &reportString)
   double y[3] = {1, 4, 2};
   double a[3];
 
-  fitQuadratic(a, x, y);
+  rsPolynomial<double>::fitQuadratic(a, x, y);
   testResult &= (a[0] == -13.000000000000000 );
   testResult &= (a[1] ==   9.6666666666666661);
   testResult &= (a[2] ==  -1.3333333333333333);
 
   x[0] = 0.0; x[1] = 1.0; x[2] = 2.0;
-  fitQuadratic(a, x, y);
+  rsPolynomial<double>::fitQuadratic(a, x, y);
   testResult &= (a[0] ==  1.0);
   testResult &= (a[1] ==  5.5);
   testResult &= (a[2] == -2.5);
 
-  fitQuadratic_0_1_2(a, y);
+  rsPolynomial<double>::fitQuadratic_0_1_2(a, y);
   testResult &= (a[0] ==  1.0);
   testResult &= (a[1] ==  5.5);
   testResult &= (a[2] == -2.5);
@@ -290,15 +294,15 @@ bool testFitQuarticWithDerivatives(std::string &reportString)
   double s2   = -2;
   double a[5];
 
-  fitQuarticWithDerivatives(a, y, s0, s2);
+  rsPolynomial<double>::fitQuarticWithDerivatives(a, y, s0, s2);
 
   double tmp[2];
-  RSLib::evaluatePolynomialAndDerivativesAt(0.0, a, 4, tmp, 1);
+  rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(0.0, a, 4, tmp, 1);
   testResult &= (tmp[0] == 1.0);
   testResult &= (tmp[1] == 1.0);
-  RSLib::evaluatePolynomialAndDerivativesAt(1.0, a, 4, tmp, 1);
+  rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(1.0, a, 4, tmp, 1);
   testResult &= (tmp[0] == 2.0);
-  RSLib::evaluatePolynomialAndDerivativesAt(2.0, a, 4, tmp, 1);
+  rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(2.0, a, 4, tmp, 1);
   testResult &= (tmp[0] ==  0.0);
   testResult &= (tmp[1] == -2.0);
 

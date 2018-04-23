@@ -14,7 +14,7 @@
 #include "Math/MoebiusTransformTests.h"
 #include "Math/NumberTheoryTests.h"
 #include "Math/RealFunctionTests.h"
-//#include "Math/TransformsTests.h"
+#include "Math/TransformsTests.h"
 //#include "Math/StatisticsTests.h"  // there is no such file - why?
 
 
