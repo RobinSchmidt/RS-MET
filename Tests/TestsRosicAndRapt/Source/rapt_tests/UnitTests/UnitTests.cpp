@@ -42,9 +42,9 @@ bool runAllUnitTests()
   passed &= runUnitTest(&testRealFunctions,              "real functions"); 
   passed &= runUnitTest(&testTransforms,                 "transforms");
 
-
-
-
+  passed &= runUnitTest(&testTriangle2D,                 "rsTriangle2D");
+  passed &= runUnitTest(&testPoint2D,                    "rsPoint2D");
+  passed &= runUnitTest(&testPolygon2D,                  "rsPolygon2D");
 
 
   // Filters:

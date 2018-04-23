@@ -1,14 +1,15 @@
 #include "Point2DTests.h"
 
-bool testPoint2D(std::string &reportString)
+bool testPoint2D()
 {
   std::string testName = "rsPoint2D";
+  std::string dummy;
   bool testResult = true;
 
-  testResult &= testPoint2DOperators(reportString);
-  testResult &= testPoint2DTransformations(reportString);
+  testResult &= testPoint2DOperators(dummy);
+  testResult &= testPoint2DTransformations(dummy);
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -42,7 +43,7 @@ bool testPoint2DOperators(std::string &reportString)
   testResult &= ( p1+p2  == rsPoint2D<double>(6.0, 3.0) );  // (2,1)+(4,2) = (6,3)
   testResult &= ( p3-p2  == rsPoint2D<double>(1.0, 0.0) );  // (5,2)-(4,2) = (1,0)
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -134,6 +135,6 @@ bool testPoint2DTransformations(std::string &reportString)
   testResult &= ( t1 == t2 );
 
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }

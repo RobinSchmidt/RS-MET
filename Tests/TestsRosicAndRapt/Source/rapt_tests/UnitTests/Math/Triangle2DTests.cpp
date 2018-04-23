@@ -1,13 +1,14 @@
 #include "Triangle2DTests.h"
 
-bool testTriangle2D(std::string &reportString)
+bool testTriangle2D()
 {
   std::string testName = "Triangle2D";
+  std::string dummy;
   bool testResult = true;
 
-  testResult &= testPointInsideTriangle2D(reportString);
+  testResult &= testPointInsideTriangle2D(dummy);
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 

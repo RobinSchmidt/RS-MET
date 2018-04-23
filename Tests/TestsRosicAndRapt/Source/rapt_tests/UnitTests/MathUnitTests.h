@@ -17,9 +17,9 @@
 #include "Math/TransformsTests.h"
 //#include "Math/StatisticsTests.h"  // there is no such file - why?
 
-//#include "Math/Point2DTests.h"
-//#include "Math/Polygon2DTests.h"
-//#include "Math/Triangle2DTests.h"
+#include "Math/Point2DTests.h"
+#include "Math/Polygon2DTests.h"
+#include "Math/Triangle2DTests.h"
 
 bool coordinateMapperUnitTest();
 bool interpolatingFunctionUnitTest();

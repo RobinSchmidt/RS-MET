@@ -1,9 +1,9 @@
 #ifndef RS_POLYGON2DTESTS_H
 #define RS_POLYGON2DTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
-bool testPolygon2D(std::string &reportString);
+bool testPolygon2D();
 
 bool testRegularPolygonCreation2D(std::string &reportString);
 //bool testPointInsidePolygon2D(std::string &reportString);

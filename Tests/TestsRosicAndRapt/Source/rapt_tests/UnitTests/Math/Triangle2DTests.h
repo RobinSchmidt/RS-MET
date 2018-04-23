@@ -1,9 +1,9 @@
 #ifndef RS_TRIANGLE2DTESTS_H
 #define RS_TRIANGLE2DTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
-bool testTriangle2D(std::string &reportString);
+bool testTriangle2D();
 
 bool testPointInsideTriangle2D(std::string &reportString);
 

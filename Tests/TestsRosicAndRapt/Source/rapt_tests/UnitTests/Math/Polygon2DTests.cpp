@@ -1,17 +1,18 @@
 #include "Polygon2DTests.h"
 
 
-bool testPolygon2D(std::string &reportString)
+bool testPolygon2D()
 {
   std::string testName = "Polygon2D";
+  std::string dummy; 
   bool testResult = true;
 
   /*
-  testRegularPolygonCreation2D(reportString);
-  //testResult &= testPointInsidePolygon2D(reportString);
+  testRegularPolygonCreation2D(dummy);
+  //testResult &= testPointInsidePolygon2D(dummy);
   */
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
