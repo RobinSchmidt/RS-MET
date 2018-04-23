@@ -108,11 +108,18 @@ template void RAPT::rsPrimeFactors(rsUint32 x, std::vector<rsUint32>& factors,
   std::vector<rsUint32>& exponents, std::vector<rsUint32>* primeTable);
 
 template void RAPT::rsEGCD(int x, int y, int& a, int& b, int& g);
+
+template int RAPT::rsModularInverse(const int& x, const int& m);
 template int RAPT::rsPrimeModularInverse(const int& x, const int& p);
 template int RAPT::rsPrimeModularInverse2(const int& x, const int& p);
+template int RAPT::rsChineseRemainderTheorem(int* remainders, int* moduli, rsUint32 count);
+//template rsUint32 RAPT::rsChineseRemainderTheorem(rsUint32* remainders, rsUint32* moduli, rsUint32 count);
 
-template rsUint32 RAPT::rsChineseRemainderTheorem(rsUint32* remainders, rsUint32* moduli, rsUint32 count);
 
+template RAPT::rsSineIterator<double>;
+template RAPT::rsComplexExponentialIterator<double>;
+
+template double RAPT::rsNormalizedSinc(double x);
 
 template int RAPT::rsClip(int x, int min, int max);
 template RAPT::rsConicSection<float>;

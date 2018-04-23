@@ -163,7 +163,8 @@ bool testComplexExponentialIterator(rsComplexDbl a, rsComplexDbl z)
   // compute values and target values ans measure the maximum distance:
   for(int n = 0; n < N; n++)
   {
-    wt = a * rsPowC(z, rsComplexDbl((double)n, 0));
+    //wt = a * rsPowC(z, rsComplexDbl((double)n, 0));
+    wt = a * pow(z, rsComplexDbl((double)n, 0));
     w  = it.getValue();
     e  = abs(wt-w) / abs(wt);
     if( e > eMax )
