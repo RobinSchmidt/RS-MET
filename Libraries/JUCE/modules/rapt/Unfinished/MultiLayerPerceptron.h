@@ -1,6 +1,13 @@
 #ifndef RAPT_MULTILAYERPERCEPTRON_H
 #define RAPT_MULTILAYERPERCEPTRON_H
 
+// forward decalarations need for friend declarations:
+template<class T>
+class MultiLayerPerceptronErrorFunction;
+
+template<class T>
+class MultiLayerPerceptronTrainer;
+
 /** This class implements a multilayer perceptron to be used for nonlinear function approximation.
 This class here only implements the neural network 'at work', that is, the forward propagation
 of activations to produce an output vector from an input vector. The network learning/training
@@ -108,7 +115,7 @@ public:
 
   //=============================================================================================
 
-//protected: // temporaly made public because the friend decalarations below don't compile
+protected: // temporaly made public because the friend decalarations below don't compile
 
   /** Applies the selected activation function to some value x and returns the result. */
   inline T activationFunction(T x) const;
@@ -137,11 +144,11 @@ public:
   rsVectorDbl  x;   // vector of network inputs (excluding bias)
   rsVectorDbl  y;   // vector of network outputs (exluding bias)
 
-  //template<class T>
-  //friend class MultiLayerPerceptronErrorFunction<T>;
+  template<class T>
+  friend class MultiLayerPerceptronErrorFunction;
 
-  //template<class T>
-  //friend class MultiLayerPerceptronTrainer<T>;
+  template<class T>
+  friend class MultiLayerPerceptronTrainer;
 
 };
 

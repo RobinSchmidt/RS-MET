@@ -2,15 +2,6 @@
 
 using namespace RAPT;
 
-/*
-template<class T>
-template<class S>
-void Foo<T>::bar(S x)
-{
-
-}
-*/
-
 bool runUnitTest(bool (*test)(), const string& name)
 {
   //cout << "Testing: " + name + ": ";
@@ -20,7 +11,7 @@ bool runUnitTest(bool (*test)(), const string& name)
   if(passed)
     cout << "Passed\n";
   else
-    cout << "!!!!----Failed----!!!!\n";
+    cout << "!!!!----> F A I L E D <----!!!!\n";
   return passed;
 }
 

@@ -17,7 +17,6 @@ namespace RAPT
 #include "GradientBasedMinimizer.h"
 #include "MultiLayerPerceptron.h"
 
-// for these, updates/adaptions for RAPT are under construction:
 #include "DifferentialEquationSystem.h"
 #include "FourierTransformer.h"
 #include "Interpolation.h"
@@ -26,8 +25,18 @@ namespace RAPT
 #include "Transforms.h"
 #include "Statistics.h"  // merge with the Statistics.h aleady present in the Math folder
 
+// for these, updates/adaptions for RAPT are under construction:
+
+//#include "GeometricFunctions.h"
+#include "Point2D.h"
+#include "Polygon2D.h"
+#include "Rectangle2D.h"
+#include "Triangle2D.h"
+#include "AffineTransform2D.h"
+
 // still missing math files from RSLib:
-// ModularInteger, ....
+// ModularInteger, MultiArray, BigInt/BigFloat (should go into rosic), ....
+
 
 }
 
