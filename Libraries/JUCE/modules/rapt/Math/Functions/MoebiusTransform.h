@@ -96,7 +96,7 @@ public:
   bool isIdentity() const
   {
     std::complex<T> O(0, 0); // zero, for comparison
-    if(b != O || c != O || a != O)
+    if(b != O || c != O || a != d)
       return false;
     if(a == O)
       return false;
