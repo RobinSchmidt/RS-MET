@@ -27,24 +27,23 @@ bool runAllUnitTests()
   passed &= runUnitTest(&coordinateMapperUnitTest,       "rsCoordinateMapper2D");
   passed &= runUnitTest(&interpolatingFunctionUnitTest,  "rsInterpolatingFunction");
   passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
-
   passed &= runUnitTest(&testVector,                     "rsVector");
   passed &= runUnitTest(&testMatrix,                     "rsMatrix");
   passed &= runUnitTest(&testMiscMath,                   "misc math");
   passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");
   passed &= runUnitTest(&testPolynomial,                 "rsPolynomial");
   //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial  
-
   passed &= runUnitTest(&testDifferentialEquationSystem, "rsDifferentialEquationSystem");
   passed &= runUnitTest(&testIntegerFunctions,           "integer functions");
   passed &= runUnitTest(&testMoebiusTransform,           "rsMoebiusTransform");
   passed &= runUnitTest(&testNumberTheory,               "number theory"); 
   passed &= runUnitTest(&testRealFunctions,              "real functions"); 
   passed &= runUnitTest(&testTransforms,                 "transforms");
-
   passed &= runUnitTest(&testTriangle2D,                 "rsTriangle2D");
   passed &= runUnitTest(&testPoint2D,                    "rsPoint2D");
   passed &= runUnitTest(&testPolygon2D,                  "rsPolygon2D");
+
+  passed &= runUnitTest(&testMultiArray,                 "rsMultiArray");
 
 
   // Filters:

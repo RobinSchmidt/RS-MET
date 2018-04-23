@@ -155,6 +155,8 @@ template RAPT::rsFourierTransformerRadix2<double>;
 template void RAPT::rsStatistics::linearRegression(int N, float* x, float* y, float& a, float& b);
 template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float* y);
 
+template RAPT::rsMultiArray<float>; 
+
 // Filters-Musical:
 template RAPT::rsSmoothingFilter<float, float>;
 template RAPT::rsLadderFilter<float, float>;

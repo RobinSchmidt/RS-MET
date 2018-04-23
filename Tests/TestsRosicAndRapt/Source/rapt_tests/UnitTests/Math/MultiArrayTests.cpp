@@ -1,16 +1,17 @@
 #include "MultiArrayTests.h"
 
-bool testMultiArray(std::string &reportString)
+bool testMultiArray()
 {
   std::string testName = "rsMultiArray";
+  std::string dummy;
   bool testResult = true;
 
-  testResult &= testMultiArrayInit(reportString);
-  testResult &= testMultiArrayOffsetComputation(reportString);
-  testResult &= testMultiArrayOuterProduct(reportString);
-  testResult &= testMultiArrayContraction(reportString);
+  testResult &= testMultiArrayInit(dummy);
+  testResult &= testMultiArrayOffsetComputation(dummy);
+  testResult &= testMultiArrayOuterProduct(dummy);
+  testResult &= testMultiArrayContraction(dummy);
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -24,7 +25,7 @@ bool testMultiArrayInit(std::string &reportString)
   rsUint32 indices[1];
   indices[0] = 3;    // that value should be irrelevant
   float data[10];
-  rsFillWithRangeLinear(data, 10, 1.f, 10.f);
+  rsArray::fillWithRangeLinear(data, 10, 1.f, 10.f);
 
   // create array with 0 indices (a scalar) and see, if it initializes correctly:
   rsMultiArray<float> a0;
@@ -100,7 +101,7 @@ bool testMultiArrayOuterProduct(std::string &reportString)
   rsUint32 indicesResult[5];
 
   float data[30];
-  rsFillWithRangeLinear(data, 30, 1.f, 30.f);
+  rsArray::fillWithRangeLinear(data, 30, 1.f, 30.f);
   data[23] = 32; // these 2 values will be used in the divisions, so we want powers of 2 to make
   data[29] = 64; // numerically exact division possible (for easier comparison witn target results)
 
@@ -176,7 +177,7 @@ bool testMultiArrayContraction(std::string &reportString)
   subjectIndices[4] = 5;
 
   float data[360];
-  rsFillWithRangeLinear(data, 360, 1.f, 360.f);
+  rsArray::fillWithRangeLinear(data, 360, 1.f, 360.f);
 
   rsMultiArray<float> a(5, subjectIndices);
   a.setDataFromFlatArray(data);

@@ -34,6 +34,10 @@
                   file="Source/rapt_tests/UnitTests/Math/MoebiusTransformTests.cpp"/>
             <FILE id="OsYAgi" name="MoebiusTransformTests.h" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/MoebiusTransformTests.h"/>
+            <FILE id="cMRSEm" name="MultiArrayTests.cpp" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/MultiArrayTests.cpp"/>
+            <FILE id="aF2pQE" name="MultiArrayTests.h" compile="0" resource="0"
+                  file="Source/rapt_tests/UnitTests/Math/MultiArrayTests.h"/>
             <FILE id="zZEdCa" name="NumberTheoryTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/NumberTheoryTests.cpp"/>
             <FILE id="IDBCHE" name="NumberTheoryTests.h" compile="0" resource="0"

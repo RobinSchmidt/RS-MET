@@ -262,6 +262,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\MultiArrayTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClCompile>
@@ -1963,6 +1966,9 @@
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MultiArrayTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.h">
