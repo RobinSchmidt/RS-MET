@@ -38,12 +38,12 @@ void rsFindPrimesUpTo(std::vector<T> &primes, T upperLimit)
   // collect the primes:
   rsUint32 numPrimes = (rsUint32) primeFlags.getNumTrueFlags()+1; // +1 because "2" isn't included
   primes.clear();
-  primes.ensureAllocatedSize(numPrimes);
-  primes.appendElement(2);
+  primes.reserve(numPrimes);
+  primes.push_back(2);
   for(i = 1; i < primeFlags.getNumFlags(); i++)
   {
     if( primeFlags.isFlagTrue(i) )
-      primes.appendElement(2*i+1);
+      primes.push_back(2*i+1);
   }
 }
 
@@ -126,7 +126,7 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
   bool tableIsTemporary = (primeTable == nullptr);
   if( tableIsTemporary )
   {
-    primeTable = new rsArray<T>;
+    primeTable = new std::vector<T>;
     rsFindPrimesUpTo(*primeTable, limit);
   }
 
@@ -134,13 +134,13 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
   exponents.clear();
   T i  = 0;
   T np = 0;
-  T p  = primeTable->getElement(0);
+  T p  = (*primeTable)[0];
   while( p <= limit )
   {
     if( x % p == 0 )
     {
-      factors.appendElement(p);
-      exponents.appendElement(1);
+      factors.push_back(p);
+      exponents.push_back(1);
       x /= p;
       while( x % p == 0 )
       {
@@ -151,12 +151,12 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
       np++;
     }
     i++;
-    p = primeTable->getElement(i);
+    p = (*primeTable)[i];
   }
   if( x != T(1) )
   {
-    factors.appendElement(x);
-    exponents.appendElement(1);
+    factors.push_back(x);
+    exponents.push_back(1);
   }
 
   if( tableIsTemporary )

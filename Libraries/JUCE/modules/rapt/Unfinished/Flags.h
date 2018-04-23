@@ -39,12 +39,12 @@ public:
 
   /** \name Operators */
 
-  bool operator==(const rsFlags8& other) const
+  inline bool operator==(const rsFlags8& other) const
   {
     return flags == other.flags;
   }
 
-  bool operator!=(const rsFlags8& other) const
+  inline bool operator!=(const rsFlags8& other) const
   {
     return flags != other.flags;
   }
@@ -78,7 +78,7 @@ public:
   }
 
   /** Sets the flag with the given index to the passed new boolean value.  */
-  void rsFlags8::setFlag(int index, bool newValue)
+  inline void rsFlags8::setFlag(int index, bool newValue)
   {
     if( newValue == true )
       setFlagTrue(index);
@@ -88,7 +88,7 @@ public:
   }
 
   /** Toggles the flag into to the other state - a true flag becomes flase and vice versa. */
-  void rsFlags8::toggleFlag(int index)
+  inline void rsFlags8::toggleFlag(int index)
   {
     if( isFlagTrue(index) )
       setFlagFalse(index);
@@ -150,7 +150,7 @@ RS_INLINE void rsSwitchBit(T& x, T i)
 
 /** Fills an array of rsUint32 values with the bit pattern of a 64-bit datatype. */
 template <class T>
-void rsGetBits64(T value, rsUint32 bits[64])
+RS_INLINE void rsGetBits64(T value, rsUint32 bits[64])
 {
   // \todo convert endianness (maybe, test on different machines)
   rsUint64 *x   = reinterpret_cast<rsUint64*> (&value);
@@ -187,7 +187,7 @@ RS_INLINE bool rsIsBitTrue(T x, T i)
 /** Sets bit pattern of a 64-bit datatype from an ofarray rsUint32 values (assumed to be either 0 
 or 1). */
 template <class T>
-void rsSetBits64(T *value, rsUint32 bits[64])
+RS_INLINE void rsSetBits64(T *value, rsUint32 bits[64])
 {
   // \todo convert endianness (maybe, test on different machines)
   rsUint64 *x = reinterpret_cast<rsUint64*> (value);
@@ -213,10 +213,10 @@ public:
   /** \name Construction/Destruction */
 
   /** Standard constructor. Initializes all flags to zero. */
-  rsFlagArray(rsUint64 numDesiredFlags);
+  inline rsFlagArray(rsUint64 numDesiredFlags);
 
   /** Destructor */
-  ~rsFlagArray();
+  inline ~rsFlagArray();
 
 
 
@@ -314,7 +314,7 @@ protected:
 };
 
 
-rsFlagArray::rsFlagArray(rsUint64 numDesiredFlags)
+inline rsFlagArray::rsFlagArray(rsUint64 numDesiredFlags)
 {
   rsAssert( numDesiredFlags / 64 < UINT_MAX-1 );
 
@@ -326,12 +326,12 @@ rsFlagArray::rsFlagArray(rsUint64 numDesiredFlags)
   setAllFalse();
 }
 
-rsFlagArray::~rsFlagArray()
+inline rsFlagArray::~rsFlagArray()
 {
   delete[] flagGroups64;
 }
 
-bool rsFlagArray::areAllFlagsTrue()
+inline bool rsFlagArray::areAllFlagsTrue()
 {
   for(rsUint32 i = 0; i < numFullGroups; i++)
   {
@@ -341,7 +341,7 @@ bool rsFlagArray::areAllFlagsTrue()
   return getNumTrueTailFlags() == tailLength;
 }
 
-bool rsFlagArray::areAllFlagsFalse()
+inline bool rsFlagArray::areAllFlagsFalse()
 {
   for(rsUint32 i = 0; i < numFullGroups; i++)
   {
@@ -351,7 +351,7 @@ bool rsFlagArray::areAllFlagsFalse()
   return getNumTrueTailFlags() == 0;
 }
 
-rsUint64 rsFlagArray::getNumTrueFlags() const
+inline rsUint64 rsFlagArray::getNumTrueFlags() const
 {
   rsUint64 n = 0;
   for(rsUint32 i = 0; i < numFullGroups; i++)
@@ -360,7 +360,7 @@ rsUint64 rsFlagArray::getNumTrueFlags() const
   return n;
 }
 
-rsUint64 rsFlagArray::getNumTrueTailFlags() const
+inline rsUint64 rsFlagArray::getNumTrueTailFlags() const
 {
   if( tailLength > 0 )
   {
@@ -369,9 +369,6 @@ rsUint64 rsFlagArray::getNumTrueTailFlags() const
     return rsGetNumTrueBits64(flagGroups64[numFullGroups] & mask);
   }
   return 0;
-}
-
-
 }
 
 #endif

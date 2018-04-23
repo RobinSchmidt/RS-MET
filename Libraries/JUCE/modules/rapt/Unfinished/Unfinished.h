@@ -7,7 +7,7 @@ code. It's a sort of construction yard for new code. */
 namespace RAPT
 {
 
-//#include "Flags.h" // needed for NumberTheory (FlagArray is used to mark non-primes in siev algorithms)
+#include "Flags.h" // needed for NumberTheory (FlagArray is used to mark non-primes in siev algorithms)
 
 #include "BandSplitter.h"
 
