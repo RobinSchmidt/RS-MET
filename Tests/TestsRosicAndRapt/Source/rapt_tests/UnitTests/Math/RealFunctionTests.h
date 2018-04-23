@@ -1,7 +1,7 @@
 #ifndef RS_REALFUNCTIONTESTS_H
 #define RS_REALFUNCTIONTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testRealFunctions(std::string &reportString);
 bool testAbsAndSign(std::string &reportString);

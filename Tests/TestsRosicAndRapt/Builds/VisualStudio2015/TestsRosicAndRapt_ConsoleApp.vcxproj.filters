@@ -316,6 +316,9 @@
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Shared.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
     </ClCompile>

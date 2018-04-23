@@ -1,5 +1,7 @@
 #include "RealFunctionTests.h"
 
+typedef std::complex<double> rsComplexDbl; // get rid
+
 bool testRealFunctions(std::string &reportString)
 {
   std::string testName = "rsRealFunctions";
@@ -156,14 +158,14 @@ bool testComplexExponentialIterator(rsComplexDbl a, rsComplexDbl z)
   //int n;             // iteration counter
 
   // create the iterator for complex expoentials:
-  rsComplexExponentialIterator it(a, z);
+  rsComplexExponentialIterator<double> it(a, z);
 
   // compute values and target values ans measure the maximum distance:
   for(int n = 0; n < N; n++)
   {
     wt = a * rsPowC(z, rsComplexDbl((double)n, 0));
     w  = it.getValue();
-    e  = (wt-w).getRadius() / wt.getRadius();
+    e  = abs(wt-w) / abs(wt);
     if( e > eMax )
       eMax = e;
   }
@@ -183,7 +185,7 @@ bool testSineIterator(double w, double p, double a)
   int N = 1000;      // number of iterations
 
   // create the iterator for sinusoids:
-  rsSineIterator it(w, p, a);
+  rsSineIterator<double> it(w, p, a);
 
   // compute values and target values ans measure the maximum distance:
   for(int n = 0; n < N; n++)

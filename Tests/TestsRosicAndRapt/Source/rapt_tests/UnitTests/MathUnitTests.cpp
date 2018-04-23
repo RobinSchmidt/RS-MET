@@ -12,8 +12,8 @@
 #include "Math/DifferentialEquationTests.cpp"
 #include "Math/IntegerFunctionTests.cpp"
 #include "Math/MoebiusTransformTests.cpp"
-//#include "Math/NumberTheoryTests.cpp" // we need to make FlagArray work first...
-//#include "Math/RealFunctionFunctionTests.cpp"
+#include "Math/NumberTheoryTests.cpp"
+#include "Math/RealFunctionTests.cpp"
 //#include "Math/TransformsTests.cpp"
 //#include "Math/StatisticsTests.cpp"  // there is no such file - why?
 

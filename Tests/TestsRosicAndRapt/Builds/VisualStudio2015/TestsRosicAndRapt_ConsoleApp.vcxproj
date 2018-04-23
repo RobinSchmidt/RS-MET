@@ -193,6 +193,7 @@
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\MathExperiments.cpp"/>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Shared.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Utilities\PerformanceTestTools.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp"/>

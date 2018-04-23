@@ -35,5 +35,9 @@ inline void appendTestResultToReport(std::string &reportString, const std::strin
     reportString += nameOfTest + ": !!! FAILED !!!\n";
 }
 
+/** Comparison function that compares with a given error tolerance and also returns true when the 
+involved numbers are NaNs or infinities. */
+bool areNumbersEqual(double x, double y, double relativeTolerance);
+
 
 #endif
