@@ -7,16 +7,16 @@ code. It's a sort of construction yard for new code. */
 namespace RAPT
 {
 
-#include "Flags.h" // needed for NumberTheory (FlagArray is used to mark non-primes in siev algorithms)
+#include "Flags.h" // should go to Data
 
-#include "BandSplitter.h"
+#include "BandSplitter.h" // should go to Filters
 
+// should go to Math:
 #include "Vector.h"
 #include "Matrix.h"
 #include "FunctionObjects.h"
 #include "GradientBasedMinimizer.h"
 #include "MultiLayerPerceptron.h"
-
 #include "DifferentialEquationSystem.h"
 #include "FourierTransformer.h"
 #include "Interpolation.h"
@@ -24,9 +24,6 @@ namespace RAPT
 #include "NumericCalculus.h"
 #include "Transforms.h"
 #include "Statistics.h"  // merge with the Statistics.h aleady present in the Math folder
-
-// for these, updates/adaptions for RAPT are under construction:
-
 #include "GeometricFunctions.h"
 #include "Point2D.h"
 #include "Polygon2D.h"
@@ -34,8 +31,11 @@ namespace RAPT
 #include "Triangle2D.h"
 #include "AffineTransform2D.h"
 
-// still missing math files from RSLib:
-// ModularInteger, MultiArray, BigInt/BigFloat (should go into rosic), ....
+// for these, updates/adaptions for RAPT are under construction:
+#include "ModularInteger.h"
+#include "MultiArray.h"
+
+// still missing math files from RSLib:  BigInt/BigFloat (should go into rosic)
 
 
 }

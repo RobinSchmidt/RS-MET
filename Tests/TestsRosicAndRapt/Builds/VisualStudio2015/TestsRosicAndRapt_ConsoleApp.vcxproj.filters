@@ -625,6 +625,12 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\ModularInteger.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiArray.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
@@ -2341,6 +2347,12 @@
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\ModularInteger.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiArray.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.h">
