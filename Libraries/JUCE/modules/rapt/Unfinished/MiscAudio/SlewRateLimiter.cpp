@@ -1,8 +1,7 @@
-using namespace RSLib;
-
 // Construction/Destruction:
 
-rsSlewRateLimiter::rsSlewRateLimiter()
+template<class TSig, class TPar>
+rsSlewRateLimiter<TSig, TPar>::rsSlewRateLimiter()
 {
   sampleRate  = 44100.0f; 
   attackTime  = 10.0f;    
@@ -13,14 +12,10 @@ rsSlewRateLimiter::rsSlewRateLimiter()
   calculateReleaseCoefficient();
 }
 
-rsSlewRateLimiter::~rsSlewRateLimiter()
-{
-
-}
-
 // Setup:
 
-void rsSlewRateLimiter::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsSlewRateLimiter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   if( newSampleRate > 0.0 )
   {
@@ -30,7 +25,8 @@ void rsSlewRateLimiter::setSampleRate(double newSampleRate)
   }
 }
 
-void rsSlewRateLimiter::setAttackTime(double newAttackTime)
+template<class TSig, class TPar>
+void rsSlewRateLimiter<TSig, TPar>::setAttackTime(TPar newAttackTime)
 {
   if( newAttackTime >= 0.0 && newAttackTime != attackTime )
   {
@@ -39,7 +35,8 @@ void rsSlewRateLimiter::setAttackTime(double newAttackTime)
   }
 }
 
-void rsSlewRateLimiter::setReleaseTime(double newReleaseTime)
+template<class TSig, class TPar>
+void rsSlewRateLimiter<TSig, TPar>::setReleaseTime(TPar newReleaseTime)
 {
   if( newReleaseTime >= 0.0 && newReleaseTime != releaseTime )
   {
@@ -50,12 +47,14 @@ void rsSlewRateLimiter::setReleaseTime(double newReleaseTime)
 
 // Misc:
 
-void rsSlewRateLimiter::reset()
+template<class TSig, class TPar>
+void rsSlewRateLimiter<TSig, TPar>::reset()
 {
   y1 = 0.0;
 }
 
-void rsSlewRateLimiter::calculateAttackCoefficient()
+template<class TSig, class TPar>
+void rsSlewRateLimiter<TSig, TPar>::calculateAttackCoefficient()
 {
   double tau = 0.001*attackTime; // in seconds
   if( tau > 0.0 )
@@ -64,7 +63,8 @@ void rsSlewRateLimiter::calculateAttackCoefficient()
     coeffAttack = 0.0;
 }
 
-void rsSlewRateLimiter::calculateReleaseCoefficient()
+template<class TSig, class TPar>
+void rsSlewRateLimiter<TSig, TPar>::calculateReleaseCoefficient()
 {
   double tau = 0.001*releaseTime;
   if( tau > 0.0 )
