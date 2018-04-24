@@ -40,7 +40,7 @@ namespace RAPT
 #include "MiscAudio/SlewRateLimiter.h"
 #include "MiscAudio/SlewRateLimiterLinear.h"
 #include "MiscAudio/WindowFunctions.h"
-//#include "MiscAudio/AudioFunctions.h"
+#include "MiscAudio/AudioFunctions.h" // merge with other AudioFunctions.h file
 #include "MiscAudio/BandwidthConverter.h"
 
 #include "Filters/BandSplitter.h"

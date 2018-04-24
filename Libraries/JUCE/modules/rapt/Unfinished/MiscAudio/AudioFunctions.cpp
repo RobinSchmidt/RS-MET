@@ -1,9 +1,8 @@
-using namespace RSLib;
-
-double RSLib::rsCentroid(double *x, int N)
+template<class T>
+T rsCentroid(T *x, int N)
 {
-  double num = 0.0;
-  double den = 0.0;
+  T num = 0.0;
+  T den = 0.0;
   for(int n = 0; n < N; n++)
   {
     num += (n+1)*x[n];
@@ -12,11 +11,12 @@ double RSLib::rsCentroid(double *x, int N)
   return num/den - 1.0;
 }
 
-double RSLib::rsCentroidOfEnergy(double *x, int N)
+template<class T>
+T rsCentroidOfEnergy(T *x, int N)
 {
-  double num = 0.0;
-  double den = 0.0;
-  double x2;
+  T num = 0.0;
+  T den = 0.0;
+  T x2;
   for(int n = 0; n < N; n++)
   {
     x2   = x[n]*x[n];
@@ -28,13 +28,14 @@ double RSLib::rsCentroidOfEnergy(double *x, int N)
 // maybe make a generalization that uses pow(fabs(x[n]), a) instead of just x[n] or x^2[n]
 
 /*
-void RSLib::rsSineAmplitudeAndPhase(double y0, double y1, double w, double *a, double *p)
+template<class T>
+void rsSineAmplitudeAndPhase(T y0, T y1, T w, T *a, T *p)
 {
   // The nonlinear system of 2 equations:
   // y0 = a * sin(p)
   // y1 = a * sin(p+w)
   // with known y0, y1, w and unknown a, p is solved for a and p:
-  double s, c;
+  T s, c;
   rsSinCos(w, &s, &c);
   *p = atan2(y0*s, y1-y0*c);
   s  = sin(*p);
@@ -45,13 +46,14 @@ void RSLib::rsSineAmplitudeAndPhase(double y0, double y1, double w, double *a, d
 }
 */
 
-void RSLib::rsSineAmplitudeAndPhase(double y0, double y1, double w, double *a, double *p)
+template<class T>
+void rsSineAmplitudeAndPhase(T y0, T y1, T w, T *a, T *p)
 {
   // The nonlinear system of 2 equations:
   // y0 = a * sin(p)
   // y1 = a * sin(p+w)
   // with known y0, y1, w and unknown a, p is solved for a and p:
-  double s, c, s2;
+  T s, c, s2;
   rsSinCos(w, &s, &c);
   *p = atan2(y0*s, y1-y0*c);
   s  = sin(*p);
@@ -69,7 +71,8 @@ void RSLib::rsSineAmplitudeAndPhase(double y0, double y1, double w, double *a, d
   // necessarry) - but might be more accurate numerically? ...tests are needed
 }
 
-double RSLib::rsSineFrequency(double y0, double y1, double y2, double small)
+template<class T>
+T rsSineFrequency(T y0, T y1, T y2, T small)
 {
   rsAssert( fabs(y1) > small * (fabs(y0)+fabs(y2)), "y1 (numerically) zero is not allowed");
 
@@ -80,7 +83,8 @@ double RSLib::rsSineFrequency(double y0, double y1, double y2, double small)
   return acos(0.5*(y0+y2)/y1); 
 }
 
-double RSLib::rsSineFrequencyAtCore(double *x, int N, int n0, double small)
+template<class T>
+T rsSineFrequencyAtCore(T *x, int N, int n0, T small)
 {
   if( n0 <= 0 )
     n0 = 1;
@@ -96,12 +100,12 @@ double RSLib::rsSineFrequencyAtCore(double *x, int N, int n0, double small)
   return rsSineFrequency(x[n0-1], x[n0], x[n0+1]);
 }
 
-
-double refineFrequencyEstimate(double *x, int N, int n, double w)
+template<class T>
+T refineFrequencyEstimate(T *x, int N, int n, T w)
 {
-  double c = 2.0 / 3.0;  // found empirically
-  double w1;             // w measured with 1 sample offset
-  double wr;             // refined w
+  T c = 2.0 / 3.0;  // found empirically
+  T w1;             // w measured with 1 sample offset
+  T wr;             // refined w
 
   //bool forward = true; 
   bool forward = n+2 < N-1; // x[n+2] must be a valid index
@@ -126,15 +130,16 @@ double refineFrequencyEstimate(double *x, int N, int n, double w)
   // at high w, we may get outliers that are worse than the unrefined values, so we return the 
   // refined value only if the relative difference to the input value is below some threshold 
   // (which was found empirically):
-  double thresh = 0.0001;
-  double relativeDelta = (w-wr)/w;
+  T thresh = 0.0001;
+  T relativeDelta = (w-wr)/w;
   if( rsAbs(relativeDelta) < thresh )
     return wr;
   else
     return w;
 }
 
-double RSLib::rsSineFrequencyAt(double *x, int N, int n0, bool refine)
+template<class T>
+T rsSineFrequencyAt(T *x, int N, int n0, bool refine)
 {
   // find indices of maxima/minima before and after the sample-index in question, taking into 
   // account cases where our index n0 is not surrounded by peaks/valley in which case we take the 
@@ -156,8 +161,8 @@ double RSLib::rsSineFrequencyAt(double *x, int N, int n0, bool refine)
   //  return rsSineFrequencyAtCore(x, N, nL);
 
   // compute instantaneous frequencies at nL and nR:
-  double wL = rsSineFrequencyAtCore(x, N, nL); 
-  double wR = rsSineFrequencyAtCore(x, N, nR); 
+  T wL = rsSineFrequencyAtCore(x, N, nL); 
+  T wR = rsSineFrequencyAtCore(x, N, nR); 
 
   if( refine == true )
   {
@@ -166,7 +171,7 @@ double RSLib::rsSineFrequencyAt(double *x, int N, int n0, bool refine)
   }
 
   // compute frequency at n0 by linear interpolation (or extrapolation):
-  double w  = rsInterpolateLinear((double)nL, (double)nR, wL, wR, (double)n0);
+  T w  = rsInterpolateLinear((T)nL, (T)nR, wL, wR, (T)n0);
   return w;
 
 
@@ -177,8 +182,8 @@ double RSLib::rsSineFrequencyAt(double *x, int N, int n0, bool refine)
 
   // experimental: try to remove measurement bias by predicting and compensating (to use one of these,
   // comment out the "return f" above and uncomment one of the formulas here:
-  double dw = wR - wL;
-  double rw = wR / wL;
+  T dw = wR - wL;
+  T rw = wR / wL;
   //return w + 0.5*dw*w;
   //return w + 0.5*dw*w*rw; // error around 10/10^5 for 1000-2000 sweep, biased to -
   //return w + 0.25*dw*w*rw; // error around 5/10^5 for 1000-2000 sweep, biased to +
@@ -188,12 +193,13 @@ double RSLib::rsSineFrequencyAt(double *x, int N, int n0, bool refine)
   //return w + 0.5*rw; // no
 }
 
-double RSLib::rsSinePhaseAt(double *x, int N, int n0, double w)
+template<class T>
+T rsSinePhaseAt(T *x, int N, int n0, T w)
 {
   rsAssert(N >= 2, "Signal too short");
 
-  //double w = rsSineFrequencyAt(x, N, n0);
-  double a, p;
+  //T w = rsSineFrequencyAt(x, N, n0);
+  T a, p;
   if( n0 <= N-2 )
     rsSineAmplitudeAndPhase(x[n0], x[n0+1], w, &a, &p);
   else
@@ -204,13 +210,12 @@ double RSLib::rsSinePhaseAt(double *x, int N, int n0, double w)
   return p;
 }
 
-double RSLib::rsSinePhaseAt(double *x, int N, int n0)
+template<class T>
+T rsSinePhaseAt(T *x, int N, int n0)
 {
-  double w = rsSineFrequencyAt(x, N, n0);
+  T w = rsSineFrequencyAt(x, N, n0);
   return rsSinePhaseAt(x, N, n0, w);
 }
-
-
 
 // move all these somewhere else:
 template <class T>
@@ -231,7 +236,8 @@ inline bool isDownwardZeroCrossing(T x, int N, int n0)
     return false;
 }
 
-int RSLib::rsFindZeroNear(double *x, int N, int n0, int searchDirection, bool upward, 
+template <class T>
+int rsFindZeroNear(T *x, int N, int n0, int searchDirection, bool upward, 
   bool downward)
 {
   int n;
@@ -263,13 +269,13 @@ int RSLib::rsFindZeroNear(double *x, int N, int n0, int searchDirection, bool up
   return -1;
 }
 
-// intergrate into RSLib:
-double rsSubSamplePrecisionZeroCrossing(double *x, int N, int n0, int p)
+template<class T>
+T rsSubSamplePrecisionZeroCrossing(T *x, int N, int n0, int p)
 {
   // maybe factor out a function rsFractionalPartOfZeroCrossing
 
-  double *a = new double[2*p+2]; // polynomial coefficients for interpolant 
-  double nf;                     // fractional part of zero-crossing sample-index
+  T *a = new T[2*p+2]; // polynomial coefficients for interpolant 
+  T nf;                     // fractional part of zero-crossing sample-index
 
   // adjust (reduce) p, when we are at the borders of the signal to avoid access violation
   p = rsMin(p, n0);
@@ -288,13 +294,14 @@ double rsSubSamplePrecisionZeroCrossing(double *x, int N, int n0, int p)
   return n0 + nf;
 }
 
-double RSLib::rsSinePhaseAtViaZeros(double *x, int N, int n0, int precision)
+template<class T>
+T rsSinePhaseAtViaZeros(T *x, int N, int n0, int precision)
 {
   // find integer zero crossings before and after n0
   //....
   int nzl, nzr;   // left and right zero crossing index
-  double zl, zr;  // left and right zero crossing with subsample precision
-  double p = 0;   // computed phase
+  T zl, zr;  // left and right zero crossing with subsample precision
+  T p = 0;   // computed phase
 
   if(x[n0] == 0.0)
   {
@@ -337,14 +344,15 @@ double RSLib::rsSinePhaseAtViaZeros(double *x, int N, int n0, int precision)
   return p;
 }
 
-double RSLib::rsSineShiftAmount(double *x, int N, int n0, double p0, double w)
+template<class T>
+T rsSineShiftAmount(T *x, int N, int n0, T p0, T w)
 {
   // compute desired phase-shift: 
 
-  //double p  = rsSinePhaseAt(x, N, n0, w);  // instantaneous phase at n0
-  double p  = rsSinePhaseAtViaZeros(x, N, n0, 3); // test - with new function
+  //T p  = rsSinePhaseAt(x, N, n0, w);  // instantaneous phase at n0
+  T p  = rsSinePhaseAtViaZeros(x, N, n0, 3); // test - with new function
 
-  double dp = p - p0;                      // desired phase-shift
+  T dp = p - p0;                      // desired phase-shift
 
   // map to the range -pi...pi (never shift more than half a cycle):
   if( dp < -PI )
@@ -358,8 +366,9 @@ double RSLib::rsSineShiftAmount(double *x, int N, int n0, double p0, double w)
   return dp / w;
 }
 
-double RSLib::rsSineShiftAmount(double *x, int N, int n0, double p0)
+template<class T>
+T rsSineShiftAmount(T *x, int N, int n0, T p0)
 {
-  double w = rsSineFrequencyAt(x, N, n0);  // instantaneous normalized radian frequency at n0
+  T w = rsSineFrequencyAt(x, N, n0);  // instantaneous normalized radian frequency at n0
   return rsSineShiftAmount(x, N, n0, p0, w);
 }
