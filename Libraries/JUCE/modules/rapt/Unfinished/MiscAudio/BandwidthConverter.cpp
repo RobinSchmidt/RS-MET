@@ -1,52 +1,59 @@
-using namespace RSLib;
-
-double rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu)
+template<class T>
+T rsBandwidthConverter::bandedgesToCenterFrequency(T fl, T fu)
 {
   return sqrt(fl*fu);
 }
 
-double rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu)
+template<class T>
+T rsBandwidthConverter::bandedgesToAbsoluteBandwidth(T fl, T fu)
 {
   return fu - fl;
 }
 
-double rsBandwidthConverter::relativeBandwidthToBandedgeFactor(double br)
+template<class T>
+T rsBandwidthConverter::relativeBandwidthToBandedgeFactor(T br)
 {
   return 0.5*br + sqrt(0.25*br*br + 1);
 }
 
-void rsBandwidthConverter::absoluteBandwidthToBandedges(double bw, double fc, double *fl, 
-  double *fu)
+template<class T>
+void rsBandwidthConverter::absoluteBandwidthToBandedges(T bw, T fc, T *fl, 
+  T *fu)
 {
-  double br = bandwidthAbsoluteToRelative(bw, fc);
-  double k  = relativeBandwidthToBandedgeFactor(br);
+  T br = bandwidthAbsoluteToRelative(bw, fc);
+  T k  = relativeBandwidthToBandedgeFactor(br);
   *fl = fc/k;
   *fu = fc*k;
 }
 
-double rsBandwidthConverter::bandwidthAbsoluteToRelative(double bw, double fc)
+template<class T>
+T rsBandwidthConverter::bandwidthAbsoluteToRelative(T bw, T fc)
 {
   return bw / fc;
 }
 
-double rsBandwidthConverter::absoluteBandwidthToQ(double bw, double fc)
+template<class T>
+T rsBandwidthConverter::absoluteBandwidthToQ(T bw, T fc)
 {
   return 1.0 / bandwidthAbsoluteToRelative(bw, fc);
 }
 
-double rsBandwidthConverter::bandedgesToBandwidthInOctaves(double fl, double fu)
+template<class T>
+T rsBandwidthConverter::bandedgesToBandwidthInOctaves(T fl, T fu)
 {
   return rsLog2(fu/fl);
 }
 
-double rsBandwidthConverter::absoluteBandwidthToOctaves(double bw, double fc)
+template<class T>
+T rsBandwidthConverter::absoluteBandwidthToOctaves(T bw, T fc)
 {
-  double fl, fu;
+  T fl, fu;
   absoluteBandwidthToBandedges(bw, fc, &fl, &fu);
   return bandedgesToBandwidthInOctaves(fl, fu);
 }
 
-double rsBandwidthConverter::multipassScalerButterworth(int M, int N, double g)
+template<class T>
+T rsBandwidthConverter::multipassScalerButterworth(int M, int N, T g)
 {
   return pow(pow(g, -2.0/M)-1, -0.5/N);
 

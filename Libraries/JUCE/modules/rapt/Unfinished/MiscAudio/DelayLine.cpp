@@ -1,15 +1,17 @@
 // Construction/Destruction:
 
-rsBasicDelayLine::rsBasicDelayLine()
+template<class T>
+rsBasicDelayLine<T>::rsBasicDelayLine()
 {
   maxDelay  = 3;
-  delayLine = new double[maxDelay+1];
+  delayLine = new T[maxDelay+1];
   tapIn     = 0;
   tapOut    = 0;
   reset();
 }
 
-rsBasicDelayLine::~rsBasicDelayLine()
+template<class T>
+rsBasicDelayLine<T>::~rsBasicDelayLine()
 {
   if( delayLine != NULL )
     delete[] delayLine;
@@ -17,17 +19,19 @@ rsBasicDelayLine::~rsBasicDelayLine()
 
 // Setup:
 
-void rsBasicDelayLine::setMaximumDelayInSamples(int newMaxDelay)
+template<class T>
+void rsBasicDelayLine<T>::setMaximumDelayInSamples(int newMaxDelay)
 {
   if( newMaxDelay > maxDelay )
   {
     delete[] delayLine;
     maxDelay  = rsNextPowerOfTwo(newMaxDelay + 1) - 1;
-    delayLine = new double[maxDelay+1];
+    delayLine = new T[maxDelay+1];
   }
 }
 
-void rsBasicDelayLine::setDelayInSamples(int newDelay)
+template<class T>
+void rsBasicDelayLine<T>::setDelayInSamples(int newDelay)
 {
   int delay = rsMax(0, newDelay);
   if( delay > maxDelay )
@@ -41,7 +45,8 @@ void rsBasicDelayLine::setDelayInSamples(int newDelay)
 
 // Misc:
 
-void rsBasicDelayLine::reset()
+template<class T>
+void rsBasicDelayLine<T>::reset()
 {
   for(int i = 0; i < maxDelay+1; i++)  
     delayLine[i] = 0.0;
@@ -51,39 +56,45 @@ void rsBasicDelayLine::reset()
 
 // Construction/Destruction:
 
-rsDelayLine::rsDelayLine() 
+template<class TSig, class TPar>
+rsDelayLine<TSig, TPar>::rsDelayLine() 
 {
-  delayInSeconds = 0.001;
-  sampleRate     = 44100.0; 
+  delayInSeconds = TPar(0.001);
+  sampleRate     = TPar(44100.0); 
   setDelayInSeconds(delayInSeconds);
 }
 
-rsDelayLine::~rsDelayLine()
+template<class TSig, class TPar>
+rsDelayLine<TSig, TPar>::~rsDelayLine()
 {
 
 }
 
 // Setup:
 
-void rsDelayLine::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsDelayLine<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   setDelayInSeconds(delayInSeconds);
 }
 
-void rsDelayLine::setDelayInSamples(int newDelayInSamples)
+template<class TSig, class TPar>
+void rsDelayLine<TSig, TPar>::setDelayInSamples(int newDelayInSamples)
 {
   rsBasicDelayLine::setDelayInSamples(newDelayInSamples);
-  delayInSeconds = (double) newDelayInSamples / sampleRate;
+  delayInSeconds = (TPar) newDelayInSamples / sampleRate;
 }
 
-void rsDelayLine::setDelayInSeconds(double newDelayInSeconds)
+template<class TSig, class TPar>
+void rsDelayLine<TSig, TPar>::setDelayInSeconds(TPar newDelayInSeconds)
 {
   delayInSeconds = rsMax(0.0, newDelayInSeconds);
   setDelayInSamples( rsRoundToInt(sampleRate*delayInSeconds) );
 }
 
-void rsDelayLine::setDelayInMilliseconds(double newDelayInMilliseconds)
+template<class TSig, class TPar>
+void rsDelayLine<TSig, TPar>::setDelayInMilliseconds(TPar newDelayInMilliseconds)
 {
   setDelayInSeconds(0.001*newDelayInMilliseconds);
 }
@@ -92,16 +103,17 @@ void rsDelayLine::setDelayInMilliseconds(double newDelayInMilliseconds)
 
 // construction/destruction:
 
-rsFractionalDelayLine::rsFractionalDelayLine(int maximumDelayInSamples)
+template<class TSig, class TPar>
+rsFractionalDelayLine<TSig, TPar>::rsFractionalDelayLine(int maximumDelayInSamples)
 {
   length      = maximumDelayInSamples + 1;
-  delayBuffer = new double[length+interpolatorMargin];
+  delayBuffer = new TSig[length+interpolatorMargin];
 
   tapIn      = 0;
   tapOut     = 0;
-  delayTime  = 0.25;
-  sampleRate = 44100.0;
-  bpm        = 120.0;
+  delayTime  = TPar(0.25);
+  sampleRate = TPar(44100.0);
+  bpm        = TPar(120.0);
   tempoSync  = false;
 
   interpolator.setInterpolationMethod(rsInterpolator::WARPED_ALLPASS);
@@ -112,7 +124,8 @@ rsFractionalDelayLine::rsFractionalDelayLine(int maximumDelayInSamples)
   clearDelayBuffer();
 }
 
-rsFractionalDelayLine::~rsFractionalDelayLine()
+template<class TSig, class TPar>
+rsFractionalDelayLine<TSig, TPar>::~rsFractionalDelayLine()
 {
   if( delayBuffer != NULL )
   {
@@ -123,7 +136,8 @@ rsFractionalDelayLine::~rsFractionalDelayLine()
 
 // parameter settings (set-functions):
 
-void rsFractionalDelayLine::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsFractionalDelayLine<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   if(newSampleRate > 0.01)
   {
@@ -132,20 +146,23 @@ void rsFractionalDelayLine::setSampleRate(double newSampleRate)
   }
 }
 
-void rsFractionalDelayLine::setDelayTime(double newDelayTime)
+template<class TSig, class TPar>
+void rsFractionalDelayLine<TSig, TPar>::setDelayTime(TPar newDelayTime)
 {
   //delayTime = rsClip(newDelayTime, 0.0, 4.25);  
   delayTime = newDelayTime;
   setupDelayInSamples();
 }
 
-void rsFractionalDelayLine::setSyncMode(bool shouldTempoSync)
+template<class TSig, class TPar>
+void rsFractionalDelayLine<TSig, TPar>::setSyncMode(bool shouldTempoSync)
 {
   tempoSync = shouldTempoSync;
   setupDelayInSamples();
 }
 
-void rsFractionalDelayLine::setTempoInBPM(double newTempoInBPM)
+template<class TSig, class TPar>
+void rsFractionalDelayLine<TSig, TPar>::setTempoInBPM(TPar newTempoInBPM)
 {
   if(newTempoInBPM >= 0.0)
   {
@@ -156,7 +173,8 @@ void rsFractionalDelayLine::setTempoInBPM(double newTempoInBPM)
     rsError("Tempo < 0");
 }
 
-void rsFractionalDelayLine::setInterpolationMethod(int newMethod)
+template<class TSig, class TPar>
+void rsFractionalDelayLine<TSig, TPar>::setInterpolationMethod(int newMethod)
 {
   if(newMethod <= rsInterpolator::WARPED_ALLPASS)
     interpolator.setInterpolationMethod(newMethod);
@@ -166,14 +184,16 @@ void rsFractionalDelayLine::setInterpolationMethod(int newMethod)
 
 // others:
 
-void rsFractionalDelayLine::clearDelayBuffer()
+template<class TSig, class TPar>
+void rsFractionalDelayLine<TSig, TPar>::clearDelayBuffer()
 {
   for(int i=0; i<length+interpolatorMargin; i++)
     delayBuffer[i] = 0.0;
   interpolator.reset();
 }
 
-void rsFractionalDelayLine::setupDelayInSamples()
+template<class TSig, class TPar>
+void rsFractionalDelayLine<TSig, TPar>::setupDelayInSamples()
 {
   double delayInSeconds;
   if( tempoSync )
@@ -183,8 +203,8 @@ void rsFractionalDelayLine::setupDelayInSamples()
     // get rid of the temposync stuff
 
   delayInSamples = sampleRate*delayInSeconds;
-  delayInSamples = rsLimitToRange(delayInSamples, (double)(interpolatorMargin-1), 
-    (double) (length-1-interpolatorMargin));
+  delayInSamples = rsLimitToRange(delayInSamples, (TPar)(interpolatorMargin-1), 
+    (TPar) (length-1-interpolatorMargin));
   //delayInSamples = clip(delayInSamples, (double)(interpolatorMargin-1), 
   //  (double) (length-1-interpolatorMargin)); // old
 
@@ -197,9 +217,9 @@ void rsFractionalDelayLine::setupDelayInSamples()
     delayTime = delayInSeconds;
 
   // calculate the integer and fractional parts of the delay:
-  double tmp   = floor(delayInSamples);
-  int    dInt  = (int) tmp;
-  double dFrac = delayInSamples - tmp;
+  TPar tmp   = floor(delayInSamples);
+  int  dInt  = (int) tmp;
+  TPar dFrac = delayInSamples - tmp;
   frac         = 1.0 - dFrac; // because we look backwards
 
                               // adjust tapOut-pointer:
