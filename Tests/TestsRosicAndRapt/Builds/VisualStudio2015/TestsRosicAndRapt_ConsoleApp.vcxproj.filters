@@ -110,6 +110,9 @@
     <Filter Include="Juce Modules\rapt\Unfinished\Math">
       <UniqueIdentifier>{E8F0BB0E-21A6-F034-F0C2-22342EFE39B8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Unfinished\MiscAudio">
+      <UniqueIdentifier>{BD3E6722-12DD-9ADA-8F53-CDF0FABEDFB4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Unfinished">
       <UniqueIdentifier>{6A17A633-5931-836E-67EA-F3DA66DD4636}</UniqueIdentifier>
     </Filter>
@@ -675,6 +678,33 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Transforms.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\AudioFunctions.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\BandwidthConverter.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\DelayLine.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Interpolator.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\MiscAudio.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Saturator.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\SlewRateLimiter.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\SlewRateLimiterLinear.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
@@ -2435,6 +2465,33 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Vector.h">
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\AudioFunctions.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\BandwidthConverter.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\DelayLine.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Interpolator.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\MiscAudio.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Saturator.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\SlewRateLimiter.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\SlewRateLimiterLinear.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
