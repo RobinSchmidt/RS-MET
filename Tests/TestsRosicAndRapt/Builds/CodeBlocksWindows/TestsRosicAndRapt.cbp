@@ -1485,223 +1485,229 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/OouraFFT/fft4g.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Audio/BandSplitter.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/AffineTransform2D.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Audio/BandSplitter.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/BandSplitter.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Data/Flags.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/BandSplitter.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Data/Flags.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/DifferentialEquationSystem.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Data/MultiArray.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Flags.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Data/MultiArray.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Flags.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/OouraFFT/fft4g.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/FourierTransformer.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/AffineTransform2D.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/FourierTransformer.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/DifferentialEquationSystem.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/FunctionObjects.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/FourierTransformer.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/FunctionObjects.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/FourierTransformer.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/GeometricFunctions.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/FunctionObjects.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/GeometricFunctions.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/FunctionObjects.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/GradientBasedMinimizer.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/GeometricFunctions.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/GradientBasedMinimizer.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/GeometricFunctions.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Interpolation.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/GradientBasedMinimizer.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Interpolation.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/GradientBasedMinimizer.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Matrix.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Interpolation.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Matrix.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Interpolation.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/ModularInteger.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Matrix.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/ModularInteger.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Matrix.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/MultiArray.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/ModularInteger.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/MultiArray.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/ModularInteger.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/MultiLayerPerceptron.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/MultiLayerPerceptron.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/MultiLayerPerceptron.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/MultiLayerPerceptron.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/NumberTheory.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/NumberTheory.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/NumberTheory.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/NumberTheory.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/NumericCalculus.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/NumericCalculus.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/NumericCalculus.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/NumericCalculus.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Point2D.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Point2D.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Polygon2D.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Polygon2D.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Rectangle2D.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Rectangle2D.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Statistics.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Statistics.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Statistics.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Statistics.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Transforms.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Transforms.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Transforms.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Transforms.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Triangle2D.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Triangle2D.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Vector.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
@@ -1714,12 +1720,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Unfinished.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Vector.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

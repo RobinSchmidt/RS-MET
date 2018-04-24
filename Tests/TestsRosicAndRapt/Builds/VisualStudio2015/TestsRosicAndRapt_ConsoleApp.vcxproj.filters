@@ -98,8 +98,17 @@
     <Filter Include="Juce Modules\rapt\Temp">
       <UniqueIdentifier>{1077C9FE-8734-5D17-6E96-F6DB62A1D921}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Juce Modules\rapt\Unfinished\OouraFFT">
-      <UniqueIdentifier>{A8DDFDC4-521E-F676-462D-53CEE016407A}</UniqueIdentifier>
+    <Filter Include="Juce Modules\rapt\Unfinished\Audio">
+      <UniqueIdentifier>{B5A18F83-892E-8696-9037-7B9282DEEDAD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Unfinished\Data">
+      <UniqueIdentifier>{D5D08C3C-6C7A-94C1-4EA5-3445774835F7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Unfinished\Math\OouraFFT">
+      <UniqueIdentifier>{40D64605-5B08-2D90-EA87-75B90BFFABFB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Unfinished\Math">
+      <UniqueIdentifier>{E8F0BB0E-21A6-F034-F0C2-22342EFE39B8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules\rapt\Unfinished">
       <UniqueIdentifier>{6A17A633-5931-836E-67EA-F3DA66DD4636}</UniqueIdentifier>
@@ -601,53 +610,53 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\OouraFFT\fft4g.cpp">
-      <Filter>Juce Modules\rapt\Unfinished\OouraFFT</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Audio\BandSplitter.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Data\Flags.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Flags.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Data\MultiArray.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FourierTransformer.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\OouraFFT\fft4g.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math\OouraFFT</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FunctionObjects.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\FourierTransformer.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GeometricFunctions.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\FunctionObjects.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GeometricFunctions.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Interpolation.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GradientBasedMinimizer.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Interpolation.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\ModularInteger.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Matrix.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiArray.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\ModularInteger.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\MultiLayerPerceptron.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumberTheory.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumberTheory.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumericCalculus.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumericCalculus.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Statistics.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Statistics.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Transforms.cpp">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Transforms.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
@@ -2325,73 +2334,73 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\AffineTransform2D.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Audio\BandSplitter.h">
+      <Filter>Juce Modules\rapt\Unfinished\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Data\Flags.h">
+      <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\DifferentialEquationSystem.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Data\MultiArray.h">
+      <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Flags.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\AffineTransform2D.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FourierTransformer.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\DifferentialEquationSystem.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\FunctionObjects.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\FourierTransformer.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GeometricFunctions.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\FunctionObjects.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\GradientBasedMinimizer.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GeometricFunctions.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Interpolation.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GradientBasedMinimizer.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Matrix.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Interpolation.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\ModularInteger.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Matrix.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiArray.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\ModularInteger.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MultiLayerPerceptron.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\MultiLayerPerceptron.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumberTheory.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumberTheory.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\NumericCalculus.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumericCalculus.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Point2D.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Point2D.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Polygon2D.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Polygon2D.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Rectangle2D.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Rectangle2D.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Statistics.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Statistics.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Transforms.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Transforms.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Triangle2D.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Triangle2D.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Vector.h">
+      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h">
-      <Filter>Juce Modules\rapt\Unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Vector.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h">
