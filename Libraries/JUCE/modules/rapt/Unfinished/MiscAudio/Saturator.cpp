@@ -1,12 +1,8 @@
-namespace RSLib
-{
-
-//-------------------------------------------------------------------------------------------------
 // class rsHalfWaveSaturator:
-
 // Construction/Destruction:
 
-rsHalfWaveSaturator::rsHalfWaveSaturator()
+template<class TSig, class TPar>
+rsHalfWaveSaturator<TSig, TPar>::rsHalfWaveSaturator()
 {
   setThreshold(0.0); 
   setSaturationFunction(&rsTanh);
@@ -14,19 +10,21 @@ rsHalfWaveSaturator::rsHalfWaveSaturator()
 
 // Setup:
 
-void rsHalfWaveSaturator::setThreshold(double newThreshold)
+template<class TSig, class TPar>
+void rsHalfWaveSaturator<TSig, TPar>::setThreshold(TPar newThreshold)
 {
   rsAssert(newThreshold >= 0.0);
   rsAssert(newThreshold <= 1.0);
   thresh   = newThreshold;
   outScale = 1-thresh;
-  if(outScale >= RS_EPS(double))
+  if(outScale >= RS_EPS(TPar))
     inScale = 1/outScale;
   else
     inScale = 1.0;
 }
 
-void rsHalfWaveSaturator::setSaturationFunction(double (*newFunction)(double))
+template<class TSig, class TPar>
+void rsHalfWaveSaturator<TSig, TPar>::setSaturationFunction(TSig (*newFunction)(TSig))
 {
   saturate = newFunction;
 }
@@ -36,33 +34,39 @@ void rsHalfWaveSaturator::setSaturationFunction(double (*newFunction)(double))
 
 // Setup:
 
-void rsSaturator::setLowerThreshold(double newThreshold)
+template<class TSig, class TPar>
+void rsSaturator<TSig, TPar>::setLowerThreshold(TPar newThreshold)
 {
   loSaturator.setThreshold(newThreshold);
 }
 
-void rsSaturator::setUpperThreshold(double newThreshold)
+template<class TSig, class TPar>
+void rsSaturator<TSig, TPar>::setUpperThreshold(TPar newThreshold)
 {
   upSaturator.setThreshold(newThreshold);
 }
 
-void rsSaturator::setThresholds(double newThreshold)
+template<class TSig, class TPar>
+void rsSaturator<TSig, TPar>::setThresholds(TPar newThreshold)
 {
   setUpperThreshold(newThreshold);
   setLowerThreshold(newThreshold);
 }
 
-void rsSaturator::setLowerSaturationFunction(double (*newFunction)(double))
+template<class TSig, class TPar>
+void rsSaturator<TSig, TPar>::setLowerSaturationFunction(TSig (*newFunction)(TSig))
 {
   loSaturator.setSaturationFunction(newFunction);
 }
 
-void rsSaturator::setUpperSaturationFunction(double (*newFunction)(double))
+template<class TSig, class TPar>
+void rsSaturator<TSig, TPar>::setUpperSaturationFunction(TSig (*newFunction)(TSig))
 {
   upSaturator.setSaturationFunction(newFunction);
 }
 
-void rsSaturator::setSaturationFunctions(double (*newFunction)(double))
+template<class TSig, class TPar>
+void rsSaturator<TSig, TPar>::setSaturationFunctions(TSig (*newFunction)(TSig))
 {
   setLowerSaturationFunction(newFunction);
   setUpperSaturationFunction(newFunction);
@@ -71,9 +75,8 @@ void rsSaturator::setSaturationFunctions(double (*newFunction)(double))
 //-------------------------------------------------------------------------------------------------
 // class rsSidechainSaturator:
 
-void rsSidechainSaturator::setMode(int newMode)
+template<class TSig, class TPar>
+void rsSidechainSaturator<TSig, TPar>::setMode(int newMode)
 {
   mode = newMode;
-}
-
 }
