@@ -1,92 +1,82 @@
-#ifndef RS_SLEWRATELIMITERLINEAR_H
-#define RS_SLEWRATELIMITERLINEAR_H
+#ifndef RAPT_SLEWRATELIMITERLINEAR_H
+#define RAPT_SLEWRATELIMITERLINEAR_H
 
-namespace RSLib
+/** This is a slewrate limiter with user adjustable attack and release time constants.... */
+
+template<class TSig, class TPar>
+class rsSlewRateLimiterLinear
 {
 
-  /**
+public:
 
-  This is a slewrate limiter with user adjustable attack and release time constants. ....
+  /** \name Construction/Destruction */
 
-  */
-
-  class RSLib_API rsSlewRateLimiterLinear  
-  {
-
-  public:
-
-    /** \name Construction/Destruction */
-
-    /** Constructor. */
-    rsSlewRateLimiterLinear();  
-
-    /** Destructor. */
-    ~rsSlewRateLimiterLinear();  
+  /** Constructor. */
+  rsSlewRateLimiterLinear();
 
 
-    /** \name Setup */
+  /** \name Setup */
 
-    /** Sets the sample-rate. */
-    void setSampleRate(double newSampleRate);    
+  /** Sets the sample-rate. */
+  void setSampleRate(TPar newSampleRate);
 
-    /** Sets the attack-time (in milliseconds) - this time which it takes to rise from 0 to 1
-    when the input signal makes an upward step from 0 to 1. */
-    void setAttackTime(double newAttackTime); 
+  /** Sets the attack-time (in milliseconds) - this time which it takes to rise from 0 to 1
+  when the input signal makes an upward step from 0 to 1. */
+  void setAttackTime(TPar newAttackTime);
 
-    /** Sets the release-time (in milliseconds). ... */
-    void setReleaseTime(double newReleaseTime);
-
-
-    /** \name Inquiry */
-
-    /** Returns the attack-time (in milliseconds). */
-    double getAttackTime() const { return attackTime; }
-
-    /** Returns the release-time. */
-    double getReleaseTime() const { return releaseTime; }
+  /** Sets the release-time (in milliseconds). ... */
+  void setReleaseTime(TPar newReleaseTime);
 
 
-    /** \name Audio Processing */
+  /** \name Inquiry */
 
-    /** Returns a smoothed input value. */
-    RS_INLINE double getSample(double in);
+  /** Returns the attack-time (in milliseconds). */
+  TPar getAttackTime() const { return attackTime; }
 
-
-    /** \name Misc */
-
-    void reset();
-
-  protected:
-    
-    /** \name Internal */
-
-    /** Calculates the maximum difference between current and past output sample, when the current
-    input is greater than the past output. */
-    void calculateUpwardLimit();
-
-    /** Calculates the maximum difference between current and past output sample, when the current
-    input is smaller than the past output. */
-    void calculateDownwardLimit();
+  /** Returns the release-time. */
+  TPar getReleaseTime() const { return releaseTime; }
 
 
-    double calculateStepLimit(double unitStepTime);
+  /** \name Audio Processing */
 
-    double upwardLimit, downwardLimit;  
-    double y1;                          // previous output sample
-    double sampleRate;                  // the samplerate
-    double attackTime, releaseTime;     // in milliseconds
+  /** Returns a smoothed input value. */
+  RS_INLINE TSig getSample(TSig in);
 
-  };
 
-  //-----------------------------------------------------------------------------------------------
-  // inlined functions:
+  /** \name Misc */
 
-  RS_INLINE double rsSlewRateLimiterLinear::getSample(double in)
-  {
-    y1 += rsClipToRange(in-y1, -downwardLimit, upwardLimit);
-    return y1;
-  }
+  void reset();
 
+protected:
+
+  /** \name Internal */
+
+  /** Calculates the maximum difference between current and past output sample, when the current
+  input is greater than the past output. */
+  void calculateUpwardLimit();
+
+  /** Calculates the maximum difference between current and past output sample, when the current
+  input is smaller than the past output. */
+  void calculateDownwardLimit();
+
+
+  TPar calculateStepLimit(TPar unitStepTime);
+
+  TPar upwardLimit, downwardLimit;
+  TSig y1;                          // previous output sample
+  TPar sampleRate;                  // the samplerate
+  TPar attackTime, releaseTime;     // in milliseconds
+
+};
+
+//-----------------------------------------------------------------------------------------------
+// inlined functions:
+
+template<class TSig, class TPar>
+RS_INLINE TSig rsSlewRateLimiterLinear<TSig, TPar>::getSample(TSig in)
+{
+  y1 += rsClipToRange(in-y1, -downwardLimit, upwardLimit);
+  return y1;
 }
 
 #endif

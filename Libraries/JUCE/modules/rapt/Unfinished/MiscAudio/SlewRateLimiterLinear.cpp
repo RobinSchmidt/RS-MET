@@ -1,9 +1,7 @@
-namespace RSLib
-{
-
 // Construction/Destruction:
 
-rsSlewRateLimiterLinear::rsSlewRateLimiterLinear()
+template<class TSig, class TPar>
+rsSlewRateLimiterLinear<TSig, TPar>::rsSlewRateLimiterLinear()
 {
   sampleRate  = 44100.0f; 
   attackTime  = 10.0f;    
@@ -14,14 +12,10 @@ rsSlewRateLimiterLinear::rsSlewRateLimiterLinear()
   calculateDownwardLimit();
 }
 
-rsSlewRateLimiterLinear::~rsSlewRateLimiterLinear()
-{
-
-}
-
 // Setup:
 
-void rsSlewRateLimiterLinear::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsSlewRateLimiterLinear<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   if( newSampleRate > 0.0 )
   {
@@ -31,7 +25,8 @@ void rsSlewRateLimiterLinear::setSampleRate(double newSampleRate)
   }
 }
 
-void rsSlewRateLimiterLinear::setAttackTime(double newAttackTime)
+template<class TSig, class TPar>
+void rsSlewRateLimiterLinear<TSig, TPar>::setAttackTime(TPar newAttackTime)
 {
   if( newAttackTime >= 0.0 && newAttackTime != attackTime )
   {
@@ -40,7 +35,8 @@ void rsSlewRateLimiterLinear::setAttackTime(double newAttackTime)
   }
 }
 
-void rsSlewRateLimiterLinear::setReleaseTime(double newReleaseTime)
+template<class TSig, class TPar>
+void rsSlewRateLimiterLinear<TSig, TPar>::setReleaseTime(TPar newReleaseTime)
 {
   if( newReleaseTime >= 0.0 && newReleaseTime != releaseTime )
   {
@@ -51,24 +47,26 @@ void rsSlewRateLimiterLinear::setReleaseTime(double newReleaseTime)
 
 // Misc:
 
-void rsSlewRateLimiterLinear::reset()
+template<class TSig, class TPar>
+void rsSlewRateLimiterLinear<TSig, TPar>::reset()
 {
   y1 = 0.0;
 }
 
-void rsSlewRateLimiterLinear::calculateUpwardLimit()
+template<class TSig, class TPar>
+void rsSlewRateLimiterLinear<TSig, TPar>::calculateUpwardLimit()
 {
   upwardLimit = calculateStepLimit(attackTime);
 }
 
-void rsSlewRateLimiterLinear::calculateDownwardLimit()
+template<class TSig, class TPar>
+void rsSlewRateLimiterLinear<TSig, TPar>::calculateDownwardLimit()
 {
   downwardLimit = calculateStepLimit(releaseTime);
 }
 
-double rsSlewRateLimiterLinear::calculateStepLimit(double unitStepTime)
+template<class TSig, class TPar>
+TPar rsSlewRateLimiterLinear<TSig, TPar>::calculateStepLimit(TPar unitStepTime)
 {
   return 1.0 / (0.001*unitStepTime * sampleRate);
-}
-
 }
