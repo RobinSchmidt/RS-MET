@@ -26,7 +26,7 @@ namespace RAPT
 #include "MiscAudio/Saturator.cpp"
 #include "MiscAudio/SlewRateLimiter.cpp"
 #include "MiscAudio/SlewRateLimiterLinear.cpp"
-//#include "MiscAudio/WindowFunctions.cpp"
+#include "MiscAudio/WindowFunctions.cpp"
 //#include "MiscAudio/AudioFunctions.cpp"
 #include "MiscAudio/BandwidthConverter.cpp"
 
