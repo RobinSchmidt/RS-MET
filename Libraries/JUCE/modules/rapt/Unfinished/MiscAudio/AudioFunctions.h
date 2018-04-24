@@ -52,6 +52,7 @@ parameter "small" determines how close y1 may be to 0 until the computations are
 too error-prone. */
 template<class T>
 T rsSineFrequency(T y0, T y1, T y2, T smalll = 1.e-8);
+ // "smalll" because "small" is defined as "char" somewhere leading to weird compiler errors
 
 /** Assuming a sinusoidal input signal x of length N (and unknown frequency), this function
 computes the sinusoid's instantaneous normalized radian frequency at sample-instant n0. The value

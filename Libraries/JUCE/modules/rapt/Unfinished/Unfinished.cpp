@@ -31,8 +31,8 @@ namespace RAPT
 #include "MiscAudio/BandwidthConverter.cpp"
 
 #include "Filters/BandSplitter.cpp"
+#include "Filters/FilterDesignFormulas.cpp"
 //#include "Filters/FakeResonanceFilter.cpp"
-//#include "Filters/FilterDesignFormulas.cpp"
 //#include "Filters/LadderFilter.cpp"
 //#include "Filters/ModalFilterBank.cpp"
 //#include "Filters/MovingAverage.cpp"

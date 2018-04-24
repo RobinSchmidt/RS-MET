@@ -71,10 +71,12 @@ void rsSineAmplitudeAndPhase(T y0, T y1, T w, T *a, T *p)
   // necessarry) - but might be more accurate numerically? ...tests are needed
 }
 
+
+// i get weird compiler errors when compiling include_rosic.cpp when these are not commented - wtf?
 template<class T>
-T rsSineFrequency(T y0, T y1, T y2, T small)
+T rsSineFrequency(T y0, T y1, T y2, T smalll)
 {
-  rsAssert( fabs(y1) > small * (fabs(y0)+fabs(y2)), "y1 (numerically) zero is not allowed");
+  rsAssert( fabs(y1) > smalll * (fabs(y0)+fabs(y2)), "y1 (numerically) zero is not allowed");
 
   // There's a recursion for the sine y[n] = a1*y[n-1] - y[n-2] where a1 = 2*cos(w) and the states
   // y[n-1], y[n-2] are initialized as y[n-1] = A * sin(p - w), y[n-2] = A * sin(p - 2*w) which in 
@@ -84,13 +86,13 @@ T rsSineFrequency(T y0, T y1, T y2, T small)
 }
 
 template<class T>
-T rsSineFrequencyAtCore(T *x, int N, int n0, T small)
+T rsSineFrequencyAtCore(T *x, int N, int n0, T smalll)
 {
   if( n0 <= 0 )
     n0 = 1;
   else if( n0 >= N-1 )
     n0 = N-2;
-  if( fabs(x[n0]) <= small * (fabs(x[n0-1])+fabs(x[n0+1])) )
+  if( fabs(x[n0]) <= smalll * (fabs(x[n0-1])+fabs(x[n0+1])) )
   {
     if( n0 == N-2 )
       n0--;
@@ -99,6 +101,7 @@ T rsSineFrequencyAtCore(T *x, int N, int n0, T small)
   }
   return rsSineFrequency(x[n0-1], x[n0], x[n0+1]);
 }
+
 
 template<class T>
 T refineFrequencyEstimate(T *x, int N, int n, T w)
