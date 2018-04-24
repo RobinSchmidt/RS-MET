@@ -13,7 +13,7 @@
   name:             Rob's Audio Processing Templates
   description:      Library of audio DSP algorithms as C++ templates
   website:          http://www.rs-met.com
-  license:          GPL/Commercial
+  license:          Custom
 
   dependencies:
   OSXFrameworks:

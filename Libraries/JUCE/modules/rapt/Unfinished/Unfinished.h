@@ -32,9 +32,13 @@ namespace RAPT
 
 // still missing math files from RSLib:  BigInt/BigFloat (should go into rosic)
 
-#include "Audio/BandSplitter.h" // should go to Filters
-
-
+#include "Filters/BandSplitter.h"
+//#include "Filters/FakeResonanceFilter.h"
+//#include "Filters/FilterDesignFormulas.h"
+//#include "Filters/LadderFilter.h"
+//#include "Filters/ModalFilterBank.h"
+//#include "Filters/MovingAverage.h"
+//#include "Filters/PhonoFilter.h"
 
 }
 

@@ -18,6 +18,12 @@ namespace RAPT
 #include "Math/GeometricFunctions.cpp"
 #include "Math/ModularInteger.cpp"
 
-#include "Audio/BandSplitter.cpp"  // should go into Filters
+#include "Filters/BandSplitter.cpp"
+//#include "Filters/FakeResonanceFilter.cpp"
+//#include "Filters/FilterDesignFormulas.cpp"
+//#include "Filters/LadderFilter.cpp"
+//#include "Filters/ModalFilterBank.cpp"
+//#include "Filters/MovingAverage.cpp"
+//#include "Filters/PhonoFilter.cpp"
 
 }

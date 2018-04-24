@@ -13,7 +13,7 @@
   name:             Rob's Signal Processing Classes
   description:      Library of audio DSP algorithms
   website:          http://www.rs-met.com
-  license:          GPL/Commercial
+  license:          Custom
 
   dependencies:     rapt
   OSXFrameworks:
