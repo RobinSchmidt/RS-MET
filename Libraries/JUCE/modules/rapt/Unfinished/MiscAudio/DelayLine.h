@@ -8,6 +8,7 @@ algorithm is involved - that makes it especially efficient.
 
 \todo: use only one pointer for tapIn and tapOut (see Julius Smith's pasp-book) */
 
+template<class T>
 class rsBasicDelayLine
 {
 
@@ -52,18 +53,18 @@ public:
   /** \name Audio Processing */
 
   /** Calculates one output-sample at a time and handles all the tap-pointer increments. */
-  RS_INLINE double getSample(double in);
+  RS_INLINE T getSample(T in);
 
   /** Calculates one output-sample at a time but suppresses the incrementation of the tapIn
   tapOut pointers and should be used in conjunction with incrementTapPointers(). This is useful
   when something must be added to the input which is not yet available at the time of/before
   calling getSample() - for example, when the delayline is part of a feedback loop. The adding
   itself can the be done via addToInput(). */
-  RS_INLINE double getSampleSuppressTapIncrements(double in);
+  RS_INLINE T getSampleSuppressTapIncrements(T in);
 
   /** Adds some signal value to the current tapIn-position in the delayLine - useful for
   feedback and crossfeedback stuff. */
-  RS_INLINE void addToInput(double signalToAdd);
+  RS_INLINE void addToInput(T signalToAdd);
 
   /** Does the increment for the tap pointers and wraps them around if necesarray - should be
   used in conjunction with getSampleSuppressTapIncrements(). */
@@ -79,32 +80,36 @@ protected:
 
   /** \name Data */
 
-  double *delayLine;
-  int    tapIn, tapOut, maxDelay;
+  T* delayLine;  // maybe use std::vector
+  int tapIn, tapOut, maxDelay;
 
 };
 
 //-----------------------------------------------------------------------------------------------
 // inlined functions:
 
-RS_INLINE double rsBasicDelayLine::getSample(double in)
+template<class T>
+RS_INLINE T rsBasicDelayLine<T>::getSample(T in)
 {
   incrementTapPointers();
   return getSampleSuppressTapIncrements(in);
 }
 
-RS_INLINE double rsBasicDelayLine::getSampleSuppressTapIncrements(double in)
+template<class T>
+RS_INLINE T rsBasicDelayLine<T>::getSampleSuppressTapIncrements(T in)
 {
   delayLine[tapIn] = in;
   return delayLine[tapOut];
 }
 
-RS_INLINE void rsBasicDelayLine::addToInput(double signalToAdd)
+template<class T>
+RS_INLINE void rsBasicDelayLine<T>::addToInput(T signalToAdd)
 {
   delayLine[tapIn] += signalToAdd;
 }
 
-RS_INLINE void rsBasicDelayLine::incrementTapPointers()
+template<class T>
+RS_INLINE void rsBasicDelayLine<T>::incrementTapPointers()
 {
   tapIn  = (tapIn+1)  & maxDelay;
   tapOut = (tapOut+1) & maxDelay;
@@ -128,7 +133,8 @@ seconds.
 
 */
 
-class rsDelayLine : public rsBasicDelayLine
+template<class TSig, class TPar>
+class rsDelayLine : public rsBasicDelayLine<TSig>
 {
 
 public:
@@ -146,32 +152,32 @@ public:
   /** \name Setup */
 
   /** Sets the sample-rate. */
-  void setSampleRate(double newSampleRate);
+  void setSampleRate(TPar newSampleRate);
 
   /** Sets the delay-time in samples. */
   void setDelayInSamples(int newDelayInSamples);
 
   /** Sets the delay-time in seconds. */
-  void setDelayInSeconds(double newDelayInSeconds);
+  void setDelayInSeconds(TPar newDelayInSeconds);
 
   /** Sets the delay-time in milliseconds. */
-  void setDelayInMilliseconds(double newDelayInMilliseconds);
+  void setDelayInMilliseconds(TPar newDelayInMilliseconds);
 
 
   /** \name Inquiry */
 
   /** Returns the delay-time in seconds. */
-  RS_INLINE double getDelayInSeconds() const { return delayInSeconds; }
+  RS_INLINE TPar getDelayInSeconds() const { return delayInSeconds; }
 
   /** Returns the delay-time in milliseconds. */
-  RS_INLINE double getDelayInMilliseconds() const { return 1000.0 * delayInSeconds; }
+  RS_INLINE TPar getDelayInMilliseconds() const { return 1000.0 * delayInSeconds; }
 
 protected:
 
   /** \name Data */
 
-  double delayInSeconds;
-  double sampleRate;
+  TPar delayInSeconds;
+  TPar sampleRate;
 
 };
 
@@ -188,6 +194,7 @@ This class implements a basic delay-line with various interpolation methods.
 
 */
 
+template<class TSig, class TPar>
 class rsFractionalDelayLine
 {
 
@@ -205,16 +212,16 @@ public:
   /** \name Setup */
 
   /** Sets the sample-rate. */
-  void setSampleRate(double newSampleRate);
+  void setSampleRate(TPar newSampleRate);
 
   /** Sets the delay-time in seconds or beats (depending on whether sync is active). */
-  void setDelayTime(double newDelayTime);
+  void setDelayTime(TPar newDelayTime);
 
   /** Switches the tempo-sync on or off. */
   void setSyncMode(bool shouldTempoSync);
 
   /** Sets up the tempo in  beats per minute. */
-  void setTempoInBPM(double newTempoInBPM);
+  void setTempoInBPM(TPar newTempoInBPM);
 
   /** Sets the interpolation method. */
   void setInterpolationMethod(int newMethod);
@@ -223,7 +230,7 @@ public:
   /** \name Inquiry */
 
   /** Returns the delay-time in seconds or beats (depending on whether sync is active). */
-  double getDelayTime() const { return delayTime; }
+  TPar getDelayTime() const { return delayTime; }
 
   /** Returns true when tempo-sync is active, false otherwise. */
   int isInSyncMode() const { return tempoSync; }
@@ -235,7 +242,7 @@ public:
   /** \name Audio Processing */
 
   /** Calculates one output-sample at a time. */
-  RS_INLINE double getSample(double in);
+  RS_INLINE TSig getSample(TSig in);
 
 
   /** \name Misc */
@@ -263,23 +270,23 @@ protected:
 
   int    tapIn, tapOut;
 
-  double *delayBuffer;
+  TSig *delayBuffer;
 
   int    length;
   // nominal length (excluding the interpolator margin, maximum delay will be length-1
 
-  double frac;
+  TPar frac;
   // The actual readout-position is this (fractional) number of samples ahead the
   // tapOut-pointer position. It is given by  1.0 - delayInSampleFractionalPart. */
 
 
-  double delayInSamples;
-  double delayTime;      // in seconds or beats
-  double sampleRate;
-  double bpm;
-  bool   tempoSync;
+  TPar delayInSamples;
+  TPar delayTime;      // in seconds or beats
+  TPar sampleRate;
+  TPar bpm;
+  bool tempoSync;
 
-  rsInterpolator interpolator;
+  rsInterpolator<TSig> interpolator;
 
 private:
 
@@ -293,7 +300,8 @@ private:
 //-----------------------------------------------------------------------------------------------
 // inlined functions:
 
-RS_INLINE int rsFractionalDelayLine::wrapAround(int position)
+template<class TSig, class TPar>
+RS_INLINE int rsFractionalDelayLine<TSig, TPar>::wrapAround(int position)
 {
   while(position >= length)
     position =-length;
@@ -303,9 +311,10 @@ RS_INLINE int rsFractionalDelayLine::wrapAround(int position)
   // optimize using a bitmask
 }
 
-double rsFractionalDelayLine::getSample(double in)
+template<class TSig, class TPar>
+TSig rsFractionalDelayLine<TSig, TPar>::getSample(TSig in)
 {
-  doubleA out;
+  TSig out;
 
   // write the incoming sample into the delay-line:
   delayBuffer[tapIn] = in;

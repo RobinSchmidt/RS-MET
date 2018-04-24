@@ -1,5 +1,3 @@
-using namespace RSLib;
-
 // Construction/Destruction:
 
 rsBasicDelayLine::rsBasicDelayLine()
