@@ -3,7 +3,7 @@
 namespace RAPT
 {
 
-//#include "Basic/OnePoleFilter.cpp"
+#include "Basic/OnePoleFilter.cpp"
 #include "Basic/SmoothingFilter.cpp"
 
 #include "Scientific/PrototypeDesigner.cpp"

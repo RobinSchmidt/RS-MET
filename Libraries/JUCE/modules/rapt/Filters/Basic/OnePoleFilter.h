@@ -112,7 +112,7 @@ protected:
 // inlined functions:
 
 template<class TSig, class TPar>
-inline TSig rsOnePoleFilter::getSample(TSig in)
+inline TSig rsOnePoleFilter<TSig, TPar>::getSample(TSig in)
 {
   y1 = b0*in + b1*x1 + a1*y1;
   x1 = in;

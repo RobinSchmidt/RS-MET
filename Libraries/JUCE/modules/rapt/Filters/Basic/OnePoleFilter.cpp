@@ -1,7 +1,7 @@
 // Construction/Destruction:
 
 template<class TSig, class TPar>
-rsOnePoleFilter::rsOnePoleFilter()
+rsOnePoleFilter<TSig, TPar>::rsOnePoleFilter()
 {
   shelvingGain = 1.0;
   setSampleRate(44100.0);  // sampleRate = 44100 Hz by default
@@ -13,7 +13,7 @@ rsOnePoleFilter::rsOnePoleFilter()
 // Setup:
 
 template<class TSig, class TPar>
-void rsOnePoleFilter::setSampleRate(TPar newSampleRate)
+void rsOnePoleFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   if( newSampleRate > 0.0 )
     sampleRate = newSampleRate;
@@ -24,14 +24,14 @@ void rsOnePoleFilter::setSampleRate(TPar newSampleRate)
 }
 
 template<class TSig, class TPar>
-void rsOnePoleFilter::setMode(int newMode)
+void rsOnePoleFilter<TSig, TPar>::setMode(int newMode)
 {
   mode = newMode; // 0:bypass, 1:Low Pass, 2:High Pass
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void rsOnePoleFilter::setCutoff(TPar newCutoff)
+void rsOnePoleFilter<TSig, TPar>::setCutoff(TPar newCutoff)
 {
   if( (newCutoff > 0.0) && (newCutoff <= 20000.0) )
     cutoff = newCutoff;
@@ -43,7 +43,7 @@ void rsOnePoleFilter::setCutoff(TPar newCutoff)
 }
 
 template<class TSig, class TPar>
-void rsOnePoleFilter::setShelvingGain(TPar newGain)
+void rsOnePoleFilter<TSig, TPar>::setShelvingGain(TPar newGain)
 {
   if( newGain > 0.0 )
   {
@@ -55,13 +55,13 @@ void rsOnePoleFilter::setShelvingGain(TPar newGain)
 }
 
 template<class TSig, class TPar>
-void rsOnePoleFilter::setShelvingGainInDecibels(TPar newGain)
+void rsOnePoleFilter<TSig, TPar>::setShelvingGainInDecibels(TPar newGain)
 {
   setShelvingGain(rsDB2amp(newGain));
 }
 
 template<class TSig, class TPar>
-void rsOnePoleFilter::setCoefficients(TPar newB0, TPar newB1, TPar newA1)
+void rsOnePoleFilter<TSig, TPar>::setCoefficients(TPar newB0, TPar newB1, TPar newA1)
 {
   b0 = newB0;
   b1 = newB1;
@@ -69,7 +69,7 @@ void rsOnePoleFilter::setCoefficients(TPar newB0, TPar newB1, TPar newA1)
 }
 
 template<class TSig, class TPar>
-void rsOnePoleFilter::setInternalState(TSig newX1, TSig newY1)
+void rsOnePoleFilter<TSig, TPar>::setInternalState(TSig newX1, TSig newY1)
 {
   x1 = newX1;
   y1 = newY1;
@@ -78,7 +78,7 @@ void rsOnePoleFilter::setInternalState(TSig newX1, TSig newY1)
 // Inquiry:
 
 template<class TSig, class TPar>
-double rsOnePoleFilter::getMagnitudeAt(TPar f)
+TPar rsOnePoleFilter<TSig, TPar>::getMagnitudeAt(TPar f)
 {
   return onePoleMagnitudeAt(b0, b1, -a1, 2*PI*f*sampleRateRec);
     // we use a different sign-convention for the a1 coefficient here ...maybe fix this someday
@@ -87,7 +87,7 @@ double rsOnePoleFilter::getMagnitudeAt(TPar f)
 // Misc:
 
 template<class TSig, class TPar>
-void rsOnePoleFilter::calcCoeffs()
+void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
 {
   // maybe move these to FilterDesignFormulas
   switch(mode)
@@ -207,7 +207,7 @@ void rsOnePoleFilter::calcCoeffs()
 }
 
 template<class TSig, class TPar>
-void rsOnePoleFilter::reset()
+void rsOnePoleFilter<TSig, TPar>::reset()
 {
   x1 = 0.0;
   y1 = 0.0;
