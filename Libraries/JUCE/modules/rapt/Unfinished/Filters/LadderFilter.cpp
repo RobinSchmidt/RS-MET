@@ -71,7 +71,7 @@ void rsLadderFilter2<TSig, TPar>::reset()
 }
 
 template<class TSig, class TPar>
-double rsLadderFilter2<TSig, TPar>::computeCompensationGain(TPar a, TPar b, TPar k)
+TPar rsLadderFilter2<TSig, TPar>::computeCompensationGain(TPar a, TPar b, TPar k)
 {
   double b4 = b*b*b*b;     // b^4
   return ((((a+4) * a+6) * a+4) * a + k*b4 + 1) / b4;
@@ -79,14 +79,14 @@ double rsLadderFilter2<TSig, TPar>::computeCompensationGain(TPar a, TPar b, TPar
 }
 
 template<class TSig, class TPar>
-double rsLadderFilter2<TSig, TPar>::computeFeedbackFactor(TPar fb, TPar cosWc, TPar a, TPar b)
+TPar rsLadderFilter2<TSig, TPar>::computeFeedbackFactor(TPar fb, TPar cosWc, TPar a, TPar b)
 {
   TPar g2 = b*b / (1 + a*a + 2*a*cosWc);
   return fb / (g2*g2);
 }
 
 template<class TSig, class TPar>
-double rsLadderFilter2<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar cutoff)
+TPar rsLadderFilter2<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar cutoff)
 {
   if(decay > 0.0)
     return exp(-1/(decay*cutoff));
@@ -159,13 +159,13 @@ void rsLadderFilter2<TSig, TPar>::calcCoeffs()
 // expensive due to the evaluation of the prediction equation.
 
 template<class TSig, class TPar>
-rsLadderFilterZDF::rsLadderFilterZDF()
+rsLadderFilterZDF<TSig, TPar>::rsLadderFilterZDF()
 {
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void rsLadderFilterZDF::calcCoeffs()
+void rsLadderFilterZDF<TSig, TPar>::calcCoeffs()
 {
   TPar wc, s, c, b4, q;
 
@@ -193,7 +193,7 @@ void rsLadderFilterZDF::calcCoeffs()
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>
-rsLadderFilterFeedbackSaturated::rsLadderFilterFeedbackSaturated()
+rsLadderFilterFeedbackSaturated<TSig, TPar>::rsLadderFilterFeedbackSaturated()
 { 
   drive   = 1.0;
   loLimit = -16777216;
@@ -211,52 +211,52 @@ rsLadderFilterFeedbackSaturated::rsLadderFilterFeedbackSaturated()
 }
 
 template<class TSig, class TPar>
-void rsLadderFilterFeedbackSaturated::setLowerFeedbackLimit(double newLimit)
+void rsLadderFilterFeedbackSaturated<TSig, TPar>::setLowerFeedbackLimit(TPar newLimit)
 {
   loLimit = newLimit;
   computeScaleAndShift();
 }
 
 template<class TSig, class TPar>
-void rsLadderFilterFeedbackSaturated::setUpperFeedbackLimit(double newLimit)
+void rsLadderFilterFeedbackSaturated<TSig, TPar>::setUpperFeedbackLimit(TPar newLimit)
 {
   hiLimit = newLimit;
   computeScaleAndShift();
 }
 
 template<class TSig, class TPar>
-void rsLadderFilterFeedbackSaturated::setFeedbackDrive(double newDrive)
+void rsLadderFilterFeedbackSaturated<TSig, TPar>::setFeedbackDrive(TPar newDrive)
 {
   drive = newDrive;
 }
 
 template<class TSig, class TPar>
-void rsLadderFilterFeedbackSaturated::setSaturationGainAt1(double newGain)
+void rsLadderFilterFeedbackSaturated<TSig, TPar>::setSaturationGainAt1(TPar newGain)
 {
   sigmoid.setValueAt1(newGain);
 }
 
 template<class TSig, class TPar>
-void rsLadderFilterFeedbackSaturated::setSaturationMode(int newMode)
+void rsLadderFilterFeedbackSaturated<TSig, TPar>::setSaturationMode(int newMode)
 {
   mode = newMode;
 }
 
 template<class TSig, class TPar>
-void rsLadderFilterFeedbackSaturated::computeScaleAndShift()
+void rsLadderFilterFeedbackSaturated<TSig, TPar>::computeScaleAndShift()
 {
   rsRangeConversionCoefficients(loLimit, hiLimit,    -1.0,    +1.0, &scaleX, &shiftX);
   rsRangeConversionCoefficients(-1.0,       +1.0, loLimit, hiLimit, &scaleY, &shiftY);
 }
 
 template<class TSig, class TPar>
-double rsLadderFilterFeedbackSaturated::getCompensationGain()
+TPar rsLadderFilterFeedbackSaturated<TSig, TPar>::getCompensationGain()
 {
   //double wc = 2*PI*cutoff/sampleRate;
   //double b0_1, a1_1, k_1;
   //computeCoeffs(wc, fb, &a1_1, &b0_1, &k_1, &g_1);
 
-  double gain;
+  TPar gain;
   gain = computeCompensationGain(a, b, k);  // maybe drive*k?
   //computeCompensationGain(a1, b0, drive*k, &gain);
   return gain;
@@ -275,7 +275,7 @@ double rsLadderFilterFeedbackSaturated::getCompensationGain()
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>
-rsLadderResoShaped::rsLadderResoShaped()
+rsLadderResoShaped<TSig, TPar>::rsLadderResoShaped()
 {
   sampleRate  = 44100;
   inGain      = 1.0;
@@ -292,7 +292,7 @@ rsLadderResoShaped::rsLadderResoShaped()
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setSampleRate(double newSampleRate)
+void rsLadderResoShaped<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   resonant.setSampleRate(sampleRate);
@@ -302,19 +302,19 @@ void rsLadderResoShaped::setSampleRate(double newSampleRate)
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setInputGain(double newGain)
+void rsLadderResoShaped<TSig, TPar>::setInputGain(TPar newGain)
 {
   inGain = newGain;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setInputLeak(double newLeak)
+void rsLadderResoShaped<TSig, TPar>::setInputLeak(TPar newLeak)
 {
   leak = newLeak;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setCutoff(double newCutoff)
+void rsLadderResoShaped<TSig, TPar>::setCutoff(TPar newCutoff)
 {
   cutoff = newCutoff;
   resonant.setCutoff(cutoff);
@@ -324,71 +324,71 @@ void rsLadderResoShaped::setCutoff(double newCutoff)
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setResonanceDecay(double newDecay)
+void rsLadderResoShaped<TSig, TPar>::setResonanceDecay(TPar newDecay)
 {
   decay = newDecay;
   setupScaledDecay();
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setDecayByFrequency(double newDecayByFreq)
+void rsLadderResoShaped<TSig, TPar>::setDecayByFrequency(TPar newDecayByFreq)
 {
   decayByFreq = newDecayByFreq;
   setupScaledDecay();
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setResonanceAttack(double newAttack)
+void rsLadderResoShaped<TSig, TPar>::setResonanceAttack(TPar newAttack)
 {
   attack = newAttack;
   setupAttackSmoother();
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setResonanceGain(double newGain)
+void rsLadderResoShaped<TSig, TPar>::setResonanceGain(TPar newGain)
 {
   resGain = newGain;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setResonancePhase(double newPhase)
+void rsLadderResoShaped<TSig, TPar>::setResonancePhase(TPar newPhase)
 {
   phase = newPhase;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setFeedbackDrive(double newDrive)
+void rsLadderResoShaped<TSig, TPar>::setFeedbackDrive(TPar newDrive)
 {
   resonant.setFeedbackDrive(newDrive);
     // todo: we may have to recalculate the DC gain compensation factor here
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setFeedbackLowerLimit(double newLimit)
+void rsLadderResoShaped<TSig, TPar>::setFeedbackLowerLimit(TPar newLimit)
 {
   resonant.setLowerFeedbackLimit(newLimit);
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setFeedbackUpperLimit(double newLimit)
+void rsLadderResoShaped<TSig, TPar>::setFeedbackUpperLimit(TPar newLimit)
 {
   resonant.setUpperFeedbackLimit(newLimit);
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setFeedbackSaturationGainAt1(double newGain)
+void rsLadderResoShaped<TSig, TPar>::setFeedbackSaturationGainAt1(TPar newGain)
 {
   resonant.setSaturationGainAt1(newGain);
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setFeedbackSaturationPlace(int newPlace)
+void rsLadderResoShaped<TSig, TPar>::setFeedbackSaturationPlace(int newPlace)
 {
   resonant.setSaturationMode(newPlace);
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::getSignalParts(double in, double *yf, double *yr)
+void rsLadderResoShaped<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TSig *yr)
 {
   double r; // temporary variable for resonance signal - maybe, get rid of it
 
@@ -401,8 +401,8 @@ void rsLadderResoShaped::getSignalParts(double in, double *yf, double *yr)
   r = attackSmoother.getSample(r);
 
   // apply phase shift:
-  double yq  = allpass.getSample(r);  // quadrature signal
-  double gd, gq;                      // direct gain and quadrature gain
+  TSig yq  = allpass.getSample(r);  // quadrature signal
+  TSig gd, gq;                      // direct gain and quadrature gain
   rsSinCos(phase, &gq, &gd);          // make gd, gq members - move calculation to setResonancePhase
   r = gd*r + gq*yq;
   // apply phase-modulation by input, maybe the modulator can be pre-shaped as well...
@@ -411,16 +411,16 @@ void rsLadderResoShaped::getSignalParts(double in, double *yf, double *yr)
 }
 
 template<class TSig, class TPar>
-double rsLadderResoShaped::getSample(double in)
+TSig rsLadderResoShaped<TSig, TPar>::getSample(TSig in)
 {
   in *= inGain;
-  double yf, yr;
+  TSig yf, yr;
   getSignalParts(in, &yf, &yr);
   return leak*in + yf + resGain*yr;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::reset()
+void rsLadderResoShaped<TSig, TPar>::reset()
 {
   resonant.reset();
   nonResonant.reset();
@@ -428,14 +428,14 @@ void rsLadderResoShaped::reset()
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setupScaledDecay()
+void rsLadderResoShaped<TSig, TPar>::setupScaledDecay()
 {
   scaledDecay = decay * pow(2.0, -decayByFreq*rsLog2(0.001*cutoff)); // neutral at cutoff = 1kHz
     // i think, this may be optimized so as to use only exp/log instead of pow/log2 (the latter
     // pair of which is more expensive to compute) by using some rules for exponentials and 
     // logarithms
 
-  double r = rsLadderFilter::resonanceDecayToFeedbackGain(scaledDecay, cutoff);
+  TPar r = rsLadderFilter::resonanceDecayToFeedbackGain(scaledDecay, cutoff);
   resonant.setResonance(r);
   
   // old:
@@ -445,10 +445,10 @@ void rsLadderResoShaped::setupScaledDecay()
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped::setupAttackSmoother()
+void rsLadderResoShaped<TSig, TPar>::setupAttackSmoother()
 {
-  double w = 2*PI*cutoff/sampleRate;
-  double d = attack*scaledDecay*sampleRate;
+  TPar w = 2*PI*cutoff/sampleRate;
+  TPar d = attack*scaledDecay*sampleRate;
   attackSmoother.setFrequencyAndDecay(w, d);
 
   // enforce a unit-gain at the resonance frequency:
@@ -458,7 +458,7 @@ void rsLadderResoShaped::setupAttackSmoother()
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>
-rsLadderResoShaped2::rsLadderResoShaped2()
+rsLadderResoShaped2<TSig, TPar>::rsLadderResoShaped2()
 {
   drive     = 1.0;
   addConst  = 0.0;
@@ -474,69 +474,69 @@ rsLadderResoShaped2::rsLadderResoShaped2()
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::setSaturationMode(int newMode)
+void rsLadderResoShaped2<TSig, TPar>::setSaturationMode(int newMode)
 {
   saturator.setMode(newMode);
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::setSaturationGainAt1(double newGain)
+void rsLadderResoShaped2<TSig, TPar>::setSaturationGainAt1(TPar newGain)
 {
   saturator.setValueAt1(newGain);
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::setDrive(double newDrive)
+void rsLadderResoShaped2<TSig, TPar>::setDrive(TPar newDrive)
 {
   drive   = newDrive;
   unDrive = pow(1/drive, driveComp);
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::setDriveCompensation(double newCompensation)
+void rsLadderResoShaped2<TSig, TPar>::setDriveCompensation(TPar newCompensation)
 {
   driveComp = newCompensation;
   unDrive   = pow(1/drive, driveComp);
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::setSaturationAddConstant(double newOffset)
+void rsLadderResoShaped2<TSig, TPar>::setSaturationAddConstant(TPar newOffset)
 {
   addConst = newOffset;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::setSaturationAddInput(double newAmount)
+void rsLadderResoShaped2<TSig, TPar>::setSaturationAddInput(TPar newAmount)
 {
   addIn = newAmount;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::setSaturationAddFiltered(double newAmount)
+void rsLadderResoShaped2<TSig, TPar>::setSaturationAddFiltered(TPar newAmount)
 {
   addFlt = newAmount;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::setGateSensitivity(double newSensitivity)
+void rsLadderResoShaped2<TSig, TPar>::setGateSensitivity(TPar newSensitivity)
 {
   gate = newSensitivity;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::setGateMix(double newMix)
+void rsLadderResoShaped2<TSig, TPar>::setGateMix(TPar newMix)
 {
   gateMix = newMix;
 }
 
 template<class TSig, class TPar>
-void rsLadderResoShaped2::getSignalParts(double in, double *yf, double *yr)
+void rsLadderResoShaped2<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TSig *yr)
 {
   rsLadderResoShaped::getSignalParts(in, yf, yr);
 
   // apply saturation:
-  double yd = *yr * drive;                              // driven resonance
-  double s  = yd + addIn*in + addFlt*(*yf) + addConst;  // saturator sidechain signal
+  TSig yd = *yr * drive;                              // driven resonance
+  TSig s  = yd + addIn*in + addFlt*(*yf) + addConst;  // saturator sidechain signal
   *yr  = saturator.getSample(yd, s);                    // actual saturation  
   *yr *= unDrive;                                       // gain compensation
 
@@ -559,7 +559,7 @@ void rsLadderResoShaped2::getSignalParts(double in, double *yf, double *yr)
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>
-rsResoReplacer::rsResoReplacer()
+rsResoReplacer<TSig, TPar>::rsResoReplacer()
 {
   setResonanceWaveform(0);        // sine
   resoCutoffMultiplier = 10000.0; // maps to 20kHz at cutoff = 20Hz -> high enough to be neutral
@@ -570,42 +570,42 @@ rsResoReplacer::rsResoReplacer()
 }
 
 template<class TSig, class TPar>
-void rsResoReplacer::setResonanceWaveform(int newWaveform)
+void rsResoReplacer<TSig, TPar>::setResonanceWaveform(int newWaveform)
 {
   waveform = newWaveform;
     // later, we need to set up the wavetable oscillator here...
 }
 
 template<class TSig, class TPar>
-void rsResoReplacer::setResoCutoffMultiplier(double newMultiplier)
+void rsResoReplacer<TSig, TPar>::setResoCutoffMultiplier(TPar newMultiplier)
 {
   resoCutoffMultiplier = newMultiplier;
 }
 
 template<class TSig, class TPar>
-void rsResoReplacer::setResoCutoffModulation(double newModulation)
+void rsResoReplacer<TSig, TPar>::setResoCutoffModulation(TPar newModulation)
 {
   resoCutoffModulation = newModulation;
 }
 
 template<class TSig, class TPar>
-void rsResoReplacer::setSampleRate(double newSampleRate)
+void rsResoReplacer<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   rsLadderResoShaped::setSampleRate(newSampleRate);
   resoFilter.setSampleRate(newSampleRate);
 }
 
 template<class TSig, class TPar>
-void rsResoReplacer::getSignalParts(double in, double *yf, double *yr)
+void rsResoReplacer<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TSig *yr)
 {
-  double mag, phs;
+  TSig mag, phs;
   getNonresonantOutputAndResonanceParameters(in, yf, &mag, &phs);
   *yr = getWaveForm(mag, phs);
 }
 
 template<class TSig, class TPar>
-void rsResoReplacer::getNonresonantOutputAndResonanceParameters(double in, double *yf,
-  double *mag, double *phs)
+void rsResoReplacer<TSig, TPar>::getNonresonantOutputAndResonanceParameters(TSig in, TSig *yf,
+  TSig *mag, TSig *phs)
 {
   // temporary variables:
   double r, q;
@@ -626,7 +626,7 @@ void rsResoReplacer::getNonresonantOutputAndResonanceParameters(double in, doubl
 }
 
 template<class TSig, class TPar>
-double rsResoReplacer::getWaveForm(double a, double p)
+TSig rsResoReplacer<TSig, TPar>::getWaveForm(TSig a, TSig p)
 {
   double r;
 
@@ -643,7 +643,7 @@ double rsResoReplacer::getWaveForm(double a, double p)
   }
 
   // set up the resonance filter's cutoff frequency and filter the resonance waveform:
-  double ctf = cutoff*(resoCutoffMultiplier + resoCutoffModulation*a);
+  TPar ctf = cutoff*(resoCutoffMultiplier + resoCutoffModulation*a);
   ctf = rsLimitToRange(ctf, 20.0, 20000.0);
   resoFilter.setCutoff(ctf);
   r = resoFilter.getSample(r);
@@ -658,7 +658,7 @@ double rsResoReplacer::getWaveForm(double a, double p)
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>
-rsResoReplacerPhaseBumped::rsResoReplacerPhaseBumped()
+rsResoReplacerPhaseBumped<TSig, TPar>::rsResoReplacerPhaseBumped()
 {
   // todo: set up highpass and lowpass filters for the bumping signal
 
@@ -695,7 +695,7 @@ rsResoReplacerPhaseBumped::rsResoReplacerPhaseBumped()
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::setSampleRate(double newSampleRate)
+void rsResoReplacerPhaseBumped<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   rsResoReplacer::setSampleRate(newSampleRate);
   inputDifferencer.setSampleRate(newSampleRate);
@@ -704,13 +704,13 @@ void rsResoReplacerPhaseBumped::setSampleRate(double newSampleRate)
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::setBumpFactor(double newFactor)
+void rsResoReplacerPhaseBumped<TSig, TPar>::setBumpFactor(TPar newFactor)
 {
   bumpFactor = newFactor;
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::setBumpCutoffs(double cutoff1, double cutoff2)
+void rsResoReplacerPhaseBumped<TSig, TPar>::setBumpCutoffs(TPar cutoff1, TPar cutoff2)
 {
   bumpCutoff1 = cutoff1;
   bumpCutoff2 = cutoff2;
@@ -719,13 +719,13 @@ void rsResoReplacerPhaseBumped::setBumpCutoffs(double cutoff1, double cutoff2)
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::setChaosParameter(double newParameter)
+void rsResoReplacerPhaseBumped<TSig, TPar>::setChaosParameter(TPar newParameter)
 {
   chaosParam = newParameter;
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::setAmplitudeLimit(double newLimit)
+void rsResoReplacerPhaseBumped<TSig, TPar>::setAmplitudeLimit(TPar newLimit)
 {
   rsAssert(newLimit > 0.0);
   ampLimit = newLimit;
@@ -733,31 +733,31 @@ void rsResoReplacerPhaseBumped::setAmplitudeLimit(double newLimit)
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::setInputRange(double newRange)
+void rsResoReplacerPhaseBumped<TSig, TPar>::setInputRange(TPar newRange)
 {
   inRange = newRange;
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::setSelfExitation(double newExcitation)
+void rsResoReplacerPhaseBumped<TSig, TPar>::setSelfExitation(TPar newExcitation)
 {
   selfExcite = newExcitation;
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::setAmplitudeOffset(double newOffset)
+void rsResoReplacerPhaseBumped<TSig, TPar>::setAmplitudeOffset(TPar newOffset)
 {
   ampOffset = newOffset;
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::getSignalParts(double in, double *yf, double *yr)
+void rsResoReplacerPhaseBumped<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TSig *yr)
 {
-  double ex = 0.0;      // exitation signal
+  TSig ex = 0.0;      // exitation signal
   ex = getExcitation(in); // comment to deactivate self-excitation code
 
   // copied from baseclass:
-  double mag, phs;
+  TSig mag, phs;
   getNonresonantOutputAndResonanceParameters(in+ex, yf, &mag, &phs);
   phs     += bump;                // new, compared to baseclass (maybe, we need to apply wrapToInterval?)
   mag     += ampOffset;
@@ -772,9 +772,9 @@ void rsResoReplacerPhaseBumped::getSignalParts(double in, double *yf, double *yr
 }
 
 template<class TSig, class TPar>
-void rsResoReplacerPhaseBumped::updateBump(double in, double yf, double yr)
+void rsResoReplacerPhaseBumped<TSig, TPar>::updateBump(TSig in, TSig yf, TSig yr)
 {
-  double tmp;
+  TSig tmp;
   tmp  = inputDifferencer.getSample(in);
   tmp *= in + chaosParam * yr;   // should produce the chaos
   tmp *= bumpFactor;
@@ -792,7 +792,7 @@ void rsResoReplacerPhaseBumped::updateBump(double in, double yf, double yr)
 }
 
 template<class TSig, class TPar>
-double rsResoReplacerPhaseBumped::limitMagnitude(double mag)
+TSig rsResoReplacerPhaseBumped<TSig, TPar>::limitMagnitude(TSig mag)
 {
   //return ampLimit * rsPositiveSigmoids::softClip(ampLimitInv*mag);
 
@@ -801,7 +801,7 @@ double rsResoReplacerPhaseBumped::limitMagnitude(double mag)
 }
 
 template<class TSig, class TPar>
-double rsResoReplacerPhaseBumped::inputScale(double in)
+TSig rsResoReplacerPhaseBumped<TSig, TPar>::inputScale(TSig in)
 {
   // we use a kind of "Butterworth"-squared function for the multiplier
 
@@ -822,7 +822,7 @@ double rsResoReplacerPhaseBumped::inputScale(double in)
 }
 
 template<class TSig, class TPar>
-double rsResoReplacerPhaseBumped::getExcitation(double in)
+TSig rsResoReplacerPhaseBumped<TSig, TPar>::getExcitation(TSig in)
 {
   // create self-excitation signal (very experimental - can be optimized):
 
@@ -852,14 +852,14 @@ double rsResoReplacerPhaseBumped::getExcitation(double in)
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>
-rsLadderMystran::rsLadderMystran()
+rsLadderMystran<TSig, TPar>::rsLadderMystran()
 { 
   setMode(LP_24);
   reset(); 
 }
 
 template<class TSig, class TPar>
-void rsLadderMystran::reset()
+void rsLadderMystran<TSig, TPar>::reset()
 {
   rsFillWithZeros(s, 4);
   zi = 0.0;

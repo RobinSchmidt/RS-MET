@@ -85,7 +85,7 @@ public:
   TPar getCompensationGain() { return g; }
 
   /** Writes the filter's internal state buffer into the passed array which must be of length 5. */
-  void getState(TPar *state);
+  void getState(TSig *state);
 
 
   /** \name Audio Processing */
@@ -763,7 +763,7 @@ public:
   virtual void getSignalParts(TSig in, TSig *yf, TSig *yr);
 
   /** Produces an output sample. */
-  double getSample(TSig in);
+  TSig getSample(TSig in);
 
 
   /** \name Misc */
@@ -1077,7 +1077,7 @@ public:
 
 
   // this is supposed to stay only during development, so we can look at the bump function
-  double getPhaseBump()
+  TSig getPhaseBump()
   {
     return bump;
   }
