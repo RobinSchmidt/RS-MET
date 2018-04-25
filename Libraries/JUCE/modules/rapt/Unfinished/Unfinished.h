@@ -46,10 +46,11 @@ namespace RAPT
 #include "Filters/BandSplitter.h"
 #include "Filters/FilterDesignFormulas.h"
 #include "Filters/MovingAverage.h"
+#include "Filters/PhonoFilter.h"
 //#include "Filters/FakeResonanceFilter.h"
 //#include "Filters/LadderFilter.h"
 //#include "Filters/ModalFilterBank.h"
-//#include "Filters/PhonoFilter.h"
+
 
 
 

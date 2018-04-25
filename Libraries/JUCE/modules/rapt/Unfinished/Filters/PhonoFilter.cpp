@@ -1,8 +1,7 @@
-using namespace RSLib;
-
 // Construction/Destruction:
 
-rsPhonoFilter::rsPhonoFilter()
+template<class TSig, class TPar>
+rsPhonoFilter<TSig, TPar>::rsPhonoFilter()
 {
   mode = PRE_EMPHASIS;
   setSampleRate(44100.0);
@@ -11,13 +10,15 @@ rsPhonoFilter::rsPhonoFilter()
 
 // Setup:
 
-void rsPhonoFilter::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsPhonoFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   calcCoeffs();
 }
 
-void rsPhonoFilter::setMode(int newMode)
+template<class TSig, class TPar>
+void rsPhonoFilter<TSig, TPar>::setMode(int newMode)
 {
   mode = newMode;
   calcCoeffs();
@@ -25,7 +26,8 @@ void rsPhonoFilter::setMode(int newMode)
 
 // Audio Processing:
     
-void rsPhonoFilter::processBlock(float *in, float *out, int blockSize)
+template<class TSig, class TPar>
+void rsPhonoFilter<TSig, TPar>::processBlock(TSig *in, TSig *out, int blockSize)
 {
   for(int n = 0; n < blockSize; n++)
     out[n] = (float) getSample(in[n]);
@@ -33,22 +35,25 @@ void rsPhonoFilter::processBlock(float *in, float *out, int blockSize)
 
 // Misc:
 
-void rsPhonoFilter::reset()
+template<class TSig, class TPar>
+void rsPhonoFilter<TSig, TPar>::reset()
 {
   y2 = y1 = x2 = x1 = 0.0;
 }
 
-double rsPhonoFilter::getMagnitudeAt(double frequency)
+template<class TSig, class TPar>
+TPar rsPhonoFilter<TSig, TPar>::getMagnitudeAt(TPar frequency)
 {
   return biquadMagnitudeAt(b0, b1, b2, a1, a2, 2*PI*frequency/sampleRate);
 }
 
-void rsPhonoFilter::calcCoeffs()
+template<class TSig, class TPar>
+void rsPhonoFilter<TSig, TPar>::calcCoeffs()
 {  
-  double bb0[2], bb1[2], aa1[2]; // first order filter coeffs for the two stages
+  TPar bb0[2], bb1[2], aa1[2]; // first order filter coeffs for the two stages
 
   // model 1st stage:
-  double f[3], m[3], w[3];
+  TPar f[3], m[3], w[3];
   f[0] = 0.0;    
   f[1] = 1000.0; 
   f[2] = sampleRate/3;  
@@ -73,27 +78,31 @@ void rsPhonoFilter::calcCoeffs()
     invertBiquad(b0, b1, b2, a1, a2);
 }
 
-double rsPhonoFilter::prototypeMagnitudeAt(double frequency)
+template<class TSig, class TPar>
+TPar rsPhonoFilter<TSig, TPar>::prototypeMagnitudeAt(TPar frequency)
 {
   return prototypeMagnitude1(frequency) * prototypeMagnitude2(frequency);
 }
 
-double rsPhonoFilter::prototypeMagnitude1(double frequency)
+template<class TSig, class TPar>
+TPar rsPhonoFilter<TSig, TPar>::prototypeMagnitude1(TPar frequency)
 {
   return unnormalizedMagnitude1(frequency) / unnormalizedMagnitude1(1000);
 }
 
-double rsPhonoFilter::prototypeMagnitude2(double frequency)
+template<class TSig, class TPar>
+TPar rsPhonoFilter<TSig, TPar>::prototypeMagnitude2(TPar frequency)
 {
   return unnormalizedMagnitude2(frequency) / unnormalizedMagnitude2(1000);
 }
   
-double rsPhonoFilter::unnormalizedMagnitude1(double frequency)
+template<class TSig, class TPar>
+TPar rsPhonoFilter<TSig, TPar>::unnormalizedMagnitude1(TPar frequency)
 {
   // component values:
-  double C1 = 1.0e-6;   // 1 uF
-  double R1 = 3.18e+3;  // 3.18 kOhm
-  double R2 = 353.33;   // 353.33 Ohm
+  TPar C1 = 1.0e-6;   // 1 uF
+  TPar R1 = 3.18e+3;  // 3.18 kOhm
+  TPar R2 = 353.33;   // 353.33 Ohm
 
   // evaluate and return transfer-function magnitude at s = j*w, w=2*PI*frequency:
   rsComplexDbl s  = rsComplexDbl(0.0, 2*PI*frequency);
@@ -101,12 +110,13 @@ double rsPhonoFilter::unnormalizedMagnitude1(double frequency)
   return H1.getRadius();
 }
  
-double rsPhonoFilter::unnormalizedMagnitude2(double frequency)
+template<class TSig, class TPar>
+TPar rsPhonoFilter<TSig, TPar>::unnormalizedMagnitude2(TPar frequency)
 {
-  double C2 = 10.0e-9;  // 10 nF
-  double R3 = 7.5e+3;   // 7.5 kOhm
-  double R4 = 353.33;   // 353.33 Ohm
+  TPar C2 = 10.0e-9;  // 10 nF
+  TPar R3 = 7.5e+3;   // 7.5 kOhm
+  TPar R4 = 353.33;   // 353.33 Ohm
   rsComplexDbl s  = rsComplexDbl(0.0, 2*PI*frequency);
   rsComplexDbl H2 = (s + 1.0/(R3*C2)) / (s + (R3+R4)/(R3*R4*C2));
-  return H2.getRadius();
+  TPar H2.getRadius();
 }
