@@ -17,7 +17,11 @@ zero (i.e. leaky integrators) of the general form: y[n] = b*x[n] - a*y[n-1] wher
 (-1,0] and b = 1+a. It's a linear ladder with a unit delay in the feedback path. The coefficients 
 of the lowpass stages (a,b) and the feedback gain are adjusted in order to compensate for the side 
 effects of the unit delay, such that there's no shift of the resonant frequency and no instability 
-artifacts for resonance-values < 1. */
+artifacts for resonance-values < 1. 
+
+\todo merge this class with rsLadderFilter
+
+*/
 
 template<class TSig, class TPar>
 class rsLadderFilter2
