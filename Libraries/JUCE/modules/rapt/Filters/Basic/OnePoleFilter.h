@@ -6,6 +6,7 @@
 \todo rename to FirstOrderFilter (it does not only have a pole but also a zero).
 \todo make it possible to set up time constants in terms of dB/sec */
 
+template<class TSig, class TPar>
 class rsOnePoleFilter
 {
 
@@ -39,42 +40,42 @@ public:
   /** \name Setup */
 
   /** Sets the sample-rate. */
-  void setSampleRate(double newSampleRate);
+  void setSampleRate(TPar newSampleRate);
 
   /** Chooses the filter mode. See the enumeration for available modes. */
   void setMode(int newMode);
 
   /** Sets the cutoff-frequency for this filter. */
-  void setCutoff(double newCutoff);
+  void setCutoff(TPar newCutoff);
 
   /** This will set the time constant 'tau' for the case, when lowpass mode is chosen. This is
   the time, it takes for the impulse response to die away to 1/e = 0.368... or equivalently, the
   time it takes for the step response to raise to 1-1/e = 0.632... */
-  void setLowpassTimeConstant(double newTimeConstant) { setCutoff(1.0/(2*PI*newTimeConstant)); }
+  void setLowpassTimeConstant(TPar newTimeConstant) { setCutoff(1.0/(2*PI*newTimeConstant)); }
 
   /** Sets the gain factor for the shelving modes (this is not in decibels). */
-  void setShelvingGain(double newGain);
+  void setShelvingGain(TPar newGain);
 
   /** Sets the gain for the shelving modes in decibels. */
-  void setShelvingGainInDecibels(double newGain);
+  void setShelvingGainInDecibels(TPar newGain);
 
   /** Sets the filter coefficients manually. */
-  void setCoefficients(double newB0, double newB1, double newA1);
+  void setCoefficients(TPar newB0, TPar newB1, TPar newA1);
 
   /** Sets up the internal state variables for both channels. */
-  void setInternalState(double newX1, double newY1);
+  void setInternalState(TSig newX1, TSig newY1);
 
 
   /** \name Inquiry */
 
   /** Returns the magnitude response of this filter at the given frqeuency (in Hz). */
-  double getMagnitudeAt(double frequency);
+  TPar getMagnitudeAt(TPar frequency);
 
 
   /** \name Audio Processing */
 
   /** Calculates a single filtered output-sample. */
-  inline double getSample(double in);
+  inline TSig getSample(TSig in);
 
 
   /** \name Misc */
@@ -91,28 +92,28 @@ protected:
   /** \name Data */
 
   // buffering:
-  double x1, y1;
+  TSig x1, y1;
 
   // filter coefficients:
-  double b0, b1; // feedforward coeffs
-  double a1;     // feedback coeff
+  TPar b0, b1; // feedforward coeffs
+  TPar a1;     // feedback coeff
 
   // filter parameters:
-  double cutoff;
-  double shelvingGain;
+  TPar cutoff;
+  TPar shelvingGain;
   int    mode;
 
-  double sampleRate;
-  double sampleRateRec;  // reciprocal of the sampleRate
+  TPar sampleRate;
+  TPar sampleRateRec;  // reciprocal of the sampleRate
 
 };
 
 //-----------------------------------------------------------------------------------------------
 // inlined functions:
 
-inline double rsOnePoleFilter::getSample(double in)
+template<class TSig, class TPar>
+inline TSig rsOnePoleFilter::getSample(TSig in)
 {
-  //y1 = b0*in + b1*x1 + a1*y1 + TINY;
   y1 = b0*in + b1*x1 + a1*y1;
   x1 = in;
   return y1;

@@ -1,5 +1,6 @@
 // Construction/Destruction:
 
+template<class TSig, class TPar>
 rsOnePoleFilter::rsOnePoleFilter()
 {
   shelvingGain = 1.0;
@@ -11,7 +12,8 @@ rsOnePoleFilter::rsOnePoleFilter()
 
 // Setup:
 
-void rsOnePoleFilter::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsOnePoleFilter::setSampleRate(TPar newSampleRate)
 {
   if( newSampleRate > 0.0 )
     sampleRate = newSampleRate;
@@ -21,13 +23,15 @@ void rsOnePoleFilter::setSampleRate(double newSampleRate)
   return;
 }
 
+template<class TSig, class TPar>
 void rsOnePoleFilter::setMode(int newMode)
 {
   mode = newMode; // 0:bypass, 1:Low Pass, 2:High Pass
   calcCoeffs();
 }
 
-void rsOnePoleFilter::setCutoff(double newCutoff)
+template<class TSig, class TPar>
+void rsOnePoleFilter::setCutoff(TPar newCutoff)
 {
   if( (newCutoff > 0.0) && (newCutoff <= 20000.0) )
     cutoff = newCutoff;
@@ -38,7 +42,8 @@ void rsOnePoleFilter::setCutoff(double newCutoff)
   return;
 }
 
-void rsOnePoleFilter::setShelvingGain(double newGain)
+template<class TSig, class TPar>
+void rsOnePoleFilter::setShelvingGain(TPar newGain)
 {
   if( newGain > 0.0 )
   {
@@ -49,19 +54,22 @@ void rsOnePoleFilter::setShelvingGain(double newGain)
     RS_DEBUG_BREAK; // this is a linear gain factor and must be >= 0.0
 }
 
-void rsOnePoleFilter::setShelvingGainInDecibels(double newGain)
+template<class TSig, class TPar>
+void rsOnePoleFilter::setShelvingGainInDecibels(TPar newGain)
 {
   setShelvingGain(rsDB2amp(newGain));
 }
 
-void rsOnePoleFilter::setCoefficients(double newB0, double newB1, double newA1)
+template<class TSig, class TPar>
+void rsOnePoleFilter::setCoefficients(TPar newB0, TPar newB1, TPar newA1)
 {
   b0 = newB0;
   b1 = newB1;
   a1 = newA1;
 }
 
-void rsOnePoleFilter::setInternalState(double newX1, double newY1)
+template<class TSig, class TPar>
+void rsOnePoleFilter::setInternalState(TSig newX1, TSig newY1)
 {
   x1 = newX1;
   y1 = newY1;
@@ -69,7 +77,8 @@ void rsOnePoleFilter::setInternalState(double newX1, double newY1)
 
 // Inquiry:
 
-double rsOnePoleFilter::getMagnitudeAt(double f)
+template<class TSig, class TPar>
+double rsOnePoleFilter::getMagnitudeAt(TPar f)
 {
   return onePoleMagnitudeAt(b0, b1, -a1, 2*PI*f*sampleRateRec);
     // we use a different sign-convention for the a1 coefficient here ...maybe fix this someday
@@ -77,14 +86,16 @@ double rsOnePoleFilter::getMagnitudeAt(double f)
 
 // Misc:
 
+template<class TSig, class TPar>
 void rsOnePoleFilter::calcCoeffs()
 {
+  // maybe move these to FilterDesignFormulas
   switch(mode)
   {
   case LOWPASS: 
     {
       // formula from dspguide (impulse invariant):
-      double x = exp(-2.0 * PI * cutoff * sampleRateRec); 
+      TPar x = exp(-2.0 * PI * cutoff * sampleRateRec); 
       b0 = 1-x;
       b1 = 0.0;
       a1 = x;
@@ -93,7 +104,7 @@ void rsOnePoleFilter::calcCoeffs()
   case HIGHPASS:  
     {
       // formula from dspguide (impulse invariant):
-      double x = exp(-2.0 * PI * cutoff * sampleRateRec);
+      TPar x = exp(-2.0 * PI * cutoff * sampleRateRec);
       b0 =  0.5*(1+x);
       b1 = -0.5*(1+x);  // = -b0 -> optimize
       a1 = x;
@@ -102,8 +113,8 @@ void rsOnePoleFilter::calcCoeffs()
   case ALLPASS:  
     {
       // formula from DAFX (bilinear):
-      double t = tan(PI*cutoff*sampleRateRec);
-      double x = (t-1.0) / (t+1.0);
+      TPar t = tan(PI*cutoff*sampleRateRec);
+      TPar x = (t-1.0) / (t+1.0);
 
       b0 = x;
       b1 = 1.0;
@@ -113,50 +124,50 @@ void rsOnePoleFilter::calcCoeffs()
   case LOWSHELV:
     {
       // formula derived as special case of the Orfanidis equalizers:
-      double g    = rsDB2amp(shelvingGain);
-      double wc   = 2*PI*cutoff*sampleRateRec;
-      double wa   = 2*sampleRate*tan(wc/2);
-      double gb   = rsSqrt(g);
-      double beta = rsSqrt( (gb*gb-1)/(g*g-gb*gb) );
-      double pa   = -beta*wa;
-      double za   = -g*beta*wa;
-      double s    = 0.5*sampleRateRec;
-      double p    = (1+s*pa)/(1-s*pa);
-      double z    = (1+s*za)/(1-s*za);
-      b1          = -z;
-      a1          = -p;
-      double n    = rsSqrt((1+a1*a1-2*a1) / (1+b1*b1-2*b1));
-      b0          = n;
-      b1         *= n;
+      TPar g    = rsDB2amp(shelvingGain);
+      TPar wc   = 2*PI*cutoff*sampleRateRec;
+      TPar wa   = 2*sampleRate*tan(wc/2);
+      TPar gb   = rsSqrt(g);
+      TPar beta = rsSqrt( (gb*gb-1)/(g*g-gb*gb) );
+      TPar pa   = -beta*wa;
+      TPar za   = -g*beta*wa;
+      TPar s    = 0.5*sampleRateRec;
+      TPar p    = (1+s*pa)/(1-s*pa);
+      TPar z    = (1+s*za)/(1-s*za);
+      b1        = -z;
+      a1        = -p;
+      TPar n    = rsSqrt((1+a1*a1-2*a1) / (1+b1*b1-2*b1));
+      b0        = n;
+      b1       *= n;
     }
     break;
   case HIGHSHELV:
     {
       // formula derived as special case of the Orfanidis equalizers:
-      double g    = rsDB2amp(shelvingGain);
-      double wc   = 2*PI*cutoff*sampleRateRec;
-      double wa   = 2*sampleRate*tan(wc/2);
-      double gb   = rsSqrt(g);
-      double beta = rsSqrt( (gb*gb-1)/(g*g-gb*gb) );
-      double pa   = -beta*wa;
-      double za   = -g*beta*wa;
-      double s    = 0.5*sampleRateRec;
-      double p    = (1+s*pa)/(1-s*pa);
-      double z    = (1+s*za)/(1-s*za);
-      b1          = -p;
-      a1          = -z;
-      double n    = rsSqrt((1+a1*a1+2*a1) / (1+b1*b1+2*b1));
-      b0          = n;
-      b1         *= n;
+      TPar g    = rsDB2amp(shelvingGain);
+      TPar wc   = 2*PI*cutoff*sampleRateRec;
+      TPar wa   = 2*sampleRate*tan(wc/2);
+      TPar gb   = rsSqrt(g);
+      TPar beta = rsSqrt( (gb*gb-1)/(g*g-gb*gb) );
+      TPar pa   = -beta*wa;
+      TPar za   = -g*beta*wa;
+      TPar s    = 0.5*sampleRateRec;
+      TPar p    = (1+s*pa)/(1-s*pa);
+      TPar z    = (1+s*za)/(1-s*za);
+      b1        = -p;
+      a1        = -z;
+      TPar n    = rsSqrt((1+a1*a1+2*a1) / (1+b1*b1+2*b1));
+      b0        = n;
+      b1       *= n;
       // \todo get rid of the code duplication
     }
     break;
   case LOWSHELV_DAFX:
     {
       // formula from DAFX:
-      double c = 0.5*(shelvingGain-1.0);
-      double t = tan(PI*cutoff*sampleRateRec);
-      double a;
+      TPar c = 0.5*(shelvingGain-1.0);
+      TPar t = tan(PI*cutoff*sampleRateRec);
+      TPar a;
       if( shelvingGain >= 1.0 )
         a = (t-1.0)/(t+1.0);
       else
@@ -170,9 +181,9 @@ void rsOnePoleFilter::calcCoeffs()
   case HIGHSHELV_DAFX:
     {
       // formula from DAFX:
-      double c = 0.5*(shelvingGain-1.0);
-      double t = tan(PI*cutoff*sampleRateRec);
-      double a;
+      TPar c = 0.5*(shelvingGain-1.0);
+      TPar t = tan(PI*cutoff*sampleRateRec);
+      TPar a;
       if( shelvingGain >= 1.0 )
         a = (t-1.0)/(t+1.0);
       else
@@ -195,6 +206,7 @@ void rsOnePoleFilter::calcCoeffs()
   // get rid of these strange names DAFX, etc.
 }
 
+template<class TSig, class TPar>
 void rsOnePoleFilter::reset()
 {
   x1 = 0.0;
