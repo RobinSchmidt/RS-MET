@@ -48,8 +48,9 @@ namespace RAPT
 #include "Filters/MovingAverage.h"
 #include "Filters/PhonoFilter.h"
 #include "Filters/ModalFilterBank.h"
+//#include "Filters/LadderFilter.h" // rsOnePoleFilter needs to be templatized
 //#include "Filters/FakeResonanceFilter.h"
-//#include "Filters/LadderFilter.h"
+
 
 
 
