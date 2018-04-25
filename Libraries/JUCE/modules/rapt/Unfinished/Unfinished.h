@@ -29,13 +29,11 @@ namespace RAPT
 #include "Math/Triangle2D.h"
 #include "Math/AffineTransform2D.h"
 #include "Math/ModularInteger.h"
-
 // still missing math files from RSLib:  BigInt/BigFloat (should go into rosic)
-
 
 #include "MiscAudio/Interpolator.h"
 #include "MiscAudio/DelayLine.h"
-//#include "MiscAudio/MiscAudio.h"  // may have to be included later (needs higher level stuff)
+#include "MiscAudio/MiscAudio.h"  // may have to be included later (needs higher level stuff)
 #include "MiscAudio/Saturator.h"
 #include "MiscAudio/SlewRateLimiter.h"
 #include "MiscAudio/SlewRateLimiterLinear.h"
@@ -50,12 +48,6 @@ namespace RAPT
 #include "Filters/ModalFilterBank.h"
 #include "Filters/LadderFilter.h"
 #include "Filters/FakeResonanceFilter.h"
-
-
-
-
-
-
 
 }
 
