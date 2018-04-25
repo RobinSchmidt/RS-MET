@@ -1,34 +1,37 @@
-using namespace RSLib;
-
 //=================================================================================================
 // class rsTwoPoleFilter:
 
-rsTwoPoleFilter::rsTwoPoleFilter()
+template<class TSig, class TPar>
+rsTwoPoleFilter<TSig, TPar>::rsTwoPoleFilter()
 {
   a1 = a2 = 0;
   g  = 1;
   reset();
 }
 
-void rsTwoPoleFilter::setFrequencyAndDecay(double w, double d)
+template<class TSig, class TPar>
+void rsTwoPoleFilter<TSig, TPar>::setFrequencyAndDecay(TPar w, TPar d)
 {
-  double P = exp(-1/d);  // pole radius
+  TPar P = exp(-1/d);  // pole radius
   a1 = -2*P*cos(w);
   a2 = P*P;    
 }
 
-void rsTwoPoleFilter::setOutputGain(double newGain)
+template<class TSig, class TPar>
+void rsTwoPoleFilter<TSig, TPar>::setOutputGain(TPar newGain)
 {
   g = newGain;
 }
 
-double rsTwoPoleFilter::getMagnitudeAt(double w)
+template<class TSig, class TPar>
+TPar rsTwoPoleFilter<TSig, TPar>::getMagnitudeAt(TPar w)
 {
   return biquadMagnitudeAt(1, 0, 0, a1, a2, w);
     // optimize: a simpler (less general) formula may be used
 }
 
-void rsTwoPoleFilter::reset()
+template<class TSig, class TPar>
+void rsTwoPoleFilter<TSig, TPar>::reset()
 {
   y1 = y2 = 0;
 }
@@ -68,10 +71,10 @@ void rsTwoPoleFilter::reset()
 //    *g = -*g;
 //}
 
-void RSLib::rsDampedSineFilter(double w, double A, double d, double p, double *b0, double *b1, 
-  double *a1, double *a2)
+template<class T>
+void rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2)
 {
-  double cw, sw, cp, sp, P;
+  T cw, sw, cp, sp, P;
   rsSinCos(w, &sw, &cw);
   rsSinCos(p, &sp, &cp);
   P   = exp(-1.0/d);        // = exp(-alpha), pole radius
@@ -81,7 +84,8 @@ void RSLib::rsDampedSineFilter(double w, double A, double d, double p, double *b
   *b1 = A*P*(sw*cp-cw*sp);  // = A*P*sin(w-p) via addition theorem
 }
 
-double RSLib::findDecayScalerLess1(double c)
+template<class T>
+T findDecayScalerLess1(T c)
 {
   if( c <= 0.0 || c >= 1.0 )
   {
@@ -90,14 +94,14 @@ double RSLib::findDecayScalerLess1(double c)
   }
 
   // precomputations:
-  double kp  = 1/c;                                    // location of the the peak of g(k)
-  double k   = 1 + 2*(kp-1);                           // initial guess for the zero of g(k)
-  double eps = std::numeric_limits<double>::epsilon(); // relative tolerance
-  int    i   = 0;                                      // iteration counter
+  T kp  = 1/c;                               // location of the the peak of g(k)
+  T k   = 1 + 2*(kp-1);                      // initial guess for the zero of g(k)
+  T eps = std::numeric_limits<T>::epsilon(); // relative tolerance
+  int    i   = 0;                            // iteration counter
 
   // Newton iteration:
-  double g, gp;      // g(k), g'(k)
-  double kOld = 2*k; // ensure to enter the loop
+  T g, gp;      // g(k), g'(k)
+  T kOld = 2*k; // ensure to enter the loop
   while( fabs(k-kOld) > k*eps && i < 1000 )
   {
     kOld = k;
@@ -116,7 +120,8 @@ double RSLib::findDecayScalerLess1(double c)
   // the range 0...1 and fit a polynomial (or other suitable function) to the data
 }
 
-void RSLib::expDiffScalerAndTau2(double tau1, double tp, double *tau2, double *scaler)
+template<class T>
+void expDiffScalerAndTau2(T tau1, T tp, T *tau2, T *scaler)
 {
   if( tp >= tau1 )
   {
@@ -125,11 +130,11 @@ void RSLib::expDiffScalerAndTau2(double tau1, double tp, double *tau2, double *s
     *scaler = 1.0;
     return;
   }
-  double a1 = 1/tau1;
-  double c  = a1 * tp;
-  double k  = findDecayScalerLess1(c);
-  double a2 = k*a1;
-  double hp = exp(-a1*tp) - exp(-a2*tp); // peak height
+  T a1 = 1/tau1;
+  T c  = a1 * tp;
+  T k  = findDecayScalerLess1(c);
+  T a2 = k*a1;
+  T hp = exp(-a1*tp) - exp(-a2*tp); // peak height
 
   *tau2   = 1/a2;
   *scaler = 1/hp; 
@@ -138,21 +143,24 @@ void RSLib::expDiffScalerAndTau2(double tau1, double tp, double *tau2, double *s
 //=================================================================================================
 // class rsModalFilter:
 
-rsModalFilter::rsModalFilter()
+template<class TSig, class TPar>
+rsModalFilter<TSig, TPar>::rsModalFilter()
 {
   b0 = 1.0;
   b1 = a1 = a2 = 0.0;
   reset();
 }
 
-void rsModalFilter::setModalParameters(double frequency, double amplitude, double decayTime, 
-                                       double startPhase, double sampleRate)
+template<class TSig, class TPar>
+void rsModalFilter<TSig, TPar>::setModalParameters(TPar frequency, TPar amplitude, TPar decayTime, 
+  TPar startPhase, TPar sampleRate)
 {
   rsDampedSineFilter(2*PI*frequency/sampleRate, amplitude, decayTime*sampleRate, startPhase,
     &b0, &b1, &a1, &a2);  
 }
 
-void rsModalFilter::copyCoefficientsFrom(const rsModalFilter &other)
+template<class TSig, class TPar>
+void rsModalFilter<TSig, TPar>::copyCoefficientsFrom(const rsModalFilter &other)
 {
   b0 = other.b0;
   b1 = other.b1;
@@ -160,22 +168,26 @@ void rsModalFilter::copyCoefficientsFrom(const rsModalFilter &other)
   a2 = other.a2;
 }
 
-double rsModalFilter::getDecayTime(double sampleRate)
+template<class TSig, class TPar>
+TPar rsModalFilter<TSig, TPar>::getDecayTime(TPar sampleRate)
 {
   return -1.0 / (log(rsSqrt(a2))*sampleRate);
 }
 
-double rsModalFilter::getMagnitudeAt(double w)
+template<class TSig, class TPar>
+TPar rsModalFilter<TSig, TPar>::getMagnitudeAt(TPar w)
 {
   return biquadMagnitudeAt(b0, b1, 0, a1, a2, w);
 }
 
-void rsModalFilter::reset()
+template<class TSig, class TPar>
+void rsModalFilter<TSig, TPar>::reset()
 {
   x1 = y1 = y2 = 0.0;
 }
 
-void rsModalFilter::processBlock(double in[], double out[], int blockSize)
+template<class TSig, class TPar>
+void rsModalFilter<TSig, TPar>::processBlock(TSig in[], TSig out[], int blockSize)
 {
   // under construction - still it is less efficient to call the block-based version compared to 
   // the sample-based version, also it is not yet entirely correct (the scale factor should be 
@@ -225,7 +237,8 @@ void rsModalFilter::processBlock(double in[], double out[], int blockSize)
 //=================================================================================================
 // class rsNonlinearModalFilter:
 
-rsNonlinearModalFilter::rsNonlinearModalFilter()
+template<class TSig, class TPar>
+rsNonlinearModalFilter<TSig, TPar>::rsNonlinearModalFilter()
 {  
   a  = 0.0; 
   cr = 1.0;
@@ -239,14 +252,15 @@ rsNonlinearModalFilter::rsNonlinearModalFilter()
   reset();
 }
 
-void rsNonlinearModalFilter::setModalParameters(double frequency, double amplitude, double decayTime,                                  
-                                                double startPhase, double sampleRate)
+template<class TSig, class TPar>
+void rsNonlinearModalFilter<TSig, TPar>::setModalParameters(TPar frequency, TPar amplitude, 
+  TPar decayTime, TPar startPhase, TPar sampleRate)
 {
   // compute recursion coeff:
-  double w     = 2*PI*frequency/sampleRate;
-  double alpha = 1.0 / (decayTime*sampleRate); 
-  double r     = exp(-alpha);
-  a.setRadiusAndAngle(r, w);
+  TPar w     = 2*PI*frequency/sampleRate;
+  TPar alpha = 1.0 / (decayTime*sampleRate); 
+  TPar r     = exp(-alpha);
+  a.setRadiusAndAngle(r, w); // write a function setPolar...or check if there already is one in std::complex
 
   this->amplitude  = amplitude;
   this->startPhase = startPhase;
@@ -257,12 +271,14 @@ void rsNonlinearModalFilter::setModalParameters(double frequency, double amplitu
   //ci *= amplitude;
 }
 
-void rsNonlinearModalFilter::setAmplitude(double newAmplitude)
+template<class TSig, class TPar>
+void rsNonlinearModalFilter<TSig, TPar>::setAmplitude(TPar newAmplitude)
 {
   amplitude = newAmplitude;
 }
 
-void rsNonlinearModalFilter::setPhaseModulation(double newPhaseModulation)
+template<class TSig, class TPar>
+void rsNonlinearModalFilter<TSig, TPar>::setPhaseModulation(TPar newPhaseModulation)
 {
   // todo: rename into phasemodualtionByIm, try to find a mor intuitive parametrization in terms
   // of the overtone spectrum (maybe a formula may be derived that relates a spectral slope to the 
@@ -271,14 +287,16 @@ void rsNonlinearModalFilter::setPhaseModulation(double newPhaseModulation)
   phaseModByIm = newPhaseModulation;
 }
 
-void rsNonlinearModalFilter::copyCoefficientsFrom(const rsNonlinearModalFilter &other)
+template<class TSig, class TPar>
+void rsNonlinearModalFilter<TSig, TPar>::copyCoefficientsFrom(const rsNonlinearModalFilter &other)
 {
   a  = other.a;
   cr = other.cr;
   ci = other.ci;
 }
 
-void rsNonlinearModalFilter::reset()
+template<class TSig, class TPar>
+void rsNonlinearModalFilter<TSig, TPar>::reset()
 {
   z = 0.0;
 }
@@ -286,14 +304,13 @@ void rsNonlinearModalFilter::reset()
 //=================================================================================================
 // class ModalFilterWithAttack:
 
-void rsModalFilterWithAttack::setModalParameters(double frequency, double amplitude, 
-                                                 double attackTime, double decayTime, 
-                                                 double startPhase, double sampleRate, 
-                                                 double detuneFactor)
+template<class TSig, class TPar>
+void rsModalFilterWithAttack<TSig, TPar>::setModalParameters(TPar frequency, TPar amplitude, 
+  TPar attackTime, TPar decayTime, TPar startPhase, TPar sampleRate, TPar detuneFactor)
 {
   rsAssert(attackTime < decayTime);  // attackTime >= decayTime will not work (because of math)
 
-  double tau1, tau2, scaler;
+  TPar tau1, tau2, scaler;
   tau1 = decayTime;
   expDiffScalerAndTau2(tau1, attackTime, &tau2, &scaler);
   amplitude *= scaler;
@@ -307,16 +324,18 @@ void rsModalFilterWithAttack::setModalParameters(double frequency, double amplit
   // the quickly decaying sinusoid
 }
 
-double rsModalFilterWithAttack::getLength(double decayLevel, double sampleRate)
+template<class TSig, class TPar>
+TPar rsModalFilterWithAttack<TSig, TPar>::getLength(TPar decayLevel, TPar sampleRate)
 {
-  double td = modalFilter1.getDecayTime(sampleRate);       // decay time
-  double a1 = 1.0 / td;
-  double a2 = 1.0 / modalFilter2.getDecayTime(sampleRate);
-  double tp = (log(a1)-log(a2))/(a1-a2);                   // peak time
+  TPar td = modalFilter1.getDecayTime(sampleRate);       // decay time
+  TPar a1 = 1.0 / td;
+  TPar a2 = 1.0 / modalFilter2.getDecayTime(sampleRate);
+  TPar tp = (log(a1)-log(a2))/(a1-a2);                   // peak time
   return tp + rsTauToDecayTime(td, decayLevel);
 }
 
-void rsModalFilterWithAttack::reset()
+template<class TSig, class TPar>
+void rsModalFilterWithAttack<TSig, TPar>::reset()
 {
   modalFilter1.reset();
   modalFilter2.reset();
@@ -325,33 +344,34 @@ void rsModalFilterWithAttack::reset()
 //=================================================================================================
 // class ModalFilterWithAttack2:
 
-rsModalFilterWithAttack2::rsModalFilterWithAttack2()
+template<class TSig, class TPar>
+rsModalFilterWithAttack2<TSig, TPar>::rsModalFilterWithAttack2()
 {
   //b0 = 1.0;
   b1 = b2 = b3 = a1 = a2 = a3 = a4 = 0.0;
   reset();
 }
 
-void rsModalFilterWithAttack2::setModalParameters(double frequency, double amplitude, 
-                                                  double attackTime, double decayTime, 
-                                                  double startPhase, double sampleRate)
+template<class TSig, class TPar>
+void rsModalFilterWithAttack2<TSig, TPar>::setModalParameters(TPar frequency, TPar amplitude, 
+  TPar attackTime, TPar decayTime, TPar startPhase, TPar sampleRate)
 {
   rsAssert(attackTime < decayTime);  // attackTime >= decayTime will not work (because of math)
 
-  double tau1, tau2, scaler;
-  double w = 2*PI*frequency/sampleRate;
-  double p = startPhase;
+  TPar tau1, tau2, scaler;
+  TPar w = 2*PI*frequency/sampleRate;
+  TPar p = startPhase;
   tau1 = decayTime;
   expDiffScalerAndTau2(tau1, attackTime, &tau2, &scaler);
 
   // compute coefficients for a parallel connection of filters:
-  double a = amplitude * scaler;
-  double b10, b11, a11, a12;
-  double b20, b21, a21, a22;
+  TPar a = amplitude * scaler;
+  TPar b10, b11, a11, a12;
+  TPar b20, b21, a21, a22;
   rsDampedSineFilter(w, a, tau1*sampleRate, p, &b10, &b11, &a11, &a12);
   rsDampedSineFilter(w, a, tau2*sampleRate, p, &b20, &b21, &a21, &a22);
 
-  // convert parallel connection into a single 4th order filter:
+  // convert parallel connection into a single 4th order filter (maybe factor out):
   //b0 = b10-b20; // b0 comes out as zero
   b1 = b11-b21+a21*b10-a11*b20;
   b2 = a21*b11-a11*b21+a22*b10-a12*b20;
@@ -362,7 +382,8 @@ void rsModalFilterWithAttack2::setModalParameters(double frequency, double ampli
   a4 = a12*a22;
 }
 
-void rsModalFilterWithAttack2::reset()
+template<class TSig, class TPar>
+void rsModalFilterWithAttack2<TSig, TPar>::reset()
 {
   w1 = w2 = w3 = w4 = 0.0;
 }
@@ -372,7 +393,8 @@ void rsModalFilterWithAttack2::reset()
 
 // construction/destruction:
 
-rsModalFilterBank::rsModalFilterBank()
+template<class TSig, class TPar>
+rsModalFilterBank<TSig, TPar>::rsModalFilterBank()
 {
   sampleRate         = 44100.0;
   referenceFrequency = 440.0;
@@ -384,40 +406,46 @@ rsModalFilterBank::rsModalFilterBank()
     modalFilters.push_back(rsModalFilterWithAttack());
 }
 
-rsModalFilterBank::~rsModalFilterBank()
+template<class TSig, class TPar>
+rsModalFilterBank<TSig, TPar>::~rsModalFilterBank()
 {
 
 }
 
 // parameter settings:
 
-void rsModalFilterBank::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   calculateModalFilterCoefficients();
 }
 
-void rsModalFilterBank::setReferenceFrequency(double newFrequency)
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::setReferenceFrequency(TPar newFrequency)
 {
   referenceFrequency = newFrequency;
   calculateModalFilterCoefficients();
 }
 
-void rsModalFilterBank::setReferenceAttack(double newAttack)
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::setReferenceAttack(TPar newAttack)
 {
   referenceAttack = newAttack;
   calculateModalFilterCoefficients();
 }
 
-void rsModalFilterBank::setReferenceDecay(double newDecay)
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::setReferenceDecay(TPar newDecay)
 {
   referenceDecay = newDecay;
   calculateModalFilterCoefficients();
 }
 
-void rsModalFilterBank::setModalParameters(rsVectorDbl newFrequencies, rsVectorDbl newAmplitudes, 
-                                           rsVectorDbl newAttackTimes, rsVectorDbl newDecayTimes, 
-                                           rsVectorDbl newStartPhases)
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::setModalParameters(std::vector<TPar> newFrequencies, 
+  std::vector<TPar> newAmplitudes, std::vector<TPar> newAttackTimes, 
+  std::vector<TPar> newDecayTimes, std::vector<TPar> newStartPhases)
 {
   frequencies = newFrequencies;
   amplitudes  = newAmplitudes;
@@ -429,10 +457,11 @@ void rsModalFilterBank::setModalParameters(rsVectorDbl newFrequencies, rsVectorD
 
 // inquiry:
 
-double rsModalFilterBank::getLength(double decayLevel)
+template<class TSig, class TPar>
+TPar rsModalFilterBank<TSig, TPar>::getLength(TPar decayLevel)
 {
-  double max = 0.0;
-  double tmp;
+  TPar max = 0.0;
+  TPar tmp;
   for(int m = 0; m < decayTimes.dim; m++)
   {
     tmp = modalFilters[m].getLength(decayLevel, sampleRate);
@@ -446,7 +475,8 @@ double rsModalFilterBank::getLength(double decayLevel)
 
 // audio processing:
 
-void rsModalFilterBank::processBlock(double in[], double out[], int blockSize)
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::processBlock(TSig in[], TSig out[], int blockSize)
 {
   for(int n = 0; n < blockSize; n++)
     out[n] = getSample(in[n]);
@@ -456,13 +486,15 @@ void rsModalFilterBank::processBlock(double in[], double out[], int blockSize)
 
 // others:
 
-void rsModalFilterBank::resetModalFilters()
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::resetModalFilters()
 {
   for(unsigned int m = 0; m < modalFilters.size(); m++)
     modalFilters[m].reset();
 }
 
-void rsModalFilterBank::calculateModalFilterCoefficients()
+template<class TSig, class TPar>
+void rsModalFilterBank<TSig, TPar>::calculateModalFilterCoefficients()
 {
   int nm = rsMin(numModes, frequencies.dim, amplitudes.dim, decayTimes.dim);
   nm = rsMin(nm, startPhases.dim);
@@ -480,15 +512,16 @@ void rsModalFilterBank::calculateModalFilterCoefficients()
 
 // static member functions:
 
-double rsModalFilterBank::modeDecayTime(double f, double fc, double p)
+template<class TSig, class TPar>
+TPar rsModalFilterBank<TSig, TPar>::modeDecayTime(TPar f, TPar fc, TPar p)
 {
-  double k = pow(fc, -p);
+  TPar k = pow(fc, -p);
   return (1-k) / ((1-k*2) + pow(f/fc, p));
 }
 
-rsVectorDbl rsModalFilterBank::randomModePhases(const rsVectorDbl &a, 
-                                                double randomness, 
-                                                int seed)
+template<class TSig, class TPar>
+std::vector<TPar> rsModalFilterBank<TSig, TPar>::randomModePhases(
+  const std::vector<TPar> &a, TPar randomness, int seed)
 {
   // The formulas used here were obtained by requiring a1*sin(p1) + a2*sin(p2) = k and solving 
   // for p2. For the last value in case of an odd number of modes, it is: a*sin(p) = k.
@@ -498,8 +531,8 @@ rsVectorDbl rsModalFilterBank::randomModePhases(const rsVectorDbl &a,
   // there is this if(a[n] < a[n+1]) thing.
 
   rsRandomUniform(0.0, 1.0, seed);
-  rsVectorDbl p(a.dim);
-  double k = 0.0;    // target value for the sample at n = 0
+  std::vector<TPar> p(a.size());
+  TPar k = 0.0;    // target value for the sample at n = 0
   int    N = p.dim;  // upper limit for loop below
   if( rsIsOdd(p.dim) )
   {
@@ -528,21 +561,21 @@ rsVectorDbl rsModalFilterBank::randomModePhases(const rsVectorDbl &a,
   return p;
 }
 
-rsVectorDbl rsModalFilterBank::modeDecayTimes(rsVectorDbl f, double fc, double p)
+template<class TSig, class TPar>
+std::vector<TPar> rsModalFilterBank<TSig, TPar>::modeDecayTimes(std::vector<TPar> f, TPar fc, TPar p)
 {
-  rsVectorDbl d(f.dim);
-  for(int n = 0; n < d.dim; n++)
+  std::vector<TPar> d(f.size());
+  for(int n = 0; n < d.size(); n++)
     d[n] = modeDecayTime(f[n], fc, p);
   return d;
 }
 
-rsVectorDbl rsModalFilterBank::scaleAtIntervals(rsVectorDbl v, 
-                                                int startIndex, 
-                                                int interval, 
-                                                double scaler)
+template<class TSig, class TPar>
+std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TPar> v,                 
+  int startIndex, int interval, TPar scaler)
 {
-  rsVectorDbl r = v;
-  for(int n = startIndex; n < r.dim; n += interval)
+  std::vector<TPar> r = v;
+  for(int n = startIndex; n < r.size(); n += interval)
     r[n] *= scaler;
   return r;
 }

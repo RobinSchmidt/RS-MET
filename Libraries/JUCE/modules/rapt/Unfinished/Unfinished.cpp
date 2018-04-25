@@ -34,7 +34,7 @@ namespace RAPT
 #include "Filters/FilterDesignFormulas.cpp"
 #include "Filters/MovingAverage.cpp"
 #include "Filters/PhonoFilter.cpp"
-//#include "Filters/ModalFilterBank.cpp"
+#include "Filters/ModalFilterBank.cpp"
 //#include "Filters/FakeResonanceFilter.cpp"
 //#include "Filters/LadderFilter.cpp"
 

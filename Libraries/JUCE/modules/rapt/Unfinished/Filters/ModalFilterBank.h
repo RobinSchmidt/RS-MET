@@ -27,7 +27,7 @@ public:
   void setOutputGain(TPar newGain);
 
   /** Returns the magnitude response of the filter at the given normalized radian frequency. */
-  double getMagnitudeAt(TPar w);
+  TPar getMagnitudeAt(TPar w);
 
   /** Resets the internal state variables to zero. */
   void reset();
@@ -159,11 +159,11 @@ public:
   /** Returns the decay time constant (tau) in seconds. Because the filter object is agnostic of
   the sample-rate at which it runs (for economy reasons), you must pass it along to the
   function. */
-  double getDecayTime(TPar sampleRate);
+  TPar getDecayTime(TPar sampleRate);
 
   /** Returns the magnitude response of the filter at the normalized radian frequency
   w = 2*pi*f/fs. */
-  double getMagnitudeAt(TPar w);
+  TPar getMagnitudeAt(TPar w);
 
 
 
