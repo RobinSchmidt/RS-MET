@@ -1,6 +1,5 @@
-using namespace RSLib;
-
-rsMovingAverage::rsMovingAverage()
+template<class TSig, class TPar>
+rsMovingAverage<TSig, TPar>::rsMovingAverage()
 {
   delayLine.setDelayInSamples(100);
 
@@ -10,48 +9,54 @@ rsMovingAverage::rsMovingAverage()
   reset();
 }
 
-void rsMovingAverage::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsMovingAverage<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   setLengthInSeconds(length);
 }
 
-void rsMovingAverage::setLengthInSeconds(double newLength)
+template<class TSig, class TPar>
+void rsMovingAverage<TSig, TPar>::setLengthInSeconds(TPar newLength)
 {
   int N = rsRoundToInt(newLength * sampleRate);
   length = N / sampleRate;
   setLengthInSamples(N);
 }
 
-void rsMovingAverage::setLengthInSamples(int newLength)
+template<class TSig, class TPar>
+void rsMovingAverage<TSig, TPar>::setLengthInSamples(int newLength)
 {
   delayLine.setDelayInSamples(newLength);
   updateCoefficients();
 }
 
-void rsMovingAverage::setDeviation(double newDeviation)
+template<class TSig, class TPar>
+void rsMovingAverage<TSig, TPar>::setDeviation(TPar newDeviation)
 {
   d = newDeviation;
   updateCoefficients();
 }
 
-void rsMovingAverage::reset()
+template<class TSig, class TPar>
+void rsMovingAverage<TSig, TPar>::reset()
 {
   delayLine.reset();
   y1 = 0.0;
 }
 
-void rsMovingAverage::updateCoefficients()
+template<class TSig, class TPar>
+void rsMovingAverage<TSig, TPar>::updateCoefficients()
 {
-  int    N = delayLine.getDelayInSamples();
-  double k = (d+1)/N;     // d is the relative deviation
-  double c = 1-k;
+  int  N = delayLine.getDelayInSamples();
+  TPar k = (d+1)/N;     // d is the relative deviation
+  TPar c = 1-k;
 
   // solve k*x^N - x + c via Newton iteration (x == a1):
-  double x = 0.0;
-  double f, fp;
-  double dx = 1.0;
-  double xN;
+  TPar x = 0.0;
+  TPar f, fp;
+  TPar dx = 1.0;
+  TPar xN;
   while( fabs(dx) > 0.0 )
   {
     xN  = pow(x, N-1);
@@ -73,8 +78,8 @@ void rsMovingAverage::updateCoefficients()
   // that it's divided by the first value, which is 1, before applying the overall gain).
 
   // calculate gain as reciprocal of the sum of the impulse-response values:
-  double sn = 1.0;
-  double an = a1;
+  TPar sn = 1.0;
+  TPar an = a1;
   for(int n = 1; n < N; n++)
   {
     sn += an;
