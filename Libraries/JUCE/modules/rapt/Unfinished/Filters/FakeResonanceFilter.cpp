@@ -1,6 +1,5 @@
-using namespace RSLib;
-
-rsFakeResonanceFilter::rsFakeResonanceFilter()
+template<class TSig, class TPar>
+rsFakeResonanceFilter<TSig, TPar>::rsFakeResonanceFilter()
 {
   fs     = 44100;
   cutoff = 1000;
@@ -38,7 +37,8 @@ rsFakeResonanceFilter::rsFakeResonanceFilter()
   //reset();
 }
 
-void rsFakeResonanceFilter::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   fs = newSampleRate;
   lpf1.setSampleRate(fs);
@@ -51,7 +51,8 @@ void rsFakeResonanceFilter::setSampleRate(double newSampleRate)
   setupResonanceDelay();
 }
 
-void rsFakeResonanceFilter::setLowpassCutoff(double newCutoff)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setLowpassCutoff(TPar newCutoff)
 {
   cutoff = newCutoff;
   lpf1.setCutoff(cutoff);
@@ -62,54 +63,63 @@ void rsFakeResonanceFilter::setLowpassCutoff(double newCutoff)
   setupResonanceDelay();
 }
 
-void rsFakeResonanceFilter::setHighpassCutoff(double newCutoff)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setHighpassCutoff(TPar newCutoff)
 {
   hpf.setCutoff(newCutoff);
 }
 
-void rsFakeResonanceFilter::setResonanceShift(double newShift)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setResonanceShift(TPar newShift)
 {
   shift = newShift;
   setupResonance();
 }
 
-void rsFakeResonanceFilter::setResonanceAmplitude(double newAmplitude)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setResonanceAmplitude(TPar newAmplitude)
 {
   gr = newAmplitude;
   setupResonance();
 }
 
-void rsFakeResonanceFilter::setResonancePhase(double newPhase)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setResonancePhase(TPar newPhase)
 {
   pr = newPhase;
   setupResonance();
 }
 
-void rsFakeResonanceFilter::setResonanceDecay(double newDecay)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setResonanceDecay(TPar newDecay)
 {
   dr = newDecay;
   setupResonance();
 }
 
-void rsFakeResonanceFilter::setDecayByFrequency(double newDecayByFreq)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setDecayByFrequency(TPar newDecayByFreq)
 {
   decayByFreq = newDecayByFreq;
   setupResonance();
 }
 
-void rsFakeResonanceFilter::setResonanceAttack(double newAttack)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setResonanceAttack(TPar newAttack)
 {
   ar = newAttack;
   setupResonance();
 }
 
-void rsFakeResonanceFilter::setResonanceDelay(double newDelay)
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setResonanceDelay(TPar newDelay)
 {
   delay = newDelay;
   setupResonanceDelay();
 }
 
-void rsFakeResonanceFilter::reset()
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::reset()
 {
   lpf1.reset();
   lpf2.reset();
@@ -119,11 +129,11 @@ void rsFakeResonanceFilter::reset()
   rf.reset();
 }
 
-void rsFakeResonanceFilter::setupResonance()
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setupResonance()
 {
-  double fr  = cutoff * rsPitchOffsetToFreqFactor(shift);
-
-  double scl = pow(2.0, -decayByFreq*rsLog2(0.001*fr));
+  TPar fr  = cutoff * rsPitchOffsetToFreqFactor(shift);
+  TPar scl = pow(2.0, -decayByFreq*rsLog2(0.001*fr));
     // scaler for the attack/decay times
     // i think, this may be optimized so as to use only exp/log instead of pow/log2 (the latter
     // pair of which is more expensive to compute) by using some rules for exponentials and 
@@ -132,7 +142,8 @@ void rsFakeResonanceFilter::setupResonance()
   rf.setModalParameters(fr, gr, scl*ar*dr, scl*dr, pr, fs, 1.0);
 }
 
-void rsFakeResonanceFilter::setupResonanceDelay()
+template<class TSig, class TPar>
+void rsFakeResonanceFilter<TSig, TPar>::setupResonanceDelay()
 {
   dl.setDelayTime(delay/cutoff);
 }
