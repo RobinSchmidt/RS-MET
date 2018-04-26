@@ -50,7 +50,7 @@ namespace RAPT
 #include "Filters/FakeResonanceFilter.h"
 
 // under construction:
-//#include "Analysis/EnvelopeFollower.h"
+#include "Analysis/EnvelopeFollower.h"
 //#include "Analysis/LinearPredictor.h"
 //#include "Analysis/FormantRemover.h"
 //#include "Analysis/CyclicAutoCorrelator.h"

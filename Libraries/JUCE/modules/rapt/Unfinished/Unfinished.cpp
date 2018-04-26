@@ -39,7 +39,7 @@ namespace RAPT
 #include "Filters/FakeResonanceFilter.cpp"
 
 // under construction:
-//#include "Analysis/EnvelopeFollower.cpp"
+#include "Analysis/EnvelopeFollower.cpp" // file is actually empty anyway
 //#include "Analysis/LinearPredictor.cpp"
 //#include "Analysis/FormantRemover.cpp"
 //#include "Analysis/CyclicAutoCorrelator.cpp"
