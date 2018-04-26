@@ -43,7 +43,7 @@ namespace RAPT
 #include "Analysis/LinearPredictor.cpp"
 #include "Analysis/FormantRemover.cpp"
 #include "Analysis/CyclicAutoCorrelator.cpp"
-//#include "Analysis/AutoCorrelationPitchDetector.cpp"
+#include "Analysis/AutoCorrelationPitchDetector.cpp"
 //#include "Analysis/ZeroCrossingPitchDetector.cpp"
 //#include "Analysis/ResponseGetters.cpp"
 

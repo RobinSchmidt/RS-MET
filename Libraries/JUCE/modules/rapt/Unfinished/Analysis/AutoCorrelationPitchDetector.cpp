@@ -1,8 +1,7 @@
-using namespace RSLib;
-
 // Construction/Destruction:
 
-rsAutoCorrelationPitchDetector::rsAutoCorrelationPitchDetector()
+template<class T>
+rsAutoCorrelationPitchDetector<T>::rsAutoCorrelationPitchDetector()
 {
   circularBuffer    = NULL;
   linearBuffer      = NULL;
@@ -13,7 +12,8 @@ rsAutoCorrelationPitchDetector::rsAutoCorrelationPitchDetector()
   reAllocateBuffers();
 }
 
-rsAutoCorrelationPitchDetector::~rsAutoCorrelationPitchDetector()
+template<class T>
+rsAutoCorrelationPitchDetector<T>::~rsAutoCorrelationPitchDetector()
 {
   delete[] circularBuffer;
   delete[] linearBuffer;
@@ -21,17 +21,20 @@ rsAutoCorrelationPitchDetector::~rsAutoCorrelationPitchDetector()
 
 // Setup:
 
-void rsAutoCorrelationPitchDetector::setSampleRate(double newSampleRate)
+template<class T>
+void rsAutoCorrelationPitchDetector<T>::setSampleRate(T newSampleRate)
 {
   sampleRate = newSampleRate;
 }
 
-void rsAutoCorrelationPitchDetector::setMaxFundamental(double newMaxFundamental)
+template<class T>
+void rsAutoCorrelationPitchDetector<T>::setMaxFundamental(T newMaxFundamental)
 {
   maxFundamental = newMaxFundamental;
 }
 
-void rsAutoCorrelationPitchDetector::setBufferSize(int newSize)
+template<class T>
+void rsAutoCorrelationPitchDetector<T>::setBufferSize(int newSize)
 {
   if( newSize != bufferSize  && rsIsPowerOfTwo(newSize) )
   {
@@ -40,21 +43,23 @@ void rsAutoCorrelationPitchDetector::setBufferSize(int newSize)
   }
 }
 
-void rsAutoCorrelationPitchDetector::setUpdateInterval(int newInterval)
+template<class T>
+void rsAutoCorrelationPitchDetector<T>::setUpdateInterval(int newInterval)
 {
   updateInterval = newInterval;
 }
 
 // Audio Processing:
 
-double rsAutoCorrelationPitchDetector::processBlock(double *block, int blockSize)
+template<class T>
+T rsAutoCorrelationPitchDetector<T>::processBlock(T *block, int blockSize)
 {
   int readIndex, copyLength;
   if( blockSize > bufferSize )
   {
     // fill up internal buffer with last portion of incoming block:
     readIndex = blockSize-bufferSize;
-    memcpy(circularBuffer, &block[readIndex], bufferSize*sizeof(double));
+    memcpy(circularBuffer, &block[readIndex], bufferSize*sizeof(T));
       // maybe use rsCopyBuffer (rewrite such that it uses memcopy)
     writeIndex = 0;
   }
@@ -63,19 +68,19 @@ double rsAutoCorrelationPitchDetector::processBlock(double *block, int blockSize
     if( blockSize < bufferSize-writeIndex )
     {
       // copy incoming block to current position circular buffer:
-      memcpy(&circularBuffer[writeIndex], block, blockSize*sizeof(double));
+      memcpy(&circularBuffer[writeIndex], block, blockSize*sizeof(T));
       writeIndex += blockSize;
     }
     else
     {
       // copy first portion of incoming block to current position circular buffer:
       copyLength = bufferSize-writeIndex;
-      memcpy(&circularBuffer[writeIndex], block, copyLength*sizeof(double));
+      memcpy(&circularBuffer[writeIndex], block, copyLength*sizeof(T));
 
       // copy last portion of incoming block to begin of circular buffer (wrap-around):
       readIndex  = copyLength;
       copyLength = blockSize-readIndex;
-      memcpy(circularBuffer, &block[readIndex], copyLength*sizeof(double));
+      memcpy(circularBuffer, &block[readIndex], copyLength*sizeof(T));
       writeIndex = copyLength;
 
       // write function copyLinearToCircular
@@ -86,9 +91,9 @@ double rsAutoCorrelationPitchDetector::processBlock(double *block, int blockSize
   if( sampleCounter >= updateInterval )
   {
     // copy circular into linear buffer:
-    //double linearBuffer[16];
-    memcpy(linearBuffer, &circularBuffer[writeIndex], (bufferSize-writeIndex)*sizeof(double));
-    memcpy(&linearBuffer[bufferSize-writeIndex], circularBuffer, writeIndex*sizeof(double));
+    //T linearBuffer[16];
+    memcpy(linearBuffer, &circularBuffer[writeIndex], (bufferSize-writeIndex)*sizeof(T));
+    memcpy(&linearBuffer[bufferSize-writeIndex], circularBuffer, writeIndex*sizeof(T));
       // write a function copyCircularToLinear
 
     // do processing and reset counter:
@@ -99,25 +104,27 @@ double rsAutoCorrelationPitchDetector::processBlock(double *block, int blockSize
   return frequencyEstimate;
 }
 
-void rsAutoCorrelationPitchDetector::updateFrequencyEstimate()
+template<class T>
+void rsAutoCorrelationPitchDetector<T>::updateFrequencyEstimate()
 {
-  double minFundamental = 0.0; // preliminary - maybe, we don't need it at all
+  T minFundamental = 0.0; // preliminary - maybe, we don't need it at all
   frequencyEstimate = estimateFundamental(linearBuffer, bufferSize, sampleRate, minFundamental, 
     maxFundamental, &reliability);
 }
 
-double rsAutoCorrelationPitchDetector::estimateFundamental(double *x, int L, double fs, 
-  double fMin, double fMax, double *reliability)
+template<class T>
+T rsAutoCorrelationPitchDetector<T>::estimateFundamental(T *x, int L, T fs, T fMin, T fMax, 
+  T *reliability)
 {
   // Get autocorrelation sequence r:
-  double *r = new double[L];
+  T *r = new T[L];
   rsAutoCorrelationFFT(x, L, r);
 
   // find index in autocorrelation function where a peak with maximum value occurs:
   int startIndex  = rsMax(1, (int) (fs/fMax));
   int m           = startIndex;    // index of maximum
-  double maxValue = -rsInfDouble;
-  double value;
+  T maxValue = -rsInfDouble;
+  T value;
   for(int k = startIndex; k < L-1; k++)
   {
     value = r[k];
@@ -141,7 +148,7 @@ double rsAutoCorrelationPitchDetector::estimateFundamental(double *x, int L, dou
 
   // obtain unbiased estimates of the autocorrelation function for the 3 values to be considered for
   // the parabolic fit:
-  double y[3];
+  T y[3];
   y[0] = r[m-1] / (L-(m-1));
   y[1] = r[m]   / (L- m   );
   y[2] = r[m+1] / (L-(m+1));
@@ -156,9 +163,9 @@ double rsAutoCorrelationPitchDetector::estimateFundamental(double *x, int L, dou
 
   // find exact location of maximum by fitting a parabola through 3 successive autocorrelation
   // values and using the maximum of the parabola:
-  double a[3];
+  T a[3];
   fitQuadratic_0_1_2(a, y);   // linker error on linux - fixed
-  double offset = 0.0;
+  T offset = 0.0;
   if( a[2] != 0.0 )
     offset = -0.5*a[1]/a[2];
 
@@ -173,12 +180,12 @@ double rsAutoCorrelationPitchDetector::estimateFundamental(double *x, int L, dou
 
   // todo: compute a correction to eliminate the (frequency-dependent) bias - this will probably
   // have to be a function of the offset:
-  double correction = 0.0; // preliminary
+  T correction = 0.0; // preliminary
 
   // compute the frequency estimate:
-  double exactIndex = m - 1 + offset + correction;
+  T exactIndex = m - 1 + offset + correction;
 
-  double frequencyEstimate = fs / exactIndex;
+  T frequencyEstimate = fs / exactIndex;
 
   // estimate reliability of the estimate by using the autocorrelation value at the peak,
   // normalized as if, for zero-lag, the autocorrelation-function would be unity:
@@ -190,29 +197,31 @@ double rsAutoCorrelationPitchDetector::estimateFundamental(double *x, int L, dou
   return frequencyEstimate;
 }
 
-double rsAutoCorrelationPitchDetector::applyNonlinearity(double x)
+template<class T>
+T rsAutoCorrelationPitchDetector<T>::applyNonlinearity(T x)
 {
   //return x;                   // linear
   //return log(x);              // worse than linear
   //return 1/x;                 // worse than log
   return rsPowBipolar(x, 0.75); // better than linear
 
-  // under construcktion - maybe try to find a better function - perhaps some rational function or 
+  // under construction - maybe try to find a better function - perhaps some rational function or 
   // something which would also be more efficient to evaluate
 }
 
 /*
-void rsAutoCorrelationPitchDetector::updateFrequencyEstimate()
+template<class T>
+void rsAutoCorrelationPitchDetector<T>::updateFrequencyEstimate()
 {
   // obtain autocorrelation function (ACF) of the linearBuffer:
-  double *tmpBuffer = new double[bufferSize];  // later: have a member or use linearBuffer itself
+  T *tmpBuffer = new T[bufferSize];  // later: have a member or use linearBuffer itself
   autoCorrelationFFT(linearBuffer, bufferSize, tmpBuffer);
 
   // Apply a 2-point moving average (MA) filter to the ACF (without the scaling by 1/2). This
   // avoids octave errors when a sinusoid of f = fs/(k+1/2) (k integer) is applied. Later we will
   // need to take accout of this by moving the exact location of the maximum by -0.5:
-  double x;
-  double xOld = tmpBuffer[0]; // initial value for x[n-1]
+  T x;
+  T xOld = tmpBuffer[0]; // initial value for x[n-1]
   for(int n = 0; n < bufferSize; n++)
   {
     x = tmpBuffer[n];
@@ -222,11 +231,11 @@ void rsAutoCorrelationPitchDetector::updateFrequencyEstimate()
 
   // find index in (MA-filtered) autocorrelation function where a peak with maximum value occurs:
   int    maxIndex = findHighestPeakIndex(tmpBuffer, bufferSize);
-  double maxValue = tmpBuffer[maxIndex];
+  T maxValue = tmpBuffer[maxIndex];
 
   // obtain unbiased estimates of the autocorrelation function for the 3 values to be considered for
   // the parabolic fit:
-  double y[3];
+  T y[3];
   y[0] = tmpBuffer[maxIndex-1] / (bufferSize - (maxIndex-1));
   y[1] = tmpBuffer[maxIndex]   / (bufferSize -  maxIndex   );
   y[2] = tmpBuffer[maxIndex+1] / (bufferSize - (maxIndex+1));
@@ -234,7 +243,7 @@ void rsAutoCorrelationPitchDetector::updateFrequencyEstimate()
   // it has been found empirically that a transformation of the values y <- y^(2/3) leads to less
   // bias towards frequencies which are dividers of the sample-rate (i think, the estimated exact
   // location of the maximum of the parabola leans less to the inside):
-  double ex = 1.0;  // bypass nonlinearity for test purposes
+  T ex = 1.0;  // bypass nonlinearity for test purposes
   //ex = 2.0/3.0;
   ex = 0.691; // seems to be even better than 2/3 ...maybe optimize further
   //ex = 0.816; // good for 3520 Hz @ 44100
@@ -245,13 +254,13 @@ void rsAutoCorrelationPitchDetector::updateFrequencyEstimate()
 
   // find exact location of maximum by fitting a parabola through 3 successive autocorrelation
   // values and using the maximum of the parabola:
-  double a[3];
+  T a[3];
   fitQuadratic(a, y);
-  double offset = 0.0;
+  T offset = 0.0;
   if( a[2] != 0.0 )
     offset = -0.5*a[1]/a[2];
 
-  double exactIndex = maxIndex - 1 + offset;
+  T exactIndex = maxIndex - 1 + offset;
   exactIndex -= 0.5; // due to the 2-point MA filter on the ACF
   frequencyEstimate = sampleRate / exactIndex;
 
@@ -265,7 +274,8 @@ void rsAutoCorrelationPitchDetector::updateFrequencyEstimate()
 
 // Misc:
 
-void rsAutoCorrelationPitchDetector::reset()
+template<class T>
+void rsAutoCorrelationPitchDetector<T>::reset()
 {
   writeIndex        = 0;
   sampleCounter     = 0;
@@ -277,11 +287,12 @@ void rsAutoCorrelationPitchDetector::reset()
 
 // Internal Functions;
 
-void rsAutoCorrelationPitchDetector::reAllocateBuffers()
+template<class T>
+void rsAutoCorrelationPitchDetector<T>::reAllocateBuffers()
 {
   delete[] circularBuffer;
   delete[] linearBuffer;
-  circularBuffer = new double[bufferSize];
-  linearBuffer   = new double[bufferSize];
+  circularBuffer = new T[bufferSize];
+  linearBuffer   = new T[bufferSize];
   reset();
 }

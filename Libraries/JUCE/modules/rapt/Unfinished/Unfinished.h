@@ -54,7 +54,7 @@ namespace RAPT
 #include "Analysis/LinearPredictor.h"
 #include "Analysis/FormantRemover.h"
 #include "Analysis/CyclicAutoCorrelator.h"
-//#include "Analysis/AutoCorrelationPitchDetector.h"
+#include "Analysis/AutoCorrelationPitchDetector.h"
 //#include "Analysis/ZeroCrossingPitchDetector.h"
 //#include "Analysis/ResponseGetters.h"
 
