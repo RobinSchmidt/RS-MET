@@ -1,8 +1,6 @@
-using namespace RSLib;
-
 // Construction/Destruction:
-
-rsZeroCrossingPitchDetector::rsZeroCrossingPitchDetector() : formantRemover(30)
+template<class T>
+rsZeroCrossingPitchDetector<T>::rsZeroCrossingPitchDetector() : formantRemover(30)
 {
   // initialize parameters:
   sampleRate        = 44100.0;
@@ -41,7 +39,8 @@ rsZeroCrossingPitchDetector::rsZeroCrossingPitchDetector() : formantRemover(30)
 
 // Setup:
 
-void rsZeroCrossingPitchDetector::setSampleRate(double newSampleRate)
+template<class T>
+void rsZeroCrossingPitchDetector<T>::setSampleRate(T newSampleRate)
 {
   if( newSampleRate > 0.0 )
   {
@@ -55,7 +54,8 @@ void rsZeroCrossingPitchDetector::setSampleRate(double newSampleRate)
     RS_DEBUG_BREAK; // invalid sample-rate
 }
 
-void rsZeroCrossingPitchDetector::setMinFundamental(double newMinFundamental)
+template<class T>
+void rsZeroCrossingPitchDetector<T>::setMinFundamental(T newMinFundamental)
 {
   if( newMinFundamental >= 10.0 
     && newMinFundamental <= 5000.0 
@@ -66,7 +66,8 @@ void rsZeroCrossingPitchDetector::setMinFundamental(double newMinFundamental)
   }
 }
 
-void rsZeroCrossingPitchDetector::setMaxFundamental(double newMaxFundamental)
+template<class T>
+void rsZeroCrossingPitchDetector<T>::setMaxFundamental(T newMaxFundamental)
 {
   if( newMaxFundamental >= 100.0 
     && newMaxFundamental <= 20000.0 
@@ -77,7 +78,8 @@ void rsZeroCrossingPitchDetector::setMaxFundamental(double newMaxFundamental)
   }
 }
 
-void rsZeroCrossingPitchDetector::reset(double initialEstimate)
+template<class T>
+void rsZeroCrossingPitchDetector<T>::reset(T initialEstimate)
 {
   y0 = y1 = y2 = y3 = 0.0;
   fracOld           = 0.0;
