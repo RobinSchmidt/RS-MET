@@ -16,8 +16,14 @@ rsZeroCrossingPitchDetector<T>::rsZeroCrossingPitchDetector() : formantRemover(3
   dcBlocker.setCutoff(20.0);
   dcBlocker.setSampleRate(sampleRate);
 
-  lowpass.setMode(rsFourPoleFilterParameters::LOWPASS_6);
-  lowpass.useTwoStages(true);
+  // old:
+  //lowpass.setMode(rsFourPoleFilterParameters::LOWPASS_6);
+  //lowpass.useTwoStages(true);
+  //lowpass.setFrequency(50.0);
+  //lowpass.setSampleRate(sampleRate);
+
+  // new:
+  lowpass.setMode(rsLadderFilter::LOWPASS_24);
   lowpass.setFrequency(50.0);
   lowpass.setSampleRate(sampleRate);
 

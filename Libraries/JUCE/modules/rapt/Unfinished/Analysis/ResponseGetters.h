@@ -1,6 +1,8 @@
 #ifndef RS_RESPONSEGETTERS_H
 #define RS_RESPONSEGETTERS_H
 
+// todo: move into test suite
+
 namespace RSLib
 {
 

@@ -101,7 +101,8 @@ protected:
   rsOnePoleFilter<T, T>  dcBlocker;
     // The dc-blocker filter for the signal in which we look for zero-crossings.
 
-  rsFourPoleFilter<T, T> lowpass;
+  //rsFourPoleFilter<T, T> lowpass;
+  rsLadderFilter<T, T> lowpass;
     // The lowpass filter for the signal in which we look for zero-crossings.
 
   rsEnvelopeFollower<T, T> envFollower;
@@ -181,8 +182,8 @@ RS_INLINE T rsZeroCrossingPitchDetector<T>::estimatePeriod(T inputSignal, T whit
     // adapt the lowpass and dc-blocking highpass:
     frequencyEstimate = 1.0 / periodEstimate;
     //dcBlocker.setCutoff(0.25*freq);
-    lowpass.setFrequency(0.5*frequencyEstimate);
-    lowpass.updateFilterCoefficients();
+    lowpass.setCutoff(0.5*frequencyEstimate);
+    //lowpass.updateFilterCoefficients();
   }
 
   return periodEstimate;
