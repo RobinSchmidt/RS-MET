@@ -1,12 +1,12 @@
-using namespace RSLib;
-
-rsFormantRemover::rsFormantRemover(int newMaxOrder) 
+template<class TSig, class TPar>
+rsFormantRemover<TSig, TPar>::rsFormantRemover(int newMaxOrder) 
   : rsLinearPredictor(newMaxOrder)
 {
   reset();
 }
 
-void rsFormantRemover::reset()
+template<class TSig, class TPar>
+void rsFormantRemover<TSig, TPar>::reset()
 {
   coeff   = 0.0;
   pastIn  = 0.0;

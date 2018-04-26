@@ -1,78 +1,73 @@
-#ifndef RS_FORMANTREMOVER_H
-#define RS_FORMANTREMOVER_H
+#ifndef RAPT_FORMANTREMOVER_H
+#define RAPT_FORMANTREMOVER_H
 
-namespace RSLib
+/** This class removes formants from an incoming audio signal by first applying an adaptive first
+order pre-emphasis filter, the applying an adaptive prediction error filter (as inherited from 
+LinearPredictor) and finally undoing the pre-emphasis by its inverse filter. 
+
+...what about rsFormantPreserver...is this class still available in rosic only? */
+
+template<class TSig, class TPar>
+class rsFormantRemover : public rsLinearPredictor<TSig, TPar>
 {
 
-  /**
+public:
 
-  This class removes formants from an incoming audio signal by first applying an adaptive first 
-  order pre-emphasis filter, the applying an adaptive prediction error filter (as inherited from 
-  LinearPredictor) and finally undoing the pre-emphasis by its inverse filter.
+  /** \name Construction/Destruction */
 
-  */
-
-  class RSLib_API rsFormantRemover : public rsLinearPredictor
-  {
-
-  public:
-
-    /** \name Construction/Destruction */
-
-    /** Constructor. */
-    rsFormantRemover(int newMaxOrder = 128);
+  /** Constructor. */
+  rsFormantRemover(int newMaxOrder = 128);
 
 
-    /** \name Audio Processing */
+  /** \name Audio Processing */
 
-    /** Returns one prediction error sample and internally updates the weight vector and 
-    pre-emphasis coefficient. */
-    RS_INLINE double getSample(double in); 
+  /** Returns one prediction error sample and internally updates the weight vector and
+  pre-emphasis coefficient. */
+  RS_INLINE TSig getSample(TSig in);
 
 
-    /** \name Misc */
+  /** \name Misc */
 
-    /** Resets the state-variables and coefficient of the pre-emphasis filter and calls the 
-    baseclass' method (which resets the weight vector to all zeros). */
-    void reset();
+  /** Resets the state-variables and coefficient of the pre-emphasis filter and calls the
+  baseclass' method (which resets the weight vector to all zeros). */
+  void reset();
 
-  protected:
+protected:
 
-    /** \name Data */
+  /** \name Data */
 
-    double coeff;
-    double pastIn, pastOut;
+  TSig coeff;
+  TSig pastIn, pastOut;
 
-  };
+};
 
-  //-----------------------------------------------------------------------------------------------
-  // inlined functions:
+//-----------------------------------------------------------------------------------------------
+// inlined functions:
 
-  RS_INLINE double rsFormantRemover::getSample(double in)
-  {
-    double predicted, error, tmp;
+template<class TSig, class TPar>
+RS_INLINE TSig rsFormantRemover<TSig, TPar>::getSample(TSig in)
+{
+  TSig predicted, error, tmp;
 
-    // predict the input signal and establish the prediction error (which serves as pre-emphasized 
-    // signal):
-    predicted = coeff*pastIn;
-    error     = in-predicted;
+  // predict the input signal and establish the prediction error (which serves as pre-emphasized 
+  // signal, the pre-emphasis filter is a 1st order linear prediction error filter):
+  predicted = coeff*pastIn;
+  error     = in-predicted;
 
-    // apply the linear prediction error filter to the pre-emphsized signal:
-    tmp = rsLinearPredictor::getSample(error);
+  // apply the linear prediction error filter to the pre-emphsized signal:
+  tmp = rsLinearPredictor::getSample(error);
 
-    // undo the pre-empasis:
-    tmp     = tmp + coeff*pastOut;
-    pastOut = tmp;
+  // undo the pre-empasis:
+  tmp     = tmp + coeff*pastOut;
+  pastOut = tmp;
 
-    // adapt the pre-emphasis coefficient:
-    coeff = forgetFactor*coeff + learnRate*error*pastIn;
+  // adapt the pre-emphasis coefficient:
+  coeff = forgetFactor*coeff + learnRate*error*pastIn;
 
-    // update state:
-    pastIn = in;
+  // update state:
+  pastIn = in;
 
-    return tmp;
-  }
-
+  return tmp;
 }
 
 #endif
