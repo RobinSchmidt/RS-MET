@@ -33,9 +33,11 @@ template<class T>
 void synthesizePulseWave(T *x, int N, T frequency, T dutyCycle, T sampleRate, T phase = 0.0, 
   bool antiAlias = false);
 
+// what about TriSaw
+
 template<class T>
-void synthesizeDecayingSine(double *x, int N, double frequency, double amplitude,
-  double decayTime, double startPhase, double sampleRate);
+void synthesizeDecayingSine(T *x, int N, T frequency, T amplitude, T decayTime, T startPhase, 
+  T sampleRate);
 
 template<class T>
 void synthesizeModal(T *x, int N, std::vector<T> frequencies, std::vector<T> amplitudes,

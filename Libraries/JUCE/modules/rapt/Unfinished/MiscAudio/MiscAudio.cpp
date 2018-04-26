@@ -1,9 +1,7 @@
-using namespace RSLib;
-
-void RSLib::synthesizeWaveform(double *x, int N, int shape, double frequency, double sampleRate, 
-  double phase, bool antiAlias)
+template<class T>
+void synthesizeWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, bool antiAlias)
 {
-  double w = 2*PI*frequency/sampleRate;
+  T w = 2*PI*frequency/sampleRate;
   rsFillWithZeros(x, N);
   switch( shape )
   {
@@ -28,7 +26,7 @@ void RSLib::synthesizeWaveform(double *x, int N, int shape, double frequency, do
         int k = 1;
         while( k*frequency < sampleRate/2 )
         {
-          double a = -2.0 / (k*PI);
+          T a = -2.0 / (k*PI);
           for(int n=0; n<N; n++)
             x[n] += a * sin(k*(w*n+PI) + phase);
           k++;
@@ -48,7 +46,7 @@ void RSLib::synthesizeWaveform(double *x, int N, int shape, double frequency, do
         int k = 1;
         while( k*frequency < sampleRate/2 )
         {
-          double a = -4.0 / (k*PI);
+          T a = -4.0 / (k*PI);
           for(int n=0; n<N; n++)
             x[n] += a * sin(k*(w*n+PI) + phase);
           k+=2;
@@ -65,11 +63,11 @@ void RSLib::synthesizeWaveform(double *x, int N, int shape, double frequency, do
       }
       else
       {
-        int    k = 1;
-        double s = 1.0; // sign 
+        int k = 1;
+        T s = 1.0; // sign 
         while( k*frequency < sampleRate/2 )
         {
-          double a = 8.0 / (k*k*PI*PI);
+          T a = 8.0 / (k*k*PI*PI);
           for(int n=0; n<N; n++)
             x[n] += s * a * sin(k*w*n + phase);
           k +=  2;
@@ -81,10 +79,11 @@ void RSLib::synthesizeWaveform(double *x, int N, int shape, double frequency, do
   }
 }
 
-void RSLib::synthesizePulseWave(double *x, int N, double frequency, double dutyCycle, 
-  double sampleRate, double phase, bool antiAlias)
+template<class T>
+void synthesizePulseWave(T *x, int N, T frequency, T dutyCycle, T sampleRate, T phase, 
+  bool antiAlias)
 {
-  double w = 2*PI*frequency/sampleRate;
+  T w = 2*PI*frequency/sampleRate;
   rsFillWithZeros(x, N);
   if( antiAlias == false )
   {
@@ -96,7 +95,7 @@ void RSLib::synthesizePulseWave(double *x, int N, double frequency, double dutyC
     int k = 1;
     while( k*frequency < sampleRate/2 )
     {
-      double a = 4.0 * sin(k*PI*dutyCycle) / (k*PI);
+      T a = 4.0 * sin(k*PI*dutyCycle) / (k*PI);
       for(int n=0; n<N; n++)
         x[n] += a * cos(k*w*n + phase);
       k++;
@@ -104,26 +103,27 @@ void RSLib::synthesizePulseWave(double *x, int N, double frequency, double dutyC
   }
 }
 
-void RSLib::synthesizeDecayingSine(double *x, int N, double frequency, double amplitude, 
-  double decayTime, double startPhase, double sampleRate)
+template<class T>
+void synthesizeDecayingSine(T *x, int N, T frequency, T amplitude, T decayTime, T startPhase, 
+  T sampleRate)
 {
   rsModalFilter filter;
   filter.setModalParameters(frequency, amplitude, decayTime, startPhase, sampleRate);
   filter.reset();
-
   x[0] = filter.getSample(1.0);
   for(int n=1; n<N; n++)
     x[n] = filter.getSample(0.0);
 }
 
-void RSLib::synthesizeModal(double *x, int N, rsVectorDbl frequencies, rsVectorDbl amplitudes,                           
-  rsVectorDbl decayTimes, rsVectorDbl startPhases, double sampleRate)
+template<class T>
+void synthesizeModal(T *x, int N, std::vector<T> frequencies, std::vector<T> amplitudes,                           
+  std::vector<T> decayTimes, std::vector<T> startPhases, T sampleRate)
 {
   //rsModalSynthesizer synth;
   rsModalFilterBank synth;
 
   // preliminary: fixed (to zero) attack times - make this a user parameter later:
-  rsVectorDbl attackTimes(frequencies.dim);
+  std::vector<T> attackTimes(frequencies.dim);
 
   synth.setModalParameters(frequencies, amplitudes, attackTimes, decayTimes, startPhases);
   synth.setSampleRate(sampleRate);
@@ -133,18 +133,19 @@ void RSLib::synthesizeModal(double *x, int N, rsVectorDbl frequencies, rsVectorD
   rsNormalize(x, N, 1.0);
 }
 
-void RSLib::synthesizeModalPluckedString(double *x, int N, double frequency, double sampleRate, 
-  double decayTime, double decayExponent, double amplitudeExponent, double inharmonicity,   
-  double phase, double evenAmplitudeScaler)
+template<class T>
+void synthesizeModalPluckedString(T *x, int N, T frequency, T sampleRate, 
+  T decayTime, T decayExponent, T amplitudeExponent, T inharmonicity,   
+  T phase, T evenAmplitudeScaler)
 {
-  double f0 = frequency;     // fundamental frequency
-  double d0 = decayTime;     // fundamental decay-time
-  double h;                  // partial number
+  T f0 = frequency;     // fundamental frequency
+  T d0 = decayTime;     // fundamental decay-time
+  T h;                  // partial number
   int numModes = (int) floor(sampleRate/(2*frequency));
-  rsVectorDbl f(numModes);
-  rsVectorDbl a(numModes);
-  rsVectorDbl d(numModes);
-  rsVectorDbl p(numModes);
+  std::vector<T> f(numModes);
+  std::vector<T> a(numModes);
+  std::vector<T> d(numModes);
+  std::vector<T> p(numModes);
   for(int m = 0; m < numModes; m++)
   {
     h      = m + 1;               
@@ -160,17 +161,18 @@ void RSLib::synthesizeModalPluckedString(double *x, int N, double frequency, dou
   synthesizeModal(x, N, f, a, d, p, sampleRate);
 }
 
-void RSLib::synthesizeModalRodFreeFree(double *x, int N, double frequency, double sampleRate, 
-                                       double decayTime, double decayExponent, 
-                                       double amplitudeExponent, double phase)
+template<class T>
+void synthesizeModalRodFreeFree(T *x, int N, T frequency, T sampleRate, 
+  T decayTime, T decayExponent, T amplitudeExponent, T phase)
 {
   // calculate frequency ratios (following Dave Benson's Math and Music):
-  std::vector<double> lambdas;
-  std::vector<double> frequencies;    
-  double c, r, lambda;
-  double fTmp = frequency;
-  //double fScale;
+  std::vector<T> lambdas;
+  std::vector<T> frequencies;    
+  T c, r, lambda;
+  T fTmp = frequency;
+  //T fScale;
 
+  // numbers taken from???
   lambdas.push_back(4.7300407448627040260240481);
   lambdas.push_back(7.8532046240958375564770667);
   lambdas.push_back(10.9956078380016709066690325);
@@ -178,7 +180,7 @@ void RSLib::synthesizeModalRodFreeFree(double *x, int N, double frequency, doubl
   lambdas.push_back(17.2787596573994814380910740);
   lambdas.push_back(20.4203522456260610909364112);
   c       = (1+0.5)*PI;
-  lambda  = c - pow(-1.0,(double)1)*2*exp(-c) - 4*exp(-2*c);
+  lambda  = c - pow(-1.0,(T)1)*2*exp(-c) - 4*exp(-2*c);
   c       = pow(lambdas[0], 2);
   r       = (lambda*lambda)/c;
   fTmp    = r * frequency;
@@ -186,7 +188,7 @@ void RSLib::synthesizeModalRodFreeFree(double *x, int N, double frequency, doubl
   while( fTmp <= 0.5*sampleRate )
   {
     c       = (m+0.5)*PI;
-    lambda  = c - pow(-1.0,(double)m)*2*exp(-c) - 4*exp(-2*c);
+    lambda  = c - pow(-1.0,(T)m)*2*exp(-c) - 4*exp(-2*c);
     lambdas.push_back(lambda);
     c       = pow(lambdas[0], 2);
     r       = (lambda*lambda)/c;
@@ -205,13 +207,13 @@ void RSLib::synthesizeModalRodFreeFree(double *x, int N, double frequency, doubl
   }
   
   int numModes = (int) frequencies.size();  // maybe use rsUint32
-  //double f0    = frequency;     // fundamental frequency
-  double d0    = decayTime;     // fundamental decay-time
-  double h;
-  rsVectorDbl f(numModes);
-  rsVectorDbl a(numModes);
-  rsVectorDbl d(numModes);
-  rsVectorDbl p(numModes);
+  //T f0    = frequency;     // fundamental frequency
+  T d0    = decayTime;     // fundamental decay-time
+  T h;
+  std::vector<T> f(numModes);
+  std::vector<T> a(numModes);
+  std::vector<T> d(numModes);
+  std::vector<T> p(numModes);
   for(int m = 0; m < numModes; m++)
   {        
     f.v[m] = frequencies[m];
@@ -225,40 +227,42 @@ void RSLib::synthesizeModalRodFreeFree(double *x, int N, double frequency, doubl
 
 // Interpolation:
 
-void RSLib::upsampleLinear(double *in, int inLength, double *out, int upsamplingFactor)
+template<class T>
+void upsampleLinear(T *in, int inLength, T *out, int upsamplingFactor)
 {
   int offset = 0;
   for(int n = 1; n < inLength; n++)  // should start at n = 0 -> for the case n == 0, we need special treatment
   {
     for(int m = 0; m < upsamplingFactor; m++)
     {
-      double d      = 1.0 - (double) m / (double) upsamplingFactor;
+      T d      = 1.0 - (T) m / (T) upsamplingFactor;
       out[offset+m] = getDelayedSampleLinear(d, &in[n]);
     }
     offset += upsamplingFactor;
   }
 
   // tail:
-  double tmpBuffer[2];
+  T tmpBuffer[2];
   tmpBuffer[0] = in[inLength-1];
   tmpBuffer[1] = 0.0;
   for(int m = 0; m < upsamplingFactor; m++)
   {
-    double d      = 1.0 - (double) m / (double) upsamplingFactor;
+    T d      = 1.0 - (T) m / (T) upsamplingFactor;
     out[offset+m] = getDelayedSampleLinear(d, &tmpBuffer[1]);
   }
 }
 
-void RSLib::upsampleHermiteAsymmetric1(double *in, int inLength, double *out, int upsamplingFactor, 
-                                       double shape)
+template<class T>
+void upsampleHermiteAsymmetric1(T *in, int inLength, T *out, int upsamplingFactor,                                     
+  T shape)
 {
   int offset = 0;
   for(int n = 1; n < inLength; n++)
   {
     // special handling for the input sample at index 1 - it has only one predecessor, 
     // but the cubic interpolator needs two:
-    double *tmpPointer;
-    double tmpBuffer[3];
+    T *tmpPointer;
+    T tmpBuffer[3];
     if( n == 1 )
     {
       tmpBuffer[2] = in[n];
@@ -271,21 +275,22 @@ void RSLib::upsampleHermiteAsymmetric1(double *in, int inLength, double *out, in
 
     for(int m = 0; m < upsamplingFactor; m++)
     {
-      double d      = 1.0 - (double) m / (double) upsamplingFactor;
+      T d      = 1.0 - (T) m / (T) upsamplingFactor;
       out[offset+m] = getDelayedSampleAsymmetricHermite1(d, tmpPointer, shape);
     }
     offset += upsamplingFactor;
   }
 }
 
-void RSLib::upsampleHermiteAsymmetricM(double *in, int inLength, double *out, 
-                                       int upsamplingFactor, int M, double shape)
+template<class T>
+void upsampleHermiteAsymmetricM(T *in, int inLength, T *out, 
+                                       int upsamplingFactor, int M, T shape)
 {
   int n, m, i;
   int offset        = 0;
   int bufferSize    = M+2;  
-  double *tmpBuffer = new double[bufferSize];  
-  double *tmpPointer;
+  T *tmpBuffer = new T[bufferSize];  
+  T *tmpPointer;
 
   for(n = 1; n < inLength; n++)
   {
@@ -300,7 +305,7 @@ void RSLib::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
       tmpPointer = &in[n];
     for(m = 0; m < upsamplingFactor; m++)
     {
-      double d      = 1.0 - (double) m / (double) upsamplingFactor;
+      T d      = 1.0 - (T) m / (T) upsamplingFactor;
       out[offset+m] = getDelayedSampleAsymmetricHermiteM(d, tmpPointer, M, shape);
     }
     offset += upsamplingFactor;
@@ -313,7 +318,7 @@ void RSLib::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
   tmpBuffer[M+1] = 0.0;
   for(m = 0; m < upsamplingFactor; m++)
   {
-    double d      = 1.0 - (double) m / (double) upsamplingFactor;
+    T d      = 1.0 - (T) m / (T) upsamplingFactor;
     out[offset+m] = getDelayedSampleAsymmetricHermiteM(d, &tmpBuffer[M+1], M, shape);
   }
 
@@ -322,8 +327,9 @@ void RSLib::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
 
 // Filtering:
 
-void RSLib::filterButterworth(double *x, double *y, int N, double frequency, double sampleRate, 
-                              int mode, int prototypeOrder, double gain, bool forwardBackward)
+template<class T>
+void filterButterworth(T *x, T *y, int N, T frequency, T sampleRate, 
+                              int mode, int prototypeOrder, T gain, bool forwardBackward)
 {
   rsError("We need to get the high-order IIR filter code into RSLib to make this work again");
   /*
@@ -347,27 +353,29 @@ void RSLib::filterButterworth(double *x, double *y, int N, double frequency, dou
 // Others:
 
 /*
-void rosic::estimateEnvelope(double *x, double *y, int N, double sampleRate, double attackTime, 
-                             double releaseTime, int mode, bool forwardBackward)
+void rosic::estimateEnvelope(T *x, T *y, int N, T sampleRate, T attackTime, 
+                             T releaseTime, int mode, bool forwardBackward)
 {
 
 }
 */
 
-void RSLib::fft(double *signalBlock, int blockSize, rsComplexDbl *spectrum, int fftSize)
+template<class T>
+void fft(T *signalBlock, int blockSize, std::complex<T> *spectrum, int fftSize)
 {
   rsAssert(fftSize >= blockSize);
   static rsFourierTransformerBluestein transformer;
   transformer.setBlockSize(fftSize);
   transformer.setNormalizationMode(rsFourierTransformerRadix2::NORMALIZE_ON_FORWARD_TRAFO);
   for(int n=0; n<blockSize; n++)
-    spectrum[n] = rsComplexDbl(signalBlock[n]);
+    spectrum[n] = std::complex<T>(signalBlock[n]);
   for(int n=blockSize; n<fftSize; n++)
-    spectrum[n] = rsComplexDbl(0.0);
+    spectrum[n] = std::complex<T>(0.0);
   transformer.transformComplexBufferInPlace(spectrum);
 }
 
-void RSLib::ifft(rsComplexDbl *spectrum, int fftSize, rsComplexDbl *signalBlock)
+template<class T>
+void ifft(std::complex<T> *spectrum, int fftSize, std::complex<T> *signalBlock)
 {
   static rsFourierTransformerBluestein transformer;
   transformer.setBlockSize(fftSize);
@@ -376,19 +384,21 @@ void RSLib::ifft(rsComplexDbl *spectrum, int fftSize, rsComplexDbl *signalBlock)
   transformer.transformComplexBuffer(spectrum, signalBlock);
 }
 
-void RSLib::ifftReal(rsComplexDbl *spectrum, int fftSize, double *signalBlock)
+template<class T>
+void ifftReal(std::complex<T> *spectrum, int fftSize, T *signalBlock)
 {
-  rsComplexDbl *tmp = new rsComplexDbl[fftSize];
+  std::complex<T> *tmp = new std::complex<T>[fftSize];
   ifft(spectrum, fftSize, tmp);
   for(int n=0; n<fftSize; n++)
     signalBlock[n] = tmp[n].re;
   delete[] tmp;
 }
 
-void RSLib::fftMagnitudesAndPhases(double *signalBlock, int blockSize, double *magnitudes, 
-                                   double *phases, int fftSize)
+template<class T>
+void fftMagnitudesAndPhases(T *signalBlock, int blockSize, T *magnitudes, 
+                                   T *phases, int fftSize)
 {
-  rsComplexDbl *spectrum = new rsComplexDbl[fftSize];
+  std::complex<T> *spectrum = new std::complex<T>[fftSize];
   fft(signalBlock, blockSize, spectrum, fftSize);
   int kMax;
   if( rsIsEven(fftSize) )
@@ -405,10 +415,10 @@ void RSLib::fftMagnitudesAndPhases(double *signalBlock, int blockSize, double *m
   delete[] spectrum;
 }
 
-
-void RSLib::signalToRealCepstrum(double *signal, int numSamples, double *cepstrum)
+template<class T>
+void signalToRealCepstrum(T *signal, int numSamples, T *cepstrum)
 {
-  rsComplexDbl *spectrum = new rsComplexDbl[numSamples];
+  std::complex<T> *spectrum = new std::complex<T>[numSamples];
   fft(signal, numSamples, spectrum, numSamples);
   for(int n = 0; n < numSamples; n++)
     spectrum[n] = log(spectrum[n].getRadius());
@@ -416,9 +426,10 @@ void RSLib::signalToRealCepstrum(double *signal, int numSamples, double *cepstru
   delete[] spectrum;
 }
 
-void RSLib::realCepstrumToSignal(double *cepstrum, int numSamples, double *signal)
+template<class T>
+void realCepstrumToSignal(T *cepstrum, int numSamples, T *signal)
 {
-  rsComplexDbl *spectrum = new rsComplexDbl[numSamples];
+  std::complex<T> *spectrum = new std::complex<T>[numSamples];
   fft(cepstrum, numSamples, spectrum, numSamples);
   for(int n = 0; n < numSamples; n++)
     spectrum[n] = rsExpC(spectrum[n]);
@@ -426,9 +437,10 @@ void RSLib::realCepstrumToSignal(double *cepstrum, int numSamples, double *signa
   delete[] spectrum;
 }
 
-void RSLib::minimumPhaseReconstruction(double *input, int numSamples, double *output)
+template<class T>
+void minimumPhaseReconstruction(T *input, int numSamples, T *output)
 {
-  double *c = output; // use output buffer for intermediate results in cepstarl domain
+  T *c = output; // use output buffer for intermediate results in cepstarl domain
   int N = numSamples;
 
   signalToRealCepstrum(input, numSamples, c); 
@@ -454,12 +466,13 @@ void RSLib::minimumPhaseReconstruction(double *input, int numSamples, double *ou
   realCepstrumToSignal(c, numSamples, output);
 }
 
-void RSLib::crossCorrelation(double *x, int xLength, double *y, int yLength, double *result)
+template<class T>
+void crossCorrelation(T *x, int xLength, T *y, int yLength, T *result)
 {
   int length  = xLength + yLength - 1;
   int fftSize = rsNextPowerOfTwo(length);
-  rsComplexDbl *X  = new rsComplexDbl[fftSize];
-  rsComplexDbl *Y  = new rsComplexDbl[fftSize];
+  std::complex<T> *X  = new std::complex<T>[fftSize];
+  std::complex<T> *Y  = new std::complex<T>[fftSize];
 
   fft(x, xLength, X, fftSize);
   fft(y, yLength, Y, fftSize);
@@ -472,7 +485,8 @@ void RSLib::crossCorrelation(double *x, int xLength, double *y, int yLength, dou
   delete[] Y;
 }
 
-double RSLib::rsMaxCorrelationLag(double *r, int N)
+template<class T>
+T rsMaxCorrelationLag(T *r, int N)
 {
   int nMax = rsMaxIndex(r, N);
   if( nMax == 0 || nMax == N-1 )
@@ -480,19 +494,20 @@ double RSLib::rsMaxCorrelationLag(double *r, int N)
 
   // find exact location of maximum by fitting a parabola through 3 successive correlation values
   // and using the maximum of the parabola:
-  double a[3];
+  T a[3];
   fitQuadratic_0_1_2(a, &r[nMax-1]); 
-  double offset = 0.0;
+  T offset = 0.0;
   if( a[2] != 0.0 )
     offset = -0.5*a[1]/a[2];
   return nMax - 1 + offset; // -1, because fitQuadratic_0_1_2 assumes x-coordinates 0,1,2
 }
 
-double RSLib::rsMaxCorrelationLag(double *x1, double *x2, int N, bool deBias)
+template<class T>
+T rsMaxCorrelationLag(T *x1, T *x2, int N, bool deBias)
 {
   // obtain windowed signals:
-  double *y1 = new double[N];  // x1, windowed
-  double *y2 = new double[N];  // x2, windowed
+  T *y1 = new T[N];  // x1, windowed
+  T *y2 = new T[N];  // x2, windowed
   rsMakeHammingWindow(y1, N);  // now, y1 contains the window
                                // Hamming seems to be better than Hann and Blackman
   for(int n = 0; n < N; n++)
@@ -502,13 +517,13 @@ double RSLib::rsMaxCorrelationLag(double *x1, double *x2, int N, bool deBias)
   }
 
   // obtain cross-correlation sequence of windowed signals:
-  double *r = new double[N];
+  T *r = new T[N];
   rsCrossCorrelation(y1, y2, N, r);
   if( deBias == true )
     rsRemoveCorrelationBias(r, N, r);
 
   // find the maximum of the cross-correlation sequence with subsample precision:
-  double lag = rsMaxCorrelationLag(r, N);
+  T lag = rsMaxCorrelationLag(r, N);
 
   // clean up and return lag:
   delete[] y1;
@@ -517,10 +532,11 @@ double RSLib::rsMaxCorrelationLag(double *x1, double *x2, int N, bool deBias)
   return lag;
 }
 
-double RSLib::rsGetShiftForBestMatch(double *x1, double *x2, int N, bool deBias)
+template<class T>
+T rsGetShiftForBestMatch(T *x1, T *x2, int N, bool deBias)
 {
-  double lag1 = rsMaxCorrelationLag(x2, x1, N, deBias); // how much x1 lags behind x2
-  double lag2 = rsMaxCorrelationLag(x1, x2, N, deBias); // how much x2 lags behind x1
+  T lag1 = rsMaxCorrelationLag(x2, x1, N, deBias); // how much x1 lags behind x2
+  T lag2 = rsMaxCorrelationLag(x1, x2, N, deBias); // how much x2 lags behind x1
 
   // If only one of the lags for best match is > 0.0, return it (with the correct sign), if both 
   // are > 0.0, return the one with smaller absolute value (also with the correct sign):
@@ -559,8 +575,8 @@ double RSLib::rsGetShiftForBestMatch(double *x1, double *x2, int N, bool deBias)
 }
 
 /*
-double RSLib::estimateFundamental(double *x, int N, double sampleRate,       
-                                  double minExpected, double maxExpected)
+T RSLib::estimateFundamental(T *x, int N, T sampleRate,       
+                                  T minExpected, T maxExpected)
 {
   int minLag = (int) floor(sampleRate / maxExpected);
   int maxLag = (int) ceil(sampleRate  / minExpected);
@@ -577,8 +593,8 @@ double RSLib::estimateFundamental(double *x, int N, double sampleRate,
 */
 
 /*
-void rosic::estimateModalParameters(double *x, int N, Vector *frequencies, Vector *amplitudes, 
-                                    Vector *decayTimes, double sampleRate)
+void rosic::estimateModalParameters(T *x, int N, Vector *frequencies, Vector *amplitudes, 
+                                    Vector *decayTimes, T sampleRate)
 {
 
 }
