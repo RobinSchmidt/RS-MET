@@ -51,7 +51,7 @@ namespace RAPT
 
 // under construction:
 #include "Analysis/EnvelopeFollower.h"
-//#include "Analysis/LinearPredictor.h"
+#include "Analysis/LinearPredictor.h"
 //#include "Analysis/FormantRemover.h"
 //#include "Analysis/CyclicAutoCorrelator.h"
 //#include "Analysis/AutoCorrelationPitchDetector.h"

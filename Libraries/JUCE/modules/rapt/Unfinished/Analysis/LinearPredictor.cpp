@@ -1,17 +1,16 @@
-using namespace RSLib;
-
 // Construction/Destruction:
 
-rsLinearPredictor::rsLinearPredictor(int newMaximumOrder)
+template<class TSig, class TPar>
+rsLinearPredictor<TSig, TPar>::rsLinearPredictor(int newMaximumOrder)
 {
   if( newMaximumOrder >= 1 )
     maxOrder = newMaximumOrder;
   else 
     maxOrder = 128;
 
-  weightVector = new double[maxOrder];
-  pastInputs   = new double[maxOrder];
-  updateVector = new double[maxOrder];
+  weightVector = new TSig[maxOrder];
+  pastInputs   = new TSig[maxOrder];
+  updateVector = new TSig[maxOrder];
 
   order        = maxOrder;
   learnRate    = 0.01;
@@ -22,7 +21,8 @@ rsLinearPredictor::rsLinearPredictor(int newMaximumOrder)
   reset();
 }
 
-rsLinearPredictor::~rsLinearPredictor()
+template<class TSig, class TPar>
+rsLinearPredictor<TSig, TPar>::~rsLinearPredictor()
 {
   if( weightVector != NULL )
     delete[] weightVector;
@@ -34,7 +34,8 @@ rsLinearPredictor::~rsLinearPredictor()
 
 // Setup:
 
-void rsLinearPredictor::setOrder(int newOrder)
+template<class TSig, class TPar>
+void rsLinearPredictor<TSig, TPar>::setOrder(int newOrder)
 {
   if( newOrder >= 1 && newOrder <= maxOrder )
     order = newOrder;
@@ -44,20 +45,23 @@ void rsLinearPredictor::setOrder(int newOrder)
   reset();
 }
 
-void rsLinearPredictor::setLearnRate(double newLearnRate)
+template<class TSig, class TPar>
+void rsLinearPredictor<TSig, TPar>::setLearnRate(TPar newLearnRate)
 {
   if( newLearnRate >= 0.0 && newLearnRate < 1.0 )
     learnRate = newLearnRate;
 }
 
-void rsLinearPredictor::setForgetRate(double newForgetRate)
+template<class TSig, class TPar>
+void rsLinearPredictor<TSig, TPar>::setForgetRate(TPar newForgetRate)
 {
   if( newForgetRate >= 0.0 && newForgetRate < 1.0 )
     forgetRate = newForgetRate;
   forgetFactor = 1.0-forgetRate;
 }
 
-void rsLinearPredictor::setMomentum(double newMomentum)
+template<class TSig, class TPar>
+void rsLinearPredictor<TSig, TPar>::setMomentum(TPar newMomentum)
 {
   if( newMomentum >= 0.0 && newMomentum < 1.0 )
     momentum = newMomentum;
@@ -65,7 +69,8 @@ void rsLinearPredictor::setMomentum(double newMomentum)
 
 // Misc:
 
-void rsLinearPredictor::reset()
+template<class TSig, class TPar>
+void rsLinearPredictor<TSig, TPar>::reset()
 {
   for(int i = 0; i < maxOrder; i++)
   {
