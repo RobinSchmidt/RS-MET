@@ -1,8 +1,7 @@
-using namespace RSLib;
-
 // Construction/Destruction:
 
-rsCyclicAutoCorrelator::rsCyclicAutoCorrelator(int newMaxBufferSize)
+template<class T>
+rsCyclicAutoCorrelator<T>::rsCyclicAutoCorrelator(int newMaxBufferSize)
 {
   if( newMaxBufferSize >= 256 )
     maxBufferSize = newMaxBufferSize;
@@ -13,8 +12,7 @@ rsCyclicAutoCorrelator::rsCyclicAutoCorrelator(int newMaxBufferSize)
   }
 
   // allocate memory for the buffer:
-  buffer = NULL;
-  buffer = new double[maxBufferSize];
+  buffer = new T[maxBufferSize];
 
   oldCycleLength = maxBufferSize;
   oldMeanSquare  = 0.0;
@@ -24,22 +22,24 @@ rsCyclicAutoCorrelator::rsCyclicAutoCorrelator(int newMaxBufferSize)
   resetBuffer(); 
 }
 
-rsCyclicAutoCorrelator::~rsCyclicAutoCorrelator()
+template<class T>
+rsCyclicAutoCorrelator<T>::~rsCyclicAutoCorrelator()
 {
-  if( buffer != NULL )
-    delete[] buffer;
+  delete[] buffer;
 }
 
 // Misc:
 
-void rsCyclicAutoCorrelator::resetAccumulators()
+template<class T>
+void rsCyclicAutoCorrelator<T>::resetAccumulators()
 {
   sumOfProducts   = 0.0;
   sumOfSquares    = 0.0;
   sampleCounter   = 0;
 }
 
-void rsCyclicAutoCorrelator::resetBuffer()
+template<class T>
+void rsCyclicAutoCorrelator<T>::resetBuffer()
 {
   for(int i = 0; i < maxBufferSize; i++)
     buffer[i] = 0.0;

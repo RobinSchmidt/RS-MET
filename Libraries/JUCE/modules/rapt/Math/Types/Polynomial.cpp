@@ -218,6 +218,7 @@ void rsPolynomial<T>::rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, 
   for(n = n-1; n > 0; n--)
     a[n] = (w1*a1[n] + w1x*a1[n-1] + w2*a2[n]) / w0;
   a[0] = (w1*a1[0] + w2*a2[0]) / w0;
+  // optimize: replace divisions by w0 by multiplications
 }
 
 template<class T>
@@ -295,7 +296,7 @@ template<class T>
 T evaluatePolynomialWithTwoDerivativesAndError(std::complex<T> *a, int order,
   std::complex<T> z, std::complex<T> *P)
 {
-  P[0] = a[order];                // P(z)
+  P[0] = a[order];                   // P(z)
   P[1] = std::complex<T>(0.0, 0.0);  // P'(z)
   P[2] = std::complex<T>(0.0, 0.0);  // P''(z)
   T err = abs(P[0]);          // estimated roundoff error in evaluation of the polynomial
@@ -341,7 +342,6 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
     // Laguerre's formulas:
     std::complex<T> G  = P[1]/P[0];       // Eq. 9.5.6
     std::complex<T> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
-
     std::complex<T> sq = sqrt(T(order-1)*(T(order)*H-G*G)); // square-root Eq. 9.5.11
     std::complex<T> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
     std::complex<T> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
