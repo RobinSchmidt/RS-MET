@@ -38,6 +38,14 @@ namespace RAPT
 #include "Filters/LadderFilter.cpp"
 #include "Filters/FakeResonanceFilter.cpp"
 
+// under construction:
+//#include "Analysis/EnvelopeFollower.cpp"
+//#include "Analysis/LinearPredictor.cpp"
+//#include "Analysis/FormantRemover.cpp"
+//#include "Analysis/CyclicAutoCorrelator.cpp"
+//#include "Analysis/AutoCorrelationPitchDetector.cpp"
+//#include "Analysis/ZeroCrossingPitchDetector.cpp"
+//#include "Analysis/ResponseGetters.cpp"
 
 
 

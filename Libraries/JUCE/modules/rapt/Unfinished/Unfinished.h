@@ -49,6 +49,15 @@ namespace RAPT
 #include "Filters/LadderFilter.h"
 #include "Filters/FakeResonanceFilter.h"
 
+// under construction:
+//#include "Analysis/EnvelopeFollower.h"
+//#include "Analysis/LinearPredictor.h"
+//#include "Analysis/FormantRemover.h"
+//#include "Analysis/CyclicAutoCorrelator.h"
+//#include "Analysis/AutoCorrelationPitchDetector.h"
+//#include "Analysis/ZeroCrossingPitchDetector.h"
+//#include "Analysis/ResponseGetters.h"
+
 }
 
 #endif

@@ -98,6 +98,9 @@
     <Filter Include="Juce Modules\rapt\Temp">
       <UniqueIdentifier>{1077C9FE-8734-5D17-6E96-F6DB62A1D921}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Unfinished\Analysis">
+      <UniqueIdentifier>{3AA90EC0-15FB-F47E-3C63-A128F319F4A4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Unfinished\Data">
       <UniqueIdentifier>{D5D08C3C-6C7A-94C1-4EA5-3445774835F7}</UniqueIdentifier>
     </Filter>
@@ -613,6 +616,27 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\AutoCorrelationPitchDetector.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\CyclicAutoCorrelator.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\EnvelopeFollower.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\FormantRemover.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\LinearPredictor.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\ResponseGetters.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\ZeroCrossingPitchDetector.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Data\Flags.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClCompile>
@@ -1088,9 +1112,6 @@
       <Filter>Juce Modules\rosic\dynamics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Limiter.cpp">
-      <Filter>Juce Modules\rosic\dynamics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_MultiBandCompressor - Copy.cpp">
       <Filter>Juce Modules\rosic\dynamics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_MultiBandCompressor.cpp">
@@ -2382,6 +2403,27 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\AutoCorrelationPitchDetector.h">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\CyclicAutoCorrelator.h">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\EnvelopeFollower.h">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\FormantRemover.h">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\LinearPredictor.h">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\ResponseGetters.h">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Analysis\ZeroCrossingPitchDetector.h">
+      <Filter>Juce Modules\rapt\Unfinished\Analysis</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Data\Flags.h">
       <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClInclude>
@@ -2914,9 +2956,6 @@
       <Filter>Juce Modules\rosic\dynamics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Limiter.h">
-      <Filter>Juce Modules\rosic\dynamics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_MultiBandCompressor - Copy.h">
       <Filter>Juce Modules\rosic\dynamics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_MultiBandCompressor.h">
