@@ -457,18 +457,18 @@ public:
 
   /** Sets up the input signal and the corresponding array of instantaneous read-speeds, both
   assumed to be of the given length.*/
-  void setInputAndSpeed(double *input, double *speeds, int length);
+  void setInputAndSpeed(TSig *input, TPos *speeds, int length);
 
 
   /** \name Time Conversion */
 
   /** From a time index in the original signal tx (given in samples), compute the corresponding
   time index in the warped signal.  */
-  double warpTime(double tx);
+  TPos warpTime(TPos tx);
 
   /** From a time index in the warped signal ty (given in samples), compute the corresponding
   time index in the original signal. */
-  double unwarpTime(double ty);
+  TPos unwarpTime(TPos ty);
 
 
   /** \name Output Computation */
@@ -480,11 +480,11 @@ public:
   passed pointer to the output array y must be of length given by getOutputLength(). The
   remaining parameters determine the behavior of the sinc-interpolation -
   @see rsTimeWarper::timeWarpSinc for their meaning. */
-  void getOutput(double *y, double minSincLength = 64.0, double maxLengthScaler = 1.0,
+  void getOutput(TSig *y, TPos minSincLength = 64.0, TPos maxLengthScaler = 1.0,
     bool antiAlias = true);
 
   /** Returns output as std::vector (more convenient). */
-  vector<double> getOutput(double minSincLength = 64.0, double maxLengthScaler = 1.0,
+  std::vector<TSig> getOutput(TPos minSincLength = 64.0, TPos maxLengthScaler = 1.0,
     bool antiAlias = true);
 
 
@@ -493,20 +493,21 @@ public:
   /** Returns the warping map that assigns for each original time-index in input signal x the
   corresponding target time-index in output signal y. The length of the map equals the length
   of the input signal x. */
-  vector<double> getTimeWarpMapXY();
+  std::vector<TPos> getTimeWarpMapXY();
 
   /** Returns the warping map that assigns for each time-index in the output signal y the
   corresponding source time-index in imput signal x. The length of the map equals the length
   of the output signal y. */
-  vector<double> getTimeWarpMapYX();
+  std::vector<TPos> getTimeWarpMapYX();
 
 
   /** Given a vector of read-speeds to be applied to an input signal x to give output signal y,
   this function creates the corresponding vector of speeds to apply to y to get back x. */
-  static vector<double> invertSpeeds(vector<double>& speeds);
+  static std::vector<TPos> invertSpeeds(std::vector<TPos>& speeds);
 
 
-  static vector<double> applyPlaybackSpeed(vector<double>& input, vector<double>& speeds);
+  static std::vector<TSig> applyPlaybackSpeed(std::vector<TSig>& input, 
+    std::vector<TPos>& speeds);
     // rename to applyPlaybackSpeed
 
 
@@ -518,10 +519,10 @@ protected:
   /** Clears the internal buffers */
   void clear();
 
-  double *x;           // input signal
-  double *w, *wi;      // warp-map and its inverse
-  int Nx;              // length of x, wi
-  int Ny;              // length of output signal y and warp map w
+  TSig *x;           // input signal
+  TPos *w, *wi;      // warp-map and its inverse
+  int Nx;            // length of x, wi
+  int Ny;            // length of output signal y and warp map w
 
   // maybe exchange naming of w and wi - w should be the map that maps from original time to
   // target time (see DAFX book, which convention is used there) - or use wxy, wyx for warp
@@ -537,7 +538,8 @@ protected:
 /** A class for flattening the pitch of an audio signal. It is assumed that the instantaneous
 frequency is known at each sample instant. */
 
-class rsPitchFlattener : public rsVariableSpeedPlayer
+template<class TSig, class TPos> 
+class rsPitchFlattener : public rsVariableSpeedPlayer<TSig, TPos>
 {
 
 public:
@@ -545,7 +547,7 @@ public:
   /** \name Setup */
 
   /** Sets up the input signal, instantaneous frequency array and target frequency. */
-  void setInput(double *input, double *frequencies, int length, double targetFrequency);
+  void setInput(TSig *input, TPos *frequencies, int length, TPos targetFrequency);
 
 };
 
@@ -564,6 +566,7 @@ both signals at each sample instant. It is used as follows:
     may set those values manually or use whatever algorithm seems appropriate for that task.
 (4) Retrieve the output via getOutput  */
 
+template<class TSig, class TPos>
 class rsPhaseLockedCrossfader
 {
 
@@ -574,14 +577,14 @@ public:
   /** Sets up the 2 input signals with corresponding instantaneous frequency arrays and a target
   value for the flattened frequency. If you pass 0.0 or nothing for the target frequency, the
   mean value of both instananeous frequency arrays will be used. */
-  void setInputs(double *input1, double *frequencies1, int length1, double *input2,
-    double *frequencies2, int length2, double targetFrequency = 0.0);
+  void setInputs(TSig *input1, TPos *frequencies1, int length1, TSig *input2,
+    TPos *frequencies2, int length2, TPos targetFrequency = 0.0);
 
   /** Sets the start and end points of the crossfade in the time domain of the pitch-flattened
   signal x1 (as returned by getFlattenedSignal1). The optional shift-parameter is a time shift
   of the 2nd (flattened) signal with respect to the first along the (pitch-flattened) time
   axis. */
-  void setFlattenedCrossfade(double start, double end, double shift = 0.0);
+  void setFlattenedCrossfade(TPos start, TPos end, TPos shift = 0.0);
 
 
   /** \name Inquiry */
@@ -595,41 +598,41 @@ public:
   /** \name Processing */
 
   /** Returns pitch flattened version of input 1. */
-  vector<double> getFlattenedSignal1();
+  std::vector<TSig> getFlattenedSignal1();
 
   /** Returns pitch flattened version of input 2. */
-  vector<double> getFlattenedSignal2();
+  std::vector<TSig> getFlattenedSignal2();
 
   /** Returns crossfaded output signal. */
-  vector<double> getOutput();
+  std::vector<TSig> getOutput();
 
 
   /** \name Misc */
 
-  vector<double> getTimeWarpMapXY1();
-  vector<double> getTimeWarpMapYX1();
-  vector<double> getTimeWarpMapXY2();
-  vector<double> getTimeWarpMapYX2();
+  std::vector<TPos> getTimeWarpMapXY1();
+  std::vector<TPos> getTimeWarpMapYX1();
+  std::vector<TPos> getTimeWarpMapXY2();
+  std::vector<TPos> getTimeWarpMapYX2();
   // Return the warping maps and their inverses for inputs x1, x2. See comments in 
   // rsVariableSpeedPlayer getTimeWarpMapXY/YX
 
 protected:
 
   /** Computes and returns the crossfade section. */
-  vector<double> getCrossfadeSection();
+  std::vector<TPos> getCrossfadeSection();
 
   /** Computes the time instants at which to read out x1 and x2 during the crossfade (and stores
   them in our t1, t2 members. */
   void computeReadoutTimes();
 
 
-  double *x1, *x2;              // input signals
-  int    N1, N2;                // lengths of x1, x2
-  int    cs1, ce2;              // crossfade start in x1 and end in x2
-  double cs2, ce1;              // crossfade start in x2 and end in x1
-  double shift;                 // time-shift of x2 with respect to x1
-  rsPitchFlattener pf1, pf2;    // pitch-flatteners for x1, x2
-  vector<double> t1, t2;        // readout times for crossfade
+  TSig *x1, *x2;                            // input signals
+  int N1, N2;                               // lengths of x1, x2
+  int cs1, ce2;                             // crossfade start in x1 and end in x2
+  TPos cs2, ce1;                            // crossfade start in x2 and end in x1
+  TPos shift;                               // time-shift of x2 with respect to x1
+  rsPitchFlattener<TSig, TPos> pf1, pf2;    // pitch-flatteners for x1, x2
+  std::vector<TPos> t1, t2;                 // readout times for crossfade
 
 };
 
@@ -656,13 +659,11 @@ not the zero-crossings but could be maximum peaks or energy-centers of the cycle
 let the class have some member variables such that we don't always have to pass a large number of
 parameters into a static function */
 
+template<class T>
 class rsInstantaneousFundamentalEstimator
 {
 
 public:
-
-
-
 
   /** Given an input signal x of length N, this function measures the instantaneous fundamental
   frequency of the signal at each sample instant and stores the values in f (which must be also
@@ -675,16 +676,15 @@ public:
   each sample. The relaibility measure is between 0 and 1. If you don't need this reliability
   measure, just pass a nullpointer. The cycleMarkAlgo parameter determines, how we find the cycle
   starts/ends and can be any of the values in enum cycleMarkAlgorithms. */
-  static void measureInstantaneousFundamental(double *x, double *f, int N, double fs,
-    double fMin, double fMax, double *reliability = nullptr,
+  static void measureInstantaneousFundamental(T *x, T *f, int N, T fs,
+    T fMin, T fMax, T *reliability = nullptr,
     int cycleMarkAlgo = rsCycleMarkFinder::F0_ZERO_CROSSINGS);
 
   /** Given an input signal x of length N, this function estimates the fundamental frequency of
   the signal at sample instant n using an autocorrelation based approach. Here, this estimate is
   only used as a rough inital estimate to tune the filters used inside the actual high-precision
   measurement algorithm. */
-  static double estimateFundamentalAt(double *x, int N, int n, double fs, double fMin,
-    double fMax);
+  static T estimateFundamentalAt(T *x, int N, int n, T fs, T fMin, T fMax);
 
 protected:
 
@@ -693,7 +693,7 @@ protected:
   sample instant n (from 0...N-1) and stores it in the array r (of length N). The function is
   used internally inside measureInstantaneousFundamental(). The reliability measure is based on
   the cross-correlation of successive cycles in the signal x. */
-  static void estimateReliability(double *x, int N, const std::vector<double>& z, double *r);
+  static void estimateReliability(T *x, int N, const std::vector<T>& z, T *r);
 
 };
 
@@ -707,8 +707,8 @@ means of applying a 1st order allpass to x, with its 90° frequency adjusted to f
 be transient/edge effects at the start of the signal, you may want to choose to apply the filter
 backwards instead (considering that at the end, there's often a slow fade-out, edge effects tend
 to be less annoying there). */
-void rsSineQuadraturePart(double *x, double *y, int N, double f, double fs,
-  bool backward = false);
+template<class T>
+void rsSineQuadraturePart(T *x, T *y, int N, T f, T fs, bool backward = false);
 
 /** Exctracts the envelope of a signal x that is supposed to be an enveloped sinusoid at
 frequency f and writes the result into y. N is the length and fs is the samplerate and s is a
@@ -718,19 +718,20 @@ instantaneous envelope. This, in turn, is optionally smoothed by running a first
 bi-directionally over the instantaneous envelope, the cutoff of this lowpass is set to f/s, such
 that when s = 4 (a reasonable value), the cutoff will be one fourth of the sinusoids frequency. A
 zero value will avoid the smoothing entirely. */
-void rsSineEnvelopeViaQuadrature(double *x, double *y, int N, double f, double fs,
-  double smooth = 0.0);
+template<class T>
+void rsSineEnvelopeViaQuadrature(T *x, T *y, int N, T f, T fs, T smooth = 0.0);
 
 /** Similar to rsSineEnvelopeViaQuadrature, but uses internally the formula for computing an
 instantaneous amplitude as implemented in rsSineAmplitudeAndPhase.  */
-void rsSineEnvelopeViaAmpFormula(double *x, double *y, int N, double f, double fs,
-  double smooth = 0.0);
+template<class T>
+void rsSineEnvelopeViaAmpFormula(T *x, T *y, int N, T f, T fs, T smooth = 0.0);
 
 /** Fills the y-array of length N with a sine-wave of frequency f at samplerate fs with initial
 phase p and an amplitude envelope given by the a-array (wich must be also of length N. The
 a-array may be the same array as y, in which case it will be overwritten.
 \todo: make the a-array optional - if NULL, create a unit amplitude sine */
-void rsEnvelopedSine(double *y, int N, double f, double fs, double p, double *a);
+template<class T>
+void rsEnvelopedSine(T *y, int N, T f, T fs, T p, T *a);
 
 
 /** Fills the signal y of length N with a linear sine sweep that reaches a frequency wN at sample
@@ -745,33 +746,34 @@ at phase differences in the decision, but that seems to lead to the smallest fre
 as well - but maybe not always? check the math...)
 \todo: maybe factor out a function for the instantaneous phases such that it can also be used for
 creating sweeps with other waveforms.
-\todo: maybe make a function that creates a sweep with a parabolic shape instead of linear
-*/
-void rsPhaseCatchSweep(double *y, int N, double p0, double pN, double wN,
-  int sweepDirection = 0);
+\todo: maybe make a function that creates a sweep with a parabolic shape instead of linear */
+template<class T>
+void rsPhaseCatchSweep(T *y, int N, T p0, T pN, T wN, int sweepDirection = 0);
 
 /** Same as rsPhaseCatchSweep(double *y, int N, double p0, double pN, double wN,
 int sweepDirection = 0) but with an additional "a" array as parameter whichshould  contain
 the amplitude envelope that should be used. "a" and "y" may point to the same arrays. */
-void rsEnvelopedPhaseCatchSweep(double *y, int N, double p0, double pN, double wN,
-  double *a, int sweepDirection = 0);
+template<class T>
+void rsEnvelopedPhaseCatchSweep(T *y, int N, T p0, T pN, T wN, T *a, int sweepDirection = 0);
 
 /** Similar to rsCreateEnvelopedSine, but it additionally specifies a target-phase pk at some
 sample index k that should be caught up there by sweeping the sine's frequency between sample 0
 and sample k accordingly. The "y" and "a" arrays must be distinct.  */
-void rsEnvelopedPhaseCatchSine(double *y, int N, double f, double fs, double p0,
-  double pk, int k, double *a, int sweepDirection = 0);
+template<class T>
+void rsEnvelopedPhaseCatchSine(T *y, int N, T f, T fs, T p0, T pk, int k, T *a, 
+  int sweepDirection = 0);
 
 /** Given a sinusoidal input signal x of length N, having a frequency fx, this function extracts
 the amplitude envelope of the input sinusoid x and synthesizes a new sinusoid with frequency fy
 with the same amplitude envelope and writes it into the y-array. Paramaters: x: input sine,
 y: output sine, N: length, fx: input sine frequency, fy: output sine frequency, fs: sample-rate,
 p0: initial phase for output, smooth: smoothing parameter for envelope extraction. */
-void rsRecreateSine(double *x, double *y, int N, double fx, double fy, double fs,
-  double p0, double smooth = 0.0);
+template<class T>
+void rsRecreateSine(T *x, T *y, int N, T fx, T fy, T fs, T p0, T smooth = 0.0);
 
-void rsRecreateSineWithPhaseCatch(double *x, double *y, int N, double fx, double fy,
-  double fs, double p0, double pk, int k, double smooth = 0.0, int sweepDirection = 0);
+template<class T>
+void rsRecreateSineWithPhaseCatch(T *x, T *y, int N, T fx, T fy, T fs, T p0, T pk, int k, 
+  T smooth = 0.0, int sweepDirection = 0);
 
 
 #endif
