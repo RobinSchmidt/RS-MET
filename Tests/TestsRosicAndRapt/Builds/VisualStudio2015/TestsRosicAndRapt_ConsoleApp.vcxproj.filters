@@ -116,6 +116,9 @@
     <Filter Include="Juce Modules\rapt\Unfinished\MiscAudio">
       <UniqueIdentifier>{BD3E6722-12DD-9ADA-8F53-CDF0FABEDFB4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Unfinished\Sampling">
+      <UniqueIdentifier>{CC45EDAE-586A-2376-80AA-C7320A54C0D1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Unfinished">
       <UniqueIdentifier>{6A17A633-5931-836E-67EA-F3DA66DD4636}</UniqueIdentifier>
     </Filter>
@@ -712,6 +715,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\DelayLine.cpp">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\DoublePendulum.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Interpolator.cpp">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
@@ -729,6 +735,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.cpp">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\PhaseVocoder.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Resampler.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
       <Filter>Juce Modules\rapt\Unfinished</Filter>
@@ -2517,6 +2532,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\DelayLine.h">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\DoublePendulum.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Interpolator.h">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
@@ -2534,6 +2552,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.h">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\PhaseVocoder.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Resampler.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h">
       <Filter>Juce Modules\rapt\Unfinished</Filter>

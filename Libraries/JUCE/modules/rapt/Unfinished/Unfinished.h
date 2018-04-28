@@ -40,6 +40,7 @@ namespace RAPT
 #include "MiscAudio/WindowFunctions.h"
 #include "MiscAudio/AudioFunctions.h" // merge with other AudioFunctions.h file
 #include "MiscAudio/BandwidthConverter.h"
+#include "MiscAudio/DoublePendulum.h" // will go to Physics
 
 #include "Filters/BandSplitter.h"
 #include "Filters/FilterDesignFormulas.h"
@@ -49,7 +50,6 @@ namespace RAPT
 #include "Filters/LadderFilter.h"
 #include "Filters/FakeResonanceFilter.h"
 
-// under construction:
 #include "Analysis/EnvelopeFollower.h"
 #include "Analysis/LinearPredictor.h"
 #include "Analysis/FormantRemover.h"
@@ -57,6 +57,11 @@ namespace RAPT
 #include "Analysis/AutoCorrelationPitchDetector.h"
 #include "Analysis/ZeroCrossingPitchDetector.h"
 //#include "Analysis/ResponseGetters.h" // maybe that code should be in the test suite
+
+// under construction:
+//#include "Sampling/PhaseVocoder.h"
+//#include "Sampling/Resampler.h"
+//#include "Sampling/SampleManipulation.h"
 
 }
 

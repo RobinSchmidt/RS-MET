@@ -18,8 +18,6 @@ namespace RAPT
 #include "Math/GeometricFunctions.cpp"
 #include "Math/ModularInteger.cpp"
 
-
-
 #include "MiscAudio/Interpolator.cpp"
 #include "MiscAudio/DelayLine.cpp"
 #include "MiscAudio/MiscAudio.cpp"  // may have to be included later (needs higher level stuff)
@@ -29,6 +27,7 @@ namespace RAPT
 #include "MiscAudio/WindowFunctions.cpp"
 #include "MiscAudio/AudioFunctions.cpp"
 #include "MiscAudio/BandwidthConverter.cpp"
+#include "MiscAudio/DoublePendulum.cpp"
 
 #include "Filters/BandSplitter.cpp"
 #include "Filters/FilterDesignFormulas.cpp"
@@ -46,6 +45,11 @@ namespace RAPT
 #include "Analysis/AutoCorrelationPitchDetector.cpp"
 #include "Analysis/ZeroCrossingPitchDetector.cpp"
 //#include "Analysis/ResponseGetters.cpp"
+
+// under construction:
+//#include "Sampling/PhaseVocoder.cpp"
+//#include "Sampling/Resampler.cpp"
+//#include "Sampling/SampleManipulation.cpp"
 
 
 
