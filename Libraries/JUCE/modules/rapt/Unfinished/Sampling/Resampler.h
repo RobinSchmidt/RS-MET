@@ -172,6 +172,7 @@ and the next one begins.
 
 \todo: maybe have a phase-offset parameter */
 
+template<class T>
 class rsCycleMarkFinder
 {
 
@@ -186,17 +187,17 @@ public:
 
   /** Constructor. You should pass a sample-rate and the minimum and maximum expected values
   for the fundamental frequency. */
-  rsCycleMarkFinder(double sampleRate, double minFundamental = 20, double maxFundamental = 5000);
+  rsCycleMarkFinder(T sampleRate, T minFundamental = 20, T maxFundamental = 5000);
 
 
   /** \name Setup */
 
   /** Sets the sample-rate of the signal to be analyzed. */
-  inline void setSampleRate(double newSampleRate) { fs = newSampleRate; }
+  inline void setSampleRate(T newSampleRate) { fs = newSampleRate; }
 
   /** Sets the expected range for the fundamental frequency. This sets some thresholds in the
   algorithm. */
-  inline void setFundamentalRange(double newMin, double newMax)
+  inline void setFundamentalRange(T newMin, T newMax)
   {
     fMin = newMin;
     fMax = newMax;
@@ -223,7 +224,7 @@ public:
   algorithm as fraction of the cycle length. Should be at most 1. The larger it is, the more of
   the neighbourhood of the (old, estimated) cycle-mark will be taken into account to find the
   new, refined cycle-mark. */
-  inline void setRelativeCorrelationLength(double newLength)
+  inline void setRelativeCorrelationLength(T newLength)
   {
     correlationLength = newLength;
   }
@@ -231,7 +232,7 @@ public:
   /** In the CYCLE_CORRELATION algorithm, there's an optional highpass that is used on the signal
   before doing the correlations. Here you can set its frequency as fraction of the estimated
   fundamental frequency. A value of 0 turns the highpass off (which is the default setting). */
-  inline void setRelativeCorrelationHighpassFreq(double newFreq)
+  inline void setRelativeCorrelationHighpassFreq(T newFreq)
   {
     correlationHighpass = newFreq;
   }
@@ -240,7 +241,7 @@ public:
   the estimated fundamental frequency. So, if this value is 1 and the (estimated) fundamental is
   100Hz, a bandpass from 50 to 150 Hz will be used to extract the fundamental. If it's 0.1, the
   bandpass will go from from 95 to 105 Hz.  */
-  inline void setRelativeBandpassWidth(double newWidth)
+  inline void setRelativeBandpassWidth(T newWidth)
   {
     bandPassWidth = newWidth;
   }
@@ -259,7 +260,7 @@ public:
   /** \name Processing */
 
   /** Returns an array of cycle-marks for the given input signal of length N. */
-  std::vector<double> findCycleMarks(double *x, int N);
+  std::vector<T> findCycleMarks(T *x, int N);
 
 
 protected:
@@ -267,17 +268,17 @@ protected:
   /** Refines a given vector of initial estimates of the cycle-marks given in cm by correlating
   successive (estimated) cycles and placing the new cycle border at the instant of maximum
   correlation. */
-  void refineCycleMarksByCorrelation(double *x, int N, std::vector<double>& cm, double f0);
+  void refineCycleMarksByCorrelation(T *x, int N, std::vector<T>& cm, T f0);
 
   /** \name Data */
-  double fs;                    /**< sample rate */
-  double fMin;                  /**< minimum expected fundamental */
-  double fMax;                  /**< maximum expected fundamental */
+  T fs;                         /**< sample rate */
+  T fMin;                       /**< minimum expected fundamental */
+  T fMax;                       /**< maximum expected fundamental */
+  T correlationLength   = 1.0;
+  T correlationHighpass = 0.0;
+  T bandPassWidth       = 1.0;
   int    algo = 0;              /**< algorithm to use */
   int    precision = 3;
-  double correlationLength   = 1.0;
-  double correlationHighpass = 0.0;
-  double bandPassWidth       = 1.0;
   int    bandpassSteepness   = 3;
 
 };
@@ -322,8 +323,16 @@ at once
 
 make a file Preliminary.h/cpp which contains classes and functions that are currently under
 construction - currently we have a lot of such code here in this file which should eventually
-be moved into appropriate places in the library */
+be moved into appropriate places in the library 
 
+maybe rename class...it's more like a collections of functions, maybe a true Resampler class
+should be able to operate in realtime...hmm...but maybe that can be integrated into that class 
+too...have a "ratio" member and getSample and/or getBlock functions...maybe look at soundtouch
+or zPlane elastique for a realtime resampling interface 
+*/
+
+
+template<class TSig, class TPos> // tpyes for signal and (subsample) position
 class rsResampler
 {
 
@@ -334,17 +343,14 @@ public:
   /** Allows for random access to signal values at noninteger time-instants t using windowed sinc
   interpolation.
 
-  \todo move suitable parts of the comments for transposeSinc to here.
-
-  */
-  static double signalValueViaSincAt(double *x, int N, double t, double sincLength,
-    double stretch);
+  \todo move suitable parts of the comments for transposeSinc to here.  */
+  static TSig signalValueViaSincAt(TSig *x, int N, TPos t, TPos sincLength, TPos stretch);
 
   /** Transposes a signal x of length xN by the given factor using linear interpolation and
   stores the result in y which is assumed to an array of length yN. When the end of the input
   signal x is reached before the end of the output signal y, the tail of y will be filled with
   zeros. */
-  static void transposeLinear(double *x, int xN, double *y, int yN, double factor);
+  static void transposeLinear(TSig *x, int xN, TSig *y, int yN, TPos factor);
 
   /** Like transposeLinear, but uses windowed sinc interpolation. You may pass the length of the
   sinc filter kernel to be used. This length is of type "double" because its interpretation is
@@ -358,13 +364,13 @@ public:
 
   The actual number of samples M used for interpolation is given by:
   M = 2 * ( ((int)floor(sincLength)) / 2) + 1  [verify this formula] */
-  static void transposeSinc(double *x, int xN, double *y, int yN, double factor,
-    double sincLength = 64.0, bool antiAlias = true);
+  static void transposeSinc(TSig *x, int xN, TSig *y, int yN, TPos factor,
+    TPos sincLength = 64.0, bool antiAlias = true);
 
   /** Shifts an input signal x of length N by an arbitrary (noninteger) amount of samples using
   sinc-interpolation and stores the result in y (also of length N). x and y may point to the same
   array in which case a temporary buffer will be used internally. */
-  static void shiftSinc(double *x, double *y, int N, double amount, double sincLength = 64.0);
+  static void shiftSinc(TSig *x, TSig *y, int N, TPos amount, TPos sincLength = 64.0);
 
 };
 
@@ -374,6 +380,7 @@ public:
 
 \todo move the class into a separate file (maybe) .... */
 
+template<class TSig, class TPos> 
 class rsTimeWarper
 {
 
@@ -396,8 +403,8 @@ public:
   Note: if you have a readout-speed for each output sample index n instead of a time-instant
   where to read the input signal, you can convert your values into time-instants using
   rsCumulativeSum. */
-  static void timeWarpSinc(double *x, int xN, double *y, double *w, int yN,
-    double minSincLength = 64.0, double maxLengthScaler = 1.0, bool antiAlias = true);
+  static void timeWarpSinc(TSig *x, int xN, TSig *y, TPos *w, int yN,
+    TPos minSincLength = 64.0, TPos maxLengthScaler = 1.0, bool antiAlias = true);
     // \todo provide a function to compute the nonzero length of the y-signal beforehand
 
 
@@ -405,21 +412,21 @@ public:
   /** Given a (monotonuously increasing) time warping map w of length N, this function computes
   the inverse warping map of w and stores it in wi which is of length ceil(w[N-1]), so the caller
   has to take care that the array wi is at least that long. */
-  static void invertMonotonousWarpMap(double *w, int N, double *wi);
+  static void invertMonotonousWarpMap(TPos *w, int N, double *wi);
 
   /** Computes the resulting length of a signal when it is read with an instantaneous read-speed
   given by the array values in r which is of length N. */
-  static int getPitchModulatedLength(double *r, int N);
+  static int getPitchModulatedLength(TPos *r, int N);
 
   /** Modulates the pitch the pitch of the signal x (of length N) using the array of
   instantaneous readout speeds r and stores the result in y. The length of y is can be determined
   beforehand using getPitchModulatedLength(). */
-  static void applyPitchModulation(double *x, double *r, int N, double *y,
-    double minSincLength = 64.0, double maxLengthScaler = 1.0, bool antiAlias = true);
+  static void applyPitchModulation(TSig *x, TPos *r, int N, TSig *y,
+    TPos minSincLength = 64.0, TPos maxLengthScaler = 1.0, bool antiAlias = true);
 
   /** Given an array of instantaneous (fundamental) frequencies of length N and a desired target
   frequency ft, this function computes the length of the output signal that will be created */
-  static int getPitchDemodulatedLength(double *f, int N, double ft);
+  static int getPitchDemodulatedLength(TPos *f, int N, TPos ft);
 
 
   //static void removePitchModulation(double *x, double *fx, int N, double *y, double fy,
@@ -431,6 +438,7 @@ public:
 
 /** A class for variable speed readout of a signal.  */
 
+template<class TSig, class TPos> 
 class rsVariableSpeedPlayer
 {
 
