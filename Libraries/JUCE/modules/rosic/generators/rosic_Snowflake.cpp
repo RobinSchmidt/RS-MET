@@ -149,4 +149,12 @@ waveshape)
 see here for inspiration for new curves
 https://www.youtube.com/watch?v=RU0wScIj36o&t=53s
 
+maybe, these are created using using parameteric equations?
+http://benice-equation.blogspot.de/
+http://benice-equation.blogspot.de/2012/01/fractal-spirograph.html
+https://medium.com/@Alikayaspor/essential-mathematical-gifs-that-will-make-mathematics-finally-make-sense-4873573f5883
+
+more math fun:
+https://medium.com/@Alikayaspor/essential-mathematical-gifs-that-will-make-mathematics-finally-make-sense-4873573f5883
+
 */

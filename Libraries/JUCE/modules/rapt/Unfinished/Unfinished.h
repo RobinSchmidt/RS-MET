@@ -59,7 +59,7 @@ namespace RAPT
 //#include "Analysis/ResponseGetters.h" // maybe that code should be in the test suite
 
 // under construction:
-//#include "Sampling/PhaseVocoder.h"
+#include "Sampling/PhaseVocoder.h"
 //#include "Sampling/Resampler.h"
 //#include "Sampling/SampleManipulation.h"
 
