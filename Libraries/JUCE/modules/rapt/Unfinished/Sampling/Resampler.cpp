@@ -609,17 +609,20 @@ void rsTimeWarper::applyPitchModulation(TSig *x, TPos *r, int N, TSig *y,
 
 //=================================================================================================
 
+template<class TSig, class TPos> 
 rsVariableSpeedPlayer::rsVariableSpeedPlayer()
 {
   init();
 }
 
+template<class TSig, class TPos> 
 rsVariableSpeedPlayer::~rsVariableSpeedPlayer()
 {
   clear();
 }
 
-void rsVariableSpeedPlayer::setInputAndSpeed(double *input, double *r, int length)
+template<class TSig, class TPos> 
+void rsVariableSpeedPlayer::setInputAndSpeed(TSig *input, TPos *r, int length)
 {
   clear();
 
@@ -629,60 +632,67 @@ void rsVariableSpeedPlayer::setInputAndSpeed(double *input, double *r, int lengt
   // Create inverse warping map (i.e., the map, that assigns for each input sample-index n in x a 
   // (noninteger) time-instant t in y where the sample value x[n] should be written, such that
   // y(t) = x[n]:
-  wi = new double[Nx];
+  wi = new TPos[Nx];
   wi[0] = 0.0; // y(0.0) = x[0]
   for(int n = 1; n < Nx; n++)
     wi[n] = wi[n-1] + 1.0 / r[n-1];
 
   // Obtain desired warping map by inverting the wi map:
   Ny = (int) ceil(wi[Nx-1]);
-  w  = new double[Ny]; 
+  w  = new TPos[Ny]; 
   rsTimeWarper::invertMonotonousWarpMap(wi, Nx, w);
 }
 
-double rsVariableSpeedPlayer::warpTime(double tx)
+template<class TSig, class TPos> 
+double rsVariableSpeedPlayer::warpTime(TPos tx)
 {
   return rsInterpolateClamped(wi, Nx, tx);
 }
 
-double rsVariableSpeedPlayer::unwarpTime(double ty)
+template<class TSig, class TPos> 
+double rsVariableSpeedPlayer::unwarpTime(TPos ty)
 {
   return rsInterpolateClamped(w, Ny, ty);
 }
 
-void rsVariableSpeedPlayer::getOutput(double *y, double minSincLength, double maxLengthScaler,
+template<class TSig, class TPos> 
+void rsVariableSpeedPlayer::getOutput(TSig *y, TPos minSincLength, TPos maxLengthScaler,
   bool antiAlias)
 {
   rsTimeWarper::timeWarpSinc(x, Nx, y, w, Ny, minSincLength, maxLengthScaler, antiAlias);
 }
 
-vector<double> rsVariableSpeedPlayer::getOutput(double minSincLength, double maxLengthScaler, 
+template<class TSig, class TPos> 
+vector<TSig> rsVariableSpeedPlayer::getOutput(TPos minSincLength, TPos maxLengthScaler, 
   bool antiAlias)
 {
-  vector<double> y(Ny);
+  vector<TSig> y(Ny);
   getOutput(&y[0], minSincLength, maxLengthScaler, antiAlias);
   return y;
 }
 
-vector<double> rsVariableSpeedPlayer::getTimeWarpMapXY()
+template<class TSig, class TPos> 
+vector<TPos> rsVariableSpeedPlayer::getTimeWarpMapXY()
 {
-  vector<double> map(Nx);
+  vector<TPos> map(Nx);
   rsCopyBuffer(wi, &map[0], Nx);
   return map;
 }
 
-vector<double> rsVariableSpeedPlayer::getTimeWarpMapYX()
+template<class TSig, class TPos> 
+vector<TPos> rsVariableSpeedPlayer::getTimeWarpMapYX()
 {
-  vector<double> map(Ny);
+  vector<TPos> map(Ny);
   rsCopyBuffer(w, &map[0], Ny);
   return map;
 }
 
-vector<double> rsVariableSpeedPlayer::invertSpeeds(vector<double>& speeds)
+template<class TSig, class TPos> 
+vector<TPos> rsVariableSpeedPlayer::invertSpeeds(vector<TPos>& speeds)
 {
   rsVariableSpeedPlayer vsp;
   vsp.setInputAndSpeed(nullptr, &speeds[0], (int)speeds.size());
-  vector<double> map = vsp.getTimeWarpMapYX();
+  vector<TPos> map = vsp.getTimeWarpMapYX();
   int N = (int)map.size();
   for(int n = 0; n < N-1; n++)
     map[n] = 1.0 / (map[n+1]-map[n]);
@@ -690,7 +700,8 @@ vector<double> rsVariableSpeedPlayer::invertSpeeds(vector<double>& speeds)
   return map;
 }
 
-vector<double> rsVariableSpeedPlayer::applyPlaybackSpeed(vector<double>& x, vector<double>& s)
+template<class TSig, class TPos> 
+vector<TSig> rsVariableSpeedPlayer::applyPlaybackSpeed(vector<TSig>& x, vector<TPos>& s)
 {
   rsAssert(x.size() == s.size());
   rsVariableSpeedPlayer vsp;
@@ -698,12 +709,14 @@ vector<double> rsVariableSpeedPlayer::applyPlaybackSpeed(vector<double>& x, vect
   return vsp.getOutput();
 }
 
+template<class TSig, class TPos> 
 void rsVariableSpeedPlayer::init()
 {
   x = w = wi = nullptr;
   Nx = Ny = 0;
 }
 
+template<class TSig, class TPos> 
 void rsVariableSpeedPlayer::clear()
 {
   delete[] wi;
