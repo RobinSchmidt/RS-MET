@@ -245,19 +245,20 @@ std::vector<T> rsZeroCrossingFinder::bandpassedUpwardCrossings(T *x, int N, T fc
 
 //=================================================================================================
 
-// move to ArrayFunctions:
-double rsMaxPosition(double *buffer, int N)
+// move to rsArray:
+template<class T>
+T rsMaxPosition(T *buffer, int N)
 {
   int i = rsMaxIndex(buffer, N);
 
   if(i < 1 || i >= N-1)
     return i;
 
-  double x[3] = { -1, 0, 1 };
-  double a[3];
+  T x[3] = { -1, 0, 1 };
+  T a[3];
   fitQuadratic(a, x, &buffer[i-1]);
 
-  double offset = 0;
+  T offset = 0;
   if( abs(2*a[2]) >= abs(a[1]) ) // abs(offset) shall be <= 1
     offset = -a[1] / (2*a[2]);   // maximum of the parabola (zero-crossing of its slope)
 
@@ -268,17 +269,18 @@ double rsMaxPosition(double *buffer, int N)
   // the delta computation in line 302 should be 0.5, 1, 1.5 (or something else)
 }
 
-rsCycleMarkFinder::rsCycleMarkFinder(double sampleRate, double minFundamental, double maxFundamental)
+template<class T>
+rsCycleMarkFinder<T>::rsCycleMarkFinder(T sampleRate, T minFundamental, T maxFundamental)
 {
   fs   = sampleRate;
   fMin = minFundamental;
   fMax = maxFundamental;
 }
 
-void rsCycleMarkFinder::refineCycleMarksByCorrelation(double *x, int N, std::vector<double>& cm, 
-  double f0)
+template<class T>
+void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vector<T>& cm, T f0)
 {
-  double* y = new double[N];
+  T* y = new T[N];
   if(correlationHighpass > 0)
     rsBiDirectionalFilter::applyButterworthHighpass(x, y, N, f0*correlationHighpass, fs, 4, 1);
   else
@@ -288,7 +290,7 @@ void rsCycleMarkFinder::refineCycleMarksByCorrelation(double *x, int N, std::vec
                         // cycle-marks in cm array
 
   int left = (int) cm[0];
-  std::vector<double> cl(maxLength), cr(maxLength), corr(2*maxLength-1);
+  std::vector<T> cl(maxLength), cr(maxLength), corr(2*maxLength-1);
   for(unsigned int i = 1; i < cm.size(); i++)
   {
     int right      = (int) cm[i];
@@ -306,7 +308,7 @@ void rsCycleMarkFinder::refineCycleMarksByCorrelation(double *x, int N, std::vec
     // see here: https://en.wikipedia.org/wiki/Matched_filter
     rsReverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
     rsConvolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
-    double delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
+    T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
     //delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
 
     // overwrite array entry and update for next iteration:
@@ -317,20 +319,21 @@ void rsCycleMarkFinder::refineCycleMarksByCorrelation(double *x, int N, std::vec
   delete[] y;
 }
 
-std::vector<double> rsCycleMarkFinder::findCycleMarks(double *x, int N)
+template<class T>
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
 {
   // Get initial estimate of fundamental by using an autocorrelation based algorithm at the center
   // of the input signal:
-  double f0 = rsInstantaneousFundamentalEstimator::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
+  T f0 = rsInstantaneousFundamentalEstimator::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
     // here, we have a mutual dependency between rsInstantaneousFundamentalEstimator and 
     // rsCycleMarkFinder - maybe break up by dragging estimateFundamentalAt out of the class
 
-  double bw = bandPassWidth*f0; // absolute bandwidth
-  double *y = new double[N];
+  T bw = bandPassWidth*f0; // absolute bandwidth
+  T *y = new T[N];
   rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, y, N, f0, bw, fs, bandpassSteepness);
 
   // Find cycle marks:
-  std::vector<double> z; 
+  std::vector<T> z; 
   if(algo == F0_ZERO_CROSSINGS)
     z = rsZeroCrossingFinder::upwardCrossings(y, N, precision);
   else
@@ -349,12 +352,13 @@ std::vector<double> rsCycleMarkFinder::findCycleMarks(double *x, int N)
 
 // converts raw value from the cosine-generator into the window value - todo: write a class
 // rsWindowFunctionIterator (subclass of rsSineIterator) that wraps that:
-RS_INLINE double cosineToWindow(double c)
+template<class T>
+RS_INLINE T cosineToWindow(T c)
 {
   // exact Blackman coefficients, modified such that we don't need to precompute c2=2*c*c-1:
-  const double a0 = 6508.0/18608.0;
-  const double a1 = 9240.0/18608.0;
-  const double a2 = 2860.0/18608.0;
+  const T a0 = 6508.0/18608.0;
+  const T a1 = 9240.0/18608.0;
+  const T a2 = 2860.0/18608.0;
   return a0 + a1*c + a2*c*c;
 }
 // rename to cosineToBlackman
@@ -367,14 +371,14 @@ RS_INLINE double cosineToWindow(double c)
 // c[0] = cos(0*w) = 1
 // c[1] = cos(1*w) = c
 // c[n] = cos(n*w) = a*c[n-1]-c[n-2] with a = 2*cos(w) = 2*c
-// from linear combinations these successive cosine values, various windows can be created, 
+// from linear combinations of these successive cosine values, various windows can be created, 
 // see https://en.wikipedia.org/wiki/Window_function#Higher-order_generalized_cosine_windows
 
-
-RS_INLINE void sincInterpolatorLoop(int mMin, int mMax, double &tf, rsSineIterator &sinIt, 
-  rsSineIterator &wndIt, double &y, double *&x, int &ti, double &ws)
+template<class TSig, class TPos>
+RS_INLINE void sincInterpolatorLoop(int mMin, int mMax, TPos &tf, rsSineIterator<TPos> &sinIt, 
+  rsSineIterator<TPos> &wndIt, TSig &y, TSig *&x, int &ti, TPos &ws)
 {
-  double w;
+  TPos w;
   for(int m = mMin; m <= mMax; m++)
   {
     w   = sinIt.getValue() * cosineToWindow(wndIt.getValue()) / (m-tf);
@@ -382,10 +386,12 @@ RS_INLINE void sincInterpolatorLoop(int mMin, int mMax, double &tf, rsSineIterat
     y  += w * x[ti+m];
   }
 }
-RS_INLINE void sincInterpolatorLoopNoStretch(int mMin, int mMax, double &tf, double &s,
-  rsSineIterator &wndIt, double &y, double *&x, int &ti, double &ws)
+
+template<class TSig, class TPos>
+RS_INLINE void sincInterpolatorLoopNoStretch(int mMin, int mMax, TPos &tf, TPos &s,
+  rsSineIterator<TPos> &wndIt, TSig &y, TSig *&x, int &ti, TPos &ws)
 {
-  double w;
+  TPos w;
   for(int m = mMin; m <= mMax; m++)
   {
     w  = s * cosineToWindow(wndIt.getValue())  / (m-tf);
@@ -394,22 +400,25 @@ RS_INLINE void sincInterpolatorLoopNoStretch(int mMin, int mMax, double &tf, dou
     s  *= -1.0;
   }
 }
-double rsResampler::signalValueViaSincAt(double *x, int N, double t, double sincLength, 
-  double stretch)
+// todo: check, if types TSig/TPos are correct for all variables
+
+
+template<class TSig, class TPos>
+double rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos sincLength, TPos stretch)
 {
   int L  = (int) floor(sincLength);
   int ti = (int) floor(t);         // integer part of t
   if( ti < 0 || ti >= N )
     return 0.0;
-  double tf = t - ti;              // fractional part of t    
-  double y  = 0.0;                 // output value
-  double s;                        // sine value
-  double ws = 0.0;                 // sum of tap weights
+  TPos tf = t - ti;                // fractional part of t    
+  TSig y  = 0.0;                   // output value
+  TPos s;                          // sine value
+  TPos ws = 0.0;                   // sum of tap weights
   int mMin = -rsMin(L/2-1, ti);    // minimum shift
   int mMax = +rsMin(L/2, N-ti-1);  // maximum shift
 
   // optimized loop for stretch == 1.0 (used for downward transpositions):
-  rsSineIterator wndIt(2*PI/sincLength, 2*PI*(mMin-tf)/sincLength+PI/2);
+  rsSineIterator<TPos> wndIt(2*PI/sincLength, 2*PI*(mMin-tf)/sincLength+PI/2);
   if( stretch == 1.0 )
   {
     s = sin(PI*(mMin-tf)/stretch) / PI;
@@ -429,7 +438,7 @@ double rsResampler::signalValueViaSincAt(double *x, int N, double t, double sinc
   }
 
   // general case with stretch (could handle special case above also, but less efficiently):
-  rsSineIterator sinIt(PI/stretch, PI*(mMin-tf)/stretch, 1.0/PI);
+  rsSineIterator<TPos> sinIt(PI/stretch, PI*(mMin-tf)/stretch, 1.0/PI);
   if( tf > EPS )
     sincInterpolatorLoop(mMin, mMax, tf, sinIt, wndIt, y, x, ti, ws);
   else
@@ -449,12 +458,13 @@ double rsResampler::signalValueViaSincAt(double *x, int N, double t, double sinc
 // ...but we need to check, if this is correct. This version could be used for looped 
 // sample-playback (for example, in a sampler) or for wavetable-oscillators
 
-void rsResampler::transposeLinear(double *x, int xN, double *y, int yN, double factor)
+template<class TSig, class TPos>
+void rsResampler<TSig, TPos>::transposeLinear(TSig *x, int xN, TSig *y, int yN, TPos factor)
 {
-  int    nw;         // write position
-  double nr = 0.0;   // read position
-  int    nri;        // integer part of nr
-  double nrf;        // fractional part of nr
+  int  nw;         // write position
+  TPos nr = 0.0;   // read position
+  int  nri;        // integer part of nr
+  TPos nrf;        // fractional part of nr
   for(nw = 0; nw < yN; nw++)
   {
     nri = (int) floor(nr);
@@ -470,15 +480,16 @@ void rsResampler::transposeLinear(double *x, int xN, double *y, int yN, double f
   rsFillWithZeros(&y[nw], yN-nw); // fill tail with zeros
 }
 
-void rsResampler::transposeSinc(double *x, int xN, double *y, int yN, double factor,                            
-  double sincLength, bool antiAlias)
+template<class TSig, class TPos>
+void rsResampler<TSig, TPos>::transposeSinc(TSig *x, int xN, TSig *y, int yN, TPos factor, 
+  TPos sincLength, bool antiAlias)
 {
-  double stretch = 1.0; 
+  TPos stretch = 1.0; 
   if( antiAlias == true )
     stretch = rsMax(1.0, factor);
 
-  int    nw;         // write position
-  double nr = 0.0;   // read position
+  int  nw;         // write position
+  TPos nr = 0.0;   // read position
   for(nw = 0; nw < yN; nw++)
   {
     y[nw] = signalValueViaSincAt(x, xN, nr, sincLength, stretch);
@@ -487,11 +498,12 @@ void rsResampler::transposeSinc(double *x, int xN, double *y, int yN, double fac
   rsFillWithZeros(&y[nw], yN-nw);
 }
 
-void rsResampler::shiftSinc(double *x, double *y, int N, double amount, double sincLength)
+template<class TSig, class TPos>
+void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TPos sincLength)
 {
   if( x == y )
   {
-    double *tmp = new double[N];
+    TSig *tmp = new TSig[N];
     shiftSinc(x, tmp, N, amount, sincLength);
     rsCopyBuffer(tmp, y, N);
     delete[] tmp;
