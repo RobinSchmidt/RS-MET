@@ -42,24 +42,24 @@ public:
   To compensate for the effects of multiple passes, the bandwidth of the single-pass filter will
   be adjusted internally.
   gc: gain at bandedge frequencies (raw amplitude) */
-  template<class T>
-  static void applyConstPeakBandpassBwInHz(T *x, T *y, int N, T fc, T bw, T fs, int numPasses = 1, 
-    T gc = RS_SQRT2_INV);
+  template<class TSig, class TPar>
+  static void applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs, 
+    int numPasses = 1, TPar gc = RS_SQRT2_INV);
 
   /** Similar to applyConstPeakBandpassBwInHz but uses a Butterworth bandpass with given order
   instead of a 2nd order bandpass. */
-  template<class T>
-  static void applyButterworthBandpassBwInHz(T *x, T *y, int N, T fc, T bw, T fs, int order, 
-    int numPasses = 1, T gc = RS_SQRT2_INV);
+  template<class TSig, class TPar>
+  static void applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs, 
+    int order, int numPasses = 1, TPar gc = RS_SQRT2_INV);
 
 
-  template<class T>
-  static void applyButterworthLowpass(T *x, T *y, int N, T fc, T fs, int order, int numPasses = 1, 
-    T gc = RS_SQRT2_INV);
+  template<class TSig, class TPar>
+  static void applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order, 
+    int numPasses = 1, TPar gc = RS_SQRT2_INV);
 
-  template<class T>
-  static void applyButterworthHighpass(T *x, T *y, int N, T fc, T fs, int order, int numPasses = 1, 
-    T gc = RS_SQRT2_INV);
+  template<class TSig, class TPar>
+  static void applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order, 
+    int numPasses = 1, TPar gc = RS_SQRT2_INV);
 
 
   /** Applies a bidirectional 1st order lowpass to the signal x of length N and stores the
@@ -67,8 +67,9 @@ public:
   numPasses parameter, you can control, how many times the filter will be applied. To compensate
   for the effects of multiple passes, the cutoff frequency of the single-pass filter will be
   adjusted internally. */
-  template<class T>
-  static void applyLowpass(T *x, T *y, int N, T fc, T fs, int numPasses = 1, T gc = RS_SQRT2_INV);
+  template<class TSig, class TPar>
+  static void applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses = 1, 
+    TPar gc = RS_SQRT2_INV);
 
 protected:
 

@@ -1,13 +1,10 @@
-using namespace RSLib;
-
-
 //=================================================================================================
 
 // x: input, y: output, N: length, processor: the filter/processor to be applied (needs to 
 // implement double getSample(double), P: padding length, numPasses: number of forward/backward 
 // passes maybe move to another file
-template<class T>
-void rsApplyBiDirectionally(double *x, double *y, int N, T &processor, int P, int numPasses)
+template<class TSig, class TFlt> // signal and filter type
+void rsApplyBiDirectionally(double *x, double *y, int N, TFlt &processor, int P, int numPasses)
 {
   // create a buffer containing the signal with (pre- and post) zero padding to allow the 
   // processor/filter to ring out at the ends:
@@ -38,22 +35,24 @@ void rsApplyBiDirectionally(double *x, double *y, int N, T &processor, int P, in
   // applying first all forward passes and then all backward passes should give the same result.
 }
 
-int rsBiDirectionalFilter::getPaddingLength(double bw, double fs)
+template<class T> 
+int rsBiDirectionalFilter::getPaddingLength(T bw, T fs)
 {
   return rsCeilInt(10 * fs / bw); 
   // factor 10 is ad hoc - experiment to find optimal factor, maybe the formula should include 
-  // the number of passes as well?
+  // the number of passes as well? and maybe also the order?
 }
 
-void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(double *x, double *y, int N, double fc, 
-  double bw, double fs, int numPasses, double gc)
+template<class TSig, class TPar>
+void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, 
+  TPar bw, TPar fs, int numPasses, TPar gc)
 {
   // compute desired bandwidth for single-pass filter in octaves:
   bw *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, 1, gc);  
-  double bo = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fc);
+  TPar bo = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fc);
 
   // create and set up the filter:
-  rsStateVariableFilter flt;  // maybe use a biquad later
+  rsStateVariableFilter<TSig, TPar> flt;  // maybe use a biquad later
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setBandwidth(bo);
@@ -64,15 +63,16 @@ void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(double *x, double *y, i
   rsApplyBiDirectionally(x, y, N, flt, P, numPasses);
 }
 
-void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(double *x, double *y, int N, double fc, 
-  double bw, double fs, int order, int numPasses, double gc)
+template<class TSig, class TPar>
+void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, 
+  TPar bw, TPar fs, int order, int numPasses, TPar gc)
 {
   // compute desired bandwidth for single-pass filter in octaves:
   bw *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, order, gc);
-  double bo = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fc);
+  TPar bo = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fc);
 
   // create and set up the filter:
-  rsEngineersFilter flt;
+  rsEngineersFilter<TSig, TPar> flt;
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setBandwidth(bo);
@@ -85,14 +85,15 @@ void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(double *x, double *y,
   rsApplyBiDirectionally(x, y, N, flt, P, numPasses);
 }
 
-void rsBiDirectionalFilter::applyButterworthLowpass(double *x, double *y, int N, double fc, 
-  double fs, int order, int numPasses, double gc)
+template<class TSig, class TPar>
+void rsBiDirectionalFilter::applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc, 
+  TPar fs, int order, int numPasses, TPar gc)
 {
   // compute desired lowpass cutoff:
   fc *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, order, gc);
 
   // create and set up the filter:
-  rsEngineersFilter flt;
+  rsEngineersFilter<TSig, TPar> flt;
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setMode(rsInfiniteImpulseResponseDesigner::LOWPASS);
@@ -104,11 +105,12 @@ void rsBiDirectionalFilter::applyButterworthLowpass(double *x, double *y, int N,
   rsApplyBiDirectionally(x, y, N, flt, P, numPasses);
 }
 
-void rsBiDirectionalFilter::applyButterworthHighpass(double *x, double *y, int N, double fc, 
-  double fs, int order, int numPasses, double gc)
+template<class TSig, class TPar>
+void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc, 
+  TPar fs, int order, int numPasses, TPar gc)
 {
   applyButterworthLowpass(x, y, N, fc, fs, order, numPasses, gc);
-  rsSubtract(x, y, y, N);
+  rsSubtract(x, y, y, N); // works because we use a bidirectional (zero-phase) filter
 
 
   //// quick and dirty code duplication from applyButterworthLowpass - refactor
@@ -129,16 +131,15 @@ void rsBiDirectionalFilter::applyButterworthHighpass(double *x, double *y, int N
   //rsApplyBiDirectionally(x, y, N, flt, P, numPasses);
 }
 
-
-
-void rsBiDirectionalFilter::applyLowpass(double *x, double *y, int N, double fc, double fs, 
-  int numPasses, double gc)
+template<class TSig, class TPar>
+void rsBiDirectionalFilter::applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses, 
+  TPar gc)
 {
   // compute desired cutoff for single-pass filter:
   fc *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, 1, gc);
 
   // create and set up the filter:
-  rsOnePoleFilter flt;
+  rsOnePoleFilter<TSig, TPar> flt;
   flt.setMode(rsOnePoleFilter::LOWPASS); // gives impulse invariant lowpass design - maybe switch
                                          // to bilinear later
   flt.setSampleRate(fs);
