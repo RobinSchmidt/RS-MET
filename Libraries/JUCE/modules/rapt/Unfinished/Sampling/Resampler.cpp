@@ -517,8 +517,9 @@ void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TP
 
 //=================================================================================================
 
-void rsTimeWarper::timeWarpSinc(double *x, int xN, double *y, double *w, int yN,                             
-  double minSincLength, double maxLengthScaler, bool antiAlias)
+template<class TSig, class TPos> 
+void rsTimeWarper::timeWarpSinc(TSig *x, int xN, TSig *y, TPos *w, int yN,                             
+  TPos minSincLength, TPos maxLengthScaler, bool antiAlias)
 {
   if( antiAlias == false )
   {
@@ -527,25 +528,26 @@ void rsTimeWarper::timeWarpSinc(double *x, int xN, double *y, double *w, int yN,
   }
   else
   {
-    double tOld = w[0];
+    TPos tOld = w[0];
     for(int n = 0; n < yN; n++)
     {
-      double speed   = rsAbs(w[n]-tOld);
-      double stretch = rsMax(1.0, speed);
-      //double length  = minSincLength * rsMin(stretch, maxLengthScaler); // old, probably buggy
-      double length  = rsMax(minSincLength, minSincLength*rsMin(stretch, maxLengthScaler));
+      TPos speed   = rsAbs(w[n]-tOld);
+      TPos stretch = rsMax(1.0, speed);
+      //TPos length  = minSincLength * rsMin(stretch, maxLengthScaler); // old, probably buggy
+      TPos length  = rsMax(minSincLength, minSincLength*rsMin(stretch, maxLengthScaler));
 
       // maybe better, do just: 
       // length = rsLimitToRange(minSincLength*stretch, minSincLength, maxSincLength);
       // where maxSincLength is precomputed as minSincLength*maxLengthScaler
 
-      y[n] = rsResampler::signalValueViaSincAt(x, xN, w[n], length, stretch);
+      y[n] = rsResampler<TSig, TPar>::signalValueViaSincAt(x, xN, w[n], length, stretch);
       tOld = w[n];
     }
   }
 }
 
-void rsTimeWarper::invertMonotonousWarpMap(double *w, int N, double *wi)
+template<class TSig, class TPos> 
+void rsTimeWarper::invertMonotonousWarpMap(TPos *w, int N, TPos *wi)
 {
   //bool cubic = true; // make this a parameter for the function
 
@@ -559,19 +561,19 @@ void rsTimeWarper::invertMonotonousWarpMap(double *w, int N, double *wi)
       if( w[i] <= n && w[i+1] >= n )
         break;
     }
-    wi[n] = rsInterpolateLinear(w[i], w[i+1], (double)i, (double)(i+1), (double)n);
+    wi[n] = rsInterpolateLinear(w[i], w[i+1], (TPos)i, (TPos)(i+1), (TPos)n);
 
 
     /*
     if( cubic == true && i >= 1 && i < N-2 )
     {
-      wi[n] = rsInterpolateCubicHermite(w[i-1], w[i], w[i+1], w[i+2], (double)(i-1), (double)i, 
-        (double)(i+1), (double)(i+2), (double)n);
+      wi[n] = rsInterpolateCubicHermite(w[i-1], w[i], w[i+1], w[i+2], (TPos)(i-1), (TPos)i, 
+        (TPos)(i+1), (TPos)(i+2), (TPos)n);
     }
     else
-      wi[n] = rsInterpolateLinear(w[i], w[i+1], (double)i, (double)(i+1), (double)n);
+      wi[n] = rsInterpolateLinear(w[i], w[i+1], (TPos)i, (TPos)(i+1), (TPos)n);
     */
-    //wi[n] = rsInterpolateLinear(w[i], (double)i, w[i+1], (double)(i+1), (double)n);
+    //wi[n] = rsInterpolateLinear(w[i], (TPos)i, w[i+1], (TPos)(i+1), (TPos)n);
       // Can be optimized: (i+1)-i == 1 - always, the function computes the value, but maybe it's 
       // not worth it. On the other hand, maybe the quality could be improved by using cubic 
       // hermite instead of linear interpolation.
@@ -585,10 +587,10 @@ void rsTimeWarper::invertMonotonousWarpMap(double *w, int N, double *wi)
   // property.
 }
 
- 
-int rsTimeWarper::getPitchModulatedLength(double *r, int N)
+template<class TSig, class TPos>  
+int rsTimeWarper::getPitchModulatedLength(TPos *r, int N)
 {
-  double s = 0.0;
+  TPos s = 0.0;
   for(int n = 1; n < N; n++)
     s += 1.0 / r[n-1];
   return (int) ceil(s);
@@ -596,8 +598,9 @@ int rsTimeWarper::getPitchModulatedLength(double *r, int N)
   // the time-instant, where the (nonexistent) next-to-last sample x[N] would have to be written
 }
 
-void rsTimeWarper::applyPitchModulation(double *x, double *r, int N, double *y,
-  double minSincLength, double maxLengthScaler, bool antiAlias)
+template<class TSig, class TPos> 
+void rsTimeWarper::applyPitchModulation(TSig *x, TPos *r, int N, TSig *y,
+  TPos minSincLength, TPos maxLengthScaler, bool antiAlias)
 {
   rsVariableSpeedPlayer vsp;
   vsp.setInputAndSpeed(x, r, N);
