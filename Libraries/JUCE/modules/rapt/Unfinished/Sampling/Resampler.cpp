@@ -152,14 +152,16 @@ void rsBiDirectionalFilter::applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar 
 
 //=================================================================================================
 
-bool rsZeroCrossingFinder::isUpwardCrossing(double *x, int n)
+template<class T>
+bool rsZeroCrossingFinder::isUpwardCrossing(T *x, int n)
 {
   if(x[n] < 0.0 && x[n+1] >= 0.0)
     return true;
   return false;
 }
 
-int rsZeroCrossingFinder::numUpwardCrossings(double *x, int N)
+template<class T>
+int rsZeroCrossingFinder::numUpwardCrossings(T *x, int N)
 {
   int nz = 0;
   for(int n = 0; n < N-1; n++)
@@ -170,7 +172,8 @@ int rsZeroCrossingFinder::numUpwardCrossings(double *x, int N)
   return nz;
 }
 
-std::vector<int> rsZeroCrossingFinder::upwardCrossingsInt(double *x, int N)
+template<class T>
+std::vector<int> rsZeroCrossingFinder::upwardCrossingsInt(T *x, int N)
 {
   int Nz = numUpwardCrossings(x, N);  // number of zero crossings in x
   int nz = 0;                         // index of the current zero crossing
@@ -187,15 +190,16 @@ std::vector<int> rsZeroCrossingFinder::upwardCrossingsInt(double *x, int N)
   return z;
 }
 
-std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(double *x, 
+template<class T>
+std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(T *x, 
   int N, int p)
 {
   std::vector<int> zi = upwardCrossingsInt(x, N);
   int Nz = (int)zi.size();
   std::vector<rsFractionalIndex> z;   // the positions of the zero crossings
   z.resize(Nz);
-  double *a = new double[2*p+2];      // polynomial coefficients for interpolant 
-  double nf;                          // fractional part of zero-crossing sample-index
+  T *a = new T[2*p+2];                // polynomial coefficients for interpolant 
+  T nf;                               // fractional part of zero-crossing sample-index
   int q;                              // p, restricted to avoid access violation
   int n;                              // integer part of zero-crossing sample-index 
   for(int nz = 0; nz < Nz; nz++)
@@ -217,22 +221,24 @@ std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(doub
   return z;
 }
 
-std::vector<double> rsZeroCrossingFinder::upwardCrossings(double *x, int N, int p)
+template<class T>
+std::vector<double> rsZeroCrossingFinder::upwardCrossings(T *x, int N, int p)
 {
   std::vector<rsFractionalIndex> z = upwardCrossingsIntFrac(x, N, p);
-  std::vector<double> zd;
+  std::vector<T> zd;
   zd.resize(z.size());
   for(unsigned int i = 0; i < z.size(); i++)
     zd[i] = z[i].intPart + z[i].fracPart; // combine integer and fractional part into a "double" value
   return zd;
 }
 
-std::vector<double> rsZeroCrossingFinder::bandpassedUpwardCrossings(double *x, int N, double fc, 
-  double bw, double fs, int np, int p)
+template<class T>
+std::vector<T> rsZeroCrossingFinder::bandpassedUpwardCrossings(T *x, int N, T fc, 
+  T bw, T fs, int np, int p)
 {
-  double *y = new double[N];
+  T *y = new T[N];
   rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, y, N, fc, bw, fs, np);
-  std::vector<double> z = upwardCrossings(y, N, p);
+  std::vector<T> z = upwardCrossings(y, N, p);
   delete[] y;
   return z;
 }

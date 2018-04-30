@@ -96,7 +96,6 @@ struct rsFractionalIndex
   int    intPart;   // integer part of the index
   double fracPart;  // fractional part of the index
 };
-// move somewhere into the RSCore module
 
 
 /** A class with a collection of functions to find the zero-crossings in a signal, possibly with
