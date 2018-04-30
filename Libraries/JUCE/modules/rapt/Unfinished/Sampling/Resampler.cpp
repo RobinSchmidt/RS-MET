@@ -726,7 +726,8 @@ void rsVariableSpeedPlayer::clear()
 
 //=================================================================================================
 
-void rsPitchFlattener::setInput(double *x, double *f, int N, double ft)
+template<class TSig, class TPos>
+void rsPitchFlattener::setInput(TSig *x, TPos *f, int N, TPos ft)
 {
   // x: input, f: instantaneous frequencies, N: length of x and f, ft: target frequency
 
@@ -735,7 +736,7 @@ void rsPitchFlattener::setInput(double *x, double *f, int N, double ft)
     ft = rsMean(f, N);
 
   // create temporary read-speed array:
-  double *r = new double[N];
+  TPos *r = new TPos[N];
   for(int n = 0; n < N; n++)
     r[n] = ft / f[n];
 
@@ -746,8 +747,9 @@ void rsPitchFlattener::setInput(double *x, double *f, int N, double ft)
 
 //=================================================================================================
 
-void rsPhaseLockedCrossfader::setInputs(double *in1, double *f1, int len1, double *in2,
-  double *f2, int len2, double ft)
+template<class TSig, class TPos>
+void rsPhaseLockedCrossfader::setInputs(TSig *in1, TPos *f1, int len1, TSig *in2,
+  TPos *f2, int len2, TPos ft)
 {
   x1 = in1;
   x2 = in2;
@@ -759,7 +761,8 @@ void rsPhaseLockedCrossfader::setInputs(double *in1, double *f1, int len1, doubl
   pf2.setInput(x2, f2, N2, ft);
 }
 
-void rsPhaseLockedCrossfader::setFlattenedCrossfade(double start, double end, double shift)
+template<class TSig, class TPos>
+void rsPhaseLockedCrossfader::setFlattenedCrossfade(TPos start, TPos end, TPos shift)
 {
   // adjust crossfade-start such that it is an integer with respect to x1 and crossfade-end to
   // be an integer with respect to x2 for seamless splicing:
@@ -772,11 +775,12 @@ void rsPhaseLockedCrossfader::setFlattenedCrossfade(double start, double end, do
   this->shift = shift;
 }
 
+template<class TSig, class TPos>
 int rsPhaseLockedCrossfader::getCrossfadeOutputLength()
 {
-  double cl1 = ce1 - cs1;              // crossfade length in x1
-  double cl2 = ce2 - cs2;              // crossfade length in x2
-  double cly;                          // crossfade length in y 
+  TPos cl1 = ce1 - cs1;              // crossfade length in x1
+  TPos cl2 = ce2 - cs2;              // crossfade length in x2
+  TPos cly;                          // crossfade length in y 
   //cly = 0.5*(cl1+cl2);               // arithmetic mean
   cly = 1 / (0.5*(1/cl1 + 1/cl2));     // harmonic mean
   return (int)round(cly);
@@ -788,16 +792,20 @@ int rsPhaseLockedCrossfader::getCrossfadeOutputLength()
   // https://en.wikipedia.org/wiki/Generalized_mean
 }
 
-vector<double> rsPhaseLockedCrossfader::getFlattenedSignal1()
+template<class TSig, class TPos>
+vector<TSig> rsPhaseLockedCrossfader::getFlattenedSignal1()
 {
   return pf1.getOutput();
 }
-vector<double> rsPhaseLockedCrossfader::getFlattenedSignal2()
+
+template<class TSig, class TPos>
+vector<TSig> rsPhaseLockedCrossfader::getFlattenedSignal2()
 {
   return pf2.getOutput();
 }
 
-vector<double> rsPhaseLockedCrossfader::getOutput()
+template<class TSig, class TPos>
+vector<TSig> rsPhaseLockedCrossfader::getOutput()
 {
   // splice together heading section of x1, crossfade section and trailing section of x2:
   vector<double> yc = getCrossfadeSection();
@@ -815,30 +823,38 @@ vector<double> rsPhaseLockedCrossfader::getOutput()
   return y;
 }
 
-vector<double> rsPhaseLockedCrossfader::getTimeWarpMapXY1()
+template<class TSig, class TPos>
+vector<TPos> rsPhaseLockedCrossfader::getTimeWarpMapXY1()
 {
   return pf1.getTimeWarpMapXY();
 }
-vector<double> rsPhaseLockedCrossfader::getTimeWarpMapYX1()
+
+template<class TSig, class TPos>
+vector<TPos> rsPhaseLockedCrossfader::getTimeWarpMapYX1()
 {
   return pf1.getTimeWarpMapYX();
 }
-vector<double> rsPhaseLockedCrossfader::getTimeWarpMapXY2()
+
+template<class TSig, class TPos>
+vector<TPos> rsPhaseLockedCrossfader::getTimeWarpMapXY2()
 {
   return pf2.getTimeWarpMapXY();
 }
-vector<double> rsPhaseLockedCrossfader::getTimeWarpMapYX2()
+
+template<class TSig, class TPos>
+vector<TPos> rsPhaseLockedCrossfader::getTimeWarpMapYX2()
 {
   return pf2.getTimeWarpMapYX();
 }
 
-vector<double> rsPhaseLockedCrossfader::getCrossfadeSection()
+template<class TSig, class TPos>
+vector<TSig> rsPhaseLockedCrossfader::getCrossfadeSection()
 {
   computeReadoutTimes();
   int    L     = (int)t1.size();
-  double scale = 1.0 / (L-1);
-  double y1, y2, c;
-  vector<double> yc(L);
+  TSig scale = 1.0 / (L-1);
+  TSig y1, y2, c;
+  vector<TSig> yc(L);
   for(int n = 0; n < L; n++)
   {
     c  = scale * n;
@@ -850,19 +866,20 @@ vector<double> rsPhaseLockedCrossfader::getCrossfadeSection()
   // maybe later include optional anti-aliasing
 }
 
+template<class TSig, class TPos>
 void rsPhaseLockedCrossfader::computeReadoutTimes()
 {
-  double cl1 = ce1 - cs1;                        // crossfade length in x1
-  double cl2 = ce2 - cs2;                        // crossfade length in x2
-  int    L   = getCrossfadeOutputLength();       // crossfade length in output
-  double scl = 1.0 / (L-1);                      // scaler to map 0..L-1 to 0..1
-  double t, c;                                   // t: normalized time 0..1, c(t)
-  double a = 1, b = 0;                           // parameters of c(t) = a*t + b*t^2
-  bool sweep = true;                             // maybe make this a member variable
+  TPos cl1 = ce1 - cs1;                        // crossfade length in x1
+  TPos cl2 = ce2 - cs2;                        // crossfade length in x2
+  int  L   = getCrossfadeOutputLength();       // crossfade length in output
+  TPos scl = 1.0 / (L-1);                      // scaler to map 0..L-1 to 0..1
+  TPos t, c;                                   // t: normalized time 0..1, c(t)
+  TPos a = 1, b = 0;                           // parameters of c(t) = a*t + b*t^2
+  bool sweep = true;                           // maybe make this a member variable
   if(sweep == true)
   {
-    double s0 = L/cl1;                           // slope of c(t) at t=0
-    double s1 = L/cl2;                           // slope of c(t) at t=1
+    TPos s0 = L/cl1;                           // slope of c(t) at t=0
+    TPos s1 = L/cl2;                           // slope of c(t) at t=1
     a = s0;
     b = 0.5*(s1-a);
   }
@@ -872,9 +889,9 @@ void rsPhaseLockedCrossfader::computeReadoutTimes()
   {
     t = scl * n;
     c = a*t + b*t*t;
-    double tx1 = pf1.warpTime(cs1+c*cl1);
-    double tx2 = pf2.warpTime(cs2+c*cl2)+shift;
-    double txw = (1-t)*tx1 + t*tx2;              // aggree on warped readout time
+    TPos tx1 = pf1.warpTime(cs1+c*cl1);
+    TPos tx2 = pf2.warpTime(cs2+c*cl2)+shift;
+    TPos txw = (1-t)*tx1 + t*tx2;              // aggree on warped readout time
     t1[n] = pf1.unwarpTime(txw);
     t2[n] = pf2.unwarpTime(txw-shift);
   }
@@ -894,13 +911,14 @@ void rsPhaseLockedCrossfader::computeReadoutTimes()
 
 //=================================================================================================
 
-void rsInstantaneousFundamentalEstimator::estimateReliability(double *x, int N, 
-  const std::vector<double>& z, double *r)
+template<class T>
+void rsInstantaneousFundamentalEstimator::estimateReliability(T *x, int N, 
+  const std::vector<T>& z, T *r)
 {
   int Nz = (int) z.size(); // number of zero crossings in z
   int nz;                  // index of zero-crossing
   int sl, sr, el, er;      // start and end, left and right
-  double c;                // cross-correlation value
+  T c;                     // cross-correlation value
 
   sr = rsCeilInt( z[0]);
   er = rsFloorInt(z[1]);
@@ -911,7 +929,7 @@ void rsInstantaneousFundamentalEstimator::estimateReliability(double *x, int N,
     sr = el + 1;
     er = (int) z[nz];
 
-    double test = z[nz]; // for debug
+    T test = z[nz]; // for debug
       // seems like the last zero crossing is too close to the end of the signal such that the
       // zero crossing detection accesses invalid array indices - or something
 
@@ -926,11 +944,12 @@ void rsInstantaneousFundamentalEstimator::estimateReliability(double *x, int N,
   rsFillWithValue(r, sl, r[sl]);
 }
 
-void rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(double *x, double *f, 
-  int N, double fs, double fMin, double fMax, double *r, int cycleMarkAlgo)
+template<class T>
+void rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(T *x, T *f, 
+  int N, T fs, T fMin, T fMax, T *r, int cycleMarkAlgo)
 {
   rsCycleMarkFinder cmf(fs, fMin, fMax); // todo: maybe set it up - or maybe have it a member and allow client code to set it up
-  std::vector<double> z = cmf.findCycleMarks(x, N);
+  std::vector<T> z = cmf.findCycleMarks(x, N);
 
   // old:
   //std::vector<double> z = rsCycleMarkFinder::findCycleMarks(x, N, fs, fMin, fMax, cycleMarkAlgo, 3);
@@ -940,8 +959,8 @@ void rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(double
   // instant at which we consider this period measurement to be effective is midway between the 
   // two zero-crossings:
   int Nz = (int) z.size();
-  double *p  = new double[Nz-1];
-  double *tp = new double[Nz-1];
+  T *p  = new T[Nz-1];
+  T *tp = new T[Nz-1];
   int n;
   for(n = 0; n < Nz-1; n++)
   {
@@ -950,7 +969,7 @@ void rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(double
   }
 
   // Interpolate period measurements up to samplerate and convert to frequencies
-  double *tn = new double[N];
+  T *tn = new T[N];
   rsFillWithIndex(tn, N);
   rsInterpolateSpline(tp, p, Nz-1, tn, f, N, 1);
   for(n = 0; n < N; n++)
@@ -980,16 +999,17 @@ void rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(double
   delete[] tn;
 }
 
-double rsInstantaneousFundamentalEstimator::estimateFundamentalAt(double *x, int N, int n, 
-  double fs, double fMin, double fMax)
+template<class T>
+double rsInstantaneousFundamentalEstimator::estimateFundamentalAt(T *x, int N, int n, 
+  T fs, T fMin, T fMax)
 {
-  double pMax = fs/fMin; // maximum detectable period
+  T pMax = fs/fMin; // maximum detectable period
 
   // Compute desired Length of autocorrelation sequence. It should be significantly longer than the
   // lag that corresponds to our maximum detectable period because the accuracy of the measured 
   // values degrades for lags that are close to the end of the sequence due to less samples used in 
   // the averaging. We need it to be odd so we can use a chunk that is centered around n.
-  double k = 2.0;
+  T k = 2.0;
   int L = (int) ceil(k*pMax);  
   if( rsIsEven(L) )
     L += 1;
@@ -997,13 +1017,13 @@ double rsInstantaneousFundamentalEstimator::estimateFundamentalAt(double *x, int
   // Get a chunk from the signal, typically centered around n, but the center is shifted at the 
   // start and end of the input signal, such that we don't need to zero-extend the input 
   // (conceptually):
-  double *y = new double[L];            // chunk from input signal
+  T *y = new T[L];                      // chunk from input signal
   int ns = rsMin(rsMax(0, n-L/2), N-L); // start of the chunk
   rsCopySection(x, N, y, ns, L); 
 
   // measure frequency:
-  double r;  // reliability
-  double f = rsAutoCorrelationPitchDetector::estimateFundamental(y, L, fs, fMin, fMax, &r);
+  T r;  // reliability
+  T f = rsAutoCorrelationPitchDetector::estimateFundamental(y, L, fs, fMin, fMax, &r);
 
   // cleanup and return:
   delete[] y;
