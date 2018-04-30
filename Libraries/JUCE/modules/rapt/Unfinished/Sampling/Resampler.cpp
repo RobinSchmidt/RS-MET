@@ -1032,7 +1032,8 @@ double rsInstantaneousFundamentalEstimator::estimateFundamentalAt(T *x, int N, i
 
 //=================================================================================================
 
-void RSLib::rsSineQuadraturePart(double *x, double *y, int N, double f, double fs, bool backward)
+template<class T>
+void rsSineQuadraturePart(T *x, T *y, int N, T f, T fs, bool backward)
 {
   rsOnePoleFilter flt;
   flt.setSampleRate(fs);
@@ -1051,9 +1052,10 @@ void RSLib::rsSineQuadraturePart(double *x, double *y, int N, double f, double f
 }
 
 // used internally by rsSineEnvelopeViaQuadrature, rsSineEnvelopeViaAmpFormula
-void rsSmoothSineEnvelope(double *y, int N, double f, double fs, double s)
+template<class T>
+void rsSmoothSineEnvelope(T *y, int N, T f, T fs, T s)
 {
-  double a[3], b[3]; // filter coeffs
+  T a[3], b[3]; // filter coeffs
   if( s > 0.0 && f/s < 0.5*fs )
   {
     rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(b[0], b[1], b[2], a[1], a[2], 1.0/fs, f/s);
@@ -1067,8 +1069,8 @@ void rsSmoothSineEnvelope(double *y, int N, double f, double fs, double s)
   }
 }
 
-void RSLib::rsSineEnvelopeViaQuadrature(double *x, double *y, int N, double f, double fs, 
-  double s)
+template<class T>
+void rsSineEnvelopeViaQuadrature(T *x, T *y, int N, T f, T fs, T s)
 {
   // get 90° phase shifted version:
   rsSineQuadraturePart(x, y, N, f, fs, true);
@@ -1081,11 +1083,11 @@ void RSLib::rsSineEnvelopeViaQuadrature(double *x, double *y, int N, double f, d
   rsSmoothSineEnvelope(y, N, f, fs, s);
 }
 
-void RSLib::rsSineEnvelopeViaAmpFormula(double *x, double *y, int N, double f, double fs, 
-  double s)
+template<class T>
+void rsSineEnvelopeViaAmpFormula(T *x, T *y, int N, T f, T fs, T s)
 {
-  double w = 2*PI*f/fs;
-  double a, p;
+  T w = 2*PI*f/fs;
+  T a, p;
   for(int n = 0; n < N-1; n++)
   {
     rsSineAmplitudeAndPhase(x[n], x[n+1], w, &a, &p);
@@ -1100,23 +1102,24 @@ void RSLib::rsSineEnvelopeViaAmpFormula(double *x, double *y, int N, double f, d
   rsSmoothSineEnvelope(y, N, f, fs, s);
 }
 
-void RSLib::rsEnvelopedSine(double *y, int N, double f, double fs, double p, double *a)
+template<class T>
+void rsEnvelopedSine(T *y, int N, T f, T fs, T p, T *a)
 {
   rsSineIterator sinIt(2*PI*f/fs, p, 1.0);
   for(int n = 0; n < N; n++)
     y[n] = a[n] * sinIt.getValue();
 }
 
-double rsUnwrappedPhaseForCatchSweep(double p0, double pk, double wk, int k, 
-  int sweepDirection = 0)
+template<class T>
+double rsUnwrappedPhaseForCatchSweep(T p0, T pk, T wk, int k, int sweepDirection = 0)
 {
   // compute phase that would be reached at k, if we were running a fixed frequency sine at w from 
   // 0 to k:
-  double pkw = p0 + k*wk;
+  T pkw = p0 + k*wk;
 
   // find the unwrapped target phase pk at k - this is given by pk plus/minus some integer multiple
   // of 2*PI, such that we get most closely to pkw:
-  double pku = pk;
+  T pku = pk;
   int n = 0;
   while( pku < pkw )
   {
@@ -1129,8 +1132,8 @@ double rsUnwrappedPhaseForCatchSweep(double p0, double pk, double wk, int k,
   return pku;
 }
 
-void RSLib::rsEnvelopedPhaseCatchSweep(double *y, int k, double p0, double pk, double wk, 
-  double *a, int sweepDirection)
+template<class T>
+void rsEnvelopedPhaseCatchSweep(T *y, int k, T p0, T pk, T wk, T *a, int sweepDirection)
 {
   // Notation: p0, pk, w0, wk: instantaneous phases and normalized radian frequencies at sample 0
   // and sample k, respectively, wn: inst. freq. at sample n = 0...k-1. We have
@@ -1140,11 +1143,11 @@ void RSLib::rsEnvelopedPhaseCatchSweep(double *y, int k, double p0, double pk, d
   // This can be solved for w0 = (pk - p0 - sn*wk/k) / (k - sn/k)
 
   pk = rsUnwrappedPhaseForCatchSweep(p0, pk, wk, k, sweepDirection);
-  double snk = (double) rsSum(0, k-1) / (double) k;
-  double w0  = (pk-p0-snk*wk)/(k-snk); // normalized radian frequency at start
-  double dw  = (wk-w0)/k;              // increment for normalized radian frequency
-  double wn  = w0;                     // instantaneous normalized radian frequency
-  double pn  = p0;                     // instantaneous phase
+  T snk = (T) rsSum(0, k-1) / (T) k;
+  T w0  = (pk-p0-snk*wk)/(k-snk); // normalized radian frequency at start
+  T dw  = (wk-w0)/k;              // increment for normalized radian frequency
+  T wn  = w0;                     // instantaneous normalized radian frequency
+  T pn  = p0;                     // instantaneous phase
   for(int n = 0; n < k; n++)
   {
     y[n] = a[n] * sin(pn);
@@ -1156,48 +1159,49 @@ void RSLib::rsEnvelopedPhaseCatchSweep(double *y, int k, double p0, double pk, d
   // sweep and comparison between linear and parabolic sweep (to be implemented)
 }
 
-void RSLib::rsPhaseCatchSweep(double *y, int k, double p0, double pk, double wk, 
-  int sweepDirection)
+template<class T>
+void rsPhaseCatchSweep(T *y, int k, T p0, T pk, T wk, int sweepDirection)
 {
   rsFillWithValue(y, k, 1.0);
   rsEnvelopedPhaseCatchSweep(y, k, p0, pk, wk, y, sweepDirection);
 }
 
-void RSLib::rsEnvelopedPhaseCatchSine(double *y, int N, double f, double fs, double p0, 
-  double pk, int k, double *a, int sweepDirection)
+template<class T>
+void rsEnvelopedPhaseCatchSine(T *y, int N, T f, T fs, T p0, T pk, int k, T *a, int sweepDirection)
 {
   // 1st part (sweeping frequency):
-  double w = 2*PI*f/fs;
+  T w = 2*PI*f/fs;
   rsEnvelopedPhaseCatchSweep(y, k, p0, pk, w, a, sweepDirection);
 
   // 2nd part (fixed frequency):
   rsEnvelopedSine(&y[k], N-k, f, fs, pk, &a[k]);
 }
 
-void RSLib::rsRecreateSine(double *x, double *y, int N, double fx, double fy, double fs, double p0, 
-  double smooth)
+template<class T>
+void rsRecreateSine(T *x, T *y, int N, T fx, T fy, T fs, T p0, T smooth)
 {
   rsSineEnvelopeViaAmpFormula(x, y, N, fx, fs, smooth);
   rsEnvelopedSine(y, N, fy, fs, p0, y);
 }
 
-void RSLib::rsRecreateSineWithPhaseCatch(double *x, double *y, int N, double fx, double fy, 
-  double fs, double p0, double pk, int k, double smooth, int sd)
+template<class T>
+void rsRecreateSineWithPhaseCatch(T *x, T *y, int N, T fx, T fy, T fs, T p0, T pk, int k, 
+  T smooth, int sd)
 {
   rsSineEnvelopeViaAmpFormula(x, y, N, fx, fs, smooth);
   rsEnvelopedPhaseCatchSine(y, N, fy, fs, p0, pk, k, y, sd);
 }
 
 /*
-void RSLib::rsRecreateSine(double *x, double *y, int N, double fx, double fy, double fs, double p0, 
-  double smooth)
+template<class T>
+void rsRecreateSine(T *x, T *y, int N, T fx, T fy, T fs, T p0, T smooth)
 {
   // get the input sinusoid's envelope (we may use y as temporary buffer for this)
   rsSineEnvelopeViaAmpFormula(x, y, N, fx, fs, smooth);
 
   // generate the sine at the desired frequency and multiply it by the envelope:
-  double w = 2*PI*fy/fs;
-  double p = p0;
+  T w = 2*PI*fy/fs;
+  T p = p0;
   for(int n = 0; n < N; n++)
   {
     y[n] *= sin(p);
