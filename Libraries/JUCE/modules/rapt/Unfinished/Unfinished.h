@@ -12,6 +12,7 @@ namespace RAPT
 
 #include "Math/Vector.h"
 #include "Math/Matrix.h"
+//#include "Math/MatrixUnOptimized.h" // simpler, can perhaps be optimized via move-constructor
 #include "Math/FunctionObjects.h"
 #include "Math/GradientBasedMinimizer.h"
 #include "Math/MultiLayerPerceptron.h"
@@ -61,7 +62,7 @@ namespace RAPT
 // under construction:
 #include "Sampling/PhaseVocoder.h"
 #include "Sampling/Resampler.h"
-//#include "Sampling/SampleManipulation.h"
+#include "Sampling/SampleManipulation.h"
 
 }
 

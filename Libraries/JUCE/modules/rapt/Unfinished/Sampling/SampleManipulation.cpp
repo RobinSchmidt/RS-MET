@@ -1,9 +1,9 @@
-
-void RSLib::rsFadeOut(double *buffer, int start, int end)
+template<class T>
+void rsFadeOut(T* buffer, int start, int end)
 {
   // rsAssert(end > start);
   int N = end - start;
-  rsBreakpointModulator bm;
+  rsBreakpointModulator<T> bm;
   bm.setSampleRate(1.0);
   bm.initialize();  
   bm.setBreakpointLevel(1, 0.0);
