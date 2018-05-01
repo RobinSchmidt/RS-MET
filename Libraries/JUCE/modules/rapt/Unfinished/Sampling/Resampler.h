@@ -412,7 +412,7 @@ public:
   /** Given a (monotonuously increasing) time warping map w of length N, this function computes
   the inverse warping map of w and stores it in wi which is of length ceil(w[N-1]), so the caller
   has to take care that the array wi is at least that long. */
-  static void invertMonotonousWarpMap(TPos *w, int N, double *wi);
+  static void invertMonotonousWarpMap(TPos *w, int N, TPos *wi);
 
   /** Computes the resulting length of a signal when it is read with an instantaneous read-speed
   given by the array values in r which is of length N. */
@@ -619,7 +619,7 @@ public:
 protected:
 
   /** Computes and returns the crossfade section. */
-  std::vector<TPos> getCrossfadeSection();
+  std::vector<TSig> getCrossfadeSection();
 
   /** Computes the time instants at which to read out x1 and x2 during the crossfade (and stores
   them in our t1, t2 members. */

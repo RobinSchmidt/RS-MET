@@ -404,7 +404,7 @@ RS_INLINE void sincInterpolatorLoopNoStretch(int mMin, int mMax, TPos &tf, TPos 
 
 
 template<class TSig, class TPos>
-double rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos sincLength, TPos stretch)
+TSig rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos sincLength, TPos stretch)
 {
   int L  = (int) floor(sincLength);
   int ti = (int) floor(t);         // integer part of t
@@ -644,13 +644,13 @@ void rsVariableSpeedPlayer<TSig, TPos>::setInputAndSpeed(TSig *input, TPos *r, i
 }
 
 template<class TSig, class TPos> 
-double rsVariableSpeedPlayer<TSig, TPos>::warpTime(TPos tx)
+TPos rsVariableSpeedPlayer<TSig, TPos>::warpTime(TPos tx)
 {
   return rsInterpolateClamped(wi, Nx, tx);
 }
 
 template<class TSig, class TPos> 
-double rsVariableSpeedPlayer<TSig, TPos>::unwarpTime(TPos ty)
+TPos rsVariableSpeedPlayer<TSig, TPos>::unwarpTime(TPos ty)
 {
   return rsInterpolateClamped(w, Ny, ty);
 }
@@ -663,36 +663,36 @@ void rsVariableSpeedPlayer<TSig, TPos>::getOutput(TSig *y, TPos minSincLength, T
 }
 
 template<class TSig, class TPos> 
-vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::getOutput(TPos minSincLength, TPos maxLengthScaler, 
+std::vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::getOutput(TPos minSincLength, TPos maxLengthScaler, 
   bool antiAlias)
 {
-  vector<TSig> y(Ny);
+  std::vector<TSig> y(Ny);
   getOutput(&y[0], minSincLength, maxLengthScaler, antiAlias);
   return y;
 }
 
 template<class TSig, class TPos> 
-vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapXY()
+std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapXY()
 {
-  vector<TPos> map(Nx);
+  std::vector<TPos> map(Nx);
   rsCopyBuffer(wi, &map[0], Nx);
   return map;
 }
 
 template<class TSig, class TPos> 
-vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapYX()
+std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapYX()
 {
-  vector<TPos> map(Ny);
+  std::vector<TPos> map(Ny);
   rsCopyBuffer(w, &map[0], Ny);
   return map;
 }
 
 template<class TSig, class TPos> 
-vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::invertSpeeds(vector<TPos>& speeds)
+std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::invertSpeeds(std::vector<TPos>& speeds)
 {
   rsVariableSpeedPlayer vsp;
   vsp.setInputAndSpeed(nullptr, &speeds[0], (int)speeds.size());
-  vector<TPos> map = vsp.getTimeWarpMapYX();
+  std::vector<TPos> map = vsp.getTimeWarpMapYX();
   int N = (int)map.size();
   for(int n = 0; n < N-1; n++)
     map[n] = 1.0 / (map[n+1]-map[n]);
@@ -701,7 +701,8 @@ vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::invertSpeeds(vector<TPos>& speed
 }
 
 template<class TSig, class TPos> 
-vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::applyPlaybackSpeed(vector<TSig>& x, vector<TPos>& s)
+std::vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::applyPlaybackSpeed(std::vector<TSig>& x, 
+  std::vector<TPos>& s)
 {
   rsAssert(x.size() == s.size());
   rsVariableSpeedPlayer vsp;
@@ -793,26 +794,26 @@ int rsPhaseLockedCrossfader<TSig, TPos>::getCrossfadeOutputLength()
 }
 
 template<class TSig, class TPos>
-vector<TSig> rsPhaseLockedCrossfader<TSig, TPos>::getFlattenedSignal1()
+std::vector<TSig> rsPhaseLockedCrossfader<TSig, TPos>::getFlattenedSignal1()
 {
   return pf1.getOutput();
 }
 
 template<class TSig, class TPos>
-vector<TSig> rsPhaseLockedCrossfader<TSig, TPos>::getFlattenedSignal2()
+std::vector<TSig> rsPhaseLockedCrossfader<TSig, TPos>::getFlattenedSignal2()
 {
   return pf2.getOutput();
 }
 
 template<class TSig, class TPos>
-vector<TSig> rsPhaseLockedCrossfader<TSig, TPos>::getOutput()
+std::vector<TSig> rsPhaseLockedCrossfader<TSig, TPos>::getOutput()
 {
   // splice together heading section of x1, crossfade section and trailing section of x2:
-  vector<TSig> yc = getCrossfadeSection();
+  std::vector<TSig> yc = getCrossfadeSection();
   int L  = (int)yc.size();
   int s2 = ce2+1;             // start in x2
   int N  = cs1 + L + N2-s2;   // output length
-  vector<TSig> y(N);
+  std::vector<TSig> y(N);
   int n;
   for(n = 0; n < cs1; n++)
     y[n] = x1[n];
@@ -824,37 +825,37 @@ vector<TSig> rsPhaseLockedCrossfader<TSig, TPos>::getOutput()
 }
 
 template<class TSig, class TPos>
-vector<TPos> rsPhaseLockedCrossfader<TSig, TPos>::getTimeWarpMapXY1()
+std::vector<TPos> rsPhaseLockedCrossfader<TSig, TPos>::getTimeWarpMapXY1()
 {
   return pf1.getTimeWarpMapXY();
 }
 
 template<class TSig, class TPos>
-vector<TPos> rsPhaseLockedCrossfader<TSig, TPos>::getTimeWarpMapYX1()
+std::vector<TPos> rsPhaseLockedCrossfader<TSig, TPos>::getTimeWarpMapYX1()
 {
   return pf1.getTimeWarpMapYX();
 }
 
 template<class TSig, class TPos>
-vector<TPos> rsPhaseLockedCrossfader<TSig, TPos>::getTimeWarpMapXY2()
+std::vector<TPos> rsPhaseLockedCrossfader<TSig, TPos>::getTimeWarpMapXY2()
 {
   return pf2.getTimeWarpMapXY();
 }
 
 template<class TSig, class TPos>
-vector<TPos> rsPhaseLockedCrossfader<TSig, TPos>::getTimeWarpMapYX2()
+std::vector<TPos> rsPhaseLockedCrossfader<TSig, TPos>::getTimeWarpMapYX2()
 {
   return pf2.getTimeWarpMapYX();
 }
 
 template<class TSig, class TPos>
-vector<TSig> rsPhaseLockedCrossfader<TSig, TPos>::getCrossfadeSection()
+std::vector<TSig> rsPhaseLockedCrossfader<TSig, TPos>::getCrossfadeSection()
 {
   computeReadoutTimes();
   int    L     = (int)t1.size();
   TSig scale = 1.0 / (L-1);
   TSig y1, y2, c;
-  vector<TSig> yc(L);
+  std::vector<TSig> yc(L);
   for(int n = 0; n < L; n++)
   {
     c  = scale * n;
@@ -1000,7 +1001,7 @@ void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *
 }
 
 template<class T>
-double rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int n, 
+T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int n, 
   T fs, T fMin, T fMax)
 {
   T pMax = fs/fMin; // maximum detectable period

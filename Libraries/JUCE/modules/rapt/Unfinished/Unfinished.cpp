@@ -48,7 +48,7 @@ namespace RAPT
 
 // under construction:
 #include "Sampling/PhaseVocoder.cpp"
-//#include "Sampling/Resampler.cpp"
+#include "Sampling/Resampler.cpp"
 //#include "Sampling/SampleManipulation.cpp"
 
 
