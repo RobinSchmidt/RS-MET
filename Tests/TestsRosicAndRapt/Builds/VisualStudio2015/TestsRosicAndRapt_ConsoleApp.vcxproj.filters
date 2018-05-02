@@ -35,6 +35,21 @@
     <Filter Include="TestsRosicAndRapt\Source\Shared">
       <UniqueIdentifier>{0F45AEA0-E94D-18ED-0EF6-EDFEF2882D6B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests">
+      <UniqueIdentifier>{C137463F-96D2-EACB-E3C5-4F28F3D65DB8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests">
+      <UniqueIdentifier>{26824C73-6416-0FA8-E875-9012D1088B01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments">
+      <UniqueIdentifier>{5CB8F3EE-57A7-82C7-3321-DE5708B265EA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Examples">
+      <UniqueIdentifier>{58FDE990-F439-C1EA-6EB8-89F79DA61287}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib">
+      <UniqueIdentifier>{587B9CE1-67C0-850A-C3BA-6CFE2CE1909A}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\rosic_tests">
       <UniqueIdentifier>{7D734073-1DF1-0543-6CD6-E343158C3EBD}</UniqueIdentifier>
     </Filter>
@@ -387,6 +402,93 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\ModalTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\NumberManipulationsTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\AnalysisTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\CoreTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MathTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MiscAudioTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\ModalTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\AnalysisExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\CellularExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\DelayExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\FilterExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\MathExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\MiscAudioExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ModalExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ModulatorExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\OscillatorExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PartialExtractionExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PhaseVocoderExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PhysicsExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ResamplingExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\SaturationExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\ModalExamples.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Examples</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Examples</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
@@ -2172,6 +2274,93 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\ModalTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\NumberManipulationsTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\AnalysisTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\CoreTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MathTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MiscAudioTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\ModalTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\AnalysisExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\CellularExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\DelayExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\FilterExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\MathExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\MiscAudioExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ModalExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ModulatorExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\OscillatorExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PartialExtractionExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PhaseVocoderExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PhysicsExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ResamplingExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\SaturationExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\ModalExamples.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Examples</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>
@@ -3946,6 +4135,9 @@
   <ItemGroup>
     <None Include="..\..\Source\Shared\Prototypes\ReadMe.txt">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </None>
+    <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
     </None>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Ideas.txt">
       <Filter>Juce Modules\rapt\Modulators</Filter>

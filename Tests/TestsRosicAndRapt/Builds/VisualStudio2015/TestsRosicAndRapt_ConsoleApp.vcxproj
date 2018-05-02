@@ -219,6 +219,93 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\ModalTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\NumberManipulationsTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\AnalysisTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\CoreTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MathTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MiscAudioTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\ModalTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\AnalysisExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\CellularExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\DelayExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\FilterExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\MathExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\MiscAudioExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ModalExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ModulatorExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\OscillatorExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PartialExtractionExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PhaseVocoderExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PhysicsExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ResamplingExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\SaturationExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\ModalExamples.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_BasicsTests.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_CorrectnessTests.cpp"/>
@@ -1880,6 +1967,35 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\ModalTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\NumberManipulationsTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\AnalysisTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\CoreTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MathTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MiscAudioTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\ModalTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\AnalysisExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\CellularExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\DelayExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\FilterExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\MathExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\MiscAudioExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ModalExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ModulatorExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\OscillatorExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PartialExtractionExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PhaseVocoderExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\PhysicsExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ResamplingExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\SaturationExperiments.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\ModalExamples.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_BasicsTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_CorrectnessTests.h"/>
@@ -2473,6 +2589,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Source\Shared\Prototypes\ReadMe.txt"/>
+    <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Ideas.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\TweaksAndNotes.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\docs\changes.txt"/>

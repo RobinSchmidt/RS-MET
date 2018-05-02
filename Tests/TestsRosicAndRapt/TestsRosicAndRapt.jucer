@@ -179,6 +179,120 @@
         </GROUP>
       </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">
+        <GROUP id="{AB24ABE0-F0E0-71E1-6E93-83A6FD72A019}" name="PortedFromRSLib">
+          <GROUP id="{E211B07B-0D0B-BE93-8EEF-79E9F655C637}" name="UnitTests">
+            <FILE id="TSv7aa" name="BufferFunctionTests.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/BufferFunctionTests.cpp"/>
+            <FILE id="TgRTd7" name="BufferFunctionTests.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/BufferFunctionTests.h"/>
+            <FILE id="SKajol" name="FilterTests.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/FilterTests.cpp"/>
+            <FILE id="cYA1XK" name="FilterTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/FilterTests.h"/>
+            <FILE id="k16UrY" name="MiscAudioTests.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/MiscAudioTests.cpp"/>
+            <FILE id="n26eCF" name="MiscAudioTests.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/MiscAudioTests.h"/>
+            <FILE id="jHUqAj" name="ModalTests.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/ModalTests.cpp"/>
+            <FILE id="ho5p6m" name="ModalTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/ModalTests.h"/>
+            <FILE id="xLSEu6" name="NumberManipulationsTests.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/NumberManipulationsTests.cpp"/>
+            <FILE id="cjyB1g" name="NumberManipulationsTests.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/NumberManipulationsTests.h"/>
+            <FILE id="UxMuS1" name="PitchDetectorTests.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.cpp"/>
+            <FILE id="yAF5Xk" name="PitchDetectorTests.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.h"/>
+            <FILE id="VvWO1B" name="SortAndSearchTests.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/SortAndSearchTests.cpp"/>
+            <FILE id="lA2dlO" name="SortAndSearchTests.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/SortAndSearchTests.h"/>
+            <FILE id="NvkHEp" name="TypeSizeTests.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.cpp"/>
+            <FILE id="VTy1vA" name="TypeSizeTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.h"/>
+          </GROUP>
+          <GROUP id="{150F6231-3E51-29B3-6982-F62432C7656B}" name="PerformanceTests">
+            <FILE id="aKNzR5" name="AnalysisTests.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/AnalysisTests.cpp"/>
+            <FILE id="ylp4ee" name="AnalysisTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/AnalysisTests.h"/>
+            <FILE id="JeNZM5" name="CoreTests.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/CoreTests.cpp"/>
+            <FILE id="lC6grT" name="CoreTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/CoreTests.h"/>
+            <FILE id="O5Wbtb" name="MathTests.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/MathTests.cpp"/>
+            <FILE id="LI9G63" name="MathTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/MathTests.h"/>
+            <FILE id="HsFcpO" name="MiscAudioTests.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.cpp"/>
+            <FILE id="q341Az" name="MiscAudioTests.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.h"/>
+            <FILE id="oU4YVw" name="ModalTests.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/ModalTests.cpp"/>
+            <FILE id="Wt9aIf" name="ModalTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/PerformanceTests/ModalTests.h"/>
+          </GROUP>
+          <GROUP id="{784943D4-776D-3E84-0F27-543A9378DC3A}" name="Experiments">
+            <FILE id="Z5rntp" name="AnalysisExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/AnalysisExperiments.cpp"/>
+            <FILE id="WNMuMh" name="AnalysisExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/AnalysisExperiments.h"/>
+            <FILE id="FyNXbQ" name="CellularExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/CellularExperiments.cpp"/>
+            <FILE id="QA5b3M" name="CellularExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/CellularExperiments.h"/>
+            <FILE id="RJes9J" name="ConicsURLs.txt" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/Experiments/ConicsURLs.txt"/>
+            <FILE id="LOK6uh" name="DelayExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/DelayExperiments.cpp"/>
+            <FILE id="vWPy5M" name="DelayExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/DelayExperiments.h"/>
+            <FILE id="XLyC7X" name="FilterExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/FilterExperiments.cpp"/>
+            <FILE id="cQfQy1" name="FilterExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/FilterExperiments.h"/>
+            <FILE id="k0Djhr" name="MathExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/MathExperiments.cpp"/>
+            <FILE id="wV04gZ" name="MathExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/MathExperiments.h"/>
+            <FILE id="JzSS71" name="MiscAudioExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/MiscAudioExperiments.cpp"/>
+            <FILE id="jCl8e3" name="MiscAudioExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/MiscAudioExperiments.h"/>
+            <FILE id="YOoVr6" name="ModalExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/ModalExperiments.cpp"/>
+            <FILE id="gtDKFM" name="ModalExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/ModalExperiments.h"/>
+            <FILE id="NNlUa8" name="ModulatorExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/ModulatorExperiments.cpp"/>
+            <FILE id="RXiUJS" name="ModulatorExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/ModulatorExperiments.h"/>
+            <FILE id="pAe8fI" name="OscillatorExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/OscillatorExperiments.cpp"/>
+            <FILE id="UXUlpr" name="OscillatorExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/OscillatorExperiments.h"/>
+            <FILE id="TCCgTH" name="PartialExtractionExperiments.cpp" compile="0"
+                  resource="0" file="Source/rosic_tests/PortedFromRSLib/Experiments/PartialExtractionExperiments.cpp"/>
+            <FILE id="xRhd4H" name="PartialExtractionExperiments.h" compile="0"
+                  resource="0" file="Source/rosic_tests/PortedFromRSLib/Experiments/PartialExtractionExperiments.h"/>
+            <FILE id="BITq9E" name="PhaseVocoderExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/PhaseVocoderExperiments.cpp"/>
+            <FILE id="J8ps2t" name="PhaseVocoderExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/PhaseVocoderExperiments.h"/>
+            <FILE id="zP4PMA" name="PhysicsExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/PhysicsExperiments.cpp"/>
+            <FILE id="NceqIw" name="PhysicsExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/PhysicsExperiments.h"/>
+            <FILE id="Yd2lK5" name="ResamplingExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.cpp"/>
+            <FILE id="jnYejF" name="ResamplingExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.h"/>
+            <FILE id="Uxmkfd" name="SaturationExperiments.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/SaturationExperiments.cpp"/>
+            <FILE id="eYS71L" name="SaturationExperiments.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Experiments/SaturationExperiments.h"/>
+          </GROUP>
+          <GROUP id="{DDD12279-EAC2-A48A-EF05-6980703ECD23}" name="Examples">
+            <FILE id="CNJW7a" name="ModalExamples.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Examples/ModalExamples.cpp"/>
+            <FILE id="Ou11Aa" name="ModalExamples.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/Examples/ModalExamples.h"/>
+            <FILE id="G8Z6Vi" name="SampleMapGenerator.cpp" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Examples/SampleMapGenerator.cpp"/>
+            <FILE id="nNfwtZ" name="SampleMapGenerator.h" compile="0" resource="0"
+                  file="Source/rosic_tests/PortedFromRSLib/Examples/SampleMapGenerator.h"/>
+          </GROUP>
+        </GROUP>
         <FILE id="xbbPi9" name="rosic_AnalysisTests.cpp" compile="1" resource="0"
               file="Source/rosic_tests/rosic_AnalysisTests.cpp"/>
         <FILE id="HZIBH7" name="rosic_AnalysisTests.h" compile="0" resource="0"
