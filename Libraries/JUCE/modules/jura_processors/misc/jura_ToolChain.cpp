@@ -336,6 +336,26 @@ void ToolChain::setStateFromXml(const XmlElement& xmlState, const juce::String& 
 {
   ScopedLock scopedLock(*lock);
 
+  /*
+  // just for test:
+  saveXmlToFile(xmlState, File("E:/TempData/xmlOld.xml"), false);
+
+  String xmlStr = xmlState.createDocument("");
+  File xmlFile("E:/TempData/xmlStr.xml");
+  if( xmlFile.existsAsFile() )
+    xmlFile.deleteFile();
+  xmlFile.create();
+  xmlFile.appendText(xmlStr);
+
+  //// doesn't work:
+  //XmlElement newXml = XmlElement(xmlStr);
+  //saveXmlToFile(newXml, File("E:/TempData/xmlNew.xml"), false);
+
+  XmlElement* newXml = stringToXml(xmlStr);
+  saveXmlToFile(*newXml, File("E:/TempData/xmlNew.xml"), false);
+  delete newXml;
+  */
+
   bool smoothingIsByassed = smoothingManager->isSmoothingBypassed();
   smoothingManager->setBypassSmoothing(true);
 

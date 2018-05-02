@@ -1,3 +1,9 @@
+XmlElement* stringToXml(const String& xmlStr)
+{
+  XmlDocument xmlDoc(xmlStr);
+  return xmlDoc.getDocumentElement();
+}
+
 XmlElement* getXmlFromFile(const File &fileToLoadFrom)
 {
   if( fileToLoadFrom.existsAsFile() )

@@ -1,6 +1,11 @@
 #ifndef jura_XmlTools_h
 #define jura_XmlTools_h
 
+/** Converts a string that represents an xml document to an actual XmlElement object. The caller is
+responsible for deleting the object eventually. Convenience function to save the user from going 
+through the XmlDocument class. */
+JUCE_API XmlElement* stringToXml(const String& xmlStr);
+
 /** Returns an XmlElement from a file - returns NULL if the file doesn't exist or is not a
 valid xml file. The caller is responsible for deleting the XmlElement. */
 JUCE_API XmlElement* getXmlFromFile(const juce::File& fileToLoadFrom);
