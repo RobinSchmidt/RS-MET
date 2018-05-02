@@ -180,6 +180,21 @@
       </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">
         <GROUP id="{AB24ABE0-F0E0-71E1-6E93-83A6FD72A019}" name="PortedFromRSLib">
+          <FILE id="UyyUEp" name="ExamplesRSLib.cpp" compile="1" resource="0"
+                file="Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.cpp"/>
+          <FILE id="Wot74g" name="ExamplesRSLib.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.h"/>
+          <FILE id="WhspGD" name="ExperimentsRSLib.cpp" compile="1" resource="0"
+                file="Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.cpp"/>
+          <FILE id="WYThpe" name="ExperimentsRSLib.h" compile="0" resource="0"
+                file="Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.h"/>
+          <FILE id="dpFd5E" name="PerformanceTestsRSLib.cpp" compile="1" resource="0"
+                file="Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.cpp"/>
+          <FILE id="d8ktZy" name="PerformanceTestsRSLib.h" compile="0" resource="0"
+                file="Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h"/>
+          <FILE id="H026Ei" name="UnitTestsRSLib.cpp" compile="1" resource="0"
+                file="Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.cpp"/>
+          <FILE id="ih1a8q" name="UnitTestsRSLib.h" compile="0" resource="0"
+                file="Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.h"/>
           <GROUP id="{E211B07B-0D0B-BE93-8EEF-79E9F655C637}" name="UnitTests">
             <FILE id="TSv7aa" name="BufferFunctionTests.cpp" compile="0" resource="0"
                   file="Source/rosic_tests/PortedFromRSLib/UnitTests/BufferFunctionTests.cpp"/>

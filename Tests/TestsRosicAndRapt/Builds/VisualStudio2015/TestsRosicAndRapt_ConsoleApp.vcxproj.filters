@@ -403,6 +403,18 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExamplesRSLib.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClCompile>
@@ -2273,6 +2285,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExamplesRSLib.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>

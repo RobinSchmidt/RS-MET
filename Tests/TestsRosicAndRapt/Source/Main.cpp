@@ -1,7 +1,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 #include "rosic_tests/rosic_CorrectnessTests.h"
-using namespace rotes;
+using namespace rotes; // get rid of that
 
 #include "rapt_tests/Experiments/MathExperiments.h"
 #include "rapt_tests/Experiments/FilterExperiments.h"
@@ -14,8 +14,14 @@ using namespace rotes;
 
 #include "rapt_tests/UnitTests/UnitTests.h"
 
-
 #include "Experiments/Experiments.h"
+
+// the new stuff proted from RSLib (todo: merge directories and files where appropriate, bring 
+// everything into a consistent order):
+#include "rosic_tests/PortedFromRSLib/ExamplesRSLib.h"
+#include "rosic_tests/PortedFromRSLib/ExperimentsRSLib.h"
+#include "rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h"
+#include "rosic_tests/PortedFromRSLib/UnitTestsRSLib.h"
 
 
 int main(int argc, char* argv[])

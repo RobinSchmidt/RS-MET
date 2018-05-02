@@ -219,6 +219,10 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExamplesRSLib.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1967,6 +1971,10 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExamplesRSLib.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.h"/>
