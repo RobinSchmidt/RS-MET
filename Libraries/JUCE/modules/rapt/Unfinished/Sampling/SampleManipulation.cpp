@@ -8,7 +8,7 @@ void rsFadeOut(T* buffer, int start, int end)
   bm.initialize();  
   bm.setBreakpointLevel(1, 0.0);
   bm.setBreakpointTime( 1, N);
-  bm.setBreakpointShape(1, rsModBreakpoint::SMOOTH);  
+  bm.setBreakpointShape(1, rsModBreakpoint<T>::SMOOTH);  
   bm.noteOn();
   for(int n = start; n <= end; n++)
     buffer[n] *= bm.getSample();

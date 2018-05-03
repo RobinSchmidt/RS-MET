@@ -260,7 +260,8 @@ void rsNonlinearModalFilter<TSig, TPar>::setModalParameters(TPar frequency, TPar
   TPar w     = 2*PI*frequency/sampleRate;
   TPar alpha = 1.0 / (decayTime*sampleRate); 
   TPar r     = exp(-alpha);
-  a.setRadiusAndAngle(r, w); // write a function setPolar...or check if there already is one in std::complex
+  //a.setRadiusAndAngle(r, w); // write a function setPolar...or check if there already is one in std::complex
+  a = polar(r, w);
 
   this->amplitude  = amplitude;
   this->startPhase = startPhase;
@@ -403,7 +404,7 @@ rsModalFilterBank<TSig, TPar>::rsModalFilterBank()
   numModes           = maxNumModes;
   modalFilters.reserve(maxNumModes);
   for(int m = 0; m < maxNumModes; m++)
-    modalFilters.push_back(rsModalFilterWithAttack());
+    modalFilters.push_back(rsModalFilterWithAttack<TSig, TPar>());
 }
 
 template<class TSig, class TPar>
@@ -462,7 +463,7 @@ TPar rsModalFilterBank<TSig, TPar>::getLength(TPar decayLevel)
 {
   TPar max = 0.0;
   TPar tmp;
-  for(int m = 0; m < decayTimes.dim; m++)
+  for(int m = 0; m < decayTimes.size(); m++)
   {
     tmp = modalFilters[m].getLength(decayLevel, sampleRate);
     if( tmp > max )
@@ -496,16 +497,16 @@ void rsModalFilterBank<TSig, TPar>::resetModalFilters()
 template<class TSig, class TPar>
 void rsModalFilterBank<TSig, TPar>::calculateModalFilterCoefficients()
 {
-  int nm = rsMin(numModes, frequencies.dim, amplitudes.dim, decayTimes.dim);
-  nm = rsMin(nm, startPhases.dim);
+  size_t nm = rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
+  nm = rsMin(nm, startPhases.size());
   for(int m = 0; m < nm; m++)
   {
     modalFilters[m].setModalParameters(
-      referenceFrequency * frequencies.v[m], 
-      amplitudes.v[m],
-      referenceAttack * attackTimes.v[m],
-      referenceDecay * decayTimes.v[m], 
-      startPhases.v[m], 
+      referenceFrequency * frequencies[m], 
+      amplitudes[m],
+      referenceAttack * attackTimes[m],
+      referenceDecay * decayTimes[m], 
+      startPhases[m], 
       sampleRate); 
   }
 }
@@ -533,13 +534,13 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::randomModePhases(
   rsRandomUniform(0.0, 1.0, seed);
   std::vector<TPar> p(a.size());
   TPar k = 0.0;    // target value for the sample at n = 0
-  int    N = p.dim;  // upper limit for loop below
-  if( rsIsOdd(p.dim) )
+  int    N = p.size();  // upper limit for loop below
+  if( rsIsOdd(p.size()) )
   {
-    if( a[p.dim-1] == 0.0 )
-      p[p.dim-1] = 0.0;
+    if( a[p.size()-1] == 0.0 )
+      p[p.size()-1] = 0.0;
     else
-      p[p.dim-1] = asin(k/a[p.dim-1]);
+      p[p.size()-1] = asin(k/a[p.size()-1]);
     N--;
   }
   for(int n = 0; n < N; n += 2)
@@ -557,7 +558,7 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::randomModePhases(
       p[n]   = asin((k-a[n+1]*sin(p[n+1]))/a[n]);      
     }
   }
-  rsScale(p.v, p.dim, 360.0/(2*PI));
+  rsArray::scale(&p[0], p.size(), 360.0/(2*PI));
   return p;
 }
 

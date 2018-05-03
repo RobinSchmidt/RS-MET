@@ -209,3 +209,6 @@ template RAPT::rsPhaseScopeBuffer<float, float, double>;
 // Unfinished:
 template RAPT::rsTwoBandSplitter<float, float>;
 template RAPT::rsMultiBandSplitter<float, float>;
+
+
+template void RAPT::rsFadeOut(double* buffer, int start, int end);

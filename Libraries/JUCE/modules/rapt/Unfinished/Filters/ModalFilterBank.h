@@ -446,17 +446,17 @@ public:
 
 
   /** Sets the frequencies of the modes. */
-  void setModalFrequencies(std::vector<TPar> newFrequencies);
+  //void setModalFrequencies(std::vector<TPar> newFrequencies);
     // use a reference for the parameter
 
   /** Sets the amplitudes of the modes. */
-  void setModalAmplitudes(std::vector<TPar> newAmplitudes);
+  //void setModalAmplitudes(std::vector<TPar> newAmplitudes);
 
   /** Sets the decay time-constants of the modes. */
-  void setModalDecayTimes(std::vector<TPar> newDecayTimes);
+  //void setModalDecayTimes(std::vector<TPar> newDecayTimes);
 
   /** Sets the start-phases of the modes (in degrees). */
-  void setModalStartPhases(std::vector<TPar> newStartPhases);
+  //void setModalStartPhases(std::vector<TPar> newStartPhases);
 
   /** Sets all mode parameters at once. */
   void setModalParameters(std::vector<TPar> newFrequencies, std::vector<TPar> newAmplitudes,
@@ -602,7 +602,7 @@ template<class TSig, class TPar>
 RS_INLINE TSig rsNonlinearModalFilter<TSig, TPar>::getInstantaneousEnvelope(TSig in)
 {
   z = a*z + in;
-  return amplitude * z.getRadius();
+  return amplitude * abs(z);
 }
 
 template<class TSig, class TPar>
