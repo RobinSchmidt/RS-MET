@@ -209,6 +209,7 @@
     <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Utilities\PerformanceTestTools.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Utilities\TestUtilities.cpp"/>
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\DSPPlotters.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp"/>
@@ -659,6 +660,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\MiscAudio.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\ResponseGetters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Saturator.cpp">
@@ -2004,6 +2008,7 @@
     <ClInclude Include="..\..\Source\Shared\Utilities\FileWriting.h"/>
     <ClInclude Include="..\..\Source\Shared\Utilities\PerformanceTestTools.h"/>
     <ClInclude Include="..\..\Source\Shared\Utilities\TestInputCreation.h"/>
+    <ClInclude Include="..\..\Source\Shared\Utilities\TestUtilities.h"/>
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\DSPPlotters.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h"/>
@@ -2205,6 +2210,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\DoublePendulum.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Interpolator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\MiscAudio.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\ResponseGetters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Saturator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\SlewRateLimiter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\SlewRateLimiterLinear.h"/>

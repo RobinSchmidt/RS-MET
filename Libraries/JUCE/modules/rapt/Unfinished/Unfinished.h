@@ -42,6 +42,7 @@ namespace RAPT
 #include "MiscAudio/AudioFunctions.h" // merge with other AudioFunctions.h file
 #include "MiscAudio/BandwidthConverter.h"
 #include "MiscAudio/DoublePendulum.h" // will go to Physics
+#include "MiscAudio/ResponseGetters.h"
 
 #include "Filters/BandSplitter.h"
 #include "Filters/FilterDesignFormulas.h"

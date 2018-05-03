@@ -4,9 +4,12 @@
 //#include "../../../Common/TestUtilities.h" // old
 
 // new:
+#include "../../../Shared/Utilities/TestUtilities.h"
 #include "../../../Shared/Utilities/FileWriting.h" // includes rapt
 #include "../RSLib/Core/RSCore.h"            
 using namespace RSLib;
+
+//typedef std::vector<double> rsVectorDbl; // get rid
 
 struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (double/float)
 {
@@ -73,13 +76,11 @@ struct rsModalBankParameters // maybe move to RSLib
   double attack;       // attack time in seconds
   double decay;        // decay time in seconds
 
-  typedef std::vector<double> rsVectorDbl; // get rid
-
-  rsVectorDbl f;       // relative frequencies   // maybe use rsArray instead of rsVector
-  rsVectorDbl g;       // gains
-  rsVectorDbl a;       // relative attack times
-  rsVectorDbl d;       // relative decay times
-  rsVectorDbl p;       // start-phases
+  std::vector<double> f;       // relative frequencies   // maybe use rsArray instead of rsVector
+  std::vector<double> g;       // gains
+  std::vector<double> a;       // relative attack times
+  std::vector<double> d;       // relative decay times
+  std::vector<double> p;       // start-phases
 };
 
 

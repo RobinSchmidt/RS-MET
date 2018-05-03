@@ -420,6 +420,7 @@ typedef RAPT::rsRayBouncerDriver<double> rsRayBouncerDriverD;
 namespace rosic
 {
 typedef RAPT::rsNonlinearModalFilter<double, double> rsNonlinearModalFilterDD;
+typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
 
 }
 

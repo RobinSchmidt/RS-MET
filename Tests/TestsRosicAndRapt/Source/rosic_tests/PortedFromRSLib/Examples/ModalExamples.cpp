@@ -1,14 +1,27 @@
 #include "ModalExamples.h"
 
+// convenience functions (should got to and included from TestUtilities or something):
+std::vector<double> rsApplyFunction(const std::vector<double>& x, double p, 
+  double (*f) (double, double))
+{
+  std::vector<double> y(x.size());
+  for(int i = 0; i < x.size(); i++)
+    y[i] = f(x[i], p);
+  return y;
+}
+
 // \todo: let this function accept a relative path:
 template<class T>
 void writeImpulseResponseToFile(const char *path, T &module, int N, int fs, int numBits)
 {  
   double *h = new double[N];  
   getImpulseResponse(module, h, N);
-  writeToMonoWaveFile(path, h, N, fs, numBits);
+  rosic::writeToMonoWaveFile(path, h, N, fs, numBits);
   delete[] h;
 }
+
+
+
 
 void createModalFilterExamples()
 {
@@ -97,16 +110,17 @@ double combAmplitude(double frequency, double notchDistance, double notchOffset 
   a  = ampFloor + (1-ampFloor)*a;
   return a;
 }
-rsVectorDbl applyCombWeighting(rsVectorDbl v, rsVectorDbl f, double notchDistance, 
-                               double notchOffset = 0, double ampFloor = 0, double shape = 1)
+
+std::vector<double> applyCombWeighting(std::vector<double> v, std::vector<double> f, 
+  double notchDistance, double notchOffset = 0, double ampFloor = 0, double shape = 1)
 {
-  for(int i = 0; i < f.dim; i++)
+  for(int i = 0; i < f.size(); i++)
     v[i] = v[i] * combAmplitude(f[i], notchDistance, notchOffset, ampFloor, shape);
   return v;
 }
 
 
-rsVectorDbl pseudoHarmonicRatios12TET(int numPartials)
+std::vector<double> pseudoHarmonicRatios12TET(int numPartials)
 {
   double tmp[21];
   long double s = pow(2.0, 1.0/12.0); // basis
@@ -134,16 +148,16 @@ rsVectorDbl pseudoHarmonicRatios12TET(int numPartials)
   tmp[19] = pow(s, 52);  // 20   20.158736798317982
   tmp[20] = pow(s, 53);  // 21   21.357437666720561
 
-  rsVectorDbl r = rsLinearRangeVector(numPartials, 1.0, numPartials); // relative frequencies
+  std::vector<double> r = rsLinearRangeVector(numPartials, 1.0, numPartials); // relative frequencies
   for(int n = 0; n < RAPT::rsMin(numPartials, 21); n++)
     r[n] = tmp[n];
   return r;
 }
 
-rsVectorDbl ratios12TET(int numPartials)
+std::vector<double> ratios12TET(int numPartials)
 {  
   double tmp[21];
-  rsVectorDbl r(numPartials);
+  std::vector<double> r(numPartials);
   long double s = pow(2.0, 1.0/12.0); // basis
 
                          //  #    ratio
@@ -183,8 +197,7 @@ rsVectorDbl ratios12TET(int numPartials)
   return r;
 }
 
-
-rsVectorDbl stiffStringRatios(double frequency, double sampleRate, double inharmonicity)
+std::vector<double> stiffStringRatios(double frequency, double sampleRate, double inharmonicity)
 {
   double B = inharmonicity;
 
@@ -203,7 +216,10 @@ rsVectorDbl stiffStringRatios(double frequency, double sampleRate, double inharm
     numPartials++;
   }
 
-  rsVectorDbl v(numPartials, tmp);
+  //rsVectorDbl v(numPartials, tmp);
+  std::vector<double> v(numPartials);
+  RAPT::rsArray::copyBuffer(tmp, &v[0], numPartials);
+
   return v;
 }
 
@@ -269,11 +285,11 @@ rsModalBankParameters modalParametersOrganBass55Hz()
   p.decay     = 0.5;
 
   p.f = pseudoHarmonicRatios12TET(numPartials);
-  p.g = rsApplyFunction(p.f, -0.5,  &pow);
+  p.g = rsApplyFunction(p.f, -0.5, &pow);
   p.g[1] = p.g[3] = p.g[7] = 1.0;
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 3.0, 1.8); 
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 3.0, 1.8); 
   p.a = p.d;
-  p.d = rsModalFilterBank::scaleAtIntervals(p.d, 3, 3, 0.5);
+  p.d = rsModalFilterBankDD::scaleAtIntervals(p.d, 3, 3, 0.5);
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);  
 
   return p;
@@ -294,7 +310,7 @@ rsModalBankParameters modalParametersPiano110Hz()
 
   // preliminary (from guitar):
 
-  p.g = rsModalFilterBank::modeDecayTimes(p.f, 35.0, 3.0);
+  p.g = rsModalFilterBankDD::modeDecayTimes(p.f, 35.0, 3.0);
 
 
   p.g = applyCombWeighting(p.g, p.f, 7);
@@ -302,12 +318,12 @@ rsModalBankParameters modalParametersPiano110Hz()
   //p.g = applyCombWeighting(p.g, p.f, 10.0/1.0);
 
 
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 35.0, 1.0);
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 35.0, 1.0);
   //p.d = linearRangeVector(p.f.dim, 1.0, 1.0);
 
   p.a = p.d;
   //p.a = linearRangeVector(p.f.dim, 0.1, 0.1);
-  p.p = rsRandomVector(p.f.dim, 0.0, 60.0, 0);
+  p.p = rsRandomVector((int)p.f.size(), 0.0, 60.0, 0);
 
 
 
@@ -364,7 +380,7 @@ void createModalFilterBankExamples()
   //p = modalParametersPiano110Hz();
 
 
-  rsModalFilterBank mfb;
+  rsModalFilterBankDD mfb;
   mfb.setSampleRate(sampleRate);
   mfb.setModalParameters(p.f, p.g, p.a, p.d, p.p);
   mfb.setReferenceFrequency(p.frequency);
@@ -385,8 +401,8 @@ void createModalFilterBankExamples()
 
   //scale(y, numSamples, 0.25);
   rsNormalize(y, numSamples, 1.0);
-  rsFadeOut(y, numSamples-numFadeSamples-1, numSamples-1);
-  writeToMonoWaveFile("d:\\TmpData\\ModalSynthTest.wav", y, numSamples, (int) sampleRate, 16);
+  RAPT::rsFadeOut(y, numSamples-numFadeSamples-1, numSamples-1);
+  rosic::writeToMonoWaveFile("d:\\TmpData\\ModalSynthTest.wav", y, numSamples, (int) sampleRate, 16);
 }
 
 
@@ -416,9 +432,9 @@ void createBass1()
   p.f = pseudoHarmonicRatios12TET(numPartials);
   p.g = rsApplyFunction(p.f, -0.5,  &pow);
   p.g[1] = p.g[3] = p.g[7] = 1.0;
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 3.0, 1.8); 
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 3.0, 1.8); 
   p.a = p.d;
-  p.d = rsModalFilterBank::scaleAtIntervals(p.d, 3, 3, 0.5);
+  p.d = rsModalFilterBankDD::scaleAtIntervals(p.d, 3, 3, 0.5);
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);    
   g.setModalParametersForKey(33, p);
 
@@ -428,9 +444,9 @@ void createBass1()
   p.decay     =   0.45;
   p.f = pseudoHarmonicRatios12TET(numPartials);
   p.g = rsApplyFunction(p.f, -0.5,  &pow);
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 2.3, 2.2);
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.3, 2.2);
   p.a = p.d;
-  p.d = rsModalFilterBank::scaleAtIntervals(p.d, 3, 3, 0.5);
+  p.d = rsModalFilterBankDD::scaleAtIntervals(p.d, 3, 3, 0.5);
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);    
   g.setModalParametersForKey(45, p);
 
@@ -470,14 +486,14 @@ void createGong1()
   p.attack    =  0.5;
   p.decay     =  0.8;
   p.f = ratios12TET(numPartials);
-  p.g = rsModalFilterBank::modeDecayTimes(p.f, 16.0, 3.0);
+  p.g = rsModalFilterBankDD::modeDecayTimes(p.f, 16.0, 3.0);
   p.g[1] *= 0.5;
-  p.a = rsVectorDbl(numPartials);
-  rsFillWithRangeExponential( p.a.v,     16,             0.05, 0.5);
-  rsFillWithRangeExponential(&p.a.v[16], numPartials-16,  0.5, 0.6);
-  p.d = rsVectorDbl(numPartials);
-  rsFillWithRangeExponential( p.d.v,     16,              1.5, 1.0);
-  rsFillWithRangeExponential(&p.d.v[16], numPartials-16,  1.0, 0.8);
+  p.a = std::vector<double>(numPartials);
+  rsFillWithRangeExponential(&p.a[0],  16,              0.05, 0.5);
+  rsFillWithRangeExponential(&p.a[16], numPartials-16,  0.5,  0.6);
+  p.d = std::vector<double>(numPartials);
+  rsFillWithRangeExponential(&p.d[0],  16,              1.5, 1.0);
+  rsFillWithRangeExponential(&p.d[16], numPartials-16,  1.0, 0.8);
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);    
   g.setModalParametersForKey(33, p);
 
@@ -520,7 +536,7 @@ void createPluck1()
   p.f = rsLinearRangeVector(numPartials, 1.0, numPartials);
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
   p.g[0] *= 0.25;  
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 5.0, 0.95);
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 5.0, 0.95);
   p.a = p.d;
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
   g.setModalParametersForKey(21, p);
@@ -532,7 +548,7 @@ void createPluck1()
   p.decay     =  1.0;
   p.f = rsLinearRangeVector(numPartials, 1.0, numPartials);
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 4.0, 0.95);
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 4.0, 0.95);
   p.a = p.d;
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
   g.setModalParametersForKey(33, p);
@@ -544,7 +560,7 @@ void createPluck1()
   p.decay     =   0.9;
   p.f = rsLinearRangeVector(numPartials, 1.0, numPartials);
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 2.5, 0.93);
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.5, 0.93);
   p.a = p.d;
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
   g.setModalParametersForKey(45, p);
@@ -556,7 +572,7 @@ void createPluck1()
   p.decay     =   0.7;
   p.f = rsLinearRangeVector(numPartials, 1.0, numPartials);
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 2.7, 0.80);  // before: 2.35, 0.85
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.7, 0.80);  // before: 2.35, 0.85
   p.a = p.d;
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
   g.setModalParametersForKey(57, p);
@@ -568,7 +584,7 @@ void createPluck1()
   p.decay     =   0.5;
   p.f = rsLinearRangeVector(numPartials, 1.0, numPartials);
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 2.9, 0.65);  // before: 2.2, .82
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.9, 0.65);  // before: 2.2, .82
   p.a = p.d;
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
   g.setModalParametersForKey(69, p);
@@ -580,7 +596,7 @@ void createPluck1()
   p.decay     =   0.4;
   p.f = rsLinearRangeVector(numPartials, 1.0, numPartials);
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 2.4, 0.60); // before 2.0, 0.8
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.4, 0.60); // before 2.0, 0.8
   p.a = p.d;
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
   g.setModalParametersForKey(81, p);
@@ -592,7 +608,7 @@ void createPluck1()
   p.decay     =    0.3;
   p.f = rsLinearRangeVector(numPartials, 1.0, numPartials);
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
-  p.d = rsModalFilterBank::modeDecayTimes(p.f, 2.0, 0.50); // before: 1.8, 0.75
+  p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.0, 0.50); // before: 1.8, 0.75
   p.a = p.d;
   p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
   g.setModalParametersForKey(93, p);
@@ -738,16 +754,13 @@ void createInsertionSortSound()
   rsNormalize(cycle, cycleLength, 1.0);
 
 
-
-
   //insertionSortSound(cycle, cycleLength, signal, signalLength);
   //insertionSortBackwardSound(cycle, cycleLength, signal, signalLength);
   selectionSortSound(cycle, cycleLength, signal, signalLength);
   //selectionSortBackwardSound(cycle, cycleLength, signal, signalLength);
 
+  rosic::writeToMonoWaveFile("SelectionSortSound.wav", signal, signalLength, 44100, 16);
 
-  writeToMonoWaveFile("SelectionSortSound.wav", signal, signalLength, 44100, 16);
-  
   delete[] signal;
 }
 

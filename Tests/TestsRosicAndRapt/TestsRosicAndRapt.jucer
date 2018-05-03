@@ -140,6 +140,9 @@
                 file="Source/Shared/Utilities/TestInputCreation.cpp"/>
           <FILE id="M3MA2g" name="TestInputCreation.h" compile="0" resource="0"
                 file="Source/Shared/Utilities/TestInputCreation.h"/>
+          <FILE id="UrfiMo" name="TestUtilities.cpp" compile="1" resource="0"
+                file="Source/Shared/Utilities/TestUtilities.cpp"/>
+          <FILE id="V9vOxM" name="TestUtilities.h" compile="0" resource="0" file="Source/Shared/Utilities/TestUtilities.h"/>
         </GROUP>
         <GROUP id="{26F3386D-C17C-0FE0-E219-28AD9C050586}" name="RaptLibraryCode">
           <FILE id="oxwZnF" name="RaptInstantiations.cpp" compile="1" resource="0"

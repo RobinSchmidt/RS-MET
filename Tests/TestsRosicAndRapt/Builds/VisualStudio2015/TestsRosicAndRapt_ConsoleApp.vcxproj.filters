@@ -397,6 +397,9 @@
     <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Utilities\TestUtilities.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
     </ClCompile>
@@ -905,6 +908,9 @@
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\MiscAudio.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\ResponseGetters.cpp">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Saturator.cpp">
@@ -2325,6 +2331,9 @@
     <ClInclude Include="..\..\Source\Shared\Utilities\TestInputCreation.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Utilities\TestUtilities.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
     </ClInclude>
@@ -2926,6 +2935,9 @@
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\MiscAudio.h">
+      <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\ResponseGetters.h">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\Saturator.h">

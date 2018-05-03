@@ -28,6 +28,7 @@ namespace RAPT
 #include "MiscAudio/AudioFunctions.cpp"
 #include "MiscAudio/BandwidthConverter.cpp"
 #include "MiscAudio/DoublePendulum.cpp"
+#include "MiscAudio/ResponseGetters.cpp"
 
 #include "Filters/BandSplitter.cpp"
 #include "Filters/FilterDesignFormulas.cpp"

@@ -336,7 +336,7 @@ protected:
 
   /** \name Data */
 
-  rsModalFilter modalFilter1, modalFilter2;
+  rsModalFilter<TSig, TPar> modalFilter1, modalFilter2;
 
   // \todo maybe introduce a delayline here - this allows the attack-phase to start at some
   // specified delayed time instant - only one delayline is needed to feed the two modal filters
@@ -568,7 +568,7 @@ template<class TSig, class TPar>
 RS_INLINE TSig rsNonlinearModalFilter<TSig, TPar>::getSample(TSig in)
 {
   z = a*z + in;
-  return amplitude * (cr*z.re + ci*z.im);  // test (all is linear)
+  return amplitude * (cr*z.real() + ci*z.imag());  // test (all is linear)
 
 
   /*
@@ -627,8 +627,8 @@ RS_INLINE TSig rsModalFilterWithAttack2<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 RS_INLINE TSig rsModalFilterBank<TSig, TPar>::getSample(TSig in)
 {
-  int M = rsMin(numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
-  M     = rsMin(M, startPhases.size());
+  int M = (int)rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
+  M     = (int)rsMin((size_t)M, startPhases.size());
   // M: number of modes - optimize this, use a member variable
 
 
