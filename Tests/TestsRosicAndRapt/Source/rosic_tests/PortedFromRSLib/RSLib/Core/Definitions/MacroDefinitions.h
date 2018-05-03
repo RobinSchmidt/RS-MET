@@ -1,6 +1,7 @@
 #ifndef RS_MACRODEFINITIONS_H
 #define RS_MACRODEFINITIONS_H
 
+/*
 #ifdef _MSC_VER
   #define RS_INLINE __forceinline
   #define ASM(x) __asm {x}
@@ -9,6 +10,7 @@
   //#define RS_INLINE __attribute__((always_inline))
   #define ASM(x) asm("x");
 #endif
+*/
 
 #ifdef RS_DEBUG
   #ifdef _MSC_VER

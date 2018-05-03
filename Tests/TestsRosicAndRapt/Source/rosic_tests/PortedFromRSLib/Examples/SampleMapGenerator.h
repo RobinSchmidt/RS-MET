@@ -1,8 +1,12 @@
 #ifndef RS_SAMPLEMAPGENERATOR_H
 #define RS_SAMPLEMAPGENERATOR_H
 
-#include "../../../Common/TestUtilities.h"
+//#include "../../../Common/TestUtilities.h" // old
 
+// new:
+#include "../../../Shared/Utilities/FileWriting.h" // includes rapt
+#include "../RSLib/Core/RSCore.h"            
+using namespace RSLib;
 
 struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (double/float)
 {
@@ -68,6 +72,8 @@ struct rsModalBankParameters // maybe move to RSLib
   double gain;         // overall gain factor
   double attack;       // attack time in seconds
   double decay;        // decay time in seconds
+
+  typedef std::vector<double> rsVectorDbl; // get rid
 
   rsVectorDbl f;       // relative frequencies   // maybe use rsArray instead of rsVector
   rsVectorDbl g;       // gains
@@ -187,7 +193,8 @@ protected:
 
   //static const int fftSize = 262144;
   static const int fftSize = 131072;
-  rsFourierTransformerRadix2 ft; // for the ambience
+  //rsFourierTransformerRadix2 ft; // for the ambience
+  RAPT::rsFourierTransformerRadix2<double> ft; // for the ambience ..// use rosic::rsFourierTransformerRadix2_D
 
 
   // \todo later provide facilities for velocity layers
@@ -250,8 +257,8 @@ protected:
     // two next neighbours that are defined will be used. if there's only one neighbour, it's 
     // parameters will be used as is (which amounts to constant extrapolation)
 
-    
-  rsModalFilterBank modalFilterBank;
+  //rsModalFilterBank modalFilterBank;
+  RAPT::rsModalFilterBank<double, double> modalFilterBank; // use rosic::rsModalFilterBankDD
 
   double truncationLevel;
 

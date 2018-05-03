@@ -153,6 +153,7 @@ namespace RSLib
   RS_INLINE bool rsIsDenormal(double x)
   {
     if( x != 0.0 && fabs(x) < RS_MIN(double) ) 
+    //if( x != 0.0 && fabs(x) < std::numeric_limits<double>::min() ) 
       return true;
     return false;
   }

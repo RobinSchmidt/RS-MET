@@ -1,10 +1,15 @@
 #ifndef RS_RSCORE_H
 #define RS_RSCORE_H
 
-
+// old:
 //#include <RSBuildConfig.h> // import build settings from a (possibly customized) config file
 //                           // sitting in a directory listed in the compiler's include paths
+
+// new:
 #define RSLib_API
+#define RS_INLINE inline
+#undef min
+#undef max
 
 
 #include "Definitions/Setup.h"

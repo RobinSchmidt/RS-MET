@@ -1,4 +1,6 @@
 #pragma once
 
-//#include "Examples/ModalExamples.h"
-//#include "Examples/SampleMapGenerator.h"
+//#include "RSLib/Core/RSCore.h"
+
+#include "Examples/ModalExamples.h"
+//#include "Examples/SampleMapGenerator.h" // already included by ModalExamples.h
