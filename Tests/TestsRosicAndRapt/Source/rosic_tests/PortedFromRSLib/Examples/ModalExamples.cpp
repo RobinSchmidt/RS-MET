@@ -24,7 +24,7 @@ void createModalFilterExamples()
   double pm  = 8.0;    // phase-modulation
 
   // synthesize the signal:
-  rsNonlinearModalFilter nmf;
+  rsNonlinearModalFilterDD nmf;
   nmf.setModalParameters(f, A, td, phs, fs);
   nmf.setPhaseModulation(pm);
   writeImpulseResponseToFile("d:\\TmpData\\ModalFilterTest1.wav", nmf, N, (int) fs, 16); 
@@ -34,11 +34,11 @@ void createModalFilterExamples()
   N = 3*N;
   nmf.reset();
   double *y = new double[N];  
-  rsRandomUniform(-1.0, 1.0, 0);
+  RAPT::rsRandomUniform(-1.0, 1.0, 0);
   for(int n = 0; n < N; n++)
-    y[n] = nmf.getSample(rsRandomUniform(-0.01, 0.01));
+    y[n] = nmf.getSample(RAPT::rsRandomUniform(-0.01, 0.01));
   rsNormalize(y, N, 1.0);
-  writeToMonoWaveFile("d:\\TmpData\\ModalFilterNoiseTest1.wav", y, N, (int) fs, 16);
+  rosic::writeToMonoWaveFile("d:\\TmpData\\ModalFilterNoiseTest1.wav", y, N, (int) fs, 16);
 }
 
 
@@ -135,7 +135,7 @@ rsVectorDbl pseudoHarmonicRatios12TET(int numPartials)
   tmp[20] = pow(s, 53);  // 21   21.357437666720561
 
   rsVectorDbl r = rsLinearRangeVector(numPartials, 1.0, numPartials); // relative frequencies
-  for(int n = 0; n < rsMin(numPartials, 21); n++)
+  for(int n = 0; n < RAPT::rsMin(numPartials, 21); n++)
     r[n] = tmp[n];
   return r;
 }
@@ -170,7 +170,7 @@ rsVectorDbl ratios12TET(int numPartials)
   tmp[20] = pow(s, 53);  // 21   21.357437666720561
   // get rid of this code-duplication
 
-  for(int n = 0; n < rsMin(numPartials, 21); n++)
+  for(int n = 0; n < RAPT::rsMin(numPartials, 21); n++)
     r[n] = tmp[n];
 
   for(int n = 21; n < numPartials; n++)
