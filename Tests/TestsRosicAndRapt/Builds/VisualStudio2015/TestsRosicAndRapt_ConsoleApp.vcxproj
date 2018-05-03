@@ -219,6 +219,49 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Flags.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\File.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\FileInputOutput.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\FileStream.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\WaveFile.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\ErrorHandling.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Logger.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Parameter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\SystemInformation.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringArray.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringPair.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringTree.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\String.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\NumberManipulations.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\RSCore.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExamplesRSLib.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.cpp"/>
@@ -1971,6 +2014,41 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Array.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Flags.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\InfiniteDataStream.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\KeyValueMap.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\List.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Range.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Tree.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\ConstantDefinitions.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\MacroDefinitions.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\Setup.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\StandardHeaders.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\TypeDefinitions.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\File.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\FileInputOutput.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\FileStream.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\WaveFile.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Callback.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\ErrorHandling.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Logger.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Parameter.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\SystemInformation.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringArray.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringPair.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringTree.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\String.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\ArrayFunctions.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\ArrayFunctions.inl"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\MathBasics.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\MathBasics.inl"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\MatrixFunctions.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\MatrixFunctions.inl"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\NumberManipulations.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\SortAndSearch.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\SortAndSearch.inl"/>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\RSCore.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExamplesRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.h"/>

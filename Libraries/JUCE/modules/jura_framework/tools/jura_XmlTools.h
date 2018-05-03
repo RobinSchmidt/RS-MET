@@ -25,7 +25,7 @@ of found/added child elements. */
 JUCE_API int findChildElementsWithTagName(juce::Array<XmlElement*> &results, 
   const XmlElement& parentElement, const juce::String& tagNameToLookFor);
 
-/** When the XmlElement passed in"xml" has multiple child-elements with the same name, this 
+/** When the XmlElement passed as "xml" has multiple child-elements with the same name, this 
 function returns the "index"-th one. The passed index should be zero for the first child-element 
 with given name and then count upward. The function will return a NULL pointer when the number of 
 child-elements with given name is smaller than the given index plus one. */

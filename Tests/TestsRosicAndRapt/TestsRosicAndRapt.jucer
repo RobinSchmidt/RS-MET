@@ -180,6 +180,95 @@
       </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">
         <GROUP id="{AB24ABE0-F0E0-71E1-6E93-83A6FD72A019}" name="PortedFromRSLib">
+          <GROUP id="{48C6D1F8-6AD7-FF79-41F5-E7CE50E9B494}" name="RSLib">
+            <GROUP id="{D6D3DCCD-7A0C-3499-9916-B2B51746C21A}" name="Core">
+              <GROUP id="{A100759D-C12F-8405-003E-6336B6E3C4D8}" name="Containers">
+                <FILE id="KXyG32" name="Array.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Array.h"/>
+                <FILE id="MFerXT" name="Flags.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Flags.cpp"/>
+                <FILE id="hQ5qXT" name="Flags.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Flags.h"/>
+                <FILE id="uLnbaq" name="InfiniteDataStream.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/InfiniteDataStream.h"/>
+                <FILE id="Fcde2Y" name="KeyValueMap.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/KeyValueMap.h"/>
+                <FILE id="z3nyOY" name="List.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/List.h"/>
+                <FILE id="vaOXXt" name="Range.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Range.h"/>
+                <FILE id="m6N4od" name="Tree.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Tree.h"/>
+              </GROUP>
+              <GROUP id="{02C3C315-DA86-BF6A-C35A-EDC0EAF75A22}" name="Definitions">
+                <FILE id="hUUzyO" name="ConstantDefinitions.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/ConstantDefinitions.h"/>
+                <FILE id="IG5yNI" name="MacroDefinitions.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/MacroDefinitions.h"/>
+                <FILE id="orYGeK" name="Setup.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/Setup.h"/>
+                <FILE id="F2aWvn" name="StandardHeaders.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/StandardHeaders.h"/>
+                <FILE id="FAdQB6" name="TypeDefinitions.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/TypeDefinitions.h"/>
+              </GROUP>
+              <GROUP id="{19BD4203-42E5-3062-D0E8-58D4115AA2DC}" name="Files">
+                <FILE id="sDkpAq" name="File.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/File.cpp"/>
+                <FILE id="UbHfTp" name="File.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/File.h"/>
+                <FILE id="BEQLSG" name="FileInputOutput.cpp" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileInputOutput.cpp"/>
+                <FILE id="nfzpcf" name="FileInputOutput.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileInputOutput.h"/>
+                <FILE id="H9z18f" name="FileStream.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileStream.cpp"/>
+                <FILE id="ogeVfu" name="FileStream.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileStream.h"/>
+                <FILE id="AYD1et" name="WaveFile.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/WaveFile.cpp"/>
+                <FILE id="yewYQQ" name="WaveFile.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/WaveFile.h"/>
+              </GROUP>
+              <GROUP id="{85353A6A-336C-D7FC-12F5-507704DCDD37}" name="Misc">
+                <FILE id="mRqSS2" name="Callback.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Callback.h"/>
+                <FILE id="DZAAtw" name="ErrorHandling.cpp" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/ErrorHandling.cpp"/>
+                <FILE id="ZHXY4L" name="ErrorHandling.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/ErrorHandling.h"/>
+                <FILE id="QYprt6" name="Logger.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Logger.cpp"/>
+                <FILE id="fA7ozc" name="Logger.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Logger.h"/>
+                <FILE id="xUGm07" name="Parameter.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Parameter.cpp"/>
+                <FILE id="gaoud3" name="Parameter.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Parameter.h"/>
+                <FILE id="RMTBVV" name="SystemInformation.cpp" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/SystemInformation.cpp"/>
+                <FILE id="dlf1oS" name="SystemInformation.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/SystemInformation.h"/>
+              </GROUP>
+              <GROUP id="{CF3CE357-26F3-FEE6-60BF-91CA01104B81}" name="Text">
+                <FILE id="oPa8Le" name="KeyValueStringArray.cpp" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringArray.cpp"/>
+                <FILE id="JK5UDn" name="KeyValueStringArray.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringArray.h"/>
+                <FILE id="eYyaRv" name="KeyValueStringPair.cpp" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringPair.cpp"/>
+                <FILE id="r0gAwr" name="KeyValueStringPair.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringPair.h"/>
+                <FILE id="IOD206" name="KeyValueStringTree.cpp" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringTree.cpp"/>
+                <FILE id="MlgLBr" name="KeyValueStringTree.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringTree.h"/>
+                <FILE id="AFNuix" name="String.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/String.cpp"/>
+                <FILE id="xVVPVe" name="String.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/String.h"/>
+              </GROUP>
+              <GROUP id="{0C114A4C-ED65-A750-57DC-2BD18659F78C}" name="Utilities">
+                <FILE id="RHUMvk" name="ArrayFunctions.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/ArrayFunctions.h"/>
+                <FILE id="y70XIi" name="ArrayFunctions.inl" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/ArrayFunctions.inl"/>
+                <FILE id="sVjE23" name="MathBasics.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MathBasics.h"/>
+                <FILE id="gizXac" name="MathBasics.inl" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MathBasics.inl"/>
+                <FILE id="NRpt4a" name="MatrixFunctions.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MatrixFunctions.h"/>
+                <FILE id="QUQlYC" name="MatrixFunctions.inl" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MatrixFunctions.inl"/>
+                <FILE id="f9IQKi" name="NumberManipulations.cpp" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/NumberManipulations.cpp"/>
+                <FILE id="no4zri" name="NumberManipulations.h" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/NumberManipulations.h"/>
+                <FILE id="C3eiV6" name="SortAndSearch.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/SortAndSearch.h"/>
+                <FILE id="wruXI5" name="SortAndSearch.inl" compile="0" resource="0"
+                      file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/SortAndSearch.inl"/>
+              </GROUP>
+              <FILE id="sZxRdA" name="RSCore.cpp" compile="1" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.cpp"/>
+              <FILE id="VeWpEu" name="RSCore.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.h"/>
+            </GROUP>
+          </GROUP>
           <FILE id="UyyUEp" name="ExamplesRSLib.cpp" compile="1" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.cpp"/>
           <FILE id="Wot74g" name="ExamplesRSLib.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.h"/>

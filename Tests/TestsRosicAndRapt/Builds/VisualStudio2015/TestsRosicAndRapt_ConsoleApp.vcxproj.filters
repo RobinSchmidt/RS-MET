@@ -35,6 +35,30 @@
     <Filter Include="TestsRosicAndRapt\Source\Shared">
       <UniqueIdentifier>{0F45AEA0-E94D-18ED-0EF6-EDFEF2882D6B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers">
+      <UniqueIdentifier>{54D9FD88-3AF2-4EFA-EDC5-C7EDF1C39B54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions">
+      <UniqueIdentifier>{D8F288A0-E38F-FD6A-FB0F-93E871715D57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files">
+      <UniqueIdentifier>{098C8496-A72D-FF7B-465C-96D0AD0F7E00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc">
+      <UniqueIdentifier>{010F9D3E-7955-2ABA-08D4-BF6D6AE35AFA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text">
+      <UniqueIdentifier>{7E2D6FE2-1144-F73E-BA21-EC6821775CB9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities">
+      <UniqueIdentifier>{29E4619A-56D2-0F83-F5BF-7FFEDEFADA09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core">
+      <UniqueIdentifier>{0207A05C-FFF1-845F-8156-63B2D310B4ED}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib">
+      <UniqueIdentifier>{673CA204-9AA7-CB58-80E9-097D408B6E79}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests">
       <UniqueIdentifier>{C137463F-96D2-EACB-E3C5-4F28F3D65DB8}</UniqueIdentifier>
     </Filter>
@@ -402,6 +426,51 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Flags.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\File.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\FileInputOutput.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\FileStream.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\WaveFile.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\ErrorHandling.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Logger.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Parameter.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\SystemInformation.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringArray.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringPair.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringTree.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\String.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\NumberManipulations.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\RSCore.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExamplesRSLib.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
@@ -2285,6 +2354,111 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Array.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Flags.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\InfiniteDataStream.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\KeyValueMap.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\List.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Range.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Tree.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\ConstantDefinitions.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\MacroDefinitions.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\Setup.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\StandardHeaders.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions\TypeDefinitions.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\File.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\FileInputOutput.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\FileStream.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files\WaveFile.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Callback.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\ErrorHandling.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Logger.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\Parameter.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc\SystemInformation.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringArray.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringPair.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\KeyValueStringTree.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text\String.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\ArrayFunctions.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\ArrayFunctions.inl">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\MathBasics.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\MathBasics.inl">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\MatrixFunctions.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\MatrixFunctions.inl">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\NumberManipulations.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\SortAndSearch.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities\SortAndSearch.inl">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\RSCore.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExamplesRSLib.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
