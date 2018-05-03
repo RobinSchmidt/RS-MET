@@ -40,6 +40,9 @@ typedef std::complex<double> cmplxD;
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArray::fillWithRangeLinear(int* x, int N, int min, int max);
 
+template void rsArray::fillWithRangeLinear(double* x, int N, double min, double max);
+template void rsArray::fillWithRangeExponential(double* x, int N, double min, double max);
+
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed);
 template void rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 template void rsArray::deConvolve(double *y, int yLength, double *h, int hLength, double *x);

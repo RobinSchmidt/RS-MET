@@ -1,5 +1,6 @@
 #include "TestUtilities.h"
 
+/*
 bool detectMemoryLeaks()
 {
   #ifdef _MSC_VER
@@ -8,6 +9,7 @@ bool detectMemoryLeaks()
   return false;
   #endif
 }
+*/
 
 std::vector<double> rsLinearRangeVector(int N, double min, double max)
 {

@@ -10,7 +10,7 @@
 #include "../RaptLibraryCode/RaptInstantiations.h"
 #include "rosic/rosic.h"
 
-bool detectMemoryLeaks();  // currently works only in MSVC
+//bool detectMemoryLeaks();  // currently works only in MSVC
 
 /** This function should be called on program startup when automatic detection of memory leaks 
 should be turned on. */

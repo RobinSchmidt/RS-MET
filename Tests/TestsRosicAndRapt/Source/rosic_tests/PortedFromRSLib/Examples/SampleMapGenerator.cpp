@@ -3,7 +3,7 @@
 // a quick and dirty implementation to create a directory which may not yet exist (but its parent
 // is assumed to exist) -  move to somewhere in RSLib, when when finished and cleaned:
 #include <direct.h>  // for msvc - otherwise maybe dirent.h
-void rsCreateDirectoryIfNonExistent(const rsString &path)
+void rsCreateDirectoryIfNonExistent(const RSLib::rsString &path)
 {
   char *cString = path.getAsZeroTerminatedString();
 
@@ -15,13 +15,13 @@ void rsCreateDirectoryIfNonExistent(const rsString &path)
     }
     else if( errno == ENOENT )
     {
-      rsError("Parent directory does not exist.");
+      RSLib::rsError("Parent directory does not exist.");
         // _mkdir can only create one dircetory at a time, so if we want to use it to create a
         // sub-sub-sub... directory, we need to call this function recursively
     }
     else
     {
-      rsError( "Problem creating directory\n" );
+      RSLib::rsError( "Problem creating directory\n" );
         // errno may indicate some other condition like missing write access and stuff - complete
         // the implementation of that later
     }
@@ -32,7 +32,7 @@ void rsCreateDirectoryIfNonExistent(const rsString &path)
 }
 
 // move to RSLib, write UnitTests:
-void rsWriteToWaveFile(const rsString &path, rsAudioBuffer &buffer, int sampleRate, 
+void rsWriteToWaveFile(const RSLib::rsString &path, rsAudioBuffer &buffer, int sampleRate, 
                        int numBits)
 {
   // create an interleaved buffer of floats for writing:
@@ -73,12 +73,12 @@ SampleMapGenerator::~SampleMapGenerator()
 
 // Setup:
 
-void SampleMapGenerator::setOutputDirectory(const rsString& newDirectory) 
+void SampleMapGenerator::setOutputDirectory(const RSLib::rsString& newDirectory) 
 { 
   outputDirectory = newDirectory; 
 }
 
-void SampleMapGenerator::setName(const rsString& newName)
+void SampleMapGenerator::setName(const RSLib::rsString& newName)
 {
   name = newName;
   sampleSubDirectory = name + "\\";
@@ -93,20 +93,20 @@ void SampleMapGenerator::setKeyRangeToRender(int newLowKey, int newHighKey)
 
 // Inquiry:  
 
-rsString SampleMapGenerator::getSampleFileName(int key)
+RSLib::rsString SampleMapGenerator::getSampleFileName(int key)
 {
   key = rsClipToRange(key, loKey, hiKey);
   return name + "K" 
-    + rsString(key)    // use toStringWithLeadingZeros(key, 3)
+    + RSLib::rsString(key)    // use toStringWithLeadingZeros(key, 3)
     + ".wav";
 }
 
-rsString SampleMapGenerator::getSampleRelativePath(int key)
+RSLib::rsString SampleMapGenerator::getSampleRelativePath(int key)
 {
   return sampleSubDirectory + getSampleFileName(key);
 }
   
-rsString SampleMapGenerator::getAmbienceRelativePath(int key)
+RSLib::rsString SampleMapGenerator::getAmbienceRelativePath(int key)
 {
   return sampleSubDirectory + "Amb" + getSampleFileName(key);
 }
@@ -115,7 +115,7 @@ rsString SampleMapGenerator::getAmbienceRelativePath(int key)
 
 void SampleMapGenerator::generateSampleMap(bool printProgress)
 {
-  rsString sampleDir = outputDirectory + sampleSubDirectory;
+  RSLib::rsString sampleDir = outputDirectory + sampleSubDirectory;
   rsCreateDirectoryIfNonExistent(sampleDir);
 
   generateAllSamples(printProgress); // temporarily commented
@@ -127,21 +127,21 @@ void SampleMapGenerator::generateSampleMap(bool printProgress)
   generateSoundFontFile();
 }
 
-rsString SampleMapGenerator::getRegionString(int root, int lo, int hi)
+RSLib::rsString SampleMapGenerator::getRegionString(int root, int lo, int hi)
 {
-  rsString s;
+  RSLib::rsString s;
   s += "<region>";
   s += " sample="          + getSampleRelativePath(root);
-  s += " pitch_keycenter=" + rsString(root);   
-  s += " lokey="           + rsString(lo);
-  s += " hikey="           + rsString(hi);  
+  s += " pitch_keycenter=" + RSLib::rsString(root);   
+  s += " lokey="           + RSLib::rsString(lo);
+  s += " hikey="           + RSLib::rsString(hi);  
   s += " volume="          + rsDoubleToString2(rsAmp2dB(gains[root])) + "\n";
   return s;
 }
 
 void SampleMapGenerator::generateSoundFontFile()
 {
-  rsString sfz;
+  RSLib::rsString sfz;
 
   // some global performance settings for all regions to make it more playable:
   sfz += "<group>";
@@ -193,9 +193,9 @@ void SampleMapGenerator::generateSoundFontFile()
 
         sfz += "<region>";
         sfz += " sample="          + getAmbienceRelativePath(key);
-        sfz += " pitch_keycenter=" + rsString(key);   
-        sfz += " lokey="           + rsString(key);
-        sfz += " hikey="           + rsString(key+11);  
+        sfz += " pitch_keycenter=" + RSLib::rsString(key);   
+        sfz += " lokey="           + RSLib::rsString(key);
+        sfz += " hikey="           + RSLib::rsString(key+11);  
         sfz += " volume="          + rsDoubleToString2(rsAmp2dB(ambGains[key])-12);
         sfz += " pan=-100";
         sfz += " loop_mode=loop_continuous";
@@ -203,13 +203,13 @@ void SampleMapGenerator::generateSoundFontFile()
 
         sfz += "<region>";
         sfz += " sample="          + getAmbienceRelativePath(key);
-        sfz += " pitch_keycenter=" + rsString(key);   
-        sfz += " lokey="           + rsString(key);
-        sfz += " hikey="           + rsString(key+11);  
+        sfz += " pitch_keycenter=" + RSLib::rsString(key);   
+        sfz += " lokey="           + RSLib::rsString(key);
+        sfz += " hikey="           + RSLib::rsString(key+11);  
         sfz += " volume="          + rsDoubleToString2(rsAmp2dB(ambGains[key])-12);
         sfz += " pan=100";
         sfz += " loop_mode=loop_continuous";
-        sfz += " offset="          + rsString(fftSize/2);
+        sfz += " offset="          + RSLib::rsString(fftSize/2);
         sfz += "\n";
 
         // get rid of the code-duplication
@@ -218,8 +218,8 @@ void SampleMapGenerator::generateSoundFontFile()
   }
 
   // write the string to an .sfz file:
-  rsString sfzPath = outputDirectory + name + ".sfz";
-  rsFile sfzFile(sfzPath);
+  RSLib::rsString sfzPath = outputDirectory + name + ".sfz";
+  RSLib::rsFile sfzFile(sfzPath);
   sfzFile.writeStringToFile(sfz);
 }
 
@@ -244,7 +244,7 @@ void SampleMapGenerator::generateSampleForKey(int key)
   rsScale(buffer.dataFlat, buffer.getSize(), 1.0/max);
 
   // write buffer to wave-file:
-  rsString path = outputDirectory + getSampleRelativePath(key);
+  RSLib::rsString path = outputDirectory + getSampleRelativePath(key);
   rsWriteToWaveFile(path, buffer, (int) sampleRate, numBits);
 
 
@@ -264,21 +264,21 @@ void SampleMapGenerator::generateSampleForKey(int key)
       int n;
       if( buffer.numChannels == 2 )
       {
-        for(n = 0; n < rsMin(fftSize, buffer.numFrames); n++)
+        for(n = 0; n < RAPT::rsMin(fftSize, buffer.numFrames); n++)
           tmpBuf.data[0][n] = ONE_OVER_SQRT2 * (buffer.data[0][n] + buffer.data[1][n]);
       }
       else
       {
-        for(n = 0; n < rsMin(fftSize, buffer.numFrames); n++)
+        for(n = 0; n < RAPT::rsMin(fftSize, buffer.numFrames); n++)
           tmpBuf.data[0][n] = buffer.data[0][n];
       }
-      for(n = rsMin(fftSize, buffer.numFrames); n < fftSize; n++)
+      for(n = RAPT::rsMin(fftSize, buffer.numFrames); n < fftSize; n++)
           tmpBuf.data[0][n] = 0.0;
       if( fftSize < buffer.numFrames )
       {
         // fade out instead of truncating:
         int numFadeSamples = 1024;
-        rsFadeOut(tmpBuf.data[0], tmpBuf.numFrames-numFadeSamples-1, tmpBuf.numFrames-1);
+        RAPT::rsFadeOut(tmpBuf.data[0], tmpBuf.numFrames-numFadeSamples-1, tmpBuf.numFrames-1);
           // check, if this is right
       }
 
@@ -301,9 +301,9 @@ void SampleMapGenerator::generateSampleForKey(int key)
       }
       */
 
-      rsRandomUniform(0.0, 1.0, 0);
+      RAPT::rsRandomUniform(0.0, 1.0, 0);
       for(int n = 1; n < fftSize/2; n++)  // phs[0] has special meaning - start at 1
-        phs[n] = rsRandomUniform(0.0, 2*PI);
+        phs[n] = RAPT::rsRandomUniform(0.0, 2*PI);
       ft.getRealSignalFromMagnitudesAndPhases(mag, phs, tmpBuf.data[0]);
 
       // normalize ambience buffer and store normalization gain:
@@ -312,7 +312,7 @@ void SampleMapGenerator::generateSampleForKey(int key)
       rsScale(tmpBuf.dataFlat, tmpBuf.getSize(), 1.0/max);
 
       // write ambience buffer to wave-file:
-      rsString path = outputDirectory + getAmbienceRelativePath(key);
+      RSLib::rsString path = outputDirectory + getAmbienceRelativePath(key);
       rsWriteToWaveFile(path, tmpBuf, (int) sampleRate, numBits);
 
       delete[] mag;
@@ -368,7 +368,7 @@ void SampleMapGeneratorModal::writeUnnormalizedSampleForKeyToBuffer(int key)
     // inter- or extrapolate:
     if( keyL == -1 && keyR == 128 )
     {
-      rsError("No parameters for inter- or extrapolation available.");
+      RAPT::rsError("No parameters for inter- or extrapolation available.");
     }
     if( keyL == -1 )
       p = *(keyParameters[keyR]);  // extrapolate leftward
@@ -383,7 +383,7 @@ void SampleMapGeneratorModal::writeUnnormalizedSampleForKeyToBuffer(int key)
   }
 
   // set  fundamental frequency and truncate all arrays in p to below sampleRate/2:
-  p.frequency = rsPitchToFreq(key);
+  p.frequency = rsPitchToFreq((double)key);
   p = removeModesAbove(p, sampleRate/2);
 
 
@@ -503,7 +503,7 @@ rsModalBankParameters SampleMapGeneratorModal::interpolateParameters(
   r.gain      = rsWeightedGeometricMean(p1.gain,      p2.gain,      w1);
   r.attack    = rsWeightedGeometricMean(p1.attack,    p2.attack,    w1);
   r.decay     = rsWeightedGeometricMean(p1.decay,     p2.decay,     w1);
-  for(int i = 0; i < r.g.dim; i++)
+  for(int i = 0; i < r.g.size(); i++)
   {
     r.f[i] = rsWeightedGeometricMean(p1.f[i], p2.f[i], w1);
     r.g[i] = rsWeightedGeometricMean(p1.g[i], p2.g[i], w1);
@@ -527,18 +527,28 @@ rsModalBankParameters SampleMapGeneratorModal::removeModesAbove(const rsModalBan
 
   int cutoffIndex = 0;
   int i;
-  for(i = 0; i < p.f.dim; i++)
+  for(i = 0; i < p.f.size(); i++)
   {
     if( p.frequency * p.f[i] < cutoff )
       cutoffIndex++;
   }
 
+  /*
   // truncation via constructor of rsVectorDbl:
   r.f = rsVectorDbl(cutoffIndex, r.f.v);  
   r.g = rsVectorDbl(cutoffIndex, r.g.v);
   r.a = rsVectorDbl(cutoffIndex, r.a.v);
   r.d = rsVectorDbl(cutoffIndex, r.d.v);
   r.p = rsVectorDbl(cutoffIndex, r.p.v);
+  */
+
+  // new - should also truncate (i hope)
+  r.f.resize(cutoffIndex);  
+  r.g.resize(cutoffIndex);  
+  r.a.resize(cutoffIndex);  
+  r.d.resize(cutoffIndex);  
+  r.p.resize(cutoffIndex); 
+  RAPT::rsAssertFalse; // check, if code above truncates vectors as desired
 
   return r;
 }

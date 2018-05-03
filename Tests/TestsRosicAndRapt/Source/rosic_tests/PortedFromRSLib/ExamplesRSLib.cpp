@@ -3,5 +3,6 @@
 using namespace RAPT;
 using namespace rosic;
 
-#include "Examples/ModalExamples.cpp"
-//#include "Examples/SampleMapGenerator.cpp" // needs TestUitlities.h
+// these compile now but don't link:
+//#include "Examples/ModalExamples.cpp"
+//#include "Examples/SampleMapGenerator.cpp"
