@@ -1,7 +1,8 @@
 #ifndef RS_MATHEXPERIMENTS_H
 #define RS_MATHEXPERIMENTS_H
 
-#include "../ExperimentsUtilities.h"
+//#include "../ExperimentsUtilities.h" // old
+#include "../../../Shared/Shared.h"  // new
 
 
 void binomialDistribution();

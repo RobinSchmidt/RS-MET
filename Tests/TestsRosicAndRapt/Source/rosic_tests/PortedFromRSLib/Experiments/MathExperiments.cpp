@@ -158,7 +158,7 @@ void bandLimitedStep()
   static const int N = 5000;
   double t[N];
   double y[N];
-  rsFillWithRangeLinear(t, N, tMin, tMax);
+  RAPT::rsArray::fillWithRangeLinear(t, N, tMin, tMax);
   for(int n = 0; n < N; n++)
     y[n] = rsWindowedBandLimitedStep(t[n], T);
   plotData(N, t, y);
@@ -336,7 +336,7 @@ void splineInterpolationNonEquidistant()
   //rsInterpolateSpline(xn, yn, N, xi, yiSp3, M, 10);
 
   // interpolate and plot interpolated data:
-  rsFillWithRangeLinear(xi, M, xiMin, xiMax);
+  RAPT::rsArray::fillWithRangeLinear(xi, M, xiMin, xiMax);
   rsInterpolateSpline(xn, yn, N, xi, yiSp0, M, 0);
   rsInterpolateSpline(xn, yn, N, xi, yiSp1, M, 1);
   rsInterpolateSpline(xn, yn, N, xi, yiSp2, M, 2);
@@ -550,7 +550,7 @@ void splineInterpolationAreaNormalized()
   // create linear, cubic, quartic and quintic interpolant:
   static const int N = 1000;
   double x[N], yl[N], yc[N], yr1[N], yr2[N];
-  rsFillWithRangeLinear(x, N, 0.0, 1.0);
+  RAPT::rsArray::fillWithRangeLinear(x, N, 0.0, 1.0);
   for(int n = 0; n < N; n++)
   {
     yl[n]  = rsInterpolateLinear(0.0, 1.0, y0[0], y1[0], x[n]);
@@ -561,14 +561,14 @@ void splineInterpolationAreaNormalized()
 
   // create the running sums of the interpolants (which are approximations to integrals times N):
   double sl1[N], sl2[N], sc1[N], sc2[N], sr11[N], sr12[N], sr21[N], sr22[N];
-  rsCumulativeSum(yl,  sl1,  N);     // 1st order cumulative sum of linear interpolant
-  rsCumulativeSum(yl,  sl2,  N, 2);  // 2nd order cumulative sum of linear interpolant
-  rsCumulativeSum(yc,  sc1,  N);     // 1st order cumulative sum of cubic interpolant
-  rsCumulativeSum(yc,  sc2,  N, 2);  // 2nd order cumulative sum of cubic interpolant
-  rsCumulativeSum(yr1, sr11, N);     // 1st order cumulative sum of quartic interpolant
-  rsCumulativeSum(yr1, sr12, N, 2);  // 2nd order cumulative sum of quartic interpolant
-  rsCumulativeSum(yr2, sr21, N);     // 1st order cumulative sum of quintic interpolant
-  rsCumulativeSum(yr2, sr22, N, 2);  // 2nd order cumulative sum of quintic interpolant
+  RAPT::rsArray::cumulativeSum(yl,  sl1,  N);     // 1st order cumulative sum of linear interpolant
+  RAPT::rsArray::cumulativeSum(yl,  sl2,  N, 2);  // 2nd order cumulative sum of linear interpolant
+  RAPT::rsArray::cumulativeSum(yc,  sc1,  N);     // 1st order cumulative sum of cubic interpolant
+  RAPT::rsArray::cumulativeSum(yc,  sc2,  N, 2);  // 2nd order cumulative sum of cubic interpolant
+  RAPT::rsArray::cumulativeSum(yr1, sr11, N);     // 1st order cumulative sum of quartic interpolant
+  RAPT::rsArray::cumulativeSum(yr1, sr12, N, 2);  // 2nd order cumulative sum of quartic interpolant
+  RAPT::rsArray::cumulativeSum(yr2, sr21, N);     // 1st order cumulative sum of quintic interpolant
+  RAPT::rsArray::cumulativeSum(yr2, sr22, N, 2);  // 2nd order cumulative sum of quintic interpolant
 
   // plot:
   //plotData(N, x, yl,  yc,  yr1);   // linear, cubic and quartic interpolant
@@ -629,7 +629,7 @@ void numericDerivative()
 
   // create x-axis:
   rsFillWithRandomValues(x, N, 0.1, 1.5, 0);
-  rsCumulativeSum(x, x, N);
+  RAPT::rsArray::cumulativeSum(x, x, N);
   double scaler = xMax/x[N-1];
   rsScale(x, N, scaler);
 
@@ -658,7 +658,7 @@ void shiftPolynomial()
   double xMax = +1.0;
   static const int N = 1000;
   double x[N];
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   double y[N], ys[N], yst[N];   // y, stretched version of y, target for stretched version
   int n;
   for(n = 0; n < N; n++)

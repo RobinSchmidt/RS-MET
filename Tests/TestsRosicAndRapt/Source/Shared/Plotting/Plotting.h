@@ -22,4 +22,30 @@ vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale);
 template<class TSig, class TFlt>
 void plotImpulseResponse(TFlt &filter, int length, TSig scale);
 
+
+
+// new, dragged over from RSLib tests (TestUtilities.h):
+
+// convenience functions for interfacing with the Plotter class (they manage instantiation and 
+// setup of Plotter objects for frequently used cases):
+void plotData(int N, double *x, double *y1, double *y2 = NULL, double *y3 = NULL, 
+  double *y4 = NULL, double *y5 = NULL);
+
+void plotData(int N, double x0, double dx, double *y1, double *y2 = NULL, double *y3 = NULL, 
+  double *y4 = NULL, double *y5 = NULL);
+// for equidistant data, abscissa values start at x0 with increment dx
+
+void plotDataLogX(int N, double *x, double *y1, double *y2 = NULL, double *y3 = NULL, 
+  double *y4 = NULL, double *y5 = NULL);
+
+void plotVector(std::vector<double> v);
+
+/** Plots the magnitude spectrogram given in s against time axis t (of length numFrames) and
+frequency axis f (of length numBins). */
+void plotSpectrogram(int numFrames, int numBins, double **magnitudes, double sampleRate, 
+  int hopSize);
+// introduce parameters to control scaling of time- and frequency axis..
+
+
+
 #endif

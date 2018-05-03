@@ -127,55 +127,55 @@ void createWaveform(float *x, int N, int shape, float frequency, float sampleRat
   }
 }
 
-//void createPulseWave(double *x, int N, double frequency, double dutyCycle, 
-//  double sampleRate, double phase, bool antiAlias)
-//{
-//  double w = 2*PI*frequency/sampleRate;
-//  fillWithZeros(x, N);
-//  if( antiAlias == false )
-//  {
-//    for(int n=0; n<N; n++)
-//      x[n] = rsPulseWave(w*n + phase, dutyCycle);
-//  }
-//  else
-//  {
-//    int k = 1;
-//    while( k*frequency < sampleRate/2 )
-//    {
-//      double a = 4.0 * sin(k*PI*dutyCycle) / (k*PI);
-//      for(int n=0; n<N; n++)
-//        x[n] += a * cos(k*w*n + phase);
-//      k++;
-//    }
-//  }
-//}
-//
-//double sineSum(double p, double *A, double N)
-//{
-//  double y = 0.0;
-//  for(int h = 1; h <= N; h++)
-//    y += A[h-1] * sin(h*p);
-//  return y;
-//}
-//
-//void createSineWave(double *x, int N, double f, double a, double fs)
-//{
-//  double w = 2*PI*f/fs;
-//  double p = 0;            // startphase - make this an optional parameter later
-//  for(int n = 0; n < N; n++)
-//    x[n] = a * sin(w*n+p);
-//}
-//
-//void createSineWave(double *x, int N, double *f, double a, double fs)
-//{
-//  double s   = 2*PI/fs;  // frequency scaler
-//  double phi = 0.0;      // instantaneous phase
-//  for(int n = 0; n < N; n++)
-//  {
-//    x[n] = a * sin(phi);
-//    phi += s * f[n];
-//  }
-//}
+void createPulseWave(double *x, int N, double frequency, double dutyCycle, 
+  double sampleRate, double phase, bool antiAlias)
+{
+  double w = 2*PI*frequency/sampleRate;
+  fillWithZeros(x, N);
+  if( antiAlias == false )
+  {
+    for(int n=0; n<N; n++)
+      x[n] = RAPT::rsPulseWave(w*n + phase, dutyCycle);
+  }
+  else
+  {
+    int k = 1;
+    while( k*frequency < sampleRate/2 )
+    {
+      double a = 4.0 * sin(k*PI*dutyCycle) / (k*PI);
+      for(int n=0; n<N; n++)
+        x[n] += a * cos(k*w*n + phase);
+      k++;
+    }
+  }
+}
+
+double sineSum(double p, double *A, double N)
+{
+  double y = 0.0;
+  for(int h = 1; h <= N; h++)
+    y += A[h-1] * sin(h*p);
+  return y;
+}
+
+void createSineWave(double *x, int N, double f, double a, double fs)
+{
+  double w = 2*PI*f/fs;
+  double p = 0;            // startphase - make this an optional parameter later
+  for(int n = 0; n < N; n++)
+    x[n] = a * sin(w*n+p);
+}
+
+void createSineWave(double *x, int N, double *f, double a, double fs)
+{
+  double s   = 2*PI/fs;  // frequency scaler
+  double phi = 0.0;      // instantaneous phase
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = a * sin(phi);
+    phi += s * f[n];
+  }
+}
 
 template<class T>
 std::vector<T> createNoise(int numSamples, int seed, T min, T max)

@@ -1,7 +1,8 @@
 #ifndef RS_ANALYSISEXPERIMENTS_H
 #define RS_ANALYSISEXPERIMENTS_H
 
-#include "../ExperimentsUtilities.h"
+//#include "../ExperimentsUtilities.h" // old
+#include "../../../Shared/Shared.h"  // new
 
 void autoCorrelation();
 void autocorrelationPeakVariation();

@@ -1,7 +1,8 @@
 #ifndef RS_PHASEVOCODEREXPERIMENTS_H
 #define RS_PHASEVOCODEREXPERIMENTS_H
 
-#include "../ExperimentsUtilities.h"
+//#include "../ExperimentsUtilities.h" // old
+#include "../../../Shared/Shared.h"  // new
 
 void phaseRepresentation();
 
