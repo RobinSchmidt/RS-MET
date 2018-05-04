@@ -30,9 +30,7 @@ void sequenceSquareRoot();
 void conicSystem();
 void logisticMapNoise();
 
-//void findPatternForVectorMultiply();
-void nestedComplexOrder2();
-void nestedComplexOrder3();
+
 
 
 // these are some ideas, there's not much code yet:

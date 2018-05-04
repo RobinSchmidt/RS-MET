@@ -430,6 +430,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Flags.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>
     </ClCompile>
@@ -2363,6 +2366,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Array.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers</Filter>

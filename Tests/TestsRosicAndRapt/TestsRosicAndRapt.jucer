@@ -183,6 +183,10 @@
       </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">
         <GROUP id="{AB24ABE0-F0E0-71E1-6E93-83A6FD72A019}" name="PortedFromRSLib">
+          <FILE id="DHL0kA" name="UnUsedTestsRSLib.cpp" compile="0" resource="0"
+                file="Source/rosic_tests/PortedFromRSLib/UnUsedTestsRSLib.cpp"/>
+          <FILE id="wsmPe7" name="UnUsedTestsRSLib.h" compile="0" resource="0"
+                file="Source/rosic_tests/PortedFromRSLib/UnUsedTestsRSLib.h"/>
           <GROUP id="{48C6D1F8-6AD7-FF79-41F5-E7CE50E9B494}" name="RSLib">
             <GROUP id="{D6D3DCCD-7A0C-3499-9916-B2B51746C21A}" name="Core">
               <GROUP id="{A100759D-C12F-8405-003E-6336B6E3C4D8}" name="Containers">
