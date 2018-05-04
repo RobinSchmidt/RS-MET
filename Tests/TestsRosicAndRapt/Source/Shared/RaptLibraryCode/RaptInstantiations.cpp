@@ -70,6 +70,8 @@ template void rsArray::fillWithZeros(rsUint32 *buffer, int length);
 
 template void rsArray::convertBuffer(std::complex<double> *source, std::complex<double> *destination, int length);
 
+template int RAPT::rsFindHighestPeakIndex(double *buffer, int length);
+
 
 template void MatrixTools::rsInitMatrix(double** A, int N, int M, double value);
 template void MatrixTools::rsCopyMatrix(double** source, double **destination, int N, int M);
@@ -265,5 +267,4 @@ template double RAPT::rsSineFrequencyAtCore(double *x, int N, int n0, double sma
 template double RAPT::rsSineFrequencyAt(double *x, int N, int n0, bool refine);
 template double RAPT::rsSinePhaseAt(double *x, int N, int n0, double w);
 template double RAPT::rsSinePhaseAtViaZeros(double *x, int N, int n0, int precision);
-
-
+template double RAPT::rsGetShiftForBestMatch(double *x1, double *x2, int N, bool deBias);

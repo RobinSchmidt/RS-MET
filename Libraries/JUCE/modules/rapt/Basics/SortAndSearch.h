@@ -3,6 +3,7 @@
 
 // this file contains functions for sorting arrays, finding elements and related stuff
 // maybe wrap into a class or two classes rsSort, rsSearch
+// todo: let the less comparator be a std::function
 
 /** Default less-than comparison function used in sorting. It's based on the less-than operator of 
 type T and returns true if left < right, false otherwise. */
@@ -76,6 +77,7 @@ stretch of equal maximum values, it will return the index of the first of them. 
 value inside the buffer that satifies the above condition, 0 will be returned. */
 template<class T>
 int rsFindHighestPeakIndex(T *buffer, int length);
+ // move to rsArray
 
 /** Returns the last occurrence of an element in the passed buffer and its index, -1 if the
 element is not found in the buffer. The optional searchStart parameter can be used to specify,

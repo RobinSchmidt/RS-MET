@@ -488,14 +488,14 @@ void crossCorrelation(T *x, int xLength, T *y, int yLength, T *result)
 template<class T>
 T rsMaxCorrelationLag(T *r, int N)
 {
-  int nMax = rsMaxIndex(r, N);
+  int nMax = rsArray::maxIndex(r, N);
   if( nMax == 0 || nMax == N-1 )
     return nMax; // no subsample precision possible at ends of the array
 
   // find exact location of maximum by fitting a parabola through 3 successive correlation values
   // and using the maximum of the parabola:
   T a[3];
-  fitQuadratic_0_1_2(a, &r[nMax-1]); 
+  rsPolynomial<T>::fitQuadratic_0_1_2(a, &r[nMax-1]); 
   T offset = 0.0;
   if( a[2] != 0.0 )
     offset = -0.5*a[1]/a[2];
