@@ -5,6 +5,8 @@
 conversion between amplitudes and decibels, frequencies and midi-pitches, beats and seconds, 
 etc. */
 
+// todo: merge with the file in "Unfinished"
+
 /** Converts a raw amplitude value/factor to a value in decibels. */
 template<class T>
 inline T rsAmpToDb(T amp)

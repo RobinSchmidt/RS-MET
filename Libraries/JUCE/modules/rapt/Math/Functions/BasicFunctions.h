@@ -41,11 +41,11 @@ inline bool rsIsCloseTo(T x, T targetValue, double tolerance);
 
 /** Checks, if x is even. */
 template<class T>
-inline bool rsIsEven(T x);
+inline bool rsIsEven(T x) { return x % 2 == 0; } // maybe use bit-mask
 
 /** Checks, if x is odd. */
 template<class T>
-inline bool rsIsOdd(T x);
+inline bool rsIsOdd(T x) { return x % 2 != 0; }
 
 /** Checks, if x is a power of 2. */
 inline bool rsIsPowerOfTwo(unsigned int x);

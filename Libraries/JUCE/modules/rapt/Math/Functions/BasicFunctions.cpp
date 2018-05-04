@@ -88,7 +88,7 @@ inline bool rsIsCloseTo(T x, T targetValue, double tolerance)
   else
     return false;
 }
-
+/*
 template<class T>
 inline bool rsIsEven(T x)
 {
@@ -100,6 +100,7 @@ inline bool rsIsOdd(T x)
 {
   return x % 2 != 0;
 }
+*/
 
 inline bool rsIsPowerOfTwo(unsigned int x)
 {

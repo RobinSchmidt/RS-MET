@@ -147,17 +147,17 @@ T rsSineFrequencyAt(T *x, int N, int n0, bool refine)
   // find indices of maxima/minima before and after the sample-index in question, taking into 
   // account cases where our index n0 is not surrounded by peaks/valley in which case we take the 
   // two to the left or right to n0 and use these for extrapolation
-  int nL = rsFindPeakOrValleyLeft( x, N, n0);
-  int nR = rsFindPeakOrValleyRight(x, N, n0);
+  int nL = rsArray::findPeakOrValleyLeft( x, N, n0);
+  int nR = rsArray::findPeakOrValleyRight(x, N, n0);
   if( nL == -1 )
   {
     nL = nR;
-    nR = rsFindPeakOrValleyRight(x, N, nL+1);
+    nR = rsArray::findPeakOrValleyRight(x, N, nL+1);
   }
   if( nR == -1 )
   {
     nR = nL;
-    nL = rsFindPeakOrValleyLeft(x, N, nR-1);
+    nL = rsArray::findPeakOrValleyLeft(x, N, nR-1);
   }
 
   //if( nL == nR )
@@ -289,8 +289,8 @@ T rsSubSamplePrecisionZeroCrossing(T *x, int N, int n0, int p)
   {
     // refine linear zero estimate by Newton iteration on a higher order interpolating 
     // polynomial:
-    rsInterpolatingPolynomial(a, -p, 1, &x[n0-p], 2*p+2);
-    nf = getRootNear(nf, a, 2*p+1, 0.0, 1.0);
+    rsPolynomial<T>::rsInterpolatingPolynomial(a, -p, 1, &x[n0-p], 2*p+2);
+    nf = rsPolynomial<T>::getRootNear(nf, a, 2*p+1, 0.0, 1.0);
   }
 
   delete[] a;

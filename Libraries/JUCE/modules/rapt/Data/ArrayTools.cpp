@@ -754,7 +754,7 @@ bool rsArray::isValley(T *x, int n)
 template<class T>
 bool rsArray::isPeakOrValley(T *x, int n)
 {
-  return rsIsPeak(x, n) || rsIsValley(x, n);
+  return isPeak(x, n) || isValley(x, n);
 }
 
 template<class T>

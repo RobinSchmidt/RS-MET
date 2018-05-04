@@ -105,6 +105,15 @@ template RAPT::rsMatrix<double>;
 template RAPT::rsPolynomial<float>;
 template RAPT::rsPolynomial<double>;
 //template RAPT::rsPolynomial<int>; // template doesn't compile with int
+template void RAPT::rsPolynomial<double>::dividePolynomialByMonomialInPlace(double*, int, double, double*);
+  // needs separate instantiation because function itself has a (second) template parameter
+
+// should go into an "Interpolation" class...or maybe CurveFitter
+//template void RAPT::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1, 
+//  double yd2, double *a3, double *a2, double *a1, double *a0);
+template void RAPT::fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, double yd1, 
+  double *a3, double *a2, double *a1, double *a0);
+
 
 template RAPT::UnivariateScalarFunction<double>;
 template RAPT::UnivariateScalarFunctionViaPointer<double>;
@@ -126,6 +135,9 @@ template rsUint32 RAPT::rsMultinomialCoefficient(rsUint32* n, rsUint32 k);
 template rsUint32 RAPT::rsMultinomialCoefficientUpTo12(rsUint32* n, rsUint32 k);
 template int RAPT::rsLeviCivita(int indices[], int N);
 
+template void RAPT::rsStirlingNumbersFirstKind(int **s, int nMax);
+
+
 template void RAPT::rsFindPrimesUpTo(std::vector<rsUint32>& primes, rsUint32 upperLimit);
 template void RAPT::rsPrimeFactors(rsUint32 x, std::vector<rsUint32>& factors, 
   std::vector<rsUint32>& exponents, std::vector<rsUint32>* primeTable);
@@ -136,6 +148,7 @@ template int RAPT::rsPrimeModularInverse(const int& x, const int& p);
 template int RAPT::rsPrimeModularInverse2(const int& x, const int& p);
 template int RAPT::rsChineseRemainderTheorem(int* remainders, int* moduli, rsUint32 count);
 //template rsUint32 RAPT::rsChineseRemainderTheorem(rsUint32* remainders, rsUint32* moduli, rsUint32 count);
+template void RAPT::rsFillPrimeTable(rsUint32 *primes, rsUint32 numPrimes, rsUint32 bufferSize);
 
 template void RAPT::smbFft(float *fftBuffer, long fftFrameSize, long sign);
 template void RAPT::rsDFT(std::complex<double> *buffer, int N);
@@ -149,6 +162,7 @@ template RAPT::rsSineIterator<double>;
 template RAPT::rsComplexExponentialIterator<double>;
 
 template double RAPT::rsNormalizedSinc(double x);
+template double RAPT::rsSineIntegral(double x);
 
 template int RAPT::rsClip(int x, int min, int max);
 template int RAPT::rsFactorial(int n);
@@ -182,6 +196,8 @@ template RAPT::rsFourierTransformerRadix2<double>;
 
 template void RAPT::rsStatistics::linearRegression(int N, float* x, float* y, float& a, float& b);
 template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float* y);
+template void RAPT::rsRemoveCorrelationBias(double x[], int N, double r[]);
+
 
 template RAPT::rsMultiArray<float>; 
 
@@ -221,6 +237,9 @@ template RAPT::rsRayBouncer<float>;
 // Modulation:
 template RAPT::rsBreakpointModulator<float>;
 
+// Analysis:
+template RAPT::rsAutoCorrelationPitchDetector<double>;
+
 // Visualization:
 template RAPT::rsImage<float>;
 template RAPT::rsAlphaMask<float>;
@@ -231,9 +250,20 @@ template RAPT::rsPhaseScopeBuffer<float, float, double>;
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized
 
+// Offline:
+template RAPT::rsResampler<double, double>;
+
 // Unfinished:
 template RAPT::rsTwoBandSplitter<float, float>;
 template RAPT::rsMultiBandSplitter<float, float>;
 
-
+// misc audio functions
 template void RAPT::rsFadeOut(double* buffer, int start, int end);
+template void RAPT::rsSineAmplitudeAndPhase(double y0, double y1, double w, double *a, double *p);
+template double RAPT::rsSineFrequency(double y0, double y1, double y2, double smalll);
+template double RAPT::rsSineFrequencyAtCore(double *x, int N, int n0, double smalll);
+template double RAPT::rsSineFrequencyAt(double *x, int N, int n0, bool refine);
+template double RAPT::rsSinePhaseAt(double *x, int N, int n0, double w);
+template double RAPT::rsSinePhaseAtViaZeros(double *x, int N, int n0, int precision);
+
+

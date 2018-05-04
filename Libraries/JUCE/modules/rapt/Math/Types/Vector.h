@@ -27,6 +27,8 @@ public:
   /** Returns the Euclidean norm of this vector. */
   T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }
 
+  // maybe just define "norm", "normSquared" functions outside the class (like dot, det, etc)
+
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 

@@ -699,7 +699,7 @@ protected:
 
 
 //===============================================================================================
-
+// move to AudioFunctions
 
 /** Given a sinusoidal signal x of length N with frequency f at samplerate fs, this function will
 produce a 90° phase-shifted "quadrature" component corresponding to the sine and store it in y by

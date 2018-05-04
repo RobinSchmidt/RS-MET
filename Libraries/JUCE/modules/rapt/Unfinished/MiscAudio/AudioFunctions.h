@@ -97,6 +97,7 @@ direction and the upward/downward parameters determine, whether upward and/or do
 should count. if no zero crossing could be found, -1 will be returned. */
 template<class T>
 int rsFindZeroNear(T *x, int N, int n0, int searchDirection, bool upward, bool downward);
+// move to rsArray
 
 /**
 NOTE: this function works only if the sample index n0 is between two zero-crossings of the signal

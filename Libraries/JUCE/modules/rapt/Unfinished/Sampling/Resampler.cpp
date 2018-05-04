@@ -422,7 +422,7 @@ TSig rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos 
   if( stretch == 1.0 )
   {
     s = sin(PI*(mMin-tf)/stretch) / PI;
-    if( tf > EPS )
+    if( tf > RS_EPS(TPos) )
       sincInterpolatorLoopNoStretch(mMin, mMax, tf, s, wndIt, y, x, ti, ws);
     else
     {
@@ -439,7 +439,7 @@ TSig rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos 
 
   // general case with stretch (could handle special case above also, but less efficiently):
   rsSineIterator<TPos> sinIt(PI/stretch, PI*(mMin-tf)/stretch, 1.0/PI);
-  if( tf > EPS )
+  if( tf > RS_EPS(TPos) )
     sincInterpolatorLoop(mMin, mMax, tf, sinIt, wndIt, y, x, ti, ws);
   else
   {
@@ -477,7 +477,7 @@ void rsResampler<TSig, TPos>::transposeLinear(TSig *x, int xN, TSig *y, int yN, 
     y[nw] = (1.0-nrf)*x[nri] + nrf*x[nri+1];
     nr += factor;
   }
-  rsFillWithZeros(&y[nw], yN-nw); // fill tail with zeros
+  rsArray::fillWithZeros(&y[nw], yN-nw); // fill tail with zeros
 }
 
 template<class TSig, class TPos>
@@ -495,7 +495,7 @@ void rsResampler<TSig, TPos>::transposeSinc(TSig *x, int xN, TSig *y, int yN, TP
     y[nw] = signalValueViaSincAt(x, xN, nr, sincLength, stretch);
     nr += factor;
   }
-  rsFillWithZeros(&y[nw], yN-nw);
+  rsArray::fillWithZeros(&y[nw], yN-nw);
 }
 
 template<class TSig, class TPos>
@@ -505,7 +505,7 @@ void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TP
   {
     TSig *tmp = new TSig[N];
     shiftSinc(x, tmp, N, amount, sincLength);
-    rsCopyBuffer(tmp, y, N);
+    rsArray::copyBuffer(tmp, y, N);
     delete[] tmp;
   }
   else
