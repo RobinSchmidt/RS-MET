@@ -421,6 +421,11 @@ namespace rosic
 {
 typedef RAPT::rsNonlinearModalFilter<double, double> rsNonlinearModalFilterDD;
 typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
+typedef RAPT::rsStateVariableFilter<double, double> rsStateVariableFilterDD;
+
+typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundamentalEstimatorD;
+typedef RAPT::rsZeroCrossingPitchDetector<double> rsZeroCrossingPitchDetectorD;
+
 
 }
 

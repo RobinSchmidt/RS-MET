@@ -105,6 +105,12 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 
 template class RAPT::rsNonlinearModalFilter<double, double>;
 template class RAPT::rsModalFilterBank<double, double>;
+template class RAPT::rsStateVariableFilter<double, double>;
+
+template class RAPT::rsInstantaneousFundamentalEstimator<double>; // rename
+
+template class RAPT::rsZeroCrossingPitchDetector<double>;
+
 
 // hmm...it seems, we need all these explicit instantiations anyway - maybe clean up the build
 // system...rename the files to raptJuceModule.h/cpp

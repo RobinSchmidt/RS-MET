@@ -32,7 +32,7 @@ void autoCorrelation()
 
   double t[bufferSize]; 
   //createTimeAxis(bufferSize, t, sampleRate);
-  rsFillWithIndex(t, bufferSize);
+  RAPT::rsArray::fillWithIndex(t, bufferSize);
   double buffer[bufferSize];  
   int n;
   for(n = 0; n < bufferSize; n++)
@@ -41,7 +41,7 @@ void autoCorrelation()
   // obtain sample autocorrelation function (ACF):
   double acf[bufferSize];
   rsAutoCorrelationFFT(buffer, bufferSize, acf);
-  rsScale(acf, bufferSize, 1.0/acf[0]);
+  RAPT::rsArray::scale(acf, bufferSize, 1.0/acf[0]);
 
   // obtain unbiased ACF:
   double uacf[bufferSize];
@@ -72,7 +72,7 @@ void autoCorrelation()
   // avoids octave errors when a sinusoid of f = fs/(k+1/2) (k integer) is applied. Later we will 
   // need to take accout of this by moving the exact location of the maximum by -0.5:  
   double sacf[bufferSize];
-  rsCopyBuffer(acf, sacf, bufferSize);
+  RAPT::rsArray::copyBuffer(acf, sacf, bufferSize);
   /*
   sacf[0] = 2*acf[0];
   for(int n = 1; n < bufferSize; n++)
@@ -85,7 +85,7 @@ void autoCorrelation()
 
   // compute exact value of the index by parabolic interpolation:
   double a[3];
-  fitQuadratic_0_1_2(a, &sacf[maxIndex-1]);
+  RAPT::rsPolynomial<double>::fitQuadratic_0_1_2(a, &sacf[maxIndex-1]);
   double offset = 0.0;
   if( a[2] != 0.0 )
     offset = -0.5*a[1]/a[2];
@@ -121,7 +121,7 @@ void autocorrelationPeakVariation()
   static const int kRange = kMax-kMin;
 
   double t[N]; 
-  rsFillWithIndex(t, N);
+  RAPT::rsArray::fillWithIndex(t, N);
   double x1[N];  
   double x2[N];  
 
@@ -148,11 +148,11 @@ void autocorrelationPeakVariation()
     double acf1[N];
     rsAutoCorrelationFFT(x1, N, acf1);
     rsRemoveCorrelationBias(acf1, N, acf1);
-    rsScale(acf1, N, 1.0/acf1[0]);
+    RAPT::rsArray::scale(acf1, N, 1.0/acf1[0]);
     double acf2[N];
     rsAutoCorrelationFFT(x2, N, acf2);
     rsRemoveCorrelationBias(acf2, N, acf2);
-    rsScale(acf2, N, 1.0/acf2[0]);
+    RAPT::rsArray::scale(acf2, N, 1.0/acf2[0]);
 
     d[k-kMin] = acf1[k]-acf2[k]; // difference
     r[k-kMin] = acf1[k]/acf2[k]; // ratio
@@ -163,7 +163,7 @@ void autocorrelationPeakVariation()
 
   // plot the difference and ratio as function of k:
   double kValues[kRange+1];
-  rsFillWithRangeLinear(kValues, kRange+1, (double)kMin, (double)kMax);
+  RAPT::rsArray::fillWithRangeLinear(kValues, kRange+1, (double)kMin, (double)kMax);
   //Plotter::plotData(kRange, kValues, d, rLog);
   //Plotter::plotData(kRange, kValues, r);
   //Plotter::plotData(kRange, kValues, rLog);
@@ -221,7 +221,7 @@ void autoCorrelationPitchDetector()
   //frequency = sampleRate/9;  // no bias
   //frequency = sampleRate / 9.7;
 
-  rsAutoCorrelationPitchDetector pd;
+  rsAutoCorrelationPitchDetector<double> pd;
   pd.setBufferSize(bufferSize);
   pd.setUpdateInterval(blockSize);
   pd.setSampleRate(sampleRate);
@@ -234,8 +234,8 @@ void autoCorrelationPitchDetector()
   double fe[numBlocks]; // estimated frequency
   double fm[numBlocks]; // running mean of estimated frequency
   double fs[numBlocks]; // exponentially smoothed estimate
-  rsFillWithIndex(t,  numBlocks);
-  rsFillWithValue(ft, numBlocks, frequency);
+  RAPT::rsArray::fillWithIndex(t,  numBlocks);
+  RAPT::rsArray::fillWithValue(ft, numBlocks, frequency);
 
   double w    = 2*PI*frequency/sampleRate;
   double fSum = 0.0;
@@ -260,8 +260,8 @@ void autoCorrelationPitchDetector()
 
   // get the maximum error between true and estimated frequency:
   //double maxError = maxDeviation(ft, fe, numBlocks);
-  double maxError = rsMaxDeviation(&ft[10], &fe[10], numBlocks-10);
-  double bias     = rsMean(&fs[100], numBlocks-100) - ft[0];
+  double maxError = RAPT::rsArray::maxDeviation(&ft[10], &fe[10], numBlocks-10);
+  double bias     = RAPT::rsArray::mean(&fs[100], numBlocks-100) - ft[0];
 
   // plot the true frequency, the instantaneous estimate and the running mean of the current 
   // estimate:
@@ -292,17 +292,17 @@ void autoCorrelationPitchDetectorOffline()
   double *fm = new double[N]; // measured instantaneous frequency
 
   // create the array with instantaneous frequencies of input signal:
-  rsFillWithRangeLinear(f, N, f1, f2);
+  RAPT::rsArray::fillWithRangeLinear(f, N, f1, f2);
 
   // create input signal:
   createSineWave(x, N, f, a, fs);
 
   // measure the instantaneous frequency (preliminary):
-  rsFillWithZeros(fm, N);
+  RAPT::rsArray::fillWithZeros(fm, N);
   int hopSize = 1;
   int n;
   for(n = 0; n < N; n += hopSize)
-    fm[n] = rsInstantaneousFundamentalEstimator::estimateFundamentalAt(x, N, n, fs, 400.0, 5000.0);
+    fm[n] = rsInstantaneousFundamentalEstimator<double>::estimateFundamentalAt(x, N, n, fs, 400.0, 5000.0);
 
   // OK - this is way off in terms of accuracy - we need the zero-crossing approach
 
@@ -347,7 +347,7 @@ void crossCorrelationBestMatch()
 
   // shift the 2nd signal so as to match the 1st:
   double y2[N2];
-  rsResampler::shiftSinc(x2, y2, N2, lag, 64);
+  rsResampler<double, double>::shiftSinc(x2, y2, N2, lag, 64);
 
   // plot:
   plotData(N, 0, 1, x1, y2);     // original 1st and shifted 2nd signal
@@ -373,26 +373,26 @@ void combineFFTs()
   rsRandomUniform(-1.0, 1.0, 0);  // to init the seed
   for(int n = 0; n < N; n++)
   {
-    x[n].re = rsRandomUniform(-1.0, 1.0);
-    x[n].im = rsRandomUniform(-1.0, 1.0);
+    x[n].real(rsRandomUniform(-1.0, 1.0));
+    x[n].imag(rsRandomUniform(-1.0, 1.0));
   }
 
   // compute an N-point FFT:
-  rsCopyBuffer(x, X, N);
+  RAPT::rsArray::copyBuffer(x, X, N);
   rsFFT(X, N);
 
   // compute two N/2-point FFTs (of the 1st and 2nd half of the buffer):
-  rsCopyBuffer(x, X1, N/2);
+  RAPT::rsArray::copyBuffer(x, X1, N/2);
   rsFFT(X1, N/2);
-  rsCopyBuffer(&x[N/2], X2, N/2);
+  RAPT::rsArray::copyBuffer(&x[N/2], X2, N/2);
   rsFFT(X2, N/2);
 
   // combine the two N/2 point FFTs into one N-point FFT:
-  rsComplexDbl wN2 = rsExpC( -rsComplexDbl(0, 1)*rsComplexDbl(PI/N) );
+  rsComplexDbl wN2 = exp( -rsComplexDbl(0, 1)*rsComplexDbl(PI/N) );
   rsComplexDbl w;
   for(int k = 0; k < N/2; k++)
   {
-    w = rsPowC(wN2, rsComplexDbl(k+1));
+    w = pow(wN2, rsComplexDbl(k+1));
 
     XX[2*k]   = X1[k] + X2[k];
     XX[2*k+1] = w*XX[2*k];       // ...the odd-numbered bins are still wrong
@@ -412,7 +412,7 @@ void instantaneousFrequency()
   double f1 = 2000;            // start frequency
   double f2 = 1000;            // end frequency
 
-  double small = 1.e-8;
+  double smalll = 1.e-8;
 
   double f[N];                 // true instantaneous frequencies
   double fm1[N];               // measured instantaneous frequencies with core algorithm
@@ -422,13 +422,13 @@ void instantaneousFrequency()
   double x[N];                 // signal
 
   // create frequency array and signal:
-  rsFillWithRangeLinear(f, N, f1, f2);
+  RAPT::rsArray::fillWithRangeLinear(f, N, f1, f2);
   createSineWave(x, N, f, a, fs);
 
   // measure instantaneous frequency and obtain error:
   for(int n = 0; n < N; n++)
   {
-    fm1[n] = rsSineFrequencyAtCore(x, N, n, small); // normalized radian frequency
+    fm1[n] = rsSineFrequencyAtCore(x, N, n, smalll); // normalized radian frequency
     fm2[n] = rsSineFrequencyAt(x, N, n, false);
     fm3[n] = rsSineFrequencyAt(x, N, n, true);
 
@@ -441,12 +441,12 @@ void instantaneousFrequency()
     e3[n]  = (f[n] - fm3[n]) / f[n];
   }
 
-  double maxError = rsMaxAbs(e3, N);
+  double maxError = RAPT::rsArray::maxAbs(e3, N);
     // c = 0.76: 3.6285047484070877e-005
     // c = 0.75: 3.4832150523579422e-005
     // c = 0.72: 3.0473459643206141e-005
 
-  double meanError = rsMean(e3, N);
+  double meanError = RAPT::rsArray::mean(e3, N);
     // c = 0.66: -1.2387131128786400e-006
     // c = 0.666: -2.4751832800983252e-007
 
@@ -503,10 +503,10 @@ void instantaneousPhase()
 
   // fill arrays with true instantaneous (normalized radian) frequencies, phases and amplitudes:
   int n;
-  rsFillWithRangeLinear(w, N, f1, f2);
+  RAPT::rsArray::fillWithRangeLinear(w, N, f1, f2);
   for(n = 0; n < N; n++)
     w[n] *= 2*PI/fs;
-  rsFillWithRangeLinear(a, N, a1, a2);
+  RAPT::rsArray::fillWithRangeLinear(a, N, a1, a2);
   p[0] = p0;
   for(n = 1; n < N; n++)
     p[n] = rsWrapToInterval(p[n-1] + w[n], -PI, PI);
@@ -623,16 +623,16 @@ void zeroCrossingFinder()
   double *e1 = new double[Nz]; // error for precision 1 (cubic)
   double *e2 = new double[Nz]; // error for precision 2 (quintic)
   double *e3 = new double[Nz]; // error for precision 3 (heptic)
-  rsSubtract(z0, zt, e0, Nz);
-  rsSubtract(z1, zt, e1, Nz);
-  rsSubtract(z2, zt, e2, Nz);
-  rsSubtract(z3, zt, e3, Nz);
+  RAPT::rsArray::subtract(z0, zt, e0, Nz);
+  RAPT::rsArray::subtract(z1, zt, e1, Nz);
+  RAPT::rsArray::subtract(z2, zt, e2, Nz);
+  RAPT::rsArray::subtract(z3, zt, e3, Nz);
 
   // find maximum errors:
-  double eMax0 = rsMaxAbs(e0, Nz);
-  double eMax1 = rsMaxAbs(e1, Nz);
-  double eMax2 = rsMaxAbs(e2, Nz);
-  double eMax3 = rsMaxAbs(e3, Nz);
+  double eMax0 = RAPT::rsArray::maxAbs(e0, Nz);
+  double eMax1 = RAPT::rsArray::maxAbs(e1, Nz);
+  double eMax2 = RAPT::rsArray::maxAbs(e2, Nz);
+  double eMax3 = RAPT::rsArray::maxAbs(e3, Nz);
 
   // compute error ratios - these are the precision improvement factors by which choosing a higher 
   // precision value actually affects the precision
@@ -682,8 +682,8 @@ void zeroCrossingFinder2()
 
   static const int N = 10;
   double x[N];
-  rsFillWithValue(x,       N/2, +1.0);
-  rsFillWithValue(&x[N/2], N/2, -1.0);
+  RAPT::rsArray::fillWithValue(x,       N/2, +1.0);
+  RAPT::rsArray::fillWithValue(&x[N/2], N/2, -1.0);
   x[0]   = -1.0;
   x[N-1] = +1.0;
 
@@ -703,18 +703,18 @@ void cycleMarkFinder()
   createSineWave(&x[0], N, f, 1.0, fs);
 
   // find cycle marks by different algorithms:
-  rsCycleMarkFinder cmf(fs, 20, 5000);
+  rsCycleMarkFinder<double> cmf(fs, 20, 5000);
   vector<double> cm1, cm2;
-  cmf.setAlgorithm(rsCycleMarkFinder::F0_ZERO_CROSSINGS); 
+  cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS); 
   cm1 = cmf.findCycleMarks(&x[0], N);
-  cmf.setAlgorithm(rsCycleMarkFinder::CYCLE_CORRELATION); 
+  cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION); 
   cm2 = cmf.findCycleMarks(&x[0], N);
 
   vector<double> deltas(cm1.size());
-  rsSubtract(&cm1[0], &cm2[0], &deltas[0], cm1.size());
+  RAPT::rsArray::subtract(&cm1[0], &cm2[0], &deltas[0], (int)cm1.size());
 
   // plot signal and cycle marks:
-  int Nz = cm1.size();       // # cycle marks
+  int Nz = (int) cm1.size(); // # cycle marks
   vector<double> cmy(Nz);    // y values for plotting (all zero)
   GNUPlotter plt;
 
@@ -734,8 +734,8 @@ void cycleMarkFinder()
 void applyBellFilter(double *x, double *y, int N, double f, double fs, double b, double g)
 {
   // create and set up bell filter:
-  rsStateVariableFilter flt; // we may use a biquad later as well (c/p legacy code to RSLib)
-  flt.setMode(rsStateVariableFilter::BELL);
+  rsStateVariableFilterDD flt; // we may use a biquad later as well (c/p legacy code to RSLib)
+  flt.setMode(rsStateVariableFilterDD::BELL);
   flt.setFrequency(f);
   flt.setSampleRate(fs);
   flt.setBandwidth(b);
@@ -762,17 +762,17 @@ void zeroCrossingPitchDetector()
   //synthesizePulseWave(x, N, f, 0.5, fs, 0.0, true);
   applyBellFilter(x, x, N,  750, fs, 0.2, 15);
   applyBellFilter(x, x, N, 1500, fs, 0.2, 15);
-  rsScale(x, N, 0.25);
+  RAPT::rsArray::scale(x, N, 0.25);
   //writeToMonoWaveFile("PitchDetectorInput.wav",  x, N, (int) fs, 16);
 
   // get initial estimate of fundamental by using an autocorrelation based algorithm at the center
   // of the input signal:
-  double fi = rsInstantaneousFundamentalEstimator::estimateFundamentalAt(x, N, N/2, fs, 20.0, 
+  double fi = rsInstantaneousFundamentalEstimatorD::estimateFundamentalAt(x, N, N/2, fs, 20.0, 
     5000.0);
 
   // detect the instantaneous frequency with the realtime algorithm, intialized with our initial
   // estimate - this gives our f1 array:
-  rsZeroCrossingPitchDetector pd;
+  rsZeroCrossingPitchDetectorD pd;
   pd.reset(fi);
   for(n = 0; n < N; n++)
     f1[n] = pd.estimateFundamentalFrequency(x[n]);
@@ -789,11 +789,11 @@ void zeroCrossingPitchDetector()
     f2[n] = pd.estimateFundamentalFrequency(y[n]);
 
   // use the new nonrealtime algo:
-  rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(x, f3, N, fs, 20.0, 5000.0); 
+  rsInstantaneousFundamentalEstimatorD::measureInstantaneousFundamental(x, f3, N, fs, 20.0, 5000.0); 
 
 
   double *ft = new double[N];  // target value
-  rsFillWithValue(ft, N, f);
+  RAPT::rsArray::fillWithValue(ft, N, f);
   //plotData(N, 0, 1/fs, x); // plot original signal
   //plotData(N, 0, 1/fs, y); // plot filtered signal
   //plotData(N, 0, 1/fs, x, y); // plot original and filtered signal
@@ -878,10 +878,8 @@ void zeroCrossingPitchDetectorTwoTones()
   // todo: refactor the function, such that we can use the zero-crossing based pitch detection
   // also on the unfiltered signal.
 
-  rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(
+  rsInstantaneousFundamentalEstimatorD::measureInstantaneousFundamental(
     x, f, N, fs, 20.0, 5000.0, r);
-
-
 
   // plot:
   //plotData(N, 0.0, 1.0/fs, x);  // input signal
@@ -891,7 +889,3 @@ void zeroCrossingPitchDetectorTwoTones()
 
   int dummy = 0;
 }
-
-
-
-

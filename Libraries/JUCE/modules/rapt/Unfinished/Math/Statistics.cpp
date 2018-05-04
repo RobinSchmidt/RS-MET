@@ -80,9 +80,9 @@ void rsRemoveCorrelationBias(T x[], int N, T r[])
 template<class T>
 T rsCrossCorrelation(T *x, int Nx, T *y, int Ny)
 {
-  T xx = rsSumOfSquares(x, Nx);
-  T yy = rsSumOfSquares(y, Ny);
-  T xy = rsSumOfProducts(x, y, rsMin(Nx, Ny));
+  T xx = rsArray::sumOfSquares(x, Nx);
+  T yy = rsArray::sumOfSquares(y, Ny);
+  T xy = rsArray::sumOfProducts(x, y, rsMin(Nx, Ny));
   if(xx == 0 || yy == 0)
     return 0;
   return xy / sqrt(xx*yy);
@@ -109,7 +109,7 @@ T rsStretchedCrossCorrelation(T *x, int Nx, T *y, int Ny)
   for(nx = 0; nx < Nx; nx++)
   {
     xn  = x[nx];
-    yn  = rsInterpolatedValueAt(y, Ny, a*nx);
+    yn  = rsArray::interpolatedValueAt(y, Ny, a*nx);
     xx += xn*xn;
     yy += yn*yn;
     xy += xn*yn;

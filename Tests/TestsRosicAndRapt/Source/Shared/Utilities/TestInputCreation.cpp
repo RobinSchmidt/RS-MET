@@ -46,6 +46,12 @@ void createTimeAxis(int numSamples, float *timeAxis, float sampleRate)
     timeAxis[n] = n / sampleRate;
 }
 
+void createTimeAxis(int numSamples, double *timeAxis, double sampleRate)
+{
+  for(int n = 0; n < numSamples; n++)
+    timeAxis[n] = n / sampleRate;
+}
+
 void createWaveform(float *x, int N, int shape, float frequency, float sampleRate, 
   float phase, bool antiAlias)
 {

@@ -1,7 +1,7 @@
 #ifndef RAPT_CONSTANTS_H_INCLUDED
 #define RAPT_CONSTANTS_H_INCLUDED
 
-// mathematical constants:
+// mathematical constants (maybe prepend RS_ ):
 #define PI 3.1415926535897932384626433832795
 #define PI_INV 0.31830988618379067153776752674503       // 1/PI
 #define EULER 2.7182818284590452353602874713527

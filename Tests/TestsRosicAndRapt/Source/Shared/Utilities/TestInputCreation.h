@@ -6,6 +6,9 @@
 /** Creates a time-axis (in seconds) given the sample-rate. */
 void createTimeAxis(int numSamples, float *timeAxis, float sampleRate);
 
+void createTimeAxis(int numSamples, double *timeAxis, double sampleRate);
+
+
 /** Synthesizes a standard waveform at the desired frequency and samplerate. The phase is 
 expected in radians and there is an option to do anti-aliased synthesis (by means of adding
 the sinusoidal components up to the Nyquist frequency). Shapes: 0: sine, 1: saw, 2: square, 

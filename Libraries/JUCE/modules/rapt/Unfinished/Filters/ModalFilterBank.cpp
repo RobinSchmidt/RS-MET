@@ -534,7 +534,7 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::randomModePhases(
   rsRandomUniform(0.0, 1.0, seed);
   std::vector<TPar> p(a.size());
   TPar k = 0.0;    // target value for the sample at n = 0
-  int    N = p.size();  // upper limit for loop below
+  int    N = (int) p.size();  // upper limit for loop below
   if( rsIsOdd(p.size()) )
   {
     if( a[p.size()-1] == 0.0 )
@@ -558,7 +558,7 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::randomModePhases(
       p[n]   = asin((k-a[n+1]*sin(p[n+1]))/a[n]);      
     }
   }
-  rsArray::scale(&p[0], p.size(), 360.0/(2*PI));
+  rsArray::scale(&p[0], (int)p.size(), 360.0/(2*PI));
   return p;
 }
 

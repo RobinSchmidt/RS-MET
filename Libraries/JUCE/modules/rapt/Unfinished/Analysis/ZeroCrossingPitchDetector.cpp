@@ -12,7 +12,7 @@ rsZeroCrossingPitchDetector<T>::rsZeroCrossingPitchDetector() : formantRemover(3
 
   formantRemover.setOrder(30);
 
-  dcBlocker.setMode(rsOnePoleFilter::HIGHPASS);
+  dcBlocker.setMode(rsOnePoleFilter<T,T>::HIGHPASS);
   dcBlocker.setCutoff(20.0);
   dcBlocker.setSampleRate(sampleRate);
 
@@ -23,11 +23,11 @@ rsZeroCrossingPitchDetector<T>::rsZeroCrossingPitchDetector() : formantRemover(3
   //lowpass.setSampleRate(sampleRate);
 
   // new:
-  lowpass.setMode(rsLadderFilter::LOWPASS_24);
-  lowpass.setFrequency(50.0);
+  lowpass.setMode(rsLadderFilter<T,T>::LP_24);
+  lowpass.setCutoff(50.0);
   lowpass.setSampleRate(sampleRate);
 
-  envFollower.setMode(rsEnvelopeFollower::MEAN_ABS);
+  envFollower.setMode(rsEnvelopeFollower<T,T>::MEAN_ABS);
   envFollower.setAttackTime(0.0);
   envFollower.setReleaseTime(20.0);
   envFollower.setSampleRate(sampleRate);

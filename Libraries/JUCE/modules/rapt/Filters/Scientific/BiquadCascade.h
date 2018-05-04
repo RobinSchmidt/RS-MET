@@ -102,6 +102,13 @@ public:
   void getMagnitudeResponse(TCoef* frequencies, TCoef sampleRate, TCoef* magnitudes, 
     int numBins, bool inDecibels = false, bool accumulate = false);
 
+  /** Returns an estimate of the time (in samples) it takes for the impulse response to ring 
+  down to "threshold". The estimate is based on the pole which has the highest Q (i.e. is 
+  closest to the unit circle). */
+  TCoef getRingingTimeEstimate(TCoef threshold);
+  // todo: write a funtion getRingingFrequency - the normalized radian ringing frequency is
+  // the angle of the pole that is closest to the unit circle
+
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
 

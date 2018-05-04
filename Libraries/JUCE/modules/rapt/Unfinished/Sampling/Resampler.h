@@ -44,22 +44,22 @@ public:
   gc: gain at bandedge frequencies (raw amplitude) */
   template<class TSig, class TPar>
   static void applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs, 
-    int numPasses = 1, TPar gc = RS_SQRT2_INV);
+    int numPasses = 1, TPar gc = SQRT2_INV);
 
   /** Similar to applyConstPeakBandpassBwInHz but uses a Butterworth bandpass with given order
   instead of a 2nd order bandpass. */
   template<class TSig, class TPar>
   static void applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs, 
-    int order, int numPasses = 1, TPar gc = RS_SQRT2_INV);
+    int order, int numPasses = 1, TPar gc = SQRT2_INV);
 
 
   template<class TSig, class TPar>
   static void applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order, 
-    int numPasses = 1, TPar gc = RS_SQRT2_INV);
+    int numPasses = 1, TPar gc = SQRT2_INV);
 
   template<class TSig, class TPar>
   static void applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order, 
-    int numPasses = 1, TPar gc = RS_SQRT2_INV);
+    int numPasses = 1, TPar gc = SQRT2_INV);
 
 
   /** Applies a bidirectional 1st order lowpass to the signal x of length N and stores the
@@ -69,7 +69,7 @@ public:
   adjusted internally. */
   template<class TSig, class TPar>
   static void applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses = 1, 
-    TPar gc = RS_SQRT2_INV);
+    TPar gc = SQRT2_INV);
 
 protected:
 
@@ -678,7 +678,7 @@ public:
   starts/ends and can be any of the values in enum cycleMarkAlgorithms. */
   static void measureInstantaneousFundamental(T *x, T *f, int N, T fs,
     T fMin, T fMax, T *reliability = nullptr,
-    int cycleMarkAlgo = rsCycleMarkFinder::F0_ZERO_CROSSINGS);
+    int cycleMarkAlgo = rsCycleMarkFinder<T>::F0_ZERO_CROSSINGS);
 
   /** Given an input signal x of length N, this function estimates the fundamental frequency of
   the signal at sample instant n using an autocorrelation based approach. Here, this estimate is

@@ -10,9 +10,9 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
   // processor/filter to ring out at the ends:
   int M = N+2*P;
   TSig *tmp = new TSig[M];
-  rsFillWithZeros(tmp, P);
-  rsCopyBuffer(x, &tmp[P], N);
-  rsFillWithZeros(&tmp[P+N], P);
+  rsArray::fillWithZeros(tmp, P);
+  rsArray::copyBuffer(x, &tmp[P], N);
+  rsArray::fillWithZeros(&tmp[P+N], P);
 
   // apply processor (multipass, bidirectionally):
   int p, n;
@@ -28,7 +28,7 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
   }
 
   // copy result to output and clean up:
-  rsCopyBuffer(&tmp[P], y, N);
+  rsArray::copyBuffer(&tmp[P], y, N);
   delete[] tmp;
 
   // todo: Actually, we don't really need pre- and post padding. Using just post padding and 
@@ -56,7 +56,7 @@ void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setBandwidth(bo);
-  flt.setMode(rsStateVariableFilter::BANDPASS_PEAK);
+  flt.setMode(rsStateVariableFilter<TSig, TPar>::BANDPASS_PEAK);
 
   // apply filter:
   int P = getPaddingLength(bw, fs);
@@ -96,8 +96,8 @@ void rsBiDirectionalFilter::applyButterworthLowpass(TSig *x, TSig *y, int N, TPa
   rsEngineersFilter<TSig, TPar> flt;
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
-  flt.setMode(rsInfiniteImpulseResponseDesigner::LOWPASS);
-  flt.setApproximationMethod(rsPrototypeDesigner::BUTTERWORTH);
+  flt.setMode(rsInfiniteImpulseResponseDesigner<TPar>::LOWPASS);
+  flt.setApproximationMethod(rsPrototypeDesigner<TPar>::BUTTERWORTH);
   flt.setPrototypeOrder(order);
 
   // apply filter:
@@ -110,7 +110,7 @@ void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TP
   TPar fs, int order, int numPasses, TPar gc)
 {
   applyButterworthLowpass(x, y, N, fc, fs, order, numPasses, gc);
-  rsSubtract(x, y, y, N); // works because we use a bidirectional (zero-phase) filter
+  rsArray::subtract(x, y, y, N); // works because we use a bidirectional (zero-phase) filter
 
 
   //// quick and dirty code duplication from applyButterworthLowpass - refactor
@@ -211,7 +211,7 @@ std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(T *x
     {
       // refine linear zero estimate by Newton iteration on a higher order interpolating 
       // polynomial using the zero of the linear interpolant as initial guess:
-      rsInterpolatingPolynomial(a, -q, 1, &x[n-q], 2*q+2);
+      rsPolynomial<T>::rsInterpolatingPolynomial(a, -q, 1, &x[n-q], 2*q+2);
       nf = getRootNear(nf, a, 2*q+1, 0.0, 1.0);
     }
     z[nz].intPart  = n;    // store integer part
@@ -249,14 +249,14 @@ std::vector<T> rsZeroCrossingFinder::bandpassedUpwardCrossings(T *x, int N, T fc
 template<class T>
 T rsMaxPosition(T *buffer, int N)
 {
-  int i = rsMaxIndex(buffer, N);
+  int i = rsArray::maxIndex(buffer, N);
 
   if(i < 1 || i >= N-1)
     return i;
 
   T x[3] = { -1, 0, 1 };
   T a[3];
-  fitQuadratic(a, x, &buffer[i-1]);
+  rsPolynomial<T>::fitQuadratic(a, x, &buffer[i-1]);
 
   T offset = 0;
   if( abs(2*a[2]) >= abs(a[1]) ) // abs(offset) shall be <= 1
@@ -284,7 +284,7 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
   if(correlationHighpass > 0)
     rsBiDirectionalFilter::applyButterworthHighpass(x, y, N, f0*correlationHighpass, fs, 4, 1);
   else
-    rsCopyBuffer(x, y, N);
+    rsArray::copyBuffer(x, y, N);
 
   int maxLength = 5000; // preliminary - use something based on the maximum time-delta between the 
                         // cycle-marks in cm array
@@ -301,13 +301,13 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
     cl.resize(length); // maybe use raw arrays instead of vectors, avoid memory re-allocations
     cr.resize(length);
     corr.resize(2*length-1);
-    rsCopySection(y, N, &cl[0],  left-halfLength, length);
-    rsCopySection(y, N, &cr[0], right-halfLength, length);
+    rsArray::copySection(y, N, &cl[0],  left-halfLength, length);
+    rsArray::copySection(y, N, &cr[0], right-halfLength, length);
 
     // use a matched filter to do the correlation, 
     // see here: https://en.wikipedia.org/wiki/Matched_filter
-    rsReverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
-    rsConvolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
+    rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
+    rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
     T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
     //delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
 
@@ -324,7 +324,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
 {
   // Get initial estimate of fundamental by using an autocorrelation based algorithm at the center
   // of the input signal:
-  T f0 = rsInstantaneousFundamentalEstimator::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
+  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
     // here, we have a mutual dependency between rsInstantaneousFundamentalEstimator and 
     // rsCycleMarkFinder - maybe break up by dragging estimateFundamentalAt out of the class
 
@@ -936,20 +936,20 @@ void rsInstantaneousFundamentalEstimator<T>::estimateReliability(T *x, int N,
 
     //c  = rsCrossCorrelation(&x[sl], el-sl+1, &x[sr], er-sr+1);
     c  = rsStretchedCrossCorrelation(&x[sl], el-sl+1, &x[sr], er-sr+1);
-    rsFillWithValue(&r[sl], el-sl+1, c);
+    rsArray::fillWithValue(&r[sl], el-sl+1, c);
   }
 
   // extend first and last reliability value to the start and end of the r-array:
-  rsFillWithValue(&r[el], N-el, c);
+  rsArray::fillWithValue(&r[el], N-el, c);
   sl = rsCeilInt(z[0]);
-  rsFillWithValue(r, sl, r[sl]);
+  rsArray::fillWithValue(r, sl, r[sl]);
 }
 
 template<class T>
 void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *x, T *f, 
   int N, T fs, T fMin, T fMax, T *r, int cycleMarkAlgo)
 {
-  rsCycleMarkFinder cmf(fs, fMin, fMax); // todo: maybe set it up - or maybe have it a member and allow client code to set it up
+  rsCycleMarkFinder<T> cmf(fs, fMin, fMax); // todo: maybe set it up - or maybe have it a member and allow client code to set it up
   std::vector<T> z = cmf.findCycleMarks(x, N);
 
   // old:
@@ -971,7 +971,7 @@ void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *
 
   // Interpolate period measurements up to samplerate and convert to frequencies
   T *tn = new T[N];
-  rsFillWithIndex(tn, N);
+  rsArray::fillWithIndex(tn, N);
   rsInterpolateSpline(tp, p, Nz-1, tn, f, N, 1);
   for(n = 0; n < N; n++)
     f[n] = fs/f[n];
@@ -1020,11 +1020,12 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
   // (conceptually):
   T *y = new T[L];                      // chunk from input signal
   int ns = rsMin(rsMax(0, n-L/2), N-L); // start of the chunk
-  rsCopySection(x, N, y, ns, L); 
+  rsArray::copySection(x, N, y, ns, L); 
+  //rsCopySection(x, N, y, ns, L); 
 
   // measure frequency:
   T r;  // reliability
-  T f = rsAutoCorrelationPitchDetector::estimateFundamental(y, L, fs, fMin, fMax, &r);
+  T f = rsAutoCorrelationPitchDetector<T>::estimateFundamental(y, L, fs, fMin, fMax, &r);
 
   // cleanup and return:
   delete[] y;

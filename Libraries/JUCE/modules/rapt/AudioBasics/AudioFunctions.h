@@ -62,7 +62,7 @@ inline T rsCubicFadeOut(T x)
 /** Converts a frequency in Hz into a MIDI-note value. It can be used also for tunings different 
 than the default the 440 Hz. */
 template<class T>
-inline T rsFreqToPitch(T freq, T masterTuneA4)
+inline T rsFreqToPitch(T freq, T masterTuneA4 = T(440))
 {
   return 12.0 * rsLog2(freq / masterTuneA4) + 69.0;
 }

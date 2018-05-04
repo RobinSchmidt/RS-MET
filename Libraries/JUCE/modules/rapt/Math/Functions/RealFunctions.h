@@ -6,9 +6,9 @@ functions (such as sin, exp, log, pow, tanh, etc. - although, we don't duplicate
 functions here) or can be expressed as combinations thereof (involving composition and arithmetic
 operations), like gauss, log2, cheby, etc...  */
 
+// \todo templatize them
 // \todo maybe have special polynomials like cheby in an extra file - but maybe not
 // \todo move some of them into the cpp file - un-inline
-// \todo add the RSLib_API prefix to all functions (and constants)
 
 
 /** A table of values of the factorial of some integer number n, that is: n!, where n should be

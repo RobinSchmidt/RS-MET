@@ -123,7 +123,8 @@ T rsAutoCorrelationPitchDetector<T>::estimateFundamental(T *x, int L, T fs, T fM
   // find index in autocorrelation function where a peak with maximum value occurs:
   int startIndex  = rsMax(1, (int) (fs/fMax));
   int m           = startIndex;    // index of maximum
-  T maxValue = -rsInfDouble;
+  //T maxValue = -rsInfDouble;
+  T maxValue = -RS_INF(T);
   T value;
   for(int k = startIndex; k < L-1; k++)
   {
@@ -164,7 +165,7 @@ T rsAutoCorrelationPitchDetector<T>::estimateFundamental(T *x, int L, T fs, T fM
   // find exact location of maximum by fitting a parabola through 3 successive autocorrelation
   // values and using the maximum of the parabola:
   T a[3];
-  fitQuadratic_0_1_2(a, y);   // linker error on linux - fixed
+  rsPolynomial<T>::fitQuadratic_0_1_2(a, y);   // linker error on linux - fixed
   T offset = 0.0;
   if( a[2] != 0.0 )
     offset = -0.5*a[1]/a[2];

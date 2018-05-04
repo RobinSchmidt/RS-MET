@@ -49,6 +49,9 @@ template<class T> inline T rsSin( T x) { return std::sin( x); }
 template<class T> inline T rsCos( T x) { return std::cos( x); }
 template<class T> inline T rsTan( T x) { return std::tan( x); }
 
+template<class T> inline int rsFloorInt(T x) { return (int) floor(x); }
+template<class T> inline int rsCeilInt( T x) { return (int) ceil(x);  }
+
 /** Returns the absolute value of the input argument. It is intended to replace the standard
 "abs" and "fabs" c-functions where genericity is desired. */
 template <class T>
@@ -65,6 +68,8 @@ inline rsInt8  rsAbs(rsInt8  x) { return  abs(x); }
 inline rsInt16 rsAbs(rsInt16 x) { return  abs(x); }
 inline rsInt32 rsAbs(rsInt32 x) { return  abs(x); }
 //inline rsInt64 rsAbs(rsInt64 x) { return  abs(x); } // doesn't work with MinGW gcc 4.7
+
+
 
 
 

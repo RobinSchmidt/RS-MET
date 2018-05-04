@@ -67,7 +67,7 @@ public:
   void reset(T initialEstimate = 1000.0);
 
 
-  rsFormantRemover formantRemover; // move to the protceted area?
+  rsFormantRemover<T, T> formantRemover; // move to the protceted area?
 
 protected:
 
@@ -165,7 +165,7 @@ RS_INLINE T rsZeroCrossingPitchDetector<T>::estimatePeriod(T inputSignal, T whit
     // estimate the period (taking into account the fractional part from this iteration and the 
     // previous one):
     tmpCandidate = (sampleCounter+frac-fracOld) * sampleRateRec;
-    tmpCandidate = rsClipToRange(tmpCandidate, minPeriod, maxPeriod);
+    tmpCandidate = rsClip(tmpCandidate, minPeriod, maxPeriod);
 
     // remember the current fractional part for the next time:
     fracOld = frac;
@@ -225,7 +225,7 @@ RS_INLINE T rsZeroCrossingPitchDetector<T>::getFractionalPartOfZeroCrossing()
   // with these coefficients for a cubic polynomial, we now compute the zero-crossing (root) of 
   // that polynomial via Newton-Raphson iteration, using the zero-crossing from the fitted line
   // as initial estimate ...and return that value:
-  return rsPolynomial::getCubicRootNear(fracLinear, a, b, c, d, 0.0, 1.0);
+  return rsPolynomial<T>::getCubicRootNear(fracLinear, a, b, c, d, 0.0, 1.0);
 }
 
 #endif

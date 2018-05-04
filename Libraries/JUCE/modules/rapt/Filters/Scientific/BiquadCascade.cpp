@@ -144,6 +144,23 @@ void rsBiquadCascade<TSig, TCoef>::getMagnitudeResponse(TCoef* frequencies, TCoe
     frequencies, sampleRate, magnitudes, numBins, inDecibels, accumulate);
 }
 
+template<class T>
+T biquadRingingTime(T a1, T a2, T threshold)
+{
+  std::complex<T> p = -T(a1/2.0) + sqrt(std::complex<T>(a1*T(a1/4.0)-a2)); // 1st pole
+  return (T) rsLogB(threshold, abs(p));
+}
+// move to somewhere else
+
+template<class TSig, class TCoef>
+TCoef rsBiquadCascade<TSig, TCoef>::getRingingTimeEstimate(TCoef threshold)
+{
+  TCoef rt = 0.0;
+  for(int i = 0; i < numStages; i++)
+    rt = rsMax(rt, biquadRingingTime(a1[i], a2[i], threshold));
+  return rt;
+}
+
 //-------------------------------------------------------------------------------------------------
 // others:
 
