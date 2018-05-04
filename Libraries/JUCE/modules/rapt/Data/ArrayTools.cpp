@@ -869,7 +869,7 @@ int rsArray::maxIndex(T *buffer, int length)
 template <class T>
 T rsArray::maxValue(T *buffer, int length)
 {
-  return buffer[rsMaxIndex(buffer, length)];
+  return buffer[maxIndex(buffer, length)];
 }
 
 template <class T>
@@ -891,7 +891,7 @@ int rsArray::minIndex(T *buffer, int length)
 template <class T>
 T rsArray::minValue(T *buffer, int length)
 {
-  return buffer[rsMinIndex(buffer, length)];
+  return buffer[minIndex(buffer, length)];
 }
 
 template <class T>

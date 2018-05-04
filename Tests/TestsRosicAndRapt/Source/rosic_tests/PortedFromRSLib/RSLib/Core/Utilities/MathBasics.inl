@@ -316,6 +316,7 @@ namespace RSLib
     return fmod(numberToWrap, length);
   }
 
+
   inline double rsWrapToInterval(double x, double min, double max)
   {
     double r   = max-min;   // range

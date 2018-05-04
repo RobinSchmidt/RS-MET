@@ -37,19 +37,37 @@ typedef std::complex<double> cmplxD;
 
 
 // Data:
-template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
-template void rsArray::fillWithRangeLinear(int* x, int N, int min, int max);
 
 template void rsArray::fillWithRangeLinear(double* x, int N, double min, double max);
 template void rsArray::fillWithRangeExponential(double* x, int N, double min, double max);
-
-template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed);
 template void rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 template void rsArray::deConvolve(double *y, int yLength, double *h, int hLength, double *x);
 template void rsArray::sequenceSqrt(double *y, int yLength, double *x);
 template void rsArray::transposeSquareArray(double **in, double **out, int size);
+template void rsArray::cumulativeSum(double *x, double *y, int length, int order);
+template double rsArray::minValue(double *x, int length);
+template double rsArray::maxValue(double *x, int length);
+template double rsArray::maxAbs(double *x, int length);
+template double rsArray::mean(double *x, int length);
+template double rsArray::maxDeviation(double *buffer1, double *buffer2, int length);
+template void rsArray::applyFunction(double *x, double *y, int N, double (*f) (double));
 
+template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
+template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
 template float rsArray::maxDeviation(float *buffer1, float *buffer2, int length);
+
+template void rsArray::fillWithRangeLinear(int* x, int N, int min, int max);
+template void rsArray::allocateSquareArray2D(int**& theArray, int size);
+template void rsArray::deAllocateSquareArray2D(int**& theArray, int size);
+
+template rsUint32 rsArray::maxValue(rsUint32 *x, int length);
+template void rsArray::fillWithRangeLinear(rsUint32* x, int N, rsUint32 min, rsUint32 max);
+template void rsArray::copyBuffer(const rsUint32 *src, rsUint32 *dst, int N);
+template int rsArray::firstIndexWithNonZeroValue(rsUint32 *a, int N);
+template bool rsArray::contains(rsUint32 *buffer, int length, rsUint32 elementToFind);
+template void rsArray::fillWithZeros(rsUint32 *buffer, int length);
+
+
 template void rsArray::convertBuffer(std::complex<double> *source, std::complex<double> *destination, int length);
 
 
@@ -133,6 +151,13 @@ template RAPT::rsComplexExponentialIterator<double>;
 template double RAPT::rsNormalizedSinc(double x);
 
 template int RAPT::rsClip(int x, int min, int max);
+template int RAPT::rsFactorial(int n);
+
+//template double RAPT::rsWrapToInterval(double x, double min, double max); // rename to rsWrap
+
+template void RAPT::rsBinomialDistribution(double*, int, double);
+
+
 template RAPT::rsConicSection<float>;
 template RAPT::rsRotationXY<double>;
 
