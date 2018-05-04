@@ -222,7 +222,7 @@ RS_INLINE T rsInterpolator<T>::getSampleParabolic4p2o2x(T x, T *y)
 template<class T>
 RS_INLINE T rsInterpolator<T>::getSampleHermite4p3o(T x, T *y)
 {
-  static TA c0, c1, c2, c3;
+  static T c0, c1, c2, c3;
 
   // 4-point, 3rd-order Hermite (x-form)
   c0 = y[1];
@@ -235,7 +235,7 @@ RS_INLINE T rsInterpolator<T>::getSampleHermite4p3o(T x, T *y)
 template<class T>
 RS_INLINE T rsInterpolator<T>::getSample2ndOsculating4p5o(T x, T *y)
 {
-  static TA z, even1, odd1, even2, odd2, c0, c1, c2, c5;
+  static T z, even1, odd1, even2, odd2, c0, c1, c2, c5;
 
   // 4-point, 5th-order 2nd-order-osculating (z-form)
   z     = x - 1/2.0;
@@ -253,7 +253,7 @@ RS_INLINE T rsInterpolator<T>::getSample2ndOsculating4p5o(T x, T *y)
 template<class T>
 RS_INLINE T rsInterpolator<T>::getSampleOptimal4p3o2x(T x, T *y)
 {
-  static TA z, even1, odd1, even2, odd2, c0, c1, c2, c3;
+  static T z, even1, odd1, even2, odd2, c0, c1, c2, c3;
 
   // Optimal 2x (4-point, 3rd-order) (z-form)
   z     = x - 1/2.0;
@@ -271,7 +271,7 @@ RS_INLINE T rsInterpolator<T>::getSampleOptimal4p3o2x(T x, T *y)
 template<class T>
 RS_INLINE T rsInterpolator<T>::getSampleOptimal6p5o2x(T x, T *y)
 {
-  TA z,
+  T z,
     even1, odd1, even2, odd2, even3, odd3,
     c0, c1, c2, c3, c4, c5;
 

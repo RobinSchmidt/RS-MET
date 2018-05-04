@@ -30,6 +30,7 @@ using namespace RAPT;
 // needed when it's commented out in rapt -> reduce build time during tweaking the class
 
 // we need to make sure to provide only instantiations that are not already there in rosic.cpp
+// todo: move instantiations to rosic, where appropriate
 
 typedef std::complex<double> cmplxD;
 

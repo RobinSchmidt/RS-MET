@@ -107,6 +107,10 @@ template class RAPT::rsNonlinearModalFilter<double, double>;
 template class RAPT::rsModalFilterBank<double, double>;
 template class RAPT::rsStateVariableFilter<double, double>;
 
+template class RAPT::rsDelayLine<double, double>;
+template class RAPT::rsFractionalDelayLine<double, double>;
+
+
 template class RAPT::rsInstantaneousFundamentalEstimator<double>; // rename
 
 template class RAPT::rsZeroCrossingPitchDetector<double>;

@@ -7,8 +7,8 @@ using namespace rosic;
 #include "Experiments/MathExperiments.cpp"
 
 #include "Experiments/AnalysisExperiments.cpp"
-//#include "Experiments/CellularExperiments.cpp"
-//#include "Experiments/DelayExperiments.cpp"
+#include "Experiments/CellularExperiments.cpp"
+#include "Experiments/DelayExperiments.cpp"
 //#include "Experiments/FilterExperiments.cpp"
 //#include "Experiments/MiscAudioExperiments.cpp"
 //#include "Experiments/ModalExperiments.cpp"

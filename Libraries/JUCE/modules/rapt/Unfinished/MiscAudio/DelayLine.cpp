@@ -116,9 +116,9 @@ rsFractionalDelayLine<TSig, TPar>::rsFractionalDelayLine(int maximumDelayInSampl
   bpm        = TPar(120.0);
   tempoSync  = false;
 
-  interpolator.setInterpolationMethod(rsInterpolator::WARPED_ALLPASS);
+  interpolator.setInterpolationMethod(rsInterpolator<TSig>::WARPED_ALLPASS);
 
-  interpolator.setInterpolationMethod(rsInterpolator::LINEAR);  // for debug
+  interpolator.setInterpolationMethod(rsInterpolator<TSig>::LINEAR);  // for debug
 
   setDelayTime(delayTime);
   clearDelayBuffer();
@@ -176,7 +176,7 @@ void rsFractionalDelayLine<TSig, TPar>::setTempoInBPM(TPar newTempoInBPM)
 template<class TSig, class TPar>
 void rsFractionalDelayLine<TSig, TPar>::setInterpolationMethod(int newMethod)
 {
-  if(newMethod <= rsInterpolator::WARPED_ALLPASS)
+  if(newMethod <= rsInterpolator<TSig>::WARPED_ALLPASS)
     interpolator.setInterpolationMethod(newMethod);
   else
     rsError("Unknown interpolation method");
@@ -203,7 +203,7 @@ void rsFractionalDelayLine<TSig, TPar>::setupDelayInSamples()
     // get rid of the temposync stuff
 
   delayInSamples = sampleRate*delayInSeconds;
-  delayInSamples = rsLimitToRange(delayInSamples, (TPar)(interpolatorMargin-1), 
+  delayInSamples = rsClip(delayInSamples, (TPar)(interpolatorMargin-1), 
     (TPar) (length-1-interpolatorMargin));
   //delayInSamples = clip(delayInSamples, (double)(interpolatorMargin-1), 
   //  (double) (length-1-interpolatorMargin)); // old
