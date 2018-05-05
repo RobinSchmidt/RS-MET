@@ -81,7 +81,7 @@ void magnitudeMatchedOnePoleCoeffs(T &b0, T &b1, T &a1, T w[3], T m[3])
 
   // compute the intermediate coefficients:
   T c[3];
-  rsSolveLinearSystem3x3(A, c, p);
+  rsLinearAlgebra::rsSolveLinearSystem3x3(A, c, p);
   T B0 = c[0];
   T B1 = c[1];
   T A1 = c[2];

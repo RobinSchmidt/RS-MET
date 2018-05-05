@@ -106,6 +106,7 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 template class RAPT::rsNonlinearModalFilter<double, double>;
 template class RAPT::rsModalFilterBank<double, double>;
 template class RAPT::rsStateVariableFilter<double, double>;
+template class RAPT::rsPhonoFilter<double, double>;
 
 template class RAPT::rsDelayLine<double, double>;
 template class RAPT::rsFractionalDelayLine<double, double>;

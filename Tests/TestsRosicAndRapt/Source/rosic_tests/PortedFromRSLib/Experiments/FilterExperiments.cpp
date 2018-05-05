@@ -160,7 +160,7 @@ void bandwidthScaling()
   // internal variables:
   double B0, B1, B2, A0, A1, A2; // analog biquad coeffs
   double w[N], p[5][N];
-  rsFillWithRangeLinear(w, N, 0.0, wMax);
+  RAPT::rsArray::fillWithRangeLinear(w, N, 0.0, wMax);
 
   // compute and plot magnitude-squared responses:
   double Q;
@@ -186,7 +186,7 @@ void stateVariableFilter()
 
   static const int N = 2048;  // number of sample to generate
 
-  rsStateVariableFilter svf;
+  rsStateVariableFilterDD svf;
   svf.setSampleRate(fs);
   svf.setFrequency(fc);
   svf.setGain(G);
@@ -205,39 +205,39 @@ void stateVariableFilter()
     f[k] = k*fs/N;
 
   // obtain impulse-responses for various modes:
-  svf.setMode(rsStateVariableFilter::LOWPASS);
+  svf.setMode(rsStateVariableFilterDD::LOWPASS);
   svf.reset();
   getImpulseResponse(svf, yL, N);
 
-  svf.setMode(rsStateVariableFilter::HIGHPASS);
+  svf.setMode(rsStateVariableFilterDD::HIGHPASS);
   svf.reset();
   getImpulseResponse(svf, yH, N);
 
-  svf.setMode(rsStateVariableFilter::BANDPASS_SKIRT);
+  svf.setMode(rsStateVariableFilterDD::BANDPASS_SKIRT);
   svf.reset();
   getImpulseResponse(svf, yB, N);
 
-  svf.setMode(rsStateVariableFilter::BANDPASS_PEAK);
+  svf.setMode(rsStateVariableFilterDD::BANDPASS_PEAK);
   svf.reset();
   getImpulseResponse(svf, yBPCP, N);
 
-  svf.setMode(rsStateVariableFilter::BANDREJECT);
+  svf.setMode(rsStateVariableFilterDD::BANDREJECT);
   svf.reset();
   getImpulseResponse(svf, yBR, N);
 
-  svf.setMode(rsStateVariableFilter::BELL);
+  svf.setMode(rsStateVariableFilterDD::BELL);
   svf.reset();
   getImpulseResponse(svf, yPK, N);
 
-  svf.setMode(rsStateVariableFilter::LOWSHELF);
+  svf.setMode(rsStateVariableFilterDD::LOWSHELF);
   svf.reset();
   getImpulseResponse(svf, yLS, N);
 
-  svf.setMode(rsStateVariableFilter::HIGHSHELF);
+  svf.setMode(rsStateVariableFilterDD::HIGHSHELF);
   svf.reset();
   getImpulseResponse(svf, yHS, N);
 
-  svf.setMode(rsStateVariableFilter::ALLPASS);
+  svf.setMode(rsStateVariableFilterDD::ALLPASS);
   svf.reset();
   getImpulseResponse(svf, yAP, N);
 
@@ -248,7 +248,7 @@ void stateVariableFilter()
   rsMagnitudeAndPhase(yPK, N, mPK);
   rsMagnitudeAndPhase(yLS, N, mLS);
   rsMagnitudeAndPhase(yHS, N, mHS);
-  rsMagnitudeAndPhase(yAP, N, mAP, pAP); rsScale(pAP, N/2, 180.0/PI);
+  rsMagnitudeAndPhase(yAP, N, mAP, pAP); RAPT::rsArray::scale(pAP, N/2, 180.0/PI);
   rsMagnitudeAndPhase(yBR, N, mBR);
   rsMagnitudeAndPhase(yBPCP, N, mBPCP);
 
@@ -268,7 +268,7 @@ void stateVariableFilterMorph()
 
   static const int N = 2048;  // number of sample to generate
 
-  rsStateVariableFilter svf;
+  rsStateVariableFilterDD svf;
   svf.setSampleRate(fs);
   svf.setFrequency(fc);
   svf.setGain(G);
@@ -285,7 +285,7 @@ void stateVariableFilterMorph()
     f[k] = k*fs/N;
 
   // obtain impulse-responses for various modes:
-  svf.setMode(rsStateVariableFilter::MORPH_LP_BP_HP);
+  svf.setMode(rsStateVariableFilterDD::MORPH_LP_BP_HP);
   svf.setMorph(0.0);
   svf.reset();
   getImpulseResponse(svf, y0, N);
@@ -342,13 +342,13 @@ void transistorLadder()
   double *x = new double[N];
   createTimeAxis(N, t, fs);
 
-  rsFillWithRandomValues(x, N, -0.01, +0.01, 1);
+  RAPT::rsArray::fillWithRandomValues(x, N, -0.01, +0.01, 1);
   //fillWithZeros(x, N);
   //x[0] = 1.0;
 
 
-  rsLadderMystran ldr;
-  ldr.setMode(rsLadderMystran::LP_24);
+  rsLadderMystran<double, double> ldr;
+  ldr.setMode(rsLadderMystran<double, double>::LP_24);
   ldr.setCutoff(1000.0);
   ldr.setResonance(1.0);
   for(int n = 0; n < N; n++)
@@ -364,7 +364,7 @@ void transistorLadder()
   // todo: compare against the non-ZDF ladder, try multimode    
   plotData(N, t, x);
 
-  rsNormalize(x, N, 1.0);
+  RAPT::rsArray::normalize(x, N, 1.0);
   writeToMonoWaveFile("d:\\TmpData\\MystranLadderZap.wav", x, N, (int)fs, 16);
 
   delete[] t;
@@ -381,7 +381,7 @@ void phonoFilterPrototypePlot()
   for(int n = 0; n < N; n++)
   {
     f[n]  = rsLinToExp(n, 0, N-1, fL, fH);
-    dB[n] = rsAmp2dB(rsPhonoFilter::prototypeMagnitudeAt(f[n]));
+    dB[n] = rsAmp2dB(rsPhonoFilterDD::prototypeMagnitudeAt(f[n]));
   }
   plotDataLogX(N, f, dB);
 }
@@ -422,13 +422,13 @@ void phonoFilterModelPlot()
   double fs = 44100;  // sample-rate
   //double fs = 8000;  // sample-rate
 
-  rsPhonoFilter preEmphasisFilter;
+  rsPhonoFilterDD preEmphasisFilter;
   preEmphasisFilter.setSampleRate(fs);
-  preEmphasisFilter.setMode(rsPhonoFilter::PRE_EMPHASIS);
+  preEmphasisFilter.setMode(rsPhonoFilterDD::PRE_EMPHASIS);
 
-  rsPhonoFilter deEmphasisFilter;
+  rsPhonoFilterDD deEmphasisFilter;
   deEmphasisFilter.setSampleRate(fs);
-  deEmphasisFilter.setMode(rsPhonoFilter::DE_EMPHASIS);
+  deEmphasisFilter.setMode(rsPhonoFilterDD::DE_EMPHASIS);
 
   // compute and plot the magnitude response
   static const int N = 1000;
@@ -442,7 +442,7 @@ void phonoFilterModelPlot()
     fp[n]  = rsLinToExp(n, 0, N-1, fL, fH);
 
     // analog prototype gain:
-    dBp[n] = rsAmp2dB(rsPhonoFilter::prototypeMagnitudeAt(fp[n]));
+    dBp[n] = rsAmp2dB(rsPhonoFilterDD::prototypeMagnitudeAt(fp[n]));
 
     // digital model gain:
     dBm[n] = rsAmp2dB(preEmphasisFilter.getMagnitudeAt(fp[n]));
@@ -463,13 +463,13 @@ void phonoFilterSimulation()
   double fs = 44100;           // samplerate in Hz
   static const int N = 8192;  // number of sample to generate
 
-  rsPhonoFilter preEmphasisFilter;
+  rsPhonoFilterDD preEmphasisFilter;
   preEmphasisFilter.setSampleRate(fs);
-  preEmphasisFilter.setMode(rsPhonoFilter::PRE_EMPHASIS);
+  preEmphasisFilter.setMode(rsPhonoFilterDD::PRE_EMPHASIS);
 
-  rsPhonoFilter deEmphasisFilter;
+  rsPhonoFilterDD deEmphasisFilter;
   deEmphasisFilter.setSampleRate(fs);
-  deEmphasisFilter.setMode(rsPhonoFilter::DE_EMPHASIS);
+  deEmphasisFilter.setMode(rsPhonoFilterDD::DE_EMPHASIS);
 
   // impules responses (pre- and de-emphasis):
   double hp[N], hd[N];
@@ -503,13 +503,13 @@ void serialParallelBlend()
   double gp = 1.0 - gs;  // gain for parallel path
   static const int numFilters = 3;
   static const int numSamples = 2048;
-  rsStateVariableFilter f[numFilters];
+  rsStateVariableFilterDD f[numFilters];
 
   int n, m;
   for(m = 0; m < numFilters; m++)
   {
     f[m].setSampleRate(fs);
-    f[m].setMode(rsStateVariableFilter::BELL);
+    f[m].setMode(rsStateVariableFilterDD::BELL);
     f[m].setBandwidth(bw);
     f[m].setGain(g);
     f[m].setFrequency((m+1)*f1);

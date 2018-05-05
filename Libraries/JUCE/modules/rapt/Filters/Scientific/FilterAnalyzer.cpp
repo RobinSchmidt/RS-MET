@@ -1,4 +1,47 @@
 template<class T>
+T onePoleMagnitudeAt(T b0, T b1, T a1, T w)
+{
+  T c = 2*cos(w);
+  T p = (b0*b0 + b1*b1 + b0*b1*c) / (1 + a1*a1 + a1*c);
+  return sqrt(p);
+}
+
+template<class T>
+T biquadMagnitudeAt(T b0, T b1, T b2, T a1, T a2, T w)
+{
+  T c1  = 2*cos(w);
+  T c2  = 2*cos(2*w);
+  T num = b0*b0 + b1*b1 + b2*b2 + c1*(b0*b1 + b1*b2) + c2*b0*b2;
+  T den = 1     + a1*a1 + a2*a2 + c1*(   a1 + a1*a2) + c2*   a2;
+  T p   = num/den;
+  return sqrt(p);
+}
+
+template<class T>
+bool isBiquadStableAndMinimumPhase(T b0, T b1, T b2, T a1, T a2)
+{
+  return rsPolynomial<T>::areRootsOnOrInsideUnitCircle(b2, b1, b0) 
+    && rsPolynomial<T>::areRootsOnOrInsideUnitCircle(a2, a1, 1);
+  // reverse order, because coeffs multiply negative powers of z
+}
+
+template<class T>
+T analogBiquadMagnitudeSquaredAt(T B0, T B1, T B2, T A0, 
+  T A1, T A2, T w)
+{
+  T w2  = w*w;   // w^2
+  T w4  = w2*w2; // w^4
+  T num = B0*B0 + (B1*B1-2*B0*B2)*w2 + B2*B2*w4;
+  T den = A0*A0 + (A1*A1-2*A0*A2)*w2 + A2*A2*w4;
+  return num/den;
+}
+
+
+
+
+
+
+template<class T>
 std::complex<T> rsFilterAnalyzer<T>::getAnalogFrequencyResponseAt(Complex* z, Complex* p, T k, 
   int N, T w)
 {

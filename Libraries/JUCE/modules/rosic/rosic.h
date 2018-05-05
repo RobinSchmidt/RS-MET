@@ -426,6 +426,7 @@ typedef RAPT::rsFractionalDelayLine<double, double> rsFractionalDelayLineDD;
 typedef RAPT::rsNonlinearModalFilter<double, double> rsNonlinearModalFilterDD;
 typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
 typedef RAPT::rsStateVariableFilter<double, double> rsStateVariableFilterDD;
+typedef RAPT::rsPhonoFilter<double, double> rsPhonoFilterDD;
 
 typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundamentalEstimatorD;
 typedef RAPT::rsZeroCrossingPitchDetector<double> rsZeroCrossingPitchDetectorD;

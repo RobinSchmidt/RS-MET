@@ -1,6 +1,64 @@
 #ifndef RAPT_FILTERANALYZER_H_INCLUDED
 #define RAPT_FILTERANALYZER_H_INCLUDED
 
+
+// \todo move these standalonefunctions into class rsFilterAnalyzer
+
+/** Returns the magnitude of a one-pole filter of the form  
+y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1]  
+at the normalized radian frequency w */
+template<class T>
+T onePoleMagnitudeAt(T b0, T b1, T a1, T w);
+
+/** Returns the magnitude of a biquad filter of the form
+y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-1] - a1*y[n-1] - a2*y[n-2]
+at the normalized radian frequency w = 2*PI*f/fs, f: frequency, fs: samplerate */
+template<class T>
+T biquadMagnitudeAt(T b0, T b1, T b2, T a1, T a2, T w);
+
+// \todo: check if these formulas really correspond to the difference equations with negative 
+// sign convention on the feedback coefficients
+
+/** Given a set of biquad coefficients, this function will determine whether or not the biquad 
+is stable and minimum phase (all poles and zeros must be inside or on the unit circle). Strictly 
+speaking, when there are poles on the unit circle, the system is only marginally stable and not 
+really stable in a bounded-input/bounded-output (BIBO) sense. */
+template<class T>
+bool isBiquadStableAndMinimumPhase(T b0, T b1, T b2, T a1, T a2);
+
+/** Returns the squared magnitude of an analog biquad filter with s-domain transfer function H(s) 
+and magnitude-squared function G^2(w) given by:
+        B0 + B1*s + B2*s^2             B0^2 + (B1^2-2*B0*B2)*w^2 + B2^2*w^4
+H(s) = --------------------, G^2(w) = --------------------------------------
+        A0 + A1*s + A2*s^2             A0^2 + (A1^2-2*A0*A2)*w^2 + A2^2*w^4
+at the (radian) frequency w = 2*pi*f, f: frequency in Hz. */
+template<class T>
+T analogBiquadMagnitudeSquaredAt(T B0, T B1, T B2, T A0, T A1, T A2, T w);
+
+
+/*
+Analog biquad prototype transfer functions (from RBJ cookbook):
+
+Pass-filters:
+LPF: H(s) = 1     / (s^2 + s/Q + 1)
+HPF: H(s) = s^2   / (s^2 + s/Q + 1)
+BPF: H(s) = s     / (s^2 + s/Q + 1), constant skirt gain, peak gain = Q
+BPF: H(s) = (s/Q) / (s^2 + s/Q + 1), constant 0 dB peak gain
+
+Bandreject and allpass:
+BRF: H(s) = (s^2 + 1) / (s^2 + s/Q + 1)
+APF: H(s) = (s^2 - s/Q + 1) / (s^2 + s/Q + 1)
+
+Shelving filters (low, high, band),  A  = sqrt(10^(dBgain/20)):
+LSF: H(s) = A * (s^2 + (sqrt(A)/Q)*s + A)   / (A*s^2 + (sqrt(A)/Q)*s + 1)
+HSF: H(s) = A * (A*s^2 + (sqrt(A)/Q)*s + 1) / (s^2 + (sqrt(A)/Q)*s + A)
+BSF: H(s) = (s^2 + s*(A/Q) + 1)             / (s^2 + s/(A*Q) + 1)
+*/
+
+
+
+
+
 /** This class implements a bunch of static functions to analyze various aspects of filters. The 
 functions use the following conventions for naming the parameters: 'f' denotes a physical frequency 
 in Hz, 'fs' denotes a sample-rate in Hz, 'w' a denotes normalized radian frequency (w = 2*pi*f/fs), 

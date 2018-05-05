@@ -105,9 +105,9 @@ TPar rsPhonoFilter<TSig, TPar>::unnormalizedMagnitude1(TPar frequency)
   TPar R2 = 353.33;   // 353.33 Ohm
 
   // evaluate and return transfer-function magnitude at s = j*w, w=2*PI*frequency:
-  rsComplexDbl s  = rsComplexDbl(0.0, 2*PI*frequency);
-  rsComplexDbl H1 = (s + 1.0/(R1*C1)) / (s + (R1+R2)/(R1*R2*C1));
-  return H1.getRadius();
+  std::complex<TPar> s  = std::complex<TPar>(0.0, 2*PI*frequency);
+  std::complex<TPar> H1 = (s + 1.0/(R1*C1)) / (s + (R1+R2)/(R1*R2*C1));
+  return abs(H1);
 }
  
 template<class TSig, class TPar>
@@ -116,7 +116,7 @@ TPar rsPhonoFilter<TSig, TPar>::unnormalizedMagnitude2(TPar frequency)
   TPar C2 = 10.0e-9;  // 10 nF
   TPar R3 = 7.5e+3;   // 7.5 kOhm
   TPar R4 = 353.33;   // 353.33 Ohm
-  rsComplexDbl s  = rsComplexDbl(0.0, 2*PI*frequency);
-  rsComplexDbl H2 = (s + 1.0/(R3*C2)) / (s + (R3+R4)/(R3*R4*C2));
-  TPar H2.getRadius();
+  std::complex<TPar> s  = std::complex<TPar>(0.0, 2*PI*frequency);
+  std::complex<TPar> H2 = (s + 1.0/(R3*C2)) / (s + (R3+R4)/(R3*R4*C2));
+  return abs(H2);
 }

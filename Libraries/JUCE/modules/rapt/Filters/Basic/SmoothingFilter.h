@@ -12,6 +12,8 @@ doesn't get more and more sluggish, when increasing the order (which would happe
 automatic downscaling of the time constant). 
 ...i should use a table that gets allocated and filled when the first object is created
 
+...maybe instead of a series connection use a parallel connections of 1st order filters
+-> makes it easier to find a closed form formula for the step response
 
 */
 
@@ -43,6 +45,7 @@ public:
   /** Sets up the number of samples that it takes for the unit-step response to reach a value
   of 1/2. */
   void setNumSamplesToReachHalf(TPar numSamples);
+   // does not work
 
   /** Sets the order of the filter, i.e. the number of first order lowpass stages. */
   void setOrder(int newOrder);
