@@ -102,6 +102,9 @@ template class RAPT::rsEllipseOscillator<double>;
 
 template class RAPT::rsMultiBandSplitter<double, double>;
 
+
+template class RAPT::rsSlewRateLimiterLinear<double, double>;
+
 template class RAPT::rsOnePoleFilter<double, double>;
 template class RAPT::rsNonlinearModalFilter<double, double>;
 template class RAPT::rsModalFilterBank<double, double>;
@@ -118,6 +121,7 @@ template class RAPT::rsLadderFilterFeedbackSaturated<double, double>;
 template class RAPT::rsResoReplacer<double, double>;
 template class RAPT::rsResoReplacerPhaseBumped<double, double>;
 template class RAPT::rsFakeResonanceFilter<double, double>;
+template class RAPT::rsLadderMystran<double, double>;
 
 template class RAPT::rsDelayLine<double, double>;
 template class RAPT::rsFractionalDelayLine<double, double>;

@@ -110,18 +110,18 @@ void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases)
 {
   std::complex<T> *tmp = new std::complex<T>[N];
 
-  rsConvertBuffer(signal, tmp, N);
+  rsArray::convertBuffer(signal, tmp, N);
   rsFFT(tmp, N);
 
   int k;
   for(k = 0; k < N/2; k++)
-    magnitudes[k] = tmp[k].getRadius();
+    magnitudes[k] = abs(tmp[k]);
   // the bin at 0 (and N/2-1?) should be multiplied by 2?
 
   if(phases != NULL)
   {
     for(k = 0; k < N/2; k++)
-      phases[k] = tmp[k].getAngle();
+      phases[k] = arg(tmp[k]);
   }
   delete[] tmp;
 }
@@ -138,7 +138,7 @@ void rsRadix2FFT(std::complex<T> *a, int N)
   int jl;              // JLast
   std::complex<T> tmp; // Temp
   std::complex<T> wj;  // W (current twiddle factor), maybe rename to wjk or wkj
-  std::complex<T> wm = exp(std::complex<T>(T(0), T(-2.0*PI/N))); // multiplier for twiddle factor 
+  std::complex<T> wm = exp(std::complex<T>(T(0), T(-2.0*PI/N))); // multiplier for twiddle factor, todo: use polar() 
 
   // \todo use setRadiusAndAngle for initializing wm (more efficient), we also do not need to 
   // include the ComplexFunctions.inl

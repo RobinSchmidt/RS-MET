@@ -9,33 +9,36 @@ inline void fillWithZeros(T *buffer, int length)
     buffer[i] = T(0);
 }
 
-inline float rsSawWave(float x)
+template <class T>
+inline T rsSawWave(T x)
 {
-  float tmp = (float)fmod(x, 2*PI_F);
-  if( tmp < PI_F )
-    return tmp/PI_F;
+  T tmp = (T)fmod(x, 2*PI);
+  if( tmp < PI )
+    return T(tmp/PI);
   else
-    return (tmp/PI_F) - 2;
+    return T((tmp/PI) - 2);
 }
 
-inline float rsSqrWave(float x)
+template <class T>
+inline T rsSqrWave(T x)
 {
-  float tmp = fmod(x, 2*PI_F);
-  if( tmp < PI_F )
+  T tmp = (T)fmod(x, 2*PI);
+  if( tmp < PI )
     return 1;
   else
     return -1;
 }
 
-inline float rsTriWave(float x)
+template <class T>
+inline T rsTriWave(T x)
 {
-  float tmp = fmod(x, 2*PI_F);
-  if( tmp < 0.5f*PI_F )
-    return tmp/(0.5f*PI_F);
-  else if( tmp < 1.5f*PI_F )
-    return 1 - ((tmp-0.5f*PI_F)/(0.5f*PI_F));
+  T tmp = (T)fmod(x, 2*PI);
+  if( tmp < 0.5f*PI )
+    return T(tmp/(0.5f*PI));
+  else if( tmp < 1.5f*PI )
+    return T(1 - ((tmp-0.5f*PI)/(0.5f*PI)));
   else
-    return -1 + ((tmp-1.5f*PI_F)/(0.5f*PI_F));
+    return T(-1 + ((tmp-1.5f*PI)/(0.5f*PI)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -73,16 +76,16 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
     if( antiAlias == false )
     {
       for(int n=0; n<N; n++)
-        x[n] = rsSawWave(w*n + phase);
+        x[n] = (T) rsSawWave(T(w*n) + T(phase));
     }
     else
     {
       int k = 1;
       while( k*frequency < sampleRate/2 )
       {
-        T a = -2.f / (k*PI);
+        T a = T(-2.f / (k*PI));
         for(int n=0; n<N; n++)
-          x[n] += a * sin(k*(w*n+PI) + phase);
+          x[n] += T(a * sin(k*(w*n+PI) + phase));
         k++;
       }
     }
@@ -93,16 +96,16 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
     if( antiAlias == false )
     {
       for(int n=0; n<N; n++)
-        x[n] = rsSqrWave(w*n + phase);
+        x[n] = rsSqrWave(T(w*n + phase));
     }
     else
     {
       int k = 1;
       while( k*frequency < sampleRate/2 )
       {
-        T a = -4.f / (k*PI);
+        T a = T(-4.f / (k*PI));
         for(int n=0; n<N; n++)
-          x[n] += a * sin(k*(w*n+PI) + phase);
+          x[n] += T(a * sin(k*(w*n+PI) + phase));
         k+=2;
       }
     }
@@ -121,7 +124,7 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
       T s = 1.0; // sign 
       while( k*frequency < sampleRate/2 )
       {
-        float a = 8.f / (k*k*PI*PI);
+        T a = T(8.f / (k*k*PI*PI));
         for(int n=0; n<N; n++)
           x[n] += s * a * sin(k*w*n + phase);
         k +=  2;

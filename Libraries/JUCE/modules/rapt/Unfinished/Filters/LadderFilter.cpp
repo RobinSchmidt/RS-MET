@@ -861,6 +861,6 @@ rsLadderMystran<TSig, TPar>::rsLadderMystran()
 template<class TSig, class TPar>
 void rsLadderMystran<TSig, TPar>::reset()
 {
-  rsFillWithZeros(s, 4);
+  rsArray::fillWithZeros(s, 4);
   zi = 0.0;
 }

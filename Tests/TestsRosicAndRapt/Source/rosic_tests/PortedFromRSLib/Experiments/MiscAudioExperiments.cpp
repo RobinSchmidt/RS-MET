@@ -11,6 +11,7 @@ void centroid()
   int dummy = 0;
 }
 
+// functions are now part of the library
 double cubicFadeIn(double x)
 {
   return x*(x*((PI/2-2)*x+(3-PI))+(PI/2));
@@ -50,14 +51,14 @@ void recursiveSineSweep()
   double dw = 2*PI*df/(fs*fs);    // increment for rotation frequency
   rsComplexDbl z(1, 0);           // initial value vor z
   rsComplexDbl j(0, 1);           // imaginary unit
-  rsComplexDbl a = rsExpC(j*w0);  // initial rotation factor
-  rsComplexDbl b = rsExpC(j*dw);  // multiplier for rotation factor
+  rsComplexDbl a = exp(j*w0);  // initial rotation factor
+  rsComplexDbl b = exp(j*dw);  // multiplier for rotation factor
 
   for(int n = 0; n < N; n++)
   {
-    y[n] = z.re;  // as output, we take the real part
-    z *= a;       // update our rotating phasor (multiply by rotation factor)
-    a *= b;       // update our rotation factor
+    y[n] = z.real();  // as output, we take the real part
+    z *= a;           // update our rotating phasor (multiply by rotation factor)
+    a *= b;           // update our rotation factor
   }
 
   plotData(N, 0.0, 1/fs, y);
@@ -115,7 +116,7 @@ void ringModNoise()
   // we have a DC offset of..
 
   // normalize and write to file:
-  rsNormalize(x, N, 1.0, true);
+  RAPT::rsArray::normalize(x, N, 1.0, true);
   writeToMonoWaveFile("RingModNoise.wav",  x, N, (int) fs, 16);
 
   // plot signal:
@@ -140,7 +141,7 @@ void slewRateLimiterLinear()
   // Attack- and release times are 1 and 2 seconds respectively. With a sample-rate of 10 Hz, that
   // translates to 10 and 20 samples to ramp up and down between 0 and 1, respectively
 
-  rsSlewRateLimiterLinear slewRateLimiter;
+  rsSlewRateLimiterLinearDD slewRateLimiter;
 
   slewRateLimiter.setSampleRate(fs);
   slewRateLimiter.setAttackTime(attack);
@@ -151,11 +152,11 @@ void slewRateLimiterLinear()
   double x[N];  // input signal
   double y[N];  // output signal
 
-  rsFillWithIndex(t, N);
-  rsScale(t, N, 1.0/fs);
+  RAPT::rsArray::fillWithIndex(t, N);
+  RAPT::rsArray::scale(t, N, 1.0/fs);
 
-  rsFillWithZeros(x, N);
-  rsFillWithZeros(y, N);
+  RAPT::rsArray::fillWithZeros(x, N);
+  RAPT::rsArray::fillWithZeros(y, N);
 
   int n;
   for(n = N/3; n < 2*N/3; n++)
@@ -215,7 +216,7 @@ void taperedFourierSeries()
   double xF[numSamples];      // signal with Fejer tapering
   double f[numHarmonics+1];   // normalized frequencies for plot
 
-  rsFillWithRangeLinear(f, numHarmonics+1, 0.0, (double) numHarmonics);
+  RAPT::rsArray::fillWithRangeLinear(f, numHarmonics+1, 0.0, (double) numHarmonics);
 
   int n, k;
   a[0]  = 0.0;
@@ -235,7 +236,7 @@ void taperedFourierSeries()
   //p[2] = 0.25*PI;
 
 
-  rsFillWithRangeLinear(t, numSamples, tMin, tMax);
+  RAPT::rsArray::fillWithRangeLinear(t, numSamples, tMin, tMax);
   double tmp;
   for(n = 0; n < numSamples; n++)
   {
@@ -251,7 +252,7 @@ void taperedFourierSeries()
     }
   }
 
-  double peak = rsMaxAbs(x, numSamples);
+  double peak = RAPT::rsArray::maxAbs(x, numSamples);
 
   //plotData(numHarmonics+1, f, aL, aF);
   plotData(numSamples, t, x, xL, xF);
@@ -261,7 +262,8 @@ void taperedFourierSeries()
 void directFormImpulseResponse(double *a, int Na, double *b, int Nb, double *h, int Nh)
 {
   double x0 = 1.0;
-  rsFilter(&x0, 1, h, Nh, b, Nb, a, Na);
+  //rsFilter(&x0, 1, h, Nh, b, Nb, a, Na);
+  RAPT::rsArray::filter(&x0, 1, h, Nh, b, Nb, a, Na);
 }
 
 void transientModeling()
@@ -331,7 +333,7 @@ void windowFunctionsContinuous()
   double wExactBlackman[N];    // "exact" Blackman window values
 
   // generate the window functions:
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     wHann[n]          = rsRaisedCosineWindow( x[n], length, 0.0);
@@ -355,7 +357,7 @@ void windowedSinc()
   double s[N];                 // normalized sinc values
   double w[N];                 // window values
   double y[N];                 // windowed sinc values
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     s[n] = rsNormalizedSinc(x[n]/stretch);

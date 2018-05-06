@@ -75,7 +75,7 @@ protected:
 template<class TSig, class TPar>
 RS_INLINE TSig rsSlewRateLimiterLinear<TSig, TPar>::getSample(TSig in)
 {
-  y1 += rsClipToRange(in-y1, -downwardLimit, upwardLimit);
+  y1 += rsClip(in-y1, -downwardLimit, upwardLimit);
   return y1;
 }
 

@@ -419,13 +419,14 @@ typedef RAPT::rsRayBouncerDriver<double> rsRayBouncerDriverD;
 // some more which are wrapped into rosic namespace (todo: clean this up and make it consistent):
 namespace rosic
 {
+
+typedef RAPT::rsSlewRateLimiterLinear<double, double> rsSlewRateLimiterLinearDD;
+
 typedef RAPT::rsBasicDelayLine<double> rsBasicDelayLineD;
 typedef RAPT::rsDelayLine<double, double> rsDelayLineDD;
 typedef RAPT::rsFractionalDelayLine<double, double> rsFractionalDelayLineDD;
 
-
 typedef RAPT::rsOnePoleFilter<double, double> rsOnePoleFilterDD;
-
 typedef RAPT::rsNonlinearModalFilter<double, double> rsNonlinearModalFilterDD;
 typedef RAPT::rsModalFilter<double, double> rsModalFilterDD;
 typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
@@ -442,6 +443,7 @@ typedef RAPT::rsLadderFilterFeedbackSaturated<double, double> rsLadderFeedbackSa
 typedef RAPT::rsResoReplacer<double, double> rsResoReplacerDD;
 typedef RAPT::rsResoReplacerPhaseBumped<double, double> rsResoReplacerPhaseBumpedDD;
 typedef RAPT::rsFakeResonanceFilter<double, double> rsFakeResonanceFilterDD;
+typedef RAPT::rsLadderMystran<double, double> rsLadderMystranDD;
 
 
 typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundamentalEstimatorD;

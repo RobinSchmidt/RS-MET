@@ -936,8 +936,8 @@ void rsArray::normalize(T *buffer, int length, T maximum, bool subtractMean)
 {
   if(subtractMean == true)
   {
-    T mean = mean(buffer, length);
-    add(buffer, -mean, buffer, length);
+    //T mean = mean(buffer, length);
+    add(buffer, -mean(buffer, length), buffer, length);
   }
   T max   = maxAbs(buffer, length);;
   T scale = maximum / max;

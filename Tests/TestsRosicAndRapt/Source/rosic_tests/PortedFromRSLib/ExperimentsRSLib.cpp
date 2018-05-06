@@ -10,7 +10,7 @@ using namespace rosic;
 #include "Experiments/CellularExperiments.cpp"
 #include "Experiments/DelayExperiments.cpp"
 #include "Experiments/FilterExperiments.cpp"
-//#include "Experiments/MiscAudioExperiments.cpp"
+#include "Experiments/MiscAudioExperiments.cpp"
 //#include "Experiments/ModalExperiments.cpp"
 //#include "Experiments/ModulatorExperiments.cpp"
 //#include "Experiments/OscillatorExperiments.cpp"

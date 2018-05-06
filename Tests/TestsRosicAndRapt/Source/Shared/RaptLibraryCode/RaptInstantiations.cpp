@@ -46,12 +46,16 @@ template void rsArray::deConvolve(double *y, int yLength, double *h, int hLength
 template void rsArray::sequenceSqrt(double *y, int yLength, double *x);
 template void rsArray::transposeSquareArray(double **in, double **out, int size);
 template void rsArray::cumulativeSum(double *x, double *y, int length, int order);
+template void rsArray::difference(double *buffer, int length, int order, bool periodic);
 template double rsArray::minValue(double *x, int length);
 template double rsArray::maxValue(double *x, int length);
 template double rsArray::maxAbs(double *x, int length);
+template void rsArray::normalize(double *buffer, int length, double maximum, bool subtractMean);
 template double rsArray::mean(double *x, int length);
 template double rsArray::maxDeviation(double *buffer1, double *buffer2, int length);
 template void rsArray::applyFunction(double *x, double *y, int N, double (*f) (double));
+
+
 
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
@@ -157,8 +161,11 @@ template void RAPT::smbFft(float *fftBuffer, long fftFrameSize, long sign);
 template void RAPT::rsDFT(std::complex<double> *buffer, int N);
 template void RAPT::rsFFT(std::complex<double> *buffer, int N);
 template void RAPT::rsIFFT(std::complex<double> *buffer, int N);
+template void RAPT::rsMagnitudeAndPhase(double *signal, int N, double *magnitudes, double *phases);
 template void RAPT::rsCrossCorrelation(float x[], float y[], int N, float r[], bool removeBias);
 template void RAPT::rsAutoCorrelationFFT(float x[], int N, float r[]);
+
+
 
 
 template RAPT::rsSineIterator<double>;
@@ -269,3 +276,7 @@ template double RAPT::rsSineFrequencyAt(double *x, int N, int n0, bool refine);
 template double RAPT::rsSinePhaseAt(double *x, int N, int n0, double w);
 template double RAPT::rsSinePhaseAtViaZeros(double *x, int N, int n0, int precision);
 template double RAPT::rsGetShiftForBestMatch(double *x1, double *x2, int N, bool deBias);
+
+// move to rsFilterAnalyzer:
+template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0, 
+  double A1, double A2, double w);
