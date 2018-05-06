@@ -26,7 +26,7 @@ void rsTwoPoleFilter<TSig, TPar>::setOutputGain(TPar newGain)
 template<class TSig, class TPar>
 TPar rsTwoPoleFilter<TSig, TPar>::getMagnitudeAt(TPar w)
 {
-  return biquadMagnitudeAt(1, 0, 0, a1, a2, w);
+  return biquadMagnitudeAt(TPar(1), TPar(0), TPar(0), a1, a2, w);
     // optimize: a simpler (less general) formula may be used
 }
 

@@ -53,8 +53,7 @@ void createTimeAxis(int numSamples, double *timeAxis, double sampleRate)
 }
 
 template<class T>
-void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase = 0.0, 
-  bool antiAlias = false)
+void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, bool antiAlias)
 {
   T w = (T)(2*PI*frequency/sampleRate);
   fillWithZeros(x, N);
@@ -134,9 +133,9 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase =
   }
 }
 template void createWaveform(float *x, int N, int shape, float frequency, float sampleRate, 
-  float phase = 0.0, bool antiAlias = false);
+  float phase, bool antiAlias);
 template void createWaveform(double *x, int N, int shape, double frequency, double sampleRate, 
-  double phase = 0.0, bool antiAlias = false);
+  double phase, bool antiAlias);
 
 
 void createPulseWave(double *x, int N, double frequency, double dutyCycle, 

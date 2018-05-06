@@ -114,7 +114,7 @@ template class RAPT::rsLadderFilter2<double, double>;
 template class RAPT::rsLadderFilterZDF<double, double>; 
 template class RAPT::rsLadderResoShaped<double, double>;
 template class RAPT::rsLadderResoShaped2<double, double>;
-template class RAPT::rsLadderFeedbackSaturated<double, double>;
+template class RAPT::rsLadderFilterFeedbackSaturated<double, double>;
 template class RAPT::rsResoReplacer<double, double>;
 template class RAPT::rsResoReplacerPhaseBumped<double, double>;
 template class RAPT::rsFakeResonanceFilter<double, double>;

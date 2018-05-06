@@ -61,13 +61,13 @@ void rsLadderFilter2<TSig, TPar>::setMode(int newMode)
 template<class TSig, class TPar>
 void rsLadderFilter2<TSig, TPar>::getState(TSig *state)
 {
-  rsCopyBuffer(y, state, 5);
+  rsArray::copyBuffer(y, state, 5);
 }
 
 template<class TSig, class TPar>
 void rsLadderFilter2<TSig, TPar>::reset()
 {
-  rsFillWithZeros(y, 5);
+  rsArray::fillWithZeros(y, 5);
 }
 
 template<class TSig, class TPar>
@@ -207,7 +207,7 @@ rsLadderFilterFeedbackSaturated<TSig, TPar>::rsLadderFilterFeedbackSaturated()
 
 
   fbLpCutoff = 1.0;
-  fbLpf.setMode(rsOnePoleFilter::LOWPASS);
+  fbLpf.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
 }
 
 template<class TSig, class TPar>
@@ -288,7 +288,7 @@ rsLadderResoShaped<TSig, TPar>::rsLadderResoShaped()
   resGain     = 1.0;
   phase       = 0.0;
 
-  allpass.setMode(rsOnePoleFilter::ALLPASS);
+  allpass.setMode(rsOnePoleFilter<TSig, TPar>::ALLPASS);
 }
 
 template<class TSig, class TPar>
@@ -435,7 +435,7 @@ void rsLadderResoShaped<TSig, TPar>::setupScaledDecay()
     // pair of which is more expensive to compute) by using some rules for exponentials and 
     // logarithms
 
-  TPar r = rsLadderFilter::resonanceDecayToFeedbackGain(scaledDecay, cutoff);
+  TPar r = rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(scaledDecay, cutoff);
   resonant.setResonance(r);
   
   // old:
@@ -470,7 +470,7 @@ rsLadderResoShaped2<TSig, TPar>::rsLadderResoShaped2()
   gateMix   = 0.0;
 
   //saturator.setValueAt1(1.0); // hardclipper by default
-  saturator.setMode(rsSidechainSaturator::BYPASS);  // no waveshaping by default
+  saturator.setMode(rsSidechainSaturator<TSig, TPar>::BYPASS);  // no waveshaping by default
 }
 
 template<class TSig, class TPar>
@@ -565,7 +565,7 @@ rsResoReplacer<TSig, TPar>::rsResoReplacer()
   resoCutoffMultiplier = 10000.0; // maps to 20kHz at cutoff = 20Hz -> high enough to be neutral
   resoCutoffModulation = 0.0;
 
-  resoFilter.setMode(rsOnePoleFilter::LOWPASS);  
+  resoFilter.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);  
     // maybe let the user choose, maybe use more interesting filter - like a ladder or biquad
 }
 
@@ -644,7 +644,7 @@ TSig rsResoReplacer<TSig, TPar>::getWaveForm(TSig a, TSig p)
 
   // set up the resonance filter's cutoff frequency and filter the resonance waveform:
   TPar ctf = cutoff*(resoCutoffMultiplier + resoCutoffModulation*a);
-  ctf = rsLimitToRange(ctf, 20.0, 20000.0);
+  ctf = rsClip(ctf, 20.0, 20000.0);
   resoFilter.setCutoff(ctf);
   r = resoFilter.getSample(r);
   // todo: optimization: skip setCutoff if resoCutoffModulation == 0 - but we need to take care
@@ -662,9 +662,9 @@ rsResoReplacerPhaseBumped<TSig, TPar>::rsResoReplacerPhaseBumped()
 {
   // todo: set up highpass and lowpass filters for the bumping signal
 
-  inputDifferencer.setMode(rsOnePoleFilter::HIGHPASS);
-  bumpSmoother1.setMode(rsOnePoleFilter::LOWPASS);
-  bumpSmoother2.setMode(rsOnePoleFilter::LOWPASS);
+  inputDifferencer.setMode(rsOnePoleFilter<TSig, TPar>::HIGHPASS);
+  bumpSmoother1.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
+  bumpSmoother2.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
 
 
   inputDifferencer.setCutoff(20000);
@@ -796,7 +796,7 @@ TSig rsResoReplacerPhaseBumped<TSig, TPar>::limitMagnitude(TSig mag)
 {
   //return ampLimit * rsPositiveSigmoids::softClip(ampLimitInv*mag);
 
-  return ampLimit * rsPositiveSigmoids::quartic(ampLimitInv*mag);
+  return ampLimit * rsPositiveSigmoids<TSig>::quartic(ampLimitInv*mag);
     // maybe try a different function
 }
 

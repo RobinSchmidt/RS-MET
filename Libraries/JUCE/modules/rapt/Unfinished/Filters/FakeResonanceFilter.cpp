@@ -13,16 +13,16 @@ rsFakeResonanceFilter<TSig, TPar>::rsFakeResonanceFilter()
   ar          = 0.001;
   delay       = 1.0;      // use "optimal" delay 
 
-  lpf1.setMode(rsOnePoleFilter::LOWPASS);
-  lpf2.setMode(rsOnePoleFilter::LOWPASS);
-  lpf3.setMode(rsOnePoleFilter::LOWPASS);
-  lpf4.setMode(rsOnePoleFilter::LOWPASS);
+  lpf1.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
+  lpf2.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
+  lpf3.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
+  lpf4.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
 
-  hpf.setMode(rsOnePoleFilter::HIGHPASS);
+  hpf.setMode(rsOnePoleFilter<TSig, TPar>::HIGHPASS);
 
-  //dl.setInterpolationMethod(rsInterpolator::LINEAR); 
-  //dl.setInterpolationMethod(rsInterpolator::ALLPASS); 
-  dl.setInterpolationMethod(rsInterpolator::WARPED_ALLPASS); 
+  //dl.setInterpolationMethod(rsInterpolator<TSig>::LINEAR); 
+  //dl.setInterpolationMethod(rsInterpolator<TSig>::ALLPASS); 
+  dl.setInterpolationMethod(rsInterpolator<TSig>::WARPED_ALLPASS); 
     // it seems to be a good idea to use the more sophisticated (possibly warped) allpass 
     // interpolation instead of linear - otherwise, the resonance amplitude will be reduced at 
     // high resonance frequencies whenever the delay is such that the fractional part of the 

@@ -643,7 +643,7 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleLinear(TSig in)
 {
-  return rsLadderFilter::getSample(in);
+  return rsLadderFilter2<TSig, TPar>::getSample(in);
 }
 
 //=================================================================================================
