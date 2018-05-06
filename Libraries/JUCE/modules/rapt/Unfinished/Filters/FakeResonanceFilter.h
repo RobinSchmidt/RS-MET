@@ -178,16 +178,16 @@ protected:
 
 
   // processors in filter path:
-  rsOnePoleFilter lpf1, lpf2, lpf3, lpf4;
+  rsOnePoleFilter<TSig, TPar> lpf1, lpf2, lpf3, lpf4;
     // Four 1st order lowpasses in series for the lowpass path
     // \todo: Maybe replace this series of 4 individual 1st order filters by an actual 
     // implementation of the Moog-ladder structure.
 
 
   // processors in resonance path:
-  rsFractionalDelayLine   dl;     // delayline
-  rsOnePoleFilter         hpf;    // highpass
-  rsModalFilterWithAttack rf;     // resonator
+  rsFractionalDelayLine<TSig, TPar>   dl;     // delayline
+  rsOnePoleFilter<TSig, TPar>         hpf;    // highpass
+  rsModalFilterWithAttack<TSig, TPar> rf;     // resonator
 
 
   /** \name Internal Functions */
@@ -223,7 +223,7 @@ RS_INLINE TSig rsFakeResonanceFilter<TSig, TPar>::getSample(TSig in)
   // example by "ducking" it with a signal that is derived from the input (and/or lowpass output)
   // in order to mimic saturation effects in analog filters...
 
-  TSig yl + yr;
+  return yl + yr;
   // maybe use a weighted sum - introduce a "mix" parameter that mixes between lowpass and 
   // resonance output
 }

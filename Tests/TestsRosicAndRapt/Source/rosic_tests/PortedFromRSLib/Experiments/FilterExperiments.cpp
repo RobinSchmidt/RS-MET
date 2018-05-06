@@ -1,5 +1,6 @@
 #include "FilterExperiments.h"
 
+//using namespace RAPT; // remove when possible
 
 /*
 
@@ -166,7 +167,7 @@ void bandwidthScaling()
   double Q;
   for(int k = 0; k < 5; k++)
   {
-    Q = Q1 / rsBandwidthConverter::multipassScalerButterworth(k+1, 1, g);
+    Q = Q1 / RAPT::rsBandwidthConverter::multipassScalerButterworth(k+1, 1, g);
     rsAnalogBandpassCoeffsConstantPeak(&B0, &B1, &B2, &A0, &A1, &A2, Q, wc);
     for(int n = 0; n < N; n++)
     {
@@ -275,10 +276,10 @@ void stateVariableFilterMorph()
   svf.setBandwidth(B);  //later
 
   // impules responses:
-  double y0[N], y1[N], y2[N], y3[N], y4[N], y5[5];
+  double y0[N], y1[N], y2[N], y3[N], y4[N]/*, y5[5]*/;
 
   // frequency axis and magnitude responses:
-  double f[N/2], m0[N/2], m1[N/2], m2[N/2], m3[N/2], m4[N/2], m5[N/2];
+  double f[N/2], m0[N/2], m1[N/2], m2[N/2], m3[N/2], m4[N/2]/*, m5[N/2]*/;
 
   // frequency-axis scaled in Hz (put into function):
   for(int k = 0; k < N/2; k++)
@@ -483,8 +484,8 @@ void phonoFilterSimulation()
   getImpulseResponse(deEmphasisFilter, hd, N);
   rsMagnitudeAndPhase(hp, N, mp);
   rsMagnitudeAndPhase(hd, N, md);
-  rsApplyFunction(mp, mp, N/2, &rsAmp2dB);
-  rsApplyFunction(md, md, N/2, &rsAmp2dB);
+  RAPT::rsArray::applyFunction(mp, mp, N/2, &rsAmp2dB);
+  RAPT::rsArray::applyFunction(md, md, N/2, &rsAmp2dB);
 
   plotDataLogX(N/2, f, mp, md);
 }
@@ -517,7 +518,7 @@ void serialParallelBlend()
 
   // obtain impulse-response:
   double x[numSamples], y[numSamples];
-  rsFillWithZeros(x, numSamples);
+  RAPT::rsArray::fillWithZeros(x, numSamples);
   x[0] = 1;
   double w, z;
   double accu;
@@ -540,7 +541,7 @@ void serialParallelBlend()
   for(int k = 0; k < numSamples/2; k++)
     frq[k] = k*fs/numSamples;
   rsMagnitudeAndPhase(y, numSamples, mag);
-  rsApplyFunction(mag, dB, numSamples/2, &rsAmp2dB);
+  RAPT::rsArray::applyFunction(mag, dB, numSamples/2, &rsAmp2dB);
   plotDataLogX(numSamples/2, frq, dB);
 
 }
@@ -565,8 +566,8 @@ void averager()
 
   double t[N], y1[N], y2[N], y3[N], ySum[N];
 
-  rsFillWithRangeLinear(t, N, 0.0, (double)(N-1));
-  rsFillWithZeros(ySum, N);
+  RAPT::rsArray::fillWithRangeLinear(t, N, 0.0, (double)(N-1));
+  RAPT::rsArray::fillWithZeros(ySum, N);
 
   // accumulate the decay functions
   int n;
@@ -601,8 +602,8 @@ void movingAverage()
   static const int N = 2*L;
 
   double t[N], h[N];
-  rsFillWithIndex(t, N);
-  rsMovingAverage ma;
+  RAPT::rsArray::fillWithIndex(t, N);
+  rsMovingAverageDD ma;
   //ma.setLengthInSamples(L);
   ma.setLengthInSeconds(0.02);
   //ma.setDeviation(0.001); // good for practical use
@@ -613,7 +614,7 @@ void movingAverage()
 
   getImpulseResponse(ma, h, N);
   plotData(N, t, h);
-  double sum = rsSum(h, L);
+  double sum = RAPT::rsArray::sum(h, L);
 }
 
 void trapezAverager()
@@ -623,8 +624,8 @@ void trapezAverager()
   static const int N = L1+L2+10;
 
   double t[N], h[N];
-  rsFillWithIndex(t, N);
-  rsMovingAverage ma1, ma2;
+  RAPT::rsArray::fillWithIndex(t, N);
+  rsMovingAverageDD ma1, ma2;
   ma1.setLengthInSamples(L1);
   ma2.setLengthInSamples(L2);
 
@@ -646,14 +647,19 @@ void compareApproximationMethods()
   double As    =    50.0;  // stopband rejection in dB
   int    order =    6;    // prototype filter order
 
+  typedef RAPT::rsInfiniteImpulseResponseDesigner<double> IIRD;
+  typedef RAPT::rsPrototypeDesigner<double> PTD;
+
+
+
   // create and set up the filter:
-  rsEngineersFilter flt;
+  rsEngineersFilterDD flt;
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
-  //flt.setMode(rsInfiniteImpulseResponseDesigner::LOWPASS);
-  //flt.setMode(rsInfiniteImpulseResponseDesigner::HIGHPASS);
-  flt.setMode(rsInfiniteImpulseResponseDesigner::BANDPASS);
-  //flt.setMode(rsInfiniteImpulseResponseDesigner::BANDREJECT);
+  //flt.setMode(IIRD::LOWPASS);
+  //flt.setMode(IIRD::HIGHPASS);
+  flt.setMode(IIRD::BANDPASS);
+  //flt.setMode(IIRD::BANDREJECT);
   flt.setRipple(Ap);
   flt.setStopbandRejection(As);
   flt.setPrototypeOrder(order);
@@ -664,29 +670,29 @@ void compareApproximationMethods()
   double mBes[N], mBut[N], mCheb1[N], mCheb2[N], mEll[N], mPap[N];  // magnitude responses
   double f[N];
   //rsFillWithRangeLinear(f, N, 0.0, fs/2);
-  rsFillWithRangeExponential(f, N, 1.0, fs/2);
+  RAPT::rsArray::fillWithRangeExponential(f, N, 1.0, fs/2);
 
-  flt.setApproximationMethod(rsPrototypeDesigner::BESSEL);
+  flt.setApproximationMethod(PTD::BESSEL);
   getImpulseResponse(flt, hBes, N);
   flt.getMagnitudeResponse(f, mBes, N, true);
 
-  flt.setApproximationMethod(rsPrototypeDesigner::BUTTERWORTH);
+  flt.setApproximationMethod(PTD::BUTTERWORTH);
   getImpulseResponse(flt, hBut, N);
   flt.getMagnitudeResponse(f, mBut, N, true);
 
-  flt.setApproximationMethod(rsPrototypeDesigner::CHEBYCHEV);
+  flt.setApproximationMethod(PTD::CHEBYCHEV);
   getImpulseResponse(flt, hCheb1, N);
   flt.getMagnitudeResponse(f, mCheb1, N, true);
 
-  flt.setApproximationMethod(rsPrototypeDesigner::INVERSE_CHEBYCHEV);
+  flt.setApproximationMethod(PTD::INVERSE_CHEBYCHEV);
   getImpulseResponse(flt, hCheb2, N);
   flt.getMagnitudeResponse(f, mCheb2, N, true);
 
-  flt.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);
+  flt.setApproximationMethod(PTD::ELLIPTIC);
   getImpulseResponse(flt, hEll, N);
   flt.getMagnitudeResponse(f, mEll, N, true);
 
-  flt.setApproximationMethod(rsPrototypeDesigner::PAPOULIS);
+  flt.setApproximationMethod(PTD::PAPOULIS);
   getImpulseResponse(flt, hPap, N);
   flt.getMagnitudeResponse(f, mPap, N, true);
 
@@ -703,12 +709,12 @@ void compareApproximationMethods()
   // normalize impulse repsonses and write to wavefiles
   double s = 1.0;
   //s = 1.0 / rsMaxAbs(hBut, N); // Butterworth impulse response has highest peak
-  rsScale(hBes, N, s);
-  rsScale(hBut, N, s);
-  rsScale(hCheb1, N, s);
-  rsScale(hCheb2, N, s);
-  rsScale(hEll, N, s);
-  rsScale(hPap, N, s);
+  RAPT::rsArray::scale(hBes, N, s);
+  RAPT::rsArray::scale(hBut, N, s);
+  RAPT::rsArray::scale(hCheb1, N, s);
+  RAPT::rsArray::scale(hCheb2, N, s);
+  RAPT::rsArray::scale(hEll, N, s);
+  RAPT::rsArray::scale(hPap, N, s);
   writeToMonoWaveFile("Bessel.wav", hBes, N, (int)fs, 16);
   writeToMonoWaveFile("Butterworth.wav", hBut, N, (int)fs, 16);
   writeToMonoWaveFile("Chebychev1.wav", hCheb1, N, (int)fs, 16);
@@ -745,6 +751,10 @@ void compareApproximationMethods()
 
 void ringingTime()
 {
+  typedef RAPT::rsInfiniteImpulseResponseDesigner<double> IIRD;
+  typedef RAPT::rsPrototypeDesigner<double> PTD;
+
+
   // filter parameters:
   double fs        = 44100.0;  // samplerate
   double fc        = fs/16;
@@ -753,13 +763,13 @@ void ringingTime()
   double threshold =     0.01; // threshold amplitude
   int    order     =     5;    // filter order
   //int    method    = rsPrototypeDesigner::BUTTERWORTH; // approximation method
-  int    method    = rsPrototypeDesigner::ELLIPTIC;
+  int    method    = PTD::ELLIPTIC;
 
   // create and set up the filter:
-  rsEngineersFilter flt;
+  rsEngineersFilterDD flt;
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
-  flt.setMode(rsInfiniteImpulseResponseDesigner::LOWPASS);
+  flt.setMode(IIRD::LOWPASS);
   flt.setRipple(Ap);
   flt.setStopbandRejection(As);
   //flt.setOrder(order);
@@ -773,8 +783,8 @@ void ringingTime()
   static const int N = 1000;    // number of samples
   double h[N];
   getImpulseResponse(flt, h, N);
-  double s = 1.0 / rsMaxAbs(h, N);
-  rsScale(h, N, s);
+  double s = 1.0 / RAPT::rsArray::maxAbs(h, N);
+  RAPT::rsArray::scale(h, N, s);
 
   // plot:
   plotData(N, 0, 1, h);
@@ -800,7 +810,7 @@ void butterworthSquaredLowHighSum()
   double H2H[P];    // |H(w)|^2 for the highpass
   double H2S[P];    // |H(w)|^2 for the sum of low- and highpass
 
-  rsFillWithRangeExponential(w, P, wMin, wMax);
+  RAPT::rsArray::fillWithRangeExponential(w, P, wMin, wMax);
   for(int i = 0; i < P; i++)
   {
     H2L[i] = pow(1.0 / (1.0 + eps*pow(w[i]*w[i], N)), M);
@@ -826,16 +836,18 @@ void gaussianPrototype()
   double wc = 0.5;                 // cutoff frequency
   double g  = log(2.0) / (wc*wc);  // "gamma"
 
-  rsGaussianPolynomial(c, N, wc);
+
+  typedef RAPT::rsPrototypeDesigner<double> PTD;
+  PTD::gaussianPolynomial(c, N, wc);
 
   static const int numBins = 1000;
   double wMin = 0.0;
   double wMax = 3.0;
   double w[numBins], m[numBins], mt[numBins];
-  rsFillWithRangeLinear(w, numBins, wMin, wMax);
+  RAPT::rsArray::fillWithRangeLinear(w, numBins, wMin, wMax);
   for(int i = 0; i < numBins; i++)
   {
-    m[i]  = 1.0 / (evaluatePolynomialAt(w[i], c, 2*N));
+    m[i]  = 1.0 / (RAPT::rsPolynomial<double>::evaluatePolynomialAt(w[i], c, 2*N));
     mt[i] = exp(-g*w[i]*w[i]);  // ideal Gaussian response
   }
 
@@ -853,8 +865,9 @@ void halpernPrototype()
 
   int N = 10;
 
-  rsHalpernPolynomial(aH, N);
-  rsPapoulisPolynomial(aP, N);
+  typedef RAPT::rsPrototypeDesigner<double> PTD;
+  PTD::halpernPolynomial(aH, N);
+  PTD::papoulisPolynomial(aP, N);
 
 
   //maximumSlopeMonotonicPolynomial(aP, N);
@@ -871,11 +884,11 @@ void halpernPrototype()
   double wMax = 100;
   static const int numBins = 1000;
   double w[numBins], mH[numBins], mP[numBins];
-  rsFillWithRangeExponential(w, numBins, wMin, wMax);
+  RAPT::rsArray::fillWithRangeExponential(w, numBins, wMin, wMax);
   for(int i = 0; i < numBins; i++)
   {
-    mH[i] = 1.0 / (1.0 + eps*eps * evaluatePolynomialAt(w[i], aH, 2*N));
-    mP[i] = 1.0 / (1.0 + eps*eps * evaluatePolynomialAt(w[i], aP, 2*N));
+    mH[i] = 1.0 / (1.0 + eps*eps * RAPT::rsPolynomial<double>::evaluatePolynomialAt(w[i], aH, 2*N));
+    mP[i] = 1.0 / (1.0 + eps*eps * RAPT::rsPolynomial<double>::evaluatePolynomialAt(w[i], aP, 2*N));
 
     //mP[i] = 1.0 / (1.0 + eps*eps * evaluatePolynomialAt(w[i]*w[i], aP, N));
 
@@ -899,7 +912,7 @@ void plotMaxSteepResponse(double *p, int M, double *q, int N, double k)
   double wMax = 100;
   static const int numBins = 1000;
   double w[numBins], r[numBins], rB[numBins];
-  rsFillWithRangeExponential(w, numBins, wMin, wMax);
+  RAPT::rsArray::fillWithRangeExponential(w, numBins, wMin, wMax);
   int n;
   double num, den, x;
   for(n = 0; n < numBins; n++)
@@ -907,8 +920,8 @@ void plotMaxSteepResponse(double *p, int M, double *q, int N, double k)
     x = w[n]*w[n];
 
     // evaluate our filter's response:
-    num   = evaluatePolynomialAt(x, p, M);
-    den   = evaluatePolynomialAt(x, q, N);
+    num   = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, p, M);
+    den   = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, q, N);
     r[n]  = k * num / den;
 
     // evaluate the reference Butterworth response:
@@ -1053,28 +1066,28 @@ void maxFlatMaxSteepPrototypeM2N2()
 void envelopeFilter1(double *x, double *yEnv, double *yMod, int N, double fc, double fs,
   int numPasses = 8)
 {
-  double mean = rsMean(x, N);     // compute mean
-  rsAdd(x, -mean, yEnv, N);       // subtract it from x
+  double mean = RAPT::rsArray::mean(x, N);     // compute mean
+  RAPT::rsArray::add(x, -mean, yEnv, N);       // subtract it from x
   rsBiDirectionalFilter::applyButterworthLowpass(yEnv, yEnv, N, fc, fs, 1, numPasses);
-  rsAdd(yEnv, mean, yEnv, N);     // undo mean subtraction
-  rsSubtract(x, yEnv, yMod, N);   // compute residual
+  RAPT::rsArray::add(yEnv, mean, yEnv, N);     // undo mean subtraction
+  RAPT::rsArray::subtract(x, yEnv, yMod, N);   // compute residual
 }
 
 void envelopeFilter2(double *x, double *yEnv, double *yMod, int N, double fc, double fs,
   int numPasses = 8)
 {
-  double mean = rsMean(x, N);      // compute mean
-  rsAdd(x, -mean, yEnv, N);        // subtract it from x
-  rsDifference(yEnv, N);           // take difference signal
+  double mean = RAPT::rsArray::mean(x, N);      // compute mean
+  RAPT::rsArray::add(x, -mean, yEnv, N);        // subtract it from x
+  RAPT::rsArray::difference(yEnv, N);           // take difference signal
   rsBiDirectionalFilter::applyButterworthLowpass(yEnv, yEnv, N, fc, fs, 1, numPasses);
-  rsCumulativeSum(yEnv, yEnv, N);  // undo difference
-  rsAdd(yEnv, mean, yEnv, N);      // undo mean subtraction
-  rsSubtract(x, yEnv, yMod, N);    // compute residual
+  RAPT::rsArray::cumulativeSum(yEnv, yEnv, N);  // undo difference
+  RAPT::rsArray::add(yEnv, mean, yEnv, N);      // undo mean subtraction
+  RAPT::rsArray::subtract(x, yEnv, yMod, N);    // compute residual
 
   // transfer mean of residual signal into envelope signal:
-  mean = rsMean(yMod, N);
-  rsAdd(yEnv, +mean, yEnv, N);
-  rsAdd(yMod, -mean, yMod, N);
+  mean = RAPT::rsArray::mean(yMod, N);
+  RAPT::rsArray::add(yEnv, +mean, yEnv, N);
+  RAPT::rsArray::add(yMod, -mean, yMod, N);
 }
 
 void envelopeFilter3(double *x, double *yEnv, double *yMod, int N, double fc, double fs,
@@ -1085,10 +1098,10 @@ void envelopeFilter3(double *x, double *yEnv, double *yMod, int N, double fc, do
   envelopeFilter2(x, tmp, yMod, N, fc, fs, numPasses);
 
   // use the filter on the reversed signal (then undo reversal):
-  rsReverse(x, N);
+  RAPT::rsArray::reverse(x, N);
   envelopeFilter2(x, yEnv, yMod, N, fc, fs, numPasses);
-  rsReverse(x, N);
-  rsReverse(yEnv, N);
+  RAPT::rsArray::reverse(x, N);
+  RAPT::rsArray::reverse(yEnv, N);
 
   // crossfade:
   for(int n = 0; n < N; n++)
@@ -1097,7 +1110,7 @@ void envelopeFilter3(double *x, double *yEnv, double *yMod, int N, double fc, do
     yEnv[n] = k*tmp[n] + (1-k)*yEnv[n];
   }
 
-  rsSubtract(x, yEnv, yMod, N);    // compute residual
+  RAPT::rsArray::subtract(x, yEnv, yMod, N);    // compute residual
   delete[] tmp;
 }
 
@@ -1123,7 +1136,7 @@ void splitLowFreqFromDC()
 
   // create the input signal:
   createSineWave(x, N, f, a, fs);
-  rsFillWithRangeLinear(yl, N, 1.0, 1.5);
+  RAPT::rsArray::fillWithRangeLinear(yl, N, 1.0, 1.5);
   for(int n = 0; n < N; n++)
     x[n] += yl[n];
 
@@ -1161,7 +1174,7 @@ void ladderResonanceModeling()
   double d   = 0.02;        // decay time in seconds
 
   // create and set up the ladder filter:
-  rsLadderResoShaped ldr;
+  rsLadderResoShapedDD ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   ldr.setResonanceDecay(d);
@@ -1169,13 +1182,13 @@ void ladderResonanceModeling()
 
   // create filter's step response:
   vector<double> x(N), yr(N);
-  rsFillWithValue(&x[0], N, 1.0);
+  RAPT::rsArray::fillWithValue(&x[0], N, 1.0);
   double dummy;
   for(int n = 0; n < N; n++)
     ldr.getSignalParts(x[n], &dummy, &yr[n]);
 
   // create a decaying sinusoid that is supposed to model the pure resonance signal:
-  rsModalFilter dsf;
+  rsModalFilterDD dsf;
   double a  = 0.87;     // sine amplitude
   double p  = -PI/1.7;  // start phase
   double fr = 0.985*fc;  // resonance frequency (all values were set ad-hoc - we need formulas)
@@ -1187,7 +1200,7 @@ void ladderResonanceModeling()
   // obtain the error-signal which is the desired impulse response of the transient correction
   // filter:
   vector<double> err(N);
-  rsSubtract(&yr[0], &ym[0], &err[0], N);
+  RAPT::rsArray::subtract(&yr[0], &ym[0], &err[0], N);
 
   // plot:
   GNUPlotter plt;
@@ -1255,7 +1268,7 @@ void ladderResoShape()
   double drv = 1.0;         // waveshaper drive
 
   // create and set up the filter:
-  rsLadderResoShaped2 flt;
+  rsLadderResoShaped2DD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(fc);
   flt.setResonanceDecay(dec);
@@ -1305,7 +1318,7 @@ void ladderThresholds()
   double drive = 8;
 
   // create and set up filter:
-  rsLadderResoShaped2 flt;
+  rsLadderResoShaped2DD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(1000);
   flt.setResonanceDecay(0.01);
@@ -1316,7 +1329,7 @@ void ladderThresholds()
 
   // create input signal:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, 50, fs, 0, false);
+  createWaveform(&x[0], N, 1, 50., fs, 0., false);
 
   // create output signal:
   vector<double> y(N);
@@ -1420,14 +1433,14 @@ void ladderFeedbackSaturation()
   // create input signal - we use a sawtooth wave with amplitude increasing from aMin to aMax:
   vector<double> x(N);
   vector<double> a(N); // amplitude 
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsFillWithRangeLinear(&a[0], N, aMin, aMax);
-  rsMultiply(&x[0], &a[0], &x[0], N);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::fillWithRangeLinear(&a[0], N, aMin, aMax);
+  RAPT::rsArray::multiply(&x[0], &a[0], &x[0], N);
 
   // compute ladder coeffs:
   double a1, b0, k, g;
   //fc = 0.007, r = 1;  // just for test
-  rsLadderFilter::computeCoeffs(2*PI*fc/fs, r, &a1, &b0, &k, &g);
+  rsLadderFilter2DD::computeCoeffs(2*PI*fc/fs, r, &a1, &b0, &k, &g);
 
 
   // compute ladder output:
@@ -1493,13 +1506,13 @@ void ladderFeedbackSaturation2()
   double aMax = 3.0;         // maximum output amplitude
   vector<double> x(N);
   vector<double> a(N);       // amplitude 
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
   //createWaveform(&x[0], N, 1, fIn, fs, 0, true); // with anti-aliasing
-  rsFillWithRangeLinear(&a[0], N, aMin, aMax);
-  rsMultiply(&x[0], &a[0], &x[0], N);
+  RAPT::rsArray::fillWithRangeLinear(&a[0], N, aMin, aMax);
+  RAPT::rsArray::multiply(&x[0], &a[0], &x[0], N);
 
   // create the filter object and set up its parameters:
-  rsLadderFilterFeedbackSaturated flt;
+  rsLadderFeedbackSaturatedDD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(1500);
   //flt.setResonanceDecay(0.1);
@@ -1564,15 +1577,15 @@ void ladderFeedbackSaturation3()
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // create cutoff frequency sweep:
   vector<double> fc(N);
-  rsFillWithRangeExponential(&fc[0], N, fc1, fc2);
+  RAPT::rsArray::fillWithRangeExponential(&fc[0], N, fc1, fc2);
 
   // create and set up filter:
-  rsLadderFilterFeedbackSaturated flt;
+  rsLadderFeedbackSaturatedDD flt;
   flt.setSampleRate(fs);
   //flt.setResonanceDecay(0.01);
   flt.setResonance(1.0);
@@ -1607,7 +1620,7 @@ void ladderFeedbackSatDCGain()
   double inGain = 1.0;        // gain of input DC signal
 
   // create and set up filter:
-  rsLadderFilterFeedbackSaturated flt;
+  rsLadderFeedbackSaturatedDD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(1000);
   //flt.setResonanceDecay(0.01);
@@ -1615,13 +1628,13 @@ void ladderFeedbackSatDCGain()
   flt.setFeedbackDrive(2.0);
   flt.setLowerFeedbackLimit(-0.5);
   flt.setUpperFeedbackLimit(+0.5);
-  flt.setSaturationMode(rsLadderFilterFeedbackSaturated::PRE_FB_GAIN);
+  flt.setSaturationMode(rsLadderFeedbackSaturatedDD::PRE_FB_GAIN);
   //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_FB_GAIN);
   //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_INPUT_ADD);
 
   // create DC input signal:
   vector<double> x(N);
-  rsFillWithValue(&x[0], N, inGain);
+  RAPT::rsArray::fillWithValue(&x[0], N, inGain);
 
   // compute filter output signal:
   vector<double> y(N);
@@ -1631,8 +1644,8 @@ void ladderFeedbackSatDCGain()
 
   // apply a 1st order lowpass to the output to extract the DC component:
   vector<double> yDC(N);
-  rsOnePoleFilter lpf;
-  lpf.setMode(rsOnePoleFilter::LOWPASS);
+  rsOnePoleFilterDD lpf;
+  lpf.setMode(rsOnePoleFilterDD::LOWPASS);
   lpf.setSampleRate(fs);
   lpf.setCutoff(10.0);
   for(n = 0; n < N; n++)
@@ -1665,7 +1678,7 @@ void ladderFeedbackSatReso()
   //double hi       = +0.5;       // feedback saturation high-limit
 
   // create and set up the filter:
-  rsLadderFilterFeedbackSaturated flt;
+  rsLadderFeedbackSaturatedDD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(1000);                   // cutoff frequency
   flt.setResonance(1.0);
@@ -1676,24 +1689,24 @@ void ladderFeedbackSatReso()
 
   // set the position for the saturation function(s):
   //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::PRE_FB_GAIN);
-  flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_FB_GAIN);     // use as reference
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_INPUT_ADD);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_1ST_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_2ND_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_3RD_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_4TH_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_EACH_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::IN_1ST_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::IN_2ND_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::IN_3RD_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::IN_4TH_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::IN_EACH_STAGE);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::TEST1);
+  flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_FB_GAIN);     // use as reference
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_INPUT_ADD);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_1ST_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_2ND_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_3RD_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_4TH_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_EACH_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::IN_1ST_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::IN_2ND_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::IN_3RD_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::IN_4TH_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::IN_EACH_STAGE);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::TEST1);
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // create output signals of the individual filter stages:
   double y[5];
@@ -1735,7 +1748,7 @@ void ladderFeedbackSatGrowl()
   double aIn   = 1.0;        // amplitude of input sawtooth
 
   // create and set up the filter:
-  rsLadderResoShaped flt;
+  rsLadderResoShapedDD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(fc);                             // cutoff frequency
   flt.setResonanceDecay(0.1);
@@ -1743,15 +1756,15 @@ void ladderFeedbackSatGrowl()
   flt.setFeedbackDrive(drive);
   flt.setFeedbackLowerLimit(-1.0);
   flt.setFeedbackUpperLimit(+1.0);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_FB_GAIN);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_INPUT_ADD);
-  flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_GAIN_AND_ADD);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_FB_GAIN);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_INPUT_ADD);
+  flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_GAIN_AND_ADD);
 
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // create filter output:
   vector<double> yf(N), yr(N), y(N);
@@ -1806,7 +1819,7 @@ void ladderFeedbackSatGrowl2()
 
 
   // create and set up the filter:
-  rsLadderFilterFeedbackSaturated flt;
+  rsLadderFeedbackSaturatedDD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(fc);                 // cutoff frequency
   flt.setResonance(1.0);
@@ -1814,14 +1827,14 @@ void ladderFeedbackSatGrowl2()
   flt.setFeedbackDrive(drive);
   flt.setLowerFeedbackLimit(-1.0);   // irrelevant, if we use the experimental saturation mode
   flt.setUpperFeedbackLimit(+1.0);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_FB_GAIN);
-  flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_INPUT_ADD);
-  //flt.setSaturationMode(rsLadderFilterFeedbackSaturated::POST_GAIN_AND_ADD);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_FB_GAIN);
+  flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_INPUT_ADD);
+  //flt.setSaturationMode(rsLadderFeedbackSaturatedDD::POST_GAIN_AND_ADD);
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // create filter output:
   vector<double> y(N);
@@ -1881,7 +1894,7 @@ void ladderZDF()
 
   // compute compensation gain (formula the same as in UDF):
   double g;
-  g = rsLadderFilter::computeCompensationGain(a, b, k);
+  g = rsLadderFilter2DD::computeCompensationGain(a, b, k);
 
   // compute feedback solution coefficients:
   double d[5];
@@ -1895,13 +1908,13 @@ void ladderZDF()
 
   // create input signal:
   vector<double> x(N);
-  rsFillWithZeros(&x[0], N);
+  RAPT::rsArray::fillWithZeros(&x[0], N);
   x[0] = 1;
 
   // compute output:
   vector<double> output(N);
   double y[5];    // filter state
-  rsFillWithZeros(y, 5);
+  RAPT::rsArray::fillWithZeros(y, 5);
   double tmp;
   for(int n = 0; n < N; n++)
   {
@@ -1945,25 +1958,25 @@ void ladderZDFvsUDF()
   double depth = 0.8;           // modulation depth (as scaler for fc)
 
   // create and set up the unit delay feedback filter:
-  rsLadderFilter udf;
+  rsLadderFilter2DD udf;
   udf.setCutoff(fc);
   udf.setSampleRate(fs);
   udf.setResonance(r);
 
   // create and set up the zero delay feedback filter:
-  rsLadderFilterZDF zdf;
+  rsLadderFilterZDFDD zdf;
   zdf.setCutoff(fc);
   zdf.setSampleRate(fs);
   zdf.setResonance(r);
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, true);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., true);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // create modulation signal:
   vector<double> m(N);
-  createWaveform(&m[0], N, 2, fMod, fs, 0, true);
+  createWaveform(&m[0], N, 2, fMod, fs, 0., true);
 
   // create filter outputs
   vector<double> yu(N), yz(N);
@@ -2028,7 +2041,7 @@ void resoShapeFeedbackSat()
 
   // create and set up the filter object:
   //rsLadderFilterFeedbackSaturated flt;
-  rsLadderResoShaped flt;  // later: rsLadderResoShaped2
+  rsLadderResoShapedDD flt;  // later: rsLadderResoShaped2
   flt.setSampleRate(fs);
   flt.setCutoff(1500);
   flt.setResonanceDecay(0.1);
@@ -2036,17 +2049,17 @@ void resoShapeFeedbackSat()
   flt.setFeedbackDrive(4.0);
   flt.setFeedbackLowerLimit(-0.1);
   flt.setFeedbackUpperLimit(+0.2);
-  flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::PRE_FB_GAIN);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_FB_GAIN);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_INPUT_ADD);
+  flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::PRE_FB_GAIN);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_FB_GAIN);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_INPUT_ADD);
   flt.setFeedbackSaturationGainAt1(0.75);
 
   // create input signal (sawtooth with amplitude increasing from aMin to aMax):
   vector<double> x(N);
   vector<double> a(N);       // amplitude 
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsFillWithRangeLinear(&a[0], N, aMin, aMax);
-  rsMultiply(&x[0], &a[0], &x[0], N);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::fillWithRangeLinear(&a[0], N, aMin, aMax);
+  RAPT::rsArray::multiply(&x[0], &a[0], &x[0], N);
 
   // compute output signals:
   vector<double> y(N), yr(N), yf(N);  // full, resonant and nonresonant-filtered output
@@ -2058,7 +2071,7 @@ void resoShapeFeedbackSat()
     double drive  = 4.0;
     double offset = 0.0;
     //yr[n] = tanh(drive*yr[n]+offset);
-    yr[n] = rsLimitToRange(drive*yr[n]+offset, -1.0, +1.0);
+    yr[n] = rsClip(drive*yr[n]+offset, -1.0, +1.0);
 
     y[n] = yf[n] + yr[n];
   }
@@ -2100,7 +2113,7 @@ void resoSaturationModes()
   double offset = 0.0;
 
   // create and set up the filter:
-  rsLadderResoShaped filter;
+  rsLadderResoShapedDD filter;
   filter.setSampleRate(fs);
   filter.setCutoff(fc);
   filter.setResonanceDecay(decay);
@@ -2110,7 +2123,7 @@ void resoSaturationModes()
 
   // create input signal:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
 
   // create output signals with different saturation modes:
   vector<double> yd(N), ym(N), ya(N); // direct, multiplicative, additive
@@ -2182,7 +2195,7 @@ void resoShapeGate()
   double hi       = +0.5;       // feedback saturation high-limit
 
   // create and set up the filter:
-  rsLadderResoShaped2 flt;
+  rsLadderResoShaped2DD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(1000);                   // cutoff frequency
   flt.setResonanceDecay(1.0);
@@ -2195,24 +2208,24 @@ void resoShapeGate()
   flt.setGateMix(0.0);
 
   // set the position for the saturation function(s):
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::PRE_FB_GAIN);
-  flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_FB_GAIN);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_INPUT_ADD);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_1ST_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_2ND_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_3RD_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_4TH_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_EACH_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_1ST_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_2ND_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_3RD_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_4TH_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_EACH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::PRE_FB_GAIN);
+  flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_FB_GAIN);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_INPUT_ADD);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_1ST_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_2ND_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_3RD_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_4TH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_EACH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_1ST_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_2ND_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_3RD_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_4TH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_EACH_STAGE);
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // create output signals (filtered, resonance, complete)
   vector<double> y(N), yr(N), yf(N);
@@ -2279,7 +2292,7 @@ void resoShapePseudoSync()
   double hi       = +0.5;       // feedback saturation high-limit
 
   // create and set up the filter:
-  rsLadderResoShaped2 flt;
+  rsLadderResoShaped2DD flt;
   flt.setSampleRate(fs);
   flt.setResonanceDecay(0.005);
   flt.setFeedbackSaturationGainAt1(y1);
@@ -2287,19 +2300,19 @@ void resoShapePseudoSync()
   flt.setFeedbackDrive(drive / (y1*y1*y1*y1)); // test - compensated drive
   flt.setFeedbackLowerLimit(lo); 
   flt.setFeedbackUpperLimit(hi);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_1ST_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_2ND_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_3RD_STAGE);
-  flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_4TH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_1ST_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_2ND_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_3RD_STAGE);
+  flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_4TH_STAGE);
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // create cutoff sweep:
   vector<double> fc(N);
-  rsFillWithRangeExponential(&fc[0], N, fc1, fc2);
+  RAPT::rsArray::fillWithRangeExponential(&fc[0], N, fc1, fc2);
 
   // get filter output:
   vector<double> y(N);
@@ -2310,7 +2323,7 @@ void resoShapePseudoSync()
   }
 
   // normalize filter output and write to wavefile:
-  rsNormalize(&y[0], N, 1.0, true);
+  RAPT::rsArray::normalize(&y[0], N, 1.0, true);
   writeToMonoWaveFile("ResoShapePseudoSync.wav", &y[0], N, (int)fs, 16);
 }
 
@@ -2334,7 +2347,7 @@ void resoSeparationNonlinear()
   double hi       = +1.0;       // feedback saturation high-limit
 
   // create and set up the filter:
-  rsLadderResoShaped2 flt;
+  rsLadderResoShaped2DD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(fc);
   flt.setResonanceDecay(1.0);
@@ -2344,24 +2357,24 @@ void resoSeparationNonlinear()
   flt.setFeedbackUpperLimit(hi);
 
   // set the position for the saturation function(s):
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::PRE_FB_GAIN);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_FB_GAIN);
-  flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_INPUT_ADD);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_1ST_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_2ND_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_3RD_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_4TH_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_EACH_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_1ST_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_2ND_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_3RD_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_4TH_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_EACH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::PRE_FB_GAIN);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_FB_GAIN);
+  flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_INPUT_ADD);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_1ST_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_2ND_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_3RD_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_4TH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_EACH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_1ST_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_2ND_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_3RD_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_4TH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_EACH_STAGE);
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // create output signals (filtered, resonance, complete)
   vector<double> y(N), yr(N), yf(N);
@@ -2399,7 +2412,7 @@ void resoReplace()
   double fIn   = 50;         // frequency of input sawtooth
 
   // create and set up the filter:
-  rsResoReplacer flt;
+  rsResoReplacerDD flt;
   flt.setSampleRate(fs);
   flt.setCutoff(1000.0);
   flt.setResonanceDecay(0.01);
@@ -2412,7 +2425,7 @@ void resoReplace()
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
 
   // get filter output:
   vector<double> y(N), yr(N), yf(N);
@@ -2462,7 +2475,7 @@ void resoReplacePhaseBumping()
 
 
   // create and set up filter:
-  rsResoReplacerPhaseBumped flt;
+  rsResoReplacerPhaseBumpedDD flt;
   flt.setCutoff(fc);
   flt.setResonanceDecay(0.02);
   flt.setBumpFactor(5.0);
@@ -2471,8 +2484,8 @@ void resoReplacePhaseBumping()
 
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // get filter output:
   vector<double> y(N), yr(N), yf(N);
@@ -2516,17 +2529,17 @@ void resoReplaceScream()
 
   // create and set up the filter:
   // create and set up the filter:
-  rsResoReplacerPhaseBumped flt;
+  rsResoReplacerPhaseBumpedDD flt;
   flt.setSampleRate(fs);
   flt.setResonanceDecay(1.0);
   flt.setFeedbackDrive(4.0);            // seems to control the growl
   flt.setFeedbackLowerLimit(-0.2);
   flt.setFeedbackUpperLimit(+0.2);
   flt.setFeedbackSaturationGainAt1(1.0);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_FB_GAIN);
-  flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_INPUT_ADD);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::POST_EACH_STAGE);
-  //flt.setFeedbackSaturationPlace(rsLadderFilterFeedbackSaturated::IN_EACH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_FB_GAIN);
+  flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_INPUT_ADD);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_EACH_STAGE);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::IN_EACH_STAGE);
   //flt.setResonanceAttack(0.0);
   //flt.setResonancePhase(PI); 
   //flt.setResonanceGain(1.0);
@@ -2542,12 +2555,12 @@ void resoReplaceScream()
   
   // create input sawtooth:
   vector<double> x(N);
-  createWaveform(&x[0], N, 1, fIn, fs, 0, false);
-  rsScale(&x[0], N, aIn);
+  createWaveform(&x[0], N, 1, fIn, fs, 0., false);
+  RAPT::rsArray::scale(&x[0], N, aIn);
 
   // create frequency sweep:
   vector<double> f(N);
-  rsFillWithRangeExponential(&f[0], N, fc1, fc2);
+  RAPT::rsArray::fillWithRangeExponential(&f[0], N, fc1, fc2);
 
   // compute output:
   vector<double> y(N);
@@ -2587,7 +2600,7 @@ void fakeResonance()
   double dl    = 1.0;         // resonance delay (as factor for optimal dealy)
 
   // create and set up the filter object:
-  rsFakeResonanceFilter flt;
+  rsFakeResonanceFilterDD flt;
   flt.setSampleRate(fs);
   flt.setLowpassCutoff(fc);
   flt.setHighpassCutoff(fh);
@@ -2640,7 +2653,7 @@ void fakeResoLowpassResponse()
   double fs = 44100;       // samplerate
   double fc = 500;         // lowpass cutoff
 
-  rsFakeResonanceFilter flt;
+  rsFakeResonanceFilterDD flt;
   flt.setSampleRate(fs);
   flt.setLowpassCutoff(fc);
 
@@ -2649,7 +2662,7 @@ void fakeResoLowpassResponse()
   h[0] = flt.getLowpassOutput(1.0);
   for(int n = 1; n < N; n++)
     h[n] = flt.getLowpassOutput(0.0);
-  rsNormalize(&h[0], N, 1.0);
+  RAPT::rsArray::normalize(&h[0], N, 1.0);
 
   flt.reset();
   for(int n = 0; n < N; n++)
@@ -2670,7 +2683,7 @@ void fakeResoDifferentDelays()
   double fs    = 40000;       // samplerate
 
   // create and set up the filter object:
-  rsFakeResonanceFilter flt;
+  rsFakeResonanceFilterDD flt;
   flt.setSampleRate(fs);
   flt.setLowpassCutoff(5000);
   flt.setResonanceAmplitude(1.0);
@@ -2692,10 +2705,10 @@ void fakeResoDifferentDelays()
   getImpulseResponse(flt, &y5[0], N);
 
   // extract the envelopes:
-  rsOnePoleFilter smoother;
+  rsOnePoleFilterDD smoother;
   smoother.setCutoff(50.0);
   smoother.setSampleRate(fs);
-  smoother.setMode(rsOnePoleFilter::LOWPASS);
+  smoother.setMode(rsOnePoleFilterDD::LOWPASS);
   int n;
   smoother.reset();
   for(n = 0; n < N; n++)

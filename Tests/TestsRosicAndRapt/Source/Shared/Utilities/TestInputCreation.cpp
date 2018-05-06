@@ -52,10 +52,11 @@ void createTimeAxis(int numSamples, double *timeAxis, double sampleRate)
     timeAxis[n] = n / sampleRate;
 }
 
-void createWaveform(float *x, int N, int shape, float frequency, float sampleRate, 
-  float phase, bool antiAlias)
+template<class T>
+void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase = 0.0, 
+  bool antiAlias = false)
 {
-  float w = (float)(2*PI*frequency/sampleRate);
+  T w = (T)(2*PI*frequency/sampleRate);
   fillWithZeros(x, N);
   switch( shape )
   {
@@ -80,9 +81,9 @@ void createWaveform(float *x, int N, int shape, float frequency, float sampleRat
       int k = 1;
       while( k*frequency < sampleRate/2 )
       {
-        float a = -2.f / (k*PI_F);
+        T a = -2.f / (k*PI);
         for(int n=0; n<N; n++)
-          x[n] += a * sin(k*(w*n+PI_F) + phase);
+          x[n] += a * sin(k*(w*n+PI) + phase);
         k++;
       }
     }
@@ -100,9 +101,9 @@ void createWaveform(float *x, int N, int shape, float frequency, float sampleRat
       int k = 1;
       while( k*frequency < sampleRate/2 )
       {
-        float a = -4.f / (k*PI_F);
+        T a = -4.f / (k*PI);
         for(int n=0; n<N; n++)
-          x[n] += a * sin(k*(w*n+PI_F) + phase);
+          x[n] += a * sin(k*(w*n+PI) + phase);
         k+=2;
       }
     }
@@ -117,11 +118,11 @@ void createWaveform(float *x, int N, int shape, float frequency, float sampleRat
     }
     else
     {
-      int   k = 1;
-      float s = 1.0; // sign 
+      int k = 1;
+      T s = 1.0; // sign 
       while( k*frequency < sampleRate/2 )
       {
-        float a = 8.f / (k*k*PI_F*PI_F);
+        float a = 8.f / (k*k*PI*PI);
         for(int n=0; n<N; n++)
           x[n] += s * a * sin(k*w*n + phase);
         k +=  2;
@@ -132,6 +133,11 @@ void createWaveform(float *x, int N, int shape, float frequency, float sampleRat
   break;
   }
 }
+template void createWaveform(float *x, int N, int shape, float frequency, float sampleRate, 
+  float phase = 0.0, bool antiAlias = false);
+template void createWaveform(double *x, int N, int shape, double frequency, double sampleRate, 
+  double phase = 0.0, bool antiAlias = false);
+
 
 void createPulseWave(double *x, int N, double frequency, double dutyCycle, 
   double sampleRate, double phase, bool antiAlias)

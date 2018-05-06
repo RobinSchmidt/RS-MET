@@ -423,10 +423,26 @@ typedef RAPT::rsBasicDelayLine<double> rsBasicDelayLineD;
 typedef RAPT::rsDelayLine<double, double> rsDelayLineDD;
 typedef RAPT::rsFractionalDelayLine<double, double> rsFractionalDelayLineDD;
 
+
+typedef RAPT::rsOnePoleFilter<double, double> rsOnePoleFilterDD;
+
 typedef RAPT::rsNonlinearModalFilter<double, double> rsNonlinearModalFilterDD;
+typedef RAPT::rsModalFilter<double, double> rsModalFilterDD;
 typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
 typedef RAPT::rsStateVariableFilter<double, double> rsStateVariableFilterDD;
 typedef RAPT::rsPhonoFilter<double, double> rsPhonoFilterDD;
+typedef RAPT::rsMovingAverage<double, double> rsMovingAverageDD;
+typedef RAPT::rsEngineersFilter<double, double> rsEngineersFilterDD;
+
+typedef RAPT::rsLadderFilter2<double, double> rsLadderFilter2DD;  // the version from RSLib
+typedef RAPT::rsLadderFilterZDF<double, double> rsLadderFilterZDFDD; 
+typedef RAPT::rsLadderResoShaped<double, double> rsLadderResoShapedDD;
+typedef RAPT::rsLadderResoShaped2<double, double> rsLadderResoShaped2DD;
+typedef RAPT::rsLadderFilterFeedbackSaturated<double, double> rsLadderFeedbackSaturatedDD;
+typedef RAPT::rsResoReplacer<double, double> rsResoReplacerDD;
+typedef RAPT::rsResoReplacerPhaseBumped<double, double> rsResoReplacerPhaseBumpedDD;
+typedef RAPT::rsFakeResonanceFilter<double, double> rsFakeResonanceFilterDD;
+
 
 typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundamentalEstimatorD;
 typedef RAPT::rsZeroCrossingPitchDetector<double> rsZeroCrossingPitchDetectorD;

@@ -102,11 +102,22 @@ template class RAPT::rsEllipseOscillator<double>;
 
 template class RAPT::rsMultiBandSplitter<double, double>;
 
-
+template class RAPT::rsOnePoleFilter<double, double>;
 template class RAPT::rsNonlinearModalFilter<double, double>;
 template class RAPT::rsModalFilterBank<double, double>;
 template class RAPT::rsStateVariableFilter<double, double>;
 template class RAPT::rsPhonoFilter<double, double>;
+template class RAPT::rsMovingAverage<double, double>;
+template class RAPT::rsEngineersFilter<double, double>;
+
+template class RAPT::rsLadderFilter2<double, double>;
+template class RAPT::rsLadderFilterZDF<double, double>; 
+template class RAPT::rsLadderResoShaped<double, double>;
+template class RAPT::rsLadderResoShaped2<double, double>;
+template class RAPT::rsLadderFeedbackSaturated<double, double>;
+template class RAPT::rsResoReplacer<double, double>;
+template class RAPT::rsResoReplacerPhaseBumped<double, double>;
+template class RAPT::rsFakeResonanceFilter<double, double>;
 
 template class RAPT::rsDelayLine<double, double>;
 template class RAPT::rsFractionalDelayLine<double, double>;
