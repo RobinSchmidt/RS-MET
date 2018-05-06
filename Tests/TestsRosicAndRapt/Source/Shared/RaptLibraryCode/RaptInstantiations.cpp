@@ -54,9 +54,8 @@ template void rsArray::normalize(double *buffer, int length, double maximum, boo
 template double rsArray::mean(double *x, int length);
 template double rsArray::maxDeviation(double *buffer1, double *buffer2, int length);
 template void rsArray::applyFunction(double *x, double *y, int N, double (*f) (double));
-
-
-
+template void rsArray::filter(double *x, int xLength, double *y, int yLength, 
+  double *b, int bOrder, double *a, int aOrder);
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
 template float rsArray::maxDeviation(float *buffer1, float *buffer2, int length);
@@ -276,6 +275,12 @@ template double RAPT::rsSineFrequencyAt(double *x, int N, int n0, bool refine);
 template double RAPT::rsSinePhaseAt(double *x, int N, int n0, double w);
 template double RAPT::rsSinePhaseAtViaZeros(double *x, int N, int n0, int precision);
 template double RAPT::rsGetShiftForBestMatch(double *x1, double *x2, int N, bool deBias);
+
+template double RAPT::rsCentroid(double *x, int N);
+template double RAPT::rsCentroidOfEnergy(double *x, int N);
+template double RAPT::rsRaisedCosineWindow(double x, double length, double p);
+template double RAPT::rsExactBlackmanWindow(double x, double length, double dummy);
+template double RAPT::rsWindowedSinc(double x, double length, double stretch);
 
 // move to rsFilterAnalyzer:
 template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0, 
