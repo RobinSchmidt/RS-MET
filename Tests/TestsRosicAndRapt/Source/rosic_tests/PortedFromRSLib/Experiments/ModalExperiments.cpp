@@ -11,7 +11,7 @@ void modalFilter()
   double A   = 1.0;    // amplitude as raw factor
 
   // create and set up the modal filter:
-  rsModalFilter mf;
+  rsModalFilterDD mf;
   mf.setModalParameters(f, A, td, phs, fs);
 
   // generate time-axis and impulse-response:
@@ -35,7 +35,7 @@ void attackDecayFilter()
   double a   = 1.0;    // amplitude as raw factor
 
   // create and set up the filter:
-  rsModalFilterWithAttack mf;
+  rsModalFilterWithAttackDD mf;
   mf.setModalParameters(f, a, ta, td, phs, fs);
 
   // generate and plot impulse-response:
@@ -114,15 +114,15 @@ void rsDampedSineFilterAnalysis2(double b0, double b1, double a1, double a2, dou
   double *d, double *p)
 {
   rsAssert(0.25*a1*a1-a2 < 0.0, "no damped sine filter, poles not complex conjugate");
-  rsComplexDbl j(0.0, 1.0);            // imaginary unit
-  double P = sqrt(a2);                 // pole radius
-  *w = acos(-0.5*a1/P);                // pole angle
-  rsComplexDbl q = P * rsExpC(j * *w); // pole location
-  rsComplexDbl r = (b1+b0*q)/(2*q.im); // residue location
-  *d = -1.0/log(P);                    // normalized decay time constant
-  *A = 2*r.getRadius();                // amplitude
-  *p = r.getAngle();                   // start phase...
-  if( *p < 0.0 )                       // ...in interval 0...2pi instead of -pi...pi
+  rsComplexDbl j(0.0, 1.0);                // imaginary unit
+  double P = sqrt(a2);                     // pole radius
+  *w = acos(-0.5*a1/P);                    // pole angle
+  rsComplexDbl q = P * exp(j * *w);        // pole location
+  rsComplexDbl r = (b1+b0*q)/(2*q.imag()); // residue location
+  *d = -1.0/log(P);                        // normalized decay time constant
+  *A = 2*abs(r);                           // amplitude
+  *p = arg(r);                             // start phase...
+  if( *p < 0.0 )                           // ...in interval 0...2pi instead of -pi...pi
     *p += 2*PI;
   // Remark: There are actually two mathematical errors in this sequence of assignments which 
   // conveniently cancel each other and streamline the implementation, that's why I left them in.
@@ -220,9 +220,9 @@ void biquadImpulseResponseDesign()
   // generate time-axis and impulse-response:
   double t[N], x[N];
   createTimeAxis(N, t, fs);
-  rsFillWithZeros(x, N);
+  RAPT::rsArray::fillWithZeros(x, N);
   x[0] = 1;
-  rsFilter(x, N, x, N, b, 2, a, 2);
+  RAPT::rsArray::filter(x, N, x, N, b, 2, a, 2);
 
   // plot the impulse-response (versus the time-axis):
   plotData(N, t, x);

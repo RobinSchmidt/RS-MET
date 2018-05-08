@@ -51,6 +51,9 @@ namespace RAPT
 #include "Filters/ModalFilterBank.h"
 #include "Filters/LadderFilter.h"
 #include "Filters/FakeResonanceFilter.h"
+#include "Filters/Biquad.h"
+
+
 
 #include "Analysis/EnvelopeFollower.h"
 #include "Analysis/LinearPredictor.h"

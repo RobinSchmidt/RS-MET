@@ -421,6 +421,8 @@ namespace rosic
 {
 
 typedef RAPT::rsSlewRateLimiterLinear<double, double> rsSlewRateLimiterLinearDD;
+typedef RAPT::rsBreakpointModulator<double> rsBreakpointModulatorD;
+
 
 typedef RAPT::rsBasicDelayLine<double> rsBasicDelayLineD;
 typedef RAPT::rsDelayLine<double, double> rsDelayLineDD;
@@ -429,6 +431,7 @@ typedef RAPT::rsFractionalDelayLine<double, double> rsFractionalDelayLineDD;
 typedef RAPT::rsOnePoleFilter<double, double> rsOnePoleFilterDD;
 typedef RAPT::rsNonlinearModalFilter<double, double> rsNonlinearModalFilterDD;
 typedef RAPT::rsModalFilter<double, double> rsModalFilterDD;
+typedef RAPT::rsModalFilterWithAttack<double, double> rsModalFilterWithAttackDD;
 typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
 typedef RAPT::rsStateVariableFilter<double, double> rsStateVariableFilterDD;
 typedef RAPT::rsPhonoFilter<double, double> rsPhonoFilterDD;

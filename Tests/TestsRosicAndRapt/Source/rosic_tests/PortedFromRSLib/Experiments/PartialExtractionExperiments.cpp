@@ -270,7 +270,7 @@ void biDirectionalFilter()
   // create input signal with centered impulse and filter it (with different values for the number
   // of passes):
   double x[N], y1[N], y2[N], y4[N], y8[N], y16[N];
-  rsFillWithZeros(x, N);
+  RAPT::rsArray::fillWithZeros(x, N);
   x[N/2] = 1.0;
   //x[0] = 1.0;  // for padding test
 
@@ -329,19 +329,19 @@ void biDirectionalFilter()
 
 
   double freqs[N];
-  rsFillWithRangeLinear(freqs, N, 0.0, fs);
+  RAPT::rsArray::fillWithRangeLinear(freqs, N, 0.0, fs);
   //plotDataLogX(N/2, freqs, m1, m2, m4, m8, m16);
   //plotData(N/2, 0.0, fs/N, m1, m2, m4, m8, m16); // magnitude responses
   plotData(N/16, 0.0, fs/N, m1, m2, m4, m8, m16); // magnitude responses - shouldn't it be
                                                   // fs/(N+1)?
 
   // normalize and write output files:
-  double s = 1 / rsMaxAbs(y1, N);
-  rsScale(y1,  N, s);
-  rsScale(y2,  N, s);
-  rsScale(y4,  N, s);
-  rsScale(y8,  N, s);
-  rsScale(y16, N, s);
+  double s = 1 / RAPT::rsArray::maxAbs(y1, N);
+  RAPT::rsArray::scale(y1,  N, s);
+  RAPT::rsArray::scale(y2,  N, s);
+  RAPT::rsArray::scale(y4,  N, s);
+  RAPT::rsArray::scale(y8,  N, s);
+  RAPT::rsArray::scale(y16, N, s);
   writeToMonoWaveFile("BiDirectionalFilterPasses1.wav",    y1, N, (int) fs, 16);
   writeToMonoWaveFile("BiDirectionalFilterPasses2.wav",    y2, N, (int) fs, 16);
   writeToMonoWaveFile("BiDirectionalFilterPasses4.wav",    y4, N, (int) fs, 16);
@@ -384,13 +384,13 @@ void sineRecreation()
   double *y   = new double[N];  // output signal
 
   // create the amplitude envelope:
-  rsBreakpointModulator bm;
+  rsBreakpointModulatorD bm;
   bm.setSampleRate(fs);
   bm.initialize();
-  bm.modifyBreakpoint(0, 0.0, 0.0, rsModBreakpoint::ANALOG, 0.5);
-  bm.modifyBreakpoint(1, 1.0, 0.0, rsModBreakpoint::ANALOG, 0.5);
-  bm.insertBreakpoint(0.1, 1.0, rsModBreakpoint::ANALOG, 0.5);
-  bm.insertBreakpoint(0.5, 0.5, rsModBreakpoint::ANALOG, 0.5);
+  bm.modifyBreakpoint(0, 0.0, 0.0, rsModBreakpoint<double>::ANALOG, 0.5);
+  bm.modifyBreakpoint(1, 1.0, 0.0, rsModBreakpoint<double>::ANALOG, 0.5);
+  bm.insertBreakpoint(0.1, 1.0, rsModBreakpoint<double>::ANALOG, 0.5);
+  bm.insertBreakpoint(0.5, 0.5, rsModBreakpoint<double>::ANALOG, 0.5);
   bm.noteOn();
   for(n = 0; n < N; n++)
     et[n] = bm.getSample();
@@ -454,8 +454,8 @@ void sineWithPhaseCatchUp()
   double a[N], x[N];            // amplitude envelope and signals
 
   // create amplitude envelope (and copy to x):
-  rsFillWithRangeLinear(a, N, as, ae);
-  rsCopyBuffer(a, x, N);
+  RAPT::rsArray::fillWithRangeLinear(a, N, as, ae);
+  RAPT::rsArray::copyBuffer(a, x, N);
 
   // create the sine with envelope - we pass x as envelope to see if it also works when x and a
   // point to the same array:
@@ -484,7 +484,7 @@ void partialExtractionTriple()
   // via multipass bidirectional bandpass filtering
 
   double fs = 44100;          // sample rate
-  int    N  = fs;             // number of samples
+  int    N  = (int)fs;        // number of samples
 
   // lower partial parameters:
   double fL  = 900;    // frequency in Hz
@@ -526,15 +526,15 @@ void partialExtractionTriple()
   double *ye = new double[N]; // measured envelope of middle mode
 
   // synthesize and mix the 3 partials:
-  rsModalFilterWithAttack mf;
+  rsModalFilterWithAttackDD mf;
   mf.setModalParameters(fL, aL, atL, dcL, pL, fs);
   getImpulseResponse(mf, xL, N);
   mf.setModalParameters(fM, aM, atM, dcM, pM, fs);
   getImpulseResponse(mf, xM, N);
   mf.setModalParameters(fU, aU, atU, dcU, pU, fs);
   getImpulseResponse(mf, xU, N);
-  rsAdd(xL, xM, x, N);
-  rsAdd(x,  xU, x, N);
+  RAPT::rsArray::add(xL, xM, x, N);
+  RAPT::rsArray::add(x,  xU, x, N);
 
   // retrieve the middle partial via multipass bidirectional bandpassing
   rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, yM, N, fM, bw, fs, np, gp);
@@ -552,7 +552,7 @@ void partialExtractionTriple()
 
   // get peak location and height of envelope (later, maybe use quadratic interpolation to find it 
   // with subsample precision - this is actually overkill, but however)
-  int    nPeak = rsMaxIndex(ye, N);
+  int    nPeak = RAPT::rsArray::maxIndex(ye, N);
   double tPeak = nPeak / fs;
   double aPeak = ye[nPeak];
 
@@ -619,14 +619,14 @@ void partialExtractionBell()
   double **sampleData = readFromWaveFile(samplePath, numChannels, N, fs);
 
   // allocate internal buffers:
-  double *x  = new double[N]; rsCopyBuffer(sampleData[0], x, N); // input signal
+  double *x  = new double[N]; RAPT::rsArray::copyBuffer(sampleData[0], x, N); // input signal
   double *t  = new double[N]; createTimeAxis(N, t, fs);          // time axis for plot
   double *yr = new double[N];                                    // real part of filtered signal
   double *yi = new double[N];                                    // imaginary part
   double *ye = new double[N];                                    // instantaneous envelope
 
   // set up filter:
-  rsNonlinearModalFilter mf;
+  rsNonlinearModalFilterDD mf;
   double f = 980.0;
   double Q = 4.0;  // ad hoc
   mf.setModalParameters(f, 1.0/Q, Q/f, 0.0, fs); // check tau ?= Q/f -> look up definition of Q, tau
@@ -637,9 +637,9 @@ void partialExtractionBell()
   for(int n = 0; n < N; n++)
   {
     z     = mf.getComplexSample(0.5*rsComplexDbl(x[n], x[n])); // maybe, we should use 1/sqrt(2) instead of 0.5
-    yr[n] = z.re;
-    yi[n] = z.im;
-    ye[n] = z.getRadius();
+    yr[n] = z.real();
+    yi[n] = z.imag();
+    ye[n] = abs(z);
   }
 
   plotData(N/10, t, x, yr, yi, ye);
@@ -788,17 +788,20 @@ double isolatePartialWithBiquad(double *x, double *y, int N, double fL, double f
   Np = 0;          // for test
   int M  = N+2*Np; // length with pre- and post-padding
   double *tmp = new double[M];
-  rsFillWithZeros(tmp, Np);
-  rsCopyBuffer(x, &tmp[Np], N);
-  rsFillWithZeros(&tmp[Np+N], Np);
+  RAPT::rsArray::fillWithZeros(tmp, Np);
+  RAPT::rsArray::copyBuffer(x, &tmp[Np], N);
+  RAPT::rsArray::fillWithZeros(&tmp[Np+N], Np);
   double a[3], b[3]; // filter coeffs
   rsBiquadDesigner::calculateCookbookBandpassConstSkirtCoeffsViaQ
     (b[0], b[1], b[2], a[1], a[2], 1.0/fs, fM, Q);
-  rsNegate(a, a, 3);
+  RAPT::rsArray::negate(a, a, 3);
   a[0] = 1.0;
   for(int i = 0; i < np; i++)
-    filterBiDirectional(tmp, M, tmp, M, b, 2, a, 2);
-  rsCopyBuffer(&tmp[Np], y, N);
+  {
+    //filterBiDirectional(tmp, M, tmp, M, b, 2, a, 2);
+    RAPT::rsArray::filterBiDirectional(tmp, M, tmp, M, b, 2, a, 2);
+  }
+  RAPT::rsArray::copyBuffer(&tmp[Np], y, N);
   delete[] tmp;
 
   /*
@@ -831,7 +834,7 @@ double isolatePartialWithBiquad(double *x, double *y, int N, double fL, double f
   double w = 2*PI*fM/fs;
   double g = biquadMagnitudeAt(b[0], b[1], b[2], a[1], a[2], 2*PI*fM/fs);
   g = pow(g, 2*np);  // bidirectional: g^2, multipass: g^np -> g^(2*np)
-  rsScale(y, N, 1.0/g);
+  RAPT::rsArray::scale(y, N, 1.0/g);
     // we are getting HUUUUGE gain factors here, maybe, we should design a constant peak-gain 
     // bandpass instead of constant skirt gain to avoid this
 
@@ -900,22 +903,22 @@ void plotModalEnvelope(const char *samplePath, double fL, double fM, double fU, 
   // signal
 
   int numChannels; 
-  int N;            // number of sample-frames
-  int fs;           // sample rate
+  int N;         // number of sample-frames
+  int fs;        // sample rate
   double **sampleData = readFromWaveFile(samplePath, numChannels, N, fs);
 
   // allocate internal buffers:
-  double *x  = new double[N]; rsCopyBuffer(sampleData[0], x, N); // input signal
+  double *x  = new double[N]; RAPT::rsArray::copyBuffer(sampleData[0], x, N); // input signal
   double *y  = new double[N];                                    // filtered signal
   double *ye = new double[N];                                    // envelope
   double *yn = new double[N];                                    // negated envelope
 
   // extract partial and envelope:
   fM = isolatePartial(x, y, N, fL, fM, fU, fs, aM, aMax, p, np);
-  rsSineEnvelopeViaQuadrature(y, ye, N, fM, fs, 4.0);
+  rsSineEnvelopeViaQuadrature(y, ye, N, fM, (double)fs, 4.0);
 
   // plot the extracted mode with its envelope:
-  rsNegate(ye, yn, N);
+  RAPT::rsArray::negate(ye, yn, N);
   numSamplesToPlot = rsMin(N, numSamplesToPlot);
   plotSignals(numSamplesToPlot, fs, y, ye, yn);
 
@@ -933,8 +936,8 @@ void partialExtractionViaBiquadTriple()
 {
   // create 3 partials at 900, 1000, 1150 Hz, try to retrieve the 1000Hz mode
 
-  double fs = 44100;  // sample rate
-  int    N  = fs;     // number of samples
+  double fs = 44100;    // sample rate
+  int    N  = (int)fs;  // number of samples
 
   // memory allocation:
   double *xL = new double[N]; // lower mode signal
@@ -972,15 +975,15 @@ void partialExtractionViaBiquadTriple()
 
 
   // synthesize and mix the 3 modes
-  rsModalFilterWithAttack mf;
+  rsModalFilterWithAttackDD mf;
   mf.setModalParameters(fL, aL, atL, dcL, pL, fs);
   getImpulseResponse(mf, xL, N);
   mf.setModalParameters(fM, aM, atM, dcM, pM, fs);
   getImpulseResponse(mf, xM, N);
   mf.setModalParameters(fU, aU, atU, dcU, pU, fs);
   getImpulseResponse(mf, xU, N);
-  rsAdd(xL, xM, x, N);
-  rsAdd(x,  xU, x, N);
+  RAPT::rsArray::add(xL, xM, x, N);
+  RAPT::rsArray::add(x,  xU, x, N);
 
 
   // just for inspecting the impulse-reponse during development - replace our x-signal with a 
@@ -1023,7 +1026,7 @@ void partialExtractionViaBiquadTriple()
 
   // get peak location and height of envelope (later, maybe use quadratic interpolation to find it 
   // with subsample precision - this is actually overkill, but however)
-  int    nPeak = rsMaxIndex(ye, N);
+  int    nPeak = RAPT::rsArray::maxIndex(ye, N);
   double tPeak = nPeak / fs;
   double aPeak = ye[nPeak];
 

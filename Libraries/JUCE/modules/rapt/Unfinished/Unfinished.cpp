@@ -37,6 +37,7 @@ namespace RAPT
 #include "Filters/ModalFilterBank.cpp"
 #include "Filters/LadderFilter.cpp"
 #include "Filters/FakeResonanceFilter.cpp"
+#include "Filters/Biquad.cpp"
 
 // under construction:
 #include "Analysis/EnvelopeFollower.cpp" // file is actually empty anyway

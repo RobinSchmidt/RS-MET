@@ -4,7 +4,7 @@ void breakpointModulator()
 {
   double fs  = 100;  // samplerate in Hz
 
-  rsBreakpointModulator bm;
+  rsBreakpointModulatorD bm;
   bm.setSampleRate(fs);
 
   // generate and plot envelope:
@@ -25,7 +25,7 @@ void breakpointModulatorSmoothFadeOut()
 {
   double fs  = 100;  // samplerate in Hz
 
-  rsBreakpointModulator bm;
+  rsBreakpointModulatorD bm;
   bm.setSampleRate(fs);
   bm.initialize();
 
@@ -33,7 +33,7 @@ void breakpointModulatorSmoothFadeOut()
   static const int N = 500;  // number of samples to plot
   bm.setBreakpointLevel(1, 0.0);
   bm.setBreakpointTime( 1, (N-1)/fs);
-  bm.setBreakpointShape(1, rsModBreakpoint::SMOOTH);
+  bm.setBreakpointShape(1, rsModBreakpoint<double>::SMOOTH);
 
   double t[N], x[N];
   createTimeAxis(N, t, fs);

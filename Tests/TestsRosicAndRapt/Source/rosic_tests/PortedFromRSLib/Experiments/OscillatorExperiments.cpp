@@ -22,7 +22,7 @@ void triSaw()
   double p = -0.8;           // parameter 0: triangle, -1: saw down, +1: saw up
   static const int N = 501;  // number of function values
   double t[N], y[N];
-  rsFillWithRangeLinear(t, N, 0.0, 20.0); 
+  RAPT::rsArray::fillWithRangeLinear(t, N, 0.0, 20.0); 
   for(int n = 0; n < N; n++)
     y[n] = triSaw(t[n], p);
 
@@ -108,7 +108,7 @@ void phaseShapingCurvePoly4()
   static const int N = 1001;
   double p[N];    // unshaped phase
   double ps[N];   // shaped phase
-  rsFillWithRangeLinear(p, N, 0.0, 1.0);
+  RAPT::rsArray::fillWithRangeLinear(p, N, 0.0, 1.0);
   for(int n = 0; n < N; n++)
     ps[n] = phaseShapeXY4(p[n], x, y, s);
 
@@ -154,7 +154,7 @@ void phaseShapingCurvesRational()
   static const int numCurves = 7;  // number of curves in the function family on each side
 
   double x[N], y[N];
-  rsFillWithRangeLinear(x, N, 0.0, 1.0);
+  RAPT::rsArray::fillWithRangeLinear(x, N, 0.0, 1.0);
 
   GNUPlotter plt;
   plt.addDataArrays(N, x, x);
@@ -220,9 +220,9 @@ void phaseShaping()
 
   // create the x/y sweep functions:
   vector<double> x(N), y(N), s(N);
-  rsFillWithRangeLinear(&x[0], N, xMin, xMax);
-  rsFillWithRangeLinear(&y[0], N, yMin, yMax);
-  rsFillWithRangeLinear(&s[0], N, sMin, sMax);
+  RAPT::rsArray::fillWithRangeLinear(&x[0], N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(&y[0], N, yMin, yMax);
+  RAPT::rsArray::fillWithRangeLinear(&s[0], N, sMin, sMax);
 
   // apply the the phase-shaping:
   int n;
@@ -289,7 +289,7 @@ void phaseShapingSkew()
 
   // create the parameter sweep function:
   vector<double> a(N);
-  rsFillWithRangeLinear(&a[0], N, aMin, aMax);
+  RAPT::rsArray::fillWithRangeLinear(&a[0], N, aMin, aMax);
 
   // apply the the phase-shaping:
   int n;

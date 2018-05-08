@@ -1127,7 +1127,7 @@ void splitLowFreqFromDC()
   double dc2         =     1.5;  // DC at end
   double fc          =   100.0;  // filter cutoff frequency
   double order       =     1;    // order of the single-pass filter
-  double numPass     =     8;    // number of passes
+  int    numPass     =     8;    // number of passes
 
 
   double *x = new double[N];
@@ -1915,7 +1915,7 @@ void ladderZDF()
   vector<double> output(N);
   double y[5];    // filter state
   RAPT::rsArray::fillWithZeros(y, 5);
-  double tmp;
+  //double tmp;
   for(int n = 0; n < N; n++)
   {
     // compute/predict output of final stage:

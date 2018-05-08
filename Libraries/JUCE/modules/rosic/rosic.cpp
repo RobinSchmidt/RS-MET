@@ -104,6 +104,7 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 
 
 template class RAPT::rsSlewRateLimiterLinear<double, double>;
+template class RAPT::rsBreakpointModulator<double>;
 
 template class RAPT::rsOnePoleFilter<double, double>;
 template class RAPT::rsNonlinearModalFilter<double, double>;
