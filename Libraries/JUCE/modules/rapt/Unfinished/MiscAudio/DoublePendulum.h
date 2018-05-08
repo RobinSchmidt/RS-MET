@@ -18,7 +18,7 @@ require to extend the differential equation solver - see Numerical Recipies...
   to the momenta?
 -include a driving force (input signal). */
 
-template<class TSig, class TPar>
+template<class TSig, class TPar> // why the distinction between TSig/TPar - isn't one T enough?
 class rsDoublePendulum : public rsDifferentialEquationSystem<TSig, TSig>
 {
 

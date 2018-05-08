@@ -134,6 +134,11 @@ template class RAPT::rsZeroCrossingPitchDetector<double>;
 
 template class RAPT::rsPhaseVocoder<double>;
 
+template class RAPT::rsDoublePendulum<double, double>;
+
+template class RAPT::rsResampler<double, double>;
+template class RAPT::rsTimeWarper<double, double>;
+
 
 // hmm...it seems, we need all these explicit instantiations anyway - maybe clean up the build
 // system...rename the files to raptJuceModule.h/cpp

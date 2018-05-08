@@ -6,7 +6,7 @@ void doublePendulum()
   int fs = 44100;
 
   // create and set up the double pendulum object:
-  rsDoublePendulum dp;
+  rsDoublePendulumDD dp;
   dp.setLength1(1.0);
   dp.setLength2(0.5);
   dp.setMass1(1.0);
@@ -42,13 +42,13 @@ void doublePendulum()
 
 
   // normalize observables and write into wavefiles:
-  rsNormalize(&m1[0], N, 1.0, true);
+  RAPT::rsArray::normalize(&m1[0], N, 1.0, true);
   writeToMonoWaveFile("DoublePendulumM1.wav", &m1[0], N, fs, 16);
-  rsNormalize(&m2[0], N, 1.0, true);
+  RAPT::rsArray::normalize(&m2[0], N, 1.0, true);
   writeToMonoWaveFile("DoublePendulumM2.wav", &m2[0], N, fs, 16);
-  rsNormalize(&x1[0], N, 1.0, true);
+  RAPT::rsArray::normalize(&x1[0], N, 1.0, true);
   writeToMonoWaveFile("DoublePendulumX1.wav", &x1[0], N, fs, 16);
-  rsNormalize(&x2[0], N, 1.0, true);
+  RAPT::rsArray::normalize(&x2[0], N, 1.0, true);
   writeToMonoWaveFile("DoublePendulumX2.wav", &x2[0], N, fs, 16);
 
   // Observations:
@@ -72,11 +72,11 @@ Idea:
  m*a = -k*x - r*v + F 
  where m: mass, a: acceleration, k: spring hardness, x: excursion, r: damping/resistence, 
        v: velocity, F: driving force
--add nonlinear terms one by one and study their influence of the system, for example a progressive
+-add nonlinear terms one by one and study their influence on the system, for example a progressive
  spring hardening term: -k3*x^3 - this should distort the waveform and increase the frequency at
  higher amplitudes
 -generally, instead of using just the linear contributions (m*a, k*x, r*v), we could use 
  polynomials in x, v, a
--maybe we could also consider more derivatives like the increase/decrease of acceleration
+-maybe we could also consider more derivatives like the increase/decrease of acceleration ("jerk"?)
 
 */

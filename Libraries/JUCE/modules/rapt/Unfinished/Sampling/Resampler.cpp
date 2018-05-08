@@ -524,7 +524,7 @@ void rsTimeWarper<TSig, TPos>::timeWarpSinc(TSig *x, int xN, TSig *y, TPos *w, i
   if( antiAlias == false )
   {
     for(int n = 0; n < yN; n++)
-      y[n] = rsResampler::signalValueViaSincAt(x, xN, w[n], minSincLength, 1.0);
+      y[n] = rsResampler<TSig, TPos>::signalValueViaSincAt(x, xN, w[n], minSincLength, 1.0);
   }
   else
   {

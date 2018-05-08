@@ -454,6 +454,11 @@ typedef RAPT::rsZeroCrossingPitchDetector<double> rsZeroCrossingPitchDetectorD;
 
 typedef RAPT::rsPhaseVocoder<double> rsPhaseVocoderD;
 
+typedef RAPT::rsDoublePendulum<double, double> rsDoublePendulumDD;
+
+typedef RAPT::rsResampler<double, double> rsResamplerDD;
+typedef RAPT::rsTimeWarper<double, double> rsTimeWarperDD;
+
 }
 
 
