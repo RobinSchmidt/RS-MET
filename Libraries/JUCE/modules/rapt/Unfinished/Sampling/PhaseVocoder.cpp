@@ -54,15 +54,15 @@ template<class T>
 void rsPhaseVocoder<T>::shortTimeSpectrum(T *x, int N, int n, T *w, 
   int B, int M, std::complex<T> *X)
 {
-  int pad = (M-B)/2;                 // amount of pre/post zero padding
+  int pad = (M-B)/2;                        // amount of pre/post zero padding
   if(pad > 0)
   {
-    rsFillWithZeros(X, pad);         // pre peadding
-    rsFillWithZeros(&X[M-pad], pad); // post padding
+    rsArray::fillWithZeros(X, pad);         // pre padding
+    rsArray::fillWithZeros(&X[M-pad], pad); // post padding
   }
-  std::complex<T> *Xs = &X[pad];        // pointer, from which we write into the X-array
-  rsCopySection(x, N, Xs, n-B/2, B); // copy signal section into FFT buffer (convert to complex)
-  for(int i = 0; i < B; i++)         // apply window
+  std::complex<T> *Xs = &X[pad];            // pointer, from which we write into the X-array
+  rsArray::copySection(x, N, Xs, n-B/2, B); // copy signal section into FFT buffer (convert to complex)
+  for(int i = 0; i < B; i++)                // apply window
     Xs[i] *= w[i];
 
   // shift buffer to make the window center the reference for phase values
@@ -77,19 +77,19 @@ rsMatrix<std::complex<T>> rsPhaseVocoder<T>::complexSpectrogram(T *x, int N, T *
 {
   // x: signal, N: number of samples, w: window, B: blocksize, H: hopsize, P: padding factor
 
-  int F = getNumFrames(N, H);               // number of STFT frames
-  int M = B * P;                            // FFT size (maybe use L)
-  int K = M/2 + 1;                          // number of non-redundant bins
+  int F = getNumFrames(N, H);                  // number of STFT frames
+  int M = B * P;                               // FFT size (maybe use L)
+  int K = M/2 + 1;                             // number of non-redundant bins
   rsMatrix<std::complex<T>> s(F, K);           // spectrogram (only positive frequency bins)
-  T a = 2 / rsSum(w, B);               // amplitude scaler
-  int n = 0;                                // sample, where current block is centered
-  std::complex<T> *X = new std::complex<T>[M];    // short-time spectrum centered at sample n
-  for(int i = 0; i < F; i++)                // loop over frames
+  T a = 2 / rsArray::sum(w, B);                // amplitude scaler
+  int n = 0;                                   // sample, where current block is centered
+  std::complex<T> *X = new std::complex<T>[M]; // short-time spectrum centered at sample n
+  for(int i = 0; i < F; i++)                   // loop over frames
   {
-    shortTimeSpectrum(x, N, n, w, B, M, X); // obtain STFT centered at n
-    for(int j = 0; j < K; j++)              // collect results for positive frequencies
+    shortTimeSpectrum(x, N, n, w, B, M, X);    // obtain STFT centered at n
+    for(int j = 0; j < K; j++)                 // collect results for positive frequencies
       s(i, j) = a * X[j];
-    n += H;                                 // advance n by the hop size
+    n += H;                                    // advance n by the hop size
   }
   delete[] X;
   return s;
@@ -102,7 +102,7 @@ std::vector<T> rsPhaseVocoder<T>::synthesize(const rsMatrix<std::complex<T>> &s,
   // s: spectrogram, ws: synthesis-window, B: block size, H: hop size, wa: analysis window,
   std::vector<T> y = synthesizeRaw(s, ws, B, H);
   std::vector<T> m = getModulation(wa, ws, B, H, s.getNumRows());
-  T a = rsSum(wa, B) / 2;
+  T a = rsArray::sum(wa, B) / 2;
   for(unsigned int n = 0; n < y.size(); n++)
     y[n] *= (a/m[n]);
   return y;
@@ -187,14 +187,14 @@ std::vector<T> rsPhaseVocoder<T>::synthesizeRaw(const rsMatrix<std::complex<T>> 
     for(k = 1; k < K; k++)
     {
       Y[k]   = s(i, k);
-      Y[M-k] = Y[k].getConjugate();
+      Y[M-k] = conj(Y[k]);
     }
     rsIFFT(Y, M);
 
     // apply synthesis-window and overlap/add into output signal:
     for(k = 0; k < B; k++)
-      g[k] = Y[k0+k].re * w[k];  // k0 != 0, if zero-padding was used
-    rsAddInto(y.data(), N, g.data(), B, i*H-B/2);
+      g[k] = Y[k0+k].real() * w[k];  // k0 != 0, if zero-padding was used
+    rsArray::addInto(y.data(), N, g.data(), B, i*H-B/2);
   }
 
   delete[] Y;
@@ -211,7 +211,7 @@ std::vector<T> rsPhaseVocoder<T>::getModulation(T *wa, T *ws, int B, int H, int 
   for(int n = 0; n < B; n++)
     w[n] = wa[n] * ws[n];             
   for(int i = 0; i < F; i++)
-    rsAddInto(y.data(), N, w, B, i*H-B/2);
+    rsArray::addInto(y.data(), N, w, B, i*H-B/2);
   delete[] w;
   return y;
 }

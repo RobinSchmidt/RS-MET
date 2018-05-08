@@ -15,7 +15,7 @@ using namespace rosic;
 #include "Experiments/ModulatorExperiments.cpp"
 #include "Experiments/OscillatorExperiments.cpp"
 #include "Experiments/PartialExtractionExperiments.cpp"
-//#include "Experiments/PhaseVocoderExperiments.cpp"
+#include "Experiments/PhaseVocoderExperiments.cpp"
 //#include "Experiments/PhysicsExperiments.cpp"
 //#include "Experiments/ResamplingExperiments.cpp"
 //#include "Experiments/SaturationExperiments.cpp"

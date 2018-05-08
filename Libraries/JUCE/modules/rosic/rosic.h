@@ -452,8 +452,7 @@ typedef RAPT::rsLadderMystran<double, double> rsLadderMystranDD;
 typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundamentalEstimatorD;
 typedef RAPT::rsZeroCrossingPitchDetector<double> rsZeroCrossingPitchDetectorD;
 
-
-
+typedef RAPT::rsPhaseVocoder<double> rsPhaseVocoderD;
 
 }
 

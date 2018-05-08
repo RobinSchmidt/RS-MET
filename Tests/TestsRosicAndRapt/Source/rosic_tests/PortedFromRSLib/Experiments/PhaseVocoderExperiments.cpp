@@ -41,8 +41,8 @@ void phaseRepresentation()
     
   // obtain the difference between the two signals - it represents the error:
   double d[N];
-  rsSubtract(x2, x1, d, N);
-  double e = rsMaxAbs(d, N);
+  RAPT::rsArray::subtract(x2, x1, d, N);
+  double e = RAPT::rsArray::maxAbs(d, N);
   int dummy = 0;
 
   // Observations:
@@ -80,7 +80,7 @@ void grainRoundTrip()
   static const int M = 2*K;      // FFT size
   int n0 = B/2;                  // time index of STFT frame
 
-  rsPhaseVocoder pv;             // for conveniently calling the static functions
+  rsPhaseVocoderD pv;             // for conveniently calling the static functions
                                        
   // create analysis and synthesis windows:
   double wa[B], ws[B];
@@ -90,7 +90,7 @@ void grainRoundTrip()
 
   // create the test signal:
   double x[N];
-  rsFillWithValue(x, N, 1.0);
+  RAPT::rsArray::fillWithValue(x, N, 1.0);
 
   // obtain short-time spectrum:
   rsComplexDbl X[M];
@@ -110,18 +110,18 @@ void plotWindows()
   static const int N  = 1000;           // number of samples in the test signal
 
 
-  int J = rsPhaseVocoder::getNumFrames(N, H);
+  int J = rsPhaseVocoderD::getNumFrames(N, H);
                                       
   // create the window function:
   double wa[B], ws[B], w[B];
-  rsPhaseVocoder::hanningWindowZN(wa, B);
-  rsPhaseVocoder::hanningWindowZN(ws, B);
-  rsMultiply(wa, ws, w, B);
+  rsPhaseVocoderD::hanningWindowZN(wa, B);
+  rsPhaseVocoderD::hanningWindowZN(ws, B);
+  RAPT::rsArray::multiply(wa, ws, w, B);
 
     // todo: try different window functions: Hmaming, Blackman, versions with both ends nonzero
 
   double yw[N];             // sum of windows
-  rsFillWithZeros(yw, N);
+  RAPT::rsArray::fillWithZeros(yw, N);
   double t[B];              // time indices for current window
 
   GNUPlotter plt;
@@ -134,13 +134,13 @@ void plotWindows()
   int n = 0;
   for(j = 0; j < J; j++)
   {
-    rsFillWithRangeLinear(t, B, n-B/2., n+B/2.-1);
+    RAPT::rsArray::fillWithRangeLinear(t, B, n-B/2., n+B/2.-1);
     plt.addDataArrays(B, t, w);
-    rsAddInto(yw, N, w, B, n-B/2);
+    RAPT::rsArray::addInto(yw, N, w, B, n-B/2);
     n += H;
   }
-  double s = rsPhaseVocoder::getWindowSum(wa, ws, B, H);
-  rsScale(yw, N, 1/s);
+  double s = rsPhaseVocoderD::getWindowSum(wa, ws, B, H);
+  RAPT::rsArray::scale(yw, N, 1/s);
   plt.addDataArrays(N, yw);
 
 
@@ -181,32 +181,32 @@ void spectrogramSine()
 
   // create the window function:
   double w[B];
-  rsPhaseVocoder::hanningWindowZN(w, B); // todo: create also the time-derivative and the 
+  rsPhaseVocoderD::hanningWindowZN(w, B); // todo: create also the time-derivative and the 
                                          // time-ramped window for reassignment later
 
   // create the test signal:
   double x[N];
   createSineWave(x, N, f, 1.0, fs);
-  rsScale(x, N/2, 0.1);   // amplitude switch in the middle of the signal
+  RAPT::rsArray::scale(x, N/2, 0.1);   // amplitude switch in the middle of the signal
 
   // compute the complex spectrogram:
-  rsMatrix<rsComplexDbl> s = rsPhaseVocoder::complexSpectrogram(x, N, w, B, H, P);
+  rsMatrix<rsComplexDbl> s = rsPhaseVocoderD::complexSpectrogram(x, N, w, B, H, P);
   int F = s.getNumRows();
 
   // compute (magnitude) spectrogram and phasogram:
   double **mag, **phs, **dB;
-  rsAllocateMatrix(mag, F, K);
-  rsAllocateMatrix(phs, F, K);
-  rsAllocateMatrix(dB,  F, K);
+  MatrixTools::rsAllocateMatrix(mag, F, K);
+  MatrixTools::rsAllocateMatrix(phs, F, K);
+  MatrixTools::rsAllocateMatrix(dB,  F, K);
 
   int i, j;
   for(i = 0; i < F; i++)
   {
     for(j = 0; j < K; j++)
     {
-      mag[i][j] = s(i, j).getRadius();
+      mag[i][j] = abs(s(i, j));
       dB[i][j]  = rsMax(rsAmp2dB(mag[i][j]), -50.0);
-      phs[i][j] = s(i, j).getAngle();
+      phs[i][j] = arg(s(i, j));
     }
   }
 
@@ -217,13 +217,13 @@ void spectrogramSine()
   plotSpectrogram(F, K, dB, fs, H);
 
   // resynthesize and plot signal:
-  std::vector<double> y  = rsPhaseVocoder::synthesize(s, w, B, H, w);
+  std::vector<double> y  = rsPhaseVocoderD::synthesize(s, w, B, H, w);
   plotVector(y);
 
   // free dynamically memory:
-  rsDeAllocateMatrix(mag, F, K);
-  rsDeAllocateMatrix(phs, F, K);
-  rsDeAllocateMatrix(dB,  F, K);
+  MatrixTools::rsDeAllocateMatrix(mag, F, K);
+  MatrixTools::rsDeAllocateMatrix(phs, F, K);
+  MatrixTools::rsDeAllocateMatrix(dB,  F, K);
 
   // create error signal:
   double err[N];
