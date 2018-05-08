@@ -219,6 +219,7 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\Ideas.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Prototypes.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
@@ -1976,7 +1977,6 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_rapt.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_rosic.cpp"/>
   </ItemGroup>
@@ -2024,6 +2024,7 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\Ideas.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\Prototypes.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Array.h"/>
@@ -2684,7 +2685,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosicOld.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
