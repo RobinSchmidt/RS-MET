@@ -54,8 +54,11 @@ template void rsArray::normalize(double *buffer, int length, double maximum, boo
 template double rsArray::mean(double *x, int length);
 template double rsArray::maxDeviation(double *buffer1, double *buffer2, int length);
 template void rsArray::applyFunction(double *x, double *y, int N, double (*f) (double));
+template void rsArray::negate(double *source, double *destination, int length);
 template void rsArray::filter(double *x, int xLength, double *y, int yLength, 
   double *b, int bOrder, double *a, int aOrder);
+template void rsArray::filterBiDirectional(double *x, int xLength, double *y, int yLength, 
+  double *b, int bOrder, double *a, int aOrder, int numRingOutSamples);
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
 template float rsArray::maxDeviation(float *buffer1, float *buffer2, int length);
@@ -282,6 +285,29 @@ template double RAPT::rsRaisedCosineWindow(double x, double length, double p);
 template double RAPT::rsExactBlackmanWindow(double x, double length, double dummy);
 template double RAPT::rsWindowedSinc(double x, double length, double stretch);
 
+
+template void RAPT::rsSineQuadraturePart(double *x, double *y, int N, double f, double fs, 
+  bool backward);
+template void RAPT::rsSineEnvelopeViaQuadrature(double *x, double *y, int N, double f, double fs, 
+  double smooth);
+template void RAPT::rsSineEnvelopeViaAmpFormula(double *x, double *y, int N, double f, double fs, 
+  double smooth);
+template void RAPT::rsEnvelopedSine(double *y, int N, double f, double fs, double p, double *a);
+template void RAPT::rsEnvelopedPhaseCatchSine(double *y, int N, double f, double fs, double p0, 
+  double pk, int k, double *a, int sweepDirection);
+template void RAPT::rsRecreateSine(double *x, double *y, int N, double fx, double fy, double fs, 
+  double p0, double smooth);
+template void RAPT::rsRecreateSineWithPhaseCatch(double *x, double *y, int N, double fx, double fy, 
+  double fs, double p0, double pk, int k, double smooth, int sweepDirection);
+
+
+
 // move to rsFilterAnalyzer:
 template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0, 
   double A1, double A2, double w);
+
+
+template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(double *x, double *y, 
+  int N, double fc, double bw, double fs, int numPasses, double gc);
+template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(double *x, double *y, 
+  int N, double fc, double bw, double fs, int order, int numPasses, double gc);

@@ -14,7 +14,7 @@ using namespace rosic;
 #include "Experiments/ModalExperiments.cpp"
 #include "Experiments/ModulatorExperiments.cpp"
 #include "Experiments/OscillatorExperiments.cpp"
-#include "Experiments/PartialExtractionExperiments.cpp" // compiles but doesn't link
+#include "Experiments/PartialExtractionExperiments.cpp"
 //#include "Experiments/PhaseVocoderExperiments.cpp"
 //#include "Experiments/PhysicsExperiments.cpp"
 //#include "Experiments/ResamplingExperiments.cpp"

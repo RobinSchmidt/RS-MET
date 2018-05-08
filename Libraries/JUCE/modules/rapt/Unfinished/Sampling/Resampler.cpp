@@ -76,8 +76,8 @@ void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(TSig *x, TSig *y, int
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setBandwidth(bo);
-  flt.setMode(rsInfiniteImpulseResponseDesigner::BANDPASS);
-  flt.setApproximationMethod(rsPrototypeDesigner::BUTTERWORTH);
+  flt.setMode(rsInfiniteImpulseResponseDesigner<TPar>::BANDPASS);
+  flt.setApproximationMethod(rsPrototypeDesigner<TPar>::BUTTERWORTH);
   flt.setPrototypeOrder(order);
 
   // apply filter:
@@ -1037,10 +1037,10 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 template<class T>
 void rsSineQuadraturePart(T *x, T *y, int N, T f, T fs, bool backward)
 {
-  rsOnePoleFilter flt;
+  rsOnePoleFilter<T,T> flt;
   flt.setSampleRate(fs);
   flt.setCutoff(f);
-  flt.setMode(rsOnePoleFilter::ALLPASS);
+  flt.setMode(rsOnePoleFilter<T,T>::ALLPASS);
   if( backward == true )
   {
     for(int n = N-1; n >= 0; n--)
@@ -1061,12 +1061,12 @@ void rsSmoothSineEnvelope(T *y, int N, T f, T fs, T s)
   if( s > 0.0 && f/s < 0.5*fs )
   {
     rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(b[0], b[1], b[2], a[1], a[2], 1.0/fs, f/s);
-    rsNegate(a, a, 3);
+    rsArray::negate(a, a, 3);
     a[0] = 1.0;
-    rsFilter(y, N, y, N, b, 1, a, 1);
-    rsReverse(y, N);
-    rsFilter(y, N, y, N, b, 1, a, 1);
-    rsReverse(y, N);
+    rsArray::filter(y, N, y, N, b, 1, a, 1);
+    rsArray::reverse(y, N);
+    rsArray::filter(y, N, y, N, b, 1, a, 1);
+    rsArray::reverse(y, N);
      // do this with a 1st order filter as well, maybe use rsBiDirectionalFilter (lowpass version)
   }
 }
@@ -1107,7 +1107,7 @@ void rsSineEnvelopeViaAmpFormula(T *x, T *y, int N, T f, T fs, T s)
 template<class T>
 void rsEnvelopedSine(T *y, int N, T f, T fs, T p, T *a)
 {
-  rsSineIterator sinIt(2*PI*f/fs, p, 1.0);
+  rsSineIterator<T> sinIt(2*PI*f/fs, p, 1.0);
   for(int n = 0; n < N; n++)
     y[n] = a[n] * sinIt.getValue();
 }
@@ -1164,7 +1164,7 @@ void rsEnvelopedPhaseCatchSweep(T *y, int k, T p0, T pk, T wk, T *a, int sweepDi
 template<class T>
 void rsPhaseCatchSweep(T *y, int k, T p0, T pk, T wk, int sweepDirection)
 {
-  rsFillWithValue(y, k, 1.0);
+  rsArray::fillWithValue(y, k, 1.0);
   rsEnvelopedPhaseCatchSweep(y, k, p0, pk, wk, y, sweepDirection);
 }
 
