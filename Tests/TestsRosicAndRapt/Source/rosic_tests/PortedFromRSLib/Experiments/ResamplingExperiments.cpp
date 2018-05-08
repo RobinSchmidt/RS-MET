@@ -1,5 +1,8 @@
 #include "ResamplingExperiments.h"
 
+#include "../PortedFromRSLib/RSLib/Core/RSCore.h"
+
+
 void fadeOut()
 {
   static const int N = 500;  // number of samples to plot
@@ -343,7 +346,7 @@ void sincResamplerSumOfTapWeights()
   // used with slightly longer lengths (about 25% longer)
   
   // we measure the maximum of the wiggles of the 64-sample long sinc and express it in dB:
-  double d64 = rsAmp2dB(rsMaxValue(ws64, N));
+  double d64 = rsAmpToDb(RAPT::rsArray::maxValue(ws64, N));
     // rect: 1.43, Hann: 0.11, Hamming: 0.034, Blackman: 0.0029829146655588447,
     // exact Blackman: 0.00084361968017353120 -> that's what we should use for the interpolator
 
@@ -426,7 +429,7 @@ int removePitchModulation(double *x, int N, double *&y,  double targetFrequency)
   double *f = new double[N]; // instantaneous frequency
 
   // Measure instantaneous frequency:
-  rsInstantaneousFundamentalEstimator::
+  rsInstantaneousFundamentalEstimatorD::
     measureInstantaneousFundamental(x, f, N, fs, 20.0, 5000.0);
 
   // Compute desired readout speed for each sample which is given by the ratio of the desired 
@@ -484,18 +487,18 @@ void pitchDemodulation()
     r[n] = fy / f[n];
 
   // compute the output signal:
-  int yN = rsTimeWarper::getPitchModulatedLength(r, xN);
+  int yN = rsTimeWarperDD::getPitchModulatedLength(r, xN);
   double *y = new double[yN]; 
   rsTimeWarperDD::applyPitchModulation(x, r, xN, y, 16.0, 4.0, true);  
   writeToMonoWaveFile("PitchDemodulationOutputKnownF0.wav",  y, yN, (int) fs, 16);
 
 
   // measure the instantaneous frequency and do the same thing with measured values:
-  rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(x, fm, xN, fs, 20.0, 
+  rsInstantaneousFundamentalEstimatorD::measureInstantaneousFundamental(x, fm, xN, fs, 20.0, 
     5000.0, rl);
   for(n = 0; n < xN; n++)
     r[n] = fy / fm[n];  
-  int yN2 = rsTimeWarper::getPitchModulatedLength(r, xN);
+  int yN2 = rsTimeWarperDD::getPitchModulatedLength(r, xN);
   double *y2 = new double[yN2]; 
   rsTimeWarperDD::applyPitchModulation(x, r, xN, y2, 16.0, 4.0, true);  
   writeToMonoWaveFile("PitchDemodulationOutputMeasuredF0.wav",  y2, yN2, (int) fs, 16);
@@ -561,7 +564,7 @@ void phaseLockedCrossfade()
   double ft = 0.5 * (fc1 + fc2); 
 
   // create and set up the rsPhaseLockedCrossfader object:
-  rsPhaseLockedCrossfader plc;
+  rsPhaseLockedCrossfaderDD plc;
   plc.setInputs(x1, f1, N1, x2, f2, N2, ft);
 
   // retrieve flattened signals:
@@ -583,13 +586,13 @@ void phaseLockedCrossfade()
   // write wavefiles:
   writeToMonoWaveFile("PhaseLockCrossfadeInput1.wav", x1, N1, (int) fs, 16);
   writeToMonoWaveFile("PhaseLockCrossfadeInput2.wav", x2, N2, (int) fs, 16);
-  writeToMonoWaveFile("PhaseLockCrossfadeOutput.wav", &y[0], y.size(), (int) fs, 16);
+  writeToMonoWaveFile("PhaseLockCrossfadeOutput.wav", &y[0], (int)y.size(), (int) fs, 16);
 
   // plot crossfaded signal:
   GNUPlotter plt;
   //plt.addDataArrays(x1f.size(), &x1f[0]);
   //plt.addDataArrays(x2f.size(), &x2f[0]);
-  plt.addDataArrays(y.size(), &y[0]);
+  plt.addDataArrays((int) y.size(), &y[0]);
   //plt.addDataArrays(pmc.t1.size(), &pmc.t1[0]);
   //plt.addDataArrays(pmc.t2.size(), &pmc.t2[0]);
 
@@ -619,8 +622,8 @@ void phaseLockedCrossfade()
 vector<double> linearCrossfade(vector<double> x1, vector<double> x2, int start, int end, 
   int shift)
 {
-  int N1 = x1.size();                    // length of x1
-  int N2 = x2.size();                    // length of x2
+  int N1 = (int)x1.size();               // length of x1
+  int N2 = (int)x2.size();               // length of x2
   int Ny = N2+shift;                     // length of output
   vector<double> y(Ny);
   int n;
@@ -651,8 +654,8 @@ void crossfadeUnflatteningSpeeds(vector<double>* speeds1, vector<double> *speeds
   int *end, int *shift)
 {
   vector<double> s = linearCrossfade(*speeds1, *speeds2, *start, *end, *shift);
-  rsVariableSpeedPlayer vsp;
-  vsp.setInputAndSpeed(nullptr, &s[0], s.size());
+  rsVariableSpeedPlayerDD vsp;
+  vsp.setInputAndSpeed(nullptr, &s[0], (int) s.size());
   for(int n = 0; n < speeds1->size(); n++)
     (*speeds1)[n] = 1 / (vsp.warpTime(n+1) - vsp.warpTime(n));
   for(int n = 0; n < speeds2->size(); n++)
@@ -697,15 +700,15 @@ void phaseLockedCrossfade2()
     s2[n] = ft / f2[n];
 
   // create pitch-flattened signals:
-  rsVariableSpeedPlayer vsp1, vsp2;
+  rsVariableSpeedPlayerDD vsp1, vsp2;
   vsp1.setInputAndSpeed(&x1[0], &s1[0], N1);
   vsp2.setInputAndSpeed(&x2[0], &s2[0], N2);
   vector<double> y1 = vsp1.getOutput();
   vector<double> y2 = vsp2.getOutput();
 
   // create the inverse speed-arrays (which turn y1, y2 back into x1, x2):
-  vector<double> s1i = rsVariableSpeedPlayer::invertSpeeds(s1);
-  vector<double> s2i = rsVariableSpeedPlayer::invertSpeeds(s2);
+  vector<double> s1i = rsVariableSpeedPlayerDD::invertSpeeds(s1);
+  vector<double> s2i = rsVariableSpeedPlayerDD::invertSpeeds(s2);
 
   // create flattened crossfaded signal y:
   int start = 400;   // crossfade start in y1
@@ -717,20 +720,20 @@ void phaseLockedCrossfade2()
 
   // unflatten the crossfaded signal:
   vector<double> si = linearCrossfade(s1i, s2i, start, end, shift);
-  vector<double> yu = rsVariableSpeedPlayer::applyPlaybackSpeed(y, si);
+  vector<double> yu = rsVariableSpeedPlayerDD::applyPlaybackSpeed(y, si);
 
   // obtain unflattening arrays to be applied to y1, y2 separately, pre-crossfade, apply them 
   // (giving z1, z2) and then do the crossfade post-unflattening.
   crossfadeUnflatteningSpeeds(&s1i, &s2i, &start, &end, &shift); // call modifies all arguments
-  vector<double> z1 = rsVariableSpeedPlayer::applyPlaybackSpeed(y1, s1i);
-  vector<double> z2 = rsVariableSpeedPlayer::applyPlaybackSpeed(y2, s2i);
+  vector<double> z1 = rsVariableSpeedPlayerDD::applyPlaybackSpeed(y1, s1i);
+  vector<double> z2 = rsVariableSpeedPlayerDD::applyPlaybackSpeed(y2, s2i);
   vector<double> z  = linearCrossfade(z1, z2, start, end, shift);
 
   //// write wavefiles:
   //writeToMonoWaveFile("PhaseLockCrossfadeInput1.wav",     &x1[0], N1, (int) fs, 16);
   //writeToMonoWaveFile("PhaseLockCrossfadeInput2.wav",     &x2[0], N2, (int) fs, 16);
-  writeToMonoWaveFile("PhaseLockCrossfadeOutputPost.wav", &yu[0], yu.size(), (int) fs, 16);
-  writeToMonoWaveFile("PhaseLockCrossfadeOutputPre.wav",  &z[0],  z.size(),  (int) fs, 16);
+  writeToMonoWaveFile("PhaseLockCrossfadeOutputPost.wav", &yu[0], (int) yu.size(), (int) fs, 16);
+  writeToMonoWaveFile("PhaseLockCrossfadeOutputPre.wav",  &z[0],  (int) z.size(),  (int) fs, 16);
 
   // plot:
   GNUPlotter plt;
@@ -1073,13 +1076,13 @@ void sineShift()
   // create shifted signal using a rounded integer shift value:
   double yi[N];
   RAPT::rsArray::copyBuffer(x, yi, N);
-  rsShift(yi, N, (int) rsRound(dn));
+  RAPT::rsArray::shift(yi, N, (int) rsRound(dn));
 
   // create shifted signal using the exact shift value and sinc-interpolation:
   double y[N];
-  rsCopyBuffer(x, y, N);
+  RAPT::rsArray::copyBuffer(x, y, N);
 
-  rsResampler::shiftSinc(y, y, N, dn, 64.0);
+  rsResamplerDD::shiftSinc(y, y, N, dn, 64.0);
 
   // plot:
   plotData(N, 0, 1, x, yi, y); // input and output signals with integer and noninteger shift
@@ -1128,7 +1131,7 @@ void sineShift2()
   for(int h = 0; h < numHarmonics; h++)
   {
     double shiftAmount = rsSineShiftAmount(x[h], numSamples, n0, p0); 
-    rsResampler::shiftSinc(x[h], y[h], numSamples, shiftAmount, 64.0); 
+    rsResamplerDD::shiftSinc(x[h], y[h], numSamples, shiftAmount, 64.0); 
   }
 
   // mix the (original and shifted) harmonics together and write the results into wavefiles:
@@ -1175,13 +1178,13 @@ void rsHarmonicPhaseAdjust(double *x, double *y, int N, double f0, double bw, do
   double *tmp = new double[N];    // memory for one harmonic
 
   // extract, shift and accumulate one harmonic at a time:
-  rsFillWithZeros(y, N);
+  RAPT::rsArray::fillWithZeros(y, N);
   for(int h = 0; h < nh; h++)
   {
     f = (h+1)*f0;
     rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, tmp, N, f, bw, fs, 10);
     shift = rsSineShiftAmount(tmp, N, n0, tp, 2*PI*f/fs);
-    rsResampler::shiftSinc(tmp, tmp, N, shift, 64);
+    rsResamplerDD::shiftSinc(tmp, tmp, N, shift, 64);
     RAPT::rsArray::add(y, tmp, y, N);
   }
 
@@ -1194,10 +1197,10 @@ void pitchDetectA3()
   const char *path = "../../TestInputs/SustainA3Cut.wav";
 
   int N, fs;
-  double* x = readMonoWaveFile(path, N, fs);
+  double* x = RSLib::readMonoWaveFile(path, N, fs);
   double* f = new double[N];
 
-  rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(
+  rsInstantaneousFundamentalEstimatorD::measureInstantaneousFundamental(
     x, f, N, fs, 20, 5000, nullptr);
 
   GNUPlotter plt;
@@ -1280,9 +1283,9 @@ void phaseLockSaxophone2()
   for(int h = 0; h < nh; h++)
   {
     f = (h+1)*f0;
-    rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, y[h], N, f, bw, fs, 10);
+    rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, y[h], N, f, bw, (double)fs, 10);
     shift = rsSineShiftAmount(y[h], N, n0, tp, 2*PI*f/fs);
-    rsResampler::shiftSinc(y[h], y[h], N, shift, 64);
+    rsResamplerDD::shiftSinc(y[h], y[h], N, shift, 64);
   }
   
   plotData(3000, 0, 1.0, y[0], y[1], y[2], y[3], y[4]);
@@ -1316,21 +1319,21 @@ void autoTuneHorn()
   r   = new double[N];
 
   // measure the instantaneous frequency:
-  rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(x, f, N, fs, 20.0, 
+  rsInstantaneousFundamentalEstimatorD::measureInstantaneousFundamental(x, f, N, fs, 20.0, 
     5000.0, rl);
 
   // tune the original signal:
   for(n = 0; n < N; n++)
     r[n] = f0 / f[n];  
-  int Ny = rsTimeWarper::getPitchModulatedLength(r, N);
+  int Ny = rsTimeWarperDD::getPitchModulatedLength(r, N);
   double *y = new double[Ny]; 
-  rsTimeWarper::applyPitchModulation(x, r, N, y, 16.0, 4.0, true);  
+  rsTimeWarperDD::applyPitchModulation(x, r, N, y, 16.0, 4.0, true);  
   writeToMonoWaveFile("HornAutotuned.wav",  y, Ny, (int) fs, 16);
 
   // filter out fundamental from original:
   double bw = 0.7*f0;
   double *xf = new double[N];
-  rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, xf, N, f0, bw, fs, 10);
+  rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, xf, N, f0, bw, (double)fs, 10);
   //writeToMonoWaveFile("HornFundamental.wav",  xf, N, (int) fs, 16);
 
   // write original and extracted fundamental into file:
@@ -1367,7 +1370,7 @@ void autoTuneHorn2()
   // read chunk of 1st harmonic of horn sample:
   px = readFromWaveFile("../../TestInputs/Horn_F1_H1_Chunk.wav", numChannels, N, fs);
   double *xH1 = new double[N];
-  rsCopyBuffer(px[0], xH1, N);
+  RAPT::rsArray::copyBuffer(px[0], xH1, N);
   for(n = 0; n < numChannels; n++)
     delete px[n];
   delete[] px;
@@ -1383,7 +1386,7 @@ void autoTuneHorn2()
   double *f, *rl, *r;
   f   = new double[L];
   rl  = new double[L];
-  rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(xH1+nStart, f, L, fs, 20.0, 
+  rsInstantaneousFundamentalEstimatorD::measureInstantaneousFundamental(xH1+nStart, f, L, fs, 20.0, 
     5000.0, rl);
 
   // create array of readout speed factors:
@@ -1405,9 +1408,9 @@ void autoTuneHorn2()
     r[n] = 1.0;
 
   // tune the full signal using the readout-speed array that we have just created:
-  int Ny = rsTimeWarper::getPitchModulatedLength(r, N);
+  int Ny = rsTimeWarperDD::getPitchModulatedLength(r, N);
   double *y = new double[Ny]; 
-  rsTimeWarper::applyPitchModulation(xFull, r, N, y, 16.0, 4.0, true);  
+  rsTimeWarperDD::applyPitchModulation(xFull, r, N, y, 16.0, 4.0, true);  
   writeToMonoWaveFile("HornAutotunedViaH1Chunk.wav",  y, Ny, (int) fs, 16);
 
   delete[] xFull;
@@ -1422,18 +1425,18 @@ void sylophoneCycleMarks()
 {
   int N, fs;
   char* path = "../../TestInputs/Sylophone/Sustain`n=A2`rr=3-shortChunk.wav";
-  double* x = readMonoWaveFile(path, N, fs);
+  double* x = RSLib::readMonoWaveFile(path, N, fs);
 
   // find cycle marks by different algorithms:
-  rsCycleMarkFinder cmf(fs, 20, 5000);
+  rsCycleMarkFinderD cmf(fs, 20, 5000);
   vector<double> cm1, cm2;
-  cmf.setAlgorithm(rsCycleMarkFinder::F0_ZERO_CROSSINGS); 
+  cmf.setAlgorithm(rsCycleMarkFinderD::F0_ZERO_CROSSINGS); 
   cm1 = cmf.findCycleMarks(&x[0], N);
-  cmf.setAlgorithm(rsCycleMarkFinder::CYCLE_CORRELATION); 
+  cmf.setAlgorithm(rsCycleMarkFinderD::CYCLE_CORRELATION); 
   cm2 = cmf.findCycleMarks(&x[0], N);
 
   // plot signal and cycle marks:
-  int Nz = cm1.size();       // # cycle marks
+  int Nz = (int)cm1.size();       // # cycle marks
   vector<double> cmy(Nz);    // y values for plotting (all zero)
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
@@ -1450,13 +1453,13 @@ void autoTuneSylophone()
   char* path = "../../TestInputs/Sylophone/Sustain`n=A2`rr=3.wav";
 
   int N, fs;
-  double* x = readMonoWaveFile(path, N, fs);
+  double* x = RSLib::readMonoWaveFile(path, N, fs);
 
   //int mode = rsInstantaneousFundamentalEstimator::F0_ZERO_CROSSINGS;
   //int mode = rsInstantaneousFundamentalEstimator::CYCLE_CORRELATION;
 
   std::vector<double> f1(N), f2(N);
-  rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(x, &f1[0], N, fs, 20, 5000,
+  rsInstantaneousFundamentalEstimatorD::measureInstantaneousFundamental(x, &f1[0], N, fs, 20, 5000,
     nullptr, 0);
   //rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(x, &f2[0], N, fs, 20, 5000,
   //  nullptr, 1);
@@ -1476,15 +1479,15 @@ void autoTuneSylophone()
 
 void bestMatchShift()
 {
-  int numChannels;
+  //int numChannels;
   int N1, N2;        // lengths of the 2 signals
   double *x1, *x2;   // the 2 signals
   int fs;            // samplerate
-  int n;
+  //int n;
             
   // read signals:
-  x1 = readMonoWaveFile("../../TestInputs/autocorrelate_test-001.wav", N1, fs);
-  x2 = readMonoWaveFile("../../TestInputs/autocorrelate_test-002.wav", N2, fs);
+  x1 = RSLib::readMonoWaveFile("../../TestInputs/autocorrelate_test-001.wav", N1, fs);
+  x2 = RSLib::readMonoWaveFile("../../TestInputs/autocorrelate_test-002.wav", N2, fs);
 
   double shift = rsGetShiftForBestMatch(x1, x2, rsMin(N1, N2));
 

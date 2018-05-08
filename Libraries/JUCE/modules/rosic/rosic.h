@@ -458,6 +458,10 @@ typedef RAPT::rsDoublePendulum<double, double> rsDoublePendulumDD;
 
 typedef RAPT::rsResampler<double, double> rsResamplerDD;
 typedef RAPT::rsTimeWarper<double, double> rsTimeWarperDD;
+typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundamentalEstimatorD;
+typedef RAPT::rsCycleMarkFinder<double> rsCycleMarkFinderD;
+typedef RAPT::rsVariableSpeedPlayer<double, double> rsVariableSpeedPlayerDD;
+typedef RAPT::rsPhaseLockedCrossfader<double, double>  rsPhaseLockedCrossfaderDD;
 
 }
 

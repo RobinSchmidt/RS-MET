@@ -81,7 +81,7 @@ inline T rsPitchOffsetToFreqFactor(T pitchOffset)
 template<class T>
 inline T rsPitchToFreq(T pitch)
 {
-  return 8.1757989156437073336828122976033 * exp(0.057762265046662109118102676788181 * pitch);
+  return T(8.1757989156437073336828122976033 * exp(0.057762265046662109118102676788181 * pitch));
   //return 440.0*( pow(2.0, (pitch-69.0)/12.0) ); // naive, slower but numerically more precise
 }
 

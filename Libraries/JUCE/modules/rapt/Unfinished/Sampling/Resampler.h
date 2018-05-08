@@ -426,7 +426,7 @@ public:
 
   /** Given an array of instantaneous (fundamental) frequencies of length N and a desired target
   frequency ft, this function computes the length of the output signal that will be created */
-  static int getPitchDemodulatedLength(TPos *f, int N, TPos ft);
+  //static int getPitchDemodulatedLength(TPos *f, int N, TPos ft);
 
 
   //static void removePitchModulation(double *x, double *fx, int N, double *y, double fy,

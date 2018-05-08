@@ -138,6 +138,10 @@ template class RAPT::rsDoublePendulum<double, double>;
 
 template class RAPT::rsResampler<double, double>;
 template class RAPT::rsTimeWarper<double, double>;
+template class RAPT::rsInstantaneousFundamentalEstimator<double>;
+template class RAPT::rsCycleMarkFinder<double>;
+template class RAPT::rsVariableSpeedPlayer<double, double>;
+template class RAPT::rsPhaseLockedCrossfader<double, double>;
 
 
 // hmm...it seems, we need all these explicit instantiations anyway - maybe clean up the build

@@ -9,6 +9,7 @@
 #include "Utilities/PerformanceTestTools.h"
 
 //#include "Prototypes/LindenmayerSystem.h"
+#include "Prototypes/Prototypes.h"
 
 //#include "rosic/rosic.h"
 
