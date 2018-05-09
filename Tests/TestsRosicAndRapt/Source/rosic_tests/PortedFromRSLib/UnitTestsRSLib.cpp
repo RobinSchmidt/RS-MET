@@ -3,7 +3,7 @@
 using namespace RAPT;
 using namespace rosic;
 
-//#include "UnitTests/BufferFunctionTests.cpp"
+#include "UnitTests/BufferFunctionTests.cpp"
 //#include "UnitTests/FilterTests.cpp"
 //#include "UnitTests/MiscAudioTests.cpp"
 //#include "UnitTests/ModalTests.cpp"

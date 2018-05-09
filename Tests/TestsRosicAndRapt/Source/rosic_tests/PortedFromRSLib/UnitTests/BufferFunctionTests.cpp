@@ -59,64 +59,64 @@ bool testCopySection(std::string &reportString)
   int b[Nb];
   int n;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, Na, b, 2, 3);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, Na, b, 2, 3);
   testResult &= b[0] == 3 && b[1] == 4 && b[2] == 5;
   for(n = 3; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, 5, b, 2, 3);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, 5, b, 2, 3);
   testResult &= b[0] == 3 && b[1] == 4 && b[2] == 5;
   for(n = 3; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, 5, b, 2, 4);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, 5, b, 2, 4);
   testResult &= b[0] == 3 && b[1] == 4 && b[2] == 5 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, 5, b, -2, 4);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, 5, b, -2, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 1 && b[3] == 2;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, 5, b, -2, 7);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, 5, b, -2, 7);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 1 && b[3] == 2 && b[4] == 3 && b[5] == 4 && 
                 b[6] == 5;
   for(n = 7; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, 5, b, -2, 8);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, 5, b, -2, 8);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 1 && b[3] == 2 && b[4] == 3 && b[5] == 4 && 
                 b[6] == 5 && b[7] == 0;
   for(n = 8; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, 5, b, -4, 4);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, 5, b, -4, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 0 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, 5, b, -3, 4);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, 5, b, -3, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 0 && b[3] == 1;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, 5, b, 4, 4);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, 5, b, 4, 4);
   testResult &= b[0] == 5 && b[1] == 0 && b[2] == 0 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  rsFillWithValue(b, Nb, -1);
-  rsCopySection(a, 5, b, 5, 4);
+  RAPT::rsArray::fillWithValue(b, Nb, -1);
+  RAPT::rsArray::copySection(a, 5, b, 5, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 0 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
@@ -124,10 +124,6 @@ bool testCopySection(std::string &reportString)
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
-
-
-
-
 
 // these two functions are apparently not yet complete:
 bool testMoveElements(  std::string &reportString)
@@ -138,7 +134,7 @@ bool testMoveElements(  std::string &reportString)
   static const int length = 10;
   int b[length] = {1,6,7,1,4,5,7,6,1,2};
 
-  rsRightShift(b, length, 2);
+  RAPT::rsArray::rightShift(b, length, 2);
 
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;
@@ -162,8 +158,3 @@ bool testRemoveElements(std::string &reportString)
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
-
-
-
-
-

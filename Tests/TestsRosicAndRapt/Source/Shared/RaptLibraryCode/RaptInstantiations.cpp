@@ -61,11 +61,18 @@ template void rsArray::filterBiDirectional(double *x, int xLength, double *y, in
   double *b, int bOrder, double *a, int aOrder, int numRingOutSamples);
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
+template void rsArray::divide(double *buffer1, double *buffer2, double *result, int length);
+template int rsArray::maxAbsIndex(const double* const buffer, int length);
+template void rsArray::rightShift(double *buffer, int length, int numPlaces);
+template void rsArray::shift(double *buffer, int length, int numPlaces);
+
 template float rsArray::maxDeviation(float *buffer1, float *buffer2, int length);
 
 template void rsArray::fillWithRangeLinear(int* x, int N, int min, int max);
 template void rsArray::allocateSquareArray2D(int**& theArray, int size);
 template void rsArray::deAllocateSquareArray2D(int**& theArray, int size);
+template void rsArray::rightShift(int *buffer, int length, int numPlaces);
+template void rsArray::copySection(int *source, int sourceLength, int *destination, int copyStart, int copyLength);
 
 template rsUint32 rsArray::maxValue(rsUint32 *x, int length);
 template void rsArray::fillWithRangeLinear(rsUint32* x, int N, rsUint32 min, rsUint32 max);
@@ -75,13 +82,8 @@ template bool rsArray::contains(rsUint32 *buffer, int length, rsUint32 elementTo
 template void rsArray::fillWithZeros(rsUint32 *buffer, int length);
 
 template void rsArray::convertBuffer(std::complex<double> *source, std::complex<double> *destination, int length);
-template void rsArray::divide(double *buffer1, double *buffer2, double *result, int length);
-template int rsArray::maxAbsIndex(const double* const buffer, int length);
-template void rsArray::rightShift(double *buffer, int length, int numPlaces);
-template void rsArray::shift(double *buffer, int length, int numPlaces);
-
-
 template int RAPT::rsFindHighestPeakIndex(double *buffer, int length); // move to rsArray
+
 
 
 template void MatrixTools::rsInitMatrix(double** A, int N, int M, double value);
