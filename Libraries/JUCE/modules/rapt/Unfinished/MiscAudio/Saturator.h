@@ -125,7 +125,7 @@ protected:
 
   /** \name Embedded objects */
 
-  rsHalfWaveSaturator loSaturator, upSaturator;
+  rsHalfWaveSaturator<TSig, TPar> loSaturator, upSaturator;
 
 };
 

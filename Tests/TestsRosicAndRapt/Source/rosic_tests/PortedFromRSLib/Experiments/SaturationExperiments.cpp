@@ -16,12 +16,12 @@ void powRatioParametricSigmoid()
   //double test = rsNormalizedSigmoids::powRatio(-1000, 1000);
 
   double x[N], y[N];
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
   for(int i = 0; i < numCurves; i++)
   {
     for(int n = 0; n < N; n++)
-      y[n] = rsNormalizedSigmoids::powRatio(x[n], p);
+      y[n] = rsNormalizedSigmoidsD::powRatio(x[n], p);
     plt.addDataArrays(N, x, y);
     p *= 2;
   }
@@ -37,11 +37,11 @@ void parametricSigmoid()
   double xMin = -3.0;
   double xMax =  3.0;
   double x[N], y[N];
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
 
   double f1 = 0.5;                  // desired value at x=1 for 1st curve
-  rsParametricSigmoid sig;
+  rsParametricSigmoidD sig;
   sig.setPiecewiseBreakpoint(0.75); // value for f1, above which we use piecewise functions
   int numCurves = 11;
   for(int i = 0; i < numCurves; i++)
@@ -64,10 +64,10 @@ void parametricSigmoid2()
   double xMin = 0.0;
   double xMax = 3.0;
   double x[N], y[N];
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
 
-  rsParametricSigmoid sig;
+  rsParametricSigmoidD sig;
   sig.setPiecewiseBreakpoint(0.75);   
   int n;
 
@@ -85,7 +85,7 @@ void parametricSigmoid2()
 
   // haprdclipper for reference:
   for(n = 0; n < N; n++)
-    y[n] = rsNormalizedSigmoids::clip(x[n]);
+    y[n] = rsNormalizedSigmoidsD::clip(x[n]);
   plt.addDataArrays(N, x, y); 
 
   //// tanh: 
@@ -98,12 +98,12 @@ void parametricSigmoid2()
   //plt.addDataArrays(N, x, y);
 
   // quartic:
-  sig.setValueAt1(rsPositiveSigmoids::quartic(1));
+  sig.setValueAt1(rsPositiveSigmoidsD::quartic(1));
   for(n = 0; n < N; n++)
     y[n] = sig.getValue(x[n]);
   plt.addDataArrays(N, x, y);
   for(n = 0; n < N; n++)
-    y[n] = rsPositiveSigmoids::quartic(x[n]);
+    y[n] = rsPositiveSigmoidsD::quartic(x[n]);
   plt.addDataArrays(N, x, y);
 
   // cubicRational (is actually a special case, so the match should be perfect):
@@ -112,7 +112,7 @@ void parametricSigmoid2()
     y[n] = sig.getValue(x[n]);
   plt.addDataArrays(N, x, y);
   for(n = 0; n < N; n++)
-    y[n] = rsPositiveSigmoids::cubicRational(x[n]);
+    y[n] = rsPositiveSigmoidsD::cubicRational(x[n]);
   plt.addDataArrays(N, x, y);
   // ok - works
 
@@ -179,7 +179,7 @@ void quinticParametricSigmoid()
   //double a3, a4, a5;         // polynomial coefficients
 
   double x[N], y[N];
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
   for(int n = 0; n < N; n++)
     y[n] = rsQuinticParametricSigmoid(x[n], s);
@@ -253,7 +253,7 @@ void septicParametricSigmoid()
   double s = 3.0;            // the saturation level
 
   double x[N], y[N];
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
   for(int n = 0; n < N; n++)
     y[n] = rsSepticParametricSigmoid(x[n], s);
@@ -274,13 +274,13 @@ void saturator()
   double xMax = +2.2;
 
   // create and set up the saturator:
-  rsSaturator sat;
+  rsSaturatorDD sat;
   sat.setLowerThreshold(0.8);     // lower halfwave threshold
   sat.setUpperThreshold(0.5);     // upper halfwave threshold
 
   int n;
   vector<double> x(N);
-  rsFillWithRangeLinear(&x[0], N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(&x[0], N, xMin, xMax);
 
   // hyperbolic tangent:
   vector<double> yTanh(N);
@@ -290,31 +290,31 @@ void saturator()
 
   // linear:
   vector<double> yLinear(N);
-  sat.setSaturationFunctions(&rsPositiveSigmoids::linear);
+  sat.setSaturationFunctions(&rsPositiveSigmoidsD::linear);
   for(n = 0; n < N; n++)
     yLinear[n] = sat.getSample(x[n]);
 
   // rational:
   vector<double> yRational(N);
-  sat.setSaturationFunctions(&rsPositiveSigmoids::rational);
+  sat.setSaturationFunctions(&rsPositiveSigmoidsD::rational);
   for(n = 0; n < N; n++)
     yRational[n] = sat.getSample(x[n]);
 
   // cubic:
   vector<double> yCubic(N);
-  sat.setSaturationFunctions(&rsPositiveSigmoids::cubic);
+  sat.setSaturationFunctions(&rsPositiveSigmoidsD::cubic);
   for(n = 0; n < N; n++)
     yCubic[n] = sat.getSample(x[n]);
 
   // quartic:
   vector<double> yQuartic(N);
-  sat.setSaturationFunctions(&rsPositiveSigmoids::quartic);
+  sat.setSaturationFunctions(&rsPositiveSigmoidsD::quartic);
   for(n = 0; n < N; n++)
     yQuartic[n] = sat.getSample(x[n]);
 
   // sixtic:
   vector<double> ySixtic(N);
-  sat.setSaturationFunctions(&rsPositiveSigmoids::hexic);
+  sat.setSaturationFunctions(&rsPositiveSigmoidsD::hexic);
   for(n = 0; n < N; n++)
     ySixtic[n] = sat.getSample(x[n]);
 
@@ -365,18 +365,18 @@ void sigmoidScaleAndShift()
   rsRangeConversionCoefficients(-1.0, +1.0,   lo,   hi, &sy, &ty);
 
   // fill the arrays:
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   double t;  // temporary
   for(int n = 0; n < N; n++)
   {
     t = sx*x[n] + tx;  // transformed input to the normalized sigmoid function
     //t = x[n]; // just for test
-    yClip[n]    = ty + sy * rsNormalizedSigmoids::clip(t);
-    yCubic[n]   = ty + sy * rsNormalizedSigmoids::cubic(t);  
-    yQuartic[n] = ty + sy * rsNormalizedSigmoids::quartic(t);
-    ySixtic[n]  = ty + sy * rsNormalizedSigmoids::hexic(t);  
+    yClip[n]    = ty + sy * rsNormalizedSigmoidsD::clip(t);
+    yCubic[n]   = ty + sy * rsNormalizedSigmoidsD::cubic(t);  
+    yQuartic[n] = ty + sy * rsNormalizedSigmoidsD::quartic(t);
+    ySixtic[n]  = ty + sy * rsNormalizedSigmoidsD::hexic(t);  
     yTanh[n]    = ty + sy * rsTanh(t);
-    yAtan[n]    = ty + sy * rsNormalizedSigmoids::atan(t);  
+    yAtan[n]    = ty + sy * rsNormalizedSigmoidsD::atan(t);  
   }
 
   // plot:
@@ -437,7 +437,7 @@ void quarticMonotonic()
   double xMin = 0.0;
   double xMax = 4.0;
   double x[N], y[N];
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
   double k  = 1.5;    // saturation level goes from 1.5 to...
   int numCurves = 6;  // ...4 (increment is 0.5)
@@ -483,23 +483,23 @@ void sigmoidPrototypes()
   double t    = 0.5;    // threshold below which the function is linear (for the softclipper)
 
   double x[N];
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
 
   int n;
   double yHard[N], yCubic[N], yQuartic[N], yHexic[N], ySoft[N], yTanh[N];
 
   for(n = 0; n < N; n++)
-    yHard[n] = rsNormalizedSigmoids::clip(x[n]);
+    yHard[n] = rsNormalizedSigmoidsD::clip(x[n]);
   for(n = 0; n < N; n++)
-    yCubic[n] = rsPositiveSigmoids::cubic(x[n]);
+    yCubic[n] = rsPositiveSigmoidsD::cubic(x[n]);
   for(n = 0; n < N; n++)
-    yQuartic[n] = rsPositiveSigmoids::quartic(x[n]);
+    yQuartic[n] = rsPositiveSigmoidsD::quartic(x[n]);
   for(n = 0; n < N; n++)
-    yHexic[n] = rsPositiveSigmoids::hexic(x[n]);
+    yHexic[n] = rsPositiveSigmoidsD::hexic(x[n]);
   for(n = 0; n < N; n++)
-    ySoft[n] = rsPositiveSigmoids::softClipHexic(x[n], t);
+    ySoft[n] = rsPositiveSigmoidsD::softClipHexic(x[n], t);
   for(n = 0; n < N; n++)
-    yTanh[n] = rsNormalizedSigmoids::tanh(x[n]);
+    yTanh[n] = rsNormalizedSigmoidsD::tanh(x[n]);
 
   GNUPlotter plt;
   plt.addDataArrays(N, x, yHard);
@@ -625,7 +625,7 @@ void sixticPositive()
   double xMax = 3.0/k;
 
   double x[N], y[N];
-  rsFillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     y[n] = sixticValue(x[n], k);

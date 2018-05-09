@@ -420,9 +420,13 @@ typedef RAPT::rsRayBouncerDriver<double> rsRayBouncerDriverD;
 namespace rosic
 {
 
+typedef RAPT::rsPositiveSigmoids<double> rsPositiveSigmoidsD;
+typedef RAPT::rsNormalizedSigmoids<double> rsNormalizedSigmoidsD;
+typedef RAPT::rsParametricSigmoid<double> rsParametricSigmoidD;
+
+typedef RAPT::rsSaturator<double, double> rsSaturatorDD;
 typedef RAPT::rsSlewRateLimiterLinear<double, double> rsSlewRateLimiterLinearDD;
 typedef RAPT::rsBreakpointModulator<double> rsBreakpointModulatorD;
-
 
 typedef RAPT::rsBasicDelayLine<double> rsBasicDelayLineD;
 typedef RAPT::rsDelayLine<double, double> rsDelayLineDD;

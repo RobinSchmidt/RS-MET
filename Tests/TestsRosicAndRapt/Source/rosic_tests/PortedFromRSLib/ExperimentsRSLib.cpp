@@ -18,4 +18,4 @@ using namespace rosic;
 #include "Experiments/PhaseVocoderExperiments.cpp"
 #include "Experiments/PhysicsExperiments.cpp"
 #include "Experiments/ResamplingExperiments.cpp"
-//#include "Experiments/SaturationExperiments.cpp"
+#include "Experiments/SaturationExperiments.cpp"

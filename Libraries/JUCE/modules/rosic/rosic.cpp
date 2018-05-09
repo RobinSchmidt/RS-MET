@@ -55,7 +55,9 @@ template class RAPT::rsMatrixNew<double>;
 template class RAPT::rsNodeBasedFunction<double>;
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;
+template class RAPT::rsPositiveSigmoids<double>;
 template class RAPT::rsNormalizedSigmoids<double>;
+template class RAPT::rsParametricSigmoid<double>;
 template class RAPT::rsSinCosTable<double>;
 template class RAPT::rsScaledAndShiftedSigmoid<double>;
 template class RAPT::rsEllipse<double>;
@@ -102,7 +104,8 @@ template class RAPT::rsEllipseOscillator<double>;
 
 template class RAPT::rsMultiBandSplitter<double, double>;
 
-
+template class RAPT::rsHalfWaveSaturator<double, double>;
+template class RAPT::rsSaturator<double, double>;
 template class RAPT::rsSlewRateLimiterLinear<double, double>;
 template class RAPT::rsBreakpointModulator<double>;
 
