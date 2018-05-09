@@ -433,10 +433,15 @@ typedef RAPT::rsDelayLine<double, double> rsDelayLineDD;
 typedef RAPT::rsFractionalDelayLine<double, double> rsFractionalDelayLineDD;
 
 typedef RAPT::rsOnePoleFilter<double, double> rsOnePoleFilterDD;
+
+
 typedef RAPT::rsNonlinearModalFilter<double, double> rsNonlinearModalFilterDD;
 typedef RAPT::rsModalFilter<double, double> rsModalFilterDD;
 typedef RAPT::rsModalFilterWithAttack<double, double> rsModalFilterWithAttackDD;
+typedef RAPT::rsModalFilterWithAttack2<double, double> rsModalFilterWithAttack2DD;
 typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
+
+
 typedef RAPT::rsStateVariableFilter<double, double> rsStateVariableFilterDD;
 typedef RAPT::rsPhonoFilter<double, double> rsPhonoFilterDD;
 typedef RAPT::rsMovingAverage<double, double> rsMovingAverageDD;

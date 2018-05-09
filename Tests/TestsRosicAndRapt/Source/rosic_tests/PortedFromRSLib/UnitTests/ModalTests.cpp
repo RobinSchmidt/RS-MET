@@ -25,7 +25,7 @@ bool testModalFilter(std::string &reportString)
     xt[n] = A * exp(-a*n) * sin(w*n + p);
 
   // the impulse-response of an rsModalFilter should give the same signal:
-  rsModalFilter mf;
+  rsModalFilterDD mf;
   mf.setModalParameters(f, A, td, phs, fs);
 
   // check inquiry functions:
@@ -34,21 +34,21 @@ bool testModalFilter(std::string &reportString)
   // check impulse-response:
   double x1[N];
   getImpulseResponse(mf, x1, N);
-  double err = RSLib::rsMaxDeviation(xt, x1, N);
+  double err = RAPT::rsArray::maxDeviation(xt, x1, N);
   testResult &= err < 1.e-11;
 
 
   // the same procedure for an object of class rsNonlinearModalFilter:
-  rsNonlinearModalFilter nmf;
+  rsNonlinearModalFilterDD nmf;
   nmf.setModalParameters(f, A, td, phs, fs);
   double x2[N];
   getImpulseResponse(nmf, x2, N);
-  err = RSLib::rsMaxDeviation(xt, x2, N);
+  err = RAPT::rsArray::maxDeviation(xt, x2, N);
   testResult &= err < 1.e-13;  // rsNonlinearModalFilter has less error than rsModalFilter
 
 
   // check class rsModalFilterWithAttack:
-  rsModalFilterWithAttack mfa;
+  rsModalFilterWithAttackDD mfa;
   mfa.setModalParameters(f, A, ta, td, phs, fs);
 
   // check inquiry functions:
@@ -62,22 +62,19 @@ bool testModalFilter(std::string &reportString)
   for(n = 0; n < N; n++)
     xt[n] = A * scaler * (exp(-a*n)-exp(-a2*n)) * sin(w*n + p);
   getImpulseResponse(mfa, x1, N);
-  err = RSLib::rsMaxDeviation(xt, x1, N);
+  err = RAPT::rsArray::maxDeviation(xt, x1, N);
   testResult &= err < 1.e-11;
 
 
 
   // check class rsModalFilterWithAttack2:
-  rsModalFilterWithAttack2 mfa2;
+  rsModalFilterWithAttack2DD mfa2;
   mfa2.setModalParameters(f, A, ta, td, phs, fs);
 
   getImpulseResponse(mfa2, x1, N);
-  err = RSLib::rsMaxDeviation(xt, x1, N);
+  err = RAPT::rsArray::maxDeviation(xt, x1, N);
   testResult &= err < 1.e-7;
     // 4 orders of magnitude less precise than rsModalFilterWithAttack (with GCC)
-
-
-
 
 
   appendTestResultToReport(reportString, testName, testResult);
@@ -90,7 +87,7 @@ bool testModalSynth(std::string &reportString)
   std::string testName = "ModalSynth";
   bool testResult = true;
 
-  rsModalFilterBank ms;
+  rsModalFilterBankDD ms;
   ms.setSampleRate(44100);
   ms.setReferenceFrequency(1000);
   ms.setReferenceDecay(0.2);
@@ -103,14 +100,13 @@ bool testModalSynth(std::string &reportString)
   double a4[4] = {1.0, 0.5, 0.3, 0.4};
   double d4[4] = {1.0, 0.9, 0.8, 0.7};
 
-
-  rsVectorDbl f(4, f4);
-  rsVectorDbl g(4, a4);
-  rsVectorDbl d(4, d4);
-  rsVectorDbl p = rsModalFilterBank::randomModePhases(g);
-
-  ms.setModalParameters(f, g, 0.25*d, d, p);
-
+  rsAssert(false); // this test is not yet fully updated bcs of this rsVectorDbl class - commented 
+  // code below should be re-activated
+  //rsVectorDbl f(4, f4);
+  //rsVectorDbl g(4, a4);
+  //rsVectorDbl d(4, d4);
+  //rsVectorDbl p = rsModalFilterBankDD::randomModePhases(g);
+  //ms.setModalParameters(f, g, 0.25*d, d, p);
 
   int n;
   y[0] = ms.getSample(1.0);

@@ -110,8 +110,11 @@ template class RAPT::rsSlewRateLimiterLinear<double, double>;
 template class RAPT::rsBreakpointModulator<double>;
 
 template class RAPT::rsOnePoleFilter<double, double>;
+
 template class RAPT::rsNonlinearModalFilter<double, double>;
 template class RAPT::rsModalFilterBank<double, double>;
+template class RAPT::rsModalFilterWithAttack2<double, double>;
+
 template class RAPT::rsStateVariableFilter<double, double>;
 template class RAPT::rsPhonoFilter<double, double>;
 template class RAPT::rsMovingAverage<double, double>;
