@@ -17,5 +17,5 @@ using namespace rosic;
 #include "Experiments/PartialExtractionExperiments.cpp"
 #include "Experiments/PhaseVocoderExperiments.cpp"
 #include "Experiments/PhysicsExperiments.cpp"
-//#include "Experiments/ResamplingExperiments.cpp" // doesn't link
+#include "Experiments/ResamplingExperiments.cpp"
 //#include "Experiments/SaturationExperiments.cpp"

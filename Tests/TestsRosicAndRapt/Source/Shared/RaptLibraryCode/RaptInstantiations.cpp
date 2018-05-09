@@ -74,10 +74,14 @@ template int rsArray::firstIndexWithNonZeroValue(rsUint32 *a, int N);
 template bool rsArray::contains(rsUint32 *buffer, int length, rsUint32 elementToFind);
 template void rsArray::fillWithZeros(rsUint32 *buffer, int length);
 
-
 template void rsArray::convertBuffer(std::complex<double> *source, std::complex<double> *destination, int length);
+template void rsArray::divide(double *buffer1, double *buffer2, double *result, int length);
+template int rsArray::maxAbsIndex(const double* const buffer, int length);
+template void rsArray::rightShift(double *buffer, int length, int numPlaces);
+template void rsArray::shift(double *buffer, int length, int numPlaces);
 
-template int RAPT::rsFindHighestPeakIndex(double *buffer, int length);
+
+template int RAPT::rsFindHighestPeakIndex(double *buffer, int length); // move to rsArray
 
 
 template void MatrixTools::rsInitMatrix(double** A, int N, int M, double value);
@@ -299,8 +303,8 @@ template void RAPT::rsRecreateSine(double *x, double *y, int N, double fx, doubl
   double p0, double smooth);
 template void RAPT::rsRecreateSineWithPhaseCatch(double *x, double *y, int N, double fx, double fy, 
   double fs, double p0, double pk, int k, double smooth, int sweepDirection);
-
-
+template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0, double w);
+template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0);
 
 // move to rsFilterAnalyzer:
 template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0, 
