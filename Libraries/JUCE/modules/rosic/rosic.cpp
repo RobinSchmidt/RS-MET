@@ -115,6 +115,10 @@ template class RAPT::rsModalFilterBank<double, double>;
 template class RAPT::rsStateVariableFilter<double, double>;
 template class RAPT::rsPhonoFilter<double, double>;
 template class RAPT::rsMovingAverage<double, double>;
+
+
+//template class RAPT::rsPrototypeDesigner<double>;
+//template class RAPT::rsInfiniteImpulseResponseDesigner<double>;
 template class RAPT::rsEngineersFilter<double, double>;
 
 template class RAPT::rsLadderFilter2<double, double>;

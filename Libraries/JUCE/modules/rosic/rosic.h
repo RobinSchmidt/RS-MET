@@ -440,6 +440,9 @@ typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
 typedef RAPT::rsStateVariableFilter<double, double> rsStateVariableFilterDD;
 typedef RAPT::rsPhonoFilter<double, double> rsPhonoFilterDD;
 typedef RAPT::rsMovingAverage<double, double> rsMovingAverageDD;
+
+typedef RAPT::rsPrototypeDesigner<double> rsPrototypeDesignerD;
+typedef RAPT::rsInfiniteImpulseResponseDesigner<double> rsInfiniteImpulseResponseDesignerD;
 typedef RAPT::rsEngineersFilter<double, double> rsEngineersFilterDD;
 
 typedef RAPT::rsLadderFilter2<double, double> rsLadderFilter2DD;  // the version from RSLib

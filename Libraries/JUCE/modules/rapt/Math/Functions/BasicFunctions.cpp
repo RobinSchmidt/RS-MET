@@ -79,7 +79,7 @@ inline bool rsIsCloseTo(double x, double targetValue, double tolerance)
   else
     return false;
 }
-
+/*
 template<class T>
 inline bool rsIsCloseTo(T x, T targetValue, double tolerance)
 {
@@ -88,6 +88,7 @@ inline bool rsIsCloseTo(T x, T targetValue, double tolerance)
   else
     return false;
 }
+*/
 /*
 template<class T>
 inline bool rsIsEven(T x)

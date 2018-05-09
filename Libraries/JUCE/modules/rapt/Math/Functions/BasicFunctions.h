@@ -37,7 +37,8 @@ inline bool rsIsCloseTo(double x, double targetValue, double tolerance);
 
 /** Checks, if x is close to some target-value within some tolerance. */
 template<class T>
-inline bool rsIsCloseTo(T x, T targetValue, double tolerance);
+//inline bool rsIsCloseTo(T x, T targetValue, double tolerance);
+inline bool rsIsCloseTo(T x, T targetValue, T tolerance);
 
 /** Checks, if x is even. */
 template<class T>
@@ -187,5 +188,18 @@ template<class T>
 inline T rsZeroValue(T value);
 
 // \todo - is it somehow possible to get rid of the inlining?
+
+//=================================================================================================
+// implementations:
+
+template<class T>
+inline bool rsIsCloseTo(T x, T targetValue, T tolerance)
+{
+  if(rsAbs(x - targetValue) <= tolerance)
+    return true;
+  else
+    return false;
+}
+
 
 #endif
