@@ -18,7 +18,7 @@ tweaking:
 */
 double signalValueViaSincAt(double *x, int N, double t, double sincLength, double stretch,
   //FunctionPointer3DoublesToDouble windowFunction = rsExactBlackmanWindow, 
-  double (*windowFunction)(double,double,double),
+  double (*windowFunction)(double,double,double) = RAPT::rsExactBlackmanWindow,
   double windowParameter = 0.0, bool normalizeDC = true);
 
 /** Generates polynomial coefficients of the polynomial used in Halpern filters. It's the T^2(w) 

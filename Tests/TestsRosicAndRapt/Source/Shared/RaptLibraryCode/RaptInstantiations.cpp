@@ -219,6 +219,10 @@ template void RAPT::rsRemoveCorrelationBias(double x[], int N, double r[]);
 
 template RAPT::rsMultiArray<float>; 
 
+template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
+template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);
+template double RAPT::rsBandwidthConverter::absoluteBandwidthToQ(double fl, double fu);
+
 // Filters-Musical:
 template RAPT::rsSmoothingFilter<float, float>;
 template RAPT::rsLadderFilter<float, float>;

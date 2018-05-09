@@ -65,22 +65,22 @@ bool testSincInterpolationAtPickedInstants(double *x, int N, int L, double s, do
   double y, yt;
 
   yt = signalValueViaSincAt(             x, N,   2.0,  L, s);
-  y  = rsResampler::signalValueViaSincAt(x, N,   2.0,  L, s);
+  y  = rsResamplerDD::signalValueViaSincAt(x, N,   2.0,  L, s);
   testResult &= rsAbs(yt-y) / yt <= tol;
   yt = signalValueViaSincAt(             x, N,   2.25, L, s);
-  y  = rsResampler::signalValueViaSincAt(x, N,   2.25, L, s);
+  y  = rsResamplerDD::signalValueViaSincAt(x, N,   2.25, L, s);
   testResult &= rsAbs(yt-y) / yt <= tol;
   yt = signalValueViaSincAt(             x, N, 100.0,  L, s);
-  y  = rsResampler::signalValueViaSincAt(x, N, 100.0,  L, s);
+  y  = rsResamplerDD::signalValueViaSincAt(x, N, 100.0,  L, s);
   testResult &= rsAbs(yt-y) / yt <= tol;
   yt = signalValueViaSincAt(             x, N, 100.25, L, s);
-  y  = rsResampler::signalValueViaSincAt(x, N, 100.25, L, s);
+  y  = rsResamplerDD::signalValueViaSincAt(x, N, 100.25, L, s);
   testResult &= rsAbs(yt-y) / yt <= tol;
   yt = signalValueViaSincAt(             x, N, 197.0,  L, s); 
-  y  = rsResampler::signalValueViaSincAt(x, N, 197.0,  L, s);
+  y  = rsResamplerDD::signalValueViaSincAt(x, N, 197.0,  L, s);
   testResult &= rsAbs(yt-y) / yt <= tol;
   yt = signalValueViaSincAt(             x, N, 197.25, L, s); 
-  y  = rsResampler::signalValueViaSincAt(x, N, 197.25, L, s);
+  y  = rsResamplerDD::signalValueViaSincAt(x, N, 197.25, L, s);
   testResult &= rsAbs(yt-y) / yt <= tol;
 
   return testResult;
@@ -118,13 +118,13 @@ bool testSincInterpolation(std::string &reportString)
   // read noise signal at random time-instants with random stretch factors
   int numTests = 100; // number of samples to be read
   L = 64;
-  rsFillWithRandomValues(x, N, -1.0, +1.0, 0); // create noise input signal
+  RAPT::rsArray::fillWithRandomValues(x, N, -1.0, +1.0, 0); // create noise input signal
   for(int i = 1; i <= numTests; i++)
   {
     t  = rsRandomUniform(0.0, N);
     s  = rsRandomUniform(1.0, 10.0);
     yt = signalValueViaSincAt(x, N, t, L, s);
-    y  = rsResampler::signalValueViaSincAt(x, N, t, L, s);
+    y  = rsResamplerDD::signalValueViaSincAt(x, N, t, L, s);
     e  = rsAbs(yt-y) / yt;
     if( e > eMax )
       eMax = e;
