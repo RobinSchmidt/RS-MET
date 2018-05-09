@@ -1,7 +1,7 @@
 #ifndef RS_NUMBERMANIPULATIONSTESTS_H
 #define RS_NUMBERMANIPULATIONSTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testNumberManipulations( std::string &reportString);
 

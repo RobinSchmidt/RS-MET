@@ -1,7 +1,7 @@
 #ifndef RS_TYPESIZETESTS_H
 #define RS_TYPESIZETESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testTypeSizes(std::string &reportString);
 

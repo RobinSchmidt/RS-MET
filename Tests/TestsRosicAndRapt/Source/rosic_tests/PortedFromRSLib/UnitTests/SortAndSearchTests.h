@@ -1,7 +1,7 @@
 #ifndef RSCORE_SORTANDSEARCHTESTS_H
 #define RSCORE_SORTANDSEARCHTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testSortAndSearch(std::string &reportString);
 

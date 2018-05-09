@@ -1,7 +1,7 @@
 #ifndef RS_MODALTESTS_H
 #define RS_MODALTESTS_H
 
-#include "../../UnitTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 bool testModalFilter(std::string &reportString);
 
