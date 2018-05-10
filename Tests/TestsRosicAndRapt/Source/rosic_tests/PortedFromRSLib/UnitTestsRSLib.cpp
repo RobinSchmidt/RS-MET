@@ -9,5 +9,5 @@ using namespace rosic;
 #include "UnitTests/ModalTests.cpp"
 #include "UnitTests/NumberManipulationsTests.cpp" 
 #include "UnitTests/PitchDetectorTests.cpp"
-//#include "UnitTests/SortAndSearchTests.cpp"
+#include "UnitTests/SortAndSearchTests.cpp"
 //#include "UnitTests/TypeSizeTests.cpp"

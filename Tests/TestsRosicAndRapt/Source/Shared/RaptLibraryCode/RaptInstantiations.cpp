@@ -37,6 +37,15 @@ typedef std::complex<double> cmplxD;
 // Basics:
 
 
+template bool RAPT::defaultLess(const int& left, const int& right);
+template void RAPT::rsHeapSort(int *buffer, int length, 
+  bool (*lessThen)(const int& left, const int& right));
+template bool RAPT::rsIsSortedAscending(int *buffer, int length);
+template std::vector<int> RAPT::rsFindAllOccurencesOf(char* buffer, int bufferLength, 
+  char* pattern, int patternLength);
+// maybe move these into rsArray
+
+
 // Data:
 
 template void rsArray::fillWithRangeLinear(double* x, int N, double min, double max);
@@ -69,6 +78,7 @@ template void rsArray::shift(double *buffer, int length, int numPlaces);
 template float rsArray::maxDeviation(float *buffer1, float *buffer2, int length);
 
 template void rsArray::fillWithRangeLinear(int* x, int N, int min, int max);
+template void rsArray::fillWithRandomValues(int* x, int N, double min, double max, int seed);
 template void rsArray::allocateSquareArray2D(int**& theArray, int size);
 template void rsArray::deAllocateSquareArray2D(int**& theArray, int size);
 template void rsArray::rightShift(int *buffer, int length, int numPlaces);

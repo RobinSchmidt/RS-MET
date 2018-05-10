@@ -22,12 +22,12 @@ bool testHeapSort(std::string &reportString)
   int testArray[length];
   for(int i=0; i<numTests; i++)
   {
-    rsFillWithRandomValues(testArray, length, -1000, +1000, 1);
+    RAPT::rsArray::fillWithRandomValues(testArray, length, -1000, +1000, 1);
     rsHeapSort(testArray, length);
     testResult &= rsIsSortedAscending(testArray, length);
 
     // check odd lengths by just sorting the subarray up to length-1:
-    rsFillWithRandomValues(testArray, length, -1000, +1000, 1);
+    RAPT::rsArray::fillWithRandomValues(testArray, length, -1000, +1000, 1);
     rsHeapSort(testArray, length-1);
     testResult &= rsIsSortedAscending(testArray, length-1);
   }
