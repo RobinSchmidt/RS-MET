@@ -141,6 +141,7 @@ template class RAPT::rsFractionalDelayLine<double, double>;
 template class RAPT::rsInstantaneousFundamentalEstimator<double>; // rename
 
 template class RAPT::rsZeroCrossingPitchDetector<double>;
+template class RAPT::rsAutoCorrelationPitchDetector<double>;
 
 template class RAPT::rsPhaseVocoder<double>;
 

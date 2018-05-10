@@ -20,9 +20,9 @@ bool testAutoCorrelationPitchDetector(std::string &reportString)
   //static const int bufferSize = 16;
   //double buffer[bufferSize];
   double signal[1000];
-  rsFillWithIndex(signal, 1000);
+  RAPT::rsArray::fillWithIndex(signal, 1000);
 
-  rsAutoCorrelationPitchDetector pd;
+  rsAutoCorrelationPitchDetectorD pd;
   pd.setBufferSize(16);
   pd.setUpdateInterval(5);
 

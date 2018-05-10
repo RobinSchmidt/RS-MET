@@ -463,6 +463,7 @@ typedef RAPT::rsLadderMystran<double, double> rsLadderMystranDD;
 
 typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundamentalEstimatorD;
 typedef RAPT::rsZeroCrossingPitchDetector<double> rsZeroCrossingPitchDetectorD;
+typedef RAPT::rsAutoCorrelationPitchDetector<double> rsAutoCorrelationPitchDetectorD;
 
 typedef RAPT::rsPhaseVocoder<double> rsPhaseVocoderD;
 
