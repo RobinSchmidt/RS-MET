@@ -1,8 +1,7 @@
 #ifndef RS_FILTEREXPERIMENTS_H
 #define RS_FILTEREXPERIMENTS_H
 
-//#include "../ExperimentsUtilities.h" // old
-#include "../../../Shared/Shared.h"  // new
+#include "../../../Shared/Shared.h"
 
 void bandwidthScaling();
 void stateVariableFilter();
@@ -56,5 +55,6 @@ void resoReplaceScream();
 void fakeResonance();
 void fakeResoLowpassResponse();
 void fakeResoDifferentDelays();
+
 
 #endif

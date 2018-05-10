@@ -147,6 +147,61 @@ int main(int argc, char* argv[])
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
 
+  // Delay:
+  basicIntegerDelayLine();
+
+  // Filter:
+  bandwidthScaling();
+  stateVariableFilter();
+  stateVariableFilterMorph();
+  //transistorLadder(); // triggers assert
+  phonoFilterPrototypePlot();
+  magnitudeMatchedOnePoleFilter();
+  phonoFilterModelPlot();
+  phonoFilterSimulation();
+  serialParallelBlend();
+  averager();
+  //movingAverage();  // hangs
+  //trapezAverager();   // hangs
+  compareApproximationMethods();  // something is wrong here - plot are weird
+  ringingTime();
+  butterworthSquaredLowHighSum();
+  gaussianPrototype();
+  halpernPrototype();
+  maxFlatMaxSteepPrototypeM1N2();
+  maxFlatMaxSteepPrototypeM2N2();
+  //experimentalPrototypeM1N2();  // commented in header
+  splitLowFreqFromDC();
+  ladderResonanceModeling();
+  ladderResoShape();
+  ladderThresholds();           // maybe remove - this seemed to be a dead end
+  ladderFeedbackSaturation();
+  ladderFeedbackSaturation2();
+  ladderFeedbackSaturation3();
+  ladderFeedbackSatDCGain();
+  ladderFeedbackSatReso();
+  ladderFeedbackSatGrowl();
+  ladderFeedbackSatGrowl2();
+  ladderZDF();
+  ladderZDFvsUDF();
+  resoShapeFeedbackSat();
+  resoSaturationModes();
+  resoShapeGate();
+  resoShapePseudoSync();
+  resoSeparationNonlinear();
+  resoReplace();
+  resoReplacePhaseBumping();
+  resoReplaceScream();
+  fakeResonance();
+  fakeResoLowpassResponse();
+  fakeResoDifferentDelays();
+
+
+
+
+
+
+
 
 
 
