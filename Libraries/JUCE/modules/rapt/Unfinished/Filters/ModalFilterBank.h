@@ -550,9 +550,9 @@ protected:
 template<class TSig, class TPar>
 RS_INLINE TSig rsModalFilter<TSig, TPar>::getSample(TSig in)
 {
-  TSig y = b0*in + b1*x1 - a1*y1 - a2*y2;
-  x1 = in;
-  y2 = y1;
+  TSig y = b0*in + b1*x1 - a1*y1 - a2*y2; // todo: use all plusses (more efficient)
+  x1 = in;  // maybe multiply by b0 at the output instead of input for better reponse to amplitude
+  y2 = y1;  // modulation
   y1 = y;
   return y;
 }

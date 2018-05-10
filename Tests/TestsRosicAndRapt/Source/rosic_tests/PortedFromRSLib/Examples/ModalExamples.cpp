@@ -1,6 +1,7 @@
 #include "ModalExamples.h"
 
-// convenience functions (should got to and included from TestUtilities or something):
+// convenience functions (should go to and included from TestUtilities or something):
+/*
 std::vector<double> rsApplyFunction(const std::vector<double>& x, double p, 
   double (*f) (double, double))
 {
@@ -9,6 +10,7 @@ std::vector<double> rsApplyFunction(const std::vector<double>& x, double p,
     y[i] = f(x[i], p);
   return y;
 }
+*/
 
 // \todo: let this function accept a relative path:
 template<class T>

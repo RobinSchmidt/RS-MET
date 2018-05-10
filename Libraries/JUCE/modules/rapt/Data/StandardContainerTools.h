@@ -80,6 +80,16 @@ inline T rsGetAndRemoveLast(std::vector<T>& v)
   return result;
 }
 
+/** Multiplies a scalar and a vector. */
+template<class T>
+inline std::vector<T> operator*(const T& x, const std::vector<T>& v)
+{
+  std::vector<T> result(v.size());
+  for(int i = 0; i < v.size(); i++)
+    result[i] = x * v[i];
+  return result;
+}
+
 //=================================================================================================
 
 

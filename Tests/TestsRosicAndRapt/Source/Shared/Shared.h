@@ -7,6 +7,7 @@
 #include "Utilities/TestInputCreation.h"
 #include "Utilities/FileWriting.h"
 #include "Utilities/PerformanceTestTools.h"
+#include "Utilities/TestUtilities.h"
 
 //#include "Prototypes/LindenmayerSystem.h"
 #include "Prototypes/Prototypes.h"

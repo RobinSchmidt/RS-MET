@@ -29,6 +29,8 @@ inline void checkForMemoryLeaksOnExit()
 std::vector<double> rsLinearRangeVector(     int N, double min, double max);
 std::vector<double> rsExponentialRangeVector(int N, double min, double max);
 std::vector<double> rsRandomVector(          int N, double min, double max, int seed = 0);
+std::vector<double> rsApplyFunction(const std::vector<double>& v, double p, 
+  double (*f) (double, double));
 
 // conversions to std::string:
 std::string toString(int n);

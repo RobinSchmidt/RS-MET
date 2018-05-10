@@ -1,17 +1,18 @@
 #include "ModalTests.h"
 
+// move to PerformanceTestTools:
 template<class T>
 double getCyclesPerSample(T &module, int numSamples = 1000, int numTests = 5)
 {  
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
 
   // create noise to be used as input signal:
   double *x = new double[numSamples];
-  RSLib::rsFillWithRandomValues(x, numSamples, -1.0, 1.0, 0);
+  RAPT::rsArray::fillWithRandomValues(x, numSamples, -1.0, 1.0, 0);
 
   // do the test numTests times, use the minimum as result:
   double y, cycles, minCycles;
-  minCycles = rsInfDouble;
+  minCycles = RS_INF(double);
   for(int i = 1; i <= numTests; i++)
   {
     counter.init();
@@ -33,14 +34,14 @@ double getCyclesPerSampleBlockWise(T &module,
                                    int numTests = 5, 
                                    int blockSize = 512)
 {  
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
 
   double *x = new double[numSamples];
   double *y = new double[numSamples];
-  RSLib::rsFillWithRandomValues(x, numSamples, -1.0, 1.0, 0);
+  RAPT::rsArray::fillWithRandomValues(x, numSamples, -1.0, 1.0, 0);
 
   double cycles, minCycles;
-  minCycles = rsInfDouble;
+  minCycles = RS_INF(double);
   int numFullBlocks = numSamples/blockSize;
   int lastBlockSize = numSamples - numFullBlocks*blockSize;
 
@@ -79,26 +80,26 @@ void testModalFilter2(std::string &reportString)
   int numSamples = 10000;
 
 
-  rsModalFilter mf;
+  rsModalFilterDD mf;
   mf.setModalParameters(f, A, td, phs, fs);
 
   double cyclesPerSample = getCyclesPerSample(mf, 1000);
-  appendResultToReport(reportString, "ModalFilter", cyclesPerSample);
+  printPerformanceTestResult("ModalFilter", cyclesPerSample);
 
   mf.reset();
   double cyclesPerSampleBlockWise = getCyclesPerSampleBlockWise(mf, numSamples, 5, blockSize);
-  appendResultToReport(reportString, "  blockwise:", cyclesPerSampleBlockWise);
+  printPerformanceTestResult("  blockwise:", cyclesPerSampleBlockWise);
 
-  rsModalFilterWithAttack mfa;
+  rsModalFilterWithAttackDD mfa;
   mfa.setModalParameters(f, A, ta, td, phs, fs);
   cyclesPerSample = getCyclesPerSample(mfa, 1000);
-  appendResultToReport(reportString, "ModalFilterAttack", cyclesPerSample);
+  printPerformanceTestResult("ModalFilterAttack", cyclesPerSample);
 
 
-  rsModalFilterWithAttack mfa2;
+  rsModalFilterWithAttackDD mfa2;
   mfa2.setModalParameters(f, A, ta, td, phs, fs);
   cyclesPerSample = getCyclesPerSample(mfa2, 1000);
-  appendResultToReport(reportString, "ModalFilterAttack2", cyclesPerSample);
+  printPerformanceTestResult("ModalFilterAttack2", cyclesPerSample);
 
   /*
   rsNonlinearModalFilter nmf;
@@ -125,25 +126,25 @@ void testModalFilterBank(std::string &reportString)
   rsVectorDbl p = randomVector(numPartials, 0.0, 360.0, 0); 
   */
 
-  rsVectorDbl f = rsLinearRangeVector(numPartials, 1.0, numPartials);
-  rsVectorDbl a = rsApplyFunction(f, -0.7,  &pow); 
-  rsVectorDbl d = rsModalFilterBank::modeDecayTimes(f, 4.0, 0.95); 
-  rsVectorDbl p = rsRandomVector(numPartials, 0.0, 360.0, 0);
+  std::vector<double> f = rsLinearRangeVector(numPartials, 1.0, numPartials);
+  std::vector<double> a = rsApplyFunction(f, -0.7,  &pow); 
+  std::vector<double> d = rsModalFilterBankDD::modeDecayTimes(f, 4.0, 0.95); 
+  std::vector<double> p = rsRandomVector(numPartials, 0.0, 360.0, 0);
 
-  rsModalFilterBank mfb;
+  rsModalFilterBankDD mfb;
   mfb.setSampleRate(sampleRate);
-  mfb.setModalParameters(f, a, 0.1*d, d, p);
+  mfb.setModalParameters(f, a, 0.1*d, d, p); // we need an operator taking a double and a vector
   mfb.setReferenceFrequency(frequency);
   mfb.setReferenceDecay(decay);
 
   mfb.resetModalFilters();
   double cyclesPerSample = getCyclesPerSample(mfb, numSamples) / numPartials;
-  appendResultToReport(reportString, "ModalFilterBank", cyclesPerSample);
+  printPerformanceTestResult("ModalFilterBank", cyclesPerSample);
 
   mfb.resetModalFilters();
   double cyclesPerSampleBlockWise = 
     getCyclesPerSampleBlockWise(mfb, numSamples, 5, blockSize) / numPartials;
-  appendResultToReport(reportString, "  blockwise:", cyclesPerSampleBlockWise);
+  printPerformanceTestResult("  blockwise:", cyclesPerSampleBlockWise);
 
 
   int dummy = 0;

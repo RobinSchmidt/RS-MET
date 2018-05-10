@@ -32,6 +32,16 @@ std::vector<double> rsRandomVector(int N, double min, double max, int seed)
   return v;
 }
 
+std::vector<double> rsApplyFunction(const std::vector<double>& v, double p, 
+  double (*f) (double, double))
+{
+  std::vector<double> r(v.size());
+  for(int i = 0; i < r.size(); i++)
+    r[i] = f(v[i], p);
+  return r;
+}
+
+
 #if defined(_MSC_VER)
 // works only on MSVC and we need this function only in the performance tests, which we do only
 // with the MSVC compiler anyway:

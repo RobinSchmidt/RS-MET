@@ -246,13 +246,13 @@ bool testMatrixMul()
 
   return testResult;
 }
-
+/*
 template<class T>
 T square(T x)
 {
   return x*x;
 }
- 
+*/
 bool testMatrixArithmetic(std::string &reportString)
 {
   std::string testName = "MatrixArithmetic";

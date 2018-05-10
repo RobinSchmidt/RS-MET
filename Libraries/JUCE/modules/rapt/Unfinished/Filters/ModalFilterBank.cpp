@@ -177,7 +177,7 @@ TPar rsModalFilter<TSig, TPar>::getDecayTime(TPar sampleRate)
 template<class TSig, class TPar>
 TPar rsModalFilter<TSig, TPar>::getMagnitudeAt(TPar w)
 {
-  return biquadMagnitudeAt(b0, b1, 0, a1, a2, w);
+  return biquadMagnitudeAt(b0, b1, TPar(0), a1, a2, w);
 }
 
 template<class TSig, class TPar>
@@ -186,6 +186,14 @@ void rsModalFilter<TSig, TPar>::reset()
   x1 = y1 = y2 = 0.0;
 }
 
+template<class TSig, class TPar>
+void rsModalFilter<TSig, TPar>::processBlock(TSig in[], TSig out[], int blockSize)
+{
+  for(int n = 0; n < blockSize; n++)
+    out[n] = getSample(in[n]);
+}
+
+/*
 template<class TSig, class TPar>
 void rsModalFilter<TSig, TPar>::processBlock(TSig in[], TSig out[], int blockSize)
 {
@@ -221,18 +229,20 @@ void rsModalFilter<TSig, TPar>::processBlock(TSig in[], TSig out[], int blockSiz
 
   //scale(out, blockSize, g);
 
-  /*
-  for(int n = 0; n < blockSize; n++)
-  {
-    //out[n] = getSample(in[n]);
-    double y = in[n] + b1*x1 - a1*y1 - a2*y2;
-    x1 = in[n];
-    y2 = y1;
-    y1 = y;
-    out[n] = g*y;
-  }
-  */
+
+  //for(int n = 0; n < blockSize; n++)
+  //{
+  //  //out[n] = getSample(in[n]);
+  //  double y = in[n] + b1*x1 - a1*y1 - a2*y2;
+  //  x1 = in[n];
+  //  y2 = y1;
+  //  y1 = y;
+  //  out[n] = g*y;
+  //}
+
 }
+  */
+
 
 //=================================================================================================
 // class rsNonlinearModalFilter:
