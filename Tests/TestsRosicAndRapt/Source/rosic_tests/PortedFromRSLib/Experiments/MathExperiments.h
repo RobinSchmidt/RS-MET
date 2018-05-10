@@ -1,9 +1,7 @@
 #ifndef RS_MATHEXPERIMENTS_H
 #define RS_MATHEXPERIMENTS_H
 
-//#include "../ExperimentsUtilities.h" // old
-#include "../../../Shared/Shared.h"  // new
-
+#include "../../../Shared/Shared.h"
 
 void binomialDistribution();
 void sineParameters();
@@ -29,9 +27,6 @@ void bernoulliNumbers();
 void sequenceSquareRoot();
 void conicSystem();
 void logisticMapNoise();
-
-
-
 
 // these are some ideas, there's not much code yet:
 void bigFloatErrors();

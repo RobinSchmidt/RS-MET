@@ -131,6 +131,40 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Experiments:
 
+  // Math:
+  //binomialDistribution();
+  //sineParameters();
+  //bandLimitedStep();
+  //cubicInterpolationNonEquidistant();   // move to unit tests
+  //hyperbolicFunctions(); 
+  //splineInterpolationNonEquidistant();
+  //rationalInterpolation();
+  //splineInterpolationAreaNormalized();
+  //numericDerivative();
+  //shiftPolynomial();
+  ////void stretchPolynomial();  // commented in header
+  //monotonicPolynomials();
+  //parametricBell();
+  //partialFractionExpansion();
+  //partialFractionExpansion2();
+  //partialFractionExpansionQuadratic();
+  //dampedSineEnergy();
+  //sineIntegral();
+  //logarithmQuotient();
+  //stirlingNumbers();
+  //bernoulliNumbers();
+  //sequenceSquareRoot();
+  //conicSystem();
+  ////logisticMapNoise(); // takes long to compute
+  //bigFloatErrors();
+  //primeRecursion();
+  ////primeSieveSchmidt1(); // crashes
+  ////primeSieveSchmidt2(); // crashes
+  //primeSieveAtkin();
+  ////primeSieve();  // crashes
+  //primeDistribution();
+  ////numberTheoreticTransform(); // triggers assert
+
   // Analysis:
   //autoCorrelation();
   //autocorrelationPeakVariation();
@@ -148,53 +182,53 @@ int main(int argc, char* argv[])
   //zeroCrossingPitchDetectorTwoTones();
 
   // Delay:
-  basicIntegerDelayLine();
+  //basicIntegerDelayLine();
 
   // Filter:
-  bandwidthScaling();
-  stateVariableFilter();
-  stateVariableFilterMorph();
-  //transistorLadder(); // triggers assert
-  phonoFilterPrototypePlot();
-  magnitudeMatchedOnePoleFilter();
-  phonoFilterModelPlot();
-  phonoFilterSimulation();
-  serialParallelBlend();
-  averager();
-  //movingAverage();  // hangs
-  //trapezAverager();   // hangs
-  compareApproximationMethods();  // something is wrong here - plot are weird
-  ringingTime();
-  butterworthSquaredLowHighSum();
-  gaussianPrototype();
-  halpernPrototype();
-  maxFlatMaxSteepPrototypeM1N2();
-  maxFlatMaxSteepPrototypeM2N2();
-  //experimentalPrototypeM1N2();  // commented in header
-  splitLowFreqFromDC();
-  ladderResonanceModeling();
-  ladderResoShape();
-  ladderThresholds();           // maybe remove - this seemed to be a dead end
-  ladderFeedbackSaturation();
-  ladderFeedbackSaturation2();
-  ladderFeedbackSaturation3();
-  ladderFeedbackSatDCGain();
-  ladderFeedbackSatReso();
-  ladderFeedbackSatGrowl();
-  ladderFeedbackSatGrowl2();
-  ladderZDF();
-  ladderZDFvsUDF();
-  resoShapeFeedbackSat();
-  resoSaturationModes();
-  resoShapeGate();
-  resoShapePseudoSync();
-  resoSeparationNonlinear();
-  resoReplace();
-  resoReplacePhaseBumping();
-  resoReplaceScream();
-  fakeResonance();
-  fakeResoLowpassResponse();
-  fakeResoDifferentDelays();
+  //bandwidthScaling();
+  //stateVariableFilter();
+  //stateVariableFilterMorph();
+  ////transistorLadder(); // triggers assert
+  //phonoFilterPrototypePlot();
+  //magnitudeMatchedOnePoleFilter();
+  //phonoFilterModelPlot();
+  //phonoFilterSimulation();
+  //serialParallelBlend();
+  //averager();
+  ////movingAverage();  // hangs
+  ////trapezAverager();   // hangs
+  //compareApproximationMethods();  // something is wrong here - plot are weird
+  //ringingTime();
+  //butterworthSquaredLowHighSum();
+  //gaussianPrototype();
+  //halpernPrototype();
+  //maxFlatMaxSteepPrototypeM1N2();
+  //maxFlatMaxSteepPrototypeM2N2();
+  ////experimentalPrototypeM1N2();  // commented in header
+  //splitLowFreqFromDC();
+  //ladderResonanceModeling();
+  //ladderResoShape();
+  //ladderThresholds();           // maybe remove - this seemed to be a dead end
+  //ladderFeedbackSaturation();
+  //ladderFeedbackSaturation2();
+  //ladderFeedbackSaturation3();
+  //ladderFeedbackSatDCGain();
+  //ladderFeedbackSatReso();
+  //ladderFeedbackSatGrowl();
+  //ladderFeedbackSatGrowl2();
+  //ladderZDF();
+  //ladderZDFvsUDF();
+  //resoShapeFeedbackSat();
+  //resoSaturationModes();
+  //resoShapeGate();
+  //resoShapePseudoSync();
+  //resoSeparationNonlinear();
+  //resoReplace();
+  //resoReplacePhaseBumping();
+  //resoReplaceScream();
+  //fakeResonance();
+  //fakeResoLowpassResponse();
+  //fakeResoDifferentDelays();
 
 
 
