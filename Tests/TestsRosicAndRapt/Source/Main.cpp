@@ -27,6 +27,103 @@ using namespace rotes; // get rid of that
 int main(int argc, char* argv[])
 {
   //===============================================================================================
+  // RAPT tests:
+
+  //-----------------------------------------------------------------------------------------------
+  // Unit tests:
+
+  //runAllUnitTests();
+  //mathUnitTests();
+  //filterUnitTests();
+
+
+  //-----------------------------------------------------------------------------------------------
+  // Performance tests:
+
+  //callbackPerformance();
+  //matrixAdressingTest();
+  //simdPerformanceFloat64x2();
+  //sinCosPerformance();
+
+  //ladderPerformance();
+  //engineersFilterPerformance();
+  //turtleGraphicsPerformance();
+
+  //-----------------------------------------------------------------------------------------------
+  // Experiments:
+
+  // Prototypes (not yet in library):
+  //particleBouncerExperiment();
+
+  // Math:
+  //ellipseLineIntersections();
+  //expBipolar();
+  //expGaussBell();
+  //linearRegression();
+  //productLogPlot();
+  //sinCosTable();
+
+  // Filter:
+  //bandSplittingTwoWay();
+  //bandSplittingMultiWay();
+  //bandSplittingTreeAlgo();
+  //ladderResonanceManipulation();
+  //nonUniformMovingAverage();
+  //prototypeDesign();
+  //smoothingFilterOrders();
+  //smoothingFilterTransitionTimes();
+
+  // Physics:
+  //particleForceDistanceLaw();
+  //particleSystem(); 
+
+  // Generators:
+  //bouncillator();
+  //bouncillatorFormula();
+  //rayBouncer();
+  //hilbertCurve();
+  //lindenmayer();
+  //xoxosOsc();
+
+  // Graphics:
+  //lineDrawing();
+  //lineDrawingThick();
+  ///lineDrawingThick2(); // obsolete
+  //lineJoints();
+  //lineTo();
+  //polyLineRandom();
+  //phaseScopeLissajous();
+
+
+  //===============================================================================================
+  // Tests for dragged over RSLib code:
+
+  int dummy;
+  std::string str;
+  bool passed = true;
+
+  // Unit Tests:
+
+  passed &= testBufferFunctions(str);
+  passed &= testCopySection(    str);
+  passed &= testMoveElements(   str);
+  passed &= testRemoveElements( str);
+
+  passed &= testFilterPolynomials(str);
+  //passed &= testHighOrderFilter(  str);  // fails!!!
+
+
+
+  // Experiments:
+
+  // Performance Tests:
+
+  // Examples:
+
+
+  dummy = 0;
+
+  //===============================================================================================
   // RoSiC tests:
 
   //-----------------------------------------------------------------------------------------------
@@ -88,74 +185,19 @@ int main(int argc, char* argv[])
   //testTurtleSource();
 
 
-  //===============================================================================================
-  // RAPT tests:
-
-  //-----------------------------------------------------------------------------------------------
-  // Unit tests:
-
-  runAllUnitTests();
-  //mathUnitTests();
-  //filterUnitTests();
 
 
-  //-----------------------------------------------------------------------------------------------
-  // Performance tests:
-
-  //callbackPerformance();
-  //matrixAdressingTest();
-  //simdPerformanceFloat64x2();
-  //sinCosPerformance();
-
-  //ladderPerformance();
-  //engineersFilterPerformance();
-  //turtleGraphicsPerformance();
 
 
-  //-----------------------------------------------------------------------------------------------
-  // Experiments:
 
-  // Prototypes (not yet in library):
-  //particleBouncerExperiment();
 
-  // Math:
-  //ellipseLineIntersections();
-  //expBipolar();
-  //expGaussBell();
-  //linearRegression();
-  //productLogPlot();
-  //sinCosTable();
 
-  // Filter:
-  //bandSplittingTwoWay();
-  //bandSplittingMultiWay();
-  //bandSplittingTreeAlgo();
-  //ladderResonanceManipulation();
-  //nonUniformMovingAverage();
-  //prototypeDesign();
-  //smoothingFilterOrders();
-  //smoothingFilterTransitionTimes();
 
-  // Physics:
-  //particleForceDistanceLaw();
-  //particleSystem(); 
 
-  // Generators:
-  //bouncillator();
-  //bouncillatorFormula();
-  //rayBouncer();
-  //hilbertCurve();
-  //lindenmayer();
-  //xoxosOsc();
 
-  // Graphics:
-  //lineDrawing();
-  //lineDrawingThick();
-  ///lineDrawingThick2(); // obsolete
-  //lineJoints();
-  //lineTo();
-  //polyLineRandom();
-  //phaseScopeLissajous();
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   // Demos:
