@@ -2,6 +2,7 @@
 #define PERFORMANCETESTTOOLS_INCLUDED
 
 #include <iostream>
+#include <string>
 
 #ifdef _MSC_VER
 #include <intrin.h> // Or #include <ia32intrin.h> etc.
@@ -9,6 +10,9 @@
 #endif
 
 void printPerformanceTestResult(const char *testName, double numCyclesPerOperation);
+
+void printPerformanceTestResult(const std::string& testName, double numCyclesPerOperation);
+
 
 /** Prints the memory occupation of the given object in bytes. */
 template<class T>
