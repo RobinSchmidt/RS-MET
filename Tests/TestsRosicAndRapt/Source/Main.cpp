@@ -102,6 +102,7 @@ int main(int argc, char* argv[])
   std::string str;
   bool passed = true;
 
+  //-----------------------------------------------------------------------------------------------
   // Unit Tests:
 
   passed &= testBufferFunctions(str);
@@ -127,11 +128,32 @@ int main(int argc, char* argv[])
 
   passed &= testTypeSizes(str);
 
-
+  //-----------------------------------------------------------------------------------------------
   // Experiments:
 
+  // Analysis:
+  //autoCorrelation();
+  //autocorrelationPeakVariation();
+  //autoCorrelationPitchDetector();
+  //autoCorrelationPitchDetectorOffline();
+  //crossCorrelationBestMatch();
+  //combineFFTs(); // move to math experiments
+  ////zeroCrossingPitchDetector(); // commented in header - why?
+  //instantaneousFrequency(); 
+  ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
+  //zeroCrossingFinder();
+  //zeroCrossingFinder2();
+  //cycleMarkFinder();
+  ////zeroCrossingPitchDetector(); // triggers assert
+  //zeroCrossingPitchDetectorTwoTones();
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
   // Performance Tests:
 
+  //-----------------------------------------------------------------------------------------------
   // Examples:
 
 
