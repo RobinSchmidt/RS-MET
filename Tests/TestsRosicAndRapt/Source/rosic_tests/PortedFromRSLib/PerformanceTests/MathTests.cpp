@@ -1,5 +1,7 @@
 #include "MathTests.h"
 
+#undef min
+
 inline double absFast(double x)
 {
   static const unsigned long long mask = 0x7FFFFFFFFFFFFFFFULL; // binary: 011111...
@@ -16,33 +18,33 @@ void testAbsAndSign2(std::string &reportString)
   static const int N = 10000;   // number of tests
   double x[N];
   double y[N];
-  rsFillWithRandomValues(x, N, -N, N, 0);
+  RAPT::rsArray::fillWithRandomValues(x, N, -N, N, 0);
   int n;
 
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
   counter.init();
   for(n = 0; n < N; n++)
     y[n] = fabs(x[n]);
   double cycles = (double) counter.getNumCyclesSinceInit();
-  appendResultToReport(reportString, "standard fabs", cycles / N);  // 0.5 cycles (?)
+  printPerformanceTestResult("standard fabs", cycles / N);  // 0.5 cycles (?)
 
   counter.init();
   for(n = 0; n < N; n++)
     y[n] = absFast(x[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
-  appendResultToReport(reportString, "absFast", cycles / N);      // 1.5 cycles - actually slower
+  printPerformanceTestResult("absFast", cycles / N);      // 1.5 cycles - actually slower
 
   counter.init();
   for(n = 0; n < N; n++)
     y[n] = copysign(x[n], 1.0);
   cycles = (double) counter.getNumCyclesSinceInit();
-  appendResultToReport(reportString, "copysign", cycles / N);       // 35 cycles
+  printPerformanceTestResult("copysign", cycles / N);       // 35 cycles
 
   counter.init();
   for(n = 0; n < N; n++)
     y[n] = rsSign(x[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
-  appendResultToReport(reportString, "rsSign", cycles / N);           // 0.43 cycles
+  printPerformanceTestResult("rsSign", cycles / N);           // 0.43 cycles
 }
 
 void testMultinomialCoefficients2(std::string &reportString)
@@ -52,7 +54,7 @@ void testMultinomialCoefficients2(std::string &reportString)
   rsUint32 k[mMax];
   rsUint32 result;
     
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
   counter.init();
 
   // we use the same nested loop computation as in the unit test - refer to the comments there for
@@ -63,23 +65,23 @@ void testMultinomialCoefficients2(std::string &reportString)
     for(rsUint32 k2 = 0; k2 <= nMax; k2++)
     {
       k[1] = k2;
-      if( rsSum(k, 2) <= nMax )
-        result = rsMultinomialCoefficient(k, 2);
+      if( RAPT::rsArray::sum(k, 2) <= nMax )
+        result = rsMultinomialCoefficient(k, (rsUint32)2);
       for(rsUint32 k3 = 0; k3 <= nMax; k3++)
       {
         k[2] = k3;
-        if( rsSum(k, 3) <= nMax )
-          result = rsMultinomialCoefficient(k, 3);
+        if( RAPT::rsArray::sum(k, 3) <= nMax )
+          result = rsMultinomialCoefficient(k, (rsUint32)3);
         for(rsUint32 k4 = 0; k4 <= nMax; k4++)
         {
           k[3] = k4;
-          if( rsSum(k, 4) <= nMax )
-            result = rsMultinomialCoefficient(k, 4);
+          if( RAPT::rsArray::sum(k, 4) <= nMax )
+            result = rsMultinomialCoefficient(k, (rsUint32)4);
           for(rsUint32 k5 = 0; k5 <= nMax; k5++)
           {
             k[4] = k5;
-            if( rsSum(k, 5) <= nMax )
-              result = rsMultinomialCoefficient(k, 5);
+            if( RAPT::rsArray::sum(k, 5) <= nMax )
+              result = rsMultinomialCoefficient(k, (rsUint32)5);
           }
         }
       }
@@ -87,7 +89,7 @@ void testMultinomialCoefficients2(std::string &reportString)
   }
   double cycles = (double) counter.getNumCyclesSinceInit();
 
-  appendResultToReport(reportString, "MultinomialCoefficients", cycles);
+  printPerformanceTestResult("MultinomialCoefficients", cycles);
 }
 
 // from:
@@ -146,7 +148,7 @@ void segmented_sieve(int64_t limit, int segment_size = L1D_CACHE_SIZE)
     for (; n <= high; n += 2)
       if (segment[n - low])
       {
-        int p = n; // added by robin schmidt - this is how the primes are retrieved
+        int p = (int)n; // added by robin schmidt - this is how the primes are retrieved
         count++;
       }
   }
@@ -162,15 +164,16 @@ void testPrimeSieves(std::string &reportString)
   //static const rsUint64 maxPrime = 1000;
     // we should measure for different values of maxPrime - the algorithms may scale differently
 
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
   double cyclesPerNumber;
 
-  rsArray<rsUint64> pa;
+  //rsArray<rsUint64> pa;
+  std::vector<rsUint64> pa;
   counter.init();
   rsFindPrimesUpTo(pa, maxPrime);
-  rsUint32 numPrimes = pa.getNumElements();
+  rsUint32 numPrimes = (int)pa.size();
   cyclesPerNumber = (double) counter.getNumCyclesSinceInit() / maxPrime;
-  appendResultToReport(reportString, "Prime Sieve (Joerg Arndt)", cyclesPerNumber);
+  printPerformanceTestResult("Prime Sieve (Joerg Arndt)", cyclesPerNumber);
 
   rsUint32 *p = new rsUint32[numPrimes];
   //rsUint64 *p = new rsUint64[numPrimes];
@@ -183,13 +186,13 @@ void testPrimeSieves(std::string &reportString)
   rsFillPrimeTable(p, numPrimes, 32768);  // seems to be the sweet spot
   //rsFillPrimeTable(p, numPrimes, 65536);
   cyclesPerNumber = (double) counter.getNumCyclesSinceInit() / maxPrime;
-  appendResultToReport(reportString, "Prime Sieve (Robin Schmidt)", cyclesPerNumber);
+  printPerformanceTestResult("Prime Sieve (Robin Schmidt)", cyclesPerNumber);
   delete[] p;
 
   counter.init();
   segmented_sieve(maxPrime, 16384);
   cyclesPerNumber = (double) counter.getNumCyclesSinceInit() / maxPrime;
-  appendResultToReport(reportString, "Prime Sieve (Kim Walisch)", cyclesPerNumber);
+  printPerformanceTestResult("Prime Sieve (Kim Walisch)", cyclesPerNumber);
 
 
   // seems mine is faster for smaller value of maxPrime and Arndt's is faster for greater values
@@ -199,6 +202,7 @@ void testPrimeSieves(std::string &reportString)
 
 std::string matrixString(const rsMatrixDbl& A)
 {
+  /*
   rsString s;
   s += "Matrix(";
   s += rsString(A.getNumRows());
@@ -206,20 +210,30 @@ std::string matrixString(const rsMatrixDbl& A)
   s += rsString(A.getNumColumns());
   s += "):";
   return s.getAsStdString(); // rename into toStdString
+  */
+  std::string s;
+  s += "Matrix(";
+  s += to_string(A.getNumRows());
+  s += "x";
+  s += to_string(A.getNumColumns());
+  s += "):";
+  return s;
 }
 void runMatrixTest(std::string &reportString, int numRows, int numColumns, int numRuns = 20)
 {
   rsMatrixDbl A(numRows, numColumns);
   A.randomizeElements(-1.0, 1.0);
 
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
   counter.init();
   for(int i = 1; i <= numRuns; i++)
     A = 2.0 * ((A*trans(A))*A + A);  // A := 2 * ((A*A^T)*A + A)
   double cycles = (double) counter.getNumCyclesSinceInit();
 
   double cyclesPerElement = cycles / (numRows*numColumns*numRuns);
-  appendResultToReport(reportString, matrixString(A), cyclesPerElement);
+
+  rsAssert(false); // printing below doesn't compile
+  //printPerformanceTestResult(matrixString(A), cyclesPerElement);
 }
 void testMatrix(std::string &reportString)
 {
@@ -247,18 +261,18 @@ void testMatrixAddressing(std::string &reportString)
   for(i = 0; i < N; i++){
     a[i] = &af[i*M];
     b[i] = &bf[i*M];
-    rsFillWithRandomValues(af, N*M, 1.0, 2.0, 0);
+    RAPT::rsArray::fillWithRandomValues(af, N*M, 1.0, 2.0, 0);
   }
 
   // measure copying a into b via pointer-to-pointer access:
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
   counter.init();
   for(i = 0; i < N; i++){
     for(j = 0; j < M; j++)
       b[i][j] = a[i][j];
   }
   double cycles = (double) counter.getNumCyclesSinceInit();
-  appendResultToReport(reportString, "pointer-to-pointer Matrix", cycles / (N*M));
+  printPerformanceTestResult("pointer-to-pointer Matrix", cycles / (N*M));
 
   // measure copying a into b via pointer arithmetic:
   counter.init();
@@ -267,7 +281,7 @@ void testMatrixAddressing(std::string &reportString)
       bf[M*i+j] = af[M*i+j];
   }
   cycles = (double) counter.getNumCyclesSinceInit();
-  appendResultToReport(reportString, "pointer-arithmetic Matrix", cycles / (N*M));
+  printPerformanceTestResult("pointer-arithmetic Matrix", cycles / (N*M));
 
   // Results - cycles per element-access (in release build):
   // matrix size:            5x7 20x70  70x20  30x50  50x70  300x500

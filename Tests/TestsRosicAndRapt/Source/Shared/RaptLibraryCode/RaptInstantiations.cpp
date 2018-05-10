@@ -167,6 +167,7 @@ template void RAPT::rsStirlingNumbersFirstKind(int **s, int nMax);
 
 
 template void RAPT::rsFindPrimesUpTo(std::vector<rsUint32>& primes, rsUint32 upperLimit);
+template void RAPT::rsFindPrimesUpTo(std::vector<rsUint64>& primes, rsUint64 upperLimit);
 template void RAPT::rsPrimeFactors(rsUint32 x, std::vector<rsUint32>& factors, 
   std::vector<rsUint32>& exponents, std::vector<rsUint32>* primeTable);
 
