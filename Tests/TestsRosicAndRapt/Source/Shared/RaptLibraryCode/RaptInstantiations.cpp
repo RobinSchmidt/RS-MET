@@ -43,8 +43,8 @@ template void RAPT::rsHeapSort(int *buffer, int length,
 template bool RAPT::rsIsSortedAscending(int *buffer, int length);
 template std::vector<int> RAPT::rsFindAllOccurencesOf(char* buffer, int bufferLength, 
   char* pattern, int patternLength);
+template int RAPT::rsFindHighestPeakIndex(double *buffer, int length); // move to rsArray
 // maybe move these into rsArray
-
 
 // Data:
 
@@ -92,7 +92,10 @@ template bool rsArray::contains(rsUint32 *buffer, int length, rsUint32 elementTo
 template void rsArray::fillWithZeros(rsUint32 *buffer, int length);
 
 template void rsArray::convertBuffer(std::complex<double> *source, std::complex<double> *destination, int length);
-template int RAPT::rsFindHighestPeakIndex(double *buffer, int length); // move to rsArray
+template void rsArray::fillWithRandomValues(std::complex<double>* x, int N, double min, double max, int seed);
+
+
+
 
 
 

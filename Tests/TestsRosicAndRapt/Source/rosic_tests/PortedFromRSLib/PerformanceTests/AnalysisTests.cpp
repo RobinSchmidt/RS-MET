@@ -1,5 +1,7 @@
 #include "AnalysisTests.h"
 
+typedef std::complex<double> rsComplexDbl;
+
 void testFourierTransformer(std::string &reportString)
 {
   static const int bufferSize = 4096;
@@ -7,32 +9,32 @@ void testFourierTransformer(std::string &reportString)
 
   rsComplexDbl x[bufferSize];
   rsComplexDbl X[bufferSize];
-  rsFillWithRandomValues(x, bufferSize, -1.0, +1.0, 1);
+  RAPT::rsArray::fillWithRandomValues(x, bufferSize, -1.0, +1.0, 1);
 
-  rsFourierTransformerRadix2 ft;
+  rsFourierTransformerRadix2D ft;
   ft.setBlockSize(bufferSize);
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
   counter.init();
   int b;
   for(b = 0; b < numBuffers; b++)
     ft.transformComplexBuffer(x, X);
   double cycles = (double) counter.getNumCyclesSinceInit();
   double cyclesPerSample = cycles / (bufferSize*numBuffers);
-  appendResultToReport(reportString, "FourierTransformerRadix2", cyclesPerSample);
+  printPerformanceTestResult("FourierTransformerRadix2", cyclesPerSample);
 
   counter.init();
   for(b = 0; b < numBuffers; b++)
   {
-    rsCopyBuffer(x, X, bufferSize);
+    RAPT::rsArray::copyBuffer(x, X, bufferSize);
     rsFFT(X, bufferSize);
   }
   cycles = (double) counter.getNumCyclesSinceInit();
   cyclesPerSample = cycles / (bufferSize*numBuffers);
-  appendResultToReport(reportString, "rsFFT", cyclesPerSample);
+  printPerformanceTestResult("rsFFT", cyclesPerSample);
 
 }
 
-void testAutoCorrelationPitchDetector(std::string &reportString)
+void testAutoCorrelationPitchDetector2(std::string &reportString)
 {
   static const int bufferSize     = 2048;
   static const int updateInterval = 256;
@@ -43,7 +45,7 @@ void testAutoCorrelationPitchDetector(std::string &reportString)
   double f  = 1000.0;  // frequency of the sinusoid
 
   // create and setup the pitch detector object:
-  rsAutoCorrelationPitchDetector pd;
+  rsAutoCorrelationPitchDetectorD pd;
   pd.setBufferSize(bufferSize);
   pd.setUpdateInterval(updateInterval);
   pd.setSampleRate(fs);
@@ -54,7 +56,7 @@ void testAutoCorrelationPitchDetector(std::string &reportString)
   double fe; // frequency estimate (irrelevant in performance test)
   double block[blockSize];   
   int b, n;
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
   counter.init();
   for(b = 0; b < numBlocks; b++)
   {
@@ -65,5 +67,5 @@ void testAutoCorrelationPitchDetector(std::string &reportString)
   double cycles = (double) counter.getNumCyclesSinceInit();
   double cyclesPerBlock  = cycles/numBlocks;
   double cyclesPerSample = cyclesPerBlock/blockSize;
-  appendResultToReport(reportString, "AutoCorrelationPitchDetector", cyclesPerSample);
+  printPerformanceTestResult("AutoCorrelationPitchDetector", cyclesPerSample);
 }

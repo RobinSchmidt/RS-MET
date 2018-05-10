@@ -66,7 +66,7 @@ double getCyclesPerSampleBlockWise(T &module,
   return minCycles / numSamples;
 }
 
-void testModalFilter(std::string &reportString)
+void testModalFilter2(std::string &reportString)
 {
   double fs  = 44100;  // samplerate in Hz
   double ta  = 0.02;   // decay time in seconds

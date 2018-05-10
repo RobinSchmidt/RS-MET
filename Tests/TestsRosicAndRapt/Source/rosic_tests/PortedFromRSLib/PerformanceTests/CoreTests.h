@@ -1,7 +1,7 @@
 #ifndef RS_COREPERFORMANCETESTS_H
 #define RS_COREPERFORMANCETESTS_H
 
-#include "../PerformanceTestUtilities.h"
+#include "../../../Shared/Shared.h"
 
 void testFlagArray(std::string &reportString);
 

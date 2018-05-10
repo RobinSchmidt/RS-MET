@@ -8,7 +8,7 @@ inline double absFast(double x)
 }
 // in the performance test, it turned out that standard-fabs is actually faster.
 
-void testAbsAndSign(std::string &reportString)
+void testAbsAndSign2(std::string &reportString)
 {
   // Compares the performance of the standard library functions fabs(double x) and 
   // rsAbsFast(double x)
@@ -45,7 +45,7 @@ void testAbsAndSign(std::string &reportString)
   appendResultToReport(reportString, "rsSign", cycles / N);           // 0.43 cycles
 }
 
-void testMultinomialCoefficients(std::string &reportString)
+void testMultinomialCoefficients2(std::string &reportString)
 {
   static const rsUint32 mMax = 5;  // maximum number of indices for the k-values
   static const rsUint32 nMax = 12; // maximum value for the sum of the k-values to be tested

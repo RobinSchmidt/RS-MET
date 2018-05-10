@@ -10,4 +10,4 @@ using namespace rosic;
 #include "UnitTests/NumberManipulationsTests.cpp" 
 #include "UnitTests/PitchDetectorTests.cpp"
 #include "UnitTests/SortAndSearchTests.cpp"
-//#include "UnitTests/TypeSizeTests.cpp"
+#include "UnitTests/TypeSizeTests.cpp"

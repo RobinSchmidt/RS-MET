@@ -65,6 +65,8 @@ template class RAPT::rsRotationXYZ<double>;
 template class RAPT::rsCoordinateMapper<double>;
 template class RAPT::rsCoordinateMapper2D<double>;
 
+template class RAPT::rsFourierTransformerRadix2<double>;
+
 
 template class RAPT::rsStateVariableFilter<double, double>;
 

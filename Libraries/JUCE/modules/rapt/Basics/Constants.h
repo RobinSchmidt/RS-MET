@@ -19,6 +19,8 @@
 #define SEMITONE_FACTOR 1.0594630943592952645618252949463
 
 // constants related to numeric format:
+#undef min  // some silly include header on windows (minwindef.h) defines min/max as macros
+#undef max
 #define RS_INF(T) (std::numeric_limits<T>::infinity())
 #define RS_MIN(T) (std::numeric_limits<T>::min())
 #define RS_MAX(T) (std::numeric_limits<T>::max())

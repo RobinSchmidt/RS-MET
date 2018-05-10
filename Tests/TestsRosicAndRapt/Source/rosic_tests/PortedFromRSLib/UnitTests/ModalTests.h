@@ -3,7 +3,7 @@
 
 #include "../../../Shared/Shared.h"
 
-bool testModalFilter(std::string &reportString);
+bool testModalFilter2(std::string &reportString);
 
 bool testModalSynth(std::string &reportString);
 
