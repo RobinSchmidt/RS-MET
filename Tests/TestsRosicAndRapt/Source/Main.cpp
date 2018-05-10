@@ -110,8 +110,22 @@ int main(int argc, char* argv[])
   passed &= testRemoveElements( str);
 
   passed &= testFilterPolynomials(str);
-  //passed &= testHighOrderFilter(  str);  // fails!!!
+  //passed &= testHighOrderFilter(  str);  // fails
 
+  //passed &= testModalFilter2(str);       // fails
+  //passed &= testModalSynth(str);         // triggers assert
+
+  //passed &= testNumberManipulations( str); // triggers assert (calls the two below)
+  //passed &= testDoubleIntConversions(str); // triggers same assert (called by function above)
+  passed &= testExponentExtraction(str);
+
+  passed &= testAutoCorrelationPitchDetector(str);
+
+  passed &= testSortAndSearch(str);          // calls the two below (redundant)
+  passed &= testHeapSort(str);
+  passed &= testKnuthMorrisPrattSearch(str);
+
+  passed &= testTypeSizes(str);
 
 
   // Experiments:

@@ -1,6 +1,6 @@
 #include "ModalTests.h"
 
-bool testModalFilter(std::string &reportString)
+bool testModalFilter2(std::string &reportString)
 {
   std::string testName = "ModalFilter";
   bool testResult = true;
