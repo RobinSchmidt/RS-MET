@@ -339,11 +339,20 @@ int main(int argc, char* argv[])
   //testModalFilter2(str);
   //testModalFilterBank(str);
 
-
-
-
   //-----------------------------------------------------------------------------------------------
   // Examples:
+
+  // Modal:
+  //createInsertionSortSound();  // move somewhere else
+  //createModalFilterExamples();
+  //createModalFilterBankExamples(); // takes long
+  // sample-map creations (they take long):
+  createBass1();
+  createGong1();
+  createPluck1();
+
+
+
 
 
   dummy = 0;

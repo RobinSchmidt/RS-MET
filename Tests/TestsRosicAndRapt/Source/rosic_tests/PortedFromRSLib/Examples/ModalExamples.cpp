@@ -42,7 +42,8 @@ void createModalFilterExamples()
   rsNonlinearModalFilterDD nmf;
   nmf.setModalParameters(f, A, td, phs, fs);
   nmf.setPhaseModulation(pm);
-  writeImpulseResponseToFile("d:\\TmpData\\ModalFilterTest1.wav", nmf, N, (int) fs, 16); 
+  //writeImpulseResponseToFile("d:\\TmpData\\ModalFilterTest1.wav", nmf, N, (int) fs, 16);
+  writeImpulseResponseToFile("ModalFilterTest1.wav", nmf, N, (int) fs, 16); 
 
 
   // create a "noise-response":
@@ -53,7 +54,8 @@ void createModalFilterExamples()
   for(int n = 0; n < N; n++)
     y[n] = nmf.getSample(RAPT::rsRandomUniform(-0.01, 0.01));
   rsNormalize(y, N, 1.0);
-  rosic::writeToMonoWaveFile("d:\\TmpData\\ModalFilterNoiseTest1.wav", y, N, (int) fs, 16);
+  //rosic::writeToMonoWaveFile("d:\\TmpData\\ModalFilterNoiseTest1.wav", y, N, (int) fs, 16);
+  rosic::writeToMonoWaveFile("ModalFilterNoiseTest1.wav", y, N, (int) fs, 16);
 }
 
 
@@ -404,7 +406,8 @@ void createModalFilterBankExamples()
   //scale(y, numSamples, 0.25);
   rsNormalize(y, numSamples, 1.0);
   RAPT::rsFadeOut(y, numSamples-numFadeSamples-1, numSamples-1);
-  rosic::writeToMonoWaveFile("d:\\TmpData\\ModalSynthTest.wav", y, numSamples, (int) sampleRate, 16);
+  //rosic::writeToMonoWaveFile("d:\\TmpData\\ModalSynthTest.wav", y, numSamples, (int) sampleRate, 16);
+  rosic::writeToMonoWaveFile("ModalSynthTest.wav", y, numSamples, (int) sampleRate, 16);
 }
 
 

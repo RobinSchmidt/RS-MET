@@ -548,7 +548,7 @@ rsModalBankParameters SampleMapGeneratorModal::removeModesAbove(const rsModalBan
   r.a.resize(cutoffIndex);  
   r.d.resize(cutoffIndex);  
   r.p.resize(cutoffIndex); 
-  RAPT::rsAssertFalse; // check, if code above truncates vectors as desired
+  //RAPT::rsAssertFalse; // check, if code above truncates vectors as desired - yes, works
 
   return r;
 }
