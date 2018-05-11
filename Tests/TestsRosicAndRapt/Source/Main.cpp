@@ -277,9 +277,43 @@ int main(int argc, char* argv[])
   //spectrogramSine();
 
   // Physics:
-  doublePendulum(); // takes long
+  //doublePendulum(); // takes long
 
+  // Resampling:
+  //fadeOut();  // move to a new file SampleEditingExperiments
+  //resampler();
+  //sincResamplerAliasing();
+  //sincResamplerModulation();
+  //sincResamplerPassbandRipple();
+  //sincResamplerSumOfTapWeights();
+  //timeWarp();
+  //pitchDemodulation();
+  //phaseLockedCrossfade();
+  //phaseLockedCrossfade2();
+  //sineShift();
+  //sineShift2();
+  //pitchDetectWithSilence();
+  ////// tests with Elan's example files:
+  ////pitchDetectA3();
+  ////phaseLockSaxophone();
+  ////phaseLockSaxophone2();
+  ////autoTuneHorn();
+  ////autoTuneHorn2();
+  ////sylophoneCycleMarks();
+  ////autoTuneSylophone();
+  ////bestMatchShift();
 
+  // Saturation:
+  //powRatioParametricSigmoid();
+  //parametricSigmoid();
+  //parametricSigmoid2();
+  //quinticParametricSigmoid(); 
+  //septicParametricSigmoid();
+  //saturator();
+  //sigmoidScaleAndShift();
+  //quarticMonotonic();
+  //sigmoidPrototypes();
+  //sixticPositive();
 
 
   //-----------------------------------------------------------------------------------------------

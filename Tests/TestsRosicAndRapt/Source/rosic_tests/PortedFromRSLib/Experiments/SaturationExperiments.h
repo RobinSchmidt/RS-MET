@@ -1,8 +1,7 @@
 #ifndef RS_SATURATIONEXPERIMENTS_H
 #define RS_SATURATIONEXPERIMENTS_H
 
-//#include "../ExperimentsUtilities.h" // old
-#include "../../../Shared/Shared.h"  // new
+#include "../../../Shared/Shared.h"
 
 void powRatioParametricSigmoid();
 void parametricSigmoid();
@@ -14,6 +13,5 @@ void sigmoidScaleAndShift();
 void quarticMonotonic();
 void sigmoidPrototypes();
 void sixticPositive();
-
 
 #endif

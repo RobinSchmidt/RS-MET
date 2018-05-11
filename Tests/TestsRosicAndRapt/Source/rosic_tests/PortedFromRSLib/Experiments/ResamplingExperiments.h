@@ -27,10 +27,8 @@ void phaseLockSaxophone();
 void phaseLockSaxophone2();
 void autoTuneHorn();
 void autoTuneHorn2();
-
 void sylophoneCycleMarks();
 void autoTuneSylophone();
-
 void bestMatchShift();
 
 
