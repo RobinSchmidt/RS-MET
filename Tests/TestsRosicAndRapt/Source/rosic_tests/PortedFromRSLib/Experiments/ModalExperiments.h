@@ -1,10 +1,9 @@
 #ifndef RS_MODALEXPERIMENTS_H
 #define RS_MODALEXPERIMENTS_H
 
-//#include "../ExperimentsUtilities.h" // old
-#include "../../../Shared/Shared.h"  // new
+#include "../../../Shared/Shared.h"
 
-// rename file to FilterExperiments
+// maybe move to FilterExperiments
 
 void modalFilter();
 void attackDecayFilter();

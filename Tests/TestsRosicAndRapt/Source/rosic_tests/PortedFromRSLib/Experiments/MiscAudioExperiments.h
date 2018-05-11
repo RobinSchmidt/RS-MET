@@ -1,9 +1,7 @@
 #ifndef RS_MISCAUDIOEXPERIMENTS_H
 #define RS_MISCAUDIOEXPERIMENTS_H
 
-//#include "../ExperimentsUtilities.h" // old
-#include "../../../Shared/Shared.h"  // new
-
+#include "../../../Shared/Shared.h"
 
 void centroid();
 void cubicCrossfade();
@@ -16,10 +14,4 @@ void transientModeling();
 void windowFunctionsContinuous();
 void windowedSinc();
 
-
-
-
-
-
-
-#endif 
+#endif

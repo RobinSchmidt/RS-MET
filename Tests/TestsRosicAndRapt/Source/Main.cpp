@@ -197,10 +197,10 @@ int main(int argc, char* argv[])
   //averager();
   ////movingAverage();  // hangs
   ////trapezAverager();   // hangs
-  //compareApproximationMethods();  // something is wrong here - plot are weird
+  //compareApproximationMethods();  // something is wrong here - plots are weird
   //ringingTime();
   //butterworthSquaredLowHighSum();
-  //gaussianPrototype();
+  //gaussianPrototype(); // after this line, auto formatting for new text in vs is messed up - wtf?
   //halpernPrototype();
   //maxFlatMaxSteepPrototypeM1N2();
   //maxFlatMaxSteepPrototypeM2N2();
@@ -230,18 +230,45 @@ int main(int argc, char* argv[])
   //fakeResoLowpassResponse();
   //fakeResoDifferentDelays();
 
-  // Misc Audio:
-  centroid();
-  cubicCrossfade();
-  recursiveSineSweep();
-  ringModNoise();
-  slewRateLimiterLinear();
-  stretchedCorrelation();
-  taperedFourierSeries();
-  transientModeling();
-  windowFunctionsContinuous();
-  windowedSinc();
 
+
+  // Misc Audio:
+  //centroid();
+  //cubicCrossfade();
+  //recursiveSineSweep();
+  //ringModNoise();
+  //slewRateLimiterLinear();
+  //stretchedCorrelation();
+  //taperedFourierSeries();
+  //transientModeling();
+  //windowFunctionsContinuous();
+  //windowedSinc();
+
+  // Modal:
+  //modalFilter();
+  //attackDecayFilter();
+  //dampedSineFilterDesign();
+  //biquadImpulseResponseDesign();
+
+  // Modulator:
+  //breakpointModulator();
+  //breakpointModulatorSmoothFadeOut();
+
+  // Oscillator:
+  //triSaw();
+  //phaseShapingCurvePoly4();
+  //phaseShapingCurvesRational();
+  //phaseShaping();
+  //phaseShapingSkew();
+
+  // Partial Extraction:
+  //biDirectionalFilter();    // maybe move to filter tests
+  //sineRecreation();         // maybe move elsewhere
+  //sineWithPhaseCatchUp();   // dito
+  //partialExtractionTriple();
+  //partialExtractionViaBiquadTriple();
+  ////partialExtractionBell();  // crashes because sample not available
+  ////partialExtractionSample();  // dito
 
 
 

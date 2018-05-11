@@ -15,7 +15,7 @@ void numericDerivative();
 void shiftPolynomial();
 //void stretchPolynomial();
 void monotonicPolynomials();
-void parametricBell();         // move to MathExperiments
+void parametricBell();
 void partialFractionExpansion();
 void partialFractionExpansion2();
 void partialFractionExpansionQuadratic();

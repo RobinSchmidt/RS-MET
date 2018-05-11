@@ -1,8 +1,7 @@
 #ifndef RS_PARTIALEXTRACTIONEXPERIMENTS_H
 #define RS_PARTIALEXTRACTIONEXPERIMENTS_H
 
-//#include "../ExperimentsUtilities.h" // old
-#include "../../../Shared/Shared.h"  // new
+#include "../../../Shared/Shared.h"
 
 /** Plots the impulse- or magnitude responses of the multipass bidirectional (bandpass or lowpass) 
 filter for different numbers of passes. */
