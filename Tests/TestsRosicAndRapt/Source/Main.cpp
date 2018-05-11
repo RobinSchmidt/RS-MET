@@ -105,28 +105,28 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit Tests:
 
-  passed &= testBufferFunctions(str);
-  passed &= testCopySection(    str);
-  passed &= testMoveElements(   str);
-  passed &= testRemoveElements( str);
+  //passed &= testBufferFunctions(str);
+  //passed &= testCopySection(    str);
+  //passed &= testMoveElements(   str);
+  //passed &= testRemoveElements( str);
 
-  passed &= testFilterPolynomials(str);
-  //passed &= testHighOrderFilter(  str);  // fails
+  //passed &= testFilterPolynomials(str);
+  ////passed &= testHighOrderFilter(  str);  // fails
 
-  //passed &= testModalFilter2(str);       // fails
-  //passed &= testModalSynth(str);         // triggers assert
+  ////passed &= testModalFilter2(str);       // fails
+  ////passed &= testModalSynth(str);         // triggers assert
 
-  //passed &= testNumberManipulations( str); // triggers assert (calls the two below)
-  //passed &= testDoubleIntConversions(str); // triggers same assert (called by function above)
-  passed &= testExponentExtraction(str);
+  ////passed &= testNumberManipulations( str); // triggers assert (calls the two below)
+  ////passed &= testDoubleIntConversions(str); // triggers same assert (called by function above)
+  //passed &= testExponentExtraction(str);
 
-  passed &= testAutoCorrelationPitchDetector(str);
+  //passed &= testAutoCorrelationPitchDetector(str);
 
-  passed &= testSortAndSearch(str);          // calls the two below (redundant)
-  passed &= testHeapSort(str);
-  passed &= testKnuthMorrisPrattSearch(str);
+  //passed &= testSortAndSearch(str);          // calls the two below (redundant)
+  //passed &= testHeapSort(str);
+  //passed &= testKnuthMorrisPrattSearch(str);
 
-  passed &= testTypeSizes(str);
+  //passed &= testTypeSizes(str);
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:
@@ -230,9 +230,17 @@ int main(int argc, char* argv[])
   //fakeResoLowpassResponse();
   //fakeResoDifferentDelays();
 
-
-
-
+  // Misc Audio:
+  centroid();
+  cubicCrossfade();
+  recursiveSineSweep();
+  ringModNoise();
+  slewRateLimiterLinear();
+  stretchedCorrelation();
+  taperedFourierSeries();
+  transientModeling();
+  windowFunctionsContinuous();
+  windowedSinc();
 
 
 
