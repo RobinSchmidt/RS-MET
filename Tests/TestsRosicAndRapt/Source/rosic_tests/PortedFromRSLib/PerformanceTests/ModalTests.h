@@ -3,7 +3,7 @@
 
 #include "../../../Shared/Shared.h"
 
-void testModalFilter(    std::string &reportString);
+void testModalFilter3(   std::string &reportString);
 void testModalFilterBank(std::string &reportString);
 
 #endif

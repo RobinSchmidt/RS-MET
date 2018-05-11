@@ -315,9 +315,32 @@ int main(int argc, char* argv[])
   //sigmoidPrototypes();
   //sixticPositive();
 
-
   //-----------------------------------------------------------------------------------------------
   // Performance Tests:
+
+  // Analysis:
+  //testFourierTransformer(str); 
+  //testAutoCorrelationPitchDetector2(str);
+
+  // Core:
+  //testFlagArray(str);
+
+  // Math:
+  //testAbsAndSign2(str);              // rename (mabye "Perf" or sth)
+  //testMultinomialCoefficients2(str); // rename
+  //testPrimeSieves(str);
+  ////testMatrix(str);                 // triggers assert
+  //testMatrixAddressing(str);
+
+  // Misc Audio:
+  //testSincInterpolator(str);
+
+  // Modal:
+  //testModalFilter2(str);
+  //testModalFilterBank(str);
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   // Examples:
