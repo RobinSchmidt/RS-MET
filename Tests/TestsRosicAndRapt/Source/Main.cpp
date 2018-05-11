@@ -270,6 +270,14 @@ int main(int argc, char* argv[])
   ////partialExtractionBell();  // crashes because sample not available
   ////partialExtractionSample();  // dito
 
+  // Phase Vocoder:
+  //phaseRepresentation();
+  //grainRoundTrip();        // under construction
+  //plotWindows();
+  //spectrogramSine();
+
+  // Physics:
+  doublePendulum(); // takes long
 
 
 
