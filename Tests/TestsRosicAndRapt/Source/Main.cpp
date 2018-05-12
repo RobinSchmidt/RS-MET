@@ -82,6 +82,7 @@ int main(int argc, char* argv[])
   //bouncillatorFormula();
   //rayBouncer();
   //hilbertCurve();
+  //circleFractals(); // rename to spirograph
   //lindenmayer();
   //xoxosOsc();
 
@@ -197,7 +198,7 @@ int main(int argc, char* argv[])
   //averager();
   ////movingAverage();  // hangs
   ////trapezAverager();   // hangs
-  //compareApproximationMethods();  // something is wrong here - plots are weird
+  compareApproximationMethods();  // something is wrong here - plots are weird
   //ringingTime();
   //butterworthSquaredLowHighSum();
   //gaussianPrototype(); // after this line, auto formatting for new text in vs is messed up - wtf?
@@ -347,9 +348,9 @@ int main(int argc, char* argv[])
   //createModalFilterExamples();
   //createModalFilterBankExamples(); // takes long
   // sample-map creations (they take long):
-  createBass1();
-  createGong1();
-  createPluck1();
+  //createBass1();
+  //createGong1();
+  //createPluck1();
 
 
 
@@ -417,18 +418,6 @@ int main(int argc, char* argv[])
   //testResetter();
   //testTurtleReverse();
   //testTurtleSource();
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

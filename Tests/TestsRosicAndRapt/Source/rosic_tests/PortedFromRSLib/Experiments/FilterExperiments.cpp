@@ -706,7 +706,8 @@ void compareApproximationMethods()
   //plotDataLogX(N, f, mBut, mPap, mEll);
   //plotDataLogX(N, f, mBut, mCheb2);
 
-  // normalize impulse repsonses and write to wavefiles
+  /*
+  // normalize impulse repsonses and write to wavefiles (maybe remove)
   double s = 1.0;
   //s = 1.0 / rsMaxAbs(hBut, N); // Butterworth impulse response has highest peak
   RAPT::rsArray::scale(hBes, N, s);
@@ -721,6 +722,7 @@ void compareApproximationMethods()
   writeToMonoWaveFile("Chebychev2.wav", hCheb2, N, (int)fs, 16);
   writeToMonoWaveFile("Elliptic.wav", hEll, N, (int)fs, 16);
   writeToMonoWaveFile("Papoulis.wav", hPap, N, (int)fs, 16);
+  */
 
   // BUG: bandpass and bandreject don't work for chebychev2/elliptic (types with finite zeros)
   // ...must be in LP->BP, LP->BR transform ...check old code, write a test in the old codebase

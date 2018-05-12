@@ -1,6 +1,9 @@
 #ifndef RS_ERRORHANDLING_H
 #define RS_ERRORHANDLING_H
 
+//#define RSLib_API
+#undef rsAssert
+
 namespace RSLib
 {
 

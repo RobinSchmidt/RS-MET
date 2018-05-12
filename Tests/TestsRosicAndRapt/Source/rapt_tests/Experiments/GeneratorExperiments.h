@@ -10,6 +10,7 @@ void particleSystem();            // move to PhysicsExperiments
 void bouncillator();
 void bouncillatorFormula();
 void rayBouncer();
+void circleFractals();
 void hilbertCurve();
 void lindenmayer();
 void xoxosOsc();

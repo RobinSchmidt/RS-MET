@@ -249,6 +249,65 @@ void rayBouncer()
   plt.plot();
 }
 
+void circleFractals()
+{
+  // http://benice-equation.blogspot.de/2012/01/fractal-spirograph.html
+  // from the comments:
+  // Speed(n) = k^(n-1), k=±2, ±3, ±4, ....
+  // The most general parametric equation is:
+  // x(t) = ?(k=1 to n) R(k)*cos(a(k)*t)
+  // y(t) = ?(k=1 to n) R(k)*sin(a(k)*t)
+
+  // R(k): radius of k-th circle, a(k): angular velocity?
+
+  // hmm - does not yet really work well (pictures not as interesting as on benice-equation)
+  // ...more research needed
+
+  int N = 501; // number of points
+  std::vector<double> x(N), y(N);
+
+
+  std::vector<double> r, w; 
+  //r = { 1, .5, .25, .125 };  // radii
+  //w = { 1,  2,   4, 8    };  // relative frequencies
+
+  //r = { 1, .5};  // cardioid
+  //w = { 1,  2};
+
+  r = { 1, .7, .5};
+  w = { 1, 2,  4};
+
+  //r = { 1,  1/3.}; // nephroid
+  //w = { 1,  3};
+
+  //r = { 1,  1/4.}; // 
+  //w = { 1,  4};
+
+  //r = { 1, .7, .5, .4, .3, .2};
+  //w = { 1, 5,  10, 15, 20, 25};
+
+  r = { 1, .5, .25,};
+  w = { 1,  5,  25};
+
+  for(size_t n = 0; n < N; n++)
+  {
+    x[n] = y[n] = 0;
+    for(size_t k = 0; k < r.size(); k++)
+    {
+      double wk = 2*PI*w[k] / (N-1); // N for open loop, N-1 for closed loop
+      x[n] += r[k] * cos(wk*n);
+      y[n] += r[k] * sin(wk*n);
+    }
+  }
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0], &y[0]);
+  //plt.setRange(-2, +2, -2, +2);
+  plt.setPixelSize(400, 400);
+  plt.addCommand("set size square");  // set aspect ratio to 1:1
+  plt.plot();
+}
+
 // from https://en.wikipedia.org/wiki/Hilbert_curve
 void rot(int n, int *x, int *y, int rx, int ry) //rotate/flip a quadrant appropriately
 {
@@ -287,7 +346,6 @@ void d2xy(int n, int d, int *x, int *y)  // convert d to (x,y)
     t /= 4;
   }
 }
-
 void hilbertCurve()
 {
   int order = 3;
