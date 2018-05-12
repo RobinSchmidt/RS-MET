@@ -99,6 +99,13 @@ public:
   void getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins,
     bool inDecibels = false, bool accumulate = false);
 
+
+
+  inline void getSampleFrameStereo(double *left, double* right)
+  {
+    getSampleFrameDirect2(left, right);
+  }
+
 protected:
 
   /** Triggers a re-calculation of the biquad coefficients. */

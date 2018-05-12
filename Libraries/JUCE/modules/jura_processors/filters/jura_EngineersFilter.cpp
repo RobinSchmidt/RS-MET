@@ -1,7 +1,7 @@
 // construction/destruction:
 
 EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugInLock, 
-  rosic::rsEngineersFilterStereo *sciFilterToWrap)
+  EFLT *sciFilterToWrap)
  : AudioModule(newPlugInLock)
 {
   jassert(sciFilterToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -12,7 +12,7 @@ EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugI
 EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugInLock)
   : AudioModule(newPlugInLock)
 {
-  wrappedEngineersFilter = new rosic::rsEngineersFilterStereo;
+  wrappedEngineersFilter = new EFLT;
   wrappedEngineersFilterIsOwned = true;
   init();
 }
@@ -41,7 +41,7 @@ void EngineersFilterAudioModule::createParameters()
   typedef MetaControlledParameter Param;
   Param* p;
 
-  typedef rosic::rsEngineersFilterStereo EF;
+  typedef EFLT EF;
   EF* ef = wrappedEngineersFilter;
 
   //juce::Array<double> defaultValues;
@@ -152,7 +152,7 @@ EngineersFilterPlotEditor::~EngineersFilterPlotEditor(void)
 // parameter-settings:
 
 void EngineersFilterPlotEditor::setEngineersFilterToEdit(
-  rosic::rsEngineersFilterStereo* newEngineersFilterToEdit)
+  EFLT* newEngineersFilterToEdit)
 {
   sciFilterToEdit = newEngineersFilterToEdit;
 }
@@ -512,7 +512,7 @@ void EngineersFilterModuleEditor::updateWidgetVisibility()
   if( sciFilterModuleToEdit->wrappedEngineersFilter == NULL )
     return;
 
-  rosic::rsEngineersFilterStereo* sf = sciFilterModuleToEdit->wrappedEngineersFilter;
+  EFLT* sf = sciFilterModuleToEdit->wrappedEngineersFilter;
   bandwidthSlider->setEnabled(sf->hasCurrentModeBandwidthParameter());
   gainSlider->setEnabled(     sf->hasCurrentModeGainParameter());
   rippleSlider->setEnabled(   sf->hasCurrentModeRippleParameter());

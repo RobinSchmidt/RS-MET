@@ -1,6 +1,9 @@
 #ifndef jura_EngineersFilter_h
 #define jura_EngineersFilter_h
 
+// to quickly switch between old and new implementation during debugging - get rid later
+//typedef rosic::rsEngineersFilterStereo EFLT; // elliptic bandpass (among others) doesn't work
+typedef rosic::rsEngineersFilterOld EFLT;
 
 /** This class wraps rosic::EngineersFilter into a rosof::AudioModule to facilitate its use as 
 plugIn. */
@@ -10,13 +13,13 @@ class EngineersFilterAudioModule : public AudioModule
 
   friend class EngineersFilterModuleEditor;
 
+
 public:
 
   /** Constructor to use when you want to wrap an existing rosic::EngineersFilter object without 
   this AudioModule taking ownership (suitable, if the object already exists a smember of some 
   higher level dsp object). */
-  EngineersFilterAudioModule(CriticalSection *newPlugInLock, 
-    rosic::rsEngineersFilterStereo *sciFilterToWrap);
+  EngineersFilterAudioModule(CriticalSection *newPlugInLock, EFLT *sciFilterToWrap);
 
   /** Constructor to use ehen there's no existing rosic::EngineersFilter object to be wrapped. in 
   this case, we'll create one here and take over ownership  (i.e. will also delete it in our 
@@ -51,10 +54,8 @@ protected:
 
   void createParameters();
 
-  rosic::rsEngineersFilterStereo *wrappedEngineersFilter;
-  //rosic::rsEngineersFilterOld *wrappedEngineersFilter;
+  EFLT *wrappedEngineersFilter;
   bool wrappedEngineersFilterIsOwned = false;
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EngineersFilterAudioModule)
 };
@@ -91,7 +92,7 @@ public:
   // setup:
 
   /** Passes a pointer the the actual rosic::EngineersFilter object which is to be edited. */
-  virtual void setEngineersFilterToEdit(rosic::rsEngineersFilterStereo* newEngineersFilterToEdit);
+  virtual void setEngineersFilterToEdit(EFLT* newEngineersFilterToEdit);
 
   // functions to assign the parameters, we observe (in order to update the plot) and possibly 
   // later also to manipulated them:
@@ -155,7 +156,8 @@ protected:
     XmlElement *targetSVG = NULL);
 
   /** Pointer to the actual rosic::EngineersFilter object which is being edited. */
-  rosic::rsEngineersFilterStereo* sciFilterToEdit;
+  //rosic::rsEngineersFilterStereo* sciFilterToEdit;
+  EFLT* sciFilterToEdit;
 
   // the parameters which wil cause re-plotting and therefore must be listened to:
   //Parameter *lowFreqParameter, *lowSlopeParameter, *highFreqParameter, *highSlopeParameter;
