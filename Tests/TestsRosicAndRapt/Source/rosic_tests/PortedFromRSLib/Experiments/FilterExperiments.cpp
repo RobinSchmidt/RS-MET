@@ -751,6 +751,37 @@ void compareApproximationMethods()
   // http://en.wikipedia.org/wiki/Elliptic_rational_functions
 }
 
+void compareOldAndNewEngineersFilter()
+{
+  double fs    = 44100.0;  // samplerate
+  double fc    =  1000.0;  // cutoff frequency
+  double Ap    =     1.0;  // passband ripple in dB
+  double As    =    50.0;  // stopband rejection in dB
+  int    order =    6;     // prototype filter order
+
+  typedef RAPT::rsInfiniteImpulseResponseDesigner<double> IIRD;
+  typedef RAPT::rsPrototypeDesigner<double> PTD;
+
+  rosic::rsEngineersFilterOld efOld;
+  efOld.setSampleRate(fs);
+  efOld.setFrequency(fc);
+  efOld.setRipple(Ap);
+  efOld.setStopbandRejection(As);
+  efOld.setApproximationMethod(PTD::ELLIPTIC);
+  efOld.setMode(IIRD::BANDPASS);
+
+  rosic::rsEngineersFilterDD  efNew;
+  efNew.setSampleRate(fs);
+  efNew.setFrequency(fc);
+  efNew.setRipple(Ap);
+  efNew.setStopbandRejection(As);
+  efNew.setApproximationMethod(PTD::ELLIPTIC);
+  efNew.setMode(IIRD::BANDPASS);
+
+
+  int dummy = 0;
+}
+
 void ringingTime()
 {
   typedef RAPT::rsInfiniteImpulseResponseDesigner<double> IIRD;

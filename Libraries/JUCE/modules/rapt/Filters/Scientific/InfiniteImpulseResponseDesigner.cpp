@@ -397,6 +397,16 @@ void rsInfiniteImpulseResponseDesigner<T>::getBiquadCascadeCoefficients(T *b0, T
     //wa2 = 0.0;                  // unused
   }
 
+
+  std::vector<Complex> poles(finalOrder), zeros(finalOrder);
+  getPolesAndZeros(&poles[0], &zeros[0]);
+  rsFilterCoefficientConverter<T>::polesAndZerosToBiquadCascade(&poles[0], &zeros[0], finalOrder, 
+    b0, b1, b2, a1, a2);
+  T deWarpedPassbandCenter = T(2) * atan(sqrt(tan(T(0.5)*wd1)*tan(T(0.5)*wd2)));
+  normalizeGain(b0, b1, b2, a1, a2, deWarpedPassbandCenter, numBiquads);
+
+
+  /*
   // allocate temporary memory:
   Complex* poles = new Complex[finalOrder];
   Complex* zeros = new Complex[finalOrder];
@@ -411,6 +421,7 @@ void rsInfiniteImpulseResponseDesigner<T>::getBiquadCascadeCoefficients(T *b0, T
   // free dynamically allocated memory:
   delete[] poles;
   delete[] zeros;
+  */
 }
 
 template<class T>

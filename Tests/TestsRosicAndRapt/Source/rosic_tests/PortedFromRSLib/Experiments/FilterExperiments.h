@@ -16,6 +16,7 @@ void averager();
 void movingAverage();
 void trapezAverager();
 void compareApproximationMethods();
+void compareOldAndNewEngineersFilter();
 void ringingTime();
 void butterworthSquaredLowHighSum();
 void gaussianPrototype();
