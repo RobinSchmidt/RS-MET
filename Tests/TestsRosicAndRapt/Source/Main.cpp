@@ -199,7 +199,8 @@ int main(int argc, char* argv[])
   ////movingAverage();  // hangs
   ////trapezAverager();   // hangs
   //compareApproximationMethods();  // something is wrong here - plots are weird
-  compareOldAndNewEngineersFilter();
+  //compareOldAndNewEngineersFilter();
+  testPoleZeroMapper();
   //ringingTime();
   //butterworthSquaredLowHighSum();
   //gaussianPrototype(); // after this line, auto formatting for new text in vs is messed up - wtf?

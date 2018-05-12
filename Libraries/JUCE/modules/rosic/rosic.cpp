@@ -86,14 +86,19 @@ template class RAPT::rsPhaseScopeBuffer2<double, float, double>;
 template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
 
-
+template class RAPT::rsPrototypeDesigner<double>;
+template class RAPT::rsPoleZeroMapper<double>;
 template class RAPT::rsInfiniteImpulseResponseDesigner<double>;
+template class RAPT::rsEngineersFilter<double, double>;
+//template class RAPT::rsEngineersFilter<rsFloat64x2, double>;
+
+
 template class RAPT::rsSmoothingFilter<double, double>;
 //template class RAPT::rsLadderFilter<double, double>;
 template class RAPT::rsLadderFilter<rsFloat64x2, double>;
 template class RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
 //template class RAPT::rsLadderFilter<std::complex<double>, double>; // needed for TestPluginJUCE
-template class RAPT::rsEngineersFilter<rsFloat64x2, double>;
+
 template class RAPT::rsPhasorFilter<double, double>;
 template class RAPT::rsPhasorStateMapper<double>;
 // todo: get rid of directly using rapt classes in jura and/or products - create instantiations for

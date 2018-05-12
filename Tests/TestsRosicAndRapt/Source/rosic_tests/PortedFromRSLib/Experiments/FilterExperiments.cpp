@@ -778,6 +778,34 @@ void compareOldAndNewEngineersFilter()
   efNew.setApproximationMethod(PTD::ELLIPTIC);
   efNew.setMode(IIRD::BANDPASS);
 
+  // in rsInfiniteImpulseResponseDesigner<T>::getBiquadCascadeCoefficients, the zeros are not 
+  // properly sorted
+
+  int dummy = 0;
+}
+
+void testPoleZeroMapper()
+{
+  // some debug/throwaway code to figure out why the new RAPT elliptic bandpass zeros end up wrong
+
+  // new version:
+  typedef rsPoleZeroMapperD PZM;     
+  typedef std::complex<double> cmplx;
+
+  //// old version:
+  //typedef rosic::rsPoleZeroMapper PZM; 
+  //typedef rosic::Complex cmplx;
+
+  // create some pole/zero arrays:
+  cmplx c1(1.,2.), c2(2.,3.), c3(3.,4.), c4(4.,5.), z(0.,0.);
+  cmplx poles[8] = { c1, c2, c3, c4, z, z, z, z }; // 4 additional zeros because of order doubling
+  cmplx zeros[8] = { c1, c2, c3, c4, z, z, z, z };
+  double g = 1;
+
+  //PZM pzm;
+  PZM::prototypeToAnalogBandpass(poles, 4, zeros, 4, &g, 0.5, 2.0);
+
+
 
   int dummy = 0;
 }
