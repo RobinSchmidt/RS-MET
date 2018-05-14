@@ -336,6 +336,12 @@ void rsPoleZeroMapper::sPlanePrototypeToBandpass(Complex *prototypePoles, Comple
   double wc = sqrt(targetLowerCutoff*targetUpperCutoff); // center (radian) frequency
   double bw = targetUpperCutoff - targetLowerCutoff;     // bandwidth
 
+  // debug:
+  std::vector<Complex> pDbg, zDbg; 
+  pDbg = RAPT::toVector(targetPoles, prototypeOrder);
+  zDbg = RAPT::toVector(targetZeros, prototypeOrder);
+
+
   // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the 
   // bandpass-filter:
   Complex tmp1, tmp2;
@@ -367,6 +373,10 @@ void rsPoleZeroMapper::sPlanePrototypeToBandpass(Complex *prototypePoles, Comple
     }
   }
 
+  // debug:
+  pDbg = RAPT::toVector(targetPoles, 2*prototypeOrder);
+  zDbg = RAPT::toVector(targetZeros, 2*prototypeOrder);
+
   // re-arrange poles and zeros such that complex conjugate pairs (again) occupy successive slots:
   k = 1;
   while( k+1 < 2*prototypeOrder )
@@ -375,6 +385,11 @@ void rsPoleZeroMapper::sPlanePrototypeToBandpass(Complex *prototypePoles, Comple
     rsSwap(targetZeros[k], targetZeros[k+1]);
     k += 4;
   }
+
+  // debug:
+  pDbg = RAPT::toVector(targetPoles, 2*prototypeOrder);
+  zDbg = RAPT::toVector(targetZeros, 2*prototypeOrder);
+  int dummy = 0;
 }
 
 void rsPoleZeroMapper::prototypeToAnalogBandstop(Complex* poles, int numPoles, Complex* zeros, 

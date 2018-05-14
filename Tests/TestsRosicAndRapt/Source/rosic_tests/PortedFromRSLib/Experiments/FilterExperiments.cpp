@@ -763,6 +763,7 @@ void compareOldAndNewEngineersFilter()
   typedef RAPT::rsPrototypeDesigner<double> PTD;
 
   rosic::rsEngineersFilterOld efOld;
+  efOld.setPrototypeOrder(order);
   efOld.setSampleRate(fs);
   efOld.setFrequency(fc);
   efOld.setRipple(Ap);
@@ -771,6 +772,7 @@ void compareOldAndNewEngineersFilter()
   efOld.setMode(IIRD::BANDPASS);
 
   rosic::rsEngineersFilterDD  efNew;
+  efNew.setPrototypeOrder(order);
   efNew.setSampleRate(fs);
   efNew.setFrequency(fc);
   efNew.setRipple(Ap);
@@ -788,24 +790,33 @@ void testPoleZeroMapper()
 {
   // some debug/throwaway code to figure out why the new RAPT elliptic bandpass zeros end up wrong
 
-  // new version:
-  typedef rsPoleZeroMapperD PZM;     
-  typedef std::complex<double> cmplx;
+  //// new version:
+  //typedef rsPoleZeroMapperD PZM;     
+  //typedef std::complex<double> cmplx;
 
-  //// old version:
-  //typedef rosic::rsPoleZeroMapper PZM; 
-  //typedef rosic::Complex cmplx;
+  // old version:
+  typedef rosic::rsPoleZeroMapper PZM; 
+  typedef rosic::Complex cmplx;
 
   // create some pole/zero arrays:
-  cmplx c1(1.,2.), c2(2.,3.), c3(3.,4.), c4(4.,5.), z(0.,0.);
+  cmplx c1(1.,1.), c2(1.,-1.), c3(2.,2.), c4(2.,-2.), z(0.,0.);
   cmplx poles[8] = { c1, c2, c3, c4, z, z, z, z }; // 4 additional zeros because of order doubling
   cmplx zeros[8] = { c1, c2, c3, c4, z, z, z, z };
+  cmplx poles2[8], zeros2[8]; // targets for non-in-place processing
   double g = 1;
 
   //PZM pzm;
-  PZM::prototypeToAnalogBandpass(poles, 4, zeros, 4, &g, 0.5, 2.0);
+  //PZM::sLowpassToBandpass(zeros, poles, &g, zeros2, poles2, &g, 4, 0.5, 2.0); // old/new identical
+  PZM::sPlanePrototypeToBandpass(poles, zeros, poles2, zeros2, 4, 0.5, 2.0); // old/new identical but different from sLowpassToBandpass
+  //PZM::prototypeToAnalogBandpass(poles, 4, zeros, 4, &g, 0.5, 2.0); // old/new identical
 
 
+  PZM::bilinearAnalogToDigital(poles2, 8, zeros2, 8, 5., &g); // old/new identical
+
+  // what's the difference between prototypeToAnalogBandpass and sLowpassToBandpass?  maybe the 
+  // in-place processing sounds like they should do the same thing? are they redundant?
+  // ...if so, get rid of redundant code
+  // and what about sPlanePrototypeToBandpass - this seems to be actually used in InfiniteImp..
 
   int dummy = 0;
 }

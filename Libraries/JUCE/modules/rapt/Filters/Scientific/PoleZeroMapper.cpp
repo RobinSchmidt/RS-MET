@@ -333,6 +333,18 @@ void rsPoleZeroMapper<T>::prototypeToAnalogBandpass(Complex* poles, int numPoles
   delete[] tmpZeros;
 }
 
+// for debugging:
+template<class T>
+std::complex<T> sqrtC(std::complex<T> z)
+{
+  //return sqrt(z); // test
+  T r = sqrt(abs(z));
+  T p = 0.5*arg(z);  // behaves like std::atan2(std::imag(z), std::real(z))
+  T s = sin(p);
+  T c = cos(p);
+  return std::complex<T>(r*c, r*s);            // re = r*cos(p), im = r*sin(p)
+}
+
 template<class T>
 void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Complex* prototypeZeros, 
   Complex* targetPoles, Complex* targetZeros, int prototypeOrder, T targetLowerCutoff,                      
@@ -340,6 +352,12 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
 {
   T wc = sqrt(targetLowerCutoff*targetUpperCutoff); // center (radian) frequency
   T bw = targetUpperCutoff - targetLowerCutoff;     // bandwidth
+
+  // debug:
+  std::vector<Complex> pDbg, zDbg; 
+  pDbg = RAPT::toVector(targetPoles, prototypeOrder);
+  zDbg = RAPT::toVector(targetZeros, prototypeOrder);
+
 
   // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the 
   // bandpass-filter:
@@ -352,6 +370,7 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
     tmp2 = -bw * prototypePoles[k];
     tmp2 = T(0.25) * tmp2*tmp2;
     tmp2 = sqrt(tmp2 - wc*wc);
+    //tmp2 = sqrtC(tmp2 - wc*wc); // test
     targetPoles[2*k]   = tmp1 + tmp2;
     targetPoles[2*k+1] = tmp1 - tmp2;
 
@@ -367,19 +386,39 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
       tmp2 = -bw * prototypeZeros[k];
       tmp2 = T(0.25) * tmp2*tmp2;
       tmp2 = sqrt(tmp2 - wc*wc);
+      //tmp2 = sqrtC(tmp2 - wc*wc);  // test - behaves the same as sqrt
       targetZeros[2*k]   = tmp1 + tmp2;
       targetZeros[2*k+1] = tmp1 - tmp2;
     }
   }
 
+  // debug:
+  pDbg = RAPT::toVector(targetPoles, 2*prototypeOrder);
+  zDbg = RAPT::toVector(targetZeros, 2*prototypeOrder); // from here, it is wrong
+
   // re-arrange poles and zeros such that complex conjugate pairs (again) occupy successive slots:
   k = 1;
   while( k+1 < 2*prototypeOrder )
   {
-    rsSwap(targetPoles[k], targetPoles[k+1]);
+    rsSwap(targetPoles[k], targetPoles[k+1]); // old
     rsSwap(targetZeros[k], targetZeros[k+1]);
+    //rsSwap(targetPoles[k], targetPoles[k+2]);   // new
+    //rsSwap(targetZeros[k], targetZeros[k+2]);
     k += 4;
   }
+  // i think, this might be wrong...check/debug
+  // could it be that the std::sqrt function for complex numbers behaves differently than my sqrtC
+  // in rosic?
+  // RSLib uses rsSqrtC which is yet another implementation - there, the bug is present, too
+  // the rosic version returns +/- some imaginary number, in the std version, the imaginary part is
+  // always positive
+  // ToDo: write a unit test that compares the rosic against the rapt version...
+
+
+  // debug:
+  pDbg = toVector(targetPoles, 2*prototypeOrder);
+  zDbg = toVector(targetZeros, 2*prototypeOrder);
+  int dummy = 0;
 }
 
 template<class T>

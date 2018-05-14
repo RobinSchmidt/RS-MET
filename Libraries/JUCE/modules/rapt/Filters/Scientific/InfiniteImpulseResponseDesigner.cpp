@@ -249,8 +249,11 @@ void rsInfiniteImpulseResponseDesigner<T>::getPolesAndZeros(Complex* poles, Comp
     prototypeDesigner.setReferenceGain(0.0);
 
   // allocate temporary memory:
-  Complex* protoPoles = new Complex[prototypeOrder];
-  Complex* protoZeros = new Complex[prototypeOrder];
+  //Complex* protoPoles = new Complex[prototypeOrder];
+  //Complex* protoZeros = new Complex[prototypeOrder];
+  std::vector<Complex> pp(prototypeOrder), pz(prototypeOrder);
+  Complex* protoPoles = &pp[0];
+  Complex* protoZeros = &pz[0];
 
   // design the analog prototype filter:
   if( mode == HIGH_SHELV )
@@ -314,13 +317,16 @@ void rsInfiniteImpulseResponseDesigner<T>::getPolesAndZeros(Complex* poles, Comp
   default:         rsPoleZeroMapper<T>::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
   };
 
+  //std::vector<Complex> pDbg, zDbg; // for debugging
+  //pDbg = toVector(poles, finalOrder);
+  //zDbg = toVector(zeros, finalOrder);
+
   // transform from the s-domain to the z-domain via the bilinear transform:
   T g; // not used actually
   rsPoleZeroMapper<T>::bilinearAnalogToDigital(poles, finalOrder, zeros, finalOrder, fs, &g);
 
-  // free dynamically allocated memory:
-  delete[] protoPoles;
-  delete[] protoZeros;
+  //pDbg = toVector(poles, finalOrder);
+  //zDbg = toVector(zeros, finalOrder);
 }
 
 template<class T>
@@ -399,29 +405,11 @@ void rsInfiniteImpulseResponseDesigner<T>::getBiquadCascadeCoefficients(T *b0, T
 
 
   std::vector<Complex> poles(finalOrder), zeros(finalOrder);
-  getPolesAndZeros(&poles[0], &zeros[0]);
+  getPolesAndZeros(&poles[0], &zeros[0]); // seems to return zeros in wrong order for elliptic bandpass
   rsFilterCoefficientConverter<T>::polesAndZerosToBiquadCascade(&poles[0], &zeros[0], finalOrder, 
     b0, b1, b2, a1, a2);
   T deWarpedPassbandCenter = T(2) * atan(sqrt(tan(T(0.5)*wd1)*tan(T(0.5)*wd2)));
   normalizeGain(b0, b1, b2, a1, a2, deWarpedPassbandCenter, numBiquads);
-
-
-  /*
-  // allocate temporary memory:
-  Complex* poles = new Complex[finalOrder];
-  Complex* zeros = new Complex[finalOrder];
-
-  getPolesAndZeros(poles, zeros);
-  rsFilterCoefficientConverter<T>::polesAndZerosToBiquadCascade(poles, zeros, finalOrder, b0, b1, 
-    b2, a1, a2);
-
-  T deWarpedPassbandCenter = T(2)*atan(sqrt(tan(T(0.5)*wd1)*tan(T(0.5)*wd2)));
-  normalizeGain(b0, b1, b2, a1, a2, deWarpedPassbandCenter, numBiquads);
-
-  // free dynamically allocated memory:
-  delete[] poles;
-  delete[] zeros;
-  */
 }
 
 template<class T>

@@ -453,7 +453,7 @@ typedef RAPT::rsPrototypeDesigner<double> rsPrototypeDesignerD;
 typedef RAPT::rsPoleZeroMapper<double> rsPoleZeroMapperD;
 typedef RAPT::rsInfiniteImpulseResponseDesigner<double> rsInfiniteImpulseResponseDesignerD;
 typedef RAPT::rsEngineersFilter<double, double> rsEngineersFilterDD;
-//typedef RAPT::rsEngineersFilter<rsFloat64x2, double> rsEngineersFilterD2D;
+typedef RAPT::rsEngineersFilter<rsFloat64x2, double> rsEngineersFilterD2D;
 
 
 typedef RAPT::rsLadderFilter2<double, double> rsLadderFilter2DD;  // the version from RSLib

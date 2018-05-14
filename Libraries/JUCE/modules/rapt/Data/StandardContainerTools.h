@@ -80,6 +80,16 @@ inline T rsGetAndRemoveLast(std::vector<T>& v)
   return result;
 }
 
+/** Converts C-array to std::vector. */
+template<class T>
+inline std::vector<T> toVector(T* theArray, size_t size)
+{
+  std::vector<T> v(size);
+  for(size_t i = 0; i < size; i++)
+    v[i] = theArray[i];
+  return v;
+}
+
 /** Multiplies a scalar and a vector. */
 template<class T>
 inline std::vector<T> operator*(const T& x, const std::vector<T>& v)

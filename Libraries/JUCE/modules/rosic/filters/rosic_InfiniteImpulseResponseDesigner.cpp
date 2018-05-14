@@ -228,8 +228,13 @@ void rsInfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex
     prototypeDesigner.setReferenceGain(0.0);
 
   // allocate temporary memory:
-  Complex* protoPoles = new Complex[prototypeOrder];
-  Complex* protoZeros = new Complex[prototypeOrder];
+  //Complex* protoPoles = new Complex[prototypeOrder];
+  //Complex* protoZeros = new Complex[prototypeOrder];
+  std::vector<Complex> pp(prototypeOrder), pz(prototypeOrder);
+  Complex* protoPoles = &pp[0];
+  Complex* protoZeros = &pz[0];
+
+
 
   // design the analog prototype filter:
   if( mode == HIGH_SHELV )
@@ -298,8 +303,8 @@ void rsInfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex
   rsPoleZeroMapper::bilinearAnalogToDigital(poles, finalOrder, zeros, finalOrder, fs, &g);
 
   // free dynamically allocated memory:
-  delete[] protoPoles;
-  delete[] protoZeros;
+  //delete[] protoPoles;
+  //delete[] protoZeros;
 }
 
 void rsInfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0, double *b1, 
