@@ -139,17 +139,17 @@ bool testIIRDesign(int method, int mode, int protoOrder)
   // typedefs for convenience:
   typedef rosic::rsPrototypeDesigner PTD1;
   typedef rsPrototypeDesignerD   PTD2;
-  typedef rosic::rsPoleZeroMapper PZM1;
-  typedef rsPoleZeroMapperD   PZM2;
-  typedef rosic::rsFilterCoefficientConverter FCC1;
-  typedef rsFilterCoefficientConverterD FCC2;
+  //typedef rosic::rsPoleZeroMapper PZM1;
+  //typedef rsPoleZeroMapperD   PZM2;
+  //typedef rosic::rsFilterCoefficientConverter FCC1;
+  //typedef rsFilterCoefficientConverterD FCC2;
   typedef rosic::rsInfiniteImpulseResponseDesigner IIRD1;
   typedef rsInfiniteImpulseResponseDesignerD   IIRD2;
 
   // maybe check here, if the enums in PTD1/PTD2, etc. match
 
   // create prototype poles/zeros:
-  std:vector<rosic::Complex> pp1(N), pz1(N);
+  std::vector<rosic::Complex> pp1(N), pz1(N);
   std::vector<std::complex<double>> pp2(N), pz2(N);
   int protoMode = PTD1::LOWPASS_PROTOTYPE;
   if(mode == IIRD1::LOW_SHELV || mode == IIRD1::HIGH_SHELV || mode == IIRD1::PEAK )
@@ -171,19 +171,47 @@ bool testIIRDesign(int method, int mode, int protoOrder)
   ptd1.getPolesAndZeros(&pp1[0], &pz1[0]);
   ptd2.getPolesAndZeros(&pp2[0], &pz2[0]);
   r &= equal(pp1, pp2);
-  r &= equal(pz1, pz2); // problems with infinite zeros in equality comparison? yes, bcs inf-inf=nan
-
-
-
-  int dummy = 0;
+  r &= equal(pz1, pz2);
 
   // s-domain frequency transform:
-
+  //size_t N2 = N;
+  //if(mode == IIRD1::BANDPASS || mode == IIRD1::BANDREJECT || mode == IIRD1::PEAK )
+  //  N2 *= 2; // order doubling modes
 
   // s-to-z bilinear transform:
 
 
   // convert to biquad coeffs:
+
+
+  // the whole design encapsulated:
+  IIRD1 iird1;
+  IIRD2 iird2;
+  iird1.setMode(mode);
+  iird2.setMode(mode);
+  iird1.setApproximationMethod(method);
+  iird2.setApproximationMethod(method);
+  iird1.setRipple(rp);  // rename to setPassbandRipple
+  iird2.setRipple(rp);
+  iird1.setStopbandRejection(rj);
+  iird2.setStopbandRejection(rj);
+  iird1.setGain(g);
+  iird2.setGain(g);
+  iird1.setPrototypeOrder(protoOrder);
+  iird2.setPrototypeOrder(protoOrder);
+  iird1.setSampleRate(fs);
+  iird2.setSampleRate(fs);
+  iird1.setFrequency(fc);
+  iird2.setFrequency(fc);
+  iird1.setBandwidth(bw);
+  iird2.setBandwidth(bw);
+  size_t N2 = (size_t) iird1.getFinalFilterOrder();
+  std::vector<rosic::Complex> p1(N2), z1(N2);
+  std::vector<std::complex<double>> p2(N2), z2(N2);
+  iird1.getPolesAndZeros(&p1[0], &z1[0]);
+  iird2.getPolesAndZeros(&p2[0], &z2[0]);
+  r &= equal(p1, p2);
+  r &= equal(z1, z2);
 
   return r;
 }
