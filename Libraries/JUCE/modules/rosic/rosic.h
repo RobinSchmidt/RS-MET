@@ -451,6 +451,7 @@ typedef RAPT::rsMovingAverage<double, double> rsMovingAverageDD;
 
 typedef RAPT::rsPrototypeDesigner<double> rsPrototypeDesignerD;
 typedef RAPT::rsPoleZeroMapper<double> rsPoleZeroMapperD;
+typedef RAPT::rsFilterCoefficientConverter<double> rsFilterCoefficientConverterD;
 typedef RAPT::rsInfiniteImpulseResponseDesigner<double> rsInfiniteImpulseResponseDesignerD;
 typedef RAPT::rsEngineersFilter<double, double> rsEngineersFilterDD;
 typedef RAPT::rsEngineersFilter<rsFloat64x2, double> rsEngineersFilterD2D;

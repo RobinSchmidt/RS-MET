@@ -23,11 +23,9 @@ bool testFilterPolynomials(std::string &reportString)
   return testResult;
 }
 
-bool testHighOrderFilter(std::string &reportString)
+bool testHighOrderFilter1()
 {
-  std::string testName = "HighOrderFilter";
   bool testResult = true;
-
 
   static const int N = 6;    // prototype filter order
   double fs    = 44100.0;  // samplerate
@@ -97,10 +95,110 @@ bool testHighOrderFilter(std::string &reportString)
 
   //testResult &= z[0] == 
 
-
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
+
+
+bool equal(rosic::Complex z1, std::complex<double> z2, double tol)
+{
+  double dr = z1.re - z2.real();
+  double di = z1.im - z2.imag();
+  return abs(dr) <= tol && abs(di) <= tol;
+}
+
+bool equal(const std::vector<rosic::Complex>& array1,
+  const std::vector<std::complex<double>>& array2)
+{
+  if(array1.size() != array2.size())
+    return false;
+  double tol = 1.e-13;
+  for(size_t i = 0; i < array1.size(); i++) {
+    if(!equal(array1[i], array2[i], tol))
+      return false; }
+  return true;
+}
+
+bool testIIRDesign(int method, int mode, int protoOrder)
+{
+  // method: 0..5, mode: 0..7, order: 0..20
+  // Compare results from the old rosic and new rapt implementation
+
+  bool r = true;
+
+  double fs = 44100;  // sample rate
+  double fc = 1000;   // cutoff/center frequency
+  double bw = 2;      // bandwidth in octaves
+  double g  = 6;      // peak/shelf gain
+  double rp = 3;      // passband ripple in dB
+  double rj = 60;     // stopband rejection in dB
+  size_t N  = protoOrder;
+
+  // typedefs for convenience:
+  typedef rosic::rsPrototypeDesigner PTD1;
+  typedef rsPrototypeDesignerD   PTD2;
+  typedef rosic::rsPoleZeroMapper PZM1;
+  typedef rsPoleZeroMapperD   PZM2;
+  typedef rosic::rsFilterCoefficientConverter FCC1;
+  typedef rsFilterCoefficientConverterD FCC2;
+  typedef rosic::rsInfiniteImpulseResponseDesigner IIRD1;
+  typedef rsInfiniteImpulseResponseDesignerD   IIRD2;
+
+  // maybe check here, if the enums in PTD1/PTD2, etc. match
+
+  // create prototype poles/zeros:
+  std:vector<rosic::Complex> pp1(N), pz1(N);
+  std::vector<std::complex<double>> pp2(N), pz2(N);
+  int protoMode = PTD1::LOWPASS_PROTOTYPE;
+  if(mode == IIRD1::LOW_SHELV || mode == IIRD1::HIGH_SHELV || mode == IIRD1::PEAK )
+    protoMode = PTD1::LOWSHELV_PROTOTYPE;
+  PTD1 ptd1;
+  PTD2 ptd2;
+  ptd1.setPrototypeMode(protoMode);
+  ptd2.setPrototypeMode(protoMode);
+  ptd1.setApproximationMethod(method);
+  ptd2.setApproximationMethod(method);
+  ptd1.setPassbandRipple(rp);
+  ptd2.setPassbandRipple(rp);
+  ptd1.setStopbandRejection(rj);
+  ptd2.setStopbandRejection(rj);
+  ptd1.setGain(g);
+  ptd2.setGain(g);
+  ptd1.setOrder(protoOrder);
+  ptd2.setOrder(protoOrder);
+  ptd1.getPolesAndZeros(&pp1[0], &pz1[0]);
+  ptd2.getPolesAndZeros(&pp2[0], &pz2[0]);
+  r &= equal(pp1, pp2);
+  //r &= equal(pz1, pz2); // problems with infinite zeros in equality comparison?
+
+
+
+  int dummy = 0;
+
+  // s-domain frequency transform:
+
+
+  // s-to-z bilinear transform:
+
+
+  // convert to biquad coeffs:
+
+  return r;
+}
+
+bool testHighOrderFilter(std::string &reportString)
+{
+  bool r = true;
+
+
+  r &= testHighOrderFilter1();
+
+  r &= testIIRDesign(1, 1, 2);
+
+
+  return r;
+}
+
+
 
 
 

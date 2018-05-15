@@ -132,6 +132,10 @@ Neural Network Synthesizer ("Cortex")
 Scripting Synthesizer ("Synthax")
 
 
+wavefolding:
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=501471
+out = 4.0 * (std::abs(0.25 * in + 0.25 - std::round(0.25 * in + 0.25)) - 0.25);
+
 
 */
 

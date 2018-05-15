@@ -402,7 +402,7 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
   {
     rsSwap(targetPoles[k], targetPoles[k+1]); // old
     rsSwap(targetZeros[k], targetZeros[k+1]);
-    //rsSwap(targetPoles[k], targetPoles[k+2]);   // new
+    //rsSwap(targetPoles[k], targetPoles[k+2]);   // new - doesn't seem to always work either
     //rsSwap(targetZeros[k], targetZeros[k+2]);
     k += 4;
   }

@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
   //passed &= testRemoveElements( str);
 
   //passed &= testFilterPolynomials(str);
-  ////passed &= testHighOrderFilter(  str);  // fails
+  passed &= testHighOrderFilter(  str);  // fails
 
   ////passed &= testModalFilter2(str);       // fails
   ////passed &= testModalSynth(str);         // triggers assert

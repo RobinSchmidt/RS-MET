@@ -42,6 +42,7 @@ public:
     ELLIPTIC,          ///< equiripple in passband and stopband, maximally steep transition
     BESSEL,            ///< approximates linear phase
     PAPOULIS,          ///< maximizes steepness at cutoff (selectivity) under constraint of monotonicity
+
     HALPERN,           ///< minimizes ratio of bandwidths at specified magnitudes (shaping factor) under constraint of monotonicity
                        ///< ...less steep at cutoff but steeper in stopband than Papoulis
     GAUSSIAN,          ///< smallest timelength*bandwidth product, good time response (no overshoot?)
