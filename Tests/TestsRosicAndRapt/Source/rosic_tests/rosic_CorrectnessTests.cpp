@@ -76,6 +76,7 @@ void rotes::testRosicModulators()
 
 void rotes::testRosicMath()
 {
+  testComplexSqrt();
   testCubicCoeffsTwoPointsAndDerivatives();
   testPolynomialDiffAndInt();
   testPolynomialComposition();

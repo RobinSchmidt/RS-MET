@@ -60,6 +60,8 @@ public:
   template <class T>
   static inline bool areBuffersEqual(T *buffer1, T *buffer2, int length);
 
+
+
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward
   shifts use negative values for numPositions. If the absolute value of 'numPositions' is greater
   than the length of the buffer, it will use numPositions modulo the length - so if the length is 6

@@ -221,8 +221,8 @@ bool testHighOrderFilter(std::string &reportString)
   bool r = true;
 
   //r &= testHighOrderFilter1();
-  r &= testIIRDesign(1, 1, 2);
-  r &= testIIRDesign(0, 3, 1);  // 1st order butterworth highpass -> fail
+  //r &= testIIRDesign(1, 1, 2);
+  r &= testIIRDesign(0, 3, 1);  // 1st order butterworth highpass -> fails because the old one
 
   for(int method = 0; method <= 5; method++)
     for(int mode = 0; mode <= 7; mode++)

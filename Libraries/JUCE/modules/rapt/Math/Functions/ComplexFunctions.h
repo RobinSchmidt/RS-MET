@@ -159,6 +159,11 @@ purely real. */
 template<class T>
 bool rsAreAllValuesReal(std::complex<T> *z, int length, T relativeTolerance = T(0));
 
+/** Returns true, if z[i] and z[i+1] are complex conjugates for all i from 0..length-2. */
+template<class T>
+bool rsAreNeighborsConjugates(std::complex<T> *z, int length, T absoluteTolerance = T(0));
+
+
 /* Computes the 2 roots (zeros) of the quadratic equation x^2 + p*x + q = 0. */
 template<class T>
 inline void solveQuadraticEquation(std::complex<T> p, std::complex<T> q,

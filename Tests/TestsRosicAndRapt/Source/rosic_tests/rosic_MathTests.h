@@ -6,6 +6,7 @@
 namespace rotes
 {
 
+  bool testComplexSqrt();
   bool testCubicCoeffsTwoPointsAndDerivatives();
   bool testPolynomialDiffAndInt();
   bool testPolynomialComposition();

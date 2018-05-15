@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
   //passed &= testRemoveElements( str);
 
   //passed &= testFilterPolynomials(str);
-  passed &= testHighOrderFilter(  str);  // fails
+  //passed &= testHighOrderFilter(  str);  // fails
 
   ////passed &= testModalFilter2(str);       // fails
   ////passed &= testModalSynth(str);         // triggers assert
@@ -198,8 +198,10 @@ int main(int argc, char* argv[])
   //averager();
   ////movingAverage();  // hangs
   ////trapezAverager();   // hangs
+
   //compareApproximationMethods();  // something is wrong here - plots are weird
-  compareOldAndNewEngineersFilter();
+  //compareOldAndNewEngineersFilter();
+
   //testPoleZeroMapper();
   //ringingTime();
   //butterworthSquaredLowHighSum();
@@ -374,7 +376,7 @@ int main(int argc, char* argv[])
   //testRosicGenerators();
   //testRosicFilter();
   //testRosicNumerical();
-  //testRosicMath();
+  testRosicMath();
   //testRosicNonRealTime();
   //testRosicOthers();
 

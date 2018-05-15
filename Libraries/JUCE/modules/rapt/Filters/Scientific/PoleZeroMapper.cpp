@@ -418,6 +418,8 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
   // debug:
   pDbg = toVector(targetPoles, 2*prototypeOrder);
   zDbg = toVector(targetZeros, 2*prototypeOrder);
+  rsAssert(rsAreNeighborsConjugates(targetPoles, 2*prototypeOrder, T(1.e-12)));
+  rsAssert(rsAreNeighborsConjugates(targetZeros, 2*prototypeOrder, T(1.e-12)));
   int dummy = 0;
 }
 

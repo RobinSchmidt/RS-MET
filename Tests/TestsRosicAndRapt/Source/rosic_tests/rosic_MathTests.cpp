@@ -1,10 +1,46 @@
 #include "rosic_MathTests.h"
 using namespace rotes;
 
-//#include "rosic/rosic.h"
 #include "../Shared/Plotting/rosic_Plotter.h"
 using namespace rosic;
 
+bool rotes::testComplexSqrt()
+{
+  bool result = true;
+  int N = 500;  // number of tests
+
+  RAPT::rsNoiseGenerator<double> ng;
+  ng.setRange(-1000, +1000);
+  double re, im;
+
+
+  for(int n = 0; n < N; n++)
+  {
+    re = ng.getSample();
+    im = ng.getSample();
+    std::complex<double> z1 = std::complex<double>(re, im);
+    rosic::Complex z2 = rosic::Complex(re, im);
+    z1 = sqrt(z1);
+    z2 = sqrtC(z2);
+
+    // ...compare z1, z2
+
+    z1 = std::complex<double>(0., im);
+    z2 = rosic::Complex(0., im);
+    z1 = sqrt(z1);
+    z2 = sqrtC(z2);
+
+    // ...compare z1, z2
+
+
+
+  }
+
+  // they seem to be the same..so what is wrong in the PoleZeroMapper?
+
+
+  return result;
+}
 
 bool rotes::testCubicCoeffsTwoPointsAndDerivatives()
 {

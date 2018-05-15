@@ -360,3 +360,18 @@ bool rsAreAllValuesReal(std::complex<T> *z, int length, T relativeTolerance)
   }
   return true;
 }
+
+template<class T>
+bool rsAreNeighborsConjugates(std::complex<T> *z, int length, T tol)
+{
+  for(int i = 0; i < length-1; i+=2)
+  {
+    if(z[i].real() == RS_INF(T) && z[i+1].real() == RS_INF(T))
+      continue;
+    if( abs(z[i].real() - z[i+1].real()) > tol )
+      return false;
+    if( abs(z[i].imag() + z[i+1].imag()) > tol )
+      return false;
+  }
+  return true;
+}
