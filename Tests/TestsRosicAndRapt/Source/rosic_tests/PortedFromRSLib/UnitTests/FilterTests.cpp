@@ -114,7 +114,7 @@ bool equal(const std::vector<rosic::Complex>& array1,
 {
   if(array1.size() != array2.size())
     return false;
-  double tol = 1.e-13;
+  double tol = 1.e-12;
   for(size_t i = 0; i < array1.size(); i++) {
     if(!equal(array1[i], array2[i], tol))
       return false; }
@@ -123,7 +123,7 @@ bool equal(const std::vector<rosic::Complex>& array1,
 
 bool testIIRDesign(int method, int mode, int protoOrder)
 {
-  // method: 0..5, mode: 0..7, order: 0..20
+  // method: 0..5, mode: 0..7, order: 1..20
   // Compare results from the old rosic and new rapt implementation
 
   bool r = true;
@@ -220,11 +220,17 @@ bool testHighOrderFilter(std::string &reportString)
 {
   bool r = true;
 
-
-  r &= testHighOrderFilter1();
-
+  //r &= testHighOrderFilter1();
   r &= testIIRDesign(1, 1, 2);
+  r &= testIIRDesign(0, 3, 1);  // 1st order butterworth highpass -> fail
 
+  for(int method = 0; method <= 5; method++)
+    for(int mode = 0; mode <= 7; mode++)
+      for(int order = 1; order <= 20; order++)
+      {
+        r &= testIIRDesign(method, mode, order);
+        rsAssert(r == true);
+      }
 
   return r;
 }
