@@ -29,6 +29,9 @@
     <Filter Include="TestsRosicAndRapt\Source\Shared\Plotting">
       <UniqueIdentifier>{2CDC542A-DB2E-9525-1B3C-3EF43EFE347F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign">
+      <UniqueIdentifier>{472FD494-B589-3CEC-F7D3-0D2380CFDE0B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\Shared\Prototypes">
       <UniqueIdentifier>{1F11B7F2-6C77-FAF9-7328-DDEE1DD2B957}</UniqueIdentifier>
     </Filter>
@@ -414,6 +417,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerAnalog.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerDigital.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroMapper.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroPrototype.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
@@ -2354,6 +2369,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerAnalog.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerDigital.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroMapper.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroPrototype.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>

@@ -162,6 +162,24 @@
           <FILE id="pVGgqG" name="rosic_Plotter.h" compile="0" resource="0" file="Source/Shared/Plotting/rosic_Plotter.h"/>
         </GROUP>
         <GROUP id="{809E6B65-DC9E-FA2F-B4F0-C29F9B4AED03}" name="Prototypes">
+          <GROUP id="{DC7D8DE9-3939-AE39-ECFF-0EB6C702A79E}" name="ClassicFilterDesign">
+            <FILE id="FBVoUS" name="PoleZeroDesignerAnalog.cpp" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroDesignerAnalog.cpp"/>
+            <FILE id="B3tE3t" name="PoleZeroDesignerAnalog.h" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroDesignerAnalog.h"/>
+            <FILE id="URFHEb" name="PoleZeroDesignerDigital.cpp" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroDesignerDigital.cpp"/>
+            <FILE id="WO5yZh" name="PoleZeroDesignerDigital.h" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroDesignerDigital.h"/>
+            <FILE id="zKLcFG" name="PoleZeroMapper.cpp" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroMapper.cpp"/>
+            <FILE id="f9ixlk" name="PoleZeroMapper.h" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroMapper.h"/>
+            <FILE id="sITbrb" name="PoleZeroPrototype.cpp" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroPrototype.cpp"/>
+            <FILE id="dUQgUu" name="PoleZeroPrototype.h" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroPrototype.h"/>
+          </GROUP>
           <FILE id="BiN3xa" name="FiniteAutomaton.cpp" compile="1" resource="0"
                 file="Source/Shared/Prototypes/FiniteAutomaton.cpp"/>
           <FILE id="siWyu0" name="FiniteAutomaton.h" compile="0" resource="0"

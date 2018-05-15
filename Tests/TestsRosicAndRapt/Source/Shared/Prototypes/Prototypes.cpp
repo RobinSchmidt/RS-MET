@@ -1,5 +1,11 @@
 #include "Prototypes.h"
 
+#include "ClassicFilterDesign/PoleZeroPrototype.cpp"
+#include "ClassicFilterDesign/PoleZeroMapper.cpp"
+#include "ClassicFilterDesign/PoleZeroDesignerAnalog.cpp"
+#include "ClassicFilterDesign/PoleZeroDesignerDigital.cpp"
+
+
 using namespace RAPT;
 
 double signalValueViaSincAt(double *x, int N, double t, double sincLength, double stretch,

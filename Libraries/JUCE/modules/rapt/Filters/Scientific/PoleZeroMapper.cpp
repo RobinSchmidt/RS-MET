@@ -333,6 +333,7 @@ void rsPoleZeroMapper<T>::prototypeToAnalogBandpass(Complex* poles, int numPoles
   delete[] tmpZeros;
 }
 
+/*
 // for debugging:
 template<class T>
 std::complex<T> sqrtC(std::complex<T> z)
@@ -344,6 +345,7 @@ std::complex<T> sqrtC(std::complex<T> z)
   T c = cos(p);
   return std::complex<T>(r*c, r*s);            // re = r*cos(p), im = r*sin(p)
 }
+*/
 
 template<class T>
 void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Complex* prototypeZeros, 
@@ -418,8 +420,8 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
   // debug:
   pDbg = toVector(targetPoles, 2*prototypeOrder);
   zDbg = toVector(targetZeros, 2*prototypeOrder);
-  rsAssert(rsAreNeighborsConjugates(targetPoles, 2*prototypeOrder, T(1.e-12)));
-  rsAssert(rsAreNeighborsConjugates(targetZeros, 2*prototypeOrder, T(1.e-12)));
+  //rsAssert(rsAreNeighborsConjugates(targetPoles, 2*prototypeOrder, T(1.e-12)));
+  //rsAssert(rsAreNeighborsConjugates(targetZeros, 2*prototypeOrder, T(1.e-12)));
   int dummy = 0;
 }
 

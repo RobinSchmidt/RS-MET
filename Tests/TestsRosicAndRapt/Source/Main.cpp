@@ -111,8 +111,10 @@ int main(int argc, char* argv[])
   //passed &= testMoveElements(   str);
   //passed &= testRemoveElements( str);
 
+
   //passed &= testFilterPolynomials(str);
-  //passed &= testHighOrderFilter(  str);  // fails
+  passed &= testHighOrderFilter(  str);  // fails
+
 
   ////passed &= testModalFilter2(str);       // fails
   ////passed &= testModalSynth(str);         // triggers assert
@@ -200,7 +202,7 @@ int main(int argc, char* argv[])
   ////trapezAverager();   // hangs
 
   //compareApproximationMethods();  // something is wrong here - plots are weird
-  //compareOldAndNewEngineersFilter();
+  compareOldAndNewEngineersFilter();
 
   //testPoleZeroMapper();
   //ringingTime();
@@ -376,7 +378,7 @@ int main(int argc, char* argv[])
   //testRosicGenerators();
   //testRosicFilter();
   //testRosicNumerical();
-  testRosicMath();
+  //testRosicMath();
   //testRosicNonRealTime();
   //testRosicOthers();
 

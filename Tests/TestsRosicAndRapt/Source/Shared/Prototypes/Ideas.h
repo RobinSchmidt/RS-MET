@@ -128,6 +128,30 @@ Neural Network Synthesizer ("Cortex")
  can be used for neural, modal, spectral, etc. modeling
 
 
+-rewrite EngineersFilter
+ -PrototypeDesigner:
+  -has only static functions to fill arrays of poles/zeros/gain like
+   butterworth(int order, complex* poles, complex* zeros, T* gain, G = 1, G0 = 0),
+   bessel, elliptic, etc. - all with the same signature
+   -if G=1, G0=0 they may delegate to simpler implementations that create "pass" prototypes
+   -if there are more poles that zeros, zeros will be set to infinity (real part = +inf)
+  -it only computes the non-redundant poles/zeros in the upper-left quarter-plane
+  -poles and zeros are ordered by ascending frequency (imaginary part) and if poles happen to have
+   the same frequency, by ascending real part (increasing Q)
+ -PoleZeroMapper
+  -static functions like sProtoToLowpass, sProtoToBandpass - maybe they should also all have the 
+   same signature such that a higher level class can keep a function pointer to the mapper function
+ -make class rsFilterDesignerAnalog for s-plane design, this one should have state-variables for
+  method, mode, ripple, rejection, gain
+ -make a class rsFilterDesignerDigital that uses and rsFilterDesignerAnalog and does all the bilinear 
+  (or whatever other) mapping
+ -maybe make an alternative rsFilterDesignerDigital2 that uses a z-plane prototype and does only a 
+  z-to-z frequency transformation when the cutoff frequency changes (saves all the pre-warping 
+  computations)
+ -the new filter should also be able to use a SVF insstead of a biquad for each stage
+
+
+
 
 Scripting Synthesizer ("Synthax")
 

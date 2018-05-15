@@ -4,6 +4,13 @@
 //#include "rapt/rapt.h"
 #include "rosic/rosic.h"
 
+// new implementation of classic IIR filter design:
+#include "ClassicFilterDesign/PoleZeroPrototype.h"
+#include "ClassicFilterDesign/PoleZeroMapper.h"
+#include "ClassicFilterDesign/PoleZeroDesignerAnalog.h"
+#include "ClassicFilterDesign/PoleZeroDesignerDigital.h"
+
+
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant 
 to be used for production code but are useful for a more readable proof-of-concept (because of lack 
 of optimizations), for tweaking an algorithm's internal parameters which might not be even exposed 
