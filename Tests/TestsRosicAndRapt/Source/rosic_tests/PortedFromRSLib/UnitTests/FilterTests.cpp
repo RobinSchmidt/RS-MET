@@ -98,14 +98,17 @@ bool testHighOrderFilter1()
   return testResult;
 }
 
-
+// move to test utilities or something:
+bool equal(double x, double y, double tol)
+{
+  if(x == RS_INF(double) && y == RS_INF(double))
+    return true;
+  return abs(x-y) <= tol;
+}
 bool equal(rosic::Complex z1, std::complex<double> z2, double tol)
 {
-  double dr = z1.re - z2.real();
-  double di = z1.im - z2.imag();
-  return abs(dr) <= tol && abs(di) <= tol;
+  return equal(z1.re, z2.real(), tol) && equal(z1.im, z2.imag(), tol); 
 }
-
 bool equal(const std::vector<rosic::Complex>& array1,
   const std::vector<std::complex<double>>& array2)
 {
@@ -168,7 +171,7 @@ bool testIIRDesign(int method, int mode, int protoOrder)
   ptd1.getPolesAndZeros(&pp1[0], &pz1[0]);
   ptd2.getPolesAndZeros(&pp2[0], &pz2[0]);
   r &= equal(pp1, pp2);
-  //r &= equal(pz1, pz2); // problems with infinite zeros in equality comparison?
+  r &= equal(pz1, pz2); // problems with infinite zeros in equality comparison? yes, bcs inf-inf=nan
 
 
 
