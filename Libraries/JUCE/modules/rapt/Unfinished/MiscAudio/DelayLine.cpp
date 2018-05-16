@@ -48,7 +48,7 @@ void rsBasicDelayLine<T>::setDelayInSamples(int newDelay)
 template<class T>
 void rsBasicDelayLine<T>::reset()
 {
-  for(int i = 0; i < maxDelay+1; i++)  
+  for(int i = 0; i < maxDelay+1; i++)
     delayLine[i] = 0.0;
 }
 
@@ -57,10 +57,10 @@ void rsBasicDelayLine<T>::reset()
 // Construction/Destruction:
 
 template<class TSig, class TPar>
-rsDelayLine<TSig, TPar>::rsDelayLine() 
+rsDelayLine<TSig, TPar>::rsDelayLine()
 {
   delayInSeconds = TPar(0.001);
-  sampleRate     = TPar(44100.0); 
+  sampleRate     = TPar(44100.0);
   setDelayInSeconds(delayInSeconds);
 }
 
@@ -82,7 +82,7 @@ void rsDelayLine<TSig, TPar>::setSampleRate(TPar newSampleRate)
 template<class TSig, class TPar>
 void rsDelayLine<TSig, TPar>::setDelayInSamples(int newDelayInSamples)
 {
-  rsBasicDelayLine::setDelayInSamples(newDelayInSamples);
+  rsBasicDelayLine<TSig>::setDelayInSamples(newDelayInSamples);
   delayInSeconds = (TPar) newDelayInSamples / sampleRate;
 }
 
@@ -149,7 +149,7 @@ void rsFractionalDelayLine<TSig, TPar>::setSampleRate(TPar newSampleRate)
 template<class TSig, class TPar>
 void rsFractionalDelayLine<TSig, TPar>::setDelayTime(TPar newDelayTime)
 {
-  //delayTime = rsClip(newDelayTime, 0.0, 4.25);  
+  //delayTime = rsClip(newDelayTime, 0.0, 4.25);
   delayTime = newDelayTime;
   setupDelayInSamples();
 }
@@ -203,14 +203,14 @@ void rsFractionalDelayLine<TSig, TPar>::setupDelayInSamples()
     // get rid of the temposync stuff
 
   delayInSamples = sampleRate*delayInSeconds;
-  delayInSamples = rsClip(delayInSamples, (TPar)(interpolatorMargin-1), 
+  delayInSamples = rsClip(delayInSamples, (TPar)(interpolatorMargin-1),
     (TPar) (length-1-interpolatorMargin));
-  //delayInSamples = clip(delayInSamples, (double)(interpolatorMargin-1), 
+  //delayInSamples = clip(delayInSamples, (double)(interpolatorMargin-1),
   //  (double) (length-1-interpolatorMargin)); // old
 
 
   // update member delayTime to the clipped value:
-  delayInSeconds = delayInSamples / sampleRate;   
+  delayInSeconds = delayInSamples / sampleRate;
   if( tempoSync )
     delayTime = rsSecondsToBeats(delayInSeconds, bpm);
   else

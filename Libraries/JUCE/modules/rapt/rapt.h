@@ -29,6 +29,7 @@
 
 // maybe these standard library includes should go somewhere else?
 #include <ctgmath>       // template generic math?
+#include <cstdio>        // to fix warning in gcc when using printf
 #include <complex>       // included already by ctgmath ...but not on gcc/windows?
 #include <vector>
 #include <functional>
@@ -41,7 +42,7 @@
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
 #include "Data/Data.h"                   // data structures like arrays, lists, files, etc.
 #include "Math/Math.h"                   // interpolation, transforms, linear algebra, numerical analysis
-#include "AudioBasics/AudioBasics.h" 
+#include "AudioBasics/AudioBasics.h"
 //#include "Music/Music.h"               // scales (pitchToFreq, ..), time signatures, sequences, patterns, notes, MIDI, etc.
 #include "Filters/Filters.h"             // butterworth, ladder, biquad, elliptic, SVF, etc.
 //#include "Analysis/Analysis.h"         // envelope follower, smoother, pitch-detector, etc.
