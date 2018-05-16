@@ -1,12 +1,12 @@
 //=================================================================================================
 
-// x: input, y: output, N: length, processor: the filter/processor to be applied (needs to 
-// implement double getSample(double), P: padding length, numPasses: number of forward/backward 
+// x: input, y: output, N: length, processor: the filter/processor to be applied (needs to
+// implement double getSample(double), P: padding length, numPasses: number of forward/backward
 // passes maybe move to another file
 template<class TSig, class TFlt> // signal and filter type
 void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int numPasses)
 {
-  // create a buffer containing the signal with (pre- and post) zero padding to allow the 
+  // create a buffer containing the signal with (pre- and post) zero padding to allow the
   // processor/filter to ring out at the ends:
   int M = N+2*P;
   TSig *tmp = new TSig[M];
@@ -31,24 +31,24 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
   rsArray::copyBuffer(&tmp[P], y, N);
   delete[] tmp;
 
-  // todo: Actually, we don't really need pre- and post padding. Using just post padding and 
+  // todo: Actually, we don't really need pre- and post padding. Using just post padding and
   // applying first all forward passes and then all backward passes should give the same result.
 }
 
-template<class T> 
+template<class T>
 int rsBiDirectionalFilter::getPaddingLength(T bw, T fs)
 {
-  return rsCeilInt(10 * fs / bw); 
-  // factor 10 is ad hoc - experiment to find optimal factor, maybe the formula should include 
+  return rsCeilInt(10 * fs / bw);
+  // factor 10 is ad hoc - experiment to find optimal factor, maybe the formula should include
   // the number of passes as well? and maybe also the order?
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, 
+void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc,
   TPar bw, TPar fs, int numPasses, TPar gc)
 {
   // compute desired bandwidth for single-pass filter in octaves:
-  bw *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, 1, gc);  
+  bw *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, 1, gc);
   TPar bo = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fc);
 
   // create and set up the filter:
@@ -64,7 +64,7 @@ void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, 
+void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc,
   TPar bw, TPar fs, int order, int numPasses, TPar gc)
 {
   // compute desired bandwidth for single-pass filter in octaves:
@@ -86,7 +86,7 @@ void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(TSig *x, TSig *y, int
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc, 
+void rsBiDirectionalFilter::applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc,
   TPar fs, int order, int numPasses, TPar gc)
 {
   // compute desired lowpass cutoff:
@@ -106,7 +106,7 @@ void rsBiDirectionalFilter::applyButterworthLowpass(TSig *x, TSig *y, int N, TPa
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc, 
+void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc,
   TPar fs, int order, int numPasses, TPar gc)
 {
   applyButterworthLowpass(x, y, N, fc, fs, order, numPasses, gc);
@@ -132,7 +132,7 @@ void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TP
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses, 
+void rsBiDirectionalFilter::applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses,
   TPar gc)
 {
   // compute desired cutoff for single-pass filter:
@@ -140,7 +140,7 @@ void rsBiDirectionalFilter::applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar 
 
   // create and set up the filter:
   rsOnePoleFilter<TSig, TPar> flt;
-  flt.setMode(rsOnePoleFilter::LOWPASS); // gives impulse invariant lowpass design - maybe switch
+  flt.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS); // gives impulse invariant lowpass design - maybe switch
                                          // to bilinear later
   flt.setSampleRate(fs);
   flt.setCutoff(fc);
@@ -191,17 +191,17 @@ std::vector<int> rsZeroCrossingFinder::upwardCrossingsInt(T *x, int N)
 }
 
 template<class T>
-std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(T *x, 
+std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(T *x,
   int N, int p)
 {
   std::vector<int> zi = upwardCrossingsInt(x, N);
   int Nz = (int)zi.size();
   std::vector<rsFractionalIndex> z;   // the positions of the zero crossings
   z.resize(Nz);
-  T *a = new T[2*p+2];                // polynomial coefficients for interpolant 
+  T *a = new T[2*p+2];                // polynomial coefficients for interpolant
   T nf;                               // fractional part of zero-crossing sample-index
   int q;                              // p, restricted to avoid access violation
-  int n;                              // integer part of zero-crossing sample-index 
+  int n;                              // integer part of zero-crossing sample-index
   for(int nz = 0; nz < Nz; nz++)
   {
     n  = zi[nz];
@@ -209,7 +209,7 @@ std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(T *x
     q  = rsMin(p, n, N-n-2);
     if(q > 0)
     {
-      // refine linear zero estimate by Newton iteration on a higher order interpolating 
+      // refine linear zero estimate by Newton iteration on a higher order interpolating
       // polynomial using the zero of the linear interpolant as initial guess:
       rsPolynomial<T>::rsInterpolatingPolynomial(a, -q, 1, &x[n-q], 2*q+2);
       nf = getRootNear(nf, a, 2*q+1, 0.0, 1.0);
@@ -233,7 +233,7 @@ std::vector<T> rsZeroCrossingFinder::upwardCrossings(T *x, int N, int p)
 }
 
 template<class T>
-std::vector<T> rsZeroCrossingFinder::bandpassedUpwardCrossings(T *x, int N, T fc, 
+std::vector<T> rsZeroCrossingFinder::bandpassedUpwardCrossings(T *x, int N, T fc,
   T bw, T fs, int np, int p)
 {
   T *y = new T[N];
@@ -265,7 +265,7 @@ T rsMaxPosition(T *buffer, int N)
   return i; // for test
   //return i + offset;  // also test
   //return i - offset;
-  // figure out first, if it has to be + or - (i think +), then check, if the added constant in 
+  // figure out first, if it has to be + or - (i think +), then check, if the added constant in
   // the delta computation in line 302 should be 0.5, 1, 1.5 (or something else)
 }
 
@@ -286,7 +286,7 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
   else
     rsArray::copyBuffer(x, y, N);
 
-  int maxLength = 5000; // preliminary - use something based on the maximum time-delta between the 
+  int maxLength = 5000; // preliminary - use something based on the maximum time-delta between the
                         // cycle-marks in cm array
 
   int left = (int) cm[0];
@@ -304,7 +304,7 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
     rsArray::copySection(y, N, &cl[0],  left-halfLength, length);
     rsArray::copySection(y, N, &cr[0], right-halfLength, length);
 
-    // use a matched filter to do the correlation, 
+    // use a matched filter to do the correlation,
     // see here: https://en.wikipedia.org/wiki/Matched_filter
     rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
     rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
@@ -325,7 +325,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
   // Get initial estimate of fundamental by using an autocorrelation based algorithm at the center
   // of the input signal:
   T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
-    // here, we have a mutual dependency between rsInstantaneousFundamentalEstimator and 
+    // here, we have a mutual dependency between rsInstantaneousFundamentalEstimator and
     // rsCycleMarkFinder - maybe break up by dragging estimateFundamentalAt out of the class
 
   T bw = bandPassWidth*f0; // absolute bandwidth
@@ -333,7 +333,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
   rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, y, N, f0, bw, fs, bandpassSteepness);
 
   // Find cycle marks:
-  std::vector<T> z; 
+  std::vector<T> z;
   if(algo == F0_ZERO_CROSSINGS)
     z = rsZeroCrossingFinder::upwardCrossings(y, N, precision);
   else
@@ -362,8 +362,8 @@ RS_INLINE T cosineToWindow(T c)
   return a0 + a1*c + a2*c*c;
 }
 // rename to cosineToBlackman
-// todo: maybe write a general function that recursively computes cosines of successive multiples 
-// of an angle from the cosine of that angle. This recursion is based on the trigonometric 
+// todo: maybe write a general function that recursively computes cosines of successive multiples
+// of an angle from the cosine of that angle. This recursion is based on the trigonometric
 // identity:
 // cos(a)*cos(b) = (cos(a-b) + cos(a+b))/2 which implies
 // cos(w)*cos(w) = (cos(0)   + cos(2*w))/2, so cos(2*w) = 2*cos^2(w) - cos(0)
@@ -371,11 +371,11 @@ RS_INLINE T cosineToWindow(T c)
 // c[0] = cos(0*w) = 1
 // c[1] = cos(1*w) = c
 // c[n] = cos(n*w) = a*c[n-1]-c[n-2] with a = 2*cos(w) = 2*c
-// from linear combinations of these successive cosine values, various windows can be created, 
+// from linear combinations of these successive cosine values, various windows can be created,
 // see https://en.wikipedia.org/wiki/Window_function#Higher-order_generalized_cosine_windows
 
 template<class TSig, class TPos>
-RS_INLINE void sincInterpolatorLoop(int mMin, int mMax, TPos &tf, rsSineIterator<TPos> &sinIt, 
+RS_INLINE void sincInterpolatorLoop(int mMin, int mMax, TPos &tf, rsSineIterator<TPos> &sinIt,
   rsSineIterator<TPos> &wndIt, TSig &y, TSig *&x, int &ti, TPos &ws)
 {
   TPos w;
@@ -396,7 +396,7 @@ RS_INLINE void sincInterpolatorLoopNoStretch(int mMin, int mMax, TPos &tf, TPos 
   {
     w  = s * cosineToWindow(wndIt.getValue())  / (m-tf);
     ws += w;
-    y  += w * x[ti+m];      
+    y  += w * x[ti+m];
     s  *= -1.0;
   }
 }
@@ -410,7 +410,7 @@ TSig rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos 
   int ti = (int) floor(t);         // integer part of t
   if( ti < 0 || ti >= N )
     return 0.0;
-  TPos tf = t - ti;                // fractional part of t    
+  TPos tf = t - ti;                // fractional part of t
   TSig y  = 0.0;                   // output value
   TPos s;                          // sine value
   TPos ws = 0.0;                   // sum of tap weights
@@ -426,7 +426,7 @@ TSig rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos 
       sincInterpolatorLoopNoStretch(mMin, mMax, tf, s, wndIt, y, x, ti, ws);
     else
     {
-      // split loop into a part for m < 0 and for m > 0, the case for m == 0 is handled separately 
+      // split loop into a part for m < 0 and for m > 0, the case for m == 0 is handled separately
       // because it would lead to division-by-zero error:
       sincInterpolatorLoopNoStretch(mMin, -1, tf, s, wndIt, y, x, ti, ws);
       wndIt.getValue(); // for internal state-update
@@ -454,8 +454,8 @@ TSig rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos 
 }
 // \todo: make a version of this function for periodic signals, maybe the loop should look like:
 //  for(int m = sincLength/2; m <= sincLength/2; m++)
-//    y += x[(ti+m)%N] * rsWindowedSinc(m-tf, sincLength, stretch); 
-// ...but we need to check, if this is correct. This version could be used for looped 
+//    y += x[(ti+m)%N] * rsWindowedSinc(m-tf, sincLength, stretch);
+// ...but we need to check, if this is correct. This version could be used for looped
 // sample-playback (for example, in a sampler) or for wavetable-oscillators
 
 template<class TSig, class TPos>
@@ -481,10 +481,10 @@ void rsResampler<TSig, TPos>::transposeLinear(TSig *x, int xN, TSig *y, int yN, 
 }
 
 template<class TSig, class TPos>
-void rsResampler<TSig, TPos>::transposeSinc(TSig *x, int xN, TSig *y, int yN, TPos factor, 
+void rsResampler<TSig, TPos>::transposeSinc(TSig *x, int xN, TSig *y, int yN, TPos factor,
   TPos sincLength, bool antiAlias)
 {
-  TPos stretch = 1.0; 
+  TPos stretch = 1.0;
   if( antiAlias == true )
     stretch = rsMax(1.0, factor);
 
@@ -517,8 +517,8 @@ void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TP
 
 //=================================================================================================
 
-template<class TSig, class TPos> 
-void rsTimeWarper<TSig, TPos>::timeWarpSinc(TSig *x, int xN, TSig *y, TPos *w, int yN,                             
+template<class TSig, class TPos>
+void rsTimeWarper<TSig, TPos>::timeWarpSinc(TSig *x, int xN, TSig *y, TPos *w, int yN,
   TPos minSincLength, TPos maxLengthScaler, bool antiAlias)
 {
   if( antiAlias == false )
@@ -536,7 +536,7 @@ void rsTimeWarper<TSig, TPos>::timeWarpSinc(TSig *x, int xN, TSig *y, TPos *w, i
       //TPos length  = minSincLength * rsMin(stretch, maxLengthScaler); // old, probably buggy
       TPos length  = rsMax(minSincLength, minSincLength*rsMin(stretch, maxLengthScaler));
 
-      // maybe better, do just: 
+      // maybe better, do just:
       // length = rsLimitToRange(minSincLength*stretch, minSincLength, maxSincLength);
       // where maxSincLength is precomputed as minSincLength*maxLengthScaler
 
@@ -546,12 +546,12 @@ void rsTimeWarper<TSig, TPos>::timeWarpSinc(TSig *x, int xN, TSig *y, TPos *w, i
   }
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 void rsTimeWarper<TSig, TPos>::invertMonotonousWarpMap(TPos *w, int N, TPos *wi)
 {
   //bool cubic = true; // make this a parameter for the function
 
-  int M = (int) ceil(w[N-1]); // length of inverse map 
+  int M = (int) ceil(w[N-1]); // length of inverse map
   int n, i, iOld = 0;
   for(n = 0; n < M; n++)
   {
@@ -567,15 +567,15 @@ void rsTimeWarper<TSig, TPos>::invertMonotonousWarpMap(TPos *w, int N, TPos *wi)
     /*
     if( cubic == true && i >= 1 && i < N-2 )
     {
-      wi[n] = rsInterpolateCubicHermite(w[i-1], w[i], w[i+1], w[i+2], (TPos)(i-1), (TPos)i, 
+      wi[n] = rsInterpolateCubicHermite(w[i-1], w[i], w[i+1], w[i+2], (TPos)(i-1), (TPos)i,
         (TPos)(i+1), (TPos)(i+2), (TPos)n);
     }
     else
       wi[n] = rsInterpolateLinear(w[i], w[i+1], (TPos)i, (TPos)(i+1), (TPos)n);
     */
     //wi[n] = rsInterpolateLinear(w[i], (TPos)i, w[i+1], (TPos)(i+1), (TPos)n);
-      // Can be optimized: (i+1)-i == 1 - always, the function computes the value, but maybe it's 
-      // not worth it. On the other hand, maybe the quality could be improved by using cubic 
+      // Can be optimized: (i+1)-i == 1 - always, the function computes the value, but maybe it's
+      // not worth it. On the other hand, maybe the quality could be improved by using cubic
       // hermite instead of linear interpolation.
 
     iOld = i;
@@ -587,7 +587,7 @@ void rsTimeWarper<TSig, TPos>::invertMonotonousWarpMap(TPos *w, int N, TPos *wi)
   // property.
 }
 
-template<class TSig, class TPos>  
+template<class TSig, class TPos>
 int rsTimeWarper<TSig, TPos>::getPitchModulatedLength(TPos *r, int N)
 {
   TPos s = 0.0;
@@ -598,7 +598,7 @@ int rsTimeWarper<TSig, TPos>::getPitchModulatedLength(TPos *r, int N)
   // the time-instant, where the (nonexistent) next-to-last sample x[N] would have to be written
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 void rsTimeWarper<TSig, TPos>::applyPitchModulation(TSig *x, TPos *r, int N, TSig *y,
   TPos minSincLength, TPos maxLengthScaler, bool antiAlias)
 {
@@ -609,19 +609,19 @@ void rsTimeWarper<TSig, TPos>::applyPitchModulation(TSig *x, TPos *r, int N, TSi
 
 //=================================================================================================
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 rsVariableSpeedPlayer<TSig, TPos>::rsVariableSpeedPlayer()
 {
   init();
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 rsVariableSpeedPlayer<TSig, TPos>::~rsVariableSpeedPlayer()
 {
   clear();
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 void rsVariableSpeedPlayer<TSig, TPos>::setInputAndSpeed(TSig *input, TPos *r, int length)
 {
   clear();
@@ -629,7 +629,7 @@ void rsVariableSpeedPlayer<TSig, TPos>::setInputAndSpeed(TSig *input, TPos *r, i
   x  = input;
   Nx = length;
 
-  // Create inverse warping map (i.e., the map, that assigns for each input sample-index n in x a 
+  // Create inverse warping map (i.e., the map, that assigns for each input sample-index n in x a
   // (noninteger) time-instant t in y where the sample value x[n] should be written, such that
   // y(t) = x[n]:
   wi = new TPos[Nx];
@@ -639,31 +639,31 @@ void rsVariableSpeedPlayer<TSig, TPos>::setInputAndSpeed(TSig *input, TPos *r, i
 
   // Obtain desired warping map by inverting the wi map:
   Ny = (int) ceil(wi[Nx-1]);
-  w  = new TPos[Ny]; 
+  w  = new TPos[Ny];
   rsTimeWarper<TSig, TPos>::invertMonotonousWarpMap(wi, Nx, w);
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 TPos rsVariableSpeedPlayer<TSig, TPos>::warpTime(TPos tx)
 {
   return rsArray::interpolateClamped(wi, Nx, tx);
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 TPos rsVariableSpeedPlayer<TSig, TPos>::unwarpTime(TPos ty)
 {
   return rsArray::interpolateClamped(w, Ny, ty);
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 void rsVariableSpeedPlayer<TSig, TPos>::getOutput(TSig *y, TPos minSincLength, TPos maxLengthScaler,
   bool antiAlias)
 {
   rsTimeWarper<TSig, TPos>::timeWarpSinc(x, Nx, y, w, Ny, minSincLength, maxLengthScaler, antiAlias);
 }
 
-template<class TSig, class TPos> 
-std::vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::getOutput(TPos minSincLength, TPos maxLengthScaler, 
+template<class TSig, class TPos>
+std::vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::getOutput(TPos minSincLength, TPos maxLengthScaler,
   bool antiAlias)
 {
   std::vector<TSig> y(Ny);
@@ -671,7 +671,7 @@ std::vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::getOutput(TPos minSincLengt
   return y;
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapXY()
 {
   std::vector<TPos> map(Nx);
@@ -679,7 +679,7 @@ std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapXY()
   return map;
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapYX()
 {
   std::vector<TPos> map(Ny);
@@ -687,7 +687,7 @@ std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapYX()
   return map;
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::invertSpeeds(std::vector<TPos>& speeds)
 {
   rsVariableSpeedPlayer<TSig, TPos> vsp;
@@ -700,8 +700,8 @@ std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::invertSpeeds(std::vector<TP
   return map;
 }
 
-template<class TSig, class TPos> 
-std::vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::applyPlaybackSpeed(std::vector<TSig>& x, 
+template<class TSig, class TPos>
+std::vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::applyPlaybackSpeed(std::vector<TSig>& x,
   std::vector<TPos>& s)
 {
   rsAssert(x.size() == s.size());
@@ -710,14 +710,14 @@ std::vector<TSig> rsVariableSpeedPlayer<TSig, TPos>::applyPlaybackSpeed(std::vec
   return vsp.getOutput();
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 void rsVariableSpeedPlayer<TSig, TPos>::init()
 {
   x = w = wi = nullptr;
   Nx = Ny = 0;
 }
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 void rsVariableSpeedPlayer<TSig, TPos>::clear()
 {
   delete[] wi;
@@ -742,7 +742,7 @@ void rsPitchFlattener<TSig, TPos>::setInput(TSig *x, TPos *f, int N, TPos ft)
     r[n] = ft / f[n];
 
   // setup inherited variable speed player and clean up temporary array:
-  rsVariableSpeedPlayer::setInputAndSpeed(x, r, N);
+  rsVariableSpeedPlayer<TSig, TPos>::setInputAndSpeed(x, r, N);
   delete[] r;
 }
 
@@ -781,14 +781,14 @@ int rsPhaseLockedCrossfader<TSig, TPos>::getCrossfadeOutputLength()
 {
   TPos cl1 = ce1 - cs1;              // crossfade length in x1
   TPos cl2 = ce2 - cs2;              // crossfade length in x2
-  TPos cly;                          // crossfade length in y 
+  TPos cly;                          // crossfade length in y
   //cly = 0.5*(cl1+cl2);               // arithmetic mean
   cly = 1 / (0.5*(1/cl1 + 1/cl2));     // harmonic mean
   return rsRoundToInt(cly);
 
   // Using arithmetic mean, the vibrato speed during crossfade will be between the vibrato speeds
-  // of x1, x2. Using the harmonic mean, the output frequency will be the arithmetic mean between 
-  // the input frequencies of x1, x2. The geometric mean is in between. Maybe we can use a 
+  // of x1, x2. Using the harmonic mean, the output frequency will be the arithmetic mean between
+  // the input frequencies of x1, x2. The geometric mean is in between. Maybe we can use a
   // generalized mean and expose the exponent as user parameter.
   // https://en.wikipedia.org/wiki/Generalized_mean
 }
@@ -897,23 +897,23 @@ void rsPhaseLockedCrossfader<TSig, TPos>::computeReadoutTimes()
     t2[n] = pf2.unwarpTime(txw-shift);
   }
 
-  // Notes: 
+  // Notes:
   // The boolean "sweep" variable could at some point be exposed as user option. If sweep mode
   // is off and the two input signals have different fixed frequencies, we will see a fixed output
-  // frequency during the crossfade which is intermediate between the two input frequencies. Which 
-  // frequency exactly that is, is determined by the return value of getCrossfadeOutputLength - if 
-  // it returns the harmonic mean between both input crossfade-lengths, the frequency during 
+  // frequency during the crossfade which is intermediate between the two input frequencies. Which
+  // frequency exactly that is, is determined by the return value of getCrossfadeOutputLength - if
+  // it returns the harmonic mean between both input crossfade-lengths, the frequency during
   // crossfade will be the arithmetic mean between both input frequencies (and vice versa).
-  // The computation of txw as weighted mean between tx1 and tx2: txw = (1-t)*tx1 + t*tx2 could 
-  // use also "c" instead of "t" as weight - or some combination of t and c and we could also try 
-  // weighted means different from the arithmetic mean. All of these modifications will lead to 
+  // The computation of txw as weighted mean between tx1 and tx2: txw = (1-t)*tx1 + t*tx2 could
+  // use also "c" instead of "t" as weight - or some combination of t and c and we could also try
+  // weighted means different from the arithmetic mean. All of these modifications will lead to
   // different behavior when both input signals have vibratos with different speeds.
 }
 
 //=================================================================================================
 
 template<class T>
-void rsInstantaneousFundamentalEstimator<T>::estimateReliability(T *x, int N, 
+void rsInstantaneousFundamentalEstimator<T>::estimateReliability(T *x, int N,
   const std::vector<T>& z, T *r)
 {
   int Nz = (int) z.size(); // number of zero crossings in z
@@ -946,7 +946,7 @@ void rsInstantaneousFundamentalEstimator<T>::estimateReliability(T *x, int N,
 }
 
 template<class T>
-void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *x, T *f, 
+void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *x, T *f,
   int N, T fs, T fMin, T fMax, T *r, int cycleMarkAlgo)
 {
   rsCycleMarkFinder<T> cmf(fs, fMin, fMax); // todo: maybe set it up - or maybe have it a member and allow client code to set it up
@@ -956,8 +956,8 @@ void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *
   //std::vector<double> z = rsCycleMarkFinder::findCycleMarks(x, N, fs, fMin, fMax, cycleMarkAlgo, 3);
     // 3 is the precision - may be tweaked
 
-  // Measure periods. They are given by the distance between successive zero-crossings. The time 
-  // instant at which we consider this period measurement to be effective is midway between the 
+  // Measure periods. They are given by the distance between successive zero-crossings. The time
+  // instant at which we consider this period measurement to be effective is midway between the
   // two zero-crossings:
   int Nz = (int) z.size();
   T *p  = new T[Nz-1];
@@ -980,14 +980,14 @@ void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *
   // zero-crossing/pitch-mark (each would have a value of phase[n] = 2*pi*n), interpolate these
   // phases, and obtain the instantaneous frequencies as difference - this would ensure a "phase
   // coherent interpolation" of the instantaneous frequencies (i.e. the instantaneous phase for a
-  // resynthesized signal will not tend to drift depending on the specifics of the interpolation 
+  // resynthesized signal will not tend to drift depending on the specifics of the interpolation
   // scheme)
   // we should not really extrapolate the head and tail values with the first and last polynomial
   // repeating the last value will probably be better
 
   // If more actual data values are needed before the interpolation, we could find the zeros of
   // the derivatives which would give values halfway in between our current values. If the envelope
-  // is exponential, the distance between maxima also equals the period (see Physics of Musical 
+  // is exponential, the distance between maxima also equals the period (see Physics of Musical
   // Instruments, 2nd Ed, p.12)
 
   // assessment of reliability, if desired:
@@ -1001,27 +1001,27 @@ void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *
 }
 
 template<class T>
-T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int n, 
+T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int n,
   T fs, T fMin, T fMax)
 {
   T pMax = fs/fMin; // maximum detectable period
 
   // Compute desired Length of autocorrelation sequence. It should be significantly longer than the
-  // lag that corresponds to our maximum detectable period because the accuracy of the measured 
-  // values degrades for lags that are close to the end of the sequence due to less samples used in 
+  // lag that corresponds to our maximum detectable period because the accuracy of the measured
+  // values degrades for lags that are close to the end of the sequence due to less samples used in
   // the averaging. We need it to be odd so we can use a chunk that is centered around n.
   T k = 2.0;
-  int L = (int) ceil(k*pMax);  
+  int L = (int) ceil(k*pMax);
   if( rsIsEven(L) )
     L += 1;
 
-  // Get a chunk from the signal, typically centered around n, but the center is shifted at the 
-  // start and end of the input signal, such that we don't need to zero-extend the input 
+  // Get a chunk from the signal, typically centered around n, but the center is shifted at the
+  // start and end of the input signal, such that we don't need to zero-extend the input
   // (conceptually):
   T *y = new T[L];                      // chunk from input signal
   int ns = rsMin(rsMax(0, n-L/2), N-L); // start of the chunk
-  rsArray::copySection(x, N, y, ns, L); 
-  //rsCopySection(x, N, y, ns, L); 
+  rsArray::copySection(x, N, y, ns, L);
+  //rsCopySection(x, N, y, ns, L);
 
   // measure frequency:
   T r;  // reliability
@@ -1115,7 +1115,7 @@ void rsEnvelopedSine(T *y, int N, T f, T fs, T p, T *a)
 template<class T>
 double rsUnwrappedPhaseForCatchSweep(T p0, T pk, T wk, int k, int sweepDirection = 0)
 {
-  // compute phase that would be reached at k, if we were running a fixed frequency sine at w from 
+  // compute phase that would be reached at k, if we were running a fixed frequency sine at w from
   // 0 to k:
   T pkw = p0 + k*wk;
 
@@ -1139,7 +1139,7 @@ void rsEnvelopedPhaseCatchSweep(T *y, int k, T p0, T pk, T wk, T *a, int sweepDi
 {
   // Notation: p0, pk, w0, wk: instantaneous phases and normalized radian frequencies at sample 0
   // and sample k, respectively, wn: inst. freq. at sample n = 0...k-1. We have
-  // pk = p0 + sum_{n=0}^{k-1} wn and we assume a linear frequency sweep such that 
+  // pk = p0 + sum_{n=0}^{k-1} wn and we assume a linear frequency sweep such that
   // wn = w0 + n * dw, where dw = (wk-w0)/k. Inserting this into the pk formula, we get:
   // pk = p0 + sum_{n=0}^{k-1} (w0 + n*dw) = p0 + k*w0 + sn*dw, where sn = sum_{n=0}^{k-1} n
   // This can be solved for w0 = (pk - p0 - sn*wk/k) / (k - sn/k)
@@ -1157,7 +1157,7 @@ void rsEnvelopedPhaseCatchSweep(T *y, int k, T p0, T pk, T wk, T *a, int sweepDi
     pn  += wn;
   }
 
-  // todo: factor out a function to compute an array of w[n] - mainly for plotting the frequency 
+  // todo: factor out a function to compute an array of w[n] - mainly for plotting the frequency
   // sweep and comparison between linear and parabolic sweep (to be implemented)
 }
 
@@ -1187,7 +1187,7 @@ void rsRecreateSine(T *x, T *y, int N, T fx, T fy, T fs, T p0, T smooth)
 }
 
 template<class T>
-void rsRecreateSineWithPhaseCatch(T *x, T *y, int N, T fx, T fy, T fs, T p0, T pk, int k, 
+void rsRecreateSineWithPhaseCatch(T *x, T *y, int N, T fx, T fy, T fs, T p0, T pk, int k,
   T smooth, int sd)
 {
   rsSineEnvelopeViaAmpFormula(x, y, N, fx, fs, smooth);

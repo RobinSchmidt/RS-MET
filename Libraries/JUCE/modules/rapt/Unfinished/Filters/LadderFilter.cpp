@@ -46,13 +46,13 @@ void rsLadderFilter2<TSig, TPar>::setMode(int newMode)
     case HP_6:     c[0] = 1; c[1] = -1; c[2] =  0; c[3] =  0; c[4] =  0;  break;
     case HP_12:    c[0] = 1; c[1] = -2; c[2] =  1; c[3] =  0; c[4] =  0;  break;
     case HP_18:    c[0] = 1; c[1] = -3; c[2] =  3; c[3] = -1; c[4] =  0;  break;
-    case HP_24:    c[0] = 1; c[1] = -4; c[2] =  6; c[3] = -4; c[4] =  1;  break;  
+    case HP_24:    c[0] = 1; c[1] = -4; c[2] =  6; c[3] = -4; c[4] =  1;  break;
     case BP_6_6:   c[0] = 0; c[1] =  1; c[2] = -1; c[3] =  0; c[4] =  0;  break;
     case BP_6_12:  c[0] = 0; c[1] =  0; c[2] =  1; c[3] = -1; c[4] =  0;  break;
     case BP_6_18:  c[0] = 0; c[1] =  0; c[2] =  0; c[3] =  1; c[4] = -1;  break;
     case BP_12_6:  c[0] = 0; c[1] =  1; c[2] = -2; c[3] =  1; c[4] =  0;  break;
     case BP_12_12: c[0] = 0; c[1] =  0; c[2] =  1; c[3] = -2; c[4] =  1;  break;
-    case BP_18_6:  c[0] = 0; c[1] =  1; c[2] = -3; c[3] =  3; c[4] = -1;  break;  
+    case BP_18_6:  c[0] = 0; c[1] =  1; c[2] = -3; c[3] =  3; c[4] = -1;  break;
     default:       c[0] = 1; c[1] =  0; c[2] =  0; c[3] =  0; c[4] =  0;  // flat
     }
   }
@@ -92,15 +92,15 @@ TPar rsLadderFilter2<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar 
     return exp(-1/(decay*cutoff));
   else
     return 0.0;
-  // The time tr for a sinusoid at the cutoff frequency fc to complete a single roundtrip around 
+  // The time tr for a sinusoid at the cutoff frequency fc to complete a single roundtrip around
   // the filter loop is given by tr = 1/fc. The amplitude of the sinusoid as function of t is given
-  // by a(t) = r^(t/tr) = r^(t*fc). The decaytime is defined as the time instant where a(t) = 1/e, 
+  // by a(t) = r^(t/tr) = r^(t*fc). The decaytime is defined as the time instant where a(t) = 1/e,
   // so we need to solve 1/e = r^(t*fc) leading to r = (1/e)^(1/(t*fc)).
   // can be expressed as exp(-1/(decay*cutoff)) - avoid expensive pow
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter2<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k, 
+void rsLadderFilter2<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k,
   TPar *g)
 {
   computeCoeffs(wc, fb, a, b, k);
@@ -111,20 +111,20 @@ template<class TSig, class TPar>
 void rsLadderFilter2<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k)
 {
   TPar s, c, t;                     // sin(wc), cos(wc), tan((wc-PI)/4)
-  rsSinCos(wc, &s, &c);             
+  rsSinCos(wc, &s, &c);
   t  = tan(0.25*(wc-PI));
   *a = t / (s-c*t);
-  *b = 1.0 + *a;  
+  *b = 1.0 + *a;
   *k = computeFeedbackFactor(fb, c, *a, *b);
   // If the cutoff frequency goes to zero wc -> 0, then s -> 0, c -> 1, t -> -1, b -> 0, a -> -1.
-  // The coefficient computation for the lowpass stages approaches this limit correctly, but the 
+  // The coefficient computation for the lowpass stages approaches this limit correctly, but the
   // formula for the feedback factor k runs into numerical problems when wc -> 0. However, we know
   // from the analog filter that the correct limit for the feedback factor is k = 4*fb, since the
   // analog limit corresponds to infinite samplerate. Also, the formula for the compensation gain
-  // becomes invalid. Maybe we should look at the magnitude response at zero frequency of the 
-  // analog filter to get a gain formula from the feedback factor for this. Then, we could use a 
-  // lower threshold for wc, below which these limiting case formulas are used. For the feedback 
-  // computation, a lower limit of wc = 1.e-6 seems appropriate (for gain compensation, i did not 
+  // becomes invalid. Maybe we should look at the magnitude response at zero frequency of the
+  // analog filter to get a gain formula from the feedback factor for this. Then, we could use a
+  // lower threshold for wc, below which these limiting case formulas are used. For the feedback
+  // computation, a lower limit of wc = 1.e-6 seems appropriate (for gain compensation, i did not
   // yet figure it out)
 }
 
@@ -136,7 +136,7 @@ void rsLadderFilter2<TSig, TPar>::calcCoeffs()
 }
 
 //-------------------------------------------------------------------------------------------------
-// This is the zero delay feedback implementation of the ladder filter. Let z1,z2,.. denote the old 
+// This is the zero delay feedback implementation of the ladder filter. Let z1,z2,.. denote the old
 // values of y1,y2..., then the equations are:
 // y0 =    x - k*y4
 // y1 = b*y0 - a*z1 =          b*(x-k*y4) - a*z1
@@ -155,7 +155,7 @@ void rsLadderFilter2<TSig, TPar>::calcCoeffs()
 // These p-coefficients are used for predicting the value of the 4th filterstage. Compared to the
 // UDF (unit-delay-feedback) case, the computation of the a,b coefficients is a bit simpler because
 // we dont have the additional delay into account (which simplifies the formula), but we have to
-// additionaly compute the prediction coefficients and the per-sample calculations are more 
+// additionaly compute the prediction coefficients and the per-sample calculations are more
 // expensive due to the evaluation of the prediction equation.
 
 template<class TSig, class TPar>
@@ -169,24 +169,24 @@ void rsLadderFilterZDF<TSig, TPar>::calcCoeffs()
 {
   TPar wc, s, c, b4, q;
 
-  wc = 2 * PI * cutoff / sampleRate;         
+  wc = 2 * PI * this->cutoff / this->sampleRate;
   rsSinCos(wc, &s, &c);               // s = sin(wc), c = cos(wc)
-  a = -1 / (s+c);
-  b =  1 + a;
-  k = computeFeedbackFactor(resonance, c, a, b);
-  g = computeCompensationGain(a, b, k);
+  this->a = -1 / (s+c);
+  this->b =  1 + this->a;
+  this->k = computeFeedbackFactor(this->resonance, c, this->a, this->b);
+  this->g = computeCompensationGain(this->a, this->b, this->k);
 
   // prediction coefficients:
-  b4   =  b*b*b*b;         // b^4
-  q    =  1 / (b4*k + 1);  // scaler
-  p[4] = -q*a;
-  p[3] =  b*p[4];
-  p[2] =  b*p[3];
-  p[1] =  b*p[2];
-  p[0] =  q*b4;
+  b4   =  this->b * this->b * this->b * this->b;   // b^4
+  q    =  1 / (b4 * this->k + 1);                  // scaler
+  p[4] = -q * this->a;
+  p[3] =  this->b * p[4];
+  p[2] =  this->b * p[3];
+  p[1] =  this->b * p[2];
+  p[0] =  q * b4;
 
   // for optimization, we may copy the code from computeFeedbackFactor, computeCompensationGain and
-  // then avoid some redundant computations (b^4, for example) ... but i'm not sure if it's worth 
+  // then avoid some redundant computations (b^4, for example) ... but i'm not sure if it's worth
   // it.
 }
 
@@ -194,11 +194,11 @@ void rsLadderFilterZDF<TSig, TPar>::calcCoeffs()
 
 template<class TSig, class TPar>
 rsLadderFilterFeedbackSaturated<TSig, TPar>::rsLadderFilterFeedbackSaturated()
-{ 
+{
   drive   = 1.0;
   loLimit = -16777216;
   hiLimit = +16777216;
-   // +-2^24 - large values - i think, it's good when they have an exact binary representation but 
+   // +-2^24 - large values - i think, it's good when they have an exact binary representation but
    // that may not be too critical
 
   sigmoid.setValueAt1(1.0);  // hardclipping mode by default
@@ -257,7 +257,7 @@ TPar rsLadderFilterFeedbackSaturated<TSig, TPar>::getCompensationGain()
   //computeCoeffs(wc, fb, &a1_1, &b0_1, &k_1, &g_1);
 
   TPar gain;
-  gain = computeCompensationGain(a, b, k);  // maybe drive*k?
+  gain = computeCompensationGain(this->a, this->b, this->k);  // maybe drive*k?
   //computeCompensationGain(a1, b0, drive*k, &gain);
   return gain;
 
@@ -432,12 +432,12 @@ void rsLadderResoShaped<TSig, TPar>::setupScaledDecay()
 {
   scaledDecay = decay * pow(2.0, -decayByFreq*rsLog2(0.001*cutoff)); // neutral at cutoff = 1kHz
     // i think, this may be optimized so as to use only exp/log instead of pow/log2 (the latter
-    // pair of which is more expensive to compute) by using some rules for exponentials and 
+    // pair of which is more expensive to compute) by using some rules for exponentials and
     // logarithms
 
   TPar r = rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(scaledDecay, cutoff);
   resonant.setResonance(r);
-  
+
   // old:
   //resonant.setResonanceDecay(scaledDecay);
 
@@ -452,7 +452,7 @@ void rsLadderResoShaped<TSig, TPar>::setupAttackSmoother()
   attackSmoother.setFrequencyAndDecay(w, d);
 
   // enforce a unit-gain at the resonance frequency:
-  attackSmoother.setOutputGain(1.0/attackSmoother.getMagnitudeAt(w)); 
+  attackSmoother.setOutputGain(1.0/attackSmoother.getMagnitudeAt(w));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -463,7 +463,7 @@ rsLadderResoShaped2<TSig, TPar>::rsLadderResoShaped2()
   drive     = 1.0;
   addConst  = 0.0;
   addIn     = 0.0;
-  addFlt    = 0.0; 
+  addFlt    = 0.0;
   driveComp = 0.0;
   unDrive   = 1.0;
   gate      = 1.0;
@@ -532,12 +532,12 @@ void rsLadderResoShaped2<TSig, TPar>::setGateMix(TPar newMix)
 template<class TSig, class TPar>
 void rsLadderResoShaped2<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TSig *yr)
 {
-  rsLadderResoShaped::getSignalParts(in, yf, yr);
+  rsLadderResoShaped<TSig, TPar>::getSignalParts(in, yf, yr);
 
   // apply saturation:
   TSig yd = *yr * drive;                              // driven resonance
   TSig s  = yd + addIn*in + addFlt*(*yf) + addConst;  // saturator sidechain signal
-  *yr  = saturator.getSample(yd, s);                    // actual saturation  
+  *yr  = saturator.getSample(yd, s);                    // actual saturation
   *yr *= unDrive;                                       // gain compensation
 
 
@@ -549,7 +549,7 @@ void rsLadderResoShaped2<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TSig *yr
   //  double gateHi = resonant.getUpperFeedbackLimit() / gate;
   //  double tmp    = gateMix * (*yf) + (1-gateMix) * in;
   //  if(tmp < gateLo || tmp > gateHi)
-  //    *yr = 0;  
+  //    *yr = 0;
   //  // This is a very crude hard-gate - later, a soft gate should be used and/or a filter applied
   //  // to avoid flutter with bandlimited waveforms. The code can also be optimized by precomputing
   //  // gateLo/gateHi. I think, it would be best, to wrap the gate-code into a class.
@@ -565,7 +565,7 @@ rsResoReplacer<TSig, TPar>::rsResoReplacer()
   resoCutoffMultiplier = 10000.0; // maps to 20kHz at cutoff = 20Hz -> high enough to be neutral
   resoCutoffModulation = 0.0;
 
-  resoFilter.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);  
+  resoFilter.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
     // maybe let the user choose, maybe use more interesting filter - like a ladder or biquad
 }
 
@@ -591,7 +591,7 @@ void rsResoReplacer<TSig, TPar>::setResoCutoffModulation(TPar newModulation)
 template<class TSig, class TPar>
 void rsResoReplacer<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
-  rsLadderResoShaped::setSampleRate(newSampleRate);
+  rsLadderResoShaped<TSig, TPar>::setSampleRate(newSampleRate);
   resoFilter.setSampleRate(newSampleRate);
 }
 
@@ -610,19 +610,19 @@ void rsResoReplacer<TSig, TPar>::getNonresonantOutputAndResonanceParameters(TSig
   // temporary variables:
   double r, q;
 
-  *yf = nonResonant.getSample(in);
-  //r   = resonant.getSampleLinear(in) - *yf;  // pure resonance - old code (linear - no growl)
-  r   = resonant.getSample(in) - *yf;          // pure resonance
-  r   = attackSmoother.getSample(r);           // attack smoothing filter
+  *yf = this->nonResonant.getSample(in);
+  //r   = this->resonant.getSampleLinear(in) - *yf;  // pure resonance - old code (linear - no growl)
+  r   = this->resonant.getSample(in) - *yf;          // pure resonance
+  r   = this->attackSmoother.getSample(r);           // attack smoothing filter
 
   // compute magnitude and phase:
-  q     = allpass.getSample(r);                // quadrature signal
+  q     = this->allpass.getSample(r);                // quadrature signal
   *mag  = sqrt(r*r + q*q);                    // extract magnitude
   *phs  = atan2(r, q);                        // exctract phase
 
   // manipulate phase (later add phase-modulation):
-  *phs += phase;  // add static offset
-  *phs += 2*PI;   // rsSqrWave, etc. expects phase in 0...2*PI - get rid when using a wavetable
+  *phs += this->phase;  // add static offset
+  *phs += 2*PI;         // rsSqrWave, etc. expects phase in 0...2*PI - get rid when using a wavetable
 }
 
 template<class TSig, class TPar>
@@ -631,7 +631,7 @@ TSig rsResoReplacer<TSig, TPar>::getWaveForm(TSig a, TSig p)
   double r;
 
   // resonance waveform reconstruction (prelimiary - later use a mip mapped wavetable, where the
-  // mip map level is chosen according the the phase difference between previous and current 
+  // mip map level is chosen according the the phase difference between previous and current
   // sample):
   switch(waveform)
   {
@@ -643,7 +643,7 @@ TSig rsResoReplacer<TSig, TPar>::getWaveForm(TSig a, TSig p)
   }
 
   // set up the resonance filter's cutoff frequency and filter the resonance waveform:
-  TPar ctf = cutoff*(resoCutoffMultiplier + resoCutoffModulation*a);
+  TPar ctf = this->cutoff*(resoCutoffMultiplier + resoCutoffModulation*a);
   ctf = rsClip(ctf, 20.0, 20000.0);
   resoFilter.setCutoff(ctf);
   r = resoFilter.getSample(r);
@@ -697,7 +697,7 @@ rsResoReplacerPhaseBumped<TSig, TPar>::rsResoReplacerPhaseBumped()
 template<class TSig, class TPar>
 void rsResoReplacerPhaseBumped<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
-  rsResoReplacer::setSampleRate(newSampleRate);
+  rsResoReplacer<TSig, TPar>::setSampleRate(newSampleRate);
   inputDifferencer.setSampleRate(newSampleRate);
   bumpSmoother1.setSampleRate(newSampleRate);
   bumpSmoother2.setSampleRate(newSampleRate);
@@ -762,7 +762,7 @@ void rsResoReplacerPhaseBumped<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TS
   phs     += bump;                // new, compared to baseclass (maybe, we need to apply wrapToInterval?)
   mag     += ampOffset;
   mag      = limitMagnitude(mag);   // new - maybe optimize by inlining (2-level)
-  *yr      = getWaveForm(mag, phs); // resonance reconstruction/replacement 
+  *yr      = getWaveForm(mag, phs); // resonance reconstruction/replacement
 
   //*yr *= inputScale(in);        // input based limiting
     // creates too narrow spikes - use lowpassed version instead
@@ -787,7 +787,7 @@ void rsResoReplacerPhaseBumped<TSig, TPar>::updateBump(TSig in, TSig yf, TSig yr
   tmp  = bumpSmoother1.getSample(tmp);
   tmp  = bumpSmoother2.getSample(tmp);
   tmp *=  10000.0 / rsMin(bumpCutoff1, bumpCutoff2);// preliminary: use peak excursion formula, or better: attck/decay filter
-   
+
   bump = tmp;
 }
 
@@ -805,15 +805,15 @@ TSig rsResoReplacerPhaseBumped<TSig, TPar>::inputScale(TSig in)
 {
   // we use a kind of "Butterworth"-squared function for the multiplier
 
-  double tmp; 
+  double tmp;
 
   tmp  = in / inRange;   // maybe include an offset later, use multiplication instead of division
   tmp *= tmp;            // ^2  -> 1st  order butterworth
-  tmp *= tmp;            // ^4  -> 2nd  order   
+  tmp *= tmp;            // ^4  -> 2nd  order
   tmp *= tmp;            // ^8  -> 4th  order
   tmp *= tmp;            // ^16 -> 8th  order
   tmp *= tmp;            // ^32 -> 16th order
-  tmp  = 1 / (1 + tmp);  
+  tmp  = 1 / (1 + tmp);
 
   return tmp;
 
@@ -826,7 +826,7 @@ TSig rsResoReplacerPhaseBumped<TSig, TPar>::getExcitation(TSig in)
 {
   // create self-excitation signal (very experimental - can be optimized):
 
-  double omega = 2*PI*cutoff/sampleRate; // optimize: precompute in setCutoff
+  double omega = 2*PI*this->cutoff/this->sampleRate; // optimize: precompute in setCutoff
 
   oldPhase += omega;
   oldPhase  = fmod(oldPhase, 2*PI);
@@ -853,9 +853,9 @@ TSig rsResoReplacerPhaseBumped<TSig, TPar>::getExcitation(TSig in)
 
 template<class TSig, class TPar>
 rsLadderMystran<TSig, TPar>::rsLadderMystran()
-{ 
-  setMode(LP_24);
-  reset(); 
+{
+  setMode(this->LP_24);
+  reset();
 }
 
 template<class TSig, class TPar>

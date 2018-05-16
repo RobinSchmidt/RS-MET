@@ -1,6 +1,6 @@
 template<class TSig, class TPar>
-rsFormantRemover<TSig, TPar>::rsFormantRemover(int newMaxOrder) 
-  : rsLinearPredictor(newMaxOrder)
+rsFormantRemover<TSig, TPar>::rsFormantRemover(int newMaxOrder)
+  : rsLinearPredictor<TSig, TPar>(newMaxOrder)
 {
   reset();
 }
@@ -11,5 +11,5 @@ void rsFormantRemover<TSig, TPar>::reset()
   coeff   = 0.0;
   pastIn  = 0.0;
   pastOut = 0.0;
-  rsLinearPredictor::reset();
+  rsLinearPredictor<TSig, TPar>::reset();
 }

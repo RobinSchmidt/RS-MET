@@ -4,8 +4,8 @@ template<class TSig, class TPar>
 rsDoublePendulum<TSig, TPar>::rsDoublePendulum()
 {
   // init inherited variables:
-  x = 0.0;
-  y.setDimensionality(4);
+  this->x = 0.0;
+  this->y.setDimensionality(4);
   setState(0.5*PI, PI, 0.0, 0.0); // 1st arm horizontal, 2nd arm upright
 
   // set up user parameters:
@@ -51,10 +51,10 @@ void rsDoublePendulum<TSig, TPar>::setStepSize(TPar newStepSize)
 template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::setState(TSig theta1, TSig theta2, TSig momentum1, TSig momentum2)
 {
-  y[0] = theta1;
-  y[1] = theta2;
-  y[2] = momentum1;
-  y[3] = momentum2;
+  this->y[0] = theta1;
+  this->y[1] = theta2;
+  this->y[2] = momentum1;
+  this->y[3] = momentum2;
 }
 
 // Inquiry:
@@ -62,24 +62,24 @@ void rsDoublePendulum<TSig, TPar>::setState(TSig theta1, TSig theta2, TSig momen
 template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::getState(TSig *t1, TSig *t2, TSig *p1, TSig *p2)
 {
-  *t1 = y[0];
-  *t2 = y[1];
-  *p1 = y[2];
-  *p2 = y[3];
+  *t1 = this->y[0];
+  *t2 = this->y[1];
+  *p1 = this->y[2];
+  *p2 = this->y[3];
 }
 
 template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::getAngles(TSig *a1, TSig *a2)
 {
-  *a1 = y[0];
-  *a2 = y[1];
+  *a1 = this->y[0];
+  *a2 = this->y[1];
 }
 
 template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::getMomenta(TSig *m1, TSig *m2)
 {
-  *m1 = y[2];
-  *m2 = y[3];
+  *m1 = this->y[2];
+  *m2 = this->y[3];
 }
 
 template<class TSig, class TPar>
@@ -99,14 +99,14 @@ template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::updateState()
 {
   stepRungeKutta4(h);
-  y[0] = rsWrapToInterval(y[0], -PI, PI);
-  y[1] = rsWrapToInterval(y[1], -PI, PI);
+  this->y[0] = rsWrapToInterval(this->y[0], -PI, PI);
+  this->y[1] = rsWrapToInterval(this->y[1], -PI, PI);
 }
 
 template<class TSig, class TPar>
 rsVector<TSig> rsDoublePendulum<TSig, TPar>::f(const TSig &x, const rsVector<TSig> &y)
 {
-  rsVector<TSig> v(4); // todo: avoid this memory allocation and copying...maybe let the 
+  rsVector<TSig> v(4); // todo: avoid this memory allocation and copying...maybe let the
   // rsDifferentialEquationSystem baseclass use a std::function to compute the vector/array of
   // derivatives - it should get a reference (or pointer) to the currentt state and one (output)
   // reference for the array of derivatives
@@ -127,7 +127,7 @@ rsVector<TSig> rsDoublePendulum<TSig, TPar>::f(const TSig &x, const rsVector<TSi
   TSig l12      = l1*l1;        // l1^2
   TSig l22      = l2*l2;        // l2^2
   TSig l1l2     = l1*l2;        // l1*l2
-  TSig l12l22t2 = 2*l1l2*l1l2;  // 2 * l1^2 * l2^2 
+  TSig l12l22t2 = 2*l1l2*l1l2;  // 2 * l1^2 * l2^2
   l12l22t2        = 2*l12*l22;    // should stay the same - test in debugger
 
   // intermediate variables:
@@ -135,7 +135,7 @@ rsVector<TSig> rsDoublePendulum<TSig, TPar>::f(const TSig &x, const rsVector<TSi
   TSig c  = cos(t1-t2);
   TSig a  = m1 + m2*s*s;
   TSig C1 = (p1*p2*s) / (l1l2*a);
-  TSig C2 = ((l22*m2*p1*p1 + l12*(m1+m2)*p2*p2 - l1l2*m2*p1*p2*c) * sin(2*(t1-t2))) 
+  TSig C2 = ((l22*m2*p1*p1 + l12*(m1+m2)*p2*p2 - l1l2*m2*p1*p2*c) * sin(2*(t1-t2)))
             / l12l22t2*a*a;
 
   //double C2 = (l12*m2*p1*p1 + l12*(m1+m2)*p2*p2 - l1l2*m2*p1*p2*c) * sin(2*(t1-t2)) / l12l22t2*a*a;
