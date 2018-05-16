@@ -1,7 +1,7 @@
 ResetCounter::ResetCounter()
 {
   setParametersToOffMode();
-  reset(); 
+  reset();
 }
 
 void ResetCounter::setInterval(double t)
@@ -9,9 +9,9 @@ void ResetCounter::setInterval(double t)
   if(t >= maxInterval)
     setParametersToOffMode();
   else {
-    interval = t; 
+    interval = t;
     intPart  = (int)t;
-    fracPart = t - intPart; 
+    fracPart = t - intPart;
   }
   updateJitteringLimit();
 }
@@ -19,7 +19,7 @@ void ResetCounter::setInterval(double t)
 bool ResetCounter::tick()
 {
   if(intPart == maxInterval)
-    return false; // counter is off 
+    return false; // counter is off
   counter++;
   if(counter >= jitteringLimit) { // >= not ==, bcs we may get beyond when user adjusts it
     counter = 0;
@@ -41,7 +41,7 @@ void ResetCounter::reset()
 {
   counter = 0;
   errAccu = 0;
-  jitteringLimit = 0; 
+  jitteringLimit = 0;
 }
 
 void ResetCounter::updateJitteringLimit()
@@ -88,7 +88,7 @@ TurtleSource::TurtleSource()
 void TurtleSource::setTurtleCommands(const std::string& commands)
 {
   turtleCommands = commands;
-  numLines = turtle.getNumberOfLines(turtleCommands); 
+  numLines = turtle.getNumberOfLines(turtleCommands);
   updateLineCommandIndices();
   updateMeanAndNormalizer();
   updateResetters();
@@ -146,12 +146,12 @@ void TurtleSource::setReverseOffset(int i, double newOffset)
   updateReverser(i);
 }
 
-void TurtleSource::setTurnAngle(double newAngle) 
+void TurtleSource::setTurnAngle(double newAngle)
 {
   turnAngle = newAngle;
   turtle.setAngle(turnAngle);
   updateMeanAndNormalizer();
-  tableUpToDate = false; 
+  tableUpToDate = false;
 }
 
 void TurtleSource::setSkew(double newAngle)
@@ -159,7 +159,7 @@ void TurtleSource::setSkew(double newAngle)
   skew = newAngle;
   turtle.setAngleDelta(skew);
   updateMeanAndNormalizer();
-  tableUpToDate = false; 
+  tableUpToDate = false;
 }
 
 int TurtleSource::getNumTurtleLines()
@@ -173,9 +173,9 @@ void TurtleSource::updateWaveTable()
   tmpTurtle.setAngle(turnAngle);
   tmpTurtle.translate(turtleCommands, tableX, tableY);
   RS_ASSERT(tableX.size() == tableY.size());           // tables for x and y must have same size
-  while(tableX.size() < 2) { 
+  while(tableX.size() < 2) {
     tableX.push_back(0);
-    tableY.push_back(0); 
+    tableY.push_back(0);
   }
   RS_ASSERT(tableX.size() >= 2 && tableY.size() >= 2); // tables need to have at least 2 values
   tableUpToDate = true;
@@ -234,7 +234,7 @@ bool TurtleSource::isInInitialState()
   r &= turtle.getEndY()   == ye;
 
   // actually, it seems wrong to me that that the entries of the line-buffers should be swapped in
-  // reverse mode - after all, we could switch between forward and reverse mode multiple times 
+  // reverse mode - after all, we could switch between forward and reverse mode multiple times
   // within one line segment in which case we would just go back and forth in the same line buffer
 
   return r;
@@ -257,8 +257,8 @@ void TurtleSource::resetPhase()
 void TurtleSource::resetTurtle()
 {
   //// test:
-  //turtle.init(0, 0, 1, 0); 
-  //return; 
+  //turtle.init(0, 0, 1, 0);
+  //return;
   //// when doing this plot 3 is right and 1,2 are wrong, when not doing it, it's the other
   //// way around
 
@@ -301,13 +301,13 @@ void TurtleSource::goToLineSegment(int targetLineIndex)
   {
     lineIndex = targetLineIndex;
     updateLineBufferFromTable();
-    // if we want anti-aliasing, we would actually also have to go through the intermediate 
+    // if we want anti-aliasing, we would actually also have to go through the intermediate
     // segments and filter while reading out the table and filter during this process
   }
   else
   {
     lineIndex = targetLineIndex;
-    goToCommand(lineCommandIndices[lineIndex]); 
+    goToCommand(lineCommandIndices[lineIndex]);
   }
 
   // later: update interpolator coeffs here according to x,y buffers (but maybe only if inc > 1 in
@@ -337,7 +337,7 @@ void TurtleSource::goToCommand(int targetCommandIndex)
     if(lineDrawn)
       updateLineBufferFromTurtle();
     // todo: take anti-alias flag into account - if it's false, it may actually suffice to update
-    // the line buffers after leaving the loop...hmm...maybe we can generally fill them after the 
+    // the line buffers after leaving the loop...hmm...maybe we can generally fill them after the
     // loop keeping track only of some temporary variables here
 
   }
@@ -359,7 +359,7 @@ void TurtleSource::updateLineBufferFromTurtle()
     x[1] = turtle.getEndX();
     y[1] = turtle.getEndY();
   }
-  
+
 
   /*
   // test - don't reverse line-buffer - nope, seems wrong:
@@ -413,7 +413,7 @@ void TurtleSource::reverseDirection()
   updateDirection();
 }
 
-bool xor(bool a, bool b) // move somewhere else
+bool rsXor(bool a, bool b) // move somewhere else
 {
   return (a || b) && !(a && b); // can this be optimized?
 }
@@ -421,12 +421,12 @@ bool xor(bool a, bool b) // move somewhere else
 void TurtleSource::updateDirection()
 {
   bool oldReverse = reverse;
-  reverse = xor(reverseFlipFlop, (freqScaler*frequency < 0));
+  reverse = rsXor(reverseFlipFlop, (freqScaler*frequency < 0));
   if(reverse && inc > 0 || !reverse && inc < 0) // can this be optimized?
     inc = -inc;
   turtle.setReverseMode(reverse);
-  if(xor(reverse, oldReverse))  // a direction change occured - turtle needs to set its position
-    turtle.backtrack();         // back to the start of current line
+  if(rsXor(reverse, oldReverse))  // a direction change occured - turtle needs to set its position
+    turtle.backtrack();           // back to the start of current line
 }
 
 void TurtleSource::updateIncrement()
@@ -437,9 +437,9 @@ void TurtleSource::updateIncrement()
     minLength = rmin(minLength, resetters[i].getInterval());
 
   for(int i = 0; i < numReversers; i++)
-    minLength = rmin(minLength, 2*reversers[i].getInterval()); 
+    minLength = rmin(minLength, 2*reversers[i].getInterval());
 
-     
+
 
   inc = minLength * freqScaler * frequency / sampleRate;
 
@@ -489,13 +489,13 @@ void TurtleSource::updateMeanAndNormalizer()
   maxY  = rmax(fabs(minY), fabs(maxY));
   normalizer = 1.0 / rmax(maxX, maxY);
 
-  // in free running mode, this so computed mean is sometimes (often) wrong because one cycle is 
-  // only part (for example half) of a larger shape - in this case, we would need the mean over two 
+  // in free running mode, this so computed mean is sometimes (often) wrong because one cycle is
+  // only part (for example half) of a larger shape - in this case, we would need the mean over two
   // cycles ...maybe we can somehow deduce the symmetry in order to compute a better mean? maybe we
   // should offer different normalization modes...maybe have a highpass and leveller running on it
   // in realtime (but not oversampled)
 
-  // maybe don't use the "mean" but the "center" defined as (min+max)/2 -> avoids computations and 
+  // maybe don't use the "mean" but the "center" defined as (min+max)/2 -> avoids computations and
   // is probably just as good (especially, when a DC blocking filter is used later anyway)
 }
 
@@ -503,22 +503,22 @@ void TurtleSource::updateMeanAndNormalizer()
 Features to do:
 -anti-aliasing
 -continuous number of iterations (do it in Snowflake)
- -we need TurtleSourceMulti that 
+ -we need TurtleSourceMulti that
   either: runs all turtles in parallel to ensure that they all stay in sync (expensive)
   or: only run two turtles at a time and figure out a way to meaningfully initialize the state when
   we have to switch on a new turtle (like from the pair 2/3 to 3/4, we have to switch on 4)
-  -for initialization of turtle 4 we may use its stored table and/or the state of "neighbour" 
+  -for initialization of turtle 4 we may use its stored table and/or the state of "neighbour"
    turtle 3
 
 
 BUGS:
 -in non-table mode, there's a click at the beginning (try with InitSquare patch)
--BuzzingTriangles patch is different in table-mode vs non-table-mode - aahhh - i think, it is 
+-BuzzingTriangles patch is different in table-mode vs non-table-mode - aahhh - i think, it is
  because in non-table mode, and 'f' leads to a jump in position and in table-mode, the point is not
  being drawn...needs fix - in table-mode, we also need a jump...but is that possible?
 -the pitch is resetting mode is not the same as in free-runing mode for closed curves - test
  with patch BuzzingTriangles (maybe add ++ to axiom, if necessarry) ...still true?
--in resetting mode, there's a click at the beginning of a note, in free-running mode, there's no 
+-in resetting mode, there's a click at the beginning of a note, in free-running mode, there's no
  such click
 -when start-position is > 0 and the number of iterations is reduced, we may get access violations
  (i think, it tries to reset to a line-number that has become invalid)
@@ -529,14 +529,14 @@ Ideas:
 
 -optionally compensate for changes in turning-angle by a rotation of the whole image, i.e. rotate
  image by -TurningAngle ..or maybe -compensationAmount*TurningAngle
--requires to not pre-render a wavetable but only render the L-system output string and interpret 
- it on the fly (the string should be stripped from meaningless characters, retaining only F,+,- 
+-requires to not pre-render a wavetable but only render the L-system output string and interpret
+ it on the fly (the string should be stripped from meaningless characters, retaining only F,+,-
  before)
 -may require to compute shift and scale (to remove DC and normalize) when a new angle is set up
--maybe these values should be precomputed for various angles, for example 0,5,10,15,.. and 
+-maybe these values should be precomputed for various angles, for example 0,5,10,15,.. and
  interpolation be used (to avoid to expensively compute the actually desired value whenever the
  angle changes)
--allow a turtle syntax like +30 or -45 to mean: turn 30° left or 45° right (instead of whatever 
+-allow a turtle syntax like +30 or -45 to mean: turn 30° left or 45° right (instead of whatever
  value the turtle drawer is set to)
 -make rotation angle quantizable to a set of numbers that the user can enter, for example
  120,90,72,60,45,36,30,24,22.5,20,15,12,10
@@ -544,60 +544,60 @@ Ideas:
 -maybe in backward passes, (optionally) interpret angles as their negative (necessarry to actually
  "go back")
 -maybe have an additional string of turtle commands that can be applied after each cycle has passed
- (empty by default)...or maybe even different command strings to be applied after different numbers 
+ (empty by default)...or maybe even different command strings to be applied after different numbers
  of cycles ..this defines the "turn/wrap around behavior"
 -interpolation modes: left, right, nearest, linear, cubic
--allow a traversal speed (or better: duration/length) to be associated with each point (i.e. the 
- line segment that goes toward that point)...like a normal 'F' would assume 1, an 'f' would 
- assume '0', but we could also have F2 to let it take 2 time units to traverse the segment or 
- 1/3 to take one thrid of the time unit, the increment computation would then not use "numLines" 
+-allow a traversal speed (or better: duration/length) to be associated with each point (i.e. the
+ line segment that goes toward that point)...like a normal 'F' would assume 1, an 'f' would
+ assume '0', but we could also have F2 to let it take 2 time units to traverse the segment or
+ 1/3 to take one thrid of the time unit, the increment computation would then not use "numLines"
  as multiplier but sum-of-traversal-duration
 -optionally "upsample" the turtle commands like F+F-FF -> x3 -> FFF+FFF-FFFFFF, this givens a finer
  resulution of lines. by itself, it's useless but now we apply additional bending inside ths line
  (like turning by a few degrees after each F)
 -randomize turn angles, user can set seed and distribution (uniform, bell, bimodal, etc.)
 -randomize step lengths
--maybe let the turle have scaleX, scaleY members that are applied in each step - these can be 
+-maybe let the turle have scaleX, scaleY members that are applied in each step - these can be
  modulated and/or randomized
 -have a fine turning angle delta (maybe 0 to 10%) with keytracking
--DC blocker and leveller may replace or complement normalization (it doesn't always work right, 
+-DC blocker and leveller may replace or complement normalization (it doesn't always work right,
  especially in free running mode and turning angle modulation is prohibitively expensive with it)
- ...maybe we could handle it in ModulationTarget by defining an update-interval (by default, 1 
+ ...maybe we could handle it in ModulationTarget by defining an update-interval (by default, 1
  sample but could also be something like 100 or 1000 samples - greatly reduces modulation costs)
--maybe, as (pseudo) anti-alias strategy, we should use a fixed internal sample-rate that is some 
- multiple of the signal frequency. technically, the signal would still produce alias frequencies, 
- but they would be harmonically related to the signal frequency and therefore much less annoying, 
+-maybe, as (pseudo) anti-alias strategy, we should use a fixed internal sample-rate that is some
+ multiple of the signal frequency. technically, the signal would still produce alias frequencies,
+ but they would be harmonically related to the signal frequency and therefore much less annoying,
  maybe even beneficial
  -maybe this is a good opportunity to write a resampler class for arbitrary ratios
--the turtle could interpret '*' as "multiply speed by factor" (which is a (realtime) parameter) and 
+-the turtle could interpret '*' as "multiply speed by factor" (which is a (realtime) parameter) and
 '/' as "divide speed by factor" (or maybe the speed should increase decreas linearly?)
--in free-running mode, a turn angle that is slightly off some ideal value leads to rotating image 
--maybe this can be simulated in wavetable mode, by modulating the increments for x,y in a particular 
- way - maybe modulate incX in any way and modulate incY according to the condition that 
- incX^2 + incY^2 = const = 2*inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it 
- renormalizes the implied "turtle" step size...i think...maybe try it..or maybe not modulate it 
+-in free-running mode, a turn angle that is slightly off some ideal value leads to rotating image
+-maybe this can be simulated in wavetable mode, by modulating the increments for x,y in a particular
+ way - maybe modulate incX in any way and modulate incY according to the condition that
+ incX^2 + incY^2 = const = 2*inc^2 -> incY = sqrt(2*inc^2 - incX^2)...why?...because it
+ renormalizes the implied "turtle" step size...i think...maybe try it..or maybe not modulate it
  but just set it to that value?
 -provide soft-reset (interpolate between current turtle state and initial state)
 -provide independent resets for turtle position and direction
--maybe the line count reset can be made continuous by alternating between floor and ceil of the 
+-maybe the line count reset can be made continuous by alternating between floor and ceil of the
  given number...or maybe by just comparing "pos" to lineCountReset in getSampleFrame?
--maybe reset or don't reset when the counter has reached its limit, depending the value of a 
+-maybe reset or don't reset when the counter has reached its limit, depending the value of a
  binary sequence ("reset sequence"). see PGCA for generation methods for binary sequences. also,
  L-system output can be used, interpreting '+' as '1' and '-' as '0'...or a dedicated L-system,
  producing 0s and 1s directly can be set up
  -maybe, it can produce more instructions than just "reset" and "don't reset", like "half reset"
   "set to" or whatever (then, the sequence wouldn't be binary anymore)
 -allow for reversal of readout direction - allow negative frequencies/increments
- -introduce backward-mode to TurtleGraphics: subtracts dx,dy (do the turns also need to be 
+ -introduce backward-mode to TurtleGraphics: subtracts dx,dy (do the turns also need to be
   reversed? ...maybe, maybe not - try it: just draw F+F and go back - see, if we end up at (0,0))
 -have multiple resetters and reversers that all work independently from each other - the ratios of
  them will probably be useful parameters for sound design
 -have a start-phase/pos parameter (modulatable) - modulating it and reset interval at the same time
  (but with different modulators) will give interesting sounds
--Let the turtle interpret '|': turn around (180°), g: forward without line, B,b: backward with and 
+-Let the turtle interpret '|': turn around (180°), g: forward without line, B,b: backward with and
  without line
 -maybe dc-subtraction, normalization, rotation can be applied already to the content of the
- line buffer - that would make sounds where inc < 1 faster to compute and sounds where inc > 1 
+ line buffer - that would make sounds where inc < 1 faster to compute and sounds where inc > 1
  slower...hmm...the latter part seems bad, since they are already slow to compute...
  so maybe it's not a good idea
 

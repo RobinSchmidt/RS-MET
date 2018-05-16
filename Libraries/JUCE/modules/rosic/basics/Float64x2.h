@@ -20,6 +20,7 @@ public:
 
   /** Constructor that initializes both elements to the given value. */
   inline rsFloat64x2(double a) : v(_mm_set1_pd(a)) {}
+  //rsFloat64x2(double a) : v(_mm_set1_pd(a)) {}
 
   /** Constructs a value form int (needed for implicit conversions). */
   inline rsFloat64x2(int a) : v(_mm_set1_pd(double(a))) {}
@@ -28,8 +29,8 @@ public:
   inline rsFloat64x2(double a, double b) : v(_mm_setr_pd(a, b)) {}
 
   /** Constructor that initializes the elements from a 2-value array of doubles. */
-  inline rsFloat64x2(double* values) 
-  { 
+  inline rsFloat64x2(double* values)
+  {
     //*this = _mm_load_pd(values); // doesnt work
     v = _mm_setr_pd(values[0], values[1]);
   }
@@ -102,28 +103,28 @@ public:
   {
     static const long long i = 0x7fffffffffffffff;
     static const double    d = *((double*)(&i));
-    static const __m128d   r = _mm_set1_pd(d); 
+    static const __m128d   r = _mm_set1_pd(d);
     return r;
   }
 
-  /** Returns a vector that has for both scalars a one for the sign bit and the rest zeros. This is 
+  /** Returns a vector that has for both scalars a one for the sign bit and the rest zeros. This is
   useful for implementing the sign function. */
   inline static rsFloat64x2 signBitOne()
   {
     static const long long i = 0x8000000000000000;
     static const double    d = *((double*)(&i));
-    static const __m128d   r = _mm_set1_pd(d); 
+    static const __m128d   r = _mm_set1_pd(d);
     return r;
   }
 
 
   /** \name Operators */
 
-  /** Allows the two double values to be accessed (for reading and writing) as if this would be an 
+  /** Allows the two double values to be accessed (for reading and writing) as if this would be an
   array of two doubles. Valid indices are 0 and 1. */
   inline double& operator[](const int i) const { return asArray()[i]; }
-    // maybe with this, we can get rid of set/get...hmm...but maybe not (or not just yet), they use 
-    // different operations - maybe they are faster? or safer (i.e. compatible with more 
+    // maybe with this, we can get rid of set/get...hmm...but maybe not (or not just yet), they use
+    // different operations - maybe they are faster? or safer (i.e. compatible with more
     // compilers? - test this first)
 
   // arithmetic operators:
@@ -135,24 +136,24 @@ public:
   //inline rsFloat64x2 operator+(const rsFloat64x2& b) { return _mm_add_pd(v, b.v); }
     // nope - we define it outside the class because that allows lhs or rhs to be of scalar type
 
-  /** Comparison for equality. For two vectors to be considered equal, both scalar elements must be 
+  /** Comparison for equality. For two vectors to be considered equal, both scalar elements must be
   equal. */
   inline bool operator==(const rsFloat64x2& b) const
-  { 
+  {
     return (this[0] == b[0]) && (this[1] == b[1]);
     //double* A = asArray();
     //double* B = b.asArray();
     //return (A[0] == B[0]) && (A[1] == B[1]);
   }
 
-  /** Comparison for "less-than". For a vector to be considered less than another vector, both 
-  scalar elements must be less than the corresponding elements in the other vector. This 
-  definition is a bit arbitrary, but it makes sense for convergence tests in numerical algorithms 
-  (such as root finding) when the algorithm checks, whether a variable is within a given tolerance. 
-  These checks will evaluate to true only when both elements are within the tolerance, which is 
+  /** Comparison for "less-than". For a vector to be considered less than another vector, both
+  scalar elements must be less than the corresponding elements in the other vector. This
+  definition is a bit arbitrary, but it makes sense for convergence tests in numerical algorithms
+  (such as root finding) when the algorithm checks, whether a variable is within a given tolerance.
+  These checks will evaluate to true only when both elements are within the tolerance, which is
   typically what is desired. */
   inline bool operator<(const rsFloat64x2& b) const
-  { 
+  {
     return (this[0] < b[0]) && (this[1] < b[1]);
     //double* A = asArray();
     //double* B = b.asArray();
@@ -160,10 +161,10 @@ public:
   }
 
 
-  //// unary minus (commented out because the implementation outside the class turned out to be 
+  //// unary minus (commented out because the implementation outside the class turned out to be
   //// more efficient (suprisingly - maybe more tests are needed, why)
-  //inline rsFloat64x2 operator-() 
-  //{ 
+  //inline rsFloat64x2 operator-()
+  //{
   //  return _mm_xor_pd(signBitOne(), v);
 
   //  //return _mm_sub_pd(zero(), v); // alternative implementation
@@ -184,8 +185,8 @@ protected:
   __m128d v; // the value
   //__declspec(align(16)) __m128d v; // the value (define and ALIGN(N) macro for gcc/msc)
 
-  // Note: Subclassing __m128d (instead of having a member of that type) works with the MS compiler 
-  // but not with gcc. Apparently, MS allows primitive datatypes to be seen as classes while gcc 
+  // Note: Subclassing __m128d (instead of having a member of that type) works with the MS compiler
+  // but not with gcc. Apparently, MS allows primitive datatypes to be seen as classes while gcc
   // doesn't.
 };
 
@@ -196,19 +197,19 @@ inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { retur
 inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_div_pd(a, b); }
 inline rsFloat64x2 operator+(const rsFloat64x2& a) { return a; }                    // unary plus
 inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a; } // unary minus
-// the binary operators with a scalar for the left or right hand side do not have to be defined due 
+// the binary operators with a scalar for the left or right hand side do not have to be defined due
 // to implicit conversions
 
 // limiting functions::
 inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_min_pd(a, b); }
 inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_max_pd(a, b); }
 inline rsFloat64x2 rsClip(const rsFloat64x2& x, const rsFloat64x2& min, const rsFloat64x2& max)
-{ 
-  return rsMax(rsMin(x, max), min); 
+{
+  return rsMax(rsMin(x, max), min);
 }
 //inline rsFloat64x2 rsClip(rsFloat64x2 x, rsFloat64x2 min, rsFloat64x2 max)
-//{ 
-//  return rsMax(rsMin(x, max), min); 
+//{
+//  return rsMax(rsMin(x, max), min);
 //}
 
 // bit-manipulations and related functions:
@@ -242,7 +243,7 @@ inline rsFloat64x2 rsTan(const rsFloat64x2& x) { double* a = x.asArray(); return
 
 
 //inline rsFloat64x2 exp(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(exp(a[0]), exp(a[1])); }
-// without the rs-prefix, i get a shitload of compiler errors related to RealFunctions.h - perhaps because i 
+// without the rs-prefix, i get a shitload of compiler errors related to RealFunctions.h - perhaps because i
 // invoke a non-templated version (for double) there - maybe it can be fixed by using std:: or :: there?
 
 
@@ -250,7 +251,7 @@ inline rsFloat64x2 rsTan(const rsFloat64x2& x) { double* a = x.asArray(); return
 // https://msdn.microsoft.com/de-de/library/tyy88x2a(v=vs.90).aspx
 // https://msdn.microsoft.com/de-de/library/9b07190d(v=vs.90).aspx
 // http://johanmabille.github.io/blog/2014/10/10/writing-c-plus-plus-wrappers-for-simd-intrinsics-3/
-// https://github.com/p12tic/libsimdpp 
+// https://github.com/p12tic/libsimdpp
 // https://github.com/VcDevel/Vc
 // https://github.com/NumScale/boost.simd
 

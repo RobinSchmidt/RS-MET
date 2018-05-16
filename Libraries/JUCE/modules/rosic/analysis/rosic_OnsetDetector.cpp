@@ -29,7 +29,7 @@ OnsetDetector::~OnsetDetector()
   delete[] magnitudes;
   delete[] magnitudesOld;
   delete[] weights;
-  delete[] window; 
+  delete[] window;
   delete[] linearBuffer;
   delete[] complexSpectrum;
   delete[] circularBuffer;
@@ -105,7 +105,7 @@ void OnsetDetector::feedSignalBlock(float *sampleData, int numSamples)
 
       // find the end index (keep track, if wraparound is necesarry and how much):
       int end         = start + (blockSize-1);
-      int wrapSamples = 0;  
+      int wrapSamples = 0;
       if( end >= 2*maxBlockSize )
       {
         wrapSamples = end - (2*maxBlockSize-1);
@@ -118,7 +118,7 @@ void OnsetDetector::feedSignalBlock(float *sampleData, int numSamples)
       while( i <= end )
       {
         linearBuffer[j] = circularBuffer[i];
-        i++; 
+        i++;
         j++;
       }
 
@@ -129,7 +129,7 @@ void OnsetDetector::feedSignalBlock(float *sampleData, int numSamples)
         while( i < wrapSamples )
         {
           linearBuffer[j] = circularBuffer[i];
-          i++; 
+          i++;
           j++;
         }
       }
@@ -203,18 +203,18 @@ void OnsetDetector::clearBuffers()
 }
 
 void OnsetDetector::createWindow()
-{ 
+{
   // create a Hann-window:
-  for(int n=0; n<blockSize; n++)  
-    window[n] = (float) (0.5 * ( 1.0 - cos(2.0*M_PI*n / (double) (blockSize-1)) ));
+  for(int n=0; n<blockSize; n++)
+    window[n] = (float) (0.5 * ( 1.0 - cos(2.0*PI*n / (double) (blockSize-1)) ));
 }
 
 void OnsetDetector::computeSpectralWeights()
 {
   // algorithm parameters (todo - make them members and let them be accessed from client code):
-  float weight       = -1.f/4.f;     // exponent for spectral weighting values < 0 weight low 
-                                     // frequencies stronger  
-  float weightCutoff = 22000;        // cutoff frequency above which the flux does not contribute 
+  float weight       = -1.f/4.f;     // exponent for spectral weighting values < 0 weight low
+                                     // frequencies stronger
+  float weightCutoff = 22000;        // cutoff frequency above which the flux does not contribute
                                      // to the onset's strength
 
   int n;
@@ -239,7 +239,7 @@ void OnsetDetector::computeMagnitudes(float *complexSpectrum, float *magnitudes,
   float scaler = (float) (1.0 / blockSize);
   for(int k=0; k<numBins/2; k++)
   {
-    magnitudes[k] = scaler * sqrt(   complexSpectrum[2*k]   * complexSpectrum[2*k] 
+    magnitudes[k] = scaler * sqrt(   complexSpectrum[2*k]   * complexSpectrum[2*k]
                                    + complexSpectrum[2*k+1] * complexSpectrum[2*k+1] );
   }
 }
@@ -253,7 +253,7 @@ float OnsetDetector::computeBlockRms(float *block)
   return sqrt(accu);
 }
 
-float OnsetDetector::computeSpectralFluxValue(float *magnitudes, float *oldMagnitudes, 
+float OnsetDetector::computeSpectralFluxValue(float *magnitudes, float *oldMagnitudes,
                                               float *spectralWeights)
 {
   float accu = 0.0;
@@ -281,7 +281,7 @@ void OnsetDetector::computeSpectralFlux()
   createComplexBlockForTransform(&signal[blockStart], complexSpectrum);
   smbFft(complexSpectrum, blockSize, -1); // Stephan Bernsee's FFT routine
   computeMagnitudes(complexSpectrum, magnitudes, blockSize);
-  rms.push_back(  computeBlockRms(&signal[blockStart]) );  
+  rms.push_back(  computeBlockRms(&signal[blockStart]) );
   flux.push_back( 0.f );
   blockIndex += 1;
   blockStart += hopSize;
@@ -296,7 +296,7 @@ void OnsetDetector::computeSpectralFlux()
     smbFft(complexSpectrum, blockSize, -1);
     computeMagnitudes(complexSpectrum, magnitudes, blockSize);
 
-    // compute the block's RMS and it's (weighted) spectral flux with respect to the previous 
+    // compute the block's RMS and it's (weighted) spectral flux with respect to the previous
     // block:
     rms.push_back(  computeBlockRms(&signal[blockStart]) );
     flux.push_back( computeSpectralFluxValue(magnitudes, magnitudesOld, weights) );
@@ -304,7 +304,7 @@ void OnsetDetector::computeSpectralFlux()
     // increments and state-updates for next iteration:
     blockIndex += 1;
     blockStart += hopSize;
-    blockEnd    = blockStart + blockSize - 1; 
+    blockEnd    = blockStart + blockSize - 1;
     copyBuffer(magnitudes, magnitudesOld, blockSize/2);
   }
 }
@@ -313,27 +313,27 @@ void OnsetDetector::findOnsetsFromFluxMaxima()
 {
   // algorithm parameters (todo - make them members and let them be accessed from client code):
   int w              = blockSize/64;   // window size for local maximum
-  int m              = 4;              // multiplier for extending the window into the past, 1...4 
+  int m              = 4;              // multiplier for extending the window into the past, 1...4
                                        // smaller -> more onsets
   int k              = (m+1)*w+1;      // size of the neighborhood for the local mean
 
   float threshold    = 0.7f;                  // relative threshold
-  float absThreshold = (float)dB2amp(-60.0);  // absolute threshold in dB fo the RMS value of a 
+  float absThreshold = (float)dB2amp(-60.0);  // absolute threshold in dB fo the RMS value of a
                                               // block to be considered at all
   bool  refineOnsets = false;                  // toggles onset time/strength refinement on
 
   for(int blockIndex = m*w+w; blockIndex<numBlocks; blockIndex++)
   {
-    int   n         = blockIndex-w;               // block under investigation  
+    int   n         = blockIndex-w;               // block under investigation
     float value     = flux[n];                    // flux of the block
     float localMean = mean(    &flux[n-m*w], k);  // mean of the block's neighborhood
-    float localMax  = maxValue(&flux[n-m*w], k);  // maximum in the block's neighborhood 
+    float localMax  = maxValue(&flux[n-m*w], k);  // maximum in the block's neighborhood
 
-    // onset decision function - an onset must the local maximum of the chunk and some threshold 
+    // onset decision function - an onset must the local maximum of the chunk and some threshold
     // above the local mean (modified with respect to Dixon so as to use a relative threshold):
-    bool onsetDetected =     value  == localMax  
-                         &&  rms[n] >= absThreshold  
-                         &&  value  >= localMean + threshold*localMean; 
+    bool onsetDetected =     value  == localMax
+                         &&  rms[n] >= absThreshold
+                         &&  value  >= localMean + threshold*localMean;
 
     if( onsetDetected == true )
     {
@@ -341,7 +341,7 @@ void OnsetDetector::findOnsetsFromFluxMaxima()
       newOnset.timeInSamples = (n+1)*hopSize + blockSize/2 - 1;
       newOnset.strength      = value;
 
-      // if so desired, refine the time and strength of the onset by fitting a quadratic parabola 
+      // if so desired, refine the time and strength of the onset by fitting a quadratic parabola
       // through the local maximum and its two neighbours and locate the maximum of the parabola:
       if( refineOnsets == true )
       {

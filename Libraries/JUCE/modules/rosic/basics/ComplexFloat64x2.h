@@ -1,9 +1,9 @@
 #ifndef RAPT_COMPLEXFLOAT64X2_H_INCLUDED
 #define RAPT_COMPLEXFLOAT64X2_H_INCLUDED
 
-/** In this file are some operattors and functions for complex variables where the real and 
-imaginary parts are each a SIMD vector. For some reason, the standard library functions of 
-std::complex dont work anymore when the template parameter to std::complex is a SIMD type, so we 
+/** In this file are some operattors and functions for complex variables where the real and
+imaginary parts are each a SIMD vector. For some reason, the standard library functions of
+std::complex dont work anymore when the template parameter to std::complex is a SIMD type, so we
 provide explicit specializations here. */
 
 /** Returns the first (index 0) complex number in the complex of simd vectors. */
@@ -24,8 +24,8 @@ inline std::complex<double> get1(std::complex<rsFloat64x2> z)
 
 /** Divides two complex numbers. */
 inline std::complex<rsFloat64x2> operator/(
-  const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b) 
-{ 
+  const std::complex<rsFloat64x2>& a, const std::complex<rsFloat64x2>& b)
+{
   double* reA = a.real().asArray();
   double* imA = a.imag().asArray();
   double* reB = b.real().asArray();
@@ -39,17 +39,24 @@ inline std::complex<rsFloat64x2> operator/(
   double  re1 = s1  * (reA[1]*reB[1] + imA[1]*imB[1]);
   double  im1 = s1  * (imA[1]*reB[1] - reA[1]*imB[1]);
 
-  return std::complex<rsFloat64x2>(rsFloat64x2(re0, re1), rsFloat64x2(im0, im1)); 
+  return std::complex<rsFloat64x2>(rsFloat64x2(re0, re1), rsFloat64x2(im0, im1));
 }
 // \todo: provide optimized versions when left or right operand is real
 
 /** Divides a complex number in place by another complex number. */
-inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
-  const std::complex<rsFloat64x2>& a) 
-{ 
-  return *this = *this / a;
-  //return *this;
+inline std::complex<rsFloat64x2>& operator/=(std::complex<rsFloat64x2>& a,
+                                             const std::complex<rsFloat64x2>& b)
+{
+  return a = a / b; // THIS NEEDS TESTING!
 }
+
+// old - doesn't compile with gcc:
+//inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
+//  const std::complex<rsFloat64x2>& a)
+//{
+//  return *this = *this / a;
+//  //return *this;
+//}
 
 inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) { return z; }
 

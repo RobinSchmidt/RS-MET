@@ -98,7 +98,7 @@ void rsDoublePendulum<TSig, TPar>::getPendulumCoordinates(TSig *x1, TSig *y1, TS
 template<class TSig, class TPar>
 void rsDoublePendulum<TSig, TPar>::updateState()
 {
-  stepRungeKutta4(h);
+  this->stepRungeKutta4(h);
   this->y[0] = rsWrapToInterval(this->y[0], -PI, PI);
   this->y[1] = rsWrapToInterval(this->y[1], -PI, PI);
 }

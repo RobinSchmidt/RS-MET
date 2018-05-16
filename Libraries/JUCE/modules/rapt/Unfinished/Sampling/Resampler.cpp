@@ -930,7 +930,7 @@ void rsInstantaneousFundamentalEstimator<T>::estimateReliability(T *x, int N,
     sr = el + 1;
     er = (int) z[nz];
 
-    T test = z[nz]; // for debug
+    //T test = z[nz]; // for debug
       // seems like the last zero crossing is too close to the end of the signal such that the
       // zero crossing detection accesses invalid array indices - or something
 

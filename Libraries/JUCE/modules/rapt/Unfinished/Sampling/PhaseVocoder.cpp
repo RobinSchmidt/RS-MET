@@ -4,8 +4,6 @@ template<class T>
 rsPhaseVocoder<T>::rsPhaseVocoder()
 {
   init();
-
-  int dummy = 0;
 }
 
 template<class T>
@@ -48,10 +46,10 @@ void rsPhaseVocoder<T>::hanningWindowZN(T *w, int N)
     w[n] = 0.5*(1-cos(s*n));
 }
 
-// x: signal, N: number of samples, n: block center sample, w: window, B: blocksize, M: FFT size, 
+// x: signal, N: number of samples, n: block center sample, w: window, B: blocksize, M: FFT size,
 // X: complex short-time spectrum (output)
 template<class T>
-void rsPhaseVocoder<T>::shortTimeSpectrum(T *x, int N, int n, T *w, 
+void rsPhaseVocoder<T>::shortTimeSpectrum(T *x, int N, int n, T *w,
   int B, int M, std::complex<T> *X)
 {
   int pad = (M-B)/2;                        // amount of pre/post zero padding
@@ -72,7 +70,7 @@ void rsPhaseVocoder<T>::shortTimeSpectrum(T *x, int N, int n, T *w,
 }
 
 template<class T>
-rsMatrix<std::complex<T>> rsPhaseVocoder<T>::complexSpectrogram(T *x, int N, T *w, 
+rsMatrix<std::complex<T>> rsPhaseVocoder<T>::complexSpectrogram(T *x, int N, T *w,
   int B, int H, int P)
 {
   // x: signal, N: number of samples, w: window, B: blocksize, H: hopsize, P: padding factor
@@ -96,7 +94,7 @@ rsMatrix<std::complex<T>> rsPhaseVocoder<T>::complexSpectrogram(T *x, int N, T *
 }
 
 template<class T>
-std::vector<T> rsPhaseVocoder<T>::synthesize(const rsMatrix<std::complex<T>> &s, T *ws, 
+std::vector<T> rsPhaseVocoder<T>::synthesize(const rsMatrix<std::complex<T>> &s, T *ws,
   int B, int H, T *wa)
 {
   // s: spectrogram, ws: synthesis-window, B: block size, H: hop size, wa: analysis window,
@@ -112,13 +110,13 @@ template<class T>
 rsMatrix<T> rsPhaseVocoder<T>::timeReassignment(T *x, int N,
   const rsMatrix<std::complex<T>> &s, T *wr, int B, int H)
 {
-  // x: signal, N: number of samples, s: complex spectrogram, wr: time-ramped window, B: blocksize, 
+  // x: signal, N: number of samples, s: complex spectrogram, wr: time-ramped window, B: blocksize,
   // H: hopsize
 
   rsMatrix<T> tr;
 
-  // use the complexSpectrogram function to compute a spectrogram with the ramped window and then 
-  // apply the time reassignment formula using the original spectrogram s and the "ramped" 
+  // use the complexSpectrogram function to compute a spectrogram with the ramped window and then
+  // apply the time reassignment formula using the original spectrogram s and the "ramped"
   // spectrogram to compute corresponding value of the time reassignment matrix tr
   // ...
 
@@ -129,13 +127,13 @@ template<class T>
 rsMatrix<T> rsPhaseVocoder<T>::frequencyReassignment(T *x, int N,
   const rsMatrix<std::complex<T>> &s, T *wd, int B, int H)
 {
-  // x: signal, N: number of samples, s: complex spectrogram, wd: window derivative, B: blocksize, 
+  // x: signal, N: number of samples, s: complex spectrogram, wd: window derivative, B: blocksize,
   // H: hopsize
 
   rsMatrix<T> fr;
 
-  // use the complexSpectrogram function to compute a spectrogram with the ramped window and then 
-  // apply the frequency reassignment formula using the original spectrogram s and the "ramped" 
+  // use the complexSpectrogram function to compute a spectrogram with the ramped window and then
+  // apply the frequency reassignment formula using the original spectrogram s and the "ramped"
   // spectrogram to compute corresponding value of the frequency reassignment matrix fr
   // ...
 
@@ -164,7 +162,7 @@ void addInto(T *x, int N, T *y, int L, int n = 0)
 */
 
 template<class T>
-std::vector<T> rsPhaseVocoder<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &s, 
+std::vector<T> rsPhaseVocoder<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &s,
   T *w, int B, int H)
 {
   // w: window, B: blocksize, H: hopsize, s: complex spectrogram
@@ -173,7 +171,7 @@ std::vector<T> rsPhaseVocoder<T>::synthesizeRaw(const rsMatrix<std::complex<T>> 
   int K  = s.getNumColumns();             // number of (non-redundant) bins
   int N  = (F-1) * H + B/2;               // number of samples
   int M  = (K-1) * 2;                     // FFT size
-  int k0 = (M-B) / 2;                     // read start in resynthesized grain before the 
+  int k0 = (M-B) / 2;                     // read start in resynthesized grain before the
                                           // resynthesis window is applied
   std::vector<T> y(N);               // allocate signal
   std::vector<T> g(B);               // grain
@@ -209,7 +207,7 @@ std::vector<T> rsPhaseVocoder<T>::getModulation(T *wa, T *ws, int B, int H, int 
   std::vector<T> y(N);        // modulation signal
   T *w = new T[B];       // product-window
   for(int n = 0; n < B; n++)
-    w[n] = wa[n] * ws[n];             
+    w[n] = wa[n] * ws[n];
   for(int i = 0; i < F; i++)
     rsArray::addInto(y.data(), N, w, B, i*H-B/2);
   delete[] w;
