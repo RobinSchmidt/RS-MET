@@ -1,23 +1,23 @@
 #ifndef RAPT_LADDERFILTER_H
 #define RAPT_LADDERFILTER_H
 
-// \todo implement a rsLadderFilter baseclass, have subclasses rsLadderLinearZDF, 
+// \todo implement a rsLadderFilter baseclass, have subclasses rsLadderLinearZDF,
 // rsLadderMystran, rsLadderLinear
-// 
+//
 // maybe have a version that provides a "spread" parameter that spreads the cutoff frequencies of
 // the individual stages out..i guess, if it's implemented in such a way that the geometric mean
 // of the cutoff frequencies equals the desired cutoff, the resonance won't move (but i'm not sure)
-// perhaps, with such a spread parameter, peaking filters with adjustable badwidths could be 
+// perhaps, with such a spread parameter, peaking filters with adjustable badwidths could be
 // possible?
 
 //=================================================================================================
 
-/** This is an implementation of a ladder filter based on a chain of 4 one-pole lowpasses without a 
-zero (i.e. leaky integrators) of the general form: y[n] = b*x[n] - a*y[n-1] where a is in the range 
-(-1,0] and b = 1+a. It's a linear ladder with a unit delay in the feedback path. The coefficients 
-of the lowpass stages (a,b) and the feedback gain are adjusted in order to compensate for the side 
-effects of the unit delay, such that there's no shift of the resonant frequency and no instability 
-artifacts for resonance-values < 1. 
+/** This is an implementation of a ladder filter based on a chain of 4 one-pole lowpasses without a
+zero (i.e. leaky integrators) of the general form: y[n] = b*x[n] - a*y[n-1] where a is in the range
+(-1,0] and b = 1+a. It's a linear ladder with a unit delay in the feedback path. The coefficients
+of the lowpass stages (a,b) and the feedback gain are adjusted in order to compensate for the side
+effects of the unit delay, such that there's no shift of the resonant frequency and no instability
+artifacts for resonance-values < 1.
 
 \todo merge this class with rsLadderFilter
 
@@ -50,7 +50,7 @@ public:
 
     NUM_MODES
   };
-  // add more modes: allpass1/2/3/4, notch(es), maybe peak if possible (perhaps requires gain 
+  // add more modes: allpass1/2/3/4, notch(es), maybe peak if possible (perhaps requires gain
   // parameter)
 
 
@@ -93,7 +93,7 @@ public:
   /** Returns a single output sample without gain-compensation */
   RS_INLINE TSig getSampleNoGain(TSig in);
 
-  /** Returns a single output sample (with gain-compensation such that the DC-gain remains 
+  /** Returns a single output sample (with gain-compensation such that the DC-gain remains
   unity, irrespective of the resonance) */
   RS_INLINE TSig getSample(TSig in);
 
@@ -110,8 +110,8 @@ public:
   feedback coefficients a, b, k. */
   static TPar computeCompensationGain(TPar a, TPar b, TPar k);
 
-  /** Given some normalized net feedback loop gain fb (in the range 0..1 where 1 is the 
-  self-oscillation/instability limit), cos(wc) and lowpass coefficients a, b, this function 
+  /** Given some normalized net feedback loop gain fb (in the range 0..1 where 1 is the
+  self-oscillation/instability limit), cos(wc) and lowpass coefficients a, b, this function
   computes the feedback factor k. */
   static TPar computeFeedbackFactor(TPar fb, TPar cosWc, TPar a, TPar b);
 
@@ -127,22 +127,22 @@ public:
   the first unit and a compensation gain g that compensates for the loss of DC gain when turning up
   the feedback. */
   static void computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k, TPar *g);
-  // todo: factor the function into a/b-computation, k-computation, g-computation - but leave 
+  // todo: factor the function into a/b-computation, k-computation, g-computation - but leave
   // this one as convenience function also
 
-  /** Same as computeCoeffs(double wc, double fb, double *a, double *b, double *k, double *g) but 
+  /** Same as computeCoeffs(double wc, double fb, double *a, double *b, double *k, double *g) but
   without the compensation gain computation.  */
   static void computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k);
 
-  // make a static method for the output coefficients c[] 
+  // make a static method for the output coefficients c[]
 
 
 protected:
 
   /** \name Internal Functions */
-                        
+
   /** Calculates the one-pole coefficients, feedback-gain and output gain from the parameters. */
-  virtual void calcCoeffs(); 
+  virtual void calcCoeffs();
 
 
   /** \name Data */
@@ -198,7 +198,7 @@ public:
   /** Returns a single output sample without gain-compensation */
   RS_INLINE TSig getSampleNoGain(TSig in);
 
-  /** Returns a single output sample (with gain-compensation such that the DC-gain remains 
+  /** Returns a single output sample (with gain-compensation such that the DC-gain remains
   unity, irrespective of the resonance) */
   RS_INLINE TSig getSample(TSig in);
 
@@ -208,7 +208,7 @@ protected:
   /** \name Internal Functions */
 
   /** Calculates the one-pole coefficients, feedback-gain and output gain from the parameters. */
-  virtual void calcCoeffs(); 
+  virtual void calcCoeffs();
 
 
   /** \name Data */
@@ -221,35 +221,41 @@ template<class TSig, class TPar>
 RS_INLINE TSig rsLadderFilterZDF<TSig, TPar>::getSampleNoGain(TSig in)
 {
   // compute/predict output of final stage:
-  y[4] = p[0]*in + p[1]*y[1] + p[2]*y[2] + p[3]*y[3] + p[4]*y[4];
+  this->y[4] = p[0]*in + p[1]*this->y[1] + p[2]*this->y[2] + p[3]*this->y[3] + p[4]*this->y[4];
 
   // update other filter states:
-  y[0] =     in - k*y[4];
-  y[1] = b*y[0] - a*y[1];
-  y[2] = b*y[1] - a*y[2];
-  y[3] = b*y[2] - a*y[3];
+  this->y[0] =                   in - this->k * this->y[4];
+  this->y[1] = this->b * this->y[0] - this->a * this->y[1];
+  this->y[2] = this->b * this->y[1] - this->a * this->y[2];
+  this->y[3] = this->b * this->y[2] - this->a * this->y[3];
 
   // form output (maybe factor out - this is the same as in the UDF case):
-  return c[0]*y[0] + c[1]*y[1] + c[2]*y[2] + c[3]*y[3] + c[4]*y[4];
+  return this->c[0] * this->y[0] +
+         this->c[1] * this->y[1] +
+         this->c[2] * this->y[2] +
+         this->c[3] * this->y[3] +
+         this->c[4] * this->y[4];
+
+  // the ugly "this->" syntax is required by gcc for inherited members in template classes
 }
 
 template<class TSig, class TPar>
 RS_INLINE TSig rsLadderFilterZDF<TSig, TPar>::getSample(TSig in)
 {
-  return g * getSampleNoGain(in);
+  return this->g * getSampleNoGain(in);
 }
 
 //=================================================================================================
 
 /**
 
-This is a subclass of rsLadderFilterUDF that allows for saturation inside the feedback loop. The 
+This is a subclass of rsLadderFilterUDF that allows for saturation inside the feedback loop. The
 user can set the lower and upper limiting value. In between the limits, an appropriately scaled and
-shifted sigmoid function is applied. You can pass a function-poiter to the sigmoid to be used. It 
+shifted sigmoid function is applied. You can pass a function-poiter to the sigmoid to be used. It
 should be normalized such that it limits to +-1 as the input goes to +-inf and have unit-slope at
 the origin. When using a simple hardclipper that just clips at +-1, the function applied in the
-feedback path is equivalent to y = clip(x, lowerLimit, upperLimit) - appropriate pre/post 
-scale/shift operations ensure this behavior. But you can also use tanh or other sigmoids that 
+feedback path is equivalent to y = clip(x, lowerLimit, upperLimit) - appropriate pre/post
+scale/shift operations ensure this behavior. But you can also use tanh or other sigmoids that
 satisfy the above normalization criteria.
 
 ToDo:
@@ -261,13 +267,13 @@ the use in the resoshape filter.
 
 rename to ...FeedbackClipped - or just ...Nonlinear
 
-Currently, the total feedback can be seen a a multiplication of two factors, one from the 
-decay-setting "fbd" and one from the drive-setting that can be used to drive the filter into 
+Currently, the total feedback can be seen a a multiplication of two factors, one from the
+decay-setting "fbd" and one from the drive-setting that can be used to drive the filter into
 self-oscillation "fbo", so we have: fb = fbd * fbo. Maybe other combinations, like fb = fbd + fbo,
 fb = max(fbd, fbo) are worth to explore. The implications of the different formulas are:
 fb = fbd * fbo:
  -fbo is ineffective when fbd = 0, i.e. decay is set to zero
- -when fbd depends on the cutoff (for example, for const-Q filters), the filter may cease to 
+ -when fbd depends on the cutoff (for example, for const-Q filters), the filter may cease to
   self-oscillate at low cutoffs
  -the feedback factor "k" can be separated into k_decay and k_drive (that's done in getSample)
 fb = fbd + fbo:
@@ -276,9 +282,9 @@ fb = fbd + fbo:
 fb = max(fbd, fbo):
  -when fbd sweeps (for example as result of cutoff sweep in const-Q mode), the fb-sweep has a
   discontinuity, when fbd crosses fbo
- -it's always one value always that dominates, and within these two regimes, there are no 
+ -it's always one value always that dominates, and within these two regimes, there are no
   interactions between the parameters
-the formulas may be translated into each other, like 
+the formulas may be translated into each other, like
 fbd * fbom = fbd + fboa -> fboa = fbd * fbom - fbd, fbom = (fbd + fboa) / fbd -  the latter formula
 works only for fbd != 0
 */
@@ -317,7 +323,7 @@ public:
     TEST1,                // experimental
 
   };
-  // todo: figure out, if the pre-k/post-k modes are equivalent when adjusting the limits 
+  // todo: figure out, if the pre-k/post-k modes are equivalent when adjusting the limits
   // appropriately -  i think, multiplying the limits by k should make them equivalent
 
 
@@ -350,8 +356,8 @@ public:
   /** \name Inquiry */
 
   /** Returns the compensation gain to be applied to the output of the filter to achieve unit gain
-  at DC. This gain depends on the resonance decay and the feedback drive. 
-  \todo: move this function into the protected section, use it internally to compute the 
+  at DC. This gain depends on the resonance decay and the feedback drive.
+  \todo: move this function into the protected section, use it internally to compute the
   compensation gain. override setCutoff/etc. - anything that changes this gain */
   TPar getCompensationGain();
 
@@ -365,7 +371,7 @@ public:
   RS_INLINE TSig getSample(TSig in);
 
   /** This function bypasses all the nonlinear additions introduced in this subclass and just
-  accesses the inherited getSample function from the (linear) rsLadderFilter baseclass. We need 
+  accesses the inherited getSample function from the (linear) rsLadderFilter baseclass. We need
   this function for optimization purposes, when an object embedds a rsLadderFilterFeedbackSaturated
   object but wants to use only the linear features - this is the case in rsLadderresoShaped3 which
   inherits the nonlinear ladder filter from rsLadderresoShaped but needs only the linear features.
@@ -441,8 +447,8 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
     y[2] = b*y[1] - a*y[2];
     y[3] = b*y[2] - a*y[3];
     y[4] = b*y[3] - a*y[4];
-  }  
-  break; 
+  }
+  break;
   case PRE_FB_GAIN:                              // pre k
   {
     y[0] = in - k*saturate(drive*y[4]);
@@ -459,8 +465,8 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
     y[2] = b*y[1] - a*y[2];
     y[3] = b*y[2] - a*y[3];
     y[4] = b*y[3] - a*y[4];
-  } 
-  break; 
+  }
+  break;
   case INPUT_AND_POST_GAIN:                   // input and post k
   {
     y[0] = saturate(in) - saturate(k*drive*y[4]);
@@ -468,8 +474,8 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
     y[2] = b*y[1] - a*y[2];
     y[3] = b*y[2] - a*y[3];
     y[4] = b*y[3] - a*y[4];
-  } 
-  break; 
+  }
+  break;
   case POST_INPUT_ADD:                           // post input add
   {
     y[0] = saturate(in - k*drive*y[4]);
@@ -479,7 +485,7 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
     y[4] = b*y[3] - a*y[4];
   }
   break;
-  case POST_GAIN_AND_ADD: 
+  case POST_GAIN_AND_ADD:
   {
     double tmp;
     tmp  = saturate(k*drive*y[4]);  // 1st saturation
@@ -490,8 +496,8 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
     y[2] = b*y[1] - a*y[2];
     y[3] = b*y[2] - a*y[3];
     y[4] = b*y[3] - a*y[4];
-  } 
-  break; 
+  }
+  break;
 
   case POST_1ST_STAGE:
   {
@@ -596,25 +602,25 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
 
 
 
-  //case TEST1: 
+  //case TEST1:
   //{
   //  y[0] = in - saturate(k*drive*y[4]);
   //  y[1] = b*y[0] - a*y[1];
   //  y[2] = b*y[1] - a*y[2];
   //  y[3] = b*y[2] - a*y[3];
   //  y[4] = b*y[3] - a*y[4];
-  //} 
-  //break; 
-  //case TEST1: 
+  //}
+  //break;
+  //case TEST1:
   //{
   //  y[0] = in - k*y[4];
   //  y[1] = b*y[0] - a*y[1];
   //  y[2] = b*y[1] - a*y[2];
   //  y[3] = b*y[2] - a*y[3];
   //  y[4] = saturate(drive*(b*y[3] - a*y[4]));
-  //} 
-  //break; 
-  case TEST1: 
+  //}
+  //break;
+  case TEST1:
   {
     TSig c = -0.3;
     //y[0] = in - saturate(k*drive*y[4] + c*in) - saturate(c*in);
@@ -623,8 +629,8 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
     y[2] = b*y[1] - a*y[2];
     y[3] = b*y[2] - a*y[3];
     y[4] = b*y[3] - a*y[4];
-  } 
-  break; 
+  }
+  break;
 
   default: return 0.0;
   }
@@ -636,7 +642,7 @@ template<class TSig, class TPar>
 RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSample(TSig in)
 {
   return g * getSampleNoGain(in);
-    // maybe our gain here should be computed using a max(drive*feedback, 1.0) instead of the 
+    // maybe our gain here should be computed using a max(drive*feedback, 1.0) instead of the
     // regular normalized feedback
 }
 
@@ -650,8 +656,8 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleLinear(TSig
 
 /**
 
-This is a variant of the ladder filter that splits off a purified resonance signal from the 
-(lowpass or otherwise) filtered part in order to separately process that pure resonance signal 
+This is a variant of the ladder filter that splits off a purified resonance signal from the
+(lowpass or otherwise) filtered part in order to separately process that pure resonance signal
 further. The separation is achieved by running a resonant and a nonresonant filter and subtracting
 the output of the nonresonant filter from the output of the resonant filter. The structure is:
 
@@ -662,29 +668,29 @@ in --------> NRF ------------>+----> out
 
 NRF: nonresonant filter, RF: resonant filter, PP: post-processing
 
-The main purpose of the separation of the resonance signal is the option to shape it further in 
+The main purpose of the separation of the resonance signal is the option to shape it further in
 a postprocessing stage before adding it back to the nonresonant filter output. The post-processing
 consists of passing the resonance signal through a resonator filter which applies a kind of attack
-shape to the resonance, then adjusting the phase (by passing it through an allpass, giving a 
-quadrature (90° phase-shifted) version and forming a linear combination of the original resonance 
-and the quadrature component) and finally applying an overall gain to the resonance. Subclasses 
+shape to the resonance, then adjusting the phase (by passing it through an allpass, giving a
+quadrature (90° phase-shifted) version and forming a linear combination of the original resonance
+and the quadrature component) and finally applying an overall gain to the resonance. Subclasses
 may implement further post-processing steps, such as waveshaping, etc.
 
 
-\todo: Adjust the cutoff frequency of the nonresonant filter in a way so as to minimize the 
+\todo: Adjust the cutoff frequency of the nonresonant filter in a way so as to minimize the
        bandwidth of the resonance signal - i.e. make it as pure as possible. I think, the cutoff of
        the lowpass should be increased a bit, but the amount of increase may depend on the cutoff
-       frequency and/or resonance/decay-time. I suppose, that it should be a function of the 
+       frequency and/or resonance/decay-time. I suppose, that it should be a function of the
        relative bandwidth or Q. Some experimentation will be necessary. I think, minimizing the
        bandwidth is equivalent to minimizing the transient. The optimal frequency may also depend
-       on the resonance gain (i.e. when it's 0, there should not be any shift of the cutoff 
+       on the resonance gain (i.e. when it's 0, there should not be any shift of the cutoff
        frequency at all)
 
 \todo: Switch to a (linear) ZDF ladder implementation.
 
 \todo: Add a waveshaper to the resonance post-processing chain
 
-Observations: 
+Observations:
 -the phase shift causes a dip in the spectrum below the resonance, it's most pronounced when
  the phase is around 135 degrees
 -the attack may shift the dip - the higher the attack, the closer the dip moves to the resonance
@@ -723,21 +729,21 @@ public:
   decay down to 1/e. */
   void setResonanceDecay(TPar newDecay);
 
-  /** Sets the amount of dependency of the resonance decay time from the resonance frequency. If 
-  it's set to zero, the decaytime will be independent from the resonant frequency, corresponding 
-  to a resonator filter with constant absolute bandwidth. If it's set to unity, the decaytime 
-  will be inversely proportional to the resonant frequency, corresponding to a resonator with 
-  constant relative bandwith (which implies constant Q as well). You may set it to values less 
-  than zero and larger than unity as well. In case of a nonzero dependency, we use a reference 
+  /** Sets the amount of dependency of the resonance decay time from the resonance frequency. If
+  it's set to zero, the decaytime will be independent from the resonant frequency, corresponding
+  to a resonator filter with constant absolute bandwidth. If it's set to unity, the decaytime
+  will be inversely proportional to the resonant frequency, corresponding to a resonator with
+  constant relative bandwith (which implies constant Q as well). You may set it to values less
+  than zero and larger than unity as well. In case of a nonzero dependency, we use a reference
   frequency of 1kHz - that means, at 1kHz (for resonance frequency), the decay time will be left
   unmodified. */
   void setDecayByFrequency(TPar newDecayByFreq);
 
-  /** Sets the attack time for the resonance signal as multiplier for the (possibly frequency 
-  scaled) decay time of the ladder's resonance signal. Note that, for efficiency reasons, we 
-  define the attack time as the decay time constant of the two-pole filter that creates the 
+  /** Sets the attack time for the resonance signal as multiplier for the (possibly frequency
+  scaled) decay time of the ladder's resonance signal. Note that, for efficiency reasons, we
+  define the attack time as the decay time constant of the two-pole filter that creates the
   attack. It's not exactly the time where the peak in the envelope occurs, because that would
-  require a solution of an implicit equation and limit the factor to values < 1. 
+  require a solution of an implicit equation and limit the factor to values < 1.
   \todo: maybe apply a mapping function, maybe look into findDecayScalerLess1 - the mapping should
   probably approximate that function. */
   void setResonanceAttack(TPar newAttack);
@@ -776,7 +782,7 @@ protected:
 
   /** \name Internal Functions */
 
-  /** Sets up the scaled decay-time according to the parameters: decay, decayByFreq, cutoff and 
+  /** Sets up the scaled decay-time according to the parameters: decay, decayByFreq, cutoff and
   then calls setupAttackSmoother (because the attack time depends on the scaled decaytime). */
   void setupScaledDecay();
 
@@ -785,7 +791,7 @@ protected:
 
 
   /** \name Embedded objects */
-  
+
   rsLadderFilterFeedbackSaturated<TSig, TPar> resonant;
   rsLadderFilter2<TSig, TPar> nonResonant;
   rsTwoPoleFilter<TSig, TPar> attackSmoother;
@@ -819,7 +825,7 @@ protected:
 
 //=================================================================================================
 
-/** Subclass of rsLadderResoShaped that adds nonlinear features such as waveshaping of the 
+/** Subclass of rsLadderResoShaped that adds nonlinear features such as waveshaping of the
 resonance signal. */
 
 template<class TSig, class TPar>
@@ -846,8 +852,8 @@ public:
   //a "double" as argument and returns a "double" as return-value. */
   //void setSaturationFunction(double (*func)(double));
 
-  ///** Sets the threshhold above which the nonlinear part of the saturation function begins. It 
-  //should be a value between 0..1. It can also be interpreted as a "hardness" parameter, where 0 
+  ///** Sets the threshhold above which the nonlinear part of the saturation function begins. It
+  //should be a value between 0..1. It can also be interpreted as a "hardness" parameter, where 0
   //amounts to the softest distortion and 1 amounts to full-blown hardclipping.  */
   //void setSaturationThreshold(double newThreshold);
 
@@ -858,8 +864,8 @@ public:
   gets multiplied before it goes into the waveshaper. */
   void setDrive(TPar newDrive);
 
-  /** Sets the amount by which the pre-saturation gain (given by the drive factor) is to be undone 
-  post-saturation. If it's 0, there's no compensation, if it's 1, there's full compensation such 
+  /** Sets the amount by which the pre-saturation gain (given by the drive factor) is to be undone
+  post-saturation. If it's 0, there's no compensation, if it's 1, there's full compensation such
   that postGain = 1/preGain. Generally, we have postGain = (1/preGain)^compensation. */
   void setDriveCompensation(TPar newCompensation);
 
@@ -869,20 +875,20 @@ public:
   /** Sets the amount by which the input signal is added to the saturator sidechain input. */
   void setSaturationAddInput(TPar newAmount);
 
-  /** Sets the amount by which the nonresonant filter output signal is added to the saturator 
+  /** Sets the amount by which the nonresonant filter output signal is added to the saturator
   sidechain input. */
   void setSaturationAddFiltered(TPar newAmount);
 
-  /** Sets the sensitivity of teh gate as inverse factor by which the lower and upper saturation 
+  /** Sets the sensitivity of teh gate as inverse factor by which the lower and upper saturation
   limits are scaled. 0: gating is effectively turned off, 1: limits equal to saturation limits -
-  generally gateLimit = saturationlimit / gateSesitivity, which goes to infinity when the 
+  generally gateLimit = saturationlimit / gateSesitivity, which goes to infinity when the
   sensitivity goes to 0. */
   void setGateSensitivity(TPar newSensitivity);
 
   // 0: only input signal, 1: only lowpass signal
   void setGateMix(TPar newMix);
 
-  // maybe we can also have a gate-amount parameter that crossfades between gated und non-gated 
+  // maybe we can also have a gate-amount parameter that crossfades between gated und non-gated
   // signal
   // REMOVE the gate stuff...
 
@@ -918,22 +924,22 @@ protected:
 
 /**
 
-Subclass of rsLadderResoShaped that adds the option of replacing the resonance waveform. This is 
+Subclass of rsLadderResoShaped that adds the option of replacing the resonance waveform. This is
 achieved by measuring instantaneous amplitude and phase of the resonance signal, that is, we model
-the resonance signal as an enveloped sinusoid at the cutoff frequency: r = a * sin(p), where a 
+the resonance signal as an enveloped sinusoid at the cutoff frequency: r = a * sin(p), where a
 and p are instantaneous amplitude and phase which are measured from the resonance signal r and then
-replace it by some other, arbitrary waveform: r' = a * wave(p). At the moment, the standard 
-waveforms: sine, triangle, square, saw-up, saw-down are provided but the structure is general 
+replace it by some other, arbitrary waveform: r' = a * wave(p). At the moment, the standard
+waveforms: sine, triangle, square, saw-up, saw-down are provided but the structure is general
 enough to support arbitrary waveforms.
 
-todo: 
--maybe try to do the measurement based on 2 succesive resonance samples using rsSineAmplitudeAndPhase 
+todo:
+-maybe try to do the measurement based on 2 succesive resonance samples using rsSineAmplitudeAndPhase
  instead of the allpass quadrature method - compare both methods, choose the better. ...but it think
  rsSineAmplitudeAndPhase will be much more expensive, so maybe it's better to stick with the allpass
  method.
--let the user choose an arbitrary waveform by setting wavetable - embedd a wavetable oscillator 
+-let the user choose an arbitrary waveform by setting wavetable - embedd a wavetable oscillator
  object to achieve this
- -anti-alias the wavetable oscillator by mip-mapping - we need to keep track of the (absolute value 
+ -anti-alias the wavetable oscillator by mip-mapping - we need to keep track of the (absolute value
   of) the phase difference between two successive samples to select the appropriately decimated
   wavetable
 -maybe inherit from rsLadderResoShaped3 if we want to use waveshaping features from there
@@ -961,7 +967,7 @@ public:
   /** Sets the multiplier by which the filter's cutoff frequency is to be multiplied to obtain the
   cutoff frequency for the filter that filters the resonance waveform. */
   void setResoCutoffMultiplier(TPar newMultiplier);
-    
+
   /** Sets the amount by which the resonance waveform filter's cutoff frequency is modulated by the
   instantaneous amplitude of the resonance signal. */
   void setResoCutoffModulation(TPar newModulation);
@@ -983,11 +989,11 @@ protected:
   virtual void getNonresonantOutputAndResonanceParameters(TSig input, TSig *nonRes,
     TSig *resAmp, TSig *resPhase);
 
-  /** Given an instantaneous amplitude and phase in the range 0..2*PI (or beyond 2*PI, but not below 
+  /** Given an instantaneous amplitude and phase in the range 0..2*PI (or beyond 2*PI, but not below
   0), this function returns the intantaneous value of the reconstructed resonance waveform.  */
   virtual TSig getWaveForm(TSig amplitude, TSig phase);
     // todo: maybe change phase format (to 0..1) to make it more compatible with wavetable oscillator
-    
+
 
   /** \name User Parameters */
 
@@ -1004,7 +1010,7 @@ protected:
 
 //=================================================================================================
 
-/** Subclass of rsResoReplacer that extends it by adding an optional dynamic "phase-bumping" based 
+/** Subclass of rsResoReplacer that extends it by adding an optional dynamic "phase-bumping" based
 on the relation between the resonance-signal's phase and features of the input signal with the goal
 to emulate growl-like effects that occur in ladder filters that involve a saturating feedback path.
 */
@@ -1042,22 +1048,22 @@ public:
   void setChaosParameter(TPar newParameter);
 
 
-  /** Sets a limiting value for the instantaneous amplitude of the resonance waveform. We apply a 
-  soft-clipping function to the instantaneous amplitude in order simulate some aspect of the 
-  nonlinear ladder filter (namely, avoiding too large resonance amplitudes, when the cutoff 
+  /** Sets a limiting value for the instantaneous amplitude of the resonance waveform. We apply a
+  soft-clipping function to the instantaneous amplitude in order simulate some aspect of the
+  nonlinear ladder filter (namely, avoiding too large resonance amplitudes, when the cutoff
   frequency hits a partial of the input signal). The value should be a (strictly) positive number.
   We use the formula y = rsPositiveSigmoids::softClip(x/limit) * limit. */
   void setAmplitudeLimit(TPar newLimit);
     // move to baseclass
 
-  /** Sets the range of input signals for which the resonance signal is (mostly) unaffected. 
-  Beyond this range, it gets progressively more attenuated to simulate the limiting effect in 
+  /** Sets the range of input signals for which the resonance signal is (mostly) unaffected.
+  Beyond this range, it gets progressively more attenuated to simulate the limiting effect in
   feedback saturated filters. */
   void setInputRange(TPar newRange);
     // move to baseclass
 
-  /** Sets the amount by which the filter gets self-excited in order to emulate 
-  self-oscillation. In a linear filter, such as this, true self-oscillation is not possible 
+  /** Sets the amount by which the filter gets self-excited in order to emulate
+  self-oscillation. In a linear filter, such as this, true self-oscillation is not possible
   because self-oscillation is based on an unstable filter which is re-stbilized by saturation
   (i.e. nonlinearity). */
   void setSelfExitation(TPar newExcitation);
@@ -1088,11 +1094,11 @@ protected:
   /** Function for updating the bump value. */
   void updateBump(TSig in, TSig yf, TSig yr);
 
-  /** Returns a limited value for the instantaneous magnitude (from a raw, unlimited measurement 
+  /** Returns a limited value for the instantaneous magnitude (from a raw, unlimited measurement
   value) according to our limiting settings here. */
   TSig limitMagnitude(TSig mag);
 
-  /** Returns a multiplier for the resonance signal based on the input signal to simulate the 
+  /** Returns a multiplier for the resonance signal based on the input signal to simulate the
   bell-shaped envelope that is seen in self-oscillating feedback-saturated filters when there's a
   (sawtooth) input signal. */
   TSig inputScale(TSig in);
@@ -1104,7 +1110,7 @@ protected:
   rsOnePoleFilter<TSig, TPar> inputDifferencer;
   rsOnePoleFilter<TSig, TPar> bumpSmoother1, bumpSmoother2;
     // if the concept turns out to be useful, replace the 2 bumpSmoother filters with a single
-    // attack/decay filter that allows the user to set attack-time, decay-time and amplitude (i 
+    // attack/decay filter that allows the user to set attack-time, decay-time and amplitude (i
     // think, i have such a filter somewhere in the legacy codebase)
 
   rsMovingAverage<TSig, TPar> bumpAverager;
@@ -1118,7 +1124,7 @@ protected:
   TPar chaosParam;
 
 
-  TPar ampLimit, ampLimitInv;  
+  TPar ampLimit, ampLimitInv;
     // instantaneous amplitude limiting value and its reciprocal
 
   TPar inRange;

@@ -143,11 +143,11 @@ RS_INLINE TSig rsSaturator<TSig, TPar>::getSample(TSig in)
 
 //=================================================================================================
 
-/** This class extends rsParametricSigmoid by re-expressing the saturation function y = f(x) in 
-various ways, like, for example as a signal-dependent factor: y = f(x) = x * a(x) where 
-a(x) = f(x)/x and then allowing a sidechain signal s to go into a(x) instead of x itself, such that 
-effectively, we compute y = x * a(s) instead of y = x * a(x). There are different modes which 
-amount to different ways of rewriting y = f(x). The example above corresponds to the multiplicative 
+/** This class extends rsParametricSigmoid by re-expressing the saturation function y = f(x) in
+various ways, like, for example as a signal-dependent factor: y = f(x) = x * a(x) where
+a(x) = f(x)/x and then allowing a sidechain signal s to go into a(x) instead of x itself, such that
+effectively, we compute y = x * a(s) instead of y = x * a(x). There are different modes which
+amount to different ways of rewriting y = f(x). The example above corresponds to the multiplicative
 mode, there's also an additive mode: y = f(x) = x + a(x), etc.
 
 */
@@ -200,12 +200,12 @@ template<class TSig, class TPar>
 RS_INLINE TSig rsSidechainSaturator<TSig, TPar>::getSample(TSig x, TSig s)
 {
   TSig as;                                     // a(s)
-  TSig fs = rsParametricSigmoid::getValue(s);  // f(s) 
+  TSig fs = rsParametricSigmoid<TSig>::getValue(s);  // f(s)
 
   switch(mode)
   {
   case DIRECT1:  return fs;
-  case DIRECT2:  return fs - rsParametricSigmoid::getValue(s-x);
+  case DIRECT2:  return fs - rsParametricSigmoid<TSig>::getValue(s-x);
   case ADDITIVE:
   {
     as = fs - s;
