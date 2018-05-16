@@ -78,7 +78,7 @@ public:
   }
 
   /** Sets the flag with the given index to the passed new boolean value.  */
-  inline void rsFlags8::setFlag(int index, bool newValue)
+  inline void setFlag(int index, bool newValue)
   {
     if( newValue == true )
       setFlagTrue(index);
@@ -88,7 +88,7 @@ public:
   }
 
   /** Toggles the flag into to the other state - a true flag becomes flase and vice versa. */
-  inline void rsFlags8::toggleFlag(int index)
+  inline void toggleFlag(int index)
   {
     if( isFlagTrue(index) )
       setFlagFalse(index);

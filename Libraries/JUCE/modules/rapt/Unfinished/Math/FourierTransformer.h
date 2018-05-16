@@ -226,7 +226,7 @@ protected:
   /**< Indicates if we have the special case of a power of two blocksize - in this case, the
   whole transformation is significantly simplified. */
 
-  rsFourierTransformerRadix2 transformerRadix2;
+  rsFourierTransformerRadix2<T> transformerRadix2;
   /**< This embedded object is used to perform the radix-2 forward and inverse transformations
   which occur as part of the Bluestein algorithm. */
 
