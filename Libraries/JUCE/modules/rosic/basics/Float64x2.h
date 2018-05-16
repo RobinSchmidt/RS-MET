@@ -20,7 +20,6 @@ public:
 
   /** Constructor that initializes both elements to the given value. */
   inline rsFloat64x2(double a) : v(_mm_set1_pd(a)) {}
-  //rsFloat64x2(double a) : v(_mm_set1_pd(a)) {}
 
   /** Constructs a value form int (needed for implicit conversions). */
   inline rsFloat64x2(int a) : v(_mm_set1_pd(double(a))) {}

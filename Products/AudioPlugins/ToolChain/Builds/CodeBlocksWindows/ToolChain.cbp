@@ -36,6 +36,7 @@
           <Add option="-mstackrealign"/>
           <Add option="-g"/>
           <Add option="-fpermissive"/>
+          <Add option="-msse2"/>
           <Add directory="."/>
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
@@ -86,6 +87,7 @@
           <Add option="-mstackrealign"/>
           <Add option="-g"/>
           <Add option="-fpermissive"/>
+          <Add option="-msse2"/>
           <Add directory="."/>
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
@@ -138,6 +140,7 @@
           <Add option="-mstackrealign"/>
           <Add option="-g"/>
           <Add option="-fpermissive"/>
+          <Add option="-msse2"/>
           <Add directory="."/>
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
@@ -188,6 +191,7 @@
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
           <Add option="-fpermissive"/>
+          <Add option="-msse2"/>
           <Add directory="."/>
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
@@ -237,6 +241,7 @@
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
           <Add option="-fpermissive"/>
+          <Add option="-msse2"/>
           <Add directory="."/>
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
@@ -288,6 +293,7 @@
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
           <Add option="-fpermissive"/>
+          <Add option="-msse2"/>
           <Add directory="."/>
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>

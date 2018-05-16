@@ -50,7 +50,7 @@
         <MODULEPATH id="juce_audio_utils" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive">
+    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive&#10;-msse2">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="ToolChain"
                        headerPath="..\..\..\..\..\Libraries\JUCE\modules" windowsCodeBlocksArchitecture="-m32"/>
