@@ -1,7 +1,7 @@
 //=================================================================================================
-// class UnivariateScalarFunction  
+// class UnivariateScalarFunction
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // evaluation:
 
 template<class T>
@@ -24,7 +24,7 @@ T UnivariateScalarFunction<T>::approximateDerivativeAt(T x, int order, T eps)
     return getValueAt(x);
   else
   {
-    return (  approximateDerivativeAt(x+eps, order-1, eps) 
+    return (  approximateDerivativeAt(x+eps, order-1, eps)
             - approximateDerivativeAt(x-eps, order-1, eps)) / (2*eps);
   }
 }
@@ -33,11 +33,11 @@ template<class T>
 T UnivariateScalarFunction<T>::findRootViaRidders(T xL, T xU)
 {
   // it doesn't always converge - maybe we should use a relative error criterion in the while-loop,
-  // i.e., instead of checking while( xU-xL > tol && i <= iMax ), we could check 
-  // while( xU-xL > tol && i <= iMax ). in this case, xM needs to be initialized before we enter 
+  // i.e., instead of checking while( xU-xL > tol && i <= iMax ), we could check
+  // while( xU-xL > tol && i <= iMax ). in this case, xM needs to be initialized before we enter
   // the loop
 
-  const T tol  = 10*std::numeric_limits<T>::epsilon(); 
+  const T tol  = 10*std::numeric_limits<T>::epsilon();
   const int    iMax = 1000;    // maximum number of iterations
   T fL = getValueAt(xL);  // function value at lower bound
   T fU = getValueAt(xU);  // function value at upper bound
@@ -62,7 +62,7 @@ T UnivariateScalarFunction<T>::findRootViaRidders(T xL, T xU)
   {
     while( xU-xL > tol && i <= iMax )  // maybe use relative range-size: xU-xL > rsAbs(xM)*tol
     {
-      xM = 0.5*(xL+xU); 
+      xM = 0.5*(xL+xU);
       fM = getValueAt(xM);                       // 1st evaluation
       if( fM == 0.0 )
         return xM;
@@ -80,12 +80,12 @@ T UnivariateScalarFunction<T>::findRootViaRidders(T xL, T xU)
       {
         if( fN > 0.0 )
         {
-          xU = xN; 
+          xU = xN;
           fU = fN;
-          if( fM < 0.0 ) 
-          { 
-            xL = xM; 
-            fL = fM; 
+          if( fM < 0.0 )
+          {
+            xL = xM;
+            fL = fM;
           }
         }
         else if( fN < 0.0 )
@@ -135,7 +135,7 @@ T UnivariateScalarFunction<T>::findRootViaRidders(T xL, T xU)
   }
 
   rsError("findRootViaRidders did not converge.");
-  return 0.0; 
+  return 0.0;
 }
 
 template<class T>
@@ -143,7 +143,7 @@ T UnivariateScalarFunction<T>::findRootViaNewtonNonRobust(T x)
 {
   // why is this "NonRobust" and hwo can it be made robust?
 
-  const T tol  = std::numeric_limits<T>::epsilon(); 
+  const T tol  = std::numeric_limits<T>::epsilon();
   const int    iMax = 1000;    // maximum number of iterations - todo: pass as parameter
   T f, f1;                // f(x), f'(x)
 
@@ -172,11 +172,11 @@ T UnivariateScalarFunction<T>::findRootViaChebychevNonRobust(T x)
 {
   // \todo: here, we should also use a relative-error based stopping criterion...
 
-  const T eps = std::numeric_limits<T>::epsilon(); 
+  const T eps = std::numeric_limits<T>::epsilon();
   T f, f1, f2;  // f(x), f'(x), f''(x)
-  T d = 2*eps;  
-  int i    = 0;    
-  int iMax = 1000; 
+  T d = 2*eps;
+  int i    = 0;
+  int iMax = 1000;
   while( fabs(d) > eps && i <= iMax )
   {
     f   = getValueAt(x);
@@ -197,7 +197,7 @@ T UnivariateScalarFunction<T>::findRootViaChebychevNonRobust(T x)
 //=================================================================================================
 // class UnivariateScalarFunctionViaPointer
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 template<class T>
@@ -209,7 +209,7 @@ UnivariateScalarFunctionViaPointer<T>::UnivariateScalarFunctionViaPointer(
   derivativePointer = derivativeToUse;
 }
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // evaluation:
 
 template<class T>
@@ -224,14 +224,14 @@ T UnivariateScalarFunctionViaPointer<T>::getFirstDerivativeAt(T x)
   if( derivativePointer != NULL )
     return derivativePointer(x);
   else
-    return UnivariateScalarFunction::getFirstDerivativeAt(x);
+    return UnivariateScalarFunction<T>::getFirstDerivativeAt(x);
 }
 
 
 //=================================================================================================
-// class Polynomial  
+// class Polynomial
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 /*
 Polynomial::Polynomial(const unsigned int initOrder, const T* const initCoeffs)
@@ -249,7 +249,7 @@ Polynomial::~Polynomial()
   delete[] coeffs;
 }
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // setup:
 
 void Polynomial::zeroCoefficients()
@@ -264,7 +264,7 @@ void Polynomial::setCoefficients(const T* const newCoeffs)
     coeffs[k] = newCoeffs[k];
 }
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // inquiry:
 
 T Polynomial::getValueAt(T x)
@@ -289,9 +289,9 @@ T Polynomial::getSecondDerivativeAt(T x)
 
 
 //=================================================================================================
-// class MultivariateScalarFunction  
+// class MultivariateScalarFunction
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 template<class T>
@@ -308,9 +308,9 @@ MultivariateScalarFunction<T>::~MultivariateScalarFunction()
 
 
 //=================================================================================================
-// class MultivariateErrorFunction  
+// class MultivariateErrorFunction
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 template<class T>
@@ -347,10 +347,10 @@ rsVectorDbl MultivariateErrorFunction<T>::getGradient(rsVectorDbl p)
 }
 
 template<class T>
-rsVectorDbl MultivariateErrorFunction<T>::getVectorTimesHessianApproximate(rsVectorDbl p, 
+rsVectorDbl MultivariateErrorFunction<T>::getVectorTimesHessianApproximate(rsVectorDbl p,
   rsVectorDbl v)
 {
-  T eps  = 0.00001;                     // epsilon for the approximation (ad hoc - use 
+  T eps  = 0.00001;                     // epsilon for the approximation (ad hoc - use
                                              // something more meaningful and/or have a parameter)
   eps        /= v.getEuclideanNorm();        // ...should be normalized by ||v||
   rsVectorDbl gp   = getGradient(p + eps*v); // gradient at p + eps*v
@@ -359,15 +359,15 @@ rsVectorDbl MultivariateErrorFunction<T>::getVectorTimesHessianApproximate(rsVec
 }
 
 //=================================================================================================
-// class QuadraticTestErrorFunction  
+// class QuadraticTestErrorFunction
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 template<class T>
 QuadraticTestErrorFunction<T>::QuadraticTestErrorFunction()
 {
-  // example form the paper An Introduction to tze Conjugate Gradient Method Without the Agonizing 
+  // example form the paper An Introduction to tze Conjugate Gradient Method Without the Agonizing
   // pain:
   b.setDimensionality(2);
   b.v[0] =  2;
@@ -410,9 +410,9 @@ QuadraticTestErrorFunction<T>::~QuadraticTestErrorFunction()
 }
 
 //=================================================================================================
-// class MultivariateVectorFunction  
+// class MultivariateVectorFunction
 
-//-------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 /*
 template<class T>

@@ -2,8 +2,8 @@
 #define RAPT_FORMANTREMOVER_H
 
 /** This class removes formants from an incoming audio signal by first applying an adaptive first
-order pre-emphasis filter, the applying an adaptive prediction error filter (as inherited from 
-LinearPredictor) and finally undoing the pre-emphasis by its inverse filter. 
+order pre-emphasis filter, the applying an adaptive prediction error filter (as inherited from
+LinearPredictor) and finally undoing the pre-emphasis by its inverse filter.
 
 ...what about rsFormantPreserver...is this class still available in rosic only? */
 
@@ -49,20 +49,20 @@ RS_INLINE TSig rsFormantRemover<TSig, TPar>::getSample(TSig in)
 {
   TSig predicted, error, tmp;
 
-  // predict the input signal and establish the prediction error (which serves as pre-emphasized 
+  // predict the input signal and establish the prediction error (which serves as pre-emphasized
   // signal, the pre-emphasis filter is a 1st order linear prediction error filter):
   predicted = coeff*pastIn;
   error     = in-predicted;
 
   // apply the linear prediction error filter to the pre-emphsized signal:
-  tmp = rsLinearPredictor::getSample(error);
+  tmp = rsLinearPredictor<TSig, TPar>::getSample(error);
 
   // undo the pre-empasis:
   tmp     = tmp + coeff*pastOut;
   pastOut = tmp;
 
   // adapt the pre-emphasis coefficient:
-  coeff = forgetFactor*coeff + learnRate*error*pastIn;
+  coeff = this->forgetFactor * coeff + this->learnRate * error * pastIn;
 
   // update state:
   pastIn = in;

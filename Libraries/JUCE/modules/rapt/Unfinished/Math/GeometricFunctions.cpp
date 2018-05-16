@@ -1,5 +1,5 @@
 template<class T>
-T rsEllipticSectorArea(T a, T b, T angle)
+T rsEllipticSectorArea(T a, T b, T p)
 {
   T A = 0.0;
   while(p >= 2*PI) // handle full turnarounds

@@ -92,7 +92,7 @@ protected:
 template<class TSig, class TPar>
 RS_INLINE TSig rsEnvelopeFollower<TSig, TPar>::applySmoothing(TSig in)
 {
-  return rsSlewRateLimiter::getSample(in);
+  return rsSlewRateLimiter<TSig, TPar>::getSample(in);
 }
 
 template<class TSig, class TPar>
