@@ -1,5 +1,5 @@
 template<class T>
-T rsCosineSquaredWindow<T>(T x, T length)
+T rsCosineSquaredWindow(T x, T length)
 {
   if( rsAbs(x) > 0.5*length )
     return 0.0;
@@ -8,7 +8,7 @@ T rsCosineSquaredWindow<T>(T x, T length)
 }
 
 template<class T>
-T rsRaisedCosineWindow<T>(T x, T length, T p)
+T rsRaisedCosineWindow(T x, T length, T p)
 {
   if( rsAbs(x) > 0.5*length )
     return 0.0;
@@ -18,7 +18,7 @@ T rsRaisedCosineWindow<T>(T x, T length, T p)
 }
 
 template<class T>
-T rsExactBlackmanWindow<T>(T x, T length, T p)
+T rsExactBlackmanWindow(T x, T length, T p)
 {
   if( rsAbs(x) > 0.5*length )
     return 0.0;
@@ -33,7 +33,7 @@ T rsExactBlackmanWindow<T>(T x, T length, T p)
 }
 
 template<class T>
-void rsMakeBlackmanWindow<T>(T *window, int length)
+void rsMakeBlackmanWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 0.42 - 0.5*cos( 2.0*PI*n / (T) (length-1))
@@ -41,35 +41,35 @@ void rsMakeBlackmanWindow<T>(T *window, int length)
 }
 
 template<class T>
-void rsMakeCosinePowerWindow<T>(T *window, int length, T power)
+void rsMakeCosinePowerWindow(T *window, int length, T power)
 {
   for(int n = 0; n < length; n++)
     window[n] = pow( sin(PI * (T) n / (T) length), power );
 }
 
 template<class T>
-void rsMakeHammingWindow<T>(T *window, int length)
+void rsMakeHammingWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 0.54 -  0.46 * cos(2.0*PI*n / (T) (length-1)) ;
 }
 
 template<class T>
-void rsMakeHanningWindow<T>(T *window, int length)
+void rsMakeHanningWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 0.5 * ( 1.0 - cos(2.0*PI*n / (T) (length-1)) );
 }
 
 template<class T>
-void rsMakeRectangularWindow<T>(T *window, int length)
+void rsMakeRectangularWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 1.0;
 }
 
 template<class T>
-T rsWindowedSinc<T>(T x, T length, T stretch)
+T rsWindowedSinc(T x, T length, T stretch)
 {
   return rsNormalizedSinc(x/stretch) * rsCosineSquaredWindow(x, length);
 }

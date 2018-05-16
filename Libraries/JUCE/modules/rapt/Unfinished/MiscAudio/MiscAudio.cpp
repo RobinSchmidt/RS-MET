@@ -64,7 +64,7 @@ void synthesizeWaveform(T *x, int N, int shape, T frequency, T sampleRate, T pha
       else
       {
         int k = 1;
-        T s = 1.0; // sign 
+        T s = 1.0; // sign
         while( k*frequency < sampleRate/2 )
         {
           T a = 8.0 / (k*k*PI*PI);
@@ -80,7 +80,7 @@ void synthesizeWaveform(T *x, int N, int shape, T frequency, T sampleRate, T pha
 }
 
 template<class T>
-void synthesizePulseWave(T *x, int N, T frequency, T dutyCycle, T sampleRate, T phase, 
+void synthesizePulseWave(T *x, int N, T frequency, T dutyCycle, T sampleRate, T phase,
   bool antiAlias)
 {
   T w = 2*PI*frequency/sampleRate;
@@ -104,10 +104,10 @@ void synthesizePulseWave(T *x, int N, T frequency, T dutyCycle, T sampleRate, T 
 }
 
 template<class T>
-void synthesizeDecayingSine(T *x, int N, T frequency, T amplitude, T decayTime, T startPhase, 
+void synthesizeDecayingSine(T *x, int N, T frequency, T amplitude, T decayTime, T startPhase,
   T sampleRate)
 {
-  rsModalFilter filter;
+  rsModalFilter<T,T> filter;
   filter.setModalParameters(frequency, amplitude, decayTime, startPhase, sampleRate);
   filter.reset();
   x[0] = filter.getSample(1.0);
@@ -116,11 +116,11 @@ void synthesizeDecayingSine(T *x, int N, T frequency, T amplitude, T decayTime, 
 }
 
 template<class T>
-void synthesizeModal(T *x, int N, std::vector<T> frequencies, std::vector<T> amplitudes,                           
+void synthesizeModal(T *x, int N, std::vector<T> frequencies, std::vector<T> amplitudes,
   std::vector<T> decayTimes, std::vector<T> startPhases, T sampleRate)
 {
   //rsModalSynthesizer synth;
-  rsModalFilterBank synth;
+  rsModalFilterBank<T,T> synth;
 
   // preliminary: fixed (to zero) attack times - make this a user parameter later:
   std::vector<T> attackTimes(frequencies.dim);
@@ -134,8 +134,8 @@ void synthesizeModal(T *x, int N, std::vector<T> frequencies, std::vector<T> amp
 }
 
 template<class T>
-void synthesizeModalPluckedString(T *x, int N, T frequency, T sampleRate, 
-  T decayTime, T decayExponent, T amplitudeExponent, T inharmonicity,   
+void synthesizeModalPluckedString(T *x, int N, T frequency, T sampleRate,
+  T decayTime, T decayExponent, T amplitudeExponent, T inharmonicity,
   T phase, T evenAmplitudeScaler)
 {
   T f0 = frequency;     // fundamental frequency
@@ -148,7 +148,7 @@ void synthesizeModalPluckedString(T *x, int N, T frequency, T sampleRate,
   std::vector<T> p(numModes);
   for(int m = 0; m < numModes; m++)
   {
-    h      = m + 1;               
+    h      = m + 1;
     f.v[m] = f0 * h * sqrt(1+inharmonicity*h*h);
     d.v[m] = d0 / pow(h, decayExponent);
     p.v[m] = phase;
@@ -162,12 +162,12 @@ void synthesizeModalPluckedString(T *x, int N, T frequency, T sampleRate,
 }
 
 template<class T>
-void synthesizeModalRodFreeFree(T *x, int N, T frequency, T sampleRate, 
+void synthesizeModalRodFreeFree(T *x, int N, T frequency, T sampleRate,
   T decayTime, T decayExponent, T amplitudeExponent, T phase)
 {
   // calculate frequency ratios (following Dave Benson's Math and Music):
   std::vector<T> lambdas;
-  std::vector<T> frequencies;    
+  std::vector<T> frequencies;
   T c, r, lambda;
   T fTmp = frequency;
   //T fScale;
@@ -205,7 +205,7 @@ void synthesizeModalRodFreeFree(T *x, int N, T frequency, T sampleRate,
     fTmp    = r * frequency;
     frequencies.push_back(fTmp);
   }
-  
+
   int numModes = (int) frequencies.size();  // maybe use rsUint32
   //T f0    = frequency;     // fundamental frequency
   T d0    = decayTime;     // fundamental decay-time
@@ -215,7 +215,7 @@ void synthesizeModalRodFreeFree(T *x, int N, T frequency, T sampleRate,
   std::vector<T> d(numModes);
   std::vector<T> p(numModes);
   for(int m = 0; m < numModes; m++)
-  {        
+  {
     f.v[m] = frequencies[m];
     h      = f.v[m] / f.v[0];
     d.v[m] = d0 / pow(h, decayExponent);
@@ -253,13 +253,13 @@ void upsampleLinear(T *in, int inLength, T *out, int upsamplingFactor)
 }
 
 template<class T>
-void upsampleHermiteAsymmetric1(T *in, int inLength, T *out, int upsamplingFactor,                                     
+void upsampleHermiteAsymmetric1(T *in, int inLength, T *out, int upsamplingFactor,
   T shape)
 {
   int offset = 0;
   for(int n = 1; n < inLength; n++)
   {
-    // special handling for the input sample at index 1 - it has only one predecessor, 
+    // special handling for the input sample at index 1 - it has only one predecessor,
     // but the cubic interpolator needs two:
     T *tmpPointer;
     T tmpBuffer[3];
@@ -283,13 +283,13 @@ void upsampleHermiteAsymmetric1(T *in, int inLength, T *out, int upsamplingFacto
 }
 
 template<class T>
-void upsampleHermiteAsymmetricM(T *in, int inLength, T *out, 
+void upsampleHermiteAsymmetricM(T *in, int inLength, T *out,
                                        int upsamplingFactor, int M, T shape)
 {
   int n, m, i;
   int offset        = 0;
-  int bufferSize    = M+2;  
-  T *tmpBuffer = new T[bufferSize];  
+  int bufferSize    = M+2;
+  T *tmpBuffer = new T[bufferSize];
   T *tmpPointer;
 
   for(n = 1; n < inLength; n++)
@@ -311,7 +311,7 @@ void upsampleHermiteAsymmetricM(T *in, int inLength, T *out,
     offset += upsamplingFactor;
   }
 
-  // tail: 
+  // tail:
   rsFillWithZeros(tmpBuffer, M+2);
   for(i = 1; i <= rsMin(M+1, inLength); i++)
     tmpBuffer[M+1-i] = in[inLength-i];
@@ -328,7 +328,7 @@ void upsampleHermiteAsymmetricM(T *in, int inLength, T *out,
 // Filtering:
 
 template<class T>
-void filterButterworth(T *x, T *y, int N, T frequency, T sampleRate, 
+void filterButterworth(T *x, T *y, int N, T frequency, T sampleRate,
                               int mode, int prototypeOrder, T gain, bool forwardBackward)
 {
   rsError("We need to get the high-order IIR filter code into RSLib to make this work again");
@@ -353,7 +353,7 @@ void filterButterworth(T *x, T *y, int N, T frequency, T sampleRate,
 // Others:
 
 /*
-void rosic::estimateEnvelope(T *x, T *y, int N, T sampleRate, T attackTime, 
+void rosic::estimateEnvelope(T *x, T *y, int N, T sampleRate, T attackTime,
                              T releaseTime, int mode, bool forwardBackward)
 {
 
@@ -364,9 +364,9 @@ template<class T>
 void fft(T *signalBlock, int blockSize, std::complex<T> *spectrum, int fftSize)
 {
   rsAssert(fftSize >= blockSize);
-  static rsFourierTransformerBluestein transformer;
+  static rsFourierTransformerBluestein<T> transformer;
   transformer.setBlockSize(fftSize);
-  transformer.setNormalizationMode(rsFourierTransformerRadix2::NORMALIZE_ON_FORWARD_TRAFO);
+  transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO);
   for(int n=0; n<blockSize; n++)
     spectrum[n] = std::complex<T>(signalBlock[n]);
   for(int n=blockSize; n<fftSize; n++)
@@ -377,10 +377,10 @@ void fft(T *signalBlock, int blockSize, std::complex<T> *spectrum, int fftSize)
 template<class T>
 void ifft(std::complex<T> *spectrum, int fftSize, std::complex<T> *signalBlock)
 {
-  static rsFourierTransformerBluestein transformer;
+  static rsFourierTransformerBluestein<T> transformer;
   transformer.setBlockSize(fftSize);
-  transformer.setNormalizationMode(rsFourierTransformerRadix2::NORMALIZE_ON_FORWARD_TRAFO);
-  transformer.setDirection(rsFourierTransformerRadix2::INVERSE);
+  transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO);
+  transformer.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
   transformer.transformComplexBuffer(spectrum, signalBlock);
 }
 
@@ -395,7 +395,7 @@ void ifftReal(std::complex<T> *spectrum, int fftSize, T *signalBlock)
 }
 
 template<class T>
-void fftMagnitudesAndPhases(T *signalBlock, int blockSize, T *magnitudes, 
+void fftMagnitudesAndPhases(T *signalBlock, int blockSize, T *magnitudes,
                                    T *phases, int fftSize)
 {
   std::complex<T> *spectrum = new std::complex<T>[fftSize];
@@ -443,8 +443,8 @@ void minimumPhaseReconstruction(T *input, int numSamples, T *output)
   T *c = output; // use output buffer for intermediate results in cepstarl domain
   int N = numSamples;
 
-  signalToRealCepstrum(input, numSamples, c); 
-  
+  signalToRealCepstrum(input, numSamples, c);
+
   // apply cepstral window to make the cepstrum causal (left-to-zero indices are reflected into the
   // second half of the buffer):
   int n;
@@ -478,7 +478,7 @@ void crossCorrelation(T *x, int xLength, T *y, int yLength, T *result)
   fft(y, yLength, Y, fftSize);
   for(int k=0; k<fftSize; k++)
     X[k] *= Y[k].getConjugate();  // X is now the cross-spectrum
-  
+
   ifftReal(X, fftSize, result);
 
   delete[] X;
@@ -495,7 +495,7 @@ T rsMaxCorrelationLag(T *r, int N)
   // find exact location of maximum by fitting a parabola through 3 successive correlation values
   // and using the maximum of the parabola:
   T a[3];
-  rsPolynomial<T>::fitQuadratic_0_1_2(a, &r[nMax-1]); 
+  rsPolynomial<T>::fitQuadratic_0_1_2(a, &r[nMax-1]);
   T offset = 0.0;
   if( a[2] != 0.0 )
     offset = -0.5*a[1]/a[2];
@@ -538,9 +538,9 @@ T rsGetShiftForBestMatch(T *x1, T *x2, int N, bool deBias)
   T lag1 = rsMaxCorrelationLag(x2, x1, N, deBias); // how much x1 lags behind x2
   T lag2 = rsMaxCorrelationLag(x1, x2, N, deBias); // how much x2 lags behind x1
 
-  // If only one of the lags for best match is > 0.0, return it (with the correct sign), if both 
+  // If only one of the lags for best match is > 0.0, return it (with the correct sign), if both
   // are > 0.0, return the one with smaller absolute value (also with the correct sign):
-  if(lag1 > 0.0 && lag2 > 0.0)  
+  if(lag1 > 0.0 && lag2 > 0.0)
   {
     if(lag2 < lag1)
       return lag2;
@@ -560,22 +560,22 @@ T rsGetShiftForBestMatch(T *x1, T *x2, int N, bool deBias)
   //  return -lag1;
 
   // todo: Maybe the criterion which of the lags should be returned should not be based only on
-  // the amount of shift that would be necessary for a best match with shifting in either 
+  // the amount of shift that would be necessary for a best match with shifting in either
   // direction, but on the actual "goodness" of both matches. Instead of choosing the lag with
   // smaller absolute value for the time-shift variable, we could choose the lag with larger
-  // actual value of the crosscorrelation function evaluated at the respective lag. In 
+  // actual value of the crosscorrelation function evaluated at the respective lag. In
   // rsMaxCorrelationLag, we would not only determine the subsample-precision lag value, but also
   // the value of the crosscorrelation function *at* this lag and use this y-value in the decision
-  // logic. Maybe rsMaxCorrelationLag should return an rsPoint2D object with the lag value as 
-  // x-coordinate and the crosscorrelation function value as y coordinate at this x. In the 
-  // (unlikely) event, that these y-values are indeed exactly equal (or maybe within a threshold), 
-  // the logic above could be used. Or maybe, we could establish a "soft" logic, using the smaller 
+  // logic. Maybe rsMaxCorrelationLag should return an rsPoint2D object with the lag value as
+  // x-coordinate and the crosscorrelation function value as y coordinate at this x. In the
+  // (unlikely) event, that these y-values are indeed exactly equal (or maybe within a threshold),
+  // the logic above could be used. Or maybe, we could establish a "soft" logic, using the smaller
   // lag whenever some measure of the difference in the lags is greater than some measure in the
   // difference in the function values - it's a mess....
 }
 
 /*
-T RSLib::estimateFundamental(T *x, int N, T sampleRate,       
+T RSLib::estimateFundamental(T *x, int N, T sampleRate,
                                   T minExpected, T maxExpected)
 {
   int minLag = (int) floor(sampleRate / maxExpected);
@@ -586,14 +586,14 @@ T RSLib::estimateFundamental(T *x, int N, T sampleRate,
   minLag = maxLag;
   N = 1;
   x = 0;
-  
- 
+
+
   return 0.0;  // preliminary
 }
 */
 
 /*
-void rosic::estimateModalParameters(T *x, int N, Vector *frequencies, Vector *amplitudes, 
+void rosic::estimateModalParameters(T *x, int N, Vector *frequencies, Vector *amplitudes,
                                     Vector *decayTimes, T sampleRate)
 {
 
