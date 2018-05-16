@@ -630,3 +630,10 @@ void smoothingFilterTransitionTimes()
   // http://homes.esat.kuleuven.be/~maapc/Sofia/slides_chapter8.pdf
   // http://dspcan.homestead.com/files/IIRFilt/zfiltsii.htm
 }
+
+
+void poleZeroPrototype()
+{
+
+  int dummy = 0;
+}

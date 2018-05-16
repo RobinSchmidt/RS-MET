@@ -1,7 +1,12 @@
 #pragma once
 
 /** A class for computing poles and zeros (and gain factors) for analog unit cutoff lowpass or 
-low-shelving prototype filters. */
+low-shelving prototype filters. 
+
+References:
+-(1) Sophocles J. Orfanidis: Lecture Notes on Elliptic Filter Design
+-(2) Sophocles J. Orfanidis: High-Order Elliptical Equalizer Design
+-(3) Larry D.Paarmann: Design and Analysis of Analog Filters */
 
 template<class T>
 class PoleZeroPrototype
