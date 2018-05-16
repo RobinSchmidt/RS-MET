@@ -1,5 +1,7 @@
 Snowflake::Snowflake()
 {
+  commandsReady = false;
+
   // init to order 4 Koch snowflake:
   turnAngle = 60;
   turtle.setAngle(turnAngle);

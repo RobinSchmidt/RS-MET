@@ -43,20 +43,21 @@ inline std::complex<rsFloat64x2> operator/(
 }
 // \todo: provide optimized versions when left or right operand is real
 
+#ifdef _MSC_VER // doesn't compile with gcc
 /** Divides a complex number in place by another complex number. */
-inline std::complex<rsFloat64x2>& operator/=(std::complex<rsFloat64x2>& a,
-                                             const std::complex<rsFloat64x2>& b)
+inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
+  const std::complex<rsFloat64x2>& a)
 {
-  return a = a / b; // THIS NEEDS TESTING!
+  return *this = *this / a;
 }
-
-// old - doesn't compile with gcc:
-//inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
-//  const std::complex<rsFloat64x2>& a)
+#endif
+// this does compile with gcc, but there it compiles also, when leaving it out entirely:
+//inline std::complex<rsFloat64x2>& operator/=(std::complex<rsFloat64x2>& a,
+//                                             const std::complex<rsFloat64x2>& b)
 //{
-//  return *this = *this / a;
-//  //return *this;
+//  return a = a / b; // THIS NEEDS TESTING!
 //}
+
 
 inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) { return z; }
 

@@ -186,6 +186,10 @@ void GradientBasedMinimizer<T>::minimizeViaConjugateGradient()
   printEndInfo();
 }
 
+#undef min  // some silly include header on windows (minwindef.h) defines min/max as macros
+#undef max  // ...but actually, they are already undef'd in Constants.h - but i still get a 
+            // warning without these undefs
+
 template<class T>
 void GradientBasedMinimizer<T>::minimizeViaScaledConjugateGradient()
 {

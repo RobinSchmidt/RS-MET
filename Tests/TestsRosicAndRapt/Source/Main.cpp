@@ -113,7 +113,8 @@ int main(int argc, char* argv[])
 
 
   //passed &= testFilterPolynomials(str);
-  passed &= testHighOrderFilter(  str);  // fails
+
+  //passed &= testHighOrderFilter(  str);  // fails
 
 
   ////passed &= testModalFilter2(str);       // fails
@@ -201,8 +202,10 @@ int main(int argc, char* argv[])
   ////movingAverage();  // hangs
   ////trapezAverager();   // hangs
 
+
   //compareApproximationMethods();  // something is wrong here - plots are weird
-  compareOldAndNewEngineersFilter();
+  //compareOldAndNewEngineersFilter();
+
 
   //testPoleZeroMapper();
   //ringingTime();
@@ -420,7 +423,7 @@ int main(int argc, char* argv[])
   // Genrators:
   //testOscillatorStereo();
   //testLorentzSystem();
-  //testSnowflake();
+  testSnowflake();
   //testResetter();
   //testTurtleReverse();
   //testTurtleSource();

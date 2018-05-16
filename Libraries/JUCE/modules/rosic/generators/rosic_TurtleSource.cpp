@@ -57,6 +57,9 @@ void ResetCounter::updateJitteringLimit()
 
 TurtleSource::TurtleSource()
 {
+  tableUpToDate = false;
+  incUpToDate = false;
+
   // init to square:
   turnAngle = 90;
   turtle.setAngle(turnAngle);
