@@ -12,7 +12,7 @@
 it contains only the coefficients as members - past inputs/output samples are supposed to be
 added in subclasses because different topolies require different state variables.
 
-// todo: check, if the difference equation's sign convention is right (plusses for the recursive 
+// todo: check, if the difference equation's sign convention is right (plusses for the recursive
 part) */
 
 template<class TCof> // coefficient type
@@ -109,7 +109,7 @@ RS_INLINE void rsBiquadDF1<TSig, TCof>::getSampleInPlace(TSig &inOut)
 {
   TSig tmp = inOut;
 
-  tmp = (b0*tmp) + (b1*x1 + b2*x2) + (a1*y1 + a2*y2);
+  tmp = (this->b0 * tmp) + (this->b1 * x1 + this->b2 * x2) + (this->a1 * y1 + this->a2 * y2);
     // parentheses facilitate out-of-order execution
 
   x2 = x1;
@@ -125,7 +125,7 @@ RS_INLINE TSig rsBiquadDF1<TSig, TCof>::getSample(TSig in)
 {
   TSig tmp;
 
-  tmp = (b0*in) + (b1*x1 + b2*x2) + (a1*y1 + a2*y2);
+  tmp = (this->b0 * in) + (this->b1 * x1 + this->b2 * x2) + (this->a1 * y1 + this->a2 * y2);
     // parentheses facilitate out-of-order execution
 
   x2 = x1;
@@ -827,11 +827,12 @@ RS_INLINE void rsBiquadDesigner::calculateLowPeakHighMorphCoeffs(T &b0, T &b1,
     tmp2 = 0.0;
     RS_DEBUG_BREAK; // this design procedure assumes q >= 0.5
   }
-  rsComplexDbl pa = rsComplexDbl(tmp1, tmp2);
+
+  std::complex<T> pa = std::complex<T>(tmp1, tmp2);
 
   // calculate the position of the digital pole-pair:
-  rsComplexDbl z  = 0.5 * oneOverSampleRate * pa;
-  rsComplexDbl pd = (1.0+z) / (1.0-z);
+  std::complex<T> z  = 0.5 * oneOverSampleRate * pa;
+  std::complex<T> pd = (1.0+z) / (1.0-z);
 
   // convert poles to biquad feedback coefficients:
   a1 = 2.0 * pd.re;
