@@ -145,10 +145,10 @@ protected: // temporaly made public because the friend decalarations below don't
   rsVectorDbl  y;   // vector of network outputs (exluding bias)
 
   //template<class T>
-  friend class MultiLayerPerceptronErrorFunction;
+  friend class MultiLayerPerceptronErrorFunction<T>;
 
   //template<class T>
-  friend class MultiLayerPerceptronTrainer;
+  friend class MultiLayerPerceptronTrainer<T>;
 
 };
 

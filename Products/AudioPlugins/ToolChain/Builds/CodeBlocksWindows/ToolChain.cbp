@@ -30,7 +30,7 @@
           <Add option="-DJucePlugin_Build_AAX=0"/>
           <Add option="-DJucePlugin_Build_Standalone=1"/>
           <Add option="-DJUCE_SHARED_CODE=1"/>
-          <Add option="-m64"/>
+          <Add option="-m32"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
@@ -42,7 +42,7 @@
           <Add directory="..\..\..\..\..\Libraries\JUCE\modules"/>
         </Compiler>
         <Linker>
-          <Add option="-m64"/>
+          <Add option="-m32"/>
           <Add library="comdlg32"/>
           <Add library="imm32"/>
           <Add library="ole32"/>
@@ -80,7 +80,7 @@
           <Add option="-DJucePlugin_Build_RTAS=0"/>
           <Add option="-DJucePlugin_Build_AAX=0"/>
           <Add option="-DJucePlugin_Build_Standalone=0"/>
-          <Add option="-m64"/>
+          <Add option="-m32"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
@@ -93,7 +93,7 @@
         </Compiler>
         <Linker>
           <Add option="bin/Debug/ToolChain.lib"/>
-          <Add option="-m64"/>
+          <Add option="-m32"/>
           <Add library="comdlg32"/>
           <Add library="imm32"/>
           <Add library="ole32"/>
@@ -132,7 +132,7 @@
           <Add option="-DJucePlugin_Build_RTAS=0"/>
           <Add option="-DJucePlugin_Build_AAX=0"/>
           <Add option="-DJucePlugin_Build_Standalone=1"/>
-          <Add option="-m64"/>
+          <Add option="-m32"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
@@ -145,7 +145,7 @@
         </Compiler>
         <Linker>
           <Add option="bin/Debug/ToolChain.lib"/>
-          <Add option="-m64"/>
+          <Add option="-m32"/>
           <Add library="comdlg32"/>
           <Add library="imm32"/>
           <Add library="ole32"/>

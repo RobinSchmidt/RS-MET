@@ -36,3 +36,9 @@ occurences of "libcurl" from the makefile, makes it build
 for the juce PluginHost - additionally this is needed:
 sudo apt-get install libgl-dev
 
+
+The CodeBlocksWindows build has been set to a 32 bit build because i was getting errors in 64 bit.
+This is meant only for fixing gcc build errors on windows without the  need to switch to linux or
+osx.
+
+
