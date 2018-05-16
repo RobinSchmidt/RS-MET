@@ -212,7 +212,7 @@ std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(T *x
       // refine linear zero estimate by Newton iteration on a higher order interpolating
       // polynomial using the zero of the linear interpolant as initial guess:
       rsPolynomial<T>::rsInterpolatingPolynomial(a, -q, 1, &x[n-q], 2*q+2);
-      nf = getRootNear(nf, a, 2*q+1, 0.0, 1.0);
+      nf = rsPolynomial<T>::getRootNear(nf, a, 2*q+1, 0.0, 1.0);
     }
     z[nz].intPart  = n;    // store integer part
     z[nz].fracPart = nf;   // store fractional part

@@ -173,8 +173,8 @@ void rsLadderFilterZDF<TSig, TPar>::calcCoeffs()
   rsSinCos(wc, &s, &c);               // s = sin(wc), c = cos(wc)
   this->a = -1 / (s+c);
   this->b =  1 + this->a;
-  this->k = computeFeedbackFactor(this->resonance, c, this->a, this->b);
-  this->g = computeCompensationGain(this->a, this->b, this->k);
+  this->k = this->computeFeedbackFactor(this->resonance, c, this->a, this->b);
+  this->g = this->computeCompensationGain(this->a, this->b, this->k);
 
   // prediction coefficients:
   b4   =  this->b * this->b * this->b * this->b;   // b^4
@@ -257,7 +257,7 @@ TPar rsLadderFilterFeedbackSaturated<TSig, TPar>::getCompensationGain()
   //computeCoeffs(wc, fb, &a1_1, &b0_1, &k_1, &g_1);
 
   TPar gain;
-  gain = computeCompensationGain(this->a, this->b, this->k);  // maybe drive*k?
+  gain = this->computeCompensationGain(this->a, this->b, this->k);  // maybe drive*k?
   //computeCompensationGain(a1, b0, drive*k, &gain);
   return gain;
 
@@ -758,11 +758,11 @@ void rsResoReplacerPhaseBumped<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TS
 
   // copied from baseclass:
   TSig mag, phs;
-  getNonresonantOutputAndResonanceParameters(in+ex, yf, &mag, &phs);
+  this->getNonresonantOutputAndResonanceParameters(in+ex, yf, &mag, &phs);
   phs     += bump;                // new, compared to baseclass (maybe, we need to apply wrapToInterval?)
   mag     += ampOffset;
   mag      = limitMagnitude(mag);   // new - maybe optimize by inlining (2-level)
-  *yr      = getWaveForm(mag, phs); // resonance reconstruction/replacement
+  *yr      = this->getWaveForm(mag, phs); // resonance reconstruction/replacement
 
   //*yr *= inputScale(in);        // input based limiting
     // creates too narrow spikes - use lowpassed version instead
@@ -854,7 +854,7 @@ TSig rsResoReplacerPhaseBumped<TSig, TPar>::getExcitation(TSig in)
 template<class TSig, class TPar>
 rsLadderMystran<TSig, TPar>::rsLadderMystran()
 {
-  setMode(this->LP_24);
+  this->setMode(this->LP_24);
   reset();
 }
 

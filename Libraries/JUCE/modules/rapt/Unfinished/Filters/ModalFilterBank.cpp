@@ -271,7 +271,7 @@ void rsNonlinearModalFilter<TSig, TPar>::setModalParameters(TPar frequency, TPar
   TPar alpha = 1.0 / (decayTime*sampleRate); 
   TPar r     = exp(-alpha);
   //a.setRadiusAndAngle(r, w); // write a function setPolar...or check if there already is one in std::complex
-  a = polar(r, w);
+  a = std::polar(r, w);
 
   this->amplitude  = amplitude;
   this->startPhase = startPhase;

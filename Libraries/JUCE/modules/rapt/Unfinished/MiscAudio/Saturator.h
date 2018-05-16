@@ -10,7 +10,7 @@ and the output of the saturation function is shifted and scaled again - so, even
 y = t + s2 * saturate( (x-t)*s1 ) where s1 chosen such that the input domain t..1 maps to 0..1 and
 s2 is chosen such that the saturation-function's output range 0..1 maps back to t..1. For a typical
 saturating behavior, you'll probably want to choose a saturation function that satisfies:
-f(0)=0, f'(0)=1, f(inf)=1. f(0)=0 will ensure a matched function value at the threshold, f'(0)=0
+f(0)=0, f'(0)=1, f(inf)=1. f(0)=0 will ensure a matched function value at the threshold, f'(0)=1
 will ensure a matched derivative at the threshold and f(inf)=1 will ensure that the overall
 saturation value is unity.
 
