@@ -442,161 +442,161 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
   {
   case NOWHERE:                                  // no saturation
   {
-    y[0] = in - k*y[4];
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    this->y[0] = in - this->k * this->y[4];
+    this->y[1] = this->b * this->y[0] - this->a * this->y[1];
+    this->y[2] = this->b * this->y[1] - this->a * this->y[2];
+    this->y[3] = this->b * this->y[2] - this->a * this->y[3];
+    this->y[4] = this->b * this->y[3] - this->a * this->y[4];
   }
   break;
   case PRE_FB_GAIN:                              // pre k
   {
-    y[0] = in - k*saturate(drive*y[4]);
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[0] = in - k*saturate(drive * y[4]);
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case POST_FB_GAIN:                             // post k
   {
-    y[0] = in - saturate(k*drive*y[4]);
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[0] = in - saturate(k * drive * y[4]);
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case INPUT_AND_POST_GAIN:                   // input and post k
   {
-    y[0] = saturate(in) - saturate(k*drive*y[4]);
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[0] = saturate(in) - saturate(k * drive * y[4]);
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case POST_INPUT_ADD:                           // post input add
   {
     y[0] = saturate(in - k*drive*y[4]);
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case POST_GAIN_AND_ADD:
   {
     double tmp;
-    tmp  = saturate(k*drive*y[4]);  // 1st saturation
+    tmp  = saturate(k * drive * y[4]);  // 1st saturation
     tmp  = saturate(in - tmp);      // 2nd saturation
                                     // todo: use different clipping limits for 1st and 2nd
     y[0] = tmp;
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
 
   case POST_1ST_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = saturate(b*y[0] - a*y[1]);
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[0] = in - drive * k * y[4];
+    y[1] = saturate(b * y[0] - a * y[1]);
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case POST_2ND_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = b*y[0] - a*y[1];
-    y[2] = saturate(b*y[1] - a*y[2]);
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[0] = in - drive * k * y[4];
+    y[1] = b * y[0] - a * y[1];
+    y[2] = saturate(b * y[1] - a * y[2]);
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case POST_3RD_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = saturate(b*y[2] - a*y[3]);
-    y[4] = b*y[3] - a*y[4];
+    y[0] = in - drive * k * y[4];
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = saturate(b * y[2] - a * y[3]);
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case POST_4TH_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = saturate(b*y[3] - a*y[4]);
+    y[0] = in - drive * k * y[4];
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = saturate(b * y[3] - a * y[4]);
   }
   break;
   case POST_EACH_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = saturate(b*y[0] - a*y[1]);
-    y[2] = saturate(b*y[1] - a*y[2]);
-    y[3] = saturate(b*y[2] - a*y[3]);
-    y[4] = saturate(b*y[3] - a*y[4]);
+    y[0] = in - drive * k * y[4];
+    y[1] = saturate(b * y[0] - a * y[1]);
+    y[2] = saturate(b * y[1] - a * y[2]);
+    y[3] = saturate(b * y[2] - a * y[3]);
+    y[4] = saturate(b * y[3] - a * y[4]);
   }
   break;
 
   case IN_1ST_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = b*y[0] - a*saturate(y[1]);
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[0] = in - drive * k * y[4];
+    y[1] = b * y[0] - a * saturate(y[1]);
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case IN_2ND_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*saturate(y[2]);
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[0] = in - drive * k * y[4];
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * saturate(y[2]);
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case IN_3RD_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*saturate(y[3]);
-    y[4] = b*y[3] - a*y[4];
+    y[0] = in - drive * k * y[4];
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * saturate(y[3]);
+    y[4] = b * y[3] - a * y[4];
   }
   break;
   case IN_4TH_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*saturate(y[4]);
+    y[0] = in - drive * k * y[4];
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * saturate(y[4]);
   }
   break;
   case IN_EACH_STAGE:
   {
-    y[0] = in - drive*k*y[4];
-    y[1] = b*y[0] - a*saturate(y[1]);
-    y[2] = b*y[1] - a*saturate(y[2]);
-    y[3] = b*y[2] - a*saturate(y[3]);
-    y[4] = b*y[3] - a*saturate(y[4]);
+    y[0] = in - drive * k * y[4];
+    y[1] = b * y[0] - a * saturate(y[1]);
+    y[2] = b * y[1] - a * saturate(y[2]);
+    y[3] = b * y[2] - a * saturate(y[3]);
+    y[4] = b * y[3] - a * saturate(y[4]);
   }
   break;
   case POST_EACH_AND_IN:
   {
-    y[0] = saturate(in) - drive*k*y[4];
-    y[1] = b*y[0] - a*saturate(y[1]);
-    y[2] = b*y[1] - a*saturate(y[2]);
-    y[3] = b*y[2] - a*saturate(y[3]);
-    y[4] = b*y[3] - a*saturate(y[4]);
+    y[0] = saturate(in) - drive * k * y[4];
+    y[1] = b * y[0] - a * saturate(y[1]);
+    y[2] = b * y[1] - a * saturate(y[2]);
+    y[3] = b * y[2] - a * saturate(y[3]);
+    y[4] = b * y[3] - a * saturate(y[4]);
   }
   break;
 
@@ -624,18 +624,18 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
   {
     TSig c = -0.3;
     //y[0] = in - saturate(k*drive*y[4] + c*in) - saturate(c*in);
-    y[0] = in - saturate(k*drive*y[4] + c*in);
-    y[1] = b*y[0] - a*y[1];
-    y[2] = b*y[1] - a*y[2];
-    y[3] = b*y[2] - a*y[3];
-    y[4] = b*y[3] - a*y[4];
+    y[0] = in - saturate(k * drive * y[4] + c * in);
+    y[1] = b * y[0] - a * y[1];
+    y[2] = b * y[1] - a * y[2];
+    y[3] = b * y[2] - a * y[3];
+    y[4] = b * y[3] - a * y[4];
   }
   break;
 
   default: return 0.0;
   }
 
-  return c[0]*y[0] + c[1]*y[1] + c[2]*y[2] + c[3]*y[3] + c[4]*y[4];
+  return c[0] * y[0] + c[1] * y[1] + c[2] * y[2] + c[3] * y[3] + c[4] * y[4];
 }
 
 template<class TSig, class TPar>
