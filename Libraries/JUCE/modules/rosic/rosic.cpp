@@ -10,11 +10,11 @@ header files that the compiler may be using. */
 
 //=================================================================================================
 
-/** The cpp files are included in the order in which they depend on each other. The only folder 
+/** The cpp files are included in the order in which they depend on each other. The only folder
 from which we have not included the .cpp files is the legacy folder.
 
-ToDo: reorder them in the library accordingly, such that files in one library folder depend only on 
-other files in folders that are considered "above" in the hierarchy. 
+ToDo: reorder them in the library accordingly, such that files in one library folder depend only on
+other files in folders that are considered "above" in the hierarchy.
 In the future, rosic should be made dependent on the RAPT library and whereever it makes sense, the
 rosic-class should be turned into an template instatiation of  RAPT class template.
 jura_processors should depend on the rosic module and grab its DSP code from there
@@ -22,7 +22,7 @@ rename modules:
 
 jura_framework: rs_framework
 jura_processors: rs_audio_processors
-...namespace name should be rs (but do all of this only after dragging in all old plugin code and 
+...namespace name should be rs (but do all of this only after dragging in all old plugin code and
 integrating it into the Chainer.
 
 rosic: rs_dsp (this should never depend on any juce class/module)
@@ -115,7 +115,7 @@ template class RAPT::rsMultiBandSplitter<double, double>;
 template class RAPT::rsHalfWaveSaturator<double, double>;
 template class RAPT::rsSaturator<double, double>;
 template class RAPT::rsSlewRateLimiterLinear<double, double>;
-template class RAPT::rsBreakpointModulator<double>;
+//template class RAPT::rsBreakpointModulator<double>;
 
 template class RAPT::rsOnePoleFilter<double, double>;
 
@@ -124,17 +124,17 @@ template class RAPT::rsNonlinearModalFilter<double, double>;
 template class RAPT::rsModalFilterBank<double, double>;
 template class RAPT::rsModalFilterWithAttack2<double, double>;
 
-template class RAPT::rsStateVariableFilter<double, double>;
+//template class RAPT::rsStateVariableFilter<double, double>;
 template class RAPT::rsPhonoFilter<double, double>;
 template class RAPT::rsMovingAverage<double, double>;
 
 
 //template class RAPT::rsPrototypeDesigner<double>;
 //template class RAPT::rsInfiniteImpulseResponseDesigner<double>;
-template class RAPT::rsEngineersFilter<double, double>;
+//template class RAPT::rsEngineersFilter<double, double>;
 
 template class RAPT::rsLadderFilter2<double, double>;
-template class RAPT::rsLadderFilterZDF<double, double>; 
+template class RAPT::rsLadderFilterZDF<double, double>;
 template class RAPT::rsLadderResoShaped<double, double>;
 template class RAPT::rsLadderResoShaped2<double, double>;
 template class RAPT::rsLadderFilterFeedbackSaturated<double, double>;
@@ -158,7 +158,7 @@ template class RAPT::rsDoublePendulum<double, double>;
 
 template class RAPT::rsResampler<double, double>;
 template class RAPT::rsTimeWarper<double, double>;
-template class RAPT::rsInstantaneousFundamentalEstimator<double>;
+//template class RAPT::rsInstantaneousFundamentalEstimator<double>;
 template class RAPT::rsCycleMarkFinder<double>;
 template class RAPT::rsVariableSpeedPlayer<double, double>;
 template class RAPT::rsPhaseLockedCrossfader<double, double>;
@@ -188,7 +188,7 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 #include "math/rosic_RealFunctionEvaluationAlgorithms.cpp"   // used by SpecialFunctionsReal
 #include "math/rosic_SpecialFunctionsReal.cpp"               // used by ComplexFunctions?
 #include "math/rosic_Complex.cpp"                            // used by ComplexFunctionsAlgorithms
-#include "math/rosic_ComplexFunctionsAlgorithms.cpp" 
+#include "math/rosic_ComplexFunctionsAlgorithms.cpp"
 #include "math/rosic_ComplexFunctions.cpp"                   // used by ExpressionEvaluator
 #include "scripting/rosic_ExpressionEvaluator.cpp"           // used by TabulatedFunction
 #include "basics/rosic_TabulatedFunction.cpp"                // needs ExpressionEvaluator
@@ -304,7 +304,7 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 #include "generators/rosic_TestGenerator.cpp"
 #include "generators/rosic_WaveTable.cpp"
 #include "generators/rosic_TurtleSource.cpp"
-#include "generators/rosic_Snowflake.cpp" 
+#include "generators/rosic_Snowflake.cpp"
 
 // modulators
 //#include "modulators/MagicCarpetModulator.cpp" // needs MagicCarpetDefinitions.h - where is this? legacy?
@@ -339,10 +339,10 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 #include "others/rosic_SpectralEnvelopeProcessor.cpp"
 #include "others/rosic_SpectralFilter.cpp"
 #include "others/rosic_TuningTable.cpp"
-#include "others/rosic_VectorMixer.cpp"  
+#include "others/rosic_VectorMixer.cpp"
 
 // analysis
-#include "analysis/rosic_CyclicAutoCorrelator.cpp" 
+#include "analysis/rosic_CyclicAutoCorrelator.cpp"
 #include "analysis/rosic_EnvelopeFollower.cpp"    // needs SlewRateLimiter
 #include "analysis/rosic_LinearPredictor.cpp"
 #include "analysis/rosic_FormantRemover.cpp"
@@ -434,7 +434,7 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 #include "infrastructure/rosic_MidiNoteEvent.cpp"
 #include "infrastructure/rosic_PolyphonicInstrument.cpp"
 #include "infrastructure/rosic_PolyphonicInstrumentVoice.cpp"
-// copy MonoSynth baseclass from ChaosGenerator here ...but maybe PolyphonicInstrumentVoice has 
+// copy MonoSynth baseclass from ChaosGenerator here ...but maybe PolyphonicInstrumentVoice has
 // already the required functionality and more?
 
 // numerical (maybe move to math)
@@ -450,7 +450,7 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 #include "sequencing/rosic_AcidPattern.cpp"
 #include "sequencing/rosic_AcidSequencer.cpp"
 
-// offline 
+// offline
 // ...include code from RSLib for offline processes (Resampler, PitchFlattener, etc.) here...
 // ...also the BeatDetector stuff
 
@@ -477,7 +477,7 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 #include "instruments/rosic_WorkhorseVoice.cpp"
 #include "instruments/rosic_Workhorse.cpp"
 
-// these do not really fit into the directory order - they are kind-of higher-level classes, maybe 
+// these do not really fit into the directory order - they are kind-of higher-level classes, maybe
 // they should be in the instruments section...or something:
 #include "effects/rosic_Quadrifex.cpp"  // needs the effects wrapped into "Module" subclasses
 #include "generators/rosic_Quadrigen.cpp"             // needs Module, RoutingMatrix
