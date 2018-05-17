@@ -83,9 +83,14 @@
 #include "basics/GlobalDefinitions.h"
 #include "basics/GlobalFunctions.h"
 #include "basics/rosic_Constants.h"
+
 //#include "basics/Float32x4.h"
 #include "basics/Float64x2.h"
+
+#ifdef _MSC_VER                       // i can't figure out, how to make this compile on mac
 #include "basics/ComplexFloat64x2.h"
+#endif
+
 #include "basics/rosic_ChannelMatrix2x2.h"
 #include "basics/rosic_HelperFunctions.h"
 #include "basics/rosic_NumberManipulations.h"
@@ -404,7 +409,7 @@
 
 
 //=================================================================================================
-// typedefs for RAPT instantiations (for convenience)..should these be wrapped into rosic 
+// typedefs for RAPT instantiations (for convenience)..should these be wrapped into rosic
 // namespace?:
 
 typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
@@ -458,7 +463,7 @@ typedef RAPT::rsEngineersFilter<rsFloat64x2, double> rsEngineersFilterD2D;
 
 
 typedef RAPT::rsLadderFilter2<double, double> rsLadderFilter2DD;  // the version from RSLib
-typedef RAPT::rsLadderFilterZDF<double, double> rsLadderFilterZDFDD; 
+typedef RAPT::rsLadderFilterZDF<double, double> rsLadderFilterZDFDD;
 typedef RAPT::rsLadderResoShaped<double, double> rsLadderResoShapedDD;
 typedef RAPT::rsLadderResoShaped2<double, double> rsLadderResoShaped2DD;
 typedef RAPT::rsLadderFilterFeedbackSaturated<double, double> rsLadderFeedbackSaturatedDD;

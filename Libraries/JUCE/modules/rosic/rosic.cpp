@@ -97,7 +97,12 @@ template class RAPT::rsEngineersFilter<rsFloat64x2, double>;
 template class RAPT::rsSmoothingFilter<double, double>;
 //template class RAPT::rsLadderFilter<double, double>;
 template class RAPT::rsLadderFilter<rsFloat64x2, double>;
+
+#ifdef _MSC_VER
 template class RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
+// does not compile on mac because of std::complex<rsFloat64x2>
+#endif
+
 //template class RAPT::rsLadderFilter<std::complex<double>, double>; // needed for TestPluginJUCE
 
 template class RAPT::rsPhasorFilter<double, double>;

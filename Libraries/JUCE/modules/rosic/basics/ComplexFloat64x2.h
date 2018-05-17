@@ -6,6 +6,47 @@ imaginary parts are each a SIMD vector. For some reason, the standard library fu
 std::complex dont work anymore when the template parameter to std::complex is a SIMD type, so we
 provide explicit specializations here. */
 
+
+/*
+// copied/edited from complex on mac (i commented out most of the declarations - it may become
+// necessarry to uncomment and provide implementations later...
+template<>
+class std::complex<rsFloat64x2>
+{
+public:
+  //typedef rsFloat64x2 value_type;
+
+  constexpr complex(rsFloat64x2 re = 0.0f, rsFloat64x2 im = 0.0f);
+  //explicit constexpr complex(const complex<rsFloat64x2>&);
+
+  constexpr rsFloat64x2 real() const;
+  constexpr rsFloat64x2 imag() const;
+  //void real(rsFloat64x2);
+  //void imag(rsFloat64x2);
+
+  complex<rsFloat64x2>& operator= (rsFloat64x2 z)
+  {
+    return *this = z;
+  }
+
+  //complex<rsFloat64x2>& operator+=(rsFloat64x2);
+  //complex<rsFloat64x2>& operator-=(rsFloat64x2);
+  //complex<rsFloat64x2>& operator*=(rsFloat64x2);
+  complex<rsFloat64x2>& operator/=(rsFloat64x2);
+
+  //complex<rsFloat64x2>& operator=(const complex<rsFloat64x2>&);
+  //template<class X> complex<rsFloat64x2>& operator= (const complex<X>&);
+  //template<class X> complex<rsFloat64x2>& operator+=(const complex<X>&);
+  //template<class X> complex<rsFloat64x2>& operator-=(const complex<X>&);
+  //template<class X> complex<rsFloat64x2>& operator*=(const complex<X>&);
+  //template<class X> complex<rsFloat64x2>& operator/=(const complex<X>&);
+};
+*/
+
+
+
+
+
 /** Returns the first (index 0) complex number in the complex of simd vectors. */
 inline std::complex<double> get0(std::complex<rsFloat64x2> z)
 {
@@ -61,6 +102,8 @@ inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator/=(
 
 inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) { return z; }
 
+
+
 /** Computes the complex exponential of z. */
 inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
 {
@@ -78,7 +121,10 @@ inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
   return std::complex<rsFloat64x2>(vre, vim);
 }
 
+
+
 /** Preliminary, to satisfy compiler on mac  */
+#ifndef _MSC_VER
 inline bool isnan(std::complex<rsFloat64x2> z)
 {
   return false;
@@ -92,41 +138,15 @@ inline std::complex<rsFloat64x2> copysign(std::complex<rsFloat64x2> z, std::comp
   return w;
 }
 
-/*
-// copied/edited from complex on mac:
-template<>
-class std::complex<rsFloat64x2>
-{
-public:
-  //typedef rsFloat64x2 value_type;
-  
-  //constexpr complex(rsFloat64x2 re = 0.0f, rsFloat64x2 im = 0.0f);
-  //explicit constexpr complex(const complex<rsFloat64x2>&);
-  
-  //constexpr rsFloat64x2 real() const;
-  //void real(rsFloat64x2);
-  //constexpr rsFloat64x2 imag() const;
-  //void imag(rsFloat64x2);
-  
-  complex<rsFloat64x2>& operator= (rsFloat64x2 z)
-  {
-    *this = z;
-  }
-  
-  //complex<rsFloat64x2>& operator+=(rsFloat64x2);
-  //complex<rsFloat64x2>& operator-=(rsFloat64x2);
-  //complex<rsFloat64x2>& operator*=(rsFloat64x2);
-  //complex<rsFloat64x2>& operator/=(rsFloat64x2);
-  
-  //complex<float>& operator=(const complex<rsFloat64x2>&);
-  //template<class X> complex<float>& operator= (const complex<X>&);
-  //template<class X> complex<float>& operator+=(const complex<X>&);
-  //template<class X> complex<float>& operator-=(const complex<X>&);
-  //template<class X> complex<float>& operator*=(const complex<X>&);
-  //template<class X> complex<float>& operator/=(const complex<X>&);
-};
-*/
+//template<>
+//inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator=(
+//  std::complex<rsFloat64x2> z) { return z; }
 
+//template<>
+//inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator=(
+//  const std::complex<rsFloat64x2>& z) { return z; }
+
+#endif
 
 
 
