@@ -1,4 +1,5 @@
-#include "../_third_party/ooura_fft/fft4g.c" // maybe try fft4g.c, compare performance
+#include "../_third_party/ooura_fft/fft4g.c" // maybe get rid? it's now in rapt...
+
 
 // construction/destruction:
 
