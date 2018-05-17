@@ -78,4 +78,75 @@ inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
   return std::complex<rsFloat64x2>(vre, vim);
 }
 
+/** Preliminary, to satisfy compiler on mac  */
+inline bool isnan(std::complex<rsFloat64x2> z)
+{
+  return false;
+}
+inline bool isinf(std::complex<rsFloat64x2> z)
+{
+  return false;
+}
+inline std::complex<rsFloat64x2> copysign(std::complex<rsFloat64x2> z, std::complex<rsFloat64x2> w)
+{
+  return w;
+}
+
+/*
+// copied/edited from complex on mac:
+template<>
+class std::complex<rsFloat64x2>
+{
+public:
+  //typedef rsFloat64x2 value_type;
+  
+  //constexpr complex(rsFloat64x2 re = 0.0f, rsFloat64x2 im = 0.0f);
+  //explicit constexpr complex(const complex<rsFloat64x2>&);
+  
+  //constexpr rsFloat64x2 real() const;
+  //void real(rsFloat64x2);
+  //constexpr rsFloat64x2 imag() const;
+  //void imag(rsFloat64x2);
+  
+  complex<rsFloat64x2>& operator= (rsFloat64x2 z)
+  {
+    *this = z;
+  }
+  
+  //complex<rsFloat64x2>& operator+=(rsFloat64x2);
+  //complex<rsFloat64x2>& operator-=(rsFloat64x2);
+  //complex<rsFloat64x2>& operator*=(rsFloat64x2);
+  //complex<rsFloat64x2>& operator/=(rsFloat64x2);
+  
+  //complex<float>& operator=(const complex<rsFloat64x2>&);
+  //template<class X> complex<float>& operator= (const complex<X>&);
+  //template<class X> complex<float>& operator+=(const complex<X>&);
+  //template<class X> complex<float>& operator-=(const complex<X>&);
+  //template<class X> complex<float>& operator*=(const complex<X>&);
+  //template<class X> complex<float>& operator/=(const complex<X>&);
+};
+*/
+
+
+
+
+//inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator=(std::complex<rsFloat64x2>& a,                                             const std::complex<rsFloat64x2>& b)
+//{
+//  return a = b;
+//}
+
+//inline void std::complex<rsFloat64x2>::operator=(const std::complex<rsFloat64x2>& a)
+//{
+//  return *this = a;
+//}
+//inline std::complex<rsFloat64x2>& std::complex<rsFloat64x2>::operator=(const std::complex<rsFloat64x2>& a)
+//{
+//  return *this = a;
+//}
+
+
+
+
+
+
 #endif
