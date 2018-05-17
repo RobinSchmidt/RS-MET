@@ -1,4 +1,4 @@
-#include "../_third_party/ooura_fft/fft4g.c" // maybe get rid? it's now in rapt...
+//#include "../_third_party/ooura_fft/fft4g.c" // maybe get rid? it's now in rapt...
 
 
 // construction/destruction:
@@ -115,7 +115,7 @@ void FourierTransformerRadix2::transformComplexBufferInPlace(Complex *buffer)
     sign = -1;
   else
     sign = +1;
-  cdft(2*N, sign, d_buffer, ip, w);
+  RAPT::cdft(2*N, sign, d_buffer, ip, w);
 }
 
 void FourierTransformerRadix2::transformComplexBuffer(Complex *inBuffer, Complex *outBuffer)
@@ -144,7 +144,7 @@ void FourierTransformerRadix2::transformComplexBuffer(Complex *inBuffer, Complex
     sign = -1;
   else
     sign = +1;
-  cdft(2*N, sign, d_outBuffer, ip, w);
+  RAPT::cdft(2*N, sign, d_outBuffer, ip, w);
 }
 
 // convenience functions for real signals:
@@ -171,7 +171,7 @@ void FourierTransformerRadix2::transformRealSignal(double *inSignal, Complex *ou
   }
 
   // use Ooura's routine:
-  rdft(N, 1, d_outBuffer, ip, w);
+  RAPT::rdft(N, 1, d_outBuffer, ip, w);
 
   // for some reason, this routine returns the second half of the spectrum (the complex conjugate
   // values of the desired first half), so we need to take the complex conjugates:
@@ -254,7 +254,7 @@ void FourierTransformerRadix2::transformSymmetricSpectrum(Complex *inSpectrum, d
     outSignal[n] = -outSignal[n];
 
   // use Ooura's routine:
-  rdft(N, -1, outSignal, ip, w);
+  RAPT::rdft(N, -1, outSignal, ip, w);
 }
 
 void FourierTransformerRadix2::transformSymmetricSpectrum(double *reAndIm, double *signal)
