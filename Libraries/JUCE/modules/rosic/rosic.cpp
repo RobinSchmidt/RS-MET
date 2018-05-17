@@ -49,6 +49,28 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 
 //template double RAPT::rsLinToLin(double x, double inMin, double inMax, double outMin, double outMax);
 
+// Ouura FFT instantiations (trying to fix linker errors on mac):
+template void RAPT::bitrv2conj(int, int*, double*);
+template void RAPT::bitrv2(int, int*, double*);
+template void RAPT::makect(int, int*, double*);
+template void RAPT::makewt(int, int*, double*);
+template void RAPT::cftbsub(int, double*, double*);
+template void RAPT::cftfsub(int, double*, double*);
+template void RAPT::rftbsub(int, double*, int, double*);
+template void RAPT::rftfsub(int, double*, int, double*);
+// ...hmm - but it doesn't seem to help - linker errors persist
+// ...let's try these:
+template void RAPT::cdft(int, int, double *, int *, double *);
+template void RAPT::rdft(int, int, double *, int *, double *);
+template void RAPT::ddct(int, int, double *, int *, double *);
+template void RAPT::ddst(int, int, double *, int *, double *);
+template void RAPT::dfct(int, double *, double *, int *, double *);
+template void RAPT::dfst(int, double *, double *, int *, double *);
+// ...nope - doesn't make difference
+// hmm - the error says: Undefined symbols for architecture i386:
+
+
+
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrixNew<double>;
 
