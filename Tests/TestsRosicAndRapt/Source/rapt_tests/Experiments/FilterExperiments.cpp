@@ -652,8 +652,8 @@ FilterSpecificationZPK<T> analogPrototypeSpecZPK(
 
 
   FilterSpecificationZPK<T> spec;
-  spec.poles = p;
-  spec.zeros = z;
+  //spec.poles = p;
+  //spec.zeros = z;
   spec.sampleRate = RS_INF(T); // indicates analog (s-plane) poles and zeros
   spec.gain = k;
   return spec;
@@ -669,24 +669,24 @@ void poleZeroPrototype()
   Real G0 = 0.f;    // use G0=0, G=1 for lowpass and G0=2, G=8 for low-shelf
   Real G  = 1.f;     
 
+  PZP pzp;
+  pzp.setApproximationMethod(PZP::BUTTERWORTH);
 
   // maybe the new version should use optimized versions of halpernT2, papoulisL2 from 
   // Prototypes.h/cpp (avoids dynamic memory allocation)
 
-
   Real k; 
-  std::complex<Real> p[maxOrder], z[maxOrder];
-  size_t n = 1; // later loop over n = 1..maxOrder
-
-  //PZP::butterworth(n, &k, p, z);
-
-  PZP pzp; // create object to enforce template instantiation
-  //pzp.setApproximationMethod(PZP::BUTTERWORTH);
-  pzp.setOrder(n);
-  pzp.getPolesZerosAndGain(p, z, &k);
-
-
-
+  std::complex<Real> p[maxOrder], z[maxOrder]; // (maxOrder+1)/2 should be enough
+  FilterPlotter<Real> plt;
+  for(int n = 1; n <= maxOrder; n++)
+  {
+    pzp.setOrder(n);
+    pzp.getPolesZerosAndGain(p, z, &k);
+    FilterSpecificationZPK<Real> spec = analogPrototypeSpecZPK(n, z, p, k);
+    plt.addFilterSpecification(spec);
+  }
+  //plt.plotPolesAndZeros(600);
+  plt.plotMagnitude(500, 0, 3, false, false);
 
   int dummy = 0;
 }
