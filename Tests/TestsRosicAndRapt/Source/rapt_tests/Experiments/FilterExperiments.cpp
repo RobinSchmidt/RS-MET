@@ -636,24 +636,19 @@ void prototypeDesign()
 
 
 // helper function to convert form raw arrays of poles and zeros to the FilterSpecificationZPK 
-// structure used by the plotte
+// structure used by the plotter
 template<class T>
 FilterSpecificationZPK<T> analogPrototypeSpecZPK(
-  int N, std::complex<T>* z, std::complex<T>* p, T k)
+  int N, std::complex<T>* za, std::complex<T>* pa, T k)
 {
-  //int nz = numFiniteValue(z, N);
-  //int np = numFiniteValue(p, N);
-  //vector<complex<T>> z(np);          // np is correct, we may get infinite zeros which will be..
-  //vector<complex<T>> p(np);          // ..removed later
-  //pd.getPolesAndZeros(&p[0], &z[0]); // returns only the non-redundant upper halfplane poles/zeros
-  //reflectRoots(&p[0], np);           // create full pole/zero set by reflection
-  //reflectRoots(&z[0], np);
-  //removeInfiniteValues(z);
-
-
+  vector<complex<T>> z = RAPT::toVector(za, N);
+  vector<complex<T>> p = RAPT::toVector(pa, N);
+  reflectRoots(&p[0], N);           // create full pole/zero set by reflection
+  reflectRoots(&z[0], N);
+  removeInfiniteValues(z);
   FilterSpecificationZPK<T> spec;
-  //spec.poles = p;
-  //spec.zeros = z;
+  spec.poles = p;
+  spec.zeros = z;
   spec.sampleRate = RS_INF(T); // indicates analog (s-plane) poles and zeros
   spec.gain = k;
   return spec;
@@ -665,7 +660,8 @@ void poleZeroPrototype()
 
   typedef float Real;
   typedef PoleZeroPrototype<Real> PZP;
-  static const int maxOrder = 10;  // maximum filter order to plot
+  static const int minOrder = 4;   // minimum filter order to plot
+  static const int maxOrder = 4;  // maximum filter order to plot
   Real G0 = 0.f;    // use G0=0, G=1 for lowpass and G0=2, G=8 for low-shelf
   Real G  = 1.f;     
 
@@ -678,15 +674,17 @@ void poleZeroPrototype()
   Real k; 
   std::complex<Real> p[maxOrder], z[maxOrder]; // (maxOrder+1)/2 should be enough
   FilterPlotter<Real> plt;
-  for(int n = 1; n <= maxOrder; n++)
+  for(int n = minOrder; n <= maxOrder; n++)
   {
     pzp.setOrder(n);
     pzp.getPolesZerosAndGain(p, z, &k);
     FilterSpecificationZPK<Real> spec = analogPrototypeSpecZPK(n, z, p, k);
     plt.addFilterSpecification(spec);
   }
-  //plt.plotPolesAndZeros(600);
-  plt.plotMagnitude(500, 0, 3, false, false);
+  plt.plotPolesAndZeros(600);
+  //plt.plotMagnitude(500, 0, 3, false, false);
+
+  // something is wrong...
 
   int dummy = 0;
 }
