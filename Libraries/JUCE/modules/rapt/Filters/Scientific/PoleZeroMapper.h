@@ -138,6 +138,20 @@ protected:
   bandwidth bw. */
   static void sLowpassToBandreject(Complex* r, Complex* rNew, int N, T wc, T bw);
 
+
+
+
+
+
+
+  /** Sorts the given array of s-plane filter roots (poles or zeros) according to descending 
+  absolute value of imaginary part. tbc.... */
+  static void sSortFilterRoots(Complex* r, int N);
+
+  /** Says, whether or not root r1 should come before root r2 - used as comparison function in 
+  sortFilterRoots. */
+  static bool sFilterRootBefore(const Complex& r1, const Complex& r2);
+
 };
 
 #endif

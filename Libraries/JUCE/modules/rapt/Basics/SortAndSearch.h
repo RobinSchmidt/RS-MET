@@ -3,7 +3,12 @@
 
 // this file contains functions for sorting arrays, finding elements and related stuff
 // maybe wrap into a class or two classes rsSort, rsSearch
+// todo: rename lessThan, defaultLess, etc to "before" - because x may come before y even if x > y 
+//       because one may want to sort in descending order
 // todo: let the less comparator be a std::function
+
+// maybe implement https://en.wikipedia.org/wiki/Smoothsort see also 
+// http://www.cs.utexas.edu/users/EWD/ewd07xx/EWD796a.PDF
 
 /** Default less-than comparison function used in sorting. It's based on the less-than operator of 
 type T and returns true if left < right, false otherwise. */

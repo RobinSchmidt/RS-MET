@@ -70,7 +70,7 @@ A: amplitude
 d: normalized decay time constant (= tau*fs, tau: time (in s) to decay to A/e = A*0.3678...)
 p: start phase in radians. 
 
-move to FilterDesignFormulas
+move to FilterDesignFormulas, change sign convention for a-coeffs
 */
 template<class T>
 void rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2);
@@ -219,6 +219,13 @@ sweep: causes a frequency sweep by feedforward phase-modulation by (a power of) 
 call this approach "Nonlinear Modal Synthesis" (NLM Synthesis)
 
 \todo: implement a version of this with attack parameter
+
+todo:
+-test freq-mod, phase-mod, amp-mod and decay-mod by external signal (use a long decay time, 
+ feed impulse, switch values during impulse-response)
+-check, what happens to the modulation response, if zeros and/or gain are processed before the 
+ poles - it will probably make the impulse-response unmodulatable (for phase and amp) during it 
+ runs - but what happens, if there's a continuous input signal like a saw wave?
 
 note: the nice thing about such a system as compared to a more general additive synthesis
 approach is that it is an autonomous system, that is, it does not need to know what time it is

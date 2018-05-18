@@ -416,6 +416,16 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
   // always positive
   // ToDo: write a unit test that compares the rosic against the rapt version...
 
+  // maybe use a function
+  // sortFilterRoots(T* roots, int N) and call it here for the poles and zeros. it may sort the 
+  // roots, for example, according to descending absolute value of imaginary part, descending to 
+  // fit the convention that the real pole (if existent) comes last in the array. it may also, in a 
+  // 2nd pass over the data make sure that the number with positive imag part always comes first
+
+  // also: figure out, which order of poles has the best modulation response - maybe it's best to 
+  // have low-Q poles first in the biquad array?
+
+
 
   // debug:
   pDbg = toVector(targetPoles, 2*prototypeOrder);
@@ -569,4 +579,27 @@ void rsPoleZeroMapper<T>::zLowpassToLowpass(Complex* /*z*/, Complex* /*p*/, T* /
 {
   // not yet implemented
   //int dummy = 0;
+}
+
+
+
+
+template<class T>
+void rsPoleZeroMapper<T>::sSortFilterRoots(Complex* r, int N)
+{
+  rsHeapSort(r, N, &sFilterRootBefore);
+
+  // todo: make sure that roots with positive imag parts are before those with negative 
+
+  std::vector<Complex> dbg = toVector(r, N);
+}
+
+template<class T>
+bool rsPoleZeroMapper<T>::sFilterRootBefore(const Complex& r1, const Complex& r2)
+{
+  if(abs(r1.imag()) > abs(r2.imag()))
+    return true;   // sort roots by (descending, absolute) frequency
+  if(r1.real() < r2.real())
+    return true;   // if roots have same (absolute) frequency, sort by ascending real part
+  return false;
 }

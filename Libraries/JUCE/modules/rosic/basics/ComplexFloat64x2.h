@@ -41,6 +41,13 @@ public:
   //template<class X> complex<rsFloat64x2>& operator*=(const complex<X>&);
   //template<class X> complex<rsFloat64x2>& operator/=(const complex<X>&);
 };
+
+// from https://en.cppreference.com/w/cpp/numeric/complex:
+// For any object z of type complex<T>, 
+// reinterpret_cast<T(&)[2]>(z)[0] is the real part of z and 
+// reinterpret_cast<T(&)[2]>(z)[1] is the imaginary part of z.
+// may be relevant for implementing real() and imag() in an explicit specialization
+
 */
 
 

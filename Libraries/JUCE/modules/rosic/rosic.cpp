@@ -68,6 +68,9 @@ template void RAPT::dfct(int, double *, double *, int *, double *);
 template void RAPT::dfst(int, double *, double *, int *, double *);
 // ...nope - doesn't make difference
 // hmm - the error says: Undefined symbols for architecture i386:
+// ...ok - linker error gone after changing the fft4g.cpp and using the RAPT version in rosic, too
+// ...try what happens now, if we delete these instantiations again (and maybe revert fft4g to its
+// old state - maybe it was using the rapt version in rosic that made the difference...)
 
 
 
