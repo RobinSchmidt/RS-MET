@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();
+  //runAllUnitTests();  // merge with eunit testsf for RSLib
   //mathUnitTests();
   //filterUnitTests();
 
@@ -202,10 +202,8 @@ int main(int argc, char* argv[])
   ////movingAverage();  // hangs
   ////trapezAverager();   // hangs
 
-
   //compareApproximationMethods();  // something is wrong here - plots are weird
-  //compareOldAndNewEngineersFilter();
-
+  compareOldAndNewEngineersFilter();
 
   //testPoleZeroMapper();
   //ringingTime();
@@ -423,7 +421,7 @@ int main(int argc, char* argv[])
   // Genrators:
   //testOscillatorStereo();
   //testLorentzSystem();
-  testSnowflake();
+  //testSnowflake();
   //testResetter();
   //testTurtleReverse();
   //testTurtleSource();

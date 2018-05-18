@@ -398,16 +398,16 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
   pDbg = RAPT::toVector(targetPoles, 2*prototypeOrder);
   zDbg = RAPT::toVector(targetZeros, 2*prototypeOrder); // from here, it is wrong
 
-  // re-arrange poles and zeros such that complex conjugate pairs (again) occupy successive slots:
-  k = 1;
-  while( k+1 < 2*prototypeOrder )
-  {
-    rsSwap(targetPoles[k], targetPoles[k+1]); // old
-    rsSwap(targetZeros[k], targetZeros[k+1]);
-    //rsSwap(targetPoles[k], targetPoles[k+2]);   // new - doesn't seem to always work either
-    //rsSwap(targetZeros[k], targetZeros[k+2]);
-    k += 4;
-  }
+  //// re-arrange poles and zeros such that complex conjugate pairs (again) occupy successive slots:
+  //k = 1;
+  //while( k+1 < 2*prototypeOrder )
+  //{
+  //  rsSwap(targetPoles[k], targetPoles[k+1]); // old
+  //  rsSwap(targetZeros[k], targetZeros[k+1]);
+  //  //rsSwap(targetPoles[k], targetPoles[k+2]);   // new - doesn't seem to always work either
+  //  //rsSwap(targetZeros[k], targetZeros[k+2]);
+  //  k += 4;
+  //}
   // i think, this might be wrong...check/debug
   // could it be that the std::sqrt function for complex numbers behaves differently than my sqrtC
   // in rosic?
@@ -421,6 +421,11 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
   // roots, for example, according to descending absolute value of imaginary part, descending to 
   // fit the convention that the real pole (if existent) comes last in the array. it may also, in a 
   // 2nd pass over the data make sure that the number with positive imag part always comes first
+
+  sSortFilterRoots(targetPoles, 2*prototypeOrder);
+  sSortFilterRoots(targetZeros, 2*prototypeOrder);
+    // of course, it would be highly desirable to be able to get rid of a full-blown sorting 
+    // procedure here - but it's going to be re-written anyway...
 
   // also: figure out, which order of poles has the best modulation response - maybe it's best to 
   // have low-Q poles first in the biquad array?
@@ -531,16 +536,23 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandreject(Complex* prototypePoles,
     }
   }
 
-  // re-arrange poles and zeros such that complex conjugate pairs (again) occupy successive slots:
-  k = 1;
-  while( k+1 < 2*prototypeOrder )
-  {
-    rsSwap(targetPoles[k], targetPoles[k+1]);
-    int kp = (k-1)/4;
-    if( !isInfinite(prototypeZeros[kp]) )
-      rsSwap(targetZeros[k], targetZeros[k+1]); // don't want to swap the generated zeros at +-j*wc
-    k += 4;
-  }
+  //// re-arrange poles and zeros such that complex conjugate pairs (again) occupy successive slots:
+  //k = 1;
+  //while( k+1 < 2*prototypeOrder )
+  //{
+  //  rsSwap(targetPoles[k], targetPoles[k+1]);
+  //  int kp = (k-1)/4;
+  //  if( !isInfinite(prototypeZeros[kp]) )
+  //    rsSwap(targetZeros[k], targetZeros[k+1]); // don't want to swap the generated zeros at +-j*wc
+  //  k += 4;
+  //}
+  //// doesn't work anymore since porting to rapt..
+
+  // instead, this is needed now:
+  sSortFilterRoots(targetPoles, 2*prototypeOrder);
+  sSortFilterRoots(targetZeros, 2*prototypeOrder);
+  // todo: rewrite these design routines, clean up code and adopt conventions that avoid the need
+  // for re-ordering
 }
 
 template<class T>
@@ -587,11 +599,14 @@ void rsPoleZeroMapper<T>::zLowpassToLowpass(Complex* /*z*/, Complex* /*p*/, T* /
 template<class T>
 void rsPoleZeroMapper<T>::sSortFilterRoots(Complex* r, int N)
 {
+  std::vector<Complex> in = toVector(r, N);  // debug
+
   rsHeapSort(r, N, &sFilterRootBefore);
 
   // todo: make sure that roots with positive imag parts are before those with negative 
+  // ...but maybe not - later, we don't care about the sign anyway (i think)
 
-  std::vector<Complex> dbg = toVector(r, N);
+  std::vector<Complex> out = toVector(r, N);  // debug
 }
 
 template<class T>
@@ -599,7 +614,10 @@ bool rsPoleZeroMapper<T>::sFilterRootBefore(const Complex& r1, const Complex& r2
 {
   if(abs(r1.imag()) > abs(r2.imag()))
     return true;   // sort roots by (descending, absolute) frequency
-  if(r1.real() < r2.real())
-    return true;   // if roots have same (absolute) frequency, sort by ascending real part
+
+  //if(r1.real() < r2.real())
+  //  return true;   // if roots have same (absolute) frequency, sort by ascending real part
+   // oh no - this is wrong
+
   return false;
 }

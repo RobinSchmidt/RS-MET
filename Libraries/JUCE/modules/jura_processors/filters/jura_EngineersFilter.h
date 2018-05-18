@@ -2,8 +2,8 @@
 #define jura_EngineersFilter_h
 
 // to quickly switch between old and new implementation during debugging - get rid later
-//typedef rosic::rsEngineersFilterStereo EFLT; // elliptic bandpass (among others) doesn't work
-typedef rosic::rsEngineersFilterOld EFLT;
+typedef rosic::rsEngineersFilterStereo EFLT; // elliptic bandpass (among others) doesn't work
+//typedef rosic::rsEngineersFilterOld EFLT;
 
 /** This class wraps rosic::EngineersFilter into a rosof::AudioModule to facilitate its use as 
 plugIn. */
