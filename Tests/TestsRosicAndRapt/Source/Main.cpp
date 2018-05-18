@@ -69,9 +69,11 @@ int main(int argc, char* argv[])
   //bandSplittingTreeAlgo();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  prototypeDesign();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
+  //prototypeDesign();  // old implementation
+  poleZeroPrototype();  // new implementation
+
 
   // Physics:
   //particleForceDistanceLaw();

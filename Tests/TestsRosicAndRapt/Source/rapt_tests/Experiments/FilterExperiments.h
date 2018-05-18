@@ -8,11 +8,11 @@ void bandSplittingMultiWay();
 void bandSplittingTreeAlgo();
 void ladderResonanceManipulation();
 void nonUniformMovingAverage();
-void prototypeDesign();
 void smoothingFilterOrders();
 void smoothingFilterTransitionTimes();
 
-void poleZeroPrototype();
+void prototypeDesign();    // still using the old code
+void poleZeroPrototype();  // new implementation
 
 
 #endif

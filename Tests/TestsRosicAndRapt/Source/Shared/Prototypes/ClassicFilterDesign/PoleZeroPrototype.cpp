@@ -82,3 +82,43 @@ void PoleZeroPrototype<T>::elliptic(size_t N, T* k, Complex* p, Complex* z, T ri
   }
 }
 */
+
+
+
+template<class T>
+void PoleZeroPrototype<T>::getPolesZerosAndGain(Complex* p, Complex* z, T* k)
+{
+  switch(method)
+  {
+  case BUTTERWORTH: butterworth(order, G0, G, k, p, z);                 break;
+  //case ELLIPTIC:    elliptic(   order, G0, G, k, p, z, ripple, reject); break;
+  };
+}
+
+// explicit instantiation (remove when integrating class into rapt):
+//template class PoleZeroPrototype<double>;
+template class PoleZeroPrototype<float>;
+
+//=================================================================================================
+
+// ideas:
+
+// maybe the order of the functions should be be bessel, gaussian, butterworth, papoulis, halpern, 
+// chebychev2, chebychev, elliptic - from time-domain to frequency-domain superiority (roughly)
+
+// or: COINCINDENT_POLE, GAUSS, BESSEL, BUTTERWORTH, PAPOULIS <-?-> HALPERN, CHEBY1 <-?-> 
+// CHEBY2, ELLIPTIC ->sorted by desirability of time response vs. frequency response (roughly)
+// or maybe sort by ringing time?
+
+// ideas: try other polynomials, for example non-reversed Bessel, Laguerre, etc. - if roots occur 
+// in the right half-plane, reflect them, maybe try Power-Series expansions of various 
+// interesting functions as it is done with the Gaussian filter
+
+// class should return only upper-left quarter-plane poles and zeros, their number is (order+1)/2
+// using integer division
+
+// maybe have a class PoleZeroPrototypeDigital with the same interface, maybe rename this  to
+// ...Analog. the digital one should also include prototypes for perfect-reconstruction crossovers
+
+// bilinear maps from s-to-z or from z-to-z for bandpass filters should match center-freq and lower
+// cutoff-freq - the upper cutoff freq may be warped away from its proper place

@@ -398,121 +398,6 @@ void nonUniformMovingAverage()
   // gets averaged out better?
 }
 
-
-template<class T>
-void reflectRoots(complex<T>* roots, int N) // rename to mirrorFirstHalf, make generic, add to library
-{
-  for(int i = 0; i <= N/2; i++)
-    roots[N-1-i] = conj(roots[i]);
-}
-template<class T>
-void removeInfiniteValues(vector<complex<T>>& z)
-{
-  for(size_t i = 0; i < z.size(); i++) {
-    if(RAPT::isInfinite(z[i])) {   // as rs prefix
-      z.erase(z.begin() + i);
-      i--; }}
-}
-template<class T>
-FilterSpecificationZPK<T> getFilterSpecificationZPK(RAPT::rsPrototypeDesigner<T>& pd)
-{
-  int nz = pd.getNumFiniteZeros();
-  int np = pd.getNumFinitePoles();
-  vector<complex<T>> z(np);          // np is correct, we may get infinite zeros which will be..
-  vector<complex<T>> p(np);          // ..removed later
-  pd.getPolesAndZeros(&p[0], &z[0]); // returns only the non-redundant upper halfplane poles/zeros
-  reflectRoots(&p[0], np);           // create full pole/zero set by reflection
-  reflectRoots(&z[0], np);
-  removeInfiniteValues(z);
-  FilterSpecificationZPK<T> spec;
-  spec.poles = p;
-  spec.zeros = z;
-  spec.sampleRate = RS_INF(T);
-  //spec.gain  = pd.getGain();
-  return spec;
-}
-void prototypeDesign()
-{
-  //rsEngineersFilterFF ef;
-
-  /*
-  // something is wrong with odd order bessel filters (exept for order = 1), looks like it never 
-  // worked in rapt - ive gone back to the commit of 21.11.2017, 00:06:28 with message:
-  // implemented FilterPlotter<T>::plotMagnitude
-  // code for debugging :
-  // compare float/double versions:
-  rsPrototypeDesignerD pdD;
-  complex<double> polesD[5], zerosD[5];
-  pdD.setApproximationMethod(pdD.BESSEL);
-  pdD.setOrder(3);
-  pdD.getPolesAndZeros(polesD, zerosD);
-
-  rsPrototypeDesignerF pdF;
-  complex<float> polesF[5], zerosF[5];
-  pdF.setApproximationMethod(pdF.BESSEL);
-  pdF.setOrder(3);
-  pdF.getPolesAndZeros(polesF, zerosF);
-
-  int dummy = 0;
-  // ok, yes - that's the problem: the double precision poles are correct (they match with what the 
-  // rosic version computes) but the single precision float poles are wrong. It's probably 
-  // something about the root finder
-  // in rsPrototypeDesigner<T>::makeBesselLowShelv the pickNonRedundantPolesAndZeros fills the p 
-  // member array differently for double and float versions, the pTmp array is the same in both
-  // cases
-
-  // in rsZeroNegligibleImaginaryParts the "real" pole has some small negative imaginary part which 
-  // doesn't get zeroed out and in the subsequent call to rsOnlyUpperHalfPlane, the real pole
-  // get thrown away - we need a different threshold for float than we use for double
-  // ...ok - seems to be fixed.
-  */
-
-  typedef float Real;
-  typedef RAPT::rsPrototypeDesigner<Real> PD;
-
-
-  // min and max filter order to plot:
-  int minOrder = 1;
-  int maxOrder = 10;
-
-  // create and set up prototype designer:
-  PD pd;
-  //pd.setApproximationMethod(PD::GAUSSIAN);
-  //pd.setApproximationMethod(PD::BESSEL);
-  //pd.setApproximationMethod(PD::BUTTERWORTH);
-  //pd.setApproximationMethod(PD::PAPOULIS);
-  pd.setApproximationMethod(PD::HALPERN);
-  //pd.setApproximationMethod(PD::CHEBYCHEV);
-  //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
-  //pd.setApproximationMethod(PD::ELLIPTIC);
-
-  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
-  pd.setGain(+6.02f); // needs to be nonzero for plots
-
-  pd.setPassbandRipple(1); 
-  pd.setStopbandRejection(20);
-
-  // create plotter, add filter specs for the desired orders to it and plot:
-  FilterPlotter<Real> plt;
-  for(int i = minOrder; i <= maxOrder; i++)
-  {
-    pd.setOrder(i);
-    FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
-    plt.addFilterSpecification(spec);
-  }
-  //plt.plotPolesAndZeros(600);
-  plt.plotMagnitude(1000, 0, 3, false, false);
-
-  // issues:
-
-  // it seems, even order elliptic prototypes have an overall gain equal to the reciprocal of the 
-  // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have
-  // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
-  // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
-
-  // todo: test the gaussian filter design
-}
-
 void smoothingFilterOrders()
 {
   // We plot the step responses of the rsSmoothingFilter for various orders.
@@ -632,8 +517,177 @@ void smoothingFilterTransitionTimes()
 }
 
 
+
+
+template<class T>
+void reflectRoots(complex<T>* roots, int N) // rename to mirrorFirstHalf, make generic, add to library
+{
+  for(int i = 0; i <= N/2; i++)
+    roots[N-1-i] = conj(roots[i]);
+}
+template<class T>
+void removeInfiniteValues(vector<complex<T>>& z)
+{
+  for(size_t i = 0; i < z.size(); i++) {
+    if(RAPT::isInfinite(z[i])) {   // as rs prefix
+      z.erase(z.begin() + i);
+      i--; }}
+}
+template<class T>
+FilterSpecificationZPK<T> getFilterSpecificationZPK(RAPT::rsPrototypeDesigner<T>& pd)
+{
+  int nz = pd.getNumFiniteZeros();
+  int np = pd.getNumFinitePoles();
+  vector<complex<T>> z(np);          // np is correct, we may get infinite zeros which will be..
+  vector<complex<T>> p(np);          // ..removed later
+  pd.getPolesAndZeros(&p[0], &z[0]); // returns only the non-redundant upper halfplane poles/zeros
+  reflectRoots(&p[0], np);           // create full pole/zero set by reflection
+  reflectRoots(&z[0], np);
+  removeInfiniteValues(z);
+  FilterSpecificationZPK<T> spec;
+  spec.poles = p;
+  spec.zeros = z;
+  spec.sampleRate = RS_INF(T);
+  //spec.gain  = pd.getGain();
+  return spec;
+}
+void prototypeDesign()
+{
+  //rsEngineersFilterFF ef;
+
+  /*
+  // something is wrong with odd order bessel filters (exept for order = 1), looks like it never 
+  // worked in rapt - ive gone back to the commit of 21.11.2017, 00:06:28 with message:
+  // implemented FilterPlotter<T>::plotMagnitude
+  // code for debugging :
+  // compare float/double versions:
+  rsPrototypeDesignerD pdD;
+  complex<double> polesD[5], zerosD[5];
+  pdD.setApproximationMethod(pdD.BESSEL);
+  pdD.setOrder(3);
+  pdD.getPolesAndZeros(polesD, zerosD);
+
+  rsPrototypeDesignerF pdF;
+  complex<float> polesF[5], zerosF[5];
+  pdF.setApproximationMethod(pdF.BESSEL);
+  pdF.setOrder(3);
+  pdF.getPolesAndZeros(polesF, zerosF);
+
+  int dummy = 0;
+  // ok, yes - that's the problem: the double precision poles are correct (they match with what the 
+  // rosic version computes) but the single precision float poles are wrong. It's probably 
+  // something about the root finder
+  // in rsPrototypeDesigner<T>::makeBesselLowShelv the pickNonRedundantPolesAndZeros fills the p 
+  // member array differently for double and float versions, the pTmp array is the same in both
+  // cases
+
+  // in rsZeroNegligibleImaginaryParts the "real" pole has some small negative imaginary part which 
+  // doesn't get zeroed out and in the subsequent call to rsOnlyUpperHalfPlane, the real pole
+  // get thrown away - we need a different threshold for float than we use for double
+  // ...ok - seems to be fixed.
+  */
+
+  typedef float Real;
+  typedef RAPT::rsPrototypeDesigner<Real> PD;
+
+
+  // min and max filter order to plot:
+  int minOrder = 1;
+  int maxOrder = 10;
+
+  // create and set up prototype designer:
+  PD pd;
+  //pd.setApproximationMethod(PD::GAUSSIAN);
+  //pd.setApproximationMethod(PD::BESSEL);
+  //pd.setApproximationMethod(PD::BUTTERWORTH);
+  //pd.setApproximationMethod(PD::PAPOULIS);
+  pd.setApproximationMethod(PD::HALPERN);
+  //pd.setApproximationMethod(PD::CHEBYCHEV);
+  //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
+  //pd.setApproximationMethod(PD::ELLIPTIC);
+
+  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  pd.setGain(+6.02f); // needs to be nonzero for plots
+
+  pd.setPassbandRipple(1); 
+  pd.setStopbandRejection(20);
+
+  // create plotter, add filter specs for the desired orders to it and plot:
+  FilterPlotter<Real> plt;
+  for(int i = minOrder; i <= maxOrder; i++)
+  {
+    pd.setOrder(i);
+    FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
+    plt.addFilterSpecification(spec);
+  }
+  //plt.plotPolesAndZeros(600);
+  plt.plotMagnitude(1000, 0, 3, false, false);
+
+  // issues:
+
+  // it seems, even order elliptic prototypes have an overall gain equal to the reciprocal of the 
+  // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have
+  // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
+  // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
+
+  // todo: test the gaussian filter design
+}
+
+
+
+// helper function to convert form raw arrays of poles and zeros to the FilterSpecificationZPK 
+// structure used by the plotte
+template<class T>
+FilterSpecificationZPK<T> analogPrototypeSpecZPK(
+  int N, std::complex<T>* z, std::complex<T>* p, T k)
+{
+  //int nz = numFiniteValue(z, N);
+  //int np = numFiniteValue(p, N);
+  //vector<complex<T>> z(np);          // np is correct, we may get infinite zeros which will be..
+  //vector<complex<T>> p(np);          // ..removed later
+  //pd.getPolesAndZeros(&p[0], &z[0]); // returns only the non-redundant upper halfplane poles/zeros
+  //reflectRoots(&p[0], np);           // create full pole/zero set by reflection
+  //reflectRoots(&z[0], np);
+  //removeInfiniteValues(z);
+
+
+  FilterSpecificationZPK<T> spec;
+  spec.poles = p;
+  spec.zeros = z;
+  spec.sampleRate = RS_INF(T); // indicates analog (s-plane) poles and zeros
+  spec.gain = k;
+  return spec;
+}
+
 void poleZeroPrototype()
 {
+  // tests the new implementation of analog filter prototype design
+
+  typedef float Real;
+  typedef PoleZeroPrototype<Real> PZP;
+  static const int maxOrder = 10;  // maximum filter order to plot
+  Real G0 = 0.f;    // use G0=0, G=1 for lowpass and G0=2, G=8 for low-shelf
+  Real G  = 1.f;     
+
+
+  // maybe the new version should use optimized versions of halpernT2, papoulisL2 from 
+  // Prototypes.h/cpp (avoids dynamic memory allocation)
+
+
+  Real k; 
+  std::complex<Real> p[maxOrder], z[maxOrder];
+  size_t n = 1; // later loop over n = 1..maxOrder
+
+  //PZP::butterworth(n, &k, p, z);
+
+  PZP pzp; // create object to enforce template instantiation
+  //pzp.setApproximationMethod(PZP::BUTTERWORTH);
+  pzp.setOrder(n);
+  pzp.getPolesZerosAndGain(p, z, &k);
+
+
+
 
   int dummy = 0;
 }
+
