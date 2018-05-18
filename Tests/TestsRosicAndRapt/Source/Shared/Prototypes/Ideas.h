@@ -149,7 +149,8 @@ Neural Network Synthesizer ("Cortex")
   z-to-z frequency transformation when the cutoff frequency changes (saves all the pre-warping 
   computations)
  -the new filter should also be able to use a SVF insstead of a biquad for each stage
-
+ -figure out, which order of poles has the best modulation response - maybe it's best to 
+  have low-Q poles first in the biquad array?
 
 
 

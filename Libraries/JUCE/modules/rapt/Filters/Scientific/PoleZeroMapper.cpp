@@ -333,20 +333,6 @@ void rsPoleZeroMapper<T>::prototypeToAnalogBandpass(Complex* poles, int numPoles
   delete[] tmpZeros;
 }
 
-/*
-// for debugging:
-template<class T>
-std::complex<T> sqrtC(std::complex<T> z)
-{
-  //return sqrt(z); // test
-  T r = sqrt(abs(z));
-  T p = 0.5*arg(z);  // behaves like std::atan2(std::imag(z), std::real(z))
-  T s = sin(p);
-  T c = cos(p);
-  return std::complex<T>(r*c, r*s);            // re = r*cos(p), im = r*sin(p)
-}
-*/
-
 template<class T>
 void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Complex* prototypeZeros, 
   Complex* targetPoles, Complex* targetZeros, int prototypeOrder, T targetLowerCutoff,                      
@@ -354,12 +340,6 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
 {
   T wc = sqrt(targetLowerCutoff*targetUpperCutoff); // center (radian) frequency
   T bw = targetUpperCutoff - targetLowerCutoff;     // bandwidth
-
-  // debug:
-  std::vector<Complex> pDbg, zDbg; 
-  pDbg = RAPT::toVector(targetPoles, prototypeOrder);
-  zDbg = RAPT::toVector(targetZeros, prototypeOrder);
-
 
   // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the 
   // bandpass-filter:
@@ -372,7 +352,6 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
     tmp2 = -bw * prototypePoles[k];
     tmp2 = T(0.25) * tmp2*tmp2;
     tmp2 = sqrt(tmp2 - wc*wc);
-    //tmp2 = sqrtC(tmp2 - wc*wc); // test
     targetPoles[2*k]   = tmp1 + tmp2;
     targetPoles[2*k+1] = tmp1 - tmp2;
 
@@ -388,15 +367,10 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
       tmp2 = -bw * prototypeZeros[k];
       tmp2 = T(0.25) * tmp2*tmp2;
       tmp2 = sqrt(tmp2 - wc*wc);
-      //tmp2 = sqrtC(tmp2 - wc*wc);  // test - behaves the same as sqrt
       targetZeros[2*k]   = tmp1 + tmp2;
       targetZeros[2*k+1] = tmp1 - tmp2;
     }
   }
-
-  // debug:
-  pDbg = RAPT::toVector(targetPoles, 2*prototypeOrder);
-  zDbg = RAPT::toVector(targetZeros, 2*prototypeOrder); // from here, it is wrong
 
   //// re-arrange poles and zeros such that complex conjugate pairs (again) occupy successive slots:
   //k = 1;
@@ -404,40 +378,15 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
   //{
   //  rsSwap(targetPoles[k], targetPoles[k+1]); // old
   //  rsSwap(targetZeros[k], targetZeros[k+1]);
-  //  //rsSwap(targetPoles[k], targetPoles[k+2]);   // new - doesn't seem to always work either
-  //  //rsSwap(targetZeros[k], targetZeros[k+2]);
   //  k += 4;
   //}
-  // i think, this might be wrong...check/debug
-  // could it be that the std::sqrt function for complex numbers behaves differently than my sqrtC
-  // in rosic?
-  // RSLib uses rsSqrtC which is yet another implementation - there, the bug is present, too
-  // the rosic version returns +/- some imaginary number, in the std version, the imaginary part is
-  // always positive
-  // ToDo: write a unit test that compares the rosic against the rapt version...
+  //// doesn't work anymore since proting to rapt...
 
-  // maybe use a function
-  // sortFilterRoots(T* roots, int N) and call it here for the poles and zeros. it may sort the 
-  // roots, for example, according to descending absolute value of imaginary part, descending to 
-  // fit the convention that the real pole (if existent) comes last in the array. it may also, in a 
-  // 2nd pass over the data make sure that the number with positive imag part always comes first
-
+  // ...instead, this is needed now:
   sSortFilterRoots(targetPoles, 2*prototypeOrder);
   sSortFilterRoots(targetZeros, 2*prototypeOrder);
     // of course, it would be highly desirable to be able to get rid of a full-blown sorting 
     // procedure here - but it's going to be re-written anyway...
-
-  // also: figure out, which order of poles has the best modulation response - maybe it's best to 
-  // have low-Q poles first in the biquad array?
-
-
-
-  // debug:
-  pDbg = toVector(targetPoles, 2*prototypeOrder);
-  zDbg = toVector(targetZeros, 2*prototypeOrder);
-  //rsAssert(rsAreNeighborsConjugates(targetPoles, 2*prototypeOrder, T(1.e-12)));
-  //rsAssert(rsAreNeighborsConjugates(targetZeros, 2*prototypeOrder, T(1.e-12)));
-  int dummy = 0;
 }
 
 template<class T>
@@ -593,20 +542,12 @@ void rsPoleZeroMapper<T>::zLowpassToLowpass(Complex* /*z*/, Complex* /*p*/, T* /
   //int dummy = 0;
 }
 
-
-
-
 template<class T>
 void rsPoleZeroMapper<T>::sSortFilterRoots(Complex* r, int N)
 {
-  std::vector<Complex> in = toVector(r, N);  // debug
-
   rsHeapSort(r, N, &sFilterRootBefore);
-
   // todo: make sure that roots with positive imag parts are before those with negative 
   // ...but maybe not - later, we don't care about the sign anyway (i think)
-
-  std::vector<Complex> out = toVector(r, N);  // debug
 }
 
 template<class T>
@@ -614,10 +555,5 @@ bool rsPoleZeroMapper<T>::sFilterRootBefore(const Complex& r1, const Complex& r2
 {
   if(abs(r1.imag()) > abs(r2.imag()))
     return true;   // sort roots by (descending, absolute) frequency
-
-  //if(r1.real() < r2.real())
-  //  return true;   // if roots have same (absolute) frequency, sort by ascending real part
-   // oh no - this is wrong
-
   return false;
 }

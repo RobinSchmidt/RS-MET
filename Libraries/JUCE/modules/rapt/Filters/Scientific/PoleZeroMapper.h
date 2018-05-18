@@ -139,11 +139,6 @@ protected:
   static void sLowpassToBandreject(Complex* r, Complex* rNew, int N, T wc, T bw);
 
 
-
-
-
-
-
   /** Sorts the given array of s-plane filter roots (poles or zeros) according to descending 
   absolute value of imaginary part. tbc.... */
   static void sSortFilterRoots(Complex* r, int N);
