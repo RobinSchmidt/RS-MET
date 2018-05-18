@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
   //bandSplittingTreeAlgo();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  //prototypeDesign();
+  prototypeDesign();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
 
@@ -202,14 +202,14 @@ int main(int argc, char* argv[])
   ////movingAverage();  // hangs
   ////trapezAverager();   // hangs
 
-  //compareApproximationMethods();  // something is wrong here - plots are weird
-  compareOldAndNewEngineersFilter();
-
+  //gaussianPrototype();
+  //halpernPrototype();
+  //compareApproximationMethods();
+  //compareOldAndNewEngineersFilter();
   //testPoleZeroMapper();
+
   //ringingTime();
   //butterworthSquaredLowHighSum();
-  //gaussianPrototype(); // after this line, auto formatting for new text in vs is messed up - wtf?
-  //halpernPrototype();
   //maxFlatMaxSteepPrototypeM1N2();
   //maxFlatMaxSteepPrototypeM2N2();
   ////experimentalPrototypeM1N2();  // commented in header

@@ -666,8 +666,8 @@ void compareApproximationMethods()
 
   // create impulse responses of different types of filters:
   static const int N = 7000;    // number of samples in impulse- and magnitude response
-  double hBes[N], hBut[N], hCheb1[N], hCheb2[N], hEll[N], hPap[N];  // impulse responses
-  double mBes[N], mBut[N], mCheb1[N], mCheb2[N], mEll[N], mPap[N];  // magnitude responses
+  double hBes[N], hBut[N], hCheb1[N], hCheb2[N], hEll[N], hPap[N], hHalp[N], hGaus[N];  // impulse responses
+  double mBes[N], mBut[N], mCheb1[N], mCheb2[N], mEll[N], mPap[N], mHalp[N], mGaus[N];  // magnitude responses
   double f[N];
   //rsFillWithRangeLinear(f, N, 0.0, fs/2);
   RAPT::rsArray::fillWithRangeExponential(f, N, 1.0, fs/2);
@@ -696,13 +696,23 @@ void compareApproximationMethods()
   getImpulseResponse(flt, hPap, N);
   flt.getMagnitudeResponse(f, mPap, N, true);
 
+  flt.setApproximationMethod(PTD::HALPERN);
+  getImpulseResponse(flt, hHalp, N);
+  flt.getMagnitudeResponse(f, mHalp, N, true);
+
+  flt.setApproximationMethod(PTD::GAUSSIAN);
+  getImpulseResponse(flt, hGaus, N);
+  flt.getMagnitudeResponse(f, mGaus, N, true);
+
 
   // plots:
   //plotData(N, 0, 1/fs, hBes, hBut, hCheb2, hCheb1, hEll);
   //plotData(N/10, 0, 1/fs, hBut, hCheb2);
   //plotData(N, 0, 1/fs, hBut, hPap, hCheb1);
-  plotDataLogX(N, f, mBes, mBut, mCheb2, mCheb1, mEll);
-  //plotDataLogX(N, f, mBut, mPap, mCheb1); // Butterworth, Papoulis, Chebychev1
+  //plotDataLogX(N, f, mBes, mBut, mCheb2, mCheb1, mEll);
+  //plotDataLogX(N, f, mBut, mPap, mHalp);   // Butterworth, Papoulis, Halpern
+  plotDataLogX(N, f, mBut, mBes, mGaus);     // Butterworth, Besssel, Gaussian - gauss too wide - use asymptotic normalization
+  //plotDataLogX(N, f, mBut, mPap, mCheb1);  // Butterworth, Papoulis, Chebychev1
   //plotDataLogX(N, f, mBut, mPap, mEll);
   //plotDataLogX(N, f, mBut, mCheb2);
 

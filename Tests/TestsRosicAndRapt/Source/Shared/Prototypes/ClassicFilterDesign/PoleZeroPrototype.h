@@ -69,3 +69,6 @@ protected:
 
 // class should return only upper-left quarter-plane poles and zeros, their number is (order+1)/2
 // using integer division
+
+// maybe have a class PoleZeroPrototypeDigital with the same interface, maybe rename this  to
+// ...Analog

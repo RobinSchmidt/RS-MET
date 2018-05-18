@@ -676,6 +676,8 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* 
   }
   else
     *k = a[0];
+  // works for Bessel but not for Gaussian - why? maybe the leading coeff is 1 in Bessel but not in
+  // Gaussian? ...and/or the k is different?
 
   delete[] a;
 }
