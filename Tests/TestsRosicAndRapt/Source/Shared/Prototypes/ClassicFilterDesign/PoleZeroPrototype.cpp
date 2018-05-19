@@ -103,6 +103,19 @@ template class PoleZeroPrototype<float>;
 
 // ideas:
 
+// hmm...actually - the more i look at the old implementation, the more resonable its design
+// decisions look. maybe rewriting was a bad idea after all and i should stick to the old class
+// (but maybe rename it and clean it up) - maybe move the getRequiredButterworthOrder, etc. stuff
+// to some other class (FilterRequirements/FilterFeatures - may also implement formulas for 
+// selectivity, etc. - see Paarman)
+
+// but the PoleZeroMapper certainly needs a closer look - there seem to be a lot of redundancies
+// and the need for a sort-function in (s-domain) bandpass/bandstop mappings sucks
+
+// but maybe we should refactor the InfiniteImp... into AnalogPoleZeroDesigner and
+// DigitalPoleZeroDesigner
+
+
 // maybe the order of the functions should be be bessel, gaussian, butterworth, papoulis, halpern, 
 // chebychev2, chebychev, elliptic - from time-domain to frequency-domain superiority (roughly)
 

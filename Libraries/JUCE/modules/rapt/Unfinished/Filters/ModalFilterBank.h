@@ -643,6 +643,15 @@ RS_INLINE TSig rsModalFilterBank<TSig, TPar>::getSample(TSig in)
   for(int m = 0; m < M; m++)
     out += modalFilters[m].getSample(in);
   return out;
+
+  // idea for nonlinear feedback: apply a nonlinearity (saturation or similar) to the final sum
+  // and feed it back to the input with some feedback factor. OR: obtain the signal to be fed back
+  // as a differently weighted sum of the modal filter outputs, in which the weights depend 
+  // (inversely) on the decay time of the respective mode - faster decaying modes produce higher
+  // nonlinear feedback -> should emphasize/chaosify the transient more than the body
+
+  // maybe the nolinearity could also have some sigmoid(x^3) chracteristic -> lessen the feedback for 
+  // low-level signals
 }
 
 #endif

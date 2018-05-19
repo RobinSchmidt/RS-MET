@@ -412,7 +412,8 @@ protected:
   T k = 1;                 // overall gain factor - not yet used
 
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
-                       // re-calculated or are still valid from a previous calculation
+                       // re-calculated or are still valid from a previous calculation 
+                       // (todo: use atomic_bool)
 };
 
 #endif

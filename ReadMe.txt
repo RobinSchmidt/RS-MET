@@ -29,6 +29,18 @@ is just sooo much easier when everything is lumped into a single project. The
 code in this project is trivial because all the actual code is in the library. 
 The other projects that can be built are mostly for development and testing.
 
+Disclaimer:
+I'm currently in the process of restructuring the codebase, merging code from
+3 different codebases with *lots* of overlapping functionality but slightly 
+different goals and interfaces. That is to say: it's rather messy at the 
+moment and the API is still subject to change. Eventually, my goal is to 
+provide a commercially viable DSP library for licensing to audio software 
+companies - but as said: i need to clean up a lot of things, so don't take the 
+messy and inconsistent API too seriously yet - i'm still working on it. ...and 
+if you have some special requirement that the library does not yet support - 
+consider to hire me to add it. I'm generally available for freelance work on 
+audio DSP algorithms with special focus on musical DSP.
+
 
 
 
