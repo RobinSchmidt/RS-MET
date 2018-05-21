@@ -229,12 +229,12 @@ void modalBankTransient()
 {
   double fs  = 44100;  // samplerate in Hz
   //double fs  = 2000;      // samplerate in Hz
-  double f   = 100;       // fundamental frequency
-  double length = 2.0;    // total length in seconds
+  double f   = 50;       // fundamental frequency
+  double length = 4.0;    // total length in seconds
 
-  double attack = 0.1;  // master attack
-  double decay  = 0.3;  // master decay time in seconds
-  double nonlin = 0.0;  // nonlinear feedback strength
+  double attack = 0.1;   // master attack
+  double decay  = 0.5;   // master decay time in seconds
+  double nonlin = -0.001;  // nonlinear feedback strength
 
   // transient parameters:
   double tr = 0.5 * (1+sqrt(5.0)); // golden ratio - relative frequency of "transient mode"
@@ -268,6 +268,7 @@ void modalBankTransient()
   Vec x(N);
   rosic::rsModalFilterBankDD mfb;
   mfb.setSampleRate(fs);
+  mfb.setNonLinearFeedback(nonlin);
   mfb.setReferenceFrequency(f);
   mfb.setReferenceDecay(decay);
   mfb.setReferenceAttack(attack);
@@ -283,6 +284,46 @@ void modalBankTransient()
   rosic::writeToMonoWaveFile("ModalWithTransient.wav", &x[0], N, (int)fs);
     // todo: make convenience function that takes a std::vector as signal, double for the 
     // sample-rate
+
+  // maybe have a feedback-drive and feedback-amount factor
+
+  // using x / (1 + x^(2*N)) with large N as nonlinearity gives a sort of sawtooth shape 
+  // (one cycle only)
+
+  // idea for more controlled feedback:
+  // -evaluate the complex frequency response (magnitude and phase) H(z) of the modal filter bank
+  //  without feedback (just add up all individual complex(!) contributions)
+  // -figure out at which w the phase response exp(-j*w) * H(exp(j*w)) goes through 180° (the first
+  //  exp(-j*w) is the phase response coming from the unit delay in the feedback path)
+  //  ...hmm...i'm not sure, if a closed form solution for w is possible
+  // -this is our would-be resonance frequency (...or maybe there are several?)
+  // -now put in an allpass into the feedback path that let's us shift this resonance frequency to
+  //  any desired value (which, as fraction/multiple of the fundamental, is a user parameter)
+  // -evaluate the magnitude of H(z) at that resonance frequency and use a normalized feedback 
+  //  parameter fb, such that the net loop gain becomes 1, when fb=1
+  // -all this is very similar to the resonance tuning of the ladder
+  // -when this is done, introduce a nonlinearity (1/(1+x^2) or whatever) into the feedback path
+  // -maybe the Q of the feedback allpass can be adjusted too (maybe it makes the resonance more
+  //  narrow or broad?)
+  // -maybe make the nonlinearity adjustable (by pre/post multiplication by a and 1/a for some a)
+  // -maybe it's necessary to factor in the allpass response right from the beginning and solve the
+  //  full response (including allpasses) for w
+  // -or maybe w has to be found numerically (bisection or whatever)
+
+  // let's define:
+  // -i-th modal transfer function:             Gi(z) 
+  // -modal bank transfer function:             G(z) = sum_i Gi(z) 
+  // -feedback allpass transfer function:       A(z) = ?...to be found
+  // -total feedback transfer function:         F(z) = G(z) * A(z) * (z^-1)
+  // -complete transfer function with feedback: H(z) = G(z) / (1 + k * F(z)) 
+  //  where k is the feedback gain
+  // -todo: evaluate that and plot, first evaluate G(z) - that should somehow tell us, how to set 
+  //  up A(z) in order to achieve a 180° phase shift at some particular frequency and |G(z)| at 
+  //  that frequency should tell us how to set up k to achieve a certain feedback amount
+  // -maybe experiment with other types of filters in the feedback path (lowpass, highpass, etc.)
+  //  -especially a highpass could be interesting because transients are characterized by high
+  //   frequencies...but maby also low/high shelvers...whatever - just make sure, the phase 
+  //   response comes out right and compensate for amplitude losses/gains in feedback factor
 
 
   int dummy = 0;

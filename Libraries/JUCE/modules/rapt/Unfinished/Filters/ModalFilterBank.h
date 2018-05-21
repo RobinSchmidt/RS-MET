@@ -450,6 +450,10 @@ public:
   void setReferenceAttack(TPar newAttack);
   void setReferenceDecay(TPar newDecay);
 
+  /** Sets the strength of the nonlinear feedback. This parameter is important to shape the 
+  transient. */
+  void setNonLinearFeedback(TPar newFeedback) { nonLinFeedback = newFeedback; }
+
 
 
   /** Sets the frequencies of the modes. */
@@ -644,7 +648,12 @@ RS_INLINE TSig rsModalFilterBank<TSig, TPar>::saturate(TSig x)
   // later: x = (1-k)*x + k*x^3; k between 0..1, high k make small feedback values even smaller, so
   // it sort of controls the decay-shape of the nonlinear feedback
 
-  return rsClip(x, TSig(-1), TSig(+1));  // use a parameteric softClip later
+  //return rsClip(x, TSig(-1), TSig(+1));  // use a parameteric softClip later
+  //return rsClip(x, TSig(-0.1), TSig(+0.1));
+
+  //return x / (1 + abs(x)); // cheap, saturating, not very smooth at origin
+
+  return x = x / (1 + x*x); // non-monotonic, smooth (continuous derivatives of all order (verify))
 }
 
 template<class TSig, class TPar>
@@ -693,6 +702,16 @@ RS_INLINE TSig rsModalFilterBank<TSig, TPar>::getSample(TSig in)
   // check, if the transient behaves similar at different sample-rates (due to chaos, it may not)
 
   // give the user a transient/body balance slider
+
+  // make a stereo version - channels may differ in start-phase and/or frequency (maybe provide
+  // a mid/side adjustment afterwards)
+
+  // allow the user to use a combination of (filtered) impulse and (filtered) noise as input
+  // signal
+
+  // the velocity should control the transient strength (among other things)
+
+  // provide a dedicated API for setting up the transient
 }
 
 #endif
