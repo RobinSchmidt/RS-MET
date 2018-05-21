@@ -71,9 +71,8 @@ int main(int argc, char* argv[])
   //nonUniformMovingAverage();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
-  //prototypeDesign();  // old implementation
-  poleZeroPrototype();  // new implementation
-
+  //prototypeDesign();  // old implementation - tddo: check gains of prototype filters
+  //poleZeroPrototype();  // new implementation - but we don't need that
 
   // Physics:
   //particleForceDistanceLaw();
@@ -259,6 +258,7 @@ int main(int argc, char* argv[])
   //attackDecayFilter();
   //dampedSineFilterDesign();
   //biquadImpulseResponseDesign();
+  modalBankTransient();
 
   // Modulator:
   //breakpointModulator();

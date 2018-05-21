@@ -396,7 +396,7 @@ protected:
                            // for shelvers (elliptic and inverse chebychev)
 
   // internal variables:
-  int L;                   // number of second order sections
+  int L;                   // number of second order sections (biquads)
   int r;                   // number of first order sections (either zero or one)
   int numFinitePoles;      // number of poles (excluding those at infinity)
   int numFiniteZeros;      // number of zeros (excluding those at infinity). 
@@ -405,6 +405,8 @@ protected:
   static const int maxOrder   = 2 * maxBiquads;   // maximum filter order
   static const int maxCoeffs  = 2 * maxOrder + 1; // maximum number of polynomial coeffs, * 2 
                                                   // because we need mag-squared polynomials
+                                                  // todo: maybe use member for temporary coeff arrays
+                                                  // -> functions will need less stack memory
 
   // arrays for nonredundant poles and zeros:
   Complex z[maxBiquads];   // zeros

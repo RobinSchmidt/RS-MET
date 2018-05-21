@@ -13,16 +13,18 @@ subfolder. This is a copy of the corresponding folder in the original JUCE
 distribution with some additions of my own. These additions are my own juce 
 "modules" and these are the ones, on which all the actual products are based. 
 The rapt module (Rob's Audio Processing Templates) is a template based library 
-with rather low level DSP code and it has no dependencies whatsoever (not even
-on juce_core). The rosic module (Rob's Signal Processing Classes), which 
-depends only on rapt, is a bit more high-level and more convenient and often 
-already facilitates easy integration of the code into plugins. rapt and rosic - 
-although being written as juce modules - do not depend in any way on juce. They 
-can be used in their own right and/or combined with other frameworks. 
-jura_framework is my juce-based GUI and plugin framework and jura_processors is 
-the glue that ties together the DSP code from rapt/rosic with the 
-jura_framework based GUI code into actual plugins or sub-modules of plugins 
-(such as oscillators, filters, effects, etc.).
+with rather low level code for math, number crunching and signal processing. It 
+has no dependencies whatsoever (not even on juce_core). The rosic module (Rob's 
+Signal Processing Classes), which depends only on rapt, is a bit more 
+high-level and more convenient to use and even includes some framework'ish 
+stuff (like thread-synchronization, polyphonic voice-management, etc.) to 
+facilitate easy integration of the code into plugins. rapt and rosic - although 
+being written as juce modules - do not depend in any way on juce. They can be 
+used in their own right and/or combined with other frameworks. jura_framework 
+is my juce-based GUI and plugin framework and jura_processors is the glue that 
+ties together the DSP code from rapt/rosic with the jura_framework based GUI 
+code into actual plugins or sub-modules of plugins (such as oscillators, 
+filters, effects, etc.).
 
 The most important project that can actually be built by itself is in:
 Products/AudioPlugins/ToolChain/

@@ -10,4 +10,6 @@ void attackDecayFilter();
 void dampedSineFilterDesign();
 void biquadImpulseResponseDesign();
 
+void modalBankTransient(); // tests the use of nonlinear feedback to produce transients
+
 #endif

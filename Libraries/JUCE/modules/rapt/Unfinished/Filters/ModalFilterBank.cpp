@@ -500,8 +500,9 @@ void rsModalFilterBank<TSig, TPar>::processBlock(TSig in[], TSig out[], int bloc
 template<class TSig, class TPar>
 void rsModalFilterBank<TSig, TPar>::resetModalFilters()
 {
-  for(unsigned int m = 0; m < modalFilters.size(); m++)
+  for(size_t m = 0; m < modalFilters.size(); m++)
     modalFilters[m].reset();
+  out = TSig(0);
 }
 
 template<class TSig, class TPar>

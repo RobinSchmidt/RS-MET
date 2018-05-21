@@ -126,7 +126,7 @@ void rsDampedSineFilterAnalysis2(double b0, double b1, double a1, double a2, dou
     *p += 2*PI;
   // Remark: There are actually two mathematical errors in this sequence of assignments which 
   // conveniently cancel each other and streamline the implementation, that's why I left them in.
-  // Actually, it should be r = (b1+b0*q)/(2.0*j*q.im) and *p = r.getAngle() + 0.5*PI, so we have 
+  // Actually, it should be r = (b1+b0*q)/(2.0*j*q.im) and *p = arg(r) + 0.5*PI, so we have 
   // first missed a division by j (corresponding to a rotation by -pi/2) in the computation of the
   // residue r and that's why we later don't need to add pi/2 to the startphase value ;-)
 }
@@ -173,9 +173,10 @@ void dampedSineFilterDesign()
   int dummy = 0;
 }
 
-/**
 
-*/
+/** A genaral time-domain design of biquad filters can be thought of as a damped-sine filter 
+(two-pole/one-zero) plus a scaled delta-impulse at the beginning of the impulse-response
+...check, if this is actually true... */
 void rsDelayedDampedSinePlusScaledDeltaFilter(double w, double A, double d, double p, double c,
   double *b0, double *b1, double *b2, double *a1, double *a2)
 {
@@ -185,10 +186,6 @@ void rsDelayedDampedSinePlusScaledDeltaFilter(double w, double A, double d, doub
   *b1 = c * (*a1) + g;
   *b2 = c * (*a2) + g*c1;
 }
-
-
-
-
 
 void biquadImpulseResponseDesign()
 {
@@ -228,3 +225,46 @@ void biquadImpulseResponseDesign()
   plotData(N, t, x);
 }
 
+void modalBankTransient()
+{
+  double fs  = 44100;  // samplerate in Hz
+  double f   = 100;    // fundamental frequency
+
+  double decay = 0.3;  // master decay time in seconds
+
+  // transient parameters:
+  double tr = 0.5 * (1+sqrt(5.0)); // golden ratio - relative frequency of "transient mode"
+  double ta = 1.0;                 // transient strength/amplitude
+  double tl = 0.1;                 // transient length
+  double tp = 0.0;                 // transient phase
+
+  // use 3 modes at relative frequencies 1,2,3 where 2 decays faster than 3 (generally, we may have
+  // and even/odd decay balance.
+
+  // use an additional fast-decaying mode at an irrational relative frequency, like the golden 
+  // ratio (=1.618... which is the number which is hardest to approximate by a rational number)
+  // ..then use nonlinear feedback to produce chaos in the transient
+
+  // try "lowpass" attack/decay filters to model a transient - or do my regular modal filters
+  // admit zero frequency? ...maybe if not, i could just make a dispatcher to switch to another 
+  // design formula, if w==0
+
+  typedef std::vector<double> Vec;
+
+
+  // relative mode frequencies, amplitudes, phases, decay-times, attack times
+  Vec frq = { 1,    2,    3, tr }; // use last mode as transient (preliminary - later have a
+  Vec amp = { 1, 1./2, 1./3, ta }; // dedicated interface for setting up transients
+  Vec phs = { 0,    0,    0, tp };
+  Vec dec = { 1, 1./2,    1, tl };
+  //Vec att = 
+
+
+
+  // synthesize signal:
+  rosic::rsModalFilterBankDD mfb;
+  mfb.setModalParameters(frq, amp, 0.1*decay*dec, decay*dec, phs);
+
+
+  int dummy = 0;
+}

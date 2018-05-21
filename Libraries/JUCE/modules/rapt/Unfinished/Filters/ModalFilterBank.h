@@ -495,6 +495,7 @@ public:
 
   /** Resets the internal states of the filters. */
   void resetModalFilters();
+    // rename to reset();
 
   void calculateModalFilterCoefficients();
 
@@ -528,6 +529,9 @@ public:
 
 protected:
 
+  /** Feedback saturation function. */
+  RS_INLINE TSig saturate(TSig x);
+
   /** \name Data */
 
   static const int maxNumModes = 1000;    // get rid of this - allow an arbitrary number
@@ -548,6 +552,9 @@ protected:
                        // restriction other than the minimum of the dimensionalities of the
                        // parameter vectors
   TPar sampleRate;
+
+  TPar nonLinFeedback = TPar(0);
+  TSig out = 0;
 
 };
 
@@ -632,17 +639,32 @@ RS_INLINE TSig rsModalFilterWithAttack2<TSig, TPar>::getSample(TSig in)
 }
 
 template<class TSig, class TPar>
+RS_INLINE TSig rsModalFilterBank<TSig, TPar>::saturate(TSig x)
+{
+  // later: x = (1-k)*x + k*x^3; k between 0..1, high k make small feedback values even smaller, so
+  // it sort of controls the decay-shape of the nonlinear feedback
+
+  return rsClip(x, TSig(-1), TSig(+1));  // use a parameteric softClip later
+}
+
+template<class TSig, class TPar>
 RS_INLINE TSig rsModalFilterBank<TSig, TPar>::getSample(TSig in)
 {
   int M = (int)rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
   M     = (int)rsMin((size_t)M, startPhases.size());
   // M: number of modes - optimize this, use a member variable
 
-
-  double out = 0.0;
+  in += saturate(nonLinFeedback*out);
+  out = 0.0;
   for(int m = 0; m < M; m++)
-    out += modalFilters[m].getSample(in);
+    out += modalFilters[m].getSample(in); // factor out into getBody, make a similar loop for getTransient
   return out;
+
+  // old:
+  //double out = 0.0;
+  //for(int m = 0; m < M; m++)
+  //  out += modalFilters[m].getSample(in);
+  //return out;
 
   // idea for nonlinear feedback: apply a nonlinearity (saturation or similar) to the final sum
   // and feed it back to the input with some feedback factor. OR: obtain the signal to be fed back
@@ -650,8 +672,27 @@ RS_INLINE TSig rsModalFilterBank<TSig, TPar>::getSample(TSig in)
   // (inversely) on the decay time of the respective mode - faster decaying modes produce higher
   // nonlinear feedback -> should emphasize/chaosify the transient more than the body
 
+  // maybe introduce special "transient" modes - with inharmonic frequencies and fast decay
+
   // maybe the nolinearity could also have some sigmoid(x^3) chracteristic -> lessen the feedback for 
   // low-level signals
+
+  // maybe do all of these things in ModalFilterNonLinear...or actually, we need a 
+  // ModalFilterBankNonlinear ......for this, we should also have a nonlinear/modulatable version
+  // with attack...check performance of plain modal filter vs the modulatable version - if the
+  // modulatable has similar performance, there's actually no need to use the plain version
+
+  // maybe to further shape the transient, we could use attack/decay lowpass filters - maybe let's
+  // have a second array of filters for this purpose - this has parameters attack/decay/amplitude
+  // per "mode" (amplitude can be negative) - so transient building blocks are simpler than body
+  // building blocks (which additionally have frequency and phase)
+  
+  // ...OR use a completely general pole/zero 
+  // filter to model the transient
+
+  // check, if the transient behaves similar at different sample-rates (due to chaos, it may not)
+
+  // give the user a transient/body balance slider
 }
 
 #endif

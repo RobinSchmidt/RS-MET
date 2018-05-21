@@ -583,7 +583,7 @@ void prototypeDesign()
 
   // in rsZeroNegligibleImaginaryParts the "real" pole has some small negative imaginary part which 
   // doesn't get zeroed out and in the subsequent call to rsOnlyUpperHalfPlane, the real pole
-  // get thrown away - we need a different threshold for float than we use for double
+  // gets thrown away - we need a different threshold for float than we use for double
   // ...ok - seems to be fixed.
   */
 
@@ -597,16 +597,16 @@ void prototypeDesign()
 
   // create and set up prototype designer:
   PD pd;
-  //pd.setApproximationMethod(PD::GAUSSIAN);
+  pd.setApproximationMethod(PD::GAUSSIAN);
   //pd.setApproximationMethod(PD::BESSEL);
   //pd.setApproximationMethod(PD::BUTTERWORTH);
   //pd.setApproximationMethod(PD::PAPOULIS);
-  pd.setApproximationMethod(PD::HALPERN);
+  //pd.setApproximationMethod(PD::HALPERN);
   //pd.setApproximationMethod(PD::CHEBYCHEV);
   //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
   //pd.setApproximationMethod(PD::ELLIPTIC);
 
-  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  //pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE); // comment fo lowpass
   pd.setGain(+6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
@@ -626,14 +626,18 @@ void prototypeDesign()
   // issues:
 
   // it seems, even order elliptic prototypes have an overall gain equal to the reciprocal of the 
-  // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have
+  // linear stopband rejection (passband ripple seems to have no effect), odd order elliptics have
   // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
   // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
+  // in EngineersFilter, it's not a problem, because i have a gain normalization step at the very
+  // end of the design pipeline - but it would be desirable to have correct gains at all stages
+  // of the design process rather than renormalizing at the end (which is sort of dirty)
 
   // todo: test the gaussian filter design
 }
 
 
+// this is for testing the rewrite attempt - which i then decided to give up:
 
 // helper function to convert form raw arrays of poles and zeros to the FilterSpecificationZPK 
 // structure used by the plotter
