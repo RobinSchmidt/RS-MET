@@ -17,15 +17,15 @@ namespace rosic
 
   /** Writes a mono signal into a wavefile (single precision version). */
   void writeToMonoWaveFile(const char* path, float *signal, int numFrames, int sampleRate,
-    int numBits);
+    int numBits = 16);
 
   /** Writes a mono signal into a wavefile (double precision version). */
   void writeToMonoWaveFile(const char* path, double *signal, int numFrames, int sampleRate,
-    int numBits);
+    int numBits = 16);
 
   /** Writes a stereo signal into a wavefile. */
   void writeToStereoWaveFile(const char* path, double *left, double *right, int numFrames,
-    int sampleRate, int numBits);
+    int sampleRate, int numBits = 16);
 
   /** Reads audio-data from a wavefile and returns a pointer to the data. When you access the data
   as an array, the first index is channel-number and the second index is the sample-number. Note

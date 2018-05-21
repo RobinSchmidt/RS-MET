@@ -228,14 +228,18 @@ void biquadImpulseResponseDesign()
 void modalBankTransient()
 {
   double fs  = 44100;  // samplerate in Hz
-  double f   = 100;    // fundamental frequency
+  //double fs  = 2000;      // samplerate in Hz
+  double f   = 100;       // fundamental frequency
+  double length = 2.0;    // total length in seconds
 
-  double decay = 0.3;  // master decay time in seconds
+  double attack = 0.1;  // master attack
+  double decay  = 0.3;  // master decay time in seconds
+  double nonlin = 0.0;  // nonlinear feedback strength
 
   // transient parameters:
   double tr = 0.5 * (1+sqrt(5.0)); // golden ratio - relative frequency of "transient mode"
   double ta = 1.0;                 // transient strength/amplitude
-  double tl = 0.1;                 // transient length
+  double tl = 0.2;                 // transient length
   double tp = 0.0;                 // transient phase
 
   // use 3 modes at relative frequencies 1,2,3 where 2 decays faster than 3 (generally, we may have
@@ -259,11 +263,26 @@ void modalBankTransient()
   Vec dec = { 1, 1./2,    1, tl };
   //Vec att = 
 
-
-
-  // synthesize signal:
+  // set up modal filter bank:
+  int N = ceilInt(length*fs);
+  Vec x(N);
   rosic::rsModalFilterBankDD mfb;
-  mfb.setModalParameters(frq, amp, 0.1*decay*dec, decay*dec, phs);
+  mfb.setSampleRate(fs);
+  mfb.setReferenceFrequency(f);
+  mfb.setReferenceDecay(decay);
+  mfb.setReferenceAttack(attack);
+  mfb.setModalParameters(frq, amp, 0.1*dec, dec, phs);
+
+  // synthesize signal as impulse-response of modal filter bank:
+  x[0] = mfb.getSample(1);
+  for(int n = 1; n < N; n++)
+    x[n] = mfb.getSample(0);
+  RAPT::rsArray::normalize(&x[0], N, 1.0, true);
+
+  // plot or write to wavefile:
+  rosic::writeToMonoWaveFile("ModalWithTransient.wav", &x[0], N, (int)fs);
+    // todo: make convenience function that takes a std::vector as signal, double for the 
+    // sample-rate
 
 
   int dummy = 0;
