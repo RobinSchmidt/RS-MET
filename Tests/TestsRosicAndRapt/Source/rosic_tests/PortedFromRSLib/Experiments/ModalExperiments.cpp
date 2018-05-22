@@ -23,6 +23,33 @@ void modalFilter()
   plotData(N, t, x);
 }
 
+void modalFilterFreqResp()
+{
+  // filter parameters:
+  double fs  = 44100;  // samplerate in Hz
+  double frq = 500;   // frequency in Hz
+  double amp = 1.0;    // amplitude as raw factor
+  double phs = 45;     // phase in degrees
+  double att = 0.01;   // attack time in seconds
+  double dec = 0.1;    // decay time constant in seconds
+
+
+  rsModalFilterWithAttackDD mf;
+  mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
+
+  // plot the impulse-response (versus the time-axis):
+  static const int N = 5000;
+  double t[N], x[N];
+  createTimeAxis(N, t, fs);
+  getImpulseResponse(mf, x, N);
+  plotData(N, t, x);
+  // factor out into plotImpulseResponse...
+
+  // plot frequency response:
+  FilterPlotter<double> plt;
+  // ...
+}
+
 void attackDecayFilter()
 {
   static const int N = 20000;  // number of samples to plot

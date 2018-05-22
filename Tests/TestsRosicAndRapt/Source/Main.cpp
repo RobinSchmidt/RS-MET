@@ -254,11 +254,12 @@ int main(int argc, char* argv[])
   //windowedSinc();
 
   // Modal:
-  //modalFilter();
+  //modalFilter();        // impulse response of decaying-sine filter
+  modalFilterFreqResp();  // frequency response of attack/decay-sine filter
   //attackDecayFilter();
   //dampedSineFilterDesign();
   //biquadImpulseResponseDesign();
-  modalBankTransient();
+  //modalBankTransient();
 
   // Modulator:
   //breakpointModulator();
