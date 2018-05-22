@@ -86,6 +86,7 @@ template class RAPT::rsParametricSigmoid<double>;
 template class RAPT::rsSinCosTable<double>;
 template class RAPT::rsScaledAndShiftedSigmoid<double>;
 template class RAPT::rsEllipse<double>;
+template class RAPT::rsRotationXY<double>;
 template class RAPT::rsRotationXYZ<double>;
 template class RAPT::rsCoordinateMapper<double>;
 template class RAPT::rsCoordinateMapper2D<double>;
@@ -110,6 +111,9 @@ template class RAPT::rsPhaseScopeBuffer2<double, float, double>;
 // not called from anywhere inside jura or rosic:
 template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
+
+//template class RAPT::rsBiquadCascade<double, double>;
+template class RAPT::rsBiquadCascade<rsFloat64x2, double>;
 
 template class RAPT::rsPrototypeDesigner<double>;
 template class RAPT::rsPoleZeroMapper<double>;
@@ -141,6 +145,7 @@ template class RAPT::rsLissajousOscillator3D<double>;
 template class RAPT::rsEllipseOscillator<double>;
 
 template class RAPT::rsMultiBandSplitter<double, double>;
+template class RAPT::rsMultiBandSplitter<rsFloat64x2, double>;
 
 template class RAPT::rsHalfWaveSaturator<double, double>;
 template class RAPT::rsSaturator<double, double>;
