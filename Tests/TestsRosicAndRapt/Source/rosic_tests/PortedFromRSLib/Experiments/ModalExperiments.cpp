@@ -35,8 +35,22 @@ void modalFilterFreqResp()
 
   plotImpulseResponse(mf, 5000, 1.0);
 
+  // plot frequency response (factor out):
+  int N = 1000;   // number of frequencies
+  double fMin = 20;
+  double fMax = fs/2;
+  std::complex<double> j(0,1);        // imaginary unit
+  std::vector<double> f(N);           // array of frequencies
+  std::vector<complex<double>> H(N);  // H(e^jw) at w=2*pi*f/fs
+  RAPT::rsArray::fillWithRangeExponential(&f[0], N, fMin, fMax);
+  for(int k = 0; k < N; k++)
+  {
+    double w = 2*PI*f[k]/fs;
+    H[k] = mf.getTransferFunctionAt(exp(j*w));
+  }
+
   // plot frequency response:
-  FilterPlotter<double> plt;
+  //FilterPlotter<double> plt;
   // ...
 }
 
