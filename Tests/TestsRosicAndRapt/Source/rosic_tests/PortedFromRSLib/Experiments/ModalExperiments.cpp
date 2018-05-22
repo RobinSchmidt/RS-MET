@@ -22,9 +22,9 @@ void modalFilter()
 // Unwraps values in the length-N array "a" with respect to a periodicity of "p".
 void unwrap(double *a, int N, double p)
 {
-  int k = 0;
   for(int n = 1; n < N; n++)
   {
+    int k = 0;
     while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k+1)*p))-a[n-1]))
       k++;
     while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k-1)*p))-a[n-1]))
@@ -72,7 +72,8 @@ void modalFilterFreqResp()
   {
     magnitude[k] = abs(H[k]);
     dB[k]        = amp2dB(magnitude[k]);
-    phase[k]     = arg(H[k]);
+    //phase[k]     = arg(H[k]);
+    phase[k]     = arg(H[k])-2*PI; // arg is in -pi..+pi, we want -2*pi..0 - check, if this is correct
   }
 
   // unwrap phase, convert to degrees:
@@ -85,7 +86,7 @@ void modalFilterFreqResp()
   GNUPlotter p;
   p.addDataArrays(N, &f[0], &dB[0]);
   p.addDataArrays(N, &f[0], &phase[0]);
-  p.setPixelSize(1200, 600); 
+  p.setPixelSize(1200, 400); 
   p.setTitle("Filter Frequency Response");
   //p.setGraphColors("A00000", "909000", "008000", "0000A0", "800080",
   //  "A00000", "909000", "008000", "0000A0", "800080" );
