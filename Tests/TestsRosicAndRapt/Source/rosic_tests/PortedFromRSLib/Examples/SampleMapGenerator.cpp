@@ -404,7 +404,7 @@ void SampleMapGeneratorModal::writeUnnormalizedSampleForKeyToBuffer(int key)
   numSamples += numFadeSamples;
 
   // synthesize (and post-process) the sound and write the result into the buffer:
-  modalFilterBank.resetModalFilters();
+  modalFilterBank.reset();
   buffer.setSize(1, numSamples);
   buffer.data[0][0] = modalFilterBank.getSample(1.0);
   for(int n = 1; n < numSamples; n++)

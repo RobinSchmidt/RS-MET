@@ -137,11 +137,11 @@ void testModalFilterBank(std::string &reportString)
   mfb.setReferenceFrequency(frequency);
   mfb.setReferenceDecay(decay);
 
-  mfb.resetModalFilters();
+  mfb.reset();
   double cyclesPerSample = getCyclesPerSample(mfb, numSamples) / numPartials;
   printPerformanceTestResult("ModalFilterBank", cyclesPerSample);
 
-  mfb.resetModalFilters();
+  mfb.reset();
   double cyclesPerSampleBlockWise = 
     getCyclesPerSampleBlockWise(mfb, numSamples, 5, blockSize) / numPartials;
   printPerformanceTestResult("  blockwise:", cyclesPerSampleBlockWise);

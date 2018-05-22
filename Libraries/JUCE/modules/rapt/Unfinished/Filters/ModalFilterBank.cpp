@@ -486,7 +486,7 @@ std::complex<TPar> rsModalFilterBank<TSig, TPar>::getTransferFunctionAt(std::com
   std::complex<TPar> H = std::complex<TPar>(0, 0); // accumulator for H(z)
   for(int m = 0; m < getNumModes(); m++)
     H += modalFilters[m].getTransferFunctionAt(z);
-  return z;
+  return H;
   // maybe later rename H to G and use H for transfer function with feedback, G for without
 }
 
@@ -520,7 +520,7 @@ void rsModalFilterBank<TSig, TPar>::processBlock(TSig in[], TSig out[], int bloc
 // others:
 
 template<class TSig, class TPar>
-void rsModalFilterBank<TSig, TPar>::resetModalFilters()
+void rsModalFilterBank<TSig, TPar>::reset()
 {
   for(size_t m = 0; m < modalFilters.size(); m++)
     modalFilters[m].reset();

@@ -58,7 +58,7 @@ inline std::vector<std::complex<TSig>> getFrequencyResponse(
 /** Plots the given magnitude response in dB and phase response in degrees against the frequency 
 axis f. */
 void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB, 
-  std::vector<double>& degrees);
+  std::vector<double>& degrees, bool logFreq = true);
 
 /** Plots the frequency response of the given filter. The class must have a function 
 getTransferFunctionAt... */
@@ -78,7 +78,7 @@ inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSi
   std::vector<TSig> dB(N), phs(N);
   for(int k = 0; k < N; k++) {
     dB[k]  = amp2dB(abs(H[k]));
-    phs[k] = arg(H[k])-2*PI; // arg is in -pi..+pi, we want -2*pi..0 - check, if this is correct
+    phs[k] = arg(H[k]); //-2*PI; // arg is in -pi..+pi, we want -2*pi..0 - check, if this is correct
   }
 
   // unwrap phase, convert to degrees:
@@ -90,7 +90,7 @@ inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSi
 
   // convert w back to Hz and plot:
   RAPT::rsArray::scale(&w[0], N, fs/(2*PI));
-  plotFrequencyResponse(w, dB, phs);
+  plotFrequencyResponse(w, dB, phs, logFreq);
 }
 
 

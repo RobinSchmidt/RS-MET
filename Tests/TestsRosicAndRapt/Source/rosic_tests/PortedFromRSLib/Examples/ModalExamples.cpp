@@ -396,7 +396,7 @@ void createModalFilterBankExamples()
   int    numFadeSamples = (int) (sampleRate * fadeOutTime);
   numSamples += numFadeSamples;
 
-  mfb.resetModalFilters();
+  mfb.reset();
   double *y = new double[numSamples];  
   y[0] = mfb.getSample(1.0);
   for(int n = 1; n < numSamples; n++)

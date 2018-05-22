@@ -255,11 +255,11 @@ int main(int argc, char* argv[])
 
   // Modal:
   //modalFilter();        // impulse response of decaying-sine filter
-  modalFilterFreqResp();  // frequency response of attack/decay-sine filter
+  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
   //attackDecayFilter();  // ...hmm..almost redundant
   //dampedSineFilterDesign();
   //biquadImpulseResponseDesign();
-  //modalBankTransient();
+  modalBankTransient();
 
   // Modulator:
   //breakpointModulator();

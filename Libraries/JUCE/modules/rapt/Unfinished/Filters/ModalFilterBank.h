@@ -517,8 +517,7 @@ public:
   /** \name Misc */
 
   /** Resets the internal states of the filters. */
-  void resetModalFilters();
-    // rename to reset();
+  void reset();
 
   void calculateModalFilterCoefficients();
 

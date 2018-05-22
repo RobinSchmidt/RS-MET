@@ -7,15 +7,15 @@ void modalFilter()
   double fs  = 44100;  // samplerate in Hz
   double td  = 0.1;    // decay time constant in seconds
   double f   = 100;    // frequency in Hz
-  double phs = 45;     // phase in degrees
+  double phs = 0;     // phase in degrees
   double A   = 1.0;    // amplitude as raw factor
 
   // create and set up the modal filter:
   rsModalFilterDD mf;
   mf.setModalParameters(f, A, td, phs, fs);
 
-
-  plotImpulseResponse(mf, 5000, 1.0);
+  //plotImpulseResponse(mf, 5000, 1.0);
+  plotFrequencyResponse(mf, 2000, 20.0, fs/2, fs, true);
 }
 
 void modalFilterFreqResp()
@@ -32,68 +32,8 @@ void modalFilterFreqResp()
   rsModalFilterWithAttackDD mf;
   mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
 
-
   //plotImpulseResponse(mf, 5000, 1.0);
-  plotFrequencyResponse(mf, 2000, 20.0, fs, fs, true);
-
-  /*
-  // obtain complex frequency response (factor out):
-  int N = 2000;   // number of frequencies
-  double fMin = 20;
-  double fMax = fs/2;
-  std::complex<double> j(0,1);        // imaginary unit
-  std::vector<double> f(N);           // array of frequencies
-  std::vector<complex<double>> H(N);  // H(e^jw) at w=2*pi*f/fs
-  RAPT::rsArray::fillWithRangeExponential(&f[0], N, fMin, fMax);
-  for(int k = 0; k < N; k++)
-  {
-    double w = 2*PI*f[k]/fs;
-    H[k] = mf.getTransferFunctionAt(exp(j*w));
-  }
-
-  // obtain magnitude and phase from complex frequency response (factor out)
-  std::vector<double> magnitude(N), phase(N), dB(N);
-  for(int k = 0; k < N; k++)
-  {
-    magnitude[k] = abs(H[k]);
-    dB[k]        = amp2dB(magnitude[k]);
-    phase[k]     = arg(H[k])-2*PI; // arg is in -pi..+pi, we want -2*pi..0 - check, if this is correct
-  }
-
-  // unwrap phase, convert to degrees:
-  RAPT::rsArray::unwrap(&phase[0], N, 2*PI);
-  for(int k = 0; k < N; k++)
-    phase[k] *= 180.0/PI;
-  */
-
-  /*
-  // factor out:
-  GNUPlotter p;
-  p.addDataArrays(N, &f[0], &dB[0]);
-  p.addDataArrays(N, &f[0], &phase[0]);
-  p.setPixelSize(1200, 400); 
-  p.setTitle("Filter Frequency Response");
-  //p.setGraphColors("A00000", "909000", "008000", "0000A0", "800080",
-  //  "A00000", "909000", "008000", "0000A0", "800080" );
-  p.addCommand("set logscale x");
-  //p.addCommand("set xrange  [0.0625:16]");
-  //p.addCommand("set yrange  [-100:0]");
-  //p.addCommand("set y2range [-450:0]");
-  p.addCommand("set xlabel \"Frequency in Hz\"");
-  p.addCommand("set ylabel \"Magnitude in dB\"");
-  p.addCommand("set y2label \"Phase in Degrees\"");
-  //p.addCommand("set xtics 2");    // factor 2 between (major) frequency axis tics
-  //p.addCommand("unset mxtics");   // no minor tics for frequency axis
-  p.addCommand("set ytics 10");   // 10 dB steps for magnitude axis
-  p.addCommand("set y2tics 45");  // 45° steps for phase axis
-
-  // add magnitude and phase graphs:
-  p.addGraph("i 0 u 1:2 w lines lw 1.5 axes x1y1 notitle");
-  p.addGraph("i 1 u 1:2 w lines lw 1.5 axes x1y2 notitle");
-  p.plot();
-  */
-
-  // todo: factor out plotting code for reuse
+  plotFrequencyResponse(mf, 5000, 20.0, fs/2, fs, true);
 }
 
 // hmm...this is now a bit redundant:
@@ -303,7 +243,7 @@ void modalBankTransient()
 {
   double fs  = 44100;  // samplerate in Hz
   //double fs  = 2000;      // samplerate in Hz
-  double f   = 50;       // fundamental frequency
+  double f   = 100;       // fundamental frequency
   double length = 4.0;    // total length in seconds
 
   double attack = 0.1;   // master attack
@@ -314,7 +254,7 @@ void modalBankTransient()
   double tr = 0.5 * (1+sqrt(5.0)); // golden ratio - relative frequency of "transient mode"
   double ta = 1.0;                 // transient strength/amplitude
   double tl = 0.2;                 // transient length
-  double tp = 0.0;                 // transient phase
+  double tp = 0;                   // transient phase - try pi too -> phase rresponse more monotonic
 
   // use 3 modes at relative frequencies 1,2,3 where 2 decays faster than 3 (generally, we may have
   // and even/odd decay balance.
@@ -334,6 +274,7 @@ void modalBankTransient()
   Vec frq = { 1,    2,    3, tr }; // use last mode as transient (preliminary - later have a
   Vec amp = { 1, 1./2, 1./3, ta }; // dedicated interface for setting up transients
   Vec phs = { 0,    0,    0, tp };
+  //Vec phs = { 0,    0,    PI, PI }; // alternating (the last is actualy at index 1, if sorted
   Vec dec = { 1, 1./2,    1, tl };
   //Vec att = 
 
@@ -354,7 +295,9 @@ void modalBankTransient()
     x[n] = mfb.getSample(0);
   RAPT::rsArray::normalize(&x[0], N, 1.0, true);
 
-  // plot or write to wavefile:
+  // plot and/or write to wavefile:
+  //plotImpulseResponse(mfb, 5000, 1.0);
+  plotFrequencyResponse(mfb, 5000, 0.0, 400.0, fs, false);
   rosic::writeToMonoWaveFile("ModalWithTransient.wav", &x[0], N, (int)fs);
     // todo: make convenience function that takes a std::vector as signal, double for the 
     // sample-rate
@@ -404,6 +347,20 @@ void modalBankTransient()
   //  phase-modulation
   // -modulatable version would lend itself well for a monophonic synthesizer with glide
 
+  // todo: set up test project where we put the feedback path externally around the object - easier
+  // for experimentation (shorter build times)
+
+
+  // Observations:
+  // -when all modes are in phase, the phase response is alternating between 0 and -180 and at the 
+  //  modes it is close to 90° (but not exactly..or maybe it is exact? - hard to say due to messed 
+  //  up axis values in plot -> figure out)
+  // -when mode phases are alternating, the phase response is monotonic. the 1st mode is at -90°
+  //  and the other ones are at distances -n*180 form that (quite precisely)
+
+  // ...maybe make an experiment with just 2 modes to figure out these things ...then maybe 10 for
+  // nice plots - figure also out, how the responses depend on attack
+  //
 
   int dummy = 0;
 }

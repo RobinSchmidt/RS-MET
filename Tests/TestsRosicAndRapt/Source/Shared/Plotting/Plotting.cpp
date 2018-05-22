@@ -33,7 +33,7 @@ void plotImpulseResponse(TFlt &filter, int N, TSig scale)
 */
 
 void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
-  std::vector<double>& degrees)
+  std::vector<double>& degrees, bool logFreq)
 {
   //rsAssert(size(f) == size(dB) && size(f) == size(degrees));
   int N = (int) size(f);
@@ -44,7 +44,8 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   p.setTitle("Filter Frequency Response");
   //p.setGraphColors("A00000", "909000", "008000", "0000A0", "800080",
   //  "A00000", "909000", "008000", "0000A0", "800080" );
-  p.addCommand("set logscale x");
+  if(logFreq)
+    p.addCommand("set logscale x");
   //p.addCommand("set xrange  [0.0625:16]");
   //p.addCommand("set yrange  [-100:0]");
   //p.addCommand("set y2range [-450:0]");
