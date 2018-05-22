@@ -33,6 +33,7 @@ void modalFilterFreqResp()
   mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
 
 
+
   //plotImpulseResponse(mf, 5000, 1.0);
 
   // obtain complex frequency response (factor out):
