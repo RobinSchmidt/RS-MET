@@ -35,6 +35,17 @@ inline void plotImpulseResponse(TFlt &filter, int length, TSig scale)
   plt.plot();
 }
 
+/** Plots the frequency response of the given filter. The class must have a function 
+getTransferFunctionAt... */
+template<class TSig, class TFlt>
+inline void plotFrequencyResponse(TFlt &filter, TSig fLow, TSig fHigh, TSig fs, bool logFreq)
+{
+
+
+}
+
+
+
 
 // new, dragged over from RSLib tests (TestUtilities.h):
 

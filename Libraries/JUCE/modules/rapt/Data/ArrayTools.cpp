@@ -1110,6 +1110,20 @@ void rsArray::transposeSquareArray(T **A, int N)
   }
 }
 
+template<class T>
+void rsArray::unwrap(T* a, int N, T p)
+{
+  for(int n = 1; n < N; n++)
+  {
+    int k = 0;
+    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k+1)*p))-a[n-1]))
+      k++;
+    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k-1)*p))-a[n-1]))
+      k--;
+    a[n] += k*p;
+  }
+}
+
 template <class T>
 T rsArray::weightedSum(T *w, T *x, rsUint32 length)
 {

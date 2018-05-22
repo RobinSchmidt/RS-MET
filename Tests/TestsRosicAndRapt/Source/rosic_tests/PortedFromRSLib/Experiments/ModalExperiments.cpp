@@ -18,22 +18,6 @@ void modalFilter()
   plotImpulseResponse(mf, 5000, 1.0);
 }
 
-
-// Unwraps values in the length-N array "a" with respect to a periodicity of "p".
-void unwrap(double *a, int N, double p)
-{
-  for(int n = 1; n < N; n++)
-  {
-    int k = 0;
-    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k+1)*p))-a[n-1]))
-      k++;
-    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k-1)*p))-a[n-1]))
-      k--;
-    a[n] += k*p;
-  }
-}
-// move to RAPT
-
 void modalFilterFreqResp()
 {
   // filter parameters:
@@ -77,7 +61,7 @@ void modalFilterFreqResp()
   }
 
   // unwrap phase, convert to degrees:
-  unwrap(&phase[0], N, 2*PI);
+  RAPT::rsArray::unwrap(&phase[0], N, 2*PI);
   for(int k = 0; k < N; k++)
     phase[k] *= 180.0/PI;
 

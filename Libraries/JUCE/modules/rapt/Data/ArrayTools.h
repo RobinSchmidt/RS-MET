@@ -500,9 +500,17 @@ public:
   static void transposeSquareArray(T **theArray, int size);
   // move to MatrixFunctions
 
+  /** Given an array that contains values that have been subject to some kind wrap-around into some
+  period p, this function (heuristically) unwraps them again. This is useful for plotting a 
+  phase-response - if you have an array of angles in the interval -pi..pi (as you will get when 
+  using arg(std::complex z) on a transfer function value), subtract off 2*pi, and unwrap with 
+  period 2*pi. */
+  template<class T>
+  static void unwrap(T* a, int N, T p);
+
   /** Returns the sum-over-i w[i]*x[i]. */
   template <class T>
-  static T weightedSum(T *w, T *x, rsUint32 length);
+  static T weightedSum(T *w, T *x, rsUint32 length);  // redundant with sumOfProducts
 
   /** Forms a weighted sum of the two buffers. */
   template <class T>

@@ -74,6 +74,7 @@ template void rsArray::divide(double *buffer1, double *buffer2, double *result, 
 template int rsArray::maxAbsIndex(const double* const buffer, int length);
 template void rsArray::rightShift(double *buffer, int length, int numPlaces);
 template void rsArray::shift(double *buffer, int length, int numPlaces);
+template void rsArray::unwrap(double* a, int N, double p);
 
 template float rsArray::maxDeviation(float *buffer1, float *buffer2, int length);
 
