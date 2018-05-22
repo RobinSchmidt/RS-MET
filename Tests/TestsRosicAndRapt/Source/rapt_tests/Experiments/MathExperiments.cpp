@@ -307,3 +307,16 @@ void expGaussBell()
   plt.addDataArrays(N, &x[0], &y[0]);
   plt.plot();
 }
+
+// fun stuff:
+
+void primeAlternatingSums()
+{
+  // Take the array of prime numbers with alternating signs
+  // 2 -3 5 -7 11 -13 17 -19 ...
+  // and take running sums of various or ...just for fun to see what happens
+  // ...do they also all have alternating signs? what happens, if we add them to one of the
+  // previous arrays...just mess around a little - may interesting patterns emerge...
+  // what changes, if we give the even-indexed primes a negative sign?
+
+}

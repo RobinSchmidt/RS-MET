@@ -32,7 +32,7 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 {
   bool   matrixIsSingular = false;
   int    i, j, k, p;
-  double biggest;
+  double biggest;   // use T
   T      multiplier;
   T      tmpSum;
 
@@ -51,10 +51,11 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
         p       = j;
       }
     }
-    if(rsIsCloseTo(biggest, 0.0, 1.e-12))
-    {
+    if(rsIsCloseTo(biggest, 0.0, 1.e-12))  // todo: use something based on std::numeric_limits<T>
+    {                                      // and/or let the user pick a threshold
       matrixIsSingular = true;
-      //rsError("Matrix close to singular.");
+      rsError("Matrix (numerically close to) singular.");
+      // shouldn't we return here?
     }
 
     // swap current row with pivot row (a pointer switch in the first index of A and an exchange 
@@ -97,8 +98,9 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
     x[i] = (b[i] - tmpSum) / A[i][i];
   }
 
-  // done: the vector x now contains the solution to the system A*x=b (unless the matrix was
-  // singular in which case it contains meaningless numbers or not-a-numbers)
+  // Done: The vector x now contains the solution to the system A*x=b (unless the matrix was
+  // singular in which case it contains meaningless numbers or not-a-numbers). A and b contain
+  // garbage now.
 
   return !matrixIsSingular;
 }

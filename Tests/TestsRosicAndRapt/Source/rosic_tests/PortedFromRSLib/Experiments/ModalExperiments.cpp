@@ -107,24 +107,6 @@ void modalFilterFreqResp()
   p.addGraph("i 1 u 1:2 w lines lw 1.5 axes x1y2 notitle");
   p.plot();
 
-  // ok - not bad - but something is wrong with the phase unwrapping - shouldn't the phase be
-  // strictly negative indicating a delay (and never an advance?)?
-
-
-  /*
-  // plot frequency response:
-  GNUPlotter plt;
-  plt.setLogScale("x", 2.0);
-  //plt.addDataArrays(N, &f[0], &magnitude[0]);
-  //plt.addDataArrays(N, &f[0], &dB[0]);
-  plt.addDataArrays(N, &f[0], &phase[0]);
-  plt.plot();
-  */
-
-
-  // todo: figure out how to plot magnitude and phase...or maybe just plot them in one plot with 
-  // double axes
-
   // todo: factor out plotting code for reuse
 }
 

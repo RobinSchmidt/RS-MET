@@ -41,14 +41,23 @@ public:
   //bool rsSolveLinearSystem(const T **A, T *x, const T *b, int N);
   static bool rsSolveLinearSystem(T **A, T *x, T *b, int N);
 
-  /** Solves the linear system just as solveLinearSystem() but destroys the coefficient matrix A 
-  and the target vector b during the process because the computation is done in placce. In 
-  fact, the function solveLinearSystem() just makes temporary copies of the matrix A and target 
-  vector b and the calls this function with these copies to do the actual computation. If you 
-  don't need the matrix or vector anymore after solving the system, you can use this function 
-  directly to get rid of the copying overhead. */
+  /** Solves the linear system just as solveLinearSystem() does - but doesn't allocate temporary 
+  heap memory and instead destroys the coefficient matrix A and the target vector b during the 
+  process because the computation is done in place. In fact, the function solveLinearSystem() just 
+  makes temporary copies of the matrix A and target vector b and the calls this function with these 
+  copies to do the actual computation. If you don't need the matrix or vector anymore after solving 
+  the system, you can use this function directly to get rid of the copying overhead. The algorithm 
+  is Gaussian elimination with partial pivoting (...i think -> verify this). */
   template<class T>
   static bool rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N);
+
+  // todo: add functions to solve NxM systems with N != M (find minimum-norm solution for 
+  // underdetermined systems and least-squares approximation for overdetermined systems...
+  // maybe we should have two different functions solveUnderDeterminedSystem, 
+  // solveOverDeterminedSystem...or something. the overdetermined case can then be used
+  // inside polynomial curve-fitting and multiple linear regression routines 
+  // (i think polynomial fits use a Vandermonde matrix (created from data vectors) and then works
+  // the same a multiple linear regression -> look it up...)
 
   /** Inverts the matrix A via Gauss-Jordan elimination with partial pivoting. */
   template<class T>
@@ -89,6 +98,8 @@ public:
   of the matrices A and B. */
   template<class T>
   static bool rsChangeOfBasisMatrixRowWise(T **A, T **B, T **C, int N);
+
+
 
 };
 

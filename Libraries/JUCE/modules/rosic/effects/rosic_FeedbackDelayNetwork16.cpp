@@ -987,3 +987,17 @@ void FeedbackDelayNetwork16::reset()
   wetFilterL.reset();
   wetFilterR.reset();
 }
+
+
+/*
+Idea for producing relative delayline lengths:
+start with an irrational number r, like, for example: r = (1+sqrt(5))/2
+(1) take r as 1st relative delay-time
+(2) square it: r = r^2  ...or maybe r = r^2 + c for c some additive constant (like 0.2)
+(3) while r > 2: r = r/2
+    -use r as next delay time
+(4) back to (2)
+
+can use different seed numbers (can be user parameter)
+-maybe, when all times are computed, the should be sorted ascending (but may be optional)
+*/
