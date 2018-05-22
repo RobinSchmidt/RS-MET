@@ -10,6 +10,7 @@
 //  plt.plot();
 //}
 
+/* // commented because inlined in .h now
 template<class TSig, class TFlt>
 vector<TSig> impulseResponse(TFlt &filter, int N, TSig scale)
 {
@@ -29,6 +30,7 @@ void plotImpulseResponse(TFlt &filter, int N, TSig scale)
   plt.addDataArrays(N, &y[0]);
   plt.plot();
 }
+*/
 
 
 // new from RSLib test - needs testing:

@@ -14,13 +14,8 @@ void modalFilter()
   rsModalFilterDD mf;
   mf.setModalParameters(f, A, td, phs, fs);
 
-  // generate time-axis and impulse-response:
-  double t[N], x[N];
-  createTimeAxis(N, t, fs);
-  getImpulseResponse(mf, x, N);
 
-  // plot the impulse-response (versus the time-axis):
-  plotData(N, t, x);
+  plotImpulseResponse(mf, 5000, 1.0);
 }
 
 void modalFilterFreqResp()
@@ -37,19 +32,15 @@ void modalFilterFreqResp()
   rsModalFilterWithAttackDD mf;
   mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
 
-  // plot the impulse-response (versus the time-axis):
-  static const int N = 5000;
-  double t[N], x[N];
-  createTimeAxis(N, t, fs);
-  getImpulseResponse(mf, x, N);
-  plotData(N, t, x);
-  // factor out into plotImpulseResponse...
+
+  plotImpulseResponse(mf, 5000, 1.0);
 
   // plot frequency response:
   FilterPlotter<double> plt;
   // ...
 }
 
+// hmm...this is now a bit redundant:
 void attackDecayFilter()
 {
   static const int N = 20000;  // number of samples to plot

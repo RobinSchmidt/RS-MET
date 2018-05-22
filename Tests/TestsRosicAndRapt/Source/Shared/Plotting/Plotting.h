@@ -10,18 +10,30 @@ using namespace std;  // try to get rid
 //  float *y4 = nullptr, float *y5 = nullptr);
 
 /** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary 
-for you to pass a scale factor of the type of the filter's output signal (for example: double), 
-such that the compiler can deduce the template parameter. We also use it to scale the impulse 
-response, so it actually gets some purpose besides satisfying the compiler. The filter class must 
-support the functions reset() and getSample() */
+for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for 
+double), such that the compiler can deduce the template parameter. We also use it to scale the 
+input impulse to the filter, so it actually gets some purpose besides satisfying the compiler. The 
+filter class must support the functions reset() and getSample() */
 template<class TSig, class TFlt>
-vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale);
- // maybe move to a file ResponseGetters
+inline vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
+{
+  vector<TSig> y(length);
+  filter.reset();
+  y[0] = filter.getSample(scale);
+  for(int n = 1; n < length; n++)
+    y[n] = filter.getSample(0.0);
+  return y;
+}
 
 /** Plots N samples of the impulse response of the passed filter. */
 template<class TSig, class TFlt>
-void plotImpulseResponse(TFlt &filter, int length, TSig scale);
-
+inline void plotImpulseResponse(TFlt &filter, int length, TSig scale)
+{
+  vector<TSig> y = impulseResponse(filter, length, scale);
+  GNUPlotter plt;
+  plt.addDataArrays(length, &y[0]);
+  plt.plot();
+}
 
 
 // new, dragged over from RSLib tests (TestUtilities.h):
