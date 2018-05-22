@@ -18,6 +18,22 @@ void modalFilter()
   plotImpulseResponse(mf, 5000, 1.0);
 }
 
+
+// Unwraps values in the length-N array "a" with respect to a periodicity of "p".
+void unwrap(double *a, int N, double p)
+{
+  int k = 0;
+  for(int n = 1; n < N; n++)
+  {
+    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k+1)*p))-a[n-1]))
+      k++;
+    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k-1)*p))-a[n-1]))
+      k--;
+    a[n] += k*p;
+  }
+}
+// move to RAPT
+
 void modalFilterFreqResp()
 {
   // filter parameters:
@@ -59,16 +75,54 @@ void modalFilterFreqResp()
     phase[k]     = arg(H[k]);
   }
 
-  // todo: unwrap phase...
+  // unwrap phase, convert to degrees:
+  unwrap(&phase[0], N, 2*PI);
+  for(int k = 0; k < N; k++)
+    phase[k] *= 180.0/PI;
 
 
+  // factor out:
+  GNUPlotter p;
+  p.addDataArrays(N, &f[0], &dB[0]);
+  p.addDataArrays(N, &f[0], &phase[0]);
+  p.setPixelSize(1200, 600); 
+  p.setTitle("Filter Frequency Response");
+  //p.setGraphColors("A00000", "909000", "008000", "0000A0", "800080",
+  //  "A00000", "909000", "008000", "0000A0", "800080" );
+  p.addCommand("set logscale x");
+  //p.addCommand("set xrange  [0.0625:16]");
+  //p.addCommand("set yrange  [-100:0]");
+  //p.addCommand("set y2range [-450:0]");
+  p.addCommand("set xlabel \"Frequency in Hz\"");
+  p.addCommand("set ylabel \"Magnitude in dB\"");
+  p.addCommand("set y2label \"Phase in Degrees\"");
+  //p.addCommand("set xtics 2");    // factor 2 between (major) frequency axis tics
+  //p.addCommand("unset mxtics");   // no minor tics for frequency axis
+  p.addCommand("set ytics 10");   // 10 dB steps for magnitude axis
+  p.addCommand("set y2tics 45");  // 45° steps for phase axis
+
+  // add magnitude and phase graphs:
+  p.addGraph("i 0 u 1:2 w lines lw 1.5 axes x1y1 notitle");
+  p.addGraph("i 1 u 1:2 w lines lw 1.5 axes x1y2 notitle");
+  p.plot();
+
+  // ok - not bad - but something is wrong with the phase unwrapping - shouldn't the phase be
+  // strictly negative indicating a delay (and never an advance?)?
+
+
+  /*
   // plot frequency response:
   GNUPlotter plt;
   plt.setLogScale("x", 2.0);
   //plt.addDataArrays(N, &f[0], &magnitude[0]);
-  plt.addDataArrays(N, &f[0], &dB[0]);
-  //plt.addDataArrays(N, &f[0], &phase[0]);
+  //plt.addDataArrays(N, &f[0], &dB[0]);
+  plt.addDataArrays(N, &f[0], &phase[0]);
   plt.plot();
+  */
+
+
+  // todo: figure out how to plot magnitude and phase...or maybe just plot them in one plot with 
+  // double axes
 
   // todo: factor out plotting code for reuse
 }
