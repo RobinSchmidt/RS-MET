@@ -22,7 +22,7 @@ void modalFilterFreqResp()
 {
   // filter parameters:
   double fs  = 44100;  // samplerate in Hz
-  double frq = 500;   // frequency in Hz
+  double frq = 1000;   // frequency in Hz
   double amp = 1.0;    // amplitude as raw factor
   double phs = 45;     // phase in degrees
   double att = 0.01;   // attack time in seconds
@@ -33,10 +33,10 @@ void modalFilterFreqResp()
   mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
 
 
-  plotImpulseResponse(mf, 5000, 1.0);
+  //plotImpulseResponse(mf, 5000, 1.0);
 
-  // plot frequency response (factor out):
-  int N = 1000;   // number of frequencies
+  // obtain complex frequency response (factor out):
+  int N = 2000;   // number of frequencies
   double fMin = 20;
   double fMax = fs/2;
   std::complex<double> j(0,1);        // imaginary unit
@@ -49,9 +49,27 @@ void modalFilterFreqResp()
     H[k] = mf.getTransferFunctionAt(exp(j*w));
   }
 
+  // obtain magnitude and phase from complex frequency response (factor out)
+  std::vector<double> magnitude(N), phase(N), dB(N);
+  for(int k = 0; k < N; k++)
+  {
+    magnitude[k] = abs(H[k]);
+    dB[k]        = amp2dB(magnitude[k]);
+    phase[k]     = arg(H[k]);
+  }
+
+  // todo: unwrap phase...
+
+
   // plot frequency response:
-  //FilterPlotter<double> plt;
-  // ...
+  GNUPlotter plt;
+  plt.setLogScale("x", 2.0);
+  //plt.addDataArrays(N, &f[0], &magnitude[0]);
+  plt.addDataArrays(N, &f[0], &dB[0]);
+  //plt.addDataArrays(N, &f[0], &phase[0]);
+  plt.plot();
+
+  // todo: factor out plotting code for reuse
 }
 
 // hmm...this is now a bit redundant:
