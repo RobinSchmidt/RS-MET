@@ -32,6 +32,37 @@ void plotImpulseResponse(TFlt &filter, int N, TSig scale)
 }
 */
 
+void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
+  std::vector<double>& degrees)
+{
+  //rsAssert(size(f) == size(dB) && size(f) == size(degrees));
+  int N = (int) size(f);
+  GNUPlotter p;
+  p.addDataArrays(N, &f[0], &dB[0]);
+  p.addDataArrays(N, &f[0], &degrees[0]);
+  p.setPixelSize(1200, 400); 
+  p.setTitle("Filter Frequency Response");
+  //p.setGraphColors("A00000", "909000", "008000", "0000A0", "800080",
+  //  "A00000", "909000", "008000", "0000A0", "800080" );
+  p.addCommand("set logscale x");
+  //p.addCommand("set xrange  [0.0625:16]");
+  //p.addCommand("set yrange  [-100:0]");
+  //p.addCommand("set y2range [-450:0]");
+  p.addCommand("set xlabel \"Frequency in Hz\"");
+  p.addCommand("set ylabel \"Magnitude in dB\"");
+  p.addCommand("set y2label \"Phase in Degrees\"");
+  //p.addCommand("set xtics 2");    // factor 2 between (major) frequency axis tics
+  //p.addCommand("unset mxtics");   // no minor tics for frequency axis
+  p.addCommand("set ytics 10");   // 10 dB steps for magnitude axis
+  p.addCommand("set y2tics 45");  // 45° steps for phase axis
+
+  // add magnitude and phase graphs:
+  p.addGraph("i 0 u 1:2 w lines lw 1.5 axes x1y1 notitle");
+  p.addGraph("i 1 u 1:2 w lines lw 1.5 axes x1y2 notitle");
+  p.plot();
+}
+
+
 
 // new from RSLib test - needs testing:
 

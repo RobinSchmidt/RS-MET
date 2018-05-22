@@ -5,6 +5,8 @@
 #include "DSPPlotters.h"
 using namespace std;  // try to get rid
 
+#include "rosic/rosic.h"
+
 ///** Plots at most five y-functions against a common x-axis. */
 //void plotData(int N, float *x, float *y1, float *y2 = nullptr, float *y3 = nullptr,
 //  float *y4 = nullptr, float *y5 = nullptr);
@@ -35,13 +37,60 @@ inline void plotImpulseResponse(TFlt &filter, int length, TSig scale)
   plt.plot();
 }
 
+
+
+
+
+template<class TSig, class TFlt>
+inline std::vector<std::complex<TSig>> getFrequencyResponse(
+  TFlt &filter, const std::vector<TSig>& w)
+{
+  int N = size(w);
+  std::complex<TSig> j(0,1);        // imaginary unit
+  std::vector<complex<TSig>> H(N);  // H(e^jw) 
+  for(int k = 0; k < N; k++)
+    H[k] = filter.getTransferFunctionAt(exp(j*w[k]));
+  return H;
+}
+// maybe move to RAPT...but maybe use plain arrays instead of vectors there, keep convenience 
+// function here
+
+/** Plots the given magnitude response in dB and phase response in degrees against the frequency 
+axis f. */
+void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB, 
+  std::vector<double>& degrees);
+
 /** Plots the frequency response of the given filter. The class must have a function 
 getTransferFunctionAt... */
 template<class TSig, class TFlt>
-inline void plotFrequencyResponse(TFlt &filter, TSig fLow, TSig fHigh, TSig fs, bool logFreq)
+inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq)
 {
+  // create w array (normalized radian frequencies):
+  std::vector<TSig> w(N);
+  if(logFreq)
+    RAPT::rsArray::fillWithRangeExponential(&w[0], N, fMin, fMax);
+  else
+    RAPT::rsArray::fillWithRangeLinear(&w[0], N, fMin, fMax);
+  RAPT::rsArray::scale(&w[0], N, 2*PI/fs);
 
+  // compute magnitude and phase response:
+  std::vector<complex<TSig>> H = getFrequencyResponse(filter, w);
+  std::vector<TSig> dB(N), phs(N);
+  for(int k = 0; k < N; k++) {
+    dB[k]  = amp2dB(abs(H[k]));
+    phs[k] = arg(H[k])-2*PI; // arg is in -pi..+pi, we want -2*pi..0 - check, if this is correct
+  }
 
+  // unwrap phase, convert to degrees:
+  RAPT::rsArray::unwrap(&phs[0], N, 2*PI);
+  for(int k = 0; k < N; k++)
+    phs[k] *= 180.0/PI;
+
+  // maybe move the two steps above into rapt, too
+
+  // convert w back to Hz and plot:
+  RAPT::rsArray::scale(&w[0], N, fs/(2*PI));
+  plotFrequencyResponse(w, dB, phs);
 }
 
 

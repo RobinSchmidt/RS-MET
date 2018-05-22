@@ -33,9 +33,10 @@ void modalFilterFreqResp()
   mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
 
 
-
   //plotImpulseResponse(mf, 5000, 1.0);
+  plotFrequencyResponse(mf, 2000, 20.0, fs, fs, true);
 
+  /*
   // obtain complex frequency response (factor out):
   int N = 2000;   // number of frequencies
   double fMin = 20;
@@ -56,7 +57,6 @@ void modalFilterFreqResp()
   {
     magnitude[k] = abs(H[k]);
     dB[k]        = amp2dB(magnitude[k]);
-    //phase[k]     = arg(H[k]);
     phase[k]     = arg(H[k])-2*PI; // arg is in -pi..+pi, we want -2*pi..0 - check, if this is correct
   }
 
@@ -64,8 +64,9 @@ void modalFilterFreqResp()
   RAPT::rsArray::unwrap(&phase[0], N, 2*PI);
   for(int k = 0; k < N; k++)
     phase[k] *= 180.0/PI;
+  */
 
-
+  /*
   // factor out:
   GNUPlotter p;
   p.addDataArrays(N, &f[0], &dB[0]);
@@ -90,6 +91,7 @@ void modalFilterFreqResp()
   p.addGraph("i 0 u 1:2 w lines lw 1.5 axes x1y1 notitle");
   p.addGraph("i 1 u 1:2 w lines lw 1.5 axes x1y2 notitle");
   p.plot();
+  */
 
   // todo: factor out plotting code for reuse
 }
