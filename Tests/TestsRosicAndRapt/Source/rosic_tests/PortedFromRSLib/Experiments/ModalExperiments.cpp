@@ -234,7 +234,7 @@ void modalBankTransient()
 
   double attack = 0.1;   // master attack
   double decay  = 0.5;   // master decay time in seconds
-  double nonlin = -0.001;  // nonlinear feedback strength
+  double nonlin = +0.12;  // nonlinear feedback strength
 
   // transient parameters:
   double tr = 0.5 * (1+sqrt(5.0)); // golden ratio - relative frequency of "transient mode"
@@ -324,6 +324,11 @@ void modalBankTransient()
   //  -especially a highpass could be interesting because transients are characterized by high
   //   frequencies...but maby also low/high shelvers...whatever - just make sure, the phase 
   //   response comes out right and compensate for amplitude losses/gains in feedback factor
+  // -maybe the feedback gain should be defined in terms of a decay-time - the transient decay 
+  //  time
+  // -maybe use a modulatable version and use the (summed, delayed) output signal for 
+  //  phase-modulation
+  // -modulatable version would lend itself well for a monophonic synthesizer with glide
 
 
   int dummy = 0;

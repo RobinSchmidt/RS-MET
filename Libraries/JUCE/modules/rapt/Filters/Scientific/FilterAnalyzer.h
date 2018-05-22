@@ -16,6 +16,13 @@ at the normalized radian frequency w = 2*PI*f/fs, f: frequency, fs: samplerate *
 template<class T>
 T biquadMagnitudeAt(T b0, T b1, T b2, T a1, T a2, T w);
 
+/** Returns the z-domain transfer function value of a biquad filter of the form
+y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-1] - a1*y[n-1] - a2*y[n-2]
+evaluated at the given value of z. */
+template<class T>
+std::complex<T> biquadTransferFunctionAt(T b0, T b1, T b2, T a1, T a2, std::complex<T> z);
+// todo make a version that allows complex coeffs
+
 // \todo: check if these formulas really correspond to the difference equations with negative 
 // sign convention on the feedback coefficients
 

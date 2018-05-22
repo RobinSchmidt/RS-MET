@@ -161,6 +161,9 @@ public:
   function. */
   TPar getDecayTime(TPar sampleRate);
 
+  /** Returns the filter's z-domain transfer function value at the given value of z. */
+  std::complex<TPar> getTransferFunctionAt(std::complex<TPar> z);
+
   /** Returns the magnitude response of the filter at the normalized radian frequency
   w = 2*pi*f/fs. */
   TPar getMagnitudeAt(TPar w);
@@ -257,16 +260,17 @@ public:
 
   void copyCoefficientsFrom(const rsNonlinearModalFilter &other);
 
+  //std::complex<TPar> getTransferFunctionAt(std::complex<TPar> z);
+
+
+
+
   /** Produces the complex output sample for a given complex input sample. A linear combination
   of the real and imaginary part can be used to calculate a real output sample from that, but you
   can also calculate the instantaneous envelope and/or phase. */
   RS_INLINE std::complex<TSig> getComplexSample(std::complex<TSig> in);
 
   RS_INLINE TSig getSample(TSig in);
-
-
-
-
 
 
   /** Calculates the instantaneous envelope of the mode (== absoulte value == sqrt(re*re+im*im).
@@ -321,6 +325,9 @@ public:
 
 
   /** \name Inquiry */
+
+  /** Returns the filter's z-domain transfer function value at the given value of z. */
+  std::complex<TPar> getTransferFunctionAt(std::complex<TPar> z);
 
   /** Returns the time (in seconds) it takes for the sound to decay down to the given
   decayLevel. */
@@ -477,9 +484,21 @@ public:
 
   /** \name Inquiry */
 
+  /** Returns the filter's z-domain transfer function value at the given value of z. */
+  std::complex<TPar> getTransferFunctionAt(std::complex<TPar> z);
+
   /** Returns the length (in seconds) until the produced sound will have decayed to the specified
   level. */
   TPar getLength(TPar decayLevel);
+
+  /** Returns the currently active number of modal filters. */
+  RS_INLINE int getNumModes()
+  {
+    int M = (int)rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
+    return (int)rsMin((size_t)M, startPhases.size());
+    // M: number of modes - optimize this, use a member variable
+  }
+
 
 
   /** \name Audio Processing */
@@ -540,7 +559,8 @@ protected:
 
   static const int maxNumModes = 1000;    // get rid of this - allow an arbitrary number
 
-  std::vector<rsModalFilterWithAttack<TSig, TPar>> modalFilters;    // mabe use c-arrays instead
+  std::vector<rsModalFilterWithAttack<TSig, TPar>> modalFilters;    // maybe use c-arrays instead
+
 
   //  consolidate into class rsModalBankParameters:
   TPar referenceFrequency;
@@ -632,7 +652,7 @@ RS_INLINE TSig rsModalFilterWithAttack<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 RS_INLINE TSig rsModalFilterWithAttack2<TSig, TPar>::getSample(TSig in)
 {
-  TSig w0 = in - a1*w1 - a2*w2 - a3*w3 - a4*w4;
+  TSig w0 = in - a1*w1 - a2*w2 - a3*w3 - a4*w4; // todo: use positive sign convention
   TSig y  =      b1*w1 + b2*w2 + b3*w3;
   w4 = w3;
   w3 = w2;
@@ -653,15 +673,21 @@ RS_INLINE TSig rsModalFilterBank<TSig, TPar>::saturate(TSig x)
 
   //return x / (1 + abs(x)); // cheap, saturating, not very smooth at origin
 
+  x *= x;  // test
+  x *= x;
+
   return x = x / (1 + x*x); // non-monotonic, smooth (continuous derivatives of all order (verify))
 }
 
 template<class TSig, class TPar>
 RS_INLINE TSig rsModalFilterBank<TSig, TPar>::getSample(TSig in)
 {
-  int M = (int)rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
-  M     = (int)rsMin((size_t)M, startPhases.size());
-  // M: number of modes - optimize this, use a member variable
+  //int M = (int)rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
+  //M     = (int)rsMin((size_t)M, startPhases.size());
+  //// M: number of modes - optimize this, use a member variable
+  //// factor out inot getNumModes
+
+  int M = getNumModes();
 
   in += saturate(nonLinFeedback*out);
   out = 0.0;

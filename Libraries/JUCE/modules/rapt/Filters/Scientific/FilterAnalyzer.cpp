@@ -12,9 +12,17 @@ T biquadMagnitudeAt(T b0, T b1, T b2, T a1, T a2, T w)
   T c1  = 2*cos(w);
   T c2  = 2*cos(2*w);
   T num = b0*b0 + b1*b1 + b2*b2 + c1*(b0*b1 + b1*b2) + c2*b0*b2;
-  T den = 1     + a1*a1 + a2*a2 + c1*(   a1 + a1*a2) + c2*   a2;
+  T den = T(1)  + a1*a1 + a2*a2 + c1*(   a1 + a1*a2) + c2*   a2;
   T p   = num/den;
   return sqrt(p);
+}
+
+template<class T>
+std::complex<T> biquadTransferFunctionAt(T b0, T b1, T b2, T a1, T a2, std::complex<T> z)
+{
+  std::complex<T> z1 = T(1)/z;                          // z^(-1)
+  std::complex<T> z2 = z1*z1;                           // z^(-2)
+  return (b0 + b1*z1 + b2*z2) / (T(1) + a1*z1 + a2*z2); // H(z)
 }
 
 template<class T>

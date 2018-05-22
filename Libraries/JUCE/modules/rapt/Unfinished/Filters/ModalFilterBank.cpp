@@ -175,6 +175,12 @@ TPar rsModalFilter<TSig, TPar>::getDecayTime(TPar sampleRate)
 }
 
 template<class TSig, class TPar>
+std::complex<TPar> rsModalFilter<TSig, TPar>::getTransferFunctionAt(std::complex<TPar> z)
+{
+  return biquadTransferFunctionAt(b0, b1, TPar(0), a1, a2, z);
+}
+
+template<class TSig, class TPar>
 TPar rsModalFilter<TSig, TPar>::getMagnitudeAt(TPar w)
 {
   return biquadMagnitudeAt(b0, b1, TPar(0), a1, a2, w);
@@ -336,6 +342,12 @@ void rsModalFilterWithAttack<TSig, TPar>::setModalParameters(TPar frequency, TPa
 }
 
 template<class TSig, class TPar>
+std::complex<TPar> rsModalFilterWithAttack<TSig, TPar>::getTransferFunctionAt(std::complex<TPar> z)
+{
+  return modalFilter1.getTransferFunctionAt(z) + modalFilter2.getTransferFunctionAt(z);
+}
+
+template<class TSig, class TPar>
 TPar rsModalFilterWithAttack<TSig, TPar>::getLength(TPar decayLevel, TPar sampleRate)
 {
   TPar td = modalFilter1.getDecayTime(sampleRate);       // decay time
@@ -467,6 +479,16 @@ void rsModalFilterBank<TSig, TPar>::setModalParameters(std::vector<TPar> newFreq
 }
 
 // inquiry:
+
+template<class TSig, class TPar>
+std::complex<TPar> rsModalFilterBank<TSig, TPar>::getTransferFunctionAt(std::complex<TPar> z)
+{
+  std::complex<TPar> H = std::complex<TPar>(0, 0); // accumulator for H(z)
+  for(int m = 0; m < getNumModes(); m++)
+    H += modalFilters[m].getTransferFunctionAt(z);
+  return z;
+  // maybe later rename H to G and use H for transfer function with feedback, G for without
+}
 
 template<class TSig, class TPar>
 TPar rsModalFilterBank<TSig, TPar>::getLength(TPar decayLevel)
