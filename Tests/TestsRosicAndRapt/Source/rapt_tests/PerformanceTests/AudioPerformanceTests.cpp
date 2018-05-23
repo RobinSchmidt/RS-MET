@@ -1,6 +1,88 @@
 #include "AudioPerformanceTests.h"
 using namespace RAPT;
 
+void filterSignConventionPerformance()
+{
+  // test, how the + or - sign convention for filters affects the performance
+
+  int numSamples = 20000;
+
+  //typedef float Real;  
+  typedef double Real;
+  //typedef rsFloat64x2 Real;
+
+  // filter coeffs:
+  Real b0 = 0.5, b1 = 0.25, b2 =  0.125, a1 = 0.5, a2 = -0.25;
+  Real x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+  Real g;
+
+  // signals and bookeeping:
+  ProcessorCycleCounter counter;
+  double cycles;
+  vector<Real> x = createNoise(numSamples, 0, double(-1), double(+1));
+  vector<Real> y(numSamples);
+  int n;
+
+  // biquad, direct form 1, positive sign for a-coeffs:
+  counter.init(); 
+  for(n = 0; n < numSamples; n++)
+  {
+    y[n] = b0*x[n] + b1*x1 + b2*x2 + a1*y1 + a2*y2;
+    x2 = x1;
+    x1 = x[n];
+    y2 = y1;
+    y1 = y[n];
+  }
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("biquad, DF1, +:", cycles/numSamples);
+
+  // biquad, direct form 1, negative sign for a-coeffs:
+  counter.init(); 
+  for(n = 0; n < numSamples; n++)
+  {
+    y[n] = b0*x[n] + b1*x1 + b2*x2 - a1*y1 - a2*y2;
+    x2 = x1;
+    x1 = x[n];
+    y2 = y1;
+    y1 = y[n];
+  }
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("biquad, DF1, -:", cycles/numSamples);
+
+
+  // biquad, direct form 2, positive sign for a-coeffs:
+  counter.init(); 
+  for(n = 0; n < numSamples; n++)
+  {
+    g    = x[n] + a1*y1 + a2*y2;
+    y[n] = b0*g + b1*y1 + b2*y2;
+    y2 = y1;
+    y1 = g;
+  }
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("biquad, DF2, +:", cycles/numSamples);
+
+  // biquad, direct form 2, negative sign for a-coeffs:
+  counter.init(); 
+  for(n = 0; n < numSamples; n++)
+  {
+    g    = x[n] - a1*y1 - a2*y2;
+    y[n] = b0*g + b1*y1 + b2*y2;
+    y2 = y1;
+    y1 = g;
+  }
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("biquad, DF2, -:", cycles/numSamples);
+
+
+  // todo: test 1st order filters, test use of parentheses
+
+
+  // Results:
+  // biquad, DF1, +: 18
+  // biquad, DF1, -: 15  ..so it's 20% slower (18/15 = 1.2)
+}
+
 void ladderPerformance()
 {
   int numSamples = 20000;
@@ -22,6 +104,8 @@ void ladderPerformance()
   for(n = 0; n < numSamples; n++) ys[n] = filterSS.getSample(xs[n]);
   double cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("rsLadderFilter<double, double>", cycles/numSamples);
+
+  // vector signal, scalar coeffs...
 
   // vector-signal, vector-coeffs:
   RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2> filterVV;

@@ -162,6 +162,17 @@ http://www.kvraudio.com/forum/viewtopic.php?f=33&t=501471
 out = 4.0 * (std::abs(0.25 * in + 0.25 - std::round(0.25 * in + 0.25)) - 0.25);
 
 
+for performance tests:
+-make the same test M times
+-order results and throw away first m and last m to get rid of outliers, sample-size is now
+ N = M-2m
+-find mean and variance
+-maybe plot histograms
+-(maybe): when comparing results from different implementations of the same algorithm and one 
+ turns out to be faster than the other on the average - test if this advantage is statistically
+ significant - a bit like testing medication against placebos
+
+
 */
 
 #endif

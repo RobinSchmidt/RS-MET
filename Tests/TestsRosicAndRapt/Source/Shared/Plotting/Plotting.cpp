@@ -32,6 +32,8 @@ void plotImpulseResponse(TFlt &filter, int N, TSig scale)
 }
 */
 
+// move this code to FilterPlotter (or maybe there already is something similar?) - allows user
+// to create an object and access further settings
 void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   std::vector<double>& degrees, bool logFreq)
 {

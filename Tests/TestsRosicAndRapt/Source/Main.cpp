@@ -45,8 +45,9 @@ int main(int argc, char* argv[])
   //simdPerformanceFloat64x2();
   //sinCosPerformance();
 
+  filterSignConventionPerformance();
   //ladderPerformance();
-  //engineersFilterPerformance();
+  engineersFilterPerformance();
   //turtleGraphicsPerformance();
 
   //-----------------------------------------------------------------------------------------------
@@ -256,10 +257,11 @@ int main(int argc, char* argv[])
   // Modal:
   //modalFilter();        // impulse response of decaying-sine filter
   //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  //modalTwoModes();
   //attackDecayFilter();  // ...hmm..almost redundant
   //dampedSineFilterDesign();
   //biquadImpulseResponseDesign();
-  modalBankTransient();
+  //modalBankTransient();
 
   // Modulator:
   //breakpointModulator();

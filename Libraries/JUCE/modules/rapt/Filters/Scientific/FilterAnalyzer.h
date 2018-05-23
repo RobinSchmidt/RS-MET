@@ -2,7 +2,8 @@
 #define RAPT_FILTERANALYZER_H_INCLUDED
 
 
-// \todo move these standalonefunctions into class rsFilterAnalyzer
+// \todo move these standalone functions into class rsFilterAnalyzer
+// add: biquadToStateVariable, biquadToPhasor
 
 /** Returns the magnitude of a one-pole filter of the form  
 y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1]  

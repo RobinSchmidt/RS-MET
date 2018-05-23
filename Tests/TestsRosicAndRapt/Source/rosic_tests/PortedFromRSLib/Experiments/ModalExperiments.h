@@ -6,8 +6,9 @@
 // maybe move to FilterExperiments
 
 void modalFilter();
-void modalFilterFreqResp();
-void attackDecayFilter();
+void modalFilterFreqResp(); // rename to modalWithAttack
+void modalTwoModes();
+void attackDecayFilter();   // remove (redundant now)
 void dampedSineFilterDesign();
 void biquadImpulseResponseDesign();
 void modalBankTransient(); // tests the use of nonlinear feedback to produce transients

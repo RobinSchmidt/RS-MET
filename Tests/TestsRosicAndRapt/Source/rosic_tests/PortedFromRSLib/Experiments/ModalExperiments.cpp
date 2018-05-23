@@ -36,6 +36,45 @@ void modalFilterFreqResp()
   plotFrequencyResponse(mf, 5000, 20.0, fs/2, fs, true);
 }
 
+void modalTwoModes()
+{
+  double fs  = 44100;
+  double at  = 0.01;  // attack - needs to be nonzero for numerical reasons (->try to fix)
+
+  // mode parameter arrays:
+  typedef std::vector<double> Vec;
+  Vec frq = { 1.0, 4.0 };
+  Vec amp = { 1.0, 1.0 };
+  Vec phs = { 0.0, 0.0 };
+  Vec dec = { 0.2, 0.2 };
+  Vec att = { at,  at  };
+
+  // create and set up object:
+  rosic::rsModalFilterBankDD mfb;
+  mfb.setSampleRate(fs);
+  mfb.setReferenceFrequency(100);
+  mfb.setReferenceDecay(1.0);
+  mfb.setReferenceAttack(1.0);
+  mfb.setModalParameters(frq, amp, att, dec, phs);
+
+  // plots:
+  //plotImpulseResponse(  mfb, 5000, 1.0);
+  plotFrequencyResponse(mfb, 5000, 0.0, 500.0, fs, false);
+
+  // Observations:
+  // frq: 1,4; amp: 1,1; dec: 0.2,0.2, att: 0.0001:
+  // phs: 0,0: 
+  //  -two sharp resonances at 100 and 400 Hz, 1 sharp antiresonance at 200 Hz 
+  //   (geometric mean of 100 and 400)
+  //  -phase response goes from 0° down to -180° and back up to 0°, passing through 90° at the
+  //   resonances and antiresonance, transition is quite steep/squarish
+  // phs: 0,pi or pi,0
+  //  -two sharp resonances at 100,400
+  //  -phase monotonically decresing from 0 to -90 then to -180
+  //   ...wait - it starts at +180 - something must be wrong about the plot/unwrapping
+}
+
+
 // hmm...this is now a bit redundant:
 void attackDecayFilter()
 {
@@ -341,15 +380,19 @@ void modalBankTransient()
   //  -especially a highpass could be interesting because transients are characterized by high
   //   frequencies...but maby also low/high shelvers...whatever - just make sure, the phase 
   //   response comes out right and compensate for amplitude losses/gains in feedback factor
+  //  -maybe just use a general cookbook biquad with all available filter-types there
+  //  -maybe later extend it to a biquad chain a la EasyQ
   // -maybe the feedback gain should be defined in terms of a decay-time - the transient decay 
   //  time
   // -maybe use a modulatable version and use the (summed, delayed) output signal for 
   //  phase-modulation
   // -modulatable version would lend itself well for a monophonic synthesizer with glide
 
-  // todo: set up test project where we put the feedback path externally around the object - easier
-  // for experimentation (shorter build times)
-
+  // todo: 
+  //  -set up test project where we put the feedback path externally around the object - easier
+  //   for experimentation (shorter build times)
+  //  -maybe make a wrapper class rsModalBankWithFeedback
+  //  -
 
   // Observations:
   // -when all modes are in phase, the phase response is alternating between 0 and -180 and at the 
