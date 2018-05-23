@@ -314,9 +314,37 @@ void primeAlternatingSums()
 {
   // Take the array of prime numbers with alternating signs
   // 2 -3 5 -7 11 -13 17 -19 ...
-  // and take running sums of various or ...just for fun to see what happens
+  // and take running sums of various order ...just for fun to see what happens
   // ...do they also all have alternating signs? what happens, if we add them to one of the
   // previous arrays...just mess around a little - may interesting patterns emerge...
-  // what changes, if we give the even-indexed primes a negative sign?
+  // -what changes, if we give the even-indexed primes a negative sign?
+  // -what happens, if we flip every k-th sign instead of every 2nd?
+  // -what happens, if we filter the arrays with integer-coefficient IIR filters? this is a 
+  //  generalization of (iterated) running sums (i think)
+  // -what about nonlinear and/or time-variant recursive filters with coeffs depending on index?
 
+  int N = 100; // number of primes
+
+  //typedef std::vector<int> IntVec;
+
+  // create array of primes:
+  std::vector<int> primes(N);
+  RAPT::rsFillPrimeTable(&primes[0], N);  // make convenience function getPrimes
+
+  // create arrays of primes with alternating signs:
+  int n;
+  std::vector<int> ev, od; // ev: have even-numberd signs flipped, od: odd numbered signs flipped
+  ev = primes; od = primes;  
+  for(n = 0; n < N; n += 2) ev[n] = -ev[n];
+  for(n = 1; n < N; n += 2) od[n] = -od[n];
+
+
+  // plot:
+  GNUPlotter plt;
+  plt.setPixelSize(1000, 500);
+  plt.addDataArrays(N, &primes[0]);
+  plt.addDataArrays(N, &ev[0]);
+  plt.addDataArrays(N, &od[0]);
+  plt.plot();
+  // todo: maybe plot with stems or at least, get rid of the linear interpolation (draw steps)
 }

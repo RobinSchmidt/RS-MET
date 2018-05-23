@@ -45,9 +45,9 @@ int main(int argc, char* argv[])
   //simdPerformanceFloat64x2();
   //sinCosPerformance();
 
-  filterSignConventionPerformance();
+  //filterSignConventionPerformance();
   //ladderPerformance();
-  engineersFilterPerformance();
+  //engineersFilterPerformance();
   //turtleGraphicsPerformance();
 
   //-----------------------------------------------------------------------------------------------
@@ -96,6 +96,10 @@ int main(int argc, char* argv[])
   //lineTo();
   //polyLineRandom();
   //phaseScopeLissajous();
+
+
+  // just for fun:
+  primeAlternatingSums();
 
 
   //===============================================================================================

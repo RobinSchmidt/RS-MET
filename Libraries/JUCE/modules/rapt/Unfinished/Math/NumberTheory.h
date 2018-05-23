@@ -13,6 +13,9 @@ T rsIntSqrt(T x);
 a prime itself). It uses an optimized version of the the sieve of Erathostenes. */
 template<class T>
 void rsFindPrimesUpTo(std::vector<T>& primes, T upperLimit);
+ // rename to rsPrimesUpTo, maybe return the vector instead of filling a reference
+
+// make convenience function rsPrimes(int numPrimes)
 
 /** This function fills the boolean array primeFlags with true/false, where a flag at index "i"
 will be set to true, if start+2*i is a prime, false otherwise. This means, each entry of the
