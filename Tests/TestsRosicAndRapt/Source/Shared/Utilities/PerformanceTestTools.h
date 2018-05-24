@@ -134,18 +134,75 @@ differences in the averages. This class is meant to do the appropriate statistic
 todo:
 -computations for the statiscal tests should be factored out
 -it should be possible to make plots that show how the performance depends on input size - with
- error-bars and multiple graphs
- 
-*/ 
+ error-bars and multiple graphs  */ 
 
 class PerformanceAnalyzer
 {
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup:
+
+  /** Adds a new test to be performed. You have to pass a name that will be used to identify the 
+  test in analysis/comparisons - for example something like "FFT, radix-2, decimation in time". 
+  The test function itself should then run one such FFT with a length given by its integer 
+  parameter and return the number of CPU cycles taken per datapoint as double. */
+  void addTest(const std::function<double(int)> testFunc, const std::string& testName);
+
+  /** You can pass an array of inputs sizes to the algorithms to be tested. */
+  void setTestInputSizes(const std::vector<int>& inputSizes);
+
+  /** Sets the number of times that each test should be run for each input size. */
+  void setNumRunsPerTest(int numberOfRuns);
+    // maybe we should allow to set separate numbers of runs for different input sizes (for large
+    // input sizes, we may want to run the test less often because it takes too mauch time to run
+    // multiple times)
+
+  /** Sets up, how large a deviation form the median is allowed before a datapoint is considered
+  an outlier with invalid value and thrown away. For example, passing 0.5 and 3.0 will mean that 
+  values below 0.5 times the median and above 3.0 times the median will be cosidered invalid 
+  outliers. */
+  void setOutlierRemovalLevels(double smallOutlierRatio, double largeOutlierRatio);
+
+  /** Clears the array of test functions. */
+  void clearTests();
+
+  /** Clears the array of input sizes. */
+  void clearInputSizes();
+
+  /** Puts the object back into its initial state, i.e. clears all arrays of test-functors, 
+  input sizes, etc. */
+  void init();
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Measurement:
+
+  /** Runs all tests. Needs to be called after setting up the object and before retrieving the test 
+  results. */
+  void runTests();
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry:
+
+  /** Returns the number of valid datapoints that were obtained for the test with given index and
+  input size index. Due to removal of outliers, this value may be different from the value passed 
+  to setNumRunsPerTest. */
+  int getNumValidDatapoints(int testIndex, int sizeIndex);
+
+  /** Returns the mean values of the test results. */
+  std::vector<double> getMeans();
+
+  /** Returns the variances of the test results. */
+  std::vector<double> getVariances();
+
+  /** Creates a report string that summarizes the results. */
+  std::string getReport();
 
 protected:
 
+  //void runTest(
 
   std::vector<string> names;                     // names of the tests
   std::vector<std::function<double(int)>> tests; // tests themselves
