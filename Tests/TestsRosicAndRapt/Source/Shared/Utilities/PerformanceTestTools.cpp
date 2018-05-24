@@ -55,7 +55,14 @@ void PerformanceAnalyzer::init()
 
 void PerformanceAnalyzer::runTests()
 {
-
+  initResultArray();
+  for(size_t i = 0; i < tests.size(); i++) {
+    for(size_t j = 0; j < inputSizes.size(); j++) {
+      for(size_t k = 0; k < numRuns; k++) {
+        cpuCounter.init();
+        (*tests[i])(inputSizes[j]);  // run test i with input size (indexed by) j
+        double cycles = cpuCounter.getNumCyclesSinceInit();
+        rawData[i][j][k] = cycles; }}}
   int dummy = 0;
 }
 
@@ -66,4 +73,15 @@ std::string PerformanceAnalyzer::getReport()
   //...
 
   return report;
+}
+
+void PerformanceAnalyzer::initResultArray()
+{
+  rawData.clear();
+  rawData.resize(tests.size());
+  for(size_t i = 0; i < tests.size(); i++) {
+    rawData[i].resize(inputSizes.size());
+    for(size_t j = 0; j < inputSizes.size(); j++)
+      rawData[i][j].resize(numRuns);
+  }
 }

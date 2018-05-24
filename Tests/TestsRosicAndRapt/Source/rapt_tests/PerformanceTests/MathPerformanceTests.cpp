@@ -10,7 +10,8 @@ void fftPerformance()
 
 
   // create dummy data to perform the tests on:
-  std::vector<int> sizes = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
+  //std::vector<int> sizes = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
+  std::vector<int> sizes = { 1, 2, 4, 8, 16, 32, 64, 128};
   size_t numSizes = sizes.size();
   int maxSize = sizes[numSizes-1];
   //std::vector<double> noise = createNoise(maxSize, -1.0, 1.0);
