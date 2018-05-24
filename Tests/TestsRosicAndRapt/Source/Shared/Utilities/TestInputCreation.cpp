@@ -192,7 +192,7 @@ void createSineWave(double *x, int N, double *f, double a, double fs)
 }
 
 template<class T>
-std::vector<T> createNoise(int numSamples, int seed, T min, T max)
+std::vector<T> createNoise(int numSamples, T min, T max, int seed)
 {
   std::vector<T> x(numSamples);
   RAPT::rsNoiseGenerator<T> ng;
@@ -203,5 +203,5 @@ std::vector<T> createNoise(int numSamples, int seed, T min, T max)
     x[n] = ng.getSample();
   return x;
 }
-template std::vector<float> createNoise(int numSamples, int seed, float min, float max);
-template std::vector<double> createNoise(int numSamples, int seed, double min, double max);
+template std::vector<float> createNoise(int numSamples, float min, float max, int seed);
+template std::vector<double> createNoise(int numSamples, double min, double max, int seed);

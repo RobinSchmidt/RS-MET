@@ -38,7 +38,7 @@ double sineSum(double p, double *A, double N);
 
 /** Returns a vector of random samples uniformly distributed between min and max. */
 template<class T>
-std::vector<T> createNoise(int numSamples, int seed = 0, T min = T(-1), T max = T(+1));
+std::vector<T> createNoise(int numSamples, T min, T max, int seed = 0);
 
 
 

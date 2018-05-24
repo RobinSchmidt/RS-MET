@@ -58,3 +58,12 @@ void PerformanceAnalyzer::runTests()
 
   int dummy = 0;
 }
+
+std::string PerformanceAnalyzer::getReport()
+{
+  std::string report;
+
+  //...
+
+  return report;
+}

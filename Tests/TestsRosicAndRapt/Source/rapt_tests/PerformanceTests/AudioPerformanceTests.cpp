@@ -19,7 +19,7 @@ void filterSignConventionPerformance()
   // signals and bookeeping:
   ProcessorCycleCounter counter;
   double cycles;
-  vector<Real> x = createNoise(numSamples, 0, double(-1), double(+1));
+  vector<Real> x = createNoise(numSamples, double(-1), double(+1));
   vector<Real> y(numSamples);
   int n;
 
@@ -117,7 +117,7 @@ void ladderPerformance()
   int n;
 
   // create input and allocate output signals:
-  vector<double> xs = createNoise(numSamples, 0, double(-1), double(+1));
+  vector<double> xs = createNoise(numSamples, double(-1), double(+1));
   vector<double> ys(numSamples);
   vector<rsFloat64x2> xv(numSamples), yv(numSamples);
   for(n = 0; n < numSamples; n++) 
@@ -162,7 +162,7 @@ void engineersFilterPerformance()
   int n;
 
   // create input and allocate output signals:
-  vector<double> xs = createNoise(numSamples, 0, double(-1), double(+1));
+  vector<double> xs = createNoise(numSamples, double(-1), double(+1));
 
   rosic::rsEngineersFilterOld filterScalar;
   filterScalar.setPrototypeOrder(order);
@@ -173,7 +173,7 @@ void engineersFilterPerformance()
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("rsEngineersFilterOld", cycles/numSamples);
 
-  xs = createNoise(numSamples, 0, double(-1), double(+1));
+  xs = createNoise(numSamples, double(-1), double(+1));
 
   rosic::rsEngineersFilterStereo filterVector;
   filterVector.setPrototypeOrder(order);

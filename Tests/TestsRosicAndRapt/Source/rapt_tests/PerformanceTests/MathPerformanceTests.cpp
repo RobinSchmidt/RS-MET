@@ -9,27 +9,27 @@ void fftPerformance()
   // mostly to test the PerformanceAnalyzer class
 
 
-
+  // create dummy data to perform the tests on:
   std::vector<int> sizes = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
-
-
   size_t numSizes = sizes.size();
   int maxSize = sizes[numSizes-1];
+  //std::vector<double> noise = createNoise(maxSize, -1.0, 1.0);
+  std::vector<complex<double>> buf(maxSize);
+
+  // define functors to be passed to performance analyzer:
+  std::function<void(int)> dft = [&](int N){ rsDFT(&buf[0], N); };
+  std::function<void(int)> fft = [&](int N){ rsFFT(&buf[0], N); };
+
+  // set up the performance analyzer:
   PerformanceAnalyzer pa;
+  pa.addTest(&dft, "DFT");
+  pa.addTest(&fft, "FFT");
+  pa.setTestInputSizes(sizes);
 
-  //std::vector<double> noise = createNoise(maxSize);
-
-
-
-  // maybe compare FFT vs DFT - simple, does not require objects
-
-
-  //void rsDFT(std::complex<T> *buffer, int N);
-
-  //std::function<void(int)> dft =
-
-
-  int dummy = 0;
+  // run tests and print report:
+  pa.runTests();
+  std::string report = pa.getReport();
+  cout << report;
 }
 
 
