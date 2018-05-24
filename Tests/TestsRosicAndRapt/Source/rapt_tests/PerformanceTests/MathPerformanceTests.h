@@ -3,6 +3,7 @@
 
 #include "../../Shared/Shared.h"
 
+void fftPerformance();
 void matrixAdressingTest();
 void simdPerformanceFloat64x2();
 void sinCosPerformance();

@@ -45,7 +45,8 @@ int main(int argc, char* argv[])
   //simdPerformanceFloat64x2();
   //sinCosPerformance();
 
-  filterSignConventionPerformance();
+  fftPerformance();
+  //filterSignConventionPerformance();
   //ladderPerformance();
   //engineersFilterPerformance();
   //turtleGraphicsPerformance();

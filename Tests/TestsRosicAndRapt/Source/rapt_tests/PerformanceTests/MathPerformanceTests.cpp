@@ -4,6 +4,18 @@ using namespace RAPT;
 //#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"
 // needed when it's commented out in rapt -> reduce build time during tweaking the class
 
+void fftPerformance()
+{
+  // mostly to test the PerformanceAnalyzer class
+
+  PerformanceAnalyzer pa;
+
+
+
+  int dummy = 0;
+}
+
+
 void matrixAdressingTest()
 {
   // Compares two matrix addressing schemes: using a flat array with pointer arithmetic vs. using

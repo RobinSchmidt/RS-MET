@@ -134,7 +134,11 @@ differences in the averages. This class is meant to do the appropriate statistic
 todo:
 -computations for the statiscal tests should be factored out
 -it should be possible to make plots that show how the performance depends on input size - with
- error-bars and multiple graphs  */ 
+ error-bars and multiple graphs  
+-the test function should actually have a void return type - this class here should handle the
+ actual measurement - the functor should should just do something to be measured, not measure it
+ by itself
+ */ 
 
 class PerformanceAnalyzer
 {
@@ -163,7 +167,11 @@ public:
   an outlier with invalid value and thrown away. For example, passing 0.5 and 3.0 will mean that 
   values below 0.5 times the median and above 3.0 times the median will be cosidered invalid 
   outliers. */
-  void setOutlierRemovalLevels(double smallOutlierRatio, double largeOutlierRatio);
+  void setOutlierRemovalLevels(double smallOutlierRatio, double largeOutlierRatio)
+  {
+    smallOutlier = smallOutlierRatio;
+    largeOutlier = largeOutlierRatio;
+  }
 
   /** Clears the array of test functions. */
   void clearTests();
@@ -186,30 +194,57 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry:
 
+  /** Creates a report string that summarizes the results. */
+  std::string getReport();
+
+  // void plotResults() 
+  // may be better handled by another, higher level class
+
   /** Returns the number of valid datapoints that were obtained for the test with given index and
   input size index. Due to removal of outliers, this value may be different from the value passed 
   to setNumRunsPerTest. */
   int getNumValidDatapoints(int testIndex, int sizeIndex);
 
+  /** Returns the raw test results as nested vector (i.e. 2D array) where the first index is for 
+  the test-function (i.e. the algorithm among a family of algorithms) and the second is for the 
+  input-size and the third index is the index of the datapoint, like
+  result[i][j][k] is the result of the k-th run of algorithm i with input size (indexed by) j */
+  std::vector<std::vector<std::vector<double>>> getRawData() { return rawData; }
+
   /** Returns the mean values of the test results. */
-  std::vector<double> getMeans();
+  std::vector<std::vector<double>> getMeans();
 
   /** Returns the variances of the test results. */
-  std::vector<double> getVariances();
+  std::vector<std::vector<double>> getVariances();
 
-  /** Creates a report string that summarizes the results. */
-  std::string getReport();
 
 protected:
 
   //void runTest(
 
-  std::vector<string> names;                     // names of the tests
+  /** Resizes the rawData matrix to what is required to hold all the results. */
+  void initResultMatrix();
+    // ...maybe intialize to all zeros - but that's actually not necessarry - it will be soon 
+    // after filled with valid data anyway
+
+  std::vector<std::string> names;                     // names of the tests
   std::vector<std::function<double(int)>> tests; // tests themselves
 
+
+
+  int numRuns = 30; // later use an array to allow smaller numRuns for large input sizes
+  double smallOutlier = -std::numeric_limits<double>::infinity();
+  double largeOutlier =  std::numeric_limits<double>::infinity();
+
+
+  std::vector<std::vector<std::vector<double>>> rawData;      
+    // raw results, 1st index: function, 2nd: input-size, 3rd: datapoint
+
+  std::vector<std::vector<double>> means, variances;
+
+  ProcessorCycleCounter cpuCounter;
+
 };
-
-
-
+// test with 2 functions (like Ooura FFT, rsFFT), 5 input sizes (128...2048), 30 runs
 
 #endif 
