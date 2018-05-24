@@ -84,6 +84,7 @@ template void rsArray::allocateSquareArray2D(int**& theArray, int size);
 template void rsArray::deAllocateSquareArray2D(int**& theArray, int size);
 template void rsArray::rightShift(int *buffer, int length, int numPlaces);
 template void rsArray::copySection(int *source, int sourceLength, int *destination, int copyStart, int copyLength);
+template void rsArray::cumulativeSum(int *x, int *y, int length, int order);
 
 template rsUint32 rsArray::maxValue(rsUint32 *x, int length);
 template void rsArray::fillWithRangeLinear(rsUint32* x, int N, rsUint32 min, rsUint32 max);

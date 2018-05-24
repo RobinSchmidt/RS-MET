@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <functional>
 
 #ifdef _MSC_VER
 #include <intrin.h> // Or #include <ia32intrin.h> etc.
@@ -111,6 +113,41 @@ protected:
 
 };
 
+
+
+/** Class to perform performance analysis. You can hand it a bunch of std::function objects, each 
+of which are supposed to perform a certain task whose performance you want to measure and it gives
+you back a string with a report of the test results. The std::function objects you need to pass
+should take an integer parameter for (a measure of) the input size and return a double that is a 
+measure of the performance (like the number of CPU cycles taken (per datapoint, audio-sample, 
+whatever).
+
+It runs the tests multiple times, gathers the data and may perform statistical analysis afterwards. 
+In the simplest case, you might be interested in how minimum, average or maximum running times of 
+the various functions differ, but on a more sophisticated level, you might be interested in 
+variances and statistical significance of differences in the averages. This class is meant to do 
+the appropriate statistical tests (...not yet finished). 
+
+todo:
+-computations for the statiscal tests should be factored out
+-it should be possible to make plots that show how the performance depends on input size - with
+ error-bars and multiple graphs
+ 
+*/ 
+
+class PerformanceAnalyzer
+{
+
+public:
+
+
+protected:
+
+
+  std::vector<string> names;                     // names of the tests
+  std::vector<std::function<double(int)>> tests; // tests themselves
+
+};
 
 
 

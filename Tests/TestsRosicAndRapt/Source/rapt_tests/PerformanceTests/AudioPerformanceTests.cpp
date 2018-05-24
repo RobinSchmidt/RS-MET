@@ -5,7 +5,7 @@ void filterSignConventionPerformance()
 {
   // test, how the + or - sign convention for filters affects the performance
 
-  int numSamples = 20000;
+  int numSamples = 10000;
 
   //typedef float Real;  
   typedef double Real;
@@ -75,7 +75,34 @@ void filterSignConventionPerformance()
   printPerformanceTestResult("biquad, DF2, -:", cycles/numSamples);
 
 
-  // todo: test 1st order filters, test use of parentheses
+
+  // 1st order, DF1, +:
+  counter.init(); 
+  for(n = 0; n < numSamples; n++)
+  {
+    y[n] = y1 = b0*x[n] + b1*x1 + a1*y1;
+    x1 = x[n];
+  }
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("1st order, DF1, +:", cycles/numSamples);
+
+  // 1st order, DF1, -:
+  counter.init(); 
+  for(n = 0; n < numSamples; n++)
+  {
+    y[n] = y1 = b0*x[n] + b1*x1 - a1*y1;
+    x1 = x[n];
+  }
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("1st order, DF1, -:", cycles/numSamples);
+
+
+
+
+
+
+
+  // todo: test 1st order filters, test use of parentheses, test one-pole (without zero)
 
 
   // Results:

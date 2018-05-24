@@ -322,10 +322,18 @@ void primeAlternatingSums()
   // -what happens, if we filter the arrays with integer-coefficient IIR filters? this is a 
   //  generalization of (iterated) running sums (i think)
   // -what about nonlinear and/or time-variant recursive filters with coeffs depending on index?
+  // -what about trying to use non/linear prediction methods on the time series?
+  //  -maybe the equations (correlation coeffs, etc) should use rational numbers?
+  //  -test on number sequences with known structure first (like fibonacci numbers), see, if they
+  //   pick it up correctly
+  // -what if we sign invert not every second number but every second pair of numbers? ..and then 
+  //  combine the resulting sequences with those obtained from inerting every other number ...then
+  //  generalize: invert every triple, quadruple, etc...
 
-  int N = 100; // number of primes
+  int N = 200; // number of primes
 
   //typedef std::vector<int> IntVec;
+  typedef RAPT::rsArray AR;
 
   // create array of primes:
   std::vector<int> primes(N);
@@ -338,13 +346,41 @@ void primeAlternatingSums()
   for(n = 0; n < N; n += 2) ev[n] = -ev[n];
   for(n = 1; n < N; n += 2) od[n] = -od[n];
 
+  // 1st order running sums:
+  std::vector<int> ev1(N), od1(N);
+  AR::cumulativeSum(&ev[0], &ev1[0], N);
+  AR::cumulativeSum(&od[0], &od1[0], N);
+
+  // 2nd order running sums:
+  std::vector<int> ev2(N), od2(N);
+  AR::cumulativeSum(&ev1[0], &ev2[0], N);
+  AR::cumulativeSum(&od1[0], &od2[0], N);
+
+  // 3rd order running sums:
+  std::vector<int> ev3(N), od3(N);
+  AR::cumulativeSum(&ev2[0], &ev3[0], N);
+  AR::cumulativeSum(&od2[0], &od3[0], N);
+
+  // ...at this point, we really should use a loop
+
+
 
   // plot:
   GNUPlotter plt;
   plt.setPixelSize(1000, 500);
-  plt.addDataArrays(N, &primes[0]);
-  plt.addDataArrays(N, &ev[0]);
+  //plt.addDataArrays(N, &primes[0]);
+  //plt.addDataArrays(N, &ev[0]);
   plt.addDataArrays(N, &od[0]);
+  //plt.addDataArrays(N, &ev1[0]);
+  plt.addDataArrays(N, &od1[0]);
+  //plt.addDataArrays(N, &ev2[0]);
+  plt.addDataArrays(N, &od2[0]);
+  //plt.addDataArrays(N, &ev3[0]);
+  plt.addDataArrays(N, &od3[0]);
   plt.plot();
   // todo: maybe plot with stems or at least, get rid of the linear interpolation (draw steps)
+
+  // the 3rd order sum is very smooth ... subtract even and odd 3rd order sums...
+
+  // ..but maybe it's actually faster to noodle around with that stuff in python or sage
 }

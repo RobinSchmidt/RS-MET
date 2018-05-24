@@ -53,6 +53,19 @@ public:
   static void normalizeBiquadStages(T* b0, T* b1, T* b2, T* a1, T* a2, T omega, int numStages, 
     T gainFactor = 1.0);
 
+
+  //static void biquadToStateVariable(T* b0, T* b1, T* b2, T* a1, T* a2, ...);
+
+  //static void biquadToPhasor(T* b0, T* b1, T* b2, T* a1, T* a2, T* rc, T* rs, T* wx, T* wy, T* wi);
+  // update equation:
+  // |x| = r * |c -s| * |x| + |in|
+  // |y|       |s  c|   |y|   |0 |
+  // output equation:
+  // out = wx*x + wy*y + wi*in
+  // where r is a decay factor <= 1; c,s are rotation matrix coeffs (sin/cos of angle w); wx,wy,wi 
+  // are weights for the state-variables x,y and input -> 5 independent coeffs (r can be absorbed 
+  // into the rotation matrix, turning it into a spiraling matrix)
+  // the filter's state is a 2D vector - could be called state-vector filter
 };
 
 #endif
