@@ -1,3 +1,9 @@
+-in order to make in compile on Win32, we need to replace the type of function-parameters in RAPT
+ (T, TSig, TPar, etc.) with const T& for any class template that is instantiated with rsFloat64x2 
+ or similar - otherwise ther error:
+ "formal parameter with requested alignment of 16 won't be aligned"
+ will occur when trying to compile - so, for consistency, it's probably best to use const-refs 
+ instead of by-value parameters generally in RAPT
 
 
 -use "rs" prefix for all rosic classes and functions (start with those where there's a name-clash with
@@ -13,6 +19,7 @@
 -get rid of "using namespace" in headers
  (rapt.h (done), rosic.h (done), romos.h, jura_*.h)
 -maybe fix Level4 compiler warnings in msvc
+-rename rosic to ramp (rob's music and audio processors)
 
 
 -integrate old rapt test/demo code into testbed

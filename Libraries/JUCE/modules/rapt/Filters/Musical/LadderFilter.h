@@ -26,6 +26,12 @@ class rsLadderFilter
 public:
 	//virtual ~LadderFilter() = default;
 
+  // for convenience:
+  typedef const TSig& CRSig;  // const reference to a signal value
+  typedef const TPar& CRPar;  // const reference to a parameter value
+
+
+
   /** Enumeration of the available filter modes. */
   enum modes  // rename to LadderMode or just Mode, see  state handling here: 
               // https://www.juce.com/doc/tutorial_playing_sound_files
@@ -62,23 +68,23 @@ public:
   /** \name Setup */
 
   /** Sets the cutoff frequency in Hz. */
-  void setCutoff(TPar newCutoff);
+  void setCutoff(CRPar newCutoff);
     // maybe rename to setFrequency because we have different modes and the term cutoff applies
     // only to lowpass- and highpass filters (not to bandpass filters, for example)
 
   /** Sets the sample rate in Hz. */
-  void setSampleRate(TPar newSampleRate);
+  void setSampleRate(CRPar newSampleRate);
 
   /** Sets the resonance. This is the net amount of gain in the feedback loop - so the parameter is
   normalized to the range 0..1 where at 1, the stability/self-oscillation limit is reached. */
-  void setResonance(TPar newResonance);
+  void setResonance(CRPar newResonance);
 
   /** Sets the coefficients by which the different signals, tapped off after successive 1-pole
   lowpass stages, are mixed together to form the final output. c0 multiplies the input, c1 the 
   output of the 1st lowpass stage, and so on. These mixing coefficients determine the general shape
   of the frequency response. For example, if c4 = 1 and all others are 0, we get a 24 dB/oct 
   lowpass - as in the classical Moog filter. */
-  void setMixingCoefficients(TPar c0, TPar c1, TPar c2, TPar c3, TPar c4);
+  void setMixingCoefficients(CRPar c0, CRPar c1, CRPar c2, CRPar c3, CRPar c4);
 
   /** Chooses the filter mode. See the enumeration for available modes. */
   void setMode(int newMode);
@@ -96,20 +102,22 @@ public:
   void getState(TSig *state);
 
   /** Returns the filter's z-domain transfer function value at the given value of z. */
-  std::complex<TPar> getTransferFunctionAt(std::complex<TPar> z);
+  std::complex<TPar> getTransferFunctionAt(const std::complex<TPar>& z); 
+    // z needs to be a const-reference, too?
 
   /** Returns the filter's magnitude response at the given frequency in Hz. */
-  TPar getMagnitudeResponseAt(TPar frequency);
+  TPar getMagnitudeResponseAt(CRPar frequency);
 
 
   /** \name Audio Processing */
 
   /** Returns a single output sample without gain-compensation */
-  inline TSig getSampleNoGain(TSig in);
+  //inline TSig getSampleNoGain(TSig in);
+  inline TSig getSampleNoGain(CRSig in);
 
   /** Returns a single output sample (with gain-compensation such that the DC-gain remains 
   unity, irrespective of the resonance) */
-  TSig getSample(TSig in);
+  TSig getSample(CRSig in);
 
   /** Processes a buffer of given length. */
   void process(TSig *in, TSig *out, int length);
@@ -126,12 +134,12 @@ public:
   /** Given some normalized net feedback loop gain fb (in the range 0..1 where 1 is the 
   self-oscillation/instability limit), cos(wc) and lowpass coefficients a, b, this function 
   computes the feedback factor k. */
-  static TPar computeFeedbackFactor(TPar fb, TPar cosWc, TPar a, TPar b);
+  static TPar computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a, CRPar b);
 
   /** Given a desired decay time for the resonance (defined as the time it takes to fall to the
   value 1/e = 0.36..) in seconds and a cutoff frequency in Hz, this function computes the desired
   normalized net feedback loop gain (in the range 0..1) to achieve this decay time. */
-  static TPar resonanceDecayToFeedbackGain(TPar decay, TPar cutoff);
+  static TPar resonanceDecayToFeedbackGain(CRPar decay, CRPar cutoff);
 
   /** Given a normalized radian cutoff frequency wc (in the range 0...pi) and a normalized overall
   feedback gain fb (in the range 0...1), this function computes the desired coefficients a, b for
@@ -139,13 +147,13 @@ public:
   feedback gain k by which the output of a chain of 4 such one-pole units should be fed back into
   the first unit and a compensation gain g that compensates for the loss of DC gain when turning up
   the feedback. */
-  static void computeCoeffs(TPar wc, TPar fb, TPar s, TPar *a, TPar *b, TPar *k, TPar *g);
+  static void computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *b, TPar *k, TPar *g);
   // todo: factor the function into a/b-computation, k-computation, g-computation - but leave 
   // this one as convenience function also
 
   /** Same as computeCoeffs(double wc, double fb, double *a, double *b, double *k, double *g) but 
   without the compensation gain computation.  */
-  static void computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k);
+  static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *b, TPar *k);
 
   // make a static method for the output coefficients c[] 
 

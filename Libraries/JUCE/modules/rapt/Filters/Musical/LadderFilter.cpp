@@ -10,28 +10,29 @@ rsLadderFilter<TSig, TPar>::rsLadderFilter()
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::setCutoff(TPar newCutoff)
+void rsLadderFilter<TSig, TPar>::setCutoff(CRPar newCutoff)
 {
   cutoff = newCutoff;
   updateCoefficients();
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
+void rsLadderFilter<TSig, TPar>::setSampleRate(CRPar newSampleRate)
 {
   sampleRate = newSampleRate;
   updateCoefficients();
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::setResonance(TPar newResonance)
+void rsLadderFilter<TSig, TPar>::setResonance(CRPar newResonance)
 {
   resonance = newResonance;
   updateCoefficients();
 }
 
 template<class TSig, class TPar>
-void  rsLadderFilter<TSig, TPar>::setMixingCoefficients(TPar c0, TPar c1, TPar c2, TPar c3, TPar c4)
+void  rsLadderFilter<TSig, TPar>::setMixingCoefficients(
+  CRPar c0, CRPar c1, CRPar c2, CRPar c3, CRPar c4)
 {
   c[0] = c0; c[1] = c1; c[2] = c2; c[3] = c3; c[4] = c4;
 }
@@ -86,7 +87,7 @@ void rsLadderFilter<TSig, TPar>::getState(TSig *state)
 }
 
 template<class TSig, class TPar>
-std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(std::complex<TPar> z)
+std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(const std::complex<TPar>& z)
 {
   std::complex<TPar> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
   std::complex<TPar> H;              // transfer function with resonance   
@@ -102,7 +103,7 @@ std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(std::comple
 }
 
 template<class TSig, class TPar>
-TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
+TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency)
 {
   TPar w = 2 * TPar(PI) * frequency/sampleRate;
   std::complex<TPar> j(0, 1);                      // imaginary unit
@@ -118,7 +119,8 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
 // audio processing:
 
 template<class TSig, class TPar>
-inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
+inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
+//inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
 {
   //y[4] /= 1 + y[4]*y[4];   // (ad hoc) nonlinearity applied to the feedback signal
   y[0]  = in - k*y[4];        // linear
@@ -145,7 +147,7 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
 }
 
 template<class TSig, class TPar>
-inline TSig rsLadderFilter<TSig, TPar>::getSample(TSig in)
+inline TSig rsLadderFilter<TSig, TPar>::getSample(CRSig in)
 {
   return getSampleNoGain(g * in);     // apply gain at input
   //return g * getSampleNoGain(in);   // apply gain at output
@@ -175,14 +177,14 @@ void rsLadderFilter<TSig, TPar>::reset()
 // coefficient computations:
 
 template<class TSig, class TPar>
-TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(TPar fb, TPar cosWc, TPar a, TPar b)
+TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a, CRPar b)
 {
   TPar g2 = b*b / (1 + a*a + 2*a*cosWc);
   return fb / (g2*g2);
 }
 
 template<class TSig, class TPar>
-TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar cutoff)
+TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(CRPar decay, CRPar cutoff)
 {
   return rsExp(-1/(decay*cutoff)); // does this return 0 for decay == 0? -> test
 
@@ -199,8 +201,8 @@ TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar c
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar s, TPar *a, TPar *b, TPar *k, 
-  TPar *g)
+void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *b, 
+  TPar *k, TPar *g)
 {
   computeCoeffs(wc, fb, a, b, k);
   //*g = 1 + *k; // this overall gain factor ensures unit gain at DC regardless of resonance
@@ -221,7 +223,7 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar s, TPar *a
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k)
+void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *b, TPar *k)
 {
   TPar s, c, t;                     // sin(wc), cos(wc), tan((wc-PI)/4)
   //rsSinCos(wc, &s, &c);

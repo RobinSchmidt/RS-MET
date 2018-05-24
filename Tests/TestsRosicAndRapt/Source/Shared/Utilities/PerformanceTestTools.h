@@ -115,18 +115,21 @@ protected:
 
 
 
-/** Class to perform performance analysis. You can hand it a bunch of std::function objects, each 
-of which are supposed to perform a certain task whose performance you want to measure and it gives
+/** (...not yet finished - just a stub). 
+
+Class to perform performance analysis. You can hand it a bunch of std::function objects, each 
+of which is supposed to perform a certain task whose performance you want to measure and it gives
 you back a string with a report of the test results. The std::function objects you need to pass
 should take an integer parameter for (a measure of) the input size and return a double that is a 
 measure of the performance (like the number of CPU cycles taken (per datapoint, audio-sample, 
-whatever).
+whatever). For example, each of these objects could perform the same task (matrix-multiply, FFT, 
+filtering, ...) but use a different algorithm/implementation internally.
 
-It runs the tests multiple times, gathers the data and may perform statistical analysis afterwards. 
-In the simplest case, you might be interested in how minimum, average or maximum running times of 
-the various functions differ, but on a more sophisticated level, you might be interested in 
-variances and statistical significance of differences in the averages. This class is meant to do 
-the appropriate statistical tests (...not yet finished). 
+It runs the tests multiple times (how many is something you can set up), gathers the data and may 
+perform statistical analysis afterwards. In the simplest case, you might be interested in how 
+minimum, average or maximum running times of the various functions differ. On a more 
+sophisticated level, you might be interested in variances and statistical significance of 
+differences in the averages. This class is meant to do the appropriate statistical tests 
 
 todo:
 -computations for the statiscal tests should be factored out

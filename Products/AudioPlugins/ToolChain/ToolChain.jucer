@@ -29,6 +29,9 @@
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="ToolChain" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
+        <CONFIGURATION name="Debug Win32" winWarningLevel="3" generateManifest="1" winArchitecture="Win32"
+                       isDebug="1" optimisation="1" targetName="ToolChain" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
