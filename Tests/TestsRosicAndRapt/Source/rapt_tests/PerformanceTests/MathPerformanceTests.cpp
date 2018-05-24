@@ -8,8 +8,25 @@ void fftPerformance()
 {
   // mostly to test the PerformanceAnalyzer class
 
+
+
+  std::vector<int> sizes = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
+
+
+  size_t numSizes = sizes.size();
+  int maxSize = sizes[numSizes-1];
   PerformanceAnalyzer pa;
 
+  //std::vector<double> noise = createNoise(maxSize);
+
+
+
+  // maybe compare FFT vs DFT - simple, does not require objects
+
+
+  //void rsDFT(std::complex<T> *buffer, int N);
+
+  //std::function<void(int)> dft =
 
 
   int dummy = 0;

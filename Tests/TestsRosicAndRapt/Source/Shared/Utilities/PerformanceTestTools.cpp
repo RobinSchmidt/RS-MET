@@ -39,3 +39,22 @@ void printMemoryOccupation(const char *name, T& object)
   std::cout << "\n";
 }
 
+//=================================================================================================
+
+void PerformanceAnalyzer::init()
+{
+  clearTests();
+  clearInputSizes();
+  numRuns = 30;
+  smallOutlier = -std::numeric_limits<double>::infinity();
+  largeOutlier =  std::numeric_limits<double>::infinity();
+  rawData.clear();
+  means.clear();
+  variances.clear();
+}
+
+void PerformanceAnalyzer::runTests()
+{
+
+  int dummy = 0;
+}

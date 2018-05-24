@@ -120,10 +120,9 @@ protected:
 Class to perform performance analysis. You can hand it a bunch of std::function objects, each 
 of which is supposed to perform a certain task whose performance you want to measure and it gives
 you back a string with a report of the test results. The std::function objects you need to pass
-should take an integer parameter for (a measure of) the input size and return a double that is a 
-measure of the performance (like the number of CPU cycles taken (per datapoint, audio-sample, 
-whatever). For example, each of these objects could perform the same task (matrix-multiply, FFT, 
-filtering, ...) but use a different algorithm/implementation internally.
+should take an integer parameter for (a measure of) the input size. For example, each of these 
+objects could perform the same task (matrix-multiply, FFT, filtering, ...) but use a different 
+algorithm/implementation internally.
 
 It runs the tests multiple times (how many is something you can set up), gathers the data and may 
 perform statistical analysis afterwards. In the simplest case, you might be interested in how 
@@ -134,11 +133,7 @@ differences in the averages. This class is meant to do the appropriate statistic
 todo:
 -computations for the statiscal tests should be factored out
 -it should be possible to make plots that show how the performance depends on input size - with
- error-bars and multiple graphs  
--the test function should actually have a void return type - this class here should handle the
- actual measurement - the functor should should just do something to be measured, not measure it
- by itself
- */ 
+ error-bars and multiple graphs   */ 
 
 class PerformanceAnalyzer
 {
@@ -151,14 +146,21 @@ public:
   /** Adds a new test to be performed. You have to pass a name that will be used to identify the 
   test in analysis/comparisons - for example something like "FFT, radix-2, decimation in time". 
   The test function itself should then run one such FFT with a length given by its integer 
-  parameter and return the number of CPU cycles taken per datapoint as double. */
-  void addTest(const std::function<double(int)> testFunc, const std::string& testName);
+  parameter. */
+  void addTest(std::function<void(int)>* testFunc, const std::string& testName)
+  {
+    tests.push_back(testFunc);
+    names.push_back(testName);
+  }
 
   /** You can pass an array of inputs sizes to the algorithms to be tested. */
-  void setTestInputSizes(const std::vector<int>& inputSizes);
+  void setTestInputSizes(const std::vector<int>& newInputSizes)
+  {
+    inputSizes = newInputSizes;
+  }
 
   /** Sets the number of times that each test should be run for each input size. */
-  void setNumRunsPerTest(int numberOfRuns);
+  void setNumRunsPerTest(int numberOfRuns) { numRuns = numberOfRuns; }
     // maybe we should allow to set separate numbers of runs for different input sizes (for large
     // input sizes, we may want to run the test less often because it takes too mauch time to run
     // multiple times)
@@ -174,10 +176,10 @@ public:
   }
 
   /** Clears the array of test functions. */
-  void clearTests();
+  void clearTests() { tests.clear(); names.clear(); }
 
   /** Clears the array of input sizes. */
-  void clearInputSizes();
+  void clearInputSizes() { inputSizes.clear(); }
 
   /** Puts the object back into its initial state, i.e. clears all arrays of test-functors, 
   input sizes, etc. */
@@ -205,9 +207,9 @@ public:
   to setNumRunsPerTest. */
   int getNumValidDatapoints(int testIndex, int sizeIndex);
 
-  /** Returns the raw test results as nested vector (i.e. 2D array) where the first index is for 
+  /** Returns the raw test results as nested vector (i.e. 3D array) where the first index is for 
   the test-function (i.e. the algorithm among a family of algorithms) and the second is for the 
-  input-size and the third index is the index of the datapoint, like
+  input-size and the third index is the index of the actual datapoint, like
   result[i][j][k] is the result of the k-th run of algorithm i with input size (indexed by) j */
   std::vector<std::vector<std::vector<double>>> getRawData() { return rawData; }
 
@@ -222,14 +224,14 @@ protected:
 
   //void runTest(
 
-  /** Resizes the rawData matrix to what is required to hold all the results. */
-  void initResultMatrix();
+  /** Resizes the rawData 3D-array to what is required to hold all the results. */
+  void initResultArray();
     // ...maybe intialize to all zeros - but that's actually not necessarry - it will be soon 
     // after filled with valid data anyway
 
-  std::vector<std::string> names;                     // names of the tests
-  std::vector<std::function<double(int)>> tests; // tests themselves
-
+  std::vector<std::string> names;               // names of the tests
+  std::vector<std::function<void(int)>*> tests; // tests themselves
+  std::vector<int> inputSizes;
 
 
   int numRuns = 30; // later use an array to allow smaller numRuns for large input sizes
