@@ -306,6 +306,15 @@ void rsParticleSystem<T>::updatePositions()
 {
   for(size_t i = 0; i < particles.size(); i++)
     particles[i].pos += particles[i].vel;
+
+  // this update equation represents naive, forward Euler integration, i.e.
+  // x += dx;
+  // maybe try trapezoidal integration instead:
+  // x += 0.5*(dx + dxOld);
+  // dxOld = dx;
+  // ...this formula applies a 2-value moving average filter to the dx signal before accumulating 
+  // it into the integrated signal x
+  // do the same trapezoidal integration also for velocities
 }
 
 template<class T>

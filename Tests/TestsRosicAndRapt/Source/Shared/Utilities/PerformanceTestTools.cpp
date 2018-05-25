@@ -60,16 +60,34 @@ void PerformanceAnalyzer::runTests()
     for(size_t j = 0; j < inputSizes.size(); j++) {
       for(size_t k = 0; k < numRuns; k++) {
         cpuCounter.init();
-        (*tests[i])(inputSizes[j]);  // run test i with input size (indexed by) j
+        (*tests[i])((int)inputSizes[j]);  // run test i with input size (indexed by) j
         double cycles = cpuCounter.getNumCyclesSinceInit();
         rawData[i][j][k] = cycles; }}}
-  int dummy = 0;
+  removeOutliers();
+  computeMeansAndVariances();
 }
 
 std::string PerformanceAnalyzer::getReport()
 {
   std::string report;
 
+  // formatting variables:
+  int lineWidth     = 80; // make user parameter
+  int columnWidth   = 6;
+  int maxNameLength = 6; // preliminary
+
+
+  size_t i, j;
+
+  // todo: remove outliers
+
+  computeMeansAndVariances();
+
+  report += "Mean Values\n";
+  std::vector<std::vector<double>> means = getMeans();
+
+  
+  //std::vector<std::vector<double>> getMeans();
   //...
 
   return report;
@@ -84,4 +102,30 @@ void PerformanceAnalyzer::initResultArray()
     for(size_t j = 0; j < inputSizes.size(); j++)
       rawData[i][j].resize(numRuns);
   }
+}
+
+void PerformanceAnalyzer::removeOutliers()
+{
+  // for each test and input size, we must sort the array of results, find the median (center 
+  // value) - maybe they should be stored in an array, too - but maybe not - they are trivial to 
+  // recompute, once the rawData is sorted
+
+  // i think, we should use inf for invalid datapoints, sort the raw data, make a copy, and
+  // of each array, just cut off the inf-values at the end via resize in the copy - that is the
+  // cleaned up data
+
+  // or maybe use interquartile range:
+  // https://en.wikipedia.org/wiki/Quartile
+  // https://en.wikipedia.org/wiki/Interquartile_range
+
+  // or use values between user adjustable quantiles, for example above the 10% quantile and
+  // below the 90% quantile
+
+}
+
+void PerformanceAnalyzer::computeMeansAndVariances()
+{
+
+
+  // maybe refactor into computeMeans and computeVariances
 }

@@ -31,6 +31,8 @@ void fftPerformance()
   pa.runTests();
   std::string report = pa.getReport();
   cout << report;
+
+  // maybe plot means with error bars for variances, maybe also plot mins/maxes/medians/modes
 }
 
 

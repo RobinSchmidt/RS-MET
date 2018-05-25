@@ -174,6 +174,7 @@ public:
     smallOutlier = smallOutlierRatio;
     largeOutlier = largeOutlierRatio;
   }
+  // not yet implemented
 
   /** Clears the array of test functions. */
   void clearTests() { tests.clear(); names.clear(); }
@@ -214,11 +215,13 @@ public:
   std::vector<std::vector<std::vector<double>>> getRawData() { return rawData; }
 
   /** Returns the mean values of the test results. */
-  std::vector<std::vector<double>> getMeans();
+  std::vector<std::vector<double>> getMeans() { return means; }
 
   /** Returns the variances of the test results. */
-  std::vector<std::vector<double>> getVariances();
+  std::vector<std::vector<double>> getVariances() { return variances; }
 
+  // todo:
+  // getMinimums, getMaximums, getMedians, getModes
 
 protected:
 
@@ -228,6 +231,15 @@ protected:
   void initResultArray();
     // ...maybe intialize to all zeros - but that's actually not necessarry - it will be soon 
     // after filled with valid data anyway
+
+  /** Sets datapoints that are considered outliers to NaN. */
+  void removeOutliers();
+
+  /** Computes the means and variances of the test results and stores them in the appropriate 
+  member arrays. */
+  void computeMeansAndVariances();
+
+  //void computeVariances();
 
   std::vector<std::string> names;               // names of the tests
   std::vector<std::function<void(int)>*> tests; // tests themselves

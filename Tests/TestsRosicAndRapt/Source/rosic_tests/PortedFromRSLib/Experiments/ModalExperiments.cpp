@@ -39,7 +39,7 @@ void modalFilterFreqResp()
 void modalTwoModes()
 {
   double fs  = 44100;
-  double at  = 0.01;  // attack - needs to be nonzero for numerical reasons (->try to fix)
+  double at  = 0.05;  // attack - needs to be nonzero for numerical reasons (->try to fix)
 
   // mode parameter arrays:
   typedef std::vector<double> Vec;
@@ -58,7 +58,7 @@ void modalTwoModes()
   mfb.setModalParameters(frq, amp, att, dec, phs);
 
   // plots:
-  //plotImpulseResponse(  mfb, 5000, 1.0);
+  plotImpulseResponse(  mfb, 5000, 1.0);
   plotFrequencyResponse(mfb, 5000, 0.0, 500.0, fs, false);
 
   // Observations:
@@ -72,6 +72,10 @@ void modalTwoModes()
   //  -two sharp resonances at 100,400
   //  -phase monotonically decresing from 0 to -90 then to -180
   //   ...wait - it starts at +180 - something must be wrong about the plot/unwrapping
+
+  // interesting: when increasing the attack time, the freq-resp first deviates away from how it 
+  // initially (at=0.0001) looks but seems to come back to a similar look at at=0.1 with some weird
+  // wiggling in between
 }
 
 

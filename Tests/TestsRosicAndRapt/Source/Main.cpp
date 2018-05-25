@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
   //simdPerformanceFloat64x2();
   //sinCosPerformance();
 
-  fftPerformance();
+  //fftPerformance();
   //filterSignConventionPerformance();
   //ladderPerformance();
   //engineersFilterPerformance();
@@ -245,7 +245,14 @@ int main(int argc, char* argv[])
   //fakeResoLowpassResponse();
   //fakeResoDifferentDelays();
 
-
+  // Modal Filters/Synthesis:
+  //modalFilter();        // impulse response of decaying-sine filter
+  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  //modalTwoModes();
+  //attackDecayFilter();  // ...hmm..almost redundant
+  //dampedSineFilterDesign();
+  //biquadImpulseResponseDesign();
+  modalBankTransient();
 
   // Misc Audio:
   //centroid();
@@ -258,15 +265,6 @@ int main(int argc, char* argv[])
   //transientModeling();
   //windowFunctionsContinuous();
   //windowedSinc();
-
-  // Modal:
-  //modalFilter();        // impulse response of decaying-sine filter
-  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
-  //modalTwoModes();
-  //attackDecayFilter();  // ...hmm..almost redundant
-  //dampedSineFilterDesign();
-  //biquadImpulseResponseDesign();
-  //modalBankTransient();
 
   // Modulator:
   //breakpointModulator();
