@@ -24,6 +24,15 @@ using namespace rotes; // get rid of that
 #include "rosic_tests/PortedFromRSLib/UnitTestsRSLib.h"
 
 
+// new include structure for unity build:
+//#include "Shared/Shared.h"
+//#include "Experiments/Experiments.h"
+//#include "UnitTests/UnitTests.h"
+//#include "PerformanceTests/PerformanceTests.h"
+//#include "Misc/Misc.h"
+
+
+
 int main(int argc, char* argv[])
 {
   //===============================================================================================

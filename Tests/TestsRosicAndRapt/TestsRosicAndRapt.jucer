@@ -7,6 +7,20 @@
               cppLanguageStandard="11" companyCopyright="">
   <MAINGROUP id="faVDnE" name="TestsRosicAndRapt">
     <GROUP id="{1E9A4B2E-B083-724B-094D-49D8FBCEF73F}" name="Source">
+      <GROUP id="{59094510-7833-4796-F4A7-379C8B18FAB3}" name="Misc">
+        <FILE id="x4bxBy" name="Misc.cpp" compile="1" resource="0" file="Source/Misc/Misc.cpp"/>
+        <FILE id="Spitji" name="Misc.h" compile="0" resource="0" file="Source/Misc/Misc.h"/>
+      </GROUP>
+      <GROUP id="{40D03961-5CBF-0CD0-2C0F-24C4433BCC33}" name="PerformanceTests">
+        <FILE id="y5MbfD" name="PerformanceTests.cpp" compile="1" resource="0"
+              file="Source/PerformanceTests/PerformanceTests.cpp"/>
+        <FILE id="Wms543" name="PerformanceTests.h" compile="0" resource="0"
+              file="Source/PerformanceTests/PerformanceTests.h"/>
+      </GROUP>
+      <GROUP id="{E33E5AE1-0B53-585E-6280-A65B3AB8AB76}" name="UnitTests">
+        <FILE id="LumMiL" name="UnitTests.cpp" compile="1" resource="0" file="Source/UnitTests/UnitTests.cpp"/>
+        <FILE id="tTg0CW" name="UnitTests.h" compile="0" resource="0" file="Source/UnitTests/UnitTests.h"/>
+      </GROUP>
       <GROUP id="{86EEC43B-AEDF-BBF9-BF97-B91B0A6A75D6}" name="rapt_tests">
         <GROUP id="{DC26DB91-6388-5853-E13D-90EAAE45AFD9}" name="UnitTests">
           <GROUP id="{59E203FE-103B-3F2C-9162-9ECEFBF76A2E}" name="Math">

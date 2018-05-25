@@ -2,6 +2,15 @@
 
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="TestsRosicAndRapt\Source\Misc">
+      <UniqueIdentifier>{F9764927-7559-AB98-0CF0-DFB5C453A3F1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\PerformanceTests">
+      <UniqueIdentifier>{5136B0E5-41B6-170D-B9FF-E68CD269B899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\UnitTests">
+      <UniqueIdentifier>{9C4BE32F-7C09-3C2B-77A0-44913A460196}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math">
       <UniqueIdentifier>{C2424CEF-CE1B-9274-05DD-B7C280A6F9DA}</UniqueIdentifier>
     </Filter>
@@ -304,6 +313,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Misc\Misc.cpp">
+      <Filter>TestsRosicAndRapt\Source\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\PerformanceTests\PerformanceTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\PerformanceTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UnitTests\UnitTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\UnitTests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClCompile>
@@ -854,6 +872,9 @@
       <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitter.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitterCRef.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\Biquad.cpp">
@@ -2253,6 +2274,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Misc\Misc.h">
+      <Filter>TestsRosicAndRapt\Source\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\PerformanceTests\PerformanceTests.h">
+      <Filter>TestsRosicAndRapt\Source\PerformanceTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UnitTests\UnitTests.h">
+      <Filter>TestsRosicAndRapt\Source\UnitTests</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClInclude>
@@ -2881,6 +2911,9 @@
       <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitter.h">
+      <Filter>Juce Modules\rapt\Unfinished\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitterCRef.h">
       <Filter>Juce Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\Biquad.h">
