@@ -31,9 +31,9 @@ void bandSplittingMultiWay()
   int n, k;
   rsMultiBandSplitterFF splitter;
   splitter.setSplitFrequencies(splitFreqs);
-  //splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
+  splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
   //splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
-  splitter.setSplitMode(rsMultiBandSplitterFF::BINARY_TREE);
+  //splitter.setSplitMode(rsMultiBandSplitterFF::BINARY_TREE);
   int numBands = splitter.getNumActiveBands();
   std::vector<float> x(numSamples);
   std::vector<std::vector<float>> y(numBands);

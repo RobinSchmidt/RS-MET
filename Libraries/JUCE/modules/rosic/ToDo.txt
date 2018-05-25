@@ -19,7 +19,7 @@
 -get rid of "using namespace" in headers
  (rapt.h (done), rosic.h (done), romos.h, jura_*.h)
 -maybe fix Level4 compiler warnings in msvc
--rename rosic to ramp (rob's music and audio processors)
+-rename rosic to ramp (rob's audio and music processors)
 
 
 -integrate old rapt test/demo code into testbed

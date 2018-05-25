@@ -11,6 +11,8 @@ allpassed version of the input). */
 template<class TSig, class TPar>
 class rsTwoBandSplitter
 {
+  typedef const TSig& CRSig;  // const reference to a signal value
+  typedef const TPar& CRPar;  // const reference to a parameter value
 
 public:
 
@@ -34,7 +36,7 @@ public:
 
 
   /** Produces one output sample at a time. */
-  inline TSig getLowpassSample(TSig in)
+  inline TSig getLowpassSample(CRSig in)
   {
     y1 = b0*in + b1*x1 - a1*y1;
     x1 = in;
