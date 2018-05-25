@@ -13,6 +13,8 @@ such as for example the BiquadDesigner class. */
 template<class TSig, class TCoef>  // types for signal and coefficients
 class rsBiquadCascade // rename to BiquadChain
 {
+  typedef const TSig&  CRSig;   // const reference to a signal value
+  typedef const TCoef& CRCoef;  // const reference to a coefficient value
 
 public:
 
@@ -41,7 +43,7 @@ public:
 
   /** Sets up the global gain factor (by multiplying the feedforward coefficients of the first 
   stage by the factor). */
-  void setGlobalGainFactor(TCoef newGainFactor);
+  void setGlobalGainFactor(CRCoef newGainFactor);
 
   /** Copies the settings (numStages and the coefficients) from another instance of this class. */
   void copySettingsFrom(rsBiquadCascade *other);
@@ -56,7 +58,7 @@ public:
   /** Allows the user to set the filter coefficients for the individual biquad-stages. The 
   difference-equation of each of the biquad stages is: 
   \f[ y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2] \f] */
-  inline void setCoeffs(TCoef *newB0, TCoef *newB1, TCoef *newB2, TCoef *newA1, TCoef *newA2); 
+  inline void setCoeffs(TCoef* newB0, TCoef* newB1, TCoef* newB2, TCoef* newA1, TCoef* newA2); 
   //, double newGain = 1.0);
 
   //-----------------------------------------------------------------------------------------------
@@ -99,27 +101,27 @@ public:
 
   /** Writes the magnitdue-response of a biquad-cascade at the physical frequencies given in 
   'frequencies' into the array 'magnitudes'. */
-  void getMagnitudeResponse(TCoef* frequencies, TCoef sampleRate, TCoef* magnitudes, 
+  void getMagnitudeResponse(TCoef* frequencies, CRCoef sampleRate, TCoef* magnitudes, 
     int numBins, bool inDecibels = false, bool accumulate = false);
 
   /** Returns an estimate of the time (in samples) it takes for the impulse response to ring 
   down to "threshold". The estimate is based on the pole which has the highest Q (i.e. is 
   closest to the unit circle). */
-  TCoef getRingingTimeEstimate(TCoef threshold);
-  // todo: write a funtion getRingingFrequency - the normalized radian ringing frequency is
+  TCoef getRingingTimeEstimate(CRCoef threshold);
+  // todo: write a function getRingingFrequency - the normalized radian ringing frequency is
   // the angle of the pole that is closest to the unit circle
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
 
   /** Calculates a single filtered output-sample via a cascade of biquads in Direct-Form 1 */
-  inline TSig getSampleDirect1(TSig in);
+  inline TSig getSampleDirect1(CRSig in);
 
   /** Calculates a single filtered output-sample via a cascade of biquads in Direct-Form 2 */
-  inline TSig getSampleDirect2(TSig in);
+  inline TSig getSampleDirect2(CRSig in);
 
   /** Calculates a single filtered output-sample via a cascade of biquads. */
-  inline TSig getSample(TSig in) { return getSampleDirect1(in); }
+  inline TSig getSample(CRSig in) { return getSampleDirect1(in); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */
@@ -157,7 +159,7 @@ inline void rsBiquadCascade<TSig, TCoef>::setCoeffs(TCoef* newB0, TCoef* newB1, 
 }
 
 template<class TSig, class TCoef>
-inline TSig rsBiquadCascade<TSig, TCoef>::getSampleDirect1(TSig in)
+inline TSig rsBiquadCascade<TSig, TCoef>::getSampleDirect1(CRSig in)
 {
   TSig tmp, tmp2;
   int  i;  // for the loop through the stages 
@@ -184,7 +186,7 @@ inline TSig rsBiquadCascade<TSig, TCoef>::getSampleDirect1(TSig in)
 }
 
 template<class TSig, class TCoef>
-inline TSig rsBiquadCascade<TSig, TCoef>::getSampleDirect2(TSig in)
+inline TSig rsBiquadCascade<TSig, TCoef>::getSampleDirect2(CRSig in)
 {
   TSig x, y, g;
   x = in;

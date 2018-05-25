@@ -60,7 +60,7 @@ void rsBiquadCascade<TSig, TCoef>::setOrder(int newOrder)
 }
 
 template<class TSig, class TCoef>
-void rsBiquadCascade<TSig, TCoef>::setGlobalGainFactor(TCoef newGain)
+void rsBiquadCascade<TSig, TCoef>::setGlobalGainFactor(CRCoef newGain)
 {
   b0[0] *= newGain;
   b1[0] *= newGain;
@@ -137,7 +137,7 @@ void rsBiquadCascade<TSig, TCoef>::getMagnitudeResponse(TCoef *w, TCoef *magnitu
 }
 
 template<class TSig, class TCoef>
-void rsBiquadCascade<TSig, TCoef>::getMagnitudeResponse(TCoef* frequencies, TCoef sampleRate, 
+void rsBiquadCascade<TSig, TCoef>::getMagnitudeResponse(TCoef* frequencies, CRCoef sampleRate, 
   TCoef* magnitudes, int numBins, bool inDecibels, bool accumulate)
 {
   rsFilterAnalyzer<TCoef>::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, 
@@ -150,10 +150,10 @@ T biquadRingingTime(T a1, T a2, T threshold)
   std::complex<T> p = -T(a1/2.0) + sqrt(std::complex<T>(a1*T(a1/4.0)-a2)); // 1st pole
   return (T) rsLogB(threshold, abs(p));
 }
-// move to somewhere else
+// move to FilterAnalyzer
 
 template<class TSig, class TCoef>
-TCoef rsBiquadCascade<TSig, TCoef>::getRingingTimeEstimate(TCoef threshold)
+TCoef rsBiquadCascade<TSig, TCoef>::getRingingTimeEstimate(CRCoef threshold)
 {
   TCoef rt = 0.0;
   for(int i = 0; i < numStages; i++)

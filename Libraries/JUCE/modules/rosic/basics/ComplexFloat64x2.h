@@ -55,7 +55,7 @@ public:
 
 
 /** Returns the first (index 0) complex number in the complex of simd vectors. */
-inline std::complex<double> get0(std::complex<rsFloat64x2> z)
+inline std::complex<double> get0(const std::complex<rsFloat64x2>& z)
 {
   double* re = z.real().asArray();
   double* im = z.imag().asArray();
@@ -63,7 +63,7 @@ inline std::complex<double> get0(std::complex<rsFloat64x2> z)
 }
 
 /** Returns the second (index 1) complex number in the complex of simd vectors. */
-inline std::complex<double> get1(std::complex<rsFloat64x2> z)
+inline std::complex<double> get1(const std::complex<rsFloat64x2>& z)
 {
   double* re = z.real().asArray();
   double* im = z.imag().asArray();
@@ -112,7 +112,7 @@ inline std::complex<rsFloat64x2> operator+(const std::complex<rsFloat64x2>& z) {
 
 
 /** Computes the complex exponential of z. */
-inline std::complex<rsFloat64x2> rsExp(std::complex<rsFloat64x2> z)
+inline std::complex<rsFloat64x2> rsExp(const std::complex<rsFloat64x2>& z)
 {
   // e^z = e^(a + i*b) = e^a * e^(i*b) = e^a * (cos(b) + i*sin(b))
   double* re = z.real().asArray();  // real parts
