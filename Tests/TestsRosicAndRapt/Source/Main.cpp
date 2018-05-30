@@ -14,9 +14,7 @@ using namespace rotes; // get rid of that
 
 #include "rapt_tests/UnitTests/UnitTests.h"
 
-#include "Experiments/Experiments.h"
-
-// the new stuff proted from RSLib (todo: merge directories and files where appropriate, bring 
+// the new stuff ported from RSLib (todo: merge directories and files where appropriate, bring 
 // everything into a consistent order):
 #include "rosic_tests/PortedFromRSLib/ExamplesRSLib.h"
 #include "rosic_tests/PortedFromRSLib/ExperimentsRSLib.h"
@@ -24,14 +22,11 @@ using namespace rotes; // get rid of that
 #include "rosic_tests/PortedFromRSLib/UnitTestsRSLib.h"
 
 
-// new include structure for unity build:
-//#include "Shared/Shared.h"
-//#include "Experiments/Experiments.h"
-//#include "UnitTests/UnitTests.h"
-//#include "PerformanceTests/PerformanceTests.h"
-//#include "Misc/Misc.h"
-
-
+// new includes for unity build (eventually, delete all includes above):
+#include "Experiments/Experiments.h"
+#include "UnitTests/UnitTests.h"   // demos, examples, rendering, ...
+#include "PerformanceTests/PerformanceTests.h"
+#include "Misc/Misc.h"
 
 int main(int argc, char* argv[])
 {
