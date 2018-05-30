@@ -1,28 +1,6 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
-#include "rosic_tests/rosic_CorrectnessTests.h"
-using namespace rotes; // get rid of that
-
-#include "rapt_tests/Experiments/MathExperiments.h"
-#include "rapt_tests/Experiments/FilterExperiments.h"
-#include "rapt_tests/Experiments/GeneratorExperiments.h"
-#include "rapt_tests/Experiments/GraphicsExperiments.h"
-
-#include "rapt_tests/PerformanceTests/MathPerformanceTests.h"
-#include "rapt_tests/PerformanceTests/AudioPerformanceTests.h"
-#include "rapt_tests/PerformanceTests/MiscPerformanceTests.h"
-
-#include "rapt_tests/UnitTests/UnitTests.h"
-
-// the new stuff ported from RSLib (todo: merge directories and files where appropriate, bring 
-// everything into a consistent order):
-#include "rosic_tests/PortedFromRSLib/ExamplesRSLib.h"
-#include "rosic_tests/PortedFromRSLib/ExperimentsRSLib.h"
-#include "rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h"
-#include "rosic_tests/PortedFromRSLib/UnitTestsRSLib.h"
-
-
-// new includes for unity build (eventually, delete all includes above):
+// includes for unity build:
 #include "Experiments/Experiments.h"
 #include "UnitTests/UnitTests.h"   // demos, examples, rendering, ...
 #include "PerformanceTests/PerformanceTests.h"
