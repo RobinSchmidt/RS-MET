@@ -1,5 +1,31 @@
 #include "Experiments.h"
 
+#include "../rapt_tests/Experiments/MathExperiments.cpp"
+#include "../rapt_tests/Experiments/FilterExperiments.cpp"
+#include "../rapt_tests/Experiments/GeneratorExperiments.cpp"
+#include "../rapt_tests/Experiments/GraphicsExperiments.cpp"
+
+// get rid:
+using namespace RAPT;
+using namespace rosic;
+
+#include "../rosic_tests/PortedFromRSLib/Experiments/MathExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/AnalysisExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/CellularExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/DelayExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/FilterExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/MiscAudioExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/ModalExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/ModulatorExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/OscillatorExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/PartialExtractionExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/PhaseVocoderExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/PhysicsExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.cpp"
+#include "../rosic_tests/PortedFromRSLib/Experiments/SaturationExperiments.cpp"
+
+
+
 void particleBouncerExperiment()
 {
   static const int N = 8000;   // number of output samples

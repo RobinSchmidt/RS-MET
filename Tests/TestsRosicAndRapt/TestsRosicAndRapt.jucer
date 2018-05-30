@@ -116,19 +116,19 @@
                 file="Source/rapt_tests/PerformanceTests/MiscPerformanceTests.h"/>
         </GROUP>
         <GROUP id="{9B3DF9C6-510B-1467-E9E7-3E8187C592F8}" name="Experiments">
-          <FILE id="jYh9KO" name="FilterExperiments.cpp" compile="1" resource="0"
+          <FILE id="jYh9KO" name="FilterExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/FilterExperiments.cpp"/>
           <FILE id="OTp55x" name="FilterExperiments.h" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/FilterExperiments.h"/>
-          <FILE id="Cau1xx" name="GeneratorExperiments.cpp" compile="1" resource="0"
+          <FILE id="Cau1xx" name="GeneratorExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/GeneratorExperiments.cpp"/>
           <FILE id="Q19B2r" name="GeneratorExperiments.h" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/GeneratorExperiments.h"/>
-          <FILE id="MpBTt9" name="GraphicsExperiments.cpp" compile="1" resource="0"
+          <FILE id="MpBTt9" name="GraphicsExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/GraphicsExperiments.cpp"/>
           <FILE id="OhAvkW" name="GraphicsExperiments.h" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/GraphicsExperiments.h"/>
-          <FILE id="NqLe9c" name="MathExperiments.cpp" compile="1" resource="0"
+          <FILE id="NqLe9c" name="MathExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/MathExperiments.cpp"/>
           <FILE id="EfK5dG" name="MathExperiments.h" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/MathExperiments.h"/>
@@ -313,7 +313,7 @@
           <FILE id="UyyUEp" name="ExamplesRSLib.cpp" compile="1" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.cpp"/>
           <FILE id="Wot74g" name="ExamplesRSLib.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.h"/>
-          <FILE id="WhspGD" name="ExperimentsRSLib.cpp" compile="1" resource="0"
+          <FILE id="WhspGD" name="ExperimentsRSLib.cpp" compile="0" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.cpp"/>
           <FILE id="WYThpe" name="ExperimentsRSLib.h" compile="0" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.h"/>

@@ -384,6 +384,8 @@
     <Unit filename="../../Source/rapt_tests/Experiments/FilterExperiments.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rapt_tests/Experiments/FilterExperiments.h">
       <Option target="ConsoleApp | Debug"/>
@@ -394,6 +396,8 @@
     <Unit filename="../../Source/rapt_tests/Experiments/GeneratorExperiments.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rapt_tests/Experiments/GeneratorExperiments.h">
       <Option target="ConsoleApp | Debug"/>
@@ -404,6 +408,8 @@
     <Unit filename="../../Source/rapt_tests/Experiments/GraphicsExperiments.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rapt_tests/Experiments/GraphicsExperiments.h">
       <Option target="ConsoleApp | Debug"/>
@@ -414,6 +420,8 @@
     <Unit filename="../../Source/rapt_tests/Experiments/MathExperiments.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rapt_tests/Experiments/MathExperiments.h">
       <Option target="ConsoleApp | Debug"/>
@@ -974,6 +982,8 @@
     <Unit filename="../../Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.h">
       <Option target="ConsoleApp | Debug"/>

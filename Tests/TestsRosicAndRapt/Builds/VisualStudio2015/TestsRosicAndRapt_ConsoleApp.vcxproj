@@ -203,10 +203,18 @@
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\Experiments\MathExperiments.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\MathExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Shared.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp"/>
@@ -283,7 +291,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\RSCore.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExamplesRSLib.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.cpp">

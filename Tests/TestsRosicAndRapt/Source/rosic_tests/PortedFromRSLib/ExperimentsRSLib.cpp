@@ -5,7 +5,6 @@ using namespace rosic;
 
 
 #include "Experiments/MathExperiments.cpp"
-
 #include "Experiments/AnalysisExperiments.cpp"
 #include "Experiments/CellularExperiments.cpp"
 #include "Experiments/DelayExperiments.cpp"
