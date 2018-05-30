@@ -84,21 +84,21 @@
             <FILE id="eibJXp" name="VectorUnitTests.h" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/VectorUnitTests.h"/>
           </GROUP>
-          <FILE id="crSQKa" name="DataUnitTests.cpp" compile="1" resource="0"
+          <FILE id="crSQKa" name="DataUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/DataUnitTests.cpp"/>
           <FILE id="dj1inx" name="DataUnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/DataUnitTests.h"/>
-          <FILE id="vo1C57" name="FilterUnitTests.cpp" compile="1" resource="0"
+          <FILE id="vo1C57" name="FilterUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/FilterUnitTests.cpp"/>
           <FILE id="S3g7Rt" name="FilterUnitTests.h" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/FilterUnitTests.h"/>
-          <FILE id="yWZr9A" name="ImageUnitTests.cpp" compile="1" resource="0"
+          <FILE id="yWZr9A" name="ImageUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/ImageUnitTests.cpp"/>
           <FILE id="Jkti6q" name="ImageUnitTests.h" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/ImageUnitTests.h"/>
-          <FILE id="n0ecux" name="MathUnitTests.cpp" compile="1" resource="0"
+          <FILE id="n0ecux" name="MathUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/MathUnitTests.cpp"/>
           <FILE id="xAAX6K" name="MathUnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/MathUnitTests.h"/>
-          <FILE id="f93wHx" name="UnitTests.cpp" compile="1" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.cpp"/>
+          <FILE id="f93wHx" name="UnitTests.cpp" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.cpp"/>
           <FILE id="S3Y8ov" name="UnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.h"/>
         </GROUP>
         <GROUP id="{47DEF60D-47E1-97D9-4623-845086C6F137}" name="PerformanceTests">
@@ -321,7 +321,7 @@
                 file="Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.cpp"/>
           <FILE id="d8ktZy" name="PerformanceTestsRSLib.h" compile="0" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h"/>
-          <FILE id="H026Ei" name="UnitTestsRSLib.cpp" compile="1" resource="0"
+          <FILE id="H026Ei" name="UnitTestsRSLib.cpp" compile="0" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.cpp"/>
           <FILE id="ih1a8q" name="UnitTestsRSLib.h" compile="0" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.h"/>
@@ -438,55 +438,55 @@
                   file="Source/rosic_tests/PortedFromRSLib/Examples/SampleMapGenerator.h"/>
           </GROUP>
         </GROUP>
-        <FILE id="xbbPi9" name="rosic_AnalysisTests.cpp" compile="1" resource="0"
+        <FILE id="xbbPi9" name="rosic_AnalysisTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_AnalysisTests.cpp"/>
         <FILE id="HZIBH7" name="rosic_AnalysisTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_AnalysisTests.h"/>
-        <FILE id="sDw1Bg" name="rosic_BasicsTests.cpp" compile="1" resource="0"
+        <FILE id="sDw1Bg" name="rosic_BasicsTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_BasicsTests.cpp"/>
         <FILE id="FbwLNl" name="rosic_BasicsTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_BasicsTests.h"/>
-        <FILE id="RSxJZq" name="rosic_CorrectnessTests.cpp" compile="1" resource="0"
+        <FILE id="RSxJZq" name="rosic_CorrectnessTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_CorrectnessTests.cpp"/>
         <FILE id="LIJAvD" name="rosic_CorrectnessTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_CorrectnessTests.h"/>
-        <FILE id="jNjDSh" name="rosic_EffectsTests.cpp" compile="1" resource="0"
+        <FILE id="jNjDSh" name="rosic_EffectsTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_EffectsTests.cpp"/>
         <FILE id="enE2Sh" name="rosic_EffectsTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_EffectsTests.h"/>
-        <FILE id="PZyOcX" name="rosic_FileTests.cpp" compile="1" resource="0"
+        <FILE id="PZyOcX" name="rosic_FileTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_FileTests.cpp"/>
         <FILE id="tI9rm9" name="rosic_FileTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_FileTests.h"/>
-        <FILE id="nwci9O" name="rosic_FilterTests.cpp" compile="1" resource="0"
+        <FILE id="nwci9O" name="rosic_FilterTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_FilterTests.cpp"/>
         <FILE id="vCAVkL" name="rosic_FilterTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_FilterTests.h"/>
-        <FILE id="Mrnsak" name="rosic_GeneratorsTests.cpp" compile="1" resource="0"
+        <FILE id="Mrnsak" name="rosic_GeneratorsTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_GeneratorsTests.cpp"/>
         <FILE id="vFBpwL" name="rosic_GeneratorsTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_GeneratorsTests.h"/>
-        <FILE id="yZ7IbP" name="rosic_MathTests.cpp" compile="1" resource="0"
+        <FILE id="yZ7IbP" name="rosic_MathTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_MathTests.cpp"/>
         <FILE id="Yz2lJ2" name="rosic_MathTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_MathTests.h"/>
-        <FILE id="BhzhTs" name="rosic_ModulatorsTests.cpp" compile="1" resource="0"
+        <FILE id="BhzhTs" name="rosic_ModulatorsTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_ModulatorsTests.cpp"/>
         <FILE id="ylOiOv" name="rosic_ModulatorsTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_ModulatorsTests.h"/>
-        <FILE id="H00Aik" name="rosic_NonRealTimeTests.cpp" compile="1" resource="0"
+        <FILE id="H00Aik" name="rosic_NonRealTimeTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_NonRealTimeTests.cpp"/>
         <FILE id="vbMbkJ" name="rosic_NonRealTimeTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_NonRealTimeTests.h"/>
-        <FILE id="xpY36Q" name="rosic_NumericalTests.cpp" compile="1" resource="0"
+        <FILE id="xpY36Q" name="rosic_NumericalTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_NumericalTests.cpp"/>
         <FILE id="iCQJYG" name="rosic_NumericalTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_NumericalTests.h"/>
-        <FILE id="IEw0M1" name="rosic_OthersTests.cpp" compile="1" resource="0"
+        <FILE id="IEw0M1" name="rosic_OthersTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_OthersTests.cpp"/>
         <FILE id="qxiZH7" name="rosic_OthersTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_OthersTests.h"/>
-        <FILE id="qILQe2" name="rosic_StringTests.cpp" compile="1" resource="0"
+        <FILE id="qILQe2" name="rosic_StringTests.cpp" compile="0" resource="0"
               file="Source/rosic_tests/rosic_StringTests.cpp"/>
         <FILE id="vQeECd" name="rosic_StringTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_StringTests.h"/>

@@ -5,7 +5,7 @@ typedef std::complex<double> rsComplexDbl;
 template<class T>
 void interleaveWithZeros(T *x, T *y, int xLength, int factor)
 {
-  rsArray::fillWithZeros(y, factor*xLength);
+  RAPT::rsArray::fillWithZeros(y, factor*xLength);
   for(int i = 0; i < xLength; i++)
     y[factor*i] = x[i];
 }

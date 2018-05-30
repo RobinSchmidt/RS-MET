@@ -195,11 +195,21 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\MathUnitTests.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTests.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\MathUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.cpp"/>
@@ -295,7 +305,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -383,19 +395,45 @@
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_BasicsTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_CorrectnessTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_EffectsTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_FileTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_FilterTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_GeneratorsTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_MathTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_ModulatorsTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_NonRealTimeTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_NumericalTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_OthersTests.cpp"/>
-    <ClCompile Include="..\..\Source\rosic_tests\rosic_StringTests.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_BasicsTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_CorrectnessTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_EffectsTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_FileTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_FilterTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_GeneratorsTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_MathTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_ModulatorsTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_NonRealTimeTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_NumericalTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_OthersTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_StringTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioBasics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
