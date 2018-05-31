@@ -3,8 +3,10 @@
 // includes for unity build:
 #include "Experiments/Experiments.h"
 #include "UnitTests/UnitTests.h" 
-#include "PerformanceTests/PerformanceTests.h" // todo: make unity build cpp file
-#include "Misc/Misc.h"  // demos, examples, rendering, ...
+#include "PerformanceTests/PerformanceTests.h" 
+#include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
+
+// we also need a "Shared.cpp" unity build file
 
 int main(int argc, char* argv[])
 {
@@ -14,7 +16,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // merge with eunit testsf for RSLib
+  //runAllUnitTests();  // merge with eunit tests for RSLib
   //mathUnitTests();
   //filterUnitTests();
 

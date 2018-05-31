@@ -171,7 +171,8 @@ void rotes::testModalFilterWithAttack()
 
   ModalFilterWithAttack mf;
   mf.setModalParameters(f, A, tp, td, phs, fs, df);
-  plotImpulseResponse(mf, (int)fs, (int)fs);
+  //plotImpulseResponse(mf, (int)fs, (int)fs); // why fs two times?
+  plotImpulseResponse(mf, (int)fs, 1.0);
   //writeImpulseResponseToFile("d:\\TmpData\\ModalImpulseResponse.wav", mf, fs, fs, 16);
 }
 

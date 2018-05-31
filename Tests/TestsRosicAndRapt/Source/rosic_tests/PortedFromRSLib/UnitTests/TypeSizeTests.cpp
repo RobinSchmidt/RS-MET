@@ -43,7 +43,7 @@ bool testTypeSizes(std::string &reportString)
   //
   rsInt32 rsInt32Min = RS_MIN(rsInt32);  // -2147483648
   rsInt32 rsInt32Max = RS_MAX(rsInt32);  //  2147483647
-  testResult &= rsInt32Min == -2147483648; // msvc gives a warning here - why?
+  testResult &= rsInt32Min == -(int)2147483648; // msvc gives a warning here - why?
   testResult &= rsInt32Max ==  2147483647;
 
   //double doubleMin = RS_MIN(double);

@@ -5,6 +5,7 @@
 #include "../rapt_tests/PerformanceTests/AudioPerformanceTests.cpp"
 #include "../rapt_tests/PerformanceTests/MiscPerformanceTests.cpp"
 
+// get rid of these:
 using namespace RAPT;
 using namespace rosic;
 
@@ -13,5 +14,3 @@ using namespace rosic;
 #include "../rosic_tests/PortedFromRSLib/PerformanceTests/MathTests.cpp"
 #include "../rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.cpp"
 #include "../rosic_tests/PortedFromRSLib/PerformanceTests/ModalTests.cpp"
-
-//#include "../rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h"
