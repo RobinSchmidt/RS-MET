@@ -364,6 +364,8 @@
     <Unit filename="../../Source/rapt_tests/PerformanceTests/AudioPerformanceTests.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rapt_tests/PerformanceTests/AudioPerformanceTests.h">
       <Option target="ConsoleApp | Debug"/>
@@ -374,6 +376,8 @@
     <Unit filename="../../Source/rapt_tests/PerformanceTests/MathPerformanceTests.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rapt_tests/PerformanceTests/MathPerformanceTests.h">
       <Option target="ConsoleApp | Debug"/>
@@ -384,6 +388,8 @@
     <Unit filename="../../Source/rapt_tests/PerformanceTests/MiscPerformanceTests.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rapt_tests/PerformanceTests/MiscPerformanceTests.h">
       <Option target="ConsoleApp | Debug"/>
@@ -1004,6 +1010,8 @@
     <Unit filename="../../Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h">
       <Option target="ConsoleApp | Debug"/>

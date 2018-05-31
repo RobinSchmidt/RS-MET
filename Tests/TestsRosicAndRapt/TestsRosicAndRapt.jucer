@@ -102,15 +102,15 @@
           <FILE id="S3Y8ov" name="UnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.h"/>
         </GROUP>
         <GROUP id="{47DEF60D-47E1-97D9-4623-845086C6F137}" name="PerformanceTests">
-          <FILE id="g0WJb3" name="AudioPerformanceTests.cpp" compile="1" resource="0"
+          <FILE id="g0WJb3" name="AudioPerformanceTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/AudioPerformanceTests.cpp"/>
           <FILE id="g4ucO2" name="AudioPerformanceTests.h" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/AudioPerformanceTests.h"/>
-          <FILE id="QfWR9e" name="MathPerformanceTests.cpp" compile="1" resource="0"
+          <FILE id="QfWR9e" name="MathPerformanceTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/MathPerformanceTests.cpp"/>
           <FILE id="hBoBzf" name="MathPerformanceTests.h" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/MathPerformanceTests.h"/>
-          <FILE id="Tt4cHh" name="MiscPerformanceTests.cpp" compile="1" resource="0"
+          <FILE id="Tt4cHh" name="MiscPerformanceTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/MiscPerformanceTests.cpp"/>
           <FILE id="zjflBD" name="MiscPerformanceTests.h" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/MiscPerformanceTests.h"/>
@@ -317,7 +317,7 @@
                 file="Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.cpp"/>
           <FILE id="WYThpe" name="ExperimentsRSLib.h" compile="0" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.h"/>
-          <FILE id="dpFd5E" name="PerformanceTestsRSLib.cpp" compile="1" resource="0"
+          <FILE id="dpFd5E" name="PerformanceTestsRSLib.cpp" compile="0" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.cpp"/>
           <FILE id="d8ktZy" name="PerformanceTestsRSLib.h" compile="0" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h"/>

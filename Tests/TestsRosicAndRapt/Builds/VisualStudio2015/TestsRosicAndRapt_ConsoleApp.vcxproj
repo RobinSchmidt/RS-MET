@@ -210,9 +210,15 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.cpp"/>
-    <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -304,7 +310,9 @@
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
