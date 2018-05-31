@@ -1,12 +1,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 // includes for unity build:
+#include "Shared/Shared.h"
 #include "Experiments/Experiments.h"
 #include "UnitTests/UnitTests.h" 
 #include "PerformanceTests/PerformanceTests.h" 
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 
-// we also need a "Shared.cpp" unity build file
+
 
 int main(int argc, char* argv[])
 {

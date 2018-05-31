@@ -233,15 +233,33 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Shared.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Utilities\PerformanceTestTools.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Utilities\TestUtilities.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Plotting\DSPPlotters.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Utilities\PerformanceTestTools.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Utilities\TestUtilities.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Plotting\DSPPlotters.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerAnalog.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -254,12 +272,24 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroPrototype.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Ideas.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Prototypes.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Ideas.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Prototypes.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>

@@ -59,7 +59,7 @@ template<class T>
 void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, bool antiAlias)
 {
   T w = (T)(2*PI*frequency/sampleRate);
-  fillWithZeros(x, N);
+  RAPT::rsArray::fillWithZeros(x, N);
   switch( shape )
   {
   case 0:
@@ -145,7 +145,7 @@ void createPulseWave(double *x, int N, double frequency, double dutyCycle,
   double sampleRate, double phase, bool antiAlias)
 {
   double w = 2*PI*frequency/sampleRate;
-  fillWithZeros(x, N);
+  RAPT::rsArray::fillWithZeros(x, N);
   if( antiAlias == false )
   {
     for(int n=0; n<N; n++)

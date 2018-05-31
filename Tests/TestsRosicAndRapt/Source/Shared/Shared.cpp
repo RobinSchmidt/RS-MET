@@ -1,5 +1,24 @@
 #include "Shared.h"
 
+#include "RaptLibraryCode/RaptInstantiations.cpp"
+
+#include "Plotting/GNUPlotter.cpp"
+#include "Plotting/DSPPlotters.cpp"
+#include "Plotting/Plotting.cpp"
+#include "Plotting/rosic_Plotter.cpp" // get rid
+
+#include "Prototypes/Prototypes.cpp"
+#include "Prototypes/FiniteAutomaton.cpp"
+#include "Prototypes/ParticleBouncer.cpp"
+#include "Prototypes/ParticleSystem.cpp"
+#include "Prototypes/Tensor.cpp"
+
+#include "Utilities/FileWriting.cpp"
+#include "Utilities/PerformanceTestTools.cpp"
+#include "Utilities/TestInputCreation.cpp"
+#include "Utilities/TestUtilities.cpp"
+
+
 #undef min
 
 bool areNumbersEqual(double x, double y, double relativeTolerance)

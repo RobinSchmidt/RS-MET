@@ -474,6 +474,8 @@
     <Unit filename="../../Source/Shared/Utilities/FileWriting.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Utilities/FileWriting.h">
       <Option target="ConsoleApp | Debug"/>
@@ -484,6 +486,8 @@
     <Unit filename="../../Source/Shared/Utilities/PerformanceTestTools.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Utilities/PerformanceTestTools.h">
       <Option target="ConsoleApp | Debug"/>
@@ -494,6 +498,8 @@
     <Unit filename="../../Source/Shared/Utilities/TestInputCreation.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Utilities/TestInputCreation.h">
       <Option target="ConsoleApp | Debug"/>
@@ -504,6 +510,8 @@
     <Unit filename="../../Source/Shared/Utilities/TestUtilities.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Utilities/TestUtilities.h">
       <Option target="ConsoleApp | Debug"/>
@@ -514,6 +522,8 @@
     <Unit filename="../../Source/Shared/RaptLibraryCode/RaptInstantiations.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/RaptLibraryCode/RaptInstantiations.h">
       <Option target="ConsoleApp | Debug"/>
@@ -524,6 +534,8 @@
     <Unit filename="../../Source/Shared/Plotting/DSPPlotters.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Plotting/DSPPlotters.h">
       <Option target="ConsoleApp | Debug"/>
@@ -534,6 +546,8 @@
     <Unit filename="../../Source/Shared/Plotting/GNUPlotter.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Plotting/GNUPlotter.h">
       <Option target="ConsoleApp | Debug"/>
@@ -544,6 +558,8 @@
     <Unit filename="../../Source/Shared/Plotting/Plotting.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Plotting/Plotting.h">
       <Option target="ConsoleApp | Debug"/>
@@ -554,6 +570,8 @@
     <Unit filename="../../Source/Shared/Plotting/rosic_Plotter.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Plotting/rosic_Plotter.h">
       <Option target="ConsoleApp | Debug"/>
@@ -612,6 +630,8 @@
     <Unit filename="../../Source/Shared/Prototypes/FiniteAutomaton.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Prototypes/FiniteAutomaton.h">
       <Option target="ConsoleApp | Debug"/>
@@ -622,6 +642,8 @@
     <Unit filename="../../Source/Shared/Prototypes/Ideas.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Prototypes/Ideas.h">
       <Option target="ConsoleApp | Debug"/>
@@ -632,6 +654,8 @@
     <Unit filename="../../Source/Shared/Prototypes/ParticleBouncer.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Prototypes/ParticleBouncer.h">
       <Option target="ConsoleApp | Debug"/>
@@ -642,6 +666,8 @@
     <Unit filename="../../Source/Shared/Prototypes/ParticleSystem.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Prototypes/ParticleSystem.h">
       <Option target="ConsoleApp | Debug"/>
@@ -652,6 +678,8 @@
     <Unit filename="../../Source/Shared/Prototypes/Prototypes.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Prototypes/Prototypes.h">
       <Option target="ConsoleApp | Debug"/>
@@ -668,6 +696,8 @@
     <Unit filename="../../Source/Shared/Prototypes/Tensor.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Shared/Prototypes/Tensor.h">
       <Option target="ConsoleApp | Debug"/>

@@ -203,7 +203,7 @@ T rsParticleSystem<T>::getForceScalerByDistance(T d, T size1, T size2)
 
   //return (1 + size1 + size2) / (size1 + size2 + pow(d,p)); 
   //return 1 / (size1 + size2 + pow(d,p)); 
-  return 1 / (std::max(size1 + size2, pow(d,p))); 
+  return 1 / (rsMax(size1 + size2, pow(d,p))); 
   //return 1 / (max(size1,  size2, pow(d,p))); 
 }
 

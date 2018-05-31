@@ -144,34 +144,34 @@
               file="../../Libraries/JUCE/modules/jura_framework/control/jura_Callbacks.h"/>
         <FILE id="jygXVA" name="Shared.h" compile="0" resource="0" file="Source/Shared/Shared.h"/>
         <GROUP id="{201E673D-AA9B-D76E-9C89-E7FCF6FE4A20}" name="Utilities">
-          <FILE id="P5YT2S" name="FileWriting.cpp" compile="1" resource="0" file="Source/Shared/Utilities/FileWriting.cpp"/>
+          <FILE id="P5YT2S" name="FileWriting.cpp" compile="0" resource="0" file="Source/Shared/Utilities/FileWriting.cpp"/>
           <FILE id="S3nBXy" name="FileWriting.h" compile="0" resource="0" file="Source/Shared/Utilities/FileWriting.h"/>
-          <FILE id="AC22l8" name="PerformanceTestTools.cpp" compile="1" resource="0"
+          <FILE id="AC22l8" name="PerformanceTestTools.cpp" compile="0" resource="0"
                 file="Source/Shared/Utilities/PerformanceTestTools.cpp"/>
           <FILE id="flk1eu" name="PerformanceTestTools.h" compile="0" resource="0"
                 file="Source/Shared/Utilities/PerformanceTestTools.h"/>
-          <FILE id="dTQlI6" name="TestInputCreation.cpp" compile="1" resource="0"
+          <FILE id="dTQlI6" name="TestInputCreation.cpp" compile="0" resource="0"
                 file="Source/Shared/Utilities/TestInputCreation.cpp"/>
           <FILE id="M3MA2g" name="TestInputCreation.h" compile="0" resource="0"
                 file="Source/Shared/Utilities/TestInputCreation.h"/>
-          <FILE id="UrfiMo" name="TestUtilities.cpp" compile="1" resource="0"
+          <FILE id="UrfiMo" name="TestUtilities.cpp" compile="0" resource="0"
                 file="Source/Shared/Utilities/TestUtilities.cpp"/>
           <FILE id="V9vOxM" name="TestUtilities.h" compile="0" resource="0" file="Source/Shared/Utilities/TestUtilities.h"/>
         </GROUP>
         <GROUP id="{26F3386D-C17C-0FE0-E219-28AD9C050586}" name="RaptLibraryCode">
-          <FILE id="oxwZnF" name="RaptInstantiations.cpp" compile="1" resource="0"
+          <FILE id="oxwZnF" name="RaptInstantiations.cpp" compile="0" resource="0"
                 file="Source/Shared/RaptLibraryCode/RaptInstantiations.cpp"/>
           <FILE id="G9J9kL" name="RaptInstantiations.h" compile="0" resource="0"
                 file="Source/Shared/RaptLibraryCode/RaptInstantiations.h"/>
         </GROUP>
         <GROUP id="{2FD6D867-5BCE-6EA7-AA7A-0B678FC2D479}" name="Plotting">
-          <FILE id="QfPywz" name="DSPPlotters.cpp" compile="1" resource="0" file="Source/Shared/Plotting/DSPPlotters.cpp"/>
+          <FILE id="QfPywz" name="DSPPlotters.cpp" compile="0" resource="0" file="Source/Shared/Plotting/DSPPlotters.cpp"/>
           <FILE id="N7Zpln" name="DSPPlotters.h" compile="0" resource="0" file="Source/Shared/Plotting/DSPPlotters.h"/>
-          <FILE id="xlYcGO" name="GNUPlotter.cpp" compile="1" resource="0" file="Source/Shared/Plotting/GNUPlotter.cpp"/>
+          <FILE id="xlYcGO" name="GNUPlotter.cpp" compile="0" resource="0" file="Source/Shared/Plotting/GNUPlotter.cpp"/>
           <FILE id="iJVniX" name="GNUPlotter.h" compile="0" resource="0" file="Source/Shared/Plotting/GNUPlotter.h"/>
-          <FILE id="oLiZ6u" name="Plotting.cpp" compile="1" resource="0" file="Source/Shared/Plotting/Plotting.cpp"/>
+          <FILE id="oLiZ6u" name="Plotting.cpp" compile="0" resource="0" file="Source/Shared/Plotting/Plotting.cpp"/>
           <FILE id="MiC0Zk" name="Plotting.h" compile="0" resource="0" file="Source/Shared/Plotting/Plotting.h"/>
-          <FILE id="HQfys9" name="rosic_Plotter.cpp" compile="1" resource="0"
+          <FILE id="HQfys9" name="rosic_Plotter.cpp" compile="0" resource="0"
                 file="Source/Shared/Plotting/rosic_Plotter.cpp"/>
           <FILE id="pVGgqG" name="rosic_Plotter.h" compile="0" resource="0" file="Source/Shared/Plotting/rosic_Plotter.h"/>
         </GROUP>
@@ -194,24 +194,24 @@
             <FILE id="dUQgUu" name="PoleZeroPrototype.h" compile="0" resource="0"
                   file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroPrototype.h"/>
           </GROUP>
-          <FILE id="BiN3xa" name="FiniteAutomaton.cpp" compile="1" resource="0"
+          <FILE id="BiN3xa" name="FiniteAutomaton.cpp" compile="0" resource="0"
                 file="Source/Shared/Prototypes/FiniteAutomaton.cpp"/>
           <FILE id="siWyu0" name="FiniteAutomaton.h" compile="0" resource="0"
                 file="Source/Shared/Prototypes/FiniteAutomaton.h"/>
-          <FILE id="nOJxxx" name="Ideas.cpp" compile="1" resource="0" file="Source/Shared/Prototypes/Ideas.cpp"/>
+          <FILE id="nOJxxx" name="Ideas.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Ideas.cpp"/>
           <FILE id="vFcTlP" name="Ideas.h" compile="0" resource="0" file="Source/Shared/Prototypes/Ideas.h"/>
-          <FILE id="kZGzyT" name="ParticleBouncer.cpp" compile="1" resource="0"
+          <FILE id="kZGzyT" name="ParticleBouncer.cpp" compile="0" resource="0"
                 file="Source/Shared/Prototypes/ParticleBouncer.cpp"/>
           <FILE id="TSNqal" name="ParticleBouncer.h" compile="0" resource="0"
                 file="Source/Shared/Prototypes/ParticleBouncer.h"/>
-          <FILE id="ouIafZ" name="ParticleSystem.cpp" compile="1" resource="0"
+          <FILE id="ouIafZ" name="ParticleSystem.cpp" compile="0" resource="0"
                 file="Source/Shared/Prototypes/ParticleSystem.cpp"/>
           <FILE id="wa7Bex" name="ParticleSystem.h" compile="0" resource="0"
                 file="Source/Shared/Prototypes/ParticleSystem.h"/>
-          <FILE id="BgSGtz" name="Prototypes.cpp" compile="1" resource="0" file="Source/Shared/Prototypes/Prototypes.cpp"/>
+          <FILE id="BgSGtz" name="Prototypes.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Prototypes.cpp"/>
           <FILE id="Pe1gBO" name="Prototypes.h" compile="0" resource="0" file="Source/Shared/Prototypes/Prototypes.h"/>
           <FILE id="cwWYDw" name="ReadMe.txt" compile="0" resource="0" file="Source/Shared/Prototypes/ReadMe.txt"/>
-          <FILE id="u50Oe6" name="Tensor.cpp" compile="1" resource="0" file="Source/Shared/Prototypes/Tensor.cpp"/>
+          <FILE id="u50Oe6" name="Tensor.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Tensor.cpp"/>
           <FILE id="FEh1t3" name="Tensor.h" compile="0" resource="0" file="Source/Shared/Prototypes/Tensor.h"/>
         </GROUP>
       </GROUP>

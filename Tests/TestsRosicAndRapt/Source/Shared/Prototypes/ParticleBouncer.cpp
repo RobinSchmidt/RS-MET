@@ -32,7 +32,7 @@ double ParticleBouncer::getLineEllipseIntersectionParameter(double x, double y, 
 
   // Solutions: t_1,2 = (-b +- sqrt(b^2-4*a*c)) / (2*a):
   double d = b*b - 4*a*c;         // discriminant
-  d = sqrt(max(d, 0));            // max, just in case numerical error leads to negative d
+  d = sqrt(max(d, 0.0));          // max, just in case numerical error leads to negative d
   //double t2 = (-b - d) / (2*a); // the solution which is irrelevant for us
   return (-b + d) / (2*a);        // the solution we are interested in
 
