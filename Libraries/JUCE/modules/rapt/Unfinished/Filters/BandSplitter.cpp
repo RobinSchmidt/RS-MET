@@ -1,5 +1,5 @@
 template<class TSig, class TPar>
-void rsTwoBandSplitter<TSig, TPar>::setOmega(TPar newOmega)
+void rsTwoBandSplitter<TSig, TPar>::setOmega(CRPar newOmega)
 {
   w = newOmega;
   TPar c = tan(TPar(0.5) * w);
@@ -34,14 +34,14 @@ rsMultiBandSplitter<TSig, TPar>::~rsMultiBandSplitter()
 }
 
 template<class TSig, class TPar>
-void rsMultiBandSplitter<TSig, TPar>::setSampleRate(TPar newSampleRate)
+void rsMultiBandSplitter<TSig, TPar>::setSampleRate(CRPar newSampleRate)
 {
   sampleRate = newSampleRate;
   updateSplitters();
 }
 
 template<class TSig, class TPar>
-void rsMultiBandSplitter<TSig, TPar>::setSplitFrequency(int bandIndex, TPar newFreq)
+void rsMultiBandSplitter<TSig, TPar>::setSplitFrequency(int bandIndex, CRPar newFreq)
 {
   //if(bandIndex <= getNumActiveBands()-1)
   //  return;  // a bit kludgy to avoid crash on MultiComp startup
@@ -87,7 +87,7 @@ void rsMultiBandSplitter<TSig, TPar>::setNumberOfActiveBands(int newNumber)
 }
 
 template<class TSig, class TPar>
-void rsMultiBandSplitter<TSig, TPar>::addBand(TPar splitFrequency)
+void rsMultiBandSplitter<TSig, TPar>::addBand(CRPar splitFrequency)
 {
   rsTwoBandSplitter<TSig, TPar>* splitter = new rsTwoBandSplitter<TSig, TPar>;
   splitter->setOmega(TPar(2*PI)*splitFrequency/sampleRate);
@@ -97,7 +97,7 @@ void rsMultiBandSplitter<TSig, TPar>::addBand(TPar splitFrequency)
 }
 
 template<class TSig, class TPar>
-void rsMultiBandSplitter<TSig, TPar>::insertBand(int index, TPar splitFrequency)
+void rsMultiBandSplitter<TSig, TPar>::insertBand(int index, CRPar splitFrequency)
 {
   rsTwoBandSplitter<TSig, TPar>* splitter = new rsTwoBandSplitter<TSig, TPar>;
   splitter->setOmega(TPar(2*PI)*splitFrequency/sampleRate);

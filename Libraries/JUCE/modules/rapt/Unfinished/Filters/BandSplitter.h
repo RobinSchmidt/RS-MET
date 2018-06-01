@@ -17,7 +17,7 @@ class rsTwoBandSplitter
 public:
 
   /** Sets the normalized radian frequency at which the split occurs. */
-  void setOmega(TPar newOmega);
+  void setOmega(CRPar newOmega);
 
   //void setOrder(int newOrder); // to be added later
 
@@ -100,10 +100,10 @@ public:
   // \name Setup
 
   /** Sets up the sample rate. */
-  void setSampleRate(TPar newSampleRate);
+  void setSampleRate(CRPar newSampleRate);
 
   /** Sets the splitting frequency for the band with given index. */
-  void setSplitFrequency(int bandIndex, TPar newFrequency);
+  void setSplitFrequency(int bandIndex, CRPar newFrequency);
 
   /** Sets up all the splitting frequencies at once. */
   void setSplitFrequencies(const std::vector<TPar>& newFrequencies);
@@ -124,10 +124,10 @@ public:
   void setNumberOfActiveBands(int newNumber);
 
   /** Adds a new band with the given splitting frequency. */
-  void addBand(TPar splitFrequency);
+  void addBand(CRPar splitFrequency);
 
 
-  void insertBand(int index, TPar splitFrequency); // not yet tested
+  void insertBand(int index, CRPar splitFrequency); // not yet tested
   void removeBand(int index, bool mergeWithRightNeighbour = false); // not yet tested
 
   /** Copies the settings of the band with index src into the band with index dst. When copyState is 
@@ -166,10 +166,13 @@ public:
   /** Produces one output sample frame. The frequency bands are in ascending order (from lowpass 
   through the various bandpasses up to highpass). The caller must make sure that the output array 
   is at least as long as the number of bands. */
-  void processSampleFrame(TSig in, TSig* outs)
+  void processSampleFrame(CRSig input, TSig* outs)
   {
     //if(numActiveBands == 0)
     //  return;
+
+    TSig in = input;
+
 
     //int numSplitters = (int) splitters.size(); // use getNumActiveBands
     int numSplitters = numActiveBands - 1; // assume numActiveBands >= 1
