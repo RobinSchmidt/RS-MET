@@ -20,7 +20,7 @@ public:
 
 
 
-  INLINE rsFloat64x2 getSample(rsFloat64x2 x)
+  INLINE rsFloat64x2 getSample(const rsFloat64x2& x)
   {
     if(delayConfig == DELAY_BOTH)
     {

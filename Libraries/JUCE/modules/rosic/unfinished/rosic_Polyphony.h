@@ -12,7 +12,7 @@ class rsPolyModule
 
 public:
 
-  virtual rsFloat64x2 getSample(rsFloat64x2 in) = 0;
+  virtual rsFloat64x2 getSample(const rsFloat64x2& in) = 0;
 
 protected:
 

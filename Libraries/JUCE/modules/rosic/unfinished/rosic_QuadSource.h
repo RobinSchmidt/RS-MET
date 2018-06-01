@@ -10,7 +10,7 @@ class rsQuadSource
 public:
 
 
-  INLINE rsFloat64x2 getSample(rsFloat64x2 x)
+  INLINE rsFloat64x2 getSample(const rsFloat64x2& x)
   {
     return a1*s1->getSample(x) + a2*s2->getSample(x) + a3*s3->getSample(x) + a4*s4->getSample(x);
   }
