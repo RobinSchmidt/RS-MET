@@ -43,12 +43,26 @@ public:
     return y1;
   }
 
+
   /** Produces a pair of a lowpass and a highpass output sample from an input sample. */
-  inline void getSamplePair(TSig in, TSig* lo, TSig* hi)
+  inline void getSamplePair(CRSig in, TSig* lo, TSig* hi)
   {
-    *lo = getLowpassSample(in);
-    *hi = in - *lo; // ensures tha in = lo + hi (perfect reconstruction)
+    TSig tmp = in;
+    *lo = getLowpassSample(tmp);
+    *hi = tmp - *lo; // ensures tha in = lo + hi (perfect reconstruction)
+
+    // the test function bandSplittingMultiWay() fails, if we don't make a copy of "in" in "tmp"
+    // ...i don't know why - perhaps something about overwriting something that shouldn't be?
+    // well - the multiband splitter uses the same variable for input and one of the outputs...
+    // -> figure out -> write better comment
   }
+
+  // old:
+  //inline void getSamplePair(TSig in, TSig* lo, TSig* hi)
+  //{
+  //  *lo = getLowpassSample(in);
+  //  *hi = in - *lo; // ensures tha in = lo + hi (perfect reconstruction)
+  //}
 
 protected:
 
@@ -67,6 +81,8 @@ bands. */
 template<class TSig, class TPar>
 class rsMultiBandSplitter
 {
+  typedef const TSig& CRSig;  // const reference to a signal value
+  typedef const TPar& CRPar;  // const reference to a parameter value
 
 public:
 
