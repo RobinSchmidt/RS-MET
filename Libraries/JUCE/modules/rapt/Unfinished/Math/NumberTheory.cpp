@@ -19,24 +19,24 @@ void rsFindPrimesUpTo(std::vector<T> &primes, T upperLimit)
   // sieve of Eratosthenes for odd numbers of the form 2*i+1:
   rsFlagArray primeFlags(upperLimit/2);
   primeFlags.setAllTrue();
-  rsUint32 r  = rsIntSqrt(upperLimit);  // use T instead of rsUint32
-  rsUint32 i  = 3;
-  rsUint32 i2 = i/2;
+  T r  = rsIntSqrt(upperLimit);
+  T i  = 3;
+  T i2 = i/2;
   primeFlags.setFlagFalse(0);           // "1" is not considered a prime
   while( i <= r )
   {
     if( primeFlags.isFlagTrue(i2) )
     {
       //printf("%d %s", 2*i2+1, " ");
-      for(rsUint32 j = (i*i)/2; j < primeFlags.getNumFlags(); j += i)
+      for(T j = (i*i)/2; j < primeFlags.getNumFlags(); j += i)
         primeFlags.setFlagFalse(j);
     }
-    i2 = (rsUint32) primeFlags.getNextTrueFlag(i2+1);
+    i2 = (T) primeFlags.getNextTrueFlag(i2+1);
     i  = 2*i2 + 1;
   }
 
   // collect the primes:
-  rsUint32 numPrimes = (rsUint32) primeFlags.getNumTrueFlags()+1; // +1 because "2" isn't included
+  T numPrimes = (T) primeFlags.getNumTrueFlags()+1; // +1 because "2" isn't included
   primes.clear();
   primes.reserve(numPrimes);
   primes.push_back(2);

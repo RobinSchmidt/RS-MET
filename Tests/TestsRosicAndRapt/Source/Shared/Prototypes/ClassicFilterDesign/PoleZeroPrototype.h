@@ -46,33 +46,33 @@ public:
   // lowpass prototypes (for allpole filters, zeros will be set to inf):
   // N: order, k: gain, p: poles, z: zeros, ripple and rejection is given in dB
   static void butterworth(size_t N, T* k, Complex* p, Complex* z);
-  static void bessel(     size_t N, T* k, Complex* p, Complex* z);
-  static void papoulis(   size_t N, T* k, Complex* p, Complex* z);
-  static void halpern(    size_t N, T* k, Complex* p, Complex* z);
-  static void gaussian(   size_t N, T* k, Complex* p, Complex* z);
-  static void chebychev(  size_t N, T* k, Complex* p, Complex* z, T ripple);
-  static void chebychev2( size_t N, T* k, Complex* p, Complex* z, T rejection);
-  static void elliptic(   size_t N, T* k, Complex* p, Complex* z, T ripple, T rejection);
+  //static void bessel(     size_t N, T* k, Complex* p, Complex* z);
+  //static void papoulis(   size_t N, T* k, Complex* p, Complex* z);
+  //static void halpern(    size_t N, T* k, Complex* p, Complex* z);
+  //static void gaussian(   size_t N, T* k, Complex* p, Complex* z);
+  //static void chebychev(  size_t N, T* k, Complex* p, Complex* z, T ripple);
+  //static void chebychev2( size_t N, T* k, Complex* p, Complex* z, T rejection);
+  //static void elliptic(   size_t N, T* k, Complex* p, Complex* z, T ripple, T rejection);
 
   // low-shelving prototypes:
   // G0: reference gain, G: shelving-gain
   static void butterworth(size_t N, T G0, T G, T* k, Complex* p, Complex* z);
-  static void bessel(     size_t N, T G0, T G, T* k, Complex* p, Complex* z);
-  static void papoulis(   size_t N, T G0, T G, T* k, Complex* p, Complex* z);
-  static void halpern(    size_t N, T G0, T G, T* k, Complex* p, Complex* z);
-  static void gaussian(   size_t N, T G0, T G, T* k, Complex* p, Complex* z);
-  static void chebychev(  size_t N, T G0, T G, T* k, Complex* p, Complex* z, T ripple);
-  static void chebychev2( size_t N, T G0, T G, T* k, Complex* p, Complex* z, T ripple);
-  static void elliptic(   size_t N, T G0, T G, T* k, Complex* p, Complex* z, T ripple, T reject);
+  //static void bessel(     size_t N, T G0, T G, T* k, Complex* p, Complex* z);
+  //static void papoulis(   size_t N, T G0, T G, T* k, Complex* p, Complex* z);
+  //static void halpern(    size_t N, T G0, T G, T* k, Complex* p, Complex* z);
+  //static void gaussian(   size_t N, T G0, T G, T* k, Complex* p, Complex* z);
+  //static void chebychev(  size_t N, T G0, T G, T* k, Complex* p, Complex* z, T ripple);
+  //static void chebychev2( size_t N, T G0, T G, T* k, Complex* p, Complex* z, T ripple);
+  //static void elliptic(   size_t N, T G0, T G, T* k, Complex* p, Complex* z, T ripple, T reject);
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
   void setOrder(int newOrder) { order = newOrder; }
   void setApproximationMethod(int newMethod) { method = newMethod; }
-  void setShelvingGain(T newGain);
-  void setPassbandRipple(T newRipple);
-  void setStopbandRejection(T newRejection);
+  //void setShelvingGain(T newGain);
+  //void setPassbandRipple(T newRipple);
+  //void setStopbandRejection(T newRejection);
 
   //-----------------------------------------------------------------------------------------------
   // \name Retrieving Poles/Zeros/Gain

@@ -61,7 +61,7 @@ void PerformanceAnalyzer::runTests()
       for(size_t k = 0; k < numRuns; k++) {
         cpuCounter.init();
         (*tests[i])((int)inputSizes[j]);  // run test i with input size (indexed by) j
-        double cycles = cpuCounter.getNumCyclesSinceInit();
+        double cycles = (double)cpuCounter.getNumCyclesSinceInit();
         rawData[i][j][k] = cycles; }}}
   removeOutliers();
   computeMeansAndVariances();
@@ -77,7 +77,7 @@ std::string PerformanceAnalyzer::getReport()
   int maxNameLength = 6; // preliminary
 
 
-  size_t i, j;
+  //size_t i, j;
 
   // todo: remove outliers
 

@@ -45,10 +45,10 @@ template<class TSig, class TFlt>
 inline std::vector<std::complex<TSig>> getFrequencyResponse(
   TFlt &filter, const std::vector<TSig>& w)
 {
-  int N = size(w);
+  size_t N = size(w);
   std::complex<TSig> j(0,1);        // imaginary unit
   std::vector<complex<TSig>> H(N);  // H(e^jw) 
-  for(int k = 0; k < N; k++)
+  for(size_t k = 0; k < N; k++)
     H[k] = filter.getTransferFunctionAt(exp(j*w[k]));
   return H;
 }
