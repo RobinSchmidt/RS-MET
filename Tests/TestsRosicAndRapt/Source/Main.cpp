@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // merge with eunit tests for RSLib
+  //runAllUnitTests();  // merge with unit tests for RSLib
   //mathUnitTests();
   //filterUnitTests();
 

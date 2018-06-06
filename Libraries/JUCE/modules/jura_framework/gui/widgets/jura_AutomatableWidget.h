@@ -403,7 +403,22 @@ protected:
 
 /** A slider subclass specifically for sliders that have modulatable parameters assigned. It may
 paint itself differently, depending on the modulations that are applied to its underlying 
-parameter. */
+parameter. 
+
+\todo:
+-let it regularly repaint itself, showing the value of the parameter with modulations applied
+-for this, make a class RepaintManager (subclass of juce::Timer) where repaintable widgets can
+ register themselves, this should have functions: setRepaintInterval(int milliseconds), 
+ registerRepaintee(Component* c), deRegisterRepaintee(Component* c), 
+-maybe the Repaintee class should be a subclass of component and have a method needsRepaint that 
+ checks, if there are incoming modulation connection and returns false, if not to avoid repainting
+ when it's not necessarry)...but that would make it less flexible than passing just a 
+ juce::Component, ...hmm.....
+-RepaintManager could also be used for metering widgets
+-hmm...maybe the needsRepaint or needsPeriodicReapint or similar can be done on the level of 
+ RWidget (return false by default and overriden by subclasses)...maybe RWidget can have an array
+ of flags for such things
+*/
 
 class JUCE_API ModulatableSlider : public AutomatableSlider, public ModulationTargetObserver
 {
