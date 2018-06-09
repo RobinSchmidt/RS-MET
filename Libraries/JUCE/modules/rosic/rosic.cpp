@@ -125,7 +125,7 @@ template class RAPT::rsEngineersFilter<rsFloat64x2, double>;
 
 
 template class RAPT::rsSmoothingFilter<double, double>;
-//template class RAPT::rsLadderFilter<double, double>;
+template class RAPT::rsLadderFilter<double, double>;
 template class RAPT::rsLadderFilter<rsFloat64x2, double>;
 
 #ifdef _MSC_VER
