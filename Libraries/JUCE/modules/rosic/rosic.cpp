@@ -95,7 +95,8 @@ template class RAPT::rsFourierTransformerRadix2<double>;
 
 
 template class RAPT::rsStateVariableFilter<double, double>;
-//template class RAPT::rsImage<float>;
+
+template class RAPT::rsImage<float>;
 template class RAPT::rsAlphaMask<float>;
 template class RAPT::rsImagePainter<float, float, float>;
 

@@ -97,6 +97,30 @@ Implicit equation solver:
 -..oh - but Newton iteration needs a formula for the gradient of F(x,y)...maybe we need a numerical
  approximation of that...or maybe an entirely different 2D root-finding algorithm can be used
 
+3D to 2D projection:
+-user specifies 8 parameters (degrees of freedom):
+ -camera postion in cartesian (x,y,z) or spherical (r,phi,theta) coordinates,
+  maybe allow also cylinder (r,phi,z) coordinates
+ -camera direction or the point looked at (object/model position), also as coordinate 
+  triple (x,y,z)
+ -camera rotation alpha (around the line connecting the camera position and object position)
+ -zoom or viewing angle (sort of solid angle fo what is finally visible)
+-from the 8 parameters, another set of 8 values is computed that can be used in a 3D-to-2D 
+ transform realized by the equation:
+ |X| = |xx xy xz| * |x| + |dx|
+ |Y|   |yx yy yz|   |y|   |dy|
+                    |z|
+ where (X,Y) is the 2D output vector, (x,y,z) the 3D input vector and the other 8 values 
+ coefficients to be determined from our 8 user parameters
+-setting the camera distance to infinity should give a parallel projection ("orthographic view")
+-to derive the equations for the coeffs, maybe go through the usual 4D homogenous coordinate 
+ approach used in computer graphics and boil it down at the end...or maybe use affine transofrms 
+ in 3D
+-i think, the zoom and cam-rotation together determine the distance and orientation of the 
+ projection-plane with respect to the camera
+-see:
+ http://www.cs.trinity.edu/~jhowland/cs3353/intro/intro/  (but this uses more parameters)
+
 Equation synth ("Equator", "Formula..", "Solv..."):
 -use a func-shape like input to let the user define signal shapes via equations
 -user can select between parametric, implicit and differential equations

@@ -382,6 +382,14 @@ void TurtleSource::updateLineBufferFromTable()
   y[1] = tableY[i+1];
 }
 
+double TurtleSource::computeInterval(double ratio, double offset)
+{
+  double freq = freqScaler*frequency;
+  if(ratio == 0 || freq == 0)
+    return RS_INF(double);       // avoid Nan in potential inf + inf computation
+  return 1/ratio + offset/freq;
+}
+
 void TurtleSource::updateResetters()
 {
   for(int i = 0; i < numResetters; i++)
@@ -390,7 +398,8 @@ void TurtleSource::updateResetters()
 
 void TurtleSource::updateResetter(int i)
 {
-  double interval = (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
+  //double interval = (1/resetRatios[i] + resetOffsets[i]/(freqScaler*frequency));
+  double interval = computeInterval(resetRatios[i], resetOffsets[i]);
   resetters[i].setInterval(interval);
   incUpToDate = false; // because computing the inc uses min(numLines, minResetInterval)
 }
@@ -403,7 +412,8 @@ void TurtleSource::updateReversers()
 
 void TurtleSource::updateReverser(int i)
 {
-  double interval = 0.5*(1/reverseRatios[i] + reverseOffsets[i]/(freqScaler*frequency));
+  //double interval = 0.5*(1/reverseRatios[i] + reverseOffsets[i]/(freqScaler*frequency));
+  double interval = 0.5*computeInterval(reverseRatios[i], reverseOffsets[i]);
   reversers[i].setInterval(interval);
   incUpToDate = false;
 

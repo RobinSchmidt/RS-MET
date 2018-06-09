@@ -286,6 +286,11 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
   else
     rsArray::copyBuffer(x, y, N);
 
+  // bug: i cannot refine the cycle marks in place inside the passed array because the refined mark
+  // may overrun the unrefined, leading to a negative length in the process
+  // try to devise an experiment that exposes this behavior (maybe with tow frequencies at
+  // 100 and 200*1.618...
+
   int maxLength = 5000; // preliminary - use something based on the maximum time-delta between the
                         // cycle-marks in cm array
 

@@ -331,6 +331,9 @@ protected:
   string. */
   void updateLineCommandIndices();
 
+  /** Implements nternal formula used by updateResetter and updateRevereser. */
+  double computeInterval(double ratio, double offset);
+
   /** Updates all the resetters. */
   void updateResetters();
 
