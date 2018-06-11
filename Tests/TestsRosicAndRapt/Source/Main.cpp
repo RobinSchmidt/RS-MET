@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 
   // Filter:
   //bandSplittingTwoWay();
-  bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
+  //bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
   //bandSplittingTreeAlgo();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
-  //cycleMarkFinder();
+  cycleMarkFinder();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
 

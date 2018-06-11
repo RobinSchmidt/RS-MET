@@ -31,10 +31,16 @@ void createSineWave(double *x, int N, double f, double a, double fs);
 sample and an amplitude given by a, at samplerate fs. */
 void createSineWave(double *x, int N, double *f, double a, double fs);
 
+/** Creates a sum of sine waves with given frequencies, amplitudes and phases (phases will be 
+zero, if a nullptr is passed); */
+void createSumOfSines(double* x, int numSamples, int numSines, double fs, double *f, double *a, 
+  double *p = nullptr);
 
 /** Returns the value of a sum of N harmonic sines with amplitudes given by A and instantaneous 
 phases given by n*p, where n is the harmonic number of the sine (starting at 1) */
 double sineSum(double p, double *A, double N);
+
+
 
 /** Returns a vector of random samples uniformly distributed between min and max. */
 template<class T>

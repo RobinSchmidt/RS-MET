@@ -191,6 +191,26 @@ void createSineWave(double *x, int N, double *f, double a, double fs)
   }
 }
 
+void createSumOfSines(double* x, int numSamples, int numSines, double fs,
+  double *f, double *a, double *p)
+{
+  double s = 2*PI/fs;  // frequency scaler
+  double phi;          // instantaneous phase;
+  RAPT::rsArray::fillWithZeros(x, numSamples);
+  for(int k = 0; k < numSines; k++)
+  {
+    if(p != nullptr)
+      phi = p[k];
+    else
+      phi = 0;
+    for(int n = 0; n < numSamples; n++)
+    {
+      x[n] += a[k] * sin(phi);
+      phi += s * f[k];
+    }
+  }
+}
+
 template<class T>
 std::vector<T> createNoise(int numSamples, T min, T max, int seed)
 {
