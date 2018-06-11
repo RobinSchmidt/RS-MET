@@ -460,6 +460,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Prototypes.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
@@ -2422,6 +2425,9 @@
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Prototypes.h">

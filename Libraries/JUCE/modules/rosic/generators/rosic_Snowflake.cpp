@@ -151,6 +151,9 @@ waveshape)
 see here for inspiration for new curves
 https://www.youtube.com/watch?v=RU0wScIj36o&t=53s
 
+https://en.wikipedia.org/wiki/List_of_fractals_by_Hausdorff_dimension
+https://en.wikipedia.org/wiki/N-flake#Hexaflake
+
 maybe, these are created using using parameteric equations?
 http://benice-equation.blogspot.de/
 http://benice-equation.blogspot.de/2012/01/fractal-spirograph.html

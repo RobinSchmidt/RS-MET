@@ -120,6 +120,18 @@ Implicit equation solver:
  projection-plane with respect to the camera
 -see:
  http://www.cs.trinity.edu/~jhowland/cs3353/intro/intro/  (but this uses more parameters)
+-maybe the equation above should be interpreted as reduced version of:
+ |X|   |xx xy xz|   |x|   |dx|
+ |Y| = |yx yy yz| * |y| + |dy|
+ |Z|   |zx zy zz|   |z|   |dz|
+ and just discarding Z afterwards. the full equations is just an affine transform in 3D - maybe
+ an rsAffineTransform3D can be used as baseclass
+-maybe to derive the equations, we need to define a projection plane, i.e. a plane whose normal
+ vector is given by the camera's aiming direction which itself is given by the difference between
+ camera position and aiming point - maybe to make the plane unique, choose the one that is halfway
+ between these two vectors - or maybe just choose a plane that is unit-distance away from the 
+ camera - figure out, what's most convenient
+ 
 
 Equation synth ("Equator", "Formula..", "Solv..."):
 -use a func-shape like input to let the user define signal shapes via equations

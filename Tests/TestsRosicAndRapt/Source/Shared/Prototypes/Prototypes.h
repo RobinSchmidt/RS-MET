@@ -10,6 +10,8 @@
 #include "ClassicFilterDesign/PoleZeroDesignerAnalog.h"
 #include "ClassicFilterDesign/PoleZeroDesignerDigital.h"
 
+#include "Projection3Dto2D.h"
+
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant 
 to be used for production code but are useful for a more readable proof-of-concept (because of lack 

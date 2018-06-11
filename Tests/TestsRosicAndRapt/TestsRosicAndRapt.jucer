@@ -208,6 +208,10 @@
                 file="Source/Shared/Prototypes/ParticleSystem.cpp"/>
           <FILE id="wa7Bex" name="ParticleSystem.h" compile="0" resource="0"
                 file="Source/Shared/Prototypes/ParticleSystem.h"/>
+          <FILE id="edu0Jv" name="Projection3Dto2D.cpp" compile="0" resource="0"
+                file="Source/Shared/Prototypes/Projection3Dto2D.cpp"/>
+          <FILE id="brWXSO" name="Projection3Dto2D.h" compile="0" resource="0"
+                file="Source/Shared/Prototypes/Projection3Dto2D.h"/>
           <FILE id="BgSGtz" name="Prototypes.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Prototypes.cpp"/>
           <FILE id="Pe1gBO" name="Prototypes.h" compile="0" resource="0" file="Source/Shared/Prototypes/Prototypes.h"/>
           <FILE id="cwWYDw" name="ReadMe.txt" compile="0" resource="0" file="Source/Shared/Prototypes/ReadMe.txt"/>
