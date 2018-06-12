@@ -607,6 +607,16 @@ RS_INLINE TSig rsNonlinearModalFilter<TSig, TPar>::getSample(TSig in)
   z = a*z + in;
   return amplitude * (cr*z.real() + ci*z.imag());  // test (all is linear)
 
+  // maybe have a 3rd coeff cIn and use
+  // amplitude * (cr*z.real() + ci*z.imag() + cIn*in);
+  // maybe this filter could replace a general biquad?
+  // and/or maybe we should have a parametrized injection injection
+  // z.re += a * in; z.im += b * in instead of injecting into the real part only
+  // maybe, if a,b = 1/sqrt(2) (equal injection into both parts), we could also model two real
+  // poles in parallel (maybe we would then have to compensate in the phase parameter by 
+  // subtracting 45° when computing cr, ci
+
+
 
   /*
   bool linear = false;

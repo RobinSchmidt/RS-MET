@@ -183,6 +183,7 @@ int main(int argc, char* argv[])
   //bandwidthScaling();
   //stateVariableFilter();
   //stateVariableFilterMorph();
+  stateVectorFilter();   // just a stub, at the moment
   ////transistorLadder(); // triggers assert
   //phonoFilterPrototypePlot();
   //magnitudeMatchedOnePoleFilter();

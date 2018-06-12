@@ -698,9 +698,12 @@ void cycleMarkFinder()
   // create input:
   static const int N  = 1000;  // number of samples
   double fs = 44100;           // samplerate in Hz
-  double f  = 3000.0;           // signal frequency
+  double f  = 1000.0;          // signal frequency
   vector<double> x(N);         // input signal
+
+
   createSineWave(&x[0], N, f, 1.0, fs);
+    // too simple - try something that has inharmonic partials (maybe 2*goldenRatio)
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
@@ -718,7 +721,23 @@ void cycleMarkFinder()
   vector<double> cmy(Nz);    // y values for plotting (all zero)
   GNUPlotter plt;
 
-
+  // todo: the CYCLE_CORRELATION algorithm may fail due to the refined marks overrunning
+  // the unrefined ones 
+  // -find a test scenario where this happens
+  // -fix it by not considering the f0-zero-crossings as preliminary estimates but starting
+  //  from scratch
+  // -begin in the middle -> set a cycle mark there
+  // -look for the next cycle mark (left and right) near the position that would be predicted
+  //  by periodicity (find f0 estimate via autocorrelation), then refine that position by
+  //  cyclic cross correlation
+  // -do the same thing for the next neighbour cycle (for prediction, we can now use the length
+  //  of the previous cycle)
+  // -this method has some ambiguity to it - we could have started somewhere els near the center
+  //  ...maybe it makes sense to shift the start-position such that the first cycle mark has the
+  //  same distance to sample 0 as the distance between the first and second...or something
+  //  ...but maybe close to the beginning, we should not set cycle-marks at all because this is
+  //  the transient and very probably aperiodic...or maybe carry along a reliability for each
+  //  cycle mark given by the cross-correlation value
   
   //plt.addDataArrays(deltas.size(), &deltas[0]); // test
   //plt.plot();

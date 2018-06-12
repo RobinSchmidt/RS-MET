@@ -6,6 +6,7 @@
 void bandwidthScaling();
 void stateVariableFilter();
 void stateVariableFilterMorph();
+void stateVectorFilter();
 void transistorLadder();
 void phonoFilterPrototypePlot();
 void magnitudeMatchedOnePoleFilter();

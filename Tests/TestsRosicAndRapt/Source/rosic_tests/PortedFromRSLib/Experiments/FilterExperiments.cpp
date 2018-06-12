@@ -328,6 +328,33 @@ void stateVariableFilterMorph()
   plotData(N/2, f, m0, m1, m2, m3, m4);
 }
 
+void stateVectorFilter()
+{
+  // Idea: create a filter similar to the complex-phasor filter, but more general, using a 2D
+  // (x,y) vector as state and update equations:
+  //
+  // t = x;                       // temporary
+  // x = xx*x + xy*y + in;        // update x
+  // y = yx*t + yy*y + in;        // update y
+  // return cx*x + cy*y * ci*in;  // output
+  //
+  // It should be able to have a pair of complex conjugate poles, if the (xx,xy;yx,yy) matrix is
+  // a spiraling matrix (xx = yy = r*cos(w), -xy = yx = r*sin(w)) or a parallel connection of two
+  // real poles (xy = yx = 0), the output coeffs cx,cy,ci determine the zeros.
+  //
+  // To find the coefficients, take a biquad reference filter, compute the first 5 samples of its
+  // impulse response, finde formulas of the state-vector-filter's first 5 impulse response samples
+  // in terms of its coeffs and solve the resulting system of equations for the coeffs (maybe use
+  // the additional constraints on the matrix coeffs above, if necessary)
+  //
+  // h[0] = cx + cy + ci
+  // h[1] = 2*cx + 2*cy
+  // h[2] = cx*(xx + xy) + cy*(yx + yy)
+  // h[3] = 
+  // h[4] = 
+
+  int dummy = 0;
+}
 
 void transistorLadder()
 {
