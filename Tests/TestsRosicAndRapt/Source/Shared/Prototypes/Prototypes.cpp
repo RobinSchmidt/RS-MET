@@ -166,3 +166,52 @@ void papoulisL2(double *v, int N)
     RAPT::rsArray::scale(v, 2*N+1, K); 
   }
 }
+
+//=================================================================================================
+
+template<class TSig, class TPar>
+void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
+  CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2)
+{
+  // compute poles from a1, a2, then compute matrix coeffs from poles:
+  TPar d = a1*a1 - a2;    // discriminant
+  TPar t = -a1*0.5;       // -p/2 in p-q-formula, term before +/-
+  if(d >= 0) {            // real poles
+    TPar sq = sqrt(d);    // square-root term in p-q-formula
+
+    // !!verify, if the coeffs xx,yy really *are* the poles !! 
+    xx = t + sq;          // larger pole
+    yy = t - sq;          // smaller pole
+
+    xy = yx = 0;          // no cross coupling, two independently decaying, real exponentials
+  }
+  else {                         // complex conjugate poles
+    TPar s, pr, pi, r, w, s, c;
+    pr = t;                      // real part of pole
+    pi = sqrt(-d);               // imaginary part of pole (+/-)
+    r  = sqrt(pr*pr + pi*pi);    // pole radius
+    w  = atan2(pi, pr);          // pole angle
+    s  = sin(w);
+    c  = cos(w);
+    xx = yy = r*c;
+    yx = r*s;
+    xy = -yx;
+  }
+
+
+
+  // compute first 3 samples of biquad impulse response:
+  TPar h0, h1, h2; 
+  h0 = b0;
+  h1 = b1 - a1*h0;
+  h2 = b2 - a1*h1 - a2*h0;
+
+  // compute mixing coeffs from matrix coeffs and the condition that the first 3 output samples of
+  // the impulse response of this filter must match those of the biquad:
+  // ...
+
+
+}
+// todo: make functions setupFromPolesAndZeros, setupFromParameters - for various parametrizations
+// like setupFromFrqDecAmpPhs (for the "modal" filter - take care to take into account the 
+// injection into both parts - shifts pahse by 45° and increases amplitude by sqrt(2))

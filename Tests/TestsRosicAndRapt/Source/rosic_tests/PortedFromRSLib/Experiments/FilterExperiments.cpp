@@ -343,15 +343,47 @@ void stateVectorFilter()
   // real poles (xy = yx = 0), the output coeffs cx,cy,ci determine the zeros.
   //
   // To find the coefficients, take a biquad reference filter, compute the first 5 samples of its
-  // impulse response, finde formulas of the state-vector-filter's first 5 impulse response samples
+  // impulse response, find formulas of the state-vector-filter's first 5 impulse response samples
   // in terms of its coeffs and solve the resulting system of equations for the coeffs (maybe use
-  // the additional constraints on the matrix coeffs above, if necessary)
+  // the additional constraints on the matrix coeffs above, if necessary - maybe we need to choose
+  // which constraint to use based on the discriminant of the a1,a2 biquad coeffs). To make a 
+  // general modulatable filter, boil it down to a parallel connection of biquads and implement 
+  // each biquad as state-vector filter - make comparison experiments of modulation properties of
+  // DF1, DF2, TDF1, TDF2, state-variable and state-vector implementations. Maybe if the 
+  // equation system based on the impulse response is hard or impossible to solve analytically, try
+  // something based on the transfer function - maybe it makes sense to derive formulas for the
+  // coeffs in terms of poles and zeros - how? ..or maybe first derive formulas for poles and zeros
+  // in terms of the coeffs? maybe compute matrix coefficients from the two poles and weights
+  // cx,cy,ci from the 1st 3 samples of the impulse repsonse when xx,xy,yx,yy are already known
+  // ...this should be tractable
   //
-  // h[0] = cx + cy + ci
-  // h[1] = 2*cx + 2*cy
-  // h[2] = cx*(xx + xy) + cy*(yx + yy)
+  // 0: x = 0, y = 0, in = 1
+  //    x = xx*0 + xy*0 + 1 = 1
+  //    y = yx*0 + yy*0 + 1 = 1
+  //    h[0] = cx + cy + ci
+  // 1: x = 1, y = 1, in = 0
+  //    x = xx*1 + xy*1 + 0 = xx + xy
+  //    y = yx*1 + yy*1 + 0 = yx + yy
+  //    h[1] = cx*(xx + xy) + cy*(yx + yy)
+  // 2: x = xx+xy, y = yx+yy, in = 0
+  //    x = xx*(xx+xy) + xy*(yx+yy)
+  //    y = yx*(xx+xy) + yy*(yx+yy)
+  //    h[2] = cx*(xx*(xx+xy) + xy*(yx+yy)) + cy*(yx*(xx+xy) + yy*(yx+yy))
+  // uh oh - expression complexitiy blows up exponentially and we get lots on products, i.e. a 
+  // nonlinear system...but it's a 3x3 linear system, if we compute xx,xy,yx,yy from the poles
+  // beforehand and treat them as knowns - we need a branch for computing these for the two cases
+  // of two real poles and a pair of complex conjugate poles
   // h[3] = 
   // h[4] = 
+
+  // transfer functions (verify):
+  // X(z) = 1 / (1 - xx * z^-1 * X(z) - xy * z^-1 * Y(z))
+  // Y(z) = 1 / (1 - yx * z^-1 * X(z) - yy * z^-1 * Y(z))
+  // H(z) = ci + cx*X(z) + cy*Y(z)
+  // maybe solve 2nd equation for Y(z) and plug into 1st
+
+  rsStateVectorFilter<double, double> flt;
+
 
   int dummy = 0;
 }

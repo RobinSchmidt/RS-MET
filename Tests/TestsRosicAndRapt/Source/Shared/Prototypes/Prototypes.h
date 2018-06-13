@@ -40,4 +40,42 @@ void papoulisL2(double *c, int N);
 
 
 
+template<class TSig, class TPar>
+class rsStateVectorFilter
+{
+  typedef const TSig& CRSig;
+  typedef const TPar& CRPar;
+
+public:
+
+  /** Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
+  void setupFromBiquad(CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2);
+
+
+
+  /** Produces one output sample at a time. */
+  inline TSig getSample(CRSig in)
+  {
+    TSig t = x;                  // temporary
+    x = xx*x + xy*y + in;        // update x
+    y = yx*t + yy*y + in;        // update y
+    return cx*x + cy*y * ci*in;  // output
+  }
+
+  /** Resets the filter state. */
+  void reset()
+  {
+    x = y = TSig(0);
+  }
+
+protected:
+
+  TPar xx = 0, xy = 0, yx = 0, yy = 0;  // matrix coeffs
+  TPar cx = 0, cy = 0, ci = 1;          // mixing coeffs
+  TSig x  = 0, y  = 0;                  // state vector
+
+};
+
+
+
 #endif
