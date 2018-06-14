@@ -182,38 +182,19 @@ template<class TSig, class TPar>
 void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
   CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2)
 {
-  // compute poles from a1, a2, then compute state update coeffs from poles:
+  //  compute and set up poles from a1, a2:
   TPar d = TPar(0.25)*a1*a1 - a2;  // discriminant, term inside sqrt
   TPar p = -a1*0.5;                // -p/2 in p-q-formula, term before +/- sqrt
-
   if(d >= 0) {                     // d >= 0: we have 2 real poles
-    TPar sq = sqrt(d);             // the square-root term in p-q-formula is real, so we get
-    //xx = p + sq;                   // two independently decaying, real exponentials and no
-    //yy = p - sq;                   // no cross coupling between x and y
-    //xy = yx = 0;                   
-    setPoles(p+sq, 0, p-sq, 0);    // two real poles
+    TPar sq = sqrt(d);
+    setPoles(p+sq, 0, p-sq, 0);
   }
   else {                           // d < 0: we have complex conjugate poles    
-    TPar sq = sqrt(-d);            // imaginary part of poles (+ or -) which
-    //yx =  sq;                      // equals r*sin(w) (r:radius, w:angle) creates the
-    //xy = -sq;                      // cross-coupling between the coordinates
-    //xx = yy = p;                   // real part of poles = r*cos(w) for self-feedback
-    setPoles(p, sq, p, -sq);       // pair of complex conjugate poles
+    TPar sq = sqrt(-d);
+    setPoles(p, sq, p, -sq);
   }
 
-  // old version of 2nd branch - unnecessarily complictaed - we actually convert from re/im to 
-  // abs/arg only to then convert back - it's instructive but totally unnecessary:
-  //else {                           // d < 0: we have complex conjugate poles
-  //  TPar pi, r, w, s, c;
-  //  pi = sqrt(-d);                 // imaginary part of poles (+ or -)
-  //  r  = sqrt(p*p + pi*pi);        // pole radius
-  //  w  = atan2(pi, p);             // pole angle
-  //  s  = sin(w);                   // coefficients for...
-  //  c  = cos(w);                   // ...rotation matrix
-  //  xx = yy = r*c;                 // state update matrix:
-  //  yx = r*s;                      // r * |cos(w)  -sin(w)| 
-  //  xy = -yx;                      //     |sin(w)   cos(w)|  ...is decaying rotation
-  //}
+
 
 
   // compute first 3 samples of biquad impulse response:
