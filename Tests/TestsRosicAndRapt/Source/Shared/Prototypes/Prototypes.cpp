@@ -178,29 +178,22 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
   TPar t = -a1*0.5;                // -p/2 in p-q-formula, term before +/- sqrt
   if(d >= 0) {                     // we have 2 real poles
     TPar sq = sqrt(d);             // square-root term in p-q-formula
-
-    // !!verify, if the coeffs xx,yy really *are* the poles !! 
-    xx = t + sq;          // larger pole
-    yy = t - sq;          // smaller pole
-
-    xy = yx = 0;          // no cross coupling, two independently decaying, real exponentials
-
-
-    // for test/debug:
-    //xx =  0.5; 
-    //yy = -0.25;  
+    xx = t + sq;                   // larger pole
+    yy = t - sq;                   // smaller pole
+    xy = yx = 0;                   // no cross coupling, two independently decaying, 
+                                   // real exponentials
   }
-  else {                         // we have complex conjugate poles
+  else {                           // d < 0: we have complex conjugate poles
     TPar pr, pi, r, w, s, c;
-    pr = t;                      // real part of poles
-    pi = sqrt(-d);               // imaginary part of poles (+ or -)
-    r  = sqrt(pr*pr + pi*pi);    // pole radius
-    w  = atan2(pi, pr);          // pole angle
+    pr = t;                        // real part of poles
+    pi = sqrt(-d);                 // imaginary part of poles (+ or -)
+    r  = sqrt(pr*pr + pi*pi);      // pole radius
+    w  = atan2(pi, pr);            // pole angle
     s  = sin(w);
     c  = cos(w);
-    xx = yy = r*c;               // state update matrix:
-    yx = r*s;                    // r * |cos(w)  -sin(w)| 
-    xy = -yx;                    //     |sin(w)   cos(w)|  ...is decaying rotation
+    xx = yy = r*c;                 // state update matrix:
+    yx = r*s;                      // r * |cos(w)  -sin(w)| 
+    xy = -yx;                      //     |sin(w)   cos(w)|  ...is decaying rotation
   }
 
   // compute first 3 samples of biquad impulse response:
@@ -225,9 +218,6 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
   cx = c[0];
   cy = c[1];
   ci = h[0] - cx - cy; // 1st equation
-
-
-  //ci = cx = cy = 1; // debug
 
   // maybe we need to catch special cases when a divisor may become zero, i.e. the A-matrix
   // becomes singular?
