@@ -384,7 +384,7 @@ void stateVectorFilter()
 
 
 
-  int    N  = 500;           // number of samples
+  int    N  = 100;           // number of samples
   double fs = 44100;         // sample rate
   double f  = 1000;          // filter frequency
   double q  = 0.5;           // Q value

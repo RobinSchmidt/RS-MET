@@ -175,22 +175,22 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
 {
   // compute poles from a1, a2, then compute state update coeffs from poles:
   TPar d = TPar(0.25)*a1*a1 - a2;  // discriminant, term inside sqrt
-  TPar t = -a1*0.5;                // -p/2 in p-q-formula, term before +/- sqrt
-  if(d >= 0) {                     // we have 2 real poles
+  TPar p = -a1*0.5;                // -p/2 in p-q-formula, term before +/- sqrt
+
+  if(d >= 0) {                     // d >= 0: we have 2 real poles
     TPar sq = sqrt(d);             // square-root term in p-q-formula
-    xx = t + sq;                   // larger pole
-    yy = t - sq;                   // smaller pole
+    xx = p + sq;                   // larger pole
+    yy = p - sq;                   // smaller pole
     xy = yx = 0;                   // no cross coupling, two independently decaying, 
                                    // real exponentials
   }
   else {                           // d < 0: we have complex conjugate poles
-    TPar pr, pi, r, w, s, c;
-    pr = t;                        // real part of poles
+    TPar pi, r, w, s, c;
     pi = sqrt(-d);                 // imaginary part of poles (+ or -)
-    r  = sqrt(pr*pr + pi*pi);      // pole radius
-    w  = atan2(pi, pr);            // pole angle
-    s  = sin(w);
-    c  = cos(w);
+    r  = sqrt(p*p + pi*pi);        // pole radius
+    w  = atan2(pi, p);             // pole angle
+    s  = sin(w);                   // coefficients for...
+    c  = cos(w);                   // ...rotation matrix
     xx = yy = r*c;                 // state update matrix:
     yx = r*s;                      // r * |cos(w)  -sin(w)| 
     xy = -yx;                      //     |sin(w)   cos(w)|  ...is decaying rotation

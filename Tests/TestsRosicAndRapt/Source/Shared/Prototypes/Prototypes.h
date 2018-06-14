@@ -52,23 +52,17 @@ public:
   void setupFromBiquad(CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2);
 
 
-
   /** Produces one output sample at a time. */
   inline TSig getSample(CRSig in)
   {
-    TSig t = x;                  // temporary
-    x = xx*x + xy*y + in;        // update x
-    y = yx*t + yy*y + in;        // update y
-    //TSig  out = cx*x + cy*y + ci*in;  // for debug
-    return cx*x + cy*y + ci*in;  // output
+    updateState(in);
+    return cx*x + cy*y + ci*in;
   }
 
   // maybe try a nonlinearity: multiply x and y by 1/(1 + x^2 + y^2) after state update
   // saturates(with some foldover)/contracts state vector without changing its angle
-  // maybe apply this factor also to "in"
-  // ...maybe factor out the state update
-
-
+  // maybe apply this factor also to "in" because it would be weird to pass the input through
+  // undistroted ...but might be interesting to explore
 
 
   /** Resets the filter state. */
@@ -78,6 +72,14 @@ public:
   }
 
 protected:
+
+  /** Used internally in getSample to update the filter state. */
+  inline void updateState(CRSig in)
+  {
+    TSig t = x;             // temporary
+    x = xx*x + xy*y + in;   // update x
+    y = yx*t + yy*y + in;   // update y
+  }
 
   TPar xx = 0, xy = 0, yx = 0, yy = 0;  // matrix coeffs
   TPar cx = 0, cy = 0, ci = 1;          // mixing coeffs
