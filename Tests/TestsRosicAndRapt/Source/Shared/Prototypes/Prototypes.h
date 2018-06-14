@@ -51,6 +51,12 @@ public:
   /** Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
   void setupFromBiquad(CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2);
 
+  /** Sets up the two poles of this filter. You need to pass real and imaginary parts of both 
+  poles separately. If there are two real poles, the imaginary parts p1im, p2im should both be zero 
+  and if there's a complex pair, the imaginary parts should be negatives of each other, i.e p2im 
+  should be -p1im. */
+  void setPoles(CRPar p1re, CRPar p1im, CRPar p2re, CRPar p2im);
+
 
   /** Produces one output sample at a time. */
   inline TSig getSample(CRSig in)

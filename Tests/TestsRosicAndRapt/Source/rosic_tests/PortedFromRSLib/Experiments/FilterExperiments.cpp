@@ -380,7 +380,17 @@ void stateVectorFilter()
   // X(z) = 1 / (1 - xx * z^-1 * X(z) - xy * z^-1 * Y(z))
   // Y(z) = 1 / (1 - yx * z^-1 * X(z) - yy * z^-1 * Y(z))
   // H(z) = ci + cx*X(z) + cy*Y(z)
-  // maybe solve 2nd equation for Y(z) and plug into 1st
+  // maybe solve 2nd equation for Y(z) and plug into 1st - try to equate to biquad transfer
+  // function and compare coeffs
+  // H(z) =
+  // try to manipulate with sage:
+  // var("H z X Y ci cx cy xx xy yx yy")
+  // H = ci + cx/(1-(xx*X + xy*Y)/z) + cy/(1-(yx*X+yy*Y)/z)
+  // simplify(H) # doesn't help
+  // i want to write down H(z) in terms of xx,xy,yx,yy,ci,cx,cy and z without using X(z),Y(z)
+  // H.simplify_full()
+  // maybe eliminate(X)? or maybe i need a matrix z-transform
+
 
 
 
@@ -395,12 +405,12 @@ void stateVectorFilter()
   DSN::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, 1/fs, f, q, g);
    // uses + convention for a-coeffs
 
-  //// test:
-  //b0 = 1;
-  //b1 = 0;
-  //b2 = 0;
-  //a1 = 0.5;
-  //a2 = 0.2;
+  // test:
+  b0 = 1;
+  b1 = 0;
+  b2 = 0;
+  a1 = 0.5;
+  a2 = 0.2;
 
 
   rosic::BiquadMonoDF1 bqd;
