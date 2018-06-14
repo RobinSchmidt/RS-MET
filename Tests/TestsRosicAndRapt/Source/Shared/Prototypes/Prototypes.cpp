@@ -180,8 +180,11 @@ void rsStateVectorFilter<TSig, TPar>::setPoles(CRPar p1re, CRPar p1im, CRPar p2r
   // The state update matrix will have one of these two general forms:
   // |p1 0 |     or:     r * |cos(w)  -sin(w)| 
   // |0  p2|                 |sin(w)   cos(w)|
-  // where in the first case, the x and y states decay independently and in the second case, we
-  // will se a spiraling/decaying rotation
+  // where in the first case, p1 and p2 are the two real poles and the x and y states decay 
+  // exponentially and independently from each other when the input is switched off. In the second 
+  // case, the numbers r*cos(w), r*sin(w) are the real and imaginary parts of a pair of complex 
+  // conjugate poles and we will see a spiraling/decaying rotation of the states when there's no 
+  // input (anymore).
 }
 
 template<class TSig, class TPar>
@@ -203,8 +206,12 @@ void rsStateVectorFilter<TSig, TPar>::setImpulseResponseStart(TPar h[3])
   // h[1] = cx*(xx + xy) + cy*(yx + yy)
   // h[2] = cx*(xx*(xx+xy) + xy*(yx+yy)) + cy*(yx*(xx+xy) + yy*(yx+yy))
   // and this must match what is given to this function. From this, we can set up a system of
-  // 3 linear equations ofr the mixing coefficients and solve it. It can actually be solved as a 
+  // 3 linear equations for the mixing coefficients and solve it. It can actually be solved as a 
   // 2x2 system and the 3rd equation is then trivial.
+
+  // Problem: the matrix may become singular. i think, this happens when we have two equal real 
+  // poles?)...then, the filter can't be expressed as a parallel connection of two first order
+  // filters - what to do in this case? ...
 }
 
 template<class TSig, class TPar>
@@ -233,6 +240,8 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
 
 template class rsStateVectorFilter<double, double>; // explicit instantiation
 
+// can the mixing coeffs be computed more simply - from the b-coeffs of the biquad?
+
 // todo: make functions setupFromPolesAndZeros - i think, the update matrix is (re,-im;im,re)
 // setPoles(p1re, p1im, p2re, p2im)
 // setImpRespStart(h[3])
@@ -259,3 +268,8 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 // of real/complex poles/zeros, also with unused higher order coeffs (like b2=0, etc)
 // against the outputs of the state vector (and also state variable) implementation
 // ->also good to have in place when we later change a-coeff sign convention
+
+// maybe try a nonlinearity: multiply x and y by 1/(1 + x^2 + y^2) after state update
+// saturates(with some foldover)/contracts state vector without changing its angle
+// maybe apply this factor also to "in" because it would be weird to pass the input through
+// undistorted ...but might be interesting to explore

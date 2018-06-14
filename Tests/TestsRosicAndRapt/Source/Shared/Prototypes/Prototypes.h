@@ -71,12 +71,6 @@ public:
     return cx*x + cy*y + ci*in;
   }
 
-  // maybe try a nonlinearity: multiply x and y by 1/(1 + x^2 + y^2) after state update
-  // saturates(with some foldover)/contracts state vector without changing its angle
-  // maybe apply this factor also to "in" because it would be weird to pass the input through
-  // undistroted ...but might be interesting to explore
-
-
   /** Resets the filter state. */
   void reset()
   {

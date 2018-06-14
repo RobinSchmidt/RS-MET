@@ -24,7 +24,7 @@ void rsProjection3Dto2D<T>::setup(T xc, T yc, T zc, T rot, T zoom, T xt, T yt, T
 
   //T T1[4][4], 
 
-  // create homogenous matrix via formula 3.13 (factor out):
+  // create homogenous matrix via formula (1), Eq 3.44 (factor out):
   T a = xc, b = yc, c = zc;
   T d = vx, e = vy, f = vz;
   T r = 1; // preliminary - later 1/k where k is the distance of the viewer from the screen

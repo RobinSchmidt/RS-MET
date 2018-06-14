@@ -1,5 +1,15 @@
 #pragma once
 
+
+/**
+
+References:
+1: Computer Graphics and Geometric Modeling (David Salomon)
+
+todo: rename to rsPerspectiveProjection and make another class rsParallelProjection (maybe later 
+also others like rsFishEyeProjection, etc.)
+*/
+
 template<class T>
 class rsProjection3Dto2D
 {

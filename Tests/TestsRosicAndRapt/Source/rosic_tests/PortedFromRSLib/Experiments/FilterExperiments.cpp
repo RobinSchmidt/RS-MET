@@ -398,11 +398,12 @@ void stateVectorFilter()
   double fs = 44100;         // sample rate
   double f  = 1000;          // filter frequency
   double q  = 0.5;           // Q value
-  double g  = 2;             // gain factor
+  double g  = 2;             // gain factor (for shelf or bell filters)
 
   typedef rosic::BiquadDesigner DSN;
   double b0, b1, b2, a1, a2; // biquad coeffs
-  DSN::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, 1/fs, f, q, g);
+  //DSN::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, 1/fs, f, q, g);
+  DSN::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1/fs, f, q);
    // uses + convention for a-coeffs
 
   //// test:
