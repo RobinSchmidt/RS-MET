@@ -176,13 +176,42 @@ void rsStateVectorFilter<TSig, TPar>::setPoles(CRPar p1re, CRPar p1im, CRPar p2r
   yx = p1im;
   yy = p2re;
   xy = p2im;
+
+  // The state update matrix will have one of these two general forms:
+  // |p1 0 |     or:     r * |cos(w)  -sin(w)| 
+  // |0  p2|                 |sin(w)   cos(w)|
+  // where in the first case, the x and y states decay independently and in the second case, we
+  // will se a spiraling/decaying rotation
+}
+
+template<class TSig, class TPar>
+void rsStateVectorFilter<TSig, TPar>::setImpulseResponseStart(TPar h[3])
+{
+  TPar A[2][2];
+  TPar c[2];
+  A[0][0] = xx + xy;
+  A[0][1] = yx + yy;
+  A[1][0] = xx*A[0][0] + xy*A[0][1];
+  A[1][1] = yx*A[0][0] + yy*A[0][1];
+  rsLinearAlgebra::rsSolveLinearSystem2x2(A, c, &h[1]);
+  cx = c[0];
+  cy = c[1];
+  ci = h[0] - cx - cy;
+
+  // The first 3 impulse response samples of this filter can be calculated as:
+  // h[0] = cx + cy + ci
+  // h[1] = cx*(xx + xy) + cy*(yx + yy)
+  // h[2] = cx*(xx*(xx+xy) + xy*(yx+yy)) + cy*(yx*(xx+xy) + yy*(yx+yy))
+  // and this must match what is given to this function. From this, we can set up a system of
+  // 3 linear equations ofr the mixing coefficients and solve it. It can actually be solved as a 
+  // 2x2 system and the 3rd equation is then trivial.
 }
 
 template<class TSig, class TPar>
 void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
   CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2)
 {
-  //  compute and set up poles from a1, a2:
+  // compute and set up poles from a1, a2:
   TPar d = TPar(0.25)*a1*a1 - a2;  // discriminant, term inside sqrt
   TPar p = -a1*0.5;                // -p/2 in p-q-formula, term before +/- sqrt
   if(d >= 0) {                     // d >= 0: we have 2 real poles
@@ -194,34 +223,12 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
     setPoles(p, sq, p, -sq);
   }
 
-
-
-
-  // compute first 3 samples of biquad impulse response:
+  // compute first 3 samples of biquad impulse response and set up mixing coeffs:
   TPar h[3]; 
   h[0] = b0;
   h[1] = b1 - a1*h[0];
   h[2] = b2 - a1*h[1] - a2*h[0];
-
-  // compute mixing coeffs from state update coeffs and the condition that the first 3 output 
-  // samples of the impulse response of this filter must match those of the biquad - leads to a 
-  // 2x2 linear system for cx, cy, then ci can be computed easily from h[0]:
-  // h[0] = cx + cy + ci
-  // h[1] = cx*(xx + xy) + cy*(yx + yy)
-  // h[2] = cx*(xx*(xx+xy) + xy*(yx+yy)) + cy*(yx*(xx+xy) + yy*(yx+yy))
-  TPar A[2][2];
-  TPar c[2];
-  A[0][0] = xx + xy;
-  A[0][1] = yx + yy;
-  A[1][0] = xx*A[0][0] + xy*A[0][1];
-  A[1][1] = yx*A[0][0] + yy*A[0][1];
-  rsLinearAlgebra::rsSolveLinearSystem2x2(A, c, &h[1]);
-  cx = c[0];
-  cy = c[1];
-  ci = h[0] - cx - cy; // 1st equation
-
-  // maybe we need to catch special cases when a divisor may become zero, i.e. the A-matrix
-  // becomes singular?
+  setImpulseResponseStart(h);
 }
 
 template class rsStateVectorFilter<double, double>; // explicit instantiation

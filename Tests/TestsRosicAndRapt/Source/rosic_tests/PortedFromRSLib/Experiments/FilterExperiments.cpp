@@ -405,12 +405,12 @@ void stateVectorFilter()
   DSN::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, 1/fs, f, q, g);
    // uses + convention for a-coeffs
 
-  // test:
-  b0 = 1;
-  b1 = 0;
-  b2 = 0;
-  a1 = 0.5;
-  a2 = 0.2;
+  //// test:
+  //b0 = 1;
+  //b1 = 0;
+  //b2 = 0;
+  //a1 = 0.5;
+  //a2 = 0.2;
 
 
   rosic::BiquadMonoDF1 bqd;

@@ -54,8 +54,14 @@ public:
   /** Sets up the two poles of this filter. You need to pass real and imaginary parts of both 
   poles separately. If there are two real poles, the imaginary parts p1im, p2im should both be zero 
   and if there's a complex pair, the imaginary parts should be negatives of each other, i.e p2im 
-  should be -p1im. */
+  should be -p1im. The poles determine the coefficients in the state update matrix. */
   void setPoles(CRPar p1re, CRPar p1im, CRPar p2re, CRPar p2im);
+
+  /** Assuming the poles are already fixed, this function computes the mixing coefficients such 
+  that the first 3 samples of the impulse response will equal, what you pass to this function. */
+  void setImpulseResponseStart(TPar h[3]);
+
+  // maybe make a setZeros function, too
 
 
   /** Produces one output sample at a time. */
