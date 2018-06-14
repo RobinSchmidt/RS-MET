@@ -257,24 +257,22 @@ void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
 {
   TPar minDelta = 0.001; // preliminary
   TPar delta;
-  if(xy == 0)  // two real poles
-  {
-    delta = xx - xy;
-    if(abs(delta) < minDelta)
-    {
+  if(xy == 0) { // two real poles
+    delta = xx - yy;
+    if(abs(delta) < minDelta) {
       TPar avg = 0.5*(xx+xy);
       xx = avg + minDelta;
-      xy = avg - minDelta;
+      yy = avg - minDelta;
     }
   }
-  else
-  {
+  else {
     delta = xy + yx; // + because they have opposing signs
-    if(abs(delta) < minDelta)
-    {
-      xy = +minDelta;
-      xy = -minDelta;
-      // todo: i think, we should take into account the original signs of xy,xy
+    if(abs(delta) < minDelta) {
+      TPar sgn = +1;
+      if(xy < 0)
+        sgn = -1;
+      xy = +sgn*minDelta;
+      yx = -sgn*minDelta;
     }
   }
 }
