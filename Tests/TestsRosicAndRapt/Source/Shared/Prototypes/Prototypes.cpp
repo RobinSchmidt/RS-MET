@@ -255,7 +255,12 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
 template<class TSig, class TPar>
 void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
 {
-  TPar minDelta = 0.001; // preliminary
+  TPar minDelta = 0.001; 
+  // with 0.001, impulse response of a lowpass (1kHz@44.1kHz) is visually indistiguishable from 
+  // the correct, desired one and the mixing coeffs are still below 10 (around 9). With 0.0001,
+  // mixing coeffs raise to about 90. Maybe make more formal tests, how the upper bound of the 
+  // mixing coeffs behaves as function of minDelta and choose something reasonable.
+
   TPar delta;
   if(xy == 0) { // two real poles
     delta = xx - yy;
