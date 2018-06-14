@@ -7,6 +7,8 @@ using namespace std;  // try to get rid
 
 #include "rosic/rosic.h"
 
+
+
 ///** Plots at most five y-functions against a common x-axis. */
 //void plotData(int N, float *x, float *y1, float *y2 = nullptr, float *y3 = nullptr,
 //  float *y4 = nullptr, float *y5 = nullptr);
@@ -26,6 +28,8 @@ inline vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
     y[n] = filter.getSample(0.0);
   return y;
 }
+// move to Utilities
+
 
 /** Plots N samples of the impulse response of the passed filter. */
 template<class TSig, class TFlt>

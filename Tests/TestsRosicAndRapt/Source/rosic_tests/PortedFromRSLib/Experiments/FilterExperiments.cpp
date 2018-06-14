@@ -382,8 +382,37 @@ void stateVectorFilter()
   // H(z) = ci + cx*X(z) + cy*Y(z)
   // maybe solve 2nd equation for Y(z) and plug into 1st
 
-  rsStateVectorFilter<double, double> flt;
 
+
+  int    N  = 500;           // number of samples
+  double fs = 44100;         // sample rate
+  double f  = 1000;          // filter frequency
+  double q  = 2.0;           // Q value
+  double g  = 2;             // gain factor
+
+  typedef rosic::BiquadDesigner DSN;
+  double b0, b1, b2, a1, a2; // biquad coeffs
+  DSN::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, 1/fs, f, q, g);
+   // uses + convention for a-coeffs
+
+  // test:
+  b0 = 1;
+  b1 = 0;
+  b2 = 0;
+  a1 = 0.5;
+  a2 = 0.2;
+
+
+  rosic::BiquadMonoDF1 bqd;
+  rsStateVectorFilter<double, double> stVecFlt;
+
+  bqd.setCoefficients(b0, b1, b2, a1, a2);
+  stVecFlt.setupFromBiquad(b0, b1, b2, -a1, -a2);
+
+
+  std::vector<double> yBqd   = impulseResponse(bqd,      N, 1.0);
+  std::vector<double> yStVec = impulseResponse(stVecFlt, N, 1.0);
+  
 
   int dummy = 0;
 }

@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
-  cycleMarkFinder();
+  //cycleMarkFinder();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
 
@@ -237,7 +237,7 @@ int main(int argc, char* argv[])
   //attackDecayFilter();  // ...hmm..almost redundant
   //dampedSineFilterDesign();
   //biquadImpulseResponseDesign();
-  modalBankTransient();
+  //modalBankTransient();
 
   // Misc Audio:
   //centroid();

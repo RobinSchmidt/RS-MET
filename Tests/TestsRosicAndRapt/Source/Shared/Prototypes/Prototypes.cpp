@@ -173,45 +173,82 @@ template<class TSig, class TPar>
 void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
   CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2)
 {
-  // compute poles from a1, a2, then compute matrix coeffs from poles:
-  TPar d = a1*a1 - a2;    // discriminant
-  TPar t = -a1*0.5;       // -p/2 in p-q-formula, term before +/-
-  if(d >= 0) {            // real poles
-    TPar sq = sqrt(d);    // square-root term in p-q-formula
+  // compute poles from a1, a2, then compute state update coeffs from poles:
+  TPar d = TPar(0.25)*a1*a1 - a2;  // discriminant, term inside sqrt
+  TPar t = -a1*0.5;                // -p/2 in p-q-formula, term before +/- sqrt
+  if(d >= 0) {                     // we have 2 real poles
+    TPar sq = sqrt(d);             // square-root term in p-q-formula
 
     // !!verify, if the coeffs xx,yy really *are* the poles !! 
     xx = t + sq;          // larger pole
     yy = t - sq;          // smaller pole
 
     xy = yx = 0;          // no cross coupling, two independently decaying, real exponentials
+
+
+    // for test/debug:
+    //xx =  0.5; 
+    //yy = -0.25;  
   }
-  else {                         // complex conjugate poles
-    TPar s, pr, pi, r, w, s, c;
-    pr = t;                      // real part of pole
-    pi = sqrt(-d);               // imaginary part of pole (+/-)
+  else {                         // we have complex conjugate poles
+    TPar pr, pi, r, w, s, c;
+    pr = t;                      // real part of poles
+    pi = sqrt(-d);               // imaginary part of poles (+ or -)
     r  = sqrt(pr*pr + pi*pi);    // pole radius
     w  = atan2(pi, pr);          // pole angle
     s  = sin(w);
     c  = cos(w);
-    xx = yy = r*c;
-    yx = r*s;
-    xy = -yx;
+    xx = yy = r*c;               // state update matrix:
+    yx = r*s;                    // r * |cos(w)  -sin(w)| 
+    xy = -yx;                    //     |sin(w)   cos(w)|  ...is decaying rotation
   }
 
-
-
   // compute first 3 samples of biquad impulse response:
-  TPar h0, h1, h2; 
-  h0 = b0;
-  h1 = b1 - a1*h0;
-  h2 = b2 - a1*h1 - a2*h0;
+  TPar h[3]; 
+  h[0] = b0;
+  h[1] = b1 - a1*h[0];
+  h[2] = b2 - a1*h[1] - a2*h[0];
 
-  // compute mixing coeffs from matrix coeffs and the condition that the first 3 output samples of
-  // the impulse response of this filter must match those of the biquad:
-  // ...
+  // compute mixing coeffs from state update coeffs and the condition that the first 3 output 
+  // samples of the impulse response of this filter must match those of the biquad - leads to a 
+  // 2x2 linear system for cx, cy, then ci can be computed easily from h[0]:
+  // h[0] = cx + cy + ci
+  // h[1] = cx*(xx + xy) + cy*(yx + yy)
+  // h[2] = cx*(xx*(xx+xy) + xy*(yx+yy)) + cy*(yx*(xx+xy) + yy*(yx+yy))
+  TPar A[2][2];
+  TPar c[2];
+  A[0][0] = xx + xy;
+  A[0][1] = yx + yy;
+  A[1][0] = xx*A[0][0] + xy*A[0][1];
+  A[1][1] = yx*A[0][0] + yy*A[0][1];
+  rsLinearAlgebra::rsSolveLinearSystem2x2(A, c, &h[1]);
+  cx = c[0];
+  cy = c[1];
+  ci = h[0] - cx - cy; // 1st equation
 
 
+  //ci = cx = cy = 1; // debug
+
+  // maybe we need to catch special cases when a divisor may become zero, i.e. the A-matrix
+  // becomes singular?
 }
+
+template class rsStateVectorFilter<double, double>; // explicit instantiation
+
 // todo: make functions setupFromPolesAndZeros, setupFromParameters - for various parametrizations
 // like setupFromFrqDecAmpPhs (for the "modal" filter - take care to take into account the 
-// injection into both parts - shifts pahse by 45° and increases amplitude by sqrt(2))
+// injection into both parts - shifts phase by 45° and increases amplitude by sqrt(2))
+// setFreqAndReso(freq, reso) 
+// freq controls pole angle, reso is pole radius - maybe allow values > 1 and use saturation
+// circle-saturation/distortion or (soft)clipping
+
+// is it possible to find simpler formulas? it looks all very complicated - maybe from equating the
+// transfer functions of biquad and svf? i think, the TF of this filter is:
+// X(z) = 1 / (1 - xx * z^-1 * X(z) - xy * z^-1 * Y(z))
+// Y(z) = 1 / (1 - yx * z^-1 * X(z) - yy * z^-1 * Y(z))
+// H(z) = ci + cx*X(z) + cy*Y(z)
+
+// todo: make unit tests that compare outputs of biquads for various settings all combinations 
+// of real/complex poles/zeros, also with unused higher order coeffs (like b2=0, etc)
+// against the outputs of the state vector (and also state variable) implementation
+// ->also good to have in place when we later change a-coeff sign convention

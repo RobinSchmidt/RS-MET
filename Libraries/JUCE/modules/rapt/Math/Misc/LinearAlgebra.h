@@ -58,6 +58,8 @@ public:
   // inside polynomial curve-fitting and multiple linear regression routines 
   // (i think polynomial fits use a Vandermonde matrix (created from data vectors) and then works
   // the same a multiple linear regression -> look it up...)
+  // (maybe) make a dispatcher function  rsSolveLinearSystem(T **A, T *x, T *b, int N, int M);
+  // that dispatches the 3 cases to the 3 functions
 
   /** Inverts the matrix A via Gauss-Jordan elimination with partial pivoting. */
   template<class T>

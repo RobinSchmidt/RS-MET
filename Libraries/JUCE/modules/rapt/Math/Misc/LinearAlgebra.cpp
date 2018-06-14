@@ -18,6 +18,10 @@ void rsLinearAlgebra::rsSolveLinearSystem3x3(const T A[3][3], T x[3], const T y[
   x[1] = -c*(A[0][0]*k3 + A[0][2]*k4 + (A[1][2]*A[2][0] - A[1][0]*A[2][2])*y[0]);
   x[2] = +c*(A[0][0]*(A[2][1]*y[1] - A[1][1]*y[2]) + A[0][1]*k4 + k1*y[0]);
 
+  // maybe optimize further - there are still some products above that are computed twice:
+  // A[1][0]*A[2][2], A[1][2]*A[2][0], A[1][1]*y[2]
+  // ...but then do performance tests
+
   /*
   // un-optimized maxima output - measure performance against optimized version above:
   T s = T(1) / (A[0][0]*(A[1][2]*A[2][1]-A[1][1]*A[2][2])+A[0][1]*(A[1][0]*A[2][2]-A[1][2]*A[2][0])+A[0][2]*(A[1][1]*A[2][0]-A[1][0]*A[2][1]));

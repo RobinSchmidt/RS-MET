@@ -59,8 +59,17 @@ public:
     TSig t = x;                  // temporary
     x = xx*x + xy*y + in;        // update x
     y = yx*t + yy*y + in;        // update y
-    return cx*x + cy*y * ci*in;  // output
+    //TSig  out = cx*x + cy*y + ci*in;  // for debug
+    return cx*x + cy*y + ci*in;  // output
   }
+
+  // maybe try a nonlinearity: multiply x and y by 1/(1 + x^2 + y^2) after state update
+  // saturates(with some foldover)/contracts state vector without changing its angle
+  // maybe apply this factor also to "in"
+  // ...maybe factor out the state update
+
+
+
 
   /** Resets the filter state. */
   void reset()
