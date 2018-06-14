@@ -397,7 +397,7 @@ void stateVectorFilter()
   int    N  = 100;           // number of samples
   double fs = 44100;         // sample rate
   double f  = 1000;          // filter frequency
-  double q  = 0.5;           // Q value
+  double q  = 0.3;           // Q value
   double g  = 2;             // gain factor (for shelf or bell filters)
 
   typedef rosic::BiquadDesigner DSN;
@@ -422,12 +422,19 @@ void stateVectorFilter()
 
   std::vector<double> yBqd   = impulseResponse(bqd,      N, 1.0);
   std::vector<double> yStVec = impulseResponse(stVecFlt, N, 1.0);
-  
+
   // plot:
   GNUPlotter plt;
   plt.addDataArrays(N, &yBqd[0]);
   plt.addDataArrays(N, &yStVec[0]);
   plt.plot();
+
+  // Observations:
+  // -cookbook lowpass with q = 0.5 leads to a singularity (a matrix becomes non-invertible)
+  // -in this case, the filter can neither be modeled as two parallel exponential decays nor
+  //  as spiraling phasor ...what to do?
+
+
 }
 
 void transistorLadder()

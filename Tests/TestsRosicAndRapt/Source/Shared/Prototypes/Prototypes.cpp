@@ -209,9 +209,18 @@ void rsStateVectorFilter<TSig, TPar>::setImpulseResponseStart(TPar h[3])
   // 3 linear equations for the mixing coefficients and solve it. It can actually be solved as a 
   // 2x2 system and the 3rd equation is then trivial.
 
-  // Problem: the matrix may become singular. i think, this happens when we have two equal real 
-  // poles?)...then, the filter can't be expressed as a parallel connection of two first order
+  // Problem: The A-matrix may become singular. This happens when we have two equal real poles as
+  // happens in a cookbook lowpass with q = 0.5.
+  // ...then, the filter can't be expressed as a parallel connection of two first order
   // filters - what to do in this case? ...
+  // maybe work with a fudged determinant, like D_f = sign(D) * max(abs(D), fudgeFactor) where
+  // fudgefactor is some small nonzero number
+  // rewrite the equation system as:
+  // |a b| * |x1| = |y1|
+  // |c d|   |x2|   |y2|
+  // and use D = a*d - b*c as preliminary determinant and then call D = fudgeDet(D) or something
+  // ...very hacky/dirty/ugly but it may work. don't call rsSolveLinearSystem2x2, write out the
+  // equations here
 }
 
 template<class TSig, class TPar>
