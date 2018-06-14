@@ -207,7 +207,7 @@ void rsStateVectorFilter<TSig, TPar>::setImpulseResponseStart(TPar h[3])
   // h[1] = cx*(xx + xy) + cy*(yx + yy)
   // h[2] = cx*(xx*(xx+xy) + xy*(yx+yy)) + cy*(yx*(xx+xy) + yy*(yx+yy))
   // and this must match what is given to this function. From this, we can set up a system of
-  // 3 linear equations for the mixing coefficients and solve it. It can actually be solved as a 
+  // 3 linear equations for the 3 mixing coefficients and solve it. It can actually be solved as a 
   // 2x2 system and the 3rd equation is then trivial.
 
   // Problem: The A-matrix may become singular. This happens when we have two equal real poles as
@@ -239,7 +239,7 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
     TPar sq = sqrt(d);
     setPoles(p+sq, 0, p-sq, 0);
   }
-  else {                           // d < 0: we have complex conjugate poles    
+  else {                           // d < 0: we have complex conjugate poles
     TPar sq = sqrt(-d);
     setPoles(p, sq, p, -sq);
   }
@@ -255,31 +255,45 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
 template<class TSig, class TPar>
 void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
 {
-  TPar minDelta = 0.001; 
-  // with 0.001, impulse response of a lowpass (1kHz@44.1kHz) is visually indistiguishable from 
-  // the correct, desired one and the mixing coeffs are still below 10 (around 9). With 0.0001,
-  // mixing coeffs raise to about 90. Maybe make more formal tests, how the upper bound of the 
-  // mixing coeffs behaves as function of minDelta and choose something reasonable.
+  TPar minDelta = 0.001; // actually  2 * minimum pole-distance
+    // with 0.001, impulse response of a cookbook lowpass (1kHz@44.1kHz, q=0.5) is visually 
+    // indistiguishable from the correct, desired one and the mixing coeffs are around 9.
+    // With 0.0001, mixing coeffs raise to about 90. Maybe make more formal tests, 
+    // how  the upper bound of the mixing coeffs behaves as function of minDelta and choose 
+    // something reasonable. The c-coeffs should ideally stay of the same order of magnitude as in
+    // the naturally nonsingular cases (or at least not be vastly higher)
 
   TPar delta;
   if(xy == 0) { // two real poles
     delta = xx - yy;
     if(abs(delta) < minDelta) {
       TPar avg = 0.5*(xx+yy);
-      xx = avg + minDelta;
-      yy = avg - minDelta;
+      if(xx >= yy) {
+        xx = avg + minDelta;
+        yy = avg - minDelta;
+      }
+      else {
+        xx = avg - minDelta;
+        yy = avg + minDelta;
+      }
     }
   }
   else {
-    delta = xy + yx; // + because they have opposing signs
+    delta = xy + yx; // + because they have opposite signs
     if(abs(delta) < minDelta) {
-      TPar sgn = +1;
-      if(xy < 0)
-        sgn = -1;
-      xy = +sgn*minDelta;
-      yx = -sgn*minDelta;
+      if(xy > 0) {
+        xy = +minDelta;
+        yx = -minDelta;
+      }
+      else {
+        xy = -minDelta;
+        yx = +minDelta;
+      }
     }
   }
+
+  // todo: optimize: avoid the makePolesDistinct when it can be predicted that they are
+  // distinct anyway (after computing sqrt(d) or sqrt(-d)) ...but not in prototype
 }
 
 
