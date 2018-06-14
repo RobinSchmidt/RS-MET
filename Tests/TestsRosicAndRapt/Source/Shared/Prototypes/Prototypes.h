@@ -87,6 +87,14 @@ protected:
     y = yx*t + yy*y + in;   // update y
   }
 
+  /** This is a function to fudge with the poles in cases where they are (almost) equal. Such a 
+  case cannot be represented exactly by this filter structure (a singular matrix in the mixing 
+  coefficient calculation would occur), so we use distinct poles close to the originally desired 
+  poles. The effect is a slight misadjustment of the filter in these particular cases. */
+  void makePolesDistinct();
+   // maybe returna bool to inform, if the poles were modified, maybe also return a booll from
+   // setPoles in order to be able to make client code aware of the fudging
+
   TPar xx = 0, xy = 0, yx = 0, yy = 0;  // matrix coeffs
   TPar cx = 0, cy = 0, ci = 1;          // mixing coeffs
   TSig x  = 0, y  = 0;                  // state vector

@@ -176,6 +176,7 @@ void rsStateVectorFilter<TSig, TPar>::setPoles(CRPar p1re, CRPar p1im, CRPar p2r
   yx = p1im;
   yy = p2re;
   xy = p2im;
+  makePolesDistinct();  // avoid singular case of equal poles by fudging
 
   // The state update matrix will have one of these two general forms:
   // |p1 0 |     or:     r * |cos(w)  -sin(w)| 
@@ -219,8 +220,12 @@ void rsStateVectorFilter<TSig, TPar>::setImpulseResponseStart(TPar h[3])
   // |a b| * |x1| = |y1|
   // |c d|   |x2|   |y2|
   // and use D = a*d - b*c as preliminary determinant and then call D = fudgeDet(D) or something
-  // ...very hacky/dirty/ugly but it may work. don't call rsSolveLinearSystem2x2, write out the
+  // ...very hacky/dirty/ugly but it may work (the filter may be slightly misadjusted in these
+  // problematic cases but otherwise work well). don't call rsSolveLinearSystem2x2, write out the
   // equations here
+
+  // or maybe use a fudgePoles function called at the end of setPoles to make sure, they are
+  // somewhat distinct
 }
 
 template<class TSig, class TPar>
@@ -246,6 +251,34 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
   h[2] = b2 - a1*h[1] - a2*h[0];
   setImpulseResponseStart(h);
 }
+
+template<class TSig, class TPar>
+void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
+{
+  TPar minDelta = 0.001; // preliminary
+  TPar delta;
+  if(xy == 0)  // two real poles
+  {
+    delta = xx - xy;
+    if(abs(delta) < minDelta)
+    {
+      TPar avg = 0.5*(xx+xy);
+      xx = avg + minDelta;
+      xy = avg - minDelta;
+    }
+  }
+  else
+  {
+    delta = xy + yx; // + because they have opposing signs
+    if(abs(delta) < minDelta)
+    {
+      xy = +minDelta;
+      xy = -minDelta;
+      // todo: i think, we should take into account the original signs of xy,xy
+    }
+  }
+}
+
 
 template class rsStateVectorFilter<double, double>; // explicit instantiation
 
