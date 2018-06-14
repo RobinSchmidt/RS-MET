@@ -397,7 +397,7 @@ void stateVectorFilter()
   int    N  = 100;           // number of samples
   double fs = 44100;         // sample rate
   double f  = 1000;          // filter frequency
-  double q  = 0.3;           // Q value
+  double q  = 0.5;           // Q value
   double g  = 2;             // gain factor (for shelf or bell filters)
 
   typedef rosic::BiquadDesigner DSN;

@@ -260,7 +260,7 @@ void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
   if(xy == 0) { // two real poles
     delta = xx - yy;
     if(abs(delta) < minDelta) {
-      TPar avg = 0.5*(xx+xy);
+      TPar avg = 0.5*(xx+yy);
       xx = avg + minDelta;
       yy = avg - minDelta;
     }
