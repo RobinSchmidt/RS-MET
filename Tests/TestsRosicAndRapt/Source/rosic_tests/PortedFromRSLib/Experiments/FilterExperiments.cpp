@@ -178,6 +178,43 @@ void bandwidthScaling()
   plotData(N, w, p[0], p[1], p[2], p[3], p[4]);
 }
 
+void biquadModulation()
+{
+  // Compares the responses of different biquad implementation structures (DF1, DF2, SVF, etc.) to
+  // modulation of the parameters...
+  
+  // not yet finsihed
+
+  int    N  = 10000;         // number of samples
+  double fs = 44100;         // sample rate
+  double f  = 50;            // input signal frequency
+  double f1 = 5000;          // first filter frequency
+  double f2 = 500;           // second filter frequency
+  double q  = 5.0;           // Q value
+  //double g  = 2;             // gain factor (for shelf or bell filters)
+
+
+  double b0, b1, b2, a1, a2; // biquad coeffs
+  typedef rosic::BiquadDesigner DSN;
+  rosic::BiquadMonoDF1 bqd;
+  rsStateVectorFilter<double, double> stVecFlt;
+
+  // has to be put into a loop:
+  //DSN::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, 1/fs, f, q, g);
+  //DSN::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1/fs, f, q);
+  // uses + convention for a-coeffs
+  //bqd.setCoefficients(b0, b1, b2, a1, a2);
+  //stVecFlt.setupFromBiquad(b0, b1, b2, -a1, -a2);
+
+
+
+  // plot:
+  GNUPlotter plt;
+  //plt.addDataArrays(N, &yBqd[0]);
+  //plt.addDataArrays(N, &yStVec[0]);
+  plt.plot();
+}
+
 void stateVariableFilter()
 {
   double fs = 44100;  // samplerate in Hz
@@ -391,9 +428,6 @@ void stateVectorFilter()
   // H.simplify_full()
   // maybe eliminate(X)? or maybe i need a matrix z-transform
 
-
-
-
   int    N  = 100;           // number of samples
   double fs = 44100;         // sample rate
   double f  = 1000;          // filter frequency
@@ -413,7 +447,6 @@ void stateVectorFilter()
   //a1 = 0.5;
   //a2 = 0.2;
 
-
   rosic::BiquadMonoDF1 bqd;
   rsStateVectorFilter<double, double> stVecFlt;
 
@@ -431,10 +464,7 @@ void stateVectorFilter()
 
   // Observations:
   // -cookbook lowpass with q = 0.5 leads to a singularity (a matrix becomes non-invertible)
-  // -in this case, the filter can neither be modeled as two parallel exponential decays nor
-  //  as spiraling phasor ...what to do?
-
-
+  //  -in this case, we fudge with the poles (todo: make more tests for this)
 }
 
 void transistorLadder()

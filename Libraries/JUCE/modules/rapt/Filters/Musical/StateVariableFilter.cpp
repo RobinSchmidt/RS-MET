@@ -57,6 +57,17 @@ void rsStateVariableFilter<TSig, TPar>::setMorph(TPar newMorph)
   calcCoeffs();
 }
 
+/*
+template<class TSig, class TPar>
+void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
+  CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2)
+{
+
+  // formulas from:
+  // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
+}
+*/
+
 // Misc:
 
 template<class TSig, class TPar>

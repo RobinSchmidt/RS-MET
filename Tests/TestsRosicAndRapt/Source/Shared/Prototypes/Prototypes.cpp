@@ -262,38 +262,44 @@ void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
     // how  the upper bound of the mixing coeffs behaves as function of minDelta and choose 
     // something reasonable. The c-coeffs should ideally stay of the same order of magnitude as in
     // the naturally nonsingular cases (or at least not be vastly higher)
+    // maybe plot error between desired and approximated impulse response
 
   TPar delta;
   if(xy == 0) { // two real poles
     delta = xx - yy;
     if(abs(delta) < minDelta) {
       TPar avg = 0.5*(xx+yy);
+      TPar d2  = 0.5*minDelta;
       if(xx >= yy) {
-        xx = avg + minDelta;
-        yy = avg - minDelta;
+        xx = avg + d2;
+        yy = avg - d2;
       }
       else {
-        xx = avg - minDelta;
-        yy = avg + minDelta;
+        xx = avg - d2;
+        yy = avg + d2;
       }
     }
   }
   else {
     delta = xy + yx; // + because they have opposite signs
     if(abs(delta) < minDelta) {
+      TPar d2  = 0.5*minDelta;
       if(xy > 0) {
-        xy = +minDelta;
-        yx = -minDelta;
+        xy = +d2;
+        yx = -d2;
       }
       else {
-        xy = -minDelta;
-        yx = +minDelta;
+        xy = -d2;
+        yx = +d2;
       }
     }
   }
 
   // todo: optimize: avoid the makePolesDistinct when it can be predicted that they are
   // distinct anyway (after computing sqrt(d) or sqrt(-d)) ...but not in prototype
+  // but what if the shifting of poles makes an originally stable filter unstable? maybe a more
+  // sophisticated approach is needed - and unit tests
+
 }
 
 

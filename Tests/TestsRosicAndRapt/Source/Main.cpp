@@ -183,7 +183,8 @@ int main(int argc, char* argv[])
   //bandwidthScaling();
   //stateVariableFilter();
   //stateVariableFilterMorph();
-  stateVectorFilter();   // just a stub, at the moment
+  //stateVectorFilter();   // just a stub, at the moment
+  biquadModulation();   // compares modulation properties of various biquad structures
   ////transistorLadder(); // triggers assert
   //phonoFilterPrototypePlot();
   //magnitudeMatchedOnePoleFilter();
@@ -217,7 +218,7 @@ int main(int argc, char* argv[])
   //ladderFeedbackSatGrowl();
   //ladderFeedbackSatGrowl2();
   //ladderZDF();
-  //ladderZDFvsUDF();
+  //ladderZDFvsUDF();   // compares modulation properties
   //resoShapeFeedbackSat();
   //resoSaturationModes();
   //resoShapeGate();

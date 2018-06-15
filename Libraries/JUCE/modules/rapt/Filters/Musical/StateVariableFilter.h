@@ -10,6 +10,8 @@ are also shelvers, a bell, etc.). */
 template<class TSig, class TPar> // signal, parameter types
 class rsStateVariableFilter
 {
+  typedef const TSig& CRSig;
+  typedef const TPar& CRPar;
 
 public:
 
@@ -64,6 +66,12 @@ public:
 
   /** Morphing parameter for the morphing filter types - this feature is under construction. */
   void setMorph(TPar newMorph);
+
+  /** Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
+  //void setupFromBiquad(CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2);
+   // not yet tested
+
+
 
 
   /** \name Inquiry */

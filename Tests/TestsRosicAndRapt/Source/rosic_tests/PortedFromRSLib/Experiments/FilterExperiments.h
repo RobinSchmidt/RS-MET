@@ -4,6 +4,7 @@
 #include "../../../Shared/Shared.h"
 
 void bandwidthScaling();
+void biquadModulation();
 void stateVariableFilter();
 void stateVariableFilterMorph();
 void stateVectorFilter();
