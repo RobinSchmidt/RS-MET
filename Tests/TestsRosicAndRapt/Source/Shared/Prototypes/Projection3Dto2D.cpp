@@ -47,6 +47,32 @@ void rsProjection3Dto2D<T>::setup(T xc, T yc, T zc, T rot, T zoom, T xt, T yt, T
   Tg[3][2] = 0;
   Tg[3][3] = -(a*d + b*e + c*f)*r;
   // actually, it would be nice to absorb the final rotation as well
+  // damn - this matrix sets the z-coordinate to 0 because it includes the final projection matrix 
+  // it would be better to have one that pre
+
+  // maybe make a class rsAffineTransform3D
+  // it should be able to create the unique rotation that rotates one vector into (the direction 
+  // of) another vector which can then be used to rotate viewing direction into (0,0,1) (catch 
+  // singular case of original vector being (0,0,-1))
+  // -compose a translation of viewer to the origin with this rotation (or maybe use simpler 
+  //  formulas taking into account the simplicity of the target vector)
+  // -a perspective projection can use the same transform as a parallel projection and just apply
+  //  a diffent final step (instead of X = x, Y = y, do: X = x/(1+z/k), Y = y/(1+z/k), Eq. 33.8)
+  // -to preserve depth in a perspective projection, use Z / z/(1+z/k) - this is proprtionla to 
+  //  what is given on page 137)
+  // -maybe it's best to re-derive 3.44 but without the final projection step, i.e. only the matrix
+  //  product of the translation*rotation*translation (maybe even the last translation (by k)) is 
+  //  not necessarry - k is irrelevant in parallel projections and for perspective, it can be 
+  //  included in the final step)
+  //  -so, (re)-derive a formula for T1*T2 (maybe using column-vectors and pre-multiplication) and
+  //   for parallel projection, just strip off z and for perspective use X = x/(1+z/k), etc.
+  //  -the parallel projection can (i think) indeed be expressed a 3D affine transform - so the
+  //   perspective can be represented by that same affine transform followed by multiplying the
+  //   end results by 1/(1+z/k) -> all of that can be done in one class with functions
+  //   projectParallel(x,y,z, X,Y,Z); projectPerspective(x,y,z, X,Y,Z) where the latter calls the 
+  //   former and multiplies results by 1/(1+z/k) (note how that factor goes to one when k goes to 
+  //   inf as it should). of course, we can have versions opf the "project" functions that don't 
+  //   compute z when it's not needed  - for optimzation
 
   // now we have the 4D homogeneous matrix Tg - next step: translate to 3D affine transform
 

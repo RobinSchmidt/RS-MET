@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
-  //cycleMarkFinder();
+  cycleMarkFinder();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
 
@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
   //stateVariableFilter();
   //stateVariableFilterMorph();
   //stateVectorFilter();   // just a stub, at the moment
-  biquadModulation();   // compares modulation properties of various biquad structures
+  //biquadModulation();   // compares modulation properties of various biquad structures
   ////transistorLadder(); // triggers assert
   //phonoFilterPrototypePlot();
   //magnitudeMatchedOnePoleFilter();
