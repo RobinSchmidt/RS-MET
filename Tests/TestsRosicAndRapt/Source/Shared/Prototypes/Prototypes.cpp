@@ -208,7 +208,7 @@ void rsStateVectorFilter<TSig, TPar>::setImpulseResponseStart(TPar h[3])
   // h[2] = cx*(xx*(xx+xy) + xy*(yx+yy)) + cy*(yx*(xx+xy) + yy*(yx+yy))
   // and this must match what is given to this function. From this, we can set up a system of
   // 3 linear equations for the 3 mixing coefficients and solve it. It can actually be solved as a 
-  // 2x2 system and the 3rd equation is then trivial.
+  // 2x2 system for cx,cy and the 3rd equation for ci is then trivially ci = h[0]-cx-cy.
 
   // Problem: The A-matrix may become singular. This happens when we have two equal real poles as
   // happens in a cookbook lowpass with q = 0.5.
@@ -328,6 +328,8 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 // X(z) = 1 / (1 - xx * z^-1 * X(z) - xy * z^-1 * Y(z))
 // Y(z) = 1 / (1 - yx * z^-1 * X(z) - yy * z^-1 * Y(z))
 // H(z) = ci + cx*X(z) + cy*Y(z)
+// maybe look here for the transfer function of a state-space filter:
+// https://ccrma.stanford.edu/courses/250a-fall-2003/hiqfilters.pdf
 
 // todo: make unit tests that compare outputs of biquads for various settings all combinations 
 // of real/complex poles/zeros, also with unused higher order coeffs (like b2=0, etc)

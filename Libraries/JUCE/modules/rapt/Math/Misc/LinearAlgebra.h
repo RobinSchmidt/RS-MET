@@ -40,6 +40,9 @@ public:
   template<class T>
   //bool rsSolveLinearSystem(const T **A, T *x, const T *b, int N);
   static bool rsSolveLinearSystem(T **A, T *x, T *b, int N);
+    // maybe have possibly different types for the matrix elements and vector elements - some 
+    // equations (for curves in Salomon's Computer Graphics... for example) are formulated in terms 
+    // of matrices-of-numbers and vectors-of-points
 
   /** Solves the linear system just as solveLinearSystem() does - but doesn't allocate temporary 
   heap memory and instead destroys the coefficient matrix A and the target vector b during the 

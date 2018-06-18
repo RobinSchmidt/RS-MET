@@ -58,7 +58,8 @@ public:
   void setPoles(CRPar p1re, CRPar p1im, CRPar p2re, CRPar p2im);
 
   /** Assuming the poles are already fixed, this function computes the mixing coefficients such 
-  that the first 3 samples of the impulse response will equal, what you pass to this function. */
+  that the first 3 samples of the impulse response will equal what you pass to this function. This 
+  is used to compute the mixing coefficients after the poles have been determined. */
   void setImpulseResponseStart(TPar h[3]);
 
   // maybe make a setZeros function, too
@@ -92,7 +93,7 @@ protected:
   coefficient calculation would occur), so we use distinct poles close to the originally desired 
   poles. The effect is a slight misadjustment of the filter in these particular cases. */
   void makePolesDistinct();
-   // maybe returna bool to inform, if the poles were modified, maybe also return a booll from
+   // maybe return a bool to inform, if the poles were modified, maybe also return a bool from
    // setPoles in order to be able to make client code aware of the fudging
 
   TPar xx = 0, xy = 0, yx = 0, yy = 0;  // matrix coeffs

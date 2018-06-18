@@ -182,7 +182,12 @@ public:
   enum algorithms
   {
     F0_ZERO_CROSSINGS = 0,  // zero crossings of extracted fundamental
-    CYCLE_CORRELATION       // auto-correlation between successive cycles
+    CYCLE_CORRELATION,       // auto-correlation between successive cycles
+
+
+
+    CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems, 
+                            // should not be used anymore)
   };
 
   /** Constructor. You should pass a sample-rate and the minimum and maximum expected values
@@ -259,8 +264,16 @@ public:
 
   /** \name Processing */
 
-  /** Returns an array of cycle-marks for the given input signal of length N. */
-  std::vector<T> findCycleMarks(T *x, int N);
+  /** Returns an array of cycle-marks for the given input signal of length N using the selected
+  algorithm. */
+  std::vector<T> findCycleMarks(T* x, int N);
+
+
+  // the various algorithms:
+
+  std::vector<T> findCycleMarksByFundamentalZeros(T* x, int N);
+
+  std::vector<T> findCycleMarksByCorrelation(T* x, int N);
 
 
 protected:

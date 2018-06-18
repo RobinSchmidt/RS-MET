@@ -340,16 +340,41 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
   // Find cycle marks:
   std::vector<T> z;
   if(algo == F0_ZERO_CROSSINGS)
+  {
     z = rsZeroCrossingFinder::upwardCrossings(y, N, precision);
-  else
-  { // use CYCLE_CORRELATION as cycleMarkAlgo
+  }
+  else if(algo == CYCLE_CORRELATION)
+  {
+    z = findCycleMarksByCorrelation(x, N);
+  }
+  else if(algo == CYCLE_CORRELATION_OLD)
+  { 
+    // use CYCLE_CORRELATION_OLD as cycleMarkAlgo 
     z = rsZeroCrossingFinder::upwardCrossings(y, N, 0); // initial estimates
     refineCycleMarksByCorrelation(x, N, z, f0);
+    // todo: get rid of that and move creation of filtered signal y into the F0_ZERO_CROSSINGS
+    // branch (it will then  be used only there)
   }
+
+
   // todo: maybe work with the more precise version that splits integer and fractional parts
   // of the zero-crossings
 
   delete[] y;
+  return z;
+}
+
+template<class T>
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int N)
+{
+  std::vector<T> z;
+  return z;
+}
+
+template<class T>
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
+{
+  std::vector<T> z;
   return z;
 }
 
