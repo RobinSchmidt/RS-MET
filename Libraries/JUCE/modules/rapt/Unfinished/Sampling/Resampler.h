@@ -276,6 +276,10 @@ public:
   std::vector<T> findCycleMarksByCorrelation(T* x, int N);
 
 
+  std::vector<T> findCycleMarksByCorrelationOld(T* x, int N);
+    // to be deprecated
+
+
 protected:
 
   /** Refines a given vector of initial estimates of the cycle-marks given in cm by correlating

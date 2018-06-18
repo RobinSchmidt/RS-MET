@@ -332,17 +332,13 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
   else if(algo == CYCLE_CORRELATION)
     return findCycleMarksByCorrelation(x, N);
   else if(algo == CYCLE_CORRELATION_OLD)
-  { 
-    std::vector<T> z = findCycleMarksByFundamentalZeros(x, N); // initial estimates
-    T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
-    refineCycleMarksByCorrelation(x, N, z, f0);
-    return z;
-    // todo: get rid of that and move creation of filtered signal y into the F0_ZERO_CROSSINGS
-    // branch (it will then  be used only there)
-  }
+    return findCycleMarksByCorrelationOld(x, N); // deprecated
 
   // todo: maybe work with the more precise version that splits integer and fractional parts
   // of the zero-crossings
+
+  rsError("Unknown algorithm setting");
+  return std::vector<T>();
 }
 
 template<class T>
@@ -365,13 +361,19 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
 template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 {
-  std::vector<T> z;
+  return findCycleMarksByCorrelationOld(x, N); // preliminary
 
-  // preliminary/old/to-be-replaced:
-  z = findCycleMarksByFundamentalZeros(x, N); // initial estimates
+  std::vector<T> z;
+  // ...
+  return z;
+}
+
+template<class T>
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
+{
+  std::vector<T> z = findCycleMarksByFundamentalZeros(x, N); // initial estimates
   T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
   refineCycleMarksByCorrelation(x, N, z, f0);
-
   return z;
 }
 
