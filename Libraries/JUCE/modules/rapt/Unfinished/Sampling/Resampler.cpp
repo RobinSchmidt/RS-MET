@@ -327,47 +327,38 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
 template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
 {
-  // Get initial estimate of fundamental by using an autocorrelation based algorithm at the center
-  // of the input signal:
-  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
-    // here, we have a mutual dependency between rsInstantaneousFundamentalEstimator and
-    // rsCycleMarkFinder - maybe break up by dragging estimateFundamentalAt out of the class
-
-  T bw = bandPassWidth*f0; // absolute bandwidth
-  T *y = new T[N];
-  rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, y, N, f0, bw, fs, bandpassSteepness);
-
-  // Find cycle marks:
-  std::vector<T> z;
   if(algo == F0_ZERO_CROSSINGS)
-  {
-    z = rsZeroCrossingFinder::upwardCrossings(y, N, precision);
-  }
+    return findCycleMarksByFundamentalZeros(x, N);
   else if(algo == CYCLE_CORRELATION)
-  {
-    z = findCycleMarksByCorrelation(x, N);
-  }
+    return findCycleMarksByCorrelation(x, N);
   else if(algo == CYCLE_CORRELATION_OLD)
   { 
-    // use CYCLE_CORRELATION_OLD as cycleMarkAlgo 
-    z = rsZeroCrossingFinder::upwardCrossings(y, N, 0); // initial estimates
+    std::vector<T> z = findCycleMarksByFundamentalZeros(x, N); // initial estimates
+    T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
     refineCycleMarksByCorrelation(x, N, z, f0);
+    return z;
     // todo: get rid of that and move creation of filtered signal y into the F0_ZERO_CROSSINGS
     // branch (it will then  be used only there)
   }
 
-
   // todo: maybe work with the more precise version that splits integer and fractional parts
   // of the zero-crossings
-
-  delete[] y;
-  return z;
 }
 
 template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int N)
 {
-  std::vector<T> z;
+  // Get initial estimate of fundamental by using an autocorrelation based algorithm at the center
+  // of the input signal:
+  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
+  // here, we have a mutual dependency between rsInstantaneousFundamentalEstimator and
+  // rsCycleMarkFinder - maybe break up by dragging estimateFundamentalAt out of the class
+
+  T bw = bandPassWidth*f0; // absolute bandwidth
+  T *y = new T[N];
+  rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, y, N, f0, bw, fs, bandpassSteepness);
+  std::vector<T> z = rsZeroCrossingFinder::upwardCrossings(y, N, precision);
+  delete[] y;
   return z;
 }
 
@@ -375,6 +366,12 @@ template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 {
   std::vector<T> z;
+
+  // preliminary/old/to-be-replaced:
+  z = findCycleMarksByFundamentalZeros(x, N); // initial estimates
+  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
+  refineCycleMarksByCorrelation(x, N, z, f0);
+
   return z;
 }
 
