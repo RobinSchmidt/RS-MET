@@ -393,7 +393,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   while(left > 0)
   {
     T delta = maxCorrelationLag(&y[0], N, left, right); // maybe needs an offset?
-    z.push_back(left + delta);  
+    z.push_back(left - delta);  
     p = z[z.size()-1] - z[z.size()-2];
 
     right = left;
@@ -409,7 +409,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   while(right < N)
   {
     T delta = maxCorrelationLag(&y[0], N, left, right); // maybe needs an offset (maybe another than above)?
-    z.push_back(left + delta);  
+    z.push_back(right + delta);  
     p = z[z.size()-1] - z[z.size()-2];
 
     left  = right;
@@ -418,6 +418,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 
   return z;
 }
+
+//#include "../../../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
 
 template<class T>
 T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
@@ -439,9 +441,15 @@ T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
   T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
   //delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
 
-  return delta;
+  // test - try to plot the chunks:
+  //GNUPlotter plt; // i get linker errors in the test project even though GNUPlotter.cpp is 
+                    // compiled (via Shared.cpp)
+  //plt.addDataArrays(length, &cl[0]);
+  //plt.addDataArrays(length, &cr[0]);
+  //plt.plot();
 
-  //return 0; 
+
+  return delta;
 }
 
 

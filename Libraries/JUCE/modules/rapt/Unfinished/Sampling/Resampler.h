@@ -303,7 +303,15 @@ protected:
   int    bandpassSteepness   = 3;
 
 
-
+  /** We assume that left and right are preliminary estimates for the starting times of two 
+  successive cycles in the signal x assumed to be of length N. This function computes 
+  cross-correlation between two chunks of x, centered at left and right respectively (the length
+  is determined by k*(right-left), where k is a user constant set by setRelativeCorrelationLength
+  and is 1 by default). The return value is the time lag (in samples) at which this 
+  cross-correlation has its maximum. If left and right are indeed the correct cycle start-points, 
+  it should be zero. If it's nonzero, the returned value can be used to refine either the left mark
+  by subtracting the returned value or to refine the right mark by adding the returned value 
+  (todo: verify/test this).  */
   T maxCorrelationLag(T* x, int N, int left, int right);
    // experimental
 
