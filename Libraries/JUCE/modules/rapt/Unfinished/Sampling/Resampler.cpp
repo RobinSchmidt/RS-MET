@@ -361,7 +361,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
 template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 {
-  return findCycleMarksByCorrelationOld(x, N); // preliminary
+  //return findCycleMarksByCorrelationOld(x, N); // preliminary
 
 
 
@@ -419,13 +419,17 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   return z;
 }
 
-//#include "../../../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
-
 template<class T>
 T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
 {
+  rsAssert(left  >= 0);
+  rsAssert(right <  N);
+  rsAssert(right >  left);
+
   int halfLength = rsFloorInt(correlationLength * 0.5 * (right-left));
   int length     = 2*halfLength;
+
+  rsAssert(length >= 2);
 
   // prepare buffers for correlation computation:
   cl.resize(length);
@@ -441,13 +445,11 @@ T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
   T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
   //delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
 
-  // test - try to plot the chunks:
-  //GNUPlotter plt; // i get linker errors in the test project even though GNUPlotter.cpp is 
-                    // compiled (via Shared.cpp)
+  //// plot the signal chunks:
+  //GNUPlotter plt; // #define DEBUG_PLOTTING in rapt.h to make it work
   //plt.addDataArrays(length, &cl[0]);
   //plt.addDataArrays(length, &cr[0]);
   //plt.plot();
-
 
   return delta;
 }

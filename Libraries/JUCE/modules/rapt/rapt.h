@@ -40,6 +40,14 @@
 #include <emmintrin.h>    // SSE2
 //#include <iostream>       // only for printing debug info
 
+// uncomment if you want to plot from rapt code (should be done only temporarily for debugging 
+// sessions in the test project - trying to actually plot stuff will produce linker errors in other 
+// projects):
+//#define DEBUG_PLOTTING
+#ifdef DEBUG_PLOTTING
+#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
+#endif
+
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
 #include "Data/Data.h"                   // data structures like arrays, lists, files, etc.
 #include "Math/Math.h"                   // interpolation, transforms, linear algebra, numerical analysis
