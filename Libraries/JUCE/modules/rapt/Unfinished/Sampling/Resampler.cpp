@@ -390,30 +390,31 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   int right = nCenter;
   int left  = right - (int) ::round(p);
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
-  while(left > 0)
+  while(true)
   {
     T delta = maxCorrelationLag(&y[0], N, left, right); // maybe needs an offset?
     z.push_back(left - delta);  
     p = z[z.size()-2] - z[z.size()-1];
-
     right = left;
     left  = right - (int) ::round(p);
+    if(left <= 0)
+      break;
   }
   rsArray::reverse(&z[0], (int) size(z)); // bring marks in 1st half into ascending order
 
-
   // find cycle-marks to the right of nCenter (which is currently the last element in z):
   left = (int) ::round(z[z.size()-1]);
-  p = z[left] - z[left-1];
+  p = z[z.size()-1] - z[z.size()-2];
   right = left + (int) ::round(p);
-  while(right < N)
+  while(true)
   {
     T delta = maxCorrelationLag(&y[0], N, left, right); // maybe needs an offset (maybe another than above)?
     z.push_back(right + delta);  
     p = z[z.size()-1] - z[z.size()-2];
-
     left  = right;
     right = left + (int) ::round(p);
+    if(right >= N)
+      break;
   }
 
   return z;
@@ -442,8 +443,10 @@ T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
   // see here: https://en.wikipedia.org/wiki/Matched_filter
   rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
   rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
-  T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
-  //delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
+  //T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
+  //T delta = rsMaxPosition(&corr[0], 2*length-1) - length; // is +1.5 correct? was found by trial and error
+  T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
+  //T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 0.5;
 
   //// plot the signal chunks:
   //GNUPlotter plt; // #define DEBUG_PLOTTING in rapt.h to make it work

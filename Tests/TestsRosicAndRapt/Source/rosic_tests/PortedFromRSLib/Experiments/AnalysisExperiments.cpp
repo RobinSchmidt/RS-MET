@@ -730,10 +730,19 @@ std::vector<double> cycleMarkTestSignal2(int N, double f, double fs)
 
   return x;
 }
+
+double meanDifference(double* x , int N) // move to Utilities or rsArray
+{
+  double sum = 0;
+  for(int i = 1; i < N; i++)
+    sum += x[i] - x[i-1];
+  return sum/(N-1);
+}
+
 void cycleMarkFinder()
 {
   // user parameters:
-  static const int N  = 2000;  // number of samples
+  static const int N  = 4000;  // number of samples
   double fs = 44100;           // samplerate in Hz
   double f  = 1000.0;          // signal frequency
 
@@ -753,8 +762,14 @@ void cycleMarkFinder()
   vector<double> deltas(cm1.size());
   RAPT::rsArray::subtract(&cm1[0], &cm2[0], &deltas[0], (int)cm1.size());
 
+  // compute average distances between the cycle-marks - the correct value would be fs/f
+  double dAvg1, dAvg2;
+  dAvg1 = meanDifference(&cm1[0], size(cm1));
+  dAvg2 = meanDifference(&cm2[0], size(cm2));
+
+
   // plot signal and cycle marks:
-  int Nz = (int) cm1.size(); // # cycle marks
+  int Nz = (int) std::max(cm1.size(), cm2.size()); // # cycle marks
   vector<double> cmy(Nz);    // y values for plotting (all zero)
   GNUPlotter plt;
 
@@ -782,8 +797,8 @@ void cycleMarkFinder()
   // 1: blue crosses, 2: green stars
 
   plt.addDataArrays(N, &x[0]);
-  //plt.addDataArrays(Nz, &cm1[0], &cmy[0]);    
-  plt.addDataArrays(Nz, &cm2[0], &cmy[0]);
+  plt.addDataArrays(cm1.size(), &cm1[0], &cmy[0]);    
+  plt.addDataArrays(cm2.size(), &cm2[0], &cmy[0]);
   plt.setGraphStyles("lines", "points", "points");
   plt.setPixelSize(1000, 300);
   plt.plot();
