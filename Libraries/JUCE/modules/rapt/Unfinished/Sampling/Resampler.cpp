@@ -363,10 +363,71 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 {
   return findCycleMarksByCorrelationOld(x, N); // preliminary
 
+
+
+  // select a sample index n in the middle and estimate frequency there:
+  int nCenter = N/2;
+  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(
+    x, N, nCenter, fs, fMin, fMax);
+
+  // create temporary signal to work with:
+  std::vector<T> y(N);
+  if(correlationHighpass > 0)
+    rsBiDirectionalFilter::applyButterworthHighpass(
+      x, &y[0], N, f0*correlationHighpass, fs, 4, 1);
+  else
+    rsArray::copyBuffer(x, &y[0], N);
+
+
+
+
+
+  T p = fs/f0; // curent period estimate (currently at nCenter)
+
+
+  // temporary arrays for left and right cycles and their cross-correlation sequence:
+  int maxLength = 5000; // preliminary - use something based on the maximum time-delta between the cycle-marks in cm array
+  std::vector<T> cl(maxLength), cr(maxLength), corr(2*maxLength-1);
+  //int left = (int) cm[0];
+
+  // nCenter serves as the initial cycle mark - from there, find the next one to the left by 
+  // correlating two segments of length p (or maybe 2*pn with windowing? - maybe experiment)
   std::vector<T> z;
-  // ...
+  z.reserve((int) ceil(2*p));  // estimated size needed is p, so 2*pn should be more than enough
+
+
+  // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
+  // current estimate of the period):
+  int right = nCenter;
+  int left  = right - (int) ::round(p);
+  z.push_back(right);  // nCenter = right serves as the initial cycle mark
+  while(left > 0)
+  {
+    // ....
+
+    // p = ... // update instantaneous period estimate
+    right = left;
+    left  = right - (int) ::round(p);
+  }
+  rsArray::reverse(&z[0], (int) size(z)); // bring marks in 1st half into ascending order
+
+
+  // find cycle-marks to the right of nCenter (which is currently the last element in z):
+  left = (int) ::round(z[z.size()-1]);
+  p = z[left] - z[left-1];
+  right = left + (int) ::round(p);
+  while(right < N)
+  {
+    // ....
+
+    // p = 
+    left  = right;
+    right = left + (int) ::round(p);
+  }
+
   return z;
 }
+
 
 template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
