@@ -706,6 +706,9 @@ std::vector<double> cycleMarkTestSignal2(int N, double f, double fs)
   // 1+sqrt(5) = 2*goldenRatio to the first. This makes the second partial's ratio close to
   // 3 but very inharmonic (the golden ratio is in some sense the most irrational number)
 
+  // or maybe let both be steady?...maybe try both - provide another parameter for the decay-rate
+  // if zero, theres no decay...maybe define decayRate = 1/decayTime
+
   vector<double> x(N);
 
   // two partial frequencies:
@@ -714,8 +717,14 @@ std::vector<double> cycleMarkTestSignal2(int N, double f, double fs)
 
   // their amplitudes:
   double a1 = 1.0;
-  double a2 = 1.0;
+  double a2 = 1.0/3.0;
   double d2 = 0.1;  // decay time of 2nd partial (1st is steady)
+
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = a1*sin(w1*n) + a2*sin(w2*n); // todo: include decay
+    //x[n] = a1*sin(w1*n) + a2*exp(-n/(d2*fs))*sin(w2*n); // check formula for decay
+  }
 
   // ...
 
@@ -724,14 +733,14 @@ std::vector<double> cycleMarkTestSignal2(int N, double f, double fs)
 void cycleMarkFinder()
 {
   // user parameters:
-  static const int N  = 1000;  // number of samples
+  static const int N  = 2000;  // number of samples
   double fs = 44100;           // samplerate in Hz
   double f  = 1000.0;          // signal frequency
 
   // create test input signal:
   vector<double> x;
-  x = cycleMarkTestSignal1(N, f, fs); // sine wave at frequency f
-  //x = cycleMarkTestSignal2(N, f, fs); // sine at f + decaying sine at f*(1+sqrt(5))
+  //x = cycleMarkTestSignal1(N, f, fs); // sine wave at frequency f
+  x = cycleMarkTestSignal2(N, f, fs); // sine at f + decaying sine at f*(1+sqrt(5))
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
