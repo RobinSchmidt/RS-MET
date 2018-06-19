@@ -287,6 +287,10 @@ protected:
   correlation. */
   void refineCycleMarksByCorrelation(T *x, int N, std::vector<T>& cm, T f0);
 
+
+
+
+
   /** \name Data */
   T fs;                         /**< sample rate */
   T fMin;                       /**< minimum expected fundamental */
@@ -297,6 +301,15 @@ protected:
   int    algo = 0;              /**< algorithm to use */
   int    precision = 3;
   int    bandpassSteepness   = 3;
+
+
+
+  T maxCorrelationLag(T* x, int N, int left, int right);
+   // experimental
+
+
+  // tempoaries to hold left and right cycle (estimate) and their cross-correlation
+  std::vector<T> cl, cr, corr;
 
 };
 
