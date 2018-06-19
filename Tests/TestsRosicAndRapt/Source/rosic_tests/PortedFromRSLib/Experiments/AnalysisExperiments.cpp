@@ -693,17 +693,45 @@ void zeroCrossingFinder2()
   int dummy = 0;
 }
 
+std::vector<double> cycleMarkTestSignal1(int N, double f, double fs)
+{
+  // a simple sine wave
+  vector<double> x(N);
+  createSineWave(&x[0], N, f, 1.0, fs);
+  return x;
+}
+std::vector<double> cycleMarkTestSignal2(int N, double f, double fs)
+{
+  // Combination of a steady and a decaying sine wave, the 2nd having a frequency-ratio of
+  // 1+sqrt(5) = 2*goldenRatio to the first. This makes the second partial's ratio close to
+  // 3 but very inharmonic (the golden ratio is in some sense the most irrational number)
+
+  vector<double> x(N);
+
+  // two partial frequencies:
+  double w1 = 2*PI*f/fs;
+  double w2 = w1 * (1+sqrt(5));
+
+  // their amplitudes:
+  double a1 = 1.0;
+  double a2 = 1.0;
+  double d2 = 0.1;  // decay time of 2nd partial (1st is steady)
+
+  // ...
+
+  return x;
+}
 void cycleMarkFinder()
 {
-  // create input:
+  // user parameters:
   static const int N  = 1000;  // number of samples
   double fs = 44100;           // samplerate in Hz
   double f  = 1000.0;          // signal frequency
-  vector<double> x(N);         // input signal
 
-
-  createSineWave(&x[0], N, f, 1.0, fs);
-    // too simple - try something that has inharmonic partials (maybe 2*goldenRatio)
+  // create test input signal:
+  vector<double> x;
+  x = cycleMarkTestSignal1(N, f, fs); // sine wave at frequency f
+  //x = cycleMarkTestSignal2(N, f, fs); // sine at f + decaying sine at f*(1+sqrt(5))
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
@@ -749,6 +777,7 @@ void cycleMarkFinder()
   plt.setPixelSize(1000, 300);
   plt.plot();
 }
+
 
 void applyBellFilter(double *x, double *y, int N, double f, double fs, double b, double g)
 {

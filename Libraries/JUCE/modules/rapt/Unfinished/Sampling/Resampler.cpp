@@ -361,7 +361,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
 template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 {
-  //return findCycleMarksByCorrelationOld(x, N); // preliminary
+  return findCycleMarksByCorrelationOld(x, N); // preliminary
 
 
 
