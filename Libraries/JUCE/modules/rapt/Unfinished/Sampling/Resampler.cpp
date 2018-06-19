@@ -403,9 +403,27 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
   while(left > 0)
   {
-    // ....
+    int halfLength = rsFloorInt(correlationLength * 0.5 * (right-left));
+    int length     = 2*halfLength;
 
-    // p = ... // update instantaneous period estimate
+    // prepare buffers for correlation computation:
+    cl.resize(length); // maybe use raw arrays instead of vectors, avoid memory re-allocations
+    cr.resize(length);
+    corr.resize(2*length-1);
+    rsArray::copySection(&y[0], N, &cl[0],  left-halfLength, length);
+    rsArray::copySection(&y[0], N, &cr[0], right-halfLength, length);
+
+    // use a matched filter to do the correlation,
+    // see here: https://en.wikipedia.org/wiki/Matched_filter
+    rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
+    rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
+    T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
+    //delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
+
+    // todo: factor out stuff above
+
+    z.push_back(left + delta);
+    p = z[z.size()-1] - z[z.size()-2];
     right = left;
     left  = right - (int) ::round(p);
   }
@@ -427,6 +445,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 
   return z;
 }
+
 
 
 template<class T>
