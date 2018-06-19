@@ -739,8 +739,8 @@ void cycleMarkFinder()
 
   // create test input signal:
   vector<double> x;
-  //x = cycleMarkTestSignal1(N, f, fs); // sine wave at frequency f
-  x = cycleMarkTestSignal2(N, f, fs); // sine at f + decaying sine at f*(1+sqrt(5))
+  x = cycleMarkTestSignal1(N, f, fs); // sine wave at frequency f
+  //x = cycleMarkTestSignal2(N, f, fs); // sine at f + decaying sine at f*(1+sqrt(5))
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
@@ -779,8 +779,10 @@ void cycleMarkFinder()
   //plt.addDataArrays(deltas.size(), &deltas[0]); // test
   //plt.plot();
 
+  // 1: blue crosses, 2: green stars
+
   plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays(Nz, &cm1[0], &cmy[0]);
+  //plt.addDataArrays(Nz, &cm1[0], &cmy[0]);    
   plt.addDataArrays(Nz, &cm2[0], &cmy[0]);
   plt.setGraphStyles("lines", "points", "points");
   plt.setPixelSize(1000, 300);

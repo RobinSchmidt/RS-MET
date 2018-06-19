@@ -361,7 +361,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
 template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 {
-  return findCycleMarksByCorrelationOld(x, N); // preliminary
+  //return findCycleMarksByCorrelationOld(x, N); // preliminary
 
 
 
@@ -383,7 +383,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   // nCenter serves as the initial cycle mark - from there, find the next one to the left by 
   // correlating two segments of length p (or maybe 2*pn with windowing? - maybe experiment)
   std::vector<T> z;
-  z.reserve((int) ceil(2*p));  // estimated size needed is p, so 2*pn should be more than enough
+  z.reserve((int) 2*ceil(N/p));  // estimated size needed is N/p, so twice that value should be more than enough
 
   // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
   // current estimate of the period):
@@ -394,7 +394,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   {
     T delta = maxCorrelationLag(&y[0], N, left, right); // maybe needs an offset?
     z.push_back(left - delta);  
-    p = z[z.size()-1] - z[z.size()-2];
+    p = z[z.size()-2] - z[z.size()-1];
 
     right = left;
     left  = right - (int) ::round(p);
