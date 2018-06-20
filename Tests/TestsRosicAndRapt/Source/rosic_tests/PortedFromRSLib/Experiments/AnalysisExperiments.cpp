@@ -745,18 +745,20 @@ void cycleMarkFinder()
   static const int N  = 4000;  // number of samples
   double fs = 44100;           // samplerate in Hz
   double f  = 1000.0;          // signal frequency
-
-  fs = 44000;                  // test: cycle exactly 44 samples long
+  double corrLength = 3.0;     // length of correlation (in terms of cycles)
+  //fs = 44000;                  // test: cycle exactly 44 samples long
   //fs = 44500;                  // test: cycle exactly 44.5 samples long
+  //fs = 44700; 
 
   // create test input signal:
   vector<double> x;
-  x = cycleMarkTestSignal1(N, f, fs); // sine wave at frequency f
-  //x = cycleMarkTestSignal2(N, f, fs); // sine at f + decaying sine at f*(1+sqrt(5))
+  //x = cycleMarkTestSignal1(N, f, fs); // sine wave at frequency f
+  x = cycleMarkTestSignal2(N, f, fs); // sine at f + decaying sine at f*(1+sqrt(5))
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
   vector<double> cm1, cm2;
+  cmf.setRelativeCorrelationLength(corrLength);
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS); 
   cm1 = cmf.findCycleMarks(&x[0], N);
   cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION); 

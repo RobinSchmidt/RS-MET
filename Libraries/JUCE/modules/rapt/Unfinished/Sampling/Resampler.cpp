@@ -362,10 +362,6 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
 template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 {
-  //return findCycleMarksByCorrelationOld(x, N); // preliminary
-
-
-
   // select a sample index n in the middle and estimate frequency there:
   int nCenter = N/2;
   T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(
@@ -423,6 +419,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   }
 
   return z;
+
+  // maybe refine by letting the very 1st cycle mark be at0 and shift all others
 }
 
 template<class T>
@@ -440,13 +438,8 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   rsAssert(left  >= 0);
   rsAssert(right <  N);
   rsAssert(right >  left);
-
-
-  T correlationLength = 3;  // test/debug - overrides member setting (of 1)
-
   int halfLength = rsFloorInt(correlationLength * 0.5 * (right-left));
   int length     = 2*halfLength;
-
   rsAssert(length >= 2);
 
   // prepare buffers for correlation computation:
@@ -458,17 +451,20 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   applyWindow(&cl[0], length);
   applyWindow(&cr[0], length);
 
+  // use a matched filter to get the cross-correlation sequence,
+  // see here: https://en.wikipedia.org/wiki/Matched_filter
+  rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
+  rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
+
 #ifdef DEBUG_PLOTTING
   // plot the signal chunks:
   GNUPlotter plt; // #define DEBUG_PLOTTING in rapt.h to make it work
   plt.addDataArrays(length, &cl[0]);
   plt.addDataArrays(length, &cr[0]);
+  rsArray::scale(&corr[0], 2*length-1, 1./halfLength);
+  plt.addDataArrays(2*length-1, &corr[0]);
+  plt.plot();
 #endif
-
-  // use a matched filter to get the cross-correlation sequence,
-  // see here: https://en.wikipedia.org/wiki/Matched_filter
-  rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
-  rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
 
   // from the cross-correlation, find the correlation lag for a best match:
   T maxPos  = rsMaxPosition(&corr[0], 2*length-1);
@@ -477,36 +473,10 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   T period = bestLag * T(right-left) / T(length);
   // seems like dividing by correlationLength is better than dividing by the actual length-ratio
   // T(length) / T(right-left) which might be slightly different due to rounding to integers when
-  // computing period (tried with a sine with period length of 45.5 cycles)
+  // computing period (tried with a sine with period length of 45.5 cycles) ..or well, not seems
+  // the exact ratio is better...makes more sense - but maybe more tests are needed
 
-  // factor out code up to here into periodByCorrelation
-
-
-#ifdef DEBUG_PLOTTING
-  rsArray::scale(&corr[0], 2*length-1, 1./halfLength);
-  plt.addDataArrays(2*length-1, &corr[0]);
-  plt.plot();
-#endif
-
-  // factor code below into periodErrorByCorrelation
-
-  // if (left,right) already are optimal, their difference right-left should match bestLag
-  // the difference (right-left) is supposed to be an initial estimate for the period-length and 
-  // this function is supposed to 
-
-  T test =  T(length) / T(right-left); // should be close to correlationLength but not exactly due
-                                       // rounding to integers
-   
-  //T period = bestLag * T(right-left) / T(length);
-
-  //T period = bestLag / test;
-  T error  = period - T(right-left);
-
-  //T delta  = bestLag - length;
-  //delta *= T(right-left) / T(length); // right? or wrong?
-
-
-  return error;
+  return period - T(right-left);
 }
 
 template<class T>
