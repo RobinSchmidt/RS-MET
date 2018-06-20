@@ -393,11 +393,14 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
   while(true)
   {
-    T delta = maxCorrelationLag(&y[0], N, left, right); // maybe needs an offset?
+    T delta = periodErrorByCorrelation(&y[0], N, left, right); // maybe needs an offset?
     z.push_back(left - delta);  
     p = z[z.size()-2] - z[z.size()-1];
     right = left;
     left  = right - (int) ::round(p);
+
+    //T error = periodErrorByCorrelation(&y[0], N, left, right);
+
     if(left <= 0)
       break;
   }
@@ -409,7 +412,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   right = left + (int) ::round(p);
   while(true)
   {
-    T delta = maxCorrelationLag(&y[0], N, left, right); // maybe needs an offset (maybe another than above)?
+    T delta = periodErrorByCorrelation(&y[0], N, left, right); // maybe needs an offset (maybe another than above)?
     z.push_back(right + delta);  
     p = z[z.size()-1] - z[z.size()-2];
     left  = right;
@@ -431,7 +434,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
 }
 
 template<class T>
-T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
+T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int right)
 {
   rsAssert(left  >= 0);
   rsAssert(right <  N);
@@ -469,20 +472,13 @@ T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
   // from the cross-correlation, find the correlation lag for a best match:
   T maxPos  = rsMaxPosition(&corr[0], 2*length-1);
   T bestLag = maxPos + 1;       // found by trial and error - but why the +1?
+  T period  = bestLag / correlationLength;
+  // seems like dividing by correlationLength is better than dividing by the actual length-ratio
+  // T(length) / T(right-left) which might be slightly different due to rounding to integers when
+  // computing period (tried with a sine with period length of 45.5 cycles)
 
+  // factor out code up to here into periodByCorrelation
 
-  // if (left,right) already are optimal, their difference right-left should match bestLag
-
-  T test =  T(length) / T(right-left); // should be close to correlationLength but not exactly due
-                                       // rounding to integers
-   
-  //T period = bestLag * T(right-left) / T(length);
-  T period = bestLag / correlationLength;
-  //T period = bestLag / test;
-  T delta  = T(right-left) - period;
-
-  //T delta  = bestLag - length;
-  //delta *= T(right-left) / T(length); // right? or wrong?
 
 #ifdef DEBUG_PLOTTING
   rsArray::scale(&corr[0], 2*length-1, 1./halfLength);
@@ -490,7 +486,25 @@ T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
   plt.plot();
 #endif
 
-  return delta;
+  // factor code below into periodErrorByCorrelation
+
+  // if (left,right) already are optimal, their difference right-left should match bestLag
+  // the difference (right-left) is supposed to be an initial estimate for the period-length and 
+  // this function is supposed to 
+
+  T test =  T(length) / T(right-left); // should be close to correlationLength but not exactly due
+                                       // rounding to integers
+   
+  //T period = bestLag * T(right-left) / T(length);
+
+  //T period = bestLag / test;
+  T error  = period - T(right-left);
+
+  //T delta  = bestLag - length;
+  //delta *= T(right-left) / T(length); // right? or wrong?
+
+
+  return error;
 }
 
 template<class T>

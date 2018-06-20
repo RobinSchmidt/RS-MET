@@ -307,13 +307,13 @@ protected:
   successive cycles in the signal x assumed to be of length N. This function computes 
   cross-correlation between two chunks of x, centered at left and right respectively (the length
   is determined by k*(right-left), where k is a user constant set by setRelativeCorrelationLength
-  and is 1 by default). The return value is the time lag (in samples) at which this 
-  cross-correlation has its maximum. If left and right are indeed the correct cycle start-points, 
-  it should be zero. If it's nonzero, the returned value can be used to refine either the left mark
-  by subtracting the returned value or to refine the right mark by adding the returned value 
-  (todo: verify/test this).  */
-  T maxCorrelationLag(T* x, int N, int left, int right);
-   // experimental
+  and is 1 by default) and computes an estimate for the signal period from the cross-correlation
+  sequence. The return value is the error between the initial period estimate given by the 
+  difference (right-left) and the estimated period, i.e. error = period - (right-left). If left and 
+  right are indeed the correct cycle start-points, it should be zero. If it's nonzero, the returned 
+  value can be used to refine either the left mark by subtracting the returned value or to refine 
+  the right mark by adding the returned value..  */
+  T periodErrorByCorrelation(T* x, int N, int left, int right);
 
   /** Applies the window function to sequence x of length N (used in maxCorrelationLag). */
   void applyWindow(T* x, int N);
