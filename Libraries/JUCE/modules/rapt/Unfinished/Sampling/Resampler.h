@@ -315,6 +315,8 @@ protected:
   T maxCorrelationLag(T* x, int N, int left, int right);
    // experimental
 
+  /** Applies the window function to sequence x of length N (used in maxCorrelationLag). */
+  void applyWindow(T* x, int N);
 
   // tempoaries to hold left and right cycle (estimate) and their cross-correlation
   std::vector<T> cl, cr, corr;

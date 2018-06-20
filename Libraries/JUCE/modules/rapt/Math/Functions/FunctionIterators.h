@@ -85,8 +85,8 @@ public:
   RS_INLINE T getValue()
   {
     T tmp = a1*s1 - s2;
-    s2         = s1;
-    s1         = tmp;
+    s2 = s1;
+    s1 = tmp;
     return tmp;
   }
 
@@ -98,13 +98,8 @@ protected:
 };
 
 /*
-class RSLib_API rsSineCosineIterator : public rsComplexExponentialIterator
-{
-
-};
-class RSLib_API rsExponentialIterator
-{
-
-};
+todo:
+rsSineCosineIterator : public rsComplexExponentialIterator
+rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator, rsPolynomialIterator
 */
 #endif

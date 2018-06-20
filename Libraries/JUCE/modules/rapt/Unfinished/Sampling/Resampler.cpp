@@ -421,11 +421,23 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 }
 
 template<class T>
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
+{
+  std::vector<T> z = findCycleMarksByFundamentalZeros(x, N); // initial estimates
+  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
+  refineCycleMarksByCorrelation(x, N, z, f0);
+  return z;
+}
+
+template<class T>
 T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
 {
   rsAssert(left  >= 0);
   rsAssert(right <  N);
   rsAssert(right >  left);
+
+
+  //T correlationLength = 2;  // test/debug - overrides member setting (of 1)
 
   int halfLength = rsFloorInt(correlationLength * 0.5 * (right-left));
   int length     = 2*halfLength;
@@ -438,6 +450,15 @@ T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
   corr.resize(2*length-1);
   rsArray::copySection(x, N, &cl[0],  left-halfLength, length);
   rsArray::copySection(x, N, &cr[0], right-halfLength, length);
+  applyWindow(&cl[0], length);
+  applyWindow(&cr[0], length);
+
+#ifdef DEBUG_PLOTTING
+  // plot the signal chunks:
+  GNUPlotter plt; // #define DEBUG_PLOTTING in rapt.h to make it work
+  plt.addDataArrays(length, &cl[0]);
+  plt.addDataArrays(length, &cr[0]);
+#endif
 
   // use a matched filter to do the correlation,
   // see here: https://en.wikipedia.org/wiki/Matched_filter
@@ -448,23 +469,26 @@ T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
   T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
   //T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 0.5;
 
-  //// plot the signal chunks:
-  //GNUPlotter plt; // #define DEBUG_PLOTTING in rapt.h to make it work
-  //plt.addDataArrays(length, &cl[0]);
-  //plt.addDataArrays(length, &cr[0]);
-  //plt.plot();
+  //delta *= T(right-left) / T(length);
+
+#ifdef DEBUG_PLOTTING
+  rsArray::scale(&corr[0], 2*length-1, 1./halfLength);
+  plt.addDataArrays(2*length-1, &corr[0]);
+  plt.plot();
+#endif
 
   return delta;
 }
 
-
 template<class T>
-std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
+void rsCycleMarkFinder<T>::applyWindow(T* x, int N)
 {
-  std::vector<T> z = findCycleMarksByFundamentalZeros(x, N); // initial estimates
-  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
-  refineCycleMarksByCorrelation(x, N, z, f0);
-  return z;
+  T halfN = T(0.5) * T(N);
+  for(int n = 0; n < N; n++)
+    x[n] *= rsCosineSquaredWindow(T(n)-halfN, T(N));
+
+  // todo: optimize (using some kind of rsWindowIterator class), flexibilize (allow client to 
+  // select window)
 }
 
 //=================================================================================================
