@@ -746,6 +746,9 @@ void cycleMarkFinder()
   double fs = 44100;           // samplerate in Hz
   double f  = 1000.0;          // signal frequency
 
+  //fs = 44000;                  // test: cycle exactly 44 samples long
+  fs = 44500;                  // test: cycle exactly 44.5 samples long
+
   // create test input signal:
   vector<double> x;
   x = cycleMarkTestSignal1(N, f, fs); // sine wave at frequency f

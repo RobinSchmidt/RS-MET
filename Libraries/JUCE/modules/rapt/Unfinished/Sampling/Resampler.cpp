@@ -245,9 +245,10 @@ std::vector<T> rsZeroCrossingFinder::bandpassedUpwardCrossings(T *x, int N, T fc
 
 //=================================================================================================
 
-// move to rsArray:
+// move to rsArray, maybe get rid of using rsPolynomial<T>::fitQuadratic (formula simplifies 
+// because x-values are simple)
 template<class T>
-T rsMaxPosition(T *buffer, int N)
+T rsMaxPosition(T* buffer, int N)
 {
   int i = rsArray::maxIndex(buffer, N);
 
@@ -262,8 +263,8 @@ T rsMaxPosition(T *buffer, int N)
   if( abs(2*a[2]) >= abs(a[1]) ) // abs(offset) shall be <= 1
     offset = -a[1] / (2*a[2]);   // maximum of the parabola (zero-crossing of its slope)
 
-  return i; // for test
-  //return i + offset;  // also test
+  //return i; // for test
+  return i + offset;  // also test
   //return i - offset;
   // figure out first, if it has to be + or - (i think +), then check, if the added constant in
   // the delta computation in line 302 should be 0.5, 1, 1.5 (or something else)
@@ -437,7 +438,7 @@ T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
   rsAssert(right >  left);
 
 
-  //T correlationLength = 2;  // test/debug - overrides member setting (of 1)
+  T correlationLength = 3;  // test/debug - overrides member setting (of 1)
 
   int halfLength = rsFloorInt(correlationLength * 0.5 * (right-left));
   int length     = 2*halfLength;
@@ -460,16 +461,28 @@ T rsCycleMarkFinder<T>::maxCorrelationLag(T* x, int N, int left, int right)
   plt.addDataArrays(length, &cr[0]);
 #endif
 
-  // use a matched filter to do the correlation,
+  // use a matched filter to get the cross-correlation sequence,
   // see here: https://en.wikipedia.org/wiki/Matched_filter
   rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
   rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
-  //T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
-  //T delta = rsMaxPosition(&corr[0], 2*length-1) - length; // is +1.5 correct? was found by trial and error
-  T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
-  //T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 0.5;
 
-  //delta *= T(right-left) / T(length);
+  // from the cross-correlation, find the correlation lag for a best match:
+  T maxPos  = rsMaxPosition(&corr[0], 2*length-1);
+  T bestLag = maxPos + 1;       // found by trial and error - but why the +1?
+
+
+  // if (left,right) already are optimal, their difference right-left should match bestLag
+
+  T test =  T(length) / T(right-left); // should be close to correlationLength but not exactly due
+                                       // rounding to integers
+   
+  //T period = bestLag * T(right-left) / T(length);
+  T period = bestLag / correlationLength;
+  //T period = bestLag / test;
+  T delta  = T(right-left) - period;
+
+  //T delta  = bestLag - length;
+  //delta *= T(right-left) / T(length); // right? or wrong?
 
 #ifdef DEBUG_PLOTTING
   rsArray::scale(&corr[0], 2*length-1, 1./halfLength);
