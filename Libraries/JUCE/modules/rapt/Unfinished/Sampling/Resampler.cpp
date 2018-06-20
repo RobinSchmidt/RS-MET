@@ -388,40 +388,36 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 
   // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
   // current estimate of the period):
+  T error;
   T right  = nCenter;
   T left   = right - p;
   T length = right-left; 
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
   while(true)
   {
-    //T delta = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right));
-    //z.push_back(left - delta);  
-    //p = z[z.size()-2] - z[z.size()-1];
-    //right = left;
-    //left  = right - (int) ::round(p);
-
-    T error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right));
+    error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right));
     left -= error;
     z.push_back(left);
-    length = right-left;
+    length = right - left;
     right  = left;
-    left   = right-length;
+    left   = right - length;
     if(left <= 0)
       break;
   }
   rsArray::reverse(&z[0], (int) size(z)); // bring marks in 1st half into ascending order
 
   // find cycle-marks to the right of nCenter (which is currently the last element in z):
-  left = (int) ::round(z[z.size()-1]);
-  p = z[z.size()-1] - z[z.size()-2];
-  right = left + (int) ::round(p);
+  left  = z[z.size()-1];
+  length = z[z.size()-1] - z[z.size()-2];
+  right = left + length;
   while(true)
   {
-    T delta = periodErrorByCorrelation(&y[0], N, left, right); // maybe needs an offset (maybe another than above)?
-    z.push_back(right + delta);  
-    p = z[z.size()-1] - z[z.size()-2];
-    left  = right;
-    right = left + (int) ::round(p);
+    error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right));
+    right += error;
+    z.push_back(right);  
+    length = right - left;
+    left   = right;
+    right  = left + length;
     if(right >= N)
       break;
   }
