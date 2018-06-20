@@ -388,19 +388,24 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 
   // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
   // current estimate of the period):
-  int right = nCenter;
-  int left  = right - (int) ::round(p);
+  T right  = nCenter;
+  T left   = right - p;
+  T length = right-left; 
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
   while(true)
   {
-    T delta = periodErrorByCorrelation(&y[0], N, left, right); // maybe needs an offset?
-    z.push_back(left - delta);  
-    p = z[z.size()-2] - z[z.size()-1];
-    right = left;
-    left  = right - (int) ::round(p);
+    //T delta = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right));
+    //z.push_back(left - delta);  
+    //p = z[z.size()-2] - z[z.size()-1];
+    //right = left;
+    //left  = right - (int) ::round(p);
 
-    //T error = periodErrorByCorrelation(&y[0], N, left, right);
-
+    T error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right));
+    left -= error;
+    z.push_back(left);
+    length = right-left;
+    right  = left;
+    left   = right-length;
     if(left <= 0)
       break;
   }
@@ -472,7 +477,8 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   // from the cross-correlation, find the correlation lag for a best match:
   T maxPos  = rsMaxPosition(&corr[0], 2*length-1);
   T bestLag = maxPos + 1;       // found by trial and error - but why the +1?
-  T period  = bestLag / correlationLength;
+  //T period  = bestLag / correlationLength;
+  T period = bestLag * T(right-left) / T(length);
   // seems like dividing by correlationLength is better than dividing by the actual length-ratio
   // T(length) / T(right-left) which might be slightly different due to rounding to integers when
   // computing period (tried with a sine with period length of 45.5 cycles)
