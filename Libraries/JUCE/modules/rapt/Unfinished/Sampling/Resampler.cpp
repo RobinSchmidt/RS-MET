@@ -391,9 +391,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
   while(true)
   {
-    // todo: don't round the values
-
-    error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right));
+    //error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right)); // old
+    error = periodErrorByCorrelation(&y[0], N, left, right);
     left -= error;
     z.push_back(left);
     length = right - left;
@@ -410,7 +409,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   right = left + length;
   while(true)
   {
-    error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right));
+    //error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right)); // old
+    error = periodErrorByCorrelation(&y[0], N, left, right);
     right += error;
     z.push_back(right);  
     length = right - left;
@@ -438,8 +438,11 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
 template<class T>
 T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, T left, T right)
 {
-
-  return 0; // preliminary
+  int iLeft  = rsRoundToInt(left);
+  int iRight = rsRoundToInt(right);
+  T error = periodErrorByCorrelation(x, N, iLeft, iRight);
+  error  -= (right-left) - T(iRight-iLeft);
+  return error;
 }
 
 template<class T>
