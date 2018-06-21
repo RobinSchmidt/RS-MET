@@ -745,9 +745,9 @@ void cycleMarkFinder()
 
   // create test input signal:
   vector<double> x;
-  //x = cycleMarkTestSignal1(N, f, fs);   // sine wave at frequency f
+  x = cycleMarkTestSignal1(N, f, fs);   // sine wave at frequency f
   //x = cycleMarkTestSignal2(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
-  x = cycleMarkTestSignal2(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
+  //x = cycleMarkTestSignal2(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
@@ -769,12 +769,19 @@ void cycleMarkFinder()
   // maybe compute the variance of the difference, too - maybe with a steady inharmonic input, this
   // value may say something about the stability of the pitch estimate over time in the presence
   // of inharmonicity - maybe a good cycle-mark finder should give a low variance?
+  // maybe compute the min/max values of the differences and the maximum absolute deviation from
+  // the true/desired value, maybe make a data structure, rsCycleMarkQualityMeasures (maybe one
+  // that can be returned from rsCycleMarkFinder itself (using as input an array of cycle marks and
+  // a period length)
 
 
   // plot signal and cycle marks:
   int Nz = (int) std::max(cm1.size(), cm2.size()); // # cycle marks
   vector<double> cmy(Nz);    // y values for plotting (all zero)
   GNUPlotter plt;
+
+  // hmm . currently, it seems that increasing the corrLength has a negative effect on the quality
+  // of the marks (3 is worse than 1, for example) - investigate, why
 
   // todo: the CYCLE_CORRELATION algorithm may fail due to the refined marks overrunning
   // the unrefined ones 
