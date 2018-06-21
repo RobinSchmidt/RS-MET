@@ -700,14 +700,13 @@ std::vector<double> cycleMarkTestSignal1(int N, double f, double fs)
   createSineWave(&x[0], N, f, 1.0, fs);
   return x;
 }
-std::vector<double> cycleMarkTestSignal2(int N, double f, double fs)
+std::vector<double> cycleMarkTestSignal2(int N, double f, double fs, double decay = 0)
 {
   // Combination of a steady and a decaying sine wave, the 2nd having a frequency-ratio of
   // 1+sqrt(5) = 2*goldenRatio to the first. This makes the second partial's ratio close to
-  // 3 but very inharmonic (the golden ratio is in some sense the most irrational number)
-
-  // or maybe let both be steady?...maybe try both - provide another parameter for the decay-rate
-  // if zero, theres no decay...maybe define decayRate = 1/decayTime
+  // 3 but very inharmonic (the golden ratio is in some sense the most irrational number).
+  // The decay is given as 1/tau where tau is the decay time in seconds. So, a decay parameter
+  // of 0 makes the 2nd partial steady, too.
 
   vector<double> x(N);
 
@@ -718,16 +717,10 @@ std::vector<double> cycleMarkTestSignal2(int N, double f, double fs)
   // their amplitudes:
   double a1 = 1.0;
   double a2 = 1.0/3.0;
-  double d2 = 0.1;  // decay time of 2nd partial (1st is steady)
+  double tau = 1/decay;  // decay time of 2nd partial (1st is steady)
 
   for(int n = 0; n < N; n++)
-  {
-    x[n] = a1*sin(w1*n) + a2*sin(w2*n); // todo: include decay
-    //x[n] = a1*sin(w1*n) + a2*exp(-n/(d2*fs))*sin(w2*n); // check formula for decay
-  }
-
-  // ...
-
+    x[n] = a1 * sin(w1*n) + a2 * exp(-(n/fs)/tau) * sin(w2*n);
   return x;
 }
 
@@ -745,15 +738,16 @@ void cycleMarkFinder()
   static const int N  = 4000;  // number of samples
   double fs = 44100;           // samplerate in Hz
   double f  = 1000.0;          // signal frequency
-  double corrLength = 3.0;     // length of correlation (in terms of cycles)
+  double corrLength = 1.0;     // length of correlation (in terms of cycles)
   //fs = 44000;                  // test: cycle exactly 44 samples long
   //fs = 44500;                  // test: cycle exactly 44.5 samples long
   //fs = 44700; 
 
   // create test input signal:
   vector<double> x;
-  //x = cycleMarkTestSignal1(N, f, fs); // sine wave at frequency f
-  x = cycleMarkTestSignal2(N, f, fs); // sine at f + decaying sine at f*(1+sqrt(5))
+  //x = cycleMarkTestSignal1(N, f, fs);   // sine wave at frequency f
+  //x = cycleMarkTestSignal2(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
+  x = cycleMarkTestSignal2(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
@@ -767,10 +761,14 @@ void cycleMarkFinder()
   vector<double> deltas(cm1.size());
   RAPT::rsArray::subtract(&cm1[0], &cm2[0], &deltas[0], (int)cm1.size());
 
-  // compute average distances between the cycle-marks - the correct value would be fs/f
+  // compute average distances between the cycle-marks - the correct value would be fs/f for a
+  // periodic input
   double dAvg1, dAvg2;
-  dAvg1 = meanDifference(&cm1[0], size(cm1));
-  dAvg2 = meanDifference(&cm2[0], size(cm2));
+  dAvg1 = meanDifference(&cm1[0], (int)size(cm1));
+  dAvg2 = meanDifference(&cm2[0], (int)size(cm2));
+  // maybe compute the variance of the difference, too - maybe with a steady inharmonic input, this
+  // value may say something about the stability of the pitch estimate over time in the presence
+  // of inharmonicity - maybe a good cycle-mark finder should give a low variance?
 
 
   // plot signal and cycle marks:
@@ -802,8 +800,8 @@ void cycleMarkFinder()
   // 1: blue crosses, 2: green stars
 
   plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays(cm1.size(), &cm1[0], &cmy[0]);    
-  plt.addDataArrays(cm2.size(), &cm2[0], &cmy[0]);
+  plt.addDataArrays((int)cm1.size(), &cm1[0], &cmy[0]);    
+  plt.addDataArrays((int)cm2.size(), &cm2[0], &cmy[0]);
   plt.setGraphStyles("lines", "points", "points");
   plt.setPixelSize(1000, 300);
   plt.plot();

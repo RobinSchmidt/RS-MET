@@ -380,7 +380,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   // nCenter serves as the initial cycle mark - from there, find the next one to the left by 
   // correlating two segments of length p (or maybe 2*pn with windowing? - maybe experiment)
   std::vector<T> z;
-  z.reserve((int) 2*ceil(N/p));  // estimated size needed is N/p, so twice that value should be more than enough
+  z.reserve((int) (2*ceil(N/p))); // estimated size needed is N/p, so twice that value should be more than enough
 
   // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
   // current estimate of the period):
@@ -391,6 +391,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
   while(true)
   {
+    // todo: don't round the values
+
     error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right));
     left -= error;
     z.push_back(left);
@@ -432,6 +434,14 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
   return z;
 }
 
+
+template<class T>
+T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, T left, T right)
+{
+
+  return 0; // preliminary
+}
+
 template<class T>
 T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int right)
 {
@@ -456,12 +466,13 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
   rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
 
-#ifdef DEBUG_PLOTTING
-  // plot the signal chunks:
+#ifdef RS_DEBUG_PLOTTING
+  // plot the signal chunks and correlation sequence:
   GNUPlotter plt; // #define DEBUG_PLOTTING in rapt.h to make it work
+  rsArray::reverse(&cl[0], length);                     // reverse again for better visual match
+  rsArray::scale(&corr[0], 2*length-1, 1./halfLength);  // to make the same scale as inputs
   plt.addDataArrays(length, &cl[0]);
   plt.addDataArrays(length, &cr[0]);
-  rsArray::scale(&corr[0], 2*length-1, 1./halfLength);
   plt.addDataArrays(2*length-1, &corr[0]);
   plt.plot();
 #endif

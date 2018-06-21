@@ -315,6 +315,11 @@ protected:
   the right mark by adding the returned value..  */
   T periodErrorByCorrelation(T* x, int N, int left, int right);
 
+  T periodErrorByCorrelation(T* x, int N, T left, T right);
+    // should call the function with same name but integer left/right preliminary marks 
+    // maybe make public for testing
+
+
   /** Applies the window function to sequence x of length N (used in maxCorrelationLag). */
   void applyWindow(T* x, int N);
 

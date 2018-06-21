@@ -43,8 +43,8 @@
 // uncomment if you want to plot from rapt code (should be done only temporarily for debugging 
 // sessions in the test project - trying to actually plot stuff will produce linker errors in other 
 // projects):
-//#define DEBUG_PLOTTING
-#ifdef DEBUG_PLOTTING
+//#define RS_DEBUG_PLOTTING
+#ifdef RS_DEBUG_PLOTTING
 #include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
 #endif
 

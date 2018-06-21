@@ -201,7 +201,7 @@ void biquadModulation()
 
   // has to be put into a loop:
   //DSN::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, 1/fs, f, q, g);
-  //DSN::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1/fs, f, q);
+  DSN::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1/fs, f, q);
   // uses + convention for a-coeffs
   //bqd.setCoefficients(b0, b1, b2, a1, a2);
   //stVecFlt.setupFromBiquad(b0, b1, b2, -a1, -a2);

@@ -100,6 +100,9 @@ protected:
 /*
 todo:
 rsSineCosineIterator : public rsComplexExponentialIterator
-rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator, rsPolynomialIterator
+rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator, 
+rsPolynomialIterator,
+for the polynomial iterators, see Salomon - Computer Graphics, page 275ff ("Fast Calculation of the 
+Curve" and page 698 ("Forward Differences")
 */
 #endif
