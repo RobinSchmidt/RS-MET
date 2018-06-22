@@ -290,8 +290,9 @@ public:
     // more to come
   };
 
-  ErrorMeasures getErrorMeasures(const std::vector<T>& cycleMarks, T period);
-
+  ErrorMeasures getErrorMeasures(std::vector<T>& cycleMarks, T period);
+  //ErrorMeasures getErrorMeasures(const std::vector<T>& cycleMarks, T period);
+  // using const gives compiler error - figure our why and use const again
 
 
 protected:

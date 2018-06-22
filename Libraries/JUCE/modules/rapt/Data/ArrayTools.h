@@ -370,6 +370,10 @@ public:
   template <class T>
   static T mean(T *buffer, int length);
 
+  /** Computes the mean of the differences of the array elements. */
+  template <class T>
+  static T meanDifference(T* buffer, int length);
+
   /** Returns the median of the passed buffer. */
   template <class T>
   static T median(T *buffer, int length);

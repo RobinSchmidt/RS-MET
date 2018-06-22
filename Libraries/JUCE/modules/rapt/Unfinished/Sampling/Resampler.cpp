@@ -437,10 +437,22 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
 // introspection:
 
 template<class T>
-typename rsCycleMarkFinder<T>::ErrorMeasures rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T period)
+typename rsCycleMarkFinder<T>::ErrorMeasures 
+rsCycleMarkFinder<T>::getErrorMeasures(std::vector<T>& cycleMarks, T period)
+//rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T period)
 {
   ErrorMeasures errors;
 
+  int N = (int) size(cycleMarks);
+
+  // todo: create an array of the differences (these represent instantaneous period estimates in 
+  // samples)
+
+  T tmp = rsArray::meanDifference(&cycleMarks[0], N);
+
+  errors.errorMean = period - tmp;
+
+  // todo: assign min/max
 
   return errors;
 }

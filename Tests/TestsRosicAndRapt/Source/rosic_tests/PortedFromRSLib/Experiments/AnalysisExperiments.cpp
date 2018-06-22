@@ -724,7 +724,7 @@ std::vector<double> cycleMarkTestSignal2(int N, double f, double fs, double deca
   return x;
 }
 
-double meanDifference(double* x , int N) // move to Utilities or rsArray
+double meanDifference(double* x , int N) // move to rsArray - done - delete here...
 {
   double sum = 0;
   for(int i = 1; i < N; i++)
@@ -823,7 +823,7 @@ void cycleMarkErrors()
   double corrLength = 1.0;     // length of correlation (in terms of cycles)
 
   // maybe have a minPeriod and maxPeriod, for example 99..101 and a stepsize and check for various
-  // periods in between (99.0, 99.1, 99.2,...,100.9, 101.0) and plot the errors as function
+  // periods in between (99.0, 99.1, 99.2, ..., 100.9, 101.0) and plot the errors as function
   // of the period
 
 
