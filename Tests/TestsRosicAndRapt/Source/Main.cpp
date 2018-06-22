@@ -172,7 +172,8 @@ int main(int argc, char* argv[])
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
-  cycleMarkFinder();
+  //cycleMarkFinder();
+  cycleMarkErrors();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
 

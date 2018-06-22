@@ -280,6 +280,20 @@ public:
     // to be deprecated
 
 
+  /** \name Introspection */
+
+
+  /** A datastructure to represent the errors of a cycle-mark analysis. */
+  struct ErrorMeasures
+  {
+    T errorMin, errorMax, errorMean;
+    // more to come
+  };
+
+  ErrorMeasures getErrorMeasures(const std::vector<T>& cycleMarks, T period);
+
+
+
 protected:
 
   /** Refines a given vector of initial estimates of the cycle-marks given in cm by correlating

@@ -781,7 +781,8 @@ void cycleMarkFinder()
   GNUPlotter plt;
 
   // hmm . currently, it seems that increasing the corrLength has a negative effect on the quality
-  // of the marks (3 is worse than 1, for example) - investigate, why
+  // of the marks (3 is worse than 1, for example) - investigate, why - seems, it goes away when
+  // increasing the length (something about the mea-compuatation?)
 
   // todo: the CYCLE_CORRELATION algorithm may fail due to the refined marks overrunning
   // the unrefined ones 
@@ -812,6 +813,11 @@ void cycleMarkFinder()
   plt.setGraphStyles("lines", "points", "points");
   plt.setPixelSize(1000, 300);
   plt.plot();
+}
+void cycleMarkErrors()
+{
+
+  int dummy = 0;
 }
 
 
