@@ -816,6 +816,43 @@ void cycleMarkFinder()
 }
 void cycleMarkErrors()
 {
+  // user parameters:
+  static const int N  = 4000;  // number of samples
+  double fs = 44100;           // samplerate in Hz
+  double period = 100;         // signal period in samples
+  double corrLength = 1.0;     // length of correlation (in terms of cycles)
+
+  // maybe have a minPeriod and maxPeriod, for example 99..101 and a stepsize and check for various
+  // periods in between (99.0, 99.1, 99.2,...,100.9, 101.0) and plot the errors as function
+  // of the period
+
+
+
+
+  // create test input signal:
+  double f = fs/period;       // signal frequency
+  vector<double> x;
+  x = cycleMarkTestSignal1(N, f, fs);   // sine wave at frequency f
+  //x = cycleMarkTestSignal2(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
+  //x = cycleMarkTestSignal2(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
+
+  // find cycle marks by different algorithms:
+  typedef rsCycleMarkFinder<double> CMF;
+  CMF cmf(fs, 20, 5000);
+  vector<double> cm1, cm2;
+  cmf.setRelativeCorrelationLength(corrLength);
+  cmf.setAlgorithm(CMF::F0_ZERO_CROSSINGS); 
+  cm1 = cmf.findCycleMarks(&x[0], N);
+  cmf.setAlgorithm(CMF::CYCLE_CORRELATION); 
+  cm2 = cmf.findCycleMarks(&x[0], N);
+
+
+  CMF::ErrorMeasures errors1, errors2;
+  errors1 = cmf.getErrorMeasures(cm1, period);
+  errors2 = cmf.getErrorMeasures(cm2, period);
+
+
+
 
   int dummy = 0;
 }
