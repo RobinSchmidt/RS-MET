@@ -438,8 +438,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
 
 template<class T>
 typename rsCycleMarkFinder<T>::ErrorMeasures 
-rsCycleMarkFinder<T>::getErrorMeasures(std::vector<T>& cycleMarks, T period)
-//rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T period)
+rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T period)
 {
   ErrorMeasures errors;
 

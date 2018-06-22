@@ -817,10 +817,10 @@ void cycleMarkFinder()
 void cycleMarkErrors()
 {
   // user parameters:
-  static const int N  = 4000;  // number of samples
-  double fs = 44100;           // samplerate in Hz
-  double period = 100;         // signal period in samples
-  double corrLength = 1.0;     // length of correlation (in terms of cycles)
+  static const int N  = 100000;  // number of samples
+  double fs = 44100;             // samplerate in Hz
+  double period = 100;           // signal period in samples
+  double corrLength = 1.0;       // length of correlation (in terms of cycles)
 
   // maybe have a minPeriod and maxPeriod, for example 99..101 and a stepsize and check for various
   // periods in between (99.0, 99.1, 99.2, ..., 100.9, 101.0) and plot the errors as function

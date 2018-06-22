@@ -290,10 +290,16 @@ public:
     // more to come
   };
 
-  ErrorMeasures getErrorMeasures(std::vector<T>& cycleMarks, T period);
-  //ErrorMeasures getErrorMeasures(const std::vector<T>& cycleMarks, T period);
-  // using const gives compiler error - figure our why and use const again
+  /** Given an array of cycle marks (supposedly produced by an object of this class) and a true,
+  known, target value for signal's period in samples (assumed to be static, non-time varying here), 
+  this function returns a data structure containing various measures about the errors in the 
+  cycle-mark array. It mainly intended for quality assessment of the various algorithms. */
+  ErrorMeasures getErrorMeasures(const std::vector<T>& cycleMarks, T period);
 
+  // todo: make a getErrorMeasures function for the case of a time-varying input signal - maybe
+  // it should be given an array of instantaneous periods or frequencies and compare them against
+  // the estimated lengths of the cycles to the left and to the right of the mark, i.e.
+  // error = period - 0.5*(leftEsimate + rightEstimate)
 
 protected:
 

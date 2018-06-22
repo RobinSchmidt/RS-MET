@@ -901,7 +901,7 @@ T rsArray::mean(T *buffer, int length)
 }
 
 template <class T>
-T rsArray::meanDifference(T *x, int N)
+T rsArray::meanDifference(const T *x, int N)
 {
   T s = 0;             // sum (of differences)
   for(int i = 1; i < N; i++)
