@@ -449,7 +449,8 @@ rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T perio
 
   T tmp = rsArray::meanDifference(&cycleMarks[0], N);
 
-  errors.errorMean = period - tmp;
+  // errors are given in percent (of the true period):
+  errors.errorMean = 100*(period-tmp)/period;
 
   // todo: assign min/max
 

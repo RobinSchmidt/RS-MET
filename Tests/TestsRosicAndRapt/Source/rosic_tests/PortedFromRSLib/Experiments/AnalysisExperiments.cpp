@@ -817,46 +817,57 @@ void cycleMarkFinder()
 void cycleMarkErrors()
 {
   // user parameters:
-  static const int N  = 100000;  // number of samples
+  static const int N  = 20000;  // number of samples
   double fs = 44100;             // samplerate in Hz
-  double period = 100;           // signal period in samples
+  double minPeriod  =  98;       // minimum signal period in samples
+  double maxPeriod  = 102;
   double corrLength = 1.0;       // length of correlation (in terms of cycles)
+  int numPeriods    = 41;        // number of signal periodicities between min and max
 
   // maybe have a minPeriod and maxPeriod, for example 99..101 and a stepsize and check for various
   // periods in between (99.0, 99.1, 99.2, ..., 100.9, 101.0) and plot the errors as function
   // of the period
 
 
-
-
-  // create test input signal:
-  double f = fs/period;       // signal frequency
-  vector<double> x;
-  x = cycleMarkTestSignal1(N, f, fs);   // sine wave at frequency f
-  //x = cycleMarkTestSignal2(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
-  //x = cycleMarkTestSignal2(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
-
-  // find cycle marks by different algorithms:
   typedef rsCycleMarkFinder<double> CMF;
   CMF cmf(fs, 20, 5000);
-  vector<double> cm1, cm2;
   cmf.setRelativeCorrelationLength(corrLength);
-  cmf.setAlgorithm(CMF::F0_ZERO_CROSSINGS); 
-  cm1 = cmf.findCycleMarks(&x[0], N);
-  cmf.setAlgorithm(CMF::CYCLE_CORRELATION); 
-  cm2 = cmf.findCycleMarks(&x[0], N);
+  vector<double> x;
+  vector<double> cm1, cm2;
+  vector<double> periods, meanErrors1, meanErrors2;
+  for(int i = 0; i < numPeriods; i++)
+  {
+    // create test input signal:
+    double period = minPeriod + i*(maxPeriod-minPeriod)/(numPeriods-1);
+    double f = fs/period;                 // signal frequency
+    x = cycleMarkTestSignal1(N, f, fs);   // sine wave at frequency f
 
+    // find cycle marks by different algorithms:
+    cmf.setAlgorithm(CMF::F0_ZERO_CROSSINGS);
+    cm1 = cmf.findCycleMarks(&x[0], N);
+    cmf.setAlgorithm(CMF::CYCLE_CORRELATION);
+    cm2 = cmf.findCycleMarks(&x[0], N);
 
-  CMF::ErrorMeasures errors1, errors2;
-  errors1 = cmf.getErrorMeasures(cm1, period);
-  errors2 = cmf.getErrorMeasures(cm2, period);
+    // get errors:
+    CMF::ErrorMeasures errors1, errors2;
+    errors1 = cmf.getErrorMeasures(cm1, period);
+    errors2 = cmf.getErrorMeasures(cm2, period);
 
+    // add measured errors to data arrays for plotting
+    periods.push_back(period);
+    meanErrors1.push_back(errors1.errorMean);
+    meanErrors2.push_back(errors2.errorMean);
+  }
 
+  GNUPlotter plt;
+  int M = (int)periods.size();
+  plt.addDataArrays(M, &periods[0], &meanErrors1[0]);
+  plt.addDataArrays(M, &periods[0], &meanErrors2[0]);
+  plt.plot();
 
-
-  int dummy = 0;
+  // Observations:
+  // -the correlation algorithm seems to have a bias towards overestimating the period length
 }
-
 
 void applyBellFilter(double *x, double *y, int N, double f, double fs, double b, double g)
 {
