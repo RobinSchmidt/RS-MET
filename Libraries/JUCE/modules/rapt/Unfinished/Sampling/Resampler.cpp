@@ -362,6 +362,13 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
 template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 {
+  // problems: 
+  // -it seems the initial estimate of the fundamental is sometimes very off (cello G1
+  //  has a period of 450 samples, the initial estimate is around 319)
+  // -it has problems with initial and final silence/noise-floor - we need some robustification
+  //  ...maybe based on relative signal level and/or max-value of the correlation sequence
+
+
   // select a sample index n in the middle and estimate frequency there:
   int nCenter = N/2;
   T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(
@@ -391,7 +398,6 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
   while(true)
   {
-    //error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right)); // old
     error = periodErrorByCorrelation(&y[0], N, left, right);
     left -= error;
     z.push_back(left);
@@ -409,14 +415,13 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   right = left + length;
   while(true)
   {
-    //error = periodErrorByCorrelation(&y[0], N, rsRoundToInt(left), rsRoundToInt(right)); // old
     error = periodErrorByCorrelation(&y[0], N, left, right);
     right += error;
     z.push_back(right);  
     length = right - left;
     left   = right;
     right  = left + length;
-    if(right >= N)
+    if(right >= N-1)
       break;
   }
 
@@ -523,7 +528,13 @@ void rsCycleMarkFinder<T>::applyWindow(T* x, int N)
 {
   T halfN = T(0.5) * T(N);
   for(int n = 0; n < N; n++)
-    x[n] *= rsCosineSquaredWindow(T(n)-halfN, T(N));
+  {
+    x[n] *= rsCosineSquaredWindow(T(n)-halfN, T(N));  // seems best among those that were tested
+    //x[n] *= rsRaisedCosineWindow(T(n)-halfN, T(N), 0.08);  // Hamming - produces large spikes of the error
+    //x[n] *= rsRaisedCosineWindow(T(n)-halfN, T(N), 0.07672);  // equiripple sidelobes - also spikes
+    //x[n] *= rsExactBlackmanWindow(T(n)-halfN, T(N));  // similar to rsCosineSquaredWindow
+    // maybe try a window that has zeros for the first and second derivative at +-1
+  }
 
   // todo: optimize (using some kind of rsWindowIterator class), flexibilize (allow client to 
   // select window)

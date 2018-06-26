@@ -817,11 +817,11 @@ void cycleMarkFinder()
 void cycleMarkErrors()
 {
   // user parameters:
-  static const int N  = 20000;  // number of samples
+  static const int N  = 20000;   // number of samples
   double fs = 44100;             // samplerate in Hz
-  double minPeriod  =  98;       // minimum signal period in samples
-  double maxPeriod  = 102;
-  double corrLength = 1.0;       // length of correlation (in terms of cycles)
+  double minPeriod  = 48;        // minimum signal period in samples
+  double maxPeriod  = 52;
+  double corrLength = 3.0;       // length of correlation (in terms of cycles)
   int numPeriods    = 41;        // number of signal periodicities between min and max
 
   // maybe have a minPeriod and maxPeriod, for example 99..101 and a stepsize and check for various
@@ -867,6 +867,9 @@ void cycleMarkErrors()
 
   // Observations:
   // -the correlation algorithm seems to have a bias towards overestimating the period length
+  //  when the correlation length is 1, it seems to go down with longer lengths, at 3, it's
+  //  disapperaed
+  //  -try different window functions
 }
 
 void applyBellFilter(double *x, double *y, int N, double f, double fs, double b, double g)
