@@ -226,9 +226,10 @@ public:
   }
 
   /** This sets the length of the correlation that should be used in the CYCLE_CORRELATION
-  algorithm as fraction of the cycle length. Should be at most 1. The larger it is, the more of
-  the neighbourhood of the (old, estimated) cycle-mark will be taken into account to find the
-  new, refined cycle-mark. */
+  algorithm as fraction of the cycle length. The larger it is, the more of the neighbourhood of the 
+  (old, estimated) cycle-mark will be taken into account to find the new, refined cycle-mark. A 
+  value of 1 one means to take a neighbourhood corresponding to one cycle (a half-cycle to the left 
+  and another half-cycle to the right). */
   inline void setRelativeCorrelationLength(T newLength)
   {
     correlationLength = newLength;
