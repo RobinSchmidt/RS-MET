@@ -445,39 +445,29 @@ template<class T>
 typename rsCycleMarkFinder<T>::ErrorMeasures 
 rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T period)
 {
-  ErrorMeasures errors;
-
   int N = (int) size(cycleMarks);
-
-  // todo: create an array of the differences (these represent instantaneous period estimates in 
-  // samples)
-
-  T tmp = rsArray::meanDifference(&cycleMarks[0], N);
-
-  // errors are given in percent (of the true period):
-  errors.errorMean = 100*(period-tmp)/period;
-
-  errors.errorMin = T(0);
-  errors.errorMax = T(0);
-  errors.errorMaxAbs = T(0);
-  for(int i = 1; i < N; i++)
-  {
+  ErrorMeasures errors;
+  errors.mean   = period - rsArray::meanDifference(&cycleMarks[0], N);
+  errors.min    = T(0);
+  errors.max    = T(0);
+  errors.maxAbs = T(0);
+  for(int i = 1; i < N; i++) {
     T estimate = cycleMarks[i] - cycleMarks[i-1];
     T error = period - estimate;
-    if(error < errors.errorMin)
-      errors.errorMin = error;
-    if(error > errors.errorMax)
-      errors.errorMax = error;
-    if(abs(error) > errors.errorMaxAbs)
-      errors.errorMaxAbs = abs(error);
+    if(error < errors.min)
+      errors.min = error;
+    if(error > errors.max)
+      errors.max = error;
+    if(abs(error) > errors.maxAbs)
+      errors.maxAbs = abs(error);
   }
 
   // convert error measures to percent-of-true-value:
   T scale = T(100) / period;
-  errors.errorMin *= scale;
-  errors.errorMax *= scale;
-  errors.errorMaxAbs *= scale;
-
+  errors.mean   *= scale;
+  errors.min    *= scale;
+  errors.max    *= scale;
+  errors.maxAbs *= scale;
   return errors;
 }
 

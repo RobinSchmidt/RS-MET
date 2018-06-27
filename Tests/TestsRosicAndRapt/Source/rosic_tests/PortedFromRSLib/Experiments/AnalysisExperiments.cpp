@@ -856,18 +856,18 @@ void cycleMarkErrors()
 
     // add measured errors to data arrays for plotting
     periods.push_back(period);
-    meanErrors1.push_back(errors1.errorMean);
-    meanErrors2.push_back(errors2.errorMean);
-    maxAbsErrors1.push_back(errors1.errorMaxAbs);
-    maxAbsErrors2.push_back(errors2.errorMaxAbs);
+    meanErrors1.push_back(errors1.mean);
+    meanErrors2.push_back(errors2.mean);
+    maxAbsErrors1.push_back(errors1.maxAbs);
+    maxAbsErrors2.push_back(errors2.maxAbs);
   }
 
   GNUPlotter plt;
   int M = (int)periods.size();
-  //plt.addDataArrays(M, &periods[0], &meanErrors1[0]);
-  //plt.addDataArrays(M, &periods[0], &meanErrors2[0]);
-  plt.addDataArrays(M, &periods[0], &maxAbsErrors1[0]);
-  plt.addDataArrays(M, &periods[0], &maxAbsErrors2[0]);
+  plt.addDataArrays(M, &periods[0], &meanErrors1[0]);
+  plt.addDataArrays(M, &periods[0], &meanErrors2[0]);
+  //plt.addDataArrays(M, &periods[0], &maxAbsErrors1[0]);
+  //plt.addDataArrays(M, &periods[0], &maxAbsErrors2[0]);
   plt.plot();
 
   // Observations:
