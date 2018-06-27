@@ -477,6 +477,12 @@ rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T perio
 template<class T>
 T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, T left, T right)
 {
+  // a sort of crude, preliminary way to avoid producing garbage data or even crashes in 
+  // fade-in/out sections:
+  T minPeriod = fs/fMax;
+  if(right - left < minPeriod)
+    return T(0);
+
   int iLeft  = rsRoundToInt(left);
   int iRight = rsRoundToInt(right);
   T error = periodErrorByCorrelation(x, N, iLeft, iRight);
