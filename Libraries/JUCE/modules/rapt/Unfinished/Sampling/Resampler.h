@@ -286,7 +286,7 @@ public:
   /** A datastructure to represent the errors of a cycle-mark analysis. */
   struct ErrorMeasures
   {
-    T errorMin, errorMax, errorMean;
+    T errorMin, errorMax, errorMean, errorMaxAbs;
     // more to come
   };
 

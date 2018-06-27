@@ -834,7 +834,8 @@ void cycleMarkErrors()
   cmf.setRelativeCorrelationLength(corrLength);
   vector<double> x;
   vector<double> cm1, cm2;
-  vector<double> periods, meanErrors1, meanErrors2;
+  vector<double> periods, meanErrors1, meanErrors2, maxErrors1, maxErrors2, minErrors1, minErrors2,
+    maxAbsErrors1, maxAbsErrors2;
   for(int i = 0; i < numPeriods; i++)
   {
     // create test input signal:
@@ -857,12 +858,16 @@ void cycleMarkErrors()
     periods.push_back(period);
     meanErrors1.push_back(errors1.errorMean);
     meanErrors2.push_back(errors2.errorMean);
+    maxAbsErrors1.push_back(errors1.errorMaxAbs);
+    maxAbsErrors2.push_back(errors2.errorMaxAbs);
   }
 
   GNUPlotter plt;
   int M = (int)periods.size();
-  plt.addDataArrays(M, &periods[0], &meanErrors1[0]);
-  plt.addDataArrays(M, &periods[0], &meanErrors2[0]);
+  //plt.addDataArrays(M, &periods[0], &meanErrors1[0]);
+  //plt.addDataArrays(M, &periods[0], &meanErrors2[0]);
+  plt.addDataArrays(M, &periods[0], &maxAbsErrors1[0]);
+  plt.addDataArrays(M, &periods[0], &maxAbsErrors2[0]);
   plt.plot();
 
   // Observations:

@@ -457,7 +457,26 @@ rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T perio
   // errors are given in percent (of the true period):
   errors.errorMean = 100*(period-tmp)/period;
 
-  // todo: assign min/max
+  errors.errorMin = T(0);
+  errors.errorMax = T(0);
+  errors.errorMaxAbs = T(0);
+  for(int i = 1; i < N; i++)
+  {
+    T estimate = cycleMarks[i] - cycleMarks[i-1];
+    T error = period - estimate;
+    if(error < errors.errorMin)
+      errors.errorMin = error;
+    if(error > errors.errorMax)
+      errors.errorMax = error;
+    if(abs(error) > errors.errorMaxAbs)
+      errors.errorMaxAbs = abs(error);
+  }
+
+  // convert error measures to percent-of-true-value:
+  T scale = T(100) / period;
+  errors.errorMin *= scale;
+  errors.errorMax *= scale;
+  errors.errorMaxAbs *= scale;
 
   return errors;
 }
@@ -496,8 +515,12 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
 
   // use a matched filter to get the cross-correlation sequence,
   // see here: https://en.wikipedia.org/wiki/Matched_filter
+  // old:
   rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
   rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
+  // new:
+  //rsCrossCorrelation(&cl[0], &cr[0], length, &corr[0], false); // doesn't seem to work -> make unit test
+
 
 #ifdef RS_DEBUG_PLOTTING
   // plot the signal chunks and correlation sequence:
