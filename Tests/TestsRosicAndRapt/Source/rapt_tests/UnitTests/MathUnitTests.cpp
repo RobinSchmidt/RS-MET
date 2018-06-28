@@ -45,14 +45,14 @@ bool correlationUnitTest()
 {
   bool r = true;      // test result
 
-  static const int N = 100;   // signal length (todo: make this a variable in a loop to test 
+  static const int N = 10;   // signal length (todo: make this a variable in a loop to test 
                               // with different lengths)
   static const int M = 2*N-1; // length of correlation sequence
 
   double x[N], y[N], xr[N], yr[N];  // inputs and reversed versions 
   double c1[M], c2[M], c3[M];       // correlation sequences (results)
   rsArray::fillWithRandomValues(x, N, -1, +1, 0);
-  rsArray::fillWithRandomValues(y, N, -1, +1, 0);
+  rsArray::fillWithRandomValues(y, N, -1, +1, 1);
   rsArray::reverse(x, xr, N);
   rsArray::reverse(y, yr, N);
 
@@ -63,11 +63,9 @@ bool correlationUnitTest()
   
   // results should all be the same up to roundoff:
 
-  // c3 is completely different - wtf?
-
-
-
-
+  // c3 is completely different - wtf? ...oh - it seems, the rsCrossCorrelation functions only 
+  // return the 2nd half of the array - well, yeah, the results are only of length N whereas 
+  // rsArray::convolve produces a result of length 2*N-1
 
   return r;
 }

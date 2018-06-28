@@ -735,13 +735,14 @@ double meanDifference(double* x , int N) // move to rsArray - done - delete here
 void cycleMarkFinder()
 {
   // user parameters:
-  static const int N  = 4000;  // number of samples
+  static const int N  = 40000;  // number of samples
   double fs = 44100;           // samplerate in Hz
   double f  = 1000.0;          // signal frequency
   double corrLength = 1.0;     // length of correlation (in terms of cycles)
   //fs = 44000;                  // test: cycle exactly 44 samples long
   //fs = 44500;                  // test: cycle exactly 44.5 samples long
-  //fs = 44700; 
+  fs = 44700; 
+  //fs = 45000;
 
   // create test input signal:
   vector<double> x;
@@ -779,6 +780,13 @@ void cycleMarkFinder()
   int Nz = (int) std::max(cm1.size(), cm2.size()); // # cycle marks
   vector<double> cmy(Nz);    // y values for plotting (all zero)
   GNUPlotter plt;
+
+  // there seems to be a small bias for the cross-correlation approach leading of a small drift
+  // of the cycle marks (unless the period length happens to be integer). seems like the length
+  // is estimated systematically too short (verify this)
+
+  // check, if there are any (asymmetric) biases in the cross-correlation function...but maybe
+  // even a sysmmetric bias could have a bad effect?
 
   // hmm . currently, it seems that increasing the corrLength has a negative effect on the quality
   // of the marks (3 is worse than 1, for example) - investigate, why - seems, it goes away when
