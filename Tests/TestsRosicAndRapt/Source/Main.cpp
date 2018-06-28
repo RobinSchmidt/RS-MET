@@ -16,9 +16,9 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // merge with unit tests for RSLib
-  //mathUnitTests();
-  //filterUnitTests();
+  runAllUnitTests();  // merge with unit tests for RSLib
+  //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
+  //filterUnitTests();  // dito (?)
 
 
   //-----------------------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ int main(int argc, char* argv[])
   //autocorrelationPeakVariation();
   //autoCorrelationPitchDetector();
   //autoCorrelationPitchDetectorOffline();
-  //crossCorrelationBestMatch();
+  crossCorrelationBestMatch();
   //combineFFTs(); // move to math experiments
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency(); 

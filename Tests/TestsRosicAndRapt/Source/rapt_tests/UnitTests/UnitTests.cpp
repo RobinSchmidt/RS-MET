@@ -27,6 +27,8 @@ bool runAllUnitTests()
   passed &= runUnitTest(&coordinateMapperUnitTest,       "rsCoordinateMapper2D");
   passed &= runUnitTest(&interpolatingFunctionUnitTest,  "rsInterpolatingFunction");
   passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
+  passed &= runUnitTest(&correlationUnitTest,            "correlation");
+
   passed &= runUnitTest(&testVector,                     "rsVector");
   passed &= runUnitTest(&testMatrix,                     "rsMatrix");
   passed &= runUnitTest(&testMiscMath,                   "misc math");

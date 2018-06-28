@@ -541,6 +541,14 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
 
   return period - T(right-left);
 }
+// more ideas for improvement:
+// -use de-biased cross-correlation sequence
+// -fit quartic instead of quadratic for finding the subsample-precision maximum
+// -apply a nonlinearity before fitting the parabola (it should be such that the found maximum 
+//  stays invariant with respect to scaling the signal - maybe log qualifies, maybe powers, too?)
+// -use zero-crossings of the original signal near a correlation maximum (zeros are better than 
+//  just any value because they are (almost) invariant with respect to amplitude changes between
+//  the cycles)
 
 template<class T>
 void rsCycleMarkFinder<T>::applyWindow(T* x, int N)

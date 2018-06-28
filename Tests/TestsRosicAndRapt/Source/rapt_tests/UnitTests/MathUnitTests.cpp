@@ -41,6 +41,25 @@ bool coordinateMapperUnitTest()
   return r;
 }
 
+bool correlationUnitTest()
+{
+  bool r = true;      // test result
+
+  static const int N = 100; // signal length (todo: make this a variable in a loop to test 
+                            // with different lengths)
+
+  double x[N], y[N], c[2*N-1];    // inputs and result
+  rsArray::fillWithRandomValues(x, N, -1, +1, 0);
+  rsArray::fillWithRandomValues(y, N, -1, +1, 0);
+
+
+
+
+
+
+  return r;
+}
+
 bool interpolatingFunctionUnitTest()
 {	
   bool r = true;      // test result
