@@ -600,9 +600,34 @@ T rsCycleMarkFinder<T>::sumOfProducts(T* x, int N, int n1, int n2, int M)
   }
   return sum;
 }
-
 // M is the correlation length, we may need also a correlation range...or maybe just call until
 // a maximum is found
+
+
+template<class T>
+T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, int nFix, int nVar, int M)
+{
+  T left  = sumOfProducts(x, N, nFix, nVar-1, M);
+  T mid   = sumOfProducts(x, N, nFix, nVar,   M);
+  T right = sumOfProducts(x, N, nFix, nVar+1, M);
+  while(right > mid)
+  {
+    nVar++;
+    left  = mid;
+    mid   = right;
+    right = sumOfProducts(x, N, nFix, nVar+1, M);
+  }
+  while(left > mid)
+  {
+    nVar--;
+    right = mid;
+    mid   = left;
+    left  = sumOfProducts(x, N, nFix, nVar-1, M);
+  }
+  return T(nVar);  
+  // preliminary, later: T(nVar) + offset where offset is in -1..+1, the fractional amount found
+  // by fitting a parabola
+}
 
 //=================================================================================================
 

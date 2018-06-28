@@ -350,6 +350,8 @@ protected:
   T sumOfProducts(T* x, int N, int n1, int n2, int M);
     // todo: maybe move to rsArray
 
+  T bestMatchOffset(T* x, int N, int nFixed, int nVariable, int M);
+
   // tempoaries to hold left and right cycle (estimate) and their cross-correlation
   std::vector<T> cl, cr, corr;
 
