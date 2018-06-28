@@ -308,10 +308,6 @@ protected:
   correlation. */
   void refineCycleMarksByCorrelation(T *x, int N, std::vector<T>& cm, T f0);
 
-
-
-
-
   /** \name Data */
   T fs;                         /**< sample rate */
   T fMin;                       /**< minimum expected fundamental */
@@ -343,6 +339,8 @@ protected:
 
   /** Applies the window function to sequence x of length N (used in maxCorrelationLag). */
   void applyWindow(T* x, int N);
+
+  void deBiasConvolutionResult(T* x, int N);
 
   // tempoaries to hold left and right cycle (estimate) and their cross-correlation
   std::vector<T> cl, cr, corr;

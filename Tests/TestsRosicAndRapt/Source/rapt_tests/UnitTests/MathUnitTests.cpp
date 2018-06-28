@@ -45,7 +45,7 @@ bool correlationUnitTest()
 {
   bool r = true;      // test result
 
-  static const int N = 10;   // signal length (todo: make this a variable in a loop to test 
+  static const int N = 11;   // signal length (todo: make this a variable in a loop to test 
                               // with different lengths)
   static const int M = 2*N-1; // length of correlation sequence
 
@@ -66,6 +66,21 @@ bool correlationUnitTest()
   // c3 is completely different - wtf? ...oh - it seems, the rsCrossCorrelation functions only 
   // return the 2nd half of the array - well, yeah, the results are only of length N whereas 
   // rsArray::convolve produces a result of length 2*N-1
+
+
+  // try de-biasing a convolution result:
+  rsArray::fillWithValue(x, N, 1.0);
+  rsArray::fillWithValue(y, N, 1.0);
+  rsArray::convolve(x, N, y, N, c3);
+  for(int n = 0; n < N; n++)
+  {
+    double scale = double(N)/double(N-n);
+    c3[N-1+n] *= scale;
+    c3[N-1-n] *= scale;
+    int dummy = 0;
+  }
+  // ok - looks good
+
 
   return r;
 }

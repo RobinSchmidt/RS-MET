@@ -514,6 +514,8 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   // old:
   rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
   rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
+  //deBiasConvolutionResult(&corr[0], length);   // test
+
   // new:
   //rsCrossCorrelation(&cl[0], &cr[0], length, &corr[0], false); // doesn't seem to work -> make unit test
 
@@ -565,6 +567,16 @@ void rsCycleMarkFinder<T>::applyWindow(T* x, int N)
 
   // todo: optimize (using some kind of rsWindowIterator class), flexibilize (allow client to 
   // select window)
+}
+
+template<class T>
+void rsCycleMarkFinder<T>::deBiasConvolutionResult(T* x, int N)
+{
+  for(int n = 0; n < N; n++)  {
+    T scale = T(N) / T(N-n);
+    x[N-1+n] *= scale;
+    x[N-1-n] *= scale;
+  }
 }
 
 //=================================================================================================

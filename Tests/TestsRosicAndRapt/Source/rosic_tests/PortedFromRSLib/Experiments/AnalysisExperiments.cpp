@@ -740,9 +740,12 @@ void cycleMarkFinder()
   double f  = 1000.0;          // signal frequency
   double corrLength = 1.0;     // length of correlation (in terms of cycles)
   //fs = 44000;                  // test: cycle exactly 44 samples long
+  fs = 44300;
   //fs = 44500;                  // test: cycle exactly 44.5 samples long
-  fs = 44700; 
+  //fs = 44700; 
   //fs = 45000;
+
+  double period = fs/f;
 
   // create test input signal:
   vector<double> x;
@@ -825,12 +828,15 @@ void cycleMarkFinder()
 void cycleMarkErrors()
 {
   // user parameters:
-  static const int N  = 20000;   // number of samples
+  static const int N  = 40000;   // number of samples
   double fs = 44100;             // samplerate in Hz
-  double minPeriod  = 48;        // minimum signal period in samples
-  double maxPeriod  = 52;
-  double corrLength = 3.0;       // length of correlation (in terms of cycles)
-  int numPeriods    = 41;        // number of signal periodicities between min and max
+  double minPeriod  = 40;        // minimum signal period in samples
+  double maxPeriod  = 50;
+  double corrLength = 1.0;       // length of correlation (in terms of cycles)
+  //int numPeriods    = 41;        // number of signal periodicities between min and max
+  int numPeriods = 101;
+  //int numPeriods = 201;
+  //int numPeriods = 401;
 
   // maybe have a minPeriod and maxPeriod, for example 99..101 and a stepsize and check for various
   // periods in between (99.0, 99.1, 99.2, ..., 100.9, 101.0) and plot the errors as function
@@ -840,6 +846,7 @@ void cycleMarkErrors()
   typedef rsCycleMarkFinder<double> CMF;
   CMF cmf(fs, 20, 5000);
   cmf.setRelativeCorrelationLength(corrLength);
+  cmf.setSubSampleApproximationPrecision(2); // 0: linear, 1: cubic, ...
   vector<double> x;
   vector<double> cm1, cm2;
   vector<double> periods, meanErrors1, meanErrors2, maxErrors1, maxErrors2, minErrors1, minErrors2,
