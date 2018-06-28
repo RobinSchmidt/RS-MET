@@ -514,7 +514,7 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   // old:
   rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
   rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
-  //deBiasConvolutionResult(&corr[0], length);   // test
+  deBiasConvolutionResult(&corr[0], length);   // test
 
   // new:
   //rsCrossCorrelation(&cl[0], &cr[0], length, &corr[0], false); // doesn't seem to work -> make unit test
@@ -578,6 +578,31 @@ void rsCycleMarkFinder<T>::deBiasConvolutionResult(T* x, int N)
     x[N-1-n] *= scale;
   }
 }
+// experimental - multiplies the result of a convolution with a sequence that compesates for the 
+// number of summed terms - the center value is due to a sum of N nonzero terms, left and right of
+// it, only N-1 terms were summed, and so on
+
+template<class T>
+T rsCycleMarkFinder<T>::sumOfProducts(T* x, int N, int n1, int n2, int M)
+{
+  T sum = 0;
+  int i, j;
+  for(int n = 0; n < M; n++)
+  {
+    i = n1+n;
+    j = n2+n;
+    if(i < 0 || i >= N || j < 0 || j >= N)
+      continue;
+    // todo: optimize by precomputing nMin, nMax and get rid of the if inside the loop
+    // do unit tests comparing against prototype with the "if"
+
+    sum += x[i] * x[j];
+  }
+  return sum;
+}
+
+// M is the correlation length, we may need also a correlation range...or maybe just call until
+// a maximum is found
 
 //=================================================================================================
 

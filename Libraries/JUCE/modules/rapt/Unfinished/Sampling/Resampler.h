@@ -340,7 +340,15 @@ protected:
   /** Applies the window function to sequence x of length N (used in maxCorrelationLag). */
   void applyWindow(T* x, int N);
 
+  // experimental stuff:
   void deBiasConvolutionResult(T* x, int N);
+
+
+  /** Given an array x of length N, this function computes the sum of the products 
+  x[n1+n] * x[n2+n] for n = 0,..,M-1, so M is the number of products that are summed up. The 
+  function will take care of array bounds and assume zero values there. */
+  T sumOfProducts(T* x, int N, int n1, int n2, int M);
+    // todo: maybe move to rsArray
 
   // tempoaries to hold left and right cycle (estimate) and their cross-correlation
   std::vector<T> cl, cr, corr;
