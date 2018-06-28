@@ -429,6 +429,11 @@ public:
   template <class T>
   static void reverse(T *buffer, int length);
 
+  /** Fills array y with the reversed content of array x. x and y must be distinct and 
+  non-overlapping. */
+  template <class T>
+  static void reverse(T* x, T* y, int length);
+
   /** Shifts the content of the buffer numPlaces to the right, filling it up with zeros from the
   left. */
   template <class T>

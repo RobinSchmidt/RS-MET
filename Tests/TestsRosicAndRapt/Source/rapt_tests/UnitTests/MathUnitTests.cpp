@@ -45,13 +45,25 @@ bool correlationUnitTest()
 {
   bool r = true;      // test result
 
-  static const int N = 100; // signal length (todo: make this a variable in a loop to test 
-                            // with different lengths)
+  static const int N = 100;   // signal length (todo: make this a variable in a loop to test 
+                              // with different lengths)
+  static const int M = 2*N-1; // length of correlation sequence
 
-  double x[N], y[N], c[2*N-1];    // inputs and result
+  double x[N], y[N], xr[N], yr[N];  // inputs and reversed versions 
+  double c1[M], c2[M], c3[M];       // correlation sequences (results)
   rsArray::fillWithRandomValues(x, N, -1, +1, 0);
   rsArray::fillWithRandomValues(y, N, -1, +1, 0);
+  rsArray::reverse(x, xr, N);
+  rsArray::reverse(y, yr, N);
 
+  // obtain cross-correlation sequences via various algorithms: 
+  rsCrossCorrelationDirect(x, y, N, c1);
+  rsCrossCorrelationFFT(   x, y, N, c2);
+  rsArray::convolve(       x, N, yr, N, c3);
+  
+  // results should all be the same up to roundoff:
+
+  // c3 is completely different - wtf?
 
 
 

@@ -1005,6 +1005,13 @@ void rsArray::reverse(T *buffer, int length)
 }
 
 template <class T>
+void rsArray::reverse(T* x, T* y, int N)
+{
+  for(int i = 0; i < N; i++)
+    y[i] = x[N-1-i];
+}
+
+template <class T>
 void rsArray::rightShift(T *buffer, int length, int numPlaces)
 {
   //rsAssert(numPlaces >= 0 && numPlaces <= length, "we require 0 <= numPlaces <= length ");

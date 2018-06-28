@@ -72,6 +72,7 @@ template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
 template void rsArray::divide(double *buffer1, double *buffer2, double *result, int length);
 template int rsArray::maxAbsIndex(const double* const buffer, int length);
+template void rsArray::reverse(double* x, double* y, int length);
 template void rsArray::rightShift(double *buffer, int length, int numPlaces);
 template void rsArray::shift(double *buffer, int length, int numPlaces);
 template void rsArray::unwrap(double* a, int N, double p);
