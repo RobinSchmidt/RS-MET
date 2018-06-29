@@ -373,6 +373,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   int nCenter = N/2;
   T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(
     x, N, nCenter, fs, fMin, fMax);
+  T p = fs/f0; // curent period estimate (currently at nCenter)
 
   // create temporary signal to work with:
   std::vector<T> y(N);
@@ -382,12 +383,12 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   else
     rsArray::copyBuffer(x, &y[0], N);
 
-  T p = fs/f0; // curent period estimate (currently at nCenter)
-
   // nCenter serves as the initial cycle mark - from there, find the next one to the left by 
   // correlating two segments of length p (or maybe 2*pn with windowing? - maybe experiment)
   std::vector<T> z;
   z.reserve((int) (2*ceil(N/p))); // estimated size needed is N/p, so twice that value should be more than enough
+
+
 
   // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
   // current estimate of the period):
@@ -428,6 +429,54 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
   return z;
 
   // maybe refine by letting the very 1st cycle mark be at0 and shift all others
+}
+
+template<class T>
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation2(T* x, int N)
+{
+  // select a sample index n in the middle and estimate frequency there:
+  int nCenter = N/2;
+  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(
+    x, N, nCenter, fs, fMin, fMax);
+  T p = fs/f0; // curent period estimate (currently at nCenter)
+
+  // create temporary signal to work with:
+  std::vector<T> y(N);
+  if(correlationHighpass > 0)
+    rsBiDirectionalFilter::applyButterworthHighpass(
+      x, &y[0], N, f0*correlationHighpass, fs, 4, 1);
+  else
+    rsArray::copyBuffer(x, &y[0], N);
+
+  // nCenter serves as the initial cycle mark - from there, find the next one to the left by 
+  // correlating two segments of length p (or maybe 2*pn with windowing? - maybe experiment)
+  std::vector<T> z;
+  z.reserve((int) (2*ceil(N/p))); // estimated size needed is N/p, so twice that value should be more than enough
+
+  // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
+  // current estimate of the period):
+  T right  = nCenter;
+  T left   = right - p;
+  T length = right-left; 
+  z.push_back(right);  // nCenter = right serves as the initial cycle mark
+  while(true)
+  {
+    left = bestMatchOffset(&y[0], N, right, left); // new, refined left mark
+    z.push_back(left);
+    length = right - left;
+    right  = left;
+    left   = right - length;
+    if(left <= 0)
+      break;
+  }
+  rsArray::reverse(&z[0], (int) size(z)); // bring marks in 1st half into ascending order
+
+
+
+
+
+
+  return z;
 }
 
 template<class T>
@@ -627,6 +676,26 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, int nFix, int nVar, int M)
   return T(nVar);  
   // preliminary, later: T(nVar) + offset where offset is in -1..+1, the fractional amount found
   // by fitting a parabola
+}
+
+template<class T>
+T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, T nFix, T nVar)
+{
+  // a sort of crude, preliminary way to avoid producing garbage data or even crashes in 
+  // fade-in/out sections:
+  T minPeriod = fs/fMax;
+  if(abs(nVar-nFix) < minPeriod)
+    return T(0);
+
+  int iFix = rsRoundToInt(nFix);
+  int iVar = rsRoundToInt(nVar); 
+  int M    = (int) ceil(correlationLength*abs(iVar-iFix));
+
+  T result = bestMatchOffset(x, N, iFix, iVar, M);
+    // may have to add/or subtract nVar-iVar or something? otherwise may produce jitter?
+    // -> experiment
+
+  return result;
 }
 
 //=================================================================================================

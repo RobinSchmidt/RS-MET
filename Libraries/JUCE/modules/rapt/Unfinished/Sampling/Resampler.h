@@ -184,7 +184,7 @@ public:
     F0_ZERO_CROSSINGS = 0,  // zero crossings of extracted fundamental
     CYCLE_CORRELATION,       // auto-correlation between successive cycles
 
-
+    CYCLE_CORRELATION_2,    // experimental
 
     CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems, 
                             // should not be used anymore)
@@ -275,7 +275,10 @@ public:
   std::vector<T> findCycleMarksByFundamentalZeros(T* x, int N);
 
   std::vector<T> findCycleMarksByCorrelation(T* x, int N);
+    // produces drift of cycle marks
 
+  std::vector<T> findCycleMarksByCorrelation2(T* x, int N);
+    // experimental
 
   std::vector<T> findCycleMarksByCorrelationOld(T* x, int N);
     // to be deprecated
@@ -350,7 +353,12 @@ protected:
   T sumOfProducts(T* x, int N, int n1, int n2, int M);
     // todo: maybe move to rsArray
 
+
+  // experimental:
   T bestMatchOffset(T* x, int N, int nFixed, int nVariable, int M);
+  T bestMatchOffset(T* x, int N, T nFixed, T nVariable);
+
+
 
   // tempoaries to hold left and right cycle (estimate) and their cross-correlation
   std::vector<T> cl, cr, corr;
