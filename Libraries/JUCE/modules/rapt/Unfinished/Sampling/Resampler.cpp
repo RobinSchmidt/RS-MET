@@ -473,10 +473,20 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation2(T* x, int N)
   }
   rsArray::reverse(&z[0], (int) size(z)); // bring marks in 1st half into ascending order
 
-
-
-
-
+  // find cycle-marks to the right of nCenter (which is currently the last element in z):
+  left  = z[z.size()-1];
+  length = z[z.size()-1] - z[z.size()-2];
+  right = left + length;
+  while(true)
+  {
+    right = bestMatchOffset(&y[0], N, left, right); // new, refined right mark
+    z.push_back(right);  
+    length = right - left;
+    left   = right;
+    right  = left + length;
+    if(right >= N-1)
+      break;
+  }
 
   return z;
 }
