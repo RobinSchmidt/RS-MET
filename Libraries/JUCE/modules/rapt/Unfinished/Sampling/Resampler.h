@@ -359,6 +359,12 @@ protected:
   T bestMatchOffset(T* x, int N, T nFixed, T nVariable);
 
 
+  /** Given an array x of length N and a known, fixed cycle-mark "anchor" and a preliminary 
+  estimate of a neighbouring cycle-mark "mark" (either to the left or to the right of anchor), this
+  function returns a refined value for "mark" according to the selected algorithm. */
+  T refineCycleMark(T* x, int N, T anchor, T mark);
+
+
 
   // tempoaries to hold left and right cycle (estimate) and their cross-correlation
   std::vector<T> cl, cr, corr;

@@ -463,7 +463,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation2(T* x, int N)
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
   while(true)
   {
-    left = bestMatchOffset(&y[0], N, right, left); // new, refined left mark
+    left = refineCycleMark(&y[0], N, right, left); // new, refined left mark
     z.push_back(left);
     length = right - left;
     right  = left;
@@ -479,7 +479,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation2(T* x, int N)
   right = left + length;
   while(true)
   {
-    right = bestMatchOffset(&y[0], N, left, right); // new, refined right mark
+    right = refineCycleMark(&y[0], N, left, right); // new, refined right mark
     z.push_back(right);  
     length = right - left;
     left   = right;
@@ -489,13 +489,6 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation2(T* x, int N)
   }
 
   return z;
-
-  // todo: instead of bestMatchOffset, use a function 
-  // T refineCycleMark(T *x, int N, T anchorMark, T markEstimate) that dispatches between
-  // refineViaCrossCorr1, refineViaCrossCorr2, refineViaZeroCross, ...
-  // ...then this function and findCycleMarksByCorrelation (without "2") can be merged)...but 
-  // consider that "2" call a function that returns an error and refine should return the new, 
-  // refined mark
 }
 
 template<class T>
@@ -668,9 +661,23 @@ T rsCycleMarkFinder<T>::sumOfProducts(T* x, int N, int n1, int n2, int M)
     sum += x[i] * x[j];
   }
   return sum;
+
+  // maybe also compute a sum of x[i] * x[i] and x[j] * x[j] and return a normalized product
+  // like in rsCrossCorrelation:
+  // T xx = rsArray::sumOfSquares(x, Nx);
+  // T yy = rsArray::sumOfSquares(y, Ny);
+  // T xy = rsArray::sumOfProducts(x, y, rsMin(Nx, Ny));
+  // if(xx == 0 || yy == 0)
+  //  return 0;
+  // return xy / sqrt(xx*yy);
+  // ...maybe we can even call rsCrossCorrelation here -> rename function...maybe to
+  // autoCorrelation and move to Statistics.h
+  // maybe:
+  // int Nx = rsMin(M, N-n1);
+  // int Ny = rsMin(M, N-n2);
+  // return rsCrossCorrelation(&x[n1], Nx, &x[n2], Ny);
 }
-// M is the correlation length, we may need also a correlation range...or maybe just call until
-// a maximum is found
+
 
 
 template<class T>
@@ -728,6 +735,19 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, T nFix, T nVar)
   result += (nFix-iFix); // correct?
 
   return result;
+}
+
+template<class T>
+T rsCycleMarkFinder<T>::refineCycleMark(T* x, int N, T anchor, T mark)
+{
+  return bestMatchOffset(x, N, anchor, mark);  // rename to refineCrossCorr2 or sth.
+  // preliminary - todo: switch between refinement algorithms
+
+  // refineViaCrossCorr1, refineViaCrossCorr2, refineViaZeroCross, ...
+
+  // ...then this function and findCycleMarksByCorrelation (without "2") can be merged)...but 
+  // consider that "2" call a function that returns an error and refine should return the new, 
+  // refined mark
 }
 
 //=================================================================================================
