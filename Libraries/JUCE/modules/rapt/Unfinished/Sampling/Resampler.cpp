@@ -574,7 +574,12 @@ void rsCycleMarkFinder<T>::deBiasConvolutionResult(T* x, int N)
 template<class T>
 T rsCycleMarkFinder<T>::sumOfProducts(T* x, int N, int n1, int n2, int M)
 {
-  T sum = 0;
+  //return rsCrossCorrelation(&x[n1], rsMin(M, N-n1), &x[n2], rsMin(M, N-n2));
+    // test - should produce same results as code below - nope - why?
+
+  T xx = 0;
+  T xy = 0;
+  T yy = 0;
   int i, j;
   for(int n = 0; n < M; n++)
   {
@@ -585,24 +590,14 @@ T rsCycleMarkFinder<T>::sumOfProducts(T* x, int N, int n1, int n2, int M)
     // todo: optimize by precomputing nMin, nMax and get rid of the if inside the loop
     // do unit tests comparing against prototype with the "if"
 
-    sum += x[i] * x[j];
+    xx += x[i] * x[i];
+    xy += x[i] * x[j];
+    yy += x[j] * x[j];
   }
-  return sum;
-
-  // maybe also compute a sum of x[i] * x[i] and x[j] * x[j] and return a normalized product
-  // like in rsCrossCorrelation:
-  // T xx = rsArray::sumOfSquares(x, Nx);
-  // T yy = rsArray::sumOfSquares(y, Ny);
-  // T xy = rsArray::sumOfProducts(x, y, rsMin(Nx, Ny));
-  // if(xx == 0 || yy == 0)
-  //  return 0;
-  // return xy / sqrt(xx*yy);
-  // ...maybe we can even call rsCrossCorrelation here -> rename function...maybe to
-  // autoCorrelation and move to Statistics.h
-  // maybe:
-  // int Nx = rsMin(M, N-n1);
-  // int Ny = rsMin(M, N-n2);
-  // return rsCrossCorrelation(&x[n1], Nx, &x[n2], Ny);
+  //return xy;  // old - unnormalized sum-of-products
+  if(xx == 0 || yy == 0)
+    return 0; 
+  return xy / sqrt(xx*yy); // new - normalized autocorrelation - better results - keep and rename function
 }
 
 
