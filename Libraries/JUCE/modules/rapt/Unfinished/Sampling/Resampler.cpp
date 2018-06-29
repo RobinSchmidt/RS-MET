@@ -568,7 +568,8 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   //deBiasConvolutionResult(&corr[0], length);   // test
 
   // new:
-  //rsCrossCorrelation(&cl[0], &cr[0], length, &corr[0], false); // doesn't seem to work -> make unit test
+  //rsCrossCorrelation(&cl[0], &cr[0], length, &corr[0], false); 
+  // doesn't seem to work -> make unit test -> ah, it produces a length N output instead of 2*N-1
 
 
 #ifdef RS_DEBUG_PLOTTING
@@ -675,9 +676,18 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, int nFix, int nVar, int M)
     mid   = left;
     left  = sumOfProducts(x, N, nFix, nVar-1, M);
   }
-  return T(nVar);  
-  // preliminary, later: T(nVar) + offset where offset is in -1..+1, the fractional amount found
-  // by fitting a parabola
+  //return T(nVar);  //preliminary
+
+  // fit parabola
+  T xp[3] = { -1, 0, 1 };
+  T yp[3] = { left, mid, right };
+  T a[3];
+  rsPolynomial<T>::fitQuadratic(a, xp, yp);
+  T offset = 0;
+  if( abs(2*a[2]) >= abs(a[1]) ) // abs(offset) shall be <= 1
+    offset = -a[1] / (2*a[2]);   // maximum of the parabola (zero-crossing of its slope)
+  return T(nVar) + offset;
+  //return T(nVar) - offset;  // test
 }
 
 template<class T>
@@ -696,6 +706,9 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, T nFix, T nVar)
   T result = bestMatchOffset(x, N, iFix, iVar, M);
     // may have to add/or subtract nVar-iVar or something? otherwise may produce jitter?
     // -> experiment
+
+  //result -= (nFix-iFix); // correct?
+  result += (nFix-iFix); // correct?
 
   return result;
 }
