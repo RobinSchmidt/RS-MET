@@ -332,17 +332,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
     return findCycleMarksByFundamentalZeros(x, N);
   else if(algo == CYCLE_CORRELATION_OLD)         // deprecated...
     return findCycleMarksByCorrelationOld(x, N); // ...remove soon
-
-  else if(algo == CYCLE_CORRELATION_2 /* || algo == CYCLE_CORRELATION */)
+  else if(algo == CYCLE_CORRELATION || algo == CYCLE_CORRELATION_2)
     return findCycleMarksByRefinement(x, N);
-    // absorb CYCLE_CORRELATION into this too
-
-  else if(algo == CYCLE_CORRELATION)
-    return findCycleMarksByCorrelation(x, N);
-
-
-    
-
 
   // todo: maybe work with the more precise version that splits integer and fractional parts
   // of the zero-crossings
@@ -366,78 +357,6 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
   std::vector<T> z = rsZeroCrossingFinder::upwardCrossings(y, N, precision);
   delete[] y;
   return z;
-}
-
-template<class T>
-std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
-{
-  // problems: 
-  // -it seems the initial estimate of the fundamental is sometimes very off (cello G1
-  //  has a period of 450 samples, the initial estimate is around 319)
-  // -it has problems with initial and final silence/noise-floor - we need some robustification
-  //  ...maybe based on relative signal level and/or max-value of the correlation sequence
-
-
-  // select a sample index n in the middle and estimate frequency there:
-  int nCenter = N/2;
-  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(
-    x, N, nCenter, fs, fMin, fMax);
-  T p = fs/f0; // curent period estimate (currently at nCenter)
-
-  // create temporary signal to work with:
-  std::vector<T> y(N);
-  if(correlationHighpass > 0)
-    rsBiDirectionalFilter::applyButterworthHighpass(
-      x, &y[0], N, f0*correlationHighpass, fs, 4, 1);
-  else
-    rsArray::copyBuffer(x, &y[0], N);
-
-  // nCenter serves as the initial cycle mark - from there, find the next one to the left by 
-  // correlating two segments of length p (or maybe 2*pn with windowing? - maybe experiment)
-  std::vector<T> z;
-  z.reserve((int) (2*ceil(N/p))); // estimated size needed is N/p, so twice that value should be more than enough
-
-
-
-  // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
-  // current estimate of the period):
-  T error;
-  T right  = nCenter;
-  T left   = right - p;
-  T length = right-left; 
-  z.push_back(right);  // nCenter = right serves as the initial cycle mark
-  while(true)
-  {
-    error = periodErrorByCorrelation(&y[0], N, left, right);
-    left -= error;
-    z.push_back(left);
-    length = right - left;
-    right  = left;
-    left   = right - length;
-    if(left <= 0)
-      break;
-  }
-  rsArray::reverse(&z[0], (int) size(z)); // bring marks in 1st half into ascending order
-
-  // find cycle-marks to the right of nCenter (which is currently the last element in z):
-  left  = z[z.size()-1];
-  length = z[z.size()-1] - z[z.size()-2];
-  right = left + length;
-  while(true)
-  {
-    error = periodErrorByCorrelation(&y[0], N, left, right);
-    right += error;
-    z.push_back(right);  
-    length = right - left;
-    left   = right;
-    right  = left + length;
-    if(right >= N-1)
-      break;
-  }
-
-  return z;
-
-  // maybe refine by letting the very 1st cycle mark be at0 and shift all others
 }
 
 template<class T>

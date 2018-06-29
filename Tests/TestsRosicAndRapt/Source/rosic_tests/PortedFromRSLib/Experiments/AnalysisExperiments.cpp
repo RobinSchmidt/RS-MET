@@ -862,8 +862,8 @@ void cycleMarkErrors()
     // find cycle marks by different algorithms:
     cmf.setAlgorithm(CMF::F0_ZERO_CROSSINGS);
     cm1 = cmf.findCycleMarks(&x[0], N);
-    cmf.setAlgorithm(CMF::CYCLE_CORRELATION);
-    //cmf.setAlgorithm(CMF::CYCLE_CORRELATION_2);
+    //cmf.setAlgorithm(CMF::CYCLE_CORRELATION);
+    cmf.setAlgorithm(CMF::CYCLE_CORRELATION_2);
     cm2 = cmf.findCycleMarks(&x[0], N);
 
     // get errors:

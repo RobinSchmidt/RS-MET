@@ -272,17 +272,22 @@ public:
 
   // the various algorithms:
 
+  /** Filters the signal with a bandpass tuned to (an estimate of) the fundamental frequency and 
+  then uses the zero-crossings of this bandpassed signal as cycle-marks. */
   std::vector<T> findCycleMarksByFundamentalZeros(T* x, int N);
 
-  std::vector<T> findCycleMarksByCorrelation(T* x, int N);
-    // produces drift of cycle marks
-    // 
-
+  /** Uses one of several refinement methods that use an initial estimate for a mark and then look
+  in the vicinity of that estimate for a better position to place the mark by criteria based on
+  correlation, etc... 
+  ...explain better...
+  */
   std::vector<T> findCycleMarksByRefinement(T* x, int N);
     // experimental
 
+  /** DEPRECATED. Uses cycle marks from fundamental zeros refined by autocorrelation - but it 
+  doesn't work because the refined marks may overrun the initial estimates etc...to be deleted. */
   std::vector<T> findCycleMarksByCorrelationOld(T* x, int N);
-    // to be deprecated
+    // deprecated
 
 
   /** \name Introspection */
