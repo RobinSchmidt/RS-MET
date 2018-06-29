@@ -740,8 +740,25 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, T nFix, T nVar)
 template<class T>
 T rsCycleMarkFinder<T>::refineCycleMark(T* x, int N, T anchor, T mark)
 {
-  return bestMatchOffset(x, N, anchor, mark);  // rename to refineCrossCorr2 or sth.
+  //return bestMatchOffset(x, N, anchor, mark);  // rename to refineCrossCorr2 or sth.
   // preliminary - todo: switch between refinement algorithms
+
+  switch(algo)
+  {
+  case CYCLE_CORRELATION_2: return bestMatchOffset(x, N, anchor, mark);
+  case CYCLE_CORRELATION:
+  {
+    if(anchor > mark)
+      return mark - periodErrorByCorrelation(x, N, mark, anchor);
+    else
+      return mark + periodErrorByCorrelation(x, N, anchor, mark);
+  }
+  default:
+  {
+    rsError("Unknown algorithm");
+    return mark;
+  }
+  }
 
   // refineViaCrossCorr1, refineViaCrossCorr2, refineViaZeroCross, ...
 
