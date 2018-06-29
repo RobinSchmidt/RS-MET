@@ -330,12 +330,19 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
 {
   if(algo == F0_ZERO_CROSSINGS)
     return findCycleMarksByFundamentalZeros(x, N);
+  else if(algo == CYCLE_CORRELATION_OLD)         // deprecated...
+    return findCycleMarksByCorrelationOld(x, N); // ...remove soon
+
+  else if(algo == CYCLE_CORRELATION_2 /* || algo == CYCLE_CORRELATION */)
+    return findCycleMarksByRefinement(x, N);
+    // absorb CYCLE_CORRELATION into this too
+
   else if(algo == CYCLE_CORRELATION)
     return findCycleMarksByCorrelation(x, N);
-  else if(algo == CYCLE_CORRELATION_2)
-    return findCycleMarksByCorrelation2(x, N);
-  else if(algo == CYCLE_CORRELATION_OLD)
-    return findCycleMarksByCorrelationOld(x, N); // deprecated
+
+
+    
+
 
   // todo: maybe work with the more precise version that splits integer and fractional parts
   // of the zero-crossings
@@ -434,7 +441,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation(T* x, int N)
 }
 
 template<class T>
-std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation2(T* x, int N)
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
 {
   // select a sample index n in the middle and estimate frequency there:
   int nCenter = N/2;
@@ -449,6 +456,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation2(T* x, int N)
       x, &y[0], N, f0*correlationHighpass, fs, 4, 1);
   else
     rsArray::copyBuffer(x, &y[0], N);
+  // rename correlationHighpass to refinementHighpass
 
   // nCenter serves as the initial cycle mark - from there, find the next one to the left by 
   // correlating two segments of length p (or maybe 2*pn with windowing? - maybe experiment)

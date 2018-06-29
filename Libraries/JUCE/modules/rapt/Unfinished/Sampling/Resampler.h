@@ -276,8 +276,9 @@ public:
 
   std::vector<T> findCycleMarksByCorrelation(T* x, int N);
     // produces drift of cycle marks
+    // 
 
-  std::vector<T> findCycleMarksByCorrelation2(T* x, int N);
+  std::vector<T> findCycleMarksByRefinement(T* x, int N);
     // experimental
 
   std::vector<T> findCycleMarksByCorrelationOld(T* x, int N);
@@ -310,6 +311,7 @@ protected:
   successive (estimated) cycles and placing the new cycle border at the instant of maximum
   correlation. */
   void refineCycleMarksByCorrelation(T *x, int N, std::vector<T>& cm, T f0);
+    // deprecated
 
   /** \name Data */
   T fs;                         /**< sample rate */
