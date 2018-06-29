@@ -357,9 +357,13 @@ protected:
   /** Given an array x of length N, this function computes the sum of the products 
   x[n1+n] * x[n2+n] for n = 0,..,M-1, so M is the number of products that are summed up. The 
   function will take care of array bounds and assume zero values there. */
-  T sumOfProducts(T* x, int N, int n1, int n2, int M);
-    // todo: maybe move to rsArray
+  //T sumOfProducts(T* x, int N, int n1, int n2, int M);
+    // repalced by autoCorrelation
 
+  /** Given an array x of length N, this function computes the autocorrelation of two chunks of x 
+  starting at n1 and n2 respectively. The function will take care to not try to sum up values 
+  outside array bounds (which is equivalent to assuming zero values there). */
+  T autoCorrelation(T* x, int N, int n1, int n2, int M);
 
   // experimental:
   T bestMatchOffset(T* x, int N, int nFixed, int nVariable, int M);

@@ -572,7 +572,7 @@ void rsCycleMarkFinder<T>::deBiasConvolutionResult(T* x, int N)
 // it, only N-1 terms were summed, and so on
 
 template<class T>
-T rsCycleMarkFinder<T>::sumOfProducts(T* x, int N, int n1, int n2, int M)
+T rsCycleMarkFinder<T>::autoCorrelation(T* x, int N, int n1, int n2, int M)
 {
   //return rsCrossCorrelation(&x[n1], rsMin(M, N-n1), &x[n2], rsMin(M, N-n2));
     // test - should produce same results as code below - nope - why?
@@ -597,30 +597,28 @@ T rsCycleMarkFinder<T>::sumOfProducts(T* x, int N, int n1, int n2, int M)
   //return xy;  // old - unnormalized sum-of-products
   if(xx == 0 || yy == 0)
     return 0; 
-  return xy / sqrt(xx*yy); // new - normalized autocorrelation - better results - keep and rename function
+  return xy / sqrt(xx*yy); // new - normalized autocorrelation - better results
 }
-
-
 
 template<class T>
 T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, int nFix, int nVar, int M)
 {
-  T left  = sumOfProducts(x, N, nFix, nVar-1, M);
-  T mid   = sumOfProducts(x, N, nFix, nVar,   M);
-  T right = sumOfProducts(x, N, nFix, nVar+1, M);
+  T left  = autoCorrelation(x, N, nFix, nVar-1, M);
+  T mid   = autoCorrelation(x, N, nFix, nVar,   M);
+  T right = autoCorrelation(x, N, nFix, nVar+1, M);
   while(right > mid)
   {
     nVar++;
     left  = mid;
     mid   = right;
-    right = sumOfProducts(x, N, nFix, nVar+1, M);
+    right = autoCorrelation(x, N, nFix, nVar+1, M);
   }
   while(left > mid)
   {
     nVar--;
     right = mid;
     mid   = left;
-    left  = sumOfProducts(x, N, nFix, nVar-1, M);
+    left  = autoCorrelation(x, N, nFix, nVar-1, M);
   }
   //return T(nVar);  //preliminary
 

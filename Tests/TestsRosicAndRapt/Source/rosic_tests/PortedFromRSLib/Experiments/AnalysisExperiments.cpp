@@ -832,12 +832,12 @@ void cycleMarkErrors()
   static const int N  = 4000;   // number of samples
   double fs = 44100;             // samplerate in Hz
   double minPeriod  = 40;        // minimum signal period in samples
-  double maxPeriod  = 45;
+  double maxPeriod  = 50;
   double corrLength = 1.0;       // length of correlation (in terms of cycles)
   int numPeriods    = 41;        // number of signal periodicities between min and max
   //int numPeriods = 101;
   //int numPeriods = 201;
-  //int numPeriods = 401;
+  int numPeriods = 401;
 
   // maybe have a minPeriod and maxPeriod, for example 99..101 and a stepsize and check for various
   // periods in between (99.0, 99.1, 99.2, ..., 100.9, 101.0) and plot the errors as function
