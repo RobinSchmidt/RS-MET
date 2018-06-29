@@ -332,6 +332,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
     return findCycleMarksByFundamentalZeros(x, N);
   else if(algo == CYCLE_CORRELATION)
     return findCycleMarksByCorrelation(x, N);
+  else if(algo == CYCLE_CORRELATION_2)
+    return findCycleMarksByCorrelation2(x, N);
   else if(algo == CYCLE_CORRELATION_OLD)
     return findCycleMarksByCorrelationOld(x, N); // deprecated
 
@@ -563,7 +565,7 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   // old:
   rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
   rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
-  deBiasConvolutionResult(&corr[0], length);   // test
+  //deBiasConvolutionResult(&corr[0], length);   // test
 
   // new:
   //rsCrossCorrelation(&cl[0], &cr[0], length, &corr[0], false); // doesn't seem to work -> make unit test

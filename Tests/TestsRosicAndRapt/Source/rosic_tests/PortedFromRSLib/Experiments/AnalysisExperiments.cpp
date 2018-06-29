@@ -735,12 +735,12 @@ double meanDifference(double* x , int N) // move to rsArray - done - delete here
 void cycleMarkFinder()
 {
   // user parameters:
-  static const int N  = 40000;  // number of samples
+  static const int N  = 4000;  // number of samples
   double fs = 44100;           // samplerate in Hz
   double f  = 1000.0;          // signal frequency
   double corrLength = 1.0;     // length of correlation (in terms of cycles)
   //fs = 44000;                  // test: cycle exactly 44 samples long
-  fs = 44300;
+  //fs = 44300;
   //fs = 44500;                  // test: cycle exactly 44.5 samples long
   //fs = 44700; 
   //fs = 45000;
@@ -757,9 +757,10 @@ void cycleMarkFinder()
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
   vector<double> cm1, cm2;
   cmf.setRelativeCorrelationLength(corrLength);
-  cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS); 
+  cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   cm1 = cmf.findCycleMarks(&x[0], N);
-  cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION); 
+  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
+  cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION_2); // test
   cm2 = cmf.findCycleMarks(&x[0], N);
 
   vector<double> deltas(cm1.size());
