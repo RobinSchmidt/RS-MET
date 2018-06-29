@@ -735,7 +735,7 @@ double meanDifference(double* x , int N) // move to rsArray - done - delete here
 void cycleMarkFinder()
 {
   // user parameters:
-  static const int N  = 4000;  // number of samples
+  static const int N  = 40000;  // number of samples
   double fs = 44100;           // samplerate in Hz
   double f  = 1000.0;          // signal frequency
   double corrLength = 1.0;     // length of correlation (in terms of cycles)
@@ -862,7 +862,8 @@ void cycleMarkErrors()
     // find cycle marks by different algorithms:
     cmf.setAlgorithm(CMF::F0_ZERO_CROSSINGS);
     cm1 = cmf.findCycleMarks(&x[0], N);
-    cmf.setAlgorithm(CMF::CYCLE_CORRELATION);
+    //cmf.setAlgorithm(CMF::CYCLE_CORRELATION);
+    cmf.setAlgorithm(CMF::CYCLE_CORRELATION_2);
     cm2 = cmf.findCycleMarks(&x[0], N);
 
     // get errors:

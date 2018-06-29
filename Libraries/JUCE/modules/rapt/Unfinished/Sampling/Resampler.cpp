@@ -489,6 +489,13 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelation2(T* x, int N)
   }
 
   return z;
+
+  // todo: instead of bestMatchOffset, use a function 
+  // T refineCycleMark(T *x, int N, T anchorMark, T markEstimate) that dispatches between
+  // refineViaCrossCorr1, refineViaCrossCorr2, refineViaZeroCross, ...
+  // ...then this function and findCycleMarksByCorrelation (without "2") can be merged)...but 
+  // consider that "2" call a function that returns an error and refine should return the new, 
+  // refined mark
 }
 
 template<class T>
