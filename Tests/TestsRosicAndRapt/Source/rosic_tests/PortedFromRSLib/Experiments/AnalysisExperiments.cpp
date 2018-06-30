@@ -693,7 +693,15 @@ void zeroCrossingFinder2()
   int dummy = 0;
 }
 
-std::vector<double> cycleMarkTestSignal1(int N, double f, double fs)
+// todo: create a contrived test signal consisting of 2 inharmonic sines and use:
+// if(abs(x[n] < thresh) 
+//   x[n] = 0;
+// i.e. clamp small values to zero - see, if the zero markers are placed intuitively - try both
+// conventions x[n-1] < 0 && x[n] >= 0 or x[n-1] <= 0 && x[n] > 0
+
+
+// move to TestInputCreation.h/cpp, rename:
+std::vector<double> cycleMarkTestSignal1(int N, double f, double fs) // rename to sineWave
 {
   // a simple sine wave
   vector<double> x(N);
@@ -702,6 +710,8 @@ std::vector<double> cycleMarkTestSignal1(int N, double f, double fs)
 }
 std::vector<double> cycleMarkTestSignal2(int N, double f, double fs, double decay = 0)
 {
+  // rename to sineAndInharmonic3rd
+
   // Combination of a steady and a decaying sine wave, the 2nd having a frequency-ratio of
   // 1+sqrt(5) = 2*goldenRatio to the first. This makes the second partial's ratio close to
   // 3 but very inharmonic (the golden ratio is in some sense the most irrational number).

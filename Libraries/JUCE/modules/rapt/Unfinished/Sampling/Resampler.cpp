@@ -158,6 +158,8 @@ bool rsZeroCrossingFinder::isUpwardCrossing(T *x, int n)
   if(x[n] < 0.0 && x[n+1] >= 0.0)
     return true;
   return false;
+
+  // what about n < 0 or n >= N-2...this is unsafe
 }
 
 template<class T>
@@ -198,6 +200,11 @@ std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(T *x
   int Nz = (int)zi.size();
   std::vector<rsFractionalIndex> z;   // the positions of the zero crossings
   z.resize(Nz);
+
+
+  // factor out into: T zeroCrossingFracPart(T* x, int N, int n)
+  // assumes x[n] < 0, x[n+1] >= 0...or x[n] <= 0, x[n+1] > 0? which convention is more
+  // more intuitive in contrived cases (like when there are sequences of multiple zero samples)?)
   T *a = new T[2*p+2];                // polynomial coefficients for interpolant
   T nf;                               // fractional part of zero-crossing sample-index
   int q;                              // p, restricted to avoid access violation
@@ -218,6 +225,9 @@ std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(T *x
     z[nz].fracPart = nf;   // store fractional part
   }
   delete[] a;
+
+
+
   return z;
 }
 

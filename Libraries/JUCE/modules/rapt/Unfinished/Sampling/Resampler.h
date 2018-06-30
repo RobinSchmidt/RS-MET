@@ -132,9 +132,17 @@ class rsZeroCrossingFinder
 
 public:
 
-  /** Returns true, if x[n] < 0.0 and x[n+1] >= 0.0. */
+  /** Returns true, if x[n] < 0.0 and x[n+1] >= 0.0.
+    
+  Using < and >= as opposed to <= and > is a convention.
+  When there is a sample < 0 followed by a sequence of zeros followed by sample > 0, this places 
+  the marker at the beginning of the sequenece of zeros. When there's a sample > 0 at n = 0, it 
+  will be not considered a zero...hmm...maybe the convention x[n] <= 0.0 and x[n+1] > 0.0 for a 
+  zero crossing may be more intuitive in such contrived cases...maybe change it...make 
+  experiments */
   template<class T>
   static bool isUpwardCrossing(T *x, int n);
+
 
   /** Returns the number of upward zero crossings in array x of length N. */
   template<class T>
