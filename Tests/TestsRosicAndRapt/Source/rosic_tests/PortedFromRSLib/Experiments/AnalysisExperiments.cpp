@@ -692,55 +692,11 @@ void zeroCrossingFinder2()
    // z should be: 0.5, 8.5
   int dummy = 0;
 }
-
 // todo: create a contrived test signal consisting of 2 inharmonic sines and use:
 // if(abs(x[n] < thresh) 
 //   x[n] = 0;
 // i.e. clamp small values to zero - see, if the zero markers are placed intuitively - try both
 // conventions x[n-1] < 0 && x[n] >= 0 or x[n-1] <= 0 && x[n] > 0
-
-
-// move to TestInputCreation.h/cpp, rename:
-std::vector<double> cycleMarkTestSignal1(int N, double f, double fs) // rename to sineWave
-{
-  // a simple sine wave
-  vector<double> x(N);
-  createSineWave(&x[0], N, f, 1.0, fs);
-  return x;
-}
-std::vector<double> cycleMarkTestSignal2(int N, double f, double fs, double decay = 0)
-{
-  // rename to sineAndInharmonic3rd
-
-  // Combination of a steady and a decaying sine wave, the 2nd having a frequency-ratio of
-  // 1+sqrt(5) = 2*goldenRatio to the first. This makes the second partial's ratio close to
-  // 3 but very inharmonic (the golden ratio is in some sense the most irrational number).
-  // The decay is given as 1/tau where tau is the decay time in seconds. So, a decay parameter
-  // of 0 makes the 2nd partial steady, too.
-
-  vector<double> x(N);
-
-  // two partial frequencies:
-  double w1 = 2*PI*f/fs;
-  double w2 = w1 * (1+sqrt(5));
-
-  // their amplitudes:
-  double a1 = 1.0;
-  double a2 = 1.0/3.0;
-  double tau = 1/decay;  // decay time of 2nd partial (1st is steady)
-
-  for(int n = 0; n < N; n++)
-    x[n] = a1 * sin(w1*n) + a2 * exp(-(n/fs)/tau) * sin(w2*n);
-  return x;
-}
-
-double meanDifference(double* x , int N) // move to rsArray - done - delete here...
-{
-  double sum = 0;
-  for(int i = 1; i < N; i++)
-    sum += x[i] - x[i-1];
-  return sum/(N-1);
-}
 
 void cycleMarkFinder()
 {
@@ -759,9 +715,9 @@ void cycleMarkFinder()
 
   // create test input signal:
   vector<double> x;
-  x = cycleMarkTestSignal1(N, f, fs);   // sine wave at frequency f
-  //x = cycleMarkTestSignal2(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
-  //x = cycleMarkTestSignal2(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
+  //x = createSineWave(N, f, fs);   // sine wave at frequency f
+  //x = sineAndDeacyingInharmonic(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
+  x = sineAndDeacyingInharmonic(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
@@ -779,8 +735,8 @@ void cycleMarkFinder()
   // compute average distances between the cycle-marks - the correct value would be fs/f for a
   // periodic input
   double dAvg1, dAvg2;
-  dAvg1 = meanDifference(&cm1[0], (int)size(cm1));
-  dAvg2 = meanDifference(&cm2[0], (int)size(cm2));
+  dAvg1 = RAPT::rsArray::meanDifference(&cm1[0], (int)size(cm1));
+  dAvg2 = RAPT::rsArray::meanDifference(&cm2[0], (int)size(cm2));
   // maybe compute the variance of the difference, too - maybe with a steady inharmonic input, this
   // value may say something about the stability of the pitch estimate over time in the presence
   // of inharmonicity - maybe a good cycle-mark finder should give a low variance?
@@ -866,8 +822,8 @@ void cycleMarkErrors()
   {
     // create test input signal:
     double period = minPeriod + i*(maxPeriod-minPeriod)/(numPeriods-1);
-    double f = fs/period;                 // signal frequency
-    x = cycleMarkTestSignal1(N, f, fs);   // sine wave at frequency f
+    double f = fs/period;           // signal frequency
+    x = createSineWave(N, f, fs);   // sine wave at frequency f
 
     // find cycle marks by different algorithms:
     cmf.setAlgorithm(CMF::F0_ZERO_CROSSINGS);

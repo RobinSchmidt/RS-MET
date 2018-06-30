@@ -225,3 +225,28 @@ std::vector<T> createNoise(int numSamples, T min, T max, int seed)
 }
 template std::vector<float> createNoise(int numSamples, float min, float max, int seed);
 template std::vector<double> createNoise(int numSamples, double min, double max, int seed);
+
+
+std::vector<double> createSineWave(int N, double f, double fs)
+{
+  vector<double> x(N);
+  createSineWave(&x[0], N, f, 1.0, fs);
+  return x;
+}
+
+std::vector<double> sineAndDeacyingInharmonic(int N, double f, double fs, double decay)
+{
+  // two partial frequencies:
+  double w1 = 2*PI*f/fs;
+  double w2 = w1 * (1+sqrt(5));
+
+  // their amplitudes:
+  double a1 = 1.0;
+  double a2 = 1.0/3.0;
+  double tau = 1/decay;  // decay time of 2nd partial (1st is steady)
+
+  vector<double> x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = a1 * sin(w1*n) + a2 * exp(-(n/fs)/tau) * sin(w2*n);
+  return x;
+}

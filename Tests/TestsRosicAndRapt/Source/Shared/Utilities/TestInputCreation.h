@@ -27,6 +27,8 @@ void createPulseWave(double *x, int N, double frequency, double dutyCycle, doubl
 at samplerate fs. */
 void createSineWave(double *x, int N, double f, double a, double fs);
 
+std::vector<double> createSineWave(int N, double f, double fs); // convenicne function
+
 /** Creates a sine-wave of length N (in samples) with an instantaneous frequency given by f at each 
 sample and an amplitude given by a, at samplerate fs. */
 void createSineWave(double *x, int N, double *f, double a, double fs);
@@ -40,13 +42,15 @@ void createSumOfSines(double* x, int numSamples, int numSines, double fs, double
 phases given by n*p, where n is the harmonic number of the sine (starting at 1) */
 double sineSum(double p, double *A, double N);
 
-
-
 /** Returns a vector of random samples uniformly distributed between min and max. */
 template<class T>
 std::vector<T> createNoise(int numSamples, T min, T max, int seed = 0);
 
-
-
+/** Combination of a steady and a decaying sine wave, the 2nd having a frequency-ratio of 
+1+sqrt(5) = 2*goldenRatio to the first. This makes the second partial's ratio close to 3 but very 
+inharmonic (the golden ratio is in some sense the most irrational number). The decay is given as 
+1/tau where tau is the decay time in seconds. So, a decay parameter of 0 makes the 2nd partial 
+steady, too. */
+std::vector<double> sineAndDeacyingInharmonic(int N, double f, double fs, double decay = 0);
 
 #endif
