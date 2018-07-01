@@ -216,34 +216,10 @@ std::vector<rsFractionalIndex> rsZeroCrossingFinder::upwardCrossingsIntFrac(T *x
   int Nz = (int)zi.size();
   std::vector<rsFractionalIndex> z;   // the positions of the zero crossings
   z.resize(Nz);
-
-
-  // factor out into: T zeroCrossingFracPart(T* x, int N, int n)
-  // assumes x[n] < 0, x[n+1] >= 0...or x[n] <= 0, x[n+1] > 0? which convention is more
-  // more intuitive in contrived cases (like when there are sequences of multiple zero samples)?)
-  T *a = new T[2*p+2];                // polynomial coefficients for interpolant
-  T nf;                               // fractional part of zero-crossing sample-index
-  int q;                              // p, restricted to avoid access violation
-  int n;                              // integer part of zero-crossing sample-index
-  for(int nz = 0; nz < Nz; nz++)
-  {
-    n  = zi[nz];
-    nf = x[n]/(x[n]-x[n+1]); // zero of linear interpolant
-    q  = rsMin(p, n, N-n-2);
-    if(q > 0)
-    {
-      // refine linear zero estimate by Newton iteration on a higher order interpolating
-      // polynomial using the zero of the linear interpolant as initial guess:
-      rsPolynomial<T>::rsInterpolatingPolynomial(a, -q, 1, &x[n-q], 2*q+2);
-      nf = rsPolynomial<T>::getRootNear(nf, a, 2*q+1, 0.0, 1.0);
-    }
-    z[nz].intPart  = n;    // store integer part
-    z[nz].fracPart = nf;   // store fractional part
+  for(int nz = 0; nz < Nz; nz++) {
+    z[nz].intPart  = zi[nz];                                // store integer part
+    z[nz].fracPart = upwardCrossingFrac(x, N, zi[nz], p);   // store fractional part
   }
-  delete[] a;
-
-
-
   return z;
 }
 
