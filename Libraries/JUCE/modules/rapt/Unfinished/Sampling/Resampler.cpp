@@ -394,7 +394,11 @@ template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
 {
   // select a sample index n in the middle and estimate frequency there:
-  int nCenter = N/2;
+  //int nCenter = N/2;
+  int nCenter = rsZeroCrossingFinder::closestUpwardCrossing(x, N, N/2);
+
+  // refine nCenter to get fractional part
+
   T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(
     x, N, nCenter, fs, fMin, fMax);
   T p = fs/f0; // curent period estimate (currently at nCenter)

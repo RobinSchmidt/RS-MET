@@ -146,17 +146,17 @@ public:
   /** Finds the position of the upward zero-crossing that is closest to n and left to n. If none 
   is found, -1 is returned. */
   template<class T>
-  int closestUpwardCrossingLeft(T *x, int N, int n);
+  static int closestUpwardCrossingLeft(T *x, int N, int n);
 
   /** Finds the position of the upward zero-crossing that is closest to n and right to n. If none 
   is found, -1 is returned. */
   template<class T>
-  int closestUpwardCrossingRight(T *x, int N, int n);
+  static int closestUpwardCrossingRight(T *x, int N, int n);
 
   /** Finds the position of the upward zero-crossing that is closest to n. If none is found, -1 is 
   returned. */
   template<class T>
-  int closestUpwardCrossing(T *x, int N, int n);
+  static int closestUpwardCrossing(T *x, int N, int n);
 
   /** Assuming an upward zero crossing somewhere in the range n..n+1 (n must be in the range 
   0..N-2), this function returns the fractional part of that zero crossing, i.e. a number f in the 
@@ -214,6 +214,9 @@ public:
     CYCLE_CORRELATION,       // auto-correlation between successive cycles
 
     CYCLE_CORRELATION_2,    // experimental
+
+    ZERO_CROSSINGS,
+
 
     CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems, 
                             // should not be used anymore)
