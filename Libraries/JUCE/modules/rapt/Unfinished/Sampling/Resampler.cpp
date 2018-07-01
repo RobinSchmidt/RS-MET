@@ -363,7 +363,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
     return findCycleMarksByFundamentalZeros(x, N);
   else if(algo == CYCLE_CORRELATION_OLD)         // deprecated...
     return findCycleMarksByCorrelationOld(x, N); // ...remove soon
-  else if(algo == CYCLE_CORRELATION || algo == CYCLE_CORRELATION_2)
+  else
     return findCycleMarksByRefinement(x, N);
 
   // todo: maybe work with the more precise version that splits integer and fractional parts
@@ -397,8 +397,6 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
   //int nCenter = N/2;
   int nCenter = rsZeroCrossingFinder::closestUpwardCrossing(x, N, N/2);
 
-  // refine nCenter to get fractional part
-
   T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(
     x, N, nCenter, fs, fMin, fMax);
   T p = fs/f0; // curent period estimate (currently at nCenter)
@@ -419,7 +417,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
 
   // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
   // current estimate of the period):
-  T right  = nCenter;
+  T right  = nCenter + rsZeroCrossingFinder::upwardCrossingFrac(x, N, nCenter, precision);
   T left   = right - p;
   T length = right-left; 
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
@@ -708,6 +706,16 @@ T rsCycleMarkFinder<T>::refineCycleMark(T* x, int N, T anchor, T mark)
     else
       return mark + periodErrorByCorrelation(x, N, anchor, mark);
   }
+  case ZERO_CROSSINGS: 
+  {
+    int n = rsRoundToInt(mark);
+    n = rsZeroCrossingFinder::closestUpwardCrossing(x, N, n);
+    return n + rsZeroCrossingFinder::upwardCrossingFrac(x, N, n, precision);
+  }
+
+  // todo: hybrid: use bestMatchOffset and upwardCrossingFrac
+
+
   default:
   {
     rsError("Unknown algorithm");

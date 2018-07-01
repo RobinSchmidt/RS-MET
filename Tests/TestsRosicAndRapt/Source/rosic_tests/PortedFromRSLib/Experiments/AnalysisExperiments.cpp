@@ -742,8 +742,8 @@ void cycleMarkFinder()
   // create test input signal:
   vector<double> x;
   //x = createSineWave(N, f, fs);   // sine wave at frequency f
-  //x = sineAndDeacyingInharmonic(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
-  x = sineAndDeacyingInharmonic(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
+  x = sineAndDeacyingInharmonic(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
+  //x = sineAndDeacyingInharmonic(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
@@ -752,11 +752,12 @@ void cycleMarkFinder()
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   cm1 = cmf.findCycleMarks(&x[0], N);
   //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
-  cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION_2); // test
+  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION_2); // test
+  cmf.setAlgorithm(rsCycleMarkFinder<double>::ZERO_CROSSINGS); // hangs in endless loop
   cm2 = cmf.findCycleMarks(&x[0], N);
 
   vector<double> deltas(cm1.size());
-  RAPT::rsArray::subtract(&cm1[0], &cm2[0], &deltas[0], (int)cm1.size());
+  //RAPT::rsArray::subtract(&cm1[0], &cm2[0], &deltas[0], (int)cm1.size());
 
   // compute average distances between the cycle-marks - the correct value would be fs/f for a
   // periodic input
