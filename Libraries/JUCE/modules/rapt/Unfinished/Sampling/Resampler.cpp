@@ -165,8 +165,17 @@ bool rsZeroCrossingFinder::isUpwardCrossing(T *x, int n)
 template<class T>
 T rsZeroCrossingFinder::upwardCrossingFrac(T *x, int N, int n, int p)
 {
-
-  return 0; // preliminary
+  T f = x[n]/(x[n]-x[n+1]);      // fractional part - init to zero of linear interpolant
+  int q = rsMin(p, n, N-n-2);    // p, restricted to avoid access violation
+  if(q > 0) {
+    // refine linear zero estimate by Newton iteration on a higher order interpolating
+    // polynomial using the zero of the linear interpolant as initial guess:
+    T *a = new T[2*p+2];   // polynomial coefficients for interpolant (maybe use a static array)
+    rsPolynomial<T>::rsInterpolatingPolynomial(a, -q, 1, &x[n-q], 2*q+2);
+    f = rsPolynomial<T>::getRootNear(f, a, 2*q+1, 0.0, 1.0);
+    delete[] a;
+  }
+  return f;
 }
 
 template<class T>
