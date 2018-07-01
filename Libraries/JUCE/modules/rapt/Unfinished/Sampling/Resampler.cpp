@@ -163,6 +163,35 @@ bool rsZeroCrossingFinder::isUpwardCrossing(T *x, int n)
 }
 
 template<class T>
+int rsZeroCrossingFinder::closestUpwardCrossingLeft(T *x, int N, int n)
+{
+  for(int i = 0; i >= 0; i++)
+    if(isUpwardCrossing(x, i))
+      return i;
+  return -1;
+}
+
+template<class T>
+int rsZeroCrossingFinder::closestUpwardCrossingRight(T *x, int N, int n)
+{
+  for(int i = n; i < N; i++)
+    if(isUpwardCrossing(x, i))
+      return i;
+  return -1;
+}
+
+template<class T>
+int rsZeroCrossingFinder::closestUpwardCrossing(T *x, int N, int n)
+{
+  int cl = closestUpwardCrossingLeft( x, N, n);
+  int cr = closestUpwardCrossingRight(x, N, n);
+  if( cr-n < n-cl )
+    return cr;
+  else
+    return cl;
+}
+
+template<class T>
 T rsZeroCrossingFinder::upwardCrossingFrac(T *x, int N, int n, int p)
 {
   T f = x[n]/(x[n]-x[n+1]);      // fractional part - init to zero of linear interpolant

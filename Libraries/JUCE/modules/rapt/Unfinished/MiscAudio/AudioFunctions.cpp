@@ -220,7 +220,7 @@ T rsSinePhaseAt(T *x, int N, int n0)
   return rsSinePhaseAt(x, N, n0, w);
 }
 
-// move all these somewhere else:
+// move all these somewhere else (rsZeroCrossingFinder):
 template <class T>
 inline bool isUpwardZeroCrossing(T x, int N, int n0)
 {
