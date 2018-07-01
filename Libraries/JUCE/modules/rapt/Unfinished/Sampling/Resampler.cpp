@@ -163,6 +163,13 @@ bool rsZeroCrossingFinder::isUpwardCrossing(T *x, int n)
 }
 
 template<class T>
+T rsZeroCrossingFinder::upwardCrossingFrac(T *x, int N, int n, int p)
+{
+
+  return 0; // preliminary
+}
+
+template<class T>
 int rsZeroCrossingFinder::numUpwardCrossings(T *x, int N)
 {
   int nz = 0;

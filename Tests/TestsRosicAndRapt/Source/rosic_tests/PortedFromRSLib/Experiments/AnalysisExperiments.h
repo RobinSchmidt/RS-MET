@@ -20,6 +20,7 @@ void instantaneousPhase();
 
 void zeroCrossingFinder();
 void zeroCrossingFinder2();
+void zeroCrossingFinder3();
 void cycleMarkFinder();
 void cycleMarkErrors();
 void zeroCrossingPitchDetector();

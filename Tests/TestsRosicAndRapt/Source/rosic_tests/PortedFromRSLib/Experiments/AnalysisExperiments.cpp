@@ -692,6 +692,32 @@ void zeroCrossingFinder2()
    // z should be: 0.5, 8.5
   int dummy = 0;
 }
+
+void zeroCrossingFinder3()
+{
+  // user parameters:
+  static const int N  = 20000;  // number of samples
+  double fs = 44100;            // samplerate in Hz
+  double f  = 100.0;            // signal frequency
+  double thresh = 0.5;          // threshold below which values are set to zero
+  int prec = 1;                 // precision
+
+  vector<double> x = sineAndDeacyingInharmonic(N, f, fs, 0);
+  for(int n = 0; n < N; n++) {
+    if(fabs(x[n]) < thresh)
+      x[n] = 0;
+  }
+  std::vector<double> z = rsZeroCrossingFinder::upwardCrossings(&x[0], N, prec);
+  vector<double> zy(z.size()); // all zeros
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays((int)z.size(), &z[0], &zy[0]);
+  plt.setGraphStyles("lines", "points");
+  plt.setPixelSize(1000, 300);
+  plt.plot();
+}
+
 // todo: create a contrived test signal consisting of 2 inharmonic sines and use:
 // if(abs(x[n] < thresh) 
 //   x[n] = 0;
@@ -702,9 +728,9 @@ void cycleMarkFinder()
 {
   // user parameters:
   static const int N  = 40000;  // number of samples
-  double fs = 44100;           // samplerate in Hz
-  double f  = 1000.0;          // signal frequency
-  double corrLength = 1.0;     // length of correlation (in terms of cycles)
+  double fs = 44100;            // samplerate in Hz
+  double f  = 1000.0;           // signal frequency
+  double corrLength = 1.0;      // length of correlation (in terms of cycles)
   //fs = 44000;                  // test: cycle exactly 44 samples long
   //fs = 44300;
   //fs = 44500;                  // test: cycle exactly 44.5 samples long

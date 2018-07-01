@@ -143,6 +143,12 @@ public:
   template<class T>
   static bool isUpwardCrossing(T *x, int n);
 
+  /** Assuming an upward zero crossing somewhere in the range n..n+1, this function returns the
+  fractional part of that zero crossing, i.e. a number f in the range 0..1 such that the actual 
+  position of the zero crossing is at n+f. Parameter p is the precision... */
+  template<class T>
+  static T upwardCrossingFrac(T *x, int N, int n, int p = 1);
+
 
   /** Returns the number of upward zero crossings in array x of length N. */
   template<class T>

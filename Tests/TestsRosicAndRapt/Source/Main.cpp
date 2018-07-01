@@ -171,8 +171,9 @@ int main(int argc, char* argv[])
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency(); 
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
-  zeroCrossingFinder();
-  zeroCrossingFinder2();
+  //zeroCrossingFinder();
+  //zeroCrossingFinder2();
+  zeroCrossingFinder3();
   //cycleMarkFinder();
   //cycleMarkErrors();
   ////zeroCrossingPitchDetector(); // triggers assert
