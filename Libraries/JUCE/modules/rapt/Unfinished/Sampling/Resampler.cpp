@@ -165,7 +165,7 @@ bool rsZeroCrossingFinder::isUpwardCrossing(T *x, int n)
 template<class T>
 int rsZeroCrossingFinder::closestUpwardCrossingLeft(T *x, int N, int n)
 {
-  for(int i = 0; i >= 0; i++)
+  for(int i = n; i >= 0; i--)
     if(isUpwardCrossing(x, i))
       return i;
   return -1;
@@ -174,7 +174,7 @@ int rsZeroCrossingFinder::closestUpwardCrossingLeft(T *x, int N, int n)
 template<class T>
 int rsZeroCrossingFinder::closestUpwardCrossingRight(T *x, int N, int n)
 {
-  for(int i = n; i < N; i++)
+  for(int i = n; i < N-1; i++)
     if(isUpwardCrossing(x, i))
       return i;
   return -1;
@@ -424,6 +424,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
   while(true)
   {
     left = refineCycleMark(&y[0], N, right, left); // new, refined left mark
+    if(left == T(-1))
+      break;
     z.push_back(left);
     length = right - left;
     right  = left;
@@ -440,6 +442,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
   while(true)
   {
     right = refineCycleMark(&y[0], N, left, right); // new, refined right mark
+    if(right == T(-1))
+      break;
     z.push_back(right);  
     length = right - left;
     left   = right;
@@ -701,33 +705,41 @@ T rsCycleMarkFinder<T>::refineCycleMark(T* x, int N, T anchor, T mark)
   case CYCLE_CORRELATION_2: return bestMatchOffset(x, N, anchor, mark);
   case CYCLE_CORRELATION:
   {
+    // rename to WINDOWED_CORRELATION
     if(anchor > mark)
       return mark - periodErrorByCorrelation(x, N, mark, anchor);
     else
       return mark + periodErrorByCorrelation(x, N, anchor, mark);
   }
-  case ZERO_CROSSINGS: 
+  case ZERO_CROSSINGS:  return refineByZeroCrossing(x, N, anchor, mark);
+  case CORRELATED_ZERO:
   {
-    int n = rsRoundToInt(mark);
-    n = rsZeroCrossingFinder::closestUpwardCrossing(x, N, n);
-    return n + rsZeroCrossingFinder::upwardCrossingFrac(x, N, n, precision);
+    T tmp = bestMatchOffset(x, N, anchor, mark);
+    return refineByZeroCrossing(x, N, anchor, tmp);
   }
-
-  // todo: hybrid: use bestMatchOffset and upwardCrossingFrac
-
-
   default:
   {
     rsError("Unknown algorithm");
     return mark;
   }
   }
+}
 
-  // refineViaCrossCorr1, refineViaCrossCorr2, refineViaZeroCross, ...
+template<class T>
+T rsCycleMarkFinder<T>::refineByZeroCrossing(T* x, int N, T anchor, T mark)
+{
+  T delta = mark - anchor; // for debug
+  rsAssert(abs(delta) > T(0));
 
-  // ...then this function and findCycleMarksByCorrelation (without "2") can be merged)...but 
-  // consider that "2" call a function that returns an error and refine should return the new, 
-  // refined mark
+  int n = rsRoundToInt(mark);
+  n = rsZeroCrossingFinder::closestUpwardCrossing(x, N, n);
+  if(n != -1)
+  {
+    T newMark = n + rsZeroCrossingFinder::upwardCrossingFrac(x, N, n, precision);
+    return newMark;
+  }
+  else
+    return T(-1);  // encodes failure to find a zero crossing
 }
 
 //=================================================================================================

@@ -217,6 +217,8 @@ public:
 
     ZERO_CROSSINGS,
 
+    CORRELATED_ZERO,        // hybrid - use correlation first, then zero-crossing
+
 
     CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems, 
                             // should not be used anymore)
@@ -400,12 +402,16 @@ protected:
   // experimental:
   T bestMatchOffset(T* x, int N, int nFixed, int nVariable, int M);
   T bestMatchOffset(T* x, int N, T nFixed, T nVariable);
+  // rename to refineByCorrelation
 
 
   /** Given an array x of length N and a known, fixed cycle-mark "anchor" and a preliminary 
   estimate of a neighbouring cycle-mark "mark" (either to the left or to the right of anchor), this
   function returns a refined value for "mark" according to the selected algorithm. */
   T refineCycleMark(T* x, int N, T anchor, T mark);
+
+
+  T refineByZeroCrossing(T* x, int N, T anchor, T mark);
 
 
 
