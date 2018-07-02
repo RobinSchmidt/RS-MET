@@ -727,18 +727,20 @@ T rsCycleMarkFinder<T>::refineCycleMark(T* x, int N, T anchor, T mark)
 template<class T>
 T rsCycleMarkFinder<T>::refineByZeroCrossing(T* x, int N, T anchor, T mark)
 {
-  T delta = mark - anchor; // for debug
-  rsAssert(abs(delta) > T(0));
+  //T delta = mark - anchor; // for debug
+  //rsAssert(abs(delta) > T(0));
 
   int n = rsRoundToInt(mark);
   n = rsZeroCrossingFinder::closestUpwardCrossing(x, N, n);
   if(n != -1)
   {
+    //rsAssert(x[n] < 0 && x[n+1] >= 0);  // debug
+
     T newMark = n + rsZeroCrossingFinder::upwardCrossingFrac(x, N, n, precision);
     return newMark;
   }
   else
-    return T(-1);  // encodes failure to find a zero crossing
+    return T(-1);  // -1 encodes failure to find a zero crossing
 }
 
 //=================================================================================================

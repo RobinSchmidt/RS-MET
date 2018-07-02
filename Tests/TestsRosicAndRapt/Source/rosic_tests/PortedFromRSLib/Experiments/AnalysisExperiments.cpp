@@ -742,19 +742,20 @@ void cycleMarkFinder()
   // create test input signal:
   vector<double> x;
   //x = createSineWave(N, f, fs);   // sine wave at frequency f
-  //x = sineAndDeacyingInharmonic(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
-  x = sineAndDeacyingInharmonic(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
+  x = sineAndDeacyingInharmonic(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
+  //x = sineAndDeacyingInharmonic(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
 
   // find cycle marks by different algorithms:
   rsCycleMarkFinder<double> cmf(fs, 20, 5000);
   vector<double> cm1, cm2;
   cmf.setRelativeCorrelationLength(corrLength);
+  cmf.setSubSampleApproximationPrecision(0);  // linear
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   cm1 = cmf.findCycleMarks(&x[0], N);
   //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
   //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION_2); // test
-  cmf.setAlgorithm(rsCycleMarkFinder<double>::ZERO_CROSSINGS);
-  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CORRELATED_ZERO);
+  //cmf.setAlgorithm(rsCycleMarkFinder<double>::ZERO_CROSSINGS);
+  cmf.setAlgorithm(rsCycleMarkFinder<double>::CORRELATED_ZERO);
   cm2 = cmf.findCycleMarks(&x[0], N);
 
   vector<double> deltas(cm1.size());
