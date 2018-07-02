@@ -702,10 +702,9 @@ T rsCycleMarkFinder<T>::refineCycleMark(T* x, int N, T anchor, T mark)
 
   switch(algo)
   {
-  case CYCLE_CORRELATION_2: return bestMatchOffset(x, N, anchor, mark);
-  case CYCLE_CORRELATION:
+  case CYCLE_CORRELATION: return bestMatchOffset(x, N, anchor, mark);
+  case WINDOWED_CORRELATION:
   {
-    // rename to WINDOWED_CORRELATION
     if(anchor > mark)
       return mark - periodErrorByCorrelation(x, N, mark, anchor);
     else

@@ -211,14 +211,10 @@ public:
   enum algorithms
   {
     F0_ZERO_CROSSINGS = 0,  // zero crossings of extracted fundamental
-    CYCLE_CORRELATION,       // auto-correlation between successive cycles
-
-    CYCLE_CORRELATION_2,    // experimental
-
+    WINDOWED_CORRELATION,
+    CYCLE_CORRELATION,
     ZERO_CROSSINGS,
-
     CORRELATED_ZERO,        // hybrid - use correlation first, then zero-crossing
-
 
     CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems, 
                             // should not be used anymore)

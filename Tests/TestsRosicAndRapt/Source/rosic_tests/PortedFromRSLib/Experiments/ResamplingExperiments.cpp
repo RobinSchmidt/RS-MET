@@ -1431,7 +1431,7 @@ void sylophoneCycleMarks()
   vector<double> cm1, cm2;
   cmf.setAlgorithm(rsCycleMarkFinderD::F0_ZERO_CROSSINGS); 
   cm1 = cmf.findCycleMarks(&x[0], N);
-  cmf.setAlgorithm(rsCycleMarkFinderD::CYCLE_CORRELATION); 
+  cmf.setAlgorithm(rsCycleMarkFinderD::WINDOWED_CORRELATION); 
   cm2 = cmf.findCycleMarks(&x[0], N);
 
   // plot signal and cycle marks:
