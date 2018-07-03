@@ -250,3 +250,13 @@ std::vector<double> sineAndDeacyingInharmonic(int N, double f, double fs, double
     x[n] = a1 * sin(w1*n) + a2 * exp(-(n/fs)/tau) * sin(w2*n);
   return x;
 }
+
+std::vector<double> twoSinesAndDecayingDc(int N, double f, double fs, double overtoneRatio, 
+  double overtoneAmplitude, double dcAmount, double dcDecay)
+{
+  double w = 2*PI*f/fs;
+  vector<double> x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = sin(w*n) + overtoneAmplitude * sin(overtoneRatio*w*n) + dcAmount * exp(-(n/fs)/dcDecay);
+  return x;
+}

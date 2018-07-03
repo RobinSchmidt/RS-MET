@@ -724,12 +724,24 @@ void zeroCrossingFinder3()
 // i.e. clamp small values to zero - see, if the zero markers are placed intuitively - try both
 // conventions x[n-1] < 0 && x[n] >= 0 or x[n-1] <= 0 && x[n] > 0
 
+/*
+std::vector<double> twoTonesAndDecayingDc(int N, double f, double fs, double overtoneRatio, 
+  double overtoneAmplitude, double dcAmount, double dcDecay)
+{
+  double w = 2*PI*f/fs;
+  vector<double> x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = sin(w*n) + overtoneAmplitude * sin(overtoneRatio*w*n) + dcAmount * exp(-(n/fs)/dcDecay);
+  return x;
+}
+*/
+
 void cycleMarkFinder()
 {
   // user parameters:
-  static const int N  = 40000;  // number of samples
+  static const int N  = 20000;  // number of samples
   double fs = 44100;            // samplerate in Hz
-  double f  = 1000.0;           // signal frequency
+  double f  = 100.0;           // signal frequency
   double corrLength = 1.0;      // length of correlation (in terms of cycles)
   //fs = 44000;                  // test: cycle exactly 44 samples long
   //fs = 44300;
@@ -742,20 +754,26 @@ void cycleMarkFinder()
   // create test input signal:
   vector<double> x;
   //x = createSineWave(N, f, fs);   // sine wave at frequency f
-  x = sineAndDeacyingInharmonic(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
+  //x = sineAndDeacyingInharmonic(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
   //x = sineAndDeacyingInharmonic(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
+  //x = cycleMarkTestSignal(N, f, fs, 20, 5);
+  x = twoSinesAndDecayingDc(N, f, fs, 15, 0.1, 0.9, 0.2);
+    // with 0.2 for the overtone amplitude, the cycle-mark finder thingks, the fundamental
+    // is at the overtone - bad!
 
   // find cycle marks by different algorithms:
-  rsCycleMarkFinder<double> cmf(fs, 20, 5000);
+  typedef rsCycleMarkFinder<double> CMF;
+  CMF cmf(fs, 20, 5000);
   vector<double> cm1, cm2;
   cmf.setRelativeCorrelationLength(corrLength);
+  cmf.setRelativeCorrelationHighpassFreq(0.5);
   cmf.setSubSampleApproximationPrecision(0);  // linear
-  cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
+  cmf.setAlgorithm(CMF::F0_ZERO_CROSSINGS);
   cm1 = cmf.findCycleMarks(&x[0], N);
-  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
-  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION_2); // test
-  //cmf.setAlgorithm(rsCycleMarkFinder<double>::ZERO_CROSSINGS);
-  cmf.setAlgorithm(rsCycleMarkFinder<double>::CORRELATED_ZERO);
+  //cmf.setAlgorithm(CMF::CYCLE_CORRELATION);
+  //cmf.setAlgorithm(CMF::CYCLE_CORRELATION_2); // test
+  //cmf.setAlgorithm(CMF::ZERO_CROSSINGS);
+  cmf.setAlgorithm(CMF::CORRELATED_ZERO);
   cm2 = cmf.findCycleMarks(&x[0], N);
 
   vector<double> deltas(cm1.size());

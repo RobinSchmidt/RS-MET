@@ -417,7 +417,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
 
   // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
   // current estimate of the period):
-  T right  = nCenter + rsZeroCrossingFinder::upwardCrossingFrac(x, N, nCenter, precision);
+  T right  = nCenter + rsZeroCrossingFinder::upwardCrossingFrac(&y[0], N, nCenter, precision);
   T left   = right - p;
   T length = right-left; 
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
@@ -451,6 +451,17 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
     if(right >= N-1)
       break;
   }
+
+#ifdef RS_DEBUG_PLOTTING
+  // plot the (possibly highpassed) signal and cycle marks:
+  GNUPlotter plt; // #define DEBUG_PLOTTING in rapt.h to make it work
+  std::vector<T> cmy(z.size());    // y values for plotting (all zero)
+  plt.addDataArrays(N, &y[0]);
+  plt.addDataArrays((int)z.size(), &z[0], &cmy[0]);
+  plt.setGraphStyles("lines", "points");
+  plt.setPixelSize(1000, 300);
+  plt.plot();
+#endif
 
   return z;
 }
@@ -729,13 +740,11 @@ T rsCycleMarkFinder<T>::refineByZeroCrossing(T* x, int N, T anchor, T mark)
 {
   //T delta = mark - anchor; // for debug
   //rsAssert(abs(delta) > T(0));
-
   int n = rsRoundToInt(mark);
   n = rsZeroCrossingFinder::closestUpwardCrossing(x, N, n);
   if(n != -1)
   {
     //rsAssert(x[n] < 0 && x[n+1] >= 0);  // debug
-
     T newMark = n + rsZeroCrossingFinder::upwardCrossingFrac(x, N, n, precision);
     return newMark;
   }

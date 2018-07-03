@@ -53,4 +53,7 @@ inharmonic (the golden ratio is in some sense the most irrational number). The d
 steady, too. */
 std::vector<double> sineAndDeacyingInharmonic(int N, double f, double fs, double decay = 0);
 
+std::vector<double> twoSinesAndDecayingDc(int N, double f, double fs, double overtoneRatio, 
+  double overtoneAmplitude, double dcAmount, double dcDecay);
+
 #endif
