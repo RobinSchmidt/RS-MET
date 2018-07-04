@@ -775,28 +775,20 @@ void phaseScopeLissajous()
 void drawTriangleFlatTop(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
 {
-  // calulcate slopes in screen space:
-  float m0 = (v2.x - v0.x) / (v2.y - v0.y);
-  float m1 = (v2.x - v1.x) / (v2.y - v1.y);
-
-  // calculate start and end scanlines:
-  const int yStart = (int) ceil(v0.y - 0.5f);
-  const int yEnd   = (int) ceil(v2.y - 0.5f); // the scanline after the last line drawn
-
-  for(int y = yStart; y < yEnd; y++) {
-    // caluclate start and end points (x-coords)
-    // add 0.5 to y value because we're calculating based on pixel centers:
-    const float px0 = m0 * (float(y) + 0.5f - v0.y) + v0.x;
-    const float px1 = m1 * (float(y) + 0.5f - v1.y) + v1.x;
-
-    // calculate start and end pixels
-    const int xStart = (int)ceil(px0 - 0.5f);
-    const int xEnd   = (int)ceil(px1 - 0.5f); // the pixel after the last pixel drawn
-
-    for( int x = xStart; x < xEnd; x++ )
+  float m0 = (v2.x - v0.x) / (v2.y - v0.y);   // inverse of slope of line from v0 to v2
+  float m1 = (v2.x - v1.x) / (v2.y - v1.y);   // inverse of slope of line from v1 to v2
+  int ys = (int) ceil(v0.y - 0.5f);           // y-coord of first scanline
+  int ye = (int) ceil(v2.y - 0.5f);           // y-coord of scanline after the last line drawn
+  for(int y = ys; y < ye; y++) {
+    float px0 = m0 * (float(y) + 0.5f - v0.y) + v0.x; // start x-coord | we add 0.5 bcs formula is
+    float px1 = m1 * (float(y) + 0.5f - v1.y) + v1.x; // end x-coord   | based on pixel centers
+    int xs = (int) ceil(px0 - 0.5f);                  // start pixel
+    int xe = (int) ceil(px1 - 0.5f);                  // end pixel (after the last pixel drawn)
+    for( int x = xs; x < xe; x++ )
       drw.plot(x, y, color);
   }
 }
+
 void drawTriangleFlatBottom(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
 {
@@ -830,6 +822,8 @@ void drawTriangle(rsImageDrawerFFF& drw,
   const Vec2* pv0 = &v0;
   const Vec2* pv1 = &v1;
   const Vec2* pv2 = &v2;
+  // todo: use pointers as arguments - maybe provide convenience function that takes const 
+  // references
 
   // sort vertices by y:
   if(pv1->y < pv0->y) std::swap(pv0, pv1);
