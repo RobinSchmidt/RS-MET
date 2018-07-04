@@ -770,11 +770,30 @@ void phaseScopeLissajous()
   //plt.plot();
 }
 
+
+
+void drawTriangleFlatTop(rsImageF& img, 
+  const rsVector2DF& v1, const rsVector2DF& v2, const rsVector2DF& v3, float color)
+{
+
+}
+void drawTriangleFlatBottom(rsImageF& img, 
+  const rsVector2DF& v1, const rsVector2DF& v2, const rsVector2DF& v3, float color)
+{
+
+}
 void triangles()
 {
-  typedef rsVector2DF Vec2;
+  typedef rsVector2DF Vec2; // for convenience
+  rsImageF img(20, 20);     // image to draw on
 
-  Vec2 p1(5.f, 5.f), p2(10.f, 5.f), p3(7.f, 15.f);
+  float c = 0.5f;           // color (gray value)
+
+  // vertices to create triangles from:
+  Vec2 p1(2.f, 1.f), p2(7.f, 1.f), p3(4.f, 5.f), p4(9.f, 5.f);
+  drawTriangleFlatTop(   img, p1, p2, p3, c);
+  drawTriangleFlatBottom(img, p2, p4, p3, c);
+
 
   int dummy = 0;
 }
