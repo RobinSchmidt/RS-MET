@@ -861,22 +861,50 @@ void drawTriangle(rsImageDrawerFFF& drw,
 
 void triangles()
 {
-  // vertices to create triangles from:
-  typedef rsVector2DF Vec2; // for convenience
-  Vec2 p1(2.f, 1.f), p2(7.f, 1.f), p3(4.f, 5.f), p4(9.f, 5.f);
   float c = 0.5f;           // color (gray value)
 
+  // vertices to create triangles from:
+  typedef rsVector2DF Vec2; // for convenience
+
   // create and set up objects:
-  rsImageF img(20, 20);        // image to draw on
+  rsImageF img(35, 20);        // image to draw on
   rsImageDrawerFFF drw(&img);  // drawer object
   drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
 
   // draw a few triangles:
   //drawTriangleFlatTop(   drw, p1, p2, p3, c); // seems to work
   //drawTriangleFlatBottom(drw, p2, p4, p3, c);   // is not drawn - wrong vertex order?
+  // todo: figure out, which vertex-order the two functions require - write into comments
 
-  drawTriangle(drw, p1, p2, p3, c);  // works
-  drawTriangle(drw, p2, p4, p3, c);  // works
+  // parallelogram made from a flat-top and flat-bottom triangle:
+  Vec2 
+    p1(  2.f,  1.f), 
+    p2(  7.f,  1.f), 
+    p3(  4.f,  5.f), 
+    p4(  9.f,  5.f);
+  drawTriangle(drw, p1, p2, p3, c);  // flat-top
+  drawTriangle(drw, p2, p4, p3, c);  // flat-bottom
+
+  // polygon from 3 general triangles:
+  Vec2
+    p5(  6.f,  7.f),
+    p6( 15.f,  8.f),
+    p7(  9.f, 10.f),
+    p8(  3.f, 11.f),
+    p9( 14.f, 13.f);
+  drawTriangle(drw, p5, p6, p7, c);
+  drawTriangle(drw, p6, p9, p7, c);
+  drawTriangle(drw, p5, p7, p8, c);
+
+  // a general triangle:
+  Vec2
+    p10(25.f,  1.f),
+    p11(31.f, 10.f),
+    p12(17.f,  5.f);
+  drawTriangle(drw, p10, p11, p12, c);
+
+  // polygon from 7 triangles:
+
 
 
   // save to file:
