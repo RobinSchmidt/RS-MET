@@ -1,6 +1,47 @@
 #ifndef RAPT_VECTOR_H
 #define RAPT_VECTOR_H
 
+/** Class for representing 2-dimensional vectors. */
+
+template<class T>
+class rsVector2D
+{
+
+public:
+
+  /** The 2 cartesian coordinate values. */
+  T x, y;
+
+  /** Constructor. Initializes coordinates with the passed values. */
+  rsVector2D(T _x = 0, T _y = 0) : x(_x), y(_y) {}
+  // for optimization, make a constructor without initialization
+
+  /** Returns the squared Euclidean norm of this vector. */
+  T getSquaredEuclideanNorm() { return x*x + y*y; }
+  // rename to squaredNorm
+
+  /** Returns the Euclidean norm of this vector. */
+  T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
+
+  /** Adds vector v to this vector. */
+  rsVector2D<T>& operator+=(const rsVector2D<T>& v) { x += v.x; y += v.y; return *this; }
+
+  /** Subtracts vector v from this vector. */
+  rsVector2D<T>& operator-=(const rsVector2D<T>& v) { x -= v.x; y -= v.y; return *this; }
+
+  /** Multiplies this vector by scalar s. */
+  rsVector2D<T>& operator*=(const T& s) { x *= s; y *= s; return *this; }
+
+  /** Divides this vector by scalar s. */
+  rsVector2D<T>& operator/=(T s) { s = 1/s; x *= s; y *= s; return *this; }
+
+};
+
+
+//=================================================================================================
 
 /** Class for representing 3-dimensional vectors. 
 
@@ -23,6 +64,7 @@ public:
 
   /** Returns the squared Euclidean norm of this vector. */
   T getSquaredEuclideanNorm() { return x*x + y*y + z*z; }
+    // rename to squaredNorm
 
   /** Returns the Euclidean norm of this vector. */
   T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }

@@ -43,6 +43,7 @@ typedef RAPT::rsNodeBasedFunction<float> rsNodeBasedFunctionF;
 typedef RAPT::rsSinCosTable<float> rsSinCosTableF;
 typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
 
+typedef RAPT::rsVector2D<float> rsVector2DF;
 typedef RAPT::rsVector3D<float> rsVector3DF;
 
 

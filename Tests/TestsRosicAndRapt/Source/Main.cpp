@@ -82,6 +82,7 @@ int main(int argc, char* argv[])
   //lineTo();
   //polyLineRandom();
   //phaseScopeLissajous();
+  triangles();
 
 
   // just for fun:
@@ -174,7 +175,7 @@ int main(int argc, char* argv[])
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();
-  cycleMarkFinder();
+  //cycleMarkFinder();
   //cycleMarkErrors();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();

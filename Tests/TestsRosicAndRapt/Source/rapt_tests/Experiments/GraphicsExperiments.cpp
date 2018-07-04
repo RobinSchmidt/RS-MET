@@ -769,3 +769,12 @@ void phaseScopeLissajous()
   //plt.addDataArrays(N, x, y);
   //plt.plot();
 }
+
+void triangles()
+{
+  typedef rsVector2DF Vec2;
+
+  Vec2 p1(5.f, 5.f), p2(10.f, 5.f), p3(7.f, 15.f);
+
+  int dummy = 0;
+}

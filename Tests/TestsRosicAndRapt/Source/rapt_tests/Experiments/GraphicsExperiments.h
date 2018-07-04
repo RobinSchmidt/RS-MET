@@ -10,5 +10,6 @@ void lineJoints();
 void lineTo();
 void polyLineRandom();
 void phaseScopeLissajous();
+void triangles();
 
 #endif

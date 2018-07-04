@@ -226,6 +226,7 @@ template RAPT::rsRootFinder<float>;
 template RAPT::rsNodeBasedFunction<float>;
 template RAPT::rsSinCosTable<float>;
 template RAPT::rsSinCosTable<double>;
+template RAPT::rsVector2D<float>;
 template RAPT::rsVector3D<float>;
 
 template RAPT::rsFourierTransformerRadix2<double>;
