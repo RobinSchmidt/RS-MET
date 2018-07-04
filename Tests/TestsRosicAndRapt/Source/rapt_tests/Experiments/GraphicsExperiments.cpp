@@ -771,7 +771,7 @@ void phaseScopeLissajous()
 }
 
 
-
+// code based on:  https://www.youtube.com/watch?v=9A5TVh6kPLA
 void drawTriangleFlatTop(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
 {
@@ -799,10 +799,33 @@ void drawTriangleFlatTop(rsImageDrawerFFF& drw,
   }
 }
 void drawTriangleFlatBottom(rsImageDrawerFFF& drw, 
-  const rsVector2DF& v1, const rsVector2DF& v2, const rsVector2DF& v3, float color)
+  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
 {
+  // calulcate slopes in screen space
+  float m0 = (v1.x - v0.x) / (v1.y - v0.y);
+  float m1 = (v2.x - v0.x) / (v2.y - v0.y);
 
+  // calculate start and end scanlines
+  const int yStart = (int)ceilf( v0.y - 0.5f );
+  const int yEnd   = (int)ceilf( v2.y - 0.5f ); // the scanline after the last line drawn
+
+  for( int y = yStart; y < yEnd; y++ )
+  {
+    // caluclate start and end points
+    // add 0.5 to y value because we're calculating based on pixel centers
+    const float px0 = m0 * (float( y ) + 0.5f - v0.y) + v0.x;
+    const float px1 = m1 * (float( y ) + 0.5f - v0.y) + v0.x;
+
+    // calculate start and end pixels
+    const int xStart = (int)ceilf( px0 - 0.5f );
+    const int xEnd   = (int)ceilf( px1 - 0.5f ); // the pixel after the last pixel drawn
+
+    for( int x = xStart; x < xEnd; x++ )
+      drw.plot(x, y, color);
+  }
 }
+
+
 void triangles()
 {
   // vertices to create triangles from:
@@ -816,8 +839,8 @@ void triangles()
   drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
 
   // draw a few triangles:
-  drawTriangleFlatTop(   drw, p1, p2, p3, c);
-  drawTriangleFlatBottom(drw, p2, p4, p3, c);
+  //drawTriangleFlatTop(   drw, p1, p2, p3, c); // seems to work
+  drawTriangleFlatBottom(drw, p2, p4, p3, c);   // is not drawn - wrong vertex order?
 
 
   // save to file:
