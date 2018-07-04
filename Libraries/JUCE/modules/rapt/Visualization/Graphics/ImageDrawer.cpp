@@ -50,6 +50,7 @@ void rsImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TW
 
   //pixel  = (pixel + color) / (TPix(1) + abs(color)); // must be able to handle negative values
   // maybe try pixel = (pixel + color) / (TPix(1) + color*color); as alternative
+  // yet another option: pixel = pixel + (1-pixel)*color
 }
 
 //=================================================================================================

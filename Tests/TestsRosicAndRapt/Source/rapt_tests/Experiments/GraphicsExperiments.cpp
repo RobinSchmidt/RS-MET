@@ -772,28 +772,54 @@ void phaseScopeLissajous()
 
 
 
-void drawTriangleFlatTop(rsImageF& img, 
-  const rsVector2DF& v1, const rsVector2DF& v2, const rsVector2DF& v3, float color)
+void drawTriangleFlatTop(rsImageDrawerFFF& drw, 
+  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
 {
+  // calulcate slopes in screen space:
+  float m0 = (v2.x - v0.x) / (v2.y - v0.y);
+  float m1 = (v2.x - v1.x) / (v2.y - v1.y);
 
+  // calculate start and end scanlines:
+  const int yStart = (int)ceilf( v0.y - 0.5f );
+  const int yEnd   = (int)ceilf( v2.y - 0.5f ); // the scanline after the last line drawn
+
+  for( int y = yStart; y < yEnd; y++ )
+  {
+    // caluclate start and end points (x-coords)
+    // add 0.5 to y value because we're calculating based on pixel centers:
+    const float px0 = m0 * (float( y ) + 0.5f - v0.y) + v0.x;
+    const float px1 = m1 * (float( y ) + 0.5f - v1.y) + v1.x;
+
+    // calculate start and end pixels
+    const int xStart = (int)ceilf( px0 - 0.5f );
+    const int xEnd   = (int)ceilf( px1 - 0.5f ); // the pixel after the last pixel drawn
+
+    for( int x = xStart; x < xEnd; x++ )
+      drw.plot(x, y, color);
+  }
 }
-void drawTriangleFlatBottom(rsImageF& img, 
+void drawTriangleFlatBottom(rsImageDrawerFFF& drw, 
   const rsVector2DF& v1, const rsVector2DF& v2, const rsVector2DF& v3, float color)
 {
 
 }
 void triangles()
 {
+  // vertices to create triangles from:
   typedef rsVector2DF Vec2; // for convenience
-  rsImageF img(20, 20);     // image to draw on
-
+  Vec2 p1(2.f, 1.f), p2(7.f, 1.f), p3(4.f, 5.f), p4(9.f, 5.f);
   float c = 0.5f;           // color (gray value)
 
-  // vertices to create triangles from:
-  Vec2 p1(2.f, 1.f), p2(7.f, 1.f), p3(4.f, 5.f), p4(9.f, 5.f);
-  drawTriangleFlatTop(   img, p1, p2, p3, c);
-  drawTriangleFlatBottom(img, p2, p4, p3, c);
+  // create and set up objects:
+  rsImageF img(20, 20);        // image to draw on
+  rsImageDrawerFFF drw(&img);  // drawer object
+  drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
+
+  // draw a few triangles:
+  drawTriangleFlatTop(   drw, p1, p2, p3, c);
+  drawTriangleFlatBottom(drw, p2, p4, p3, c);
 
 
-  int dummy = 0;
+  // save to file:
+  writeImageToFilePPM(img, "Triangles.ppm");
 }
