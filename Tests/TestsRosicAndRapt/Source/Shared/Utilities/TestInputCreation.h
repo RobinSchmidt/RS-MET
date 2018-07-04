@@ -56,4 +56,8 @@ std::vector<double> sineAndDeacyingInharmonic(int N, double f, double fs, double
 std::vector<double> twoSinesAndDecayingDc(int N, double f, double fs, double overtoneRatio, 
   double overtoneAmplitude, double dcAmount, double dcDecay);
 
+
+std::vector<double> sawAndSquare(int N, double fs, double fSaw, double aSaw, 
+  double fSqr, double aSqr, bool antiAlias);
+
 #endif

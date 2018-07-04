@@ -303,3 +303,10 @@ void rsLineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int 
     }// for y
   }// for x
 }
+
+// rasterization of filled triangles:
+// https://fgiesen.wordpress.com/2013/02/08/triangle-rasterization-in-practice/
+// https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage
+
+// https://www.youtube.com/watch?v=9A5TVh6kPLA
+// https://github.com/planetchili/3D_Fundamentals

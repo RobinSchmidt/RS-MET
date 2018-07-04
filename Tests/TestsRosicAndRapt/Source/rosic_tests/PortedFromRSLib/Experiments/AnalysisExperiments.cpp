@@ -739,7 +739,7 @@ std::vector<double> twoTonesAndDecayingDc(int N, double f, double fs, double ove
 void cycleMarkFinder()
 {
   // user parameters:
-  static const int N  = 20000;  // number of samples
+  static const int N  = 50000;  // number of samples
   double fs = 44100;            // samplerate in Hz
   double f  = 100.0;           // signal frequency
   double corrLength = 1.0;      // length of correlation (in terms of cycles)
@@ -757,23 +757,27 @@ void cycleMarkFinder()
   //x = sineAndDeacyingInharmonic(N, f, fs, 0);  // sine at f + sine at f*(1+sqrt(5))
   //x = sineAndDeacyingInharmonic(N, f, fs, 20); // sine at f + decaying sine at f*(1+sqrt(5))
   //x = cycleMarkTestSignal(N, f, fs, 20, 5);
-  x = twoSinesAndDecayingDc(N, f, fs, 15, 0.1, 0.9, 0.2);
-    // with 0.2 for the overtone amplitude, the cycle-mark finder thingks, the fundamental
+  //x = twoSinesAndDecayingDc(N, f, fs, 15, 0.1, 0.9, 0.2);
+    // with 0.2 for the overtone amplitude, the cycle-mark finder thinks, the fundamental
     // is at the overtone - bad!
+  //x = twoSinesAndDecayingDc(N, f, fs, 9.9, 0.2, 0.0, 0.2);
+  x = sawAndSquare(N, fs, f, 1.0, 10.1*f, 0.2, false);
+
+
 
   // find cycle marks by different algorithms:
   typedef rsCycleMarkFinder<double> CMF;
   CMF cmf(fs, 20, 5000);
   vector<double> cm1, cm2;
   cmf.setRelativeCorrelationLength(corrLength);
-  cmf.setRelativeCorrelationHighpassFreq(0.5);
+  //cmf.setRelativeCorrelationHighpassFreq(0.5);
   cmf.setSubSampleApproximationPrecision(0);  // linear
   cmf.setAlgorithm(CMF::F0_ZERO_CROSSINGS);
   cm1 = cmf.findCycleMarks(&x[0], N);
-  //cmf.setAlgorithm(CMF::CYCLE_CORRELATION);
-  //cmf.setAlgorithm(CMF::CYCLE_CORRELATION_2); // test
+  //cmf.setAlgorithm(CMF::WINDOWED_CORRELATION);
+  cmf.setAlgorithm(CMF::CYCLE_CORRELATION);
   //cmf.setAlgorithm(CMF::ZERO_CROSSINGS);
-  cmf.setAlgorithm(CMF::CORRELATED_ZERO);
+  //cmf.setAlgorithm(CMF::CORRELATED_ZERO);
   cm2 = cmf.findCycleMarks(&x[0], N);
 
   vector<double> deltas(cm1.size());
@@ -826,6 +830,14 @@ void cycleMarkFinder()
   //  ...but maybe close to the beginning, we should not set cycle-marks at all because this is
   //  the transient and very probably aperiodic...or maybe carry along a reliability for each
   //  cycle mark given by the cross-correlation value
+
+  // more ideas:
+  // -use a nonlinear (monotonic) function on the autocorrelation values before fitting a parabola
+  // -use a quartic instead of quadratic parabola
+  // -use step-size - don't jump one cycle forward but M and put M-1 markers in between at equal
+  //  distances
+  // -when it's all done, check, how well the first and last cycle correlate. is there an offset?
+  //  if so, can this be compensated by multiplying all cycle-lengths by a factor?
   
   //plt.addDataArrays(deltas.size(), &deltas[0]); // test
   //plt.plot();
@@ -833,7 +845,7 @@ void cycleMarkFinder()
   // 1: blue crosses, 2: green stars
 
   plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays((int)cm1.size(), &cm1[0], &cmy[0]);    
+  //plt.addDataArrays((int)cm1.size(), &cm1[0], &cmy[0]);
   plt.addDataArrays((int)cm2.size(), &cm2[0], &cmy[0]);
   plt.setGraphStyles("lines", "points", "points");
   plt.setPixelSize(1000, 300);
