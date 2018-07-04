@@ -824,7 +824,43 @@ void drawTriangleFlatBottom(rsImageDrawerFFF& drw,
       drw.plot(x, y, color);
   }
 }
+void drawTriangle(rsImageDrawerFFF& drw, 
+  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
+{
+  // use pointers so we can swap (for sorting purposes)
+  typedef rsVector2DF Vec2; // for convenience
+  const Vec2* pv0 = &v0;
+  const Vec2* pv1 = &v1;
+  const Vec2* pv2 = &v2;
 
+  // sort vertices by y:
+  if(pv1->y < pv0->y) std::swap(pv0, pv1);
+  if(pv2->y < pv1->y) std::swap(pv1, pv2);
+  if(pv1->y < pv0->y) std::swap(pv0, pv1);
+
+  if(pv0->y == pv1->y) {        // triangle is flat top
+    if(pv1->x < pv0->x) std::swap(pv0, pv1); // sort top vertices by x
+    drawTriangleFlatTop(drw, *pv0, *pv1, *pv2, color);
+  }
+  else if(pv1->y == pv2->y) {   // triangle is flat bottom
+    if(pv2->x < pv1->x) std::swap( pv1,pv2 ); // sort bottom vertices by x
+    drawTriangleFlatBottom(drw, *pv0, *pv1, *pv2, color);
+  }
+  else
+  {
+    // split general triangle into flat-top and flat-bottom:
+    const float alpha = (pv1->y - pv0->y) / (pv2->y - pv0->y);
+    const Vec2 vi = *pv0 + alpha * (*pv2 - *pv0);    // splitting vertex
+    if(pv1->x < vi.x) { // major right
+      drawTriangleFlatBottom(drw, *pv0, *pv1,   vi, color);
+      drawTriangleFlatTop(   drw, *pv1,   vi, *pv2, color);
+    }
+    else {              // major left
+      drawTriangleFlatBottom(drw, *pv0,   vi, *pv1, color);
+      drawTriangleFlatTop(drw,      vi, *pv1, *pv2, color);
+    }
+  }
+}
 
 void triangles()
 {
@@ -840,7 +876,10 @@ void triangles()
 
   // draw a few triangles:
   //drawTriangleFlatTop(   drw, p1, p2, p3, c); // seems to work
-  drawTriangleFlatBottom(drw, p2, p4, p3, c);   // is not drawn - wrong vertex order?
+  //drawTriangleFlatBottom(drw, p2, p4, p3, c);   // is not drawn - wrong vertex order?
+
+  drawTriangle(drw, p1, p2, p3, c);  // works
+  drawTriangle(drw, p2, p4, p3, c);  // works
 
 
   // save to file:

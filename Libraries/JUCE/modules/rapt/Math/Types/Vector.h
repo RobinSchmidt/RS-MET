@@ -26,6 +26,18 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
+  /** Adds two vectors. */
+  rsVector2D<T> operator+(const rsVector2D<T> &v) const { return rsVector2D<T>(x+v.x, y+v.y); }
+
+  /** Subtracts two vectors. */
+  rsVector2D<T> operator-(const rsVector2D<T> &v) const { return rsVector2D<T>(x-v.x, y-v.y); }
+
+  /** Multiplies a vector by a number. */
+  rsVector2D<T> operator*(const T &r) const { return rsVector2D<T>(x*r, y*r); }
+
+  /** Divides a vector by a number. */
+  rsVector2D<T> operator/(const T &r) const { T s = T(1) / r; return rsVector2D<T>(x*s, y*s); }
+
   /** Adds vector v to this vector. */
   rsVector2D<T>& operator+=(const rsVector2D<T>& v) { x += v.x; y += v.y; return *this; }
 
@@ -39,6 +51,18 @@ public:
   rsVector2D<T>& operator/=(T s) { s = 1/s; x *= s; y *= s; return *this; }
 
 };
+
+/** Multiplies a number and a vector. We need to define this operator outside the class because the 
+left operand is not of class rsVector2D (but of some real number type). We use the fact that 
+number*vector == vector*number to compute the result.  */
+template<class T>
+inline rsVector2D<T> operator*(const T &r, const rsVector2D<T> &p)
+{
+  rsVector2D<T> tmp(p);
+  tmp *= r;
+  return tmp;
+}
+
 
 
 //=================================================================================================
