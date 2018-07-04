@@ -780,19 +780,18 @@ void drawTriangleFlatTop(rsImageDrawerFFF& drw,
   float m1 = (v2.x - v1.x) / (v2.y - v1.y);
 
   // calculate start and end scanlines:
-  const int yStart = (int)ceilf( v0.y - 0.5f );
-  const int yEnd   = (int)ceilf( v2.y - 0.5f ); // the scanline after the last line drawn
+  const int yStart = (int) ceil(v0.y - 0.5f);
+  const int yEnd   = (int) ceil(v2.y - 0.5f); // the scanline after the last line drawn
 
-  for( int y = yStart; y < yEnd; y++ )
-  {
+  for(int y = yStart; y < yEnd; y++) {
     // caluclate start and end points (x-coords)
     // add 0.5 to y value because we're calculating based on pixel centers:
-    const float px0 = m0 * (float( y ) + 0.5f - v0.y) + v0.x;
-    const float px1 = m1 * (float( y ) + 0.5f - v1.y) + v1.x;
+    const float px0 = m0 * (float(y) + 0.5f - v0.y) + v0.x;
+    const float px1 = m1 * (float(y) + 0.5f - v1.y) + v1.x;
 
     // calculate start and end pixels
-    const int xStart = (int)ceilf( px0 - 0.5f );
-    const int xEnd   = (int)ceilf( px1 - 0.5f ); // the pixel after the last pixel drawn
+    const int xStart = (int)ceil(px0 - 0.5f);
+    const int xEnd   = (int)ceil(px1 - 0.5f); // the pixel after the last pixel drawn
 
     for( int x = xStart; x < xEnd; x++ )
       drw.plot(x, y, color);
@@ -806,19 +805,18 @@ void drawTriangleFlatBottom(rsImageDrawerFFF& drw,
   float m1 = (v2.x - v0.x) / (v2.y - v0.y);
 
   // calculate start and end scanlines
-  const int yStart = (int)ceilf( v0.y - 0.5f );
-  const int yEnd   = (int)ceilf( v2.y - 0.5f ); // the scanline after the last line drawn
+  const int yStart = (int)ceil(v0.y - 0.5f);
+  const int yEnd   = (int)ceil(v2.y - 0.5f); // the scanline after the last line drawn
 
-  for( int y = yStart; y < yEnd; y++ )
-  {
+  for( int y = yStart; y < yEnd; y++ ) {
     // caluclate start and end points
     // add 0.5 to y value because we're calculating based on pixel centers
-    const float px0 = m0 * (float( y ) + 0.5f - v0.y) + v0.x;
-    const float px1 = m1 * (float( y ) + 0.5f - v0.y) + v0.x;
+    const float px0 = m0 * (float(y) + 0.5f - v0.y) + v0.x;
+    const float px1 = m1 * (float(y) + 0.5f - v0.y) + v0.x;
 
     // calculate start and end pixels
-    const int xStart = (int)ceilf( px0 - 0.5f );
-    const int xEnd   = (int)ceilf( px1 - 0.5f ); // the pixel after the last pixel drawn
+    const int xStart = (int)ceil(px0 - 0.5f);
+    const int xEnd   = (int)ceil(px1 - 0.5f); // the pixel after the last pixel drawn
 
     for( int x = xStart; x < xEnd; x++ )
       drw.plot(x, y, color);
@@ -846,8 +844,7 @@ void drawTriangle(rsImageDrawerFFF& drw,
     if(pv2->x < pv1->x) std::swap( pv1,pv2 ); // sort bottom vertices by x
     drawTriangleFlatBottom(drw, *pv0, *pv1, *pv2, color);
   }
-  else
-  {
+  else {
     // split general triangle into flat-top and flat-bottom:
     const float alpha = (pv1->y - pv0->y) / (pv2->y - pv0->y);
     const Vec2 vi = *pv0 + alpha * (*pv2 - *pv0);    // splitting vertex
