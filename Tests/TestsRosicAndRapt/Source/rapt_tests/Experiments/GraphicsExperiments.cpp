@@ -854,27 +854,19 @@ void drawTriangle(rsImageDrawerFFF& drw,
     }
     else {              // major left
       drawTriangleFlatBottom(drw, *pv0,   vi, *pv1, color);
-      drawTriangleFlatTop(drw,      vi, *pv1, *pv2, color);
+      drawTriangleFlatTop(   drw,   vi, *pv1, *pv2, color);
     }
   }
 }
 
 void triangles()
 {
-  float c = 0.5f;           // color (gray value)
-
-  // vertices to create triangles from:
-  typedef rsVector2DF Vec2; // for convenience
-
-  // create and set up objects:
+  // create and set up objects and parameters:
+  typedef rsVector2DF Vec2;    // for convenience
+  float c = 0.5f;              // color (gray value)
   rsImageF img(35, 20);        // image to draw on
   rsImageDrawerFFF drw(&img);  // drawer object
   drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
-
-  // draw a few triangles:
-  //drawTriangleFlatTop(   drw, p1, p2, p3, c); // seems to work
-  //drawTriangleFlatBottom(drw, p2, p4, p3, c);   // is not drawn - wrong vertex order?
-  // todo: figure out, which vertex-order the two functions require - write into comments
 
   // parallelogram made from a flat-top and flat-bottom triangle:
   Vec2 
@@ -884,6 +876,9 @@ void triangles()
     p4(  9.f,  5.f);
   drawTriangle(drw, p1, p2, p3, c);  // flat-top
   drawTriangle(drw, p2, p4, p3, c);  // flat-bottom
+  //drawTriangleFlatTop(   drw, p1, p2, p3, c); // seems to work
+  //drawTriangleFlatBottom(drw, p2, p4, p3, c);   // is not drawn - wrong vertex order?
+  // todo: figure out, which vertex-order the two functions require - write into comments
 
   // polygon from 3 general triangles:
   Vec2
@@ -904,8 +899,23 @@ void triangles()
   drawTriangle(drw, p10, p11, p12, c);
 
   // polygon from 7 triangles:
-
-
+  Vec2
+    p13(17.f, 12.f),
+    p14(19.f, 11.f),
+    p15(23.f, 12.f),
+    p16(26.f, 14.f),
+    p17(24.f, 17.f),
+    p18(23.f, 15.f),
+    p19(20.f, 17.f),
+    p20(17.f, 16.f),
+    p21(15.f, 17.f);
+  drawTriangle(drw, p13, p20, p21, c);
+  drawTriangle(drw, p13, p19, p20, c);
+  drawTriangle(drw, p13, p14, p19, c);
+  drawTriangle(drw, p14, p15, p19, c);
+  drawTriangle(drw, p15, p18, p19, c);
+  drawTriangle(drw, p15, p16, p18, c);
+  drawTriangle(drw, p16, p17, p18, c);
 
   // save to file:
   writeImageToFilePPM(img, "Triangles.ppm");
