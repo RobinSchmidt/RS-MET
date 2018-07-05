@@ -18,10 +18,11 @@ public:
 
   /** Returns the squared Euclidean norm of this vector. */
   T getSquaredEuclideanNorm() { return x*x + y*y; }
-  // rename to squaredNorm
+  // rename to squaredNorm or getSquaredLength
 
   /** Returns the Euclidean norm of this vector. */
   T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }
+  // rename to getLength
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -49,6 +50,33 @@ public:
 
   /** Divides this vector by scalar s. */
   rsVector2D<T>& operator/=(T s) { s = 1/s; x *= s; y *= s; return *this; }
+
+  //-----------------------------------------------------------------------------------------------
+
+  /** \name Static Member Functions */
+
+  /** Returns the cross-product of two vectors defined as x1*y2-x2*y1. The cross-product can be
+  interpreted as the signed area of the parallelogram formed by the vectors (0,0),p1,p2,p1+p2
+  where the sign is positive when p1 is clockwise from p2 with respect to the origin, negative
+  when it's counterclockwise and zero when they are collinear (pointing in the same or opposite
+  directions).  */
+  static T crossProduct(const rsVector2D<T> &p1, const rsVector2D<T> &p2)
+  {
+    return p1.x*p2.y - p2.x*p1.y;
+  }
+  // rename to cross
+
+  /** Returns the dot-product (aka inner product or scalar product) of two vectors defined as
+  x1*x2+y1*y2. When the two vectors are of unit length, it can be interpreted as the cosine of
+  the angle between the two vectors. Because the cosine of a 90 degree angle is zero, this
+  implies that a zero scalar-product indicates orthogonal vectors. If only p1=(x1,y1) is a unit
+  vector, then the scalar-product can be interpreted as the length of the orthogonal projection
+  of p2 onto p1. */
+  static T scalarProduct(const rsVector2D<T> &p1, const rsVector2D<T> &p2)
+  {
+    return p1.x*p2.x + p1.y*p2.y;
+  }
+  // rename to dot
 
 };
 

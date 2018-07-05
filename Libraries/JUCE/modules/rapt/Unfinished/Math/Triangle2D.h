@@ -94,7 +94,7 @@ protected:
 };
 
 // a typedef'd explicit instantiation for coordinates of type double:
-typedef rsTriangle2D<double> rsDblTriangle2D; // needs the RSLib_API prefix?
+//typedef rsTriangle2D<double> rsDblTriangle2D; // needs the RSLib_API prefix?
 // get rid of that
 
 #endif
