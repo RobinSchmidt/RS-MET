@@ -89,11 +89,12 @@ public:
 
 protected:
 
-  rsPoint2D<RealType> a, b, c;
+  rsPoint2D<RealType> a, b, c; // us rsVector2D
 
 };
 
 // a typedef'd explicit instantiation for coordinates of type double:
 typedef rsTriangle2D<double> rsDblTriangle2D; // needs the RSLib_API prefix?
+// get rid of that
 
 #endif
