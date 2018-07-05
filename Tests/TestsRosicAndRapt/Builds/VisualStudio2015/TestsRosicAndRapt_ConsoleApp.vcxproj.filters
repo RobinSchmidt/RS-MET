@@ -448,6 +448,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroPrototype.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Drawing.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
@@ -2414,6 +2417,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroPrototype.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\ClassicFilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\Drawing.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>

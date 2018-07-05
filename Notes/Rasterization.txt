@@ -8,8 +8,11 @@ Rasterization: a Practical Implementation
 Overview
 https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/overview-rasterization-algorithm
 -rendering can decomposed into visibility and shading. Rasterization solves the visibility problem.
--triangles are often used as basic rendering primitive in ray tracing and in rasterization
- -they are the simplest possible polygon and always planar (all vertices are in a plane)
+-triangles are as basic rendering primitive in ray tracing and in rasterization
+ -they are the simplest possible polygon and always planar (all vertices are in a plane) which 
+  simplifies the math
+ -together with lines and points they are the basic primitives provided by GPUs
+ -any polygon can be broken down into triangles (triangulated)
 -ray tracing loops in an outer loop over all pixels
  -it shoots a ray from the camera through each pixel
   -it computes intersections of this ray with all the triangles (in an inner loop) to find the one
@@ -26,10 +29,10 @@ https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical
   inside the triangle
 -ray tracing is image-centric, rasterization is object-centric
 
-
-
 The Projection Stage
 https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/projection-stage
+
+
 
 The Rasterization Stage
 https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage

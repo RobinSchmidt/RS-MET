@@ -272,6 +272,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroPrototype.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Drawing.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2136,6 +2139,7 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerDigital.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroMapper.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroPrototype.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\Drawing.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Ideas.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>

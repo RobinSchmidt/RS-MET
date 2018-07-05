@@ -194,6 +194,8 @@
             <FILE id="dUQgUu" name="PoleZeroPrototype.h" compile="0" resource="0"
                   file="Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroPrototype.h"/>
           </GROUP>
+          <FILE id="rbHd45" name="Drawing.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Drawing.cpp"/>
+          <FILE id="MGiDaH" name="Drawing.h" compile="0" resource="0" file="Source/Shared/Prototypes/Drawing.h"/>
           <FILE id="BiN3xa" name="FiniteAutomaton.cpp" compile="0" resource="0"
                 file="Source/Shared/Prototypes/FiniteAutomaton.cpp"/>
           <FILE id="siWyu0" name="FiniteAutomaton.h" compile="0" resource="0"

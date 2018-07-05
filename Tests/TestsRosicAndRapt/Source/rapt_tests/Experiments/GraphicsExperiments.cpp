@@ -926,3 +926,8 @@ void triangles()
   // save to file:
   writeImageToFilePPM(img, "PolygonsViaTriangles.ppm");
 }
+
+// todo: try anti-aliasing by computing overlap-polygons by clipping the triangle to pixels
+// see Foley, page 124ff - iterate over all pixels in the bounding box of the triangle, for each
+// perform sutherlnad/hodgeman clipping, compute polygon area and fill the pixel - ultra-slow
+// but good for a prototype

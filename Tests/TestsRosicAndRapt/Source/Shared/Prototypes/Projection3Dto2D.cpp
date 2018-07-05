@@ -140,6 +140,20 @@ https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-
 
 http://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/opengl-perspective-projection-matrix
 
+*/
 
+/*
+Ideas:
+-make a class for projecting N-dimensional vectors to 2D
+ -each coordinate axis in ND space is projected onto an axis in 2D where the 2D projections are 
+  distributed at equal angles from 0° to 180°/N:
+  2D: x: 0° = 0*180/2, y: 90° = 1*180/2
+  3D: x: 0° = 0*180/3, y: 60° = 1*180/3, z: 120° = 2*180/3
+  4D: x: 0° = 0*180/4, y: 45° = 1*180/4, z:  90° = 2*180/4, w: 135° = 3*180/4
+  ND: n-th axis: (n-1)*180/N
+ -maybe generealize to k*(n-1)*180/N where k is an user-adjustable angle-squishing factor
+  -for 3D and k=3/4, we get a y-axis at 45° and a z-axis at 90°
+ -the projection of the n-th unit vector in ND is given by (cos(a_n), sin(a_n)) where
+  a_n = k*(n-1)*180/N
 
 */
