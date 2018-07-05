@@ -82,6 +82,7 @@ bool testPointInsidePolygon2D(std::string &reportString)
   return testResult;
 }
 
+
 bool convexPolygonClipping(std::string &reportString)
 {
   bool r = true;
@@ -104,7 +105,16 @@ bool convexPolygonClipping(std::string &reportString)
     t2(  0.0f,  3.0f);
   Poly triangle = { t0, t1, t2 };
 
-  // Poly clipped = clipConvexPolygons(square, triangle); // clipping should be commutative
+  Poly clipped = clipConvexPolygons(square, triangle); 
+
+  // should result in:  (2,1), (4,1), (5,2), (5,4), (1,3.4), (1,2)
+  
+
+
+  // clipping should be commutative, i.e. the result independent from order of arguments
+  // -> test this
+
+
 
 
 

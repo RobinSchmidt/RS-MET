@@ -36,3 +36,11 @@ https://docs.microsoft.com/en-us/windows/desktop/direct3d11/d3d10-graphics-progr
 */
 void drawTriangle(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
+
+// Polygons:
+
+/** Sutherland-Hodgman algorithm for 2D polygon clipping. */
+std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p, 
+  const std::vector<rsVector2DF>& c);
+// actually not a drawing algorithm but a polygon clipping algorithm (needed here for prototype for
+// anti-aliased triangle drawing)

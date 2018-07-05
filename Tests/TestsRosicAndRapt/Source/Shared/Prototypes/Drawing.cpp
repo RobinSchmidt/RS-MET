@@ -549,3 +549,36 @@ void drawTriangle(rsImageDrawerFFF& drw,
     }
   }
 }
+
+//-------------------------------------------------------------------------------------------------
+// Polygons:
+
+bool insideEdge(const rsVector2DF& p, const rsVector2DF& v1, const rsVector2DF& v2)
+{
+  // from v1, v2, obtain implicit line equation for the edge defined by v1, v2 and plug point
+  // p into that line equation - sign of the result determines if the point is considered inside
+
+  return true; // preliminary
+}
+
+rsVector2DF intersection(const rsVector2DF& p1, const rsVector2DF& p2,
+  const rsVector2DF& q1, const rsVector2DF& q2)
+{
+  // finds intersection point of the two lines through p1,p2 and q1,q2
+
+  return rsVector2DF();  // preliminary
+}
+
+// p: general polygon to be clipped, c: convex clipping polygon
+std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p, 
+  const std::vector<rsVector2DF>& c)
+{
+  std::vector<rsVector2DF> r; // result
+
+  // something to do...
+
+  return r;
+}
+// Sutherland-Hodgman algorithm (Foley, page 124ff)
+// can p really be non-convex? in this case the output may have to be a set of polygons (one 
+// non-convex could split into many polygons), see page 125
