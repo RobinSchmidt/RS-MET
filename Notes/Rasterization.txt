@@ -15,6 +15,16 @@ https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical
   -it computes intersections of this ray with all the triangles (in an inner loop) to find the one
    which is closes to the camera along the ray
 -rasterization projects all triangles to the screen (in an outer loop)
+ -for each projected triangle, it loops over (some subset of) all the pixels
+ -for each pixel, it must figure out, if this pixel is part of the triangle, and if so, it may 
+  assign a new color to the pixel
+ -whether or not a new color must be assigned depends on:
+  -is the triangle's surface normal directed toward the camera?
+  -is the triangle in front of or behind other triangles already drawn at that pixel?
+ -the color itself must be determined by a shading model
+ -for anti-aliasing, the algorithm may take into account that the pixel may only be partially 
+  inside the triangle
+-ray tracing is image-centric, rasterization is object-centric
 
 
 
