@@ -86,6 +86,28 @@ bool convexPolygonClipping(std::string &reportString)
 {
   bool r = true;
 
+  typedef rsVector2DF Vec2;       // 2D vector (for poylgon vertices
+  typedef std::vector<Vec2> Poly; // a polygon is an array of vertices
+
+  // a square:
+  Vec2 
+    s0(1.f, 1.f), 
+    s1(5.f, 1.f),
+    s2(5.f, 5.f),
+    s3(1.0, 5.f);
+  Poly square = { s0, s1, s2, s3 };
+
+  // a triangle:
+  Vec2 
+    t0(  3.0f,  0.0f), 
+    t1(  7.5f,  4.5f), 
+    t2(  0.0f,  3.0f);
+  Poly triangle = { t0, t1, t2 };
+
+  // Poly clipped = clipConvexPolygons(square, triangle); // clipping should be commutative
+
+
+
 
   return r;
 }

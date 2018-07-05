@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
   //lineTo();
   //polyLineRandom();
   //phaseScopeLissajous();
-  //triangles();
+  triangles();
 
 
   // just for fun:
