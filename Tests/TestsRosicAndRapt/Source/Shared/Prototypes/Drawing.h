@@ -1,5 +1,27 @@
 #pragma once
 
+// Lines
+
+void drawLineWuPrototype(rsImageF& img, float x0, float y0, float x1, float y1, float color);
+void drawLineBresenham(rsImageF& img, int x0, int y0, int x1, int y1, float color);
+
+void drawThickLine(rsImageF& img, float x0, float y0, float x1, float y1, float color,
+  float thickness, bool roundCaps = false);
+void drawThickLine2(rsImageF& img, float x0, float y0, float x1, float y1, float color,
+  float thickness, int endCaps = 0);
+void drawThickLineViaWu(rsImageF& img, float x0, float y0, float x1, float y1, float color, 
+  float thickness);
+
+void plotLineWidth(rsImageF& img, int x0, int y0, int x1, int y1, float wd); //?
+
+// line profile functions
+float lineIntensity1(float d, float t2);
+float lineIntensity2(float d, float t2);
+float lineIntensity3(float d, float t2);
+float lineIntensity4(float d, float t2);
+
+// Triangles
+
 /** Fills all pixels whose centers are inside the given triangle with the given color. If a pixel
 center is on an edge, it will be considered inside, if it's a top or a left edge 
 ("top-left rule"). It corresponds to a convention where a pixel with coordinate i (i being the 
