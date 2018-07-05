@@ -217,6 +217,7 @@ template RAPT::rsCoordinateMapper2D<float>;
 template RAPT::rsCoordinateMapper2D<double>;
 
 template RAPT::rsEllipse<float>;
+template RAPT::rsLine2D<float>;
 template RAPT::rsNormalizedSigmoids<float>;
 template RAPT::rsParametricSigmoid<float>;
 template RAPT::rsScaledAndShiftedSigmoid<float>;

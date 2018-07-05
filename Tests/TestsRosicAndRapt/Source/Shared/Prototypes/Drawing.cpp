@@ -558,14 +558,40 @@ bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF
   // from e0, e1, obtain implicit line equation for the edge defined by e0, e1 and plug point
   // p into that line equation - sign of the result determines if the point is considered inside
 
+  // maybe use the edge-function defined as cross(e1-e0, p-e0)...or similar..look up
+
   return true; // preliminary
 }
-rsVector2DF intersection(const rsVector2DF& p1, const rsVector2DF& p2,
-  const rsVector2DF& q1, const rsVector2DF& q2)
+rsVector2DF intersection(const rsVector2DF& p0, const rsVector2DF& p1,
+  const rsVector2DF& q0, const rsVector2DF& q1)
 {
   // finds intersection point of the two lines through p1,p2 and q1,q2
 
-  return rsVector2DF();  // preliminary
+  //float a, b, c;
+  //rsLine2DF::twoPointToImplicit(p0.x, p0.y, p1.x, p1.y, a, b, c);
+  // make a function that doesn't normalize the implicit equation coeffs
+
+  // compute parameter t for which both lines intersect, lines are given in parametric form as
+  // Lp = p0 + t*(p1-p0), Lq = q0 + t*(q1-q0) - these equations are set equal and solved for t,
+  // in the result we have formally a quotient of two vectors - we can use either or the other 
+  // coordinate - we choose the one which has the larger absolute value in the denominator to
+  // avoid divisions by zero
+  rsVector2DF dp, dq, d; 
+  dp = p1 - p0;
+  dq = q1 - q0;
+  d  = dq - dp;
+
+  // solve for t and return result of line equation Lp for the found t:
+  float t;
+  if(abs(d.x) > abs(d.y))
+    t = (p0.x-q0.x) / d.x; // use x-oordinate to solve for t
+  else
+    t = (p0.y-q0.y) / d.y; // use y-oordinate to solve for t
+  return p0 + t*(p1-p0);
+
+  //return rsVector2DF();  // preliminary
+
+  // or maybe it's easier to work with the implicit line equations?
 }
 
 // internal function of Sutherland-Hodgman polygon clipper that clips the input polygon against a 
@@ -596,6 +622,8 @@ void clipAgainstEdge(const std::vector<rsVector2DF>& in, std::vector<rsVector2DF
     s = p;
   }
 }
+// optimization: both isInsideEdge and intersection need to compute the implicit line equation
+// coeffs - can be done once (in production code)
 
 // p: general polygon to be clipped, c: convex clipping polygon
 std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p, 

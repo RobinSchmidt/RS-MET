@@ -32,6 +32,7 @@ typedef RAPT::rsPolynomial<double> rsPolynomialD;
 
 typedef RAPT::rsConicSection<float> rsConicSectionF;
 typedef RAPT::rsEllipse<float> rsEllipseF;
+typedef RAPT::rsLine2D<float> rsLine2DF;
 
 typedef RAPT::rsCoordinateMapper<float> rsCoordinateMapperF;
 typedef RAPT::rsCoordinateMapper<double> rsCoordinateMapperD;
