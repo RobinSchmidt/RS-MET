@@ -602,11 +602,8 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
   const std::vector<rsVector2DF>& c)
 {
   std::vector<rsVector2DF> r; // result
-
-  // something to do...
-  //rsVector2DF s, p;
-  //s = 
-
+  for(size_t i = 0; i < c.size()-1; i++)
+    clipAgainstEdge(p, r, c[i], c[i+1]);
   return r;
 }
 // Sutherland-Hodgman algorithm (Foley, page 124ff)
