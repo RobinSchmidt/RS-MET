@@ -8,4 +8,6 @@ bool testPolygon2D();
 bool testRegularPolygonCreation2D(std::string &reportString);
 //bool testPointInsidePolygon2D(std::string &reportString);
 
+bool convexPolygonClipping(std::string &reportString);
+
 #endif

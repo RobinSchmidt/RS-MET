@@ -5,15 +5,15 @@ bool testPolygon2D()
 {
   std::string testName = "Polygon2D";
   std::string dummy; 
-  bool testResult = true;
+  bool r = true;
 
-  /*
-  testRegularPolygonCreation2D(dummy);
-  //testResult &= testPointInsidePolygon2D(dummy);
-  */
+
+  //r &= testRegularPolygonCreation2D(dummy);
+  //r &= testPointInsidePolygon2D(dummy);
+  r &= convexPolygonClipping(dummy);
 
   //appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
+  return r;
 }
 
 bool testRegularPolygonCreation2D(std::string &reportString)
@@ -21,9 +21,7 @@ bool testRegularPolygonCreation2D(std::string &reportString)
   std::string testName = "RegularPolygonCreation2D";
   bool testResult = true;
 
-
   /*
-
   typedef rsPoint2D<double>   Point;
   typedef rsPolygon2D<double> Polygon;
 
@@ -31,22 +29,16 @@ bool testRegularPolygonCreation2D(std::string &reportString)
 
   // equilateral triangle centered at origin, pointing to the right:
   Polygon p1(3, 1, c1, 0);
-
-
   */
 
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
-
-
-
 bool testPointInsidePolygon2D(std::string &reportString)
 {
   std::string testName = "PointInsidePolygon2D";
   bool testResult = true;
-
 
   /*
   typedef rsPoint2D<double>   Point;
@@ -88,4 +80,12 @@ bool testPointInsidePolygon2D(std::string &reportString)
 
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;
+}
+
+bool convexPolygonClipping(std::string &reportString)
+{
+  bool r = true;
+
+
+  return r;
 }
