@@ -553,20 +553,48 @@ void drawTriangle(rsImageDrawerFFF& drw,
 //-------------------------------------------------------------------------------------------------
 // Polygons:
 
-bool insideEdge(const rsVector2DF& p, const rsVector2DF& v1, const rsVector2DF& v2)
+bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
 {
-  // from v1, v2, obtain implicit line equation for the edge defined by v1, v2 and plug point
+  // from e0, e1, obtain implicit line equation for the edge defined by e0, e1 and plug point
   // p into that line equation - sign of the result determines if the point is considered inside
 
   return true; // preliminary
 }
-
 rsVector2DF intersection(const rsVector2DF& p1, const rsVector2DF& p2,
   const rsVector2DF& q1, const rsVector2DF& q2)
 {
   // finds intersection point of the two lines through p1,p2 and q1,q2
 
   return rsVector2DF();  // preliminary
+}
+
+// internal function of Sutherland-Hodgman polygon clipper that clips the input polygon against a 
+// given edge from e0 to e1, thereby adding zero, one or two vertices to the output polygon
+void clipAgainstEdge(const std::vector<rsVector2DF>& in, std::vector<rsVector2DF>& out,
+  const rsVector2DF& e0, const rsVector2DF& e1)
+{
+  rsVector2DF s, p, i;  // don't use i for a vertex
+  s = in[in.size()-1];
+  for(size_t j = 0; j < in.size(); j++) {
+    p = in[j];
+    if(isInsideEdge(p, e0, e1))  { // cases 1,4    
+      if(isInsideEdge(s, e0, e1))  // case 1 - add polygon vertex
+        out.push_back(p);
+      else {                       // case 4 - add intersection and polygon vertex
+        i = intersection(s, p, e0, e1);
+        out.push_back(i);
+        out.push_back(p);
+      }
+    }
+    else  { // cases 2,3
+      if(isInsideEdge(s, e0, e1)) { // case 2 - add intersection vertex
+        i = intersection(s, p, e0, e1);
+        out.push_back(i);
+      }
+      //else                         // case 3 - add no vertex
+    }
+    s = p;
+  }
 }
 
 // p: general polygon to be clipped, c: convex clipping polygon
@@ -576,9 +604,12 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
   std::vector<rsVector2DF> r; // result
 
   // something to do...
+  //rsVector2DF s, p;
+  //s = 
 
   return r;
 }
 // Sutherland-Hodgman algorithm (Foley, page 124ff)
 // can p really be non-convex? in this case the output may have to be a set of polygons (one 
-// non-convex could split into many polygons), see page 125
+// non-convex could split into many polygons), see page 125 - or will the algorithm then 
+// produce degenerate edges (page 929?)
