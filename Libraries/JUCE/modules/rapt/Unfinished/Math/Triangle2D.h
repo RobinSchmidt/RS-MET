@@ -84,6 +84,8 @@ public:
     else
       return false;
   }
+  // can be simplified using the edge function,
+  // see https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage
 
 protected:
 

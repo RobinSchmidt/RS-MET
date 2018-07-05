@@ -772,22 +772,26 @@ void phaseScopeLissajous()
 
 
 // code based on:  https://www.youtube.com/watch?v=9A5TVh6kPLA
+// v0 should be left to v1 and v2 below the line connecting v0 and v1
 void drawTriangleFlatTop(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
 {
+  static const float d = 0.5f;                // offset of a pixel's center from its index/coord
   float m0 = (v2.x - v0.x) / (v2.y - v0.y);   // inverse of slope of line from v0 to v2
   float m1 = (v2.x - v1.x) / (v2.y - v1.y);   // inverse of slope of line from v1 to v2
-  int ys = (int) ceil(v0.y - 0.5f);           // y-coord of first scanline
-  int ye = (int) ceil(v2.y - 0.5f);           // y-coord of scanline after the last line drawn
-  for(int y = ys; y < ye; y++) {              // loop over scanlines
-    float px0 = m0 * (float(y) + 0.5f - v0.y) + v0.x; // start x-coord | add 0.5 bcs. formula is
-    float px1 = m1 * (float(y) + 0.5f - v1.y) + v1.x; // end x-coord   | based on pixel centers
-    int xs = (int) ceil(px0 - 0.5f);                  // start pixel
-    int xe = (int) ceil(px1 - 0.5f);                  // end pixel (after the last pixel drawn)
-    for(int x = xs; x < xe; x++)                      // loop over pixels in current scanline
+  for(int y = (int)ceil(v0.y-d); y < (int)ceil(v2.y-d); y++) { // loop over scanlines
+    float px0 = m0 * (float(y) - v0.y + d) + v0.x;             // start x-coord
+    float px1 = m1 * (float(y) - v1.y + d) + v1.x;             // end x-coord
+    for(int x = (int)ceil(px0-d); x < (int)ceil(px1-d); x++)   // loop over pixels in scanline
       drw.plot(x, y, color);
   }
+  // the ceil-function together with the offset of 0.5 amounts to the top-left rule
 }
+// maybe compute px0, px1 incrementally, i.e. init to v0.x, v1.x and incerement by dx0, dx1 in each
+// iteration, where dx0 =
+// but not in the prototype
+
+// v1 should be left to v2 and v0 above the line connecting v1 and v2
 void drawTriangleFlatBottom(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
 {
@@ -804,6 +808,24 @@ void drawTriangleFlatBottom(rsImageDrawerFFF& drw,
       drw.plot(x, y, color);
   }
 }
+// compactify this further (get rid of ys,ye,xs,xe, use d=0.5)
+
+// i think, the anti-aliased version should let loop indices start at = floor(...) and end at
+// <= ceil(...)
+
+// maybe wrap into class rsPolygonDrawer
+
+// Fills all pixels whose centers are inside the given triangle with the given color. If a pixel
+// center is on an edge, it will be considered inside, if it's a top or a left edge 
+// ("top-left rule"). It corresponds to a convention where a pixel with coordinate i (i being the 
+// integer x or y coordinate) being defined as covering the range [i, i+1), i.e. an interval that 
+// is closed to the left and open to ther right, i.e. including i but excluding i+1.
+// The order of the vertices doesn't matter.
+// A top edge, is an edge that is exactly horizontal and is above the other edges.
+// A left edge, is an edge that is not exactly horizontal and is on the left side of the triangle. 
+// A triangle can have one or two left edges.
+// see:
+// https://docs.microsoft.com/en-us/windows/desktop/direct3d11/d3d10-graphics-programming-guide-rasterizer-stage-rules#triangle-rasterization-rules-without-multisampling
 
 void drawTriangle(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
@@ -832,12 +854,12 @@ void drawTriangle(rsImageDrawerFFF& drw,
   else {
     // split general triangle into flat-top and flat-bottom:
     const float alpha = (pv1->y - pv0->y) / (pv2->y - pv0->y);
-    const Vec2 vi = *pv0 + alpha * (*pv2 - *pv0);    // splitting vertex
-    if(pv1->x < vi.x) { // major right
+    const Vec2 vi = *pv0 + alpha * (*pv2 - *pv0);    // splitting vertex by linear interpolation between v0 and v2
+    if(pv1->x < vi.x) { // long side is on the right (major right)
       drawTriangleFlatBottom(drw, *pv0, *pv1,   vi, color);
       drawTriangleFlatTop(   drw, *pv1,   vi, *pv2, color);
     }
-    else {              // major left
+    else {              // long side is on the left (major left)
       drawTriangleFlatBottom(drw, *pv0,   vi, *pv1, color);
       drawTriangleFlatTop(   drw,   vi, *pv1, *pv2, color);
     }
@@ -861,9 +883,8 @@ void triangles()
     p4(  9.f,  5.f);
   drawTriangle(drw, p1, p2, p3, c);  // flat-top
   drawTriangle(drw, p2, p4, p3, c);  // flat-bottom
-  //drawTriangleFlatTop(   drw, p1, p2, p3, c); // seems to work
-  //drawTriangleFlatBottom(drw, p2, p4, p3, c);   // is not drawn - wrong vertex order?
-  // todo: figure out, which vertex-order the two functions require - write into comments
+  //drawTriangleFlatTop(   drw, p1, p2, p3, c);  // p1,p2 above p3, clockwise
+  //drawTriangleFlatBottom(drw, p2, p3, p4, c);  // p2 above p3,p4, counterclockwise
 
   // polygon from 3 general triangles:
   Vec2
@@ -903,5 +924,5 @@ void triangles()
   drawTriangle(drw, p16, p17, p18, c);
 
   // save to file:
-  writeImageToFilePPM(img, "Triangles.ppm");
+  writeImageToFilePPM(img, "PolygonsViaTriangles.ppm");
 }
