@@ -17,7 +17,8 @@ bool testPointInsideTriangle2D(std::string &reportString)
   std::string testName = "PointInsideTriangle2D";
   bool testResult = true;
 
-  typedef rsPoint2D<double>    Point;
+  //typedef rsPoint2D<double>    Point;
+  typedef rsVector2D<double>   Point;
   typedef rsTriangle2D<double> Triangle;
 
   Point a(1, 1);

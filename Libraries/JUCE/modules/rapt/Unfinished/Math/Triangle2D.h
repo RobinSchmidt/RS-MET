@@ -3,20 +3,18 @@
 
 /** This is a class for representing 2 dimensional triangles in the plane.  */
 
-template<class RealType>
+template<class T>
 class rsTriangle2D
 {
 
 public:
 
-  //friend class rsAffineTransform2D<RealType>;  // why?
+  //friend class rsAffineTransform2D<T>;  // why?
 
   /** \name Construction/Destruction */
 
   /** Constructor. Initializes the 3 points. */
-  rsTriangle2D(const rsPoint2D<RealType> &a,
-    const rsPoint2D<RealType> &b,
-    const rsPoint2D<RealType> &c)
+  rsTriangle2D(const rsVector2D<T> &a, const rsVector2D<T> &b, const rsVector2D<T> &c)
   {
     this->a = a;
     this->b = b;
@@ -27,7 +25,7 @@ public:
   /** \name Inquiry */
 
   /** Returns true when this triangle contains the given point, false otherwise. */
-  bool containsPoint(const rsPoint2D<RealType> &p) const
+  bool containsPoint(const rsVector2D<T> &p) const
   {
     return isPointInsideTriangle(p, *this);
   }
@@ -56,24 +54,21 @@ public:
   /** Determines whether the two points p1 and p2 are on the same side of the line that connects
   a and b.
   \todo move this function into a class 'Line' */
-  static bool arePointsOnSameSideOfLine(const rsPoint2D<RealType> &p1,
-    const rsPoint2D<RealType> &p2,
-    const rsPoint2D<RealType> &a,
-    const rsPoint2D<RealType> &b)
+  static bool arePointsOnSameSideOfLine(const rsVector2D<T> &p1, const rsVector2D<T> &p2,
+    const rsVector2D<T> &a, const rsVector2D<T> &b)
   {
-    rsPoint2D<RealType> aa = a, bb = b, pp1 = p1, pp2 = p2; // needed because Point::operator- 
+    rsVector2D<T> aa = a, bb = b, pp1 = p1, pp2 = p2; // needed because Point::operator- 
                                                             // is not const
-    RealType cp1 = rsPoint2D<RealType>::crossProduct(bb-aa, pp1-aa);
-    RealType cp2 = rsPoint2D<RealType>::crossProduct(bb-aa, pp2-aa);
-    if(rsPoint2D<RealType>::scalarProduct(cp1, cp2) >= 0)
+    T cp1 = rsVector2D<T>::crossProduct(bb-aa, pp1-aa);
+    T cp2 = rsVector2D<T>::crossProduct(bb-aa, pp2-aa);
+    if(rsVector2D<T>::scalarProduct(cp1, cp2) >= 0)
       return true;
     else
       return false;
   }
 
   /** Determines whether the given point is inside the given triangle or not. */
-  static bool isPointInsideTriangle(const rsPoint2D<RealType> &p,
-    const rsTriangle2D<RealType> &t)
+  static bool isPointInsideTriangle(const rsVector2D<T> &p, const rsTriangle2D<T> &t)
   {
     if(arePointsOnSameSideOfLine(p, t.a, t.b, t.c)
       && arePointsOnSameSideOfLine(p, t.b, t.a, t.c)
@@ -86,15 +81,14 @@ public:
   }
   // can be simplified using the edge function,
   // see https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage
+  // when doing so, check, if the unit test still passes
 
 protected:
 
-  rsPoint2D<RealType> a, b, c; // us rsVector2D
+  rsVector2D<T> a, b, c; // vertices - maybe make public
 
 };
 
-// a typedef'd explicit instantiation for coordinates of type double:
-//typedef rsTriangle2D<double> rsDblTriangle2D; // needs the RSLib_API prefix?
-// get rid of that
+// todo: getNormal (returns normal vector)
 
 #endif
