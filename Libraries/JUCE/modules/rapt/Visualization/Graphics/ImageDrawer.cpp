@@ -309,25 +309,6 @@ void rsLineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int 
 /*
 Background/References:
 
-// rasterization of filled triangles:
-// https://fgiesen.wordpress.com/2013/02/08/triangle-rasterization-in-practice/
-
-https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage
--the edge function for edge a,b and point p is the cross products between vectors (b-a) and (p-a)
--point p is inside triangle if the edge-function is positive for all 3 edges 
--OpenGL and DirectX expect triangles to be declared in counter-clockwise order
--barycentric coordinates express any point p as linear combination of the vertices of a triangle:
- p = t0*v0 + t1*v1 + t2*v2 (t stands for "triangle coordinate")
- -for points inside the triangle, we have t0,t1,t2 in 0..1 and t0 + t1 + t2 = 1
- -if known for a point in the triangle, they can be used to interpolate or extrapolate vertex 
-  attributes such as color, normal vectors, texture coordinates, z-depth etc.
- -they can be computed for a point p as foolows - let edg denote the edge function, then:
-  s = 1/edg(v0,v1,v2), t0 = s*edg(v1,v2,p), t1 = s*edg(v2,v0,p), t2 = edg(v0,v1)
--the top-left rule considers a point on the edge as inside, if it's on a top or left edge
- -a top edge is perfectly horizontal above the third vertex
- -a left edge is an edge that is going down (in counter-clockwise vertex order convention)
- -important for cases where the edge function is 0
-
 // https://www.youtube.com/watch?v=9A5TVh6kPLA
 // https://github.com/planetchili/3D_Fundamentals
 
