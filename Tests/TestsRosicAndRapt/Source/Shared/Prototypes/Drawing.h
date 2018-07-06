@@ -53,15 +53,25 @@ float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF
 rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
   const rsVector2DF& q0, const rsVector2DF& q1);
 
-/** Sutherland-Hodgman algorithm for 2D polygon clipping. */
-std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p, 
-  const std::vector<rsVector2DF>& c);
+/** Clips a subject polygon against a convex clipping polygon. The subject needs to to be 
+convex. */
+std::vector<rsVector2DF> clipPolygon(const std::vector<rsVector2DF>& subject, 
+  const std::vector<rsVector2DF>& clipper);
 // actually not a drawing algorithm but a polygon clipping algorithm (needed here for prototype for
 // anti-aliased triangle drawing)
 
-std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
-  const std::vector<rsVector2DF>& c);
-
+/** Clips the given polygon p against the edge from e0 to e1. */
 std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
   const rsVector2DF& e0, const rsVector2DF& e1);
- //test
+// rename to clipPolygonAgainstedge
+
+std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
+  const std::vector<rsVector2DF>& c);
+// obsolete
+
+/** Given pixel coordinates x,y and the 3 vertices a,b,c of a triangle (in counterclockwise order), 
+this function computes the area in which the triangle and pixel-square overlap. It's a value 
+between 0 and 1, where 0 means the pixel and triangle do not intersect at all, 1 means the pixel is
+fully covered by the triangle. */
+float pixelCoverage(int x, int y, 
+  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c);

@@ -151,10 +151,10 @@ bool convexPolygonClipping(std::string &reportString)
   // change nothing
 
 
-  clipped = clipConvexPolygons(triangle, square);
+  clipped = clipPolygon(triangle, square);
   r &= clipped.size() == 6;
   target  = { V(7,3), V(6,2), V(4,2), V(3,3), V(3,5), V(7,5) }; r &= clipped == target;
-  clipped = clipConvexPolygons(square, triangle);
+  clipped = clipPolygon(square, triangle);
   target  = { V(6,2), V(4,2), V(3,3), V(3,5), V(7,5), V(7,3) }; r &= clipped == target;
   // clipping the triangle against the square or vice versa results in the same clipped polygon,
   // however, the start vertex is different in both cases

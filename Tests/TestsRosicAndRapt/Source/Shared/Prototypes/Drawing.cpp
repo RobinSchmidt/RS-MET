@@ -681,7 +681,7 @@ std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
   return r;
 }
 
-std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p, 
+std::vector<rsVector2DF> clipPolygon(const std::vector<rsVector2DF>& p, 
   const std::vector<rsVector2DF>& c)
 {
   std::vector<rsVector2DF> r = p;
@@ -694,6 +694,7 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
   }
   return r;
 }
+// production version should just be named clip and be a static function of class Polygon
 
 /*
 std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
@@ -745,8 +746,7 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
 // done
 
 // https://rosettacode.org/wiki/Sutherland-Hodgman_polygon_clipping#C
-
-
+// maybe use this as model for the production version
 
 
 
@@ -755,16 +755,17 @@ float polygonArea(const ArrVec2& p)
 {
   return 0; // preliminary
 }
-
-// computes intersection area of pixel x,y with triangle a,b,c
-float coverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
+float pixelCoverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
 {
   ArrVec2 triangle = { a, b, c };
   ArrVec2 square   = { Vec2(x, y), Vec2(x+1, y), Vec2(x+1, y+1), Vec2(x, y+1) };
-  ArrVec2 polygon  = clipConvexPolygons(triangle, square);
+  ArrVec2 polygon  = clipPolygon(triangle, square);
   return polygonArea(polygon);
 }
-
+float pixelCoverage(int x, int y, Vec2 a, Vec2 b, Vec2 c)
+{
+  return pixelCoverage((float) x, (float) y, a, b, c);
+}
 // make a simplified version of the polygon clipping algorithm to clip a triangle angainst a pixel
 // take advantage of the simplicity of the shapes to optimize away unnecessary operations
 // (some of the vector elements become 0 or 1 -> allows to remove the respective additions and 
