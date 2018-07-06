@@ -47,6 +47,12 @@ inline size_t rsFind(std::vector<T>& v, T elementToFind)
 }
 
 template<class T>
+inline T rsLast(const std::vector<T>& v)
+{
+  return v[v.size()-1];
+}
+
+template<class T>
 inline bool rsRemoveFirstOccurrence(std::vector<T>& v, T elementToRemove)
 {
   for(size_t i = 0; i < size(v); i++)

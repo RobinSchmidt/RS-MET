@@ -665,33 +665,36 @@ std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
 {
   std::vector<rsVector2DF> r;
   Vec2 S = p[p.size()-1];               // start of edge under consideration
-  Vec2 I;
-  for(int i = 0; i < p.size(); i++) {
-    Vec2 E = p[i];
-    if(isInsideEdge(E, e0, e1)) 
-    {
-      if(!isInsideEdge(S, e0, e1)) {
-        I = lineIntersection(S, E, e0, e1);
-        r.push_back(I);
-      }
+  for(int i = 0; i < p.size(); i++) {   // loop over edges of polynomial
+    Vec2 E = p[i];                      // end of edge under consideration
+    if(isInsideEdge(E, e0, e1)) {
+      if(!isInsideEdge(S, e0, e1))
+        r.push_back(lineIntersection(S, E, e0, e1));
       r.push_back(E);
     }
     else {
       if(isInsideEdge(S, e0, e1))
-      {
-        I = lineIntersection(S, E, e0, e1);
-        r.push_back(I);
-      }
+        r.push_back(lineIntersection(S, E, e0, e1));
     }
     S = E;
   }
   return r;
 }
 
-
 std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
   const std::vector<rsVector2DF>& c)
 {
+  std::vector<rsVector2DF> r = p;
+  Vec2 e0 = rsLast(c), e1;
+  for(int i = 0; i < c.size(); i++)
+  {
+    e1 = c[i];
+    r  = clipAgainstEdge(r, e0, e1);
+    e0 = e1;
+  }
+  return r;
+
+  /*
   ArrVec2 in = p;           // partially clipped polygon
   ArrVec2 out;
   Vec2 e0 = c[c.size()-1];  // current clip edge start
@@ -719,6 +722,7 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
     e1 = c[i];
   }
   return out;//...nnnnaaaahhhh...doesn't work either
+  */
 }
 
 /*
