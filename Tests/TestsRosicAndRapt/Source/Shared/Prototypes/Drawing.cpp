@@ -1,3 +1,6 @@
+typedef rsVector2DF Vec2;
+typedef std::vector<Vec2> ArrVec2;
+
 //-------------------------------------------------------------------------------------------------
 // Lines
 
@@ -549,18 +552,21 @@ void drawTriangle(rsImageDrawerFFF& drw,
     }
   }
 }
+// for production code, instead of just passing a color value, pass a std::function object
+// that computes a color - it should implement the () operator which should return the color
+// -> allows for all kinds of shading algorithms (texture, lighting, bump, etc.)
 
 //-------------------------------------------------------------------------------------------------
 // Polygons:
 
+float edgeFunction(Vec2 a, Vec2 b, Vec2 p) // verify
+{
+  return Vec2::crossProduct(b-a, p-a);
+}
+
 bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
 {
-  // from e0, e1, obtain implicit line equation for the edge defined by e0, e1 and plug point
-  // p into that line equation - sign of the result determines if the point is considered inside
-
-  // maybe use the edge-function defined as cross(e1-e0, p-e0)...or similar..look up
-
-  return true; // preliminary
+  return edgeFunction(e0, e1, p) >= 0.f;
 }
 rsVector2DF intersection(const rsVector2DF& p0, const rsVector2DF& p1,
   const rsVector2DF& q0, const rsVector2DF& q1)
@@ -638,3 +644,24 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
 // can p really be non-convex? in this case the output may have to be a set of polygons (one 
 // non-convex could split into many polygons), see page 125 - or will the algorithm then 
 // produce degenerate edges (page 929?)
+
+
+float polygonArea(const ArrVec2& p)
+{
+  return 0; // preliminary
+}
+
+// computes intersection area of pixel x,y with triangle a,b,c
+float coverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
+{
+  ArrVec2 triangle = { a, b, c };
+  ArrVec2 square   = { Vec2(x, y), Vec2(x+1, y), Vec2(x+1, y+1), Vec2(x, y+1) };
+  ArrVec2 polygon  = clipConvexPolygons(triangle, square);
+  return polygonArea(polygon);
+}
+
+// make a simplified version of the polygon clipping algorithm to clip a triangle angainst a pixel
+// take advantage of the simplicity of the shapes to optimize away unnecessary operations
+// (some of the vector elements become 0 or 1 -> allows to remove the respective additions and 
+// multiplications) ...maybe it can be based on the implicit line equations - maybe that would make
+// it even simpler? ...more work to do...
