@@ -96,16 +96,16 @@ bool convexPolygonClipping(std::string &reportString)
     s1(5.f, 1.f),
     s2(5.f, 5.f),
     s3(1.0, 5.f);
-  Poly square = { s0, s1, s2, s3 };  // clockwise
-  //Poly square = { s3, s2, s1, s0 };    // counter clockwise
+  //Poly square = { s0, s1, s2, s3 };  // clockwise
+  Poly square = { s3, s2, s1, s0 };    // counter clockwise
 
   // a triangle:
   Vec2 
     t0(  3.0f,  0.0f), 
     t1(  7.5f,  4.5f), 
     t2(  0.0f,  3.0f);
-  Poly triangle = { t0, t1, t2 };  // clockwise
-  //Poly triangle = { t2, t1, t0 };  // counter clockwise
+  //Poly triangle = { t0, t1, t2 };  // clockwise
+  Poly triangle = { t2, t1, t0 };  // counter clockwise
 
 
   // test edge function:
@@ -120,13 +120,20 @@ bool convexPolygonClipping(std::string &reportString)
   Vec2 v = lineIntersection(Vec2(3,0), Vec2(4,1), Vec2(0,3), Vec2(2.5,3.5));
   r &= v == Vec2(7.5, 4.5);
 
-  Poly clipped = clipConvexPolygons(square, triangle); 
+  Poly clipped; 
+  clipped = clipConvexPolygons(triangle, square);
+  clipped = clipConvexPolygons(square, triangle); 
+ 
    // still wrong - but some vertices have the right coords already
+   // some intersection vertices are missing and some ouside vertices are kept which should
+   // be removed -> problem with decision logic
+   // maybe the algorithm needs the vertices of both polygons in a particluar order?
 
   // should result in:  (2,1), (4,1), (5,2), (5,4), (1,3.4), (1,2)
 
   // doesn't work - problem with vertex order and/or definition of inside/orientation?
   
+  // use counter-clockwise convention (to be consistent with OpenGL and DirectX)
 
 
   // clipping should be commutative, i.e. the result independent from order of arguments

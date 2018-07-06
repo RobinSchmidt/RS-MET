@@ -566,7 +566,7 @@ float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF
 
 bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
 {
-  return edgeFunction(e0, e1, p) < 0.f;
+  return edgeFunction(e0, e1, p) >= 0.f;
 }
 
 rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
@@ -613,7 +613,10 @@ void clipAgainstEdge(const std::vector<rsVector2DF>& in, std::vector<rsVector2DF
         i = lineIntersection(s, p, e0, e1);
         out.push_back(i);
       }
-      //else                         // case 3 - add no vertex
+      else                         // case 3 - add no vertex
+      {
+        int dummy = 0;
+      }
     }
     s = p;
   }
@@ -627,7 +630,11 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
 {
   std::vector<rsVector2DF> r; // result
   for(size_t i = 0; i < c.size()-1; i++)
+  {
     clipAgainstEdge(p, r, c[i], c[i+1]);
+    int dummy = 0;
+  }
+  clipAgainstEdge(p, r, c[c.size()-1], c[0]);
   return r;
 }
 // Sutherland-Hodgman algorithm (Foley, page 124ff)
