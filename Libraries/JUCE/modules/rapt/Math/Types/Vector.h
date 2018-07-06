@@ -51,6 +51,27 @@ public:
   /** Divides this vector by scalar s. */
   rsVector2D<T>& operator/=(T s) { s = 1/s; x *= s; y *= s; return *this; }
 
+  /** Defines the negative of a vector. */
+  rsVector2D<T> operator-() const { return rsVector2D(-x, -y); }
+
+  /** Compares two vectors for equality. */
+  bool operator==(const rsVector2D<T>& p) const 
+  {
+    if(x == p.x && y == p.y)
+      return true;
+    else
+      return false;
+  }
+
+  /** Compares two vectors for inequality. */
+  bool operator!=(const rsVector2D<T>& p) const
+  {
+    if(x != p.x || y != p.y)
+      return true;
+    else
+      return false;
+  }
+
   //-----------------------------------------------------------------------------------------------
 
   /** \name Static Member Functions */

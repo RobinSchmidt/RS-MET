@@ -105,7 +105,14 @@ bool convexPolygonClipping(std::string &reportString)
     t2(  0.0f,  3.0f);
   Poly triangle = { t0, t1, t2 };
 
+  // test edge function:
+  
+  // test line intersection:
+  Vec2 v = lineIntersection(Vec2(3,0), Vec2(4,1), Vec2(0,3), Vec2(2.5,3.5));
+  r &= v == Vec2(7.5, 4.5);
+
   Poly clipped = clipConvexPolygons(square, triangle); 
+   // still wrong
 
   // should result in:  (2,1), (4,1), (5,2), (5,4), (1,3.4), (1,2)
   

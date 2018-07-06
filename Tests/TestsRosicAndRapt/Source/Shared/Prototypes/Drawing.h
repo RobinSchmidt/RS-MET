@@ -42,6 +42,10 @@ void drawTriangle(rsImageDrawerFFF& drw,
 
 // Polygons:
 
+/** Intersection point between lines through p0,p1 and q0,q1 */
+rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
+  const rsVector2DF& q0, const rsVector2DF& q1);
+
 /** Sutherland-Hodgman algorithm for 2D polygon clipping. */
 std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p, 
   const std::vector<rsVector2DF>& c);

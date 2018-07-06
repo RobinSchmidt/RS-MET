@@ -568,37 +568,27 @@ bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF
 {
   return edgeFunction(e0, e1, p) >= 0.f;
 }
-rsVector2DF intersection(const rsVector2DF& p0, const rsVector2DF& p1,
+
+rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
   const rsVector2DF& q0, const rsVector2DF& q1)
 {
-  // finds intersection point of the two lines through p1,p2 and q1,q2
+  // coeffs for the two implicit line equations:
+  float a, b, c;
+  rsLine2DF::twoPointToImplicit(p0.x, p0.y, p1.x, p1.y, a, b, c, false);
+  float A, B, C;
+  rsLine2DF::twoPointToImplicit(q0.x, q0.y, q1.x, q1.y, A, B, C, false);
 
-  //float a, b, c;
-  //rsLine2DF::twoPointToImplicit(p0.x, p0.y, p1.x, p1.y, a, b, c);
-  // make a function that doesn't normalize the implicit equation coeffs
-
-  // compute parameter t for which both lines intersect, lines are given in parametric form as
-  // Lp = p0 + t*(p1-p0), Lq = q0 + t*(q1-q0) - these equations are set equal and solved for t,
-  // in the result we have formally a quotient of two vectors - we can use either or the other 
-  // coordinate - we choose the one which has the larger absolute value in the denominator to
-  // avoid divisions by zero
-  rsVector2DF dp, dq, d; 
-  dp = p1 - p0;
-  dq = q1 - q0;
-  d  = dq - dp;
-
-  // solve for t and return result of line equation Lp for the found t:
-  float t;
-  if(abs(d.x) > abs(d.y))
-    t = (p0.x-q0.x) / d.x; // use x-oordinate to solve for t
-  else
-    t = (p0.y-q0.y) / d.y; // use y-oordinate to solve for t
-  return p0 + t*(p1-p0);
-
-  //return rsVector2DF();  // preliminary
-
-  // or maybe it's easier to work with the implicit line equations?
+  // solve 2x2 linear system M*v = r:
+  // a*x + b*y = c
+  // A*x + B*y = C
+  // for x,y
+  float M[2][2] = { {a,b}, {A,B} };
+  float r[2]    = {  -c,    -C   };
+  float v[2];
+  rsLinearAlgebra::rsSolveLinearSystem2x2(M, v, r);
+  return rsVector2DF(v[0], v[1]);
 }
+// move to rsLine2D
 
 // internal function of Sutherland-Hodgman polygon clipper that clips the input polygon against a 
 // given edge from e0 to e1, thereby adding zero, one or two vertices to the output polygon
@@ -613,14 +603,14 @@ void clipAgainstEdge(const std::vector<rsVector2DF>& in, std::vector<rsVector2DF
       if(isInsideEdge(s, e0, e1))  // case 1 - add polygon vertex
         out.push_back(p);
       else {                       // case 4 - add intersection and polygon vertex
-        i = intersection(s, p, e0, e1);
+        i = lineIntersection(s, p, e0, e1);
         out.push_back(i);
         out.push_back(p);
       }
     }
     else  { // cases 2,3
       if(isInsideEdge(s, e0, e1)) { // case 2 - add intersection vertex
-        i = intersection(s, p, e0, e1);
+        i = lineIntersection(s, p, e0, e1);
         out.push_back(i);
       }
       //else                         // case 3 - add no vertex
