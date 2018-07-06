@@ -146,34 +146,20 @@ bool convexPolygonClipping(std::string &reportString)
 
   clipped = clipAgainstEdge(triangle, s3, s2); 
   target  = { V(7,3), V(7,5), V(9,5) }; r &= clipped == target;
-
-
   // we need to test the case where none of the vertices is inside the edge and also
   // when adges of clipping and subject polygon coincide (maybe just clip again - this should
   // change nothing
 
-  //clipped = clipConvexPolygons2(triangle, square);
-  //clipped = clipConvexPolygons(square, triangle); 
 
   clipped = clipConvexPolygons(triangle, square);
   r &= clipped.size() == 6;
   target  = { V(7,3), V(6,2), V(4,2), V(3,3), V(3,5), V(7,5) }; r &= clipped == target;
-  int dummy = 0;
- 
-   // still wrong - but some vertices have the right coords already
-   // some intersection vertices are missing and some ouside vertices are kept which should
-   // be removed -> problem with decision logic
-   // maybe the algorithm needs the vertices of both polygons in a particluar order?
+  clipped = clipConvexPolygons(square, triangle);
+  target  = { V(6,2), V(4,2), V(3,3), V(3,5), V(7,5), V(7,3) }; r &= clipped == target;
+  // clipping the triangle against the square or vice versa results in the same clipped polygon,
+  // however, the start vertex is different in both cases
 
-
-  // doesn't work - problem with vertex order and/or definition of inside/orientation?
-  
-  // use counter-clockwise convention (to be consistent with OpenGL and DirectX)
-
-
-  // clipping should be commutative, i.e. the result independent from order of arguments
-  // -> test this
-
+  // counter-clockwise convention is used (to be consistent with OpenGL and DirectX)
   // info to vertex order in OpenGL
   // https://stackoverflow.com/questions/8142388/in-what-order-should-i-send-my-vertices-to-opengl-for-culling
   // By default, counterclockwise polygons are taken to be front-facing.
