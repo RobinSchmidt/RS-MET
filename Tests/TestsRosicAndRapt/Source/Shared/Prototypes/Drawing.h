@@ -42,7 +42,12 @@ void drawTriangle(rsImageDrawerFFF& drw,
 
 // Polygons:
 
+/** Returns a value proportional to how much the given point p is to the left of the directed edge
+from a to b. The proportionlatity constant is the (signed) length of b-a. A point p to the left of 
+the edge will return positive values, a point p to the right, negative values and a point on the 
+edge zero. */
 float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& p);
+// rename to leftOf (or rightTo) a->b is a directed edge or leftDistance
 
 /** Intersection point between lines through p0,p1 and q0,q1 */
 rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,

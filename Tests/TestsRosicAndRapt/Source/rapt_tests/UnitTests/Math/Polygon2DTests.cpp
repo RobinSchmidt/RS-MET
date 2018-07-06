@@ -89,13 +89,14 @@ bool convexPolygonClipping(std::string &reportString)
 
   typedef rsVector2DF Vec2;       // 2D vector (for poylgon vertices
   typedef std::vector<Vec2> Poly; // a polygon is an array of vertices
+  typedef Vec2 V;
 
   // a square:
   Vec2 
     s0(3, 2), 
     s1(3, 6),
-    s3(7, 6),
-    s2(7, 2);
+    s2(7, 6),
+    s3(7, 2);
   Poly square = { s0, s1, s2, s3 };  // counter clockwise
 
 
@@ -108,6 +109,14 @@ bool convexPolygonClipping(std::string &reportString)
 
   // test edge function:
   float d;
+
+  d = edgeFunction(V(4,1), V(4,3), V(3,8)); r &= d ==  2;
+  d = edgeFunction(V(4,1), V(4,3), V(4,8)); r &= d ==  0;
+  d = edgeFunction(V(4,1), V(4,3), V(5,8)); r &= d == -2;
+  // rename edgeFunction To LeftDistance
+  // returns a value proportional to the distance of the point p to the left of the directed
+  //
+
   d = edgeFunction(t0, t1, s0);        r &= d >  0;
   d = edgeFunction(t0, t1, t2);        r &= d <  0;
   d = edgeFunction(t0, t1, Vec2(4,2)); r &= d == 0;
@@ -118,9 +127,27 @@ bool convexPolygonClipping(std::string &reportString)
   Vec2 v = lineIntersection(Vec2(3,0), Vec2(4,1), Vec2(0,3), Vec2(2.5,3.5));
   r &= v == Vec2(7.5, 4.5);
 
+
+
   Poly clipped; 
 
-  clipped = clipAgainstEdge(triangle, s0, s1);
+  Poly target;
+  clipped = clipAgainstEdge(triangle, s3, s2); // wrong!
+
+  clipped = clipAgainstEdge(triangle, s0, s1);  
+  target  = { V(5,1), V(3,3), V(3,5), V(9,5) }; r &= clipped == target;
+
+  clipped = clipAgainstEdge(triangle, s1, s2);
+  target  = { V(5,1), V(1,5), V(9,5) }; r &= clipped == target;
+
+  clipped = clipAgainstEdge(triangle, s2, s3); // (7,3),(5,1),(1,5),(7,5)
+  clipped = clipAgainstEdge(triangle, s3, s0); // (6,2),(4,2),(1,5),(9,5)
+  clipped = clipAgainstEdge(triangle, s0, s3); // (6,2),(5,1),(4,2)
+
+
+  // we need to test the case where nor of the vertices is inside the edge
+
+
 
 
   clipped = clipConvexPolygons2(triangle, square);

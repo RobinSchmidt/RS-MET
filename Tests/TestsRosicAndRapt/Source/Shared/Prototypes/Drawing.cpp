@@ -566,9 +566,10 @@ float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF
 
 bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
 {
-  //return edgeFunction(e0, e1, p) >= 0.f;
+  //return leftDistance(e0, e1, p) >= 0.f;
   return edgeFunction(e0, e1, p) <= 0.f;
 }
+// rename to leftOf (or rightTo)
 
 rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
   const rsVector2DF& q0, const rsVector2DF& q1)
@@ -665,8 +666,6 @@ std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
   std::vector<rsVector2DF> r;
   Vec2 S = p[p.size()-1];               // start of edge under consideration
   Vec2 I;
-  if(isInsideEdge(S, e0, e1))
-    r.push_back(S);
   for(int i = 0; i < p.size(); i++) {
     Vec2 E = p[i];
     if(isInsideEdge(E, e0, e1)) 
@@ -678,8 +677,10 @@ std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
       r.push_back(E);
     }
     else {
+
       I = lineIntersection(S, E, e0, e1);
       r.push_back(I);
+
     }
     S = E;
   }
@@ -767,6 +768,9 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
 //       S = E;
 //    done
 // done
+
+// https://rosettacode.org/wiki/Sutherland-Hodgman_polygon_clipping#C
+
 
 
 
