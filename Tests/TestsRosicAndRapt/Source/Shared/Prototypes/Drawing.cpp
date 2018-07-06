@@ -589,41 +589,56 @@ rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
   return rsVector2DF(v[0], v[1]);
 }
 // move to rsLine2D
+// actually, it computes an intersection point of the infinitely extended lines...hmm
 
 // internal function of Sutherland-Hodgman polygon clipper that clips the input polygon against a 
 // given edge from e0 to e1, thereby adding zero, one or two vertices to the output polygon
 void clipAgainstEdge(const std::vector<rsVector2DF>& in, std::vector<rsVector2DF>& out,
   const rsVector2DF& e0, const rsVector2DF& e1)
 {
-  rsVector2DF s, p, i;  // don't use i for a vertex
-  s = in[in.size()-1];
+  //rsVector2DF s, p, i;  // don't use i for a vertex
+  //s = in[in.size()-1];
+  //for(size_t j = 0; j < in.size(); j++) {
+  //  p = in[j];
+  //  if(isInsideEdge(p, e0, e1))  { // cases 1,4    
+  //    if(isInsideEdge(s, e0, e1))  // case 1 - add polygon vertex
+  //      out.push_back(p);
+  //    else {                       // case 4 - add intersection and polygon vertex
+  //      i = lineIntersection(s, p, e0, e1);
+  //      out.push_back(i);
+  //      out.push_back(p);
+  //    }
+  //  }
+  //  else  { // cases 2,3
+  //    if(isInsideEdge(s, e0, e1)) { // case 2 - add intersection vertex
+  //      i = lineIntersection(s, p, e0, e1);
+  //      out.push_back(i);
+  //    }
+  //    else                         // case 3 - add no vertex
+  //    {
+  //      int dummy = 0;
+  //    }
+  //  }
+  //  s = p;
+  //}
+
+  rsVector2DF s = in[in.size()-1];
   for(size_t j = 0; j < in.size(); j++) {
-    p = in[j];
-    if(isInsideEdge(p, e0, e1))  { // cases 1,4    
-      if(isInsideEdge(s, e0, e1))  // case 1 - add polygon vertex
-        out.push_back(p);
-      else {                       // case 4 - add intersection and polygon vertex
-        i = lineIntersection(s, p, e0, e1);
-        out.push_back(i);
-        out.push_back(p);
-      }
+    rsVector2DF p = in[j];
+    if(isInsideEdge(p, e0, e1))  {    // cases 1,4    
+      if(!isInsideEdge(s, e0, e1)) 
+        out.push_back(lineIntersection(s, p, e0, e1));
+      out.push_back(p);
     }
-    else  { // cases 2,3
-      if(isInsideEdge(s, e0, e1)) { // case 2 - add intersection vertex
-        i = lineIntersection(s, p, e0, e1);
-        out.push_back(i);
-      }
-      else                         // case 3 - add no vertex
-      {
-        int dummy = 0;
-      }
+    else  {                        // cases 2,3
+      if(isInsideEdge(s, e0, e1))  // case 2 - add intersection vertex
+        out.push_back(lineIntersection(s, p, e0, e1));
     }
     s = p;
   }
 }
 // optimization: both isInsideEdge and intersection need to compute the implicit line equation
 // coeffs - can be done once (in production code)
-
 // p: general polygon to be clipped, c: convex clipping polygon
 std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p, 
   const std::vector<rsVector2DF>& c)
@@ -641,6 +656,56 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
 // can p really be non-convex? in this case the output may have to be a set of polygons (one 
 // non-convex could split into many polygons), see page 125 - or will the algorithm then 
 // produce degenerate edges (page 929?)
+
+
+std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
+  const std::vector<rsVector2DF>& c)
+{
+  ArrVec2 out = p;          // output polygon
+  Vec2 e0 = c[c.size()-1];  // current clip edge start
+  Vec2 e1 = c[0];           // current clip edge end
+  for(int i = 0; i < c.size(); i++)   {   // loop over clip polygon edges
+    ArrVec2 in = out;                     // holds the partially clipped polygon
+    out.clear();
+    Vec2 S = in[in.size()-1];             // start point of current edge in subject polygon
+    for(int j = 0; j < in.size(); j++) {  // loop over vertices in current input polygon
+      Vec2 E = in[j];                     // end point of current edge in subject polygon
+      if(isInsideEdge(E, e0, e1)) {
+        if(!isInsideEdge(S, e0, e1))
+          out.push_back(lineIntersection(S, E, e0, e1));  // add intersection vertex
+        out.push_back(E);                                 // add end vertex
+      }
+      else if(isInsideEdge(S, e0, e1))
+        out.push_back(lineIntersection(S, E, e0, e1));
+      S = E;
+    }
+    e0 = e1;
+    e1 = c[i];
+  }
+  return out;
+}
+// https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm
+// List outputList = subjectPolygon;   
+// for (Edge clipEdge in clipPolygon) do
+//    List inputList = outputList;
+//    outputList.clear();
+//    Point S = inputList.last;
+//    for (Point E in inputList) do
+//       if (E inside clipEdge) then
+//          if (S not inside clipEdge) then
+//             outputList.add(ComputeIntersection(S,E,clipEdge));
+//          end if
+//          outputList.add(E);
+//       else if (S inside clipEdge) then
+//          outputList.add(ComputeIntersection(S,E,clipEdge));
+//       end if
+//       S = E;
+//    done
+// done
+
+
+
+
 
 
 float polygonArea(const ArrVec2& p)

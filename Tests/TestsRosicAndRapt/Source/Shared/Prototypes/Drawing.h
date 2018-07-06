@@ -53,3 +53,6 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
   const std::vector<rsVector2DF>& c);
 // actually not a drawing algorithm but a polygon clipping algorithm (needed here for prototype for
 // anti-aliased triangle drawing)
+
+std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
+  const std::vector<rsVector2DF>& c);

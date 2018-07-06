@@ -106,6 +106,8 @@ bool convexPolygonClipping(std::string &reportString)
     t2(  0.0f,  3.0f);
   //Poly triangle = { t0, t1, t2 };  // clockwise
   Poly triangle = { t2, t1, t0 };  // counter clockwise
+  //Poly triangle = { t0, t2, t1 };  // counter clockwise
+  //Poly triangle = { t1, t0, t2 };    // counter clockwise
 
 
   // test edge function:
@@ -121,8 +123,13 @@ bool convexPolygonClipping(std::string &reportString)
   r &= v == Vec2(7.5, 4.5);
 
   Poly clipped; 
+  clipped = clipConvexPolygons2(triangle, square);
+
   clipped = clipConvexPolygons(triangle, square);
   clipped = clipConvexPolygons(square, triangle); 
+
+
+  int dummy = 0;
  
    // still wrong - but some vertices have the right coords already
    // some intersection vertices are missing and some ouside vertices are kept which should
@@ -139,7 +146,9 @@ bool convexPolygonClipping(std::string &reportString)
   // clipping should be commutative, i.e. the result independent from order of arguments
   // -> test this
 
-
+  // info to vertex order in OpenGL
+  // https://stackoverflow.com/questions/8142388/in-what-order-should-i-send-my-vertices-to-opengl-for-culling
+  // By default, counterclockwise polygons are taken to be front-facing.
 
 
 
