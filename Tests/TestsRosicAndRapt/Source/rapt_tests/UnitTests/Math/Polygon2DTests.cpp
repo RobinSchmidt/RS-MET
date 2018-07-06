@@ -96,14 +96,17 @@ bool convexPolygonClipping(std::string &reportString)
     s1(5.f, 1.f),
     s2(5.f, 5.f),
     s3(1.0, 5.f);
-  Poly square = { s0, s1, s2, s3 };
+  Poly square = { s0, s1, s2, s3 };  // clockwise
+  //Poly square = { s3, s2, s1, s0 };    // counter clockwise
 
   // a triangle:
   Vec2 
     t0(  3.0f,  0.0f), 
     t1(  7.5f,  4.5f), 
     t2(  0.0f,  3.0f);
-  Poly triangle = { t0, t1, t2 };
+  Poly triangle = { t0, t1, t2 };  // clockwise
+  //Poly triangle = { t2, t1, t0 };  // counter clockwise
+
 
   // test edge function:
   float d;
@@ -118,9 +121,11 @@ bool convexPolygonClipping(std::string &reportString)
   r &= v == Vec2(7.5, 4.5);
 
   Poly clipped = clipConvexPolygons(square, triangle); 
-   // still wrong
+   // still wrong - but some vertices have the right coords already
 
   // should result in:  (2,1), (4,1), (5,2), (5,4), (1,3.4), (1,2)
+
+  // doesn't work - problem with vertex order and/or definition of inside/orientation?
   
 
 
