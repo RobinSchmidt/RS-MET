@@ -566,7 +566,6 @@ float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF
 
 bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
 {
-  //return leftDistance(e0, e1, p) >= 0.f;
   return edgeFunction(e0, e1, p) <= 0.f;
 }
 // rename to leftOf (or rightTo)
@@ -642,7 +641,7 @@ void clipAgainstEdge(const std::vector<rsVector2DF>& in, std::vector<rsVector2DF
 // optimization: both isInsideEdge and intersection need to compute the implicit line equation
 // coeffs - can be done once (in production code)
 // p: general polygon to be clipped, c: convex clipping polygon
-std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p, 
+std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
   const std::vector<rsVector2DF>& c)
 {
   std::vector<rsVector2DF> r; // result
@@ -658,6 +657,7 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
 // can p really be non-convex? in this case the output may have to be a set of polygons (one 
 // non-convex could split into many polygons), see page 125 - or will the algorithm then 
 // produce degenerate edges (page 929?)
+// this version doesn't work
 
 
 std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
@@ -681,7 +681,7 @@ std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
   return r;
 }
 
-std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
+std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p, 
   const std::vector<rsVector2DF>& c)
 {
   std::vector<rsVector2DF> r = p;
@@ -693,36 +693,6 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
     e0 = e1;
   }
   return r;
-
-  /*
-  ArrVec2 in = p;           // partially clipped polygon
-  ArrVec2 out;
-  Vec2 e0 = c[c.size()-1];  // current clip edge start
-  Vec2 e1 = c[0];           // current clip edge end
-  for(int i = 0; i < c.size(); i++)   {     // loop over clip polygon edges
-    out.clear();
-    Vec2 S = in[in.size()-1];             // start of edge under consideration
-    for(int j = 0; j < in.size(); j++) {
-      Vec2 E = in[j];
-      if(isInsideEdge(S, e0, e1)) {   
-        out.push_back(S);                                // S is inside -> add it
-        if(isInsideEdge(E, e0, e1))
-          out.push_back(E);                              // E is also inside -> add it, too
-        else
-          out.push_back(lineIntersection(S, E, e0, e1)); // E is outside -> add intersection
-      }
-      else {                                             // S is outside -> don't add it
-        if(isInsideEdge(E, e0, e1))
-          out.push_back(E);                              // E is inside -> add it
-      }
-      S  = E;
-    }
-    in = out;
-    e0 = e1;
-    e1 = c[i];
-  }
-  return out;//...nnnnaaaahhhh...doesn't work either
-  */
 }
 
 /*

@@ -152,13 +152,12 @@ bool convexPolygonClipping(std::string &reportString)
   // when adges of clipping and subject polygon coincide (maybe just clip again - this should
   // change nothing
 
-
-
-
-  clipped = clipConvexPolygons2(triangle, square);
-  clipped = clipConvexPolygons(triangle, square);
+  //clipped = clipConvexPolygons2(triangle, square);
   //clipped = clipConvexPolygons(square, triangle); 
+
+  clipped = clipConvexPolygons(triangle, square);
   r &= clipped.size() == 6;
+  target  = { V(7,3), V(6,2), V(4,2), V(3,3), V(3,5), V(7,5) }; r &= clipped == target;
   int dummy = 0;
  
    // still wrong - but some vertices have the right coords already
