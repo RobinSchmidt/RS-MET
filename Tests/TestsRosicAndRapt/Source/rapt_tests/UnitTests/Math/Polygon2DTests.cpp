@@ -106,6 +106,12 @@ bool convexPolygonClipping(std::string &reportString)
   Poly triangle = { t0, t1, t2 };
 
   // test edge function:
+  float d;
+  d = edgeFunction(t0, t2, s0);        r &= d >  0;
+  d = edgeFunction(t0, t2, t1);        r &= d <  0;
+  d = edgeFunction(t0, t2, Vec2(2,1)); r &= d == 0;
+  d = edgeFunction(t0, t2, Vec2(1,2)); r &= d == 0;
+
   
   // test line intersection:
   Vec2 v = lineIntersection(Vec2(3,0), Vec2(4,1), Vec2(0,3), Vec2(2.5,3.5));

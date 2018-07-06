@@ -559,14 +559,14 @@ void drawTriangle(rsImageDrawerFFF& drw,
 //-------------------------------------------------------------------------------------------------
 // Polygons:
 
-float edgeFunction(Vec2 a, Vec2 b, Vec2 p) // verify
+float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& p) 
 {
   return Vec2::crossProduct(b-a, p-a);
 }
 
 bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
 {
-  return edgeFunction(e0, e1, p) >= 0.f;
+  return edgeFunction(e0, e1, p) < 0.f;
 }
 
 rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,

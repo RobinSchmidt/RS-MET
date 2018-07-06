@@ -42,6 +42,8 @@ void drawTriangle(rsImageDrawerFFF& drw,
 
 // Polygons:
 
+float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& p);
+
 /** Intersection point between lines through p0,p1 and q0,q1 */
 rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
   const rsVector2DF& q0, const rsVector2DF& q1);
