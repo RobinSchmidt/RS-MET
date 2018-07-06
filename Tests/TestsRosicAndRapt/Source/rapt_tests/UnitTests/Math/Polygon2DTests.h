@@ -10,4 +10,7 @@ bool testRegularPolygonCreation2D(std::string &reportString);
 
 bool convexPolygonClipping(std::string &reportString);
 
+bool triangleRasterization(std::string &reportString);
+// maybe move to a RenderingTests.h/cpp file
+
 #endif

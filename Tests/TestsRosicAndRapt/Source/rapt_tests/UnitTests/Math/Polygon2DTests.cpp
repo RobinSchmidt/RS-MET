@@ -11,6 +11,7 @@ bool testPolygon2D()
   //r &= testRegularPolygonCreation2D(dummy);
   //r &= testPointInsidePolygon2D(dummy);
   r &= convexPolygonClipping(dummy);
+  r &= triangleRasterization(dummy);
 
   //appendTestResultToReport(reportString, testName, testResult);
   return r;
@@ -82,7 +83,6 @@ bool testPointInsidePolygon2D(std::string &reportString)
   return testResult;
 }
 
-
 bool convexPolygonClipping(std::string &reportString)
 {
   bool r = true;
@@ -92,85 +92,128 @@ bool convexPolygonClipping(std::string &reportString)
   typedef Vec2 V;
 
   // a square:
-  Vec2 
-    s0(3, 2), 
+  Vec2
+    s0(3, 2),
     s1(3, 6),
     s2(7, 6),
     s3(7, 2);
-  Poly square = { s0, s1, s2, s3 };  // counter clockwise
+  Poly square ={ s0, s1, s2, s3 };  // counter clockwise
 
 
   // a triangle:
-  Vec2 
+  Vec2
     t0(5, 1),
     t1(1, 5),
-    t2(9, 5); 
-  Poly triangle = { t0, t1, t2 };  // counter clockwise
+    t2(9, 5);
+  Poly triangle ={ t0, t1, t2 };  // counter clockwise
 
   // test edge function:
   float d;
 
-  d = edgeFunction(V(4,1), V(4,3), V(3,8)); r &= d ==  2;
-  d = edgeFunction(V(4,1), V(4,3), V(4,8)); r &= d ==  0;
-  d = edgeFunction(V(4,1), V(4,3), V(5,8)); r &= d == -2;
+  d = edgeFunction(V(4, 1), V(4, 3), V(3, 8)); r &= d ==  2;
+  d = edgeFunction(V(4, 1), V(4, 3), V(4, 8)); r &= d ==  0;
+  d = edgeFunction(V(4, 1), V(4, 3), V(5, 8)); r &= d == -2;
   // rename edgeFunction To LeftDistance
   // returns a value proportional to the distance of the point p to the left of the directed
   //
 
   d = edgeFunction(t0, t1, s0);        r &= d >  0;
   d = edgeFunction(t0, t1, t2);        r &= d <  0;
-  d = edgeFunction(t0, t1, Vec2(4,2)); r &= d == 0;
-  d = edgeFunction(t0, t1, Vec2(3,3)); r &= d == 0;
+  d = edgeFunction(t0, t1, Vec2(4, 2)); r &= d == 0;
+  d = edgeFunction(t0, t1, Vec2(3, 3)); r &= d == 0;
 
-  
+
   // test line intersection:
-  Vec2 v = lineIntersection(Vec2(3,0), Vec2(4,1), Vec2(0,3), Vec2(2.5,3.5));
+  Vec2 v = lineIntersection(Vec2(3, 0), Vec2(4, 1), Vec2(0, 3), Vec2(2.5, 3.5));
   r &= v == Vec2(7.5, 4.5);
 
   Poly clipped, target;
 
-  clipped = clipAgainstEdge(triangle, s0, s1);  
-  target  = { V(5,1), V(3,3), V(3,5), V(9,5) }; r &= clipped == target;
+  clipped = clipAgainstEdge(triangle, s0, s1);
+  target  ={ V(5,1), V(3,3), V(3,5), V(9,5) }; r &= clipped == target;
 
   clipped = clipAgainstEdge(triangle, s1, s2);
-  target  = { V(5,1), V(1,5), V(9,5) }; r &= clipped == target;
+  target  ={ V(5,1), V(1,5), V(9,5) }; r &= clipped == target;
 
   clipped = clipAgainstEdge(triangle, s2, s3);
-  target  = { V(7,3), V(5,1), V(1,5), V(7,5) }; r &= clipped == target;
+  target  ={ V(7,3), V(5,1), V(1,5), V(7,5) }; r &= clipped == target;
 
   clipped = clipAgainstEdge(triangle, s3, s0);
-  target  = { V(6,2), V(4,2), V(1,5), V(9,5) }; r &= clipped == target;
+  target  ={ V(6,2), V(4,2), V(1,5), V(9,5) }; r &= clipped == target;
 
   clipped = clipAgainstEdge(triangle, s0, s3);
-  target  = { V(6,2), V(5,1), V(4,2) }; r &= clipped == target;
+  target  ={ V(6,2), V(5,1), V(4,2) }; r &= clipped == target;
 
-  clipped = clipAgainstEdge(triangle, s3, s2); 
-  target  = { V(7,3), V(7,5), V(9,5) }; r &= clipped == target;
+  clipped = clipAgainstEdge(triangle, s3, s2);
+  target  ={ V(7,3), V(7,5), V(9,5) }; r &= clipped == target;
   // we need to test the case where none of the vertices is inside the edge and also
   // when adges of clipping and subject polygon coincide (maybe just clip again - this should
   // change nothing
 
   clipped = clipPolygon(triangle, square);
   r &= clipped.size() == 6;
-  target  = { V(7,3), V(6,2), V(4,2), V(3,3), V(3,5), V(7,5) }; r &= clipped == target;
+  target  ={ V(7,3), V(6,2), V(4,2), V(3,3), V(3,5), V(7,5) }; r &= clipped == target;
   clipped = clipPolygon(square, triangle);
-  target  = { V(6,2), V(4,2), V(3,3), V(3,5), V(7,5), V(7,3) }; r &= clipped == target;
+  target  ={ V(6,2), V(4,2), V(3,3), V(3,5), V(7,5), V(7,3) }; r &= clipped == target;
   // clipping the triangle against the square or vice versa results in the same clipped polygon,
   // however, the start vertex is different in both cases
 
-
-  float area;
-  area = polygonArea(square);
+  //float area;
+  //area = polygonArea(square);
   //r &= area == 16; // it returns -16 - maybe winding is wrong bcs of the y-axis direction?
-  area = polygonArea(triangle);
+  //area = polygonArea(triangle);
   //r &= area == 16;
 
-  
+  Poly triangle2 ={ V(5,3), t1, t2 };  // 1st vertex is inside the square
+
+  clipped = clipAgainstEdge(triangle2, s0, s1);
+  target  = { V(5,3), V(3,4), V(3,5), V(9,5) }; r &= clipped == target;
+
+  clipped = clipAgainstEdge(triangle2, s1, s2);
+  target  = { V(5,3), V(1,5), V(9,5) }; r &= clipped == target;
+
+  clipped = clipAgainstEdge(triangle2, s2, s3);
+  target  = { V(7,4), V(5,3), V(1,5), V(7,5) }; r &= clipped == target;
+
+  clipped = clipAgainstEdge(triangle2, s3, s0);
+  target  = { V(5,3), V(1,5), V(9,5) }; r &= clipped == target;
+
+  clipped = clipPolygon(triangle2, square); 
+  target  = { V(7,4), V(5,3), V(3,4), V(3,5), V(7,5) }; r &= clipped == target;
+
+  return r;
 
   // counter-clockwise convention is used (to be consistent with OpenGL and DirectX)
   // info to vertex order in OpenGL
   // https://stackoverflow.com/questions/8142388/in-what-order-should-i-send-my-vertices-to-opengl-for-culling
   // By default, counterclockwise polygons are taken to be front-facing.
+}
 
+bool triangleRasterization(std::string &reportString)
+{
+  bool r = true;
+
+  typedef rsVector2DF Vec2;    // for convenience
+  typedef Vec2 V;              // even shorter
+  float c = 0.5f;              // color (gray value)
+  rsImageF img(6, 4);          // image to draw on
+  rsImageDrawerFFF drw(&img);  // drawer object
+  drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
+
+  Vec2 A = V(0.5,0.5), B = V(2.5,0.5), C = V(4.5,2.5);
+  float x = 0, y = 0;
+ 
+  std::vector<Vec2> 
+    triangle = { A, B, C },
+    square   = { V(x, y), V(x+1, y), V(x+1, y+1), V(x, y+1) },
+    polygon  = clipPolygon(triangle, square);
+
+  drawTriangleAntiAliased(drw, A, B, C, c);
+  //drawTriangleAntiAliased(drw, V(0.5,0.5), V(2.5,0.5), V(4.5,2.5), c);
+
+
+
+
+  writeImageToFilePPM(img, "TriangleTest.ppm");
   return r;
 }
