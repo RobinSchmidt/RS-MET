@@ -34,10 +34,11 @@ A triangle can have one or two left edges.
 see:
 https://docs.microsoft.com/en-us/windows/desktop/direct3d11/d3d10-graphics-programming-guide-rasterizer-stage-rules#triangle-rasterization-rules-without-multisampling
 If this algorithms is used to render several triangles with shared edges (as in a triangle mesh),
-each pixel will be visited only once
-
-*/
+each pixel will be visited only once. */
 void drawTriangle(rsImageDrawerFFF& drw, 
+  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
+
+void drawTriangleAntiAliased(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
 
 // Polygons:

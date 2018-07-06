@@ -316,6 +316,15 @@ void triangles()
   rsImageDrawerFFF drw(&img);  // drawer object
   drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
 
+  void (*pDrawTriangle)(rsImageDrawerFFF&, const Vec2&, const Vec2&, const Vec2&, float);
+  pDrawTriangle = &drawTriangle;
+
+
+
+
+  //void drawTriangle(rsImageDrawerFFF& drw, 
+  //  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
+
   // parallelogram made from a flat-top and flat-bottom triangle:
   Vec2 
     p1(  2.f,  1.f), 

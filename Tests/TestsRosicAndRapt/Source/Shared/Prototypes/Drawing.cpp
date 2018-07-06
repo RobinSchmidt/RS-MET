@@ -556,6 +556,13 @@ void drawTriangle(rsImageDrawerFFF& drw,
 // that computes a color - it should implement the () operator which should return the color
 // -> allows for all kinds of shading algorithms (texture, lighting, bump, etc.)
 
+void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
+  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
+{
+
+  int dummy = 0;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Polygons:
 
@@ -746,7 +753,9 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
 // done
 
 // https://rosettacode.org/wiki/Sutherland-Hodgman_polygon_clipping#C
-// maybe use this as model for the production version
+// maybe use this as model for the production version - there's also a function to compute the
+// windong of a polynomial (may be useful to use in assertions when counter/clockwise winding
+// should be asserted)
 
 
 
