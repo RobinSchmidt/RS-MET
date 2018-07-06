@@ -677,10 +677,11 @@ std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
       r.push_back(E);
     }
     else {
-
-      I = lineIntersection(S, E, e0, e1);
-      r.push_back(I);
-
+      if(isInsideEdge(S, e0, e1))
+      {
+        I = lineIntersection(S, E, e0, e1);
+        r.push_back(I);
+      }
     }
     S = E;
   }

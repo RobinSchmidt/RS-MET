@@ -127,12 +127,7 @@ bool convexPolygonClipping(std::string &reportString)
   Vec2 v = lineIntersection(Vec2(3,0), Vec2(4,1), Vec2(0,3), Vec2(2.5,3.5));
   r &= v == Vec2(7.5, 4.5);
 
-
-
-  Poly clipped; 
-
-  Poly target;
-  clipped = clipAgainstEdge(triangle, s3, s2); // wrong!
+  Poly clipped, target;
 
   clipped = clipAgainstEdge(triangle, s0, s1);  
   target  = { V(5,1), V(3,3), V(3,5), V(9,5) }; r &= clipped == target;
@@ -140,12 +135,22 @@ bool convexPolygonClipping(std::string &reportString)
   clipped = clipAgainstEdge(triangle, s1, s2);
   target  = { V(5,1), V(1,5), V(9,5) }; r &= clipped == target;
 
-  clipped = clipAgainstEdge(triangle, s2, s3); // (7,3),(5,1),(1,5),(7,5)
-  clipped = clipAgainstEdge(triangle, s3, s0); // (6,2),(4,2),(1,5),(9,5)
-  clipped = clipAgainstEdge(triangle, s0, s3); // (6,2),(5,1),(4,2)
+  clipped = clipAgainstEdge(triangle, s2, s3);
+  target  = { V(7,3), V(5,1), V(1,5), V(7,5) }; r &= clipped == target;
+
+  clipped = clipAgainstEdge(triangle, s3, s0);
+  target  = { V(6,2), V(4,2), V(1,5), V(9,5) }; r &= clipped == target;
+
+  clipped = clipAgainstEdge(triangle, s0, s3);
+  target  = { V(6,2), V(5,1), V(4,2) }; r &= clipped == target;
+
+  clipped = clipAgainstEdge(triangle, s3, s2); 
+  target  = { V(7,3), V(7,5), V(9,5) }; r &= clipped == target;
 
 
-  // we need to test the case where nor of the vertices is inside the edge
+  // we need to test the case where none of the vertices is inside the edge and also
+  // when adges of clipping and subject polygon coincide (maybe just clip again - this should
+  // change nothing
 
 
 
