@@ -93,29 +93,25 @@ bool convexPolygonClipping(std::string &reportString)
   // a square:
   Vec2 
     s0(1.f, 1.f), 
-    s1(5.f, 1.f),
-    s2(5.f, 5.f),
-    s3(1.0, 5.f);
-  //Poly square = { s0, s1, s2, s3 };  // clockwise
-  Poly square = { s3, s2, s1, s0 };    // counter clockwise
+    s1(1.0, 5.f),
+    s3(5.f, 1.f),
+    s2(5.f, 5.f);
+  Poly square = { s0, s1, s2, s3 };  // counter clockwise
+
 
   // a triangle:
   Vec2 
-    t0(  3.0f,  0.0f), 
-    t1(  7.5f,  4.5f), 
-    t2(  0.0f,  3.0f);
-  //Poly triangle = { t0, t1, t2 };  // clockwise
-  Poly triangle = { t2, t1, t0 };  // counter clockwise
-  //Poly triangle = { t0, t2, t1 };  // counter clockwise
-  //Poly triangle = { t1, t0, t2 };    // counter clockwise
-
+    t0(  3.0f,  0.0f),
+    t1(  0.0f,  3.0f),
+    t2(  7.5f,  4.5f); 
+  Poly triangle = { t0, t1, t2 };  // counter clockwise
 
   // test edge function:
   float d;
-  d = edgeFunction(t0, t2, s0);        r &= d >  0;
-  d = edgeFunction(t0, t2, t1);        r &= d <  0;
-  d = edgeFunction(t0, t2, Vec2(2,1)); r &= d == 0;
-  d = edgeFunction(t0, t2, Vec2(1,2)); r &= d == 0;
+  d = edgeFunction(t0, t1, s0);        r &= d >  0;
+  d = edgeFunction(t0, t1, t2);        r &= d <  0;
+  d = edgeFunction(t0, t1, Vec2(2,1)); r &= d == 0;
+  d = edgeFunction(t0, t1, Vec2(1,2)); r &= d == 0;
 
   
   // test line intersection:
@@ -123,12 +119,14 @@ bool convexPolygonClipping(std::string &reportString)
   r &= v == Vec2(7.5, 4.5);
 
   Poly clipped; 
+
+  clipped = clipAgainstEdge(triangle, s0, s1);
+
+
   clipped = clipConvexPolygons2(triangle, square);
-
   clipped = clipConvexPolygons(triangle, square);
-  clipped = clipConvexPolygons(square, triangle); 
-
-
+  //clipped = clipConvexPolygons(square, triangle); 
+  r &= clipped.size() == 6;
   int dummy = 0;
  
    // still wrong - but some vertices have the right coords already
@@ -149,9 +147,6 @@ bool convexPolygonClipping(std::string &reportString)
   // info to vertex order in OpenGL
   // https://stackoverflow.com/questions/8142388/in-what-order-should-i-send-my-vertices-to-opengl-for-culling
   // By default, counterclockwise polygons are taken to be front-facing.
-
-
-
 
   return r;
 }

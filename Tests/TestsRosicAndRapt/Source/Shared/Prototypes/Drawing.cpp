@@ -566,7 +566,8 @@ float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF
 
 bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
 {
-  return edgeFunction(e0, e1, p) >= 0.f;
+  //return edgeFunction(e0, e1, p) >= 0.f;
+  return edgeFunction(e0, e1, p) <= 0.f;
 }
 
 rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
@@ -644,12 +645,12 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
   const std::vector<rsVector2DF>& c)
 {
   std::vector<rsVector2DF> r; // result
+  clipAgainstEdge(p, r, c[c.size()-1], c[0]);
   for(size_t i = 0; i < c.size()-1; i++)
   {
     clipAgainstEdge(p, r, c[i], c[i+1]);
     int dummy = 0;
   }
-  clipAgainstEdge(p, r, c[c.size()-1], c[0]);
   return r;
 }
 // Sutherland-Hodgman algorithm (Foley, page 124ff)
@@ -658,6 +659,67 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
 // produce degenerate edges (page 929?)
 
 
+std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
+  const rsVector2DF& e0, const rsVector2DF& e1)
+{
+  std::vector<rsVector2DF> r;
+  Vec2 S = p[p.size()-1];               // start of edge under consideration
+  Vec2 I;
+  if(isInsideEdge(S, e0, e1))
+    r.push_back(S);
+  for(int i = 0; i < p.size(); i++) {
+    Vec2 E = p[i];
+    if(isInsideEdge(E, e0, e1)) 
+    {
+      if(!isInsideEdge(S, e0, e1)) {
+        I = lineIntersection(S, E, e0, e1);
+        r.push_back(I);
+      }
+      r.push_back(E);
+    }
+    else {
+      I = lineIntersection(S, E, e0, e1);
+      r.push_back(I);
+    }
+    S = E;
+  }
+  return r;
+}
+
+
+std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
+  const std::vector<rsVector2DF>& c)
+{
+  ArrVec2 in = p;           // partially clipped polygon
+  ArrVec2 out;
+  Vec2 e0 = c[c.size()-1];  // current clip edge start
+  Vec2 e1 = c[0];           // current clip edge end
+  for(int i = 0; i < c.size(); i++)   {     // loop over clip polygon edges
+    out.clear();
+    Vec2 S = in[in.size()-1];             // start of edge under consideration
+    for(int j = 0; j < in.size(); j++) {
+      Vec2 E = in[j];
+      if(isInsideEdge(S, e0, e1)) {   
+        out.push_back(S);                                // S is inside -> add it
+        if(isInsideEdge(E, e0, e1))
+          out.push_back(E);                              // E is also inside -> add it, too
+        else
+          out.push_back(lineIntersection(S, E, e0, e1)); // E is outside -> add intersection
+      }
+      else {                                             // S is outside -> don't add it
+        if(isInsideEdge(E, e0, e1))
+          out.push_back(E);                              // E is inside -> add it
+      }
+      S  = E;
+    }
+    in = out;
+    e0 = e1;
+    e1 = c[i];
+  }
+  return out;//...nnnnaaaahhhh...doesn't work either
+}
+
+/*
 std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
   const std::vector<rsVector2DF>& c)
 {
@@ -666,6 +728,8 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
   Vec2 e1 = c[0];           // current clip edge end
   for(int i = 0; i < c.size(); i++)   {   // loop over clip polygon edges
     ArrVec2 in = out;                     // holds the partially clipped polygon
+    if(in.size() == 0) 
+      continue;
     out.clear();
     Vec2 S = in[in.size()-1];             // start point of current edge in subject polygon
     for(int j = 0; j < in.size(); j++) {  // loop over vertices in current input polygon
@@ -675,15 +739,16 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
           out.push_back(lineIntersection(S, E, e0, e1));  // add intersection vertex
         out.push_back(E);                                 // add end vertex
       }
-      else if(isInsideEdge(S, e0, e1))
+      else if(!isInsideEdge(S, e0, e1))
         out.push_back(lineIntersection(S, E, e0, e1));
       S = E;
     }
     e0 = e1;
     e1 = c[i];
   }
-  return out;
+  return out; // nope - this doesn't work yet
 }
+*/
 // https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm
 // List outputList = subjectPolygon;   
 // for (Edge clipEdge in clipPolygon) do
@@ -702,7 +767,6 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
 //       S = E;
 //    done
 // done
-
 
 
 

@@ -56,3 +56,7 @@ std::vector<rsVector2DF> clipConvexPolygons(const std::vector<rsVector2DF>& p,
 
 std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
   const std::vector<rsVector2DF>& c);
+
+std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
+  const rsVector2DF& e0, const rsVector2DF& e1);
+ //test
