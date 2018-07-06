@@ -57,8 +57,8 @@ rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
 convex. */
 std::vector<rsVector2DF> clipPolygon(const std::vector<rsVector2DF>& subject, 
   const std::vector<rsVector2DF>& clipper);
-// actually not a drawing algorithm but a polygon clipping algorithm (needed here for prototype for
-// anti-aliased triangle drawing)
+// what about winding? does it matter - probably not as long as its consistent for the two 
+// polygons
 
 /** Clips the given polygon p against the edge from e0 to e1. */
 std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
@@ -68,6 +68,9 @@ std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
 std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p, 
   const std::vector<rsVector2DF>& c);
 // obsolete
+
+/** Computes the area of the given polygon. */
+float polygonArea(const std::vector<rsVector2DF>& p);
 
 /** Given pixel coordinates x,y and the 3 vertices a,b,c of a triangle (in counterclockwise order), 
 this function computes the area in which the triangle and pixel-square overlap. It's a value 

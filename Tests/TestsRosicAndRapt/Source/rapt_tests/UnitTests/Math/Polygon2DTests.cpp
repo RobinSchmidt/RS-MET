@@ -150,7 +150,6 @@ bool convexPolygonClipping(std::string &reportString)
   // when adges of clipping and subject polygon coincide (maybe just clip again - this should
   // change nothing
 
-
   clipped = clipPolygon(triangle, square);
   r &= clipped.size() == 6;
   target  = { V(7,3), V(6,2), V(4,2), V(3,3), V(3,5), V(7,5) }; r &= clipped == target;
@@ -158,6 +157,15 @@ bool convexPolygonClipping(std::string &reportString)
   target  = { V(6,2), V(4,2), V(3,3), V(3,5), V(7,5), V(7,3) }; r &= clipped == target;
   // clipping the triangle against the square or vice versa results in the same clipped polygon,
   // however, the start vertex is different in both cases
+
+
+  float area;
+  area = polygonArea(square);
+  //r &= area == 16; // it returns -16 - maybe winding is wrong bcs of the y-axis direction?
+  area = polygonArea(triangle);
+  //r &= area == 16;
+
+  
 
   // counter-clockwise convention is used (to be consistent with OpenGL and DirectX)
   // info to vertex order in OpenGL

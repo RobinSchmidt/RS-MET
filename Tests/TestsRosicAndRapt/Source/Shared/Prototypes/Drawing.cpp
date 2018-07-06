@@ -753,7 +753,10 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
 
 float polygonArea(const ArrVec2& p)
 {
-  return 0; // preliminary
+  float sum = Vec2::crossProduct(rsLast(p), p[0]);
+  for(size_t i = 0; i < p.size()-1; i++)
+    sum += Vec2::crossProduct(p[i], p[i+1]);
+  return 0.5f * sum;
 }
 float pixelCoverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
 {
