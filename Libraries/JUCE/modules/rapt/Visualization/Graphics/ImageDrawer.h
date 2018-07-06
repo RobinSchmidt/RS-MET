@@ -29,7 +29,7 @@ public:
   /** Constructor. */
   rsImageDrawer(rsImage<TPix> *imageToDrawOn);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the image that we will draw on. */
@@ -45,6 +45,14 @@ public:
     // maybe make it possible to provide a function pointer to a custom blend function
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns a pointer to the image object that this drawer draws on. */
+  rsImage<TPix>* getImageToDrawOn() { return image; }
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Drawing */
 
   /** Blends the pixel color in the image at given coordinates with the color of this drawer

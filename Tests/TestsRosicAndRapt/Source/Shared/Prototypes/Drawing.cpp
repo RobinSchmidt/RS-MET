@@ -559,8 +559,25 @@ void drawTriangle(rsImageDrawerFFF& drw,
 void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
 {
+  rsImageF* img = drw.getImageToDrawOn();
 
+  // todo - find bounding box:
+  int xMin, xMax, yMin, yMax;
+  xMin = 0;
+  xMax = img->getWidth();
+  yMin = 0;
+  yMax = img->getHeight();
+
+  for(int y = yMin; y < yMax; y++) {
+    for(int x = 0; x < xMax; x++) {
+      float coverage = pixelCoverage(x, y, v0, v1, v2);
+      drw.plot(x, y, coverage*color);
+    }
+  }
   int dummy = 0;
+
+  // todo: optimize by using bounding box, production code should actually also compute spans
+  // inside the bounding bpx which have zero or full coverage
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -671,6 +688,8 @@ std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
   const rsVector2DF& e0, const rsVector2DF& e1)
 {
   std::vector<rsVector2DF> r;
+  if(p.size() == 0)
+    return r;
   Vec2 S = p[p.size()-1];               // start of edge under consideration
   for(int i = 0; i < p.size(); i++) {   // loop over edges of polynomial
     Vec2 E = p[i];                      // end of edge under consideration
@@ -762,6 +781,8 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
 
 float polygonArea(const ArrVec2& p)
 {
+  if(p.size() < 3)
+    return 0.f;
   float sum = Vec2::crossProduct(rsLast(p), p[0]);
   for(size_t i = 0; i < p.size()-1; i++)
     sum += Vec2::crossProduct(p[i], p[i+1]);
@@ -774,7 +795,8 @@ float pixelCoverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
   ArrVec2 polygon  = clipPolygon(triangle, square);
   return polygonArea(polygon);
 }
-float pixelCoverage(int x, int y, Vec2 a, Vec2 b, Vec2 c)
+float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b, 
+  const rsVector2DF& c)
 {
   return pixelCoverage((float) x, (float) y, a, b, c);
 }

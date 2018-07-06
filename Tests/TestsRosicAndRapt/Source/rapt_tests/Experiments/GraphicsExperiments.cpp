@@ -317,7 +317,8 @@ void triangles()
   drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
 
   void (*pDrawTriangle)(rsImageDrawerFFF&, const Vec2&, const Vec2&, const Vec2&, float);
-  pDrawTriangle = &drawTriangle;
+  //pDrawTriangle = &drawTriangle;
+  pDrawTriangle = &drawTriangleAntiAliased;
 
 
 
@@ -331,8 +332,8 @@ void triangles()
     p2(  7.f,  1.f), 
     p3(  4.f,  5.f), 
     p4(  9.f,  5.f);
-  drawTriangle(drw, p1, p2, p3, c);  // flat-top
-  drawTriangle(drw, p2, p4, p3, c);  // flat-bottom
+  pDrawTriangle(drw, p1, p2, p3, c);  // flat-top
+  pDrawTriangle(drw, p2, p4, p3, c);  // flat-bottom
   //drawTriangleFlatTop(   drw, p1, p2, p3, c);  // p1,p2 above p3, clockwise
   //drawTriangleFlatBottom(drw, p2, p3, p4, c);  // p2 above p3,p4, counterclockwise
 
@@ -343,16 +344,16 @@ void triangles()
     p7(  9.f, 10.f),
     p8(  3.f, 11.f),
     p9( 14.f, 13.f);
-  drawTriangle(drw, p5, p6, p7, c);
-  drawTriangle(drw, p6, p9, p7, c);
-  drawTriangle(drw, p5, p7, p8, c);
+  pDrawTriangle(drw, p5, p6, p7, c);
+  pDrawTriangle(drw, p6, p9, p7, c);
+  pDrawTriangle(drw, p5, p7, p8, c);
 
   // a general triangle:
   Vec2
     p10(25.f,  1.f),
     p11(31.f, 10.f),
     p12(17.f,  5.f);
-  drawTriangle(drw, p10, p11, p12, c);
+  pDrawTriangle(drw, p10, p11, p12, c);
 
   // polygon from 7 triangles:
   Vec2
@@ -365,13 +366,13 @@ void triangles()
     p19(20.f, 17.f),
     p20(17.f, 16.f),
     p21(15.f, 17.f);
-  drawTriangle(drw, p13, p20, p21, c);
-  drawTriangle(drw, p13, p19, p20, c);
-  drawTriangle(drw, p13, p14, p19, c);
-  drawTriangle(drw, p14, p15, p19, c);
-  drawTriangle(drw, p15, p18, p19, c);
-  drawTriangle(drw, p15, p16, p18, c);
-  drawTriangle(drw, p16, p17, p18, c);
+  pDrawTriangle(drw, p13, p20, p21, c);
+  pDrawTriangle(drw, p13, p19, p20, c);
+  pDrawTriangle(drw, p13, p14, p19, c);
+  pDrawTriangle(drw, p14, p15, p19, c);
+  pDrawTriangle(drw, p15, p18, p19, c);
+  pDrawTriangle(drw, p15, p16, p18, c);
+  pDrawTriangle(drw, p16, p17, p18, c);
 
   // save to file:
   writeImageToFilePPM(img, "PolygonsViaTriangles.ppm");
