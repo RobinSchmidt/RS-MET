@@ -92,26 +92,26 @@ bool convexPolygonClipping(std::string &reportString)
 
   // a square:
   Vec2 
-    s0(1.f, 1.f), 
-    s1(1.0, 5.f),
-    s3(5.f, 1.f),
-    s2(5.f, 5.f);
+    s0(3, 2), 
+    s1(3, 6),
+    s3(7, 6),
+    s2(7, 2);
   Poly square = { s0, s1, s2, s3 };  // counter clockwise
 
 
   // a triangle:
   Vec2 
-    t0(  3.0f,  0.0f),
-    t1(  0.0f,  3.0f),
-    t2(  7.5f,  4.5f); 
+    t0(5, 1),
+    t1(1, 5),
+    t2(9, 5); 
   Poly triangle = { t0, t1, t2 };  // counter clockwise
 
   // test edge function:
   float d;
   d = edgeFunction(t0, t1, s0);        r &= d >  0;
   d = edgeFunction(t0, t1, t2);        r &= d <  0;
-  d = edgeFunction(t0, t1, Vec2(2,1)); r &= d == 0;
-  d = edgeFunction(t0, t1, Vec2(1,2)); r &= d == 0;
+  d = edgeFunction(t0, t1, Vec2(4,2)); r &= d == 0;
+  d = edgeFunction(t0, t1, Vec2(3,3)); r &= d == 0;
 
   
   // test line intersection:
@@ -134,7 +134,6 @@ bool convexPolygonClipping(std::string &reportString)
    // be removed -> problem with decision logic
    // maybe the algorithm needs the vertices of both polygons in a particluar order?
 
-  // should result in:  (2,1), (4,1), (5,2), (5,4), (1,3.4), (1,2)
 
   // doesn't work - problem with vertex order and/or definition of inside/orientation?
   
