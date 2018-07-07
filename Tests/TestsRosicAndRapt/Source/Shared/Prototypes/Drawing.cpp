@@ -859,7 +859,8 @@ void unitSquareIntersections(const Vec2& p, const Vec2& q,
   pqy0 =  p.y    + t*(q.y - p.y);
   t    = (1-p.x) /   (q.x - p.x);
   pqy1 =  p.y    + t*(q.y - p.y);
-  // computations can be optimized 
+  // computations can be optimized (do this when the coverage function is finished and a unit test
+  // is in place) - but maybe the way it currently looks is ideal for simd processing
   // get rid of pq prefix
 }
 float unitSquareBite(const Vec2& p, const Vec2& q, 
@@ -879,7 +880,7 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
       if(p.x > q.x)        
         return 0.5f * ((1-pqy0) + (1-pqy1)); // edge cuts from right to left and cuts off top quad
       else 
-        return 0.5f * (pqy0 + pqy1);         // edge cuts off bottom region
+        return 0.5f * (   pqy0  +    pqy1);  // edge cuts off bottom region
     }
     else {                   // square crossed diagonally
       quadBite = false;      // bite is triangular
@@ -887,6 +888,21 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
         return 0.5f * pqx1 * pqy0;     // bottom edge crossed - return bottom left triangular area
       else 
         return 0.5f * pqx1 * (1-pqy0); // top edge crossed - return top-left triangular area
+    }
+  }
+
+  // exactly analogous to the if(L) stuff but with the roles of x and y exchanged and L taking the 
+  // role of B:
+  if(B) {
+    if(T) {
+      quadBite = true;
+      if(p.y > q.y)  return 0.5f * ((1-pqx0) + (1-pqx1));
+      else           return 0.5f * (   pqx0  +    pqx1 );
+    }
+    else {
+      quadBite = false;
+      if(L)  return 0.5f * pqx1 * pqy0;
+      else   return 0.5f * pqx1 * (1-pqy0);
     }
   }
 
@@ -910,10 +926,6 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   unitSquareIntersections(b, c, bcx0, bcx1, bcy0, bcy1);
   unitSquareIntersections(c, a, cax0, cax1, cay0, cay1);
 
-  // area, biten off from unit square by the edge a,b:
-  //bool abQuad;
-  //float abBite = unitSquareBite(a, b, abx0, abx1, aby0, aby1, abQuad);
-
   // compute the areas that are cut off from the unit square by the 3 edges:
   bool  abQuad, bcQuad, caQuad;
   float abBite, bcBite, caBite;
@@ -921,7 +933,15 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   bcBite = unitSquareBite(b, c, bcx0, bcx1, bcy0, bcy1, bcQuad);
   caBite = unitSquareBite(c, a, cax0, cax1, cay0, cay1, caQuad);
 
+  // can - instead of computing the bite areas directly - compute the clip polygon from this info?
+  // that would be better than just the coverage because we can use it to compute the center
+  // of gravity and use that for linear deinterpolation
+
   // figure out which of the cut-areas have parts that were cut off twice:
+
+  // condtions for overlap: 
+  // -triangle vertex (for example: a) inside unit square
+  //  -at least one but maybe both of the edges ab or ca are cutting off a quad
 
 
 

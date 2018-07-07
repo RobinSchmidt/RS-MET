@@ -394,3 +394,6 @@ void pixelCoverage()
 
   int dummy = 0;
 }
+
+// maybe make animations with
+// http://www.softpedia.com/get/Multimedia/Graphic/Graphic-Others/APNG-Anime-Maker.shtml
