@@ -484,7 +484,9 @@ void drawTriangleFlatTop(rsImageDrawerFFF& drw,
     for(int x = (int)ceil(px0-d); x < (int)ceil(px1-d); x++)   // loop over pixels in scanline
       drw.plot(x, y, color);
   }
-  // the ceil-function together with the offset of 0.5 amounts to the top-left rule
+  // the ceil-function together with the offset of d=0.5 amounts to the top-left rule
+  // maybe replace the constat d = 0.5 with two variables dx, dy - this lets the user decide, 
+  // where inside the pixel the sampling point is
 }
 // maybe compute px0, px1 incrementally, i.e. init to v0.x, v1.x and incerement by dx0, dx1 in each
 // iteration, where dx0 =
@@ -909,8 +911,20 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   unitSquareIntersections(c, a, cax0, cax1, cay0, cay1);
 
   // area, biten off from unit square by the edge a,b:
-  bool aQuad;
-  float abBite = unitSquareBite(a, b, abx0, abx1, aby0, aby1, aQuad);
+  //bool abQuad;
+  //float abBite = unitSquareBite(a, b, abx0, abx1, aby0, aby1, abQuad);
+
+  // compute the areas that are cut off from the unit square by the 3 edges:
+  bool  abQuad, bcQuad, caQuad;
+  float abBite, bcBite, caBite;
+  abBite = unitSquareBite(a, b, abx0, abx1, aby0, aby1, abQuad);
+  bcBite = unitSquareBite(b, c, bcx0, bcx1, bcy0, bcy1, bcQuad);
+  caBite = unitSquareBite(c, a, cax0, cax1, cay0, cay1, caQuad);
+
+  // figure out which of the cut-areas have parts that were cut off twice:
+
+
+
 
 
   return 0; // preliminary
