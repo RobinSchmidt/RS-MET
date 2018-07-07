@@ -860,8 +860,31 @@ void unitSquareIntersections(const Vec2& p, const Vec2& q,
   // computations can be optimized 
 }
 float unitSquareBite(const Vec2& p, const Vec2& q, 
-  float& pqx0, float& pqx1, float& pqy0, float& pqy1)
+  float& pqx0, float& pqx1, float& pqy0, float& pqy1, bool& quadBite)
 {
+  bool L = pqy0 > 0 && pqy0 < 1;  // left unit square edge crossed by triangle egde p,q
+  bool R = pqy1 > 0 && pqy1 < 1;  // right edge crossed 
+  bool T = pqx1 > 0 && pqx1 < 1;  // top edge crossed
+  bool B = pqx0 > 0 && pqx0 < 1;  // bottom edge crossed
+
+  if(L)
+  {
+    if(R)
+    {
+      quadBite = true;   // square crossed horizontally - bite is quadrilateral
+      // compute and return quadrilateral bite area
+    }
+    else
+    {
+      
+
+      quadBite = false;  // square crossed diagonally - bite is triangular
+
+      // compute and return triangle bite area
+    }
+  }
+
+
  return 0;
 }
 float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
@@ -878,7 +901,8 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   unitSquareIntersections(c, a, cax0, cax1, cay0, cay1);
 
   // area, biten off from unit square by the edge a,b:
-  float abBite = unitSquareBite(a, b, abx0, abx1, aby0, aby1);
+  bool aQuad;
+  float abBite = unitSquareBite(a, b, abx0, abx1, aby0, aby1, aQuad);
 
 
   return 0; // preliminary
