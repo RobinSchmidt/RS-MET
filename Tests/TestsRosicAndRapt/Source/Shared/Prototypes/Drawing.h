@@ -105,4 +105,8 @@ fully covered by the triangle. */
 float pixelCoverage(int x, int y, 
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c);
 
+
+float unitSquareCut(const rsVector2DF& p, const rsVector2DF& q, 
+  float& x0, float& x1, float& y0, float& y1, bool& quadCut); // helper function
+
 float pixelCoverage2(float x, float y, rsVector2DF a, rsVector2DF b, rsVector2DF c);

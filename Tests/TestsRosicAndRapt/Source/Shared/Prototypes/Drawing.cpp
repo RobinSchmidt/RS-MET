@@ -863,8 +863,8 @@ void unitSquareIntersections(const Vec2& p, const Vec2& q,
   // is in place) - but maybe the way it currently looks is ideal for simd processing
   // get rid of pq prefix
 }
-float unitSquareBite(const Vec2& p, const Vec2& q, 
-  float& x0, float& x1, float& y0, float& y1, bool& quadBite)
+float unitSquareCut(const Vec2& p, const Vec2& q, 
+  float& x0, float& x1, float& y0, float& y1, bool& quadCut)
 {
   // get rid of the pq prefix in the x0,x1,...names
   // maybe rename to unitSquareCutArea
@@ -882,19 +882,16 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
 
   if(L) {
     if(R) {                  // LR, square is crossed horizontally
-      quadBite = true;       // bite is quadrilateral
+      quadCut = true;       // bite is quadrilateral
       if(p.x > q.x)        
         return 0.5f * ((1-y0) + (1-y1)); // edge cuts from right to left and cuts off top quad
       else 
         return 0.5f * (   y0  +    y1);  // edge cuts off bottom region
     }
     else {                   // square crossed diagonally
-      quadBite = false;      // bite is triangular
+      quadCut = false;      // bite is triangular
       if(B) // LB
-      {
-        return 0.5f * x0 * y0;
-        //return 0.5f * x1 * y0;     // bottom edge crossed - return bottom left triangular area
-      }
+        return 0.5f * x0 * y0;     // bottom edge crossed - return bottom left triangular area
       else  // LT
         return 0.5f * x1 * (1-y0); // top edge crossed - return top-left triangular area
     }
@@ -903,12 +900,15 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
 
   if(B) {
     if(T) {  // BT
-      quadBite = true;
-      if(p.y > q.y)  return 0.5f * ((1-x0) + (1-x1));  // verify
-      else           return 0.5f * (   x0  +    x1 );  // verify
+      quadCut = true;
+      if(p.y > q.y)  
+        return 0.5f * (   x0  +    x1 );  // edge downward, cuts of left quad (right?)
+      else           
+        return 0.5f * ((1-x0) + (1-x1));  // verify
+      // maybe they have to be exchanged?
     }
     else {   // BR
-      quadBite = false;
+      quadCut = false;
       return 0.5f * (1-x0) * y1;
     }
   }
@@ -920,17 +920,7 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
   // 8 return formulas corresponding to 4 possible triangles (top-left, top-right, bottom-left,
   // bottom-right) and 4 possible quadrilaterals (left, right, top, bottom)
 
-  // top-left (LT):        0.5f * x1 * (1-y0)
-  // bottom-left (LB):     0.5f * x1 *    y0
-
-
-  // top-right (RT):       0.5f * y1 *    x0   - wrong, use: (1-x1)*(1-y1)
-  // bottom-right (BR):    0.5f * y1 * (1-x0)  - wrong, use (1-x1)*y0 
-
-  // left: x, right
-
-
-  // todo: write unit testsm ake sure, all branches are tested
+  // todo: write unit testsm make sure, all branches are tested
 
   // production code does not need to compute L,R,T,B in advance - each can be computed as needed
   // -> saves a bit of logic, actually, the quadBite output variable is not used by outside
@@ -954,10 +944,10 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
 
   // compute the areas that are cut off from the unit square by the 3 edges:
   bool  abQuad, bcQuad, caQuad;
-  float abBite, bcBite, caBite;
-  abBite = unitSquareBite(a, b, abx0, abx1, aby0, aby1, abQuad);
-  bcBite = unitSquareBite(b, c, bcx0, bcx1, bcy0, bcy1, bcQuad);
-  caBite = unitSquareBite(c, a, cax0, cax1, cay0, cay1, caQuad);
+  float abCut, bcCut, caCut;
+  abCut = unitSquareCut(a, b, abx0, abx1, aby0, aby1, abQuad);
+  bcCut = unitSquareCut(b, c, bcx0, bcx1, bcy0, bcy1, bcQuad);
+  caCut = unitSquareCut(c, a, cax0, cax1, cay0, cay1, caQuad);
 
   // can - instead of computing the bite areas directly - compute the clip polygon from this info?
   // that would be better than just the coverage because we can use it to compute the center
@@ -968,10 +958,6 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   // condtions for overlap: 
   // -triangle vertex (for example: a) inside unit square
   //  -at least one but maybe both of the edges ab or ca are cutting off a quad
-
-
-
-
 
   return 0; // preliminary
 }
