@@ -843,6 +843,21 @@ float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b,
 // it even simpler? ...more work to do...
 
 
+
+void unitSquareIntersections(Vec2 p, Vec2 q, float& pqx0, float& pqx1, float& pqy0, float& pqy1)
+{
+  // p, q and stand for a, b or c
+  float t;
+  t    = -p.y    /   (q.y - p.y);
+  pqx0 =  p.x    + t*(q.x - p.x);
+  t    = (1-p.y) /   (q.y - p.y);
+  pqx1 =  p.x    + t*(q.x - p.x);
+  t    = -p.x    /   (q.x - p.x);
+  pqy0 =  p.y    + t*(q.y - p.y);
+  t    = (1-p.x) /   (q.x - p.x);
+  pqy1 =  p.y    + t*(q.y - p.y);
+  // computations can be optimized 
+}
 float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
 {
   // notation: abx0 denotes the x-coordinate of the intersection of the edge (a,b) with the line
@@ -852,18 +867,9 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   float abx0, abx1, aby0, aby1;
   float bcx0, bcx1, bcy0, bcy1;
   float cax0, cax1, cay0, cay1;
-
-  float t;
-  t    = -a.y    /   (b.y - a.y);
-  abx0 =  a.x    + t*(b.x - a.x);
-  t    = (1-a.y) /   (b.y - a.y);
-  abx1 =  a.x    + t*(b.x - a.x);
-  t    = -a.x    /   (b.x - a.x);
-  aby0 =  a.y    + t*(b.y - a.y);
-  t    = (1-a.x) /   (b.x - a.x);
-  aby1 =  a.y    + t*(b.y - a.y);
-
-
+  unitSquareIntersections(a, b, abx0, abx1, aby0, aby1);
+  unitSquareIntersections(b, c, bcx0, bcx1, bcy0, bcy1);
+  unitSquareIntersections(c, a, cax0, cax1, cay0, cay1);
 
 
   return 0; // preliminary
