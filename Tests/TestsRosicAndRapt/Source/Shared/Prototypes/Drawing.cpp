@@ -898,8 +898,6 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
   }
   // LR, LB, LT done (3 of 6)
 
-  // exactly analogous to the if(L) stuff but with the roles of x and y exchanged and L taking the 
-  // role of B:
   if(B) {
     if(T) {  // BT
       quadBite = true;
@@ -908,29 +906,24 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
     }
     else {
       quadBite = false;
-      if(L)  return 0.5f * pqx1 * pqy0;      // BL - already done - unreachable
-      else   return 0.5f * pqx1 * (1-pqy0);  // BR - formula wrong
+      return 0.5f * pqy1 * (1-pqx0);  // verify formula
     }
   }
   // LR, LB, LT, BT, BR done (5 of 6)
 
-  if(R)
-  {
+  if(T) // only RT remains
+    return 0.5f * pqy1 * pqx0;  // verify
 
-  }
+  // 8 return formulas corresponding to 4 possible triangles (top-left, top-right, bottom-left,
+  // bottom-right) and 4 possible quadrilaterals (left, right, top, bottom)
 
-  if(T)
-  {
+  // todo: write unit testsm ake sure, all branches are tested
 
-  }
-
-
-
-  //- then write unit tests
   // production code does not need to compute L,R,T,B in advance - each can be computed as needed
-  // -> saves a bit of logic
+  // -> saves a bit of logic, actually, the quadBite output variable is not used by outside
+  // code...however, maybe keep it (at least in the prototype), maybe it's useful later
 
- return 0;
+ return 0; // all booleans were false - nothing is cut off from the square
 }
 
 float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
