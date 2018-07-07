@@ -321,45 +321,49 @@ void triangles()
   //pDrawTriangle = &drawTriangle;
   pDrawTriangle = &drawTriangleAntiAliased;
 
-
-
-
-  /*
-
   //void drawTriangle(rsImageDrawerFFF& drw, 
   //  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
 
   // parallelogram made from a flat-top and flat-bottom triangle:
   Vec2 
-    p1(  2.f,  1.f), 
-    p2(  7.f,  1.f), 
-    p3(  4.f,  5.f), 
-    p4(  9.f,  5.f);
+    p1(  2.f,  1.f),  // V(2,1) 
+    p2(  7.f,  1.f),  // V(7,1)
+    p3(  4.f,  5.f),  // V(4,5)
+    p4(  9.f,  5.f);  // V(9,5)
   pDrawTriangle(drw, p1, p2, p3, c);  // flat-top
   pDrawTriangle(drw, p2, p4, p3, c);  // flat-bottom
   //drawTriangleFlatTop(   drw, p1, p2, p3, c);  // p1,p2 above p3, clockwise
   //drawTriangleFlatBottom(drw, p2, p3, p4, c);  // p2 above p3,p4, counterclockwise
 
+
+
+  /*
   // polygon from 3 general triangles:
   Vec2
-    p5(  6.f,  7.f),
-    p6( 15.f,  8.f),
-    p7(  9.f, 10.f),
-    p8(  3.f, 11.f),
-    p9( 14.f, 13.f);
+    p5(  6.f,  7.f),  // V( 6, 7)
+    p6( 15.f,  8.f),  // V(15, 8)
+    p7(  9.f, 10.f),  // V( 9,10)
+    p8(  3.f, 11.f),  // V( 3,11)
+    p9( 14.f, 13.f);  // V(14,13)
   pDrawTriangle(drw, p5, p6, p7, c);
   pDrawTriangle(drw, p6, p9, p7, c);
   pDrawTriangle(drw, p5, p7, p8, c);
+  */
+  pDrawTriangle(drw, V( 6, 7), V(15, 8), V( 9,10), c);
+  pDrawTriangle(drw, V(15, 8), V(14,13), V( 9,10), c);
+  pDrawTriangle(drw, V( 6, 7), V( 9,10), V( 3,11), c);
 
+  /*
   // a general triangle:
   Vec2
-    p10(25.f,  1.f),
-    p11(31.f, 10.f),
-    p12(17.f,  5.f);
+    p10(25.f,  1.f),  // V(25,  1)
+    p11(31.f, 10.f),  // V(31, 10)
+    p12(17.f,  5.f);  // V(17,  5)
   pDrawTriangle(drw, p10, p11, p12, c);
   */
+  pDrawTriangle(drw, V(25,1), V(31,10), V(17,5), c);
 
-  //pDrawTriangle(drw, V(,), V(,), V(,), c);
+
 
   // polygon from 7 triangles:
   pDrawTriangle(drw, V(17,12), V(15,17), V(17,16), c);
@@ -383,7 +387,11 @@ void triangles()
   pDrawTriangle(drw, V(31,12), V(32,13), V(32,12), c); // top right
   pDrawTriangle(drw, V(34,12), V(33,13), V(34,13), c); // bottom right
 
-  //pDrawTriangle(drw, V(,), V(,), V(,), c);  
+  // for copy/paste:
+  //pDrawTriangle(drw, V(,), V(,), V(,), c);   
+
+  // when assuming a downward y-axis, alway start at the top vertex (in case of a flat-top, at
+  // the top-left) and traverse vertices in counterclockwise order
 
 
   // save to file:

@@ -41,6 +41,25 @@ void drawTriangle(rsImageDrawerFFF& drw,
 void drawTriangleAntiAliased(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
 // todo: make sure correct winding order - either make an assertion or re-order vertices here
+// uses unweighted area sampling -> disadvantage: objects that are smaller than one pixel don't 
+// seem to move at all when they move within one pixel such that no part ever sticks out
+// for that, weighted area sampling (maybe with a conic filter) can be used - but exact weighted
+// coverage computations are complicated ...maybe use a 3x3 pixel filter with piecewise constant
+// weighting, like
+// |1 2 1|
+// |2 4 2| * 1/12,  ..maybe let the user set the filter kernel coeffs
+// |1 2 1|
+// default:
+// |0 0 0|
+// |0 1 0|
+// |0 0 0|
+// or maybe a 2x2 matrix:
+// |1 1| * 1/4
+// |1 1| 
+// or maybe find the center of gravity of the polygon (triangle-clipped-to-square) and use the
+// "paint-dot" operation (with bilinear deinterpolation)
+
+
 
 void drawTriangleAntiAliased2(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
