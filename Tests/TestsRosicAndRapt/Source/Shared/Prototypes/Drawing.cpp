@@ -842,5 +842,52 @@ float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b,
 // multiplications) ...maybe it can be based on the implicit line equations - maybe that would make
 // it even simpler? ...more work to do...
 
+
+float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
+{
+  // notation: abx0 denotes the x-coordinate of the intersection of the edge (a,b) with the line
+  // in the x-direction for which y=0 (i.e. the x-axis), abx1 is the x coordinate of the 
+  // intersection with the horizontal line at y=1, aby0: with vertical line at x=0, aby1: with
+  // vertical line at x=1, similar definitions for triangle edges bc and ca
+  float abx0, abx1, aby0, aby1;
+  float bcx0, bcx1, bcy0, bcy1;
+  float cax0, cax1, cay0, cay1;
+
+  return 0; // preliminary
+}
+float pixelCoverage2(float x, float y, Vec2 a, Vec2 b, Vec2 c)
+{
+  Vec2 d(x, y);
+  return unitSquareCoverage(a-d, b-d, c-d);
+}
+// Idea:
+// -shift the original triangle, such the the pixel coordinates can be assumed to be 0,0 like:
+//  a.x -= x; a.y -= y; b.x -= x; ...
+// -for the 3 triangle edges (a,b), (b,c), (c,a), compute, how much each edge bites off from the
+//  the unit square
+// -the coverage is one minus the sum of these 3 values
+// -each part that is biten off is either the empty polygon, a triangle or a quadrilateral
+// -to compute the "bite", we need to compute the intersections of the respective triangle edge 
+//  with the 4 lines that contain the edges of the unit square
+// -these lines have simple equations: x = 0, x = 1, y = 0, y = 1, these formulas comform the 
+//  implicit line equation format A*x + B*y + C = 0
+// -....oooh - no this seems to work only, if a,b,c are outside the pixel - but if one of them is 
+//  inside, the bite is not a simple triangle or quad anymore...hmmm
+// -but maybe it can be made to work, if we consider additional bites..or wait...actually, in this
+//  case, parts of the bites get biten off twice - maybe the areas of these parts can be computed 
+//  and added back
+// -if a is in the square then the bites ab and ca have an overlap that must be added back
+//  -that overlap area may be a triangle or quadrilateral
+
+// maybe implement Liang/Barsky algorithm (clips a polygon against rectangle, see Foley, page 930)
+
+// Foley, page 693 mentions Catmull's object-precision anitaliasing algorithm
+// describein in detail here in the paper: A hidden-surface algorithm with anti-aliasing
+// https://www.researchgate.net/publication/234810089_A_hidden-surface_algorithm_with_anti-aliasing
+
+
 // triangle/pixel coverage computation:
 // http://www.cs.cmu.edu/afs/cs/academic/class/15462-s16/www/lec_slides/2.pdf
+
+// book: Practical Algorithms for 3D Computer Graphics, Second Edition
+// https://books.google.de/books?id=NKONAgAAQBAJ

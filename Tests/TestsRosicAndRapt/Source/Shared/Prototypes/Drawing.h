@@ -85,6 +85,7 @@ std::vector<rsVector2DF> clipPolygon(const std::vector<rsVector2DF>& subject,
 // what about winding? does it matter - probably not as long as its consistent for the two 
 // polygons
 
+
 /** Clips the given polygon p against the edge from e0 to e1. */
 std::vector<rsVector2DF> clipAgainstEdge(const std::vector<rsVector2DF>& p,
   const rsVector2DF& e0, const rsVector2DF& e1);
@@ -103,3 +104,5 @@ between 0 and 1, where 0 means the pixel and triangle do not intersect at all, 1
 fully covered by the triangle. */
 float pixelCoverage(int x, int y, 
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c);
+
+float pixelCoverage2(float x, float y, rsVector2DF a, rsVector2DF b, rsVector2DF c);

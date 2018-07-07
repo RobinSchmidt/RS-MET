@@ -379,7 +379,14 @@ void triangles()
   writeImageToFilePPM(img, "PolygonsViaTriangles.ppm");
 }
 
-// todo: try anti-aliasing by computing overlap-polygons by clipping the triangle to pixels
-// see Foley, page 124ff - iterate over all pixels in the bounding box of the triangle, for each
-// perform sutherlnad/hodgeman clipping, compute polygon area and fill the pixel - ultra-slow
-// but good for a prototype
+void pixelCoverage()
+{
+  typedef rsVector2DF Vec2;    // for convenience
+  //typedef rsVector2DF V;       // even shorter - for inlined constructor calls
+
+  Vec2 a(1.5f, 1.5f), b(-1.0f, 0.25f), c(2.0, -0.75);
+
+  float cov = pixelCoverage2(0.f, 0.f, a, b, c);
+
+  int dummy = 0;
+}

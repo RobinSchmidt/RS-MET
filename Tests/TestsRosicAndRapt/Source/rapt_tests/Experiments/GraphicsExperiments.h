@@ -12,4 +12,6 @@ void polyLineRandom();
 void phaseScopeLissajous();
 void triangles();
 
+void pixelCoverage();
+
 #endif
