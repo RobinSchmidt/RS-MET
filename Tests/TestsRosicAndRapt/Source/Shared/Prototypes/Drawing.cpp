@@ -881,6 +881,10 @@ float unitSquareCut(const Vec2& p, const Vec2& q,
   // LR, LB, LT;   (BL), BR, BT;   (RL), (RB), RT;   (TL), (TR), (TB)
   // the combinations without parentheses are the non-redundant ones, there are 6 of them
 
+  // it seems to be important to use strictly greater/less, otherwise, it returns zero when the
+  // edge goes through a corner point, now in these cases, it may return a negative area (the 
+  // absolute value is correct, though) -> more unit tests needed
+
 
   if(L) {
     if(R) {                  // LR, square is crossed horizontally
