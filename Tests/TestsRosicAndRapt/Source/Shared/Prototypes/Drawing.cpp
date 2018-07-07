@@ -871,10 +871,14 @@ float unitSquareCut(const Vec2& p, const Vec2& q,
 
   // maybe we need <=, >=
 
-  bool L = y0 > 0 && y0 < 1;  // left unit square edge crossed by triangle egde p,q
-  bool R = y1 > 0 && y1 < 1;  // right edge crossed 
-  bool B = x0 > 0 && x0 < 1;  // bottom edge crossed
-  bool T = x1 > 0 && x1 < 1;  // top edge crossed
+  //bool L = y0 > 0 && y0 < 1;  // left unit square edge crossed by triangle egde p,q
+  //bool R = y1 > 0 && y1 < 1;  // right edge crossed 
+  //bool B = x0 > 0 && x0 < 1;  // bottom edge crossed
+  //bool T = x1 > 0 && x1 < 1;  // top edge crossed
+  bool L = y0 >= 0 && y0 <= 1;  // left unit square edge crossed by triangle egde p,q
+  bool R = y1 >= 0 && y1 <= 1;  // right edge crossed 
+  bool B = x0 >= 0 && x0 <= 1;  // bottom edge crossed
+  bool T = x1 >= 0 && x1 <= 1;  // top edge crossed
   // 4 booleans which are either all false or two are false and the other two are true. Below are
   // the enumerated combinations of true-values using parentheses for one that appeared before in 
   // the list (if it appeared, it did so in reverse order - which doesn't matter):
