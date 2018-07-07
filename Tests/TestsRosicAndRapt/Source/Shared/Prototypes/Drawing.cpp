@@ -853,6 +853,19 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   float bcx0, bcx1, bcy0, bcy1;
   float cax0, cax1, cay0, cay1;
 
+  float t;
+  t    = -a.y    /   (b.y - a.y);
+  abx0 =  a.x    + t*(b.x - a.x);
+  t    = (1-a.y) /   (b.y - a.y);
+  abx1 =  a.x    + t*(b.x - a.x);
+  t    = -a.x    /   (b.x - a.x);
+  aby0 =  a.y    + t*(b.y - a.y);
+  t    = (1-a.x) /   (b.x - a.x);
+  aby1 =  a.y    + t*(b.y - a.y);
+
+
+
+
   return 0; // preliminary
 }
 float pixelCoverage2(float x, float y, Vec2 a, Vec2 b, Vec2 c)
