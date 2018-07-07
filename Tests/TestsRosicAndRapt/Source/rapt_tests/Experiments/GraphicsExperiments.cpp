@@ -324,7 +324,7 @@ void triangles()
 
 
 
-
+  /*
 
   //void drawTriangle(rsImageDrawerFFF& drw, 
   //  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
@@ -357,36 +357,18 @@ void triangles()
     p11(31.f, 10.f),
     p12(17.f,  5.f);
   pDrawTriangle(drw, p10, p11, p12, c);
+  */
+
+  //pDrawTriangle(drw, V(,), V(,), V(,), c);
 
   // polygon from 7 triangles:
-  /*
-  Vec2
-    p13(17.f, 12.f),  // V(17,12)
-    p14(19.f, 11.f),  // V(19,11)
-    p15(23.f, 12.f),  // V(23,12)
-    p16(26.f, 14.f),  // V(26,14)
-    p17(24.f, 17.f),  // V(24,17)
-    p18(23.f, 15.f),  // V(23,15)
-    p19(20.f, 17.f),  // V(20,17)
-    p20(17.f, 16.f),  // V(17,16)
-    p21(15.f, 17.f);  // V(15,17)
-  pDrawTriangle(drw, p13, p20, p21, c);
-  pDrawTriangle(drw, p13, p19, p20, c);
-  pDrawTriangle(drw, p13, p14, p19, c);
-  pDrawTriangle(drw, p14, p15, p19, c);
-  pDrawTriangle(drw, p15, p18, p19, c);
-  pDrawTriangle(drw, p15, p16, p18, c);
-  pDrawTriangle(drw, p16, p17, p18, c);
-  // the right side looks wrong
-  */
-  // new:
-  pDrawTriangle(drw, V(17,12), V(20,17), V(15,17), c);
-  pDrawTriangle(drw, V(17,12), V(20,17), V(20,17), c);
-  pDrawTriangle(drw, V(17,12), V(19,11), V(20,17), c);
-  pDrawTriangle(drw, V(19,11), V(23,12), V(20,17), c);
-  pDrawTriangle(drw, V(23,12), V(23,15), V(20,17), c);
-  pDrawTriangle(drw, V(23,12), V(26,14), V(23,15), c);
-  pDrawTriangle(drw, V(26,14), V(24,17), V(23,15), c);
+  pDrawTriangle(drw, V(17,12), V(15,17), V(17,16), c);
+  pDrawTriangle(drw, V(17,12), V(17,16), V(20,17), c);
+  pDrawTriangle(drw, V(19,11), V(17,12), V(20,17), c);
+  pDrawTriangle(drw, V(19,11), V(20,17), V(23,12), c);
+  pDrawTriangle(drw, V(23,12), V(20,17), V(23,15), c);
+  pDrawTriangle(drw, V(23,12), V(23,15), V(26,14), c);
+  pDrawTriangle(drw, V(26,14), V(23,15), V(24,17), c);
 
   // polygon from 5 triangles:
   pDrawTriangle(drw, V( 1,13), V(3,17), V( 7,13), c);
@@ -396,7 +378,7 @@ void triangles()
   pDrawTriangle(drw, V( 3,17), V(7,19), V( 9,16), c);
 
   // half-pixel mini triangles:
-  pDrawTriangle(drw, V(27,12), V(27,13), V(18,12), c); // top left
+  pDrawTriangle(drw, V(27,12), V(27,13), V(28,12), c); // top left
   pDrawTriangle(drw, V(29,12), V(29,13), V(30,13), c); // bottom left
   pDrawTriangle(drw, V(31,12), V(32,13), V(32,12), c); // top right
   pDrawTriangle(drw, V(34,12), V(33,13), V(34,13), c); // bottom right
