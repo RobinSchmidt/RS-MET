@@ -864,15 +864,15 @@ void unitSquareIntersections(const Vec2& p, const Vec2& q,
   // get rid of pq prefix
 }
 float unitSquareBite(const Vec2& p, const Vec2& q, 
-  float& pqx0, float& pqx1, float& pqy0, float& pqy1, bool& quadBite)
+  float& x0, float& x1, float& y0, float& y1, bool& quadBite)
 {
   // get rid of the pq prefix in the x0,x1,...names
   // maybe rename to unitSquareCutArea
 
-  bool L = pqy0 > 0 && pqy0 < 1;  // left unit square edge crossed by triangle egde p,q
-  bool R = pqy1 > 0 && pqy1 < 1;  // right edge crossed 
-  bool B = pqx0 > 0 && pqx0 < 1;  // bottom edge crossed
-  bool T = pqx1 > 0 && pqx1 < 1;  // top edge crossed
+  bool L = y0 > 0 && y0 < 1;  // left unit square edge crossed by triangle egde p,q
+  bool R = y1 > 0 && y1 < 1;  // right edge crossed 
+  bool B = x0 > 0 && x0 < 1;  // bottom edge crossed
+  bool T = x1 > 0 && x1 < 1;  // top edge crossed
   // 4 booleans which are either all false or two are false and the other two are true. Below are
   // the enumerated combinations of true-values using parentheses for one that appeared before in 
   // the list (if it appeared, it did so in reverse order - which doesn't matter):
@@ -884,16 +884,16 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
     if(R) {                  // LR, square is crossed horizontally
       quadBite = true;       // bite is quadrilateral
       if(p.x > q.x)        
-        return 0.5f * ((1-pqy0) + (1-pqy1)); // edge cuts from right to left and cuts off top quad
+        return 0.5f * ((1-y0) + (1-y1)); // edge cuts from right to left and cuts off top quad
       else 
-        return 0.5f * (   pqy0  +    pqy1);  // edge cuts off bottom region
+        return 0.5f * (   y0  +    y1);  // edge cuts off bottom region
     }
     else {                   // square crossed diagonally
       quadBite = false;      // bite is triangular
       if(B) // LB
-        return 0.5f * pqx1 * pqy0;     // bottom edge crossed - return bottom left triangular area
+        return 0.5f * x1 * y0;     // bottom edge crossed - return bottom left triangular area
       else  // LT
-        return 0.5f * pqx1 * (1-pqy0); // top edge crossed - return top-left triangular area
+        return 0.5f * x1 * (1-y0); // top edge crossed - return top-left triangular area
     }
   }
   // LR, LB, LT done (3 of 6)
@@ -901,21 +901,27 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
   if(B) {
     if(T) {  // BT
       quadBite = true;
-      if(p.y > q.y)  return 0.5f * ((1-pqx0) + (1-pqx1));  // verify
-      else           return 0.5f * (   pqx0  +    pqx1 );  // verify
+      if(p.y > q.y)  return 0.5f * ((1-x0) + (1-x1));  // verify
+      else           return 0.5f * (   x0  +    x1 );  // verify
     }
-    else {
+    else {   // BR
       quadBite = false;
-      return 0.5f * pqy1 * (1-pqx0);  // verify formula
+      return 0.5f * y1 * (1-x0);  // verify formula
     }
   }
   // LR, LB, LT, BT, BR done (5 of 6)
 
   if(T) // only RT remains
-    return 0.5f * pqy1 * pqx0;  // verify
+    return 0.5f * y1 * x0;  // verify
 
   // 8 return formulas corresponding to 4 possible triangles (top-left, top-right, bottom-left,
   // bottom-right) and 4 possible quadrilaterals (left, right, top, bottom)
+
+  // top-left (LT):        0.5f * pqx1 * (1-pqy0)
+  // bottom-left (LB):     0.5f * pqx1 *    pqy0
+  // top-right (RT):       0.5f * pqy1 *    pqx0   - wrong use: (1-x1)*(1-y1)
+  // bottom-right (BR):    0.5f * pqy1 * (1-pqx0)  - wrong, use (1-x1)*y0 
+
 
   // todo: write unit testsm ake sure, all branches are tested
 
