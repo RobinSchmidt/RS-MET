@@ -841,3 +841,6 @@ float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b,
 // (some of the vector elements become 0 or 1 -> allows to remove the respective additions and 
 // multiplications) ...maybe it can be based on the implicit line equations - maybe that would make
 // it even simpler? ...more work to do...
+
+// triangle/pixel coverage computation:
+// http://www.cs.cmu.edu/afs/cs/academic/class/15462-s16/www/lec_slides/2.pdf
