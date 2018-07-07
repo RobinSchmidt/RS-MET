@@ -869,6 +869,8 @@ float unitSquareCut(const Vec2& p, const Vec2& q,
   // get rid of the pq prefix in the x0,x1,...names
   // maybe rename to unitSquareCutArea
 
+  // maybe we need <=, >=
+
   bool L = y0 > 0 && y0 < 1;  // left unit square edge crossed by triangle egde p,q
   bool R = y1 > 0 && y1 < 1;  // right edge crossed 
   bool B = x0 > 0 && x0 < 1;  // bottom edge crossed
@@ -913,6 +915,9 @@ float unitSquareCut(const Vec2& p, const Vec2& q,
     }
   }
   // LR, LB, LT, BT, BR done (5 of 6)
+
+
+  quadCut = false;
 
   if(T) // only RT remains
     return 0.5f * (1-x1) * (1-y1);

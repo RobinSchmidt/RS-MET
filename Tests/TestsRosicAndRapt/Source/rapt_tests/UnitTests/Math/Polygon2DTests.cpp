@@ -230,16 +230,21 @@ bool pixelCoverage(std::string &reportString)
 
   // cut off quadrilaterals:
   t = 6.f/16.f;
-  a = unitSquareCut(V( 2,1), V(-1,0.25f),q);  r &= a == t; r &= q == true;  // top
-  a = unitSquareCut(V( 0.75,2), V(0,-1),q);   r &= a == t; r &= q == true;  // left
-  a = unitSquareCut(V( -1,0.75), V(2,0),q);   r &= a == t; r &= q == true;  // bottom
-  a = unitSquareCut(V( 0,-2), V(1,2),q);      r &= a == t; r &= q == true;  // right
-  
-  // check a non-intersecting edge
+  a = unitSquareCut(V(2,1), V(-1,0.25f),q);  r &= a == t; r &= q == true;  // top
+  a = unitSquareCut(V(0.75,2), V(0,-1),q);   r &= a == t; r &= q == true;  // left
+  a = unitSquareCut(V(-1,0.75), V(2,0),q);   r &= a == t; r &= q == true;  // bottom
+  a = unitSquareCut(V(0,-2), V(1,2),q);      r &= a == t; r &= q == true;  // right
+  // for quads, the direction is important  
 
-  a = unitSquareCut(V( 1,2), V(-0.5,-1),q); // -0.25 - check how negative area can occur
+  //  non-intersecting edge:
+  a = unitSquareCut(V(0,-1), V(2,0),q);  r &= a == 0; r &= q == false;
 
-  // for quads, the direction is important
+  // edges through corners:
+  a = unitSquareCut(V( 1,2), V(-0.5,-1), q); 
+  // -0.25 - check how negative area can occur - the edge goes through the bottom left corner
+  // i.e. the origin - maybe this needs special treatment?
+  // check also cases, where it goes through 2 corners
+
 
   return r;
 }
