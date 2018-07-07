@@ -205,9 +205,26 @@ bool convexPolygonClipping(std::string &reportString)
   // By default, counterclockwise polygons are taken to be front-facing.
 }
 
+
+float unitSquareCut(const rsVector2DF& p, const rsVector2DF& q, bool& quadCut)
+{
+  // helper function for tests
+  float x0, y0, x1, y1;
+  unitSquareIntersections(p, q, x0, x1, y0, y1);
+  return unitSquareCut(p, q, x0, x1, y0, y1, quadCut); 
+}
 bool pixelCoverage(std::string &reportString)
 {
   bool r = true;
+
+  typedef rsVector2DF V;    // for convenience
+  float t = 1.f/16.f;       // target area
+  float a;                  // computed area
+  bool quad;
+  a = unitSquareCut(V(1.5f,1.5f), V(-1,0.25f), quad); r &= a == t; // top-left triangle
+  a = unitSquareCut(V(1.5f,0.5f), V(0,1.25f),  quad); r &= a == t;
+
+
 
   return r;
 }
