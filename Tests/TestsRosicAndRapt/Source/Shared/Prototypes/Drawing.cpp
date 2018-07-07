@@ -875,10 +875,11 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
     if(R)
     {
       quadBite = true;   // square crossed horizontally - bite is quadrilateral
-
       // compute and return quadrilateral bite area
-
-      return 0;  // preliminary
+      if(p.x > q.x)  // triangle edge crosses from right to left and cuts off top region
+        return 0.5f * ((1-pqy0) + (1-pqy1));
+      else // triangle edge cuts off bottom region
+        return 0.5f * (pqy0 + pqy1);
     }
     else
     {

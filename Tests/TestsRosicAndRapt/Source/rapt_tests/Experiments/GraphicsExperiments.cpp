@@ -382,11 +382,15 @@ void triangles()
 void pixelCoverage()
 {
   typedef rsVector2DF Vec2;    // for convenience
-  //typedef rsVector2DF V;       // even shorter - for inlined constructor calls
+  typedef rsVector2DF V;       // even shorter - for inlined constructor calls
 
   Vec2 a(1.5f, 1.5f), b(-1.0f, 0.25f), c(2.0, -0.75);
 
-  float cov = pixelCoverage2(0.f, 0.f, a, b, c);
+  float x = 0, y = 0;
+
+  float cov = pixelCoverage2(x, y, a, b, c);
+
+  cov = pixelCoverage2(x, y, V(2,1), V(-1,0.25f), V(2.5f,-0.25f));
 
   int dummy = 0;
 }
