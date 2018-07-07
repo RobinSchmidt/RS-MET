@@ -891,7 +891,10 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
     else {                   // square crossed diagonally
       quadBite = false;      // bite is triangular
       if(B) // LB
-        return 0.5f * x1 * y0;     // bottom edge crossed - return bottom left triangular area
+      {
+        return 0.5f * x0 * y0;
+        //return 0.5f * x1 * y0;     // bottom edge crossed - return bottom left triangular area
+      }
       else  // LT
         return 0.5f * x1 * (1-y0); // top edge crossed - return top-left triangular area
     }
@@ -906,21 +909,25 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
     }
     else {   // BR
       quadBite = false;
-      return 0.5f * y1 * (1-x0);  // verify formula
+      return 0.5f * (1-x0) * y1;
     }
   }
   // LR, LB, LT, BT, BR done (5 of 6)
 
   if(T) // only RT remains
-    return 0.5f * y1 * x0;  // verify
+    return 0.5f * (1-x1) * (1-y1);
 
   // 8 return formulas corresponding to 4 possible triangles (top-left, top-right, bottom-left,
   // bottom-right) and 4 possible quadrilaterals (left, right, top, bottom)
 
-  // top-left (LT):        0.5f * pqx1 * (1-pqy0)
-  // bottom-left (LB):     0.5f * pqx1 *    pqy0
-  // top-right (RT):       0.5f * pqy1 *    pqx0   - wrong use: (1-x1)*(1-y1)
-  // bottom-right (BR):    0.5f * pqy1 * (1-pqx0)  - wrong, use (1-x1)*y0 
+  // top-left (LT):        0.5f * x1 * (1-y0)
+  // bottom-left (LB):     0.5f * x1 *    y0
+
+
+  // top-right (RT):       0.5f * y1 *    x0   - wrong, use: (1-x1)*(1-y1)
+  // bottom-right (BR):    0.5f * y1 * (1-x0)  - wrong, use (1-x1)*y0 
+
+  // left: x, right
 
 
   // todo: write unit testsm ake sure, all branches are tested
