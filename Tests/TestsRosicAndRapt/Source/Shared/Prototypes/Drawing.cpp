@@ -571,6 +571,9 @@ void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
   for(int y = yMin; y < yMax; y++) {
     for(int x = 0; x < xMax; x++) {
       float coverage = pixelCoverage(x, y, v0, v1, v2);
+
+      coverage = abs(coverage); // preliminary
+
       drw.plot(x, y, coverage*color);
     }
   }
@@ -791,7 +794,7 @@ float polygonArea(const ArrVec2& p)
 float pixelCoverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
 {
   ArrVec2 triangle = { a, b, c };
-  ArrVec2 square   = { Vec2(x, y), Vec2(x+1, y), Vec2(x+1, y+1), Vec2(x, y+1) };
+  ArrVec2 square   = { Vec2(x, y), Vec2(x, y+1), Vec2(x+1, y+1), Vec2(x+1, y) };
   ArrVec2 polygon  = clipPolygon(triangle, square);
   return polygonArea(polygon);
 }

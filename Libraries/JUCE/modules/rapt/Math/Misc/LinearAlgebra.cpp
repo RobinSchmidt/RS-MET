@@ -1,6 +1,7 @@
 ﻿template<class T>
 void rsLinearAlgebra::rsSolveLinearSystem2x2(const T A[2][2], T x[2], const T y[2])
 {
+  T det = (A[0][0]*A[1][1] - A[0][1]*A[1][0]); // for debugging
   T s  = T(1) / (A[0][0]*A[1][1] - A[0][1]*A[1][0]);
   x[0] = s * (A[1][1]*y[0] - A[0][1]*y[1]);
   x[1] = s * (A[0][0]*y[1] - A[1][0]*y[0]);
