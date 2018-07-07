@@ -557,10 +557,9 @@ void drawTriangle(rsImageDrawerFFF& drw,
 // -> allows for all kinds of shading algorithms (texture, lighting, bump, etc.)
 
 void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
-  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color)
+  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {
   rsImageF* img = drw.getImageToDrawOn();
-
   // todo - find bounding box:
   int xMin, xMax, yMin, yMax;
   xMin = 0;
@@ -570,17 +569,51 @@ void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
 
   for(int y = yMin; y < yMax; y++) {
     for(int x = 0; x < xMax; x++) {
-      float coverage = pixelCoverage(x, y, v0, v1, v2);
-
-      coverage = abs(coverage); // preliminary
-
+      float coverage = pixelCoverage(x, y, a, b, c);
       drw.plot(x, y, coverage*color);
     }
   }
-  int dummy = 0;
 
   // todo: optimize by using bounding box, production code should actually also compute spans
-  // inside the bounding bpx which have zero or full coverage
+  // inside the bounding box which have zero or full coverage
+}
+
+void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
+  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
+{
+  rsImageF* img = drw.getImageToDrawOn();
+
+  // todo - find bounding box:
+  int xMin, xMax, yMin, yMax;
+  xMin = 0;
+  xMax = img->getWidth();
+  yMin = 0;                 // use max(     0, min(floor(a.y), floor(b.y), floor(c.y)))
+  yMax = img->getHeight();  // use min(height, max( ceil(a.y),  ceil(b.y),  ceil(c.y)))
+
+  for(int y = yMin; y < yMax; y++) 
+  {
+    //sHere = intersection of this scanline with left edge
+    //sNext = intersection of next scaline with left edge
+    //eHere = intersection of this scanline with right edge
+    //eNext = intersection of next scanline with right edge
+
+    // 3 loops: 
+    // 1: from floor(sNext) to ceil(sHere)     -> compute coverages
+    // 2: from ceil(sHere)+1 to floor(eHere)-1 -> pixels are fully covered
+    // 3: from floor(eHere) to ceil(eNext)     -> compute coverages
+
+    // but how do we know, which is the left and right edge? one of them may change during the
+    // loop through the scanlines
+
+    for(int x = 0; x < xMax; x++) 
+    {
+      float coverage = pixelCoverage(x, y, a, b, c);
+      drw.plot(x, y, coverage*color);
+    }
+  }
+
+  // todo: optimize by using bounding box, production code should actually also compute spans
+  // inside the bounding box which have zero or full coverage
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -782,7 +815,7 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
 
 
 
-float polygonArea(const ArrVec2& p)
+float polygonArea(const ArrVec2& p) // rename to polygonSignedArea
 {
   if(p.size() < 3)
     return 0.f;
@@ -796,7 +829,7 @@ float pixelCoverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
   ArrVec2 triangle = { a, b, c };
   ArrVec2 square   = { Vec2(x, y), Vec2(x, y+1), Vec2(x+1, y+1), Vec2(x+1, y) };
   ArrVec2 polygon  = clipPolygon(triangle, square);
-  return polygonArea(polygon);
+  return abs(polygonArea(polygon));
 }
 float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b, 
   const rsVector2DF& c)

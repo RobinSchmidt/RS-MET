@@ -40,6 +40,11 @@ void drawTriangle(rsImageDrawerFFF& drw,
 
 void drawTriangleAntiAliased(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
+// todo: make sure correct winding order - either make an assertion or re-order vertices here
+
+void drawTriangleAntiAliased2(rsImageDrawerFFF& drw, 
+  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
+// fast version
 
 // Polygons:
 
