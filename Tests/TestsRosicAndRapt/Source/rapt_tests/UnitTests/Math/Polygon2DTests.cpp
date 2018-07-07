@@ -181,6 +181,12 @@ bool convexPolygonClipping(std::string &reportString)
   clipped = clipPolygon(triangle2, square); 
   target  = { V(7,4), V(5,3), V(3,4), V(3,5), V(7,5) }; r &= clipped == target;
 
+
+  Poly triangle3 = { V(4,3), V(9,10), V(9,3) };
+  clipped = clipPolygon(triangle3, square);  // wrong!
+  target  = { V(7,3), V(4,3), V(6,6), V(7,6) }; r &= clipped == target;
+
+
   return r;
 
   // counter-clockwise convention is used (to be consistent with OpenGL and DirectX)
