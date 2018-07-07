@@ -11,6 +11,7 @@ bool testPolygon2D()
   //r &= testRegularPolygonCreation2D(dummy);
   //r &= testPointInsidePolygon2D(dummy);
   r &= convexPolygonClipping(dummy);
+  r &= pixelCoverage(dummy);
   r &= triangleRasterization(dummy);
 
   //appendTestResultToReport(reportString, testName, testResult);
@@ -204,6 +205,13 @@ bool convexPolygonClipping(std::string &reportString)
   // By default, counterclockwise polygons are taken to be front-facing.
 }
 
+bool pixelCoverage(std::string &reportString)
+{
+  bool r = true;
+
+  return r;
+}
+
 bool triangleRasterization(std::string &reportString)
 {
   bool r = true;
@@ -227,6 +235,6 @@ bool triangleRasterization(std::string &reportString)
   //drawTriangleAntiAliased(drw, V(0.5,0.5), V(2.5,0.5), V(4.5,2.5), c);
 
 
-  writeImageToFilePPM(img, "TriangleTest.ppm");
+  //writeImageToFilePPM(img, "TriangleTest.ppm");
   return r;
 }
