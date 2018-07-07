@@ -220,11 +220,15 @@ bool pixelCoverage(std::string &reportString)
   typedef rsVector2DF V;    // for convenience
   float t = 1.f/16.f;       // target area
   float a;                  // computed area
-  bool quad;
-  a = unitSquareCut(V(1.5f,1.5f), V(-1,0.25f), quad); r &= a == t; // top-left triangle
-  a = unitSquareCut(V(1.5f,0.5f), V(0,1.25f),  quad); r &= a == t;
+  bool q;
 
+  // cut off triangles at the corners:
+  a = unitSquareCut(V( 1.5f,1.5f), V(  -1,0.25f), q);  r &= a == t; r &= q == false; // top-left
+  a = unitSquareCut(V( 1.5f,0.5f), V(   0,1.25f), q);  r &= a == t; r &= q == false; // top-right
+  a = unitSquareCut(V(-0.5f,0.5f), V(1.5f,-0.5f), q);  r &= a == t; r &= q == false; // bottom-left
+  a = unitSquareCut(V(-1.0f,-0.75f), V(1.5f,0.5f), q); r &= a == t; r &= q == false; // bottom-right
 
+  // cut off quadrilaterals:
 
   return r;
 }
