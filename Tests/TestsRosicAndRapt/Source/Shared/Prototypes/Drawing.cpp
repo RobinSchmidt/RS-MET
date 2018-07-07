@@ -858,10 +858,13 @@ void unitSquareIntersections(const Vec2& p, const Vec2& q,
   t    = (1-p.x) /   (q.x - p.x);
   pqy1 =  p.y    + t*(q.y - p.y);
   // computations can be optimized 
+  // get rid of pq prefix
 }
 float unitSquareBite(const Vec2& p, const Vec2& q, 
   float& pqx0, float& pqx1, float& pqy0, float& pqy1, bool& quadBite)
 {
+  // maybe don't pass p,q, get rid of the pq prefix in the x0,x1,...names
+
   bool L = pqy0 > 0 && pqy0 < 1;  // left unit square edge crossed by triangle egde p,q
   bool R = pqy1 > 0 && pqy1 < 1;  // right edge crossed 
   bool T = pqx1 > 0 && pqx1 < 1;  // top edge crossed
@@ -872,15 +875,19 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
     if(R)
     {
       quadBite = true;   // square crossed horizontally - bite is quadrilateral
+
       // compute and return quadrilateral bite area
+
+      return 0;  // preliminary
     }
     else
     {
-      
-
       quadBite = false;  // square crossed diagonally - bite is triangular
-
-      // compute and return triangle bite area
+      // compute and return triangle bite area:
+      if(B) 
+        return 0.5f * pqx1 * pqy0;     // bottom edge crossed - needs test
+      else 
+        return 0.5f * pqx1 * (1-pqy0); // top edge crossed
     }
   }
 
