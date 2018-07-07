@@ -864,37 +864,37 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
   float& pqx0, float& pqx1, float& pqy0, float& pqy1, bool& quadBite)
 {
   // maybe don't pass p,q, get rid of the pq prefix in the x0,x1,...names
+  // maybe rename to unitSquareCutArea
 
   bool L = pqy0 > 0 && pqy0 < 1;  // left unit square edge crossed by triangle egde p,q
   bool R = pqy1 > 0 && pqy1 < 1;  // right edge crossed 
   bool T = pqx1 > 0 && pqx1 < 1;  // top edge crossed
   bool B = pqx0 > 0 && pqx0 < 1;  // bottom edge crossed
 
-  if(L)
-  {
-    if(R)
-    {
-      quadBite = true;   // square crossed horizontally - bite is quadrilateral
-      // compute and return quadrilateral bite area
-      if(p.x > q.x)  // triangle edge crosses from right to left and cuts off top region
-        return 0.5f * ((1-pqy0) + (1-pqy1));
-      else // triangle edge cuts off bottom region
-        return 0.5f * (pqy0 + pqy1);
-    }
-    else
-    {
-      quadBite = false;  // square crossed diagonally - bite is triangular
-      // compute and return triangle bite area:
-      if(B) 
-        return 0.5f * pqx1 * pqy0;     // bottom edge crossed - needs test
+  if(L) {
+    if(R) {                  // square crossed horizontally
+      quadBite = true;       // bite is quadrilateral
+      if(p.x > q.x)        
+        return 0.5f * ((1-pqy0) + (1-pqy1)); // edge cuts from right to left and cuts off top quad
       else 
-        return 0.5f * pqx1 * (1-pqy0); // top edge crossed
+        return 0.5f * (pqy0 + pqy1);         // edge cuts off bottom region
+    }
+    else {                   // square crossed diagonally
+      quadBite = false;      // bite is triangular
+      if(B) 
+        return 0.5f * pqx1 * pqy0;     // bottom edge crossed - return bottom left triangular area
+      else 
+        return 0.5f * pqx1 * (1-pqy0); // top edge crossed - return top-left triangular area
     }
   }
 
+  // make 3 more of these 3-fold nested branches if(R), if(T), if(B) - then write unit tests
+  // production code does not need to compute L,R,T,B in advance - each can be computed as needed
+  // -> saves a bit of logic
 
  return 0;
 }
+
 float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
 {
   // notation: abx0 denotes the x-coordinate of the intersection of the edge (a,b) with the line
