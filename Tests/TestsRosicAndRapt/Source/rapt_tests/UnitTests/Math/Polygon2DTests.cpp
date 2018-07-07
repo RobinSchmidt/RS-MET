@@ -210,7 +210,7 @@ bool triangleRasterization(std::string &reportString)
 
   typedef rsVector2DF Vec2;    // for convenience
   typedef Vec2 V;              // even shorter
-  float c = 0.5f;              // color (gray value)
+  float c = 1.0f;              // color (gray value)
   rsImageF img(6, 4);          // image to draw on
   rsImageDrawerFFF drw(&img);  // drawer object
   drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
