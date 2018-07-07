@@ -844,7 +844,8 @@ float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b,
 
 
 
-void unitSquareIntersections(Vec2 p, Vec2 q, float& pqx0, float& pqx1, float& pqy0, float& pqy1)
+void unitSquareIntersections(const Vec2& p, const Vec2& q, 
+  float& pqx0, float& pqx1, float& pqy0, float& pqy1)
 {
   // p, q and stand for a, b or c
   float t;
@@ -858,6 +859,11 @@ void unitSquareIntersections(Vec2 p, Vec2 q, float& pqx0, float& pqx1, float& pq
   pqy1 =  p.y    + t*(q.y - p.y);
   // computations can be optimized 
 }
+float unitSquareBite(const Vec2& p, const Vec2& q, 
+  float& pqx0, float& pqx1, float& pqy0, float& pqy1)
+{
+ return 0;
+}
 float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
 {
   // notation: abx0 denotes the x-coordinate of the intersection of the edge (a,b) with the line
@@ -870,6 +876,9 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   unitSquareIntersections(a, b, abx0, abx1, aby0, aby1);
   unitSquareIntersections(b, c, bcx0, bcx1, bcy0, bcy1);
   unitSquareIntersections(c, a, cax0, cax1, cay0, cay1);
+
+  // area, biten off from unit square by the edge a,b:
+  float abBite = unitSquareBite(a, b, abx0, abx1, aby0, aby1);
 
 
   return 0; // preliminary
