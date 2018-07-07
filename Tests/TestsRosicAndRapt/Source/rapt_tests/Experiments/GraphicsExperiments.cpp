@@ -311,6 +311,7 @@ void triangles()
 {
   // create and set up objects and parameters:
   typedef rsVector2DF Vec2;    // for convenience
+  typedef rsVector2DF V;       // even shorter - for inlined constructor calls
   float c = 1.0f;              // color (gray value)
   rsImageF img(35, 20);        // image to draw on
   rsImageDrawerFFF drw(&img);  // drawer object
@@ -358,16 +359,17 @@ void triangles()
   pDrawTriangle(drw, p10, p11, p12, c);
 
   // polygon from 7 triangles:
+  /*
   Vec2
-    p13(17.f, 12.f),
-    p14(19.f, 11.f),
-    p15(23.f, 12.f),
-    p16(26.f, 14.f),
-    p17(24.f, 17.f),
-    p18(23.f, 15.f),
-    p19(20.f, 17.f),
-    p20(17.f, 16.f),
-    p21(15.f, 17.f);
+    p13(17.f, 12.f),  // V(17,12)
+    p14(19.f, 11.f),  // V(19,11)
+    p15(23.f, 12.f),  // V(23,12)
+    p16(26.f, 14.f),  // V(26,14)
+    p17(24.f, 17.f),  // V(24,17)
+    p18(23.f, 15.f),  // V(23,15)
+    p19(20.f, 17.f),  // V(20,17)
+    p20(17.f, 16.f),  // V(17,16)
+    p21(15.f, 17.f);  // V(15,17)
   pDrawTriangle(drw, p13, p20, p21, c);
   pDrawTriangle(drw, p13, p19, p20, c);
   pDrawTriangle(drw, p13, p14, p19, c);
@@ -375,8 +377,17 @@ void triangles()
   pDrawTriangle(drw, p15, p18, p19, c);
   pDrawTriangle(drw, p15, p16, p18, c);
   pDrawTriangle(drw, p16, p17, p18, c);
+  // the right side looks wrong
+  */
+  // new:
+  pDrawTriangle(drw, V(17,12), V(20,17), V(15,17), c);
+  pDrawTriangle(drw, V(17,12), V(20,17), V(20,17), c);
+  pDrawTriangle(drw, V(17,12), V(19,11), V(20,17), c);
+  pDrawTriangle(drw, V(19,11), V(23,12), V(20,17), c);
+  pDrawTriangle(drw, V(23,12), V(23,15), V(20,17), c);
+  pDrawTriangle(drw, V(23,12), V(26,14), V(23,15), c);
+  pDrawTriangle(drw, V(26,14), V(24,17), V(23,15), c);
 
-  typedef Vec2 V; 
   // polygon from 5 triangles:
   pDrawTriangle(drw, V( 1,13), V(3,17), V( 7,13), c);
   pDrawTriangle(drw, V( 7,13), V(3,17), V(11,13), c);
