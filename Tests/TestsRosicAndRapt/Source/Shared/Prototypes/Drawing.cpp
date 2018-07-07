@@ -866,16 +866,22 @@ void unitSquareIntersections(const Vec2& p, const Vec2& q,
 float unitSquareBite(const Vec2& p, const Vec2& q, 
   float& pqx0, float& pqx1, float& pqy0, float& pqy1, bool& quadBite)
 {
-  // maybe don't pass p,q, get rid of the pq prefix in the x0,x1,...names
+  // get rid of the pq prefix in the x0,x1,...names
   // maybe rename to unitSquareCutArea
 
   bool L = pqy0 > 0 && pqy0 < 1;  // left unit square edge crossed by triangle egde p,q
   bool R = pqy1 > 0 && pqy1 < 1;  // right edge crossed 
-  bool T = pqx1 > 0 && pqx1 < 1;  // top edge crossed
   bool B = pqx0 > 0 && pqx0 < 1;  // bottom edge crossed
+  bool T = pqx1 > 0 && pqx1 < 1;  // top edge crossed
+  // 4 booleans which are either all false or two are false and the other two are true. Below are
+  // the enumerated combinations of true-values using parentheses for one that appeared before in 
+  // the list (if it appeared, it did so in reverse order - which doesn't matter):
+  // LR, LB, LT;   (BL), BR, BT;   (RL), (RB), RT;   (TL), (TR), (TB)
+  // the combinations without parentheses are the non-redundant ones, there are 6 of them
+
 
   if(L) {
-    if(R) {                  // square crossed horizontally
+    if(R) {                  // LR, square is crossed horizontally
       quadBite = true;       // bite is quadrilateral
       if(p.x > q.x)        
         return 0.5f * ((1-pqy0) + (1-pqy1)); // edge cuts from right to left and cuts off top quad
@@ -884,29 +890,43 @@ float unitSquareBite(const Vec2& p, const Vec2& q,
     }
     else {                   // square crossed diagonally
       quadBite = false;      // bite is triangular
-      if(B) 
+      if(B) // LB
         return 0.5f * pqx1 * pqy0;     // bottom edge crossed - return bottom left triangular area
-      else 
+      else  // LT
         return 0.5f * pqx1 * (1-pqy0); // top edge crossed - return top-left triangular area
     }
   }
+  // LR, LB, LT done (3 of 6)
 
   // exactly analogous to the if(L) stuff but with the roles of x and y exchanged and L taking the 
   // role of B:
   if(B) {
-    if(T) {
+    if(T) {  // BT
       quadBite = true;
-      if(p.y > q.y)  return 0.5f * ((1-pqx0) + (1-pqx1));
-      else           return 0.5f * (   pqx0  +    pqx1 );
+      if(p.y > q.y)  return 0.5f * ((1-pqx0) + (1-pqx1));  // verify
+      else           return 0.5f * (   pqx0  +    pqx1 );  // verify
     }
     else {
       quadBite = false;
-      if(L)  return 0.5f * pqx1 * pqy0;
-      else   return 0.5f * pqx1 * (1-pqy0);
+      if(L)  return 0.5f * pqx1 * pqy0;      // BL - already done - unreachable
+      else   return 0.5f * pqx1 * (1-pqy0);  // BR - formula wrong
     }
   }
+  // LR, LB, LT, BT, BR done (5 of 6)
 
-  // make 3 more of these 3-fold nested branches if(R), if(T), if(B) - then write unit tests
+  if(R)
+  {
+
+  }
+
+  if(T)
+  {
+
+  }
+
+
+
+  //- then write unit tests
   // production code does not need to compute L,R,T,B in advance - each can be computed as needed
   // -> saves a bit of logic
 
