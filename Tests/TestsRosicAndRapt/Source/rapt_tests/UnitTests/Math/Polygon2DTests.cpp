@@ -291,6 +291,9 @@ bool triangleRasterization(std::string &reportString)
   drawTriangleAntiAliased2(drw, A, B, C, c);
 
 
+  // we should test at least with integer and half-integer vertex coordinates - see, if the
+  // loop min/max values always get the correct values
+
   //writeImageToFilePPM(img, "TriangleTest.ppm");
   return r;
 }

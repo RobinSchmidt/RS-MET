@@ -74,5 +74,21 @@ https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical
 -one may render blocks of pixels - rather than testing all pixels in the block, we first test 
  corner pixels - if they are contained in a triangle, the interior piyled will also be
 -when the edge-function is called for many pixels in the same triangle, an incremental evaluation
- is possible
+ is possible by precomputing triagle related variables, the per-pixel update is only an addition
+-vertex attributes need to be "pre-divided" by these vertices z-coordinates for perspective correct
+ interpolation). It is usually done just before the triangle gets rendered (just before the loop 
+ that iterates over the pixels). 
+-rasterization uses an outer loop over the triangles and the inner loop iterates over the pixels 
+ contained in the current triangle's bounding box
+-each pixel is tested for coverage using the edge function. If a pixel covers a triangle, we 
+ compute the pixel barycentric coordinates with respect to the triangle. we use these coordinates 
+ to compute the depth. If we pass the depth buffer test, we then update the buffer with the new 
+ depth value and update the frame-buffer with the triangle's color (barycentrically interpolated at
+ the pixel's barycentric coordinates)
+-the facing ratio is the dot product between the triangle normal and the view direction, which is 
+ the vector defined by the point P on the triangle camera position E. Since all points at this 
+ the camera position is E=(0,0,0). Thus the view direction is simply -P which then needs to be 
+ normalized. The dot product can be negative so we need to clamp it (we only want positive values). 
+-back-face culling: Don't render the triangle if the dot product of its normal and the view 
+ direction is lower than a certain threshold
 

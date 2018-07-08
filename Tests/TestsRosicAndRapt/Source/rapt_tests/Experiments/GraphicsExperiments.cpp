@@ -376,8 +376,8 @@ void triangles()
   // the top-left) and traverse vertices in counterclockwise order
 
   // save to file:
-  writeImageToFilePPM(img, "PolygonsViaTriangles.ppm");
-  writeScaledImageToFilePPM(img, "PolygonsViaTrianglesX2.ppm", 2);
+  //writeImageToFilePPM(img, "PolygonsViaTriangles.ppm");
+  writeScaledImageToFilePPM(img, "PolygonsViaTriangles.ppm", 10);
     // todo: write a function that includes a magnification factor (or maybe two, for x and y
     // separately)
 }

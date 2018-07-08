@@ -625,10 +625,16 @@ void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
 
   // todo - find bounding box:
   int xMin, xMax, yMin, yMax;
-  xMin = 0;
-  xMax = img->getWidth();
-  yMin = 0;                 // use max(     0, min(floor(a.y), floor(b.y), floor(c.y)))
-  yMax = img->getHeight();  // use min(height, max( ceil(a.y),  ceil(b.y),  ceil(c.y)))
+
+  //xMin = 0;
+  //xMax = img->getWidth();
+  //yMin = 0;                   // use max(     0, min(floor(a.y), floor(b.y), floor(c.y)))
+  //yMax = img->getHeight()-1;  // use min(height, max( ceil(a.y),  ceil(b.y),  ceil(c.y)))
+
+  yMin = rsMax(rsMin((int)floor(a.y), (int)floor(b.y), (int)floor(c.y)), 0);
+  //yMax = rsMin(rsMax((int)ceil(a.y),  (int)ceil(b.y),  (int)ceil(c.y)), img->getHeight()-1); // 1 too much
+  //yMax = rsMin(rsMax((int)floor(a.y), (int)floor(b.y), (int)floor(c.y)), img->getHeight()-1); // dito (when max y in triangle is integer)
+
 
   // left edge (from a to b):
   Vec leftStart = a;
@@ -640,14 +646,16 @@ void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
 
   // loop over the scanlines:
   Vec sHere, eHere, sNext, eNext;
-  for(int y = yMin; y < yMax; y++) 
+  for(int y = yMin; y <= yMax; y++) 
   {
     sHere = lineIntersection(Vec(0, y),   Vec(1, y),   leftStart,  leftEnd);  // intersection of this scanline with left edge
     sNext = lineIntersection(Vec(0, y+1), Vec(1, y+1), leftStart,  leftEnd);  // intersection of this scanline with left edge
     eHere = lineIntersection(Vec(0, y),   Vec(1, y),   rightStart, rightEnd); // intersection of this scanline with right edge
     eNext = lineIntersection(Vec(0, y+1), Vec(1, y+1), rightStart, rightEnd); // intersection of next scanline with right edge
+    // optimize: compute only sNext, eNext - sHere, eHere become the old values of sNext, eNext
 
-    // make 3 loops: 
+    // 3 loops - the section in the middle of the span doesn't need to compute coverages becasue 
+    // pixels are fully covered 
 
     // 1st loop: from floor(sNext) to ceil(sHere): compute coverages
     xMin = (int) floor(sNext.x);
@@ -657,11 +665,19 @@ void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
     for(x = xMin; x <= xMax ; x++) 
       drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 
-
-
     // 2nd loop: from ceil(sHere)+1 to floor(eHere)-1 -> pixels are fully covered
+    xMin = xMax+1;
+    xMax = (int) floor(eHere.x);
+    for(x = xMin; x <= xMax ; x++) 
+      drw.plot(x, y, color);  // replace color variable by shading function-call
 
     // 3rd loop: from floor(eHere) to ceil(eNext)     -> compute coverages
+    xMin = xMax+1;
+    xMax = (int) ceil(eNext.x);
+    for(x = xMin; x <= xMax ; x++) 
+      drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
+
+    // clip xMin, xMax at 0, w-1
 
     // at some iteration in the loop, we may have to switch either the left or the right edge
 
