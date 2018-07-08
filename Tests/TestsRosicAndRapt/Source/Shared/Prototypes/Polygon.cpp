@@ -37,7 +37,7 @@ rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
 // move to rsLine2D
 // actually, it computes an intersection point of the infinitely extended lines...hmm
 
-float polygonArea(const ArrVec2& p) // rename to polygonSignedArea
+float polygonSignedArea(const ArrVec2& p)
 {
   if(p.size() < 3)
     return 0.f;
@@ -46,8 +46,6 @@ float polygonArea(const ArrVec2& p) // rename to polygonSignedArea
     sum += Vec2::crossProduct(p[i], p[i+1]);
   return 0.5f * sum;
 }
-
-
 
 //-------------------------------------------------------------------------------------------------
 // Clipping:

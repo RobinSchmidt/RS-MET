@@ -18,8 +18,11 @@ bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF
 rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
   const rsVector2DF& q0, const rsVector2DF& q1);
 
-/** Computes the area of the given polygon. */
-float polygonArea(const std::vector<rsVector2DF>& p);
+/** Computes the signed area of the given polygon. The sign is positive for counterclockwise 
+winding order of the vertices and negative otherwise (verify). */
+float polygonSignedArea(const std::vector<rsVector2DF>& p);
+
+// todo: bool isClockwise, centerOfMass
 
 //-------------------------------------------------------------------------------------------------
 // Clipping:

@@ -9,7 +9,7 @@ float pixelCoverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
   ArrVec2 triangle = { a, b, c };
   ArrVec2 square   = { Vec2(x, y), Vec2(x, y+1), Vec2(x+1, y+1), Vec2(x+1, y) };
   ArrVec2 polygon  = clipPolygon(triangle, square);
-  return abs(polygonArea(polygon));
+  return abs(polygonSignedArea(polygon));
 }
 float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b, 
   const rsVector2DF& c)
@@ -21,6 +21,9 @@ float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b,
 // (some of the vector elements become 0 or 1 -> allows to remove the respective additions and 
 // multiplications) ...maybe it can be based on the implicit line equations - maybe that would make
 // it even simpler? ...more work to do...i started doing this in Polygon.cpp (not yet finished)
+
+// todo: use center of mass of the polygon and de-interpolate it (maybe we need to take care of the
+// convention for pixel coords (center or corner)
 
 //-------------------------------------------------------------------------------------------------
 // Lines
