@@ -651,19 +651,24 @@ void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
 
     // 1st loop: from floor(sNext) to ceil(sHere): compute coverages
     xMin = (int) floor(sNext.x);
-    xMax = (int) ceil( sHere.x);
+    //xMax = (int) ceil( sHere.x); // seems to be one too much
+    xMax = (int) floor( sHere.x);
     int x;
     for(x = xMin; x <= xMax ; x++) 
       drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 
 
 
-    // 2: from ceil(sHere)+1 to floor(eHere)-1 -> pixels are fully covered
-    // 3: from floor(eHere) to ceil(eNext)     -> compute coverages
+    // 2nd loop: from ceil(sHere)+1 to floor(eHere)-1 -> pixels are fully covered
+
+    // 3rd loop: from floor(eHere) to ceil(eNext)     -> compute coverages
+
     // at some iteration in the loop, we may have to switch either the left or the right edge
 
     // but how do we know, which is the left and right edge? one of them may change during the
     // loop through the scanlines
+    // if c.y > b.y, the left edge changes between floor(b.y) and ceil(b.y)
+
 
     //for(int x = 0; x < img->getWidth(); x++) 
     //{
