@@ -2,6 +2,42 @@ typedef rsVector2DF Vec2;
 typedef std::vector<Vec2> ArrVec2;
 
 //-------------------------------------------------------------------------------------------------
+// Utilities
+
+float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& p) 
+{
+  return Vec2::crossProduct(b-a, p-a);
+}
+
+bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
+{
+  return edgeFunction(e0, e1, p) <= 0.f;
+}
+// rename to leftOf (or rightTo)
+
+rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
+  const rsVector2DF& q0, const rsVector2DF& q1)
+{
+  // coeffs for the two implicit line equations:
+  float a, b, c;
+  rsLine2DF::twoPointToImplicit(p0.x, p0.y, p1.x, p1.y, a, b, c, false);
+  float A, B, C;
+  rsLine2DF::twoPointToImplicit(q0.x, q0.y, q1.x, q1.y, A, B, C, false);
+
+  // solve 2x2 linear system M*v = r:
+  // a*x + b*y = c
+  // A*x + B*y = C
+  // for x,y
+  float M[2][2] = { {a,b}, {A,B} };
+  float r[2]    = {  -c,    -C   };
+  float v[2];
+  rsLinearAlgebra::rsSolveLinearSystem2x2(M, v, r);
+  return rsVector2DF(v[0], v[1]);
+}
+// move to rsLine2D
+// actually, it computes an intersection point of the infinitely extended lines...hmm
+
+//-------------------------------------------------------------------------------------------------
 // Lines
 
 // Sources:
@@ -583,6 +619,8 @@ void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
 void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {
+  typedef rsVector2DF Vec;
+
   rsImageF* img = drw.getImageToDrawOn();
 
   // todo - find bounding box:
@@ -592,67 +630,61 @@ void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
   yMin = 0;                 // use max(     0, min(floor(a.y), floor(b.y), floor(c.y)))
   yMax = img->getHeight();  // use min(height, max( ceil(a.y),  ceil(b.y),  ceil(c.y)))
 
+  // left edge (from a to b):
+  Vec leftStart = a;
+  Vec leftEnd   = b;
+
+  // right edge (from a to c):
+  Vec rightStart = a;
+  Vec rightEnd   = c;
+
+  // loop over the scanlines:
+  Vec sHere, eHere, sNext, eNext;
   for(int y = yMin; y < yMax; y++) 
   {
-    //sHere = intersection of this scanline with left edge
-    //sNext = intersection of next scaline with left edge
-    //eHere = intersection of this scanline with right edge
-    //eNext = intersection of next scanline with right edge
+    sHere = lineIntersection(Vec(0, y),   Vec(1, y),   leftStart,  leftEnd);  // intersection of this scanline with left edge
+    sNext = lineIntersection(Vec(0, y+1), Vec(1, y+1), leftStart,  leftEnd);  // intersection of this scanline with left edge
+    eHere = lineIntersection(Vec(0, y),   Vec(1, y),   rightStart, rightEnd); // intersection of this scanline with right edge
+    eNext = lineIntersection(Vec(0, y+1), Vec(1, y+1), rightStart, rightEnd); // intersection of next scanline with right edge
 
-    // 3 loops: 
-    // 1: from floor(sNext) to ceil(sHere)     -> compute coverages
+    // make 3 loops: 
+
+    // 1st loop: from floor(sNext) to ceil(sHere): compute coverages
+    xMin = (int) floor(sNext.x);
+    xMax = (int) ceil( sHere.x);
+    int x;
+    for(x = xMin; x <= xMax ; x++) 
+      drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
+
+
+
     // 2: from ceil(sHere)+1 to floor(eHere)-1 -> pixels are fully covered
     // 3: from floor(eHere) to ceil(eNext)     -> compute coverages
+    // at some iteration in the loop, we may have to switch either the left or the right edge
 
     // but how do we know, which is the left and right edge? one of them may change during the
     // loop through the scanlines
 
-    for(int x = 0; x < xMax; x++) 
-    {
-      float coverage = pixelCoverage(x, y, a, b, c);
-      drw.plot(x, y, coverage*color);
-    }
+    //for(int x = 0; x < img->getWidth(); x++) 
+    //{
+    //  float coverage = pixelCoverage(x, y, a, b, c);
+    //  drw.plot(x, y, coverage*color);
+    //}
+
+
   }
 
   // todo: optimize by using bounding box, production code should actually also compute spans
   // inside the bounding box which have zero or full coverage
 }
+/*
+rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
+const rsVector2DF& q0, const rsVector2DF& q1)
+*/
 
 //-------------------------------------------------------------------------------------------------
 // Polygons:
 
-float edgeFunction(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& p) 
-{
-  return Vec2::crossProduct(b-a, p-a);
-}
-
-bool isInsideEdge(const rsVector2DF& p, const rsVector2DF& e0, const rsVector2DF& e1)
-{
-  return edgeFunction(e0, e1, p) <= 0.f;
-}
-// rename to leftOf (or rightTo)
-
-rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
-  const rsVector2DF& q0, const rsVector2DF& q1)
-{
-  // coeffs for the two implicit line equations:
-  float a, b, c;
-  rsLine2DF::twoPointToImplicit(p0.x, p0.y, p1.x, p1.y, a, b, c, false);
-  float A, B, C;
-  rsLine2DF::twoPointToImplicit(q0.x, q0.y, q1.x, q1.y, A, B, C, false);
-
-  // solve 2x2 linear system M*v = r:
-  // a*x + b*y = c
-  // A*x + B*y = C
-  // for x,y
-  float M[2][2] = { {a,b}, {A,B} };
-  float r[2]    = {  -c,    -C   };
-  float v[2];
-  rsLinearAlgebra::rsSolveLinearSystem2x2(M, v, r);
-  return rsVector2DF(v[0], v[1]);
-}
-// move to rsLine2D
-// actually, it computes an intersection point of the infinitely extended lines...hmm
 
 // internal function of Sutherland-Hodgman polygon clipper that clips the input polygon against a 
 // given edge from e0 to e1, thereby adding zero, one or two vertices to the output polygon
@@ -941,6 +973,10 @@ float unitSquareCut(const Vec2& p, const Vec2& q,
 
  return 0; // all booleans were false - nothing is cut off from the square
 }
+bool isInsideUnitSquare(Vec2 v)
+{
+  return v.x > 0 && v.x < 1 && v.y > 0 && v.y < 1;
+}
 
 float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
 {
@@ -958,13 +994,6 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   // mayb call them abT, abB for (a,b,top), etc
   // abx0 -> abB, abx1 -> abT, aby0 -> abL, aby1 ->abR
 
-  // experimental - try to figure out the clipped polygon from the intersection points:
-  int nv = 0;   // number of vertices in clipped polygon (so far)
-  Vec2 v[7];    // array for clipped polygon vertices
-
-
-  int dummy = 0;
-
   // compute the areas that are cut off from the unit square by the 3 edges:
   bool  abQuad, bcQuad, caQuad;
   float abCut, bcCut, caCut;
@@ -972,17 +1001,35 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   bcCut = unitSquareCut(b, c, bcB, bcT, bcL, bcR, bcQuad);
   caCut = unitSquareCut(c, a, caB, caT, caL, caR, caQuad);
 
-  // can - instead of computing the bite areas directly - compute the clip polygon from this info?
-  // that would be better than just the coverage because we can use it to compute the center
-  // of gravity and use that for linear deinterpolation
-
   // figure out which of the cut-areas have parts that were cut off twice:
 
   // condtions for overlap: 
   // -triangle vertex (for example: a) inside unit square
   //  -at least one but maybe both of the edges ab or ca are cutting off a quad
 
-  return 0; // preliminary
+
+  float area = 1.f - abCut - bcCut - caCut;
+  if(isInsideUnitSquare(a))
+  {
+    float overlap = 0; // amount of overlap in cut-areas resulting from ab and ca
+
+    // ...
+
+    area += overlap;
+  }
+
+
+  int dummy = 0;
+
+
+
+  // can - instead of computing the bite areas directly - compute the clip polygon from this info?
+  // that would be better than just the coverage because we can use it to compute the center
+  // of gravity and use that for linear deinterpolation
+  int nv = 0;   // number of vertices in clipped polygon (so far)
+  Vec2 v[7];    // array for clipped polygon vertices
+
+  return area; // preliminary
 }
 float pixelCoverage2(float x, float y, Vec2 a, Vec2 b, Vec2 c)
 {

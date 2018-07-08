@@ -222,12 +222,6 @@ bool pixelCoverage(std::string &reportString)
   float a;                  // computed area
   bool q;
 
-  // edges through corners:
-
-
-
-
-
   // cut off triangles at the corners:
   a = unitSquareCut(V( 1.5f,1.5f), V(  -1,0.25f), q);  r &= a == t; r &= q == false; // top-left
   a = unitSquareCut(V( 1.5f,0.5f), V(   0,1.25f), q);  r &= a == t; r &= q == false; // top-right
@@ -245,16 +239,26 @@ bool pixelCoverage(std::string &reportString)
   //  non-intersecting edge:
   a = unitSquareCut(V(0,-1), V(2,0),q);  r &= a == 0; r &= q == false;
 
+  // edges through corners:
+  a = unitSquareCut(V(0,0), V(0.5f,1), q);  // (0,0), top-center    0.25 fails
+  a = unitSquareCut(V(0,0), V(1   ,1), q);  // (0,0), (1,1)         0.5
+  a = unitSquareCut(V(0,0), V(1,0.5f), q);  // (0,0), right-center: 0.25
+
   //a = unitSquareCut(V( 1,2), V(-0.5,-1), q); 
   // -0.25 - check how negative area can occur - the edge goes through the bottom left corner
   // i.e. the origin - maybe this needs special treatment?
   // check also cases, where it goes through 2 corners
 
-  a = unitSquareCut(V(0,0), V(0.5f,1), q);  // (0,0), top-center    0.25 fails
-  a = unitSquareCut(V(0,0), V(1   ,1), q);  // (0,0), (1,1)         0.5
-  a = unitSquareCut(V(0,0), V(1,0.5f), q);  // (0,0), right-center: 0.25
+
+  // more to do...
 
 
+  t = 1 - 1.f/16.f;
+  float x = 0, y = 0;
+  a = pixelCoverage2(x, y, V(1.5f,1.5f), V(-1,0.25f) , V(2,-0.75f)); r &= a == t;
+
+  // this triangle has the a-vertex inside the unit square, leading to overlapped cut areas:
+  a = pixelCoverage2(x, y, V(0.75f,0.75f), V(-0.5f,0.25f) , V(2,-0.5f));
 
 
   return r;
@@ -267,7 +271,7 @@ bool triangleRasterization(std::string &reportString)
   typedef rsVector2DF Vec2;    // for convenience
   typedef Vec2 V;              // even shorter
   float c = 1.0f;              // color (gray value)
-  rsImageF img(6, 4);          // image to draw on
+  rsImageF img(13,10);         // image to draw on
   rsImageDrawerFFF drw(&img);  // drawer object
   drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
 
@@ -281,6 +285,10 @@ bool triangleRasterization(std::string &reportString)
 
   drawTriangleAntiAliased(drw, A, B, C, c);
   //drawTriangleAntiAliased(drw, V(0.5,0.5), V(2.5,0.5), V(4.5,2.5), c);
+
+
+  A = V(7,1), B = V(1,5), C = V(9,7);
+  drawTriangleAntiAliased2(drw, A, B, C, c);
 
 
   //writeImageToFilePPM(img, "TriangleTest.ppm");
