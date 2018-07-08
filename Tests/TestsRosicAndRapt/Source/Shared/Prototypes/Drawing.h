@@ -2,6 +2,17 @@
 
 // rename to Rasterization
 
+//-------------------------------------------------------------------------------------------------
+// Utilities
+
+/** Given pixel coordinates x,y and the 3 vertices a,b,c of a triangle (in counterclockwise order), 
+this function computes the area in which the triangle and pixel-square overlap. It's a value 
+between 0 and 1, where 0 means the pixel and triangle do not intersect at all, 1 means the pixel is
+fully covered by the triangle. */
+float pixelCoverage(int x, int y, 
+  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c);
+
+//-------------------------------------------------------------------------------------------------
 // Lines
 
 void drawLineWuPrototype(rsImageF& img, float x0, float y0, float x1, float y1, float color);
@@ -22,6 +33,8 @@ float lineIntensity2(float d, float t2);
 float lineIntensity3(float d, float t2);
 float lineIntensity4(float d, float t2);
 
+
+//-------------------------------------------------------------------------------------------------
 // Triangles
 
 /** Fills all pixels whose centers are inside the given triangle with the given color. If a pixel

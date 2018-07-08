@@ -2,6 +2,27 @@ typedef rsVector2DF Vec2;
 typedef std::vector<Vec2> ArrVec2;
 
 //-------------------------------------------------------------------------------------------------
+// Utilities
+
+float pixelCoverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
+{
+  ArrVec2 triangle = { a, b, c };
+  ArrVec2 square   = { Vec2(x, y), Vec2(x, y+1), Vec2(x+1, y+1), Vec2(x+1, y) };
+  ArrVec2 polygon  = clipPolygon(triangle, square);
+  return abs(polygonArea(polygon));
+}
+float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b, 
+  const rsVector2DF& c)
+{
+  return pixelCoverage((float) x, (float) y, a, b, c);
+}
+// make a simplified version of the polygon clipping algorithm to clip a triangle against a pixel
+// take advantage of the simplicity of the shapes to optimize away unnecessary operations
+// (some of the vector elements become 0 or 1 -> allows to remove the respective additions and 
+// multiplications) ...maybe it can be based on the implicit line equations - maybe that would make
+// it even simpler? ...more work to do...i started doing this in Polygon.cpp (not yet finished)
+
+//-------------------------------------------------------------------------------------------------
 // Lines
 
 // Sources:
@@ -622,10 +643,11 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
              // right edge to render the second "half" of the triangle
     }
 
-    sHere = lineIntersection(Vec(0, y),   Vec(1, y),   leftStart,  leftEnd);  // intersection of this scanline with left edge
-    sNext = lineIntersection(Vec(0, y+1), Vec(1, y+1), leftStart,  leftEnd);  // intersection of this scanline with left edge
-    eHere = lineIntersection(Vec(0, y),   Vec(1, y),   rightStart, rightEnd); // intersection of this scanline with right edge
-    eNext = lineIntersection(Vec(0, y+1), Vec(1, y+1), rightStart, rightEnd); // intersection of next scanline with right edge
+    float yf = (float) y;
+    sHere = lineIntersection(Vec(0, yf),   Vec(1, yf),   leftStart,  leftEnd);  // intersection of this scanline with left edge
+    sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), leftStart,  leftEnd);  // intersection of next scanline with left edge
+    eHere = lineIntersection(Vec(0, yf),   Vec(1, yf),   rightStart, rightEnd); // intersection of this scanline with right edge
+    eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightStart, rightEnd); // intersection of next scanline with right edge
     // optimize: compute only sNext, eNext - sHere, eHere become the old values of sNext, eNext
 
     // 3 loops - the section in the middle of the span doesn't need to compute coverages becasue 

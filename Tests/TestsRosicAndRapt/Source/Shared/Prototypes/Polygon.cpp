@@ -37,6 +37,18 @@ rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
 // move to rsLine2D
 // actually, it computes an intersection point of the infinitely extended lines...hmm
 
+float polygonArea(const ArrVec2& p) // rename to polygonSignedArea
+{
+  if(p.size() < 3)
+    return 0.f;
+  float sum = Vec2::crossProduct(rsLast(p), p[0]);
+  for(size_t i = 0; i < p.size()-1; i++)
+    sum += Vec2::crossProduct(p[i], p[i+1]);
+  return 0.5f * sum;
+}
+
+
+
 //-------------------------------------------------------------------------------------------------
 // Clipping:
 
@@ -201,35 +213,9 @@ return out; // nope - this doesn't work yet
 // should be asserted)
 
 
-float polygonArea(const ArrVec2& p) // rename to polygonSignedArea
-{
-  if(p.size() < 3)
-    return 0.f;
-  float sum = Vec2::crossProduct(rsLast(p), p[0]);
-  for(size_t i = 0; i < p.size()-1; i++)
-    sum += Vec2::crossProduct(p[i], p[i+1]);
-  return 0.5f * sum;
-}
-float pixelCoverage(float x, float y, Vec2 a, Vec2 b, Vec2 c)
-{
-  ArrVec2 triangle = { a, b, c };
-  ArrVec2 square   = { Vec2(x, y), Vec2(x, y+1), Vec2(x+1, y+1), Vec2(x+1, y) };
-  ArrVec2 polygon  = clipPolygon(triangle, square);
-  return abs(polygonArea(polygon));
-}
-float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b, 
-  const rsVector2DF& c)
-{
-  return pixelCoverage((float) x, (float) y, a, b, c);
-}
-// make a simplified version of the polygon clipping algorithm to clip a triangle angainst a pixel
-// take advantage of the simplicity of the shapes to optimize away unnecessary operations
-// (some of the vector elements become 0 or 1 -> allows to remove the respective additions and 
-// multiplications) ...maybe it can be based on the implicit line equations - maybe that would make
-// it even simpler? ...more work to do...
 
 
-
+// Experimental clipping:
 void unitSquareIntersections(const Vec2& p, const Vec2& q, 
   float& x0, float& x1, float& y0, float& y1) // rename to bottom, top, left right
 {
