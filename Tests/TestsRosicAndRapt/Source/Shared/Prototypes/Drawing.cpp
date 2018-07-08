@@ -598,43 +598,33 @@ void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {
   rsImageF* img = drw.getImageToDrawOn();
-  // todo - find bounding box:
-  int xMin, xMax, yMin, yMax;
-  xMin = 0;
-  xMax = img->getWidth();
-  yMin = 0;
-  yMax = img->getHeight();
-
-  for(int y = yMin; y < yMax; y++) {
-    for(int x = 0; x < xMax; x++) {
+  for(int y = 0; y < img->getHeight(); y++) {
+    for(int x = 0; x < img->getWidth(); x++) {
       float coverage = pixelCoverage(x, y, a, b, c);
       drw.plot(x, y, coverage*color);
     }
   }
-
-  // todo: optimize by using bounding box, production code should actually also compute spans
-  // inside the bounding box which have zero or full coverage
 }
+
+// todo: make version that uses bounding box and version that also computes spans of partial and
+// full coverage and renders only these and a dispatcher switching between bounding-box and 
+// span-based that decides which one to use based on the size (min(width,height)) of the triangle 
+// bcs the span-based stuff has an overhead that may pay off only for larger triangles
+
+// name the versions: ..Proto, ..BoxBased, ..SpanBased, the dispatcher has no suffix and dispatches
+// between BoxBased and SpanBased. Proto is used in unit-test
 
 void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {
   typedef rsVector2DF Vec;
-
   rsImageF* img = drw.getImageToDrawOn();
-
-  // todo - find bounding box:
   int xMin, xMax, yMin, yMax;
-
-  //xMin = 0;
-  //xMax = img->getWidth();
-  //yMin = 0;                   // use max(     0, min(floor(a.y), floor(b.y), floor(c.y)))
-  //yMax = img->getHeight()-1;  // use min(height, max( ceil(a.y),  ceil(b.y),  ceil(c.y)))
 
   yMin = rsMax(rsMin((int)floor(a.y), (int)floor(b.y), (int)floor(c.y)), 0);
   //yMax = rsMin(rsMax((int)ceil(a.y),  (int)ceil(b.y),  (int)ceil(c.y)), img->getHeight()-1); // 1 too much
   //yMax = rsMin(rsMax((int)floor(a.y), (int)floor(b.y), (int)floor(c.y)), img->getHeight()-1); // dito (when max y in triangle is integer)
-
+  yMax = rsMin(rsMax((int)ceil(a.y),  (int)ceil(b.y),  (int)ceil(c.y)), img->getHeight())-1;
 
   // left edge (from a to b):
   Vec leftStart = a;
@@ -644,10 +634,30 @@ void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
   Vec rightStart = a;
   Vec rightEnd   = c;
 
+  // somwhere in the middle of the loop over the scanlines, we must switch either the left or right
+  // triangle edge - here we figure out where and which:
+  int breakLine;
+  bool breakLeft;
+  if(c.y > b.y) {
+    breakLeft = true;       // left edge is broken
+    breakLine = floor(b.y); // between floor(b.y) and ceil(b.y)
+  }
+  else {
+    breakLeft = false;       // right edge is broken
+    breakLine = floor(b.y);  // between floor(c.y) and ceil(c.y)
+  }
+
+
   // loop over the scanlines:
   Vec sHere, eHere, sNext, eNext;
   for(int y = yMin; y <= yMax; y++) 
   {
+    if(y == breakLine)
+    {
+      break; // preliminary - what should actually happen is to change either the active left or
+             // right edge to render the second "half" of the triangle
+    }
+
     sHere = lineIntersection(Vec(0, y),   Vec(1, y),   leftStart,  leftEnd);  // intersection of this scanline with left edge
     sNext = lineIntersection(Vec(0, y+1), Vec(1, y+1), leftStart,  leftEnd);  // intersection of this scanline with left edge
     eHere = lineIntersection(Vec(0, y),   Vec(1, y),   rightStart, rightEnd); // intersection of this scanline with right edge
@@ -677,31 +687,12 @@ void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
     for(x = xMin; x <= xMax ; x++) 
       drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 
-    // clip xMin, xMax at 0, w-1
-
-    // at some iteration in the loop, we may have to switch either the left or the right edge
-
-    // but how do we know, which is the left and right edge? one of them may change during the
-    // loop through the scanlines
-    // if c.y > b.y, the left edge changes between floor(b.y) and ceil(b.y)
-
-
-    //for(int x = 0; x < img->getWidth(); x++) 
-    //{
-    //  float coverage = pixelCoverage(x, y, a, b, c);
-    //  drw.plot(x, y, coverage*color);
-    //}
-
-
+    // todo: clip xMin, xMax at 0, w-1
   }
 
   // todo: optimize by using bounding box, production code should actually also compute spans
   // inside the bounding box which have zero or full coverage
 }
-/*
-rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
-const rsVector2DF& q0, const rsVector2DF& q1)
-*/
 
 //-------------------------------------------------------------------------------------------------
 // Polygons:

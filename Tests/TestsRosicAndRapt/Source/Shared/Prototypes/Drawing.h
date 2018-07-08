@@ -65,7 +65,7 @@ void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
 // fast version
 
-// Polygons:
+// Polygons (move to another file for polygon algorithms):
 
 /** Returns a value proportional to how much the given point p is to the left of the directed edge
 from a to b. The proportionlatity constant is the (signed) length of b-a. A point p to the left of 

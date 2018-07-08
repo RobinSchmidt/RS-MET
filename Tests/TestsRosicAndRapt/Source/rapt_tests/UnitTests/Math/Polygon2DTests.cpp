@@ -287,6 +287,9 @@ bool triangleRasterization(std::string &reportString)
   //drawTriangleAntiAliased(drw, V(0.5,0.5), V(2.5,0.5), V(4.5,2.5), c);
 
 
+  A = V(7.5f,1.5f), B = V(1.5f,5.5f), C = V(9.5f,7.5f);
+  drawTriangleAntiAliased2(drw, A, B, C, c);
+
   A = V(7,1), B = V(1,5), C = V(9,7);
   drawTriangleAntiAliased2(drw, A, B, C, c);
 
