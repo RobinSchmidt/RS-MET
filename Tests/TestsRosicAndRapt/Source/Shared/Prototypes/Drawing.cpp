@@ -847,18 +847,18 @@ float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b,
 
 
 void unitSquareIntersections(const Vec2& p, const Vec2& q, 
-  float& pqx0, float& pqx1, float& pqy0, float& pqy1)
+  float& x0, float& x1, float& y0, float& y1) // rename to bottom, top, left right
 {
   // p, q and stand for a, b or c
   float t;
-  t    = -p.y    /   (q.y - p.y);
-  pqx0 =  p.x    + t*(q.x - p.x);
-  t    = (1-p.y) /   (q.y - p.y);
-  pqx1 =  p.x    + t*(q.x - p.x);
-  t    = -p.x    /   (q.x - p.x);
-  pqy0 =  p.y    + t*(q.y - p.y);
-  t    = (1-p.x) /   (q.x - p.x);
-  pqy1 =  p.y    + t*(q.y - p.y);
+  t  = -p.y    /   (q.y - p.y);
+  x0 =  p.x    + t*(q.x - p.x);
+  t  = (1-p.y) /   (q.y - p.y);
+  x1 =  p.x    + t*(q.x - p.x);
+  t  = -p.x    /   (q.x - p.x);
+  y0 =  p.y    + t*(q.y - p.y);
+  t  = (1-p.x) /   (q.x - p.x);
+  y1 =  p.y    + t*(q.y - p.y);
   // computations can be optimized (do this when the coverage function is finished and a unit test
   // is in place) - but maybe the way it currently looks is ideal for simd processing
   // get rid of pq prefix
@@ -948,19 +948,29 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   // in the x-direction for which y=0 (i.e. the x-axis), abx1 is the x coordinate of the 
   // intersection with the horizontal line at y=1, aby0: with vertical line at x=0, aby1: with
   // vertical line at x=1, similar definitions for triangle edges bc and ca
-  float abx0, abx1, aby0, aby1;
-  float bcx0, bcx1, bcy0, bcy1;
-  float cax0, cax1, cay0, cay1;
-  unitSquareIntersections(a, b, abx0, abx1, aby0, aby1);
-  unitSquareIntersections(b, c, bcx0, bcx1, bcy0, bcy1);
-  unitSquareIntersections(c, a, cax0, cax1, cay0, cay1);
+  float abB, abT, abL, abR;
+  float bcB, bcT, bcL, bcR;
+  float caB, caT, caL, caR;
+  unitSquareIntersections(a, b, abB, abT, abL, abR);
+  unitSquareIntersections(b, c, bcB, bcT, bcL, bcR);
+  unitSquareIntersections(c, a, caB, caT, caL, caR);
+
+  // mayb call them abT, abB for (a,b,top), etc
+  // abx0 -> abB, abx1 -> abT, aby0 -> abL, aby1 ->abR
+
+  // experimental - try to figure out the clipped polygon from the intersection points:
+  int nv = 0;   // number of vertices in clipped polygon (so far)
+  Vec2 v[7];    // array for clipped polygon vertices
+
+
+  int dummy = 0;
 
   // compute the areas that are cut off from the unit square by the 3 edges:
   bool  abQuad, bcQuad, caQuad;
   float abCut, bcCut, caCut;
-  abCut = unitSquareCut(a, b, abx0, abx1, aby0, aby1, abQuad);
-  bcCut = unitSquareCut(b, c, bcx0, bcx1, bcy0, bcy1, bcQuad);
-  caCut = unitSquareCut(c, a, cax0, cax1, cay0, cay1, caQuad);
+  abCut = unitSquareCut(a, b, abB, abT, abL, abR, abQuad);
+  bcCut = unitSquareCut(b, c, bcB, bcT, bcL, bcR, bcQuad);
+  caCut = unitSquareCut(c, a, caB, caT, caL, caR, caQuad);
 
   // can - instead of computing the bite areas directly - compute the clip polygon from this info?
   // that would be better than just the coverage because we can use it to compute the center
@@ -998,12 +1008,17 @@ float pixelCoverage2(float x, float y, Vec2 a, Vec2 b, Vec2 c)
 // -if a is in the square then the bites ab and ca have an overlap that must be added back
 //  -that overlap area may be a triangle or quadrilateral
 
+// here has someone else the exact same problem:
+// https://stackoverflow.com/questions/22634006/fast-calculation-of-the-intersection-area-of-a-triangle-and-the-unit-square
+
 // maybe implement Liang/Barsky algorithm (clips a polygon against rectangle, see Foley, page 930)
 
 // Foley, page 693 mentions Catmull's object-precision anitaliasing algorithm
 // describein in detail here in the paper: A hidden-surface algorithm with anti-aliasing
 // https://www.researchgate.net/publication/234810089_A_hidden-surface_algorithm_with_anti-aliasing
 
+// general polygon clipping:
+// https://en.wikipedia.org/wiki/Vatti_clipping_algorithm
 
 // triangle/pixel coverage computation:
 // http://www.cs.cmu.edu/afs/cs/academic/class/15462-s16/www/lec_slides/2.pdf

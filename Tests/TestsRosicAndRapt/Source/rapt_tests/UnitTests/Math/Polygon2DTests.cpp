@@ -225,14 +225,7 @@ bool pixelCoverage(std::string &reportString)
   // edges through corners:
 
 
-  //a = unitSquareCut(V( 1,2), V(-0.5,-1), q); 
-  // -0.25 - check how negative area can occur - the edge goes through the bottom left corner
-  // i.e. the origin - maybe this needs special treatment?
-  // check also cases, where it goes through 2 corners
 
-  a = unitSquareCut(V(0,0), V(0.5f,1), q);  // (0,0), top-center    0.25 fails
-  a = unitSquareCut(V(0,0), V(1   ,1), q);  // (0,0), (1,1)         0.5
-  a = unitSquareCut(V(0,0), V(1,0.5f), q);  // (0,0), right-center: 0.25
 
 
   // cut off triangles at the corners:
@@ -251,6 +244,15 @@ bool pixelCoverage(std::string &reportString)
 
   //  non-intersecting edge:
   a = unitSquareCut(V(0,-1), V(2,0),q);  r &= a == 0; r &= q == false;
+
+  //a = unitSquareCut(V( 1,2), V(-0.5,-1), q); 
+  // -0.25 - check how negative area can occur - the edge goes through the bottom left corner
+  // i.e. the origin - maybe this needs special treatment?
+  // check also cases, where it goes through 2 corners
+
+  a = unitSquareCut(V(0,0), V(0.5f,1), q);  // (0,0), top-center    0.25 fails
+  a = unitSquareCut(V(0,0), V(1   ,1), q);  // (0,0), (1,1)         0.5
+  a = unitSquareCut(V(0,0), V(1,0.5f), q);  // (0,0), right-center: 0.25
 
 
 
