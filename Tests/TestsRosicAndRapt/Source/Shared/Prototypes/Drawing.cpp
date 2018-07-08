@@ -594,7 +594,7 @@ void drawTriangle(rsImageDrawerFFF& drw,
 // that computes a color - it should implement the () operator which should return the color
 // -> allows for all kinds of shading algorithms (texture, lighting, bump, etc.)
 
-void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
+void drawTriangleAntiAliasedProto(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {
   rsImageF* img = drw.getImageToDrawOn();
@@ -614,7 +614,7 @@ void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
 // name the versions: ..Proto, ..BoxBased, ..SpanBased, the dispatcher has no suffix and dispatches
 // between BoxBased and SpanBased. Proto is used in unit-test
 
-void drawTriangleAntiAliased2(rsImageDrawerFFF& drw,
+void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {
   typedef rsVector2DF Vec;

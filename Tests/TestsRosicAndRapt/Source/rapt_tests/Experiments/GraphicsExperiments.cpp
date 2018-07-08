@@ -319,7 +319,7 @@ void triangles()
 
   void (*pDrawTriangle)(rsImageDrawerFFF&, const Vec2&, const Vec2&, const Vec2&, float);
   pDrawTriangle = &drawTriangle;
-  //pDrawTriangle = &drawTriangleAntiAliased;
+  //pDrawTriangle = &drawTriangleAntiAliasedProto;
 
   //void drawTriangle(rsImageDrawerFFF& drw, 
   //  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);

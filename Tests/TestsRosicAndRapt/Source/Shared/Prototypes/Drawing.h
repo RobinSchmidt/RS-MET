@@ -38,7 +38,7 @@ each pixel will be visited only once. */
 void drawTriangle(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
 
-void drawTriangleAntiAliased(rsImageDrawerFFF& drw, 
+void drawTriangleAntiAliasedProto(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
 // todo: make sure correct winding order - either make an assertion or re-order vertices here
 // uses unweighted area sampling -> disadvantage: objects that are smaller than one pixel don't 
@@ -60,8 +60,7 @@ void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
 // "paint-dot" operation (with bilinear deinterpolation)
 
 
-
-void drawTriangleAntiAliased2(rsImageDrawerFFF& drw, 
+void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
 // fast version
 

@@ -283,15 +283,15 @@ bool triangleRasterization(std::string &reportString)
     square   = { V(x, y), V(x, y+1), V(x+1, y+1), V(x+1, y) },
     polygon  = clipPolygon(triangle, square);
 
-  drawTriangleAntiAliased(drw, A, B, C, c);
+  drawTriangleAntiAliasedProto(drw, A, B, C, c);
   //drawTriangleAntiAliased(drw, V(0.5,0.5), V(2.5,0.5), V(4.5,2.5), c);
 
 
   A = V(7.5f,1.5f), B = V(1.5f,5.5f), C = V(9.5f,7.5f);
-  drawTriangleAntiAliased2(drw, A, B, C, c);
+  drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
 
   A = V(7,1), B = V(1,5), C = V(9,7);
-  drawTriangleAntiAliased2(drw, A, B, C, c);
+  drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
 
 
   // we should test at least with integer and half-integer vertex coordinates - see, if the
