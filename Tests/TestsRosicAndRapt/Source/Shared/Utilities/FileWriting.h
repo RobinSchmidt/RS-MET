@@ -8,6 +8,7 @@
 void writeImageToFilePPM(const rsImageF& image, const char* path);
 // make version that takes an rsImageF4 (4 floats per pixel representing RGBA)
 
+void writeScaledImageToFilePPM(rsImageF& image, const char* path, int scale);
 
 void writeToMonoWaveFile(std::string path, float *signal, int numFrames, int sampleRate,
   int numBits);

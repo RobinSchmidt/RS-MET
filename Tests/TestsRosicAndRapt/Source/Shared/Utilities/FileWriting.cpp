@@ -28,6 +28,27 @@ void writeImageToFilePPM(const rsImageF& img, const char* path)
   delete[] buf;
 }
 
+void writeScaledImageToFilePPM(rsImageF& img, const char* path, int scl)
+{
+  // maybe factor out into a function magnify (or generally 
+  // image.getResized(int newWidth, int newHeight, int interpolationMethod))
+  int w = img.getWidth();
+  int h = img.getHeight();
+  rsImageF tmp(scl*w, scl*h);
+  for(int x = 0; x < w; x++)  {
+    for(int y = 0; y < h; y++) {
+      for(int i = 0; i < scl; i++) {
+        for(int j = 0; j < scl; j++) {
+          tmp(scl*x+i, scl*y+j) = img(x, y);
+        }
+      }
+    }
+  }
+  writeImageToFilePPM(tmp, path);
+}
+
+
+
 void writeToMonoWaveFile(std::string path, float *signal, int numFrames, int sampleRate,
   int numBits)
 {

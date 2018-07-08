@@ -377,6 +377,9 @@ void triangles()
 
   // save to file:
   writeImageToFilePPM(img, "PolygonsViaTriangles.ppm");
+  writeScaledImageToFilePPM(img, "PolygonsViaTrianglesX2.ppm", 2);
+    // todo: write a function that includes a magnification factor (or maybe two, for x and y
+    // separately)
 }
 
 void pixelCoverage()

@@ -33,7 +33,6 @@ The Projection Stage
 https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/projection-stage
 
 
-
 The Rasterization Stage
 https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage
 -the edge function for edge a,b and point p is the cross product between vectors (b-a) and (p-a)
@@ -51,6 +50,29 @@ https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical
  -a left edge is an edge that is going down (in counter-clockwise vertex order convention)
  -important for cases where the edge function is 0
 
+The Visibility Problem, the Depth Buffer Algorithm and Depth Interpolation
 https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/visibility-problem-depth-buffer-depth-interpolation
-
+-the z-buffer (or depth buffer) stores the (projected) z-coordinate for each pixel for the last
+ triangle that has (over)written the pixel (it's initialized with large/inf values)
+-when a new triangle (that overlaps the pixel) is encountered, we compute a z-value for the new 
+ triangle at the pixel (by inverse barycentric interpolation) and compare it to the value already 
+ in the buffer
+ -when the new z-value is less than the stored value, the pixel's color and z-buffer value are
+  overwritten
+-to find an interpolated z-depth value of a point on a triangle whose vertices were projected 
+ via perspective projection, we need to interpolate the reciprocals of the projected z-values
+ 
+Perspective Correct Interpolation and Vertex Attributes
+https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/perspective-correct-interpolation-vertex-attributes
+-to interpolate a vertex attribute, we first divide by the z-coordinate of the vertex, then 
+ linearly interpolate, and finally multiply by Z, which is the depth of the point on the triangle
+ (obtained by reciprocal linear/barycentric interpolation as explained above)
+ 
+Rasterization: a Practical Implementation 
+https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-practical-implementation
+-pixels may be divided into a N by N number of sub-pixels where N is generally a power of 2
+-one may render blocks of pixels - rather than testing all pixels in the block, we first test 
+ corner pixels - if they are contained in a triangle, the interior piyled will also be
+-when the edge-function is called for many pixels in the same triangle, an incremental evaluation
+ is possible
 

@@ -82,8 +82,8 @@ int main(int argc, char* argv[])
   //lineTo();
   //polyLineRandom();
   //phaseScopeLissajous();
-  //triangles();
-  pixelCoverage();
+  triangles();
+  //pixelCoverage();
 
 
   // just for fun:
