@@ -6,6 +6,7 @@
 #include "ClassicFilterDesign/PoleZeroDesignerDigital.cpp"
 
 #include "Projection3Dto2D.cpp"
+#include "Polygon.cpp"
 #include "Drawing.cpp"
 
 using namespace RAPT;

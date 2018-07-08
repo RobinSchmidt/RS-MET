@@ -463,6 +463,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Polygon.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
@@ -878,9 +881,6 @@
       <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitter.cpp">
-      <Filter>Juce Modules\rapt\Unfinished\Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitterCRef.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\Biquad.cpp">
@@ -2433,6 +2433,9 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\Polygon.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
@@ -2923,9 +2926,6 @@
       <Filter>Juce Modules\rapt\Unfinished\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitter.h">
-      <Filter>Juce Modules\rapt\Unfinished\Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitterCRef.h">
       <Filter>Juce Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\Biquad.h">

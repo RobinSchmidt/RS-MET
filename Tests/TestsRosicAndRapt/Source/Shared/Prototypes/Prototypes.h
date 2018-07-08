@@ -11,6 +11,7 @@
 #include "ClassicFilterDesign/PoleZeroDesignerDigital.h"
 
 #include "Projection3Dto2D.h"
+#include "Polygon.h"
 #include "Drawing.h"
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant 

@@ -287,6 +287,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Polygon.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -698,9 +701,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitterCRef.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\Biquad.cpp">
@@ -2144,6 +2144,7 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\Ideas.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\Polygon.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Prototypes.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h"/>
@@ -2308,7 +2309,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Data\Flags.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Data\MultiArray.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitter.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\BandSplitterCRef.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\Biquad.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\FakeResonanceFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Filters\FilterDesignFormulas.h"/>

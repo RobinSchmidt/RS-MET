@@ -687,6 +687,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/Shared/Prototypes/Polygon.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Shared/Prototypes/Polygon.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/Shared/Prototypes/Projection3Dto2D.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -2514,18 +2526,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Filters/BandSplitter.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Filters/BandSplitterCRef.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Filters/BandSplitterCRef.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
