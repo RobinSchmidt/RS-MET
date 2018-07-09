@@ -5,4 +5,6 @@
 
 bool imagePainterUnitTest();
 
+bool triangleRasterizationUnitTest();
+
 #endif

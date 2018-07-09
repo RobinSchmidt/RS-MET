@@ -74,6 +74,21 @@ void drawTriangleAntiAliasedProto(rsImageDrawerFFF& drw,
 // or maybe find the center of gravity of the polygon (triangle-clipped-to-square) and use the
 // "paint-dot" operation (with bilinear deinterpolation)
 
+
+// fast version:
+// dispatcher between box-based and span-based:
+void drawTriangleAntiAliased(rsImageDrawerFFF& drw, 
+  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
+void drawTriangleAntiAliasedBoxBased(rsImageDrawerFFF& drw, 
+  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
 void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw, 
   const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
-// fast version
+
+
+// todo: make class rsRenderer
+// setMethod(int);   // rasterize or raytrace
+// setAntiAlias(int); // off, unweighted area sampling, weighted area sampling, bilinear deinterpolation, supersampling
+// setAreaSamplingFilter(rsImage* filterKernel); // or maybe pass a function-pointer f(float x, float y) definign the continuous kernel function?
+// renderScene(rsScene*, rsImage*);
+// renderTriangle(rsVertex* a, rsVertex* b, rsVertex* c);
+// setVertexShader(rsVertexShader*);

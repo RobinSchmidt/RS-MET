@@ -171,3 +171,67 @@ bool imagePainterUnitTest()
 
   return result;
 }
+
+bool triangleRasterizationUnitTest()
+{
+  // We have 3 versions of the triangle drawing function - the naive, slow version, and the 
+  // box-based and span-based optimizations - we check here, if the optimized versions produce the 
+  // same results as the naive version.
+
+  bool r = true;
+
+  typedef rsVector2DF Vec2;    // for convenience
+
+  int numTriangles = 5;
+
+
+  // create and set up images and drawer objects:
+  int w = 60;
+  int h = 40;
+  rsImageF img1(w, h), img2(w, h), img3(w, h);
+  rsImageDrawerFFF drw1(&img1), drw2(&img2), drw3(&img3);
+  drw1.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
+  drw2.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
+  drw3.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
+
+
+  rsNoiseGeneratorF coordinateGenerator;
+  coordinateGenerator.setRange(-100, 100);
+
+  rsNoiseGeneratorF colorGenerator;
+  colorGenerator.setRange(0, 1);
+
+  float color = 1.0f;              // color (gray value)
+
+
+  Vec2 a, b, c;
+  for(int i = 1; i <= numTriangles; i++)
+  {
+    a.x = coordinateGenerator.getSample();
+    a.y = coordinateGenerator.getSample();
+    b.x = coordinateGenerator.getSample();
+    b.y = coordinateGenerator.getSample();
+    c.x = coordinateGenerator.getSample();
+    c.y = coordinateGenerator.getSample();
+    color = colorGenerator.getSample();
+
+    // maybe draw only if the triangle is counterclockwise? hmm...
+
+    drawTriangleAntiAliasedProto(drw1, a, b, c, color);
+    //drawTriangleAntiAliasedBoxBased(drw2, a, b, c, color);
+    drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
+
+    r &= img2.areAllPixelsEqualTo(&img1);
+    r &= img3.areAllPixelsEqualTo(&img1);
+
+    // we clear because otherwise, it's likely that all pixel soon saturate to white:
+    img1.clear();
+    img2.clear();
+    img3.clear();
+  }
+
+
+  writeImageToFilePPM(img1, "RandomTriangles.ppm");
+
+  return r;
+}

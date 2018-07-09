@@ -84,6 +84,7 @@ typedef RAPT::rsParticleSystem<float> rsParticleSystemF;
 // Generators:
 typedef RAPT::rsBouncillator<float> rsBouncillatorF;
 typedef RAPT::rsRayBouncer<float> rsRayBouncerF;
+typedef RAPT::rsNoiseGenerator<float> rsNoiseGeneratorF;
 
 // Modulation:
 typedef RAPT::rsBreakpointModulator<float> rsBreakpointModulatorF;

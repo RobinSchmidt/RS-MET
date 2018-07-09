@@ -53,6 +53,8 @@ bool runAllUnitTests()
 
   // Visualization:
   passed &= runUnitTest(&imagePainterUnitTest, "rsImagePainter");
+  passed &= runUnitTest(&triangleRasterizationUnitTest, "Triangle Rasterization");
+
 
   //...
   //...more to come...

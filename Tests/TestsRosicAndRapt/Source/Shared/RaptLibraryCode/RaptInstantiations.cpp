@@ -275,6 +275,7 @@ template RAPT::rsParticleSystem<float>;
 // Generators:
 template RAPT::rsBouncillator<float>;
 template RAPT::rsRayBouncer<float>;
+template RAPT::rsNoiseGenerator<float>;
 
 // Modulation:
 template RAPT::rsBreakpointModulator<float>;

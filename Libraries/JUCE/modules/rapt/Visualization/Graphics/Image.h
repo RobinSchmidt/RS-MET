@@ -95,6 +95,16 @@ public:
     return rsIsInRange(x, 0, width-1) && rsIsInRange(y, 0, height-1);
   }
 
+  /** Compares all pixel values of this image to those of another image and returns true, if they 
+  are all equal up to some given tolerance. It assumes that the other image has the same width
+  and height as this. */
+  inline bool areAllPixelsEqualTo(const rsImage<TPix>* otherImage, TPix tolerance = 0)
+  {
+    rsAssert(width  == otherImage->width);
+    rsAssert(height == otherImage->height);
+    return areBuffersApproximatelyEqual(data, otherImage->data, width*height, tolerance);
+  }
+
   /** \name Manipulations */
 
   /** Sets the color of the pixel at (x,y). */
