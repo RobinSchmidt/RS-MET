@@ -613,9 +613,9 @@ void drawTriangleAntiAliasedBoxBased(rsImageDrawerFFF& drw,
   int w = drw.getImageToDrawOn()->getWidth();
   int h = drw.getImageToDrawOn()->getHeight();
   int xMin = rsMax(0,   rsMin(rsFloorInt(a.x), rsFloorInt(b.x), rsFloorInt(c.x)));
-  int xMax = rsMin(w-1, rsMax(rsCeilInt( a.x), rsCeilInt( b.x), rsCeilInt( c.x)));
+  int xMax = rsMin(w-1, rsMax(rsCeilInt( a.x), rsCeilInt( b.x), rsCeilInt( c.x)));  // one too much?
   int yMin = rsMax(0,   rsMin(rsFloorInt(a.y), rsFloorInt(b.y), rsFloorInt(c.y)));
-  int yMax = rsMin(h-1, rsMax( rsCeilInt(a.y), rsCeilInt( b.y), rsCeilInt( c.y)));
+  int yMax = rsMin(h-1, rsMax( rsCeilInt(a.y), rsCeilInt( b.y), rsCeilInt( c.y)));  // one too much?
   for(int y = yMin; y <= yMax; y++) {
     for(int x = xMin; x <= xMax; x++) {
       float coverage = pixelCoverage(x, y, a, b, c);
@@ -629,13 +629,11 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {
   typedef rsVector2DF Vec;
-  rsImageF* img = drw.getImageToDrawOn();
-  int xMin, xMax, yMin, yMax;
 
-  yMin = rsMax(rsMin((int)floor(a.y), (int)floor(b.y), (int)floor(c.y)), 0);
-  //yMax = rsMin(rsMax((int)ceil(a.y),  (int)ceil(b.y),  (int)ceil(c.y)), img->getHeight()-1); // 1 too much
-  //yMax = rsMin(rsMax((int)floor(a.y), (int)floor(b.y), (int)floor(c.y)), img->getHeight()-1); // dito (when max y in triangle is integer)
-  yMax = rsMin(rsMax((int)ceil(a.y),  (int)ceil(b.y),  (int)ceil(c.y)), img->getHeight())-1;
+  int w = drw.getImageToDrawOn()->getWidth();
+  int h = drw.getImageToDrawOn()->getHeight();
+  int yMin = rsMax(0,   rsMin(rsFloorInt(a.y), rsFloorInt(b.y), rsFloorInt(c.y)));
+  int yMax = rsMin(h-1, rsMax( rsCeilInt(a.y), rsCeilInt( b.y), rsCeilInt( c.y)) - 1);
 
   // left edge (from a to b):
   Vec leftStart = a;
@@ -660,6 +658,7 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
 
 
   // loop over the scanlines:
+  int xMin, xMax;
   Vec sHere, eHere, sNext, eNext;
   for(int y = yMin; y <= yMax; y++) 
   {
