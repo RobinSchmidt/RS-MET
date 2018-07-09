@@ -695,20 +695,21 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
     // 1st loop: from floor(sNext) to ceil(sHere): compute coverages
     xMin = (int) floor(sNext.x);
     //xMax = (int) ceil( sHere.x); // seems to be one too much
-    xMax = (int) floor( sHere.x);
+    //xMax = (int) floor( sHere.x);
+    xMax = (int) ceil( sHere.x) - 1;
     int x;
     for(x = xMin; x <= xMax ; x++) 
       drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 
     // 2nd loop: from ceil(sHere)+1 to floor(eHere)-1 -> pixels are fully covered
     xMin = xMax+1;
-    xMax = (int) floor(eHere.x);
+    xMax = (int) floor(eHere.x) - 1;
     for(x = xMin; x <= xMax ; x++) 
       drw.plot(x, y, color);  // replace color variable by shading function-call
 
     // 3rd loop: from floor(eHere) to ceil(eNext)     -> compute coverages
     xMin = xMax+1;
-    xMax = (int) ceil(eNext.x);
+    xMax = (int) ceil(eNext.x) - 1;
     for(x = xMin; x <= xMax ; x++) 
       drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 
