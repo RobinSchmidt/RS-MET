@@ -613,9 +613,9 @@ void drawTriangleAntiAliasedBoxBased(rsImageDrawerFFF& drw,
   int w = drw.getImageToDrawOn()->getWidth();
   int h = drw.getImageToDrawOn()->getHeight();
   int xMin = rsMax(0,   rsMin(rsFloorInt(a.x), rsFloorInt(b.x), rsFloorInt(c.x)));
-  int xMax = rsMin(w-1,  rsMax(rsCeilInt(a.x),  rsCeilInt(b.x),  rsCeilInt(c.x)));
+  int xMax = rsMin(w-1, rsMax(rsCeilInt( a.x), rsCeilInt( b.x), rsCeilInt( c.x)));
   int yMin = rsMax(0,   rsMin(rsFloorInt(a.y), rsFloorInt(b.y), rsFloorInt(c.y)));
-  int yMax = rsMin(h-1, rsMax( rsCeilInt(a.y),  rsCeilInt(b.y),  rsCeilInt(c.y)));
+  int yMax = rsMin(h-1, rsMax( rsCeilInt(a.y), rsCeilInt( b.y), rsCeilInt( c.y)));
   for(int y = yMin; y <= yMax; y++) {
     for(int x = xMin; x <= xMax; x++) {
       float coverage = pixelCoverage(x, y, a, b, c);
@@ -655,7 +655,7 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   }
   else {
     breakLeft = false;            // right edge is broken
-    breakLine = (int)floor(b.y);  // between floor(c.y) and ceil(c.y)
+    breakLine = (int)floor(c.y);  // between floor(c.y) and ceil(c.y)
   }
 
 
@@ -663,18 +663,31 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   Vec sHere, eHere, sNext, eNext;
   for(int y = yMin; y <= yMax; y++) 
   {
-    if(y == breakLine)
-    {
-      break; // preliminary - what should actually happen is to change either the active left or
-             // right edge to render the second "half" of the triangle
-    }
-
     float yf = (float) y;
     sHere = lineIntersection(Vec(0, yf),   Vec(1, yf),   leftStart,  leftEnd);  // intersection of this scanline with left edge
     sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), leftStart,  leftEnd);  // intersection of next scanline with left edge
     eHere = lineIntersection(Vec(0, yf),   Vec(1, yf),   rightStart, rightEnd); // intersection of this scanline with right edge
     eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightStart, rightEnd); // intersection of next scanline with right edge
     // optimize: compute only sNext, eNext - sHere, eHere become the old values of sNext, eNext
+
+
+
+    if(y == breakLine) {
+      // change either the active left or right edge to render the second "half" of the triangle:
+      if(breakLeft) {
+        leftStart = b;
+        leftEnd   = c;
+        sHere = b.x;
+        sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), leftStart,  leftEnd); // needs to be re-computed
+      }
+      else {
+        rightStart = c;
+        rightEnd   = b;
+        eHere = c.x;
+        eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightStart, rightEnd); // needs to be recomputed
+      }
+    }
+
 
     // 3 loops - the section in the middle of the span doesn't need to compute coverages becasue 
     // pixels are fully covered 

@@ -104,3 +104,10 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
 // renderScene(rsScene*, rsImage*);
 // renderTriangle(rsVertex* a, rsVertex* b, rsVertex* c);
 // setVertexShader(rsVertexShader*);
+
+// recommended book
+// Physically Based Rendering: From Theory To Implementation
+// https://www.amazon.de/Physically-Based-Rendering-Matt-Pharr/dp/0128006455/ref=dp_ob_title_bk
+// has a website with source code (BSD licensed)
+// http://www.pbrt.org/
+// https://github.com/mmp/pbrt-v3
