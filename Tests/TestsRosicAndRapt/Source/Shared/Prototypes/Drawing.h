@@ -77,12 +77,24 @@ void drawTriangleAntiAliasedProto(rsImageDrawerFFF& drw,
 
 // fast version:
 // dispatcher between box-based and span-based:
+
+/** An optimized version - it dispatches between drawTriangleAntiAliasedBoxBased and 
+drawTriangleAntiAliasedSpanBased based on the size of the triangle (for small triangles, it may
+not be worth it do to the span-based optimizations - the overhead pays off only for larger
+triangles). */
 void drawTriangleAntiAliased(rsImageDrawerFFF& drw, 
-  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
+  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color);
+
+/** As a simple and obvious optimization, this function loops only over those pixels that are 
+contained in the bounding box of the triangle. */
 void drawTriangleAntiAliasedBoxBased(rsImageDrawerFFF& drw, 
-  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
+  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color);
+
+/** As a further optimization, this functions computes 3 spans for each scanline where the first 
+and last spans compute coverages and the middle section rund over the pixles that are fully 
+covered, so no coverage needs to be computed (it's just 1 everywhere there). */
 void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw, 
-  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
+  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color);
 
 
 // todo: make class rsRenderer

@@ -594,14 +594,18 @@ void drawTriangleAntiAliasedProto(rsImageDrawerFFF& drw,
   }
 }
 
-// todo: make version that uses bounding box and version that also computes spans of partial and
-// full coverage and renders only these and a dispatcher switching between bounding-box and 
-// span-based that decides which one to use based on the size (min(width,height)) of the triangle 
-// bcs the span-based stuff has an overhead that may pay off only for larger triangles
-
-// name the versions: ..Proto, ..BoxBased, ..SpanBased, the dispatcher has no suffix and dispatches
-// between BoxBased and SpanBased. Proto is used in unit-test
-
+void drawTriangleAntiAliased(rsImageDrawerFFF& drw,
+  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
+{
+  int w = drw.getImageToDrawOn()->getWidth();
+  int h = drw.getImageToDrawOn()->getHeight();
+  int min = rsMin(w, h);
+  int thresh = 10;  // currently arbitrarily chosen - todo: make performance tests and pick a good value
+  if(min < thresh)
+    drawTriangleAntiAliasedBoxBased(drw, a, b, c, color);
+  else
+    drawTriangleAntiAliasedSpanBased(drw, a, b, c, color);
+}
 
 void drawTriangleAntiAliasedBoxBased(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
@@ -620,6 +624,7 @@ void drawTriangleAntiAliasedBoxBased(rsImageDrawerFFF& drw,
   }
 }
 
+// under construction - does not work yet:
 void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {
@@ -696,7 +701,4 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
 
     // todo: clip xMin, xMax at 0, w-1
   }
-
-  // todo: optimize by using bounding box, production code should actually also compute spans
-  // inside the bounding box which have zero or full coverage
 }

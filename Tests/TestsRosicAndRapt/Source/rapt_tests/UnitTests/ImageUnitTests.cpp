@@ -179,34 +179,34 @@ bool triangleRasterizationUnitTest()
   // same results as the naive version.
 
   bool r = true;
-
-  typedef rsVector2DF Vec2;    // for convenience
-
-  int numTriangles = 10;
-
+  int numTriangles = 10; // it takes quite a lot of time to draw triangles, so we use a small number
 
   // create and set up images and drawer objects:
-  int w = 60;
-  int h = 40;
+  int w = 20;
+  int h = 10;
   rsImageF img1(w, h), img2(w, h), img3(w, h);
   rsImageDrawerFFF drw1(&img1), drw2(&img2), drw3(&img3);
   drw1.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
   drw2.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
   drw3.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
 
-
+  // random number generators for the triangle vertices and color:
   rsNoiseGeneratorF coordinateGenerator;
   coordinateGenerator.setRange(-100, 100);
-
   rsNoiseGeneratorF colorGenerator;
   colorGenerator.setRange(0, 1);
 
-  float color = 1.0f;              // color (gray value)
-
-
-  Vec2 a, b, c;
+  // draw triangles using the different functions and compare results:
+  float color;
+  rsVector2DF a, b, c;
   for(int i = 1; i <= numTriangles; i++)
   {
+    // we clear because otherwise, it's likely that all pixel soon saturate to white:
+    img1.clear();
+    img2.clear();
+    img3.clear();
+
+    // produce a random triangle with random color:
     a.x = coordinateGenerator.getSample();
     a.y = coordinateGenerator.getSample();
     b.x = coordinateGenerator.getSample();
@@ -215,23 +215,19 @@ bool triangleRasterizationUnitTest()
     c.y = coordinateGenerator.getSample();
     color = colorGenerator.getSample();
 
+    // draw it with the different versions of the drawing
     // maybe draw only if the triangle is counterclockwise? hmm...
-
-    drawTriangleAntiAliasedProto(drw1, a, b, c, color);
+    drawTriangleAntiAliasedProto(   drw1, a, b, c, color);
     drawTriangleAntiAliasedBoxBased(drw2, a, b, c, color);
-    //drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
 
+    // this function does not work yet (it even crashes at the moment):
+    drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
+
+    // compare drawing results:
     r &= img2.areAllPixelsEqualTo(&img1);
-    //r &= img3.areAllPixelsEqualTo(&img1);
-
-    // we clear because otherwise, it's likely that all pixel soon saturate to white:
-    img1.clear();
-    img2.clear();
-    img3.clear();
+    r &= img3.areAllPixelsEqualTo(&img1);
   }
 
-
-  writeImageToFilePPM(img1, "RandomTriangles.ppm");
-
+  //writeImageToFilePPM(img1, "RandomTriangles.ppm");
   return r;
 }
