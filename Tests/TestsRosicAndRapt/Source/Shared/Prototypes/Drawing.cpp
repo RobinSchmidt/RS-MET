@@ -629,7 +629,6 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {
   typedef rsVector2DF Vec;
-
   int w = drw.getImageToDrawOn()->getWidth();
   int h = drw.getImageToDrawOn()->getHeight();
   int yMin = rsMax(0,   rsMin(rsFloorInt(a.y), rsFloorInt(b.y), rsFloorInt(c.y)));
@@ -656,10 +655,9 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
     breakLine = (int)floor(c.y);  // between floor(c.y) and ceil(c.y)
   }
 
-
   // loop over the scanlines:
-  int xMin, xMax;
   Vec sHere, eHere, sNext, eNext;
+  int xMin, xMax;
   for(int y = yMin; y <= yMax; y++) 
   {
     float yf = (float) y;
@@ -668,8 +666,6 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
     eHere = lineIntersection(Vec(0, yf),   Vec(1, yf),   rightStart, rightEnd); // intersection of this scanline with right edge
     eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightStart, rightEnd); // intersection of next scanline with right edge
     // optimize: compute only sNext, eNext - sHere, eHere become the old values of sNext, eNext
-
-
 
     if(y == breakLine) {
       // change either the active left or right edge to render the second "half" of the triangle:
@@ -687,31 +683,27 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
       }
     }
 
-
-    // 3 loops - the section in the middle of the span doesn't need to compute coverages becasue 
-    // pixels are fully covered 
-
-    // 1st loop: from floor(sNext) to ceil(sHere): compute coverages
+    // 1st loop: partially covered pixels on the left side of the scanline - compute coverages:
     xMin = (int) floor(sNext.x);
-    //xMax = (int) ceil( sHere.x); // seems to be one too much
-    //xMax = (int) floor( sHere.x);
+    xMin = rsMax(xMin, 0);              // should be >= 0
     xMax = (int) ceil( sHere.x) - 1;
+    xMax = rsMin(xMax, w-1);            // should be <= w-1
     int x;
     for(x = xMin; x <= xMax ; x++) 
       drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 
-    // 2nd loop: from ceil(sHere)+1 to floor(eHere)-1 -> pixels are fully covered
+    // 2nd loop: fully covered pixels in the middle of the scanline - use color as is:
     xMin = xMax+1;
     xMax = (int) floor(eHere.x) - 1;
+    xMax = rsMin(xMax, w-1);
     for(x = xMin; x <= xMax ; x++) 
       drw.plot(x, y, color);  // replace color variable by shading function-call
 
-    // 3rd loop: from floor(eHere) to ceil(eNext)     -> compute coverages
+    // 3rd loop: partially covered pixels on the right side of the scanline - compute coverages:
     xMin = xMax+1;
     xMax = (int) ceil(eNext.x) - 1;
+    xMax = rsMin(xMax, w-1);
     for(x = xMin; x <= xMax ; x++) 
       drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
-
-    // todo: clip xMin, xMax at 0, w-1
   }
 }
