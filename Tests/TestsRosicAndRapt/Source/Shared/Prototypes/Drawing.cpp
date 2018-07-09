@@ -602,6 +602,24 @@ void drawTriangleAntiAliasedProto(rsImageDrawerFFF& drw,
 // name the versions: ..Proto, ..BoxBased, ..SpanBased, the dispatcher has no suffix and dispatches
 // between BoxBased and SpanBased. Proto is used in unit-test
 
+
+void drawTriangleAntiAliasedBoxBased(rsImageDrawerFFF& drw,
+  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
+{
+  int w = drw.getImageToDrawOn()->getWidth();
+  int h = drw.getImageToDrawOn()->getHeight();
+  int xMin = rsMax(0,   rsMin(rsFloorInt(a.x), rsFloorInt(b.x), rsFloorInt(c.x)));
+  int xMax = rsMin(w-1,  rsMax(rsCeilInt(a.x),  rsCeilInt(b.x),  rsCeilInt(c.x)));
+  int yMin = rsMax(0,   rsMin(rsFloorInt(a.y), rsFloorInt(b.y), rsFloorInt(c.y)));
+  int yMax = rsMin(h-1, rsMax( rsCeilInt(a.y),  rsCeilInt(b.y),  rsCeilInt(c.y)));
+  for(int y = yMin; y <= yMax; y++) {
+    for(int x = xMin; x <= xMax; x++) {
+      float coverage = pixelCoverage(x, y, a, b, c);
+      drw.plot(x, y, coverage*color);
+    }
+  }
+}
+
 void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
 {

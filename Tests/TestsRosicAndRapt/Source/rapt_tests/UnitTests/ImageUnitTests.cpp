@@ -182,7 +182,7 @@ bool triangleRasterizationUnitTest()
 
   typedef rsVector2DF Vec2;    // for convenience
 
-  int numTriangles = 5;
+  int numTriangles = 10;
 
 
   // create and set up images and drawer objects:
@@ -218,11 +218,11 @@ bool triangleRasterizationUnitTest()
     // maybe draw only if the triangle is counterclockwise? hmm...
 
     drawTriangleAntiAliasedProto(drw1, a, b, c, color);
-    //drawTriangleAntiAliasedBoxBased(drw2, a, b, c, color);
-    drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
+    drawTriangleAntiAliasedBoxBased(drw2, a, b, c, color);
+    //drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
 
     r &= img2.areAllPixelsEqualTo(&img1);
-    r &= img3.areAllPixelsEqualTo(&img1);
+    //r &= img3.areAllPixelsEqualTo(&img1);
 
     // we clear because otherwise, it's likely that all pixel soon saturate to white:
     img1.clear();
