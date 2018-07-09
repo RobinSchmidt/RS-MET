@@ -179,11 +179,11 @@ bool triangleRasterizationUnitTest()
   // same results as the naive version.
 
   bool r = true;
-  int numTriangles = 10; // it takes quite a lot of time to draw triangles, so we use a small number
+  int numTriangles = 1; // it takes quite a lot of time to draw triangles, so we use a small number
 
   // create and set up images and drawer objects:
   int w = 20;
-  int h = 10;
+  int h = 20;
   rsImageF img1(w, h), img2(w, h), img3(w, h);
   rsImageDrawerFFF drw1(&img1), drw2(&img2), drw3(&img3);
   drw1.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
@@ -192,7 +192,7 @@ bool triangleRasterizationUnitTest()
 
   // random number generators for the triangle vertices and color:
   rsNoiseGeneratorF coordinateGenerator;
-  coordinateGenerator.setRange(-100, 100);
+  coordinateGenerator.setRange(-10, 30);
   rsNoiseGeneratorF colorGenerator;
   colorGenerator.setRange(0, 1);
 
@@ -220,12 +220,25 @@ bool triangleRasterizationUnitTest()
     drawTriangleAntiAliasedProto(   drw1, a, b, c, color);
     drawTriangleAntiAliasedBoxBased(drw2, a, b, c, color);
 
+    writeScaledImageToFilePPM(img1, "TriangleNaive.ppm", 16);
+    writeScaledImageToFilePPM(img2, "TriangleBoxOptimization.ppm", 16);
+
+
+    r &= img2.areAllPixelsEqualTo(&img1);
     // this function does not work yet (it even crashes at the moment):
-    //drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
+    drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
+     // this seems to modify img2 - wtf? ..no - not anymore
+    //r &= img2.areAllPixelsEqualTo(&img1);
+
+
+    //writeScaledImageToFilePPM(img2, "TriangleBoxOptimization2.ppm", 16);
+    writeScaledImageToFilePPM(img3, "TriangleSpanOptimization.ppm", 16);
+
 
     // compare drawing results:
     r &= img2.areAllPixelsEqualTo(&img1);
-    //r &= img3.areAllPixelsEqualTo(&img1);
+    r &= img3.areAllPixelsEqualTo(&img1);
+    int dummy = 0;
   }
 
   //writeImageToFilePPM(img1, "RandomTriangles.ppm");
