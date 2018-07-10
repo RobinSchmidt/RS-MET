@@ -662,8 +662,16 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
   int x, xMin, xMax;
 
   // 1st loop: partially covered pixels on the left side of the scanline - compute coverages:
-  xMin = (int) floor(sNext);
-  xMax = (int) ceil(sHere) - 1;
+  if(sNext < sHere)  // a top-left side
+  {
+    xMin = (int)floor(sNext);
+    xMax = (int)ceil( sHere) - 1;
+  }
+  else
+  {                 // a bottom left side
+    xMin = (int)floor(sHere);
+    xMax = (int)ceil( sNext) - 1;
+  }
   xMin = rsMax(xMin, 0);              // should be >= 0
   xMax = rsMin(xMax, w-1);            // should be <= w-1
   for(x = xMin; x <= xMax ; x++) 
@@ -671,14 +679,17 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
 
   // 2nd loop: fully covered pixels in the middle of the scanline - use color as is:
   xMin = xMax+1;
-  xMax = (int) floor(eHere) - 1;
+  xMax = (int) floor(eHere) - 1;  
   xMax = rsMin(xMax, w-1);
   for(x = xMin; x <= xMax ; x++) 
     drw.plot(x, y, color);  // replace color variable by shading function-call
 
   // 3rd loop: partially covered pixels on the right side of the scanline - compute coverages:
   xMin = xMax+1;
-  xMax = (int) ceil(eNext) - 1;
+
+  xMax = (int) ceil(eNext) - 1;  // this may need an if(eNext > eHere) - similar to if(sNext < sHere) above
+                                 // to be tested with left-major triangle
+
   xMax = rsMin(xMax, w-1);
   for(x = xMin; x <= xMax ; x++) 
     drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
@@ -723,7 +734,7 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   //int xMin, xMax;
 
   int y = yMin;
-  float yf = y;
+  float yf = (float)y;
   //sHere = eHere = a;
 
 
@@ -757,23 +768,28 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   }
 
   // middle scanline:
-  // ...
+  yf = (float) (breakLine+1);
+  if(breakLeft) {
+    leftEdgeStart = b;
+    leftEdgeEnd   = c;
+    sHere = b;
+    sNext = lineIntersection(Vec(0, yf), Vec(1, yf), leftEdgeStart, leftEdgeEnd);
+    eHere = eNext;
+    eNext = lineIntersection(Vec(0, yf), Vec(1, yf), rightEdgeStart, rightEdgeEnd); 
+  }
+  else {
+    //rightEdgeStart = c;
+    //rightEdgeEnd   = b;
+    //eHere = c.x;
+    //eNext = lineIntersection(Vec(0, yf), Vec(1, yf), rightEdgeStart, rightEdgeEnd);
+  }
+  drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
+
+
 
 
   /*
   // bottom triangle area:
-  if(breakLeft) {
-    leftEdgeStart = b;
-    leftEdgeEnd   = c;
-    sHere = b.x;
-    sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), leftEdgeStart,  leftEdgeEnd); // needs to be re-computed
-  }
-  else {
-    rightEdgeStart = c;
-    rightEdgeEnd   = b;
-    eHere = c.x;
-    eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightEdgeStart, rightEdgeEnd); // needs to be recomputed
-  }
   for(y = breakLine+1; y < yMax; y++)
   {
     drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
