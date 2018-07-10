@@ -220,19 +220,14 @@ bool triangleRasterizationUnitTest()
     drawTriangleAntiAliasedProto(   drw1, a, b, c, color);
     drawTriangleAntiAliasedBoxBased(drw2, a, b, c, color);
 
+    drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
+    // bottom scanline looks wrong
+
+
     writeScaledImageToFilePPM(img1, "TriangleNaive.ppm", 16);
     writeScaledImageToFilePPM(img2, "TriangleBoxOptimization.ppm", 16);
-
-
-    r &= img2.areAllPixelsEqualTo(&img1);
-    // this function does not work yet (it even crashes at the moment):
-    drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
-     // this seems to modify img2 - wtf? ..no - not anymore
-    //r &= img2.areAllPixelsEqualTo(&img1);
-
-
-    //writeScaledImageToFilePPM(img2, "TriangleBoxOptimization2.ppm", 16);
     writeScaledImageToFilePPM(img3, "TriangleSpanOptimization.ppm", 16);
+
 
 
     // compare drawing results:

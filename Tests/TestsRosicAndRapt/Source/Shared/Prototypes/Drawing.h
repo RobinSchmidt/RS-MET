@@ -104,6 +104,8 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
 // renderScene(rsScene*, rsImage*);
 // renderTriangle(rsVertex* a, rsVertex* b, rsVertex* c);
 // setVertexShader(rsVertexShader*);
+// if i get serious about than, maybe i should call my company Media engineering tools - acronym 
+// stays the same..and maybe add a paintbrush that paints a triangle to the logo :-)
 
 // recommended book
 // Physically Based Rendering: From Theory To Implementation

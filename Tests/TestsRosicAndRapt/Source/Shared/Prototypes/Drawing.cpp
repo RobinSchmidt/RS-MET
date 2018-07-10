@@ -624,11 +624,39 @@ void drawTriangleAntiAliasedBoxBased(rsImageDrawerFFF& drw,
   }
 }
 
+bool areTriangleVerticesOrdered(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c)
+{
+  bool r = true;
+  r &= (a.y <= b.y && a.y <= c.y);
+  r &= (b.x < c.x);  // what about degenerate cases - for example, all x coords the same?
+  return r;
+}
+void orderTriangleVertices(rsVector2DF& a, rsVector2DF& b, rsVector2DF& c)
+{
+  if(a.y > b.y)
+    RAPT::rsSwap(a, b);
+  if(a.y > c.y)
+    RAPT::rsSwap(a, c);
+  if(b.x > c.x)
+    RAPT::rsSwap(b, c);
+  // is that all?
+
+  rsAssert(areTriangleVerticesOrdered(a, b, c), "Vertex ordering failed");
+  // ...under construction...
+}
+// for production code, maybe use a coordinate-comparison function pointer instead of the
+// operators to make it work for pixel and world coordinates (pixel coordinates use a downward 
+// y-axis) - these functions above work with pixel coordinates - but maybe we don't need this
+// function for world coordinates?
+
+
 // under construction - does not work yet:
 void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
-  const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color)
+  const rsVector2DF& aIn, const rsVector2DF& bIn, const rsVector2DF& cIn, float color)
 {
   typedef rsVector2DF Vec;
+  Vec a = aIn, b = bIn, c = cIn;
+  orderTriangleVertices(a, b, c);
   int w = drw.getImageToDrawOn()->getWidth();
   int h = drw.getImageToDrawOn()->getHeight();
   int yMin = rsMax(0,   rsMin(rsFloorInt(a.y), rsFloorInt(b.y), rsFloorInt(c.y)));
