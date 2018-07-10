@@ -224,9 +224,9 @@ bool triangleRasterizationUnitTest()
     // bottom scanline looks wrong
 
 
-    writeScaledImageToFilePPM(img1, "TriangleNaive.ppm", 16);
-    writeScaledImageToFilePPM(img2, "TriangleBoxOptimization.ppm", 16);
-    writeScaledImageToFilePPM(img3, "TriangleSpanOptimization.ppm", 16);
+    //writeScaledImageToFilePPM(img1, "TriangleNaive.ppm", 16);
+    //writeScaledImageToFilePPM(img2, "TriangleBoxOptimization.ppm", 16);
+    //writeScaledImageToFilePPM(img3, "TriangleSpanOptimization.ppm", 16);
 
 
 

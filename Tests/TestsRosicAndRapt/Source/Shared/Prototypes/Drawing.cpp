@@ -694,6 +694,8 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
     eHere = lineIntersection(Vec(0, yf),   Vec(1, yf),   rightStart, rightEnd); // intersection of this scanline with right edge
     eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightStart, rightEnd); // intersection of next scanline with right edge
     // optimize: compute only sNext, eNext - sHere, eHere become the old values of sNext, eNext
+    // i think, in the 1st scanline sHere, eHere should be given by a.y and in the last either
+    // by b.y or c.y
 
     if(y == breakLine) {
       // change either the active left or right edge to render the second "half" of the triangle:
