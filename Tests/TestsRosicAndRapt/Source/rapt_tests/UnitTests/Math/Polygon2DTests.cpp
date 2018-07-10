@@ -283,7 +283,7 @@ bool triangleRasterization(std::string &reportString)
     square   = { V(x, y), V(x, y+1), V(x+1, y+1), V(x+1, y) },
     polygon  = clipPolygon(triangle, square);
 
-  drawTriangleAntiAliasedProto(drw, A, B, C, c);
+  //drawTriangleAntiAliasedProto(drw, A, B, C, c);
   //drawTriangleAntiAliased(drw, V(0.5,0.5), V(2.5,0.5), V(4.5,2.5), c);
 
 
@@ -291,12 +291,12 @@ bool triangleRasterization(std::string &reportString)
   drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
 
   A = V(7,1), B = V(1,5), C = V(9,7);
-  drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
+  //drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
 
 
   // we should test at least with integer and half-integer vertex coordinates - see, if the
   // loop min/max values always get the correct values
 
-  writeImageToFilePPM(img, "TriangleTest.ppm");
+  writeScaledImageToFilePPM(img, "TriangleTest.ppm", 16);
   return r;
 }
