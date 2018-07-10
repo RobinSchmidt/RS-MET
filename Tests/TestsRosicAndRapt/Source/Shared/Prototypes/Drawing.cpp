@@ -731,29 +731,29 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   // of the outer loop, i.e. render: top-line, top-area, middle-line, bottom-area, bottom-line
   // saves also the need for checking break-conditions inside the loops
 
-  // top scanline:
+  // top scanline - compute coverages for every pixel because the only case where we could have
+  // fully covered pixels in the top-row would be a flat-top triangle with an integer y-coordinate
+  // for the flat top (but this may be not so unlikely - maybe treat this special case in a further
+  // optimized way - pixel positioned flat-top rectangles are actually a common case for handling
+  // windows):
   sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), a, b);  // intersection of next scanline with left edge
   eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), a, c);  // intersection of next scanline with right edge
-  //drawTriangleScanlineSpans(y, a.x, sNext.x, a.x, eNext.x, a, b, c, color, drw, w);
   int x;
   for(x = (int) floor(sNext.x); x <= (int) ceil(eNext.x) - 1; x++) 
     drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 
-
-  // actually, for the top row, we most likely have to compute coevrages for every pixel (the only 
-  // case, where this doesn't occur is a flat-top triangle with integer a.y
-
-  // similarly for the bottom row and a flat bottom triangle
-
   // top triangle area:
+  yf = (float) (yMin+1);
+  sHere = sNext;
+  eHere = eNext;
   for(y = yMin+1; y < breakLine; y++)
   {
     yf = (float) y;
-    sHere = lineIntersection(Vec(0, yf),   Vec(1, yf),   a, b);
-    eHere = lineIntersection(Vec(0, yf),   Vec(1, yf),   a, c); 
     sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), a, b);
     eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), a, c); 
     drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
+    sHere = sNext;
+    eHere = eNext;
   }
 
   // middle scanline:
