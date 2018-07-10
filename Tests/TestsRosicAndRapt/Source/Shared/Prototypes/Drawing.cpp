@@ -785,20 +785,28 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   }
   drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
 
-
-
-
-  /*
+ 
   // bottom triangle area:
+  yf = (float) (breakLine+1);
+  sHere = sNext;
+  eHere = eNext;
   for(y = breakLine+1; y < yMax; y++)
   {
+    yf = (float) y;
+    sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), leftEdgeStart,  leftEdgeEnd);
+    eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightEdgeStart, rightEdgeEnd); 
     drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
     sHere = sNext;
     eHere = eNext;
-    sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), leftEdgeStart,  leftEdgeEnd);
-    eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightEdgeStart, rightEdgeEnd);
+
+
+    //drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
+    //sHere = sNext;
+    //eHere = eNext;
+    //sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), leftEdgeStart,  leftEdgeEnd);
+    //eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightEdgeStart, rightEdgeEnd);
   }
-  */
+ 
 
   // bottom scanline
   // ...
