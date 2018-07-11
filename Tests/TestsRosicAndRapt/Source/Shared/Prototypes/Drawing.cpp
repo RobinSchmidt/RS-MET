@@ -649,11 +649,30 @@ void orderTriangleVertices(rsVector2DF& a, rsVector2DF& b, rsVector2DF& c)
 // y-axis) - these functions above work with pixel coordinates - but maybe we don't need this
 // function for world coordinates?
 
+// this does not work yet!!!
 void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, float eNext,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c,
   float color, rsImageDrawerFFF& drw, int w)
 {
+  // threshold for distance between left and right triangle edge below which we use a simple loop 
+  // to compute coverages for all pixels in scanline
+  float thresh = 2.f;
   int x, xMin, xMax;
+  float dxHere = eHere - sHere;
+  float dxNext = eNext - sNext;
+  if(rsMin(abs(dxHere), abs(dxNext)) < thresh)
+  {
+    xMin  = rsClip((int) floor(sNext),    0, w-1);
+    xMax  = rsClip((int) ceil(eNext) - 1, 0, w-1);
+    for(x = xMin; x <= xMax; x++) 
+      drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
+    return;
+  }
+
+
+
+
+
 
   // 1st loop: partially covered pixels on the left side of the scanline - compute coverages:
   if(sNext < sHere)  {  // a top-left side
@@ -683,17 +702,14 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
     xMin = xMax+1;
   else
   {
-    // maybe something else to do? recompunte xMin?
+    //return; // is that correct?
+    // maybe something else to do? recompute xMin?
   }
 
   if(eNext > eHere)
-  {
     xMax = (int)ceil(eNext) - 1;  // a top-right side
-  }
   else
-  {
     xMax = (int)ceil(eHere) - 1;  // a bottom-right side
-  }
   xMax = rsClip(xMax, 0, w-1);
   for(x = xMin; x <= xMax ; x++) 
     drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));

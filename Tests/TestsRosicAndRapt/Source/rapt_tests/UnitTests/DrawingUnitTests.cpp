@@ -36,7 +36,8 @@ bool triangleRasterization()
 
 
   // an example that turned out to be problematic in the random test:
-  A = V(3.7f,15.6f), B = V(10.3f,13.2f), C = V(21.8f,19.5f);
+  //A = V(3.7f,15.6f), B = V(10.3f,13.2f), C = V(21.8f,19.5f);
+  A = V(5.3f,15.7f), B = V(10.9f,11.7f), C = V(6.0f,-0.1f);
   img.clear();
   drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
   writeScaledImageToFilePPM(img, "TestTriangleSpan.ppm", 16);
@@ -44,10 +45,6 @@ bool triangleRasterization()
   drawTriangleAntiAliasedProto(drw, A, B, C, c);
   writeScaledImageToFilePPM(img, "TestTriangleNaive.ppm", 16);
   // seems like the last (19) pixel in the second-to-last (18) line is drawn twice
-
-
-
-
 
 
   // we should test at least with integer and half-integer vertex coordinates - see, if the
@@ -64,7 +61,7 @@ bool triangleRasterization2()
   // same results as the naive version.
 
   bool r = true;
-  int numTriangles = 2; // it takes quite a lot of time to draw triangles, so we use a small number
+  int numTriangles = 10; // it takes quite a lot of time to draw triangles, so we use a small number
 
                         // create and set up images and drawer objects:
   int w = 20;
@@ -105,22 +102,29 @@ bool triangleRasterization2()
     drawTriangleAntiAliasedBoxBased(drw2, a, b, c, color);
     drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
 
+
+
     // compare drawing results:
-    r &= img2.areAllPixelsEqualTo(&img1);
-    r &= img3.areAllPixelsEqualTo(&img1);
+    float tol = 1.e-5;
+    r &= img2.areAllPixelsEqualTo(&img1, tol);
+    r &= img3.areAllPixelsEqualTo(&img1, tol);
       // remaining error seems to be of numerical nature (the naive and box-based versiona produce a 
       // nonzero value of the order of 10^-5 where the optimized version returns 0 bcs the pixel is 
       // considered already outside the nonzero range) - but 10^-5 seems a bit much, even for 
       // single precision (i'd expect something like 10^-7)...hmmm...
 
     // for debug:
-    writeScaledImageToFilePPM(img1, "TriangleNaive.ppm", 16);
-    writeScaledImageToFilePPM(img2, "TriangleBoxOptimization.ppm", 16);
-    writeScaledImageToFilePPM(img3, "TriangleSpanOptimization.ppm", 16);
-    std::vector<float> v1, v2, v3;
+    //writeScaledImageToFilePPM(img1, "TriangleNaive.ppm", 16);
+    //writeScaledImageToFilePPM(img2, "TriangleBoxOptimization.ppm", 16);
+    //writeScaledImageToFilePPM(img3, "TriangleSpanOptimization.ppm", 16);
+    std::vector<float> v1, v2, v3, err;
     v1 = img1.toStdVector();
     v2 = img2.toStdVector();
     v3 = img3.toStdVector();
+    err = v1-v3;
+    int errMaxIdx = rosic::maxErrorIndex(&v1[0], &v3[0], w*h);
+    float errMax = err[errMaxIdx];
+
     int dummy = 0;
   }
 

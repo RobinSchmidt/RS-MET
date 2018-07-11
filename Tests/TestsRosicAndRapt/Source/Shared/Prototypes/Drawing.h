@@ -95,6 +95,7 @@ and last spans compute coverages and the middle section rund over the pixles tha
 covered, so no coverage needs to be computed (it's just 1 everywhere there). */
 void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw, 
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, float color);
+// this does not work yet!!!
 
 
 // todo: make class rsRenderer
