@@ -370,6 +370,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DrawingUnitTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
@@ -2335,6 +2338,9 @@
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DrawingUnitTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h">

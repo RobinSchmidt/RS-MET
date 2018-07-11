@@ -12,7 +12,7 @@ bool testPolygon2D()
   //r &= testPointInsidePolygon2D(dummy);
   r &= convexPolygonClipping(dummy);
   r &= pixelCoverage(dummy);
-  r &= triangleRasterization(dummy);
+  //r &= triangleRasterization(dummy);  // has been moved
 
   //appendTestResultToReport(reportString, testName, testResult);
   return r;
@@ -264,39 +264,3 @@ bool pixelCoverage(std::string &reportString)
   return r;
 }
 
-bool triangleRasterization(std::string &reportString)
-{
-  bool r = true;
-
-  typedef rsVector2DF Vec2;    // for convenience
-  typedef Vec2 V;              // even shorter
-  float c = 1.0f;              // color (gray value)
-  rsImageF img(13,10);         // image to draw on
-  rsImageDrawerFFF drw(&img);  // drawer object
-  drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
-
-  Vec2 A = V(0.5,0.5), B = V(4.5,2.5), C = V(2.5,0.5);
-  float x = 0, y = 0;
- 
-  std::vector<Vec2> 
-    triangle = { A, B, C },
-    square   = { V(x, y), V(x, y+1), V(x+1, y+1), V(x+1, y) },
-    polygon  = clipPolygon(triangle, square);
-
-  //drawTriangleAntiAliasedProto(drw, A, B, C, c);
-  //drawTriangleAntiAliased(drw, V(0.5,0.5), V(2.5,0.5), V(4.5,2.5), c);
-
-
-  A = V(7.5f,1.5f), B = V(1.5f,5.5f), C = V(9.5f,7.5f);
-  drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
-
-  A = V(7,1), B = V(1,5), C = V(9,7);
-  //drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
-
-
-  // we should test at least with integer and half-integer vertex coordinates - see, if the
-  // loop min/max values always get the correct values
-
-  writeScaledImageToFilePPM(img, "TriangleTest.ppm", 16);
-  return r;
-}

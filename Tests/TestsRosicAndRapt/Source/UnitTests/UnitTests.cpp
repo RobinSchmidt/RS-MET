@@ -4,6 +4,7 @@
 #include "../rapt_tests/UnitTests/FilterUnitTests.cpp"
 #include "../rapt_tests/UnitTests/ImageUnitTests.cpp"
 #include "../rapt_tests/UnitTests/MathUnitTests.cpp"
+#include "../rapt_tests/UnitTests/DrawingUnitTests.cpp"
 #include "../rapt_tests/UnitTests/UnitTests.cpp"
 
 #include "../rosic_tests/rosic_AnalysisTests.cpp"

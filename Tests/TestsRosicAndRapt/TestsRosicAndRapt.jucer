@@ -87,6 +87,10 @@
           <FILE id="crSQKa" name="DataUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/DataUnitTests.cpp"/>
           <FILE id="dj1inx" name="DataUnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/DataUnitTests.h"/>
+          <FILE id="L0CxIn" name="DrawingUnitTests.cpp" compile="0" resource="0"
+                file="Source/rapt_tests/UnitTests/DrawingUnitTests.cpp"/>
+          <FILE id="PAepQL" name="DrawingUnitTests.h" compile="0" resource="0"
+                file="Source/rapt_tests/UnitTests/DrawingUnitTests.h"/>
           <FILE id="vo1C57" name="FilterUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/FilterUnitTests.cpp"/>
           <FILE id="S3g7Rt" name="FilterUnitTests.h" compile="0" resource="0"

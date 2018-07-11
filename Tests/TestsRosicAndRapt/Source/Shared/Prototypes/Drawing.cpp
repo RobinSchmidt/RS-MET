@@ -687,8 +687,10 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
   // 3rd loop: partially covered pixels on the right side of the scanline - compute coverages:
   xMin = xMax+1;
 
-  xMax = (int) ceil(eNext) - 1;  // this may need an if(eNext > eHere) - similar to if(sNext < sHere) above
-                                 // to be tested with left-major triangle
+  xMax = (int) ceil(eNext) - 1;  
+  rsAssert(eNext > eHere);
+  // this may need an if(eNext > eHere) - similar to if(sNext < sHere) above
+  // to be tested with left-major triangle
 
   xMax = rsMin(xMax, w-1);
   for(x = xMin; x <= xMax ; x++) 
@@ -785,7 +787,6 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   }
   drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
 
- 
   // bottom triangle area:
   yf = (float) (breakLine+1);
   sHere = sNext;
@@ -798,18 +799,12 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
     drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
     sHere = sNext;
     eHere = eNext;
-
-
-    //drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
-    //sHere = sNext;
-    //eHere = eNext;
-    //sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), leftEdgeStart,  leftEdgeEnd);
-    //eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightEdgeStart, rightEdgeEnd);
   }
  
 
   // bottom scanline
-  // ...
+  for(x = (int) floor(sHere.x); x <= (int) ceil(eHere.x) - 1; x++) 
+    drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 
 
 

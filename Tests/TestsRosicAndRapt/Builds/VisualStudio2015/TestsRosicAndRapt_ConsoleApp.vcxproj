@@ -198,6 +198,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DrawingUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2112,6 +2115,7 @@
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Triangle2DTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DrawingUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\MathUnitTests.h"/>

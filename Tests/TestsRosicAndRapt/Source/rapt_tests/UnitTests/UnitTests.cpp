@@ -52,8 +52,9 @@ bool runAllUnitTests()
   //passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner");
 
   // Visualization:
-  passed &= runUnitTest(&imagePainterUnitTest, "rsImagePainter");
-  passed &= runUnitTest(&triangleRasterizationUnitTest, "Triangle Rasterization");
+  passed &= runUnitTest(&imagePainterUnitTest,   "rsImagePainter");
+  passed &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
+  passed &= runUnitTest(&triangleRasterization2, "Triangle Rasterization 2"); // merge
 
 
   //...
