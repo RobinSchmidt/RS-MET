@@ -102,7 +102,10 @@ public:
   {
     rsAssert(width  == otherImage->width);
     rsAssert(height == otherImage->height);
-    return areBuffersApproximatelyEqual(data, otherImage->data, width*height, tolerance);
+    TPix err = maxError(data, otherImage->data, width*height);
+    return abs(err) <= tolerance;
+
+    //return areBuffersApproximatelyEqual(data, otherImage->data, width*height, tolerance);
   }
 
   /** \name Manipulations */

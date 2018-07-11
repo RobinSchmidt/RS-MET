@@ -171,10 +171,18 @@ namespace rosic
   template <class T>
   INLINE T maxValue(T *buffer, int length);
 
-  /** Returns the maximum value of the element-wise difference of two buffers (the maximum is determined from the absolute value of the
-  differences, but the actual returned value will have the proper sign where buffer2 is subtracted from buffer1). */
+
+  /** Returns the maximum value of the element-wise difference of two buffers (the maximum is 
+  determined from the absolute value of the differences, but the actual returned value will have 
+  the proper sign where buffer2 is subtracted from buffer1). */
   template <class T>
   INLINE T maxError(T *buffer1, T *buffer2, int length);
+
+  template <class T>
+  INLINE int maxErrorIndex(T* x, T* y, int N);
+  // move to rapt (it's used by rsImage - how does it even work having it in rosic?), rename to 
+  // maxDeviation
+
 
   /** Returns the index of minimum value of the buffer ("<"-operator must be defined). */
   template <class T>
@@ -184,8 +192,9 @@ namespace rosic
   template <class T>
   INLINE T minValue(T *buffer, int length);
 
-  /** Computes the mean (i.e. the DC-component) from the passed buffer. The type must define operators: +=, / and a constructor which takes
-  an int and initializes to zero when 0 is passed and a typecast from int. */
+  /** Computes the mean (i.e. the DC-component) from the passed buffer. The type must define 
+  operators: +=, / and a constructor which takes an int and initializes to zero when 0 is passed 
+  and a typecast from int. */
   template <class T>
   T mean(T *buffer, int length);
 
@@ -827,14 +836,33 @@ namespace rosic
   }
 
   template <class T>
-  INLINE T maxError(T *buffer1, T *buffer2, int length)
+  INLINE T maxError(T* x, T* y, int N)
   {
-    T* diff = new T[length];
+    /*
+    T* diff = new T[length];  // !!not good!! get rid
     subtract(buffer1, buffer2, diff, length);
-    int    maxIndex = findMaxAbs(diff, length);
-    double maxDiff  = diff[maxIndex];
-    delete[] diff;
+    int maxIndex = findMaxAbs(diff, length);
+    T maxDiff  = diff[maxIndex];
+    delete[] diff;    // get rid!
     return maxDiff;
+    */
+    int i = maxErrorIndex(x, y, N);
+    return abs(x[i]-y[i]);
+  }
+
+  template <class T>
+  INLINE int maxErrorIndex(T* x, T* y, int N)
+  {
+    T maxErr   = T(0);
+    int maxIdx = 0;
+    for(int i = 0; i < N; i++) {
+      T err = abs(x[i]-y[i]);
+      if(err > maxErr) {
+        maxErr = err;
+        maxIdx = i;
+      }
+    }
+    return maxIdx;
   }
 
   template <class T>
