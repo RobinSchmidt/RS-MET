@@ -92,10 +92,19 @@ bool triangleRasterization2()
     writeScaledImageToFilePPM(img3, "TriangleSpanOptimization.ppm", 16);
 
 
-
     // compare drawing results:
     r &= img2.areAllPixelsEqualTo(&img1);
     r &= img3.areAllPixelsEqualTo(&img1);
+      // remaining error seems to be of numerical nature (the naive and box-based versiona produce a 
+      // nonzero value of the order of 10^-5 where the optimized version returns 0 bcs the pixel is 
+      // considered already outside the nonzero range) - but 10^-5 seems a bit much, even for 
+      // single precision (i'd expect something like 10^-7)...hmmm...
+
+    // for debug:
+    std::vector<float> v1, v2, v3;
+    v1 = img1.toStdVector();
+    v2 = img2.toStdVector();
+    v3 = img3.toStdVector();
     int dummy = 0;
   }
 

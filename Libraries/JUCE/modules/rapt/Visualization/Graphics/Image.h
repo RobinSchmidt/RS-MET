@@ -108,6 +108,12 @@ public:
     //return areBuffersApproximatelyEqual(data, otherImage->data, width*height, tolerance);
   }
 
+  /** Converts the image to a flat array of type std::vector. */
+  std::vector<TPix> toStdVector()
+  {
+    return toVector(data, width*height);
+  }
+
   /** \name Manipulations */
 
   /** Sets the color of the pixel at (x,y). */
