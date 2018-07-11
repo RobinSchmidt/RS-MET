@@ -672,15 +672,17 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
     xMin = (int)floor(sHere);
     xMax = (int)ceil( sNext) - 1;
   }
-  xMin = rsMax(xMin, 0);              // should be >= 0
-  xMax = rsMin(xMax, w-1);            // should be <= w-1
+  //xMin = rsMax(xMin, 0);              // should be >= 0
+  //xMax = rsMin(xMax, w-1);            // should be <= w-1
+  xMin = rsClip(xMin, 0, w-1);
+  xMax = rsClip(xMax, 0, w-1);
   for(x = xMin; x <= xMax ; x++) 
     drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 
   // 2nd loop: fully covered pixels in the middle of the scanline - use color as is:
   xMin = xMax+1;
-  xMax = (int) floor(eHere) - 1;  
-  xMax = rsMin(xMax, w-1);
+  xMax = (int) floor(eHere) - 1;
+  xMax = rsClip(xMax, 0, w-1);
   for(x = xMin; x <= xMax ; x++) 
     drw.plot(x, y, color);  // replace color variable by shading function-call
 
@@ -692,7 +694,7 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
   // this may need an if(eNext > eHere) - similar to if(sNext < sHere) above
   // to be tested with left-major triangle
 
-  xMax = rsMin(xMax, w-1);
+  xMax = rsClip(xMax, 0, w-1);
   for(x = xMin; x <= xMax ; x++) 
     drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
 }

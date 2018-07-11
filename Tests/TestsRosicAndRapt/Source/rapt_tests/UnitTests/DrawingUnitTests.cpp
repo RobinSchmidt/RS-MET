@@ -31,7 +31,7 @@ bool triangleRasterization()
   // we should test at least with integer and half-integer vertex coordinates - see, if the
   // loop min/max values always get the correct values
 
-  writeScaledImageToFilePPM(img, "TriangleTest.ppm", 16);
+  //writeScaledImageToFilePPM(img, "TriangleTest.ppm", 16);
   return r;
 }
 
