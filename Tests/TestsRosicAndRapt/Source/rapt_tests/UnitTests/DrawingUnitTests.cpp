@@ -21,9 +21,15 @@ bool triangleRasterization()
   //drawTriangleAntiAliased(drw, V(0.5,0.5), V(2.5,0.5), V(4.5,2.5), c);
 
 
-  A = V(7.5f,1.5f), B = V(1.5f,5.5f), C = V(9.5f,7.5f);
+  // a somewhat left-pointing triangle with half-integer vertices:
+  A = V(1.5f,1.5f), B = V(3.5f,8.5f), C = V(7.5f,4.5f);
   drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
 
+  // a somewhat right-pointing triangle with half-integer vertices:
+  A = V(7.5f,1.5f), B = V(1.5f,5.5f), C = V(9.5f,7.5f);
+  //drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
+
+  // with integer vertices:
   A = V(7,1), B = V(1,5), C = V(9,7);
   //drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
 
@@ -31,7 +37,7 @@ bool triangleRasterization()
   // we should test at least with integer and half-integer vertex coordinates - see, if the
   // loop min/max values always get the correct values
 
-  //writeScaledImageToFilePPM(img, "TriangleTest.ppm", 16);
+  writeScaledImageToFilePPM(img, "TriangleTest.ppm", 16);
   return r;
 }
 
