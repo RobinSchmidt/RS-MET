@@ -687,10 +687,15 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
   // 3rd loop: partially covered pixels on the right side of the scanline - compute coverages:
   xMin = xMax+1;
 
-  xMax = (int) ceil(eNext) - 1;  
-  rsAssert(eNext > eHere);
+  //xMax = (int) ceil(eNext) - 1;  
+  //rsAssert(eNext > eHere);
   // this may need an if(eNext > eHere) - similar to if(sNext < sHere) above
   // to be tested with left-major triangle
+
+  if(eNext > eHere)
+    xMax = (int) ceil(eNext) - 1;
+  else
+    xMax = (int) ceil(eHere) - 1;
 
   xMax = rsClip(xMax, 0, w-1);
   for(x = xMin; x <= xMax ; x++) 
@@ -730,25 +735,18 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
     breakLine = (int)floor(c.y);  // between floor(c.y) and ceil(c.y)
   }
 
-
-  // loop over the scanlines:
+  // span-range variables:
   Vec sHere, eHere, sNext, eNext;
-  //int xMin, xMax;
-  int x, xMin, xMax;
-  int y = yMin;
+  int x, xMin, xMax, y = yMin;
   float yf = (float)y;
-  //sHere = eHere = a;
 
 
-  // maybe we need to treat the top, middle and bottom line separately and then use two copies
-  // of the outer loop, i.e. render: top-line, top-area, middle-line, bottom-area, bottom-line
-  // saves also the need for checking break-conditions inside the loops
 
   // top scanline - compute coverages for every pixel because the only case where we could have
   // fully covered pixels in the top-row would be a flat-top triangle with an integer y-coordinate
   // for the flat top (but this may be not so unlikely - maybe treat this special case in a further
-  // optimized way - pixel positioned flat-top rectangles are actually a common case for handling
-  // windows):
+  // optimized way - pixel-aligned flat-top rectangles (and therefore also triangles) are actually 
+  // a common case for handling windows):
   sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), a, b);  // intersection of next scanline with left edge
   eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), a, c);  // intersection of next scanline with right edge
   xMin  = rsClip((int) floor(sNext.x),    0, w-1);
@@ -781,10 +779,12 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
     eNext = lineIntersection(Vec(0, yf), Vec(1, yf), rightEdgeStart, rightEdgeEnd); 
   }
   else {
-    //rightEdgeStart = c;
-    //rightEdgeEnd   = b;
-    //eHere = c.x;
-    //eNext = lineIntersection(Vec(0, yf), Vec(1, yf), rightEdgeStart, rightEdgeEnd);
+    rightEdgeStart = c;
+    rightEdgeEnd   = b;
+    eHere = c;
+    eNext = lineIntersection(Vec(0, yf), Vec(1, yf), rightEdgeStart, rightEdgeEnd);
+    sHere = sNext;
+    sNext = lineIntersection(Vec(0, yf), Vec(1, yf), leftEdgeStart, leftEdgeEnd);
   }
   drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
 
