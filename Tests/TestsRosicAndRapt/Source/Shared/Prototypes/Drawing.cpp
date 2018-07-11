@@ -649,12 +649,6 @@ void orderTriangleVertices(rsVector2DF& a, rsVector2DF& b, rsVector2DF& c)
 // y-axis) - these functions above work with pixel coordinates - but maybe we don't need this
 // function for world coordinates?
 
-
-// under construction - does not work yet:
-
-// maybe factor out a function: drawTriangleScanLine(sHere, sNext, eHere, eNext, 
-//  bool computeCoverage, float color, int y, int w)
-
 void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, float eNext,
   const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c,
   float color, rsImageDrawerFFF& drw, int w)
@@ -662,13 +656,11 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
   int x, xMin, xMax;
 
   // 1st loop: partially covered pixels on the left side of the scanline - compute coverages:
-  if(sNext < sHere)  // a top-left side
-  {
+  if(sNext < sHere)  {  // a top-left side
     xMin = (int)floor(sNext);
     xMax = (int)ceil( sHere) - 1;
   }
-  else
-  {                 // a bottom left side
+  else {                // a bottom-left side
     xMin = (int)floor(sHere);
     xMax = (int)ceil( sNext) - 1;
   }
@@ -685,18 +677,23 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
     drw.plot(x, y, color);  // replace color variable by shading function-call
 
   // 3rd loop: partially covered pixels on the right side of the scanline - compute coverages:
-  xMin = xMax+1;
-
-  //xMax = (int) ceil(eNext) - 1;  
-  //rsAssert(eNext > eHere);
-  // this may need an if(eNext > eHere) - similar to if(sNext < sHere) above
-  // to be tested with left-major triangle
+  //xMin = xMax+1; // is this sometimes wrong? it seems, i may fail when xMin comes out > xMax which
+  //               // indicates an empty span
+  if(xMax >= xMin)
+    xMin = xMax+1;
+  else
+  {
+    // maybe something else to do? recompunte xMin?
+  }
 
   if(eNext > eHere)
-    xMax = (int) ceil(eNext) - 1;
+  {
+    xMax = (int)ceil(eNext) - 1;  // a top-right side
+  }
   else
-    xMax = (int) ceil(eHere) - 1;
-
+  {
+    xMax = (int)ceil(eHere) - 1;  // a bottom-right side
+  }
   xMax = rsClip(xMax, 0, w-1);
   for(x = xMin; x <= xMax ; x++) 
     drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
@@ -713,7 +710,6 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   int yMin = rsMax(0,   rsMin(rsFloorInt(a.y), rsFloorInt(b.y), rsFloorInt(c.y)));
   int yMax = rsMin(h-1, rsMax( rsCeilInt(a.y), rsCeilInt( b.y), rsCeilInt( c.y)) - 1);
 
-
   // left edge (from a to b):
   Vec leftEdgeStart = a;
   Vec leftEdgeEnd   = b;
@@ -727,11 +723,11 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   int breakLine;
   bool breakLeft;
   if(c.y > b.y) {
-    breakLeft = true;            // left edge is broken
-    breakLine = (int)floor(b.y); // between floor(b.y) and ceil(b.y)
+    breakLeft = true;             // left edge is broken in two pieces
+    breakLine = (int)floor(b.y);  // between floor(b.y) and ceil(b.y)
   }
   else {
-    breakLeft = false;            // right edge is broken
+    breakLeft = false;            // right edge is broken in two pieces
     breakLine = (int)floor(c.y);  // between floor(c.y) and ceil(c.y)
   }
 
@@ -739,8 +735,6 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   Vec sHere, eHere, sNext, eNext;
   int x, xMin, xMax, y = yMin;
   float yf = (float)y;
-
-
 
   // top scanline - compute coverages for every pixel because the only case where we could have
   // fully covered pixels in the top-row would be a flat-top triangle with an integer y-coordinate
@@ -807,38 +801,4 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   xMax = rsClip((int) ceil(eHere.x) - 1, 0, w-1);
   for(x = xMin; x <= xMax; x++) 
     drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
-
-
-
-  /*
-  for(int y = yMin; y <= yMax; y++) 
-  {
-    yf = (float) y;
-
-
-    if(y == breakLine) {
-      // change either the active left or right edge to render the second "half" of the triangle:
-      if(breakLeft) {
-        leftEdgeStart = b;
-        leftEdgeEnd   = c;
-        sHere = b.x;
-        sNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), leftEdgeStart,  leftEdgeEnd); // needs to be re-computed
-      }
-      else {
-        rightEdgeStart = c;
-        rightEdgeEnd   = b;
-        eHere = c.x;
-        eNext = lineIntersection(Vec(0, yf+1), Vec(1, yf+1), rightEdgeStart, rightEdgeEnd); // needs to be recomputed
-      }
-    }
-
-    drawTriangleScanlineSpans(y, sHere.x, sNext.x, eHere.x, eNext.x, a, b, c, color, drw, w);
-
-    // update span range variables:
-    sHere = sNext;
-    eHere = eNext;
-    sNext = lineIntersection(Vec(0, yf+2), Vec(1, yf+2), leftEdgeStart,  leftEdgeEnd);  // intersection of next scanline with left edge
-    eNext = lineIntersection(Vec(0, yf+2), Vec(1, yf+2), rightEdgeStart, rightEdgeEnd); // intersection of next scanline with right edge
-  }
-  */
 }

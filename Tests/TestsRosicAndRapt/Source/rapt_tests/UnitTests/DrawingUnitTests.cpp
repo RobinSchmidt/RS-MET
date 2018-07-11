@@ -5,7 +5,8 @@ bool triangleRasterization()
   typedef rsVector2DF Vec2;    // for convenience
   typedef Vec2 V;              // even shorter
   float c = 1.0f;              // color (gray value)
-  rsImageF img(13,10);         // image to draw on
+  //rsImageF img(13,10);         // image to draw on
+  rsImageF img(20,20);         // image to draw on
   rsImageDrawerFFF drw(&img);  // drawer object
   drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
 
@@ -34,10 +35,25 @@ bool triangleRasterization()
   //drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
 
 
+  // an example that turned out to be problematic in the random test:
+  A = V(3.7f,15.6f), B = V(10.3f,13.2f), C = V(21.8f,19.5f);
+  img.clear();
+  drawTriangleAntiAliasedSpanBased(drw, A, B, C, c);
+  writeScaledImageToFilePPM(img, "TestTriangleSpan.ppm", 16);
+  img.clear();
+  drawTriangleAntiAliasedProto(drw, A, B, C, c);
+  writeScaledImageToFilePPM(img, "TestTriangleNaive.ppm", 16);
+  // seems like the last (19) pixel in the second-to-last (18) line is drawn twice
+
+
+
+
+
+
   // we should test at least with integer and half-integer vertex coordinates - see, if the
   // loop min/max values always get the correct values
 
-  writeScaledImageToFilePPM(img, "TriangleTest.ppm", 16);
+  //writeScaledImageToFilePPM(img, "TriangleTest.ppm", 16);
   return r;
 }
 
@@ -48,7 +64,7 @@ bool triangleRasterization2()
   // same results as the naive version.
 
   bool r = true;
-  int numTriangles = 1; // it takes quite a lot of time to draw triangles, so we use a small number
+  int numTriangles = 2; // it takes quite a lot of time to draw triangles, so we use a small number
 
                         // create and set up images and drawer objects:
   int w = 20;
@@ -84,19 +100,10 @@ bool triangleRasterization2()
     c.y = coordinateGenerator.getSample();
     color = colorGenerator.getSample();
 
-    // draw it with the different versions of the drawing
-    // maybe draw only if the triangle is counterclockwise? hmm...
+    // draw it with the different versions of the drawing function:
     drawTriangleAntiAliasedProto(   drw1, a, b, c, color);
     drawTriangleAntiAliasedBoxBased(drw2, a, b, c, color);
-
     drawTriangleAntiAliasedSpanBased(drw3, a, b, c, color);
-    // bottom scanline looks wrong
-
-
-    writeScaledImageToFilePPM(img1, "TriangleNaive.ppm", 16);
-    writeScaledImageToFilePPM(img2, "TriangleBoxOptimization.ppm", 16);
-    writeScaledImageToFilePPM(img3, "TriangleSpanOptimization.ppm", 16);
-
 
     // compare drawing results:
     r &= img2.areAllPixelsEqualTo(&img1);
@@ -107,6 +114,9 @@ bool triangleRasterization2()
       // single precision (i'd expect something like 10^-7)...hmmm...
 
     // for debug:
+    writeScaledImageToFilePPM(img1, "TriangleNaive.ppm", 16);
+    writeScaledImageToFilePPM(img2, "TriangleBoxOptimization.ppm", 16);
+    writeScaledImageToFilePPM(img3, "TriangleSpanOptimization.ppm", 16);
     std::vector<float> v1, v2, v3;
     v1 = img1.toStdVector();
     v2 = img2.toStdVector();
