@@ -228,8 +228,6 @@ public:
   
 protected:
 
-
-
   std::vector<rsDraggableNode*> nodes;
   int draggedNodeIndex = -1;  // -1 is code for "none"
   float dotSize = 8;
@@ -237,6 +235,12 @@ protected:
   std::vector<rsNodeEditorObserver*> observers;
 
   RAPT::rsCoordinateMapper2D<double> xyMapper; // converts to/from pixel-coodinates
+
+  // functions to convert node x,y-coordinates to text for display:
+  juce::String (*xToString) (double x) = valueToString2;
+  juce::String (*yToString) (double y) = valueToString2;
+  // todo: make selectable from client code (setStringConversionX/Y)
+  // int valuePlotMode = 0; // todo: none/compact/verbose
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeEditor)
 };

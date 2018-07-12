@@ -263,23 +263,28 @@ void rsNodeEditor::drawNodes(Graphics& g)
   bool drawNodeInfo = true;
   for(size_t i = 0; i < nodes.size(); i++)
   {
-    float x, y;
-    x = getPixelX(nodes[i]);
-    y = getPixelY(nodes[i]);
-
-    juce::String xStr = String(x);
-    juce::String yStr = String(y);
-
-    g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
+    float pixelX, pixelY;
+    pixelX = getPixelX(nodes[i]);
+    pixelY = getPixelY(nodes[i]);
+    g.fillEllipse(pixelX-0.5f*dotSize, pixelY-0.5f*dotSize, dotSize, dotSize);
     if(drawNodeInfo)
     {
+      juce::String xStr = xToString(nodes[i]->getX());
+      juce::String yStr = yToString(nodes[i]->getY());
+
       String str = String(i) + ": x=" + xStr + ", y=" + yStr;  // verbose
-      //String str = String(i) + "," + String(x) + "," + String(y); // compact
+      //String str = String(i) + ":" + xStr + "," + yStr; // compact
+        // maybe let client select between none/compact/verbose value painting
 
-
-
-      drawBitmapFontText(g, (int)getPixelX(nodes[i]), (int)getPixelY(nodes[i])-10, str, 
+      // if pixelY is below some threshold, paint the value below the node (otherwise, it's
+      // invisible
+      int drawY = roundToInt(pixelY)-10;
+      if(drawY <= 6)
+        drawY += 20;
+      drawBitmapFontText(g, roundToInt(pixelX), drawY, str, 
         &normalFont7px, getTextColour(), -1, Justification::centred);
+      // maybe we need soemthing similar for the drawX, too (it may shift out of the visible range
+      // left or right ...dteail-work -> later)
     }
   }
 }
