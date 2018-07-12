@@ -36,7 +36,8 @@ and smoothing.
 todo: maybe handle midi controller assignment here, too
 */
 
-class JUCE_API rsAutomationSetup : public rsParameterSetupBase, public RComboBoxObserver
+class JUCE_API rsAutomationSetup : public rsParameterSetupBase, public RComboBoxObserver,
+  public rsNodeEditorObserver
 {
 
 public:
@@ -48,13 +49,20 @@ public:
   virtual void rComboBoxChanged(RComboBox* cb) override;
   virtual void resized() override;
 
+  virtual void nodeWasAdded(     rsNodeEditor* editor, int nodeIndex) override;
+  virtual void nodeWillBeRemoved(rsNodeEditor* editor, int nodeIndex) override;
+  virtual void nodeWasSelected(  rsNodeEditor* editor, int nodeIndex) override;
+
 protected:
 
   /** Shows the popup menu with the attachable MetaParameters. */
   void showMetaAttachPopUp();
 
-  void createWidgets();
+  /** (Re)assigns our widgets to manipulate node parameters to the parameter-objects in the node
+  with given index. */
+  void assignNodeParameterWidgets(int nodeIndex);
 
+  void createWidgets();
 
   rsNodeBasedFunctionEditor* metaMapEditor;
   RNamedComboBox* boxMetaAttach;
@@ -62,8 +70,6 @@ protected:
 
   RNamedComboBox* boxShapeType;
   RSlider *sliderNodeX, *sliderNodeY, *sliderShapeParam;
-
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomationSetup)
 };

@@ -140,8 +140,9 @@ void rsNodeEditor::setDotSize(float newDotSize)
 
 void rsNodeEditor::selectNode(int i)
 {
-  jassert(i >= -1 && i < nodes.size());
+  jassert(i >= -1 && i < (int) nodes.size());
   selectedNodeIndex = i;
+  sendNodeSelectNotification(i);
   repaint();
 }
 
@@ -169,6 +170,14 @@ int rsNodeEditor::getNodeIndexAt(int pixelX, int pixelY)
       return (int)i;
   }
   return -1;
+}
+
+rsDraggableNode* rsNodeEditor::getNode(int i)
+{
+  //jassert(i >= 0 && i < nodes.size());
+  if(i >= 0 && i < nodes.size())
+    return nodes[i];
+  return nullptr;
 }
 
 float rsNodeEditor::getPixelX(const rsDraggableNode* node)
@@ -202,20 +211,25 @@ void rsNodeEditor::resized()
 
 void rsNodeEditor::mouseDown(const MouseEvent& e)
 {  
-  selectedNodeIndex = getNodeIndexAt(e.x, e.y);
+  int clickedNodeIndex = getNodeIndexAt(e.x, e.y);
   if(e.mods.isLeftButtonDown())
   {
-    if(selectedNodeIndex == -1)
+    if(clickedNodeIndex == -1)
     {
-      selectedNodeIndex = addNode((float)e.x, (float)e.y);
-      repaint();
+      int newNodeIndex = addNode((float)e.x, (float)e.y);
+      selectNode(newNodeIndex); // calls repaint
+      //selectedNodeIndex = 
+      //repaint();
     }
+    else
+      selectNode(clickedNodeIndex);
   }
   else if(e.mods.isRightButtonDown())
   {
     removeNodeAt(e.x, e.y);
-    selectedNodeIndex = -1;
-    repaint();
+    selectNode(-1); // calls repaint
+    //selectedNodeIndex = -1;
+    //repaint();
   }
 }
 
@@ -263,6 +277,12 @@ void rsNodeEditor::sendNodeMoveNotification(int nodeIndex)
 {
   for(size_t i = 0; i < observers.size(); i++)
     observers[i]->nodeWasMoved(this, nodeIndex);
+}
+
+void rsNodeEditor::sendNodeSelectNotification(int nodeIndex)
+{
+  for(size_t i = 0; i < observers.size(); i++)
+    observers[i]->nodeWasSelected(this, nodeIndex);
 }
 
 // misc:
@@ -359,6 +379,9 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
   clipIfDesired(&x, &y);
   int i = (int) valueMapper->addNode(x, y);
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
+
+  addNodeParameters(newNode); 
+
   insert(nodes, newNode, i);
   nodes[i]->setIndex(i);
   for(int j = i+1; j < size(nodes); j++)
@@ -369,6 +392,9 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
 bool rsNodeBasedFunctionEditor::removeNode(int i)
 {
   ScopedPointerLock spl(lock);
+
+  removeNodeParameters(getNode(i));
+
   if(rsNodeEditor::removeNode(i))
   {
     return valueMapper->removeNode(i);
@@ -423,4 +449,14 @@ void rsNodeBasedFunctionEditor::clipIfDesired(double* x, double* y)
   if(clipRanges) {
     *x = clip(*x, xyMapper.getInMinX(), xyMapper.getInMaxX());
     *y = clip(*y, xyMapper.getInMinY(), xyMapper.getInMaxY()); }
+}
+
+void rsNodeBasedFunctionEditor::addNodeParameters(rsDraggableNode* node)
+{
+
+}
+
+void rsNodeBasedFunctionEditor::removeNodeParameters(rsDraggableNode* node)
+{
+
 }

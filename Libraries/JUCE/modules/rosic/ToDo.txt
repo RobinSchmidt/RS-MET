@@ -1,5 +1,7 @@
 Meta Mapping:
--allow a "selected node" in node editor, connect the x/y sliders to its coodinates
+-allow a "selected node" in node editor 
+-connect the x/y sliders to its coodinates
+ -needs to connect via a Parameter object
 -implement different transition curves between the nodes
 
 -in order to make in compile on Win32, we need to replace the type of function-parameters in RAPT

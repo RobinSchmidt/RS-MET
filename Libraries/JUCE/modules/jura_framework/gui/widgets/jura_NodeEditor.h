@@ -53,6 +53,15 @@ public:
   /** Returns the y-coordinate of this node. */
   inline double getY() const { return y; }
 
+  /** Returns a pointer to the parameter object that is associated with the node's x-variable 
+  (maybe a nullptr, if none is assigned). */
+  Parameter* getParameterX() { return paramX; }
+
+  /** @see getParameterX */
+  Parameter* getParameterY() { return paramY; }
+
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
 
@@ -91,6 +100,10 @@ public:
 
   /** Callback that will be called before an existing node will be removed. */
   virtual void nodeWillBeRemoved(rsNodeEditor* editor, int nodeIndex) = 0;
+
+  /** Called when a node was selected. The passed value may be -1, indicating that no node was 
+  selected, i.e. a previously selcetd node was de-selected. */
+  virtual void nodeWasSelected(rsNodeEditor* editor, int nodeIndex) = 0;
 
   /** Callback that will be called after an existing node was moved. Your subclass may choose to
   not override this, if it is already an observer of the parameters associated with the node's x/y
@@ -174,6 +187,10 @@ public:
   will return -1. */
   int getNodeIndexAt(int pixelX, int pixelY);
 
+  /** Returns a pointer to the node with given index (or a nullptr if the index is out of 
+  range). */
+  rsDraggableNode* getNode(int nodeIndex);
+
   /** Returns the x-coordinate in pixels of the given node. */
   float getPixelX(const rsDraggableNode* node);
 
@@ -220,13 +237,12 @@ public:
 
   void registerObserver(rsNodeEditorObserver* obs) { appendIfNotAlreadyThere(observers, obs); }
 
-  void deregisterObserver(rsNodeEditorObserver* obs) { removeFirstOccurrence(observers, obs); }
+  void deRegisterObserver(rsNodeEditorObserver* obs) { removeFirstOccurrence(observers, obs); }
 
-  void sendNodeAddNotification(int nodeIndex);
-
+  void sendNodeAddNotification(   int nodeIndex);
   void sendNodeRemoveNotification(int nodeIndex);
-
-  void sendNodeMoveNotification(int nodeIndex);
+  void sendNodeMoveNotification(  int nodeIndex);
+  void sendNodeSelectNotification(int nodeIndex);
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
@@ -305,6 +321,14 @@ protected:
   set up in our xyMapper, if this clipping option is selected (via setClipCoordinatesToRange). */
   void clipIfDesired(double* x, double* y);
 
+  /** Creates the Parameter objects associated with the given node (assumed to have been just 
+  added) and adds them to our array. */
+  void addNodeParameters(rsDraggableNode* node); 
+
+  /** */
+  void removeNodeParameters(rsDraggableNode* node); 
+
+
   RAPT::rsNodeBasedFunction<double>* valueMapper = nullptr;
 
   bool clipRanges = false; // clip x,y to their min/max values (todo: maybe have 4 separate flags
@@ -314,6 +338,13 @@ protected:
 
   CriticalSection* lock = nullptr;
 
+  // array of parameters assoicated with each node:
+  struct NodeParameters 
+  { 
+    Parameter *x, *y, *shape, *shapeAmount; 
+    rsDraggableNode* node; // pointer to the node to which the parameters belong
+  };
+  std::vector<NodeParameters*> nodeParams;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeBasedFunctionEditor)

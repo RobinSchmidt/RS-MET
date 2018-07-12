@@ -23,11 +23,13 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
 {
   closeButton->setDescription("Closes the automation setup window");
   createWidgets();
+  metaMapEditor->registerObserver(this);
   setSize(300, 250);
 }
 
 rsAutomationSetup::~rsAutomationSetup() 
 {
+  metaMapEditor->deRegisterObserver(this);
   //delete boxMetaAttach; // why? shouldn't that happen automatically? ..ok, no memleak warning
 }
 
@@ -85,6 +87,33 @@ void rsAutomationSetup::resized()
   w = getWidth();
   h = sliderNodeX->getY()-y-d;
   metaMapEditor->setBounds(0, y, w, h);
+}
+
+void rsAutomationSetup::nodeWasAdded(rsNodeEditor* editor, int nodeIndex)
+{
+
+}
+
+void rsAutomationSetup::nodeWillBeRemoved(rsNodeEditor* editor, int nodeIndex)
+{
+
+}
+
+void rsAutomationSetup::nodeWasSelected(rsNodeEditor* editor, int nodeIndex)
+{
+  assignNodeParameterWidgets(nodeIndex);
+}
+
+void rsAutomationSetup::assignNodeParameterWidgets(int i)
+{
+  if(i != -1) {
+    sliderNodeX->assignParameter(metaMapEditor->getNode(i)->getParameterX());
+    sliderNodeY->assignParameter(metaMapEditor->getNode(i)->getParameterY());
+  }
+  else {
+    sliderNodeX->assignParameter(nullptr);
+    sliderNodeY->assignParameter(nullptr);
+  }
 }
 
 void rsAutomationSetup::createWidgets()
