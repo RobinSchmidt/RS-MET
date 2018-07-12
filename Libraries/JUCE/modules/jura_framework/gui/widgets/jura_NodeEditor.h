@@ -151,6 +151,15 @@ public:
   void setValueRange(double minX, double maxX, double minY, double maxY)
   { xyMapper.setInputRange(minX, maxX, minY, maxY); }
 
+  /** Chooses one of the nodes to be the selected node. Useful in order to attach other widgets
+  with the node to edit the node settings more precisely and get access to advanced node 
+  paraeters, if any (for example: the curve setting in a node-based function). To deselect the
+  node, you may pass -1. */
+  virtual void selectNode(int index);
+
+  /** Deselects the selected node (if any). */
+  inline void deSelectNode() { selectNode(-1); }
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
@@ -229,7 +238,8 @@ public:
 protected:
 
   std::vector<rsDraggableNode*> nodes;
-  int draggedNodeIndex = -1;  // -1 is code for "none"
+  //int draggedNodeIndex = -1;  // -1 is code for "none"
+  int selectedNodeIndex = -1; // -1 is code for "none"
   float dotSize = 8;
 
   std::vector<rsNodeEditorObserver*> observers;

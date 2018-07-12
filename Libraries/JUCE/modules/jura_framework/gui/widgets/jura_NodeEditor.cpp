@@ -92,6 +92,8 @@ bool rsNodeEditor::removeNode(int i)
   remove(nodes, i);
   for(i = i; i < size(nodes); i++)
     nodes[i]->decrementIndex();
+  if(i == selectedNodeIndex)
+    selectedNodeIndex = -1;
   repaint();
   return true;
 }
@@ -115,8 +117,8 @@ int rsNodeEditor::moveNodeTo(int index, int pixelX, int pixelY)
 
 void rsNodeEditor::reIndexNode(int oldIndex, int newIndex)
 {
-  if(draggedNodeIndex == oldIndex)
-    draggedNodeIndex = newIndex;
+  if(selectedNodeIndex == oldIndex)
+    selectedNodeIndex = newIndex;
   while(oldIndex < newIndex) {
     swapNodes(oldIndex, oldIndex+1); oldIndex++; }
   while(oldIndex > newIndex) {
@@ -133,6 +135,13 @@ void rsNodeEditor::swapNodes(int i, int j)
 void rsNodeEditor::setDotSize(float newDotSize)
 {
   dotSize = newDotSize;
+  repaint();
+}
+
+void rsNodeEditor::selectNode(int i)
+{
+  jassert(i >= -1 && i < nodes.size());
+  selectedNodeIndex = i;
   repaint();
 }
 
@@ -193,32 +202,32 @@ void rsNodeEditor::resized()
 
 void rsNodeEditor::mouseDown(const MouseEvent& e)
 {  
-  draggedNodeIndex = getNodeIndexAt(e.x, e.y);
+  selectedNodeIndex = getNodeIndexAt(e.x, e.y);
   if(e.mods.isLeftButtonDown())
   {
-    if(draggedNodeIndex == -1)
+    if(selectedNodeIndex == -1)
     {
-      draggedNodeIndex = addNode((float)e.x, (float)e.y);
+      selectedNodeIndex = addNode((float)e.x, (float)e.y);
       repaint();
     }
   }
   else if(e.mods.isRightButtonDown())
   {
     removeNodeAt(e.x, e.y);
-    draggedNodeIndex = -1;
+    selectedNodeIndex = -1;
     repaint();
   }
 }
 
 void rsNodeEditor::mouseDrag(const MouseEvent& e)
 {
-  if(draggedNodeIndex != -1)
-    draggedNodeIndex = moveNodeTo(draggedNodeIndex, e.x, e.y);
+  if(selectedNodeIndex != -1)
+    selectedNodeIndex = moveNodeTo(selectedNodeIndex, e.x, e.y);
 }
 
 void rsNodeEditor::mouseUp(const MouseEvent &e)
 {
-  draggedNodeIndex = -1;
+  //draggedNodeIndex = -1;
 }
 
 void rsNodeEditor::mouseMove(const MouseEvent &e)
@@ -266,7 +275,16 @@ void rsNodeEditor::drawNodes(Graphics& g)
     float pixelX, pixelY;
     pixelX = getPixelX(nodes[i]);
     pixelY = getPixelY(nodes[i]);
+
+    if(i == selectedNodeIndex)
+    {
+      // draw semitransparent halo:
+      g.setColour(getHandleColour().withMultipliedAlpha(.625f));
+      g.fillEllipse(pixelX-dotSize, pixelY-dotSize, 2*dotSize, 2*dotSize);
+      g.setColour(getHandleColour());
+    }
     g.fillEllipse(pixelX-0.5f*dotSize, pixelY-0.5f*dotSize, dotSize, dotSize);
+
     if(drawNodeInfo)
     {
       juce::String xStr = xToString(nodes[i]->getX());
@@ -276,8 +294,8 @@ void rsNodeEditor::drawNodes(Graphics& g)
       //String str = String(i) + ":" + xStr + "," + yStr; // compact
         // maybe let client select between none/compact/verbose value painting
 
-      // if pixelY is below some threshold, paint the value below the node (otherwise, it's
-      // invisible
+      // if pixelY is below some threshold, paint the value below the node so it doesn't move
+      // out of the visible area ..or maybe just clip the y-coordinate?
       int drawY = roundToInt(pixelY)-10;
       if(drawY <= 6)
         drawY += 20;

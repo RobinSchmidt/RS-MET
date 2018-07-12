@@ -1,5 +1,4 @@
 Meta Mapping:
--display actual coordinates (not pixel coordinates at the nodes)
 -allow a "selected node" in node editor, connect the x/y sliders to its coodinates
 -implement different transition curves between the nodes
 
