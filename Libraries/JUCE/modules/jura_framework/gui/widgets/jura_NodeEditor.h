@@ -159,8 +159,8 @@ public:
   the first one that is found. 
   todo: if there are several nodes, return the first one among those that are closest to the given 
   pixel position */
-  rsDraggableNode* getNoteAt(int pixelX, int pixelY);
-
+  rsDraggableNode* getNodeAt(int pixelX, int pixelY);
+    
   /** Returns the index in our array of nodes a node at the given position. If there is none, it 
   will return -1. */
   int getNodeIndexAt(int pixelX, int pixelY);
@@ -170,6 +170,8 @@ public:
 
   /** Returns the y-coordinate in pixels of the given node. */
   float getPixelY(const rsDraggableNode* node);
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Hooks

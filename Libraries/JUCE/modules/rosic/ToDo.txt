@@ -1,3 +1,8 @@
+Meta Mapping:
+-display actual coordinates (not pixel coordinates at the nodes)
+-allow a "selected node" in node editor, connect the x/y sliders to its coodinates
+-implement different transition curves between the nodes
+
 -in order to make in compile on Win32, we need to replace the type of function-parameters in RAPT
  (T, TSig, TPar, etc.) with const T& for any class template that is instantiated with rsFloat64x2 
  or similar - otherwise ther error:

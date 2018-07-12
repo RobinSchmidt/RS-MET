@@ -138,7 +138,7 @@ void rsNodeEditor::setDotSize(float newDotSize)
 
 // inquiry:
 
-rsDraggableNode* rsNodeEditor::getNoteAt(int pixelX, int pixelY)
+rsDraggableNode* rsNodeEditor::getNodeAt(int pixelX, int pixelY)
 {
   int i = getNodeIndexAt(pixelX, pixelY);
   if(i != -1)
@@ -223,7 +223,7 @@ void rsNodeEditor::mouseUp(const MouseEvent &e)
 
 void rsNodeEditor::mouseMove(const MouseEvent &e)
 {
-  rsDraggableNode* nodeUnderMouse = getNoteAt(e.x, e.y);
+  rsDraggableNode* nodeUnderMouse = getNodeAt(e.x, e.y);
   if(nodeUnderMouse != nullptr)
     setMouseCursor(MouseCursor(MouseCursor::PointingHandCursor));
   else
@@ -266,11 +266,18 @@ void rsNodeEditor::drawNodes(Graphics& g)
     float x, y;
     x = getPixelX(nodes[i]);
     y = getPixelY(nodes[i]);
+
+    juce::String xStr = String(x);
+    juce::String yStr = String(y);
+
     g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
     if(drawNodeInfo)
     {
-      String str = String(i) + ": x=" + String(x) + ", y=" + String(y);
-      //String str = String(i) + "," + String(x) + "," + String(y);
+      String str = String(i) + ": x=" + xStr + ", y=" + yStr;  // verbose
+      //String str = String(i) + "," + String(x) + "," + String(y); // compact
+
+
+
       drawBitmapFontText(g, (int)getPixelX(nodes[i]), (int)getPixelY(nodes[i])-10, str, 
         &normalFont7px, getTextColour(), -1, Justification::centred);
     }

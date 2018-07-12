@@ -656,11 +656,11 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
 {
   // threshold for distance between left and right triangle edge below which we use a simple loop 
   // to compute coverages for all pixels in scanline
-  float thresh = 2.f;
+  float thresh = 2.f; // in pixels
   int x, xMin, xMax;
   float dxHere = eHere - sHere;
   float dxNext = eNext - sNext;
-  if(rsMin(abs(dxHere), abs(dxNext)) < thresh)
+  if(rsMin(dxHere, dxNext) < thresh)
   {
     xMin  = rsClip((int) floor(sNext),    0, w-1);
     xMax  = rsClip((int) ceil(eNext) - 1, 0, w-1);
@@ -668,9 +668,8 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
       drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
     return;
   }
-
-
-
+  // maybe with these distance thresholds, we can get rid of the separate top- and bottom scanline
+  // code (if we treat them like all others, the lines will fall into this case)
 
 
 
