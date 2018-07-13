@@ -64,6 +64,10 @@ protected:
 
   void createWidgets();
 
+  /** Makes the node parameter widgets (sliderX, sliderY, etc.) in/visible, depending on whether 
+  or not a node is currently selected. */
+  void updateWidgetVisibility();
+
   rsNodeBasedFunctionEditor* metaMapEditor;
   RNamedComboBox* boxMetaAttach;
   RSlider *sliderSmoothing;  // smoothing time

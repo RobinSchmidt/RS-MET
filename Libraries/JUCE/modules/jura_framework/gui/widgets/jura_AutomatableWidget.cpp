@@ -91,12 +91,12 @@ void rsAutomationSetup::resized()
 
 void rsAutomationSetup::nodeWasAdded(rsNodeEditor* editor, int nodeIndex)
 {
-
+  // not needed - maybe make it optional to override this
 }
 
 void rsAutomationSetup::nodeWillBeRemoved(rsNodeEditor* editor, int nodeIndex)
 {
-
+  // dito
 }
 
 void rsAutomationSetup::nodeWasSelected(rsNodeEditor* editor, int nodeIndex)
@@ -114,7 +114,7 @@ void rsAutomationSetup::assignNodeParameterWidgets(int i)
     sliderNodeX->assignParameter(nullptr);
     sliderNodeY->assignParameter(nullptr);
   }
-  // maybe update widget visibility - when no node is selected, make widgets invisible
+  updateWidgetVisibility();
 }
 
 void rsAutomationSetup::createWidgets()
@@ -150,6 +150,16 @@ void rsAutomationSetup::createWidgets()
 
   addWidget(sliderShapeParam = new RSlider("Shape Parameter"));
   sliderShapeParam->setDescription("Parameter of curve shape");
+
+  updateWidgetVisibility();
+}
+
+void rsAutomationSetup::updateWidgetVisibility()
+{
+  sliderNodeX->setVisible(sliderNodeX->hasAssignedParameter());
+  sliderNodeY->setVisible(sliderNodeY->hasAssignedParameter());
+  sliderShapeParam->setVisible(sliderShapeParam->hasAssignedParameter());
+  boxShapeType->setVisible(boxShapeType->hasAssignedParameter());
 }
 
 //=================================================================================================

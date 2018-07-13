@@ -61,7 +61,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // inquiry:
 
+  /** Returns a pointer to the assigned parameter (nullptr, if none is assigned). */
   virtual Parameter* getAssignedParameter() const { return assignedParameter; }
+
+  /** Returns true when this widget has a parameter assigned to it, false otherwise. */
+  inline bool hasAssignedParameter() { return getAssignedParameter() != nullptr; }
 
   virtual Colour getBackgroundColour() const { return colourScheme.background.withMultipliedAlpha(alphaMultiplier); };
   virtual Colour getOutlineColour()    const { return colourScheme.outline.withMultipliedAlpha(alphaMultiplier); };
