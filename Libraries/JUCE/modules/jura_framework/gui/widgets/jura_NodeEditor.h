@@ -283,6 +283,8 @@ public:
   rsNodeBasedFunctionEditor(RAPT::rsNodeBasedFunction<double>* functionMapper = nullptr, 
     CriticalSection* lockToUse = nullptr);
 
+  ~rsNodeBasedFunctionEditor();
+
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
@@ -325,8 +327,44 @@ protected:
   added) and adds them to our array. */
   void addNodeParameters(rsDraggableNode* node); 
 
-  /** */
-  void removeNodeParameters(rsDraggableNode* node); 
+  /** Removes the parameters for the given node. */
+  void removeNodeParameters(rsDraggableNode* node);
+
+  /** Removes the node parameters at a given index in our nodeParams array. Note that this index
+  may not match the node's index - this is because when nodes are moved around, they may have to be
+  re-indexe. hmmm...this is ugly ..maybe override reIndexNode in order to keep the arrays in 
+  sync. */
+  void removeNodeParameters(int indexInParameterArray);
+
+  /** Adds parameters for all nodes that do not yet have parameters associated with them. Called in 
+  constructor. */
+  void addParametersForAllNodes();
+
+  void removeParametersForAllNodes();
+
+  // array of parameters assoicated with each node:
+  struct NodeParameterSet
+  { 
+    NodeParameterSet(rsDraggableNode* _node)
+    {
+      node = _node;
+      x = new Parameter("X");
+      y = new Parameter("Y");
+      shape = new Parameter("Shape");
+      shapeAmount = new Parameter("ShapeAmount");
+    }
+    ~NodeParameterSet()
+    {
+      delete x;
+      delete y;
+      delete shape;
+      delete shapeAmount;
+    }
+    Parameter *x, *y, *shape, *shapeAmount; 
+    rsDraggableNode* node; // pointer to the node to which the parameters belong
+  };
+  std::vector<NodeParameterSet*> nodeParams;
+
 
 
   RAPT::rsNodeBasedFunction<double>* valueMapper = nullptr;
@@ -338,13 +376,7 @@ protected:
 
   CriticalSection* lock = nullptr;
 
-  // array of parameters assoicated with each node:
-  struct NodeParameters 
-  { 
-    Parameter *x, *y, *shape, *shapeAmount; 
-    rsDraggableNode* node; // pointer to the node to which the parameters belong
-  };
-  std::vector<NodeParameters*> nodeParams;
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeBasedFunctionEditor)

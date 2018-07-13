@@ -317,12 +317,11 @@ void rsNodeEditor::drawNodes(Graphics& g)
       // if pixelY is below some threshold, paint the value below the node so it doesn't move
       // out of the visible area ..or maybe just clip the y-coordinate?
       int drawY = roundToInt(pixelY)-10;
-      if(drawY <= 6)
-        drawY += 20;
+      drawY = jmax(drawY, 6);
       drawBitmapFontText(g, roundToInt(pixelX), drawY, str, 
         &normalFont7px, getTextColour(), -1, Justification::centred);
       // maybe we need soemthing similar for the drawX, too (it may shift out of the visible range
-      // left or right ...dteail-work -> later)
+      // left or right ...detail-work -> later)
     }
   }
 }
@@ -334,6 +333,12 @@ rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
 {
   lock = lockToUse;
   valueMapper = functionMapper;
+  //addParametersForAllNodes();
+}
+
+rsNodeBasedFunctionEditor::~rsNodeBasedFunctionEditor()
+{
+  //removeParametersForAllNodes();
 }
 
 void rsNodeBasedFunctionEditor::setFunctionToEdit(RAPT::rsNodeBasedFunction<double>* func) 
@@ -356,6 +361,7 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
     g.drawLine((float)x1, (float) xyMapper.mapY(y1), (float)x2, (float) xyMapper.mapY(y2), 2.f);
   }
   /*
+  // obsolete? check and if so, delete
   if(nodes.size() > 1)
   {
     for(size_t i = 0; i < nodes.size()-1; i++)
@@ -453,10 +459,37 @@ void rsNodeBasedFunctionEditor::clipIfDesired(double* x, double* y)
 
 void rsNodeBasedFunctionEditor::addNodeParameters(rsDraggableNode* node)
 {
-
+  NodeParameterSet* params = new NodeParameterSet(node);
+  node->assignParameterX(params->x);
+  node->assignParameterY(params->y);
+  nodeParams.push_back(params);
 }
 
 void rsNodeBasedFunctionEditor::removeNodeParameters(rsDraggableNode* node)
 {
+  for(int i = 0; i < nodeParams.size(); i++) {
+    if(nodeParams[i]->node == node)
+      removeNodeParameters(i);
+  }
+}
 
+void rsNodeBasedFunctionEditor::removeNodeParameters(int i)
+{
+  rsDraggableNode* node = nodeParams[i]->node;
+  node->assignParameterX(nullptr);
+  node->assignParameterY(nullptr);
+  delete nodeParams[i];
+  RAPT::rsRemove(nodeParams, i);
+}
+
+void rsNodeBasedFunctionEditor::addParametersForAllNodes()
+{
+  jassert(nodeParams.size() == 0); // should be called only on init when there are no paremeters yet
+
+}
+
+void rsNodeBasedFunctionEditor::removeParametersForAllNodes()
+{
+  for(int i = (int)nodeParams.size()-1; i >= 0; i++)
+    removeNodeParameters(i);
 }
