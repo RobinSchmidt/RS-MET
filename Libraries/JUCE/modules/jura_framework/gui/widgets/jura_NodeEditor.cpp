@@ -17,8 +17,10 @@ void rsDraggableNode::assignParameterX(Parameter* newParameterX)
   if(paramX)
     paramX->deRegisterParameterObserver(this);
   paramX = newParameterX;
-  if(paramX)
+  if(paramX) {
+    paramX->setValue(x, false, false);
     paramX->registerParameterObserver(this);
+  }
 }
 
 void rsDraggableNode::assignParameterY(Parameter* newParameterY)
@@ -26,9 +28,12 @@ void rsDraggableNode::assignParameterY(Parameter* newParameterY)
   if(paramY)
     paramY->deRegisterParameterObserver(this);
   paramY = newParameterY;
-  if(paramY)
+  if(paramY) {
+    paramY->setValue(y, false, false);
     paramY->registerParameterObserver(this);
+  }
 }
+// try to get rid of code duplication
 
 void rsDraggableNode::setPosition(double newX, double newY, bool callNodeChanged)
 {
@@ -44,6 +49,8 @@ void rsDraggableNode::setPosition(double newX, double newY, bool callNodeChanged
 
 void rsDraggableNode::parameterChanged(Parameter* p)
 {
+  x = paramX->getValue();
+  y = paramY->getValue();
   nodeEditor->nodeChanged(this->index);
 }
 

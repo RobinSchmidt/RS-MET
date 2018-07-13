@@ -364,6 +364,8 @@ protected:
     rsDraggableNode* node; // pointer to the node to which the parameters belong
   };
   std::vector<NodeParameterSet*> nodeParams;
+  // maybe move the parameter handling into baseclass or into intermediate rsParameterNodeEditor 
+  // class
 
 
 
