@@ -39,12 +39,9 @@ void rsDraggableNode::setPosition(double newX, double newY, bool callNodeChanged
 {
   x = newX;
   y = newY;
-  if(callNodeChanged)
-    nodeEditor->nodeChanged(index);
-  // todo: do not call nodeChanged directly here - instead, set up the paramX, paramY parameters
-  // according to the new pixel position. this will trigger a call to our parameterChanged function
-  // which will in turn call nodeEditor->nodeChanged(this); ...hmm...or maybe that's not so good
-  // because nodeChanged will then get called twice (once for x and once for y)
+  if(paramX) paramX->setValue(x, true, true);
+  if(paramY) paramY->setValue(y, true, true);
+  if(callNodeChanged)  nodeEditor->nodeChanged(index);
 }
 
 void rsDraggableNode::parameterChanged(Parameter* p)

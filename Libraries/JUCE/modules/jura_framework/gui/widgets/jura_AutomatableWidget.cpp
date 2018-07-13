@@ -114,6 +114,7 @@ void rsAutomationSetup::assignNodeParameterWidgets(int i)
     sliderNodeX->assignParameter(nullptr);
     sliderNodeY->assignParameter(nullptr);
   }
+  // maybe update widget visibility - when no node is selected, make widgets invisible
 }
 
 void rsAutomationSetup::createWidgets()
