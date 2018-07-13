@@ -333,18 +333,20 @@ rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
 {
   lock = lockToUse;
   valueMapper = functionMapper;
-  //addParametersForAllNodes();
+  //addParametersForAllNodes(); // done in setFunctionToEdit
 }
 
 rsNodeBasedFunctionEditor::~rsNodeBasedFunctionEditor()
 {
-  //removeParametersForAllNodes();
+  removeParametersForAllNodes();
 }
 
 void rsNodeBasedFunctionEditor::setFunctionToEdit(RAPT::rsNodeBasedFunction<double>* func) 
 { 
   valueMapper = func;
+  removeParametersForAllNodes();
   updateDraggableNodesArray();
+  addParametersForAllNodes();
 }
 
 void rsNodeBasedFunctionEditor::paint(Graphics& g)
@@ -485,11 +487,12 @@ void rsNodeBasedFunctionEditor::removeNodeParameters(int i)
 void rsNodeBasedFunctionEditor::addParametersForAllNodes()
 {
   jassert(nodeParams.size() == 0); // should be called only on init when there are no paremeters yet
-
+  for(int i = 0; i < nodes.size(); i++)
+    addNodeParameters(nodes[i]);
 }
 
 void rsNodeBasedFunctionEditor::removeParametersForAllNodes()
 {
-  for(int i = (int)nodeParams.size()-1; i >= 0; i++)
+  for(int i = (int)nodeParams.size()-1; i >= 0; i--)
     removeNodeParameters(i);
 }
