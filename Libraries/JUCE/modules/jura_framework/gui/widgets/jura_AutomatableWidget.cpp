@@ -20,6 +20,7 @@ rsParameterSetupBase::rsParameterSetupBase(AutomatableWidget* widgetToSetup,
 rsMetaMapEditor::rsMetaMapEditor(MetaParameterManager* metaManagerToUse)
 {
   metaManager = metaManagerToUse;
+  param = nullptr;
 
   setAlwaysOnTop(true); // hmm - this doesn't seem to help - it still gets obscured when moving the
                         // parameter slider
@@ -27,7 +28,17 @@ rsMetaMapEditor::rsMetaMapEditor(MetaParameterManager* metaManagerToUse)
 
 rsMetaMapEditor::~rsMetaMapEditor()
 {
+  if(param)
+    param->deRegisterParameterObserver(this);
+}
 
+void rsMetaMapEditor::setParameterToControl(MetaControlledParameter* p) 
+{ 
+  if(param) 
+    param->deRegisterParameterObserver(this);
+  param = p; 
+  if(param)
+    param->registerParameterObserver(this);
 }
 
 MetaParameter* rsMetaMapEditor::getAttachedMetaParameter()
@@ -46,9 +57,15 @@ void rsMetaMapEditor::paint(Graphics& g)
     double mv = mp->getMetaValue();
     float pixelX = (float) xyMapper.mapX(mv);
     g.drawLine(pixelX, 0.f, pixelX, (float) getHeight(), 1.f);
-    // doesn't update when meta value changes - we need to trigger a repaint whenever the 
-    // meta-value (or the parameter value) changes (if one changes, so does the other)
   }
+}
+
+void rsMetaMapEditor::parameterChanged(Parameter* p)
+{
+  if(p == param)
+    repaintOnMessageThread(); // to update position of vertical line
+  else
+    rsNodeBasedFunctionEditor::parameterChanged(p);
 }
 
 //=================================================================================================

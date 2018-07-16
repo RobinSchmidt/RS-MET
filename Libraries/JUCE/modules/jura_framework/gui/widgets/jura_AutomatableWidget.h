@@ -44,7 +44,7 @@ public:
   virtual ~rsMetaMapEditor();
 
   /** Sets up the parameter, whose meta-mapping curve we control. */
-  virtual void setParameterToControl(MetaControlledParameter* p) { param = p; }
+  virtual void setParameterToControl(MetaControlledParameter* p);
 
   /** Returns a pointer to the meta-parameter that is assigned to the parameter whose meta-mapping 
   curve this editor controls. May be a nullptr, if none is assigned. */
@@ -52,6 +52,7 @@ public:
 
   // overrides:
   virtual void paint(Graphics& g) override;
+  virtual void parameterChanged(Parameter* p) override;
 
 protected:
 
