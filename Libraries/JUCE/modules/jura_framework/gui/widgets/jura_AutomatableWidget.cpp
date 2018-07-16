@@ -44,9 +44,10 @@ void rsMetaMapEditor::paint(Graphics& g)
   if(mp != nullptr)
   {
     double mv = mp->getMetaValue();
-
-    int dummy = 0;
-    // todo: paint vertical line indicating meta value
+    float pixelX = (float) xyMapper.mapX(mv);
+    g.drawLine(pixelX, 0.f, pixelX, (float) getHeight(), 1.f);
+    // doesn't update when meta value changes - we need to trigger a repaint whenever the 
+    // meta-value (or the parameter value) changes (if one changes, so does the other)
   }
 }
 

@@ -60,6 +60,8 @@ protected:
                                       // meta-manager, which is the same - maybe remove
 };
 
+//=================================================================================================
+
 /** A component for setting up the the connection of a parameter to a meta-parameter, the mapping
 and smoothing. 
 todo: maybe handle midi controller assignment here, too
