@@ -1,7 +1,18 @@
 Meta Mapping:
 -make the meta combo-box show the assigned meta parameter, let user select another one there
+-update the dependent parameters when a node is moved
 -make the smoothing slider work (or invisible)
 -implement different transition curves between the nodes
+Elan's list:
+-add vertical line to indicate current position (value of meta)
+-window should not close when moving the parameter slider (actually, it doesn't close, it just
+ get into the background -> use "always-on-top"
+-when node is moved, the resulting change in parameter should be immediately audible
+-when selecting the last point, x/y sliders do not appear (i can't reproduce this)
+-when attaching a 2nd, 3rd, ..parameter, the graph should be a flat line (at the parameter's 
+ current value)
+
+
 
 -in order to make in compile on Win32, we need to replace the type of function-parameters in RAPT
  (T, TSig, TPar, etc.) with const T& for any class template that is instantiated with rsFloat64x2 

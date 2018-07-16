@@ -701,7 +701,7 @@ void drawTriangleScanlineSpans(int y, float sHere, float sNext, float eHere, flo
     xMin = xMax+1;
   else
   {
-    //return; // is that correct?
+    return; // is that correct?
     // maybe something else to do? recompute xMin?
   }
 
@@ -816,4 +816,111 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
   xMax = rsClip((int) ceil(eHere.x) - 1, 0, w-1);
   for(x = xMin; x <= xMax; x++) 
     drw.plot(x, y, color*pixelCoverage(x, y, a, b, c));
+}
+
+
+
+int RectangleF::getRegion(const rsVector2DF& p)
+{
+  if(p.x < xMin) {    // left regions
+    if(p.y < yMin)
+      return BOTTOM_LEFT;
+    if(p.y > yMax)
+      return TOP_LEFT;
+    return CENTER_LEFT;
+  }
+  if(p.x > xMax) {    // right regions
+    if(p.y < yMin)
+      return BOTTOM_RIGHT;
+    if(p.y > yMax)
+      return TOP_RIGHT;
+    return CENTER_RIGHT;
+  }
+  if(p.y < yMin)
+    return BOTTOM_CENTER;
+  if(p.y > yMax)
+    return TOP_CENTER;
+  return INSIDE;
+}
+
+int clipTriangleToUnitSquare(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c,
+  rsVector2DF* p)
+{
+  // assume a is top vertex and left in a flat-top triangle (with a downward y-axis)
+  // so a has minimum y-coordinate)
+
+  int nv = 0; // number of vertice in output polygon
+  if(a.y > 1) 
+    return 0;
+
+  RectangleF r;
+  int ra = r.getRegion(a);
+  switch(ra)
+  {
+  case r.INSIDE: {      // may leave
+    p[nv] = a; nv++; 
+  } break;
+  case r.TOP_RIGHT: {   // may enter from right or top edge
+    // ...
+  } break;
+  case r.TOP_CENTER: {  // may enter from from top edge
+    //...
+  } break;
+  case r.TOP_LEFT: {  // may enter from from top or left edge
+    //...
+  } break;
+
+  }
+
+
+
+  return nv;
+}
+
+
+
+// maybe the best way would be to make a simplified sutherland-hodgman version
+// https://www.codeguru.com/cpp/misc/misc/graphics/article.php/c8965/Polygon-Clipping.htm
+// that clips against all 4 edges separately with simplified tests, simplified intersection
+// computations and avoiding dynamic memory allocations, here's a skeleton:
+int clipAgainstTop(rsVector2DF* in, int N, rsVector2DF* out) // maybe rename to clipAgainstY1, Y1 means y=1
+{
+  int nv = 0;                   // number of output vertices
+  rsVector2DF S = in[0], E;     // current start- and end vertex
+  for(int i = 0; i < N; i++)
+  {
+    if(S.y > 1)             // outside top boundary
+    {
+
+    }
+    else
+    {
+      out[nv] = S;
+      nv++;
+
+    }
+  }
+  
+  return nv;
+}
+
+int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c,
+  rsVector2DF* out)
+{
+  // init:
+  rsVector2DF p[7], q[7];  
+  int np = 3, nq = 0;
+  p[0] = a; p[1] = b; p[2] = c;     // p contains triangle with 3 vertices, q is empty
+
+  // clip against the 4 edges:
+  nq = clipAgainstTop(   p, np, q);  // q contains partially clipped polygon
+  //np = clipAgainstLeft(  q, nq, p);  // p contains partially clipped polygon
+  //nq = clipAgainstBottom(p, np, q);  // q contains partially clipped polygon
+  //np = clipAgainstRight( q, nq, p);  // p contains partially clipped polygon
+
+  // copy result to output (for production code, get rid of local p, use out directly (rename to 
+  // p)):
+  for(int i = 0; i < np; i++)
+    out[i] = p[i];
+  return np;
 }

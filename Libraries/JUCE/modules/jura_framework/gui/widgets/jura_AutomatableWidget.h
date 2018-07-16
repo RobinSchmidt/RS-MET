@@ -31,6 +31,33 @@ protected:
 
 //=================================================================================================
 
+/** Customized subclass of rsNodeBasedFunctionEditor to incorporate additional features such as 
+showing a vertical line at the current position of the meta-value. */ 
+
+class JUCE_API rsMetaMapEditor : public rsNodeBasedFunctionEditor
+{
+
+public:
+
+  rsMetaMapEditor();
+
+  virtual ~rsMetaMapEditor();
+
+  /** Returns a pointer to the meta-parameter that is assigned to the parameter whose meta-mapping 
+  curve this editor controls. May be a nullptr, if none is assigned. */
+  MetaParameter* getAssignedMetaParameter();
+
+  // overrides:
+  virtual void paint(Graphics& g) override;
+
+protected:
+
+  // maybe should have a pointer to the MetaManager and also allow to drag the vertical line to 
+  // change the meta value
+
+
+};
+
 /** A component for setting up the the connection of a parameter to a meta-parameter, the mapping
 and smoothing. 
 todo: maybe handle midi controller assignment here, too
@@ -68,7 +95,7 @@ protected:
   or not a node is currently selected. */
   void updateWidgetVisibility();
 
-  rsNodeBasedFunctionEditor* metaMapEditor;
+  rsMetaMapEditor* metaMapEditor;
   RNamedComboBox* boxMetaAttach;
   RSlider *sliderSmoothing;  // smoothing time
 

@@ -98,6 +98,71 @@ void drawTriangleAntiAliasedSpanBased(rsImageDrawerFFF& drw,
 // this does not work yet!!!
 
 
+/** Class for representing an axis aligned rectangle. Mainly for simplifying computations for 
+clipping aginst windows or pixels. */
+
+class RectangleF  // just Rectangle doesn't compile (name conflict?)
+{
+
+public:
+
+  float xMin = 0.f, xMax = 1.f, yMin = 0.f, yMax = 1.f;
+
+  enum regions
+  {
+    INSIDE = 0,
+    TOP_LEFT,
+    CENTER_LEFT,
+    BOTTOM_LEFT,
+    BOTTOM_CENTER,
+    BOTTOM_RIGHT,
+    CENTER_RIGHT,
+    TOP_RIGHT,
+    TOP_CENTER
+  };
+
+  /** Returns in which of the region the given point falls. */
+  int getRegion(const rsVector2DF& p);
+
+  /** Returns whether or not the given point is inside the unit square. Points on the boundary are
+  considered inside. */
+  bool isInside(const rsVector2DF& p) { return getRegion(p) == INSIDE; }
+
+  /** Given a line L defined by the parametric equation L(t) = a + t*(b-a), this function returns 
+  the value of the parameter t for which the line L intersects the top edge of the unit square. If 
+  the line is parallel, it will be plus or minus infinity. */
+  float getIntersectionParameterTop(const rsVector2DF& a, const rsVector2DF& b)
+  {
+    return (yMax-a.y) / (b.y-a.y);
+  }
+
+  float getIntersectionParameterLeft(const rsVector2DF& a, const rsVector2DF& b)
+  {
+    return (xMin-a.x) / (b.x-a.x);
+  }
+
+  float getIntersectionParameterBottom(const rsVector2DF& a, const rsVector2DF& b)
+  {
+    return (yMin-a.y) / (b.y-a.y);
+  }
+
+  float getIntersectionParameterRight(const rsVector2DF& a, const rsVector2DF& b)
+  {
+    return (xMax-a.x) / (b.x-a.x);
+  }
+
+};
+
+/** Given a triangle defined by the vertices a,b,c, this function returns the number of vertices of
+the polygon that results from clipping the triangle to the unit square. It writes the polygon 
+vertices into the array p which should be of length 7 (this is the maximum number of vertices that 
+the resulting polygon can have). If 0 is returned, the triangle doesn't overlap the unit-square at 
+all. */
+int clipTriangleToUnitSquare(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c, 
+  rsVector2DF* p);
+// under construction
+
+
 // todo: make class rsRenderer
 // setMethod(int);   // rasterize or raytrace
 // setAntiAlias(int); // off, unweighted area sampling, weighted area sampling, bilinear deinterpolation, supersampling
