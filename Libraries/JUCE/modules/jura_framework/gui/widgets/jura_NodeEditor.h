@@ -306,7 +306,7 @@ public:
   //virtual rsDraggableNode* addNode(double pixelX, double pixelY) override;
   virtual int addNode(double pixelX, double pixelY) override;
   virtual bool removeNode(int index) override;
-  int moveNodeTo(int index, int pixelX, int pixelY) override;
+  virtual int moveNodeTo(int index, int pixelX, int pixelY) override;
   virtual int nodeChanged(int nodeIndex) override;
   //virtual void nodeChanged(const rsDraggableNode* node) override; // obsolete?
   virtual bool isNodeRemovable(int i) override { return (int)valueMapper->isNodeRemovable((size_t)i); }

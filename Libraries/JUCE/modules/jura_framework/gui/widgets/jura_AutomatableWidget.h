@@ -58,10 +58,14 @@ public:
   // overriden to update parameter value when nodes are edited:
   virtual int addNode(double pixelX, double pixelY) override;
   virtual bool removeNode(int index) override;
-  int moveNodeTo(int index, int pixelX, int pixelY) override;
+  virtual int moveNodeTo(int index, int pixelX, int pixelY) override;
   //virtual int nodeChanged(int nodeIndex) override; // seems to be enough to override moveNodeTo
 
 protected:
+
+  /** Called from functions that change the mpping function (by adding/removing/moving nodes) to 
+  update the dependent parameter according to the new mapping function. */
+  void updateParameter();
 
   MetaControlledParameter* param;     // parameter, whose meta-map we control
   MetaParameterManager* metaManager;  // actually, this is redundant bcs "param" knows *its* 

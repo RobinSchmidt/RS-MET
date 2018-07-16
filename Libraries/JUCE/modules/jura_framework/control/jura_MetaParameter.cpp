@@ -203,6 +203,13 @@ void MetaControlledParameter::setNormalizedTargetValue(double newTargetValue, bo
     metaMapper.map(normalizedValue), metaMapper.map(oldNormalizedValue)); 
 }
 
+void MetaControlledParameter::metaMapChanged()
+{
+  value = applyBothMaps(normalizedValue); 
+  callValueChangeCallbacks(value);
+  notifyObservers();
+}
+
 void MetaControlledParameter::saveToXml(XmlElement* xml) const
 {
   rsSmoothableParameter::saveToXml(xml);

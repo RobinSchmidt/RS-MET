@@ -71,22 +71,35 @@ void rsMetaMapEditor::parameterChanged(Parameter* p)
 int rsMetaMapEditor::addNode(double pixelX, double pixelY)
 {
   int result = rsNodeBasedFunctionEditor::addNode(pixelX, pixelY);
-
+  updateParameter();
   return result;
 }
 
 bool rsMetaMapEditor::removeNode(int index)
 {
   bool result = rsNodeBasedFunctionEditor::removeNode(index);
-
+  updateParameter();
   return result;
 }
 
 int rsMetaMapEditor::moveNodeTo(int index, int pixelX, int pixelY)
 {
   int result = rsNodeBasedFunctionEditor::moveNodeTo(index, pixelX, pixelY);
-
+  updateParameter();
   return result;
+}
+
+void rsMetaMapEditor::updateParameter()
+{
+  if(param)
+  {
+    //double metaValue = param->getNormalizedValue();
+    //param->setFromMetaValue(metaValue, true, true);
+    // this doesn't work because in MetaControlledParameter::setNormalizedValue there's a check
+    // if(normalizedValue == newNormalizedValue) which lets the function return early
+
+    param->metaMapChanged();
+  }
 }
 
 //=================================================================================================

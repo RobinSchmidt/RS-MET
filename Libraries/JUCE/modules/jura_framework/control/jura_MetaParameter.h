@@ -154,6 +154,11 @@ public:
   virtual void setNormalizedValue(double newValue, bool sendNotification, 
     bool callCallbacks) override;
 
+  /** This is called from rsMetaMapEditor whenever the mapping curve changes in oder to update the
+  underlying dsp parameter and the numerical slider readout. It's not very elegant to require
+  rsMetaMapEditor to call this, but it's good enough for the moment. */
+  void metaMapChanged();
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
