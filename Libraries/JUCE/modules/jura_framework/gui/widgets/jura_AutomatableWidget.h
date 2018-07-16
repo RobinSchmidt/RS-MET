@@ -52,7 +52,14 @@ public:
 
   // overrides:
   virtual void paint(Graphics& g) override;
-  virtual void parameterChanged(Parameter* p) override;
+
+  virtual void parameterChanged(Parameter* p) override; // overriden to update vertcial line
+
+  // overriden to update parameter value when nodes are edited:
+  virtual int addNode(double pixelX, double pixelY) override;
+  virtual bool removeNode(int index) override;
+  int moveNodeTo(int index, int pixelX, int pixelY) override;
+  //virtual int nodeChanged(int nodeIndex) override; // seems to be enough to override moveNodeTo
 
 protected:
 
@@ -106,6 +113,8 @@ protected:
 
   RNamedComboBox* boxShapeType;
   RSlider *sliderNodeX, *sliderNodeY, *sliderShapeParam;
+
+  // add a slider to set up the meta-value/parameter-value
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomationSetup)
 };

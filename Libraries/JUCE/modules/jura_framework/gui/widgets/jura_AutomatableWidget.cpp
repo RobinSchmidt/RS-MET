@@ -68,6 +68,27 @@ void rsMetaMapEditor::parameterChanged(Parameter* p)
     rsNodeBasedFunctionEditor::parameterChanged(p);
 }
 
+int rsMetaMapEditor::addNode(double pixelX, double pixelY)
+{
+  int result = rsNodeBasedFunctionEditor::addNode(pixelX, pixelY);
+
+  return result;
+}
+
+bool rsMetaMapEditor::removeNode(int index)
+{
+  bool result = rsNodeBasedFunctionEditor::removeNode(index);
+
+  return result;
+}
+
+int rsMetaMapEditor::moveNodeTo(int index, int pixelX, int pixelY)
+{
+  int result = rsNodeBasedFunctionEditor::moveNodeTo(index, pixelX, pixelY);
+
+  return result;
+}
+
 //=================================================================================================
 
 rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,

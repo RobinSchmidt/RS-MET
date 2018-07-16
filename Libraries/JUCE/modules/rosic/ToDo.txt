@@ -4,10 +4,11 @@ Meta Mapping:
 -make the smoothing slider work (or invisible)
 -implement different transition curves between the nodes
 Elan's list:
--add vertical line to indicate current position (value of meta)
+-add vertical line to indicate current position (value of meta) - done
 -window should not close when moving the parameter slider (actually, it doesn't close, it just
- get into the background -> use "always-on-top"
+ get into the background -> use "always-on-top" -> doesn't work
 -when node is moved, the resulting change in parameter should be immediately audible
+ -maybe override addNode, removeNode, moveNodeTo (and/or nodeChanged) in rsMetaMapEditor)
 -when selecting the last point, x/y sliders do not appear (i can't reproduce this)
 -when attaching a 2nd, 3rd, ..parameter, the graph should be a flat line (at the parameter's 
  current value)
