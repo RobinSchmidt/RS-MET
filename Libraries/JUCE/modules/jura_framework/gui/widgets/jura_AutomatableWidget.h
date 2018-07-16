@@ -39,23 +39,25 @@ class JUCE_API rsMetaMapEditor : public rsNodeBasedFunctionEditor
 
 public:
 
-  rsMetaMapEditor();
+  rsMetaMapEditor(MetaParameterManager* metaManagerToUse);
 
   virtual ~rsMetaMapEditor();
 
+  /** Sets up the parameter, whose meta-mapping curve we control. */
+  virtual void setParameterToControl(MetaControlledParameter* p) { param = p; }
+
   /** Returns a pointer to the meta-parameter that is assigned to the parameter whose meta-mapping 
   curve this editor controls. May be a nullptr, if none is assigned. */
-  MetaParameter* getAssignedMetaParameter();
+  MetaParameter* getAttachedMetaParameter();
 
   // overrides:
   virtual void paint(Graphics& g) override;
 
 protected:
 
-  // maybe should have a pointer to the MetaManager and also allow to drag the vertical line to 
-  // change the meta value
-
-
+  MetaControlledParameter* param;     // parameter, whose meta-map we control
+  MetaParameterManager* metaManager;  // actually, this is redundant bcs "param" knows *its* 
+                                      // meta-manager, which is the same - maybe remove
 };
 
 /** A component for setting up the the connection of a parameter to a meta-parameter, the mapping

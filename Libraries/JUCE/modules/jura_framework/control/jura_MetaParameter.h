@@ -107,6 +107,7 @@ public:
 
 //=================================================================================================
 
+class MetaParameter;
 class MetaParameterManager;
 
 /** A subclass of Parameter that can be controlled via a MetaParameter. To do so, it maintains a
@@ -165,6 +166,9 @@ public:
 
   /** Returns true, if this Parameter has an attached MetaParameter, false otherwise. */
   inline bool hasAttachedMeta() const { return metaIndex != -1; }
+
+  /** Returns a pointer to the attached meta-parameter (nullptr, if none). */
+  MetaParameter* getAttachedMeta();
 
   /** Returns the name of the MetaParameter which this Parameter is attached to. */
   String getMetaParameterName(); // may be const?

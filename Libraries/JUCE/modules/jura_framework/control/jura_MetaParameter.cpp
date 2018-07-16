@@ -256,6 +256,13 @@ void MetaControlledParameter::detachFromMetaParameter()
   metaIndex = -1;
 }
 
+MetaParameter* MetaControlledParameter::getAttachedMeta()
+{
+  if(metaParaManager == nullptr || metaIndex == -1)  // is the || -1 redundant? (checked also in metaParaManager->getMetaParameter?)
+    return nullptr;
+  return metaParaManager->getMetaParameter(metaIndex);
+}
+
 String MetaControlledParameter::getMetaParameterName()
 {
   if(metaParaManager == nullptr || metaIndex == -1)

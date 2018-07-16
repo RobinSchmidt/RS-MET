@@ -17,8 +17,10 @@ rsParameterSetupBase::rsParameterSetupBase(AutomatableWidget* widgetToSetup,
 
 //=================================================================================================
 
-rsMetaMapEditor::rsMetaMapEditor()
+rsMetaMapEditor::rsMetaMapEditor(MetaParameterManager* metaManagerToUse)
 {
+  metaManager = metaManagerToUse;
+
   setAlwaysOnTop(true); // hmm - this doesn't seem to help - it still gets obscured when moving the
                         // parameter slider
 }
@@ -28,18 +30,22 @@ rsMetaMapEditor::~rsMetaMapEditor()
 
 }
 
-MetaParameter* rsMetaMapEditor::getAssignedMetaParameter()
+MetaParameter* rsMetaMapEditor::getAttachedMetaParameter()
 {
-  return nullptr; // preliminary
+  if(param)
+    return param->getAttachedMeta();
+  return nullptr;
 }
 
 void rsMetaMapEditor::paint(Graphics& g)
 {
   rsNodeBasedFunctionEditor::paint(g);
-
-  MetaParameter* mp = getAssignedMetaParameter();
+  MetaParameter* mp = getAttachedMetaParameter();
   if(mp != nullptr)
   {
+    double mv = mp->getMetaValue();
+
+    int dummy = 0;
     // todo: paint vertical line indicating meta value
   }
 }
@@ -148,7 +154,7 @@ void rsAutomationSetup::assignNodeParameterWidgets(int i)
 
 void rsAutomationSetup::createWidgets()
 {
-  addWidget(metaMapEditor = new rsMetaMapEditor);
+  addWidget(metaMapEditor = new rsMetaMapEditor(metaManager));
   metaMapEditor->setDescription("Mapping between meta-parameter and parameter");
   metaMapEditor->setValueRange(0, 1, 0, 1);
   metaMapEditor->setClipCoordinatesToRange(true);
@@ -156,6 +162,7 @@ void rsAutomationSetup::createWidgets()
   MetaControlledParameter* mcp = widget->getMetaControlledParameter();
   if(mcp != nullptr)
   {
+    metaMapEditor->setParameterToControl(mcp);
     metaMapEditor->setFunctionToEdit(mcp->getMetaMapper());
     metaMapEditor->setMutexToUse(mcp->getUsedMutex());
   }
