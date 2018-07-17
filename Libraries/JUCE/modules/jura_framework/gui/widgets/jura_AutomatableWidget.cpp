@@ -22,7 +22,7 @@ rsMetaMapEditor::rsMetaMapEditor(MetaParameterManager* metaManagerToUse)
   metaManager = metaManagerToUse;
   param = nullptr;
 
-  setAlwaysOnTop(true); // hmm - this doesn't seem to help - it still gets obscured when moving the
+  //setAlwaysOnTop(true); // hmm - this doesn't seem to help - it still gets obscured when moving the
                         // parameter slider
 }
 
@@ -110,15 +110,14 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
 {
   closeButton->setDescription("Closes the automation setup window");
   createWidgets();
+  setAlwaysOnTop(true); // should be stay on top, if parameter slider is moved
   metaMapEditor->registerObserver(this);
-  sliderMetaValue->addListener(this);
   setSize(300, 250);
 }
 
 rsAutomationSetup::~rsAutomationSetup() 
 {
   metaMapEditor->deRegisterObserver(this);
-  sliderMetaValue->removeListener(this); 
   //delete boxMetaAttach; // why? shouldn't that happen automatically? ..ok, no memleak warning
 }
 
@@ -137,14 +136,6 @@ void rsAutomationSetup::rComboBoxChanged(RComboBox* cb)
   else if(cb == boxShapeType)
   {
     // set shape type fo selecetd node
-  }
-}
-
-void rsAutomationSetup::rSliderValueChanged(RSlider* sld)
-{
-  if(sld == sliderMetaValue)
-  {
-
   }
 }
 
@@ -167,9 +158,7 @@ void rsAutomationSetup::resized()
   w = getWidth()/2 - 2*d;
   boxMetaAttach->setBounds(  x, y, w, sh);
   x = getWidth()/2 + d;
-  sliderMetaValue->setBounds(x, y, w, sh); 
-
-  //sliderSmoothing->setBounds(x, y, w, sh);  // this has to go somewhere else
+  sliderSmoothing->setBounds(x, y, w, sh);
 
   // bottom row:
   x = d;
@@ -182,7 +171,7 @@ void rsAutomationSetup::resized()
   sliderShapeParam->setBounds(x, y+sh-2, w, sh);
 
   // plot:
-  y = sliderMetaValue->getBottom() + d;
+  y = sliderSmoothing->getBottom() + d;
   w = getWidth();
   h = sliderNodeX->getY()-y-d;
   metaMapEditor->setBounds(0, y, w, h);
@@ -234,9 +223,6 @@ void rsAutomationSetup::createWidgets()
   addWidget(boxMetaAttach = new RNamedComboBox("", "Meta:"));
   boxMetaAttach->setDescription("Select meta parameter to attach");
   // todo: fill the box
-
-  addWidget(sliderMetaValue = new RSlider("MetaValue"));
-  sliderMetaValue->setDescription("Value of attached meta parameter");
 
   addWidget(sliderSmoothing = new RSlider("Smoothing"));
   sliderSmoothing->setDescription("Smoothing time in milliseconds");
