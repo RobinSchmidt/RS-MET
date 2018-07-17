@@ -80,7 +80,7 @@ todo: maybe handle midi controller assignment here, too
 */
 
 class JUCE_API rsAutomationSetup : public rsParameterSetupBase, public RComboBoxObserver,
-  public rsNodeEditorObserver
+  public RSliderListener, public rsNodeEditorObserver
 {
 
 public:
@@ -90,6 +90,7 @@ public:
 
   virtual void rButtonClicked(RButton *button) override;
   virtual void rComboBoxChanged(RComboBox* cb) override;
+  virtual void rSliderValueChanged(RSlider* sld) override;
   virtual void resized() override;
 
   virtual void nodeWasAdded(     rsNodeEditor* editor, int nodeIndex) override;
@@ -113,6 +114,7 @@ protected:
 
   rsMetaMapEditor* metaMapEditor;
   RNamedComboBox* boxMetaAttach;
+  RSlider*  sliderMetaValue;
   RSlider *sliderSmoothing;  // smoothing time
 
   RNamedComboBox* boxShapeType;
