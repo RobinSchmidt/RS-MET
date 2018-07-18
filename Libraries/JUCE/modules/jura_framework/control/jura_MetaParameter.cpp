@@ -69,6 +69,13 @@ void rsMetaParameterMapper::initToDefaults()
   appendNode(1, 1); 
 }
 
+void rsMetaParameterMapper::initToFlat(double v)
+{
+  nodes.clear(); 
+  appendNode(0, v); 
+  appendNode(1, v); 
+}
+
 XmlElement* rsMetaParameterMapper::getStateAsXml(const juce::String& tagName) const
 {
   XmlElement* mapXml = new XmlElement(tagName);
@@ -303,6 +310,8 @@ void MetaParameter::attachParameter(MetaControlledParameter* p, bool flatMap)
     p->setFromMetaValue(metaValue, false, false);
   p->registerParameterObserver(this);
   appendIfNotAlreadyThere(params, p);
+  if(flatMap)
+    p->initMetaMapToFlat();
   p->notifyObservers();               // notifies host that MetaParameter has (possibly) changed
   p->callValueChangeCallbacks(p->getValue()); // might be relevant in other contexts
 

@@ -94,6 +94,10 @@ public:
 
   /** Initializes this maps to its default state which is the identity map. */
   void initToDefaults();
+  // rename to initToIdentity
+
+  /** Initializes this maps to a flat line at the given value. */
+  void initToFlat(double value);
 
   /** Returns the state of this mapper as xml element with given tag name. */
   XmlElement* getStateAsXml(const juce::String& tagName) const;
@@ -144,9 +148,9 @@ public:
   virtual void setMetaParameterManager(MetaParameterManager* newManager);
 
   /** Attaches this parameter to the MetaParameter with the given index (in the
-  MetaParameterManager). The flatMap parameter decides, where the mapping function should initially 
-  be a flat line at the current value (otherwise it will be the identity map, which is the 
-  default). */
+  MetaParameterManager). The flatMap parameter decides, whether the mapping function should 
+  initially be a flat line at the current value (otherwise it will be left as is - which initially 
+  is the identity map). */
   virtual void attachToMetaParameter(int metaParameterIndex, bool flatMap = false);
 
   /** Detaches this parameter from any MetaParameter, it may be attched to. */
@@ -160,6 +164,9 @@ public:
   underlying dsp parameter and the numerical slider readout. It's not very elegant to require
   rsMetaMapEditor to call this, but it's good enough for the moment. */
   void metaMapChanged();
+
+  /** Initializes the meta map to a flat line at the current (normalized) value. */
+  void initMetaMapToFlat() { metaMapper.initToFlat(getNormalizedValue()); }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -238,7 +245,8 @@ public:
   /** Returns the current (meta) value of the MetaParameter. */
   inline double getMetaValue() { return metaValue; }
 
-  /** Attaches the given MetaControlledParameter to this MetaParameter. */
+  /** Attaches the given MetaControlledParameter to this MetaParameter. The flatMap parameter decides, whether the mapping function should 
+  initially be a flat line at the current value. */
   void attachParameter(MetaControlledParameter* p, bool flatMap = false);
 
   /** Detaches the given MetaControlledParameter from this MetaParameter, if it is attached. It 
