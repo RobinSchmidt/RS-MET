@@ -242,12 +242,12 @@ void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newM
 
 }
 
-void MetaControlledParameter::attachToMetaParameter(int index)
+void MetaControlledParameter::attachToMetaParameter(int index, bool flatMap)
 {
   jassert(metaParaManager != nullptr); // we need a reference to a MetaParameterManager object
   if(metaParaManager == nullptr)
     return;
-  bool success = metaParaManager->attachParameter(this, index);
+  bool success = metaParaManager->attachParameter(this, index, flatMap);
   if(success)
     metaIndex = index;
   else
@@ -286,7 +286,7 @@ MetaParameter::MetaParameter()
   notifyPostSmoothing(false);
 }
 
-void MetaParameter::attachParameter(MetaControlledParameter* p)
+void MetaParameter::attachParameter(MetaControlledParameter* p, bool flatMap)
 {
   if(contains(params, p))
     return; // already there, nothing to do, avoid recursive callbacks
@@ -356,11 +356,11 @@ void MetaParameterManager::addMetaParamater(MetaParameter* metaParameterToAdd)
   appendIfNotAlreadyThere(metaParams, metaParameterToAdd);
 }
 
-bool MetaParameterManager::attachParameter(MetaControlledParameter* param, int index)
+bool MetaParameterManager::attachParameter(MetaControlledParameter* param, int index, bool flatMap)
 {
   detachParameter(param);
   if(index >= 0 && index < size(metaParams)) {
-    metaParams[index]->attachParameter(param);
+    metaParams[index]->attachParameter(param, flatMap);
     updateMetaName(index);
     return true; }
   else {

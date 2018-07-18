@@ -611,7 +611,9 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menu)
     switch(selectedIdentifier)
     {
     case META_ATTACH: mcp->attachToMetaParameter(
-      (int)wrappedWidget->openModalNumberEntryField(mcp->getMetaParameterIndex()) ); break;
+      (int)wrappedWidget->openModalNumberEntryField(mcp->getMetaParameterIndex()), false); break;
+    case META_ATTACH_FLAT: mcp->attachToMetaParameter(
+      (int)wrappedWidget->openModalNumberEntryField(mcp->getMetaParameterIndex()), true ); break;
     case META_DETACH: mcp->detachFromMetaParameter();    break;
     }
   }
@@ -707,6 +709,7 @@ void AutomatableWidget::addPopUpMetaItems()
 
     rightClickPopUp->addItem(META_ATTACH,      "Meta attach " + miString);
     rightClickPopUp->addItem(META_DETACH,      "Meta detach");
+    rightClickPopUp->addItem(META_ATTACH_FLAT, "Meta attach (flat)");
     rightClickPopUp->addItem(AUTOMATION_SETUP, "Automation setup");
   }
 }

@@ -144,8 +144,10 @@ public:
   virtual void setMetaParameterManager(MetaParameterManager* newManager);
 
   /** Attaches this parameter to the MetaParameter with the given index (in the
-  MetaParameterManager). */
-  virtual void attachToMetaParameter(int metaParameterIndex);
+  MetaParameterManager). The flatMap parameter decides, where the mapping function should initially 
+  be a flat line at the current value (otherwise it will be the identity map, which is the 
+  default). */
+  virtual void attachToMetaParameter(int metaParameterIndex, bool flatMap = false);
 
   /** Detaches this parameter from any MetaParameter, it may be attched to. */
   virtual void detachFromMetaParameter();
@@ -237,7 +239,7 @@ public:
   inline double getMetaValue() { return metaValue; }
 
   /** Attaches the given MetaControlledParameter to this MetaParameter. */
-  void attachParameter(MetaControlledParameter* p);
+  void attachParameter(MetaControlledParameter* p, bool flatMap = false);
 
   /** Detaches the given MetaControlledParameter from this MetaParameter, if it is attached. It 
   returns true, if it was attached (i.e. an actualy removal took place). If it wasn't attached, 
@@ -315,7 +317,7 @@ public:
 
   /** Attaches the passed MetaControlledParameter to the MetaParameter with given index and
   returns if this was successful (it may fail, if you pass an out-of-range index). */
-  bool attachParameter(MetaControlledParameter* param, int metaIndex);
+  bool attachParameter(MetaControlledParameter* param, int metaIndex, bool flatMap = false);
 
   /** If the passed parameter is attached to any of our managed MetaParameters, this function
   will detach it (otherwise it will have no effect). */
