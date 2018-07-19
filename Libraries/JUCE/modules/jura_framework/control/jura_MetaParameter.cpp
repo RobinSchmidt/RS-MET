@@ -224,6 +224,7 @@ void MetaControlledParameter::initMetaMapToFlat()
   // different from what it should be - we should retrieve the completely mapped value (after both 
   // maps) and undo the 2nd map (the one from normalized to physical units), like this:
   double v = mapper->unmap(getValue());
+  // or v = metaMapper->map(getNormalizedValue());
   metaMapper.initToFlat(v);
 }
 

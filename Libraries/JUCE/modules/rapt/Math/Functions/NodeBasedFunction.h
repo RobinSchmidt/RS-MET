@@ -18,7 +18,9 @@ public:
     RIGHT_NEIGHBOUR,
     NEAREST_NEIGHBOUR,
     LINEAR,             // this is the default
-    CUBIC
+    CUBIC,
+    EXPONENTIAL,
+    RATIONAL
   };
   // maybe have log, exp, pow shapes
   // pow: y = a + b * (x+c)^d
@@ -162,30 +164,28 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Output computation
 
-  /** For internal use only... */
-  T getValueLinear(T x, size_t i)
-  {
-    T x1 = nodes[i].x;
-    T y1 = nodes[i].y;
-    T x2 = nodes[i+1].x;
-    T y2 = nodes[i+1].y;
-    T thresh = T(1.e-10); // todo: use epsilon of T
-    if(fabs(x2-x1) < thresh)
-      return T(0.5) * (y1+y2);
-    return y1 + (y2-y1) * (x-x1) / (x2-x1);
-  }
-
   /** Returns an interpolated y-value at the given value of x. */
   T getValue(T x)
   {
     if(nodes.size() == 0)
       return 0;
+
+    // todo: switch endpoint-mode (clamp, extrapolate, periocic, ...):
     if(x < nodes[0].x)
       return nodes[0].y;
     size_t i = firstIndexOfGreaterX(x);
     if(i == nodes.size())
       return nodes[i-1].y;
-    return getValueLinear(x, i-1);
+
+    typedef rsFunctionNode<T> FN;
+    switch(nodes[i].shapeType)
+    {
+    //case FN::LINEAR:      return getValueLinear(x, i-1);  // redundant with default case
+    case FN::EXPONENTIAL: return getValueExponential(x, i-1);
+    default:              return getValueLinear(x, i-1);
+    }
+
+    //return getValueLinear(x, i-1);
   }
   // rename to applyFunction
 
@@ -197,6 +197,40 @@ public:
   T applyInverseFunction(T y);
 
 protected:
+
+  /** For internal use only... */
+  T getValueLinear(T x, size_t i)
+  {
+    T x1 = nodes[i].x;
+    T y1 = nodes[i].y;
+    T x2 = nodes[i+1].x;
+    T y2 = nodes[i+1].y;
+    //T thresh = T(1.e-10); // todo: use epsilon of T
+    T thresh = RS_EPS(T);
+    if(fabs(x2-x1) < thresh)
+      return T(0.5) * (y1+y2);
+    return y1 + (y2-y1) * (x-x1) / (x2-x1);
+  }
+
+  T getValueExponential(T x, size_t i)
+  {
+    T thresh = RS_EPS(T);
+    T a = nodes[i].shapeParam;  // alpha - maybe use shapeScaler*shapeParam where shapeScaler is a 
+    if(abs(a) < thresh)         // global setting for the whole function defined in this class
+      getValueLinear(x, i);     // avoid div-by-zero
+
+    // this is the same as in the linear case:
+    T x1 = nodes[i].x;
+    T y1 = nodes[i].y;
+    T x2 = nodes[i+1].x;
+    T y2 = nodes[i+1].y;
+    if(fabs(x2-x1) < thresh)
+      return T(0.5) * (y1+y2);
+
+    // Formulas taken from Moore - Elements of Computer Music, page 184:
+    T I = (x-x1) / (x2-x1);                          // Eq 3.30
+    return y1 + (y2-y1) * (1-exp(I*a)) / (1-exp(a)); // Eq 3.29
+  }
 
   /** Simply appends a node with given coordinates (and linear shape-type) to our array - without 
   checking constraints or sorting. This is mainly meant to be used by subclasses to intialize the
