@@ -164,8 +164,8 @@ public:
   rsMetaMapEditor to call this, but it's good enough for the moment. */
   void metaMapChanged();
 
-  /** Initializes the meta map to a flat line at the current (normalized) value. */
-  void initMetaMapToFlat() { metaMapper.initToFlat(getNormalizedValue()); }
+  /** Initializes the meta map to a flat line at the current value. */
+  void initMetaMapToFlat();
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry

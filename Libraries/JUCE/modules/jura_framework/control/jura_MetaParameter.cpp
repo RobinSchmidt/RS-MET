@@ -217,6 +217,16 @@ void MetaControlledParameter::metaMapChanged()
   notifyObservers();
 }
 
+void MetaControlledParameter::initMetaMapToFlat() 
+{ 
+  //double v = getNormalizedValue();
+  // this is not good - when there is currently a non-identity meta-map applied, the value may be
+  // different from what it should be - we should retrieve the completely mapped value (after both 
+  // maps) and undo the 2nd map (the one from normalized to physical units), like this:
+  double v = mapper->unmap(getValue());
+  metaMapper.initToFlat(v);
+}
+
 void MetaControlledParameter::saveToXml(XmlElement* xml) const
 {
   rsSmoothableParameter::saveToXml(xml);
