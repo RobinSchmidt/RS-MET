@@ -179,10 +179,9 @@ void rsAutomationSetup::resized()
 
 void rsAutomationSetup::setVisible(bool shouldBeVisible)
 {
-  //if(shouldBeVisible)
-  //  metaMapEditor->updateDraggableNodesArray(); 
-  //  // to keep them in sync with the corresponding nodes in RAPT::rsNodeBasedFunction
-
+  if(shouldBeVisible)
+    metaMapEditor->updateDraggableNodesArray(); 
+    // to keep them in sync with the corresponding nodes in RAPT::rsNodeBasedFunction
   rsParameterSetupBase::setVisible(shouldBeVisible);
 }
 

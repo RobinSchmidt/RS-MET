@@ -342,7 +342,7 @@ rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
 
 rsNodeBasedFunctionEditor::~rsNodeBasedFunctionEditor()
 {
-  removeParametersForAllNodes();
+  clearNodes();
 }
 
 void rsNodeBasedFunctionEditor::setFunctionToEdit(RAPT::rsNodeBasedFunction<double>* func) 
@@ -444,7 +444,8 @@ int rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
 
 void rsNodeBasedFunctionEditor::updateDraggableNodesArray()
 {
-  nodes.clear(); // not enough - objects must be deleted
+  //nodes.clear(); // not enough - objects must be deleted
+  clearNodes();
   if(valueMapper == nullptr)
     return;
   const std::vector<RAPT::rsFunctionNode<double>> funcNodes = valueMapper->getNodes();
@@ -499,4 +500,12 @@ void rsNodeBasedFunctionEditor::removeParametersForAllNodes()
 {
   for(int i = (int)nodeParams.size()-1; i >= 0; i--)
     removeNodeParameters(i);
+}
+
+void rsNodeBasedFunctionEditor::clearNodes()
+{
+  removeParametersForAllNodes();
+  for(size_t i = 0; i < nodes.size(); i++) 
+    delete nodes[i];
+  nodes.clear();
 }

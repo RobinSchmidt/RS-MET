@@ -340,9 +340,11 @@ protected:
   constructor. */
   void addParametersForAllNodes();
 
+  /** Calls removeNodeParameters for all nodes. */
   void removeParametersForAllNodes();
 
-  // void clearNodes();
+  /** Clears the nodes array and does all associated clean up work. */
+  void clearNodes();
 
   // array of parameters assoicated with each node:
   struct NodeParameterSet
