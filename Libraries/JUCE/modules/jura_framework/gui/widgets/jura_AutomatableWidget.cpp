@@ -177,6 +177,15 @@ void rsAutomationSetup::resized()
   metaMapEditor->setBounds(0, y, w, h);
 }
 
+void rsAutomationSetup::setVisible(bool shouldBeVisible)
+{
+  //if(shouldBeVisible)
+  //  metaMapEditor->updateDraggableNodesArray(); 
+  //  // to keep them in sync with the corresponding nodes in RAPT::rsNodeBasedFunction
+
+  rsParameterSetupBase::setVisible(shouldBeVisible);
+}
+
 void rsAutomationSetup::nodeWasAdded(rsNodeEditor* editor, int nodeIndex)
 {
   // not needed - maybe make it optional to override this

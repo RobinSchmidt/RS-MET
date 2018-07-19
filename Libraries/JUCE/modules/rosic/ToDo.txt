@@ -6,6 +6,9 @@ Elan's list:
 -when selecting the last point, x/y sliders do not appear (i can't reproduce this)
 -when attaching a 2nd, 3rd, ..parameter, the graph should be a flat line (at the parameter's 
  current value)
+jura::rsNodeBasedFunctionEditor and RAPT::rsNodeBasedFunction<double> are not always in sync in
+rsMetaParameterMapper/rsMetaMapEditor
+-try to attach cutoff to meta 1 then reso also to meta 1 with flat option
 
 
 

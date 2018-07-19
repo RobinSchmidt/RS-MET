@@ -444,7 +444,7 @@ int rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
 
 void rsNodeBasedFunctionEditor::updateDraggableNodesArray()
 {
-  nodes.clear();
+  nodes.clear(); // not enough - objects must be deleted
   if(valueMapper == nullptr)
     return;
   const std::vector<RAPT::rsFunctionNode<double>> funcNodes = valueMapper->getNodes();

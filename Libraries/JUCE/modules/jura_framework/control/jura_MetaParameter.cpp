@@ -1,6 +1,6 @@
 rsMetaParameterMapper::rsMetaParameterMapper()
 {
-  initToDefaults();
+  initToIdentity();
 }
 
 /*
@@ -62,7 +62,7 @@ bool rsMetaParameterMapper::isDefaultMap() const
   return false;
 }
 
-void rsMetaParameterMapper::initToDefaults()
+void rsMetaParameterMapper::initToIdentity()
 {
   nodes.clear(); 
   appendNode(0, 0); 
@@ -101,7 +101,7 @@ void rsMetaParameterMapper::setStateFromXml(const XmlElement& mapXml)
   }
   jassert(nodes.size() >= 2); // xml corrupted? it should have at least 2 nodes
   if(nodes.size() < 2) 
-    initToDefaults();
+    initToIdentity();
 }
 
 // experimental: null object (as in https://sourcemaking.com/design_patterns/null_object) to be
@@ -231,7 +231,7 @@ void MetaControlledParameter::recallFromXml(const XmlElement& xml)
   if(mapXml != nullptr)
     metaMapper.setStateFromXml(*mapXml);
   else
-    metaMapper.initToDefaults();
+    metaMapper.initToIdentity();
 }
 
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
@@ -306,23 +306,30 @@ void MetaParameter::attachParameter(MetaControlledParameter* p, bool flatMap)
   // new:
   if(size(params) == 0)
     metaValue = p->getNormalizedValue();
-  else
-    p->setFromMetaValue(metaValue, false, false);
+  else {
+    if(flatMap)
+      p->initMetaMapToFlat();
+    else
+      p->setFromMetaValue(metaValue, false, false);
+  }
   p->registerParameterObserver(this);
   appendIfNotAlreadyThere(params, p);
-  if(flatMap)
-    p->initMetaMapToFlat();
-  p->notifyObservers();               // notifies host that MetaParameter has (possibly) changed
-  p->callValueChangeCallbacks(p->getValue()); // might be relevant in other contexts
+  if(!flatMap) {
+    p->notifyObservers();               // notifies host that MetaParameter has (possibly) changed
+    p->callValueChangeCallbacks(p->getValue()); // might be relevant in other contexts
+  }
 
   // Desired behavoir: when there are already other Parameters attached to this MetaParameter, set
   // the newly attached Parameter to the current value of the MetaParameter. If there are currently
   // none attached, let the MetaParameter take over the vealue from the attched Parameter.
   // ...but somehow the host must get notified
+
+  // Currently the "Meta attach (flat)" option has confusing behavior...
 }
 
 bool MetaParameter::detachParameter(MetaControlledParameter* p)
 {
+  //p->initMetaMapToIdentity(); // reset map on detach..hmm...maybe not
   p->deRegisterParameterObserver(this);
   return removeFirstOccurrence(params, p);
 }

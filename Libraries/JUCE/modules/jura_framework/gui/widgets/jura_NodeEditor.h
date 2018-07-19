@@ -299,6 +299,10 @@ public:
   values. */
   void setClipCoordinatesToRange(bool shouldClip) { clipRanges = shouldClip; }
 
+  /** Updates the inherited array of draggable nodes in order to in sync with the 
+  rsNodeBasedFunction object that is edited. */
+  void updateDraggableNodesArray();
+
   //-----------------------------------------------------------------------------------------------
   // \name Overrides
 
@@ -314,10 +318,6 @@ public:
 
 
 protected:
-
-  /** Updates the inherited array of draggable nodes in order to in sync with the 
-  rsNodeBasedFunction object that is edited. */
-  void updateDraggableNodesArray();
 
   /** Clips the x,y coordinates (given as model coordinates) to their respective min/max values as
   set up in our xyMapper, if this clipping option is selected (via setClipCoordinatesToRange). */
@@ -341,6 +341,8 @@ protected:
   void addParametersForAllNodes();
 
   void removeParametersForAllNodes();
+
+  // void clearNodes();
 
   // array of parameters assoicated with each node:
   struct NodeParameterSet

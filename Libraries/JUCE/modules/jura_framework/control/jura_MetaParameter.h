@@ -87,14 +87,13 @@ public:
   /** Tries to find a normalized x-value that corresponds to the given normalized y-value... */
   double unmap(double y) { return rsNodeBasedFunction<double>::applyInverseFunction(y); } 
 
-  /** Returns true, if this map is the default identity map. */
+  /** Returns true, if this map is the default identity map with two nodes at (0,0) and (1,1). */
   bool isDefaultMap() const;
     // maybe factor out into a baseclass that handles all kinds of maps and
     // make virtual, so subclasses can define their own default maps
 
   /** Initializes this maps to its default state which is the identity map. */
-  void initToDefaults();
-  // rename to initToIdentity
+  void initToIdentity();
 
   /** Initializes this maps to a flat line at the given value. */
   void initToFlat(double value);
