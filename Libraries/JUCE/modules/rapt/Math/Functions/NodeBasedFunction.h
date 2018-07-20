@@ -227,7 +227,7 @@ protected:
     if(fabs(x2-x1) < thresh)
       return T(0.5) * (y1+y2);
 
-    // Formulas taken from Moore - Elements of Computer Music, page 184:
+    // Formulas taken from Elements of Computer Music (Moore), page 184:
     T I = (x-x1) / (x2-x1);                          // Eq 3.30
     return y1 + (y2-y1) * (1-exp(I*a)) / (1-exp(a)); // Eq 3.29
   }

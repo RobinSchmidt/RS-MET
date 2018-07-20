@@ -35,6 +35,19 @@ void rsDraggableNode::assignParameterY(Parameter* newParameterY)
 }
 // try to get rid of code duplication
 
+void rsDraggableNode::addNodeParameter(Parameter* p)
+{
+  nodeParams.push_back(p);
+}
+
+void rsDraggableNode::clearNodeParameters(bool deleteObjects)
+{
+  if(deleteObjects)
+    for(size_t i = 0; i < nodeParams.size(); i++)
+      delete nodeParams[i];
+  nodeParams.clear();
+}
+
 void rsDraggableNode::setPosition(double newX, double newY, bool callNodeChanged)
 {
   x = newX;
@@ -455,6 +468,7 @@ void rsNodeBasedFunctionEditor::updateDraggableNodesArray()
     node->setIndex((int)i);
     nodes.push_back(node); 
   }
+  addParametersForAllNodes();
 }
 
 void rsNodeBasedFunctionEditor::clipIfDesired(double* x, double* y)
@@ -469,6 +483,9 @@ void rsNodeBasedFunctionEditor::addNodeParameters(rsDraggableNode* node)
   NodeParameterSet* params = new NodeParameterSet(node);
   node->assignParameterX(params->x);
   node->assignParameterY(params->y);
+  node->addNodeParameter(params->shapeType);   // order of adding the parameters is important for
+  node->addNodeParameter(params->shapeAmount); // rsAutomationSetup::assignNodeParameterWidgets
+  // todo: wire up callbacks for shapeType and shapeAmount
   nodeParams.push_back(params);
 }
 
@@ -485,13 +502,15 @@ void rsNodeBasedFunctionEditor::removeNodeParameters(int i)
   rsDraggableNode* node = nodeParams[i]->node;
   node->assignParameterX(nullptr);
   node->assignParameterY(nullptr);
+  node->clearNodeParameters(false);
   delete nodeParams[i];
   RAPT::rsRemove(nodeParams, i);
 }
 
 void rsNodeBasedFunctionEditor::addParametersForAllNodes()
 {
-  jassert(nodeParams.size() == 0); // should be called only on init when there are no paremeters yet
+  //jassert(nodeParams.size() == 0); // should be called only on init when there are no paremeters yet
+  removeParametersForAllNodes(); // nodeParams should be empty anyway but isn't? ...check this..
   for(int i = 0; i < nodes.size(); i++)
     addNodeParameters(nodes[i]);
 }

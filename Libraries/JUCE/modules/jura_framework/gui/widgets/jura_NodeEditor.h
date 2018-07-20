@@ -29,6 +29,14 @@ public:
   /** Assigns the parameter object associated with the y-coordinate of this node. */
   virtual void assignParameterY(Parameter* newParameterY);
 
+  /** With this function, you can associate additional parameters with each node that controls 
+  additional features of a node such as a bandwidth for an eq-band, a slope, a shape, whatever. */
+  virtual void addNodeParameter(Parameter* newParameter);
+
+  /** Clears the array of additional node feature parameters and optionally deletes the parameter 
+  objects. */
+  virtual void clearNodeParameters(bool deleteObjects);
+
   /** Sets the position of this node (in model coordinates) calls the nodeChanged function of 
   our editor. */
   virtual void setPosition(double newX, double newY, bool callNodeChanged = true);
@@ -60,7 +68,9 @@ public:
   /** @see getParameterX */
   Parameter* getParameterY() { return paramY; }
 
-
+  /** Returns a pointer to the node feature parameter with given index, i.e. one of those added via
+  addNodeParameter. If the index is out of range, this will lead to an access violation. */
+  Parameter* getNodeParameter(int index) { return nodeParams[index]; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
@@ -73,13 +83,9 @@ protected:
   int index = -1;
   double x, y;                                    // (model) coordinates of the node 
   Parameter *paramX = nullptr, *paramY = nullptr; // parameter objects associated with x and y
+  std::vector<Parameter*> nodeParams;             // additional node feature parameters
   rsNodeEditor* nodeEditor;                       // editor which edits this node 
                                                   // todo: maybe allow more than one editor
-
-  // maybe let nodes have additional "features" associated with parameters, such as a bandwidth for
-  // an eq-band, a slope, a shape, whatever ....maybe express this by a vector of additional 
-  // parameters
-  // std::vector<Parameter*> nodeParams;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsDraggableNode)
 };
@@ -346,7 +352,7 @@ protected:
   /** Clears the nodes array and does all associated clean up work. */
   void clearNodes();
 
-  // array of parameters assoicated with each node:
+  // array of parameters associated with each node:
   struct NodeParameterSet
   { 
     NodeParameterSet(rsDraggableNode* _node)
@@ -354,17 +360,19 @@ protected:
       node = _node;
       x = new Parameter("X");
       y = new Parameter("Y");
-      shape = new Parameter("Shape");
-      shapeAmount = new Parameter("ShapeAmount");
+      shapeAmount = new Parameter("ShapeValue");
+      shapeType = new Parameter("ShapeType", 0, 1, 0, Parameter::STRING, 1);
+      shapeType->addStringValue("Linear");
+      shapeType->addStringValue("Exponential");
     }
     ~NodeParameterSet()
     {
       delete x;
       delete y;
-      delete shape;
+      delete shapeType;
       delete shapeAmount;
     }
-    Parameter *x, *y, *shape, *shapeAmount; 
+    Parameter *x, *y, *shapeType, *shapeAmount; 
     rsDraggableNode* node; // pointer to the node to which the parameters belong
   };
   std::vector<NodeParameterSet*> nodeParams;

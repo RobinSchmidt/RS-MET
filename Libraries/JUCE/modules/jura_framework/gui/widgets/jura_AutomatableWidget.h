@@ -91,7 +91,7 @@ public:
   virtual void rButtonClicked(RButton *button) override;
   virtual void rComboBoxChanged(RComboBox* cb) override;
   virtual void resized() override;
-  virtual void 	setVisible(bool shouldBeVisible) override;
+  virtual void setVisible(bool shouldBeVisible) override;
 
   virtual void nodeWasAdded(     rsNodeEditor* editor, int nodeIndex) override;
   virtual void nodeWillBeRemoved(rsNodeEditor* editor, int nodeIndex) override;
