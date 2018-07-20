@@ -206,8 +206,8 @@ void rsAutomationSetup::assignNodeParameterWidgets(int i)
     rsDraggableNode* node = metaMapEditor->getNode(i);
     sliderNodeX     ->assignParameter(node->getParameterX());
     sliderNodeY     ->assignParameter(node->getParameterY());
-    //boxShapeType    ->assignParameter(node->getNodeParameter(0));
-    //sliderShapeParam->assignParameter(node->getNodeParameter(1));
+    boxShapeType    ->assignParameter(node->getNodeParameter(0));
+    sliderShapeParam->assignParameter(node->getNodeParameter(1));
     // we get an access violation when selecting an existing node, but none when inserting a new node
   }
   else {

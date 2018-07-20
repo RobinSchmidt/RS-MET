@@ -43,7 +43,7 @@ public:
   inline void setShapeType(int newType) { shapeType = newType; }
 
   /** Some shapes have a numeric parameter which can be set via this function. */
-  inline void setShapeParameter(int newParam) { shapeParam = newParam; }
+  inline void setShapeParameter(T newParam) { shapeParam = newParam; }
 
   /** Returns the x-coordinate of this node. */
   inline T getX() const { return x; }
@@ -110,6 +110,15 @@ public:
   position. It will move the node up or down in the array of nodes (by successive swaps) to keep 
   the array sorted. The return value is the new index. */
   size_t moveNodeToSortedIndex(size_t index);
+
+  /** Sets the shape type for the node at given index. */
+  virtual void setNodeShapeType(size_t index, int newType) { nodes[index].setShapeType(newType); }
+
+  /** Sets the shape parameter for the node at given index. */
+  virtual void setNodeShapeParameter(size_t index, T newParam) 
+  { 
+    nodes[index].setShapeParameter(newParam); 
+  }
 
   //-----------------------------------------------------------------------------------------------
   // \name Hooks

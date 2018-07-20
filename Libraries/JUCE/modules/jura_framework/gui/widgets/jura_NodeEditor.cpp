@@ -471,6 +471,16 @@ void rsNodeBasedFunctionEditor::updateDraggableNodesArray()
   addParametersForAllNodes();
 }
 
+void rsNodeBasedFunctionEditor::setNodeShapeType(rsDraggableNode* node, int newType)
+{
+  int dummy = 0;
+}
+
+void rsNodeBasedFunctionEditor::setNodeShapeParam(rsDraggableNode* node, double newParam)
+{
+
+}
+
 void rsNodeBasedFunctionEditor::clipIfDesired(double* x, double* y)
 {
   if(clipRanges) {
@@ -485,7 +495,12 @@ void rsNodeBasedFunctionEditor::addNodeParameters(rsDraggableNode* node)
   node->assignParameterY(params->y);
   node->addNodeParameter(params->shapeType);   // order of adding the parameters is important for
   node->addNodeParameter(params->shapeAmount); // rsAutomationSetup::assignNodeParameterWidgets
-  // todo: wire up callbacks for shapeType and shapeAmount
+
+  // wire up callbacks for shapeType and shapeAmount:
+  params->shapeType->setValueChangeCallback(
+    [=](double s){setNodeShapeType(node, RAPT::rsRoundToInt(s));});
+  params->shapeAmount->setValueChangeCallback([=](double p){setNodeShapeParam(node, p);});
+
   nodeParams.push_back(params);
 }
 

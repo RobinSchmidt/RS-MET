@@ -309,6 +309,14 @@ public:
   rsNodeBasedFunction object that is edited. */
   void updateDraggableNodesArray();
 
+  /** Sets the shape type for the given node. */
+  void setNodeShapeType(rsDraggableNode* node, int newType);
+
+  /** Sets the shape parameter for the given node */
+  void setNodeShapeParam(rsDraggableNode* node, double newParam);
+
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Overrides
 
@@ -360,7 +368,7 @@ protected:
       node = _node;
       x = new Parameter("X");
       y = new Parameter("Y");
-      shapeAmount = new Parameter("ShapeValue");
+      shapeAmount = new Parameter("ShapeValue", -1, +1, 0, Parameter::LINEAR);
       shapeType = new Parameter("ShapeType", 0, 1, 0, Parameter::STRING, 1);
       shapeType->addStringValue("Linear");
       shapeType->addStringValue("Exponential");
