@@ -228,7 +228,7 @@ protected:
     if(abs(a) < thresh)            // global setting for the whole function defined in this class
       return getValueLinear(x, i); // avoid div-by-zero
 
-    // this is the same as in the linear case:
+    // this is the same as in the linear case (factor out, if possible):
     T x1 = nodes[i].x;
     T y1 = nodes[i].y;
     T x2 = nodes[i+1].x;
@@ -240,6 +240,17 @@ protected:
     T I = (x-x1) / (x2-x1);                          // Eq 3.30
     return y1 + (y2-y1) * (1-exp(I*a)) / (1-exp(a)); // Eq 3.29
   }
+  // todo: interpret the shape parameter not directly as "a" - instead compute a from the condition
+  // (1-exp(a/2)) / (1-exp(a)) = c  -> wolfram: solve (1-exp(a/2))/(1-exp(a)) = c for a
+  // -> a = 2*log((1-c)/c) where c is the value between 0..1 of the
+  // normalized transition function (between 0..1)...so, if c = 0.75, it means the normalized curve
+  // goes through the point (x = 0.5,y = 0.75), with c = 0.25, it goes through (x = 0.5, y = 0.25)
+  // so c is y-value in the middle of the transition function
+  // -> use the same convention (shape parameter is normalized curve value at x=0.5) also for the 
+  // rational mapping
+
+
+
 
   /** Simply appends a node with given coordinates (and linear shape-type) to our array - without 
   checking constraints or sorting. This is mainly meant to be used by subclasses to intialize the
