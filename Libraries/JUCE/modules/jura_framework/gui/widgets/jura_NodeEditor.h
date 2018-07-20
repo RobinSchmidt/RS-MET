@@ -197,6 +197,10 @@ public:
   range). */
   rsDraggableNode* getNode(int nodeIndex);
 
+  /** Returns the index of the given node in our array nodes. Returns -1, if the node isn't 
+  found. */
+  int getNodeIndex(rsDraggableNode* node);
+
   /** Returns the x-coordinate in pixels of the given node. */
   float getPixelX(const rsDraggableNode* node);
 
@@ -390,6 +394,8 @@ protected:
 
 
   RAPT::rsNodeBasedFunction<double>* valueMapper = nullptr;
+
+  std::vector<int> shapeOptions;
 
   bool clipRanges = false; // clip x,y to their min/max values (todo: maybe have 4 separate flags
                            // for low/high x/y clipping)

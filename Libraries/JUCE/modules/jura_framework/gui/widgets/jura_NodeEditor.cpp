@@ -197,6 +197,15 @@ rsDraggableNode* rsNodeEditor::getNode(int i)
   return nullptr;
 }
 
+int rsNodeEditor::getNodeIndex(rsDraggableNode* node)
+{
+  size_t i = RAPT::rsFind(nodes, node);
+  if(i == nodes.size())
+    return -1;
+  else
+    return (int) i;
+}
+
 float rsNodeEditor::getPixelX(const rsDraggableNode* node)
 {
   return (float) xyMapper.mapX(node->getX());
@@ -351,6 +360,10 @@ rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
   lock = lockToUse;
   valueMapper = functionMapper;
   //addParametersForAllNodes(); // done in setFunctionToEdit
+
+  typedef RAPT::rsFunctionNode<double> FN;
+  shapeOptions.push_back(FN::LINEAR);
+  shapeOptions.push_back(FN::EXPONENTIAL);
 }
 
 rsNodeBasedFunctionEditor::~rsNodeBasedFunctionEditor()
@@ -473,12 +486,16 @@ void rsNodeBasedFunctionEditor::updateDraggableNodesArray()
 
 void rsNodeBasedFunctionEditor::setNodeShapeType(rsDraggableNode* node, int newType)
 {
-  int dummy = 0;
+  int i = getNodeIndex(node);
+  valueMapper->setNodeShapeType(i, shapeOptions[newType]);
+  repaint();
 }
 
 void rsNodeBasedFunctionEditor::setNodeShapeParam(rsDraggableNode* node, double newParam)
 {
-
+  int i = getNodeIndex(node);
+  valueMapper->setNodeShapeParameter(i, 20*newParam); // 20 is preliminary just for test
+  repaint();
 }
 
 void rsNodeBasedFunctionEditor::clipIfDesired(double* x, double* y)

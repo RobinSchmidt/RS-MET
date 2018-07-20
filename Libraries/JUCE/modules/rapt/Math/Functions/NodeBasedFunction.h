@@ -224,9 +224,9 @@ protected:
   T getValueExponential(T x, size_t i)
   {
     T thresh = RS_EPS(T);
-    T a = nodes[i].shapeParam;  // alpha - maybe use shapeScaler*shapeParam where shapeScaler is a 
-    if(abs(a) < thresh)         // global setting for the whole function defined in this class
-      getValueLinear(x, i);     // avoid div-by-zero
+    T a = -nodes[i+1].shapeParam;  // alpha - maybe use shapeScaler*shapeParam where shapeScaler is a 
+    if(abs(a) < thresh)            // global setting for the whole function defined in this class
+      return getValueLinear(x, i); // avoid div-by-zero
 
     // this is the same as in the linear case:
     T x1 = nodes[i].x;
