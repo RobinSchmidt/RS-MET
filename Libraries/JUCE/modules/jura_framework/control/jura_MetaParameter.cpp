@@ -95,14 +95,14 @@ XmlElement* rsMetaParameterMapper::getStateAsXml(const juce::String& tagName) co
 
 void rsMetaParameterMapper::setStateFromXml(const XmlElement& mapXml)
 {
+  typedef RAPT::rsFunctionNode<double> FN;
   nodes.clear();
   forEachXmlChildElementWithTagName(mapXml, nodeXml, "Node") {
-    double x = nodeXml->getDoubleAttribute("X", 0.0);
-    double y = nodeXml->getDoubleAttribute("Y", 0.0);
-
-
-    appendNode(x, y); // needs version that also takes shape parameters
-
+    double x  = nodeXml->getDoubleAttribute("X", 0.0);
+    double y  = nodeXml->getDoubleAttribute("Y", 0.0);
+    double sp = nodeXml->getDoubleAttribute("ShapeParameter", 0.0);
+    int shape = stringToShapeIndex(nodeXml->getStringAttribute("Shape", "Linear"));
+    appendNode(x, y, shape, sp);
     //addNode(x, y); // can't be used because when the array is empty, the constraint checker 
                      // doesn't work properly
   }

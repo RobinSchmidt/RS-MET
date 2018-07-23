@@ -27,7 +27,10 @@ public:
 
   /** Constructor. Initializes the x,y coordinates to the given values and uses a linear shape by 
   default. */
-  rsFunctionNode(T _x, T _y) : x(_x), y(_y) {}
+  //rsFunctionNode(T _x, T _y) : x(_x), y(_y) {}
+  rsFunctionNode(T _x, T _y, int _shape = LINEAR, T _shapeParam = T(0)) 
+    : x(_x), y(_y), shapeType(_shape), shapeParam(_shapeParam) {}
+
 
   /** Sets the x,y coordinates of this node. */
   inline void setCoordinates(T newX, T newY) { x = newX; y = newY; }
@@ -262,10 +265,16 @@ protected:
 
 
 
-  /** Simply appends a node with given coordinates (and linear shape-type) to our array - without 
+  /** Simply appends a node with given coordinates and linear shape-type to our array - without 
   checking constraints or sorting. This is mainly meant to be used by subclasses to intialize the
   node array to a default state (in which case the constraints may not work as desired). */
-  void appendNode(T x, T y) { nodes.push_back(rsFunctionNode<T>(x, y)); }
+  //void appendNode(T x, T y) { nodes.push_back(rsFunctionNode<T>(x, y)); }
+  void appendNode(T x, T y, int shape = rsFunctionNode<T>::LINEAR, T shapeParam = T(0)) 
+  { 
+    nodes.push_back(rsFunctionNode<T>(x, y, shape, shapeParam)); 
+  }
+
+
 
   std::vector<rsFunctionNode<T>> nodes;
 
