@@ -105,6 +105,10 @@ public:
   void setStateFromXml(const XmlElement& xmlState);
 
 
+  static String shapeIndexToString(int index);
+
+  static int stringToShapeIndex(const String& shapeString);
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMetaParameterMapper)
 };
 

@@ -78,12 +78,16 @@ void rsMetaParameterMapper::initToFlat(double v)
 
 XmlElement* rsMetaParameterMapper::getStateAsXml(const juce::String& tagName) const
 {
+  typedef RAPT::rsFunctionNode<double> FN;
   XmlElement* mapXml = new XmlElement(tagName);
   for(size_t i = 0; i < nodes.size(); i++) {
     XmlElement* nodeXml = new XmlElement("Node");
     nodeXml->setAttribute("X", nodes[i].getX());
     nodeXml->setAttribute("Y", nodes[i].getY());
-    // todo: shape-type and shape-param
+    if(nodes[i].getShapeType() != FN::LINEAR) {
+      nodeXml->setAttribute("Shape", shapeIndexToString(nodes[i].getShapeType()));
+      nodeXml->setAttribute("ShapeParameter", nodes[i].getShapeParameter());
+    }
     mapXml->addChildElement(nodeXml);
   }
   return mapXml;
@@ -95,7 +99,10 @@ void rsMetaParameterMapper::setStateFromXml(const XmlElement& mapXml)
   forEachXmlChildElementWithTagName(mapXml, nodeXml, "Node") {
     double x = nodeXml->getDoubleAttribute("X", 0.0);
     double y = nodeXml->getDoubleAttribute("Y", 0.0);
-    appendNode(x, y); 
+
+
+    appendNode(x, y); // needs version that also takes shape parameters
+
     //addNode(x, y); // can't be used because when the array is empty, the constraint checker 
                      // doesn't work properly
   }
@@ -103,6 +110,26 @@ void rsMetaParameterMapper::setStateFromXml(const XmlElement& mapXml)
   if(nodes.size() < 2) 
     initToIdentity();
 }
+
+String rsMetaParameterMapper::shapeIndexToString(int index)
+{
+  typedef RAPT::rsFunctionNode<double> FN;
+  switch(index)
+  {
+  case FN::LINEAR:      return "Linear";
+  case FN::EXPONENTIAL: return "Exponential";
+  default:              return "Linear";
+  }
+}
+
+int rsMetaParameterMapper::stringToShapeIndex(const String& s)
+{
+  typedef RAPT::rsFunctionNode<double> FN;
+  if(s == "Linear")       return FN::LINEAR;
+  if(s == "Exponential")  return FN::EXPONENTIAL;
+  return FN::LINEAR;
+}
+
 
 // experimental: null object (as in https://sourcemaking.com/design_patterns/null_object) to be
 // used by default:

@@ -107,7 +107,7 @@ public:
 
 /** A mapper based on the hyperbolic sine function, using y = a * sinh(b*x) where x is a value
 between -1 and +1 (derived from the normalized 0..1 parameter p as x = 2*p-1). This function is 
-suitable for parameters that should be mapped exponentially but should nevertheless by bipolar.
+suitable for parameters that should be mapped exponentially but should nevertheless be bipolar.
 An example would be a frequency between -20000 and +20000 Hz. You can set up a shape parameter 
 which controls the trade-off between precision around zero and high frequency precision (in the 
 case of the freq-example). This shape parameter is actually the "b" in the formula. The "a" will 

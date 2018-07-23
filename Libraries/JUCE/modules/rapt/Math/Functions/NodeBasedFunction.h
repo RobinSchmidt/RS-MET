@@ -12,7 +12,7 @@ class rsFunctionNode
 public:
 
   /** Enumeration of possible shapes. */
-  enum shapes
+  enum  
   {
     LEFT_NEIGHBOUR,
     RIGHT_NEIGHBOUR,
@@ -50,6 +50,12 @@ public:
 
   /** Returns the y-coordinate of this node. */
   inline T getY() const { return y; }
+
+  /** Returns the index of the shape type for this node, @see shapes.  */
+  inline int getShapeType() const { return shapeType; }
+
+  /** Returns the numerical parameter that controls the shape. */
+  inline T getShapeParameter() const { return shapeParam; }
 
   /** A node is considered to be less than another, if its x-coordinate is less and in case of 
   equal x-coordinates, if its y-coordinate is less. */
@@ -224,7 +230,11 @@ protected:
   T getValueExponential(T x, size_t i)
   {
     T thresh = RS_EPS(T);
-    T a = -nodes[i+1].shapeParam;  // alpha - maybe use shapeScaler*shapeParam where shapeScaler is a 
+
+    T c = 0.5 * (nodes[i+1].shapeParam + 1);
+    T a = 2*log((1-c)/c);
+    //T a = -nodes[i+1].shapeParam;  // alpha - maybe use shapeScaler*shapeParam where shapeScaler is a 
+
     if(abs(a) < thresh)            // global setting for the whole function defined in this class
       return getValueLinear(x, i); // avoid div-by-zero
 

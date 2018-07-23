@@ -494,7 +494,7 @@ void rsNodeBasedFunctionEditor::setNodeShapeType(rsDraggableNode* node, int newT
 void rsNodeBasedFunctionEditor::setNodeShapeParam(rsDraggableNode* node, double newParam)
 {
   int i = getNodeIndex(node);
-  valueMapper->setNodeShapeParameter(i, 20*newParam); // 20 is preliminary just for test
+  valueMapper->setNodeShapeParameter(i, newParam);
   repaint();
 }
 
