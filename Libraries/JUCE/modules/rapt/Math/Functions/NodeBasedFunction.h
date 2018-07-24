@@ -275,13 +275,11 @@ protected:
   T ratCurve(T p, T a)
   {
     T ap = a*p;
-    return (ap-p) / (2*ap - a - 1);
+    return (a*p+p) / (2*a*p - a + 1);
   }
   T getValueRational(T x, size_t i)
   {
     T thresh = RS_EPS(T);
-    T c = 0.5 * (nodes[i+1].shapeParam + 1);
-    T a = (2*c)/(2*c+1);
 
     // this is the same as in the linear case (factor out, if possible):
     T x1 = nodes[i].x;
@@ -292,7 +290,7 @@ protected:
       return T(0.5) * (y1+y2);
 
     T p = (x-x1) / (x2-x1);
-    return y1 + (y2-y1) * ratCurve(p, a);
+    return y1 + (y2-y1) * ratCurve(p, nodes[i+1].shapeParam);
   }
 
 
