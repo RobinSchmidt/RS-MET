@@ -393,6 +393,11 @@ protected:
   /** Clears the nodes array and does all associated clean up work. */
   void clearNodes();
 
+  /** Maps from a value from RAPT::rsFunctionNode::shapes to the corresponding index in our 
+  shapeOptions array. Its a bit clunky but we need a different set of shape options here and there,
+  so this mapping is needed. */
+  int getShapeOptionIndex(int shapeOption);
+
   // data:
 
   std::vector<NodeParameterSet*> nodeParams;  // array of parameters associated with each node

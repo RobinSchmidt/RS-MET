@@ -520,7 +520,10 @@ void rsNodeBasedFunctionEditor::setupParameterCallbacks(
   int i = getNodeIndex(node);
 
   // doesn't work yet - new nodes default to exponential:
-  params->shapeType  ->setValue(valueMapper->getNodeShapeType(i),      false, false);
+  int shapeIndex = getShapeOptionIndex(valueMapper->getNodeShapeType(i));
+  params->shapeType  ->setValue((double)shapeIndex,      false, false);
+  //params->shapeType  ->setValue(valueMapper->getNodeShapeType(i),      false, false);
+  // maybe because we must map it via the shapeOptions array
   params->shapeAmount->setValue(valueMapper->getNodeShapeParameter(i), false, false);
 
   params->shapeType->setValueChangeCallback(
@@ -566,4 +569,11 @@ void rsNodeBasedFunctionEditor::clearNodes()
   for(size_t i = 0; i < nodes.size(); i++) 
     delete nodes[i];
   nodes.clear();
+}
+
+int rsNodeBasedFunctionEditor::getShapeOptionIndex(int shapeOption)
+{
+  size_t index = RAPT::rsFind(shapeOptions, shapeOption);
+  jassert(index != shapeOptions.size()); // shape option not found
+  return (int) index;
 }
