@@ -118,6 +118,7 @@ String rsMetaParameterMapper::shapeIndexToString(int index)
   {
   case FN::LINEAR:      return "Linear";
   case FN::EXPONENTIAL: return "Exponential";
+  case FN::RATIONAL:    return "Rational";
   default:              return "Linear";
   }
 }
@@ -127,6 +128,7 @@ int rsMetaParameterMapper::stringToShapeIndex(const String& s)
   typedef RAPT::rsFunctionNode<double> FN;
   if(s == "Linear")       return FN::LINEAR;
   if(s == "Exponential")  return FN::EXPONENTIAL;
+  if(s == "Rational")     return FN::RATIONAL;
   return FN::LINEAR;
 }
 

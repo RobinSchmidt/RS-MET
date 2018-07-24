@@ -208,7 +208,8 @@ public:
     {
     //case FN::LINEAR:      return getValueLinear(x, i-1);  // redundant with default case
     case FN::EXPONENTIAL: return getValueExponential(x, i-1);
-    default:              return getValueLinear(x, i-1);
+    case FN::RATIONAL:    return getValueRational(   x, i-1);
+    default:              return getValueLinear(     x, i-1);
     }
 
     //return getValueLinear(x, i-1);
@@ -235,7 +236,7 @@ protected:
     T thresh = RS_EPS(T);
     if(fabs(x2-x1) < thresh)
       return T(0.5) * (y1+y2);
-    return y1 + (y2-y1) * (x-x1) / (x2-x1);
+    return y1 + (y2-y1) * (x-x1) / (x2-x1); // factor into function linCurve
   }
 
   T getValueExponential(T x, size_t i)
@@ -259,7 +260,7 @@ protected:
 
     // Formulas taken from Elements of Computer Music (Moore), page 184:
     T I = (x-x1) / (x2-x1);                          // Eq 3.30
-    return y1 + (y2-y1) * (1-exp(I*a)) / (1-exp(a)); // Eq 3.29
+    return y1 + (y2-y1) * (1-exp(I*a)) / (1-exp(a)); // Eq 3.29 - factor into function expCurve(I, a)
   }
   // todo: interpret the shape parameter not directly as "a" - instead compute a from the condition
   // (1-exp(a/2)) / (1-exp(a)) = c  -> wolfram: solve (1-exp(a/2))/(1-exp(a)) = c for a
@@ -269,6 +270,32 @@ protected:
   // so c is y-value in the middle of the transition function
   // -> use the same convention (shape parameter is normalized curve value at x=0.5) also for the 
   // rational mapping
+
+
+  T ratCurve(T p, T a)
+  {
+    T ap = a*p;
+    return (ap-p) / (2*ap - a - 1);
+  }
+  T getValueRational(T x, size_t i)
+  {
+    T thresh = RS_EPS(T);
+    T c = 0.5 * (nodes[i+1].shapeParam + 1);
+    T a = (2*c)/(2*c+1);
+
+    // this is the same as in the linear case (factor out, if possible):
+    T x1 = nodes[i].x;
+    T y1 = nodes[i].y;
+    T x2 = nodes[i+1].x;
+    T y2 = nodes[i+1].y;
+    if(fabs(x2-x1) < thresh)
+      return T(0.5) * (y1+y2);
+
+    T p = (x-x1) / (x2-x1);
+    return y1 + (y2-y1) * ratCurve(p, a);
+  }
+
+
 
 
 

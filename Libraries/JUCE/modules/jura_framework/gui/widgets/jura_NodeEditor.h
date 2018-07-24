@@ -345,10 +345,12 @@ protected:
       node = _node;
       x = new Parameter("X");
       y = new Parameter("Y");
-      shapeAmount = new Parameter("ShapeValue", -1, +1, 0, Parameter::LINEAR);
+      //shapeAmount = new Parameter("ShapeValue", -1, +1, 0, Parameter::LINEAR);
+      shapeAmount = new Parameter("ShapeValue", -0.99, +0.99, 0, Parameter::LINEAR);
       shapeType = new Parameter("ShapeType", 0, 1, 0, Parameter::STRING, 1);
       shapeType->addStringValue("Linear");
       shapeType->addStringValue("Exponential");
+      shapeType->addStringValue("Rational");
     }
     ~NodeParameterSet()
     {

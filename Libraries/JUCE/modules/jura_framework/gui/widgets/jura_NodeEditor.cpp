@@ -364,6 +364,9 @@ rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
   typedef RAPT::rsFunctionNode<double> FN;
   shapeOptions.push_back(FN::LINEAR);
   shapeOptions.push_back(FN::EXPONENTIAL);
+  shapeOptions.push_back(FN::RATIONAL);
+  // it sucks to have to change the code in various places when a new shape type should be added
+  // -> recaftor to consolidate that in a class
 }
 
 rsNodeBasedFunctionEditor::~rsNodeBasedFunctionEditor()
