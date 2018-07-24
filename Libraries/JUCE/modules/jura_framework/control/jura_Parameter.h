@@ -306,6 +306,15 @@ public:
   /** Sets the mutex lock to use for parameter changes. */
   virtual void setMutexToUse(CriticalSection* cs) { mutex = cs; }
 
+  /** A global switch (for all parameter objects) to decide whether a parameter value should be 
+  stored to an xml element (in saveToXml), even if it has its default value. Normally, default 
+  values are not stored because when reading an xml and the attribute isn't found, the parameter
+  will take on its deafult value anyway, so we may save some space. */
+  static void setStoreDefaultValuesToXml(bool shouldStore)
+  {
+    storeDefaultValues = shouldStore;
+  }
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
@@ -557,7 +566,9 @@ protected:
   double interval;              // interval for adjustments ...rename to stepSize
   double defaultValue;          // default value of this parameter ...maybe rename to resetValue
   int    scaling;               // index to the scaling/mapping to be used
-  bool   saveAndRecall = true;  // flag, to switch automatic saving on/off - why?
+  bool   saveAndRecall = true;  // flag, to switch automatic saving on/off
+
+  static bool storeDefaultValues; // a global switch for values to xml even if they are at default value
 
   // array of some more default values, meant to be used for easy access via popup menu:
   std::vector<double> defaultValues;

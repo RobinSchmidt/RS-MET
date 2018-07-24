@@ -25,6 +25,8 @@ bool ParameterObserver::wantsAutomationNotification()
 //=================================================================================================
 // class Parameter:
 
+bool Parameter::storeDefaultValues = false;
+
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
@@ -384,12 +386,15 @@ String Parameter::getScalingString() const
 
 void Parameter::saveToXml(XmlElement* xml) const
 {
-  if(shouldBeSavedAndRecalled() && !isCurrentValueDefaultValue())
+  if(shouldBeSavedAndRecalled())
   {
-    if(isStringParameter())
-      xml->setAttribute(getName(), getStringValue());
-    else
-      xml->setAttribute(getName(), juce::String(getValue()));
+    if(!isCurrentValueDefaultValue() || storeDefaultValues == true)
+    {
+      if(isStringParameter())
+        xml->setAttribute(getName(), getStringValue());
+      else
+        xml->setAttribute(getName(), juce::String(getValue()));
+    }
   }
 }
 
