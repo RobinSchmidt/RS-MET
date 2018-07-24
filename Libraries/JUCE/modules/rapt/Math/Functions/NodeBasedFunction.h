@@ -29,7 +29,10 @@ public:
   default. */
   //rsFunctionNode(T _x, T _y) : x(_x), y(_y) {}
   rsFunctionNode(T _x, T _y, int _shape = LINEAR, T _shapeParam = T(0)) 
-    : x(_x), y(_y), shapeType(_shape), shapeParam(_shapeParam) {}
+    : x(_x), y(_y), shapeType(_shape), shapeParam(_shapeParam) 
+  {
+  
+  }
 
 
   /** Sets the x,y coordinates of this node. */
@@ -156,6 +159,11 @@ public:
 
   /** Returns the y coordinate of the node with given index. */
   inline T getNodeY(size_t index) { return nodes[index].getY(); }
+
+  inline int getNodeShapeType(size_t index) { return nodes[index].getShapeType(); }
+
+  inline T getNodeShapeParameter(size_t index) { return nodes[index].getShapeParameter(); }
+
 
   /** Returns a reference to our array of nodes. It's a constant reference because client code
   is not allowed to edit that data directly. Instead, it must use the moveNode function which

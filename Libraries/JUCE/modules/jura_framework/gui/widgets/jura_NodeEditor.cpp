@@ -417,11 +417,9 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
   clipIfDesired(&x, &y);
   int i = (int) valueMapper->addNode(x, y);
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
-
-  addNodeParameters(newNode); 
-
-  insert(nodes, newNode, i);
-  nodes[i]->setIndex(i);
+  insert(nodes, newNode, i);   // must be done before addNodeParameters, or access violation on...
+  nodes[i]->setIndex(i);       // ...adding a new node
+  addNodeParameters(newNode);  
   for(int j = i+1; j < size(nodes); j++)
     nodes[j]->incrementIndex();
   return i;
@@ -512,13 +510,22 @@ void rsNodeBasedFunctionEditor::addNodeParameters(rsDraggableNode* node)
   node->assignParameterY(params->y);
   node->addNodeParameter(params->shapeType);   // order of adding the parameters is important for
   node->addNodeParameter(params->shapeAmount); // rsAutomationSetup::assignNodeParameterWidgets
+  nodeParams.push_back(params);
+  setupParameterCallbacks(node, params);       // wire up callbacks for shapeType and shapeAmount
+}
 
-  // wire up callbacks for shapeType and shapeAmount:
+void rsNodeBasedFunctionEditor::setupParameterCallbacks(
+  rsDraggableNode* node, NodeParameterSet* params)
+{
+  int i = getNodeIndex(node);
+
+  // doesn't work yet - new nodes default to exponential:
+  params->shapeType  ->setValue(valueMapper->getNodeShapeType(i),      false, false);
+  params->shapeAmount->setValue(valueMapper->getNodeShapeParameter(i), false, false);
+
   params->shapeType->setValueChangeCallback(
     [=](double s){setNodeShapeType(node, RAPT::rsRoundToInt(s));});
   params->shapeAmount->setValueChangeCallback([=](double p){setNodeShapeParam(node, p);});
-
-  nodeParams.push_back(params);
 }
 
 void rsNodeBasedFunctionEditor::removeNodeParameters(rsDraggableNode* node)

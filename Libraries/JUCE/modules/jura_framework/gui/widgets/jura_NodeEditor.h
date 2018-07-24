@@ -337,34 +337,7 @@ public:
 
 protected:
 
-  /** Clips the x,y coordinates (given as model coordinates) to their respective min/max values as
-  set up in our xyMapper, if this clipping option is selected (via setClipCoordinatesToRange). */
-  void clipIfDesired(double* x, double* y);
 
-  /** Creates the Parameter objects associated with the given node (assumed to have been just 
-  added) and adds them to our array. */
-  void addNodeParameters(rsDraggableNode* node); 
-
-  /** Removes the parameters for the given node. */
-  void removeNodeParameters(rsDraggableNode* node);
-
-  /** Removes the node parameters at a given index in our nodeParams array. Note that this index
-  may not match the node's index - this is because when nodes are moved around, they may have to be
-  re-indexe. hmmm...this is ugly ..maybe override reIndexNode in order to keep the arrays in 
-  sync. */
-  void removeNodeParameters(int indexInParameterArray);
-
-  /** Adds parameters for all nodes that do not yet have parameters associated with them. Called in 
-  constructor. */
-  void addParametersForAllNodes();
-
-  /** Calls removeNodeParameters for all nodes. */
-  void removeParametersForAllNodes();
-
-  /** Clears the nodes array and does all associated clean up work. */
-  void clearNodes();
-
-  // array of parameters associated with each node:
   struct NodeParameterSet
   { 
     NodeParameterSet(rsDraggableNode* _node)
@@ -387,11 +360,44 @@ protected:
     Parameter *x, *y, *shapeType, *shapeAmount; 
     rsDraggableNode* node; // pointer to the node to which the parameters belong
   };
-  std::vector<NodeParameterSet*> nodeParams;
+
+
+  /** Clips the x,y coordinates (given as model coordinates) to their respective min/max values as
+  set up in our xyMapper, if this clipping option is selected (via setClipCoordinatesToRange). */
+  void clipIfDesired(double* x, double* y);
+
+  /** Creates the Parameter objects associated with the given node (assumed to have been just 
+  added) and adds them to our array. */
+  void addNodeParameters(rsDraggableNode* node); 
+
+  /** Called from addNodeParameters to set up the callback functions to be called when the node 
+  shape settings are changed. */
+  void setupParameterCallbacks(rsDraggableNode* node, NodeParameterSet* params);
+
+  /** Removes the parameters for the given node. */
+  void removeNodeParameters(rsDraggableNode* node);
+
+  /** Removes the node parameters at a given index in our nodeParams array. Note that this index
+  may not match the node's index - this is because when nodes are moved around, they may have to be
+  re-indexe. hmmm...this is ugly ..maybe override reIndexNode in order to keep the arrays in 
+  sync. */
+  void removeNodeParameters(int indexInParameterArray);
+
+  /** Adds parameters for all nodes that do not yet have parameters associated with them. Called in 
+  constructor. */
+  void addParametersForAllNodes();
+
+  /** Calls removeNodeParameters for all nodes. */
+  void removeParametersForAllNodes();
+
+  /** Clears the nodes array and does all associated clean up work. */
+  void clearNodes();
+
+  // data:
+
+  std::vector<NodeParameterSet*> nodeParams;  // array of parameters associated with each node
   // maybe move the parameter handling into baseclass or into intermediate rsParameterNodeEditor 
   // class
-
-
 
   RAPT::rsNodeBasedFunction<double>* valueMapper = nullptr;
 
