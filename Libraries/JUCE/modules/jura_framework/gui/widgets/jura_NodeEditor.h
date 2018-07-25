@@ -382,7 +382,7 @@ protected:
 
   /** Called from addNodeParameters to set up the callback functions to be called when the node 
   shape settings are changed. */
-  void setupParameterCallbacks(rsDraggableNode* node, NodeParameterSet* params);
+  void setupNodeParameterCallbacks(rsDraggableNode* node, NodeParameterSet* params);
 
   /** Removes the parameters for the given node. */
   void removeNodeParameters(rsDraggableNode* node);

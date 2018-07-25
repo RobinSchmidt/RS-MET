@@ -68,6 +68,12 @@ public:
 
 protected:
 
+  /** Called from our overriden addNodeParameters function to additionally register ourselves
+  as listener to the node-related parameters such as coordinates and shape settings. We need to
+  observe these parameters in order to call updateParameter on any change of such a paremeter such
+  that changes become immediately audible. */
+  void setupNodeParameterObservation(rsDraggableNode* node, NodeParameterSet* params);
+
   /** Called from functions that change the mapping function (by adding/removing/moving nodes) to 
   update the dependent parameter according to the new mapping function. */
   void updateParameter();

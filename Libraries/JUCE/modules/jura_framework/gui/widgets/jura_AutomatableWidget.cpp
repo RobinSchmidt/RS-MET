@@ -65,7 +65,10 @@ void rsMetaMapEditor::parameterChanged(Parameter* p)
   if(p == param)
     repaintOnMessageThread(); // to update position of vertical line
   else
+  {
+    updateParameter();
     rsNodeBasedFunctionEditor::parameterChanged(p);
+  }
 }
 
 int rsMetaMapEditor::addNode(double pixelX, double pixelY)
@@ -89,15 +92,23 @@ int rsMetaMapEditor::moveNodeTo(int index, int pixelX, int pixelY)
   return result;
 }
 
-rsNodeBasedFunctionEditor::NodeParameterSet* rsMetaMapEditor::addNodeParameters(rsDraggableNode* node)
+rsNodeBasedFunctionEditor::NodeParameterSet* rsMetaMapEditor::addNodeParameters(
+  rsDraggableNode* node)
 {
   rsNodeBasedFunctionEditor::NodeParameterSet* params = 
     rsNodeBasedFunctionEditor::addNodeParameters(node);
-
-  // setupNodeParameterObservation(node, params);
-  // we need to register as ParameterListener, so we can call metaMapEditor->updateParameter()
-
+  setupNodeParameterObservation(node, params);
   return params;
+}
+
+void rsMetaMapEditor::setupNodeParameterObservation(
+  rsDraggableNode* node, NodeParameterSet* params)
+{
+  params->x          ->registerParameterObserver(this);
+  params->y          ->registerParameterObserver(this);
+  params->shapeType  ->registerParameterObserver(this);
+  params->shapeAmount->registerParameterObserver(this);
+  // register, so we can call updateParameter() on changes
 }
 
 void rsMetaMapEditor::updateParameter()

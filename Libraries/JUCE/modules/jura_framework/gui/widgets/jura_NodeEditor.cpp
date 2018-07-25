@@ -515,11 +515,11 @@ rsNodeBasedFunctionEditor::addNodeParameters(rsDraggableNode* node)
   node->addNodeParameter(params->shapeType);   // order of adding the parameters is important for
   node->addNodeParameter(params->shapeAmount); // rsAutomationSetup::assignNodeParameterWidgets
   nodeParams.push_back(params);
-  setupParameterCallbacks(node, params);       // wire up callbacks for shapeType and shapeAmount
+  setupNodeParameterCallbacks(node, params);   // wire up callbacks for shapeType and shapeAmount
   return params;
 }
 
-void rsNodeBasedFunctionEditor::setupParameterCallbacks(
+void rsNodeBasedFunctionEditor::setupNodeParameterCallbacks(
   rsDraggableNode* node, NodeParameterSet* params)
 {
   int i = getNodeIndex(node);
