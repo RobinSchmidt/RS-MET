@@ -61,6 +61,11 @@ public:
   virtual int moveNodeTo(int index, int pixelX, int pixelY) override;
   //virtual int nodeChanged(int nodeIndex) override; // seems to be enough to override moveNodeTo
 
+
+  /** Overriden to register ourselves as listener for the node's x,y- and shape parameters. */
+  virtual rsNodeBasedFunctionEditor::NodeParameterSet* 
+    addNodeParameters(rsDraggableNode* node) override;
+
 protected:
 
   /** Called from functions that change the mapping function (by adding/removing/moving nodes) to 
@@ -106,8 +111,7 @@ protected:
   with given index. */
   void assignNodeParameterWidgets(int nodeIndex);
 
-  /** Overriden to register ourselves as listener for the node's x,y- and shape parameters. */
-  virtual void addNodeParameters(rsDraggableNode* node) override;
+
 
   /** Creates our widgets. Called in constructor. */
   void createWidgets();

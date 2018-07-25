@@ -89,6 +89,17 @@ int rsMetaMapEditor::moveNodeTo(int index, int pixelX, int pixelY)
   return result;
 }
 
+rsNodeBasedFunctionEditor::NodeParameterSet* rsMetaMapEditor::addNodeParameters(rsDraggableNode* node)
+{
+  rsNodeBasedFunctionEditor::NodeParameterSet* params = 
+    rsNodeBasedFunctionEditor::addNodeParameters(node);
+
+  // setupNodeParameterObservation(node, params);
+  // we need to register as ParameterListener, so we can call metaMapEditor->updateParameter()
+
+  return params;
+}
+
 void rsMetaMapEditor::updateParameter()
 {
   if(param)
@@ -219,13 +230,6 @@ void rsAutomationSetup::assignNodeParameterWidgets(int i)
     sliderShapeParam->assignParameter(nullptr);
   }
   updateWidgetVisibility();
-}
-
-void rsAutomationSetup::addNodeParameters(rsDraggableNode* node)
-{
-  rsNodeBasedFunctionEditor::addNodeParameters(node);
-  // we need to register as ParameterListener, so we can call metaMapEditor->updateParameter()
-
 }
 
 void rsAutomationSetup::createWidgets()

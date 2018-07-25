@@ -319,8 +319,6 @@ public:
   /** Sets the shape parameter for the given node */
   void setNodeShapeParam(rsDraggableNode* node, double newParam);
 
-
-
   //-----------------------------------------------------------------------------------------------
   // \name Overrides
 
@@ -334,10 +332,16 @@ public:
   virtual bool isNodeRemovable(int i) override { return (int)valueMapper->isNodeRemovable((size_t)i); }
   virtual int constrainNode(int i) override { return (int)valueMapper->constrainNode((size_t)i); }
 
+  //-----------------------------------------------------------------------------------------------
+  // \name 
+
+
+
 
 protected:
 
-
+  /** Structure, used to represent the parameters (x- and y-coordinates, shape-settings) of a node.
+  These settings are controlled via Parameter objects. */
   struct NodeParameterSet
   { 
     NodeParameterSet(rsDraggableNode* _node)
@@ -364,13 +368,17 @@ protected:
   };
 
 
+
+
   /** Clips the x,y coordinates (given as model coordinates) to their respective min/max values as
   set up in our xyMapper, if this clipping option is selected (via setClipCoordinatesToRange). */
   void clipIfDesired(double* x, double* y);
 
   /** Creates the Parameter objects associated with the given node (assumed to have been just 
-  added) and adds them to our array. */
-  virtual void addNodeParameters(rsDraggableNode* node); 
+  added) and adds them to our array. It returns a pointer to the new parameter set to allow 
+  subclasses do additional stuff with it in their overrides. */
+  //virtual void addNodeParameters(rsDraggableNode* node);
+  virtual NodeParameterSet* addNodeParameters(rsDraggableNode* node); 
 
   /** Called from addNodeParameters to set up the callback functions to be called when the node 
   shape settings are changed. */

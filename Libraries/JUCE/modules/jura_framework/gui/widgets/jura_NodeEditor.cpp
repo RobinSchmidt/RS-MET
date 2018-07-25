@@ -506,7 +506,8 @@ void rsNodeBasedFunctionEditor::clipIfDesired(double* x, double* y)
     *y = clip(*y, xyMapper.getInMinY(), xyMapper.getInMaxY()); }
 }
 
-void rsNodeBasedFunctionEditor::addNodeParameters(rsDraggableNode* node)
+rsNodeBasedFunctionEditor::NodeParameterSet* 
+rsNodeBasedFunctionEditor::addNodeParameters(rsDraggableNode* node)
 {
   NodeParameterSet* params = new NodeParameterSet(node);
   node->assignParameterX(params->x);
@@ -515,6 +516,7 @@ void rsNodeBasedFunctionEditor::addNodeParameters(rsDraggableNode* node)
   node->addNodeParameter(params->shapeAmount); // rsAutomationSetup::assignNodeParameterWidgets
   nodeParams.push_back(params);
   setupParameterCallbacks(node, params);       // wire up callbacks for shapeType and shapeAmount
+  return params;
 }
 
 void rsNodeBasedFunctionEditor::setupParameterCallbacks(
