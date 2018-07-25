@@ -370,7 +370,7 @@ protected:
 
   /** Creates the Parameter objects associated with the given node (assumed to have been just 
   added) and adds them to our array. */
-  void addNodeParameters(rsDraggableNode* node); 
+  virtual void addNodeParameters(rsDraggableNode* node); 
 
   /** Called from addNodeParameters to set up the callback functions to be called when the node 
   shape settings are changed. */

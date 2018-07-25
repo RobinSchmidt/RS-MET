@@ -100,6 +100,8 @@ void rsMetaMapEditor::updateParameter()
 
     param->metaMapChanged();
   }
+  // we need to call this also when the node position is changed via the sliders and/or the node
+  // cuver is changed
 }
 
 //=================================================================================================
@@ -217,6 +219,13 @@ void rsAutomationSetup::assignNodeParameterWidgets(int i)
     sliderShapeParam->assignParameter(nullptr);
   }
   updateWidgetVisibility();
+}
+
+void rsAutomationSetup::addNodeParameters(rsDraggableNode* node)
+{
+  rsNodeBasedFunctionEditor::addNodeParameters(node);
+  // we need to register as ParameterListener, so we can call metaMapEditor->updateParameter()
+
 }
 
 void rsAutomationSetup::createWidgets()

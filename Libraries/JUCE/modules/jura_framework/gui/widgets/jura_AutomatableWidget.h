@@ -63,7 +63,7 @@ public:
 
 protected:
 
-  /** Called from functions that change the mpping function (by adding/removing/moving nodes) to 
+  /** Called from functions that change the mapping function (by adding/removing/moving nodes) to 
   update the dependent parameter according to the new mapping function. */
   void updateParameter();
 
@@ -105,6 +105,9 @@ protected:
   /** (Re)assigns our widgets to manipulate node parameters to the parameter-objects in the node
   with given index. */
   void assignNodeParameterWidgets(int nodeIndex);
+
+  /** Overriden to register ourselves as listener for the node's x,y- and shape parameters. */
+  virtual void addNodeParameters(rsDraggableNode* node) override;
 
   /** Creates our widgets. Called in constructor. */
   void createWidgets();
