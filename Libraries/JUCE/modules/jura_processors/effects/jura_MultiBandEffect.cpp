@@ -542,6 +542,11 @@ void MultiBandPlotEditor::mouseDown(const MouseEvent& e)
     openRightClickMenu(index);
 }
 
+void MultiBandPlotEditor::resized()
+{
+  freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
+}
+
 void MultiBandPlotEditor::paintOverChildren(Graphics& g)
 {
   int numBands = core->getNumberOfBands();
@@ -576,11 +581,26 @@ void MultiBandPlotEditor::paintOverChildren(Graphics& g)
 
   // todo: maybe give all bands a color (going through the rainbow) and just use a higher alpha
   // for the selected band (that may look nice)
+
+  // todo: split function into: 
+  // -paintBandShadings
+  // -paintSplitLines
+  // -paintGainReductions
 }
 
-void MultiBandPlotEditor::resized()
+void MultiBandPlotEditor::paintBandShadings(Graphics& g)
 {
-  freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
+
+}
+
+void MultiBandPlotEditor::paintSplitLines(Graphics& g)
+{
+
+}
+
+void MultiBandPlotEditor::paintInOutGain(Graphics& g)
+{
+
 }
 
 void MultiBandPlotEditor::openRightClickMenu(int bandIndex)

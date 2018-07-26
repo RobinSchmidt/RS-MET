@@ -201,7 +201,10 @@ area in the frequency response plot that represents that band, change split freq
 vertical line, etc. 
 
 todo:
+-plot frequency curves
+-plot gain reduction
 -maybe it needs to connect to the split-freq parameters
+
 */
 
 class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public ChangeListener, // ChangeListener obsolete?
@@ -216,21 +219,33 @@ public:
   //virtual void parameterChanged(Parameter* p) override;
 
   // MultiBandEffectObserver overrides:
-  virtual void bandWasInserted(  MultiBandEffect* mbe, int index) override;
-  virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
-  virtual void bandWasRemoved(   MultiBandEffect* mbe, int index) override;
-  virtual void bandWasSelected(  MultiBandEffect* mbe, int index) override;
+  virtual void bandWasInserted(      MultiBandEffect* mbe, int index) override;
+  virtual void bandWillBeRemoved(    MultiBandEffect* mbe, int index) override;
+  virtual void bandWasRemoved(       MultiBandEffect* mbe, int index) override;
+  virtual void bandWasSelected(      MultiBandEffect* mbe, int index) override;
   virtual void allBandsWillBeRemoved(MultiBandEffect* mbe) override;
-  virtual void totalRefreshNeeded(MultiBandEffect* mbe) override;
+  virtual void totalRefreshNeeded(   MultiBandEffect* mbe) override;
 
   // other callbacks:
   virtual void changeListenerCallback(ChangeBroadcaster* source) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
   virtual void mouseDown(const MouseEvent& e) override;
-  virtual void paintOverChildren(Graphics& g) override;
   virtual void resized() override;
+  virtual void paintOverChildren(Graphics& g) override;
 
 protected:
+
+
+  /** Paints the shadings of the various bands (currently to highlight the selected band - maybe 
+  later more stuff) */
+  void paintBandShadings(Graphics& g);
+
+  /** Paints the vertical lines at the split frequencies. */
+  void paintSplitLines(Graphics& g);
+
+  /** Paints the gain of the output signal with respect to the input signal for each band. 
+  Especially useful for dynamics processors. */
+  void paintInOutGain(Graphics& g);
 
   /** Opens the right-click context menu for inserting and removing bands. It takes as parameter 
   the index of the band inside of which the mouse-click occured (required because available options 
@@ -253,7 +268,9 @@ protected:
     REMOVE_BAND
   };
 
-  double freqAtMouse = 0; // why is this a member
+  double freqAtMouse = 0; // why is this a member?
+
+  //bool 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandPlotEditor)
 };
@@ -275,12 +292,12 @@ public:
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
 
   // MultiBandEffectObserver overrides:
-  virtual void bandWasInserted(  MultiBandEffect* mbe, int index) override;
-  virtual void bandWillBeRemoved(MultiBandEffect* mbe, int index) override;
-  virtual void bandWasRemoved(   MultiBandEffect* mbe, int index) override;
-  virtual void bandWasSelected(  MultiBandEffect* mbe, int index) override;
+  virtual void bandWasInserted(      MultiBandEffect* mbe, int index) override;
+  virtual void bandWillBeRemoved(    MultiBandEffect* mbe, int index) override;
+  virtual void bandWasRemoved(       MultiBandEffect* mbe, int index) override;
+  virtual void bandWasSelected(      MultiBandEffect* mbe, int index) override;
   virtual void allBandsWillBeRemoved(MultiBandEffect* mbe) override;
-  virtual void totalRefreshNeeded(MultiBandEffect* mbe) override;
+  virtual void totalRefreshNeeded(   MultiBandEffect* mbe) override;
 
 
 protected:
