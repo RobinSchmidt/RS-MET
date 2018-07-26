@@ -204,7 +204,8 @@ todo:
 -plot frequency curves
 -plot gain reduction
 -maybe it needs to connect to the split-freq parameters
-
+-maybe instead of embedding a rsFunctionPlot object, we should subcall from it, so we may directly
+ override paint instead of paintOverChildren
 */
 
 class JUCE_API MultiBandPlotEditor : public ColourSchemeComponent, public ChangeListener, // ChangeListener obsolete?
@@ -243,10 +244,6 @@ protected:
   /** Paints the vertical lines at the split frequencies. */
   void paintSplitLines(Graphics& g);
 
-  /** Paints the gain of the output signal with respect to the input signal for each band. 
-  Especially useful for dynamics processors. */
-  void paintInOutGain(Graphics& g);
-
   /** Opens the right-click context menu for inserting and removing bands. It takes as parameter 
   the index of the band inside of which the mouse-click occured (required because available options 
   may be different for different bands) */
@@ -270,9 +267,35 @@ protected:
 
   double freqAtMouse = 0; // why is this a member?
 
-  //bool 
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandPlotEditor)
+};
+
+//=================================================================================================
+
+/** Extends MultiBandPlotEditor to provide animated feedback such as drawing gain-reduction into
+the plot (useful for multiband dynamics). */
+
+class JUCE_API MultiBandPlotEditorAnimated : public MultiBandPlotEditor/*, public juce::Timer*/
+{
+
+public:
+
+  MultiBandPlotEditorAnimated(jura::MultiBandEffect* moduleToEdit);
+  virtual ~MultiBandPlotEditorAnimated();
+
+  virtual void paintOverChildren(Graphics& g) override;
+
+protected:
+
+  /** Paints the gain of the output signal with respect to the input signal for each band. 
+  Especially useful for dynamics processors. */
+  void paintInOutGains(Graphics& g);
+
+
+  // todo: somehow, we should buffer the static parts in the background into an image to avoid
+  // redrawing them for each frame (which is expensive)
+
+
 };
 
 //=================================================================================================
@@ -338,7 +361,8 @@ protected:
   virtual void updateSplitSliderPositions();
 
   // widgets:
-  MultiBandPlotEditor* plotEditor;
+  //MultiBandPlotEditor* plotEditor;
+  MultiBandPlotEditorAnimated* plotEditor;
   RComboBox *effectSelectBox, *splitModeBox;
   std::vector<RSlider*> splitFreqSliders;         // sliders for splitting frequencies
   std::vector<AudioModuleEditor*> perBandEditors; // sub editor array (one editor for each band)

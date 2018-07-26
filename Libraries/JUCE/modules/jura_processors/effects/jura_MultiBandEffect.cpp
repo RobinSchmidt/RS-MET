@@ -549,6 +549,12 @@ void MultiBandPlotEditor::resized()
 
 void MultiBandPlotEditor::paintOverChildren(Graphics& g)
 {
+  paintBandShadings(g);
+  paintSplitLines(g);
+}
+
+void MultiBandPlotEditor::paintBandShadings(Graphics& g)
+{
   int numBands = core->getNumberOfBands();
 
   // highlight rectangle of selected band:
@@ -563,10 +569,17 @@ void MultiBandPlotEditor::paintOverChildren(Graphics& g)
       x2 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(selected));
     //g.setColour(Colours::red.withAlpha(0.25f));
     g.setColour(Colours::lightblue.withAlpha(0.25f)); // preliminary
-    //g.setColour(Colours::magenta.withAlpha(0.25f));
+                                                      //g.setColour(Colours::magenta.withAlpha(0.25f));
     g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
   }
 
+  // todo: maybe give all bands a color (going through the rainbow) and just use a higher alpha
+  // for the selected band (that may look nice)
+}
+
+void MultiBandPlotEditor::paintSplitLines(Graphics& g)
+{
+  int numBands = core->getNumberOfBands();
 
   // draw vertical lines at split frequencies:
   float y1 = 0.f;
@@ -578,29 +591,6 @@ void MultiBandPlotEditor::paintOverChildren(Graphics& g)
     float x = (float)freqRespPlot->toPixelX(core->getSplitFrequency(i));
     g.drawLine(x, y1, x, y2, 2.f);
   }
-
-  // todo: maybe give all bands a color (going through the rainbow) and just use a higher alpha
-  // for the selected band (that may look nice)
-
-  // todo: split function into: 
-  // -paintBandShadings
-  // -paintSplitLines
-  // -paintGainReductions
-}
-
-void MultiBandPlotEditor::paintBandShadings(Graphics& g)
-{
-
-}
-
-void MultiBandPlotEditor::paintSplitLines(Graphics& g)
-{
-
-}
-
-void MultiBandPlotEditor::paintInOutGain(Graphics& g)
-{
-
 }
 
 void MultiBandPlotEditor::openRightClickMenu(int bandIndex)
@@ -633,6 +623,36 @@ void MultiBandPlotEditor::refreshFunctionsToPlot()
   for(int i = 0; i < core->getNumberOfBands(); i++)
     freqRespPlot->addFunction([=](double f)->double { return core->getDecibelsAt(i, f); });
   repaint();
+}
+
+//=================================================================================================
+
+MultiBandPlotEditorAnimated::MultiBandPlotEditorAnimated(jura::MultiBandEffect* moduleToEdit)
+  : MultiBandPlotEditor(moduleToEdit)
+{
+
+}
+
+MultiBandPlotEditorAnimated::~MultiBandPlotEditorAnimated()
+{
+
+}
+
+void MultiBandPlotEditorAnimated::paintOverChildren(Graphics& g)
+{
+  MultiBandPlotEditor::paintOverChildren(g);
+  paintInOutGains(g);
+}
+
+void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
+{
+  double gainDb = 0.0;
+  int numBands  = core->getNumberOfBands();
+  float x1, y1, x2, y2;   // rectangle coordinates
+  for(int i = 0; i < numBands; i++)
+  {
+    //gaindDb = amp2dB(module->getBandInOutGain(i)); // to be activated later
+  }
 }
 
 //=================================================================================================
@@ -756,7 +776,8 @@ void MultiBandEffectEditor::createWidgets()
 {
   RComboBox *c;
 
-  plotEditor = new MultiBandPlotEditor(effectToEdit);
+  //plotEditor = new MultiBandPlotEditor(effectToEdit);
+  plotEditor = new MultiBandPlotEditorAnimated(effectToEdit);
   addChildColourSchemeComponent(plotEditor);
 
   addWidget( c = effectSelectBox = new RComboBox() );
