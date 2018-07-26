@@ -115,6 +115,10 @@ public:
   /** Returns the upper cutoff frequency for the band with given index. */
   double getSplitFreq(int bandIndex) const { return core.getSplitFrequency(bandIndex); }
 
+  /** Returns the gain that this effect has applied to the given band. Mostly useful for multiband 
+  dynamics processors. */
+  double getBandInOutGain(int bandIndex, bool resetAccumulators = true);
+
   /** Returns index of the band that is currently selected (-1, if none). */
   int getSelectedBand() const { return selectedBand; }
 
@@ -190,6 +194,10 @@ protected:
   AudioModuleFactory perBandModuleFactory;
   std::vector<AudioModule*> perBandModules;
   juce::String effectTypeString;
+
+  // accumulators for the sums of squares of input and output samples - for display of per-band 
+  // gain:
+  std::vector<double> inSumOfSquares, outSumOfSquares;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiBandEffect)
 };

@@ -57,9 +57,22 @@ void MultiBandEffect::processBlock(double **inOutBuffer, int numChannels, int nu
 void MultiBandEffect::processStereoFrame(double *left, double *right)
 {
   jassert(perBandModules.size() == getNumBands());
+  double xL = 0, xR = 0, yL = 0, yR = 0;    // for per-band I/O gain measurement
   core.split(left, right);
-  for(int k = 0; k < getNumBands(); k++)  // process individual bands
+  for(int k = 0; k < getNumBands(); k++) {  // process individual bands
+    // input gain measurement:
+    xL = *core.getLeft(k);
+    xR = *core.getRight(k);
+    inSumOfSquares[k]  += xL*xL + xR*xR;
+
+    // processing:
     perBandModules[k]->processStereoFrame(core.getLeft(k), core.getRight(k));
+
+    // output gain measurement:
+    yL = *core.getLeft(k);
+    yR = *core.getRight(k);
+    outSumOfSquares[k] += yL*yL + yR*yR;
+  }
   core.recombine(left, right);
 }
 
@@ -76,7 +89,8 @@ void MultiBandEffect::reset()
   ScopedLock scopedLock(*lock);
   core.reset();
   for(size_t i = 0; i < perBandModules.size(); i++)
-    perBandModules[i]->reset();;
+    perBandModules[i]->reset();
+  // todo: reset gain accumulators
 }
 
 AudioModuleEditor* MultiBandEffect::createEditor()
@@ -195,7 +209,6 @@ void MultiBandEffect::removeBand(int index, bool mergeWithRightNeighbour, bool s
   core.removeBand(index);      // crashes whe last band is removed
   removeSplitFreqParam(index); // must be done after core.removeBand
 
-
   if(sendNotification)
     sendBandRemovePostNotification(index);
 }
@@ -258,6 +271,16 @@ Parameter* MultiBandEffect::getSplitFreqParam(int bandIndex)
 {
   ScopedLock scopedLock(*lock);
   return splitFreqParams[bandIndex];
+}
+
+double MultiBandEffect::getBandInOutGain(int i, bool resetAccus)
+{
+  double g  = sqrt(outSumOfSquares[i]/inSumOfSquares[i]);
+  if(resetAccus) {
+    inSumOfSquares[i]  = 0;
+    outSumOfSquares[i] = 0;
+  }
+  return g; // maybe we need a sample-counter and divide by that?
 }
 
 int MultiBandEffect::getNumBands() const 
@@ -410,6 +433,11 @@ void MultiBandEffect::insertBandEffect(int i)
   // an ordered array for state storage and recall
 
   insert(perBandModules, m, i);
+
+  // new:
+  insert(inSumOfSquares,  0.0, i);
+  insert(outSumOfSquares, 0.0, i);
+
   updateBandModuleNames();
 }
 
@@ -418,6 +446,11 @@ void MultiBandEffect::removeBandEffect(int i)
   ScopedLock scopedLock(*lock);
   delete perBandModules[i];
   remove(perBandModules, i);
+
+  // new:
+  remove(inSumOfSquares,  i);
+  remove(outSumOfSquares, i);
+
   updateBandModuleNames();
 }
 
@@ -659,8 +692,8 @@ void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
   for(int i = 0; i < numBands-1; i++) // should be < numBands? why -1
   {
     freq = core->getSplitFrequency(i);
-    //gain = amp2dB(module->getBandInOutGain(i)); // to be activated later
-    gain = 9.0; // preliminary
+    gain = RAPT::rsAmpToDb(module->getBandInOutGain(i)); // to be activated later
+    //gain = 9.0; // preliminary
 
     x2 = (float)freqRespPlot->toPixelX(freq);
     y1 = (float)freqRespPlot->toPixelY(0.0);
