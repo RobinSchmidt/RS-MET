@@ -433,11 +433,8 @@ void MultiBandEffect::insertBandEffect(int i)
   // an ordered array for state storage and recall
 
   insert(perBandModules, m, i);
-
-  // new:
   insert(inSumOfSquares,  0.0, i);
   insert(outSumOfSquares, 0.0, i);
-
   updateBandModuleNames();
 }
 
@@ -446,11 +443,8 @@ void MultiBandEffect::removeBandEffect(int i)
   ScopedLock scopedLock(*lock);
   delete perBandModules[i];
   remove(perBandModules, i);
-
-  // new:
   remove(inSumOfSquares,  i);
   remove(outSumOfSquares, i);
-
   updateBandModuleNames();
 }
 
@@ -684,28 +678,26 @@ void MultiBandPlotEditorAnimated::paintOverChildren(Graphics& g)
 
 void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
 {
-  double gain = 0.0;  // in dB
-  double freq;
-  int numBands  = core->getNumberOfBands();
-  float x1, y1, x2, y2;   // rectangle coordinates
-  x1 = 0.f;
-  for(int i = 0; i < numBands-1; i++) // should be < numBands? why -1
+  double freq, gain;           // gain in dB
+  float x1, y1, x2 = 0.f, y2;  // rectangle pixel coordinates
+  int numBands = core->getNumberOfBands();
+  g.setColour(Colours::green.withMultipliedAlpha(0.5f));
+  for(int i = 0; i < numBands; i++)
   {
+    // get frequency (at rectangle's right) and gain:
     freq = core->getSplitFrequency(i);
-    gain = RAPT::rsAmpToDb(module->getBandInOutGain(i)); // to be activated later
-    //gain = 9.0; // preliminary
+    gain = RAPT::rsAmpToDb(module->getBandInOutGain(i));
 
+    // compute rectangle pixel coordinates and draw:
+    x1 = x2; // this rect's left is previous rect's right
     x2 = (float)freqRespPlot->toPixelX(freq);
     y1 = (float)freqRespPlot->toPixelY(0.0);
     y2 = (float)freqRespPlot->toPixelY(gain);
-
     if(y2 < y1)
       swap(y1, y2);
-
-    g.setColour(Colours::green.withMultipliedAlpha(0.5f));
+    if(i == numBands-1)
+      x2 = (float)getWidth();
     g.fillRect(x1, y1, x2-x1, y2-y1);
-
-    x1 = x2;
   }
 }
 
