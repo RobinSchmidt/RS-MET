@@ -640,7 +640,7 @@ MultiBandPlotEditorAnimated::~MultiBandPlotEditorAnimated()
 
 void MultiBandPlotEditorAnimated::timerCallback()
 {
-  //repaint();
+  repaint();
 }
 
 void MultiBandPlotEditorAnimated::paintOverChildren(Graphics& g)
@@ -651,19 +651,27 @@ void MultiBandPlotEditorAnimated::paintOverChildren(Graphics& g)
 
 void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
 {
-  double gainDb = 0.0;
+  double gain = 0.0;  // in dB
+  double freq;
   int numBands  = core->getNumberOfBands();
   float x1, y1, x2, y2;   // rectangle coordinates
   x1 = 0.f;
-  for(int i = 1; i < numBands; i++)
+  for(int i = 0; i < numBands-1; i++) // should be < numBands? why -1
   {
-    //gaindDb = amp2dB(module->getBandInOutGain(i)); // to be activated later
+    freq = core->getSplitFrequency(i);
+    //gain = amp2dB(module->getBandInOutGain(i)); // to be activated later
+    gain = 9.0; // preliminary
 
-    x2 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(i-1));
-    y1 = 20;  // preliminary
-    y2 = 50;  // preliminary
+    x2 = (float)freqRespPlot->toPixelX(freq);
+    y1 = (float)freqRespPlot->toPixelY(0.0);
+    y2 = (float)freqRespPlot->toPixelY(gain);
+
+    if(y2 < y1)
+      swap(y1, y2);
+
     g.setColour(Colours::green.withMultipliedAlpha(0.5f));
-    //g.fillRect(x1, y1, x2-x1, y2-y1);
+    g.fillRect(x1, y1, x2-x1, y2-y1);
+
     x1 = x2;
   }
 }

@@ -302,7 +302,7 @@ protected:
   //  -changes to the frequency splitting settings
   // ...wait no - that's not necessary bcs the background/plot is a child component which is not
   //  necessarrily repainted from scratch inside our paintoverChildren...right? -> check this
-  // ahh...but when we call repaint in out timer callback, it probably is..hmmm
+  // ahh...but when we call repaint in out timer callback, it probably is..hmmm - yes - seems so
 
   //juce::Image background;  // should contain what our baseclass would produce in paint and
                              // paintOverChildren

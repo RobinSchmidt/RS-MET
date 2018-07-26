@@ -912,6 +912,8 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
   int np = 3, nq = 0;
   p[0] = a; p[1] = b; p[2] = c;     // p contains triangle with 3 vertices, q is empty
 
+  // 7 vertices occur for example with a = (0.5,1.25), b = (-0.25,-0.25), c = (1.25,0.5)
+
   // clip against the 4 edges:
   nq = clipAgainstTop(   p, np, q);  // q contains partially clipped polygon
   //np = clipAgainstLeft(  q, nq, p);  // p contains partially clipped polygon
