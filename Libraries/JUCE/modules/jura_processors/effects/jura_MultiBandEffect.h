@@ -275,7 +275,7 @@ protected:
 /** Extends MultiBandPlotEditor to provide animated feedback such as drawing gain-reduction into
 the plot (useful for multiband dynamics). */
 
-class JUCE_API MultiBandPlotEditorAnimated : public MultiBandPlotEditor/*, public juce::Timer*/
+class JUCE_API MultiBandPlotEditorAnimated : public MultiBandPlotEditor, public juce::Timer
 {
 
 public:
@@ -283,6 +283,7 @@ public:
   MultiBandPlotEditorAnimated(jura::MultiBandEffect* moduleToEdit);
   virtual ~MultiBandPlotEditorAnimated();
 
+  virtual void timerCallback() override;
   virtual void paintOverChildren(Graphics& g) override;
 
 protected:
@@ -294,8 +295,17 @@ protected:
 
   // todo: somehow, we should buffer the static parts in the background into an image to avoid
   // redrawing them for each frame (which is expensive)
+  // -we should override repaint and there, first draw the background image and then draw our
+  //  animated stuff over it
+  // -the background image should be refreshed (i.e. re-painted/re-drawn) on:
+  //  -size changes
+  //  -changes to the frequency splitting settings
+  // ...wait no - that's not necessary bcs the background/plot is a child component which is not
+  //  necessarrily repainted from scratch inside our paintoverChildren...right? -> check this
+  // ahh...but when we call repaint in out timer callback, it probably is..hmmm
 
-
+  //juce::Image background;  // should contain what our baseclass would produce in paint and
+                             // paintOverChildren
 };
 
 //=================================================================================================

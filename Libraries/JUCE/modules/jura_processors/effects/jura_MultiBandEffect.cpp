@@ -630,12 +630,17 @@ void MultiBandPlotEditor::refreshFunctionsToPlot()
 MultiBandPlotEditorAnimated::MultiBandPlotEditorAnimated(jura::MultiBandEffect* moduleToEdit)
   : MultiBandPlotEditor(moduleToEdit)
 {
-
+  startTimerHz(30); // 30 fps - maybe make adjustable from client code
 }
 
 MultiBandPlotEditorAnimated::~MultiBandPlotEditorAnimated()
 {
 
+}
+
+void MultiBandPlotEditorAnimated::timerCallback()
+{
+  //repaint();
 }
 
 void MultiBandPlotEditorAnimated::paintOverChildren(Graphics& g)
@@ -649,9 +654,17 @@ void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
   double gainDb = 0.0;
   int numBands  = core->getNumberOfBands();
   float x1, y1, x2, y2;   // rectangle coordinates
-  for(int i = 0; i < numBands; i++)
+  x1 = 0.f;
+  for(int i = 1; i < numBands; i++)
   {
     //gaindDb = amp2dB(module->getBandInOutGain(i)); // to be activated later
+
+    x2 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(i-1));
+    y1 = 20;  // preliminary
+    y2 = 50;  // preliminary
+    g.setColour(Colours::green.withMultipliedAlpha(0.5f));
+    //g.fillRect(x1, y1, x2-x1, y2-y1);
+    x1 = x2;
   }
 }
 
