@@ -679,10 +679,14 @@ void MultiBandPlotEditorAnimated::paintOverChildren(Graphics& g)
 void MultiBandPlotEditorAnimated::paint(Graphics& g)
 {
   MultiBandPlotEditor::paint(g); return; // preliminary
+  // todo: comment this and also comment code in paintOverChildren (to make it empty) and then
+  // override all callbacks that are called when something happens that changes the background
+  // image
  
 
   if(backgroundIsDirty)
     updateBackgroundImage();
+  //g.fillAll(Colours::red); // for test
   g.drawImageAt(background, 0, 0);
   paintInOutGains(g);
 }
@@ -714,11 +718,31 @@ void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
 
 void MultiBandPlotEditorAnimated::updateBackgroundImage()
 {
-  // something to do...
+  background = Image(Image::PixelFormat::RGB, getWidth(), getHeight(), false); // or maybe ARGB?
+  Graphics g(background);
+
+  g.fillAll(Colours::red); // for test
+
+  //MultiBandPlotEditor::paint(g);
+  //MultiBandPlotEditor::paintOverChildren(g); 
+  //MultiBandPlotEditor::paintBandShadings(g);
 
   backgroundIsDirty = false;
   // we also need to override some methods such as resized, mouseDown, bandWasSelected, etc. in 
   // order to set the flag to true
+
+  // somehow, this doesn't work
+  // maybe we need to make the child component invisible
+  // maybe use a static flag bufferBackground and switch between bufferd and unbuffered drawing
+  // ->also good for performance comparison later
+  // OR: make a subclass MultiBandPlotEditorAnimated2 so that we can switch at compile time
+  // between the two implementations
+}
+
+void MultiBandPlotEditorAnimated::resized()
+{
+  MultiBandPlotEditor::resized();
+  backgroundIsDirty = true;
 }
 
 //=================================================================================================

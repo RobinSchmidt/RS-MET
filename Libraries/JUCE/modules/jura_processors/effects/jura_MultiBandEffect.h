@@ -292,9 +292,10 @@ public:
   virtual ~MultiBandPlotEditorAnimated();
 
   virtual void timerCallback() override;
-  virtual void paintOverChildren(Graphics& g) override; // may be removed, when paint override is ready
+  virtual void paintOverChildren(Graphics& g) override; 
+  virtual void paint(Graphics& g) override;             // not yet finished
 
-  virtual void paint(Graphics& g) override;             // preliminary
+  virtual void resized() override;
 
 protected:
 
