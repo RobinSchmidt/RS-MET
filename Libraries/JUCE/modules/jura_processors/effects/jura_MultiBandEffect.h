@@ -292,13 +292,20 @@ public:
   virtual ~MultiBandPlotEditorAnimated();
 
   virtual void timerCallback() override;
-  virtual void paintOverChildren(Graphics& g) override;
+  virtual void paintOverChildren(Graphics& g) override; // may be removed, when paint override is ready
+
+  virtual void paint(Graphics& g) override;             // preliminary
 
 protected:
 
   /** Paints the gain of the output signal with respect to the input signal for each band. 
   Especially useful for dynamics processors. */
   void paintInOutGains(Graphics& g);
+
+  /** This basically renders what our baseclass would render in its paint() method and writes the
+  result into the backgroundImage member, so we don't need to re-render it every time we need to
+  update the gain indicator bars. */
+  void updateBackgroundImage();
 
 
   // todo: somehow, we should buffer the static parts in the background into an image to avoid
@@ -312,8 +319,9 @@ protected:
   //  necessarrily repainted from scratch inside our paintoverChildren...right? -> check this
   // ahh...but when we call repaint in out timer callback, it probably is..hmmm - yes - seems so
 
-  //juce::Image background;  // should contain what our baseclass would produce in paint and
-                             // paintOverChildren
+  bool backgroundIsDirty = true;
+  juce::Image background;  // should contain what our baseclass would produce in paint and
+                           // paintOverChildren
 };
 
 //=================================================================================================

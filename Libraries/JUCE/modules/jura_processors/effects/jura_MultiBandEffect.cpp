@@ -676,6 +676,17 @@ void MultiBandPlotEditorAnimated::paintOverChildren(Graphics& g)
   paintInOutGains(g);
 }
 
+void MultiBandPlotEditorAnimated::paint(Graphics& g)
+{
+  MultiBandPlotEditor::paint(g); return; // preliminary
+ 
+
+  if(backgroundIsDirty)
+    updateBackgroundImage();
+  g.drawImageAt(background, 0, 0);
+  paintInOutGains(g);
+}
+
 void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
 {
   double freq, gain;           // gain in dB
@@ -699,6 +710,15 @@ void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
       x2 = (float)getWidth();
     g.fillRect(x1, y1, x2-x1, y2-y1);
   }
+}
+
+void MultiBandPlotEditorAnimated::updateBackgroundImage()
+{
+  // something to do...
+
+  backgroundIsDirty = false;
+  // we also need to override some methods such as resized, mouseDown, bandWasSelected, etc. in 
+  // order to set the flag to true
 }
 
 //=================================================================================================
