@@ -51,6 +51,17 @@ MetaParameter* rsMetaMapEditor::getAttachedMetaParameter()
 void rsMetaMapEditor::paint(Graphics& g)
 {
   rsNodeBasedFunctionEditor::paint(g);
+
+  // new - shows line always:
+  if(param != nullptr)
+  {
+    double nv = param->getNormalizedValue();
+    float pixelX = (float) xyMapper.mapX(nv);
+    g.drawLine(pixelX, 0.f, pixelX, (float) getHeight(), 1.f);
+  }
+
+  // old - shows line onle when a meta is attached:
+  /*
   MetaParameter* mp = getAttachedMetaParameter();
   if(mp != nullptr)
   {
@@ -58,6 +69,7 @@ void rsMetaMapEditor::paint(Graphics& g)
     float pixelX = (float) xyMapper.mapX(mv);
     g.drawLine(pixelX, 0.f, pixelX, (float) getHeight(), 1.f);
   }
+  */
 }
 
 void rsMetaMapEditor::parameterChanged(Parameter* p)
