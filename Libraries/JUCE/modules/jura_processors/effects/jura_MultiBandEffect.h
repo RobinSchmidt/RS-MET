@@ -307,7 +307,7 @@ protected:
 
 /** Subclass of MultiBandPlotEditorAnimated to provide optimized drawing by avoiding to redraw the
 background image every frame. We do this in a subclass in order to make it easy to switch between
-both implementations at compile time (for performance tests and to keep the simple, non-optimized 
+both implementations at compile time (for performance tests and to keep the simpler, non-optimized 
 version for reference). */
 
 class JUCE_API MultiBandPlotEditorAnimated2 : public MultiBandPlotEditorAnimated
@@ -324,18 +324,16 @@ public:
   virtual void changeListenerCallback(ChangeBroadcaster* source) override;
 
   virtual void bandWasInserted(      MultiBandEffect* mbe, int index) override;
-  //virtual void bandWillBeRemoved(    MultiBandEffect* mbe, int index) override;
   virtual void bandWasRemoved(       MultiBandEffect* mbe, int index) override;
   virtual void bandWasSelected(      MultiBandEffect* mbe, int index) override;
-  //virtual void allBandsWillBeRemoved(MultiBandEffect* mbe) override;
   virtual void totalRefreshNeeded(   MultiBandEffect* mbe) override;
 
 
 protected:
 
-  /** This basically renders what our baseclass would render in its paint() method and writes the
-  result into the backgroundImage member, so we don't need to re-render it every time we need to
-  update the gain indicator bars. */
+  /** This basically renders what MultiBandPlotEditor would render in its paint() method and writes 
+  the result into the backgroundImage member, so we don't need to re-render it every time we need 
+  to update the gain indicator bars. */
   void updateBackgroundImage();
 
   bool backgroundIsDirty = true;
