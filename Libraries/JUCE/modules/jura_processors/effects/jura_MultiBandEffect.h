@@ -314,6 +314,8 @@ class JUCE_API MultiBandPlotEditorAnimated2 : public MultiBandPlotEditorAnimated
 
 public:
 
+  MultiBandPlotEditorAnimated2(jura::MultiBandEffect* moduleToEdit);
+
 
   virtual void paint(Graphics& g) override;
   virtual void resized() override;

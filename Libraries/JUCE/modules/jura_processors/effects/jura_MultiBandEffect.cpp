@@ -275,7 +275,10 @@ Parameter* MultiBandEffect::getSplitFreqParam(int bandIndex)
 
 double MultiBandEffect::getBandInOutGain(int i, bool resetAccus)
 {
-  double g  = sqrt(outSumOfSquares[i]/inSumOfSquares[i]);
+  ScopedLock scopedLock(*lock);
+  if(inSumOfSquares[i] < 1.e-10)  // avoid div-by-zero
+    return 1.0;
+  double g = sqrt(outSumOfSquares[i]/inSumOfSquares[i]);
   if(resetAccus) {
     inSumOfSquares[i]  = 0;
     outSumOfSquares[i] = 0;
@@ -703,18 +706,23 @@ void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
 
 //=================================================================================================
 
+MultiBandPlotEditorAnimated2::MultiBandPlotEditorAnimated2(jura::MultiBandEffect* moduleToEdit)
+  : MultiBandPlotEditorAnimated(moduleToEdit)
+{
+  freqRespPlot->setVisible(false);
+}
+
 void MultiBandPlotEditorAnimated2::paint(Graphics& g)
 {
-  MultiBandPlotEditorAnimated::paint(g); return; // preliminary
+  //MultiBandPlotEditorAnimated::paint(g); return; // preliminary
   // todo: comment this and also comment code in paintOverChildren (to make it empty) and then
   // override all callbacks that are called when something happens that changes the background
   // image
 
   if(backgroundIsDirty)
     updateBackgroundImage();
-  //g.fillAll(Colours::red); // for test
   g.drawImageAt(background, 0, 0);
-  paintInOutGains(g);
+  paintInOutGains(g); // the gain bars are flickering..as if they are sometimes drawn twice
 }
 
 void MultiBandPlotEditorAnimated2::resized()
@@ -729,25 +737,21 @@ void MultiBandPlotEditorAnimated2::updateBackgroundImage()
   background = Image(Image::PixelFormat::RGB, getWidth(), getHeight(), false); // or maybe ARGB?
   Graphics g(background);
 
-  g.fillAll(Colours::red); // for test
+  //g.fillAll(Colours::black); // for test
 
   //MultiBandPlotEditor::paint(g);
   //MultiBandPlotEditor::paintOverChildren(g); 
   //MultiBandPlotEditor::paintBandShadings(g);
 
+  freqRespPlot->paint(g);
+  paintBandShadings(g);
+  paintSplitLines(g);
+
   backgroundIsDirty = false;
   // we also need to override some methods such as resized, mouseDown, bandWasSelected, etc. in 
   // order to set the flag to true
 
-  // somehow, this doesn't work
-  // maybe we need to make the child component invisible
-  // maybe use a static flag bufferBackground and switch between bufferd and unbuffered drawing
-  // ->also good for performance comparison later
-  // OR: make a subclass MultiBandPlotEditorAnimated2 so that we can switch at compile time
-  // between the two implementations
 }
-
-
 
 //=================================================================================================
 
@@ -871,7 +875,8 @@ void MultiBandEffectEditor::createWidgets()
   RComboBox *c;
 
   //plotEditor = new MultiBandPlotEditor(effectToEdit);
-  plotEditor = new MultiBandPlotEditorAnimated(effectToEdit);
+  //plotEditor = new MultiBandPlotEditorAnimated(effectToEdit);
+  plotEditor = new MultiBandPlotEditorAnimated2(effectToEdit);
   addChildColourSchemeComponent(plotEditor);
 
   addWidget( c = effectSelectBox = new RComboBox() );
