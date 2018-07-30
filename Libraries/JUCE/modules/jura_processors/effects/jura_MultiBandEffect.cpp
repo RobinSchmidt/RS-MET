@@ -715,13 +715,8 @@ MultiBandPlotEditorAnimated2::MultiBandPlotEditorAnimated2(jura::MultiBandEffect
 void MultiBandPlotEditorAnimated2::paint(Graphics& g)
 {
   //MultiBandPlotEditorAnimated::paint(g); return; // preliminary
-  // todo: comment this and also comment code in paintOverChildren (to make it empty) and then
-  // override all callbacks that are called when something happens that changes the background
-  // image
 
-  //ScopedLock scopedLock(*(module->getCriticalSection())); 
-  // doesn't seem to help against the flicker but might be a good idea anyway?
-
+  //ScopedLock scopedLock(*(module->getCriticalSection())); // do we need this?
   if(backgroundIsDirty)
     updateBackgroundImage();
   g.drawImageAt(background, 0, 0);
@@ -740,6 +735,31 @@ void MultiBandPlotEditorAnimated2::resized()
   backgroundIsDirty = true;
 }
 
+void MultiBandPlotEditorAnimated2::bandWasInserted(MultiBandEffect* mbe, int index)
+{
+  MultiBandPlotEditorAnimated::bandWasInserted(mbe, index);
+  backgroundIsDirty = true;
+}
+
+void MultiBandPlotEditorAnimated2::bandWasRemoved(MultiBandEffect* mbe, int index)
+{
+  MultiBandPlotEditorAnimated::bandWasRemoved(mbe, index);
+  backgroundIsDirty = true;
+}
+
+void MultiBandPlotEditorAnimated2::bandWasSelected(MultiBandEffect* mbe, int index)
+{
+  MultiBandPlotEditorAnimated::bandWasSelected(mbe, index);
+  backgroundIsDirty = true;
+}
+
+void MultiBandPlotEditorAnimated2::totalRefreshNeeded(MultiBandEffect* mbe)
+{
+  MultiBandPlotEditorAnimated::totalRefreshNeeded(mbe);
+  backgroundIsDirty = true;
+}
+// we need to set the fal dirty also when a split frequency changes
+
 void MultiBandPlotEditorAnimated2::updateBackgroundImage()
 {
   background = Image(Image::PixelFormat::RGB, getWidth(), getHeight(), false); // or maybe ARGB?
@@ -748,9 +768,6 @@ void MultiBandPlotEditorAnimated2::updateBackgroundImage()
   paintBandShadings(g);
   paintSplitLines(g);
   backgroundIsDirty = false;
-  // we also need to override some methods such as resized, mouseDown, bandWasSelected, etc. in 
-  // order to set the flag to true
-
 }
 
 //=================================================================================================
