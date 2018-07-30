@@ -321,6 +321,7 @@ public:
   virtual void paint(Graphics& g) override;
   virtual void paintOverChildren(Graphics& g) override; 
   virtual void resized() override;
+  virtual void changeListenerCallback(ChangeBroadcaster* source) override;
 
   virtual void bandWasInserted(      MultiBandEffect* mbe, int index) override;
   //virtual void bandWillBeRemoved(    MultiBandEffect* mbe, int index) override;

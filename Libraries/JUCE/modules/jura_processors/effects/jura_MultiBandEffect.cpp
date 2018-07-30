@@ -735,6 +735,13 @@ void MultiBandPlotEditorAnimated2::resized()
   backgroundIsDirty = true;
 }
 
+void MultiBandPlotEditorAnimated2::changeListenerCallback(ChangeBroadcaster* source)
+{
+  // gets called when a split frequency changes
+  MultiBandPlotEditorAnimated::changeListenerCallback(source);
+  backgroundIsDirty = true;
+}
+
 void MultiBandPlotEditorAnimated2::bandWasInserted(MultiBandEffect* mbe, int index)
 {
   MultiBandPlotEditorAnimated::bandWasInserted(mbe, index);
