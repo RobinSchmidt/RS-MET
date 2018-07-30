@@ -229,6 +229,10 @@ XmlElement* ModulationConnection::getAsXml()
   }
   return xml;
 
+  // todo (pseudocode):
+  // if(!modMap.isIdentity())
+  //   save modulation map
+
   // maybe move this function into ModulationManager as 
   // getConnectionXml(ModulationConnection *c);
 }

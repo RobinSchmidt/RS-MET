@@ -463,7 +463,7 @@ public:
   /** Applies the source-value to the target-value, taking into account the modulation depth. */
   inline void apply()
   {
-    double m = *sourceValue;
+    double m = *sourceValue; // todo: apply map to m, similar to meta-map
     double d = depth;
     double u = target->unmodulatedValue;
     double z;

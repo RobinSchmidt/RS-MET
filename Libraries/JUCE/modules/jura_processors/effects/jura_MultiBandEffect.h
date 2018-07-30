@@ -325,6 +325,23 @@ protected:
                            // paintOverChildren
 };
 
+/** Subclass of MultiBandPlotEditorAnimated to provide optimized drawing by avoiding to redraw the
+background image every frame. We do this in a subclass in order to make it easy to switch between
+both implementations at compile time (for performance tests and to keep the simple, non-optimized 
+version for reference). */
+
+class JUCE_API MultiBandPlotEditorAnimated2 : public MultiBandPlotEditorAnimated
+{
+
+public:
+
+protected:
+
+
+
+};
+
+
 //=================================================================================================
 
 /** Editor for a generic mutiband effect. */
