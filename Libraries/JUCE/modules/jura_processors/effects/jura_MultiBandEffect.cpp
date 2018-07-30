@@ -719,10 +719,19 @@ void MultiBandPlotEditorAnimated2::paint(Graphics& g)
   // override all callbacks that are called when something happens that changes the background
   // image
 
+  //ScopedLock scopedLock(*(module->getCriticalSection())); 
+  // doesn't seem to help against the flicker but might be a good idea anyway?
+
   if(backgroundIsDirty)
     updateBackgroundImage();
   g.drawImageAt(background, 0, 0);
-  paintInOutGains(g); // the gain bars are flickering..as if they are sometimes drawn twice
+  paintInOutGains(g);
+}
+
+void MultiBandPlotEditorAnimated2::paintOverChildren(Graphics& g)
+{
+  // overriden with empty implementation to avoid baseclass method drawing the gain bars a second
+  // time (leading to flickering gain bars)
 }
 
 void MultiBandPlotEditorAnimated2::resized()
@@ -731,22 +740,13 @@ void MultiBandPlotEditorAnimated2::resized()
   backgroundIsDirty = true;
 }
 
-
 void MultiBandPlotEditorAnimated2::updateBackgroundImage()
 {
   background = Image(Image::PixelFormat::RGB, getWidth(), getHeight(), false); // or maybe ARGB?
   Graphics g(background);
-
-  //g.fillAll(Colours::black); // for test
-
-  //MultiBandPlotEditor::paint(g);
-  //MultiBandPlotEditor::paintOverChildren(g); 
-  //MultiBandPlotEditor::paintBandShadings(g);
-
   freqRespPlot->paint(g);
   paintBandShadings(g);
   paintSplitLines(g);
-
   backgroundIsDirty = false;
   // we also need to override some methods such as resized, mouseDown, bandWasSelected, etc. in 
   // order to set the flag to true
