@@ -676,21 +676,6 @@ void MultiBandPlotEditorAnimated::paintOverChildren(Graphics& g)
   paintInOutGains(g);
 }
 
-void MultiBandPlotEditorAnimated::paint(Graphics& g)
-{
-  MultiBandPlotEditor::paint(g); return; // preliminary
-  // todo: comment this and also comment code in paintOverChildren (to make it empty) and then
-  // override all callbacks that are called when something happens that changes the background
-  // image
- 
-
-  if(backgroundIsDirty)
-    updateBackgroundImage();
-  //g.fillAll(Colours::red); // for test
-  g.drawImageAt(background, 0, 0);
-  paintInOutGains(g);
-}
-
 void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
 {
   double freq, gain;           // gain in dB
@@ -716,7 +701,30 @@ void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
   }
 }
 
-void MultiBandPlotEditorAnimated::updateBackgroundImage()
+//=================================================================================================
+
+void MultiBandPlotEditorAnimated2::paint(Graphics& g)
+{
+  MultiBandPlotEditorAnimated::paint(g); return; // preliminary
+  // todo: comment this and also comment code in paintOverChildren (to make it empty) and then
+  // override all callbacks that are called when something happens that changes the background
+  // image
+
+  if(backgroundIsDirty)
+    updateBackgroundImage();
+  //g.fillAll(Colours::red); // for test
+  g.drawImageAt(background, 0, 0);
+  paintInOutGains(g);
+}
+
+void MultiBandPlotEditorAnimated2::resized()
+{
+  MultiBandPlotEditorAnimated::resized();
+  backgroundIsDirty = true;
+}
+
+
+void MultiBandPlotEditorAnimated2::updateBackgroundImage()
 {
   background = Image(Image::PixelFormat::RGB, getWidth(), getHeight(), false); // or maybe ARGB?
   Graphics g(background);
@@ -739,11 +747,7 @@ void MultiBandPlotEditorAnimated::updateBackgroundImage()
   // between the two implementations
 }
 
-void MultiBandPlotEditorAnimated::resized()
-{
-  MultiBandPlotEditor::resized();
-  backgroundIsDirty = true;
-}
+
 
 //=================================================================================================
 

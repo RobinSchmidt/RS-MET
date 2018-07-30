@@ -293,15 +293,33 @@ public:
 
   virtual void timerCallback() override;
   virtual void paintOverChildren(Graphics& g) override; 
-  virtual void paint(Graphics& g) override;             // not yet finished
-
-  virtual void resized() override;
 
 protected:
 
   /** Paints the gain of the output signal with respect to the input signal for each band. 
   Especially useful for dynamics processors. */
   void paintInOutGains(Graphics& g);
+
+};
+
+//=================================================================================================
+
+/** Subclass of MultiBandPlotEditorAnimated to provide optimized drawing by avoiding to redraw the
+background image every frame. We do this in a subclass in order to make it easy to switch between
+both implementations at compile time (for performance tests and to keep the simple, non-optimized 
+version for reference). */
+
+class JUCE_API MultiBandPlotEditorAnimated2 : public MultiBandPlotEditorAnimated
+{
+
+public:
+
+
+  virtual void paint(Graphics& g) override;
+  virtual void resized() override;
+
+protected:
+
 
   /** This basically renders what our baseclass would render in its paint() method and writes the
   result into the backgroundImage member, so we don't need to re-render it every time we need to
@@ -323,20 +341,6 @@ protected:
   bool backgroundIsDirty = true;
   juce::Image background;  // should contain what our baseclass would produce in paint and
                            // paintOverChildren
-};
-
-/** Subclass of MultiBandPlotEditorAnimated to provide optimized drawing by avoiding to redraw the
-background image every frame. We do this in a subclass in order to make it easy to switch between
-both implementations at compile time (for performance tests and to keep the simple, non-optimized 
-version for reference). */
-
-class JUCE_API MultiBandPlotEditorAnimated2 : public MultiBandPlotEditorAnimated
-{
-
-public:
-
-protected:
-
 
 
 };
