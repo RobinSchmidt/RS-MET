@@ -737,7 +737,7 @@ void MultiBandPlotEditorAnimated2::resized()
 
 void MultiBandPlotEditorAnimated2::changeListenerCallback(ChangeBroadcaster* source)
 {
-  // gets called when a split frequency changes
+  // this function gets called when a split frequency changes
   MultiBandPlotEditorAnimated::changeListenerCallback(source);
   backgroundIsDirty = true;
 }
@@ -765,7 +765,6 @@ void MultiBandPlotEditorAnimated2::totalRefreshNeeded(MultiBandEffect* mbe)
   MultiBandPlotEditorAnimated::totalRefreshNeeded(mbe);
   backgroundIsDirty = true;
 }
-// we need to set the fal dirty also when a split frequency changes
 
 void MultiBandPlotEditorAnimated2::updateBackgroundImage()
 {

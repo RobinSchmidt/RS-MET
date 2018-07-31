@@ -105,7 +105,7 @@ bool triangleRasterization2()
 
 
     // compare drawing results:
-    float tol = 1.e-5;
+    float tol = float(1.e-5);
     r &= img2.areAllPixelsEqualTo(&img1, tol);
     r &= img3.areAllPixelsEqualTo(&img1, tol);
       // remaining error seems to be of numerical nature (the naive and box-based versiona produce a 

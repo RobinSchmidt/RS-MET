@@ -5,6 +5,7 @@
 
 void ellipseLineIntersections();
 void linearRegression();
+void probabilityLogic();
 void productLogPlot();
 void sinCosTable();
 void expBipolar();

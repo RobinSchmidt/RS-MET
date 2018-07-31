@@ -243,8 +243,8 @@ protected:
   {
     T thresh = RS_EPS(T);
 
-    T c = 0.5 * (nodes[i+1].shapeParam + 1);
-    T a = 2*log((1-c)/c);
+    T c = T(0.5) * (nodes[i+1].shapeParam + 1);
+    T a = T(2)*log((1-c)/c);
     //T a = -nodes[i+1].shapeParam;  // alpha - maybe use shapeScaler*shapeParam where shapeScaler is a 
 
     if(abs(a) < thresh)            // global setting for the whole function defined in this class

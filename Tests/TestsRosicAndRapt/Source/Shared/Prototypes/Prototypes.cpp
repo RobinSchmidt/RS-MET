@@ -5,6 +5,7 @@
 #include "ClassicFilterDesign/PoleZeroDesignerAnalog.cpp"
 #include "ClassicFilterDesign/PoleZeroDesignerDigital.cpp"
 
+#include "Probability.cpp"
 #include "Projection3Dto2D.cpp"
 #include "Polygon.cpp"
 #include "Drawing.cpp"

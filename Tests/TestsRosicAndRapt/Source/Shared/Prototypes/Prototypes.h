@@ -10,6 +10,7 @@
 #include "ClassicFilterDesign/PoleZeroDesignerAnalog.h"
 #include "ClassicFilterDesign/PoleZeroDesignerDigital.h"
 
+#include "Probability.h"
 #include "Projection3Dto2D.h"
 #include "Polygon.h"
 #include "Drawing.h"

@@ -293,6 +293,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\Polygon.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\Probability.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2149,6 +2152,7 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Polygon.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\Probability.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Prototypes.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h"/>

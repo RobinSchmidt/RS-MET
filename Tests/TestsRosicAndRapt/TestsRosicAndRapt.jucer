@@ -216,6 +216,8 @@
                 file="Source/Shared/Prototypes/ParticleSystem.h"/>
           <FILE id="hphf4A" name="Polygon.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Polygon.cpp"/>
           <FILE id="tyyxCw" name="Polygon.h" compile="0" resource="0" file="Source/Shared/Prototypes/Polygon.h"/>
+          <FILE id="aRqizX" name="Probability.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Probability.cpp"/>
+          <FILE id="a2O8pi" name="Probability.h" compile="0" resource="0" file="Source/Shared/Prototypes/Probability.h"/>
           <FILE id="edu0Jv" name="Projection3Dto2D.cpp" compile="0" resource="0"
                 file="Source/Shared/Prototypes/Projection3Dto2D.cpp"/>
           <FILE id="brWXSO" name="Projection3Dto2D.h" compile="0" resource="0"

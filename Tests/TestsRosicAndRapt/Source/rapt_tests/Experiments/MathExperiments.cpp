@@ -112,6 +112,11 @@ void linearRegression()
   plt.plot();
 }
 
+void probabilityLogic()
+{
+
+  int dummy = 0;
+}
 
 double productLog(const double z) 
 {
