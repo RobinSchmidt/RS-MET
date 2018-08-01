@@ -43,6 +43,7 @@ array and the shorter array is conceptually zero-padded to match the length of t
 (there's no literal zero-padding done, just the summation loop is shorter). */
 template<class T>
 T rsCrossCorrelation(T *x, int Nx, T *y, int Ny);
+// ?formula assumes zero mean for x and y? ...check this...maybe rename/generalize
 
 /** Given two arrays x and y of lengths Nx and Ny, this function computes the cross-correlation
 between the arrays where the shorter one of the arrays is first stretched to the length of the

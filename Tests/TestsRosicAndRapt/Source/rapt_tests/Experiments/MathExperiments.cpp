@@ -112,15 +112,74 @@ void linearRegression()
   plt.plot();
 }
 
+
+
+
+// maybe move to RAPT into the Statistics section
+double variance(double *x, int N)
+{
+  double mx  = RAPT::rsArray::mean(x, N); // mean of x
+  double sum = 0;
+  for(int n = 0; n < N; n++) {
+    double d = x[n] - mx;
+    sum += d*d;
+  }
+  return sum / (N-1);
+  // todo: make an optimized version that takes the mean as argument
+}
+double standardDeviation(double *x, int N)
+{
+  return sqrt(variance(x, N));
+}
+double covariance(double *x, double *y, int N)
+{
+  double mx = RAPT::rsArray::mean(x, N); // mean of x
+  double my = RAPT::rsArray::mean(y, N); // mean of y
+  double sum = 0;
+  for(int n = 0; n < N; n++)
+    sum += (x[n]-mx) * (y[n]-my);
+  return sum / (N-1);
+}
+double correlation(double *x, double *y, int N)
+{
+  double vxy = covariance(x, y, N);
+  double vx  = variance(x, N);
+  double vy  = variance(y, N);
+  return vxy / (vx*vy);
+}
+double conditionalProbability(double* a, double* b, int N)
+{
+  // conditional probability of "a given b"
+  // a and b must be arrays of boolean values (0 or 1) but as double data type
+  int na = 0, nb = 0;
+  for(int n = 0; n < N; n++) {
+    if(b[n] == 1) {
+      nb++;
+      if(a[n] == 1)
+        na++;
+    }
+  }
+  return (double) na / (double) nb;
+}
 void probabilityLogic()
 {
-  // consider an example: produce random number x in 0..1, let: A: x < 0.5, B: 0.3 < x < 0.6,
-  // -> P(A)=0.5, P(B)=0.3, P(A|B)=1/3, P(B|A)=2/5=0.4 -> what's the correlation C(A,B)?
+  // consider an example: produce random number x in 0..1, 
 
-  int N = 100000;                // number of realizations to produce
-  std::vector<int> A(N), B(N);   // realizations of events A and B (true/false, represented as 0/1)
-  std::vector<double> x(N);
+  // let: A:  x < 0.5, B: 0.3 < x < 0.6,
+  // -> P(A)=0.5, P(B)=0.3, P(A|B)=2/3, P(B|A)=2/5=0.4 -> what's the correlation C(A,B)?
 
+
+  // setup:
+  int N = 100000;   // number of realizations to produce
+  double aL = 0.0;  // lower limit for x, such that event A is considered to have occured
+  double aU = 0.5;  // upper limit ....
+  double bL = 0.3;  // ...same for event B
+  double bU = 0.6;
+
+
+  typedef std::vector<double> Vec;
+  Vec A(N), B(N);   // realizations of events A and B (true/false, represented as 0/1)
+  Vec x(N);
   int n;
   RAPT::rsNoiseGenerator<double> prng;
   prng.setRange(0, 1);
@@ -129,20 +188,37 @@ void probabilityLogic()
     double xn = prng.getSample();
     x[n] = xn;
 
-    if(xn < 0.5)  
+    if(xn > aL && xn < aU)  
       A[n] = 1;
     else         
       A[n] = 0;
 
-    if(xn > 0.3 && xn < 0.6)
+    if(xn > bL && xn < bU)
       B[n] = 1;
     else
       B[n] = 0;
   }
 
   // compute relative frequencies of events A and B (should approximate their probabilities):
-  double fA = RAPT::rsArray::sum(&A[0], N) / double(N);
-  double fB = RAPT::rsArray::sum(&B[0], N) / double(N);
+  //double fA = RAPT::rsArray::sum(&A[0], N) / N;
+  //double fB = RAPT::rsArray::sum(&B[0], N) / N;
+  // are actually the mean values
+
+  // compute sample mean values for event A and B:
+  double mA = RAPT::rsArray::mean(&A[0], N);
+  double mB = RAPT::rsArray::mean(&B[0], N);
+
+  // compute sample variances:
+  double vA = variance(&A[0], N);
+  double vB = variance(&B[0], N);
+
+  // compute sample covariance and correlation:
+  double cov = covariance( &A[0], &B[0], N);
+  double cor = correlation(&A[0], &B[0], N);
+
+  // compute empirical conditional probabilities:
+  double cab = conditionalProbability(&A[0], &B[0], N); // P(A|B), empirical prob of A given B
+  double cba = conditionalProbability(&B[0], &A[0], N); // P(B|A), empirical prob of B given A
 
 
 
