@@ -145,7 +145,7 @@ double correlation(double *x, double *y, int N)
   double vxy = covariance(x, y, N);
   double vx  = variance(x, N);
   double vy  = variance(y, N);
-  return vxy / (vx*vy);
+  return vxy / sqrt(vx*vy);
 }
 double conditionalProbability(double* a, double* b, int N)
 {
@@ -240,6 +240,17 @@ void probabilityLogic()
   // soo, let's say P(A) and P(B) are known and let's assume that the correlation (or maybe 
   // covariance) between a and b is also known - can we compute P(A,B)?
   // how does the correlations relate to the conditional probabilities P(A|B) or P(B|A)?
+
+  // https://math.stackexchange.com/questions/1751950/from-correlation-coefficient-to-conditional-probability
+  // says:
+  // Corr(A,B) = (P(A,B) - P(A)*P(B)) / sqrt( P(A)*(1-P(A)) * P(B)*(1-P(B)) )
+
+  // let's try it:
+  double cor2 = (jab-pa*pb) / sqrt(pa*(1-pa)*pb*(1-pb));
+  // yes, looks good
+
+  // from this, we may build a general continuous "and" formula that incorporates correlation
+  // ...and from that, we can also create an "or" formula
 
   int dummy = 0;
 }
