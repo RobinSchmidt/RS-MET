@@ -161,6 +161,15 @@ double conditionalProbability(double* a, double* b, int N)
   }
   return (double) na / (double) nb;
 }
+double jointProbability(double* a, double* b, int N)
+{
+  int sum = 0;
+  for(int n = 0; n < N; n++)
+    if(a[n] == 1 && b[n] == 1)
+      sum += 1;
+  return sum / (double) N;
+}
+
 void probabilityLogic()
 {
   // consider an example: produce random number x in 0..1, 
@@ -216,11 +225,21 @@ void probabilityLogic()
   double cov = covariance( &A[0], &B[0], N);
   double cor = correlation(&A[0], &B[0], N);
 
-  // compute empirical conditional probabilities:
+  // compute empirical probabilities (by relative frequencies):
+  double pa  = RAPT::rsArray::sum(&A[0], N) / N;        // P(A), empirical prob of event A
+  double pb  = RAPT::rsArray::sum(&B[0], N) / N;        // P(B), empricial prob of event B
   double cab = conditionalProbability(&A[0], &B[0], N); // P(A|B), empirical prob of A given B
   double cba = conditionalProbability(&B[0], &A[0], N); // P(B|A), empirical prob of B given A
+  double jab = jointProbability(      &A[0], &B[0], N); // P(A,B), empirical prob of A and B
 
+  // compute joint probability by formulas via conditional probability:
+  //double jab1 = cab * pb;   // P(A,B) = P(A|B) * P(B)
+  //double jab2 = cba * pa;   // P(A,B) = P(B|A) * P(A)
+  // ok, this works - both are equal to jab
 
+  // soo, let's say P(A) and P(B) are known and let's assume that the correlation (or maybe 
+  // covariance) between a and b is also known - can we compute P(A,B)?
+  // how does the correlations relate to the conditional probabilities P(A|B) or P(B|A)?
 
   int dummy = 0;
 }
