@@ -25,9 +25,12 @@ public:
   // retrieve pointers to the observed parameters:
 
   /** Retrieves a pointer to an Parameter object which has a given name - if no
-  parameter with the given name exists in the vector of observed parameters, NULL will be
+  parameter with the given name exists in the vector of observed parameters, a nullptr  will be
   returned. */
   virtual Parameter* getParameterByName(const juce::String& nameOfParameter) const;
+
+  /** Returns true, if there is a parameter with given name */
+  virtual bool hasParameterWithName(const juce::String& name) const;
 
   /** Retrieves a pointer to an Parameter object which has a given index - if no
   parameter with the given index exists in the vector of observed parameters, NULL will be

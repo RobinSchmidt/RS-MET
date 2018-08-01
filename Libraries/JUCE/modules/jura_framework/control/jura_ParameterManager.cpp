@@ -30,6 +30,15 @@ Parameter* ParameterManager::getParameterByName(const String& nameOfParameter) c
   return result;
 }
 
+bool ParameterManager::hasParameterWithName(const juce::String& name) const
+{
+  ScopedLock scopedLock(*lock);
+  for(int i=0; i < (int)parameters.size(); i++)
+    if( parameters[i]->hasName(name) )
+      return true;
+  return false;
+}
+
 Parameter* ParameterManager::getParameterByIndex(int indexOfParameter) const
 {
   ScopedLock scopedLock(*lock);
@@ -60,12 +69,13 @@ int ParameterManager::getNumParameters() const
 //-------------------------------------------------------------------------------------------------
 // add/remove observed parameters:
 
-void ParameterManager::addObservedParameter(Parameter *parameterToAdd)
+void ParameterManager::addObservedParameter(Parameter *p)
 {
   ScopedLock scopedLock(*lock);
-  parameterToAdd->setMutexToUse(lock);
-  parameterToAdd->registerParameterObserver(this);
-  appendIfNotAlreadyThere(parameters, parameterToAdd);
+  jassert(!hasParameterWithName(p->getName())); // parameters must have unique names
+  p->setMutexToUse(lock);
+  p->registerParameterObserver(this);
+  appendIfNotAlreadyThere(parameters, p);
 }
 
 void ParameterManager::removeObservedParameter(Parameter *parameterToRemove, bool deleteObject)

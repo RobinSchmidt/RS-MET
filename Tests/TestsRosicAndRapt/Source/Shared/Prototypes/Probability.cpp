@@ -52,6 +52,10 @@ char TriLogic::or(char a, char b)
   return 2;                 // 9 handled
 }
 
+// see:
+// https://en.wikipedia.org/wiki/Three-valued_logic
+// https://en.wikipedia.org/wiki/Four-valued_logic
+
 /*
 -continuous/probabilistic logic functions that take in real numbers a,b (probabilities):
 -not(a)    = 1-a
