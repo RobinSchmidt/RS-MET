@@ -114,6 +114,37 @@ void linearRegression()
 
 void probabilityLogic()
 {
+  // consider an example: produce random number x in 0..1, let: A: x < 0.5, B: 0.3 < x < 0.6,
+  // -> P(A)=0.5, P(B)=0.3, P(A|B)=1/3, P(B|A)=2/5=0.4 -> what's the correlation C(A,B)?
+
+  int N = 100000;                // number of realizations to produce
+  std::vector<int> A(N), B(N);   // realizations of events A and B (true/false, represented as 0/1)
+  std::vector<double> x(N);
+
+  int n;
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setRange(0, 1);
+  for(n = 0; n < N; n++)
+  {
+    double xn = prng.getSample();
+    x[n] = xn;
+
+    if(xn < 0.5)  
+      A[n] = 1;
+    else         
+      A[n] = 0;
+
+    if(xn > 0.3 && xn < 0.6)
+      B[n] = 1;
+    else
+      B[n] = 0;
+  }
+
+  // compute relative frequencies of events A and B (should approximate their probabilities):
+  double fA = RAPT::rsArray::sum(&A[0], N) / double(N);
+  double fB = RAPT::rsArray::sum(&B[0], N) / double(N);
+
+
 
   int dummy = 0;
 }

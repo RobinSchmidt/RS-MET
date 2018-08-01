@@ -1,4 +1,56 @@
 
+char TriLogic::not(char a)
+{
+  if(a == 0) return 1;  // not(T) = F
+  if(a == 1) return 0;  // not(F) = T
+  return 2;             // not(U) = U
+}
+
+char TriLogic::and(char a, char b)
+{
+  //        a a a
+  //        T F U
+  //             
+  //  b T   T F U
+  //  b F   F F F
+  //  b U   U F U 
+
+  if(a == 0) return 0; // a=F column (3 cases handled)
+  if(b == 0) return 0; // b=F row    (5 cases handled)
+
+  // a=T column:
+  if(a == 1) {
+    if(b == 1) return 1;     // 6 handled
+    if(b == 2) return 2; }   // 7 handled
+
+  // b=T row:
+  if(b == 1)
+    if(a == 2) return 2;     // 8 handled
+
+  return 2;                  // 9 handled
+
+  // can this logic be simplified? returns 5F, 3U, 1T (similar to the 5T, 3U, 1F for or), so maybe
+  // the same logical structure can be used?...make unit-test and try to optimize
+}
+
+char TriLogic::or(char a, char b)
+{
+  //        a a a
+  //        T F U
+  //             
+  //  b T   T T T    gives 5T, 3U, 1F
+  //  b F   T F U
+  //  b U   T U U
+
+  if(a == 1) return 1;      // a=T column (3 handled)
+  if(b == 1) return 1;      // b=T row    (5 handled)
+
+  // a=F column:
+  if(a == 0)
+    if(b == 0) return 0;    // 6 handled
+
+  return 2;                 // 9 handled
+}
 
 /*
 -continuous/probabilistic logic functions that take in real numbers a,b (probabilities):
@@ -7,7 +59,7 @@
 -or( a, b) = 1 - (1-a)*(1-b) = a + b - a*b
 here, (1-a)*(1-b) is the probability that a and b are both false
 nand(a, b) = 1-a*b
--xor(a, b) = or(and(a,not(b)),and(b,not(a))) = a + b - a*b(3-a-b+a*b)
+-xor(a, b) = or(and(a,not(b)),and(b,not(a))) = a + b - a*b*(3-a-b+a*b)
 -maybe these functions can be extended to take a 3rd argument c for the correlation between 
 a and b
 -and(a,b,c) should reduce to the form above when c=0: and(a,b,0) = a*b
