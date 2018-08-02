@@ -1,3 +1,19 @@
+double rsAnd(double pa, double pb, double cor)
+{
+  double d = sqrt( pa*(1-pa) * pb*(1-pb) );
+  return pa*pb + cor*d;
+  // comes from the definition of correlation as:
+  // Corr(A,B) = (P(A,B) - P(A)*P(B)) / sqrt( P(A)*(1-P(A)) * P(B)*(1-P(B)) )
+  // https://math.stackexchange.com/questions/1751950/from-correlation-coefficient-to-conditional-probability
+}
+
+double rsOr(double pa, double pb, double cor)
+{
+  return pa + pb - rsAnd(pa, pb, cor);
+  // formula needs to be verified
+}
+
+//=================================================================================================
 
 char TriLogic::not(char a)
 {
@@ -85,6 +101,10 @@ results
 conditional probabilities...maybe a correlation can be seen as a pair of symmetric conditational
 probabilities, where C = P(A|B) = P(B|A) but in general, these two conditional probabilities
 can be different -> look up - if that's the case, maybe bayes rule can be used for and(a,b)?
+ -> nope that's wrong, but correlations and conditional probabilities can be related, in fact,
+    if P(A) and P(B) are known, then any of the four P(A|B), P(B|A), P(A,B), Corr(A,B) contains
+    the same information - if one of them is additionally known, then the others can be computed
+    -> maybe implement the formulas
 -consider an example: produce random number x in 0..1, let: A: x < 0.5, B: 0.3 < x < 0.6,
 -> P(A)=0.5, P(B)=0.3, P(A|B)=1/3, P(B|A)=2/5=0.4 -> what's the correlation C(A,B)?
 -maybe a class for such variables can be written, using operators "*" for "and" and "+" for "or"

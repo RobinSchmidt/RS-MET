@@ -62,19 +62,37 @@ protected:
 // to be true.
 
 
-
+/** Given a probability p of an event to occur, this returns the probability of the event to not 
+occur, which is just 1-p. */
 inline double rsNot(double p) { return 1 - p; }
 
 /** Probability that two independent events a and b occur both where pa is the probability for a to
 occur and pb is the probability for b to occur. */
 inline double rsAnd(double pa, double pb) { return pa*pb; }
 
+/** Probability of "a and b" given the probabilities of a, b alone and the correlation between a and 
+b. */
+double rsAnd(double pa, double pb, double cor);
+
 /** Probability that event a occurs or event b occurs or both occur, assuming a and b are
 independent. */
 inline double rsOr(double pa, double pb) { return pa + pb - pa*pb; }
 
-/** == or(and(a,not(b)),and(b,not(a))) */
+/** Probability that event a occurs or event b occurs or both occur, assuming a and b are
+correlated with given correlation coefficient . */
+double rsOr(double pa, double pb, double cor);
+
+/** Exclusive or of two independent events == or(and(a,not(b)),and(b,not(a))) */
 inline double rsXor(double pa, double pb) { return pa + pb - pa*pb*(3-pa-pb+pa*pb); }
+
+/** Given the correlation cab = cor(A,B) between events A,B and the correlation cbc = cor(B,C) 
+between events B,C, this function computes the correlation between events A,C. */
+double rsCorrelationComposition(double cab, double cbc) { return 0; } // not yet implemented
+
+
+
+
+
 
 //=================================================================================================
 

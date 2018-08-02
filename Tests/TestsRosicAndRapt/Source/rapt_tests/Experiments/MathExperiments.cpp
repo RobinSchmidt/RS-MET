@@ -160,6 +160,10 @@ double conditionalProbability(double* a, double* b, int N)
     }
   }
   return (double) na / (double) nb;
+
+  // can this somehow be generalized...like sum(prod(a, b)) / sum(b) ...sum over the elementwise 
+  // product of the realizations of a,b divided by sum of realizations of b - should allow
+  // realizations between 0..1
 }
 double jointProbability(double* a, double* b, int N)
 {
@@ -168,7 +172,9 @@ double jointProbability(double* a, double* b, int N)
     if(a[n] == 1 && b[n] == 1)
       sum += 1;
   return sum / (double) N;
+  // maybe generalize by using a sum-of-products (divided by N)
 }
+// maybe rename to andProbability and write also an orProbability
 
 void probabilityLogic()
 {
