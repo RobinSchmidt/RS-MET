@@ -272,10 +272,11 @@ protected:
   // rational mapping
 
 
-  T ratCurve(T p, T a)
+  T ratCurve(T x, T a)
   {
-    T ap = a*p;
-    return (a*p+p) / (2*a*p - a + 1);
+    T ax = a*x;
+    return (ax+x) / (2*ax - a + 1);
+    // for a plot, see: https://www.desmos.com/calculator/ql1hh1byy5
   }
   T getValueRational(T x, size_t i)
   {
