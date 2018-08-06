@@ -4,6 +4,7 @@
 for p = -1, because there's a potential division by zero in this case (it actually mostly ends
 up in the branch where ther is no such division but i'm not totally sure if there can't be 
 conditions where this may happen). So maybe best restrict the range to -0.99...+0.99 */
+/*
 double triSaw(double x, double p) // p=0: triangle, p=-0.99: saw down, p=+0.99: saw up
 {
   x /= 2*PI;
@@ -16,15 +17,17 @@ double triSaw(double x, double p) // p=0: triangle, p=-0.99: saw down, p=+0.99: 
   else
     return 2*(r2-x)/(1-2*r2) + 1;
 }
+*/
+// was moved to RAPT now
 
 void triSaw()
 {
-  double p = -0.8;           // parameter 0: triangle, -1: saw down, +1: saw up
+  double p = -0.5;           // parameter 0: triangle, -1: saw down, +1: saw up
   static const int N = 501;  // number of function values
   double t[N], y[N];
   RAPT::rsArray::fillWithRangeLinear(t, N, 0.0, 20.0); 
   for(int n = 0; n < N; n++)
-    y[n] = triSaw(t[n], p);
+    y[n] = RAPT::rsTriSaw(t[n], p);
 
   // regular triangle:
   //for(int n = 0; n < N; n++)

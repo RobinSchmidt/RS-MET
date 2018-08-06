@@ -62,6 +62,7 @@ protected:
 // to be true.
 
 
+
 /** Given a probability p of an event to occur, this returns the probability of the event to not 
 occur, which is just 1-p. */
 inline double rsNot(double p) { return 1 - p; }
@@ -85,9 +86,16 @@ double rsOr(double pa, double pb, double cor);
 /** Exclusive or of two independent events == or(and(a,not(b)),and(b,not(a))) */
 inline double rsXor(double pa, double pb) { return pa + pb - pa*pb*(3-pa-pb+pa*pb); }
 
+/** Given the probability pA = P(A) of event A, probability pB = P(B) of event B and the probability 
+pAB = P(A,B) = P(A and B) of the event "A and B", this function computes the correlation 
+coefficient between events A and B. */
+double rsCorrelation(double pA, double pB, double pAB);
+
 /** Given the correlation cab = cor(A,B) between events A,B and the correlation cbc = cor(B,C) 
 between events B,C, this function computes the correlation between events A,C. */
-double rsCorrelationComposition(double cab, double cbc) { return 0; } // not yet implemented
+//inline double rsCorrelationComposition(double cab, double cbc) { return 0; } 
+// not yet implemented ...i hope that somehow a formula can be derived via going through the 
+// formulas that define correlation in terms of conditional probabilities
 
 
 

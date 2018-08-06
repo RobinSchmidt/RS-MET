@@ -140,6 +140,7 @@ template class RAPT::rsPhasorStateMapper<double>;
 // todo: get rid of directly using rapt classes in jura and/or products - create instantiations for
 // double in rosic and use these instantiations only
 
+template class RAPT::rsBouncillator<double>;
 template class RAPT::rsRayBouncer<double>;
 template class RAPT::rsRayBouncerDriver<double>;
 template class RAPT::rsLissajousOscillator3D<double>;

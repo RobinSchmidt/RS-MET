@@ -13,6 +13,7 @@ void rayBouncer();
 void circleFractals();
 void hilbertCurve();
 void lindenmayer();
+void shapedTriSaw();
 void xoxosOsc();
 
 

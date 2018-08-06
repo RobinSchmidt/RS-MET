@@ -474,6 +474,15 @@ void lindenmayer()
   plt1.plot();
 }
 
+void shapedTriSaw()
+{
+  // maybe move where the other (non-shaped) triSaw experiment ist
+
+
+  GNUPlotter plt;
+  //plt.plot();
+}
+
 void xoxosOsc()
 {
   // Oscillator based on an ellipse in the xy-plane

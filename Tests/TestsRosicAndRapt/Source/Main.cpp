@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
   //expBipolar();
   //expGaussBell();
   //linearRegression();
-  probabilityLogic();
+  //probabilityLogic();
   //productLogPlot();
   //sinCosTable();
 
@@ -73,6 +73,7 @@ int main(int argc, char* argv[])
   //hilbertCurve();
   //circleFractals(); // rename to spirograph
   //lindenmayer();
+  shapedTriSaw();
   //xoxosOsc();
 
   // Graphics:
@@ -83,7 +84,7 @@ int main(int argc, char* argv[])
   //lineTo();
   //polyLineRandom();
   //phaseScopeLissajous();
-  triangles();
+  //triangles();
   //pixelCoverage();
 
 
@@ -263,9 +264,9 @@ int main(int argc, char* argv[])
   //breakpointModulatorSmoothFadeOut();
 
   // Oscillator:
-  //triSaw();
-  //phaseShapingCurvePoly4();
-  //phaseShapingCurvesRational();
+  triSaw();
+  phaseShapingCurvePoly4();
+  phaseShapingCurvesRational();
   //phaseShaping();
   //phaseShapingSkew();
 

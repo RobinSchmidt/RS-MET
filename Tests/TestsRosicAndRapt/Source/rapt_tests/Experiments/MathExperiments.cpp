@@ -165,6 +165,9 @@ double conditionalProbability(double* a, double* b, int N)
   // product of the realizations of a,b divided by sum of realizations of b - should allow
   // realizations between 0..1
 }
+// or maybe it's called conditional relative frequency?
+// https://mathbitsnotebook.com/Algebra1/StatisticsReg/ST2TwoWayTable.html
+
 double jointProbability(double* a, double* b, int N)
 {
   int sum = 0;
@@ -175,6 +178,7 @@ double jointProbability(double* a, double* b, int N)
   // maybe generalize by using a sum-of-products (divided by N)
 }
 // maybe rename to andProbability and write also an orProbability
+
 
 void probabilityLogic()
 {

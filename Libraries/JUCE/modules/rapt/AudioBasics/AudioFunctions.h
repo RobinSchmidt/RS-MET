@@ -111,6 +111,38 @@ inline T rsTauToDecayTime(T tau, T decayLevel)
   return -k*tau*decayLevel;
 }
 
+/** A waveform that morphs between saw-down (p = -1), triangle (p = 0) and saw-up (p = +1) - but 
+note that the limiting values (+-1) should not actually be used because of divisions by zero, so
+use a range -0.99...+0.99 instead for example. */
+template<class T>
+T rsTriSaw(T x, T p)
+{
+  //x /= 2*PI;
+  x *= (1/(2*PI)); 
+  x  = fmod(x, 1);
+  T r2 = 0.25*(p+1);
+  if(x < r2)
+    return x / r2;
+  else if(x > 1-r2) 
+    return (x-1)/r2;
+  else
+    return 2*(r2-x)/(1-2*r2) + 1;
+}
+// todo: introduce flat top and/or bottom - maybe it's simplest to just amplify and clip the 
+// waveform, maybe make an oscillator class that pre-computes 1/r2 and maybe also allows for a 
+// p-range -1..+1 by somehow taking care of div-by-0 itself
+// maybe make a simplified version:
+// if(x < h)
+//   return a0 + a1*t;
+// else
+//   return b0 + b1*t;   
+// -> no divisions at all, h should the be turning point in the cycle, i.e. a number 0..1 that 
+// separates upward and downward "half"-waves (they are not actually half a cycle long) and the
+// coeffs are computed according to the desired output range - it can be nicely extendend to higher
+// order polynomial shapes as well (for example to introduce smoothness constraints)
+
+
+
 /** Converts a time-stamp given in whole notes into seconds according to a tempo measured
 in beats per minute (bpm). */
 template<class T>
