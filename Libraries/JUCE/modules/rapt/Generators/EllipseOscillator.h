@@ -10,8 +10,20 @@ class rsTriSawOscillator
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   inline void setPhaseIncrement(T newIncrement) { inc = newIncrement; }
+
+  inline void setAsymmetry(T newAsymmetry) 
+  { 
+    h = T(0.5)*(newAsymmetry+1);
+    updateTriSawCoeffs();
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
 
   inline void updatePhase()
   {
@@ -20,7 +32,6 @@ public:
       p -= 1;
     // maybe do also a wraparound at 0 -> allow negative frequencies
   }
-
 
   inline T shape1(T x)
   {
@@ -47,6 +58,12 @@ public:
   inline void reset() { p = startPhase; }
 
 protected:
+
+  /** Updates the coefficients for the creation of basic triangle/sawtooth waveform before the 
+  waveshaper is applied. */
+  void updateTriSawCoeffs();
+
+
 
   T startPhase = 0;  
   T p = 0;     // current phase in 0..1

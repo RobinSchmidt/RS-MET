@@ -482,6 +482,7 @@ void shapedTriSaw()   // rename to triSawOsc
   // set up osc:
   RAPT::rsTriSawOscillator<float> osc;
   osc.setPhaseIncrement(1.f/T);
+  osc.setAsymmetry(-0.5);
 
   // generate signal:
   float y[N];
