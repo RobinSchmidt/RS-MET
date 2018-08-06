@@ -11,7 +11,6 @@ namespace RAPT
 #include "Oscillator3D.h"
 #include "RayBouncer.h"
 
-
 // maybe make subdirectories: Oscillator, Sampling, Physical, Chaotic, Noise,
 // Geometric, etc.
 

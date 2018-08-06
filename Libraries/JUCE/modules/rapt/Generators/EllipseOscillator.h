@@ -1,5 +1,67 @@
 #ifndef RAPT_ELLIPSEOSCILLATOR_H_INCLUDED
 #define RAPT_ELLIPSEOSCILLATOR_H_INCLUDED
+// rename to Oscillators.h
+
+/**   */
+
+template<class T>
+class rsTriSawOscillator
+{
+
+public:
+
+
+  inline void setPhaseIncrement(T newIncrement) { inc = newIncrement; }
+
+  inline void updatePhase()
+  {
+    p += inc;
+    while(p > 1)
+      p -= 1;
+    // maybe do also a wraparound at 0 -> allow negative frequencies
+  }
+
+
+  inline T shape1(T x)
+  {
+    return x; // preliminary
+  }
+
+  inline T shape2(T x)
+  {
+    return x; // preliminary
+  }
+
+  inline T getSample()
+  {
+    T y;
+    if(p < h)
+      y = shape1(a0 + a1*p);  // upward section
+    else 
+      y = shape2(b0 + b1*p);  // downward section
+
+    updatePhase();
+    return y;
+  }
+
+  inline void reset() { p = startPhase; }
+
+protected:
+
+  T startPhase = 0;  
+  T p = 0;     // current phase in 0..1
+  T h = 0.5;
+  T inc = 0;   // phase increment
+
+  // variables for thetrisaw waveform before applying the waveshaper
+  T a0 =  0; 
+  T a1 =  2;
+  T b0 =  2;
+  T b1 = -2;
+
+};
+
+//=================================================================================================
 
 /** Oscillator based on an ellipse in the xy-plane.
 

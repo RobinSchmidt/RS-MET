@@ -474,13 +474,24 @@ void lindenmayer()
   plt1.plot();
 }
 
-void shapedTriSaw()
+void shapedTriSaw()   // rename to triSawOsc
 {
-  // maybe move where the other (non-shaped) triSaw experiment ist
+  static const int N = 1000;   // number of output samples
+  float T = 250;               // period in samples
 
+  // set up osc:
+  RAPT::rsTriSawOscillator<float> osc;
+  osc.setPhaseIncrement(1.f/T);
 
+  // generate signal:
+  float y[N];
+  for(int n = 0; n < N; n++)
+    y[n] = osc.getSample();
+
+  // plot:
   GNUPlotter plt;
-  //plt.plot();
+  plt.addDataArrays(N, y);
+  plt.plot();
 }
 
 void xoxosOsc()

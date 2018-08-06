@@ -264,9 +264,9 @@ int main(int argc, char* argv[])
   //breakpointModulatorSmoothFadeOut();
 
   // Oscillator:
-  triSaw();
-  phaseShapingCurvePoly4();
-  phaseShapingCurvesRational();
+  //triSaw();
+  //phaseShapingCurvePoly4();
+  //phaseShapingCurvesRational();
   //phaseShaping();
   //phaseShapingSkew();
 
