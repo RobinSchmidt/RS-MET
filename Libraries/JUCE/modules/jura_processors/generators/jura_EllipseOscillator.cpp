@@ -77,3 +77,36 @@ void EllipseOscillatorAudioModule::noteOn(int noteNumber, int velocity)
   oscCore.setFrequency(pitchToFreq(noteNumber)); // preliminary - use tuning table
   //oscCore.reset();
 }
+
+//=================================================================================================
+
+TriSawOscModule::TriSawOscModule(CriticalSection *lockToUse, 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
+{
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("TriSawOscillator");
+  createParameters();
+}
+
+
+void TriSawOscModule::createParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  typedef RAPT::rsTriSawOscillator<double> TSO;
+  TSO* tso = &oscCore;
+
+  typedef ModulatableParameter Param;
+  Param* p;
+
+  /*
+  p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<EO>(eo, &EO::setAmplitude);
+
+  p = new Param("Tune", -60.0, +60.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<EO>(eo, &EO::setDetune);
+  */
+}
