@@ -10,6 +10,8 @@ class rsTriSawOscillator
 
 public:
 
+  rsTriSawOscillator() { updateTriSawCoeffs(); }
+
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
@@ -20,6 +22,14 @@ public:
     h = T(0.5)*(newAsymmetry+1);
     updateTriSawCoeffs();
   }
+
+  // tension and sigmoidity parameters (params are in -1..+1):
+  inline void setTension1(T newParam) { t1 = newParam; }
+  inline void setTension2(T newParam) { t2 = newParam; }
+  inline void setSigmoid1(T newParam) { s1 = T(-0.5)*newParam; }
+  inline void setSigmoid2(T newParam) { s2 = T(-0.5)*newParam; }
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -33,15 +43,16 @@ public:
     // maybe do also a wraparound at 0 -> allow negative frequencies
   }
 
-  inline T shape1(T x)
+  /** Given a value between -1..1 (supposed to be the raw TriSaw output), this applies the shape
+  formula with parameters t for the tension and s for the sigmoidity. */
+  static inline T shape(T x, T t, T s)
   {
-    return x; // preliminary
+    x = ((1-s) + s*x*x)*x;  // apply sigmoidity
+    return (x+t) / (t*x+1); // apply tension
   }
 
-  inline T shape2(T x)
-  {
-    return x; // preliminary
-  }
+  inline T shape1(T x) { return shape(x, t1, s1); }
+  inline T shape2(T x) { return shape(x, t2, s2); }
 
   inline T getSample()
   {
@@ -70,13 +81,21 @@ protected:
   T h = 0.5;
   T inc = 0;   // phase increment
 
-  // variables for thetrisaw waveform before applying the waveshaper
+  // variables for the trisaw waveform before applying the waveshaper
   T a0 =  0; 
   T a1 =  2;
   T b0 =  2;
   T b1 = -2;
+  // maybe rename to u0,u1, d0,d1 (for up/down)
 
+
+  T t1 = 0, s1 = 0;  // tension and sigmodity for first (upward) half-wave
+  T t2 = 0, s2 = 0;  // same for downward half-wave
 };
+
+
+
+
 
 //=================================================================================================
 
