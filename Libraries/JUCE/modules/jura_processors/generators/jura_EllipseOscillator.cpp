@@ -106,7 +106,7 @@ void TriSawOscModule::createParameters()
 
   p = new Param("AttackBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<TSO>(tso, &TSO::setTension1);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setBending1);
 
   p = new Param("AttackSigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
@@ -114,13 +114,16 @@ void TriSawOscModule::createParameters()
 
   p = new Param("DecayBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<TSO>(tso, &TSO::setTension2);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setBending2);
+  // perhaps this should work the opposite way
 
   p = new Param("DecaySigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setSigmoid2);
 
   // add AttackDrive/DecayDrive
+
+  // for the envelope, add floor/ceil, set it up in terms of AttackTime/DecayTime
 
 }
 

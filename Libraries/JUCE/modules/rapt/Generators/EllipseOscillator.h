@@ -24,8 +24,8 @@ public:
   }
 
   // tension and sigmoidity parameters (params are in -1..+1):
-  inline void setTension1(T newParam) { t1 = newParam; }  // rename to Bending
-  inline void setTension2(T newParam) { t2 = newParam; }  
+  inline void setBending1(T newParam) { t1 =  newParam; }  // rename to Bending
+  inline void setBending2(T newParam) { t2 = -newParam; }  
   inline void setSigmoid1(T newParam) { s1 = T(-0.5)*newParam; }
   inline void setSigmoid2(T newParam) { s2 = T(-0.5)*newParam; }
 
