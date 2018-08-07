@@ -48,7 +48,7 @@ public:
   static inline T shape(T x, T t, T s)
   {
     x = ((1-s) + s*x*x)*x;  // apply sigmoidity
-    return (x+t) / (t*x+1); // apply tension
+    return (x+t) / (t*x+1); // apply bending
   }
 
   inline T shape1(T x) { return shape(x, t1, s1); }

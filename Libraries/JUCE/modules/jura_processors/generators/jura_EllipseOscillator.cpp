@@ -101,10 +101,12 @@ void TriSawOscModule::createParameters()
   Param* p;
 
   p = new Param("Asymmetry", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.80)); // test
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setAsymmetry);
 
   p = new Param("AttackBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setBending1);
 
@@ -113,9 +115,9 @@ void TriSawOscModule::createParameters()
   p->setValueChangeCallback<TSO>(tso, &TSO::setSigmoid1);
 
   p = new Param("DecayBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setBending2);
-  // perhaps this should work the opposite way
 
   p = new Param("DecaySigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
@@ -124,6 +126,15 @@ void TriSawOscModule::createParameters()
   // add AttackDrive/DecayDrive
 
   // for the envelope, add floor/ceil, set it up in terms of AttackTime/DecayTime
+
+  // asymmetry and bedning need finer resolution at the ends / less in the center
+  // maybe try tanh mapper or rational s-curve
+  // ok, the mappers are currently commented - maybe thei shape paremeters should themselves be
+  // availabe as user parameters - at least during development to figure out best (most musical) 
+  // settings for them, and later maybe hard-coded - maybe to figure out the best curve, use a 
+  // sinusoidal LFO and modulate the parameter with it and choose a setting in which the LFO sounds
+  // "most sinusoidal" ...whatever that means
+
 
 }
 

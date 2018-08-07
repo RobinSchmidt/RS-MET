@@ -236,12 +236,22 @@ public:
   // todo: sanity checks (floor < ceil), maybe have something like abs(ceil-floor) > minDistance
    
   /** Sets the increment for the upward part. */
-  void setIncrement(T newIncrement) { inc = newIncrement; }
+  void setIncrement(T newIncrement) 
+  { 
+    inc = newIncrement; 
+    if(dx > 0)
+      dx = inc;
+  }
 
   /** Sets the decrement for the downward part. */
-  void setDecrement(T newDecrement) { dec = newDecrement; }
+  void setDecrement(T newDecrement)
+  { 
+    dec = newDecrement;
+    if(dx < 0)
+      dx = -dec;
+  }
 
-  /** Sets up a shape parameter taht controls, how much of the current value will be added when 
+  /** Sets up a shape parameter that controls, how much of the current value will be added when 
   computing the new current value, i.e. a kind of feedback. */
   void setShape(T newShape) { shape = newShape; }
 
