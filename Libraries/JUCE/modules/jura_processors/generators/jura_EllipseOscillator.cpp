@@ -110,3 +110,25 @@ void TriSawOscModule::createParameters()
   p->setValueChangeCallback<EO>(eo, &EO::setDetune);
   */
 }
+
+void TriSawOscModule::processStereoFrame(double *left, double *right)
+{
+  *left = *right = oscCore.getSample();
+}
+
+void TriSawOscModule::setSampleRate(double newSampleRate)
+{
+  sampleRate = newSampleRate;
+  oscCore.setPhaseIncrement(freq/sampleRate);
+}
+
+void TriSawOscModule::reset()
+{
+  oscCore.reset();
+}
+
+void TriSawOscModule::noteOn(int noteNumber, int velocity)
+{
+  freq = pitchToFreq(noteNumber);
+  oscCore.setPhaseIncrement(freq/sampleRate);
+}

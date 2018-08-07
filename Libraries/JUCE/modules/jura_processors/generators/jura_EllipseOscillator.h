@@ -48,7 +48,7 @@ public:
   virtual void createParameters();
 
   // overriden from AudioModule baseclass:
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
+  //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
@@ -57,6 +57,8 @@ public:
 protected:
 
   RAPT::rsTriSawOscillator<double> oscCore;
+
+  double freq = 0, sampleRate = 44100;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriSawOscModule)
 };
