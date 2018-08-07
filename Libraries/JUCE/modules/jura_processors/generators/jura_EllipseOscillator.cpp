@@ -100,15 +100,28 @@ void TriSawOscModule::createParameters()
   typedef ModulatableParameter Param;
   Param* p;
 
-  /*
-  p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
+  p = new Param("Asymmetry", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<EO>(eo, &EO::setAmplitude);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setAsymmetry);
 
-  p = new Param("Tune", -60.0, +60.0, 0.0, Parameter::LINEAR);
+  p = new Param("AttackBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<EO>(eo, &EO::setDetune);
-  */
+  p->setValueChangeCallback<TSO>(tso, &TSO::setTension1);
+
+  p = new Param("AttackSigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setSigmoid1);
+
+  p = new Param("DecayBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setTension2);
+
+  p = new Param("DecaySigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setSigmoid2);
+
+  // add AttackDrive/DecayDrive
+
 }
 
 void TriSawOscModule::processStereoFrame(double *left, double *right)

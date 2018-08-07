@@ -24,8 +24,8 @@ public:
   }
 
   // tension and sigmoidity parameters (params are in -1..+1):
-  inline void setTension1(T newParam) { t1 = newParam; }
-  inline void setTension2(T newParam) { t2 = newParam; }
+  inline void setTension1(T newParam) { t1 = newParam; }  // rename to Bending
+  inline void setTension2(T newParam) { t2 = newParam; }  
   inline void setSigmoid1(T newParam) { s1 = T(-0.5)*newParam; }
   inline void setSigmoid2(T newParam) { s2 = T(-0.5)*newParam; }
 
@@ -53,6 +53,8 @@ public:
 
   inline T shape1(T x) { return shape(x, t1, s1); }
   inline T shape2(T x) { return shape(x, t2, s2); }
+  //inline T shape1(T x) { return x; }
+  //inline T shape2(T x) { return x; }
 
   inline T getSample()
   {
