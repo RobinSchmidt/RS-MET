@@ -192,10 +192,20 @@ void rsTriSawModulator::setTimeScaler(double newScaler)
   updateOscParameters();
 }
 
+void rsTriSawModulator::setFloor(double newFloor)
+{
+  flooor = newFloor;
+}
+
+void rsTriSawModulator::setCeiling(double newCeiling)
+{
+  ceiling = newCeiling;
+}
+
 void rsTriSawModulator::updateOscParameters()
 {
   double period = timeScale*(attack+decay);
   double freq   = 1/period;
-  setPhaseIncrement(freq / sampleRate); // later: scale by abs(ceil-floor)/2
+  setPhaseIncrement(freq / sampleRate);
   setAsymmetry(1 - 2*decay/period);
 }

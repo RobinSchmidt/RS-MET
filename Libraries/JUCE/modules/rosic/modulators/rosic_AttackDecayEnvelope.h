@@ -108,6 +108,19 @@ public:
   /** Scales the overall length of the envelope with given factor. */
   void setTimeScaler(double newScaler);
 
+
+  void setFloor(double newFloor);
+
+  void setCeiling(double newCeiling);
+
+
+  inline double getSample() /* override ...but baseclass method is not virtual */
+  {
+    double y = RAPT::rsTriSawOscillator<double>::getSample();
+    //y = 0.5 * (y+1);
+    return flooor + (ceiling-flooor) * 0.5 * (y+1);
+  }
+
 protected:
 
   /** Called from setattack, setDecay, etc. to update the parameters of the underlying 
@@ -115,6 +128,7 @@ protected:
   void updateOscParameters();
 
   double sampleRate = 44100, attack = 0.01, decay = 0.99, timeScale = 1;
+  double flooor = -1, ceiling = +1;
 
   // overriden because they should not be used in this subclass
   // setAsymmetry, setPhaseIncrement

@@ -52,6 +52,8 @@ void triSawModulator()
   tsm.setSampleRate(fs);
   tsm.setAttackTime(20);
   tsm.setDecayTime(200);
+  tsm.setFloor(  0.2);
+  tsm.setCeiling(1.5);
 
   double t[N], x[N];
   createTimeAxis(N, t, fs);
