@@ -283,6 +283,8 @@ double saw(int n, double f, double fs, int kMax)
     sum += sin(k*phi) / k;
   return (-2/PI) * sum;
 }
+// make a version of the function that takes onny phi and kMax as parameters (needed to test 
+// phase-modulation)
 
 double sqr(int n, double f, double fs, int kMax)
 {

@@ -30,18 +30,18 @@ public:
   /** Sets the bending parameter for the upward half-wave. The value is in -1..+1 where negative 
   values let the curve bend inward (toward the time axis) and positive values ouward (toward a 
   square wave). */
-  inline void setBending1(T newParam) { t1 =  newParam; }  // rename to AttackBending
+  inline void setAttackBending(T newParam) { t1 =  newParam; }  // rename to AttackBending
 
   /** Bending parameter for downward half-wave. */
-  inline void setBending2(T newParam) { t2 = -newParam; } 
+  inline void setDecayBending(T newParam) { t2 = -newParam; } 
 
   /** Sets the amount of sigmoidity or s-shapedness of the upward half-wave. A value of +1 leads to
   an s-shape with zero derivative at the corner point (i.e. perfectly rounded corners) and negative 
   values make the curve more spikey. */
-  inline void setSigmoid1(T newParam) { s1 = T(-0.5)*newParam; }
+  inline void setAttackSigmoid(T newParam) { s1 = T(-0.5)*newParam; }
 
   /** Sigmoidity of downward half-wave. */
-  inline void setSigmoid2(T newParam) { s2 = T(-0.5)*newParam; }
+  inline void setDecaySigmoid(T newParam) { s2 = T(-0.5)*newParam; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

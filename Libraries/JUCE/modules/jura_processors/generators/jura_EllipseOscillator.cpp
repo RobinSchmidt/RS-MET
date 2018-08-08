@@ -45,8 +45,6 @@ void EllipseOscillatorAudioModule::createParameters()
 
   // A is Upper/Lower Bias, B is Left/Right Bias, C is Upper/Lower Pinch
 
-
-
   // Renormalize, Mix, FreqScaleY, FreqShiftY
 
   // we really need some rescaling of LowHigh and InOut
@@ -89,7 +87,6 @@ TriSawOscModule::TriSawOscModule(CriticalSection *lockToUse,
   createParameters();
 }
 
-
 void TriSawOscModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
@@ -100,28 +97,56 @@ void TriSawOscModule::createParameters()
   typedef ModulatableParameter Param;
   Param* p;
 
+  std::vector<double> defaultValues; // used for figuring out map-points during development
+
   p = new Param("Asymmetry", -1.0, 1.0, 0.0, Parameter::LINEAR);
   //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.80)); // test
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setAsymmetry);
 
-  p = new Param("AttackBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  /*
+  // for later, to replace AttackBending and DecayBending parameters - but that doesn't work yet:
+  p = new Param("Bending", -1.0, 1.0, 0.0, Parameter::LINEAR);
   //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
   addObservedParameter(p);
-  p->setValueChangeCallback<TSO>(tso, &TSO::setBending1);
+  p->setValueChangeCallback<TriSawOscModule>(this, &TriSawOscModule::setBend);
 
-  p = new Param("AttackSigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new Param("BendAsym", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
   addObservedParameter(p);
-  p->setValueChangeCallback<TSO>(tso, &TSO::setSigmoid1);
+  p->setValueChangeCallback<TriSawOscModule>(this, &TriSawOscModule::setBendAsym);
+  */
+  
+  p = new Param("AttackBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
+  //defaultValues.clear();
+  //defaultValues.push_back(0.0);    // x = 0.0
+  //defaultValues.push_back(0.5);    // x = 0.25
+  //defaultValues.push_back(0.85);   // x = 0.5
+  //defaultValues.push_back(0.975);  // x = 0.75
+  //defaultValues.push_back(1.0);    // x = 1.0
+  //p->setDefaultValues(defaultValues);
+  addObservedParameter(p);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setAttackBending);
 
   p = new Param("DecayBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
   //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
   addObservedParameter(p);
-  p->setValueChangeCallback<TSO>(tso, &TSO::setBending2);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setDecayBending);
+
+  p = new Param("AttackSigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setAttackSigmoid);
 
   p = new Param("DecaySigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<TSO>(tso, &TSO::setSigmoid2);
+  p->setValueChangeCallback<TSO>(tso, &TSO::setDecaySigmoid);
+
+  // maybe later allow the (raw) sigmoid parameter go from -2..+1 because at -2, we get a flat 
+  // section in the middle. i think a mapped (not raw anymore) sigmoid parameter should use a 
+  // mapping curve that goes through (-1,-2),(0,0),(1,1) -> find a function through these points 
+  // that feels natural
+
 
   // add AttackDrive/DecayDrive
 
@@ -136,6 +161,9 @@ void TriSawOscModule::createParameters()
   // "most sinusoidal" ...whatever that means
 
 
+  // instead of AttackBending (ab) and DecayBending (db) provide
+  // Bending = b = (ab+db)/2 and BendAsym = ba = (ab-db)/2
+  // and similar for the two sigmoid parameters
 }
 
 void TriSawOscModule::processStereoFrame(double *left, double *right)
@@ -158,4 +186,73 @@ void TriSawOscModule::noteOn(int noteNumber, int velocity)
 {
   freq = pitchToFreq(noteNumber);
   oscCore.setPhaseIncrement(freq/sampleRate); // maybe times 2 because it ranegs from -1..+1?
+}
+
+void TriSawOscModule::setBend(double newBend)
+{
+  bend = newBend;
+  updateBending();
+}
+
+void TriSawOscModule::setBendAsym(double newAsym)
+{
+  bendAsym = newAsym;
+  updateBending();
+}
+
+void TriSawOscModule::updateBending()
+{
+  // this does not work yet - when asym is too much, it messes up totally
+  //oscCore.setAttackBending(bend + bendAsym);
+  //oscCore.setDecayBending( bend - bendAsym);
+
+  // Bend looks good but when asym ist introduced, it gets messed up...maybe i need some 
+  // renormalization constant, i.e. scale attack/decay bend values according to the bend-asym?
+
+  //double s = 1. / (1. - fabs(bendAsym)); // ad-hoc ...why....derive it
+  //oscCore.setAttackBending(bend + s*bendAsym);
+  //oscCore.setDecayBending( bend - s*bendAsym);
+
+  // hmm..well when bend b=1 and bendAsym a=1 then
+  // ba = b+a = 2, bd = b-a = 0 but we actually want ba = 1, bd = 0
+
+  // that's not yet very nice:
+  oscCore.setAttackBending(rosic::clip(bend + bendAsym, -1., +1.) );
+  oscCore.setDecayBending( rosic::clip(bend - bendAsym, -1., +1.) );
+
+  // ...under construction - 
+  // idea: 
+  // -collect data for perceptually equidistant values for attackBend
+  // -for example, finde the y value for x = 0, 0.25, 0.5, 0.75, 1.0, like this:
+  //  (0,0),(0.25,0.5),(0.5,0.8),(0.75,0.9),(1,1) (values plucked out of thin air)
+  // -to these values, fit a function of a given form, for example
+  //  f(x) = (a1*x + a3*x^3) / (1 + b2*x^2 + b4*x^4)  -> odd symmetry
+  //  https://www.desmos.com/calculator/6n6va65ige maybe make it 3-parameteric by imposing
+  //  f(1) = 1  ...f(-1) = -1 is no additional constraint since the function is already symmetric 
+  //  by construction, also we already have f(0) = 0 by construction 
+  //  -constraint: 1 = (a+b)/(1+c+d) -> solve for d, leaving only a,b,c as parameters
+  //   https://www.desmos.com/calculator/adns6zwdm7
+  //  -maybe another constraint could be monotonicity in 0..1 -> f'(x) > 0 in 0..1
+  //  -maybe try to define it via function values at 1/4, 1/2, 3/4
+  // 
+  // -write a pade approximation function for that (useful for the toolkit anyway) or use
+  //  numpy/scipy curve fitting
+  // -maybe this should allow also constraints for fixing some coeffs at given values and enforce
+  //  to go through specific points...maybe pass arrays for the fixed coeffs where NaN encodes a 
+  //  free coeff and an array of weights for data points where inf encodes to enforce passing
+  //  through the value
+  // -this procedure can be generally used to find good parameter mapping functions
+
+  // -maybe it makes not much sense to figure out a each one-dimensional parameter mapping such as
+  //  the one for attackBend
+  // -for example, if only the raw attack-bend parameter is used, the mapping curve would contain
+  //  (0,0),(0.25,5),(0.5,0.85),(0.75,0.975),(1,1) where in the first half of the curve, the 
+  //  spectrum would fill up the even harmonics and in the second half raise the overtones, making
+  //  it more sharp - but if we would use a symmetric bend parameter that sets attack and decay 
+  //  bend at the same time, no such spectrum-filling first half would occur - no qualitative 
+  //  change of the mapping function midway the parameter range
+  // -maybe use a neural network to map from N user-parameters to M algo-parameters?
+  //  -how to acquire the data?
+  //  -how to impose constraints such as that the raw attack-bend and decay-bend (as network 
+  //   outputs) should behave symmetric (in some sense)?
 }

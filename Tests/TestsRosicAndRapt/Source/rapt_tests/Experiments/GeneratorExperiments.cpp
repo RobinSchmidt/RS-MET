@@ -235,6 +235,11 @@ void freqVsPhaseMod()
   // or vice versa - each has the first two sine components of a saw or square wave - they 
   // waveforms are still simple but maybe complex enough to expose the difference between FM and PM
 
+  // todo: maybe make a sweep of an FM vs PM parameter over time to show the difference between
+  // the two - look into chaosfly code how to compute the two mod-indices from the FM/FM parameter
+  // i think, it uses a sin/cos formula such that fmi^2 + pmi^2 == 1 - this was found to be 
+  // perceptually adequate, iirc
+
   // experiment parameters:
   static const int N = 882;        // number of samples to produce
   double fs = 44100;   // sample rate
@@ -248,15 +253,24 @@ void freqVsPhaseMod()
   double wm = 2*PI*fm/fs;
   for(int n = 0; n < N; n++)
   {
+    // time axis, unmodulated carrier and modulator:
     double tn = n/fs;    // current time instant (in seconds?)
     t[n]   = tn;
-    car[n] = saw(n, fc, fs, 2); // maybe also try it vice versa
-    mod[n] = sqr(n, fm, fs, 3);
+    car[n] = saw(n, fc, fs, 2); // maybe also try it vice versa...mayb use function pointers
+    mod[n] = sqr(n, fm, fs, 3); // for carrier and modualtr wave function
+
+    // frequency modulation:
+    double fmi = mi;  // freq-mod index - verify formula - maybe fc/fm should appear
+    double df  = (fmi*mod[n])*fc; // excursion seems too large
+    yFM[n] = saw(n, fc+df, fs, 2);
+
+
+    //yPM[n] =
   }
 
   // plot:
   GNUPlotter plt;
-  plt.addDataArrays(N, t, car, mod);
+  plt.addDataArrays(N, t, car, mod, yFM);
   plt.plot();
 }
 

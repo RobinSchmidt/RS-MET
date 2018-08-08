@@ -25,6 +25,7 @@ bool runAllUnitTests()
 
   // Math:
   passed &= runUnitTest(&coordinateMapperUnitTest,       "rsCoordinateMapper2D");
+  passed &= runUnitTest(&fitRationalUnitTest,            "fit rational");
   passed &= runUnitTest(&interpolatingFunctionUnitTest,  "rsInterpolatingFunction");
   passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
   passed &= runUnitTest(&correlationUnitTest,            "correlation");

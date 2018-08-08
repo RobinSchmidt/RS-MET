@@ -54,11 +54,26 @@ public:
   virtual void reset() override;
   virtual void noteOn(int noteNumber, int velocity) override;
 
+  // parameter callback targets:
+  void setBend(double newBend);
+  void setBendAsym(double newAsym);
+  //void setSigmoid(double newSigmoid);  // or maybe call it sinusoidality/smoothness
+  //void setSigmoidAsym(double newAsym);
+
+  // asym: triangle vs saw, or up vs down, pulse-width, hi vs low, "Upness"
+  // bend: squareness vs thinness, thick vs thin, "Thickness"
+  // sigmoid: sinusoidality/smoothness, "Smoothness"
+
 protected:
+
+  void updateBending();
 
   RAPT::rsTriSawOscillator<double> oscCore;
 
+  // parameters:
   double freq = 0, sampleRate = 44100;
+  double bend = 0, bendAsym = 0;
+  double sigmoid = 0, sigmoidAsym = 0;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriSawOscModule)
 };

@@ -85,6 +85,13 @@ bool correlationUnitTest()
   return r;
 }
 
+bool fitRationalUnitTest()
+{
+  bool r = true;      // test result
+
+  return r;
+}
+
 bool interpolatingFunctionUnitTest()
 {	
   bool r = true;      // test result

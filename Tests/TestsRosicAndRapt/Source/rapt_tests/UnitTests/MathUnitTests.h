@@ -24,6 +24,7 @@
 
 bool coordinateMapperUnitTest();
 bool correlationUnitTest();
+bool fitRationalUnitTest();
 bool interpolatingFunctionUnitTest();
 bool rootFinderUnitTest();
 bool polynomialRootsUnitTest(); // the new explicit formulas - move to PolynomialUnitTests
