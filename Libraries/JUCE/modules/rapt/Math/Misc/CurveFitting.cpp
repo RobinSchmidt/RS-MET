@@ -1,7 +1,7 @@
 //using namespace RSLib;
 
 template<class T>
-bool rsFitSumOfExponentials(T* y, int numValues, T* A, T* a, int numExponentials)
+bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numExponentials)
 {
   rsAssert( numExponentials == numValues/2 );
     // later, we may generalize this to allow numExponentials <= numValues/2
@@ -50,4 +50,9 @@ bool rsFitSumOfExponentials(T* y, int numValues, T* A, T* a, int numExponentials
   rsArray::deAllocateSquareArray2D(M, k);
   delete[] roots;
   return result;
+
+  // Can the algorithm be generalized to fit complex exponentials to complex datapoints? Or maybe
+  // it already can do this when being instantiated with a complex datatype?
+
+  // see Numerical Methods for Scientists and Engineers (Hamming), Ch.39, page 617f 
 }

@@ -156,7 +156,7 @@ template RAPT::MultiLayerPerceptron<double>;
 template RAPT::MultiLayerPerceptronErrorFunction<double>;
 template RAPT::MultiLayerPerceptronTrainer<double>;
 
-template bool RAPT::rsFitSumOfExponentials(double* y, int numValues, double* A, double* a, 
+template bool RAPT::rsCurveFitter::fitExponentialSum(double* y, int numValues, double* A, double* a, 
   int numExponentials);
 
 template rsUint32 RAPT::rsBinomialCoefficient(rsUint32 n, rsUint32 k);

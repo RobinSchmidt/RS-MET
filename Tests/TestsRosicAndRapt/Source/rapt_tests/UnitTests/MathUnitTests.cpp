@@ -85,7 +85,8 @@ bool correlationUnitTest()
   return r;
 }
 
-// move to RAPT - CurveFitting
+// move to RAPT - CurveFitting ...hmm...but actually it's not a curve-fit in the least-squares
+// sense but an interpolation...maybe it belongs into a class rsInterpolator
 void fitOddRatFunc4(double *x, double* y, double *coeffs)
 {
   // establish matrix and rhs vector:
@@ -105,7 +106,7 @@ void fitOddRatFunc4(double *x, double* y, double *coeffs)
   RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(A, coeffs, b, 4);
   RAPT::rsArray::deAllocateSquareArray2D(A, 4);
 }
-double oddRatFunc4(double x, double *c) // evaluates (c0*x + c1*x^3) / (1 + c2*x^2 + c4*x^4)
+double oddRatFunc4(double x, double *c) // evaluates (c0*x + c1*x^3) / (1 + c2*x^2 + c3*x^4)
 {
   double x2 = x*x;  // x^2
   return (c[0]*x + c[1]*x*x2) / (1 + c[2]*x2 + c[3]*x2*x2);
@@ -134,7 +135,9 @@ bool fitRationalUnitTest()
   // -can the fitting routine be suitably generalized to allow the user to specify which 
   //  exponents he wants in the numerator and denominator?
   // -can we detect problems by checking if there are poles with in the x-range of datapoints?
-  // -can the algorithm be extended to choose a set of exponents that works?
+  // -can the algorithm be extended to choose itself a set of exponents that works? ..just 
+  //  systematically try a bunch of combinations of exponents and return the first one that works?
+  //  ...or maybe try a few more and return one that works best - ...but how do we define best?
 
   return r;
 }

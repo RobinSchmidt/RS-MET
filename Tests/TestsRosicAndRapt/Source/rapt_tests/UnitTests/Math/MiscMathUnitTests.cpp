@@ -28,7 +28,7 @@ bool testExponentialCurveFitting(std::string &reportString)
   // find exponents and weights:
   double a[k];   // exponents
   double A[k];   // weights
-  bool success = rsFitSumOfExponentials(y, N, A, a, k);
+  bool success = rsCurveFitter::fitExponentialSum(y, N, A, a, k);
   rsAssert(success);
 
   // now we should have: y[n] = A[0]*exp(a[0]*n) + A[1]*exp(a[1]*n) - verify this:
