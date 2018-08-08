@@ -20,11 +20,15 @@ static bool fitExponentialSum(T* y, int numValues, T* A, T* a, int numExponentia
 
 // add fitLine, fitPolynomial, fitRational, 
 // fitPower: a * x^p + b ...p can be found by fitting a line to log-of-y-values
+
 // fitFunctionSet -> should take a set of basis functions that are linearly combined
 // maybe we can have a linear combination of basis functions in the numerator and in the 
 // denominator, i.e. f(x) = (a0*f0(x) + ... + aN*fN(x)) / (b0*g0(x) + ... + bM*gM(x))
 // this is a quite general set of functions but the coefficients can still be found by solving
-// a linear system of equations
+// a linear system of equations - ahh..wait - no - this may work only when interpolating with
+// a set of arbitrary basis-functions but nor least-squares fitting...or maybe it will?
+// if not, maybe we can use a smoothed version of the data to find an interpolant and then
+// use the resulting coeffs of the interpolant as start-values for gradient descent?
 
 };
 

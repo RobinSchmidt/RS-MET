@@ -1,5 +1,6 @@
 #ifndef rosic_AttackDecayEnvelope_h
 #define rosic_AttackDecayEnvelope_h
+// rename to MiscModulators
 
 namespace rosic
 {
@@ -92,7 +93,7 @@ INLINE double AttackDecayEnvelope::getSample()
 a frequency and an asymmetry parameter, this class is parametrized in terms of attack- and decay 
 times. */
 
-class rsTriSawEnvelope : public RAPT::rsTriSawOscillator<double>
+class rsTriSawModulator : public RAPT::rsTriSawOscillator<double>
 {
 
 public:

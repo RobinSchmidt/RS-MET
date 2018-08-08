@@ -41,6 +41,23 @@ void breakpointModulatorSmoothFadeOut()
   for(int n = 0; n < N; n++)
     x[n] = bm.getSample();
   plotData(N, t, x);
+}
 
+void triSawModulator()
+{
+  double fs = 1000;          // sample rate
+  static const int N = 5000;  // number of samples to plot
+
+  rosic::rsTriSawModulator tsm;
+  tsm.setSampleRate(fs);
+  tsm.setAttackTime(20);
+  tsm.setDecayTime(200);
+
+  double t[N], x[N];
+  createTimeAxis(N, t, fs);
+  tsm.reset();
+  for(int n = 0; n < N; n++)
+    x[n] = tsm.getSample();
+  plotData(N, t, x);
 }
 

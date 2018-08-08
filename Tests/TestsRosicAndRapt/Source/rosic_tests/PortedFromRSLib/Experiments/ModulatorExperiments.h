@@ -5,5 +5,6 @@
 
 void breakpointModulator();
 void breakpointModulatorSmoothFadeOut();
+void triSawModulator();
 
 #endif

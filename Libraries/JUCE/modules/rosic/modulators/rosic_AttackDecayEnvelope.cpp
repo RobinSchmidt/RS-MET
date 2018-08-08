@@ -168,36 +168,34 @@ void AttackDecayEnvelope::calculateCoeffsAndInitValue()
 
 //=================================================================================================
 
-void rsTriSawEnvelope::setSampleRate(double newSampleRate)
+void rsTriSawModulator::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
   updateOscParameters();
 }
 
-void rsTriSawEnvelope::setAttackTime(double newAttack)
+void rsTriSawModulator::setAttackTime(double newAttack)
 {
   attack = 0.001*newAttack;
   updateOscParameters();
 }
 
-void rsTriSawEnvelope::setDecayTime(double newDecay)
+void rsTriSawModulator::setDecayTime(double newDecay)
 {
   decay = 0.001*newDecay;
   updateOscParameters();
 }
 
-void rsTriSawEnvelope::setTimeScaler(double newScaler)
+void rsTriSawModulator::setTimeScaler(double newScaler)
 {
   timeScale = newScaler;
   updateOscParameters();
 }
 
-void rsTriSawEnvelope::updateOscParameters()
+void rsTriSawModulator::updateOscParameters()
 {
-  double period = attack+decay;
+  double period = timeScale*(attack+decay);
   double freq   = 1/period;
-  setPhaseIncrement(freq / sampleRate); // maybe times 2 because it goes from -1..+1?
-
-  double asym = 2*decay/period - 1;     // verify formula...
-  setAsymmetry(asym);
+  setPhaseIncrement(freq / sampleRate); // later: scale by abs(ceil-floor)/2
+  setAsymmetry(1 - 2*decay/period);
 }
