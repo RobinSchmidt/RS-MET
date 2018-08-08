@@ -2857,6 +2857,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditorMulti.cpp">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_VariousModulators.cpp">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_ClassConversions.cpp">
       <Filter>Juce Modules\jura_processors\tools</Filter>
     </ClCompile>
@@ -6991,6 +6994,9 @@
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditorMulti.h">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_VariousModulators.h">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_ClassConversions.h">

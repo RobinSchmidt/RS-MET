@@ -2285,6 +2285,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditorMulti.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_VariousModulators.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_ClassConversions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4836,6 +4839,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_LowFrequencyOscillator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditor.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditorMulti.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_VariousModulators.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_ClassConversions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_DualFilter.h"/>

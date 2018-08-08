@@ -45,6 +45,7 @@ namespace jura
 #include "modulators/jura_ModulatorCurveEditorMulti.cpp"
 #include "modulators/jura_BreakpointModulatorEditorMulti.cpp"
 #include "modulators/jura_LowFrequencyOscillator.cpp"
+#include "modulators/jura_VariousModulators.cpp"
 
 #include "generators/jura_EllipseOscillator.cpp"
 #include "generators/jura_Oscillator3D.cpp"
