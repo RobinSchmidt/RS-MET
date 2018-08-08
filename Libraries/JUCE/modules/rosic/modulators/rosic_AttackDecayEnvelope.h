@@ -98,26 +98,28 @@ class rsTriSawModulator : public RAPT::rsTriSawOscillator<double>
 
 public:
 
+  /** Sets the sample rate in Hz. */
   void setSampleRate(double newSampleRate);
 
+  /** Sets the attack time in milliseconds. */
   void setAttackTime(double newAttack);
 
+  /** Sets the decay time in milliseconds. */
   void setDecayTime(double newDecay);
-
 
   /** Scales the overall length of the envelope with given factor. */
   void setTimeScaler(double newScaler);
 
-
+  /** Sets the floor, i.e. the lowest value. */
   void setFloor(double newFloor);
 
+  /** Sets the ceiling, i.e. the highest value. */
   void setCeiling(double newCeiling);
 
-
+  /** Produces one output sample at a time. */
   inline double getSample() /* override ...but baseclass method is not virtual */
   {
     double y = RAPT::rsTriSawOscillator<double>::getSample();
-    //y = 0.5 * (y+1);
     return flooor + (ceiling-flooor) * 0.5 * (y+1);
   }
 
@@ -130,8 +132,11 @@ protected:
   double sampleRate = 44100, attack = 0.01, decay = 0.99, timeScale = 1;
   double flooor = -1, ceiling = +1;
 
-  // overriden because they should not be used in this subclass
-  // setAsymmetry, setPhaseIncrement
+  // overriden because they should not be used in this subclass:
+  typedef RAPT::rsTriSawOscillator<double> Base;
+  inline void setPhaseIncrement(double newInc) { Base::setPhaseIncrement(newInc); }
+  inline void setAsymmetry(double newAsym)     { Base::setAsymmetry(newAsym); }
+  // use setAttackTime, setDecayTime instead
 
 };
 
