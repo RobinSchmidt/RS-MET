@@ -88,11 +88,21 @@ bool correlationUnitTest()
 // move to RAPT - CurveFitting
 void fitOddRatFunc4(double *x, double* y, double *coeffs)
 {
+  // establish matrix and rhs vector:
   double** A;
+  double b[4];
   RAPT::rsArray::allocateSquareArray2D(A, 4);
+  for(int i = 0; i < 4; i++) {
+    double xi2 = x[i]*x[i];     //  xi^2
+    A[i][0] = x[i];             //  xi
+    A[i][1] = xi2*x[i];         //  xi^3
+    A[i][2] = -xi2*y[i];        // -xi^2*yi
+    A[i][3] = -xi2*xi2*y[i];    // -xi^4*yi
+    b[i]    = y[i];
+  }
 
-
-
+  // solve linear system and clean up:
+  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(A, coeffs, b, 4);
   RAPT::rsArray::deAllocateSquareArray2D(A, 4);
 }
 bool fitRationalUnitTest()
