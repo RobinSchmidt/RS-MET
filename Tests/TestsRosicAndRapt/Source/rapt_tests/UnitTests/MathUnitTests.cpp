@@ -127,6 +127,15 @@ bool fitRationalUnitTest()
     r &= fabs(y[i]-Y[i]) < tol;
   }
 
+  // the function values match indeed - but the function may be useless as an approximation to the
+  // data as it features a pole within the range of data points, see the plot:
+  // https://www.desmos.com/calculator/5le2p3qsvb
+  // -can this be fixed by using x^5 instead of x^3 in the numerator? or replace x by x^5?
+  // -can the fitting routine be suitably generalized to allow the user to specify which 
+  //  exponents he wants in the numerator and denominator?
+  // -can we detect problems by checking if there are poles with in the x-range of datapoints?
+  // -can the algorithm be extended to choose a set of exponents that works?
+
   return r;
 }
 
