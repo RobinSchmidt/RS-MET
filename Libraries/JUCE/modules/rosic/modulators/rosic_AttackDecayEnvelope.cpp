@@ -197,5 +197,5 @@ void rsTriSawModulator::updateOscParameters()
   double period = timeScale*(attack+decay);
   double freq   = 1/period;
   setPhaseIncrement(freq / sampleRate);
-  setAsymmetry(1 - 2*decay/period);
+  setAsymmetry(1 - 2*(timeScale*decay)/period);
 }
