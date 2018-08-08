@@ -9,17 +9,11 @@ public:
   TriSawModulatorModule(CriticalSection *lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
 
-  // override setSampleRate
 
-  virtual void noteOn(int noteNumber, int velocity) override
-  {
-    core.reset();
-  }
-
-  virtual void updateModulationValue() override
-  {
-    modValue = core.getSample();
-  }
+  virtual void setSampleRate(double newSampleRate) override { core.setSampleRate(newSampleRate); }
+  virtual void reset() override { core.reset();  }
+  virtual void noteOn(int noteNumber, int velocity) override { core.reset(); }
+  virtual void updateModulationValue() override { modValue = core.getSample();  }
   // todo: change interface in order to return the modValue and let the framework take care of 
   // where to store it
 
