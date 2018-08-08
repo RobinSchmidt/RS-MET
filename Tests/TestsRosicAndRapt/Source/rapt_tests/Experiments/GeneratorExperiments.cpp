@@ -225,6 +225,17 @@ void bouncillatorFormula()
   plt.plot();
 }
 
+
+// move to test-signal generation code - make them more general by letting the use pass the highest
+// harmonic a second parameter:
+double saw12(double t)  // first two harmonics of a sawtooth wave
+{
+  return (-2/PI) * (sin(t) + sin(2*t)/2);
+}
+double sqr13(double t)  // first two harmonics of a square wave (harmonics 1 and 3)
+{
+  return (4/PI) * (sin(t) + sin(3*t)/3);
+}
 void freqVsPhaseMod()
 {
   // Compares frequency modulation with phase modulation and tries to transform one into the other
@@ -235,9 +246,32 @@ void freqVsPhaseMod()
   // or vice versa - each has the first two sine components of a saw or square wave - they 
   // waveforms are still simple but maybe complex enough to expose the difference between FM and PM
 
+  // experiment parameters:
+  static const int N = 882;        // number of samples to produce
+  double fs = 44100;   // sample rate
+  double fc = 300;     // carrier freq
+  double fm = 200;     // modulator freq
+  double mi = 1.0;     // modulation index
+
+  // create signals:
+  double t[N], car[N], mod[N], yFM[N], yPM[N];
+  double wc = 2*PI*fm/fs;
+  double wm = 2*PI*fc/fs;
+  for(int n = 0; n < N; n++)
+  {
+    double tn = n/fs;    // current time instant (in seconds?)
+    //double phi = 
+
+    t[n]   = tn;
+    car[n] = saw12(wc*n);    // maybe also try it vice versa
+    mod[n] = sqr13(wm*n);
+  }
 
 
-  int dummy = 0;
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays(N, t, car, mod);
+  plt.plot();
 }
 
 void rayBouncer()
