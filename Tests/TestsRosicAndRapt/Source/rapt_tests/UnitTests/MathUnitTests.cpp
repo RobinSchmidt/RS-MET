@@ -105,14 +105,27 @@ void fitOddRatFunc4(double *x, double* y, double *coeffs)
   RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(A, coeffs, b, 4);
   RAPT::rsArray::deAllocateSquareArray2D(A, 4);
 }
+double oddRatFunc4(double x, double *c) // evaluates (c0*x + c1*x^3) / (1 + c2*x^2 + c4*x^4)
+{
+  double x2 = x*x;  // x^2
+  return (c[0]*x + c[1]*x*x2) / (1 + c[2]*x2 + c[3]*x2*x2);
+}
 bool fitRationalUnitTest()
 {
   bool r = true;      // test result
 
+  // create data to match and allocate coeffs:
   double x[4] = { 0.25, 0.5,  0.75,  1.0 };  // x-values
   double y[4] = { 0.5,  0.85, 0.975, 1.0 };  // y-values
   double c[4]; fitOddRatFunc4(x, y, c);      // coeffs
 
+  // evaluate function at the data point and verify, if it matches them indeed:
+  double Y[4];
+  double tol = 1.e-13;
+  for(int i = 0; i < 4; i++) {
+    Y[i] = oddRatFunc4(x[i], c);
+    r &= fabs(y[i]-Y[i]) < tol;
+  }
 
   return r;
 }
