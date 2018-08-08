@@ -271,3 +271,27 @@ std::vector<double> sawAndSquare(int N, double fs, double fSaw, double aSaw,
     x[n] = aSaw*xSaw[n] + aSqr*xSqr[n];
   return x;
 }
+
+double saw(int n, double f, double fs, int kMax)
+{
+  if(kMax == -1)
+    kMax = (int) floor(0.5*fs/f);
+  double w   = 2*PI*f/fs;
+  double phi = fmod(w*n, 2*PI);
+  double sum = 0;
+  for(int k = 1; k <= kMax; k++)
+    sum += sin(k*phi) / k;
+  return (-2/PI) * sum;
+}
+
+double sqr(int n, double f, double fs, int kMax)
+{
+  if(kMax == -1)
+    kMax = (int) floor(0.5*fs/f);
+  double w   = 2*PI*f/fs;
+  double phi = fmod(w*n, 2*PI);
+  double sum = 0;
+  for(int k = 1; k <= kMax; k+=2)
+    sum += sin(k*phi) / k;
+  return (4/PI) * sum;
+}

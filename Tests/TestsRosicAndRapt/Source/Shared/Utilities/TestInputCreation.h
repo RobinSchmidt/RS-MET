@@ -56,8 +56,16 @@ std::vector<double> sineAndDeacyingInharmonic(int N, double f, double fs, double
 std::vector<double> twoSinesAndDecayingDc(int N, double f, double fs, double overtoneRatio, 
   double overtoneAmplitude, double dcAmount, double dcDecay);
 
-
 std::vector<double> sawAndSquare(int N, double fs, double fSaw, double aSaw, 
   double fSqr, double aSqr, bool antiAlias);
+
+/** Creates output of an sawtooth wave at a given sample index n with given frequency and 
+sample-rate. You may optionally pass a maximum harmonic number to generate, if you pass nothing,
+it will be automatically selected to be the maximum harmonic possible without introducing 
+aliasing. */
+double saw(int n, double f, double fs, int maxHarmonic = -1);
+
+/** @see saw - same stuff for a square wave. */
+double sqr(int n, double f, double fs, int maxHarmonic = -1);
 
 #endif
