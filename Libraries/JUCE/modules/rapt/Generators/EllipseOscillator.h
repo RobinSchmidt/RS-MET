@@ -2,7 +2,7 @@
 #define RAPT_ELLIPSEOSCILLATOR_H_INCLUDED
 // rename to Oscillators.h
 
-/**   */
+/** An oscillator based on morphing between saw-up/triangle/saw-down waveforms */
 
 template<class T>
 class rsTriSawOscillator
@@ -15,26 +15,38 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
+  /** Sets the phase-increment per sample. Should be set to frequency/sampleRate. (times 2?) */
   inline void setPhaseIncrement(T newIncrement) { inc = newIncrement; }
 
+  /** Sets the asymmetry parameter of the waveform which should be a number in -1..+1. For -1, you
+  will get a downward sawtooth, for 0 a triangle and for +1 an upward sawtooth wave (assuming the
+  bending and sigmoidity parameters are at thei neutral settings of 0). */
   inline void setAsymmetry(T newAsymmetry) 
   { 
     h = T(0.5)*(newAsymmetry+1);
     updateTriSawCoeffs();
   }
 
-  // tension and sigmoidity parameters (params are in -1..+1):
-  inline void setBending1(T newParam) { t1 =  newParam; }  // rename to Bending
-  inline void setBending2(T newParam) { t2 = -newParam; }  
+  /** Sets the bending parameter for the upward half-wave. The value is in -1..+1 where negative 
+  values let the curve bend inward (toward the time axis) and positive values ouward (toward a 
+  square wave). */
+  inline void setBending1(T newParam) { t1 =  newParam; }  // rename to AttackBending
+
+  /** Bending parameter for downward half-wave. */
+  inline void setBending2(T newParam) { t2 = -newParam; } 
+
+  /** Sets the amount of sigmoidity or s-shapedness of the upward half-wave. A value of +1 leads to
+  an s-shape with zero derivative at the corner point (i.e. perfectly rounded corners) and negative 
+  values make the curve more spikey. */
   inline void setSigmoid1(T newParam) { s1 = T(-0.5)*newParam; }
+
+  /** Sigmoidity of downward half-wave. */
   inline void setSigmoid2(T newParam) { s2 = T(-0.5)*newParam; }
-
-
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
+  /** Updates the phase-variable (called din getSample) */
   inline void updatePhase()
   {
     p += inc;
@@ -80,7 +92,7 @@ protected:
 
   T startPhase = 0;  
   T p = 0;     // current phase in 0..1
-  T h = 0.5;
+  T h = 0.5;   // time instant of the "half-cycle" point, i.e. the switch between up/down
   T inc = 0;   // phase increment
 
   // variables for the trisaw waveform before applying the waveshaper
@@ -94,10 +106,6 @@ protected:
   T t1 = 0, s1 = 0;  // tension and sigmodity for first (upward) half-wave
   T t2 = 0, s2 = 0;  // same for downward half-wave
 };
-
-
-
-
 
 //=================================================================================================
 

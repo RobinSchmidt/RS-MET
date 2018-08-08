@@ -9,11 +9,12 @@ void particleSystem();            // move to PhysicsExperiments
 
 void bouncillator();
 void bouncillatorFormula();
+void freqVsPhaseMod();
 void rayBouncer();
 void circleFractals();
 void hilbertCurve();
 void lindenmayer();
-void shapedTriSaw();
+void triSawOsc();
 void xoxosOsc();
 
 

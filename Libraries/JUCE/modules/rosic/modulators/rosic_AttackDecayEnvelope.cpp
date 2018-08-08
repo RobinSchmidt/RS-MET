@@ -165,3 +165,39 @@ void AttackDecayEnvelope::calculateCoeffsAndInitValue()
   ca     = -aa;
   ydInit = bd*normalizer/cd;
 }
+
+//=================================================================================================
+
+void rsTriSawEnvelope::setSampleRate(double newSampleRate)
+{
+  sampleRate = newSampleRate;
+  updateOscParameters();
+}
+
+void rsTriSawEnvelope::setAttackTime(double newAttack)
+{
+  attack = 0.001*newAttack;
+  updateOscParameters();
+}
+
+void rsTriSawEnvelope::setDecayTime(double newDecay)
+{
+  decay = 0.001*newDecay;
+  updateOscParameters();
+}
+
+void rsTriSawEnvelope::setTimeScaler(double newScaler)
+{
+  timeScale = newScaler;
+  updateOscParameters();
+}
+
+void rsTriSawEnvelope::updateOscParameters()
+{
+  double period = attack+decay;
+  double freq   = 1/period;
+  setPhaseIncrement(freq / sampleRate); // maybe times 2 because it goes from -1..+1?
+
+  double asym = 2*decay/period - 1;     // verify formula...
+  setAsymmetry(asym);
+}

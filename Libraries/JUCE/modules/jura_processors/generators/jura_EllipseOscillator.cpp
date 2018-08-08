@@ -157,5 +157,5 @@ void TriSawOscModule::reset()
 void TriSawOscModule::noteOn(int noteNumber, int velocity)
 {
   freq = pitchToFreq(noteNumber);
-  oscCore.setPhaseIncrement(freq/sampleRate);
+  oscCore.setPhaseIncrement(freq/sampleRate); // maybe times 2 because it ranegs from -1..+1?
 }

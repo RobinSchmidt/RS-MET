@@ -69,11 +69,12 @@ int main(int argc, char* argv[])
   // Generators:
   //bouncillator();
   //bouncillatorFormula();
+  freqVsPhaseMod();
   //rayBouncer();
   //hilbertCurve();
   //circleFractals(); // rename to spirograph
   //lindenmayer();
-  shapedTriSaw();
+  triSawOsc();
   //xoxosOsc();
 
   // Graphics:

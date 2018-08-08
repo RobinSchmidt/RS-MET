@@ -225,6 +225,21 @@ void bouncillatorFormula()
   plt.plot();
 }
 
+void freqVsPhaseMod()
+{
+  // Compares frequency modulation with phase modulation and tries to transform one into the other
+  // by integration/differentiaition of the modulator signal
+
+  // use as carrier:    c(t) = sin(wc*t) + sin(2*wc*t)/2
+  // and as modulator:  m(t) = sin(wm*t) + sin(3*wm*t)/3
+  // or vice versa - each has the first two sine components of a saw or square wave - they 
+  // waveforms are still simple but maybe complex enough to expose the difference between FM and PM
+
+
+
+  int dummy = 0;
+}
+
 void rayBouncer()
 {
   rsRayBouncerF rb;
@@ -474,7 +489,7 @@ void lindenmayer()
   plt1.plot();
 }
 
-void shapedTriSaw()   // rename to triSawOsc
+void triSawOsc()
 {
   static const int N = 1000;   // number of output samples
   float T = 250;               // period in samples
