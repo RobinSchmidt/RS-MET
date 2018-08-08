@@ -1083,10 +1083,15 @@ void GenericAudioModuleEditor::createWidgets()
   // using the inherited addWidget method (this will add the widget to our inherited widgets
   // array)
 
+  typedef AutomatableButton   Btn;
+  typedef AutomatableComboBox Cmb;
+  typedef ModulatableSlider   Sld;
+  //typedef AutomatableSlider   Sld; // doesn't show modulation connection
+
   Parameter *p;
-  AutomatableSlider   *s;
-  AutomatableComboBox *c;
-  AutomatableButton   *b;
+  Sld *s;
+  Cmb *c;
+  Btn *b;
   for(int i = 0; i < moduleToEdit->getNumParameters(); i++)
   {
     p = moduleToEdit->getParameterByIndex(i);
@@ -1096,7 +1101,7 @@ void GenericAudioModuleEditor::createWidgets()
     if(p->getScaling() == Parameter::BOOLEAN)
     {
       // on/off parameter - create button:
-      b = new AutomatableButton(name);
+      b = new Btn(name);
       b->assignParameter(p);
       b->setDescriptionField(infoField);
       addWidget(b);
@@ -1105,7 +1110,7 @@ void GenericAudioModuleEditor::createWidgets()
     else if(p->getScaling() == Parameter::STRING)
     {
       // multiple-choice parameter - create combobox:
-      c = new AutomatableComboBox();
+      c = new Cmb();
       c->assignParameter(p);
       c->setDescriptionField(infoField);
       addWidget(c);
@@ -1114,7 +1119,7 @@ void GenericAudioModuleEditor::createWidgets()
     else
     {
       // numeric parameter - create slider:
-      s = new AutomatableSlider();
+      s = new Sld();
       s->setRange(p->getMinValue(), p->getMaxValue(), p->getInterval(), p->getDefaultValue());
       s->assignParameter(p);
       s->setSliderName(name);
