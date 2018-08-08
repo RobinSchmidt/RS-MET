@@ -23,16 +23,16 @@ void TriSawModulatorModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<TSM>(&core, &TSM::setDecayTime);
 
-  p = new Param("TimeScale", 0.01, 100.0, 0.0, Parameter::EXPONENTIAL);
+  p = new Param("TimeScale", 0.01, 100.0, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<TSM>(&core, &TSM::setTimeScaler);
 
   // maybe use another rnage and/or mapping for floor/ceil:
-  p = new Param("Floor", -2, +2, 0.0, Parameter::LINEAR);
+  p = new Param("Floor", -2, +2, -1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<TSM>(&core, &TSM::setFloor);
 
-  p = new Param("Ceiling", -2, +2, 0.0, Parameter::LINEAR);
+  p = new Param("Ceiling", -2, +2, +1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<TSM>(&core, &TSM::setCeiling);
 }
