@@ -141,6 +141,22 @@ bool fitRationalUnitTest()
 
   return r;
 }
+/*
+todo: use te same approach to interpolate with arbitrary basis functions. we have N+M basis 
+functions, N in the numerator and M in the denominator and use the relation
+yi = f(xi) = sum(i=0..N-1, ci*fi(xi)) / ( 1 + sum(i=N..L, ci*fi(xi)) ), where L = N+M-1
+this gives the matrix equation:
+
+|f0(x0) f1(x0) ... fN-1(x0) -y0*fN(x0) ... -y0*fL(x0)|   |c0|   |y0|
+|                                                    | * |  | = |  |
+|f0(xL) f1(xL) ... fN-1(xL) -yL*fN(xL) ... -yL*fL(xL)|   |cL|   |yL|
+
+which can solved just the same way. When M=0 and fi = x^i, we interpolate with an N-1 th order
+polynomial - test with the results are the same as with regular polynomial interpolation. The 
+fitting routine should get as inputs the arrays of x and y values and an array of function-pointers
+for the basis functions (maybe std::function) and give back the coeffs as usual */
+
+
 
 bool interpolatingFunctionUnitTest()
 {	

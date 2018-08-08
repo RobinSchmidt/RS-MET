@@ -49,7 +49,9 @@ that the library does not yet support - consider to hire me to add it. I'm
 generally available for freelance work on audio DSP algorithms with special 
 interest in musical DSP.
 
-
+for a quick overview for what i'm planning for rapt library, you may take a 
+look at this totally incomplete, skeletal document:
+https://github.com/RobinSchmidt/RS-MET/blob/master/Documentation/RAPT/LaTeX/UserManual/UserManual.pdf
 
 
 
