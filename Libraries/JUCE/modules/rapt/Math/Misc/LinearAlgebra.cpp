@@ -5,6 +5,7 @@ void rsLinearAlgebra::rsSolveLinearSystem2x2(const T A[2][2], T x[2], const T y[
   T s  = T(1) / (A[0][0]*A[1][1] - A[0][1]*A[1][0]);
   x[0] = s * (A[1][1]*y[0] - A[0][1]*y[1]);
   x[1] = s * (A[0][0]*y[1] - A[1][0]*y[0]);
+  // add: 0, sub: 4, mul: 10, div: 1
 }
 
 template<class T>
@@ -19,6 +20,7 @@ void rsLinearAlgebra::rsSolveLinearSystem3x3(const T A[3][3], T x[3], const T y[
   x[1] = -c*(A[0][0]*k3 + A[0][2]*k4 + (A[1][2]*A[2][0] - A[1][0]*A[2][2])*y[0]);
   x[2] = +c*(A[0][0]*(A[2][1]*y[1] - A[1][1]*y[2]) + A[0][1]*k4 + k1*y[0]);
 
+  // add: 8, sub: 8, mul: 31, div: 1
   // maybe optimize further - there are still some products above that are computed twice:
   // A[1][0]*A[2][2], A[1][2]*A[2][0], A[1][1]*y[2]
   // ...but then do performance tests

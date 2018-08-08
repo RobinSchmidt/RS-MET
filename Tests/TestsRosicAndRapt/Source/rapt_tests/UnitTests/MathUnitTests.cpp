@@ -85,9 +85,24 @@ bool correlationUnitTest()
   return r;
 }
 
+// move to RAPT - CurveFitting
+void fitOddRatFunc4(double *x, double* y, double *coeffs)
+{
+  double** A;
+  RAPT::rsArray::allocateSquareArray2D(A, 4);
+
+
+
+  RAPT::rsArray::deAllocateSquareArray2D(A, 4);
+}
 bool fitRationalUnitTest()
 {
   bool r = true;      // test result
+
+  double x[4] = { 0.25, 0.5,  0.75,  1.0 };  // x-values
+  double y[4] = { 0.5,  0.85, 0.975, 1.0 };  // y-values
+  double c[4]; fitOddRatFunc4(x, y, c);      // coeffs
+
 
   return r;
 }
