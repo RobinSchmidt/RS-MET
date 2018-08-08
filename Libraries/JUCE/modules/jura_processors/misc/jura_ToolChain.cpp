@@ -539,6 +539,7 @@ void ToolChain::populateModuleFactory()
 
   s = "Modulators";
   f.registerModuleType([](CS cs)->AM { return new BreakpointModulatorAudioModule(cs); }, s, "BreakpointModulator");
+  f.registerModuleType([](CS cs)->AM { return new TriSawModulatorModule(cs); },          s, "TriSawModulator");
 
   s = "Dynamics";
   f.registerModuleType([](CS cs)->AM { return new LimiterAudioModule(cs);   }, s, "Limiter");

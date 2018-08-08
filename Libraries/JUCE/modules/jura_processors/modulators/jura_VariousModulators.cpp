@@ -2,6 +2,8 @@ TriSawModulatorModule::TriSawModulatorModule(CriticalSection *lockToUse,
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
 {
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("TriSawModulator");
   createParameters();
 }
 
