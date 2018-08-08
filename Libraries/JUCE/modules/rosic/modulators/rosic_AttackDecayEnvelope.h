@@ -95,6 +95,7 @@ times. */
 
 class rsTriSawModulator : public RAPT::rsTriSawOscillator<double>
 {
+  typedef RAPT::rsTriSawOscillator<double> Base; // for conveniently calling baseclass methods
 
 public:
 
@@ -111,21 +112,20 @@ public:
   void setTimeScaler(double newScaler);
 
   /** Sets the floor, i.e. the lowest value. */
-  void setFloor(double newFloor);
+  void setFloor(double newFloor) { flooor = newFloor; }
 
   /** Sets the ceiling, i.e. the highest value. */
-  void setCeiling(double newCeiling);
+  void setCeiling(double newCeiling) { ceiling = newCeiling; }
 
   /** Produces one output sample at a time. */
   inline double getSample() /* override ...but baseclass method is not virtual */
   {
-    double y = RAPT::rsTriSawOscillator<double>::getSample();
-    return flooor + (ceiling-flooor) * 0.5 * (y+1);
+    return flooor + (ceiling-flooor) * 0.5 * (Base::getSample() + 1);
   }
 
 protected:
 
-  /** Called from setattack, setDecay, etc. to update the parameters of the underlying 
+  /** Called from setAttackTime, setDecayTime, etc. to update the parameters of the underlying 
   oscillator. */
   void updateOscParameters();
 
@@ -133,14 +133,11 @@ protected:
   double flooor = -1, ceiling = +1;
 
   // overriden because they should not be used in this subclass:
-  typedef RAPT::rsTriSawOscillator<double> Base;
   inline void setPhaseIncrement(double newInc) { Base::setPhaseIncrement(newInc); }
   inline void setAsymmetry(double newAsym)     { Base::setAsymmetry(newAsym); }
   // use setAttackTime, setDecayTime instead
 
 };
-
-
 
 
 } // end namespace rosic

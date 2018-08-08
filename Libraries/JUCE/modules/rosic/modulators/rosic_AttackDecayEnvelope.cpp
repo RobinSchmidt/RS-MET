@@ -192,16 +192,6 @@ void rsTriSawModulator::setTimeScaler(double newScaler)
   updateOscParameters();
 }
 
-void rsTriSawModulator::setFloor(double newFloor)
-{
-  flooor = newFloor;
-}
-
-void rsTriSawModulator::setCeiling(double newCeiling)
-{
-  ceiling = newCeiling;
-}
-
 void rsTriSawModulator::updateOscParameters()
 {
   double period = timeScale*(attack+decay);
