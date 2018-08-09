@@ -517,25 +517,24 @@ void ToolChain::populateModuleFactory()
   CS cs = lock;
   AudioModuleFactory& f = moduleFactory;
 
+  // todo: maybe allow subcategories, maybe pass the category string as last as last argument to 
+  // registerModuleType, default to the empty string (meaning it should appear at root level)
+  // and add a subcategory string parameter, following the same convention)
+
   juce::String s = "";
   f.registerModuleType([](CS cs)->AM { return new DummyModule(cs); },      s, "None");
+#ifdef JUCE_DEBUG
   f.registerModuleType([](CS cs)->AM { return new DebugAudioModule(cs); }, s, "DebugAudioModule");
+#endif
 
   s = "Sources";
-  f.registerModuleType([](CS cs)->AM { return new TriSawOscModule(cs);  },              s, "TriSawOscillator");
-  f.registerModuleType([](CS cs)->AM { return new EllipseOscillatorAudioModule(cs);  }, s, "EllipseOscillator");
-  f.registerModuleType([](CS cs)->AM { return new RotationOscillatorAudioModule(cs); }, s, "Oscillator3D");
-  f.registerModuleType([](CS cs)->AM { return new RayBouncerAudioModule(cs);         }, s, "RayBouncer");
-  f.registerModuleType([](CS cs)->AM { return new Snowflake(cs);         },             s, "Snowflake");
   //f.registerModuleType([](CS cs)->AM { return new OscillatorStereoAudioModule(cs);   }, s, "WaveOscillator");
   //f.registerModuleType([](CS cs)->AM { return new FourOscSectionAudioModule(cs);     }, s, "FourOscSection");
 
   s = "Filters";
   f.registerModuleType([](CS cs)->AM { return new EqualizerAudioModule(cs);       }, s, "Equalizer");
   f.registerModuleType([](CS cs)->AM { return new Ladder(cs);                     }, s, "Ladder");
-  //f.registerModuleType([](CS cs)->AM { return new PhasorFilter(cs);               }, s, "PhasorFilter");
   f.registerModuleType([](CS cs)->AM { return new EngineersFilterAudioModule(cs); }, s, "EngineersFilter");
-  //f.registerModuleType([](CS cs)->AM { return new CrossOverAudioModule(cs);       }, s, "CrossOver");
 
   s = "Modulators";
   f.registerModuleType([](CS cs)->AM { return new BreakpointModulatorAudioModule(cs); }, s, "BreakpointModulator");
@@ -543,19 +542,11 @@ void ToolChain::populateModuleFactory()
 
   s = "Dynamics";
   f.registerModuleType([](CS cs)->AM { return new LimiterAudioModule(cs);   }, s, "Limiter");
-  //f.registerModuleType([](CS cs)->AM { return new MultiCompAudioModule(cs); }, s, "MultiComp");
 
   s = "Effects";
   f.registerModuleType([](CS cs)->AM { return new FuncShaperAudioModule(cs);   }, s, "FuncShaper");
-  //f.registerModuleType([](CS cs)->AM { return new NodeShaperAudioModule(cs);   }, s, "NodeShaper");
-  //f.registerModuleType([](CS cs)->AM { return new AlgoVerbAudioModule(cs);     }, s, "AlgoVerb");
   f.registerModuleType([](CS cs)->AM { return new EchoLabAudioModule(cs);      }, s, "EchoLab");
-  //f.registerModuleType([](CS cs)->AM { return new PingPongEchoAudioModule(cs); }, s, "PingPongEcho");
   f.registerModuleType([](CS cs)->AM { return new StereoDelayAudioModule(cs);  }, s, "StereoDelay");
-  //f.registerModuleType([](CS cs)->AM { return new PitchShifterAudioModule(cs); }, s, "PitchShifter");
-  f.registerModuleType([](CS cs)->AM { return new QuadrifexAudioModule(cs);    }, s, "Quadrifex");
-  //f.registerModuleType([](CS cs)->AM { return new DspWorkbenchAudioModule(cs); }, s, "DspWorkbench");
-  f.registerModuleType([](CS cs)->AM { return new MultiBandEffect(cs); }, s, "MultiBandEffect");
 
   s = "Analysis";
   f.registerModuleType([](CS cs)->AM { return new PhaseScope(cs); },               s, "Scope");
@@ -566,6 +557,32 @@ void ToolChain::populateModuleFactory()
   s = "Instruments";
   f.registerModuleType([](CS cs)->AM { return new AciDevilAudioModule(cs);      }, s, "AcidDevil");
   f.registerModuleType([](CS cs)->AM { return new StraightlinerAudioModule(cs); }, s, "Straightliner");
+
+
+  // the large collection of modules that are still unfinished (wrap this into an ifdef (or simple if)):
+  s = "Under Construction";
+
+  // Sources:
+  f.registerModuleType([](CS cs)->AM { return new TriSawOscModule(cs);  },              s, "TriSawOscillator");
+  f.registerModuleType([](CS cs)->AM { return new EllipseOscillatorAudioModule(cs);  }, s, "EllipseOscillator");
+  f.registerModuleType([](CS cs)->AM { return new RotationOscillatorAudioModule(cs); }, s, "Oscillator3D");
+  f.registerModuleType([](CS cs)->AM { return new RayBouncerAudioModule(cs);         }, s, "RayBouncer");
+  f.registerModuleType([](CS cs)->AM { return new Snowflake(cs);         },             s, "Snowflake");
+
+  // Filters:
+  //f.registerModuleType([](CS cs)->AM { return new PhasorFilter(cs);               }, s, "PhasorFilter");
+  //f.registerModuleType([](CS cs)->AM { return new CrossOverAudioModule(cs);       }, s, "CrossOver");
+
+  // Effects:
+  //f.registerModuleType([](CS cs)->AM { return new NodeShaperAudioModule(cs);   }, s, "NodeShaper");
+  //f.registerModuleType([](CS cs)->AM { return new AlgoVerbAudioModule(cs);     }, s, "AlgoVerb");
+  //f.registerModuleType([](CS cs)->AM { return new PingPongEchoAudioModule(cs); }, s, "PingPongEcho");
+  //f.registerModuleType([](CS cs)->AM { return new PitchShifterAudioModule(cs); }, s, "PitchShifter");
+  //f.registerModuleType([](CS cs)->AM { return new DspWorkbenchAudioModule(cs); }, s, "DspWorkbench");
+  f.registerModuleType([](CS cs)->AM { return new MultiBandEffect(cs); }, s, "MultiBandEffect");
+
+  // Instruments:
+  f.registerModuleType([](CS cs)->AM { return new QuadrifexAudioModule(cs);    }, s, "Quadrifex");
   f.registerModuleType([](CS cs)->AM { return new NewSynthAudioModule(cs);      }, s, "NewSynth");
   //f.registerModuleType([](CS cs)->AM { return new MagicCarpetAudioModule(cs);   }, s, "MagicCarpet");
   //f.registerModuleType([](CS cs)->AM { return new SimpleSamplerAudioModule(cs); }, s, "SimpleSampler");
@@ -573,7 +590,7 @@ void ToolChain::populateModuleFactory()
   //f.registerModuleType([](CS cs)->AM { return new QuadrigaAudioModule(cs);      }, s, "Quadriga");
   //f.registerModuleType([](CS cs)->AM { return new WorkhorseAudioModule(cs);     }, s, "Workhorse");
 #ifdef _MSC_VER
-  //f.registerModuleType([](CS cs)->AM { return new LibertyAudioModule(cs);       }, s, "Liberty");
+  f.registerModuleType([](CS cs)->AM { return new LibertyAudioModule(cs);       }, s, "Liberty");
 #endif
 }
 
