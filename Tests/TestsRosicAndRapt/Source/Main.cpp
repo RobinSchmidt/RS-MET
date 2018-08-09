@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
   // Generators:
   //bouncillator();
   //bouncillatorFormula();
-  //freqVsPhaseMod();
+  freqVsPhaseMod();
   //rayBouncer();
   //hilbertCurve();
   //circleFractals(); // rename to spirograph
@@ -263,7 +263,7 @@ int main(int argc, char* argv[])
   // Modulator:
   //breakpointModulator();
   //breakpointModulatorSmoothFadeOut();
-  triSawModulator();
+  //triSawModulator();
 
   // Oscillator:
   //triSaw();

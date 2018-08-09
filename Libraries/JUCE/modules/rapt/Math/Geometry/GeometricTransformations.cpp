@@ -20,6 +20,7 @@ void rsRotationXY<T>::updateCoeffs()
   yx =  s;
   yy =  c;
 }
+// maybe inline these two functions
 
 //=================================================================================================
 
@@ -73,7 +74,7 @@ void rsRotationXYZ<T>::updateCoeffs()
 /*
 ToDo:
 -make a rotation class that lets the user set up the rotation axis and angle
- (see OpenGl Programming Guide, p. 852 for formulas - maybe make it possible to decompose the 
+ (see OpenGL Programming Guide, p. 852 for formulas - maybe make it possible to decompose the 
  rotation into an x-, y-, z-roation (by successively dividing out the respective inverse
  rotation-matrices, recover also the rotation angles (acos)
 

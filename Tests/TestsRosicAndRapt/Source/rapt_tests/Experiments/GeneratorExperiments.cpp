@@ -241,7 +241,8 @@ void freqVsPhaseMod()
   // perceptually adequate, iirc
 
   // experiment parameters:
-  static const int N = 882;        // number of samples to produce
+  //static const int N = 882;        // number of samples to produce
+  static const int N = 2000;        // number of samples to produce
   double fs = 44100;   // sample rate
   double fc = 300;     // carrier freq
   double fm = 200;     // modulator freq
@@ -249,21 +250,36 @@ void freqVsPhaseMod()
 
   // create signals:
   double t[N], car[N], mod[N], yFM[N], yPM[N];
-  double wc = 2*PI*fc/fs;
-  double wm = 2*PI*fm/fs;
+  double wc  = 2*PI*fc/fs;
+  double wm  = 2*PI*fm/fs;
+  double pm  = 0;   // instantaneous phase of modulator
+  double pFM = 0;   // instantaneous phase of FM signal
+  double pPM = 0;   // instantaneous phase of PM signal (before phase-modulation)
   for(int n = 0; n < N; n++)
   {
     // time axis, unmodulated carrier and modulator:
     double tn = n/fs;    // current time instant (in seconds?)
     t[n]   = tn;
-    car[n] = saw(n, fc, fs, 2); // maybe also try it vice versa...mayb use function pointers
-    mod[n] = sqr(n, fm, fs, 3); // for carrier and modualtr wave function
+    car[n] = saw(n, fc, fs, 2); // maybe also try it vice versa...maybe use function pointers
+    mod[n] = sqr(n, fm, fs, 3); // for carrier and modulator wave function
+
+
 
     // frequency modulation:
-    double fmi = mi;  // freq-mod index - verify formula - maybe fc/fm should appear
-    double df  = (fmi*mod[n])*fc; // excursion seems too large
+    double fmi = mi;                  // FM index
+    double df  = fmi*mod[n]*fc;       //
     yFM[n] = saw(n, fc+df, fs, 2);
 
+
+    // test:
+    car[n] = sin(wc*n);
+    mod[n] = sin(wm*n);
+    double wi = wc + fmi*wc*mod[n]; // instantaneous omega
+    double fi = fc + fmi*fc*mod[n]; // instantaneous frequency
+    yFM[n] = sin(wi*n);
+    // nooo...that doesn't work because it assumes that the instantaneous frequency was valid
+    // since the beginning -> we need to introduce an instantaneous phase and increment it 
+    // according to instantaneous frequency
 
     //yPM[n] =
   }

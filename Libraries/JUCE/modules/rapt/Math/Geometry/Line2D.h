@@ -17,6 +17,7 @@ public:
   equation gives the (signed) distance of any point (x,y) from the line. If it's not normalized, 
   the right hand side will be proportional to the distance. (Not yet tested) */
   static void twoPointToImplicit(T x0, T y0, T x1, T y1, T& A, T& B, T& C, bool normalize = true);
+    // todo: use pointers for output variables
 
   /** Given the two end points of a line (x1,y1) and (x2,y2), this function computes the 
   coefficients for the explicit line equation y = a*x + b. (not yet tested) */
@@ -25,6 +26,7 @@ public:
     a = (y2-y1)/(x2-x1); // slope
     b = y1-a*x1;         // offset
   }
+    // todo: use pointers for output variables
 
   /** Given the coordinates of a point (x,y) and the parameters of an implicit line equation
   A*x + B*y + C = 0, this function computes the coordinates of a point that is reflected about this

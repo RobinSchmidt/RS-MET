@@ -45,7 +45,7 @@ void breakpointModulatorSmoothFadeOut()
 
 void triSawModulator()
 {
-  double fs = 1000;          // sample rate
+  double fs = 1000;           // sample rate
   static const int N = 5000;  // number of samples to plot
 
   rosic::rsTriSawModulator tsm;
