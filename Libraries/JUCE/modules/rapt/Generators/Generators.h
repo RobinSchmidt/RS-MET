@@ -7,7 +7,7 @@ namespace RAPT
 // make a nested namespace Generators
 
 #include "NoiseGenerator.h"
-#include "EllipseOscillator.h"
+#include "VariousOscillators.h"
 #include "Oscillator3D.h"
 #include "RayBouncer.h"
 

@@ -71,6 +71,45 @@ protected:
 -the overall design goal is to have a framework within which polyphonic 
  instruments can be built without storing any data redundantly
  
-
+ 
+Sampler Engine
+-let it use an object to take care of the streaming of the samples (from disc
+ or memory)
+class rsAudioStreamer
+{
+public:
+  virtual void getSampleFrame(...);
+  virtual void getBlock(...);
+};
+class rsAudioStreamerPreLoaded : public rsAudioStreamer
+{
+  // ...
+};
+class rsAudioStreamerDirectFromDisc : public rsAudioStreamer
+{
+  void setBufferSize(int numSampleFrames);
+  // ...
+};
+class rsSamplePlayer
+{
+public:
+  void setAudioStreamer(rsAudioStreamer* s);
+protected:
+  rsAudioStreamer* audioStreamer;
+};
+-maybe the rsSamplePlayer class (or a subclass of it) should maintain its own 
+ streamer objects and be able to switch between pre-loading and disc-streaming
+ via setHardDiscStreamingMode(bool)
+-the streaming classes can then be re-used in a DAW app
+-maybe implement the simple, preloading streamer in rosic and the more 
+ complicated DFD version in jura_framework using juce classes
+ -then, the sampler can't create a DFD streamer itself, it must rely on it 
+  being passed in from outside code
+ -a simple, pre-loading sampler-engine could be made in rosic without juce
+  dependency and the DFD version would depend on juce audiofile handling
+ -maybe the pre-loading engine would only support a limited set of file-formats
+  to avoid juce-dependency for file loading...or maybe it wouldn't read in the
+  files itself but also rely on the data being passed via a function
+  setSampleData(...)
 
  

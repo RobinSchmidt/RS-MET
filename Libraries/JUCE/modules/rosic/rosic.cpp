@@ -349,7 +349,7 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 #include "modulators/rosic_AmpEnvRc.cpp"
 #include "modulators/rosic_AnalogEnvelope.cpp"
 #include "modulators/rosic_AnalogEnvelopeScaled.cpp"
-#include "modulators/rosic_AttackDecayEnvelope.cpp"
+#include "modulators/rosic_VariousModulators.cpp"
 #include "modulators/rosic_BreakpointModulator.cpp"
 #include "modulators/rosic_DecayEnvelope.cpp"
 #include "modulators/rosic_EnvelopeGenerator.cpp"

@@ -249,7 +249,7 @@
 #include "modulators/rosic_AmpEnvRc.h"
 #include "modulators/rosic_AnalogEnvelope.h"
 #include "modulators/rosic_AnalogEnvelopeScaled.h"
-#include "modulators/rosic_AttackDecayEnvelope.h"
+#include "modulators/rosic_VariousModulators.h"
 #include "modulators/rosic_BreakpointModulator.h"
 #include "modulators/rosic_DecayEnvelope.h"
 #include "modulators/rosic_EnvelopeGenerator.h"

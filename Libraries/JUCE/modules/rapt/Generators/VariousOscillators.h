@@ -1,6 +1,6 @@
-#ifndef RAPT_ELLIPSEOSCILLATOR_H_INCLUDED
-#define RAPT_ELLIPSEOSCILLATOR_H_INCLUDED
-// rename to Oscillators.h
+#ifndef RAPT_VARIOUSOSCILLATORS_H_INCLUDED
+#define RAPT_VARIOUSOSCILLATORS_H_INCLUDED
+
 
 /** An oscillator based on morphing between saw-up/triangle/saw-down waveforms */
 

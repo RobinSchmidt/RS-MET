@@ -802,6 +802,10 @@ void ToolChainEditor::resized()
     selectors[i]->setBounds(x, y, w, h);
     y += dy;
   }
+  // todo: maybe put a number in front of the selector - it's easier to see what module is in which
+  // slot when the slots are numbered - especially if there are several slots with the same type
+  // of module - in the modualtion setup, we may see Slot7-TriSawModulator, Slot8-TriSawModulator, 
+  // etc. and to figure out which is which, we may have to actually count slots
 
   // set up bounds of the editor for the active module:
   if(activeEditor != nullptr){

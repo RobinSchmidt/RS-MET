@@ -2767,9 +2767,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_EllipseOscillator.cpp">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_FourOscSection.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
@@ -2786,6 +2783,9 @@
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_Snowflake.cpp">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VariousGenerators.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.cpp">
@@ -2959,9 +2959,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.cpp">
       <Filter>Juce Modules\rapt\Filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\EllipseOscillator.cpp">
-      <Filter>Juce Modules\rapt\Generators</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
@@ -2969,6 +2966,9 @@
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\VariousOscillators.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
@@ -4453,9 +4453,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AnalogEnvelopeScaled.cpp">
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AttackDecayEnvelope.cpp">
-      <Filter>Juce Modules\rosic\modulators</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_BreakpointModulator.cpp">
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClCompile>
@@ -4481,6 +4478,9 @@
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_SampleModulator.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_VariousModulators.cpp">
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptron.cpp">
@@ -6906,9 +6906,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_EllipseOscillator.h">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_FourOscSection.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
@@ -6925,6 +6922,9 @@
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_Snowflake.h">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VariousGenerators.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.h">
@@ -7107,9 +7107,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.h">
       <Filter>Juce Modules\rapt\Filters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\EllipseOscillator.h">
-      <Filter>Juce Modules\rapt\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
@@ -7120,6 +7117,9 @@
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\VariousOscillators.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h">
@@ -8691,9 +8691,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AnalogEnvelopeScaled.h">
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AttackDecayEnvelope.h">
-      <Filter>Juce Modules\rosic\modulators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_BreakpointModulator.h">
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClInclude>
@@ -8719,6 +8716,9 @@
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_SampleModulator.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_VariousModulators.h">
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptron.h">
