@@ -242,18 +242,14 @@ void constPowerFade(double x, double* s1, double* s2)
 }
 void freqVsPhaseMod()
 {
-  // Compares frequency modulation with phase modulation and tries to transform one into the other
-  // by integration/differentiaition of the modulator signal
-
+  // Compares frequency modulation with phase modulation, also creates a mixed-modulation signal
+  // with adjustable morphing factor (0..1) and tries to transform FM into PM and vice versa by 
+  // integration/differentiation of the modulator signal
   // use as carrier:    c(t) = sin(wc*t) + sin(2*wc*t)/2
   // and as modulator:  m(t) = sin(wm*t) + sin(3*wm*t)/3
   // or vice versa - each has the first two sine components of a saw or square wave - they 
   // waveforms are still simple but maybe complex enough to expose the difference between FM and PM
 
-  // todo: maybe make a sweep of an FM vs PM parameter over time to show the difference between
-  // the two - look into chaosfly code how to compute the two mod-indices from the FM/FM parameter
-  // i think, it uses a sin/cos formula such that fmi^2 + pmi^2 == 1 - this was found to be 
-  // perceptually adequate, iirc
 
   // experiment parameters:
   static const int N = 882;     // number of samples to produce
@@ -267,17 +263,20 @@ void freqVsPhaseMod()
   //double (*carWave) (double x) = saw2;  // carrier waveform function
   double (*modWave) (double x) = sin;
   double (*carWave) (double x) = sin;
-           
-
 
   // create signals:
-  double t[N], yC[N], yM[N], yFM[N], yPM[N], yMM[N];
+  double t[N], yC[N], yM[N];      // time axis, unmodulated carrier, modulator
+  double yFM[N], yPM[N], yMM[N];  // FM output, PM output, mixed-mod output
+  double yMd, yMi;                // differentiated and integrated modulator
+  double yPFM, yPPM;              // pseudo-FM and pseudo-PM outputs
   double wc  = 2*PI*fc/fs;
   double wm  = 2*PI*fm/fs;
-  double pm  = 0;   // instantaneous phase of modulator
+  //double pm  = 0;   // instantaneous phase of modulator
   double pFM = 0;   // instantaneous phase of FM signal
   double pPM = 0;   // instantaneous phase of PM signal (before phase-modulation)
   double pMM = 0;   // instantaneous phase of mixed modulation signal
+  double scaleFM, scalePM;
+  constPowerFade(fmVsPm, &scaleFM, &scalePM);
   for(int n = 0; n < N; n++)
   {
     // time axis, unmodulated carrier and modulator:
@@ -300,12 +299,15 @@ void freqVsPhaseMod()
     // maybe even equal in terms of magnitudes?
 
     // mixed modulation:
-    double scaleFM, scalePM;
-    constPowerFade(fmVsPm, &scaleFM, &scalePM);
     wInst = wc  + scaleFM * depth * yM[n] * wc;   // instantaneous omega
     pInst = pMM + scalePM * depth * yM[n];        // instantaneous phase
     yMM[n] = carWave(pInst);
     pMM += wInst;
+
+    // todo: try to obtain pseudo-FM via PM and pseudo PM via FM by using an integrated or 
+    // differentiated modulator signal
+
+
   }
 
   // todo: maybe to analyze the spectra, choose frequencies such that the period of the signals is 
