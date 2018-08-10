@@ -4,7 +4,7 @@ PolyModulatorsAudioModule::PolyModulatorsAudioModule(CriticalSection *lockToUse)
 
 }
 
-AudioModuleEditor* PolyModulatorsAudioModule::createEditor()
+AudioModuleEditor* PolyModulatorsAudioModule::createEditor(int type)
 {
   return new jura::PolyModulatorsEditor(lock, this); // get rid of passing the lock
 }

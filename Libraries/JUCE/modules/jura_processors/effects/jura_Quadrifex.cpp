@@ -132,7 +132,7 @@ QuadrifexAudioModule::~QuadrifexAudioModule()
   }
 }
 
-AudioModuleEditor* QuadrifexAudioModule::createEditor()
+AudioModuleEditor* QuadrifexAudioModule::createEditor(int type)
 {
   return new QuadrifexModuleEditor(lock, this);
 }

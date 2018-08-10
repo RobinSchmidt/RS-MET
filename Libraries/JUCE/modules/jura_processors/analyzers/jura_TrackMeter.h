@@ -13,7 +13,7 @@ public:
 
   virtual ~TrackMeterAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 

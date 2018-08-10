@@ -50,7 +50,7 @@ public:
   }
 
 
-  virtual AudioModuleEditor *createEditor() override;
+  virtual AudioModuleEditor *createEditor(int type) override;
 
 
   // new overrides (added after dragging the old code over - they are currently only dummies):

@@ -278,7 +278,7 @@ juce::String AudioModule::getAudioModulePath()
     return parentModule->getAudioModulePath() + moduleName + ".";
 }
 
-AudioModuleEditor* AudioModule::createEditor()
+AudioModuleEditor* AudioModule::createEditor(int type)
 {
   return new GenericAudioModuleEditor(this);
 }

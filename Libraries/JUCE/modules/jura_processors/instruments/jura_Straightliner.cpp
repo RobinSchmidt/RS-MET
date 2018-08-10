@@ -43,7 +43,7 @@ StraightlinerAudioModule::~StraightlinerAudioModule()
   delete wrappedStraightliner; // use a std::unique_ptr
 }
 
-AudioModuleEditor* StraightlinerAudioModule::createEditor()
+AudioModuleEditor* StraightlinerAudioModule::createEditor(int type)
 {
   return new StraightlinerModuleEditor(lock, this); // get rid of lock parameter
 }

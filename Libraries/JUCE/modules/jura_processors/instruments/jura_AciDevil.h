@@ -25,7 +25,7 @@ public:
 
   virtual ~AciDevilAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   //---------------------------------------------------------------------------------------------
   // parameter settings:

@@ -29,7 +29,7 @@ QuadrigaAudioModule::~QuadrigaAudioModule()
   delete wrappedQuadriga;
 }
 
-AudioModuleEditor* QuadrigaAudioModule::createEditor()
+AudioModuleEditor* QuadrigaAudioModule::createEditor(int type)
 {
   return new QuadrigaModuleEditor(lock, this);
 }

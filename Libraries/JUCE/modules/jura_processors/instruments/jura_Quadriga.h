@@ -12,7 +12,7 @@ public:
 
   virtual ~QuadrigaAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
 
   /** Do we really need to override this ?! */

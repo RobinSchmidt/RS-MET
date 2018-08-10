@@ -58,7 +58,7 @@ public:
 
 
   // overriden from AudioModule baseclass:
-  virtual AudioModuleEditor *createEditor() override;
+  virtual AudioModuleEditor *createEditor(int type) override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override; 

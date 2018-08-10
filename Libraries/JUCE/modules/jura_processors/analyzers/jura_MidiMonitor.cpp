@@ -9,7 +9,7 @@ MidiMonitorAudioModule::MidiMonitorAudioModule(CriticalSection *newPlugInLock)
   initializeAutomatableParameters();
 }
 
-AudioModuleEditor* MidiMonitorAudioModule::createEditor()
+AudioModuleEditor* MidiMonitorAudioModule::createEditor(int type)
 {
   return new MidiMonitorModuleEditor(lock, this);
 }

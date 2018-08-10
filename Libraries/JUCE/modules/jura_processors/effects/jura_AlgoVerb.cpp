@@ -26,7 +26,7 @@ AlgoVerbAudioModule::~AlgoVerbAudioModule()
     delete wrappedAlgoVerb;
 }
 
-AudioModuleEditor* AlgoVerbAudioModule::createEditor()
+AudioModuleEditor* AlgoVerbAudioModule::createEditor(int type)
 {
   return new jura::AlgoVerbModuleEditor(lock, this); // get rid of passing the lock
 }

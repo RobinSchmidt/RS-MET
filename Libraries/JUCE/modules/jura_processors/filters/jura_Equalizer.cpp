@@ -36,7 +36,7 @@ EqualizerAudioModule::~EqualizerAudioModule()
     delete wrappedEqualizerStereo;
 }
 
-AudioModuleEditor* EqualizerAudioModule::createEditor()
+AudioModuleEditor* EqualizerAudioModule::createEditor(int type)
 {
   return new EqualizerModuleEditor(lock, this);
 }

@@ -232,7 +232,7 @@ void PhaseScope::setSyncMode(bool shouldSync)
   phaseScopeBuffer->setSyncMode(shouldSync);
 }
 
-AudioModuleEditor* PhaseScope::createEditor()
+AudioModuleEditor* PhaseScope::createEditor(int type)
 {
   return new PhaseScopeEditor(this);
 }

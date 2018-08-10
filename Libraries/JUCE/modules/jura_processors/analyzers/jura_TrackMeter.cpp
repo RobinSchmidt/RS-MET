@@ -23,7 +23,7 @@ TrackMeterAudioModule::~TrackMeterAudioModule()
     delete wrappedTrackMeter;
 }
 
-AudioModuleEditor* TrackMeterAudioModule::createEditor()
+AudioModuleEditor* TrackMeterAudioModule::createEditor(int type)
 {
   return new TrackMeterModuleEditor(lock, this);
 }

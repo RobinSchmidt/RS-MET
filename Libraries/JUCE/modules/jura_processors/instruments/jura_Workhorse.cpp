@@ -57,7 +57,7 @@ WorkhorseAudioModule::~WorkhorseAudioModule()
   delete wrappedWorkhorse;
 }
 
-AudioModuleEditor* WorkhorseAudioModule::createEditor()
+AudioModuleEditor* WorkhorseAudioModule::createEditor(int type)
 {
   return new WorkhorseModuleEditor(lock, this);
 }

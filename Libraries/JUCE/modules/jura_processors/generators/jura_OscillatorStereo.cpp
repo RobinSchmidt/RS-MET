@@ -30,7 +30,7 @@ OscillatorStereoAudioModule::~OscillatorStereoAudioModule()
 }
 
 
-AudioModuleEditor* OscillatorStereoAudioModule::createEditor()
+AudioModuleEditor* OscillatorStereoAudioModule::createEditor(int type)
 {
   return new OscillatorStereoEditor(lock, this); // get rid of passing the lock
 }

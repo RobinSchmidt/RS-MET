@@ -229,8 +229,10 @@ public:
   AudioModuleEditor. The baseclass implementation will return a generic editor with sliders, 
   comboboxes and button for all the Parameters of this AudioModule. You can create the editor with
   "new", return it and forget about it - the responsibility for deleting it eventually is on the 
-  framework. */
-  virtual AudioModuleEditor* createEditor();
+  framework. Via the integer "type" parameter, it is possible to have different kinds of editors
+  for the same kind of audio module - if your AudioModule subclass doesn't need to support 
+  different editors, just ignore that parameter. */
+  virtual AudioModuleEditor* createEditor(int type = 0);
 
   //-----------------------------------------------------------------------------------------------
   // \name Automation and state management:

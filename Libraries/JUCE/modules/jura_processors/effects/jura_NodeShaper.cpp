@@ -10,7 +10,7 @@ NodeShaperAudioModule::~NodeShaperAudioModule()
 
 }
 
-AudioModuleEditor* NodeShaperAudioModule::createEditor()
+AudioModuleEditor* NodeShaperAudioModule::createEditor(int type)
 {
   return new jura::NodeShaperModuleEditor(this);
 }

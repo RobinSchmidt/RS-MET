@@ -20,7 +20,7 @@ ChannelMatrix2x2AudioModule::~ChannelMatrix2x2AudioModule()
     delete wrappedChannelMatrix2x2;
 }
 
-AudioModuleEditor* ChannelMatrix2x2AudioModule::createEditor()
+AudioModuleEditor* ChannelMatrix2x2AudioModule::createEditor(int type)
 {
   return new ChannelMatrix2x2ModuleEditor(lock, this);
 }

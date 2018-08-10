@@ -15,7 +15,7 @@ public:
 
   virtual ~NodeShaperAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   //---------------------------------------------------------------------------------------------
   // \name Setup

@@ -113,7 +113,7 @@ void PhaseScopeMultiColor::setFrameRate(double newRate)
   updateRepaintInterval();
 }
 
-AudioModuleEditor* PhaseScopeMultiColor::createEditor()
+AudioModuleEditor* PhaseScopeMultiColor::createEditor(int type)
 {
   return new PhaseScopeMultiColorEditor(this);
 }

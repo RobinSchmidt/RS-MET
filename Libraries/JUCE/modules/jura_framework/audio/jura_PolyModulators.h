@@ -9,7 +9,7 @@ public:
 
   PolyModulatorsAudioModule(CriticalSection *lockToUse);
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type = 0) override;
 
 protected:
 

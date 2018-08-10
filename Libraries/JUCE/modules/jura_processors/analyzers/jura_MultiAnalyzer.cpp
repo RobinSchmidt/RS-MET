@@ -135,7 +135,7 @@ MultiAnalyzerAudioModule::~MultiAnalyzerAudioModule()
   delete wrappedSpectrumAnalyzer;
 }
 
-AudioModuleEditor* MultiAnalyzerAudioModule::createEditor()
+AudioModuleEditor* MultiAnalyzerAudioModule::createEditor(int type)
 {
   return new MultiAnalyzerModuleEditor(lock, this);
 }

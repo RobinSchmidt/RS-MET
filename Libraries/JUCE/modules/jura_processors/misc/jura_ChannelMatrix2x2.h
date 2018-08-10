@@ -13,7 +13,7 @@ public:
 
   virtual ~ChannelMatrix2x2AudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
 
 

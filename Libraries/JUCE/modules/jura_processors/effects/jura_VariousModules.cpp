@@ -975,7 +975,7 @@ void CompressorAudioModule::reset()
   wrappedCompressor->reset();
 }
 
-AudioModuleEditor* CompressorAudioModule::createEditor()
+AudioModuleEditor* CompressorAudioModule::createEditor(int type)
 {
   return new CompressorModuleEditor(lock, this);
 }
@@ -1454,7 +1454,7 @@ void LimiterAudioModule::createParameters()
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setLimit);
 }
 
-AudioModuleEditor* LimiterAudioModule::createEditor()
+AudioModuleEditor* LimiterAudioModule::createEditor(int type)
 {
   return new LimiterModuleEditor(lock, this);
 }
@@ -2978,7 +2978,7 @@ PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *lockTouse,
   createParameters();
 }
 
-AudioModuleEditor* PingPongEchoAudioModule::createEditor()
+AudioModuleEditor* PingPongEchoAudioModule::createEditor(int type)
 {
   return new PingPongEchoModuleEditor(lock, this);
 }

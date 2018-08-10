@@ -31,7 +31,7 @@ public:
 
   virtual ~EqualizerAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
 
   //-----------------------------------------------------------------------------------------------

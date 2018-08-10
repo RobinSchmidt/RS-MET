@@ -108,7 +108,7 @@ void Snowflake::createParameters()
   */
 }
 
-AudioModuleEditor* Snowflake::createEditor()
+AudioModuleEditor* Snowflake::createEditor(int type)
 {
   return new SnowflakeEditor(this);
 }

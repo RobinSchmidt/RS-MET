@@ -8,7 +8,7 @@ Enveloper::Enveloper(CriticalSection *lockToUse)
   addChildAudioModule(envGenWrapper);
 }
 
-AudioModuleEditor* Enveloper::createEditor()
+AudioModuleEditor* Enveloper::createEditor(int type)
 {
   //jura::BreakpointModulatorEditor* editor = new jura::BreakpointModulatorEditor(lock, &envGenWrapper);
   jura::BreakpointModulatorEditor* editor = new jura::BreakpointModulatorEditor(lock, envGenWrapper);

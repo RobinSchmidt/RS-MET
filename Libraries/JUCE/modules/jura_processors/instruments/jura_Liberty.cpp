@@ -41,7 +41,7 @@ LibertyAudioModule::~LibertyAudioModule()
     delete wrappedLiberty;
 }
 
-AudioModuleEditor* LibertyAudioModule::createEditor()
+AudioModuleEditor* LibertyAudioModule::createEditor(int type)
 {
   return new jura::LibertyEditor(lock, this); // get rid of passing the lock
 }

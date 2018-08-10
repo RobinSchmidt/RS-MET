@@ -15,7 +15,7 @@ public:
   Enveloper(CriticalSection *lockToUse);
 
   // overriden from AudioModule baseclass:
-  AudioModuleEditor *createEditor() override;
+  AudioModuleEditor *createEditor(int type) override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void noteOn(int noteNumber, int velocity) override;

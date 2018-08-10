@@ -268,7 +268,7 @@ void BreakpointModulatorAudioModule::setStateToDefaults()
   sendChangeMessage();
 }
 
-AudioModuleEditor* BreakpointModulatorAudioModule::createEditor()
+AudioModuleEditor* BreakpointModulatorAudioModule::createEditor(int type)
 { 
   return new BreakpointModulatorEditor(lock, this);
   //return nullptr; 

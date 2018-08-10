@@ -30,7 +30,7 @@ void DebugAudioModule::createParameters()
   addObservedParameter(smoothParam);
 }
 
-AudioModuleEditor* DebugAudioModule::createEditor()
+AudioModuleEditor* DebugAudioModule::createEditor(int type)
 {
   //return AudioModuleWithMidiIn::createEditor();
   return new DebugModuleEditor(this);

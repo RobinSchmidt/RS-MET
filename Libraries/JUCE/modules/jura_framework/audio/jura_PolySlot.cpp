@@ -1,4 +1,4 @@
-AudioModuleEditor* PolySlotAudioModule::createEditor()
+AudioModuleEditor* PolySlotAudioModule::createEditor(int type)
 {
   return new jura::PolySlotEditor(lock, this); // get rid of passing the lock
 }

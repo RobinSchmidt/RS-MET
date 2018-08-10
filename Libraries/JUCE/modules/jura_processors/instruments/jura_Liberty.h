@@ -59,7 +59,7 @@ public:
 
   virtual ~LibertyAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   //-----------------------------------------------------------------------------------------------
   // parameter settings:

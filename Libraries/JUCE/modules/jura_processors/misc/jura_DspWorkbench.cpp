@@ -25,7 +25,7 @@ DspWorkbenchAudioModule::~DspWorkbenchAudioModule()
     delete wrappedDspWorkbench;
 }
 
-AudioModuleEditor* DspWorkbenchAudioModule::createEditor()
+AudioModuleEditor* DspWorkbenchAudioModule::createEditor(int type)
 {
   return new DspWorkbenchModuleEditor(lock, this);
 }

@@ -17,7 +17,7 @@ NewSynthAudioModule::NewSynthAudioModule(CriticalSection *lockToUse)
   //createParameters();
 }
 
-AudioModuleEditor* NewSynthAudioModule::createEditor()
+AudioModuleEditor* NewSynthAudioModule::createEditor(int type)
 {
   return new jura::NewSynthEditor(lock, this); // get rid of passing the lock
 }

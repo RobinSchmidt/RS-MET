@@ -27,7 +27,7 @@ public:
 
   virtual ~FuncShaperAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   //---------------------------------------------------------------------------------------------
   // automation and state management:

@@ -22,7 +22,7 @@ KeyShotAudioModule::~KeyShotAudioModule()
   delete wrappedKeyShot;
 }
 
-AudioModuleEditor* KeyShotAudioModule::createEditor()
+AudioModuleEditor* KeyShotAudioModule::createEditor(int type)
 {
   return new KeyShotModuleEditor(lock, this);
 }

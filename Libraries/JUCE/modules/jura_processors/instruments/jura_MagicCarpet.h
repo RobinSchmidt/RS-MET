@@ -33,7 +33,7 @@ public:
 
   virtual ~MagicCarpetAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
 
 

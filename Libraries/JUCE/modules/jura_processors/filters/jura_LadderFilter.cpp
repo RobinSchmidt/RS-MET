@@ -65,7 +65,7 @@ void Ladder::createStaticParameters()
 //-------------------------------------------------------------------------------------------------
 // Editor creation:
 
-AudioModuleEditor* Ladder::createEditor()
+AudioModuleEditor* Ladder::createEditor(int type)
 {
   return new jura::LadderEditor(this);
 }

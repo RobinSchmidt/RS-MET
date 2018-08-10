@@ -397,7 +397,7 @@ EchoLabAudioModule::~EchoLabAudioModule()
     delete wrappedEchoLab;
 }
 
-AudioModuleEditor* EchoLabAudioModule::createEditor()
+AudioModuleEditor* EchoLabAudioModule::createEditor(int type)
 {
   return new jura::EchoLabModuleEditor(lock, this); // get rid of passing the lock
 }

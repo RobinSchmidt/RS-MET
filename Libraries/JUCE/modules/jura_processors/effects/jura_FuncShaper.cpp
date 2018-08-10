@@ -36,7 +36,7 @@ FuncShaperAudioModule::~FuncShaperAudioModule()
     delete wrappedFuncShaper;
 }
 
-AudioModuleEditor* FuncShaperAudioModule::createEditor()
+AudioModuleEditor* FuncShaperAudioModule::createEditor(int type)
 {
   return new jura::FuncShaperModuleEditor(lock, this); // get rid of passing the lock
 }

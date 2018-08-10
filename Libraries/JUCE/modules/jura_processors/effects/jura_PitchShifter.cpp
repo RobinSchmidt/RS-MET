@@ -25,7 +25,7 @@ PitchShifterAudioModule::~PitchShifterAudioModule()
     delete wrappedPitchShifter;
 }
 
-AudioModuleEditor* PitchShifterAudioModule::createEditor()
+AudioModuleEditor* PitchShifterAudioModule::createEditor(int type)
 {
   return new PitchShifterModuleEditor(lock, this);
 }

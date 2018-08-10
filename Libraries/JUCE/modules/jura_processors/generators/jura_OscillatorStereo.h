@@ -32,7 +32,7 @@ public:
 
   //virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
-  virtual AudioModuleEditor* createEditor() override;
+  virtual AudioModuleEditor* createEditor(int type) override;
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean);

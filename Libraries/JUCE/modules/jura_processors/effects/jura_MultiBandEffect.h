@@ -66,7 +66,7 @@ public:
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;

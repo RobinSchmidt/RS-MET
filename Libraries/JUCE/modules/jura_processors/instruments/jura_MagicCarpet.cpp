@@ -103,7 +103,7 @@ MagicCarpetAudioModule::~MagicCarpetAudioModule()
   delete wrappedMagicCarpet;
 }
 
-AudioModuleEditor* MagicCarpetAudioModule::createEditor()
+AudioModuleEditor* MagicCarpetAudioModule::createEditor(int type)
 {
   return new MagicCarpetModuleEditor(lock, this);
 }

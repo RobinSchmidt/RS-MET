@@ -9,7 +9,7 @@ public:
   /** Constructor. */
   NewSynthAudioModule(CriticalSection *lockToUse);
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   virtual void processBlock(double **inOut, int numChannels, int numSamples) override
   {

@@ -6,7 +6,7 @@ public:
 
   QuadSourceAudioModule(CriticalSection *lockToUse/*, rosic::rsQuadSource* coreToUse*/);
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   void setModuleFactory(AudioModuleFactory* newFactory);
 

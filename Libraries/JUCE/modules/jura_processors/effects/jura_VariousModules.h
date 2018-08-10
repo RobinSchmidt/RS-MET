@@ -1,5 +1,8 @@
 #ifndef rosof_VariousModulesAndEditors_h
 #define rosof_VariousModulesAndEditors_h
+// rename to VariousEffects, override createEditor everywhere, let Quadrifex use an
+// AudioModuleFactory and get rid of that ugly, messy code there related to selecting
+// which module to plug in
 
 /** This file defines a bunch of smaller AudioModules and their editors.
 
@@ -247,7 +250,7 @@ public:
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
 protected:
   virtual void createStaticParameters();
@@ -305,7 +308,7 @@ class LimiterAudioModule : public ModulatableAudioModule
 public:
   LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Limiter* newLimiterToWrap = nullptr);
   virtual ~LimiterAudioModule() { if(wrappedLimiterIsOwned) delete wrappedLimiter; }
-  virtual AudioModuleEditor* createEditor() override;
+  virtual AudioModuleEditor* createEditor(int type) override;
   virtual void processStereoFrame(double *left, double *right) override 
   { 
     wrappedLimiter->getSampleFrameStereo(left, right); 
@@ -576,7 +579,7 @@ public:
     ScopedLock scopedLock(*lock);
     wrappedEcho->setTempoInBPM(newBpm);
   }
-  virtual AudioModuleEditor* createEditor() override;
+  virtual AudioModuleEditor* createEditor(int type) override;
   virtual void processStereoFrame(double *left, double *right) override 
   { 
     wrappedEcho->getSampleFrameStereo(left, right); 

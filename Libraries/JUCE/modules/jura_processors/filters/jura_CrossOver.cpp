@@ -25,7 +25,7 @@ CrossOverAudioModule::~CrossOverAudioModule()
     delete wrappedCrossOver;
 }
 
-AudioModuleEditor* CrossOverAudioModule::createEditor()
+AudioModuleEditor* CrossOverAudioModule::createEditor(int type)
 {
   return new CrossOverModuleEditor(lock, this);
 }

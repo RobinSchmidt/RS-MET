@@ -181,7 +181,7 @@ void ToolChain::sendAudioModuleWasReplacedNotification(AudioModule *oldModule,
 
 // overrides:
 
-AudioModuleEditor* ToolChain::createEditor()
+AudioModuleEditor* ToolChain::createEditor(int type)
 {
   return new ToolChainEditor(this);
 }

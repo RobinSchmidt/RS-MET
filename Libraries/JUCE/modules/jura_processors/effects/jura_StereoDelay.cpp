@@ -24,7 +24,7 @@ StereoDelayAudioModule::~StereoDelayAudioModule()
     delete wrappedStereoDelay;
 }
 
-AudioModuleEditor* StereoDelayAudioModule::createEditor()
+AudioModuleEditor* StereoDelayAudioModule::createEditor(int type)
 {
 
   return new StereoDelayModuleEditor(lock, this);

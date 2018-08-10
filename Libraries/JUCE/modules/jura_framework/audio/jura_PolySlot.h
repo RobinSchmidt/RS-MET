@@ -8,7 +8,7 @@ public:
 
   PolySlotAudioModule(CriticalSection *lockToUse) : PolyAudioModule(lockToUse) {}
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   /** Sets the factory object that is used to create the slot insert modules. */
   void setModuleFactory(AudioModuleFactory* newFactory) { moduleFactory = newFactory; }

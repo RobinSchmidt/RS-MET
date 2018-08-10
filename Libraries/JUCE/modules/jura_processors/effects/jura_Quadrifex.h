@@ -20,7 +20,7 @@ public:
 
   virtual ~QuadrifexAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   //---------------------------------------------------------------------------------------------
   // setup:

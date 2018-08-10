@@ -29,7 +29,7 @@ EngineersFilterAudioModule::~EngineersFilterAudioModule()
     delete wrappedEngineersFilter;
 }
 
-AudioModuleEditor* EngineersFilterAudioModule::createEditor()
+AudioModuleEditor* EngineersFilterAudioModule::createEditor(int type)
 {
   return new jura::EngineersFilterModuleEditor(lock, this); // get rid of passing the lock
 }

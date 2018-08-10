@@ -11,7 +11,7 @@ QuadSourceAudioModule::QuadSourceAudioModule(
   addChildAudioModule(vectorMixerModule = new PolyAudioModule(lock));
 }
 
-AudioModuleEditor* QuadSourceAudioModule::createEditor()
+AudioModuleEditor* QuadSourceAudioModule::createEditor(int type)
 {
   return new jura::QuadSourceEditor(lock, this); // get rid of passing the lock
 }

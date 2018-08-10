@@ -41,7 +41,7 @@ SimpleSamplerAudioModule::~SimpleSamplerAudioModule()
   delete wrappedSimpleSampler;
 }
 
-AudioModuleEditor* SimpleSamplerAudioModule::createEditor()
+AudioModuleEditor* SimpleSamplerAudioModule::createEditor(int type)
 {
   return new SimpleSamplerModuleEditor(lock, this);
 }

@@ -9,7 +9,7 @@ DualFilterAudioModule::DualFilterAudioModule(
   addChildAudioModule(vectorMixerModule = new PolyAudioModule(lock));
 }
 
-AudioModuleEditor* DualFilterAudioModule::createEditor()
+AudioModuleEditor* DualFilterAudioModule::createEditor(int type)
 {
   return new jura::DualFilterEditor(lock, this); // get rid of passing the lock
 }

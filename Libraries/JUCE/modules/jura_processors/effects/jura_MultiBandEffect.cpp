@@ -93,7 +93,7 @@ void MultiBandEffect::reset()
   // todo: reset gain accumulators
 }
 
-AudioModuleEditor* MultiBandEffect::createEditor()
+AudioModuleEditor* MultiBandEffect::createEditor(int type)
 {
   return new MultiBandEffectEditor(this);
 }

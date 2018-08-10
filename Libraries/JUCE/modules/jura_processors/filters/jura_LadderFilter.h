@@ -31,7 +31,7 @@ public:
     // maybe rename to createParameters
 
   /** Creates the GUI editor (returns an object of an appropriate subclass of AudioModuleEditor) */
-  AudioModuleEditor *createEditor() override;
+  AudioModuleEditor *createEditor(int type) override;
 
   // overriden from AudioModule baseclass:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;

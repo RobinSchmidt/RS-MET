@@ -32,7 +32,7 @@ AciDevilAudioModule::~AciDevilAudioModule()
     delete wrappedAciDevil;
 }
 
-AudioModuleEditor* AciDevilAudioModule::createEditor()
+AudioModuleEditor* AciDevilAudioModule::createEditor(int type)
 {
   return new jura::AciDevilModuleEditor(lock, this); // get rid of passing the lock
 }

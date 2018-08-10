@@ -30,7 +30,7 @@ public:
 
   virtual ~EngineersFilterAudioModule();
 
-  AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor(int type) override;
 
   virtual void setSampleRate(double newSampleRate) override
   {
