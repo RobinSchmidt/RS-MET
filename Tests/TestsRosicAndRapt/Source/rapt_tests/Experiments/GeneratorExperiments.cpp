@@ -250,8 +250,8 @@ void freqVsPhaseMod()
   // perceptually adequate, iirc
 
   // experiment parameters:
-  //static const int N = 882;     // number of samples to produce
-  static const int N = 2000;      // number of samples to produce
+  static const int N = 882;     // number of samples to produce
+  //static const int N = 2000;      // number of samples to produce
   double fs = 44100;              // sample rate
   double fc = 300;                // carrier freq
   double fm = 200;                // modulator freq
@@ -261,7 +261,7 @@ void freqVsPhaseMod()
 
 
   // create signals:
-  double t[N], car[N], mod[N], yFM[N], yPM[N];
+  double t[N], yC[N], yM[N], yFM[N], yPM[N];
   double wc  = 2*PI*fc/fs;
   double wm  = 2*PI*fm/fs;
   double pm  = 0;   // instantaneous phase of modulator
@@ -272,25 +272,28 @@ void freqVsPhaseMod()
     // time axis, unmodulated carrier and modulator:
     double tn = n/fs;    // current time instant (in seconds?)
     t[n]   = tn;
-    car[n] = saw(n, fc, fs, 2); // maybe also try it vice versa...maybe use function pointers
-    mod[n] = sqr(n, fm, fs, 3); // for carrier and modulator wave function
+    yM[n] = modWave(wm*n);  // needed in equations below
+    yC[n] = carWave(wc*n);  // needed just for the plot
 
     // frequency modulation:
-    yFM[n] = saw(pFM, 2);
-    double fmi = mi;                  // FM index
-    double wi  = wc + fmi*wc*mod[n];  // instantaneous omega
+    yFM[n] = carWave(pFM);
+    double fmi = mi;                  // FM index/depth
+    double wi  = wc + fmi*wc*yM[n];   // instantaneous omega
     pFM += wi;
 
     // phase modulation:
-    double pmi = mi;                   // PM index
-    double pi  = pPM + pmi*wc*mod[n];  // instantaneous phase
-    yPM[n] = saw(pi, 2);
+    double pmi = mi;                  // PM index/depth
+    double pi  = pPM + pmi*yM[n];     // instantaneous phase
+    yPM[n] = carWave(pi);
     pPM += wc;
+    // do we need a constant scale-factor, like 2*PI, to scale the phase-offset? maybe compare
+    // spectra of FM and PM signals with the same index - they should have the same bandwidth..or
+    // maybe even equal?
   }
 
   // plot:
   GNUPlotter plt;
-  //plt.addDataArrays(N, t, car, mod);
+  //plt.addDataArrays(N, t, yC,  yM);
   plt.addDataArrays(N, t, yFM, yPM);
   plt.plot();
 }
