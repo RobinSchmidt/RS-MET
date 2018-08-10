@@ -8,21 +8,25 @@ OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlu
   //jassert( newOscillatorStereoToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   if(oscToWrap == nullptr) {
     wrappedOscillatorStereo = new rosic::OscillatorStereo;
+    waveTable = new rosic::MipMappedWaveTableStereo;
+    wrappedOscillatorStereo->setWaveTableToUse(waveTable);
     wrappedOscIsOwned = true;
   }
   else
     wrappedOscillatorStereo = oscToWrap;
 
-  setModuleTypeName("OscillatorStereo");
-    // use WaveOscillator or WaveCycleOscillator
+  //setModuleTypeName("OscillatorStereo"); // old name
+  setModuleTypeName("WaveOscillator");
 
   createParameters();
 }
 
 OscillatorStereoAudioModule::~OscillatorStereoAudioModule()
 {
-  if(wrappedOscIsOwned)
+  if(wrappedOscIsOwned) {
     delete wrappedOscillatorStereo;
+    delete waveTable;
+  }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -32,8 +36,11 @@ XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, XmlElement* xmlEle
 {
   // the XmlElement which stores all the releveant state-information:
   XmlElement* xmlState;
-  if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String("OscillatorStereo"));  //wrong? should be OscillatorStereoState
+  if(xmlElementToStartFrom == NULL)
+  {
+    xmlState = new XmlElement("WaveOscillator");
+    //xmlState = new XmlElement(juce::String("OscillatorStereo"));  //wrong? should be OscillatorStereoState
+  }
   else
     xmlState = xmlElementToStartFrom;
 

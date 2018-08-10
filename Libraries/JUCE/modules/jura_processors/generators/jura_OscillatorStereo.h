@@ -59,8 +59,10 @@ protected:
 
   /** Pointer to the underlying rosic object which is wrapped. */
   rosic::OscillatorStereo *wrappedOscillatorStereo;
-  bool wrappedOscIsOwned = false;
 
+  bool wrappedOscIsOwned = false;
+  rosic::MipMappedWaveTableStereo *waveTable = nullptr; 
+  // only needed when the wrapped osc is owned - in this case, we also need an owned wavetable
 
   juce_UseDebuggingNewOperator;
 };

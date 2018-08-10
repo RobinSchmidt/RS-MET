@@ -1,4 +1,7 @@
 make WaveOscillator available for ToolChain
+-override getEditor
+-maybe change the interface to let getEditor take an int parameter such that we can have different
+ types of editors for the same module
 
 -make a class DualWaveOscillator
  -sync 1->2, 2->1 via blep
