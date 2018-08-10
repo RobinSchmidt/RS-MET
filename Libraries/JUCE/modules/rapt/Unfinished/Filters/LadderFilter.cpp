@@ -207,7 +207,7 @@ rsLadderFilterFeedbackSaturated<TSig, TPar>::rsLadderFilterFeedbackSaturated()
 
 
   fbLpCutoff = 1.0;
-  fbLpf.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
+  fbLpf.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS_IIT);
 }
 
 template<class TSig, class TPar>
@@ -288,7 +288,7 @@ rsLadderResoShaped<TSig, TPar>::rsLadderResoShaped()
   resGain     = 1.0;
   phase       = 0.0;
 
-  allpass.setMode(rsOnePoleFilter<TSig, TPar>::ALLPASS);
+  allpass.setMode(rsOnePoleFilter<TSig, TPar>::ALLPASS_BLT);
 }
 
 template<class TSig, class TPar>
@@ -565,7 +565,7 @@ rsResoReplacer<TSig, TPar>::rsResoReplacer()
   resoCutoffMultiplier = 10000.0; // maps to 20kHz at cutoff = 20Hz -> high enough to be neutral
   resoCutoffModulation = 0.0;
 
-  resoFilter.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
+  resoFilter.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS_IIT);
     // maybe let the user choose, maybe use more interesting filter - like a ladder or biquad
 }
 
@@ -662,9 +662,9 @@ rsResoReplacerPhaseBumped<TSig, TPar>::rsResoReplacerPhaseBumped()
 {
   // todo: set up highpass and lowpass filters for the bumping signal
 
-  inputDifferencer.setMode(rsOnePoleFilter<TSig, TPar>::HIGHPASS);
-  bumpSmoother1.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
-  bumpSmoother2.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
+  inputDifferencer.setMode(rsOnePoleFilter<TSig, TPar>::HIGHPASS_MZT);
+  bumpSmoother1.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS_IIT);
+  bumpSmoother2.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS_IIT);
 
 
   inputDifferencer.setCutoff(20000);

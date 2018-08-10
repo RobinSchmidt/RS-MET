@@ -1444,7 +1444,7 @@ void rsSineQuadraturePart(T *x, T *y, int N, T f, T fs, bool backward)
   rsOnePoleFilter<T,T> flt;
   flt.setSampleRate(fs);
   flt.setCutoff(f);
-  flt.setMode(rsOnePoleFilter<T,T>::ALLPASS);
+  flt.setMode(rsOnePoleFilter<T,T>::ALLPASS_BLT);
   if( backward == true )
   {
     for(int n = N-1; n >= 0; n--)

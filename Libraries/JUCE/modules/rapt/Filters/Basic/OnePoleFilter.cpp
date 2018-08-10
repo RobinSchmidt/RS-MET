@@ -89,10 +89,13 @@ TPar rsOnePoleFilter<TSig, TPar>::getMagnitudeAt(TPar f)
 template<class TSig, class TPar>
 void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
 {
-  // maybe move these to FilterDesignFormulas
+  // maybe move these to FilterDesignFormulas - factor out, maybe together with biquad formulas
+  // BUT: make sure to be clear about the sign-convention for feedback coeffs. here we assume
+  // that the feedback coeffs are used with positive sign in the filter update
+  // these functions should then take only an omega as input
   switch(mode)
   {
-  case LOWPASS: 
+  case LOWPASS_IIT: 
     {
       // formula from dspguide (impulse invariant):
       TPar x = exp(-2.0 * PI * cutoff * sampleRateRec); 
@@ -101,7 +104,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       a1 = x;
     }
     break;
-  case HIGHPASS:  
+  case HIGHPASS_MZT:  
     {
       // formula from dspguide (impulse invariant):
       TPar x = exp(-2.0 * PI * cutoff * sampleRateRec);
@@ -110,7 +113,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       a1 = x;
     }
     break;
-  case ALLPASS:  
+  case ALLPASS_BLT:  
     {
       // formula from DAFX (bilinear):
       TPar t = tan(PI*cutoff*sampleRateRec);
@@ -121,7 +124,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       a1 = -x;
     }
     break;
-  case LOWSHELV:
+  case LOWSHELV_NMM:
     {
       // formula derived as special case of the Orfanidis equalizers:
       TPar g    = rsDB2amp(shelvingGain);
@@ -139,9 +142,11 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       TPar n    = rsSqrt((1+a1*a1-2*a1) / (1+b1*b1-2*b1));
       b0        = n;
       b1       *= n;
+      // this seems overly complicated - can't we just derive the coeffs directly from 3 magnitude
+      // constraints ...check this out....
     }
     break;
-  case HIGHSHELV:
+  case HIGHSHELV_NMM:
     {
       // formula derived as special case of the Orfanidis equalizers:
       TPar g    = rsDB2amp(shelvingGain);
@@ -162,7 +167,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       // \todo get rid of the code duplication
     }
     break;
-  case LOWSHELV_DAFX:
+  case LOWSHELV_BLT:
     {
       // formula from DAFX:
       TPar c = 0.5*(shelvingGain-1.0);
@@ -178,7 +183,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       a1 = -a;
     }
     break;
-  case HIGHSHELV_DAFX:
+  case HIGHSHELV_BLT:
     {
       // formula from DAFX:
       TPar c = 0.5*(shelvingGain-1.0);
@@ -194,6 +199,24 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       a1 = -a;
     }
     break;
+  case LOWPASS_BLT:  
+  {
+    TPar t = tan(PI*cutoff*sampleRateRec);
+    TPar x = (t-1.0) / (t+1.0);
+    b0 = 0.5*(1+x);
+    b1 = b0;
+    a1 = -x;
+  }
+  break;
+  case HIGHPASS_BLT:  
+  {
+    TPar t = tan(PI*cutoff*sampleRateRec);
+    TPar x = (t-1.0) / (t+1.0);
+    b0 = 0.5*(1-x);
+    b1 = -b0;
+    a1 = -x;
+  }
+  break;
   default: // bypass
     {
       b0 = 1.0;

@@ -16,13 +16,15 @@ public:
   enum modes
   {
     BYPASS = 0,
-    LOWPASS,         // rename to LOWPASS_IIT (impulse invariant transform)
-    HIGHPASS,        // rename to HIGHPASS_MZT (matched Z transform)
-    ALLPASS,
-    LOWSHELV,        // rename to LOWSHELF_NMM "Nyquist Magnitude Match"
-    HIGHSHELV,       // rename to LOWSHELF_NMM
-    LOWSHELV_DAFX,   // rename to LOWSHELF_BLT
-    HIGHSHELV_DAFX   // rename to HIGHSHELF_BLT
+    LOWPASS_IIT,      // lowpass via impulse invariant transform
+    HIGHPASS_MZT,     // highpass via matched-Z transform
+    ALLPASS_BLT,      // allpass via bilinear transform
+    LOWSHELV_NMM,     // low shelving via nyquist magnitude match
+    HIGHSHELV_NMM,    // high shelving via nyquist magnitude match
+    LOWSHELV_BLT,     // low shelving via bilinear transform
+    HIGHSHELV_BLT,    // high shelving via bilinear transform
+    LOWPASS_BLT,      // lowpass via bilinear transform ...needs test
+    HIGHPASS_BLT      // highpass via bilinear transform ...needs test
   };
   // \todo (maybe): let the user choose between LP/HP versions obtained via bilinear trafo and 
   // impulse invariant trafo, magnitude-matched trafo
@@ -105,6 +107,8 @@ protected:
 
   TPar sampleRate;
   TPar sampleRateRec;  // reciprocal of the sampleRate
+
+  // maybe factor out a baseclass that has only x1,y1,b0,b1,a1 as members
 
 };
 

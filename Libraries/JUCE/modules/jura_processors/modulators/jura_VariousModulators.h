@@ -27,6 +27,5 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriSawModulatorModule)
 };
-// maybe make it modulatable? or is it already?
 
 #endif

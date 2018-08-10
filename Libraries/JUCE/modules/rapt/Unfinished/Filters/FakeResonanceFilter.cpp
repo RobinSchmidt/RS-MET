@@ -13,12 +13,12 @@ rsFakeResonanceFilter<TSig, TPar>::rsFakeResonanceFilter()
   ar          = 0.001;
   delay       = 1.0;      // use "optimal" delay 
 
-  lpf1.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
-  lpf2.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
-  lpf3.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
-  lpf4.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS);
+  lpf1.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS_IIT);
+  lpf2.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS_IIT);
+  lpf3.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS_IIT);
+  lpf4.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS_IIT);
 
-  hpf.setMode(rsOnePoleFilter<TSig, TPar>::HIGHPASS);
+  hpf.setMode(rsOnePoleFilter<TSig, TPar>::HIGHPASS_MZT);
 
   //dl.setInterpolationMethod(rsInterpolator<TSig>::LINEAR); 
   //dl.setInterpolationMethod(rsInterpolator<TSig>::ALLPASS); 

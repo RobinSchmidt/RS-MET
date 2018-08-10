@@ -12,7 +12,7 @@ rsZeroCrossingPitchDetector<T>::rsZeroCrossingPitchDetector() : formantRemover(3
 
   formantRemover.setOrder(30);
 
-  dcBlocker.setMode(rsOnePoleFilter<T,T>::HIGHPASS);
+  dcBlocker.setMode(rsOnePoleFilter<T,T>::HIGHPASS_MZT);
   dcBlocker.setCutoff(20.0);
   dcBlocker.setSampleRate(sampleRate);
 

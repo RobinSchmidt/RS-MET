@@ -1865,7 +1865,7 @@ void ladderFeedbackSatDCGain()
   // apply a 1st order lowpass to the output to extract the DC component:
   vector<double> yDC(N);
   rsOnePoleFilterDD lpf;
-  lpf.setMode(rsOnePoleFilterDD::LOWPASS);
+  lpf.setMode(rsOnePoleFilterDD::LOWPASS_IIT);
   lpf.setSampleRate(fs);
   lpf.setCutoff(10.0);
   for(n = 0; n < N; n++)
@@ -2928,7 +2928,7 @@ void fakeResoDifferentDelays()
   rsOnePoleFilterDD smoother;
   smoother.setCutoff(50.0);
   smoother.setSampleRate(fs);
-  smoother.setMode(rsOnePoleFilterDD::LOWPASS);
+  smoother.setMode(rsOnePoleFilterDD::LOWPASS_IIT);
   int n;
   smoother.reset();
   for(n = 0; n < N; n++)
