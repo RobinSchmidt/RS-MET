@@ -225,6 +225,15 @@ void bouncillatorFormula()
   plt.plot();
 }
 
+// test inputs for FM/PM to replace sin
+double saw2(double phi)
+{
+  return saw(phi, 2);
+}
+double sqr3(double phi)
+{
+  return sqr(phi, 3);
+}
 void freqVsPhaseMod()
 {
   // Compares frequency modulation with phase modulation and tries to transform one into the other
@@ -241,12 +250,15 @@ void freqVsPhaseMod()
   // perceptually adequate, iirc
 
   // experiment parameters:
-  //static const int N = 882;        // number of samples to produce
-  static const int N = 2000;        // number of samples to produce
-  double fs = 44100;   // sample rate
-  double fc = 300;     // carrier freq
-  double fm = 200;     // modulator freq
-  double mi = 1.0;     // modulation index
+  //static const int N = 882;     // number of samples to produce
+  static const int N = 2000;      // number of samples to produce
+  double fs = 44100;              // sample rate
+  double fc = 300;                // carrier freq
+  double fm = 200;                // modulator freq
+  double mi = 1.0;                // modulation index
+  double (*modWave) (double x) = sin;  // modulator waveform function (like sin, cos, ...)
+  double (*carWave) (double x) = sin;  // carrier waveform function
+
 
   // create signals:
   double t[N], car[N], mod[N], yFM[N], yPM[N];
@@ -263,30 +275,23 @@ void freqVsPhaseMod()
     car[n] = saw(n, fc, fs, 2); // maybe also try it vice versa...maybe use function pointers
     mod[n] = sqr(n, fm, fs, 3); // for carrier and modulator wave function
 
-
-
     // frequency modulation:
+    yFM[n] = saw(pFM, 2);
     double fmi = mi;                  // FM index
-    double df  = fmi*mod[n]*fc;       //
-    yFM[n] = saw(n, fc+df, fs, 2);
+    double wi  = wc + fmi*wc*mod[n];  // instantaneous omega
+    pFM += wi;
 
-
-    // test:
-    car[n] = sin(wc*n);
-    mod[n] = sin(wm*n);
-    double wi = wc + fmi*wc*mod[n]; // instantaneous omega
-    double fi = fc + fmi*fc*mod[n]; // instantaneous frequency
-    yFM[n] = sin(wi*n);
-    // nooo...that doesn't work because it assumes that the instantaneous frequency was valid
-    // since the beginning -> we need to introduce an instantaneous phase and increment it 
-    // according to instantaneous frequency
-
-    //yPM[n] =
+    // phase modulation:
+    double pmi = mi;                   // PM index
+    double pi  = pPM + pmi*wc*mod[n];  // instantaneous phase
+    yPM[n] = saw(pi, 2);
+    pPM += wc;
   }
 
   // plot:
   GNUPlotter plt;
-  plt.addDataArrays(N, t, car, mod, yFM);
+  //plt.addDataArrays(N, t, car, mod);
+  plt.addDataArrays(N, t, yFM, yPM);
   plt.plot();
 }
 

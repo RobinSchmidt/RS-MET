@@ -272,19 +272,31 @@ std::vector<double> sawAndSquare(int N, double fs, double fSaw, double aSaw,
   return x;
 }
 
+
+double saw(double phi, int kMax)
+{
+  double sum = 0;
+  for(int k = 1; k <= kMax; k++)
+    sum += sin(k*phi) / k;
+  return (-2/PI) * sum;
+}
+
+double sqr(double phi, int kMax)
+{
+  double sum = 0;
+  for(int k = 1; k <= kMax; k+=2)
+    sum += sin(k*phi) / k;
+  return (4/PI) * sum;
+}
+
 double saw(int n, double f, double fs, int kMax)
 {
   if(kMax == -1)
     kMax = (int) floor(0.5*fs/f);
   double w   = 2*PI*f/fs;
   double phi = fmod(w*n, 2*PI);
-  double sum = 0;
-  for(int k = 1; k <= kMax; k++)
-    sum += sin(k*phi) / k;
-  return (-2/PI) * sum;
+  return saw(phi, kMax);
 }
-// make a version of the function that takes onny phi and kMax as parameters (needed to test 
-// phase-modulation)
 
 double sqr(int n, double f, double fs, int kMax)
 {
@@ -292,8 +304,5 @@ double sqr(int n, double f, double fs, int kMax)
     kMax = (int) floor(0.5*fs/f);
   double w   = 2*PI*f/fs;
   double phi = fmod(w*n, 2*PI);
-  double sum = 0;
-  for(int k = 1; k <= kMax; k+=2)
-    sum += sin(k*phi) / k;
-  return (4/PI) * sum;
+  return sqr(phi, kMax);
 }
