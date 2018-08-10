@@ -227,7 +227,9 @@ public:
 
   /** Your subclass may override this to return an object of an appropriate subclass of
   AudioModuleEditor. The baseclass implementation will return a generic editor with sliders, 
-  comboboxes and button for all the Parameters of this AudioModule. */
+  comboboxes and button for all the Parameters of this AudioModule. You can create the editor with
+  "new", return it and forget about it - the responsibility for deleting it eventually is on the 
+  framework. */
   virtual AudioModuleEditor* createEditor();
 
   //-----------------------------------------------------------------------------------------------

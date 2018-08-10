@@ -29,6 +29,12 @@ OscillatorStereoAudioModule::~OscillatorStereoAudioModule()
   }
 }
 
+
+AudioModuleEditor* OscillatorStereoAudioModule::createEditor()
+{
+  return new OscillatorStereoEditor(lock, this); // get rid of passing the lock
+}
+
 //-------------------------------------------------------------------------------------------------
 // state saving and recall:
 

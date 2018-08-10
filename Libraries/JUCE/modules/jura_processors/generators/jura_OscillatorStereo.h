@@ -32,25 +32,38 @@ public:
 
   //virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
+  virtual AudioModuleEditor* createEditor() override;
+
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean);
 
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
 
+
+
+
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
   /** Calculates a stereo-ouput frame. */
+  /*
   virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     wrappedOscillatorStereo->getSampleFrameStereo(inOutL, inOutR);
   }
+  */
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples)
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
       wrappedOscillatorStereo->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
   }
+
+  virtual void processStereoFrame(double *left, double *right) override
+  {
+    wrappedOscillatorStereo->getSampleFrameStereo(left, right);
+  }
+  //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) 
 
 protected:
 
