@@ -259,15 +259,34 @@ void freqVsPhaseMod()
   double fm = 200;                // modulator freq
   double depth = 1.0;             // modulation depth
   double fmVsPm = 0.5;            // 0: pure FM, 1: pure PM
+  double lpCutoff = 10;           // cutoff freq for integrator filter
+  double hpCutoff = 10;           // cutoff freq for differentiator filter
   //double (*modWave) (double x) = sqr3;  // modulator waveform function (like sin, cos, ...)
   //double (*carWave) (double x) = saw2;  // carrier waveform function
   double (*modWave) (double x) = sin;
   double (*carWave) (double x) = sin;
 
+
+  typedef RAPT::rsOnePoleFilter<double, double> Flt;
+  Flt lpf, hpf;
+  lpf.setMode(Flt::LOWPASS_IIT);  // later use BLT
+  lpf.setSampleRate(fs);
+  lpf.setCutoff(lpCutoff);
+  hpf.setMode(Flt::HIGHPASS_MZT); // later use BLT
+  hpf.setSampleRate(fs);
+  lpf.setCutoff(hpCutoff);
+  // 1st order lowpass and highpass filters have a phase of 45° at the cutoff frequency but we
+  // actually need 90° to turn a sine into a (positive or negative) cosine
+  // an allpass filter, on the other hand, has 90° phase shift at the cutoff, so just putting an
+  // allpass after a lowpass give too much phase shift
+  // maybe a lowpass and an allpass with a different cutoff freq could make sense
+  // orr...no...the integrator should actually have a cutoff of zero or almost zero
+
+
   // create signals:
   double t[N], yC[N], yM[N];      // time axis, unmodulated carrier, modulator
   double yFM[N], yPM[N], yMM[N];  // FM output, PM output, mixed-mod output
-  double yMd, yMi;                // differentiated and integrated modulator
+  double yMd[N], yMi[N];          // differentiated and integrated modulator signal
   double yPFM, yPPM;              // pseudo-FM and pseudo-PM outputs
   double wc  = 2*PI*fc/fs;
   double wm  = 2*PI*fm/fs;
@@ -304,8 +323,14 @@ void freqVsPhaseMod()
     yMM[n] = carWave(pInst);
     pMM += wInst;
 
-    // todo: try to obtain pseudo-FM via PM and pseudo PM via FM by using an integrated or 
+
+
+    // try to obtain pseudo-FM via PM and pseudo PM via FM by using an integrated or 
     // differentiated modulator signal
+    yMd[n] = hpf.getSample(yM[n]);
+    yMi[n] = lpf.getSample(yM[n]);
+    // we need gain factors equal to the reciprocal of the magnitude response of the filters
+    // at the modulator frequency
 
 
   }
@@ -317,7 +342,8 @@ void freqVsPhaseMod()
   // plot:
   GNUPlotter plt;
   //plt.addDataArrays(N, t, yC,  yM);
-  plt.addDataArrays(N, t, yFM, yPM, yMM);
+  plt.addDataArrays(N, t, yM, yMd, yMi); // modulator, differentiated mod, integrated mod
+  //plt.addDataArrays(N, t, yFM, yPM, yMM);
   plt.plot();
 }
 

@@ -37,9 +37,23 @@ inline void rsAssert(bool expression, const char *errorMessage = nullptr)
 
 inline void rsAssertFalse() { rsAssert(false); }
 
-
 template<class T> inline T rsUnityValue(T value) { return T(1); }
 template<class T> inline T rsZeroValue( T value) { return T(0); }
+template<class T> inline bool rsIsNaN(T x)
+{
+  return x != x; // NaN is the only value that returns false for this, also, you can't
+}
+template<class T> inline bool rsIsInfinite(T x)
+{
+  return x == std::numeric_limits<T>::infinity() || x == -std::numeric_limits<T>::infinity();
+}
+template<class T> inline bool rsIsFiniteNumber(T x)
+{
+  if(rsIsNaN(x) || rsIsInfinite(x))
+    return false;
+  return true;
+}
+
 
 // abs, sign, floor, ceil
 template<class T> inline T rsSqrt(T x) { return std::sqrt(x); }

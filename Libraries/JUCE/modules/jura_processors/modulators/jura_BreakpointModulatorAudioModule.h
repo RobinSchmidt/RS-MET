@@ -44,10 +44,11 @@ public:
   }
   // maybe, this function is obsolete now
 
-  virtual void updateModulationValue() override
+  virtual double getModulatorOutputSample() override
   {
-    modValue = wrappedBreakpointModulator->getSample();
+    return wrappedBreakpointModulator->getSample();
   }
+
 
   virtual AudioModuleEditor *createEditor() override;
 

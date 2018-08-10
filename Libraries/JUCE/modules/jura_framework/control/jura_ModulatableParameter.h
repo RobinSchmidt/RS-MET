@@ -209,9 +209,21 @@ public:
   virtual ~ModulationSource();
 
   /** Should be overriden by subclasses to update the "modValue" member variable per sample. It 
-  should assign modValue to the output signal value of the modulator. */
-  virtual void updateModulationValue() = 0;
-    // todo: replace by a double getModulatorOutputSample()
+  should assign modValue to the output signal value of the modulator. 
+  NOT ANYMORE !
+  // previously, this function was required to be overriden, but now you must override
+  // getModulatorOutputSample instead - it's better design to let teh framework take care of 
+  // where the value is stored - it allows me also to make debug checks on the value  */
+  //virtual void updateModulationValue() = 0;
+  virtual void updateModulationValue() final 
+  { 
+    modValue = getModulatorOutputSample(); 
+    jassert(RAPT::rsIsFiniteNumber(modValue));
+  }
+  // when the dust settles, delete these comments
+
+  /** Override this function in your subclass to produce one modulator output sample at a time. */
+  virtual double getModulatorOutputSample() = 0;
 
   /** Sets up a name for this ModulationSource. This should be unique among all the available 
   ModulationSource names, so it can be used to identify the source in state recall. */
