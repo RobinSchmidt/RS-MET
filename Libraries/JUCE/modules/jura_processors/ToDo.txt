@@ -1,3 +1,29 @@
+make WaveOscillator available for ToolChain
+
+-make a class DualWaveOscillator
+ -sync 1->2, 2->1 via blep
+ -FM/PM 1->1, 1->2, 2->1, 2->2, FmVsPm, LinVsExp
+ -RM
+ -insert points for filters
+ -optionally quantize tuning parameter (for example to (sub) harmonics)
+
+Polyphony for ToolChain:
+-add a function bool supportsPolyphony() to AudioModule (returns false by default)
+-add functions processSamplePoly(), processBlockPoly() (default implementations produce silence)
+-make a subclass PolyphonicAudioModule of AudioModule that has a VoiceManager object (pointer)
+ -override setupManagers to also set up the voice manager
+-in ToolChain when processing the modules in the chain, use the following rules:
+ -Mono -> Mono: processing as before
+ -Poly -> Poly: pass each voice signal separately to the next module
+ -Mono -> Poly: each voice gets a copy of the monophonic input
+ -Poly -> Mono: sum voices of polyphonic output to a monophonic signal
+-the polyphonic modules should have a switch to turn polyphony on/off
+-the same goes for modulators - we somehow need to make the mod-system polyphonic, too
+ ...including meta-mapping and smoothing
+
+
+
+
 new plotting stuff:
 -we need to refactor it such that we can mix and match different functionalities like 
  grid-snapping, zooming, etc without subclassing - the virtual baseclasses are a pita

@@ -3,12 +3,26 @@
 // construction/destruction:
 
 OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlugInLock,
-  rosic::OscillatorStereo *newOscillatorStereoToWrap) : AudioModule(newPlugInLock)
+  rosic::OscillatorStereo *oscToWrap) : AudioModule(newPlugInLock)
 {
-  jassert( newOscillatorStereoToWrap != NULL ); // you must pass a valid rosic-object to the constructor
+  //jassert( newOscillatorStereoToWrap != NULL ); // you must pass a valid rosic-object to the constructor
+  if(oscToWrap == nullptr) {
+    wrappedOscillatorStereo = new rosic::OscillatorStereo;
+    wrappedOscIsOwned = true;
+  }
+  else
+    wrappedOscillatorStereo = oscToWrap;
+
   setModuleTypeName("OscillatorStereo");
-  wrappedOscillatorStereo = newOscillatorStereoToWrap;
+    // use WaveOscillator or WaveCycleOscillator
+
   createParameters();
+}
+
+OscillatorStereoAudioModule::~OscillatorStereoAudioModule()
+{
+  if(wrappedOscIsOwned)
+    delete wrappedOscillatorStereo;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -8,7 +8,9 @@ todo: rename to WaveOscillator
 
 */
 
-class OscillatorStereoAudioModule : public AudioModule
+class OscillatorStereoAudioModule : public AudioModule 
+  // use ModulatableAudioModule as baseclass - but check how that affects the oscs in 
+  // Straightliner - how will they respond to (additional) modulation?
 {
 
   friend class OscillatorStereoEditor;
@@ -21,7 +23,9 @@ public:
 
   /** Constructor. */
   OscillatorStereoAudioModule(CriticalSection *newPlugInLock, 
-    rosic::OscillatorStereo *newOscillatorStereoToWrap);
+    rosic::OscillatorStereo *oscToWrap = nullptr);
+
+  virtual ~OscillatorStereoAudioModule();
 
   //---------------------------------------------------------------------------------------------
   // automation and state management:
@@ -55,6 +59,8 @@ protected:
 
   /** Pointer to the underlying rosic object which is wrapped. */
   rosic::OscillatorStereo *wrappedOscillatorStereo;
+  bool wrappedOscIsOwned = false;
+
 
   juce_UseDebuggingNewOperator;
 };
