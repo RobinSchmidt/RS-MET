@@ -234,6 +234,12 @@ double sqr3(double phi)
 {
   return sqr(phi, 3);
 }
+void constPowerFade(double x, double* s1, double* s2)
+{
+  double p = x*0.5*PI;
+  *s1 = cos(p);
+  *s2 = sin(p);
+}
 void freqVsPhaseMod()
 {
   // Compares frequency modulation with phase modulation and tries to transform one into the other
@@ -255,46 +261,61 @@ void freqVsPhaseMod()
   double fs = 44100;              // sample rate
   double fc = 300;                // carrier freq
   double fm = 200;                // modulator freq
-  double mi = 1.0;                // modulation index
-  double (*modWave) (double x) = sin;  // modulator waveform function (like sin, cos, ...)
-  double (*carWave) (double x) = sin;  // carrier waveform function
+  double depth = 1.0;             // modulation depth
+  double fmVsPm = 0.5;            // 0: pure FM, 1: pure PM
+  //double (*modWave) (double x) = sqr3;  // modulator waveform function (like sin, cos, ...)
+  //double (*carWave) (double x) = saw2;  // carrier waveform function
+  double (*modWave) (double x) = sin;
+  double (*carWave) (double x) = sin;
+           
 
 
   // create signals:
-  double t[N], yC[N], yM[N], yFM[N], yPM[N];
+  double t[N], yC[N], yM[N], yFM[N], yPM[N], yMM[N];
   double wc  = 2*PI*fc/fs;
   double wm  = 2*PI*fm/fs;
   double pm  = 0;   // instantaneous phase of modulator
   double pFM = 0;   // instantaneous phase of FM signal
   double pPM = 0;   // instantaneous phase of PM signal (before phase-modulation)
+  double pMM = 0;   // instantaneous phase of mixed modulation signal
   for(int n = 0; n < N; n++)
   {
     // time axis, unmodulated carrier and modulator:
     double tn = n/fs;    // current time instant (in seconds?)
     t[n]   = tn;
-    yM[n] = modWave(wm*n);  // needed in equations below
-    yC[n] = carWave(wc*n);  // needed just for the plot
+    yM[n] = modWave(wm*n);  // modulator output (needed in equations below)
+    yC[n] = carWave(wc*n);  // unmodulated carrier output (needed just for the plot)
 
     // frequency modulation:
+    double wInst = wc + depth * yM[n] * wc; // instantaneous omega
     yFM[n] = carWave(pFM);
-    double fmi = mi;                  // FM index/depth
-    double wi  = wc + fmi*wc*yM[n];   // instantaneous omega
-    pFM += wi;
+    pFM += wInst;
 
     // phase modulation:
-    double pmi = mi;                  // PM index/depth
-    double pi  = pPM + pmi*yM[n];     // instantaneous phase
-    yPM[n] = carWave(pi);
+    double pInst = pPM + depth * yM[n];     // instantaneous phase
+    yPM[n] = carWave(pInst);
     pPM += wc;
     // do we need a constant scale-factor, like 2*PI, to scale the phase-offset? maybe compare
     // spectra of FM and PM signals with the same index - they should have the same bandwidth..or
-    // maybe even equal?
+    // maybe even equal in terms of magnitudes?
+
+    // mixed modulation:
+    double scaleFM, scalePM;
+    constPowerFade(fmVsPm, &scaleFM, &scalePM);
+    wInst = wc  + scaleFM * depth * yM[n] * wc;   // instantaneous omega
+    pInst = pMM + scalePM * depth * yM[n];        // instantaneous phase
+    yMM[n] = carWave(pInst);
+    pMM += wInst;
   }
+
+  // todo: maybe to analyze the spectra, choose frequencies such that the period of the signals is 
+  // a power of two, suitable for FFT (or use arbitrary length FFT, tuned to actual cycle length)
+  // i think, the period is given by the lowest common multiple of the carrier and modulator freq
 
   // plot:
   GNUPlotter plt;
   //plt.addDataArrays(N, t, yC,  yM);
-  plt.addDataArrays(N, t, yFM, yPM);
+  plt.addDataArrays(N, t, yFM, yPM, yMM);
   plt.plot();
 }
 
