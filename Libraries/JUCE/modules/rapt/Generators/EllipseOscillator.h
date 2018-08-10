@@ -76,6 +76,7 @@ public:
     else 
       y = shape2(b0 + b1*p);  // downward section
 
+    rsAssert(rsIsFiniteNumber(y));
     updatePhase();
     return y;
   }

@@ -112,10 +112,18 @@ public:
   void setTimeScaler(double newScaler);
 
   /** Sets the floor, i.e. the lowest value. */
-  void setFloor(double newFloor) { flooor = newFloor; }
+  void setFloor(double newFloor) 
+  {
+    //RAPT::rsAssert(RAPT::rsIsFiniteNumber(newFloor));
+    flooor = newFloor; 
+  }
 
   /** Sets the ceiling, i.e. the highest value. */
-  void setCeiling(double newCeiling) { ceiling = newCeiling; }
+  void setCeiling(double newCeiling) 
+  { 
+    //RAPT::rsAssert(RAPT::rsIsFiniteNumber(newCeiling));
+    ceiling = newCeiling; 
+  }
 
   /** Produces one output sample at a time. */
   inline double getSample() /* override ...but baseclass method is not virtual */

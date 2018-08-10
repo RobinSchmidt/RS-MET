@@ -218,7 +218,7 @@ public:
   virtual void updateModulationValue() final 
   { 
     modValue = getModulatorOutputSample(); 
-    jassert(RAPT::rsIsFiniteNumber(modValue));
+    //jassert(RAPT::rsIsFiniteNumber(modValue));
   }
   // when the dust settles, delete these comments
 
@@ -805,6 +805,7 @@ public:
   called per sample for each modulated Parameter. ModulationManager will take care of this. */
   inline void callCallbackWithModulatedValue()
   {
+    //jassert(RAPT::rsIsFiniteNumber(getModulatedValue()));
     if( valueChangeCallbackDouble != nullptr )
       valueChangeCallbackDouble->call(getModulatedValue());
     if( valueChangeCallbackInt != nullptr )
