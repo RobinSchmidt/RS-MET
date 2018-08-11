@@ -620,8 +620,6 @@ void createPluck1()
 
   g.setKeyRangeToRender(21, 93);
 
-
-
   // for preview and sounddesign:
   //g.setKeyRangeToRender(21, 21);
   //g.setKeyRangeToRender(33, 33);
@@ -638,8 +636,6 @@ void createPluck1()
   //g.setTruncationLevel(-1);
   //g.setTruncationLevel(-3);
   //g.setTruncationLevel(-20);
-
-
 
   g.generateSampleMap(true);
 }

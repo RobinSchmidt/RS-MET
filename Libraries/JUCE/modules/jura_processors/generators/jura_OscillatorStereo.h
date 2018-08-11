@@ -4,7 +4,13 @@
 /** This class wraps rosic::OscillatorStereo into a rosof::AudioModule to facilitate its use as
 plugIn or sub-module inside a plugin.  
 
-todo: rename to WaveOscillator
+todo:
+-fix sample-loading recall bug (directory is somehow prepended twice)
+-rename to WaveOscillator
+-override noteOn, noteOff (maybe), reset
+-let the osc add its output to what comes in (do this for all sources and instruments)
+-make modulatable (and test it)
+-make a DualWaveOscillator with interactions 
 
 */
 
@@ -39,19 +45,8 @@ public:
 
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
 
-
-
-
   //---------------------------------------------------------------------------------------------
   // audio processing:
-
-  /** Calculates a stereo-ouput frame. */
-  /*
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  {
-    wrappedOscillatorStereo->getSampleFrameStereo(inOutL, inOutR);
-  }
-  */
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
@@ -63,7 +58,8 @@ public:
   {
     wrappedOscillatorStereo->getSampleFrameStereo(left, right);
   }
-  //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) 
+
+
 
 protected:
 

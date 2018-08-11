@@ -360,7 +360,7 @@ int main(int argc, char* argv[])
   // sample-map creations (they take long):
   //createBass1();
   //createGong1();
-  //createPluck1();
+  createPluck1();
 
 
 

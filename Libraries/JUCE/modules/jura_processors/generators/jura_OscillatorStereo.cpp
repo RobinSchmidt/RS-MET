@@ -769,6 +769,7 @@ OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
   jassert( newOscillatorStereoAudioModule != NULL );
   createWidgets();
 
+  // maybe create this only when needed and init to nullptr:
   contextMenu = new OscillatorStereoEditorContextMenu(newOscillatorStereoAudioModule, this);
   contextMenu->addChangeListener(this);
   contextMenu->setAlwaysOnTop(true);
@@ -796,7 +797,7 @@ OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
   updateWidgetsAccordingToState();
 
   // widget arrangement is optimized for this size:
-  //setSize(232, 136);
+  setSize(232, 136);
 }
 
 OscillatorStereoEditor::~OscillatorStereoEditor()
