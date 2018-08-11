@@ -51,13 +51,16 @@ XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, XmlElement* xmlEle
     xmlState = xmlElementToStartFrom;
 
   // store the settings in the XmlElement:
-  xmlState->setAttribute("AudioFileRelativePath", juce::String(osc->waveTable->getSampleName() )    );
+  juce::String samplePath = juce::String(osc->waveTable->getSampleName());
+  xmlState->setAttribute("AudioFileRelativePath", samplePath);
 
   return xmlState;
 }
 
 bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlState)
 {
+  // this gets called multiple times on startup - why?
+
   bool success = false;
 
   // temporarily switch off the automatic re-rendering of the mip-map, to multiple rendering (one for each
@@ -93,9 +96,14 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
     delete buffer;
     success = true;
   }
+  else
+  {
+    //  maybe init waveform with silence
+  }
 
   // pass the path as c-string:
   char* fileNameC = toZeroTerminatedString(relativePath);
+  //jassert(fileNameC[0] != 'C'); // for debug
   osc->waveTable->setSampleName(fileNameC);
   delete[] fileNameC;
 
@@ -1134,8 +1142,16 @@ bool OscillatorStereoEditor::setAudioData(AudioSampleBuffer* newBuffer,
     else
       channelPointers[1] = newBuffer->getWritePointer(0, 0);
     oscillatorToEdit->waveTable->setWaveform(channelPointers, newBuffer->getNumSamples());
-    juce::String relativePath = underlyingFile.getRelativePathFrom(rootDirectory);
-    char* fileNameC           = toZeroTerminatedString(relativePath);
+
+    //juce::String relativePath = underlyingFile.getRelativePathFrom(rootDirectory);
+    // this seems wrong - we must use the support-folder as root directory
+
+    juce::String relativePath = underlyingFile.getRelativePathFrom(getSupportDirectory());
+
+    //juce::String root = rootDirectory;
+    //juce::String support = getSupportDirectory();
+
+    char* fileNameC = toZeroTerminatedString(relativePath);
     oscillatorToEdit->waveTable->setSampleName(fileNameC);
     delete[] fileNameC;
     waveFileLabel->setText(underlyingFile.getFileName());

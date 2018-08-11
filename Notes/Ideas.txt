@@ -70,6 +70,10 @@ protected:
  SynthVoice's oscVoice, filterVoice, envVoice, etc. objects
 -the overall design goal is to have a framework within which polyphonic 
  instruments can be built without storing any data redundantly
+-another design goal is that the core dsp classes do not necessarily be aware
+ of any polyphony stuff - for example class Ladder does not deal with any of 
+ that - only the subclass LadderVoice introdcues this concept, so Ladder can 
+ be used monophonically without the burden of voice-handling code
  
  
 Sampler Engine

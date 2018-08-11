@@ -6,11 +6,20 @@ plugIn or sub-module inside a plugin.
 
 todo:
 -fix sample-loading recall bug (directory is somehow prepended twice)
+ -the full absolute file path is stored instead of the last section, i.e. the relative path
+  with respect to the support folder
+  ->the error seems to be in OscillatorSteroEditor::setAudioData
+  -> check, if/why it works in straightliner
+  -> figure out, why setSate...is called so many times on start up
+
 -rename to WaveOscillator
 -override noteOn, noteOff (maybe), reset
 -let the osc add its output to what comes in (do this for all sources and instruments)
 -make modulatable (and test it)
 -make a DualWaveOscillator with interactions 
+-maybe, if we have just one single WaveOsc, we may put the additional parameters from the context
+ menu directly on the main editor - good opportunity to test the multiple editor types feature
+ ->in the DualOsc case, we need the smaller gui
 
 */
 
