@@ -30,6 +30,7 @@ Liberty:
 -parameter values are not recalled..or well - it actually is, but reset to min when the
  parameter is selected - probably the parameter editor sets the value when its created
  instead of retrieving it from the parameter??
+ ModulePropertiesEditor::widgetChanged is called when the slider has not yet taken over the module's value
 
 -in the leaky integrator, some connections are drawn black
 -preset label has black text (same with scope's colormap loader)

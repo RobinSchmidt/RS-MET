@@ -784,8 +784,6 @@ void ParameterModuleEditor::resized()
 void ParameterModuleEditor::updateWidgetsFromModuleState()
 {
   ScopedLock scopedLock(*plugInLock);
-  ModulePropertiesEditor::updateWidgetsFromModuleState();
-
   romos::ParameterModule* pm = (romos::ParameterModule*) moduleToEdit;
   if(pm != nullptr)
   {
@@ -802,7 +800,11 @@ void ParameterModuleEditor::updateWidgetsFromModuleState()
       valueSlider->setScaling(Parameter::EXPONENTIAL);
     else
       valueSlider->setScaling(Parameter::LINEAR);
+
+    ModulePropertiesEditor::updateWidgetsFromModuleState();
   }
+
+
 }
 
 //-------------------------------------------------------------------------------------------------
