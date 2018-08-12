@@ -1,0 +1,29 @@
+to finde out, if an executable (.exe) or dynamic link library (.dll) was compiled for 32 bit or 64, the commandline tool dumpbin can be used. It's part of Visual studio 2015. on my machine, it resides in:
+
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin
+
+to check a dll, open a command line (run: cmd), navigate to the directory shown above and enter:
+
+dumpbin -headers -out:dump.txt myfile.dll
+
+dump.txt is a file, wher the info will be written. 
+
+For example, to check the file:
+
+E:\Programming\C++\RobinsCodeBase\RSLib\GeneratedFiles\CodeBlocks\Binaries\Win32_Debug\RSLib.dll
+
+enter:
+
+Win32_Debug:
+dumpbin -headers -out:E:\Programming\C++\RobinsCodeBase\RSLib\GeneratedFiles\CodeBlocks\Binaries\Win32_Debug\RSLibHeaders.txt E:\Programming\C++\RobinsCodeBase\RSLib\GeneratedFiles\CodeBlocks\Binaries\Win32_Debug\RSLib.dll
+
+Win32_Release:
+dumpbin -headers -out:E:\Programming\C++\RobinsCodeBase\RSLib\GeneratedFiles\CodeBlocks\Binaries\Win32_Release\RSLibHeaders.txt E:\Programming\C++\RobinsCodeBase\RSLib\GeneratedFiles\CodeBlocks\Binaries\Win32_Release\RSLib.dll
+
+Win64_Debug:
+dumpbin -headers -out:E:\Programming\C++\RobinsCodeBase\RSLib\GeneratedFiles\CodeBlocks\Binaries\Win64_Debug\RSLibHeaders.txt E:\Programming\C++\RobinsCodeBase\RSLib\GeneratedFiles\CodeBlocks\Binaries\Win64_Debug\RSLib.dll
+
+
+...it's possible to paste this into the command line
+
+

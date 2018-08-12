@@ -1,6 +1,58 @@
 maybe keep a parent reference (NULL by default) 
  ->allows block processing for the top-level module 
  ->top-level module can acquire all mutexes for all child modules per block
+   ->actually, we should use a single-mutex on the top-level module anyway, i.e. all modules share
+     the same mutex and the top-level module aqcuires it once at the begin of each block
 
 Modules:
-sample-and-hold, quantize, send, receive, alias
+-chek, what csound has - provide a similar set
+-meter/scope/analyzer - should show a miniature version directly on the breadboard, gui can show
+ larger version with controls
+-sample-and-hold 
+-quantize - gui lets user set the allowed levels
+-table
+-phasor
+-table-osc
+-send/receive - should get a number for the channel on which to send/receive (SendCh1, ReceiveCh2, 
+ etc. - multiple senders on the same channel get added)
+-alias
+-tapped delayline (multi-out, returns x[n-1], x[n-2], etc., for building filters)
+-function (single-in/single-out, multi-in/single-out FunctionN, multi-in/multi-out FunctionNM)
+ gui lets user edit function - like in func-shaper, declare variable/input names, 
+ number of inputs/outputs
+-maybe the formula and tapped delayline can behave like AdderN - always provide an 
+ additional pin when all are used up
+-code fragment (angelscript? lua?)
+-interpolating delayline - gui lets user choose interpolation
+-sine osc - use most efficient implementation, no-phase-mod input
+-TriSawOsc
+-StateVectorFilter (can be used as sine-osc, too - maybe allow phase-mod)
+ Ins: Freq, Q/bandwidth/decay/decay-speed/(1/Q) - whatever is most convenient or has the simplest
+ formula, Type (Lowpass, Bandpass, DecayingSine/Reson (compare to csound))
+-Bank of Attack/Decay-Sine filters, Inputs: Freq, Attack, Decay, Phase, Amplitude (maybe)
+ gui lets user set up number of filters, scaling factors for each filter's parameters and maybe 
+ allows to sava/load such settings
+ -good for creating the body of acoustic instrument sounds
+-some sort of transient generator
+
+
+-maybe produce educational videos on sound synthesis with liberty
+-Subtractive1 - Overview
+ -oscillators
+ -filters
+ -modulators
+Subtractive2 - Oscillators
+ -waveforms / spectra
+ -detuning/beats
+ -sync
+
+  
+-FM1
+ -carrier/modulator setup
+ -sidebands
+  -c/m: ratio - positions
+  -depth: bandwidth
+ 
+
+
+

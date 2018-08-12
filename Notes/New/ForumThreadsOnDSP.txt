@@ -1,0 +1,120 @@
+kvraudio.com
+
+Simple Filters:
+http://www.kvraudio.com/forum/viewtopic.php?&t=466737 Leaky integrator?
+http://www.kvraudio.com/forum/viewtopic.php?&t=466314 BLT - prewarping Fc, Q or both (solved)
+
+Virtual Analog Filters:
+http://www.kvraudio.com/forum/viewtopic.php?&t=350246 Book: The Art of VA Filter Design 1.1.1
+http://www.kvraudio.com/forum/viewtopic.php?&t=434194 zero delay feedback
+http://www.kvraudio.com/forum/viewtopic.php?&t=346155 Diode Ladder Filter
+http://www.kvraudio.com/forum/viewtopic.php?&t=349859 Cheap non-linear zero-delay filters
+http://www.kvraudio.com/forum/viewtopic.php?&t=207647 Xpander style filter modes for your 4-pole "ladder"
+http://www.kvraudio.com/forum/viewtopic.php?&t=422892 Diode clipping in filters
+http://www.kvraudio.com/forum/viewtopic.php?&t=457907 I started modelling circuits :)
+http://www.kvraudio.com/forum/viewtopic.php?&t=457796 Looking for artciles on analog-modelled filters
+http://www.kvraudio.com/forum/viewtopic.php?&t=466588 Multimode Ladder Filter with magnitude plot function.
+http://www.kvraudio.com/forum/viewtopic.php?&t=464488 ZDF Filters in Circuits
+
+Classical Filter Design:
+http://www.kvraudio.com/forum/viewtopic.php?t=249926 A Collection of Useful C++ Classes for Signal Processing
+http://www.kvraudio.com/forum/viewtopic.php?t=278658 formula for the zeros of a parallel connection of filters?
+http://www.kvraudio.com/forum/viewtopic.php?t=307579 Bessel filter design
+http://www.kvraudio.com/forum/viewtopic.php?t=306170 Elliptic filter?
+http://www.kvraudio.com/forum/viewtopic.php?t=458419 How to improve the filter quality at low fs
+http://www.kvraudio.com/forum/viewtopic.php?t=471286 Fractional order filters
+http://www.kvraudio.com/forum/viewtopic.php?t=459955 Newton's Method for vectorial functions (4-pole filter)
+http://www.kvraudio.com/forum/viewtopic.php?t=467832 resource for learning s-plane to z-plane stuff?
+http://www.kvraudio.com/forum/viewtopic.php?t=483173 SCREW IT I'm building a 64-bit RubberFilter clone     .."descending q-order"
+
+Crossovers:
+http://www.kvraudio.com/forum/viewtopic.php?t=278736       mutliband-crossover IIR-design with allpass-sum?
+http://www.kvraudio.com/forum/viewtopic.php?t=415214       Crossover filter with phase reconstruction
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=445272  Problem with -12db/oct crossover network
+http://www.dsprelated.com/showthread/comp.dsp/79844-1.php  help needed for Butterworth crossover response
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=500121  Splitting Bands with Linkwitz-Riley
+
+MZTi
+http://www.kvraudio.com/forum/viewtopic.php?p=4894039 Why are almost all digital synthesis techniques based on analog approximations?
+http://www.kvraudio.com/forum/viewtopic.php?p=5072726 Struggling with MZTi lowpass
+http://www.kvraudio.com/forum/viewtopic.php?p=5179780 I have my analog filter prototype, yet
+
+(Min-)BLEPs:
+http://www.kvraudio.com/forum/viewtopic.php?t=364256  *minBLEPS once and for all
+http://www.kvraudio.com/forum/viewtopic.php?t=398553   Tutorial: BLEPs (using PolyBLEPs but extensible)
+http://www.kvraudio.com/forum/viewtopic.php?t=424520   minblep phase modulation
+http://www.kvraudio.com/forum/viewtopic.php?t=339592   Generating sawtooth waves: why use minbleps instead of a filter?
+http://www.kvraudio.com/forum/viewtopic.php?p=3596239  About BLEP minBLEP - polyBLEP and bandlimited ramps
+http://www.kvraudio.com/forum/viewtopic.php?t=287993   Traingle OSC with BLAMP, minBlep
+http://www.kvraudio.com/forum/viewtopic.php?t=275300   MinBLEP questions.
+http://www.kvraudio.com/forum/viewtopic.php?t=56891    Other waveforms with MinBLEPs ?
+http://www.kvraudio.com/forum/viewtopic.php?t=141257   Why all the fuss about Blits an Bleps ect...
+http://www.kvraudio.com/forum/viewtopic.php?t=437116   Oscillator antialiasing (BLEP, polyBLEP, oversampling ,...)
+http://www.kvraudio.com/forum/viewtopic.php?t=432780   Noobie question...what is BLEP data?
+http://www.kvraudio.com/forum/viewtopic.php?t=425054   Modulating (poly)BLEP hard-sync saw
+http://www.kvraudio.com/forum/viewtopic.php?t=424585   Blam from Blep
+http://www.kvraudio.com/forum/viewtopic.php?t=423884   Better polybleps polynomials
+http://www.kvraudio.com/forum/viewtopic.php?t=390025   Do mini-bleps destroy phase relationship?
+http://www.kvraudio.com/forum/viewtopic.php?t=375517   PolyBLEP oscillators
+http://www.kvraudio.com/forum/viewtopic.php?t=334126   Some random BLEP thoughts
+http://www.kvraudio.com/forum/viewtopic.php?t=308052   weak spot of hardsynch with BLEPs
+http://www.kvraudio.com/forum/viewtopic.php?t=274598   PWM with Bleps
+www.kvraudio.com/forum/viewtopic.php?f=33&t=424585     Blam from Blep
+
+Reverb:
+https://www.kvraudio.com/forum/viewtopic.php?&t=423754 Understanding hadamard matrices in reverb
+https://www.kvraudio.com/forum/viewtopic.php?&t=419595 Best Lightweight Reverb Algorithm
+..search for FDN
+
+Distortion:
+http://www.kvraudio.com/forum/viewtopic.php?t=465091 Variable tanh() for saturation
+
+Frequency- and Phase-Modulation:
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=399705 FM Synth anti aliasing.
+
+
+http://www.dsprelated.com/showarticle/176.php Understanding the 'Phasing Method' of Single Sideband Demodulation
+
+Oscillators:
+http://www.kvraudio.com/forum/viewtopic.php?t=412674 Efficient sine oscillator
+http://www.kvraudio.com/forum/viewtopic.php?t=349262 A wavetable oscillator tutorial
+
+(De-)Convolution:
+http://www.kvraudio.com/forum/viewtopic.php?t=370163 division of power series and (direct) deconvolution
+
+Minimum Phase Transformation:
+http://www.kvraudio.com/forum/viewtopic.php?t=197881
+
+smbPitchShift:
+http://www.kvraudio.com/forum/viewtopic.php?t=369665
+
+Plugin-Programming:
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=423238 Looking for WDL/iPlug tutor
+
+Misc
+http://www.kvraudio.com/forum/viewtopic.php?t=307408 oversampling - why powers of 2?
+http://www.kvraudio.com/forum/viewtopic.php?t=441525 Antialiasing by limiting rate of change (cont. of "perfect" synthesis)
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=437372 Lin/Exp control of allpass phaser?
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=434387 Limiter with Auto Release via Peak-Detection
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=427039 Effect of degrees of freedom on trajectories in dynamical systems
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=426203 What is the best way to smooth control signals?
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=404204 Envelope detector confusion
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=424096 Variable rate /change length of every sample / subsample accuracy? Isn't this normal?
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=423754 Understanding hadamard matrices in reverb
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=445438 Efficient antialiasing for distortion of any input
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=445684 how to zero centre audio for Forward FFT
+
+Optimization:
+http://www.kvraudio.com/forum/viewtopic.php?&t=466649 Trying to optimize sin, pow & atan, getting nowhere...
+http://www.kvraudio.com/forum/viewtopic.php?&t=464290 faster exp and log
+http://www.kvraudio.com/forum/viewtopic.php?&t=468645 Using Double instead of Float increase noise? (it has stuff about avoiding denormals by using cpu flags)
+
+
+
+Business:
+http://www.kvraudio.com/forum/viewtopic.php?t=437160  Pay someone to build app to split voice samples into pitch and noise components
+http://www.kvraudio.com/forum/viewtopic.php?p=4154535 licensing dsp code - what are appropriate prices
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=418966 Need custom off-line pitch correction app - for pay
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=441669 Looking for DSP Developer
+http://www.kvraudio.com/forum/viewtopic.php?f=33&t=429568 Job - Audio Programmer
+

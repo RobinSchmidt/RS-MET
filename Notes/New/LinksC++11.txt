@@ -1,0 +1,25 @@
+https://en.wikipedia.org/wiki/C%2B%2B     C++
+https://en.wikipedia.org/wiki/C%2B%2B03   C++03
+https://en.wikipedia.org/wiki/C%2B%2B11   C++11
+https://en.wikipedia.org/wiki/C%2B%2B14   C++14
+
+https://en.wikipedia.org/wiki/Return_value_optimization
+https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B_.28since_C.2B.2B11.29
+
+http://blog.smartbear.com/c-plus-plus/the-biggest-changes-in-c11-and-why-you-should-care/
+
+http://blog.smartbear.com/c-plus-plus/c11-tutorial-introducing-the-move-constructor-and-the-move-assignment-operator/
+
+http://preshing.com/20141202/cpp-has-become-more-pythonic/
+
+http://cpptruths.blogspot.de/2011/10/multi-dimensional-arrays-in-c11.html
+
+http://www.stroustrup.com/C++11FAQ.html
+
+http://blog.smartbear.com/development/c11-tutorial-explaining-the-ever-elusive-lvalues-and-rvalues/ (confusing)
+
+https://meetingcpp.com/tl_files/mcpp/slides/12/c++11_AnOverview.pdf
+
+https://www.blackhat.com/docs/eu-14/materials/eu-14-Andrivet-C-plus-plus11-Metaprogramming-Applied-To-software-Obfuscation-wp.pdf
+
+http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3631.pdf (C11, not C++11)

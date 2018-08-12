@@ -1,0 +1,31 @@
+Consider two ladder filters at the same cutoff frequency of the type:
+
+y0 = x  - k*y4Old
+y1 = y0 - a*y1Old
+y2 = y1 - a*y2Old
+y3 = y2 - a*y3Old
+y4 = y3 - a*y4Old
+
+We use one with resonance (the states are denoted as y0,...,y4) and another one without resonance for which k=0 (the states of which we denote as z0,...,z4). We form the difference of all the states of the respective filters to get imaginary states of an imaginary "pure-resonance" filter:
+
+r0 = y0 - z0, ..., r4 = y4 - z4
+
+We assume that the filter is running at high resonance such that the output signal of the pure-resonance filter is approximately a sinusoid at the cutoff frequency. At any time instant, it has an instantaneous amplitude a and an instantaneous phase p, such that:
+
+r4 = a * sin(p)
+
+Because we assume a sinusoid at the cutoff frequency, it must be the case that the state r4 represents the same sinusoid as the state r3, but r4 is multiplied by 1/sqrt(2) and phase-shifted by -45 degrees (-pi/4) with respect to r3 because each successive stage delays the sinusoid by 45 degrees and multiplies its amplitude by a factor of 1/sqrt(2). Working backwards, we must then have:
+
+r3 = a * sqrt(2)   * sin(p +   pi/4)
+r2 = a * sqrt(2)^2 * sin(p + 2*pi/4) = a * 2 * sin(p + pi/2)
+r1 = a * sqrt(2)^3 * sin(p + 3*pi/4) 
+r0 = a * sqrt(2)^4 * sin(p + 4*pi/4) = a * 4 * sin(p + pi)
+
+That means, given the states r4,r2 we should be able to figure out the instantaneous amplitude a and phase p. We just divide the state r2 by two and together with r4 we can take it as the sine and cosine part of our sine from which amplitude and phase can be computed. Having a and p, we can do whatever we want to them (for example sync the phase to an input signal) and then compute our new states r0,...,r4 using the formulas above. Having done that, we may update the states of the resonant filter according to y0 = z0 + r0, ..., y4 = z4 + r4. This should give us a ladder filter in which we can freely mess with the instantaneous phase of the resonance without needing to post-process the resonance signal
+
+
+
+
+
+
+

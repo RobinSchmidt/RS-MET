@@ -1329,12 +1329,14 @@ ModularBlockDiagramPanel::ModularBlockDiagramPanel(LibertyInterfaceMediator *int
   // todo: use colors from colorscheme
   wireColour      = Colours::black;
   highlightColour = Colours::red;
+  // maybe override ColorSchemeComponent::colorSchmeChanged and set the colors there
 
   pinHighlighter = new RectangleComponent(highlightColour, highlightColour, 0);
   pinHighlighter->setInterceptsMouseClicks(false, false);
   addChildComponent(pinHighlighter);
 
-  lassoComponent = new RectangleComponent(highlightColour.withMultipliedAlpha(0.0625f), highlightColour.withMultipliedAlpha(0.25f), 2);
+  lassoComponent = new RectangleComponent(highlightColour.withMultipliedAlpha(0.0625f), 
+    highlightColour.withMultipliedAlpha(0.25f), 2);
   addChildComponent(lassoComponent);
 }
 
@@ -3085,6 +3087,8 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, LibertyAudioModule*
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
 
   updateWidgetsAccordingToState();
+
+  setSize(600, 400);
 }
 
 LibertyEditor::~LibertyEditor()

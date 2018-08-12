@@ -1,0 +1,52 @@
+-suppose, we are doing an N-point FFT on
+ a zero padded input-buffer (non-zero data length = N/2)
+ for partitioned convolution (zero padding is needed 
+ because the output buffer will have twice this length after
+ spectral multiplication and IFFT)
+ -actually, we have to run many of such 
+  FFT/spectral-multiply/IFFT in parallel, but the procedure 
+  can be applied on each of them separately, so it's sufficient 
+  to consider just one
+-suppose, the audio-callback is invoked at irregular intervals
+ which M_i (i: numer of invocation) are tpyically much shorter 
+ than N/2
+-a typical FFT routine (see rsFFT) consists of 3 nested loops
+ and the total iteration count T ("task size") of the innermost 
+ loop is determined by the FFT-size N. For a given N, it can be 
+ computed by running a dummy loop which counts the iterations 
+ (just computing N*log2(N) doesn't work)
+-assume that, at callback invocation i, we must start a new 
+ FFT-task (because we have accumulated a buffer of size N/2) and the 
+ result of that task will be needed N/2 samples in the future.
+-inside each of the subsequent callback invocations, we want to 
+ perform ceil(T/M_i) (check this) innermost iterations of the FFT
+-we need a class that is capable of starting an FFT and performing it
+ partially, maybe using a break or goto statement inside the innermost
+ loop like:
+ if( count >= oldCount + numStepsToPerform )
+   goto: storeStateAndJumpOutOfFunction; // pseudocode
+ -the method that performs the partial FFT computation, must store
+  the current processing step and be able to pick up the processing
+  at this step in the next invoction
+ 
+ 
+
+
+
+General Pattern (Load Spreading/Smoothing):
+Setting:
+-There's a realtime callback, that is invoked at short
+ (possibly irregular) time intervals.
+-Every once in a while, we must perform a computationally
+ expensive task in this realtime callback, the result of which
+ is not needed immediately but will be needed in a later invocation.
+-Performing the task at once would lead to an unacceptable 
+ CPU-load spike in this particular invocation of the callback.
+-It is desired to split the task over some number of subsequent
+ invocations such that the computational load is spread evenly over
+ time and the result becomes available when needed.
+Solution:
+-Wrap the task into a class that can perform partial steps of the
+ task and keeps track of the current processing state (i.e. at which
+ step we are)
+-

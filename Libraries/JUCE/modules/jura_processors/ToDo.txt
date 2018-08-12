@@ -1,10 +1,19 @@
 Liberty:
+-preset label has black text (same with scope's colormap loader)
 -in the NoiseFlute instrument, go to WhiteNoise module, select Out2
  ->muliple connections are highlighted that shouldn't, the same in the 
  NoteFilter
--no sound
--make intial gui size larger
--gui size not recalled when patch is loaded
+-in the leaky integrator, some connections are drawn black
+-to show miniscopes, use ScopeDisplay objects as child components
+-make it possible to resize the different parts of the gui - use some sort of container for 
+ components...maybe juce has something like that already
+
+ToolChain:
+-gui size not recalled when patch is loaded - guis always get their default size on
+ preset load - maybe fix this by storing editor-sizes in a dedicated xml-element in Toolchain
+-load WaveOscTest preset -> no slot appears
+
+
 
 -make a class DualWaveOscillator
  -sync 1->2, 2->1 via blep

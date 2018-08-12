@@ -1,0 +1,8 @@
+
+
+http://amcath.ccadet.unam.mx/jart/vol9_3/ztransformation_8.pdf  s-to-z via Pascal Matrix
+https://cnx.org/exports/35aa760f-dbce-4c2f-80ce-65f13d96e9c0@2.pdf/direct-frequency-domain-iir-filter-design-methods-2.pdf direct z-domain design z-domain
+
+http://www.yedey.com/wp-content/uploads/2013/05/IIR-filter-design-for-audio-DSP-programmers.pdf 
+i think this was a 5-point magnitude biquad design - posted here
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=431486&p=6059760

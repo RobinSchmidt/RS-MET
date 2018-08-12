@@ -1,0 +1,39 @@
+GitHub:
+
+https://github.com/pac-dev/protoplug
+Create audio plugins on-the-fly with LuaJIT.
+
+https://github.com/julianstorer/JUCE
+The JUCE cross-platform C++ framework.
+
+https://github.com/dliganov/Chaotic-DAW  // from Denis Liganov - with my old "rosic" code
+Digital Audio Workstation with extended sequencing capabilities http://www.chaoticdaw.com
+
+https://github.com/vinniefalco/VFLib
+Vinnie's Multipurpose Library (That Uses JUCE)
+
+https://github.com/vinniefalco/LayerEffects
+Photoshop Layer Effects for juce::Graphics
+
+https://github.com/jcredland/juce-toys
+Debugging utilities in a JUCE Module, plus NatVis and LLDB customizations
+
+https://github.com/drowaudio/stk_module
+JUCE module wrapper for the STK library
+
+https://github.com/bsutherland/JuceOPLVSTi
+A VST instrument which emulates the Yamaha OPL sound chip used in PC sound cards from the 90s.
+
+https://github.com/agomusic/ardour3
+Ardour is a digital audio workstation. http://ardour.org/
+
+https://github.com/dmtaudio/mordaw
+MorDAW is a cross-platform digital audio workstation built using C++ and the JUCE class libraries.
+
+https://github.com/mbrucher/AudioTK
+An audio digital processing toolbox based on a workflow/pipeline principle http://matt.eifelle.com/tag/audio-toolkit/
+
+SourceForge:
+
+https://sourceforge.net/projects/mda-vst/
+mda VST plug-ins
