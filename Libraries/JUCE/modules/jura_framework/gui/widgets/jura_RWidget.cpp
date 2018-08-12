@@ -93,7 +93,7 @@ void RWidget::setColourScheme(const WidgetColourScheme &newColourScheme)
 void RWidget::setColourSchemeFromXml(const XmlElement &xml)
 {
   WidgetColourScheme tmpColourScheme;
-  //tmpColourScheme.setColourSchemeFromXml(xml);
+  //tmpColourScheme.setColourSchemeFromXml(xml); // why commented?
   setColourScheme(tmpColourScheme);
   // we don't use colourScheme.setColourSchemeFromXml(xml) directly here such that subclasses 
   // need to override only setColourScheme (and not also setColourSchemeFromXml) when they need 

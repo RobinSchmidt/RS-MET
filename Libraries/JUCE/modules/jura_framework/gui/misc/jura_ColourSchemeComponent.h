@@ -79,6 +79,10 @@ public:
   visible again. */
   virtual void setWidgetsVisible(bool shouldBeVisible);
 
+
+  //virtual void setColourScheme(const WidgetColourScheme& newColourScheme);
+    // i think, this needs to be added
+
   /** Sets up this colorscheme from an XmlElement. */
   virtual void setColourSchemeFromXml(const XmlElement& xmlColorScheme);
 
@@ -156,11 +160,12 @@ protected:
   WidgetColourScheme widgetColourScheme;
   EditorColourScheme editorColourScheme;
   PlotColourScheme   plotColourScheme;
+    // todo: use pointers
 
   // we maintain components that should adhere to the colour-schemes above as arrays:
-  juce::Array<RWidget*>               widgets;
-  juce::Array<WidgetSet*>             widgetSets;
-  juce::Array<rsPlot*>   plots;
+  juce::Array<RWidget*>   widgets;
+  juce::Array<WidgetSet*> widgetSets;
+  juce::Array<rsPlot*>    plots;
   juce::Array<ColourSchemeComponent*> childColourSchemeComponents;
   CriticalSection arrayLock; // used to access all the arrays
   // use std::vector, maybe have also arrays of non-owned widgets, etc. in order to allow client 

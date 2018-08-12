@@ -49,6 +49,20 @@ public:
     stateLabel->setVisible(shouldBeVisible);
   }
 
+  /*
+  // for debug:
+  virtual void setColourScheme(const WidgetColourScheme& newColourScheme) override
+  {
+    WidgetSet::setColourScheme(newColourScheme);
+  }
+
+  virtual void setColourSchemeFromXml(const XmlElement* widgetColours) override
+  {
+    WidgetSet::setColourSchemeFromXml(widgetColours);
+  }
+  */
+  
+
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 

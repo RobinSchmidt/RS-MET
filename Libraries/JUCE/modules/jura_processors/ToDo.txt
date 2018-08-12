@@ -1,9 +1,13 @@
 Liberty:
+-parameter values are nor recalled
+-in the leaky integrator, some connections are drawn black
 -preset label has black text (same with scope's colormap loader)
+ -the color gets fixed by opening and closing the color setup (sometimes just by
+  opening - maybe the colorscheme is set up too late, after the painting
+  is already complete? 
 -in the NoiseFlute instrument, go to WhiteNoise module, select Out2
  ->muliple connections are highlighted that shouldn't, the same in the 
  NoteFilter
--in the leaky integrator, some connections are drawn black
 -to show miniscopes, use ScopeDisplay objects as child components
 -make it possible to resize the different parts of the gui - use some sort of container for 
  components...maybe juce has something like that already
@@ -11,9 +15,14 @@ Liberty:
 ToolChain:
 -gui size not recalled when patch is loaded - guis always get their default size on
  preset load - maybe fix this by storing editor-sizes in a dedicated xml-element in Toolchain
--load WaveOscTest preset -> no slot appears
+-load WaveOscTest preset -> no slot appears -> seems to be related to not finding the
+ sample-file - does the editor creation get interrupted by showing the error box?
+-if a modulatro is between a source and engineers filter, the filter has no effect
+ use TestEngineersFilterBug preset
 
-
+Snowflake:
+-Hilbert curve patch crashes when set to 0 iterations because this leads to an empty
+ string of turtle commands (we get an access violation trying to access the command string)
 
 -make a class DualWaveOscillator
  -sync 1->2, 2->1 via blep

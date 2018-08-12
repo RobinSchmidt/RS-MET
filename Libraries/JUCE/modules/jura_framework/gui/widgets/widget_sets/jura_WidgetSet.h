@@ -30,13 +30,15 @@ public:
   // setup:
 
   /** Sets up the colour-scheme. */
-  virtual void setColourScheme(const WidgetColourScheme& newColourScheme);
+  virtual void setColourScheme(const WidgetColourScheme& newColourScheme); /* override;*/
+    // should this not be an override - also available in ColourSchemeComponent?
 
   /** Sets up the colour-scheme from an XmlElement. */
-  virtual void setColourSchemeFromXml(const XmlElement* widgetColours);
+  virtual void setColourSchemeFromXml(const XmlElement* widgetColours); /* override; ?*/
+    //
 
   /** Sets the juce::Label in which the descriptions for the widgets will appear. */
-  virtual void setDescriptionField(RTextField* newDescriptionField);
+  virtual void setDescriptionField(RTextField* newDescriptionField) override;
 
 
 protected:

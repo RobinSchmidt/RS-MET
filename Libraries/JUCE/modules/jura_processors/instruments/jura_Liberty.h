@@ -208,7 +208,7 @@ protected:
 
 //=================================================================================================
 
-/** A mix-in class to mix into the basic rojue widget classes. */
+/** A mix-in class to mix into the basic jura widget classes. */
 class LibertyModuleWidget
 {
 

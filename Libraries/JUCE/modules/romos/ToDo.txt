@@ -36,22 +36,6 @@ Modules:
 -some sort of transient generator
 
 
--maybe produce educational videos on sound synthesis with liberty
--Subtractive1 - Overview
- -oscillators
- -filters
- -modulators
-Subtractive2 - Oscillators
- -waveforms / spectra
- -detuning/beats
- -sync
-
-  
--FM1
- -carrier/modulator setup
- -sidebands
-  -c/m: ratio - positions
-  -depth: bandwidth
  
 
 
