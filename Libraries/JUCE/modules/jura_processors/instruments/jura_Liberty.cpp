@@ -404,10 +404,10 @@ ModulePropertiesEditor::ModulePropertiesEditor(CriticalSection *newPlugInLock,
   addWidget(polyButton, true, true);
 }
 
-//ModulePropertiesEditor::~ModulePropertiesEditor()
-//{
-//
-//}
+ModulePropertiesEditor::~ModulePropertiesEditor()
+{
+  int dummy = 0;
+}
 
 void ModulePropertiesEditor::rSliderValueChanged(RSlider* rSlider)
 {

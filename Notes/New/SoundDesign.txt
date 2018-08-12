@@ -4,14 +4,22 @@ typical properties of acoustic instruments:
  -more overtones (lowpass filter should track velocity) 
  -faster attack (attack time should track velocity)
  -longer decay (really?)
--higher notes have 
- -faster envelope (envelope timescale should track key)
- -less overtones (filter keytrack < 100%)
--formants are independent from note pitch (i.e. no filter keytrack)
+-higher notes have less overtones (filter keytrack < 100%)
+-formants are independent from note pitch (resonant filter without keytrack)
 -moving sound sources have doppler shifts
--in transients, the pitch may deviate from steady state (pitch envelope)
--generally, the sound goes from bright to dull over time
- ->filter envelope from high to low
+-in transients, the pitch may deviate from steady state (use pitch envelope)
+
+impulse excited intruments:
+-higher notes have faster envelope (envelope timescale should track key, but 
+ less than 100%, maybe 50%)
+-sound goes from bright to dull over time -> filter envelope goes from high to low
+-there may be a chaotic transient
+ 
+steady excitation instruments:
+-loud notes may overblow and be more prone to chaotic behavior (higher 
+ nonlinearity)
+-there may be a nonlinear feedback between the instrument the exciter
+ 
 
 desirable features:
 -detuning (in semitones) between oscillators should become less for higher 

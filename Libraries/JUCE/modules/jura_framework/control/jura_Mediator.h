@@ -57,7 +57,9 @@ protected:
 //=================================================================================================
 
 /** This class represents an object that mediates a many-to-many communication between a bunch of 
-participating colleagues as described in GoF - Design Patterns. */
+participating colleagues as described in GoF - Design Patterns. It's a variant of the pattern that
+uses message codes to identify the messages in order to be as general as possible. The concrete 
+subclasses must define the meanings of the message codes. */
 
 class Mediator
 {

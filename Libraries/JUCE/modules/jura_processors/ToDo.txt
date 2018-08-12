@@ -1,12 +1,18 @@
 Liberty:
--crash: load NoiseFlute2, click on the Parameter and then load anther patch
--parameter values are nor recalled..or well - it actually si, but reset to min when the
+-use std::vector in jura::Mediator for the colleagues
+-crash: load Whistle, click on the Parameter and then load anther patch via 
+ forward/backward
+
+-parameter values are not recalled..or well - it actually is, but reset to min when the
  parameter is selected
 -in the leaky integrator, some connections are drawn black
 -preset label has black text (same with scope's colormap loader)
  -the color gets fixed by opening and closing the color setup (sometimes just by
   opening - maybe the colorscheme is set up too late, after the painting
   is already complete? 
+-rename "PeriodicLinearRamp" to Phasor
+ -together with the SinCos module, a sine osc can be built
+  -can it get a phase input using SinCos module for phase-mod?
 -in the NoiseFlute instrument, go to WhiteNoise module, select Out2
  ->muliple connections are highlighted that shouldn't, the same in the 
  NoteFilter

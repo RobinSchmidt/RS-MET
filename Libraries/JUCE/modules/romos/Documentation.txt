@@ -29,3 +29,7 @@ delays:
 
 
 filters:
+
+User Interface:
+-uses mediator pattern to let the various gui areas (blocks-diagram editor, tree view, module gui 
+ holder) communicate with each other without explicitly refering to each other

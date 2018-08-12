@@ -304,7 +304,7 @@ public:
   ModulePropertiesEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);
 
   /** Destructor. */
-  //virtual ~ModulePropertiesEditor();
+  virtual ~ModulePropertiesEditor();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -356,6 +356,10 @@ class ParameterModuleEditor : public ModulePropertiesEditor
 {
 public:
   ParameterModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit); 
+  virtual ~ParameterModuleEditor()
+  {
+    int dummy = 0; // for debug
+  }
   virtual void rButtonClicked(RButton *buttonThatWasClicked);
   virtual void resized();
   virtual void updateWidgetsFromModuleState();
