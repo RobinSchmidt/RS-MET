@@ -37,7 +37,7 @@ public:
 
 /** This class wraps romos::Liberty into a jura::AudioModule to facilitate its use as plugIn. */
 
-class LibertyAudioModule : public PolyphonicInstrumentAudioModule  
+class LibertyAudioModule : public PolyphonicInstrumentAudioModule, public ActionBroadcaster
 //class LibertyAudioModule : public AudioModule
 {
 
@@ -292,7 +292,7 @@ public:
 name, the polyphony setting, etc. */
 
 class ModulePropertiesEditor : public Editor, public RSliderListener, public RComboBoxObserver, 
-  public RTextEntryFieldObserver, public RButtonListener
+  public RTextEntryFieldObserver, public RButtonListener, public ActionListener
 {
 
 public:
@@ -301,7 +301,9 @@ public:
   // construction/destruction:
 
   /** Constructor.  */  
-  ModulePropertiesEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);
+  ModulePropertiesEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit);
+  /*ModulePropertiesEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);*/
+
 
   /** Destructor. */
   virtual ~ModulePropertiesEditor();
@@ -333,8 +335,12 @@ protected:
   virtual void widgetChanged(RWidget *widgetThatHasChanged);
 
 
-  CriticalSection *plugInLock;   
-  romos::Module   *moduleToEdit;
+  virtual void actionListenerCallback(const String& message) override;
+
+
+  CriticalSection* plugInLock;
+  LibertyAudioModule* libertyModule;
+  romos::Module* moduleToEdit;
 
   RTextField *moduleTypeLabel, *moduleTypeField;
   RButton    *polyButton;
@@ -356,7 +362,7 @@ protected:
 class ParameterModuleEditor : public ModulePropertiesEditor 
 {
 public:
-  ParameterModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit); 
+  ParameterModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit); 
   virtual ~ParameterModuleEditor()
   {
     int dummy = 0; // for debug
@@ -394,7 +400,7 @@ protected:
 class ContainerModuleEditor : public ModulePropertiesEditor 
 {
 public:
-  ContainerModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit); 
+  ContainerModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit); 
   juce_UseDebuggingNewOperator;
 
 protected:
@@ -404,7 +410,7 @@ protected:
 class TopLevelModuleEditor : public ModulePropertiesEditor 
 {
 public:
-  TopLevelModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit); 
+  TopLevelModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit); 
   juce_UseDebuggingNewOperator;
 
 protected:
@@ -414,7 +420,7 @@ protected:
 class VoiceKillerModuleEditor : public ModulePropertiesEditor 
 {
 public:
-  VoiceKillerModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);   
+  VoiceKillerModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit);   
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
@@ -425,7 +431,7 @@ protected:
 class WhiteNoiseModuleEditor : public ModulePropertiesEditor 
 {
 public:
-  WhiteNoiseModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);   
+  WhiteNoiseModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit);   
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
@@ -435,7 +441,7 @@ protected:
 class BiquadDesignerModuleEditor : public ModulePropertiesEditor 
 {
 public:
-  BiquadDesignerModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);   
+  BiquadDesignerModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit);   
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
@@ -445,7 +451,7 @@ protected:
 class LibertyLadderFilterModuleEditor : public ModulePropertiesEditor 
 {
 public:
-  LibertyLadderFilterModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);   
+  LibertyLadderFilterModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit);   
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:

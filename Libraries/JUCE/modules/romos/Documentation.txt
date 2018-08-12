@@ -7,6 +7,12 @@ Module:
 
 AudioConnection:
 
+-for each input pin in the target object, there is a pointer stored, which refers to the memory 
+ location of the output pin of the source module
+ -each input pin of a target can connect to only one output pin of a source
+ -to gather inputs, an explicit adder module is needed - this is for efficiency
+
+
 
 
 Event:

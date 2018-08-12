@@ -312,17 +312,15 @@ void LibertyAudioModule::setStateFromXml(const XmlElement& xmlState, const juce:
 {
   ScopedLock scopedLock(*lock);
 
-  // todo: notify the GUI that is should delete all references to the modules
-  // sendModulesWillBeDeletedNotification
+  sendActionMessage("StateRecall"); //  GUI should delete all pointers to the modules
 
   wrappedLiberty->reset();
-
   romos::TopLevelModule *topLevelModule = wrappedLiberty->getTopLevelModule();
   topLevelModule->deleteAllChildModules();       
   topLevelModule->disconnectAudioOutputModules();
 
-  XmlElement* topLevelModuleState = xmlState.getChildByName(juce::String(("TopLevelModule")));
-  if( topLevelModuleState != NULL )
+  XmlElement* topLevelModuleState = xmlState.getChildByName("TopLevelModule");
+  if( topLevelModuleState != nullptr )
     setModuleStateFromXml(*topLevelModuleState, topLevelModule);
   restoreTopLevelInOutStates(*topLevelModuleState);
   //PolyphonicInstrumentAudioModule::setStateFromXml(xmlState, stateName, markAsClean);
@@ -382,18 +380,22 @@ void LibertyAudioModule::noteOff(int noteNumber)
 //=================================================================================================
 // class ModulePropertiesEditor:
 
-ModulePropertiesEditor::ModulePropertiesEditor(CriticalSection *newPlugInLock, 
-  romos::Module* newModuleToEdit)
+//ModulePropertiesEditor::ModulePropertiesEditor(CriticalSection *newPlugInLock, 
+//  romos::Module* newModuleToEdit)
+
+ModulePropertiesEditor::ModulePropertiesEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit)
 {
-  plugInLock   = newPlugInLock;
 
-  moduleToEdit = newModuleToEdit; 
+  //plugInLock   = newPlugInLock;  // old
 
-  // maybe we need to do something like:
-  // moduleToEdit->registerDeletionWatcher(this);
-  // an invalidate our pointer on deletion
+  // new:
+  libertyModule = newLiberty;
+  plugInLock    = libertyModule->getCriticalSection();;
 
   ScopedLock scopedLock(*plugInLock);
+
+  moduleToEdit = newModuleToEdit; 
+  libertyModule->addActionListener(this);
 
   setHeadlineStyle(Editor::SUB_HEADLINE);
   setHeadlineText(rosicToJuce(moduleToEdit->getName()));
@@ -415,7 +417,7 @@ ModulePropertiesEditor::ModulePropertiesEditor(CriticalSection *newPlugInLock,
 
 ModulePropertiesEditor::~ModulePropertiesEditor()
 {
-  int dummy = 0;
+  libertyModule->removeActionListener(this);
 }
 
 void ModulePropertiesEditor::rSliderValueChanged(RSlider* rSlider)
@@ -457,6 +459,12 @@ void ModulePropertiesEditor::widgetChanged(RWidget *widgetThatHasChanged)
     }
   }
   updateWidgetsFromModuleState(); // to update the other widgets, implements widget-interdependence
+}
+
+void ModulePropertiesEditor::actionListenerCallback(const String& message)
+{
+  if(message == "StateRecall")
+    moduleToEdit = nullptr; // invalidate pointer
 }
 
 void ModulePropertiesEditor::resized()
@@ -505,18 +513,18 @@ void ModulePropertiesEditor::updateWidgetsFromModuleState()
 //=================================================================================================
 // subclasses for particular module types:
 
-ContainerModuleEditor::ContainerModuleEditor(CriticalSection *newPlugInLock, 
+ContainerModuleEditor::ContainerModuleEditor(LibertyAudioModule *newLiberty, 
   romos::Module* newModuleToEdit)
-  : ModulePropertiesEditor(newPlugInLock, newModuleToEdit)
+  : ModulePropertiesEditor(newLiberty, newModuleToEdit)
 {
 
 }
 
 //-------------------------------------------------------------------------------------------------
 
-ParameterModuleEditor::ParameterModuleEditor(CriticalSection *newPlugInLock, 
+ParameterModuleEditor::ParameterModuleEditor(LibertyAudioModule *newLiberty, 
   romos::Module* newModuleToEdit)
-  : ModulePropertiesEditor(newPlugInLock, newModuleToEdit)
+  : ModulePropertiesEditor(newLiberty, newModuleToEdit)
 {
   ScopedLock scopedLock(*plugInLock);
 
@@ -778,28 +786,29 @@ void ParameterModuleEditor::updateWidgetsFromModuleState()
   ScopedLock scopedLock(*plugInLock);
   ModulePropertiesEditor::updateWidgetsFromModuleState();
 
-
   romos::ParameterModule* pm = (romos::ParameterModule*) moduleToEdit;
+  if(pm != nullptr)
+  {
+    double minValue     = pm->getMinValue();
+    double maxValue     = pm->getMaxValue();
+    double defaultValue = pm->getDefaultValue();
+    double value        = pm->getValue();
+    double quantization = 0.0;  // preliminary
+    valueSlider->setRange(minValue, maxValue, quantization, defaultValue, false);
+    valueSlider->setValue(value, false, false);
 
-  double minValue     = pm->getMinValue();
-  double maxValue     = pm->getMaxValue();
-  double defaultValue = pm->getDefaultValue();
-  double value        = pm->getValue();
-  double quantization = 0.0;  // preliminary
-  valueSlider->setRange(minValue, maxValue, quantization, defaultValue, false);
-  valueSlider->setValue(value, false, false);
-
-  int scaling = pm->getMappingFunction();
-  if( scaling == romos::ParameterModule::EXPONENTIAL_MAPPING )
-    valueSlider->setScaling(Parameter::EXPONENTIAL);
-  else
-    valueSlider->setScaling(Parameter::LINEAR);
+    int scaling = pm->getMappingFunction();
+    if(scaling == romos::ParameterModule::EXPONENTIAL_MAPPING)
+      valueSlider->setScaling(Parameter::EXPONENTIAL);
+    else
+      valueSlider->setScaling(Parameter::LINEAR);
+  }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-TopLevelModuleEditor::TopLevelModuleEditor(CriticalSection *newPlugInLock, 
-  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newPlugInLock, newModuleToEdit)
+TopLevelModuleEditor::TopLevelModuleEditor(LibertyAudioModule *newLiberty, 
+  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newLiberty, newModuleToEdit)
 {
 
 }
@@ -807,8 +816,8 @@ TopLevelModuleEditor::TopLevelModuleEditor(CriticalSection *newPlugInLock,
 
 //-------------------------------------------------------------------------------------------------
 
-VoiceKillerModuleEditor::VoiceKillerModuleEditor(CriticalSection *newPlugInLock, 
-  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newPlugInLock, newModuleToEdit)
+VoiceKillerModuleEditor::VoiceKillerModuleEditor(LibertyAudioModule *newLiberty, 
+  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newLiberty, newModuleToEdit)
 {
   /*
   thresholdField = new RLabeledTextEntryField(juce::String(("Threshold:")), juce::String(("0.0001")));
@@ -866,8 +875,8 @@ void VoiceKillerModuleEditor::resized()
 
 //-------------------------------------------------------------------------------------------------
 
-WhiteNoiseModuleEditor::WhiteNoiseModuleEditor(CriticalSection *newPlugInLock, 
-  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newPlugInLock, newModuleToEdit)
+WhiteNoiseModuleEditor::WhiteNoiseModuleEditor(LibertyAudioModule *newLiberty, 
+  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newLiberty, newModuleToEdit)
 {
   ScopedLock scopedLock(*plugInLock);
 
@@ -899,8 +908,8 @@ void WhiteNoiseModuleEditor::resized()
 
 //-------------------------------------------------------------------------------------------------
 
-BiquadDesignerModuleEditor::BiquadDesignerModuleEditor(CriticalSection *newPlugInLock, 
-  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newPlugInLock, newModuleToEdit)
+BiquadDesignerModuleEditor::BiquadDesignerModuleEditor(LibertyAudioModule *newLiberty, 
+  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newLiberty, newModuleToEdit)
 {
   ScopedLock scopedLock(*plugInLock);
 
@@ -945,8 +954,8 @@ void BiquadDesignerModuleEditor::resized()
 
 //-------------------------------------------------------------------------------------------------
 
-LibertyLadderFilterModuleEditor::LibertyLadderFilterModuleEditor(CriticalSection *newPlugInLock, 
-  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newPlugInLock, newModuleToEdit)
+LibertyLadderFilterModuleEditor::LibertyLadderFilterModuleEditor(LibertyAudioModule *newLiberty, 
+  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newLiberty, newModuleToEdit)
 {
   ScopedLock scopedLock(*plugInLock);
 
@@ -1249,30 +1258,30 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
   switch( moduleToShowEditorFor->getTypeIdentifier() )
   {
   case romos::ModuleTypeRegistry::PARAMETER:
-    currentEditor = new ParameterModuleEditor(getInterfaceMediator()->plugInLock, 
+    currentEditor = new ParameterModuleEditor(getInterfaceMediator()->modularSynthModuleToEdit, 
       moduleToShowEditorFor);    break;
   case romos::ModuleTypeRegistry::CONTAINER:   
-    currentEditor = new ContainerModuleEditor(getInterfaceMediator()->plugInLock, 
+    currentEditor = new ContainerModuleEditor(getInterfaceMediator()->modularSynthModuleToEdit, 
       moduleToShowEditorFor);    break;
   case romos::ModuleTypeRegistry::TOP_LEVEL_MODULE:   
-    currentEditor = new TopLevelModuleEditor(getInterfaceMediator()->plugInLock, 
+    currentEditor = new TopLevelModuleEditor(getInterfaceMediator()->modularSynthModuleToEdit, 
       moduleToShowEditorFor);    break;
   case romos::ModuleTypeRegistry::WHITE_NOISE:   
-    currentEditor = new WhiteNoiseModuleEditor(getInterfaceMediator()->plugInLock, 
+    currentEditor = new WhiteNoiseModuleEditor(getInterfaceMediator()->modularSynthModuleToEdit, 
       moduleToShowEditorFor);    break;
   case romos::ModuleTypeRegistry::BIQUAD_DESIGNER:
-    currentEditor = new BiquadDesignerModuleEditor(getInterfaceMediator()->plugInLock, 
+    currentEditor = new BiquadDesignerModuleEditor(getInterfaceMediator()->modularSynthModuleToEdit, 
       moduleToShowEditorFor);    break;
   case romos::ModuleTypeRegistry::LADDER_FILTER:
-    currentEditor = new LibertyLadderFilterModuleEditor(getInterfaceMediator()->plugInLock, 
+    currentEditor = new LibertyLadderFilterModuleEditor(getInterfaceMediator()->modularSynthModuleToEdit, 
       moduleToShowEditorFor);    break;
   case romos::ModuleTypeRegistry::VOICE_KILLER:   
-    currentEditor = new VoiceKillerModuleEditor(getInterfaceMediator()->plugInLock, 
+    currentEditor = new VoiceKillerModuleEditor(getInterfaceMediator()->modularSynthModuleToEdit, 
       moduleToShowEditorFor);    break;
   default:
   {
     //jassertfalse;  // for every module-type, there should be case
-    currentEditor = new ModulePropertiesEditor(getInterfaceMediator()->plugInLock, 
+    currentEditor = new ModulePropertiesEditor(getInterfaceMediator()->modularSynthModuleToEdit, 
       moduleToShowEditorFor);
   }
   }

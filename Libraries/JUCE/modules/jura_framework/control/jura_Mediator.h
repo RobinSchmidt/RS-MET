@@ -1,7 +1,7 @@
 #ifndef jura_Mediator_h
 #define jura_Mediator_h
 
-// todo: maybe move to rosic
+// todo: maybe move to rosic, prepend rs prefix
 
 class Mediator;
 
