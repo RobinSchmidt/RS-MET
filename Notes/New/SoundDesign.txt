@@ -1,0 +1,30 @@
+
+typical properties of acoustic instruments:
+-louder notes have 
+ -more overtones (lowpass filter should track velocity) 
+ -faster attack (attack time should track velocity)
+ -longer decay (really?)
+-higher notes have 
+ -faster envelope (envelope timescale should track key)
+ -less overtones (filter keytrack < 100%)
+-formants are independent from note pitch (i.e. no filter keytrack)
+-moving sound sources have doppler shifts
+-in transients, the pitch may deviate from steady state (pitch envelope)
+-generally, the sound goes from bright to dull over time
+ ->filter envelope from high to low
+
+desirable features:
+-detuning (in semitones) between oscillators should become less for higher 
+ notes
+ -can be achieved by keytracking of detune (in st) and/or by using fixed 
+  detuning in Hz
+-higher notes should often be less loud (keytrack of master volume)
+-patches should have the same loudness - maybe use loudness meter when 
+ adjusting patches
+-a stereo correlation between 0 and 0.5 ist mostly pleasant, maybe correlation
+ should be higher in the low-freq range (use mid/side EQ)
+ -use a correlation meter
+ -use a scope in XY mode with 45° rotation such that pure mid-signals give 
+  vertical lines and pure side signals horizontal lines
+ -adjust mid/side ratio for a balance between width and height, maybe a bit
+  more height than width (correlation a bit more than 0)
