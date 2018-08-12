@@ -5,20 +5,27 @@
 plugIn or sub-module inside a plugin.  
 
 todo:
--override noteOn, noteOff (maybe), reset
--make modulatable (and test it)
--figure out, why setSate...is called so many times on start up
 -rename to WaveOscillator
--make a DualWaveOscillator with interactions 
+-make parameters modulatable (and test it)
+-check, how Straightliner can handle it
+-add freq-offset parameter (as target for LFO)
+-make a separate gui editor and use the current only for straightliner - remove the "Mod" slider
+ from tune (only striaghtliner uses this
 -maybe, if we have just one single WaveOsc, we may put the additional parameters from the context
  menu directly on the main editor - good opportunity to test the multiple editor types feature
  ->in the DualOsc case, we need the smaller gui
+-i think, i need to factor out baseclass WaveOscEditorBase that contains what they all have in 
+ common
+-figure out, why setSate...is called so many times on start up
 
--let the osc add its output to what comes in (done - do this for all sources and instruments)
+-make a DualWaveOscillator with interactions 
+
+
+-let the osc add its output to what comes in (done - do this for all sources and instruments)   
 
 */
 
-class OscillatorStereoAudioModule : public AudioModule 
+class OscillatorStereoAudioModule : public AudioModuleWithMidiIn
   // use ModulatableAudioModule as baseclass - but check how that affects the oscs in 
   // Straightliner - how will they respond to (additional) modulation?
 {
@@ -57,7 +64,7 @@ public:
     double tmpL, tmpR;
     for(int n = 0; n < numSamples; n++)
     {
-      wrappedOscillatorStereo->getSampleFrameStereo(&tmpL, &tmpR);
+      wrappedOsc->getSampleFrameStereo(&tmpL, &tmpR);
       inOutBuffer[0][n] += tmpL; 
       inOutBuffer[1][n] += tmpR;
     }
@@ -67,13 +74,33 @@ public:
   {
     //wrappedOscillatorStereo->getSampleFrameStereo(left, right);
     double tmpL, tmpR;
-    wrappedOscillatorStereo->getSampleFrameStereo(&tmpL, &tmpR);
+    wrappedOsc->getSampleFrameStereo(&tmpL, &tmpR);
     *left  += tmpL;
     *right += tmpR;
   }
   // try to optimize the temporaries away - maybe the osc itself can accumulate its output into
   // the passed pointers
 
+  virtual void setSampleRate(double newSampleRate) override
+  {
+    wrappedOsc->setSampleRate(newSampleRate);
+  }
+
+  virtual void reset() override
+  {
+    wrappedOsc->reset();
+  }
+
+  virtual void noteOn(int noteNumber, int velocity) override
+  {
+    wrappedOsc->setKeyAndVel(noteNumber, velocity);
+    wrappedOsc->setFrequencyNominal(rosic::pitchToFreq(noteNumber));
+    wrappedOsc->reset();
+     // preliminary - use tuning table - maybe baseclass AudioModuleWithMidiIn should maintain
+     // a pointer to a TuningManager object - and maybe a subclass AudioModulePolyphonic can
+     // also maintain a VoiceManager ...soo many managers...meta,smoothing,modulation,... and now
+     // these :-)
+  }
 
 
 protected:
@@ -82,7 +109,7 @@ protected:
   virtual void createParameters();
 
   /** Pointer to the underlying rosic object which is wrapped. */
-  rosic::OscillatorStereo *wrappedOscillatorStereo;
+  rosic::OscillatorStereo *wrappedOsc;
 
   bool wrappedOscIsOwned = false;
   rosic::MipMappedWaveTableStereo *waveTable = nullptr; 

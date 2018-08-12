@@ -3,17 +3,17 @@
 // construction/destruction:
 
 OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlugInLock,
-  rosic::OscillatorStereo *oscToWrap) : AudioModule(newPlugInLock)
+  rosic::OscillatorStereo *oscToWrap) : AudioModuleWithMidiIn(newPlugInLock)
 {
   //jassert( newOscillatorStereoToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   if(oscToWrap == nullptr) {
-    wrappedOscillatorStereo = new rosic::OscillatorStereo;
-    waveTable = new rosic::MipMappedWaveTableStereo;
-    wrappedOscillatorStereo->setWaveTableToUse(waveTable);
+    wrappedOsc = new rosic::OscillatorStereo;
+    waveTable  = new rosic::MipMappedWaveTableStereo;
+    wrappedOsc->setWaveTableToUse(waveTable);
     wrappedOscIsOwned = true;
   }
   else
-    wrappedOscillatorStereo = oscToWrap;
+    wrappedOsc = oscToWrap;
 
   //setModuleTypeName("OscillatorStereo"); // old name
   setModuleTypeName("WaveOscillator");
@@ -24,7 +24,7 @@ OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlu
 OscillatorStereoAudioModule::~OscillatorStereoAudioModule()
 {
   if(wrappedOscIsOwned) {
-    delete wrappedOscillatorStereo;
+    delete wrappedOsc;
     delete waveTable;
   }
 }
@@ -121,8 +121,8 @@ XmlElement* OscillatorStereoAudioModule::getStateAsXml(const juce::String& state
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
 
   // store the parameters of the underlying core object:
-  if( wrappedOscillatorStereo != NULL )
-    xmlState = oscillatorStereoStateToXml(wrappedOscillatorStereo, xmlState);
+  if( wrappedOsc != NULL )
+    xmlState = oscillatorStereoStateToXml(wrappedOsc, xmlState);
 
   return xmlState;
 }
@@ -134,8 +134,8 @@ void OscillatorStereoAudioModule::setStateFromXml(const XmlElement& xmlState,
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
 
   // restore the parameters of the underlying core object:
-  if( wrappedOscillatorStereo != NULL )
-    oscillatorStereoStateFromXml(wrappedOscillatorStereo, xmlState);
+  if( wrappedOsc != NULL )
+    oscillatorStereoStateFromXml(wrappedOsc, xmlState);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ void OscillatorStereoAudioModule::createParameters()
   StaticParam* sp; 
 
   typedef rosic::OscillatorStereo OS;
-  OS* os = wrappedOscillatorStereo;
+  OS* os = wrappedOsc;
 
   typedef rosic::MipMappedWaveTableStereo WT;
   WT* wt = os->waveTable;
@@ -801,7 +801,7 @@ OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
   //setOscillatorToEdit(newOscillatorStereoAudioModule->wrappedOscillatorStereo);
   // this will also set up the widgets according to the state of the oscillator
 
-  oscillatorToEdit = newOscillatorStereoAudioModule->wrappedOscillatorStereo; // get rid of this...
+  oscillatorToEdit = newOscillatorStereoAudioModule->wrappedOsc; // get rid of this...
   updateWidgetsAccordingToState();
 
   // widget arrangement is optimized for this size:
