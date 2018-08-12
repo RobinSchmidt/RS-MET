@@ -3,10 +3,8 @@
 #include "romos_AudioConnection.h"
 using namespace romos;
 
-
-//=========================================================================================================================================
+//=================================================================================================
 // class AudioInputPinData:
-
 
 AudioInputPinData::AudioInputPinData()
 {
@@ -30,7 +28,7 @@ void AudioInputPinData::setDefaultValue(double newDefaultValue)
 }
 void AudioInputPinData::reset()
 {
-  sourceModule      = NULL;
+  sourceModule      = nullptr;
   outputPointer     = &defaultValue;
   outputIndex       = 0;
   outputFrameSize   = 0;
@@ -45,26 +43,26 @@ void AudioInputPinData::copyDataFrom(const AudioInputPinData &other)
   outputFrameSize   = other.outputFrameSize;
   outputVoiceStride = other.outputVoiceStride;
 
-  // in case of disconnected pins we don't want to point to the other's defaultValue but to our own:
+  // in case of disconnected pins we don't want to point to the other's defaultValue but to our 
+  // own:
   if( other.outputPointer == &other.defaultValue )
     outputPointer = &defaultValue;
   else
     outputPointer = other.outputPointer;
 }
 
-
-//=========================================================================================================================================
+//=================================================================================================
 // class Module:
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 romos::Module::Module(const rosic::rsString &_name, int _x, int _y, bool _polyphonic)
 {
-  parentModule         = NULL;
-  processFrame         = NULL;
-  processBlock         = NULL;
-  audioOutputs         = NULL;
+  parentModule         = nullptr;
+  processFrame         = nullptr;
+  processBlock         = nullptr;
+  audioOutputs         = nullptr;
   numInputs            = 0;
   outFrameStride       = 0;
   hasHeaderFlag        = true;
@@ -78,7 +76,10 @@ romos::Module::Module(const rosic::rsString &_name, int _x, int _y, bool _polyph
 romos::Module::~Module()
 {
   rassert( !hasOutgoingAudioConnections() );
-    // before deleting a module, you should disconnect its outputs (which may otherwise still be referenced by other modules)
+    // before deleting a module, you should disconnect its outputs (which may otherwise still be 
+    // referenced by other modules)
+
+  // shouldn't this call cleanUp?
 }
 
 void romos::Module::cleanUp()
@@ -86,7 +87,7 @@ void romos::Module::cleanUp()
   freeMemory();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup::
 
 void romos::Module::setModuleName(const rsString& newName)
@@ -108,21 +109,23 @@ void romos::Module::setPolyphonic(bool shouldBePolyphonic)
 {
   polyphonic = shouldBePolyphonic;
   assignProcessingFunctions();
-  if( parentModule != NULL )
-    parentModule->childPolyphonyChanged(this); // containers need to keep track of the polyphony of their children
+  if( parentModule != nullptr )
+    parentModule->childPolyphonyChanged(this); 
+    // containers need to keep track of the polyphony of their children
 }
 
-void romos::Module::connectInputPinTo(int inputPinIndex, Module *sourceModule, int sourceOutputPinIndex)
+void romos::Module::connectInputPinTo(int inputPinIndex, Module *sourceModule, 
+  int sourceOutputPinIndex)
 {
   if( inputPinIndex < 0 || inputPinIndex >= (int) inputPins.size() )
     return;
 
   //rassert( sourceModule != this );  // temporary - to catch a bug
-  if( sourceModule != NULL )
+  if( sourceModule != nullptr )
   {
     //sourceModule->mapApparentSourceToProcessingSource(sourceModule, sourceOutputPinIndex);
-    // after this call, sourceModule and sourceOutputPinIndex refer to the actual module from which we drag the output data, all proxies
-    // have been resolved
+    // after this call, sourceModule and sourceOutputPinIndex refer to the actual module from 
+    // which we drag the output data, all proxies have been resolved
 
     inputPins[inputPinIndex].sourceModule      = sourceModule;
     inputPins[inputPinIndex].outputIndex       = sourceOutputPinIndex;
@@ -155,18 +158,20 @@ void romos::Module::disconnectInputPinsWithInputFrom(romos::Module *sourceModule
   }
 }
 
-void romos::Module::disconnectInputPinsWithInputFrom(romos::Module *sourceModuleToDisconnect, int outputPinIndex)
+void romos::Module::disconnectInputPinsWithInputFrom(romos::Module *sourceModuleToDisconnect, 
+  int outputPinIndex)
 {
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
-    if( inputPins[i].sourceModule == sourceModuleToDisconnect && inputPins[i].outputIndex == outputPinIndex )
+    if( inputPins[i].sourceModule == sourceModuleToDisconnect 
+      && inputPins[i].outputIndex == outputPinIndex )
       disconnectInputPin(i);
   }
 }
 
 void romos::Module::disconnectOutputPin(int outputPinIndex)
 {
-  if( parentModule != NULL )
+  if( parentModule != nullptr )
   {
     for(unsigned int i = 0; i < parentModule->getNumChildModules(); i++)
       parentModule->getChildModule(i)->disconnectInputPinsWithInputFrom(this, outputPinIndex);
@@ -175,7 +180,7 @@ void romos::Module::disconnectOutputPin(int outputPinIndex)
 
 void romos::Module::disconnectAllOutputPins()
 {
-  if( parentModule != NULL )
+  if( parentModule != nullptr )
   {
     for(unsigned int i = 0; i < parentModule->getNumChildModules(); i++)
       parentModule->getChildModule(i)->disconnectInputPinsWithInputFrom(this);
@@ -196,7 +201,7 @@ void romos::Module::updateInputPointersAndInFrameStrides()
 }
 
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inquiry:
 
 int romos::Module::getNumVoices() const
@@ -211,7 +216,7 @@ int romos::Module::getNumVoices() const
 
 romos::Module* romos::Module::getTopLevelModule()
 {
-  if( parentModule == NULL )
+  if( parentModule == nullptr )
     return this;
   else
     return parentModule->getTopLevelModule();
@@ -220,7 +225,7 @@ romos::Module* romos::Module::getTopLevelModule()
 int romos::Module::getIndexWithinParentModule()
 {
   romos::ModuleContainer* parent = getParentModule();
-  if( parent != NULL )
+  if( parent != nullptr )
     return parent->getIndexOfChildModule(this);
   else
     return -1;
@@ -274,11 +279,13 @@ bool romos::Module::hasIncomingConnectionFrom(const romos::Module *sourceModule)
   return false;
 }
 
-bool romos::Module::hasIncomingConnectionFrom(const romos::Module *sourceModule, int sourceOutputPinIndex) const
+bool romos::Module::hasIncomingConnectionFrom(const romos::Module *sourceModule, 
+  int sourceOutputPinIndex) const
 {
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
-    if( inputPins[i].sourceModule == sourceModule && inputPins[i].outputIndex == sourceOutputPinIndex )
+    if( inputPins[i].sourceModule == sourceModule 
+      && inputPins[i].outputIndex == sourceOutputPinIndex )
       return true;
   }
   return false;
@@ -288,7 +295,8 @@ bool romos::Module::hasDelayedIncomingConnection() const
 {
   for(unsigned int pinIndex = 0; pinIndex < inputPins.size(); pinIndex++)
   {
-    if( inputPins[pinIndex].sourceModule != NULL && modulePointerLessByXY(this, inputPins[pinIndex].sourceModule) )
+    if( inputPins[pinIndex].sourceModule != nullptr 
+      && modulePointerLessByXY(this, inputPins[pinIndex].sourceModule) )
       return true;
   }
   return false;
@@ -337,7 +345,8 @@ std::vector<AudioConnection> romos::Module::getIncomingAudioConnections()
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
     if( inputPins[i].sourceModule != NULL )
-      rosic::appendElement(result, AudioConnection(inputPins[i].sourceModule, inputPins[i].outputIndex, this, (int) i));
+      rosic::appendElement(result, AudioConnection(inputPins[i].sourceModule, 
+        inputPins[i].outputIndex, this, (int) i));
   }
   return result;
 }
@@ -357,7 +366,8 @@ std::vector<AudioConnection> romos::Module::getOutgoingAudioConnections()
     {
       AudioInputPinData pin = sibling->getAudioInputPinData(j);
       if( pin.sourceModule == this )
-        rosic::appendElement(result, AudioConnection(this, (int) pin.outputIndex, sibling, (int) j) );
+        rosic::appendElement(result, AudioConnection(this, (int) pin.outputIndex, 
+          sibling, (int) j) );
     }
   }
   return result;
@@ -375,7 +385,8 @@ std::vector<AudioConnection> romos::Module::getOutgoingAudioConnectionsFromPin(i
   return result;
 }
 
-void romos::Module::getExtremeCoordinates(std::vector<Module*> &modules, int &xMin, int &yMin, int &xMax, int &yMax)
+void romos::Module::getExtremeCoordinates(std::vector<Module*> &modules, int &xMin, int &yMin,
+  int &xMax, int &yMax)
 {
   if( modules.size() == 0 )
   {
@@ -408,7 +419,7 @@ void romos::Module::getMidpointCoordinates(std::vector<Module*> &modules, int &x
   yMid = (yMin+yMax)/2;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // others:
 
 void romos::Module::allocateMemory()
@@ -433,7 +444,7 @@ void romos::Module::allocateAudioInputs() // remove this middle-man function - s
 void romos::Module::allocateAudioOutputs()
 {
   delete[] audioOutputs;
-  audioOutputs = NULL;
+  audioOutputs = nullptr;
   int slotsToAllocate = processingStatus.getRequiredMemorySlotsPerPin() * outFrameStride;
   if( slotsToAllocate > 0)
   {
@@ -443,19 +454,15 @@ void romos::Module::allocateAudioOutputs()
 
   if( parentModule != NULL )
     parentModule->outputsWereReAllocated(this);
-      // should update the input pointers and frameStride pointers for all child modules that are a target of this one
-      // ...maybe just let them update all
+      // should update the input pointers and frameStride pointers for all child modules that are
+      // a target of this one ...maybe just let them update all
 
   //std::vector<AudioConnection*> outgoingAudioConnections = getOutgoingAudioConnections();
   //for(unsigned int i = 0; i < outgoingAudioConnections.size(); i++)
   //  outgoingAudioConnections[i]->updateSourcePointer();
 }
 
-
-
-
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // (non-member) helper functions:
 
 bool romos::modulePointerLessByXY(const romos::Module *left, const romos::Module *right)
@@ -590,13 +597,9 @@ void romos::retrieveModuleState(void *moduleAsVoid)
   int numOutputPins = rmin(maxNumPins,   (int) module->getNumOutputPins());
   int numFrames     = rmin(maxNumFrames, processingStatus.getBufferSize());
 
-
   double *pointer;
   int    frameDistance;
   int    voiceDistance;
-
-
-
 
   for(int voiceIndex = 0; voiceIndex < numVoices; voiceIndex++)
   {
@@ -638,16 +641,9 @@ void romos::retrieveModuleState(void *moduleAsVoid)
   int dummy = 0;
 }
 
-
 void romos::triggerRuntimeError(const char *errorMessage)
 {
   // insert code here to open a message box....
 
   DEBUG_BREAK;
 }
-
-
-
-
-
-

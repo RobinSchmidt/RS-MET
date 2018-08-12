@@ -1236,6 +1236,7 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
 
   removeChildColourSchemeComponent(currentEditor, true);
 
+  // this switch statement sucks - use std::map or something
   switch( moduleToShowEditorFor->getTypeIdentifier() )
   {
   case romos::ModuleTypeRegistry::PARAMETER:

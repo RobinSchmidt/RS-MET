@@ -2,6 +2,9 @@ Liberty:
 -use std::vector in jura::Mediator for the colleagues
 -crash: load Whistle, click on the Parameter and then load anther patch via 
  forward/backward
+ in ModulePropertiesEditor::widgetChanged, the moduleToEdit pointer is invalid
+ ->is the module destroyed before its editor?
+
 
 -parameter values are not recalled..or well - it actually is, but reset to min when the
  parameter is selected
