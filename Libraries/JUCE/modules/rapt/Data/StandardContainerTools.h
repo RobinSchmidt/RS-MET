@@ -57,7 +57,7 @@ inline bool rsRemoveFirstOccurrence(std::vector<T>& v, T elementToRemove)
 {
   for(size_t i = 0; i < size(v); i++)
     if(v[i] == elementToRemove){
-      remove(v, i);
+      rsRemove(v, i);
       return true; }
   return false;
 }

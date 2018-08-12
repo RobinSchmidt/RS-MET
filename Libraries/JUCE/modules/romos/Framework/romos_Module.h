@@ -479,7 +479,7 @@ namespace romos
     bool polyphonic;           // flag to indicate that this module is polyphonic
     int  x, y;                 // position on the GUI block-diagram
 
-    rosic::rsString name;
+    rosic::rsString name;      // use std::string
 
     bool  hasHeaderFlag;
       // determines, if the visual rendering needs a header - actually a GUI-thing that does not really belong here - maybe write a

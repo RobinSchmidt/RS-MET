@@ -1,12 +1,7 @@
 
-MediatedColleague::MediatedColleague() 
-{
-  mediator = NULL;
-}
-
 MediatedColleague::~MediatedColleague()
 {
-  if( mediator != NULL )
+  if( mediator != nullptr )
     mediator->deRegisterColleague(this);
 }
     
@@ -14,16 +9,16 @@ MediatedColleague::~MediatedColleague()
 
 void MediatedColleague::setMediator(Mediator *newMediator) 
 { 
-  if( mediator != NULL )
+  if( mediator != nullptr )
     mediator->deRegisterColleague(this);
   mediator = newMediator; 
-  if( mediator != NULL )
+  if( mediator != nullptr )
     mediator->registerColleague(this);
 }
 
 void MediatedColleague::notifyMediator(int messageCode)
 {
-  if( mediator != NULL )
+  if( mediator != nullptr )
     mediator->colleagueHasSentNotification(this, messageCode);
 }
 
@@ -38,26 +33,26 @@ Mediator::Mediator()
 Mediator::~Mediator()
 {
   for(int i=0; i<colleagues.size(); i++)
-    colleagues.getUnchecked(i)->mediator = NULL;
+    colleagues[i]->mediator = nullptr;
 }
 
 // setup/mediation:
 
 void Mediator::registerColleague(MediatedColleague *colleagueToRegister)
 {
-  colleagues.addIfNotAlreadyThere(colleagueToRegister);
+  RAPT::rsAppendIfNotAlreadyThere(colleagues, colleagueToRegister);
 }
 
 void Mediator::deRegisterColleague(MediatedColleague *colleagueDeToRegister)
 {
-  colleagues.removeFirstMatchingValue(colleagueDeToRegister);
+  RAPT::rsRemoveFirstOccurrence(colleagues, colleagueDeToRegister);
 }
 
 void Mediator::sendNotificationToColleagues(MediatedColleague *originatingColleague, 
   int messageCode)
 {
-  for(int i=0; i<colleagues.size(); i++)
-    colleagues.getUnchecked(i)->mediatorHasSentNotification(originatingColleague, messageCode);
+  for(size_t i = 0; i < colleagues.size(); i++)
+    colleagues[i]->mediatorHasSentNotification(originatingColleague, messageCode);
 }
 
 void Mediator::colleagueHasSentNotification(MediatedColleague *originatingColleague, 

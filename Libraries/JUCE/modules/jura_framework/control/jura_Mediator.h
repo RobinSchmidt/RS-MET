@@ -1,6 +1,8 @@
 #ifndef jura_Mediator_h
 #define jura_Mediator_h
 
+// todo: maybe move to rosic
+
 class Mediator;
 
 /** This class represents an object that can communicate with other objects through a mediator 
@@ -17,7 +19,7 @@ public:
   // \name Construction/Destruction:
 
   /** Constructor. */
-  MediatedColleague();
+  MediatedColleague() {}
 
   /** Destructor. */
   virtual ~MediatedColleague();
@@ -49,7 +51,7 @@ public:
 
 protected:
 
-  Mediator *mediator;
+  Mediator *mediator = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MediatedColleague)
 };
@@ -100,7 +102,7 @@ public:
 
 protected:
 
-  juce::Array<MediatedColleague*> colleagues; // use std::vector
+  std::vector<MediatedColleague*> colleagues;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Mediator)
 };
