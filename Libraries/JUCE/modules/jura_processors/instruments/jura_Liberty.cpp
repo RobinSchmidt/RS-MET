@@ -10,21 +10,23 @@ LibertyInterfaceState::LibertyInterfaceState()
 
 //=================================================================================================
 // class LibertyAudioModule:
-
+/*
 LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock, 
   romos::Liberty *modularSynthToWrap)
-//: PolyphonicInstrumentAudioModule(newPlugInLock, modularSynthToWrap)
-: AudioModule(newPlugInLock)
+: PolyphonicInstrumentAudioModule(newPlugInLock, modularSynthToWrap)
+//: AudioModule(newPlugInLock)
 {
   jassert(modularSynthToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedLiberty = modularSynthToWrap;
-  //underlyingRosicInstrument = modularSynthToWrap;
+  underlyingRosicInstrument = modularSynthToWrap;
   init();
 }
-
-LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock) : AudioModule(newPlugInLock)
+*/
+LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock) 
+  : PolyphonicInstrumentAudioModule(newPlugInLock)
 {
   wrappedLiberty = new romos::Liberty;
+  //underlyingRosicInstrument = wrappedLiberty;
   wrappedLibertyIsOwned = true;
   init();
 }

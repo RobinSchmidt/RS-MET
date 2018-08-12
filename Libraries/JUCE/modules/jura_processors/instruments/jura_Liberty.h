@@ -37,8 +37,8 @@ public:
 
 /** This class wraps romos::Liberty into a jura::AudioModule to facilitate its use as plugIn. */
 
-//class LibertyAudioModule : public PolyphonicInstrumentAudioModule  
-class LibertyAudioModule : public AudioModule
+class LibertyAudioModule : public PolyphonicInstrumentAudioModule  
+//class LibertyAudioModule : public AudioModule
 {
 
   friend class LibertyEditor;
@@ -51,7 +51,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  LibertyAudioModule(CriticalSection *newPlugInLock, romos::Liberty *modularSynthToWrap);
+  //LibertyAudioModule(CriticalSection *newPlugInLock, romos::Liberty *modularSynthToWrap);
 
   LibertyAudioModule(CriticalSection *newPlugInLock);
 
@@ -64,7 +64,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     wrappedLiberty->setSampleRate(newSampleRate);
   }
@@ -104,11 +104,11 @@ public:
   static void createConnectionsFromXml(const XmlElement& xmlState, romos::Module *module);
 
   /** Returns the state of the whole instrument as XmlElement. */
-  virtual XmlElement* getStateAsXml(const juce::String &stateName, bool markAsClean);
+  virtual XmlElement* getStateAsXml(const juce::String &stateName, bool markAsClean) override;
 
   /** Restores the state of the whole instrument from the passed XmlElement. */
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
-    bool markAsClean);
+    bool markAsClean) override;
 
   /** Calling this functions inside setStateFromXml is a quick and dirty ad-hoc solution to restore 
   the names and positions of the top-level I/O modules. */
@@ -126,16 +126,38 @@ public:
   // event-handling
 
   /** Triggers a note-on event. */
-  virtual void noteOn(int noteNumber, int velocity);
+  virtual void noteOn(int noteNumber, int velocity) override;
 
   /** Triggers a note-off event. */
-  virtual void noteOff(int noteNumber);
+  virtual void noteOff(int noteNumber) override;
 
 
   //-----------------------------------------------------------------------------------------------
   // audio processing:
 
-  /** Calculates a stereo-ouput frame. */
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    if(wrappedLiberty->isSilent())
+      return;
+
+    double tmpL, tmpR;
+    for(int n = 0; n < numSamples; n++)
+    {
+      wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
+      inOutBuffer[0][n] += tmpL; 
+      inOutBuffer[1][n] += tmpR;
+    }
+  }
+
+  virtual void processStereoFrame(double *left, double *right) override
+  {
+    double tmpL, tmpR;
+    wrappedLiberty->getSampleFrameStereo(&tmpL, &tmpR);
+    *left  += tmpL;
+    *right += tmpR;
+  }
+
+  /*
   virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     wrappedLiberty->getSampleFrameStereo(inOutL, inOutR);
@@ -161,11 +183,12 @@ public:
       //}
     }
   }
+  */
 
   //-----------------------------------------------------------------------------------------------
   // others:
 
-  virtual void reset()
+  virtual void reset() override
   {
     wrappedLiberty->reset();
   }

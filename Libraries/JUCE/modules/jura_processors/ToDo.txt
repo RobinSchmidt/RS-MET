@@ -4,6 +4,7 @@ Liberty:
  NoteFilter
 -no sound
 -make intial gui size larger
+-gui size not recalled when patch is loaded
 
 -make a class DualWaveOscillator
  -sync 1->2, 2->1 via blep
