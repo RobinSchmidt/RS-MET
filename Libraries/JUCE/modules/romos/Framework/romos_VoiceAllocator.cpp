@@ -3,7 +3,7 @@ using namespace romos;
  
 VoiceAllocator romos::voiceAllocator;  // definition of the global object
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
  
 VoiceAllocator::VoiceAllocator()
@@ -19,7 +19,7 @@ VoiceAllocator::~VoiceAllocator()
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
 void VoiceAllocator::setNumVoices(int newNumVoices)
@@ -57,7 +57,7 @@ void VoiceAllocator::setNoteOffTriggerFlag(int voiceIndex)
   noteOffTriggerFlags |= ( maskForFlags >> voiceIndex);
 }
  
-//-----------------------------------------------------------------------------------------------------------------------------------------    
+//-------------------------------------------------------------------------------------------------
 // event handling:
     
 int VoiceAllocator::noteOn(int key, int velocity)
@@ -145,7 +145,7 @@ void VoiceAllocator::resetVoice(int voiceIndex)
   voiceStates[voiceIndex].isPlaying          = false;
 }
  
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // internal functions:
 
 int VoiceAllocator::getFirstFreeVoice()
@@ -179,13 +179,15 @@ int VoiceAllocator::getNewestPlayingVoiceIndex()
   return numPlayingVoices-1;
 }
    
-int VoiceAllocator::findAmongPlayingVoices(int key, int searchStartIndex, bool ignoreVoicesWithZeroVelocity)
+int VoiceAllocator::findAmongPlayingVoices(int key, int searchStartIndex, 
+  bool ignoreVoicesWithZeroVelocity)
 {
   for(int i = searchStartIndex; i < numPlayingVoices; i++)
   {
     if( voiceStates[playingVoiceIndices[i]].key == key )
     {
-      if( ignoreVoicesWithZeroVelocity == true && voiceStates[playingVoiceIndices[i]].normalizedVelocity == 0.0 )
+      if( ignoreVoicesWithZeroVelocity == true 
+        && voiceStates[playingVoiceIndices[i]].normalizedVelocity == 0.0 )
       {
         // skip
       }
@@ -210,8 +212,9 @@ void VoiceAllocator::removeFromPlayingVoices(int voiceIndex)
 {
   rassert(numPlayingVoices > 0); // for debugg
 
-  // \todo: robustify this - when there are more than one VoiceKiller modules, the same voice might be killed multiple times
-  // but maybe it's alreay robust due to "if( indexInPlayingVoices >= 0 )"? ...check this
+  // \todo: robustify this - when there are more than one VoiceKiller modules, the same voice might
+  // be killed multiple times but maybe it's already robust due to 
+  // "if( indexInPlayingVoices >= 0 )"? ...check this
 
   int indexInPlayingVoices = getPlayingIndexOfVoice(voiceIndex);
   if( indexInPlayingVoices >= 0 )

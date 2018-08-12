@@ -326,8 +326,9 @@ public:
 protected:
 
 
-  /** Called internally by the callbacks for the specific widgets rSliderValueChanged, rComboBoxChanged, etc.. The function tries to cast
-  the widget to a LibertyWidget, reads out the parameter-name and sets the parameter with given in the moduleToEdit (provided, that this 
+  /** Called internally by the callbacks for the specific widgets rSliderValueChanged, 
+  rComboBoxChanged, etc.. The function tries to cast the widget to a LibertyWidget, reads out the 
+  parameter-name and sets the parameter with given in the moduleToEdit (provided, that this 
   moduleToEdit has parameters, which it should when this function is called). */
   virtual void widgetChanged(RWidget *widgetThatHasChanged);
 

@@ -1,12 +1,12 @@
 #ifndef romos_ModuleDefinitionMacros_h
 #define romos_ModuleDefinitionMacros_h
 
-/** 
+/** This file contains preprocessor macros that facilitate the definition a new module class by generating much of the boilerplate code that otherwise would have to written for each module.
 
-This file contains preprocessor macros that facilitate the definition a new module class by generating much of the boilerplate code that 
-otherwise would have to written for each mdoule.
-
-*/
+todo: Maybe instead of using the pre-processor, write the code generation functions directly in
+C++. This has the advantage that we can actually inspect the generated code and set debug 
+breakpoints. When new atomic modules are added, we just need to run the code-generator once. We can
+create a special project for that. Maybe it can be made part of the Liberty test project. */
 
 
 

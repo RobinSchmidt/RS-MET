@@ -2,7 +2,7 @@
 #include "romos_ModuleFactory.h"
 using namespace romos;
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // the processing functions:
 
 // fallback function to process the module in frames when necessary:
@@ -21,7 +21,6 @@ void romos::processContainerBlockFrameWiseMono(Module *moduleAsVoid, int blockSi
   // -copy the temporary output frame into output frame 0
   // -restore the original input pin data for the container
 
-
   romos::ModuleContainer *container = ((romos::ModuleContainer *) moduleAsVoid);
 
   int    pinIndex;
@@ -31,10 +30,11 @@ void romos::processContainerBlockFrameWiseMono(Module *moduleAsVoid, int blockSi
 
   // temporarily modify the input-pin data in the container's input modules:
   for(pinIndex = 0; pinIndex < inFrameSize; pinIndex++)
-    container->childModules[pinIndex]->inputPins[0].outputPointer = &(WorkArea::tmpInFrame[pinIndex]);
+    container->childModules[pinIndex]->inputPins[0].outputPointer 
+    = &(WorkArea::tmpInFrame[pinIndex]);
 
-  // compute 0th frame and buffer it in temp-variable - we'll need it later to restore the 0th frame which will repeatedly be overwritten
-  // in the subsequent loop:
+  // compute 0th frame and buffer it in temp-variable - we'll need it later to restore the 0th 
+  // frame which will repeatedly be overwritten in the subsequent loop:
   for(pinIndex = 0; pinIndex < inFrameSize; pinIndex++)
     WorkArea::tmpInFrame[pinIndex] = *(container->inputPins[pinIndex].outputPointer);
   container->processFrame(container, 0);
@@ -56,16 +56,17 @@ void romos::processContainerBlockFrameWiseMono(Module *moduleAsVoid, int blockSi
       outputPointer[frameIndex*outFrameSize + pinIndex] = outputPointer[pinIndex];
   }
 
-  // we have used the 0th output frame throughout the loop, thereby repeatedly overwriting it so we must now restore the 0th frame
-  // of the block (for which we have a temporary variable):
+  // we have used the 0th output frame throughout the loop, thereby repeatedly overwriting it so we
+  // must now restore the 0th frame of the block (for which we have a temporary variable):
   for(pinIndex = 0; pinIndex < outFrameSize; pinIndex++)
     outputPointer[pinIndex] = WorkArea::tmpOutFrame[pinIndex];   // maybe try memcopy instead
 
   // restore the original pin data in the container's input modules:
   for(pinIndex = 0; pinIndex < inFrameSize; pinIndex++)
-    container->childModules[pinIndex]->inputPins[0].outputPointer = container->inputPins[pinIndex].outputPointer;
+    container->childModules[pinIndex]->inputPins[0].outputPointer 
+    = container->inputPins[pinIndex].outputPointer;
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // little helper:
@@ -87,11 +88,13 @@ void romos::processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSi
   int    inFrameSize    = container->numInputs;
   int    outFrameSize   = container->outFrameStride;
   double *outputPointer = container->getOutputPointer(0);
-  int    outVoiceStride = outFrameSize * processingStatus.getBufferSize() * (int) container->polyphonic;
+  int outVoiceStride = 
+    outFrameSize * processingStatus.getBufferSize() * (int) container->polyphonic;
 
-  // temporarily modify the input-pin data in the container's input modules such that they point to some global memory area - we need to
-  // set the voice-strides temporarily to different values too because in the global memory area we have a lower voice-stride (because
-  // there, we don't need to multiply with the buffersize - there's only one buffered frame in the global area):
+  // temporarily modify the input-pin data in the container's input modules such that they point 
+  // to some global memory area - we need to set the voice-strides temporarily to different values
+  // too because in the global memory area we have a lower voice-stride (because there, we don't 
+  // need to multiply with the buffersize - there's only one buffered frame in the global area):
   for(pinIndex = 0; pinIndex < inFrameSize; pinIndex++)
   {
     container->childModules[pinIndex]->inputPins[0].outputPointer     = &(WorkArea::tmpInFramePoly[pinIndex]);
@@ -115,7 +118,8 @@ void romos::processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSi
     voiceIndex    = playingVoiceIndices[playIndex];
     outputPointer = container->audioOutputs + voiceIndex * outVoiceStride;
     for(pinIndex = 0; pinIndex < outFrameSize; pinIndex++)
-      WorkArea::tmpOutFramePoly[voiceIndex * WorkArea::maxNumPins + pinIndex] = outputPointer[pinIndex];
+      WorkArea::tmpOutFramePoly[voiceIndex * WorkArea::maxNumPins + pinIndex] 
+      = outputPointer[pinIndex];
   }
 
   // compute the other frames and put them into their target locations:

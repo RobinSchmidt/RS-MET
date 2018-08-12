@@ -1,10 +1,11 @@
 #include "romos_ModuleFactory.h"
 using namespace romos;
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // module creation:
     
-romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString name, int x, int y, bool polyphonic)
+romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString name, int x, int y,
+  bool polyphonic)
 {
   // use default-names, if the name parameter is empty:
   if( name.isEmpty() )
@@ -19,6 +20,7 @@ romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString n
       case ModuleTypeRegistry::SUBTRACTOR:      name = "-";   break;
       case ModuleTypeRegistry::MULTIPLIER:      name = "*";   break;
       case ModuleTypeRegistry::DIVIDER:         name = "/";   break;
+      //case ModuleTypeRegistry::POWER:      name = "^";   break;
       case ModuleTypeRegistry::ADDER_3:         name = "+";   break;
       case ModuleTypeRegistry::ADDER_4:         name = "+";   break;
       case ModuleTypeRegistry::ADDER_5:         name = "+";   break;
@@ -29,7 +31,7 @@ romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString n
     }
   }
 
-  romos::Module *newModule = NULL;
+  romos::Module *newModule = nullptr;
 
   switch( typeIdentifier )
   {
@@ -126,7 +128,8 @@ romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString n
   newModule->allocateMemory();
 
   newModule->setModuleName(name); 
-    // must be called after allocateMemory because the Constant fills its I/O arrays with the corresponding value
+  // must be called after allocateMemory because the Constant fills its I/O arrays with the 
+  // corresponding value
 
   newModule->assignProcessingFunctions();
   newModule->resetStateForAllVoices();

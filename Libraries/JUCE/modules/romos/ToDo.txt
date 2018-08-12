@@ -5,6 +5,9 @@ maybe keep a parent reference (NULL by default)
      the same mutex and the top-level module aqcuires it once at the begin of each block
 
 Modules:
+-pow (binary arithmetic)
+-TimeSinceNoteOn/NoteDuration
+-function-table - gui has various means to fill it (load file, breakpoint curve, formula, etc.)
 -chek, what csound has - provide a similar set
 -meter/scope/analyzer - should show a miniature version directly on the breadboard, gui can show
  larger version with controls

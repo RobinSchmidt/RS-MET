@@ -79,7 +79,8 @@ romos::Module::~Module()
     // before deleting a module, you should disconnect its outputs (which may otherwise still be 
     // referenced by other modules)
 
-  // shouldn't this call cleanUp?
+  // doesn't call cleanUp because that's done by ModuleFactory::deleteModule before actually
+  // deleting it
 }
 
 void romos::Module::cleanUp()

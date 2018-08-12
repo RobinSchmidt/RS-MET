@@ -5,11 +5,16 @@ namespace romos
 {
 
 /** This class is used to map numeric module identifiers for module types to and from 
-indetifiers represented as strings. The former are mainly used in the DSP code where fast access 
+identifiers represented as strings. The former are mainly used in the DSP code where fast access 
 matters whereas the latter are mainly used for persistence purposes, where we want to have human 
 readability. It is implemented as a singleton class.
 
-\todo maybe use this also as ModuleFactory  */
+\todo 
+-maybe use this also as ModuleFactory  
+ ->maybe have a function registerModuleType(int tyepID, string typeName, createFunc, destroyFunc)
+
+
+*/
 
 class ModuleTypeRegistry
 {

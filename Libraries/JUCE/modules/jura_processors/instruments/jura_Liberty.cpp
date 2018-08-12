@@ -311,6 +311,10 @@ void LibertyAudioModule::setStateFromXml(const XmlElement& xmlState, const juce:
   bool markAsClean)
 {
   ScopedLock scopedLock(*lock);
+
+  // todo: notify the GUI that is should delete all references to the modules
+  // sendModulesWillBeDeletedNotification
+
   wrappedLiberty->reset();
 
   romos::TopLevelModule *topLevelModule = wrappedLiberty->getTopLevelModule();
@@ -382,7 +386,13 @@ ModulePropertiesEditor::ModulePropertiesEditor(CriticalSection *newPlugInLock,
   romos::Module* newModuleToEdit)
 {
   plugInLock   = newPlugInLock;
-  moduleToEdit = newModuleToEdit;
+
+  moduleToEdit = newModuleToEdit; 
+
+  // maybe we need to do something like:
+  // moduleToEdit->registerDeletionWatcher(this);
+  // an invalidate our pointer on deletion
+
   ScopedLock scopedLock(*plugInLock);
 
   setHeadlineStyle(Editor::SUB_HEADLINE);
@@ -396,7 +406,6 @@ ModulePropertiesEditor::ModulePropertiesEditor(CriticalSection *newPlugInLock,
   moduleTypeField->setJustification(Justification::centredLeft);
   moduleTypeField->setDescription(moduleTypeLabel->getDescription());
   addWidget(moduleTypeField, true, true);
-
 
   polyButton = new RButton(juce::String("Poly"));
   polyButton->setDescription(juce::String("Switch between polyphonic/monophonic mode"));

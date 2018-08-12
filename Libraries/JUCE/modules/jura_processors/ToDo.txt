@@ -1,13 +1,16 @@
 Liberty:
--use std::vector in jura::Mediator for the colleagues
+-create a project for the TestSuite
+-create doxygen documentation
+-use std::string instead of rosci::String
 -crash: load Whistle, click on the Parameter and then load anther patch via 
  forward/backward
  in ModulePropertiesEditor::widgetChanged, the moduleToEdit pointer is invalid
  ->is the module destroyed before its editor?
 
-
 -parameter values are not recalled..or well - it actually is, but reset to min when the
- parameter is selected
+ parameter is selected - probably the parameter editor sets the value when its created
+ instead of retrieving it from the parameter??
+
 -in the leaky integrator, some connections are drawn black
 -preset label has black text (same with scope's colormap loader)
  -the color gets fixed by opening and closing the color setup (sometimes just by
