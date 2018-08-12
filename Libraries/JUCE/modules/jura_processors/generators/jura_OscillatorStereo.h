@@ -1,37 +1,35 @@
 #ifndef jura_OscillatorStereo_h
 #define jura_OscillatorStereo_h
+// rename file to WaveOscillator.h
+// 
 
 /** This class wraps rosic::OscillatorStereo into a rosof::AudioModule to facilitate its use as
 plugIn or sub-module inside a plugin.  
 
 todo:
--rename to WaveOscillator
--make parameters modulatable (and test it)
--check, how Straightliner can handle it
+-make parameters modulatable (use ModulatableSlider/Parameter), where possible (and test it)
+-check, how Straightliner can handle additional modulation
 -add freq-offset parameter (as target for LFO)
 -make a separate gui editor and use the current only for straightliner - remove the "Mod" slider
- from tune (only striaghtliner uses this
+ from tune (only straightliner uses this
 -maybe, if we have just one single WaveOsc, we may put the additional parameters from the context
  menu directly on the main editor - good opportunity to test the multiple editor types feature
  ->in the DualOsc case, we need the smaller gui
 -i think, i need to factor out baseclass WaveOscEditorBase that contains what they all have in 
  common
 -figure out, why setSate...is called so many times on start up
-
--make a DualWaveOscillator with interactions 
+-make a DualWaveOscillator with interactions...maybe in rosic
 
 
 -let the osc add its output to what comes in (done - do this for all sources and instruments)   
 
 */
 
-class OscillatorStereoAudioModule : public AudioModuleWithMidiIn
-  // use ModulatableAudioModule as baseclass - but check how that affects the oscs in 
-  // Straightliner - how will they respond to (additional) modulation?
+class WaveOscModule : public AudioModuleWithMidiIn
 {
 
-  friend class OscillatorStereoEditor;
-  friend class OscillatorStereoEditorContextMenu;
+  friend class WaveOscEditor;
+  friend class WaveOscEditorContextMenu;
 
 public:
 
@@ -39,10 +37,10 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  OscillatorStereoAudioModule(CriticalSection *newPlugInLock, 
+  WaveOscModule(CriticalSection *newPlugInLock, 
     rosic::OscillatorStereo *oscToWrap = nullptr);
 
-  virtual ~OscillatorStereoAudioModule();
+  virtual ~WaveOscModule();
 
   //---------------------------------------------------------------------------------------------
   // automation and state management:
@@ -121,10 +119,10 @@ protected:
 //=================================================================================================
 
 /** This is a class for a context menu that can be opened to show and edit a comprehensive set of
-parameters for a stereo-oscillator. It is used by OscillatorStereoEditor by clicking on the 'More' 
+parameters for a stereo-oscillator. It is used by WaveOscEditor by clicking on the 'More' 
 button. */
 
-class OscillatorStereoEditorContextMenu : public ColourSchemeComponent,  public ChangeBroadcaster, 
+class WaveOscEditorContextMenu : public ColourSchemeComponent,  public ChangeBroadcaster, 
   public RButtonListener, public RSliderListener//, public ComponentMovementWatcher,
 {
 
@@ -134,11 +132,11 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  OscillatorStereoEditorContextMenu(OscillatorStereoAudioModule* newOscillatorModuleToEdit, 
+  WaveOscEditorContextMenu(WaveOscModule* newOscillatorModuleToEdit, 
     Component* componentToAttachTo);  
 
   /** Destructor. */
-  virtual ~OscillatorStereoEditorContextMenu();  
+  virtual ~WaveOscEditorContextMenu();  
 
   //---------------------------------------------------------------------------------------------
   // callbacks:
@@ -188,17 +186,17 @@ protected:
 
   virtual void createWidgets();
 
-  /** Pointer to the actual OscillatorStereoAudioModule object which is being edited. */
-  OscillatorStereoAudioModule* oscillatorModuleToEdit;
+  /** Pointer to the actual WaveOscModule object which is being edited. */
+  WaveOscModule* oscillatorModuleToEdit;
 
   juce_UseDebuggingNewOperator;
 };
 
 //===============================================================================================
 
-/** Editor for the StereoOscillator */
+/** Editor for the WaveOsc */
 
-class OscillatorStereoEditor : virtual public AudioModuleEditor, public AudioFileManager,
+class WaveOscEditor : virtual public AudioModuleEditor, public AudioFileManager,
   public RSliderListener
 {
 
@@ -208,11 +206,10 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  OscillatorStereoEditor(CriticalSection *newPlugInLock, 
-    OscillatorStereoAudioModule* newOscillatorStereoAudioModule);  
+  WaveOscEditor(CriticalSection *newPlugInLock, WaveOscModule* newWaveOscModule);  
 
   /** Destructor. */
-  virtual ~OscillatorStereoEditor();  
+  virtual ~WaveOscEditor();  
 
   //---------------------------------------------------------------------------------------------
   // setup:
@@ -249,15 +246,16 @@ public:
   //---------------------------------------------------------------------------------------------
   // public data members:
 
-  rsWaveformPlot                *waveformDisplay;
-  rsPlot               *emptyDisplay;
-  OscillatorStereoEditorContextMenu *contextMenu;
-  //Viewport                          *contextMenuViewport;
+  rsWaveformPlot *waveformDisplay;
+  rsPlot         *emptyDisplay;
+  WaveOscEditorContextMenu *contextMenu;
+  //Viewport *contextMenuViewport;
 
   RTextField   *waveFileLabel;
   RButton      *waveLoadButton, *wavePlusButton, *waveMinusButton, *moreButton;
   RSlider      *levelSlider, *pitchModulationSlider;
   TuningSlider *tuneSlider;
+    // remove the pitch-modulation slider - let it remain visible only for straightliner
 
 protected:
 

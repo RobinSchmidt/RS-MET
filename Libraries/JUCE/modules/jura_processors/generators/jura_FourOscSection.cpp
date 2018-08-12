@@ -10,19 +10,19 @@ FourOscSectionAudioModule::FourOscSectionAudioModule(CriticalSection *newPlugInL
 
   setModuleTypeName("FourOscillatorSection");
 
-  osc1Module = new OscillatorStereoAudioModule(lock, &wrappedFourOscSection->osc1);
+  osc1Module = new WaveOscModule(lock, &wrappedFourOscSection->osc1);
   osc1Module->setModuleName("Osc1");
   addChildAudioModule(osc1Module);
 
-  osc2Module = new OscillatorStereoAudioModule(lock, &wrappedFourOscSection->osc2);
+  osc2Module = new WaveOscModule(lock, &wrappedFourOscSection->osc2);
   osc2Module->setModuleName("Osc2");
   addChildAudioModule(osc2Module);
 
-  osc3Module = new OscillatorStereoAudioModule(lock, &wrappedFourOscSection->osc3);
+  osc3Module = new WaveOscModule(lock, &wrappedFourOscSection->osc3);
   osc3Module->setModuleName("Osc3");
   addChildAudioModule(osc3Module);
 
-  osc4Module = new OscillatorStereoAudioModule(lock, &wrappedFourOscSection->osc4);
+  osc4Module = new WaveOscModule(lock, &wrappedFourOscSection->osc4);
   osc4Module->setModuleName("Osc4");
   addChildAudioModule(osc4Module);
 }
@@ -40,10 +40,10 @@ FourOscSectionModuleEditor::FourOscSectionModuleEditor(CriticalSection *newPlugI
   setHeadlineText("Oscillators");
   setDescription("This is the oscillator section");
 
-  addChildEditor( osc1Editor = new OscillatorStereoEditor(lock, newFourOscSectionToEdit->osc1Module));
-  addChildEditor( osc2Editor = new OscillatorStereoEditor(lock, newFourOscSectionToEdit->osc2Module) );
-  addChildEditor( osc3Editor = new OscillatorStereoEditor(lock, newFourOscSectionToEdit->osc3Module) );
-  addChildEditor( osc4Editor = new OscillatorStereoEditor(lock, newFourOscSectionToEdit->osc4Module) );
+  addChildEditor( osc1Editor = new WaveOscEditor(lock, newFourOscSectionToEdit->osc1Module));
+  addChildEditor( osc2Editor = new WaveOscEditor(lock, newFourOscSectionToEdit->osc2Module) );
+  addChildEditor( osc3Editor = new WaveOscEditor(lock, newFourOscSectionToEdit->osc3Module) );
+  addChildEditor( osc4Editor = new WaveOscEditor(lock, newFourOscSectionToEdit->osc4Module) );
 
   stateWidgetSet->stateLoadButton->setDescription(   "Load oscillator section setting from file");
   stateWidgetSet->stateSaveButton->setDescription(   "Save oscillator section setting to file");

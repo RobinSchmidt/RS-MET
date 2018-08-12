@@ -1,14 +1,25 @@
-make WaveOscillator available for ToolChain
--override getEditor
--maybe change the interface to let getEditor take an int parameter such that we can have different
- types of editors for the same module
+Liberty:
+-in the NoiseFlute instrument, go to WhiteNoise module, select Out2
+ ->muliple connections are highlighted that shouldn't, the same in the 
+ NoteFilter
+-no sound
+-make intial gui size larger
 
 -make a class DualWaveOscillator
  -sync 1->2, 2->1 via blep
  -FM/PM 1->1, 1->2, 2->1, 2->2, FmVsPm, LinVsExp
  -RM
- -insert points for filters
+ -provide insert points for filters
  -optionally quantize tuning parameter (for example to (sub) harmonics)
+
+-make the Ladder freq-resp plot respond to modulation
+ -let it register itself at a RepaintManager object which regularly calls repaint
+ -or: make it a more general RegularUpdateManager which calls a settable "update"
+  function to which "repaint" can be passed (maybe via the callback objects or 
+  std::function)
+-in update(), we check an "isDirty" flag and if it is true, call repaintOnMessageThread
+
+
 
 Polyphony for ToolChain:
 -add a function bool supportsPolyphony() to AudioModule (returns false by default)
@@ -271,10 +282,6 @@ Framework:
   -solution: we need a rPopUpMenuDismissed callback in RPopUpMenuObserver, make sure, it gets 
    properly called when a popup is dismissed, override the callback in AutomatableWidget and set
    the flag false there
-
-EchoLab
- -has no custom gui
- -state recall triggers jassert
 
 MultiAnalyzer
  -no horizontal scrollbar in scope (but might be intentional?)

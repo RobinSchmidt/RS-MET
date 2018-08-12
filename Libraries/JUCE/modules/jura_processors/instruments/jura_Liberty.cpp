@@ -1320,17 +1320,11 @@ ModularBlockDiagramPanel::ModularBlockDiagramPanel(LibertyInterfaceMediator *int
   normalFontHeight = normalFont->getFontHeight();
   smallFontHeight  = smallFont->getFontHeight();
 
-  // old - delete when the new version works:
-  //bigFontHeight = boldFont10px.getFontHeight();    
-  ////normalFontHeight = boldFont10px.getFontHeight();   // use 9 px font later
-  //normalFontHeight = normalFont9px.getFontHeight();   // use 9 px font later
-  //smallFontHeight  = normalFont7px.getFontHeight();  // height for small text
-
   pinDistance      = smallFontHeight + m;
   arrowLength      = 12;  
   arrowHeadLength  = 8;
 
-
+  // todo: use colors from colorscheme
   wireColour      = Colours::black;
   highlightColour = Colours::red;
 
@@ -1748,17 +1742,20 @@ void ModularBlockDiagramPanel::mouseUp(const MouseEvent &e)
 void ModularBlockDiagramPanel::paint(Graphics &g)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
-  g.fillAll(Colours::lavender); // \todo obtain the background colour from the colorscheme 
+
+  //g.fillAll(Colours::lavender);   // \todo obtain the background colour from the colorscheme 
+  g.fillAll(getPlotColourScheme().topLeft);  
+    // we should actually call drawBilinearGradient with the colors for the 4 corners
+
   drawGrid(g);
   drawDiagram(g);
 }
 
 void ModularBlockDiagramPanel::paintOverChildren(Graphics &g)
 {
-  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+  //ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
   // do nothing - avoid outline drawing from the baseclass
 }
-
 
 /*
 void ModularBlockDiagramPanel::resized()
@@ -2386,12 +2383,21 @@ void ModularBlockDiagramPanel::updateAudioConnectionArray()
   */
 }
 
+inline void setPixel(Graphics &g, int x, int y)
+{
+  // preliminary - try to find a more efficient way ...and move to GraphicsTools
+  g.fillRect(x, y, 1, 1);
+}
+
 void ModularBlockDiagramPanel::drawGrid(Graphics &g)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
   int numVerticalLines   = inPinDistances(getWidth())+1;
   int numHorizontalLines = inPinDistances(getHeight())+1;
-  g.setColour(Colours::black);  // preliminary
+
+  //g.setColour(Colours::black);  // preliminary
+  g.setColour(getPlotColourScheme().coarseGrid);  
+
   if( gridStyle == GRID_LINES )
   {
     for(int x=1; x<numVerticalLines; x++)
@@ -2406,7 +2412,8 @@ void ModularBlockDiagramPanel::drawGrid(Graphics &g)
       for(int y=1; y<numHorizontalLines; y++)
       {
         //g.setPixel(inPixels(x), inPixels(y)); // not available in juce 5.2.0 anymore
-        g.fillRect(inPixels(x), inPixels(y), 1, 1);
+        //g.fillRect(inPixels(x), inPixels(y), 1, 1);
+        setPixel(g, inPixels(x), inPixels(y));
       }
     }
   }
@@ -2459,6 +2466,8 @@ void ModularBlockDiagramPanel::drawDiagram(Graphics &g)
     g.drawLine(getLineForConnection(audioConnectionsInLasso[i]));
 }
 
+
+
 void ModularBlockDiagramPanel::drawModule(Graphics &g, romos::Module *moduleToDraw)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
@@ -2481,6 +2490,36 @@ void ModularBlockDiagramPanel::drawModule(Graphics &g, romos::Module *moduleToDr
     g.setColour(plotColourScheme.getCurveColourUniform(0).withAlpha(0.375f));
     int offset = 8;
     g.drawRect(x-offset, y+offset, w, h, t);
+
+    setPixel(g, x-2, y+2);
+    setPixel(g, x-2, y+3);
+    setPixel(g, x-3, y+2);
+    setPixel(g, x-3, y+3);
+
+    setPixel(g, x-5, y+5);
+    setPixel(g, x-5, y+6);
+    setPixel(g, x-6, y+5);
+    setPixel(g, x-6, y+6);
+
+    setPixel(g, x+w-2, y+h+2);
+    setPixel(g, x+w-2, y+h+3);
+    setPixel(g, x+w-3, y+h+2);
+    setPixel(g, x+w-3, y+h+3);
+
+    setPixel(g, x+w-5, y+h+5);
+    setPixel(g, x+w-5, y+h+6);
+    setPixel(g, x+w-6, y+h+5);
+    setPixel(g, x+w-6, y+h+6);
+
+    setPixel(g, x-2+1, y+h+2-2);
+    setPixel(g, x-2+1, y+h+3-2);
+    setPixel(g, x-3+1, y+h+2-2);
+    setPixel(g, x-3+1, y+h+3-2);
+
+    setPixel(g, x-5+1, y+h+5-2);
+    setPixel(g, x-5+1, y+h+6-2);
+    setPixel(g, x-6+1, y+h+5-2);
+    setPixel(g, x-6+1, y+h+6-2);
 
     /*
     // setPixel not available anymore in juce 5.2 - find replacement
@@ -2516,7 +2555,10 @@ void ModularBlockDiagramPanel::drawModule(Graphics &g, romos::Module *moduleToDr
     */
   }
 
-  g.setColour(Colours::lavender); // preliminary
+  //g.setColour(Colours::lavender); // preliminary
+
+  g.setColour(getPlotColourScheme().topLeft);  
+
   g.fillRect(x, y, w, h);
 
   g.setColour(plotColourScheme.getCurveColourUniform(0));
@@ -3017,7 +3059,6 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, LibertyAudioModule*
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
 
 
-
   interfaceMediator = new LibertyInterfaceMediator(newPlugInLock, newLibertyAudioModule);
 
   structureTreeView = new ModularStructureTreeView(interfaceMediator);
@@ -3038,10 +3079,8 @@ LibertyEditor::LibertyEditor(CriticalSection *newPlugInLock, LibertyAudioModule*
   addChildColourSchemeComponent(diagramScrollContainer);
 
   presetSectionPosition = BELOW_HEADLINE;
-  isTopLevelEditor      = true;
+  //isTopLevelEditor      = true;
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
-
-
 
   updateWidgetsAccordingToState();
 }

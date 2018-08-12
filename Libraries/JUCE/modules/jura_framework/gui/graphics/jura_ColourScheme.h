@@ -1,12 +1,12 @@
 #ifndef jura_ColourScheme_h
 #define jura_ColourScheme_h
 
-/** This is a baseclass fo ColourSchemes for various GUI objects - like, for example, widgets, plots,
-editors, etc. The basclass defines some macro-parameters that can be applied to all these objects
-such as the gnereal look (bright-on-dark vs. dark on bright), a hue offset, a saturation multiplier,
-etc. Whe the user changes one of these macro parameters, a call to updateColours() will be
-triggered - you need to override this function in your subclass to compute the actual colours.
-
+/** This is a baseclass fo ColourSchemes for various GUI objects - like, for example, widgets, 
+plots, editors, etc. The basclass defines some macro-parameters that can be applied to all these 
+objects such as the general look (bright-on-dark vs. dark-on-bright), a hue offset, a saturation 
+multiplier, etc. Whe the user changes one of these macro parameters, a call to updateColours() 
+will be triggered - you need to override this function in your subclass to compute the actual 
+colours.
 
 default:
 sky: dark-on-bright, hue= 0.65, saturation=0.60

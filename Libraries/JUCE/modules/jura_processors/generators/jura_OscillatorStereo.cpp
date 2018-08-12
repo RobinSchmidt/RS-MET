@@ -2,7 +2,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlugInLock,
+WaveOscModule::WaveOscModule(CriticalSection *newPlugInLock,
   rosic::OscillatorStereo *oscToWrap) : AudioModuleWithMidiIn(newPlugInLock)
 {
   //jassert( newOscillatorStereoToWrap != NULL ); // you must pass a valid rosic-object to the constructor
@@ -21,7 +21,7 @@ OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlu
   createParameters();
 }
 
-OscillatorStereoAudioModule::~OscillatorStereoAudioModule()
+WaveOscModule::~WaveOscModule()
 {
   if(wrappedOscIsOwned) {
     delete wrappedOsc;
@@ -30,9 +30,9 @@ OscillatorStereoAudioModule::~OscillatorStereoAudioModule()
 }
 
 
-AudioModuleEditor* OscillatorStereoAudioModule::createEditor(int type)
+AudioModuleEditor* WaveOscModule::createEditor(int type)
 {
-  return new OscillatorStereoEditor(lock, this); // get rid of passing the lock
+  return new WaveOscEditor(lock, this); // get rid of passing the lock
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
   return success;
 }
 
-XmlElement* OscillatorStereoAudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
+XmlElement* WaveOscModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   // store the inherited controller mappings:
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
@@ -127,7 +127,7 @@ XmlElement* OscillatorStereoAudioModule::getStateAsXml(const juce::String& state
   return xmlState;
 }
 
-void OscillatorStereoAudioModule::setStateFromXml(const XmlElement& xmlState,
+void WaveOscModule::setStateFromXml(const XmlElement& xmlState,
                                                  const juce::String& stateName, bool markAsClean)
 {
   // restore the inherited controller mappings:
@@ -141,7 +141,7 @@ void OscillatorStereoAudioModule::setStateFromXml(const XmlElement& xmlState,
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void OscillatorStereoAudioModule::createParameters()
+void WaveOscModule::createParameters()
 {
   typedef MetaControlledParameter Param;
   Param* p;
@@ -393,8 +393,8 @@ void OscillatorStereoAudioModule::createParameters()
 
 // construction/destruction:
 
-OscillatorStereoEditorContextMenu::OscillatorStereoEditorContextMenu(
-  OscillatorStereoAudioModule* newOscillatorModuleToEdit, Component* componentToAttachTo)
+WaveOscEditorContextMenu::WaveOscEditorContextMenu(
+  WaveOscModule* newOscillatorModuleToEdit, Component* componentToAttachTo)
   //: ComponentMovementWatcher(componentToAttachTo)
 {
   jassert(newOscillatorModuleToEdit != nullptr);
@@ -404,7 +404,7 @@ OscillatorStereoEditorContextMenu::OscillatorStereoEditorContextMenu(
   setSize(180, 488);
 }
 
-OscillatorStereoEditorContextMenu::~OscillatorStereoEditorContextMenu()
+WaveOscEditorContextMenu::~WaveOscEditorContextMenu()
 {
   deleteAllChildren();
 }
@@ -412,7 +412,7 @@ OscillatorStereoEditorContextMenu::~OscillatorStereoEditorContextMenu()
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void OscillatorStereoEditorContextMenu::rButtonClicked(RButton *buttonThatWasClicked)
+void WaveOscEditorContextMenu::rButtonClicked(RButton *buttonThatWasClicked)
 {
   /* not needed anymore
   if( oscillatorModuleToEdit == NULL )
@@ -431,7 +431,7 @@ void OscillatorStereoEditorContextMenu::rButtonClicked(RButton *buttonThatWasCli
   sendChangeMessage();
 }
 
-void OscillatorStereoEditorContextMenu::rSliderValueChanged(RSlider *sliderThatHasChanged)
+void WaveOscEditorContextMenu::rSliderValueChanged(RSlider *sliderThatHasChanged)
 {
   /*
   if( oscillatorModuleToEdit == NULL )
@@ -443,7 +443,7 @@ void OscillatorStereoEditorContextMenu::rSliderValueChanged(RSlider *sliderThatH
   sendChangeMessage();
 }
 
-void OscillatorStereoEditorContextMenu::createWidgets()
+void WaveOscEditorContextMenu::createWidgets()
 {
   typedef AutomatableSlider Sld;  Sld* s;
   typedef AutomatableButton Btn;  Btn* b;
@@ -661,7 +661,7 @@ void OscillatorStereoEditorContextMenu::createWidgets()
 
 /*
 // may be obsolete - verify and delete
-void OscillatorStereoEditorContextMenu::updateWidgetsAccordingToState()
+void WaveOscEditorContextMenu::updateWidgetsAccordingToState()
 {
   if( oscillatorModuleToEdit == NULL )
     return;
@@ -700,7 +700,7 @@ void OscillatorStereoEditorContextMenu::updateWidgetsAccordingToState()
 }
 */
 
-void OscillatorStereoEditorContextMenu::resized()
+void WaveOscEditorContextMenu::resized()
 {
   Component::resized();
   int x  = 0;
@@ -751,34 +751,34 @@ void OscillatorStereoEditorContextMenu::resized()
 }
 
 /*
-void OscillatorStereoEditorContextMenu::componentMovedOrResized(bool wasMoved, bool wasResized)
+void WaveOscEditorContextMenu::componentMovedOrResized(bool wasMoved, bool wasResized)
 {
 int dummy = 0;
 }
 
-void OscillatorStereoEditorContextMenu::componentPeerChanged()
+void WaveOscEditorContextMenu::componentPeerChanged()
 {
 int dummy = 0;
 }
 */
 
 //=================================================================================================
-// class OscillatorStereoEditor:
+// class WaveOscEditor:
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
-  OscillatorStereoAudioModule* newOscillatorStereoAudioModule)
-  : AudioModuleEditor(newOscillatorStereoAudioModule)
+WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
+  WaveOscModule* newWaveOscModule)
+  : AudioModuleEditor(newWaveOscModule)
 {
   // init the pointer to the modulator to be edited to NULL:
   oscillatorToEdit = NULL;
-  jassert( newOscillatorStereoAudioModule != NULL );
+  jassert( newWaveOscModule != NULL );
   createWidgets();
 
   // maybe create this only when needed and init to nullptr:
-  contextMenu = new OscillatorStereoEditorContextMenu(newOscillatorStereoAudioModule, this);
+  contextMenu = new WaveOscEditorContextMenu(newWaveOscModule, this);
   contextMenu->addChangeListener(this);
   contextMenu->setAlwaysOnTop(true);
   contextMenu->setOpaque(true);
@@ -798,17 +798,17 @@ OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
   // initialize the current directory for waveform loading and saving:
   AudioFileManager::setActiveDirectory(getSupportDirectory() + "/Samples/SingleCycle/Classic");
 
-  //setOscillatorToEdit(newOscillatorStereoAudioModule->wrappedOscillatorStereo);
+  //setOscillatorToEdit(newWaveOscModule->wrappedOscillatorStereo);
   // this will also set up the widgets according to the state of the oscillator
 
-  oscillatorToEdit = newOscillatorStereoAudioModule->wrappedOsc; // get rid of this...
+  oscillatorToEdit = newWaveOscModule->wrappedOsc; // get rid of this...
   updateWidgetsAccordingToState();
 
   // widget arrangement is optimized for this size:
   setSize(232, 136);
 }
 
-OscillatorStereoEditor::~OscillatorStereoEditor()
+WaveOscEditor::~WaveOscEditor()
 {
   delete contextMenu; // this is not a child component -> must be deleted separately (later, when we use a viewport, we don't need this anymore)
 
@@ -821,7 +821,7 @@ OscillatorStereoEditor::~OscillatorStereoEditor()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // callbacks:
 
-void OscillatorStereoEditor::rButtonClicked(RButton *buttonThatWasClicked)
+void WaveOscEditor::rButtonClicked(RButton *buttonThatWasClicked)
 {
   if( oscillatorToEdit == NULL )
     return;
@@ -864,7 +864,7 @@ void OscillatorStereoEditor::rButtonClicked(RButton *buttonThatWasClicked)
   //sendChangeMessage();
 }
 
-void OscillatorStereoEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
+void WaveOscEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
 {
   /*
   updateWidgetsAccordingToState();
@@ -882,7 +882,7 @@ void OscillatorStereoEditor::changeListenerCallback(ChangeBroadcaster *objectTha
     AudioModuleEditor::changeListenerCallback(objectThatHasChanged);
 }
 
-void OscillatorStereoEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
+void WaveOscEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
 {
   if( oscillatorToEdit == NULL )
     return;
@@ -898,7 +898,7 @@ void OscillatorStereoEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
 //-------------------------------------------------------------------------------------------------
 //
 
-void OscillatorStereoEditor::updateWidgetsAccordingToState()
+void WaveOscEditor::updateWidgetsAccordingToState()
 {
   if( oscillatorToEdit == NULL )
     return;
@@ -916,7 +916,7 @@ void OscillatorStereoEditor::updateWidgetsAccordingToState()
   contextMenu->updateWidgetsAccordingToState();
 }
 
-void OscillatorStereoEditor::mouseDown(const MouseEvent &e)
+void WaveOscEditor::mouseDown(const MouseEvent &e)
 {
   if( oscillatorToEdit == NULL )
     return;
@@ -929,7 +929,7 @@ void OscillatorStereoEditor::mouseDown(const MouseEvent &e)
   }
 }
 
-void OscillatorStereoEditor::resized()
+void WaveOscEditor::resized()
 {
   Editor::resized();
   int x = 0;
@@ -991,7 +991,7 @@ void OscillatorStereoEditor::resized()
 }
 
 /*
-void OscillatorStereoEditor::moved()
+void WaveOscEditor::moved()
 {
 //int x = getScreenX() + getWidth();
 //int y = getScreenY();
@@ -1000,7 +1000,7 @@ contextMenu->setVisible(false);
 }
 */
 
-void OscillatorStereoEditor::createWidgets()
+void WaveOscEditor::createWidgets()
 {
   addPlot( waveformDisplay = new rsWaveformPlot() );
   waveformDisplay->setAutoReRendering(false);
@@ -1076,7 +1076,7 @@ void OscillatorStereoEditor::createWidgets()
   pitchModulationSlider->setStringConversionFunction(&valueToString2);
 }
 
-void OscillatorStereoEditor::updatePlot()
+void WaveOscEditor::updatePlot()
 {
   if( oscillatorToEdit == NULL )
     return;
@@ -1113,7 +1113,7 @@ void OscillatorStereoEditor::updatePlot()
   emptyDisplay->setVisible(     oscillatorToEdit->isMuted() );
 }
 
-void OscillatorStereoEditor::updateWidgetVisibility()
+void WaveOscEditor::updateWidgetVisibility()
 {
   if( oscillatorToEdit == NULL )
     return;
@@ -1130,7 +1130,7 @@ void OscillatorStereoEditor::updateWidgetVisibility()
   emptyDisplay->setVisible(           oscillatorToEdit->isMuted() );
 }
 
-bool OscillatorStereoEditor::setAudioData(AudioSampleBuffer* newBuffer,
+bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
   const juce::File& underlyingFile, bool markAsClean)
 {
   if( newBuffer != NULL && newBuffer->getNumChannels() > 0 && newBuffer->getNumSamples() > 0 )

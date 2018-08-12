@@ -43,8 +43,8 @@ public:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     jassertfalse; // no code yet dragged over - maybe we should accumulate the outputs of
-    // our embedded OscillatorStereoAudioModule objects - i.e. clear the buffer and let
-    // OscillatorStereoAudioModule have a function:
+    // our embedded WaveOscModule objects - i.e. clear the buffer and let
+    // WaveOscModule have a function:
     // accumulateIntoBlock(double **inOutBuffer, int numChannels, int numSamples)
     // and call that here...hmm...but how is that supposed to work when rosic::Straightliner
     // has a rosic::FourOscSection object - or maybe it hasn't? check that out....
@@ -57,7 +57,7 @@ protected:
 
   // we maintain wrappped versions (into rosof::AudioModules) of the synth's building blocks 
   // here in order to make them automatable:
-  OscillatorStereoAudioModule *osc1Module, *osc2Module, *osc3Module, *osc4Module;
+  WaveOscModule *osc1Module, *osc2Module, *osc3Module, *osc4Module;
 
 
   juce_UseDebuggingNewOperator;
@@ -72,7 +72,7 @@ class FourOscSectionModuleEditor : public AudioModuleEditor
 
 public:
   
-  /** Constructor. You must pass 4 valid pointers to OscillatorStereoAudioModule objects. */
+  /** Constructor. You must pass 4 valid pointers to WaveOscModule objects. */
   FourOscSectionModuleEditor(CriticalSection *newPlugInLock, 
     FourOscSectionAudioModule *newFourOscSectionToEdit);
 
@@ -83,7 +83,7 @@ public:
 protected:
 
   // the 4 sub-editors for the 4 oscillators:
-  OscillatorStereoEditor *osc1Editor, *osc2Editor, *osc3Editor, *osc4Editor;
+  WaveOscEditor *osc1Editor, *osc2Editor, *osc3Editor, *osc4Editor;
 
   juce_UseDebuggingNewOperator;
 };
