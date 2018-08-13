@@ -35,6 +35,16 @@ rsString::rsString(const char *initialString)
   }
 }
 
+rsString::rsString(const std::string& str)
+{
+  length = (int)str.length();
+  reservedSize = length+1;
+  cString      = new char[reservedSize];
+  for(int i = 0; i < length; i++)
+    cString[i] = str[i];
+  cString[length] = '\0';
+}
+
 rsString::rsString(const rsString &other)
 {
   length       = other.length;
