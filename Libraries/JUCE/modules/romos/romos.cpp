@@ -43,8 +43,25 @@ using namespace rosic;
 #include "Modules/romos_ModulationModules.cpp"
 #include "Modules/romos_SoundGeneratorModules.cpp"
 
-
-#include "TestSuite/romos_TestModuleBuilder.cpp" // seems to be needed by ModuleFactory - get rid of this dependency
+//#include "TestSuite/AutomaticTests.cpp"
+//#include "TestSuite/InteractiveTests.cpp"
+//#include "TestSuite/romos_ConcreteModularSystemTests.cpp"
+//#include "TestSuite/romos_ConcretePerformanceTests.cpp"
+//#include "TestSuite/romos_ConcreteProcessingTests.cpp"
+//#include "TestSuite/romos_ContainerManipulationTests.cpp"
+//#include "TestSuite/romos_GenerateDesiredOutput.cpp"
+//#include "TestSuite/romos_GlobalFrameworkTests.cpp"
+//#include "TestSuite/romos_InteractivePlottingTests.cpp"
+//#include "TestSuite/romos_InteractiveTestRunner.cpp"
+//#include "TestSuite/romos_ModularSystemTest.cpp"
+//#include "TestSuite/romos_ModuleBuildCodeGenerator.cpp"
+//#include "TestSuite/romos_PerformanceTest.cpp"
+//#include "TestSuite/romos_PerformanceTestRunner.cpp"
+//#include "TestSuite/romos_ProcessingTest.cpp"
+//#include "TestSuite/romos_TestEventGenerator.cpp"
+#include "TestSuite/romos_TestModuleBuilder.cpp"
+//#include "TestSuite/romos_UnitTest.cpp"
+//#include "TestSuite/romos_UnitTestRunner.cpp"
 
 #endif
 

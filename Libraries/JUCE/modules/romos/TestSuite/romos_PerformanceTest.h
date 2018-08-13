@@ -80,7 +80,7 @@ namespace romos
 
     int numFramesPerRun, numRuns;
     
-    ProcessorCycleCounter counter;
+    rosic::ProcessorCycleCounter counter;
 
 
 

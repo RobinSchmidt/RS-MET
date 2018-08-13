@@ -59,14 +59,12 @@
 #include "Modules/romos_SoundGeneratorModules.h"
 
 
-
-
-//#include "TestSuite/romos_TestModuleBuilder.h"
 #include "TestSuite/romos_ModuleBuildCodeGenerator.h"
 #include "TestSuite/romos_TestModuleBuilder.h" // not needed anymore when new testsuite is complete
 #include "TestSuite/romos_UnitTestRunner.h"
-//#include "TestSuite/romos_PerformanceTestRunner.h" // complains about ProcessorCycleCounter - check that
+#include "TestSuite/romos_PerformanceTestRunner.h"
 #include "TestSuite/romos_InteractiveTestRunner.h"
+// maybe more?
 
 #include "Framework/romos_Liberty.h"
 
