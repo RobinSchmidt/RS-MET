@@ -1,3 +1,5 @@
+// code seems to be obsolete and superseded by stuff in class TestModuleBuilder
+/*
 romos::Module* romos::createLeakyIntegrator(int x, int y, const rosic::rsString &name)
 {
   ModuleContainer *module = createModuleContainer(x, y, name);
@@ -90,5 +92,4 @@ romos::Module* romos::createTestFilter1(int x, int y, const rosic::rsString &nam
 
   return module;
 }
-
-
+*/

@@ -164,7 +164,7 @@ void writeInputSequencesToFile()
   FILE *file = fopen("c:\\tmp\\InputSequences.txt", "w");
   if( file == NULL )
   {
-    creat("c:\\tmp\\InputSequences.txt", S_IWRITE);
+    _creat("c:\\tmp\\InputSequences.txt", S_IWRITE);
     file = fopen("c:\\tmp\\InputSequences.txt", "w");
   }
   if( file != NULL )
