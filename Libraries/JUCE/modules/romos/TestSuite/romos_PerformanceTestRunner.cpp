@@ -21,7 +21,7 @@ void PerformanceTestRunner::runAllTestsAndPrintResultsToConsole(bool createLogFi
   report += runAtomicModulePerformanceTests();
 
   if( createLogFile == true )
-    rosic::writeStringToFile("D:/TmpData/RomosPerformanceLog.txt", report.getRawString());
+    rosic::writeStringToFile("E:/TmpData/RomosPerformanceLog.txt", report.getRawString());
 }
 
 

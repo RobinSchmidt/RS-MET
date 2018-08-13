@@ -19,6 +19,17 @@ namespace romos
     double *buffer;    
   };
 
+  // todo: MultiUnitDelay/UnitDelayChain: provides outputs for x[n-1], x[n-2], ... - useful for 
+  // building filters
+
+  // DelayLine: user can choose interpolation (round, linear, allpass, etc.) on gui
+  // Inputs: Audio-In, Delay (in seconds)
+  // Outputs: delayed audio
+
+  // MultiTapDelay: x[n-N1], x[n-N2], ...
+  // Inputs: Audio-In, Delay-times
+  // Outputs: delayed audio signals
+
 } 
 
 #endif 

@@ -3378,6 +3378,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestHelpers.h">
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestsMain.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\romos.h">
       <Filter>Juce Modules\romos</Filter>
     </ClInclude>

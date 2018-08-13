@@ -2549,6 +2549,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTest.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTestRunner.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestHelpers.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestsMain.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\romos.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\angelscript.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_array.h"/>

@@ -7,6 +7,7 @@
 #include "PerformanceTests/PerformanceTests.h" 
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 
+#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.h"
 
 int main(int argc, char* argv[])
 {
@@ -69,7 +70,7 @@ int main(int argc, char* argv[])
   // Generators:
   //bouncillator();
   //bouncillatorFormula();
-  freqVsPhaseMod();
+  //freqVsPhaseMod();
   //rayBouncer();
   //hilbertCurve();
   //circleFractals(); // rename to spirograph
@@ -443,6 +444,15 @@ int main(int argc, char* argv[])
 
   //===============================================================================================
   // Modular:
+
+  //runModularUnitTests();
+  runModularPerformanceTests(true);
+  //testModularCodeGenerator();
+  //runModularInteractiveTests();  // triggers assert due to plotting code
+
+  // important atomic modules for performance tests: 
+  // Biquad: pure code, atomic module, wired model
+  // Phasor
 
   //runModularTests(); // we need to make a .h file with the declarations
 

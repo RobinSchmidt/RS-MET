@@ -13,15 +13,18 @@ namespace romos
     CREATE_COMMON_DECLARATIONS_3(ClipperModule);
   };
 
-  /** Computes the sine and cosine of 2*pi times the input value (multiplication of the argument by 2*pi results in a sine and cosing wave
-  with a period of unity). */
+  /** Computes the sine and cosine of 2*pi times the input value (multiplication of the argument by 
+  2*pi results in a sine and cosing wave with a period of unity). */
   class SinCosModule : public ModuleAtomic
   {
     CREATE_COMMON_DECLARATIONS_1(SinCosModule);
   };
 
   // round, ceil, floor, abs, max, min
-  // rawToDecibels, DecibelsToRaw, pitchToFrequency (have also version with custom mapping (microtuning)), LinearToExponential, etc.
+  // rawToDecibels, DecibelsToRaw, pitchToFrequency (have also version with custom mapping 
+  // (microtuning)), LinearToExponential, etc.
+
+  // Function (evaluates expression entered on the gui), FunctionNto1, Function1ToN, FunctionNToM
 
 } 
 

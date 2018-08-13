@@ -1,6 +1,8 @@
 #ifndef romos_SoundGeneratorModules_h
 #define romos_SoundGeneratorModules_h
 
+
+
 #include "../Framework/romos_ModuleAtomic.h"
 #include "romos_ModuleDefinitionMacros.h"
 
@@ -18,7 +20,8 @@ namespace romos
   \todo
   -include a shape parameter (number of added noise-gens - 2: triangular, etc.)
   -include min/max parameters
-  -include (boolean) variance-normalization parameter (if true, divide output by sqrt(shape) before scaling and offsetting)
+  -include (boolean) variance-normalization parameter (if true, divide output by sqrt(shape) before
+   scaling and offsetting)
   */
   class WhiteNoise : public ModuleWithParameters
   {
@@ -29,7 +32,8 @@ namespace romos
   protected:
     virtual void allocateMemory();
     virtual void freeMemory();
-    unsigned long *state; // actually, we should use a self-defined uint32 to make sure it's machine independent
+    unsigned long *state; // actually, we should use a self-defined uint32 to make sure it's 
+                          // machine independent ...or maybe use RAPT::rsNoiseGenerator
   };
 
 
@@ -52,6 +56,7 @@ namespace romos
     virtual void freeMemory();
     double *phases;
   };
+  // rename to Phasor
 
 
   
