@@ -5,6 +5,7 @@ maybe keep a parent reference (NULL by default)
      the same mutex and the top-level module aqcuires it once at the begin of each block
 
 Modules:
+-text - lets the user place arbitrary text fields on the structure view for comments, etc.
 -pow (binary arithmetic)
 -TimeSinceNoteOn/NoteDuration
 -function-table - gui has various means to fill it (load file, breakpoint curve, formula, etc.)

@@ -23,6 +23,7 @@ romos::ModuleAtomic::~ModuleAtomic()
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // setup of pins:
 
+
 void ModuleAtomic::initInputPins(int numberOfPins, ...)
 {
   va_list ap;
@@ -100,7 +101,17 @@ void romos::ModuleAtomic::addAudioInput(const rosic::rsString &pinName)
   rosic::appendElement(audioInputNames, pinName);
   rosic::appendElement(inputPins,       AudioInputPinData());
   numInputs++;
-  //allocateAudioInputs();
+  //allocateAudioInputs();  // old - there are no input pointers anymore
+  updateInputPointersAndInFrameStrides();
+}
+// get rid of that when function below works - but check, if subclasses override it - if so, make
+// them override the new version instead
+
+void romos::ModuleAtomic:: addAudioInput(const char* pinName)
+{
+  rosic::appendElement(audioInputNames, rosic::rsString(pinName));
+  rosic::appendElement(inputPins,       AudioInputPinData());
+  numInputs++;
   updateInputPointersAndInFrameStrides();
 }
 
@@ -111,6 +122,15 @@ void romos::ModuleAtomic::addAudioOutput(const rosic::rsString &pinName)
   outFrameStride++;
   allocateAudioOutputs();
 }
+// get rid if below works, same as for addAudioInput
+
+void romos::ModuleAtomic::addAudioOutput(const char* pinName)
+{
+  rosic::appendElement(audioOutputNames, rosic::rsString(pinName));
+  outFrameStride++;
+  allocateAudioOutputs();
+}
+
 
 void romos::ModuleAtomic::deleteAudioInput(int index)
 {

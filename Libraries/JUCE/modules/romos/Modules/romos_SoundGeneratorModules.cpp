@@ -47,6 +47,11 @@ void Phasor::initialize()
 {
   initInputPins(1, rosic::rsString("Freq"));
   initOutputPins(1, rosic::rsString("Out"));
+
+  // code below crashes:
+  //initInputPins( 1, "Freq");
+  //initOutputPins(1, "Out");
+  // todo: rewrite initInputPins such that it can take const char* arguments
 }
 INLINE void Phasor::process(Module *module, double *in1, double *out, int voiceIndex)
 {
@@ -76,7 +81,7 @@ void Phasor::freeMemory()
 {
   ModuleAtomic::freeMemory();
   delete[] phases;
-  //phases = NULL;
+  phases = nullptr;
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(Phasor);
 

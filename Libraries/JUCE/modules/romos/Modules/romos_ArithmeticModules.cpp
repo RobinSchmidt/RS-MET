@@ -201,8 +201,11 @@ namespace romos
     if( !isInputPinConnected(inputPinIndex) )
     {
       Module::connectInputPinTo(inputPinIndex, sourceModule, sourceOutputPinIndex);
-      if( inputPinIndex == getNumInputPins()-1 )
-        addAudioInput(rosic::rsString());
+      if(inputPinIndex == getNumInputPins()-1)
+      {
+        addAudioInput("");
+        //addAudioInput(rosic::rsString()); // old
+      }
     }
   }
   void AdderNModule::disconnectInputPin(int inputPinIndex)

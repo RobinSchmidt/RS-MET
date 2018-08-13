@@ -1,4 +1,8 @@
 Liberty:
+-let all fucntions that currently take an rsString as parameter take a "const char *"
+ ->client code is not concerned about how strings are stored internally, smae goes for
+ atomic module definition code
+-check biquad design formulas (TestNoise/ColoringFilter seems not to work properly)
 -check voice allocation/polyphony bug with TestOsc
  -when a note is played, not realeased, another is played, the first cannot be triggered
   again
