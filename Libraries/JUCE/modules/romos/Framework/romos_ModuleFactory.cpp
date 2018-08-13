@@ -75,7 +75,7 @@ romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString n
   case ModuleTypeRegistry::RECIPROCAL:                newModule = new ReciprocalModule();           break;
   case ModuleTypeRegistry::UNIT_DELAY:                newModule = new UnitDelayModule();            break;
 
-  case ModuleTypeRegistry::PERIODIC_LINEAR_RAMP:      newModule = new PeriodicLinearRamp();         break;
+  case ModuleTypeRegistry::PHASOR:                    newModule = new Phasor();                     break;
   case ModuleTypeRegistry::WHITE_NOISE:               newModule = new WhiteNoise();                 break;
   case ModuleTypeRegistry::BANDLIMITED_IMPULSE_TRAIN: newModule = new BandlimitedImpulseTrain();    break;
   case ModuleTypeRegistry::BLIT_SAW_OSCILLATOR:       newModule = new BlitSaw();                    break;

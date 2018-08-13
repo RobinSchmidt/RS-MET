@@ -70,7 +70,7 @@ bool ModuleTypeRegistry::hasModuleTypeEditor(int typeCode)
   case UNIT_DELAY:
   case ADDER_N: 
   case VOICE_COMBINER: 
-  case PERIODIC_LINEAR_RAMP:
+  case PHASOR:
   case CLIPPER:
   case SIN_COS:
   case AUDIO_INPUT: 
@@ -141,7 +141,7 @@ ModuleTypeRegistry::ModuleTypeRegistry()
 
 
   // Generators:
-  identifierNameMap.insertKeyValuePair(PERIODIC_LINEAR_RAMP,      rosic::rsString("PeriodicLinearRamp"));
+  identifierNameMap.insertKeyValuePair(PHASOR,                    rosic::rsString("Phasor"));
   identifierNameMap.insertKeyValuePair(WHITE_NOISE,               rosic::rsString("WhiteNoise"));
   identifierNameMap.insertKeyValuePair(BANDLIMITED_IMPULSE_TRAIN, rosic::rsString("BandlimitedImpulseTrain"));
   identifierNameMap.insertKeyValuePair(BLIT_SAW_OSCILLATOR,       rosic::rsString("BlitSaw"));

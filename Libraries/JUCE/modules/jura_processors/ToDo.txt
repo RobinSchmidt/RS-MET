@@ -1,7 +1,15 @@
 Liberty:
--rename "PeriodicLinearRamp" to Phasor
- -together with the SinCos module, a sine osc can be built
-  -can it get a phase input using SinCos module for phase-mod?
+-check voice allocation/polyphony bug with TestOsc
+ -when a note is played, not realeased, another is played, the first cannot be triggered
+  again
+
+
+-build a basic FM/PM patch using Phasor and SinCos  
+ -add ouput of a phasor and another signal and feed into SinCos
+-can it get a phase input using SinCos module for phase-mod?
+
+-rename NoteFrequency to NoteFreq or MidiFreq,
+ have NotePitch, NoteVel modules
 -create doxygen documentation
 -use std::string instead of rosic::String
 -in the leaky integrator, some connections are drawn black

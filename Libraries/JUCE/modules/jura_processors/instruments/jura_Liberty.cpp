@@ -2285,7 +2285,7 @@ void ModularBlockDiagramPanel::fillAvailableModulesTreeView()
   // signal generator modules:
 
   tmpNode1 = new RTreeViewNode(("Signal Generators"));
-  tmpNode1->addChildNode(new RTreeViewNode(("PeriodicLinearRamp"),      romos::ModuleTypeRegistry::PERIODIC_LINEAR_RAMP));
+  tmpNode1->addChildNode(new RTreeViewNode(("Phasor"),                  romos::ModuleTypeRegistry::PHASOR));
   tmpNode1->addChildNode(new RTreeViewNode(("WhiteNoise"),              romos::ModuleTypeRegistry::WHITE_NOISE));
   tmpNode1->addChildNode(new RTreeViewNode(("BandlimitedImpulseTrain"), romos::ModuleTypeRegistry::BANDLIMITED_IMPULSE_TRAIN));
   tmpNode1->addChildNode(new RTreeViewNode(("BlitSaw"),                 romos::ModuleTypeRegistry::BLIT_SAW_OSCILLATOR)); 

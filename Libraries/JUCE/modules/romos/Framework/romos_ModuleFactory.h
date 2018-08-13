@@ -49,6 +49,15 @@ public:
 
 };
 
+// todo: have a datastructure ModuleTypeInfo containing
+// a unique integer ID, a name (string), a creator function and (maybe, if necessary, a deletor
+// function.
+// to register modules, we would the just do
+// moduleFactory.registerModuleType(PHASOR, "Phasor", createPhasor)
+// maybe instead of createPhasor, &(new Phasor) could work? ..try it - would avoid the boilerplate
+// function createPhasor which would otherwise have to be defined
+// classes ModuleTypeRegistry and ModuleFactory can be merged into one single class (ModuleFactory)
+
 }
 
 #endif
