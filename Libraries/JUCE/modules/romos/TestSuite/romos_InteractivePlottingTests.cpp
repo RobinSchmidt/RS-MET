@@ -57,7 +57,8 @@ void BandlimitedImpulseTrainPlotTest::fillInputSignalArraysWithTestSignal()
 }
 void BandlimitedImpulseTrainPlotTest::plotResult()
 {
-  Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0]);
+  RAPT::rsAssert(false, "plotting code needs update");
+  //Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0]);
 }
 
 void BandlimitedImpulseTrainPlotTest::initForConstantFreq(double freq)
@@ -237,7 +238,8 @@ void SawOscillatorPlotTest::plotResult()
 {
   double dc = rosic::mean(outputs[0][0], 50);
 
-  Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0]);
+  RAPT::rsAssert(false, "plotting code needs update");
+  //Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0]);
 }
 
 void SawOscillatorPlotTest::initForConstantFreq(double freq, double phase)
@@ -329,8 +331,10 @@ void EnvelopeADSRPlotTest::fillInputSignalArraysWithTestSignal()
 }
 void EnvelopeADSRPlotTest::plotResult()
 {
-  //Plotter::plotData(110, xAxis, outputs[0][0]);
-  Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0]);
+  //Plotter::plotData(110, xAxis, outputs[0][0]);  // old
+
+  RAPT::rsAssert(false, "plotting code needs update");
+  //Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0]);
 }
   
 void EnvelopeADSRPlotTest::initEnvelopeTimesAllNonZero()
@@ -485,7 +489,8 @@ void BiquadDesignerPlotTest::fillInputSignalArraysWithTestSignal()  // override 
 }
 void BiquadDesignerPlotTest::plotResult()
 {
-  Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0], outputs[0][1], outputs[0][2], outputs[0][3], outputs[0][4]);
+  RAPT::rsAssert(false, "plotting code needs update");
+  //Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0], outputs[0][1], outputs[0][2], outputs[0][3], outputs[0][4]);
 }
 
 void BiquadDesignerPlotTest::initForFreqSweepLowpassBilinear6()
