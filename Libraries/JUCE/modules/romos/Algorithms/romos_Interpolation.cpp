@@ -10,3 +10,5 @@ double romos::interpolateExponentially(double x, double xL, double yL, double xR
   else
     return yL + (yR-yL) * (1.0 - exp(p*shape)) / (1.0 - exp(shape));
 }
+// this formula is also implemented in RAPT::rsNodeBasedFunction. factor it out there and use
+// it here - also with the mapped shape parameter

@@ -38,7 +38,7 @@ void  retrieveModuleState(void *moduleAsVoid);  // test to satisfy gcc
 //=================================================================================================
 // class AudioInputPinData:
 
-/** In its current state, it's only a data class with rudimentary behaviour - maybe turn this into 
+/** In its current state, it's only a data class with rudimentary behavior - maybe turn this into 
 a proper class later */
 
 class AudioInputPinData  // maybe rename to IncomingConnection
@@ -57,8 +57,8 @@ public:
   romos::Module *sourceModule;
   double        *outputPointer;     // rename to sourcePointer
   unsigned int  outputIndex;        // rename to sourceOutIndex
-  unsigned int  outputFrameSize;
-  unsigned int  outputVoiceStride;
+  unsigned int  outputFrameSize;    /*<<< distance between successive output frames */
+  unsigned int  outputVoiceStride;  /*<<< distance between samples of 2 voices */
 
   double defaultValue; // value to let outputPointer refer to, when input pin is disconnected
 
@@ -81,7 +81,7 @@ baseclass defines an interface for all concrete modules to adhere to and provide
 keeping track of the wiring between modules.
 
 \todo:
--look into pd and csound for inspiration
+-look into pd, csound, max/msp, reaktor for inspiration
 -Module* getClone() operation (virtual)
 -array of slave-modules for polyphonic operation
 -use unsigned int consistently...or maybe size_t */
@@ -105,9 +105,9 @@ public:
   /** Sets the x- and y-coordinates where the module appears on the screen/GUI. The optional 
   boolean parameter sortSiblingsAfterMove decides whether or not the array of siblings of "this" 
   module (that is, the array of child modules of "this" module's parent module) should be sorted 
-  ofter the move. If there is no parent, this has no effect, but if there is a parent, this ensures 
-  that after the move, the parent has the child-array sorted in the desired evalution order as 
-  determined from the coordinates of the children. */
+  after the move. If there is no parent, this has no effect, but if there is a parent, this ensures 
+  that after the move, the parent has the child-array sorted in the desired evaluation order as 
+  determined from the coordinates of its children. */
   virtual void setPositionXY(int newX, int newY, bool sortSiblingsAfterMove = true);
 
   /** Switches polyphony for this module on or off. */
@@ -134,7 +134,7 @@ public:
   virtual void disconnectInputPinsWithInputFrom(romos::Module *sourceModuleToDisconnect);
 
   /** Disconnects all our input pins that receive their input from the given 
-  sourceMdouleToDisconnect and given outputPinIndex. */
+  sourceModuleToDisconnect and given outputPinIndex. */
   virtual void disconnectInputPinsWithInputFrom(romos::Module *sourceModuleToDisconnect, 
     int outputPinIndex);
 
@@ -144,12 +144,13 @@ public:
   /** Disconnects all our the output pins. */
   virtual void disconnectAllOutputPins();
 
-  /** Updates our member variables double **inputs and unsigned int *inFrameStrides according to 
-  the incoming connections such that inputs[i] is a pointer to the i-th output (for voice 0  and 
-  frame 0) of the connected source-module and inFrameStrides[i] is the distance between successive 
-  output frames in the source module (this is equal to the source-modules' number of output 
-  pins. */
+  /** Updates some shorthand variables in our inputPins array according to some return values of
+  the respective pin's source module such as memory location pointer and strides (memory distances) 
+  between frames and voices. outputFrameSize is the distance between successive output frames in 
+  the source module (this is equal to the source-modules' number of output pins. 
+  outputVoiceStride is the memory distance between outputs of 2 voices. */
   virtual void updateInputPointersAndInFrameStrides();
+    // rename to updateInPointersAndStrides
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -163,8 +164,7 @@ public:
   /** Informs, whether this module is polyphonic or not. */
   INLINE bool isPolyphonic() const { return polyphonic; }  // we can get rid of the inlinee
 
-  /** Returns voiceAllocator.getNumVoices() when "this" module is polyphonic modules, and 1 when it
-  is monophonic. */
+  /** Returns voiceAllocator.getNumVoices() when "this" module is and 1 when it is monophonic. */
   virtual int getNumVoices() const;
 
   /** Informs whether or not the visual rendering of the module needs a header. */
@@ -179,6 +179,7 @@ public:
   typecasts and total recall. */
   INLINE int getTypeIdentifier() const { return moduleTypeIdentifier; }
 
+  /** Returns the type name of this module. */
   virtual rosic::rsString getTypeName() const
   {
     return ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(getTypeIdentifier());
@@ -196,22 +197,25 @@ public:
   /** Returns true when this module is the topl-level module, false otherwise. */
   INLINE bool isTopLevelModule() const { return getTypeIdentifier() == ModuleTypeRegistry::TOP_LEVEL_MODULE; }
 
-  /** Returns the parent moduls of "this" module. */
+  /** Returns the parent module of "this" module. */
   virtual romos::ModuleContainer* getParentModule() const { return parentModule; }
+    // may be a nullptr in cas of the top-level module - maybe also in a transitional state when 
+    // the module was not yet given a parent?
 
   /** Returns the top-level module in the whole module hierarchy. It will resolve "this" for 
   modules that don't have a parent and to a recursive call to getTopLevelModule on the parent for 
   modules that do have a parent. */
   virtual romos::Module* getTopLevelModule();
 
-  /** If "this" module is a child module, of some parent module, the function returns the index of 
+  /** If "this" module is a child module of some parent module, the function returns the index of 
   "this" module with the parent's array of children (which determines evaluation order), -1 is 
   returned, when this module has no parent. */
   virtual int getIndexWithinParentModule();
 
   /** Returns the depth of container nesting of the module - atomic modules have a depth of 0, 
-  containers one level above the have a depth of 1 and so on. */
-  virtual int getContainerNestingDepth() const { return 0; }  // get rid of that in the baseclass
+  containers one level above them have a depth of 1 and so on. */
+  virtual int getContainerNestingDepth() const { return 0; }  
+    // get rid of that in the baseclass - move to ModuleContainer
 
   /** Returns the name of one of our pins. */
   virtual rosic::rsString getPinName(int kind, int direction, int pinIndex) const = 0;
@@ -224,6 +228,7 @@ public:
 
   /** Returns the number of audio outputs. */
   virtual unsigned int getNumOutputPins() const { return outFrameStride; }
+    // redundant with getOutputFrameStride
 
   /** This is an inlined version of getNumInputs and it is for internal use only - it will return 
   wrong results in case of I/O modules. The internal code knows this and handles it appropriately - 
@@ -251,6 +256,8 @@ public:
   connected to their inputs instead. When this is called for a container, for example, the 
   container will return itself but instead invoke getConnectableSource */
   //virtual Module* getConnectableSourceModule(Module *attemptedSourceModule);
+  // can be used for sender/receiver pairs 
+
 
   /** Similar to getConnectableSourceModule but returns the index that is actually be used as 
   source output index, when this is called */
@@ -265,7 +272,7 @@ public:
   "sourceModule" pointer-reference at "this" and also leave the pin-index as is. But a container, 
   for example, when acting as source for a connection, will set the sourceModule-pointer reference 
   to the output module that corresponds to the attempted "sourceOutputPinIndex" and set the 
-  "sourceOutputPinIndex" to 0 (output modules have only one one (invisible) output pin). But that's
+  "sourceOutputPinIndex" to 0 (output modules have only one (invisible) output pin). But that's
   not yet the end of the chain: after setting the modulePointer/pinIndex, the container calls 
   sourceModule->mapApparentSourceToProcessingSource(sourceModule, attemtedOutputPinIndex) again - 
   and because the module-pointer points now to an AudioOutputModule, the overriden implementation 
@@ -291,16 +298,17 @@ public:
   voice 0 and frame 0. */
   virtual double* getOutputPointer(int pinIndex) const; // to be overriden by PointerRedirectModule
 
-  /** Returns the distance between succsessive frames in the output signal buffers. Normally, this 
-  is the same as the number of output-pins, but PointerRedirectModules (and subclasses thereof) 
-  require some special treatment which is why the function is overriden there. A 
-  PointerRedirectModule returns the frame-stride for its connected source-module, by delegating the
-  call to it. */
+  /** Returns the distance between succsessive dample frames in the output signal buffers. 
+  Normally, this is the same as the number of output-pins, but PointerRedirectModules (and 
+  subclasses thereof) require some special treatment which is why the function is overriden there. 
+  A PointerRedirectModule returns the frame-stride for its connected source-module, by delegating 
+  the call to it. */
   virtual int getOutputFrameStride() const; // to be overriden by PointerRedirectModule
 
   /** Returns the distance between succsesive voices in the output signal buffers. Normally, this 
-  is the same as the number of output-pins times the output buffersize, but PointerRedirectModules 
-  (and subclasses thereof) require some special treatment @see getOutputFrameStride */
+  is the same as the number of output-pins times the output buffersize (each voice writes into the 
+  next voice-buffer), but PointerRedirectModules (and subclasses thereof) require some special 
+  treatment @see getOutputFrameStride */
   virtual int getOutputVoiceStride() const;  // to be overriden by PointerRedirectModule
 
   // \todo: replace these functions with getChannelStride
@@ -317,7 +325,9 @@ public:
   */
 
   /** Returns the offset of the memory-location for the given sample-frame/voice/input-pin measured
-  from our first output memory location which is returned by getAudioOutputAddress(). */
+  from our first output memory location which is returned by getAudioOutputAddress().
+  ...or getOutputPointer(0)...check this - maybe rename
+  */
   virtual int getOutputPinMemoryOffset(int frameIndex, int voiceIndex, int pinIndex)
   {
     rassert(!isInputModule() && !isOutputModule());  // returns wrong results for I/O modules - override it there, if needed
@@ -340,7 +350,8 @@ public:
   given source module. */
   bool hasIncomingConnectionFrom(const romos::Module *sourceModule, int sourceOutputPinIndex) const;
 
-  /** Returns true when this module has one or more delayed incoming connections. */
+  /** Returns true when this module has one or more delayed incoming connections. Neede to detect
+  feedback loops to switch to sample-wise processing */
   bool hasDelayedIncomingConnection() const;
 
   /** Returns a vector with all modules that are connected to this module where this module is the 
@@ -350,8 +361,6 @@ public:
   /** Similar to getConnectedTargetModules() but includes only those modules that are connected to 
   the given output pin. */
   std::vector<romos::Module*> getConnectedTargetModulesOfPin(int outputPinIndex) const;
-
-
 
 
   /** Returns the number of audio connections that are coming in into this module. */
@@ -364,6 +373,7 @@ public:
   virtual std::vector<AudioConnection> getIncomingAudioConnections();
     // wouldn't it be more efficient to return an array of pointers? or is that dangerous? or
     // does it not matter bcs this function is not called per sample? ...figure out - add comments
+    // actually it seems that an array of AudioConnections is nowhere maintained
 
 
 
@@ -387,9 +397,10 @@ public:
   /** Returns true when this module has any outgoing audio connections, false otherwise. */
   virtual bool hasOutgoingAudioConnections() { return !getOutgoingAudioConnections().empty(); }
 
-  /** Given the passed array of modules, it assigns the reference variables to the minimum and maximum x- and y coordinates of all
-  modules in the array. */
-  static void getExtremeCoordinates(std::vector<Module*> &modules, int &xMin, int &yMin, int &xMax, int &yMax);
+  /** Given the passed array of modules, it assigns the reference variables to the minimum and 
+  maximum x- and y coordinates of all modules in the array. */
+  static void getExtremeCoordinates(std::vector<Module*> &modules, int &xMin, int &yMin, 
+    int &xMax, int &yMax);
 
   /** Given the passed array of modules, it assigns the reference variables to the midpoint of the
   rectangle that is determined by the extreme coordinates (as given by getExtremeCoordinates()). */
@@ -423,7 +434,7 @@ public:
   /** Zeros the outputs for in all frames for a particular voice. */
   virtual void clearVoiceBuffer(int voiceIndex)
   {
-    if(audioOutputs == NULL) // occurs on costruction of AudioOutputModules
+    if(audioOutputs == nullptr) // occurs on costruction of AudioOutputModules
       return;
 
     int voiceStride;
@@ -435,12 +446,13 @@ public:
     memset(startPointer, 0, outFrameStride * processingStatus.getBufferSize() * sizeof(double));
   }
 
-  /** After you have established the input signals to the module by retrieving the input-pointer 
-  via getAudioInputAddress() and assigning values to the returned array/pointer, you should call 
-  this function to trigger the proceesing. When the function returns, the output signals will be 
-  available in the array that you can retrieve via getAudioOutputAddress(). You should make sure to 
-  assign the right number of inputs and retrieve the right number of outputs - what these numbers 
-  are can be inquired via getNumAudioInputs/getNumAudioInputs. */
+  ///** After you have established the input signals to the module by retrieving the input-pointer 
+  //via getAudioInputAddress() and assigning values to the returned array/pointer, you should call 
+  //this function to trigger the proceesing. When the function returns, the output signals will be 
+  //available in the array that you can retrieve via getAudioOutputAddress(). You should make sure to 
+  //assign the right number of inputs and retrieve the right number of outputs - what these numbers 
+  //are can be inquired via getNumAudioInputs/getNumAudioInputs. */
+  // comment seems outdated
   INLINE void processSampleFrame()
   {
     processFrame(this, 0);
@@ -454,7 +466,8 @@ public:
 
   std::vector<AudioInputPinData> inputPins;  // temporarily moved to public for debug
   double       *audioOutputs;
-  unsigned int outFrameStride, numInputs;
+  unsigned int outFrameStride, numInputs; // isn't numInputs redundant with inputPins.size()?
+    // rename outFrameStride to numOutputs, or numAudioOutputs
 
   //===============================================================================================
 
@@ -465,6 +478,8 @@ protected:
   Subclasses need to override this and in their overriden function check for the "polyphonic" flag
   in order to assign the monophonic or polyphonic version of each of the functions. */
   virtual void assignProcessingFunctions() = 0;
+    // is this still true? should all modules implement all 4 combinations of mono/poly, 
+    // block/sample
 
   /** Allocates the memory area to be used for input/output and as work area by this module. */
   virtual void allocateMemory();
@@ -495,7 +510,7 @@ protected:
   // data members:
 
 
-  romos::ModuleContainer  *parentModule;
+  romos::ModuleContainer *parentModule;
 
   int  moduleTypeIdentifier; // one of the values defined in moduleIdentifiers - for RTTI and total recall
   bool polyphonic;           // flag to indicate that this module is polyphonic

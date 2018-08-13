@@ -50,11 +50,12 @@ public:
 
   /** Overriden from Module to additionaly set up the pin-data in the input-module that corresponds 
   to the given pin-index. */
-  virtual void connectInputPinTo(int inputPinIndex, Module *sourceModule, int sourceOutputPinIndex);
+  virtual void connectInputPinTo(int inputPinIndex, Module *sourceModule, 
+    int sourceOutputPinIndex) override;
 
   /** Overriden from Module to additionaly reset the pin-data in the input-module that corresponds 
   to the given pin-index. */
-  virtual void disconnectInputPin(int inputPinIndex);
+  virtual void disconnectInputPin(int inputPinIndex) override;
 
   /** Adds an audio input to this module. A name for the pin (and module) can optionally be passed. 
   If empty, the function will assign a default name. The return value is a pointer to the added 
@@ -65,9 +66,9 @@ public:
   /** Adds an audio input to this module. A name for the pin can optionally be passed. */
   //void addAudioInput(const rosic::rsString &pinName = rosic::rsString());
 
-  /** Adds an audio output to this module. A name for the pin (and module) can optionally be passed. 
-  If empty, the function will assign a default name. The return value is a pointer to the added 
-  module. */
+  /** Adds an audio output to this module. A name for the pin (and module) can optionally be 
+  passed. If empty, the function will assign a default name. The return value is a pointer to the 
+  added module. */
   virtual Module* addAudioOutputModule(rosic::rsString name = rosic::rsString(), int x = 1, 
     int y = 1, bool sortModuleArrayAfterInsertion = true);
 

@@ -192,7 +192,7 @@ void romos::Module::updateInputPointersAndInFrameStrides()
 {
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
-    if( inputPins[i].sourceModule != NULL )
+    if( inputPins[i].sourceModule != nullptr )
     {
       inputPins[i].outputPointer     = inputPins[i].sourceModule->getOutputPointer(inputPins[i].outputIndex);
       inputPins[i].outputFrameSize   = inputPins[i].sourceModule->getOutputFrameStride();
@@ -305,7 +305,7 @@ bool romos::Module::hasDelayedIncomingConnection() const
 
 std::vector<romos::Module*> romos::Module::getConnectedTargetModules() const
 {
-  if( parentModule != NULL )
+  if( parentModule != nullptr )
     return parentModule->getConnectedTargetModulesOf(this);
   else
   {
@@ -318,7 +318,7 @@ std::vector<romos::Module*> romos::Module::getConnectedTargetModules() const
 
 std::vector<romos::Module*> romos::Module::getConnectedTargetModulesOfPin(int outputPinIndex) const
 {
-  if( parentModule != NULL )
+  if( parentModule != nullptr )
     return parentModule->getConnectedTargetModulesOf(this, outputPinIndex);
   else
   {
@@ -334,7 +334,7 @@ unsigned int romos::Module::getNumIncomingAudioConnections() const
   int result = 0;
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
-    if( inputPins[i].sourceModule != NULL )
+    if( inputPins[i].sourceModule != nullptr )
       result++;
   }
   return  result;
@@ -345,7 +345,7 @@ std::vector<AudioConnection> romos::Module::getIncomingAudioConnections()
   std::vector<AudioConnection> result;
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
-    if( inputPins[i].sourceModule != NULL )
+    if( inputPins[i].sourceModule != nullptr )
       rosic::appendElement(result, AudioConnection(inputPins[i].sourceModule, 
         inputPins[i].outputIndex, this, (int) i));
   }

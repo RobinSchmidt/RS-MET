@@ -5,7 +5,12 @@ namespace romos
 {
 
 /** This class represents a connection from one Module to another over which audio signals are
-transmitted. */
+transmitted. 
+
+seems like connectiosn objects are just used temporarily to conveniently pass connection data 
+around
+
+*/
 
 class Module;
 
@@ -29,12 +34,18 @@ public:
   // construction/destruction:
 
   /** Constructor. Creates an audio connection ('wire') between some output slot of the source 
-  module and an input slot of the target module. The target module will establish its total input 
-  as the weighted sum over all incoming signals. */
+  module and an input slot of the target module. 
+  
+  obsolete?:
+  The target module will establish its total input  as the weighted sum over all incoming 
+  signals ...(i think that is not true anymore). */
   AudioConnection(Module *sourceModule = nullptr, int outputIndex = 0, 
     Module *targetModule = nullptr, int inputIndex = 0);
 
-  /** Destructor. It will take care to remove itself from the source- and target module's array of 
+  /** Destructor. 
+  
+  obsolete?:
+  It will take care to remove itself from the source- and target module's array of 
   outgoing/incoming connections. */
   ~AudioConnection();
 

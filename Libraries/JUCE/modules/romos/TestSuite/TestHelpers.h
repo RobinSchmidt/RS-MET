@@ -26,32 +26,30 @@ static const int N            = 50;
 extern double x[maxNumVoices][maxNumIns][maxNumFrames];      // inputs
 extern double y[maxNumVoices][maxNumOuts][maxNumFrames];     // outputs
 extern double d[maxNumVoices][maxNumOuts][maxNumFrames];     // desired outputs
-extern double t[maxNumFrames];                               // timline in samples for plots
+extern double t[maxNumFrames];                               // timeline in samples for plots
 extern double *px0[maxNumIns];                               // pointers to the inputs of voice 0
 extern double *py0[maxNumOuts];                              // pointers to the outputs of voice 0
-extern double *pd0[maxNumOuts];                              // pointers to the outputs of voice 0
+extern double *pd0[maxNumOuts];                              // pointers to the desired(?) outputs of voice 0
 
 extern double *px[maxNumVoices][maxNumIns];                  // pointers to the inputs of all voices 
 extern double *py[maxNumVoices][maxNumOuts];                 // pointers to the outputs of all voices 
-extern double *pd[maxNumVoices][maxNumOuts];                 // pointers to the outputs of all voices 
+extern double *pd[maxNumVoices][maxNumOuts];                 // pointers to the desired(?) outputs of all voices 
 
 extern double **ppx[maxNumVoices];
 extern double **ppy[maxNumVoices];
 extern double **ppd[maxNumVoices];
 
 
+/** Returns a vector containing a note-on and a corresponding note-off (indicated by velocity == 0).
+If zero is passed as duration, it will return an empty vector. */
+std::vector<NoteEvent> generateNoteOnOffPair(unsigned int key, unsigned int velocity,                                            
+  unsigned int deltaFramesForNoteOn, unsigned int durationInFrames);
 
-
-
-/** Returns a vector containing a note-on and a corresponding note-off (indicated by velocity == 0) - if zero is passed as duration, it 
-will return an empty vector. */
-std::vector<NoteEvent> generateNoteOnOffPair(unsigned int key, unsigned int velocity, 
-                                             unsigned int deltaFramesForNoteOn, unsigned int durationInFrames);
-
-/** Generates a bunch of simultaneous notes with equal spacing between the individual notes, given by noteSpacing. */
+/** Generates a bunch of simultaneous notes with equal spacing between the individual notes, given 
+by noteSpacing. */
 std::vector<NoteEvent> generateSimultaneousNotes(unsigned int key, unsigned int velocity, 
-                                                 unsigned int deltaFramesForNoteOn, unsigned int durationInFrames,
-                                                 unsigned int numNotes, unsigned int noteSpacing);
+  unsigned int deltaFramesForNoteOn, unsigned int durationInFrames, 
+  unsigned int numNotes, unsigned int noteSpacing);
 
 /** Merges two vectors of events. The result will be sorted by the time of occurence of the events. Simlutaneous events may occur in any
 order wihtin the array (\todo maybe have well defined ordering criterions in these cases, too). */

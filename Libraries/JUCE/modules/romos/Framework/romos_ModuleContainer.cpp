@@ -391,7 +391,8 @@ romos::Module* ModuleContainer::addAudioOutputModule(rosic::rsString name, int x
   return newModule;
 }
 
-romos::Module* ModuleContainer::addChildModule(Module *moduleToAdd, bool sortChildModuleArrayAfterInsertion)
+romos::Module* ModuleContainer::addChildModule(Module *moduleToAdd, 
+  bool sortChildModuleArrayAfterInsertion)
 {
   rassert( !hasAsDirectlyEmbeddedModule(moduleToAdd) ); // adding a child multiple times?
 
@@ -402,8 +403,12 @@ romos::Module* ModuleContainer::addChildModule(Module *moduleToAdd, bool sortChi
 
   rosic::appendElement(childModules, moduleToAdd);
   moduleToAdd->parentModule = this;
+
   if( sortChildModuleArrayAfterInsertion == true )
     sortChildModuleArray();
+    // todo: figure out where to insert and insert it directly in the right place - get rid of the
+    // boolean parameter
+
   return moduleToAdd;
 }
 

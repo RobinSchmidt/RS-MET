@@ -39,3 +39,23 @@ filters:
 User Interface:
 -uses mediator pattern to let the various gui areas (blocks-diagram editor, tree view, module gui 
  holder) communicate with each other without explicitly refering to each other
+
+
+ //================================================================================================
+ ok - it's looong ago that i touched that code - here i collect what i gather from the code 
+ documentation
+
+ class Module: 
+ -each module has a number of named input pins and output pins
+
+ double *audioOutputs;
+   // each output pin has a memory location (type double) to store the current output value in, 
+
+
+std::vector<AudioInputPinData> inputPins
+  // stores information about the incoming connections
+
+ -input pins do not have memory locations associated with them - when a module is processed, it 
+  just collects all the signals it needs for its input via some stored pointers to the respective 
+  memory locations of the connected output pins
+

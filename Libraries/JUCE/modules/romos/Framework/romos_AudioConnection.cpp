@@ -46,10 +46,10 @@ void AudioConnection::updateTargetPointer()
 
 void AudioConnection::resetToNull()
 {
-  sourceModule = NULL;
-  targetModule = NULL;
-  outIndex     = 0;
-  inIndex      = 0;  
+  sourceModule = nullptr;
+  targetModule = nullptr;
+  outIndex = 0;
+  inIndex  = 0;  
 }
     
 void AudioConnection::setSourceModule(romos::Module *newSourceModule)
