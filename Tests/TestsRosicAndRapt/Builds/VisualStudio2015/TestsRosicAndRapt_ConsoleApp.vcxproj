@@ -571,9 +571,6 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\EllipseOscillator.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -581,6 +578,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\VariousOscillators.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
@@ -836,6 +836,144 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\rapt.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_Interpolation.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AudioConnection.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Liberty.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module - Copy.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleAtomic.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_NoteEvent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ProcessingStatus.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_TopLevelModule.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_VoiceAllocator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_WorkArea.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Misc\romos_TempMacros.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ArithmeticModules.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_DelayModules.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FilterModules.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FunctionModules.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_InfrastructuralModules.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ModulationModules.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_SoundGeneratorModules.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\AutomaticTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcretePerformanceTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteProcessingTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ContainerManipulationTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_GenerateDesiredOutput.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_GlobalFrameworkTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_InteractivePlottingTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_InteractiveTestRunner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ModularSystemTest.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ModuleBuildCodeGenerator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_PerformanceTest.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_PerformanceTestRunner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ProcessingTest.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_TestEventGenerator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_TestModuleBuilder.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTest.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTestRunner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestHelpers.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestsMain.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\romos.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_arrayobject.cpp">
@@ -1927,9 +2065,6 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AnalogEnvelopeScaled.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AttackDecayEnvelope.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_BreakpointModulator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1955,6 +2090,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_SampleModulator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_VariousModulators.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptron.cpp">
@@ -2096,6 +2234,7 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_rapt.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_romos.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_rosic.cpp"/>
   </ItemGroup>
   <ItemGroup>
@@ -2268,11 +2407,11 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\PrototypeDesigner.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\QuadratureNetwork.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\EllipseOscillator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\NoiseGenerator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Oscillator3D.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\VariousOscillators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BellFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\ComplexFunctions.h"/>
@@ -2366,6 +2505,51 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\ScopeScreenScanner.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Visualization.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\rapt.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_Interpolation.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AudioConnection.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Liberty.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module - Copy.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleAtomic.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_NoteEvent.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ProcessingStatus.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_TopLevelModule.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_VoiceAllocator.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_WorkArea.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Misc\romos_TempMacros.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ArithmeticModules.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_DelayModules.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FilterModules.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FunctionModules.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_InfrastructuralModules.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ModulationModules.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ModuleDefinitionMacros.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_SoundGeneratorModules.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\AutomaticTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcretePerformanceTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteProcessingTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ContainerManipulationTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_GenerateDesiredOutput.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_GlobalFrameworkTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_InteractivePlottingTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_InteractiveTestRunner.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ModularSystemTest.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ModuleBuildCodeGenerator.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_PerformanceTest.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_PerformanceTestRunner.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ProcessingTest.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_TestEventGenerator.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_TestModuleBuilder.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTest.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTestRunner.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestHelpers.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\romos.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\angelscript.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_array.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_arrayobject.h"/>
@@ -2752,7 +2936,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AmpEnvRc.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AnalogEnvelope.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AnalogEnvelopeScaled.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AttackDecayEnvelope.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_BreakpointModulator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_DecayEnvelope.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_EnvelopeGenerator.h"/>
@@ -2762,6 +2945,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_Modulator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_PitchEnvRc.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_SampleModulator.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_VariousModulators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptron.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptronErrorFunction.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptronTrainer.h"/>
@@ -2821,6 +3005,11 @@
     <None Include="..\..\Source\Shared\Prototypes\ReadMe.txt"/>
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Ideas.txt"/>
+    <None Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InputSequences.txt"/>
+    <None Include="..\..\..\..\Libraries\JUCE\modules\romos\Documentation.txt"/>
+    <None Include="..\..\..\..\Libraries\JUCE\modules\romos\InOutModules.txt"/>
+    <None Include="..\..\..\..\Libraries\JUCE\modules\romos\RoMoS.txt"/>
+    <None Include="..\..\..\..\Libraries\JUCE\modules\romos\ToDo.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\TweaksAndNotes.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\docs\changes.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\docs\expreval.txt"/>

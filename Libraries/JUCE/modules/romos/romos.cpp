@@ -43,6 +43,7 @@ using namespace rosic;
 #include "Modules/romos_ModulationModules.cpp"
 #include "Modules/romos_SoundGeneratorModules.cpp"
 
+
 #include "TestSuite/romos_TestModuleBuilder.cpp" // seems to be needed by ModuleFactory - get rid of this dependency
 
 #endif

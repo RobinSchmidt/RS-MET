@@ -5,7 +5,7 @@
 //#include "../framework/romos_ModuleFactory.h"
 #include "romos_TestEventGenerator.h"
 #include "romos_UnitTest.h"
-#include "../romos_Liberty.h"
+#include "../romos.h"
 
 namespace romos
 {

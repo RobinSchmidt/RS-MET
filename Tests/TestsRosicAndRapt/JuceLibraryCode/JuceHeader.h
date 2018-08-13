@@ -15,6 +15,7 @@
 #include "AppConfig.h"
 
 #include <rapt/rapt.h>
+#include <romos/romos.h>
 #include <rosic/rosic.h>
 
 

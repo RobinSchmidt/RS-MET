@@ -6,7 +6,7 @@
 
 #include "romos_ConcreteProcessingTests.h"
 #include "../framework/romos_ModuleFactory.h"
-#include "../romos_Liberty.h"
+#include "../romos.h"
 
 namespace romos
 {

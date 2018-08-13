@@ -521,6 +521,7 @@
       <MODULEPATHS>
         <MODULEPATH id="rapt" path="../../Libraries/JUCE/modules"/>
         <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="romos" path="../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows">
@@ -533,11 +534,13 @@
       <MODULEPATHS>
         <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>
         <MODULEPATH id="rapt" path="../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="romos" path="../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_WINDOWS>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="rapt" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="romos" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="rosic" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS/>

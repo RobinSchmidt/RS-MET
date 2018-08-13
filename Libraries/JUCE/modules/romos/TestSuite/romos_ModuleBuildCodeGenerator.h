@@ -37,23 +37,23 @@ namespace romos
     static int getNumOfSameModulesBefore(romos::Module *module);
 
     /** Creates the variable names to be used for the child-modules in the generated code. */
-    static rosic::Array<rosic::rsString> createVariableNames(romos::ModuleContainer *container);
+    static rosic::rsArray<rosic::rsString> createVariableNames(romos::ModuleContainer *container);
 
     /** Creates the module names to be used for the child-modules in the generated code, including a comma and possibly padding whitespace
     to be used in the function call. */
-    static rosic::Array<rosic::rsString> createModuleNames(romos::ModuleContainer *container);
+    static rosic::rsArray<rosic::rsString> createModuleNames(romos::ModuleContainer *container);
 
     /** Creates the strings that are used to infer the type-indentifiers for the modules in the generated code. */
-    static rosic::Array<rosic::rsString> createTypeRetrievalStrings(romos::ModuleContainer *container);
+    static rosic::rsArray<rosic::rsString> createTypeRetrievalStrings(romos::ModuleContainer *container);
 
     /** Finds the longest string in the passed array and pads all shorter strings with whitespace such that all strings in the array have 
     the same length. */
-    static void padShortStringsWithSpace(rosic::Array<rosic::rsString> &stringsToPad);
+    static void padShortStringsWithSpace(rosic::rsArray<rosic::rsString> &stringsToPad);
 
     /** Given an array with names that are associated with child-modules of the passed ModuleContainer (variable-names to appear in the 
     generated code, for example), this function returns the maximum lengths of the names for atomic and container modules separately. This
     information can be used to create proper whitespace padding  for code alignment. */
-    static void getMaxNameLengths(rosic::Array<rosic::rsString> &names, romos::ModuleContainer *container, 
+    static void getMaxNameLengths(rosic::rsArray<rosic::rsString> &names, romos::ModuleContainer *container, 
       int &maxAtomicNameLength, int &maxContainerNameLength);
 
     /** Creates a string containing a stretch pf whitespaces that can be used to append (or prepend) to the passed string to make it

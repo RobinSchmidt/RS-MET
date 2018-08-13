@@ -121,7 +121,7 @@ int main(int argc, char** argv)
   if( detectMemoryLeaks() )
     printf("%s", "Memory leaks detected\n");
 
-  printf("%s", "Tests done.");
+  printf("%s", "RoMoS Tests done.");
   //getchar();
   return 0;
 }
