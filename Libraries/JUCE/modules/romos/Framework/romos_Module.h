@@ -222,6 +222,7 @@ public:
 
   /** Returns the number of audio input pins. */
   virtual unsigned int getNumInputPins() const { return (unsigned int)inputPins.size(); }
+    // rename to getNumAudioInputs
 
   /** Returns the data for the input pin with given index. */
   virtual AudioInputPinData getAudioInputPinData(int pinIndex) const;
@@ -297,6 +298,7 @@ public:
   /** Returns a pointer to the double value that represents the value of the given output-pin in 
   voice 0 and frame 0. */
   virtual double* getOutputPointer(int pinIndex) const; // to be overriden by PointerRedirectModule
+    // rename to getAudioOutputAddress
 
   /** Returns the distance between succsessive dample frames in the output signal buffers. 
   Normally, this is the same as the number of output-pins, but PointerRedirectModules (and 
@@ -335,6 +337,7 @@ public:
     //return (frameIndex * processingStatus.getNumAllocatedVoices() + voiceIndex) * numOutputs + pinIndex; // voice-index last
     return (voiceIndex * processingStatus.getBufferSize() + frameIndex) * outFrameStride + pinIndex;  // frame index last
   }
+  // rename to getAudioOutputOffset, write getAudioOutputAddress = base-address + offset
 
   /** Returns true if the input pin with given index is connected to some output pin, false 
   otherwise. */
@@ -415,6 +418,7 @@ public:
     for(int voiceIndex = 0; voiceIndex < getNumVoices(); voiceIndex++)
       resetVoiceState(voiceIndex);
   }
+  // rename to resetAllVoices
 
   /** Function that is called whenever the module should resets the internal state of the module 
   (for example filter history, oscillator phase, etc) for a particular voice. */
@@ -423,6 +427,7 @@ public:
     rassert(voiceIndex < getNumVoices());
     clearVoiceBuffer(voiceIndex);
   }
+  // rename to resetVoice
 
   /** Zeros the outputs for all voices in all frames. */
   virtual void clearBufferForAllVoices()

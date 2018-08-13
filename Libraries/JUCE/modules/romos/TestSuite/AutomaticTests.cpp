@@ -207,7 +207,8 @@ bool testContainerizationAddedConstants(bool verboseOutput)
 
   romos::Module *testModule = TestModuleBuilder::createAddedConstants("AddedConstants", 0, 0, false);
 
-  testModule->resetState();  
+  //testModule->resetState();  
+  testModule->resetStateForAllVoices();
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   copyBuffer(y[0][0], d[0][0], N);
 
@@ -483,6 +484,8 @@ bool testMonoToPoly(int numVoicesToCheck)
   return result;
 }
 
+/*
+// obsolete because that conversion now happens automatically?
 bool testPolyToMono(int numVoicesToCheck)
 {
   romos::Module *testModule =  TestModuleBuilder::createPolyToMono("PolyToMono", 0, 0, true);
@@ -510,6 +513,7 @@ bool testPolyToMono(int numVoicesToCheck)
   ModuleFactory::deleteModule(testModule);
   return result;
 }
+*/
 
 bool testGatedNoteFrequency(int numVoicesToCheck)
 {
@@ -529,8 +533,8 @@ bool testGatedNoteFrequency(int numVoicesToCheck)
   //... more to come..
   */
 
-
-  Plotter::plotData(50, t, d[0][0], y[0][0]);
+  RAPT::rsAssert(false, "plotting code needs update");
+  //Plotter::plotData(50, t, d[0][0], y[0][0]);
 
   ModuleFactory::deleteModule(testModule);
   return result;

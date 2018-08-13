@@ -270,7 +270,8 @@ void getDesiredOutputForBiquad(int N, double *x, double *b0, double *b1, double 
 
 void getDesiredOutputForFilterBlip(int N, double frequency, double q, double *desiredOutput)
 {
-  double coeffs[5];  romos::biquadBandpassCoeffs(coeffs, frequency, q);
+  //double coeffs[5];  romos::biquadBandpassCoeffs(coeffs, frequency, q);
+  double coeffs[5];  romos::biquadBandpassConstSkirtCoeffs(coeffs, frequency, q);
 
   double *x  = new double[N];  generateImpulse(N, x);
   double *b0 = new double[N];  fillWithValue(b0, N, coeffs[0]);
@@ -336,13 +337,13 @@ bool checkBlockProcessingAndPrintResult(romos::Module *module, double ***x, doub
   voiceAllocator.noteOn(69, 64);
 
   // now the actual block processing test with different (randomized) number of frames per block:
-  module->resetState();
+  module->resetStateForAllVoices();
   randomUniform(0.0, 1.0, 7); // seed for the total number of samples
   for(int i=1; i<=numTests; i++)
   {
     generateSilence(module->getNumOutputPins(), maxNumFramesToProcess, y[0]);
     int numFramesToProcess = (int) randomUniform(0.01*maxNumFramesToProcess, maxNumFramesToProcess, -1);  // total number of samples to process
-    module->resetState();
+    module->resetStateForAllVoices();
     processModuleInBlocks(module, numFramesToProcess, x, y, NULL, false);
     resultCorrect = checkResult(y[0], d[0], module->getNumOutputPins(), numFramesToProcess, tolerance);
     if( !resultCorrect )
@@ -378,7 +379,7 @@ bool checkProcessingFunctionsAndPrintResults(romos::Module *module, int numVoice
 bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d, 
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
-  module->resetState();
+  module->resetStateForAllVoices();
   fillWithZeros(y[0][0], numFrames);
 
   processModuleInFrames(module, numFrames, x, y, events, false);
@@ -397,7 +398,7 @@ bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFra
 bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d, 
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
-  module->resetState();
+  module->resetStateForAllVoices();
   fillWithZeros(y[0][0], numFrames);
 
   processModuleInBlocks(module, numFrames, x, y, events, false);
@@ -417,7 +418,7 @@ bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoi
                                                double ***x, double ***y, double ***d, 
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
-  module->resetState();
+  module->resetStateForAllVoices();
   int v;
 
   for(v = 0; v < numVoicesToCheck; v++)
@@ -442,7 +443,7 @@ bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoi
                                                double ***x, double ***y, double ***d, 
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
-  module->resetState();
+  module->resetStateForAllVoices();
   int v;
 
   for(v = 0; v < numVoicesToCheck; v++)
@@ -474,6 +475,8 @@ bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoi
 
 void establishInputBlock(romos::Module *module, double ***inputs, int blockStart, int blockSize)
 {
+  RAPT::rsAssert(false, "Code seems to be out of date" );
+  /*
   double *inputAddress = module->getAudioInputAddress();
   if( !module->isPolyphonic() )
   {
@@ -503,14 +506,16 @@ void establishInputBlock(romos::Module *module, double ***inputs, int blockStart
       }
     }
   }
+  */
 }
 
 void retrieveOutputBlock(romos::Module *module, double ***outputs, int blockStart, int blockSize)
 {
-  double *outputAddress = module->getAudioOutputAddress();
+  // code may be out of date
+  double *outputAddress = module->getOutputPointer(0);
   if( !module->isPolyphonic() )
   {
-    for(unsigned int c = 0; c < module->getNumOutputs(); c++)
+    for(unsigned int c = 0; c < module->getNumOutputPins(); c++)
     {
       for(int n = 0; n < blockSize; n++)
       {
@@ -526,7 +531,7 @@ void retrieveOutputBlock(romos::Module *module, double ***outputs, int blockStar
     for(int v = 0; v < numPlayingVoices; v++)
     {
       int voiceIndex = playingVoiceIndices[v];
-      for(unsigned int c = 0; c < module->getNumOutputs(); c++)
+      for(unsigned int c = 0; c < module->getNumOutputPins(); c++)
       {
         for(int n = 0; n < blockSize; n++)
         {
@@ -595,11 +600,11 @@ void processBlock(romos::Module *module, double ***inputs, double ***outputs, in
 
 void processModuleInBlocksNoEvents(romos::Module *module, int numFrames, double ***inputs, double ***outputs, int startIndex)
 {
-  int maxBlockSize = processingStatus.getAllocatedBlockSize();
+  int maxBlockSize = processingStatus.getBufferSize();
   int blockStart   = startIndex;
   while( blockStart < startIndex + numFrames )
   {
-    int blockSize = (int) round(randomUniform(1.0, maxBlockSize));
+    int blockSize = (int) ::round(randomUniform(1.0, maxBlockSize));
     if( blockStart + blockSize > startIndex + numFrames )
       blockSize = startIndex + numFrames - blockStart;
     processBlock(module, inputs, outputs, blockStart, blockSize);
@@ -617,7 +622,7 @@ void processModuleInBlocks(romos::Module *module, int numFrames, double ***input
     processModuleInBlocksNoEvents(module, numFrames, inputs, outputs, 0);
   else
   {
-    int maxBlockSize     = processingStatus.getAllocatedBlockSize();
+    int maxBlockSize     = processingStatus.getBufferSize();
     int blockStart       = 0;
     int numEventsHandled = 0;
     while( blockStart < numFrames )

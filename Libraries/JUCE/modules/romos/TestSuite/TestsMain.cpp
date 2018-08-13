@@ -4,7 +4,7 @@
 
 #include "../romos.h"
 
-bool runUnitTests()
+bool runModularUnitTests()
 {
   romos::UnitTestRunner testRunner;
   bool testsPassed = testRunner.runAllTestsAndPrintResultsToConsole();
@@ -20,14 +20,14 @@ bool runUnitTests()
   return testsPassed;
 }
 
-void runPerformanceTests(bool createLogFile)
+void runModularPerformanceTests(bool createLogFile)
 {
   romos::PerformanceTestRunner testRunner;
   testRunner.runAllTestsAndPrintResultsToConsole(createLogFile);
 }
 
 /*
-void runAutomatedCorrectnessTests()
+void runModularAutomatedCorrectnessTests()
 {
   bool verboseOutput    = false;
   int  numVoicesToCheck = 3;
@@ -42,7 +42,7 @@ void runAutomatedCorrectnessTests()
 
 
 
-void testCodeGenerator()
+void testModularCodeGenerator()
 {
   // here we choose what kind of module to create (and genreate code for):
   //romos::Module *testModule = createSumDiffModule(NULL);
@@ -54,7 +54,7 @@ void testCodeGenerator()
   romos::ModuleFactory::deleteModule(testModule);
 }
 
-void runInteractiveTests()
+void runModularInteractiveTests()
 {
   romos::InteractiveTestRunner testRunner;
   testRunner.runTests();
@@ -64,14 +64,14 @@ void runInteractiveTests()
 }
 
 /*
-void runPerformanceTests()
+void runModularPerformanceTests()
 {
   printModuleByteSizes();
   //printf("%s %.3f %s", "Performance hit for biquad: ", measureFrameworkOverheadWithBiquad(), "\n" );
 }
 */
 
-void runTests()
+void runModularTests()
 {
   /*
   // move this into a test-class of it own - maybe we need some reliable, invertible and pretty 
@@ -100,23 +100,20 @@ void runTests()
   //abs2 = *((double*) &intAbsValue);
 
 
-  //runUnitTests();
-  runInteractiveTests();
-  //runPerformanceTests(false);
+  //runModularUnitTests();
+  runModularInteractiveTests();
+  //runModularPerformanceTests(false);
 
   romos::ModuleTypeRegistry::deleteSoleInstance(); // deletes the singleton object
   romos::BlitIntegratorInitialStates::deleteStateValueTables();
 }
 
-
-
-
-
+/*
 int main(int argc, char** argv)
 {
 
 
-  runTests();
+  runModularTests();
 
   if( detectMemoryLeaks() )
     printf("%s", "Memory leaks detected\n");
@@ -125,3 +122,4 @@ int main(int argc, char** argv)
   //getchar();
   return 0;
 }
+*/
