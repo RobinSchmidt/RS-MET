@@ -265,7 +265,8 @@ bool ContainerizationAddedConstantsTest::runTest()
     if( !areBuffersEqual(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
     {
       printModuleStructure(moduleToTest, 0);
-      Plotter::plotData(numFramesToProcess, timeAxis, desiredOutputs[0][0], outputs[0][0]);
+      RAPT::rsAssert(false, "plotting code needs update");
+      //Plotter::plotData(numFramesToProcess, timeAxis, desiredOutputs[0][0], outputs[0][0]);
       return false;
     }
   }

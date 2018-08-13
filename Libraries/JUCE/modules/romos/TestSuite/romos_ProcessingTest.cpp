@@ -278,7 +278,7 @@ void ProcessingTest::processModuleInBlocksNoEvents(int numFrames, int startIndex
   int endIndex     = rmin(startIndex + numFrames - 1, numFramesToProcess - 1);
   while( blockStart <= endIndex )
   {
-    int blockSize = (int) round(randomUniform(1.0, maxBlockSize));
+    int blockSize = (int) ::round(randomUniform(1.0, maxBlockSize));
     if( blockStart + blockSize > endIndex + 1 )
       blockSize = endIndex - blockStart + 1;
     processBlock(blockStart, blockSize);
@@ -438,7 +438,8 @@ void ProcessingTest::setTestPolyphonic(bool shouldBePolyphonic)
 
 void ProcessingTest::plotDesiredAndActualOutput(int voiceIndex, int pinIndex, int numFramesToPlot, int startFrame)
 {
-  Plotter::plotData(numFramesToPlot, &timeAxis[startFrame], desiredOutputs[voiceIndex][pinIndex], outputs[voiceIndex][pinIndex]);
+  RAPT::rsAssert(false, "plotting code needs update");
+  //Plotter::plotData(numFramesToPlot, &timeAxis[startFrame], desiredOutputs[voiceIndex][pinIndex], outputs[voiceIndex][pinIndex]);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

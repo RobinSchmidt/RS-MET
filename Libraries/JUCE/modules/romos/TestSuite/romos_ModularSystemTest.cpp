@@ -210,13 +210,15 @@ void ModularSystemTest::handleEvent(NoteEvent eventToHandle)
 
 void ModularSystemTest::plotDesiredAndActualOutput(int numFramesToPlot, int startFrame)
 {
-  Plotter::plotData(numFramesToPlot, &timeAxis[startFrame], desiredOutputs[0]+startFrame, desiredOutputs[1]+startFrame, 
-                    outputs[0]+startFrame, outputs[1]+startFrame);
+  RAPT::rsAssert(false, "plotting code needs update");
+  //Plotter::plotData(numFramesToPlot, &timeAxis[startFrame], desiredOutputs[0]+startFrame, desiredOutputs[1]+startFrame, 
+  //                  outputs[0]+startFrame, outputs[1]+startFrame);
 }
 
 void ModularSystemTest::plotOutputErrors(int numFramesToPlot, int startFrame)
 {
-  Plotter::plotData(numFramesToPlot, &timeAxis[startFrame], outputErrors[0]+startFrame, outputErrors[1]+startFrame);
+  RAPT::rsAssert(false, "plotting code needs update");
+  //Plotter::plotData(numFramesToPlot, &timeAxis[startFrame], outputErrors[0]+startFrame, outputErrors[1]+startFrame);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

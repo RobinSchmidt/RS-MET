@@ -6,7 +6,7 @@ using namespace romos;
 
 UnitTest::UnitTest(const char *testName)
 {
-  int nameLength = strlen(testName);
+  int nameLength = (int) strlen(testName);
   name = new char[nameLength+1];
   strcpy(name, testName);
 }
