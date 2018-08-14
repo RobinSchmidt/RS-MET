@@ -27,8 +27,6 @@ INLINE void SinCosModule::process(Module *module, double *in, double *out, int v
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(SinCosModule);
 
 
-
-
 void TriSawModule::initialize()
 {
   initInputPins(6, "In", "Asym", "AtBn", "AtSg", "DcBn", "DcSg");
@@ -45,14 +43,9 @@ INLINE void TriSawModule::process(Module *module, double *In, double *Asym, doub
   double p  = fmod(*In, 1);
   typedef RAPT::rsTriSawOscillator<double> TrSw;
   if(p < h)
-    *out = TrSw::shape(a0+a1*p,  *AtBn, *AtSg);    // upward section
-    //*out = a0 + a1*p;  // upward section
+    *out = TrSw::shape(a0+a1*p,  *AtBn, -0.5 * (*AtSg));    // upward section
   else 
-    *out = TrSw::shape(b0+b1*p, -(*DcBn), *DcSg);  // downward section
-    //*out = shape2(b0 + b1*p);  // downward section
-
-  //*out = RAPT::rsTriSawOscillator<double>::getFromTime(*In, *Asym, *AtBn, *AtSg, *DcBn, *DcSg);
-  //*out = 0; // preliminary
+    *out = TrSw::shape(b0+b1*p, -(*DcBn), -0.5 * (*DcSg));  // downward section
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_6(TriSawModule);
 

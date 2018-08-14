@@ -62,6 +62,7 @@ public:
     x = ((1-s) + s*x*x)*x;  // apply sigmoidity
     return (x+t) / (t*x+1); // apply bending
   }
+  // used in romos::TriSawModule::process
 
   inline T shape1(T x) { return shape(x, t1, s1); }
   inline T shape2(T x) { return shape(x, t2, s2); }
