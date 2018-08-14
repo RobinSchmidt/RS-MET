@@ -2654,8 +2654,13 @@ void ModularBlockDiagramPanel::drawInputPins(Graphics &g, romos::Module *module,
   unsigned int i;
   for(i=0; i<module->getNumInputPins(); i++)
   {
-    drawBitmapFontText(g, x, y, juce::String( module->getPinName(AUDIO, INCOMING, i).getRawString() ), 
-      smallFont, plotColourScheme.text, -1, Justification::topLeft);
+    juce::String pinName = juce::String( module->getPinName(AUDIO, INCOMING, i).getRawString() );
+
+    if(!module->isInputPinConnected(i) && module->hasHeader())
+      pinName += "=" + juce::String(module->getInputPinDefaultValue(i));
+
+    drawBitmapFontText(g, x, y, pinName, smallFont, plotColourScheme.text, -1, 
+      Justification::topLeft);
     py = (float) (y+1);
     g.fillRect(px, py, pw, ph);
     y += (smallFontHeight+m);

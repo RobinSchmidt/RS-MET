@@ -264,6 +264,12 @@ bool romos::Module::isInputPinConnected(int pinIndex) const
   return inputPins.at(pinIndex).sourceModule != NULL;
 }
 
+double romos::Module::getInputPinDefaultValue(int pinIndex) const
+{
+  rassert( pinIndex >= 0 && pinIndex < (int) inputPins.size() ); // trying to inquire about a non-existent input pin
+  return inputPins.at(pinIndex).defaultValue;
+}
+
 bool romos::Module::isConnectedToAudioOutput() const
 {
   std::vector<romos::Module*> targetModules = getConnectedTargetModules();

@@ -47,7 +47,7 @@ void Phasor::initialize()
 {
   //initInputPins(1, "Freq");
   initInputPins(3, "Freq", "Min", "Max");
-  initOutputPins(1, "Out");
+  initOutputPins(1, "");
 
   inputPins[2].setDefaultValue(1); // Max is 1 by default
 }

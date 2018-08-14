@@ -85,7 +85,8 @@ namespace romos
 
   void NoteGateModule::initialize()
   { 
-    initOutputPins(1, "Gate");
+    //initOutputPins(1, "Gate");  // no - messes up block
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void NoteGateModule::process(Module *module, double *out, int voiceIndex)
@@ -97,7 +98,8 @@ namespace romos
 
   void NoteOnTriggerModule::initialize()
   { 
-    initOutputPins(1, "Ping");
+    //initOutputPins(1, "Ping");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void NoteOnTriggerModule::process(Module *module, double *out, int voiceIndex)
@@ -109,7 +111,7 @@ namespace romos
 
   void NoteOffTriggerModule::initialize()
   { 
-    initOutputPins(1, "Ping");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void NoteOffTriggerModule::process(Module *module, double *out, int voiceIndex)

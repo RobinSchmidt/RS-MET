@@ -153,7 +153,7 @@ public:
     // rename to updateInPointersAndStrides
 
   //-----------------------------------------------------------------------------------------------
-  // inquiry:
+  // \name Inquiry:
 
   /** Returns the x-coordinate. */
   virtual int getPositionX() const { return x; }
@@ -342,6 +342,10 @@ public:
   /** Returns true if the input pin with given index is connected to some output pin, false 
   otherwise. */
   bool isInputPinConnected(int pinIndex) const;
+
+  /** Returns the value to which the signal at the given input pin is set when the pin is not 
+  connected to any output. */
+  double getInputPinDefaultValue(int pinIndex) const;
 
   /** Returns true when this module has an AudioOutputModule among its target modules. */
   bool isConnectedToAudioOutput() const;
