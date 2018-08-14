@@ -215,10 +215,13 @@ int getTypeId(rosic::rsString typeString);
 class ModuleTypeInfo
 {
 public:
-  bool hasEditor = false;
   int identifier = 0;
-  rosic::rsString shortName, longName, description;
   Module* (*createModule)() = nullptr; // returns a pointer to (a subclass of) Module
+  bool hasEditor = false;
+  std::string shortName, longName, description;
+  std::vector<std::string> inputShortNames, inputLongNames, inputDescriptions;
+  std::vector<std::string> outputShortNames, outputLongNames, outputDescriptions;
+  std::string category; // may be a path with "." as delimiter
 };
 
 /** 2nd attempt - under construction */
@@ -227,12 +230,25 @@ class ModuleTypeRegistry2
 
 public:
 
-private:
+  /** Constructor. Pre-populates the registry with standard modules. */
+  ModuleTypeRegistry2();
 
-  //// It's a singleton - to get the instance, use getInstance
-  //ModuleTypeRegistry2();
-  //~ModuleTypeRegistry2();
-  //static ModuleTypeRegistry2* soleInstance;
+  /** Destructor. Cleans up the memory. */
+  ~ModuleTypeRegistry2();
+
+  /** Registers the module with given type info. You need to pass a pointer that you may create via
+  new and forget about it. This object takes over responsibility for deleting it */
+  void registerModuleType(ModuleTypeInfo* newTypeInfoToAdd);
+
+  /** Registers all the standard module types that are commonly used. */
+  void registerStandardModules();
+
+  /** Cleans up the memory, i.e. the registered type-info objects that were passed as pointers. */
+  void clear();
+
+protected:
+
+  std::vector<ModuleTypeInfo*> typeInfos;
 
 };
 

@@ -192,3 +192,40 @@ int romos::getTypeId(rosic::rsString typeString)
 
 //=================================================================================================
 
+ModuleTypeRegistry2::ModuleTypeRegistry2()
+{
+  registerStandardModules();
+}
+
+ModuleTypeRegistry2::~ModuleTypeRegistry2()
+{
+  clear();
+}
+
+void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* newTypeInfoToAdd)
+{
+  // todo: check, if the type is not already registered (maybe use the ID) - trigger assert, if it
+  // is
+
+}
+
+void ModuleTypeRegistry2::registerStandardModules()
+{
+  // Arithmetic:
+  registerModuleType(new AdderModuleTypeInfo);
+  //registerModuleType(new AdderModule::TypeInfo);
+  //registerModuleType(new SubtractorTypeInfo);
+
+  // Delay:
+
+  // Filters:
+
+  // Sources:
+
+  //...
+}
+
+void ModuleTypeRegistry2::clear()
+{
+
+}

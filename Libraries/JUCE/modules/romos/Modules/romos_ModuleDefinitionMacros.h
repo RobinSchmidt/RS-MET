@@ -18,12 +18,24 @@ create a special project for that. Maybe it can be made part of the Liberty test
 // as friend in order to enforce creation/deletion through the ModuleFactory class - maybe make 
 // them even private later:
 #define ENFORCE_FACTORY_USAGE(ClassName)                               \
+  public:                                                              \
+    ClassName() {}                                                     \
+  protected:                                                           \
+    ClassName(const ClassName &other) {}                               \
+    virtual ~ClassName() {}                                            \
+    ClassName& operator=(const ClassName &other) { return *this; }     \
+    friend class ModuleFactory;                                        \
+
+/* // old - doesn't work with new type registry:
+#define ENFORCE_FACTORY_USAGE(ClassName)                               \
   protected:                                                           \
     ClassName() {}                                                     \
     ClassName(const ClassName &other) {}                               \
     virtual ~ClassName() {}                                            \
     ClassName& operator=(const ClassName &other) { return *this; }     \
     friend class ModuleFactory;                                        \
+*/
+
 
 // This macro can be used in a Module subclass to declare all 4 static processing functions and 
 // the (then necessary) override for assignProcessingFunctions():
@@ -221,8 +233,10 @@ create a special project for that. Maybe it can be made part of the Liberty test
   static INLINE void process(Module *module, double *in, double *out, int voiceIndex);         \
 
 
-// given a function process(Module *module, double *in1, double *in2, double *out, int voiceIndex), these macros create the mono/poly, 
-// frame/block processing functions respectively for modules with two input pins:
+
+// given a function process(Module *module, double *in1, double *in2, double *out, int voiceIndex), 
+// these macros create the mono/poly, frame/block processing functions respectively for modules 
+// with two input pins:
 #define CREATE_MONO_FRAME_FUNCTION_2(ClassName)                                                       \
   void ClassName::processMonoFrame(Module *module, int voiceIndex)                                    \
   {                                                                                                   \
