@@ -225,9 +225,6 @@ public:
   std::vector<std::string> outputShortNames, outputFullNames, outputDescriptions;
   std::string category; // may be a path with "." as delimiter
 
-  // maybe rename fullName to name to indicate that this is the proper name and the other one
-  // is just an abbreviation
-
   /** Used to store information about one of the inputs - the short name is what appears on the 
   pins in the structure view. The long name and description (are supposed to be) used for a more
   verbose information screen. */
@@ -237,7 +234,6 @@ public:
   /** Same as addInputPinInfo but for an output pin. */
   void addOutputPinInfo(const char* shortName, const char* fullName = "",
     const char* description = "");
-
 };
 
 /** 2nd attempt - under construction 

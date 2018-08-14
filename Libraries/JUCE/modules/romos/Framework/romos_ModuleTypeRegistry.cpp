@@ -269,10 +269,15 @@ void ModuleTypeRegistry2::registerStandardModules()
   // Comparison: a<b a<=b, a>b, a>=b,
   // Logic: a&b, a|b
 
+  // Functions:
 
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
+  // Delays:
+  registerModuleType(new UnitDelayTypeInfo);
+
+  // Filters:
+  registerModuleType(new FirstOrderLowpassTypeInfo);
+  registerModuleType(new FirstOrderFilterTypeInfo);
+
   //registerModuleType(new );
   //registerModuleType(new );
   //registerModuleType(new );
@@ -286,9 +291,9 @@ void ModuleTypeRegistry2::registerStandardModules()
   // ...
 
 
-  // Delay:
 
-  // Filters:
+
+
 
   // Sources:
 
