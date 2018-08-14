@@ -47,7 +47,8 @@ Outputs:
  0: the ramp signal  */
 class Phasor : public ModuleAtomic
 {
-  CREATE_COMMON_DECLARATIONS_1(Phasor);
+  //CREATE_COMMON_DECLARATIONS_1(Phasor);
+  CREATE_COMMON_DECLARATIONS_3(Phasor);
 public:
   virtual void resetVoiceState(int voiceIndex);
 protected:

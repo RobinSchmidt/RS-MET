@@ -59,3 +59,6 @@ std::vector<AudioInputPinData> inputPins
   just collects all the signals it needs for its input via some stored pointers to the respective 
   memory locations of the connected output pins
 
+-to create code for a new atomic module, use one of the macros
+ CREATE_COMMON_DECLARATIONS_X where X stands for the number of inputs
+

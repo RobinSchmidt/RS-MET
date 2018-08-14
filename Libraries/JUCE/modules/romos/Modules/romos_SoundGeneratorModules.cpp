@@ -45,19 +45,22 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(WhiteNoise);
 
 void Phasor::initialize()
 {
-  initInputPins(1, "Freq");
+  //initInputPins(1, "Freq");
+  initInputPins(3, "Freq", "Min", "Max");
   initOutputPins(1, "Out");
 
-  //inputPins[2].setDefaultValue(1); // Max in 1 by default
+  inputPins[2].setDefaultValue(1); // Max is 1 by default
 }
-INLINE void Phasor::process(Module *module, double *in1, double *out, int voiceIndex)
+//INLINE void Phasor::process(Module *module, double *in1, double *out, int voiceIndex)
+INLINE void Phasor::process(Module* module, double* in1, double* in2, double* in3, double* out, 
+  int voiceIndex)
 {
   Phasor *phasor = static_cast<Phasor*> (module);
 
   // generate output signal:
-  *out = phasor->phases[voiceIndex];
+  //*out = phasor->phases[voiceIndex];
 
-  // *out = *in1 + (*in2 - *in1) * phasor->phases[voiceIndex];
+  *out = *in2 + (*in3 - *in2) * phasor->phases[voiceIndex];
 
   // phase increment and wraparound:
   phasor->phases[voiceIndex] += *in1 * processingStatus.getSystemSamplePeriod();
@@ -82,7 +85,8 @@ void Phasor::freeMemory()
   delete[] phases;
   phases = nullptr;
 }
-CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(Phasor);
+//CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(Phasor);
+CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(Phasor);
 
 
 
