@@ -4,6 +4,9 @@
 namespace romos
 {
 
+
+//=================================================================================================
+
 /** This class is used to map numeric module identifiers for module types to and from 
 identifiers represented as strings. The former are mainly used in the DSP code where fast access 
 matters whereas the latter are mainly used for persistence purposes, where we want to have human 
@@ -202,6 +205,38 @@ private:
 /** Shorthand function for 
 romos::ModuleTypeRegistry::getSoleInstance()->getModuleIdentifierFromTypeString(typeString); */
 int getTypeId(rosic::rsString typeString);
+
+//=================================================================================================
+
+// This stuff above is currently actually in use, but it's bad design, here is a new approach
+// (under construction)
+
+/** Under construction - not yet used */
+class ModuleTypeInfo
+{
+public:
+  bool hasEditor = false;
+  int identifier = 0;
+  rosic::rsString shortName, longName, description;
+  Module* (*createModule)() = nullptr; // returns a pointer to (a subclass of) Module
+};
+
+/** 2nd attempt - under construction */
+class ModuleTypeRegistry2
+{
+
+public:
+
+private:
+
+  //// It's a singleton - to get the instance, use getInstance
+  //ModuleTypeRegistry2();
+  //~ModuleTypeRegistry2();
+  //static ModuleTypeRegistry2* soleInstance;
+
+};
+
+//=================================================================================================
 
 /*
 Module-Types to do:

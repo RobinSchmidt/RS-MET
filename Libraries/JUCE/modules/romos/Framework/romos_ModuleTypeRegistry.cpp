@@ -189,3 +189,6 @@ int romos::getTypeId(rosic::rsString typeString)
 {
   return romos::ModuleTypeRegistry::getSoleInstance()->getModuleIdentifierFromTypeString(typeString);
 }
+
+//=================================================================================================
+

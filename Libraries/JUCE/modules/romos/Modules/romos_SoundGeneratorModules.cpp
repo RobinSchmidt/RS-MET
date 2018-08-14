@@ -5,9 +5,9 @@ namespace romos
 
 void WhiteNoise::initialize()
 {
-  //initInputPins( 1, rosic::rsString("Seed"));
-  initOutputPins(1, "Out");
-  addParameter(rosic::rsString("Seed"), 0.0);
+  initOutputPins(1, "");
+  //addParameter(rosic::rsString("Seed"), 0.0);
+  addParameter("Seed", 0.0);
   parameterChanged(0);
   // add shape, min, max
 }
@@ -45,21 +45,16 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(WhiteNoise);
 
 void Phasor::initialize()
 {
-  //initInputPins(1, "Freq");
   initInputPins(3, "Freq", "Min", "Max");
   initOutputPins(1, "");
-
   inputPins[2].setDefaultValue(1); // Max is 1 by default
 }
-//INLINE void Phasor::process(Module *module, double *in1, double *out, int voiceIndex)
 INLINE void Phasor::process(Module* module, double* in1, double* in2, double* in3, double* out, 
   int voiceIndex)
 {
   Phasor *phasor = static_cast<Phasor*> (module);
 
   // generate output signal:
-  //*out = phasor->phases[voiceIndex];
-
   *out = *in2 + (*in3 - *in2) * phasor->phases[voiceIndex];
 
   // phase increment and wraparound:
@@ -267,7 +262,8 @@ INLINE double BlitSaw::getLeakyIntegratorCoefficient(double oscOmega)
 {
   //return 1.0;
   //return exp(- 10.0 * processingStatus.getFreqToOmegaFactor());  // at constant frequency
-  return exp(-0.01*fabs(oscOmega));   // seems to be a good compromise between waveshape and dc-fadeout time
+  return exp(-0.01*fabs(oscOmega));   // seems to be a good compromise between waveshape and 
+                                      // dc-fadeout time
   //return exp(-0.1*fabs(oscOmega));
 }
 
@@ -292,18 +288,18 @@ void BlitSaw::resetVoiceState(int voiceIndex)
 }
 void BlitSaw::resetIntegratorState(Module *module, int voiceIndex, double startPhase, double blitOut, double oscFreq)
 {
-
-  /*
-  // To initialize the integrator's state, we first prescribe, which value the first output sample should have. The desired first output
-  // sample is computed by considering the continuous time sawtooth, defined as: saw(t) = 0.5 - mod(t, 1) which is a downward sawtooth
-  // between +0.5 and -0.5 with unit period (unit period is appropriate becasue the startPhase is considered to be normalized to the
-  // interval 0...1 too). Having found this value, we set up the integrator's state such that
-  // desiredFirstSample = blitOutputSample + c * integratorState. Solving for integratorState gives the intial state value:
-  double desiredFirstSample = 0.5 - fmod(startPhase + fixedPhaseOffset, 1.0);
-    //...that all doens't seem to work - maybe we need indeed table for desiredFirstSample vs startPhase - for each value of
-    // numHarmonics, one table is needed - so we perhaps need an upper bound for numHarmonics ...perhaps 2000 or so (allows for
-    //  full spectra (up to 20 kHz) for fundamentals down to 10 Hz.
-    */
+  // To initialize the integrator's state, we first prescribe, which value the first output sample 
+  // should have. The desired first output sample is computed by considering the continuous time 
+  // sawtooth, defined as: saw(t) = 0.5 - mod(t, 1) which is a downward sawtooth between +0.5 
+  // and -0.5 with unit period (unit period is appropriate because the startPhase is considered to 
+  // be normalized to the interval 0...1 too). Having found this value, we set up the integrator's 
+  // state such that desiredFirstSample = blitOutputSample + c * integratorState. Solving for 
+  // integratorState gives the intial state value: 
+  // double desiredFirstSample = 0.5 - fmod(startPhase + fixedPhaseOffset, 1.0);
+  //...that all doens't seem to work - maybe we need indeed table for desiredFirstSample vs 
+  // startPhase - for each value of numHarmonics, one table is needed - so we perhaps need an upper 
+  // bound for numHarmonics ...perhaps 2000 or so (allows for full spectra (up to 20 kHz) for 
+  // fundamentals down to 10 Hz. 
 
 
   double desiredFirstSample = getDesiredFirstSample(oscFreq, startPhase);

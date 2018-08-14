@@ -2,12 +2,13 @@
 #include "romos_ModuleFactory.h"
 using namespace romos;
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 Liberty::Liberty()
 {
   topLevelModule = (TopLevelModule*) ModuleFactory::createModule(ModuleTypeRegistry::TOP_LEVEL_MODULE, "Instrument", 0, 0, false);
+  populateModuleTypeRegistry();
 }
 
 Liberty::~Liberty()
@@ -16,7 +17,7 @@ Liberty::~Liberty()
   romos::ModuleTypeRegistry::deleteSoleInstance();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
 void Liberty::setSampleRate(double newSampleRate)
@@ -30,11 +31,11 @@ void Liberty::reset()
   voiceAllocator.reset();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inquiry:
     
 
-//-----------------------------------------------------------------------------------------------------------------------------------------   
+//-------------------------------------------------------------------------------------------------
 // event handling:
     
 void Liberty::noteOn(int key, int velocity)
@@ -53,3 +54,10 @@ void Liberty::resetAllVoices()
   voiceAllocator.reset();
 }
 */
+
+void Liberty::populateModuleTypeRegistry()
+{
+  ModuleTypeRegistry2* mtr = &moduleTypeRegistry;
+  //mtr->registerModuleType(AdderTypeInfo);
+  //mtr->registerModuleType(SubtractorTypeInfo);
+}

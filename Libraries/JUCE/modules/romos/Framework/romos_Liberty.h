@@ -7,92 +7,96 @@
 namespace romos
 {
 
-  /**
+/** Liberty is a modular synthesizer */
 
-  Liberty ....
+class Liberty   //: public PolyphonicInstrument
+{
 
-  */
+public:
 
-  class Liberty   //: public PolyphonicInstrument
-  {
+  //-----------------------------------------------------------------------------------------------
+  // \name Construction/Destruction:
 
-  public:
+  /** Constructor. */
+  Liberty();
 
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // construction/destruction:
+  /** Destructor. */
+  ~Liberty();
 
-    /** Constructor. */
-    Liberty();   
+  //-----------------------------------------------------------------------------------------------
+  // Setup:
 
-    /** Destructor. */
-    ~Liberty();  
+  /** Sets the samplerate at which the system receives and produces signals. */
+  void setSampleRate(double newSampleRate);
 
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // setup:
+  /** Resets the system into a default state. */
+  void reset();
 
-    /** Sets the samplerate at which the system receives and produces signals. */
-    void setSampleRate(double newSampleRate);
+  //-----------------------------------------------------------------------------------------------
+  // Inquiry:
 
-    /** Resets the system into a default state. */
-    void reset();
-
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // inquiry:
-
-    /** Returns a pointer to the top-level module. */
-    INLINE TopLevelModule* getTopLevelModule() const { return topLevelModule; }
-
-    
-    INLINE bool isSilent() { return false; } 
-
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // event handling:
-
-    /** Triggers a note-on for the given key. */
-    void noteOn(int key, int velocity);
-
-    /** Triggers a note-off for the given key. */
-    void noteOff(int key);
-
-    /** Resets all voices into default state. */
-    //void resetAllVoices();
-
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // audio processing:
-
-    /** Calculates the output-samples for both channels and stores them at the adresses of *outL and *outR. */
-    template <class SampleType>
-    INLINE void getSampleFrameStereo(SampleType *inOutL, SampleType *inOutR);  
+  /** Returns a pointer to the top-level module. */
+  INLINE TopLevelModule* getTopLevelModule() const { return topLevelModule; }
 
 
-    /** Produces a block of output samples. */
-    template <class SampleType>
-    INLINE void getBlockOfSampleFramesStereo(SampleType *inOutL, SampleType *inOutR, int numFrames);
+  INLINE bool isSilent() { return false; }
 
+  //-----------------------------------------------------------------------------------------------
+  // Event handling:
 
-    //=====================================================================================================================================
+  /** Triggers a note-on for the given key. */
+  void noteOn(int key, int velocity);
 
-  protected:
+  /** Triggers a note-off for the given key. */
+  void noteOff(int key);
 
-    TopLevelModule *topLevelModule;
+  /** Resets all voices into default state. */
+  //void resetAllVoices();
 
-  };
+  //-----------------------------------------------------------------------------------------------
+  // Audio processing:
 
-  //---------------------------------------------------------------------------------------------------------------------------------------
-  // inlined functions:
-
+  /** Calculates the output-samples for both channels and stores them at the adresses of *outL and 
+  *outR. */
   template <class SampleType>
-  INLINE void Liberty::getSampleFrameStereo(SampleType *inOutL, SampleType *inOutR)
+  INLINE void getSampleFrameStereo(SampleType *inOutL, SampleType *inOutR)
   {
     topLevelModule->getSampleFrameStereo(inOutL, inOutR);
   }
 
+  /** Produces a block of output samples. */
   template <class SampleType>
-  INLINE void Liberty::getBlockOfSampleFramesStereo(SampleType *inOutL, SampleType *inOutR, int numFrames)
+  INLINE void getBlockOfSampleFramesStereo(SampleType *inOutL, SampleType *inOutR, int numFrames)
   {
     topLevelModule->getBlockOfSampleFramesStereo(inOutL, inOutR, numFrames);
   }
 
+protected:
+
+  TopLevelModule *topLevelModule;
+
+  // under construction:
+  void populateModuleTypeRegistry();      // not yet used
+  ModuleTypeRegistry2 moduleTypeRegistry; // not yet used
+
+};
+
+//-------------------------------------------------------------------------------------------------
+// inlined functions:
+/*
+template <class SampleType>
+INLINE void Liberty::getSampleFrameStereo(SampleType *inOutL, SampleType *inOutR)
+{
+  topLevelModule->getSampleFrameStereo(inOutL, inOutR);
+}
+
+template <class SampleType>
+INLINE void Liberty::getBlockOfSampleFramesStereo(SampleType *inOutL, SampleType *inOutR, 
+  int numFrames)
+{
+  topLevelModule->getBlockOfSampleFramesStereo(inOutL, inOutR, numFrames);
+}
+*/
 } // end namespace romos
 
 #endif // Liberty_h

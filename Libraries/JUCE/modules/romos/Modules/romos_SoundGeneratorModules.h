@@ -119,8 +119,9 @@ public:
 
 };
 
-/** This is similar to the BandlimitedImpulseTrain module, but it incorporates a leaky integrator after the impulse train so as to produce
-as sawtooth wave.
+/** Under Construction
+This is similar to the BandlimitedImpulseTrain module, but it incorporates a leaky integrator 
+after the impulse train so as to produceas sawtooth wave.
 Parameters:
  none
 Inputs:
@@ -129,10 +130,11 @@ Inputs:
 Outputs:
  0: the sawtooth wave
 \todo:
- -there are still problems with the initial value for the leaky integrator for certain startPhase/frequency combinations
-  ->perhaps related to initlaizing such that the desired first output is that of a non-bandlimited saw?
-  ->further investigations necessary
-*/
+-there are still problems with the initial value for the leaky integrator for certain 
+ startPhase/frequency combinations 
+ ->perhaps related to initlaizing such that the desired first output is that of a 
+  non-bandlimited saw?
+ ->further investigations necessary */
 class BlitSaw : public BandlimitedImpulseTrain
 {
   CREATE_COMMON_DECLARATIONS_2(BlitSaw);
@@ -153,21 +155,20 @@ protected:
   static BlitIntegratorInitialStates initialStates;
 };
 
-
-
-/** This is similar to the BlitSaw module, but it generates two sawtooths with some phase-offset and weighting factor for the
-second sawtooth. When the offset is +- 0.5 and the weight is -1.0, a square wave is generated. Keeping the weight at -1.0 and changing
-the offset, a pulse-wave with variable pulse-width is obtained.
+/** Under Construction
+This is similar to the BlitSaw module, but it generates two sawtooths with some phase-offset 
+and weighting factor for the second sawtooth. When the offset is +- 0.5 and the weight is -1.0, a 
+square wave is generated. Keeping the weight at -1.0 and changing the offset, a pulse-wave with 
+variable pulse-width is obtained.
 Parameters:
  none
 Inputs:
  0: Freq -> frequency of the fundamental
  1: Phase -> offset for the instantaneous phase of the 1st (master) sawtooth
- 2: Offset -> phase offset of the 2nd sawtooth with respect to them 1st
+ 2: Offset -> phase offset of the 2nd sawtooth with respect to the 1st
  3: Mix -> weight for the second sawtooth
 Outputs:
- 0: the output wave
-*/
+ 0: the output wave  */
 class DualBlitSaw : public BlitSaw // rename to BlitOscillator, get rid of the BlitSaw (it's a special case of this one)
 {
   CREATE_COMMON_DECLARATIONS_4(DualBlitSaw);
@@ -179,10 +180,6 @@ protected:
   virtual void allocateMemory();
   virtual void freeMemory();
 };
-
-
-
-
 
 // DigitalNoise (randomly switch between 1 and -1) Ins: MeanSwitchFrequency
 // SyncModOsc: oscillator is synced to a master-osc and has it's start-phase modulated by another osc 

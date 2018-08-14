@@ -1,3 +1,16 @@
+-have a Function addInputPin(ShortName, Description, LongName)
+ use it like
+ EnvelopeModule
+ {
+   addInputPin("Att", "Attack time in seconds", "Attack");
+   // ...
+ }
+ and show the descripion in the infoline when the mouse is over the pin, if the long name is
+ empty, copy the short name
+ on the gui of modules that don't have parameters, show an info-text for this module describing the
+ inputs, what it does, etc.
+ 
+
 maybe keep a parent reference (NULL by default) 
  ->allows block processing for the top-level module 
  ->top-level module can acquire all mutexes for all child modules per block

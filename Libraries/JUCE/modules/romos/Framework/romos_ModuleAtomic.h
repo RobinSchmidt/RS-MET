@@ -69,10 +69,13 @@ protected:
   virtual void initOutputPins(int numberOfPins, const char*, ...); 
 
   /** Adds an audio input. A name for the pin can optionally be passed. */
-  virtual void addAudioInput(const char* pinName = "");
+  virtual void addAudioInput(const char* shortName = "", const char* longName = "", 
+    const char* description = "");
 
   /** Adds an audio output. A name for the pin can optionally be passed. */
   virtual void addAudioOutput(const char* pinName = "");
+   // these functions are in ModuleAtomic and not in Module because in containers the inputs and
+   // outputs are actually modules
 
   /** Deletes the audio input with the given index. */
   virtual void deleteAudioInput(int index);
@@ -90,8 +93,20 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // data members:
 
-  std::vector<rosic::rsString> audioInputNames;
+  std::vector<rosic::rsString> audioInputNames;   // rename to audioInputShortNames
+  std::vector<rosic::rsString> audioInputLongNames;
+  std::vector<rosic::rsString> audioInputDescriptions;
+
   std::vector<rosic::rsString> audioOutputNames;
+  //std::vector<rosic::rsString> audioOutputLongNames;
+  //std::vector<rosic::rsString> audioOutputDescriptions;
+
+  // it is actually a bad idea to store the input names in an array of strings because it implies
+  // that each module of the same types has to store the same strings - what a waste!
+  // Better: let Module have virtual functions getInputName(int index), getInputLongName(),..
+  // and override these
+  // maybe have a class ModuleTypeInfo
+
 
 private:
 
