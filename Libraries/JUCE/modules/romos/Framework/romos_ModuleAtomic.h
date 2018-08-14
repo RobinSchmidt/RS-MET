@@ -62,11 +62,18 @@ protected:
 
   /** Creates an initial number of input pins. To be called from initialize only. When more pins 
   should be added later, use addAudioInput. */
-  virtual void initInputPins(int numberOfPins, ...);
+  virtual void initInputPins(int numberOfPins, rosic::rsString, ...);
+    // 
+  virtual void initInputPins(int numberOfPins, const char*, ...);
+  // takes const char* and should eventually replace the one above that takes a rsString 
+  //...under construction
 
   /** Creates an initial number of output pins. To be called from initialize only. When more pins 
   should be added later, use addAudioOutput. */
-  virtual void initOutputPins(int numberOfPins, ...);
+  virtual void initOutputPins(int numberOfPins, rosic::rsString, ...); // deprecated
+
+  virtual void initOutputPins(int numberOfPins, const char*, ...);  // new - should be used
+
 
   /** Adds an audio input. A name for the pin can optionally be passed. */
   //virtual void addAudioInput(const rosic::rsString &pinName = rosic::rsString());

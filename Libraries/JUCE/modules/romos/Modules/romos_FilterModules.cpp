@@ -98,9 +98,11 @@ namespace romos
 
   void Biquad::initialize()
   { 
-    initInputPins(6, rosic::rsString("In"), rosic::rsString("b0"), rosic::rsString("b1"), rosic::rsString("b2"), 
-                     rosic::rsString("a1"), rosic::rsString("a2"));
-    initOutputPins(1, rosic::rsString("Out"));
+    //initInputPins(6, rosic::rsString("In"), rosic::rsString("b0"), rosic::rsString("b1"), rosic::rsString("b2"), 
+    //                 rosic::rsString("a1"), rosic::rsString("a2"));
+    //initOutputPins(1, rosic::rsString("Out"));
+    initInputPins(6, "In", "b0", "b1", "b2", "a1", "a2");
+    initOutputPins(1, "Out");
   }
   INLINE void Biquad::process(Module *module, double *in1, double *in2, double *in3, double *in4, double *in5,
                                         double *in6, double *out, int voiceIndex)
