@@ -220,22 +220,22 @@ public:
   Module* (*createModule)() = nullptr; // returns a pointer to (a subclass of) Module
   bool hasEditor = false;
   bool hasHeader = true;   // show a header at the top of the block (most do, so default to true)
-  std::string shortName, longName, description;
-  std::vector<std::string> inputShortNames, inputLongNames, inputDescriptions;
-  std::vector<std::string> outputShortNames, outputLongNames, outputDescriptions;
+  std::string shortName, fullName, description;
+  std::vector<std::string> inputShortNames, inputFullNames, inputDescriptions;
+  std::vector<std::string> outputShortNames, outputFullNames, outputDescriptions;
   std::string category; // may be a path with "." as delimiter
 
-  // maybe rename longName to name to indicate that this is the proper name and the other one
+  // maybe rename fullName to name to indicate that this is the proper name and the other one
   // is just an abbreviation
 
   /** Used to store information about one of the inputs - the short name is what appears on the 
   pins in the structure view. The long name and description (are supposed to be) used for a more
   verbose information screen. */
-  void addInputPinInfo(const char* shortName, const char* longName = "",
+  void addInputPinInfo(const char* shortName, const char* fullName = "",
     const char* description = "");
 
   /** Same as addInputPinInfo but for an output pin. */
-  void addOutputPinInfo(const char* shortName, const char* longName = "",
+  void addOutputPinInfo(const char* shortName, const char* fullName = "",
     const char* description = "");
 
 };
@@ -261,7 +261,7 @@ public:
   // \name Creation of module instances
 
   /** Creates a module with given (long) name. */
-  Module* createModule(const std::string& longName) const;
+  Module* createModule(const std::string& fullName) const;
 
   /** Creates a module with given unique identifier. */
   Module* createModule(int id) const;
@@ -271,12 +271,12 @@ public:
 
   /** Returns the unquie id for the module with given (long) name. Returns -1, if the module 
   type with given name was never registered. */
-  int getModuleId(const std::string& longName) const;
+  int getModuleId(const std::string& fullName) const;
 
   /** Returns true, iff a module of the given type exists (i.e. was registered). */
-  inline bool doesTypeExist(const std::string& longName) const
+  inline bool doesTypeExist(const std::string& fullName) const
   {
-    return getModuleId(longName) != -1;
+    return getModuleId(fullName) != -1;
   }
 
   //-----------------------------------------------------------------------------------------------

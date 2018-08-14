@@ -31,7 +31,7 @@ class ConstantModuleTypeInfo : public ModuleTypeInfo
 public:
   ConstantModuleTypeInfo() {
     shortName    = "Const";
-    longName     = "Constant";
+    fullName     = "Constant";
     description  = "Outputs a constant value";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new ConstantModule; };
@@ -43,11 +43,34 @@ class IdentityModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(IdentityModule);
 };
+class IdentityModuleTypeInfo : public ModuleTypeInfo
+{
+public:
+  IdentityModuleTypeInfo() {
+    shortName    = "id";
+    fullName     = "Identity";
+    description  = "Passes input to output as is";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new IdentityModule; };
+  }
+};
 
 /** Negates the input signal (multiplies by -1). */
 class UnaryMinusModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(UnaryMinusModule);
+};
+class UnaryMinusTypeInfo : public ModuleTypeInfo
+{
+public:
+  UnaryMinusTypeInfo() {
+    shortName    = "-";
+    fullName     = "Unary minus";
+    description  = "Negates the input";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new UnaryMinusModule; };
+    hasHeader = false;
+  }
 };
 
 /** Computes 1/x - when x is zero, it returns zero as well. */
@@ -55,7 +78,18 @@ class ReciprocalModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(ReciprocalModule);
 };
-
+class ReciprocalTypeInfo : public ModuleTypeInfo
+{
+public:
+  ReciprocalTypeInfo() {
+    shortName    = "1/x";
+    fullName     = "Reciprocal";
+    description  = "Computes the reciprocal of the input, with zero checking";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new ReciprocalModule; };
+    hasHeader = false;
+  }
+};
 
 /** Adds two input signals. */
 class AdderModule : public ModuleAtomic
@@ -67,7 +101,7 @@ class AdderModuleTypeInfo : public ModuleTypeInfo
 public:
   AdderModuleTypeInfo() {
     shortName    = "+";                          // shown inside the block 
-    longName     = "Adder";                      // shown in the menu (required!)
+    fullName     = "Adder";                      // shown in the menu (required!)
     description  = "Adds the two input signals"; // used for the description field
     category     = "Arithmetic";                 // used for categorization in the menu
     createModule =  []()->Module* { return new AdderModule; };
@@ -77,14 +111,23 @@ public:
     hasHeader = false; // draw no header at top of the block
   }
 };
-// todo: write such a type-info class for all atomic modules and use them in a new, better
-// factory class
-
 
 /** Subtracts the second input signal from the first. */
 class SubtractorModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_2(SubtractorModule);
+};
+class SubtractorTypeInfo : public ModuleTypeInfo
+{
+public:
+    SubtractorTypeInfo() {
+    shortName    = "-";
+    fullName     = "Subtractor";
+    description  = "Subtracts the second input from the first";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new SubtractorModule; };
+    hasHeader = false;
+  }
 };
 
 /** Multiplies two input signals. */
@@ -92,18 +135,56 @@ class MultiplierModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_2(MultiplierModule);
 };
+class MultiplierTypeInfo : public ModuleTypeInfo
+{
+public:
+  MultiplierTypeInfo() {
+    shortName    = "*";
+    fullName     = "Multiplier";
+    description  = "Multiplies the two inputs";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new MultiplierModule; };
+    hasHeader = false;
+  }
+};
+// make a multiplier with N inputs
 
-/** Divides the first input signal by the second - if the second input signal is zero, the output will also be zero. */
+
+/** Divides the first input signal by the second - if the second input signal is zero, the output 
+will also be zero. */
 class DividerModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_2(DividerModule);
 };
-
+class DividerTypeInfo : public ModuleTypeInfo
+{
+public:
+  DividerTypeInfo() {
+    shortName    = "/";
+    fullName     = "Divider";
+    description  = "Divides the first input by the second (if the 2nd is 0, it will return 0)";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new DividerModule; };
+    hasHeader = false;
+  }
+};
 
 /** Adds 3 input signals. */
 class Adder3Module : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_3(Adder3Module);
+};
+class Adder3ModuleTypeInfo : public ModuleTypeInfo
+{
+public:
+  Adder3ModuleTypeInfo() {
+    shortName    = "+";
+    fullName     = "Adder3";
+    description  = "Adds three input signals together";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new Adder3Module; };
+    hasHeader = false;
+  }
 };
 
 /** Adds 4 input signals. */
@@ -111,12 +192,38 @@ class Adder4Module : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_4(Adder4Module);
 };
+class Adder4ModuleTypeInfo : public ModuleTypeInfo
+{
+public:
+  Adder4ModuleTypeInfo() {
+    shortName    = "+";
+    fullName     = "Adder4";
+    description  = "Adds four input signals together";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new Adder4Module; };
+    hasHeader = false;
+  }
+};
+
 
 /** Adds 5 input signals. */
 class Adder5Module : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_5(Adder5Module);
 };
+class Adder5ModuleTypeInfo : public ModuleTypeInfo
+{
+public:
+  Adder5ModuleTypeInfo() {
+    shortName    = "+";
+    fullName     = "Adder5";
+    description  = "Adds five input signals together";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new Adder5Module; };
+    hasHeader = false;
+  }
+};
+
 
 /** Sums an arbitrary number (up to WorkArea::maxNumPins) of input signals. */
 class AdderNModule : public ModuleAtomic
@@ -127,7 +234,18 @@ class AdderNModule : public ModuleAtomic
   virtual void disconnectInputPin(int inputPinIndex);
    // factor these out into a class VariableNumInputsModule or something
 };
-
+class AdderNModuleTypeInfo : public ModuleTypeInfo
+{
+public:
+  AdderNModuleTypeInfo() {
+    shortName    = "+";
+    fullName     = "AdderN";
+    description  = "Sums an arbitrary number of input signals";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new AdderNModule; };
+    hasHeader = false;
+  }
+};
 
 //-----------------------------------------------------------------------------------------------
 // power ^, scaler (by fixed number) - 

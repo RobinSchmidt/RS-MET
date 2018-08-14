@@ -193,19 +193,19 @@ int romos::getTypeId(rosic::rsString typeString)
 
 //=================================================================================================
 
-void ModuleTypeInfo::addInputPinInfo(const char* shortName, const char* longName,
+void ModuleTypeInfo::addInputPinInfo(const char* shortName, const char* fullName,
   const char* description)
 {
   inputShortNames.push_back(shortName);
-  inputLongNames.push_back(longName);
+  inputFullNames.push_back(fullName);
   inputDescriptions.push_back(description);
 }
 
-void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* longName,
+void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullName,
   const char* description)
 {
   outputShortNames.push_back(shortName);
-  outputLongNames.push_back(longName);
+  outputFullNames.push_back(fullName);
   outputDescriptions.push_back(description);
 }
 
@@ -229,22 +229,22 @@ romos::Module* ModuleTypeRegistry2::createModule(int id) const
   return m;
 }
 
-romos::Module* ModuleTypeRegistry2::createModule(const std::string& longName) const
+romos::Module* ModuleTypeRegistry2::createModule(const std::string& fullName) const
 {
-  return createModule(getModuleId(longName));
+  return createModule(getModuleId(fullName));
 }
 
-int ModuleTypeRegistry2::getModuleId(const std::string& longName) const
+int ModuleTypeRegistry2::getModuleId(const std::string& fullName) const
 {
   for(int i = 0; i < typeInfos.size(); i++)
-    if(typeInfos[i]->longName == longName)
+    if(typeInfos[i]->fullName == fullName)
       return i;
   return -1;
 }
 
 void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
 {
-  rassert(!doesTypeExist(info->longName)); // type with that name was already registered
+  rassert(!doesTypeExist(info->fullName)); // type with that name was already registered
   info->id = (int) typeInfos.size();
   typeInfos.push_back(info);
 }
@@ -252,8 +252,37 @@ void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
 void ModuleTypeRegistry2::registerStandardModules()
 {
   // Arithmetic:
-  registerModuleType(new ConstantModuleTypeInfo);
-  registerModuleType(new AdderModuleTypeInfo);
+  registerModuleType(new ConstantModuleTypeInfo); // constant value
+  registerModuleType(new IdentityModuleTypeInfo); // a
+  registerModuleType(new UnaryMinusTypeInfo);     // -a
+  registerModuleType(new ReciprocalTypeInfo);     // 1/a
+  registerModuleType(new AdderModuleTypeInfo);    // a+b
+  registerModuleType(new SubtractorTypeInfo);     // a-b
+  registerModuleType(new MultiplierTypeInfo);     // a*b
+  registerModuleType(new DividerTypeInfo);        // a/b
+  registerModuleType(new Adder3ModuleTypeInfo);   // a+b+c
+  registerModuleType(new Adder4ModuleTypeInfo);   // a+b+c+d
+  registerModuleType(new Adder5ModuleTypeInfo);   // a+b+c+d+e
+  registerModuleType(new AdderNModuleTypeInfo);   // a+b+c+d+e+...
+  // todo: a^b, 
+  
+  // Comparison: a<b a<=b, a>b, a>=b,
+  // Logic: a&b, a|b
+
+
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+
+
   // ...
 
 

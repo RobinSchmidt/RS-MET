@@ -31,9 +31,9 @@ Inputs:
   0: Input signal (supposed to be a sawtooth in -1..+1 for a proper TriSaw output)
   1: Asymmetry
   2: Attack Bend
-  3: Attack Sigmodity
+  3: Attack Sigmoidity
   4: Decay Bend
-  5: Decay Sigmodity
+  5: Decay Sigmoidity
 Outputs:
   0: the trisaw signal  */
 class TriSawModule : public ModuleAtomic
