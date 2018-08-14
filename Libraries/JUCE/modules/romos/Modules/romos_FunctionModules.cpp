@@ -37,8 +37,22 @@ void TriSawModule::initialize()
 INLINE void TriSawModule::process(Module *module, double *In, double *Asym, double *AtBn, 
   double *AtSg, double *DcBn, double *DcSg, double *out, int voiceIndex)
 {
-  //*out = RAPT::rsTriSawOscillator::getFromSaw(*In, *Asym, *AtBn, *AtSg, *DcBn, *DcSg);
-  *out = 0; // preliminary
+  double h  = 0.5 * (*Asym+1);
+  double a0 = -1;
+  double a1 = 2 / h;
+  double b0 = (1+h)/(1-h);
+  double b1 = -1 - b0;
+  double p  = fmod(*In, 1);
+  typedef RAPT::rsTriSawOscillator<double> TrSw;
+  if(p < h)
+    *out = TrSw::shape(a0+a1*p,  *AtBn, *AtSg);    // upward section
+    //*out = a0 + a1*p;  // upward section
+  else 
+    *out = TrSw::shape(b0+b1*p, -(*DcBn), *DcSg);  // downward section
+    //*out = shape2(b0 + b1*p);  // downward section
+
+  //*out = RAPT::rsTriSawOscillator<double>::getFromTime(*In, *Asym, *AtBn, *AtSg, *DcBn, *DcSg);
+  //*out = 0; // preliminary
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_6(TriSawModule);
 

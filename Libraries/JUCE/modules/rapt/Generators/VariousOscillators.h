@@ -68,6 +68,8 @@ public:
   //inline T shape1(T x) { return x; }
   //inline T shape2(T x) { return x; }
 
+  //inline T getFromPhase(T 
+
   inline T getSample()
   {
     T y;
@@ -82,6 +84,30 @@ public:
   }
 
   inline void reset() { p = startPhase; }
+
+  /*
+  // used in romos:
+  static void getTriSawCoeffs(T h, double *a0, double *a1, double *b0, double *b1)
+  {
+    *a0 = -1;
+    *a1 = 2 / h;
+    *b0 = (1+h)/(1-h);
+    *b1 = -1 - *b0;
+
+    // todo: we need to catch cases when h = 0 or 1-h = 0
+    // if(h < eps)
+    //   a1 = 0;
+    // if(1-h < eps)
+    //   b1 = 0;
+    // or something
+  }
+  static T getFromTime(T in, T Asym, T AttBend, T AttSigm, T DecBend, T DecSigm)
+  {
+    double p = fmod(in, 1);
+
+    return p; // preliminary
+  }
+  */
 
 protected:
 

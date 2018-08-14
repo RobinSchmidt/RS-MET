@@ -1,3 +1,5 @@
+
+
 template<class T>
 void rsTriSawOscillator<T>::updateTriSawCoeffs()
 {
@@ -18,13 +20,6 @@ void rsTriSawOscillator<T>::updateTriSawCoeffs()
   a1 = 2 / h;
   b0 = (1+h)/(1-h);
   b1 = -1-b0;
-
-
-  //// coeffs:
-  //a0 = 0;  // can actually be optimized away
-  //a1 = T(1) / h;
-  //b0 = T(1) / (1-h);
-  //b1 = -b0;
 
   // todo: we need to catch cases when h = 0 or 1-h = 0
   // if(h < eps)
