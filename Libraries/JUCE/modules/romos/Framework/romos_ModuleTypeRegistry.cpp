@@ -277,10 +277,10 @@ void ModuleTypeRegistry2::registerStandardModules()
   // Filters:
   registerModuleType(new FirstOrderLowpassTypeInfo);
   registerModuleType(new FirstOrderFilterTypeInfo);
+  registerModuleType(new BiquadTypeInfo);
+  registerModuleType(new BiquadDesignerTypeInfo);
+  registerModuleType(new LadderFilterTypeInfo);
 
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
   //registerModuleType(new );
   //registerModuleType(new );
   //registerModuleType(new );

@@ -79,16 +79,21 @@ protected:
   virtual void freeMemory();
   double *buffers;
 };
+class BiquadTypeInfo : public ModuleTypeInfo
+{
+public:
+  BiquadTypeInfo() {
+    shortName    = "Biquad";
+    fullName     = "Biquad";
+    description  = "Biquad (2 pole, 2 zero) filter. Realizes y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-2] - a1*y[n-1] - a2*y[n-2]";
+    category     = "Filters";
+    createModule =  []()->Module* { return new Biquad; };
+  }
+};
 
 
-
-
-
-
-
-
-/** Module to calculate biquad coefficients from a specification. The type is selected on the GUI and there are input pins for
-characteristic frequency, gain, etc.
+/** Module to calculate biquad coefficients from a specification. The type is selected on the GUI 
+and there are input pins for characteristic frequency, gain, etc.
 
 \todo implement modes:
 // LP6, LP12, HP6, HP12, LP6->HP6, LP6+HP6, BP(const skirt), Bell,
@@ -122,7 +127,6 @@ public:
     HIGH_SHELF_2_BILINEAR,
     ALLPASS_2_BILINEAR,
 
-
     //LOWPASS_6_IMPULSE_INVARIANT,
     //LOWPASS_6_PRESCRIBED_NYQUIST_GAIN,
     // etc...
@@ -137,6 +141,18 @@ protected:
   double *oldOutputs;    // b0, b1, b2, a1, a2
   int    mode;
 };
+class BiquadDesignerTypeInfo : public ModuleTypeInfo
+{
+public:
+  BiquadDesignerTypeInfo() {
+    shortName    = "BqdDsgn";
+    fullName     = "BiquadDesigner";
+    description  = "Computes biquad coefficients from a specification";
+    category     = "Filters";
+    createModule =  []()->Module* { return new BiquadDesigner; };
+  }
+};
+
 
 
 
@@ -186,6 +202,22 @@ protected:
   double *oldParameters; // frequency, resonance, autogain
   int    filterMode, saturationMode;
 };
+
+class LadderFilterTypeInfo : public ModuleTypeInfo
+{
+public:
+  LadderFilterTypeInfo() {
+    shortName    = "Ladder";
+    fullName     = "LadderFilter";
+    description  = "A Moog style ladder filter with multiple modes";
+    category     = "Filters";
+    createModule =  []()->Module* { return new LadderFilter; };
+  }
+};
+
+
+
+
 
 
 
