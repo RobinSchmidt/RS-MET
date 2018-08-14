@@ -29,6 +29,9 @@ public:
   /** Sets the samplerate at which the system receives and produces signals. */
   void setSampleRate(double newSampleRate);
 
+  /** Not yet implemented. */
+  void setOversampling(int newFactor);
+
   /** Resets the system into a default state. */
   void reset();
 
@@ -61,6 +64,7 @@ public:
   template <class SampleType>
   INLINE void getSampleFrameStereo(SampleType *inOutL, SampleType *inOutR)
   {
+    // todo: upsample/downsample if oversampling != 1
     topLevelModule->getSampleFrameStereo(inOutL, inOutR);
   }
 
@@ -68,12 +72,16 @@ public:
   template <class SampleType>
   INLINE void getBlockOfSampleFramesStereo(SampleType *inOutL, SampleType *inOutR, int numFrames)
   {
+    // todo: upsample/downsample if oversampling != 1
     topLevelModule->getBlockOfSampleFramesStereo(inOutL, inOutR, numFrames);
   }
 
 protected:
 
   TopLevelModule *topLevelModule;
+
+  int oversampling = 1; // not yet used - for later - it would be nice to be able to select
+                        // oversampling on a per-container basis - maybe later, it's complicated
 
   // under construction:
   void populateModuleTypeRegistry();      // not yet used

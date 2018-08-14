@@ -7,10 +7,22 @@
 namespace romos
 {
 
-  /** Clips the input signal to a range between some specified minimum and maximum. */
+/** Clips the input signal to a range between some specified minimum and maximum. */
 class ClipperModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_3(ClipperModule);
+};
+class ClipperTypeInfo : public ModuleTypeInfo
+{
+public:
+  ClipperTypeInfo() {
+    shortName    = "Clip";
+    fullName     = "Clipper";
+    description  = "Clips input signal to the range between Min and Max";
+    category     = "Functions";
+    createModule =  []()->Module* { return new ClipperModule; };
+    hasHeader = false;
+  }
 };
 
 /** Computes the sine and cosine of 2*pi times the input value (multiplication of the argument by
@@ -18,6 +30,18 @@ class ClipperModule : public ModuleAtomic
 class SinCosModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(SinCosModule);
+};
+class SinCosTypeInfo : public ModuleTypeInfo
+{
+public:
+  SinCosTypeInfo() {
+    shortName    = "SinCos";
+    fullName     = "SinCos"; // maybe rename to SineAndCosine
+    description  = "Sine and cosine of 2*pi times the input (1-periodic)";
+    category     = "Functions";
+    createModule =  []()->Module* { return new SinCosModule; };
+    hasHeader = false;
+  }
 };
 
 /* TriSaw shaper module, takes a Phasor input (range -1..+1) and converts it into a TriSaw 
@@ -40,6 +64,19 @@ class TriSawModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_6(TriSawModule);
 };
+class TriSawTypeInfo : public ModuleTypeInfo
+{
+public:
+  TriSawTypeInfo() {
+    shortName    = "TriSaw";
+    fullName     = "TriSaw";
+    description  = "Morph between triangle, saw, square and sine";
+    category     = "Functions";
+    createModule =  []()->Module* { return new TriSawModule; };
+    hasHeader = false;
+  }
+};
+
 
 
 // round, ceil, floor, abs, max, min

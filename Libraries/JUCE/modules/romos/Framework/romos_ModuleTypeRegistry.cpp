@@ -251,6 +251,8 @@ void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
 
 void ModuleTypeRegistry2::registerStandardModules()
 {
+  // todo: remove the "Module" from the class names where it appears
+
   // Arithmetic:
   registerModuleType(new ConstantModuleTypeInfo); // constant value
   registerModuleType(new IdentityModuleTypeInfo); // a
@@ -272,7 +274,7 @@ void ModuleTypeRegistry2::registerStandardModules()
   // Functions:
 
   // Delays:
-  registerModuleType(new UnitDelayTypeInfo);
+  registerModuleType(new UnitDelayTypeInfo);  // y = x[n-1]
 
   // Filters:
   registerModuleType(new FirstOrderLowpassTypeInfo);
@@ -281,14 +283,42 @@ void ModuleTypeRegistry2::registerStandardModules()
   registerModuleType(new BiquadDesignerTypeInfo);
   registerModuleType(new LadderFilterTypeInfo);
 
+  // Functions:
+  registerModuleType(new ClipperTypeInfo);    // hardClip(x, Min, Max)
+  registerModuleType(new SinCosTypeInfo);     // sin(2*pi*x),cos(2*pi*x)
+  registerModuleType(new TriSawTypeInfo);
+
+  // Infrastructure:
+  registerModuleType(new AudioInputTypeInfo);
+  registerModuleType(new AudioOutputTypeInfo);
+  registerModuleType(new SystemSampleRateTypeInfo);
+  registerModuleType(new SystemSamplePeriodTypeInfo);
+  registerModuleType(new NoteGateTypeInfo);
+  registerModuleType(new NoteOnTriggerTypeInfo);
+  registerModuleType(new NoteOffTriggerTypeInfo);
+  registerModuleType(new VoiceKillerTypeInfo);
+  registerModuleType(new VoiceCombinerTypeInfo);
+  registerModuleType(new NoteFrequencyTypeInfo);
+  registerModuleType(new NoteVelocityTypeInfo);
+  registerModuleType(new ParameterModuleTypeInfo);
+
   //registerModuleType(new );
   //registerModuleType(new );
   //registerModuleType(new );
   //registerModuleType(new );
   //registerModuleType(new );
 
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
+  //registerModuleType(new );
 
-  // ...
 
 
 
@@ -297,6 +327,7 @@ void ModuleTypeRegistry2::registerStandardModules()
 
   // Sources:
 
+  // before starting using this, compare if the new names match the old ones (full and short)
   //...
 }
 

@@ -26,6 +26,19 @@ protected:
   //virtual void setAudioOutputAddress(double *newAddress);
   friend class ModuleContainer;
 };
+class AudioInputTypeInfo : public ModuleTypeInfo
+{
+public:
+  AudioInputTypeInfo() {
+    shortName    = "In";
+    fullName     = "AudioInput";
+    description  = "Input module for feeding signals into containers";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new AudioInputModule; };
+    hasHeader = false;
+  }
+};
+
 
 class AudioOutputModule : public IdentityModule
 //class AudioOutputModule : public ModuleProxy
@@ -42,12 +55,38 @@ protected:
   //virtual void resetState();
   friend class ModuleContainer;
 };
+class AudioOutputTypeInfo : public ModuleTypeInfo
+{
+public:
+  AudioOutputTypeInfo() {
+    shortName    = "Out";
+    fullName     = "AudioOutput";
+    description  = "Output module for feeding signals out of containers";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new AudioOutputModule; };
+    hasHeader = false;
+  }
+};
+
 
 /** Outputs the current system sample rate. */
 class SystemSampleRateModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(SystemSampleRateModule);
 };
+class SystemSampleRateTypeInfo : public ModuleTypeInfo
+{
+public:
+  SystemSampleRateTypeInfo() {
+    shortName    = "SR";
+    fullName     = "SampleRate";
+    description  = "Informs about the system's sample rate";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new SystemSampleRateModule; };
+    hasHeader = false;
+  }
+};
+
 
 /** Outputs the current system sampling period, that is: the distance between two samples in 
 seconds. This is equal to the reciprocal of the samplerate. */
@@ -55,11 +94,40 @@ class SystemSamplePeriodModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(SystemSamplePeriodModule);
 };
+class SystemSamplePeriodTypeInfo : public ModuleTypeInfo
+{
+public:
+  SystemSamplePeriodTypeInfo() {
+    shortName    = "1/SR";
+    fullName     = "SampleInterval";
+    description  = "Informs about the system's sampling interval";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new SystemSamplePeriodModule; };
+    hasHeader = false;
+  }
+};
+// rename to SampleInterval
+
+
+
+
 
 /** Outputs 1 if the voice is currently playing a note, 0 otherwise. */
 class NoteGateModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteGateModule);
+};
+class NoteGateTypeInfo : public ModuleTypeInfo
+{
+public:
+  NoteGateTypeInfo() {
+    shortName    = "NoteGate";
+    fullName     = "NoteGate";
+    description  = "Outputs 1 if the voice is currently playing a note, 0 otherwise";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new NoteGateModule; };
+    hasHeader = false;
+  }
 };
 
 /** Outputs 1 if the voice has just been triggered (note-on), 0 otherwise. */
@@ -67,12 +135,37 @@ class NoteOnTriggerModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteOnTriggerModule);
 };
+class NoteOnTriggerTypeInfo : public ModuleTypeInfo
+{
+public:
+  NoteOnTriggerTypeInfo() {
+    shortName    = "NoteOn";
+    fullName     = "NoteOnTrigger";
+    description  = "Outputs 1 if there was a note-on at this sample for this voice, 0 otherwise";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new NoteOnTriggerModule; };
+    hasHeader = false;
+  }
+};
 
 /** Outputs 1 if the voice has just been released (note-off), 0 otherwise. */
 class NoteOffTriggerModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteOffTriggerModule);
 };
+class NoteOffTriggerTypeInfo : public ModuleTypeInfo
+{
+public:
+  NoteOffTriggerTypeInfo() {
+    shortName    = "NoteOff";
+    fullName     = "NoteOffTrigger";
+    description  = "Outputs 1 if there was a note-off at this sample for this voice, 0 otherwise";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new NoteOffTriggerModule; };
+    hasHeader = false;
+  }
+};
+
 
 /** Kills the voice when the maximum absolute value of the input signal remains below a threshold 
 for some specified time. */
@@ -89,6 +182,19 @@ protected:
 
   double threshold, timeOut;
 };
+class VoiceKillerTypeInfo : public ModuleTypeInfo
+{
+public:
+  VoiceKillerTypeInfo() {
+    shortName    = "VoiceKill";
+    fullName     = "VoiceKiller";
+    //description  = "Kills the voice when the maximum absolute value of the input signal remains below a threshold for some specified time";
+    description  = "Kills voice when max-abs of input remains below threshold for some time";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new VoiceKillerModule; };
+    hasHeader = false;
+  }
+};
 
 
 /** Adds polyphonic signals at its input into a monophonic signal at its output. */
@@ -104,6 +210,18 @@ protected:
   virtual void setPolyphonic(bool shouldBePolyphonic);
   virtual void clearVoiceBuffer(int voiceIndex);
 };
+class VoiceCombinerTypeInfo : public ModuleTypeInfo
+{
+public:
+  VoiceCombinerTypeInfo() {
+    shortName    = "}";
+    fullName     = "VoiceCombiner";
+    description  = "Adds polyphonic signals at its input into a monophonic signal at its output";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new VoiceCombinerModule; };
+    hasHeader = false;
+  }
+};
 
 
 /** Outputs the frequency of the most recent note that is/was played in this voice. */
@@ -111,13 +229,36 @@ class NoteFrequencyModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteFrequencyModule);
 };
+class NoteFrequencyTypeInfo : public ModuleTypeInfo
+{
+public:
+  NoteFrequencyTypeInfo() {
+    shortName    = "NoteFreq";
+    fullName     = "NoteFrequency";
+    description  = "Frequency of the most recent note that is/was played in this voice";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new NoteFrequencyModule; };
+    hasHeader = false;
+  }
+};
 
 /** Outputs the velocity the note that is currently played in this voice. */
 class NoteVelocityModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteVelocityModule);
 };
-
+class NoteVelocityTypeInfo : public ModuleTypeInfo
+{
+public:
+  NoteVelocityTypeInfo() {
+    shortName    = "NoteVelo";
+    fullName     = "NoteVelocity";
+    description  = "Velocity of the most recent note that is/was played in this voice";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new NoteVelocityModule; };
+    hasHeader = false;
+  }
+};
 
 // \todo AfterTouchModules (or ChannelPressure and NotePressure (or KeyPressure) modules),
 
@@ -210,6 +351,21 @@ protected:
   std::vector<double> snapshotValues;
 
 };
+class ParameterModuleTypeInfo : public ModuleTypeInfo
+{
+public:
+  ParameterModuleTypeInfo() {
+    shortName    = "Param";
+    fullName     = "Parameter";
+    description  = "User parameter that is set up on the GUI";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new ParameterModule; };
+    hasHeader = false;
+  }
+};
+
+
+
 
 /** Outputs a number that represents some user parameter. It facilitates presentation to the
 user by defining a range and mapping. */
