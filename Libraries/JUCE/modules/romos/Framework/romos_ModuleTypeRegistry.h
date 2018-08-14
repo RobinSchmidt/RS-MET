@@ -81,6 +81,7 @@ public:
     // Functions:
     CLIPPER,
     SIN_COS,
+    TRISAW,
     FORMULA,     // dynamic Ins
 
     // CROSS_FADER, XY_FADER (mixes 4 inputs ...mmm maybe VECTOR_MIXER would be a better name)

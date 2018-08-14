@@ -28,8 +28,10 @@ namespace romos
 
   Outputs:
    0: the envelope signal
+
   References: Moore - Elements of Computer Music, page 183...
-  */
+  todo: change the meaning of the Shape parameters to be the normalized y-value at x=0.5 shifted
+  and scaled to the range -1..+1  */
   class EnvelopeADSR : public ModuleAtomic
   {
     CREATE_COMMON_DECLARATIONS_7(EnvelopeADSR);

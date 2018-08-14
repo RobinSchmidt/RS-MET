@@ -60,6 +60,7 @@ romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString n
 
   case ModuleTypeRegistry::CLIPPER:                   newModule = new ClipperModule();              break;
   case ModuleTypeRegistry::SIN_COS:                   newModule = new SinCosModule();               break;
+  case ModuleTypeRegistry::TRISAW:                    newModule = new TriSawModule();               break;
   case ModuleTypeRegistry::CONSTANT:                  newModule = new ConstantModule();             break;
   case ModuleTypeRegistry::CONTAINER:                 newModule = new ModuleContainer();            break;
 

@@ -2342,9 +2342,10 @@ void ModularBlockDiagramPanel::fillAvailableModulesTreeView()
   //---------------------------------------------------------------------------
   // functional modules:
 
-  tmpNode1 = new RTreeViewNode(("Functions"));
-  tmpNode1->addChildNode(new RTreeViewNode(("Clipper"),       romos::ModuleTypeRegistry::CLIPPER));
-  tmpNode1->addChildNode(new RTreeViewNode(("SinCos"),        romos::ModuleTypeRegistry::SIN_COS));
+  tmpNode1 = new RTreeViewNode("Functions");
+  tmpNode1->addChildNode(new RTreeViewNode("Clipper", romos::ModuleTypeRegistry::CLIPPER));
+  tmpNode1->addChildNode(new RTreeViewNode("SinCos",  romos::ModuleTypeRegistry::SIN_COS));
+  tmpNode1->addChildNode(new RTreeViewNode("TriSaw",  romos::ModuleTypeRegistry::TRISAW));
   insertModuleNode->addChildNode(tmpNode1);
 
 

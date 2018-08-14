@@ -130,7 +130,9 @@ class AdderNModule : public ModuleAtomic
 
 
 //-----------------------------------------------------------------------------------------------
-// power ^, 
+// power ^, scaler (by fixed number) - 
+// ScaleAndShift: *3 scales by 3, +2 shifts by 2, *3+2 scales by 3 and the adds 2
+// default: *1+0
 
 
 //-----------------------------------------------------------------------------------------------

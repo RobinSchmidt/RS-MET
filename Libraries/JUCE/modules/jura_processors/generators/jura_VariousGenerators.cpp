@@ -134,6 +134,7 @@ void TriSawOscModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setDecayBending);
 
+
   p = new Param("AttackSigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setAttackSigmoid);
@@ -219,6 +220,22 @@ void TriSawOscModule::updateBending()
   // that's not yet very nice:
   oscCore.setAttackBending(rosic::clip(bend + bendAsym, -1., +1.) );
   oscCore.setDecayBending( rosic::clip(bend - bendAsym, -1., +1.) );
+  // but maybe it doesn't get any better
+
+  //// this?
+  //double s = 1 / (1 + abs(bendAsym));  // -1..1 -> 1..0..1
+  //double p = 0.5 * (bendAsym + 1);     // -1..1 -> 0..1
+  //double sb2 = 2*s*bend;
+  //oscCore.setAttackBending(sb2 *   p  );
+  //oscCore.setDecayBending( sb2 * (1-p));
+  //// has a nice behavior but makes certain settings inacessible (for example 
+  //// attack bend = 0.9, decay bend = -0.9
+
+  //double s = 1 / sqrt(1 + bend*bend + bendAsym*bendAsym);
+  //oscCore.setAttackBending(s * (bend+bendAsym));
+  //oscCore.setDecayBending( s * (bend-bendAsym));
+
+
 
   // ...under construction - 
   // idea: 

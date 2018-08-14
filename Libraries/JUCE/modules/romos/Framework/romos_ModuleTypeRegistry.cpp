@@ -123,6 +123,7 @@ ModuleTypeRegistry::ModuleTypeRegistry()
   // Functions:
   identifierNameMap.insertKeyValuePair(CLIPPER,                   rosic::rsString("Clipper"));
   identifierNameMap.insertKeyValuePair(SIN_COS,                   rosic::rsString("SinCos"));
+  identifierNameMap.insertKeyValuePair(TRISAW,                    rosic::rsString("TriSaw"));
   identifierNameMap.insertKeyValuePair(FORMULA,                   rosic::rsString("Formula"));
 
   // Delays:
