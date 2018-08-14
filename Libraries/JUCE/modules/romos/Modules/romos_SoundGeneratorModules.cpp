@@ -175,11 +175,11 @@ double** BlitIntegratorInitialStates::stateValues;
 BlitIntegratorInitialStates::BlitIntegratorInitialStates()
 {
   stateValues = nullptr;    
-  createStateValueTables();
+  //createStateValueTables(); // commented to fix memory leak
 }
 BlitIntegratorInitialStates::~BlitIntegratorInitialStates()
 {
-  deleteStateValueTables();
+  //deleteStateValueTables(); // commented to fix memory leak
 }
 void BlitIntegratorInitialStates::createStateValueTables()
 {

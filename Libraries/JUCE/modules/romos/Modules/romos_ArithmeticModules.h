@@ -66,17 +66,19 @@ class AdderModuleTypeInfo : public ModuleTypeInfo
 {
 public:
   AdderModuleTypeInfo() {
-    shortName    = "+";
-    longName     = "Adder";
-    description  = "Adds the two input signals";
-    category     = "Arithmetic";
+    shortName    = "+";                          // shown inside the block 
+    longName     = "Adder";                      // shown in the menu (required!)
+    description  = "Adds the two input signals"; // used for the description field
+    category     = "Arithmetic";                 // used for categorization in the menu
     createModule =  []()->Module* { return new AdderModule; };
     // addInputPinInfo( "1st", "First argument", "First argument a of c = a + b");
     // addInputPinInfo( "2nd", "Second argument", "Second argument b of c = a + b");
     // addOutputPinInfo("Res", "Result", "Result c of c = a + b");
+    hasHeader = false; // draw no header at top of the block
   }
 };
-// todo: write such a type-info class for all atomic modules
+// todo: write such a type-info class for all atomic modules and use them in a new, better
+// factory class
 
 
 /** Subtracts the second input signal from the first. */

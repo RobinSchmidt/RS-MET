@@ -105,7 +105,8 @@ protected:
   // that each module of the same types has to store the same strings - what a waste!
   // Better: let Module have virtual functions getInputName(int index), getInputLongName(),..
   // and override these
-  // maybe have a class ModuleTypeInfo
+  // maybe have a class ModuleTypeInfo - done - the new ModuleRegistry2 also serves as factory
+  // ..when all code is changed to use this new class, get rid of the arrays above
 
 
 private:

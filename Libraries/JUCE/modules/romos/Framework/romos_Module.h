@@ -527,19 +527,24 @@ protected:
   romos::ModuleContainer *parentModule;
 
   int  moduleTypeIdentifier; // one of the values defined in moduleIdentifiers - for RTTI and total recall
+  // to be deprecated (replaced by pointer to ModuleTypeInfo structure)
+
   bool polyphonic;           // flag to indicate that this module is polyphonic
   int  x, y;                 // position on the GUI block-diagram
 
   rosic::rsString name;      // use std::string
-  // have shortName, longName, description
+  // have shortName, longName, description, write a function getLongName etc. - inside this
+  // function, check, if the variables here are empty and if so, show the long/short/etc names
+  // from the typeInfo pointer
 
   ModuleTypeInfo *typeInfo = nullptr; 
   // not yet used - should later be set on construction by the factory and replace the
   // moduleTypeIdentifier variable
 
   bool  hasHeaderFlag;
-    // determines, if the visual rendering needs a header - actually a GUI-thing that does not 
-    // really belong here - maybe write a function instead that switches on the typeCode or similar
+  // determines, if the visual rendering needs a header - actually a GUI-thing that does not 
+  // really belong here - maybe write a function instead that switches on the typeCode or similar
+  // remove - use info from typeInfo object
 
   // function pointers for audio processing:
   void (*processFrame) (Module *module, int voiceIndex);

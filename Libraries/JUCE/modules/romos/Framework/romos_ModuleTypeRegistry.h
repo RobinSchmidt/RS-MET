@@ -218,10 +218,14 @@ public:
   int id = -1;  // id must be assigned by the type registry object when a type is registered
   Module* (*createModule)() = nullptr; // returns a pointer to (a subclass of) Module
   bool hasEditor = false;
+  bool hasHeader = true;   // show a header at the top of the block (most do, so default to true)
   std::string shortName, longName, description;
   std::vector<std::string> inputShortNames, inputLongNames, inputDescriptions;
   std::vector<std::string> outputShortNames, outputLongNames, outputDescriptions;
   std::string category; // may be a path with "." as delimiter
+
+  // maybe rename longName to name to indicate that this is the proper name and the other one
+  // is just an abbreviation
 
   /** Used to store information about one of the inputs - the short name is what appears on the 
   pins in the structure view. The long name and description (are supposed to be) used for a more
@@ -235,7 +239,12 @@ public:
 
 };
 
-/** 2nd attempt - under construction */
+/** 2nd attempt - under construction 
+This class is supposed to replace the old moduleTypeRegistry and ModuleFactory and allows us to
+assign names to module in/out pins for all modules of the same type at once. Makes the arrays
+audioInputNames, audioOutputNames obsolete in class ModuleAtomic -> less redundant data to store
+
+*/
 class ModuleTypeRegistry2
 {
 
@@ -247,8 +256,30 @@ public:
   /** Destructor. Cleans up the memory. */
   ~ModuleTypeRegistry2();
 
-  Module* createModule(int id);
+  //-----------------------------------------------------------------------------------------------
+  // \name Creation of module instances
 
+  /** Creates a module with given (long) name. */
+  Module* createModule(const std::string& longName) const;
+
+  /** Creates a module with given unique identifier. */
+  Module* createModule(int id) const;
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  /** Returns the unquie id for the module with given (long) name. Returns -1, if the module 
+  type with given name was never registered. */
+  int getModuleId(const std::string& longName) const;
+
+  /** Returns true, iff a module of the given type exists (i.e. was registered). */
+  inline bool doesTypeExist(const std::string& longName) const
+  {
+    return getModuleId(longName) != -1;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Registration of module types
 
   /** Registers the module with given type info. You need to pass a pointer that you may create via
   new and forget about it. This object takes over responsibility for deleting it */

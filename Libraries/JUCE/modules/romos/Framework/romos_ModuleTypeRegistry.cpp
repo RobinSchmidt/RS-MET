@@ -208,8 +208,7 @@ void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* longNam
   outputDescriptions.push_back(description);
 }
 
-
-
+//-------------------------------------------------------------------------------------------------
 
 ModuleTypeRegistry2::ModuleTypeRegistry2()
 {
@@ -221,7 +220,7 @@ ModuleTypeRegistry2::~ModuleTypeRegistry2()
   clear();
 }
 
-romos::Module* ModuleTypeRegistry2::createModule(int id)
+romos::Module* ModuleTypeRegistry2::createModule(int id) const
 {
   rassert(id >= 0 && id < typeInfos.size());  // id out of range
   romos::Module* m = typeInfos[id]->createModule();
@@ -229,13 +228,22 @@ romos::Module* ModuleTypeRegistry2::createModule(int id)
   return m;
 }
 
+romos::Module* ModuleTypeRegistry2::createModule(const std::string& longName) const
+{
+  return createModule(getModuleId(longName));
+}
+
+int ModuleTypeRegistry2::getModuleId(const std::string& longName) const
+{
+  for(int i = 0; i < typeInfos.size(); i++)
+    if(typeInfos[i]->longName == longName)
+      return i;
+  return -1;
+}
+
 void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
 {
-  // todo: check, if the type is not already registered (maybe use the ID) - trigger assert, if it
-  // is
-  // or - no - use the name-string(s) (long and/or short) for comparison and *assign* the ID
-  // here - it doesn't have to be hardcoded at compile-time
-
+  rassert(!doesTypeExist(info->longName)); // type with that name was already registered
   info->id = (int) typeInfos.size();
   typeInfos.push_back(info);
 }
@@ -243,9 +251,10 @@ void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
 void ModuleTypeRegistry2::registerStandardModules()
 {
   // Arithmetic:
+  registerModuleType(new ConstantModuleTypeInfo);
   registerModuleType(new AdderModuleTypeInfo);
-  //registerModuleType(new AdderModule::TypeInfo);
-  //registerModuleType(new SubtractorTypeInfo);
+  // ...
+
 
   // Delay:
 
