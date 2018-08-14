@@ -192,6 +192,25 @@ int romos::getTypeId(rosic::rsString typeString)
 
 //=================================================================================================
 
+void ModuleTypeInfo::addInputPinInfo(const char* shortName, const char* longName,
+  const char* description)
+{
+  inputShortNames.push_back(shortName);
+  inputLongNames.push_back(longName);
+  inputDescriptions.push_back(description);
+}
+
+void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* longName,
+  const char* description)
+{
+  outputShortNames.push_back(shortName);
+  outputLongNames.push_back(longName);
+  outputDescriptions.push_back(description);
+}
+
+
+
+
 ModuleTypeRegistry2::ModuleTypeRegistry2()
 {
   registerStandardModules();
@@ -202,11 +221,23 @@ ModuleTypeRegistry2::~ModuleTypeRegistry2()
   clear();
 }
 
-void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* newTypeInfoToAdd)
+romos::Module* ModuleTypeRegistry2::createModule(int id)
+{
+  rassert(id >= 0 && id < typeInfos.size());  // id out of range
+  romos::Module* m = typeInfos[id]->createModule();
+  m->typeInfo = typeInfos[id];
+  return m;
+}
+
+void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
 {
   // todo: check, if the type is not already registered (maybe use the ID) - trigger assert, if it
   // is
+  // or - no - use the name-string(s) (long and/or short) for comparison and *assign* the ID
+  // here - it doesn't have to be hardcoded at compile-time
 
+  info->id = (int) typeInfos.size();
+  typeInfos.push_back(info);
 }
 
 void ModuleTypeRegistry2::registerStandardModules()
@@ -227,5 +258,7 @@ void ModuleTypeRegistry2::registerStandardModules()
 
 void ModuleTypeRegistry2::clear()
 {
-
+  for(int i = 0; i < typeInfos.size(); i++)
+    delete typeInfos[i];
+  typeInfos.clear();
 }

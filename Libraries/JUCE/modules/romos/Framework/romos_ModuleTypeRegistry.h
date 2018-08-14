@@ -215,13 +215,24 @@ int getTypeId(rosic::rsString typeString);
 class ModuleTypeInfo
 {
 public:
-  int identifier = 0;
+  int id = -1;  // id must be assigned by the type registry object when a type is registered
   Module* (*createModule)() = nullptr; // returns a pointer to (a subclass of) Module
   bool hasEditor = false;
   std::string shortName, longName, description;
   std::vector<std::string> inputShortNames, inputLongNames, inputDescriptions;
   std::vector<std::string> outputShortNames, outputLongNames, outputDescriptions;
   std::string category; // may be a path with "." as delimiter
+
+  /** Used to store information about one of the inputs - the short name is what appears on the 
+  pins in the structure view. The long name and description (are supposed to be) used for a more
+  verbose information screen. */
+  void addInputPinInfo(const char* shortName, const char* longName = "",
+    const char* description = "");
+
+  /** Same as addInputPinInfo but for an output pin. */
+  void addOutputPinInfo(const char* shortName, const char* longName = "",
+    const char* description = "");
+
 };
 
 /** 2nd attempt - under construction */
@@ -235,6 +246,9 @@ public:
 
   /** Destructor. Cleans up the memory. */
   ~ModuleTypeRegistry2();
+
+  Module* createModule(int id);
+
 
   /** Registers the module with given type info. You need to pass a pointer that you may create via
   new and forget about it. This object takes over responsibility for deleting it */

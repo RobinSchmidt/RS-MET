@@ -26,6 +26,17 @@ public:
 protected:
   double value;
 };
+class ConstantModuleTypeInfo : public ModuleTypeInfo
+{
+public:
+  ConstantModuleTypeInfo() {
+    shortName    = "Const";
+    longName     = "Constant";
+    description  = "Outputs a constant value";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new ConstantModule; };
+  }
+};
 
 /** Copies the signal in the input slot into the output slot. */
 class IdentityModule : public ModuleAtomic
@@ -51,18 +62,21 @@ class AdderModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_2(AdderModule);  // 2 because it has two inputs
 };
-class AdderModuleTypeInfo : public ModuleTypeInfo  // under construction
+class AdderModuleTypeInfo : public ModuleTypeInfo
 {
 public:
-  AdderModuleTypeInfo()
-  {
+  AdderModuleTypeInfo() {
     shortName    = "+";
     longName     = "Adder";
     description  = "Adds the two input signals";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new AdderModule; };
+    // addInputPinInfo( "1st", "First argument", "First argument a of c = a + b");
+    // addInputPinInfo( "2nd", "Second argument", "Second argument b of c = a + b");
+    // addOutputPinInfo("Res", "Result", "Result c of c = a + b");
   }
 };
+// todo: write such a type-info class for all atomic modules
 
 
 /** Subtracts the second input signal from the first. */

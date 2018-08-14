@@ -347,6 +347,11 @@ public:
   connected to any output. */
   double getInputPinDefaultValue(int pinIndex) const;
 
+  // const char* getInputPinShortName(int pinIndex) { return typeInfo.inputShortNames[pinIndex]; }
+  // or:
+  // virtual const std::string& getInputPinShortName(int pinIndex) const 
+  // { return typeInfo->inputShortNames[pinIndex]; }
+
   /** Returns true when this module has an AudioOutputModule among its target modules. */
   bool isConnectedToAudioOutput() const;
 
@@ -526,6 +531,11 @@ protected:
   int  x, y;                 // position on the GUI block-diagram
 
   rosic::rsString name;      // use std::string
+  // have shortName, longName, description
+
+  ModuleTypeInfo *typeInfo = nullptr; 
+  // not yet used - should later be set on construction by the factory and replace the
+  // moduleTypeIdentifier variable
 
   bool  hasHeaderFlag;
     // determines, if the visual rendering needs a header - actually a GUI-thing that does not 
@@ -549,7 +559,8 @@ protected:
   friend void writeModuleStateToConsole(void *module, bool waitForKeyAfterOutput);
   friend void retrieveModuleState(void *module); // for debugging
 
-  friend class ModuleFactory;
+  friend class ModuleFactory;        // for old creation code
+  friend class ModuleTypeRegistry2;  // for new creation code
 
 private:
 
