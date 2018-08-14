@@ -302,7 +302,10 @@ void ModuleTypeRegistry2::registerStandardModules()
   registerModuleType(new NoteVelocityTypeInfo);
   registerModuleType(new ParameterModuleTypeInfo);
 
-  //registerModuleType(new );
+  // Modulation:
+  registerModuleType(new EnvelopeADSRTypeInfo);
+
+
   //registerModuleType(new );
   //registerModuleType(new );
   //registerModuleType(new );
