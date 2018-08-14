@@ -69,14 +69,11 @@ protected:
   virtual void initOutputPins(int numberOfPins, ...);
 
   /** Adds an audio input. A name for the pin can optionally be passed. */
-  virtual void addAudioInput(const rosic::rsString &pinName = rosic::rsString());
-
-  // test - use char array as input:
+  //virtual void addAudioInput(const rosic::rsString &pinName = rosic::rsString());
   virtual void addAudioInput(const char* pinName = "");
 
   /** Adds an audio output. A name for the pin can optionally be passed. */
-  virtual void addAudioOutput(const rosic::rsString &pinName = rosic::rsString());
-
+  //virtual void addAudioOutput(const rosic::rsString &pinName = rosic::rsString());
   virtual void addAudioOutput(const char* pinName = "");
 
 

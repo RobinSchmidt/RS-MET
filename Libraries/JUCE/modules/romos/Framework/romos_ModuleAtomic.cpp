@@ -95,7 +95,7 @@ rosic::rsString romos::ModuleAtomic::getPinName(int kind, int direction, int pin
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
-
+/*
 void romos::ModuleAtomic::addAudioInput(const rosic::rsString &pinName)
 {
   rosic::appendElement(audioInputNames, pinName);
@@ -106,7 +106,7 @@ void romos::ModuleAtomic::addAudioInput(const rosic::rsString &pinName)
 }
 // get rid of that when function below works - but check, if subclasses override it - if so, make
 // them override the new version instead
-
+*/
 void romos::ModuleAtomic:: addAudioInput(const char* pinName)
 {
   rosic::appendElement(audioInputNames, rosic::rsString(pinName));
@@ -114,7 +114,7 @@ void romos::ModuleAtomic:: addAudioInput(const char* pinName)
   numInputs++;
   updateInputPointersAndInFrameStrides();
 }
-
+/*
 void romos::ModuleAtomic::addAudioOutput(const rosic::rsString &pinName)
 {
   //audioOutputNames.appendElement(pinName);
@@ -123,7 +123,7 @@ void romos::ModuleAtomic::addAudioOutput(const rosic::rsString &pinName)
   allocateAudioOutputs();
 }
 // get rid if below works, same as for addAudioInput
-
+*/
 void romos::ModuleAtomic::addAudioOutput(const char* pinName)
 {
   rosic::appendElement(audioOutputNames, rosic::rsString(pinName));
