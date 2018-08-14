@@ -97,9 +97,9 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Tests for dragged over RSLib code:
 
-  int dummy;
-  std::string str;
-  bool passed = true;
+  //int dummy;
+  //std::string str;
+  //bool passed = true;
 
   //-----------------------------------------------------------------------------------------------
   // Unit Tests:
@@ -363,12 +363,6 @@ int main(int argc, char* argv[])
   //createGong1();
   //createPluck1();
 
-
-
-
-
-  dummy = 0;
-
   //===============================================================================================
   // RoSiC tests:
 
@@ -430,9 +424,6 @@ int main(int argc, char* argv[])
   //testTurtleReverse();
   //testTurtleSource();
 
-
-
-
   //-----------------------------------------------------------------------------------------------
   // Demos:
   // ...
@@ -445,8 +436,8 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Modular:
 
-  //runModularUnitTests();
-  runModularPerformanceTests(true);
+  runModularUnitTests();
+  //runModularPerformanceTests(true);
   //testModularCodeGenerator();
   //runModularInteractiveTests();  // triggers assert due to plotting code
 
@@ -457,15 +448,35 @@ int main(int argc, char* argv[])
   //runModularTests(); // we need to make a .h file with the declarations
 
 
-
-
   //DEBUG_HOOK;
-
   if( detectMemoryLeaks() )
     std::cout << "\n\n!!! Memory leaks detected !!! \n";
     // If memory leaks occur even though no objects are actually created on the heap, it could mean 
     // that some class in a library module has a static data member that does a dynamic memory 
     // allocation or some global object is created somewhere that dynamically allocates memory.
+
+  // todo: fix the memory leak - i guess it's in rosic - test it by building the project with
+  // rapt only - doesn't work - try to figure out, where heap memory is allocated..
+
+  // set a debug-breakpoint _malloc_dbg in debug_heap.cpp and run the program - it gets called a 
+  // bunch of times from the startup code - skipping through these, later there will be a call
+  // from the offending memory allocating code from our codebase
+  // ..it seems to come from romos - compiling with rapt and rosic only doesn't produce memleaks
+
+  // ok - its in:
+  // void BlitIntegratorInitialStates::createStateValueTables()
+  // deleteStateValueTables(); is called after the memleaks were detected hmmm..
+  // solution: don't use global objects that freely lie around, instead use a 
+  // GlobalData class which is a singleton and encapsulates all sorts of data that should be 
+  // globally accessible
+  // write a unit test for blit-saw (maybe there is one already) and change BlitSaw module to use
+  // that - then, before checking for memory leak, call GlobalData::cleanUp (their may be a 
+  // GlobalData::initialize method as well that computes all the data/tables once and for all
+  // or: allocate memory and compute the data-tables only when they are needed the first time
+  // (lazy initialization)...can also be used for blep-tables, etc. - anything that needs globally
+  // constant tables
+  // maybe class ProcessingStatus can be extended for that - it would fit well there, too
+
 
   getchar();
   return(EXIT_SUCCESS);

@@ -169,12 +169,11 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(BandlimitedImpulseTrain);
 
 
 
-int      BlitIntegratorInitialStates::maxNumHarmonics;
+//int      BlitIntegratorInitialStates::maxNumHarmonics;
 double** BlitIntegratorInitialStates::stateValues;
 BlitIntegratorInitialStates::BlitIntegratorInitialStates()
 {
-  maxNumHarmonics = 20;    // preliminary - later: at least 1000
-  stateValues     = NULL;
+  stateValues = nullptr;    
   createStateValueTables();
 }
 BlitIntegratorInitialStates::~BlitIntegratorInitialStates()
@@ -183,7 +182,7 @@ BlitIntegratorInitialStates::~BlitIntegratorInitialStates()
 }
 void BlitIntegratorInitialStates::createStateValueTables()
 {
-  if(stateValues == NULL)
+  if(stateValues == nullptr)
   {
     int numTables = maxNumHarmonics;
 

@@ -109,10 +109,13 @@ namespace romos
     static void createStateValueTables();
     static void deleteStateValueTables();
 
-
     static double **stateValues; // 1st index: numHarmonics, 2nd index: startPhase
 
-    static int maxNumHarmonics;
+    static const int maxNumHarmonics = 20; // preliminary - later: at least 1000
+
+    // maybe use this as temporary solution to avoid the memleak (but it's wasteful because
+    // the needed matrix is triangular)
+    // static double stateValues[maxNumHarmonics][maxNumHarmonics];
 
   };
 
