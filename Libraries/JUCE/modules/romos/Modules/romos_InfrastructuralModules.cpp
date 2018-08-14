@@ -63,7 +63,7 @@ namespace romos
 
   void SystemSampleRateModule::initialize()
   { 
-    initOutputPins(1, rosic::rsString("SampleRate"));
+    initOutputPins(1, "SampleRate");
   }
   INLINE void SystemSampleRateModule::process(Module *module, double *out, int voiceIndex)
   { 
@@ -74,7 +74,7 @@ namespace romos
 
   void SystemSamplePeriodModule::initialize()
   { 
-    initOutputPins(1, rosic::rsString("SamplePeriod"));
+    initOutputPins(1, "SamplePeriod");
   }
   INLINE void SystemSamplePeriodModule::process(Module *module, double *out, int voiceIndex)
   { 
@@ -85,7 +85,7 @@ namespace romos
 
   void NoteGateModule::initialize()
   { 
-    initOutputPins(1, rosic::rsString(""));
+    initOutputPins(1, "Gate");
     hasHeaderFlag = false;
   }
   INLINE void NoteGateModule::process(Module *module, double *out, int voiceIndex)
@@ -97,7 +97,7 @@ namespace romos
 
   void NoteOnTriggerModule::initialize()
   { 
-    initOutputPins(1, rosic::rsString(""));
+    initOutputPins(1, "Ping");
     hasHeaderFlag = false;
   }
   INLINE void NoteOnTriggerModule::process(Module *module, double *out, int voiceIndex)
@@ -109,7 +109,7 @@ namespace romos
 
   void NoteOffTriggerModule::initialize()
   { 
-    initOutputPins(1, rosic::rsString(""));
+    initOutputPins(1, "Ping");
     hasHeaderFlag = false;
   }
   INLINE void NoteOffTriggerModule::process(Module *module, double *out, int voiceIndex)
@@ -122,7 +122,7 @@ namespace romos
 
   void VoiceKillerModule::initialize() 
   { 
-    initInputPins(1, rosic::rsString("In"));
+    initInputPins(1, "In");
     addParameter(rosic::rsString("Threshold"), "-100.0" );
     addParameter(rosic::rsString("TimeOut"),      "0.01");
     parameterChanged(0);   // to init internal variables threshold, timeOut
@@ -173,8 +173,8 @@ namespace romos
 
   void VoiceCombinerModule::initialize() 
   { 
-    initInputPins( 1, rosic::rsString(""));
-    initOutputPins(1, rosic::rsString(""));
+    initInputPins( 1, "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void VoiceCombinerModule::process(Module *module, double *ins, double *outs, int voiceIndex)
@@ -272,7 +272,7 @@ namespace romos
 
   void NoteFrequencyModule::initialize()
   { 
-    initOutputPins(1, rosic::rsString(""));
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void NoteFrequencyModule::process(Module *module, double *out, int voiceIndex)
@@ -284,7 +284,7 @@ namespace romos
 
   void NoteVelocityModule::initialize()
   { 
-    initOutputPins(1, rosic::rsString(""));
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void NoteVelocityModule::process(Module *module, double *out, int voiceIndex)

@@ -6,7 +6,7 @@ namespace romos
 void WhiteNoise::initialize()
 {
   //initInputPins( 1, rosic::rsString("Seed"));
-  initOutputPins(1, rosic::rsString("Out"));
+  initOutputPins(1, "Out");
   addParameter(rosic::rsString("Seed"), 0.0);
   parameterChanged(0);
   // add shape, min, max
@@ -45,8 +45,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(WhiteNoise);
 
 void Phasor::initialize()
 {
-  initInputPins(1, rosic::rsString("Freq"));
-  initOutputPins(1, rosic::rsString("Out"));
+  initInputPins(1, "Freq");
+  initOutputPins(1, "Out");
 
   // code below crashes:
   //initInputPins( 1, "Freq");
@@ -90,8 +90,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(Phasor);
 
 void BandlimitedImpulseTrain::initialize()
 {
-  initInputPins(2, rosic::rsString("Freq"), rosic::rsString("Phase"));
-  initOutputPins(1, rosic::rsString("Out"));
+  initInputPins(2, "Freq", "Phase");
+  initOutputPins(1, "Out");
   fixedPhaseOffset = 0.0;
 }
 
@@ -113,7 +113,8 @@ void BandlimitedImpulseTrain::initialize()
   double absOmega = absFreq * processingStatus.getFreqToOmegaFactor();                \
   double theta = blit->phases[voiceIndex] + TWO_PI * (*in2 + blit->fixedPhaseOffset); \
 
-INLINE void BandlimitedImpulseTrain::process(Module *module, double *in1, double *in2, double *out, int voiceIndex)
+INLINE void BandlimitedImpulseTrain::process(Module *module, double *in1, double *in2, double *out, 
+  int voiceIndex)
 {
   // for performance tests:
   //*in1 = 440.0;
@@ -123,7 +124,8 @@ INLINE void BandlimitedImpulseTrain::process(Module *module, double *in1, double
   *out = ampScaler * computeUnscaledBlitValue(theta, numHarmonics);
   incrementPhases(blit, voiceIndex, omega);
 }
-INLINE void BandlimitedImpulseTrain::incrementPhases(BandlimitedImpulseTrain *blit, const int voiceIndex, const double omega)
+INLINE void BandlimitedImpulseTrain::incrementPhases(BandlimitedImpulseTrain *blit, 
+  const int voiceIndex, const double omega)
 {
   blit->phases[voiceIndex] += omega;
   while(blit->phases[voiceIndex] >= TWO_PI)
@@ -131,7 +133,8 @@ INLINE void BandlimitedImpulseTrain::incrementPhases(BandlimitedImpulseTrain *bl
   while(blit->phases[voiceIndex] <  0.0)
     blit->phases[voiceIndex] += TWO_PI;
 }
-INLINE double BandlimitedImpulseTrain::computeUnscaledBlitValue(const double theta, const double numHarmonics)
+INLINE double BandlimitedImpulseTrain::computeUnscaledBlitValue(const double theta, 
+  const double numHarmonics)
 {
   double halfTheta = 0.5 * theta;
   double numerator, denominator;
@@ -387,8 +390,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(BlitSaw);
 
 void DualBlitSaw::initialize()
 {
-  initInputPins(4, rosic::rsString("Freq"), rosic::rsString("Phase"), rosic::rsString("Offset"), rosic::rsString("Mix"));
-  initOutputPins(1, rosic::rsString("Out"));
+  initInputPins(4, "Freq", "Phase", "Offset", "Mix");
+  initOutputPins(1, "Out");
   fixedPhaseOffset = 0.5;
 }
 INLINE void DualBlitSaw::process(Module *module, double *in1, double *in2, double *in3, double *in4, double *out, int voiceIndex)

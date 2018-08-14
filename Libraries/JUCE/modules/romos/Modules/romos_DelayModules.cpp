@@ -6,8 +6,8 @@ namespace romos
 
   void UnitDelayModule::initialize()
   { 
-    initInputPins( 1, rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 1, "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void UnitDelayModule::process(Module *module, double *in, double *out, int voiceIndex)

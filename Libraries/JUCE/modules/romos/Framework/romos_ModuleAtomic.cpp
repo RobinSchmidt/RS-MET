@@ -23,7 +23,7 @@ romos::ModuleAtomic::~ModuleAtomic()
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // setup of pins:
 
-
+/*
 void ModuleAtomic::initInputPins(int numberOfPins, rosic::rsString, ...)
 {
   va_list ap;
@@ -36,7 +36,7 @@ void ModuleAtomic::initInputPins(int numberOfPins, rosic::rsString, ...)
   numInputs += numberOfPins;
   va_end(ap);
 }
-
+*/
 void ModuleAtomic::initInputPins(int numberOfPins, const char*, ...)
 {
   va_list ap;
@@ -49,7 +49,7 @@ void ModuleAtomic::initInputPins(int numberOfPins, const char*, ...)
   numInputs += numberOfPins;
   va_end(ap);
 }
-
+/*
 void ModuleAtomic::initOutputPins(int numberOfPins, rosic::rsString, ...)
 {
   va_list ap;
@@ -59,7 +59,7 @@ void ModuleAtomic::initOutputPins(int numberOfPins, rosic::rsString, ...)
   outFrameStride += numberOfPins;
   va_end(ap);
 }
-
+*/
 void ModuleAtomic::initOutputPins(int numberOfPins, const char*, ...)
 {
   va_list ap;
@@ -320,8 +320,8 @@ romos::ModuleProxy::~ModuleProxy()
 
 void romos::ModuleProxy::initialize()
 { 
-  initInputPins( 1, rosic::rsString()); 
-  initOutputPins(1, rosic::rsString());
+  initInputPins( 1, ""); 
+  initOutputPins(1, "");
   hasHeaderFlag = false;
 }
 

@@ -5,7 +5,7 @@ namespace romos
 
   void ConstantModule::initialize() 
   { 
-    initOutputPins(1, rosic::rsString());
+    initOutputPins(1, "");
     hasHeaderFlag  = false;
     value          = 0.0;
     audioOutputs   = &value;
@@ -41,8 +41,8 @@ namespace romos
 
   void IdentityModule::initialize()
   { 
-    initInputPins( 1, rosic::rsString()); 
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 1, ""); 
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void IdentityModule::process(Module *module, double *ins, double *outs, int voiceIndex)
@@ -59,8 +59,8 @@ namespace romos
 
   void UnaryMinusModule::initialize() 
   { 
-    initInputPins( 1, rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 1, "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void UnaryMinusModule::process(Module *module, double *ins, double *outs, int voiceIndex)
@@ -73,8 +73,8 @@ namespace romos
 
   void ReciprocalModule::initialize() 
   { 
-    initInputPins( 1, rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 1, "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void ReciprocalModule::process(Module *module, double *in, double *out, int voiceIndex)
@@ -89,8 +89,8 @@ namespace romos
 
   void AdderModule::initialize()
   { 
-    initInputPins( 2, rosic::rsString(), rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 2, "", "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void AdderModule::process(Module *module, double *in1, double *in2, double *out, int voiceIndex)
@@ -102,8 +102,8 @@ namespace romos
 
   void SubtractorModule::initialize()
   { 
-    initInputPins( 2, rosic::rsString(), rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 2, "", "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void SubtractorModule::process(Module *module, double *in1, double *in2, double *out, int voiceIndex)
@@ -115,8 +115,8 @@ namespace romos
 
   void MultiplierModule::initialize()
   { 
-    initInputPins( 2, rosic::rsString(), rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 2, "", "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void MultiplierModule::process(Module *module, double *in1, double *in2, double *out, int voiceIndex)
@@ -128,8 +128,8 @@ namespace romos
 
   void DividerModule::initialize()
   { 
-    initInputPins( 2, rosic::rsString(), rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 2, "", "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void DividerModule::process(Module *module, double *in1, double *in2, double *out, int voiceIndex)
@@ -145,8 +145,8 @@ namespace romos
 
   void Adder3Module::initialize()
   { 
-    initInputPins( 3, rosic::rsString(), rosic::rsString(), rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 3, "", "", "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void Adder3Module::process(Module *module, double *in1, double *in2, double *in3, double *out, int voiceIndex)
@@ -158,8 +158,8 @@ namespace romos
 
   void Adder4Module::initialize()
   { 
-    initInputPins( 4, rosic::rsString(), rosic::rsString(), rosic::rsString(), rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 4, "", "", "", "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void Adder4Module::process(Module *module, double *in1, double *in2, double *in3, double *in4, 
@@ -172,8 +172,8 @@ namespace romos
 
   void Adder5Module::initialize()
   { 
-    initInputPins( 5, rosic::rsString(), rosic::rsString(), rosic::rsString(), rosic::rsString(), rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 5, "", "", "", "", "");
+    initOutputPins(1, "");
     hasHeaderFlag = false;
   }
   INLINE void Adder5Module::process(Module *module, double *in1, double *in2, double *in3, double *in4, double *in5, 
@@ -186,8 +186,8 @@ namespace romos
 
   void AdderNModule::initialize()
   { 
-    initInputPins( 2, rosic::rsString(), rosic::rsString());
-    initOutputPins(1, rosic::rsString());
+    initInputPins( 2, "", "");
+    initOutputPins(1, "");
   }
   INLINE void AdderNModule::process(Module *module, double *ins, double *outs, int voiceIndex) 
   {
