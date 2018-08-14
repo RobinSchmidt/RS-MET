@@ -3,18 +3,18 @@ Liberty:
  ->client code is not concerned about how strings are stored internally, smae goes for
  atomic module definition code
  addParameter
+-let phasor mave min/max inputs
 -check biquad design formulas (TestNoise/ColoringFilter seems not to work properly)
 -check voice allocation/polyphony bug with TestOsc
  -when a note is played, not realeased, another is played, the first cannot be triggered
   again
 
-
 -build a basic FM/PM patch using Phasor and SinCos  
  -add ouput of a phasor and another signal and feed into SinCos
 -can it get a phase input using SinCos module for phase-mod?
 
--rename NoteFrequency to NoteFreq or MidiFreq,
- have NotePitch, NoteVel modules
+-add copy/paste/duplicate to the menu for actions on the selected modules
+-implement undo/redo (maybe by storing the full liberty patch as memento)
 -create doxygen documentation
 -use std::string instead of rosic::String
 -in the leaky integrator, some connections are drawn black

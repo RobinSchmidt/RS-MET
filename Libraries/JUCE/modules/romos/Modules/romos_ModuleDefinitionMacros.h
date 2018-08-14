@@ -1,7 +1,8 @@
 #ifndef romos_ModuleDefinitionMacros_h
 #define romos_ModuleDefinitionMacros_h
 
-/** This file contains preprocessor macros that facilitate the definition a new module class by generating much of the boilerplate code that otherwise would have to written for each module.
+/** This file contains preprocessor macros that facilitate the definition a new module class by 
+generating much of the boilerplate code that otherwise would have to written for each module.
 
 todo: Maybe instead of using the pre-processor, write the code generation functions directly in
 C++. This has the advantage that we can actually inspect the generated code and set debug 
@@ -12,9 +13,10 @@ create a special project for that. Maybe it can be made part of the Liberty test
 
 
 
-// this macro should be used in each Module subclass declaration in order to make the constructor, copy-constructor, assignment operator 
-// and destructor protected and to declare the ModuleFactor as friend in order to enforce creation/deletion through the ModuleFactory 
-// class - maybe make them even private later:
+// This macro should be used in each Module subclass declaration in order to make the constructor, 
+// copy-constructor, assignment operator and destructor protected and to declare the ModuleFactor 
+// as friend in order to enforce creation/deletion through the ModuleFactory class - maybe make 
+// them even private later:
 #define ENFORCE_FACTORY_USAGE(ClassName)                               \
   protected:                                                           \
     ClassName() {}                                                     \
@@ -23,8 +25,8 @@ create a special project for that. Maybe it can be made part of the Liberty test
     ClassName& operator=(const ClassName &other) { return *this; }     \
     friend class ModuleFactory;                                        \
 
-// this macro can be used in a Module subclass to declare all 4 static processing functions and the (then necessary) override for
-// assignProcessingFunctions():
+// This macro can be used in a Module subclass to declare all 4 static processing functions and 
+// the (then necessary) override for assignProcessingFunctions():
 #define DECLARE_PROCESSING_FUNCTIONS                                                      \
   protected:                                                                              \
     static INLINE void processMonoFrame(Module *module, int voiceIndex);                  \
@@ -34,8 +36,9 @@ create a special project for that. Maybe it can be made part of the Liberty test
     virtual void assignProcessingFunctions();                                             \
 
 
-// this macro can be used in place of ENFORCE_FACTORY_USAGE, DECLARE_PROCESSING_FUNCTIONS and the declaration of the override
-// of initialize for Module subclasses where all 3 are needed (which is the common case):
+// This macro can be used in place of ENFORCE_FACTORY_USAGE, DECLARE_PROCESSING_FUNCTIONS and the 
+// declaration of the override of initialize for Module subclasses where all 3 are needed (which is
+// the common case):
 #define CREATE_COMMON_DECLARATIONS(ClassName)   \
   ENFORCE_FACTORY_USAGE(ClassName);             \
   DECLARE_PROCESSING_FUNCTIONS;                 \
@@ -63,8 +66,8 @@ create a special project for that. Maybe it can be made part of the Liberty test
   }                                                      \
 
 
-// given a function process(Module *module, double *out, int voiceIndex), these macros create the mono/poly, frame/block processing 
-// functions respectively for modules without input pins:
+// given a function process(Module *module, double *out, int voiceIndex), these macros create the 
+// mono/poly, frame/block processing functions respectively for modules without input pins:
 #define CREATE_MONO_FRAME_FUNCTION_0(ClassName)                                                \
   void ClassName::processMonoFrame(Module *module, int voiceIndex)                             \
   {                                                                                            \
@@ -134,8 +137,9 @@ create a special project for that. Maybe it can be made part of the Liberty test
   static INLINE void process(Module *module, double *out, int voiceIndex);                     \
 
 
-// given a function process(Module *module, double *in, double *out, int voiceIndex), these macros create the mono/poly, frame/block 
-// processing functions respectively for modules with one input pin:
+// given a function process(Module *module, double *in, double *out, int voiceIndex), these macros 
+// create the mono/poly, frame/block processing functions respectively for modules with one input 
+// pin:
 #define CREATE_MONO_FRAME_FUNCTION_1(ClassName)                                                \
   void ClassName::processMonoFrame(Module *module, int voiceIndex)                             \
   {                                                                                            \
@@ -1241,7 +1245,8 @@ create a special project for that. Maybe it can be made part of the Liberty test
 
 
 
-// given the ClassName::process function, this macro creates the corresponding monophonic per-frame processing function:
+// given the ClassName::process function, this macro creates the corresponding monophonic per-frame 
+// processing function:
 #define CREATE_MONO_FRAME_FUNCTION_N(ClassName)                                                                           \
   void ClassName::processMonoFrame(Module *module, int voiceIndex)                                                        \
   {                                                                                                                       \
@@ -1334,14 +1339,5 @@ create a special project for that. Maybe it can be made part of the Liberty test
   DECLARE_PROCESSING_FUNCTIONS;                                                            \
   virtual void initialize();                                                               \
   static INLINE void process(Module *module, double  *ins, double *outs, int voiceIndex);  \
-
-
-
-
-
-
-
-
-
 
 #endif 

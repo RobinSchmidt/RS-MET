@@ -23,20 +23,6 @@ romos::ModuleAtomic::~ModuleAtomic()
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // setup of pins:
 
-/*
-void ModuleAtomic::initInputPins(int numberOfPins, rosic::rsString, ...)
-{
-  va_list ap;
-  va_start(ap, numberOfPins);
-  for(int i=1; i<=numberOfPins; i++)
-  {
-    rosic::appendElement(audioInputNames, va_arg(ap, rosic::rsString));
-    rosic::appendElement(inputPins,       AudioInputPinData());
-  }
-  numInputs += numberOfPins;
-  va_end(ap);
-}
-*/
 void ModuleAtomic::initInputPins(int numberOfPins, const char*, ...)
 {
   va_list ap;
@@ -49,17 +35,7 @@ void ModuleAtomic::initInputPins(int numberOfPins, const char*, ...)
   numInputs += numberOfPins;
   va_end(ap);
 }
-/*
-void ModuleAtomic::initOutputPins(int numberOfPins, rosic::rsString, ...)
-{
-  va_list ap;
-  va_start(ap, numberOfPins);
-  for(int i=1; i<=numberOfPins; i++)
-    rosic::appendElement(audioOutputNames, va_arg(ap, rosic::rsString));
-  outFrameStride += numberOfPins;
-  va_end(ap);
-}
-*/
+
 void ModuleAtomic::initOutputPins(int numberOfPins, const char*, ...)
 {
   va_list ap;

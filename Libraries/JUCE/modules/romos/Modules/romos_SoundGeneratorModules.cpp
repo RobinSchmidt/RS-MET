@@ -48,10 +48,7 @@ void Phasor::initialize()
   initInputPins(1, "Freq");
   initOutputPins(1, "Out");
 
-  // code below crashes:
-  //initInputPins( 1, "Freq");
-  //initOutputPins(1, "Out");
-  // todo: rewrite initInputPins such that it can take const char* arguments
+  //inputPins[2].setDefaultValue(1); // Max in 1 by default
 }
 INLINE void Phasor::process(Module *module, double *in1, double *out, int voiceIndex)
 {
@@ -59,6 +56,8 @@ INLINE void Phasor::process(Module *module, double *in1, double *out, int voiceI
 
   // generate output signal:
   *out = phasor->phases[voiceIndex];
+
+  // *out = *in1 + (*in2 - *in1) * phasor->phases[voiceIndex];
 
   // phase increment and wraparound:
   phasor->phases[voiceIndex] += *in1 * processingStatus.getSystemSamplePeriod();
