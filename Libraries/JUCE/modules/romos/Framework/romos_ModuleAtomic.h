@@ -1,7 +1,7 @@
 #ifndef romos_ModuleAtomic_h
 #define romos_ModuleAtomic_h
 
-#include "romos_Module.h"
+//#include "romos_Module.h"
 
 namespace romos
 {

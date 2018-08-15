@@ -1,10 +1,11 @@
 #ifndef romos_ModuleContainer_h
 #define romos_ModuleContainer_h
 
-#include "romos_AudioConnection.h"
-#include "romos_ModuleTypeRegistry.h"
-#include "../Modules/romos_InfrastructuralModules.h"
-#include "../TestSuite/romos_TestModuleBuilder.h"
+//#include "romos_AudioConnection.h"
+//#include "romos_ModuleTypeRegistry.h"
+
+//#include "../Modules/romos_InfrastructuralModules.h"
+//#include "../TestSuite/romos_TestModuleBuilder.h"
 
 namespace romos
 {
@@ -27,6 +28,9 @@ is implemented.
 \todo:
 -use the command pattern to add/remove child-modules and maybe various other potentially damgeful 
  actions to enable undo/redo */
+
+class AudioInputModule;
+class AudioOutputModule;
 
 class ModuleContainer : public Module
 {
