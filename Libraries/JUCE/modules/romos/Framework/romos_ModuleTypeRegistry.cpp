@@ -221,16 +221,26 @@ ModuleTypeRegistry2::~ModuleTypeRegistry2()
   clearRegisteredTypes();
 }
 
-romos::Module* ModuleTypeRegistry2::createModule(int id) const
+romos::Module* ModuleTypeRegistry2::createModule(int id, const std::string& name, int x, int y, 
+  bool polyphonic) const
 {
   rassert(id >= 0 && id < typeInfos.size());  // id out of range
+  // todo: if the id is out of range, return some kind of "Error" dummy module
+
+
   romos::Module* m = typeInfos[id]->createModule();
   m->typeInfo = typeInfos[id];
-  //setupModule(m, name, x, y, polyphonic);  // later...
+  setupModule(m, name, x, y, polyphonic);
   return m;
 }
 
-romos::Module* ModuleTypeRegistry2::createTopLevelModule(const std::string& name, 
+romos::Module* ModuleTypeRegistry2::createModule(const std::string& fullTypeName, 
+  const std::string& name, int x, int y, bool polyphonic) const
+{
+  return createModule(getModuleId(fullTypeName), name, x, y, polyphonic);
+}
+
+romos::TopLevelModule* ModuleTypeRegistry2::createTopLevelModule(const std::string& name, 
   int x, int y, bool polyphonic) const
 {
   TopLevelModule* tlm = new TopLevelModule();
@@ -238,18 +248,21 @@ romos::Module* ModuleTypeRegistry2::createTopLevelModule(const std::string& name
   return tlm;
 }
 
-romos::Module* ModuleTypeRegistry2::createModule(const std::string& fullName) const
+void ModuleTypeRegistry2::deleteModule(romos::Module* moduleToDelete)
 {
-  return createModule(getModuleId(fullName));
+  moduleToDelete->cleanUp();
+  delete moduleToDelete;
 }
 
-int ModuleTypeRegistry2::getModuleId(const std::string& fullName) const
+int ModuleTypeRegistry2::getModuleId(const std::string& fullTypeName) const
 {
   for(int i = 0; i < typeInfos.size(); i++)
     if(typeInfos[i]->fullName == fullName)
       return i;
   return -1;
 }
+
+
 
 void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
 {

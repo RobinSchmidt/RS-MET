@@ -78,7 +78,7 @@ public:
 
 protected:
 
-  TopLevelModule *topLevelModule;
+  TopLevelModule* topLevelModule;
 
   int oversampling = 1; // not yet used - for later - it would be nice to be able to select
                         // oversampling on a per-container basis - maybe later, it's complicated

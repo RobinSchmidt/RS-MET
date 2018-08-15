@@ -236,6 +236,8 @@ public:
     const char* description = "");
 };
 
+class TopLevelModule;
+
 /** 2nd attempt - under construction 
 This class is supposed to replace the old moduleTypeRegistry and ModuleFactory and allows us to
 assign names to module in/out pins for all modules of the same type at once. Makes the arrays
@@ -254,35 +256,44 @@ public:
   ~ModuleTypeRegistry2();
 
   //-----------------------------------------------------------------------------------------------
-  // \name Creation of module instances
+  // \name Creation/deletion of module instances
 
   /** Creates a module with given (long) name. */
-  Module* createModule(const std::string& fullName) const;
+
+  /** Creates a module (using the new operator). The kind of the module (i.e. which subclass) will 
+  be determined by "fullTypeName". It should be one the types that were previously registered
+  via registerModuleType otherwise an error will occur. After creation, it will call the 
+  initialize() method of the module and then do some other calls that allocate memory, reset the 
+  state and some other stuff that is common to the initialization of all modules (these additional 
+  calls avoid  code-duplication in the respective initialize() methods of the module subclass). */
+  Module* createModule(const std::string& fullTypeName, const std::string& name, int x, int y, 
+    bool polyphonic) const;
 
   /** Creates a module with given unique identifier. */
-  Module* createModule(int id) const;
-
-  Module* createTopLevelModule(const std::string& name, int x, int y, 
+  Module* createModule(int id, const std::string& name, int x, int y, 
     bool polyphonic) const;
-  // todo: return TopLevelModule*
 
+  /** Creates a top-level module. In Liberty, this is called just once on start-up. */
+  TopLevelModule* createTopLevelModule(const std::string& name, int x, int y, 
+    bool polyphonic) const;
 
-
+  /** Deletes the passed module by first calling its cleanUp() method and then using the 
+  delete-operator. */
+  void deleteModule(romos::Module* moduleToDelete);
 
 
   // from ModuleFactory:
   //static romos::Module* createModule(int typeIdentifier, rosic::rsString name = rosic::rsString(), 
   //  int x = 0, int y = 0, bool polyphonic = false);
 
-  //void deleteModule(romos::Module *moduleToDelete);
-  // maybe copy over comments as well
+  // todo: copy/edit comments from ModuleFactory
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
   /** Returns the unquie id for the module with given (long) name. Returns -1, if the module 
   type with given name was never registered. */
-  int getModuleId(const std::string& fullName) const;
+  int getModuleId(const std::string& fullTypeName) const;
 
   /** Returns true, iff a module of the given type exists (i.e. was registered). */
   inline bool doesTypeExist(const std::string& fullName) const
