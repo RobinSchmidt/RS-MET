@@ -312,11 +312,15 @@ void ModuleContainer::setPolyphonic(bool shouldBePolyphonic)
 {
   Module::setPolyphonic(shouldBePolyphonic);
 
-  std::vector<romos::Module*> inputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_INPUT);
+  //std::vector<romos::Module*> inputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_INPUT);
+  std::vector<romos::Module*> inputModules = getChildModulesWithType("AudioInput");
+
   for(unsigned int i = 0; i < inputModules.size(); i++)
     inputModules[i]->setPolyphonic(shouldBePolyphonic);
 
-  std::vector<romos::Module*> outputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT);
+  //std::vector<romos::Module*> outputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT);
+  std::vector<romos::Module*> outputModules = getChildModulesWithType("AudioOutput");
+
   for(unsigned int i = 0; i < outputModules.size(); i++)
     outputModules[i]->setPolyphonic(shouldBePolyphonic);
 

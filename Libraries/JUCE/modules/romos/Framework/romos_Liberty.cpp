@@ -9,20 +9,24 @@ Liberty::Liberty()
 {
   //populateModuleTypeRegistry();
 
-  topLevelModule = (TopLevelModule*) ModuleFactory::createModule(
-    ModuleTypeRegistry::TOP_LEVEL_MODULE, "Instrument", 0, 0, false);
+  //topLevelModule = (TopLevelModule*) ModuleFactory::createModule(
+  //  ModuleTypeRegistry::TOP_LEVEL_MODULE, "Instrument", 0, 0, false);
 
   // later use:
   // topLevelModule = moduleTypeRegistry.createModule("TopLevelModule");
   // ...naahh - the top-level module needs special treatment - it should not be available in the
   // menu - maybe
-  // topLevelModule = moduleTypeRegistry.createTopLevelModule("Instrument", 0, 0, false);
+  topLevelModule = moduleFactory.createTopLevelModule("Instrument", 0, 0, false);
 }
 
 Liberty::~Liberty()
 {
-  ModuleFactory::deleteModule(topLevelModule);
+#ifdef RS_BUILD_OLD_MODULE_FACTORY
+  //ModuleFactory::deleteModule(topLevelModule);
   romos::ModuleTypeRegistry::deleteSoleInstance();
+#endif
+
+  moduleFactory.deleteModule(topLevelModule);
 }
 
 //-------------------------------------------------------------------------------------------------
