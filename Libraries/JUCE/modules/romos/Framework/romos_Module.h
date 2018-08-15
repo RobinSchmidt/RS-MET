@@ -1,11 +1,9 @@
 #ifndef romos_Module_h
 #define romos_Module_h
 
-#include "romos_ModuleTypeRegistry.h"
-#include "romos_ProcessingStatus.h"
-#include "romos_AudioConnection.h"
-
-//#include "romos_ModuleContainer.h" // test - to fix compiler error on gcc - nope doesnt work
+//#include "romos_ModuleTypeRegistry.h"
+//#include "romos_ProcessingStatus.h"
+//#include "romos_AudioConnection.h"
 
 namespace romos
 {
@@ -86,10 +84,14 @@ keeping track of the wiring between modules.
 -array of slave-modules for polyphonic operation
 -use unsigned int consistently...or maybe size_t */
 
+//class ModuleTypeInfo;
+
 class Module
 {
 
   friend class ModuleContainer;
+  friend class ModuleFactory;        // for old creation code
+  friend class ModuleTypeRegistry2;  // for new creation code
 
 public:
 
@@ -564,8 +566,7 @@ protected:
   friend void writeModuleStateToConsole(void *module, bool waitForKeyAfterOutput);
   friend void retrieveModuleState(void *module); // for debugging
 
-  friend class ModuleFactory;        // for old creation code
-  friend class ModuleTypeRegistry2;  // for new creation code
+
 
 private:
 
