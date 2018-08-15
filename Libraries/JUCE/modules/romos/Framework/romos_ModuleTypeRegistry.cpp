@@ -212,10 +212,11 @@ void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullNam
 //-------------------------------------------------------------------------------------------------
 
 //ModuleFactoryNew romos::moduleFactory;  // definition of the global object - causes memleak?
+MemLeakTest romos::memLeakTest;
 
 ModuleFactoryNew::ModuleFactoryNew()
 {
-  registerStandardModules();
+  //registerStandardModules();
 }
 
 ModuleFactoryNew::~ModuleFactoryNew()
@@ -333,8 +334,6 @@ void ModuleFactoryNew::registerStandardModules()
   registerModuleType(new SystemSamplePeriodTypeInfo);
 
 
-
-
   // Modulation:
   registerModuleType(new EnvelopeADSRTypeInfo);
 
@@ -360,5 +359,5 @@ void ModuleFactoryNew::clearRegisteredTypes()
 void ModuleFactoryNew::setupModule(romos::Module* module, const std::string& name, 
   int x, int y, bool polyphonic) const
 {
-
+  // copy code from the old ModuleFactory here
 }

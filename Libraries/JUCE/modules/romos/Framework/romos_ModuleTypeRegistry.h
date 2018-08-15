@@ -319,13 +319,46 @@ public:
 
 protected:
 
-  void setupModule(romos::Module* module, const std::string& name, int x, int y, bool polyphonic) const;
+  void setupModule(romos::Module* module, const std::string& name, int x, int y, 
+    bool polyphonic) const;
 
   std::vector<ModuleTypeInfo*> typeInfos;
 
 };
 
 //extern ModuleFactoryNew moduleFactory;  // declaration of the global object - temporarily commented to check memleak
+
+// just some throw-away code to figure out what causes the memory leak with ModuleFactoryNew
+class MemLeakTest
+{
+  //std::vector<ModuleTypeInfo*> typeInfos; // having this as member causes the memleak
+  //std::vector<int> test; // this also
+  // so it seems that when i have a global object of a class that has a std::vector member,
+  // i'll get a memleak
+
+  // maybe we can use a pointer-to-std-vector to avoid that?
+  std::vector<int>* test;
+  // ok - memleak is gone - but it would uglify the code
+
+  // there is a way to prevent the debugger to trigger false memory leaks, explained here:
+  // http://www.cplusplus.com/forum/general/9614/ it says:
+  // So the way to get around the problem is this:
+  // struct MemCheck {
+  //   ~MemCheck() {
+  //     _CrtDumpMemoryLeaks();
+  //   }
+  // };
+  // And then instantiate MemCheck as the first variable in the block/function so that it gets 
+  // destroyed last, after everything else.
+
+  // so, using a class/struct that calls _CrtDumpMemoryLeaks(); in its destructor and then 
+  // instantiating a variable of that class, we ensure that the destructor of that variable is 
+  // called *after* the exit point of our main function
+  // maybe have two checks pre-exit memory-leaks and post-exit memory leaks
+  // maybe name the struct PostExitMemLeakChecker
+
+};
+extern MemLeakTest memLeakTest;
 
 //=================================================================================================
 
