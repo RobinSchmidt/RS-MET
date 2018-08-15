@@ -325,7 +325,7 @@ protected:
 
 };
 
-extern ModuleFactoryNew moduleFactory;  // declaration of the global object
+//extern ModuleFactoryNew moduleFactory;  // declaration of the global object - temporarily commented to check memleak
 
 //=================================================================================================
 

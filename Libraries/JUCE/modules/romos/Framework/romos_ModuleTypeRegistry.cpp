@@ -211,7 +211,7 @@ void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullNam
 
 //-------------------------------------------------------------------------------------------------
 
-ModuleFactoryNew romos::moduleFactory;  // definition of the global object
+//ModuleFactoryNew romos::moduleFactory;  // definition of the global object - causes memleak?
 
 ModuleFactoryNew::ModuleFactoryNew()
 {

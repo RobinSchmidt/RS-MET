@@ -440,6 +440,7 @@ int main(int argc, char* argv[])
   //runModularPerformanceTests(true);  // produces a memleak
   //testModularCodeGenerator();
   //runModularInteractiveTests();  // triggers assert due to plotting code
+  //romos::moduleFactory.clearRegisteredTypes();
 
   // important atomic modules for performance tests: 
   // Biquad: pure code, atomic module, wired model

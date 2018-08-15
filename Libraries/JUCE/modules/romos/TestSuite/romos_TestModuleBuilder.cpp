@@ -2,26 +2,30 @@
 #include "../framework/romos_ModuleFactory.h"
 using namespace romos;
 
-romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name, int x, int y, 
+  bool polyphonic)
 {
+  /*
   // new - under construction:
-  //ModuleFactoryNew mf;
   ModuleContainer* m = (ModuleContainer*) moduleFactory.createModule("Container", 
     name.asStdString(), x, y, polyphonic);
 
-  /*
   // change argument order to: typeID, name, x, y, poly, sort - pass as last argument not the polyphonic
   // parameter that is passed in here, but either true or false, depending on what is actually desired
-  romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In1",  2,  2, false, false);
-  romos::Module *audioInput2  = module->addChildModule(getTypeId("AudioInput"),  "In2",  2,  5, false, false);
-  romos::Module *adder1       = module->addChildModule(getTypeId("Adder"),       "+",    9,  3, false, false);
-  romos::Module *audioOutput1 = module->addChildModule(getTypeId("AudioOutput"), "Out", 13,  3, false, false);
+  romos::Module *audioInput1  = m->addChildModule("AudioInput",  "In1",  2,  2, false, false);
+  romos::Module *audioInput2  = m->addChildModule("AudioInput",  "In2",  2,  5, false, false);
+  romos::Module *adder1       = m->addChildModule("Adder",       "+",    9,  3, false, false);
+  romos::Module *audioOutput1 = m->addChildModule("AudioOutput", "Out", 13,  3, false, false);
 
-  module->addAudioConnection(audioInput1,  0, adder1,       0);
-  module->addAudioConnection(audioInput2,  0, adder1,       1);
-  module->addAudioConnection(adder1,       0, audioOutput1, 0);
+  m->addAudioConnection(audioInput1,  0, adder1,       0);
+  m->addAudioConnection(audioInput2,  0, adder1,       1);
+  m->addAudioConnection(adder1,       0, audioOutput1, 0);
+
+  return m;
+  // the test crashes when returning the module from the new creation code
   */
 
+  
   // old: 
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   

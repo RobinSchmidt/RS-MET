@@ -412,8 +412,8 @@ romos::Module* ModuleContainer::addChildModule(Module *moduleToAdd,
   return moduleToAdd;
 }
 
-romos::Module* ModuleContainer::addChildModule(int moduleIdentifier, rosic::rsString name, int x, int y,
-                                               bool polyphonic, bool sortChildModulesAfterInsertion)
+romos::Module* ModuleContainer::addChildModule(int moduleIdentifier, rosic::rsString name, 
+  int x, int y, bool polyphonic, bool sortChildModulesAfterInsertion)
 {
   if( moduleIdentifier == ModuleTypeRegistry::AUDIO_INPUT )
     return addAudioInputModule( name, x, y, true);
@@ -421,11 +421,35 @@ romos::Module* ModuleContainer::addChildModule(int moduleIdentifier, rosic::rsSt
     return addAudioOutputModule(name, x, y, true);
   else
   {
-    romos::Module *moduleToAdd = ModuleFactory::createModule(moduleIdentifier, name, x, y, polyphonic);
+    romos::Module *moduleToAdd = ModuleFactory::createModule(moduleIdentifier, name, x, y, 
+      polyphonic);
     addChildModule(moduleToAdd, sortChildModulesAfterInsertion);
     return moduleToAdd;
   }
 }
+
+// new version - not yet tested:
+romos::Module* ModuleContainer::addChildModule(const std::string& fullTypeName, 
+  const std::string& name, int x, int y, bool poly, bool sortChildModulesAfterInsertion)
+{
+  rassert(false); return nullptr; // does not yet work
+
+  /*
+  if( fullTypeName == "AudioInput" )
+    return addAudioInputModule( name, x, y, true);
+  else if( fullTypeName == "AudioOutput" )
+    return addAudioOutputModule(name, x, y, true);
+  else
+  {
+    romos::Module *moduleToAdd = moduleFactory.createModule(fullTypeName, name, x, y, poly);
+    addChildModule(moduleToAdd, sortChildModulesAfterInsertion);
+    return moduleToAdd;
+  }
+  */
+}
+
+
+
 
 void ModuleContainer::deleteChildModule(Module *moduleToDelete, bool updateHasDelayedConnectionFlag)
 {
@@ -473,7 +497,8 @@ void ModuleContainer::deleteChildModule(Module *moduleToDelete, bool updateHasDe
     else
       rosic::removeElementByIndex(childModules, index);
 
-    ModuleFactory::deleteModule(moduleToDelete);
+    ModuleFactory::deleteModule(moduleToDelete);  // old
+    //moduleFactory.deleteModule(moduleToDelete);  // new - activate later
 
     if( updateHasDelayedConnectionFlag == true )
       updateHasDelayedConnectionsFlag();

@@ -94,6 +94,12 @@ public:
   @see addChildModule(Module*, bool, bool). The return value is a pointer to the added module. */
   virtual Module* addChildModule(int moduleIdentifier, rosic::rsString name = rosic::rsString(), 
     int x = 0, int y = 0, bool polyphonic = false, bool sortChildModulesAfterInsertion = true);
+  // old version - deprecated
+
+  // new version:
+  virtual Module* addChildModule(const std::string& fullTypeName, const std::string& name = "", 
+    int x = 0, int y = 0, bool polyphonic = false, bool sortChildModulesAfterInsertion = true);
+
 
   /** Deletes a child-module from this one. */
   virtual void deleteChildModule(Module *moduleToDelete, 
