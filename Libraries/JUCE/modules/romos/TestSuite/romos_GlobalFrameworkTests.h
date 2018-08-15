@@ -4,9 +4,9 @@
 //#include "romos_UnitTest.h"
 //#include "romos_TestEventGenerator.h"
 
-#include "romos_ConcreteProcessingTests.h"
-#include "../framework/romos_ModuleFactory.h"
-#include "../romos.h"
+//#include "romos_ConcreteProcessingTests.h"
+//#include "../framework/romos_ModuleFactory.h"
+//#include "../romos.h"
 
 namespace romos
 {

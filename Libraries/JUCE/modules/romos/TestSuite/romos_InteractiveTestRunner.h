@@ -1,7 +1,7 @@
 #ifndef romos_InteractiveTestRunner_h
 #define romos_InteractiveTestRunner_h
 
-#include "romos_InteractivePlottingTests.h"
+//#include "romos_InteractivePlottingTests.h"
 
 namespace romos
 {

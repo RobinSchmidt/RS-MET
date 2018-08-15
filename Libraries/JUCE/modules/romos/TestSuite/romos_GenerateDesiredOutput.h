@@ -1,9 +1,9 @@
 #ifndef romos_GenerateDesiredOutput_h
 #define romos_GenerateDesiredOutput_h
 
-#include "../Framework/romos_Module.h"
-#include "../Framework/romos_NoteEvent.h"
-#include "../Algorithms/romos_FilterDesign.h"
+//#include "../Framework/romos_Module.h"
+//#include "../Framework/romos_NoteEvent.h"
+//#include "../Algorithms/romos_FilterDesign.h"
 
 namespace romos
 {

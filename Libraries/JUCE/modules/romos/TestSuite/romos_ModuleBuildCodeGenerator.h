@@ -1,7 +1,7 @@
 #ifndef romos_ModuleBuildCodeGenerator_h
 #define romos_ModuleBuildCodeGenerator_h
 
-#include "../framework/romos_ModuleContainer.h"
+//#include "../framework/romos_ModuleContainer.h"
 
 namespace romos
 {

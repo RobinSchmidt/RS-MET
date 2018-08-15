@@ -1,7 +1,7 @@
 #ifndef romos_InteractivePlottingTests_h
 #define romos_InteractivePlottingTests_h
 
-#include "romos_ProcessingTest.h"
+//#include "romos_ProcessingTest.h"
 //#include "romos_TestModuleBuilder.h"
 //#include "romos_TestEventGenerator.h"
 //#include "romos_GenerateDesiredOutput.h"
