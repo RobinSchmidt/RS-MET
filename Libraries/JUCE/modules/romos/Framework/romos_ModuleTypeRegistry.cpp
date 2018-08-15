@@ -371,5 +371,17 @@ void ModuleFactoryNew::ensureTypeInfoArrayAllocated()
 void ModuleFactoryNew::setupModule(romos::Module* module, const std::string& name, 
   int x, int y, bool polyphonic) const
 {
-  // copy code from the old ModuleFactory here
+  // copied from the old ModuleFactory::createModule
+
+  module->initialize(); // this should set up the number of pins needed, etc.
+  module->setPositionXY(x, y);
+  module->setPolyphonic(polyphonic);
+  module->allocateMemory();
+
+  module->setModuleName(name); 
+    // must be called after allocateMemory because the Constant fills its I/O arrays with the 
+    // corresponding value
+
+  module->assignProcessingFunctions();
+  module->resetStateForAllVoices();
 }

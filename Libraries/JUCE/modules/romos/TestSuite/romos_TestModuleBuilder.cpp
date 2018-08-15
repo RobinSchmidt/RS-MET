@@ -5,7 +5,6 @@ using namespace romos;
 romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name, int x, int y, 
   bool polyphonic)
 {
-  /*
   // new - under construction:
   ModuleContainer* m = (ModuleContainer*) moduleFactory.createModule("Container", 
     name.asStdString(), x, y, polyphonic);
@@ -21,11 +20,11 @@ romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name
   m->addAudioConnection(audioInput2,  0, adder1,       1);
   m->addAudioConnection(adder1,       0, audioOutput1, 0);
 
-  return m;
+  return m;  
   // the test crashes when returning the module from the new creation code
-  */
 
-  
+
+  /*
   // old: 
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -41,6 +40,7 @@ romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name
   module->addAudioConnection(adder1,       0, audioOutput1, 0);
 
   return module;
+  */
 }
 
 romos::Module* TestModuleBuilder::createGain(const rosic::rsString &name, int x, int y, bool polyphonic)

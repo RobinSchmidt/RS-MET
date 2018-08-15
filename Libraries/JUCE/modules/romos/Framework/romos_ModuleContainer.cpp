@@ -432,9 +432,8 @@ romos::Module* ModuleContainer::addChildModule(int moduleIdentifier, rosic::rsSt
 romos::Module* ModuleContainer::addChildModule(const std::string& fullTypeName, 
   const std::string& name, int x, int y, bool poly, bool sortChildModulesAfterInsertion)
 {
-  rassert(false); return nullptr; // does not yet work
+  //rassert(false); return nullptr; // does not yet work
 
-  /*
   if( fullTypeName == "AudioInput" )
     return addAudioInputModule( name, x, y, true);
   else if( fullTypeName == "AudioOutput" )
@@ -445,7 +444,6 @@ romos::Module* ModuleContainer::addChildModule(const std::string& fullTypeName,
     addChildModule(moduleToAdd, sortChildModulesAfterInsertion);
     return moduleToAdd;
   }
-  */
 }
 
 
