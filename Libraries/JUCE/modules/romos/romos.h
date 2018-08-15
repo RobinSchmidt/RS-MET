@@ -38,7 +38,6 @@
 #include "Algorithms/romos_Interpolation.h"
 
 #include "Framework/romos_AudioConnection.h"
-#include "Framework/romos_Liberty.h"
 #include "Framework/romos_Module.h"
 #include "Framework/romos_ModuleAtomic.h"
 #include "Framework/romos_ModuleContainer.h"
@@ -57,6 +56,9 @@
 #include "Modules/romos_InfrastructuralModules.h"
 #include "Modules/romos_ModulationModules.h"
 #include "Modules/romos_SoundGeneratorModules.h"
+
+
+#include "Framework/romos_Liberty.h"
 
 
 #include "TestSuite/romos_ModuleBuildCodeGenerator.h"

@@ -271,10 +271,6 @@ void romos::ladderCoeffs(double *coeffs, int mode, double f, double r, double ag
   // map resonance to more intuitive behavior:
   r = (1.0-exp(-3.0*r)) / (1.0-exp(-3.0)); // use rational approximation later - for example: r = (3.0*r) / (1.32*r+0.68*r^2+1.0);
 
-
-
-
-
   // maybe get rid of this double-calculation and weighted sum:
 
   // calculate filter a1-coefficient tuned such the resonance frequency is just right:
