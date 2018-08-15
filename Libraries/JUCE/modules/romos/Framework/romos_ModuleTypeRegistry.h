@@ -326,7 +326,7 @@ protected:
 
 };
 
-//extern ModuleFactoryNew moduleFactory;  // declaration of the global object - temporarily commented to check memleak
+extern ModuleFactoryNew moduleFactory;  // declaration of the global object
 
 // just some throw-away code to figure out what causes the memory leak with ModuleFactoryNew
 class MemLeakTest
@@ -337,7 +337,7 @@ class MemLeakTest
   // i'll get a memleak
 
   //std::vector<int> testVector;         // triggers pre-exit-of-main memleak detection
-  std::vector<int>* testPointerToVector; // doens't trigger it
+  std::vector<int>* testPointerToVector; // doesn't trigger it
 
   // there is a way to prevent the debugger to trigger false memory leaks, explained here:
   // http://www.cplusplus.com/forum/general/9614/ it says:
@@ -358,6 +358,9 @@ class MemLeakTest
 
 };
 extern MemLeakTest memLeakTest;
+// ok - something like this has been added to romos.h/cpp needs to be cleaned up - move this to 
+// somewhere else - maybe make a test-project solely for demonstrating the behavior of the memleak 
+// checker - how it triggers false positives and how to avoid it
 
 //=================================================================================================
 

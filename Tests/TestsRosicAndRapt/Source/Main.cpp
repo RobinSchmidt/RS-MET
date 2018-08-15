@@ -451,12 +451,12 @@ int main(int argc, char* argv[])
 
   //DEBUG_HOOK;
   //int* test = new int;  // uncomment, to see, if it fires correctly
-  if( detectMemoryLeaks() )
-    std::cout << "\n\n!!! Memory leaks detected (pre exit of main()) !!! \n";
+  //if( detectMemoryLeaks() )
+  //  std::cout << "\n\n!!! Memory leaks detected (pre exit of main()) !!! \n";
     //std::cout << "\n\n!!! Memory leaks detected !!! \n";
-    // If memory leaks occur even though no objects are actually created on the heap, it could mean 
-    // that some class in a library module has a static data member that does a dynamic memory 
-    // allocation or some global object is created somewhere that dynamically allocates memory.
+  // If memory leaks occur even though no objects are actually created on the heap, it could mean 
+  // that some class in a library module has a static data member that does a dynamic memory 
+  // allocation or some global object is created somewhere that dynamically allocates memory.
 
   // todo: fix the memory leak - i guess it's in rosic - test it by building the project with
   // rapt only - doesn't work - try to figure out, where heap memory is allocated..

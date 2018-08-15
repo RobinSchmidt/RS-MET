@@ -211,12 +211,12 @@ void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullNam
 
 //-------------------------------------------------------------------------------------------------
 
-//ModuleFactoryNew romos::moduleFactory;  // definition of the global object - causes memleak?
-MemLeakTest romos::memLeakTest;
+ModuleFactoryNew romos::moduleFactory;  // definition of the global object - causes memleak?
+MemLeakTest romos::memLeakTest;         // clean up - move to a memleak demo project
 
 ModuleFactoryNew::ModuleFactoryNew()
 {
-  //registerStandardModules();
+  registerStandardModules();
 }
 
 ModuleFactoryNew::~ModuleFactoryNew()

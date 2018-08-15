@@ -93,9 +93,11 @@ extern PostExitMemLeakChecker postExitMemLeakChecker;
 // there is a way to prevent the debugger to trigger false memory leaks, explained here:
 // http://www.cplusplus.com/forum/general/9614/ it says:
 // So the way to get around the problem is this:
-
 // And then instantiate MemCheck as the first variable in the block/function so that it gets 
 // destroyed last, after everything else.
+
+// maybe this check should be moved up to rosic or even rapt so that it catches memleaks that
+// occur there also
 
 
 
