@@ -1,11 +1,10 @@
 #ifndef romos_SoundGeneratorModules_h
 #define romos_SoundGeneratorModules_h
 
-//#include "../Framework/romos_ModuleAtomic.h"
-//#include "romos_ModuleDefinitionMacros.h"
-
 namespace romos
 {
+
+//-------------------------------------------------------------------------------------------------
 
 /** Generates noise that is spectrally white and has uniform distribution between -1 and +1.
 Parameters:
@@ -20,6 +19,7 @@ Outputs:
 -include min/max parameters
 -include (boolean) variance-normalization parameter (if true, divide output by sqrt(shape) before
 scaling and offsetting) */
+
 class WhiteNoise : public ModuleWithParameters
 {
   CREATE_COMMON_DECLARATIONS_0(WhiteNoise);
@@ -45,7 +45,7 @@ public:
   }
 };
 
-
+//-------------------------------------------------------------------------------------------------
 
 /** Generates a linear ramp that ascends from 0 to 1 in a given time the resets back to zero, 
 ascends again, etc. 
@@ -56,6 +56,7 @@ Inputs:
  later: include a startphase input and a retrigger input
 Outputs:
  0: the ramp signal  */
+
 class Phasor : public ModuleAtomic
 {
   //CREATE_COMMON_DECLARATIONS_1(Phasor);
@@ -80,7 +81,7 @@ public:
   }
 };
 
-
+//-------------------------------------------------------------------------------------------------
 
 /** Generates an impulse train that is bandlimited by the Nyquist frequency (i.e. an anti-aliased 
 impulse-train) using a closed form expression for a summation of a sine series.
@@ -92,8 +93,8 @@ Inputs:
 Outputs:
  0: the bandlimited impulse train
 References:
- -http://www.music.mcgill.ca/~gary/307/week5/bandlimited.html
-*/
+ -http://www.music.mcgill.ca/~gary/307/week5/bandlimited.html */
+
 class BandlimitedImpulseTrain : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_2(BandlimitedImpulseTrain);
@@ -127,6 +128,9 @@ public:
   }
 };
 
+//-------------------------------------------------------------------------------------------------
+
+// helper class - not actuall a Module
 
 class BlitIntegratorInitialStates
 {
@@ -149,6 +153,8 @@ public:
 
 };
 
+//-------------------------------------------------------------------------------------------------
+
 /** Under Construction
 This is similar to the BandlimitedImpulseTrain module, but it incorporates a leaky integrator 
 after the impulse train so as to produceas sawtooth wave.
@@ -165,6 +171,7 @@ Outputs:
  ->perhaps related to initlaizing such that the desired first output is that of a 
   non-bandlimited saw?
  ->further investigations necessary */
+
 class BlitSaw : public BandlimitedImpulseTrain
 {
   CREATE_COMMON_DECLARATIONS_2(BlitSaw);
@@ -184,6 +191,8 @@ protected:
 
   static BlitIntegratorInitialStates initialStates;
 };
+
+//-------------------------------------------------------------------------------------------------
 
 /** Under Construction
 This is similar to the BlitSaw module, but it generates two sawtooths with some phase-offset 
@@ -223,7 +232,7 @@ public:
   }
 };
 
-
+//-------------------------------------------------------------------------------------------------
 
 // DigitalNoise (randomly switch between 1 and -1) Ins: MeanSwitchFrequency
 // SyncModOsc: oscillator is synced to a master-osc and has it's start-phase modulated by another osc 

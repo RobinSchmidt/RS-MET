@@ -4,6 +4,8 @@
 namespace romos
 {
 
+//-------------------------------------------------------------------------------------------------
+
 void EnvelopeADSR::initialize()
 {
   initInputPins(7, "Att", "AtSh", "Dec", "DcSh", "Sus", "Rel", "RlSh");
@@ -14,9 +16,8 @@ void EnvelopeADSR::initialize()
   //int dummy = 0;
 }
 
-
-void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *in1, 
-  const double *in2, const double *in3, const double *in4, const double *in5, const double *in6, 
+void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *in1,
+  const double *in2, const double *in3, const double *in4, const double *in5, const double *in6,
   const double *in7, double *out, const int voiceIndex)
 {
   EnvelopeADSR  *env     = static_cast<EnvelopeADSR*> (module);
@@ -29,7 +30,8 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
   unsigned long decaySamples   = (unsigned long)rosic::round(*in3 * timeScale * processingStatus.getSystemSampleRate());
   unsigned long releaseSamples = (unsigned long)rosic::round(*in6 * timeScale * processingStatus.getSystemSampleRate());
 
-    // todo: precompute timeScale * processingStatus.getSystemSampleRate() - or maybe get rid of timeScale
+  // todo: precompute timeScale * processingStatus.getSystemSampleRate() - or maybe get rid of 
+  // timeScale
 
   double a;
   double p;  // proportion of passedLength/fullLength of the phase ( = I(x), page 184, Eq.3-30)
@@ -41,7 +43,7 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
     if(a == 0.0)
       *out = yStart + (1.0 - yStart) * p;
     else
-      *out = yStart + (1.0 - yStart) * (1.0 - exp(p*a)) / (1.0 - exp(a));
+      *out = yStart + (1.0 - yStart) * (1.0 - exp(p*a)) / (1.0 - exp(a)); // encapsulate that function
     *counter += 1;
   }
   else if(*counter < attackSamples + decaySamples)
@@ -80,7 +82,7 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
     *out = 0.0;
   }
 }
-INLINE void EnvelopeADSR::process(Module *module, double *in1, double *in2, double *in3, 
+INLINE void EnvelopeADSR::process(Module *module, double *in1, double *in2, double *in3,
   double *in4, double *in5, double *in6, double *in7, double *out, int voiceIndex)
 {
   EnvelopeADSR  *env     = static_cast<EnvelopeADSR*> (module);
@@ -132,7 +134,7 @@ void EnvelopeADSR::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_7(EnvelopeADSR);
 
-
+//-------------------------------------------------------------------------------------------------
 
 
 }

@@ -138,6 +138,8 @@ INLINE void BiquadDesigner::process(Module *module, double *in1, double *in2, do
   double *oldParams = designer->oldParameters + 3*voiceIndex;
   double *oldOuts   = designer->oldOutputs    + 5*voiceIndex;
 
+  // maybe use struct biquadParamsFQG (freq/Q/gain), struct biquadCoeffs, struct biquadState
+
   // recalculate coefficients if necessary (factor out):
   if(*in1 != oldParams[0] || *in2 != oldParams[1] || *in3 != oldParams[2])
   {

@@ -3,6 +3,8 @@
 namespace romos
 {
 
+//-------------------------------------------------------------------------------------------------
+
 void WhiteNoise::initialize()
 {
   initOutputPins(1, "");
@@ -41,7 +43,7 @@ void WhiteNoise::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(WhiteNoise);
 
-
+//-------------------------------------------------------------------------------------------------
 
 void Phasor::initialize()
 {
@@ -83,8 +85,7 @@ void Phasor::freeMemory()
 //CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(Phasor);
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(Phasor);
 
-
-
+//-------------------------------------------------------------------------------------------------
 
 void BandlimitedImpulseTrain::initialize()
 {
@@ -167,8 +168,7 @@ void BandlimitedImpulseTrain::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(BandlimitedImpulseTrain);
 
-
-
+//-------------------------------------------------------------------------------------------------
 
 //int      BlitIntegratorInitialStates::maxNumHarmonics;
 double** BlitIntegratorInitialStates::stateValues;
@@ -237,6 +237,7 @@ void BlitIntegratorInitialStates::deleteStateValueTables()
   }
 }
 
+//-------------------------------------------------------------------------------------------------
 
 BlitIntegratorInitialStates BlitSaw::initialStates;
 void BlitSaw::initialize()
@@ -386,6 +387,7 @@ void BlitSaw::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(BlitSaw);
 
+//-------------------------------------------------------------------------------------------------
 
 void DualBlitSaw::initialize()
 {
@@ -393,7 +395,8 @@ void DualBlitSaw::initialize()
   initOutputPins(1, "Out");
   fixedPhaseOffset = 0.5;
 }
-INLINE void DualBlitSaw::process(Module *module, double *in1, double *in2, double *in3, double *in4, double *out, int voiceIndex)
+INLINE void DualBlitSaw::process(Module *module, double *in1, double *in2, double *in3, 
+  double *in4, double *out, int voiceIndex)
 {
   DualBlitSaw *blit = static_cast<DualBlitSaw*> (module);
 
