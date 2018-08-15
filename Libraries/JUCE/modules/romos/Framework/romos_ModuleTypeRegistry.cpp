@@ -257,12 +257,10 @@ void ModuleTypeRegistry2::deleteModule(romos::Module* moduleToDelete)
 int ModuleTypeRegistry2::getModuleId(const std::string& fullTypeName) const
 {
   for(int i = 0; i < typeInfos.size(); i++)
-    if(typeInfos[i]->fullName == fullName)
+    if(typeInfos[i]->fullName == fullTypeName)
       return i;
   return -1;
 }
-
-
 
 void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
 {

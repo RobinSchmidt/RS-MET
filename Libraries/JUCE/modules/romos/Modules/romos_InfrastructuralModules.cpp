@@ -3,47 +3,49 @@
 namespace romos
 {
 
-  /*
-  void AudioInputModule::initialize()
-  {
-    initOutputPins(1, rosic::rsString());
-    hasHeaderFlag = false;
-  }
-  void AudioInputModule::allocateMemory()
-  {
-    // do nothing - the outlying container is resposible for allocation
-  }
-  void AudioInputModule::freeMemory()
-  {
-    // do nothing - the outlying container is resposible for deallocation
-  }
-  void AudioInputModule::setAudioInputAddress(double *newAddress)
-  {
-    DEBUG_BREAK;
-    // update:
-    //audioInputs = newAddress;
-    //rassert( incomingAudioConnections.empty() ); // input modules should not have incoming connections
-  }
-  void AudioInputModule::setAudioOutputAddress(double *newAddress)
-  {
-    DEBUG_BREAK;
-    // update:
-    //audioOutputs = newAddress;
-    //std::vector<AudioConnection*> outgoingAudioConnections = getOutgoingAudioConnections();
-    //for(unsigned int i = 0; i < outgoingAudioConnections.size(); i++)
-    //  outgoingAudioConnections[i]->updateSourcePointer();
-  }
-  */
+// why is this commented out?
+/*
+void AudioInputModule::initialize()
+{
+  initOutputPins(1, rosic::rsString());
+  hasHeaderFlag = false;
+}
+void AudioInputModule::allocateMemory()
+{
+  // do nothing - the outlying container is resposible for allocation
+}
+void AudioInputModule::freeMemory()
+{
+  // do nothing - the outlying container is resposible for deallocation
+}
+void AudioInputModule::setAudioInputAddress(double *newAddress)
+{
+  DEBUG_BREAK;
+  // update:
+  //audioInputs = newAddress;
+  //rassert( incomingAudioConnections.empty() ); // input modules should not have incoming connections
+}
+void AudioInputModule::setAudioOutputAddress(double *newAddress)
+{
+  DEBUG_BREAK;
+  // update:
+  //audioOutputs = newAddress;
+  //std::vector<AudioConnection*> outgoingAudioConnections = getOutgoingAudioConnections();
+  //for(unsigned int i = 0; i < outgoingAudioConnections.size(); i++)
+  //  outgoingAudioConnections[i]->updateSourcePointer();
+}
+*/
 
+//-------------------------------------------------------------------------------------------------
 
+/*
+void AudioOutputModule::initialize()
+{
+  initInputPins(1, rosic::rsString());
+  hasHeaderFlag = false;
+}
+*/
 
-  /*
-  void AudioOutputModule::initialize()
-  {
-    initInputPins(1, rosic::rsString());
-    hasHeaderFlag = false;
-  }
-  */
 void AudioOutputModule::allocateMemory()
 {
   // do nothing - the outlying container is responsible for allocation
@@ -59,7 +61,7 @@ void AudioOutputModule::resetState()
 }
 */
 
-
+//-------------------------------------------------------------------------------------------------
 
 void SystemSampleRateModule::initialize()
 {
@@ -71,6 +73,7 @@ INLINE void SystemSampleRateModule::process(Module *module, double *out, int voi
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(SystemSampleRateModule);
 
+//-------------------------------------------------------------------------------------------------
 
 void SystemSamplePeriodModule::initialize()
 {
@@ -82,6 +85,7 @@ INLINE void SystemSamplePeriodModule::process(Module *module, double *out, int v
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(SystemSamplePeriodModule);
 
+//-------------------------------------------------------------------------------------------------
 
 void NoteGateModule::initialize()
 {
@@ -95,6 +99,7 @@ INLINE void NoteGateModule::process(Module *module, double *out, int voiceIndex)
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(NoteGateModule);
 
+//-------------------------------------------------------------------------------------------------
 
 void NoteOnTriggerModule::initialize()
 {
@@ -108,6 +113,7 @@ INLINE void NoteOnTriggerModule::process(Module *module, double *out, int voiceI
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(NoteOnTriggerModule);
 
+//-------------------------------------------------------------------------------------------------
 
 void NoteOffTriggerModule::initialize()
 {
@@ -120,7 +126,7 @@ INLINE void NoteOffTriggerModule::process(Module *module, double *out, int voice
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(NoteOffTriggerModule);
 
-
+//-------------------------------------------------------------------------------------------------
 
 void VoiceKillerModule::initialize()
 {
@@ -141,7 +147,8 @@ INLINE void VoiceKillerModule::process(Module *module, double *in, double *out, 
   else
   {
     voiceKiller->sampleCounters[voiceIndex] += 1;
-    if((double)voiceKiller->sampleCounters[voiceIndex] > voiceKiller->timeOut * processingStatus.getSystemSampleRate())
+    if((double)voiceKiller->sampleCounters[voiceIndex] > 
+      voiceKiller->timeOut * processingStatus.getSystemSampleRate())
     {
       voiceAllocator.killVoice(voiceIndex);
       //voiceKiller->sampleCounters[voiceIndex] = 0;
@@ -172,6 +179,7 @@ void VoiceKillerModule::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(VoiceKillerModule);
 
+//-------------------------------------------------------------------------------------------------
 
 void VoiceCombinerModule::initialize()
 {
@@ -193,25 +201,29 @@ void VoiceCombinerModule::processPolyFrame(Module *module, int voiceIndex)
   for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)
   {
     int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];
-    module->audioOutputs[0] += *(module->inputPins[0].outputPointer + voiceIndex * module->inputPins[0].outputVoiceStride);
+    module->audioOutputs[0] += *(module->inputPins[0].outputPointer 
+      + voiceIndex * module->inputPins[0].outputVoiceStride);
     // can be streamlined (like in the macros)
   }
 }
 void VoiceCombinerModule::processMonoBlock(Module *module, int voiceIndex, int blockSize)
 {
   for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)
-    module->audioOutputs[frameIndex] = *(module->inputPins[0].outputPointer + module->inputPins[0].outputFrameSize);
+    module->audioOutputs[frameIndex] = *(module->inputPins[0].outputPointer 
+      + module->inputPins[0].outputFrameSize);
 }
 void VoiceCombinerModule::processPolyBlock(Module *module, int voiceIndex, int blockSize)
 {
   for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)
   {
     module->audioOutputs[frameIndex] = 0.0;
-    double *sourcePointer = module->inputPins[0].outputPointer + frameIndex * module->inputPins[0].outputFrameSize;
+    double *sourcePointer = module->inputPins[0].outputPointer 
+      + frameIndex * module->inputPins[0].outputFrameSize;
     for(int playIndex = 0; playIndex < voiceAllocator.getNumPlayingVoices(); playIndex++)
     {
       int voiceIndex  = voiceAllocator.getPlayingVoiceIndices()[playIndex];
-      module->audioOutputs[frameIndex] += *(sourcePointer + voiceIndex * module->inputPins[0].outputVoiceStride);
+      module->audioOutputs[frameIndex] += 
+        *(sourcePointer + voiceIndex * module->inputPins[0].outputVoiceStride);
     }
   }
 }
@@ -230,25 +242,27 @@ void VoiceCombinerModule::setPolyphonic(bool shouldBePolyphonic)
 }
 void VoiceCombinerModule::clearVoiceBuffer(int voiceIndex)
 {
-  // do nothing - clearing the buffer would lead to gaps in the output signal (with the length of bufferSize) whenever voice 0 gets 
-  // killed
+  // do nothing - clearing the buffer would lead to gaps in the output signal (with the length of 
+  // bufferSize) whenever voice 0 gets killed
 }
-void VoiceCombinerModule::connectInputPinTo(int inputPinIndex, Module *sourceModule, int sourceOutputPinIndex)
+void VoiceCombinerModule::connectInputPinTo(int inputPinIndex, Module *sourceModule, 
+  int sourceOutputPinIndex)
 {
   ModuleAtomic::connectInputPinTo(inputPinIndex, sourceModule, sourceOutputPinIndex);
   assignProcessingFunctions();
 }
 void VoiceCombinerModule::updateInputPointersAndInFrameStrides()
 {
-  // this function is called whenever some potential input-source module has changed its output polyphony - we use this callback to
-  // set up our processing functions:
+  // this function is called whenever some potential input-source module has changed its output 
+  // polyphony - we use this callback to set up our processing functions:
   ModuleAtomic::updateInputPointersAndInFrameStrides();
   assignProcessingFunctions();
 }
 void VoiceCombinerModule::assignProcessingFunctions()
 {
-  // when the source is monophonic, we use our monophonic processing function (that just passes through the 0-th voice signal), whne the 
-  // source is polyphonic, we use our polyphonic procesing function (which sums over the voices):
+  // when the source is monophonic, we use our monophonic processing function (that just passes 
+  // through the 0-th voice signal), when the source is polyphonic, we use our polyphonic procesing
+  // function (which sums over the voices):
   if(inputPins[0].sourceModule != NULL)
   {
     if(inputPins[0].sourceModule->isPolyphonic())
@@ -269,8 +283,7 @@ void VoiceCombinerModule::assignProcessingFunctions()
   }
 }
 
-
-
+//-------------------------------------------------------------------------------------------------
 
 void NoteFrequencyModule::initialize()
 {
@@ -283,6 +296,7 @@ INLINE void NoteFrequencyModule::process(Module *module, double *out, int voiceI
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(NoteFrequencyModule);
 
+//-------------------------------------------------------------------------------------------------
 
 void NoteVelocityModule::initialize()
 {
@@ -295,10 +309,7 @@ INLINE void NoteVelocityModule::process(Module *module, double *out, int voiceIn
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(NoteVelocityModule);
 
-
-
-
-
+//-------------------------------------------------------------------------------------------------
 
 void ParameterModule::initialize()
 {
@@ -311,21 +322,22 @@ void ParameterModule::initialize()
   mappingFunction    = LINEAR_MAPPING;
   assignedController = -1; // none
 
-                                             // index in parameters array
-  addParameter("Value", "0.5"); // 0
-  addParameter("MinValue", "0.0"); // 1
-  addParameter("MaxValue", "1.0"); // 2
-  addParameter("DefaultValue", "0.5"); // 3
-  addParameter("Scaling", "Linear"); // 4 other possible values: exponential, power, etc.
-  addParameter("Quantization", "0.0"); // 5
-  addParameter("Controller", "0"); // 6    
+                                          // index in parameters array
+  addParameter("Value", "0.5");           // 0
+  addParameter("MinValue", "0.0");        // 1
+  addParameter("MaxValue", "1.0");        // 2
+  addParameter("DefaultValue", "0.5");    // 3
+  addParameter("Scaling", "Linear");      // 4 other possible values: exponential, power, etc.
+  addParameter("Quantization", "0.0");    // 5
+  addParameter("Controller", "0");        // 6    
   addParameter("ControlRangeMin", "0.0"); // 7
   addParameter("ControlRangeMax", "0.0"); // 8
-  addParameter("Smoothing", "0.0"); // 9
-  addParameter("HelpText", "Parameter"); // 10
+  addParameter("Smoothing", "0.0");       // 9
+  addParameter("HelpText", "Parameter");  // 10
 
-  parameterChanged(0); // will update internal variables that depend on the 0th ("Value") parameter
-  parameterChanged(1); // will cause all parameter-dependent variables except the 0th ("Value") to be updated at once
+  parameterChanged(0); // updates internal variables that depend on the 0th ("Value") parameter
+  parameterChanged(1); // causes all parameter-dependent variables except the 0th ("Value") to be 
+                       // updated at once
 }
 void ParameterModule::resetVoiceState(int voiceIndex)
 {
@@ -392,7 +404,6 @@ void ParameterModule::setModuleName(const rosic::rsString& newName)
   ModuleAtomic::setModuleName(newName);
 }
 
-
 /*
 void ParameterModule::setValue(double newValue)
 {
@@ -419,9 +430,6 @@ void ParameterModule::setQuantization(double newQuantization)
   DEBUG_BREAK; // optional value quantization not yet implemented
 }
 */
-
-
-
 
 void ParameterModule::setMinMaxAndMapping(double newMin, double newMax, int newMapping)
 {
@@ -450,17 +458,15 @@ void ParameterModule::setMinMaxAndMapping(double newMin, double newMax, int newM
     setParameter(4, "Linear", false);
 }
 
-
 void ParameterModule::setValueFromController(double controllerValue)
 {
   DEBUG_BREAK; // controller stuff not yet implemented
 }
-void ParameterModule::setValueFromSnapshots(int topLeftIndex, int topRightIndex, int bottomLeftIndex, int bottomRightIndex, double x, double y)
+void ParameterModule::setValueFromSnapshots(int topLeftIndex, int topRightIndex, 
+  int bottomLeftIndex, int bottomRightIndex, double x, double y)
 {
   DEBUG_BREAK; // snapshot morphing not yet implemented
 }
-
-
 
 void ParameterModule::enforceConsistencyOfValues()
 {
@@ -478,7 +484,6 @@ void ParameterModule::enforceConsistencyOfValues()
   setParameter(3, rosic::rsString(defaultValue), false);
   */
 }
-
 
 double ParameterModule::mapNormalizedValue(double normalizedValue)
 {

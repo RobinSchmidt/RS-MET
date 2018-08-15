@@ -1,8 +1,7 @@
-#include "romos_FilterModules.h"
-//#include "../Framework/romos_AudioConnection.h"  // why that?
-
 namespace romos
 {
+
+//-------------------------------------------------------------------------------------------------
 
 void FirstOrderLowpass::initialize()
 {
@@ -48,18 +47,7 @@ void FirstOrderLowpass::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(FirstOrderLowpass);
 
-
-
-
-
-
-
-
-
-
-
-
-
+//-------------------------------------------------------------------------------------------------
 
 void FirstOrderFilter::initialize()
 {
@@ -94,18 +82,20 @@ void FirstOrderFilter::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_4(FirstOrderFilter);
 
+//-------------------------------------------------------------------------------------------------
 
 void Biquad::initialize()
 {
   initInputPins(6, "In", "b0", "b1", "b2", "a1", "a2");
   initOutputPins(1, "Out");
 }
-INLINE void Biquad::process(Module *module, double *in1, double *in2, double *in3, double *in4, double *in5,
-  double *in6, double *out, int voiceIndex)
+INLINE void Biquad::process(Module *module, double *in1, double *in2, double *in3, double *in4, 
+  double *in5, double *in6, double *out, int voiceIndex) // rename inputs
 {
   Biquad *biquad = static_cast<Biquad*> (module);
   double *buf    = biquad->buffers + 4*voiceIndex;
-  *out    = (*in2 * *in1 + TINY) + (*in3 * buf[0] + *in4 * buf[1]) - (*in5 * buf[2] + *in6 * buf[3]);
+  *out    = (*in2 * *in1 + TINY) + (*in3 * buf[0] + *in4 * buf[1]) 
+    - (*in5 * buf[2] + *in6 * buf[3]); // get rid of +TINY 
   buf[3]  = buf[2];
   buf[2]  = *out;
   buf[1]  = buf[0];
@@ -130,22 +120,25 @@ void Biquad::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_6(Biquad);
 
+//-------------------------------------------------------------------------------------------------
 
 void BiquadDesigner::initialize()
 {
   initInputPins(3, "Freq", "Q", "Gain");
   initOutputPins(5, "b0", "b1", "b2", "a1", "a2");
   addParameter(rosic::rsString("Mode"), "Bypass");
-  //parameterChanged(0); // nah - it calls resetStateForAllVoices() - which is not allowed before memory is allocated by the factory
+  //parameterChanged(0); // nah - it calls resetStateForAllVoices() - which is not allowed before 
+  // memory is allocated by the factory
   mode = BYPASS;
 }
-INLINE void BiquadDesigner::process(Module *module, double *in1, double *in2, double *in3, double *outs, int voiceIndex)
+INLINE void BiquadDesigner::process(Module *module, double *in1, double *in2, double *in3, 
+  double *outs, int voiceIndex)
 {
   BiquadDesigner *designer = static_cast<BiquadDesigner*> (module);
   double *oldParams = designer->oldParameters + 3*voiceIndex;
   double *oldOuts   = designer->oldOutputs    + 5*voiceIndex;
 
-  // recalculate coefficients if necessary:
+  // recalculate coefficients if necessary (factor out):
   if(*in1 != oldParams[0] || *in2 != oldParams[1] || *in3 != oldParams[2])
   {
     switch(designer->mode)
@@ -173,7 +166,7 @@ INLINE void BiquadDesigner::process(Module *module, double *in1, double *in2, do
   else
   {
     // otherwise use same outputs as before:
-    memcpy(outs, oldOuts, 5*sizeof(double));  // maybe use direct asssignment - check which is faster
+    memcpy(outs, oldOuts, 5*sizeof(double));  // try direct asssignment - check which is faster
   }
 
   // remember outputs, in case we hit the else-branch next time:
@@ -191,24 +184,25 @@ void BiquadDesigner::parameterChanged(int index)
 {
   rosic::rsString m = parameters[0].value;
 
-  if(m == "Lowpass, 6 dB/oct, BLT")  mode = LOWPASS_6_BILINEAR;
-  else if(m == "Highpass, 6 dB/oct, BLT")  mode = HIGHPASS_6_BILINEAR;
-  else if(m == "Low Shelf, 1st order, BLT")  mode = LOW_SHELF_1_BILINEAR;
-  else if(m == "High Shelf, 1st order, BLT")  mode = HIGH_SHELF_1_BILINEAR;
-  else if(m == "Allpass, 1st order, BLT")  mode = ALLPASS_1_BILINEAR;
-  else if(m == "Lowpass, 12 dB/oct, BLT")  mode = LOWPASS_12_BILINEAR;
-  else if(m == "Highpass, 12 dB/oct, BLT")  mode = HIGHPASS_12_BILINEAR;
+  if(     m == "Lowpass, 6 dB/oct, BLT")       mode = LOWPASS_6_BILINEAR;
+  else if(m == "Highpass, 6 dB/oct, BLT")      mode = HIGHPASS_6_BILINEAR;
+  else if(m == "Low Shelf, 1st order, BLT")    mode = LOW_SHELF_1_BILINEAR;
+  else if(m == "High Shelf, 1st order, BLT")   mode = HIGH_SHELF_1_BILINEAR;
+  else if(m == "Allpass, 1st order, BLT")      mode = ALLPASS_1_BILINEAR;
+  else if(m == "Lowpass, 12 dB/oct, BLT")      mode = LOWPASS_12_BILINEAR;
+  else if(m == "Highpass, 12 dB/oct, BLT")     mode = HIGHPASS_12_BILINEAR;
   else if(m == "Bandpass, const. skirt, BLT")  mode = BANDPASS_CONST_SKIRT_BILINEAR;
-  else if(m == "Bandpass, const. peak, BLT")  mode = BANDPASS_CONST_PEAK_BILINEAR;
-  else if(m == "Bandreject, BLT")  mode = BANDREJECT_BILINEAR;
-  else if(m == "Peak, BLT")  mode = PEAK_BILINEAR;
-  else if(m == "Low Shelf, 2nd order, BLT")  mode = LOW_SHELF_2_BILINEAR;
-  else if(m == "High Shelf, 2nd order, BLT")  mode = HIGH_SHELF_2_BILINEAR;
-  else if(m == "Allpass, 2nd order, BLT")  mode = ALLPASS_2_BILINEAR;
-  else                                          mode = BYPASS;
+  else if(m == "Bandpass, const. peak, BLT")   mode = BANDPASS_CONST_PEAK_BILINEAR;
+  else if(m == "Bandreject, BLT")              mode = BANDREJECT_BILINEAR;
+  else if(m == "Peak, BLT")                    mode = PEAK_BILINEAR;
+  else if(m == "Low Shelf, 2nd order, BLT")    mode = LOW_SHELF_2_BILINEAR;
+  else if(m == "High Shelf, 2nd order, BLT")   mode = HIGH_SHELF_2_BILINEAR;
+  else if(m == "Allpass, 2nd order, BLT")      mode = ALLPASS_2_BILINEAR;
+  else                                         mode = BYPASS;
+  // maybe use std::map or rosic::KeyValueMap to do the back-and-forth
 
-  // other types to come:  impulse-invariant designs, prescribed nyquist-gain, resonator/FOF, 2nd order oscillator, 
-  // Lowpass/Highpass chain, Low/High Shelf chain
+  // other types to come:  impulse-invariant designs, prescribed nyquist-gain, resonator/FOF, 
+  // 2nd order oscillator, Lowpass/Highpass chain, Low/High Shelf chain
 
   resetStateForAllVoices(); // enforces coefficient re-calculation in next call to process
 }
@@ -228,16 +222,7 @@ void BiquadDesigner::freeMemory()
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(BiquadDesigner);
 
-
-
-
-
-
-
-
-
-
-
+//-------------------------------------------------------------------------------------------------
 
 void LadderFilter::initialize()
 {
@@ -248,7 +233,8 @@ void LadderFilter::initialize()
   filterMode     = LP_24;
   saturationMode = NO_SATURATION;
 
-  // maybe include a parameter to select the saturation function (tanh, asinh, atan, hardclip, softclip, etc.)
+  // maybe include a GUI parameter to select the saturation function (tanh, asinh, atan, hardclip, 
+  // softclip, etc.)
 }
 INLINE void LadderFilter::process(Module *module, double *in1, double *in2, double *in3, 
   double *in4, double *out, int voiceIndex)
@@ -324,21 +310,21 @@ void LadderFilter::resetVoiceState(int voiceIndex)
 void LadderFilter::parameterChanged(int index)
 {
   rosic::rsString m = parameters[0].value;
-  if(m == "Lowpass, 6 dB/oct")  filterMode = LP_6;
-  else if(m == "Lowpass, 12 dB/oct")  filterMode = LP_12;
-  else if(m == "Lowpass, 18 dB/oct")  filterMode = LP_18;
-  else if(m == "Lowpass, 24 dB/oct")  filterMode = LP_24;
-  else if(m == "Highpass, 6 dB/oct")  filterMode = HP_6;
-  else if(m == "Highpass, 12 dB/oct")  filterMode = HP_12;
-  else if(m == "Highpass, 18 dB/oct")  filterMode = HP_18;
-  else if(m == "Highpass, 24 dB/oct")  filterMode = HP_24;
-  else if(m == "Bandpass, 6/6 dB/oct")  filterMode = BP_6_6;
+  if(     m == "Lowpass, 6 dB/oct")      filterMode = LP_6;
+  else if(m == "Lowpass, 12 dB/oct")     filterMode = LP_12;
+  else if(m == "Lowpass, 18 dB/oct")     filterMode = LP_18;
+  else if(m == "Lowpass, 24 dB/oct")     filterMode = LP_24;
+  else if(m == "Highpass, 6 dB/oct")     filterMode = HP_6;
+  else if(m == "Highpass, 12 dB/oct")    filterMode = HP_12;
+  else if(m == "Highpass, 18 dB/oct")    filterMode = HP_18;
+  else if(m == "Highpass, 24 dB/oct")    filterMode = HP_24;
+  else if(m == "Bandpass, 6/6 dB/oct")   filterMode = BP_6_6;
   else if(m == "Bandpass, 6/12 dB/oct")  filterMode = BP_6_12;
   else if(m == "Bandpass, 12/6 dB/oct")  filterMode = BP_12_6;
-  else if(m == "Bandpass, 12/12 dB/oct")  filterMode = BP_12_12;
+  else if(m == "Bandpass, 12/12 dB/oct") filterMode = BP_12_12;
   else if(m == "Bandpass, 6/18 dB/oct")  filterMode = BP_6_18;
   else if(m == "Bandpass, 18/6 dB/oct")  filterMode = BP_18_6;
-  else                                     filterMode = FLAT;
+  else                                   filterMode = FLAT;
 
   m = parameters[1].value;
   if(m == "No Saturation")  saturationMode = NO_SATURATION;
@@ -366,12 +352,5 @@ void LadderFilter::freeMemory()
   oldParameters = NULL;
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_4(LadderFilter);
-
-
-
-
-
-
-
 
 }

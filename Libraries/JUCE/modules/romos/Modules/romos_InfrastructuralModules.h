@@ -1,16 +1,14 @@
 #ifndef romos_InfrastructuralModules_h
 #define romos_InfrastructuralModules_h
 
-//#include "romos_ArithmeticModules.h"
-
 namespace romos
 {
 
 //-------------------------------------------------------------------------------------------------
-// infrastructural modules:
 
 /** We use identity modules to realize input and output - but we make some special subclasses in 
 order to override the default module names. maybe factor out a baseclass PinModule */
+
 class AudioInputModule : public IdentityModule
 {
   ENFORCE_FACTORY_USAGE(AudioInputModule);
@@ -39,6 +37,7 @@ public:
   }
 };
 
+//-------------------------------------------------------------------------------------------------
 
 class AudioOutputModule : public IdentityModule
 //class AudioOutputModule : public ModuleProxy
@@ -68,8 +67,8 @@ public:
   }
 };
 
+//-------------------------------------------------------------------------------------------------
 
-/** Outputs the current system sample rate. */
 class SystemSampleRateModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(SystemSampleRateModule);
@@ -80,16 +79,18 @@ public:
   SystemSampleRateTypeInfo() {
     shortName    = "SR";
     fullName     = "SampleRate";
-    description  = "Informs about the system's sample rate";
+    description  = "Outputs the system's sample rate in Hz";
     category     = "Infrastructure";
     createModule =  []()->Module* { return new SystemSampleRateModule; };
     hasHeader = false;
   }
 };
 
+//-------------------------------------------------------------------------------------------------
 
 /** Outputs the current system sampling period, that is: the distance between two samples in 
 seconds. This is equal to the reciprocal of the samplerate. */
+
 class SystemSamplePeriodModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(SystemSamplePeriodModule);
@@ -100,7 +101,7 @@ public:
   SystemSamplePeriodTypeInfo() {
     shortName    = "1/SR";
     fullName     = "SampleInterval";
-    description  = "Informs about the system's sampling interval";
+    description  = "Outputs the system's sampling interval in seconds (= 1/SampleRate)";
     category     = "Infrastructure";
     createModule =  []()->Module* { return new SystemSamplePeriodModule; };
     hasHeader = false;
@@ -108,11 +109,8 @@ public:
 };
 // rename to SampleInterval
 
+//-------------------------------------------------------------------------------------------------
 
-
-
-
-/** Outputs 1 if the voice is currently playing a note, 0 otherwise. */
 class NoteGateModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteGateModule);
@@ -123,14 +121,15 @@ public:
   NoteGateTypeInfo() {
     shortName    = "NoteGate";
     fullName     = "NoteGate";
-    description  = "Outputs 1 if the voice is currently playing a note, 0 otherwise";
+    description  = "Outputs 1, if the voice is currently playing a note, 0 otherwise";
     category     = "Infrastructure";
     createModule =  []()->Module* { return new NoteGateModule; };
     hasHeader = false;
   }
 };
 
-/** Outputs 1 if the voice has just been triggered (note-on), 0 otherwise. */
+//-------------------------------------------------------------------------------------------------
+
 class NoteOnTriggerModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteOnTriggerModule);
@@ -141,14 +140,15 @@ public:
   NoteOnTriggerTypeInfo() {
     shortName    = "NoteOn";
     fullName     = "NoteOnTrigger";
-    description  = "Outputs 1 if there was a note-on at this sample for this voice, 0 otherwise";
+    description  = "Outputs 1, if there was a note-on at this sample for this voice, 0 otherwise";
     category     = "Infrastructure";
     createModule =  []()->Module* { return new NoteOnTriggerModule; };
     hasHeader = false;
   }
 };
 
-/** Outputs 1 if the voice has just been released (note-off), 0 otherwise. */
+//-------------------------------------------------------------------------------------------------
+
 class NoteOffTriggerModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteOffTriggerModule);
@@ -166,9 +166,11 @@ public:
   }
 };
 
+//-------------------------------------------------------------------------------------------------
 
 /** Kills the voice when the maximum absolute value of the input signal remains below a threshold 
 for some specified time. */
+
 class VoiceKillerModule : public ModuleWithParameters
 {
   CREATE_COMMON_DECLARATIONS_1(VoiceKillerModule);
@@ -196,8 +198,8 @@ public:
   }
 };
 
+//-------------------------------------------------------------------------------------------------
 
-/** Adds polyphonic signals at its input into a monophonic signal at its output. */
 class VoiceCombinerModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(VoiceCombinerModule);
@@ -223,8 +225,8 @@ public:
   }
 };
 
+//-------------------------------------------------------------------------------------------------
 
-/** Outputs the frequency of the most recent note that is/was played in this voice. */
 class NoteFrequencyModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteFrequencyModule);
@@ -242,7 +244,8 @@ public:
   }
 };
 
-/** Outputs the velocity the note that is currently played in this voice. */
+//-------------------------------------------------------------------------------------------------
+
 class NoteVelocityModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_0(NoteVelocityModule);
@@ -262,9 +265,11 @@ public:
 
 // \todo AfterTouchModules (or ChannelPressure and NotePressure (or KeyPressure) modules),
 
+//-------------------------------------------------------------------------------------------------
 
 /** Outputs a number that represents some user parameter. It facilitates presentation to the user 
 by defining a range and mapping. */
+
 class ParameterModule : public ConstantModule, public ParameterMixIn
 {
   ENFORCE_FACTORY_USAGE(ParameterModule);
@@ -364,7 +369,7 @@ public:
   }
 };
 
-
+//-------------------------------------------------------------------------------------------------
 
 
 /** Outputs a number that represents some user parameter. It facilitates presentation to the

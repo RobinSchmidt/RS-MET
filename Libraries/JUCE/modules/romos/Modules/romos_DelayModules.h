@@ -1,13 +1,11 @@
 #ifndef romos_DelayModules_h
 #define romos_DelayModules_h
 
-//#include "../Framework/romos_ModuleAtomic.h"
-//#include "romos_ModuleDefinitionMacros.h"
-
 namespace romos
 {
 
-/** Delays the input signal by one sample. */
+//-------------------------------------------------------------------------------------------------
+
 class UnitDelayModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(UnitDelayModule);
@@ -31,7 +29,7 @@ public:
   }
 };
 
-
+//-------------------------------------------------------------------------------------------------
 
 // todo: MultiUnitDelay/UnitDelayChain: provides outputs for x[n-1], x[n-2], ... - useful for 
 // building filters

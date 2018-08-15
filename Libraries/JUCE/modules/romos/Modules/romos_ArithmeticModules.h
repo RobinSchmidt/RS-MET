@@ -1,18 +1,11 @@
 #ifndef romos_ArithmeticModules_h
 #define romos_ArithmeticModules_h
 
-//#include "../Framework/romos_ModuleAtomic.h"
-//#include "../Algorithms/romos_FilterDesign.h"
-//#include "../Framework/romos_WorkArea.h"
-//#include "romos_ModuleDefinitionMacros.h"
-
 namespace romos
 {
 
 //-------------------------------------------------------------------------------------------------
-// arithmetic modules:
 
-/** Outputs a constant number. */
 class ConstantModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(ConstantModule);
@@ -38,7 +31,8 @@ public:
   }
 };
 
-/** Copies the signal in the input slot into the output slot. */
+//-------------------------------------------------------------------------------------------------
+
 class IdentityModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(IdentityModule);
@@ -55,7 +49,8 @@ public:
   }
 };
 
-/** Negates the input signal (multiplies by -1). */
+//-------------------------------------------------------------------------------------------------
+
 class UnaryMinusModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(UnaryMinusModule);
@@ -66,14 +61,15 @@ public:
   UnaryMinusTypeInfo() {
     shortName    = "-";
     fullName     = "Unary minus";
-    description  = "Negates the input";
+    description  = "Negates the input (multiplies by -1)";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new UnaryMinusModule; };
     hasHeader = false;
   }
 };
 
-/** Computes 1/x - when x is zero, it returns zero as well. */
+//-------------------------------------------------------------------------------------------------
+
 class ReciprocalModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_1(ReciprocalModule);
@@ -84,14 +80,15 @@ public:
   ReciprocalTypeInfo() {
     shortName    = "1/x";
     fullName     = "Reciprocal";
-    description  = "Computes the reciprocal of the input, with zero checking";
+    description  = "Computes the reciprocal 1/x of the input. Returns 0, if x=0. ";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new ReciprocalModule; };
     hasHeader = false;
   }
 };
 
-/** Adds two input signals. */
+//-------------------------------------------------------------------------------------------------
+
 class AdderModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_2(AdderModule);  // 2 because it has two inputs
@@ -112,7 +109,8 @@ public:
   }
 };
 
-/** Subtracts the second input signal from the first. */
+//-------------------------------------------------------------------------------------------------
+
 class SubtractorModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_2(SubtractorModule);
@@ -130,7 +128,8 @@ public:
   }
 };
 
-/** Multiplies two input signals. */
+//-------------------------------------------------------------------------------------------------
+
 class MultiplierModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_2(MultiplierModule);
@@ -147,11 +146,10 @@ public:
     hasHeader = false;
   }
 };
-// make a multiplier with N inputs
+// todo: make a multiplier with N inputs
 
+//-------------------------------------------------------------------------------------------------
 
-/** Divides the first input signal by the second - if the second input signal is zero, the output 
-will also be zero. */
 class DividerModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_2(DividerModule);
@@ -169,7 +167,29 @@ public:
   }
 };
 
-/** Adds 3 input signals. */
+//-------------------------------------------------------------------------------------------------
+/*
+// todo:
+class PowerModule : public ModuleAtomic
+{
+  CREATE_COMMON_DECLARATIONS_2(PowerModule);
+};
+class PowerTypeInfo : public ModuleTypeInfo
+{
+public:
+  PowerTypeInfo() {
+    shortName    = "^";
+    fullName     = "Power";
+    description  = "Raises the first input to the power of the second";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new PowerModule; };
+    hasHeader = false;
+  }
+};
+*/
+
+//-------------------------------------------------------------------------------------------------
+
 class Adder3Module : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_3(Adder3Module);
@@ -187,7 +207,8 @@ public:
   }
 };
 
-/** Adds 4 input signals. */
+//-------------------------------------------------------------------------------------------------
+
 class Adder4Module : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_4(Adder4Module);
@@ -205,8 +226,8 @@ public:
   }
 };
 
+//-------------------------------------------------------------------------------------------------
 
-/** Adds 5 input signals. */
 class Adder5Module : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_5(Adder5Module);
@@ -224,13 +245,13 @@ public:
   }
 };
 
+//-------------------------------------------------------------------------------------------------
 
-/** Sums an arbitrary number (up to WorkArea::maxNumPins) of input signals. */
 class AdderNModule : public ModuleAtomic
 {
   CREATE_COMMON_DECLARATIONS_N(AdderNModule);
 
-  virtual void connectInputPinTo(int inputPinIndex, Module *sourceModule, int sourceOutputPinIndex);
+  virtual void connectInputPinTo(int inputPinIndex, Module *sourceModule, int srcOutPinIndex);
   virtual void disconnectInputPin(int inputPinIndex);
    // factor these out into a class VariableNumInputsModule or something
 };
@@ -240,7 +261,7 @@ public:
   AdderNModuleTypeInfo() {
     shortName    = "+";
     fullName     = "AdderN";
-    description  = "Sums an arbitrary number of input signals";
+    description  = "Sums an arbitrary number of input signals"; // up to WorkArea::maxNumPins
     category     = "Arithmetic";
     createModule =  []()->Module* { return new AdderNModule; };
     hasHeader = false;
@@ -248,10 +269,9 @@ public:
 };
 
 //-----------------------------------------------------------------------------------------------
-// power ^, scaler (by fixed number) - 
+
 // ScaleAndShift: *3 scales by 3, +2 shifts by 2, *3+2 scales by 3 and the adds 2
 // default: *1+0
-
 
 //-----------------------------------------------------------------------------------------------
 // relations:
