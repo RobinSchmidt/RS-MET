@@ -567,7 +567,8 @@ romos::Module* TestModuleBuilder::createBlip(const rosic::rsString &name, int x,
 
 romos::Module* TestModuleBuilder::createMonoToPoly(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *constant1    = module->addChildModule(getTypeId("Constant"),    "1",    1,  2, false, false);
   romos::Module *unaryMinus1  = module->addChildModule(getTypeId("UnaryMinus"),  "-",    5,  2, false, false);
@@ -584,7 +585,8 @@ romos::Module* TestModuleBuilder::createMonoToPoly(const rosic::rsString &name, 
 
 romos::Module* TestModuleBuilder::createVoiceCombiner(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *constant1      = module->addChildModule(getTypeId("Constant"),      "1",    1,  2, false, false);
   romos::Module *voiceCombiner1 = module->addChildModule(getTypeId("VoiceCombiner"), "}",    5,  2, false, false);
@@ -601,7 +603,8 @@ romos::Module* TestModuleBuilder::createVoiceCombiner(const rosic::rsString &nam
 
 romos::Module* TestModuleBuilder::createIn3Out5(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In1",   1,  2, false, false);
   romos::Module *audioInput2  = module->addChildModule(getTypeId("AudioInput"),  "In2",   1,  8, false, false);
@@ -640,7 +643,8 @@ romos::Module* TestModuleBuilder::createIn3Out5(const rosic::rsString &name, int
 
 romos::Module* TestModuleBuilder::createGateAndKill(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *noteGate1    = module->addChildModule(getTypeId("NoteGate"),    "NoteGate",     2,  2, true,  false);
   romos::Module *constant1    = module->addChildModule(getTypeId("Constant"),    "0.001",        5,  8, true,  false);
@@ -661,7 +665,8 @@ romos::Module* TestModuleBuilder::createGateAndKill(const rosic::rsString &name,
 
 romos::Module* TestModuleBuilder::createTriggerAndKill(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *noteOnTrigger1 = module->addChildModule(getTypeId("NoteOnTrigger"), "NoteOnTrigger",  1,  2, false, false);
   romos::Module *constant1      = module->addChildModule(getTypeId("Constant"),      "0.001",          9,  6, false, false);
@@ -679,7 +684,8 @@ romos::Module* TestModuleBuilder::createTriggerAndKill(const rosic::rsString &na
 
 romos::Module* TestModuleBuilder::createGatedNoteFrequency(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *noteGate1      = module->addChildModule(getTypeId("NoteGate"),      "NoteGate",       1,  2, false, false);
   romos::Module *noteFrequency1 = module->addChildModule(getTypeId("NoteFrequency"), "NoteFrequency",  1,  5, false, false);
@@ -699,7 +705,8 @@ romos::Module* TestModuleBuilder::createGatedNoteFrequency(const rosic::rsString
 
 romos::Module* TestModuleBuilder::createVoiceKill(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In1",          2,  2, true,  false);
   romos::Module *constant1    = module->addChildModule(getTypeId("Constant"),    "0.001",        2,  5, true,  false);
@@ -717,7 +724,8 @@ romos::Module* TestModuleBuilder::createVoiceKill(const rosic::rsString &name, i
 
 romos::Module* TestModuleBuilder::createIn1Out2(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In1",   2,  4, true,  false);
   romos::Module *audioOutput1 = module->addChildModule(getTypeId("AudioOutput"), "Out1", 11,  2, true,  false);
@@ -733,7 +741,8 @@ romos::Module* TestModuleBuilder::createIn1Out2(const rosic::rsString &name, int
 
 romos::Module* TestModuleBuilder::createPolyBlipStereo(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *voiceCombiner1 = module->addChildModule(getTypeId("VoiceCombiner"), "}",       22,  3, false, false);
   romos::Module *voiceCombiner2 = module->addChildModule(getTypeId("VoiceCombiner"), "}",       22,  6, false, false);
@@ -767,7 +776,8 @@ romos::Module* TestModuleBuilder::createPolyBlipStereo(const rosic::rsString &na
 
 romos::Module* TestModuleBuilder::createNoteFilter(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *audioInput1     = module->addChildModule(getTypeId("AudioInput"),     "In1",            16,  4, true,  false);
   romos::Module *audioInput2     = module->addChildModule(getTypeId("AudioInput"),     "In2",            16, 18, true,  false);
@@ -805,7 +815,8 @@ romos::Module* TestModuleBuilder::createNoteFilter(const rosic::rsString &name, 
 
 romos::Module* TestModuleBuilder::createGatedNoise(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *constant1    = module->addChildModule(getTypeId("Constant"),    "0",           2,  4, true,  false);
   romos::Module *constant2    = module->addChildModule(getTypeId("Constant"),    "1",           2, 14, true,  false);
@@ -835,7 +846,8 @@ romos::Module* TestModuleBuilder::createGatedNoise(const rosic::rsString &name, 
 
 romos::Module* TestModuleBuilder::createNoiseFlute(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *voiceCombiner1 = module->addChildModule(getTypeId("VoiceCombiner"), "}",          25,  4, false, false);
   romos::Module *constant1      = module->addChildModule(getTypeId("Constant"),      "0.125",      25,  7, false, false);
@@ -967,7 +979,8 @@ romos::Module* TestModuleBuilder::createGatedNoiseStereo(const rosic::rsString &
 // an input connected to a minus connected to two outputs
 romos::Module* TestModuleBuilder::createContainerize01(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In1",   2,  3, false, false);
   romos::Module *unaryMinus1  = module->addChildModule(getTypeId("UnaryMinus"),  "-",    11,  3, false, false);
@@ -985,7 +998,8 @@ romos::Module* TestModuleBuilder::createContainerize01(const rosic::rsString &na
 
 romos::Module* TestModuleBuilder::createContainerize02(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *constant1       = module->addChildModule(getTypeId("Constant"),       "1",               2,  5, false, false);
   romos::Module *constant2       = module->addChildModule(getTypeId("Constant"),       "2",               2, 15, false, false);
@@ -1013,7 +1027,8 @@ romos::Module* TestModuleBuilder::createContainerize02(const rosic::rsString &na
 
 romos::Module* TestModuleBuilder::createOneTwoThree(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *constant1    = module->addChildModule(getTypeId("Constant"),    "1",     2,  2, false, false);
   romos::Module *constant2    = module->addChildModule(getTypeId("Constant"),    "2",     2,  5, false, false);
@@ -1033,7 +1048,8 @@ romos::Module* TestModuleBuilder::createOneTwoThree(const rosic::rsString &name,
 
 romos::Module* TestModuleBuilder::createOutputDeletion(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *unaryMinus1 = module->addChildModule(getTypeId("UnaryMinus"), "-", 16,  3, false, false);
   romos::Module *unaryMinus2 = module->addChildModule(getTypeId("UnaryMinus"), "-", 16,  5, false, false);
@@ -1057,7 +1073,8 @@ romos::Module* TestModuleBuilder::createOutputDeletion(const rosic::rsString &na
 
 romos::Module* TestModuleBuilder::createAddedConstants(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
   
   romos::Module *constant1    = module->addChildModule(getTypeId("Constant"),    "1",     2,  4, false, false);
   romos::Module *constant2    = module->addChildModule(getTypeId("Constant"),    "3",     2,  6, false, false);
@@ -1108,7 +1125,8 @@ romos::Module* TestModuleBuilder::createAddedConstants(const rosic::rsString &na
 
 romos::Module* TestModuleBuilder::createIdentityChain(const rosic::rsString &name, int x, int y, bool polyphonic)
 {  
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
 
   static const int numIdentities = 20;
   romos::Module *source = module->addChildModule(getTypeId("Identity"), "Identity", 0,  2, false, false);
@@ -1139,7 +1157,8 @@ romos::Module* TestModuleBuilder::createIdentityChainWithFeedback(const rosic::r
 
 romos::Module* TestModuleBuilder::createAdderChain(const rosic::rsString &name, int x, int y, bool polyphonic)
 {  
-  ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
+  ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
 
   static const int numAdders = 20;
   romos::Module *source = module->addChildModule(getTypeId("Adder"), "Adder", 0,  2, false, false);
