@@ -179,25 +179,25 @@ public:
   moduleIdentifiers enumeration and can be used to infer the kind of the module at runtime (aka 
   runtime type information (RTTI)). Knowing the concrete module (sub)class is necessary for 
   typecasts and total recall. */
-  INLINE int getTypeIdentifier() const { return moduleTypeIdentifier; }
+  INLINE int getTypeIdentifierOld() const { return moduleTypeIdentifier; }
 
   /** Returns the type name of this module. */
-  virtual rosic::rsString getTypeName() const
+  virtual rosic::rsString getTypeNameOld() const
   {
-    return ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(getTypeIdentifier());
+    return ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(getTypeIdentifierOld());
   }
 
   /** Returns true when this module is an input module, false otherwise. */
-  INLINE bool isInputModule() const { return getTypeIdentifier() == ModuleTypeRegistry::AUDIO_INPUT; }
+  INLINE bool isInputModule() const { return getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_INPUT; }
 
   /** Returns true when this module is an output module, false otherwise. */
-  INLINE bool isOutputModule() const { return getTypeIdentifier() == ModuleTypeRegistry::AUDIO_OUTPUT; }
+  INLINE bool isOutputModule() const { return getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_OUTPUT; }
 
   /** Returns true when this module is a container module, false otherwise. */
-  INLINE bool isContainerModule() const { return getTypeIdentifier() == ModuleTypeRegistry::CONTAINER; }
+  INLINE bool isContainerModule() const { return getTypeIdentifierOld() == ModuleTypeRegistry::CONTAINER; }
 
   /** Returns true when this module is the topl-level module, false otherwise. */
-  INLINE bool isTopLevelModule() const { return getTypeIdentifier() == ModuleTypeRegistry::TOP_LEVEL_MODULE; }
+  INLINE bool isTopLevelModule() const { return getTypeIdentifierOld() == ModuleTypeRegistry::TOP_LEVEL_MODULE; }
 
   /** Returns the parent module of "this" module. */
   virtual romos::ModuleContainer* getParentModule() const { return parentModule; }

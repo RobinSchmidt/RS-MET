@@ -506,7 +506,7 @@ bool romos::containsModuleOfType(const std::vector<romos::Module*> &modules, int
 {
   for(unsigned int i = 0; i < modules.size(); i++)
   {
-    if( modules.at(i)->getTypeIdentifier() == typeCode )
+    if( modules.at(i)->getTypeIdentifierOld() == typeCode )
       return true;
   }
   return false;
@@ -544,7 +544,7 @@ void romos::writeModuleStateToConsole(void *module, bool waitForKeyAfterOutput)
   double pinValue;
 
   printf("%s %s", m->getName().getRawString(), " ");
-  printf("%s %s", m->getTypeName().getRawString(), " ");
+  printf("%s %s", m->getTypeNameOld().getRawString(), " ");
   printf("%s", "Ins: ");
   if( m->isInputModule() || m->isOutputModule() )
     maxPinIndex = 0;

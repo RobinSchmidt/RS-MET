@@ -69,7 +69,7 @@ void LibertyAudioModule::restoreModuleTypeSpecificStateDataFromXml(romos::Module
   romos::ParameterMixIn *m = dynamic_cast<romos::ParameterMixIn*> (module);
   if( m != NULL )
   {
-    if( module->getTypeIdentifier() == romos::ModuleTypeRegistry::PARAMETER )
+    if( module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::PARAMETER )
     {
       // we need special treatment of the parameter module - minValue/maxValue shlould be set 
       // simultaneuously, because otherwise, min/max might not be recalled correctly, for example 
@@ -101,7 +101,7 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module,
 {
   //ScopedLock scopedLock(*plugInLock); // this function is static
 
-  XmlElement *xmlState = new XmlElement(rosicToJuce(module->getTypeName()));
+  XmlElement *xmlState = new XmlElement(rosicToJuce(module->getTypeNameOld()));
 
   xmlState->setAttribute("Name", rosicToJuce(module->getName())    );
   xmlState->setAttribute("X",    juce::String(module->getPositionX())  );
@@ -175,8 +175,8 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
   // module->setPositionXY not needed because we assign x, y in the loop and the toplevel module 
   // should always reamain at (0,0) 
 
-  if(  module->getTypeIdentifier() == romos::ModuleTypeRegistry::CONTAINER 
-    || module->getTypeIdentifier() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE )
+  if(  module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::CONTAINER 
+    || module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE )
   {
     romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
     for(int i=0; i<xmlState.getNumChildElements(); i++)
@@ -188,7 +188,7 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
 
       if( typeIdentifier != romos::ModuleTypeRegistry::UNKNOWN_MODULE_TYPE )
       {
-        if(  module->getTypeIdentifier() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE 
+        if(  module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE 
           && romos::ModuleTypeRegistry::isIdentifierInputOrOutput(typeIdentifier) )
         {
           // do nothing when this is the top-level module and the to-be-added child is an I/O module
@@ -404,7 +404,7 @@ ModulePropertiesEditor::ModulePropertiesEditor(LibertyAudioModule *newLiberty, r
   moduleTypeLabel->setDescription(juce::String("Type of the module"));
   addWidget(moduleTypeLabel, true, true);
 
-  moduleTypeField = new RTextField(rosicToJuce(moduleToEdit->getTypeName()));
+  moduleTypeField = new RTextField(rosicToJuce(moduleToEdit->getTypeNameOld()));
   moduleTypeField->setJustification(Justification::centredLeft);
   moduleTypeField->setDescription(moduleTypeLabel->getDescription());
   addWidget(moduleTypeField, true, true);
@@ -1130,7 +1130,7 @@ void ModularStructureTreeView::nodeClicked(RTreeViewNode *nodeThatWasClicked,
     else
     {  
       getInterfaceMediator()->setContainerToShowInDiagram(clickedNodeModule->getParentModule());
-      if( romos::ModuleTypeRegistry::hasModuleTypeEditor(clickedNodeModule->getTypeIdentifier()) )
+      if( romos::ModuleTypeRegistry::hasModuleTypeEditor(clickedNodeModule->getTypeIdentifierOld()) )
         getInterfaceMediator()->setModuleToShowEditorFor(clickedNodeModule);
     }
   }
@@ -1166,7 +1166,7 @@ void ModularStructureTreeView::createAndHangInSubTree(RTreeViewNode *parentNodeT
   //if( containerModule == NULL )
   //  return;
 
-  if( romos::ModuleTypeRegistry::hasModuleTypeEditor(moduleToCreateSubTreeFor->getTypeIdentifier()) )
+  if( romos::ModuleTypeRegistry::hasModuleTypeEditor(moduleToCreateSubTreeFor->getTypeIdentifierOld()) )
   {
     juce::String name = juce::String( moduleToCreateSubTreeFor->getName().getRawString() );
     RTreeViewNode *newNode = new RTreeViewNode(name);
@@ -1257,7 +1257,7 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
   removeChildColourSchemeComponent(currentEditor, true);
 
   // this switch statement sucks - use std::map or something
-  switch( moduleToShowEditorFor->getTypeIdentifier() )
+  switch( moduleToShowEditorFor->getTypeIdentifierOld() )
   {
   case romos::ModuleTypeRegistry::PARAMETER:
     currentEditor = new ParameterModuleEditor(getInterfaceMediator()->modularSynthModuleToEdit, 
@@ -1631,7 +1631,7 @@ void ModularBlockDiagramPanel::mouseDown(const MouseEvent &e)
         }
         else
         {
-          if( romos::ModuleTypeRegistry::hasModuleTypeEditor(module->getTypeIdentifier()) )
+          if( romos::ModuleTypeRegistry::hasModuleTypeEditor(module->getTypeIdentifierOld()) )
             getInterfaceMediator()->setModuleToShowEditorFor(module); // will also select it via the callback that we'll receive
           else
             selectSingleModule(module);
@@ -1912,7 +1912,7 @@ void ModularBlockDiagramPanel::openActOnSelectionMenu(int x, int y)
   if( selectedModules.size() == 1 )
   {
     actOnSelectionMenu->addItem(EDIT_NAME, ("Edit Name"), true, false);
-    if( selectedModules[0]->getTypeIdentifier() == romos::ModuleTypeRegistry::CONTAINER )
+    if( selectedModules[0]->getTypeIdentifierOld() == romos::ModuleTypeRegistry::CONTAINER )
     {
       actOnSelectionMenu->addItem(SAVE_CONTAINER, ("Save Container..."), true, false);
       actOnSelectionMenu->addItem(EXPORT_TO_CODE, ("Export to Code..."), true, false);
@@ -1943,10 +1943,10 @@ void ModularBlockDiagramPanel::openModuleNameEntryField()
     //nameEntryField->setBounds(x, y, w, getModuleTitleHeightInPixels(selectedModules[0]));
     nameEntryField->setBounds(x, y, jmax(w, 40), 2*t+2*m+bigFontHeight);
 
-    int type = selectedModules[0]->getTypeIdentifier();
+    int type = selectedModules[0]->getTypeIdentifierOld();
     if(  !romos::ModuleTypeRegistry::isModuleNameEditable(type) )
       return;  
-    if( getInterfaceMediator()->getContainerShownInDiagram()->getTypeIdentifier() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE )
+    if( getInterfaceMediator()->getContainerShownInDiagram()->getTypeIdentifierOld() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE )
     {
       if( romos::ModuleTypeRegistry::isIdentifierInputOrOutput(type) )
         return; // disallow editing of toplevel I/O module names
@@ -1996,7 +1996,7 @@ void ModularBlockDiagramPanel::openContainerLoadDialog()
 void ModularBlockDiagramPanel::openContainerSaveDialog()
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
-  if( selectedModules.size() == 1 && selectedModules[0]->getTypeIdentifier() == ModuleTypeRegistry::CONTAINER )
+  if( selectedModules.size() == 1 && selectedModules[0]->getTypeIdentifierOld() == ModuleTypeRegistry::CONTAINER )
   {
     //juce::File   initialDirectory = rojue::getApplicationDirectory(); // preliminary - we should have a member containerDirectory or sth
     juce::File   initialDirectory = getInterfaceMediator()->modularSynthModuleToEdit->macroDirectory;

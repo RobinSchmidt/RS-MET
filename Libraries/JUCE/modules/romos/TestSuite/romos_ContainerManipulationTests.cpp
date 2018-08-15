@@ -18,17 +18,20 @@ bool Containerize01::runTest()
   romos::Module* output2Level0             = containerLevel0->getChildModule(3);
 
   // check if child modules have the right types:
-  result &= inputLevel0  ->getTypeIdentifier() == ModuleTypeRegistry::AUDIO_INPUT;
-  result &= minus        ->getTypeIdentifier() == ModuleTypeRegistry::UNARY_MINUS;
-  result &= output1Level0->getTypeIdentifier() == ModuleTypeRegistry::AUDIO_OUTPUT;
-  result &= output2Level0->getTypeIdentifier() == ModuleTypeRegistry::AUDIO_OUTPUT;
+  result &= inputLevel0  ->getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_INPUT;
+  result &= minus        ->getTypeIdentifierOld() == ModuleTypeRegistry::UNARY_MINUS;
+  result &= output1Level0->getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_OUTPUT;
+  result &= output2Level0->getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_OUTPUT;
+
+
+
 
   // we try to containerize them all -> should only containerize the UnaryMinus (I/O modules are excluded from containerizing):
   std::vector<romos::Module*> modulesToContainerize = containerLevel0->getChildModules();
   containerLevel0->containerizeModules(modulesToContainerize);
 
   romos::ModuleContainer* containerLevel1 = (romos::ModuleContainer*) containerLevel0->getChildModule(1);
-  result &= containerLevel1->getTypeIdentifier()  == ModuleTypeRegistry::CONTAINER;
+  result &= containerLevel1->getTypeIdentifierOld()  == ModuleTypeRegistry::CONTAINER;
 
   // check number of children for inner and outer container
   result &= containerLevel0->getNumChildModules() == 4;
@@ -91,7 +94,7 @@ bool Containerize02::runTest()
 
   // retrieve the created container:
   romos::ModuleContainer* containerLevel1 = (romos::ModuleContainer*) containerLevel0->getChildModule(2);
-  result &= containerLevel1->getTypeIdentifier()  == ModuleTypeRegistry::CONTAINER;
+  result &= containerLevel1->getTypeIdentifierOld()  == ModuleTypeRegistry::CONTAINER;
 
   // check number of children for inner and outer container
   result &= containerLevel0->getNumChildModules() == 7;
@@ -299,7 +302,7 @@ void ContainerizationAddedConstantsTest::randomizeContainment()
     std::vector<romos::Module*> toBeUnContainerized;
     for(unsigned int i = 0; i < childModules.size(); i++)
     {
-      if( childModules[i]->getTypeIdentifier() == ModuleTypeRegistry::CONSTANT || childModules[i]->isContainerModule() )
+      if( childModules[i]->getTypeIdentifierOld() == ModuleTypeRegistry::CONSTANT || childModules[i]->isContainerModule() )
       {
         double randomNumber = random(0.0, 1.0);
         if( randomNumber < 1.0/3.0 )

@@ -45,7 +45,7 @@ rosic::rsString ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module
     child = container->getChildModule(i);
     if( child->isContainerModule() )
       continue;
-    tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifier());
+    tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifierOld());
     code    += indent;
     padding  = createPadding(variableNames[i], maxAtomicVariableNameLength);
     code    += S("romos::Module *") + variableNames[i] + padding + S(" = module->addChildModule(") + typeRetrievals[i] + S(" ");
@@ -135,7 +135,7 @@ rosic::rsString ModuleBuildCodeGenerator::makeModuleVariableName(romos::Module *
     name = module->getName();
   else
   {
-    name = module->getTypeName();  
+    name = module->getTypeNameOld();  
     int suffix = getNumOfSameModulesBefore(module) + 1;
     name += suffix;
   }
@@ -153,7 +153,7 @@ int ModuleBuildCodeGenerator::getNumOfSameModulesBefore(romos::Module *module)
     int count  = 0;
     for(unsigned int i=0; i<parent->getNumChildModules(); i++)
     {
-      if( parent->getChildModule(i)->getTypeIdentifier() == module->getTypeIdentifier() )
+      if( parent->getChildModule(i)->getTypeIdentifierOld() == module->getTypeIdentifierOld() )
       {
         if( parent->getChildModule(i) == module )
           return count;
@@ -191,7 +191,7 @@ rosic::rsArray<rosic::rsString> ModuleBuildCodeGenerator::createTypeRetrievalStr
   for(unsigned int i = 0; i < container->getNumChildModules(); i++)
   {
     romos::Module *child = container->getChildModule(i);
-    rosic::rsString tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifier());
+    rosic::rsString tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifierOld());
     tmp = S("getTypeId(\"") + S(tmp) + S("\"),");
     typeRetrievalStrings.appendElement(tmp);
   }

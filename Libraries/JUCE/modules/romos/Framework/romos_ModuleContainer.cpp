@@ -836,7 +836,7 @@ romos::AudioInputModule* ModuleContainer::getAudioInputModule(int index) const
   int numSkipped = 0;
   for(unsigned int i = 0; i < childModules.size(); i++)
   {
-    if( childModules.at(i)->getTypeIdentifier() == romos::ModuleTypeRegistry::AUDIO_INPUT )
+    if( childModules.at(i)->getTypeIdentifierOld() == romos::ModuleTypeRegistry::AUDIO_INPUT )
     {
       if( index == numSkipped )
         return (AudioInputModule*) childModules.at(i);
@@ -851,7 +851,7 @@ romos::AudioOutputModule* ModuleContainer::getAudioOutputModule(int index) const
   int numSkipped = 0;
   for(unsigned int i = 0; i < childModules.size(); i++)
   {
-    if( childModules.at(i)->getTypeIdentifier() == romos::ModuleTypeRegistry::AUDIO_OUTPUT )
+    if( childModules.at(i)->getTypeIdentifierOld() == romos::ModuleTypeRegistry::AUDIO_OUTPUT )
     {
       if( index == numSkipped )
         return (AudioOutputModule*) childModules.at(i);
@@ -866,7 +866,7 @@ int ModuleContainer::getInputPinIndexOf(AudioInputModule *inputModule) const
   int numSkipped = 0;
   for(unsigned int i = 0; i < childModules.size(); i++)
   {
-    if( childModules.at(i)->getTypeIdentifier() == romos::ModuleTypeRegistry::AUDIO_INPUT )
+    if( childModules.at(i)->getTypeIdentifierOld() == romos::ModuleTypeRegistry::AUDIO_INPUT )
     {
       if( childModules.at(i) == inputModule )
         return numSkipped;
@@ -882,7 +882,7 @@ int ModuleContainer::getOutputPinIndexOf(AudioOutputModule *outputModule) const
   int numSkipped = 0;
   for(unsigned int i = 0; i < childModules.size(); i++)
   {
-    if( childModules.at(i)->getTypeIdentifier() == romos::ModuleTypeRegistry::AUDIO_OUTPUT )
+    if( childModules.at(i)->getTypeIdentifierOld() == romos::ModuleTypeRegistry::AUDIO_OUTPUT )
     {
       if( childModules.at(i) == outputModule )
         return numSkipped;
@@ -931,7 +931,7 @@ int ModuleContainer::getContainerNestingDepth() const
   int tmp    = 0;
   for(unsigned int i = 0; i<childModules.size(); i++)
   {
-    if( childModules.at(i)->getTypeIdentifier() == ModuleTypeRegistry::CONTAINER )
+    if( childModules.at(i)->getTypeIdentifierOld() == ModuleTypeRegistry::CONTAINER )
     {
       tmp = childModules.at(i)->getContainerNestingDepth();
       if( tmp > result )
@@ -967,7 +967,7 @@ std::vector<romos::Module*> ModuleContainer::getChildModulesWithTypeOld(int type
   std::vector<romos::Module*> result;
   for(unsigned int i = 0; i < childModules.size(); i++)
   {
-    if( childModules.at(i)->getTypeIdentifier() == typeIdentifier )
+    if( childModules.at(i)->getTypeIdentifierOld() == typeIdentifier )
       rosic::appendElement(result, childModules.at(i));
       //result.appendElement(childModules.getElement(i));
   }
@@ -1410,7 +1410,7 @@ void ModuleContainer::removeModulesOfType(std::vector<romos::Module*> &modules, 
   int i = (int) modules.size()-1;
   while( i >= 0)
   {
-    if( modules[i]->getTypeIdentifier() == typeCodeToRemove )
+    if( modules[i]->getTypeIdentifierOld() == typeCodeToRemove )
       rosic::removeElementByIndex(modules, i);
     i--;
   }
