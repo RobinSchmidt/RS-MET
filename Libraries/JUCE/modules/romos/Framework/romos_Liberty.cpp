@@ -7,8 +7,16 @@ using namespace romos;
 
 Liberty::Liberty()
 {
-  topLevelModule = (TopLevelModule*) ModuleFactory::createModule(ModuleTypeRegistry::TOP_LEVEL_MODULE, "Instrument", 0, 0, false);
   populateModuleTypeRegistry();
+
+  topLevelModule = (TopLevelModule*) ModuleFactory::createModule(
+    ModuleTypeRegistry::TOP_LEVEL_MODULE, "Instrument", 0, 0, false);
+
+  // later use:
+  // topLevelModule = moduleTypeRegistry.createModule("TopLevelModule");
+  // ...naahh - the top-level module needs special treatment - it should not be available in the
+  // menu - maybe
+  // topLevelModule = moduleTypeRegistry.createTopLevelModule("Instrument", 0, 0, false);
 }
 
 Liberty::~Liberty()

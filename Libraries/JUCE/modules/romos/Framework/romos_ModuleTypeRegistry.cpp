@@ -218,7 +218,7 @@ ModuleTypeRegistry2::ModuleTypeRegistry2()
 
 ModuleTypeRegistry2::~ModuleTypeRegistry2()
 {
-  clear();
+  clearRegisteredTypes();
 }
 
 romos::Module* ModuleTypeRegistry2::createModule(int id) const
@@ -226,7 +226,16 @@ romos::Module* ModuleTypeRegistry2::createModule(int id) const
   rassert(id >= 0 && id < typeInfos.size());  // id out of range
   romos::Module* m = typeInfos[id]->createModule();
   m->typeInfo = typeInfos[id];
+  //setupModule(m, name, x, y, polyphonic);  // later...
   return m;
+}
+
+romos::Module* ModuleTypeRegistry2::createTopLevelModule(const std::string& name, 
+  int x, int y, bool polyphonic) const
+{
+  TopLevelModule* tlm = new TopLevelModule();
+  setupModule(tlm, name, x, y, polyphonic);
+  return tlm;
 }
 
 romos::Module* ModuleTypeRegistry2::createModule(const std::string& fullName) const
@@ -310,7 +319,7 @@ void ModuleTypeRegistry2::registerStandardModules()
   registerModuleType(new SystemSampleRateTypeInfo);
   registerModuleType(new SystemSamplePeriodTypeInfo);
 
-  // TopLevelModule?
+
 
 
   // Modulation:
@@ -328,9 +337,15 @@ void ModuleTypeRegistry2::registerPreBuiltContainers()
   // createAddedConstants, createPinSortTest, createBlip, createPolyBlipStereo, createNoiseFlute
 }
 
-void ModuleTypeRegistry2::clear()
+void ModuleTypeRegistry2::clearRegisteredTypes()
 {
   for(int i = 0; i < typeInfos.size(); i++)
     delete typeInfos[i];
   typeInfos.clear();
+}
+
+void ModuleTypeRegistry2::setupModule(romos::Module* module, const std::string& name, 
+  int x, int y, bool polyphonic) const
+{
+
 }

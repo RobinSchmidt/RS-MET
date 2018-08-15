@@ -102,7 +102,8 @@ protected:
   /** Destructor. */
   virtual ~TopLevelModule();
 
-  friend class ModuleFactory;
+  friend class ModuleFactory;    // old
+  friend class ModuleTypeRegistry2;
 
 
   /** Does initialization stuff for input buffers and input-modules (memory allocation, setting up

@@ -262,6 +262,21 @@ public:
   /** Creates a module with given unique identifier. */
   Module* createModule(int id) const;
 
+  Module* createTopLevelModule(const std::string& name, int x, int y, 
+    bool polyphonic) const;
+  // todo: return TopLevelModule*
+
+
+
+
+
+  // from ModuleFactory:
+  //static romos::Module* createModule(int typeIdentifier, rosic::rsString name = rosic::rsString(), 
+  //  int x = 0, int y = 0, bool polyphonic = false);
+
+  //void deleteModule(romos::Module *moduleToDelete);
+  // maybe copy over comments as well
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
@@ -289,9 +304,11 @@ public:
   void registerPreBuiltContainers();
 
   /** Cleans up the memory, i.e. the registered type-info objects that were passed as pointers. */
-  void clear();
+  void clearRegisteredTypes();
 
 protected:
+
+  void setupModule(romos::Module* module, const std::string& name, int x, int y, bool polyphonic) const;
 
   std::vector<ModuleTypeInfo*> typeInfos;
 
