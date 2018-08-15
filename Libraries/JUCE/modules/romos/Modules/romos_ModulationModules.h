@@ -1,8 +1,8 @@
 #ifndef romos_ModulationModules_h
 #define romos_ModulationModules_h
 
-#include "../Framework/romos_ModuleAtomic.h"
-#include "romos_ModuleDefinitionMacros.h"
+//#include "../Framework/romos_ModuleAtomic.h"
+//#include "romos_ModuleDefinitionMacros.h"
 
 namespace romos
 {

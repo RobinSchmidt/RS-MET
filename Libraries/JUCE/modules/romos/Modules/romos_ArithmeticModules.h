@@ -1,10 +1,10 @@
 #ifndef romos_ArithmeticModules_h
 #define romos_ArithmeticModules_h
 
-#include "../Framework/romos_ModuleAtomic.h"
-#include "../Algorithms/romos_FilterDesign.h"
-#include "../Framework/romos_WorkArea.h"
-#include "romos_ModuleDefinitionMacros.h"
+//#include "../Framework/romos_ModuleAtomic.h"
+//#include "../Algorithms/romos_FilterDesign.h"
+//#include "../Framework/romos_WorkArea.h"
+//#include "romos_ModuleDefinitionMacros.h"
 
 namespace romos
 {

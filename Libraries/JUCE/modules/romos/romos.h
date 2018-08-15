@@ -48,7 +48,7 @@
 #include "Framework/romos_TopLevelModule.h"
 #include "Framework/romos_WorkArea.h"
 
-
+#include "Modules/romos_ModuleDefinitionMacros.h"
 #include "Modules/romos_ArithmeticModules.h"
 #include "Modules/romos_DelayModules.h"
 #include "Modules/romos_FilterModules.h"
@@ -60,7 +60,6 @@
 
 #include "Framework/romos_Liberty.h"  // should not be in the framework folder
 
-
 #include "TestSuite/romos_ModuleBuildCodeGenerator.h"
 #include "TestSuite/romos_TestModuleBuilder.h" // not needed anymore when new testsuite is complete
 #include "TestSuite/romos_UnitTestRunner.h"
@@ -68,7 +67,8 @@
 #include "TestSuite/romos_InteractiveTestRunner.h"
 // maybe more?
 
-#include "Framework/romos_Liberty.h"
+
+//#include "Framework/romos_Liberty.h"
 
 #endif   // #ifdef _MSC_VER
 #endif   // #ifndef ROMOS_H_INCLUDED

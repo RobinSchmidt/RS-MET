@@ -1,10 +1,8 @@
 #ifndef romos_SoundGeneratorModules_h
 #define romos_SoundGeneratorModules_h
 
-
-
-#include "../Framework/romos_ModuleAtomic.h"
-#include "romos_ModuleDefinitionMacros.h"
+//#include "../Framework/romos_ModuleAtomic.h"
+//#include "romos_ModuleDefinitionMacros.h"
 
 namespace romos
 {
