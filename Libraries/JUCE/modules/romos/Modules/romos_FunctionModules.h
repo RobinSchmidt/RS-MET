@@ -21,7 +21,7 @@ public:
     description  = "Clips input signal to the range between Min and Max";
     category     = "Functions";
     createModule =  []()->Module* { return new ClipperModule; };
-    hasHeader = false;
+    //hasHeader = false;
   }
 };
 
@@ -40,7 +40,7 @@ public:
     description  = "Sine and cosine of 2*pi times the input (1-periodic)";
     category     = "Functions";
     createModule =  []()->Module* { return new SinCosModule; };
-    hasHeader = false;
+    //hasHeader = false;
   }
 };
 
@@ -73,7 +73,7 @@ public:
     description  = "Morph between triangle, saw, square and sine";
     category     = "Functions";
     createModule =  []()->Module* { return new TriSawModule; };
-    hasHeader = false;
+    //hasHeader = false;
   }
 };
 
@@ -84,6 +84,14 @@ public:
 // (microtuning)), LinearToExponential, etc.
 
 // Function (evaluates expression entered on the gui), FunctionNto1, Function1ToN, FunctionNToM
+// or maybe the N-to-M handles all cases, the GUI should have 4 entry fields:
+// Inputs:   x; a; b
+// Defaults: x=0; a=1; b=0;
+// Outputs:  y; z
+// Formulas: y = a*x + b; z = a*x - b
+// especially for the Formulas field, it would be nice to be multi-line
+// the class should automatically assign the names for the pins according to the Inputs/Outputs
+
 
 }
 

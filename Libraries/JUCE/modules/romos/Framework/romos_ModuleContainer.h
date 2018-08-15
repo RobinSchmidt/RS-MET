@@ -433,8 +433,8 @@ protected:
   friend void processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSize);
   friend void processContainerBlockFrameWiseMixed(Module *moduleAsVoid, int blockSize);
 
-
-  friend class ModuleFactory;
+  friend class ContainerModuleTypeInfo;
+  friend class ModuleFactory; // old
 
 private:
 
@@ -443,6 +443,18 @@ private:
   ModuleContainer& operator=(const ModuleContainer &other) { return *this; }
 
 };
+class ContainerModuleTypeInfo : public ModuleTypeInfo
+{
+public:
+  ContainerModuleTypeInfo() {
+    shortName    = "Container";
+    fullName     = "Container";
+    description  = "Wraps a bunch of interconnected modules into a single module";
+    category     = "Infrastructure";
+    createModule =  []()->Module* { return new ModuleContainer; };
+  }
+};
+
 
 } // end namespace romos
 

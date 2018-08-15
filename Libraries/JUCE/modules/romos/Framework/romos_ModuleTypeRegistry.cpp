@@ -244,8 +244,8 @@ int ModuleTypeRegistry2::getModuleId(const std::string& fullName) const
 
 void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
 {
-  rassert(!doesTypeExist(info->fullName)); // type with that name was already registered
-  info->id = (int) typeInfos.size();
+  rassert(!doesTypeExist(info->fullName)); // type with that name was already registered...
+  info->id = (int) typeInfos.size();       // ...full module names must be unique
   typeInfos.push_back(info);
 }
 
@@ -262,19 +262,29 @@ void ModuleTypeRegistry2::registerStandardModules()
   registerModuleType(new SubtractorTypeInfo);     // a-b
   registerModuleType(new MultiplierTypeInfo);     // a*b
   registerModuleType(new DividerTypeInfo);        // a/b
+  // todo: a^b, 
   registerModuleType(new Adder3ModuleTypeInfo);   // a+b+c
   registerModuleType(new Adder4ModuleTypeInfo);   // a+b+c+d
   registerModuleType(new Adder5ModuleTypeInfo);   // a+b+c+d+e
   registerModuleType(new AdderNModuleTypeInfo);   // a+b+c+d+e+...
-  // todo: a^b, 
+
   
   // Comparison: a<b a<=b, a>b, a>=b,
   // Logic: a&b, a|b
 
   // Functions:
+  registerModuleType(new ClipperTypeInfo);    // hardClip(x, Min, Max)
+  registerModuleType(new SinCosTypeInfo);     // sin(2*pi*x),cos(2*pi*x)
+  registerModuleType(new TriSawTypeInfo);
 
   // Delays:
   registerModuleType(new UnitDelayTypeInfo);  // y = x[n-1]
+
+  // Sources
+  registerModuleType(new WhiteNoiseTypeInfo);
+  registerModuleType(new PhasorTypeInfo);
+  registerModuleType(new BandlimitedImpulseTrainTypeInfo);
+  registerModuleType(new DualBlitSawTypeInfo);
 
   // Filters:
   registerModuleType(new FirstOrderLowpassTypeInfo);
@@ -283,55 +293,39 @@ void ModuleTypeRegistry2::registerStandardModules()
   registerModuleType(new BiquadDesignerTypeInfo);
   registerModuleType(new LadderFilterTypeInfo);
 
-  // Functions:
-  registerModuleType(new ClipperTypeInfo);    // hardClip(x, Min, Max)
-  registerModuleType(new SinCosTypeInfo);     // sin(2*pi*x),cos(2*pi*x)
-  registerModuleType(new TriSawTypeInfo);
-
   // Infrastructure:
   registerModuleType(new AudioInputTypeInfo);
   registerModuleType(new AudioOutputTypeInfo);
-  registerModuleType(new SystemSampleRateTypeInfo);
-  registerModuleType(new SystemSamplePeriodTypeInfo);
+  registerModuleType(new ParameterModuleTypeInfo);
+  registerModuleType(new ContainerModuleTypeInfo);
+
   registerModuleType(new NoteGateTypeInfo);
   registerModuleType(new NoteOnTriggerTypeInfo);
   registerModuleType(new NoteOffTriggerTypeInfo);
-  registerModuleType(new VoiceKillerTypeInfo);
-  registerModuleType(new VoiceCombinerTypeInfo);
   registerModuleType(new NoteFrequencyTypeInfo);
   registerModuleType(new NoteVelocityTypeInfo);
-  registerModuleType(new ParameterModuleTypeInfo);
+  registerModuleType(new VoiceCombinerTypeInfo);
+  registerModuleType(new VoiceKillerTypeInfo);
+
+  registerModuleType(new SystemSampleRateTypeInfo);
+  registerModuleType(new SystemSamplePeriodTypeInfo);
+
+  // TopLevelModule?
+
 
   // Modulation:
   registerModuleType(new EnvelopeADSRTypeInfo);
 
-
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-  //registerModuleType(new );
-
-
-
-
-
-
-
-  // Sources:
-
   // before starting using this, compare if the new names match the old ones (full and short)
-  //...
+  // register also programatically built containers...but maybe do this in liberty
+}
+
+void ModuleTypeRegistry2::registerPreBuiltContainers()
+{
+  // todo:
+  // TestModuleBuilder::createGain, createSumDiff, createWrappedSumDiff, createSummedDiffs, 
+  // createMovingAverage, createLeakyIntegrator, createTestFilter1, createBiquadMacro, 
+  // createAddedConstants, createPinSortTest, createBlip, createPolyBlipStereo, createNoiseFlute
 }
 
 void ModuleTypeRegistry2::clear()

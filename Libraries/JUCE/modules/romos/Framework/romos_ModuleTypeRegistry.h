@@ -285,6 +285,9 @@ public:
   /** Registers all the standard module types that are commonly used. */
   void registerStandardModules();
 
+  /** Registers a bunch of programatically pre-built containers. */
+  void registerPreBuiltContainers();
+
   /** Cleans up the memory, i.e. the registered type-info objects that were passed as pointers. */
   void clear();
 

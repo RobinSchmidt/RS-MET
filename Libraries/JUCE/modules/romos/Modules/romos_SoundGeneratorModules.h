@@ -34,6 +34,19 @@ protected:
   unsigned long *state; // actually, we should use a self-defined uint32 to make sure it's 
                         // machine independent ...or maybe use RAPT::rsNoiseGenerator
 };
+class WhiteNoiseTypeInfo : public ModuleTypeInfo
+{
+public:
+  WhiteNoiseTypeInfo() {
+    shortName    = "Noise";
+    fullName     = "WhiteNoise";
+    description  = "Uniform white noise between -1 and +1";
+    category     = "Sources";
+    createModule =  []()->Module* { return new WhiteNoise; };
+    hasHeader = false;
+  }
+};
+
 
 
 /** Generates a linear ramp that ascends from 0 to 1 in a given time the resets back to zero, 
@@ -56,12 +69,23 @@ protected:
   virtual void freeMemory();
   double *phases;
 };
-// todo: maybe let it have inputs for min/max (defaulting to 0/1)
+class PhasorTypeInfo : public ModuleTypeInfo
+{
+public:
+  PhasorTypeInfo() {
+    shortName    = "Phasor";
+    fullName     = "Phasor";
+    description  = "Periodic linear ramp between Min and Max with given frequency";
+    category     = "Sources";
+    createModule =  []()->Module* { return new Phasor; };
+    hasHeader = false;
+  }
+};
 
 
 
-/** Generates an impulse train that is bandlimited by the Nyquist frequency (i.e. an anti-aliased impulse-train) using a closed form
-expression for a summation of a sine series.
+/** Generates an impulse train that is bandlimited by the Nyquist frequency (i.e. an anti-aliased 
+impulse-train) using a closed form expression for a summation of a sine series.
 Parameters:
  none
 Inputs:
@@ -81,21 +105,29 @@ protected:
   virtual void allocateMemory();
   virtual void freeMemory();
 
-  INLINE static void incrementPhases(BandlimitedImpulseTrain *blit, const int voiceIndex, const double omega);
+  INLINE static void incrementPhases(BandlimitedImpulseTrain *blit, const int voiceIndex, 
+    const double omega);
 
   INLINE static double computeUnscaledBlitValue(const double theta, const double numHarmonics);
 
-
-
   double *phases;
-
   double fixedPhaseOffset;
 
   // intermediate variables, to be used locally in process:
   //double numHarmonics, ampScaler, omega, theta;
-
 };
-
+class BandlimitedImpulseTrainTypeInfo : public ModuleTypeInfo
+{
+public:
+  BandlimitedImpulseTrainTypeInfo() {
+    shortName    = "BLIT";
+    fullName     = "BandlimitedImpulseTrain";
+    description  = "Band limited train of unit impulses using a closed form formula";
+    category     = "Sources";
+    createModule =  []()->Module* { return new BandlimitedImpulseTrain; };
+    hasHeader = false;
+  }
+};
 
 
 class BlitIntegratorInitialStates
@@ -174,12 +206,26 @@ class DualBlitSaw : public BlitSaw // rename to BlitOscillator, get rid of the B
   CREATE_COMMON_DECLARATIONS_4(DualBlitSaw);
 public:
   virtual void resetVoiceState(int voiceIndex);
-  virtual void resetIntegratorState(Module *module, int voiceIndex, double startPhase, double blitOut, double oscOmega,
-    double phaseOffset, double secondBlitAmplitude);
+  virtual void resetIntegratorState(Module *module, int voiceIndex, double startPhase, 
+    double blitOut, double oscOmega, double phaseOffset, double secondBlitAmplitude);
 protected:
   virtual void allocateMemory();
   virtual void freeMemory();
 };
+class DualBlitSawTypeInfo : public ModuleTypeInfo
+{
+public:
+  DualBlitSawTypeInfo() {
+    shortName    = "BlitOsc";
+    fullName     = "BlitOscillator";
+    description  = "Saw/pulse oscillator based on integrating a bandlimited impulse train";
+    category     = "Sources";
+    createModule =  []()->Module* { return new DualBlitSaw; };
+    hasHeader = false;
+  }
+};
+
+
 
 // DigitalNoise (randomly switch between 1 and -1) Ins: MeanSwitchFrequency
 // SyncModOsc: oscillator is synced to a master-osc and has it's start-phase modulated by another osc 

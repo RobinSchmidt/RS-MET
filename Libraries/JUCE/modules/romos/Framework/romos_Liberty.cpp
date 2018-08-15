@@ -57,9 +57,5 @@ void Liberty::resetAllVoices()
 
 void Liberty::populateModuleTypeRegistry()
 {
-  //ModuleTypeRegistry2* mtr = &moduleTypeRegistry;
-  //mtr->registerModuleType(AdderTypeInfo);
-  //mtr->registerModuleType(SubtractorTypeInfo);
-  // actually, all modules are already registered in the constructor of the type registry itself
-  // ...however, more modules could be added here
+  moduleTypeRegistry.registerPreBuiltContainers();
 }

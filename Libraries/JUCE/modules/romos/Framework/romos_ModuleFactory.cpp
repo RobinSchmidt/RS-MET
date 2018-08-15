@@ -35,6 +35,7 @@ romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString n
 
   switch( typeIdentifier )
   {
+  // infrastructure:
   case ModuleTypeRegistry::TOP_LEVEL_MODULE:          newModule = new TopLevelModule();             break;
   case ModuleTypeRegistry::AUDIO_INPUT:               newModule = new AudioInputModule();           break;
   case ModuleTypeRegistry::AUDIO_OUTPUT:              newModule = new AudioOutputModule();          break;
@@ -47,35 +48,38 @@ romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString n
   case ModuleTypeRegistry::VOICE_COMBINER:            newModule = new VoiceCombinerModule();        break;
   case ModuleTypeRegistry::NOTE_FREQUENCY:            newModule = new NoteFrequencyModule();        break;
   case ModuleTypeRegistry::NOTE_VELOCITY:             newModule = new NoteVelocityModule();         break;
+
+  // arithmetic:
   case ModuleTypeRegistry::ADDER:                     newModule = new AdderModule();                break;
   case ModuleTypeRegistry::SUBTRACTOR:                newModule = new SubtractorModule();           break;
   case ModuleTypeRegistry::MULTIPLIER:                newModule = new MultiplierModule();           break;
   case ModuleTypeRegistry::DIVIDER:                   newModule = new DividerModule();              break;
-
-
   case ModuleTypeRegistry::ADDER_3:                   newModule = new Adder3Module();               break;
   case ModuleTypeRegistry::ADDER_4:                   newModule = new Adder4Module();               break;
   case ModuleTypeRegistry::ADDER_5:                   newModule = new Adder5Module();               break;
   case ModuleTypeRegistry::ADDER_N:                   newModule = new AdderNModule();               break;
 
+  // functions:
   case ModuleTypeRegistry::CLIPPER:                   newModule = new ClipperModule();              break;
   case ModuleTypeRegistry::SIN_COS:                   newModule = new SinCosModule();               break;
   case ModuleTypeRegistry::TRISAW:                    newModule = new TriSawModule();               break;
   case ModuleTypeRegistry::CONSTANT:                  newModule = new ConstantModule();             break;
   case ModuleTypeRegistry::CONTAINER:                 newModule = new ModuleContainer();            break;
 
-
+  // filters:
   case ModuleTypeRegistry::FIRST_ORDER_LOWPASS:       newModule = new FirstOrderLowpass();          break;
   case ModuleTypeRegistry::FIRST_ORDER_FILTER:        newModule = new FirstOrderFilter();           break;
   case ModuleTypeRegistry::BIQUAD:                    newModule = new Biquad();                     break;
   case ModuleTypeRegistry::BIQUAD_DESIGNER:           newModule = new BiquadDesigner();             break;
   case ModuleTypeRegistry::LADDER_FILTER:             newModule = new LadderFilter();               break;
 
+  // misc:
   case ModuleTypeRegistry::IDENTITY:                  newModule = new IdentityModule();             break;
   case ModuleTypeRegistry::UNARY_MINUS:               newModule = new UnaryMinusModule();           break;
   case ModuleTypeRegistry::RECIPROCAL:                newModule = new ReciprocalModule();           break;
   case ModuleTypeRegistry::UNIT_DELAY:                newModule = new UnitDelayModule();            break;
 
+  // sources:
   case ModuleTypeRegistry::PHASOR:                    newModule = new Phasor();                     break;
   case ModuleTypeRegistry::WHITE_NOISE:               newModule = new WhiteNoise();                 break;
   case ModuleTypeRegistry::BANDLIMITED_IMPULSE_TRAIN: newModule = new BandlimitedImpulseTrain();    break;
@@ -83,11 +87,11 @@ romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString n
   case ModuleTypeRegistry::DUAL_BLIT_SAW_OSCILLATOR:  newModule = new DualBlitSaw();                  break;
 
 
-
+  // modulators
   case ModuleTypeRegistry::ENVELOPE_ADSR:             newModule = new EnvelopeADSR();               break;
 
 
-  // test modules:
+  // test modules (pre-built containers):
   case ModuleTypeRegistry::TEST_GAIN:              newModule = TestModuleBuilder::createGain(           name, x, y, polyphonic);  break;
   case ModuleTypeRegistry::TEST_SUM_DIFF:          newModule = TestModuleBuilder::createSumDiff(        name, x, y, polyphonic);  break;
   case ModuleTypeRegistry::TEST_WRAPPED_SUM_DIFF:  newModule = TestModuleBuilder::createWrappedSumDiff( name, x, y, polyphonic);  break;
