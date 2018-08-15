@@ -211,8 +211,8 @@ void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullNam
 
 //-------------------------------------------------------------------------------------------------
 
-ModuleFactoryNew romos::moduleFactory;  // definition of the global object - causes memleak?
-MemLeakTest romos::memLeakTest;         // clean up - move to a memleak demo project
+//ModuleFactoryNew romos::moduleFactory;  // definition of the global object - causes memleak?
+//MemLeakTest romos::memLeakTest;         // clean up - move to a memleak demo project
 
 ModuleFactoryNew::ModuleFactoryNew()
 {
@@ -229,7 +229,6 @@ romos::Module* ModuleFactoryNew::createModule(int id, const std::string& name, i
 {
   rassert(id >= 0 && id < typeInfos.size());  // id out of range
   // todo: if the id is out of range, return some kind of "Error" dummy module
-
 
   romos::Module* m = typeInfos[id]->createModule();
   m->typeInfo = typeInfos[id];

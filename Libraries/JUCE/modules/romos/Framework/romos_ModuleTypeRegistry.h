@@ -323,10 +323,11 @@ protected:
     bool polyphonic) const;
 
   std::vector<ModuleTypeInfo*> typeInfos;
+  //rosic::rsArray<ModuleTypeInfo*> typeInfos;
 
 };
 
-extern ModuleFactoryNew moduleFactory;  // declaration of the global object
+//extern ModuleFactoryNew moduleFactory;  // declaration of the global object
 
 // just some throw-away code to figure out what causes the memory leak with ModuleFactoryNew
 class MemLeakTest
@@ -335,6 +336,7 @@ class MemLeakTest
   //std::vector<int> test; // this also
   // so it seems that when i have a global object of a class that has a std::vector member,
   // i'll get a memleak
+
 
   //std::vector<int> testVector;         // triggers pre-exit-of-main memleak detection
   std::vector<int>* testPointerToVector; // doesn't trigger it

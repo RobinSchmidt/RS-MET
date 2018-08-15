@@ -11,6 +11,7 @@
 
 int main(int argc, char* argv[])
 {
+
   //===============================================================================================
   // RAPT tests:
 
@@ -451,8 +452,8 @@ int main(int argc, char* argv[])
 
   //DEBUG_HOOK;
   //int* test = new int;  // uncomment, to see, if it fires correctly
-  //if( detectMemoryLeaks() )
-  //  std::cout << "\n\n!!! Memory leaks detected (pre exit of main()) !!! \n";
+  if( detectMemoryLeaks() )
+    std::cout << "\n\n!!! Memory leaks detected (pre exit of main()) !!! \n";
     //std::cout << "\n\n!!! Memory leaks detected !!! \n";
   // If memory leaks occur even though no objects are actually created on the heap, it could mean 
   // that some class in a library module has a static data member that does a dynamic memory 
