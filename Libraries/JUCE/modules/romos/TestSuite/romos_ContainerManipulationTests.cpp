@@ -18,13 +18,10 @@ bool Containerize01::runTest()
   romos::Module* output2Level0             = containerLevel0->getChildModule(3);
 
   // check if child modules have the right types:
-  result &= inputLevel0  ->getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_INPUT;
-  result &= minus        ->getTypeIdentifierOld() == ModuleTypeRegistry::UNARY_MINUS;
-  result &= output1Level0->getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_OUTPUT;
-  result &= output2Level0->getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_OUTPUT;
-
-
-
+  result &= inputLevel0  ->getTypeName() == "AudioInput";
+  result &= minus        ->getTypeName() == "UnaryMinus";
+  result &= output1Level0->getTypeName() == "AudioOutput";
+  result &= output2Level0->getTypeName() == "AudioOutput";
 
   // we try to containerize them all -> should only containerize the UnaryMinus (I/O modules are excluded from containerizing):
   std::vector<romos::Module*> modulesToContainerize = containerLevel0->getChildModules();

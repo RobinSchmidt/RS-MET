@@ -76,13 +76,12 @@ void LibertyAudioModule::restoreModuleTypeSpecificStateDataFromXml(romos::Module
       // simultaneuously, because otherwise, min/max might not be recalled correctly, for example 
       // when newMin > oldMax, the module will refuse to use the new minimum, etc. moreover, 
       // min/max must be set up before attempting to set the default and current value:
-      double min = xmlState.getDoubleAttribute(juce::String(("MinValue")), 0.0);
-      double max = xmlState.getDoubleAttribute(juce::String(("MaxValue")), 1.0);
+      double min = xmlState.getDoubleAttribute("MinValue", 0.0);
+      double max = xmlState.getDoubleAttribute("MaxValue", 1.0);
 
-      juce::String mappingString = xmlState.getStringAttribute(juce::String(("MaxValue")), 
-        juce::String(("Linear")));
+      juce::String mappingString = xmlState.getStringAttribute("MaxValue", "Linear");
       int mappingIndex = romos::ParameterModule::LINEAR_MAPPING;
-      if( mappingString == juce::String(("Exponential")) )
+      if( mappingString == "Exponential" )
         mappingIndex = romos::ParameterModule::EXPONENTIAL_MAPPING;
 
       ((romos::ParameterModule*) m)->setMinMaxAndMapping(min, max, mappingIndex); 
@@ -176,8 +175,7 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
   // module->setPositionXY not needed because we assign x, y in the loop and the toplevel module 
   // should always reamain at (0,0) 
 
-  if(  module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::CONTAINER 
-    || module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE )
+  if(  module->isContainerModule() || module->isTopLevelModule() )
   {
     romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
     for(int i=0; i<xmlState.getNumChildElements(); i++)
@@ -189,7 +187,7 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
 
       if( typeIdentifier != romos::ModuleTypeRegistry::UNKNOWN_MODULE_TYPE )
       {
-        if(  module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE 
+        if(  module->isTopLevelModule() 
           && romos::ModuleTypeRegistry::isIdentifierInputOrOutput(typeIdentifier) )
         {
           // do nothing when this is the top-level module and the to-be-added child is an I/O module
@@ -197,10 +195,10 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
         else
         {
           rosic::rsString moduleName = juceToRosic(childState
-            ->getStringAttribute(juce::String("Name")));
-          int x = childState->getIntAttribute(juce::String("X"), 0);
-          int y = childState->getIntAttribute(juce::String("Y"), 0);
-          bool poly = childState->getBoolAttribute(juce::String("Poly"), false);
+            ->getStringAttribute("Name"));
+          int x = childState->getIntAttribute("X", 0);
+          int y = childState->getIntAttribute("Y", 0);
+          bool poly = childState->getBoolAttribute("Poly", false);
           romos::Module *newModule = container->addChildModule(typeIdentifier, moduleName, 
             x, y, poly, false);
           createAndSetupEmbeddedModulesFromXml(*childState, newModule);
@@ -223,20 +221,19 @@ void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, ro
     return;
   }
 
-  juce::String connectionString = xmlState.getStringAttribute(juce::String("IncomingConnections"), 
-    juce::String::empty);
+  juce::String connectionString = xmlState.getStringAttribute("IncomingConnections", juce::String::empty);
 
   if( connectionString != juce::String::empty )
   {
-    connectionString = connectionString.removeCharacters(juce::String((" ")));
-    juce::String remainingString = connectionString + juce::String((","));
+    connectionString = connectionString.removeCharacters(" ");
+    juce::String remainingString = connectionString + juce::String(",");
     juce::String currentString;
     juce::String tmpString1, tmpString2;
     int smi, spi, tpi; // source module- and pin-index, target pin index
     while( remainingString != juce::String::empty )
     {
-      currentString   = remainingString.upToFirstOccurrenceOf((","), false, false);
-      remainingString = remainingString.fromFirstOccurrenceOf((","), false, false);
+      currentString   = remainingString.upToFirstOccurrenceOf(",", false, false);
+      remainingString = remainingString.fromFirstOccurrenceOf(",", false, false);
       tmpString1      = currentString;
       int connectionKind;
 
@@ -250,14 +247,14 @@ void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, ro
         connectionKind = romos::AUDIO;
       }
    
-      tmpString1 = tmpString1.fromFirstOccurrenceOf(("_"), false, false); 
-      tmpString2 = tmpString1.upToFirstOccurrenceOf(("_"), false, false);
+      tmpString1 = tmpString1.fromFirstOccurrenceOf("_", false, false); 
+      tmpString2 = tmpString1.upToFirstOccurrenceOf("_", false, false);
       smi        = tmpString2.getIntValue();
-      tmpString1 = tmpString1.fromFirstOccurrenceOf(("_"), false, false); 
-      tmpString2 = tmpString1.upToFirstOccurrenceOf(("_"), false, false);
+      tmpString1 = tmpString1.fromFirstOccurrenceOf("_", false, false); 
+      tmpString2 = tmpString1.upToFirstOccurrenceOf("_", false, false);
       spi        = tmpString2.getIntValue();
-      tmpString1 = tmpString1.fromFirstOccurrenceOf(("_"), false, false); 
-      tmpString2 = tmpString1.upToFirstOccurrenceOf(("_"), false, false);
+      tmpString1 = tmpString1.fromFirstOccurrenceOf("_", false, false); 
+      tmpString2 = tmpString1.upToFirstOccurrenceOf("_", false, false);
       tpi        = tmpString2.getIntValue();
 
       romos::ModuleContainer *parentModule = module->getParentModule();
@@ -1864,7 +1861,13 @@ void ModularBlockDiagramPanel::treeNodeClicked(RTreeView *treeView, RTreeViewNod
     if( nodeThatWasClicked->getNodeIdentifier() == LOAD_CONTAINER )
       openContainerLoadDialog();
     else
+    {
+      // old:
       insertModule(nodeThatWasClicked->getNodeIdentifier(), inPinDistances(mouseDownX), inPinDistances(mouseDownY));
+
+      //new:
+      //insertModule(nodeThatWasClicked->getNodeText(), inPinDistances(mouseDownX), inPinDistances(mouseDownY));
+    }
   }
   WRITE_TO_LOGFILE("ModularBlockDiagramPanel::treeNodeClicked finished\n");
 }

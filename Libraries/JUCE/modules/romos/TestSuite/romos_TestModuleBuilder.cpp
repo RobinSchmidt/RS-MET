@@ -985,10 +985,10 @@ romos::Module* TestModuleBuilder::createContainerize01(const rosic::rsString &na
   ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
     name.asStdString(), x, y, polyphonic);
   
-  romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In1",   2,  3, false, false);
-  romos::Module *unaryMinus1  = module->addChildModule(getTypeId("UnaryMinus"),  "-",    11,  3, false, false);
-  romos::Module *audioOutput1 = module->addChildModule(getTypeId("AudioOutput"), "Out1", 19,  3, false, false);
-  romos::Module *audioOutput2 = module->addChildModule(getTypeId("AudioOutput"), "Out2", 19,  8, false, false);
+  romos::Module *audioInput1  = module->addChildModule("AudioInput",  "In1",   2,  3, false, false);
+  romos::Module *unaryMinus1  = module->addChildModule("UnaryMinus",  "-",    11,  3, false, false);
+  romos::Module *audioOutput1 = module->addChildModule("AudioOutput", "Out1", 19,  3, false, false);
+  romos::Module *audioOutput2 = module->addChildModule("AudioOutput", "Out2", 19,  8, false, false);
 
   module->sortChildModuleArray();
 

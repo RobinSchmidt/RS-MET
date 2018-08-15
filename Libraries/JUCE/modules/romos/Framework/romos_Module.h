@@ -186,6 +186,11 @@ public:
   {
     return ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(getTypeIdentifierOld());
   }
+  // old, deprecated
+
+  // new:
+  virtual std::string getTypeName() const { return typeInfo->fullName; }
+
 
   /** Returns true when this module is an input module, false otherwise. */
   INLINE bool isInputModule() const { return getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_INPUT; }
