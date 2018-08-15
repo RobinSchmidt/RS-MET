@@ -289,15 +289,15 @@ romos::Module* TestModuleBuilder::createLeakyIntegrator(const rosic::rsString &n
   ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
     name.asStdString(), x, y, polyphonic);
   
-  romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In",   2,  8, false, false);
-  romos::Module *audioInput2  = module->addChildModule(getTypeId("AudioInput"),  "c",    2, 11, false, false);
-  romos::Module *constant1    = module->addChildModule(getTypeId("Constant"),    "1",    2,  5, false, false);
-  romos::Module *subtractor1  = module->addChildModule(getTypeId("Subtractor"),  "-",    8,  6, false, false);
-  romos::Module *multiplier1  = module->addChildModule(getTypeId("Multiplier"),  "*",   12,  5, false, false);
-  romos::Module *multiplier2  = module->addChildModule(getTypeId("Multiplier"),  "*",   12,  9, false, false);
-  romos::Module *adder1       = module->addChildModule(getTypeId("Adder"),       "+",   18,  7, false, false);
-  romos::Module *identity1    = module->addChildModule(getTypeId("Identity"),    "",    22,  2, false, false);
-  romos::Module *audioOutput1 = module->addChildModule(getTypeId("AudioOutput"), "Out", 23,  7, false, false);
+  romos::Module *audioInput1  = module->addChildModule("AudioInput",  "In",   2,  8, false, false);
+  romos::Module *audioInput2  = module->addChildModule("AudioInput",  "c",    2, 11, false, false);
+  romos::Module *constant1    = module->addChildModule("Constant",    "1",    2,  5, false, false);
+  romos::Module *subtractor1  = module->addChildModule("Subtractor",  "-",    8,  6, false, false);
+  romos::Module *multiplier1  = module->addChildModule("Multiplier",  "*",   12,  5, false, false);
+  romos::Module *multiplier2  = module->addChildModule("Multiplier",  "*",   12,  9, false, false);
+  romos::Module *adder1       = module->addChildModule("Adder",       "+",   18,  7, false, false);
+  romos::Module *identity1    = module->addChildModule("Identity",    "",    22,  2, false, false);
+  romos::Module *audioOutput1 = module->addChildModule("AudioOutput", "Out", 23,  7, false, false);
 
   // using the function without the getTypeId doesn't work yet (crashes, because in one test, a 
   // module is searched for via its old type-id)

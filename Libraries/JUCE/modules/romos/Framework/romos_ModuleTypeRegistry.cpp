@@ -266,6 +266,15 @@ int ModuleFactoryNew::getModuleId(const std::string& fullTypeName)
   return -1;
 }
 
+ModuleTypeInfo* ModuleFactoryNew::getModuleTypeInfo(const std::string& fullTypeName)
+{
+  ensureTypeInfoArrayAllocated();
+  for(int i = 0; i < typeInfos->size(); i++)
+    if((*typeInfos)[i]->fullName == fullTypeName)
+      return (*typeInfos)[i];
+  return nullptr;
+}
+
 void ModuleFactoryNew::registerModuleType(ModuleTypeInfo* info)
 {
   ensureTypeInfoArrayAllocated();

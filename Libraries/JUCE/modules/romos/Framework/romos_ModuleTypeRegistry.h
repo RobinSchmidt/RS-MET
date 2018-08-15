@@ -296,6 +296,10 @@ public:
   int getModuleId(const std::string& fullTypeName);
   // rename to getModuleTypeId
 
+  /** Returns a pointer the full type info object given the name of the type (if the name is
+  unknown, it returns a nullptr). */
+  ModuleTypeInfo* getModuleTypeInfo(const std::string& fullTypeName);
+
   /** Returns true, iff a module of the given type exists (i.e. was registered). */
   inline bool doesTypeExist(const std::string& fullName)
   {

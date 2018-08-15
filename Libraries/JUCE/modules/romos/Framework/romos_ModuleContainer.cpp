@@ -358,6 +358,10 @@ romos::Module* ModuleContainer::addAudioInputModule(rosic::rsString name, int x,
 
   Module *newModule = ModuleFactory::createModule(ModuleTypeRegistry::AUDIO_INPUT, name, x, y, this->isPolyphonic());
 
+  newModule->typeInfo = moduleFactory.getModuleTypeInfo("AudioInput");
+    // can be deleted when we create the newModule with the newFactory later (but until then, we 
+    // need to manually set the typeInfo pointer here
+
   newModule->parentModule = this;
   rosic::appendElement(childModules, (romos::Module*) newModule);
 
@@ -378,6 +382,11 @@ romos::Module* ModuleContainer::addAudioOutputModule(rosic::rsString name, int x
   if( name.isEmpty() )
     name = rosic::rsString("Out") + rosic::rsString(getNumOutputPins()+1);
   Module *newModule = ModuleFactory::createModule(ModuleTypeRegistry::AUDIO_OUTPUT, name, x, y, this->isPolyphonic());
+
+  newModule->typeInfo = moduleFactory.getModuleTypeInfo("AudioOutput");
+  // can be deleted when we create the newModule with the newFactory later (but until then, we 
+  // need to manually set the typeInfo pointer here
+
   newModule->parentModule = this;
   rosic::appendElement(childModules, (romos::Module*) newModule);
   if( sortModuleArrayAfterInsertion == true )
@@ -954,6 +963,7 @@ std::vector<romos::Module*> ModuleContainer::getNonInOutChildModules() const
 
 std::vector<romos::Module*> ModuleContainer::getChildModulesWithTypeOld(int typeIdentifier) const
 {
+  // to be removed when the new type-info system fully works
   std::vector<romos::Module*> result;
   for(unsigned int i = 0; i < childModules.size(); i++)
   {
