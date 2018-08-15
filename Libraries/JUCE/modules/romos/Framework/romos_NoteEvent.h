@@ -1,7 +1,7 @@
 #ifndef romos_NoteEvent_h
 #define romos_NoteEvent_h
 
-#include "romos_Module.h"
+//#include "romos_Module.h"
 
 namespace romos
 {

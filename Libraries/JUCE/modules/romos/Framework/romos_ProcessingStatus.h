@@ -1,7 +1,7 @@
 #ifndef romos_ProcessingStatus_h
 #define romos_ProcessingStatus_h
 
-#include "romos_VoiceAllocator.h"
+//#include "romos_VoiceAllocator.h"
 
 // some definitions for shorthand notation - get rid of these macros:
 #define NUM_PLAYING_VOICES processingStatus.getNumPlayingVoices()

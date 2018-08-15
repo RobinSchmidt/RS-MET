@@ -1,7 +1,7 @@
 #ifndef romos_TopLevelModule_h
 #define romos_TopLevelModule_h
 
-#include "romos_ModuleContainer.h"
+//#include "romos_ModuleContainer.h"
 
 namespace romos
 {

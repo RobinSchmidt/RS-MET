@@ -1,7 +1,7 @@
 #ifndef romos_WorkArea_h
 #define romos_WorkArea_h
 
-#include "romos_ProcessingStatus.h"
+//#include "romos_ProcessingStatus.h"
 
 #define MAX(x,y) (((x)>(y))?(x):(y))
 
