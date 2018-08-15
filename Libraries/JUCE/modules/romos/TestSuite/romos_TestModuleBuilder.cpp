@@ -262,6 +262,23 @@ romos::Module* TestModuleBuilder::createWrappedSumDiffProd(const rosic::rsString
 
 romos::Module* TestModuleBuilder::createWrappedAdderN(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
+  ModuleContainer* m = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
+
+  romos::Module *audioInput1  = m->addChildModule("AudioInput",  "In1",    1,  2, false, false);
+  romos::Module *adderN1      = m->addChildModule("AdderN",      "Sum",   10,  2, false, false);
+  romos::Module *audioOutput1 = m->addChildModule("AudioOutput", "Out1",  20,  2, false, false);
+
+  m->sortChildModuleArray();
+
+  static const int numValuesToAdd = 10;
+  for(int i = 0; i < numValuesToAdd; i++)
+    m->addAudioConnection(audioInput1,  0, adderN1, i);
+  m->addAudioConnection(adderN1, 0, audioOutput1,  0);
+
+  return m;
+
+  /*
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In1",    1,  2, false, false);
@@ -276,10 +293,44 @@ romos::Module* TestModuleBuilder::createWrappedAdderN(const rosic::rsString &nam
   module->addAudioConnection(adderN1, 0, audioOutput1,  0);
 
   return module;
+  */
 }
 
 romos::Module* TestModuleBuilder::createDifferences(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
+  ModuleContainer* m = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
+
+  romos::Module *audioInput1  = m->addChildModule("AudioInput",  "In1",   1,  2, false, false);
+  romos::Module *audioInput2  = m->addChildModule("AudioInput",  "In2",   1,  7, false, false);
+  romos::Module *audioInput3  = m->addChildModule("AudioInput",  "In3",   1, 12, false, false);
+  romos::Module *subtractor1  = m->addChildModule("Subtractor",  "-",    12,  2, false, false);
+  romos::Module *subtractor2  = m->addChildModule("Subtractor",  "-",    12,  5, false, false);
+  romos::Module *subtractor3  = m->addChildModule("Subtractor",  "-",    12,  8, false, false);
+  romos::Module *subtractor4  = m->addChildModule("Subtractor",  "-",    12, 11, false, false);
+  romos::Module *audioOutput1 = m->addChildModule("AudioOutput", "Out1", 19,  2, false, false);
+  romos::Module *audioOutput2 = m->addChildModule("AudioOutput", "Out2", 19,  5, false, false);
+  romos::Module *audioOutput3 = m->addChildModule("AudioOutput", "Out3", 19,  8, false, false);
+  romos::Module *audioOutput4 = m->addChildModule("AudioOutput", "Out4", 19, 11, false, false);
+
+  m->sortChildModuleArray();
+
+  m->addAudioConnection(audioInput1,  0, subtractor1,  0);
+  m->addAudioConnection(audioInput2,  0, subtractor1,  1);
+  m->addAudioConnection(audioInput2,  0, subtractor2,  0);
+  m->addAudioConnection(audioInput1,  0, subtractor2,  1);
+  m->addAudioConnection(audioInput3,  0, subtractor3,  0);
+  m->addAudioConnection(audioInput2,  0, subtractor3,  1);
+  m->addAudioConnection(audioInput2,  0, subtractor4,  0);
+  m->addAudioConnection(audioInput3,  0, subtractor4,  1);
+  m->addAudioConnection(subtractor1,  0, audioOutput1, 0);
+  m->addAudioConnection(subtractor2,  0, audioOutput2, 0);
+  m->addAudioConnection(subtractor3,  0, audioOutput3, 0);
+  m->addAudioConnection(subtractor4,  0, audioOutput4, 0);
+
+  return m;
+
+  /*
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In1",   1,  2, false, false);
@@ -310,10 +361,58 @@ romos::Module* TestModuleBuilder::createDifferences(const rosic::rsString &name,
   module->addAudioConnection(subtractor4,  0, audioOutput4, 0);
 
   return module;
+  */
 }
 
 romos::Module* TestModuleBuilder::createSummedDiffs(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
+  ModuleContainer* m = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
+
+  romos::Module *audioInput1  = m->addChildModule("AudioInput",  "In1",   1,  3, false, false);
+  romos::Module *audioInput2  = m->addChildModule("AudioInput",  "In2",   1, 12, false, false);
+  romos::Module *audioInput3  = m->addChildModule("AudioInput",  "In3",   1, 21, false, false);
+  romos::Module *subtractor1  = m->addChildModule("Subtractor",  "-",    12,  3, false, false);
+  romos::Module *subtractor2  = m->addChildModule("Subtractor",  "-",    12,  8, false, false);
+  romos::Module *subtractor3  = m->addChildModule("Subtractor",  "-",    12, 15, false, false);
+  romos::Module *subtractor4  = m->addChildModule("Subtractor",  "-",    12, 20, false, false);
+  romos::Module *adderN1      = m->addChildModule("AdderN",      "+",    20,  3, false, false);
+  romos::Module *adderN2      = m->addChildModule("AdderN",      "+",    20, 18, false, false);
+  romos::Module *adderN3      = m->addChildModule("AdderN",      "+",    25,  8, false, false);
+  romos::Module *adderN4      = m->addChildModule("AdderN",      "+",    25, 14, false, false);
+  romos::Module *audioOutput1 = m->addChildModule("AudioOutput", "Out1", 30,  3, false, false);
+  romos::Module *audioOutput2 = m->addChildModule("AudioOutput", "Out2", 30,  8, false, false);
+  romos::Module *audioOutput3 = m->addChildModule("AudioOutput", "Out3", 30, 14, false, false);
+  romos::Module *audioOutput4 = m->addChildModule("AudioOutput", "Out4", 30, 18, false, false);
+
+  m->sortChildModuleArray();
+
+  m->addAudioConnection(audioInput1,  0, subtractor1,  0);
+  m->addAudioConnection(audioInput2,  0, subtractor1,  1);
+  m->addAudioConnection(audioInput2,  0, subtractor2,  0);
+  m->addAudioConnection(audioInput1,  0, subtractor2,  1);
+  m->addAudioConnection(audioInput3,  0, subtractor3,  0);
+  m->addAudioConnection(audioInput2,  0, subtractor3,  1);
+  m->addAudioConnection(audioInput2,  0, subtractor4,  0);
+  m->addAudioConnection(audioInput3,  0, subtractor4,  1);
+  m->addAudioConnection(subtractor1,  0, adderN1,      0);
+  m->addAudioConnection(subtractor2,  0, adderN1,      1);
+  m->addAudioConnection(subtractor4,  0, adderN1,      2);
+  m->addAudioConnection(subtractor1,  0, adderN2,      0);
+  m->addAudioConnection(subtractor3,  0, adderN2,      1);
+  m->addAudioConnection(subtractor4,  0, adderN2,      2);
+  m->addAudioConnection(subtractor2,  0, adderN3,      0);
+  m->addAudioConnection(subtractor4,  0, adderN3,      1);
+  m->addAudioConnection(subtractor1,  0, adderN4,      0);
+  m->addAudioConnection(subtractor3,  0, adderN4,      1);
+  m->addAudioConnection(adderN1,      0, audioOutput1, 0);
+  m->addAudioConnection(adderN3,      0, audioOutput2, 0);
+  m->addAudioConnection(adderN4,      0, audioOutput3, 0);
+  m->addAudioConnection(adderN2,      0, audioOutput4, 0);
+
+  return m;
+
+  /*
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In1",   1,  3, false, false);
@@ -358,10 +457,35 @@ romos::Module* TestModuleBuilder::createSummedDiffs(const rosic::rsString &name,
   module->addAudioConnection(adderN2,      0, audioOutput4, 0);
 
   return module;
+  */
 }
 
 romos::Module* TestModuleBuilder::createMovingAverage(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
+  ModuleContainer* m = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
+
+  romos::Module *audioInput1  = m->addChildModule("AudioInput",  "In",   1,  2, false, false);
+  romos::Module *audioInput2  = m->addChildModule("AudioInput",  "b0",   1,  5, false, false);
+  romos::Module *audioInput3  = m->addChildModule("AudioInput",  "b1",   1,  8, false, false);
+  romos::Module *unitDelay1   = m->addChildModule("UnitDelay",   "D",    8,  6, false, false);
+  romos::Module *multiplier1  = m->addChildModule("Multiplier",  "*",   11,  2, false, false);
+  romos::Module *multiplier2  = m->addChildModule("Multiplier",  "*",   11,  7, false, false);
+  romos::Module *adder1       = m->addChildModule("Adder",       "+",   15,  4, false, false);
+  romos::Module *audioOutput1 = m->addChildModule("AudioOutput", "Out", 19,  4, false, false);
+
+  m->addAudioConnection(audioInput1,  0, unitDelay1,   0);
+  m->addAudioConnection(audioInput2,  0, multiplier1,  1);
+  m->addAudioConnection(audioInput1,  0, multiplier1,  0);
+  m->addAudioConnection(audioInput3,  0, multiplier2,  1);
+  m->addAudioConnection(unitDelay1,   0, multiplier2,  0);
+  m->addAudioConnection(multiplier1,  0, adder1,       0);
+  m->addAudioConnection(multiplier2,  0, adder1,       1);
+  m->addAudioConnection(adder1,       0, audioOutput1, 0);
+
+  return m;
+
+  /*
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In",   1,  2, false, false);
@@ -383,10 +507,29 @@ romos::Module* TestModuleBuilder::createMovingAverage(const rosic::rsString &nam
   module->addAudioConnection(adder1,       0, audioOutput1, 0);
 
   return module;
+  */
 }
 
 romos::Module* TestModuleBuilder::createDelayedConnection( const rosic::rsString &name, int x, int y, bool polyphonic)
 {
+  ModuleContainer* m = (ModuleContainer*) moduleFactory.createModule("Container", 
+    name.asStdString(), x, y, polyphonic);
+  
+  romos::Module *audioInput1  = m->addChildModule("AudioInput",  "In",   2,  2, false, false);
+  romos::Module *identity1    = m->addChildModule("Identity",    "",    10,  2, false, false);
+  romos::Module *identity2    = m->addChildModule("Identity",    "",     8,  5, false, false);
+  romos::Module *audioOutput1 = m->addChildModule("AudioOutput", "Out", 20,  5, false, false);
+
+  m->sortChildModuleArray();
+
+  m->addAudioConnection(audioInput1,  0, identity1,     0);
+  m->addAudioConnection(identity1,    0, identity2,     0);
+  m->addAudioConnection(identity2,    0, audioOutput1,  0);
+
+  return m;
+
+
+  /*
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In",   2,  2, false, false);
@@ -401,6 +544,7 @@ romos::Module* TestModuleBuilder::createDelayedConnection( const rosic::rsString
   module->addAudioConnection(identity2,    0, audioOutput1,  0);
 
   return module;
+  */
 }
 
 romos::Module* TestModuleBuilder::createLeakyIntegrator(const rosic::rsString &name, int x, int y, bool polyphonic)
