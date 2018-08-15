@@ -211,17 +211,19 @@ void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullNam
 
 //-------------------------------------------------------------------------------------------------
 
-ModuleTypeRegistry2::ModuleTypeRegistry2()
+ModuleFactoryNew romos::moduleFactory;  // definition of the global object
+
+ModuleFactoryNew::ModuleFactoryNew()
 {
   registerStandardModules();
 }
 
-ModuleTypeRegistry2::~ModuleTypeRegistry2()
+ModuleFactoryNew::~ModuleFactoryNew()
 {
   clearRegisteredTypes();
 }
 
-romos::Module* ModuleTypeRegistry2::createModule(int id, const std::string& name, int x, int y, 
+romos::Module* ModuleFactoryNew::createModule(int id, const std::string& name, int x, int y, 
   bool polyphonic) const
 {
   rassert(id >= 0 && id < typeInfos.size());  // id out of range
@@ -234,13 +236,13 @@ romos::Module* ModuleTypeRegistry2::createModule(int id, const std::string& name
   return m;
 }
 
-romos::Module* ModuleTypeRegistry2::createModule(const std::string& fullTypeName, 
+romos::Module* ModuleFactoryNew::createModule(const std::string& fullTypeName, 
   const std::string& name, int x, int y, bool polyphonic) const
 {
   return createModule(getModuleId(fullTypeName), name, x, y, polyphonic);
 }
 
-romos::TopLevelModule* ModuleTypeRegistry2::createTopLevelModule(const std::string& name, 
+romos::TopLevelModule* ModuleFactoryNew::createTopLevelModule(const std::string& name, 
   int x, int y, bool polyphonic) const
 {
   TopLevelModule* tlm = new TopLevelModule();
@@ -248,13 +250,13 @@ romos::TopLevelModule* ModuleTypeRegistry2::createTopLevelModule(const std::stri
   return tlm;
 }
 
-void ModuleTypeRegistry2::deleteModule(romos::Module* moduleToDelete)
+void ModuleFactoryNew::deleteModule(romos::Module* moduleToDelete)
 {
   moduleToDelete->cleanUp();
   delete moduleToDelete;
 }
 
-int ModuleTypeRegistry2::getModuleId(const std::string& fullTypeName) const
+int ModuleFactoryNew::getModuleId(const std::string& fullTypeName) const
 {
   for(int i = 0; i < typeInfos.size(); i++)
     if(typeInfos[i]->fullName == fullTypeName)
@@ -262,14 +264,14 @@ int ModuleTypeRegistry2::getModuleId(const std::string& fullTypeName) const
   return -1;
 }
 
-void ModuleTypeRegistry2::registerModuleType(ModuleTypeInfo* info)
+void ModuleFactoryNew::registerModuleType(ModuleTypeInfo* info)
 {
   rassert(!doesTypeExist(info->fullName)); // type with that name was already registered...
   info->id = (int) typeInfos.size();       // ...full module names must be unique
   typeInfos.push_back(info);
 }
 
-void ModuleTypeRegistry2::registerStandardModules()
+void ModuleFactoryNew::registerStandardModules()
 {
   // todo: remove the "Module" from the class names where it appears
 
@@ -340,7 +342,7 @@ void ModuleTypeRegistry2::registerStandardModules()
   // register also programatically built containers...but maybe do this in liberty
 }
 
-void ModuleTypeRegistry2::registerPreBuiltContainers()
+void ModuleFactoryNew::registerPreBuiltContainers()
 {
   // todo:
   // TestModuleBuilder::createGain, createSumDiff, createWrappedSumDiff, createSummedDiffs, 
@@ -348,14 +350,14 @@ void ModuleTypeRegistry2::registerPreBuiltContainers()
   // createAddedConstants, createPinSortTest, createBlip, createPolyBlipStereo, createNoiseFlute
 }
 
-void ModuleTypeRegistry2::clearRegisteredTypes()
+void ModuleFactoryNew::clearRegisteredTypes()
 {
   for(int i = 0; i < typeInfos.size(); i++)
     delete typeInfos[i];
   typeInfos.clear();
 }
 
-void ModuleTypeRegistry2::setupModule(romos::Module* module, const std::string& name, 
+void ModuleFactoryNew::setupModule(romos::Module* module, const std::string& name, 
   int x, int y, bool polyphonic) const
 {
 

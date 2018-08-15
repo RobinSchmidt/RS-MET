@@ -1,8 +1,6 @@
 #ifndef romos_ProcessingStatus_h
 #define romos_ProcessingStatus_h
 
-//#include "romos_VoiceAllocator.h"
-
 // some definitions for shorthand notation - get rid of these macros:
 #define NUM_PLAYING_VOICES processingStatus.getNumPlayingVoices()
 #define PLAYING_VOICE_INDICES processingStatus.getPlayingVoiceIndices()
@@ -13,10 +11,10 @@ namespace romos
 {
 
 /** This class represents the ProcessingStatus in which the modular system is used. Modules can 
-inquire information about their processing ProcessingStatus by accessing the sole instance of this 
-singleton-class via ProcessingStatus::getSoleInstance(). This information comprises the system 
-sample-rate, the tempo in BPM, the notes that are currently active (for each voice), etc. Some 
-modules access these informations in order to make them available inside the modular system. */
+inquire information about their processing ProcessingStatus by accessing the global object 
+processingStatus. This information comprises the system sample-rate, the tempo in BPM, the notes 
+that are currently active (for each voice), etc. Some modules access these informations in order to
+make them available inside the modular system. */
 
 class ProcessingStatus
 {

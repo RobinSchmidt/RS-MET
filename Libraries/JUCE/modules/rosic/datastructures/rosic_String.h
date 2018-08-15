@@ -180,7 +180,7 @@ public:
   // conversions to numeric values:
 
   /** Returns the string as std::string. */
-  std::string asStdString()  { return std::string(cString); }
+  std::string asStdString() const { return std::string(cString); }
 
   /** Returns the string as a integer number if conversion is possible, 0 otherwise. */
   int asInt() const { return atoi(cString); }

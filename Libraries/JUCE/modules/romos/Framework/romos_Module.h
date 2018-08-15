@@ -91,7 +91,7 @@ class Module
 
   friend class ModuleContainer;
   friend class ModuleFactory;        // for old creation code
-  friend class ModuleTypeRegistry2;  // for new creation code
+  friend class ModuleFactoryNew;  // for new creation code
 
 public:
 

@@ -7,7 +7,7 @@ using namespace romos;
 
 Liberty::Liberty()
 {
-  populateModuleTypeRegistry();
+  //populateModuleTypeRegistry();
 
   topLevelModule = (TopLevelModule*) ModuleFactory::createModule(
     ModuleTypeRegistry::TOP_LEVEL_MODULE, "Instrument", 0, 0, false);
@@ -63,7 +63,9 @@ void Liberty::resetAllVoices()
 }
 */
 
+/*
 void Liberty::populateModuleTypeRegistry()
 {
   moduleTypeRegistry.registerPreBuiltContainers();
 }
+*/

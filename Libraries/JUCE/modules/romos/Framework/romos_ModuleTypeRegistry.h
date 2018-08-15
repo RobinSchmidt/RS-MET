@@ -244,16 +244,16 @@ assign names to module in/out pins for all modules of the same type at once. Mak
 audioInputNames, audioOutputNames obsolete in class ModuleAtomic -> less redundant data to store
 
 */
-class ModuleTypeRegistry2
+class ModuleFactoryNew
 {
 
 public:
 
   /** Constructor. Pre-populates the registry with standard modules. */
-  ModuleTypeRegistry2();
+  ModuleFactoryNew();
 
   /** Destructor. Cleans up the memory. */
-  ~ModuleTypeRegistry2();
+  ~ModuleFactoryNew();
 
   //-----------------------------------------------------------------------------------------------
   // \name Creation/deletion of module instances
@@ -324,6 +324,8 @@ protected:
   std::vector<ModuleTypeInfo*> typeInfos;
 
 };
+
+extern ModuleFactoryNew moduleFactory;  // declaration of the global object
 
 //=================================================================================================
 

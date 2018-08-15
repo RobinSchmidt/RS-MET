@@ -84,8 +84,8 @@ protected:
                         // oversampling on a per-container basis - maybe later, it's complicated
 
   // under construction:
-  void populateModuleTypeRegistry();      // not yet used
-  ModuleTypeRegistry2 moduleTypeRegistry; // not yet used
+  //void populateModuleTypeRegistry();      // not yet used - rename to addCustomModulesToFactory
+  //ModuleFactoryNew moduleTypeRegistry; // not yet used 
 
 };
 
