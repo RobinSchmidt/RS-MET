@@ -814,6 +814,12 @@ protected:
   /** Inserts a module of the kind given by the identifier (@see romos::moduleIdentifiers) at the 
   given coordinates. */
   virtual void insertModule(int moduleIdentifer, int xInPinDistances, int yInPinDistances);
+    // old
+
+  virtual void insertModule(const juce::String& typeName, 
+    int xInPinDistances, int yInPinDistances);
+    // new
+
 
   /** Adds the passed module to our array of selected modules and takes care to also select all 
   connections to and from that module. */

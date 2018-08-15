@@ -2069,6 +2069,7 @@ propertiesDialog->setVisible(true);
 }
 */
 
+// old:
 void ModularBlockDiagramPanel::insertModule(int moduleIdentifer, int xInPinDistances, int yInPinDistances)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
@@ -2079,6 +2080,18 @@ void ModularBlockDiagramPanel::insertModule(int moduleIdentifer, int xInPinDista
     );
 
   //getInterfaceMediator()->sendModuleChangeNotification(getInterfaceMediator()->getContainerShownInDiagram(), NUM_CHILDREN);
+  notifyMediator(NUM_CHILDREN);
+}
+
+// new:
+void ModularBlockDiagramPanel::insertModule(const juce::String& typeName, int x, int y)
+{
+  LibertyInterfaceMediator* med = getInterfaceMediator();
+  ScopedLock scopedLock(*(med->plugInLock));
+  med->getContainerShownInDiagram()->addChildModule(typeName.toStdString(), 
+    "",                                                  // use a default name based on the module-type
+    x, y, 
+    med->getContainerShownInDiagram()->isPolyphonic());  // use same polyphony as the outlying container 
   notifyMediator(NUM_CHILDREN);
 }
 
