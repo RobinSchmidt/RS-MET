@@ -275,6 +275,13 @@ ModuleTypeInfo* ModuleFactoryNew::getModuleTypeInfo(const std::string& fullTypeN
   return nullptr;
 }
 
+ModuleTypeInfo* ModuleFactoryNew::getModuleTypeInfo(size_t id)
+{
+  if(id < typeInfos->size())
+    return (*typeInfos)[id];
+  return nullptr;
+}
+
 void ModuleFactoryNew::registerModuleType(ModuleTypeInfo* info)
 {
   ensureTypeInfoArrayAllocated();

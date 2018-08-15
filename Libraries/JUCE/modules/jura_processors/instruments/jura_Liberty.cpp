@@ -69,6 +69,7 @@ void LibertyAudioModule::restoreModuleTypeSpecificStateDataFromXml(romos::Module
   romos::ParameterMixIn *m = dynamic_cast<romos::ParameterMixIn*> (module);
   if( m != NULL )
   {
+    //if ( module->isParameter() )  // to be used later
     if( module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::PARAMETER )
     {
       // we need special treatment of the parameter module - minValue/maxValue shlould be set 
@@ -915,24 +916,26 @@ BiquadDesignerModuleEditor::BiquadDesignerModuleEditor(LibertyAudioModule *newLi
 {
   ScopedLock scopedLock(*plugInLock);
 
+  typedef romos::BiquadDesigner BQD;
+
   modeComboBox = new LibertyNamedComboBox(juce::String(("Mode")));
-  modeComboBox->addItem(romos::BiquadDesigner::BYPASS,                        "Bypass",                     true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::LOWPASS_6_BILINEAR,            "Lowpass, 6 dB/oct, BLT",     true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::HIGHPASS_6_BILINEAR,           "Highpass, 6 dB/oct, BLT",    true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::LOW_SHELF_1_BILINEAR,          "Low Shelf, 1st order, BLT",  true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::HIGH_SHELF_1_BILINEAR,         "High Shelf, 1st order, BLT", true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::ALLPASS_1_BILINEAR,            "Allpass, 1st order, BLT",    true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::LOWPASS_12_BILINEAR,           "Lowpass, 12 dB/oct, BLT",     true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::HIGHPASS_12_BILINEAR,          "Highpass, 12 dB/oct, BLT",    true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::BANDPASS_CONST_SKIRT_BILINEAR, "Bandpass, const. skirt, BLT", true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::BANDPASS_CONST_PEAK_BILINEAR,  "Bandpass, const. peak, BLT",  true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::BANDREJECT_BILINEAR,           "Bandreject, BLT",             true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::PEAK_BILINEAR,                 "Peak, BLT",                   true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::LOW_SHELF_2_BILINEAR,          "Low Shelf, 2nd order, BLT",  true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::HIGH_SHELF_2_BILINEAR,         "High Shelf, 2nd order, BLT", true, false);
-  modeComboBox->addItem(romos::BiquadDesigner::ALLPASS_2_BILINEAR,            "Allpass, 2nd order, BLT",    true, false);
-  modeComboBox->setDescription(juce::String(("Mode of the filter to be designed")));
-  modeComboBox->setComboBoxName(juce::String(("Mode:")));
+  modeComboBox->addItem(BQD::BYPASS,                        "Bypass",                      true, false);
+  modeComboBox->addItem(BQD::LOWPASS_6_BILINEAR,            "Lowpass, 6 dB/oct, BLT",      true, false);
+  modeComboBox->addItem(BQD::HIGHPASS_6_BILINEAR,           "Highpass, 6 dB/oct, BLT",     true, false);
+  modeComboBox->addItem(BQD::LOW_SHELF_1_BILINEAR,          "Low Shelf, 1st order, BLT",   true, false);
+  modeComboBox->addItem(BQD::HIGH_SHELF_1_BILINEAR,         "High Shelf, 1st order, BLT",  true, false);
+  modeComboBox->addItem(BQD::ALLPASS_1_BILINEAR,            "Allpass, 1st order, BLT",     true, false);
+  modeComboBox->addItem(BQD::LOWPASS_12_BILINEAR,           "Lowpass, 12 dB/oct, BLT",     true, false);
+  modeComboBox->addItem(BQD::HIGHPASS_12_BILINEAR,          "Highpass, 12 dB/oct, BLT",    true, false);
+  modeComboBox->addItem(BQD::BANDPASS_CONST_SKIRT_BILINEAR, "Bandpass, const. skirt, BLT", true, false);
+  modeComboBox->addItem(BQD::BANDPASS_CONST_PEAK_BILINEAR,  "Bandpass, const. peak, BLT",  true, false);
+  modeComboBox->addItem(BQD::BANDREJECT_BILINEAR,           "Bandreject, BLT",             true, false);
+  modeComboBox->addItem(BQD::PEAK_BILINEAR,                 "Peak, BLT",                   true, false);
+  modeComboBox->addItem(BQD::LOW_SHELF_2_BILINEAR,          "Low Shelf, 2nd order, BLT",   true, false);
+  modeComboBox->addItem(BQD::HIGH_SHELF_2_BILINEAR,         "High Shelf, 2nd order, BLT",  true, false);
+  modeComboBox->addItem(BQD::ALLPASS_2_BILINEAR,            "Allpass, 2nd order, BLT",     true, false);
+  modeComboBox->setDescription("Mode of the filter to be designed");
+  modeComboBox->setComboBoxName("Mode:");
   modeComboBox->setNameLabelWidth(44);
   modeComboBox->registerComboBoxObserver(this);
   addWidget(modeComboBox, true, true);
@@ -1256,7 +1259,8 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
 
   removeChildColourSchemeComponent(currentEditor, true);
 
-  // this switch statement sucks - use std::map or something
+  // this switch statement sucks - use std::map or something - maybe when this object is created, 
+  // create a map that uses the module-id as key and the creator function (pointer) as value
   switch( moduleToShowEditorFor->getTypeIdentifierOld() )
   {
   case romos::ModuleTypeRegistry::PARAMETER:
@@ -1978,7 +1982,13 @@ void ModularBlockDiagramPanel::openContainerLoadDialog()
     if( xmlState != NULL )
     {
       //romos::ModuleContainer *newModule = new romos::ModuleContainer(NULL);
+
+      // deprecated:
       romos::ModuleContainer *newModule = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER);
+
+      // later use:
+      // romos::ModuleContainer *newModule = (ModuleContainer*) moduleFactory.createModule("Container");
+
       WRITE_TO_LOGFILE("Module created\n");
       LibertyAudioModule::setModuleStateFromXml(*xmlState, newModule);
       WRITE_TO_LOGFILE("Module state was set\n");
@@ -2208,8 +2218,11 @@ void ModularBlockDiagramPanel::minimizeNumberOfInputs()
 
 void ModularBlockDiagramPanel::fillAvailableModulesTreeView()
 {
+  // ToDo: this code should be replaced with some code that loops through the module types in the
+  // global moduleTypeRegistry object
+
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
-  treeRootNode = new RTreeViewNode(("Module"), 0);
+  treeRootNode = new RTreeViewNode("Module", 0);
   treeRootNode->setDeleteChildNodesOnDestruction(true);
   // -> all the child-nodes that are subsequently created here via "new" (and added to the tree) will be deleted when the treeRootNode 
   // itself is deleted
@@ -2219,38 +2232,53 @@ void ModularBlockDiagramPanel::fillAvailableModulesTreeView()
   RTreeViewNode *tmpNode1, *tmpNode2;  // we need one temporary node for each tree-level except the lowest ...or not?
 
 
-  tmpNode1 = new RTreeViewNode(("Load Container..."), LOAD_CONTAINER);
+  tmpNode1 = new RTreeViewNode("Load Container...", LOAD_CONTAINER);
   treeRootNode->addChildNode(tmpNode1);
 
-  RTreeViewNode *insertModuleNode = new RTreeViewNode(("Insert"));
+  RTreeViewNode *insertModuleNode = new RTreeViewNode("Insert");
   treeRootNode->addChildNode(insertModuleNode);
+
+  /*
+  // new - activate soon:: 
+  for(size_t i = 0; i < moduleFactory.getNumModuleTypes(); i++)
+  {
+    romos::ModuleTypeInfo* typeInfo = moduleFactory.getModuleTypeInfo(i);
+    juce::String typeName = typeInfo->fullName;
+    juce::String category = typeInfo->category;
+    RTreeViewNode* categNode = insertModuleNode->findNodeByText(category);
+    if(categNode == nullptr) {
+      categNode = new RTreeViewNode(category);
+      insertModuleNode->addChildNode(categNode);
+    }
+    categNode->addChildNode(new RTreeViewNode(typeName, typeInfo->id));
+    int dummy = 0;
+  }
+  // this loop should replace (almost) all the code below
+  */
+
 
   //---------------------------------------------------------------------------
   // test modules:
 
-  tmpNode1 = new RTreeViewNode(("Test Modules"));
-  tmpNode1->addChildNode(new RTreeViewNode(("Gain"),            romos::ModuleTypeRegistry::TEST_GAIN));
-  tmpNode1->addChildNode(new RTreeViewNode(("SumDiff"),         romos::ModuleTypeRegistry::TEST_SUM_DIFF));
-  tmpNode1->addChildNode(new RTreeViewNode(("WrappedSumDiff"),  romos::ModuleTypeRegistry::TEST_WRAPPED_SUM_DIFF));
-  tmpNode1->addChildNode(new RTreeViewNode(("SummedDiffs"),     romos::ModuleTypeRegistry::TEST_SUMMED_DIFFS));
-  tmpNode1->addChildNode(new RTreeViewNode(("MovingAverage"),   romos::ModuleTypeRegistry::TEST_MOVING_AVERAGE));
-  tmpNode1->addChildNode(new RTreeViewNode(("LeakyIntegrator"), romos::ModuleTypeRegistry::TEST_LEAKY_INTEGRATOR));
-  tmpNode1->addChildNode(new RTreeViewNode(("TestFilter1"),     romos::ModuleTypeRegistry::TEST_FILTER1));
-  tmpNode1->addChildNode(new RTreeViewNode(("Biquad"),          romos::ModuleTypeRegistry::TEST_BIQUAD));
-  tmpNode1->addChildNode(new RTreeViewNode(("AddedConstants"),  romos::ModuleTypeRegistry::TEST_ADDED_CONSTANTS));
-  tmpNode1->addChildNode(new RTreeViewNode(("PinSorting"),      romos::ModuleTypeRegistry::TEST_PIN_SORTING));
-  tmpNode1->addChildNode(new RTreeViewNode(("Blip"),            romos::ModuleTypeRegistry::TEST_BLIP));
-  tmpNode1->addChildNode(new RTreeViewNode(("PolyBlipStereo"),  romos::ModuleTypeRegistry::TEST_POLY_BLIP_STEREO));
-  tmpNode1->addChildNode(new RTreeViewNode(("NoiseFlute"),      romos::ModuleTypeRegistry::TEST_NOISE_FLUTE));
+  tmpNode1 = new RTreeViewNode("Test Modules");
+  tmpNode1->addChildNode(new RTreeViewNode("Gain",            romos::ModuleTypeRegistry::TEST_GAIN));
+  tmpNode1->addChildNode(new RTreeViewNode("SumDiff",         romos::ModuleTypeRegistry::TEST_SUM_DIFF));
+  tmpNode1->addChildNode(new RTreeViewNode("WrappedSumDiff",  romos::ModuleTypeRegistry::TEST_WRAPPED_SUM_DIFF));
+  tmpNode1->addChildNode(new RTreeViewNode("SummedDiffs",     romos::ModuleTypeRegistry::TEST_SUMMED_DIFFS));
+  tmpNode1->addChildNode(new RTreeViewNode("MovingAverage",   romos::ModuleTypeRegistry::TEST_MOVING_AVERAGE));
+  tmpNode1->addChildNode(new RTreeViewNode("LeakyIntegrator", romos::ModuleTypeRegistry::TEST_LEAKY_INTEGRATOR));
+  tmpNode1->addChildNode(new RTreeViewNode("TestFilter1",     romos::ModuleTypeRegistry::TEST_FILTER1));
+  tmpNode1->addChildNode(new RTreeViewNode("Biquad",          romos::ModuleTypeRegistry::TEST_BIQUAD));
+  tmpNode1->addChildNode(new RTreeViewNode("AddedConstants",  romos::ModuleTypeRegistry::TEST_ADDED_CONSTANTS));
+  tmpNode1->addChildNode(new RTreeViewNode("PinSorting",      romos::ModuleTypeRegistry::TEST_PIN_SORTING));
+  tmpNode1->addChildNode(new RTreeViewNode("Blip",            romos::ModuleTypeRegistry::TEST_BLIP));
+  tmpNode1->addChildNode(new RTreeViewNode("PolyBlipStereo",  romos::ModuleTypeRegistry::TEST_POLY_BLIP_STEREO));
+  tmpNode1->addChildNode(new RTreeViewNode("NoiseFlute",      romos::ModuleTypeRegistry::TEST_NOISE_FLUTE));
 
-  /*
-  tmpNode1->addChildNode(new RTreeViewNode(("Moog Filter"),      romos::ModuleTypeRegistry::EXAMPLE_MOOG_FILTER));
-  tmpNode1->addChildNode(new RTreeViewNode(("Containerize"),      romos::ModuleTypeRegistry::TEST_CONTAINERIZE));
-  tmpNode1->addChildNode(new RTreeViewNode(("UnContainerize"),    romos::ModuleTypeRegistry::TEST_UNCONTAINERIZE));
-  tmpNode1->addChildNode(new RTreeViewNode(("Minimize Inputs 1"), romos::ModuleTypeRegistry::TEST_MINIMIZE_INS1));
-
-
-  */
+  //tmpNode1->addChildNode(new RTreeViewNode(("Moog Filter"),      romos::ModuleTypeRegistry::EXAMPLE_MOOG_FILTER));
+  //tmpNode1->addChildNode(new RTreeViewNode(("Containerize"),      romos::ModuleTypeRegistry::TEST_CONTAINERIZE));
+  //tmpNode1->addChildNode(new RTreeViewNode(("UnContainerize"),    romos::ModuleTypeRegistry::TEST_UNCONTAINERIZE));
+  //tmpNode1->addChildNode(new RTreeViewNode(("Minimize Inputs 1"), romos::ModuleTypeRegistry::TEST_MINIMIZE_INS1));
 
   insertModuleNode->addChildNode(tmpNode1);
 
@@ -2372,8 +2400,10 @@ void ModularBlockDiagramPanel::fillAvailableModulesTreeView()
   tmpNode1->addChildNode(new RTreeViewNode(("BiquadDesigner"),    romos::ModuleTypeRegistry::BIQUAD_DESIGNER));
   tmpNode1->addChildNode(new RTreeViewNode(("LadderFilter"),      romos::ModuleTypeRegistry::LADDER_FILTER));
 
-
   insertModuleNode->addChildNode(tmpNode1);
+
+
+
 
   availableModulesTreeView->setRootNode(treeRootNode);
   availableModulesTreeView->setBounds(0, 0, 200, 400);

@@ -300,6 +300,13 @@ public:
   unknown, it returns a nullptr). */
   ModuleTypeInfo* getModuleTypeInfo(const std::string& fullTypeName);
 
+  /** Returns a pointer the type info object given the index/id of the type (if the index is
+  out of range, it returns a nullptr). */
+  ModuleTypeInfo* getModuleTypeInfo(size_t id);
+
+  /** Returns the number of available module types. */
+  size_t getNumModuleTypes() { return typeInfos->size(); }
+
   /** Returns true, iff a module of the given type exists (i.e. was registered). */
   inline bool doesTypeExist(const std::string& fullName)
   {
@@ -336,6 +343,20 @@ protected:
 };
 
 extern ModuleFactoryNew moduleFactory;  // declaration of the global object
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // just some throw-away code to figure out what causes the memory leak with ModuleFactoryNew
 class MemLeakTest

@@ -199,6 +199,22 @@ public:
   /** Returns true when this module is the topl-level module, false otherwise. */
   INLINE bool isTopLevelModule() const { return getTypeIdentifierOld() == ModuleTypeRegistry::TOP_LEVEL_MODULE; }
 
+  // todo:
+  // first make it simple:
+  // INLINE bool isParameter()   const { return typeInfo.name == "Parameter";   }
+  // INLINE bool isAudioInput()  const { return typeInfo.name == "AudioInput";  }
+  // INLINE bool isAudioOutput() const { return typeInfo.name == "AudioOutput"; }
+  // INLINE bool isContainer()   const { return typeInfo.name == "Container";   }
+  // INLINE bool isTopLevel()    const { return typeInfo.name == "TopLevelModule";    }
+
+  // later make it fast:
+  // INLINE bool isParameter()   const { return typeInfo.id == moduleFactory.getTypeIdForParameter();   }
+  // INLINE bool isAudioInput()  const { return typeInfo.id == moduleFactory.getTypeIdForAudioInput();  }
+  // INLINE bool isAudioOutput() const { return typeInfo.id == moduleFactory.getTypeIdForAudioOutput(); }
+  // INLINE bool isContainer()   const { return typeInfo.id == moduleFactory.getTypeIdForContainer();   }
+  // INLINE bool isTopLevel()    const { return typeInfo.id == moduleFactory.getTypeIdForTopLevel();    }
+
+
   /** Returns the parent module of "this" module. */
   virtual romos::ModuleContainer* getParentModule() const { return parentModule; }
     // may be a nullptr in cas of the top-level module - maybe also in a transitional state when 
