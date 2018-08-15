@@ -1,7 +1,7 @@
 #ifndef romos_UnitTest_h
 #define romos_UnitTest_h
 
-#include "../framework/romos_ModuleContainer.h"
+//#include "../framework/romos_ModuleContainer.h"
 
 namespace romos
 {

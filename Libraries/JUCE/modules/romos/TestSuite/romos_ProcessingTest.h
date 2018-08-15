@@ -1,10 +1,10 @@
 #ifndef romos_ProcessingTest_h
 #define romos_ProcessingTest_h
 
-#include "../framework/romos_NoteEvent.h"
-#include "../framework/romos_ModuleFactory.h"
-#include "romos_TestEventGenerator.h"
-#include "romos_UnitTest.h"
+//#include "../framework/romos_NoteEvent.h"
+//#include "../framework/romos_ModuleFactory.h"
+//#include "romos_TestEventGenerator.h"
+//#include "romos_UnitTest.h"
 
 namespace romos
 {

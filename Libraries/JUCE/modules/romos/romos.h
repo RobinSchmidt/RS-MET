@@ -61,20 +61,20 @@
 #include "Framework/romos_Liberty.h"  // should not be in the framework folder
 
 
+#include "TestSuite/romos_TestEventGenerator.h"
+#include "TestSuite/romos_UnitTest.h"
+#include "TestSuite/romos_ProcessingTest.h"
 #include "TestSuite/romos_PerformanceTest.h"
 #include "TestSuite/romos_GenerateDesiredOutput.h"
 #include "TestSuite/romos_UnitTest.h"
 #include "TestSuite/romos_ModularSystemTest.h"
-
-
-
 #include "TestSuite/romos_ModuleBuildCodeGenerator.h"
 #include "TestSuite/romos_TestModuleBuilder.h" // not needed anymore when new testsuite is complete
 #include "TestSuite/romos_UnitTestRunner.h"
+//#include "TestSuite/romos_ConcretePerformanceTests.h"
 #include "TestSuite/romos_PerformanceTestRunner.h"
 #include "TestSuite/romos_InteractiveTestRunner.h"
 // maybe more?
-
 
 //#include "Framework/romos_Liberty.h"
 

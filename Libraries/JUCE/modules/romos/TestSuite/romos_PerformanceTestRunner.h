@@ -1,7 +1,7 @@
 #ifndef romos_PerformanceTestRunner_h
 #define romos_PerformanceTestRunner_h
 
-#include "romos_ConcretePerformanceTests.h"
+//#include "romos_ConcretePerformanceTests.h"
 
 namespace romos
 {

@@ -1,7 +1,7 @@
 #ifndef romos_TestEventGenerator_h
 #define romos_TestEventGenerator_h
 
-#include "../framework/romos_NoteEvent.h"
+//#include "../framework/romos_NoteEvent.h"
 
 namespace romos
 {

@@ -2,19 +2,11 @@
 #define TestHelpers_h
 
 
-
-
-
-
-
-#include "../romos.h"
+//#include "../romos.h"
 //#include "../../../romos/modules/romos_ModuleCreation.h"
+
 using namespace rosic;
 using namespace romos;
-
-
-
-
 
 
 // arrays for I/O signals:
