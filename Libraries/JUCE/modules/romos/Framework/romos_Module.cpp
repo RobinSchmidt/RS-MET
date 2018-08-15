@@ -66,7 +66,10 @@ romos::Module::Module(const rosic::rsString &_name, int _x, int _y, bool _polyph
   numInputs            = 0;
   outFrameStride       = 0;
   hasHeaderFlag        = true;
-  moduleTypeIdentifier = ModuleTypeRegistry::UNKNOWN_MODULE_TYPE; // the factory will set this up when a concrete module is created
+
+  //moduleTypeIdentifier = ModuleTypeRegistry::UNKNOWN_MODULE_TYPE; // the factory will set this up when a concrete module is created
+  moduleTypeIdentifier = 0;
+
   this->polyphonic     = _polyphonic;
   this->name           = _name;
   this->x              = _x;

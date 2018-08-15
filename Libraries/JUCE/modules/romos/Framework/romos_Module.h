@@ -181,16 +181,17 @@ public:
   typecasts and total recall. */
   INLINE int getTypeIdentifierOld() const { return moduleTypeIdentifier; }
 
+  // new:
+  virtual std::string getTypeName() const { return typeInfo->fullName; }
+
+#ifdef RS_BUILD_OLD_MODULE_FACTORY
+
   /** Returns the type name of this module. */
   virtual rosic::rsString getTypeNameOld() const
   {
     return ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(getTypeIdentifierOld());
   }
   // old, deprecated
-
-  // new:
-  virtual std::string getTypeName() const { return typeInfo->fullName; }
-
 
   /** Returns true when this module is an input module, false otherwise. */
   INLINE bool isInputModule() const { return getTypeIdentifierOld() == ModuleTypeRegistry::AUDIO_INPUT; }
@@ -204,13 +205,15 @@ public:
   /** Returns true when this module is the topl-level module, false otherwise. */
   INLINE bool isTopLevelModule() const { return getTypeIdentifierOld() == ModuleTypeRegistry::TOP_LEVEL_MODULE; }
 
+#else
+
   // todo:
   // first make it simple:
-  // INLINE bool isParameter()   const { return typeInfo.name == "Parameter";   }
-  // INLINE bool isAudioInput()  const { return typeInfo.name == "AudioInput";  }
-  // INLINE bool isAudioOutput() const { return typeInfo.name == "AudioOutput"; }
-  // INLINE bool isContainer()   const { return typeInfo.name == "Container";   }
-  // INLINE bool isTopLevel()    const { return typeInfo.name == "TopLevelModule";    }
+  INLINE bool isParameterModule()   const { return typeInfo->fullName == "Parameter";   }
+  INLINE bool isInputModule()       const { return typeInfo->fullName == "AudioInput";  }
+  INLINE bool isOutputModule()      const { return typeInfo->fullName == "AudioOutput"; }
+  INLINE bool isContainerModule()   const { return typeInfo->fullName == "Container";   }
+  INLINE bool isTopLevelModule()    const { return typeInfo->fullName == "TopLevelModule";    }
 
   // later make it fast:
   // INLINE bool isParameter()   const { return typeInfo.id == moduleFactory.getTypeIdForParameter();   }
@@ -218,6 +221,10 @@ public:
   // INLINE bool isAudioOutput() const { return typeInfo.id == moduleFactory.getTypeIdForAudioOutput(); }
   // INLINE bool isContainer()   const { return typeInfo.id == moduleFactory.getTypeIdForContainer();   }
   // INLINE bool isTopLevel()    const { return typeInfo.id == moduleFactory.getTypeIdForTopLevel();    }
+
+#endif
+
+
 
 
   /** Returns the parent module of "this" module. */
