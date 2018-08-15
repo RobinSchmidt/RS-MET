@@ -14,6 +14,13 @@ header files that the compiler may be using.
 
 using namespace rosic;
 
+romos::PostExitMemLeakChecker romos::postExitMemLeakChecker;
+//namespace romos
+//{
+//
+//}
+
+
 //namespace romos { // it'S still all wrapped into a namespace inside the included files
 
 // just include all files in alphabetical order - it's impractical to try to include them in

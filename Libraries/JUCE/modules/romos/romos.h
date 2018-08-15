@@ -57,9 +57,7 @@
 #include "Modules/romos_ModulationModules.h"
 #include "Modules/romos_SoundGeneratorModules.h"
 
-
 #include "Framework/romos_Liberty.h"  // should not be in the framework folder
-
 
 #include "TestSuite/romos_TestEventGenerator.h"
 #include "TestSuite/romos_UnitTest.h"
@@ -75,6 +73,32 @@
 #include "TestSuite/romos_PerformanceTestRunner.h"
 #include "TestSuite/romos_InteractiveTestRunner.h"
 // maybe more?
+
+
+namespace romos
+{
+struct PostExitMemLeakChecker
+{
+  ~PostExitMemLeakChecker()
+  {
+    if(_CrtDumpMemoryLeaks() == 1)
+    {
+      std::cout << "\n\n!!! Memory leaks detected (post exit of main) !!! \n";
+      getchar();
+    }
+  }
+};
+extern PostExitMemLeakChecker postExitMemLeakChecker;
+}
+// there is a way to prevent the debugger to trigger false memory leaks, explained here:
+// http://www.cplusplus.com/forum/general/9614/ it says:
+// So the way to get around the problem is this:
+
+// And then instantiate MemCheck as the first variable in the block/function so that it gets 
+// destroyed last, after everything else.
+
+
+
 
 //#include "Framework/romos_Liberty.h"
 

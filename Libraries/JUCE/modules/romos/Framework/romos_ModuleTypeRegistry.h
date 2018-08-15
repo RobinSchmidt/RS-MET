@@ -336,9 +336,8 @@ class MemLeakTest
   // so it seems that when i have a global object of a class that has a std::vector member,
   // i'll get a memleak
 
-  // maybe we can use a pointer-to-std-vector to avoid that?
-  std::vector<int>* test;
-  // ok - memleak is gone - but it would uglify the code
+  //std::vector<int> testVector;         // triggers pre-exit-of-main memleak detection
+  std::vector<int>* testPointerToVector; // doens't trigger it
 
   // there is a way to prevent the debugger to trigger false memory leaks, explained here:
   // http://www.cplusplus.com/forum/general/9614/ it says:
