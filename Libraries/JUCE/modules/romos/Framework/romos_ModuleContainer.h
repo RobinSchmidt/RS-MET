@@ -250,7 +250,14 @@ public:
 
   /** Returns an array with pointers to our child modules that match the given type-identifier 
   which should be one of the values enumerated in ModuleTypeRegistry::moduleIdentifiers. */
-  virtual std::vector<romos::Module*> getChildModulesWithType(int typeIdentifier) const;
+  virtual std::vector<romos::Module*> getChildModulesWithTypeOld(int typeIdentifier) const;
+    // deprectaed
+
+  virtual std::vector<romos::Module*> getChildModulesWithTypeId(int typeIdentifier) const;
+
+  virtual std::vector<romos::Module*> getChildModulesWithType(const std::string& type) const;
+
+
 
   /** Returns a vector of modules that are connected as target-modules to the given 
   source-module. */
@@ -265,7 +272,7 @@ public:
   containers. */
   virtual unsigned int getNumOutputPins() const
   {
-    return (unsigned int)getChildModulesWithType(ModuleTypeRegistry::AUDIO_OUTPUT).size();
+    return (unsigned int)getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT).size();
   }
 
   /** Overriden her because for containers, this does not necessarily equal the number of output 

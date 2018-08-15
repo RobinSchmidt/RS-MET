@@ -299,6 +299,9 @@ romos::Module* TestModuleBuilder::createLeakyIntegrator(const rosic::rsString &n
   romos::Module *identity1    = module->addChildModule(getTypeId("Identity"),    "",    22,  2, false, false);
   romos::Module *audioOutput1 = module->addChildModule(getTypeId("AudioOutput"), "Out", 23,  7, false, false);
 
+  // using the function without the getTypeId doesn't work yet (crashes, because in one test, a 
+  // module is searched for via its old type-id)
+
   module->sortChildModuleArray();
 
   module->addAudioConnection(constant1,    0, subtractor1,  0);

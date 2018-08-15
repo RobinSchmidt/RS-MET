@@ -164,7 +164,7 @@ bool testLeakyIntegratorDoubleDelay(bool verboseOutput)
 {
   romos::Module *testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegratorDoubleDelay", 0, 0, false);
   getDesiredOutputForLeakyIntegratorDoubleDelay(N, x[0][0], x[0][1], d[0][0]);
-  romos::Module *identity = ((ModuleContainer*) testModule)->getChildModulesWithType(ModuleTypeRegistry::IDENTITY).at(0);
+  romos::Module *identity = ((ModuleContainer*) testModule)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
   identity->setPositionXY(17, 2);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);

@@ -294,6 +294,7 @@ public:
   /** Returns the unquie id for the module with given (long) name. Returns -1, if the module 
   type with given name was never registered. */
   int getModuleId(const std::string& fullTypeName);
+  // rename to getModuleTypeId
 
   /** Returns true, iff a module of the given type exists (i.e. was registered). */
   inline bool doesTypeExist(const std::string& fullName)

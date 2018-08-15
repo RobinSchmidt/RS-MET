@@ -312,11 +312,11 @@ void ModuleContainer::setPolyphonic(bool shouldBePolyphonic)
 {
   Module::setPolyphonic(shouldBePolyphonic);
 
-  std::vector<romos::Module*> inputModules = getChildModulesWithType(ModuleTypeRegistry::AUDIO_INPUT);
+  std::vector<romos::Module*> inputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_INPUT);
   for(unsigned int i = 0; i < inputModules.size(); i++)
     inputModules[i]->setPolyphonic(shouldBePolyphonic);
 
-  std::vector<romos::Module*> outputModules = getChildModulesWithType(ModuleTypeRegistry::AUDIO_OUTPUT);
+  std::vector<romos::Module*> outputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT);
   for(unsigned int i = 0; i < outputModules.size(); i++)
     outputModules[i]->setPolyphonic(shouldBePolyphonic);
 
@@ -952,7 +952,7 @@ std::vector<romos::Module*> ModuleContainer::getNonInOutChildModules() const
   return result;
 }
 
-std::vector<romos::Module*> ModuleContainer::getChildModulesWithType(int typeIdentifier) const
+std::vector<romos::Module*> ModuleContainer::getChildModulesWithTypeOld(int typeIdentifier) const
 {
   std::vector<romos::Module*> result;
   for(unsigned int i = 0; i < childModules.size(); i++)
@@ -962,6 +962,23 @@ std::vector<romos::Module*> ModuleContainer::getChildModulesWithType(int typeIde
       //result.appendElement(childModules.getElement(i));
   }
   return result;
+}
+
+std::vector<romos::Module*> ModuleContainer::getChildModulesWithTypeId(int typeId) const
+{
+  std::vector<romos::Module*> result;
+  for(unsigned int i = 0; i < childModules.size(); i++)
+  {
+    if( childModules.at(i)->typeInfo->id == typeId )
+      rosic::appendElement(result, childModules.at(i));
+  }
+  return result;
+}
+
+std::vector<romos::Module*> ModuleContainer::getChildModulesWithType(const std::string& type) const
+{
+  int id = moduleFactory.getModuleId(type);
+  return getChildModulesWithTypeId(id);
 }
 
 std::vector<romos::Module*> ModuleContainer::getConnectedTargetModulesOf(const romos::Module* sourceModule) const
@@ -1290,8 +1307,8 @@ void ModuleContainer::updateHasDelayedConnectionsFlag()
 void ModuleContainer::sortChildModuleArray()
 {
   // retrieve some stuff before sorting which is needed to re-connect the container's pins in case the order of I/O modules changes:
-  std::vector<Module*> oldInputModules  = getChildModulesWithType(ModuleTypeRegistry::AUDIO_INPUT);
-  std::vector<Module*> oldOutputModules = getChildModulesWithType(ModuleTypeRegistry::AUDIO_OUTPUT);
+  std::vector<Module*> oldInputModules  = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_INPUT);
+  std::vector<Module*> oldOutputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT);
   std::vector<std::vector<Module*> > oldTargetModuleArrays; // one array for each output pin
   for(unsigned int outIndex = 0; outIndex < getNumOutputPins(); outIndex++)
     rosic::appendElement(oldTargetModuleArrays, getConnectedTargetModulesOfPin(outIndex));
@@ -1300,7 +1317,7 @@ void ModuleContainer::sortChildModuleArray()
   sortModuleArrayByCoordinates(childModules);
 
   // re-connect input pins, if necessary:
-  std::vector<Module*> newInputModules  = getChildModulesWithType(ModuleTypeRegistry::AUDIO_INPUT);
+  std::vector<Module*> newInputModules  = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_INPUT);
   for(unsigned int newIndex = 0; newIndex < newInputModules.size(); newIndex++)
   {
     unsigned int oldIndex = rosic::findElement(oldInputModules, newInputModules[newIndex]);
@@ -1313,7 +1330,7 @@ void ModuleContainer::sortChildModuleArray()
   }
 
   // re-connect output pins, if necessary:
-  std::vector<Module*> newOutputModules = getChildModulesWithType(ModuleTypeRegistry::AUDIO_OUTPUT);
+  std::vector<Module*> newOutputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT);
   for(unsigned int newIndex = 0; newIndex < newOutputModules.size(); newIndex++)
   {
     unsigned int oldIndex = rosic::findElement(oldOutputModules, newOutputModules[newIndex]);
@@ -1346,7 +1363,7 @@ void ModuleContainer::mapApparentSourceToProcessingSource(Module * &sourceModule
   if( sourceModule != this )
     triggerRuntimeError("sourceModule != this in ModuleContainer::mapApparentSourceToProcessingSource");
 
-  std::vector<romos::Module*> outputModules = getChildModulesWithType(ModuleTypeRegistry::AUDIO_OUTPUT);
+  std::vector<romos::Module*> outputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT);
   if( sourceOutputPinIndex >= 0 && sourceOutputPinIndex < (int) outputModules.size() )
   {
     sourceModule         = outputModules[sourceOutputPinIndex];

@@ -287,7 +287,7 @@ LeakyIntegratorDoubleDelayTest::LeakyIntegratorDoubleDelayTest()
 : ProcessingTest("LeakyIntegratorDoubleDelay")
 {
   moduleToTest = TestModuleBuilder::createLeakyIntegrator(name, 0, 0, false);
-  romos::Module *identity = ((ModuleContainer*) moduleToTest)->getChildModulesWithType(ModuleTypeRegistry::IDENTITY).at(0);
+  romos::Module *identity = ((ModuleContainer*) moduleToTest)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
   identity->setPositionXY(17, 2);
 }
 void LeakyIntegratorDoubleDelayTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
