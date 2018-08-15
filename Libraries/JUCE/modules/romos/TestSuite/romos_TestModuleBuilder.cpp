@@ -323,16 +323,16 @@ romos::Module* TestModuleBuilder::createTestFilter1(const rosic::rsString &name,
   ModuleContainer* module = (ModuleContainer*) moduleFactory.createModule("Container", 
     name.asStdString(), x, y, polyphonic);
   
-  romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),  "In",    2,  2, false, false);
-  romos::Module *audioInput2  = module->addChildModule(getTypeId("AudioInput"),  "b0",    2,  5, false, false);
-  romos::Module *audioInput3  = module->addChildModule(getTypeId("AudioInput"),  "b1",    2,  8, false, false);
-  romos::Module *audioInput4  = module->addChildModule(getTypeId("AudioInput"),  "c",     2, 12, false, false);
-  romos::Module *adder1       = module->addChildModule(getTypeId("Adder"),       "+",    27,  4, false, false);
-  romos::Module *subtractor1  = module->addChildModule(getTypeId("Subtractor"),  "-",    27,  7, false, false);
-  romos::Module *multiplier1  = module->addChildModule(getTypeId("Multiplier"),  "*",    27, 10, false, false);
-  romos::Module *audioOutput1 = module->addChildModule(getTypeId("AudioOutput"), "Sum",  31,  4, false, false);
-  romos::Module *audioOutput2 = module->addChildModule(getTypeId("AudioOutput"), "Diff", 31,  7, false, false);
-  romos::Module *audioOutput3 = module->addChildModule(getTypeId("AudioOutput"), "Prod", 31, 10, false, false);
+  romos::Module *audioInput1  = module->addChildModule(("AudioInput"),  "In",    2,  2, false, false);
+  romos::Module *audioInput2  = module->addChildModule(("AudioInput"),  "b0",    2,  5, false, false);
+  romos::Module *audioInput3  = module->addChildModule(("AudioInput"),  "b1",    2,  8, false, false);
+  romos::Module *audioInput4  = module->addChildModule(("AudioInput"),  "c",     2, 12, false, false);
+  romos::Module *adder1       = module->addChildModule(("Adder"),       "+",    27,  4, false, false);
+  romos::Module *subtractor1  = module->addChildModule(("Subtractor"),  "-",    27,  7, false, false);
+  romos::Module *multiplier1  = module->addChildModule(("Multiplier"),  "*",    27, 10, false, false);
+  romos::Module *audioOutput1 = module->addChildModule(("AudioOutput"), "Sum",  31,  4, false, false);
+  romos::Module *audioOutput2 = module->addChildModule(("AudioOutput"), "Diff", 31,  7, false, false);
+  romos::Module *audioOutput3 = module->addChildModule(("AudioOutput"), "Prod", 31, 10, false, false);
 
   romos::Module *movingAverage   = module->addChildModule(createMovingAverage(  "MovingAverage",   10,  4, false));
   romos::Module *leakyIntegrator = module->addChildModule(createLeakyIntegrator("LeakyIntegrator", 10, 11, false));

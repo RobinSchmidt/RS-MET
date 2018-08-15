@@ -60,7 +60,7 @@ class UnaryMinusTypeInfo : public ModuleTypeInfo
 public:
   UnaryMinusTypeInfo() {
     shortName    = "-";
-    fullName     = "Unary minus";
+    fullName     = "UnaryMinus";
     description  = "Negates the input (multiplies by -1)";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new UnaryMinusModule; };
