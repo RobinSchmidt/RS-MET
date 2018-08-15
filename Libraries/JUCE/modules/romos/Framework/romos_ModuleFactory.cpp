@@ -1,6 +1,8 @@
 #include "romos_ModuleFactory.h"
 using namespace romos;
 
+#ifdef RS_BUILD_OLD_MODULE_FACTORY
+
 //-------------------------------------------------------------------------------------------------
 // module creation:
     
@@ -147,3 +149,5 @@ void ModuleFactory::deleteModule(romos::Module *moduleToDelete)
   moduleToDelete->cleanUp();
   delete moduleToDelete;
 }
+
+#endif

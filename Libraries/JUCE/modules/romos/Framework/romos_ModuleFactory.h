@@ -1,17 +1,10 @@
 #ifndef romos_ModuleFactory_h
 #define romos_ModuleFactory_h
 
-//#include "../Modules/romos_ArithmeticModules.h"
-//#include "../Modules/romos_FilterModules.h"
-//#include "../Modules/romos_SoundGeneratorModules.h"
-//#include "../Modules/romos_DelayModules.h"
-//#include "../Modules/romos_FunctionModules.h"
-//#include "../Modules/romos_ModulationModules.h"
-//#include "romos_ModuleContainer.h"
-//#include "romos_TopLevelModule.h"
-
 namespace romos
 {
+
+#ifdef RS_BUILD_OLD_MODULE_FACTORY
 
 /** This class is used to handle the creation and destruction of modules. We use a factory in 
 order to avoid duplication of code which otherwise would be necessary in the constructors of all
@@ -57,6 +50,8 @@ public:
 // maybe instead of createPhasor, &(new Phasor) could work? ..try it - would avoid the boilerplate
 // function createPhasor which would otherwise have to be defined
 // classes ModuleTypeRegistry and ModuleFactory can be merged into one single class (ModuleFactory)
+
+#endif // RS_BUILD_OLD_MODULE_FACTORY
 
 }
 

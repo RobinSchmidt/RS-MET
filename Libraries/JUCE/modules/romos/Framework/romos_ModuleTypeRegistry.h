@@ -4,6 +4,7 @@
 namespace romos
 {
 
+#ifdef RS_BUILD_OLD_MODULE_FACTORY
 
 //=================================================================================================
 
@@ -206,6 +207,8 @@ private:
 /** Shorthand function for 
 romos::ModuleTypeRegistry::getSoleInstance()->getModuleIdentifierFromTypeString(typeString); */
 int getTypeId(rosic::rsString typeString);
+
+#endif //RS_BUILD_OLD_MODULE_FACTORY
 
 //=================================================================================================
 

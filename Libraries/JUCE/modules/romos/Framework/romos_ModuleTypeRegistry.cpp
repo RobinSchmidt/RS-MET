@@ -1,6 +1,8 @@
 #include "romos_ModuleTypeRegistry.h"
 using namespace romos;
- 
+
+#ifdef RS_BUILD_OLD_MODULE_FACTORY
+
 ModuleTypeRegistry* ModuleTypeRegistry::soleInstance = NULL;
 
 ModuleTypeRegistry* ModuleTypeRegistry::getSoleInstance()
@@ -190,6 +192,8 @@ int romos::getTypeId(rosic::rsString typeString)
 {
   return romos::ModuleTypeRegistry::getSoleInstance()->getModuleIdentifierFromTypeString(typeString);
 }
+
+#endif RS_BUILD_OLD_MODULE_FACTORY
 
 //=================================================================================================
 
