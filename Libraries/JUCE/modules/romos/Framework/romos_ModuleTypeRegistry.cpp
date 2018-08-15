@@ -211,7 +211,7 @@ void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullNam
 
 //-------------------------------------------------------------------------------------------------
 
-//ModuleFactoryNew romos::moduleFactory;  // definition of the global object - causes memleak?
+ModuleFactoryNew romos::moduleFactory;  // definition of the global object - causes memleak?
 //MemLeakTest romos::memLeakTest;         // clean up - move to a memleak demo project
 
 ModuleFactoryNew::ModuleFactoryNew()
@@ -225,19 +225,20 @@ ModuleFactoryNew::~ModuleFactoryNew()
 }
 
 romos::Module* ModuleFactoryNew::createModule(int id, const std::string& name, int x, int y, 
-  bool polyphonic) const
+  bool polyphonic)
 {
-  rassert(id >= 0 && id < typeInfos.size());  // id out of range
+  ensureTypeInfoArrayAllocated();
+  rassert(id >= 0 && id < typeInfos->size());  // id out of range
   // todo: if the id is out of range, return some kind of "Error" dummy module
 
-  romos::Module* m = typeInfos[id]->createModule();
-  m->typeInfo = typeInfos[id];
+  romos::Module* m = (*typeInfos)[id]->createModule();
+  m->typeInfo = (*typeInfos)[id];
   setupModule(m, name, x, y, polyphonic);
   return m;
 }
 
 romos::Module* ModuleFactoryNew::createModule(const std::string& fullTypeName, 
-  const std::string& name, int x, int y, bool polyphonic) const
+  const std::string& name, int x, int y, bool polyphonic)
 {
   return createModule(getModuleId(fullTypeName), name, x, y, polyphonic);
 }
@@ -256,23 +257,26 @@ void ModuleFactoryNew::deleteModule(romos::Module* moduleToDelete)
   delete moduleToDelete;
 }
 
-int ModuleFactoryNew::getModuleId(const std::string& fullTypeName) const
+int ModuleFactoryNew::getModuleId(const std::string& fullTypeName)
 {
-  for(int i = 0; i < typeInfos.size(); i++)
-    if(typeInfos[i]->fullName == fullTypeName)
+  ensureTypeInfoArrayAllocated();
+  for(int i = 0; i < typeInfos->size(); i++)
+    if((*typeInfos)[i]->fullName == fullTypeName)
       return i;
   return -1;
 }
 
 void ModuleFactoryNew::registerModuleType(ModuleTypeInfo* info)
 {
+  ensureTypeInfoArrayAllocated();
   rassert(!doesTypeExist(info->fullName)); // type with that name was already registered...
-  info->id = (int) typeInfos.size();       // ...full module names must be unique
-  typeInfos.push_back(info);
+  info->id = (int) typeInfos->size();       // ...full module names must be unique
+  typeInfos->push_back(info);
 }
 
 void ModuleFactoryNew::registerStandardModules()
 {
+
   // todo: remove the "Module" from the class names where it appears
 
   // Arithmetic:
@@ -350,9 +354,18 @@ void ModuleFactoryNew::registerPreBuiltContainers()
 
 void ModuleFactoryNew::clearRegisteredTypes()
 {
-  for(int i = 0; i < typeInfos.size(); i++)
-    delete typeInfos[i];
-  typeInfos.clear();
+  ensureTypeInfoArrayAllocated();
+  for(int i = 0; i < typeInfos->size(); i++)
+    delete (*typeInfos)[i];
+  typeInfos->clear();
+  delete typeInfos;
+  typeInfos = nullptr;
+}
+
+void ModuleFactoryNew::ensureTypeInfoArrayAllocated()
+{
+  if(typeInfos == nullptr)
+    typeInfos = new std::vector<ModuleTypeInfo*>;
 }
 
 void ModuleFactoryNew::setupModule(romos::Module* module, const std::string& name, 

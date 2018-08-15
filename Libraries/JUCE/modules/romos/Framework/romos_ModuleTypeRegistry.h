@@ -267,11 +267,11 @@ public:
   state and some other stuff that is common to the initialization of all modules (these additional 
   calls avoid  code-duplication in the respective initialize() methods of the module subclass). */
   Module* createModule(const std::string& fullTypeName, const std::string& name, int x, int y, 
-    bool polyphonic) const;
+    bool polyphonic);
 
   /** Creates a module with given unique identifier. */
   Module* createModule(int id, const std::string& name, int x, int y, 
-    bool polyphonic) const;
+    bool polyphonic);
 
   /** Creates a top-level module. In Liberty, this is called just once on start-up. */
   TopLevelModule* createTopLevelModule(const std::string& name, int x, int y, 
@@ -293,10 +293,10 @@ public:
 
   /** Returns the unquie id for the module with given (long) name. Returns -1, if the module 
   type with given name was never registered. */
-  int getModuleId(const std::string& fullTypeName) const;
+  int getModuleId(const std::string& fullTypeName);
 
   /** Returns true, iff a module of the given type exists (i.e. was registered). */
-  inline bool doesTypeExist(const std::string& fullName) const
+  inline bool doesTypeExist(const std::string& fullName)
   {
     return getModuleId(fullName) != -1;
   }
@@ -319,15 +319,18 @@ public:
 
 protected:
 
+  void ensureTypeInfoArrayAllocated();
+
   void setupModule(romos::Module* module, const std::string& name, int x, int y, 
     bool polyphonic) const;
 
-  std::vector<ModuleTypeInfo*> typeInfos;
-  //rosic::rsArray<ModuleTypeInfo*> typeInfos;
+  //std::vector<ModuleTypeInfo*> typeInfos;          // causes false memleak error triggers
+  //rosic::rsArray<ModuleTypeInfo*> typeInfos;       // dito
+  std::vector<ModuleTypeInfo*>* typeInfos = nullptr; // using a pointer-to vector avoids this
 
 };
 
-//extern ModuleFactoryNew moduleFactory;  // declaration of the global object
+extern ModuleFactoryNew moduleFactory;  // declaration of the global object
 
 // just some throw-away code to figure out what causes the memory leak with ModuleFactoryNew
 class MemLeakTest
