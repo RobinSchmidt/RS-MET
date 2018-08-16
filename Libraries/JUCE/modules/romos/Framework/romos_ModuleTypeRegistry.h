@@ -306,6 +306,12 @@ public:
   unknown, it returns a nullptr). */
   ModuleTypeInfo* getModuleTypeInfo(const std::string& fullTypeName);
 
+  std::string getShortTypeName(const std::string& fullTypeName)
+  {
+    return getModuleTypeInfo(fullTypeName)->shortName;
+  }
+
+
   /** Returns a pointer the type info object given the index/id of the type (if the index is
   out of range, it returns a nullptr). */
   ModuleTypeInfo* getModuleTypeInfo(size_t id);

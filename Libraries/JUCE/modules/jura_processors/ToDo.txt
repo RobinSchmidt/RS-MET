@@ -12,9 +12,6 @@ Liberty:
  ->client code is not concerned about how strings are stored internally, smae goes for
  atomic module definition code
  addParameter
--let phasor mave min/max inputs
--if an input is disconnected, show its default value wher its at
- like Max=1 instead of Max when Max is disconnected
 -check biquad design formulas (TestNoise/ColoringFilter seems not to work properly)
 -check voice allocation/polyphony bug with TestOsc
  -when a note is played, not realeased, another is played, the first cannot be triggered

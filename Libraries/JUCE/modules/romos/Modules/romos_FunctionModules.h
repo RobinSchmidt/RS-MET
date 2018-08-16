@@ -1,11 +1,10 @@
 #ifndef romos_FunctionModules_h
 #define romos_FunctionModules_h
 
-//#include "../Framework/romos_ModuleAtomic.h"
-//#include "romos_ModuleDefinitionMacros.h"
-
 namespace romos
 {
+
+//-------------------------------------------------------------------------------------------------
 
 /** Clips the input signal to a range between some specified minimum and maximum. */
 class ClipperModule : public ModuleAtomic
@@ -17,13 +16,15 @@ class ClipperTypeInfo : public ModuleTypeInfo
 public:
   ClipperTypeInfo() {
     shortName    = "Clip";
-    fullName     = "Clipper";
+    fullName     = "HardClipper";
     description  = "Clips input signal to the range between Min and Max";
     category     = "Functions";
     createModule =  []()->Module* { return new ClipperModule; };
     //hasHeader = false;
   }
 };
+
+//-------------------------------------------------------------------------------------------------
 
 /** Computes the sine and cosine of 2*pi times the input value (multiplication of the argument by
 2*pi results in a sine and cosing wave with a period of unity). */
@@ -43,6 +44,8 @@ public:
     //hasHeader = false;
   }
 };
+
+//-------------------------------------------------------------------------------------------------
 
 /* TriSaw shaper module, takes a Phasor input (range -1..+1) and converts it into a TriSaw 
 oscillator signal. Depending on the parameters, various waveshapes are possible, among them
@@ -76,6 +79,29 @@ public:
     //hasHeader = false;
   }
 };
+
+//-------------------------------------------------------------------------------------------------
+
+class SaturatorModule : public ModuleAtomic
+{
+  CREATE_COMMON_DECLARATIONS_3(SaturatorModule);
+  double (*sigmoid)(double) = tanh;  // (normalized) prototype sigmoid function
+};
+class SaturatorTypeInfo : public ModuleTypeInfo
+{
+public:
+  SaturatorTypeInfo() {
+    shortName    = "Saturator";
+    fullName     = "Saturator";
+    description  = "Saturation with adjustable width and center";
+    category     = "Functions";
+    createModule =  []()->Module* { return new SaturatorModule; };
+    hasHeader    = true;
+  }
+};
+
+
+
 
 
 

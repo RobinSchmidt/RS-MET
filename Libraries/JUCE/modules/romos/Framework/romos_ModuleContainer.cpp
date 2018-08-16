@@ -457,7 +457,12 @@ romos::Module* ModuleContainer::addChildModule(const std::string& fullTypeName,
     return addAudioOutputModule(name, x, y, true);
   else
   {
-    romos::Module *moduleToAdd = moduleFactory.createModule(fullTypeName, name, x, y, poly);
+    std::string nameToUse;
+    if(name == "")
+      nameToUse = moduleFactory.getShortTypeName(fullTypeName);
+    else
+      nameToUse = name;
+    romos::Module *moduleToAdd = moduleFactory.createModule(fullTypeName, nameToUse, x, y, poly);
     addChildModule(moduleToAdd, sortChildModulesAfterInsertion);
     return moduleToAdd;
   }

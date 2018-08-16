@@ -524,9 +524,13 @@ public:
   }
 
   std::vector<AudioInputPinData> inputPins;  // temporarily moved to public for debug
-  double       *audioOutputs;
+  double *audioOutputs;
   unsigned int outFrameStride, numInputs; // isn't numInputs redundant with inputPins.size()?
-    // rename outFrameStride to numOutputs, or numAudioOutputs
+  // rename outFrameStride to numOutputs, or numAudioOutputs
+  // try to move them into the protected section - currently, doing so gives compiler errors
+  // figure out why and try to fix
+
+
 
   //===============================================================================================
 
