@@ -72,6 +72,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // Inquiry:
 
+  virtual std::string getTypeName() const override { return "TopLevelModule"; }
+   // if you change this, be sure to make a corresponding change in 
+   // ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule
+
 
   //-----------------------------------------------------------------------------------------------
   // Callbacks:

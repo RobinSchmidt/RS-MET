@@ -697,7 +697,8 @@ public:
 
   enum actionsOnFreeArea
   {
-    LOAD_CONTAINER = romos::ModuleTypeRegistry::NUM_MODULE_TYPES + 1  
+    LOAD_CONTAINER = 0 
+    //LOAD_CONTAINER = romos::ModuleTypeRegistry::NUM_MODULE_TYPES + 1  
     // preliminary, to avoid clashes between module type-indices and additional possible actions 
     // which are shown in the same TreeView
   };
@@ -813,11 +814,10 @@ protected:
 
   /** Inserts a module of the kind given by the identifier (@see romos::moduleIdentifiers) at the 
   given coordinates. */
-  virtual void insertModule(int moduleIdentifer, int xInPinDistances, int yInPinDistances);
+  //virtual void insertModule(int moduleIdentifer, int xInPinDistances, int yInPinDistances);
     // old
 
-  virtual void insertModule(const juce::String& typeName, 
-    int xInPinDistances, int yInPinDistances);
+  virtual void insertModule(const juce::String& typeName, int xInPinDistances, int yInPinDistances);
     // new
 
 

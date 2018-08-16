@@ -299,6 +299,8 @@ public:
   int getModuleId(const std::string& fullTypeName);
   // rename to getModuleTypeId
 
+
+
   /** Returns a pointer the full type info object given the name of the type (if the name is
   unknown, it returns a nullptr). */
   ModuleTypeInfo* getModuleTypeInfo(const std::string& fullTypeName);
@@ -306,6 +308,12 @@ public:
   /** Returns a pointer the type info object given the index/id of the type (if the index is
   out of range, it returns a nullptr). */
   ModuleTypeInfo* getModuleTypeInfo(size_t id);
+
+  /** Peliminary - todo: disallow editing for certain simple modules such as adders, unit-delays,
+  etc - see old implementation. */
+  bool isModuleNameEditable(int id) { return true; } 
+
+  bool hasModuleTypeEditor(size_t id) { return (*typeInfos)[id]->hasEditor; }
 
   /** Returns the number of available module types. */
   size_t getNumModuleTypes() { return typeInfos->size(); }

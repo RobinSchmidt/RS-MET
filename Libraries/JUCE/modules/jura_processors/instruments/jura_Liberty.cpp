@@ -69,8 +69,8 @@ void LibertyAudioModule::restoreModuleTypeSpecificStateDataFromXml(romos::Module
   romos::ParameterMixIn *m = dynamic_cast<romos::ParameterMixIn*> (module);
   if( m != NULL )
   {
-    //if ( module->isParameter() )  // to be used later
-    if( module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::PARAMETER )
+    if ( module->isParameterModule() )  // to be used later
+    //if( module->getTypeIdentifierOld() == romos::ModuleTypeRegistry::PARAMETER )
     {
       // we need special treatment of the parameter module - minValue/maxValue shlould be set 
       // simultaneuously, because otherwise, min/max might not be recalled correctly, for example 
@@ -101,7 +101,7 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module,
 {
   //ScopedLock scopedLock(*plugInLock); // this function is static
 
-  XmlElement *xmlState = new XmlElement(rosicToJuce(module->getTypeNameOld()));
+  XmlElement *xmlState = new XmlElement(rosicToJuce(module->getTypeName()));
 
   xmlState->setAttribute("Name", rosicToJuce(module->getName())    );
   xmlState->setAttribute("X",    juce::String(module->getPositionX())  );
@@ -181,26 +181,35 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
     for(int i=0; i<xmlState.getNumChildElements(); i++)
     {
       XmlElement* childState = xmlState.getChildElement(i);
-      rosic::rsString moduleTypeName = juceToRosic(childState->getTagName());
-      int typeIdentifier = romos::ModuleTypeRegistry::getSoleInstance()
-        ->getModuleIdentifierFromTypeString(moduleTypeName);
+      rosic::rsString moduleTypeName = juceToRosic(childState->getTagName()); // get rid of that intermediate format
 
-      if( typeIdentifier != romos::ModuleTypeRegistry::UNKNOWN_MODULE_TYPE )
+      //int typeIdentifier = romos::ModuleTypeRegistry::getSoleInstance()
+      //  ->getModuleIdentifierFromTypeString(moduleTypeName);
+
+      int typeIdentifier = romos::moduleFactory.getModuleId(moduleTypeName.asStdString());
+
+      //if( typeIdentifier != romos::ModuleTypeRegistry::UNKNOWN_MODULE_TYPE )
+      if( typeIdentifier != -1 )
       {
-        if(  module->isTopLevelModule() 
-          && romos::ModuleTypeRegistry::isIdentifierInputOrOutput(typeIdentifier) )
+        //if(  module->isTopLevelModule() 
+        //  && romos::ModuleTypeRegistry::isIdentifierInputOrOutput(typeIdentifier) )
+        if( module->isTopLevelModule() && (module->isInputModule() || module->isOutputModule()) )
         {
           // do nothing when this is the top-level module and the to-be-added child is an I/O module
         }
         else
         {
-          rosic::rsString moduleName = juceToRosic(childState
-            ->getStringAttribute("Name"));
+          //rosic::rsString moduleName = juceToRosic(childState->getStringAttribute("Name"));
+          std::string moduleName = (childState->getStringAttribute("Name")).toStdString();
           int x = childState->getIntAttribute("X", 0);
           int y = childState->getIntAttribute("Y", 0);
           bool poly = childState->getBoolAttribute("Poly", false);
-          romos::Module *newModule = container->addChildModule(typeIdentifier, moduleName, 
-            x, y, poly, false);
+
+          //romos::Module *newModule = container->addChildModule(typeIdentifier, moduleName, 
+          //  x, y, poly, false);
+          romos::Module *newModule = container->addChildModule(moduleTypeName.asStdString(), 
+            moduleName, x, y, poly, false);
+
           createAndSetupEmbeddedModulesFromXml(*childState, newModule);
         }
       }
@@ -402,7 +411,7 @@ ModulePropertiesEditor::ModulePropertiesEditor(LibertyAudioModule *newLiberty, r
   moduleTypeLabel->setDescription(juce::String("Type of the module"));
   addWidget(moduleTypeLabel, true, true);
 
-  moduleTypeField = new RTextField(rosicToJuce(moduleToEdit->getTypeNameOld()));
+  moduleTypeField = new RTextField(rosicToJuce(moduleToEdit->getTypeName()));
   moduleTypeField->setJustification(Justification::centredLeft);
   moduleTypeField->setDescription(moduleTypeLabel->getDescription());
   addWidget(moduleTypeField, true, true);
@@ -1130,7 +1139,8 @@ void ModularStructureTreeView::nodeClicked(RTreeViewNode *nodeThatWasClicked,
     else
     {  
       getInterfaceMediator()->setContainerToShowInDiagram(clickedNodeModule->getParentModule());
-      if( romos::ModuleTypeRegistry::hasModuleTypeEditor(clickedNodeModule->getTypeIdentifierOld()) )
+      //if( romos::ModuleTypeRegistry::hasModuleTypeEditor(clickedNodeModule->getTypeIdentifierOld()) )
+      if( clickedNodeModule->hasEditor() )
         getInterfaceMediator()->setModuleToShowEditorFor(clickedNodeModule);
     }
   }
@@ -1166,7 +1176,8 @@ void ModularStructureTreeView::createAndHangInSubTree(RTreeViewNode *parentNodeT
   //if( containerModule == NULL )
   //  return;
 
-  if( romos::ModuleTypeRegistry::hasModuleTypeEditor(moduleToCreateSubTreeFor->getTypeIdentifierOld()) )
+  //if( romos::ModuleTypeRegistry::hasModuleTypeEditor(moduleToCreateSubTreeFor->getTypeIdentifierOld()) )
+  if( moduleToCreateSubTreeFor->hasEditor() )
   {
     juce::String name = juce::String( moduleToCreateSubTreeFor->getName().getRawString() );
     RTreeViewNode *newNode = new RTreeViewNode(name);
@@ -1256,6 +1267,8 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
 
   removeChildColourSchemeComponent(currentEditor, true);
 
+  /*
+  // old:
   // this switch statement sucks - use std::map or something - maybe when this object is created, 
   // create a map that uses the module-id as key and the creator function (pointer) as value
   switch( moduleToShowEditorFor->getTypeIdentifierOld() )
@@ -1288,6 +1301,23 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
       moduleToShowEditorFor);
   }
   }
+  */
+
+  // new:
+  // abbreviations for convenience:
+  LibertyAudioModule* lbrtyMd = getInterfaceMediator()->modularSynthModuleToEdit;
+  romos::Module* mdl = moduleToShowEditorFor;
+  std::string type = mdl->getTypeName();
+  if(     type == "Parameter")      currentEditor = new ParameterModuleEditor(lbrtyMd, mdl);
+  else if(type == "Container")      currentEditor = new ContainerModuleEditor(lbrtyMd, mdl);
+  else if(type == "TopLevelModule") currentEditor = new TopLevelModuleEditor(lbrtyMd, mdl);
+  else if(type == "WhiteNoise")     currentEditor = new WhiteNoiseModuleEditor(lbrtyMd, mdl);
+  else if(type == "BiquadDesigner") currentEditor = new BiquadDesignerModuleEditor(lbrtyMd, mdl);
+  else if(type == "LadderFilter")   currentEditor = new LibertyLadderFilterModuleEditor(lbrtyMd, mdl);
+  else if(type == "VoiceKiller")    currentEditor = new VoiceKillerModuleEditor(lbrtyMd, mdl);
+  else                              currentEditor = new ModulePropertiesEditor(lbrtyMd, mdl); // generic
+  // todo: optimize away all these string-comparisons
+  // maybe make a map from type-id to creator-function
 
   currentEditor->setDescriptionField(descriptionField, true );
   addChildColourSchemeComponent(currentEditor, true, true);
@@ -1632,7 +1662,8 @@ void ModularBlockDiagramPanel::mouseDown(const MouseEvent &e)
         }
         else
         {
-          if( romos::ModuleTypeRegistry::hasModuleTypeEditor(module->getTypeIdentifierOld()) )
+          //if( romos::ModuleTypeRegistry::hasModuleTypeEditor(module->getTypeIdentifierOld()) )
+          if( module->hasEditor() )
             getInterfaceMediator()->setModuleToShowEditorFor(module); // will also select it via the callback that we'll receive
           else
             selectSingleModule(module);
@@ -1863,10 +1894,10 @@ void ModularBlockDiagramPanel::treeNodeClicked(RTreeView *treeView, RTreeViewNod
     else
     {
       // old:
-      insertModule(nodeThatWasClicked->getNodeIdentifier(), inPinDistances(mouseDownX), inPinDistances(mouseDownY));
+      //insertModule(nodeThatWasClicked->getNodeIdentifier(), inPinDistances(mouseDownX), inPinDistances(mouseDownY));
 
       //new:
-      //insertModule(nodeThatWasClicked->getNodeText(), inPinDistances(mouseDownX), inPinDistances(mouseDownY));
+      insertModule(nodeThatWasClicked->getNodeText(), inPinDistances(mouseDownX), inPinDistances(mouseDownY));
     }
   }
   WRITE_TO_LOGFILE("ModularBlockDiagramPanel::treeNodeClicked finished\n");
@@ -1919,7 +1950,8 @@ void ModularBlockDiagramPanel::openActOnSelectionMenu(int x, int y)
   if( selectedModules.size() == 1 )
   {
     actOnSelectionMenu->addItem(EDIT_NAME, ("Edit Name"), true, false);
-    if( selectedModules[0]->getTypeIdentifierOld() == romos::ModuleTypeRegistry::CONTAINER )
+    //if( selectedModules[0]->getTypeIdentifierOld() == romos::ModuleTypeRegistry::CONTAINER )
+    if( selectedModules[0]->getTypeName() == "Container" )
     {
       actOnSelectionMenu->addItem(SAVE_CONTAINER, ("Save Container..."), true, false);
       actOnSelectionMenu->addItem(EXPORT_TO_CODE, ("Export to Code..."), true, false);
@@ -1950,16 +1982,21 @@ void ModularBlockDiagramPanel::openModuleNameEntryField()
     //nameEntryField->setBounds(x, y, w, getModuleTitleHeightInPixels(selectedModules[0]));
     nameEntryField->setBounds(x, y, jmax(w, 40), 2*t+2*m+bigFontHeight);
 
-    int type = selectedModules[0]->getTypeIdentifierOld();
-    if(  !romos::ModuleTypeRegistry::isModuleNameEditable(type) )
+    //int type = selectedModules[0]->getTypeIdentifierOld();
+    int typeId = selectedModules[0]->getTypeId();
+    std::string typeName = selectedModules[0]->getTypeName();
+    if(  !romos::moduleFactory.isModuleNameEditable(typeId) )
       return;  
-    if( getInterfaceMediator()->getContainerShownInDiagram()->getTypeIdentifierOld() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE )
+    //if( getInterfaceMediator()->getContainerShownInDiagram()->getTypeIdentifierOld() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE )
+    if( getInterfaceMediator()->getContainerShownInDiagram()->isTopLevelModule() )
     {
-      if( romos::ModuleTypeRegistry::isIdentifierInputOrOutput(type) )
+      //if( romos::ModuleTypeRegistry::isIdentifierInputOrOutput(type) )
+      if( selectedModules[0]->isInputOrOutput() )
         return; // disallow editing of toplevel I/O module names
     }
 
-    if( type == romos::ModuleTypeRegistry::CONSTANT )
+    //if( type == romos::ModuleTypeRegistry::CONSTANT )
+    if( typeName == "Constant" )
       nameEntryField->setPermittedCharacters(juce::String(("0123456789.-")));
     else
       nameEntryField->setPermittedCharacters(juce::String(("0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")));
@@ -1987,10 +2024,10 @@ void ModularBlockDiagramPanel::openContainerLoadDialog()
       //romos::ModuleContainer *newModule = new romos::ModuleContainer(NULL);
 
       // deprecated:
-      romos::ModuleContainer *newModule = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER);
+      //romos::ModuleContainer *newModule = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER);
 
       // later use:
-      // romos::ModuleContainer *newModule = (ModuleContainer*) moduleFactory.createModule("Container");
+      romos::ModuleContainer *newModule = (ModuleContainer*) moduleFactory.createModule("Container");
 
       WRITE_TO_LOGFILE("Module created\n");
       LibertyAudioModule::setModuleStateFromXml(*xmlState, newModule);
@@ -2009,7 +2046,8 @@ void ModularBlockDiagramPanel::openContainerLoadDialog()
 void ModularBlockDiagramPanel::openContainerSaveDialog()
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
-  if( selectedModules.size() == 1 && selectedModules[0]->getTypeIdentifierOld() == ModuleTypeRegistry::CONTAINER )
+  //if( selectedModules.size() == 1 && selectedModules[0]->getTypeIdentifierOld() == ModuleTypeRegistry::CONTAINER )
+  if( selectedModules.size() == 1 && selectedModules[0]->isContainerModule() ) 
   {
     //juce::File   initialDirectory = rojue::getApplicationDirectory(); // preliminary - we should have a member containerDirectory or sth
     juce::File   initialDirectory = getInterfaceMediator()->modularSynthModuleToEdit->macroDirectory;
@@ -2072,6 +2110,7 @@ propertiesDialog->setVisible(true);
 }
 */
 
+/*
 // old:
 void ModularBlockDiagramPanel::insertModule(int moduleIdentifer, int xInPinDistances, int yInPinDistances)
 {
@@ -2085,6 +2124,7 @@ void ModularBlockDiagramPanel::insertModule(int moduleIdentifer, int xInPinDista
   //getInterfaceMediator()->sendModuleChangeNotification(getInterfaceMediator()->getContainerShownInDiagram(), NUM_CHILDREN);
   notifyMediator(NUM_CHILDREN);
 }
+*/
 
 // new:
 void ModularBlockDiagramPanel::insertModule(const juce::String& typeName, int x, int y)
@@ -2254,7 +2294,6 @@ void ModularBlockDiagramPanel::fillAvailableModulesTreeView()
   RTreeViewNode *insertModuleNode = new RTreeViewNode("Insert");
   treeRootNode->addChildNode(insertModuleNode);
 
-  /*
   // new - activate soon:: 
   for(size_t i = 0; i < moduleFactory.getNumModuleTypes(); i++)
   {
@@ -2270,9 +2309,9 @@ void ModularBlockDiagramPanel::fillAvailableModulesTreeView()
     int dummy = 0;
   }
   // this loop should replace (almost) all the code below
-  */
 
 
+  /*
   //---------------------------------------------------------------------------
   // test modules:
 
@@ -2415,8 +2454,11 @@ void ModularBlockDiagramPanel::fillAvailableModulesTreeView()
   tmpNode1->addChildNode(new RTreeViewNode(("Biquad"),            romos::ModuleTypeRegistry::BIQUAD));
   tmpNode1->addChildNode(new RTreeViewNode(("BiquadDesigner"),    romos::ModuleTypeRegistry::BIQUAD_DESIGNER));
   tmpNode1->addChildNode(new RTreeViewNode(("LadderFilter"),      romos::ModuleTypeRegistry::LADDER_FILTER));
-
   insertModuleNode->addChildNode(tmpNode1);
+  */
+
+
+
 
 
 

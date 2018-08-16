@@ -172,6 +172,8 @@ public:
   /** Informs whether or not the visual rendering of the module needs a header. */
   virtual bool hasHeader() const { return hasHeaderFlag; }
 
+  virtual bool hasEditor() const { return typeInfo->hasEditor; }
+
   /** Returns the name. */
   virtual rosic::rsString getName() const { return name; }
 
@@ -180,6 +182,9 @@ public:
   runtime type information (RTTI)). Knowing the concrete module (sub)class is necessary for 
   typecasts and total recall. */
   INLINE int getTypeIdentifierOld() const { return moduleTypeIdentifier; }
+
+
+  INLINE int getTypeId() const { return typeInfo->id; }
 
   // new:
   virtual std::string getTypeName() const { return typeInfo->fullName; }
@@ -210,10 +215,11 @@ public:
   // todo:
   // first make it simple:
   INLINE bool isParameterModule()   const { return typeInfo->fullName == "Parameter";   }
-  INLINE bool isInputModule()       const { return typeInfo->fullName == "AudioInput";  }
-  INLINE bool isOutputModule()      const { return typeInfo->fullName == "AudioOutput"; }
   INLINE bool isContainerModule()   const { return typeInfo->fullName == "Container";   }
   INLINE bool isTopLevelModule()    const { return typeInfo->fullName == "TopLevelModule";    }
+  INLINE bool isInputModule()       const { return typeInfo->fullName == "AudioInput";  }
+  INLINE bool isOutputModule()      const { return typeInfo->fullName == "AudioOutput"; }
+  INLINE bool isInputOrOutput()     const { return isInputModule() || isOutputModule(); }
 
   // later make it fast:
   // INLINE bool isParameter()   const { return typeInfo.id == moduleFactory.getTypeIdForParameter();   }
