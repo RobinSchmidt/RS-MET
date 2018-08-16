@@ -1,4 +1,7 @@
 Liberty:
+-debug the tree-view and showing the editor of selected module
+ ModularStructureTreeView::rebuildTree
+
 -let all fucntions that currently take an rsString as parameter take a "const char *"
  ->client code is not concerned about how strings are stored internally, smae goes for
  atomic module definition code
