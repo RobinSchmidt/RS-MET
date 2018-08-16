@@ -193,7 +193,10 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
       {
         //if(  module->isTopLevelModule() 
         //  && romos::ModuleTypeRegistry::isIdentifierInputOrOutput(typeIdentifier) )
-        if( module->isTopLevelModule() && (module->isInputModule() || module->isOutputModule()) )
+        //if( module->isTopLevelModule() && (module->isInputModule() || module->isOutputModule()) )
+           // noo - this is wrong - we are not interested in whethere the "module" is I/O but rather
+           // the child to be added should be I/O
+        if( module->isTopLevelModule() && (moduleTypeName == "AudioInput" || moduleTypeName == "AudioOutput") )
         {
           // do nothing when this is the top-level module and the to-be-added child is an I/O module
         }

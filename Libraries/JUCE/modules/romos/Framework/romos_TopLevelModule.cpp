@@ -8,6 +8,7 @@ using namespace romos;
 TopLevelModule::TopLevelModule()
 {
   //moduleTypeIdentifier = ModuleTypeRegistry::TOP_LEVEL_MODULE;
+  typeInfo = moduleFactory.getModuleTypeInfo("Container"); 
 
   ModuleContainer::addAudioInputModule( "AudioIn1",   2,  2);
   ModuleContainer::addAudioInputModule( "AudioIn2",   2,  6);

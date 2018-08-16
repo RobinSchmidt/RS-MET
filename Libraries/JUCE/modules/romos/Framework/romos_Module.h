@@ -216,10 +216,15 @@ public:
   // first make it simple:
   INLINE bool isParameterModule()   const { return typeInfo->fullName == "Parameter";   }
   INLINE bool isContainerModule()   const { return typeInfo->fullName == "Container";   }
-  INLINE bool isTopLevelModule()    const { return typeInfo->fullName == "TopLevelModule";    }
+
   INLINE bool isInputModule()       const { return typeInfo->fullName == "AudioInput";  }
   INLINE bool isOutputModule()      const { return typeInfo->fullName == "AudioOutput"; }
   INLINE bool isInputOrOutput()     const { return isInputModule() || isOutputModule(); }
+
+  virtual bool isTopLevelModule()   const { return false; } // overriden in TopLevelModule
+  // maybe use the overriding technique for the other module-type inquiries, too
+
+
 
   // later make it fast:
   // INLINE bool isParameter()   const { return typeInfo.id == moduleFactory.getTypeIdForParameter();   }

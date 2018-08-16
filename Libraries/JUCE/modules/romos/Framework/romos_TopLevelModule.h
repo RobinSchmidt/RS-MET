@@ -11,7 +11,7 @@ namespace romos
 
 /** This class is used to represent the special top-level, or root module. This usually represents 
 a complete instrument or effect unit. It is a CompositeModule with a bit of additional 
-functionality that applies only to and instrument/effect as a whole.
+functionality that applies only to an instrument/effect as a whole.
 
 
 It also stores some global and per-voice information such as system sample-rate, the tempo in BPM, 
@@ -75,6 +75,8 @@ public:
   virtual std::string getTypeName() const override { return "TopLevelModule"; }
    // if you change this, be sure to make a corresponding change in 
    // ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule
+
+  virtual bool isTopLevelModule() const override { return true; }
 
 
   //-----------------------------------------------------------------------------------------------
