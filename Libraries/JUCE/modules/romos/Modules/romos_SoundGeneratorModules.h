@@ -80,6 +80,10 @@ public:
     hasHeader = false;
   }
 };
+// todo: let it have a 2nd output that is 0 most of the time, but 1.f at samples, when a reset
+// has occurred. the fractional part f (in 0..1) can be used to indicate the exact sub-sample
+// time-instant at which the reset occurred (is there a convention, how to interpret this in
+// max/msp, reaktor, etc? figure out)
 
 //-------------------------------------------------------------------------------------------------
 

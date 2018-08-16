@@ -309,7 +309,8 @@ public:
 // SampleAndHold: Ins: Trigger; Outs: OutValue
 // Clock - outputs impulses at regular intervals: Ins: TickInterval (seconds), Start, Stop; Outs: Tick
 // Switch - switch between a number of values on each received trigger in a round robin manner; 
-//          Ins: Reset, Direction, Increment (lets step more than one steps per trigger), Step-Values; Outs: StepValueOut
+// Ins: Reset, Direction, Increment (lets step more than one steps per trigger), Step-Values; Outs: StepValueOut
+// Switch: if in1 > in2 return in3 else in4
 // StopWatch - outputs the elapsed time since the last trigger; Ins: Start, Stop; Outs: ElapsedTime
 // Timer: outputs a trigger impulse a certain time after it recieved a trigger impulse; Ins: Start, Stop, Time; Outs: DelayedTrigger
 // Ramp: generates a linar ramp between two values at a given period/cycle-length Ins: Start, End, Period, Phase, Reset

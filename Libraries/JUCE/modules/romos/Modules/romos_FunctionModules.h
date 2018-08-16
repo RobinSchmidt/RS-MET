@@ -16,7 +16,7 @@ class ClipperTypeInfo : public ModuleTypeInfo
 public:
   ClipperTypeInfo() {
     shortName    = "Clip";
-    fullName     = "HardClipper";
+    fullName     = "Clipper";
     description  = "Clips input signal to the range between Min and Max";
     category     = "Functions";
     createModule =  []()->Module* { return new ClipperModule; };

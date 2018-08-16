@@ -269,7 +269,7 @@ public:
   via registerModuleType otherwise an error will occur. After creation, it will call the 
   initialize() method of the module and then do some other calls that allocate memory, reset the 
   state and some other stuff that is common to the initialization of all modules (these additional 
-  calls avoid  code-duplication in the respective initialize() methods of the module subclass). */
+  calls avoid code-duplication in the respective initialize() methods of the module subclass). */
   Module* createModule(const std::string& fullTypeName, const std::string& name = "", 
     int x = 0, int y = 0, bool polyphonic = false);
 
@@ -316,7 +316,7 @@ public:
   out of range, it returns a nullptr). */
   ModuleTypeInfo* getModuleTypeInfo(size_t id);
 
-  /** Peliminary - todo: disallow editing for certain simple modules such as adders, unit-delays,
+  /** Preliminary - todo: disallow editing for certain simple modules such as adders, unit-delays,
   etc - see old implementation. */
   bool isModuleNameEditable(int id) { return true; } 
 
