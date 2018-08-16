@@ -7,7 +7,7 @@ using namespace romos;
 
 TopLevelModule::TopLevelModule()
 {
-  moduleTypeIdentifier = ModuleTypeRegistry::TOP_LEVEL_MODULE;
+  //moduleTypeIdentifier = ModuleTypeRegistry::TOP_LEVEL_MODULE;
 
   ModuleContainer::addAudioInputModule( "AudioIn1",   2,  2);
   ModuleContainer::addAudioInputModule( "AudioIn2",   2,  6);

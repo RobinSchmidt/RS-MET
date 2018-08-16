@@ -45,7 +45,9 @@ rosic::rsString ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module
     child = container->getChildModule(i);
     if( child->isContainerModule() )
       continue;
-    tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifierOld());
+    //tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifierOld());
+    tmp = child->getTypeName(); // new - correct?
+
     code    += indent;
     padding  = createPadding(variableNames[i], maxAtomicVariableNameLength);
     code    += S("romos::Module *") + variableNames[i] + padding + S(" = module->addChildModule(") + typeRetrievals[i] + S(" ");
@@ -135,7 +137,8 @@ rosic::rsString ModuleBuildCodeGenerator::makeModuleVariableName(romos::Module *
     name = module->getName();
   else
   {
-    name = module->getTypeNameOld();  
+    //name = module->getTypeNameOld();  
+    name = module->getTypeName();  
     int suffix = getNumOfSameModulesBefore(module) + 1;
     name += suffix;
   }
@@ -191,8 +194,11 @@ rosic::rsArray<rosic::rsString> ModuleBuildCodeGenerator::createTypeRetrievalStr
   for(unsigned int i = 0; i < container->getNumChildModules(); i++)
   {
     romos::Module *child = container->getChildModule(i);
-    rosic::rsString tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifierOld());
-    tmp = S("getTypeId(\"") + S(tmp) + S("\"),");
+
+    //rosic::rsString tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifierOld());
+    rosic::rsString tmp = child->getTypeName();
+
+    tmp = S("getTypeId(\"") + S(tmp) + S("\"),"); // old - won't work
     typeRetrievalStrings.appendElement(tmp);
   }
   padShortStringsWithSpace(typeRetrievalStrings); 

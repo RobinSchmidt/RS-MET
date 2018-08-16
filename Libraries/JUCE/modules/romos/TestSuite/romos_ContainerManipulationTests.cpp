@@ -28,7 +28,8 @@ bool Containerize01::runTest()
   containerLevel0->containerizeModules(modulesToContainerize);
 
   romos::ModuleContainer* containerLevel1 = (romos::ModuleContainer*) containerLevel0->getChildModule(1);
-  result &= containerLevel1->getTypeIdentifierOld()  == ModuleTypeRegistry::CONTAINER;
+  //result &= containerLevel1->getTypeIdentifierOld()  == ModuleTypeRegistry::CONTAINER;
+  result &= containerLevel1->getTypeName() == "Container";
 
   // check number of children for inner and outer container
   result &= containerLevel0->getNumChildModules() == 4;
@@ -91,7 +92,8 @@ bool Containerize02::runTest()
 
   // retrieve the created container:
   romos::ModuleContainer* containerLevel1 = (romos::ModuleContainer*) containerLevel0->getChildModule(2);
-  result &= containerLevel1->getTypeIdentifierOld()  == ModuleTypeRegistry::CONTAINER;
+  //result &= containerLevel1->getTypeIdentifierOld()  == ModuleTypeRegistry::CONTAINER;
+  result &= containerLevel1->getTypeName()  == "Container";
 
   // check number of children for inner and outer container
   result &= containerLevel0->getNumChildModules() == 7;
@@ -299,7 +301,8 @@ void ContainerizationAddedConstantsTest::randomizeContainment()
     std::vector<romos::Module*> toBeUnContainerized;
     for(unsigned int i = 0; i < childModules.size(); i++)
     {
-      if( childModules[i]->getTypeIdentifierOld() == ModuleTypeRegistry::CONSTANT || childModules[i]->isContainerModule() )
+      //if( childModules[i]->getTypeIdentifierOld() == ModuleTypeRegistry::CONSTANT || childModules[i]->isContainerModule() )
+      if( childModules[i]->getTypeName() == "Constant" || childModules[i]->isContainerModule() )
       {
         double randomNumber = random(0.0, 1.0);
         if( randomNumber < 1.0/3.0 )

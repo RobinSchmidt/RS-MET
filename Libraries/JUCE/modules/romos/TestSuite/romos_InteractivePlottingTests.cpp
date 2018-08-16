@@ -32,7 +32,8 @@ BandlimitedImpulseTrainPlotTest::BandlimitedImpulseTrainPlotTest()
 : InteractivePlotTest("BandlimitedImpulseTrainPlot")
 {
   numFramesToProcess = 4000;   
-  moduleToTest       = ModuleFactory::createModule(ModuleTypeRegistry::BANDLIMITED_IMPULSE_TRAIN);
+  //moduleToTest       = ModuleFactory::createModule(ModuleTypeRegistry::BANDLIMITED_IMPULSE_TRAIN);
+  moduleToTest = moduleFactory.createModule("BandlimitedImpulseTrain");
 }
 void BandlimitedImpulseTrainPlotTest::fillInputSignalArraysWithTestSignal()  
 {
@@ -83,7 +84,8 @@ SawOscillatorPlotTest::SawOscillatorPlotTest(const char *testName)
 : InteractivePlotTest(testName)
 {
   numFramesToProcess = 4000;   
-  moduleToTest       = ModuleFactory::createModule(ModuleTypeRegistry::BLIT_SAW_OSCILLATOR);
+  //moduleToTest       = ModuleFactory::createModule(ModuleTypeRegistry::BLIT_SAW_OSCILLATOR);
+  moduleToTest = moduleFactory.createModule("BlitOscillator");
 }
 void SawOscillatorPlotTest::fillInputSignalArraysWithTestSignal()  
 {
@@ -274,7 +276,8 @@ DualBlitSawOscillatorPlotTest::DualBlitSawOscillatorPlotTest()
   numFramesToProcess = 4000;   
 
   moduleFactory.deleteModule(moduleToTest);
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::DUAL_BLIT_SAW_OSCILLATOR);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::DUAL_BLIT_SAW_OSCILLATOR);
+  moduleToTest = moduleFactory.createModule("BlitOscillator");
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -282,7 +285,8 @@ DualBlitSawOscillatorPlotTest::DualBlitSawOscillatorPlotTest()
 EnvelopeADSRPlotTest::EnvelopeADSRPlotTest()
 : InteractivePlotTest("EnvelopeADSRPlot")
 {
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ENVELOPE_ADSR);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ENVELOPE_ADSR);
+  moduleToTest = moduleFactory.createModule("ADSR-Envelope");
 
   sustainValue = 0.2;
   attackShape  = 0.0;
@@ -456,7 +460,8 @@ BiquadDesignerPlotTest::BiquadDesignerPlotTest()
 : InteractivePlotTest("BiquadDesignerPlot")
 {
   numFramesToProcess = 801;   // index == 400 -> f = 0 Hz, index == 600 -> f = fs/2
-  moduleToTest       = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD_DESIGNER);
+  //moduleToTest       = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD_DESIGNER);
+  moduleToTest = moduleFactory.createModule("BiquadDesigner");
   fMin               = -processingStatus.getSystemSampleRate();
   fMax               = +processingStatus.getSystemSampleRate();
 }

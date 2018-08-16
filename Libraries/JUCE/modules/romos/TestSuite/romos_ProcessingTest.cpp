@@ -25,13 +25,20 @@ ProcessingTest::ProcessingTest(const char *testName)
   int i;
   for(i = 0; i < maxNumInputs; i++)
   {
-    inputFeederModules[i] = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY, 
-                                                        rosic::rsString("In") + rosic::rsString(i+1), 0, i, true);
+    //inputFeederModules[i] = ModuleFactory::createModule(
+    //  ModuleTypeRegistry::IDENTITY, rosic::rsString("In") + rosic::rsString(i+1), 0, i, true);
+
+    inputFeederModules[i] = moduleFactory.createModule(
+      "Identity", std::string("In") + std::to_string(i+1), 0, i, true);
+    // shouldn't we use a proper AudioInput module isntead?
   }
   for(i = 0; i < maxNumOutputs; i++)
   {
-    outputRetrieverModules[i] = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY, 
-                                                            rosic::rsString("Out") + rosic::rsString(i+1), 0, i, true);
+    //outputRetrieverModules[i] = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY,                                                  
+    //  rosic::rsString("Out") + rosic::rsString(i+1), 0, i, true);
+
+    outputRetrieverModules[i] = moduleFactory.createModule(
+      "Identity", std::string("Out") + std::to_string(i+1), 0, i, true);
   }
 }
 

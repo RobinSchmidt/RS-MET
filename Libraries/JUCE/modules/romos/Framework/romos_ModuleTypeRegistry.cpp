@@ -244,7 +244,8 @@ romos::Module* ModuleFactoryNew::createModule(int id, const std::string& name, i
 romos::Module* ModuleFactoryNew::createModule(const std::string& fullTypeName, 
   const std::string& name, int x, int y, bool polyphonic)
 {
-  return createModule(getModuleId(fullTypeName), name, x, y, polyphonic);
+  int id = getModuleId(fullTypeName);
+  return createModule(id, name, x, y, polyphonic);
 }
 
 romos::TopLevelModule* ModuleFactoryNew::createTopLevelModule(const std::string& name, 
@@ -355,6 +356,8 @@ void ModuleFactoryNew::registerStandardModules()
 
   registerModuleType(new SystemSampleRateTypeInfo);
   registerModuleType(new SystemSamplePeriodTypeInfo);
+
+  //registerModuleType(new TopLevelTypeInfo); // nope - should not be user creatable
 
 
   // Modulation:

@@ -33,7 +33,7 @@
 
 #include <rosic/rosic.h> // for dsp algorithms
 
-#define RS_BUILD_OLD_MODULE_FACTORY    // for transition to new factory implementation
+//#define RS_BUILD_OLD_MODULE_FACTORY    // for transition to new factory implementation
 
 #include "Algorithms/romos_FilterDesign.h"
 #include "Algorithms/romos_Interpolation.h"

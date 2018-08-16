@@ -15,14 +15,16 @@ bool testSorting(bool verboseOutput)
   int yMax = 50;
   unsigned int numChildrenToCreate = 50;
 
-  ModuleContainer *testModule = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER);
+  //ModuleContainer *testModule = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER);
+  ModuleContainer *testModule = (ModuleContainer*) moduleFactory.createModule("Container");
 
   unsigned int i;
   int x, y;
   randomUniform((double) xMin, (double) xMax, 1);
   for(i = 0; i < numChildrenToCreate; i++)
   {
-    romos::Module *childModule = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
+    //romos::Module *childModule = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
+    romos::Module *childModule = moduleFactory.createModule("UnitDelay");
     x = (int) randomUniform((double) xMin, (double) xMax);
     y = (int) randomUniform((double) yMin, (double) yMax);
     childModule->setModuleName(rosic::rsString("Delay ") + rosic::rsString((int)i)); // to keep track of insertion order
@@ -164,7 +166,8 @@ bool testLeakyIntegratorDoubleDelay(bool verboseOutput)
 {
   romos::Module *testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegratorDoubleDelay", 0, 0, false);
   getDesiredOutputForLeakyIntegratorDoubleDelay(N, x[0][0], x[0][1], d[0][0]);
-  romos::Module *identity = ((ModuleContainer*) testModule)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
+  //romos::Module *identity = ((ModuleContainer*) testModule)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
+  romos::Module *identity = ((ModuleContainer*) testModule)->getChildModulesWithType("Identity").at(0);
   identity->setPositionXY(17, 2);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
@@ -194,7 +197,8 @@ bool testBiquadMacro(bool verboseOutput)
 
 bool testBiquadAtomic(bool verboseOutput)
 {
-  romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
+  //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
+  romos::Module *testModule = moduleFactory.createModule("Biquad");
   getDesiredOutputForBiquad(N, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   moduleFactory.deleteModule(testModule);
@@ -303,7 +307,8 @@ bool testPinSorting(bool verboseOutput)
 
 bool testAdderBlock(bool verboseOutput)
 {
-  romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
+  //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
+  romos::Module *testModule = moduleFactory.createModule("Adder");
   add(x[0][0], x[0][1], d[0][0], maxNumFrames);  // establish desired result
   bool result = checkBlockProcessingAndPrintResult(testModule, ppx, ppy, ppd, maxNumFrames, 50, "AdderBlock", 0.0);
   moduleFactory.deleteModule(testModule);
@@ -312,7 +317,8 @@ bool testAdderBlock(bool verboseOutput)
 
 bool testBiquadAtomicBlock(bool verboseOutput)
 {
-  romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
+  //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
+  romos::Module *testModule = moduleFactory.createModule("Biquad");
   getDesiredOutputForBiquad(maxNumFrames, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
   bool result = checkBlockProcessingAndPrintResult(testModule, ppx, ppy, ppd, maxNumFrames, 50, "BiquadAtomicBlock", 1.e-13);
   //Plotter::plotData(200, t, d[0][0], y[0][0]);
@@ -413,7 +419,8 @@ bool testBlipTwoNotes(bool verboseOutput)
 
 bool testAdderProcessingFunctions(int numVoicesToCheck)
 {
-  romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
+  //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
+  romos::Module *testModule = moduleFactory.createModule("Adder");
 
   for(int v = 0; v < numVoicesToCheck; v++) 
     add(x[v][0], x[v][1], d[v][0], maxNumFrames);
@@ -427,7 +434,8 @@ bool testAdderProcessingFunctions(int numVoicesToCheck)
 
 bool testUnitDelayProcessingFunctions(int numVoicesToCheck)
 {
-  romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
+  //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
+  romos::Module *testModule = moduleFactory.createModule("UnitDelay");
   for(int v = 0; v < numVoicesToCheck; v++) 
     getDesiredOutputForUnitDelay(maxNumFrames, x[v][0], d[v][0]);
   std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);

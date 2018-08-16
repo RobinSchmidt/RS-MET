@@ -92,8 +92,8 @@ public:
   /** Adds a child- or I/O module of the kind given by the identifier 
   (@see romos::moduleIdentifiers) at the given coordinates. 
   @see addChildModule(Module*, bool, bool). The return value is a pointer to the added module. */
-  virtual Module* addChildModule(int moduleIdentifier, rosic::rsString name = rosic::rsString(), 
-    int x = 0, int y = 0, bool polyphonic = false, bool sortChildModulesAfterInsertion = true);
+  //virtual Module* addChildModule(int moduleIdentifier, rosic::rsString name = rosic::rsString(), 
+  //  int x = 0, int y = 0, bool polyphonic = false, bool sortChildModulesAfterInsertion = true);
   // old version - deprecated
 
   // new version:
@@ -184,7 +184,8 @@ public:
   static void sortModuleArrayByCoordinates(std::vector<romos::Module*> &modulesToSort);
 
   /** Removes modules from the passed vector reference that match the given type-code. */
-  static void removeModulesOfType(std::vector<romos::Module*> &modules, int typeCodeToRemove);
+  //static void removeModulesOfType(std::vector<romos::Module*> &modules, int typeCodeToRemove);
+  static void removeModulesOfType(std::vector<romos::Module*> &modules, const std::string& typeName);
 
 
   // replaceChildModule, duplicateChildModule, copySelectedCildModulesIntoClipboard,
@@ -250,8 +251,8 @@ public:
 
   /** Returns an array with pointers to our child modules that match the given type-identifier 
   which should be one of the values enumerated in ModuleTypeRegistry::moduleIdentifiers. */
-  virtual std::vector<romos::Module*> getChildModulesWithTypeOld(int typeIdentifier) const;
-    // deprectaed
+  //virtual std::vector<romos::Module*> getChildModulesWithTypeOld(int typeIdentifier) const;
+    // deprecated
 
   virtual std::vector<romos::Module*> getChildModulesWithTypeId(int typeIdentifier) const;
 
@@ -272,7 +273,10 @@ public:
   containers. */
   virtual unsigned int getNumOutputPins() const
   {
-    return (unsigned int)getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT).size();
+    //return (unsigned int)getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT).size();
+    // old version
+
+    return (unsigned int)getChildModulesWithType("AudioOutput").size(); // new version doesn't work because of wrong id?
   }
 
   /** Overriden her because for containers, this does not necessarily equal the number of output 

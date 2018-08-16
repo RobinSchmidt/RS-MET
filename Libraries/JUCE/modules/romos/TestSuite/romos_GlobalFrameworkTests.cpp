@@ -231,7 +231,8 @@ TriggerAndKillTest::TriggerAndKillTest()
 : ProcessingTest("TriggerAndKillTest")
 {
   triggerAndKillModule = TestModuleBuilder::createTriggerAndKill("TriggerAndKill", 20, 10, true);
-  moduleToTest         = ModuleFactory::createModule(ModuleTypeRegistry::TOP_LEVEL_MODULE);
+  //moduleToTest         = ModuleFactory::createModule(ModuleTypeRegistry::TOP_LEVEL_MODULE);
+  moduleToTest = moduleFactory.createModule("TopLevelModule");
   ((ModuleContainer*) moduleToTest)->addChildModule(moduleToTest);
 
 
@@ -289,7 +290,9 @@ bool TriggerAndKillTest::runTest()
 TopLevelModuleTest::TopLevelModuleTest()
 : UnitTest("TopLevelModuleTest")
 {
-  moduleToTest = (TopLevelModule*) ModuleFactory::createModule(ModuleTypeRegistry::TOP_LEVEL_MODULE);
+  //moduleToTest = (TopLevelModule*) ModuleFactory::createModule(ModuleTypeRegistry::TOP_LEVEL_MODULE);
+  //moduleToTest = (TopLevelModule*) moduleFactory.createModule("TopLevelModule");
+  moduleToTest = moduleFactory.createTopLevelModule();
 }
 TopLevelModuleTest::~TopLevelModuleTest()
 {

@@ -276,7 +276,8 @@ double romos::Module::getInputPinDefaultValue(int pinIndex) const
 bool romos::Module::isConnectedToAudioOutput() const
 {
   std::vector<romos::Module*> targetModules = getConnectedTargetModules();
-  return romos::containsModuleOfType(targetModules, ModuleTypeRegistry::AUDIO_OUTPUT);
+  //return romos::containsModuleOfType(targetModules, ModuleTypeRegistry::AUDIO_OUTPUT);
+  return romos::containsModuleOfType(targetModules, "AudioOutput");
 }
 
 bool romos::Module::hasIncomingConnectionFrom(const romos::Module *sourceModule) const
@@ -560,7 +561,8 @@ void romos::writeModuleStateToConsole(void *module, bool waitForKeyAfterOutput)
   double pinValue;
 
   printf("%s %s", m->getName().getRawString(), " ");
-  printf("%s %s", m->getTypeNameOld().getRawString(), " ");
+  //printf("%s %s", m->getTypeNameOld().getRawString(), " ");
+  printf("%s %s", m->getTypeName().c_str(), " ");
   printf("%s", "Ins: ");
   if( m->isInputModule() || m->isOutputModule() )
     maxPinIndex = 0;

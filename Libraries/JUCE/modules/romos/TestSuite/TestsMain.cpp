@@ -104,7 +104,8 @@ void runModularTests()
   runModularInteractiveTests();
   //runModularPerformanceTests(false);
 
-  romos::ModuleTypeRegistry::deleteSoleInstance(); // deletes the singleton object
+  //romos::ModuleTypeRegistry::deleteSoleInstance(); // deletes the singleton object
+
   romos::BlitIntegratorInitialStates::deleteStateValueTables();
 }
 

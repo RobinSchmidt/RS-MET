@@ -15,7 +15,8 @@ PolyphonicProcessingTest::PolyphonicProcessingTest(const char *testName)
 IdentityTest::IdentityTest()
 : ProcessingTest("Identity")
 {
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY);
+  moduleToTest = moduleFactory.createModule("Identity");
 }
 void IdentityTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -27,7 +28,8 @@ void IdentityTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 AdderTest::AdderTest()
 : ProcessingTest("Adder")
 {
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
+  moduleToTest = moduleFactory.createModule("Adder");
 }
 void AdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -39,7 +41,8 @@ void AdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 Adder3Test::Adder3Test()
 : ProcessingTest("Adder3")
 {
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_3);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_3);
+  moduleToTest = moduleFactory.createModule("Adder3");
 }
 void Adder3Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -54,7 +57,8 @@ void Adder3Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 Adder4Test::Adder4Test()
 : ProcessingTest("Adder4")
 {
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_4);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_4);
+  moduleToTest = moduleFactory.createModule("Adder4");
 }
 void Adder4Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -69,7 +73,8 @@ void Adder4Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 Adder5Test::Adder5Test()
 : ProcessingTest("Adder5")
 {
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_5);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_5);
+  moduleToTest = moduleFactory.createModule("Adder5");
 }
 void Adder5Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -97,7 +102,8 @@ void WrappedAdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic
 SubtractorTest::SubtractorTest()
 : ProcessingTest("Subtractor")
 {
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::SUBTRACTOR);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::SUBTRACTOR);
+  moduleToTest = moduleFactory.createModule("Subtractor");
 }
 void SubtractorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -109,7 +115,8 @@ void SubtractorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 UnitDelayTest::UnitDelayTest()
 : ProcessingTest("UnitDelay")
 {
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
+  moduleToTest = moduleFactory.createModule("UnitDelay");
 }
 void UnitDelayTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -122,7 +129,8 @@ void UnitDelayTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 NoiseGeneratorTest::NoiseGeneratorTest()
 : ProcessingTest("NoiseGeneratorTest")
 {
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::WHITE_NOISE);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::WHITE_NOISE);
+  moduleToTest = moduleFactory.createModule("WhiteNoise");
 }
 void NoiseGeneratorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -332,7 +340,8 @@ BiquadAtomicTest::BiquadAtomicTest()
 : ProcessingTest("BiquadAtomic")
 {
   tolerance    = 1.e-14;
-  moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
+  //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
+  moduleToTest = moduleFactory.createModule("Biquad");
 }
 void BiquadAtomicTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {

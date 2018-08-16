@@ -31,7 +31,8 @@ BypassWithChildTest::BypassWithChildTest()
 void BypassWithChildTest::createAndConnectTestChildModules()
 {
   BypassTest::createAndConnectTestChildModules();
-  topLevelModule->addChildModule(getTypeId("UnitDelay"), "D",  10,  4, false, true);
+  //topLevelModule->addChildModule(getTypeId("UnitDelay"), "D",  10,  4, false, true);
+  topLevelModule->addChildModule("UnitDelay", "D",  10,  4, false, true);
 }
 
 

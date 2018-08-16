@@ -269,16 +269,16 @@ public:
   initialize() method of the module and then do some other calls that allocate memory, reset the 
   state and some other stuff that is common to the initialization of all modules (these additional 
   calls avoid  code-duplication in the respective initialize() methods of the module subclass). */
-  Module* createModule(const std::string& fullTypeName, const std::string& name, int x, int y, 
-    bool polyphonic);
+  Module* createModule(const std::string& fullTypeName, const std::string& name = "", 
+    int x = 0, int y = 0, bool polyphonic = false);
 
   /** Creates a module with given unique identifier. */
-  Module* createModule(int id, const std::string& name, int x, int y, 
-    bool polyphonic);
+  Module* createModule(int id, const std::string& name = "", int x = 0, int y = 0, 
+    bool polyphonic = false);
 
   /** Creates a top-level module. In Liberty, this is called just once on start-up. */
-  TopLevelModule* createTopLevelModule(const std::string& name, int x, int y, 
-    bool polyphonic) const;
+  TopLevelModule* createTopLevelModule(const std::string& name = "TopLevelModule", 
+    int x = 0, int y = 0, bool polyphonic = false) const;
 
   /** Deletes the passed module by first calling its cleanUp() method and then using the 
   delete-operator. */
