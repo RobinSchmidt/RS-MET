@@ -514,6 +514,19 @@ bool romos::containsModuleOfType(const std::vector<romos::Module*> &modules, int
   }
   return false;
 }
+// old
+
+// new:
+bool romos::containsModuleOfType(const std::vector<romos::Module*> &modules,
+  const std::string& fullTypeName)
+{
+  for(unsigned int i = 0; i < modules.size(); i++)
+  {
+    if( modules.at(i)->getTypeName() == fullTypeName )
+      return true;
+  }
+  return false;
+}
 
 /*
 bool romos::modulePointerLessByYX(romos::Module *modulePointer1, romos::Module *modulePointer2)

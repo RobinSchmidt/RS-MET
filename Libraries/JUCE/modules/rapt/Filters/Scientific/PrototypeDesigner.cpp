@@ -549,6 +549,13 @@ void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
     a[2*k] = s;    // == g^k / k! == pow(g, k) / rsFactorial(k);
     s *= g/(k+1);
   }
+
+  // todo: maybe try to figure out a formula based on a Pade approximation:
+  // PadeApproximant[exp(a*(-x^2)), {x, 0, {8, 10}}]
+  // http://www.wolframalpha.com/input/?i=PadeApproximant%5Bexp(a*(-x%5E2)),+%7Bx,+0,+%7B8,+10%7D%7D%5D
+  // i guess, the formula above (from the  Paarmann book) boils down to a Pade approximation with
+  // 1 for the numerator order...verify this...make a function 
+  // gaussianNumAndDen(T *a, int Na, T* b, int Nb, T wc);
 }
 
 template<class T>

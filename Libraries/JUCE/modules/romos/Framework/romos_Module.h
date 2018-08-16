@@ -617,6 +617,12 @@ bool modulePointerLessByXY(const romos::Module *left, const romos::Module *right
 /** Returns true when the the passed vector of modules contains one (or more) modules of the given 
 type (the code is interpreted according to the ModuleTypeRegistry::moduleTypeCodes enumerator. */
 bool containsModuleOfType(const std::vector<romos::Module*> &modules, int typeCode);
+// old
+
+bool containsModuleOfType(const std::vector<romos::Module*> &modules, 
+  const std::string& fullTypeName);
+// new
+
 
 /** Similar to modulePointerLessByXY but considers y-coordinate as more important than 
 x-coordinate. */

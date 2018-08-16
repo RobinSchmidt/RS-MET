@@ -1,9 +1,6 @@
 #ifndef romos_Liberty_h
 #define romos_Liberty_h
 
-//#include "romos_TopLevelModule.h"
-//#include "romos_NoteEvent.h"
-
 namespace romos
 {
 
