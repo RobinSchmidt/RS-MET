@@ -16,5 +16,5 @@ void testCodeGenerator()
 
   rosic::rsString codeForModule = romos::ModuleBuildCodeGenerator::getCodeForModule(testModule);
   codeForModule.printToStandardOutput();
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
 }

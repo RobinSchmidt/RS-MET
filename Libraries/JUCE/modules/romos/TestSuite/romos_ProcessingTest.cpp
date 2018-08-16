@@ -37,11 +37,11 @@ ProcessingTest::ProcessingTest(const char *testName)
 
 ProcessingTest::~ProcessingTest()
 {
-  ModuleFactory::deleteModule(moduleToTest);
+  moduleFactory.deleteModule(moduleToTest);
   for(int i = 0; i < maxNumInputs; i++)
-    ModuleFactory::deleteModule(inputFeederModules[i]);
+    moduleFactory.deleteModule(inputFeederModules[i]);
   for(int i = 0; i < maxNumOutputs; i++)
-    ModuleFactory::deleteModule(outputRetrieverModules[i]);
+    moduleFactory.deleteModule(outputRetrieverModules[i]);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

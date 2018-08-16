@@ -30,7 +30,7 @@ ModularSystemTest::ModularSystemTest(const char *testName)
 
 ModularSystemTest::~ModularSystemTest()
 {
-  //ModuleFactory::deleteModule(topLevelModule);
+  //moduleFactory.deleteModule(topLevelModule);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

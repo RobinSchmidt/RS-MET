@@ -293,7 +293,7 @@ TopLevelModuleTest::TopLevelModuleTest()
 }
 TopLevelModuleTest::~TopLevelModuleTest()
 {
-  ModuleFactory::deleteModule(moduleToTest);
+  moduleFactory.deleteModule(moduleToTest);
 }
 bool TopLevelModuleTest::runTest()
 {

@@ -22,7 +22,7 @@ Liberty::Liberty()
 Liberty::~Liberty()
 {
 #ifdef RS_BUILD_OLD_MODULE_FACTORY
-  //ModuleFactory::deleteModule(topLevelModule);
+  //moduleFactory.deleteModule(topLevelModule);
   romos::ModuleTypeRegistry::deleteSoleInstance();
 #endif
 

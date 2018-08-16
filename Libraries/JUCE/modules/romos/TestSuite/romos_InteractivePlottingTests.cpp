@@ -273,7 +273,7 @@ DualBlitSawOscillatorPlotTest::DualBlitSawOscillatorPlotTest()
 {
   numFramesToProcess = 4000;   
 
-  ModuleFactory::deleteModule(moduleToTest);
+  moduleFactory.deleteModule(moduleToTest);
   moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::DUAL_BLIT_SAW_OSCILLATOR);
 }
 

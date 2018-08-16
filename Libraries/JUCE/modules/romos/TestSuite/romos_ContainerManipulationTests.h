@@ -26,7 +26,7 @@ namespace romos
     }
     virtual ~ContainerManipulationTest()
     {
-      romos::ModuleFactory::deleteModule(moduleToTest);
+      romos::moduleFactory.deleteModule(moduleToTest);
     }
 
   protected:

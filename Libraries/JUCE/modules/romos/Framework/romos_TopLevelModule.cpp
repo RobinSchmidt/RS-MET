@@ -35,7 +35,7 @@ TopLevelModule::~TopLevelModule()
     rosic::removeElementByValue(childModules, moduleToDelete);
     //childModules.removeElementByValue(moduleToDelete);
 
-    ModuleFactory::deleteModule(moduleToDelete);
+    moduleFactory.deleteModule(moduleToDelete);
   }
 
   outFrameStride = 0;

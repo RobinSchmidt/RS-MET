@@ -13,7 +13,7 @@ PerformanceTest::PerformanceTest(const char *testName)
 
 PerformanceTest::~PerformanceTest()
 {
-  ModuleFactory::deleteModule(moduleToTest);
+  moduleFactory.deleteModule(moduleToTest);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

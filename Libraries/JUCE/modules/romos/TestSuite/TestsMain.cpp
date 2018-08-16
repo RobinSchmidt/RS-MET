@@ -51,7 +51,7 @@ void testModularCodeGenerator()
 
   rosic::rsString codeForModule = romos::ModuleBuildCodeGenerator::getCodeForModule(testModule);
   codeForModule.printToStandardOutput();
-  romos::ModuleFactory::deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
 }
 
 void runModularInteractiveTests()

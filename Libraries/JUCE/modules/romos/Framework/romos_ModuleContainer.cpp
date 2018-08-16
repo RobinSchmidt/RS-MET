@@ -508,7 +508,7 @@ void ModuleContainer::deleteChildModule(Module *moduleToDelete, bool updateHasDe
     else
       rosic::removeElementByIndex(childModules, index);
 
-    ModuleFactory::deleteModule(moduleToDelete);  // old
+    moduleFactory.deleteModule(moduleToDelete);  // old
     //moduleFactory.deleteModule(moduleToDelete);  // new - activate later
 
     if( updateHasDelayedConnectionFlag == true )

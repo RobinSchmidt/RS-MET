@@ -80,7 +80,7 @@ bool testSorting(bool verboseOutput)
   }
 
   // cleanup and return:
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   if( result == false )
     printf("%s", "!!! Sorting failed !!!\n");
   else
@@ -90,7 +90,7 @@ bool testSorting(bool verboseOutput)
 
 bool testModuleTypeRegistry()
 {
-  ModuleTypeRegistry* typeRegistry = romos::ModuleTypeRegistry::getSoleInstance();
+  //ModuleTypeRegistry* typeRegistry = romos::ModuleTypeRegistry::getSoleInstance();
 
   //double blah = x[0][0];
 
@@ -104,7 +104,7 @@ bool testGain(bool verboseOutput)
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
 
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "Gain", 0.0);
 }
 
@@ -115,7 +115,7 @@ bool testSumDiff(bool verboseOutput)
   subtract(x[0][0], x[0][1], d[0][1], N);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 2, N, "SumDiff", 0.0);
 }
 
@@ -126,7 +126,7 @@ bool testWrappedSumDiff(bool verboseOutput)
   subtract(x[0][0], x[0][1], d[0][1], N);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 2, N, "WrappedSumDiff", 0.0);
 }
 
@@ -136,7 +136,7 @@ bool testSummedDiffs(bool verboseOutput)
   getDesiredOutputForSummedDiffs(N, px0, pd0);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 4, N, "SummedDiffs", 0.0);
 }
 
@@ -146,7 +146,7 @@ bool testMovingAverage(bool verboseOutput)
   getDesiredOutputForMovingAverage(N, x[0][0], x[0][1], x[0][2], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "MovingAverage", 0.0);
 }
 
@@ -156,7 +156,7 @@ bool testLeakyIntegrator(bool verboseOutput)
   getDesiredOutputForLeakyIntegrator(N, x[0][0], x[0][1], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "LeakyIntegrator", 0.0);
 }
 
@@ -168,7 +168,7 @@ bool testLeakyIntegratorDoubleDelay(bool verboseOutput)
   identity->setPositionXY(17, 2);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "LeakyIntegratorDoubleDelay", 0.0);
 }
 
@@ -178,7 +178,7 @@ bool testTestFilter1(bool verboseOutput)
   getDesiredOutputForTestFilter1(N, x[0][0], x[0][1], x[0][2], x[0][3], d[0][0], d[0][1], d[0][2]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[2][0], y[2][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 3, N, "TestFilter1", 0.0);
 }
 
@@ -188,7 +188,7 @@ bool testBiquadMacro(bool verboseOutput)
   getDesiredOutputForBiquad(N, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "BiquadMacro", 0.0);
 }
 
@@ -197,7 +197,7 @@ bool testBiquadAtomic(bool verboseOutput)
   romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
   getDesiredOutputForBiquad(N, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "BiquadAtomic", 1.e-13); // use test with tolerance
 }
 
@@ -224,12 +224,12 @@ bool testContainerizationAddedConstants(bool verboseOutput)
       printf("%s", "!!! ContainerizationAddedConstants failed !!!\n");
       //printModuleStructure(testModule, 0);
       //Plotter::plotData(N, t, d[0][0], y[0][0]);
-      ModuleFactory::deleteModule(testModule);
+      moduleFactory.deleteModule(testModule);
       return false;
     }
   }
 
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   printf("%s", "ContainerizationAddedConstants passed\n");
   return true;
 }
@@ -293,7 +293,7 @@ bool testPinSorting(bool verboseOutput)
 
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
 
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   if( result == false )
     printf("%s", "!!! PinSorting failed !!!\n");
   else
@@ -306,7 +306,7 @@ bool testAdderBlock(bool verboseOutput)
   romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
   add(x[0][0], x[0][1], d[0][0], maxNumFrames);  // establish desired result
   bool result = checkBlockProcessingAndPrintResult(testModule, ppx, ppy, ppd, maxNumFrames, 50, "AdderBlock", 0.0);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return result; 
 }
 
@@ -316,7 +316,7 @@ bool testBiquadAtomicBlock(bool verboseOutput)
   getDesiredOutputForBiquad(maxNumFrames, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
   bool result = checkBlockProcessingAndPrintResult(testModule, ppx, ppy, ppd, maxNumFrames, 50, "BiquadAtomicBlock", 1.e-13);
   //Plotter::plotData(200, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return result;
 }
 
@@ -329,7 +329,7 @@ bool testBlip(bool verboseOutput)
 
   getDesiredOutputForFilterBlip(maxNumFrames, 880.0, 20.0, d[0][0]);
   //Plotter::plotData(maxNumFrames, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, maxNumFrames, "Blip", 0.0);
 }
 
@@ -421,7 +421,7 @@ bool testAdderProcessingFunctions(int numVoicesToCheck)
   std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
   bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, "Adder", &events);
 
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return result;
 }
 
@@ -433,7 +433,7 @@ bool testUnitDelayProcessingFunctions(int numVoicesToCheck)
   std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
   bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, 
     "UnitDelay", &events);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return result;
 }
 
@@ -446,7 +446,7 @@ bool testWrappedAdderProcessingFunctions(int numVoicesToCheck)
   bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, 
     "WrappedAdder", &events);
   //Plotter::plotData(maxNumFrames, t, d[0][0], y[0][0]);
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return result;
 }
 
@@ -480,7 +480,7 @@ bool testMonoToPoly(int numVoicesToCheck)
 
   // introduce a delayed connection and test again (uses frame-wise processing)
 
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return result;
 }
 
@@ -510,7 +510,7 @@ bool testPolyToMono(int numVoicesToCheck)
   result &= checkProcessingInBlocksMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0, 
     "PolyToMono, Container Mono", &events);
 
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return result;
 }
 */
@@ -536,7 +536,7 @@ bool testGatedNoteFrequency(int numVoicesToCheck)
   RAPT::rsAssert(false, "plotting code needs update");
   //Plotter::plotData(50, t, d[0][0], y[0][0]);
 
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return result;
 }
 
@@ -598,7 +598,7 @@ bool testTriggerAndKill(int numVoicesToCheck)
   bool result = false;  // preliminary
 
 
-  ModuleFactory::deleteModule(testModule);
+  moduleFactory.deleteModule(testModule);
   return result;
 }
 
