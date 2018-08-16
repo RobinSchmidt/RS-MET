@@ -57,8 +57,10 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_6(TriSawModule);
 
 void SaturatorModule::initialize()
 {
-  initInputPins(3, "In", "Width", "Center");
-  initOutputPins(1, "Out");
+  //initInputPins(3, "In", "Width", "Center");
+  //initOutputPins(1, "Out");
+  initInputPins({ "In", "Width", "Center" });
+  initOutputPins({ "Out" });
   inputPins[1].setDefaultValue(2); // Width is 2 by default
 }
 INLINE void SaturatorModule::process(Module *module, double *In, double *Width, double *Center,
