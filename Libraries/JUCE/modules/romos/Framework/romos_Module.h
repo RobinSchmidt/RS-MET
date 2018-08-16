@@ -174,6 +174,10 @@ public:
 
   virtual bool hasEditor() const { return typeInfo->hasEditor; }
 
+  //virtual bool hasTreeNode() const { return typeInfo->hasTreeNode; }
+
+
+
   /** Returns the name. */
   virtual rosic::rsString getName() const { return name; }
 

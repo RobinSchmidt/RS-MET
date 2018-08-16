@@ -28,6 +28,7 @@ public:
     description  = "Outputs a constant value";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new ConstantModule; };
+    hasEditor    = false;
   }
 };
 
@@ -46,6 +47,7 @@ public:
     description  = "Passes input to output as is";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new IdentityModule; };
+    hasEditor    = false;
   }
 };
 
@@ -64,7 +66,8 @@ public:
     description  = "Negates the input (multiplies by -1)";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new UnaryMinusModule; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 
@@ -83,7 +86,8 @@ public:
     description  = "Computes the reciprocal 1/x of the input. Returns 0, if x=0. ";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new ReciprocalModule; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 
@@ -105,7 +109,8 @@ public:
     // addInputPinInfo( "1st", "First argument", "First argument a of c = a + b");
     // addInputPinInfo( "2nd", "Second argument", "Second argument b of c = a + b");
     // addOutputPinInfo("Res", "Result", "Result c of c = a + b");
-    hasHeader = false; // draw no header at top of the block
+    hasHeader    = false; // draw no header at top of the block
+    hasEditor    = false;
   }
 };
 
@@ -124,7 +129,8 @@ public:
     description  = "Subtracts the second input from the first";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new SubtractorModule; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 
@@ -143,7 +149,8 @@ public:
     description  = "Multiplies the two inputs";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new MultiplierModule; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 // todo: make a multiplier with N inputs
@@ -163,7 +170,8 @@ public:
     description  = "Divides the first input by the second (if the 2nd is 0, it will return 0)";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new DividerModule; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 
@@ -203,7 +211,8 @@ public:
     description  = "Adds three input signals together";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new Adder3Module; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 
@@ -222,7 +231,8 @@ public:
     description  = "Adds four input signals together";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new Adder4Module; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 
@@ -241,7 +251,8 @@ public:
     description  = "Adds five input signals together";
     category     = "Arithmetic";
     createModule =  []()->Module* { return new Adder5Module; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 
@@ -264,7 +275,8 @@ public:
     description  = "Sums an arbitrary number of input signals"; // up to WorkArea::maxNumPins
     category     = "Arithmetic";
     createModule =  []()->Module* { return new AdderNModule; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 

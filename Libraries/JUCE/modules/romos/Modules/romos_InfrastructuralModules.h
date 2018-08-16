@@ -33,7 +33,8 @@ public:
     description  = "Input module for feeding signals into containers";
     category     = " ";
     createModule =  []()->Module* { return new AudioInputModule; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 
@@ -63,7 +64,8 @@ public:
     description  = "Output module for feeding signals out of containers";
     category     = "Infrastructure";
     createModule =  []()->Module* { return new AudioOutputModule; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 
@@ -82,7 +84,8 @@ public:
     description  = "Outputs the system's sample rate in Hz";
     category     = "Infrastructure";
     createModule =  []()->Module* { return new SystemSampleRateModule; };
-    hasHeader = false;
+    hasHeader    = false;
+    hasEditor    = false;
   }
 };
 

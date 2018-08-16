@@ -1,6 +1,12 @@
 Liberty:
--debug the tree-view and showing the editor of selected module
- ModularStructureTreeView::rebuildTree
+-maybe make a distinction between hasTreeNode/hasEditor
+ ...maybe make the hasTreeNode flag part of the Module instead of the ModuleTypeInfo and let the 
+ user set it in the editor - and let any Module have an editor - if even a trivial one just showing
+ the long description. the type-info can determine whether a module has a node by default
+ but the user can override this setting. if a module doesn't have a tree-node and gets selected,
+ select the parent-node in the tree-view...or its parent..whoever up the tree is the first to have
+ and editor
+
 
 -let all fucntions that currently take an rsString as parameter take a "const char *"
  ->client code is not concerned about how strings are stored internally, smae goes for

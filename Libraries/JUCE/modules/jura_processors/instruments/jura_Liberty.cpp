@@ -1180,8 +1180,9 @@ void ModularStructureTreeView::createAndHangInSubTree(RTreeViewNode *parentNodeT
   //  return;
 
   //if( romos::ModuleTypeRegistry::hasModuleTypeEditor(moduleToCreateSubTreeFor->getTypeIdentifierOld()) )
-  //if( moduleToCreateSubTreeFor->hasEditor() )
-  if(true)  // preliminary
+  if( moduleToCreateSubTreeFor->hasEditor() ) // maybe optionally show all modules in the tree
+  //if(true)  // preliminary
+  //if( moduleToCreateSubTreeFor->hasTreeNode() )
   {
     juce::String name = juce::String( moduleToCreateSubTreeFor->getName().getRawString() );
     RTreeViewNode *newNode = new RTreeViewNode(name);
