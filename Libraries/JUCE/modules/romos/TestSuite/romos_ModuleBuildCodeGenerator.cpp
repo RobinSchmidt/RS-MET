@@ -156,7 +156,7 @@ int ModuleBuildCodeGenerator::getNumOfSameModulesBefore(romos::Module *module)
     int count  = 0;
     for(unsigned int i=0; i<parent->getNumChildModules(); i++)
     {
-      if( parent->getChildModule(i)->getTypeIdentifierOld() == module->getTypeIdentifierOld() )
+      if( parent->getChildModule(i)->getTypeId() == module->getTypeId() )
       {
         if( parent->getChildModule(i) == module )
           return count;

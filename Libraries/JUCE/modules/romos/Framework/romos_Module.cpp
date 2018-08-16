@@ -68,7 +68,7 @@ romos::Module::Module(const rosic::rsString &_name, int _x, int _y, bool _polyph
   hasHeaderFlag        = true;
 
   //moduleTypeIdentifier = ModuleTypeRegistry::UNKNOWN_MODULE_TYPE; // the factory will set this up when a concrete module is created
-  moduleTypeIdentifier = 0;
+  //moduleTypeIdentifier = 0;
 
   this->polyphonic     = _polyphonic;
   this->name           = _name;
@@ -506,6 +506,7 @@ bool romos::modulePointerLessByXY(const romos::Module *left, const romos::Module
   }
 }
 
+/*
 bool romos::containsModuleOfType(const std::vector<romos::Module*> &modules, int typeCode)
 {
   for(unsigned int i = 0; i < modules.size(); i++)
@@ -516,6 +517,7 @@ bool romos::containsModuleOfType(const std::vector<romos::Module*> &modules, int
   return false;
 }
 // old
+*/
 
 // new:
 bool romos::containsModuleOfType(const std::vector<romos::Module*> &modules,

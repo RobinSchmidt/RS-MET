@@ -1894,7 +1894,8 @@ void ModularBlockDiagramPanel::treeNodeClicked(RTreeView *treeView, RTreeViewNod
   {
     availableModulesTreeView->setVisible(false);
     availableModulesTreeView->removeFromDesktop();
-    if( nodeThatWasClicked->getNodeIdentifier() == LOAD_CONTAINER )
+    //if( nodeThatWasClicked->getNodeIdentifier() == LOAD_CONTAINER )
+    if( nodeThatWasClicked->getNodeText() == "Load Container..." )
       openContainerLoadDialog();
     else
     {
@@ -2290,7 +2291,7 @@ void ModularBlockDiagramPanel::fillAvailableModulesTreeView()
 
   // \todo write a short description for each node to appear in the infoline
 
-  RTreeViewNode *tmpNode1, *tmpNode2;  // we need one temporary node for each tree-level except the lowest ...or not?
+  RTreeViewNode *tmpNode1; //, *tmpNode2;  // we need one temporary node for each tree-level except the lowest ...or not?
 
 
   tmpNode1 = new RTreeViewNode("Load Container...", LOAD_CONTAINER);
@@ -2709,7 +2710,8 @@ void ModularBlockDiagramPanel::drawModule(Graphics &g, romos::Module *moduleToDr
         (float) (t+1), (float) (h-(2*t+2*m)), (float) arrowHeadLength); 
     }
     //drawBitmapFontText(g, xText, y+t+m-2, name, &boldFont10px, plotColourScheme.text, -1, Justification::topLeft);
-    drawBitmapFontText(g, xText, y+t+m-2+1, name, normalFont, plotColourScheme.text, -1, Justification::topLeft);
+    drawBitmapFontText(g, xText, y+t+m-1, name, bigFont, plotColourScheme.text, -1, Justification::topLeft);
+    //drawBitmapFontText(g, xText, y+t+m-2+1, name, normalFont, plotColourScheme.text, -1, Justification::topLeft);
   }
 
   if( isModuleSelected(moduleToDraw) || rosic::containsElement(modulesInLasso, moduleToDraw) )

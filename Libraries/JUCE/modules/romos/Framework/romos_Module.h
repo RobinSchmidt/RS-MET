@@ -185,7 +185,7 @@ public:
   moduleIdentifiers enumeration and can be used to infer the kind of the module at runtime (aka 
   runtime type information (RTTI)). Knowing the concrete module (sub)class is necessary for 
   typecasts and total recall. */
-  INLINE int getTypeIdentifierOld() const { return moduleTypeIdentifier; }
+  //INLINE int getTypeIdentifierOld() const { return moduleTypeIdentifier; }
 
 
   INLINE int getTypeId() const { return typeInfo->id; }
@@ -505,13 +505,13 @@ public:
     memset(startPointer, 0, outFrameStride * processingStatus.getBufferSize() * sizeof(double));
   }
 
+  // comment seems outdated
   ///** After you have established the input signals to the module by retrieving the input-pointer 
   //via getAudioInputAddress() and assigning values to the returned array/pointer, you should call 
   //this function to trigger the proceesing. When the function returns, the output signals will be 
   //available in the array that you can retrieve via getAudioOutputAddress(). You should make sure to 
   //assign the right number of inputs and retrieve the right number of outputs - what these numbers 
   //are can be inquired via getNumAudioInputs/getNumAudioInputs. */
-  // comment seems outdated
   INLINE void processSampleFrame()
   {
     processFrame(this, 0);
@@ -575,7 +575,7 @@ protected:
 
   romos::ModuleContainer *parentModule;
 
-  int  moduleTypeIdentifier; // one of the values defined in moduleIdentifiers - for RTTI and total recall
+  //int  moduleTypeIdentifier; // one of the values defined in moduleIdentifiers - for RTTI and total recall
   // to be deprecated (replaced by pointer to ModuleTypeInfo structure)
 
   bool polyphonic;           // flag to indicate that this module is polyphonic
@@ -635,7 +635,7 @@ bool modulePointerLessByXY(const romos::Module *left, const romos::Module *right
 
 /** Returns true when the the passed vector of modules contains one (or more) modules of the given 
 type (the code is interpreted according to the ModuleTypeRegistry::moduleTypeCodes enumerator. */
-bool containsModuleOfType(const std::vector<romos::Module*> &modules, int typeCode);
+//bool containsModuleOfType(const std::vector<romos::Module*> &modules, int typeCode);
 // old
 
 bool containsModuleOfType(const std::vector<romos::Module*> &modules, 

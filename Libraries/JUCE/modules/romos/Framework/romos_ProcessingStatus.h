@@ -57,6 +57,7 @@ public:
   /** Returns the maximum blocksize that modules can take in their processBlock function. This is 
   determined by the amount of memory, they have allocated. */
   INLINE int getBufferSize() const { return bufferSize; }
+   // rename to getMaxBlockSize
 
   /** Returns the number of voices for which memory is allocated for in/out signals. */
   //INLINE int getNumAllocatedVoices() const { return voiceAllocator.getNumVoices(); }
@@ -75,6 +76,9 @@ public:
   allocate 2*N doubles for the input signals and 3*N doubles for the output signals. We must 
   allocate enough memory to hold a full buffer for all voices. */
   int getRequiredMemorySlotsPerPin() const { return voiceAllocator.getNumVoices() * bufferSize; }
+  // comment seems out of date - there are no input buffers anymore. inputs are just pointers to 
+  // another module's output 
+
 
   // maximum value for the buffersize to allocate. this affects also the size of the WorkArea
   static const int maxBufferSize = 512;

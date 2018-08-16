@@ -233,7 +233,8 @@ romos::Module* ModuleFactoryNew::createModule(int id, const std::string& name, i
 {
   ensureTypeInfoArrayAllocated();
   rassert(id >= 0 && id < typeInfos->size());  // id out of range
-  // todo: if the id is out of range, return some kind of "Error" dummy module
+  // todo: if the id is out of range, return some kind of "Error" dummy module, maybe just a 
+  // constant module outputting a 0, named "Error"? ..if that's possible
 
   romos::Module* m = (*typeInfos)[id]->createModule();
   m->typeInfo = (*typeInfos)[id];
@@ -403,8 +404,8 @@ void ModuleFactoryNew::setupModule(romos::Module* module, const std::string& nam
   module->allocateMemory();
 
   module->setModuleName(name); 
-    // must be called after allocateMemory because the Constant fills its I/O arrays with the 
-    // corresponding value
+  // must be called after allocateMemory because the Constant fills its output arrays with the 
+  // corresponding value
 
   module->assignProcessingFunctions();
   module->resetStateForAllVoices();
