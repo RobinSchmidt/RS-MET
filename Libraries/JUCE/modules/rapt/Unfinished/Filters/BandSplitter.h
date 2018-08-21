@@ -33,9 +33,9 @@ public:
 
   /** Returns the z-domain transfer function value H(z) at the given z. The transfer function value
   of the highpass is then just 1-H(z). */
-  std::complex<TPar> getLowpassTransferFunctionAt(const std::complex<TPar>& z);
+  std::complex<TPar> getLowpassTransferFunctionAt(const std::complex<TPar>& z) const;
 
-  std::complex<TPar> getHighpassTransferFunctionAt(const std::complex<TPar>& z)
+  std::complex<TPar> getHighpassTransferFunctionAt(const std::complex<TPar>& z) const
   {
     return TPar(1) - getLowpassTransferFunctionAt(z);
   }
@@ -178,10 +178,10 @@ public:
 
   /** Returns the complex frequency response of the band with given index at the given 
   frequency. */
-  std::complex<TPar> getBandFrequencyResponseAt(int bandIndex, CRPar frequency);
+  std::complex<TPar> getBandFrequencyResponseAt(int bandIndex, CRPar frequency) const;
 
   /** Returns the magnitude response of the band with given index at the given frequency. */
-  TPar getBandMagnitudeAt(int bandIndex, CRPar frequency)
+  TPar getBandMagnitudeAt(int bandIndex, CRPar frequency) const
   {
     return abs(getBandFrequencyResponseAt(bandIndex, frequency));
   }

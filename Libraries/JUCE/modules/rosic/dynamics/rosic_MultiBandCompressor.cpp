@@ -42,7 +42,9 @@ void rsMultiBandEffect::initBands(int numberOfBands)
 
 double rsMultiBandEffect::getDecibelsAt(int index, double frequency) const
 {
-  return 0; // not yet implemented
+  //return 0; // not yet implemented
+  double mag = splitter.getBandMagnitudeAt(index, frequency);
+  return RAPT::rsAmpToDb(mag);
 }
 
 // processing:

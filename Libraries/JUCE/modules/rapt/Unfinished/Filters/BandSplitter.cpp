@@ -27,7 +27,7 @@ void rsTwoBandSplitter<TSig, TPar>::copyStateFrom(const rsTwoBandSplitter& s)
 
 template<class TSig, class TPar>
 std::complex<TPar> rsTwoBandSplitter<TSig, TPar>::getLowpassTransferFunctionAt(
-  const std::complex<TPar>& z)
+  const std::complex<TPar>& z) const
 {
   std::complex<TPar> zi = TPar(1)/z;
   return (b0 + b1*zi) / (TPar(1) + a1*zi); 
@@ -162,7 +162,7 @@ void rsMultiBandSplitter<TSig, TPar>::setNumberOfBands(int newNumBands)
 
 template<class TSig, class TPar>
 std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
-  int bandIndex, CRPar frequency)
+  int bandIndex, CRPar frequency) const
 {
   TPar w = TPar(2*PI)*frequency/sampleRate;
   std::complex<TPar> j  = std::complex<TPar>(0, 1); // imaginary unit
@@ -175,10 +175,17 @@ std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
   case ACCUMULATE_INTO_HIGHPASS: 
   {
     // verify this (maybe it has to be the other way around)
+    //for(k = 0; k < bandIndex; k++)
+    //  H *= splitters[k]->getLowpassTransferFunctionAt(z);
+    //for(k = bandIndex; k < numSplitters; k++)
+    //  H *= splitters[k]->getHighpassTransferFunctionAt(z);
+
+    // this certainly looks more plausible:
     for(k = 0; k < bandIndex; k++)
-      H *= splitters[k]->getLowpassTransferFunctionAt(z);
-    for(k = bandIndex; k < numSplitters; k++)
       H *= splitters[k]->getHighpassTransferFunctionAt(z);
+    for(k = bandIndex; k < numSplitters; k++)
+      H *= splitters[k]->getLowpassTransferFunctionAt(z);
+
   } break;
 
   // handle other cases...

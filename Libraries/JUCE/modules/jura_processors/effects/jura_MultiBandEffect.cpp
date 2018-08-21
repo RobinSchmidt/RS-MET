@@ -522,6 +522,7 @@ void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 {
   // update selection highlighting
   freqRespPlot->setNumFunctionsToPlot(core->getNumberOfBands());
+  refreshFunctionsToPlot(); // for test - may be removed later
   repaint();
 }
 
@@ -575,6 +576,7 @@ void MultiBandPlotEditor::mouseDown(const MouseEvent& e)
 void MultiBandPlotEditor::resized()
 {
   freqRespPlot->setBounds(0, 0, getWidth(), getHeight());
+  //refreshFunctionsToPlot(); // for test - remove later
 }
 
 void MultiBandPlotEditor::paintOverChildren(Graphics& g)
