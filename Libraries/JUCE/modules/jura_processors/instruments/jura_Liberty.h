@@ -665,7 +665,11 @@ host) - decouple it from the romos stuff ...maybe call it FlowchartEditor and mo
 jura framework....maybe also have a class BlockDiagramElement that wraps the romos::Module class
 
 \todo when the focused module gets deleted (from outside, namely in the tree), set the new focus 
-to its parent */
+to its parent 
+
+maybe rename to ModularPatcher
+
+*/
 
 class ModularBlockDiagramPanel : public LibertyInterfaceComponent, public ColourSchemeComponent, 
   public RTreeViewObserver, public RPopUpMenuObserver, public RTextEntryFieldObserver 

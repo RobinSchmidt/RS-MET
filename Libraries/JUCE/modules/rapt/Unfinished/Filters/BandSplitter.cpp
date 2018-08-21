@@ -25,6 +25,14 @@ void rsTwoBandSplitter<TSig, TPar>::copyStateFrom(const rsTwoBandSplitter& s)
   y1 = s.y1; 
 }
 
+template<class TSig, class TPar>
+std::complex<TPar> rsTwoBandSplitter<TSig, TPar>::getLowpassTransferFunctionAt(
+  const std::complex<TPar>& z)
+{
+  std::complex<TPar> zi = 1/z;
+  return (b0 + b1*zi) / (1 + a1*zi); 
+}
+
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>
@@ -150,6 +158,13 @@ void rsMultiBandSplitter<TSig, TPar>::setNumberOfBands(int newNumBands)
   else
     splitFreqs.resize(newNumBands-1);
   updateSplitters();
+}
+
+template<class TSig, class TPar>
+std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
+  int bandIndex, CRPar frequency)
+{
+  return std::complex<TPar>(0, 0); // preliminary
 }
 
 template<class TSig, class TPar>

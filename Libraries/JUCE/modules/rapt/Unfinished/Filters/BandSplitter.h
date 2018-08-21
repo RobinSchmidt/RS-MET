@@ -30,8 +30,16 @@ public:
   /** Returns the normalized radian frequency at which the split occurs. */
   TPar getOmega() const { return w; }
 
+
+  /** Returns the z-domain transfer function value H(z) at the given z. The transfer function value
+  of the highpass is then just 1-H(z). */
+  std::complex<TPar> getLowpassTransferFunctionAt(const std::complex<TPar>& z);
+
+
   /** Resets state buffer variables */
   void reset() { x1 = y1 = 0; }
+
+
 
 
 
@@ -158,6 +166,16 @@ public:
       return splitFreqs[index];
     else
       return 0;
+  }
+
+  /** Returns the complex frequency response of the band with given index at the given 
+  frequency. */
+  std::complex<TPar> getBandFrequencyResponseAt(int bandIndex, CRPar frequency);
+
+  /** Returns the magnitude response of the band with given index at the given frequency. */
+  TPar getBandMagnitudeAt(int bandIndex, CRPar frequency)
+  {
+    return abs(getBandFrequencyResponseAt(bandIndex, frequency));
   }
 
   //-----------------------------------------------------------------------------------------------

@@ -66,7 +66,20 @@ void romos::processContainerBlockFrameWiseMono(Module *moduleAsVoid, int blockSi
     container->childModules[pinIndex]->inputPins[0].outputPointer 
     = container->inputPins[pinIndex].outputPointer;
 
-  //int dummy = 0;
+
+  // can we avoid this copy/restore stuff by calling something like
+  // container->processFrame(container, frameIndex);
+  // instead of:
+  // container->processFrame(container, 0);
+  // in the loop?
+
+  // maybe it is possible to split the modules inside a container into those that are participating
+  // in a feedback loop and those who don't and use per-sample processing only for those who do?
+  // like:
+  // process() {
+  //   processModulesPreFeedback();    // uses block-wise processing
+  //   processModulesWithFeedback();   // uses frame-wise processing
+  //   processModulesPostFeedback(); } // uses block-wise processing
 }
 
 // little helper:

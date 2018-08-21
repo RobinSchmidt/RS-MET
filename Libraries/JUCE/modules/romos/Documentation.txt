@@ -1,12 +1,29 @@
 class responsibilities:
 
 Module:
-
+-main baseclass for all modules
+-has suclasses ModuleContainer and ModuleAtomic (...rename to ContainerModule, AtomicModule)
+-TopLevelModule is a subclass of ContainerModule
+-all basic low-level, atomic modules are subclasses of AtomicModule
+-the audio processing functions processFrame and processBlock are function pointers because the 
+ container must be able to efficiently switch between block/frame and mono/poly processing - this
+ way, it only needs to set the function-pointer when it makes the decision - no checks inside
+ the processing function are necesarry
+-that leads to a somewhat weird interface where one must write either a free (non-member) or static
+ member function for the audio processing and assgin that function to the processing func-pointer
+ instead of just overriding a member function....
+-because this function is not a (non static) member-function, it gets the module for which it is
+ called passed as first parameter (as replacement for the missing "this" point)
+-to access member variables, the module pointer must be downcasted to the module subclass type
+-the module programmer only needs to write a function that handles one sample of monophonic I/O,
+ all other processing functions can then be generated automatically via preprocessor macros
 
 
 
 AudioConnection:
 
+-all signals are stored in the output buffers of modules, there are no additional explicit input
+ buffers - and input of a module just stores a pointer to another module's output buffer
 -for each input pin in the target object, there is a pointer stored, which refers to the memory 
  location of the output pin of the source module
  -each input pin of a target can connect to only one output pin of a source
