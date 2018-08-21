@@ -29,8 +29,8 @@ template<class TSig, class TPar>
 std::complex<TPar> rsTwoBandSplitter<TSig, TPar>::getLowpassTransferFunctionAt(
   const std::complex<TPar>& z)
 {
-  std::complex<TPar> zi = 1/z;
-  return (b0 + b1*zi) / (1 + a1*zi); 
+  std::complex<TPar> zi = TPar(1)/z;
+  return (b0 + b1*zi) / (TPar(1) + a1*zi); 
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -164,7 +164,30 @@ template<class TSig, class TPar>
 std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
   int bandIndex, CRPar frequency)
 {
-  return std::complex<TPar>(0, 0); // preliminary
+  TPar w = TPar(2*PI)*frequency/sampleRate;
+  std::complex<TPar> j  = std::complex<TPar>(0, 1); // imaginary unit
+  std::complex<TPar> z  = exp(j*w);                 // z-value where to evaluate H(z)
+  std::complex<TPar> H = 1;                         // frequency response H(z=e^(j*w))
+  int k;
+  int numSplitters = numActiveBands - 1; // assume numActiveBands >= 1
+  switch(mode)
+  {
+  case ACCUMULATE_INTO_HIGHPASS: 
+  {
+    // verify this (maybe it has to be the other way around)
+    for(k = 0; k < bandIndex; k++)
+      H *= splitters[k]->getLowpassTransferFunctionAt(z);
+    for(k = bandIndex; k < numSplitters; k++)
+      H *= splitters[k]->getHighpassTransferFunctionAt(z);
+  } break;
+
+  // handle other cases...
+
+  default: H = std::complex<TPar>(0, 0);
+  }
+
+
+  return H;
 }
 
 template<class TSig, class TPar>

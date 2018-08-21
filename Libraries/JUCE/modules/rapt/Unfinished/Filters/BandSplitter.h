@@ -35,6 +35,14 @@ public:
   of the highpass is then just 1-H(z). */
   std::complex<TPar> getLowpassTransferFunctionAt(const std::complex<TPar>& z);
 
+  std::complex<TPar> getHighpassTransferFunctionAt(const std::complex<TPar>& z)
+  {
+    return TPar(1) - getLowpassTransferFunctionAt(z);
+  }
+
+
+
+
 
   /** Resets state buffer variables */
   void reset() { x1 = y1 = 0; }
