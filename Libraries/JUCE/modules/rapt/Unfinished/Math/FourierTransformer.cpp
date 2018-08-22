@@ -257,12 +257,12 @@ void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(std::complex<T> *
   if( normalizationFactor != 1.0 )
   {
     for(n=0; n<N; n++)
-      outSignal[n] = 2.0 * d_inBuffer[n] * normalizationFactor;
+      outSignal[n] = T(2.0) * d_inBuffer[n] * normalizationFactor;
   }
   else
   {
     for(n=0; n<N; n++)
-      outSignal[n] = 2.0 * d_inBuffer[n];
+      outSignal[n] = T(2.0) * d_inBuffer[n];
   }
 
   // for some reason, the subsequent routine expects the second half of the spectrum (the complex
@@ -310,14 +310,14 @@ void rsFourierTransformerRadix2<T>::updateNormalizationFactor()
   if( (normalizationMode == NORMALIZE_ON_FORWARD_TRAFO && direction == FORWARD) ||
       (normalizationMode == NORMALIZE_ON_INVERSE_TRAFO && direction == INVERSE)    )
   {
-    normalizationFactor = 1.0 / (T) N;
+    normalizationFactor = T(1.0) / (T) N;
   }
   else if( normalizationMode == ORTHONORMAL_TRAFO )
   {
-    normalizationFactor = 1.0 / rsSqrt((T) N);
+    normalizationFactor = T(1.0) / rsSqrt((T) N);
   }
   else
-    normalizationFactor = 1.0;
+    normalizationFactor = T(1.0);
 }
 
 //=================================================================================================
@@ -500,7 +500,7 @@ void rsFourierTransformerBluestein<T>::generateChirp()
     delete[] c;
   c = new std::complex<T>[N];
 
-  T  theta = 2.0 * PI / (T) N;
+  T  theta = T(2.0*PI) / (T) N;
   std::complex<T> w_N;
   if( direction == rsFourierTransformerRadix2<T>::FORWARD )
     w_N = exp(std::complex<T>(0.0, -theta));
@@ -512,7 +512,7 @@ void rsFourierTransformerBluestein<T>::generateChirp()
   std::complex<T> exponent;
   for(n = 0; n < N; n++)
   {
-    exponent = std::complex<T>(-0.5*n*n, 0.0);
+    exponent = std::complex<T>(T(-0.5*n*n), T(0));
     h[n]     = pow(w_N, exponent);
     c[n]     = conj(h[n]);
   }
@@ -538,13 +538,13 @@ void rsFourierTransformerBluestein<T>::updateNormalizationFactor()
       (normalizationMode == rsFourierTransformerRadix2<T>::NORMALIZE_ON_INVERSE_TRAFO &&
        direction == rsFourierTransformerRadix2<T>::INVERSE)    )
   {
-    normalizationFactor = 1.0 / (T) N;
+    normalizationFactor = T(1.0) / (T) N;
   }
   else if( normalizationMode == rsFourierTransformerRadix2<T>::ORTHONORMAL_TRAFO )
   {
-    normalizationFactor = 1.0 / sqrt((T) N);
+    normalizationFactor = T(1.0) / sqrt((T) N);
   }
   else
-    normalizationFactor = 1.0;
+    normalizationFactor = T(1.0);
 }
 

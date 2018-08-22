@@ -192,6 +192,9 @@ template void RAPT::rsCrossCorrelation(float x[], float y[], int N, float r[], b
 template void RAPT::rsAutoCorrelationFFT(float x[], int N, float r[]);
 
 
+template RAPT::rsFourierTransformerRadix2<float>;
+template RAPT::rsFourierTransformerBluestein<float>;
+
 
 
 template RAPT::rsSineIterator<double>;

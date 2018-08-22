@@ -47,8 +47,6 @@ typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
 typedef RAPT::rsVector2D<float> rsVector2DF;
 typedef RAPT::rsVector3D<float> rsVector3DF;
 
-
-
 // Filters-Musical:
 typedef RAPT::rsSmoothingFilter<float, float> rsSmoothingFilterFF;
 typedef RAPT::rsLadderFilter<float, float> rsLadderFilterFF;

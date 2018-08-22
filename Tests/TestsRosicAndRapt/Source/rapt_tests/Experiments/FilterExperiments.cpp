@@ -126,6 +126,48 @@ void bandSplittingTreeAlgo()
   bool works = (str2 == str1);
 }
 
+void bandSplitFreqResponses()
+{
+  // plots frequency response curves of the multiband bandsplitter
+
+  // maybe turn into unit test
+
+  // user parameters:
+  int N = 1024;     // should be power of two for easy FFT
+  float sampleRate = 44100;
+  vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
+
+  // create and set up the splitter:
+  rsMultiBandSplitterFF splitter;
+  splitter.setSampleRate(sampleRate);
+  splitter.setSplitFrequencies(splitFreqs);
+  splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
+  //splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
+  //splitter.setSplitMode(rsMultiBandSplitterFF::BINARY_TREE);
+
+  // create and set up the fourier transformer:
+  typedef rsFourierTransformerRadix2<float> FT;
+  rsFourierTransformerRadix2<float> ft;
+  ft.setBlockSize(N);
+  ft.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+
+  //
+  typedef std::vector<float> Vec;
+  Vec fftFreqs(N);    // fft bin frequencies
+  Vec impResp(N);     // impulse response of current band
+  Vec magFFT(N);      // magnitude response computed by FFT
+  Vec magTF(N);       // magnitude reaponse computed by transfer function
+  for(int i = 0; i <= splitFreqs.size(); i++)
+  {
+
+
+  }
+
+
+
+  int dummy = 0;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void ladderResonanceManipulation()

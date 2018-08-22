@@ -6,6 +6,8 @@
 void bandSplittingTwoWay();
 void bandSplittingMultiWay();
 void bandSplittingTreeAlgo();
+void bandSplitFreqResponses();
+
 void ladderResonanceManipulation();
 void nonUniformMovingAverage();
 void smoothingFilterOrders();

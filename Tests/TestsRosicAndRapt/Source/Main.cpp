@@ -57,6 +57,7 @@ int main(int argc, char* argv[])
   //bandSplittingTwoWay();
   //bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
   //bandSplittingTreeAlgo();
+  bandSplitFreqResponses();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
   //smoothingFilterOrders();
@@ -437,11 +438,11 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Modular:
 
-  runModularUnitTests();
+  //runModularUnitTests();
   //runModularPerformanceTests(true);  // produces a memleak
   //testModularCodeGenerator();
   //runModularInteractiveTests();  // triggers assert due to plotting code
-  romos::moduleFactory.clearRegisteredTypes();
+  romos::moduleFactory.clearRegisteredTypes(); // avoids memleak in unit tests
 
   // important atomic modules for performance tests: 
   // Biquad: pure code, atomic module, wired model
