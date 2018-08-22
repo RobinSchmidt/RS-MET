@@ -24,8 +24,8 @@ MultiBandEffect::MultiBandEffect(CriticalSection *lockToUse,
 
   // create parameters (factor out):
   Parameter* p = new Parameter("SplitMode", 0.0, 2.0, 0.0, Parameter::STRING);
-  p->addStringValue("Steep Lowpass");
   p->addStringValue("Steep Highpass");
+  p->addStringValue("Steep Lowpass");
   //p->addStringValue("Binary Tree"); // doesn't work yet
   addObservedParameter(p);
   p->setValueChangeCallback<rosic::rsMultiBandEffect>(
