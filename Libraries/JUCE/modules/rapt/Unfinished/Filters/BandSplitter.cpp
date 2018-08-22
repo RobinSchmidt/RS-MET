@@ -180,11 +180,44 @@ std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
     //for(k = bandIndex; k < numSplitters; k++)
     //  H *= splitters[k]->getHighpassTransferFunctionAt(z);
 
-    // this certainly looks more plausible:
-    for(k = 0; k < bandIndex; k++)
-      H *= splitters[k]->getHighpassTransferFunctionAt(z);
-    for(k = bandIndex; k < numSplitters; k++)
-      H *= splitters[k]->getLowpassTransferFunctionAt(z);
+    //// this certainly looks more plausible:
+    //for(k = 0; k < bandIndex; k++)
+    //  H *= splitters[k]->getHighpassTransferFunctionAt(z);
+    //for(k = bandIndex; k < numSplitters; k++)
+    //  H *= splitters[k]->getLowpassTransferFunctionAt(z);
+    //// ..but it's still wrong
+
+    //for(k = 0; k <= bandIndex; k++)
+    //{
+    //  if(rsIsEven(k))
+    //    H *= splitters[k]->getLowpassTransferFunctionAt(z);
+    //  else
+    //    H *= splitters[k]->getHighpassTransferFunctionAt(z);
+    //}
+
+    // the switching logic, whether to accumulate the lowpass or highpass response inot the
+    // final response is wrong
+
+    for(k = 0; k <= bandIndex; k++)
+    {
+      if(k == bandIndex) // only the last stage is lowpass
+        H *= splitters[k]->getLowpassTransferFunctionAt(z);
+      else
+        H *= splitters[k]->getHighpassTransferFunctionAt(z);
+    }
+    // almost works - last band is still wrong in case of even number of splits, crashes in
+    // case of odd number of splits
+
+
+
+
+
+
+    //for(k = 0; k <= bandIndex; k++)
+    //  H *= splitters[k]->getHighpassTransferFunctionAt(z);
+    //for(k = bandIndex+1; k < numSplitters; k++)
+    //  H *= splitters[k]->getLowpassTransferFunctionAt(z);
+
 
   } break;
 

@@ -287,7 +287,7 @@ void freqVsPhaseMod()
   double t[N], yC[N], yM[N];      // time axis, unmodulated carrier, modulator
   double yFM[N], yPM[N], yMM[N];  // FM output, PM output, mixed-mod output
   double yMd[N], yMi[N];          // differentiated and integrated modulator signal
-  double yPFM, yPPM;              // pseudo-FM and pseudo-PM outputs
+  //double yPFM, yPPM;              // pseudo-FM and pseudo-PM outputs
   double wc  = 2*PI*fc/fs;
   double wm  = 2*PI*fm/fs;
   //double pm  = 0;   // instantaneous phase of modulator
