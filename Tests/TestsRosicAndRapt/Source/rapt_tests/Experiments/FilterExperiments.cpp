@@ -132,10 +132,15 @@ void bandSplitFreqResponses()
 
   // maybe turn into unit test
 
+  typedef std::vector<float> Vec;
+
   // user parameters:
-  int N = 512;     // should be power of two for easy FFT
+  int N = 2048;     // should be power of two for easy FFT
   float sampleRate = 44100;
-  vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
+  //Vec splitFreqs = { };
+  //Vec splitFreqs = { 10000 };
+  Vec splitFreqs = { 7000, 14000 };
+  //Vec splitFreqs = { 5000, 10000, 15000 };
 
   // create and set up the splitter:
   rsMultiBandSplitterFF splitter;
@@ -153,8 +158,7 @@ void bandSplitFreqResponses()
   ft.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO);
 
   //
-
-  typedef std::vector<float> Vec;
+  GNUPlotter plt;
   int numBands = splitter.getNumActiveBands();
   Vec tmp(numBands);  // array of bandpass output samples
   Vec fftFreqs(N);    // fft bin frequencies
@@ -162,15 +166,8 @@ void bandSplitFreqResponses()
   Vec magFFT(N);      // magnitude response computed by FFT
   Vec magTF(N);       // magnitude response computed by transfer function
   int i, k, n;        // indices for band, fft-bin and sample
-
   for(k = 0; k < N; k++)
     fftFreqs[k] = ft.binIndexToFrequency(k, N, sampleRate);
-
-
-  GNUPlotter plt;
-
-
-
   for(i = 0; i < numBands; i++)
   {
     splitter.reset();
@@ -192,17 +189,13 @@ void bandSplitFreqResponses()
 
     // now, the contents of magFFT and magTF should be the same up to errors due to 
     // truncation of impulse-reponse before FFT and roundoff - plot them:
-    if(i == 3)
+    //if(i == 3) // just to pick out one for test
     {
       plt.initialize();
       plt.plotFunctionTables(N, &fftFreqs[0], &magFFT[0], &magTF[0]);
     }
-    // hmm...they do not look equal...but similar
+    // the last 2 are correct, the others only similar
   }
-
-
-
-  int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------
