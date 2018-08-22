@@ -42,6 +42,9 @@ public:
   /** Destructor. */
   virtual ~GNUPlotter();
 
+  /** Initializes our data- and commandfiles. Called from constructor, but you may also call it 
+  manually, if you want to re-initialize everything. */
+  void initialize();
 
   /** \name Plotting */
 
@@ -355,6 +358,8 @@ public:
 
   /** Executes GNUPlot with the appropriate commandline parameter to read the command file. */
   void invokeGNUPlot();
+
+
 
 
 protected:

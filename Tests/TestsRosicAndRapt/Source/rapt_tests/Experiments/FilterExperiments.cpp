@@ -133,7 +133,7 @@ void bandSplitFreqResponses()
   // maybe turn into unit test
 
   // user parameters:
-  int N = 1024;     // should be power of two for easy FFT
+  int N = 512;     // should be power of two for easy FFT
   float sampleRate = 44100;
   vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
 
@@ -141,26 +141,63 @@ void bandSplitFreqResponses()
   rsMultiBandSplitterFF splitter;
   splitter.setSampleRate(sampleRate);
   splitter.setSplitFrequencies(splitFreqs);
-  splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
-  //splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
+  //splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
+  splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
   //splitter.setSplitMode(rsMultiBandSplitterFF::BINARY_TREE);
 
   // create and set up the fourier transformer:
   typedef rsFourierTransformerRadix2<float> FT;
   rsFourierTransformerRadix2<float> ft;
   ft.setBlockSize(N);
-  ft.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+  //ft.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+  ft.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO);
 
   //
+
   typedef std::vector<float> Vec;
+  int numBands = splitter.getNumActiveBands();
+  Vec tmp(numBands);  // array of bandpass output samples
   Vec fftFreqs(N);    // fft bin frequencies
   Vec impResp(N);     // impulse response of current band
   Vec magFFT(N);      // magnitude response computed by FFT
-  Vec magTF(N);       // magnitude reaponse computed by transfer function
-  for(int i = 0; i <= splitFreqs.size(); i++)
+  Vec magTF(N);       // magnitude response computed by transfer function
+  int i, k, n;        // indices for band, fft-bin and sample
+
+  for(k = 0; k < N; k++)
+    fftFreqs[k] = ft.binIndexToFrequency(k, N, sampleRate);
+
+
+  GNUPlotter plt;
+
+
+
+  for(i = 0; i < numBands; i++)
   {
+    splitter.reset();
 
+    // compute impulse response of i-th band:
+    splitter.processSampleFrame(1, &tmp[0]);
+    impResp[0] = tmp[i];
+    for(n = 1; n < N; n++) {
+      splitter.processSampleFrame(0, &tmp[0]);
+      impResp[n] = tmp[i];
+    }
 
+    // get FFT magnitudes from impulse response:
+    ft.getRealSignalMagnitudes(&impResp[0], &magFFT[0]);
+
+    // get band magnitude reponse from transfer function:
+    for(k = 0; k < N; k++)
+      magTF[k] = splitter.getBandMagnitudeAt(i, fftFreqs[k]);
+
+    // now, the contents of magFFT and magTF should be the same up to errors due to 
+    // truncation of impulse-reponse before FFT and roundoff - plot them:
+    if(i == 3)
+    {
+      plt.initialize();
+      plt.plotFunctionTables(N, &fftFreqs[0], &magFFT[0], &magTF[0]);
+    }
+    // hmm...they do not look equal...but similar
   }
 
 

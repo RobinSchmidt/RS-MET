@@ -19,15 +19,19 @@ GNUPlotter::GNUPlotter()
   dataPath    = "E:/Temp/gnuplotData.dat";
   commandPath = "E:/Temp/gnuplotCommands.txt";   // this path may not contain whitepaces
 
-  // initialize data- and commandfile:
-  initFile(dataPath);
-  initFile(commandPath);
-  addDefaultCommands();
+  initialize();                                  // initializes data- and commandfile
 }
 
 GNUPlotter::~GNUPlotter()
 {
   delete[] formatString;
+}
+
+void GNUPlotter::initialize()
+{
+  initFile(dataPath);
+  initFile(commandPath);
+  addDefaultCommands();
 }
 
 // plotting:
