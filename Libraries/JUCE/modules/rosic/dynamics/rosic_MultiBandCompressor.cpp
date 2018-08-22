@@ -42,7 +42,8 @@ void rsMultiBandEffect::initBands(int numberOfBands)
 
 double rsMultiBandEffect::getDecibelsAt(int index, double frequency) const
 {
-  //return 0; // not yet implemented
+  if(frequency > 0.5*splitter.getSampleRate())
+    return -200; // to truncate the graph, otherwise it would be mirrored due to aliasing
   double mag = splitter.getBandMagnitudeAt(index, frequency);
   return RAPT::rsAmpToDb(mag);
 }

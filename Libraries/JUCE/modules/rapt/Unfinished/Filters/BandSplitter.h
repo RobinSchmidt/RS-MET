@@ -186,6 +186,9 @@ public:
     return abs(getBandFrequencyResponseAt(bandIndex, frequency));
   }
 
+  /** Returns the smaple rate at which the splitter is currently running. */
+  inline TPar getSampleRate() const { return sampleRate; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 

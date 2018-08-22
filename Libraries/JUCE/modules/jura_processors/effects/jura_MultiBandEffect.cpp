@@ -485,6 +485,7 @@ MultiBandPlotEditor::MultiBandPlotEditor(jura::MultiBandEffect* moduleToEdit)
 
   freqRespPlot = new rsFunctionPlot;
   freqRespPlot->setupForDecibelsAgainstLogFrequency(15.625, 32000.0, -48.0, 12.0, 6);
+  refreshFunctionsToPlot();
 
   //for(int i = 0; i < core->getMaxNumberOfBands(); i++)
   //  freqRespPlot->addFunction([=](double f)->double { return core->getDecibelsAt(i, f); });
@@ -505,6 +506,7 @@ void MultiBandPlotEditor::bandWasInserted(MultiBandEffect* mbe, int i)
   // insert new graph into plot
   //freqRespPlot->addFunction([=](double f)->double { return core->getDecibelsAt(i, f); });
   //freqRespPlot->insertFunction(i, [=](double f)->double { return core->getDecibelsAt(i, f); });
+  refreshFunctionsToPlot();
   repaint();
 }
 
@@ -515,6 +517,7 @@ void MultiBandPlotEditor::bandWillBeRemoved(MultiBandEffect* mbe, int i)
 
 void MultiBandPlotEditor::bandWasRemoved(MultiBandEffect* mbe, int i)
 {
+  refreshFunctionsToPlot();
   repaint();
 }
 
@@ -522,7 +525,7 @@ void MultiBandPlotEditor::bandWasSelected(MultiBandEffect* mbe, int index)
 {
   // update selection highlighting
   freqRespPlot->setNumFunctionsToPlot(core->getNumberOfBands());
-  refreshFunctionsToPlot(); // for test - may be removed later
+  //refreshFunctionsToPlot(); // for test - may be removed later
   repaint();
 }
 
@@ -533,6 +536,7 @@ void MultiBandPlotEditor::allBandsWillBeRemoved(MultiBandEffect* mbe)
 
 void MultiBandPlotEditor::totalRefreshNeeded(MultiBandEffect* mbe)
 {
+  refreshFunctionsToPlot();
   repaint();
 }
 
@@ -601,8 +605,9 @@ void MultiBandPlotEditor::paintBandShadings(Graphics& g)
       x2 = (float)freqRespPlot->toPixelX(core->getSplitFrequency(selected));
     //g.setColour(Colours::red.withAlpha(0.25f));
     g.setColour(Colours::lightblue.withAlpha(0.25f)); // preliminary
-                                                      //g.setColour(Colours::magenta.withAlpha(0.25f));
-    g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
+    //g.setColour(Colours::magenta.withAlpha(0.25f));
+    if(x2 >= x1)
+      g.fillRect(x1, 0.f, x2-x1, (float)getHeight());
   }
 
   // todo: maybe give all bands a color (going through the rainbow) and just use a higher alpha
@@ -702,7 +707,8 @@ void MultiBandPlotEditorAnimated::paintInOutGains(Graphics& g)
       swap(y1, y2);
     if(i == numBands-1)
       x2 = (float)getWidth();
-    g.fillRect(x1, y1, x2-x1, y2-y1);
+    if(x2 >= x1)
+      g.fillRect(x1, y1, x2-x1, y2-y1);
   }
 }
 
