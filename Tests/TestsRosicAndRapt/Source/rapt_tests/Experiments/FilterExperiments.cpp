@@ -140,8 +140,8 @@ void bandSplitFreqResponses()
   //Vec splitFreqs = { };
   //Vec splitFreqs = { 10000 };
   //Vec splitFreqs = { 7000, 14000 };
-  //Vec splitFreqs = { 5000, 10000, 15000 };
-  Vec splitFreqs = { 4000, 8000, 12000, 16000 };
+  Vec splitFreqs = { 5000, 10000, 15000 };
+  //Vec splitFreqs = { 4000, 8000, 12000, 16000 };
   //Vec splitFreqs = { 3000, 6000, 9000, 12000, 15000, 18000 };
 
 
@@ -150,8 +150,8 @@ void bandSplitFreqResponses()
   rsMultiBandSplitterFF splitter;
   splitter.setSampleRate(sampleRate);
   splitter.setSplitFrequencies(splitFreqs);
-  //splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
-  splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
+  splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
+  //splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
   //splitter.setSplitMode(rsMultiBandSplitterFF::BINARY_TREE);
 
   // create and set up the fourier transformer:

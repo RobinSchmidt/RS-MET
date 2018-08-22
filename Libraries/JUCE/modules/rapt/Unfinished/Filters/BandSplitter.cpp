@@ -174,66 +174,28 @@ std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
   {
   case ACCUMULATE_INTO_HIGHPASS: 
   {
-    // verify this (maybe it has to be the other way around)
-    //for(k = 0; k < bandIndex; k++)
-    //  H *= splitters[k]->getLowpassTransferFunctionAt(z);
-    //for(k = bandIndex; k < numSplitters; k++)
-    //  H *= splitters[k]->getHighpassTransferFunctionAt(z);
-
-    //// this certainly looks more plausible:
-    //for(k = 0; k < bandIndex; k++)
-    //  H *= splitters[k]->getHighpassTransferFunctionAt(z);
-    //for(k = bandIndex; k < numSplitters; k++)
-    //  H *= splitters[k]->getLowpassTransferFunctionAt(z);
-    //// ..but it's still wrong
-
-    //for(k = 0; k <= bandIndex; k++)
-    //{
-    //  if(rsIsEven(k))
-    //    H *= splitters[k]->getLowpassTransferFunctionAt(z);
-    //  else
-    //    H *= splitters[k]->getHighpassTransferFunctionAt(z);
-    //}
-
-    // the switching logic, whether to accumulate the lowpass or highpass response inot the
-    // final response is wrong
-
-    //for(k = 0; k <= bandIndex; k++)
-    //{
-    //  if(k == bandIndex) // only the last stage is lowpass
-    //    H *= splitters[k]->getLowpassTransferFunctionAt(z);
-    //  else
-    //    H *= splitters[k]->getHighpassTransferFunctionAt(z);
-    //}
-    //// almost works - last band is still wrong in case of even number of splits, crashes in
-    //// case of odd number of splits
-
     for(k = 0; k <= min(bandIndex, numSplits-1); k++)
     {
-      if(k == bandIndex) // only the last stage is lowpass
+      if(k == bandIndex) // only the last stage is possibly lowpass
         H *= splitters[k]->getLowpassTransferFunctionAt(z);
       else
         H *= splitters[k]->getHighpassTransferFunctionAt(z);
     }
-    // ok - this looks good
-
-    //for(k = 0; k <= bandIndex; k++)
-    //  H *= splitters[k]->getHighpassTransferFunctionAt(z);
-    //if(bandIndex == numSplitters-1)
-    //  H *= splitters[bandIndex]->getLowpassTransferFunctionAt(z);
-
-
-
-
-    //for(k = 0; k <= bandIndex; k++)
-    //  H *= splitters[k]->getHighpassTransferFunctionAt(z);
-    //for(k = bandIndex+1; k < numSplitters; k++)
-    //  H *= splitters[k]->getLowpassTransferFunctionAt(z);
-
-
   } break;
-
-  // handle other cases...
+  case ACCUMULATE_INTO_LOWPASS: 
+  {
+    int i = numActiveBands-1-bandIndex;
+    for(k = min(i, numSplits-1); k >= 0; k--)
+    {
+      int j = numSplits-1-k;
+      if(k == i)
+        H *= splitters[j]->getHighpassTransferFunctionAt(z);
+      else
+        H *= splitters[j]->getLowpassTransferFunctionAt(z);
+    }
+  } break;
+ 
+  // todo: handle binary tree case
 
   default: H = std::complex<TPar>(0, 0);
   }
