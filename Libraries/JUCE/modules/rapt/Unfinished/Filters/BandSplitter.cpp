@@ -33,6 +33,23 @@ std::complex<TPar> rsTwoBandSplitter<TSig, TPar>::getLowpassTransferFunctionAt(
   return (b0 + b1*zi) / (TPar(1) + a1*zi); 
 }
 
+// ToDo: try to figure out design formulas for higher order perfect-reconstruction IIR splitters. 
+// The general transfer function of a N-pole/M-zero filter is:
+//
+//             (s-z1) * (s-z2) * ... * (s-zM)     a0*s^0 + a1*s^1 + ... + aM*s^M
+// H(s) = k * -------------------------------- = --------------------------------
+//             (s-p1) * (s-p2) * ... * (s-zN)     1      + b1*s^1 + ... + bN*s^N
+//
+// H(s) is the lowpass transfer function, H(1/s) the highpass transfer function
+// requirements (for the analog prototype):
+//
+// perfect reconstruction: H(s) + H(1/s) = 1  ->  H(1/s) = 1 - H(s)
+// symmetry of LP and HP: |H(s)|^2 = 1 / |H(1/s)|^2
+
+
+
+
+
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>
