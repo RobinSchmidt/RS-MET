@@ -1,5 +1,5 @@
-#include "romos_Interpolation.h"
-#include <math.h>
+//#include "romos_Interpolation.h"
+//#include <math.h>
 using namespace romos;
 
 double romos::interpolateExponentially(double x, double xL, double yL, double xR, double yR, double shape)

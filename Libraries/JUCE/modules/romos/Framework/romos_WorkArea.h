@@ -1,9 +1,7 @@
 #ifndef romos_WorkArea_h
 #define romos_WorkArea_h
 
-//#include "romos_ProcessingStatus.h"
-
-#define MAX(x,y) (((x)>(y))?(x):(y))
+#define MAX(x,y) (((x)>(y))?(x):(y))  // move somewhere else - or replace by std::max or rsMax
 
 namespace romos
 {

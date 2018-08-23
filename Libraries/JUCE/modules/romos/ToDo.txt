@@ -1,12 +1,6 @@
--turn ModuleFactory into a singleton, in ContainerModule, have a member function
- getModuleFactory() that returns a pointer to the instance
- or simpler: use a global object in the same way as with processingStatus
--check module registry names in new registry - do they match the old names?
+-get rid of using rosic::rsString - use std::string consistently
 -create ModuleTypeInfo objects for container modules
  ->add them to the new factory
--start using the new factory
--rename classes, get rid of the old
-
 -maybe rename ModuleTypeInfo::description to helpText and reserve despcription for a more verbose
  explanantion (multiline text)
 -descripion of pins in the infoline when the mouse is over the pin

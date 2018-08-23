@@ -1,10 +1,6 @@
 #ifndef romos_Module_h
 #define romos_Module_h
 
-//#include "romos_ModuleTypeRegistry.h"
-//#include "romos_ProcessingStatus.h"
-//#include "romos_AudioConnection.h"
-
 namespace romos
 {
 

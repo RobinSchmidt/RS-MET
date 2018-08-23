@@ -1,4 +1,4 @@
-#include "romos_ProcessingStatus.h"
+//#include "romos_ProcessingStatus.h"
 using namespace romos;
 
 ProcessingStatus romos::processingStatus;  // definition of the global object

@@ -1,4 +1,4 @@
-#include "romos_VoiceAllocator.h"
+//#include "romos_VoiceAllocator.h"
 using namespace romos;
  
 VoiceAllocator romos::voiceAllocator;  // definition of the global object
