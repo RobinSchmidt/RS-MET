@@ -451,38 +451,39 @@ LibertyLadderFilterModuleEditor::LibertyLadderFilterModuleEditor(LibertyAudioMod
 
   int labelWidth = 72;
 
+  typedef romos::LadderFilter LDR;
+
   filterModeComboBox = new LibertyNamedComboBox("Mode");
-  filterModeComboBox->addItem(romos::LadderFilter::FLAT,    "Flat",                  true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::LP_6,    "Lowpass, 6 dB/oct",     true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::LP_12,   "Lowpass, 12 dB/oct",    true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::LP_18,   "Lowpass, 18 dB/oct",    true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::LP_24,   "Lowpass, 24 dB/oct",    true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::HP_6,    "Highpass, 6 dB/oct",    true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::HP_12,   "Highpass, 12 dB/oct",   true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::HP_18,   "Highpass, 18 dB/oct",   true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::HP_24,   "Highpass, 24 dB/oct",   true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::BP_6_6,  "Bandpass, 6/6 dB/oct",  true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::BP_6_12, "Bandpass, 6/12 dB/oct", true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::BP_12_6, "Bandpass, 12/6 dB/oct", true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::BP_6_18, "Bandpass, 6/18 dB/oct", true, false);
-  filterModeComboBox->addItem(romos::LadderFilter::BP_18_6, "Bandpass, 18/6 dB/oct", true, false);
-  filterModeComboBox->setDescription(juce::String(("Mode of the filter")));
-  filterModeComboBox->setComboBoxName(juce::String(("Mode:")));
+  filterModeComboBox->addItem(LDR::FLAT,    "Flat",                  true, false);
+  filterModeComboBox->addItem(LDR::LP_6,    "Lowpass, 6 dB/oct",     true, false);
+  filterModeComboBox->addItem(LDR::LP_12,   "Lowpass, 12 dB/oct",    true, false);
+  filterModeComboBox->addItem(LDR::LP_18,   "Lowpass, 18 dB/oct",    true, false);
+  filterModeComboBox->addItem(LDR::LP_24,   "Lowpass, 24 dB/oct",    true, false);
+  filterModeComboBox->addItem(LDR::HP_6,    "Highpass, 6 dB/oct",    true, false);
+  filterModeComboBox->addItem(LDR::HP_12,   "Highpass, 12 dB/oct",   true, false);
+  filterModeComboBox->addItem(LDR::HP_18,   "Highpass, 18 dB/oct",   true, false);
+  filterModeComboBox->addItem(LDR::HP_24,   "Highpass, 24 dB/oct",   true, false);
+  filterModeComboBox->addItem(LDR::BP_6_6,  "Bandpass, 6/6 dB/oct",  true, false);
+  filterModeComboBox->addItem(LDR::BP_6_12, "Bandpass, 6/12 dB/oct", true, false);
+  filterModeComboBox->addItem(LDR::BP_12_6, "Bandpass, 12/6 dB/oct", true, false);
+  filterModeComboBox->addItem(LDR::BP_6_18, "Bandpass, 6/18 dB/oct", true, false);
+  filterModeComboBox->addItem(LDR::BP_18_6, "Bandpass, 18/6 dB/oct", true, false);
+  filterModeComboBox->setDescription("Mode of the filter");
+  filterModeComboBox->setComboBoxName("Mode:");
   filterModeComboBox->setNameLabelWidth(labelWidth);
   filterModeComboBox->registerComboBoxObserver(this);
   addWidget(filterModeComboBox, true, true);
 
   saturationModeComboBox = new LibertyNamedComboBox("SaturationMode");
-  saturationModeComboBox->addItem(romos::LadderFilter::NO_SATURATION, "No Saturation", true, false);
-  saturationModeComboBox->addItem(romos::LadderFilter::LAST_STAGE,    "Last Stage",    true, false);
-  saturationModeComboBox->addItem(romos::LadderFilter::FEEDBACK,      "Feedback",      true, false);
-  saturationModeComboBox->addItem(romos::LadderFilter::EACH_STAGE,    "Each Stage",    true, false);
-  saturationModeComboBox->setDescription(juce::String(("Point(s) in the filter where saturation is applied")));
-  saturationModeComboBox->setComboBoxName(juce::String(("Saturation:")));
+  saturationModeComboBox->addItem(LDR::NO_SATURATION, "No Saturation", true, false);
+  saturationModeComboBox->addItem(LDR::LAST_STAGE,    "Last Stage",    true, false);
+  saturationModeComboBox->addItem(LDR::FEEDBACK,      "Feedback",      true, false);
+  saturationModeComboBox->addItem(LDR::EACH_STAGE,    "Each Stage",    true, false);
+  saturationModeComboBox->setDescription("Point(s) in the filter where saturation is applied");
+  saturationModeComboBox->setComboBoxName("Saturation:");
   saturationModeComboBox->setNameLabelWidth(labelWidth);
   saturationModeComboBox->registerComboBoxObserver(this);
   addWidget(saturationModeComboBox, true, true);
-
 
   updateWidgetsFromModuleState();
 }

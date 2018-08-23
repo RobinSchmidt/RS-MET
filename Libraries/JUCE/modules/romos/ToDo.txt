@@ -1,4 +1,11 @@
 -get rid of using rosic::rsString - use std::string consistently
+
+-change meaning for the shape-parameter in the ADSR - make it range from -1..+1
+ -maybe let the user select between various shape formulas (exp, trisaw-formulas, etc.) for 
+  ->AttackShapeType, DecayShapeType, ReleaseShapeType editable via GUI and the numeric shape 
+  parameters are module inputs (maybe gray out the sigmoidity input when it doesn't apply)
+  AtBn: AttackBend, AtSg: AttackSigmoid
+
 -create ModuleTypeInfo objects for container modules
  ->add them to the new factory
 -maybe rename ModuleTypeInfo::description to helpText and reserve despcription for a more verbose
