@@ -50,7 +50,7 @@ void rsFunctionPlot::setSpecialEvaluationPoint(size_t funcIndex, size_t pointInd
 Colour rsFunctionPlot::getGraphColor(size_t index) // maybe factor out to baseclass
 {
   //return Colours::white;  // preliminary
-  return plotColourScheme.getCurveColour(index);
+  return plotColourScheme.getCurveColour((int)index);
 }
 
 float rsFunctionPlot::getGraphThickness(size_t index)

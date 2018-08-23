@@ -223,6 +223,21 @@ public:
   returned. */
   T applyInverseFunction(T y);
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
+
+  /** Given a parameter in the range -1..+1, this function computes the scaler "a" for the 
+  formula y = (1-exp(a*x)) / (1-exp(a)) that is used to smoothly morph between exponential growth,
+  linear and exponential decay. The input "x" is a value between 0 and 1. If p = 0, the transition 
+  is linear, if p < 0 it's an exponential growth and if p > 0 an (inverted) exponential decay, i.e.
+  and exponential saturation. */
+  static inline T linVsExpFormulaScaler(T p)
+  {
+    T c = T(0.5) * (p + 1);
+    return T(2) * log((1-c)/c);
+  }
+  // maybe move somewhere else
+
 protected:
 
   /** For internal use only... */
@@ -243,9 +258,10 @@ protected:
   {
     T thresh = RS_EPS(T);
 
-    T c = T(0.5) * (nodes[i+1].shapeParam + 1);
-    T a = T(2)*log((1-c)/c);
-    //T a = -nodes[i+1].shapeParam;  // alpha - maybe use shapeScaler*shapeParam where shapeScaler is a 
+    //T c = T(0.5) * (nodes[i+1].shapeParam + 1);
+    //T a = T(2)*log((1-c)/c);
+
+    T a = linVsExpFormulaScaler(nodes[i+1].shapeParam);
 
     if(abs(a) < thresh)            // global setting for the whole function defined in this class
       return getValueLinear(x, i); // avoid div-by-zero
