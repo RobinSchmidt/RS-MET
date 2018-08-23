@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="TestsRosicAndRapt\Source\Misc">
@@ -1041,7 +1042,13 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_Interpolation.cpp">
       <Filter>Juce Modules\romos\Algorithms</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AtomicModule.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AudioConnection.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ContainerModule.cpp">
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Liberty.cpp">
@@ -1050,13 +1057,7 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module.cpp">
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleAtomic.cpp">
-      <Filter>Juce Modules\romos\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.cpp">
-      <Filter>Juce Modules\romos\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.cpp">
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_NoteEvent.cpp">
@@ -1312,6 +1313,9 @@
       <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\pstats.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\tailscrap.m">
       <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\test_real.c">
@@ -3242,7 +3246,13 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_Interpolation.h">
       <Filter>Juce Modules\romos\Algorithms</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AtomicModule.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AudioConnection.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ContainerModule.h">
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Liberty.h">
@@ -3251,13 +3261,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module.h">
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleAtomic.h">
-      <Filter>Juce Modules\romos\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.h">
-      <Filter>Juce Modules\romos\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.h">
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_NoteEvent.h">
@@ -3709,6 +3713,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_WindowDesigner.h">
       <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_Array - Copy.h">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_Array.h">
       <Filter>Juce Modules\rosic\datastructures</Filter>

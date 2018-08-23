@@ -1,4 +1,4 @@
-#include "romos_ModuleTypeRegistry.h"
+//#include "romos_ModuleTypeRegistry.h"
 using namespace romos;
 
 void ModuleTypeInfo::addInputPinInfo(const char* shortName, const char* fullName,
