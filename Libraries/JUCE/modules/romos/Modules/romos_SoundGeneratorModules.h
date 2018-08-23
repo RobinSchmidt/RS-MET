@@ -252,6 +252,7 @@ public:
 
 // SineOscBank, QuadratureOscBank -> let user enter relative frequencies on the GUI
 
+// PHASE_MODULATION_2OPS, PHASE_MODULATION_3OPS, PHASE_MODULATION_4OPS, 
 
 }
 

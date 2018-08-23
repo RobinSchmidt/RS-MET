@@ -4,218 +4,10 @@
 namespace romos
 {
 
-#ifdef RS_BUILD_OLD_MODULE_FACTORY
+/** A data structure to store information about the various available module types. Conatins also
+(pointer to) a factory function "createModule" that is supposed to be used to instantiate modules
+of the respective type. */
 
-//=================================================================================================
-
-/** This class is used to map numeric module identifiers for module types to and from 
-identifiers represented as strings. The former are mainly used in the DSP code where fast access 
-matters whereas the latter are mainly used for persistence purposes, where we want to have human 
-readability. It is implemented as a singleton class.
-
-\todo 
--maybe use this also as ModuleFactory  
- ->maybe have a function registerModuleType(int tyepID, string typeName, createFunc, destroyFunc)
-
-
-*/
-
-class ModuleTypeRegistry
-{
-
-public:
-
-  /** Defines a list of numeric identifiers to be used to quickly identify the type of a module 
-  inside the DSP code. */
-  enum moduleIdentifiers  // rename to moduleTypeCodes
-  {
-    // should all be nouns, optionally with appended specifiers (adjectives)
-
-    UNKNOWN_MODULE_TYPE = 0,
-
-    // Infrastructural:
-    CONTAINER,
-    TOP_LEVEL_MODULE,
-    AUDIO_INPUT,
-    AUDIO_OUTPUT,
-    EVENT_INPUT,
-    EVENT_OUTPUT,
-    PARAMETER,
-    SYSTEM_SAMPLE_RATE,
-
-    // Events:
-    NOTE_GATE,  // maybe have PolyGate/MonoGate ...but maybe just have the same M/P switch here as on all modules
-    NOTE_ON_TRIGGER,
-    NOTE_OFF_TRIGGER,
-    VOICE_KILLER,
-    VOICE_COMBINER,
-    NOTE_FREQUENCY,
-    NOTE_VELOCITY,
-
-    // NOTE_ON_TRIGGER, NOTE_OFF_TRIGGER
-
-    // Arithmetic:
-    ADDER,
-    SUBTRACTOR,
-    MULTIPLIER,
-    DIVIDER,
-    //POWER        "^"
-    CONSTANT,
-    IDENTITY,    // rename to IDENTITY_AUDIO
-    UNARY_MINUS,
-    RECIPROCAL,       // y = 1/x
-    //COMPLEMENT        // y = 1-x
-    //SCALER,           // y = c*x
-    //OFFSET            // y = x+c
-    //LINEAR_POLYNOMIAL            // y = a*x + b 
-    //QUADRATIC_POLYNOMIAL         // y = a*x^2 + b*x + c
-    //CUBIC_POLYNOMIAL
-    //QUARTIC_POLYNOMIAL
-    //QUINTIC_POLYNOMIAL
-    ADDER_3,
-    ADDER_4,
-    ADDER_5,     // maybe go upt to Adder8 - gives opportunities to optimize via parentheses (x1+x2) + (x3+x4) + 
-    ADDER_N,     // dynamic Ins - maybe use the implicit summing at the single input - but for this we may also use the Identity module
-    PRODUCT,     // dynamic Ins 
-    MATRIX,      // dynamic Ins/Outs
-
-    // Functions:
-    CLIPPER,
-    SIN_COS,
-    TRISAW,
-    FORMULA,     // dynamic Ins
-
-    // CROSS_FADER, XY_FADER (mixes 4 inputs ...mmm maybe VECTOR_MIXER would be a better name)
-
-    // Delays:
-    UNIT_DELAY,
-    DELAY_ROUNDING,
-    DELAY_LINEAR,                // add allpass, cubic, etc...
-    MULTI_TAP_DELAY_ROUNDING,    // dynamic Ins/Outs (Ins are tap delay-times, Outs are the tap-outputs)
-    MULTI_TAP_DELAY_LINEAR,      // dynamic Ins/Outs 
-
-    // Filters:      
-    FIRST_ORDER_LOWPASS,
-    FIRST_ORDER_FILTER,
-    BIQUAD,
-    // make a dynamic I/O version of all filters - they take the coefficients and a variable number of Ins/Outs for
-    // multichannel processing
-    BIQUAD_DESIGNER,
-    LADDER_FILTER,
-
-
-
-    // Generators:
-    WHITE_NOISE,
-    PHASOR,
-    BANDLIMITED_IMPULSE_TRAIN,
-    BLIT_SAW_OSCILLATOR,
-    DUAL_BLIT_SAW_OSCILLATOR,
-    // PHASE_MODULATION_2OPS, PHASE_MODULATION_3OPS, PHASE_MODULATION_4OPS, 
-
-    // Modulators:
-    ENVELOPE_ADSR,
-
-
-    NUM_NON_TEST_MODULE_TYPES,
-
-    // test-modules (for development, debugging, testing):
-    TEST_GAIN,
-    TEST_SUM_DIFF,
-    TEST_WRAPPED_SUM_DIFF,
-    TEST_SUMMED_DIFFS,
-    TEST_MOVING_AVERAGE,
-    TEST_LEAKY_INTEGRATOR,
-    TEST_FILTER1,
-    TEST_BIQUAD,
-    TEST_ADDED_CONSTANTS,
-    TEST_PIN_SORTING,
-    TEST_BLIP,
-    TEST_POLY_BLIP_STEREO,
-    TEST_NOISE_FLUTE,
-    //EXAMPLE_MOOG_FILTER,
-    //TEST_CONTAINERIZE, 
-    //TEST_UNCONTAINERIZE,
-    //TEST_MINIMIZE_INS1,
-
-    NUM_MODULE_TYPES
-  };
-
-  //-----------------------------------------------------------------------------------------------
-  // inquiry:
-
-  /** Given a module's numeric type identifier, this function returns the corresponding type-name 
-  string. */
-  rosic::rsString getModuleTypeStringFromIdentifier(int identifier);
-
-  // \todo getModuleTypeDescription(int identifier) - maybe store these in a "OneWayAssociator" 
-  // template class
-
-  /** Given a module's type-name as string, this function returns the corresponding numeric 
-  identifier. */
-  int getModuleIdentifierFromTypeString(rosic::rsString typeString);
-
-  /** Returns true when the passed identifier indicates an input- or output module 
-  (audio or event). */
-  static bool isIdentifierInputOrOutput(int typeIdentifier);
-
-  /** Returns true when the module type given by typeIdentifier has an editable name, false 
-  otherwise. Some basic modules do not allow their name to be edited such as adders, multipliers, 
-  unit delays, etc. */
-  static bool isModuleNameEditable(int typeIdentifier);
-
-  // todo: make a similar function doesModuleBlockHaveHeader() - get rid of the flag in Module 
-  // class
-
-  /** Returns true, if the modules with given typeCode have a GUI editor - some very simple modules 
-  such as adders, etc. don't. */
-  static bool hasModuleTypeEditor(int typeCode);
-
-  //-----------------------------------------------------------------------------------------------
-  // access to the sole instance:
-
-  /** Returns the sole instance of the ModuleTypeRegistry class (it's a singleton class). It will 
-  also create and initialize the instance before, if necessary (i.e. if its hasn't been done 
-  already). */
-  static ModuleTypeRegistry* getSoleInstance();
-
-  /** Deletes the sole instance of the ModuleTypeRegistry class, if existent. We can use this to 
-  manually clean up heap memory which would otherwise be cleaned up automatically on shutdown. 
-  Manual cleanup is preferable in order to not distract the memory leak detection of MSVC during 
-  development/debugging. */
-  static void deleteSoleInstance();
-
-protected:
-
-  //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
-
-  /** Constructor. */
-  ModuleTypeRegistry();
-
-  /** Destructor. */
-  ~ModuleTypeRegistry();
-
-  rosic::KeyValueMap<int, rosic::rsString> identifierNameMap;
-
-private:
-
-  static ModuleTypeRegistry* soleInstance;
-
-};
-
-/** Shorthand function for 
-romos::ModuleTypeRegistry::getSoleInstance()->getModuleIdentifierFromTypeString(typeString); */
-int getTypeId(rosic::rsString typeString);
-
-#endif //RS_BUILD_OLD_MODULE_FACTORY
-
-//=================================================================================================
-
-// This stuff above is currently actually in use, but it's bad design, here is a new approach
-// (under construction)
-
-/** Under construction - not yet used */
 class ModuleTypeInfo
 {
 public:
@@ -240,15 +32,17 @@ public:
     const char* description = "");
 };
 
+//=================================================================================================
+
 class TopLevelModule;
 
-/** 2nd attempt - under construction 
-This class is supposed to replace the old moduleTypeRegistry and ModuleFactory and allows us to
-assign names to module in/out pins for all modules of the same type at once. Makes the arrays
-audioInputNames, audioOutputNames obsolete in class ModuleAtomic -> less redundant data to store
+/** This class is used to store information about the available module types by maintining an array 
+of (pointers to) ModuleTypeInfo objects. This structure also contains a function pointer to
+a creator/factory function that can be used to instantiate objects of the respective atomic module
+type. To access the information and/or invoke the factory functions, there is a global object
+moduleFactory of class ModuleFactory in the romos namespace. */
 
-*/
-class ModuleFactoryNew
+class ModuleFactoryNew // rename to ModuleFactory
 {
 
 public:
@@ -300,17 +94,16 @@ public:
   int getModuleId(const std::string& fullTypeName);
   // rename to getModuleTypeId
 
-
-
   /** Returns a pointer the full type info object given the name of the type (if the name is
   unknown, it returns a nullptr). */
   ModuleTypeInfo* getModuleTypeInfo(const std::string& fullTypeName);
 
+  /** Returns the short name (taht appears at the top of the blocks) give the full name of a 
+  module type */
   std::string getShortTypeName(const std::string& fullTypeName)
   {
     return getModuleTypeInfo(fullTypeName)->shortName;
   }
-
 
   /** Returns a pointer the type info object given the index/id of the type (if the index is
   out of range, it returns a nullptr). */
@@ -319,6 +112,7 @@ public:
   /** Preliminary - todo: disallow editing for certain simple modules such as adders, unit-delays,
   etc - see old implementation. */
   bool isModuleNameEditable(int id) { return true; } 
+  // maybe we should have a nameEditable flag in the Module baseclass that defaults to true
 
   bool hasModuleTypeEditor(size_t id) { return (*typeInfos)[id]->hasEditor; }
 
@@ -375,41 +169,6 @@ extern ModuleFactoryNew moduleFactory;  // declaration of the global object
 
 
 
-
-// just some throw-away code to figure out what causes the memory leak with ModuleFactoryNew
-class MemLeakTest
-{
-  //std::vector<ModuleTypeInfo*> typeInfos; // having this as member causes the memleak
-  //std::vector<int> test; // this also
-  // so it seems that when i have a global object of a class that has a std::vector member,
-  // i'll get a memleak
-
-
-  //std::vector<int> testVector;         // triggers pre-exit-of-main memleak detection
-  std::vector<int>* testPointerToVector; // doesn't trigger it
-
-  // there is a way to prevent the debugger to trigger false memory leaks, explained here:
-  // http://www.cplusplus.com/forum/general/9614/ it says:
-  // So the way to get around the problem is this:
-  // struct MemCheck {
-  //   ~MemCheck() {
-  //     _CrtDumpMemoryLeaks();
-  //   }
-  // };
-  // And then instantiate MemCheck as the first variable in the block/function so that it gets 
-  // destroyed last, after everything else.
-
-  // so, using a class/struct that calls _CrtDumpMemoryLeaks(); in its destructor and then 
-  // instantiating a variable of that class, we ensure that the destructor of that variable is 
-  // called *after* the exit point of our main function
-  // maybe have two checks pre-exit memory-leaks and post-exit memory leaks
-  // maybe name the struct PostExitMemLeakChecker
-
-};
-extern MemLeakTest memLeakTest;
-// ok - something like this has been added to romos.h/cpp needs to be cleaned up - move this to 
-// somewhere else - maybe make a test-project solely for demonstrating the behavior of the memleak 
-// checker - how it triggers false positives and how to avoid it
 
 //=================================================================================================
 

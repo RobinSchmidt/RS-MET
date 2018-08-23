@@ -331,6 +331,11 @@ public:
 // LA-alike synth - needs processing-flags for that in the ModuleContainer class and perhaps a corresponding LocalVoiceStarter module
 // unless this starting (i.e. setting the flag back to true) is also done by NoteOn module
 
+//COMPLEMENT        // y = 1-x
+//SCALER,           // y = c*x
+//OFFSET            // y = x+c
+//MATRIX,      // dynamic Ins/Outs
+
 
 }
 
