@@ -42,16 +42,16 @@ a creator/factory function that can be used to instantiate objects of the respec
 type. To access the information and/or invoke the factory functions, there is a global object
 moduleFactory of class ModuleFactory in the romos namespace. */
 
-class ModuleFactoryNew // rename to ModuleFactory
+class ModuleFactory
 {
 
 public:
 
   /** Constructor. Pre-populates the registry with standard modules. */
-  ModuleFactoryNew();
+  ModuleFactory();
 
   /** Destructor. Cleans up the memory. */
-  ~ModuleFactoryNew();
+  ~ModuleFactory();
 
   //-----------------------------------------------------------------------------------------------
   // \name Creation/deletion of module instances
@@ -154,7 +154,7 @@ protected:
 
 };
 
-extern ModuleFactoryNew moduleFactory;  // declaration of the global object
+extern ModuleFactory moduleFactory;  // declaration of the global object
 
 
 

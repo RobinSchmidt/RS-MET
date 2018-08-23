@@ -1,4 +1,4 @@
--turn ModuleFactoryNew into a singleton, in ModuleContainer, have a member function
+-turn ModuleFactory into a singleton, in ModuleContainer, have a member function
  getModuleFactory() that returns a pointer to the instance
  or simpler: use a global object in the same way as with processingStatus
 -check module registry names in new registry - do they match the old names?

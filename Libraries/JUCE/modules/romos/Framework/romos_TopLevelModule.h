@@ -109,7 +109,7 @@ protected:
   virtual ~TopLevelModule();
 
   friend class ModuleFactory;    // old
-  friend class ModuleFactoryNew;
+  friend class ModuleFactory;
 
 
   /** Does initialization stuff for input buffers and input-modules (memory allocation, setting up

@@ -19,19 +19,19 @@ void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullNam
 
 //-------------------------------------------------------------------------------------------------
 
-ModuleFactoryNew romos::moduleFactory;  // definition of the global object - causes memleak?
+ModuleFactory romos::moduleFactory;  // definition of the global object - causes memleak?
 
-ModuleFactoryNew::ModuleFactoryNew()
+ModuleFactory::ModuleFactory()
 {
   registerStandardModules();
 }
 
-ModuleFactoryNew::~ModuleFactoryNew()
+ModuleFactory::~ModuleFactory()
 {
   clearRegisteredTypes();
 }
 
-romos::Module* ModuleFactoryNew::createModule(int id, const std::string& name, int x, int y, 
+romos::Module* ModuleFactory::createModule(int id, const std::string& name, int x, int y, 
   bool polyphonic)
 {
   ensureTypeInfoArrayAllocated();
@@ -45,14 +45,14 @@ romos::Module* ModuleFactoryNew::createModule(int id, const std::string& name, i
   return m;
 }
 
-romos::Module* ModuleFactoryNew::createModule(const std::string& fullTypeName, 
+romos::Module* ModuleFactory::createModule(const std::string& fullTypeName, 
   const std::string& name, int x, int y, bool polyphonic)
 {
   int id = getModuleId(fullTypeName);
   return createModule(id, name, x, y, polyphonic);
 }
 
-romos::TopLevelModule* ModuleFactoryNew::createTopLevelModule(const std::string& name, 
+romos::TopLevelModule* ModuleFactory::createTopLevelModule(const std::string& name, 
   int x, int y, bool polyphonic) const
 {
   TopLevelModule* tlm = new TopLevelModule();
@@ -60,13 +60,13 @@ romos::TopLevelModule* ModuleFactoryNew::createTopLevelModule(const std::string&
   return tlm;
 }
 
-void ModuleFactoryNew::deleteModule(romos::Module* moduleToDelete)
+void ModuleFactory::deleteModule(romos::Module* moduleToDelete)
 {
   moduleToDelete->cleanUp();
   delete moduleToDelete;
 }
 
-int ModuleFactoryNew::getModuleId(const std::string& fullTypeName)
+int ModuleFactory::getModuleId(const std::string& fullTypeName)
 {
   ensureTypeInfoArrayAllocated();
   for(int i = 0; i < typeInfos->size(); i++)
@@ -75,7 +75,7 @@ int ModuleFactoryNew::getModuleId(const std::string& fullTypeName)
   return -1;
 }
 
-ModuleTypeInfo* ModuleFactoryNew::getModuleTypeInfo(const std::string& fullTypeName)
+ModuleTypeInfo* ModuleFactory::getModuleTypeInfo(const std::string& fullTypeName)
 {
   ensureTypeInfoArrayAllocated();
   for(int i = 0; i < typeInfos->size(); i++)
@@ -84,14 +84,14 @@ ModuleTypeInfo* ModuleFactoryNew::getModuleTypeInfo(const std::string& fullTypeN
   return nullptr;
 }
 
-ModuleTypeInfo* ModuleFactoryNew::getModuleTypeInfo(size_t id)
+ModuleTypeInfo* ModuleFactory::getModuleTypeInfo(size_t id)
 {
   if(id < typeInfos->size())
     return (*typeInfos)[id];
   return nullptr;
 }
 
-void ModuleFactoryNew::registerModuleType(ModuleTypeInfo* info)
+void ModuleFactory::registerModuleType(ModuleTypeInfo* info)
 {
   ensureTypeInfoArrayAllocated();
   rassert(!doesTypeExist(info->fullName)); // type with that name was already registered...
@@ -99,7 +99,7 @@ void ModuleFactoryNew::registerModuleType(ModuleTypeInfo* info)
   typeInfos->push_back(info);
 }
 
-void ModuleFactoryNew::registerStandardModules()
+void ModuleFactory::registerStandardModules()
 {
 
   // todo: remove the "Module" from the class names where it appears
@@ -172,7 +172,7 @@ void ModuleFactoryNew::registerStandardModules()
   // register also programatically built containers...but maybe do this in liberty
 }
 
-void ModuleFactoryNew::registerPreBuiltContainers()
+void ModuleFactory::registerPreBuiltContainers()
 {
   // todo:
   // TestModuleBuilder::createGain, createSumDiff, createWrappedSumDiff, createSummedDiffs, 
@@ -180,7 +180,7 @@ void ModuleFactoryNew::registerPreBuiltContainers()
   // createAddedConstants, createPinSortTest, createBlip, createPolyBlipStereo, createNoiseFlute
 }
 
-void ModuleFactoryNew::clearRegisteredTypes()
+void ModuleFactory::clearRegisteredTypes()
 {
   ensureTypeInfoArrayAllocated();
   for(int i = 0; i < typeInfos->size(); i++)
@@ -190,13 +190,13 @@ void ModuleFactoryNew::clearRegisteredTypes()
   typeInfos = nullptr;
 }
 
-void ModuleFactoryNew::ensureTypeInfoArrayAllocated()
+void ModuleFactory::ensureTypeInfoArrayAllocated()
 {
   if(typeInfos == nullptr)
     typeInfos = new std::vector<ModuleTypeInfo*>;
 }
 
-void ModuleFactoryNew::setupModule(romos::Module* module, const std::string& name, 
+void ModuleFactory::setupModule(romos::Module* module, const std::string& name, 
   int x, int y, bool polyphonic) const
 {
   // copied from the old ModuleFactory::createModule

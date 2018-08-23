@@ -82,7 +82,7 @@ protected:
 
   // under construction:
   //void populateModuleTypeRegistry();      // not yet used - rename to addCustomModulesToFactory
-  //ModuleFactoryNew moduleTypeRegistry; // not yet used 
+  //ModuleFactory moduleTypeRegistry; // not yet used 
 
 };
 
