@@ -8,27 +8,30 @@ namespace romos
 
 void EnvelopeADSR::initialize()
 {
-  initInputPins(7, "Att", "AtSh", "Dec", "DcSh", "Sus", "Rel", "RlSh");
-  initOutputPins(1, "Env");
+  //initInputPins(7, "Att", "AtSh", "Dec", "DcSh", "Sus", "Rel", "RlSh");
+  //initOutputPins(1, "Env");
+
+  initInputPins({ "Att", "AtSh", "Dec", "DcSh", "Sus", "Rel", "RlSh" });
+  initOutputPins({ "Env" });
 
   // wrap this into a function setPinDefaultValue(int pinIndex, double newDefaultValue):
   //inputPins[4].setDefaultValue(1.0); // otherwise, the TimeScale pin is 0 when disconnected leading to an all zero output
   //int dummy = 0;
 }
 
-void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *in1,
-  const double *in2, const double *in3, const double *in4, const double *in5, const double *in6,
-  const double *in7, double *out, const int voiceIndex)
+void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *Att,
+  const double *AtSh, const double *Dec, const double *DcSh, const double *Sus, const double *Rel,
+  const double *RlSh, double *out, const int voiceIndex)
 {
   EnvelopeADSR  *env     = static_cast<EnvelopeADSR*> (module);
   unsigned long *counter = &(env->counters[voiceIndex]);
   double         yStart  = env->startValues[voiceIndex];
 
-  double sustain   = *in5;
+  double sustain   = *Sus;
   double timeScale = 1.0;
-  unsigned long attackSamples  = (unsigned long)rosic::round(*in1 * timeScale * processingStatus.getSystemSampleRate());
-  unsigned long decaySamples   = (unsigned long)rosic::round(*in3 * timeScale * processingStatus.getSystemSampleRate());
-  unsigned long releaseSamples = (unsigned long)rosic::round(*in6 * timeScale * processingStatus.getSystemSampleRate());
+  unsigned long attackSamples  = (unsigned long)rosic::round(*Att * timeScale * processingStatus.getSystemSampleRate());
+  unsigned long decaySamples   = (unsigned long)rosic::round(*Dec * timeScale * processingStatus.getSystemSampleRate());
+  unsigned long releaseSamples = (unsigned long)rosic::round(*Rel * timeScale * processingStatus.getSystemSampleRate());
 
   // todo: precompute timeScale * processingStatus.getSystemSampleRate() - or maybe get rid of 
   // timeScale
@@ -38,7 +41,7 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
   if(*counter < attackSamples)
   {
     // attack phase
-    a = *in2;
+    a = *AtSh;  // apply formula
     p = (double)*counter / (double)attackSamples;
     if(a == 0.0)
       *out = yStart + (1.0 - yStart) * p;
@@ -49,7 +52,7 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
   else if(*counter < attackSamples + decaySamples)
   {
     // decay phase
-    a = *in4;
+    a = *DcSh;
     p = (double)(*counter-attackSamples)  / (double)(decaySamples);
     if(a == 0.0)
       *out = 1.0 + (sustain-1.0) * p;
@@ -68,7 +71,7 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
   else if(*counter < attackSamples + decaySamples + releaseSamples)
   {
     // release phase
-    a = *in7;
+    a = *RlSh;
     p = (double)(*counter-attackSamples-decaySamples)  / (double)(releaseSamples);
     if(a == 0.0)
       *out = yStart - yStart * p;
