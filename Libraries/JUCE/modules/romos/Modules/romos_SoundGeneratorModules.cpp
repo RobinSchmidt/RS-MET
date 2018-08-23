@@ -22,7 +22,7 @@ INLINE void WhiteNoise::process(Module *module, double *out, int voiceIndex)
 }
 void WhiteNoise::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   state[voiceIndex] = (unsigned long)parameters[0].value.asInt();
   //state[voiceIndex] = (unsigned long) round( *(inputPins[0].outputPointer + voiceIndex * inputPins[0].outputVoiceStride) );
 }
@@ -32,12 +32,12 @@ void WhiteNoise::parameterChanged(int index)
 }
 void WhiteNoise::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   state = new unsigned long[getNumVoices()]; // PRNG state per voice, use self defined uint32 later
 }
 void WhiteNoise::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] state;
   state = NULL;
 }
@@ -68,17 +68,17 @@ INLINE void Phasor::process(Module* module, double* in1, double* in2, double* in
 }
 void Phasor::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   phases[voiceIndex] = 0.0;  // introduce a startphase later (as GUI parameter)
 }
 void Phasor::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   phases = new double[getNumVoices()];
 }
 void Phasor::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] phases;
   phases = nullptr;
 }
@@ -152,17 +152,17 @@ INLINE double BandlimitedImpulseTrain::computeUnscaledBlitValue(const double the
 }
 void BandlimitedImpulseTrain::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   phases[voiceIndex] = fixedPhaseOffset;  // introduce a startphase later (as GUI parameter)
 }
 void BandlimitedImpulseTrain::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   phases = new double[getNumVoices()];
 }
 void BandlimitedImpulseTrain::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] phases;
   phases = NULL;
 }

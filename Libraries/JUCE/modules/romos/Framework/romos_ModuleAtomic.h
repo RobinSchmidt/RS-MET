@@ -1,24 +1,21 @@
-#ifndef romos_ModuleAtomic_h
-#define romos_ModuleAtomic_h
-
-//#include "romos_Module.h"
+#ifndef romos_AtomicModule_h
+#define romos_AtomicModule_h
 
 namespace romos
 {
 
-
 // maybe rename file to ModuleBaseClasses - we have more specific baseclasses here too
-
+// or better: move those subclasses into some file in the "Modules" folder
 
 //=================================================================================================
-// class ModuleAtomic:
+// class AtomicModule:
 
 /** This is the baseclass for atomic modules (except for some very special ones). Atomic modules 
 differ from composite modules in the way they deal with connections. Atomic modules deal with their 
 connections directly while composite modules delegate their connections to their I/O 
 child-modules. */
 
-class ModuleAtomic : public Module
+class AtomicModule : public Module
 {
 
   friend class ContainerModule;
@@ -82,7 +79,7 @@ protected:
 
   /** Adds an audio output. A name for the pin can optionally be passed. */
   virtual void addAudioOutput(const char* pinName = "");
-   // these functions are in ModuleAtomic and not in Module because in containers the inputs and
+   // these functions are in AtomicModule and not in Module because in containers the inputs and
    // outputs are actually modules
 
   /** Deletes the audio input with the given index. */
@@ -92,11 +89,11 @@ protected:
   virtual void deleteAudioOutput(int index);
 
   /** Constructor. Protected because instances should be created only through the ModuleFactory. */
-  ModuleAtomic(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
+  AtomicModule(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
     bool polyphonic = false);
 
   /** Destructor. Protected because instances should be deleted only through the ModuleFactory. */
-  virtual ~ModuleAtomic();
+  virtual ~AtomicModule();
 
   //-----------------------------------------------------------------------------------------------
   // data members:
@@ -120,8 +117,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  ModuleAtomic(const ModuleAtomic &other) {}
-  ModuleAtomic& operator=(const ModuleAtomic &other) { return *this; }
+  AtomicModule(const AtomicModule &other) {}
+  AtomicModule& operator=(const AtomicModule &other) { return *this; }
 
 };
 
@@ -208,13 +205,13 @@ protected:
 suitable as baseclass for modules with parameters that do not need to derive from other modules 
 (without parameters). */
 
-class ModuleWithParameters : public ModuleAtomic, public ParameterMixIn
+class ModuleWithParameters : public AtomicModule, public ParameterMixIn
 {
 
 protected:
 
   ModuleWithParameters(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
-    bool polyphonic = false) : ModuleAtomic(name, x, y, polyphonic)
+    bool polyphonic = false) : AtomicModule(name, x, y, polyphonic)
   {
 
   }
@@ -239,7 +236,7 @@ private:
 input signals to their connected source-modules and notify target modules when their source-module 
 has changed. Input- and and output modules fall into this class. */
 
-class ModuleProxy : public ModuleAtomic
+class ModuleProxy : public AtomicModule
 {
 
 public:

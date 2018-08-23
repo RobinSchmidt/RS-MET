@@ -33,7 +33,7 @@ References: Moore - Elements of Computer Music, page 183...
 todo: change the meaning of the Shape parameters to be the normalized y-value at x=0.5 shifted
 and scaled to the range -1..+1 see RAPT::rsNodeBasedFunction for formula */
 
-class EnvelopeADSR : public ModuleAtomic
+class EnvelopeADSR : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_7(EnvelopeADSR);
 public:

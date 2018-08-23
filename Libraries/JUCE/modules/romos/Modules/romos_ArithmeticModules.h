@@ -6,7 +6,7 @@ namespace romos
 
 //-------------------------------------------------------------------------------------------------
 
-class ConstantModule : public ModuleAtomic
+class ConstantModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(ConstantModule);
 public:
@@ -34,7 +34,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class IdentityModule : public ModuleAtomic
+class IdentityModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(IdentityModule);
 };
@@ -53,7 +53,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class UnaryMinusModule : public ModuleAtomic
+class UnaryMinusModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(UnaryMinusModule);
 };
@@ -73,7 +73,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class ReciprocalModule : public ModuleAtomic
+class ReciprocalModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(ReciprocalModule);
 };
@@ -93,7 +93,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class AdderModule : public ModuleAtomic
+class AdderModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_2(AdderModule);  // 2 because it has two inputs
 };
@@ -116,7 +116,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class SubtractorModule : public ModuleAtomic
+class SubtractorModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_2(SubtractorModule);
 };
@@ -136,7 +136,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class MultiplierModule : public ModuleAtomic
+class MultiplierModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_2(MultiplierModule);
 };
@@ -157,7 +157,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class DividerModule : public ModuleAtomic
+class DividerModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_2(DividerModule);
 };
@@ -178,7 +178,7 @@ public:
 //-------------------------------------------------------------------------------------------------
 /*
 // todo:
-class PowerModule : public ModuleAtomic
+class PowerModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_2(PowerModule);
 };
@@ -198,7 +198,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class Adder3Module : public ModuleAtomic
+class Adder3Module : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_3(Adder3Module);
 };
@@ -218,7 +218,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class Adder4Module : public ModuleAtomic
+class Adder4Module : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_4(Adder4Module);
 };
@@ -238,7 +238,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class Adder5Module : public ModuleAtomic
+class Adder5Module : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_5(Adder5Module);
 };
@@ -258,7 +258,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class AdderNModule : public ModuleAtomic
+class AdderNModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_N(AdderNModule);
 

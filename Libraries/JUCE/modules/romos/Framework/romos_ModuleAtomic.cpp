@@ -1,21 +1,21 @@
-#include "romos_ModuleAtomic.h"
+//#include "romos_AtomicModule.h"
 #include "romos_AudioConnection.h" 
 //#include "romos_ContainerModule.h"
 using namespace romos;
 
 //=========================================================================================================================================
-// ModuleAtomic:
+// AtomicModule:
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-romos::ModuleAtomic::ModuleAtomic(const rosic::rsString &name, int x, int y, bool polyphonic) 
+romos::AtomicModule::AtomicModule(const rosic::rsString &name, int x, int y, bool polyphonic) 
 : Module(name, x, y, polyphonic)
 {
 
 }
 
-romos::ModuleAtomic::~ModuleAtomic()
+romos::AtomicModule::~AtomicModule()
 {
 
 }
@@ -23,7 +23,7 @@ romos::ModuleAtomic::~ModuleAtomic()
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // setup of pins:
 
-void ModuleAtomic::initInputPins(int numberOfPins, const char*, ...)
+void AtomicModule::initInputPins(int numberOfPins, const char*, ...)
 {
   va_list ap;
   va_start(ap, numberOfPins);
@@ -36,7 +36,7 @@ void ModuleAtomic::initInputPins(int numberOfPins, const char*, ...)
   va_end(ap);
 }
 
-void ModuleAtomic::initInputPins(const std::vector<std::string>& pinNames)
+void AtomicModule::initInputPins(const std::vector<std::string>& pinNames)
 {
   for(int i = 0; i < pinNames.size(); i++)
   {
@@ -45,7 +45,7 @@ void ModuleAtomic::initInputPins(const std::vector<std::string>& pinNames)
   }
 }
 
-void ModuleAtomic::initOutputPins(int numberOfPins, const char*, ...)
+void AtomicModule::initOutputPins(int numberOfPins, const char*, ...)
 {
   va_list ap;
   va_start(ap, numberOfPins);
@@ -55,7 +55,7 @@ void ModuleAtomic::initOutputPins(int numberOfPins, const char*, ...)
   va_end(ap);
 }
 
-void ModuleAtomic::initOutputPins(const std::vector<std::string>& pinNames)
+void AtomicModule::initOutputPins(const std::vector<std::string>& pinNames)
 {
   for(int i = 0; i < pinNames.size(); i++)
     rosic::appendElement(audioOutputNames, rosic::rsString(pinNames[i]));
@@ -67,7 +67,7 @@ void ModuleAtomic::initOutputPins(const std::vector<std::string>& pinNames)
 
 // maybe reactivate later when we implement variable I/O:
 
-void romos::ModuleAtomic::setPinName(int kind, int direction, int pinIndex, const rosic::rsString &newName)
+void romos::AtomicModule::setPinName(int kind, int direction, int pinIndex, const rosic::rsString &newName)
 {
   rosic::Array<rosic::rsString>* pinNames = properties->getPinNameArray(kind, direction);
   if( pinIndex >= 0 && pinIndex < pinNames->getNumElements() )
@@ -76,7 +76,7 @@ void romos::ModuleAtomic::setPinName(int kind, int direction, int pinIndex, cons
     DEBUG_BREAK;
 }
 
-void romos::ModuleAtomic::setNumAudioInputs(int newNumber) 
+void romos::AtomicModule::setNumAudioInputs(int newNumber) 
 { 
   //moduleMutex.lock();
   numAudioInputs = newNumber; 
@@ -84,7 +84,7 @@ void romos::ModuleAtomic::setNumAudioInputs(int newNumber)
   //moduleMutex.unlock();
 }
  
-void romos::ModuleAtomic::setNumAudioOutputs(int newNumber) 
+void romos::AtomicModule::setNumAudioOutputs(int newNumber) 
 { 
   //moduleMutex.lock();
   numAudioOutputs = newNumber; 
@@ -97,7 +97,7 @@ void romos::ModuleAtomic::setNumAudioOutputs(int newNumber)
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // inquiry about pins:
 
-rosic::rsString romos::ModuleAtomic::getPinName(int kind, int direction, int pinIndex) const
+rosic::rsString romos::AtomicModule::getPinName(int kind, int direction, int pinIndex) const
 {
   if( direction == romos::INCOMING )
     return audioInputNames.at(pinIndex);
@@ -111,7 +111,7 @@ rosic::rsString romos::ModuleAtomic::getPinName(int kind, int direction, int pin
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
 
-void romos::ModuleAtomic:: addAudioInput(const char* shortName, const char* longName, 
+void romos::AtomicModule:: addAudioInput(const char* shortName, const char* longName, 
   const char* description)
 {
   rosic::appendElement(audioInputNames,        rosic::rsString(shortName));
@@ -122,7 +122,7 @@ void romos::ModuleAtomic:: addAudioInput(const char* shortName, const char* long
   updateInputPointersAndInFrameStrides();
 }
 
-void romos::ModuleAtomic::addAudioOutput(const char* pinName)
+void romos::AtomicModule::addAudioOutput(const char* pinName)
 {
   rosic::appendElement(audioOutputNames, rosic::rsString(pinName));
 
@@ -132,7 +132,7 @@ void romos::ModuleAtomic::addAudioOutput(const char* pinName)
   allocateAudioOutputs();
 }
 
-void romos::ModuleAtomic::deleteAudioInput(int index)
+void romos::AtomicModule::deleteAudioInput(int index)
 {
   rosic::removeElementByIndex(audioInputNames, index);
   rosic::removeElementByIndex(inputPins,       index);
@@ -162,7 +162,7 @@ void romos::ModuleAtomic::deleteAudioInput(int index)
   */
 }
 
-void romos::ModuleAtomic::deleteAudioOutput(int index)
+void romos::AtomicModule::deleteAudioOutput(int index)
 {
   DEBUG_BREAK;
 
@@ -286,7 +286,7 @@ int romos::ParameterMixIn::findIndexOfParameterWithName(const rosic::rsString &n
 // construction/destruction:
 
 romos::ModuleProxy::ModuleProxy(const rosic::rsString &name, int x, int y, bool polyphonic) 
-: ModuleAtomic(name, x, y, polyphonic)
+: AtomicModule(name, x, y, polyphonic)
 {
 
 }

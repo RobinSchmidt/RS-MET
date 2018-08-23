@@ -19,17 +19,17 @@ namespace romos
   }
   void UnitDelayModule::resetVoiceState(int voiceIndex)
   {
-    ModuleAtomic::resetVoiceState(voiceIndex);
+    AtomicModule::resetVoiceState(voiceIndex);
     buffer[voiceIndex] = 0.0;
   } 
   void UnitDelayModule::allocateMemory()
   {
-    ModuleAtomic::allocateMemory();
+    AtomicModule::allocateMemory();
     buffer = new double[getNumVoices()]; // x[n-1]
   }
   void UnitDelayModule::freeMemory()
   {
-    ModuleAtomic::freeMemory();
+    AtomicModule::freeMemory();
     delete[] buffer;
     buffer = NULL;
   }

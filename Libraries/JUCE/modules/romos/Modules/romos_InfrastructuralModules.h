@@ -71,7 +71,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class SystemSampleRateModule : public ModuleAtomic
+class SystemSampleRateModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_0(SystemSampleRateModule);
 };
@@ -94,7 +94,7 @@ public:
 /** Outputs the current system sampling period, that is: the distance between two samples in 
 seconds. This is equal to the reciprocal of the samplerate. */
 
-class SystemSamplePeriodModule : public ModuleAtomic
+class SystemSamplePeriodModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_0(SystemSamplePeriodModule);
 };
@@ -114,7 +114,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class NoteGateModule : public ModuleAtomic
+class NoteGateModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_0(NoteGateModule);
 };
@@ -133,7 +133,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class NoteOnTriggerModule : public ModuleAtomic
+class NoteOnTriggerModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_0(NoteOnTriggerModule);
 };
@@ -152,7 +152,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class NoteOffTriggerModule : public ModuleAtomic
+class NoteOffTriggerModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_0(NoteOffTriggerModule);
 };
@@ -203,7 +203,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class VoiceCombinerModule : public ModuleAtomic
+class VoiceCombinerModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(VoiceCombinerModule);
 protected:
@@ -230,7 +230,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class NoteFrequencyModule : public ModuleAtomic
+class NoteFrequencyModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_0(NoteFrequencyModule);
 };
@@ -249,7 +249,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class NoteVelocityModule : public ModuleAtomic
+class NoteVelocityModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_0(NoteVelocityModule);
 };

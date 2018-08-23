@@ -7,7 +7,7 @@ namespace romos
 //-------------------------------------------------------------------------------------------------
 
 /** Clips the input signal to a range between some specified minimum and maximum. */
-class ClipperModule : public ModuleAtomic
+class ClipperModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_3(ClipperModule);
 };
@@ -28,7 +28,7 @@ public:
 
 /** Computes the sine and cosine of 2*pi times the input value (multiplication of the argument by
 2*pi results in a sine and cosing wave with a period of unity). */
-class SinCosModule : public ModuleAtomic
+class SinCosModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(SinCosModule);
 };
@@ -63,7 +63,7 @@ Inputs:
   5: Decay Sigmoidity
 Outputs:
   0: the trisaw signal  */
-class TriSawModule : public ModuleAtomic
+class TriSawModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_6(TriSawModule);
 };
@@ -82,7 +82,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class SaturatorModule : public ModuleAtomic
+class SaturatorModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_3(SaturatorModule);
   double (*sigmoid)(double) = tanh;  // (normalized) prototype sigmoid function

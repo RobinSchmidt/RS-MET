@@ -14,7 +14,7 @@ computes its coefficients itself from the second input which defines the cutoff 
 a bilinear transform design equation. 
 // todo: make it switchable to impulse variant via a gui parameter */
 
-class FirstOrderLowpass : public ModuleAtomic
+class FirstOrderLowpass : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_2(FirstOrderLowpass);
 public:
@@ -42,7 +42,7 @@ public:
 equation:
 y[n] = b0[n]*x[n] + b1[n]*x[n-1] - a1[n]*y[n-1]. */
 
-class FirstOrderFilter : public ModuleAtomic
+class FirstOrderFilter : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_4(FirstOrderFilter);
 public:
@@ -69,7 +69,7 @@ public:
 /** A biquad filter module in direct form 1 realizing the difference equation:
 y[n] = b0[n]*x[n] + b1[n]*x[n-1] + b2[n]*x[n-2] - a1[n]*y[n-1] - a2[n]*y[n-2]. */
 
-class Biquad : public ModuleAtomic
+class Biquad : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_6(Biquad);
 public:

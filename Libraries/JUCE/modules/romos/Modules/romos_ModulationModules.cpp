@@ -114,19 +114,19 @@ INLINE void EnvelopeADSR::process(Module *module, double *in1, double *in2, doub
 }
 void EnvelopeADSR::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   counters[voiceIndex]    = 0;
   startValues[voiceIndex] = 0.0;
 }
 void EnvelopeADSR::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   counters    = new unsigned long[getNumVoices()];
   startValues = new double[getNumVoices()];
 }
 void EnvelopeADSR::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] counters;
   counters = NULL;
   delete[] startValues;

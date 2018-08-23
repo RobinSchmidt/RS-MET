@@ -6,7 +6,7 @@ namespace romos
 
 //-------------------------------------------------------------------------------------------------
 
-class UnitDelayModule : public ModuleAtomic
+class UnitDelayModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(UnitDelayModule);
 public:

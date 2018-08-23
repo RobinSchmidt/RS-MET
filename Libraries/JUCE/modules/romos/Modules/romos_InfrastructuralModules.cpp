@@ -158,7 +158,7 @@ INLINE void VoiceKillerModule::process(Module *module, double *in, double *out, 
 }
 void VoiceKillerModule::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   sampleCounters[voiceIndex] = 0;
 }
 void VoiceKillerModule::parameterChanged(int index)
@@ -168,12 +168,12 @@ void VoiceKillerModule::parameterChanged(int index)
 }
 void VoiceKillerModule::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   sampleCounters = new unsigned int[getNumVoices()];
 }
 void VoiceKillerModule::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] sampleCounters;
   sampleCounters = NULL;
 }
@@ -229,12 +229,12 @@ void VoiceCombinerModule::processPolyBlock(Module *module, int voiceIndex, int b
 }
 void VoiceCombinerModule::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
    // \todo we should always allocate only memory for a single voice in the outputs
 }
 void VoiceCombinerModule::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
 }
 void VoiceCombinerModule::setPolyphonic(bool shouldBePolyphonic)
 {
@@ -248,14 +248,14 @@ void VoiceCombinerModule::clearVoiceBuffer(int voiceIndex)
 void VoiceCombinerModule::connectInputPinTo(int inputPinIndex, Module *sourceModule, 
   int sourceOutputPinIndex)
 {
-  ModuleAtomic::connectInputPinTo(inputPinIndex, sourceModule, sourceOutputPinIndex);
+  AtomicModule::connectInputPinTo(inputPinIndex, sourceModule, sourceOutputPinIndex);
   assignProcessingFunctions();
 }
 void VoiceCombinerModule::updateInputPointersAndInFrameStrides()
 {
   // this function is called whenever some potential input-source module has changed its output 
   // polyphony - we use this callback to set up our processing functions:
-  ModuleAtomic::updateInputPointersAndInFrameStrides();
+  AtomicModule::updateInputPointersAndInFrameStrides();
   assignProcessingFunctions();
 }
 void VoiceCombinerModule::assignProcessingFunctions()
@@ -341,7 +341,7 @@ void ParameterModule::initialize()
 }
 void ParameterModule::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   // later: set current-value to target value here (smoothing)
 }
 void ParameterModule::parameterChanged(int index)
@@ -401,7 +401,7 @@ void ParameterModule::parameterChanged(int index)
 void ParameterModule::setModuleName(const rosic::rsString& newName)
 {
   // overriden to avoid setting the value according to the name (which the ConstantModule baseclass would do)
-  ModuleAtomic::setModuleName(newName);
+  AtomicModule::setModuleName(newName);
 }
 
 /*

@@ -57,7 +57,7 @@ Inputs:
 Outputs:
  0: the ramp signal  */
 
-class Phasor : public ModuleAtomic
+class Phasor : public AtomicModule
 {
   //CREATE_COMMON_DECLARATIONS_1(Phasor);
   CREATE_COMMON_DECLARATIONS_3(Phasor);
@@ -99,7 +99,7 @@ Outputs:
 References:
  -http://www.music.mcgill.ca/~gary/307/week5/bandlimited.html */
 
-class BandlimitedImpulseTrain : public ModuleAtomic
+class BandlimitedImpulseTrain : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_2(BandlimitedImpulseTrain);
 public:

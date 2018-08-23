@@ -30,18 +30,18 @@ INLINE void FirstOrderLowpass::process(Module *module, double *in1, double *in2,
 }
 void FirstOrderLowpass::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   double *buf = buffers + 2*voiceIndex;
   buf[0] = buf[1] = 0.0;
 }
 void FirstOrderLowpass::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   buffers = new double[2*getNumVoices()]; // x[n-1], y[n-1]
 }
 void FirstOrderLowpass::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] buffers;
   buffers = NULL;
 }
@@ -65,18 +65,18 @@ INLINE void FirstOrderFilter::process(Module *module, double *in1, double *in2, 
 }
 void FirstOrderFilter::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   double *buf = buffers + 2*voiceIndex;
   buf[0] = buf[1] = 0.0;
 }
 void FirstOrderFilter::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   buffers = new double[2*getNumVoices()]; // x[n-1], y[n-1]
 }
 void FirstOrderFilter::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] buffers;
   buffers = NULL;
 }
@@ -103,18 +103,18 @@ INLINE void Biquad::process(Module *module, double *in1, double *in2, double *in
 }
 void Biquad::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   double *buf = buffers + 4*voiceIndex;
   buf[0] = buf[1] = buf[2] = buf[3] = 0.0;
 }
 void Biquad::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   buffers = new double[4*getNumVoices()]; // x[n-1], x[n-2], y[n-1], y[n-2]
 }
 void Biquad::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] buffers;
   buffers = NULL;
 }
@@ -176,7 +176,7 @@ INLINE void BiquadDesigner::process(Module *module, double *in1, double *in2, do
 }
 void BiquadDesigner::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   double *oldParams = oldParameters + 3*voiceIndex;
   double *oldOuts   = oldOutputs    + 5*voiceIndex;
   oldParams[0] = oldParams[1] = oldParams[2] = 0.0; // div by zero? -> we should tolerate this
@@ -210,13 +210,13 @@ void BiquadDesigner::parameterChanged(int index)
 }
 void BiquadDesigner::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   oldParameters = new double[3*getNumVoices()]; // frequency, gain, Q
   oldOutputs    = new double[5*getNumVoices()]; // b0, b1, b2, a1, a2
 }
 void BiquadDesigner::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] oldParameters;
   oldParameters = NULL;
   delete[] oldOutputs;
@@ -301,7 +301,7 @@ INLINE void LadderFilter::process(Module *module, double *in1, double *in2, doub
 }
 void LadderFilter::resetVoiceState(int voiceIndex)
 {
-  ModuleAtomic::resetVoiceState(voiceIndex);
+  AtomicModule::resetVoiceState(voiceIndex);
   double *ptr = outputs + 5*voiceIndex;
   ptr[0] = ptr[1] = ptr[2] = ptr[3] = ptr[4] = 0.0;
   ptr = coeffs + 7*voiceIndex;
@@ -338,14 +338,14 @@ void LadderFilter::parameterChanged(int index)
 }
 void LadderFilter::allocateMemory()
 {
-  ModuleAtomic::allocateMemory();
+  AtomicModule::allocateMemory();
   outputs       = new double[5*getNumVoices()];  // y0[n], y1[n], y2[n], y3[n], y4[n]
   coeffs        = new double[7*getNumVoices()];  // a1, k, c0, c1, c2, c3, c4
   oldParameters = new double[3*getNumVoices()];  // frequency, resonance, autogain
 }
 void LadderFilter::freeMemory()
 {
-  ModuleAtomic::freeMemory();
+  AtomicModule::freeMemory();
   delete[] outputs;
   outputs = NULL;
   delete[] coeffs;
