@@ -24,69 +24,69 @@ ParameterModuleEditor::ParameterModuleEditor(LibertyAudioModule *newLiberty,
   addWidget(minValueField, true, true);
 
 
-  maxValueLabel = new RTextField(juce::String(("Max")));
-  maxValueLabel->setDescription(juce::String(("Maximum value of the parameter")));
+  maxValueLabel = new RTextField("Max");
+  maxValueLabel->setDescription("Maximum value of the parameter");
   addWidget(maxValueLabel, true, true);
 
-  maxValueField = new LibertyTextEntryField(juce::String(("MaxValue")));
+  maxValueField = new LibertyTextEntryField("MaxValue");
   maxValueField->setDescription(maxValueLabel->getDescription());
   maxValueField->registerTextEntryFieldObserver(this);
   addWidget(maxValueField, true, true);
 
 
-  valueSlider = new LibertySlider(juce::String(("Value")));
-  valueSlider->setSliderName(juce::String(("Value")));
+  valueSlider = new LibertySlider("Value");
+  valueSlider->setSliderName("Value");
   valueSlider->setRange(0.0, 1.0, 0.0, 0.5, true);
   valueSlider->setStringConversionFunction(&valueToString5);
-  valueSlider->setDescription(juce::String(("Current value of the parameter")));
+  valueSlider->setDescription("Current value of the parameter");
   valueSlider->addListener(this);
   addWidget(valueSlider, true, true);
 
 
-  helpTextLabel = new RTextField(juce::String(("Help:")));
-  helpTextLabel->setDescription(juce::String(("Help text for the parameter")));
+  helpTextLabel = new RTextField("Help:");
+  helpTextLabel->setDescription("Help text for the parameter");
   addWidget(helpTextLabel, true, true);
 
-  helpTextField = new LibertyTextEntryField(juce::String(("HelpText"))); 
+  helpTextField = new LibertyTextEntryField("HelpText"); 
   helpTextField->setDescription(helpTextLabel->getDescription());
   helpTextField->registerTextEntryFieldObserver(this);
   addWidget(helpTextField, true, true);
 
 
-  parameterSetupLabel = new RTextField(juce::String(("Parameter Setup")));
-  parameterSetupLabel->setDescription(juce::String(("General setup for the parameter")));
+  parameterSetupLabel = new RTextField("Parameter Setup");
+  parameterSetupLabel->setDescription("General setup for the parameter");
   parameterSetupLabel->setJustification(juce::Justification::centred);
   addWidget(parameterSetupLabel, true, true);
 
-  valueField = new LibertyLabeledTextEntryField(juce::String(("Value"))); 
-  valueField->setDescription(juce::String(("Current value of the parameter")));
-  valueField->setLabelText(juce::String(("Value:")));
+  valueField = new LibertyLabeledTextEntryField("Value"); 
+  valueField->setDescription("Current value of the parameter");
+  valueField->setLabelText("Value:");
   valueField->getTextEntryField()->registerTextEntryFieldObserver(this);
   addWidget(valueField, true, true);
 
-  defaultField = new LibertyLabeledTextEntryField(juce::String(("DefaultValue"))); 
-  defaultField->setDescription(juce::String(("Default value of the parameter")));
-  defaultField->setLabelText(juce::String(("Default:")));
+  defaultField = new LibertyLabeledTextEntryField("DefaultValue"); 
+  defaultField->setDescription("Default value of the parameter");
+  defaultField->setLabelText("Default:");
   defaultField->getTextEntryField()->registerTextEntryFieldObserver(this);
   addWidget(defaultField, true, true);
 
-  unitField = new LibertyLabeledTextEntryField(juce::String(("Unit"))); 
-  unitField->setDescription(juce::String(("Physical unit of the parameter")));
+  unitField = new LibertyLabeledTextEntryField("Unit"); 
+  unitField->setDescription("Physical unit of the parameter");
   unitField->getTextEntryField()->registerTextEntryFieldObserver(this);
-  unitField->setLabelText(juce::String(("Unit:")));
+  unitField->setLabelText("Unit:");
   addWidget(unitField, true, true);
 
-  scalingComboBox = new LibertyNamedComboBox(juce::String(("Scaling")));
-  scalingComboBox->setComboBoxName(juce::String(("Scaling:")));
-  scalingComboBox->setDescription(juce::String(("Scaling behavior of the parameter")));
+  scalingComboBox = new LibertyNamedComboBox("Scaling");
+  scalingComboBox->setComboBoxName("Scaling:");
+  scalingComboBox->setDescription("Scaling behavior of the parameter");
   scalingComboBox->addItem(romos::ParameterModule::LINEAR_MAPPING,      "Linear",      true, false);
   scalingComboBox->addItem(romos::ParameterModule::EXPONENTIAL_MAPPING, "Exponential", true, false);
   addWidget(scalingComboBox, true, true);
   scalingComboBox->registerComboBoxObserver(this);
 
 
-  setToDefaultButton = new RClickButton(juce::String(("Use")));
-  setToDefaultButton->setDescription(juce::String(("Set parameter to default value")));
+  setToDefaultButton = new RClickButton("Use");
+  setToDefaultButton->setDescription("Set parameter to default value");
   setToDefaultButton->addRButtonListener(this);
   addWidget(setToDefaultButton, true, true);
 
@@ -322,21 +322,21 @@ VoiceKillerModuleEditor::VoiceKillerModuleEditor(LibertyAudioModule *newLiberty,
 
   ScopedLock scopedLock(*plugInLock);
 
-  thresholdSlider = new LibertySlider(juce::String(("Threshold")));
-  thresholdSlider->setSliderName(juce::String(("Threshold")));
+  thresholdSlider = new LibertySlider("Threshold");
+  thresholdSlider->setSliderName("Threshold");
   thresholdSlider->setRange(-180.0, -40.0, 1.0, -100.0, true);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit);
-  thresholdSlider->setDescription(juce::String(("Amplitude threshold below which voice gets killed")));
+  thresholdSlider->setDescription("Amplitude threshold below which voice gets killed");
   addWidget(thresholdSlider, true, true);
   thresholdSlider->addListener(this);
 
 
-  timeOutSlider = new LibertySlider(juce::String(("TimeOut")));
-  timeOutSlider->setSliderName(juce::String(("TimeOut")));
+  timeOutSlider = new LibertySlider("TimeOut");
+  timeOutSlider->setSliderName("TimeOut");
   timeOutSlider->setRange(0.01, 1.0, 0.01, 0.01, true);
   timeOutSlider->setStringConversionFunction(&valueToString2);
   timeOutSlider->setScaling(Parameter::EXPONENTIAL);
-  timeOutSlider->setDescription(juce::String(("Time until voice gets killed after amplitude falls below threshold")));
+  timeOutSlider->setDescription("Time until voice gets killed after amplitude falls below threshold");
   addWidget(timeOutSlider, true, true);
   timeOutSlider->addListener(this);
 
@@ -368,11 +368,11 @@ WhiteNoiseModuleEditor::WhiteNoiseModuleEditor(LibertyAudioModule *newLiberty,
 {
   ScopedLock scopedLock(*plugInLock);
 
-  seedSlider = new LibertySlider(juce::String(("Seed")));
-  seedSlider->setSliderName(juce::String(("Seed")));
+  seedSlider = new LibertySlider("Seed");
+  seedSlider->setSliderName("Seed");
   seedSlider->setRange(0.0, 1000.0, 1.0, 0.0, true);
   seedSlider->setStringConversionFunction(&valueToString);
-  seedSlider->setDescription(juce::String(("Seed for the pseudo-random number generator")));
+  seedSlider->setDescription("Seed for the pseudo-random number generator");
   //seedSlider->setDescriptionField(descriptionField);
   addWidget(seedSlider, true, true);
   seedSlider->addListener(this);
@@ -403,7 +403,7 @@ BiquadDesignerModuleEditor::BiquadDesignerModuleEditor(LibertyAudioModule *newLi
 
   typedef romos::BiquadDesigner BQD;
 
-  modeComboBox = new LibertyNamedComboBox(juce::String(("Mode")));
+  modeComboBox = new LibertyNamedComboBox("Mode");
   modeComboBox->addItem(BQD::BYPASS,                        "Bypass",                      true, false);
   modeComboBox->addItem(BQD::LOWPASS_6_BILINEAR,            "Lowpass, 6 dB/oct, BLT",      true, false);
   modeComboBox->addItem(BQD::HIGHPASS_6_BILINEAR,           "Highpass, 6 dB/oct, BLT",     true, false);
@@ -451,7 +451,7 @@ LibertyLadderFilterModuleEditor::LibertyLadderFilterModuleEditor(LibertyAudioMod
 
   int labelWidth = 72;
 
-  filterModeComboBox = new LibertyNamedComboBox(juce::String(("Mode")));
+  filterModeComboBox = new LibertyNamedComboBox("Mode");
   filterModeComboBox->addItem(romos::LadderFilter::FLAT,    "Flat",                  true, false);
   filterModeComboBox->addItem(romos::LadderFilter::LP_6,    "Lowpass, 6 dB/oct",     true, false);
   filterModeComboBox->addItem(romos::LadderFilter::LP_12,   "Lowpass, 12 dB/oct",    true, false);
@@ -472,7 +472,7 @@ LibertyLadderFilterModuleEditor::LibertyLadderFilterModuleEditor(LibertyAudioMod
   filterModeComboBox->registerComboBoxObserver(this);
   addWidget(filterModeComboBox, true, true);
 
-  saturationModeComboBox = new LibertyNamedComboBox(juce::String(("SaturationMode")));
+  saturationModeComboBox = new LibertyNamedComboBox("SaturationMode");
   saturationModeComboBox->addItem(romos::LadderFilter::NO_SATURATION, "No Saturation", true, false);
   saturationModeComboBox->addItem(romos::LadderFilter::LAST_STAGE,    "Last Stage",    true, false);
   saturationModeComboBox->addItem(romos::LadderFilter::FEEDBACK,      "Feedback",      true, false);
