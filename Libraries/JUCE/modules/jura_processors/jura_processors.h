@@ -131,6 +131,7 @@ namespace jura
 #include "instruments/jura_Workhorse.h"
 #ifdef _MSC_VER
 #include "instruments/jura_Liberty.h"    // romos currently doesn't compile on gcc
+#include "instruments/jura_LibertyModules.h"
 #endif
 
 #include "misc/jura_ChannelMatrix2x2.h"

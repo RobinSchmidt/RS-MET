@@ -83,7 +83,8 @@ namespace jura
 #include "instruments/jura_Workhorse.cpp"
 
 #ifdef _MSC_VER
-#include "instruments/jura_Liberty.cpp" // not yet available on gcc 
+#include "instruments/jura_Liberty.cpp" // Liberty not yet available on gcc 
+#include "instruments/jura_LibertyModules.cpp"
 #endif
 
 #include "misc/jura_ChannelMatrix2x2.cpp"
