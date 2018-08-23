@@ -12,7 +12,7 @@ class ModuleTypeInfo
 {
 public:
   int id = -1;  // id must be assigned by the type registry object when a type is registered
-  Module* (*createModule)() = nullptr; // returns a pointer to (a subclass of) Module
+  Module* (*createModule)() = nullptr; // returns a pointer to a new (subclass of) Module object
   bool hasEditor   = true;  // maybe remove
   //bool hasTreeNode = true;   // should be shown as a node in the tree
   bool hasHeader   = true;   // show a header at the top of the block (most do, so default to true)

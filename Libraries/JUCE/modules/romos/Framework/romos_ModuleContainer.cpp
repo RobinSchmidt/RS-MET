@@ -1,5 +1,4 @@
 #include "romos_ModuleContainer.h"
-#include "romos_ModuleFactory.h"
 using namespace romos;
 
 //-------------------------------------------------------------------------------------------------

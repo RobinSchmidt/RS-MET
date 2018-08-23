@@ -852,9 +852,6 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2502,7 +2499,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module.h" />
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleAtomic.h" />
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.h" />
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.h" />
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.h" />
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_NoteEvent.h" />
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ProcessingStatus.h" />

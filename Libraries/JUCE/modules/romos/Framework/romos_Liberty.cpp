@@ -1,5 +1,4 @@
 #include "romos_Liberty.h"
-#include "romos_ModuleFactory.h"
 using namespace romos;
 
 //-------------------------------------------------------------------------------------------------

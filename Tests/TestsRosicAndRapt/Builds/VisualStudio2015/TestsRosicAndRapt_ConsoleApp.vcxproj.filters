@@ -1056,9 +1056,6 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.cpp">
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.cpp">
-      <Filter>Juce Modules\romos\Framework</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.cpp">
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClCompile>
@@ -3258,9 +3255,6 @@
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.h">
-      <Filter>Juce Modules\romos\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.h">
       <Filter>Juce Modules\romos\Framework</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.h">

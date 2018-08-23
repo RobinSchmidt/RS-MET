@@ -1,5 +1,4 @@
 #include "romos_TestModuleBuilder.h"
-#include "../framework/romos_ModuleFactory.h"
 using namespace romos;
 
 romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name, int x, int y, 
