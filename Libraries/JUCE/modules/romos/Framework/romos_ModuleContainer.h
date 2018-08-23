@@ -1,11 +1,5 @@
-#ifndef romos_ModuleContainer_h
-#define romos_ModuleContainer_h
-
-//#include "romos_AudioConnection.h"
-//#include "romos_ModuleTypeRegistry.h"
-
-//#include "../Modules/romos_InfrastructuralModules.h"
-//#include "../TestSuite/romos_TestModuleBuilder.h"
+#ifndef romos_ContainerModule_h
+#define romos_ContainerModule_h
 
 namespace romos
 {
@@ -32,7 +26,7 @@ is implemented.
 class AudioInputModule;
 class AudioOutputModule;
 
-class ModuleContainer : public Module
+class ContainerModule : public Module
 {
 
 public:
@@ -123,7 +117,7 @@ public:
   connections intact by equipping the to-be-created container with an appropriate number of in/out
   modules and connecting them according to the connectivity of the to-be-containerized modules. It
   returns a pointer to the just created container. */
-  virtual ModuleContainer* containerizeModules(std::vector<Module*> modulesToContainerize);
+  virtual ContainerModule* containerizeModules(std::vector<Module*> modulesToContainerize);
 
   /** Extracts all container modules in the passed array and puts their content modules as direct 
   child-modules of "this" one. */
@@ -131,7 +125,7 @@ public:
 
   /** Unpacks the modules that are contained inside the passed container and makes them direct 
   child modules of "this" one. */
-  virtual void unContainerize(ModuleContainer *container);
+  virtual void unContainerize(ContainerModule *container);
 
   /** Establishes an audio connection ('wire') between some output slot of the source module and an
   input slot of the target module. The target module will establish its total input as the weighted 
@@ -416,11 +410,11 @@ protected:
   virtual void updateHasDelayedConnectionsFlag();
 
   /** Constructor. */
-  ModuleContainer(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
+  ContainerModule(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
     bool polyphonic = false);
 
   /** Destructor. Deletes all sub modules as well. */
-  virtual ~ModuleContainer();
+  virtual ~ContainerModule();
 
   /** To be overriden by concrete subclasses to initialize the names of the pins, allocate 
   ressources, etc.. */
@@ -460,8 +454,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  ModuleContainer(const ModuleContainer &other) {}
-  ModuleContainer& operator=(const ModuleContainer &other) { return *this; }
+  ContainerModule(const ContainerModule &other) {}
+  ContainerModule& operator=(const ContainerModule &other) { return *this; }
 
 };
 class ContainerModuleTypeInfo : public ModuleTypeInfo
@@ -472,7 +466,7 @@ public:
     fullName     = "Container";
     description  = "Wraps a bunch of interconnected modules into a single module";
     category     = "Infrastructure";
-    createModule =  []()->Module* { return new ModuleContainer; };
+    createModule =  []()->Module* { return new ContainerModule; };
   }
 };
 

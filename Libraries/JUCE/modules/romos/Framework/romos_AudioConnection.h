@@ -17,7 +17,7 @@ class Module;
 class AudioConnection
 {
 
-  friend class ModuleContainer;
+  friend class ContainerModule;
 
 public:
 

@@ -208,18 +208,18 @@ bool WrappedAdderNTest::runTest()
 }   
 void WrappedAdderNTest::removeConnection(int index)
 {
-  romos::Module* audioInput = ((ModuleContainer*)moduleToTest)->getChildModule(0);
-  romos::Module* adderN     = ((ModuleContainer*)moduleToTest)->getChildModule(1);
-  ((ModuleContainer*)moduleToTest)->deleteAudioConnection(audioInput, 0, adderN, index);
+  romos::Module* audioInput = ((ContainerModule*)moduleToTest)->getChildModule(0);
+  romos::Module* adderN     = ((ContainerModule*)moduleToTest)->getChildModule(1);
+  ((ContainerModule*)moduleToTest)->deleteAudioConnection(audioInput, 0, adderN, index);
 }
 int WrappedAdderNTest::getAdderNumInputPins()
 {
-  romos::Module* adderN = ((ModuleContainer*)moduleToTest)->getChildModule(1);
+  romos::Module* adderN = ((ContainerModule*)moduleToTest)->getChildModule(1);
   return adderN->getNumInputPins();
 }
 int WrappedAdderNTest::getAdderNumConnectedInputPins()
 {
-  romos::Module* adderN = ((ModuleContainer*)moduleToTest)->getChildModule(1);
+  romos::Module* adderN = ((ContainerModule*)moduleToTest)->getChildModule(1);
   int result = 0;
   for(unsigned int i = 0; i < adderN->getNumInputPins(); i++)
   {
@@ -296,8 +296,8 @@ LeakyIntegratorDoubleDelayTest::LeakyIntegratorDoubleDelayTest()
 {
   moduleToTest = TestModuleBuilder::createLeakyIntegrator(name, 0, 0, false);
 
-  //romos::Module *identity = ((ModuleContainer*) moduleToTest)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
-  romos::Module *identity = ((ModuleContainer*) moduleToTest)->getChildModulesWithType("Identity").at(0);
+  //romos::Module *identity = ((ContainerModule*) moduleToTest)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
+  romos::Module *identity = ((ContainerModule*) moduleToTest)->getChildModulesWithType("Identity").at(0);
 
   identity->setPositionXY(17, 2);
 }

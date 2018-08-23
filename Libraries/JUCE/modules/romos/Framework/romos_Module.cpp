@@ -1,5 +1,5 @@
 #include "romos_Module.h"
-#include "romos_ModuleContainer.h"
+//#include "romos_ContainerModule.h"
 #include "romos_AudioConnection.h"
 using namespace romos;
 
@@ -228,7 +228,7 @@ romos::Module* romos::Module::getTopLevelModule()
 
 int romos::Module::getIndexWithinParentModule()
 {
-  romos::ModuleContainer* parent = getParentModule();
+  romos::ContainerModule* parent = getParentModule();
   if( parent != nullptr )
     return parent->getIndexOfChildModule(this);
   else
@@ -365,7 +365,7 @@ std::vector<AudioConnection> romos::Module::getIncomingAudioConnections()
 std::vector<AudioConnection> romos::Module::getOutgoingAudioConnections()
 {
   std::vector<AudioConnection> result;
-  ModuleContainer *parent = getParentModule();
+  ContainerModule *parent = getParentModule();
   if( parent == NULL )
     return result;
 

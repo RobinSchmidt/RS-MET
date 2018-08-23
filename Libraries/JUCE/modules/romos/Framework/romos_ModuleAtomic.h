@@ -21,7 +21,7 @@ child-modules. */
 class ModuleAtomic : public Module
 {
 
-  friend class ModuleContainer;
+  friend class ContainerModule;
 
 public:
 

@@ -1,5 +1,5 @@
 #include "romos_AudioConnection.h"
-#include "romos_ModuleContainer.h"
+//#include "romos_ContainerModule.h"
 using namespace romos;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ int AudioConnection::getApparentTargetInputIndex() const
   else
   {
     rassert( dynamic_cast<romos::AudioInputModule*> (targetModule) != NULL );
-    return ((romos::ModuleContainer*) targetModule)->getInputPinIndexOf( (romos::AudioInputModule*) targetModule );
+    return ((romos::ContainerModule*) targetModule)->getInputPinIndexOf( (romos::AudioInputModule*) targetModule );
   } 
 }
 
@@ -120,7 +120,7 @@ int AudioConnection::getApparentSourceOutputIndex() const
   else
   {
     rassert( dynamic_cast<romos::AudioOutputModule*> (sourceModule) != NULL );
-    return ((romos::ModuleContainer*) sourceModule)->getOutputPinIndexOf( (romos::AudioOutputModule*) sourceModule );
+    return ((romos::ContainerModule*) sourceModule)->getOutputPinIndexOf( (romos::AudioOutputModule*) sourceModule );
   } 
 }
 */

@@ -9,10 +9,10 @@ TopLevelModule::TopLevelModule()
   //moduleTypeIdentifier = ModuleTypeRegistry::TOP_LEVEL_MODULE;
   typeInfo = moduleFactory.getModuleTypeInfo("Container"); 
 
-  ModuleContainer::addAudioInputModule( "AudioIn1",   2,  2);
-  ModuleContainer::addAudioInputModule( "AudioIn2",   2,  6);
-  ModuleContainer::addAudioOutputModule("AudioOut1", 40,  2);
-  ModuleContainer::addAudioOutputModule("AudioOut2", 40,  6);
+  ContainerModule::addAudioInputModule( "AudioIn1",   2,  2);
+  ContainerModule::addAudioInputModule( "AudioIn2",   2,  6);
+  ContainerModule::addAudioOutputModule("AudioOut1", 40,  2);
+  ContainerModule::addAudioOutputModule("AudioOut2", 40,  6);
     // yes, we indeed want to call the baseclass implementation here - our own overriden functions do nothing in order to prevent adding
     // I/O modules by the user / client-code
 
@@ -58,7 +58,7 @@ void TopLevelModule::disconnectAudioOutputModules()
 void TopLevelModule::deleteChildModule(Module *moduleToDelete, bool updateHasDelayedConnectionFlag)
 {
   if( !(moduleToDelete->isInputModule() || moduleToDelete->isOutputModule()) )
-    ModuleContainer::deleteChildModule(moduleToDelete, updateHasDelayedConnectionFlag);
+    ContainerModule::deleteChildModule(moduleToDelete, updateHasDelayedConnectionFlag);
 }
 
 void TopLevelModule::sortChildModuleArray()

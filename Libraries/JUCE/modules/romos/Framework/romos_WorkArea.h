@@ -21,7 +21,7 @@ struct WorkArea
   static const int maxNumVoices = 32;
 
   static const int maxNumPins   = MAX(64, ProcessingStatus::maxBufferSize);
-  // necessary because in ModuleContainer's processBlockFrameWise functions, the voice-index 
+  // necessary because in ContainerModule's processBlockFrameWise functions, the voice-index 
   // temporarily takes over the role of the frame index - there is only one frame for which the 
   // process function is called, but we may need a lot of pins, so we do this role-changing to 
   // avoid unnecessary memory overheads ...comment this better

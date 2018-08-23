@@ -28,7 +28,7 @@ namespace romos
 
   /** Like BypassTest, but adds a child-module to the TopLevelModule after establishing the connections between inputs and outputs. There
   was a bug that turned the output silent when adding a child module. It was due to attempting to re-connect outside connections of a 
-  TopLevelModule in ModuleContainer::sortChildModuleArray - the method has now been overriden in TopLevelModule to fix it. */
+  TopLevelModule in ContainerModule::sortChildModuleArray - the method has now been overriden in TopLevelModule to fix it. */
   class BypassWithChildTest : public BypassTest
   {
   public:
@@ -47,7 +47,7 @@ namespace romos
   protected: 
     virtual void createAndConnectTestChildModules();
     virtual void fillDesiredOutputSignalArrays();
-    ModuleContainer *polyBlipStereo;
+    ContainerModule *polyBlipStereo;
   };
 
 
@@ -59,7 +59,7 @@ namespace romos
   protected: 
     virtual void createAndConnectTestChildModules();
     virtual void fillDesiredOutputSignalArrays();
-    ModuleContainer *noiseFlute;
+    ContainerModule *noiseFlute;
   };
 
 

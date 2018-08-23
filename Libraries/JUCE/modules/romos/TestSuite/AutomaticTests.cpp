@@ -15,8 +15,8 @@ bool testSorting(bool verboseOutput)
   int yMax = 50;
   unsigned int numChildrenToCreate = 50;
 
-  //ModuleContainer *testModule = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER);
-  ModuleContainer *testModule = (ModuleContainer*) moduleFactory.createModule("Container");
+  //ContainerModule *testModule = (ContainerModule*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER);
+  ContainerModule *testModule = (ContainerModule*) moduleFactory.createModule("Container");
 
   unsigned int i;
   int x, y;
@@ -166,8 +166,8 @@ bool testLeakyIntegratorDoubleDelay(bool verboseOutput)
 {
   romos::Module *testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegratorDoubleDelay", 0, 0, false);
   getDesiredOutputForLeakyIntegratorDoubleDelay(N, x[0][0], x[0][1], d[0][0]);
-  //romos::Module *identity = ((ModuleContainer*) testModule)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
-  romos::Module *identity = ((ModuleContainer*) testModule)->getChildModulesWithType("Identity").at(0);
+  //romos::Module *identity = ((ContainerModule*) testModule)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
+  romos::Module *identity = ((ContainerModule*) testModule)->getChildModulesWithType("Identity").at(0);
   identity->setPositionXY(17, 2);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
@@ -246,7 +246,7 @@ bool testPinSorting(bool verboseOutput)
   processModuleInFrames(testModule, N, ppx, ppd, NULL, false);
 
   // retrieve pointers to some embedded modules (assumes certain order):
-  romos::ModuleContainer *inner = dynamic_cast<romos::ModuleContainer*> ( ((ModuleContainer*)testModule)->getChildModule(3)); 
+  romos::ContainerModule *inner = dynamic_cast<romos::ContainerModule*> ( ((ContainerModule*)testModule)->getChildModule(3)); 
   rassert( inner != NULL );
   romos::Module *in1   = inner->getAudioInputModule(0);
   romos::Module *in2   = inner->getAudioInputModule(1);
@@ -388,7 +388,7 @@ bool testBlipTwoNotes(bool verboseOutput)
   modularSynth->getTopLevelModule()->addAudioConnection(testModule, 0, outputModuleL, 0);
 
 
-  ((ModuleContainer *) testModule)->setPolyphonicRecursively(true);
+  ((ContainerModule *) testModule)->setPolyphonicRecursively(true);
 
   std::vector<romos::Module*> childModuleVector = modularSynth->getTopLevelModule()->getChildModules();
 
@@ -525,8 +525,8 @@ bool testPolyToMono(int numVoicesToCheck)
 
 bool testGatedNoteFrequency(int numVoicesToCheck)
 {
-  romos::ModuleContainer *testModule = 
-    (romos::ModuleContainer *) TestModuleBuilder::createGatedNoteFrequency("GatedNoteFrequency", 0, 0, true);
+  romos::ContainerModule *testModule = 
+    (romos::ContainerModule *) TestModuleBuilder::createGatedNoteFrequency("GatedNoteFrequency", 0, 0, true);
 
   int noteLengthInFrames = 20;  
   std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, 20, numVoicesToCheck, 12);
@@ -550,8 +550,8 @@ bool testGatedNoteFrequency(int numVoicesToCheck)
 
 bool testTriggerAndKill(int numVoicesToCheck)
 {
-  romos::ModuleContainer *testModule = 
-    (ModuleContainer*) TestModuleBuilder::createTriggerAndKill("TriggerAndKill", 0, 0, true);
+  romos::ContainerModule *testModule = 
+    (ContainerModule*) TestModuleBuilder::createTriggerAndKill("TriggerAndKill", 0, 0, true);
 
   //int frameIndex, voiceIndex, pinIndex; // frameIndex, voiceIndex, pinIndex
 
@@ -639,7 +639,7 @@ bool testBlipBlock(bool verboseOutput)
 /*
 bool testContainerizationWithConstant()
 {
-  ModuleContainer *testModule = new ModuleContainer(NULL);  
+  ContainerModule *testModule = new ContainerModule(NULL);  
   testModule->setModuleName("Test Module");
 
   ConstantModule *unity = new ConstantModule(NULL);

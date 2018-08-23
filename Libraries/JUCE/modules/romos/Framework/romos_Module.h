@@ -29,7 +29,7 @@ enum connectionDirections
 class AudioConnection;
 class Module;
 
-class ModuleContainer;                          // test to satisfy gcc ...seems to work
+class ContainerModule;                          // test to satisfy gcc ...seems to work
 void  retrieveModuleState(void *moduleAsVoid);  // test to satisfy gcc
 
 
@@ -89,7 +89,7 @@ keeping track of the wiring between modules.
 class Module
 {
 
-  friend class ModuleContainer;
+  friend class ContainerModule;
   friend class ModuleFactory;        // for old creation code
   friend class ModuleFactory;  // for new creation code
 
@@ -243,7 +243,7 @@ public:
 
 
   /** Returns the parent module of "this" module. */
-  virtual romos::ModuleContainer* getParentModule() const { return parentModule; }
+  virtual romos::ContainerModule* getParentModule() const { return parentModule; }
     // may be a nullptr in cas of the top-level module - maybe also in a transitional state when 
     // the module was not yet given a parent?
 
@@ -260,7 +260,7 @@ public:
   /** Returns the depth of container nesting of the module - atomic modules have a depth of 0, 
   containers one level above them have a depth of 1 and so on. */
   virtual int getContainerNestingDepth() const { return 0; }  
-    // get rid of that in the baseclass - move to ModuleContainer
+    // get rid of that in the baseclass - move to ContainerModule
 
   /** Returns the name of one of our pins. */
   virtual rosic::rsString getPinName(int kind, int direction, int pinIndex) const = 0;
@@ -336,7 +336,7 @@ public:
   virtual void mapProcessingSourceToSourceApparent(Module * &sourceModule, 
     int &sourceOutputPinIndex) { }
 
-  // oevrride both of these in ModuleProxy and ModuleContainer
+  // oevrride both of these in ModuleProxy and ContainerModule
 
 
 
@@ -573,7 +573,7 @@ protected:
   // data members:
 
 
-  romos::ModuleContainer *parentModule;
+  romos::ContainerModule *parentModule;
 
   //int  moduleTypeIdentifier; // one of the values defined in moduleIdentifiers - for RTTI and total recall
   // to be deprecated (replaced by pointer to ModuleTypeInfo structure)

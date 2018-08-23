@@ -425,7 +425,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
 void ProcessingTest::setTestModulePolyphonyRecursively(bool shouldBePolyphonic)
 {
   if( moduleToTest->isContainerModule() )
-    ((ModuleContainer*) moduleToTest)->setPolyphonicRecursively(shouldBePolyphonic);
+    ((ContainerModule*) moduleToTest)->setPolyphonicRecursively(shouldBePolyphonic);
   else
     moduleToTest->setPolyphonic(shouldBePolyphonic);
 }

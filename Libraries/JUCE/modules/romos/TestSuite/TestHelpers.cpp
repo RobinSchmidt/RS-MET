@@ -300,7 +300,7 @@ void getDesiredOutputForFilterBlip(int N, double frequency, double q, double *de
 void setModulePolyphony(romos::Module *module, bool shouldBePolyphonic, bool recursivelyForChildren)
 {
   if( module->isContainerModule() && recursivelyForChildren == true )
-    ((ModuleContainer*) module)->setPolyphonicRecursively(shouldBePolyphonic);
+    ((ContainerModule*) module)->setPolyphonicRecursively(shouldBePolyphonic);
   else
     module->setPolyphonic(shouldBePolyphonic);
 }
@@ -669,7 +669,7 @@ bool randBool()
 
 void randomizeContainment(romos::Module *module)
 {
-  romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
+  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
   if( container != NULL )
   {
     std::vector<romos::Module*> childModules    = container->getChildModules();
@@ -714,7 +714,7 @@ void printModuleStructure(romos::Module *module, int indent)
   */
   printf("%s", "\n" );
 
-  romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module); 
+  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module); 
   if( container != NULL )
   {
     for(unsigned int i=0; i<container->getNumChildModules(); i++)

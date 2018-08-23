@@ -11,7 +11,7 @@ bool Containerize01::runTest()
   bool result = true;
 
   // retrieve pointers to the child modules:
-  romos::ModuleContainer* containerLevel0  = (romos::ModuleContainer*) moduleToTest;
+  romos::ContainerModule* containerLevel0  = (romos::ContainerModule*) moduleToTest;
   romos::Module* inputLevel0               = containerLevel0->getChildModule(0);
   romos::Module* minus                     = containerLevel0->getChildModule(1);
   romos::Module* output1Level0             = containerLevel0->getChildModule(2);
@@ -27,7 +27,7 @@ bool Containerize01::runTest()
   std::vector<romos::Module*> modulesToContainerize = containerLevel0->getChildModules();
   containerLevel0->containerizeModules(modulesToContainerize);
 
-  romos::ModuleContainer* containerLevel1 = (romos::ModuleContainer*) containerLevel0->getChildModule(1);
+  romos::ContainerModule* containerLevel1 = (romos::ContainerModule*) containerLevel0->getChildModule(1);
   //result &= containerLevel1->getTypeIdentifierOld()  == ModuleTypeRegistry::CONTAINER;
   result &= containerLevel1->getTypeName() == "Container";
 
@@ -72,7 +72,7 @@ bool Containerize02::runTest()
   bool result = true;
 
   // retrieve child pointers:
-  romos::ModuleContainer* containerLevel0  = (romos::ModuleContainer*) moduleToTest;
+  romos::ContainerModule* containerLevel0  = (romos::ContainerModule*) moduleToTest;
   romos::Module* constant1                 = containerLevel0->getChildModule(0);
   romos::Module* constant2                 = containerLevel0->getChildModule(1);
   romos::Module* constant3                 = containerLevel0->getChildModule(2);
@@ -91,7 +91,7 @@ bool Containerize02::runTest()
   containerLevel0->containerizeModules(modulesToContainerize);
 
   // retrieve the created container:
-  romos::ModuleContainer* containerLevel1 = (romos::ModuleContainer*) containerLevel0->getChildModule(2);
+  romos::ContainerModule* containerLevel1 = (romos::ContainerModule*) containerLevel0->getChildModule(2);
   //result &= containerLevel1->getTypeIdentifierOld()  == ModuleTypeRegistry::CONTAINER;
   result &= containerLevel1->getTypeName()  == "Container";
 
@@ -165,8 +165,8 @@ bool OutputModuleDeletion::runTest()
 {
   bool result = true;
 
-  ModuleContainer *outerContainer = (ModuleContainer*) moduleToTest;
-  ModuleContainer *innerContainer = (ModuleContainer*) outerContainer->getChildModule(0);
+  ContainerModule *outerContainer = (ContainerModule*) moduleToTest;
+  ContainerModule *innerContainer = (ContainerModule*) outerContainer->getChildModule(0);
   Module          *out1           = innerContainer->getChildModule(3);
   Module          *out2           = innerContainer->getChildModule(4);
   Module          *out3           = innerContainer->getChildModule(5);
@@ -277,7 +277,7 @@ bool ContainerizationAddedConstantsTest::runTest()
 }
 void ContainerizationAddedConstantsTest::containerizeSum()
 {
-  romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (moduleToTest);
+  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (moduleToTest);
   std::vector<romos::Module*> childModules = container->getChildModules();
   std::vector<romos::Module*> sumInVector;
   sumInVector.push_back(childModules[16]);
@@ -285,7 +285,7 @@ void ContainerizationAddedConstantsTest::containerizeSum()
 }
 void ContainerizationAddedConstantsTest::unContainerizeSum()
 {
-  romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (moduleToTest);
+  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (moduleToTest);
   std::vector<romos::Module*> childModules = container->getChildModules();
   std::vector<romos::Module*> containerizedSumInVector;
   containerizedSumInVector.push_back(childModules[16]);
@@ -293,7 +293,7 @@ void ContainerizationAddedConstantsTest::unContainerizeSum()
 }
 void ContainerizationAddedConstantsTest::randomizeContainment()
 {
-  romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (moduleToTest);
+  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (moduleToTest);
   if( container != NULL )
   {
     std::vector<romos::Module*> childModules    = container->getChildModules();
@@ -339,7 +339,7 @@ bool PinSortingTest::runTest()
   //fillDesiredOutputSignalArrays();
 
   // retrieve pointers to some embedded modules (assumes certain order):
-  romos::ModuleContainer *inner = dynamic_cast<romos::ModuleContainer*> ( ((ModuleContainer*)moduleToTest)->getChildModule(3)); 
+  romos::ContainerModule *inner = dynamic_cast<romos::ContainerModule*> ( ((ContainerModule*)moduleToTest)->getChildModule(3)); 
   rassert( inner != NULL );
   romos::Module *in1   = inner->getAudioInputModule(0);
   romos::Module *in2   = inner->getAudioInputModule(1);

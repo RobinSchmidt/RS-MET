@@ -328,7 +328,7 @@ public:
 // ModalFilterBankViaFormula: similar to SineBankViaFormula but with additional decay parameter for each partial and an global 
 // decayScale input (maybe also a stereo version with spread values for each of the above parameters)
 // LocalVoiceKiller - stops processing of the voice only for the immediate parent container - useful to stop transient-synthesis in an
-// LA-alike synth - needs processing-flags for that in the ModuleContainer class and perhaps a corresponding LocalVoiceStarter module
+// LA-alike synth - needs processing-flags for that in the ContainerModule class and perhaps a corresponding LocalVoiceStarter module
 // unless this starting (i.e. setting the flag back to true) is also done by NoteOn module
 
 //COMPLEMENT        // y = 1-x

@@ -109,7 +109,7 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module,
   xmlState->setAttribute("Poly", juce::String((int)module->isPolyphonic())  );
 
   unsigned int i;
-  romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
+  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
   if( container != NULL )
   {
     for(i=0; i<container->getNumChildModules(); i++)
@@ -177,7 +177,7 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
 
   if(  module->isContainerModule() || module->isTopLevelModule() )
   {
-    romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
+    romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
     for(int i=0; i<xmlState.getNumChildElements(); i++)
     {
       XmlElement* childState = xmlState.getChildElement(i);
@@ -269,7 +269,7 @@ void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, ro
       tmpString2 = tmpString1.upToFirstOccurrenceOf("_", false, false);
       tpi        = tmpString2.getIntValue();
 
-      romos::ModuleContainer *parentModule = module->getParentModule();
+      romos::ContainerModule *parentModule = module->getParentModule();
       if( parentModule != NULL ) // maybe NULL when this is called from ModularBlockDiagramPanel::openContainerSaveDialog
       {
         romos::Module *sourceModule = parentModule->getChildModule(smi);
@@ -284,7 +284,7 @@ void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, ro
   }
 
   // recursion:
-  romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
+  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
   if( container != NULL )
   {
     for(unsigned int i=0; i<container->getNumChildModules(); i++)
@@ -340,7 +340,7 @@ void LibertyAudioModule::setStateFromXml(const XmlElement& xmlState, const juce:
 void LibertyAudioModule::restoreTopLevelInOutStates(const XmlElement& xmlState)
 {
   ScopedLock scopedLock(*lock);
-  romos::ModuleContainer *topLevelMasterVoice = wrappedLiberty->getTopLevelModule();
+  romos::ContainerModule *topLevelMasterVoice = wrappedLiberty->getTopLevelModule();
 
   XmlElement *childElement;
   int numInsRestored  = 0;
@@ -1060,7 +1060,7 @@ LibertyInterfaceMediator::~LibertyInterfaceMediator()
   //int dummy = 0;
 }
 
-void LibertyInterfaceMediator::setContainerToShowInDiagram(romos::ModuleContainer* containerToShow)
+void LibertyInterfaceMediator::setContainerToShowInDiagram(romos::ContainerModule* containerToShow)
 {
   ScopedLock scopedLock(*plugInLock);
   containerShownInDiagram = containerToShow;
@@ -1136,9 +1136,9 @@ void ModularStructureTreeView::nodeClicked(RTreeViewNode *nodeThatWasClicked,
   {
     romos::Module *clickedNodeModule =  
       static_cast<romos::Module*> (nodeThatWasClicked->getUserData());
-    if( dynamic_cast<romos::ModuleContainer*> (clickedNodeModule) != NULL )
+    if( dynamic_cast<romos::ContainerModule*> (clickedNodeModule) != NULL )
       getInterfaceMediator()->setContainerToShowInDiagram( 
-        static_cast<romos::ModuleContainer*> (nodeThatWasClicked->getUserData()) );
+        static_cast<romos::ContainerModule*> (nodeThatWasClicked->getUserData()) );
     else
     {  
       getInterfaceMediator()->setContainerToShowInDiagram(clickedNodeModule->getParentModule());
@@ -1191,8 +1191,8 @@ void ModularStructureTreeView::createAndHangInSubTree(RTreeViewNode *parentNodeT
 
 
     // recursion to take care of the new node's child nodes:
-    romos::ModuleContainer *containerModule = 
-      dynamic_cast<romos::ModuleContainer*> (moduleToCreateSubTreeFor);
+    romos::ContainerModule *containerModule = 
+      dynamic_cast<romos::ContainerModule*> (moduleToCreateSubTreeFor);
     if( containerModule != NULL )
     {
       for(unsigned int i=0; i<containerModule->getNumChildModules(); i++) // conatinerModule was already checked for NULL
@@ -1514,7 +1514,7 @@ void ModularBlockDiagramPanel::mouseMove(const MouseEvent &e)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
 
-  romos::ModuleContainer *container       = getInterfaceMediator()->getContainerShownInDiagram();
+  romos::ContainerModule *container       = getInterfaceMediator()->getContainerShownInDiagram();
   romos::Module          *module          = getModuleAtPixels(e.x, e.y, true);
   juce::Rectangle<int>    moduleRectangle = getRectangleForModuleInPixels(module, true);
 
@@ -1538,7 +1538,7 @@ void ModularBlockDiagramPanel::mouseDown(const MouseEvent &e)
   actOnSelectionMenu->setVisible(false);
   nameEntryField->setVisible(false);
 
-  romos::ModuleContainer *container = getInterfaceMediator()->getContainerShownInDiagram();
+  romos::ContainerModule *container = getInterfaceMediator()->getContainerShownInDiagram();
 
   mouseDownX = e.x; 
   mouseDownY = e.y;
@@ -1556,8 +1556,8 @@ void ModularBlockDiagramPanel::mouseDown(const MouseEvent &e)
   {
     if( e.getNumberOfClicks() == 2 )
     {
-      romos::ModuleContainer *shownContainer  = getInterfaceMediator()->getContainerShownInDiagram();
-      romos::ModuleContainer *parentContainer = shownContainer->getParentModule();
+      romos::ContainerModule *shownContainer  = getInterfaceMediator()->getContainerShownInDiagram();
+      romos::ContainerModule *parentContainer = shownContainer->getParentModule();
       if( parentContainer != NULL )
       {
         getInterfaceMediator()->setContainerToShowInDiagram(parentContainer);
@@ -1656,7 +1656,7 @@ void ModularBlockDiagramPanel::mouseDown(const MouseEvent &e)
         {
           //openModuleNameEntryField(); ...nah - maybe make this available via the PopUp - double clicks naviagte into the conatiner
           if( selectedModules[0]->isContainerModule() )
-            getInterfaceMediator()->setContainerToShowInDiagram( ((ModuleContainer*)selectedModules[0]) );
+            getInterfaceMediator()->setContainerToShowInDiagram( ((ContainerModule*)selectedModules[0]) );
         }
       }
       else
@@ -1926,7 +1926,7 @@ void ModularBlockDiagramPanel::mediatorHasSentNotification(MediatedColleague *or
 
   if( messageCode == MODULE_TO_SHOW_EDITOR_FOR )
   {
-    romos::ModuleContainer *containerShownInDiagram = getInterfaceMediator()->getContainerShownInDiagram();
+    romos::ContainerModule *containerShownInDiagram = getInterfaceMediator()->getContainerShownInDiagram();
     romos::Module          *moduleToShowEditorFor   = getInterfaceMediator()->getModuleToShowEditorFor();
     if( moduleToShowEditorFor != containerShownInDiagram )
       selectSingleModule(moduleToShowEditorFor);
@@ -2033,7 +2033,7 @@ void ModularBlockDiagramPanel::openContainerLoadDialog()
       //romos::ModuleContainer *newModule = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER);
 
       // later use:
-      romos::ModuleContainer *newModule = (ModuleContainer*) moduleFactory.createModule("Container");
+      romos::ContainerModule *newModule = (ContainerModule*) moduleFactory.createModule("Container");
 
       WRITE_TO_LOGFILE("Module created\n");
       LibertyAudioModule::setModuleStateFromXml(*xmlState, newModule);
@@ -2230,7 +2230,7 @@ void ModularBlockDiagramPanel::deleteSelection()
 void ModularBlockDiagramPanel::containerizeSelection()
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
-  romos::ModuleContainer *createdContainer = getInterfaceMediator()->getContainerShownInDiagram()->containerizeModules(selectedModules);
+  romos::ContainerModule *createdContainer = getInterfaceMediator()->getContainerShownInDiagram()->containerizeModules(selectedModules);
   updateAudioConnectionArray();
   selectedModules.clear();
   addModuleWithConnectionsToArray(createdContainer, selectedModules, selectedAudioConnections); // select the just created container
@@ -2248,7 +2248,7 @@ void ModularBlockDiagramPanel::unContainerizeSelection()
   std::vector<romos::Module*> unpackedModules;
   for(unsigned int i = 0; i < selectedModules.size(); i++)
   {
-    ModuleContainer *tmpContainer = dynamic_cast<ModuleContainer*> (selectedModules[i]);
+    ContainerModule *tmpContainer = dynamic_cast<ContainerModule*> (selectedModules[i]);
     if( tmpContainer != NULL )
       rosic::appendVector(unpackedModules, tmpContainer->getNonInOutChildModules());
     //unpackedModules.appendArray( tmpContainer->getNonInOutChildModules() );
@@ -2270,7 +2270,7 @@ void ModularBlockDiagramPanel::minimizeNumberOfInputs()
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
   for(unsigned int i = 0; i < selectedModules.size(); i++)
   {
-    ModuleContainer *tmpContainer = dynamic_cast<ModuleContainer*> (selectedModules[i]);
+    ContainerModule *tmpContainer = dynamic_cast<ContainerModule*> (selectedModules[i]);
     if( tmpContainer != NULL )
       tmpContainer->minimizeNumberOfAudioInputs();
   }
@@ -2543,7 +2543,7 @@ void ModularBlockDiagramPanel::drawDiagram(Graphics &g)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
 
-  romos::ModuleContainer *mc = getInterfaceMediator()->getContainerShownInDiagram();
+  romos::ContainerModule *mc = getInterfaceMediator()->getContainerShownInDiagram();
   unsigned int i;
 
   // draw the embedded modules:

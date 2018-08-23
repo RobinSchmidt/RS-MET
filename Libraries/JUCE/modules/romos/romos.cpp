@@ -84,7 +84,7 @@ using namespace rosic;
 //#include "Framework/romos_VoiceAllocator.cpp"
 //#include "Framework/romos_WorkArea.cpp"
 //#include "Framework/romos_Module.cpp"
-//#include "Framework/romos_ModuleContainer.cpp"
+//#include "Framework/romos_ContainerModule.cpp"
 //#include "Framework/romos_ModuleAtomic.cpp"
 //
 //#include "Modules/romos_ArithmeticModules.cpp"

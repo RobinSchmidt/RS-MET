@@ -2,7 +2,7 @@ class responsibilities:
 
 Module:
 -main baseclass for all modules
--has suclasses ModuleContainer and ModuleAtomic (...rename to ContainerModule, AtomicModule)
+-has suclasses ContainerModule and ModuleAtomic (...rename to ContainerModule, AtomicModule)
 -TopLevelModule is a subclass of ContainerModule
 -all basic low-level, atomic modules are subclasses of AtomicModule
 -the audio processing functions processFrame and processBlock are function pointers because the 

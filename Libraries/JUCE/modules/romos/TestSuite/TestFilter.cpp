@@ -2,7 +2,7 @@
 /*
 romos::Module* romos::createLeakyIntegrator(int x, int y, const rosic::rsString &name)
 {
-  ModuleContainer *module = createModuleContainer(x, y, name);
+  ContainerModule *module = createContainerModule(x, y, name);
   
   romos::Module *constant1    = module->addChildModule(getTypeId("Constant"),     2,  5, "1",   false);
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),   2,  8, "In",  false);
@@ -31,7 +31,7 @@ romos::Module* romos::createLeakyIntegrator(int x, int y, const rosic::rsString 
 
 romos::Module* romos::createMovingAverage(int x, int y, const rosic::rsString &name)
 {
-  ModuleContainer *module = createModuleContainer(x, y, name);
+  ContainerModule *module = createContainerModule(x, y, name);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),   2,  2, "In",  false);
   romos::Module *audioInput2  = module->addChildModule(getTypeId("AudioInput"),   2,  5, "b0",  false);
@@ -57,7 +57,7 @@ romos::Module* romos::createMovingAverage(int x, int y, const rosic::rsString &n
 
 romos::Module* romos::createTestFilter1(int x, int y, const rosic::rsString &name)
 {
-  ModuleContainer *module = createModuleContainer(x, y, name);
+  ContainerModule *module = createContainerModule(x, y, name);
   
   romos::Module *audioInput1  = module->addChildModule(getTypeId("AudioInput"),   2,  2, "In",         false);
   romos::Module *audioInput2  = module->addChildModule(getTypeId("AudioInput"),   2,  6, "b0",         false);

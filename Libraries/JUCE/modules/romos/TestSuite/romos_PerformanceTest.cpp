@@ -54,7 +54,7 @@ rosic::rsString PerformanceTest::runTestsAndGetReport()
 void PerformanceTest::setTestPolyphonic(bool shouldBePolyphonic)
 {
   if( moduleToTest->isContainerModule() )
-    ((ModuleContainer *) moduleToTest)->setPolyphonicRecursively(shouldBePolyphonic);
+    ((ContainerModule *) moduleToTest)->setPolyphonicRecursively(shouldBePolyphonic);
   else
     moduleToTest->setPolyphonic(shouldBePolyphonic);
 }

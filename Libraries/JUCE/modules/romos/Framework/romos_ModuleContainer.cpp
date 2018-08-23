@@ -1,4 +1,4 @@
-#include "romos_ModuleContainer.h"
+//#include "romos_ContainerModule.h"
 using namespace romos;
 
 //-------------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ void romos::processContainerBlockFrameWiseMono(Module *moduleAsVoid, int blockSi
   // -copy the temporary output frame into output frame 0
   // -restore the original input pin data for the container
 
-  romos::ModuleContainer *container = ((romos::ModuleContainer *) moduleAsVoid);
+  romos::ContainerModule *container = ((romos::ContainerModule *) moduleAsVoid);
 
   int    pinIndex;
   int    inFrameSize    = container->numInputs;
@@ -91,7 +91,7 @@ void copyMatrix(double *source, double *destination, int numRows, int numColumns
 // fallback function to process the module in frames when necessary:
 void romos::processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSize)
 {
-  romos::ModuleContainer *container = ((romos::ModuleContainer *) moduleAsVoid);
+  romos::ContainerModule *container = ((romos::ContainerModule *) moduleAsVoid);
   const int *playingVoiceIndices    = voiceAllocator.getPlayingVoiceIndices();
   int numPlayingVoices              = voiceAllocator.getNumPlayingVoices();
   int bufferSize                    = processingStatus.getBufferSize();
@@ -187,7 +187,7 @@ void romos::processContainerBlockFrameWiseMixed(Module *moduleAsVoid, int blockS
 // connections):
 void romos::processContainerMixedMonoPoly(Module *module, int voiceIndex)
 {
-  ModuleContainer *container = (ModuleContainer*) module;
+  ContainerModule *container = (ContainerModule*) module;
   romos::Module   *cm;  // currently vistited child module (is also the target module of the currently visited connection in the loops)
   for(unsigned int i = 0; i < container->childModules.size(); i++)
   {
@@ -201,7 +201,7 @@ void romos::processContainerMixedMonoPoly(Module *module, int voiceIndex)
 // frame-wise processing when all child-modules are monophonic:
 void romos::processContainerAllMono(Module *module, int voiceIndex)
 {
-  ModuleContainer *container = (ModuleContainer*) module;
+  ContainerModule *container = (ContainerModule*) module;
   romos::Module   *cm;
   for(unsigned int i = 0; i < container->childModules.size(); i++)
   {
@@ -215,7 +215,7 @@ void romos::processContainerAllMono(Module *module, int voiceIndex)
 // frame-wise processing when all child-modules are polyphonic:
 void romos::processContainerAllPoly(Module *module, int voiceIndex)
 {
-  ModuleContainer *container = (ModuleContainer*) module;
+  ContainerModule *container = (ContainerModule*) module;
   romos::Module   *cm;
 
   for(unsigned int i = 0; i < container->childModules.size(); i++)
@@ -230,11 +230,11 @@ void romos::processContainerAllPoly(Module *module, int voiceIndex)
 // connections):
 void romos::processContainerMixedMonoPolyBlock(Module *module, int voiceIndex, int blockSize)
 {
-  if( ((ModuleContainer*) module)->hasDelayedConnections )
+  if( ((ContainerModule*) module)->hasDelayedConnections )
     processContainerBlockFrameWiseMixed(module, blockSize);
   else
   {
-    ModuleContainer *container = (ModuleContainer*) module;
+    ContainerModule *container = (ContainerModule*) module;
     romos::Module   *cm;
     for(unsigned int i = 0; i < container->childModules.size(); i++)
     {
@@ -248,11 +248,11 @@ void romos::processContainerMixedMonoPolyBlock(Module *module, int voiceIndex, i
 
 void romos::processContainerAllMonoBlock(Module *module, int voiceIndex, int blockSize)
 {
-  if( ((ModuleContainer*) module)->hasDelayedConnections )
+  if( ((ContainerModule*) module)->hasDelayedConnections )
     processContainerBlockFrameWiseMono(module, blockSize);
   else
   {
-    ModuleContainer *container = (ModuleContainer*) module;
+    ContainerModule *container = (ContainerModule*) module;
     romos::Module   *cm;
     for(unsigned int i = 0; i < container->childModules.size(); i++)
     {
@@ -267,11 +267,11 @@ void romos::processContainerAllMonoBlock(Module *module, int voiceIndex, int blo
 
 void romos::processContainerAllPolyBlock(Module *module, int voiceIndex, int blockSize)
 {
-  if( ((ModuleContainer*) module)->hasDelayedConnections )
+  if( ((ContainerModule*) module)->hasDelayedConnections )
     processContainerBlockFrameWisePoly(module, blockSize);
   else
   {
-    ModuleContainer *container = (ModuleContainer*) module;
+    ContainerModule *container = (ContainerModule*) module;
     romos::Module   *cm;  // currently vistited child module (is also the target module of the currently visited connection in the loops)
     for(unsigned int i = 0; i < container->childModules.size(); i++)
     {
@@ -286,7 +286,7 @@ void romos::processContainerAllPolyBlock(Module *module, int voiceIndex, int blo
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ModuleContainer::ModuleContainer(const rosic::rsString &name, int x, int y, bool polyphonic)
+ContainerModule::ContainerModule(const rosic::rsString &name, int x, int y, bool polyphonic)
 : Module(name, x, y, polyphonic)
 {
   tmpOutFrame          = NULL;
@@ -299,19 +299,19 @@ ModuleContainer::ModuleContainer(const rosic::rsString &name, int x, int y, bool
   updateHasDelayedConnectionsFlag();
 }
 
-ModuleContainer::~ModuleContainer()
+ContainerModule::~ContainerModule()
 {
   //cleanUp();
 }
 
 
-void ModuleContainer::initialize()
+void ContainerModule::initialize()
 {
   //tmpOutFrame = NULL; no! this sets the pointer to NULL after it has possibly been allocated
   updateHasDelayedConnectionsFlag();
 }
 
-void ModuleContainer::cleanUp()
+void ContainerModule::cleanUp()
 {
   freeMemory();
   deleteAllChildModules();
@@ -320,7 +320,7 @@ void ModuleContainer::cleanUp()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // setup:
 
-void ModuleContainer::setPolyphonic(bool shouldBePolyphonic)
+void ContainerModule::setPolyphonic(bool shouldBePolyphonic)
 {
   Module::setPolyphonic(shouldBePolyphonic);
 
@@ -339,14 +339,14 @@ void ModuleContainer::setPolyphonic(bool shouldBePolyphonic)
   assignProcessingFunctions();
 }
 
-void ModuleContainer::setPolyphonicRecursively(bool shouldBePolyphonic)
+void ContainerModule::setPolyphonicRecursively(bool shouldBePolyphonic)
 {
   Module::setPolyphonic(shouldBePolyphonic);
 
   for(unsigned int i = 0; i < childModules.size(); i++)
   {
     if( childModules[i]->isContainerModule() )
-      ((ModuleContainer *) childModules[i])->setPolyphonicRecursively(shouldBePolyphonic);
+      ((ContainerModule *) childModules[i])->setPolyphonicRecursively(shouldBePolyphonic);
     else
       childModules[i]->setPolyphonic(shouldBePolyphonic);
   }
@@ -354,19 +354,19 @@ void ModuleContainer::setPolyphonicRecursively(bool shouldBePolyphonic)
   assignProcessingFunctions();
 }
 
-void ModuleContainer::connectInputPinTo(int inputPinIndex, Module *sourceModule, int sourceOutputPinIndex)
+void ContainerModule::connectInputPinTo(int inputPinIndex, Module *sourceModule, int sourceOutputPinIndex)
 {
   Module::connectInputPinTo(inputPinIndex, sourceModule, sourceOutputPinIndex);
   getAudioInputModule(inputPinIndex)->connectInputPinTo(0, sourceModule, sourceOutputPinIndex);
 }
 
-void ModuleContainer::disconnectInputPin(int inputPinIndex)
+void ContainerModule::disconnectInputPin(int inputPinIndex)
 {
   Module::disconnectInputPin(inputPinIndex);
   getAudioInputModule(inputPinIndex)->disconnectInputPin(0);
 }
 
-romos::Module* ModuleContainer::addAudioInputModule(rosic::rsString name, int x, int y, bool sortModuleArrayAfterInsertion)
+romos::Module* ContainerModule::addAudioInputModule(rosic::rsString name, int x, int y, bool sortModuleArrayAfterInsertion)
 {
   if( name.isEmpty() )
     name = rosic::rsString("In") + rosic::rsString(getNumInputPins()+1);
@@ -392,7 +392,7 @@ romos::Module* ModuleContainer::addAudioInputModule(rosic::rsString name, int x,
   return newModule;
 }
 
-romos::Module* ModuleContainer::addAudioOutputModule(rosic::rsString name, int x, int y, bool sortModuleArrayAfterInsertion)
+romos::Module* ContainerModule::addAudioOutputModule(rosic::rsString name, int x, int y, bool sortModuleArrayAfterInsertion)
 {
   if( name.isEmpty() )
     name = rosic::rsString("Out") + rosic::rsString(getNumOutputPins()+1);
@@ -417,7 +417,7 @@ romos::Module* ModuleContainer::addAudioOutputModule(rosic::rsString name, int x
   return newModule;
 }
 
-romos::Module* ModuleContainer::addChildModule(Module *moduleToAdd, 
+romos::Module* ContainerModule::addChildModule(Module *moduleToAdd, 
   bool sortChildModuleArrayAfterInsertion)
 {
   rassert( !hasAsDirectlyEmbeddedModule(moduleToAdd) ); // adding a child multiple times?
@@ -439,7 +439,7 @@ romos::Module* ModuleContainer::addChildModule(Module *moduleToAdd,
 }
 
 /*
-romos::Module* ModuleContainer::addChildModule(int moduleIdentifier, rosic::rsString name, 
+romos::Module* ContainerModule::addChildModule(int moduleIdentifier, rosic::rsString name, 
   int x, int y, bool polyphonic, bool sortChildModulesAfterInsertion)
 {
   if( moduleIdentifier == ModuleTypeRegistry::AUDIO_INPUT )
@@ -458,7 +458,7 @@ romos::Module* ModuleContainer::addChildModule(int moduleIdentifier, rosic::rsSt
 */
 
 // new version - not yet tested:
-romos::Module* ModuleContainer::addChildModule(const std::string& fullTypeName, 
+romos::Module* ContainerModule::addChildModule(const std::string& fullTypeName, 
   const std::string& name, int x, int y, bool poly, bool sortChildModulesAfterInsertion)
 {
   //rassert(false); return nullptr; // does not yet work
@@ -483,7 +483,7 @@ romos::Module* ModuleContainer::addChildModule(const std::string& fullTypeName,
 
 
 
-void ModuleContainer::deleteChildModule(Module *moduleToDelete, bool updateHasDelayedConnectionFlag)
+void ContainerModule::deleteChildModule(Module *moduleToDelete, bool updateHasDelayedConnectionFlag)
 {
 
   if( rosic::containsElement(childModules, moduleToDelete) )
@@ -537,10 +537,10 @@ void ModuleContainer::deleteChildModule(Module *moduleToDelete, bool updateHasDe
   }
   else
     triggerRuntimeError(
-    "ModuleContainer::deleteChildModule called with module that isn't a child of the container for which it was called");
+    "ContainerModule::deleteChildModule called with module that isn't a child of the container for which it was called");
 }
 
-void ModuleContainer::deleteAllChildModules()
+void ContainerModule::deleteAllChildModules()
 {
   for(int i = (int) childModules.size()-1; i>=0; i--)
     deleteChildModule(childModules[i], false);
@@ -551,20 +551,20 @@ void ModuleContainer::deleteAllChildModules()
   // while loop becaomes infinite when the overriden TopLevelModule::deleteChildModule is called
 }
 
-void ModuleContainer::deleteModules(std::vector<Module*> modulesToDelete)
+void ContainerModule::deleteModules(std::vector<Module*> modulesToDelete)
 {
   for(unsigned int i = 0; i < modulesToDelete.size(); i++)
     deleteChildModule(modulesToDelete[i], false);
   updateHasDelayedConnectionsFlag();
 }
 
-void ModuleContainer::setPolyphonyForModules(std::vector<Module*> modules, bool shouldBePolyphonic)
+void ContainerModule::setPolyphonyForModules(std::vector<Module*> modules, bool shouldBePolyphonic)
 {
   for(unsigned int i = 0; i < modules.size(); i++)
     modules[i]->setPolyphonic(shouldBePolyphonic);
 }
 
-ModuleContainer* ModuleContainer::containerizeModules(std::vector<Module*> modulesToContainerize)
+ContainerModule* ContainerModule::containerizeModules(std::vector<Module*> modulesToContainerize)
 {
   // algorithm:
   /*
@@ -601,9 +601,9 @@ ModuleContainer* ModuleContainer::containerizeModules(std::vector<Module*> modul
   getExtremeCoordinates(modulesToContainerize, xMin, yMin, xMax, yMax);
   getMidpointCoordinates(modulesToContainerize, x, y);
 
-  //ModuleContainer *container = new ModuleContainer("Container", x, y, isPolyphonic()); // old
-  ModuleContainer* container = 
-    (ModuleContainer*) moduleFactory.createModule("Container", "Container", x, y, isPolyphonic());
+  //ContainerModule *container = new ContainerModule("Container", x, y, isPolyphonic()); // old
+  ContainerModule* container = 
+    (ContainerModule*) moduleFactory.createModule("Container", "Container", x, y, isPolyphonic());
 
   addChildModule(container, false);
 
@@ -692,18 +692,18 @@ ModuleContainer* ModuleContainer::containerizeModules(std::vector<Module*> modul
   return container;
 }
 
-void ModuleContainer::unContainerizeModules(std::vector<Module*> modulesToUnContainerize)
+void ContainerModule::unContainerizeModules(std::vector<Module*> modulesToUnContainerize)
 {
-  romos::ModuleContainer *container;
+  romos::ContainerModule *container;
   for(unsigned int i = 0; i < modulesToUnContainerize.size(); i++)
   {
-    container = dynamic_cast<romos::ModuleContainer*> (modulesToUnContainerize[i]);
+    container = dynamic_cast<romos::ContainerModule*> (modulesToUnContainerize[i]);
     if( container != NULL )
       unContainerize(container);
   }
 }
 
-void ModuleContainer::unContainerize(ModuleContainer *container)
+void ContainerModule::unContainerize(ContainerModule *container)
 {
   // algorithm:
   // for each child-of-container
@@ -776,39 +776,39 @@ void ModuleContainer::unContainerize(ModuleContainer *container)
   sortChildModuleArray();        // because we've got a bunch of new children appended at the end
 }
 
-void ModuleContainer::addAudioConnection(romos::Module *sourceModule, int outputIndex, romos::Module *targetModule, int inputIndex)
+void ContainerModule::addAudioConnection(romos::Module *sourceModule, int outputIndex, romos::Module *targetModule, int inputIndex)
 {
   targetModule->connectInputPinTo(inputIndex, sourceModule, outputIndex);
   updateHasDelayedConnectionsFlag();
 }
 
-void ModuleContainer::addAudioConnection(AudioConnection *connectionToAdd)
+void ContainerModule::addAudioConnection(AudioConnection *connectionToAdd)
 {
   addAudioConnection(connectionToAdd->getSourceModule(), connectionToAdd->getSourceOutputIndex(),
                      connectionToAdd->getTargetModule(), connectionToAdd->getTargetInputIndex());
 }
 
-bool ModuleContainer::deleteAudioConnection(Module *sourceModule, int outputIndex, Module *targetModule, int inputIndex)
+bool ContainerModule::deleteAudioConnection(Module *sourceModule, int outputIndex, Module *targetModule, int inputIndex)
 {
   targetModule->disconnectInputPin(inputIndex);
   updateHasDelayedConnectionsFlag();
   return true; // make this void
 }
 
-void ModuleContainer::deleteAudioConnection(AudioConnection connectionToDelete)
+void ContainerModule::deleteAudioConnection(AudioConnection connectionToDelete)
 {
   connectionToDelete.getTargetModule()->disconnectInputPin(connectionToDelete.getTargetInputIndex());
   updateHasDelayedConnectionsFlag();
 }
 
-void ModuleContainer::deleteAudioConnections(std::vector<AudioConnection> connectionsToDelete)
+void ContainerModule::deleteAudioConnections(std::vector<AudioConnection> connectionsToDelete)
 {
   for(unsigned int i = 0; i < connectionsToDelete.size(); i++)
     deleteAudioConnection(connectionsToDelete[i]);
   updateHasDelayedConnectionsFlag();
 }
 
-void ModuleContainer::minimizeNumberOfAudioInputs()
+void ContainerModule::minimizeNumberOfAudioInputs()
 {
   int oldNumInputs = getNumInputPins();
   int newNumInputs = oldNumInputs;
@@ -863,7 +863,7 @@ void ModuleContainer::minimizeNumberOfAudioInputs()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
-romos::AudioInputModule* ModuleContainer::getAudioInputModule(int index) const
+romos::AudioInputModule* ContainerModule::getAudioInputModule(int index) const
 {
   int inputId = moduleFactory.getModuleId("AudioInput");
   int numSkipped = 0;
@@ -880,7 +880,7 @@ romos::AudioInputModule* ModuleContainer::getAudioInputModule(int index) const
   return NULL;
 }
 
-romos::AudioOutputModule* ModuleContainer::getAudioOutputModule(int index) const
+romos::AudioOutputModule* ContainerModule::getAudioOutputModule(int index) const
 {
   int numSkipped = 0;
   for(unsigned int i = 0; i < childModules.size(); i++)
@@ -896,7 +896,7 @@ romos::AudioOutputModule* ModuleContainer::getAudioOutputModule(int index) const
   return NULL;
 }
 
-int ModuleContainer::getInputPinIndexOf(AudioInputModule *inputModule) const
+int ContainerModule::getInputPinIndexOf(AudioInputModule *inputModule) const
 {
   int numSkipped = 0;
   for(unsigned int i = 0; i < childModules.size(); i++)
@@ -913,7 +913,7 @@ int ModuleContainer::getInputPinIndexOf(AudioInputModule *inputModule) const
   return 0;
 }
 
-int ModuleContainer::getOutputPinIndexOf(AudioOutputModule *outputModule) const
+int ContainerModule::getOutputPinIndexOf(AudioOutputModule *outputModule) const
 {
   int numSkipped = 0;
   for(unsigned int i = 0; i < childModules.size(); i++)
@@ -930,19 +930,19 @@ int ModuleContainer::getOutputPinIndexOf(AudioOutputModule *outputModule) const
   return 0;
 }
 
-romos::Module* ModuleContainer::getChildModule(int index) const
+romos::Module* ContainerModule::getChildModule(int index) const
 {
   //rassert( index >= 0 && index < (int) childModules.size() );  // index out of range
   if( index >= 0 && index < (int) childModules.size() )
     return childModules.at(index);
   else
   {
-    romos::triggerRuntimeError("Index out of range in ModuleContainer::getChildModule");
+    romos::triggerRuntimeError("Index out of range in ContainerModule::getChildModule");
     return NULL;
   }
 }
 
-bool ModuleContainer::areAllChildModulesMonophonic() const
+bool ContainerModule::areAllChildModulesMonophonic() const
 {
   for(unsigned int i = 0; i < childModules.size(); i++ )
   {
@@ -952,7 +952,7 @@ bool ModuleContainer::areAllChildModulesMonophonic() const
   return true;
 }
 
-bool ModuleContainer::areAllChildModulesPolyphonic() const
+bool ContainerModule::areAllChildModulesPolyphonic() const
 {
   for(unsigned int i = 0; i < childModules.size(); i++ )
   {
@@ -962,7 +962,7 @@ bool ModuleContainer::areAllChildModulesPolyphonic() const
   return true;
 }
 
-int ModuleContainer::getContainerNestingDepth() const
+int ContainerModule::getContainerNestingDepth() const
 {
   int result = 0;
   int tmp    = 0;
@@ -979,7 +979,7 @@ int ModuleContainer::getContainerNestingDepth() const
   return result + 1;
 }
 
-int ModuleContainer::getIndexOfChildModule(romos::Module *childToFindIndexFor) //const
+int ContainerModule::getIndexOfChildModule(romos::Module *childToFindIndexFor) //const
 {
   int index = rosic::findElement(childModules, childToFindIndexFor);
   //int index = childModules.findElement(childToFindIndexFor);
@@ -987,7 +987,7 @@ int ModuleContainer::getIndexOfChildModule(romos::Module *childToFindIndexFor) /
   return index;
 }
 
-std::vector<romos::Module*> ModuleContainer::getNonInOutChildModules() const
+std::vector<romos::Module*> ContainerModule::getNonInOutChildModules() const
 {
   std::vector<romos::Module*> result;
   for(unsigned int i = 0; i < childModules.size(); i++)
@@ -1000,7 +1000,7 @@ std::vector<romos::Module*> ModuleContainer::getNonInOutChildModules() const
 }
 
 /*
-std::vector<romos::Module*> ModuleContainer::getChildModulesWithTypeOld(int typeIdentifier) const
+std::vector<romos::Module*> ContainerModule::getChildModulesWithTypeOld(int typeIdentifier) const
 {
   // to be removed when the new type-info system fully works
   std::vector<romos::Module*> result;
@@ -1014,7 +1014,7 @@ std::vector<romos::Module*> ModuleContainer::getChildModulesWithTypeOld(int type
 }
 */
 
-std::vector<romos::Module*> ModuleContainer::getChildModulesWithTypeId(int typeId) const
+std::vector<romos::Module*> ContainerModule::getChildModulesWithTypeId(int typeId) const
 {
   std::vector<romos::Module*> result;
   for(unsigned int i = 0; i < childModules.size(); i++)
@@ -1025,13 +1025,13 @@ std::vector<romos::Module*> ModuleContainer::getChildModulesWithTypeId(int typeI
   return result;
 }
 
-std::vector<romos::Module*> ModuleContainer::getChildModulesWithType(const std::string& type) const
+std::vector<romos::Module*> ContainerModule::getChildModulesWithType(const std::string& type) const
 {
   int id = moduleFactory.getModuleId(type);
   return getChildModulesWithTypeId(id);
 }
 
-std::vector<romos::Module*> ModuleContainer::getConnectedTargetModulesOf(const romos::Module* sourceModule) const
+std::vector<romos::Module*> ContainerModule::getConnectedTargetModulesOf(const romos::Module* sourceModule) const
 {
   std::vector<romos::Module*> result;
   for(unsigned int i = 0; i < childModules.size(); i++)
@@ -1042,7 +1042,7 @@ std::vector<romos::Module*> ModuleContainer::getConnectedTargetModulesOf(const r
   return result;
 }
 
-std::vector<romos::Module*> ModuleContainer::getConnectedTargetModulesOf(const romos::Module* sourceModule, int outputPinIndex) const
+std::vector<romos::Module*> ContainerModule::getConnectedTargetModulesOf(const romos::Module* sourceModule, int outputPinIndex) const
 {
   std::vector<romos::Module*> result;
   for(unsigned int i = 0; i < childModules.size(); i++)
@@ -1053,7 +1053,7 @@ std::vector<romos::Module*> ModuleContainer::getConnectedTargetModulesOf(const r
   return result;
 }
 
-rosic::rsString ModuleContainer::getPinName(int kind, int direction, int pinIndex) const
+rosic::rsString ContainerModule::getPinName(int kind, int direction, int pinIndex) const
 {
   if( kind == AUDIO )
   {
@@ -1066,7 +1066,7 @@ rosic::rsString ModuleContainer::getPinName(int kind, int direction, int pinInde
 }
 
 /*
-void ModuleContainer::getPinDataForModule(romos::Module *module, int &kind, int &direction, int &pinIndex) const
+void ContainerModule::getPinDataForModule(romos::Module *module, int &kind, int &direction, int &pinIndex) const
 {
   kind = direction = pinIndex = -1;
    // something to do...
@@ -1074,7 +1074,7 @@ void ModuleContainer::getPinDataForModule(romos::Module *module, int &kind, int 
 */
 
 /*
-bool ModuleContainer::containsConnectionsWithImplicitDelay() const
+bool ContainerModule::containsConnectionsWithImplicitDelay() const
 {
   rosic::Array<AudioConnection*> connections;
   for(int i=0; i<childModules.getNumElements(); i++)
@@ -1090,7 +1090,7 @@ bool ModuleContainer::containsConnectionsWithImplicitDelay() const
 }
 */
 
-bool ModuleContainer::isPositionOccupied(int &x, int &y) const
+bool ContainerModule::isPositionOccupied(int &x, int &y) const
 {
   for(unsigned int i = 0; i < childModules.size(); i++)
   {
@@ -1100,7 +1100,7 @@ bool ModuleContainer::isPositionOccupied(int &x, int &y) const
   return false;
 }
 
-void ModuleContainer::getNonOccupiedPositionNear(int &x, int &y) const
+void ContainerModule::getNonOccupiedPositionNear(int &x, int &y) const
 {
   while(true)
   {
@@ -1115,37 +1115,37 @@ void ModuleContainer::getNonOccupiedPositionNear(int &x, int &y) const
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // callbacks:
 
-void ModuleContainer::moduleMoved(Module* moduleThatHasMoved)
+void ContainerModule::moduleMoved(Module* moduleThatHasMoved)
 {
   //moduleMutex.lock();
   sortChildModuleArray();
   //moduleMutex.unlock();
 }
 
-void ModuleContainer::numAudioInputsChanged(Module* moduleThatHasChanged)
+void ContainerModule::numAudioInputsChanged(Module* moduleThatHasChanged)
 {
   // \todo: possibly remove some audio-connections
   int dummy = 0;
 }
 
-void ModuleContainer::numAudioOutputsChanged(Module* moduleThatHasChanged)
+void ContainerModule::numAudioOutputsChanged(Module* moduleThatHasChanged)
 {
   // \todo: possibly remove some audio-connections
   int dummy = 0;
 }
 
-void ModuleContainer::numEventInputsChanged(Module* moduleThatHasChanged)
+void ContainerModule::numEventInputsChanged(Module* moduleThatHasChanged)
 {
   // \todo: possibly remove some event-connections
 }
 
-void ModuleContainer::numEventOutputsChanged(Module* moduleThatHasChanged)
+void ContainerModule::numEventOutputsChanged(Module* moduleThatHasChanged)
 {
   // \todo: possibly remove some event-connections
 }
 */
 
-void ModuleContainer::childPolyphonyChanged(Module *childThatHasChangedPolyphony)
+void ContainerModule::childPolyphonyChanged(Module *childThatHasChangedPolyphony)
 {
   for(unsigned int i = 0; i < childModules.size(); i++)
     childModules[i]->updateInputPointersAndInFrameStrides();
@@ -1164,7 +1164,7 @@ void ModuleContainer::childPolyphonyChanged(Module *childThatHasChangedPolyphony
   assignProcessingFunctions();
 }
 
-void ModuleContainer::resetVoiceState(int voiceIndex)
+void ContainerModule::resetVoiceState(int voiceIndex)
 {
   for(unsigned int i = 0; i < childModules.size(); i++)
     childModules[i]->resetVoiceState(voiceIndex);
@@ -1172,7 +1172,7 @@ void ModuleContainer::resetVoiceState(int voiceIndex)
   int dummy = 0;
 }
 
-void romos::ModuleContainer::freeMemory()
+void romos::ContainerModule::freeMemory()
 {
   delete[] audioOutputs;
   delete[] tmpOutFrame;
@@ -1204,20 +1204,20 @@ void romos::ModuleContainer::freeMemory()
 }
 
 /*
-void romos::ModuleContainer::allocateAudioInputs()
+void romos::ContainerModule::allocateAudioInputs()
 {
   romos::Module::allocateAudioInputs();
   setupPointersInInputModules(); // check if still necessary...yep - seems so
 }
 */
 
-void romos::ModuleContainer::updateInputPointersAndInFrameStrides()
+void romos::ContainerModule::updateInputPointersAndInFrameStrides()
 {
   romos::Module::updateInputPointersAndInFrameStrides();
   updatePointersInInputModules();
 }
 
-void romos::ModuleContainer::updatePointersInInputModules()
+void romos::ContainerModule::updatePointersInInputModules()
 {
   //DEBUG_BREAK;  // check the below
   for(unsigned int i = 0; i < inputPins.size(); i++)
@@ -1243,17 +1243,17 @@ void romos::ModuleContainer::updatePointersInInputModules()
 
 
 
-int romos::ModuleContainer::getRequiredOutputBufferSize() const
+int romos::ContainerModule::getRequiredOutputBufferSize() const
 {
   return getNumOutputPins() * getRequiredOutputBufferSizePerPin();
 }
 
-int romos::ModuleContainer::getRequiredOutputBufferSizePerPin() const
+int romos::ContainerModule::getRequiredOutputBufferSizePerPin() const
 {
   return getNumVoices() * processingStatus.getBufferSize();
 }
 
-void romos::ModuleContainer::allocateAudioOutputs()
+void romos::ContainerModule::allocateAudioOutputs()
 {
   // maybe take out commonalities with baseclass method and invoke it...
 
@@ -1281,7 +1281,7 @@ void romos::ModuleContainer::allocateAudioOutputs()
   updatePointersInOutputModules();
 }
 
-void romos::ModuleContainer::updatePointersInOutputModules()
+void romos::ContainerModule::updatePointersInOutputModules()
 {
   for(unsigned int i = 0; i < getNumOutputPins(); i++)
   {
@@ -1291,7 +1291,7 @@ void romos::ModuleContainer::updatePointersInOutputModules()
   }
 }
 
-void romos::ModuleContainer::assignProcessingFunctions()
+void romos::ContainerModule::assignProcessingFunctions()
 {
   if( isPolyphonic() && areAllChildModulesPolyphonic() )
   {
@@ -1310,7 +1310,7 @@ void romos::ModuleContainer::assignProcessingFunctions()
   }
 }
 
-void romos::ModuleContainer::outputsWereReAllocated(Module *moduleThatHasReAllocated)
+void romos::ContainerModule::outputsWereReAllocated(Module *moduleThatHasReAllocated)
 {
   for(unsigned int i = 0; i < childModules.size(); i++)
     childModules[i]->updateInputPointersAndInFrameStrides();
@@ -1319,13 +1319,13 @@ void romos::ModuleContainer::outputsWereReAllocated(Module *moduleThatHasReAlloc
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // internal functions:
 
-bool ModuleContainer::hasAsDirectlyEmbeddedModule(romos::Module *moduleToSearchFor)
+bool ContainerModule::hasAsDirectlyEmbeddedModule(romos::Module *moduleToSearchFor)
 {
   return rosic::containsElement(childModules, moduleToSearchFor);
   //return childModules.hasElement(moduleToSearchFor);
 }
 
-bool ModuleContainer::hasAsDescendant(Module *moduleToSearchFor)
+bool ContainerModule::hasAsDescendant(Module *moduleToSearchFor)
 {
   if( hasAsDirectlyEmbeddedModule(moduleToSearchFor) )
     return true;
@@ -1333,7 +1333,7 @@ bool ModuleContainer::hasAsDescendant(Module *moduleToSearchFor)
   {
     for(unsigned int i=0; i<childModules.size(); i++)
     {
-      ModuleContainer *mc = dynamic_cast<ModuleContainer*> (childModules[i]);
+      ContainerModule *mc = dynamic_cast<ContainerModule*> (childModules[i]);
       if( mc != NULL && mc->hasAsDescendant(moduleToSearchFor) )
         return true;
     }
@@ -1341,7 +1341,7 @@ bool ModuleContainer::hasAsDescendant(Module *moduleToSearchFor)
   return false;
 }
 
-void ModuleContainer::updateHasDelayedConnectionsFlag()
+void ContainerModule::updateHasDelayedConnectionsFlag()
 {
   for(unsigned int childIndex = getNumInputPins(); childIndex < childModules.size() - getNumOutputPins(); childIndex++)
   {
@@ -1354,7 +1354,7 @@ void ModuleContainer::updateHasDelayedConnectionsFlag()
   hasDelayedConnections = false;
 }
 
-void ModuleContainer::sortChildModuleArray()
+void ContainerModule::sortChildModuleArray()
 {
   // retrieve some stuff before sorting which is needed to re-connect the container's pins in case the order of I/O modules changes:
   //std::vector<Module*> oldInputModules  = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_INPUT);
@@ -1413,10 +1413,10 @@ void ModuleContainer::sortChildModuleArray()
 }
 
 
-void ModuleContainer::mapApparentSourceToProcessingSource(Module * &sourceModule, int &sourceOutputPinIndex)
+void ContainerModule::mapApparentSourceToProcessingSource(Module * &sourceModule, int &sourceOutputPinIndex)
 {
   if( sourceModule != this )
-    triggerRuntimeError("sourceModule != this in ModuleContainer::mapApparentSourceToProcessingSource");
+    triggerRuntimeError("sourceModule != this in ContainerModule::mapApparentSourceToProcessingSource");
 
   //std::vector<romos::Module*> outputModules = getChildModulesWithTypeOld(ModuleTypeRegistry::AUDIO_OUTPUT);
   std::vector<romos::Module*> outputModules = getChildModulesWithType("AudioOutput");
@@ -1428,20 +1428,20 @@ void ModuleContainer::mapApparentSourceToProcessingSource(Module * &sourceModule
   }
   else
   {
-    triggerRuntimeError("pin-index invalid in ModuleContainer::mapApparentSourceToProcessingSource");
+    triggerRuntimeError("pin-index invalid in ContainerModule::mapApparentSourceToProcessingSource");
     sourceModule         = NULL;  // maybe have a global default module to connect to such that realease code doesn't crash
     sourceOutputPinIndex = 0;
   }
 }
 
-void ModuleContainer::mapProcessingSourceToSourceApparent(Module * &sourceModule, int &sourceOutputPinIndex)
+void ContainerModule::mapProcessingSourceToSourceApparent(Module * &sourceModule, int &sourceOutputPinIndex)
 {
   DEBUG_BREAK; // not yet implemented
 }
 
 
 
-void ModuleContainer::sortModuleArrayByCoordinates(std::vector<romos::Module*> &modulesToSort)
+void ContainerModule::sortModuleArrayByCoordinates(std::vector<romos::Module*> &modulesToSort)
 {
   std::sort(modulesToSort.begin(), modulesToSort.end(), modulePointerLessByXY);
 
@@ -1451,7 +1451,7 @@ void ModuleContainer::sortModuleArrayByCoordinates(std::vector<romos::Module*> &
   //modulesToSort.fromVectorSTL(modulesVector);
 }
 
-void ModuleContainer::removeModulesOfType(std::vector<romos::Module*> &modules, const std::string& typeName)
+void ContainerModule::removeModulesOfType(std::vector<romos::Module*> &modules, const std::string& typeName)
 {
   int i = (int) modules.size()-1;
   while( i >= 0)
@@ -1462,7 +1462,7 @@ void ModuleContainer::removeModulesOfType(std::vector<romos::Module*> &modules, 
   }
 }
 /*
-void ModuleContainer::removeModulesOfType(std::vector<romos::Module*> &modules, int typeCodeToRemove)
+void ContainerModule::removeModulesOfType(std::vector<romos::Module*> &modules, int typeCodeToRemove)
 {
   int i = (int) modules.size()-1;
   while( i >= 0)

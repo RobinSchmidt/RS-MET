@@ -163,7 +163,7 @@ protected:
   romos::Module *inputFeederModules[maxNumInputs];
   romos::Module *outputRetrieverModules[maxNumOutputs];
 
-  //romos::ModuleContainer *inputDummyModule;   // used to feed the input into the actually tested module
+  //romos::ContainerModule *inputDummyModule;   // used to feed the input into the actually tested module
   //romos::IdentityModule  *outputDummyModules
 
 

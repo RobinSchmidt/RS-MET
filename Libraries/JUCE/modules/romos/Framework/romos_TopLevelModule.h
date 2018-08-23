@@ -1,7 +1,7 @@
 #ifndef romos_TopLevelModule_h
 #define romos_TopLevelModule_h
 
-//#include "romos_ModuleContainer.h"
+//#include "romos_ContainerModule.h"
 
 namespace romos
 {
@@ -20,7 +20,7 @@ the notes that are currently active (for each voice), etc. Some modules access t
 
 \todo: maybe use block-processing here, also implement global oversampling, etc.  */
 
-class TopLevelModule : public ModuleContainer
+class TopLevelModule : public ContainerModule
 {
 
 public:

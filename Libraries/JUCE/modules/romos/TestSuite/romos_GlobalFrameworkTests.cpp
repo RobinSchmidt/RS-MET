@@ -233,7 +233,7 @@ TriggerAndKillTest::TriggerAndKillTest()
   triggerAndKillModule = TestModuleBuilder::createTriggerAndKill("TriggerAndKill", 20, 10, true);
   //moduleToTest         = ModuleFactory::createModule(ModuleTypeRegistry::TOP_LEVEL_MODULE);
   moduleToTest = moduleFactory.createModule("TopLevelModule");
-  ((ModuleContainer*) moduleToTest)->addChildModule(moduleToTest);
+  ((ContainerModule*) moduleToTest)->addChildModule(moduleToTest);
 
 
 

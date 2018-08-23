@@ -22,7 +22,7 @@ protected:
   //virtual void freeMemory();
   //virtual void setAudioInputAddress(double *newAddress);
   //virtual void setAudioOutputAddress(double *newAddress);
-  friend class ModuleContainer;
+  friend class ContainerModule;
 };
 class AudioInputTypeInfo : public ModuleTypeInfo
 {
@@ -53,7 +53,7 @@ protected:
   virtual void allocateMemory();
   virtual void freeMemory();
   //virtual void resetState();
-  friend class ModuleContainer;
+  friend class ContainerModule;
 };
 class AudioOutputTypeInfo : public ModuleTypeInfo
 {

@@ -534,7 +534,7 @@ public:
   // setup:
 
   /** Chooses a new ModuleContainer object to be shown and edited in the block diagram. */
-  void setContainerToShowInDiagram(romos::ModuleContainer* containerToShow);
+  void setContainerToShowInDiagram(romos::ContainerModule* containerToShow);
   // \todo pass the pointer to the colleague that requests the setEd....in order to pass it through 
   // to the other colleagues
 
@@ -548,7 +548,7 @@ public:
   romos::TopLevelModule*  getTopLevelModule() const { return topLevelModule; }
 
   /** Returns the container that is currently being edited/shown in the diagram editor. */
-  romos::ModuleContainer* getContainerShownInDiagram() const { return containerShownInDiagram; }
+  romos::ContainerModule* getContainerShownInDiagram() const { return containerShownInDiagram; }
 
   /** Returns the module that is currently marked as selected (might be NULL in case nothing is 
   selected or also when multiple modules are selected) */
@@ -560,7 +560,7 @@ protected:
   CriticalSection         *plugInLock; 
   LibertyAudioModule      *modularSynthModuleToEdit;
   romos::TopLevelModule   *topLevelModule;
-  romos::ModuleContainer  *containerShownInDiagram;
+  romos::ContainerModule  *containerShownInDiagram;
   romos::Module           *moduleToShowEditorFor;
 
   juce_UseDebuggingNewOperator;
