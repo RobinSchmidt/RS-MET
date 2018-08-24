@@ -213,6 +213,15 @@ void splitterPrototype_1_0(double* k, Complex* p, Complex* z)
   p[0] = -1.0;
 }
 
+// 2-pole/0-zero
+void splitterPrototype_2_0(double* k, Complex* p, Complex* z)
+{
+  double s = SQRT2_INV;
+  *k   =  1.0;
+  p[0] = Complex(-s, s);
+  p[1] = conj(p[0]);
+}
+
 // 2-pole/1-zero
 void splitterPrototype_2_1(double* k, Complex* p, Complex* z)
 {
@@ -220,11 +229,22 @@ void splitterPrototype_2_1(double* k, Complex* p, Complex* z)
   *k   =  1.0;
   p[0] = Complex(-s, s);
   p[1] = conj(p[0]);
-  z[0] = -1.0;
-  // not yet tested
+  z[0] = -1;
+  // when we place a zero on the real axis, the ultimate slope is again only 6 dB/oct - seen from a 
+  // distance (i.e. being far away on the imaginary axis) the zero cancels the effect of one of the
+  // poles
 }
-// maybe try to place poles like in butterworth filters and zeros like the poles of a butterworth
-// filter with one order less
+
+// 2-pole/2-zero
+void splitterPrototype_2_2(double* k, Complex* p, Complex* z)
+{
+  double s = SQRT2_INV;
+  *k   =  1.0;
+  p[0] = Complex(-s, s);
+  p[1] = conj(p[0]);
+  z[0] = Complex(0, 2);
+  z[1] = conj(z[0]);
+}
 
 void bandSplitHighOrderIIR()
 {
@@ -238,14 +258,31 @@ void bandSplitHighOrderIIR()
   double k;                 // gain
 
 
-  //splitterPrototype_1_0(&k, p, z); N = 1; M = 0;  // 1st order
-  splitterPrototype_2_1(&k, p, z); N = 2; M = 1;  // 2nd order
+  //splitterPrototype_1_0(&k, p, z); N = 1; M = 0;  // 1-pole
+  //splitterPrototype_2_0(&k, p, z); N = 2; M = 0;    // 2-pole (2nd order Butterworth)
+  //splitterPrototype_2_1(&k, p, z); N = 2; M = 1;  // 2-pole/1-zero - 
+  splitterPrototype_2_2(&k, p, z); N = 2; M = 2;  // 2-pole/2-zero
   // ...
 
+  // putting additional finite zeros into the s-plane is not a good idea - it makes the final slope
+  // shallower - the lowpass should have all of its zeros at infinity
+
+  // ...soooo that means we have to use an allpole lowpass filter and therefore the highpass should
+  // have all its zeros at s=0. the only wiggle room is the exact placement of the poles
+
+  // try "contracted Butterworth" - all pole angles are scaled by a factor < 1
+  // try to place poles on a ellipse instead of a circle - let the user select a width/height 
+  // ratio or eccentricity
 
 
+  // todo: obtain poles and zeros (or - simpler - polynomial coeffs) of the complementary filter
+  // H(s) = 1 - L(s) and plot that, too
 
-  int dummy = 0;
+  // plot frequency response:
+  FilterPlotter<double> plt;
+  plt.addFilterSpecification(N, p, M, z, k);
+  //plt.plotPolesAndZeros();
+  plt.plotMagnitude(1000, 0.01, 100, true, true);
 }
 
 //-------------------------------------------------------------------------------------------------

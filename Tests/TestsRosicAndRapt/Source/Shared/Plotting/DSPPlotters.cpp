@@ -56,10 +56,17 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
   for(unsigned int i = 0; i < filterSpecs.size(); i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
     vector<T> mag = getMagnitudes(H);
+
+    if(decibels)
+      for(size_t k = 0; k < mag.size(); k++) // factor out into function toDecibels
+        mag[k] = 20*log10(mag[k]);
+
     data[0][i+1] = mag;  // refactor to data[0][i+1] = getMagnitudeResponse(i, f);
     addGraph(string("i 0 u 1:") + s(i+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
   }
   addDataBlockColumnLine(data);
+  if(logFreqAxis)
+    setLogScale("x", 10); // 10 is the base - maybe try 2
   plot();
 }
 
