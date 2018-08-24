@@ -261,6 +261,16 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
 }
 
 
+// in my old octave script, i've been using poles of a 2nd order halfband butterworth (with its 
+// two bilinear zeros at z = -1 and placed a 3rd zero at z = -(sqrt(2)-1) which worked very well
+// ...try/verify
+/* from the .m file
+% add a zero:
+z(3) = -(sqrt(2)-1); 
+% works perfectly for wc == pi/4 and wc == pi/2 
+% numerically obtained but that can't be an accident
+*/
+
 void bandSplitHighOrderIIR()
 {
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
