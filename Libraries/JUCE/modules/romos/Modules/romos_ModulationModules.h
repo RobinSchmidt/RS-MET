@@ -57,7 +57,7 @@ class EnvelopeADSRTypeInfo : public ModuleTypeInfo
 {
 public:
   EnvelopeADSRTypeInfo() {
-    shortName    = "ADSR";
+    shortName    = "ADSR-Env";
     fullName     = "ADSR-Envelope";
     description  = "Attack-Decay-Sustain-Release (ADSR) envelope with variable shapes";
     category     = "Modulation";

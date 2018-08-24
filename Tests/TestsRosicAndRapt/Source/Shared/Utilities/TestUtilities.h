@@ -35,6 +35,8 @@ std::vector<double> rsApplyFunction(const std::vector<double>& v, double p,
 // conversions to std::string:
 std::string toString(int n);
 
+
+
 // returns x^2 = x*x, useful for testing application of a unary function using a function pointer
 //double rsSquare(double x);
 

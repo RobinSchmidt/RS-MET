@@ -128,7 +128,10 @@ void bandSplittingTreeAlgo()
 
 void bandSplitFreqResponses()
 {
-  // plots frequency response curves of the multiband bandsplitter
+  // Computes and plots frequency response curves of the multiband bandsplitter outputs. The 
+  // response is calculated in two ways: (1) FFT of the impulse-response and (2) using the built-in
+  // getMagnitude... functions. The prupose is mainly to compare the two to verify that 
+  // implementation of the latter is correct.
 
   // maybe turn into unit test
 
@@ -143,8 +146,6 @@ void bandSplitFreqResponses()
   Vec splitFreqs = { 5000, 10000, 15000 };
   //Vec splitFreqs = { 4000, 8000, 12000, 16000 };
   //Vec splitFreqs = { 3000, 6000, 9000, 12000, 15000, 18000 };
-
-
 
   // create and set up the splitter:
   rsMultiBandSplitterFF splitter;
@@ -200,6 +201,51 @@ void bandSplitFreqResponses()
     }
     // the last 2 are correct, the others only similar
   }
+}
+
+
+typedef std::complex<double> Complex;
+
+// 1-pole/0-zero
+void splitterPrototype_1_0(double* k, Complex* p, Complex* z)
+{
+  *k   =  1.0;
+  p[0] = -1.0;
+}
+
+// 2-pole/1-zero
+void splitterPrototype_2_1(double* k, Complex* p, Complex* z)
+{
+  double s = SQRT2_INV;
+  *k   =  1.0;
+  p[0] = Complex(-s, s);
+  p[1] = conj(p[0]);
+  z[0] = -1.0;
+  // not yet tested
+}
+// maybe try to place poles like in butterworth filters and zeros like the poles of a butterworth
+// filter with one order less
+
+void bandSplitHighOrderIIR()
+{
+  // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
+  // splitter with perfect reconstruction...
+
+  // ...under construction...
+
+  int N, M;                 // number of poles and zeros
+  Complex p[10], z[10];     // poles and zeros
+  double k;                 // gain
+
+
+  //splitterPrototype_1_0(&k, p, z); N = 1; M = 0;  // 1st order
+  splitterPrototype_2_1(&k, p, z); N = 2; M = 1;  // 2nd order
+  // ...
+
+
+
+
+  int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -577,6 +577,8 @@ protected:
   bool polyphonic;           // flag to indicate that this module is polyphonic
   int  x, y;                 // position on the GUI block-diagram
 
+
+  //std::string name;
   rosic::rsString name;      // use std::string
   // have shortName, longName, description, write a function getLongName etc. - inside this
   // function, check, if the variables here are empty and if so, show the long/short/etc names

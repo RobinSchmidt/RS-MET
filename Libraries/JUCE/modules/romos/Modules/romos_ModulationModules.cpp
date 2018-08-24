@@ -12,11 +12,20 @@ void EnvelopeADSR::initialize()
   //initOutputPins(1, "Env");
 
   initInputPins({ "Att", "AtSh", "Dec", "DcSh", "Sus", "Rel", "RlSh" });
-  initOutputPins({ "Env" });
+  //initOutputPins({ "Env" });
+  initOutputPins({ "" });
 
-  // wrap this into a function setPinDefaultValue(int pinIndex, double newDefaultValue):
-  //inputPins[4].setDefaultValue(1.0); // otherwise, the TimeScale pin is 0 when disconnected leading to an all zero output
-  //int dummy = 0;
+  // todo: maybe have a trigger input "Trig" - how does it actually currently get triggered?
+  // then, we probably also need to have a "Gate" input in order
+
+  // or: maybe have both MidiADSR and GateADSR maybe with a common baseclass
+  // or: have only a gate input and remember here the previous value of the gate and trigger when
+  // it was 0 before and is 1 now
+
+
+  inputPins[4].setDefaultValue(1.0); 
+  // wrap this into a function setPinDefaultValue(int pinIndex, double newDefaultValue) or
+  // better setPinDefaultValue(std::string pinName, double value)
 }
 
 void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *Att,
@@ -28,20 +37,20 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
   double         yStart  = env->startValues[voiceIndex];
 
   double sustain   = *Sus;
-  double timeScale = 1.0;
-  unsigned long attackSamples  = (unsigned long)rosic::round(*Att * timeScale * processingStatus.getSystemSampleRate());
-  unsigned long decaySamples   = (unsigned long)rosic::round(*Dec * timeScale * processingStatus.getSystemSampleRate());
-  unsigned long releaseSamples = (unsigned long)rosic::round(*Rel * timeScale * processingStatus.getSystemSampleRate());
+  double timeScale = 1.0;   // todo: make input
+  double scl = timeScale * processingStatus.getSystemSampleRate();
+  unsigned long attackSamples  = (unsigned long)rosic::round(*Att * scl);
+  unsigned long decaySamples   = (unsigned long)rosic::round(*Dec * scl);
+  unsigned long releaseSamples = (unsigned long)rosic::round(*Rel * scl);
 
-  // todo: precompute timeScale * processingStatus.getSystemSampleRate() - or maybe get rid of 
-  // timeScale
-
+  typedef RAPT::rsNodeBasedFunction<double> NBF;
   double a;
   double p;  // proportion of passedLength/fullLength of the phase ( = I(x), page 184, Eq.3-30)
   if(*counter < attackSamples)
   {
     // attack phase
-    a = *AtSh;  // apply formula
+    //a = *AtSh;  // apply formula
+    a = NBF::linVsExpFormulaScaler(*AtSh);
     p = (double)*counter / (double)attackSamples;
     if(a == 0.0)
       *out = yStart + (1.0 - yStart) * p;
@@ -52,7 +61,8 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
   else if(*counter < attackSamples + decaySamples)
   {
     // decay phase
-    a = *DcSh;
+    //a = *DcSh;
+    a = NBF::linVsExpFormulaScaler(*DcSh);
     p = (double)(*counter-attackSamples)  / (double)(decaySamples);
     if(a == 0.0)
       *out = 1.0 + (sustain-1.0) * p;
@@ -71,7 +81,8 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
   else if(*counter < attackSamples + decaySamples + releaseSamples)
   {
     // release phase
-    a = *RlSh;
+    //a = *RlSh;
+    a = NBF::linVsExpFormulaScaler(*RlSh);
     p = (double)(*counter-attackSamples-decaySamples)  / (double)(releaseSamples);
     if(a == 0.0)
       *out = yStart - yStart * p;
@@ -130,10 +141,8 @@ void EnvelopeADSR::allocateMemory()
 void EnvelopeADSR::freeMemory()
 {
   AtomicModule::freeMemory();
-  delete[] counters;
-  counters = NULL;
-  delete[] startValues;
-  startValues = NULL;
+  delete[] counters;     counters    = nullptr; // use deleteAndSetNull function
+  delete[] startValues;  startValues = nullptr;
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_7(EnvelopeADSR);
 
