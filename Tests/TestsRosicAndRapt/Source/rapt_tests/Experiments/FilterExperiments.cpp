@@ -271,6 +271,30 @@ z(3) = -(sqrt(2)-1);
 % numerically obtained but that can't be an accident
 */
 
+
+// digital 2-pole/3-zero
+void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
+{
+  typedef rsInfiniteImpulseResponseDesigner<double> DSGNR;
+  DSGNR dsgnr;
+  dsgnr.setApproximationMethod(rsPrototypeDesigner<double>::BUTTERWORTH);
+  dsgnr.setPrototypeOrder(2);
+  dsgnr.setSampleRate(1);
+  dsgnr.setFrequency(0.25);      // halfband filter, 0.5 is Nyquist freq
+  dsgnr.getPolesAndZeros(p, z);
+
+  // zeros are both at z=-1, poles are at z = 0 +- j*(sqrt(2)-1)
+
+  // put an additional zero at z = -(sqrt(2)-1):
+  z[2] = -(sqrt(2)-1);
+
+  // maybe we should in general put zeros along the negative real axis distributed the same way as
+  // the poles are along the (positive and negative) imaginary axis?
+
+  int dummy = 0;
+}
+
+
 void bandSplitHighOrderIIR()
 {
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
@@ -291,7 +315,12 @@ void bandSplitHighOrderIIR()
   //splitterPrototypeA_2_2(&k, p, z);   N = 2; M = 2; fs = inf;  // analog 2-pole/2-zero
   // ...
 
-  splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = 1;  // analog 2-pole/2-zero - 
+  //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = 1;  // analog 2-pole/2-zero - 
+
+  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = 1;  // analog 2-pole/3-zero
+
+  double s = sqrt(2)-1;
+  int dummy = 0;
 
 
   // putting additional finite zeros into the s-plane is not a good idea - it makes the final slope
@@ -316,9 +345,9 @@ void bandSplitHighOrderIIR()
   // plot frequency response:
   FilterPlotter<double> plt;
   plt.addFilterSpecification(N, p, M, z, k, fs);
-  //plt.plotPolesAndZeros();
+  plt.plotPolesAndZeros();
   //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
-  plt.plotMagnitude(1000, 0.0, 2*PI, false, false);
+  //plt.plotMagnitude(1000, 0.0, 2*PI, false, false);
 }
 
 //-------------------------------------------------------------------------------------------------
