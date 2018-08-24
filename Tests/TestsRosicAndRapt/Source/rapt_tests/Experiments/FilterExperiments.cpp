@@ -206,15 +206,15 @@ void bandSplitFreqResponses()
 
 typedef std::complex<double> Complex;
 
-// 1-pole/0-zero
-void splitterPrototype_1_0(double* k, Complex* p, Complex* z)
+// analog 1-pole/0-zero
+void splitterPrototypeA_1_0(double* k, Complex* p, Complex* z)
 {
   *k   =  1.0;
   p[0] = -1.0;
 }
 
-// 2-pole/0-zero
-void splitterPrototype_2_0(double* k, Complex* p, Complex* z)
+// analog 2-pole/0-zero
+void splitterPrototypeA_2_0(double* k, Complex* p, Complex* z)
 {
   double s = SQRT2_INV;
   *k   =  1.0;
@@ -222,8 +222,8 @@ void splitterPrototype_2_0(double* k, Complex* p, Complex* z)
   p[1] = conj(p[0]);
 }
 
-// 2-pole/1-zero
-void splitterPrototype_2_1(double* k, Complex* p, Complex* z)
+// analog 2-pole/1-zero
+void splitterPrototypeA_2_1(double* k, Complex* p, Complex* z)
 {
   double s = SQRT2_INV;
   *k   =  1.0;
@@ -235,8 +235,8 @@ void splitterPrototype_2_1(double* k, Complex* p, Complex* z)
   // poles
 }
 
-// 2-pole/2-zero
-void splitterPrototype_2_2(double* k, Complex* p, Complex* z)
+// analog 2-pole/2-zero
+void splitterPrototypeA_2_2(double* k, Complex* p, Complex* z)
 {
   double s = SQRT2_INV;
   *k   =  1.0;
@@ -246,6 +246,21 @@ void splitterPrototype_2_2(double* k, Complex* p, Complex* z)
   z[1] = conj(z[0]);
 }
 
+// digital 2-pole/1-zero
+void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
+{
+  //double s = SQRT2_INV;
+  //double s = 0.5;
+  //double s = 0.4;
+  double s = sqrt(2)-1;  // ad-hoc, i have no derivation for this
+  *k   =  1.0;
+  p[0] = Complex(0, s);
+  p[1] = conj(p[0]);
+  z[0] = -1.0;
+  z[1] = conj(z[0]);
+}
+
+
 void bandSplitHighOrderIIR()
 {
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
@@ -253,16 +268,21 @@ void bandSplitHighOrderIIR()
 
   // ...under construction...
 
-  int N, M;                 // number of poles and zeros
-  Complex p[10], z[10];     // poles and zeros
-  double k;                 // gain
+  int N, M;                     // number of poles and zeros
+  Complex p[10], z[10];         // poles and zeros
+  double k;                     // gain
+  double fs;                    // sample-rate
+  double inf = RS_INF(double);
 
 
-  //splitterPrototype_1_0(&k, p, z); N = 1; M = 0;  // 1-pole
-  //splitterPrototype_2_0(&k, p, z); N = 2; M = 0;    // 2-pole (2nd order Butterworth)
-  //splitterPrototype_2_1(&k, p, z); N = 2; M = 1;  // 2-pole/1-zero - 
-  splitterPrototype_2_2(&k, p, z); N = 2; M = 2;  // 2-pole/2-zero
+  //splitterPrototypeA_1_0(&k, p, z); N = 1; M = 0; fs = inf;  // analog 1-pole
+  //splitterPrototypeA_2_0(&k, p, z); N = 2; M = 0; fs = inf;  // analog 2-pole (2nd order Butterworth)
+  //splitterPrototypeA_2_1(&k, p, z); N = 2; M = 1; fs = inf;  // analog 2-pole/1-zero - 
+  //splitterPrototypeA_2_2(&k, p, z);   N = 2; M = 2; fs = inf;  // analog 2-pole/2-zero
   // ...
+
+  splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = 1;  // analog 2-pole/2-zero - 
+
 
   // putting additional finite zeros into the s-plane is not a good idea - it makes the final slope
   // shallower - the lowpass should have all of its zeros at infinity
@@ -274,15 +294,21 @@ void bandSplitHighOrderIIR()
   // try to place poles on a ellipse instead of a circle - let the user select a width/height 
   // ratio or eccentricity
 
+  // maybe experiment with multiplicities
+
+  // maybe start with z-plane prototype poles (and zeros), maybe aligned along the imaginary axis
+  // and spread in various ways
+
 
   // todo: obtain poles and zeros (or - simpler - polynomial coeffs) of the complementary filter
   // H(s) = 1 - L(s) and plot that, too
 
   // plot frequency response:
   FilterPlotter<double> plt;
-  plt.addFilterSpecification(N, p, M, z, k);
+  plt.addFilterSpecification(N, p, M, z, k, fs);
   //plt.plotPolesAndZeros();
-  plt.plotMagnitude(1000, 0.01, 100, true, true);
+  //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
+  plt.plotMagnitude(1000, 0.0, 2*PI, false, false);
 }
 
 //-------------------------------------------------------------------------------------------------

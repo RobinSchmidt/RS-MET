@@ -111,7 +111,11 @@ protected:
   bool almostEqual(std::complex<T> x, std::complex<T> y, T thresh);
 
   T freqScale = 1.0;
-  std::vector<FilterSpecificationZPK<T>> filterSpecs; 
+  std::vector<FilterSpecificationZPK<T>> filterSpecs; // use filterSpecsZPK
+
+  //std::vector<FilterSpecificationBA<T>> filterSpecsBA;
+
+  // have conversion functions convert_BA_To_ZPK, convert_ZPK_To_BA
 
 };
 
