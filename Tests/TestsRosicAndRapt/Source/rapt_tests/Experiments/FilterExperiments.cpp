@@ -246,31 +246,31 @@ void splitterPrototypeA_2_2(double* k, Complex* p, Complex* z)
   z[1] = conj(z[0]);
 }
 
-// digital 2-pole/1-zero
+
+// move to RAPT:
+Complex getDigitalTransferFunctionAt(Complex* zeros, int numZeros, Complex* poles, int numPoles,
+  double k, Complex z)
+{
+  Complex zr  = 1.0/z;       // z^-1
+  Complex num = 1, den = 1;  // numerator and denominator
+  for(int i = 0; i < numZeros; i++)  num *= (1.0 - zeros[i] * zr);
+  for(int i = 0; i < numPoles; i++)  den *= (1.0 - poles[i] * zr);
+  return k * num/den;
+  // see https://ccrma.stanford.edu/~jos/filters/Factored_Form.html for formula
+}
+
+// digital 2-pole/2-zero (i think, this is a 2nd order digital Butterworth halfband filter via 
+// bilinear transform):
 void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
 {
-  //double s = SQRT2_INV;
-  //double s = 0.5;
-  //double s = 0.4;
   double s = sqrt(2)-1;  // ad-hoc, i have no derivation for this
-  *k   =  1.0;
   p[0] = Complex(0, s);
   p[1] = conj(p[0]);
   z[0] = -1.0;
   z[1] = conj(z[0]);
+  Complex H1 = getDigitalTransferFunctionAt(z, 2, p, 2, 1, Complex(1.0, 0.0)); // H(z) at z=1
+  *k = 1 / abs(H1);  
 }
-
-
-// in my old octave script, i've been using poles of a 2nd order halfband butterworth (with its 
-// two bilinear zeros at z = -1 and placed a 3rd zero at z = -(sqrt(2)-1) which worked very well
-// ...try/verify
-/* from the .m file
-% add a zero:
-z(3) = -(sqrt(2)-1); 
-% works perfectly for wc == pi/4 and wc == pi/2 
-% numerically obtained but that can't be an accident
-*/
-
 
 // digital 2-pole/3-zero
 void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
@@ -281,6 +281,7 @@ void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
   dsgnr.setPrototypeOrder(2);
   dsgnr.setSampleRate(1);
   dsgnr.setFrequency(0.25);      // halfband filter, 0.5 is Nyquist freq
+  //dsgnr.setFrequency(0.125);      // quarterband filter - for test
   dsgnr.getPolesAndZeros(p, z);
 
   // zeros are both at z=-1, poles are at z = 0 +- j*(sqrt(2)-1)
@@ -291,9 +292,19 @@ void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
   // maybe we should in general put zeros along the negative real axis distributed the same way as
   // the poles are along the (positive and negative) imaginary axis?
 
-  int dummy = 0;
+  // set gain factor k to normalize DC gain to 1:
+  Complex H1 = getDigitalTransferFunctionAt(z, 3, p, 2, 1, Complex(1.0, 0.0)); // H(z) at z=1
+  *k = 1 / abs(H1);  
 }
-
+// in my old octave script, i've been using poles of a 2nd order halfband butterworth (with its 
+// two bilinear zeros at z = -1 and placed a 3rd zero at z = -(sqrt(2)-1) which worked very well
+// ...try/verify
+/* from the .m file
+% add a zero:
+z(3) = -(sqrt(2)-1); 
+% works perfectly for wc == pi/4 and wc == pi/2 
+% numerically obtained but that can't be an accident
+*/
 
 void bandSplitHighOrderIIR()
 {
@@ -315,11 +326,12 @@ void bandSplitHighOrderIIR()
   //splitterPrototypeA_2_2(&k, p, z);   N = 2; M = 2; fs = inf;  // analog 2-pole/2-zero
   // ...
 
-  //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = 1;  // analog 2-pole/2-zero - 
-
-  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = 1;  // analog 2-pole/3-zero
+  splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = 1;  // digital 2-pole/2-zero
+  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = 1;  // digital 2-pole/3-zero
 
   double s = sqrt(2)-1;
+  double pm = abs(p[0]);
+
   int dummy = 0;
 
 
@@ -345,9 +357,11 @@ void bandSplitHighOrderIIR()
   // plot frequency response:
   FilterPlotter<double> plt;
   plt.addFilterSpecification(N, p, M, z, k, fs);
-  plt.plotPolesAndZeros();
+  //plt.plotPolesAndZeros();
   //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
-  //plt.plotMagnitude(1000, 0.0, 2*PI, false, false);
+  plt.plotMagnitude(1000, 0.0, 2*PI, false, false);
+  //plt.plotMagnitude(1000, 0.0, 1, false, false);
+    // todo: rescale the freq-axis such that PI maps to 0.5 or 1.0
 }
 
 //-------------------------------------------------------------------------------------------------

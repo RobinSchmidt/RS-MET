@@ -107,8 +107,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // functions for analyzing filters in zero/pole/gain representation:
 
-  /** Returns the complex frequency response of an "N"th analog filter with zeros, poles and gain 
-  given in "z", "p", "k" at the radian frequency "w". */
+  /** Returns the complex frequency response of an "N"th order analog filter with zeros, poles and 
+  gain given in "z", "p", "k" at the radian frequency "w". */
   static Complex getAnalogFrequencyResponseAt(Complex* z, Complex* p, T k, int N, T w);
 
   /** Returns the magnitude response of an "N"th analog filter with zeros, poles and gain given in
