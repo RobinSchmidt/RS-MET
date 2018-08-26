@@ -81,11 +81,11 @@ public:
   a sampleRate in which case the poles and zeros will be interpreted as z-plane values. Otherwise
   an analog filter (corresponding to an infinite sample rate) will be assumed and the poles and 
   zeros are interpreted as being in the s-plane */
-  void addFilterSpecification(int numPoles, std::complex<T>* poles, int numZeros, 
+  void addFilterSpecificationZPK(int numPoles, std::complex<T>* poles, int numZeros, 
     std::complex<T>* zeros,  T gain, T sampleRate = inf);
 
   /** Adds a filter specification via an object the FilterSpecificationZPK class. */
-  void addFilterSpecification(const FilterSpecificationZPK<T>& spec);
+  void addFilterSpecificationZPK(const FilterSpecificationZPK<T>& spec);
 
 
   void addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs, 
@@ -160,6 +160,8 @@ protected:
   // maybe keep tpk and ba specifications for each filter, i.e. keep the two representaions in sync
   // and use whatever representation is more convenient to deal with to compute the various
   // plots/numbers
+
+  // maybe we could also keep SOS representations and maybe others?
 
 };
 

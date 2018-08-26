@@ -310,12 +310,33 @@ FilterSpecificationBA<double> zpk2ba(const FilterSpecificationZPK<double>& zpk)
 {
   FilterSpecificationBA<double> ba;
   ba.sampleRate = zpk.sampleRate;
-  ba.a = rsPolynomial<double>::getPolynomialCoefficientsFromRoots(zpk.poles);
-  ba.b = rsPolynomial<double>::getPolynomialCoefficientsFromRoots(zpk.zeros);
+  ba.a = rsPolynomial<double>::getPolynomialCoefficientsFromRoots(zpk.poles); // rename: rootsToCoeffs
+  ba.b = rsPolynomial<double>::getPolynomialCoefficientsFromRoots(zpk.zeros); // have also coeffsToRoots
   for(size_t i = 0; i < ba.b.size(); i++)
     ba.b[i] *= zpk.gain;
   return ba;
-} // maybe move to DSPPlotters.h
+} // maybe move to DSPPlotters.h, rename to toBA
+
+FilterSpecificationZPK<double> ba2zpk(const FilterSpecificationBA<double>& ba)
+{
+  FilterSpecificationZPK<double> zpk;
+  zpk.sampleRate = ba.sampleRate;
+  zpk.poles.resize(ba.a.size()-1);
+  zpk.zeros.resize(ba.b.size()-1);
+  rsPolynomial<double>::findPolynomialRoots(&ba.a[0], (int) ba.a.size()-1, &zpk.poles[0]);
+  rsPolynomial<double>::findPolynomialRoots(&ba.b[0], (int) ba.b.size()-1, &zpk.zeros[0]);
+
+  zpk.gain = 1; // preliminary - either b[0] or b[last]
+  //if(ba.sampleRate == inf) 
+  //  zpk.gain = ba.b[0];
+  //else
+  //  zpk.gain = ba.b[ba.b.size()-1];
+  //findPolynomialRoots(T *a, int order, std::complex<T> *roots);
+
+  return zpk;
+}
+
+
 
 FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<double>& baSpec)
 {
@@ -412,7 +433,7 @@ void bandSplitHighOrderIIR()
 
   // plot frequency response:
   FilterPlotter<double> plt;
-  plt.addFilterSpecification(N, p, M, z, k, fs);
+  plt.addFilterSpecificationZPK(N, p, M, z, k, fs);
   plt.plotPolesAndZeros();
   //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
   //plt.plotMagnitude(1000, 0.0, 2*PI, false, false);    // todo: rescale the freq-axis such that PI maps to 0.5 or 1.0
@@ -912,7 +933,7 @@ void prototypeDesign()
   {
     pd.setOrder(i);
     FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
-    plt.addFilterSpecification(spec);
+    plt.addFilterSpecificationZPK(spec);
   }
   //plt.plotPolesAndZeros(600);
   plt.plotMagnitude(1000, 0, 3, false, false);
@@ -977,7 +998,7 @@ void poleZeroPrototype()
     pzp.setOrder(n);
     pzp.getPolesZerosAndGain(p, z, &k);
     FilterSpecificationZPK<Real> spec = analogPrototypeSpecZPK(n, z, p, k);
-    plt.addFilterSpecification(spec);
+    plt.addFilterSpecificationZPK(spec);
   }
   plt.plotPolesAndZeros(600);
   //plt.plotMagnitude(500, 0, 3, false, false);

@@ -23,7 +23,7 @@ void FilterPlotter<T>::setFrequenciesAreRadian(bool areRadian)
 }
 
 template <class T>
-void FilterPlotter<T>::addFilterSpecification(int numPoles, complex<T>* poles, int numZeros, 
+void FilterPlotter<T>::addFilterSpecificationZPK(int numPoles, complex<T>* poles, int numZeros, 
   complex<T>* zeros, T gain, T sampleRate)
 {
   FilterSpecificationZPK<T> spec;
@@ -40,9 +40,10 @@ void FilterPlotter<T>::addFilterSpecification(int numPoles, complex<T>* poles, i
 }
 
 template <class T>
-void FilterPlotter<T>::addFilterSpecification(const FilterSpecificationZPK<T>& spec)
+void FilterPlotter<T>::addFilterSpecificationZPK(const FilterSpecificationZPK<T>& spec)
 {
   filterSpecsZPK.push_back(spec);
+  // // filterSpecBA.pushBack(toBA(spec));
 }
 
 template <class T>
@@ -64,6 +65,7 @@ template <class T>
 void FilterPlotter<T>::addFilterSpecificationBA(const FilterSpecificationBA<T>& spec)
 {
   filterSpecsBA.push_back(spec);
+  // filterSpecZPK.pushBack(toZPK(spec));
 }
 
 template <class T>

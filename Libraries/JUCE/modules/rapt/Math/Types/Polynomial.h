@@ -155,11 +155,11 @@ public:
 
   /** Converges to a complex root of a polynomial by means of Laguerre's method using the
   "initialGuess" as first estimate. */
-  static std::complex<T> convergeToRootViaLaguerre(std::complex<T> *a, int order,
+  static std::complex<T> convergeToRootViaLaguerre(const std::complex<T> *a, int order,
     std::complex<T> initialGuess = std::complex<T>(0.0, 0.0));
 
   /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
-  static void findPolynomialRoots(std::complex<T> *a, int order, std::complex<T> *roots);
+  static void findPolynomialRoots(const std::complex<T>* a, int order, std::complex<T>* roots);
 
   static void findPolynomialRoots(T *a, int order, std::complex<T> *roots);
 

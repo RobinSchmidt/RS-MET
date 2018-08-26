@@ -293,7 +293,7 @@ std::complex<T> rsPolynomial<T>::evaluatePolynomialWithRoots(std::complex<T> s,
 
 // used in convergeToRootViaLaguerre - maybe turn into member function:
 template<class T>
-T evaluatePolynomialWithTwoDerivativesAndError(std::complex<T> *a, int order,
+T evaluatePolynomialWithTwoDerivativesAndError(const std::complex<T>* a, int order,
   std::complex<T> z, std::complex<T> *P)
 {
   P[0] = a[order];                   // P(z)
@@ -313,7 +313,7 @@ T evaluatePolynomialWithTwoDerivativesAndError(std::complex<T> *a, int order,
 }
 
 template<class T>
-std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, int order,
+std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T> *a, int order,
                                                std::complex<T> initialGuess)
 {
   const T eps = std::numeric_limits<T>::epsilon();
@@ -384,7 +384,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
 }
 
 template<class T>
-void rsPolynomial<T>::findPolynomialRoots(std::complex<T> *a, int order, std::complex<T> *roots)
+void rsPolynomial<T>::findPolynomialRoots(const std::complex<T> *a, int order, std::complex<T> *roots)
 {
   const T eps = T(2.0e-14); // for float, it was 2.0e-6 - use template numeric_limit<T>
 
