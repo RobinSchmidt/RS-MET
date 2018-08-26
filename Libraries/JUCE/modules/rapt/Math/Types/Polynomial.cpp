@@ -438,7 +438,8 @@ std::vector<std::complex<T>> rsPolynomial<T>::getPolynomialCoefficientsFromRoots
   std::vector<std::complex<T>> coeffs;
 
   coeffs.reserve(roots.size()+1);
-  coeffs.push_back(1.0);
+  coeffs.push_back(1.0); // init with one for convolutional accumulation - but in the special case
+                         // roots.size() < 1, this would be wrong, right? ..hmm
 
   if( roots.size() < 1 )
     return coeffs;

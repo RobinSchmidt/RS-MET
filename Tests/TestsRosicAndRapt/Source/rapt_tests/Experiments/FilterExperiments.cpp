@@ -306,6 +306,17 @@ z(3) = -(sqrt(2)-1);
 % numerically obtained but that can't be an accident
 */
 
+FilterSpecificationBA<double> zpk2ba(const FilterSpecificationZPK<double>& zpk)
+{
+  FilterSpecificationBA<double> ba;
+  ba.sampleRate = zpk.sampleRate;
+  ba.a = rsPolynomial<double>::getPolynomialCoefficientsFromRoots(zpk.poles);
+  ba.b = rsPolynomial<double>::getPolynomialCoefficientsFromRoots(zpk.zeros);
+  for(size_t i = 0; i < ba.b.size(); i++)
+    ba.b[i] *= zpk.gain;
+  return ba;
+}
+
 void bandSplitHighOrderIIR()
 {
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 

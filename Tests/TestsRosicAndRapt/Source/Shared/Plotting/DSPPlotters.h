@@ -132,9 +132,10 @@ protected:
   T freqScale = 1.0;
   std::vector<FilterSpecificationZPK<T>> filterSpecsZPK; // use filterSpecsZPK
 
-  //std::vector<FilterSpecificationBA<T>> filterSpecsBA;
+  std::vector<FilterSpecificationBA<T>> filterSpecsBA;
 
   // have conversion functions convert_BA_To_ZPK, convert_ZPK_To_BA
+  // or filterSpecBA2ZPK, ba2zpk, zpk2ba
 
 };
 
