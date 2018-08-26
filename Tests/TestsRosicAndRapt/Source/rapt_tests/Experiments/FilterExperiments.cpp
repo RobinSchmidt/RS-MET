@@ -306,6 +306,7 @@ z(3) = -(sqrt(2)-1);
 % numerically obtained but that can't be an accident
 */
 
+/*
 FilterSpecificationBA<double> zpk2ba(const FilterSpecificationZPK<double>& zpk)
 {
   FilterSpecificationBA<double> ba;
@@ -335,6 +336,7 @@ FilterSpecificationZPK<double> ba2zpk(const FilterSpecificationBA<double>& ba)
 
   return zpk;
 }
+*/
 
 
 
@@ -394,7 +396,7 @@ void bandSplitHighOrderIIR()
   //FilterSpecificationZPK<double> lowpassZPK, highpassZPK;//
 
   FilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);
-  FilterSpecificationBA<double>  lowpassBA  = zpk2ba(lowpassZPK);
+  FilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
   FilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
 
 

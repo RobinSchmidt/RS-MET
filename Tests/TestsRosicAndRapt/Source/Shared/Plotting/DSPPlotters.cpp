@@ -180,6 +180,35 @@ complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>
 }
 
 template <class T>
+FilterSpecificationBA<T> FilterPlotter<T>::zpk2ba(const FilterSpecificationZPK<T>& zpk)
+{
+  FilterSpecificationBA<T> ba;
+  ba.sampleRate = zpk.sampleRate;
+  ba.a = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(zpk.poles); // rename: rootsToCoeffs
+  ba.b = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(zpk.zeros); // have also coeffsToRoots
+  for(size_t i = 0; i < ba.b.size(); i++)
+    ba.b[i] *= zpk.gain;
+  return ba;
+}
+
+template <class T>
+FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T>& ba)
+{
+  FilterSpecificationZPK<T> zpk;
+  zpk.sampleRate = ba.sampleRate;
+  zpk.poles.resize(ba.a.size()-1);
+  zpk.zeros.resize(ba.b.size()-1);
+  rsPolynomial<T>::findPolynomialRoots(&ba.a[0], (int) ba.a.size()-1, &zpk.poles[0]);
+  rsPolynomial<T>::findPolynomialRoots(&ba.b[0], (int) ba.b.size()-1, &zpk.zeros[0]);
+  zpk.gain = 1; // preliminary
+  //if(ba.sampleRate == inf) 
+  //  zpk.gain = ba.b[0];
+  //else
+  //  zpk.gain = ba.b[ba.b.size()-1];
+  return zpk;
+}
+
+template <class T>
 void FilterPlotter<T>::setupForPoleZeroPlot(int size)
 {
   bool zDomain = true;

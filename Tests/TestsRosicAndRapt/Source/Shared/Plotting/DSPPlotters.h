@@ -51,6 +51,11 @@ struct FilterSpecificationBA
 // H(s) = (b0 + b1*s + ... + bM*s^M) / (a0 + a1*s + ... + aM*s^N)   or
 // H(z) = (b0 + b1/z + ... + bM/z^M) / (a0 + a1/z + ... + aN/z^N)
 
+
+
+
+
+
 //=================================================================================================
 
 /** A class for visualizing analog and digital filter responses. It may plot magnitude responses,
@@ -131,6 +136,12 @@ public:
   complex value s */
   std::complex<T> transferFunctionZPK(std::complex<T> s, std::vector<std::complex<T>>& z,
     std::vector<std::complex<T>>& p, T k);
+
+  //-----------------------------------------------------------------------------------------------
+
+  static FilterSpecificationBA<T> zpk2ba(const FilterSpecificationZPK<T>& zpk);
+
+  static FilterSpecificationZPK<T> ba2zpk(const FilterSpecificationBA<T>& ba);
 
 protected:
 
