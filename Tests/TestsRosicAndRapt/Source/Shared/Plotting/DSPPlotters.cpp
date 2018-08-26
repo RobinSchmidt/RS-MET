@@ -172,7 +172,7 @@ complex<T> FilterPlotter<T>::polynomialByRoots(complex<T> z, vector<complex<T>>&
 
 template <class T>
 complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>>& z, 
-  vector<complex<T>>& p, T k)
+  vector<complex<T>>& p, std::complex<T> k)
 {
   complex<T> num = polynomialByRoots(s, z);
   complex<T> den = polynomialByRoots(s, p);
@@ -200,11 +200,11 @@ FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T
   zpk.zeros.resize(ba.b.size()-1);
   rsPolynomial<T>::findPolynomialRoots(&ba.a[0], (int) ba.a.size()-1, &zpk.poles[0]);
   rsPolynomial<T>::findPolynomialRoots(&ba.b[0], (int) ba.b.size()-1, &zpk.zeros[0]);
-  zpk.gain = 1; // preliminary
-  //if(ba.sampleRate == inf) 
-  //  zpk.gain = ba.b[0];
-  //else
-  //  zpk.gain = ba.b[ba.b.size()-1];
+  //zpk.gain = 1; // preliminary
+  if(ba.sampleRate == inf) 
+    zpk.gain = ba.b[0];
+  else
+    zpk.gain = ba.b[ba.b.size()-1];
   return zpk;
 }
 

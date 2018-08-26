@@ -27,7 +27,8 @@ struct FilterSpecificationZPK
 
   std::vector<std::complex<T>> poles;
   std::vector<std::complex<T>> zeros;
-  T gain = 1;  // maybe allow complex gain
+  //T gain = 1;  // maybe allow complex gain
+  std::complex<T> gain = 1;
   T sampleRate = std::numeric_limits<T>::infinity();
 };
 
@@ -135,7 +136,7 @@ public:
   /** Evaluates complex transfer function defined by its zeros z, poles p and gain k at the 
   complex value s */
   std::complex<T> transferFunctionZPK(std::complex<T> s, std::vector<std::complex<T>>& z,
-    std::vector<std::complex<T>>& p, T k);
+    std::vector<std::complex<T>>& p, std::complex<T> k);
 
   //-----------------------------------------------------------------------------------------------
 
