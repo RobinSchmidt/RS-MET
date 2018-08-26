@@ -36,13 +36,20 @@ void FilterPlotter<T>::addFilterSpecification(int numPoles, complex<T>* poles, i
     spec.zeros[i] = zeros[i];
   spec.gain = gain;
   spec.sampleRate = sampleRate;
-  filterSpecs.push_back(spec);
+  filterSpecsZPK.push_back(spec);
 }
 
 template <class T>
 void FilterPlotter<T>::addFilterSpecification(const FilterSpecificationZPK<T>& spec)
 {
-  filterSpecs.push_back(spec);
+  filterSpecsZPK.push_back(spec);
+}
+
+template <class T>
+void FilterPlotter<T>::addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs, 
+  int denominatorOrder, T* denominatorCoeffs, T sampleRate = inf)
+{
+  // not yet implemented
 }
 
 template <class T>
@@ -50,10 +57,10 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
   bool decibels)
 {
   vector<vector<vector<T>>> data(1);
-  data[0].resize(1 + filterSpecs.size());
+  data[0].resize(1 + filterSpecsZPK.size());
   vector<T> f = getFrequencyAxis(numFreqs, lowFreq, highFreq, logFreqAxis);
   data[0][0] = f;
-  for(unsigned int i = 0; i < filterSpecs.size(); i++) {
+  for(unsigned int i = 0; i < filterSpecsZPK.size(); i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
     vector<T> mag = getMagnitudes(H);
 
@@ -73,18 +80,18 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
 template <class T>
 void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
 {
-  for(unsigned int i = 0; i < filterSpecs.size(); i++)
+  for(unsigned int i = 0; i < filterSpecsZPK.size(); i++)
   {
-    addDataComplex(filterSpecs[i].poles);
-    addDataComplex(filterSpecs[i].zeros);
+    addDataComplex(filterSpecsZPK[i].poles);
+    addDataComplex(filterSpecsZPK[i].zeros);
     addGraph("i " + s(2*i)   + " u 1:2 w points pt 2 ps 1 notitle");
     addGraph("i " + s(2*i+1) + " u 1:2 w points pt 6 ps 1 notitle");
 
     // show the multiplicities of poles and zeros:
     T thresh = T(1.e-8);    // threshold for considering close poles/zeros as multiple root
                             // maybe use something that depends on the epsilon of T
-    drawMultiplicities(filterSpecs[i].poles, thresh);
-    drawMultiplicities(filterSpecs[i].zeros, thresh);
+    drawMultiplicities(filterSpecsZPK[i].poles, thresh);
+    drawMultiplicities(filterSpecsZPK[i].zeros, thresh);
   }
 
   // todo: make the colors of the poles, zeros and multiplicities for each filter equal
@@ -107,7 +114,7 @@ vector<T> FilterPlotter<T>::getFrequencyAxis(int numFreqs, T lowFreq, T highFreq
 template <class T>
 vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& f)
 {
-  FilterSpecificationZPK<T> spec = filterSpecs[index];
+  FilterSpecificationZPK<T> spec = filterSpecsZPK[index];
   bool isDigital = spec.sampleRate != inf;
   complex<T> j(0.0, 1.0);                          // imaginary unit                         
   vector<complex<T>> H(f.size());                  // frequency response
@@ -152,11 +159,11 @@ void FilterPlotter<T>::setupForPoleZeroPlot(int size)
 {
   bool zDomain = true;
   double range = 0;
-  for(unsigned int i = 0; i < filterSpecs.size(); i++) 
+  for(unsigned int i = 0; i < filterSpecsZPK.size(); i++) 
   {
-    range   = fmax(range, maxAbsReIm(filterSpecs[i].poles));  
-    range   = fmax(range, maxAbsReIm(filterSpecs[i].zeros)); 
-    zDomain = zDomain || (filterSpecs[i].sampleRate != inf);
+    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].poles));  
+    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].zeros)); 
+    zDomain = zDomain || (filterSpecsZPK[i].sampleRate != inf);
   }
   range = 1.1 * fmax(1.0, range);
   setRange(-range, range, -range, range);

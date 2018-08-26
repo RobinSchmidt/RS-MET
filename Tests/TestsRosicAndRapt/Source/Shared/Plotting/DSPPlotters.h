@@ -22,6 +22,19 @@ struct FilterSpecificationZPK
 };
 
 
+template <class T>
+struct FilterSpecificationBA
+{
+  std::vector<std::complex<T>> b; // numerator
+  std::vector<std::complex<T>> a; // denominator
+  T sampleRate = std::numeric_limits<T>::infinity();
+};
+// filter specification by polynomial coeffs for numerator (b) and denominator (a)
+// H(s) = (b0 + b1*s + ... + bM*s^M) / (a0 + a1*s + ... + aM*s^N)   or
+// H(z) = (b0 + b1/z + ... + bM/z^M) / (a0 + a1/z + ... + aN/z^N)
+
+//=================================================================================================
+
 /** A class for visualizing analog and digital filter responses. It may plot magnitude responses,
 phase responses, pole/zero plots etc. for one or more filters. You need to specify the filters in 
 terms of their poles and zeros. For each filter, you once call addPoleZeroSet to add the filter to
@@ -55,6 +68,12 @@ public:
 
   /** Adds a filter specification via an object the FilterSpecificationZPK class. */
   void addFilterSpecification(const FilterSpecificationZPK<T>& spec);
+
+
+  void addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs, 
+    int denominatorOrder, T* denominatorCoeffs, T sampleRate = inf);
+  // maybe allow for complex coeffs
+
 
   /** Plots the magnitude responses of all the filters. */
   void plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels);
@@ -111,7 +130,7 @@ protected:
   bool almostEqual(std::complex<T> x, std::complex<T> y, T thresh);
 
   T freqScale = 1.0;
-  std::vector<FilterSpecificationZPK<T>> filterSpecs; // use filterSpecsZPK
+  std::vector<FilterSpecificationZPK<T>> filterSpecsZPK; // use filterSpecsZPK
 
   //std::vector<FilterSpecificationBA<T>> filterSpecsBA;
 

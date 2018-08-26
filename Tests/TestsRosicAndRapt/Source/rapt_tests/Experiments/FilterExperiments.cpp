@@ -326,12 +326,11 @@ void bandSplitHighOrderIIR()
   //splitterPrototypeA_2_2(&k, p, z);   N = 2; M = 2; fs = inf;  // analog 2-pole/2-zero
   // ...
 
-  splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = 1;  // digital 2-pole/2-zero
-  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = 1;  // digital 2-pole/3-zero
+  //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = 1;  // digital 2-pole/2-zero
+  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = 1;  // digital 2-pole/3-zero
 
   double s = sqrt(2)-1;
   double pm = abs(p[0]);
-
   int dummy = 0;
 
 
@@ -359,9 +358,7 @@ void bandSplitHighOrderIIR()
   plt.addFilterSpecification(N, p, M, z, k, fs);
   //plt.plotPolesAndZeros();
   //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
-  plt.plotMagnitude(1000, 0.0, 2*PI, false, false);
-  //plt.plotMagnitude(1000, 0.0, 1, false, false);
-    // todo: rescale the freq-axis such that PI maps to 0.5 or 1.0
+  plt.plotMagnitude(1000, 0.0, 2*PI, false, false);    // todo: rescale the freq-axis such that PI maps to 0.5 or 1.0
 }
 
 //-------------------------------------------------------------------------------------------------
