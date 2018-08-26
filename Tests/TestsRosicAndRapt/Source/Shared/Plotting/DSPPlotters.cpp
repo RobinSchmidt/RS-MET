@@ -200,11 +200,14 @@ FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T
   zpk.zeros.resize(ba.b.size()-1);
   rsPolynomial<T>::findPolynomialRoots(&ba.a[0], (int) ba.a.size()-1, &zpk.poles[0]);
   rsPolynomial<T>::findPolynomialRoots(&ba.b[0], (int) ba.b.size()-1, &zpk.zeros[0]);
-  //zpk.gain = 1; // preliminary
+
   if(ba.sampleRate == inf) 
-    zpk.gain = ba.b[0];
+    zpk.gain = ba.b[0];  
   else
     zpk.gain = ba.b[ba.b.size()-1];
+  // is this correct?  ...verify -  has been tested only in the difital case
+
+  //zpk.gain = 1; // preliminary
   return zpk;
 }
 

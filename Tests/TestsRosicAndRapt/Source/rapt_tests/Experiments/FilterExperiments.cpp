@@ -343,25 +343,13 @@ FilterSpecificationZPK<double> ba2zpk(const FilterSpecificationBA<double>& ba)
 FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<double>& baSpec)
 {
   FilterSpecificationBA<double> r;
+  r.sampleRate = baSpec.sampleRate;
   int Na = (int)baSpec.a.size()-1;
   int Nb = (int)baSpec.b.size()-1;
   r.a = baSpec.a;                // denominator is the same
   r.b.resize(std::max(Na,Nb)+1);
-  //rsPolynomial<complex<double>>::weightedSumOfPolynomials(
-  //  &baSpec.a[0], Na, 1.0, &baSpec.b[0], Nb, -1.0, &r.b[0]);
   rsPolynomial<complex<double>>::subtractPolynomials(&baSpec.a[0], Na, &baSpec.b[0], Nb, &r.b[0]);
   return r;
-
-
-  /*
-  FilterSpecificationBA<double> r = baSpec; // result
-  for(size_t i = 0; i < r.b.size(); i++)
-    r.b[i] = -r.b[i];
-  r.b[0] += 1.0;
-  return r;
-  */
-  // nope - i think, this is wrong - we need to bring the summands 1 and -b(z)/a(z) over a common
-  // denominator
 }
 
 template<class T>
@@ -373,10 +361,8 @@ void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
   for(size_t i = 0; i < filterSpecs.size(); i++)
     plt.addFilterSpecificationBA(filterSpecs[i]);
   plt.plotMagnitude(numFreqs, lowFreq, highFreq, logFreqAxis, decibels);
+  //plt.plotPolesAndZeros(); // test
 } // maybe move as static function to class FilterPlotter
-
-
-
 
 void bandSplitHighOrderIIR()
 {
