@@ -31,7 +31,7 @@ public:
     shortName    = "In";
     fullName     = "AudioInput";
     description  = "Input module for feeding signals into containers";
-    category     = " ";
+    category     = "Infrastructure";
     createModule =  []()->Module* { return new AudioInputModule; };
     hasHeader    = false;
     hasEditor    = false;

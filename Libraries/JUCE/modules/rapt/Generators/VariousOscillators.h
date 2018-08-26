@@ -46,7 +46,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  /** Updates the phase-variable (called din getSample) */
+  /** Updates the phase-variable (called in getSample) */
   inline void updatePhase()
   {
     p += inc;

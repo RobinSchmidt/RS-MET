@@ -74,6 +74,8 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
   data[0].resize(1 + filterSpecsZPK.size());
   vector<T> f = getFrequencyAxis(numFreqs, lowFreq, highFreq, logFreqAxis);
   data[0][0] = f;
+
+
   for(unsigned int i = 0; i < filterSpecsZPK.size(); i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
     vector<T> mag = getMagnitudes(H);
@@ -85,11 +87,18 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
     data[0][i+1] = mag;  // refactor to data[0][i+1] = getMagnitudeResponse(i, f);
     addGraph(string("i 0 u 1:") + s(i+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
   }
+
+  // getFrequencyResponse(i, f); should dispatch between zpk and ba, loop should run over
+  // i = 0...getNumFilterSpecs() which returns the sum of the zpk and ba specs
+
   addDataBlockColumnLine(data);
   if(logFreqAxis)
     setLogScale("x", 10); // 10 is the base - maybe try 2
   plot();
 }
+
+
+
 
 template <class T>
 void FilterPlotter<T>::plotPolesAndZeros(int plotSize)

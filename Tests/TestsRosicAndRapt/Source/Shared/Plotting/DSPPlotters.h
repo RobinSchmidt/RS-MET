@@ -15,9 +15,19 @@ zeros and poles are in the z-plane. */
 template <class T>
 struct FilterSpecificationZPK
 {
+  FilterSpecificationZPK() {}
+  FilterSpecificationZPK(const std::vector<std::complex<T>>& poles,
+    const std::vector<std::complex<T>>& zeros, T gain, T sampleRate)
+  {
+    this->poles = poles;
+    this->zeros = zeros;
+    this->gain  = gain;
+    this->sampleRate = sampleRate;
+  }
+
   std::vector<std::complex<T>> poles;
   std::vector<std::complex<T>> zeros;
-  T gain = 1;
+  T gain = 1;  // maybe allow complex gain
   T sampleRate = std::numeric_limits<T>::infinity();
 };
 
@@ -25,6 +35,14 @@ struct FilterSpecificationZPK
 template <class T>
 struct FilterSpecificationBA
 {
+  FilterSpecificationBA() {}
+  FilterSpecificationBA(const std::vector<T>& num, const std::vector<T>& den, T sampleRate)
+  {
+    this->sampleRate = sampleRate;
+    b = num;
+    a = den;
+  }
+
   std::vector<std::complex<T>> b; // numerator
   std::vector<std::complex<T>> a; // denominator
   T sampleRate = std::numeric_limits<T>::infinity();
@@ -133,12 +151,15 @@ protected:
   bool almostEqual(std::complex<T> x, std::complex<T> y, T thresh);
 
   T freqScale = 1.0;
-  std::vector<FilterSpecificationZPK<T>> filterSpecsZPK; // use filterSpecsZPK
+  std::vector<FilterSpecificationZPK<T>> filterSpecsZPK;
 
   std::vector<FilterSpecificationBA<T>> filterSpecsBA;
 
   // have conversion functions convert_BA_To_ZPK, convert_ZPK_To_BA
   // or filterSpecBA2ZPK, ba2zpk, zpk2ba
+  // maybe keep tpk and ba specifications for each filter, i.e. keep the two representaions in sync
+  // and use whatever representation is more convenient to deal with to compute the various
+  // plots/numbers
 
 };
 
