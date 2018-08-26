@@ -342,13 +342,27 @@ FilterSpecificationZPK<double> ba2zpk(const FilterSpecificationBA<double>& ba)
 
 FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<double>& baSpec)
 {
+  FilterSpecificationBA<double> r;
+  int Na = (int)baSpec.a.size()-1;
+  int Nb = (int)baSpec.b.size()-1;
+  r.a = baSpec.a;                // denominator is the same
+  r.b.resize(std::max(Na,Nb)+1);
+  //rsPolynomial<complex<double>>::weightedSumOfPolynomials(
+  //  &baSpec.a[0], Na, 1.0, &baSpec.b[0], Nb, -1.0, &r.b[0]);
+  rsPolynomial<complex<double>>::subtractPolynomials(&baSpec.a[0], Na, &baSpec.b[0], Nb, &r.b[0]);
+  return r;
+
+
+  /*
   FilterSpecificationBA<double> r = baSpec; // result
   for(size_t i = 0; i < r.b.size(); i++)
     r.b[i] = -r.b[i];
   r.b[0] += 1.0;
   return r;
+  */
+  // nope - i think, this is wrong - we need to bring the summands 1 and -b(z)/a(z) over a common
+  // denominator
 }
-
 
 template<class T>
 void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
@@ -390,29 +404,13 @@ void bandSplitHighOrderIIR()
   splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero
 
 
-  //std::vector<double> toVector(z, M)
-
-  // under construction:
-  //FilterSpecificationZPK<double> lowpassZPK, highpassZPK;//
-
   FilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);
   FilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
   FilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
 
-
-
-
-  
-  //,  highpassZPK;
-  //FilterSpecificationBA<double>  lowpassBA,  highpassBA;
-
   double s = sqrt(2)-1;
   double pm = abs(p[0]);
   int dummy = 0;
-
-
-
-
 
   // putting additional finite zeros into the s-plane is not a good idea - it makes the final slope
   // shallower - the lowpass should have all of its zeros at infinity
@@ -436,11 +434,11 @@ void bandSplitHighOrderIIR()
   // plot frequency response:
   FilterPlotter<double> plt;
   plt.addFilterSpecificationZPK(N, p, M, z, k, fs);
-  plt.plotPolesAndZeros();
+  //plt.plotPolesAndZeros();
   //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
   //plt.plotMagnitude(1000, 0.0, 2*PI, false, false);    // todo: rescale the freq-axis such that PI maps to 0.5 or 1.0
   //plt.plotMagnitude(1000, 0.0, 0.5, false, false);
-  //plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
+  plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
 }
 
 //-------------------------------------------------------------------------------------------------

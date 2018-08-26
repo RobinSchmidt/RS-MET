@@ -43,7 +43,7 @@ template <class T>
 void FilterPlotter<T>::addFilterSpecificationZPK(const FilterSpecificationZPK<T>& spec)
 {
   filterSpecsZPK.push_back(spec);
-  // // filterSpecBA.pushBack(toBA(spec));
+  filterSpecsBA.push_back(zpk2ba(spec));
 }
 
 template <class T>
@@ -65,7 +65,7 @@ template <class T>
 void FilterPlotter<T>::addFilterSpecificationBA(const FilterSpecificationBA<T>& spec)
 {
   filterSpecsBA.push_back(spec);
-  // filterSpecZPK.pushBack(toZPK(spec));
+  filterSpecsZPK.push_back(ba2zpk(spec));
 }
 
 template <class T>

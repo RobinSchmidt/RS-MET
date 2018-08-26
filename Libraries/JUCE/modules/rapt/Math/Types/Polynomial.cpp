@@ -222,7 +222,7 @@ void rsPolynomial<T>::rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, 
 }
 
 template<class T>
-void rsPolynomial<T>::weightedSumOfPolynomials(T *p, int pN, T wp, T *q, int qN, T wq, T *r)
+void rsPolynomial<T>::weightedSumOfPolynomials(const T *p, int pN, T wp, const T *q, int qN, T wq, T *r)
 {
   int i;
   if(pN >= qN)
@@ -242,7 +242,7 @@ void rsPolynomial<T>::weightedSumOfPolynomials(T *p, int pN, T wp, T *q, int qN,
 }
 
 template<class T>
-void rsPolynomial<T>::subtractPolynomials(T *p, int pN, T *q, int qN, T *r)
+void rsPolynomial<T>::subtractPolynomials(const T *p, int pN, const T *q, int qN, T *r)
 {
   weightedSumOfPolynomials(p, pN, T(1), q, qN, T(-1), r);
 }

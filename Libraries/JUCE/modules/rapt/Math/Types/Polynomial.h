@@ -130,11 +130,11 @@ public:
   stores the coeffficients of the resulting polynomial r(x) in the r-array. The polynomials p(x)
   and q(x) do not need to be of the same order and the resulting polynomial will have an order of
   max(pN, qN). */
-  static void weightedSumOfPolynomials(T *p, int pN, T wp, T *q, int qN, T wq, T *r);
+  static void weightedSumOfPolynomials(const T *p, int pN, T wp, const T *q, int qN, T wq, T *r);
 
   /** Subtracts polynomial q(x) from polynomial p(x) and stores the coeffficients of the resulting
   polynomial in r(x) which is of order max(pN, qN). */
-  static void subtractPolynomials(T *p, int pN, T *q, int qN, T *r);
+  static void subtractPolynomials(const T *p, int pN, const T *q, int qN, T *r);
 
   /** Computes the definite integral of the polynomial "p" where the lower integration limit is
   given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"

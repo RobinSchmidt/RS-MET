@@ -138,6 +138,10 @@ template RAPT::rsPolynomial<double>;
 //template RAPT::rsPolynomial<int>; // template doesn't compile with int
 template void RAPT::rsPolynomial<double>::dividePolynomialByMonomialInPlace(double*, int, double, double*);
   // needs separate instantiation because function itself has a (second) template parameter
+template void RAPT::rsPolynomial<std::complex<double>>::subtractPolynomials(
+  const std::complex<double>* p, int pN, const std::complex<double>* q, int qN, 
+  std::complex<double>* r);
+
 
 // should go into an "Interpolation" class...or maybe CurveFitter
 //template void RAPT::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1, 
