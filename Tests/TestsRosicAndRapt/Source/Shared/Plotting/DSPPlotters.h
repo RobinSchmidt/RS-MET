@@ -74,6 +74,9 @@ public:
     int denominatorOrder, T* denominatorCoeffs, T sampleRate = inf);
   // maybe allow for complex coeffs
 
+  void addFilterSpecificationBA(const FilterSpecificationBA<T>& spec);
+
+
 
   /** Plots the magnitude responses of all the filters. */
   void plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels);

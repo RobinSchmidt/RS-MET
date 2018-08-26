@@ -49,7 +49,21 @@ template <class T>
 void FilterPlotter<T>::addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs, 
   int denominatorOrder, T* denominatorCoeffs, T sampleRate = inf)
 {
-  // not yet implemented
+  FilterSpecificationBA<T> spec;
+  spec.b.resize(numeratorOrder+1);
+  spec.a.resize(denominatorOrder+1);
+  spec.sampleRate = sampleRate;
+  for(size_t i = 0; i <= numeratorOrder; i++)
+    spec.b[i] = numeratorCoeffs[i];
+  for(size_t i = 0; i <= denominatorOrder; i++)
+    spec.a[i] = denominatorCoeffs[i];
+  addFilterSpecificationBA(spec);
+}
+
+template <class T>
+void FilterPlotter<T>::addFilterSpecificationBA(const FilterSpecificationBA<T>& spec)
+{
+  filterSpecsBA.push_back(spec);
 }
 
 template <class T>

@@ -315,7 +315,17 @@ FilterSpecificationBA<double> zpk2ba(const FilterSpecificationZPK<double>& zpk)
   for(size_t i = 0; i < ba.b.size(); i++)
     ba.b[i] *= zpk.gain;
   return ba;
-}
+} // maybe move to DSPPlotters.h
+template<class T>
+void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
+  bool logFreqAxis, bool decibels,
+  const std::vector<FilterSpecificationBA<T>>& filterSpecs)
+{
+  FilterPlotter<T> plt;
+  for(size_t i = 0; i < filterSpecs.size(); i++)
+    plt.addFilterSpecificationBA(filterSpecs[i]);
+  plt.plotMagnitude(numFreqs, lowFreq, highFreq, logFreqAxis, decibels);
+} // maybe move as static function to class FilterPlotter
 
 void bandSplitHighOrderIIR()
 {
