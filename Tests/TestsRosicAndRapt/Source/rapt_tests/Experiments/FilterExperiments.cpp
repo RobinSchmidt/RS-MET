@@ -284,47 +284,43 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
 // digital 2-pole/3-zero
 void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
 {
-  //typedef rsInfiniteImpulseResponseDesigner<double> DSGNR;
-  //DSGNR dsgnr;
-  //dsgnr.setApproximationMethod(rsPrototypeDesigner<double>::BUTTERWORTH);
-  //dsgnr.setPrototypeOrder(2);
-  //dsgnr.setSampleRate(1);
-  //dsgnr.setFrequency(0.25);      // halfband filter, 0.5 is Nyquist freq
-  //dsgnr.getPolesAndZeros(p, z);
-  // first 2 poles and zeros are the same as in 2nd order butterworth halfband lowpass, but we may 
-  // as well set all poles and zeros directly:
-
   double  s = sqrt(2)-1;
   Complex j = Complex(0, 1);
-  p[0] =  j*s;
-  p[1] = -j*s;
-  z[0] = -1;
-  z[1] = -1;
-  z[2] = -s;
+  p[0] =  j*s;   // p1
+  p[1] = -j*s;   // p2
+  z[0] = -1;     // q1
+  z[1] = -1;     // q2
+  z[2] = -s;     // q3
   *k = dcGainNormalizer(z, 3, p, 2);  // gain factor k to normalize DC gain to 1
 
-  // maybe we should in general put zeros along the negative real axis distributed the same way as
-  // the poles are along the (positive and negative) imaginary axis? nope - doesn't seem to work
+  // I arrived at these poles and zeros by just starting with a (bilinear transform based) 
+  // Butterworth halfband lowpass which fixed p1,p2 and q1,q2 to the values above and manually 
+  // added the 3rd zero q3 by trial and error. It turned out that it had to be placed along the 
+  // negative real axis the same distance as the two poles sit along the (positive and negative)
+  // imaginary axis. Unfortunately, such a simple strategy doens't seem generalize to higher order
+  // Butterworth filters. Maybe, instead, we have to consider the formula:
+  // https://ccrma.stanford.edu/~jos/filters/Factored_Form.html and write it down for the 
+  // particular N,M (here N=2, M=3), define some constraints and solve for the poles, zeros and k
+  // (or, alterteratively, for the polynomial coefficients). Maybe in this case, we would have 
+  // required q1=q2=-1, r1=r2=+1, r3=-q3, p1=-p2 (here: r1,r2,r3 are the zeros of the highpass, 
+  // q1,q2,q3 are the zeros of the lowpass - the poles are the same in lowpass and highpass).
 }
 
 // digital 3-pole/3-zero - doesn't work:
 void splitterPrototypeD_3_3(double* k, Complex* p, Complex* z)
 {
-  typedef rsInfiniteImpulseResponseDesigner<double> DSGNR;
-  DSGNR dsgnr;
-  dsgnr.setApproximationMethod(rsPrototypeDesigner<double>::BUTTERWORTH);
-  dsgnr.setPrototypeOrder(3);
-  dsgnr.setSampleRate(1);
-  dsgnr.setFrequency(0.25);      // halfband filter, 0.5 is Nyquist freq
-  dsgnr.getPolesAndZeros(p, z);
+  Complex j = Complex(0, 1);
+  double  a = 0.8;
+  p[0] =  j*a;
+  p[1] = -j*a;
+  p[3] =  0;
 
-  //z[2] = -(sqrt(2)-1); // doesn't work with 3 poles
-  z[2] = p[1].imag(); // test
-  //z[2] = -0.3;
+  double  b = 1.0;
+  z[0] = -1;
+  z[1] = -1;
+  z[2] = -b;
 
-  // set gain factor k to normalize DC gain to 1:
-  Complex H1 = getDigitalTransferFunctionAt(z, 3, p, 3, 1, Complex(1.0, 0.0)); // H(z) at z=1
-  *k = 1 / abs(H1);  
+  *k = dcGainNormalizer(z, 3, p, 3);
 }
 
 // digital 4-pole/6-zero (does not work)
@@ -394,8 +390,8 @@ void bandSplitHighOrderIIR()
 
   double fsd = 0.5/PI;  // sample-rate for digital filters
   //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
-  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
-  //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
+  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
+  splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
   // create filter specification objects for lowpass and highpass filter:
