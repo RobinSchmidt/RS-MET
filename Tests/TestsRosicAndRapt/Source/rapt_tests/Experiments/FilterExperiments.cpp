@@ -285,37 +285,55 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
 void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
 {
   double  s = sqrt(2)-1;
+  //s = 0.5;  // test
   Complex j = Complex(0, 1);
   p[0] =  j*s;   // p1
   p[1] = -j*s;   // p2
   z[0] = -1;     // q1
   z[1] = -1;     // q2
   z[2] = -s;     // q3
+  //z[2] = -0.5;   // test
   *k = dcGainNormalizer(z, 3, p, 2);  // gain factor k to normalize DC gain to 1
 
   // I arrived at these poles and zeros by just starting with a (bilinear transform based) 
   // Butterworth halfband lowpass which fixed p1,p2 and q1,q2 to the values above and manually 
   // added the 3rd zero q3 by trial and error. It turned out that it had to be placed along the 
   // negative real axis the same distance as the two poles sit along the (positive and negative)
-  // imaginary axis. Unfortunately, such a simple strategy doens't seem generalize to higher order
-  // Butterworth filters. Maybe, instead, we have to consider the formula:
+  // imaginary axes. Unfortunately, such a simple strategy doens't seem to generalize to higher 
+  // order Butterworth filters. Maybe, instead, we have to consider the formula:
   // https://ccrma.stanford.edu/~jos/filters/Factored_Form.html and write it down for the 
-  // particular N,M (here N=2, M=3), define some constraints and solve for the poles, zeros and k
-  // (or, alterteratively, for the polynomial coefficients). Maybe in this case, we would have 
-  // required q1=q2=-1, r1=r2=+1, r3=-q3, p1=-p2 (here: r1,r2,r3 are the zeros of the highpass, 
-  // q1,q2,q3 are the zeros of the lowpass - the poles are the same in lowpass and highpass).
+  // particular N,M (here N=2, M=3):
+  //
+  //             (1-q1/z)*(1-q2/z)*(1-q3/z)                        (1-r1/z)*(1-r2/z)*(1-r3/z)
+  // H(z) = k * ----------------------------, C(z) = 1-H(z) = c * ----------------------------
+  //                 (1-p1/z)*(1-p2/z)                                 (1-p1/z)*(1-p2/z)
+  //  
+  // define some constraints and solve for the poles, zeros and k (or, alternatively, for the 
+  // polynomial coefficients). We have: C(z) = 1-H(z) = 1 - (B(z)/A(z)) = (A(z)-B(z))/A(z) where 
+  // C(z) is the complementary filter to H(z), i.e. the highpass that is complementary to the 
+  // lowpass H(z) in the sense that is obtained by subtracting the lowpass output signal from the 
+  // unfiltered input. Maybe in this case, we should have required q1=q2=-1, r1=r2=+1, r3=-q3, 
+  // p1=-p2,|H(1)|=1, |H(-1)|=0, |C(1)|=0, |C(-1)|=1, maybe |H(z)| = |C(-z)| in general
+  // (here: r1,r2,r3 are the zeros of the highpass, q1,q2,q3 are the zeros of the lowpass - the 
+  // poles are the same in lowpass and highpass).
+
+  // Try, if the poles/zeros for the (2,3)-case can be recovered with this method and then try to 
+  // generalize the method to higher order filters (maybe (3,4), (4,5), etc?). Maybe try first the
+  // (1,1)-case. If no general formula can be derived, maybe it's possible to devise a numerical 
+  // algorithm (based on multi-dimensional root-finding or gradient-descent) to find suitable 
+  // poles/zeros and tabulate them for various orders.
 }
 
 // digital 3-pole/3-zero - doesn't work:
 void splitterPrototypeD_3_3(double* k, Complex* p, Complex* z)
 {
   Complex j = Complex(0, 1);
-  double  a = 0.8;
+  double  a = 0.4;
   p[0] =  j*a;
   p[1] = -j*a;
   p[3] =  0;
 
-  double  b = 1.0;
+  double  b = 0.2;
   z[0] = -1;
   z[1] = -1;
   z[2] = -b;
@@ -390,8 +408,8 @@ void bandSplitHighOrderIIR()
 
   double fsd = 0.5/PI;  // sample-rate for digital filters
   //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
-  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
-  splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
+  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
+  //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
   // create filter specification objects for lowpass and highpass filter:
