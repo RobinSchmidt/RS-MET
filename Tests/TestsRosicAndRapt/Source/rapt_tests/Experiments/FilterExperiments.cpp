@@ -259,6 +259,14 @@ Complex getDigitalTransferFunctionAt(Complex* zeros, int numZeros, Complex* pole
   // see https://ccrma.stanford.edu/~jos/filters/Factored_Form.html for formula
 }
 
+double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPoles)
+{
+  // set gain factor k to normalize DC gain to 1:
+  Complex H1 = getDigitalTransferFunctionAt(zeros, numZeros, poles, numPoles, 1, 
+    Complex(1.0, 0.0)); // H(z) at z=1
+  return 1.0 / abs(H1);  
+}
+
 // digital 2-pole/2-zero (i think, this is a 2nd order digital Butterworth halfband filter via 
 // bilinear transform):
 void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
@@ -271,72 +279,72 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
   Complex H1 = getDigitalTransferFunctionAt(z, 2, p, 2, 1, Complex(1.0, 0.0)); // H(z) at z=1
   *k = 1 / abs(H1);  
 }
+// this doesn't work
 
 // digital 2-pole/3-zero
 void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
 {
+  //typedef rsInfiniteImpulseResponseDesigner<double> DSGNR;
+  //DSGNR dsgnr;
+  //dsgnr.setApproximationMethod(rsPrototypeDesigner<double>::BUTTERWORTH);
+  //dsgnr.setPrototypeOrder(2);
+  //dsgnr.setSampleRate(1);
+  //dsgnr.setFrequency(0.25);      // halfband filter, 0.5 is Nyquist freq
+  //dsgnr.getPolesAndZeros(p, z);
+  // first 2 poles and zeros are the same as in 2nd order butterworth halfband lowpass, but we may 
+  // as well set all poles and zeros directly:
+
+  double  s = sqrt(2)-1;
+  Complex j = Complex(0, 1);
+  p[0] =  j*s;
+  p[1] = -j*s;
+  z[0] = -1;
+  z[1] = -1;
+  z[2] = -s;
+  *k = dcGainNormalizer(z, 3, p, 2);  // gain factor k to normalize DC gain to 1
+
+  // maybe we should in general put zeros along the negative real axis distributed the same way as
+  // the poles are along the (positive and negative) imaginary axis? nope - doesn't seem to work
+}
+
+// digital 3-pole/3-zero - doesn't work:
+void splitterPrototypeD_3_3(double* k, Complex* p, Complex* z)
+{
   typedef rsInfiniteImpulseResponseDesigner<double> DSGNR;
   DSGNR dsgnr;
   dsgnr.setApproximationMethod(rsPrototypeDesigner<double>::BUTTERWORTH);
-  dsgnr.setPrototypeOrder(2);
+  dsgnr.setPrototypeOrder(3);
   dsgnr.setSampleRate(1);
   dsgnr.setFrequency(0.25);      // halfband filter, 0.5 is Nyquist freq
-  //dsgnr.setFrequency(0.125);      // quarterband filter - for test
   dsgnr.getPolesAndZeros(p, z);
 
-  // zeros are both at z=-1, poles are at z = 0 +- j*(sqrt(2)-1)
-
-  // put an additional zero at z = -(sqrt(2)-1):
-  z[2] = -(sqrt(2)-1);
-
-  // maybe we should in general put zeros along the negative real axis distributed the same way as
-  // the poles are along the (positive and negative) imaginary axis?
+  //z[2] = -(sqrt(2)-1); // doesn't work with 3 poles
+  z[2] = p[1].imag(); // test
+  //z[2] = -0.3;
 
   // set gain factor k to normalize DC gain to 1:
-  Complex H1 = getDigitalTransferFunctionAt(z, 3, p, 2, 1, Complex(1.0, 0.0)); // H(z) at z=1
+  Complex H1 = getDigitalTransferFunctionAt(z, 3, p, 3, 1, Complex(1.0, 0.0)); // H(z) at z=1
   *k = 1 / abs(H1);  
 }
-// in my old octave script, i've been using poles of a 2nd order halfband butterworth (with its 
-// two bilinear zeros at z = -1 and placed a 3rd zero at z = -(sqrt(2)-1) which worked very well
-// ...try/verify
-/* from the .m file
-% add a zero:
-z(3) = -(sqrt(2)-1); 
-% works perfectly for wc == pi/4 and wc == pi/2 
-% numerically obtained but that can't be an accident
-*/
 
-/*
-FilterSpecificationBA<double> zpk2ba(const FilterSpecificationZPK<double>& zpk)
+// digital 4-pole/6-zero (does not work)
+void splitterPrototypeD_4_6(double* k, Complex* p, Complex* z)
 {
-  FilterSpecificationBA<double> ba;
-  ba.sampleRate = zpk.sampleRate;
-  ba.a = rsPolynomial<double>::getPolynomialCoefficientsFromRoots(zpk.poles); // rename: rootsToCoeffs
-  ba.b = rsPolynomial<double>::getPolynomialCoefficientsFromRoots(zpk.zeros); // have also coeffsToRoots
-  for(size_t i = 0; i < ba.b.size(); i++)
-    ba.b[i] *= zpk.gain;
-  return ba;
-} // maybe move to DSPPlotters.h, rename to toBA
+  typedef rsInfiniteImpulseResponseDesigner<double> DSGNR;
+  DSGNR dsgnr;
+  dsgnr.setApproximationMethod(rsPrototypeDesigner<double>::BUTTERWORTH);
+  dsgnr.setPrototypeOrder(4);
+  dsgnr.setSampleRate(1);
+  dsgnr.setFrequency(0.25);      // halfband filter, 0.5 is Nyquist freq
+  dsgnr.getPolesAndZeros(p, z);
 
-FilterSpecificationZPK<double> ba2zpk(const FilterSpecificationBA<double>& ba)
-{
-  FilterSpecificationZPK<double> zpk;
-  zpk.sampleRate = ba.sampleRate;
-  zpk.poles.resize(ba.a.size()-1);
-  zpk.zeros.resize(ba.b.size()-1);
-  rsPolynomial<double>::findPolynomialRoots(&ba.a[0], (int) ba.a.size()-1, &zpk.poles[0]);
-  rsPolynomial<double>::findPolynomialRoots(&ba.b[0], (int) ba.b.size()-1, &zpk.zeros[0]);
+  z[4] = -p[0].imag(); // test
+  z[5] = -p[2].imag(); // test
 
-  zpk.gain = 1; // preliminary - either b[0] or b[last]
-  //if(ba.sampleRate == inf) 
-  //  zpk.gain = ba.b[0];
-  //else
-  //  zpk.gain = ba.b[ba.b.size()-1];
-  //findPolynomialRoots(T *a, int order, std::complex<T> *roots);
-
-  return zpk;
+  Complex H1 = getDigitalTransferFunctionAt(z, 4, p, 3, 1, Complex(1.0, 0.0)); // H(z) at z=1
+  *k = 1 / abs(H1);  
 }
-*/
+
 
 
 
@@ -384,25 +392,39 @@ void bandSplitHighOrderIIR()
   //splitterPrototypeA_2_2(&k, p, z);   N = 2; M = 2; fs = inf;  // analog 2-pole/2-zero
   // ...
 
-
   double fsd = 0.5/PI;  // sample-rate for digital filters
   //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
-  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero
+  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
+  //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
+  //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
-
+  // create filter specification objects for lowpass and highpass filter:
   FilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);
   FilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
   FilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
 
-  double s = sqrt(2)-1;
-  double pm = abs(p[0]);
-  int dummy = 0;
+
+  // plot frequency response:
+  FilterPlotter<double> plt;
+  //plt.addFilterSpecificationZPK(N, p, M, z, k, fs);
+  plt.addFilterSpecificationZPK(lowpassZPK);
+  plt.addFilterSpecificationBA(highpassBA);
+  plt.plotPolesAndZeros();
+  plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
+  //plt.plotMagnitude(1000, 0.0, 0.5, false, false);
+
+  //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
+  //plt.plotMagnitude(1000, 0.0, 2*PI, false, false);    // todo: rescale the freq-axis such that PI maps to 0.5 or 1.0
+
 
   // putting additional finite zeros into the s-plane is not a good idea - it makes the final slope
   // shallower - the lowpass should have all of its zeros at infinity
 
   // ...soooo that means we have to use an allpole lowpass filter and therefore the highpass should
   // have all its zeros at s=0. the only wiggle room is the exact placement of the poles
+
+  // OR: we design a halfband lowpass prototype in the digital domain, leave the zeros at z = -1 
+  // and add *additional* zeros. this seems to work for the 2nd order case at least
 
   // try "contracted Butterworth" - all pole angles are scaled by a factor < 1
   // try to place poles on a ellipse instead of a circle - let the user select a width/height 
@@ -413,18 +435,10 @@ void bandSplitHighOrderIIR()
   // maybe start with z-plane prototype poles (and zeros), maybe aligned along the imaginary axis
   // and spread in various ways
 
+  // place N poles along the imaginary axis and N zeros at z = -1. then try to place additional 
+  // zeros into the z-plane such that we get a nice crossover...maybe we need a GUI for freely
+  // placing poles and zeros into the z-plane
 
-  // todo: obtain poles and zeros (or - simpler - polynomial coeffs) of the complementary filter
-  // H(s) = 1 - L(s) and plot that, too
-
-  // plot frequency response:
-  FilterPlotter<double> plt;
-  plt.addFilterSpecificationZPK(N, p, M, z, k, fs);
-  //plt.plotPolesAndZeros();
-  //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
-  //plt.plotMagnitude(1000, 0.0, 2*PI, false, false);    // todo: rescale the freq-axis such that PI maps to 0.5 or 1.0
-  //plt.plotMagnitude(1000, 0.0, 0.5, false, false);
-  plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
 }
 
 //-------------------------------------------------------------------------------------------------

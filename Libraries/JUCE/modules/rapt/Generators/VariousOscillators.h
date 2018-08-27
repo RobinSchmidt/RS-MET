@@ -131,7 +131,7 @@ protected:
   // maybe rename to u0,u1, d0,d1 (for up/down)
 
 
-  T t1 = 0, s1 = 0;  // tension and sigmodity for first (upward) half-wave
+  T t1 = 0, s1 = 0;  // tension and sigmoidity for first (upward) half-wave
   T t2 = 0, s2 = 0;  // same for downward half-wave
 };
 
