@@ -431,6 +431,38 @@ void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
   //plt.plotPolesAndZeros(); // test
 } // maybe move as static function to class FilterPlotter
 
+
+bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
+{
+  // Give the filter-prototype specifications for a lowpass filter, this function checks, if the 
+  // filter satisfies the conditions for a perfect reconstruction crossover, assuming the highpass
+  // signal is obtained by subtracting the lowpass signal fro the original input - that in itself 
+  // ensures perfect reconstruction, but we check here for additional conditions such as symmetry 
+  // of the responses.
+
+  bool result = true;
+  FilterSpecificationBA<double>  hpfBA  = complementaryFilter(lpfBA);
+  FilterSpecificationZPK<double> lpfZPK = FilterPlotter<double>::ba2zpk(lpfBA);
+  FilterSpecificationZPK<double> hpfZPK = FilterPlotter<double>::ba2zpk(hpfBA);
+
+
+
+  // check, if the poles are equal:
+  // ...
+
+  
+  // check if zeros are mirrored along the imaginary axis:
+  // ...
+
+
+  // check symmetry: H(z) = G(-z) ...maybe use some random values for z for that
+  int numValues = 100;
+  // ...
+
+
+  return result;
+}
+
 void bandSplitHighOrderIIR()
 {
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
@@ -462,6 +494,7 @@ void bandSplitHighOrderIIR()
   FilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);
   FilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
   FilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
+  bool splitConditionsMet = testSplitConditions(lowpassBA);
 
 
   // plot frequency response:
