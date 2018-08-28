@@ -73,6 +73,27 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
+class ScalerModule : public AtomicModule
+{
+  CREATE_COMMON_DECLARATIONS_1(ScalerModule);
+};
+class ScalerTypeInfo : public ModuleTypeInfo
+{
+public:
+  ScalerTypeInfo() {
+    shortName    = "*a";
+    fullName     = "Scaler";
+    description  = "Multiplies input by adjustable number";
+    category     = "Arithmetic";
+    createModule =  []()->Module* { return new ScalerModule; };
+    hasHeader    = false;
+    hasEditor    = true;
+  }
+};
+// todo: make offset/shift module and ScaleAndShift y = a*x+b
+
+//-------------------------------------------------------------------------------------------------
+
 class ReciprocalModule : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(ReciprocalModule);

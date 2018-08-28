@@ -75,6 +75,21 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(UnaryMinusModule);
 
 //-------------------------------------------------------------------------------------------------
 
+void ScalerModule::initialize()
+{
+  initInputPins({ "" });
+  initOutputPins({ "" });
+  hasHeaderFlag = false;
+}
+INLINE void ScalerModule::process(Module *module, double *ins, double *outs, int voiceIndex)
+{
+  double p = 1; // preliminary - todo: connect to our parameter
+  outs[0] = p * ins[0];
+}
+CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(ScalerModule);
+
+//-------------------------------------------------------------------------------------------------
+
 void ReciprocalModule::initialize()
 {
   initInputPins(1, "");

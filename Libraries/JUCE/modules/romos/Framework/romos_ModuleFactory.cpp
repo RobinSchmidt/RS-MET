@@ -113,6 +113,7 @@ void ModuleFactory::registerStandardModules()
   registerModuleType(new SubtractorTypeInfo);     // a-b
   registerModuleType(new MultiplierTypeInfo);     // a*b
   registerModuleType(new DividerTypeInfo);        // a/b
+  registerModuleType(new ScalerTypeInfo);         // a*const
   // todo: a^b, 
   registerModuleType(new Adder3ModuleTypeInfo);   // a+b+c
   registerModuleType(new Adder4ModuleTypeInfo);   // a+b+c+d
