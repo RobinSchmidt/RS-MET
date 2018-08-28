@@ -274,8 +274,24 @@ Complex transferFunctionZPK(const FilterSpecificationZPK<double>& zpk, Complex z
   }
 }
 
+Complex digitalTransferFunctionBA(const Complex* b, int Nb, const Complex* a, int Na, Complex z)
+{
+  Complex num = 0, den = 0;
+  for(int i = 0; i < Nb; i++)  num += b[i] * pow(z, -i); // can be optimized
+  for(int i = 0; i < Na; i++)  den += a[i] * pow(z, -i);
+  return num/den;
+}
 
-
+Complex transferFunctionBA(const FilterSpecificationBA<double>& ba, Complex z)
+{
+  if(ba.sampleRate != RS_INF(double))
+    return digitalTransferFunctionBA(&ba.b[0], (int)ba.b.size(), &ba.a[0], (int)ba.a.size(), z);
+  else
+  {
+    rsAssertFalse; // not yet implemented
+    return 0;
+  }
+}
 
 double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPoles)
 {
@@ -473,15 +489,12 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
   FilterSpecificationZPK<double> lpfZPK = FilterPlotter<double>::ba2zpk(lpfBA);
   FilterSpecificationZPK<double> hpfZPK = FilterPlotter<double>::ba2zpk(hpfBA);
 
-
-
   // check, if the poles are equal:
   // ...
 
   
   // check if zeros are mirrored along the imaginary axis:
   // ...
-
 
   // check symmetry: H(z) = G(-z) ...maybe use some random values for z for that
   int numValues = 100;
@@ -491,17 +504,29 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
   for(int i = 0; i < numValues; i++)
   {
     Complex z   = Complex(prng.getSample(), prng.getSample());
-    Complex Hz  = transferFunctionZPK(lpfZPK,  z);   // H(z)
-    Complex Gz  = transferFunctionZPK(hpfZPK,  z);   // G(z)
-    Complex Hzm = transferFunctionZPK(lpfZPK, -z);   // H(-z)
-    Complex Gzm = transferFunctionZPK(hpfZPK, -z);   // G(-z)
 
-
-    Complex sum = Hz + Gz;  // should be 1
+    /*
+    Complex Hz_zpk  = transferFunctionZPK(lpfZPK,  z);   // H(z)
+    Complex Gz_zpk  = transferFunctionZPK(hpfZPK,  z);   // G(z)
+    Complex Hzm_zpk = transferFunctionZPK(lpfZPK, -z);   // H(-z)
+    Complex Gzm_zpk = transferFunctionZPK(hpfZPK, -z);   // G(-z)
+    Complex sum_zpk = Hz_zpk + Gz_zpk;  // should be 1
     // doesn't work for 2,3 filter - maybe we should normalize a0=1 in complementaryFilter before
-    // doing the subtraction? ...hmm...that doesn't seem to help
+    // doing the subtraction? ...hmm...that doesn't seem to help...or does that work only for
+    // z on the unit circle - but why should it? maybe try to evaluate the transfer-function
+    // based on the BA specs
+    //double sumAbs = abs(sum);
+    */
 
-    // check if H(z) == G(-z)
+    Complex Hz_ba  = transferFunctionBA(lpfBA,  z);   // H(z)
+    Complex Gz_ba  = transferFunctionBA(hpfBA,  z);   // G(z)
+    Complex Hzm_ba = transferFunctionBA(lpfBA, -z);   // H(-z)
+    Complex Gzm_ba = transferFunctionBA(hpfBA, -z);   // G(-z)
+    Complex sum_ba = Hz_ba + Gz_ba;  // should be 1
+      // this actually is 1...is the transferFunctionZPK function broken?
+
+
+    // check if H(z) == G(-z) -> Hz_ba == Gzm_ba
 
     // check if G(z) == 1-H(z) -> H(z) + G(z) = 1 (should be ensured by complementaryFilter)
 
@@ -529,12 +554,6 @@ bool testZpkBaConversions()
 
   // return areFiltersEqualZPK(d1_zpk, d1_zpk_r);
   return result;
-
-  //FilterPlotter<double> testPlt;
-  //testPlt.addFilterSpecificationZPK(lowpassZPK); // these two specs should lead to the same plots
-  //testPlt.addFilterSpecificationBA( lowpassBA);  // this is too large!!
-  //testPlt.plotMagnitude(1000, 0.0, 0.5, false, false);
-  //int dummy = 0;
 }
 
 void bandSplitHighOrderIIR()
@@ -572,12 +591,18 @@ void bandSplitHighOrderIIR()
   // create filter specification objects for lowpass and highpass filter:
   FilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);
   FilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
-  FilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
   bool splitConditionsMet = testSplitConditions(lowpassBA);
+  FilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
 
 
 
 
+  //FilterPlotter<double> testPlt;
+  //testPlt.addFilterSpecificationZPK(lowpassZPK); // these two specs should lead to the same plots
+  //testPlt.addFilterSpecificationBA( lowpassBA);  // this is too large!!
+  //testPlt.plotMagnitude(1000, 0.0, 0.5, false, false);
+  //int dummy = 0;
+  // ok, this seems to work
 
 
   // plot frequency response:
