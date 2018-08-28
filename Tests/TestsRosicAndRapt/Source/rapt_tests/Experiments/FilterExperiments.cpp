@@ -267,6 +267,14 @@ double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPol
   return 1.0 / abs(H1);  
 }
 
+// digital 1-pole/1-zero - works
+void splitterPrototypeD_1_1(double* k, Complex* p, Complex* z)
+{
+  p[0] =  0;
+  z[0] = -1;
+  *k = dcGainNormalizer(z, 1, p, 1);
+}
+
 // digital 2-pole/2-zero (i think, this is a 2nd order digital Butterworth halfband filter via 
 // bilinear transform):
 void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
@@ -281,7 +289,7 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
 }
 // this doesn't work
 
-// digital 2-pole/3-zero
+// digital 2-pole/3-zero - works
 void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
 {
   double  s = sqrt(2)-1;
@@ -348,11 +356,12 @@ void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
   //
   // For each even i, we get two equations: ci =  bi, ci = ai-bi -> bi = ai-bi -> bi = 2*ai and
   // for each odd i, we get:                ci = -bi, ci = ai-bi -> ai = 0, so the general rules
-  // seem to be:
+  // seems to be:
   // -odd-numbered a-coeffs must be 0 (but what about the 1st order case? a1 isn't 0 there?)
   // -even numbered b-coeffs must be half of the corresponding a-coeffs
   // -poles must be on the imaginary axis (this places further constraints on the a-coeffs)
-  // -N zeros must be at z=-1 (to get a proper lowpass response)
+  // -N (= numPoles) zeros must be at z=-1 (to get a proper lowpass response) 
+  // -maybe the other M-N zeros should also be in the left half-plane?
 
   //
   // hmmm...with these equations together with the poles and some of the zeros already fixed, we 
@@ -443,8 +452,9 @@ void bandSplitHighOrderIIR()
   // ...
 
   double fsd = 0.5/PI;  // sample-rate for digital filters
+  splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - works
   //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
-  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
+  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
   //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 

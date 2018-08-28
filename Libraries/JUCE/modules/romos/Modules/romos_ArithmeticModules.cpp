@@ -79,12 +79,19 @@ void ScalerModule::initialize()
 {
   initInputPins({ "" });
   initOutputPins({ "" });
+  addParameter("Multiplier", "1");
   hasHeaderFlag = false;
 }
 INLINE void ScalerModule::process(Module *module, double *ins, double *outs, int voiceIndex)
 {
-  double p = 1; // preliminary - todo: connect to our parameter
-  outs[0] = p * ins[0];
+  //double p = 1; // preliminary - todo: connect to our parameter
+
+  ScalerModule *sclr = static_cast<ScalerModule*> (module);
+  outs[0] = sclr->multiplier * ins[0];
+}
+void ScalerModule::parameterChanged(int index)
+{
+  multiplier = parameters[0].value.asDouble(); // maybe rename to toDouble
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(ScalerModule);
 

@@ -155,6 +155,9 @@ public:
   /** Appends a parameter with given name and default value to this module - the current value will
   also be initialized with the default value. */
   void addParameter(const rosic::rsString &parameterName, const rosic::rsString &defaultValue);
+  // maybe we should distinguish between continuous, discrete/choice, boolean parameters and
+  // have separate addContinuousParameter, .. etc. functions for them
+
 
   /** Internal callback that is triggered from setParameter - you may override it when you need to 
   re-compute some internal variables when a parameter was changed. */

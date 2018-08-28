@@ -73,9 +73,13 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class ScalerModule : public AtomicModule
+class ScalerModule : public ModuleWithParameters //  public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(ScalerModule);
+public:
+  virtual void parameterChanged(int index);
+protected:
+  double multiplier = 1;
 };
 class ScalerTypeInfo : public ModuleTypeInfo
 {
