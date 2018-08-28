@@ -425,15 +425,23 @@ void splitterPrototypeD_4_6(double* k, Complex* p, Complex* z)
   *k = 1 / abs(H1);  
 }
 
+void normalizeA0(FilterSpecificationBA<double>& ba)
+{
+  Complex s = 1.0 / ba.a[0];
+  for(size_t i = 0; i < ba.a.size(); i++) ba.a[i] *= s;
+  for(size_t i = 0; i < ba.b.size(); i++) ba.b[i] *= s;
+}
+
 FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<double>& baSpec)
 {
-  FilterSpecificationBA<double> r;
-  r.sampleRate = baSpec.sampleRate;
-  int Na = (int)baSpec.a.size()-1;
-  int Nb = (int)baSpec.b.size()-1;
-  r.a = baSpec.a;                // denominator is the same
+  FilterSpecificationBA<double> ba = baSpec, r;
+  //normalizeA0(ba);
+  r.sampleRate = ba.sampleRate;
+  int Na = (int)ba.a.size()-1;
+  int Nb = (int)ba.b.size()-1;
+  r.a = ba.a;                // denominator is the same
   r.b.resize(std::max(Na,Nb)+1);
-  rsPolynomial<complex<double>>::subtractPolynomials(&baSpec.a[0], Na, &baSpec.b[0], Nb, &r.b[0]);
+  rsPolynomial<complex<double>>::subtractPolynomials(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
   return r;
 }
 
@@ -489,7 +497,7 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
 
     Complex sum = Hz + Gz;  // should be 1
     // doesn't work for 2,3 filter - maybe we should normalize a0=1 in complementaryFilter before
-    // doing the subtraction?
+    // doing the subtraction? ...hmm...that doesn't seem to help
 
     // check if H(z) == G(-z)
 
