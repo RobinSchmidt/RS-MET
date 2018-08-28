@@ -751,6 +751,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.cpp">
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterSpecifications.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.cpp">
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
@@ -2926,6 +2929,9 @@
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterSpecifications.h">
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.h">

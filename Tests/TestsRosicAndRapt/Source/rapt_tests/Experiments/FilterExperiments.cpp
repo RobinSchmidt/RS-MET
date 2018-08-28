@@ -505,7 +505,6 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
   {
     Complex z   = Complex(prng.getSample(), prng.getSample());
 
-    /*
     Complex Hz_zpk  = transferFunctionZPK(lpfZPK,  z);   // H(z)
     Complex Gz_zpk  = transferFunctionZPK(hpfZPK,  z);   // G(z)
     Complex Hzm_zpk = transferFunctionZPK(lpfZPK, -z);   // H(-z)
@@ -516,15 +515,20 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
     // z on the unit circle - but why should it? maybe try to evaluate the transfer-function
     // based on the BA specs
     //double sumAbs = abs(sum);
-    */
 
     Complex Hz_ba  = transferFunctionBA(lpfBA,  z);   // H(z)
     Complex Gz_ba  = transferFunctionBA(hpfBA,  z);   // G(z)
     Complex Hzm_ba = transferFunctionBA(lpfBA, -z);   // H(-z)
     Complex Gzm_ba = transferFunctionBA(hpfBA, -z);   // G(-z)
     Complex sum_ba = Hz_ba + Gz_ba;  // should be 1
-      // this actually is 1...is the transferFunctionZPK function broken?
+    // this actually is 1...is the transferFunctionZPK function broken? or maybe ba2zpk is still 
+    // broken? poles and zeros of the zpk specs look good - what about gain?
 
+    // todo: move the FilterSpecificationBA/ZPK classes and the conversion functions to RAPT and
+    // implement unit tests - continue here when this is done and the conversion routines a solid
+    // maybe move the transfer function evaluations also to rapt
+
+    Complex tmp = Hz_zpk / Hz_ba;
 
     // check if H(z) == G(-z) -> Hz_ba == Gzm_ba
 
@@ -582,17 +586,23 @@ void bandSplitHighOrderIIR()
   // ...
 
   double fsd = 0.5/PI;  // sample-rate for digital filters
-  //splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - works
-  //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
+  //splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - worked...but now it triggers an assert
   splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
+
+  //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
   //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
   // create filter specification objects for lowpass and highpass filter:
   FilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);
   FilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
-  bool splitConditionsMet = testSplitConditions(lowpassBA);
   FilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
+
+
+  //bool splitConditionsMet = testSplitConditions(lowpassBA);
+  // for the 2,3 filter a[2] is > 5 -> unstable filter...i think in converting between zpk/ba, i 
+  // need to reverse the polynomial coefficient arrays in case of digital filters...
+  // it works
 
 
 

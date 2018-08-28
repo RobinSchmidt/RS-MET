@@ -553,6 +553,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterSpecifications.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2395,6 +2398,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EngineersFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterAnalyzer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterSpecifications.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\LinkwitzRileyCrossOver.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\PoleZeroMapper.h"/>

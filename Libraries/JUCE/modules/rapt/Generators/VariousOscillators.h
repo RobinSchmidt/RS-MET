@@ -2,7 +2,7 @@
 #define RAPT_VARIOUSOSCILLATORS_H_INCLUDED
 
 
-/** An oscillator based on morphing between saw-up/triangle/saw-down waveforms */
+/** An oscillator based on morphing between saw-up/triangle/saw-down waveforms. */
 
 template<class T>
 class rsTriSawOscillator
@@ -83,6 +83,9 @@ public:
     updatePhase();
     return y;
   }
+  // maybe factor out a raw TriSawOscillator (without the shape stuff) and realize the shape stuff
+  // in a subclass...or have a member function getSampleRaw that doesn't apply shaping
+  // 
 
   inline void reset() { p = startPhase; }
 

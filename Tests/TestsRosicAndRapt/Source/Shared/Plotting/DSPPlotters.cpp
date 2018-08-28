@@ -186,6 +186,9 @@ FilterSpecificationBA<T> FilterPlotter<T>::zpk2ba(const FilterSpecificationZPK<T
   ba.sampleRate = zpk.sampleRate;
   ba.a = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(zpk.poles); // rename: rootsToCoeffs
   ba.b = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(zpk.zeros); // have also coeffsToRoots
+
+  // todo: reverse a,b in case of digital filter
+
   for(size_t i = 0; i < ba.b.size(); i++)
     ba.b[i] *= zpk.gain;
   normalizeA0(ba); // maybe make the normalization optional (on by default)
@@ -199,8 +202,13 @@ FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T
   zpk.sampleRate = ba.sampleRate;
   zpk.poles.resize(ba.a.size()-1);
   zpk.zeros.resize(ba.b.size()-1);
+
+  // todo: reverse a,b in case of digital filter
+
   rsPolynomial<T>::findPolynomialRoots(&ba.a[0], (int) ba.a.size()-1, &zpk.poles[0]);
   rsPolynomial<T>::findPolynomialRoots(&ba.b[0], (int) ba.b.size()-1, &zpk.zeros[0]);
+
+
 
 
   //if(ba.sampleRate != inf) // digital
@@ -213,6 +221,9 @@ FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T
   //zpk.gain = ba.b[0]/ba.a[0];
 
   zpk.gain = ba.b[ba.b.size()-1] / ba.a[ba.a.size()-1];
+
+
+
 
   //zpk.gain = 1; // preliminary
   return zpk;

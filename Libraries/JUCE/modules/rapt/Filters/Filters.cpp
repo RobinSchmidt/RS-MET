@@ -19,6 +19,7 @@ namespace RAPT
 #include "Scientific/EllipticSubBandFilter.cpp"
 #include "Scientific/EllipticSubBandFilterDirectForm.cpp"
 #include "Scientific/QuadratureNetwork.cpp"
+#include "Scientific/FilterSpecifications.cpp"
 
 #include "Musical/LadderFilter.cpp"
 #include "Musical/PhasorFilter.cpp"

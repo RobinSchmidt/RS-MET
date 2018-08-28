@@ -3,9 +3,9 @@
 
 #include "GNUPlotter.h"
 
-/* Subclasses of GNUPlotter that specialize in making plots related to digital signal processing 
-(DSP). */
 
+// todo: use RAPT::FilterSpecificationZPK/BA - move some of the functions from here to RAPT
+// zpk2ba, ba2zpk
 
 /** A structure to specify a filter in terms of its zeros, poles, a gain factor and possibly a 
 sample rate. If the sample rate is infinity (the default), an analog filter is assumed and the 
@@ -27,7 +27,6 @@ struct FilterSpecificationZPK
 
   std::vector<std::complex<T>> poles;
   std::vector<std::complex<T>> zeros;
-  //T gain = 1;  // maybe allow complex gain
   std::complex<T> gain = 1;
   T sampleRate = std::numeric_limits<T>::infinity();
 };
@@ -49,12 +48,14 @@ struct FilterSpecificationBA
   T sampleRate = std::numeric_limits<T>::infinity();
 };
 // filter specification by polynomial coeffs for numerator (b) and denominator (a)
-// H(s) = (b0 + b1*s + ... + bM*s^M) / (a0 + a1*s + ... + aM*s^N)   or
+// H(s) = (b0 + b1*s + ... + bM*s^M) / (a0 + a1*s + ... + aN*s^N)   or
 // H(z) = (b0 + b1/z + ... + bM/z^M) / (a0 + a1/z + ... + aN/z^N)
 
 
 
 
+/* Subclasses of GNUPlotter that specialize in making plots related to digital signal processing 
+(DSP). */
 
 
 //=================================================================================================

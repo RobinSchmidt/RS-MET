@@ -28,6 +28,7 @@ namespace RAPT
 #include "Scientific/EllipticSubBandFilter.h"
 #include "Scientific/EllipticSubBandFilterDirectForm.h"
 #include "Scientific/QuadratureNetwork.h"
+#include "Scientific/FilterSpecifications.h"
 
 //#include "Convolution/WindowedSinc.h" 
 
