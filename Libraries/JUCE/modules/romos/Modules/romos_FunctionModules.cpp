@@ -9,6 +9,8 @@ void ClipperModule::initialize()
 {
   initInputPins(3, "In", "Min", "Max");
   initOutputPins(1, "Out");
+  inputPins[1].setDefaultValue(-1.0); 
+  inputPins[2].setDefaultValue(+1.0); 
 }
 INLINE void ClipperModule::process(Module *module, double *in1, double *in2, double *in3, double *out, int voiceIndex)
 {

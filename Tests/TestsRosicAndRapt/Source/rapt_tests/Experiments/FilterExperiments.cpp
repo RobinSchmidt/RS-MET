@@ -305,15 +305,15 @@ void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
   // particular N,M (here N=2, M=3):
   //
   //             (1-q1/z)*(1-q2/z)*(1-q3/z)                        (1-r1/z)*(1-r2/z)*(1-r3/z)
-  // H(z) = k * ----------------------------, C(z) = 1-H(z) = c * ----------------------------
+  // H(z) = k * ----------------------------, G(z) = 1-H(z) = c * ----------------------------
   //                 (1-p1/z)*(1-p2/z)                                 (1-p1/z)*(1-p2/z)
   //  
   // define some constraints and solve for the poles, zeros and k (or, alternatively, for the 
-  // polynomial coefficients). We have: C(z) = 1-H(z) = 1 - (B(z)/A(z)) = (A(z)-B(z))/A(z) where 
-  // C(z) is the complementary filter to H(z), i.e. the highpass that is complementary to the 
+  // polynomial coefficients). We have: G(z) = 1-H(z) = 1 - (B(z)/A(z)) = (A(z)-B(z))/A(z) where 
+  // G(z) is the complementary filter to H(z), i.e. the highpass that is complementary to the 
   // lowpass H(z) in the sense that is obtained by subtracting the lowpass output signal from the 
   // unfiltered input. Maybe in this case, we should have required q1=q2=-1, r1=r2=+1, r3=-q3, 
-  // p1=-p2,|H(1)|=1, |H(-1)|=0, |C(1)|=0, |C(-1)|=1, maybe |H(z)| = |C(-z)| in general
+  // p1=-p2,|H(1)|=1, |H(-1)|=0, |G(1)|=0, |G(-1)|=1, maybe |H(z)| = |G(-z)| in general
   // (here: r1,r2,r3 are the zeros of the highpass, q1,q2,q3 are the zeros of the lowpass - the 
   // poles are the same in lowpass and highpass).
 
@@ -322,6 +322,45 @@ void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
   // (1,1)-case. If no general formula can be derived, maybe it's possible to devise a numerical 
   // algorithm (based on multi-dimensional root-finding or gradient-descent) to find suitable 
   // poles/zeros and tabulate them for various orders.
+
+  // I think, A(z)-B(z) should have its roots at positions opposite to those of B(z), i.e. 
+  // reflected about the imaginary axis. Maybe we need the condition A(z)-B(z) = B(-z)?
+  // Or A(z)-B(z) = B(-conj(z))? Maybe, we should take the poles already as given (may have to be
+  // determined by other conditions such as monotonicity of magnitude response?). Let's define
+  // C(z) = A(z)-B(z). It seems, the condition C(z)=B(-z) leads to a1=0, a2=2*b2 - which holds for 
+  // the 2,3 filter. It also seems liek C(z) has the coeffs of B(z) but the the odd-numbered coeffs 
+  // sign-inverted - which makes sense because a sign-change in the input translates to a sign 
+  // change in odd-numbered coefficients. Maybe when the poles and some of the zeros are fixed, 
+  // equations for the remaining coeffs/zeros can be obtained? Actually, maybe we should require
+  // G(z)=H(-z) instead of C(z)=B(-z), but if we place all poles on the imaginary axis, we will 
+  // have A(z)=A(-z), so G(z)=H(-z) = C(z)/A(z) = B(-z)/A(-z) -> C(z)=B(-z). Let's consider the
+  // transfer functions in sum form - here the 2,3 case:
+  // 
+  //         b0 + b1/z + b2/z^2 + b3/z^3           c0 + c1/z + c2/z^2 + c3/z^3
+  // H(z) = -----------------------------, G(z) = -----------------------------
+  //         a0 + a1/z + a2/z^2                    a0 + a1/z + a2/z^2
+  //
+  // by:  C(z)=B(-z)   C(z)=A(z)-B(z)
+  // c0 =    b0      = a0-b0             // we can't assume a0=1 at this point
+  // c1 =   -b1      = a1-b1
+  // c2 =    b2      = a2-b2
+  // c3 =   -b3      = a3-b3 = 0-b3      // ok, -b3 = 0-b3 is not very useful
+  //
+  // For each even i, we get two equations: ci =  bi, ci = ai-bi -> bi = ai-bi -> bi = 2*ai and
+  // for each odd i, we get:                ci = -bi, ci = ai-bi -> ai = 0, so the general rules
+  // seem to be:
+  // -odd-numbered a-coeffs must be 0 (but what about the 1st order case? a1 isn't 0 there?)
+  // -even numbered b-coeffs must be half of the corresponding a-coeffs
+  // -poles must be on the imaginary axis (this places further constraints on the a-coeffs)
+  // -N zeros must be at z=-1 (to get a proper lowpass response)
+
+  //
+  // hmmm...with these equations together with the poles and some of the zeros already fixed, we 
+  // may be able to solve for the remaining coeffs/zeros.
+
+  // is the condition H(z)=G(-z) actually correct? or should it be |H(z)|=|G(-z)|?
+  // -verify numerically, if H(z)=G(-z) for the 2,3 case
+  // -check the value of a1 in the 1,1 case - it doens't follow the pattern ai=0 for odd i
 }
 
 // digital 3-pole/3-zero - doesn't work:
@@ -358,9 +397,6 @@ void splitterPrototypeD_4_6(double* k, Complex* p, Complex* z)
   Complex H1 = getDigitalTransferFunctionAt(z, 4, p, 3, 1, Complex(1.0, 0.0)); // H(z) at z=1
   *k = 1 / abs(H1);  
 }
-
-
-
 
 FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<double>& baSpec)
 {
