@@ -142,7 +142,12 @@ public:
 
   static FilterSpecificationBA<T> zpk2ba(const FilterSpecificationZPK<T>& zpk);
 
+  /** Converts a filter specification in terms of numerator and denominator polynomial coefficients
+  to a specification in terms of zeros, poles and gain. */
   static FilterSpecificationZPK<T> ba2zpk(const FilterSpecificationBA<T>& ba);
+
+  /** Normalizes the a0 coefficient in a filter specification to unity. */
+  static void normalizeA0(FilterSpecificationBA<T>& ba);
 
 protected:
 

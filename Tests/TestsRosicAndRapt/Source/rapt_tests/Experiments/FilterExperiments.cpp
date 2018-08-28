@@ -425,12 +425,14 @@ void splitterPrototypeD_4_6(double* k, Complex* p, Complex* z)
   *k = 1 / abs(H1);  
 }
 
+/*
 void normalizeA0(FilterSpecificationBA<double>& ba)
 {
   Complex s = 1.0 / ba.a[0];
   for(size_t i = 0; i < ba.a.size(); i++) ba.a[i] *= s;
   for(size_t i = 0; i < ba.b.size(); i++) ba.b[i] *= s;
-}
+} // moved to FilterPlotter, used inside zpk2ba
+*/
 
 FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<double>& baSpec)
 {
@@ -443,7 +445,7 @@ FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<do
   r.b.resize(std::max(Na,Nb)+1);
   rsPolynomial<complex<double>>::subtractPolynomials(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
   return r;
-}
+} // move to FilterPlotter
 
 template<class T>
 void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
@@ -512,10 +514,38 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
   return result;
 }
 
+bool testZpkBaConversions()
+{
+  bool result = true;
+
+  typedef FilterSpecificationZPK<double> ZPK;
+  typedef FilterSpecificationBA<double>  BA;
+  typedef FilterPlotter<double> PLT;
+
+  // digital:
+  ZPK d1_zpk({1,2,3}, {1,2,3,4}, 3, 1); 
+  BA  d1_ba    = PLT::zpk2ba(d1_zpk);    // converted to BA
+  ZPK d1_zpk_r = PLT::ba2zpk(d1_ba);     // reconstructed from BA
+
+  // return areFiltersEqualZPK(d1_zpk, d1_zpk_r);
+  return result;
+
+  //FilterPlotter<double> testPlt;
+  //testPlt.addFilterSpecificationZPK(lowpassZPK); // these two specs should lead to the same plots
+  //testPlt.addFilterSpecificationBA( lowpassBA);  // this is too large!!
+  //testPlt.plotMagnitude(1000, 0.0, 0.5, false, false);
+  //int dummy = 0;
+}
+
 void bandSplitHighOrderIIR()
 {
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
   // splitter with perfect reconstruction...
+
+
+  // just for testing the ba/zpk conversion functions:
+  //testZpkBaConversions();
+
 
   // ...under construction...
 
@@ -544,6 +574,10 @@ void bandSplitHighOrderIIR()
   FilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
   FilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
   bool splitConditionsMet = testSplitConditions(lowpassBA);
+
+
+
+
 
 
   // plot frequency response:
