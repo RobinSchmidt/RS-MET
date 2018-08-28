@@ -248,8 +248,9 @@ void splitterPrototypeA_2_2(double* k, Complex* p, Complex* z)
 
 
 // move to RAPT:
-Complex getDigitalTransferFunctionAt(Complex* zeros, int numZeros, Complex* poles, int numPoles,
-  double k, Complex z)
+//Complex getDigitalTransferFunctionAt(Complex* zeros, int numZeros, Complex* poles, int numPoles,
+Complex digitalTransferFunctionZPK(const Complex* zeros, int numZeros, 
+  const Complex* poles, int numPoles, Complex k, Complex z)
 {
   Complex zr  = 1.0/z;       // z^-1
   Complex num = 1, den = 1;  // numerator and denominator
@@ -259,10 +260,27 @@ Complex getDigitalTransferFunctionAt(Complex* zeros, int numZeros, Complex* pole
   // see https://ccrma.stanford.edu/~jos/filters/Factored_Form.html for formula
 }
 
+Complex transferFunctionZPK(const FilterSpecificationZPK<double>& zpk, Complex z)
+{
+  if(zpk.sampleRate != RS_INF(double))
+    return digitalTransferFunctionZPK(&zpk.zeros[0], (int)zpk.zeros.size(), 
+      &zpk.poles[0], (int)zpk.poles.size(), zpk.gain, z);
+  else
+  {
+    //return analogTransferFunctionZPK(&zpk.zeros[0], (int)zpk.zeros.size(), 
+    //  &zpk.poles[0], (int)zpk.poles.size(), zpk.gain, z); // z should be named s here ..maybe sz? s_or_z?
+    rsAssertFalse; // not yet implemented
+    return 0;
+  }
+}
+
+
+
+
 double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPoles)
 {
   // set gain factor k to normalize DC gain to 1:
-  Complex H1 = getDigitalTransferFunctionAt(zeros, numZeros, poles, numPoles, 1, 
+  Complex H1 = digitalTransferFunctionZPK(zeros, numZeros, poles, numPoles, 1, 
     Complex(1.0, 0.0)); // H(z) at z=1
   return 1.0 / abs(H1);  
 }
@@ -284,7 +302,7 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
   p[1] = conj(p[0]);
   z[0] = -1.0;
   z[1] = conj(z[0]);
-  Complex H1 = getDigitalTransferFunctionAt(z, 2, p, 2, 1, Complex(1.0, 0.0)); // H(z) at z=1
+  Complex H1 = digitalTransferFunctionZPK(z, 2, p, 2, 1, Complex(1.0, 0.0)); // H(z) at z=1
   *k = 1 / abs(H1);  
 }
 // this doesn't work
@@ -403,7 +421,7 @@ void splitterPrototypeD_4_6(double* k, Complex* p, Complex* z)
   z[4] = -p[0].imag(); // test
   z[5] = -p[2].imag(); // test
 
-  Complex H1 = getDigitalTransferFunctionAt(z, 4, p, 3, 1, Complex(1.0, 0.0)); // H(z) at z=1
+  Complex H1 = digitalTransferFunctionZPK(z, 4, p, 3, 1, Complex(1.0, 0.0)); // H(z) at z=1
   *k = 1 / abs(H1);  
 }
 
@@ -457,6 +475,29 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
 
   // check symmetry: H(z) = G(-z) ...maybe use some random values for z for that
   int numValues = 100;
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setRange(-2.0, +2.0);
+  double tol = 1.e-13;
+  for(int i = 0; i < numValues; i++)
+  {
+    Complex z   = Complex(prng.getSample(), prng.getSample());
+    Complex Hz  = transferFunctionZPK(lpfZPK,  z);   // H(z)
+    Complex Gz  = transferFunctionZPK(hpfZPK,  z);   // G(z)
+    Complex Hzm = transferFunctionZPK(lpfZPK, -z);   // H(-z)
+    Complex Gzm = transferFunctionZPK(hpfZPK, -z);   // G(-z)
+
+
+    Complex sum = Hz + Gz;  // should be 1
+    // doesn't work for 2,3 filter - maybe we should normalize a0=1 in complementaryFilter before
+    // doing the subtraction?
+
+    // check if H(z) == G(-z)
+
+    // check if G(z) == 1-H(z) -> H(z) + G(z) = 1 (should be ensured by complementaryFilter)
+
+    int dummy = 0;
+  }
+
   // ...
 
 
@@ -484,9 +525,9 @@ void bandSplitHighOrderIIR()
   // ...
 
   double fsd = 0.5/PI;  // sample-rate for digital filters
-  splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - works
+  //splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - works
   //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
-  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
+  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
   //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
