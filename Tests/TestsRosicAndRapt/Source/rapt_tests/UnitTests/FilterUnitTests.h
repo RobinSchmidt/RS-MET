@@ -4,5 +4,7 @@
 #include "../../Shared/Shared.h"
 
 bool prototypeDesignUnitTest();
+bool filterSpecUnitTest();
+
 
 #endif

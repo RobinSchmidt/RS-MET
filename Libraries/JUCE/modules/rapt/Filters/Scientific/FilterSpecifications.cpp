@@ -1,9 +1,11 @@
 template <class T>
-rsFilterSpecificationZPK<T>::rsFilterSpecificationZPK(const std::vector<std::complex<T>>& poles,
-  const std::vector<std::complex<T>>& zeros, T gain, T sampleRate)
+rsFilterSpecificationZPK<T>::rsFilterSpecificationZPK(
+  const std::vector<std::complex<T>>& zeros, 
+  const std::vector<std::complex<T>>& poles,
+  std::complex<T> gain, T sampleRate)
 {
-  this->p = poles;
   this->z = zeros;
+  this->p = poles;
   this->k = gain;
   this->sampleRate = sampleRate;
 }

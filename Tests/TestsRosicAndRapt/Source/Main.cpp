@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // merge with unit tests for RSLib
+  runAllUnitTests();  // merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)

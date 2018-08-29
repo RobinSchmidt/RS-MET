@@ -88,3 +88,22 @@ bool prototypeDesignUnitTest()
 	
 	return r;
 }
+
+bool filterSpecUnitTest()
+{
+  bool r = true;      // test result
+
+  typedef RAPT::rsFilterSpecificationBA<double>  BA;
+  typedef RAPT::rsFilterSpecificationZPK<double> ZPK;
+  typedef std::complex<double> Complex;
+
+  // create example ZPK-filter with 3 zeros, 2 poles and gain = 3
+  Complex q1(-1.0, +1.0), q2(-1.0, -1.0), q3(-1.0, 0.0);
+  Complex p1(-0.5, +0.5), p2(-0.5, -0.5);
+  Complex k = 3.0;
+  double inf = RS_INF(double);
+  //ZPK zpk32({ q1, q2, q3 }, { p1, p2}, k, inf); // sampleRate = inf -> analog filter
+
+
+  return r;
+}

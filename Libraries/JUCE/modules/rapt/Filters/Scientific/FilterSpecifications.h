@@ -15,14 +15,16 @@ template <class T>
 struct rsFilterSpecificationZPK
 {
   rsFilterSpecificationZPK() {}
-  rsFilterSpecificationZPK(const std::vector<std::complex<T>>& poles,
-    const std::vector<std::complex<T>>& zeros, T gain, T sampleRate);
+  rsFilterSpecificationZPK(
+    const std::vector<std::complex<T>>& zeros, 
+    const std::vector<std::complex<T>>& poles,
+    std::complex<T> gain, T sampleRate);
 
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
   rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
 
-  std::vector<std::complex<T>> p; // poles
   std::vector<std::complex<T>> z; // zeros
+  std::vector<std::complex<T>> p; // poles
   std::complex<T> k = 1;          // gain
   T sampleRate = std::numeric_limits<T>::infinity();
 };

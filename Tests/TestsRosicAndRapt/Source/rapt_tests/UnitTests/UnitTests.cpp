@@ -48,9 +48,9 @@ bool runAllUnitTests()
 
   passed &= runUnitTest(&testMultiArray,                 "rsMultiArray");
 
-
   // Filters:
-  //passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner");
+  //passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner"); // why commented?
+  passed &= runUnitTest(&filterSpecUnitTest, "rsFilterSpecification (BA/ZPK)");
 
   // Visualization:
   passed &= runUnitTest(&imagePainterUnitTest,   "rsImagePainter");
