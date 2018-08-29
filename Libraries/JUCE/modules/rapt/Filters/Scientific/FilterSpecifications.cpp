@@ -102,8 +102,8 @@ std::complex<T> analogTransferFunctionBA(const std::complex<T>* b, size_t Nb,
   const std::complex<T>* a, size_t Na, std::complex<T> s)
 {
   std::complex<T> num = 0, den = 0;
-  for(size_t i = 0; i < Nb; i++) num += b[i] * pow(s, i); // can be optimized
-  for(size_t i = 0; i < Na; i++) den += a[i] * pow(s, i);
+  for(size_t i = 0; i < Nb; i++) num += b[i] * pow(s, T(i)); // can be optimized
+  for(size_t i = 0; i < Na; i++) den += a[i] * pow(s, T(i));
   return num/den;
 } // maybe move to rsFilterAnalyzer
 

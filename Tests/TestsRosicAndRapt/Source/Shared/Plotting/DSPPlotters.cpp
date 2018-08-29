@@ -141,14 +141,21 @@ template <class T>
 vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& f)
 {
   rsFilterSpecificationZPK<T> spec = filterSpecsZPK[index];
-  bool isDigital = spec.sampleRate != inf;
+  //bool isDigital = spec.sampleRate != inf;
   complex<T> j(0.0, 1.0);                          // imaginary unit                         
   vector<complex<T>> H(f.size());                  // frequency response
   for(int k = 0; k < f.size(); k++) {
     complex<T> s = j * complex<T>(freqScale*f[k]); // value on s-plane where we evaluate H
-    if(isDigital)
+    if(spec.isDigital())
       s = exp(s/spec.sampleRate);                  // conversion of analog "s" to digital "z"
-    H[k] = transferFunctionZPK(s, spec.z, spec.p, spec.k); 
+
+    // debug:
+    //complex<T> H1 = filterSpecsZPK[index].transferFunctionAt(s);
+    //complex<T> H2 = filterSpecsBA[index].transferFunctionAt(s);
+
+
+    H[k] = spec.transferFunctionAt(s);
+    //H[k] = transferFunctionZPK(s, spec.z, spec.p, spec.k); 
   }
   return H;
 }

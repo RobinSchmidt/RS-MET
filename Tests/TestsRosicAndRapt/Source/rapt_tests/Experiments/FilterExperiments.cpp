@@ -453,24 +453,6 @@ rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
   ba.a[1] = 0;              // odd a-coeffs must be zero
   ba.b[0] = ba.a[0] / 2.0;  // b0 = 0.5
 
-
-  /*
-  // freely choosable coeffs:
-  ba.a[2] =  0.5;           // must be > 0 for a complex conjugate pair
-  ba.b[1] =  ba.b[0];       // b1 == b0 puts one zero at z=-1 (i think)
-  ba.b[3] = 0.7;
-
-
-  // even b-coeffs must be half of their corresponding a-coeffs:
-  ba.b[2] = ba.a[2] / 2.0;  // depends on choice for a[2]
-  //ba.b[3] = ba.b[2];        // b3 == b2 puts another zero at z=-1 (i think..or maybe not?)
-  */
-
-
-  // hmm - with such a pole/zero placement, two zeros end up on the two poles
-
-
-  // i think, we get two zeros at z = -1 if b1==b0 and b3==b2 ..nooo - that doesn't work
   // let H(z) = B(z)/A(z) = b0*((1-q1/z)*(1-q2/z)*(1-q3/z))/((1-p1/z)*(1-p2/z))
   // and fix q1 = q2 = -1 - that gives:
   // B(z) = b0 * ( (1+1/z)*(1+1/z)*(1-q3/z) )
@@ -481,7 +463,7 @@ rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
   // we also need: b2 = a2/2 giving: a2 = 1 - 2*q3
 
   // ..ok - let's try it:
-  double q3 = 0.3;
+  double q3 = 0.7;
   ba.a[2] = 1 - 2*q3;
   ba.b[1] = 1 - q3/2;
   ba.b[2] = ba.a[2] / 2.0; // == 1/2 - q3
@@ -494,6 +476,12 @@ rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
   // maybe with the equations above, we can reduce the number of degrees of freedom to 1 and then
   // tweak that remaining variable?
 
+  // it seems that however we choose q3, the response shape is nonmonotonic
+  // ...maybe we need two additional zeros to get a good response...
+  // ...but maybe we should first verify that our plots are actually correct by takeing an FFT of
+  // an impulse response and compare to our plot - maybe try this also for the old filter
+  // with this sqrt(2)-1 stuff...
+  // at least, our symmetry constraints seem to work
 
   // choose a2 such that we get a monotonic response and b1,b3 such that two zeros are at z=-1
   // ...maybe the other way around
@@ -654,7 +642,7 @@ void bandSplitHighOrderIIR()
 
   double fsd = 0.5/PI;  // sample-rate for digital filters
   //splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - works
-  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - old
+  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - old
   splitterPrototypeD_2_3_new(&k, p, z); N = 2; M = 3; fs = fsd;
 
 
@@ -669,19 +657,13 @@ void bandSplitHighOrderIIR()
 
 
   rsFilterSpecificationBA<double>  lowpassBA  = splitterPrototype_2_3_new();
+  lowpassBA.sampleRate = fsd;
   rsFilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
 
   bool splitConditionsMet = testSplitConditions(lowpassBA);
   // for the 2,3 filter a[2] is > 5 -> unstable filter...i think in converting between zpk/ba, i 
   // need to reverse the polynomial coefficient arrays in case of digital filters...
   // it works
-
-  //FilterPlotter<double> testPlt;
-  //testPlt.addFilterSpecificationZPK(lowpassZPK); // these two specs should lead to the same plots
-  //testPlt.addFilterSpecificationBA( lowpassBA);  // this is too large!!
-  //testPlt.plotMagnitude(1000, 0.0, 0.5, false, false);
-  //int dummy = 0;
-  // ok, this seems to work
 
 
   // plot frequency response:
@@ -691,7 +673,8 @@ void bandSplitHighOrderIIR()
   plt.addFilterSpecificationBA(lowpassBA);
   plt.addFilterSpecificationBA(highpassBA);
   plt.plotPolesAndZeros();
-  //plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
+  plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
+
   //plt.plotMagnitude(1000, 0.0, 0.5, false, false);
 
   //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
