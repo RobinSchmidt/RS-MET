@@ -157,9 +157,25 @@ bool filterSpecUnitTest()
   zpkTmp = ba32.toZPK();
   r &= zpkTmp.equals(zpk32); 
 
+  // test of conversions is done - now we evaluate the transfer-function at a couple of randomly
+  // selected values for s or z an see, if both representations (ZPK and BA) give the same results:
+  int numValues = 50;
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setRange(-2.0, +2.0);
+  Complex z, s, H_zpk, H_ba, d;
+  double tol = 1.e-10; // seems like we need a quite high tolerance - check for numeric issues
+  int i;
+  for(i = 0; i < numValues; i++) {
+    Complex z = Complex(prng.getSample(), prng.getSample());
+    H_zpk = zpk32.transferFunctionAt(z);
+    H_ba  = ba32.transferFunctionAt( z);
+    d     = H_zpk - H_ba;
+    r &= abs(d) <= tol;
+    //rsAssert(r);
+  }
 
-  //double tol = 1.e-12;
-  //r &= zpkTmp.equals(zpk32, tol); // maybe we can use zero tolerance here
+
+
 
   return r;
 }
