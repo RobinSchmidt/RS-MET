@@ -123,26 +123,20 @@ rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK()
   zpk.sampleRate = sampleRate;
   zpk.p.resize(a.size()-1);
   zpk.z.resize(b.size()-1);
-
-  // todo: reverse a,b in case of digital filter
-
-  rsPolynomial<T>::findPolynomialRoots(&a[0], (int) a.size()-1, &zpk.p[0]);
-  rsPolynomial<T>::findPolynomialRoots(&b[0], (int) b.size()-1, &zpk.z[0]);
-
-  //if(ba.sampleRate != inf) // digital
-  //  //zpk.gain = ba.b[0];   // maybe, it should not be just b0 but b0/a0 -> verify/test...
-  //  zpk.gain = ba.b[0] / ba.a[0];  // gain is quotient of leading coeffs
-  //else
-  //  zpk.gain = ba.b[ba.b.size()-1] / ba.a[ba.a.size()-1] ;
-  // is this correct?  ...verify -  has been tested only in the digital case
-
-  //zpk.gain = ba.b[0]/ba.a[0];
-
-  zpk.k = b[b.size()-1] / a[a.size()-1];
-
-  //zpk.gain = 1; // preliminary
-
-
+  if(isDigital()) {
+    std::vector<complex<T>> tmp = a; 
+    rsReverse(tmp);
+    rsPolynomial<T>::findPolynomialRoots(&tmp[0], (int)tmp.size()-1, &zpk.p[0]);
+    tmp = b; 
+    rsReverse(tmp);
+    rsPolynomial<T>::findPolynomialRoots(&tmp[0], (int)tmp.size()-1, &zpk.z[0]);
+    zpk.k = b[0] / a[0];
+  }
+  else {
+    rsPolynomial<T>::findPolynomialRoots(&a[0], (int)a.size()-1, &zpk.p[0]);
+    rsPolynomial<T>::findPolynomialRoots(&b[0], (int)b.size()-1, &zpk.z[0]);
+    zpk.k = b[b.size()-1] / a[a.size()-1];
+  }
   zpk.sortPolesAndZeros();
   return zpk;
 }

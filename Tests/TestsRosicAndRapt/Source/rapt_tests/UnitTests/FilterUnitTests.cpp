@@ -126,8 +126,6 @@ bool filterSpecUnitTest()
   // now, we convert back from ba to zpk and check, if we get our original zpk specifiction
   // properly reconstructed:
   ZPK zpkTmp = ba32.toZPK();
-  //double tol = 1.e-12;
-  //r &= zpkTmp.equals(zpk32, tol); // maybe we can use zero tolerance here
   r &= zpkTmp.equals(zpk32); 
 
   // Digital case:
@@ -145,6 +143,7 @@ bool filterSpecUnitTest()
   zpk32.sampleRate = 1;
   // ...and now do the same tests as we did in the analog case:
 
+  // ZPK -> BA:
   ba32 = zpk32.toBA();
   r &= ba32.b[0] == b0;
   r &= ba32.b[1] == b1;
@@ -153,9 +152,14 @@ bool filterSpecUnitTest()
   r &= ba32.a[0] == a0;
   r &= ba32.a[1] == a1;
   r &= ba32.a[2] == a2;
-  // this fails now because we don't reverse the arrays in the conversion
+
+  // BA -> ZPK:
+  zpkTmp = ba32.toZPK();
+  r &= zpkTmp.equals(zpk32); 
 
 
+  //double tol = 1.e-12;
+  //r &= zpkTmp.equals(zpk32, tol); // maybe we can use zero tolerance here
 
   return r;
 }
