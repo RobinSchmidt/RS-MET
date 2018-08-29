@@ -112,6 +112,7 @@ bool filterSpecUnitTest()
   // multiplying out the zpk representation gives:
   Complex B0 = -k*q1*q2*q3, B1 = k*(q1*q2+q1*q3+q2*q3), B2 = -k*(q1+q2+q3), B3 = k;
   Complex A0 = p1*p2, A1 = -(p1+p2), A2 = 1;
+
   // we check now, if the built-in conversion-function gives the desired result:
   BA ba32 = zpk32.toBA();
   r &= ba32.b[0] == B0;
@@ -122,9 +123,14 @@ bool filterSpecUnitTest()
   r &= ba32.a[1] == A1;
   r &= ba32.a[2] == A2;
 
-
-
-
+  // now, we convert back from ba to zpk and check, if we get our original zpk specifiction
+  // properly reconstructed:
+  ZPK zpkTmp = ba32.toZPK();
+  double tol = 1.e-12;
+  //r &= zpkTmp == zpk32; // nope - compiler doesn't automatically create that operator
+  //r &= zpkTmp.almostEquals(zpk32, tol);
+  // we need to make sure that poles and zeros are in a well defined order - otherwise we can't
+  // compare...maybe we need to sort them...
 
 
   return r;
