@@ -343,7 +343,8 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
 }
 // this doesn't work
 
-// digital 2-pole/3-zero - works
+// digital 2-pole/3-zero - old - worked when we didn't really treat the reversed order of digital
+// filter coeff arrays right in conversions between zpk/ba form
 void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
 {
   double  s = sqrt(2)-1;
@@ -411,7 +412,7 @@ void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
   // For each even i, we get two equations: ci =  bi, ci = ai-bi -> bi = ai-bi -> bi = 2*ai and
   // for each odd i, we get:                ci = -bi, ci = ai-bi -> ai = 0, so the general rules
   // seems to be:
-  // -odd-numbered a-coeffs must be 0 (but what about the 1st order case? a1 isn't 0 there?)
+  // -odd-numbered a-coeffs must be 0 (yes, that also holds for the 1,1 case)
   // -even numbered b-coeffs must be half of the corresponding a-coeffs
   // -poles must be on the imaginary axis (this places further constraints on the a-coeffs)
   // -N (= numPoles) zeros must be at z=-1 (to get a proper lowpass response) 
@@ -424,6 +425,73 @@ void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
   // is the condition H(z)=G(-z) actually correct? or should it be |H(z)|=|G(-z)|?
   // -verify numerically, if H(z)=G(-z) for the 2,3 case
   // -check the value of a1 in the 1,1 case - it doens't follow the pattern ai=0 for odd i
+}
+
+void splitterPrototypeD_2_3_new(double* k, Complex* p, Complex* z)
+{
+  double  s = sqrt(2)-1;   // like in 2nd order butterworth
+  double  t = s;
+  //s = 0.5; t = 0.5;
+  Complex j = Complex(0, 1);
+  p[0] =  j*s;   // p1
+  p[1] = -j*s;   // p2
+  z[0] = -1;     // q1
+  z[1] = -1;     // q2
+  z[2] = -t;     // q3
+  *k = dcGainNormalizer(z, 3, p, 2); 
+}
+
+rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
+{
+  rsFilterSpecificationBA<double> ba;
+  ba.sampleRate = 1;
+  ba.a.resize(3);
+  ba.b.resize(4);
+
+  // fixed coeffs (by constraints):
+  ba.a[0] = 1;              // 0th a coeff is always 1
+  ba.a[1] = 0;              // odd a-coeffs must be zero
+  ba.b[0] = ba.a[0] / 2.0;  // b0 = 0.5
+
+  // freely choosable coeffs:
+  ba.a[2] =  0.5;           // must be > 0 for a complex conjugate pair
+  ba.b[1] =  ba.b[0];       // b1 == b0 puts one zero at z=-1 (i think)
+  ba.b[3] = 0.7;
+
+
+  // even b-coeffs must be half of their corresponding a-coeffs:
+  ba.b[2] = ba.a[2] / 2.0;  // depends on choice for a[2]
+  //ba.b[3] = ba.b[2];        // b3 == b2 puts another zero at z=-1 (i think..or maybe not?)
+
+
+  // hmm - with such a pole/zero placement, two zeros end up on the two poles
+
+
+  // i think, we get two zeros at z = -1 if b1==b0 and b3==b2 ..nooo - that doesn't work
+  // let H(z) = B(z)/A(z) = b0*((1-q1/z)*(1-q2/z)*(1-q3/z))/((1-p1/z)*(1-p2/z))
+  // and fix q1 = q2 = -1 - that gives:
+  // B(z) = b0 * ( (1+1/z)*(1+1/z)*(1-q3/z) )
+  // multiply out to obtain b0,..,b3 in terms of q3 (our additional zero to be freely placed)
+  // let r = 1/z = z^-1 for convenience, then:
+  // B(z) = b0 * (1 + (2-q3)*r + (1-2*q3)*r^2 - q3*r^3)
+  // so, with b0 = 1/2: b1 = (1-q3/2), b2 = (1/2 - q3), b3 = -q3/2
+  // we also need: b2 = a2/2 giving: a2 = 1 - 2*q3
+
+
+
+  // hmmm...we have 7 degrees of freedom all in all. constraints uniquely fix
+  // a0 = 1, a1 = 0, b0 = a0/2 = 1/2. once a2 is chosen, we must have b2 = a2/2.
+  // maybe with the equations above, we can reduce the number of degrees of freedom to 1 and then
+  // tweak that remaining variable?
+
+
+
+
+
+  // choose a2 such that we get a monotonic response and b1,b3 such that two zeros are at z=-1
+  // ...maybe the other way around
+
+  return ba;
 }
 
 // digital 3-pole/3-zero - doesn't work:
@@ -457,36 +525,29 @@ void splitterPrototypeD_4_6(double* k, Complex* p, Complex* z)
   z[4] = -p[0].imag(); // test
   z[5] = -p[2].imag(); // test
 
-
-
   *k = dcGainNormalizer(z, 6, p, 4);
-
-  //Complex H1 = digitalTransferFunctionZPK(z, 4, p, 3, 1, Complex(1.0, 0.0)); // H(z) at z=1
-  //*k = 1 / abs(H1);  
 }
-
-/*
-void normalizeA0(FilterSpecificationBA<double>& ba)
-{
-  Complex s = 1.0 / ba.a[0];
-  for(size_t i = 0; i < ba.a.size(); i++) ba.a[i] *= s;
-  for(size_t i = 0; i < ba.b.size(); i++) ba.b[i] *= s;
-} // moved to FilterPlotter, used inside zpk2ba
-*/
 
 rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationBA<double>& baSpec)
 {
   rsFilterSpecificationBA<double> ba = baSpec, r;
-  //normalizeA0(ba);
+
   r.sampleRate = ba.sampleRate;
   int Na = (int)ba.a.size()-1;
   int Nb = (int)ba.b.size()-1;
-  r.a = ba.a;                // denominator is the same
+
   r.b.resize(std::max(Na,Nb)+1);
+  r.a = ba.a;                // denominator is the same
+
+  //if(ba.isDigital()) {
+  //  rsReverse(ba.b);
+  //  rsReverse(ba.a);
+  //}
 
   rsPolynomial<complex<double>>::subtractPolynomials(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
-  // this probably doesn't work when Na,Nb are different - the we need to 
-  // reverse, subtract, reverse (otherwise the low coeffs get zero padded)
+
+  //if(r.isDigital())
+  //  rsReverse(r.b);
 
   return r;
 } // move to FilterPlotter or rapt rsFilterSpecificationBA
@@ -540,6 +601,24 @@ bool testSplitConditions(const rsFilterSpecificationBA<double>& lpfBA)
     Complex dif = Hz - Gzm;  // Symmetry:   H(z) = G(-z) -> H(z)-G(-z) = 0
     result &= abs(1.0-sum) < tol;
     result &= abs(dif)     < tol;
+    // for the 2p3z filter, the sum is totally off and Hz+Gzm is zero instead of Hz-Gzm
+    // how can the sum be so totally off? is there a bug in complementaryFilter?
+    // ok - the sum is correct now - we should not reverse arrays in complementaryFilter
+    // but if we don't reverse, the plots are messed up again...wtf?
+    // if we do reverse: sum is wrong, if we don't reverse: plots are wrong
+    // try to not reverse (the sum *must* be correct) and choose a different additional zero - 
+    // maybe it's wrongly placed, after all
+
+    // is our symmetry constraint tto restrictive? maybe it should be |H(z)| = |G(-z)|:
+    double absHz  = abs(Hz);
+    double absGzm = abs(Gzm);
+    // nope - that doesn't work either
+
+
+    Complex test1 = Hz+Gzm;
+    Complex test2 = Hz-Gz;
+
+    //rsAssert(result);
     int dummy = 0;
   }
 
@@ -567,18 +646,22 @@ void bandSplitHighOrderIIR()
   // ...
 
   double fsd = 0.5/PI;  // sample-rate for digital filters
-  splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - worked...but now it triggers an assert
+  //splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - works
+  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - old
+  splitterPrototypeD_2_3_new(&k, p, z); N = 2; M = 3; fs = fsd;
 
-  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
+
+
   //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
   //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
   // create filter specification objects for lowpass and highpass filter:
-  //rsFilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);  // old
-  rsFilterSpecificationZPK<double> lowpassZPK(toVector(z, M), toVector(p, N), k, fs);
-  //rsFilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
-  rsFilterSpecificationBA<double>  lowpassBA  = lowpassZPK.toBA();
+  //rsFilterSpecificationZPK<double> lowpassZPK(toVector(z, M), toVector(p, N), k, fs);
+  //rsFilterSpecificationBA<double>  lowpassBA  = lowpassZPK.toBA();
+
+
+  rsFilterSpecificationBA<double>  lowpassBA  = splitterPrototype_2_3_new();
   rsFilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
 
   bool splitConditionsMet = testSplitConditions(lowpassBA);
@@ -597,8 +680,9 @@ void bandSplitHighOrderIIR()
   // plot frequency response:
   FilterPlotter<double> plt;
   //plt.addFilterSpecificationZPK(N, p, M, z, k, fs);
-  plt.addFilterSpecificationZPK(lowpassZPK);
-  plt.addFilterSpecificationBA(highpassBA);
+  //plt.addFilterSpecificationZPK(lowpassZPK);
+  plt.addFilterSpecificationBA(lowpassBA);
+  //plt.addFilterSpecificationBA(highpassBA);
   plt.plotPolesAndZeros();
   plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
   //plt.plotMagnitude(1000, 0.0, 0.5, false, false);
