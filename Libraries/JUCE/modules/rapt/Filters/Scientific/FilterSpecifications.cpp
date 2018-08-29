@@ -8,6 +8,7 @@ rsFilterSpecificationZPK<T>::rsFilterSpecificationZPK(
   this->p = poles;
   this->k = gain;
   this->sampleRate = sampleRate;
+  sortPolesAndZeros();
 }
 
 template <class T>
@@ -57,6 +58,14 @@ rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA()
   ba.normalizeDenominator(); // maybe make the normalization optional (on by default)
   return ba;
 }
+
+template <class T>
+void rsFilterSpecificationZPK<T>::sortPolesAndZeros()
+{
+  rsHeapSort(&p[0], (int)p.size(), rsComplexLessByImRe<T>);
+  rsHeapSort(&z[0], (int)z.size(), rsComplexLessByImRe<T>);
+}
+
 
 //=================================================================================================
 
@@ -123,6 +132,9 @@ rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK()
   zpk.k = b[b.size()-1] / a[a.size()-1];
 
   //zpk.gain = 1; // preliminary
+
+
+  zpk.sortPolesAndZeros();
   return zpk;
 }
 

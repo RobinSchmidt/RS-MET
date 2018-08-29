@@ -25,7 +25,7 @@ struct rsFilterSpecificationZPK
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
   rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
 
-
+  void sortPolesAndZeros();
 
   std::vector<std::complex<T>> z; // zeros
   std::vector<std::complex<T>> p; // poles
