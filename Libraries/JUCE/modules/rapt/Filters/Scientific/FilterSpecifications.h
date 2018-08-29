@@ -3,8 +3,9 @@
 // the classes here are mainly meant for convenient experimentation/prototyping, not for realtime 
 // production code
 
-//template <class T>
-//struct rsFilterSpecificationBA<T>; // forward dacalation - doesn't work
+template <class T>
+struct rsFilterSpecificationBA;
+//struct rsFilterSpecificationBA<T>;
 
 /** A structure to specify a filter in terms of its zeros, poles, a gain factor and possibly a 
 sample rate. If the sample rate is infinity (the default), an analog filter is assumed and the 
@@ -16,16 +17,18 @@ struct rsFilterSpecificationZPK
 {
   rsFilterSpecificationZPK() {}
   rsFilterSpecificationZPK(const std::vector<std::complex<T>>& poles,
-    const std::vector<std::complex<T>>& zeros, T gain, T sampleRate)
+    const std::vector<std::complex<T>>& zeros, T gain, T sampleRate);
+  /*
   {
     this->poles = poles;
     this->zeros = zeros;
     this->gain  = gain;
     this->sampleRate = sampleRate;
   }
+  */
 
-  //rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
-  //transferFunctionAt(s_or_z);
+  rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
+  std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
 
   std::vector<std::complex<T>> poles; // rename to p
   std::vector<std::complex<T>> zeros; // rename to z
@@ -39,12 +42,17 @@ template <class T>
 struct rsFilterSpecificationBA
 {
   rsFilterSpecificationBA() {}
-  rsFilterSpecificationBA(const std::vector<T>& num, const std::vector<T>& den, T sampleRate)
+  rsFilterSpecificationBA(const std::vector<T>& num, const std::vector<T>& den, T sampleRate);
+  /*
   {
     this->sampleRate = sampleRate;
     b = num;
     a = den;
   }
+  */
+
+  rsFilterSpecificationZPK<T> toZPK(); // maybe move to FilterCoefficientConverter
+  std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
 
   std::vector<std::complex<T>> b; // numerator
   std::vector<std::complex<T>> a; // denominator
