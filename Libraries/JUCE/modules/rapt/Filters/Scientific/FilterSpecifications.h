@@ -20,8 +20,12 @@ struct rsFilterSpecificationZPK
     const std::vector<std::complex<T>>& poles,
     std::complex<T> gain, T sampleRate);
 
+
+  bool isDigital() { return sampleRate != std::numeric_limits<T>::infinity(); }
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
   rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
+
+
 
   std::vector<std::complex<T>> z; // zeros
   std::vector<std::complex<T>> p; // poles
@@ -38,12 +42,16 @@ struct rsFilterSpecificationBA
   rsFilterSpecificationBA(const std::vector<std::complex<T>>& num, 
     const std::vector<std::complex<T>>& den, T sampleRate);
 
+  bool isDigital() { return sampleRate != std::numeric_limits<T>::infinity(); }
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
   rsFilterSpecificationZPK<T> toZPK(); // maybe move to FilterCoefficientConverter
 
   /** Normalizes the a[0] coefficient to unity by dividing all a- and b-coeffs by a0. That 
   doesn't change the overall transfer function. */
-  void normalizeA0();
+  //void normalizeA0();
+    // in the analog case, we need to normalize with respect to a.last()
+
+  void normalizeDenominator();
 
 
   std::vector<std::complex<T>> b; // numerator

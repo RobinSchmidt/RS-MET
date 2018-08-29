@@ -113,9 +113,15 @@ bool filterSpecUnitTest()
   Complex B0 = -k*q1*q2*q3, B1 = k*(q1*q2+q1*q3+q2*q3), B2 = -k*(q1+q2+q3), B3 = k;
   Complex A0 = p1*p2, A1 = -(p1+p2), A2 = 1;
   // we check now, if the built-in conversion-function gives the desired result:
+  BA ba32 = zpk32.toBA();
+  r &= ba32.b[0] == B0;
+  r &= ba32.b[1] == B1;
+  r &= ba32.b[2] == B2;
+  r &= ba32.b[3] == B3;
+  r &= ba32.a[0] == A0;
+  r &= ba32.a[1] == A1;
+  r &= ba32.a[2] == A2;
 
-  BA ba32 = zpk32.toBA(); 
-  // all coeffs are a factor 2 too large -> divide all by A2?
 
 
 

@@ -35,7 +35,7 @@ std::complex<T> analogTransferFunctionZPK(const std::complex<T>* zeros, size_t n
 template <class T>
 std::complex<T> rsFilterSpecificationZPK<T>::transferFunctionAt(std::complex<T> s_or_z)
 {
-  if(sampleRate != RS_INF(double))
+  if(isDigital())
     return digitalTransferFunctionZPK(&z[0], z.size(), &p[0], p.size(), k, s_or_z);
   else
     return analogTransferFunctionZPK( &z[0], z.size(), &p[0], p.size(), k, s_or_z);
@@ -54,7 +54,7 @@ rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA()
   for(size_t i = 0; i < ba.b.size(); i++)
     ba.b[i] *= k;
 
-  ba.normalizeA0(); // maybe make the normalization optional (on by default)
+  ba.normalizeDenominator(); // maybe make the normalization optional (on by default)
   return ba;
 }
 
@@ -92,7 +92,7 @@ std::complex<T> analogTransferFunctionBA(const std::complex<T>* b, size_t Nb,
 template <class T>
 std::complex<T> rsFilterSpecificationBA<T>::transferFunctionAt(std::complex<T> s_or_z)
 {
-  if(sampleRate != RS_INF(double))
+  if(isDigital())
     return digitalTransferFunctionBA(&b[0], b.size(), &a[0], a.size(), s_or_z);
   else
     return analogTransferFunctionBA( &b[0], b.size(), &a[0], a.size(), s_or_z);
@@ -127,9 +127,12 @@ rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK()
 }
 
 template <class T>
-void rsFilterSpecificationBA<T>::normalizeA0()
+void rsFilterSpecificationBA<T>::normalizeDenominator()
 {
-  std::complex<T> s = T(1) / a[0];
+  std::complex<T> s;
+  if(isDigital()) s = T(1) / a[0];
+  else            s = T(1) / a[a.size()-1];
+
   for(size_t i = 0; i < a.size(); i++) a[i] *= s;
   for(size_t i = 0; i < b.size(); i++) b[i] *= s;
 }
