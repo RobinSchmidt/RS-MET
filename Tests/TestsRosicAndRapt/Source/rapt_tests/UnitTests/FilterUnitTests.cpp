@@ -98,11 +98,26 @@ bool filterSpecUnitTest()
   typedef std::complex<double> Complex;
 
   // create example ZPK-filter with 3 zeros, 2 poles and gain = 3
-  Complex q1(-1.0, +1.0), q2(-1.0, -1.0), q3(-1.0, 0.0);
+  Complex q1(-1.0, +2.0), q2(-1.0, -2.0), q3(-4.0, 0.0);
   Complex p1(-0.5, +0.5), p2(-0.5, -0.5);
-  Complex k = 3.0;
+  Complex k = 4.0;
   double inf = RS_INF(double);
-  //ZPK zpk32({ q1, q2, q3 }, { p1, p2}, k, inf); // sampleRate = inf -> analog filter
+  ZPK zpk32({ q1, q2, q3 }, { p1, p2}, k, inf); // sampleRate = inf -> analog filter
+
+  // Analog case:
+  //             (s-q1)*(s-q2)*(s-q3)     B0 + B1*s + B2*s^2 + B3*s^3
+  // H(s) = k * ---------------------- = -----------------------------
+  //             (s-p1)*(s-p2)            A0 + A1*s + A2*s^2
+  //
+  // multiplying out the zpk representation gives:
+  // B0 = -k*q1*q2*q3, B1 = k*(q1*q2+q1*q3+q2*q3), B2 = -k*(q1+q2+q3), B3 = k
+  // A0 = p1*p2, A1 = -(p1+p2), A2 = 1
+  // we check now, if the built-in conversion-function gives the desired result:
+
+  BA ba32 = zpk32.toBA();
+
+
+
 
 
   return r;

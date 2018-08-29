@@ -14,8 +14,8 @@ template <class T>
 std::complex<T> digitalTransferFunctionZPK(const std::complex<T>* zeros, size_t numZeros, 
   const std::complex<T>* poles, size_t numPoles, std::complex<T> k, std::complex<T> z)
 {
-  Complex zr  = 1.0/z;       // z^-1
-  Complex num = 1, den = 1;  // numerator and denominator
+  std::complex<T> zr  = T(1)/z;      // z^-1, reciprocal of z
+  std::complex<T> num = 1, den = 1;  // numerator and denominator
   for(size_t i = 0; i < numZeros; i++) num *= (T(1) - zeros[i] * zr);
   for(size_t i = 0; i < numPoles; i++) den *= (T(1) - poles[i] * zr);
   return k * num/den;
@@ -26,7 +26,7 @@ template <class T>
 std::complex<T> analogTransferFunctionZPK(const std::complex<T>* zeros, size_t numZeros, 
   const std::complex<T>* poles, size_t numPoles, std::complex<T> k, std::complex<T> s)
 {
-  Complex num = 1, den = 1;  // numerator and denominator
+  std::complex<T> num = 1, den = 1;  // numerator and denominator
   for(size_t i = 0; i < numZeros; i++) num *= (s - zeros[i]);
   for(size_t i = 0; i < numPoles; i++) den *= (s - poles[i]);
   return k * num/den;
@@ -62,7 +62,7 @@ rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA()
 
 template <class T>
 rsFilterSpecificationBA<T>::rsFilterSpecificationBA(
-  const std::vector<T>& num, const std::vector<T>& den, T sampleRate)
+  const std::vector<std::complex<T>>& num, const std::vector<std::complex<T>>& den, T sampleRate)
 {
   this->sampleRate = sampleRate;
   b = num;
@@ -74,8 +74,8 @@ std::complex<T> digitalTransferFunctionBA(const std::complex<T>* b, size_t Nb,
   const std::complex<T>* a, size_t Na, std::complex<T> z)
 {
   std::complex<T> num = 0, den = 0;
-  for(size_t i = 0; i < Nb; i++) num += b[i] * pow(z, -i); // can be optimized
-  for(size_t i = 0; i < Na; i++) den += a[i] * pow(z, -i);
+  for(size_t i = 0; i < Nb; i++) num += b[i] * pow(z, -T(i)); // can be optimized
+  for(size_t i = 0; i < Na; i++) den += a[i] * pow(z, -T(i));
   return num/den;
 } // maybe move to rsFilterAnalyzer
 

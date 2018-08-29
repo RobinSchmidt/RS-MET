@@ -35,7 +35,8 @@ template <class T>
 struct rsFilterSpecificationBA
 {
   rsFilterSpecificationBA() {}
-  rsFilterSpecificationBA(const std::vector<T>& num, const std::vector<T>& den, T sampleRate);
+  rsFilterSpecificationBA(const std::vector<std::complex<T>>& num, 
+    const std::vector<std::complex<T>>& den, T sampleRate);
 
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
   rsFilterSpecificationZPK<T> toZPK(); // maybe move to FilterCoefficientConverter

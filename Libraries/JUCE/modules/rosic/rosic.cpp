@@ -122,7 +122,8 @@ template class RAPT::rsFilterCoefficientConverter<double>;
 template class RAPT::rsInfiniteImpulseResponseDesigner<double>;
 template class RAPT::rsEngineersFilter<double, double>;
 template class RAPT::rsEngineersFilter<rsFloat64x2, double>;
-
+template struct RAPT::rsFilterSpecificationZPK<double>;
+template struct RAPT::rsFilterSpecificationBA<double>;
 
 template class RAPT::rsSmoothingFilter<double, double>;
 template class RAPT::rsLadderFilter<double, double>;
