@@ -513,21 +513,19 @@ bool testSplitConditions(const rsFilterSpecificationBA<double>& lpfBA)
   // of the responses.
 
   bool result = true;
-  rsFilterSpecificationBA<double>  hpfBA  = complementaryFilter(lpfBA);
+  rsFilterSpecificationBA<double> hpfBA = complementaryFilter(lpfBA);
   rsFilterSpecificationZPK<double> lpfZPK = lpfBA.toZPK();
   rsFilterSpecificationZPK<double> hpfZPK = hpfBA.toZPK();
-
-  //FilterSpecificationZPK<double> lpfZPK = FilterPlotter<double>::ba2zpk(lpfBA);
-  //FilterSpecificationZPK<double> hpfZPK = FilterPlotter<double>::ba2zpk(hpfBA);
 
   // check, if the poles are equal:
   // ...
 
-  
+
   // check if zeros are mirrored along the imaginary axis:
   // ...
 
-  // check symmetry: H(z) = G(-z) ...maybe use some random values for z for that
+
+  // check symmetry: H(z) = G(-z), use some random values for z for that
   int numValues = 100;
   RAPT::rsNoiseGenerator<double> prng;
   prng.setRange(-2.0, +2.0);
@@ -535,73 +533,23 @@ bool testSplitConditions(const rsFilterSpecificationBA<double>& lpfBA)
   for(int i = 0; i < numValues; i++)
   {
     Complex z   = Complex(prng.getSample(), prng.getSample());
-
-    Complex Hz_zpk  = lpfZPK.transferFunctionAt( z);   // H(z)
-    Complex Gz_zpk  = hpfZPK.transferFunctionAt( z);   // G(z)
-    Complex Hzm_zpk = lpfZPK.transferFunctionAt(-z);   // H(-z)
-    Complex Gzm_zpk = hpfZPK.transferFunctionAt(-z);   // G(-z)
-    Complex sum_zpk = Hz_zpk + Gz_zpk;  // should be 1
-    // doesn't work for 2,3 filter - maybe we should normalize a0=1 in complementaryFilter before
-    // doing the subtraction? ...hmm...that doesn't seem to help...or does that work only for
-    // z on the unit circle - but why should it? maybe try to evaluate the transfer-function
-    // based on the BA specs
-    //double sumAbs = abs(sum);
-
-    Complex Hz_ba  = lpfBA.transferFunctionAt( z);   // H(z)
-    Complex Gz_ba  = hpfBA.transferFunctionAt( z);   // G(z)
-    Complex Hzm_ba = lpfBA.transferFunctionAt(-z);   // H(-z)
-    Complex Gzm_ba = hpfBA.transferFunctionAt(-z);   // G(-z)
-    Complex sum_ba = Hz_ba + Gz_ba;  // should be 1
-    // this actually is 1...is the transferFunctionZPK function broken? or maybe ba2zpk is still 
-    // broken? poles and zeros of the zpk specs look good - what about gain?
-
-    // todo: move the FilterSpecificationBA/ZPK classes and the conversion functions to RAPT and
-    // implement unit tests - continue here when this is done and the conversion routines a solid
-    // maybe move the transfer function evaluations also to rapt
-
-    Complex tmp = Hz_zpk / Hz_ba;
-
-    // check if H(z) == G(-z) -> Hz_ba == Gzm_ba
-
-    // check if G(z) == 1-H(z) -> H(z) + G(z) = 1 (should be ensured by complementaryFilter)
-
+    Complex Hz  = lpfBA.transferFunctionAt( z);   // H(z)
+    Complex Gz  = hpfBA.transferFunctionAt( z);   // G(z)
+    Complex Gzm = hpfBA.transferFunctionAt(-z);   // G(-z)
+    Complex sum = Hz + Gz;   // Complement: H(z) + G(z) = 1, ensured by complementaryFilter
+    Complex dif = Hz - Gzm;  // Symmetry:   H(z) = G(-z) -> H(z)-G(-z) = 0
+    result &= abs(1.0-sum) < tol;
+    result &= abs(dif)     < tol;
     int dummy = 0;
   }
 
-  // ...
-
-
   return result;
 }
-
-/*
-bool testZpkBaConversions()
-{
-  bool result = true;
-
-  typedef FilterSpecificationZPK<double> ZPK;
-  typedef FilterSpecificationBA<double>  BA;
-  typedef FilterPlotter<double> PLT;
-
-  // digital:
-  ZPK d1_zpk({1,2,3}, {1,2,3,4}, 3, 1); 
-  BA  d1_ba    = PLT::zpk2ba(d1_zpk);    // converted to BA
-  ZPK d1_zpk_r = PLT::ba2zpk(d1_ba);     // reconstructed from BA
-
-  // return areFiltersEqualZPK(d1_zpk, d1_zpk_r);
-  return result;
-} // obsolete
-*/
 
 void bandSplitHighOrderIIR()
 {
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
   // splitter with perfect reconstruction...
-
-
-  // just for testing the ba/zpk conversion functions:
-  //testZpkBaConversions();
-
 
   // ...under construction...
 
