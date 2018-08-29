@@ -49,12 +49,12 @@ rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA()
   ba.sampleRate = sampleRate;
   ba.a = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(p); // rename: rootsToCoeffs
   ba.b = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(z); // have also coeffsToRoots
-
-  // todo: reverse a,b in case of digital filter
-
+  if(isDigital()){
+    rsReverse(ba.a);
+    rsReverse(ba.b);
+  }
   for(size_t i = 0; i < ba.b.size(); i++)
     ba.b[i] *= k;
-
   ba.normalizeDenominator(); // maybe make the normalization optional (on by default)
   return ba;
 }

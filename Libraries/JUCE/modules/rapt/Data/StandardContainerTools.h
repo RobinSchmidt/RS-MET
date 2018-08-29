@@ -75,6 +75,12 @@ inline bool rsRemoveFirstOccurrence(std::vector<T>& v, T elementToRemove)
 }
 
 template<class T>
+inline void rsReverse(std::vector<T>& v)
+{
+  rsArray::reverse(&v[0], (int) v.size());
+}
+
+template<class T>
 inline bool rsContains(std::vector<T>& v, T elementToCheckFor)
 {
   for(size_t i = 0; i < size(v); i++)
