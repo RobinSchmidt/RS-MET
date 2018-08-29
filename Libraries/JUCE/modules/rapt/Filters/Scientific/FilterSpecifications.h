@@ -38,6 +38,11 @@ struct rsFilterSpecificationBA
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
   rsFilterSpecificationZPK<T> toZPK(); // maybe move to FilterCoefficientConverter
 
+  /** Normalizes the a[0] coefficient to unity by dividing all a- and b-coeffs by a0. That 
+  doesn't change the overall transfer function. */
+  void normalizeA0();
+
+
   std::vector<std::complex<T>> b; // numerator
   std::vector<std::complex<T>> a; // denominator
   T sampleRate = std::numeric_limits<T>::infinity();
@@ -49,3 +54,4 @@ struct rsFilterSpecificationBA
 // maybe factor out a baseclass rsFilterSpecification that has only a sampleRate member and a 
 // function isDigital()...maybe also a virtual member transferFunctionAt that is overriden
 // by the two subclasses, maybe protect data members and make the classes mutual friends
+// maybe let the FilterPlotter keep an array of baseclass pointers

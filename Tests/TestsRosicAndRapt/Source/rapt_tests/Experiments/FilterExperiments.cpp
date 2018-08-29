@@ -203,6 +203,8 @@ void bandSplitFreqResponses()
   }
 }
 
+//-------------------------------------------------------------------------------------------------
+// experiments for perfect reconstruction IIR filters:
 
 typedef std::complex<double> Complex;
 
@@ -652,6 +654,7 @@ void bandSplitHighOrderIIR()
 
 }
 
+// end of experiments for perfect reconstruction IIR filters
 //-------------------------------------------------------------------------------------------------
 
 void ladderResonanceManipulation()

@@ -39,6 +39,23 @@ std::complex<T> rsFilterSpecificationZPK<T>::transferFunctionAt(std::complex<T> 
     return analogTransferFunctionZPK( &z[0], z.size(), &p[0], p.size(), k, s_or_z);
 }
 
+template <class T>
+rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA()
+{
+  rsFilterSpecificationBA<T> ba;
+  ba.sampleRate = sampleRate;
+  ba.a = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(p); // rename: rootsToCoeffs
+  ba.b = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(z); // have also coeffsToRoots
+
+  // todo: reverse a,b in case of digital filter
+
+  for(size_t i = 0; i < ba.b.size(); i++)
+    ba.b[i] *= k;
+
+  ba.normalizeA0(); // maybe make the normalization optional (on by default)
+  return ba;
+}
+
 //=================================================================================================
 
 template <class T>
@@ -77,4 +94,40 @@ std::complex<T> rsFilterSpecificationBA<T>::transferFunctionAt(std::complex<T> s
     return digitalTransferFunctionBA(&b[0], b.size(), &a[0], a.size(), s_or_z);
   else
     return analogTransferFunctionBA( &b[0], b.size(), &a[0], a.size(), s_or_z);
+}
+
+template <class T>
+rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK()
+{
+  rsFilterSpecificationZPK<T> zpk;
+  zpk.sampleRate = sampleRate;
+  zpk.p.resize(a.size()-1);
+  zpk.z.resize(b.size()-1);
+
+  // todo: reverse a,b in case of digital filter
+
+  rsPolynomial<T>::findPolynomialRoots(&a[0], (int) a.size()-1, &zpk.p[0]);
+  rsPolynomial<T>::findPolynomialRoots(&b[0], (int) b.size()-1, &zpk.z[0]);
+
+  //if(ba.sampleRate != inf) // digital
+  //  //zpk.gain = ba.b[0];   // maybe, it should not be just b0 but b0/a0 -> verify/test...
+  //  zpk.gain = ba.b[0] / ba.a[0];  // gain is quotient of leading coeffs
+  //else
+  //  zpk.gain = ba.b[ba.b.size()-1] / ba.a[ba.a.size()-1] ;
+  // is this correct?  ...verify -  has been tested only in the digital case
+
+  //zpk.gain = ba.b[0]/ba.a[0];
+
+  zpk.k = b[b.size()-1] / a[a.size()-1];
+
+  //zpk.gain = 1; // preliminary
+  return zpk;
+}
+
+template <class T>
+void rsFilterSpecificationBA<T>::normalizeA0()
+{
+  std::complex<T> s = T(1) / a[0];
+  for(size_t i = 0; i < a.size(); i++) a[i] *= s;
+  for(size_t i = 0; i < b.size(); i++) b[i] *= s;
 }

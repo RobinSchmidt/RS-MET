@@ -193,7 +193,7 @@ FilterSpecificationBA<T> FilterPlotter<T>::zpk2ba(const FilterSpecificationZPK<T
     ba.b[i] *= zpk.gain;
   normalizeA0(ba); // maybe make the normalization optional (on by default)
   return ba;
-}
+} // moved to rsFilterSpecificationZPK<T>::toBA
 
 template <class T>
 FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T>& ba)
@@ -208,9 +208,6 @@ FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T
   rsPolynomial<T>::findPolynomialRoots(&ba.a[0], (int) ba.a.size()-1, &zpk.poles[0]);
   rsPolynomial<T>::findPolynomialRoots(&ba.b[0], (int) ba.b.size()-1, &zpk.zeros[0]);
 
-
-
-
   //if(ba.sampleRate != inf) // digital
   //  //zpk.gain = ba.b[0];   // maybe, it should not be just b0 but b0/a0 -> verify/test...
   //  zpk.gain = ba.b[0] / ba.a[0];  // gain is quotient of leading coeffs
@@ -221,8 +218,6 @@ FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T
   //zpk.gain = ba.b[0]/ba.a[0];
 
   zpk.gain = ba.b[ba.b.size()-1] / ba.a[ba.a.size()-1];
-
-
 
 
   //zpk.gain = 1; // preliminary
