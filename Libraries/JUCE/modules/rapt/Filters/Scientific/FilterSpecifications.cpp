@@ -49,3 +49,32 @@ rsFilterSpecificationBA<T>::rsFilterSpecificationBA(
   b = num;
   a = den;
 }
+
+template <class T>
+std::complex<T> digitalTransferFunctionBA(const std::complex<T>* b, size_t Nb, 
+  const std::complex<T>* a, size_t Na, std::complex<T> z)
+{
+  std::complex<T> num = 0, den = 0;
+  for(size_t i = 0; i < Nb; i++) num += b[i] * pow(z, -i); // can be optimized
+  for(size_t i = 0; i < Na; i++) den += a[i] * pow(z, -i);
+  return num/den;
+} // maybe move to rsFilterAnalyzer
+
+template <class T>
+std::complex<T> analogTransferFunctionBA(const std::complex<T>* b, size_t Nb, 
+  const std::complex<T>* a, size_t Na, std::complex<T> s)
+{
+  std::complex<T> num = 0, den = 0;
+  for(size_t i = 0; i < Nb; i++) num += b[i] * pow(s, i); // can be optimized
+  for(size_t i = 0; i < Na; i++) den += a[i] * pow(s, i);
+  return num/den;
+} // maybe move to rsFilterAnalyzer
+
+template <class T>
+std::complex<T> rsFilterSpecificationBA<T>::transferFunctionAt(std::complex<T> s_or_z)
+{
+  if(sampleRate != RS_INF(double))
+    return digitalTransferFunctionBA(&b[0], b.size(), &a[0], a.size(), s_or_z);
+  else
+    return analogTransferFunctionBA( &b[0], b.size(), &a[0], a.size(), s_or_z);
+}

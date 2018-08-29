@@ -18,9 +18,8 @@ struct rsFilterSpecificationZPK
   rsFilterSpecificationZPK(const std::vector<std::complex<T>>& poles,
     const std::vector<std::complex<T>>& zeros, T gain, T sampleRate);
 
-
-  rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
+  rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
 
   std::vector<std::complex<T>> p; // poles
   std::vector<std::complex<T>> z; // zeros
@@ -36,9 +35,8 @@ struct rsFilterSpecificationBA
   rsFilterSpecificationBA() {}
   rsFilterSpecificationBA(const std::vector<T>& num, const std::vector<T>& den, T sampleRate);
 
-
-  rsFilterSpecificationZPK<T> toZPK(); // maybe move to FilterCoefficientConverter
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
+  rsFilterSpecificationZPK<T> toZPK(); // maybe move to FilterCoefficientConverter
 
   std::vector<std::complex<T>> b; // numerator
   std::vector<std::complex<T>> a; // denominator
@@ -47,3 +45,7 @@ struct rsFilterSpecificationBA
 // filter specification by polynomial coeffs for numerator (b) and denominator (a)
 // H(s) = (b0 + b1*s + ... + bM*s^M) / (a0 + a1*s + ... + aN*s^N)   or
 // H(z) = (b0 + b1/z + ... + bM/z^M) / (a0 + a1/z + ... + aN/z^N)
+
+// maybe factor out a baseclass rsFilterSpecification that has only a sampleRate member and a 
+// function isDigital()...maybe also a virtual member transferFunctionAt that is overriden
+// by the two subclasses, maybe protect data members and make the classes mutual friends
