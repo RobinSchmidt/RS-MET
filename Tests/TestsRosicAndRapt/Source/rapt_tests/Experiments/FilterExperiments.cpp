@@ -312,8 +312,18 @@ double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPol
 // digital 1-pole/1-zero - works
 void splitterPrototypeD_1_1(double* k, Complex* p, Complex* z)
 {
+  //typedef rsInfiniteImpulseResponseDesigner<double> DSGNR;
+  //DSGNR dsgnr;
+  //dsgnr.setApproximationMethod(rsPrototypeDesigner<double>::BUTTERWORTH);
+  //dsgnr.setPrototypeOrder(1);
+  //dsgnr.setSampleRate(1);
+  //dsgnr.setFrequency(0.25);      // halfband filter, 0.5 is Nyquist freq
+  //dsgnr.getPolesAndZeros(p, z);
+
+
   p[0] =  0;
   z[0] = -1;
+
   *k = dcGainNormalizer(z, 1, p, 1);
 }
 
@@ -473,7 +483,11 @@ rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationB
   int Nb = (int)ba.b.size()-1;
   r.a = ba.a;                // denominator is the same
   r.b.resize(std::max(Na,Nb)+1);
+
   rsPolynomial<complex<double>>::subtractPolynomials(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
+  // this probably doesn't work when Na,Nb are different - the we need to 
+  // reverse, subtract, reverse (otherwise the low coeffs get zero padded)
+
   return r;
 } // move to FilterPlotter or rapt rsFilterSpecificationBA
 
@@ -605,27 +619,24 @@ void bandSplitHighOrderIIR()
   // ...
 
   double fsd = 0.5/PI;  // sample-rate for digital filters
-  //splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - worked...but now it triggers an assert
-  splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
+  splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - worked...but now it triggers an assert
 
+  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - works
   //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
   //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
   // create filter specification objects for lowpass and highpass filter:
-  rsFilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);
+  //rsFilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);  // old
+  rsFilterSpecificationZPK<double> lowpassZPK(toVector(z, M), toVector(p, N), k, fs);
   //rsFilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
   rsFilterSpecificationBA<double>  lowpassBA  = lowpassZPK.toBA();
   rsFilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
 
-
-  //bool splitConditionsMet = testSplitConditions(lowpassBA);
+  bool splitConditionsMet = testSplitConditions(lowpassBA);
   // for the 2,3 filter a[2] is > 5 -> unstable filter...i think in converting between zpk/ba, i 
   // need to reverse the polynomial coefficient arrays in case of digital filters...
   // it works
-
-
-
 
   //FilterPlotter<double> testPlt;
   //testPlt.addFilterSpecificationZPK(lowpassZPK); // these two specs should lead to the same plots
