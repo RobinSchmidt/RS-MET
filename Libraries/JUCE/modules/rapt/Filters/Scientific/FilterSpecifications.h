@@ -27,6 +27,8 @@ struct rsFilterSpecificationZPK
 
   void sortPolesAndZeros();
 
+  bool equals(const rsFilterSpecificationZPK& other, T tolerance = T(0));
+
   std::vector<std::complex<T>> z; // zeros
   std::vector<std::complex<T>> p; // poles
   std::complex<T> k = 1;          // gain

@@ -66,6 +66,15 @@ void rsFilterSpecificationZPK<T>::sortPolesAndZeros()
   rsHeapSort(&z[0], (int)z.size(), rsComplexLessByImRe<T>);
 }
 
+template <class T>
+bool rsFilterSpecificationZPK<T>::equals(const rsFilterSpecificationZPK& zpk, T tol)
+{
+  bool r = sampleRate == zpk.sampleRate; // sample-rate uses exact comparison - it's not supposed to be subject to roundoff error
+  r &= abs(k-zpk.k) <= tol;
+  r &= rsAreVectorsEqual(z, zpk.z, tol);
+  r &= rsAreVectorsEqual(p, zpk.p, tol);
+  return r;
+}
 
 //=================================================================================================
 

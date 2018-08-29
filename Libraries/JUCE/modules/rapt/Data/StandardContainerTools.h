@@ -20,6 +20,18 @@ inline void rsAppend(std::vector<T>& v, T newElement)
 }
 
 template<class T>
+inline bool rsAreVectorsEqual(const std::vector<T>& v, const std::vector<T>& w, double tolerance)
+{
+  if(v.size() != w.size())
+    return false;
+  for(size_t i = 0; i < v.size(); i++) {
+    if(abs(v[i]-w[i]) > tolerance)
+      return false;
+  }
+  return true;
+}
+
+template<class T>
 inline void rsInsert(std::vector<T>& v, const T& newElement, size_t index)
 {
   v.insert(v.begin() + index, newElement);
@@ -50,7 +62,7 @@ template<class T>
 inline T rsLast(const std::vector<T>& v)
 {
   return v[v.size()-1];
-}
+} // make also an rsFirst
 
 template<class T>
 inline bool rsRemoveFirstOccurrence(std::vector<T>& v, T elementToRemove)

@@ -126,11 +126,9 @@ bool filterSpecUnitTest()
   // now, we convert back from ba to zpk and check, if we get our original zpk specifiction
   // properly reconstructed:
   ZPK zpkTmp = ba32.toZPK();
-  double tol = 1.e-12;
-  //r &= zpkTmp == zpk32; // nope - compiler doesn't automatically create that operator
-  //r &= zpkTmp.almostEquals(zpk32, tol);
-  // we need to make sure that poles and zeros are in a well defined order - otherwise we can't
-  // compare...maybe we need to sort them...
+  //double tol = 1.e-12;
+  //r &= zpkTmp.equals(zpk32, tol); // maybe we can use zero tolerance here
+  r &= zpkTmp.equals(zpk32); 
 
 
   return r;
