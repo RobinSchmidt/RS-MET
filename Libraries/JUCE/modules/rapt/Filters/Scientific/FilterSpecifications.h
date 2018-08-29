@@ -22,9 +22,9 @@ struct rsFilterSpecificationZPK
   rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
 
-  std::vector<std::complex<T>> poles; // rename to p
-  std::vector<std::complex<T>> zeros; // rename to z
-  std::complex<T> gain = 1;           // rename to k
+  std::vector<std::complex<T>> p; // poles
+  std::vector<std::complex<T>> z; // zeros
+  std::complex<T> k = 1;          // gain
   T sampleRate = std::numeric_limits<T>::infinity();
 };
 

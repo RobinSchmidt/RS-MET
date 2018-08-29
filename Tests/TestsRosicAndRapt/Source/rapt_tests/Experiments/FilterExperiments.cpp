@@ -258,7 +258,7 @@ Complex digitalTransferFunctionZPK(const Complex* zeros, int numZeros,
   for(int i = 0; i < numPoles; i++)  den *= (1.0 - poles[i] * zr);
   return k * num/den;
   // see https://ccrma.stanford.edu/~jos/filters/Factored_Form.html for formula
-}
+} // moved to rsFilterSpecificationZPK<T>::transferFunctionAt
 
 Complex transferFunctionZPK(const FilterSpecificationZPK<double>& zpk, Complex z)
 {
@@ -272,7 +272,7 @@ Complex transferFunctionZPK(const FilterSpecificationZPK<double>& zpk, Complex z
     rsAssertFalse; // not yet implemented
     return 0;
   }
-}
+} // moved to rsFilterSpecificationZPK<T>::transferFunctionAt
 
 Complex digitalTransferFunctionBA(const Complex* b, int Nb, const Complex* a, int Na, Complex z)
 {
