@@ -34,7 +34,7 @@ std::complex<T> analogTransferFunctionZPK(const std::complex<T>* zeros, size_t n
 } // maybe move to rsFilterAnalyzer
 
 template <class T>
-std::complex<T> rsFilterSpecificationZPK<T>::transferFunctionAt(std::complex<T> s_or_z)
+std::complex<T> rsFilterSpecificationZPK<T>::transferFunctionAt(std::complex<T> s_or_z) const
 {
   if(isDigital())
     return digitalTransferFunctionZPK(&z[0], z.size(), &p[0], p.size(), k, s_or_z);
@@ -43,7 +43,7 @@ std::complex<T> rsFilterSpecificationZPK<T>::transferFunctionAt(std::complex<T> 
 }
 
 template <class T>
-rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA()
+rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA() const
 {
   rsFilterSpecificationBA<T> ba;
   ba.sampleRate = sampleRate;
@@ -108,7 +108,7 @@ std::complex<T> analogTransferFunctionBA(const std::complex<T>* b, size_t Nb,
 } // maybe move to rsFilterAnalyzer
 
 template <class T>
-std::complex<T> rsFilterSpecificationBA<T>::transferFunctionAt(std::complex<T> s_or_z)
+std::complex<T> rsFilterSpecificationBA<T>::transferFunctionAt(std::complex<T> s_or_z) const
 {
   if(isDigital())
     return digitalTransferFunctionBA(&b[0], b.size(), &a[0], a.size(), s_or_z);
@@ -117,7 +117,7 @@ std::complex<T> rsFilterSpecificationBA<T>::transferFunctionAt(std::complex<T> s
 }
 
 template <class T>
-rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK()
+rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK() const
 {
   rsFilterSpecificationZPK<T> zpk;
   zpk.sampleRate = sampleRate;

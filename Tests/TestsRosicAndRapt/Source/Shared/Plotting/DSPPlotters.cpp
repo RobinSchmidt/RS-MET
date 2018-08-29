@@ -26,31 +26,32 @@ template <class T>
 void FilterPlotter<T>::addFilterSpecificationZPK(int numPoles, complex<T>* poles, int numZeros, 
   complex<T>* zeros, T gain, T sampleRate)
 {
-  FilterSpecificationZPK<T> spec;
-  spec.poles.resize(numPoles);
-  spec.zeros.resize(numZeros);
+  rsFilterSpecificationZPK<T> spec;
+  spec.p.resize(numPoles);
+  spec.z.resize(numZeros);
   int i;
   for(i = 0; i < numPoles; i++)
-    spec.poles[i] = poles[i];
+    spec.p[i] = poles[i];
   for(i = 0; i < numZeros; i++)
-    spec.zeros[i] = zeros[i];
-  spec.gain = gain;
+    spec.z[i] = zeros[i];
+  spec.k = gain;
   spec.sampleRate = sampleRate;
   filterSpecsZPK.push_back(spec);
+  // todo: factor out into constructor of rsFilterSpecificationZPK that takes raw arrays
 }
 
 template <class T>
-void FilterPlotter<T>::addFilterSpecificationZPK(const FilterSpecificationZPK<T>& spec)
+void FilterPlotter<T>::addFilterSpecificationZPK(const RAPT::rsFilterSpecificationZPK<T>& spec)
 {
   filterSpecsZPK.push_back(spec);
-  filterSpecsBA.push_back(zpk2ba(spec));
+  filterSpecsBA.push_back(spec.toBA());
 }
 
 template <class T>
 void FilterPlotter<T>::addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs, 
   int denominatorOrder, T* denominatorCoeffs, T sampleRate = inf)
 {
-  FilterSpecificationBA<T> spec;
+  rsFilterSpecificationBA<T> spec;
   spec.b.resize(numeratorOrder+1);
   spec.a.resize(denominatorOrder+1);
   spec.sampleRate = sampleRate;
@@ -62,10 +63,10 @@ void FilterPlotter<T>::addFilterSpecificationBA(int numeratorOrder, T* numerator
 }
 
 template <class T>
-void FilterPlotter<T>::addFilterSpecificationBA(const FilterSpecificationBA<T>& spec)
+void FilterPlotter<T>::addFilterSpecificationBA(const RAPT::rsFilterSpecificationBA<T>& spec)
 {
   filterSpecsBA.push_back(spec);
-  filterSpecsZPK.push_back(ba2zpk(spec));
+  filterSpecsZPK.push_back(spec.toZPK());
 }
 
 template <class T>
@@ -107,16 +108,16 @@ void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
 {
   for(unsigned int i = 0; i < filterSpecsZPK.size(); i++)
   {
-    addDataComplex(filterSpecsZPK[i].poles);
-    addDataComplex(filterSpecsZPK[i].zeros);
+    addDataComplex(filterSpecsZPK[i].p);
+    addDataComplex(filterSpecsZPK[i].z);
     addGraph("i " + s(2*i)   + " u 1:2 w points pt 2 ps 1 notitle");
     addGraph("i " + s(2*i+1) + " u 1:2 w points pt 6 ps 1 notitle");
 
     // show the multiplicities of poles and zeros:
     T thresh = T(1.e-8);    // threshold for considering close poles/zeros as multiple root
                             // maybe use something that depends on the epsilon of T
-    drawMultiplicities(filterSpecsZPK[i].poles, thresh);
-    drawMultiplicities(filterSpecsZPK[i].zeros, thresh);
+    drawMultiplicities(filterSpecsZPK[i].p, thresh);
+    drawMultiplicities(filterSpecsZPK[i].z, thresh);
   }
 
   // todo: make the colors of the poles, zeros and multiplicities for each filter equal
@@ -139,7 +140,7 @@ vector<T> FilterPlotter<T>::getFrequencyAxis(int numFreqs, T lowFreq, T highFreq
 template <class T>
 vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& f)
 {
-  FilterSpecificationZPK<T> spec = filterSpecsZPK[index];
+  rsFilterSpecificationZPK<T> spec = filterSpecsZPK[index];
   bool isDigital = spec.sampleRate != inf;
   complex<T> j(0.0, 1.0);                          // imaginary unit                         
   vector<complex<T>> H(f.size());                  // frequency response
@@ -147,7 +148,7 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& 
     complex<T> s = j * complex<T>(freqScale*f[k]); // value on s-plane where we evaluate H
     if(isDigital)
       s = exp(s/spec.sampleRate);                  // conversion of analog "s" to digital "z"
-    H[k] = transferFunctionZPK(s, spec.zeros, spec.poles, spec.gain); 
+    H[k] = transferFunctionZPK(s, spec.z, spec.p, spec.k); 
   }
   return H;
 }
@@ -179,6 +180,7 @@ complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>
   return k * num/den;
 }
 
+/*
 template <class T>
 FilterSpecificationBA<T> FilterPlotter<T>::zpk2ba(const FilterSpecificationZPK<T>& zpk)
 {
@@ -194,7 +196,9 @@ FilterSpecificationBA<T> FilterPlotter<T>::zpk2ba(const FilterSpecificationZPK<T
   normalizeA0(ba); // maybe make the normalization optional (on by default)
   return ba;
 } // moved to rsFilterSpecificationZPK<T>::toBA
+*/
 
+/*
 template <class T>
 FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T>& ba)
 {
@@ -223,7 +227,9 @@ FilterSpecificationZPK<T> FilterPlotter<T>::ba2zpk(const FilterSpecificationBA<T
   //zpk.gain = 1; // preliminary
   return zpk;
 }
+*/
 
+/*
 template <class T>
 void FilterPlotter<T>::normalizeA0(FilterSpecificationBA<T>& ba)
 {
@@ -231,17 +237,20 @@ void FilterPlotter<T>::normalizeA0(FilterSpecificationBA<T>& ba)
   for(size_t i = 0; i < ba.a.size(); i++) ba.a[i] *= s;
   for(size_t i = 0; i < ba.b.size(); i++) ba.b[i] *= s;
 } // used inside zpk2ba
+*/
 
 template <class T>
 void FilterPlotter<T>::setupForPoleZeroPlot(int size)
 {
-  bool zDomain = true;
+  //bool zDomain = true;
+  bool zDomain = false;
   double range = 0;
   for(unsigned int i = 0; i < filterSpecsZPK.size(); i++) 
   {
-    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].poles));  
-    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].zeros)); 
-    zDomain = zDomain || (filterSpecsZPK[i].sampleRate != inf);
+    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].p));  
+    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].z)); 
+    //zDomain = zDomain || (filterSpecsZPK[i].sampleRate != inf);
+    zDomain = zDomain || filterSpecsZPK[i].isDigital();
   }
   range = 1.1 * fmax(1.0, range);
   setRange(-range, range, -range, range);

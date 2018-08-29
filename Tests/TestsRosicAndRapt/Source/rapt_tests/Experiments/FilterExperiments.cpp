@@ -248,7 +248,7 @@ void splitterPrototypeA_2_2(double* k, Complex* p, Complex* z)
   z[1] = conj(z[0]);
 }
 
-
+/*
 // move to RAPT:
 //Complex getDigitalTransferFunctionAt(Complex* zeros, int numZeros, Complex* poles, int numPoles,
 Complex digitalTransferFunctionZPK(const Complex* zeros, int numZeros, 
@@ -294,11 +294,17 @@ Complex transferFunctionBA(const FilterSpecificationBA<double>& ba, Complex z)
     return 0;
   }
 }
+*/
+
+
+
+
 
 double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPoles)
 {
   // set gain factor k to normalize DC gain to 1:
-  Complex H1 = digitalTransferFunctionZPK(zeros, numZeros, poles, numPoles, 1, 
+  Complex H1 = digitalTransferFunctionZPK(
+    zeros, numZeros, poles, numPoles, Complex(1.0, 0.0), 
     Complex(1.0, 0.0)); // H(z) at z=1
   return 1.0 / abs(H1);  
 }
@@ -320,8 +326,10 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
   p[1] = conj(p[0]);
   z[0] = -1.0;
   z[1] = conj(z[0]);
-  Complex H1 = digitalTransferFunctionZPK(z, 2, p, 2, 1, Complex(1.0, 0.0)); // H(z) at z=1
-  *k = 1 / abs(H1);  
+  *k = dcGainNormalizer(z, 2, p, 2);
+
+  //Complex H1 = digitalTransferFunctionZPK(z, 2, p, 2, 1, Complex(1.0, 0.0)); // H(z) at z=1
+  //*k = 1 / abs(H1);  
 }
 // this doesn't work
 
@@ -439,8 +447,12 @@ void splitterPrototypeD_4_6(double* k, Complex* p, Complex* z)
   z[4] = -p[0].imag(); // test
   z[5] = -p[2].imag(); // test
 
-  Complex H1 = digitalTransferFunctionZPK(z, 4, p, 3, 1, Complex(1.0, 0.0)); // H(z) at z=1
-  *k = 1 / abs(H1);  
+
+
+  *k = dcGainNormalizer(z, 6, p, 4);
+
+  //Complex H1 = digitalTransferFunctionZPK(z, 4, p, 3, 1, Complex(1.0, 0.0)); // H(z) at z=1
+  //*k = 1 / abs(H1);  
 }
 
 /*
@@ -452,9 +464,9 @@ void normalizeA0(FilterSpecificationBA<double>& ba)
 } // moved to FilterPlotter, used inside zpk2ba
 */
 
-FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<double>& baSpec)
+rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationBA<double>& baSpec)
 {
-  FilterSpecificationBA<double> ba = baSpec, r;
+  rsFilterSpecificationBA<double> ba = baSpec, r;
   //normalizeA0(ba);
   r.sampleRate = ba.sampleRate;
   int Na = (int)ba.a.size()-1;
@@ -468,7 +480,7 @@ FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<do
 template<class T>
 void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
   bool logFreqAxis, bool decibels,
-  const std::vector<FilterSpecificationBA<T>>& filterSpecs)
+  const std::vector<rsFilterSpecificationBA<T>>& filterSpecs)
 {
   FilterPlotter<T> plt;
   for(size_t i = 0; i < filterSpecs.size(); i++)
@@ -478,7 +490,7 @@ void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
 } // maybe move as static function to class FilterPlotter
 
 
-bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
+bool testSplitConditions(const rsFilterSpecificationBA<double>& lpfBA)
 {
   // Give the filter-prototype specifications for a lowpass filter, this function checks, if the 
   // filter satisfies the conditions for a perfect reconstruction crossover, assuming the highpass
@@ -487,9 +499,12 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
   // of the responses.
 
   bool result = true;
-  FilterSpecificationBA<double>  hpfBA  = complementaryFilter(lpfBA);
-  FilterSpecificationZPK<double> lpfZPK = FilterPlotter<double>::ba2zpk(lpfBA);
-  FilterSpecificationZPK<double> hpfZPK = FilterPlotter<double>::ba2zpk(hpfBA);
+  rsFilterSpecificationBA<double>  hpfBA  = complementaryFilter(lpfBA);
+  rsFilterSpecificationZPK<double> lpfZPK = lpfBA.toZPK();
+  rsFilterSpecificationZPK<double> hpfZPK = hpfBA.toZPK();
+
+  //FilterSpecificationZPK<double> lpfZPK = FilterPlotter<double>::ba2zpk(lpfBA);
+  //FilterSpecificationZPK<double> hpfZPK = FilterPlotter<double>::ba2zpk(hpfBA);
 
   // check, if the poles are equal:
   // ...
@@ -507,10 +522,10 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
   {
     Complex z   = Complex(prng.getSample(), prng.getSample());
 
-    Complex Hz_zpk  = transferFunctionZPK(lpfZPK,  z);   // H(z)
-    Complex Gz_zpk  = transferFunctionZPK(hpfZPK,  z);   // G(z)
-    Complex Hzm_zpk = transferFunctionZPK(lpfZPK, -z);   // H(-z)
-    Complex Gzm_zpk = transferFunctionZPK(hpfZPK, -z);   // G(-z)
+    Complex Hz_zpk  = lpfZPK.transferFunctionAt( z);   // H(z)
+    Complex Gz_zpk  = hpfZPK.transferFunctionAt( z);   // G(z)
+    Complex Hzm_zpk = lpfZPK.transferFunctionAt(-z);   // H(-z)
+    Complex Gzm_zpk = hpfZPK.transferFunctionAt(-z);   // G(-z)
     Complex sum_zpk = Hz_zpk + Gz_zpk;  // should be 1
     // doesn't work for 2,3 filter - maybe we should normalize a0=1 in complementaryFilter before
     // doing the subtraction? ...hmm...that doesn't seem to help...or does that work only for
@@ -518,10 +533,10 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
     // based on the BA specs
     //double sumAbs = abs(sum);
 
-    Complex Hz_ba  = transferFunctionBA(lpfBA,  z);   // H(z)
-    Complex Gz_ba  = transferFunctionBA(hpfBA,  z);   // G(z)
-    Complex Hzm_ba = transferFunctionBA(lpfBA, -z);   // H(-z)
-    Complex Gzm_ba = transferFunctionBA(hpfBA, -z);   // G(-z)
+    Complex Hz_ba  = lpfBA.transferFunctionAt( z);   // H(z)
+    Complex Gz_ba  = hpfBA.transferFunctionAt( z);   // G(z)
+    Complex Hzm_ba = lpfBA.transferFunctionAt(-z);   // H(-z)
+    Complex Gzm_ba = hpfBA.transferFunctionAt(-z);   // G(-z)
     Complex sum_ba = Hz_ba + Gz_ba;  // should be 1
     // this actually is 1...is the transferFunctionZPK function broken? or maybe ba2zpk is still 
     // broken? poles and zeros of the zpk specs look good - what about gain?
@@ -545,6 +560,7 @@ bool testSplitConditions(const FilterSpecificationBA<double>& lpfBA)
   return result;
 }
 
+/*
 bool testZpkBaConversions()
 {
   bool result = true;
@@ -560,7 +576,8 @@ bool testZpkBaConversions()
 
   // return areFiltersEqualZPK(d1_zpk, d1_zpk_r);
   return result;
-}
+} // obsolete
+*/
 
 void bandSplitHighOrderIIR()
 {
@@ -596,9 +613,10 @@ void bandSplitHighOrderIIR()
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
   // create filter specification objects for lowpass and highpass filter:
-  FilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);
-  FilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
-  FilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
+  rsFilterSpecificationZPK<double> lowpassZPK(toVector(p, N), toVector(z, M), k, fs);
+  //rsFilterSpecificationBA<double>  lowpassBA  = FilterPlotter<double>::zpk2ba(lowpassZPK);
+  rsFilterSpecificationBA<double>  lowpassBA  = lowpassZPK.toBA();
+  rsFilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
 
 
   //bool splitConditionsMet = testSplitConditions(lowpassBA);
@@ -1063,7 +1081,7 @@ void removeInfiniteValues(vector<complex<T>>& z)
       i--; }}
 }
 template<class T>
-FilterSpecificationZPK<T> getFilterSpecificationZPK(RAPT::rsPrototypeDesigner<T>& pd)
+rsFilterSpecificationZPK<T> getFilterSpecificationZPK(RAPT::rsPrototypeDesigner<T>& pd)
 {
   int nz = pd.getNumFiniteZeros();
   int np = pd.getNumFinitePoles();
@@ -1073,9 +1091,9 @@ FilterSpecificationZPK<T> getFilterSpecificationZPK(RAPT::rsPrototypeDesigner<T>
   reflectRoots(&p[0], np);           // create full pole/zero set by reflection
   reflectRoots(&z[0], np);
   removeInfiniteValues(z);
-  FilterSpecificationZPK<T> spec;
-  spec.poles = p;
-  spec.zeros = z;
+  rsFilterSpecificationZPK<T> spec;
+  spec.p = p;
+  spec.z = z;
   spec.sampleRate = RS_INF(T);
   //spec.gain  = pd.getGain();
   return spec;
@@ -1146,7 +1164,7 @@ void prototypeDesign()
   for(int i = minOrder; i <= maxOrder; i++)
   {
     pd.setOrder(i);
-    FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
+    rsFilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
     plt.addFilterSpecificationZPK(spec);
   }
   //plt.plotPolesAndZeros(600);
@@ -1171,7 +1189,7 @@ void prototypeDesign()
 // helper function to convert form raw arrays of poles and zeros to the FilterSpecificationZPK 
 // structure used by the plotter
 template<class T>
-FilterSpecificationZPK<T> analogPrototypeSpecZPK(
+rsFilterSpecificationZPK<T> analogPrototypeSpecZPK(
   int N, std::complex<T>* za, std::complex<T>* pa, T k)
 {
   vector<complex<T>> z = RAPT::toVector(za, N);
@@ -1179,11 +1197,11 @@ FilterSpecificationZPK<T> analogPrototypeSpecZPK(
   reflectRoots(&p[0], N);           // create full pole/zero set by reflection
   reflectRoots(&z[0], N);
   removeInfiniteValues(z);
-  FilterSpecificationZPK<T> spec;
-  spec.poles = p;
-  spec.zeros = z;
+  rsFilterSpecificationZPK<T> spec;
+  spec.p = p;
+  spec.z = z;
   spec.sampleRate = RS_INF(T); // indicates analog (s-plane) poles and zeros
-  spec.gain = k;
+  spec.k = k;
   return spec;
 }
 
@@ -1211,7 +1229,7 @@ void poleZeroPrototype()
   {
     pzp.setOrder(n);
     pzp.getPolesZerosAndGain(p, z, &k);
-    FilterSpecificationZPK<Real> spec = analogPrototypeSpecZPK(n, z, p, k);
+    rsFilterSpecificationZPK<Real> spec = analogPrototypeSpecZPK(n, z, p, k);
     plt.addFilterSpecificationZPK(spec);
   }
   plt.plotPolesAndZeros(600);

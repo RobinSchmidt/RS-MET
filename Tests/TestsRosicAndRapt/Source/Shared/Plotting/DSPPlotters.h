@@ -2,7 +2,8 @@
 #define DSPPLOTTERS_H
 
 #include "GNUPlotter.h"
-
+//#include "../../../../Libraries/JUCE/modules/rosic/rosic.h"
+#include "../../../Libraries/JUCE/modules/rosic/rosic.h"
 
 // todo: use RAPT::FilterSpecificationZPK/BA - move some of the functions from here to RAPT
 // zpk2ba, ba2zpk
@@ -12,6 +13,7 @@ sample rate. If the sample rate is infinity (the default), an analog filter is a
 zeros and poles are in the s-plane. If it's nonzero, the filter is assumed to be digital and the
 zeros and poles are in the z-plane. */
 
+/*
 template <class T>
 struct FilterSpecificationZPK
 {
@@ -30,8 +32,9 @@ struct FilterSpecificationZPK
   std::complex<T> gain = 1;
   T sampleRate = std::numeric_limits<T>::infinity();
 };
+*/
 
-
+/*
 template <class T>
 struct FilterSpecificationBA
 {
@@ -47,6 +50,7 @@ struct FilterSpecificationBA
   std::vector<std::complex<T>> a; // denominator
   T sampleRate = std::numeric_limits<T>::infinity();
 };
+*/
 // filter specification by polynomial coeffs for numerator (b) and denominator (a)
 // H(s) = (b0 + b1*s + ... + bM*s^M) / (a0 + a1*s + ... + aN*s^N)   or
 // H(z) = (b0 + b1/z + ... + bM/z^M) / (a0 + a1/z + ... + aN/z^N)
@@ -91,15 +95,15 @@ public:
   void addFilterSpecificationZPK(int numPoles, std::complex<T>* poles, int numZeros, 
     std::complex<T>* zeros,  T gain, T sampleRate = inf);
 
-  /** Adds a filter specification via an object the FilterSpecificationZPK class. */
-  void addFilterSpecificationZPK(const FilterSpecificationZPK<T>& spec);
+  /** Adds a filter specification via an object the rsFilterSpecificationZPK class. */
+  void addFilterSpecificationZPK(const RAPT::rsFilterSpecificationZPK<T>& spec);
 
 
   void addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs, 
     int denominatorOrder, T* denominatorCoeffs, T sampleRate = inf);
   // maybe allow for complex coeffs
 
-  void addFilterSpecificationBA(const FilterSpecificationBA<T>& spec);
+  void addFilterSpecificationBA(const RAPT::rsFilterSpecificationBA<T>& spec);
 
 
 
@@ -141,15 +145,15 @@ public:
 
   //-----------------------------------------------------------------------------------------------
 
-  static FilterSpecificationBA<T> zpk2ba(const FilterSpecificationZPK<T>& zpk);
+  //static FilterSpecificationBA<T> zpk2ba(const FilterSpecificationZPK<T>& zpk);
   // moved to rsFilterSpecificationBA
 
   /** Converts a filter specification in terms of numerator and denominator polynomial coefficients
   to a specification in terms of zeros, poles and gain. */
-  static FilterSpecificationZPK<T> ba2zpk(const FilterSpecificationBA<T>& ba);
+  //static FilterSpecificationZPK<T> ba2zpk(const FilterSpecificationBA<T>& ba);
 
   /** Normalizes the a0 coefficient in a filter specification to unity. */
-  static void normalizeA0(FilterSpecificationBA<T>& ba);  // moved to rapt
+  //static void normalizeA0(FilterSpecificationBA<T>& ba);  // moved to rapt
 
 protected:
 
@@ -170,9 +174,8 @@ protected:
   bool almostEqual(std::complex<T> x, std::complex<T> y, T thresh);
 
   T freqScale = 1.0;
-  std::vector<FilterSpecificationZPK<T>> filterSpecsZPK;
-
-  std::vector<FilterSpecificationBA<T>> filterSpecsBA;
+  std::vector<RAPT::rsFilterSpecificationZPK<T>> filterSpecsZPK;
+  std::vector<RAPT::rsFilterSpecificationBA<T>>  filterSpecsBA;
 
   // have conversion functions convert_BA_To_ZPK, convert_ZPK_To_BA
   // or filterSpecBA2ZPK, ba2zpk, zpk2ba

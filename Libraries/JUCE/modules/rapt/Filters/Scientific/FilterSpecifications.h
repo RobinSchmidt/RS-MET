@@ -35,9 +35,9 @@ struct rsFilterSpecificationZPK
     std::complex<T> gain, T sampleRate);
 
 
-  bool isDigital() { return sampleRate != std::numeric_limits<T>::infinity(); }
-  std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
-  rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
+  bool isDigital() const { return sampleRate != std::numeric_limits<T>::infinity(); }
+  std::complex<T> transferFunctionAt(std::complex<T> s_or_z) const;
+  rsFilterSpecificationBA<T> toBA() const; // maybe move to FilterCoefficientConverter
 
   void sortPolesAndZeros();
 
@@ -77,9 +77,9 @@ struct rsFilterSpecificationBA
   rsFilterSpecificationBA(const std::vector<std::complex<T>>& num, 
     const std::vector<std::complex<T>>& den, T sampleRate);
 
-  bool isDigital() { return sampleRate != std::numeric_limits<T>::infinity(); }
-  std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
-  rsFilterSpecificationZPK<T> toZPK(); // maybe move to FilterCoefficientConverter
+  bool isDigital() const { return sampleRate != std::numeric_limits<T>::infinity(); }
+  std::complex<T> transferFunctionAt(std::complex<T> s_or_z) const;
+  rsFilterSpecificationZPK<T> toZPK() const; // maybe move to FilterCoefficientConverter
 
   /** Normalizes the coefficients such that a[0] in the digital and a[last] in the analog case is
   unity. */
@@ -90,6 +90,11 @@ struct rsFilterSpecificationBA
   std::vector<std::complex<T>> a; // denominator
   T sampleRate = std::numeric_limits<T>::infinity();
 };
+
+
+template <class T>
+std::complex<T> digitalTransferFunctionZPK(const std::complex<T>* zeros, size_t numZeros, 
+  const std::complex<T>* poles, size_t numPoles, std::complex<T> k, std::complex<T> z);
 
 // maybe factor out a baseclass rsFilterSpecification that has only a sampleRate member and a 
 // function isDigital()...maybe also a virtual member transferFunctionAt that is overriden
