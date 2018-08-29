@@ -453,6 +453,8 @@ rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
   ba.a[1] = 0;              // odd a-coeffs must be zero
   ba.b[0] = ba.a[0] / 2.0;  // b0 = 0.5
 
+
+  /*
   // freely choosable coeffs:
   ba.a[2] =  0.5;           // must be > 0 for a complex conjugate pair
   ba.b[1] =  ba.b[0];       // b1 == b0 puts one zero at z=-1 (i think)
@@ -462,6 +464,7 @@ rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
   // even b-coeffs must be half of their corresponding a-coeffs:
   ba.b[2] = ba.a[2] / 2.0;  // depends on choice for a[2]
   //ba.b[3] = ba.b[2];        // b3 == b2 puts another zero at z=-1 (i think..or maybe not?)
+  */
 
 
   // hmm - with such a pole/zero placement, two zeros end up on the two poles
@@ -477,15 +480,19 @@ rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
   // so, with b0 = 1/2: b1 = (1-q3/2), b2 = (1/2 - q3), b3 = -q3/2
   // we also need: b2 = a2/2 giving: a2 = 1 - 2*q3
 
-
+  // ..ok - let's try it:
+  double q3 = 0.3;
+  ba.a[2] = 1 - 2*q3;
+  ba.b[1] = 1 - q3/2;
+  ba.b[2] = ba.a[2] / 2.0; // == 1/2 - q3
+  ba.b[3] = -q3/2;
+  // ok... the pole-zero-plot looks good - also for the complementary filter - but the magnitude 
+  // response plot is messed up...and then we need to optimize q3
 
   // hmmm...we have 7 degrees of freedom all in all. constraints uniquely fix
   // a0 = 1, a1 = 0, b0 = a0/2 = 1/2. once a2 is chosen, we must have b2 = a2/2.
   // maybe with the equations above, we can reduce the number of degrees of freedom to 1 and then
   // tweak that remaining variable?
-
-
-
 
 
   // choose a2 such that we get a monotonic response and b1,b3 such that two zeros are at z=-1
@@ -682,9 +689,9 @@ void bandSplitHighOrderIIR()
   //plt.addFilterSpecificationZPK(N, p, M, z, k, fs);
   //plt.addFilterSpecificationZPK(lowpassZPK);
   plt.addFilterSpecificationBA(lowpassBA);
-  //plt.addFilterSpecificationBA(highpassBA);
+  plt.addFilterSpecificationBA(highpassBA);
   plt.plotPolesAndZeros();
-  plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
+  //plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
   //plt.plotMagnitude(1000, 0.0, 0.5, false, false);
 
   //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
