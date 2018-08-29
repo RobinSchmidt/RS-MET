@@ -5,7 +5,6 @@
 
 template <class T>
 struct rsFilterSpecificationBA;
-//struct rsFilterSpecificationBA<T>;
 
 /** A structure to specify a filter in terms of its zeros, poles, a gain factor and possibly a 
 sample rate. If the sample rate is infinity (the default), an analog filter is assumed and the 
@@ -18,14 +17,7 @@ struct rsFilterSpecificationZPK
   rsFilterSpecificationZPK() {}
   rsFilterSpecificationZPK(const std::vector<std::complex<T>>& poles,
     const std::vector<std::complex<T>>& zeros, T gain, T sampleRate);
-  /*
-  {
-    this->poles = poles;
-    this->zeros = zeros;
-    this->gain  = gain;
-    this->sampleRate = sampleRate;
-  }
-  */
+
 
   rsFilterSpecificationBA<T> toBA(); // maybe move to FilterCoefficientConverter
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);
@@ -43,13 +35,7 @@ struct rsFilterSpecificationBA
 {
   rsFilterSpecificationBA() {}
   rsFilterSpecificationBA(const std::vector<T>& num, const std::vector<T>& den, T sampleRate);
-  /*
-  {
-    this->sampleRate = sampleRate;
-    b = num;
-    a = den;
-  }
-  */
+
 
   rsFilterSpecificationZPK<T> toZPK(); // maybe move to FilterCoefficientConverter
   std::complex<T> transferFunctionAt(std::complex<T> s_or_z);

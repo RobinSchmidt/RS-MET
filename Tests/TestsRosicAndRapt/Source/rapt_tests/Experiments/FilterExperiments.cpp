@@ -461,7 +461,7 @@ FilterSpecificationBA<double> complementaryFilter(const FilterSpecificationBA<do
   r.b.resize(std::max(Na,Nb)+1);
   rsPolynomial<complex<double>>::subtractPolynomials(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
   return r;
-} // move to FilterPlotter
+} // move to FilterPlotter or rapt rsFilterSpecificationBA
 
 template<class T>
 void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
