@@ -130,6 +130,32 @@ bool filterSpecUnitTest()
   //r &= zpkTmp.equals(zpk32, tol); // maybe we can use zero tolerance here
   r &= zpkTmp.equals(zpk32); 
 
+  // Digital case:
+  //             (1-q1/z)*(1-q2/z)*(1-q3/z)     b0 + b1/z + b2/z^2 + b3/z^3
+  // H(z) = k * ---------------------------- = -----------------------------
+  //             (1-p1/z)*(1-p2/z)              a0 + a1/z + a2/z^2
+  // multiplying out the zpk representation gives:
+  Complex b0 = k, b1 = -k*(q1+q2+q3), b2 = k*(q1*q2+q1*q3+q2*q3), b3 = -k*q1*q2*q3;
+  Complex a0 = 1, a1 = -(p1+p2), a2 = p1*p2;
+  // The coeffs are the same as in the analog case but in reverse order because in the digital 
+  // domain, we multiply inverse powers of z (instead of regular powers of s in the analog domain)
+
+  // We re-interpret the zpk32 specification as a digital one by setting the sample-rate to 
+  // some finite value (1 in this case):
+  zpk32.sampleRate = 1;
+  // ...and now do the same tests as we did in the analog case:
+
+  ba32 = zpk32.toBA();
+  r &= ba32.b[0] == b0;
+  r &= ba32.b[1] == b1;
+  r &= ba32.b[2] == b2;
+  r &= ba32.b[3] == b3;
+  r &= ba32.a[0] == a0;
+  r &= ba32.a[1] == a1;
+  r &= ba32.a[2] == a2;
+  // this fails now because we don't reverse the arrays in the conversion
+
+
 
   return r;
 }
