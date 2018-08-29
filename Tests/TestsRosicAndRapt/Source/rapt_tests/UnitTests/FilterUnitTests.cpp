@@ -165,6 +165,8 @@ bool filterSpecUnitTest()
   Complex z, s, H_zpk, H_ba, d;
   double tol = 1.e-10; // seems like we need a quite high tolerance - check for numeric issues
   int i;
+
+  // digital transfer function computation:
   for(i = 0; i < numValues; i++) {
     Complex z = Complex(prng.getSample(), prng.getSample());
     H_zpk = zpk32.transferFunctionAt(z);
@@ -174,8 +176,18 @@ bool filterSpecUnitTest()
     //rsAssert(r);
   }
 
-
-
+  // analog transfer function computation:
+  zpk32.sampleRate = inf;
+  //ba32.sampleRate  = inf; // this doesn't work because it doesn't reverse the coeff-arrays
+  ba32 = zpk32.toBA();
+  for(i = 0; i < numValues; i++) {
+    Complex z = Complex(prng.getSample(), prng.getSample());
+    H_zpk = zpk32.transferFunctionAt(z);
+    H_ba  = ba32.transferFunctionAt( z);
+    d     = H_zpk - H_ba;
+    r &= abs(d) <= tol;
+    //rsAssert(r);
+  }
 
   return r;
 }
