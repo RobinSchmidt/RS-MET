@@ -128,10 +128,11 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.addFilterSpecificationBA(specBA);
   plt.addFilterSpecificationBA(compBA);
   //plt.usePiAxisTics();    // should make the axis tics multiples of pi
+
+  plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
   plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+
   //plt.plotPolesAndZeros();
-
-
 
   return result;
 }
