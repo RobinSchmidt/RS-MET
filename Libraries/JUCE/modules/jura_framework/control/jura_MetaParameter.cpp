@@ -272,6 +272,10 @@ void MetaControlledParameter::recallFromXml(const XmlElement& xml)
     metaMapper.setStateFromXml(*mapXml);
   else
     metaMapper.initToIdentity();
+
+  //metaMapChanged(); // test
+  // there's a bug: when recalling a patch with a mapping curve for some parameter, the 
+  // slider/parameter is initially wrong - i hoped, that this may help but didn't
 }
 
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
