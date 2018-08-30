@@ -182,6 +182,11 @@ template class RAPT::rsResoReplacerPhaseBumped<double, double>;
 template class RAPT::rsFakeResonanceFilter<double, double>;
 template class RAPT::rsLadderMystran<double, double>;
 
+template std::complex<double> RAPT::dcGainNormalizer(
+  const std::complex<double>* zeros, size_t numZeros, 
+  const std::complex<double>* poles, size_t numPoles);
+
+
 template class RAPT::rsDelayLine<double, double>;
 template class RAPT::rsFractionalDelayLine<double, double>;
 

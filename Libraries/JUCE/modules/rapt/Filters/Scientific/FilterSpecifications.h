@@ -1,6 +1,35 @@
 #pragma once
 
-// the classes here are mainly meant for convenient experimentation/prototyping, not for realtime 
+// helper functions - maybe move into class rsFilterAnalyzer
+
+template <class T>
+std::complex<T> digitalTransferFunctionZPK(const std::complex<T>* zeros, size_t numZeros, 
+  const std::complex<T>* poles, size_t numPoles, std::complex<T> k, std::complex<T> z);
+// maybe move to rsFilterAnalyzer
+
+template <class T>
+std::complex<T> analogTransferFunctionZPK(const std::complex<T>* zeros, size_t numZeros, 
+  const std::complex<T>* poles, size_t numPoles, std::complex<T> k, std::complex<T> s);
+
+template <class T>
+std::complex<T> digitalTransferFunctionBA(const std::complex<T>* b, size_t Nb, 
+  const std::complex<T>* a, size_t Na, std::complex<T> z);
+
+template <class T>
+std::complex<T> analogTransferFunctionBA(const std::complex<T>* b, size_t Nb, 
+  const std::complex<T>* a, size_t Na, std::complex<T> s);
+
+
+/** Given two arrays of zeros an poles, this function returns the factor by which the whole 
+transfer function has to be multiplied to achieve a DC gain of unity. Useful for normalzing lowpass 
+filters after their zeros and poles have been determined. */
+template <class T>
+std::complex<T> dcGainNormalizer(const std::complex<T>* zeros, size_t numZeros, 
+  const std::complex<T>* poles, size_t numPoles);
+
+//=================================================================================================
+
+// these classes here are mainly meant for convenient experimentation/prototyping, not for realtime
 // production code
 
 template <class T>
@@ -90,12 +119,6 @@ struct rsFilterSpecificationBA
   std::vector<std::complex<T>> a; // denominator
   T sampleRate = std::numeric_limits<T>::infinity();
 };
-
-
-template <class T>
-std::complex<T> digitalTransferFunctionZPK(const std::complex<T>* zeros, size_t numZeros, 
-  const std::complex<T>* poles, size_t numPoles, std::complex<T> k, std::complex<T> z);
-// maybe move to rsFilterAnalyzer
 
 
 

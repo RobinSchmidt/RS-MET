@@ -248,6 +248,7 @@ void splitterPrototypeA_2_2(double* k, Complex* p, Complex* z)
   z[1] = conj(z[0]);
 }
 
+/*
 double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPoles)
 {
   // set gain factor k to normalize DC gain to 1:
@@ -256,6 +257,7 @@ double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPol
     Complex(1.0, 0.0)); // H(z) at z=1
   return 1.0 / abs(H1);  
 } // move to RAPT
+*/
 
 // digital 1-pole/1-zero - works
 void splitterPrototypeD_1_1(double* k, Complex* p, Complex* z)
@@ -272,7 +274,7 @@ void splitterPrototypeD_1_1(double* k, Complex* p, Complex* z)
   p[0] =  0;
   z[0] = -1;
 
-  *k = dcGainNormalizer(z, 1, p, 1);
+  *k = abs(dcGainNormalizer(z, 1, p, 1));
 }
 // todo: return a BA specification
 
@@ -285,7 +287,7 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
   p[1] = conj(p[0]);
   z[0] = -1.0;
   z[1] = conj(z[0]);
-  *k = dcGainNormalizer(z, 2, p, 2);
+  *k = abs(dcGainNormalizer(z, 2, p, 2));
 }
 // this doesn't work
 
@@ -303,7 +305,7 @@ void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
   z[1] = -1;     // q2
   z[2] = -s;     // q3
   //z[2] = -0.5;   // test
-  *k = dcGainNormalizer(z, 3, p, 2);  // gain factor k to normalize DC gain to 1
+  *k = abs(dcGainNormalizer(z, 3, p, 2));  // gain factor k to normalize DC gain to 1
 
   // I arrived at these poles and zeros by just starting with a (bilinear transform based) 
   // Butterworth halfband lowpass which fixed p1,p2 and q1,q2 to the values above and manually 
@@ -385,7 +387,7 @@ void splitterPrototypeD_2_3_new(double* k, Complex* p, Complex* z)
   z[0] = -1;     // q1
   z[1] = -1;     // q2
   z[2] = -t;     // q3
-  *k = dcGainNormalizer(z, 3, p, 2); 
+  *k = abs(dcGainNormalizer(z, 3, p, 2));
 }
 
 rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
@@ -455,7 +457,7 @@ void splitterPrototypeD_3_3(double* k, Complex* p, Complex* z)
   z[1] = -1;
   z[2] = -b;
 
-  *k = dcGainNormalizer(z, 3, p, 3);
+  *k = abs(dcGainNormalizer(z, 3, p, 3));
 }
 
 // digital 4-pole/6-zero (does not work)
@@ -472,30 +474,18 @@ void splitterPrototypeD_4_6(double* k, Complex* p, Complex* z)
   z[4] = -p[0].imag(); // test
   z[5] = -p[2].imag(); // test
 
-  *k = dcGainNormalizer(z, 6, p, 4);
+  *k = abs(dcGainNormalizer(z, 6, p, 4));
 }
 
 rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationBA<double>& baSpec)
 {
   rsFilterSpecificationBA<double> ba = baSpec, r;
-
   r.sampleRate = ba.sampleRate;
   int Na = (int)ba.a.size()-1;
   int Nb = (int)ba.b.size()-1;
-
   r.b.resize(std::max(Na,Nb)+1);
   r.a = ba.a;                // denominator is the same
-
-  //if(ba.isDigital()) {
-  //  rsReverse(ba.b);
-  //  rsReverse(ba.a);
-  //}
-
   rsPolynomial<complex<double>>::subtractPolynomials(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
-
-  //if(r.isDigital())
-  //  rsReverse(r.b);
-
   return r;
 } // move to FilterPlotter or rapt rsFilterSpecificationBA
 
