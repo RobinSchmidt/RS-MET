@@ -17,6 +17,9 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z();
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z();
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p3z();
 
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p4z();
+
+
 //RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z();
 
 // add complementaryFilter2p4z, 4p4z maybe try to place 3 zeros at z = -1

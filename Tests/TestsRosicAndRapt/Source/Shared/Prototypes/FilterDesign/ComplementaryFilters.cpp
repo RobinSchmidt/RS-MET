@@ -120,6 +120,7 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   Vec yc = x-yd;                        // complementary filter output
   //rosic::writeToMonoWaveFile("ComplementaryFilterOut1.wav", &yd[0], N, 44100, 16);
   //rosic::writeToMonoWaveFile("ComplementaryFilterOut2.wav", &yc[0], N, 44100, 16);
+  // for the files, we should really choose a lower cutoff frequency to actually see something
 
 
   // make some plots:
@@ -127,8 +128,8 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.addFilterSpecificationBA(specBA);
   plt.addFilterSpecificationBA(compBA);
   //plt.usePiAxisTics();    // should make the axis tics multiples of pi
-  //plt.plotPolesAndZeros();
-  plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  plt.plotPolesAndZeros();
+  //plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
 
 
   return result;
@@ -140,7 +141,7 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
 // response G(z) that is a mirror-image of the response of the original filter H(z), i.e.
 // G(z) = H(-z):
 // -odd a-coeffs are zero
-// -even b-coeffs are half of corresponding a-coeffs
+// -even b-coeffs are half of corresponding a-coeffs (even a-coeffs are twice the b-coeffs)
 // -poles are sysmmetrical with respect to imaginary axis (check this)
 //  ...(implying A(z)=A(-z) - right?) -> G(z) = H(-z) reduces to C(z) = B(-z)
 // -from normalization, we have a0 = 1, so with even-b rule, b0 = 0.5 always
@@ -247,6 +248,45 @@ rsFilterSpecificationBA<double> complementaryLowpass2p3z()
   return ba;
 }
 
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p4z()
+{
+  // again, let r = 1/z = z^-1, to get the expressions for b0,b1,b2,b3,b4, this time, we use sage:
+  // http://sagecell.sagemath.org/?z=eJwrSyzSUCpSSDJQKDRWKDRR0uTlctIo0lSwBQppaRhqF2nCSd1CYy0owwTI4OXSSK0oSMxL0XDS1NRLzs_JSU0uAWoFADI3FM4=&lang=sage
+  // var("r b0 q3 q4")
+  // B(r) = b0*(1+r)*(1+r)*(1-q3*r)*(1-q4*r)
+  // (expand(B)).collect(r)
+  // gives:
+  // b0*q3*q4*r^4 + (2*b0*q3*q4 - b0*q3 - b0*q4)*r^3 + (b0*q3*q4 - 2*b0*q3 - 2*b0*q4 + b0)*r^2 - (b0*q3 + b0*q4 - 2*b0)*r + b0
+
+  typedef std::complex<double> Complex;
+  Complex q3, q4, a0, a1, a2, b0, b1, b2, b3, b4;
+
+  // tweakable:
+  //q3 = Complex(0, 0.2); //q4 = conj(q3);
+  q3 =  0.2; q4 = -q3;
+
+  // coeffs can be computed by constraint equations, once q3,q4 are chosen:
+  a0 =  1;      // as always
+  b0 =  0.5;    // as always
+  b1 = -b0*(q3 + q4 - 2.0);
+  b2 =  b0*(q3*q4 - 2.0*q3 - 2.0*q4 + 1.0);
+  b3 =  b0*(2.0*q3*q4 - q3 - q4);
+  b4 =  b0*q3*q4;
+  a1 =  0;      // as always
+  a2 =  2.0*b2; // as always
+
+  // i think, it doesn't work because a4 != 2*b4 - we need 4 poles
+
+
+  // b1 =
+  rsFilterSpecificationBA<double> ba;
+  ba.sampleRate = 1;
+  //ba.a.resize(3);
+  //ba.b.resize(5);
+  ba.a = { a0, a1, a2 };
+  ba.b = { b0, b1, b2, b3, b4 };
+  return ba;
+}
 
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
 {
