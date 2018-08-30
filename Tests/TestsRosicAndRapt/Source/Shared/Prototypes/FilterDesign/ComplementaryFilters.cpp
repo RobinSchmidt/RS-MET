@@ -128,8 +128,8 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.addFilterSpecificationBA(specBA);
   plt.addFilterSpecificationBA(compBA);
   //plt.usePiAxisTics();    // should make the axis tics multiples of pi
-  //plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
-  plt.plotPolesAndZeros();
+  plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  //plt.plotPolesAndZeros();
 
 
 
@@ -265,10 +265,13 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z1t()
   typedef std::complex<double> Complex;
   Complex q4, a0, a1, a2, a3, a4, b0, b1, b2, b3, b4;
   //q4 = 1.5;
-  q4 = -0.5;
+  //q4 = -0.5;
+  q4 = -1.0;
   //q4 = -0.3;  // unstable
   // q4 < 0: unstable
   // gives nice magnitude responses - but is unstable :'-(
+  // can we reflect the poles or will this destroy meeting the constraints? probably..
+  // ...maybe try 5 zeros...
 
   b0 =  0.5;    // always, because a0 = 1 due to normalization and ai = 2*bi for even i
   b1 = -b0*(q4 - 3.0);
@@ -304,7 +307,8 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
   Complex q3, q4, a0, a1, a2, a3, a4, b0, b1, b2, b3, b4;
 
   // tweakable:
-  q3 = Complex(0.3, 0.2); q4 = conj(q3);
+  //q3 = Complex(0.3, 0.2); q4 = conj(q3);
+  q3 = Complex(0.5, 0.25); q4 = conj(q3);
   //q3 =  0.8; q4 = -q3;
 
   // coeffs can be computed by constraint equations, once q3,q4 are chosen:

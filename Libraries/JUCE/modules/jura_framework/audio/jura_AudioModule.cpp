@@ -1051,7 +1051,7 @@ GenericAudioModuleEditor::GenericAudioModuleEditor(AudioModule* newModuleToEdit)
   setPresetSectionPosition(RIGHT_TO_HEADLINE);
   createWidgets();
 
-  int height = (widgetHeight+widgetDistance) * parameterWidgets.size() + 28;
+  int height = (widgetHeight+widgetDistance) * (int)parameterWidgets.size() + 28;
   setSize(360, height);
 }
 
@@ -1105,7 +1105,7 @@ void GenericAudioModuleEditor::createWidgets()
       b->assignParameter(p);
       b->setDescriptionField(infoField);
       addWidget(b);
-      parameterWidgets.add(b);
+      parameterWidgets.push_back(b);
     }
     else if(p->getScaling() == Parameter::STRING)
     {
@@ -1114,7 +1114,7 @@ void GenericAudioModuleEditor::createWidgets()
       c->assignParameter(p);
       c->setDescriptionField(infoField);
       addWidget(c);
-      parameterWidgets.add(c);
+      parameterWidgets.push_back(c);
     }
     else
     {
@@ -1126,7 +1126,7 @@ void GenericAudioModuleEditor::createWidgets()
       s->setDescriptionField(infoField);
       s->setStringConversionFunction(&valueToString);
       addWidget(s);
-      parameterWidgets.add(s);
+      parameterWidgets.push_back(s);
     }
   }
 }

@@ -644,8 +644,8 @@ protected:
   Called from the constructor. */
   virtual void createWidgets();
 
-  juce::Array<RWidget*> parameterWidgets; // array of the widgets for the parameters
-                                          // use std::vector
+  std::vector<RWidget*> parameterWidgets; // array of the widgets for the parameters 
+  // why do we need this? the baseclass already has an array for them
 
   int widgetHeight   = 16; 
   //int widgetDistance = 4;
