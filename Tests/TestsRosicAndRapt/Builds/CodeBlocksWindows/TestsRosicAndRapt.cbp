@@ -591,49 +591,61 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroDesignerAnalog.cpp">
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/ComplementaryFilters.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroDesignerAnalog.h">
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/ComplementaryFilters.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroDesignerDigital.cpp">
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerAnalog.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroDesignerDigital.h">
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerAnalog.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroMapper.cpp">
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerDigital.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroMapper.h">
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerDigital.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroPrototype.cpp">
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/PoleZeroMapper.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Prototypes/ClassicFilterDesign/PoleZeroPrototype.h">
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/PoleZeroMapper.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/PoleZeroPrototype.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/Shared/Prototypes/FilterDesign/PoleZeroPrototype.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

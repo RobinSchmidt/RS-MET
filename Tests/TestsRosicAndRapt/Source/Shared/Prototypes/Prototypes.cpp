@@ -1,9 +1,10 @@
 #include "Prototypes.h"
 
-#include "ClassicFilterDesign/PoleZeroPrototype.cpp"
-#include "ClassicFilterDesign/PoleZeroMapper.cpp"
-#include "ClassicFilterDesign/PoleZeroDesignerAnalog.cpp"
-#include "ClassicFilterDesign/PoleZeroDesignerDigital.cpp"
+#include "FilterDesign/PoleZeroPrototype.cpp"
+#include "FilterDesign/PoleZeroMapper.cpp"
+#include "FilterDesign/PoleZeroDesignerAnalog.cpp"
+#include "FilterDesign/PoleZeroDesignerDigital.cpp"
+#include "FilterDesign/ComplementaryFilters.cpp"
 
 #include "Probability.cpp"
 #include "Projection3Dto2D.cpp"

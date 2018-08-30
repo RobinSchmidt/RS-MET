@@ -248,17 +248,6 @@ void splitterPrototypeA_2_2(double* k, Complex* p, Complex* z)
   z[1] = conj(z[0]);
 }
 
-/*
-double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPoles)
-{
-  // set gain factor k to normalize DC gain to 1:
-  Complex H1 = digitalTransferFunctionZPK(
-    zeros, numZeros, poles, numPoles, Complex(1.0, 0.0), 
-    Complex(1.0, 0.0)); // H(z) at z=1
-  return 1.0 / abs(H1);  
-} // move to RAPT
-*/
-
 // digital 1-pole/1-zero - works
 void splitterPrototypeD_1_1(double* k, Complex* p, Complex* z)
 {

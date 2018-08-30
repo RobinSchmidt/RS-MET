@@ -5,10 +5,11 @@
 #include "rosic/rosic.h"
 
 // new implementation of classic IIR filter design:
-#include "ClassicFilterDesign/PoleZeroPrototype.h"
-#include "ClassicFilterDesign/PoleZeroMapper.h"
-#include "ClassicFilterDesign/PoleZeroDesignerAnalog.h"
-#include "ClassicFilterDesign/PoleZeroDesignerDigital.h"
+#include "FilterDesign/PoleZeroPrototype.h"
+#include "FilterDesign/PoleZeroMapper.h"
+#include "FilterDesign/PoleZeroDesignerAnalog.h"
+#include "FilterDesign/PoleZeroDesignerDigital.h"
+#include "FilterDesign/ComplementaryFilters.h"
 
 #include "Probability.h"
 #include "Projection3Dto2D.h"

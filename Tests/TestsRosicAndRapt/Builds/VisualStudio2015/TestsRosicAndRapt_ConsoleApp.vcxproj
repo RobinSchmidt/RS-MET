@@ -263,16 +263,19 @@
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerAnalog.cpp">
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerDigital.cpp">
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroMapper.cpp">
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerDigital.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroPrototype.cpp">
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroMapper.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroPrototype.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Drawing.cpp">
@@ -2278,10 +2281,11 @@
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerAnalog.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroDesignerDigital.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroMapper.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\ClassicFilterDesign\PoleZeroPrototype.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerDigital.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroMapper.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroPrototype.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Drawing.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Ideas.h"/>
