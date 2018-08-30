@@ -83,6 +83,26 @@ template void plotMagnitudesBA(
   bool logFreqAxis, bool decibels,
   const std::vector<rsFilterSpecificationBA<double>>& filterSpecs);
 
+
+
+std::vector<double> impulseResponse(const RAPT::rsFilterSpecificationBA<double>& specBA, int N)
+{
+  typedef std::vector<double> Vec;
+
+  // to make the filtering routine work, we have to convert the complex coeffs to reals:
+  Vec a, b;
+  a.resize(specBA.a.size());
+  b.resize(specBA.b.size());
+  for(size_t i = 0; i < a.size(); i++) a[i] = specBA.a[i].real();
+  for(size_t i = 0; i < b.size(); i++) b[i] = specBA.b[i].real();
+
+  // comput impulse response by filtering a unit impulse:
+  Vec x = createImpulse(N);
+  Vec y = createSilence(N);  // direct filter output
+  RAPT::rsArray::filter(&x[0], N, &y[0], N, &b[0], (int)b.size()-1, &a[0], (int)a.size()-1);
+  return y;
+} // move somewhere else
+
 bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& specBA)
 {
   bool result = isComplementary(specBA);
@@ -93,15 +113,13 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
 
 
   // obtain impulse-response and write to wave-file:
-  int N = 1000;
-  std::vector<double> x  = createImpulse(N);
-  std::vector<double> yd = createSilence(N);  // direct filter output
-  std::vector<double> yc = createSilence(N);  // complementary filter output, i.e. x-yd
-  //RAPT::rsArray::filter(&x[0], N, &yd[0], N, &specBA.b[0], 
-  //  specBA.b.size()-1, &specBA.a[0], specBA.a.size()-1);
-  // doesn't work because the arrays in specBA are complex
-  // yc = x - yd;
-
+  typedef std::vector<double> Vec;
+  int N = 1024;
+  Vec x  = createImpulse(N);
+  Vec yd = impulseResponse(specBA, N);  // direct filter output
+  Vec yc = x-yd;                        // complementary filter output
+  //rosic::writeToMonoWaveFile("ComplementaryFilterOut1.wav", &yd[0], N, 44100, 16);
+  //rosic::writeToMonoWaveFile("ComplementaryFilterOut2.wav", &yc[0], N, 44100, 16);
 
 
   // make some plots:
@@ -110,7 +128,7 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.addFilterSpecificationBA(compBA);
   //plt.usePiAxisTics();    // should make the axis tics multiples of pi
   //plt.plotPolesAndZeros();
-  plt.plotMagnitude(1000, 0.0, 2*PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
 
 
   return result;
@@ -163,6 +181,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z()
   ba.b.resize(3);
 
   double q2 = -0.101; // tweakable -0.101 seems to be (near) the value where there's no overshoot
+                      // todo: numerically optimize that value
 
   ba.a[0] = 1;
   ba.b[0] = 0.5;
@@ -197,7 +216,7 @@ rsFilterSpecificationBA<double> complementaryLowpass2p3z()
   // We also need: b2 = a2/2 giving: a2 = 1 - 2*q3
 
   // ..ok - let's try it:
-  double q3 = 0.5;
+  double q3 = 0.2;  // 0.5 leads to a2=0 - does this mean, there are no poles?
   ba.a[2] = 1 - 2*q3;
   ba.b[1] = 1 - q3/2;
   ba.b[2] = ba.a[2] / 2.0; // == 1/2 - q3
@@ -225,6 +244,15 @@ rsFilterSpecificationBA<double> complementaryLowpass2p3z()
   // maybe we should generally consider the filter's zeros as out tweakable degrees of freedom and
   // let the poles fall whereever they may due to the constraints
 
+  return ba;
+}
+
+
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
+{
+  // preliminary:
+  rsFilterSpecificationBA<double> ba = complementaryLowpass2p3z();
+  ba.a.resize(4); 
   return ba;
 }
 
