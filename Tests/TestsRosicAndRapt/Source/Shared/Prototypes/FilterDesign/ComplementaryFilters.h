@@ -14,6 +14,7 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
 
 // the actual prototype designs that satisfy the mirror-imag e conditions:
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z();
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z();
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p3z();
 
 // add complementaryFilter2p4z, 2p2z

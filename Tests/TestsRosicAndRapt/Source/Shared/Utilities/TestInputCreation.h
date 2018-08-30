@@ -8,6 +8,23 @@ void createTimeAxis(int numSamples, float *timeAxis, float sampleRate);
 
 void createTimeAxis(int numSamples, double *timeAxis, double sampleRate);
 
+//template<class T>
+inline std::vector<double> createSilence(int numSamples)
+{
+  std::vector<double> v;
+  v.resize(numSamples);
+  RAPT::rsArray::fillWithZeros(&v[0], numSamples);
+  return v;
+}
+
+//template<class T>
+inline std::vector<double> createImpulse(int numSamples)
+{
+  std::vector<double> v = createSilence(numSamples);
+  v[0] = 1;
+  return v;
+}
+
 
 /** Synthesizes a standard waveform at the desired frequency and samplerate. The phase is 
 expected in radians and there is an option to do anti-aliased synthesis (by means of adding

@@ -209,7 +209,8 @@ void complementaryFiltersIIR()
   // splitter with perfect reconstruction...
 
   //analyzeComplementaryFilter( complementaryLowpass1p1z()  );
-  analyzeComplementaryFilter( complementaryLowpass2p3z()  );
+  analyzeComplementaryFilter( complementaryLowpass2p2z()  );
+  //analyzeComplementaryFilter( complementaryLowpass2p3z()  );
 }
 
 void ladderResonanceManipulation()

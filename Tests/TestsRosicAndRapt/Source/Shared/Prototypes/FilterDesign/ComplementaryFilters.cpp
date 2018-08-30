@@ -93,6 +93,15 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
 
 
   // obtain impulse-response and write to wave-file:
+  int N = 1000;
+  std::vector<double> x  = createImpulse(N);
+  std::vector<double> yd = createSilence(N);  // direct filter output
+  std::vector<double> yc = createSilence(N);  // complementary filter output, i.e. x-yd
+  //RAPT::rsArray::filter(&x[0], N, &yd[0], N, &specBA.b[0], 
+  //  specBA.b.size()-1, &specBA.a[0], specBA.a.size()-1);
+  // doesn't work because the arrays in specBA are complex
+  // yc = x - yd;
+
 
 
   // make some plots:
@@ -100,8 +109,8 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.addFilterSpecificationBA(specBA);
   plt.addFilterSpecificationBA(compBA);
   //plt.usePiAxisTics();    // should make the axis tics multiples of pi
-  plt.plotPolesAndZeros();
-  //plt.plotMagnitude(1000, 0.0, 2*PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  //plt.plotPolesAndZeros();
+  plt.plotMagnitude(1000, 0.0, 2*PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
 
 
   return result;
@@ -116,6 +125,7 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
 // -even b-coeffs are half of corresponding a-coeffs
 // -poles are sysmmetrical with respect to imaginary axis (check this)
 //  ...(implying A(z)=A(-z) - right?) -> G(z) = H(-z) reduces to C(z) = B(-z)
+// -from normalization, we have a0 = 1, so with even-b rule, b0 = 0.5 always
 // After a prototype halfband filter is designed, it can be tuned to any frequency by applying the 
 // Constantinides frequency warping formulas to the poles and zeros.
 
@@ -132,6 +142,27 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z()
   ba.b[0] = ba.a[0] / 2.0;  // = 0.5, even b-coeffs are half of corresponding a-coeffs
   ba.b[1] = 0.5;            // odd b-coeffs are determined by zeros, 
                             // b1 = b0 = 0.5 places the zero at z=-1
+
+  return ba;
+}
+
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z()
+{
+  rsFilterSpecificationBA<double> ba;
+  ba.sampleRate = 1;
+  ba.a.resize(3);
+  ba.b.resize(3);
+
+  double q2 = -0.101; // tweakable -0.101 seems to be (near) the value where there's no overshoot
+
+  ba.a[0] = 1;
+  ba.b[0] = 0.5;
+
+  ba.a[1] = 0;
+  ba.b[1] = 0.5*(1-q2);
+
+  ba.a[2] = -q2;
+  ba.b[2] = -0.5*q2;
 
   return ba;
 }
