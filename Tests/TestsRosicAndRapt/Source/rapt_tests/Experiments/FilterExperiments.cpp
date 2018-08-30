@@ -210,10 +210,10 @@ void complementaryFiltersIIR()
 
   // ...under construction...
 
-  int N, M;                           // number of poles and zeros
+  //int N, M;                           // number of poles and zeros
   std::complex<double> p[10], z[10];  // poles and zeros
-  double k;                           // gain
-  double fs;                          // sample-rate
+  //double k;                           // gain
+  //double fs;                          // sample-rate
   double inf = RS_INF(double);
   // may not be needed anymore...
 
@@ -234,16 +234,31 @@ void complementaryFiltersIIR()
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
 
-  typedef rsFilterSpecificationBA<double> BA;
-
   // create filter specification objects for lowpass and highpass filter:
   //rsFilterSpecificationZPK<double> lowpassZPK(toVector(z, M), toVector(p, N), k, fs);
   //BA  lowpassBA  = lowpassZPK.toBA();
 
 
-  BA lowpassBA  = splitterPrototype_2_3_new();
+
+  typedef rsFilterSpecificationBA<double> BA;
+  BA lowpassBA; // maybe call it just flt
+  //lowpassBA = complementaryLowpass1p1z();
+  lowpassBA = complementaryLowpass2p3z();
+  analyzeComplementaryFilter(lowpassBA);
+
+
+
+  /*
   lowpassBA.sampleRate = fsd; // get rid...
   BA highpassBA = complementaryFilter(lowpassBA);
+  */
+
+
+
+
+
+
+  /*
 
   bool splitConditionsMet = testSplitConditions(lowpassBA);
   // for the 2,3 filter a[2] is > 5 -> unstable filter...i think in converting between zpk/ba, i 
@@ -260,6 +275,7 @@ void complementaryFiltersIIR()
   plt.plotPolesAndZeros();
   plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
   // make a function analyzeComplementaryFilter(BA ba) that encapsulates all of this
+  */
 
 
   //plt.plotMagnitude(1000, 0.0, 0.5, false, false);

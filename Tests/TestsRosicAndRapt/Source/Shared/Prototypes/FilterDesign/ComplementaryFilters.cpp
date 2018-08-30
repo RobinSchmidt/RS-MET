@@ -90,9 +90,29 @@ template void plotMagnitudesBA(
   bool logFreqAxis, bool decibels,
   const std::vector<rsFilterSpecificationBA<double>>& filterSpecs);
 
+void analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& specBA)
+{
+  bool isComplementary = testSplitConditions(specBA);
+
+  // get the b,a specification of the complementary filter, i.e. the filter that is obtained by
+  // subtracting the given filter's output from the original input:
+  RAPT::rsFilterSpecificationBA<double> compBA = complementaryFilter(specBA);
+
+  // make some plots:
+  FilterPlotter<double> plt;
+  plt.addFilterSpecificationBA(specBA);
+  plt.addFilterSpecificationBA(compBA);
+  //plt.plotPolesAndZeros();
+  plt.plotMagnitude(1000, 0.0, 2*PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+
+
+  int dummy = 0;
+  // return isComplementary;
+}
+
 //-------------------------------------------------------------------------------------------------
 
-rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
+rsFilterSpecificationBA<double> complementaryLowpass2p3z()
 {
   rsFilterSpecificationBA<double> ba;
   ba.sampleRate = 1;
