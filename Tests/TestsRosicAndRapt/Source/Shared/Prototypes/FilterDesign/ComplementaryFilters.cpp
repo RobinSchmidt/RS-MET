@@ -102,15 +102,30 @@ void analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   FilterPlotter<double> plt;
   plt.addFilterSpecificationBA(specBA);
   plt.addFilterSpecificationBA(compBA);
-  //plt.plotPolesAndZeros();
-  plt.plotMagnitude(1000, 0.0, 2*PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  //plt.usePiAxisTics();    // should make the axis tics multiples of pi
+  plt.plotPolesAndZeros();
+  //plt.plotMagnitude(1000, 0.0, 2*PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
 
 
-  int dummy = 0;
-  // return isComplementary;
+  return isComplementary;
 }
 
 //-------------------------------------------------------------------------------------------------
+
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z()
+{
+  rsFilterSpecificationBA<double> ba;
+  ba.sampleRate = 1;
+  ba.a.resize(2);
+  ba.b.resize(2);
+
+  ba.a[0] = 1;              // 0th a-coeff is always 1
+  ba.a[1] = 0;              // odd a-coeffs must be zero
+  ba.b[0] = ba.a[0] / 2.0;  // = 0.5, even b-coeffs are half of corresponding a-coeffs
+  ba.b[1] = 0.5;            // odd b-coeffs are determined by zeros, 0.5 places the zero at z=-1
+
+  return ba;
+}
 
 rsFilterSpecificationBA<double> complementaryLowpass2p3z()
 {

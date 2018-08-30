@@ -208,80 +208,8 @@ void complementaryFiltersIIR()
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
   // splitter with perfect reconstruction...
 
-  // ...under construction...
-
-  //int N, M;                           // number of poles and zeros
-  std::complex<double> p[10], z[10];  // poles and zeros
-  //double k;                           // gain
-  //double fs;                          // sample-rate
-  double inf = RS_INF(double);
-  // may not be needed anymore...
-
-
-  //splitterPrototypeA_1_0(&k, p, z); N = 1; M = 0; fs = inf;  // analog 1-pole
-  //splitterPrototypeA_2_0(&k, p, z); N = 2; M = 0; fs = inf;  // analog 2-pole (2nd order Butterworth)
-  //splitterPrototypeA_2_1(&k, p, z); N = 2; M = 1; fs = inf;  // analog 2-pole/1-zero - 
-  //splitterPrototypeA_2_2(&k, p, z);   N = 2; M = 2; fs = inf;  // analog 2-pole/2-zero
-  // ...
-
-  double fsd = 0.5/PI;  // sample-rate for digital filters
-  //splitterPrototypeD_1_1(&k, p, z); N = 1; M = 1; fs = fsd;  // digital 1-pole/1-zero - works
-  //splitterPrototypeD_2_3(&k, p, z); N = 2; M = 3; fs = fsd;  // digital 2-pole/3-zero - old
-  //splitterPrototypeD_2_3_new(&k, p, z); N = 2; M = 3; fs = fsd;
-
-  //splitterPrototypeD_2_2(&k, p, z); N = 2; M = 2; fs = fsd;  // digital 2-pole/2-zero
-  //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
-  //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
-
-
-  // create filter specification objects for lowpass and highpass filter:
-  //rsFilterSpecificationZPK<double> lowpassZPK(toVector(z, M), toVector(p, N), k, fs);
-  //BA  lowpassBA  = lowpassZPK.toBA();
-
-
-
-  typedef rsFilterSpecificationBA<double> BA;
-  BA lowpassBA; // maybe call it just flt
-  //lowpassBA = complementaryLowpass1p1z();
-  lowpassBA = complementaryLowpass2p3z();
-  analyzeComplementaryFilter(lowpassBA);
-
-
-
-  /*
-  lowpassBA.sampleRate = fsd; // get rid...
-  BA highpassBA = complementaryFilter(lowpassBA);
-  */
-
-
-
-
-
-
-  /*
-
-  bool splitConditionsMet = testSplitConditions(lowpassBA);
-  // for the 2,3 filter a[2] is > 5 -> unstable filter...i think in converting between zpk/ba, i 
-  // need to reverse the polynomial coefficient arrays in case of digital filters...
-  // it works
-
-
-  // plot frequency response:
-  FilterPlotter<double> plt;
-  //plt.addFilterSpecificationZPK(N, p, M, z, k, fs);
-  //plt.addFilterSpecificationZPK(lowpassZPK);
-  plt.addFilterSpecificationBA(lowpassBA);
-  plt.addFilterSpecificationBA(highpassBA);
-  plt.plotPolesAndZeros();
-  plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
-  // make a function analyzeComplementaryFilter(BA ba) that encapsulates all of this
-  */
-
-
-  //plt.plotMagnitude(1000, 0.0, 0.5, false, false);
-
-  //plt.plotMagnitude(1000, 0.01, 100, true, true);  // suitable for analog filters
-  //plt.plotMagnitude(1000, 0.0, 2*PI, false, false);    // todo: rescale the freq-axis such that PI maps to 0.5 or 1.0
+  analyzeComplementaryFilter( complementaryLowpass1p1z()  );
+  //analyzeComplementaryFilter( complementaryLowpass2p3z()  );
 }
 
 void ladderResonanceManipulation()
