@@ -208,8 +208,8 @@ void complementaryFiltersIIR()
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
   // splitter with perfect reconstruction...
 
-  analyzeComplementaryFilter( complementaryLowpass1p1z()  );
-  //analyzeComplementaryFilter( complementaryLowpass2p3z()  );
+  //analyzeComplementaryFilter( complementaryLowpass1p1z()  );
+  analyzeComplementaryFilter( complementaryLowpass2p3z()  );
 }
 
 void ladderResonanceManipulation()

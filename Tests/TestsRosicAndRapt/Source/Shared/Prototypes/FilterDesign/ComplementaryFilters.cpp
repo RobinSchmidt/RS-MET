@@ -12,9 +12,9 @@ rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationB
   return r;
 } // move to FilterPlotter or rapt rsFilterSpecificationBA
 
-bool testSplitConditions(const rsFilterSpecificationBA<double>& lpfBA)
+bool isComplementary(const rsFilterSpecificationBA<double>& lpfBA)
 {
-  // Give the filter-prototype specifications for a lowpass filter, this function checks, if the 
+  // Given the filter-prototype specifications for a lowpass filter, this function checks, if the 
   // filter satisfies the conditions for a perfect reconstruction crossover, assuming the highpass
   // signal is obtained by subtracting the lowpass signal fro the original input - that in itself 
   // ensures perfect reconstruction, but we check here for additional conditions such as symmetry 
@@ -56,14 +56,6 @@ bool testSplitConditions(const rsFilterSpecificationBA<double>& lpfBA)
     // try to not reverse (the sum *must* be correct) and choose a different additional zero - 
     // maybe it's wrongly placed, after all
 
-    //// is our symmetry constraint tto restrictive? maybe it should be |H(z)| = |G(-z)|:
-    //double absHz  = abs(Hz);
-    //double absGzm = abs(Gzm);
-    //// nope - that doesn't work either
-
-
-    //Complex test1 = Hz+Gzm;
-    //Complex test2 = Hz-Gz;
 
     //rsAssert(result);
     int dummy = 0;
@@ -84,19 +76,24 @@ void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, boo
 } // maybe move as static function to class FilterPlotter
 // rename to analyzeFiltersBA, put more tests here...or: write a function that just takes the BA
 // array
+// move to plotting functions
 
 template void plotMagnitudesBA(
   int numFreqs, double lowFreq, double highFreq, 
   bool logFreqAxis, bool decibels,
   const std::vector<rsFilterSpecificationBA<double>>& filterSpecs);
 
-void analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& specBA)
+bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& specBA)
 {
-  bool isComplementary = testSplitConditions(specBA);
+  bool result = isComplementary(specBA);
 
   // get the b,a specification of the complementary filter, i.e. the filter that is obtained by
   // subtracting the given filter's output from the original input:
   RAPT::rsFilterSpecificationBA<double> compBA = complementaryFilter(specBA);
+
+
+  // obtain impulse-response and write to wave-file:
+
 
   // make some plots:
   FilterPlotter<double> plt;
@@ -107,11 +104,22 @@ void analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   //plt.plotMagnitude(1000, 0.0, 2*PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
 
 
-  return isComplementary;
+  return result;
 }
 
 //-------------------------------------------------------------------------------------------------
+// Rules for designing filters H(z) = B(z)/A(z) that satisfy the constraint that subtracting the 
+// filter output from the input G(z) = 1-H(z) = (A(z)-B(z))/A(z) = C(z)/A(z) leads to a frequency 
+// response G(z) that is a mirror-image of the response of the original filter H(z), i.e.
+// G(z) = H(-z):
+// -odd a-coeffs are zero
+// -even b-coeffs are half of corresponding a-coeffs
+// -poles are sysmmetrical with respect to imaginary axis (check this)
+//  ...(implying A(z)=A(-z) - right?) -> G(z) = H(-z) reduces to C(z) = B(-z)
+// After a prototype halfband filter is designed, it can be tuned to any frequency by applying the 
+// Constantinides frequency warping formulas to the poles and zeros.
 
+// the 1-pole,1-zero case is equivalent to a first order Butterworth filter via bilinear transform
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z()
 {
   rsFilterSpecificationBA<double> ba;
@@ -119,10 +127,11 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z()
   ba.a.resize(2);
   ba.b.resize(2);
 
-  ba.a[0] = 1;              // 0th a-coeff is always 1
+  ba.a[0] = 1;              // 0th a-coeff is always 1 (normalization)
   ba.a[1] = 0;              // odd a-coeffs must be zero
   ba.b[0] = ba.a[0] / 2.0;  // = 0.5, even b-coeffs are half of corresponding a-coeffs
-  ba.b[1] = 0.5;            // odd b-coeffs are determined by zeros, 0.5 places the zero at z=-1
+  ba.b[1] = 0.5;            // odd b-coeffs are determined by zeros, 
+                            // b1 = b0 = 0.5 places the zero at z=-1
 
   return ba;
 }
@@ -135,18 +144,17 @@ rsFilterSpecificationBA<double> complementaryLowpass2p3z()
   ba.b.resize(4);
 
   // fixed coeffs (by constraints):
-  ba.a[0] = 1;              // 0th a coeff is always 1
+  ba.a[0] = 1;              // 0th a-coeff is always 1
   ba.a[1] = 0;              // odd a-coeffs must be zero
   ba.b[0] = ba.a[0] / 2.0;  // b0 = 0.5
 
-  // let H(z) = B(z)/A(z) = b0*((1-q1/z)*(1-q2/z)*(1-q3/z))/((1-p1/z)*(1-p2/z))
-  // and fix q1 = q2 = -1 - that gives:
-  // B(z) = b0 * ( (1+1/z)*(1+1/z)*(1-q3/z) )
-  // multiply out to obtain b0,..,b3 in terms of q3 (our additional zero to be freely placed)
-  // let r = 1/z = z^-1 for convenience, then:
+  // Let H(z) = B(z)/A(z) = b0*((1-q1/z)*(1-q2/z)*(1-q3/z))/((1-p1/z)*(1-p2/z))
+  // and fix q1 = q2 = -1. That gives: B(z) = b0 * ( (1+1/z)*(1+1/z)*(1-q3/z) )
+  // Multiply out to obtain b0,..,b3 in terms of q3 (our additional zero to be freely placed)
+  // Let r = 1/z = z^-1 for convenience, then:
   // B(z) = b0 * (1 + (2-q3)*r + (1-2*q3)*r^2 - q3*r^3)
-  // so, with b0 = 1/2: b1 = (1-q3/2), b2 = (1/2 - q3), b3 = -q3/2
-  // we also need: b2 = a2/2 giving: a2 = 1 - 2*q3
+  // So, with b0 = 1/2: b1 = (1-q3/2), b2 = (1/2 - q3), b3 = -q3/2
+  // We also need: b2 = a2/2 giving: a2 = 1 - 2*q3
 
   // ..ok - let's try it:
   double q3 = 0.5;
@@ -181,7 +189,8 @@ rsFilterSpecificationBA<double> complementaryLowpass2p3z()
 }
 
 //-------------------------------------------------------------------------------------------------
-
+// code below doesn't give rise to working complementary filters but contains a lot of info in the
+// comments:
 
 // analog 1-pole/0-zero
 void splitterPrototypeA_1_0(double* k, std::complex<double>* p, std::complex<double>* z)
