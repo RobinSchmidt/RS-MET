@@ -204,7 +204,7 @@ void bandSplitFreqResponses()
 }
 
 //-------------------------------------------------------------------------------------------------
-// experiments for perfect reconstruction IIR filters:
+// experiments for complementaryFiltersIIR
 
 typedef std::complex<double> Complex;
 
@@ -248,58 +248,6 @@ void splitterPrototypeA_2_2(double* k, Complex* p, Complex* z)
   z[1] = conj(z[0]);
 }
 
-/*
-// move to RAPT:
-//Complex getDigitalTransferFunctionAt(Complex* zeros, int numZeros, Complex* poles, int numPoles,
-Complex digitalTransferFunctionZPK(const Complex* zeros, int numZeros, 
-  const Complex* poles, int numPoles, Complex k, Complex z)
-{
-  Complex zr  = 1.0/z;       // z^-1
-  Complex num = 1, den = 1;  // numerator and denominator
-  for(int i = 0; i < numZeros; i++)  num *= (1.0 - zeros[i] * zr);
-  for(int i = 0; i < numPoles; i++)  den *= (1.0 - poles[i] * zr);
-  return k * num/den;
-  // see https://ccrma.stanford.edu/~jos/filters/Factored_Form.html for formula
-} // moved to rsFilterSpecificationZPK<T>::transferFunctionAt
-
-Complex transferFunctionZPK(const FilterSpecificationZPK<double>& zpk, Complex z)
-{
-  if(zpk.sampleRate != RS_INF(double))
-    return digitalTransferFunctionZPK(&zpk.zeros[0], (int)zpk.zeros.size(), 
-      &zpk.poles[0], (int)zpk.poles.size(), zpk.gain, z);
-  else
-  {
-    //return analogTransferFunctionZPK(&zpk.zeros[0], (int)zpk.zeros.size(), 
-    //  &zpk.poles[0], (int)zpk.poles.size(), zpk.gain, z); // z should be named s here ..maybe sz? s_or_z?
-    rsAssertFalse; // not yet implemented
-    return 0;
-  }
-} // moved to rsFilterSpecificationZPK<T>::transferFunctionAt
-
-Complex digitalTransferFunctionBA(const Complex* b, int Nb, const Complex* a, int Na, Complex z)
-{
-  Complex num = 0, den = 0;
-  for(int i = 0; i < Nb; i++)  num += b[i] * pow(z, -i); // can be optimized
-  for(int i = 0; i < Na; i++)  den += a[i] * pow(z, -i);
-  return num/den;
-}
-
-Complex transferFunctionBA(const FilterSpecificationBA<double>& ba, Complex z)
-{
-  if(ba.sampleRate != RS_INF(double))
-    return digitalTransferFunctionBA(&ba.b[0], (int)ba.b.size(), &ba.a[0], (int)ba.a.size(), z);
-  else
-  {
-    rsAssertFalse; // not yet implemented
-    return 0;
-  }
-}
-*/
-
-
-
-
-
 double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPoles)
 {
   // set gain factor k to normalize DC gain to 1:
@@ -307,7 +255,7 @@ double dcGainNormalizer(Complex* zeros, int numZeros, Complex* poles, int numPol
     zeros, numZeros, poles, numPoles, Complex(1.0, 0.0), 
     Complex(1.0, 0.0)); // H(z) at z=1
   return 1.0 / abs(H1);  
-}
+} // move to RAPT
 
 // digital 1-pole/1-zero - works
 void splitterPrototypeD_1_1(double* k, Complex* p, Complex* z)
@@ -326,6 +274,7 @@ void splitterPrototypeD_1_1(double* k, Complex* p, Complex* z)
 
   *k = dcGainNormalizer(z, 1, p, 1);
 }
+// todo: return a BA specification
 
 // digital 2-pole/2-zero (i think, this is a 2nd order digital Butterworth halfband filter via 
 // bilinear transform):
@@ -337,14 +286,12 @@ void splitterPrototypeD_2_2(double* k, Complex* p, Complex* z)
   z[0] = -1.0;
   z[1] = conj(z[0]);
   *k = dcGainNormalizer(z, 2, p, 2);
-
-  //Complex H1 = digitalTransferFunctionZPK(z, 2, p, 2, 1, Complex(1.0, 0.0)); // H(z) at z=1
-  //*k = 1 / abs(H1);  
 }
 // this doesn't work
 
 // digital 2-pole/3-zero - old - worked when we didn't really treat the reversed order of digital
-// filter coeff arrays right in conversions between zpk/ba form
+// filter coeff arrays right in conversions between zpk/ba form - check, why this seemed to work, 
+// and if it actually does
 void splitterPrototypeD_2_3(double* k, Complex* p, Complex* z)
 {
   double  s = sqrt(2)-1;
@@ -463,7 +410,7 @@ rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
   // we also need: b2 = a2/2 giving: a2 = 1 - 2*q3
 
   // ..ok - let's try it:
-  double q3 = 0.7;
+  double q3 = 0.5;
   ba.a[2] = 1 - 2*q3;
   ba.b[1] = 1 - q3/2;
   ba.b[2] = ba.a[2] / 2.0; // == 1/2 - q3
@@ -477,7 +424,9 @@ rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
   // tweak that remaining variable?
 
   // it seems that however we choose q3, the response shape is nonmonotonic
-  // ...maybe we need two additional zeros to get a good response...
+  // ...maybe we need two additional zeros to get a good response...maybe first try to use a pair
+  // of complex conjugate zeros (giving only one adjustable parameter - the imaginray part of both 
+  // zeros)
   // ...but maybe we should first verify that our plots are actually correct by takeing an FFT of
   // an impulse response and compare to our plot - maybe try this also for the old filter
   // with this sqrt(2)-1 stuff...
@@ -485,6 +434,9 @@ rsFilterSpecificationBA<double> splitterPrototype_2_3_new()
 
   // choose a2 such that we get a monotonic response and b1,b3 such that two zeros are at z=-1
   // ...maybe the other way around
+
+  // maybe we should generally consider the filter's zeros as out tweakable degrees of freedom and
+  // let the poles fall whereever they may due to the constraints
 
   return ba;
 }
@@ -548,8 +500,7 @@ rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationB
 } // move to FilterPlotter or rapt rsFilterSpecificationBA
 
 template<class T>
-void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
-  bool logFreqAxis, bool decibels,
+void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels,
   const std::vector<rsFilterSpecificationBA<T>>& filterSpecs)
 {
   FilterPlotter<T> plt;
@@ -558,6 +509,8 @@ void plotMagnitudesBA(int numFreqs, T lowFreq, T highFreq,
   plt.plotMagnitude(numFreqs, lowFreq, highFreq, logFreqAxis, decibels);
   //plt.plotPolesAndZeros(); // test
 } // maybe move as static function to class FilterPlotter
+// rename to analyzeFiltersBA, put more tests here...or: write a function that just takes the BA
+// array
 
 
 bool testSplitConditions(const rsFilterSpecificationBA<double>& lpfBA)
@@ -604,14 +557,14 @@ bool testSplitConditions(const rsFilterSpecificationBA<double>& lpfBA)
     // try to not reverse (the sum *must* be correct) and choose a different additional zero - 
     // maybe it's wrongly placed, after all
 
-    // is our symmetry constraint tto restrictive? maybe it should be |H(z)| = |G(-z)|:
-    double absHz  = abs(Hz);
-    double absGzm = abs(Gzm);
-    // nope - that doesn't work either
+    //// is our symmetry constraint tto restrictive? maybe it should be |H(z)| = |G(-z)|:
+    //double absHz  = abs(Hz);
+    //double absGzm = abs(Gzm);
+    //// nope - that doesn't work either
 
 
-    Complex test1 = Hz+Gzm;
-    Complex test2 = Hz-Gz;
+    //Complex test1 = Hz+Gzm;
+    //Complex test2 = Hz-Gz;
 
     //rsAssert(result);
     int dummy = 0;
@@ -620,7 +573,7 @@ bool testSplitConditions(const rsFilterSpecificationBA<double>& lpfBA)
   return result;
 }
 
-void bandSplitHighOrderIIR()
+void complementaryFiltersIIR()
 {
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
   // splitter with perfect reconstruction...
@@ -651,14 +604,20 @@ void bandSplitHighOrderIIR()
   //splitterPrototypeD_3_3(&k, p, z); N = 3; M = 3; fs = fsd;  // test - not yet working
   //splitterPrototypeD_4_6(&k, p, z); N = 4; M = 6; fs = fsd;    // nope - that doesn't work
 
+
+  typedef rsFilterSpecificationBA<double> BA;
+
   // create filter specification objects for lowpass and highpass filter:
   //rsFilterSpecificationZPK<double> lowpassZPK(toVector(z, M), toVector(p, N), k, fs);
-  //rsFilterSpecificationBA<double>  lowpassBA  = lowpassZPK.toBA();
+  //BA  lowpassBA  = lowpassZPK.toBA();
 
 
-  rsFilterSpecificationBA<double>  lowpassBA  = splitterPrototype_2_3_new();
-  lowpassBA.sampleRate = fsd;
-  rsFilterSpecificationBA<double>  highpassBA = complementaryFilter(lowpassBA);
+
+
+
+  BA lowpassBA  = splitterPrototype_2_3_new();
+  lowpassBA.sampleRate = fsd; // get rid...
+  BA highpassBA = complementaryFilter(lowpassBA);
 
   bool splitConditionsMet = testSplitConditions(lowpassBA);
   // for the 2,3 filter a[2] is > 5 -> unstable filter...i think in converting between zpk/ba, i 
@@ -674,6 +633,8 @@ void bandSplitHighOrderIIR()
   plt.addFilterSpecificationBA(highpassBA);
   plt.plotPolesAndZeros();
   plotMagnitudesBA(1000, 0.0, 0.5, false, false, { lowpassBA, highpassBA });
+  // make a function analyzeComplementaryFilter(BA ba) that encapsulates all of this
+
 
   //plt.plotMagnitude(1000, 0.0, 0.5, false, false);
 
@@ -705,7 +666,7 @@ void bandSplitHighOrderIIR()
 
 }
 
-// end of experiments for perfect reconstruction IIR filters
+// end of experiments for complementaryFiltersIIR
 //-------------------------------------------------------------------------------------------------
 
 void ladderResonanceManipulation()

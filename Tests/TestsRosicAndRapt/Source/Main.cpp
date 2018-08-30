@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
   //bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
-  bandSplitHighOrderIIR();
+  complementaryFiltersIIR();
 
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();

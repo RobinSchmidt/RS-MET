@@ -95,6 +95,9 @@ struct rsFilterSpecificationBA
 template <class T>
 std::complex<T> digitalTransferFunctionZPK(const std::complex<T>* zeros, size_t numZeros, 
   const std::complex<T>* poles, size_t numPoles, std::complex<T> k, std::complex<T> z);
+// maybe move to rsFilterAnalyzer
+
+
 
 // maybe factor out a baseclass rsFilterSpecification that has only a sampleRate member and a 
 // function isDigital()...maybe also a virtual member transferFunctionAt that is overriden
