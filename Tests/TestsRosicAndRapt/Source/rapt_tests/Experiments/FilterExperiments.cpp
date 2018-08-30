@@ -213,7 +213,7 @@ void complementaryFiltersIIR()
   //analyzeComplementaryFilter( complementaryLowpass2p3z()  );
   //analyzeComplementaryFilter( complementaryLowpass3p3z()  );
 
-  analyzeComplementaryFilter( complementaryLowpass2p4z()  );
+  analyzeComplementaryFilter( complementaryLowpass4p4z()  );
 }
 
 void ladderResonanceManipulation()

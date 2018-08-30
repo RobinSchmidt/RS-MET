@@ -17,7 +17,9 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z();
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z();
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p3z();
 
-RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p4z();
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z();
+
+
 
 
 //RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z();

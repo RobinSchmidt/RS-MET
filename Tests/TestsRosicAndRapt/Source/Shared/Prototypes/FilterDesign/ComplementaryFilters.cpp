@@ -128,8 +128,8 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.addFilterSpecificationBA(specBA);
   plt.addFilterSpecificationBA(compBA);
   //plt.usePiAxisTics();    // should make the axis tics multiples of pi
-  plt.plotPolesAndZeros();
-  //plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  //plt.plotPolesAndZeros();
+  plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
 
 
   return result;
@@ -140,11 +140,13 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
 // filter output from the input G(z) = 1-H(z) = (A(z)-B(z))/A(z) = C(z)/A(z) leads to a frequency 
 // response G(z) that is a mirror-image of the response of the original filter H(z), i.e.
 // G(z) = H(-z):
-// -odd a-coeffs are zero
-// -even b-coeffs are half of corresponding a-coeffs (even a-coeffs are twice the b-coeffs)
-// -poles are sysmmetrical with respect to imaginary axis (check this)
+// -(1) odd a-coeffs are zero
+// -(2) even b-coeffs are half of corresponding a-coeffs (even a-coeffs are twice the b-coeffs)
+// -poles are symmetrical with respect to imaginary axis (check this)
 //  ...(implying A(z)=A(-z) - right?) -> G(z) = H(-z) reduces to C(z) = B(-z)
 // -from normalization, we have a0 = 1, so with even-b rule, b0 = 0.5 always
+// -we may have either the same number of poles and zeros or one zero more than poles - otherwise 
+//  constraint (2) is violated
 // After a prototype halfband filter is designed, it can be tuned to any frequency by applying the 
 // Constantinides frequency warping formulas to the poles and zeros.
 
@@ -248,7 +250,7 @@ rsFilterSpecificationBA<double> complementaryLowpass2p3z()
   return ba;
 }
 
-RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p4z()
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
 {
   // again, let r = 1/z = z^-1, to get the expressions for b0,b1,b2,b3,b4, this time, we use sage:
   // http://sagecell.sagemath.org/?z=eJwrSyzSUCpSSDJQKDRWKDRR0uTlctIo0lSwBQppaRhqF2nCSd1CYy0owwTI4OXSSK0oSMxL0XDS1NRLzs_JSU0uAWoFADI3FM4=&lang=sage
@@ -259,11 +261,11 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p4z()
   // b0*q3*q4*r^4 + (2*b0*q3*q4 - b0*q3 - b0*q4)*r^3 + (b0*q3*q4 - 2*b0*q3 - 2*b0*q4 + b0)*r^2 - (b0*q3 + b0*q4 - 2*b0)*r + b0
 
   typedef std::complex<double> Complex;
-  Complex q3, q4, a0, a1, a2, b0, b1, b2, b3, b4;
+  Complex q3, q4, a0, a1, a2, a3, a4, b0, b1, b2, b3, b4;
 
   // tweakable:
-  //q3 = Complex(0, 0.2); //q4 = conj(q3);
-  q3 =  0.2; q4 = -q3;
+  q3 = Complex(0.3, 0.2); q4 = conj(q3);
+  //q3 =  0.8; q4 = -q3;
 
   // coeffs can be computed by constraint equations, once q3,q4 are chosen:
   a0 =  1;      // as always
@@ -274,16 +276,17 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p4z()
   b4 =  b0*q3*q4;
   a1 =  0;      // as always
   a2 =  2.0*b2; // as always
+  a3 =  0;
+  a4 =  2.0*b4;
 
-  // i think, it doesn't work because a4 != 2*b4 - we need 4 poles
+
+  // tweak q3,q4 and maybe try to put 3 zeros at z = -1 leaving only q4 tweakable
 
 
   // b1 =
   rsFilterSpecificationBA<double> ba;
   ba.sampleRate = 1;
-  //ba.a.resize(3);
-  //ba.b.resize(5);
-  ba.a = { a0, a1, a2 };
+  ba.a = { a0, a1, a2, a3, a4 };
   ba.b = { b0, b1, b2, b3, b4 };
   return ba;
 }
