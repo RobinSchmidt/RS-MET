@@ -187,7 +187,8 @@ void ColourSchemeComponent::addWidget(RWidget *widgetToAdd, bool addAsChildCompo
   bool makeVisible)
 {
   ScopedLock scopedLock(arrayLock);
-  widgets.addIfNotAlreadyThere(widgetToAdd);
+  //widgets.addIfNotAlreadyThere(widgetToAdd);
+  RAPT::rsAppendIfNotAlreadyThere(widgets, widgetToAdd);
   if( addAsChildComponent == true )
   {
     Component* comp = dynamic_cast<Component*> (widgetToAdd);
@@ -205,7 +206,8 @@ void ColourSchemeComponent::addWidgetSet(WidgetSet* widgetSetToAdd, bool addAsCh
                                          bool makeVisible)
 {
   ScopedLock scopedLock(arrayLock);
-  widgetSets.addIfNotAlreadyThere(widgetSetToAdd);
+  //widgetSets.addIfNotAlreadyThere(widgetSetToAdd);
+  RAPT::rsAppendIfNotAlreadyThere(widgetSets, widgetSetToAdd);
   if( addAsChildComponent == true )
   {
     //addChildComponent(widgetSetToAdd);
@@ -220,7 +222,8 @@ void ColourSchemeComponent::addPlot(rsPlot *plotToAdd, bool addAsChildComponent,
                                     bool makeVisible)
 {
   ScopedLock scopedLock(arrayLock);
-  plots.addIfNotAlreadyThere(plotToAdd);
+  //plots.addIfNotAlreadyThere(plotToAdd);
+  RAPT::rsAppendIfNotAlreadyThere(plots, plotToAdd);
   if( addAsChildComponent == true )
   {
     addChildComponent(plotToAdd);
@@ -235,7 +238,8 @@ void ColourSchemeComponent::addChildColourSchemeComponent(ColourSchemeComponent 
                                                           bool makeVisible)
 {
   ScopedLock scopedLock(arrayLock);
-  childColourSchemeComponents.addIfNotAlreadyThere(editorToAdd);
+  //childColourSchemeComponents.addIfNotAlreadyThere(editorToAdd);
+  RAPT::rsAppendIfNotAlreadyThere(childColourSchemeComponents, editorToAdd);
   if( addAsChildComponent == true )
   {
     addChildComponent(editorToAdd);
@@ -251,7 +255,8 @@ void ColourSchemeComponent::removeChildColourSchemeComponent(ColourSchemeCompone
   ScopedLock scopedLock(arrayLock);
   removeChildComponent(childToRemove);
   //childColourSchemeComponents.removeValue(childToRemove);
-  childColourSchemeComponents.removeFirstMatchingValue(childToRemove);
+  //childColourSchemeComponents.removeFirstMatchingValue(childToRemove);
+  RAPT::rsRemoveFirstOccurrence(childColourSchemeComponents, childToRemove);
   if( deleteObject == true )
     delete childToRemove;
 }
@@ -260,8 +265,10 @@ void ColourSchemeComponent::removeWidget(RWidget* widgetToRemove, bool removeAsC
   bool deleteObject)
 {
   ScopedLock scopedLock(arrayLock);
-  jassert( widgets.contains(widgetToRemove) ); // trying to remove a widget that was not added before?
-  widgets.removeFirstMatchingValue(widgetToRemove);
+  //jassert( widgets.contains(widgetToRemove) ); // trying to remove a widget that was not added before?
+  //widgets.removeFirstMatchingValue(widgetToRemove);
+  jassert( RAPT::rsContains(widgets, widgetToRemove) ); // trying to remove a widget that was not added before?
+  RAPT::rsRemoveFirstOccurrence(widgets, widgetToRemove);
   if( removeAsChildComponent == true )
     removeChildComponent(widgetToRemove);
   if( deleteObject == true )
@@ -327,7 +334,7 @@ void ColourSchemeComponent::paintOverChildren(Graphics &g)
 void ColourSchemeComponent::updateWidgetsAccordingToState()
 {
   ScopedLock scopedLock(arrayLock);
-  for(int i=0; i<widgets.size(); i++)
+  for(int i = 0; i < widgets.size(); i++)
     widgets[i]->updateWidgetFromAssignedParameter(false);  
 }
 

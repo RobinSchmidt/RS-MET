@@ -163,10 +163,10 @@ protected:
     // todo: use pointers
 
   // we maintain components that should adhere to the colour-schemes above as arrays:
-  juce::Array<RWidget*>   widgets;
-  juce::Array<WidgetSet*> widgetSets;
-  juce::Array<rsPlot*>    plots;
-  juce::Array<ColourSchemeComponent*> childColourSchemeComponents;
+  std::vector<RWidget*>   widgets;
+  std::vector<WidgetSet*> widgetSets;
+  std::vector<rsPlot*>    plots;
+  std::vector<ColourSchemeComponent*> childColourSchemeComponents;
   CriticalSection arrayLock; // used to access all the arrays
   // use std::vector, maybe have also arrays of non-owned widgets, etc. in order to allow client 
   // code to use non-pointer variables ...maybe use references
