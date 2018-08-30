@@ -128,8 +128,9 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.addFilterSpecificationBA(specBA);
   plt.addFilterSpecificationBA(compBA);
   //plt.usePiAxisTics();    // should make the axis tics multiples of pi
-  //plt.plotPolesAndZeros();
-  plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  //plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  plt.plotPolesAndZeros();
+
 
 
   return result;
@@ -145,8 +146,10 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
 // -poles are symmetrical with respect to imaginary axis (check this)
 //  ...(implying A(z)=A(-z) - right?) -> G(z) = H(-z) reduces to C(z) = B(-z)
 // -from normalization, we have a0 = 1, so with even-b rule, b0 = 0.5 always
-// -we may have either the same number of poles and zeros or one zero more than poles - otherwise 
-//  constraint (2) is violated
+// -when the number of poles is even, we may have either the same number of poles and zeros or one 
+//  zero more than poles - otherwise constraint (2) is violated
+// -an odd number of poles is not possible (but what about 1st order?) because the odf a-coeffs are
+//  constrained to be zero
 // After a prototype halfband filter is designed, it can be tuned to any frequency by applying the 
 // Constantinides frequency warping formulas to the poles and zeros.
 
@@ -250,6 +253,43 @@ rsFilterSpecificationBA<double> complementaryLowpass2p3z()
   return ba;
 }
 
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z1t()
+{
+  // sage:
+  // var("r b0 q3 q4")
+  // B(r) = b0*(1+r)*(1+r)*(1+r)*(1-q4*r)
+  // (expand(B)).collect(r)
+  // gives:
+  // -b0*q4*r^4 - (3*b0*q4 - b0)*r^3 - 3*(b0*q4 - b0)*r^2 - (b0*q4 - 3*b0)*r + b0
+
+  typedef std::complex<double> Complex;
+  Complex q4, a0, a1, a2, a3, a4, b0, b1, b2, b3, b4;
+  //q4 = 1.5;
+  q4 = -0.5;
+  //q4 = -0.3;  // unstable
+  // q4 < 0: unstable
+  // gives nice magnitude responses - but is unstable :'-(
+
+  b0 =  0.5;    // always, because a0 = 1 due to normalization and ai = 2*bi for even i
+  b1 = -b0*(q4 - 3.0);
+  b2 = -3.0*b0*(q4 - 1.0);
+  b3 = -b0*(3.0*q4 - 1.0);
+  b4 = -b0*q4;
+
+  // a-coeffs are determined by b-coeffs (maybe factor that out):
+  a0 =  1;
+  a1 =  0;      // as always
+  a2 =  2.0*b2; // as always
+  a3 =  0;
+  a4 =  2.0*b4;
+
+  rsFilterSpecificationBA<double> ba;
+  ba.sampleRate = 1;
+  ba.a = { a0, a1, a2, a3, a4 };
+  ba.b = { b0, b1, b2, b3, b4 };
+  return ba;
+}
+
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
 {
   // again, let r = 1/z = z^-1, to get the expressions for b0,b1,b2,b3,b4, this time, we use sage:
@@ -279,9 +319,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
   a3 =  0;
   a4 =  2.0*b4;
 
-
   // tweak q3,q4 and maybe try to put 3 zeros at z = -1 leaving only q4 tweakable
-
 
   // b1 =
   rsFilterSpecificationBA<double> ba;
@@ -290,6 +328,9 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
   ba.b = { b0, b1, b2, b3, b4 };
   return ba;
 }
+
+
+
 
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
 {
