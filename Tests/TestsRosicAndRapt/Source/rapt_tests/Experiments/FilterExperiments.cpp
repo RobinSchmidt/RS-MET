@@ -211,8 +211,9 @@ void complementaryFiltersIIR()
   analyzeComplementaryFilter( complementaryLowpass1p1z()   );
   analyzeComplementaryFilter( complementaryLowpass2p2z()   );
   analyzeComplementaryFilter( complementaryLowpass2p3z()   );
-  analyzeComplementaryFilter( complementaryLowpass4p4z1t() );  // unstable
+  //analyzeComplementaryFilter( complementaryLowpass4p4z1t() );  // unstable
   analyzeComplementaryFilter( complementaryLowpass4p4z()   );  // weird
+  //analyzeComplementaryFilter( complementaryLowpass4p5z()   );  // unstable
 }
 
 void ladderResonanceManipulation()

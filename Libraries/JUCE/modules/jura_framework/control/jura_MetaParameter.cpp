@@ -257,6 +257,14 @@ void MetaControlledParameter::initMetaMapToFlat()
   metaMapper.initToFlat(v);
 }
 
+// BUG:
+// When there's a possibly non-invertible meta-map, it's not enough to store/retrieve the parameter
+// via gets/setValue (as the baseclass implementation does). We need to always keep track of the 
+// normalized value, so we may have to store it also into the xml ....sooo, maybe we should 
+// delegate to the baseclass implementation only if metaMapper.isDefaultMap() is true and otherwise
+// store the normalized value along with the map - then we may omit storing the actual value - it 
+// would be redundant.
+
 void MetaControlledParameter::saveToXml(XmlElement* xml) const
 {
   rsSmoothableParameter::saveToXml(xml);

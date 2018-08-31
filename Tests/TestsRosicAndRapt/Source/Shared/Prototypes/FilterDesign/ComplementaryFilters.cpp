@@ -154,6 +154,7 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
 // After a prototype halfband filter is designed, it can be tuned to any frequency by applying the 
 // Constantinides frequency warping formulas to the poles and zeros.
 
+
 // the 1-pole,1-zero case is equivalent to a first order Butterworth filter via bilinear transform
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z()
 {
@@ -302,7 +303,8 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
   // B(r) = b0*(1+r)*(1+r)*(1-q3*r)*(1-q4*r)
   // (expand(B)).collect(r)
   // gives:
-  // b0*q3*q4*r^4 + (2*b0*q3*q4 - b0*q3 - b0*q4)*r^3 + (b0*q3*q4 - 2*b0*q3 - 2*b0*q4 + b0)*r^2 - (b0*q3 + b0*q4 - 2*b0)*r + b0
+  // b0*q3*q4*r^4 + (2*b0*q3*q4 - b0*q3 - b0*q4)*r^3 + (b0*q3*q4 - 2*b0*q3 - 2*b0*q4 + b0)*r^2 
+  // - (b0*q3 + b0*q4 - 2*b0)*r + b0
 
   typedef std::complex<double> Complex;
   Complex q3, q4, a0, a1, a2, a3, a4, b0, b1, b2, b3, b4;
@@ -313,12 +315,14 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
   //q3 =  0.8; q4 = -q3;
 
   // coeffs can be computed by constraint equations, once q3,q4 are chosen:
-  a0 =  1;      // as always
+
   b0 =  0.5;    // as always
   b1 = -b0*(q3 + q4 - 2.0);
   b2 =  b0*(q3*q4 - 2.0*q3 - 2.0*q4 + 1.0);
   b3 =  b0*(2.0*q3*q4 - q3 - q4);
   b4 =  b0*q3*q4;
+
+  a0 =  1;      // as always
   a1 =  0;      // as always
   a2 =  2.0*b2; // as always
   a3 =  0;
@@ -334,6 +338,48 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
   return ba;
 }
 
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z()
+{
+  // 4 zeros at z = -1, q5 tweakable
+  // var("r b0 q5")
+  // B(r) = b0*(1+r)*(1+r)*(1+r)*(1+r)*(1-q5*r)
+  // (expand(B)).collect(r)
+  // -b0*q5*r^5 - (4*b0*q5 - b0)*r^4 - 2*(3*b0*q5 - 2*b0)*r^3 - 2*(2*b0*q5 - 3*b0)*r^2 
+  // - (b0*q5 - 4*b0)*r + b0
+
+
+  typedef std::complex<double> Complex;
+  Complex q5, a0, a1, a2, a3, a4, b0, b1, b2, b3, b4, b5;
+
+  q5 = -0.5;
+
+  // 
+  b0 = 0.5;
+  b1 = -b0*(q5 - 4.0);
+  b2 = -2.0*b0*(2.0*q5 - 3.0);
+  b3 = -2.0*b0*(3.0*q5 - 2.0);
+  b4 = -b0*(4.0*q5 - 1.0);
+  b5 = -b0*q5;
+
+  // same as always - maybe make a function setFeedbackCoeffsForSymmetry:
+  a0 =  1;
+  a1 =  0;
+  a2 =  2.0*b2;
+  a3 =  0;
+  a4 =  2.0*b4;
+
+  // unstable - maybe try to fix only 3 zeros at z = -1
+
+  // todo: maybe make an explorer plugin where i can manually place all zeros - select numPoles,
+  // select, if there should be an additional zero and then move them around in the z-plane
+
+  rsFilterSpecificationBA<double> ba;
+  ba.sampleRate = 1;
+  ba.a = { a0, a1, a2, a3, a4 };
+  ba.b = { b0, b1, b2, b3, b4, b5 };
+  return ba;
+}
+
 
 
 
@@ -344,6 +390,23 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
   ba.a.resize(4); 
   return ba;
 }
+
+
+
+// Maybe requiring C(z) = B(-z) is too restrictive - we assumed that A(z) = A(-z) in the step going 
+// from requiring G(z) = H(-z) - maybe by not imposing such a symmetry constraint on A(z), more 
+// degrees of freedom can be unlocked?
+// G(z) = H(-z) -> C(z)/A(z) =  (A(z)-B(z))/A(z) = B(-z)/A(-z) ...this is less restrictive than
+// C(z) = B(-z)
+
+// let's start with (A(z)-B(z))/A(z) = B(-z)/A(-z) and define A=A(z),A'=A(-z),B=B(z),B'=B(-z), so:
+// (A-B)/A = B'/A' -> A'*(A-B) = A*B' -> A' * A - A' * B = A * B' 
+// -> A'A - A'B - AB' = 0 for all z...maybe by strategically selecting some particular z, this 
+// leads to useful equations? and/or maybe we can throw a multidimensinal root-finder at this 
+// problem? or maybe we can cast this as a constrained optimization problem - the target function
+// is some function of the magnitude response - for example, how far it is away from the 
+// butterworth lowpass of the same order and the constraint equation is A'A - A'B - AB' = 0?
+// maybe start the optimization with a butterworth filter as initial guess?
 
 //-------------------------------------------------------------------------------------------------
 // code below doesn't give rise to working complementary filters but contains a lot of info in the
