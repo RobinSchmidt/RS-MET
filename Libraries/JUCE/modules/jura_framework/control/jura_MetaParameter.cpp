@@ -257,33 +257,41 @@ void MetaControlledParameter::initMetaMapToFlat()
   metaMapper.initToFlat(v);
 }
 
-// BUG:
-// When there's a possibly non-invertible meta-map, it's not enough to store/retrieve the parameter
-// via gets/setValue (as the baseclass implementation does). We need to always keep track of the 
-// normalized value, so we may have to store it also into the xml ....sooo, maybe we should 
-// delegate to the baseclass implementation only if metaMapper.isDefaultMap() is true and otherwise
-// store the normalized value along with the map - then we may omit storing the actual value - it 
-// would be redundant.
-
 void MetaControlledParameter::saveToXml(XmlElement* xml) const
 {
-  rsSmoothableParameter::saveToXml(xml);
-  if(!metaMapper.isDefaultMap())
-    xml->addChildElement(metaMapper.getStateAsXml(getName() + "ParameterMap"));
+  if(!metaMapper.isDefaultMap()) {
+    XmlElement* mapXml = metaMapper.getStateAsXml(getName() + "ParameterMap");
+    if(!hasAttachedMeta())
+      mapXml->setAttribute("NormalizedValue", getNormalizedValue());
+    xml->addChildElement(mapXml);
+    // If there is a user-defined mapping function, we cannot just store the (final, doubly mapped) 
+    // parameter value in the xml and rely on recovering the normalized value via the inverse 
+    // mapping because user-mappings may be non-invertible. So we must also store the normalized 
+    // value in the xml - but only if there's no meta attached because otherwise, the attached meta
+    // is responsible to store the normalized value and we want to avoid redundant storage of 
+    // values because the behavior may be confusing when manually editing xml files).
+  }
+  else
+    rsSmoothableParameter::saveToXml(xml); // stores the (mapped) value directly as xml-attribute
 }
 
 void MetaControlledParameter::recallFromXml(const XmlElement& xml) 
 {
-  rsSmoothableParameter::recallFromXml(xml);
   XmlElement* mapXml = xml.getChildByName(getName() + "ParameterMap");
-  if(mapXml != nullptr)
+  if(mapXml != nullptr) {
     metaMapper.setStateFromXml(*mapXml);
-  else
+    double normVal = mapXml->getDoubleAttribute("NormalizedValue", getNormalizedDefaultValue());
+    setNormalizedValue(normVal, true, true);
+    // this may be later changed again due to re-attaching the meta as stored in xml ...verify this
+  }
+  else {
     metaMapper.initToIdentity();
+    rsSmoothableParameter::recallFromXml(xml);
+  }
 
-  //metaMapChanged(); // test
-  // there's a bug: when recalling a patch with a mapping curve for some parameter, the 
-  // slider/parameter is initially wrong - i hoped, that this may help but didn't
+  metaMapChanged();
+  // This is necesarry to update the slider in case of an attached map but no attached meta and the
+  // normalized (user-map)mapped value happens to be equal to th normalized default value
 }
 
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
