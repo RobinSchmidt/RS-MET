@@ -216,6 +216,8 @@ public:
   }
   // rename to applyFunction
 
+  // implement the () operator such that
+
   /** Tries to invert the function by finding an x-value for which this function produces the 
   given y value. The implementation is based on root-finding and will succeed only, if the given y 
   is within the range of the function. If there are several possible x-values that yield the given 

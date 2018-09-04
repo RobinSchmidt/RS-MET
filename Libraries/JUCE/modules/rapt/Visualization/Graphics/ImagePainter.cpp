@@ -571,8 +571,8 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
 {
   // Not yet implemented. Here is what we would have to do:
   // -compute coeffs of the two polynomials:
-  //  x(t) = a0 + a1*x + a2*x^2 + a3*x^3
-  //  y(t) = b0 + b1*y + b2*y^2 + b3*y^3
+  //  x(t) = a0 + a1*t + a2*t^2 + a3*t^3
+  //  y(t) = b0 + b1*t + b2*t^2 + b3*t^3
   // -compute the total length of the spline segment (this will be some kind of analytic line 
   //  integral) to be used to scale the brightness of the dots
   // -compute a sequence of t-values at which to evaluate the polynomials and set a dot - these

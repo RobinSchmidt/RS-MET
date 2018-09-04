@@ -121,7 +121,7 @@ parameterChanged callback method whenever the value has changed. It may also de-
 later via deRegisterParameterObserver. Such observer objects often like to maintain pointers to the
 observees, mainly to compare the stored pointers to the argument of the callback function in order
 to trigger particular actions depending on which particular Parameter was changed. In order to
-avoid dangling pointers inside ParameterObserver objects when Parameter obejcts get deleted, the
+avoid dangling pointers inside ParameterObserver objects when Parameter objects get deleted, the
 Parameter class calls another callback parameterWillBeDeleted in its destructor to give the
 obervers an opportunity to invalidate their pointers.
 
@@ -140,7 +140,9 @@ Moreover, it may provide better performance than the 1st meachanism due to not h
 out which Parameter has been changed on callback invocation. Disadvantages are, that it dictates a
 signature for the to-be-called-back member functions and potential code-bloat due to template
 instantiation (it's based on template functors). It's recommended to be used mainly for performance
-critical callback applications and/or when it's not acceptable to derive from ParameterObserver.
+critical callback applications and/or when it's not acceptable to derive from ParameterObserver. 
+Typically, GUI objects use the observer mechanism and DSP objects the member function pointer based
+mechanism (becuase we don't want dependencies on the parameter handling framework in the DSP code).
 
 The callbacks are called before the observer notifications - this may be relevant in situations 
 where a parameter change triggers a gui update that, for example, re-draws a plot. In this case, it 
@@ -286,6 +288,15 @@ public:
     name = newName;
   }
 
+  /** Sets the name of the parameter that should be used on the GUI. This may be different than 
+  the actual name (used for save/recall) but if you ignor this feature, then the corresponding 
+  getDisplayName will just return the regular name.  */
+  virtual void setDisplayName(const juce::String& newName)
+  {
+    ScopedPointerLock spl(mutex);
+    displayName = newName;
+  }
+
   /** Sets a flag to indicate whether this parameter should be automatically saved into a preset
   (as a parameter of AutamatableModule) - it may be desirable to turn this off, when the parameter
   is saved by other means in order to avoid redundancies in the preset files. */
@@ -309,7 +320,7 @@ public:
   /** A global switch (for all parameter objects) to decide whether a parameter value should be 
   stored to an xml element (in saveToXml), even if it has its default value. Normally, default 
   values are not stored because when reading an xml and the attribute isn't found, the parameter
-  will take on its deafult value anyway, so we may save some space. */
+  will take on its default value anyway, so we may save some space. */
   static void setStoreDefaultValuesToXml(bool shouldStore)
   {
     storeDefaultValues = shouldStore;
@@ -405,6 +416,18 @@ public:
 
   /** Returns the name of the parameter. */
   virtual const juce::String& getName() const { ScopedPointerLock spl(mutex); return name; }
+
+  /** Returns the name of the parameter that should be used on the GUI. This may be different than 
+  the actual name (used for save/recall)...but typically isn't. */
+  virtual const juce::String& getDisplayName() const 
+  { 
+    ScopedPointerLock spl(mutex);
+    if(displayName == "")
+      return name;
+    else
+      return displayName; 
+  }
+
 
   /** Retruns true if 'nameToCompareTo' equals the name of this parameter. */
   virtual bool hasName(const juce::String& nameToCompareTo) const
@@ -560,13 +583,16 @@ protected:
   values > 0 for exponential scaling, etc.. */
   virtual void valueSanityCheck();
 
-  juce::String name;            // string for the parameter name
-  double normalizedValue;       // normalized value in the range 0..1
-  double value;                 // actual value of the parameter
-  double interval;              // interval for adjustments ...rename to stepSize
-  double defaultValue;          // default value of this parameter ...maybe rename to resetValue
-  int    scaling;               // index to the scaling/mapping to be used
-  bool   saveAndRecall = true;  // flag, to switch automatic saving on/off
+  double normalizedValue;        // normalized value in the range 0..1
+  double value;                  // actual value of the parameter
+  double interval;               // interval for adjustments ...rename to stepSize
+  double defaultValue;           // default value of this parameter ...maybe rename to resetValue
+  int    scaling;                // index to the scaling/mapping to be used
+  bool   saveAndRecall = true;   // flag, to switch automatic saving on/off
+  juce::String name;             // string for the parameter name
+  juce::String displayName = ""; // a possibly different name for gui/display purposes (if empty
+                                 // the regular name will be used)
+
 
   static bool storeDefaultValues; // a global switch for values to xml even if they are at default value
 

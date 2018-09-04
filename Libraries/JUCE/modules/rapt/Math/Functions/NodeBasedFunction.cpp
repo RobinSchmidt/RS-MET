@@ -48,4 +48,8 @@ template<class T>
 T rsNodeBasedFunction<T>::applyInverseFunction(T y)
 {
   return y; // preliminary
+
+  // todo:
+  // -implement the () operator such that objects of this class can be used as functor
+  // -use rsRootFinder::bisection(*this, 0, 1, y);
 }
