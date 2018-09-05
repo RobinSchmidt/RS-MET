@@ -43,7 +43,7 @@ public:
   virtual void removeChildWidget(RWidget* widgetToRemove, bool removeAsChildComponent,
     bool deleteObject);
 
-  /** Returns a pointer the ColourSchemeComponent that contains this RLabel (if any). This works
+  /** Returns a pointer the ColourSchemeComponent that contains this RWidget (if any). This works
   also recursively in the sense that when the parent is not a ColourSchemeComponent, it will
   investigate the grand-parent and possibly return it (if it is a ColourSchemeComponent) ...and so
   on. If it reaches the root of the component embedding hierarchy and still has not found a
@@ -78,17 +78,17 @@ public:
   virtual WidgetColourScheme getColourScheme() const { return colourScheme; }
 
   /** Returns the state of the widget as a string. Subclasses may override this in order to create
-  a string from theri internal variables. They should the also override setValueFromString to restore
-  their internal variables from a string by parsing it. */
+  a string from their internal variables. They should then also override setValueFromString to 
+  restore their internal variables from a string by parsing it. */
   //virtual juce::String getStateAsString() const = 0;
   virtual juce::String getStateAsString() const { return juce::String::empty; }
 
   /** Returns a string representing the value for gui/display purposes using our string conversion 
   function on the value of the assigned parameter (if any, otherwise the empty string will be 
-  returned. */
+  returned). */
   virtual juce::String getValueDisplayString() const
   {
-    if( assignedParameter != nullptr)
+    if(assignedParameter != nullptr)
       return stringConversionFunction(assignedParameter->getValue());
     else
       return "";
@@ -143,9 +143,9 @@ protected:
 
   /** Opens a modal field for manually entering a value and returns the value entered. */
   virtual double openModalNumberEntryField(double numberToShowInitially);
-    // needs a double parameter for the value to show initially
 
-  /** The assigned Parameter object. */
+  /** The assigned Parameter object. Typically, a widget is for displaying and manipulating a 
+  parameter object (but it can be used also without attaching a parameter). */
   Parameter* assignedParameter = nullptr;
 
   /** A pointer to the function which converts a value into a juce::String. */
@@ -162,7 +162,7 @@ private:
 
   // colours for various aspects of the widget:
   WidgetColourScheme colourScheme;
-    // \TODO (IMPORTANT): use a pointer such that a number of widget can share the colour-scheme
+    // \TODO (IMPORTANT): use a pointer such that a number of widgets can share the colour-scheme
     // - if NULL we may use a global default colorscheme object
 
   friend class AutomatableWidget;

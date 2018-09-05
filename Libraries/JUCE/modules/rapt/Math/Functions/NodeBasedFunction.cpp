@@ -47,9 +47,12 @@ size_t rsNodeBasedFunction<T>::moveNodeToSortedIndex(size_t i)
 template<class T>
 T rsNodeBasedFunction<T>::applyInverseFunction(T y)
 {
-  return y; // preliminary
+  //return y; // preliminary
+  //return rsRootFinder<T>::bisection(std::function<T(T)>(*this), getMinX(), getMaxX(), y);
+  return rsRootFinder<T>::falsePosition(std::function<T(T)>(*this), getMinX(), getMaxX(), y);
+  // false-position method should need only one step in a linear mapping...but may be slow for
+  // rational/exponential mappings with a strong bending...maybe a more robust algorithm is needed
+  // that switches to bisection steps in cases of slow convergence of false-position
 
-  // todo:
-  // -implement the () operator such that objects of this class can be used as functor
-  // -use rsRootFinder::bisection(*this, 0, 1, y);
+  //return rsRootFinder<T>::bisection(*this, getMinX(), getMaxX(), y);
 }

@@ -164,6 +164,19 @@ public:
 
   inline T getNodeShapeParameter(size_t index) { return nodes[index].getShapeParameter(); }
 
+  /** Returns the minimum x-value of all nodes. */
+  inline T getMinX() { return nodes[0].getX(); } // nodes are sorted by ascending x
+
+  /** Returns the maximum x-value of all nodes. */
+  inline T getMaxX() { return nodes[nodes.size()-1].getX(); }
+
+  // what if the "nodes" array is empty? this will lead to access violation. can we ensure that it 
+  // never is empty? (currently, this is the case due to higher level code) ...or should we just 
+  // return 0 in this case?
+
+  // todo: getMinY/getMaxY (has to actually go through all nodes to find min/max)
+
+
 
   /** Returns a reference to our array of nodes. It's a constant reference because client code
   is not allowed to edit that data directly. Instead, it must use the moveNode function which
@@ -216,7 +229,13 @@ public:
   }
   // rename to applyFunction
 
-  // implement the () operator such that
+  /** The function call operator. Returns the same value as getValue and makes objects of this 
+  class usable as functors/function-objects suitable for input into root-finders, etc. */
+  T operator()(T x)
+  {
+    return getValue(x);
+  }
+
 
   /** Tries to invert the function by finding an x-value for which this function produces the 
   given y value. The implementation is based on root-finding and will succeed only, if the given y 
@@ -228,11 +247,16 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
+  /** Converts an object of type rsNodeBasedFunction to a std::function. */
+  /*operator std::function<T(T)>() const { return std::function<T(T)>(*this); }*/
+  //operator std::function<T(T)>() { return std::function<T(T)>(*this); }
+  //operator std::function<T(T)>&() { return std::function<T(T)>(*this); }
+
   /** Given a parameter in the range -1..+1, this function computes the scaler "a" for the 
   formula y = (1-exp(a*x)) / (1-exp(a)) that is used to smoothly morph between exponential growth,
   linear and exponential decay. The input "x" is a value between 0 and 1. If p = 0, the transition 
   is linear, if p < 0 it's an exponential growth and if p > 0 an (inverted) exponential decay, i.e.
-  and exponential saturation. */
+  an exponential saturation. */
   static inline T linVsExpFormulaScaler(T p)
   {
     T c = T(0.5) * (p + 1);
