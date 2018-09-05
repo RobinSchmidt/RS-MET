@@ -83,6 +83,17 @@ public:
   //virtual juce::String getStateAsString() const = 0;
   virtual juce::String getStateAsString() const { return juce::String::empty; }
 
+  /** Returns a string representing the value for gui/display purposes using our string conversion 
+  function on the value of the assigned parameter (if any, otherwise the empty string will be 
+  returned. */
+  virtual juce::String getValueDisplayString() const
+  {
+    if( assignedParameter != nullptr)
+      return stringConversionFunction(assignedParameter->getValue());
+    else
+      return "";
+  }
+
   /** Returns a pointer to the (bitmap) font that is used for drawing text on widgets. */
   inline const BitmapFont* getFont() { return font; }
 
