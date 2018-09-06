@@ -90,9 +90,9 @@ public:
   {
     unsigned long accu = 0;
     for(unsigned long i = 1; i <= order; i++) {
-      updateState();
-      accu += state; }
-    return scale * accu + shift;
+      this->updateState();
+      accu += this->state; }
+    return this->scale * accu + this->shift;
     // todo: scale and shift should depend on order - need to be updated in setOrder, setRange
     // hmm...maybe state needs to be an rsUint64 here to avoid overflow in the accumulation
     // ...maybe make performance tests to figure out, if that makes a difference

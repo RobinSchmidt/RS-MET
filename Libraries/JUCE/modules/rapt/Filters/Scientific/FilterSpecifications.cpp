@@ -135,7 +135,7 @@ rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK() const
   zpk.p.resize(a.size()-1);
   zpk.z.resize(b.size()-1);
   if(isDigital()) {
-    std::vector<complex<T>> tmp = a; 
+    std::vector<std::complex<T>> tmp = a;
     rsReverse(tmp);
     rsPolynomial<T>::findPolynomialRoots(&tmp[0], (int)tmp.size()-1, &zpk.p[0]);
     tmp = b; 

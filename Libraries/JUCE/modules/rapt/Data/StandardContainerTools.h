@@ -52,10 +52,10 @@ inline void rsRemove(std::vector<T>& v, size_t index)
 template<class T>
 inline size_t rsFind(std::vector<T>& v, T elementToFind)
 {
-  for(size_t i = 0; i < size(v); i++)
+  for(size_t i = 0; i < v.size(); i++)
     if(v[i] == elementToFind)
       return i;
-  return size(v); // as convention, return vector-length, if element is not found
+  return v.size(); // as convention, return vector-length, if element is not found
 }
 
 template<class T>

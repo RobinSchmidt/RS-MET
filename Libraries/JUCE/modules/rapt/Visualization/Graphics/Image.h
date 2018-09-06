@@ -102,7 +102,7 @@ public:
   {
     rsAssert(width  == otherImage->width);
     rsAssert(height == otherImage->height);
-    TPix err = maxError(data, otherImage->data, width*height);
+    TPix err = rsArray::maxError(data, otherImage->data, width*height);
     return abs(err) <= tolerance;
   }
 

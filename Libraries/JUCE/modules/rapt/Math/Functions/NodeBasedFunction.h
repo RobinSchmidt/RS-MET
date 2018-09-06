@@ -289,7 +289,7 @@ protected:
 
     T a = linVsExpFormulaScaler(nodes[i+1].shapeParam);
 
-    if(abs(a) < thresh)            // global setting for the whole function defined in this class
+    if(fabs(a) < thresh)            // global setting for the whole function defined in this class
       return getValueLinear(x, i); // avoid div-by-zero
 
     // this is the same as in the linear case (factor out, if possible):

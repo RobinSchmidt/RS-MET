@@ -199,7 +199,7 @@ std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
   {
   case ACCUMULATE_INTO_HIGHPASS: 
   {
-    for(k = 0; k <= min(bandIndex, numSplits-1); k++)
+    for(k = 0; k <= std::min(bandIndex, numSplits-1); k++)
     {
       if(k == bandIndex) // only the last stage is possibly lowpass
         H *= splitters[k]->getLowpassTransferFunctionAt(z);
@@ -210,7 +210,7 @@ std::complex<TPar> rsMultiBandSplitter<TSig, TPar>::getBandFrequencyResponseAt(
   case ACCUMULATE_INTO_LOWPASS: 
   {
     int i = numActiveBands-1-bandIndex;
-    for(k = min(i, numSplits-1); k >= 0; k--)
+    for(k = std::min(i, numSplits-1); k >= 0; k--)
     {
       int j = numSplits-1-k;
       if(k == i)
