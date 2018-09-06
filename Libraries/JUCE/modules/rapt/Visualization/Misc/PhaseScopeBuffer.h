@@ -61,12 +61,15 @@ public:
 
   /** Sets the maximum size of the image into which we draw. The class will pre-allocate an
   appropriate amount of memory for the pixels and subsequent call to setSize will not reallocate
-  memory but just interpret the preallocated memory differently 8and possibly leaving part of it
+  memory but just interpret the preallocated memory differently and possibly leaving part of it
   unused. If you call setSize with a size larger than the pre-allocated maximum size, memory
   re-allocation will occur (and the new maximum size will be increased). When the user resizes the
   display from the GUI thread while we write samples into the buffer in the audio thread, we don't
   want to let memory reallocation take place... */
   void setMaxSizeWithoutReAllocation(int newMaxWidth, int newMaxHeight);
+
+  /** Sets the drawing mode as one of the value in enum drawModes. */
+  void setDrawMode(int newMode) { drawMode = newMode; }
 
   /** Switches anti-aliasing on/off. */
   void setAntiAlias(bool shouldAntiAlias);
@@ -197,6 +200,7 @@ protected:
   TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
 
   TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
+  TSig dxOld, dyOld;   // old derivatives of x,y with respect to time t (i.e. the old x-xOld, ...)
   TPix cOld;           // old line end color
 
   TSig scanPos;        // scan position in 1D mode

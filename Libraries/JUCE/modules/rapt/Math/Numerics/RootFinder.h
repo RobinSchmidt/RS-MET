@@ -31,10 +31,14 @@ public:
   /** Similar to bisection but doesn't use the midpoint of the current bracketing interval, but the
   point where a line between (xLeft,yLeft), (xRight,yRight) crosses the x-axis. Convergence is
   typically (for smooth functions, that are well approximated by a line near the root) faster than
-  for bisection and convergence is guranteed. */
+  for bisection and convergence is guranteed. But for some functions, the convergence may also be 
+  slower than bisection. The method is also known as "regula falsi". */
   static T falsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
 
-  
+
+  //static T modifiedFalsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
+
+
   // secant, newton, ridders, brent, ...
 
   // see RSLib::UnivariateScalarFunction in file FunctionObjects.h/cpp

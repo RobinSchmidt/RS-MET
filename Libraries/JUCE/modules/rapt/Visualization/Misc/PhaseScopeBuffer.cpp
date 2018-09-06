@@ -212,6 +212,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
   // (xOld,yOld) = (0,0) - but in pixel coordinates:
   xOld = 0.5f * image.getWidth();
   yOld = 0.5f * image.getHeight();
+  dxOld = dyOld = TSig(0);
   cOld = TPix(0);
 }
 
@@ -244,7 +245,6 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig
     TPix ct = color / (TPix)numDots;  // target color that would be used if we don't do gradients
     c = (2.f*ct) - cOld;              // desired endpoint color
     c = rsMax(c, ct);                 // c could come out negative, use ct as lower bound
-    //painter.drawLineDotted(x1, y1, x2, y2, cOld, c, numDots);
     drawDottedSegment(x1, y1, x2, y2, cOld, c, numDots);
     cOld = c;
   }
@@ -253,7 +253,6 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig
     c = color;
     if(scaleByNumDots)
       c = color / (TPix)numDots;
-    //painter.drawLineDotted(x1, y1, x2, y2, c, c, numDots);
     drawDottedSegment(x1, y1, x2, y2, c, c, numDots);
   }
 }
@@ -264,8 +263,27 @@ template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TSig x1, TSig y1, TSig x2, TSig y2,
   TPix color1, TPix color2, int numDots)
 {
-  painter.drawLineDotted(x1, y1, x2, y2, color1, color2, numDots);
-  // todo: dispatch according to drawMode, store xOld, yOld here instead of in addLineTo
+  switch(drawMode)
+  {
+  case DOTTED_LINE: painter.drawLineDotted(x1, y1, x2, y2, color1, color2, numDots); break;
+  case DOTTED_SPLINE:
+  {
+    TSig dx = x2-x1;
+    TSig dy = y2-y1;
+    painter.drawDottedSpline(
+      x1, dxOld, y1, dyOld, 
+      x2, dx, y2, dy,
+      color1, color2, 
+      TSig(lineDensity), maxDotsPerLine, true); // true: scaleByNumDots
+    dxOld = dx;
+    dyOld = dy;
+  } break;
+
+  default: { } break; // don't draw anything if drawMode has invalid value
+
+    // todo: dispatch according to drawMode, store xOld, yOld here instead of in addLineTo
+  }
+
 }
 
 

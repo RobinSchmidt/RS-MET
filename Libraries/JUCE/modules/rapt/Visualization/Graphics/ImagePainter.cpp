@@ -566,7 +566,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2,
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
-  TCor x2, TCor x2s, TCor y2, TCor y2s, TPix color, TCor density, int maxNumDots, 
+  TCor x2, TCor x2s, TCor y2, TCor y2s, TPix color1, TPix color2, TCor density, int maxNumDots, 
   bool scaleByNumDots)
 {
   // Not yet implemented. Here is what we would have to do:
