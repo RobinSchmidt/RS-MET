@@ -45,7 +45,7 @@ size_t rsNodeBasedFunction<T>::moveNodeToSortedIndex(size_t i)
 }
 
 template<class T>
-T rsNodeBasedFunction<T>::applyInverseFunction(T y)
+T rsNodeBasedFunction<T>::applyInverseFunction(T y) const
 {
   //return y; // preliminary
   //return rsRootFinder<T>::bisection(std::function<T(T)>(*this), getMinX(), getMaxX(), y);

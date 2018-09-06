@@ -33,7 +33,7 @@ size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
 // about the constrainNode function being called after re-indexing or something ...i need to
 // figure that out..or not...it works like it is now, it's just unelegant
 
-bool rsMetaParameterMapper::isNodeRemovable(size_t index)
+bool rsMetaParameterMapper::isNodeRemovable(size_t index) const
 {
   if(index == 0 || index == nodes.size()-1) 
     return false; // first and last node can't be removed

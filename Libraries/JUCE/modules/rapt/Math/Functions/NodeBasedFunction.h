@@ -138,7 +138,7 @@ public:
   /** This function will be called before an attempt to remove a node and will not remove it, if 
   that function returns false. The baseclass implementation just returns true but you can override 
   it in a subclass if your subclass - for example - requires a certain minimum number of nodes. */
-  virtual bool isNodeRemovable(size_t /*index*/) { return true; }
+  virtual bool isNodeRemovable(size_t /*index*/) const { return true; }
 
   // todo: maybe add a canNodeBeAdded(T x, T y) function. subclasses my have a maximum number of
   // nodes and/or disallow adding nodes outside a given (x,y) range
@@ -155,20 +155,20 @@ public:
   // \name Inquiry
 
   /** Returns the x coordinate of the node with given index. */
-  inline T getNodeX(size_t index) { return nodes[index].getX(); }
+  inline T getNodeX(size_t index) const { return nodes[index].getX(); }
 
   /** Returns the y coordinate of the node with given index. */
-  inline T getNodeY(size_t index) { return nodes[index].getY(); }
+  inline T getNodeY(size_t index) const { return nodes[index].getY(); }
 
-  inline int getNodeShapeType(size_t index) { return nodes[index].getShapeType(); }
+  inline int getNodeShapeType(size_t index) const { return nodes[index].getShapeType(); }
 
-  inline T getNodeShapeParameter(size_t index) { return nodes[index].getShapeParameter(); }
+  inline T getNodeShapeParameter(size_t index) const { return nodes[index].getShapeParameter(); }
 
   /** Returns the minimum x-value of all nodes. */
-  inline T getMinX() { return nodes[0].getX(); } // nodes are sorted by ascending x
+  inline T getMinX() const { return nodes[0].getX(); } // nodes are sorted by ascending x
 
   /** Returns the maximum x-value of all nodes. */
-  inline T getMaxX() { return nodes[nodes.size()-1].getX(); }
+  inline T getMaxX() const { return nodes[nodes.size()-1].getX(); }
 
   // what if the "nodes" array is empty? this will lead to access violation. can we ensure that it 
   // never is empty? (currently, this is the case due to higher level code) ...or should we just 
@@ -181,16 +181,16 @@ public:
   /** Returns a reference to our array of nodes. It's a constant reference because client code
   is not allowed to edit that data directly. Instead, it must use the moveNode function which
   will update the datapoint and do some additional stuff. */ 
-  const std::vector<rsFunctionNode<T>>& getNodes() { return nodes; }
+  const std::vector<rsFunctionNode<T>>& getNodes() const { return nodes; }
 
   /** Returns true, if the datapoint at index i+1 is considered to be "less than" the datapoint at 
   index i. We use this function internally to keep our arrays of values sorted. Datapoints are 
   sorted according to ascending x-values and in case of equal x-values, according to ascending 
   y-values. The caller should ensure that i <= N-2. */
-  bool isNextValueLess(size_t i) { return nodes[i+1] < nodes[i]; }
+  bool isNextValueLess(size_t i) const { return nodes[i+1] < nodes[i]; }
 
   /** Returns the first index i in our x-array such that x[i] > xToFind. */
-  size_t firstIndexOfGreaterX(T xToFind)
+  size_t firstIndexOfGreaterX(T xToFind) const
   {
     for(size_t i = 0; i < nodes.size(); i++)
       if(nodes[i].x > xToFind)
@@ -204,7 +204,7 @@ public:
   // \name Output computation
 
   /** Returns an interpolated y-value at the given value of x. */
-  T getValue(T x)
+  T getValue(T x) const
   {
     if(nodes.size() == 0)
       return 0;
@@ -231,7 +231,7 @@ public:
 
   /** The function call operator. Returns the same value as getValue and makes objects of this 
   class usable as functors/function-objects suitable for input into root-finders, etc. */
-  T operator()(T x)
+  T operator()(T x) const
   {
     return getValue(x);
   }
@@ -242,7 +242,7 @@ public:
   is within the range of the function. If there are several possible x-values that yield the given 
   y value (as could be the case for nonmonotonic functions), the first (leftmost) x-value will be
   returned. */
-  T applyInverseFunction(T y);
+  T applyInverseFunction(T y) const;
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
@@ -267,7 +267,7 @@ public:
 protected:
 
   /** For internal use only... */
-  T getValueLinear(T x, size_t i)
+  T getValueLinear(T x, size_t i) const
   {
     T x1 = nodes[i].x;
     T y1 = nodes[i].y;
@@ -280,7 +280,7 @@ protected:
     return y1 + (y2-y1) * (x-x1) / (x2-x1); // factor into function linCurve
   }
 
-  T getValueExponential(T x, size_t i)
+  T getValueExponential(T x, size_t i) const
   {
     T thresh = RS_EPS(T);
 
@@ -314,13 +314,13 @@ protected:
   // rational mapping
 
 
-  T ratCurve(T x, T a)
+  T ratCurve(T x, T a) const
   {
     T ax = a*x;
     return (ax+x) / (2*ax - a + 1);
     // for a plot, see: https://www.desmos.com/calculator/ql1hh1byy5
   }
-  T getValueRational(T x, size_t i)
+  T getValueRational(T x, size_t i) const
   {
     T thresh = RS_EPS(T);
 
