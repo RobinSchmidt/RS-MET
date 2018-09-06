@@ -108,7 +108,7 @@ T rsFilterAnalyzer<T>::findAnalogFrequencyWithMagnitude(Complex* z, Complex* p, 
   T wM   = (wL+wU)/2; // midpoint
   T wOld = wM;        // to remember wM from previous iteration
   T AM   = rsFilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wM);
-  while( abs(AM-A) > tol && i < iMax ) 
+  while( abs(AM-A) > tol && i < iMax )
   {
     if( AM > A )
       wL = wM;

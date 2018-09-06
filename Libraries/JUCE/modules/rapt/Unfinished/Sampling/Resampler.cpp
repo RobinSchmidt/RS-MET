@@ -433,7 +433,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
     if(left <= 0)
       break;
   }
-  rsArray::reverse(&z[0], (int) size(z)); // bring marks in 1st half into ascending order
+  rsArray::reverse(&z[0], (int) z.size()); // bring marks in 1st half into ascending order
 
   // find cycle-marks to the right of nCenter (which is currently the last element in z):
   left  = z[z.size()-1];
@@ -481,7 +481,7 @@ template<class T>
 typename rsCycleMarkFinder<T>::ErrorMeasures 
 rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T period)
 {
-  int N = (int) size(cycleMarks);
+  int N = (int) cycleMarks.size();
   ErrorMeasures errors;
   errors.mean   = period - rsArray::meanDifference(&cycleMarks[0], N);
   errors.min    = T(0);
