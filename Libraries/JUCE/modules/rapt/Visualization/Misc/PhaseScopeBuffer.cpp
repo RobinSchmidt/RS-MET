@@ -11,9 +11,13 @@ rsPhaseScopeBuffer<TSig, TPix, TPar>::rsPhaseScopeBuffer()
   thickness      = 0.707f;
   brightness     = 1.0;
   useGradient    = false;
+
+  xOld = yOld = TSig(0);
+  cOld = TPix(0);
+  scanPos = TSig(0);
+
   updateDecayFactor();
   updateTransformCoeffs();
-
   setSampleRate(44100.0);
   reset();
 }
@@ -180,14 +184,17 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
   // replace x with sawtooth-scanner in 1D mode:
   if(oneDimensonal == true)
   {
-    xt = x+y;                         // use sum... 
-    x  = scaleX * getScannerSaw(xt);  // ...for analysis...
-    y  = xt;                          // ...and display
+    xt = x+y;                         // use sum for analysis and display (*)
+    x  = scaleX * getScannerSaw(xt);
+    y  = xt;
+    // (*) todo: use arbitrary linear combination of x,y maybe have convenience function to select
+    // left (1,0), right(0,1), left+right(1,1), (left+right)/2 (.5,.5), 
+    // left+right/sqrt(2) = mid, left-right/sqrt(2) = side
   }
 
   // transform to pixel coordinates and draw line:
   toPixelCoordinates(x, y);
-  addLineTo(x, y);
+  addLineTo(x, y);  // rename to addCurveTo, addSegmentTo
 }
 
 template<class TSig, class TPix, class TPar>
@@ -235,9 +242,10 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig
   if(useGradient)
   {
     TPix ct = color / (TPix)numDots;  // target color that would be used if we don't do gradients
-    c = (2.f*ct) - cOld;              // desired enpoint color
+    c = (2.f*ct) - cOld;              // desired endpoint color
     c = rsMax(c, ct);                 // c could come out negative, use ct as lower bound
-    painter.drawLineDotted(x1, y1, x2, y2, cOld, c, numDots);
+    //painter.drawLineDotted(x1, y1, x2, y2, cOld, c, numDots);
+    drawDottedSegment(x1, y1, x2, y2, cOld, c, numDots);
     cOld = c;
   }
   else
@@ -245,9 +253,22 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig
     c = color;
     if(scaleByNumDots)
       c = color / (TPix)numDots;
-    painter.drawLineDotted(x1, y1, x2, y2, c, c, numDots);
+    //painter.drawLineDotted(x1, y1, x2, y2, c, c, numDots);
+    drawDottedSegment(x1, y1, x2, y2, c, c, numDots);
   }
 }
+// rename to drawConnection or drawCurve or something and dispatch between line-drawing, 
+// spline-drawing and maybe other drawing modes (maybe non-dotted like bresenham, wu, etc.)
+
+template<class TSig, class TPix, class TPar>
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TSig x1, TSig y1, TSig x2, TSig y2,
+  TPix color1, TPix color2, int numDots)
+{
+  painter.drawLineDotted(x1, y1, x2, y2, color1, color2, numDots);
+  // todo: dispatch according to drawMode, store xOld, yOld here instead of in addLineTo
+}
+
+
 
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()
@@ -260,7 +281,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 {
   insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
   // The factor is totally ad-hoc - maybe come up with some more meaningful factor.
-  // However, the proportionality to the birghtness parameter and inverse proportionality to
+  // However, the proportionality to the brightness parameter and inverse proportionality to
   // the sample rate seems to make sense.
 }
 

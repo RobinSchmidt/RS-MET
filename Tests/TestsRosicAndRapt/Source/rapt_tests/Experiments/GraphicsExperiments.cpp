@@ -274,7 +274,7 @@ void phaseScopeLissajous()
   // input signal parameters:
   static const int N = 80;  // number of data points
   float a = 2.f;
-  float b = 7.f;
+  float b = 3.f;
   float scale = 0.9f;
 
   // create and set up rsPhaseScopeBuffer object:

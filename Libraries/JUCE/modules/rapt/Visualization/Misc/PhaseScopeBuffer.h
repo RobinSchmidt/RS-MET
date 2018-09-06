@@ -16,7 +16,17 @@ public:
   virtual ~rsPhaseScopeBuffer() {}
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
+
+  enum drawModes
+  {
+    DOTTED_LINE = 0,
+    DOTTED_SPLINE,
+    // BRESENHAM,
+    // WU,
+    NUM_DRAW_MODES
+  };
 
   /** Sets the sample rate. */
   void setSampleRate(TPar newSampleRate);
@@ -98,7 +108,7 @@ public:
   void setShiftX(TSig newShift);
   void setShiftY(TSig newShift);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns a pointer to our image that we use as buffer. */
@@ -116,7 +126,7 @@ public:
   /** Returns the height in pixels. */
   inline int getHeight() { return image.getHeight(); }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   /** Converts the raw left- and right signal amplitude values to the matrix indices, where the
@@ -152,7 +162,14 @@ protected:
   \todo: maybe make this color scaling optional  */
   void drawDottedLine(TSig x1, TSig y1, TSig x2, TSig y2, TPix color, TPar density = 1,
     int maxNumDots = 0, bool scaleByNumDots = false, TPar minDotDistance = 1);
-  // rename to drawLineDotted
+  // rename to drawDottedSegment
+
+  void drawDottedSegment(TSig x1, TSig y1, TSig x2, TSig y2, 
+    TPix color1, TPix color2, int numDots);
+
+  //drawLineDotted(x1, y1, x2, y2, cOld, c, numDots);
+
+
 
   /** Updates the pixel decay factor according to the settings of frame rate and desired decay
   time. */
@@ -173,7 +190,6 @@ protected:
   TPar decayTime;      // pixel illumination time
   TPar decayFactor;    // factor by which pixels decay (applied at frameRate)
   TPar lineDensity;    // density of the artificial points between actual datapoints
-  int  maxDotsPerLine;
   TPar thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
                        // maybe rename to spread or weight or something
 
@@ -191,19 +207,19 @@ protected:
   TSig rotation = 0;
   TSig shiftX = 0, shiftY = 0;
   TSig Axx, Axy, Ayx, Ayy;       // matrix coefficients
+  // factor out into class rsAffineTransform2D
 
-  bool useGradient;    // use color gradient to seamlessly join line segments
-  bool oneDimensonal = false;
+  int  maxDotsPerLine;           // maximum number dots per line to limit cpu-use
+  int  drawMode = DOTTED_LINE;
+  bool useGradient;              // use color gradient to seamlessly join line segments
+  bool oneDimensonal = false;    // switch 1D mode on/off (
 
   // members for actual painting on an image:
-  //Image<TPix> image;
   rsImageResizable<TPix> image;
-  //rsImagePainter<TPix, float, TSig> painter; // float: weight-type for alpha mask
-  //rsImagePainter<TPix, TPar, TSig> painter;  // using TPar for the 2nd TWgt template parameter
-  //                                         // might not be ideal
-  rsImagePainter<TPix, TSig, TSig> painter;  // using TPar for the 2nd TWgt template parameter
-                                           // might not be ideal
+  rsImagePainter<TPix, TSig, TSig> painter;
 
+  //rsImagePainter<TPix, TPar, TSig> painter;  
+    // old: using TPar for the 2nd TWgt template parameter might not be ideal
 };
 
 //=================================================================================================

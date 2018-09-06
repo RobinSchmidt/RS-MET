@@ -479,7 +479,7 @@ void primeAlternatingSums()
   //  -test on number sequences with known structure first (like fibonacci numbers), see, if they
   //   pick it up correctly
   // -what if we sign invert not every second number but every second pair of numbers? ..and then 
-  //  combine the resulting sequences with those obtained from inerting every other number ...then
+  //  combine the resulting sequences with those obtained from inverting every other number ...then
   //  generalize: invert every triple, quadruple, etc...
 
   int N = 200; // number of primes
