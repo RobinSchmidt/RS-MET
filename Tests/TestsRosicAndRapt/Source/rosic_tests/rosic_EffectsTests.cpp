@@ -59,7 +59,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   rosic::copyBuffer(x8, y8, 8);
   rosic::FeedbackDelayNetwork::fastGeneralizedHadamardTransform(       y8, 8, 3, 2, 3, 5, -7);
   rosic::FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(y8, 8, 3, 2, 3, 5, -7);
-  result &= fabs(rosic::maxError(x8, y8, 8)) < 1.e-15;
+  result &= fabs(RAPT::rsArray::maxDeviation(x8, y8, 8)) < 1.e-15;
 
   return result;
 }

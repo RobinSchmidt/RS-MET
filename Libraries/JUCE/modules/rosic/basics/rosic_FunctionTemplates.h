@@ -175,11 +175,12 @@ namespace rosic
   /** Returns the maximum value of the element-wise difference of two buffers (the maximum is 
   determined from the absolute value of the differences, but the actual returned value will have 
   the proper sign where buffer2 is subtracted from buffer1). */
-  template <class T>
-  INLINE T maxError(T *buffer1, T *buffer2, int length);
+  //template <class T>
+  //INLINE T maxError(T *buffer1, T *buffer2, int length);
+  // replaced by RAPT::rsArray::maxDeviation
 
-  template <class T>
-  INLINE int maxErrorIndex(T* x, T* y, int N);
+  //template <class T>
+  //INLINE int maxErrorIndex(T* x, T* y, int N);
   // move to rapt (it's used by rsImage - how does it even work having it in rosic?), rename to 
   // maxDeviation
 
@@ -835,17 +836,10 @@ namespace rosic
     return max;
   }
 
+  /*
   template <class T>
   INLINE T maxError(T* x, T* y, int N)
   {
-    /*
-    T* diff = new T[length];  // !!not good!! get rid
-    subtract(buffer1, buffer2, diff, length);
-    int maxIndex = findMaxAbs(diff, length);
-    T maxDiff  = diff[maxIndex];
-    delete[] diff;    // get rid!
-    return maxDiff;
-    */
     int i = maxErrorIndex(x, y, N);
     return abs(x[i]-y[i]);
   }
@@ -864,6 +858,7 @@ namespace rosic
     }
     return maxIdx;
   }
+  */
 
   template <class T>
   int maxIndex(T *buffer, int length)

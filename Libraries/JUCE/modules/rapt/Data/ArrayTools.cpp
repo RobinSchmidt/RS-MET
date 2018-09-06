@@ -841,13 +841,28 @@ template <class T>
 T rsArray::maxDeviation(T *buffer1, T *buffer2, int length)
 {
   T max = T(0);
-  for(int i=0; i<length; i++)
+  for(int i = 0; i < length; i++)
   {
     T absDiff = rsAbs(buffer1[i]-buffer2[i]);
     if(absDiff > max)
       max = absDiff;
   }
   return max;
+}
+
+template <class T>
+int rsArray::maxDeviationIndex(T *x, T *y, int N)
+{
+  T maxErr = T(0);  // rename to maxDev
+  int maxIdx = 0;
+  for(int i = 0; i < N; i++) {
+    T err = rsAbs(x[i]-y[i]);
+    if(err > maxErr) {
+      maxErr = err;
+      maxIdx = i;
+    }
+  }
+  return maxIdx;
 }
 
 template <class T>

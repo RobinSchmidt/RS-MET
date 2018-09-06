@@ -348,6 +348,10 @@ public:
   template <class T>
   static T maxDeviation(T *buffer1, T *buffer2, int length);
 
+  /** Returns the index of the maximum deviation (see maxDeviation). */
+  template <class T>
+  static int maxDeviationIndex(T *buffer1, T *buffer2, int length);
+
   /** Returns the index of maximum value of the buffer (">"-operator must be defined). */
   template <class T>
   static int maxIndex(T *buffer, int length);

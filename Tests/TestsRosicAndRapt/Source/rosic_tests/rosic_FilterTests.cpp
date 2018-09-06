@@ -336,7 +336,7 @@ void rotes::testConvolverPartitioned()
   for(int n=0; n<resultLength; n++)
     result[n] = convolver.getSample(impulse[n]);
 
-  double maxDiff = rosic::maxError(resultTrue, result, resultLength);
+  double maxDiff = RAPT::rsArray::maxDeviation(resultTrue, result, resultLength);
 
 
   // plot:
