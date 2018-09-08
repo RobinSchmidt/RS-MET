@@ -347,7 +347,7 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 
 //=================================================================================================
 
-rsGroupString rsGroupString::inverse()
+rsGroupString rsGroupString::inverse() const
 {
   size_t len = s.size();
   std::vector<unsigned int> r(len);
@@ -356,9 +356,8 @@ rsGroupString rsGroupString::inverse()
   return r;
 }
 
-rsGroupString rsGroupString::operator+(const rsGroupString &rhs)
+rsGroupString rsGroupString::operator+(const rsGroupString &rhs) const
 {
-  // return rhs; // preliminary
   std::vector<unsigned int> r = s;
   for(int i = 0; i < rhs.s.size(); i++) {
     if(r.size() > 0 && r[r.size()-1] != rhs.s[i])
@@ -389,7 +388,7 @@ rsGroupString2::rsGroupString2(const rsGroupString& gs)
   rsAssert(checkCharacters());
 }
 
-std::string rsGroupString2::toString()
+std::string rsGroupString2::toString() const
 {
   std::string outStr;
   size_t len = s.size();
@@ -400,7 +399,7 @@ std::string rsGroupString2::toString()
   return outStr;
 }
 
-bool rsGroupString2::checkCharacters()
+bool rsGroupString2::checkCharacters() const
 {
   bool r = true;
   for(int i = 0; i < s.size(); i++)
@@ -410,4 +409,6 @@ bool rsGroupString2::checkCharacters()
 
 // Maybe we need to let 'a' map to 1 instead of mapping to 0 - otherwise "" and "a" would both be 
 // neutral with respect to multiplication if we define multiplication via modular addition over
-// the characters
+// the characters...or maybe the string "a" is the neutral element of multiplication? there 
+// wouldn't be ambiguity because "aa", "aaa" etc. are not allowed anyway - but what about 
+// "a" * ""? would that be "a" - should it be ""? ...see field axioms

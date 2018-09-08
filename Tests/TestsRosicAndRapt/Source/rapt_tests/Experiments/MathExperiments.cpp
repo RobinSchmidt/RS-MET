@@ -467,9 +467,10 @@ bool groupString()
   bool r = true;  // test result - todo: turn into unit test
   typedef rsGroupString2 GS;
   GS abc("abc"), cde("cde");
-  GS abde = abc + cde;
+  GS abde = abc + cde;  r &= abde == "abde"; 
+  GS edba = -abde;      r &= edba == "edba";
 
-  //r &= abde == "abde"; 
+
 
 
   return r;

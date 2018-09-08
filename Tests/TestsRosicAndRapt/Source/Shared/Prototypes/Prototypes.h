@@ -133,13 +133,27 @@ public:
     return t == s;
   }
 
-  rsGroupString operator+(const rsGroupString &rhs);
+
+
+
+  /** Adds two GroupString objects. This addition is the group operation and is (conceptually) 
+  performed by concatenating two strings and then deleting all doublets (iteratively, as often as 
+  necessary to eliminate all of them). */
+  rsGroupString operator+(const rsGroupString &rhs) const;
+
+  /** Unary minus. Returns the additive inverse */
+  rsGroupString operator-() const { return inverse(); }
+
+  /** Binary subtraction by adding the additive inverse. */
+  rsGroupString operator-(const rsGroupString &rhs) { return *this + (-rhs); }
+
+
 
 
 
 
   /** Returns the (additive) inverse which is just the string in reversed order. */
-  rsGroupString inverse();
+  rsGroupString inverse() const;
    // maybe later (when we have multiplication), rename to additiveInverse and implement a 
    // multiplicativeInverse, too
    // then the class should be renamed to fieldString
@@ -183,7 +197,21 @@ public:
 
 
   /** Converts to a std::string. */
-  std::string toString();
+  std::string toString() const;
+
+
+  bool operator==(const std::string& str) const  
+  {
+    return str == toString();
+
+    //if(str.size != s.size())
+    //  return false;
+    //for(int i = 0; i <
+
+    //return t == s;
+  }
+
+
 
   // make also convenience operators that take a std::string as rhs
   // maybe factor the "convenience" stuff (back-and-forth between rsGroupString and std::string) 
@@ -191,10 +219,10 @@ public:
 
   /** Checks, if the passed unsigned integer corresponds to one of the allowed characters, i.e. is
   from the alphabet. */
-  bool isLowerCaseLetter(unsigned int c) { return c >= 97 && c <= 122; } // 'a' = 97, 'z' = 122
+  static bool isLowerCaseLetter(unsigned int c) { return c >= 97 && c <= 122; } // 'a' = 97, 'z' = 122
 
   /** Checks, if all characters are inthe valid range, i.e. inside our restricted alphabet. */
-  bool checkCharacters();
+  bool checkCharacters() const;
 
 
 };
