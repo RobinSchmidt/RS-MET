@@ -464,7 +464,7 @@ void expGaussBell()
 
 void groupString()
 {
-  typedef rsGroupString GS;
+  typedef rsGroupString2 GS;
   GS abc("abc"), cde("cde");
 
   //GS abde = abc + cde;

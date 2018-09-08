@@ -352,7 +352,7 @@ bool isLowerCaseLetter(size_t c)
   return c >= 97 && c <= 122; // 'a' = 97, 'z' = 122
 }
 
-rsGroupString::rsGroupString(const char* inStr)
+rsGroupString2::rsGroupString2(const char* inStr)
 {
   size_t len = strlen(inStr);
   s.resize(len);
@@ -362,7 +362,7 @@ rsGroupString::rsGroupString(const char* inStr)
   }
 }
 
-std::string rsGroupString::toString()
+std::string rsGroupString2::toString()
 {
   std::string outStr;
   size_t len = s.size();

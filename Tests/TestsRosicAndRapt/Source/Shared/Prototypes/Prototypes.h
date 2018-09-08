@@ -111,7 +111,7 @@ protected:
 just like with numbers. The set of all such strings forms a group (see group theory). The group 
 operation (which we call addition here) is to concatenate two strings and then delete all pairs of
 equal characters, i.e. the string "aaab" would be reduced to "ab", one "aa" pair is deleted. The 
-inverse element to each string is obtained by reversing it. adding "cba" to "abc" like abc+cba 
+inverse element to each string is obtained by reversing it. Adding "cba" to "abc" like abc+cba 
 results in abccba wich would subsequently be reduced to the empty string (the rule of deleting 
 equal pairs is used as often as applicable). The additive neutral element is the empty string. */
 
@@ -120,23 +120,13 @@ class rsGroupString
 
 public:
 
+  rsGroupString() {}
+
   rsGroupString(const std::vector<unsigned int>& initialString) { s = initialString; }
 
 
-  /** Convenience function meant to be used for strings over the aplhabet a,b,c,...,x,y,z. We 
-  represent 'a' as 0 and then count up to 'z' = 25. */
-  rsGroupString(const char* initialString);
-
-
-  /** Converts to a std::string. */
-  std::string toString();
-
   // define operators, +, =, ==, - (unary returns additive inverse, binary adds additive inverse)
   // maybe: < (lexicographical order), * (i still have to invent a suitable multiplication rule)
-  // make also convenience operators that take a std::string as rhs
-  // maybe factor the "convenience" stuff (back-and-forth between rsGroupString and std::string) 
-  // out into subclass - it has nothing to do with the actual algebraic structure
-
 
   rsGroupString inverse();
    // maybe later (when we have multiplication), rename to additiveInverse and implement a 
@@ -144,8 +134,6 @@ public:
    // then the class should be renamed to fieldString
 
    // maybe let integers 0 and 1 be used and implement 1/s = s.multiplicativeInverse, etc.
-
-
 
 
 protected:
@@ -158,7 +146,31 @@ protected:
   // the modulus, we use the 26 lowercase letters, but that is tweakable...but we don't need that 
   // yet but maybe later when we do operations on individual characters
 
+};
+
+/** Subclass of rsGroupString that lets use more conveniently work with strings over the alphabet
+a,b,c,..,x,y,z. The class provides the conversions from/to std::string comparison operators etc. 
+But all these convenenience functions have nothing to do with the actual algebraic structure, which
+is why they have been factored out to keep the baseclass pure. */
+
+class rsGroupString2 : public rsGroupString
+{
+
+public:
+
+  /** Convenience function meant to be used for strings over the aplhabet a,b,c,...,x,y,z. We 
+  represent 'a' as 0 and then count up to 'z' = 25. */
+  rsGroupString2(const char* initialString);
+
+  /** Converts to a std::string. */
+  std::string toString();
+
+  // make also convenience operators that take a std::string as rhs
+  // maybe factor the "convenience" stuff (back-and-forth between rsGroupString and std::string) 
+  // out into subclass - it has nothing to do with the actual algebraic structure
+
 
 };
+
 
 #endif
