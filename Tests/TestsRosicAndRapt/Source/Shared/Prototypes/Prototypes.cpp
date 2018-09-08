@@ -344,3 +344,11 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 // saturates(with some foldover)/contracts state vector without changing its angle
 // maybe apply this factor also to "in" because it would be weird to pass the input through
 // undistorted ...but might be interesting to explore
+
+//=================================================================================================
+
+rsGroupString::rsGroupString(const char* initialString)
+{
+
+  int dummy = 0;
+}

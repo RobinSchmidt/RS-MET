@@ -12,7 +12,10 @@ void expBipolar();
 void expGaussBell();
 
 // move to something like FunExperiments (maybe copy the mandelbrot stuff over there, too)
+void groupString();
 void primeAlternatingSums();
+
+
 
 
 #endif

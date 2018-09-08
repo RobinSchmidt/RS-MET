@@ -12,7 +12,7 @@ bool isComplementary(const RAPT::rsFilterSpecificationBA<double>& specBA);
 bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& specBA);
 
 
-// the actual prototype designs that satisfy the mirror-imag e conditions:
+// the actual prototype designs that satisfy the mirror-image conditions:
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z();
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z();
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p3z();

@@ -462,6 +462,17 @@ void expGaussBell()
 
 // fun stuff:
 
+void groupString()
+{
+  typedef rsGroupString GS;
+  GS abc("abc"), cde("cde");
+
+  //GS abde = abc + cde;
+
+
+  int dummy = 0;
+}
+
 void primeAlternatingSums()
 {
   // Take the array of prime numbers with alternating signs

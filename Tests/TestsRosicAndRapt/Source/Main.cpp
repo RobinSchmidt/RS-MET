@@ -89,13 +89,14 @@ int main(int argc, char* argv[])
   //lineJoints();
   //lineTo();
   //polyLineRandom();
-  phaseScopeLissajous();
+  //phaseScopeLissajous();
   //triangles();
   //pixelCoverage();
 
 
   // just for fun:
-  //primeAlternatingSums();
+  groupString();
+  primeAlternatingSums();
 
 
   //===============================================================================================

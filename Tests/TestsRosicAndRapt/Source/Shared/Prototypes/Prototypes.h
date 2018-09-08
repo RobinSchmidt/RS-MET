@@ -41,7 +41,7 @@ void halpernT2(double *c, int N);
 polynomial in Eq. 8.14 in Paarmann: Design and Analysis of Analog Filters */
 void papoulisL2(double *c, int N);
 
-
+//=================================================================================================
 
 template<class TSig, class TPar>
 class rsStateVectorFilter
@@ -105,6 +105,52 @@ protected:
 
 };
 
+//=================================================================================================
 
+/** A class for representing a particular kind of string with which we can do some computations 
+just like with numbers. The set of all such strings forms a group (see group theory). The group 
+operation (which we call addition here) is to concatenate two strings and then delete all pairs of
+equal characters, i.e. the string "aaab" would be reduced to "ab", one "aa" pair is deleted. The 
+inverse element to each string is obtained by reversing it. adding "cba" to "abc" like abc+cba 
+results in abccba wich would subsequently be reduced to the empty string (the rule of deleting 
+equal pairs is used as often as applicable). The additive neutral element is the empty string. */
+
+class rsGroupString
+{
+
+public:
+
+  rsGroupString(const std::vector<int>& initialString) { s = initialString; }
+
+  rsGroupString(const char* initialString);
+  // we represent 'a' as 0 and then count up to 'z'=25
+
+  /** Converts to a std::string. */
+  std::string toString();
+
+  // define operators, +, =, ==, - (unary returns additive inverse, binary adds additive inverse)
+  // maybe: < (lexicographical order), * (i still have to invent a suitable multiplication rule)
+
+
+  rsGroupString inverse();
+   // maybe later (when we have multiplication), rename to additiveInverse and implement a 
+   // multiplicativeInverse, too
+   // then the class should be renamed to fieldString
+
+   // maybe let integers 0 and 1 be used and implement 1/s = s.multiplicativeInverse, etc.
+
+
+protected:
+
+
+
+  std::vector<int> s;  // we represent the characters as integers
+
+  //int modulus = 26;    
+  // the modulus, we use the 26 lowercase letters, but that is tweakable...but we don't need that 
+  // yet but maybe later when we do operations on individual characters
+
+
+};
 
 #endif
