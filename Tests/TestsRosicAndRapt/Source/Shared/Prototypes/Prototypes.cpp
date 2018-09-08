@@ -358,7 +358,17 @@ rsGroupString rsGroupString::inverse()
 
 rsGroupString rsGroupString::operator+(const rsGroupString &rhs)
 {
-  return rhs; // preliminary
+  // return rhs; // preliminary
+  std::vector<unsigned int> r = s;
+  for(int i = 0; i < rhs.s.size(); i++) {
+    if(r.size() > 0 && r[r.size()-1] != rhs.s[i])
+      r.push_back(rhs.s[i]);
+    else
+      r.pop_back();
+  }
+  return r;
+  // todo: check, if this implementation actually does the right thing.
+  // a more naive implementation would be: just concatenate and then call removeDoublets
 }
 
 
@@ -367,30 +377,35 @@ rsGroupString2::rsGroupString2(const char* inStr)
 {
   size_t len = strlen(inStr);
   s.resize(len);
-  for(size_t i = 0; i < len; i++) {
-    rsAssert(isLowerCaseLetter(inStr[i]));
+  for(size_t i = 0; i < len; i++)
     s[i] = inStr[i] - 97;
-  }
+  rsAssert(checkCharacters());
 }
 
 rsGroupString2::rsGroupString2(const rsGroupString& gs)
 {
   //s = gs.s;  // compiler error: cannot access protected member - why?
   s = gs.get();
-  // checkCharacters();
+  rsAssert(checkCharacters());
 }
-
 
 std::string rsGroupString2::toString()
 {
   std::string outStr;
   size_t len = s.size();
   outStr.resize(len);
-  for(size_t i = 0; i < len; i++) {
-    rsAssert(isLowerCaseLetter(s[i])); // function supposed to work with strings over a,..,z
+  for(size_t i = 0; i < len; i++)
     outStr[i] = s[i] + 97;
-  }
+  rsAssert(checkCharacters());
   return outStr;
+}
+
+bool rsGroupString2::checkCharacters()
+{
+  bool r = true;
+  for(int i = 0; i < s.size(); i++)
+    r &= s[i] >= 0 && s[i] <= 25;
+  return r;
 }
 
 // Maybe we need to let 'a' map to 1 instead of mapping to 0 - otherwise "" and "a" would both be 

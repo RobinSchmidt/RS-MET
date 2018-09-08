@@ -149,6 +149,9 @@ public:
 
   std::vector<unsigned int> get() const { return s; }
 
+  // bool hasDoublets();
+  // void removeDoublets();
+
 
 protected:
 
@@ -186,8 +189,12 @@ public:
   // maybe factor the "convenience" stuff (back-and-forth between rsGroupString and std::string) 
   // out into subclass - it has nothing to do with the actual algebraic structure
 
+  /** Checks, if the passed unsigned integer corresponds to one of the allowed characters, i.e. is
+  from the alphabet. */
+  bool isLowerCaseLetter(unsigned int c) { return c >= 97 && c <= 122; } // 'a' = 97, 'z' = 122
 
-  bool isLowerCaseLetter(size_t c) { return c >= 97 && c <= 122; } // 'a' = 97, 'z' = 122
+  /** Checks, if all characters are inthe valid range, i.e. inside our restricted alphabet. */
+  bool checkCharacters();
 
 
 };
