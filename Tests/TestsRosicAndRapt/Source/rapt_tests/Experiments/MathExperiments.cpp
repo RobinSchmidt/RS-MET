@@ -466,9 +466,15 @@ bool groupString()
 {
   bool r = true;  // test result - todo: turn into unit test
   typedef rsGroupString2 GS;
-  GS abc("abc"), cde("cde");
-  GS abde = abc + cde;  r &= abde == "abde"; 
-  GS edba = -abde;      r &= edba == "edba";
+  GS abc("abc"), cde("cde"), efg("efg");
+  GS abde = abc + cde;    r &= abde == "abde"; 
+  GS edba = -abde;        r &= edba == "edba";
+  GS empty = abde - abde; r &= empty == "";
+
+  // test associativity of addition:
+  GS s1 = (abc + cde) + efg;
+  GS s2 = abc + (cde  + efg);
+  r &= s1 == s2;  // of course, this is only an example - do more random tests
 
 
 

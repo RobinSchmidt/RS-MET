@@ -124,16 +124,10 @@ public:
 
   rsGroupString(const std::vector<unsigned int>& initialString) { s = initialString; }
 
-
-  // define operators, +, =, ==, - (unary returns additive inverse, binary adds additive inverse)
+  // define operator =, 
   // maybe: < (lexicographical order), * (i still have to invent a suitable multiplication rule)
 
-  bool operator==(const rsGroupString& t) const  
-  {
-    return t == s;
-  }
-
-
+  bool operator==(const rsGroupString& t) const { return t.s == s; }
 
 
   /** Adds two GroupString objects. This addition is the group operation and is (conceptually) 
@@ -193,29 +187,17 @@ public:
   represent 'a' as 0 and then count up to 'z' = 25. */
   rsGroupString2(const char* initialString);
 
+  /** Constructor for conversion from baseclass object (?) */
   rsGroupString2(const rsGroupString& gs);
-
 
   /** Converts to a std::string. */
   std::string toString() const;
 
+  /** Comparison operator (for some reason, we need to override it or the compiler balks). */
+  bool operator==(const rsGroupString2& t) const  { return t.s == s; }
 
-  bool operator==(const std::string& str) const  
-  {
-    return str == toString();
+  //bool operator==(const std::string& str) const { return str == toString(); }  // obsolete?
 
-    //if(str.size != s.size())
-    //  return false;
-    //for(int i = 0; i <
-
-    //return t == s;
-  }
-
-
-
-  // make also convenience operators that take a std::string as rhs
-  // maybe factor the "convenience" stuff (back-and-forth between rsGroupString and std::string) 
-  // out into subclass - it has nothing to do with the actual algebraic structure
 
   /** Checks, if the passed unsigned integer corresponds to one of the allowed characters, i.e. is
   from the alphabet. */
@@ -223,7 +205,6 @@ public:
 
   /** Checks, if all characters are inthe valid range, i.e. inside our restricted alphabet. */
   bool checkCharacters() const;
-
 
 };
 
