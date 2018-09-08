@@ -347,8 +347,33 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 
 //=================================================================================================
 
-rsGroupString::rsGroupString(const char* initialString)
+bool isLowerCaseLetter(size_t c)
 {
-
-  int dummy = 0;
+  return c >= 97 && c <= 122; // 'a' = 97, 'z' = 122
 }
+
+rsGroupString::rsGroupString(const char* inStr)
+{
+  size_t len = strlen(inStr);
+  s.resize(len);
+  for(size_t i = 0; i < len; i++) {
+    rsAssert(isLowerCaseLetter(inStr[i]));
+    s[i] = inStr[i] - 97;
+  }
+}
+
+std::string rsGroupString::toString()
+{
+  std::string outStr;
+  size_t len = s.size();
+  outStr.resize(len);
+  for(size_t i = 0; i < len; i++) {
+    rsAssert(isLowerCaseLetter(s[i])); // function supposed to work with strings over a,..,z
+    outStr[i] = s[i] + 97;
+  }
+  return outStr;
+}
+
+// Maybe we need to let 'a' map to 1 instead of mapping to 0 - otherwise "" and "a" would both be 
+// neutral with respect to multiplication if we define multiplication via modular addition over
+// the characters

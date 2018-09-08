@@ -120,16 +120,22 @@ class rsGroupString
 
 public:
 
-  rsGroupString(const std::vector<int>& initialString) { s = initialString; }
+  rsGroupString(const std::vector<unsigned int>& initialString) { s = initialString; }
 
+
+  /** Convenience function meant to be used for strings over the aplhabet a,b,c,...,x,y,z. We 
+  represent 'a' as 0 and then count up to 'z' = 25. */
   rsGroupString(const char* initialString);
-  // we represent 'a' as 0 and then count up to 'z'=25
+
 
   /** Converts to a std::string. */
   std::string toString();
 
   // define operators, +, =, ==, - (unary returns additive inverse, binary adds additive inverse)
   // maybe: < (lexicographical order), * (i still have to invent a suitable multiplication rule)
+  // make also convenience operators that take a std::string as rhs
+  // maybe factor the "convenience" stuff (back-and-forth between rsGroupString and std::string) 
+  // out into subclass - it has nothing to do with the actual algebraic structure
 
 
   rsGroupString inverse();
@@ -140,11 +146,13 @@ public:
    // maybe let integers 0 and 1 be used and implement 1/s = s.multiplicativeInverse, etc.
 
 
+
+
 protected:
 
 
 
-  std::vector<int> s;  // we represent the characters as integers
+  std::vector<unsigned int> s;  // we represent the characters as unsigned integers
 
   //int modulus = 26;    
   // the modulus, we use the 26 lowercase letters, but that is tweakable...but we don't need that 
