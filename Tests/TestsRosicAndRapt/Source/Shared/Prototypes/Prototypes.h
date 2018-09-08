@@ -128,12 +128,26 @@ public:
   // define operators, +, =, ==, - (unary returns additive inverse, binary adds additive inverse)
   // maybe: < (lexicographical order), * (i still have to invent a suitable multiplication rule)
 
+  bool operator==(const rsGroupString& t) const  
+  {
+    return t == s;
+  }
+
+  rsGroupString operator+(const rsGroupString &rhs);
+
+
+
+
+  /** Returns the (additive) inverse which is just the string in reversed order. */
   rsGroupString inverse();
    // maybe later (when we have multiplication), rename to additiveInverse and implement a 
    // multiplicativeInverse, too
    // then the class should be renamed to fieldString
 
    // maybe let integers 0 and 1 be used and implement 1/s = s.multiplicativeInverse, etc.
+
+
+  std::vector<unsigned int> get() const { return s; }
 
 
 protected:
@@ -162,12 +176,18 @@ public:
   represent 'a' as 0 and then count up to 'z' = 25. */
   rsGroupString2(const char* initialString);
 
+  rsGroupString2(const rsGroupString& gs);
+
+
   /** Converts to a std::string. */
   std::string toString();
 
   // make also convenience operators that take a std::string as rhs
   // maybe factor the "convenience" stuff (back-and-forth between rsGroupString and std::string) 
   // out into subclass - it has nothing to do with the actual algebraic structure
+
+
+  bool isLowerCaseLetter(size_t c) { return c >= 97 && c <= 122; } // 'a' = 97, 'z' = 122
 
 
 };

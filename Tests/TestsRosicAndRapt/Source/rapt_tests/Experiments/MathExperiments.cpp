@@ -467,7 +467,7 @@ void groupString()
   typedef rsGroupString2 GS;
   GS abc("abc"), cde("cde");
 
-  //GS abde = abc + cde;
+  GS abde = abc + cde;
 
 
   int dummy = 0;

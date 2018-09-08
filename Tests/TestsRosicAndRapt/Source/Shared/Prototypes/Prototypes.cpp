@@ -347,10 +347,21 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 
 //=================================================================================================
 
-bool isLowerCaseLetter(size_t c)
+rsGroupString rsGroupString::inverse()
 {
-  return c >= 97 && c <= 122; // 'a' = 97, 'z' = 122
+  size_t len = s.size();
+  std::vector<unsigned int> r(len);
+  for(int i = 0; i < len; i++)
+    r[i] = s[len-1-i];
+  return r;
 }
+
+rsGroupString rsGroupString::operator+(const rsGroupString &rhs)
+{
+  return rhs; // preliminary
+}
+
+
 
 rsGroupString2::rsGroupString2(const char* inStr)
 {
@@ -361,6 +372,14 @@ rsGroupString2::rsGroupString2(const char* inStr)
     s[i] = inStr[i] - 97;
   }
 }
+
+rsGroupString2::rsGroupString2(const rsGroupString& gs)
+{
+  //s = gs.s;  // compiler error: cannot access protected member - why?
+  s = gs.get();
+  // checkCharacters();
+}
+
 
 std::string rsGroupString2::toString()
 {
