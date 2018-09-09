@@ -469,14 +469,42 @@ rsGroupString mul1(rsGroupString A, rsGroupString B)
 {
   // 1st candiate multiplication rule - reverse and add
   return (-A) + (-B);
+  // neither associative nor distributive :-(
 }
 
 bool testStringMultiplication(rsGroupString (*mul) (rsGroupString A, rsGroupString B))
 {
-  bool r = true;
+  //bool r = true;
+  typedef rsGroupString2 GS;
 
+  // test associativity:
+  GS abc("abc"), cde("cde"), efg("efg");
+  GS A = abc, B = cde, C = efg;
 
-  return r;
+  std::string t1, t2;
+
+  // do this in a loop with various A, B, C (maybe random or by systematically checking all 
+  // possible strings up to a given length)
+  bool asso = true;
+  GS s1 = mul(mul(A, B), C); // (A*B)*C
+  GS s2 = mul(A, mul(B, C)); // A*(B*C)
+  t1 = s1.toString();        // for inspection/debugging
+  t2 = s2.toString();
+  asso &= s1 == s2; 
+
+  // distributivity:
+  bool dist = true;
+  s1 = mul(A,(B+C));        // A*(B+C)
+  s2 = mul(A,B) + mul(A,C); // A*B + A*C
+  t1 = s1.toString();        // for inspection/debugging
+  t2 = s2.toString();
+  dist &= s1 == s2;
+  // should also use a loop over many strings
+
+  // maybe try all strings of length up to 4 from the alphabet a,b,c,d - each of the 3 inputs
+  // A,B,C should take on all possible values - so we need a doubly nested loop
+
+  return asso && dist;
 }
 
 bool groupString()

@@ -362,7 +362,7 @@ rsGroupString rsGroupString::operator+(const rsGroupString &rhs) const
   for(int i = 0; i < rhs.s.size(); i++) {
     if(r.size() > 0 && r[r.size()-1] != rhs.s[i])
       r.push_back(rhs.s[i]);
-    else
+    else if(r.size() > 0)     // avoid popping on empty vector
       r.pop_back();
   }
   return r;
