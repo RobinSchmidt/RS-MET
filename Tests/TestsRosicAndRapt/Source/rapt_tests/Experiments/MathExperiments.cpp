@@ -464,13 +464,29 @@ void expGaussBell()
 
 //=================================================================================================
 
-
+rsGroupString add(rsGroupString A, rsGroupString B)
+{
+  return A + B;
+  // associative, not distributive, also, it would be weird to have addition and multipication 
+  // doing the same thing (although, it's not explicitly forbidden, i think)
+}
 rsGroupString mul1(rsGroupString A, rsGroupString B)
 {
-  // 1st candiate multiplication rule - reverse and add
-  return (-A) + (-B);
+  return (-A) + (-B); // reverse and add
   // neither associative nor distributive :-(
 }
+rsGroupString mul2(rsGroupString A, rsGroupString B)
+{
+  return -((-A) + (-B));  // reverse, add, reverse result
+  // maybe associative, not distributive
+}
+// other ideas
+// -ab*cde = (a+c)(a+d)(a+e)(b+c)(b+d)(b+e) where + is modular addition of the char-numbers, so we 
+//  have 6=2*3 letters and each is given by modular addition
+// -compute the (modular) sum of the letters of the first input and mod-add them to each letter in
+//  the 2nd input
+// -mod-add element--wise...but what if inputs have different length?
+// -some sort of "convolution"
 
 bool testStringMultiplication(rsGroupString (*mul) (rsGroupString A, rsGroupString B))
 {
@@ -496,7 +512,7 @@ bool testStringMultiplication(rsGroupString (*mul) (rsGroupString A, rsGroupStri
   bool dist = true;
   s1 = mul(A,(B+C));        // A*(B+C)
   s2 = mul(A,B) + mul(A,C); // A*B + A*C
-  t1 = s1.toString();        // for inspection/debugging
+  t1 = s1.toString();       // for inspection/debugging
   t2 = s2.toString();
   dist &= s1 == s2;
   // should also use a loop over many strings
@@ -527,7 +543,10 @@ bool groupString()
 
 
   // test multiplication (with the various candidate rules):
-  r &= testStringMultiplication(&mul1);
+  //r &= testStringMultiplication(&add); // asso, not distri
+  //r &= testStringMultiplication(&mul1); // not asso, not distri - bad!
+  r &= testStringMultiplication(&mul2);
+
 
   // test multiplication: define various candidate multiplication functions
   // rsGroupString mul1(rsGroupString A, rsGroupString B), mul2, etc. and make a function 

@@ -566,13 +566,37 @@ void rsImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2,
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
-  TCor x2, TCor x2s, TCor y2, TCor y2s, TPix color1, TPix color2, TCor density, int maxNumDots, 
+  TCor x2, TCor x2s, TCor y2, TCor y2s, TPix c1, TPix c2, TCor density, int maxNumDots, 
   bool scaleByNumDots)
 {
+  // Compute coeffs of the two polynomials:
+  // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
+  // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
+
+  TCor a[4], b[4];   // polynomial coefficients for x(t), y(t)
+  TCor z0[2], z1[2]; // y0, y1 inputs in getHermiteCoeffs1
+  z0[0] = x1; z0[1] = x1s; z1[0] = x2; z1[1] = x2s; getHermiteCoeffs1(z0, z1, a);
+  z0[0] = y1; z0[1] = y1s; z1[0] = y2; z1[1] = y2s; getHermiteCoeffs1(z0, z1, b);
+
+
+
+  int numDots = 20; // preliminary
+  TPix dc = c2-c1;  // color difference
+  TCor scaler = (TCor)(1.0 / numDots);
+  TCor t, x, y;
+  for(int i = 1; i <= numDots; i++)
+  {
+    t = scaler * i;  // == i / numDots
+    x = rsPolynomial<TCor>::evaluatePolynomialAt(t, a, 3);
+    y = rsPolynomial<TCor>::evaluatePolynomialAt(t, b, 3);
+    paintDot(x, y, c1 + TPix(t)*dc);
+  }
+
+
+  int dummy = 0;
+
   // Not yet implemented. Here is what we would have to do:
-  // -compute coeffs of the two polynomials:
-  //  x(t) = a0 + a1*t + a2*t^2 + a3*t^3
-  //  y(t) = b0 + b1*t + b2*t^2 + b3*t^3
+
   // -compute the total length of the spline segment (this will be some kind of analytic line 
   //  integral) to be used to scale the brightness of the dots
   // -compute a sequence of t-values at which to evaluate the polynomials and set a dot - these

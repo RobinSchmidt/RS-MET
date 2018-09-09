@@ -138,6 +138,8 @@ void getHermiteCoeffs3(T *y0, T *y1, T *a)
   a[5] = -(-k4+14*k3-78*k2+168*k1)/2;
   a[6] =  (-k4+13*k3-68*k2+140*k1)/2;
   a[7] = -(-k4+12*k3-60*k2+120*k1)/6;
+
+  // optimize: replace divisions by multiplications
 }
 
 template<class T>
