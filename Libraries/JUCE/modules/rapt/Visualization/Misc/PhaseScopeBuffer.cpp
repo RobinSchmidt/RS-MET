@@ -270,13 +270,23 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TSig x1, TSig y1, T
   {
     TSig dx = x2-x1;
     TSig dy = y2-y1;
+
+    //dx = -dx; dy = -dy; // test
+    //dx = 0; dy = 0; // test -> wrong, but interesting effect
+
     painter.drawDottedSpline(
       x1, dxOld, y1, dyOld, 
-      x2, dx, y2, dy,
+      x2, dx,    y2, dy,
       color1, color2, 
       TSig(lineDensity), maxDotsPerLine, true); // true: scaleByNumDots
     dxOld = dx;
     dyOld = dy;
+
+    // i think, the derivatives are still wrong - we are using the derivative estimate
+    // x[n] - x[n-1] at time instant n - instead, we should use it at the time-instant n+1, i.e. 
+    // our data-points and derivatives are not in sync - the derivative at instant n should be used
+    // at x[n-1] ...we need to keep two past samples....
+
   } break;
 
   default: { } break; // don't draw anything if drawMode has invalid value

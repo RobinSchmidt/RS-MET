@@ -594,9 +594,10 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
 
 
   int dummy = 0;
+  // the derivatives seem to have wrong values
 
-  // Not yet implemented. Here is what we would have to do:
 
+  // todo:
   // -compute the total length of the spline segment (this will be some kind of analytic line 
   //  integral) to be used to scale the brightness of the dots
   // -compute a sequence of t-values at which to evaluate the polynomials and set a dot - these
