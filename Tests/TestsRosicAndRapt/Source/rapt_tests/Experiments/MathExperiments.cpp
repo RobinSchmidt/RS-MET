@@ -462,6 +462,23 @@ void expGaussBell()
 
 // fun stuff:
 
+//=================================================================================================
+
+
+rsGroupString mul1(rsGroupString A, rsGroupString B)
+{
+  // 1st candiate multiplication rule - reverse and add
+  return (-A) + (-B);
+}
+
+bool testStringMultiplication(rsGroupString (*mul) (rsGroupString A, rsGroupString B))
+{
+  bool r = true;
+
+
+  return r;
+}
+
 bool groupString()
 {
   bool r = true;  // test result - todo: turn into unit test
@@ -476,11 +493,26 @@ bool groupString()
   GS s2 = abc + (cde  + efg);
   r &= s1 == s2;  // of course, this is only an example - do more random tests
 
+  // test neutral element of addition:
+  s1 = abc + GS(""); r &= s1 == "abc";
+  s1 = GS("") + abc; r &= s1 == "abc";
 
 
+  // test multiplication (with the various candidate rules):
+  r &= testStringMultiplication(&mul1);
+
+  // test multiplication: define various candidate multiplication functions
+  // rsGroupString mul1(rsGroupString A, rsGroupString B), mul2, etc. and make a function 
+  // testMultiplication passing a function pointer to one of these candidates. Inside this 
+  // function, test associativity, distributivity
+
+  // -maybe first try to get a ring with a couple of candidate multiplication rules and then try to 
+  //  find among the candiates a rule that turns the ring into a field
 
   return r;
 }
+
+//=================================================================================================
 
 void primeAlternatingSums()
 {

@@ -411,4 +411,33 @@ bool rsGroupString2::checkCharacters() const
 // neutral with respect to multiplication if we define multiplication via modular addition over
 // the characters...or maybe the string "a" is the neutral element of multiplication? there 
 // wouldn't be ambiguity because "aa", "aaa" etc. are not allowed anyway - but what about 
-// "a" * ""? would that be "a" - should it be ""? ...see field axioms
+// "a" * ""? would that be "a" - should it be ""? ...see field axioms - no, must be "", see below
+// A*0 = 0 in every ring
+// or maybe we can at least get a ring if a field is not possible?
+
+
+// ringe (weitz):
+// https://www.youtube.com/watch?v=tpSFUXPyy0c&index=38&list=PLb0zKSynM2PD4-kkRIAWFdnFivbhEgfeO
+// gruppen:
+// https://www.youtube.com/watch?v=L_G3Lbo5z60&list=PLb0zKSynM2PD4-kkRIAWFdnFivbhEgfeO&index=21
+// https://www.youtube.com/watch?v=fYArC336jd4&index=26&list=PLb0zKSynM2PD4-kkRIAWFdnFivbhEgfeO
+// körper:
+// https://www.youtube.com/watch?v=wnUdh5iMoz4&list=PLb0zKSynM2PD4-kkRIAWFdnFivbhEgfeO&index=45
+// ah - das hilft auch bei der frage: soll "a" oder "" neutrales element der multiplikation sein
+// (see 3:10 - "die null von hier oben kann man hier nicht mit rein nehmen")
+// @9:05: bei multiplikation mit null ("") muß null rauskommen 
+// soo: multiply: 
+// -the result has the size (num chars) of the larger of the two inputs
+// -each character is given by (modular) addition of the chars of the two inputs (assuming to add
+//  0, for the part where there are no chars anymore in one of the inputs
+//  abc * ab = bdc ...does that work out? what about
+//  abd * ab = bdd = bd ? but bd / ab = ab != abc ...or maybe don't apply the 
+//  "no-doublets" rule in multiplication? ...or maybe there should not actually be a strict 
+//  "no-doublets" rule at all and we just leave the addition with that push-or-pop rule as 
+//  implemented? ...this would be even better because it doesn't restrict our allowed strings
+// -check distributive A*(B+C)=A*B+A*C, (A+B)*C = A*C+B*C (check, if the 2nd must hold or only
+//  in abelian groups) and associative law...
+// -maybe it would be better to reverse roles of add/mul...because this mul (if it works) is
+//  commutative...but then the distributive law would have to work the other way around...but
+//  commutativity of addition is more basic - it works for matrices as well (where mul is not
+//  commutative)

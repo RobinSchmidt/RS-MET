@@ -187,8 +187,14 @@ public:
   represent 'a' as 0 and then count up to 'z' = 25. */
   rsGroupString2(const char* initialString);
 
+  //rsGroupString2(const std::string& initialString);
+
   /** Constructor for conversion from baseclass object (?) */
   rsGroupString2(const rsGroupString& gs);
+
+
+
+
 
   /** Converts to a std::string. */
   std::string toString() const;
@@ -197,6 +203,14 @@ public:
   bool operator==(const rsGroupString2& t) const  { return t.s == s; }
 
   //bool operator==(const std::string& str) const { return str == toString(); }  // obsolete?
+
+  //rsGroupString operator+(const rsGroupString &rhs) const;
+
+  //rsGroupString operator+(const std::string& &rhs) const
+  //{
+
+  //}
+
 
 
   /** Checks, if the passed unsigned integer corresponds to one of the allowed characters, i.e. is
