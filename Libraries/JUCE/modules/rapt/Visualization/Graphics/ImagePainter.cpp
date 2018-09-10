@@ -572,8 +572,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
   // Compute coeffs of the two polynomials:
   // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
   // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
-
-  TCor a[4], b[4];   // polynomial coefficients for x(t), y(t)
+  TCor a[4], b[4];   // coeffs for x(t), y(t)
   TCor z0[2], z1[2]; // y0, y1 inputs in getHermiteCoeffs1
   z0[0] = x1; z0[1] = x1s; z1[0] = x2; z1[1] = x2s; getHermiteCoeffs1(z0, z1, a);
   z0[0] = y1; z0[1] = y1s; z1[0] = y2; z1[1] = y2s; getHermiteCoeffs1(z0, z1, b);
@@ -594,7 +593,8 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
 
 
   int dummy = 0;
-  // the derivatives seem to have wrong values
+  // the derivatives seem to have wrong values - that's an error in higher level code
+  // rsPhaseScopeBuffer::drawDottedSegment
 
 
   // todo:

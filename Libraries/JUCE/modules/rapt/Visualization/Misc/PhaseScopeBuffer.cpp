@@ -194,7 +194,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 
   // transform to pixel coordinates and draw line:
   toPixelCoordinates(x, y);
-  addLineTo(x, y);  // rename to addCurveTo, addSegmentTo
+  addSegmentTo(x, y);  // rename to addCurveTo, addSegmentTo
 }
 
 template<class TSig, class TPix, class TPar>
@@ -214,18 +214,36 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
   yOld = 0.5f * image.getHeight();
   dxOld = dyOld = TSig(0);
   cOld = TPix(0);
+
+  rsArray::fillWithValue(x, 4, TSig(0.5 * image.getWidth()) );
+  rsArray::fillWithValue(y, 4, TSig(0.5 * image.getHeight()));
 }
 
-template<class TSig, class TPix, class TPar>
-void rsPhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
+template<class T>
+inline void pushFrontPopBack4(T x, T* a)
 {
+  a[3] = a[2];  // old a[3] is discarded
+  a[2] = a[1];  // values in between..
+  a[1] = a[0];  // ...are shifted
+  a[0] = x;     // input x becomes the new a[0]
+}
+// move to rsArray, make versions for 1,2,3,N (using a loop or memmove) -> make performance tests, 
+// which version is fastest for what range of lengths
+
+template<class TSig, class TPix, class TPar>
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(TSig newX, TSig newY)
+{
+  pushFrontPopBack4(newX, x);  // new
+  pushFrontPopBack4(newY, y);  // new
+
   if(lineDensity == 0.f)
-    painter.paintDot(x, y, (TPix) insertFactor);
+    painter.paintDot(newX, newY, (TPix) insertFactor);
   else
-    drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)x, (TSig)y, (TPix) insertFactor,
+    drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)newX, (TSig)newY, (TPix) insertFactor,
       (TSig)lineDensity, maxDotsPerLine, true);
-  xOld = x;
-  yOld = y;
+
+  xOld = newX; // old
+  yOld = newY; // old
 }
 
 template<class TSig, class TPix, class TPar>
@@ -446,7 +464,7 @@ void rsPhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
 }
 
 template<class TSig, class TPix, class TPar>
-void rsPhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::addSegmentTo(TSig x, TSig y)
 {
   if(drawLines){
     TSig dx = x - this->xOld;
@@ -460,7 +478,7 @@ void rsPhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
     lineDrawer.lineTo(x, y);
   }
   if(drawDots)
-    rsPhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(x, y); // draws dotted line, updates xOld, yOld
+    rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(x, y); // draws dotted line, updates xOld, yOld
   else {
     this->xOld = x;
     this->yOld = y; }

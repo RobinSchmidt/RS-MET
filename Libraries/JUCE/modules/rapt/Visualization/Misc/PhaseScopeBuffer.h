@@ -69,7 +69,7 @@ public:
   void setMaxSizeWithoutReAllocation(int newMaxWidth, int newMaxHeight);
 
   /** Sets the drawing mode as one of the value in enum drawModes. */
-  void setDrawMode(int newMode) { drawMode = newMode; }
+  void setDrawMode(int newMode) { drawMode = newMode; reset(); }
 
   /** Switches anti-aliasing on/off. */
   void setAntiAlias(bool shouldAntiAlias);
@@ -154,7 +154,10 @@ protected:
   /** Adds a line to the given x,y coordinates (in pixel coordinates). The starting point of the
   line are the old pixel coordinates xOld, yOld (member variables). It takes into account our line
   density - when it's set to zero, it will just draw a dot at the new given position. */
-  virtual void addLineTo(TSig x, TSig y);
+  //virtual void addLineTo(TSig x, TSig y);  // obsolete
+
+  virtual void addSegmentTo(TSig x, TSig y); // replacement - update comment
+
 
   /** Draws a line by inserting a number of dots along the line. The number is proportional to the
   given density parameter and to the Euclidean distance between the two endpoints (i.e. the length
@@ -201,6 +204,10 @@ protected:
 
   TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
   TSig dxOld, dyOld;   // old derivatives of x,y with respect to time t (i.e. the old x-xOld, ...)
+
+  TSig x[4], y[4];     // current and old pixel values x[0] = x[n], x[1] = x[n-1], etc.
+                       // new implementation - makes xOld, yOld, dxOld, dyOld obsolete
+
   TPix cOld;           // old line end color
 
   TSig scanPos;        // scan position in 1D mode
@@ -282,7 +289,8 @@ public:
 protected:
 
   virtual void updateDecayFactor() override;
-  virtual void addLineTo(TSig x, TSig y) override;
+  virtual void addSegmentTo(TSig x, TSig y) override; // todo: check, if the override needs an update, too
+                                                      // since baseclass method was updated
 
   TPar decayByValue = 0;     // dependency of pixel decay on current pixel value
   TPar decayByAverage = 0;   // dependency of pixel decay on global average brightness
