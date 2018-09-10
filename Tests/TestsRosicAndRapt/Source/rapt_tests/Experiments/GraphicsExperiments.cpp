@@ -283,8 +283,8 @@ void phaseScopeLissajous()
   psb.setBrightness(100.f);
   psb.setLineDensity(1.f);
   psb.setPixelSpread(0.3f);
-  //psb.setDrawMode(psb.DOTTED_LINE);
-  psb.setDrawMode(psb.DOTTED_SPLINE);
+  psb.setDrawMode(psb.DOTTED_LINE);
+  //psb.setDrawMode(psb.DOTTED_SPLINE);
   psb.setUseColorGradient(true);
   psb.setSize(400, 400);
   psb.reset();

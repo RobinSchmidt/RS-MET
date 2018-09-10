@@ -12,7 +12,7 @@ rsPhaseScopeBuffer<TSig, TPix, TPar>::rsPhaseScopeBuffer()
   brightness     = 1.0;
   useGradient    = false;
 
-  xOld = yOld = TSig(0);
+  //xOld = yOld = TSig(0);
   cOld = TPix(0);
   scanPos = TSig(0);
 
@@ -210,9 +210,10 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
   scanPos = 0.0;
 
   // (xOld,yOld) = (0,0) - but in pixel coordinates:
-  xOld = 0.5f * image.getWidth();
-  yOld = 0.5f * image.getHeight();
-  dxOld = dyOld = TSig(0);
+  //xOld = 0.5f * image.getWidth();
+  //yOld = 0.5f * image.getHeight();
+  //dxOld = dyOld = TSig(0);
+
   cOld = TPix(0);
 
   rsArray::fillWithValue(x, 4, TSig(0.5 * image.getWidth()) );
@@ -240,19 +241,17 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(TSig newX, TSig newY)
   if(lineDensity == 0.f)
     painter.paintDot(newX, newY, (TPix) insertFactor);
   else
-    drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)newX, (TSig)newY, (TPix) insertFactor,
-      (TSig)lineDensity, maxDotsPerLine, true);
-
-  xOld = newX; // old
-  yOld = newY; // old
+    drawDottedLine((TPix) insertFactor, (TSig)lineDensity, maxDotsPerLine, true);
 }
 
 template<class TSig, class TPix, class TPar>
-void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig x2, 
-  TSig y2, TPix color, TPar density, int maxNumDots, bool scaleByNumDots, TPar minDotDistance)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TPix color, TPar density, int maxNumDots, 
+  bool scaleByNumDots, TPar minDotDistance)
 {
-  TSig dx = x2-x1;
-  TSig dy = y2-y1;
+  // x2 was always the destination and x1 the source
+
+  TSig dx = x[1]-x[2];
+  TSig dy = y[1]-y[2];
   TSig pixelDistance = sqrt(dx*dx + dy*dy);
   int  numDots = rsMax(1, (int)floor(density*pixelDistance/minDotDistance));
   if(maxNumDots > 0)
@@ -264,7 +263,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig
     TPix ct = color / (TPix)numDots;  // target color that would be used if we don't do gradients
     c = (2.f*ct) - cOld;              // desired endpoint color
     c = rsMax(c, ct);                 // c could come out negative, use ct as lower bound
-    drawDottedSegment(x1, y1, x2, y2, cOld, c, numDots);
+    drawDottedSegment(cOld, c, numDots);
     cOld = c;
   }
   else
@@ -272,42 +271,22 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig
     c = color;
     if(scaleByNumDots)
       c = color / (TPix)numDots;
-    drawDottedSegment(x1, y1, x2, y2, c, c, numDots);
+    drawDottedSegment(c, c, numDots);
   }
 }
 // rename to drawConnection or drawCurve or something and dispatch between line-drawing, 
 // spline-drawing and maybe other drawing modes (maybe non-dotted like bresenham, wu, etc.)
 
 template<class TSig, class TPix, class TPar>
-void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TSig x1, TSig y1, TSig x2, TSig y2,
-  TPix color1, TPix color2, int numDots)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TPix color1, TPix color2, int numDots)
 {
+  // maybe this function should not have a numDots parameter
+
   switch(drawMode)
   {
-  case DOTTED_LINE: painter.drawLineDotted(x1, y1, x2, y2, color1, color2, numDots); break;
+  case DOTTED_LINE: painter.drawLineDotted(x[2], y[2], x[1], y[1], color1, color2, numDots); break;
   case DOTTED_SPLINE:
   {
-    /*
-    TSig dx = x2-x1;
-    TSig dy = y2-y1;
-
-    //dx = -dx; dy = -dy; // test
-    //dx = 0; dy = 0; // test -> wrong, but interesting effect
-
-    painter.drawDottedSpline(
-      x1, dxOld, y1, dyOld, 
-      x2, dx,    y2, dy,
-      color1, color2, 
-      TSig(lineDensity), maxDotsPerLine, true); // true: scaleByNumDots
-    dxOld = dx;
-    dyOld = dy;
-    */
-
-    // i think, the derivatives are still wrong - we are using the derivative estimate
-    // x[n] - x[n-1] at time instant n - instead, we should use it at the time-instant n+1, i.e. 
-    // our data-points and derivatives are not in sync - the derivative at instant n should be used
-    // at x[n-1] ...we need to keep two past samples....
-
     // ok - this new implementation is much better - now we must take care of the number of dots...
 
     // compute (2nd order) derivative estimates at inner points x[1], x[2]:
@@ -484,9 +463,13 @@ void rsPhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer2<TSig, TPix, TPar>::addSegmentTo(TSig x, TSig y)
 {
+  // function needs update since we implemented the spline drawing in the baseclass
+
   if(drawLines){
-    TSig dx = x - this->xOld;
-    TSig dy = y - this->yOld;
+    //TSig dx = x - this->xOld;
+    //TSig dy = y - this->yOld;
+    TSig dx = x - this->x[1];
+    TSig dy = y - this->y[1];
     TPar L  = sqrt(dx*dx + dy*dy);
     TPar scaler = 1;
     if(L > 1)
@@ -498,6 +481,9 @@ void rsPhaseScopeBuffer2<TSig, TPix, TPar>::addSegmentTo(TSig x, TSig y)
   if(drawDots)
     rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(x, y); // draws dotted line, updates xOld, yOld
   else {
-    this->xOld = x;
-    this->yOld = y; }
+    //this->xOld = x;
+    //this->yOld = y; 
+    this->x[1] = x;
+    this->y[1] = y; 
+  }
 }

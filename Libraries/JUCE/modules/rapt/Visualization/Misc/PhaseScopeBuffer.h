@@ -166,12 +166,11 @@ protected:
   is for restricting the number of dots that are used which might be important in realtime
   situations. scaleByNumDots ...
   \todo: maybe make this color scaling optional  */
-  void drawDottedLine(TSig x1, TSig y1, TSig x2, TSig y2, TPix color, TPar density = 1,
-    int maxNumDots = 0, bool scaleByNumDots = false, TPar minDotDistance = 1);
+  void drawDottedLine(TPix color, TPar density = 1, int maxNumDots = 0, 
+    bool scaleByNumDots = false, TPar minDotDistance = 1);
   // rename to drawDottedSegment
 
-  void drawDottedSegment(TSig x1, TSig y1, TSig x2, TSig y2, 
-    TPix color1, TPix color2, int numDots);
+  void drawDottedSegment(TPix color1, TPix color2, int numDots);
 
   //drawLineDotted(x1, y1, x2, y2, cOld, c, numDots);
 
@@ -202,8 +201,8 @@ protected:
   TPix brightness;     // determines weight by which dots are added in
   TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
 
-  TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
-  TSig dxOld, dyOld;   // old derivatives of x,y with respect to time t (i.e. the old x-xOld, ...)
+  //TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
+  //TSig dxOld, dyOld;   // old derivatives of x,y with respect to time t (i.e. the old x-xOld, ...)
 
   TSig x[4], y[4];     // current and old pixel values x[0] = x[n], x[1] = x[n-1], etc.
                        // new implementation - makes xOld, yOld, dxOld, dyOld obsolete
