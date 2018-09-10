@@ -200,13 +200,7 @@ protected:
 
   TPix brightness;     // determines weight by which dots are added in
   TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
-
-  //TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
-  //TSig dxOld, dyOld;   // old derivatives of x,y with respect to time t (i.e. the old x-xOld, ...)
-
-  TSig x[4], y[4];     // current and old pixel values x[0] = x[n], x[1] = x[n-1], etc.
-                       // new implementation - makes xOld, yOld, dxOld, dyOld obsolete
-
+  TSig x[4], y[4];     // pixel coordinate buffers: x[0] = x[n], x[1] = x[n-1], etc.
   TPix cOld;           // old line end color
 
   TSig scanPos;        // scan position in 1D mode

@@ -287,8 +287,6 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TPix color1, TPix c
   case DOTTED_LINE: painter.drawLineDotted(x[2], y[2], x[1], y[1], color1, color2, numDots); break;
   case DOTTED_SPLINE:
   {
-    // ok - this new implementation is much better - now we must take care of the number of dots...
-
     // compute (2nd order) derivative estimates at inner points x[1], x[2]:
     TSig dx1, dx2, dy1, dy2;
     dx1 = TSig(0.5)*(x[0]-x[2]);    // estimated dx/dt at x[1]
@@ -298,10 +296,13 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TPix color1, TPix c
 
     // draw hermite spline with given derivative values:
     painter.drawDottedSpline(
-      x[2], dx2, y[2], dy2,   // older inner point comes first
-      x[1], dx1, y[1], dy1,   // newer inner point comes second
-      color1, color2, 
-      TSig(lineDensity), maxDotsPerLine, true); // true: scaleByNumDots
+      x[2], dx2, y[2], dy2,      // older inner point comes first
+      x[1], dx1, y[1], dy1,      // newer inner point comes second
+      color1, color2, numDots);
+
+    // todo: maybe scale the number of dots according to the length of the spline segment 
+    // (currently, the number is determined by the length of the line connecting the inner points
+    // which serves as a crude approximation of the arc-length)
   } break;
 
   default: { } break; // don't draw anything if drawMode has invalid value

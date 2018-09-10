@@ -105,8 +105,12 @@ public:
   /** Not yet implemented. See comments in implementation file. 
   Draws a cubic spline between (x1,y1) and (x1,y2) with x- and y-slopes (x1s,y1s) and (x2s,y2s)
   at the endpoints. */
+  //void drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, TCor x2, TCor x2s, TCor y2, TCor y2s,
+  //  TPix color1, TPix color2, TCor density = 1, int maxNumDots = 0, bool scaleByNumDots = false);
+
   void drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, TCor x2, TCor x2s, TCor y2, TCor y2s,
-    TPix color1, TPix color2, TCor density = 1, int maxNumDots = 0, bool scaleByNumDots = false);
+    TPix color1, TPix color2, int numDots);
+
 
   /** Draws a 1-pixel wide line with the given color from (x0,y0) to (x1,y2) using Xiaolin Wu's 
   algorithm. See https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm */

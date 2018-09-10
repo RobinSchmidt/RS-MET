@@ -566,8 +566,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2,
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
-  TCor x2, TCor x2s, TCor y2, TCor y2s, TPix c1, TPix c2, TCor density, int maxNumDots, 
-  bool scaleByNumDots)
+  TCor x2, TCor x2s, TCor y2, TCor y2s, TPix c1, TPix c2, int numDots)
 {
   // Compute coeffs of the two polynomials:
   // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
@@ -577,9 +576,6 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
   z0[0] = x1; z0[1] = x1s; z1[0] = x2; z1[1] = x2s; getHermiteCoeffs1(z0, z1, a);
   z0[0] = y1; z0[1] = y1s; z1[0] = y2; z1[1] = y2s; getHermiteCoeffs1(z0, z1, b);
 
-
-
-  int numDots = 20; // preliminary
   TPix dc = c2-c1;  // color difference
   TCor scaler = (TCor)(1.0 / numDots);
   TCor t, x, y;
@@ -591,8 +587,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
     paintDot(x, y, c1 + TPix(t)*dc);
   }
 
-
-  int dummy = 0;
+  //int dummy = 0;
   // the derivatives seem to have wrong values - that's an error in higher level code
   // rsPhaseScopeBuffer::drawDottedSegment
 

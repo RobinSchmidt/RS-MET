@@ -283,16 +283,17 @@ void phaseScopeLissajous()
   psb.setBrightness(100.f);
   psb.setLineDensity(1.f);
   psb.setPixelSpread(0.3f);
-  psb.setDrawMode(psb.DOTTED_LINE);
-  //psb.setDrawMode(psb.DOTTED_SPLINE);
+  //psb.setDrawMode(psb.DOTTED_LINE);
+  psb.setDrawMode(psb.DOTTED_SPLINE);
   psb.setUseColorGradient(true);
   psb.setSize(400, 400);
   psb.reset();
 
   // create image:
   float x[N], y[N];
-  float s = float(2*PI) / (N-1);
-  for(int n = 0; n < N; n++)
+  //float s = float(2*PI) / (N-1);
+  float s = float(2*PI) / (N-2);  // N-2, not N-1 because drawer is lagging one sample due to buffering
+  for(int n = 0; n < N; n++)  
   {
     x[n] = scale*sin(s*a*n);
     y[n] = scale*sin(s*b*n);
