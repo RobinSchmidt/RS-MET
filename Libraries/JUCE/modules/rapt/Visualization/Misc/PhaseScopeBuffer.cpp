@@ -229,6 +229,7 @@ inline void pushFrontPopBack4(T x, T* a)
 }
 // move to rsArray, make versions for 1,2,3,N (using a loop or memmove) -> make performance tests, 
 // which version is fastest for what range of lengths
+// maybe rename to updateFifoBuffer4
 
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(TSig newX, TSig newY)
@@ -286,6 +287,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TSig x1, TSig y1, T
   case DOTTED_LINE: painter.drawLineDotted(x1, y1, x2, y2, color1, color2, numDots); break;
   case DOTTED_SPLINE:
   {
+    /*
     TSig dx = x2-x1;
     TSig dy = y2-y1;
 
@@ -299,12 +301,28 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TSig x1, TSig y1, T
       TSig(lineDensity), maxDotsPerLine, true); // true: scaleByNumDots
     dxOld = dx;
     dyOld = dy;
+    */
 
     // i think, the derivatives are still wrong - we are using the derivative estimate
     // x[n] - x[n-1] at time instant n - instead, we should use it at the time-instant n+1, i.e. 
     // our data-points and derivatives are not in sync - the derivative at instant n should be used
     // at x[n-1] ...we need to keep two past samples....
 
+    // ok - this new implementation is much better - now we must take care of the number of dots...
+
+    // compute (2nd order) derivative estimates at inner points x[1], x[2]:
+    TSig dx1, dx2, dy1, dy2;
+    dx1 = TSig(0.5)*(x[0]-x[2]);    // estimated dx/dt at x[1]
+    dy1 = TSig(0.5)*(y[0]-y[2]);    // estimated dy/dt at y[1]
+    dx2 = TSig(0.5)*(x[1]-x[3]);    // estimated dx/dt at x[2]
+    dy2 = TSig(0.5)*(y[1]-y[3]);    // estimated dy/dt at y[2]
+
+    // draw hermite spline with given derivative values:
+    painter.drawDottedSpline(
+      x[2], dx2, y[2], dy2,   // older inner point comes first
+      x[1], dx1, y[1], dy1,   // newer inner point comes second
+      color1, color2, 
+      TSig(lineDensity), maxDotsPerLine, true); // true: scaleByNumDots
   } break;
 
   default: { } break; // don't draw anything if drawMode has invalid value
