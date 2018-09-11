@@ -619,10 +619,11 @@ void splineInterpolationAreaNormalized()
 // order polynomial.
 
 
-void numericDerivative()
+void numericDiffAndInt()
 {
-  // We sample a sinewave at nonequidistant sample points and find the numeric derivative at these
-  // samplepoints and compare it to the true derivative given by the cosine.
+  // Test numerical differentiation and integration routines. We sample a sinewave at 
+  // nonequidistant sample points and find the numeric derivative and  integral at these sample
+  // points and compare them to the true derivative/integral values.
 
   static const int N = 100;   // number of sample points
   double p = 1.0;             // start-phase
@@ -649,7 +650,7 @@ void numericDerivative()
 
   // compute the numeric derivative and integral:
   rsNumericDerivative(x, y, ydn, N, true);
-  rsNumericIntegral(  x, y, yin, N);
+  rsNumericIntegral(  x, y, yin, N, yi[0]);
 
   // plot function, true derivative and numeric derivative:
   //plotData(N, x, y, yd, ydn);

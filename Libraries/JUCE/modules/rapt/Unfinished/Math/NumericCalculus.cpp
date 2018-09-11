@@ -48,10 +48,10 @@ void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds)
 
 
 template<class T>
-void rsNumericIntegral(T *x, T *y, T *yi, int N)
+void rsNumericIntegral(T *x, T *y, T *yi, int N, T c)
 {
   T xo, yo, zo, tmp;
-  xo = x[0]; yo = y[0]; zo = T(0); yi[0] = zo; // "old" values (at index n-1)
+  xo = x[0]; yo = y[0]; zo = c; yi[0] = zo;    // "old" values (at index n-1)
   for(int n = 1; n < N; n++) {
     tmp = zo + (x[n]-xo)*(y[n]+yo)*T(0.5);     // compute integral by trapezoidal rule
     xo = x[n]; yo = y[n]; zo = tmp;            // update integrator state variables

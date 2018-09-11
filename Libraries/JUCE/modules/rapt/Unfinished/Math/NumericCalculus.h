@@ -27,9 +27,11 @@ template<class T>
 void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds = true);
 
 /** Computes the numerical integral of a function defined by data points. Usage is similar to
-rsNumericDerivative... */
+rsNumericDerivative... 
+The parameter c is the integration constant and determines yi[0]. This shifts the overall 
+resulting function up or down along the y-axis. */
 template<class T>
-void rsNumericIntegral(T *x, T *y, T *yi, int N);
+void rsNumericIntegral(T *x, T *y, T *yi, int N, T c = T(0));
 // maybe rename to rsNumericIntegralTrapezoidal
 
 
