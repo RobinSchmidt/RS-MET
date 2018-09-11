@@ -336,10 +336,31 @@ void splineArc()
 
   // maybe to test the density, have all points on one lines
 
-
+  // compute polynomial coefficients:
   float a[4], b[4];
   cubicCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
 
+  typedef rsPolynomial<float> PL;
+
+  // create points via simple algorithm (without density compensation):
+  std::vector<float> t(numDots), x(numDots), y(numDots), s(numDots);
+  float dx, dy, scaler = (1.f / numDots);
+  float length = 0.f;  // accumulated arc-length estimate
+  t[0] = 0;
+  x[0] = PL::evaluatePolynomialAt(0, a, 3);
+  y[0] = PL::evaluatePolynomialAt(0, b, 3);
+  for(int n = 1; n < numDots; n++) {
+    t[n] = scaler * n;  // == n / numDots
+    x[n] = PL::evaluatePolynomialAt(t[n], a, 3);
+    y[n] = PL::evaluatePolynomialAt(t[n], b, 3);
+    dx   = x[n]-x[n-1];
+    dy   = y[n]-y[n-1];
+    length += sqrt(dx*dx+dy*dy);
+  }
+  float distance = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); // distance between the two points
+
+
+  cubicArcLength2D(&a[0], &b[0], &t[0], &s[0], numDots);
 
 
   rsImageF image(width, height);
