@@ -616,23 +616,30 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline1(TCor *a, TCor *b, TPix 
 template<class T>
 void cubicArcLength2D(T *a, T *b, T *t, T* s, int N)
 {
-  typedef rsPolynomial<TCor> PL;
-  TCor c[5], d[5];                        // coeffs of:
-  PL::polyDerivative(a, c, 3);            // c is dx/dt (a is x(t))
-  PL::polyDerivative(b, d, 3);            // d is dy/dt (b is y(t))
-  PL::multiplyPolynomials(c, 3, c, 3, c); // c is (dx/dt)^2
-  PL::multiplyPolynomials(d, 3, d, 3, d); // d is (dy/dt)^2
-  rsArray::add(c, d, c, 5);               // c is (dx/dt)^2 + (dy/dt)^2
-
   // The arc-length s(t) between 0 and t of the cubic spline defined by the two polynomials
   // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
   // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
   // is given by the definite integral from 0 to t over the integrand 
   // c(t) = sqrt( (dx/dt)^2 + (dy/dt)^2 )
-  // where the term inside the square-root is a fourth order polynomial whose coeffs are in our 
-  // c-array
+  // where the term inside the square-root is a fourth order polynomial (the derivative of a cubic
+  // is a quadratic, squaring that gives a quartic and adding two quartics gives still a quartic). 
+  // We evaluate the integrand at the N values t[n] and perform a numeric integration over these 
+  // integrand values.
 
-  // more to do...
+  // Find coeffs for quartic polynomial under the square-root in the integrand:
+  typedef rsPolynomial<TCor> PL;
+  TCor c[5], d[5];                        // coeffs of:
+  PL::polyDerivative(a, c, 3);            // c is dx/dt (a is x(t))
+  PL::polyDerivative(b, d, 3);            // d is dy/dt (b is y(t))
+  PL::multiplyPolynomials(c, 2, c, 2, c); // c is (dx/dt)^2
+  PL::multiplyPolynomials(d, 2, d, 2, d); // d is (dy/dt)^2
+  rsArray::add(c, d, c, 5);               // c is (dx/dt)^2 + (dy/dt)^2
+  // The coeffs of our desired quartic are now in our c-array.
+
+  // Evaluate the integrand at the given t-values and perform numeric integration:
+  for(int n = 0; n < N; n++)
+    s[n] = sqrt(PL::evaluatePolynomialAt(t[n], c, 4));
+  rsNumericIntegral(t, s, s, N); // integration works in place (use s for integrand and integral)
 }
 // move to somewhere in the Math section
 
