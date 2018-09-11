@@ -325,13 +325,28 @@ void splineArc()
 {
   // Tests the spline arc drawing - especially the numeric integration of the arc-length
 
-  double x1 = 0, y1 = 0, x1s = 0, y1s =  1; // start at (0,0), pointing upward
-  double x2 = 1, y2 = 0, x2s = 0, y2s = -1; // end   at (1,0), pointing downward
+  int numDots = 100;
+  int width   = 400;
+  int height  = 400;
 
-  double a[4], b[4];
+  //float x1 = 0, y1 = 0, x1s = 0, y1s =  1; // start at (0,0), pointing upward
+  //float x2 = 1, y2 = 0, x2s = 0, y2s = -1; // end   at (1,0), pointing downward
+  float x1 =  10, y1 = 10, x1s = 0, y1s =  1500; // start center left, pointing upward
+  float x2 = 390, y2 = 10, x2s = 0, y2s = -1500; // end center right, pointing downward
+
+  // maybe to test the density, have all points on one lines
+
+
+  float a[4], b[4];
   cubicCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
 
 
+
+  rsImageF image(width, height);
+  rsImagePainter<float, float, float> painter(&image);
+  //painter.setAntiAlias(false);
+  painter.drawDottedSpline1(a, b, 1.0, 1.0, numDots);
+  writeImageToFilePPM(*painter.getImage(), "CubicSpline.ppm");
   int dummy = 0;
 }
 
