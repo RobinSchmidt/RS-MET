@@ -44,7 +44,8 @@ public:
   /** Multiplies the polynomials represented by the coefficient vectors 'a' and 'b' and stores the
   resulting coefficients in 'result'. The resulting polynom will be or order aOrder+bOrder and the
   coefficient vector should have allocated space for
-  (aOrder+1)+(bOrder+1)-1 = aOrder+bOrder+1 = aLength+bLength-1 elements. */
+  (aOrder+1)+(bOrder+1)-1 = aOrder+bOrder+1 = aLength+bLength-1 elements. 
+  Can work in place, i.e. result may point to the same array as a and/or b.   */
   static void multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result);
   // rename to multiply
 

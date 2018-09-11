@@ -112,6 +112,12 @@ public:
     TPix color1, TPix color2, int numDots);
 
 
+  void drawDottedSpline1(TCor *a, TCor *b, TPix c1, TPix c2, int numDots);
+  
+  void drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2, int numDots);
+
+
+
   /** Draws a 1-pixel wide line with the given color from (x0,y0) to (x1,y2) using Xiaolin Wu's 
   algorithm. See https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm */
   void drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color);

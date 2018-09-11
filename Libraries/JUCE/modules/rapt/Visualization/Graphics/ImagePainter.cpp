@@ -576,6 +576,14 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
   z0[0] = x1; z0[1] = x1s; z1[0] = x2; z1[1] = x2s; getHermiteCoeffs1(z0, z1, a);
   z0[0] = y1; z0[1] = y1s; z1[0] = y2; z1[1] = y2s; getHermiteCoeffs1(z0, z1, b);
 
+
+  bool highQuality = true;  // make parameter
+  if(highQuality)
+    drawDottedSpline2(a, b, c1, c2, numDots);
+  else
+    drawDottedSpline1(a, b, c1, c2, numDots);
+
+  /*
   TPix dc = c2-c1;  // color difference
   TCor scaler = (TCor)(1.0 / numDots);
   TCor t, x, y;
@@ -586,15 +594,60 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
     y = rsPolynomial<TCor>::evaluatePolynomialAt(t, b, 3);
     paintDot(x, y, c1 + TPix(t)*dc);
   }
+  */
+}
 
-  //int dummy = 0;
-  // the derivatives seem to have wrong values - that's an error in higher level code
-  // rsPhaseScopeBuffer::drawDottedSegment
+template<class TPix, class TWgt, class TCor>
+void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline1(TCor *a, TCor *b, TPix c1, TPix c2, 
+  int numDots)
+{
+  TPix dc = c2-c1;  // color difference
+  TCor scaler = (TCor)(1.0 / numDots);
+  TCor t, x, y;
+  for(int i = 1; i <= numDots; i++)
+  {
+    t = scaler * i;  // == i / numDots
+    x = rsPolynomial<TCor>::evaluatePolynomialAt(t, a, 3);
+    y = rsPolynomial<TCor>::evaluatePolynomialAt(t, b, 3);
+    paintDot(x, y, c1 + TPix(t)*dc);
+  }
+}
+
+template<class T>
+void cubicArcLength2D(T *a, T *b, T *t, T* s, int N)
+{
+  typedef rsPolynomial<TCor> PL;
+  TCor c[5], d[5];                        // coeffs of:
+  PL::polyDerivative(a, c, 3);            // c is dx/dt (a is x(t))
+  PL::polyDerivative(b, d, 3);            // d is dy/dt (b is y(t))
+  PL::multiplyPolynomials(c, 3, c, 3, c); // c is (dx/dt)^2
+  PL::multiplyPolynomials(d, 3, d, 3, d); // d is (dy/dt)^2
+  rsArray::add(c, d, c, 5);               // c is (dx/dt)^2 + (dy/dt)^2
+
+  // The arc-length s(t) between 0 and t of the cubic spline defined by the two polynomials
+  // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
+  // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
+  // is given by the definite integral from 0 to t over the integrand 
+  // c(t) = sqrt( (dx/dt)^2 + (dy/dt)^2 )
+  // where the term inside the square-root is a fourth order polynomial whose coeffs are in our 
+  // c-array
+
+  // more to do...
+}
+// move to somewhere in the Math section
+
+template<class TPix, class TWgt, class TCor>
+void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2,
+  int numDots)
+{
+  // maybe factor out to cubicArcLength2D(T *a, T *b, T *t, T* s, int N):
+
+
+  int dummy = 0;
 
   // preliminary, just to instantiate rsNumericIntegral (replace later with actually useful 
   // numeric integration):
   TCor c[1]; rsNumericIntegral(c, c, c, 1);
-
 
   // todo:
   // -compute the total length of the spline segment (this will be some kind of analytic line 
@@ -602,8 +655,10 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
   // -compute a sequence of t-values at which to evaluate the polynomials and set a dot - these
   //  t-values should be chosen such that the spline segments between successive t-values have
   //  all the same length, t should be in the range 0..1
-  // -the rest is conceptually similar to drawDottedLine
 }
+
+
+
 
 // some helper functions used in Wu algorithm (maybe try to get rid of them):
 template<class T> inline int        ipart(T x) { return (int) x;         }

@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
   //lineJoints();
   //lineTo();
   //polyLineRandom();
-////phaseScopeLissajous();
+  phaseScopeLissajous();
   //triangles();
   //pixelCoverage();
 
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
   //splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
-  numericDiffAndInt();
+  //numericDiffAndInt();
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();

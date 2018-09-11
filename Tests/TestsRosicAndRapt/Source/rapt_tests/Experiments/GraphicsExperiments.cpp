@@ -281,21 +281,26 @@ void phaseScopeLissajous()
   rsPhaseScopeBufferFFD psb;
   psb.setAntiAlias(true);
   psb.setBrightness(100.f);
-  //psb.setLineDensity(1.f);
-  //psb.setPixelSpread(0.3f);
-
-  // for testing color discontinuities:
-  psb.setLineDensity(0.25f);
-  psb.setPixelSpread(0.0f);
-
+  psb.setLineDensity(1.f);
+  psb.setPixelSpread(0.3f);
   //psb.setDrawMode(psb.DOTTED_LINE);
   psb.setDrawMode(psb.DOTTED_SPLINE);
-
   psb.setUseColorGradient(true);
   psb.setSize(400, 400);
-  psb.reset();
+
+
+  //// settings for testing color discontinuities in spline drawing (remove when problems are fixed):
+  //psb.setAntiAlias(false);
+  //psb.setUseColorGradient(false);
+  //psb.setLineDensity(0.3f);
+  //psb.setPixelSpread(0.0f);
+  //psb.setSize(800, 800);
+
+
+
 
   // create image:
+  psb.reset();
   float x[N], y[N];
   //float s = float(2*PI) / (N-1);
   float s = float(2*PI) / (N-2);  // N-2, not N-1 because drawer is lagging one sample due to buffering
