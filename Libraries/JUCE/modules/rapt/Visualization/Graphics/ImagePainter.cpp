@@ -591,6 +591,10 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
   // the derivatives seem to have wrong values - that's an error in higher level code
   // rsPhaseScopeBuffer::drawDottedSegment
 
+  // preliminary, just to instantiate rsNumericIntegral (replace later with actually useful 
+  // numeric integration):
+  TCor c[1]; rsNumericIntegral(c, c, c, 1);
+
 
   // todo:
   // -compute the total length of the spline segment (this will be some kind of analytic line 

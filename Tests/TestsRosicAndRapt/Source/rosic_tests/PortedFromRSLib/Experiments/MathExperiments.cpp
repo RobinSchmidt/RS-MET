@@ -626,10 +626,11 @@ void numericDerivative()
 
   static const int N = 100;   // number of sample points
   double p = 1.0;             // start-phase
-  double w = 2.3;             // radian frequency 
+  double w = 2.0;             // radian frequency 
   double xMax = 10.0;         // maximum x-axis value
   double x[N];                // x-axis values
   double y[N], yd[N], ydn[N]; // y, y' and numeric y'
+  double       yi[N], yin[N]; // true and numeric integral
 
   // create x-axis:
   RAPT::rsArray::fillWithRandomValues(x, N, 0.1, 1.5, 0);
@@ -641,15 +642,18 @@ void numericDerivative()
   int n;
   for(n = 0; n < N; n++)
   {
-    y[n]  = sin(w*x[n] + p);
-    yd[n] = w*cos(w*x[n] + p);
+    y[n]  =        sin(w*x[n] + p);
+    yd[n] =      w*cos(w*x[n] + p);
+    yi[n] = -(1/w)*cos(w*x[n] + p);
   }
 
-  // compute the numeric derivative:
+  // compute the numeric derivative and integral:
   rsNumericDerivative(x, y, ydn, N, true);
+  rsNumericIntegral(  x, y, yin, N);
 
   // plot function, true derivative and numeric derivative:
-  plotData(N, x, y, yd, ydn);
+  //plotData(N, x, y, yd, ydn);
+  plotData(N, x, y, yd, ydn, yi, yin);
 }
 
 void shiftPolynomial()

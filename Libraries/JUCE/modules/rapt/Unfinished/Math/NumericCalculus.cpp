@@ -10,10 +10,9 @@ void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds)
     dx    = dxl + dxr;
     yd[n] = dxr * (y[n]-y[n-1])/(dxl*dx) + dxl * (y[n+1]-y[n])/(dxr*dx);
   }
+  // todo: save the left weight and use it as right weight in the next iteration (save one division
+  // per iteration)
 
-  // todo: save the left weight and use it as right weight in the next iteration
-  // -make it possible to use the function in-place, i.e. y and yd point to the same memory
-  //  ->avoid using y[n-1] on the right hand side
 
   if( extrapolateEnds == true )
   {
@@ -31,17 +30,46 @@ void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds)
     yd[N-1] = (y[N-1] - y[N-2]) / (x[N-1] - x[N-2]);
   }
 }
+// todo:
+// -make it possible to use the function in-place, i.e. y and yd point to the same memory
+//  ->avoid using y[n-1] on the right hand side
+// -before making those optimization, move the non-optimized version to prototypes and write a unit
+//  test to compare optimized to non-optimized
+// -maybe allow different template types for x, y, yd so it can be used for complex or multivariate 
+//  data as well. in the latter case, x,y would be vectors (of possibly different dimensionality) 
+//  and the derivative yd would be the Jacobian matrix at each datapoint
+// -maybe write a function that computes the numeric derivative at one particular datapoint and
+//  ideally also higher order derivatives at that point - that's more convenient to use because
+//  client code does not need to have buffers for all derivatives
+// -try another approach: fit a polynomial of arbitrary order to a number of datapoints around
+//  the n and return the derivative of the poynomial at that point (may this be equivalent to the
+//  approach above when using 3 points for a quadratic polynomial?)
+
+
 
 template<class T>
 void rsNumericIntegral(T *x, T *y, T *yi, int N)
 {
-  T xn, yn, zn, tmp;
+  T xo, yo, zo, tmp;
   xo = x[0]; yo = y[0]; zo = T(0); yi[0] = zo; // "old" values (at index n-1)
   for(int n = 1; n < N; n++) {
     tmp = zo + (x[n]-xo)*(y[n]+yo)*T(0.5);     // compute integral by trapezoidal rule
-    xo = x[n]; yo = y[n]; zo = tmp;            // update state variables
+    xo = x[n]; yo = y[n]; zo = tmp;            // update integrator state variables
     yi[n] = tmp;                               // write integral to output array
   }
 }
-// it should be possible to use this function in place - yi can be the same array as y or x
-// make a simplified version that doesn't need an x-array (assume distance 1 between x-avlues)
+// todo:
+// -add an "initial state" variable / integration constant - init zo to that value
+// -verify, if this can be function in place - yi can be the same array as y or x
+// -implement a higher order method by making use of (numeric) derivative information to 
+//  approximate the integral by cubic segments - this may use the yi array first for the numeric
+//  derivative values (after nuemric derivative is adapted for in-place use) and then overwrite 
+//  them with the integral values)
+// -make a simplified version that doesn't need an x-array (assume distance 1 between x-avlues)
+// -implement path-integration - the path is defined by an array of vectors (taking the role of x)
+//  and there should be a function value associated with each vector passed in another array 
+//  (taking the role of y). in the above formula, the x[n]-xo term should be replaced by
+//  norm(x[n]-xo) where "norm" should be the Euclidean norm (function values are multiplied by the 
+//  lengths of the path-segments in the summation)
+// -write N-dimensional integration functions that return the amount of N+1 space contained in
+//  some hyperblock between x1, x2 (both of dimensionality N)
