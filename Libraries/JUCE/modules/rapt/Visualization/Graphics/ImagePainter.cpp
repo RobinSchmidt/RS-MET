@@ -564,41 +564,34 @@ void rsImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2,
   //}
 }
 
-template<class TPix, class TWgt, class TCor>
-void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
-  TCor x2, TCor x2s, TCor y2, TCor y2s, TPix c1, TPix c2, int numDots)
+template<class T>
+void cubicCoeffs2D(T x1, T x1s, T y1, T y1s, T x2, T x2s, T y2, T y2s, T* a, T* b)
 {
   // Compute coeffs of the two polynomials:
   // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
   // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
-  TCor a[4], b[4];   // coeffs for x(t), y(t)
-  TCor z0[2], z1[2]; // y0, y1 inputs in getHermiteCoeffs1
+  T z0[2], z1[2]; // y0, y1 inputs in getHermiteCoeffs1
   z0[0] = x1; z0[1] = x1s; z1[0] = x2; z1[1] = x2s; getHermiteCoeffs1(z0, z1, a);
   z0[0] = y1; z0[1] = y1s; z1[0] = y2; z1[1] = y2s; getHermiteCoeffs1(z0, z1, b);
+}
+
+template<class TPix, class TWgt, class TCor>
+void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
+  TCor x2, TCor x2s, TCor y2, TCor y2s, TPix c1, TPix c2, int numDots)
+{
+  TCor a[4], b[4];   // coeffs for x(t), y(t)
+  cubicCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
 
 
   TCor test = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); 
   // distance between points to be connected should approximate total arc length
 
 
-  bool highQuality = true;  // make parameter
+  bool highQuality = false;  // make parameter
   if(highQuality)
     drawDottedSpline2(a, b, c1, c2, numDots);
   else
     drawDottedSpline1(a, b, c1, c2, numDots);
-
-  /*
-  TPix dc = c2-c1;  // color difference
-  TCor scaler = (TCor)(1.0 / numDots);
-  TCor t, x, y;
-  for(int i = 1; i <= numDots; i++)
-  {
-    t = scaler * i;  // == i / numDots
-    x = rsPolynomial<TCor>::evaluatePolynomialAt(t, a, 3);
-    y = rsPolynomial<TCor>::evaluatePolynomialAt(t, b, 3);
-    paintDot(x, y, c1 + TPix(t)*dc);
-  }
-  */
 }
 
 template<class TPix, class TWgt, class TCor>
@@ -649,6 +642,7 @@ void cubicArcLength2D(T *a, T *b, T *t, T* s, int N)
 // 3 polynomials x(t),y(t),z(t) that we have to take derivates of, square and add...or maybe make
 // an N-dimensional version - just take one (squared) derivative at a time and accumulate - the 
 // result will always be just a 1D quartic, regardless of the number of dimensions of the space
+
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2,

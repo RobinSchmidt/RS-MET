@@ -321,6 +321,20 @@ void phaseScopeLissajous()
   //plt.plot();
 }
 
+void splineArc()
+{
+  // Tests the spline arc drawing - especially the numeric integration of the arc-length
+
+  double x1 = 0, y1 = 0, x1s = 0, y1s =  1; // start at (0,0), pointing upward
+  double x2 = 1, y2 = 0, x2s = 0, y2s = -1; // end   at (1,0), pointing downward
+
+  double a[4], b[4];
+  cubicCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
+
+
+  int dummy = 0;
+}
+
 void triangles()
 {
   // create and set up objects and parameters:

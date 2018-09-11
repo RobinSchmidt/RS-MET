@@ -1,6 +1,16 @@
 #ifndef RAPT_IMAGEPAINTER_H_INCLUDED
 #define RAPT_IMAGEPAINTER_H_INCLUDED
 
+
+// move to math:
+template<class T>
+void cubicArcLength2D(T *a, T *b, T *t, T* s, int N);
+
+template<class T>
+void cubicCoeffs2D(T x1, T x1s, T y1, T y1s, T x2, T x2s, T y2, T y2s, T* a, T* b);
+
+
+
 /** A class for painting on an Image object. It is based on an "alpha-mask" that is used as 
 prototype "dot". Whenever a dot is painted onto the image at a particular location, the mask will
 be used to blend the existing colors at these pixels with a new target color.  

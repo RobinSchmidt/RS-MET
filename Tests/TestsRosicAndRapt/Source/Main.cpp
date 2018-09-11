@@ -90,6 +90,7 @@ int main(int argc, char* argv[])
   //lineTo();
   //polyLineRandom();
   phaseScopeLissajous();
+  splineArc();
   //triangles();
   //pixelCoverage();
 

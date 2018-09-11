@@ -10,6 +10,7 @@ void lineJoints();
 void lineTo();
 void polyLineRandom();
 void phaseScopeLissajous();
+void splineArc();
 void triangles();
 
 void pixelCoverage();
