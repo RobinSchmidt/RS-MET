@@ -35,6 +35,8 @@ void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds)
 //  ->avoid using y[n-1] on the right hand side
 // -before making those optimization, move the non-optimized version to prototypes and write a unit
 //  test to compare optimized to non-optimized
+// -make a simplified version, assuming equidistant abscissa values (maybe assume unit distance, 
+//  derivatives for any other h can then be found by scaling
 // -maybe allow different template types for x, y, yd so it can be used for complex or multivariate 
 //  data as well. in the latter case, x,y would be vectors (of possibly different dimensionality) 
 //  and the derivative yd would be the Jacobian matrix at each datapoint
@@ -59,11 +61,10 @@ void rsNumericIntegral(T *x, T *y, T *yi, int N, T c)
   }
 }
 // todo:
-// -add an "initial state" variable / integration constant - init zo to that value
-// -verify, if this can be function in place - yi can be the same array as y or x
+// -verify, if this can be used in place - yi can be the same array as y or x
 // -implement a higher order method by making use of (numeric) derivative information to 
 //  approximate the integral by cubic segments - this may use the yi array first for the numeric
-//  derivative values (after nuemric derivative is adapted for in-place use) and then overwrite 
+//  derivative values (after numeric derivative is adapted for in-place use) and then overwrite 
 //  them with the integral values)
 // -make a simplified version that doesn't need an x-array (assume distance 1 between x-avlues)
 // -implement path-integration - the path is defined by an array of vectors (taking the role of x)

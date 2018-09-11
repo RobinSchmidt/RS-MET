@@ -577,6 +577,10 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
   z0[0] = y1; z0[1] = y1s; z1[0] = y2; z1[1] = y2s; getHermiteCoeffs1(z0, z1, b);
 
 
+  TCor test = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); 
+  // distance between points to be connected should approximate total arc length
+
+
   bool highQuality = true;  // make parameter
   if(highQuality)
     drawDottedSpline2(a, b, c1, c2, numDots);
@@ -627,8 +631,8 @@ void cubicArcLength2D(T *a, T *b, T *t, T* s, int N)
   // integrand values.
 
   // Find coeffs for quartic polynomial under the square-root in the integrand:
-  typedef rsPolynomial<TCor> PL;
-  TCor c[5], d[5];                        // coeffs of:
+  typedef rsPolynomial<T> PL;
+  T c[5], d[5];                           // coeffs of:
   PL::polyDerivative(a, c, 3);            // c is dx/dt (a is x(t))
   PL::polyDerivative(b, d, 3);            // d is dy/dt (b is y(t))
   PL::multiplyPolynomials(c, 2, c, 2, c); // c is (dx/dt)^2
@@ -641,13 +645,24 @@ void cubicArcLength2D(T *a, T *b, T *t, T* s, int N)
     s[n] = sqrt(PL::evaluatePolynomialAt(t[n], c, 4));
   rsNumericIntegral(t, s, s, N); // integration works in place (use s for integrand and integral)
 }
-// move to somewhere in the Math section
+// move to somewhere in the Math section, make a 3D version (the only difference is that we have 
+// 3 polynomials x(t),y(t),z(t) that we have to take derivates of, square and add...or maybe make
+// an N-dimensional version - just take one (squared) derivative at a time and accumulate - the 
+// result will always be just a 1D quartic, regardless of the number of dimensions of the space
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2,
   int numDots)
 {
-  // maybe factor out to cubicArcLength2D(T *a, T *b, T *t, T* s, int N):
+  // obtain arc-length s as (sampled) function of parameter t:
+  static const int N = 9;
+  TCor t[N], s[N];
+  rsArray::fillWithRangeLinear(t, N, TCor(0), TCor(1));
+  cubicArcLength2D(a, b, t, s, N);
+  // something is wrong - the computed arc-length is sometimes shorter than the straight line 
+  // connecting the points - make a test for the arc-length function
+
+
 
 
   int dummy = 0;
