@@ -28,7 +28,7 @@ void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds = true);
 // x, y, yd so it can be used for complex or multivariate data as well (in the latter case
 // the derivative would be a matrix namely the Jacobian)
 
-// maybe write a function that computes the numeric derivative a one particular datapoint and
+// maybe write a function that computes the numeric derivative at one particular datapoint and
 // ideally also higher order derivatives at that point - that's more convenient to use because
 // client code does not need to have buffers for all derivatives
 
@@ -36,9 +36,17 @@ void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds = true);
 // the n and return the derivative of the poynomial at that point (may this be equivalent to the
 // approach above when using 3 points for a quadratic polynomial?)
 
+
+/** Computes the numerical integral of a function defined by data points. Usage is similar to
+rsNumericDerivative... */
+template<class T>
+void rsNumericIntegral(T *x, T *y, T *yi, int N);
+// maybe rename to rsNumericIntegralTrapezoidal
+
+
 // write numerical integration functions. these should possibly also generalize to multivariate 
-// functions when intergration along the x-axis is replaced by path-integration - so maybe pass
-// an array of "x"-values for the path
+// functions when integration along the x-axis is replaced by path-integration - so maybe pass
+// an array of "t"-values for the path
 
 // write N-dimensional integration functions that return the amount of N+1 space contained in
 // some hyperblock between x1, x2 (both of dimensionality N)

@@ -303,6 +303,29 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TPix color1, TPix c
     // todo: maybe scale the number of dots according to the length of the spline segment 
     // (currently, the number is determined by the length of the line connecting the inner points
     // which serves as a crude approximation of the arc-length)
+
+    // there's a color mismatch at the joints (draw the test lissajous figure with 40 data points
+    // to see it). it's especially apparent in regions of high curvature...has it to do with the 
+    // number of dots? does it happen when a low-curvature segment joins a high-curvature segment?
+    // that would make sense bcs the high-curv segment spreads its dots along a longer arc
+
+    // -> figure out, if there's an abrupt change in dot-color/brightness or if the apparent color
+    // mismatch is indeed due to a density-change of the dots...maybe print out dot-color and 
+    // dot-distance between subsequent dots...or maybe try to plot it
+    // or: use smaller density to plot non-overlapping dots
+
+    // i think, it has to do with the dots inside a single segment not being equidistant
+    // a segment may start with low dot density, end with high dot density and join to a segment 
+    // that again starts with low density. ideas:
+    // -try to figure out a better sequence of t-values, making the dots more equidistant
+    // -or: compensate varying dot-density by varying brightness in the opposite way
+    //  -keep track of distance d between successive dots and scale brightness by d/da where da
+    //   is the assumed average distance
+    //  -maybe instead of keeping track of the actual distance (requiring a square-root for each 
+    //   dot), we could use something based on the 2nd derivative (which is easy to compute), maybe
+    //   brightness *= 1 / (1+cx*cx+cy*cy), cx = d2x/dt2, cy = d2y/dt2 - 2nd derivatives of x,y 
+    //   with respect to t
+
   } break;
 
   default: { } break; // don't draw anything if drawMode has invalid value

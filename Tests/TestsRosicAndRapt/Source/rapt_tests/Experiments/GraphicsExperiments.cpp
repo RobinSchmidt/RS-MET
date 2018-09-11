@@ -272,7 +272,7 @@ void phaseScopeLissajous()
   // x(t) = sin(2*pi*a*t), y(t) = sin(2*pi*b*t)
 
   // input signal parameters:
-  static const int N = 80;  // number of data points
+  static const int N = 35;  // number of data points
   float a = 2.f;
   float b = 3.f;
   float scale = 0.9f;
@@ -281,10 +281,16 @@ void phaseScopeLissajous()
   rsPhaseScopeBufferFFD psb;
   psb.setAntiAlias(true);
   psb.setBrightness(100.f);
-  psb.setLineDensity(1.f);
-  psb.setPixelSpread(0.3f);
+  //psb.setLineDensity(1.f);
+  //psb.setPixelSpread(0.3f);
+
+  // for testing color discontinuities:
+  psb.setLineDensity(0.25f);
+  psb.setPixelSpread(0.0f);
+
   //psb.setDrawMode(psb.DOTTED_LINE);
   psb.setDrawMode(psb.DOTTED_SPLINE);
+
   psb.setUseColorGradient(true);
   psb.setSize(400, 400);
   psb.reset();
