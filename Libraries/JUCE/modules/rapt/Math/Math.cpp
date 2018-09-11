@@ -28,5 +28,6 @@ namespace RAPT
 #include "Geometry/GeometricTransformations.cpp"
 
 #include "Numerics/RootFinder.cpp"
+#include "Numerics/NumericCalculus.cpp"
 
 }

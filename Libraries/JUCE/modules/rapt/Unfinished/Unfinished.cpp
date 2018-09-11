@@ -12,7 +12,6 @@ namespace RAPT
 #include "Math/FourierTransformer.cpp"
 #include "Math/Interpolation.cpp"
 #include "Math/NumberTheory.cpp"
-#include "Math/NumericCalculus.cpp"
 #include "Math/Transforms.cpp"
 #include "Math/Statistics.cpp"
 #include "Math/GeometricFunctions.cpp"

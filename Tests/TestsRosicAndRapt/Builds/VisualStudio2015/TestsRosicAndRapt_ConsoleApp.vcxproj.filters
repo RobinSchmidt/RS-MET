@@ -838,6 +838,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.cpp">
+      <Filter>Juce Modules\rapt\Math\Numerics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.cpp">
       <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClCompile>
@@ -962,9 +965,6 @@
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumberTheory.cpp">
-      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumericCalculus.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Statistics.cpp">
@@ -3030,6 +3030,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.h">
+      <Filter>Juce Modules\rapt\Math\Numerics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.h">
       <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
@@ -3157,9 +3160,6 @@
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumberTheory.h">
-      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumericCalculus.h">
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Point2D.h">
