@@ -25,7 +25,14 @@ public:
   constant term, a[1] is the multiplier for x^1, a[2] the multiplier for x^2 and so on until
   a[order] which is the multiplier for a^order. */
   static T evaluatePolynomialAt(T x, T *a, int order);
-  // rename to evaluateAt
+  // rename to evaluate
+
+  static inline T evaluateCubic(T x, T* a)
+  {
+    return a[0] + (a[1] + (a[2] + a[3]*x)*x)*x;
+    //T x2 = x*x;
+    //return a[0] + a[1]*x + a[2]*x2 + a[3]*x*x2;
+  }
 
   /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
   argument 'x'. The value of the polynomial will be stored in y and the value of the derivative

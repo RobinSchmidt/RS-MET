@@ -599,8 +599,8 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline1(TCor *a, TCor *b, TPix 
   int numDots)
 {
   TPix dc = c2-c1;  // color difference
-  TCor scaler = (TCor)(1.0 / numDots);
-  TCor t, x, y;
+  TCor scaler = (TCor)(1.0 / numDots); // not 1/(numDots-1) because last dot of this call is drawn
+  TCor t, x, y;                        // as first dot in next call? ..avoids drawing it twice?
   for(int i = 1; i <= numDots; i++)
   {
     t = scaler * i;  // == i / numDots
@@ -635,13 +635,14 @@ void cubicArcLength2D(T *a, T *b, T *t, T* s, int N)
 
   // Evaluate the integrand at the given t-values and perform numeric integration:
   for(int n = 0; n < N; n++)
-    s[n] = sqrt(PL::evaluatePolynomialAt(t[n], c, 4));
+    s[n] = sqrt(PL::evaluatePolynomialAt(t[n], c, 4)); // write and use optimized evaluateQuartic
   rsNumericIntegral(t, s, s, N); // integration works in place (use s for integrand and integral)
 }
 // move to somewhere in the Math section, make a 3D version (the only difference is that we have 
 // 3 polynomials x(t),y(t),z(t) that we have to take derivates of, square and add...or maybe make
-// an N-dimensional version - just take one (squared) derivative at a time and accumulate - the 
-// result will always be just a 1D quartic, regardless of the number of dimensions of the space
+// an N-dimensional version - just compute one (squared) derivative per dimension and accumulate 
+// the resulting quartics - the result will always be just a 1D quartic, regardless of the number 
+// of dimensions of the space
 
 
 template<class TPix, class TWgt, class TCor>

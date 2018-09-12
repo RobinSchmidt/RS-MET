@@ -344,10 +344,10 @@ void splineArc()
 
   // create points via simple algorithm (without density compensation):
   std::vector<float> t(numDots), x(numDots), y(numDots), s(numDots);
-  float dx, dy, scaler = (1.f / numDots);
+  float dx, dy, scaler = (1.f / (numDots-1));
   float length = 0.f;  // accumulated arc-length estimate
   t[0] = 0;
-  x[0] = PL::evaluatePolynomialAt(0, a, 3);
+  x[0] = PL::evaluatePolynomialAt(0, a, 3); // use optimized evaluateCubic (maybe inlined)
   y[0] = PL::evaluatePolynomialAt(0, b, 3);
   for(int n = 1; n < numDots; n++) {
     t[n] = scaler * n;  // == n / numDots
@@ -361,6 +361,13 @@ void splineArc()
 
 
   cubicArcLength2D(&a[0], &b[0], &t[0], &s[0], numDots);
+  // actually, we could try to use a different (less dense) t-array here, the s-array must then 
+  // also be shorter - this number should be a second parameter
+
+  GNUPlotter plt;
+  //plt.addDataArrays(numDots, &x[0], &y[0]); // the actual spline curve
+  plt.addDataArrays(numDots, &t[0], &s[0]);   // arc-length s as function of parameter t
+  plt.plot();
 
 
   rsImageF image(width, height);
