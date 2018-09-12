@@ -3,6 +3,14 @@
 
 // \todo wrap into class rsInterpolation, templatize functions
 
+/** Given two arrays of input abscissa- and ordinate values xIn, yIn of length inLength and an
+array of new abscissa values xOut, this function fills the array yOut with values that correspond 
+to the xOut values by linearly interpolating the yIn array. Array xOut and yOut are of length 
+outLength. */
+template<class T>
+void resampleLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength);
+// not yet tested
+
 /** Computes coefficients for a cubic polynomial that goes through the 4 points (-1,y[-1]),
 (0,y[0]), (1,y[1]), (2,y[2]) that will have matched 1st derivatives when used on successive
 positions in an y-array. [TEST THIS! it has not yet been tested] */

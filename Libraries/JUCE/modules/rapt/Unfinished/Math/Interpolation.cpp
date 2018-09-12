@@ -1,3 +1,18 @@
+template<class T>
+void resampleLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength)
+{
+  // code copied and adapted from from rsTimeWarper::invertMonotonousWarpMap
+  int iOld = 0;
+  for(int n = 0; n < outLength; n++) {
+    T x = xOut[n];
+    for(int i = iOld; i < inLength-1; i++) {
+      if( xIn[i] <= x && xIn[i+1] >= x )      // find i, such that xIn[i] <= x and xIn[i+1] >= x
+        break;
+    }
+    yOut[n] = rsInterpolateLinear(xIn[i], xIn[i+1], yIn[i], yIn[i+1], x);
+    iOld = i;
+  }
+}
 
 template<class T>
 void rsCubicSplineCoeffsFourPoints(T *a, T *y)

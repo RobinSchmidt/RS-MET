@@ -555,6 +555,10 @@ bool groupString()
 
   // -maybe first try to get a ring with a couple of candidate multiplication rules and then try to 
   //  find among the candiates a rule that turns the ring into a field
+  // -if no suitable multiplication rule between strings can be found, mybe try a multiplication 
+  //  rule between strings and single characters - some sort of "scalar-multiplication" just like 
+  //  in a vector space - for example modular-addition of the scalar value to all chars in the 
+  //  string ('a' is the the neutral element and the is no null element)
 
   return r;
 }

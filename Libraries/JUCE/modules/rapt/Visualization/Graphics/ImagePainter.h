@@ -4,10 +4,12 @@
 
 // move to math:
 template<class T>
-void cubicArcLength2D(T *a, T *b, T *t, T* s, int N);
+void cubicArcLength2D(T* a, T* b, T* t, T* s, int N);
 
 template<class T>
 void cubicCoeffs2D(T x1, T x1s, T y1, T y1s, T x2, T x2s, T y2, T y2s, T* a, T* b);
+
+
 
 
 
