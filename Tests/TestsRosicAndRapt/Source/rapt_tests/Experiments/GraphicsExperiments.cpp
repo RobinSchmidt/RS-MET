@@ -325,7 +325,10 @@ void splineArc()
 {
   // Tests the spline arc drawing - especially the numeric integration of the arc-length
 
-  int numDots = 100;
+  //int numDots = 100;
+
+  float density = 0.125;
+  int N = 100;        // number of spline evaluation samples
   int width   = 400;
   int height  = 400;
 
@@ -333,6 +336,9 @@ void splineArc()
   //float x2 = 1, y2 = 0, x2s = 0, y2s = -1; // end   at (1,0), pointing downward
   float x1 =  10, y1 = 10, x1s = 0, y1s =  1500; // start center left, pointing upward
   float x2 = 390, y2 = 10, x2s = 0, y2s = -1500; // end center right, pointing downward
+  float distance = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); // distance between the two points
+
+  //int numDots = density*distance
 
   // maybe to test the density, have all points on one lines
 
@@ -343,37 +349,42 @@ void splineArc()
   typedef rsPolynomial<float> PL;
 
   // create points via simple algorithm (without density compensation):
-  std::vector<float> t(numDots), x(numDots), y(numDots), s(numDots);
-  float dx, dy, scaler = (1.f / (numDots-1));
+  std::vector<float> t(N), x(N), y(N), s(N);
+  float dx, dy, scaler = (1.f / (N-1));
   float length = 0.f;  // accumulated arc-length estimate
   t[0] = 0;
   x[0] = PL::evaluatePolynomialAt(0, a, 3); // use optimized evaluateCubic (maybe inlined)
   y[0] = PL::evaluatePolynomialAt(0, b, 3);
-  for(int n = 1; n < numDots; n++) {
-    t[n] = scaler * n;  // == n / numDots
+  for(int n = 1; n < N; n++) {
+    t[n] = scaler * n;  // == n / N
     x[n] = PL::evaluatePolynomialAt(t[n], a, 3);
     y[n] = PL::evaluatePolynomialAt(t[n], b, 3);
     dx   = x[n]-x[n-1];
     dy   = y[n]-y[n-1];
     length += sqrt(dx*dx+dy*dy);
   }
-  float distance = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); // distance between the two points
 
-
-  cubicArcLength2D(&a[0], &b[0], &t[0], &s[0], numDots);
+  cubicArcLength2D(&a[0], &b[0], &t[0], &s[0], N);
   // actually, we could try to use a different (less dense) t-array here, the s-array must then 
   // also be shorter - this number should be a second parameter
 
   GNUPlotter plt;
-  //plt.addDataArrays(numDots, &x[0], &y[0]); // the actual spline curve
-  plt.addDataArrays(numDots, &t[0], &s[0]);   // arc-length s as function of parameter t
-  plt.plot();
+  //plt.addDataArrays(N, &x[0], &y[0]); // the actual spline curve
+  plt.addDataArrays(N, &t[0], &s[0]);   // arc-length s as function of parameter t
+  //plt.plot();
+
+
+  float splineLength = s[N-1]; // last value in s is total length: s(t=1)
+  int numSplineDots = std::max(1, (int)round(splineLength * density));
 
 
   rsImageF image(width, height);
   rsImagePainter<float, float, float> painter(&image);
   //painter.setAntiAlias(false);
-  painter.drawDottedSpline1(a, b, 1.0, 1.0, numDots);
+
+  //painter.drawDottedSpline1(a, b, 1.0, 1.0, N);
+  painter.drawDottedSpline1(a, b, 1.0, 1.0, numSplineDots);
+
   writeImageToFilePPM(*painter.getImage(), "CubicSpline.ppm");
   int dummy = 0;
 }
