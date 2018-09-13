@@ -565,7 +565,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2,
 }
 
 template<class T>
-void cubicCoeffs2D(T x1, T x1s, T y1, T y1s, T x2, T x2s, T y2, T y2s, T* a, T* b)
+void cubicSplineArcCoeffs2D(T x1, T x1s, T y1, T y1s, T x2, T x2s, T y2, T y2s, T* a, T* b)
 {
   // Compute coeffs of the two polynomials:
   // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
@@ -580,7 +580,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
   TCor x2, TCor x2s, TCor y2, TCor y2s, TPix c1, TPix c2, int numDots)
 {
   TCor a[4], b[4];   // coeffs for x(t), y(t)
-  cubicCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
+  cubicSplineArcCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
 
 
   TCor test = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); 
@@ -630,7 +630,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
 
 
 template<class T>
-void cubicArcLength2D(T *a, T *b, T *t, T* s, int N)
+void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
 {
   // The arc-length s(t) between 0 and t of the cubic spline defined by the two polynomials
   // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
@@ -672,19 +672,18 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   static const int N = 17;
   TCor r[N], s[N];
   rsArray::fillWithRangeLinear(r, N, TCor(0), TCor(1));
-  cubicArcLength2D(a, b, r, s, N);
-  // something is wrong - the computed arc-length is sometimes shorter than the straight line 
-  // connecting the points - make a test for the arc-length function
+  cubicSplineArcLength2D(a, b, r, s, N);
 
 #ifdef RS_DEBUG_PLOTTING
   GNUPlotter::plot(N, &r[0], &s[0]);
 #endif
 
   TCor splineLength = s[N-1]; // last value in s is total length: s(t=1)
-  TCor density = 0.125; // preliminary - make parameter
+  TCor density = 0.125;       // preliminary - make parameter
   int numSplineDots = rsMax(1, rsRoundToInt(splineLength * density));
 
 
+  // Compute sequence of t-values that result in equidistant dots:
   std::vector<TCor> u(numSplineDots), t(numSplineDots);  // preliminary - use pre-allocated buffers (members) later
   TCor scaler = splineLength / TCor(numSplineDots-1.0);
   for(int i = 0; i < numSplineDots; i++)
@@ -695,24 +694,9 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   GNUPlotter::plot(numSplineDots, &u[0], &t[0]);
 #endif
 
+  // Draw the spline with the computed t-values:
   drawDottedSpline2(a, b, c1, c2, &t[0], numSplineDots);
-
-  int dummy = 0;
-
-  // preliminary, just to instantiate rsNumericIntegral (replace later with actually useful 
-  // numeric integration):
-  //TCor c[1]; rsNumericIntegral(c, c, c, 1);
-  //resampleNonUniformLinear(c, c, 1, c, c, 1);
-
-  // todo:
-  // -compute the total length of the spline segment (this will be some kind of analytic line 
-  //  integral) to be used to scale the brightness of the dots
-  // -compute a sequence of t-values at which to evaluate the polynomials and set a dot - these
-  //  t-values should be chosen such that the spline segments between successive t-values have
-  //  all the same length, t should be in the range 0..1
 }
-
-
 
 
 // some helper functions used in Wu algorithm (maybe try to get rid of them):

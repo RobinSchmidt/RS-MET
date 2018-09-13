@@ -344,7 +344,7 @@ void splineArc()
 
   // compute polynomial coefficients:
   float a[4], b[4];
-  cubicCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
+  cubicSplineArcCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
 
   typedef rsPolynomial<float> PL;
 
@@ -364,7 +364,7 @@ void splineArc()
     length += sqrt(dx*dx+dy*dy);
   }
 
-  cubicArcLength2D(&a[0], &b[0], &t[0], &s[0], N);
+  cubicSplineArcLength2D(&a[0], &b[0], &t[0], &s[0], N);
   // actually, we could try to use a different (less dense) t-array here, the s-array must then 
   // also be shorter - this number should be a second parameter
 
