@@ -34,6 +34,7 @@ class GNUPlotter
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */
 
   /** Constructor.*/
@@ -46,7 +47,19 @@ public:
   manually, if you want to re-initialize everything. */
   void initialize();
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Plotting */
+
+  /** Convenience function to allow plotting without having client code instantiate a plotter 
+  object, set it up, etc. */
+  template <class T>
+  inline static void plot(int N, T *x, T *y1, T *y2 = nullptr, T *y3 = nullptr, T *y4 = nullptr,
+    T *y5 = nullptr, T *y6 = nullptr, T *y7 = nullptr, T *y8 = nullptr, T *y9 = nullptr)
+  {
+    GNUPlotter plt;
+    plt.addDataArrays(N, x, y1, y2, y3, y4, y5, y6, y7, y8, y9);
+    plt.plot();
+  }
 
   /** After the data has been set up and possibly a couple of formatting functions have been
   called, calling this function will actually invoke GNUPlot for plotting the data according to the
@@ -105,7 +118,7 @@ public:
   // provide more functions for specialized plots
   // plotFunctionFamily, plotVectorField, plotHistogram, bodePlot, scatterPlot, plotComplexMapping
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Style Setup */
 
   /** Adds the given command to the batchfile. */
@@ -194,7 +207,7 @@ public:
   documentation in the GNUPlot manual). */
   void addAnnotation(double x, double y, CSR text, CSR options = "");
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Data setup */
 
   /** Sets the number of decimal digits after the dot with which the data will be written into the 
@@ -337,13 +350,13 @@ public:
   flexibility and generality in the use of this plotter class. */
   void addGraph(CSR descriptor);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the path of the datafile. */
   std::string getDataPath();
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
   /** Fills the array x of length N with equally spaced values from min...max. Useful for creating 

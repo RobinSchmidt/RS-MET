@@ -36,6 +36,19 @@ void GNUPlotter::initialize()
 
 // plotting:
 
+/*
+template <class T>
+static void GNUPlotter::plot(int N, T *x, T *y1, T *y2, T *y3, T *y4, T *y5, T *y6, T *y7, T *y8, 
+  T *y9)
+{
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, y1, y2, y3, y4, y5, y6, y7, y8, y9);
+  plt.plot();
+}
+template void GNUPlotter::plot(int N, double *y1, double *y2, double *y3, double *y4, 
+  double *y5, double *y6, double *y7, double *y8, double *y9);
+*/
+
 void GNUPlotter::plot()
 {
   addPlotCommand(false);

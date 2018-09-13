@@ -650,14 +650,33 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   int numDots)
 {
   // obtain arc-length s as (sampled) function of parameter t:
-  static const int N = 9;
-  TCor t[N], s[N];
-  rsArray::fillWithRangeLinear(t, N, TCor(0), TCor(1));
-  cubicArcLength2D(a, b, t, s, N);
+  static const int N = 17;
+  TCor r[N], s[N];
+  rsArray::fillWithRangeLinear(r, N, TCor(0), TCor(1));
+  cubicArcLength2D(a, b, r, s, N);
   // something is wrong - the computed arc-length is sometimes shorter than the straight line 
   // connecting the points - make a test for the arc-length function
 
+#ifdef RS_DEBUG_PLOTTING
+  GNUPlotter::plot(N, &r[0], &s[0]);
+#endif
 
+  TCor splineLength = s[N-1]; // last value in s is total length: s(t=1)
+  TCor density = 0.125; // preliminary - make parameter
+  int numSplineDots = rsMax(1, rsRoundToInt(splineLength * density));
+
+
+  std::vector<TCor> u(numSplineDots), t(numSplineDots);  // preliminary - use a pre-allocated buffers (members) later
+  //TCor scaler = TCor(1) / TCor(numSplineDots-1.0); // wrong
+  TCor scaler = splineLength / TCor(numSplineDots-1.0);
+  //TCor scaler = TCor(1);                             // if right, get rid of scaler
+  for(int i = 0; i < numSplineDots; i++)
+    u[i] = i*scaler;
+  resampleNonUniformLinear(s, r, N, &u[0], &t[0], numSplineDots);
+
+#ifdef RS_DEBUG_PLOTTING
+  GNUPlotter::plot(numSplineDots, &u[0], &t[0]);
+#endif
 
 
   int dummy = 0;
