@@ -8,7 +8,7 @@ array of new abscissa values xOut, this function fills the array yOut with value
 to the xOut values by linearly interpolating the yIn array. Array xOut and yOut are of length 
 outLength. */
 template<class T>
-void resampleLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength);
+void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength);
 // not yet tested
 
 /** Computes coefficients for a cubic polynomial that goes through the 4 points (-1,y[-1]),

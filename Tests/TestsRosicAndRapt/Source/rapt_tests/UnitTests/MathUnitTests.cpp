@@ -243,6 +243,23 @@ bool interpolatingFunctionUnitTest()
   return r;
 }
 
+bool resampleNonUniform()
+{
+  bool r = true;
+
+  static const int inLength = 5;
+  double xIn[] = { 1, 4, 5, 7, 8 };
+  double yIn[] = { 1, 3, 1, 2, 3 };
+
+  static const int outLength = 9;
+  double xOut[] = { 1.5, 2.5, 3, 3.5, 4.5, 6, 7.5, 8.5, 9.5 };
+  double yOut[outLength];
+
+  resampleNonUniformLinear(xIn, yIn, inLength, xOut, yOut, outLength);
+
+  return r;
+}
+
 // For testing the root-finder, we use a 3rd oder polynomial as example function with roots at
 // -1, +1, +2. We define a function and a functor that implements that function in order to pass it
 // to the root finder:

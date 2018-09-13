@@ -665,6 +665,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   // preliminary, just to instantiate rsNumericIntegral (replace later with actually useful 
   // numeric integration):
   TCor c[1]; rsNumericIntegral(c, c, c, 1);
+  resampleNonUniformLinear(c, c, 1, c, c, 1);
 
   // todo:
   // -compute the total length of the spline segment (this will be some kind of analytic line 

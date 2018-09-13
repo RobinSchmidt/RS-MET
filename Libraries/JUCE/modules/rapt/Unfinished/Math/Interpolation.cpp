@@ -1,11 +1,11 @@
 template<class T>
-void resampleLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength)
+void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength)
 {
   // code copied and adapted from from rsTimeWarper::invertMonotonousWarpMap
-  int iOld = 0;
+  int i, iOld = 0;
   for(int n = 0; n < outLength; n++) {
     T x = xOut[n];
-    for(int i = iOld; i < inLength-1; i++) {
+    for(i = iOld; i < inLength-1; i++) {
       if( xIn[i] <= x && xIn[i+1] >= x )      // find i, such that xIn[i] <= x and xIn[i+1] >= x
         break;
     }
@@ -13,6 +13,8 @@ void resampleLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLengt
     iOld = i;
   }
 }
+// optimize: recompute line-equations coeffs only in the branch with the break - avoid 
+// repeated recomputation of still valid line-coeffs in case of upsampling
 
 template<class T>
 void rsCubicSplineCoeffsFourPoints(T *a, T *y)

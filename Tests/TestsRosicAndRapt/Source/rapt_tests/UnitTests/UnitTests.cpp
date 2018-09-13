@@ -27,8 +27,10 @@ bool runAllUnitTests()
   passed &= runUnitTest(&coordinateMapperUnitTest,       "rsCoordinateMapper2D");
   passed &= runUnitTest(&fitRationalUnitTest,            "fit rational");
   passed &= runUnitTest(&interpolatingFunctionUnitTest,  "rsInterpolatingFunction");
+  passed &= runUnitTest(&resampleNonUniform,             "resampleNonUniform");
   passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
   passed &= runUnitTest(&correlationUnitTest,            "correlation");
+
 
   passed &= runUnitTest(&testVector,                     "rsVector");
   passed &= runUnitTest(&testMatrix,                     "rsMatrix");
