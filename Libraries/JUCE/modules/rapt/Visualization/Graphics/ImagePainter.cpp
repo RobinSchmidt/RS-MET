@@ -609,6 +609,25 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline1(TCor *a, TCor *b, TPix 
     paintDot(x, y, c1 + TPix(t)*dc);
   }
 }
+// todo: fill t-array and call the function below - avoid code duplication
+
+template<class TPix, class TWgt, class TCor>
+void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2, 
+  TCor* t, int numDots)
+{
+  TPix dc = c2-c1;                      // color difference
+  TCor scaler = (TCor)(1.0 / numDots);  // not 1/(numDots-1) because last dot of this call is drawn
+  TCor ti, x, y;                        // as first dot in next call? ..avoids drawing it twice?
+  for(int i = 0; i < numDots; i++) {
+    ti = t[i];
+    x = rsPolynomial<TCor>::evaluatePolynomialAt(ti, a, 3);
+    y = rsPolynomial<TCor>::evaluatePolynomialAt(ti, b, 3);
+    paintDot(x, y, c1 + TPix(ti)*dc); 
+    // todo: make a function that just fills 3 arrays for x,y,c instead of directly painting, so it
+    // can be used to delegate the actual painting to OpenGL
+  }
+}
+
 
 template<class T>
 void cubicArcLength2D(T *a, T *b, T *t, T* s, int N)
@@ -647,7 +666,7 @@ void cubicArcLength2D(T *a, T *b, T *t, T* s, int N)
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2,
-  int numDots)
+  int numDots) // numDots parameter is obsolete
 {
   // obtain arc-length s as (sampled) function of parameter t:
   static const int N = 17;
@@ -666,10 +685,8 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   int numSplineDots = rsMax(1, rsRoundToInt(splineLength * density));
 
 
-  std::vector<TCor> u(numSplineDots), t(numSplineDots);  // preliminary - use a pre-allocated buffers (members) later
-  //TCor scaler = TCor(1) / TCor(numSplineDots-1.0); // wrong
+  std::vector<TCor> u(numSplineDots), t(numSplineDots);  // preliminary - use pre-allocated buffers (members) later
   TCor scaler = splineLength / TCor(numSplineDots-1.0);
-  //TCor scaler = TCor(1);                             // if right, get rid of scaler
   for(int i = 0; i < numSplineDots; i++)
     u[i] = i*scaler;
   resampleNonUniformLinear(s, r, N, &u[0], &t[0], numSplineDots);
@@ -678,13 +695,14 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   GNUPlotter::plot(numSplineDots, &u[0], &t[0]);
 #endif
 
+  drawDottedSpline2(a, b, c1, c2, &t[0], numSplineDots);
 
   int dummy = 0;
 
   // preliminary, just to instantiate rsNumericIntegral (replace later with actually useful 
   // numeric integration):
-  TCor c[1]; rsNumericIntegral(c, c, c, 1);
-  resampleNonUniformLinear(c, c, 1, c, c, 1);
+  //TCor c[1]; rsNumericIntegral(c, c, c, 1);
+  //resampleNonUniformLinear(c, c, 1, c, c, 1);
 
   // todo:
   // -compute the total length of the spline segment (this will be some kind of analytic line 

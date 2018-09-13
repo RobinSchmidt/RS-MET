@@ -126,7 +126,17 @@ public:
 
   void drawDottedSpline1(TCor *a, TCor *b, TPix c1, TPix c2, int numDots);
   
+
+  void drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2, TCor* t, int numDots);
+
+
   void drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2, int numDots);
+  // replace numDots parameter by dotDensity, maxNumDots, scaleColorByNumDots...but maybe that's 
+  // a bad interface inconsistency....mayb change the interface of drawLineDotted (or make an 
+  // additional version of the function with different interface)...actually, the passed in colors
+  // here are obsolete...we must compute them ourselves...
+
+
 
 
 
