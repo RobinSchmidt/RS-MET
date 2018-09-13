@@ -248,7 +248,7 @@ bool resampleNonUniform()
   bool r = true;
 
   static const int inLength = 5;
-  double xIn[] = { 1, 4, 5, 7, 8 };
+  double xIn[] = { 2, 4, 5, 7, 8 };
   double yIn[] = { 1, 3, 1, 2, 3 };
 
   static const int outLength = 9;
@@ -256,6 +256,16 @@ bool resampleNonUniform()
   double yOut[outLength];
 
   resampleNonUniformLinear(xIn, yIn, inLength, xOut, yOut, outLength);
+
+  r &= yOut[0] == 0.5;
+  r &= yOut[1] == 1.5;
+  r &= yOut[2] == 2.0;
+  r &= yOut[3] == 2.5;
+  r &= yOut[4] == 2.0;
+  r &= yOut[5] == 1.5;
+  r &= yOut[6] == 2.5;
+  r &= yOut[7] == 3.5;
+  r &= yOut[8] == 4.5;
 
   return r;
 }

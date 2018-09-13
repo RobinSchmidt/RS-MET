@@ -9,7 +9,7 @@ to the xOut values by linearly interpolating the yIn array. Array xOut and yOut 
 outLength. */
 template<class T>
 void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength);
-// not yet tested
+// xIn must be strictly monotonically increasing
 
 /** Computes coefficients for a cubic polynomial that goes through the 4 points (-1,y[-1]),
 (0,y[0]), (1,y[1]), (2,y[2]) that will have matched 1st derivatives when used on successive
@@ -151,7 +151,7 @@ template<class T>
 T rsInterpolateLinear(T x1, T x2, T y1, T y2, T x)
 {
   if(x1 == x2)
-    return 0.5 * (y1+y2); // at a discontinuity, we return the average
+    return T(0.5) * (y1+y2); // at a discontinuity, we return the average
   T a = (y2-y1) / (x2-x1);
   T b = y1 - a*x1;
   return a*x + b;

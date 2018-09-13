@@ -2,18 +2,15 @@ template<class T>
 void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength)
 {
   // code copied and adapted from from rsTimeWarper::invertMonotonousWarpMap
-  int i, iOld = 0;
+  int i = 0;
   for(int n = 0; n < outLength; n++) {
     T x = xOut[n];
-    for(i = iOld; i < inLength-1; i++) {
-      if( xIn[i] <= x && xIn[i+1] >= x )      // find i, such that xIn[i] <= x and xIn[i+1] >= x
-        break;
-    }
+    while(xIn[i+1] < x && i < inLength-2)
+      i++;
     yOut[n] = rsInterpolateLinear(xIn[i], xIn[i+1], yIn[i], yIn[i+1], x);
-    iOld = i;
   }
 }
-// optimize: recompute line-equations coeffs only in the branch with the break - avoid 
+// optimize: recompute line-equation coeffs only when necessarry - avoid 
 // repeated recomputation of still valid line-coeffs in case of upsampling
 
 template<class T>
