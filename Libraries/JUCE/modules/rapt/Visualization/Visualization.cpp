@@ -6,6 +6,7 @@ namespace RAPT
 #include "Graphics/Image.cpp"
 #include "Graphics/AlphaMask.cpp"
 #include "Graphics/ImageDrawer.cpp"
+#include "Graphics/RealTimeSpline.cpp"
 #include "Graphics/ImagePainter.cpp"
 
 #include "Misc/ScopeScreenScanner.cpp"

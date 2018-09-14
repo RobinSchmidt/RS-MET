@@ -1030,6 +1030,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImagePainter.cpp">
       <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\RealTimeSpline.cpp">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\PhaseScopeBuffer.cpp">
       <Filter>Juce Modules\rapt\Visualization\Misc</Filter>
     </ClCompile>
@@ -3238,6 +3241,9 @@
       <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImagePainter.h">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\RealTimeSpline.h">
       <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\PhaseScopeBuffer.h">

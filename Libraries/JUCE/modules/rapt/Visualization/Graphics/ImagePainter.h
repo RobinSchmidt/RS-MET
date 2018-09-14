@@ -1,29 +1,6 @@
 #ifndef RAPT_IMAGEPAINTER_H_INCLUDED
 #define RAPT_IMAGEPAINTER_H_INCLUDED
 
-template<class TCor, class TWgt>
-class rsDotPlacer
-{
-
-public:
-
-  /**  */
-  int getDotCoordinatesAndWeights(TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt weights, 
-    int xywLength);
-  // rename to getDots or getDotsForInputPoint
-
-protected:
-
-  TCor density;
-  int maxNumDots = -1; // -1 is code for: no limit
-  TCor x[4], y[4];
-
-};
-// -should compute dot-locations and colors for painting - this functionality is currently spread 
-//  over rsImagePainter and rsPhaseScopeBuffer
-// -maybe rename to rsRealTimeSpline2D
-
-
 /** A class for painting on an Image object. It is based on an "alpha-mask" that is used as 
 prototype "dot". Whenever a dot is painted onto the image at a particular location, the mask will
 be used to blend the existing colors at these pixels with a new target color.  
@@ -50,7 +27,7 @@ public:
   /** Constructor. */
   rsImagePainter(rsImage<TPix> *imageToPaintOn = nullptr, rsAlphaMask<TWgt> *maskToUse = nullptr);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the image on which we paint.  */
@@ -77,7 +54,7 @@ public:
   //void setRightCapProfile(int profile); // profiles for caps
   //void setBlendMode(int mode); // assigns function pointer
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns a pointer to the target image onto which we paint. */
@@ -86,7 +63,7 @@ public:
   /** Returns a pointer to the alpha mask that we use for painting. */
   rsAlphaMask<TWgt>* getAlphaMask() { return mask; }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Painting */
 
   /** Paints a dot at the given position. This function dispatches between the various versions of

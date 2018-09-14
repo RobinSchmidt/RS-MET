@@ -1,24 +1,3 @@
-// class rsDotPlacer - ideas:
-// -require only dy/dx to be equal at the joints
-//  -this is less restrictive than requiring dx/dt and dy/dt to be simultaneously equal 
-//  -maybe then a quadratic spline is enough? 
-//  -maybe that ensures only geometric but not parameteric continuity?
-// -try to draw the spline with short line-segments
-//  -maybe in this case, the higher density in regions of high curvature is actually is actually 
-//   beneficial, so no density compensation is required?
-// -try quartic interpolation spline 
-//  -maybe less overshoot?
-// -try to fix the 3rd deruvative at the joints to 0
-//  -needs a quinitc spline
-// -try a simpler (to compute) density compensation:
-//  -evaluate instantaneous speed sqrt( (dx/dt)^2 + (dy/dt)^2 ) at each spline point and skip dots or
-//   insert extra dots depending on the value
-//  -maybe use |dx/dt| + |dy/dt| instead of the sqrt
-//  -maybe instead of skip/insert dots, change the brightness of the dot to be drawn
-
-
-
-
 template<class TPix, class TWgt, class TCor>
 rsImagePainter<TPix, TWgt, TCor>::rsImagePainter(rsImage<TPix> *imageToPaintOn, rsAlphaMask<TWgt> *maskToUse)
 {
