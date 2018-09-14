@@ -178,7 +178,7 @@ void PhaseScope::setPixelScale(double newFactor)
 }
 void PhaseScope::setDrawMode(int mode)
 {
-  //phaseScopeBuffer->setDrawMode(mode);
+  phaseScopeBuffer->setDrawMode(mode);
 }
 void PhaseScope::setAntiAlias(bool shouldAntiAlias)
 {
