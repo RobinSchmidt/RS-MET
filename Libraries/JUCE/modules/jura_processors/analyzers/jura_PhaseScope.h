@@ -30,6 +30,7 @@ public:
   void setDotLimit(double newLimit);
   void setPixelSpread(double newSpread);
   void setPixelScale(double newFactor);
+  void setDrawMode(int mode);
   void setAntiAlias(bool shouldAntiAlias);
   void setFrameRate(double newRate);
   void setScaleX(double newScale);
@@ -170,6 +171,8 @@ protected:
     *sliderLineDensity, *sliderDotLimit, *sliderFrameRate;
 
   RButton *buttonAntiAlias, *button1D, *buttonSync;
+
+  RComboBox *boxDrawMode;
 
   AutomatableSlider *sliderScaleX, *sliderScaleY, *sliderShearX, *sliderShearY,
     *sliderRotation, *sliderShiftX, *sliderShiftY,

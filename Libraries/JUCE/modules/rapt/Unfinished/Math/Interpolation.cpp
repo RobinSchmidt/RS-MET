@@ -277,3 +277,49 @@ void fitCubicThroughFourPoints(T x0, T y0, T x1, T y1, T x2,
   // with h_delta on page 13 -> generalize this function to compute coefficients for n-th order 
   // Lagrange interpolator
 }
+
+template<class T>
+void cubicSplineArcCoeffs2D(T x1, T x1s, T y1, T y1s, T x2, T x2s, T y2, T y2s, T* a, T* b)
+{
+  // Compute coeffs of the two polynomials:
+  // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
+  // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
+  T z0[2], z1[2]; // y0, y1 inputs in getHermiteCoeffs1
+  z0[0] = x1; z0[1] = x1s; z1[0] = x2; z1[1] = x2s; getHermiteCoeffs1(z0, z1, a);
+  z0[0] = y1; z0[1] = y1s; z1[0] = y2; z1[1] = y2s; getHermiteCoeffs1(z0, z1, b);
+}
+
+template<class T>
+void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
+{
+  // The arc-length s(t) between 0 and t of the cubic spline defined by the two polynomials
+  // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
+  // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
+  // is given by the definite integral from 0 to t over the integrand 
+  // c(t) = sqrt( (dx/dt)^2 + (dy/dt)^2 )
+  // where the term inside the square-root is a fourth order polynomial (the derivative of a cubic
+  // is a quadratic, squaring that gives a quartic and adding two quartics gives still a quartic). 
+  // We evaluate the integrand at the N values t[n] and perform a numeric integration over these 
+  // integrand values.
+
+  // Find coeffs for quartic polynomial under the square-root in the integrand:
+  typedef rsPolynomial<T> PL;
+  T c[5], d[5];                           // coeffs of:
+  PL::polyDerivative(a, c, 3);            // c is dx/dt (a is x(t))
+  PL::polyDerivative(b, d, 3);            // d is dy/dt (b is y(t))
+  PL::multiplyPolynomials(c, 2, c, 2, c); // c is (dx/dt)^2
+  PL::multiplyPolynomials(d, 2, d, 2, d); // d is (dy/dt)^2
+  rsArray::add(c, d, c, 5);               // c is (dx/dt)^2 + (dy/dt)^2
+  // The coeffs of our desired quartic are now in our c-array.
+
+  // Evaluate the integrand at the given t-values and perform numeric integration:
+  for(int n = 0; n < N; n++)
+    s[n] = sqrt(PL::evaluatePolynomialAt(t[n], c, 4)); // write and use optimized evaluateQuartic
+  rsNumericIntegral(t, s, s, N); // integration works in place (use s for integrand and integral)
+}
+// todo: make a 3D version (the only difference is that we have 3 polynomials x(t),y(t),z(t) that 
+// we have to take derivates of, square and add...or maybe make an N-dimensional version - just 
+// compute one (squared) derivative per dimension and accumulate the resulting quartics - the 
+// result will always be just a 1D quartic, regardless of the number of dimensions of the space
+// maybe make a function that can also handle higher order splines...at least quartics because
+// we want to try a quartic interpolant

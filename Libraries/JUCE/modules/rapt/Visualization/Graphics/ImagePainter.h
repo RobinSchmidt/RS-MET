@@ -1,16 +1,27 @@
 #ifndef RAPT_IMAGEPAINTER_H_INCLUDED
 #define RAPT_IMAGEPAINTER_H_INCLUDED
 
+template<class TCor, class TWgt>
+class rsDotPlacer
+{
 
-// move to math:
-template<class T>
-void cubicSplineArcLength2D(T* a, T* b, T* t, T* s, int N);
+public:
 
-template<class T>
-void cubicSplineArcCoeffs2D(T x1, T x1s, T y1, T y1s, T x2, T x2s, T y2, T y2s, T* a, T* b);
+  /**  */
+  int getDotCoordinatesAndWeights(TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt weights, 
+    int xywLength);
+  // rename to getDots or getDotsForInputPoint
 
+protected:
 
+  TCor density;
+  int maxNumDots = -1; // -1 is code for: no limit
+  TCor x[4], y[4];
 
+};
+// -should compute dot-locations and colors for painting - this functionality is currently spread 
+//  over rsImagePainter and rsPhaseScopeBuffer
+// -maybe rename to rsRealTimeSpline2D
 
 
 /** A class for painting on an Image object. It is based on an "alpha-mask" that is used as 
@@ -26,8 +37,7 @@ algorithms from the compute graphics community
 -rename this clas into DotDrawer
 -move line drawing functions into rsLineDrawer
 -rename this "mask" stuff to "brush"
-...these terms are more conventional in the computer graphics literature
-*/
+...these terms are more conventional in the computer graphics literature */
 
 template<class TPix, class TWgt, class TCor>  // pixel, weight, coordinate types
 class rsImagePainter
@@ -130,7 +140,7 @@ public:
   void drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2, TCor* t, int numDots);
 
 
-  void drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2, int numDots);
+  void drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2);
   // replace numDots parameter by dotDensity, maxNumDots, scaleColorByNumDots...but maybe that's 
   // a bad interface inconsistency....mayb change the interface of drawLineDotted (or make an 
   // additional version of the function with different interface)...actually, the passed in colors
@@ -192,6 +202,10 @@ protected:
 
   bool antiAlias, useMask;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;
+
+
+  std::vector<TCor> r, s, t, u; // buffers for the density compensation computations
+
 
   //TWgt (*lineProfile)(TWgt, TWgt) = lineProfileSolid;
   // lineProfileLinear (metal), lineProfileParabolic (plastic), lineProfileSmooth (cloud)

@@ -1,15 +1,16 @@
 #ifndef RAPT_INTERPOLATION_H
 #define RAPT_INTERPOLATION_H
 
-// \todo wrap into class rsInterpolation, templatize functions
+// \todo wrap into class rsInterpolation ...or maybe merge with Interpolator
 
 /** Given two arrays of input abscissa- and ordinate values xIn, yIn of length inLength and an
 array of new abscissa values xOut, this function fills the array yOut with values that correspond 
 to the xOut values by linearly interpolating the yIn array. Array xOut and yOut are of length 
-outLength. */
+outLength. xIn must be strictly monotonically increasing. If the xOut array contains values outside
+the range of the xIn value, the will linearly extrapolate beyond the original range based on the 
+two initila and/or final points. */
 template<class T>
 void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength);
-// xIn must be strictly monotonically increasing
 
 /** Computes coefficients for a cubic polynomial that goes through the 4 points (-1,y[-1]),
 (0,y[0]), (1,y[1]), (2,y[2]) that will have matched 1st derivatives when used on successive
@@ -75,8 +76,7 @@ are approximated (using only past values). The "shape" parameter controls, which
 actually be used for  the desired derivative by multiplying the raw finite difference
 approximation for the n-th derivative by shape^n.  */
 template<class T>
-T getDelayedSampleAsymmetricHermiteM(T d, T *y, int M,
-  T shape = 1.0);
+T getDelayedSampleAsymmetricHermiteM(T d, T *y, int M, T shape = 1.0);
 
 /** Optimized version of getDelayedSampleAsymmetricHermiteM for the case M == 1. */
 template<class T>
@@ -144,8 +144,29 @@ order 2*smoothness+1 will be used. */
 template<class T>
 void rsInterpolateSpline(T *x, T *y, int N, T *xi, T *yi, int Ni, int smoothness = 1);
 
+/** Given two points (x1,y1), (x2,y2), this function computes the cubic polynomial coefficients for
+a spline arc that has the parametric equations:
+x(t) = a0 + a1*t + a2*t^2 + a3*t^3
+y(t) = b0 + b1*t + b2*t^2 + b3*t^3
+The desired derivatives with respect of x and y with respect to the parameter t at the two points 
+are passed in by (dx1,dy1) and (dx2,dy2) and the polynomial coefficients are written into the 
+arrays a and b which are supposed to be of length 4. */
+template<class T>
+void cubicSplineArcCoeffs2D(T x1, T dx1, T y1, T dy1, T x2, T dx2, T y2, T dy2, T* a, T* b);
+
+/** Given the polynomial coeffcient arrays of a cubic spline in 2D described by
+x(t) = a0 + a1*t + a2*t^2 + a3*t^3
+y(t) = b0 + b1*t + b2*t^2 + b3*t^3
+this function numercially approximates the arc length at the given values of t (passed in as input 
+array) and stores them in the output array s. Both arrays are assumed to be of length N. */
+template<class T>
+void cubicSplineArcLength2D(T* a, T* b, T* t, T* s, int N);
+// maybe this should go to the Geometry folder?
+
+
+
 //===============================================================================================
-// implementation of template-functions:
+// implementation of template-functions (move to cpp file):
 
 template<class T>
 T rsInterpolateLinear(T x1, T x2, T y1, T y2, T x)

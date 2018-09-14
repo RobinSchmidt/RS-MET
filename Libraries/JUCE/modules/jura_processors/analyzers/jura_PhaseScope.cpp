@@ -71,6 +71,12 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setFrameRate);
 
+  p = new Parameter("DrawMode", 0.0, 1.0, 0.0, Parameter::STRING);
+  p->addStringValue("Linear");
+  p->addStringValue("Cubic"); // maybe have density-compensated and uncompensated modes
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setDrawMode);
+
   p = new Parameter(lock, "AntiAlias", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAntiAlias);
   addObservedParameter(p);
@@ -169,6 +175,10 @@ void PhaseScope::setPixelScale(double newFactor)
   jassert(newFactor >= 1.0);
   pixelScale = newFactor;
   updateBufferSize();
+}
+void PhaseScope::setDrawMode(int mode)
+{
+  //phaseScopeBuffer->setDrawMode(mode);
 }
 void PhaseScope::setAntiAlias(bool shouldAntiAlias)
 {
@@ -454,6 +464,11 @@ void PhaseScopeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
+  addWidget( boxDrawMode = new RComboBox() );
+  boxDrawMode->assignParameter( scope->getParameterByName("DrawMode") );
+  boxDrawMode->setDescription("Select drawing mode (interpolation between incoming samples)");
+  boxDrawMode->setDescriptionField(infoField);
+
   addWidget( buttonAntiAlias = b = new RButton("AntiAlias") );
   b->assignParameter( scope->getParameterByName("AntiAlias") );
   b->setDescription("Anti aliased drawing (bilinear deinterpolation)");
@@ -568,7 +583,8 @@ void PhaseScopeEditor::resized()
   sliderLineDensity->setBounds(x, y, w,   h); y += dy;
   sliderDotLimit   ->setBounds(x, y, w,   h); y += dy;
   sliderFrameRate  ->setBounds(x, y, w,   h); y += dy;
-  buttonAntiAlias  ->setBounds(x, y, w/2, h); y += dy;
+  boxDrawMode      ->setBounds(x,     y, w/2, h); //y += dy;
+  buttonAntiAlias  ->setBounds(x+w/2, y, w/2, h); y += dy;
 
   // transform controls:
   y += 8;
@@ -581,7 +597,7 @@ void PhaseScopeEditor::resized()
   //sliderShiftY  ->setBounds(x, y, w, h); y += dy;
   sliderScanFreq  ->setBounds(x, y, w, h);
   sliderNumCycles ->setBounds(x, y, w, h); y += dy;
-  button1D        ->setBounds(x, y, w/2, h); 
+  button1D        ->setBounds(x,     y, w/2, h); 
   buttonSync      ->setBounds(x+w/2, y, w/2, h);
   y += dy;
 

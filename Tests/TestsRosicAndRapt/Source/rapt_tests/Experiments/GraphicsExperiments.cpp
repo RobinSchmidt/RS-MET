@@ -382,7 +382,7 @@ void splineArc()
   rsImagePainter<float, float, float> painter(&image);
   //painter.setAntiAlias(false);
   //painter.drawDottedSpline1(a, b, 1.0, 1.0, numSplineDots); // no density compensation
-  painter.drawDottedSpline2(a, b, 1.0, 1.0, numSplineDots);
+  painter.drawDottedSpline2(a, b, 1.0, 1.0);
 
 
   writeImageToFilePPM(*painter.getImage(), "CubicSpline.ppm");

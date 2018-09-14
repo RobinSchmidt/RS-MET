@@ -40,4 +40,6 @@ void rsNumericIntegral(T *x, T *y, T *yi, int N, T c = T(0));
 // integration stuff may depend on intrepolation and if we templatize the functions, we need to 
 // take care that everything is defined before it gets used.
 
+
+
 #endif

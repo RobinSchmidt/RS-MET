@@ -1,3 +1,24 @@
+// class rsDotPlacer - ideas:
+// -require only dy/dx to be equal at the joints
+//  -this is less restrictive than requiring dx/dt and dy/dt to be simultaneously equal 
+//  -maybe then a quadratic spline is enough? 
+//  -maybe that ensures only geometric but not parameteric continuity?
+// -try to draw the spline with short line-segments
+//  -maybe in this case, the higher density in regions of high curvature is actually is actually 
+//   beneficial, so no density compensation is required?
+// -try quartic interpolation spline 
+//  -maybe less overshoot?
+// -try to fix the 3rd deruvative at the joints to 0
+//  -needs a quinitc spline
+// -try a simpler (to compute) density compensation:
+//  -evaluate instantaneous speed sqrt( (dx/dt)^2 + (dy/dt)^2 ) at each spline point and skip dots or
+//   insert extra dots depending on the value
+//  -maybe use |dx/dt| + |dy/dt| instead of the sqrt
+//  -maybe instead of skip/insert dots, change the brightness of the dot to be drawn
+
+
+
+
 template<class TPix, class TWgt, class TCor>
 rsImagePainter<TPix, TWgt, TCor>::rsImagePainter(rsImage<TPix> *imageToPaintOn, rsAlphaMask<TWgt> *maskToUse)
 {
@@ -564,16 +585,6 @@ void rsImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2,
   //}
 }
 
-template<class T>
-void cubicSplineArcCoeffs2D(T x1, T x1s, T y1, T y1s, T x2, T x2s, T y2, T y2s, T* a, T* b)
-{
-  // Compute coeffs of the two polynomials:
-  // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
-  // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
-  T z0[2], z1[2]; // y0, y1 inputs in getHermiteCoeffs1
-  z0[0] = x1; z0[1] = x1s; z1[0] = x2; z1[1] = x2s; getHermiteCoeffs1(z0, z1, a);
-  z0[0] = y1; z0[1] = y1s; z1[0] = y2; z1[1] = y2s; getHermiteCoeffs1(z0, z1, b);
-}
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
@@ -583,13 +594,13 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor 
   cubicSplineArcCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
 
 
-  TCor test = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); 
+  //TCor test = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); 
   // distance between points to be connected should approximate total arc length
 
 
-  bool highQuality = false;  // make parameter
-  if(highQuality)
-    drawDottedSpline2(a, b, c1, c2, numDots);
+  bool desityCompensation = false;  // make parameter
+  if(desityCompensation)
+    drawDottedSpline2(a, b, c1, c2);
   else
     drawDottedSpline1(a, b, c1, c2, numDots);
 }
@@ -628,67 +639,30 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   }
 }
 
-
-template<class T>
-void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
-{
-  // The arc-length s(t) between 0 and t of the cubic spline defined by the two polynomials
-  // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
-  // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
-  // is given by the definite integral from 0 to t over the integrand 
-  // c(t) = sqrt( (dx/dt)^2 + (dy/dt)^2 )
-  // where the term inside the square-root is a fourth order polynomial (the derivative of a cubic
-  // is a quadratic, squaring that gives a quartic and adding two quartics gives still a quartic). 
-  // We evaluate the integrand at the N values t[n] and perform a numeric integration over these 
-  // integrand values.
-
-  // Find coeffs for quartic polynomial under the square-root in the integrand:
-  typedef rsPolynomial<T> PL;
-  T c[5], d[5];                           // coeffs of:
-  PL::polyDerivative(a, c, 3);            // c is dx/dt (a is x(t))
-  PL::polyDerivative(b, d, 3);            // d is dy/dt (b is y(t))
-  PL::multiplyPolynomials(c, 2, c, 2, c); // c is (dx/dt)^2
-  PL::multiplyPolynomials(d, 2, d, 2, d); // d is (dy/dt)^2
-  rsArray::add(c, d, c, 5);               // c is (dx/dt)^2 + (dy/dt)^2
-  // The coeffs of our desired quartic are now in our c-array.
-
-  // Evaluate the integrand at the given t-values and perform numeric integration:
-  for(int n = 0; n < N; n++)
-    s[n] = sqrt(PL::evaluatePolynomialAt(t[n], c, 4)); // write and use optimized evaluateQuartic
-  rsNumericIntegral(t, s, s, N); // integration works in place (use s for integrand and integral)
-}
-// move to somewhere in the Math section, make a 3D version (the only difference is that we have 
-// 3 polynomials x(t),y(t),z(t) that we have to take derivates of, square and add...or maybe make
-// an N-dimensional version - just compute one (squared) derivative per dimension and accumulate 
-// the resulting quartics - the result will always be just a 1D quartic, regardless of the number 
-// of dimensions of the space
-
-
 template<class TPix, class TWgt, class TCor>
-void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2,
-  int numDots) // numDots parameter is obsolete
+void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2)
 {
   // obtain arc-length s as (sampled) function of parameter t:
-  static const int N = 17;
-  TCor r[N], s[N];
-  rsArray::fillWithRangeLinear(r, N, TCor(0), TCor(1));
-  cubicSplineArcLength2D(a, b, r, s, N);
+  static const int N = 17; // make this user-adjustable (setDensityCompensationPrecision)
+  r.resize(N);
+  s.resize(N);
+  rsArray::fillWithRangeLinear(&r[0], N, TCor(0), TCor(1));
+  cubicSplineArcLength2D(a, b, &r[0], &s[0], N);
 
 #ifdef RS_DEBUG_PLOTTING
   GNUPlotter::plot(N, &r[0], &s[0]);
 #endif
 
+  // Compute sequence of t-values that result in equidistant dots:
   TCor splineLength = s[N-1]; // last value in s is total length: s(t=1)
   TCor density = 0.125;       // preliminary - make parameter
   int numSplineDots = rsMax(1, rsRoundToInt(splineLength * density));
-
-
-  // Compute sequence of t-values that result in equidistant dots:
-  std::vector<TCor> u(numSplineDots), t(numSplineDots);  // preliminary - use pre-allocated buffers (members) later
+  u.resize(numSplineDots);
+  t.resize(numSplineDots);
   TCor scaler = splineLength / TCor(numSplineDots-1.0);
   for(int i = 0; i < numSplineDots; i++)
     u[i] = i*scaler;
-  resampleNonUniformLinear(s, r, N, &u[0], &t[0], numSplineDots);
+  resampleNonUniformLinear(&s[0], &r[0], N, &u[0], &t[0], numSplineDots);
 
 #ifdef RS_DEBUG_PLOTTING
   GNUPlotter::plot(numSplineDots, &u[0], &t[0]);
@@ -696,6 +670,15 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
 
   // Draw the spline with the computed t-values:
   drawDottedSpline2(a, b, c1, c2, &t[0], numSplineDots);
+
+  // todo: try also a quartic spline that normalizes the integral under the functions x(t) and y(t)
+  // to the same value that a linear interpolant would have. This should probably reduce overshoot.
+  // Maybe also try to fix the 3rd derivatives at the joints to 0 using a quintic interpolating 
+  // spline - figure out, how this affects the dot-density - maybe a quintic could can go without
+  // desnity compensation (but probably not)
+
+  // factor out a class that computes the dot-coordinates and colors (rsDottingSomething) because
+  // that will be needed for the OpenGL port anyway
 }
 
 

@@ -69,7 +69,7 @@ public:
   void setMaxSizeWithoutReAllocation(int newMaxWidth, int newMaxHeight);
 
   /** Sets the drawing mode as one of the value in enum drawModes. */
-  void setDrawMode(int newMode) { drawMode = newMode; reset(); }
+  void setDrawMode(int newMode) { drawMode = newMode; /*reset();*/ }
 
   /** Switches anti-aliasing on/off. */
   void setAntiAlias(bool shouldAntiAlias);

@@ -61,12 +61,11 @@ void rsNumericIntegral(T *x, T *y, T *yi, int N, T c)
   }
 }
 // todo:
-// -verify, if this can be used in place - yi can be the same array as y or x
 // -implement a higher order method by making use of (numeric) derivative information to 
 //  approximate the integral by cubic segments - this may use the yi array first for the numeric
 //  derivative values (after numeric derivative is adapted for in-place use) and then overwrite 
 //  them with the integral values)
-// -make a simplified version that doesn't need an x-array (assume distance 1 between x-avlues)
+// -make a simplified version that doesn't need an x-array (assume distance 1 between x-values)
 // -implement path-integration - the path is defined by an array of vectors (taking the role of x)
 //  and there should be a function value associated with each vector passed in another array 
 //  (taking the role of y). in the above formula, the x[n]-xo term should be replaced by
