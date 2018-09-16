@@ -28,9 +28,9 @@ public:
   }
 
   /** Sets the bending parameter for the upward half-wave. The value is in -1..+1 where negative 
-  values let the curve bend inward (toward the time axis) and positive values ouward (toward a 
+  values let the curve bend inward (toward the time axis) and positive values outward (toward a 
   square wave). */
-  inline void setAttackBending(T newParam) { t1 =  newParam; }  // rename to AttackBending
+  inline void setAttackBending(T newParam) { t1 =  newParam; }
 
   /** Bending parameter for downward half-wave. */
   inline void setDecayBending(T newParam) { t2 = -newParam; } 
@@ -60,9 +60,15 @@ public:
   static inline T shape(T x, T t, T s)
   {
     x = ((1-s) + s*x*x)*x;  // apply sigmoidity
-    return (x+t) / (t*x+1); // apply bending
+    T d = t*x+1;            // denominator
+    if(d != T(0))
+      return (x+t) / d;     // apply bending
+    else
+      return T(1);          // is this limit value always the correct one? ...verify...
   }
   // used in romos::TriSawModule::process
+  // without the zero-check, there was a crash when AttackBend == 1, strangely DecayBend = +-1 gave 
+  // no problems and AttackBend = -1 also worked
 
   inline T shape1(T x) { return shape(x, t1, s1); }
   inline T shape2(T x) { return shape(x, t2, s2); }

@@ -272,19 +272,20 @@ void phaseScopeLissajous()
   // x(t) = sin(2*pi*a*t), y(t) = sin(2*pi*b*t)
 
   // input signal parameters:
-  static const int N = 35;  // number of data points
+  static const int N = 11;  // number of data points per cycle
   float a = 2.f;
   float b = 3.f;
   float scale = 0.9f;
+  static const int numCycles = 1;
 
   // create and set up rsPhaseScopeBuffer object:
   rsPhaseScopeBufferFFD psb;
   psb.setAntiAlias(true);
-  psb.setBrightness(100.f);
+  psb.setBrightness(300.f);
   psb.setLineDensity(1.f);
   psb.setPixelSpread(0.3f);
-  //psb.setDrawMode(psb.DOTTED_LINE);
-  psb.setDrawMode(psb.DOTTED_SPLINE);
+  psb.setDrawMode(psb.DOTTED_LINE);
+  //psb.setDrawMode(psb.DOTTED_SPLINE);
   psb.setUseColorGradient(true);
   psb.setSize(400, 400);
 
@@ -301,10 +302,10 @@ void phaseScopeLissajous()
 
   // create image:
   psb.reset();
-  float x[N], y[N];
+  float x[numCycles*N], y[numCycles*N];
   //float s = float(2*PI) / (N-1);
   float s = float(2*PI) / (N-2);  // N-2, not N-1 because drawer is lagging one sample due to buffering
-  for(int n = 0; n < N; n++)  
+  for(int n = 0; n < numCycles * N; n++)  
   {
     x[n] = scale*sin(s*a*n);
     y[n] = scale*sin(s*b*n);
