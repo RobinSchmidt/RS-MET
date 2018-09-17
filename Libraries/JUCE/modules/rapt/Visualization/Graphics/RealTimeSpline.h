@@ -22,6 +22,18 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  enum drawModes
+  {
+    DOTTED_LINE = 0,
+    DOTTED_SPLINE,
+    // BRESENHAM,
+    // WU,
+    NUM_DRAW_MODES
+  };
+
+  /** Sets the drawing mode as one of the value in enum drawModes. */
+  void setDrawMode(int newMode) { drawMode = newMode; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -41,10 +53,14 @@ public:
 
 protected:
 
-  TCor density;
-  int maxNumDots = -1; // -1 is code for: no limit
-  TCor x[4], y[4];
-  TWgt cOld;           // old line end color
+  int  drawMode = DOTTED_LINE;
+  bool useGradient = true;     // use color gradient to seamlessly join line segments
+  int maxNumDots = -1;         // -1 is code for: no limit
+  TCor density = TCor(1);      // dot-density: 1: full. 0: dots only at input points
+  TWgt brightness;             // determines weight by which dots are added in
+  TWgt insertFactor;           // factor by which are pixels "inserted" (applied at sampleRate)
+  TCor x[4], y[4];             // input signal buffers
+  TWgt cOld;                   // old line end color
 
 };
 // maybe rename to RealTimeSplineGenerator

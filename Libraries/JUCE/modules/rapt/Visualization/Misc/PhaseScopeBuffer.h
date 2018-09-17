@@ -27,6 +27,7 @@ public:
     // WU,
     NUM_DRAW_MODES
   };
+  // moved to splineGen
 
   /** Sets the sample rate. */
   void setSampleRate(TPar newSampleRate);
@@ -69,7 +70,7 @@ public:
   void setMaxSizeWithoutReAllocation(int newMaxWidth, int newMaxHeight);
 
   /** Sets the drawing mode as one of the value in enum drawModes. */
-  void setDrawMode(int newMode) { drawMode = newMode; /*reset();*/ }
+  void setDrawMode(int newMode) { drawMode = newMode; }
 
   /** Switches anti-aliasing on/off. */
   void setAntiAlias(bool shouldAntiAlias);
@@ -195,8 +196,7 @@ protected:
   TPar frameRate;
   TPar decayTime;      // pixel illumination time
   TPar decayFactor;    // factor by which pixels decay (applied at frameRate)
-  TPix brightness;     // determines weight by which dots are added in
-  TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
+
   TSig scanPos;        // scan position in 1D mode
   TPar thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
                        // maybe rename to spread or weight or something
@@ -219,10 +219,11 @@ protected:
   int  drawMode = DOTTED_LINE;
   bool useGradient;              // use color gradient to seamlessly join line segments
   int  maxDotsPerLine;           // maximum number dots per line to limit cpu-use
-  TSig x[4], y[4];     // pixel coordinate buffers: x[0] = x[n], x[1] = x[n-1], etc.
   TPar lineDensity;    // density of the artificial points between actual datapoints
+  TPix brightness;     // determines weight by which dots are added in
+  TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
+  TSig x[4], y[4];     // pixel coordinate buffers: x[0] = x[n], x[1] = x[n-1], etc.
   TPix cOld;           // old line end color
-
 
 };
 
