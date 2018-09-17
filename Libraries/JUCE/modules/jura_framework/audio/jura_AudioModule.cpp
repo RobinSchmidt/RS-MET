@@ -1045,19 +1045,14 @@ juce::String AudioModuleEditor::getPreferencesFileName()
 GenericAudioModuleEditor::GenericAudioModuleEditor(AudioModule* newModuleToEdit)
   : AudioModuleEditor(newModuleToEdit)
 {
-  //ScopedLock scopedLock(*lock);
   ScopedPointerLock spl(lock);
-
   setPresetSectionPosition(RIGHT_TO_HEADLINE);
   createWidgets();
-
-  int height = (widgetHeight+widgetDistance) * (int)parameterWidgets.size() + 28;
-  setSize(360, height);
+  setSize(360, getRequiredHeight());
 }
 
 void GenericAudioModuleEditor::resized()
 {
-  //ScopedLock scopedLock(*lock);
   ScopedPointerLock spl(lock);
   AudioModuleEditor::resized();
 
@@ -1075,7 +1070,6 @@ void GenericAudioModuleEditor::resized()
 
 void GenericAudioModuleEditor::createWidgets()
 {
-  //ScopedLock scopedLock(*lock);
   ScopedPointerLock spl(lock);
   jassert(moduleToEdit != nullptr);
 
@@ -1095,7 +1089,6 @@ void GenericAudioModuleEditor::createWidgets()
   for(int i = 0; i < moduleToEdit->getNumParameters(); i++)
   {
     p = moduleToEdit->getParameterByIndex(i);
-    //juce::String name = juce::String(p->getName()); // why?
     juce::String name = p->getName();
 
     if(p->getScaling() == Parameter::BOOLEAN)
@@ -1103,6 +1096,7 @@ void GenericAudioModuleEditor::createWidgets()
       // on/off parameter - create button:
       b = new Btn(name);
       b->assignParameter(p);
+      b->setButtonText(name);
       b->setDescriptionField(infoField);
       addWidget(b);
       parameterWidgets.push_back(b);

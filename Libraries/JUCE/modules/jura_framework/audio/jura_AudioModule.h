@@ -637,6 +637,11 @@ public:
   GenericAudioModuleEditor(AudioModule* newModuleToEdit);
   virtual void resized() override;
 
+  /** Computes the height required to fit all widgets into the editor. */
+  virtual int getRequiredHeight() const
+  {
+    return (widgetHeight+widgetDistance) * (int)parameterWidgets.size() + 28;
+  }
 
 protected:
 
