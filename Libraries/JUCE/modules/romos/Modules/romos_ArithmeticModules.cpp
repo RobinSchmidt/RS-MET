@@ -5,7 +5,7 @@ namespace romos // move this namespace wrapping into romos.cpp
 
 void ConstantModule::initialize()
 {
-  initOutputPins(1, "");
+  initOutputPins({ "" });
   hasHeaderFlag  = false;
   value          = 0.0;
   audioOutputs   = &value;
@@ -48,8 +48,8 @@ void IdentityModule::initialize()
   //initOutputPins(1, "");
   // crashes in release build
 
-  initInputPins(1, "In");
-  initOutputPins(1, "Out");
+  //initInputPins(1, "In");
+  //initOutputPins(1, "Out");
   // also crashes
 
   initInputPins({ "" });
@@ -73,8 +73,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(IdentityModule);
 
 void UnaryMinusModule::initialize()
 {
-  initInputPins(1, "");
-  initOutputPins(1, "");
+  initInputPins({ "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void UnaryMinusModule::process(Module *module, double *ins, double *outs, int voiceIndex)
@@ -109,8 +109,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(ScalerModule);
 
 void ReciprocalModule::initialize()
 {
-  initInputPins(1, "");
-  initOutputPins(1, "");
+  initInputPins({ "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void ReciprocalModule::process(Module *module, double *in, double *out, int voiceIndex)
@@ -126,8 +126,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(ReciprocalModule);
 
 void AdderModule::initialize()
 {
-  initInputPins(2, "", "");
-  initOutputPins(1, "");
+  initInputPins({ "", "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void AdderModule::process(Module *module, double *in1, double *in2, double *out, 
@@ -141,8 +141,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(AdderModule);
 
 void SubtractorModule::initialize()
 {
-  initInputPins(2, "", "");
-  initOutputPins(1, "");
+  initInputPins({ "", "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void SubtractorModule::process(Module *module, double *in1, double *in2, double *out, 
@@ -156,8 +156,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(SubtractorModule);
 
 void MultiplierModule::initialize()
 {
-  initInputPins(2, "", "");
-  initOutputPins(1, "");
+  initInputPins({ "", "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void MultiplierModule::process(Module *module, double *in1, double *in2, double *out,
@@ -171,8 +171,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(MultiplierModule);
 
 void DividerModule::initialize()
 {
-  initInputPins(2, "", "");
-  initOutputPins(1, "");
+  initInputPins({ "", "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void DividerModule::process(Module *module, double *in1, double *in2, double *out, 
@@ -189,8 +189,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(DividerModule);
 
 void Adder3Module::initialize()
 {
-  initInputPins(3, "", "", "");
-  initOutputPins(1, "");
+  initInputPins({ "", "", "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void Adder3Module::process(Module *module, double *in1, double *in2, double *in3, 
@@ -204,8 +204,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(Adder3Module);
 
 void Adder4Module::initialize()
 {
-  initInputPins(4, "", "", "", "");
-  initOutputPins(1, "");
+  initInputPins({ "", "", "", "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void Adder4Module::process(Module *module, double *in1, double *in2, double *in3, 
@@ -219,8 +219,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_4(Adder4Module);
 
 void Adder5Module::initialize()
 {
-  initInputPins(5, "", "", "", "", "");
-  initOutputPins(1, "");
+  initInputPins({ "", "", "", "", "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void Adder5Module::process(Module *module, double *in1, double *in2, double *in3, 
@@ -234,8 +234,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_5(Adder5Module);
 
 void AdderNModule::initialize()
 {
-  initInputPins(2, "", "");
-  initOutputPins(1, "");
+  initInputPins({ "", "" });
+  initOutputPins({ "" });
 }
 INLINE void AdderNModule::process(Module *module, double *ins, double *outs, int voiceIndex)
 {

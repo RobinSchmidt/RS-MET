@@ -65,7 +65,7 @@ void AudioOutputModule::resetState()
 
 void SystemSampleRateModule::initialize()
 {
-  initOutputPins(1, "SampleRate");
+  initOutputPins({ "SampleRate" });
 }
 INLINE void SystemSampleRateModule::process(Module *module, double *out, int voiceIndex)
 {
@@ -77,7 +77,7 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(SystemSampleRateModule);
 
 void SystemSamplePeriodModule::initialize()
 {
-  initOutputPins(1, "SamplePeriod");
+  initOutputPins({ "SamplePeriod" });
 }
 INLINE void SystemSamplePeriodModule::process(Module *module, double *out, int voiceIndex)
 {
@@ -89,8 +89,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(SystemSamplePeriodModule);
 
 void NoteGateModule::initialize()
 {
-  //initOutputPins(1, "Gate");  // no - messes up block
-  initOutputPins(1, "");
+  //initOutputPins({ "Gate"});  // no - messes up block
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void NoteGateModule::process(Module *module, double *out, int voiceIndex)
@@ -103,8 +103,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(NoteGateModule);
 
 void NoteOnTriggerModule::initialize()
 {
-  //initOutputPins(1, "Ping");
-  initOutputPins(1, "");
+  //initOutputPins({ "Ping"});
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void NoteOnTriggerModule::process(Module *module, double *out, int voiceIndex)
@@ -117,7 +117,7 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(NoteOnTriggerModule);
 
 void NoteOffTriggerModule::initialize()
 {
-  initOutputPins(1, "");
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void NoteOffTriggerModule::process(Module *module, double *out, int voiceIndex)
@@ -130,7 +130,7 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(NoteOffTriggerModule);
 
 void VoiceKillerModule::initialize()
 {
-  initInputPins(1, "In");
+  initInputPins({ "In" });
   addParameter(rosic::rsString("Threshold"), "-100.0");
   addParameter(rosic::rsString("TimeOut"), "0.01");
   parameterChanged(0);   // to init internal variables threshold, timeOut
@@ -183,8 +183,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(VoiceKillerModule);
 
 void VoiceCombinerModule::initialize()
 {
-  initInputPins(1, "");
-  initOutputPins(1, "");
+  initInputPins({ "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void VoiceCombinerModule::process(Module *module, double *ins, double *outs, int voiceIndex)
@@ -287,7 +287,7 @@ void VoiceCombinerModule::assignProcessingFunctions()
 
 void NoteFrequencyModule::initialize()
 {
-  initOutputPins(1, "");
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void NoteFrequencyModule::process(Module *module, double *out, int voiceIndex)
@@ -300,7 +300,7 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(NoteFrequencyModule);
 
 void NoteVelocityModule::initialize()
 {
-  initOutputPins(1, "");
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 INLINE void NoteVelocityModule::process(Module *module, double *out, int voiceIndex)

@@ -22,7 +22,7 @@ romos::AtomicModule::~AtomicModule()
 
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // setup of pins:
-
+/*
 void AtomicModule::initInputPins(int numberOfPins, const char*, ...)
 {
   va_list ap;
@@ -37,7 +37,7 @@ void AtomicModule::initInputPins(int numberOfPins, const char*, ...)
   // this function crashes - but only in a release build? am i using the var_arg mechanism wrong?
   // ...anyway - maybe best to get rid of that function entirely and use the one below:
 }
-
+*/
 void AtomicModule::initInputPins(const std::vector<std::string>& pinNames)
 {
   for(int i = 0; i < pinNames.size(); i++)
@@ -46,7 +46,7 @@ void AtomicModule::initInputPins(const std::vector<std::string>& pinNames)
     rosic::appendElement(inputPins,       AudioInputPinData());
   }
 }
-
+/*
 void AtomicModule::initOutputPins(int numberOfPins, const char*, ...)
 {
   va_list ap;
@@ -56,7 +56,7 @@ void AtomicModule::initOutputPins(int numberOfPins, const char*, ...)
   outFrameStride += numberOfPins;
   va_end(ap);
 }
-
+*/
 void AtomicModule::initOutputPins(const std::vector<std::string>& pinNames)
 {
   for(int i = 0; i < pinNames.size(); i++)
@@ -300,8 +300,8 @@ romos::ModuleProxy::~ModuleProxy()
 
 void romos::ModuleProxy::initialize()
 { 
-  initInputPins( 1, ""); 
-  initOutputPins(1, "");
+  initInputPins({ "" });
+  initOutputPins({ "" });
   hasHeaderFlag = false;
 }
 

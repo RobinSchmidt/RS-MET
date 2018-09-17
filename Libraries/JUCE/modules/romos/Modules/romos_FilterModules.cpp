@@ -5,8 +5,8 @@ namespace romos
 
 void FirstOrderLowpass::initialize()
 {
-  initInputPins(2, "In", "Cutoff");
-  initOutputPins(1, "Out");
+  initInputPins({ "In", "Cutoff" });
+  initOutputPins({ "Out" });
 }
 INLINE void FirstOrderLowpass::process(Module *module, double *in1, double *in2, double *out,
   int voiceIndex)
@@ -51,8 +51,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(FirstOrderLowpass);
 
 void FirstOrderFilter::initialize()
 {
-  initInputPins(4, "In", "b0", "b1", "a1");
-  initOutputPins(1, "Out");
+  initInputPins({ "In", "b0", "b1", "a1" });
+  initOutputPins({ "Out" });
 }
 INLINE void FirstOrderFilter::process(Module *module, double *in1, double *in2, double *in3, 
   double *in4, double *out, int voiceIndex)
@@ -86,8 +86,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_4(FirstOrderFilter);
 
 void Biquad::initialize()
 {
-  initInputPins(6, "In", "b0", "b1", "b2", "a1", "a2");
-  initOutputPins(1, "Out");
+  initInputPins({ "In", "b0", "b1", "b2", "a1", "a2" });
+  initOutputPins({ "Out" });
 }
 INLINE void Biquad::process(Module *module, double *in1, double *in2, double *in3, double *in4, 
   double *in5, double *in6, double *out, int voiceIndex) // rename inputs
@@ -124,8 +124,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_6(Biquad);
 
 void BiquadDesigner::initialize()
 {
-  initInputPins(3, "Freq", "Q", "Gain");
-  initOutputPins(5, "b0", "b1", "b2", "a1", "a2");
+  initInputPins({ "Freq", "Q", "Gain" });
+  initOutputPins({ "b0", "b1", "b2", "a1", "a2" });
   addParameter(rosic::rsString("Mode"), "Bypass");
   //parameterChanged(0); // nah - it calls resetStateForAllVoices() - which is not allowed before 
   // memory is allocated by the factory
@@ -228,8 +228,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(BiquadDesigner);
 
 void LadderFilter::initialize()
 {
-  initInputPins(4, "In", "Freq", "Reso", "AutoGain");
-  initOutputPins(1, "Out");
+  initInputPins({ "In", "Freq", "Reso", "AutoGain" });
+  initOutputPins({ "Out" });
   addParameter("Mode", "Lowpass, 24 dB/oct");
   addParameter("SaturationMode", "No Saturation");
   filterMode     = LP_24;

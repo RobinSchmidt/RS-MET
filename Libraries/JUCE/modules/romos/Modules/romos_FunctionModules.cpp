@@ -7,8 +7,8 @@ namespace romos
 
 void ClipperModule::initialize()
 {
-  initInputPins(3, "In", "Min", "Max");
-  initOutputPins(1, "Out");
+  initInputPins({ "In", "Min", "Max" });
+  initOutputPins({ "Out" });
   inputPins[1].setDefaultValue(-1.0); 
   inputPins[2].setDefaultValue(+1.0); 
 }
@@ -22,8 +22,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(ClipperModule);
 
 void SinCosModule::initialize()
 {
-  initInputPins(1, "In");
-  initOutputPins(2, "Sin", "Cos");
+  initInputPins({ "In" });
+  initOutputPins({ "Sin", "Cos" });
 }
 INLINE void SinCosModule::process(Module *module, double *in, double *out, int voiceIndex)
 {
@@ -35,8 +35,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(SinCosModule);
 
 void TriSawModule::initialize()
 {
-  initInputPins(6, "In", "Asym", "AtBn", "AtSg", "DcBn", "DcSg");
-  initOutputPins(1, "");
+  initInputPins({ "In", "Asym", "AtBn", "AtSg", "DcBn", "DcSg" });
+  initOutputPins({ "" });
 }
 INLINE void TriSawModule::process(Module *module, double *In, double *Asym, double *AtBn, 
   double *AtSg, double *DcBn, double *DcSg, double *out, int voiceIndex)

@@ -7,7 +7,7 @@ namespace romos
 
 void WhiteNoise::initialize()
 {
-  initOutputPins(1, "");
+  initOutputPins({ "" });
   //addParameter(rosic::rsString("Seed"), 0.0);
   addParameter("Seed", 0.0);
   parameterChanged(0);
@@ -47,8 +47,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_0(WhiteNoise);
 
 void Phasor::initialize()
 {
-  initInputPins(3, "Freq", "Min", "Max");
-  initOutputPins(1, "");
+  initInputPins({ "Freq", "Min", "Max" });
+  initOutputPins({ "" });
   inputPins[2].setDefaultValue(1); // Max is 1 by default
 }
 INLINE void Phasor::process(Module* module, double* in1, double* in2, double* in3, double* out, 
@@ -89,8 +89,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(Phasor);
 
 void BandlimitedImpulseTrain::initialize()
 {
-  initInputPins(2, "Freq", "Phase");
-  initOutputPins(1, "Out");
+  initInputPins({ "Freq", "Phase" });
+  initOutputPins({ "Out" });
   fixedPhaseOffset = 0.0;
 }
 
@@ -391,8 +391,8 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(BlitSaw);
 
 void DualBlitSaw::initialize()
 {
-  initInputPins(4, "Freq", "Phase", "Offset", "Mix");
-  initOutputPins(1, "Out");
+  initInputPins({ "Freq", "Phase", "Offset", "Mix" });
+  initOutputPins({ "Out" });
   fixedPhaseOffset = 0.5;
 }
 INLINE void DualBlitSaw::process(Module *module, double *in1, double *in2, double *in3, 

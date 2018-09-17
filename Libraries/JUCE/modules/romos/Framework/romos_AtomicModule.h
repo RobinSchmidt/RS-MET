@@ -59,7 +59,7 @@ protected:
 
   /** Creates an initial number of input pins. To be called from initialize only. When more pins 
   should be added later, use addAudioInput. */
-  virtual void initInputPins(int numberOfPins, const char*, ...);
+  //virtual void initInputPins(int numberOfPins, const char*, ...);
   // deprecated
 
   virtual void initInputPins(const std::vector<std::string>& pinNames);
@@ -67,7 +67,7 @@ protected:
 
   /** Creates an initial number of output pins. To be called from initialize only. When more pins 
   should be added later, use addAudioOutput. */
-  virtual void initOutputPins(int numberOfPins, const char*, ...); 
+  //virtual void initOutputPins(int numberOfPins, const char*, ...); 
   // deprecated
 
   virtual void initOutputPins(const std::vector<std::string>& pinNames);
