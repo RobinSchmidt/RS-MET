@@ -190,20 +190,16 @@ protected:
   /** Returns the value of the screen scanner sawtooth wave used in 1D mode. */
   TSig getScannerSaw(TSig x);
 
+  bool oneDimensonal = false;    // switch 1D mode on/off
   TPar sampleRate;
   TPar frameRate;
   TPar decayTime;      // pixel illumination time
   TPar decayFactor;    // factor by which pixels decay (applied at frameRate)
-  TPar lineDensity;    // density of the artificial points between actual datapoints
-  TPar thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
-                       // maybe rename to spread or weight or something
-
   TPix brightness;     // determines weight by which dots are added in
   TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
-  TSig x[4], y[4];     // pixel coordinate buffers: x[0] = x[n], x[1] = x[n-1], etc.
-  TPix cOld;           // old line end color
-
   TSig scanPos;        // scan position in 1D mode
+  TPar thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
+                       // maybe rename to spread or weight or something
 
   // geometric transform parameters:
   TSig scaleX = 1, scaleY = 1;
@@ -213,17 +209,21 @@ protected:
   TSig Axx, Axy, Ayx, Ayy;       // matrix coefficients
   // factor out into class rsAffineTransform2D
 
-  int  maxDotsPerLine;           // maximum number dots per line to limit cpu-use
-  int  drawMode = DOTTED_LINE;
-  bool useGradient;              // use color gradient to seamlessly join line segments
-  bool oneDimensonal = false;    // switch 1D mode on/off (
 
   // members for actual painting on an image:
   rsImageResizable<TPix> image;
   rsImagePainter<TPix, TSig, TSig> painter;
+  rsRealTimeSpline<TSig, TPix> splineGen;
 
-  //rsImagePainter<TPix, TPar, TSig> painter;  
-    // old: using TPar for the 2nd TWgt template parameter might not be ideal
+  // old spline parameters - (to be moved into splineGen object):
+  int  drawMode = DOTTED_LINE;
+  bool useGradient;              // use color gradient to seamlessly join line segments
+  int  maxDotsPerLine;           // maximum number dots per line to limit cpu-use
+  TSig x[4], y[4];     // pixel coordinate buffers: x[0] = x[n], x[1] = x[n-1], etc.
+  TPar lineDensity;    // density of the artificial points between actual datapoints
+  TPix cOld;           // old line end color
+
+
 };
 
 //=================================================================================================

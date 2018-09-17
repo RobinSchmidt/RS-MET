@@ -208,14 +208,10 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
 {
   rsArray::fillWithZeros(image.getPixelPointer(0, 0), image.getNumPixels());
   scanPos = 0.0;
+  splineGen.reset();
 
-  // (xOld,yOld) = (0,0) - but in pixel coordinates:
-  //xOld = 0.5f * image.getWidth();
-  //yOld = 0.5f * image.getHeight();
-  //dxOld = dyOld = TSig(0);
-
+  // remove soon:
   cOld = TPix(0);
-
   rsArray::fillWithValue(x, 4, TSig(0.5 * image.getWidth()) );
   rsArray::fillWithValue(y, 4, TSig(0.5 * image.getHeight()));
 }

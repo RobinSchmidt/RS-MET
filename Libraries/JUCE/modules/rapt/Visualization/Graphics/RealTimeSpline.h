@@ -44,8 +44,9 @@ protected:
   TCor density;
   int maxNumDots = -1; // -1 is code for: no limit
   TCor x[4], y[4];
+  TWgt cOld;           // old line end color
 
 };
-
+// maybe rename to RealTimeSplineGenerator
 
 #endif

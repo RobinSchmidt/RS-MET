@@ -17,6 +17,7 @@ void rsRealTimeSpline<TCor, TWgt>::reset(TCor x_, TCor y_)
 {
   rsArray::fillWithValue(x, 4, x_);
   rsArray::fillWithValue(y, 4, y_);
+  cOld = TWgt(0);
 }
 
 
