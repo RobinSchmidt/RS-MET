@@ -431,11 +431,9 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
 bool rsNodeBasedFunctionEditor::removeNode(int i)
 {
   ScopedPointerLock spl(lock);
-
-  removeNodeParameters(getNode(i));
-
-  if(rsNodeEditor::removeNode(i))
-  {
+  if(isNodeRemovable(i)) {
+    removeNodeParameters(getNode(i));
+    rsNodeEditor::removeNode(i);
     return valueMapper->removeNode(i);
   }
   return false;
