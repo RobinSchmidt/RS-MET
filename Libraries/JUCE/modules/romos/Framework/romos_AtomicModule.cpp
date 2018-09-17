@@ -34,6 +34,8 @@ void AtomicModule::initInputPins(int numberOfPins, const char*, ...)
   }
   numInputs += numberOfPins;
   va_end(ap);
+  // this function crashes - but only in a release build? am i using the var_arg mechanism wrong?
+  // ...anyway - maybe best to get rid of that function entirely and use the one below:
 }
 
 void AtomicModule::initInputPins(const std::vector<std::string>& pinNames)

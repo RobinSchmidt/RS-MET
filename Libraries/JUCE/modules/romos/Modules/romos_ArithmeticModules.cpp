@@ -44,8 +44,18 @@ CREATE_ASSIGN_FUNCTION_POINTERS(ConstantModule);
 
 void IdentityModule::initialize()
 {
-  initInputPins(1, "");
-  initOutputPins(1, "");
+  //initInputPins(1, "");
+  //initOutputPins(1, "");
+  // crashes in release build
+
+  initInputPins(1, "In");
+  initOutputPins(1, "Out");
+  // also crashes
+
+  initInputPins({ "" });
+  initOutputPins({ "" });
+  // doesn't crash
+
   hasHeaderFlag = false;
 }
 INLINE void IdentityModule::process(Module *module, double *ins, double *outs, int voiceIndex)

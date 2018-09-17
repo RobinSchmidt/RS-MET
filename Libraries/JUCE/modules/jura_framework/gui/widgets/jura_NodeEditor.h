@@ -215,7 +215,7 @@ public:
   /** This function will be called before an attempt to remove a node and will not remove it, if 
   that function returns false. The baseclass implementation just returns true but you can override 
   it in a subclass if you subclass - for example - requires a certain minimum number of nodes. */
-  virtual bool isNodeRemovable(int index) { return true; }
+  virtual bool isNodeRemovable(int index) const { return true; }
 
   /** This function is called after a node has been inserted or moved to a new position. You can
   override it, if you need to apply costraints on the positions of nodes, like for example that the
@@ -329,7 +329,7 @@ public:
   virtual int moveNodeTo(int index, int pixelX, int pixelY) override;
   virtual int nodeChanged(int nodeIndex) override;
   //virtual void nodeChanged(const rsDraggableNode* node) override; // obsolete?
-  virtual bool isNodeRemovable(int i) override { return (int)valueMapper->isNodeRemovable((size_t)i); }
+  virtual bool isNodeRemovable(int i) const override { return (int)valueMapper->isNodeRemovable((size_t)i); }
   virtual int constrainNode(int i) override { return (int)valueMapper->constrainNode((size_t)i); }
 
   //-----------------------------------------------------------------------------------------------
