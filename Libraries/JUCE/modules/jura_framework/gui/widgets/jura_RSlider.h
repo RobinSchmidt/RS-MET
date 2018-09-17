@@ -245,6 +245,9 @@ protected:
   int    scaling;
   int    layout;
 
+  // bool wrapAround = false;
+  // double bipolarCenter = RS_NAN(double);
+
   juce::Rectangle<int> handleRectangle;
   juce::String   sliderName;
   Component      *nameRectangle; // just a dummy in order to not receive mouse-events when the user clicks on the name-field

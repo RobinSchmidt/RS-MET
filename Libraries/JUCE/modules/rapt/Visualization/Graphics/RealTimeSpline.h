@@ -24,8 +24,8 @@ public:
 
   enum drawModes
   {
-    DOTTED_LINE = 0,
-    DOTTED_SPLINE,
+    LINEAR = 0,
+    CUBIC_HERMITE,
     // BRESENHAM,
     // WU,
     NUM_DRAW_MODES
@@ -33,6 +33,32 @@ public:
 
   /** Sets the drawing mode as one of the value in enum drawModes. */
   void setDrawMode(int newMode) { drawMode = newMode; }
+
+  /** Sets the overall brightness. This parameter, together with the sample rate, determines the
+  weight by which new dot are added in. */
+  void setBrightness(TWgt newBrightness) { brightness = newBrightness; }
+  // maybe needs to update the "insertFactor"?
+
+  /** When we draw line segments, we normally scale the brightness by the reciprocal of the length
+  so as to always add the same total amount of brightness into the screen. However, this may lead
+  to abrupt color changes on line segment joints - so with this function, you can switch into a
+  mode where a length-wise color gradient is used instead of a sudden switch. */
+  void setUseColorGradient(bool shouldUseGradient) { useGradient = shouldUseGradient; }
+
+
+
+  void setNormalizeDotDensity(bool shouldNormalize) { normalizeDensity = shouldNormalize; }
+
+  /** Sets up the density of the lines the connect our actual datapoints. It actually determines the
+  number of artificial datapoints that are inserted (by linear interpolation) between our actual
+  incoming datapoints. If set to zero, it will just draw the datapoints as dots. */
+  void setDensity(TCor newDensity) { density = newDensity; }
+
+  /** Sets a limit of the number of artificial datapoints that may be inserted per drawing
+  operation. This is important to keep the cpu usage under control. */
+  void setMaxNumDotsPerSegment(int newMaxNumDots) { maxNumDots = newMaxNumDots; }
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -51,16 +77,31 @@ public:
   // todo: facilitate use with pixel-coordinates (as required by rsPhaseScopeBuffer) or normalized 
   // device coordinates (as required for use with OpenGL)
 
+
 protected:
 
-  int  drawMode = DOTTED_LINE;
+
+  int dotsLinear(TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt weights, int xywLength);
+
+  int dotsCubicHermite(TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt weights, int xywLength);
+
+  // getDotsQuadratic, ...
+
+
+  int  drawMode = LINEAR;
   bool useGradient = true;     // use color gradient to seamlessly join line segments
+
+  bool normalizeDensity = false;  // or maybe use an int for precision of normalization (samples in 
+                                  // numeric integration routine)
+
   int maxNumDots = -1;         // -1 is code for: no limit
   TCor density = TCor(1);      // dot-density: 1: full. 0: dots only at input points
   TWgt brightness;             // determines weight by which dots are added in
-  TWgt insertFactor;           // factor by which are pixels "inserted" (applied at sampleRate)
+  //TWgt insertFactor;           // factor by which are pixels "inserted" (applied at sampleRate)
   TCor x[4], y[4];             // input signal buffers
   TWgt cOld;                   // old line end color
+
+
 
 };
 // maybe rename to RealTimeSplineGenerator

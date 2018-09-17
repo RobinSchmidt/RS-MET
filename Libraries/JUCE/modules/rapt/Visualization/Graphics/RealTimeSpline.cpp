@@ -6,11 +6,15 @@ rsRealTimeSpline<TCor, TWgt>::rsRealTimeSpline()
 
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::getDotsForInputPoint(
-  TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt weights, int xywLength)
+  TCor x, TCor y, TCor* X, TCor* Y, TWgt W, int L)
 {
-
+  switch(drawMode)
+  {
+  case LINEAR:        return dotsLinear(      x, y, X, Y, W, L);
+  case CUBIC_HERMITE: return dotsCubicHermite(x, y, X, Y, W, L);
+  default:            return 0;
+  }
 }
-
 
 template<class TCor, class TWgt>
 void rsRealTimeSpline<TCor, TWgt>::reset(TCor x_, TCor y_)
@@ -19,6 +23,23 @@ void rsRealTimeSpline<TCor, TWgt>::reset(TCor x_, TCor y_)
   rsArray::fillWithValue(y, 4, y_);
   cOld = TWgt(0);
 }
+
+template<class TCor, class TWgt>
+int rsRealTimeSpline<TCor, TWgt>::dotsLinear(TCor inX, TCor inY, TCor* dotsX, TCor* dotsY, 
+  TWgt dotsW, int length)
+{
+
+}
+
+template<class TCor, class TWgt>
+int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite(TCor inX, TCor inY, TCor* dotsX, TCor* dotsY, 
+  TWgt dotsW, int length)
+{
+
+}
+
+
+
 
 
 // -functionality for thsi class is currently scattered over rsImagePainter and rsPhaseScopeBuffer

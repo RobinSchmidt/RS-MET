@@ -172,6 +172,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::toPixelCoordinates(TSig &x, TSig &y)
   y  = image.getHeight()-1 - y;
   // maybe we should add 0.5 after multiplication by width/height?
 }
+// maybe move to splineGen
 
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
