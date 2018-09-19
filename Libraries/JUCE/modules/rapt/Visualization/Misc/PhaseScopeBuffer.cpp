@@ -324,12 +324,13 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 {
-  TPix insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
+  //TPix insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
+  TPix insertFactor = (TPix(1000) * brightness / TPix(sampleRate));
   splineGen.setBrightness(insertFactor);
 
   // The factor is totally ad-hoc - maybe come up with some more meaningful factor.
   // However, the proportionality to the brightness parameter and inverse proportionality to
-  // the sample rate seems to make sense.
+  // the sample rate seems to make sense. Maybe it should also be related to the frameRate?
 }
 
 template<class TSig, class TPix, class TPar>

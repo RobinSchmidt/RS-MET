@@ -155,6 +155,7 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     numDots = numDotsForSegment(splineLength);
 
     // compute t-array:
+    t.resize(numDots);
     TCor scaler = (TCor)(1.0 / numDots);
     for(int i = 0; i < numDots; i++)
       t[i] = scaler * (i+1);  // == (i+1) / numDots

@@ -273,7 +273,8 @@ void phaseScopeLissajous()
 
   // input signal parameters:
   //static const int N = 11;  // number of data points per cycle
-  static const int N = 80;  // number of data points per cycle
+  //static const int N = 80;
+  static const int N = 35;
   float a = 2.f;
   float b = 3.f;
   float scale = 0.9f;
@@ -284,12 +285,14 @@ void phaseScopeLissajous()
 
   // create and set up rsPhaseScopeBuffer object:
   rsPhaseScopeBufferFFD psb;
+  psb.setSampleRate(N);
   psb.setAntiAlias(true);
-  psb.setBrightness(300.f);
+  //psb.setBrightness(300.f);  // wtf? - why did this work formerly?
+  psb.setBrightness(1.0f); 
   psb.setLineDensity(1.f);
   psb.setPixelSpread(0.3f);
-  psb.setDrawMode(SG::LINEAR);
-  //psb.setDrawMode(SG::CUBIC_HERMITE);
+  //psb.setDrawMode(SG::LINEAR);
+  psb.setDrawMode(SG::CUBIC_HERMITE);
   psb.setUseColorGradient(true);
   psb.setSize(400, 400);
 
