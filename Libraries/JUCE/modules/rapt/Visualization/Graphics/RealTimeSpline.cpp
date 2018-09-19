@@ -31,6 +31,7 @@ int rsRealTimeSpline<TCor, TWgt>::getDotsForInputPoint(TCor inX, TCor inY)
   {
   case LINEAR:        return dotsLinear();
   case CUBIC_HERMITE: return dotsCubicHermite();
+  case QUADRATIC:     return dotsQuadratic();
   default:            return 0;
   }
 }
@@ -116,41 +117,108 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     x[1], dx1, y[1], dy1,      // newer inner point comes second
     a, b);
 
-
+  // factor out (duplicated in dotsQuadratic):
   int numDots = prepareParameterArray();
-
-  // start/end weight computation:
   TWgt w1, w2;
-  getStartAndEndWeights(numDots, &w1, &w2);
-
-  // dot computation:
-  dotsCubic(w1, w2, numDots);
+  getStartAndEndWeights(numDots, &w1, &w2);  // start/end weight computation:
+  dotsCubic(w1, w2, numDots);                // dot computation
   return numDots;
 }
 
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::dotsQuadratic()
 {
-  a[0] = 0;
-  a[1] = 0;
-  a[2] = 0;
-  a[3] = 0;
+  // segment goes from (x0,y0)=(x[2],y[2]) to (x1,y1)=(x[1],y[1]):
+  TCor x0, x1, y0, y1;
+  x0 = x[2];
+  y0 = y[2];
+  x1 = x[1];
+  y1 = y[1];
 
-  b[0] = 0;
-  b[1] = 0;
-  b[2] = 0;
+  // estimate derivatives with respect to t at the points (x0,y0),(x1,y1):
+  TCor dx0, dy0, dx1, dy1;
+  dx0 = TCor(0.5)*(x[1]-x[3]);    // estimated dx/dt at x0 = x[2]
+  dy0 = TCor(0.5)*(y[1]-y[3]);    // estimated dy/dt at y0 = y[2]
+  dx1 = TCor(0.5)*(x[0]-x[2]);    // estimated dx/dt at x1 = x[1]
+  dy1 = TCor(0.5)*(y[0]-y[2]);    // estimated dy/dt at y1 = y[1]
+
+  // slopes:
+  //TCor s0, s1;
+  //s0 = dy0/dx0;  // todo: if abs(dy1) > abs(dx1) use reciprocal value r0 = dx1/dy1
+  //s1 = dy1/dx1;
+
+  a[0] = x0;
+  b[0] = y0;
+  a[3] = 0;
   b[3] = 0;
 
 
+  // result from sage (s0,s1):
+  TCor s0 = dy0/dx0;
+  TCor s1 = dy1/dx1;
+  a[1] = 2*(s1*x0 - s1*x1 - y0 + y1)/(s0 - s1);
+  a[2] = -((s0 + s1)*x0 - (s0 + s1)*x1 - 2*y0 + 2*y1)/(s0 - s1);
+  b[1] = 2*(s0*s1*x0 - s0*s1*x1 - s0*y0 + s0*y1)/(s0 - s1);
+  b[2] = -(2*s0*s1*x0 - 2*s0*s1*x1 - (s0 + s1)*y0 + (s0 + s1)*y1)/(s0 - s1);
 
 
+  /*
+  // preliminary - we need to branch, depending on whether dx0>dy0 and dx1>dy1
+  // move to interpolation:
+  if(abs(dx0) > abs(dy0)) {
+    TCor s0 = dy0/dx0;
+    if(abs(dx1) > abs(dy1)) {
+      TCor s1 = dy1/dx1;  // compute a,b coeffs from s0, s1
+      a[0] = x0;
+      a[1] = 2*(s1*x0 - s1*x1 - y0 + y1)/(s0 - s1);
+      a[2] = -((s0 + s1)*x0 - (s0 + s1)*x1 - 2*y0 + 2*y1)/(s0 - s1);
+      b[0] = y0;
+      b[1] = 2*(s0*s1*x0 - s0*s1*x1 - s0*y0 + s0*y1)/(s0 - s1);
+      b[2] = -(2*s0*s1*x0 - 2*s0*s1*x1 - (s0 + s1)*y0 + (s0 + s1)*y1)/(s0 - s1);
+      // treat s0 == s1 case
+
+     
+      // optimized:
+      TCor dx, dy, ss, k, s1dx;
+      dx   = x1-x0;
+      dy   = y1-y0;
+      k    = 1/(s0-s1);
+      ss   = s0+s1;     // slope sum
+      s1dx = s1*dx;     // rename to k1
+      a[0] = x0;
+      a[1] = 2*(dy-s1dx)*k;
+      a[2] = (ss*dx - 2*dy)*k;
+      b[0] = y0;
+      b[1] = 2*(s0*(dy-s1dx))*k;  // use k2 = (dy-s1dx)
+      b[2] = (2*s0*s1dx - ss*dy)*k;
+    }
+    else
+    {
+      TCor r1 = dx1/dy1;  // compute a,b coeffs from s0, r1
+
+      // compute a,b coeffs from s0,r1
+
+      return 0;
+    }
+  }
+  else
+  {
+    return 0;
+  }
+  */
+
+
+
+
+
+
+
+
+
+  // factor out:
   int numDots = prepareParameterArray();
-
-  // start/end weight computation:
   TWgt w1, w2;
   getStartAndEndWeights(numDots, &w1, &w2);
-
-  // dot computation:
   dotsCubic(w1, w2, numDots);
   return numDots;
 }
@@ -293,7 +361,7 @@ case, precompute: 1/(s0-s1), (s0+s1),
 dx = x1-x0;
 dy = y1-y0;
 ss = s0+s1;     // slope sum
-k  = 1/(s0-s1)
+k  = 1/(s0-s1);
 s1dx = s1*dx;
 a0 = x0 
 a1 = 2*(dy - s1dx)*k

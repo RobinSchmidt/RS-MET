@@ -275,8 +275,8 @@ void phaseScopeLissajous()
   //static const int N = 11;  // number of data points per cycle
   //static const int N = 80;
   static const int N = 35;
-  float a = 2.f;
-  float b = 3.f;
+  float a = 3.f;
+  float b = 2.f;
   float scale = 0.9f;
   //static const int numCycles = 1;
 
@@ -292,7 +292,8 @@ void phaseScopeLissajous()
   psb.setLineDensity(1.f);
   psb.setPixelSpread(0.3f);
   //psb.setDrawMode(SG::LINEAR);
-  psb.setDrawMode(SG::CUBIC_HERMITE);
+  //psb.setDrawMode(SG::CUBIC_HERMITE);
+  psb.setDrawMode(SG::QUADRATIC);
   psb.setUseColorGradient(true);
   psb.setDensityNormalization(true);
   psb.setSize(400, 400);
