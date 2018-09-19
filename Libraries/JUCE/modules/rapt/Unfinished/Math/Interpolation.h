@@ -148,11 +148,18 @@ void rsInterpolateSpline(T *x, T *y, int N, T *xi, T *yi, int Ni, int smoothness
 a spline arc that has the parametric equations:
 x(t) = a0 + a1*t + a2*t^2 + a3*t^3
 y(t) = b0 + b1*t + b2*t^2 + b3*t^3
-The desired derivatives with respect of x and y with respect to the parameter t at the two points 
-are passed in by (dx1,dy1) and (dx2,dy2) and the polynomial coefficients are written into the 
+The desired derivatives of x and y with respect to the parameter t at the two points are passed in 
+by (dx1,dy1) and (dx2,dy2) and the polynomial coefficients are written into the 
 arrays a and b which are supposed to be of length 4. */
 template<class T>
 void cubicSplineArcCoeffs2D(T x1, T dx1, T y1, T dy1, T x2, T dx2, T y2, T dy2, T* a, T* b);
+// make notation consisten with quadratic case
+// use x0, x1 throughut the library instead of x1, x2 - they correspond to parameter-values 0 and 1
+// and also counting from zero is customary in programming
+
+template<class T>
+void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b);
+
 
 /** Given the polynomial coeffcient arrays of a cubic spline in 2D described by
 x(t) = a0 + a1*t + a2*t^2 + a3*t^3

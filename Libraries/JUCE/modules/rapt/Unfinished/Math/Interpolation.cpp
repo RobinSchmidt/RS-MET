@@ -279,15 +279,73 @@ void fitCubicThroughFourPoints(T x0, T y0, T x1, T y1, T x2,
 }
 
 template<class T>
-void cubicSplineArcCoeffs2D(T x1, T x1s, T y1, T y1s, T x2, T x2s, T y2, T y2s, T* a, T* b)
+void cubicSplineArcCoeffs2D(T x1, T dx1, T y1, T dy1, T x2, T dx2, T y2, T dy2, T* a, T* b)
 {
   // Compute coeffs of the two polynomials:
   // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
   // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
   T z0[2], z1[2]; // y0, y1 inputs in getHermiteCoeffs1
-  z0[0] = x1; z0[1] = x1s; z1[0] = x2; z1[1] = x2s; getHermiteCoeffs1(z0, z1, a);
-  z0[0] = y1; z0[1] = y1s; z1[0] = y2; z1[1] = y2s; getHermiteCoeffs1(z0, z1, b);
+  z0[0] = x1; z0[1] = dx1; z1[0] = x2; z1[1] = dx2; getHermiteCoeffs1(z0, z1, a);
+  z0[0] = y1; z0[1] = dy1; z1[0] = y2; z1[1] = dy2; getHermiteCoeffs1(z0, z1, b);
 }
+
+template<class T>
+void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b)
+{
+  a[0] = x0;
+  b[0] = y0;
+
+  if(abs(dx0) > abs(dy0)) {
+    T s0 = dy0/dx0;
+    if(abs(dx1) > abs(dy1)) {  // compute a,b coeffs from s0, s1
+      T s1 = dy1/dx1;
+      a[1] = 2*(s1*x0 - s1*x1 - y0 + y1)/(s0 - s1);
+      a[2] = -((s0 + s1)*x0 - (s0 + s1)*x1 - 2*y0 + 2*y1)/(s0 - s1);
+      b[1] = 2*(s0*s1*x0 - s0*s1*x1 - s0*y0 + s0*y1)/(s0 - s1);
+      b[2] = -(2*s0*s1*x0 - 2*s0*s1*x1 - (s0 + s1)*y0 + (s0 + s1)*y1)/(s0 - s1);
+      // treat s0 == s1 case
+    }
+    else {                     // compute a,b coeffs from s0, r1
+      T r1 = dx1/dy1;
+      a[1] = -2*(r1*y0 - r1*y1 - x0 + x1)/(r1*s0 - 1);
+      a[2] = -((r1*s0 + 1)*x0 - (r1*s0 + 1)*x1 - 2*r1*y0 + 2*r1*y1)/(r1*s0 - 1);
+      b[1] = -2*(r1*s0*y0 - r1*s0*y1 - s0*x0 + s0*x1)/(r1*s0 - 1);
+      b[2] = -(2*s0*x0 - 2*s0*x1 - (r1*s0 + 1)*y0 + (r1*s0 + 1)*y1)/(r1*s0 - 1);
+    }
+  }
+  else {
+    T r0 = dx0/dy0;
+    if(abs(dx1) > abs(dy1)) {  // compute a,b coeffs from r0, s1
+      T s1 = dy1/dx1;
+      a[1] = -2*(r0*s1*x0 - r0*s1*x1 - r0*y0 + r0*y1)/(r0*s1 - 1);
+      a[2] = ((r0*s1 + 1)*x0 - (r0*s1 + 1)*x1 - 2*r0*y0 + 2*r0*y1)/(r0*s1 - 1);
+      b[1] = -2*(s1*x0 - s1*x1 - y0 + y1)/(r0*s1 - 1);
+      b[2] = (2*s1*x0 - 2*s1*x1 - (r0*s1 + 1)*y0 + (r0*s1 + 1)*y1)/(r0*s1 - 1);
+    }
+    else {                     // compute a,b coeffs from r0, r1
+      T r1 = dx1/dy1;
+      a[1] = 2*(r0*r1*y0 - r0*r1*y1 - r0*x0 + r0*x1)/(r0 - r1);
+      a[2] = -(2*r0*r1*y0 - 2*r0*r1*y1 - (r0 + r1)*x0 + (r0 + r1)*x1)/(r0 - r1);
+      b[1] = 2*(r1*y0 - r1*y1 - x0 + x1)/(r0 - r1);
+      b[2] = -((r0 + r1)*y0 - (r0 + r1)*y1 - 2*x0 + 2*x1)/(r0 - r1);
+    }
+  }
+}
+/*
+// optimized computation for s0,s1 cae in function above:
+TCor dx, dy, ss, k, s1dx;
+dx   = x1-x0;
+dy   = y1-y0;
+k    = 1/(s0-s1);
+ss   = s0+s1;     // slope sum
+s1dx = s1*dx;     // rename to k1
+a[1] = 2*(    dy-s1dx) *k;
+b[1] = 2*(s0*(dy-s1dx))*k;  // use k2 = (dy-s1dx)
+a[2] = (ss*dx - 2*dy)*k;
+b[2] = (2*s0*s1dx - ss*dy)*k;
+// make optimized versions for all cases...
+*/
+
 
 template<class T>
 void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
