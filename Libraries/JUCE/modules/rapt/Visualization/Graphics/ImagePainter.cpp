@@ -57,8 +57,11 @@ void rsImagePainter<TPix, TWgt, TCor>::setUseAlphaMask(bool shouldUseMask)
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)
 {
-  // todo: get rid of this dispatcher code - use a member function pointer instead.
+  //rsAssert(rsIsFiniteNumber(x));
+  //rsAssert(rsIsFiniteNumber(y));
+  //rsAssert(rsIsFiniteNumber(color));
 
+  // todo: get rid of this dispatcher code - use a member function pointer instead.
   if(useMask)
   {
     if(antiAlias)

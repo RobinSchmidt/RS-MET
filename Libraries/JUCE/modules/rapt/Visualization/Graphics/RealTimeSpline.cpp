@@ -104,17 +104,11 @@ int rsRealTimeSpline<TCor, TWgt>::dotsLinear()
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
 {
-  // compute (2nd order) derivative estimates at inner points x[1], x[2]:
-  TCor dx1, dx2, dy1, dy2;
-  dx1 = TCor(0.5)*(x[0]-x[2]);    // estimated dx/dt at x[1]
-  dy1 = TCor(0.5)*(y[0]-y[2]);    // estimated dy/dt at y[1]
-  dx2 = TCor(0.5)*(x[1]-x[3]);    // estimated dx/dt at x[2]
-  dy2 = TCor(0.5)*(y[1]-y[3]);    // estimated dy/dt at y[2]
-
   // compute polynomial coeffs:
+  static const TCor h = TCor(0.5);
   cubicSplineArcCoeffs2D(
-    x[2], dx2, y[2], dy2,      // older inner point comes first
-    x[1], dx1, y[1], dy1,      // newer inner point comes second
+    x[2], h*(x[1]-x[3]), y[2], h*(y[1]-y[3]),  // older inner point comes first
+    x[1], h*(x[0]-x[2]), y[1], h*(y[0]-y[2]),  // newer inner point comes second
     a, b);
 
   // factor out (duplicated in dotsQuadratic):
@@ -128,21 +122,11 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::dotsQuadratic()
 {
-  // segment goes from (x0,y0)=(x[2],y[2]) to (x1,y1)=(x[1],y[1]):
-  TCor x0, x1, y0, y1;
-  x0 = x[2];
-  y0 = y[2];
-  x1 = x[1];
-  y1 = y[1];
-
-  // estimate derivatives with respect to t at the points (x0,y0),(x1,y1):
-  TCor dx0, dy0, dx1, dy1;
-  dx0 = TCor(0.5)*(x[1]-x[3]);    // estimated dx/dt at x0 = x[2]
-  dy0 = TCor(0.5)*(y[1]-y[3]);    // estimated dy/dt at y0 = y[2]
-  dx1 = TCor(0.5)*(x[0]-x[2]);    // estimated dx/dt at x1 = x[1]
-  dy1 = TCor(0.5)*(y[0]-y[2]);    // estimated dy/dt at y1 = y[1]
-
-  quadraticSplineArcCoeffs2D(x0, dx0, y0, dy0, x1, dx1, y1, dy1, a, b);
+  static const TCor h = TCor(0.5);
+  quadraticSplineArcCoeffs2D(
+    x[2], h*(x[1]-x[3]), y[2], h*(y[1]-y[3]), 
+    x[1], h*(x[0]-x[2]), y[1], h*(y[0]-y[2]), 
+    a, b);
   a[3] = 0;
   b[3] = 0;
 
@@ -212,6 +196,10 @@ void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TWgt w1, TWgt w2, int numDots)
     dotsX[i] = rsPolynomial<TCor>::evaluatePolynomialAt(t[i], a, 3);
     dotsY[i] = rsPolynomial<TCor>::evaluatePolynomialAt(t[i], b, 3);
     dotsW[i] = w1 + TWgt(t[i])*dw;
+
+    //rsAssert(rsIsFiniteNumber(dotsX[i]));
+    //rsAssert(rsIsFiniteNumber(dotsY[i]));
+    //rsAssert(rsIsFiniteNumber(dotsW[i]));
   }
 }
 

@@ -58,6 +58,7 @@ void rsNumericIntegral(T *x, T *y, T *yi, int N, T c)
     tmp = zo + (x[n]-xo)*(y[n]+yo)*T(0.5);     // compute integral by trapezoidal rule
     xo = x[n]; yo = y[n]; zo = tmp;            // update integrator state variables
     yi[n] = tmp;                               // write integral to output array
+    //rsAssert(rsIsFiniteNumber(tmp));
   }
 }
 // todo:
