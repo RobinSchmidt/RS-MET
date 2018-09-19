@@ -74,7 +74,6 @@ void rsRealTimeSpline<TCor, TWgt>::getStartAndEndWeights(int numDots, TWgt* wSta
   wOld = *wEnd;
 }
 
-
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::dotsLinear()
 {
@@ -83,7 +82,18 @@ int rsRealTimeSpline<TCor, TWgt>::dotsLinear()
   TCor pixelDistance = sqrt(dx*dx + dy*dy);
   int numDots = numDotsForSegment(pixelDistance);
 
+  TWgt w1, w2, dw;
+  getStartAndEndWeights(numDots, &w1, &w2);
+  dw = w2-w1;
 
+  TCor scaler = (TCor)(1.0 / numDots);
+  TCor k;
+  for(int i = 0; i < numDots; i++) {
+    k = scaler * (i+1);     // == (i+1) / numDots
+    X[i] = x[1] + k*dx;
+    Y[i] = y[1] + k*dy;
+    W[i] = w1 + TWgt(k)*dw;
+  }
 }
 
 template<class TCor, class TWgt>

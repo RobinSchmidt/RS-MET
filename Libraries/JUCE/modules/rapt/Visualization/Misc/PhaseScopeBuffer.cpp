@@ -262,6 +262,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TPix color, TPar densi
 }
 // rename to drawConnection or drawCurve or something and dispatch between line-drawing, 
 // spline-drawing and maybe other drawing modes (maybe non-dotted like bresenham, wu, etc.)
+// obsolete soon
 
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TPix color1, TPix color2, int numDots)
