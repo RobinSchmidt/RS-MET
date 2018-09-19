@@ -20,11 +20,11 @@ int rsRealTimeSpline<TCor, TWgt>::getDotsForInputPoint(TCor inX, TCor inY)
   rsArray::pushFrontPopBack4(inX, x);
   rsArray::pushFrontPopBack4(inY, y);
 
-  if(lineDensity == 0.f) {
+  if(density == 0.f) {
     dotsX[0] = inX;
     dotsY[0] = inY;
     dotsW[0] = brightness;
-    return;
+    return 1;
   }
 
   switch(drawMode)
@@ -47,10 +47,10 @@ template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::numDotsForSegment(TCor segmentLength)
 {
   TCor minDotDistance = 1; // maybe make user-adjustable
-  int numDots = rsMax(1, (int)floor(density*pixelDistance/minDotDistance));
+  int numDots = rsMax(1, (int)floor(density*segmentLength/minDotDistance));
   if(maxNumDots > -1)
     numDots = rsMin(numDots, maxNumDots);
-  numDots = rsMin(numDots, dotBufferLength);
+  return rsMin(numDots, dotBufferLength);
 }
 
 template<class TCor, class TWgt>
@@ -63,8 +63,8 @@ void rsRealTimeSpline<TCor, TWgt>::getStartAndEndWeights(int numDots, TWgt* wSta
 
   if(useGradient) {
     TWgt wt = brightness * scaler;   // target weight that would be used if we don't do gradients
-    *wEnd = (2.f*ct) - wOld;         // desired endpoint color
-    *wEnd = rsMax(*wEnd, ct);        // wEnd could come out negative, use wt as lower bound
+    *wEnd = (2.f*wt) - wOld;         // desired endpoint color
+    *wEnd = rsMax(*wEnd, wt);        // wEnd could come out negative, use wt as lower bound
     *wStart = wOld;
   }
   else {
@@ -93,10 +93,12 @@ int rsRealTimeSpline<TCor, TWgt>::dotsLinear()
   TCor k;
   for(int i = 0; i < numDots; i++) {
     k = scaler * (i+1);     // == (i+1) / numDots
-    X[i] = x[1] + k*dx;
-    Y[i] = y[1] + k*dy;
-    W[i] = w1 + TWgt(k)*dw;
+    dotsX[i] = x[1] + k*dx;
+    dotsY[i] = y[1] + k*dy;
+    dotsW[i] = w1 + TWgt(k)*dw;
   }
+
+  return numDots;
 }
 
 template<class TCor, class TWgt>
@@ -110,8 +112,11 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
   dy2 = TCor(0.5)*(y[1]-y[3]);    // estimated dy/dt at y[2]
 
   // compute polynomial coeffs:
-  TCor a[4], b[4];   // coeffs for x(t), y(t)
-  cubicSplineArcCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
+  TCor a[4], b[4];             // coeffs for x(t), y(t)
+  cubicSplineArcCoeffs2D(
+    x[2], dx2, y[2], dy2,      // older inner point comes first
+    x[1], dx1, y[1], dy1,      // newer inner point comes second
+    a, b);
 
   // maybe factor out code below - when we have different polynomial interpolation formulas, it 
   // would be nice to re-use the code below for all possible polynomials - we need to generalize
@@ -164,6 +169,7 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
 
   // dot computation:
   dotsCubic(a, b, w1, w2, numDots);
+  return numDots;
 }
 
 template<class TCor, class TWgt>
@@ -172,11 +178,10 @@ void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TCor *a, TCor *b, TWgt w1, TWgt w2,
   TWgt dw = w2-w1;                      // weight difference
   TCor scaler = (TCor)(1.0 / numDots);  // not 1/(numDots-1) because last dot of this call is drawn 
                                         // as first dot in next call? ..avoids drawing it twice?
-
   for(int i = 0; i < numDots; i++) {
-    X[i] = rsPolynomial<TCor>::evaluatePolynomialAt(t[i], a, 3);
-    Y[i] = rsPolynomial<TCor>::evaluatePolynomialAt(t[i], b, 3);
-    W[i] = w1 + TWgt(t[i])*dw;
+    dotsX[i] = rsPolynomial<TCor>::evaluatePolynomialAt(t[i], a, 3);
+    dotsY[i] = rsPolynomial<TCor>::evaluatePolynomialAt(t[i], b, 3);
+    dotsW[i] = w1 + TWgt(t[i])*dw;
   }
 }
 

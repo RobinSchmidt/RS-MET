@@ -19,6 +19,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  /*
   enum drawModes
   {
     DOTTED_LINE = 0,
@@ -28,6 +29,7 @@ public:
     NUM_DRAW_MODES
   };
   // moved to splineGen
+  */
 
   /** Sets the sample rate. */
   void setSampleRate(TPar newSampleRate);
@@ -50,7 +52,8 @@ public:
   so as to always add the same total amount of brightness into the screen. However, this may lead
   to abrupt color changes on line segment joints - so with this function, you can switch into a
   mode where a length-wise color gradient is used instead of a sudden switch. */
-  void setUseColorGradient(bool shouldUseGradient);
+  void setUseColorGradient(bool shouldUseGradient)
+  { splineGen.setUseColorGradient(shouldUseGradient); }
 
   /** Sets the time it takes for "color" to decay away. */
   void setDecayTime(TPar newDecayTime);
@@ -70,7 +73,7 @@ public:
   void setMaxSizeWithoutReAllocation(int newMaxWidth, int newMaxHeight);
 
   /** Sets the drawing mode as one of the value in enum drawModes. */
-  void setDrawMode(int newMode) { drawMode = newMode; }
+  void setDrawMode(int newMode) { splineGen.setDrawMode(newMode); }
 
   /** Switches anti-aliasing on/off. */
   void setAntiAlias(bool shouldAntiAlias);
@@ -78,11 +81,14 @@ public:
   /** Sets up the density of the lines the connect our actual datapoints. It actually determines the
   number of artificial datapoints that are inserted (by linear interpolation) between our actual
   incoming datapoints. If set to zero, it will just draw the datapoints as dots. */
-  void setLineDensity(TPar newDensity);
+  //void setLineDensity(TPar newDensity);
+  void setLineDensity(TPar newDensity) { splineGen.setDensity((TSig)newDensity); }
 
   /** Sets a limit of the number of artificial datapoints that may be inserted per drawing
   operation. This is important to keep the cpu usage under control. */
-  void setLineDensityLimit(int newMaxNumDotsPerLine);
+  //void setLineDensityLimit(int newMaxNumDotsPerLine);
+  void setLineDensityLimit(int newMaxNumDotsPerLine)
+  { splineGen.setMaxNumDotsPerSegment(newMaxNumDotsPerLine); }
 
   /** Sets up a weight by which each pixel is not only accumulated into its actual place but also
   into the neighbouring pixels to add more weight or thickness. It should be a value between 0
@@ -167,14 +173,12 @@ protected:
   is for restricting the number of dots that are used which might be important in realtime
   situations. scaleByNumDots ...
   \todo: maybe make this color scaling optional  */
-  void drawDottedLine(TPix color, TPar density = 1, int maxNumDots = 0, 
-    bool scaleByNumDots = false, TPar minDotDistance = 1);
+  //void drawDottedLine(TPix color, TPar density = 1, int maxNumDots = 0, 
+  //  bool scaleByNumDots = false, TPar minDotDistance = 1);
   // rename to drawDottedSegment
 
-  void drawDottedSegment(TPix color1, TPix color2, int numDots);
-
+  //void drawDottedSegment(TPix color1, TPix color2, int numDots);
   //drawLineDotted(x1, y1, x2, y2, cOld, c, numDots);
-
 
 
   /** Updates the pixel decay factor according to the settings of frame rate and desired decay
@@ -199,7 +203,6 @@ protected:
   TPar frameRate;
   TPar decayTime;      // pixel illumination time
   TPar decayFactor;    // factor by which pixels decay (applied at frameRate)
-
   TSig scanPos;        // scan position in 1D mode
   TPar thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
                        // maybe rename to spread or weight or something
@@ -212,7 +215,6 @@ protected:
   TSig Axx, Axy, Ayx, Ayy;       // matrix coefficients
   // factor out into class rsAffineTransform2D
 
-
   // members for actual painting on an image:
   rsImageResizable<TPix> image;
   rsImagePainter<TPix, TSig, TSig> painter;
@@ -222,17 +224,8 @@ protected:
   std::vector<TSig> dotsX, dotsY;
   std::vector<TPix> dotsC;
 
-
-  // old spline parameters - (to be moved into splineGen object):
-  int  drawMode = DOTTED_LINE;
-  bool useGradient;              // use color gradient to seamlessly join line segments
-  int  maxDotsPerLine;           // maximum number dots per line to limit cpu-use
-  TPar lineDensity;    // density of the artificial points between actual datapoints
   TPix brightness;     // determines weight by which dots are added in
-  TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
-  TSig x[4], y[4];     // pixel coordinate buffers: x[0] = x[n], x[1] = x[n-1], etc.
-  TPix cOld;           // old line end color
-
+  //TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
 };
 
 //=================================================================================================

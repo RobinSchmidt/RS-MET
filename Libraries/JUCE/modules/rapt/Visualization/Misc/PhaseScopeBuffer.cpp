@@ -6,14 +6,12 @@ rsPhaseScopeBuffer<TSig, TPix, TPar>::rsPhaseScopeBuffer()
 
   frameRate      = 25.0;
   decayTime      = 0.5;
-  lineDensity    = 0.0f;
-  maxDotsPerLine = 100;
+  //lineDensity    = 0.0f;
+  //maxDotsPerLine = 100;
   thickness      = 0.707f;
   brightness     = 1.0;
-  useGradient    = false;
-
-  //xOld = yOld = TSig(0);
-  cOld = TPix(0);
+  //useGradient    = false;
+  //cOld = TPix(0);
   scanPos = TSig(0);
 
   updateDecayFactor();
@@ -43,13 +41,13 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::setBrightness(TPix newBrightness)
   brightness = newBrightness;
   updateInsertFactor();
 }
-
+/*
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::setUseColorGradient(bool shouldUseGradient)
 {
   useGradient = shouldUseGradient;
 }
-
+*/
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::setDecayTime(TPar newDecayTime)
 {
@@ -77,7 +75,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::setMaxSizeWithoutReAllocation(int new
 {
   image.setMaxSize(newMaxWidth, newMaxHeight);
 }
-
+/*
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::setLineDensity(TPar newDensity)
 {
@@ -89,7 +87,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::setLineDensityLimit(int newMaxNumDots
 {
   maxDotsPerLine = newMaxNumDotsPerLine;
 }
-
+*/
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 {
@@ -196,7 +194,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 
   // transform to pixel coordinates and draw line:
   toPixelCoordinates(x, y);
-  addSegmentTo(x, y);  // rename to addCurveTo, addSegmentTo
+  addSegmentTo(x, y);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -211,26 +209,16 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
   rsArray::fillWithZeros(image.getPixelPointer(0, 0), image.getNumPixels());
   scanPos = 0.0;
   splineGen.reset();
-
-  // remove soon:
-  cOld = TPix(0);
-  rsArray::fillWithValue(x, 4, TSig(0.5 * image.getWidth()) );
-  rsArray::fillWithValue(y, 4, TSig(0.5 * image.getHeight()));
 }
 
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(TSig newX, TSig newY)
 {
-  rsArray::pushFrontPopBack4(newX, x);
-  rsArray::pushFrontPopBack4(newY, y);
-
-  if(lineDensity == 0.f)
-    painter.paintDot(newX, newY, (TPix) insertFactor);
-  else
-    drawDottedLine((TPix) insertFactor, (TSig)lineDensity, maxDotsPerLine, true);
+  int numDots = splineGen.getDotsForInputPoint(newX, newY);
+  painter.drawDots(&dotsX[0], &dotsY[0], &dotsC[0], numDots);
 }
-// obsolete soon
 
+/*
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TPix color, TPar density, int maxNumDots, 
   bool scaleByNumDots, TPar minDotDistance)
@@ -264,7 +252,9 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TPix color, TPar densi
 // rename to drawConnection or drawCurve or something and dispatch between line-drawing, 
 // spline-drawing and maybe other drawing modes (maybe non-dotted like bresenham, wu, etc.)
 // obsolete soon
+*/
 
+/*
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TPix color1, TPix color2, int numDots)
 {
@@ -322,7 +312,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TPix color1, TPix c
   }
 
 }
-
+*/
 
 
 template<class TSig, class TPix, class TPar>
@@ -334,7 +324,9 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 {
-  insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
+  TPix insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
+  splineGen.setBrightness(insertFactor);
+
   // The factor is totally ad-hoc - maybe come up with some more meaningful factor.
   // However, the proportionality to the brightness parameter and inverse proportionality to
   // the sample rate seems to make sense.
@@ -359,6 +351,8 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateDotBufferSizes()
   dotsX.resize(size);
   dotsY.resize(size);
   dotsC.resize(size);
+  splineGen.setDotBuffers(&dotsX[0], &dotsY[0], &dotsC[0], size);
+  // ...because resizing may cause re-allocation, also, it needs to know the new size
 }
 
 //template<class TSig, class TPix, class TPar>
@@ -485,8 +479,10 @@ void rsPhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer2<TSig, TPix, TPar>::addSegmentTo(TSig x, TSig y)
 {
+  rsAssert(false);
   // function needs update since we implemented the spline drawing in the baseclass
 
+  /*
   if(drawLines){
     //TSig dx = x - this->xOld;
     //TSig dy = y - this->yOld;
@@ -508,4 +504,5 @@ void rsPhaseScopeBuffer2<TSig, TPix, TPar>::addSegmentTo(TSig x, TSig y)
     this->x[1] = x;
     this->y[1] = y; 
   }
+  */
 }

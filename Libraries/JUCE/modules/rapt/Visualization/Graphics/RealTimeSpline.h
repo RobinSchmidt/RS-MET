@@ -72,6 +72,7 @@ public:
   The dot coordinates and weights will be written into the buffers that you have previously passed 
   via setDotBuffers.  */
   int getDotsForInputPoint(TCor newX, TCor newY);
+  // rename to fillDotBuffers/updateDotBuffers or something
 
   /** Resets the input point buffers to the given coodinate values. You will typically want to pass
   incoordinates that correspond to the origin of you coordinate system, either in pixel coordinates

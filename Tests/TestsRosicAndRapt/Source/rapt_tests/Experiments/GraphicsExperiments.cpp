@@ -278,14 +278,17 @@ void phaseScopeLissajous()
   float scale = 0.9f;
   static const int numCycles = 1;
 
+  typedef RAPT::rsRealTimeSpline<double, float> SG; // for spline-generator
+
+
   // create and set up rsPhaseScopeBuffer object:
   rsPhaseScopeBufferFFD psb;
   psb.setAntiAlias(true);
   psb.setBrightness(300.f);
   psb.setLineDensity(1.f);
   psb.setPixelSpread(0.3f);
-  psb.setDrawMode(psb.DOTTED_LINE);
-  //psb.setDrawMode(psb.DOTTED_SPLINE);
+  psb.setDrawMode(SG::LINEAR);
+  //psb.setDrawMode(SG::CUBIC_HERMITE);
   psb.setUseColorGradient(true);
   psb.setSize(400, 400);
 
