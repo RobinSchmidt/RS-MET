@@ -289,45 +289,68 @@ void cubicSplineArcCoeffs2D(T x1, T dx1, T y1, T dy1, T x2, T dx2, T y2, T dy2, 
   z0[0] = y1; z0[1] = dy1; z1[0] = y2; z1[1] = dy2; getHermiteCoeffs1(z0, z1, b);
 }
 
+
+template<class T>
+void quadraticLineCoeffs2D(T x0, T y0, T x1, T y1, T* a, T* b)
+{
+  a[0] = x0;
+  b[0] = y0;
+  a[1] = x1-x0;
+  b[1] = y1-y0;
+  a[2] = 0;
+  b[2] = 0;
+}
 template<class T>
 void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b)
 {
   a[0] = x0;
   b[0] = y0;
-
+  T den, k; 
+  T tol = T(1.e-6); // use (some multiple of) epsilon of T
   if(abs(dx0) > abs(dy0)) {
     T s0 = dy0/dx0;
     if(abs(dx1) > abs(dy1)) {  // compute a,b coeffs from s0, s1
       T s1 = dy1/dx1;
-      a[1] = 2*(s1*x0 - s1*x1 - y0 + y1)/(s0 - s1);
-      a[2] = -((s0 + s1)*x0 - (s0 + s1)*x1 - 2*y0 + 2*y1)/(s0 - s1);
-      b[1] = 2*(s0*s1*x0 - s0*s1*x1 - s0*y0 + s0*y1)/(s0 - s1);
-      b[2] = -(2*s0*s1*x0 - 2*s0*s1*x1 - (s0 + s1)*y0 + (s0 + s1)*y1)/(s0 - s1);
-      // treat s0 == s1 case
+      den  = s0 - s1;
+      if(abs(den) < tol) { quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); return; }
+      k    = T(1)/den;
+      a[1] = 2*(s1*x0 - s1*x1 - y0 + y1)*k;
+      a[2] = -((s0 + s1)*x0 - (s0 + s1)*x1 - 2*y0 + 2*y1)*k;
+      b[1] = 2*(s0*s1*x0 - s0*s1*x1 - s0*y0 + s0*y1)*k;
+      b[2] = -(2*s0*s1*x0 - 2*s0*s1*x1 - (s0 + s1)*y0 + (s0 + s1)*y1)*k;
     }
     else {                     // compute a,b coeffs from s0, r1
       T r1 = dx1/dy1;
-      a[1] = -2*(r1*y0 - r1*y1 - x0 + x1)/(r1*s0 - 1);
-      a[2] = -((r1*s0 + 1)*x0 - (r1*s0 + 1)*x1 - 2*r1*y0 + 2*r1*y1)/(r1*s0 - 1);
-      b[1] = -2*(r1*s0*y0 - r1*s0*y1 - s0*x0 + s0*x1)/(r1*s0 - 1);
-      b[2] = -(2*s0*x0 - 2*s0*x1 - (r1*s0 + 1)*y0 + (r1*s0 + 1)*y1)/(r1*s0 - 1);
+      den  = (r1*s0 - 1);
+      if(abs(den) < tol) { quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); return; }
+      k    = T(1)/den;
+      a[1] = -2*(r1*y0 - r1*y1 - x0 + x1)*k;
+      a[2] = -((r1*s0 + 1)*x0 - (r1*s0 + 1)*x1 - 2*r1*y0 + 2*r1*y1)*k;
+      b[1] = -2*(r1*s0*y0 - r1*s0*y1 - s0*x0 + s0*x1)*k;
+      b[2] = -(2*s0*x0 - 2*s0*x1 - (r1*s0 + 1)*y0 + (r1*s0 + 1)*y1)*k;
     }
   }
   else {
     T r0 = dx0/dy0;
     if(abs(dx1) > abs(dy1)) {  // compute a,b coeffs from r0, s1
       T s1 = dy1/dx1;
-      a[1] = -2*(r0*s1*x0 - r0*s1*x1 - r0*y0 + r0*y1)/(r0*s1 - 1);
-      a[2] = ((r0*s1 + 1)*x0 - (r0*s1 + 1)*x1 - 2*r0*y0 + 2*r0*y1)/(r0*s1 - 1);
-      b[1] = -2*(s1*x0 - s1*x1 - y0 + y1)/(r0*s1 - 1);
-      b[2] = (2*s1*x0 - 2*s1*x1 - (r0*s1 + 1)*y0 + (r0*s1 + 1)*y1)/(r0*s1 - 1);
+      den  = (r0*s1 - 1);
+      if(abs(den) < tol) { quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); return; }
+      k    = T(1)/den;
+      a[1] = -2*(r0*s1*x0 - r0*s1*x1 - r0*y0 + r0*y1)*k;
+      a[2] = ((r0*s1 + 1)*x0 - (r0*s1 + 1)*x1 - 2*r0*y0 + 2*r0*y1)*k;
+      b[1] = -2*(s1*x0 - s1*x1 - y0 + y1)*k;
+      b[2] = (2*s1*x0 - 2*s1*x1 - (r0*s1 + 1)*y0 + (r0*s1 + 1)*y1)*k;
     }
     else {                     // compute a,b coeffs from r0, r1
       T r1 = dx1/dy1;
-      a[1] = 2*(r0*r1*y0 - r0*r1*y1 - r0*x0 + r0*x1)/(r0 - r1);
-      a[2] = -(2*r0*r1*y0 - 2*r0*r1*y1 - (r0 + r1)*x0 + (r0 + r1)*x1)/(r0 - r1);
-      b[1] = 2*(r1*y0 - r1*y1 - x0 + x1)/(r0 - r1);
-      b[2] = -((r0 + r1)*y0 - (r0 + r1)*y1 - 2*x0 + 2*x1)/(r0 - r1);
+      den  = (r0 - r1);
+      if(abs(den) < tol) { quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); return; }
+      k    = T(1)/den;
+      a[1] = 2*(r0*r1*y0 - r0*r1*y1 - r0*x0 + r0*x1)*k;
+      a[2] = -(2*r0*r1*y0 - 2*r0*r1*y1 - (r0 + r1)*x0 + (r0 + r1)*x1)*k;
+      b[1] = 2*(r1*y0 - r1*y1 - x0 + x1)*k;
+      b[2] = -((r0 + r1)*y0 - (r0 + r1)*y1 - 2*x0 + 2*x1)*k;
     }
   }
 }
