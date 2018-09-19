@@ -111,21 +111,53 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
   dy2 = TCor(0.5)*(y[1]-y[3]);    // estimated dy/dt at y[2]
 
   // compute polynomial coeffs:
-  TCor a[4], b[4];             // coeffs for x(t), y(t)
   cubicSplineArcCoeffs2D(
     x[2], dx2, y[2], dy2,      // older inner point comes first
     x[1], dx1, y[1], dy1,      // newer inner point comes second
     a, b);
 
-  // maybe factor out code below - when we have different polynomial interpolation formulas, it 
-  // would be nice to re-use the code below for all possible polynomials - we need to generalize
-  // cubicSplineArcLength2D to a general polynomailSplineArcLength2D function (or maybe, for 
-  // optimization, use the cubicSplineArcLength2D with a[3]=0 for a quadratic spline - but maybe
-  // set up performance-tests first to figure out, if the optimization (to use evaluateCubic
-  // instead of the general evaluatePolynomial) is actually considerably faster - if not, the more
-  // generally applicable version should be preferred
-  // also dotsCubic must be generalized
 
+  int numDots = prepareParameterArray();
+
+  // start/end weight computation:
+  TWgt w1, w2;
+  getStartAndEndWeights(numDots, &w1, &w2);
+
+  // dot computation:
+  dotsCubic(w1, w2, numDots);
+  return numDots;
+}
+
+template<class TCor, class TWgt>
+int rsRealTimeSpline<TCor, TWgt>::dotsQuadratic()
+{
+  a[0] = 0;
+  a[1] = 0;
+  a[2] = 0;
+  a[3] = 0;
+
+  b[0] = 0;
+  b[1] = 0;
+  b[2] = 0;
+  b[3] = 0;
+
+
+
+
+  int numDots = prepareParameterArray();
+
+  // start/end weight computation:
+  TWgt w1, w2;
+  getStartAndEndWeights(numDots, &w1, &w2);
+
+  // dot computation:
+  dotsCubic(w1, w2, numDots);
+  return numDots;
+}
+
+template<class TCor, class TWgt>
+int rsRealTimeSpline<TCor, TWgt>::prepareParameterArray()
+{
   // distance computation:
   TCor splineLength;
   int numDots;
@@ -168,18 +200,11 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     for(int i = 0; i < numDots; i++)
       t[i] = scaler * i;
   }
-
-  // start/end weight computation:
-  TWgt w1, w2;
-  getStartAndEndWeights(numDots, &w1, &w2);
-
-  // dot computation:
-  dotsCubic(a, b, w1, w2, numDots);
   return numDots;
 }
 
 template<class TCor, class TWgt>
-void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TCor *a, TCor *b, TWgt w1, TWgt w2, int numDots)
+void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TWgt w1, TWgt w2, int numDots)
 {
   TWgt dw = w2-w1;                      // weight difference
   TCor scaler = (TCor)(1.0 / numDots);  // not 1/(numDots-1) because last dot of this call is drawn 

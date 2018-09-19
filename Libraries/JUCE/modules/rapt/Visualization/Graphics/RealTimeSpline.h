@@ -26,6 +26,8 @@ public:
   {
     LINEAR = 0,
     CUBIC_HERMITE,
+    QUADRATIC,
+
     // BRESENHAM,
     // WU,
     NUM_DRAW_MODES
@@ -91,13 +93,26 @@ protected:
 
   void getStartAndEndWeights(int numDots, TWgt* wStart, TWgt* wEnd);
 
+
+
+
+
   int dotsLinear();
   int dotsCubicHermite();
-  // dotsQuadratic, dotsCubic2D, ...
+  int dotsQuadratic();
+  // , dotsCubic2D, ...
+
+  /** After the polynomial coefficient arrays a, b have been computed, this function fills the 
+  array for the parameter t with values at which we evaluate the spline segment give by the 
+  parametric equations:
+  x(t) = a0 + a1*t + a2*t^2 + a3*t
+  y(t) = b0 + b1*t + b2*t^2 + b3*t  
+  The return value is the number of evaluation points/samples. */
+  int prepareParameterArray();
 
   /** Evaluates the two cubic polynomials x(t),y(t) for the coordinates at t-values determined by 
   our t-array... */
-  void dotsCubic(TCor *a, TCor *b, TWgt w1, TWgt w2, int numDots);
+  void dotsCubic(TWgt w1, TWgt w2, int numDots);
 
 
 
@@ -119,6 +134,9 @@ protected:
   TCor *dotsX, *dotsY;
   TWgt *dotsW;
   int  dotBufferLength;
+
+  // polynomial coefficients for for x(t), y(t):
+  TCor a[4], b[4];
 
   // buffers for the density compensation and spline arc-length computations:
   std::vector<TCor> r, s, t, u; 
