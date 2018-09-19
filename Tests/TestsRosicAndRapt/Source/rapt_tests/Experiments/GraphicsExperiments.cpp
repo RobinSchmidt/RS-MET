@@ -275,8 +275,8 @@ void phaseScopeLissajous()
   //static const int N = 11;  // number of data points per cycle
   //static const int N = 80;
   static const int N = 35;
-  float a = 3.f;
-  float b = 2.f;
+  float a = 2.f;
+  float b = 3.f;
   float scale = 0.9f;
   //static const int numCycles = 1;
 

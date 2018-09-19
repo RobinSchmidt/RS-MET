@@ -307,6 +307,14 @@ void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
   b[0] = y0;
   T den, k; 
   T tol = T(1.e-6); // use (some multiple of) epsilon of T
+
+  if(  (abs(dx0) < tol && abs(dy0) < tol) 
+    || (abs(dx1) < tol && abs(dy1) < tol) )
+  {
+    quadraticLineCoeffs2D(x0, y0, x1, y1, a, b);
+    return;
+  }
+
   if(abs(dx0) > abs(dy0)) {
     T s0 = dy0/dx0;
     if(abs(dx1) > abs(dy1)) {  // compute a,b coeffs from s0, s1
