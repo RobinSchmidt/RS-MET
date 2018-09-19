@@ -152,67 +152,63 @@ int rsRealTimeSpline<TCor, TWgt>::dotsQuadratic()
   a[3] = 0;
   b[3] = 0;
 
-
-  // result from sage (s0,s1):
-  TCor s0 = dy0/dx0;
-  TCor s1 = dy1/dx1;
-  a[1] = 2*(s1*x0 - s1*x1 - y0 + y1)/(s0 - s1);
-  a[2] = -((s0 + s1)*x0 - (s0 + s1)*x1 - 2*y0 + 2*y1)/(s0 - s1);
-  b[1] = 2*(s0*s1*x0 - s0*s1*x1 - s0*y0 + s0*y1)/(s0 - s1);
-  b[2] = -(2*s0*s1*x0 - 2*s0*s1*x1 - (s0 + s1)*y0 + (s0 + s1)*y1)/(s0 - s1);
-
-
-  /*
-  // preliminary - we need to branch, depending on whether dx0>dy0 and dx1>dy1
+  // we need to branch, depending on whether dx0>dy0 and dx1>dy1
   // move to interpolation:
   if(abs(dx0) > abs(dy0)) {
     TCor s0 = dy0/dx0;
     if(abs(dx1) > abs(dy1)) {
+      //return 0;
       TCor s1 = dy1/dx1;  // compute a,b coeffs from s0, s1
-      a[0] = x0;
       a[1] = 2*(s1*x0 - s1*x1 - y0 + y1)/(s0 - s1);
       a[2] = -((s0 + s1)*x0 - (s0 + s1)*x1 - 2*y0 + 2*y1)/(s0 - s1);
-      b[0] = y0;
       b[1] = 2*(s0*s1*x0 - s0*s1*x1 - s0*y0 + s0*y1)/(s0 - s1);
       b[2] = -(2*s0*s1*x0 - 2*s0*s1*x1 - (s0 + s1)*y0 + (s0 + s1)*y1)/(s0 - s1);
       // treat s0 == s1 case
 
-     
-      // optimized:
+      /*
+      // s0, s1 optimized:
       TCor dx, dy, ss, k, s1dx;
       dx   = x1-x0;
       dy   = y1-y0;
       k    = 1/(s0-s1);
       ss   = s0+s1;     // slope sum
       s1dx = s1*dx;     // rename to k1
-      a[0] = x0;
       a[1] = 2*(dy-s1dx)*k;
       a[2] = (ss*dx - 2*dy)*k;
-      b[0] = y0;
       b[1] = 2*(s0*(dy-s1dx))*k;  // use k2 = (dy-s1dx)
       b[2] = (2*s0*s1dx - ss*dy)*k;
+      */
     }
     else
     {
+      //return 0;
       TCor r1 = dx1/dy1;  // compute a,b coeffs from s0, r1
-
-      // compute a,b coeffs from s0,r1
-
-      return 0;
+      a[1] = -2*(r1*y0 - r1*y1 - x0 + x1)/(r1*s0 - 1);
+      a[2] = -((r1*s0 + 1)*x0 - (r1*s0 + 1)*x1 - 2*r1*y0 + 2*r1*y1)/(r1*s0 - 1);
+      b[1] = -2*(r1*s0*y0 - r1*s0*y1 - s0*x0 + s0*x1)/(r1*s0 - 1);
+      b[2] = -(2*s0*x0 - 2*s0*x1 - (r1*s0 + 1)*y0 + (r1*s0 + 1)*y1)/(r1*s0 - 1);
     }
   }
   else
   {
-    return 0;
+    TCor r0 = dx0/dy0;
+    if(abs(dx1) > abs(dy1)) {  // compute a,b coeffs from r0, s1
+      //return 0;
+      TCor s1 = dy1/dx1;
+      a[1] = -2*(r0*s1*x0 - r0*s1*x1 - r0*y0 + r0*y1)/(r0*s1 - 1);
+      a[2] = ((r0*s1 + 1)*x0 - (r0*s1 + 1)*x1 - 2*r0*y0 + 2*r0*y1)/(r0*s1 - 1);
+      b[1] = -2*(s1*x0 - s1*x1 - y0 + y1)/(r0*s1 - 1);
+      b[2] = (2*s1*x0 - 2*s1*x1 - (r0*s1 + 1)*y0 + (r0*s1 + 1)*y1)/(r0*s1 - 1);
+    }
+    else {                     // compute a,b coeffs from r0, r1
+      //return 0;
+      TCor r1 = dx1/dy1;
+      a[1] = 2*(r0*r1*y0 - r0*r1*y1 - r0*x0 + r0*x1)/(r0 - r1);
+      a[2] = -(2*r0*r1*y0 - 2*r0*r1*y1 - (r0 + r1)*x0 + (r0 + r1)*x1)/(r0 - r1);
+      b[1] = 2*(r1*y0 - r1*y1 - x0 + x1)/(r0 - r1);
+      b[2] = -((r0 + r1)*y0 - (r0 + r1)*y1 - 2*x0 + 2*x1)/(r0 - r1);
+    }
   }
-  */
-
-
-
-
-
-
-
 
 
   // factor out:
@@ -331,7 +327,7 @@ void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TWgt w1, TWgt w2, int numDots)
 // solving the system with sage:
 /*
 # variables and function definitions:
-var("a0 a1 a2 b0 b1 b2 t x0 x1 y0 y1 s0 s1")
+var("a0 a1 a2 b0 b1 b2 t x0 x1 y0 y1 s0 s1 r0 r1")
 x(t)  = a0 + a1*t + a2*t^2
 y(t)  = b0 + b1*t + b2*t^2
 dx(t) = diff(x(t), t)         # dx/dt
@@ -357,18 +353,31 @@ b2 == -(2*s0*s1*x0 - 2*s0*s1*x1 - (s0 + s1)*y0 + (s0 + s1)*y1)/(s0 - s1)
 the case s0 == s1 needs to be treated separately to avoid div-by-zero - maybe use a line in this 
 case, precompute: 1/(s0-s1), (s0+s1), 
 
-// simplified (needs verification):
-dx = x1-x0;
-dy = y1-y0;
-ss = s0+s1;     // slope sum
-k  = 1/(s0-s1);
-s1dx = s1*dx;
-a0 = x0 
-a1 = 2*(dy - s1dx)*k
-a2 = (ss*dx - 2*dy)*k
-b0 = y0
-b1 = 2*(-s0*(s1dx + dy))*k
-b2 = (2*s0*s1dx - ss*dy)*k
+using s0, r1:
+a0 == x0, 
+a1 == -2*(r1*y0 - r1*y1 - x0 + x1)/(r1*s0 - 1), 
+a2 == -((r1*s0 + 1)*x0 - (r1*s0 + 1)*x1 - 2*r1*y0 + 2*r1*y1)/(r1*s0 - 1), 
+b0 == y0, 
+b1 == -2*(r1*s0*y0 - r1*s0*y1 - s0*x0 + s0*x1)/(r1*s0 - 1), 
+b2 == -(2*s0*x0 - 2*s0*x1 - (r1*s0 + 1)*y0 + (r1*s0 + 1)*y1)/(r1*s0 - 1)
+
+using r0, r1:
+a0 == x0, 
+a1 == 2*(r0*r1*y0 - r0*r1*y1 - r0*x0 + r0*x1)/(r0 - r1), 
+a2 == -(2*r0*r1*y0 - 2*r0*r1*y1 - (r0 + r1)*x0 + (r0 + r1)*x1)/(r0 - r1), 
+b0 == y0, 
+b1 == 2*(r1*y0 - r1*y1 - x0 + x1)/(r0 - r1), 
+b2 == -((r0 + r1)*y0 - (r0 + r1)*y1 - 2*x0 + 2*x1)/(r0 - r1)
+
+using r0, s1:
+a0 == x0, 
+a1 == -2*(r0*s1*x0 - r0*s1*x1 - r0*y0 + r0*y1)/(r0*s1 - 1), 
+a2 == ((r0*s1 + 1)*x0 - (r0*s1 + 1)*x1 - 2*r0*y0 + 2*r0*y1)/(r0*s1 - 1), 
+b0 == y0, 
+b1 == -2*(s1*x0 - s1*x1 - y0 + y1)/(r0*s1 - 1), 
+b2 == (2*s1*x0 - 2*s1*x1 - (r0*s1 + 1)*y0 + (r0*s1 + 1)*y1)/(r0*s1 - 1)
+
+
 
 
 */
