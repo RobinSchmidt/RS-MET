@@ -139,6 +139,10 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     splineLength = s[N-1]; // last value in s is total length: s(t=1)
     numDots = numDotsForSegment(splineLength);
 
+#ifdef RS_DEBUG_PLOTTING
+    GNUPlotter::plot(N, &r[0], &s[0]);
+#endif
+
     // compute t-array by evaluating t(s), i.e. the function that is inverse to s(t):
     u.resize(numDots); // equally spaced values of s at which we compute t(s)
     t.resize(numDots); // t(s), i.e t(u[i])
@@ -146,6 +150,10 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     for(int i = 0; i < numDots; i++)
       u[i] = scaler * i;
     resampleNonUniformLinear(&s[0], &r[0], N, &u[0], &t[0], numDots);
+
+#ifdef RS_DEBUG_PLOTTING
+    GNUPlotter::plot(numDots, &u[0], &t[0]);
+#endif
   }
   else {
     // crude estimate of arc-length as distance between endpoints:

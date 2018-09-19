@@ -125,11 +125,12 @@ public:
   /** Fills the whole picture with a solid color. */
   void fillAll(const TPix &colorToFillWith);
 
-  /** Clears the image by setting all pixels to zero. */
-  inline void clear()
+  /** Clears the image by setting all pixels to the given color. */
+  inline void clear(TPix color = TPix(0))
   {
-    fillAll(TPix(0));
+    fillAll(color);
   }
+
 
   /** Flips the image vertically such that top becomes bottom and vice versa. */
   //void flipTopForBottom();

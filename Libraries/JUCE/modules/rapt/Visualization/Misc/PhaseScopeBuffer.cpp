@@ -184,7 +184,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::applyPixelDecay()
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
 {
-  rsArray::fillWithZeros(image.getPixelPointer(0, 0), image.getNumPixels());
+  clearImage();
   scanPos = 0.0;
   splineGen.reset(TSig(0.5*image.getWidth()), TSig(0.5*image.getHeight()));
 }

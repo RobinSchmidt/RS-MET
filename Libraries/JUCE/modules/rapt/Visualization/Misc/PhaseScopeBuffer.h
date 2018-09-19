@@ -147,6 +147,8 @@ public:
   /** Resets the internal buffer to all zeros. */
   void reset();
 
+  void clearImage() { image.clear(); }
+
   rsScopeScreenScanner<TSig> screenScanner;
 
 protected:

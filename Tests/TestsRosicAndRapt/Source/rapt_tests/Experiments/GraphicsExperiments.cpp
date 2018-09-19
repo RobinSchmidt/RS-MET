@@ -278,7 +278,7 @@ void phaseScopeLissajous()
   float a = 2.f;
   float b = 3.f;
   float scale = 0.9f;
-  static const int numCycles = 1;
+  //static const int numCycles = 1;
 
   typedef RAPT::rsRealTimeSpline<double, float> SG; // for spline-generator
 
@@ -294,7 +294,7 @@ void phaseScopeLissajous()
   //psb.setDrawMode(SG::LINEAR);
   psb.setDrawMode(SG::CUBIC_HERMITE);
   psb.setUseColorGradient(true);
-  //psb.setDensityNormalization(true);
+  psb.setDensityNormalization(true);
   psb.setSize(400, 400);
 
   //// settings for testing color discontinuities in spline drawing (remove when problems are fixed):
@@ -306,15 +306,16 @@ void phaseScopeLissajous()
 
   // create image:
   psb.reset();
-  float x[numCycles*N], y[numCycles*N];
-  //float s = float(2*PI) / (N-1);
-  float s = float(2*PI) / (N-2);  // N-2, not N-1 because drawer is lagging one sample due to buffering
-  for(int n = 0; n < numCycles * N; n++)  
-  {
-    x[n] = scale*sin(s*a*n);
-    y[n] = scale*sin(s*b*n);
-    psb.processSampleFrame(x[n], y[n]);
+  float x[N], y[N];
+  float s = float(2*PI) / N;
+  for(int n = 0; n < N; n++) {
+    x[n] = scale*sin(s*a*n); y[n] = scale*sin(s*b*n); psb.processSampleFrame(x[n], y[n]);
   }
+  // first run through the figure was only for warm-up (to avoid initial artifacts):
+  psb.clearImage();
+  for(int n = 0; n < N; n++) {
+    x[n] = scale*sin(s*a*n); y[n] = scale*sin(s*b*n); psb.processSampleFrame(x[n], y[n]);
+  } // factor out this loop into a function drawLissajous(...)
 
   // retrieve and save image:
   psb.getImage();
@@ -387,8 +388,8 @@ void splineArc()
   rsImagePainter<float, float, float> painter(&image);
   //painter.setAntiAlias(false);
   //painter.drawDottedSpline1(a, b, 1.0, 1.0, numSplineDots); // no density compensation
-  painter.drawDottedSpline2(a, b, 1.0, 1.0);
-
+  //painter.drawDottedSpline2(a, b, 1.0, 1.0); // removed
+   
 
   writeImageToFilePPM(*painter.getImage(), "CubicSpline.ppm");
   int dummy = 0;

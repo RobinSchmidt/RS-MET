@@ -571,17 +571,13 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDots(TCor* x, TCor* y, TPix* c, int n
     paintDot(x[i], y[i], c[i]);
 }
 
+/*
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
   TCor x2, TCor x2s, TCor y2, TCor y2s, TPix c1, TPix c2, int numDots)
 {
   TCor a[4], b[4];   // coeffs for x(t), y(t)
   cubicSplineArcCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
-
-
-  //TCor test = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); 
-  // distance between points to be connected should approximate total arc length
-
 
   bool desityCompensation = false;  // make parameter
   if(desityCompensation)
@@ -668,7 +664,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   // that will be needed for the OpenGL port anyway
 }
 // obsolete soon
-
+*/
 
 // some helper functions used in Wu algorithm (maybe try to get rid of them):
 template<class T> inline int        ipart(T x) { return (int) x;         }
