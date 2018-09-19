@@ -40,7 +40,7 @@ void rsRealTimeSpline<TCor, TWgt>::reset(TCor x_, TCor y_)
 {
   rsArray::fillWithValue(x, 4, x_);
   rsArray::fillWithValue(y, 4, y_);
-  cOld = TWgt(0);
+  wOld = TWgt(0);
 }
 
 template<class TCor, class TWgt>
@@ -52,6 +52,28 @@ int rsRealTimeSpline<TCor, TWgt>::numDotsForSegment(TCor segmentLength)
     numDots = rsMin(numDots, maxNumDots);
   numDots = rsMin(numDots, dotBufferLength);
 }
+
+template<class TCor, class TWgt>
+void rsRealTimeSpline<TCor, TWgt>::getStartAndEndWeights(int numDots, TWgt* wStart, TWgt* wEnd)
+{
+  bool scaleByNumDots = true; // make user adjustable
+  TWgt scaler = TWgt(1);
+  if(scaleByNumDots)
+    scaler /= (TWgt)numDots;
+
+  if(useGradient) {
+    TWgt wt = brightness * scaler;   // target weight that would be used if we don't do gradients
+    *wEnd = (2.f*ct) - wOld;         // desired endpoint color
+    *wEnd = rsMax(*wEnd, ct);        // wEnd could come out negative, use wt as lower bound
+    *wStart = wOld;
+  }
+  else {
+    *wStart = brightness * scaler;
+    *wEnd   = brightness * scaler;
+  }
+  wOld = *wEnd;
+}
+
 
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::dotsLinear()

@@ -89,6 +89,10 @@ protected:
   than spline arcs), so it must be passed as parameter. */
   int numDotsForSegment(TCor segmentLength);
 
+  void getStartAndEndWeights(int numDots, TWgt* wStart, TWgt* wEnd);
+
+
+
 
   int dotsLinear();
   int dotsCubicHermite();
@@ -109,7 +113,7 @@ protected:
   TWgt brightness;             // determines weight by which dots are added in
   TWgt insertFactor;           // factor by which are pixels "inserted" (applied at sampleRate)
   TCor x[4], y[4];             // input signal buffers
-  TWgt cOld;                   // old line end color
+  TWgt wOld;                   // old line end weight (brightness/color)
 
   // buffers to write the produced dots into:
   TCor *dotsX, *dotsY;
