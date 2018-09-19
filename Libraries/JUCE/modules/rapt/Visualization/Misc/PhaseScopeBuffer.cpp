@@ -228,6 +228,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(TSig newX, TSig newY)
   else
     drawDottedLine((TPix) insertFactor, (TSig)lineDensity, maxDotsPerLine, true);
 }
+// obsolete soon
 
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TPix color, TPar density, int maxNumDots, 

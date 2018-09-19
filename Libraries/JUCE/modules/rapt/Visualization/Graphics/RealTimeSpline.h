@@ -58,20 +58,20 @@ public:
   operation. This is important to keep the cpu usage under control. */
   void setMaxNumDotsPerSegment(int newMaxNumDots) { maxNumDots = newMaxNumDots; }
 
-
-
+  /** Sets the buffers to be used for the produced points (x- and y-coordinates as well as weights
+  (i.e. color/brightness values). These are the buffers that will be filled when you call
+  getDotsForInputPoint. */
+  void setDotBuffers(TCor* bufX, TCor* bufY, TWgt* bufWeights, int bufLengths);
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   /** This is the main processing function to be called from client code. You supply a new pair of 
   input coordinates newX, newY and the function gives you back the locations and brightness values
-  for the dots to draw. ... The return value is the number of dots produced. */
-  int getDotsForInputPoint(TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt *weights, 
-    int xywLength);
-  // maybe don't pass in the buffers each time, instead, have a function 
-  // setDotBuffers(TCor *bufX, TCor *bufY, TWgt *bufWeights, int bufferLengths) that client code
-  // calls once on intitialization
+  for the dots to draw. ... The return value is the number of dots produced. 
+  The dot coordinates and weights will be written into the buffers that you have previously passed 
+  via setDotBuffers.  */
+  int getDotsForInputPoint(TCor newX, TCor newY);
 
   /** Resets the input point buffers to the given coodinate values. You will typically want to pass
   incoordinates that correspond to the origin of you coordinate system, either in pixel coordinates
@@ -84,11 +84,18 @@ public:
 protected:
 
 
-  int dotsLinear(TCor* dotsX, TCor* dotsY, TWgt weights, int xywLength);
+  /** Computes the number of dots to be produced for the current segment of given length. The 
+  length of the segment depends on the interpolation mode (straight lines produce shorter segments 
+  than spline arcs), so it must be passed as parameter. */
+  int numDotsForSegment(TCor segmentLength);
 
-  int dotsCubicHermite(TCor* dotsX, TCor* dotsY, TWgt weights, int xywLength);
+
+  int dotsLinear();
+  int dotsCubicHermite();
 
   // getDotsQuadratic, ...
+
+
 
 
   int  drawMode = LINEAR;
@@ -104,6 +111,10 @@ protected:
   TCor x[4], y[4];             // input signal buffers
   TWgt cOld;                   // old line end color
 
+  // buffers to write the produced dots into:
+  TCor *dotsX, *dotsY;
+  TWgt *dotsW;
+  int  dotBufferLength;
 
 
 };

@@ -5,23 +5,32 @@ rsRealTimeSpline<TCor, TWgt>::rsRealTimeSpline()
 }
 
 template<class TCor, class TWgt>
-int rsRealTimeSpline<TCor, TWgt>::getDotsForInputPoint(
-  TCor inX, TCor inY, TCor* X, TCor* Y, TWgt* W, int L)
+void rsRealTimeSpline<TCor, TWgt>::setDotBuffers(TCor* bufX, TCor* bufY, TWgt* bufWeights, 
+  int bufLengths)
+{
+  dotsX = bufX;
+  dotsY = bufY;
+  dotsW = bufWeights;
+  dotBufferLength = bufLengths;
+}
+
+template<class TCor, class TWgt>
+int rsRealTimeSpline<TCor, TWgt>::getDotsForInputPoint(TCor inX, TCor inY)
 {
   rsArray::pushFrontPopBack4(inX, x);
   rsArray::pushFrontPopBack4(inY, y);
 
   if(lineDensity == 0.f) {
-    X[0] = inX;
-    Y[0] = inY;
-    W[0] = brightness;
+    dotsX[0] = inX;
+    dotsY[0] = inY;
+    dotsW[0] = brightness;
     return;
   }
 
   switch(drawMode)
   {
-  case LINEAR:        return dotsLinear(      X, Y, W, L);
-  case CUBIC_HERMITE: return dotsCubicHermite(X, Y, W, L);
+  case LINEAR:        return dotsLinear();
+  case CUBIC_HERMITE: return dotsCubicHermite();
   default:            return 0;
   }
 }
@@ -35,15 +44,28 @@ void rsRealTimeSpline<TCor, TWgt>::reset(TCor x_, TCor y_)
 }
 
 template<class TCor, class TWgt>
-int rsRealTimeSpline<TCor, TWgt>::dotsLinear(TCor* dotsX, TCor* dotsY, TWgt dotsW, 
-  int length)
+int rsRealTimeSpline<TCor, TWgt>::numDotsForSegment(TCor segmentLength)
 {
+  TCor minDotDistance = 1; // maybe make user-adjustable
+  int numDots = rsMax(1, (int)floor(density*pixelDistance/minDotDistance));
+  if(maxNumDots > -1)
+    numDots = rsMin(numDots, maxNumDots);
+  numDots = rsMin(numDots, dotBufferLength);
+}
+
+template<class TCor, class TWgt>
+int rsRealTimeSpline<TCor, TWgt>::dotsLinear()
+{
+  TCor dx = x[1]-x[2];
+  TCor dy = y[1]-y[2];
+  TCor pixelDistance = sqrt(dx*dx + dy*dy);
+  int numDots = numDotsForSegment(pixelDistance);
+
 
 }
 
 template<class TCor, class TWgt>
-int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite(TCor* dotsX, TCor* dotsY, TWgt dotsW, 
-  int length)
+int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
 {
 
 }
@@ -51,7 +73,7 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite(TCor* dotsX, TCor* dotsY, TWg
 
 
 
-// -functionality for thsi class is currently scattered over rsImagePainter and rsPhaseScopeBuffer
+// -functionality for this class is currently scattered over rsImagePainter and rsPhaseScopeBuffer
 
 // Ideas:
 // -make density normalization optional (it's expensive)
