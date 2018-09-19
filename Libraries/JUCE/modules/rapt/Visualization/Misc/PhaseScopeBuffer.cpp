@@ -62,6 +62,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::setSize(int newWidth, int newHeight)
 {
   image.setSize(newWidth, newHeight);
   painter.setImageToPaintOn(&image); // so it can update it's internal size variables, too
+  updateDotBufferSizes();
   reset();                           // avoid flickering at size-change
 }
 
@@ -348,6 +349,16 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateTransformCoeffs()
   Axy = s*scaleY + c*shearX;
   Ayx = c*shearY - s*scaleX;
   Ayy = c*scaleY - s*shearX;
+}
+
+template<class TSig, class TPix, class TPar>
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateDotBufferSizes()
+{
+  int size = 2048; // preliminary - maybe use k*sqrt(w^2 + h^2) for some k >= 1
+                   // hmm...or maybe some other formula based on width and height
+  dotsX.resize(size);
+  dotsY.resize(size);
+  dotsC.resize(size);
 }
 
 //template<class TSig, class TPix, class TPar>

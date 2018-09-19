@@ -95,28 +95,23 @@ public:
   //  int maxNumDots = 0, bool scaleByNumDots = false, TCor minDotDistance = 1);
   //// rename to drawLineDotted
 
-
   void drawLineDotted(TCor x1, TCor y1, TCor x2, TCor y2, TPix c1, TPix c2, int numDots);
 
+  /** Draws dot at the positions given in the x,y-arrays with colors given in the c-array. */
+  void drawDots(TCor* x, TCor* y, TPix* c, int numDots);
 
 
+  // these functions are replaced now by functions in rsRealTimeSpline and drawDots:
 
   /** Not yet implemented. See comments in implementation file. 
   Draws a cubic spline between (x1,y1) and (x1,y2) with x- and y-slopes (x1s,y1s) and (x2s,y2s)
   at the endpoints. */
   //void drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, TCor x2, TCor x2s, TCor y2, TCor y2s,
   //  TPix color1, TPix color2, TCor density = 1, int maxNumDots = 0, bool scaleByNumDots = false);
-
   void drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, TCor x2, TCor x2s, TCor y2, TCor y2s,
     TPix color1, TPix color2, int numDots);
-
-
   void drawDottedSpline1(TCor *a, TCor *b, TPix c1, TPix c2, int numDots);
-  
-
   void drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2, TCor* t, int numDots);
-
-
   void drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2);
   // replace numDots parameter by dotDensity, maxNumDots, scaleColorByNumDots...but maybe that's 
   // a bad interface inconsistency....mayb change the interface of drawLineDotted (or make an 

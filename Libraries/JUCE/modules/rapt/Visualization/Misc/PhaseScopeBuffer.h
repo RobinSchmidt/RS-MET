@@ -188,6 +188,9 @@ protected:
   /** Updates the coefficients for the geometric transform that is applied to the input. */
   void updateTransformCoeffs();
 
+  /** Updates the lengths of the dotsX, dotsY, dotsC buffers according to the size of the image. */
+  void updateDotBufferSizes();
+
   /** Returns the value of the screen scanner sawtooth wave used in 1D mode. */
   TSig getScannerSaw(TSig x);
 
@@ -214,6 +217,11 @@ protected:
   rsImageResizable<TPix> image;
   rsImagePainter<TPix, TSig, TSig> painter;
   rsRealTimeSpline<TSig, TPix> splineGen;
+
+  // buffers for dot-coordinates and weights (produced by splineGen)
+  std::vector<TSig> dotsX, dotsY;
+  std::vector<TPix> dotsC;
+
 
   // old spline parameters - (to be moved into splineGen object):
   int  drawMode = DOTTED_LINE;

@@ -564,6 +564,12 @@ void rsImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2,
   //}
 }
 
+template<class TPix, class TWgt, class TCor>
+void rsImagePainter<TPix, TWgt, TCor>::drawDots(TCor* x, TCor* y, TPix* c, int numDots)
+{
+  for(int i = 0; i < numDots; i++)
+    paintDot(x[i], y[i], c[i]);
+}
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
