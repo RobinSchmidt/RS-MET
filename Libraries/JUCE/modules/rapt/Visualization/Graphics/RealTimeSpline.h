@@ -91,14 +91,13 @@ protected:
 
   void getStartAndEndWeights(int numDots, TWgt* wStart, TWgt* wEnd);
 
-
-
-
   int dotsLinear();
   int dotsCubicHermite();
+  // dotsQuadratic, dotsCubic2D, ...
 
-  // getDotsQuadratic, ...
-
+  /** Evaluates the two cubic polynomials x(t),y(t) for the coordinates at t-values determined by 
+  our t-array... */
+  void dotsCubic(TCor *a, TCor *b, TWgt w1, TWgt w2, int numDots);
 
 
 

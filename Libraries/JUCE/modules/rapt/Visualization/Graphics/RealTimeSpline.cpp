@@ -116,6 +116,7 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
   // distance computation:
   bool desityCompensation = false;  // make user adjustable
   TCor splineLength;
+  int numDots;
   if(desityCompensation) {
     // obtain arc-length s as (sampled) function of parameter t:
     static const int N = 17; // make this user-adjustable (setDensityCompensationPrecision)
@@ -125,30 +126,50 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     rsArray::fillWithRangeLinear(&r[0], N, TCor(0), TCor(1));
     cubicSplineArcLength2D(a, b, &r[0], &s[0], N);
     splineLength = s[N-1]; // last value in s is total length: s(t=1)
+    numDots = numDotsForSegment(splineLength);
+
+
+    u.resize(numDots); // this shouldn't be done here...
+    t.resize(numDots);
+
+    TCor scaler = splineLength / TCor(numDots-1.0);
+    for(int i = 0; i < numDots; i++)
+      u[i] = i*scaler;
+    resampleNonUniformLinear(&s[0], &r[0], N, &u[0], &t[0], numDots);
+
+    // compute t-array:
   }
   else {
-    // crude estimate:
-    TCor dx = x[1]-x[2];
-    TCor dy = y[1]-y[2];
-    splineLength = sqrt(dx*dx + dy*dy);
+    TCor dx = x[1]-x[2]; 
+    TCor dy = y[1]-y[2]; 
+    splineLength = sqrt(dx*dx + dy*dy); // crude estimate
+    numDots = numDotsForSegment(splineLength);
+
+    // compute t-array:
+
   }
 
-
-  int numDots = numDotsForSegment(splineLength);
-
-
+  // start/end weight computation:
+  TWgt w1, w2;
+  getStartAndEndWeights(numDots, &w1, &w2);
 
   // dot computation:
-
-
-  //painter.drawDottedSpline(
-  //  x[2], dx2, y[2], dy2,      // older inner point comes first
-  //  x[1], dx1, y[1], dy1,      // newer inner point comes second
-  //  color1, color2, numDots);
-
+  dotsCubic(a, b, w1, w2, numDots);
 }
 
+template<class TCor, class TWgt>
+void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TCor *a, TCor *b, TWgt w1, TWgt w2, int numDots)
+{
+  TWgt dw = w2-w1;                      // weight difference
+  TCor scaler = (TCor)(1.0 / numDots);  // not 1/(numDots-1) because last dot of this call is drawn 
+                                        // as first dot in next call? ..avoids drawing it twice?
 
+  for(int i = 0; i < numDots; i++) {
+    X[i] = rsPolynomial<TCor>::evaluatePolynomialAt(t[i], a, 3);
+    Y[i] = rsPolynomial<TCor>::evaluatePolynomialAt(t[i], b, 3);
+    W[i] = w1 + TWgt(t[i])*dw;
+  }
+}
 
 
 // -functionality for this class is currently scattered over rsImagePainter and rsPhaseScopeBuffer

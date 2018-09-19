@@ -600,6 +600,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline1(TCor *a, TCor *b, TPix 
   }
 }
 // todo: fill t-array and call the function below - avoid code duplication
+// obsolete soon
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2, 
@@ -617,6 +618,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
     // can be used to delegate the actual painting to OpenGL
   }
 }
+// obsolete soon
 
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix c1, TPix c2)
@@ -659,6 +661,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   // factor out a class that computes the dot-coordinates and colors (rsDottingSomething) because
   // that will be needed for the OpenGL port anyway
 }
+// obsolete soon
 
 
 // some helper functions used in Wu algorithm (maybe try to get rid of them):

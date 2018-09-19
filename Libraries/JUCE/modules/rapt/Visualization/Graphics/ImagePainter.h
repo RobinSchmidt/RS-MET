@@ -122,6 +122,7 @@ public:
   // a bad interface inconsistency....mayb change the interface of drawLineDotted (or make an 
   // additional version of the function with different interface)...actually, the passed in colors
   // here are obsolete...we must compute them ourselves...
+  // obsolete soon
 
 
 
