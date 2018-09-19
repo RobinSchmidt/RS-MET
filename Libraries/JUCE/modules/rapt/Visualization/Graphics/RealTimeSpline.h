@@ -103,10 +103,11 @@ protected:
 
 
   int  drawMode = LINEAR;
-  bool useGradient = true;     // use color gradient to seamlessly join line segments
+  bool useGradient = true;       // use color gradient to seamlessly join line segments
 
-  bool normalizeDensity = false;  // or maybe use an int for precision of normalization (samples in 
-                                  // numeric integration routine)
+  bool scaleWeightsByNumDots = true;
+  bool normalizeDensity = false; // or maybe use an int for precision of normalization (samples in 
+                                 // numeric integration routine)
 
   int maxNumDots = -1;         // -1 is code for: no limit
   TCor density = TCor(1);      // dot-density: 1: full. 0: dots only at input points

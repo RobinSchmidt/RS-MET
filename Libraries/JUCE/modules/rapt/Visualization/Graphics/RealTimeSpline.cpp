@@ -56,9 +56,8 @@ int rsRealTimeSpline<TCor, TWgt>::numDotsForSegment(TCor segmentLength)
 template<class TCor, class TWgt>
 void rsRealTimeSpline<TCor, TWgt>::getStartAndEndWeights(int numDots, TWgt* wStart, TWgt* wEnd)
 {
-  bool scaleByNumDots = true; // make user adjustable
   TWgt scaler = TWgt(1);
-  if(scaleByNumDots)
+  if(scaleWeightsByNumDots)
     scaler /= (TWgt)numDots;
 
   if(useGradient) {
@@ -93,8 +92,8 @@ int rsRealTimeSpline<TCor, TWgt>::dotsLinear()
   TCor k;
   for(int i = 0; i < numDots; i++) {
     k = scaler * (i+1);     // == (i+1) / numDots
-    dotsX[i] = x[1] + k*dx;
-    dotsY[i] = y[1] + k*dy;
+    dotsX[i] = x[2] + k*dx;
+    dotsY[i] = y[2] + k*dy;
     dotsW[i] = w1 + TWgt(k)*dw;
   }
 

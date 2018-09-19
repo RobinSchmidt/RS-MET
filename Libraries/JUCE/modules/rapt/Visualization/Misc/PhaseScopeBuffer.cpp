@@ -208,7 +208,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
 {
   rsArray::fillWithZeros(image.getPixelPointer(0, 0), image.getNumPixels());
   scanPos = 0.0;
-  splineGen.reset();
+  splineGen.reset(TSig(0.5*image.getWidth()), TSig(0.5*image.getHeight()));
 }
 
 template<class TSig, class TPix, class TPar>

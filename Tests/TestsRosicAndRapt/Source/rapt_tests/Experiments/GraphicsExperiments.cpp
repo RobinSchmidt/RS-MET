@@ -272,7 +272,8 @@ void phaseScopeLissajous()
   // x(t) = sin(2*pi*a*t), y(t) = sin(2*pi*b*t)
 
   // input signal parameters:
-  static const int N = 11;  // number of data points per cycle
+  //static const int N = 11;  // number of data points per cycle
+  static const int N = 80;  // number of data points per cycle
   float a = 2.f;
   float b = 3.f;
   float scale = 0.9f;
@@ -292,16 +293,12 @@ void phaseScopeLissajous()
   psb.setUseColorGradient(true);
   psb.setSize(400, 400);
 
-
   //// settings for testing color discontinuities in spline drawing (remove when problems are fixed):
   //psb.setAntiAlias(false);
   //psb.setUseColorGradient(false);
   //psb.setLineDensity(0.3f);
   //psb.setPixelSpread(0.0f);
   //psb.setSize(800, 800);
-
-
-
 
   // create image:
   psb.reset();
