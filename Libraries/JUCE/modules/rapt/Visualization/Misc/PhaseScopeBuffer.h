@@ -19,18 +19,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /*
-  enum drawModes
-  {
-    DOTTED_LINE = 0,
-    DOTTED_SPLINE,
-    // BRESENHAM,
-    // WU,
-    NUM_DRAW_MODES
-  };
-  // moved to splineGen
-  */
-
   /** Sets the sample rate. */
   void setSampleRate(TPar newSampleRate);
 
@@ -93,9 +81,7 @@ public:
   // rename to setDotLimit
 
   void setDensityNormalization(bool shouldNormalize) 
-  { 
-    splineGen.setNormalizeDotDensity(shouldNormalize);
-  }
+  { splineGen.setNormalizeDotDensity(shouldNormalize); }
 
   /** Sets up a weight by which each pixel is not only accumulated into its actual place but also
   into the neighbouring pixels to add more weight or thickness. It should be a value between 0
@@ -165,28 +151,8 @@ public:
 
 protected:
 
-  /** Adds a line to the given x,y coordinates (in pixel coordinates). The starting point of the
-  line are the old pixel coordinates xOld, yOld (member variables). It takes into account our line
-  density - when it's set to zero, it will just draw a dot at the new given position. */
-  //virtual void addLineTo(TSig x, TSig y);  // obsolete
-
-  virtual void addSegmentTo(TSig x, TSig y); // replacement - update comment
-
-
-  /** Draws a line by inserting a number of dots along the line. The number is proportional to the
-  given density parameter and to the Euclidean distance between the two endpoints (i.e. the length
-  of the line). The color will be scaled inversely proportional to the length, such that the total
-  amount of color added to the picture is independent of the length. The maxNumDots parameter
-  is for restricting the number of dots that are used which might be important in realtime
-  situations. scaleByNumDots ...
-  \todo: maybe make this color scaling optional  */
-  //void drawDottedLine(TPix color, TPar density = 1, int maxNumDots = 0, 
-  //  bool scaleByNumDots = false, TPar minDotDistance = 1);
-  // rename to drawDottedSegment
-
-  //void drawDottedSegment(TPix color1, TPix color2, int numDots);
-  //drawLineDotted(x1, y1, x2, y2, cOld, c, numDots);
-
+  /** Adds a new line- or spline to the given x,y coordinates (in pixel coordinates).  */
+  virtual void addSegmentTo(TSig x, TSig y);
 
   /** Updates the pixel decay factor according to the settings of frame rate and desired decay
   time. */
@@ -211,6 +177,7 @@ protected:
   TPar decayTime;      // pixel illumination time
   TPar decayFactor;    // factor by which pixels decay (applied at frameRate)
   TSig scanPos;        // scan position in 1D mode
+  TPix brightness;     // determines weight by which dots are added in
   TPar thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
                        // maybe rename to spread or weight or something
 
@@ -230,9 +197,6 @@ protected:
   // buffers for dot-coordinates and weights (produced by splineGen)
   std::vector<TSig> dotsX, dotsY;
   std::vector<TPix> dotsC;
-
-  TPix brightness;     // determines weight by which dots are added in
-  //TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
 };
 
 //=================================================================================================

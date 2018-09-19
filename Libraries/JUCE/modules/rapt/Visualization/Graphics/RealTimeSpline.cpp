@@ -130,7 +130,7 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
   TCor splineLength;
   int numDots;
   if(normalizeDensity) {
-    // obtain arc-length s as (sampled) function of parameter t:
+    // obtain arc-length s(t) as function of parameter t at N sample points:
     static const int N = 17; // make this user-adjustable (setDensityCompensationPrecision)
     r.resize(N);  // move into setDensityCompensationPrecision
     s.resize(N);
@@ -139,18 +139,19 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     splineLength = s[N-1]; // last value in s is total length: s(t=1)
     numDots = numDotsForSegment(splineLength);
 
-    // compute t-array:
-    u.resize(numDots); 
-    t.resize(numDots);
+    // compute t-array by evaluating t(s), i.e. the function that is inverse to s(t):
+    u.resize(numDots); // equally spaced values of s at which we compute t(s)
+    t.resize(numDots); // t(s), i.e t(u[i])
     TCor scaler = splineLength / TCor(numDots);
     for(int i = 0; i < numDots; i++)
       u[i] = scaler * i;
     resampleNonUniformLinear(&s[0], &r[0], N, &u[0], &t[0], numDots);
   }
   else {
+    // crude estimate of arc-length as distance between endpoints:
     TCor dx = x[1]-x[2]; 
     TCor dy = y[1]-y[2]; 
-    splineLength = sqrt(dx*dx + dy*dy); // crude estimate
+    splineLength = sqrt(dx*dx + dy*dy); 
     numDots = numDotsForSegment(splineLength);
 
     // compute t-array:
@@ -199,6 +200,10 @@ void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TCor *a, TCor *b, TWgt w1, TWgt w2,
 //   insert extra dots depending on the value
 //  -maybe use |dx/dt| + |dy/dt| instead of the sqrt
 //  -maybe instead of skip/insert dots, change the brightness of the dot to be drawn
+//  -maybe instead of keeping track of the actual distance (requiring a square-root for each 
+//   dot), we could use something based on the 2nd derivative (which is easy to compute), maybe
+//   brightness *= 1 / (1+cx*cx+cy*cy), cx = d2x/dt2, cy = d2y/dt2 - 2nd derivatives of x,y 
+//   with respect to t
 
 // try a quadratic spline:
 // x(t) = a0 + a1*t + a2*t^2, x'(t) = a1 + 2*a2*t

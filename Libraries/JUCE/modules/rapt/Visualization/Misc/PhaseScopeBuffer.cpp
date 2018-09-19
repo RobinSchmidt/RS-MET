@@ -6,12 +6,8 @@ rsPhaseScopeBuffer<TSig, TPix, TPar>::rsPhaseScopeBuffer()
 
   frameRate      = 25.0;
   decayTime      = 0.5;
-  //lineDensity    = 0.0f;
-  //maxDotsPerLine = 100;
   thickness      = 0.707f;
   brightness     = 1.0;
-  //useGradient    = false;
-  //cOld = TPix(0);
   scanPos = TSig(0);
 
   updateDecayFactor();
@@ -41,13 +37,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::setBrightness(TPix newBrightness)
   brightness = newBrightness;
   updateInsertFactor();
 }
-/*
-template<class TSig, class TPix, class TPar>
-void rsPhaseScopeBuffer<TSig, TPix, TPar>::setUseColorGradient(bool shouldUseGradient)
-{
-  useGradient = shouldUseGradient;
-}
-*/
+
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::setDecayTime(TPar newDecayTime)
 {
@@ -75,19 +65,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::setMaxSizeWithoutReAllocation(int new
 {
   image.setMaxSize(newMaxWidth, newMaxHeight);
 }
-/*
-template<class TSig, class TPix, class TPar>
-void rsPhaseScopeBuffer<TSig, TPix, TPar>::setLineDensity(TPar newDensity)
-{
-  lineDensity = newDensity;
-}
 
-template<class TSig, class TPix, class TPar>
-void rsPhaseScopeBuffer<TSig, TPix, TPar>::setLineDensityLimit(int newMaxNumDotsPerLine)
-{
-  maxDotsPerLine = newMaxNumDotsPerLine;
-}
-*/
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 {
@@ -217,103 +195,6 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(TSig newX, TSig newY)
   int numDots = splineGen.getDotsForInputPoint(newX, newY);
   painter.drawDots(&dotsX[0], &dotsY[0], &dotsC[0], numDots);
 }
-
-/*
-template<class TSig, class TPix, class TPar>
-void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TPix color, TPar density, int maxNumDots, 
-  bool scaleByNumDots, TPar minDotDistance)
-{
-  // x2 was always the destination and x1 the source
-
-  TSig dx = x[1]-x[2];
-  TSig dy = y[1]-y[2];
-  TSig pixelDistance = sqrt(dx*dx + dy*dy);
-  int  numDots = rsMax(1, (int)floor(density*pixelDistance/minDotDistance));
-  if(maxNumDots > 0)
-    numDots = rsMin(numDots, maxNumDots);
-
-  TPix c;
-  if(useGradient)
-  {
-    TPix ct = color / (TPix)numDots;  // target color that would be used if we don't do gradients
-    c = (2.f*ct) - cOld;              // desired endpoint color
-    c = rsMax(c, ct);                 // c could come out negative, use ct as lower bound
-    drawDottedSegment(cOld, c, numDots);
-    cOld = c;
-  }
-  else
-  {
-    c = color;
-    if(scaleByNumDots)
-      c = color / (TPix)numDots;
-    drawDottedSegment(c, c, numDots);
-  }
-}
-// rename to drawConnection or drawCurve or something and dispatch between line-drawing, 
-// spline-drawing and maybe other drawing modes (maybe non-dotted like bresenham, wu, etc.)
-// obsolete soon
-*/
-
-/*
-template<class TSig, class TPix, class TPar>
-void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedSegment(TPix color1, TPix color2, int numDots)
-{
-  // maybe this function should not have a numDots parameter
-
-  switch(drawMode)
-  {
-  case DOTTED_LINE: painter.drawLineDotted(x[2], y[2], x[1], y[1], color1, color2, numDots); break;
-  case DOTTED_SPLINE:
-  {
-    // compute (2nd order) derivative estimates at inner points x[1], x[2]:
-    TSig dx1, dx2, dy1, dy2;
-    dx1 = TSig(0.5)*(x[0]-x[2]);    // estimated dx/dt at x[1]
-    dy1 = TSig(0.5)*(y[0]-y[2]);    // estimated dy/dt at y[1]
-    dx2 = TSig(0.5)*(x[1]-x[3]);    // estimated dx/dt at x[2]
-    dy2 = TSig(0.5)*(y[1]-y[3]);    // estimated dy/dt at y[2]
-
-    // draw hermite spline with given derivative values:
-    painter.drawDottedSpline(
-      x[2], dx2, y[2], dy2,      // older inner point comes first
-      x[1], dx1, y[1], dy1,      // newer inner point comes second
-      color1, color2, numDots);
-
-    // todo: maybe scale the number of dots according to the length of the spline segment 
-    // (currently, the number is determined by the length of the line connecting the inner points
-    // which serves as a crude approximation of the arc-length)
-
-    // there's a color mismatch at the joints (draw the test lissajous figure with 40 data points
-    // to see it). it's especially apparent in regions of high curvature...has it to do with the 
-    // number of dots? does it happen when a low-curvature segment joins a high-curvature segment?
-    // that would make sense bcs the high-curv segment spreads its dots along a longer arc
-
-    // -> figure out, if there's an abrupt change in dot-color/brightness or if the apparent color
-    // mismatch is indeed due to a density-change of the dots...maybe print out dot-color and 
-    // dot-distance between subsequent dots...or maybe try to plot it
-    // or: use smaller density to plot non-overlapping dots
-
-    // i think, it has to do with the dots inside a single segment not being equidistant
-    // a segment may start with low dot density, end with high dot density and join to a segment 
-    // that again starts with low density. ideas:
-    // -try to figure out a better sequence of t-values, making the dots more equidistant
-    // -or: compensate varying dot-density by varying brightness in the opposite way
-    //  -keep track of distance d between successive dots and scale brightness by d/da where da
-    //   is the assumed average distance
-    //  -maybe instead of keeping track of the actual distance (requiring a square-root for each 
-    //   dot), we could use something based on the 2nd derivative (which is easy to compute), maybe
-    //   brightness *= 1 / (1+cx*cx+cy*cy), cx = d2x/dt2, cy = d2y/dt2 - 2nd derivatives of x,y 
-    //   with respect to t
-
-  } break;
-
-  default: { } break; // don't draw anything if drawMode has invalid value
-
-    // todo: dispatch according to drawMode, store xOld, yOld here instead of in addLineTo
-  }
-
-}
-*/
-
 
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()
