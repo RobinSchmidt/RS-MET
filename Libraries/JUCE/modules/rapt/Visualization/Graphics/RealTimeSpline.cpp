@@ -113,6 +113,15 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
   TCor a[4], b[4];   // coeffs for x(t), y(t)
   cubicSplineArcCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
 
+  // maybe factor out code below - when we have different polynomial interpolation formulas, it 
+  // would be nice to re-use the code below for all possible polynomials - we need to generalize
+  // cubicSplineArcLength2D to a general polynomailSplineArcLength2D function (or maybe, for 
+  // optimization, use the cubicSplineArcLength2D with a[3]=0 for a quadratic spline - but maybe
+  // set up performance-tests first to figure out, if the optimization (to use evaluateCubic
+  // instead of the general evaluatePolynomial) is actually considerably faster - if not, the more
+  // generally applicable version should be preferred
+  // also dotsCubic must be generalized
+
   // distance computation:
   bool desityCompensation = false;  // make user adjustable
   TCor splineLength;
@@ -122,22 +131,18 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     static const int N = 17; // make this user-adjustable (setDensityCompensationPrecision)
     r.resize(N);  // move into setDensityCompensationPrecision
     s.resize(N);
-
     rsArray::fillWithRangeLinear(&r[0], N, TCor(0), TCor(1));
     cubicSplineArcLength2D(a, b, &r[0], &s[0], N);
     splineLength = s[N-1]; // last value in s is total length: s(t=1)
     numDots = numDotsForSegment(splineLength);
 
-
-    u.resize(numDots); // this shouldn't be done here...
+    // compute t-array:
+    u.resize(numDots); 
     t.resize(numDots);
-
     TCor scaler = splineLength / TCor(numDots-1.0);
     for(int i = 0; i < numDots; i++)
       u[i] = i*scaler;
     resampleNonUniformLinear(&s[0], &r[0], N, &u[0], &t[0], numDots);
-
-    // compute t-array:
   }
   else {
     TCor dx = x[1]-x[2]; 
@@ -146,7 +151,11 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     numDots = numDotsForSegment(splineLength);
 
     // compute t-array:
+    TCor scaler = (TCor)(1.0 / numDots);
+    for(int i = 0; i < numDots; i++)
+      t[i] = scaler * (i+1);  // == (i+1) / numDots
 
+    // why is it (i+1) here and i above (when computing u[i])? ...check this
   }
 
   // start/end weight computation:
