@@ -83,12 +83,19 @@ public:
   incoming datapoints. If set to zero, it will just draw the datapoints as dots. */
   //void setLineDensity(TPar newDensity);
   void setLineDensity(TPar newDensity) { splineGen.setDensity((TSig)newDensity); }
+  // rename to setDensity
 
   /** Sets a limit of the number of artificial datapoints that may be inserted per drawing
   operation. This is important to keep the cpu usage under control. */
   //void setLineDensityLimit(int newMaxNumDotsPerLine);
   void setLineDensityLimit(int newMaxNumDotsPerLine)
   { splineGen.setMaxNumDotsPerSegment(newMaxNumDotsPerLine); }
+  // rename to setDotLimit
+
+  void setDensityNormalization(bool shouldNormalize) 
+  { 
+    splineGen.setNormalizeDotDensity(shouldNormalize);
+  }
 
   /** Sets up a weight by which each pixel is not only accumulated into its actual place but also
   into the neighbouring pixels to add more weight or thickness. It should be a value between 0

@@ -127,10 +127,9 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
   // also dotsCubic must be generalized
 
   // distance computation:
-  bool desityCompensation = false;  // make user adjustable
   TCor splineLength;
   int numDots;
-  if(desityCompensation) {
+  if(normalizeDensity) {
     // obtain arc-length s as (sampled) function of parameter t:
     static const int N = 17; // make this user-adjustable (setDensityCompensationPrecision)
     r.resize(N);  // move into setDensityCompensationPrecision
@@ -143,9 +142,9 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     // compute t-array:
     u.resize(numDots); 
     t.resize(numDots);
-    TCor scaler = splineLength / TCor(numDots-1.0);
+    TCor scaler = splineLength / TCor(numDots);
     for(int i = 0; i < numDots; i++)
-      u[i] = i*scaler;
+      u[i] = scaler * i;
     resampleNonUniformLinear(&s[0], &r[0], N, &u[0], &t[0], numDots);
   }
   else {
@@ -158,9 +157,7 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
     t.resize(numDots);
     TCor scaler = (TCor)(1.0 / numDots);
     for(int i = 0; i < numDots; i++)
-      t[i] = scaler * (i+1);  // == (i+1) / numDots
-
-    // why is it (i+1) here and i above (when computing u[i])? ...check this
+      t[i] = scaler * i;
   }
 
   // start/end weight computation:

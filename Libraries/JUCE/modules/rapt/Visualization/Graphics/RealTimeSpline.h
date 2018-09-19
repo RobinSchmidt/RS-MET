@@ -46,7 +46,6 @@ public:
   void setUseColorGradient(bool shouldUseGradient) { useGradient = shouldUseGradient; }
 
 
-
   void setNormalizeDotDensity(bool shouldNormalize) { normalizeDensity = shouldNormalize; }
 
   /** Sets up the density of the lines the connect our actual datapoints. It actually determines the
@@ -107,7 +106,7 @@ protected:
 
   bool scaleWeightsByNumDots = true;
   bool normalizeDensity = false; // or maybe use an int for precision of normalization (samples in 
-                                 // numeric integration routine)
+                                 // numeric integration routine) ...expensive feature
 
   int maxNumDots = -1;         // -1 is code for: no limit
   TCor density = TCor(1);      // dot-density: 1: full. 0: dots only at input points

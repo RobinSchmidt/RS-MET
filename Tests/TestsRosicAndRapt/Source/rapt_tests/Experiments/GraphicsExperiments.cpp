@@ -294,6 +294,7 @@ void phaseScopeLissajous()
   //psb.setDrawMode(SG::LINEAR);
   psb.setDrawMode(SG::CUBIC_HERMITE);
   psb.setUseColorGradient(true);
+  //psb.setDensityNormalization(true);
   psb.setSize(400, 400);
 
   //// settings for testing color discontinuities in spline drawing (remove when problems are fixed):
