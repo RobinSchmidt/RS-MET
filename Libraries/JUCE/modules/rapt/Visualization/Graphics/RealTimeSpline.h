@@ -120,6 +120,8 @@ protected:
   TWgt *dotsW;
   int  dotBufferLength;
 
+  // buffers for the density compensation and spline arc-length computations:
+  std::vector<TCor> r, s, t, u; 
 
 };
 // maybe rename to RealTimeSplineGenerator

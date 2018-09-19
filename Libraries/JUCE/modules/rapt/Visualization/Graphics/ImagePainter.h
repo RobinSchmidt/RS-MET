@@ -182,6 +182,7 @@ protected:
 
 
   std::vector<TCor> r, s, t, u; // buffers for the density compensation computations
+  // obsolete - moved to rsRealTimeSpline
 
 
   //TWgt (*lineProfile)(TWgt, TWgt) = lineProfileSolid;

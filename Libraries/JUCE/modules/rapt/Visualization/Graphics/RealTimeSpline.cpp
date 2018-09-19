@@ -77,15 +77,18 @@ void rsRealTimeSpline<TCor, TWgt>::getStartAndEndWeights(int numDots, TWgt* wSta
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::dotsLinear()
 {
+  // distance computation:
   TCor dx = x[1]-x[2];
   TCor dy = y[1]-y[2];
   TCor pixelDistance = sqrt(dx*dx + dy*dy);
   int numDots = numDotsForSegment(pixelDistance);
 
+  // start/end weight computation:
   TWgt w1, w2, dw;
   getStartAndEndWeights(numDots, &w1, &w2);
   dw = w2-w1;
 
+  // dot computation:
   TCor scaler = (TCor)(1.0 / numDots);
   TCor k;
   for(int i = 0; i < numDots; i++) {
@@ -99,6 +102,49 @@ int rsRealTimeSpline<TCor, TWgt>::dotsLinear()
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
 {
+  // compute (2nd order) derivative estimates at inner points x[1], x[2]:
+  TCor dx1, dx2, dy1, dy2;
+  dx1 = TCor(0.5)*(x[0]-x[2]);    // estimated dx/dt at x[1]
+  dy1 = TCor(0.5)*(y[0]-y[2]);    // estimated dy/dt at y[1]
+  dx2 = TCor(0.5)*(x[1]-x[3]);    // estimated dx/dt at x[2]
+  dy2 = TCor(0.5)*(y[1]-y[3]);    // estimated dy/dt at y[2]
+
+  // compute polynomial coeffs:
+  TCor a[4], b[4];   // coeffs for x(t), y(t)
+  cubicSplineArcCoeffs2D(x1, x1s, y1, y1s, x2, x2s, y2, y2s, a, b);
+
+  // distance computation:
+  bool desityCompensation = false;  // make user adjustable
+  TCor splineLength;
+  if(desityCompensation) {
+    // obtain arc-length s as (sampled) function of parameter t:
+    static const int N = 17; // make this user-adjustable (setDensityCompensationPrecision)
+    r.resize(N);  // move into setDensityCompensationPrecision
+    s.resize(N);
+
+    rsArray::fillWithRangeLinear(&r[0], N, TCor(0), TCor(1));
+    cubicSplineArcLength2D(a, b, &r[0], &s[0], N);
+    splineLength = s[N-1]; // last value in s is total length: s(t=1)
+  }
+  else {
+    // crude estimate:
+    TCor dx = x[1]-x[2];
+    TCor dy = y[1]-y[2];
+    splineLength = sqrt(dx*dx + dy*dy);
+  }
+
+
+  int numDots = numDotsForSegment(splineLength);
+
+
+
+  // dot computation:
+
+
+  //painter.drawDottedSpline(
+  //  x[2], dx2, y[2], dy2,      // older inner point comes first
+  //  x[1], dx1, y[1], dy1,      // newer inner point comes second
+  //  color1, color2, numDots);
 
 }
 
