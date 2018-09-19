@@ -6,12 +6,22 @@ rsRealTimeSpline<TCor, TWgt>::rsRealTimeSpline()
 
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::getDotsForInputPoint(
-  TCor x, TCor y, TCor* X, TCor* Y, TWgt W, int L)
+  TCor inX, TCor inY, TCor* X, TCor* Y, TWgt* W, int L)
 {
+  rsArray::pushFrontPopBack4(inX, x);
+  rsArray::pushFrontPopBack4(inY, y);
+
+  if(lineDensity == 0.f) {
+    X[0] = inX;
+    Y[0] = inY;
+    W[0] = brightness;
+    return;
+  }
+
   switch(drawMode)
   {
-  case LINEAR:        return dotsLinear(      x, y, X, Y, W, L);
-  case CUBIC_HERMITE: return dotsCubicHermite(x, y, X, Y, W, L);
+  case LINEAR:        return dotsLinear(      X, Y, W, L);
+  case CUBIC_HERMITE: return dotsCubicHermite(X, Y, W, L);
   default:            return 0;
   }
 }
@@ -25,15 +35,15 @@ void rsRealTimeSpline<TCor, TWgt>::reset(TCor x_, TCor y_)
 }
 
 template<class TCor, class TWgt>
-int rsRealTimeSpline<TCor, TWgt>::dotsLinear(TCor inX, TCor inY, TCor* dotsX, TCor* dotsY, 
-  TWgt dotsW, int length)
+int rsRealTimeSpline<TCor, TWgt>::dotsLinear(TCor* dotsX, TCor* dotsY, TWgt dotsW, 
+  int length)
 {
 
 }
 
 template<class TCor, class TWgt>
-int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite(TCor inX, TCor inY, TCor* dotsX, TCor* dotsY, 
-  TWgt dotsW, int length)
+int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite(TCor* dotsX, TCor* dotsY, TWgt dotsW, 
+  int length)
 {
 
 }

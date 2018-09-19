@@ -217,20 +217,6 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
   rsArray::fillWithValue(y, 4, TSig(0.5 * image.getHeight()));
 }
 
-/*
-template<class T>
-inline void pushFrontPopBack4(T x, T* a)
-{
-  a[3] = a[2];  // old a[3] is discarded
-  a[2] = a[1];  // values in between..
-  a[1] = a[0];  // ...are shifted
-  a[0] = x;     // input x becomes the new a[0]
-}
-// move to rsArray, make versions for 1,2,3,N (using a loop or memmove) -> make performance tests, 
-// which version is fastest for what range of lengths
-// maybe rename to updateFifoBuffer4
-*/
-
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(TSig newX, TSig newY)
 {

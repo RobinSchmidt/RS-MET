@@ -67,8 +67,11 @@ public:
   /** This is the main processing function to be called from client code. You supply a new pair of 
   input coordinates newX, newY and the function gives you back the locations and brightness values
   for the dots to draw. ... The return value is the number of dots produced. */
-  int getDotsForInputPoint(TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt weights, 
+  int getDotsForInputPoint(TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt *weights, 
     int xywLength);
+  // maybe don't pass in the buffers each time, instead, have a function 
+  // setDotBuffers(TCor *bufX, TCor *bufY, TWgt *bufWeights, int bufferLengths) that client code
+  // calls once on intitialization
 
   /** Resets the input point buffers to the given coodinate values. You will typically want to pass
   incoordinates that correspond to the origin of you coordinate system, either in pixel coordinates
@@ -81,9 +84,9 @@ public:
 protected:
 
 
-  int dotsLinear(TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt weights, int xywLength);
+  int dotsLinear(TCor* dotsX, TCor* dotsY, TWgt weights, int xywLength);
 
-  int dotsCubicHermite(TCor newX, TCor newY, TCor* dotsX, TCor* dotsY, TWgt weights, int xywLength);
+  int dotsCubicHermite(TCor* dotsX, TCor* dotsY, TWgt weights, int xywLength);
 
   // getDotsQuadratic, ...
 
@@ -97,7 +100,7 @@ protected:
   int maxNumDots = -1;         // -1 is code for: no limit
   TCor density = TCor(1);      // dot-density: 1: full. 0: dots only at input points
   TWgt brightness;             // determines weight by which dots are added in
-  //TWgt insertFactor;           // factor by which are pixels "inserted" (applied at sampleRate)
+  TWgt insertFactor;           // factor by which are pixels "inserted" (applied at sampleRate)
   TCor x[4], y[4];             // input signal buffers
   TWgt cOld;                   // old line end color
 
