@@ -217,6 +217,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
   rsArray::fillWithValue(y, 4, TSig(0.5 * image.getHeight()));
 }
 
+/*
 template<class T>
 inline void pushFrontPopBack4(T x, T* a)
 {
@@ -228,12 +229,13 @@ inline void pushFrontPopBack4(T x, T* a)
 // move to rsArray, make versions for 1,2,3,N (using a loop or memmove) -> make performance tests, 
 // which version is fastest for what range of lengths
 // maybe rename to updateFifoBuffer4
+*/
 
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(TSig newX, TSig newY)
 {
-  pushFrontPopBack4(newX, x);  // new
-  pushFrontPopBack4(newY, y);  // new
+  rsArray::pushFrontPopBack4(newX, x);
+  rsArray::pushFrontPopBack4(newY, y);
 
   if(lineDensity == 0.f)
     painter.paintDot(newX, newY, (TPix) insertFactor);

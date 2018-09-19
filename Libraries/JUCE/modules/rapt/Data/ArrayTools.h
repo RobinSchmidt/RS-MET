@@ -423,6 +423,11 @@ public:
   template <class T>
   static T product(const T* const buffer, int length);
 
+  /** Shifts the values in the 4-element array a one position back, discarding the last one a[3] 
+  and inserting the new x at the front a[0]. */
+  template<class T>
+  static inline void pushFrontPopBack4(T x, T* a);
+
   /** Removes mean (i.e. the DC-component) from the passed buffer. The type must define operators:
   +=, -=, / and a constructor which takes an int and initializes to zero when 0 is passed and a
   typecast from int. */
@@ -572,6 +577,17 @@ inline bool rsArray::isFilledWithValue(T *buffer, int length, T value)
   }
   return true;
 }
+
+template<class T>
+inline void rsArray::pushFrontPopBack4(T x, T* a)
+{
+  a[3] = a[2];  // old a[3] is discarded
+  a[2] = a[1];  // values in between..
+  a[1] = a[0];  // ...are shifted
+  a[0] = x;     // input x becomes the new a[0]
+}
+// todo: make versions for 1,2,3,N (using a loop or memmove) -> make performance tests, 
+// which version is fastest for what range of lengths maybe rename to updateFifoBuffer4
 
 
 #endif
