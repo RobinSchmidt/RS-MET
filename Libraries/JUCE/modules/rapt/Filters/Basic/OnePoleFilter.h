@@ -16,7 +16,6 @@ class rsFirstOrderFilterBase
 
 public:
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Coefficient Computation */
 
@@ -69,6 +68,25 @@ public:
 
 
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the filter coefficients manually. */
+  inline void setCoefficients(TPar newB0, TPar newB1, TPar newA1)
+  {
+    b0 = newB0;
+    b1 = newB1;
+    a1 = newA1;
+  }
+
+  /** Sets up the internal state variables for both channels. */
+  inline void setInternalState(TSig newX1, TSig newY1)
+  {
+    x1 = newX1;
+    y1 = newY1;
+  }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
@@ -81,7 +99,7 @@ public:
   }
 
   /** Resets the internal buffers (for the \f$ x[n-1], y[n-1] \f$-samples) to zero. */
-  void reset()
+  inline void reset()
   {
     x1 = TSig(0);
     y1 = TSig(0);
@@ -91,11 +109,11 @@ public:
   /** \name Data */
 
   // buffering:
-  TSig x1, y1; // past input x[n-1] and output y[n-1]
+  TSig x1 = 0, y1 = 0; // past input x[n-1] and output y[n-1]
 
   // filter coefficients:
-  TPar b0, b1; // feedforward coeffs
-  TPar a1;     // feedback coeff
+  TPar b0 = 1, b1 = 0; // feedforward coeffs
+  TPar a1 = 0;         // feedback coeff
 
 };
 
@@ -114,7 +132,7 @@ public:
 */
 
 template<class TSig, class TPar>
-class rsOnePoleFilter
+class rsOnePoleFilter : public rsFirstOrderFilterBase<TSig, TPar>
 {
 
 public:
@@ -169,22 +187,24 @@ public:
   void setShelvingGainInDecibels(TPar newGain);
 
   /** Sets the filter coefficients manually. */
-  void setCoefficients(TPar newB0, TPar newB1, TPar newA1);
+  //void setCoefficients(TPar newB0, TPar newB1, TPar newA1);
 
   /** Sets up the internal state variables for both channels. */
-  void setInternalState(TSig newX1, TSig newY1);
+  //void setInternalState(TSig newX1, TSig newY1);
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the magnitude response of this filter at the given frqeuency (in Hz). */
   TPar getMagnitudeAt(TPar frequency);
+  // hmmm...would be nice to have that in baseclass taking omega as input - rename this to
+  // getMagnitudeAtHz
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
 
   /** Calculates a single filtered output-sample. */
-  inline TSig getSample(TSig in);
+  //inline TSig getSample(TSig in);
 
 
 
@@ -196,15 +216,15 @@ public:
   /** \name Misc */
 
   /** Resets the internal buffers (for the \f$ x[n-1], y[n-1] \f$-samples) to zero. */
-  void reset();
+  //void reset();
 
 
 
-  // buffering:
-  TSig x1, y1;
-  TPar b0, b1; // feedforward coeffs
-  TPar a1;     // feedback coeff
-  // preliminary - later use members inherited from baseclass
+  //// buffering:
+  //TSig x1, y1;
+  //TPar b0, b1; // feedforward coeffs
+  //TPar a1;     // feedback coeff
+  //// preliminary - later use members inherited from baseclass
 
 
 protected:
@@ -227,6 +247,7 @@ protected:
   // maybe factor out a baseclass that has only x1,y1,b0,b1,a1 as members
 };
 
+/*
 //-----------------------------------------------------------------------------------------------
 // inlined functions:
 
@@ -237,5 +258,6 @@ inline TSig rsOnePoleFilter<TSig, TPar>::getSample(TSig in)
   x1 = in;
   return y1;
 }
+*/
 
 #endif

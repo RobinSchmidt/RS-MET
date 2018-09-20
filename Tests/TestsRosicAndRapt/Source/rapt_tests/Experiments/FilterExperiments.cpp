@@ -221,13 +221,15 @@ void firstOrderFilters()
   typedef rsOnePoleFilter<double, double> FLT;
 
   double sr = 44100;
-  double fc = 11025;  // halfband
+  //double fc = sr/4;  // halfband
+  double fc = sr/8;    // quarterband
 
   FLT flt;
   flt.setSampleRate(sr);
   flt.setCutoff(fc);      
   flt.setMode(FLT::LOWPASS_IIT);
   //flt.setMode(FLT::HIGHPASS_MZT);
+  //flt.setMode(FLT::ALLPASS_BLT);
 
   // translate object variables into filter spec as needed by the plotter:
   RAPT::rsFilterSpecificationBA<double> spec;
@@ -240,12 +242,8 @@ void firstOrderFilters()
   spec.b[1] = flt.b1;
 
   // make some plots:
-  FilterPlotter<double> plt;
-  plt.addFilterSpecificationBA(spec);
-  plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)"); // let FilterPlotter do this automatically
-  plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
-  //plt.plotPolesAndZeros();
-  int dummy = 0;
+  spec.sampleRate = 1;  // without it, the plots are messed up -> debug this
+  showFilterPlots(spec);
 }
 
 void ladderResonanceManipulation()

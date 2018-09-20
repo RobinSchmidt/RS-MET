@@ -149,5 +149,28 @@ void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H)
   delete[] f;
 }
 
+void plotMagnitudeResponse(const RAPT::rsFilterSpecificationBA<double>& specBA)
+{
+  FilterPlotter<double> plt;
+  plt.addFilterSpecificationBA(specBA);
+  plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
+  plt.plotMagnitude(1000, 0.0, PI, false, false);
+}
+
+void plotPolesAndZeros(const RAPT::rsFilterSpecificationBA<double>& specBA)
+{
+  FilterPlotter<double> plt;
+  plt.addFilterSpecificationBA(specBA);
+  plt.plotPolesAndZeros();
+}
+
+void showFilterPlots(const RAPT::rsFilterSpecificationBA<double>& specBA)
+{
+  plotMagnitudeResponse(specBA);
+  plotPolesAndZeros(specBA);
+}
+
+
+
 
 #endif

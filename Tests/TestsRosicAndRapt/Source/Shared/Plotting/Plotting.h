@@ -41,10 +41,6 @@ inline void plotImpulseResponse(TFlt &filter, int length, TSig scale)
   plt.plot();
 }
 
-
-
-
-
 template<class TSig, class TFlt>
 inline std::vector<std::complex<TSig>> getFrequencyResponse(
   TFlt &filter, const std::vector<TSig>& w)
@@ -121,6 +117,11 @@ frequency axis f (of length numBins). */
 void plotSpectrogram(int numFrames, int numBins, double **magnitudes, double sampleRate, 
   int hopSize);
 // introduce parameters to control scaling of time- and frequency axis..
+
+// various convenience functions to plot filter responses for b/a specifications:
+void plotMagnitudeResponse(const RAPT::rsFilterSpecificationBA<double>& specBA);
+void plotPolesAndZeros(    const RAPT::rsFilterSpecificationBA<double>& specBA);
+void showFilterPlots(      const RAPT::rsFilterSpecificationBA<double>& specBA);
 
 
 

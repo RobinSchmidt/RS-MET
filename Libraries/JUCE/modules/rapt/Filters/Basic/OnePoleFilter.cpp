@@ -59,7 +59,7 @@ void rsOnePoleFilter<TSig, TPar>::setShelvingGainInDecibels(TPar newGain)
 {
   setShelvingGain(rsDB2amp(newGain));
 }
-
+/*
 template<class TSig, class TPar>
 void rsOnePoleFilter<TSig, TPar>::setCoefficients(TPar newB0, TPar newB1, TPar newA1)
 {
@@ -74,6 +74,7 @@ void rsOnePoleFilter<TSig, TPar>::setInternalState(TSig newX1, TSig newY1)
   x1 = newX1;
   y1 = newY1;
 }
+*/
 
 // Inquiry:
 
@@ -100,30 +101,30 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   {
   case LOWPASS_IIT: 
     {
-      //B::coeffsLowpassIIT(w, &b0, &b1, &a1);
-      TPar x = exp(-2.0 * PI * cutoff * sampleRateRec); 
-      b0 = 1-x;
-      b1 = 0.0;
-      a1 = x;
+      B::coeffsLowpassIIT(w, &b0, &b1, &a1);
+      //TPar x = exp(-2.0 * PI * cutoff * sampleRateRec); 
+      //b0 = 1-x;
+      //b1 = 0.0;
+      //a1 = x;
     }
     break;
   case HIGHPASS_MZT:  
     {
-      //B::coeffsHighpassMZT(w, &b0, &b1, &a1);
-      TPar x = exp(-2.0 * PI * cutoff * sampleRateRec);
-      b0 =  0.5*(1+x);
-      b1 = -0.5*(1+x);  // = -b0 -> optimize
-      a1 = x;
+      B::coeffsHighpassMZT(w, &b0, &b1, &a1);
+      //TPar x = exp(-2.0 * PI * cutoff * sampleRateRec);
+      //b0 =  0.5*(1+x);
+      //b1 = -0.5*(1+x);  // = -b0 -> optimize
+      //a1 = x;
     }
     break;
   case ALLPASS_BLT:  
     {
-      //B::coeffsAllpassBLT(w, &b0, &b1, &a1);
-      TPar t = tan(PI*cutoff*sampleRateRec); // tan w/2
-      TPar x = (t-1.0) / (t+1.0);
-      b0 = x;
-      b1 = 1.0;
-      a1 = -x;
+      B::coeffsAllpassBLT(w, &b0, &b1, &a1);
+      //TPar t = tan(PI*cutoff*sampleRateRec); // tan w/2
+      //TPar x = (t-1.0) / (t+1.0);
+      //b0 = x;
+      //b1 = 1.0;
+      //a1 = -x;
     }
     break;
   case LOWSHELV_NMM:
@@ -231,9 +232,11 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   // get rid of these strange names DAFX, etc.
 }
 
+/*
 template<class TSig, class TPar>
 void rsOnePoleFilter<TSig, TPar>::reset()
 {
   x1 = 0.0;
   y1 = 0.0;
 }
+*/
