@@ -24,6 +24,15 @@ public:
   // usage of positive or negative sign-convention consistent throughout the library...
   // or maybe support both conventions in the design formulas
 
+  /** Trivial "bypass" coeffs. */
+  template<class T>
+  static inline void coeffsBypass(T w, T* b0, T* b1, T* a1)
+  {
+    *b0 = 1;
+    *b1 = 0;
+    *a1 = 0;
+  }
+
   /** Lowpass via impulse invariant transform (from dspguide) */
   template<class T>
   static inline void coeffsLowpassIIT(T w, T* b0, T* b1, T* a1)
@@ -66,7 +75,57 @@ public:
   }
   // https://en.wikipedia.org/wiki/Bilinear_transform
 
+  /** Lowpass via bilinear transform (from DAFX) */
+  template<class T>
+  static inline void coeffsLowpassBLT(T w, T* b0, T* b1, T* a1)
+  {
+    T t = tan(0.5*w);
+    *a1 = (1-t) / (1+t);
+    *b0 = 0.5*(1 - *a1);
+    *b1 = b0;
+  }
 
+  /** Highpass via bilinear transform (from DAFX) */
+  template<class T>
+  static inline void coeffsHighpassBLT(T w, T* b0, T* b1, T* a1)
+  {
+    T t = tan(0.5*w);
+    *a1 = (1-t) / (1+t);
+    *b0 = 0.5*(1 + *a1);
+    *b1 = -b0;
+  }
+
+  /** Low shelving via bilinear transform, g is linear shelving gain. (from DAFX) */
+  template<class T>
+  static inline void coeffsLowShelfBLT(T w, T g, T* b0, T* b1, T* a1)
+  {
+    T t = tan(0.5*w);
+    t   = g >= 1.0 ? (t-1)/(t+1) : (t-g)/(t+g);
+    T c = 0.5*(g-1);
+    c  += c*t;
+    *b0 = 1 + c;
+    *b1 = t + c;
+    *a1 = -t;
+  }
+
+  template<class T>
+  static inline void coeffsHighShelfBLT(T w, T g, T* b0, T* b1, T* a1)
+  {
+    T t = tan(0.5*w);
+    t   = g >= 1.0 ? (t-1.0)/(t+1.0) : (g*t-1)/(g*t+1);
+    T c = 0.5*(g-1);
+    c  -= c*t;
+    *b0 = 1 + c;
+    *b1 = t - c;
+    *a1 = -t;
+  }
+
+  //// todo:
+  //template<class T>
+  //static void coeffsLowShelfNMM(T w, T g, T* b0, T* b1, T* a1);
+
+  //template<class T>
+  //static void coeffsHighShelfNMM(T w, T g, T* b0, T* b1, T* a1);
 
 
   //-----------------------------------------------------------------------------------------------
