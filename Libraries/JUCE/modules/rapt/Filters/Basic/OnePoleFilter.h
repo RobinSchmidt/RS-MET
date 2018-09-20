@@ -26,7 +26,7 @@ public:
 
   /** Trivial "bypass" coeffs. */
   template<class T>
-  static inline void coeffsBypass(T w, T* b0, T* b1, T* a1)
+  static inline void coeffsBypass(T* b0, T* b1, T* a1)
   {
     *b0 = 1;
     *b1 = 0;

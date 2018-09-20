@@ -227,13 +227,15 @@ void firstOrderFilters()
   FLT flt;
   flt.setSampleRate(sr);
   flt.setCutoff(fc);
-  flt.setShelvingGain(1.5);
-  //flt.setShelvingGain(0.75);
+  //flt.setShelvingGain(1.5);
+  flt.setShelvingGain(0.75);
   //flt.setMode(FLT::LOWPASS_IIT);
   //flt.setMode(FLT::HIGHPASS_MZT);
   //flt.setMode(FLT::ALLPASS_BLT);
   //flt.setMode(FLT::LOWPASS_BLT);
-  flt.setMode(FLT::HIGHPASS_BLT);
+  //flt.setMode(FLT::HIGHPASS_BLT);
+  flt.setMode(FLT::LOWSHELV_BLT);
+  flt.setMode(FLT::HIGHSHELV_BLT);
 
   // translate object variables into filter spec as needed by the plotter:
   RAPT::rsFilterSpecificationBA<double> spec;

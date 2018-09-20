@@ -33,11 +33,15 @@ void rsOnePoleFilter<TSig, TPar>::setMode(int newMode)
 template<class TSig, class TPar>
 void rsOnePoleFilter<TSig, TPar>::setCutoff(TPar newCutoff)
 {
-  if( (newCutoff > 0.0) && (newCutoff <= 20000.0) )
-    cutoff = newCutoff;
-  else
-    cutoff = 20000.0;
+  //if( (newCutoff > 0.0) && (newCutoff <= 20000.0) )
+  //  cutoff = newCutoff;
+  //else
+  //  cutoff = 20000.0;
+  // ...check, if any code relies on this safety check - if so, restrict the cutoff range on the 
+  // higher level
 
+
+  cutoff = newCutoff;
   calcCoeffs();
   return;
 }
@@ -81,18 +85,23 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   // that the feedback coeffs are used with positive sign in the filter update
   // these functions should then take only an omega as input (omega: w = 2*PI*cutoff/sampleRate)
   TPar w = 2.0*PI*cutoff*sampleRateRec;
+  TPar g = shelvingGain;
   switch(mode)
   {
-  case LOWPASS_IIT:  { B::coeffsLowpassIIT( w, &this->b0, &this->b1, &this->a1); } break;
-  case HIGHPASS_MZT: { B::coeffsHighpassMZT(w, &this->b0, &this->b1, &this->a1); } break;
-  case ALLPASS_BLT:  { B::coeffsAllpassBLT( w, &this->b0, &this->b1, &this->a1); } break;
-  case LOWPASS_BLT:  { B::coeffsLowpassBLT( w, &this->b0, &this->b1, &this->a1); } break;
-  case HIGHPASS_BLT: { B::coeffsHighpassBLT(w, &this->b0, &this->b1, &this->a1); } break;
+  case LOWPASS_IIT:   { B::coeffsLowpassIIT(  w,    &this->b0, &this->b1, &this->a1); } break;
+  case HIGHPASS_MZT:  { B::coeffsHighpassMZT( w,    &this->b0, &this->b1, &this->a1); } break;
+  case ALLPASS_BLT:   { B::coeffsAllpassBLT(  w,    &this->b0, &this->b1, &this->a1); } break;
+  case LOWPASS_BLT:   { B::coeffsLowpassBLT(  w,    &this->b0, &this->b1, &this->a1); } break;
+  case HIGHPASS_BLT:  { B::coeffsHighpassBLT( w,    &this->b0, &this->b1, &this->a1); } break;
+  case LOWSHELV_BLT:  { B::coeffsLowShelfBLT( w, g, &this->b0, &this->b1, &this->a1); } break;
+  case HIGHSHELV_BLT: { B::coeffsHighShelfBLT(w, g, &this->b0, &this->b1, &this->a1); } break;
 
+  // these two need clean-up:
   case LOWSHELV_NMM:
     {
       // formula derived as special case of the Orfanidis equalizers:
-      TPar g    = rsDB2amp(shelvingGain);
+      // TPar g    = rsDB2amp(shelvingGain);
+      //TPar g    = shelvingGain;
       TPar wc   = 2*PI*cutoff*sampleRateRec;
       TPar wa   = 2*sampleRate*tan(wc/2);
       TPar gb   = rsSqrt(g);
@@ -114,8 +123,9 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   case HIGHSHELV_NMM:
     {
       // formula derived as special case of the Orfanidis equalizers:
-      TPar g    = rsDB2amp(shelvingGain);
-      TPar wc   = 2*PI*cutoff*sampleRateRec;
+      //TPar g    = rsDB2amp(shelvingGain);  // wrong? shelvingGain is already linear
+      //TPar g    = shelvingGain;
+      TPar wc   = 2*PI*cutoff*sampleRateRec; // redundant with w
       TPar wa   = 2*sampleRate*tan(wc/2);
       TPar gb   = rsSqrt(g);
       TPar beta = rsSqrt( (gb*gb-1)/(g*g-gb*gb) );
@@ -132,45 +142,8 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       // \todo get rid of the code duplication
     }
     break;
-  case LOWSHELV_BLT:
-    {
-      // formula from DAFX:
-      TPar c = 0.5*(shelvingGain-1.0);
-      TPar t = tan(PI*cutoff*sampleRateRec);
-      TPar a;
-      if( shelvingGain >= 1.0 )
-        a = (t-1.0)/(t+1.0);
-      else
-        a = (t-shelvingGain)/(t+shelvingGain);
 
-      b0 = 1.0 + c + c*a;
-      b1 = c + c*a + a;
-      a1 = -a;
-    }
-    break;
-  case HIGHSHELV_BLT:
-    {
-      // formula from DAFX:
-      TPar c = 0.5*(shelvingGain-1.0);
-      TPar t = tan(PI*cutoff*sampleRateRec);
-      TPar a;
-      if( shelvingGain >= 1.0 )
-        a = (t-1.0)/(t+1.0);
-      else
-        a = (shelvingGain*t-1.0)/(shelvingGain*t+1.0);
 
-      b0 = 1.0 + c - c*a;
-      b1 = a + c*a - c;
-      a1 = -a;
-    }
-    break;
-
-  default: // bypass
-    {
-      b0 = 1.0;
-      b1 = 0.0;
-      a1 = 0.0;
-    }
-    break;
+  default: { B::coeffsBypass(&this->b0, &this->b1, &this->a1); } break;
   }
 }
