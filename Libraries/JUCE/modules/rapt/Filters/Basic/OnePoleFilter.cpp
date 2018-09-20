@@ -59,29 +59,13 @@ void rsOnePoleFilter<TSig, TPar>::setShelvingGainInDecibels(TPar newGain)
 {
   setShelvingGain(rsDB2amp(newGain));
 }
-/*
-template<class TSig, class TPar>
-void rsOnePoleFilter<TSig, TPar>::setCoefficients(TPar newB0, TPar newB1, TPar newA1)
-{
-  b0 = newB0;
-  b1 = newB1;
-  a1 = newA1;
-}
-
-template<class TSig, class TPar>
-void rsOnePoleFilter<TSig, TPar>::setInternalState(TSig newX1, TSig newY1)
-{
-  x1 = newX1;
-  y1 = newY1;
-}
-*/
 
 // Inquiry:
 
 template<class TSig, class TPar>
 TPar rsOnePoleFilter<TSig, TPar>::getMagnitudeAt(TPar f)
 {
-  return onePoleMagnitudeAt(b0, b1, -a1, 2*PI*f*sampleRateRec);
+  return onePoleMagnitudeAt(this->b0, this->b1, -this->a1, 2*PI*f*sampleRateRec);
     // we use a different sign-convention for the a1 coefficient here ...maybe fix this someday
 }
 
@@ -99,34 +83,9 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   TPar w = 2.0*PI*cutoff*sampleRateRec;
   switch(mode)
   {
-  case LOWPASS_IIT: 
-    {
-      B::coeffsLowpassIIT(w, &b0, &b1, &a1);
-      //TPar x = exp(-2.0 * PI * cutoff * sampleRateRec); 
-      //b0 = 1-x;
-      //b1 = 0.0;
-      //a1 = x;
-    }
-    break;
-  case HIGHPASS_MZT:  
-    {
-      B::coeffsHighpassMZT(w, &b0, &b1, &a1);
-      //TPar x = exp(-2.0 * PI * cutoff * sampleRateRec);
-      //b0 =  0.5*(1+x);
-      //b1 = -0.5*(1+x);  // = -b0 -> optimize
-      //a1 = x;
-    }
-    break;
-  case ALLPASS_BLT:  
-    {
-      B::coeffsAllpassBLT(w, &b0, &b1, &a1);
-      //TPar t = tan(PI*cutoff*sampleRateRec); // tan w/2
-      //TPar x = (t-1.0) / (t+1.0);
-      //b0 = x;
-      //b1 = 1.0;
-      //a1 = -x;
-    }
-    break;
+  case LOWPASS_IIT:  { B::coeffsLowpassIIT( w, &this->b0, &this->b1, &this->a1); } break;
+  case HIGHPASS_MZT: { B::coeffsHighpassMZT(w, &this->b0, &this->b1, &this->a1); } break;
+  case ALLPASS_BLT:  { B::coeffsAllpassBLT( w, &this->b0, &this->b1, &this->a1); } break;
   case LOWSHELV_NMM:
     {
       // formula derived as special case of the Orfanidis equalizers:
@@ -228,15 +187,4 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
     }
     break;
   }
-  // \todo provide IIT, BLT, and magnitude-matched (MMT) transform versions
-  // get rid of these strange names DAFX, etc.
 }
-
-/*
-template<class TSig, class TPar>
-void rsOnePoleFilter<TSig, TPar>::reset()
-{
-  x1 = 0.0;
-  y1 = 0.0;
-}
-*/

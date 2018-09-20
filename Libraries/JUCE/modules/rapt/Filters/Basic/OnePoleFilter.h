@@ -117,17 +117,12 @@ public:
 
 };
 
-
-
 //=================================================================================================
 /** This is an implementation of a simple one-pole filter unit.
 
 \todo 
 -rename to FirstOrderFilter (it does not only have a pole but also a zero).
  or to rsFilter1p1z
--factor out a baseclass that has only  x1, y1, b0, b1, a1 members and static coeff computation
- formulas (but in the subclass, we then have to access the members via the ugly this-pointer syntax
- otherwise, it won't compile on mac)
 -make it possible to set up time constants in terms of dB/sec 
 */
 
@@ -163,7 +158,7 @@ public:
   /** Constructor. */
   rsOnePoleFilter();
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the sample-rate. */
@@ -186,12 +181,6 @@ public:
   /** Sets the gain for the shelving modes in decibels. */
   void setShelvingGainInDecibels(TPar newGain);
 
-  /** Sets the filter coefficients manually. */
-  //void setCoefficients(TPar newB0, TPar newB1, TPar newA1);
-
-  /** Sets up the internal state variables for both channels. */
-  //void setInternalState(TSig newX1, TSig newY1);
-
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -199,33 +188,6 @@ public:
   TPar getMagnitudeAt(TPar frequency);
   // hmmm...would be nice to have that in baseclass taking omega as input - rename this to
   // getMagnitudeAtHz
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Audio Processing */
-
-  /** Calculates a single filtered output-sample. */
-  //inline TSig getSample(TSig in);
-
-
-
-
-
-
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Misc */
-
-  /** Resets the internal buffers (for the \f$ x[n-1], y[n-1] \f$-samples) to zero. */
-  //void reset();
-
-
-
-  //// buffering:
-  //TSig x1, y1;
-  //TPar b0, b1; // feedforward coeffs
-  //TPar a1;     // feedback coeff
-  //// preliminary - later use members inherited from baseclass
-
 
 protected:
 
@@ -243,21 +205,6 @@ protected:
   TPar sampleRate;
   TPar sampleRateRec;  // reciprocal of the sampleRate 
   // instead of these two, keep only 2*PI/sampleRate, i.e. the freqToOmega factor
-
-  // maybe factor out a baseclass that has only x1,y1,b0,b1,a1 as members
 };
-
-/*
-//-----------------------------------------------------------------------------------------------
-// inlined functions:
-
-template<class TSig, class TPar>
-inline TSig rsOnePoleFilter<TSig, TPar>::getSample(TSig in)
-{
-  y1 = b0*in + b1*x1 + a1*y1;
-  x1 = in;
-  return y1;
-}
-*/
 
 #endif
