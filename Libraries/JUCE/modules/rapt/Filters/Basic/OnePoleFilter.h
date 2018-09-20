@@ -40,16 +40,27 @@ public:
     *a1 = exp(-w);
     *b0 =  0.5*(1 + *a1);
     *b1 = -(*b0);
-
-    // w = 0:   
+    // w = 0:   a1 = 1, b0 = 1, b1 = -1 -> differentiate and integrate
     // w = pi:  
     // w = inf: 
   }
   // https://en.wikipedia.org/wiki/Matched_Z-transform_method
 
-
-
+  /** Allpass via bilinear transform (from DAFX) */
+  template<class T>
+  static inline void coeffsAllpassBLT(T w, T* b0, T* b1, T* a1)
+  {
+    T t = tan(0.5*w); // tan w/2
+    *b0 = (t-1.0) / (t+1.0);
+    *b1 = 1.0;
+    *a1 = -(*b0);
+    // w = 0:
+    // w = pi:  t = inf -> b0, a1 = NaN
+    // w = inf: 
+    // tan(0) = 0, tan(pi/2) = inf, tan(pi) = 0
+  }
   // https://en.wikipedia.org/wiki/Bilinear_transform
+
 
 
 

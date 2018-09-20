@@ -89,34 +89,37 @@ TPar rsOnePoleFilter<TSig, TPar>::getMagnitudeAt(TPar f)
 template<class TSig, class TPar>
 void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
 {
+  typedef rsFirstOrderFilterBase<TSig, TPar> B; // B for "baseclass"
+
   // maybe move these to FilterDesignFormulas - factor out, maybe together with biquad formulas
   // BUT: make sure to be clear about the sign-convention for feedback coeffs. here we assume
   // that the feedback coeffs are used with positive sign in the filter update
   // these functions should then take only an omega as input (omega: w = 2*PI*cutoff/sampleRate)
+  TPar w = 2.0*PI*cutoff*sampleRateRec;
   switch(mode)
   {
   case LOWPASS_IIT: 
     {
-      // formula from dspguide (impulse invariant):
-      TPar x = exp(-2.0 * PI * cutoff * sampleRateRec); 
-      b0 = 1-x;
-      b1 = 0.0;
-      a1 = x;
+      B::coeffsLowpassIIT(w, &b0, &b1, &a1);
+      //TPar x = exp(-2.0 * PI * cutoff * sampleRateRec); 
+      //b0 = 1-x;
+      //b1 = 0.0;
+      //a1 = x;
     }
     break;
   case HIGHPASS_MZT:  
     {
-      // formula from dspguide (impulse invariant):
-      TPar x = exp(-2.0 * PI * cutoff * sampleRateRec);
-      b0 =  0.5*(1+x);
-      b1 = -0.5*(1+x);  // = -b0 -> optimize
-      a1 = x;
+      B::coeffsHighpassMZT(w, &b0, &b1, &a1);
+      //TPar x = exp(-2.0 * PI * cutoff * sampleRateRec);
+      //b0 =  0.5*(1+x);
+      //b1 = -0.5*(1+x);  // = -b0 -> optimize
+      //a1 = x;
     }
     break;
   case ALLPASS_BLT:  
     {
       // formula from DAFX (bilinear):
-      TPar t = tan(PI*cutoff*sampleRateRec);
+      TPar t = tan(PI*cutoff*sampleRateRec); // tan w/2
       TPar x = (t-1.0) / (t+1.0);
 
       b0 = x;
@@ -143,7 +146,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       b0        = n;
       b1       *= n;
       // this seems overly complicated - can't we just derive the coeffs directly from 3 magnitude
-      // constraints ...check this out....
+      // constraints - should be a simple 3x3 linear system ...check this out....
     }
     break;
   case HIGHSHELV_NMM:
