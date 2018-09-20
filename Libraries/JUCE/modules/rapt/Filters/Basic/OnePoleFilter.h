@@ -1,10 +1,83 @@
 #ifndef RAPT_ONEPOLEFILTER_H_INCLUDED
 #define RAPT_ONEPOLEFILTER_H_INCLUDED
 
+
+
+
+template<class TSig, class TPar>
+class rsFirstOrderFilterBase
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Coefficient Computation */
+
+  // functions can be used from outside - maybe move into a class "FilterDesignFormulas" or
+  // something. The formulas here use a positive sign convention for feedback-coeffs...make the 
+  // usage of positive or negative sign-convention consistent throughout the library...
+  // or maybe support both conventions in the design formulas
+
+  /** Lowpass via impulse invariant transform (from dspguide) */
+  template<class T>
+  static inline void coeffsLowpassIIT(T w, T* b0, T* b1, T* a1)
+  {
+    *a1 = exp(-w); 
+    *b0 = 1 - *a1;
+    *b1 = 0.0;
+    // w < 0:   ...
+    // w = 0:   b0 = 0, a1 = 1 -> silence
+    // w = pi:  nothing special
+    // w = inf: b0 = 1, a1 = 0 -> bypass
+  }
+  // https://en.wikipedia.org/wiki/Impulse_invariance
+
+  /** Highpass via matched Z-transform (from dspguide) */
+  template<class T>
+  static inline void coeffsHighpassMZT(T w, T* b0, T* b1, T* a1)
+  {
+    *a1 = exp(-w);
+    *b0 =  0.5*(1 + *a1);
+    *b1 = -(*b0);
+
+    // w = 0:   
+    // w = pi:  
+    // w = inf: 
+  }
+  // https://en.wikipedia.org/wiki/Matched_Z-transform_method
+
+
+
+  // https://en.wikipedia.org/wiki/Bilinear_transform
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data */
+
+  // buffering:
+  TSig x1, y1; // past input x[n-1] and output y[n-1]
+
+  // filter coefficients:
+  TPar b0, b1; // feedforward coeffs
+  TPar a1;     // feedback coeff
+
+};
+
+
+
+//=================================================================================================
 /** This is an implementation of a simple one-pole filter unit.
 
-\todo rename to FirstOrderFilter (it does not only have a pole but also a zero).
-\todo make it possible to set up time constants in terms of dB/sec */
+\todo 
+-rename to FirstOrderFilter (it does not only have a pole but also a zero).
+ or to rsFilter1p1z
+-factor out a baseclass that has only  x1, y1, b0, b1, a1 members and static coeff computation
+ formulas (but in the subclass, we then have to access the members via the ugly this-pointer syntax
+ otherwise, it won't compile on mac)
+-make it possible to set up time constants in terms of dB/sec 
+*/
 
 template<class TSig, class TPar>
 class rsOnePoleFilter
@@ -32,7 +105,7 @@ public:
   // LOWPASS_BLT (bilinear tarnsform), LOWPASS_MZTI (matched z-transform improved), NFG (nyquist
   // frequency gain - a la orfanidis - maybe can also be called PMM for pointwise magnitude match)
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */
 
   /** Constructor. */
@@ -67,23 +140,31 @@ public:
   /** Sets up the internal state variables for both channels. */
   void setInternalState(TSig newX1, TSig newY1);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the magnitude response of this filter at the given frqeuency (in Hz). */
   TPar getMagnitudeAt(TPar frequency);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
 
   /** Calculates a single filtered output-sample. */
   inline TSig getSample(TSig in);
 
 
+
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
   /** Resets the internal buffers (for the \f$ x[n-1], y[n-1] \f$-samples) to zero. */
   void reset();
+
+
 
 protected:
 

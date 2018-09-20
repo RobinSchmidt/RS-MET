@@ -92,7 +92,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   // maybe move these to FilterDesignFormulas - factor out, maybe together with biquad formulas
   // BUT: make sure to be clear about the sign-convention for feedback coeffs. here we assume
   // that the feedback coeffs are used with positive sign in the filter update
-  // these functions should then take only an omega as input
+  // these functions should then take only an omega as input (omega: w = 2*PI*cutoff/sampleRate)
   switch(mode)
   {
   case LOWPASS_IIT: 
