@@ -26,8 +26,7 @@ public:
   {
     LINEAR = 0,
     CUBIC_HERMITE,
-    QUADRATIC,
-
+    QUADRATIC,      // not yet optimized - probably not so useful anyway
     // BRESENHAM,
     // WU,
     NUM_DRAW_MODES
@@ -47,7 +46,11 @@ public:
   mode where a length-wise color gradient is used instead of a sudden switch. */
   void setUseColorGradient(bool shouldUseGradient) { useGradient = shouldUseGradient; }
 
-
+  /** When drawing splines, the resulting dots are not naturally equidistant which may result in
+  artifacts like color discontinuities at the spline joints. This function switches some processing
+  on that normalizes the dot-density along the spline segment - which means that the dots become
+  equidistant. The computations for that are rather expensive, though - i think, much more 
+  expensive that the spline drawing itself (but didn't measure yet). */
   void setNormalizeDotDensity(bool shouldNormalize) { normalizeDensity = shouldNormalize; }
 
   /** Sets up the density of the lines the connect our actual datapoints. It actually determines the
@@ -73,8 +76,6 @@ public:
   The dot coordinates and weights will be written into the buffers that you have previously passed 
   via setDotBuffers.  */
   int updateDotBuffers(TCor newX, TCor newY);
-  //int getDotsForInputPoint(TCor newX, TCor newY);
-  // rename to fillDotBuffers/updateDotBuffers or something
 
   /** Resets the input point buffers to the given coodinate values. You will typically want to pass
   incoordinates that correspond to the origin of you coordinate system, either in pixel coordinates
@@ -92,12 +93,11 @@ protected:
   than spline arcs), so it must be passed as parameter. */
   int numDotsForSegment(TCor segmentLength);
 
+  /** Computes the target weights/brightness values at the start and end of the current segment to 
+  be used for the linear color gradient along the segment. */
   void getStartAndEndWeights(int numDots, TWgt* wStart, TWgt* wEnd);
 
-
-
-
-
+  // the actual workhorse functions to update the dot-buffers using various interpolation modes:
   int dotsLinear();
   int dotsCubicHermite();
   int dotsQuadratic();
@@ -112,10 +112,13 @@ protected:
   int prepareParameterArray();
 
   /** Evaluates the two cubic polynomials x(t),y(t) for the coordinates at t-values determined by 
-  our t-array... */
+  our t-array... Called from dotsCubicHermite and dotsQuadratic (the quadratic spline can just the
+  same function by setting a3=b3=0 in the cubic spline equation. */
   void dotsCubic(TWgt w1, TWgt w2, int numDots);
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data */
 
   int  drawMode = LINEAR;
   bool useGradient = true;       // use color gradient to seamlessly join line segments

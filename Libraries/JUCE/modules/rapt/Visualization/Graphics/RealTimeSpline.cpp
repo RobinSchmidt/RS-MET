@@ -114,7 +114,7 @@ int rsRealTimeSpline<TCor, TWgt>::dotsCubicHermite()
   // factor out (duplicated in dotsQuadratic):
   int numDots = prepareParameterArray();
   TWgt w1, w2;
-  getStartAndEndWeights(numDots, &w1, &w2);  // start/end weight computation:
+  getStartAndEndWeights(numDots, &w1, &w2);  // start/end weight computation
   dotsCubic(w1, w2, numDots);                // dot computation
   return numDots;
 }
@@ -204,17 +204,16 @@ void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TWgt w1, TWgt w2, int numDots)
 }
 
 
-// -functionality for this class is currently scattered over rsImagePainter and rsPhaseScopeBuffer
 
 // Ideas:
-// -make density normalization optional (it's expensive)
 // -try to draw the spline with short line-segments
 //  -maybe in this case, the higher density in regions of high curvature is actually is actually 
 //   beneficial, so no density compensation is required?
 // -try quartic interpolation spline 
 //  -maybe less overshoot?
-// -try to fix the 3rd deruvative at the joints to 0
+// -try to fix the 2nd derivative at the joints to 0
 //  -needs a quinitc spline
+// -or try to estimate meaningful values for the 2nd derivatives from the data
 // -try a simpler (to compute) density compensation:
 //  -evaluate instantaneous speed sqrt( (dx/dt)^2 + (dy/dt)^2 ) at each spline point and skip dots or
 //   insert extra dots depending on the value
@@ -225,7 +224,7 @@ void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TWgt w1, TWgt w2, int numDots)
 //   brightness *= 1 / (1+cx*cx+cy*cy), cx = d2x/dt2, cy = d2y/dt2 - 2nd derivatives of x,y 
 //   with respect to t
 
-// try a quadratic spline:
+// try a quadratic spline (...done in dotsQuadratic):
 // x(t) = a0 + a1*t + a2*t^2, x'(t) = a1 + 2*a2*t
 // y(t) = b0 + b1*t + b2*t^2, y'(t) = b1 + 2*b2*t
 // and require only dy/dx = x'/y' to be equal at the joints. This is less restrictive than 
@@ -244,7 +243,7 @@ void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TWgt w1, TWgt w2, int numDots)
 // x(t) and y(t) to be equal to the integral of a linear interpolant. This would give two 
 // additional constraint equations calling for cubics. But these would be different cubics than 
 // the Hermite cubics that we have now....perhaps better? less wiggle/overshoot? -> try it!
-// Also, we could use as additonal constraints that the 2nd derivatives d2y/dx2|t=0, d2y/dx2|t=1 
+// Also, we could use as additional constraints that the 2nd derivatives d2y/dx2|t=0, d2y/dx2|t=1 
 // should be equal at the joints - 2 additional constraints -> two additional parameters (a3,b3)
 // -> 8 coupled equations
 // solving the system with sage:
@@ -299,8 +298,4 @@ a2 == ((r0*s1 + 1)*x0 - (r0*s1 + 1)*x1 - 2*r0*y0 + 2*r0*y1)/(r0*s1 - 1),
 b0 == y0, 
 b1 == -2*(s1*x0 - s1*x1 - y0 + y1)/(r0*s1 - 1), 
 b2 == (2*s1*x0 - 2*s1*x1 - (r0*s1 + 1)*y0 + (r0*s1 + 1)*y1)/(r0*s1 - 1)
-
-
-
-
 */
