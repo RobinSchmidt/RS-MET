@@ -31,7 +31,7 @@ public:
   {
     *a1 = exp(-w); 
     *b0 = 1 - *a1;
-    *b1 = 0.0;
+    *b1 = 0;
     // w < 0:   ...
     // w = 0:   b0 = 0, a1 = 1 -> silence
     // w = pi:  nothing special
@@ -57,7 +57,7 @@ public:
   static inline void coeffsAllpassBLT(T w, T* b0, T* b1, T* a1)
   {
     T t = tan(0.5*w); // tan w/2
-    *b0 = (t-1.0) / (t+1.0);
+    *b0 = (t-1) / (t+1);
     *b1 = 1.0;
     *a1 = -(*b0);
     // w = 0:
@@ -200,6 +200,13 @@ public:
 
 
 
+  // buffering:
+  TSig x1, y1;
+  TPar b0, b1; // feedforward coeffs
+  TPar a1;     // feedback coeff
+  // preliminary - later use members inherited from baseclass
+
+
 protected:
 
   /** \name Internal Functions */
@@ -208,23 +215,16 @@ protected:
 
   /** \name Data */
 
-  // buffering:
-  TSig x1, y1;
-
-  // filter coefficients:
-  TPar b0, b1; // feedforward coeffs
-  TPar a1;     // feedback coeff
-
   // filter parameters:
   TPar cutoff;
   TPar shelvingGain;
-  int    mode;
+  int  mode;
 
   TPar sampleRate;
-  TPar sampleRateRec;  // reciprocal of the sampleRate
+  TPar sampleRateRec;  // reciprocal of the sampleRate 
+  // instead of these two, keep only 2*PI/sampleRate, i.e. the freqToOmega factor
 
   // maybe factor out a baseclass that has only x1,y1,b0,b1,a1 as members
-
 };
 
 //-----------------------------------------------------------------------------------------------

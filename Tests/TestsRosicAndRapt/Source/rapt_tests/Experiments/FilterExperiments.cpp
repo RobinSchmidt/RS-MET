@@ -216,6 +216,38 @@ void complementaryFiltersIIR()
   //analyzeComplementaryFilter( complementaryLowpass4p5z()   );  // unstable
 }
 
+void firstOrderFilters()
+{
+  typedef rsOnePoleFilter<double, double> FLT;
+
+  double sr = 44100;
+  double fc = 11025;  // halfband
+
+  FLT flt;
+  flt.setSampleRate(sr);
+  flt.setCutoff(fc);      
+  flt.setMode(FLT::LOWPASS_IIT);
+  //flt.setMode(FLT::HIGHPASS_MZT);
+
+  // translate object variables into filter spec as needed by the plotter:
+  RAPT::rsFilterSpecificationBA<double> spec;
+  spec.sampleRate = sr;
+  spec.a.resize(2);
+  spec.a[0] = 1;
+  spec.a[1] = -flt.a1;  // the filter class uses the other sign convention
+  spec.b.resize(2);
+  spec.b[0] = flt.b0;
+  spec.b[1] = flt.b1;
+
+  // make some plots:
+  FilterPlotter<double> plt;
+  plt.addFilterSpecificationBA(spec);
+  plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)"); // let FilterPlotter do this automatically
+  plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  //plt.plotPolesAndZeros();
+  int dummy = 0;
+}
+
 void ladderResonanceManipulation()
 {
   // We create two ladder filters with the same cutoff frequency, one with and one without 

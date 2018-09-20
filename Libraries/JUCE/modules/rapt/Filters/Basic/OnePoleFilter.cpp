@@ -100,30 +100,30 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   {
   case LOWPASS_IIT: 
     {
-      B::coeffsLowpassIIT(w, &b0, &b1, &a1);
-      //TPar x = exp(-2.0 * PI * cutoff * sampleRateRec); 
-      //b0 = 1-x;
-      //b1 = 0.0;
-      //a1 = x;
+      //B::coeffsLowpassIIT(w, &b0, &b1, &a1);
+      TPar x = exp(-2.0 * PI * cutoff * sampleRateRec); 
+      b0 = 1-x;
+      b1 = 0.0;
+      a1 = x;
     }
     break;
   case HIGHPASS_MZT:  
     {
-      B::coeffsHighpassMZT(w, &b0, &b1, &a1);
-      //TPar x = exp(-2.0 * PI * cutoff * sampleRateRec);
-      //b0 =  0.5*(1+x);
-      //b1 = -0.5*(1+x);  // = -b0 -> optimize
-      //a1 = x;
+      //B::coeffsHighpassMZT(w, &b0, &b1, &a1);
+      TPar x = exp(-2.0 * PI * cutoff * sampleRateRec);
+      b0 =  0.5*(1+x);
+      b1 = -0.5*(1+x);  // = -b0 -> optimize
+      a1 = x;
     }
     break;
   case ALLPASS_BLT:  
     {
-      B::coeffsAllpassBLT(w, &b0, &b1, &a1);
-      //TPar t = tan(PI*cutoff*sampleRateRec); // tan w/2
-      //TPar x = (t-1.0) / (t+1.0);
-      //b0 = x;
-      //b1 = 1.0;
-      //a1 = -x;
+      //B::coeffsAllpassBLT(w, &b0, &b1, &a1);
+      TPar t = tan(PI*cutoff*sampleRateRec); // tan w/2
+      TPar x = (t-1.0) / (t+1.0);
+      b0 = x;
+      b1 = 1.0;
+      a1 = -x;
     }
     break;
   case LOWSHELV_NMM:

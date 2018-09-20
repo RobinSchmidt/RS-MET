@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
   //complementaryFiltersIIR();
-
+  firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
   //smoothingFilterOrders();
