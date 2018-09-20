@@ -192,7 +192,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::addSegmentTo(TSig newX, TSig newY)
 {
-  int numDots = splineGen.getDotsForInputPoint(newX, newY);
+  int numDots = splineGen.updateDotBuffers(newX, newY);
   painter.drawDots(&dotsX[0], &dotsY[0], &dotsC[0], numDots);
 }
 
@@ -205,8 +205,8 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 {
-  //TPix insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
-  TPix insertFactor = (TPix(1000) * brightness / TPix(sampleRate));
+  TPix insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
+  //TPix insertFactor = (TPix(1000) * brightness / TPix(sampleRate));
   splineGen.setBrightness(insertFactor);
 
   // The factor is totally ad-hoc - maybe come up with some more meaningful factor.

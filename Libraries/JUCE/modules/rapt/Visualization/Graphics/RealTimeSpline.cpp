@@ -15,7 +15,7 @@ void rsRealTimeSpline<TCor, TWgt>::setDotBuffers(TCor* bufX, TCor* bufY, TWgt* b
 }
 
 template<class TCor, class TWgt>
-int rsRealTimeSpline<TCor, TWgt>::getDotsForInputPoint(TCor inX, TCor inY)
+int rsRealTimeSpline<TCor, TWgt>::updateDotBuffers(TCor inX, TCor inY)
 {
   rsArray::pushFrontPopBack4(inX, x);
   rsArray::pushFrontPopBack4(inY, y);

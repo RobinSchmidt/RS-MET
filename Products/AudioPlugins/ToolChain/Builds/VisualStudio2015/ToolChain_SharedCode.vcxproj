@@ -2372,6 +2372,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterSpecifications.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2451,6 +2454,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.cpp">
@@ -2579,9 +2585,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumberTheory.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumericCalculus.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Statistics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2643,6 +2646,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImagePainter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\RealTimeSpline.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\PhaseScopeBuffer.cpp">
@@ -4871,6 +4877,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EngineersFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterAnalyzer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterSpecifications.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\LinkwitzRileyCrossOver.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\PoleZeroMapper.h"/>
@@ -4901,6 +4908,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Polynomial.h"/>
@@ -4944,7 +4952,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\ModularInteger.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\MultiLayerPerceptron.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumberTheory.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\NumericCalculus.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Point2D.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Polygon2D.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Rectangle2D.h"/>
@@ -4971,6 +4978,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\Image.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImageDrawer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImagePainter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\RealTimeSpline.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\PhaseScopeBuffer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\ScopeScreenScanner.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Visualization.h"/>

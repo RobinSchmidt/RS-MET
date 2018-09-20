@@ -9912,6 +9912,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/FilterSpecifications.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/FilterSpecifications.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/InfiniteImpulseResponseDesigner.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -10249,6 +10261,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Math/Misc/Statistics.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Math/Numerics/NumericCalculus.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Math/Numerics/NumericCalculus.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -10770,18 +10794,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/NumericCalculus.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/NumericCalculus.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Unfinished/Math/Point2D.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -11059,6 +11071,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Visualization/Graphics/ImagePainter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Visualization/Graphics/RealTimeSpline.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Visualization/Graphics/RealTimeSpline.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
