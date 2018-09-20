@@ -82,26 +82,26 @@ public:
     T t = tan(0.5*w);
     *a1 = (1-t) / (1+t);
     *b0 = 0.5*(1 - *a1);
-    *b1 = b0;
+    *b1 = *b0;
   }
 
   /** Highpass via bilinear transform (from DAFX) */
   template<class T>
   static inline void coeffsHighpassBLT(T w, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);
+    T t = tan(0.5*w);     // maybe re-use w
     *a1 = (1-t) / (1+t);
     *b0 = 0.5*(1 + *a1);
-    *b1 = -b0;
+    *b1 = -(*b0);
   }
 
   /** Low shelving via bilinear transform, g is linear shelving gain. (from DAFX) */
   template<class T>
   static inline void coeffsLowShelfBLT(T w, T g, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);
+    T t = tan(0.5*w);  // re-use w
     t   = g >= 1.0 ? (t-1)/(t+1) : (t-g)/(t+g);
-    T c = 0.5*(g-1);
+    T c = 0.5*(g-1);   // re-use g
     c  += c*t;
     *b0 = 1 + c;
     *b1 = t + c;

@@ -86,6 +86,9 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   case LOWPASS_IIT:  { B::coeffsLowpassIIT( w, &this->b0, &this->b1, &this->a1); } break;
   case HIGHPASS_MZT: { B::coeffsHighpassMZT(w, &this->b0, &this->b1, &this->a1); } break;
   case ALLPASS_BLT:  { B::coeffsAllpassBLT( w, &this->b0, &this->b1, &this->a1); } break;
+  case LOWPASS_BLT:  { B::coeffsLowpassBLT( w, &this->b0, &this->b1, &this->a1); } break;
+  case HIGHPASS_BLT: { B::coeffsHighpassBLT(w, &this->b0, &this->b1, &this->a1); } break;
+
   case LOWSHELV_NMM:
     {
       // formula derived as special case of the Orfanidis equalizers:
@@ -161,24 +164,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       a1 = -a;
     }
     break;
-  case LOWPASS_BLT:  
-  {
-    TPar t = tan(PI*cutoff*sampleRateRec);
-    TPar x = (t-1.0) / (t+1.0);
-    b0 = 0.5*(1+x);
-    b1 = b0;
-    a1 = -x;
-  }
-  break;
-  case HIGHPASS_BLT:  
-  {
-    TPar t = tan(PI*cutoff*sampleRateRec);
-    TPar x = (t-1.0) / (t+1.0);
-    b0 = 0.5*(1-x);
-    b1 = -b0;
-    a1 = -x;
-  }
-  break;
+
   default: // bypass
     {
       b0 = 1.0;
