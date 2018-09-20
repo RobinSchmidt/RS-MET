@@ -118,13 +118,12 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
     break;
   case ALLPASS_BLT:  
     {
-      // formula from DAFX (bilinear):
-      TPar t = tan(PI*cutoff*sampleRateRec); // tan w/2
-      TPar x = (t-1.0) / (t+1.0);
-
-      b0 = x;
-      b1 = 1.0;
-      a1 = -x;
+      B::coeffsAllpassBLT(w, &b0, &b1, &a1);
+      //TPar t = tan(PI*cutoff*sampleRateRec); // tan w/2
+      //TPar x = (t-1.0) / (t+1.0);
+      //b0 = x;
+      //b1 = 1.0;
+      //a1 = -x;
     }
     break;
   case LOWSHELV_NMM:

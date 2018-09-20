@@ -2,7 +2,13 @@
 #define RAPT_ONEPOLEFILTER_H_INCLUDED
 
 
-
+/** Baseclass for first order (1-pole/1-zero) filters. Maintains only the filter state and 
+coefficients but no user parameters like cutoff, sampleRate, mode, etc. which makes it lean to use
+in contexts where it is undesirable for each benign first-order filter to maintain the sampleRate 
+and other things itself. It also provides the bare coefficient computation formulas as static 
+member functions. Beware that the formulas as implemented here assume a positive sign convention 
+for feedback coeffs, i.t. they compute coeffs for the difference equation:
+y[n] = b0*x[n] + b1*x[n-1] + a1*y[n-1] */
 
 template<class TSig, class TPar>
 class rsFirstOrderFilterBase
@@ -63,6 +69,23 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Calculates a single filtered output-sample. */
+  inline TSig getSample(TSig in)
+  {
+    y1 = b0*in + b1*x1 + a1*y1;
+    x1 = in;
+    return y1;
+  }
+
+  /** Resets the internal buffers (for the \f$ x[n-1], y[n-1] \f$-samples) to zero. */
+  void reset()
+  {
+    x1 = TSig(0);
+    y1 = TSig(0);
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
