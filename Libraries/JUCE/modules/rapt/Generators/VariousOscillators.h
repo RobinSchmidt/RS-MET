@@ -43,6 +43,19 @@ public:
   /** Sigmoidity of downward half-wave. */
   inline void setDecaySigmoid(T newParam) { s2 = T(-0.5)*newParam; }
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  /** Computes an asymmetry parameter which results in a (downward) transition with the given 
+  number of samples according to the current increment setting. If you want to have the upward 
+  transition last this number of samples, use minus this value. It's useful for ensuring a minimum
+  absolute transition time. */
+  inline T asymForTransitionSamples(T numTrasitionSamples)
+  {
+    return rsMax(T(0), T(1) - T(2)*numTrasitionSamples*inc);
+  }
+
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 

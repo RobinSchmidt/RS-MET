@@ -832,7 +832,8 @@ protected:
 
 
 //===============================================================================================
-// move to AudioFunctions
+// move to AudioFunctions or maybe some sort of SinusoidalAnalysis/Modeling/Resynthesis class
+
 
 /** Given a sinusoidal signal x of length N with frequency f at samplerate fs, this function will
 produce a 90° phase-shifted "quadrature" component corresponding to the sine and store it in y by
@@ -853,6 +854,8 @@ that when s = 4 (a reasonable value), the cutoff will be one fourth of the sinus
 zero value will avoid the smoothing entirely. */
 template<class T>
 void rsSineEnvelopeViaQuadrature(T *x, T *y, int N, T f, T fs, T smooth = 0.0);
+
+// make a function rsInstantaneousEnvelope
 
 /** Similar to rsSineEnvelopeViaQuadrature, but uses internally the formula for computing an
 instantaneous amplitude as implemented in rsSineAmplitudeAndPhase.  */

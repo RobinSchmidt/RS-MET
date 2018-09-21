@@ -362,10 +362,53 @@ void biDirectionalFilter()
   int dummy = 0;
 }
 
+template<class T>
+std::vector<int> findPeakIndices(T* x, int N, bool includeFirst = false, bool includeLast = false)
+{
+  std::vector<int> peaks;
+
+  if(N == 0)
+    return peaks;
+
+  if(includeFirst){
+    if(N > 1) {
+      if(x[0] >= x[1])
+        peaks.push_back(0);
+    }
+    else
+      peaks.push_back(0); // the one and only element is a "peak"
+  }
+
+  for(int n = 1; n < N-1; n++) {
+    if( RAPT::rsArray::isPeakOrPlateau(x, n) )
+      peaks.push_back(n);
+  }
+
+  if(includeLast){
+    if(N > 1) {
+      if(x[N-1] >= x[N-2])
+        peaks.push_back(N-1);
+    }
+  }
+
+  return peaks;
+}
+// what about situations where there are several values of the same height, like
+// 0 1 2 2 2 1 0 1 3 3 2 1 2 1
+//       *          *      *    desired peaks
+// ...actually, it seems like quadratic interpolation using 3 points seems unfair/asymmetric 
+// - probably it's better to use cubic interpolation and use two points to the left and two
+// to the right to find the actual peak location
+// or use >= as condition, then we would get
+// 0 1 2 2 2 1 0 1 3 3 2 1 2 1
+//     * * *       * *     *  
+// seems better for envelope extraction
+
+
 void envelopeDeBeating()
 {
   // We create two attack/decay sinusoids with frequencies close to each other such that the 
-  // resulting amplitude envelope withh show beating effects at the difference frequency. Then, we
+  // resulting amplitude envelope will show beating effects at the difference frequency. Then, we
   // try to remove the amplitude modulation from the envelope.
 
   double fs = 44100; // sample rate
@@ -374,8 +417,9 @@ void envelopeDeBeating()
   double a1 = 0.5;   // amplitude 1
   double a2 = 0.5;   //           2
   double d1 = 0.2;   // decay time 1
-  double d2 = 0.2;   //            2
-  int N = 30000;     // number of samples
+  double d2 = 0.3;   //            2
+  int N = 5000;     // number of samples
+  // If amplitudes and decay-times of both sinusoids are the same, the beating is most extreme
 
   // set up a modal filter bank to produce the output:
   RAPT::rsModalFilterBank<double, double> mfb;
@@ -384,24 +428,41 @@ void envelopeDeBeating()
   mfb.setReferenceFrequency(f1);
   mfb.setModalParameters({ 1, f2/f1 }, { a1, a2 }, { d1, d2 }, { d1, d2 }, { 0, 0 });
 
-  // create signal:
-  std::vector<double> x(N), env(N);
-  int n;
-  x[0] = mfb.getSample(1);
-  for(n = 1; n < N; n++)
-    x[n] = mfb.getSample(0);
 
-  // obtain amp-envelope (maybe use instantaneous envelope algorithm):
+  typedef std::vector<double> Vec;
+
+  // create signal and estimate envelope:
+  Vec x(N), env(N);
+  getImpulseResponse(mfb, &x[0], N);
+  rsSineEnvelopeViaQuadrature(&x[0], &env[0], N, (f1+f2)/2, fs, 2.0);
+   // todo: maybe use instantaneous envelope algorithm
+
+  std::vector<int> peakIndices = findPeakIndices(&env[0], N);
+
 
 
   // de-beat:
   // ideas:
   // -connect peaks (by lines or splines)
+
   // -filter out beating frequencies (requires to know/estimate them first)
   // -use a variation of the "True-Envelope" algorithm applied to the time-domain signal
+  // -actually, what we want is an envelope of an envelope - maybe we can appyl the same algorithm
+  //  twice
 
+  // Idea for general envelope extraction:
+  // -take absolute value
+  // -pick peaks - but only those that satisfy additional constraints - for example:
+  //  -ratio of peak vs local average must be above some threshold (local average can be obtained
+  //   by bidirectional lowpass)
+  //  -distance between two neighbouring peaks must be above some threshold
+  // -connect peaks by line or spline segments
+  //  -maybe the lines/splines should be applied to the log of the envelope and after that, the
+  //   the log should be undone via exp (or - more generally - use some monotonic nonliinear 
+  //   transformation and its inverse)..maybe take y = log(1+x) and x = exp(y)-1 to avoid
+  //   log-of-zero problems
 
-  plotData(N, 0, 1/fs, &x[0]);
+  plotData(N, 0, 1/fs, &x[0], &env[0]);
 }
 
 void sineRecreation()

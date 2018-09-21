@@ -315,6 +315,11 @@ public:
   neighbour (the caller must be sure, that n-1, n, n+1 are valid array indices). */
   template<class T>
   static bool isPeak(T *x, int n);
+  // inline this
+
+  /** Similar to isPeak, but uses "greater-or-equal" comparison instead of "greater". */
+  template<class T>
+  static inline bool isPeakOrPlateau(T *x, int n);
 
   /** Returns true if the value in array x at position n is smaller than its left and right 
   neighbour (the caller must be sure, that n-1, n, n+1 are valid array indices). */
@@ -576,6 +581,14 @@ inline bool rsArray::isFilledWithValue(T *buffer, int length, T value)
       return false;
   }
   return true;
+}
+
+template<class T>
+bool rsArray::isPeakOrPlateau(T *x, int n)
+{
+  if(x[n] >= x[n-1] && x[n] >= x[n+1])
+    return true;
+  return false;
 }
 
 template<class T>

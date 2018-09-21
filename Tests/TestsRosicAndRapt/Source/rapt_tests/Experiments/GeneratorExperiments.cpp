@@ -606,6 +606,10 @@ void triSawOsc()
   osc.setPhaseIncrement(1.f/T);
   osc.setAsymmetry(-0.5);
 
+  // test:
+  float a = osc.asymForTransitionSamples(20);
+  osc.setAsymmetry(a);
+
   // generate signal:
   float y[N];
   for(int n = 0; n < N; n++)
