@@ -300,8 +300,10 @@ void quadraticLineCoeffs2D(T x0, T y0, T x1, T y1, T* a, T* b)
   a[2] = 0;
   b[2] = 0;
 }
+// rename to lineCoeffs2D, don't access a[2], b[2], add to header
+
 template<class T>
-void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b)
+bool quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b)
 {
   a[0] = x0;
   b[0] = y0;
@@ -312,8 +314,7 @@ void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
   if(  (abs(dx0) < tol && abs(dy0) < tol) 
     || (abs(dx1) < tol && abs(dy1) < tol) )
   {
-    quadraticLineCoeffs2D(x0, y0, x1, y1, a, b);
-    return;
+    return false;
   }
 
   if(abs(dx0) > abs(dy0)) {
@@ -321,7 +322,8 @@ void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
     if(abs(dx1) > abs(dy1)) {  // compute a,b coeffs from s0, s1
       T s1 = dy1/dx1;
       den  = s0 - s1;
-      if(abs(den) < tol) { quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); return; }
+      if(abs(den) < tol)  
+        return false;
       k    = T(1)/den;
       a[1] = 2*(s1*x0 - s1*x1 - y0 + y1)*k;
       a[2] = -((s0 + s1)*x0 - (s0 + s1)*x1 - 2*y0 + 2*y1)*k;
@@ -331,7 +333,8 @@ void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
     else {                     // compute a,b coeffs from s0, r1
       T r1 = dx1/dy1;
       den  = (r1*s0 - 1);
-      if(abs(den) < tol) { quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); return; }
+      if(abs(den) < tol) 
+        return false;
       k    = T(1)/den;
       a[1] = -2*(r1*y0 - r1*y1 - x0 + x1)*k;
       a[2] = -((r1*s0 + 1)*x0 - (r1*s0 + 1)*x1 - 2*r1*y0 + 2*r1*y1)*k;
@@ -344,7 +347,8 @@ void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
     if(abs(dx1) > abs(dy1)) {  // compute a,b coeffs from r0, s1
       T s1 = dy1/dx1;
       den  = (r0*s1 - 1);
-      if(abs(den) < tol) { quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); return; }
+      if(abs(den) < tol) 
+        return false;
       k    = T(1)/den;
       a[1] = -2*(r0*s1*x0 - r0*s1*x1 - r0*y0 + r0*y1)*k;
       a[2] = ((r0*s1 + 1)*x0 - (r0*s1 + 1)*x1 - 2*r0*y0 + 2*r0*y1)*k;
@@ -354,7 +358,8 @@ void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
     else {                     // compute a,b coeffs from r0, r1
       T r1 = dx1/dy1;
       den  = (r0 - r1);
-      if(abs(den) < tol) { quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); return; }
+      if(abs(den) < tol) 
+        return false;
       k    = T(1)/den;
       a[1] = 2*(r0*r1*y0 - r0*r1*y1 - r0*x0 + r0*x1)*k;
       a[2] = -(2*r0*r1*y0 - 2*r0*r1*y1 - (r0 + r1)*x0 + (r0 + r1)*x1)*k;
@@ -362,7 +367,21 @@ void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
       b[2] = -((r0 + r1)*y0 - (r0 + r1)*y1 - 2*x0 + 2*x1)*k;
     }
   }
+  return true;
 }
+
+template<class T>
+void quadraticOrCubicSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, 
+  T* a, T* b)
+{
+  bool success = quadraticSplineArcCoeffs2D(x0, dx0, y0, dy0, x1, dx1, y1, dy1, a, b);
+  if(!success)
+  {
+    cubicSplineArcCoeffs2D(x0, dx0, y0, dy0, x1, dx1, y1, dy1, a, b);
+    //quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); // preliminary - use cubic
+  }
+}
+
 // todo: instead of just falling back to computing line-coeffs, return false and let the caller 
 // handle this case. the caller may fall back to a line or a cubic or whatever. falling back to a 
 // cubic would mean to use a quadratic where possible and use a cubic only where necessary (i.e. if 

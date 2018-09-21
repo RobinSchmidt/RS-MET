@@ -123,12 +123,13 @@ template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::dotsQuadratic()
 {
   static const TCor h = TCor(0.5);
-  quadraticSplineArcCoeffs2D(
+  a[3] = 0;
+  b[3] = 0;
+  quadraticOrCubicSplineArcCoeffs2D(
     x[2], h*(x[1]-x[3]), y[2], h*(y[1]-y[3]), 
     x[1], h*(x[0]-x[2]), y[1], h*(y[0]-y[2]), 
     a, b);
-  a[3] = 0;
-  b[3] = 0;
+
 
   // factor out:
   int numDots = prepareParameterArray();

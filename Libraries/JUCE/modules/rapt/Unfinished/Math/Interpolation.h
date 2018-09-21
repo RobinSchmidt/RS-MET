@@ -157,8 +157,13 @@ void cubicSplineArcCoeffs2D(T x1, T dx1, T y1, T dy1, T x2, T dx2, T y2, T dy2, 
 // use x0, x1 throughut the library instead of x1, x2 - they correspond to parameter-values 0 and 1
 // and also counting from zero is customary in programming
 
+
 template<class T>
-void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b);
+bool quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b);
+
+template<class T>
+void quadraticOrCubicSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b);
+
 
 
 /** Given the polynomial coeffcient arrays of a cubic spline in 2D described by

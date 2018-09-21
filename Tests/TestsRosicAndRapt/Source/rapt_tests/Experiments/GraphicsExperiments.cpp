@@ -272,9 +272,9 @@ void phaseScopeLissajous()
   // x(t) = sin(2*pi*a*t), y(t) = sin(2*pi*b*t)
 
   // input signal parameters:
-  //static const int N = 11;  // number of data points per cycle
+  static const int N = 11;  // number of data points per cycle
   //static const int N = 80;
-  static const int N = 35;
+  //static const int N = 35;
   //static const int N = 23;
   float a = 2.f;
   float b = 3.f;
@@ -289,7 +289,7 @@ void phaseScopeLissajous()
   psb.setSampleRate(N);
   psb.setAntiAlias(true);
   //psb.setBrightness(300.f);  // wtf? - why did this work formerly?
-  psb.setBrightness(1.0f); 
+  psb.setBrightness(0.1f); 
   psb.setLineDensity(1.f);
   psb.setPixelSpread(0.3f);
   //psb.setDrawMode(SG::LINEAR);
