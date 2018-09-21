@@ -73,6 +73,7 @@ void PhaseScope::createParameters()
 
   p = new Parameter("DrawMode", 0.0, 1.0, 0.0, Parameter::STRING);
   p->addStringValue("Linear");
+  p->addStringValue("Quadratic");
   p->addStringValue("Cubic"); // maybe have density-compensated and uncompensated modes
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setDrawMode);
@@ -362,6 +363,8 @@ void PhaseScopeDisplay::imageWasUpdated(juce::Image* image)
   // We will receive the change message ourselves and when we do, we will trigger a repaint. We 
   // can't directly call repaint here because then we hit an assertion which says we should acquire
   // a MessageManagerLock - but when we do so, it becomes unresponsive.
+
+  // todo: use repaintOnMessageThread
 
   // this doesn't work:
   //const MessageManagerLock mmLock;

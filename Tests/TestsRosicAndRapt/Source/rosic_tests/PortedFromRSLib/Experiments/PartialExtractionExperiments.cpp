@@ -362,6 +362,37 @@ void biDirectionalFilter()
   int dummy = 0;
 }
 
+void envelopeDeBeating()
+{
+  // We create two attack/decay sinusoids with frequencies close to each other such that the 
+  // resulting amplitude envelope withh show beating effects at the difference frequency. Then, we
+  // try to remove the amplitude modulation from the envelope.
+
+  double fs = 44100; // sample rate
+  double f1 = 100;   // frequency 1
+  double f2 = 105;   //           2
+  double a1 = 1;     // amplitude 1
+  double a2 = 0.0;   //           2
+  double d1 = 0.2;   // decay time 1
+  double d2 = 0.2;   //            2
+  int N = 15000;      // number of samples
+
+  RAPT::rsModalFilterBank<double, double> mfb;
+  mfb.setSampleRate(fs);
+  //mfb.setModalParameters({ f1, f2 }, { a1, a2 }, { 0.5*d1, 0.5*d2 }, { d1, d2 }, { 0, 0 });  // attack-maximum is where expected
+  mfb.setModalParameters({ f1, f2 }, { a1, a2 }, { 5*d1, 5*d2 }, { d1, d2 }, { 0, 0 }); // this works - somewhere there's a factor 0.1?
+
+
+  std::vector<double> x(N), env(N);
+  int n;
+  x[0] = mfb.getSample(1);
+  for(n = 1; n < N; n++)
+    x[n] = mfb.getSample(0);
+
+
+  plotData(N, 0, 1/fs, &x[0]);
+}
+
 void sineRecreation()
 {
   // Creates a sine wave with an amplitude envelope and tries to retrieve that envelope and 
@@ -577,12 +608,6 @@ void partialExtractionTriple()
   // the sweet spot seems to be somewhere between 50 and 80 Hz
   // generally, maybe it's best to use bandwidths of k * df with k = 0.5...0.8 and df: distance
   // to closest neighbour partial in Hz
-
-
-
-
-
-
 
   // ideas for improving the envelope mesurement: 
   // the "smoothing" filter that is applied to the envelope could have notches at the modulation 

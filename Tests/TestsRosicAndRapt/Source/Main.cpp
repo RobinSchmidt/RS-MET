@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
   //lineJoints();
   //lineTo();
   //polyLineRandom();
-  phaseScopeLissajous();
+  //phaseScopeLissajous();
   //splineArc();
   //triangles();
   //pixelCoverage();
@@ -281,6 +281,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
+  envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
   //partialExtractionTriple();

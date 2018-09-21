@@ -144,23 +144,30 @@ order 2*smoothness+1 will be used. */
 template<class T>
 void rsInterpolateSpline(T *x, T *y, int N, T *xi, T *yi, int Ni, int smoothness = 1);
 
-/** Given two points (x1,y1), (x2,y2), this function computes the cubic polynomial coefficients for
+/** Given two points (x0,y0), (x1,y1), this function computes the cubic polynomial coefficients for
 a spline arc that has the parametric equations:
 x(t) = a0 + a1*t + a2*t^2 + a3*t^3
 y(t) = b0 + b1*t + b2*t^2 + b3*t^3
 The desired derivatives of x and y with respect to the parameter t at the two points are passed in 
-by (dx1,dy1) and (dx2,dy2) and the polynomial coefficients are written into the 
+by (dx0,dy0) and (dx1,dy1) and the polynomial coefficients are written into the 
 arrays a and b which are supposed to be of length 4. */
 template<class T>
-void cubicSplineArcCoeffs2D(T x1, T dx1, T y1, T dy1, T x2, T dx2, T y2, T dy2, T* a, T* b);
+void cubicSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b);
 // make notation consisten with quadratic case
 // use x0, x1 throughut the library instead of x1, x2 - they correspond to parameter-values 0 and 1
 // and also counting from zero is customary in programming
 
-
+/** Similar to cubicSplineArcCoeffs2D but tries to fit a quadratic spline between the two points. It 
+doens't require dx/dt and dy/dt to have certian values at the joints but only their quotient 
+(dx/dt)/(dy/dt) = dx/dy must be equal at the joints. This is less restrictive but still gives a 
+curve that is 2nd order continuous in 2D (although both 1D function may be not). However, this may
+sometimes fail due to division by zero conditions. In this case, the function does nothing and just 
+returns false (otherwise true). */
 template<class T>
 bool quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b);
 
+/** Tries to fit a quadratic (via quadraticSplineArcCoeffs2D) and if this fails, falls back to
+cubicSplineArcCoeffs2D. */
 template<class T>
 void quadraticOrCubicSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, T* a, T* b);
 

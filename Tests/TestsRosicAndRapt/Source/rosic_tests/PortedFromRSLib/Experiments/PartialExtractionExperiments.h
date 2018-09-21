@@ -7,6 +7,9 @@
 filter for different numbers of passes. */
 void biDirectionalFilter();
 
+void envelopeDeBeating(); // try to remove beating from an extracted envelope
+
+
 /** Creates a sine wave with an amplitude envelope and tries to retrieve that envelope and recreate
 the sine from the envelope (with possibly different frequency and startphase). */
 void sineRecreation();
@@ -17,6 +20,8 @@ void sineWithPhaseCatchUp();
 /** Creates 3 partials with attack/decay envelope and tries to recover the middle one by means of 
 the rsBiDirectionalFilter::applyConstPeakBandpassBwInHz function. */
 void partialExtractionTriple();
+
+
 
 
 

@@ -369,24 +369,6 @@ bool quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
   }
   return true;
 }
-
-template<class T>
-void quadraticOrCubicSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, 
-  T* a, T* b)
-{
-  bool success = quadraticSplineArcCoeffs2D(x0, dx0, y0, dy0, x1, dx1, y1, dy1, a, b);
-  if(!success)
-  {
-    cubicSplineArcCoeffs2D(x0, dx0, y0, dy0, x1, dx1, y1, dy1, a, b);
-    //quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); // preliminary - use cubic
-  }
-}
-
-// todo: instead of just falling back to computing line-coeffs, return false and let the caller 
-// handle this case. the caller may fall back to a line or a cubic or whatever. falling back to a 
-// cubic would mean to use a quadratic where possible and use a cubic only where necessary (i.e. if 
-// there has to be an inflection point, i think)
-// 
 /*
 // optimized computation for s0,s1 cae in function above:
 TCor dx, dy, ss, k, s1dx;
@@ -401,6 +383,21 @@ a[2] = (ss*dx - 2*dy)*k;
 b[2] = (2*s0*s1dx - ss*dy)*k;
 // make optimized versions for all cases...
 */
+
+template<class T>
+void quadraticOrCubicSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T dy1, 
+  T* a, T* b)
+{
+  bool success = quadraticSplineArcCoeffs2D(x0, dx0, y0, dy0, x1, dx1, y1, dy1, a, b);
+  if(!success)
+    cubicSplineArcCoeffs2D(x0, dx0, y0, dy0, x1, dx1, y1, dy1, a, b);
+    //quadraticLineCoeffs2D(x0, y0, x1, y1, a, b); // preliminary - use cubic
+  else {
+    a[3] = 0;
+    b[3] = 0;
+  }
+}
+// it still sometimes seem to produce linear segments (try (2,3) lissjous figure with 11 samples)
 
 
 template<class T>

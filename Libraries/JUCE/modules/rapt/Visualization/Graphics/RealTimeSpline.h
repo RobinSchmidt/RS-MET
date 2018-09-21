@@ -25,8 +25,8 @@ public:
   enum drawModes
   {
     LINEAR = 0,
-    CUBIC_HERMITE,
     QUADRATIC,      // not yet optimized - probably not so useful anyway
+    CUBIC_HERMITE,
     // BRESENHAM,
     // WU,
     NUM_DRAW_MODES

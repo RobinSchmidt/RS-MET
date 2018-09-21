@@ -7,7 +7,7 @@ coefficients but no user parameters like cutoff, sampleRate, mode, etc. which ma
 in contexts where it is undesirable for each benign first-order filter to maintain the sampleRate 
 and other things itself. It also provides the bare coefficient computation formulas as static 
 member functions. Beware that the formulas as implemented here assume a positive sign convention 
-for feedback coeffs, i.t. they compute coeffs for the difference equation:
+for feedback coeffs, i.e. they compute coeffs for the difference equation:
 y[n] = b0*x[n] + b1*x[n-1] + a1*y[n-1] */
 
 template<class TSig, class TPar>
@@ -122,7 +122,9 @@ public:
     *a1 = -t;
   }
 
-  //// todo:
+  //// todo - but these need the sample-rate as input - can we reformulate the equations such that
+  //// we don't need the sample-rate...if w corresponds to some frequency in Hz then pi corresponds 
+  //// to the Nyquist frequency...
   //template<class T>
   //static void coeffsLowShelfNMM(T w, T g, T* b0, T* b1, T* a1);
 
@@ -147,6 +149,9 @@ public:
     x1 = newX1;
     y1 = newY1;
   }
+
+  // todo:
+  // void setup(int mode, TPar omega, TPar gain = TPar(1));
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -199,13 +204,16 @@ public:
     BYPASS = 0,
     LOWPASS_IIT,      // lowpass via impulse invariant transform
     HIGHPASS_MZT,     // highpass via matched-Z transform
+    //ALLPASS_MZT
+    LOWPASS_BLT,      // lowpass via bilinear transform
+    HIGHPASS_BLT,     // highpass via bilinear transform
     ALLPASS_BLT,      // allpass via bilinear transform
-    LOWSHELV_NMM,     // low shelving via nyquist magnitude match
-    HIGHSHELV_NMM,    // high shelving via nyquist magnitude match
     LOWSHELV_BLT,     // low shelving via bilinear transform
     HIGHSHELV_BLT,    // high shelving via bilinear transform
-    LOWPASS_BLT,      // lowpass via bilinear transform ...needs test
-    HIGHPASS_BLT      // highpass via bilinear transform ...needs test
+
+    LOWSHELV_NMM,     // low shelving via nyquist magnitude match
+    HIGHSHELV_NMM,    // high shelving via nyquist magnitude match
+
   };
   // \todo (maybe): let the user choose between LP/HP versions obtained via bilinear trafo and 
   // impulse invariant trafo, magnitude-matched trafo

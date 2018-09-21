@@ -81,6 +81,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   TPar g = shelvingGain;
   switch(mode)
   {
+    // handle these cases in baseclass:
   case LOWPASS_IIT:   { B::coeffsLowpassIIT(  w,    &this->b0, &this->b1, &this->a1); } break;
   case HIGHPASS_MZT:  { B::coeffsHighpassMZT( w,    &this->b0, &this->b1, &this->a1); } break;
   case ALLPASS_BLT:   { B::coeffsAllpassBLT(  w,    &this->b0, &this->b1, &this->a1); } break;
