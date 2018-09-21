@@ -369,25 +369,36 @@ void envelopeDeBeating()
   // try to remove the amplitude modulation from the envelope.
 
   double fs = 44100; // sample rate
-  double f1 = 100;   // frequency 1
-  double f2 = 105;   //           2
-  double a1 = 1;     // amplitude 1
-  double a2 = 0.0;   //           2
+  double f1 = 440;   // frequency 1
+  double f2 = 445;   //           2
+  double a1 = 0.5;   // amplitude 1
+  double a2 = 0.5;   //           2
   double d1 = 0.2;   // decay time 1
   double d2 = 0.2;   //            2
-  int N = 15000;      // number of samples
+  int N = 30000;     // number of samples
 
+  // set up a modal filter bank to produce the output:
   RAPT::rsModalFilterBank<double, double> mfb;
   mfb.setSampleRate(fs);
-  //mfb.setModalParameters({ f1, f2 }, { a1, a2 }, { 0.5*d1, 0.5*d2 }, { d1, d2 }, { 0, 0 });  // attack-maximum is where expected
-  mfb.setModalParameters({ f1, f2 }, { a1, a2 }, { 5*d1, 5*d2 }, { d1, d2 }, { 0, 0 }); // this works - somewhere there's a factor 0.1?
+  mfb.setReferenceAttack(0.2);
+  mfb.setReferenceFrequency(f1);
+  mfb.setModalParameters({ 1, f2/f1 }, { a1, a2 }, { d1, d2 }, { d1, d2 }, { 0, 0 });
 
-
+  // create signal:
   std::vector<double> x(N), env(N);
   int n;
   x[0] = mfb.getSample(1);
   for(n = 1; n < N; n++)
     x[n] = mfb.getSample(0);
+
+  // obtain amp-envelope (maybe use instantaneous envelope algorithm):
+
+
+  // de-beat:
+  // ideas:
+  // -connect peaks (by lines or splines)
+  // -filter out beating frequencies (requires to know/estimate them first)
+  // -use a variation of the "True-Envelope" algorithm applied to the time-domain signal
 
 
   plotData(N, 0, 1/fs, &x[0]);
