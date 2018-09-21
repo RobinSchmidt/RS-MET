@@ -41,7 +41,7 @@ public:
     *b0 = 1 - *a1;
     *b1 = 0;
     // w < 0:   ...
-    // w = 0:   b0 = 0, a1 = 1 -> silence
+    // w = 0:   b0 = 0, a1 = 1 -> silence or DC
     // w = pi:  nothing special
     // w = inf: b0 = 1, a1 = 0 -> bypass
   }
@@ -74,6 +74,8 @@ public:
     // tan(0) = 0, tan(pi/2) = inf, tan(pi) = 0
   }
   // https://en.wikipedia.org/wiki/Bilinear_transform
+  // todo: catch the special case |t| == inf by setting coeffs to the limiting values
+  // ...maybe make "safe" versions of these functions coeffsAllpassSafeBLT or something
 
   /** Lowpass via bilinear transform (from DAFX) */
   template<class T>
@@ -259,10 +261,11 @@ protected:
   // filter parameters:
   TPar cutoff;
   TPar shelvingGain;
+  TPar freqToOmega; // = 2*PI/sampleRate, conversion factor from physical to digital frequency
   int  mode;
 
-  TPar sampleRate;
-  TPar sampleRateRec;  // reciprocal of the sampleRate 
+  //TPar sampleRate;
+  //TPar sampleRateRec;  // reciprocal of the sampleRate 
   // instead of these two, keep only 2*PI/sampleRate, i.e. the freqToOmega factor
 };
 

@@ -308,6 +308,7 @@ void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
   T den, k; 
   T tol = T(1.e-6); // use (some multiple of) epsilon of T
 
+  // catch 0/0 cases:
   if(  (abs(dx0) < tol && abs(dy0) < tol) 
     || (abs(dx1) < tol && abs(dy1) < tol) )
   {
@@ -362,6 +363,11 @@ void quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
     }
   }
 }
+// todo: instead of just falling back to computing line-coeffs, return false and let the caller 
+// handle this case. the caller may fall back to a line or a cubic or whatever. falling back to a 
+// cubic would mean to use a quadratic where possible and use a cubic only where necessary (i.e. if 
+// there has to be an inflection point, i think)
+// 
 /*
 // optimized computation for s0,s1 cae in function above:
 TCor dx, dy, ss, k, s1dx;

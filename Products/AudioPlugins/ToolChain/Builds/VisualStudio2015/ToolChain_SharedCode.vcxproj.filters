@@ -2530,6 +2530,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RectangleComponent.cpp">
       <Filter>Juce Modules\jura_framework\gui\misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RepaintManager.cpp">
+      <Filter>Juce Modules\jura_framework\gui\misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystem.cpp">
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClCompile>
@@ -6673,6 +6676,9 @@
       <Filter>Juce Modules\jura_framework\gui\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RectangleComponent.h">
+      <Filter>Juce Modules\jura_framework\gui\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RepaintManager.h">
       <Filter>Juce Modules\jura_framework\gui\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystem.h">

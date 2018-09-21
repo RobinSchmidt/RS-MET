@@ -15,10 +15,8 @@ rsOnePoleFilter<TSig, TPar>::rsOnePoleFilter()
 template<class TSig, class TPar>
 void rsOnePoleFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
-  if( newSampleRate > 0.0 )
-    sampleRate = newSampleRate;
-  sampleRateRec = 1.0 / sampleRate;
-
+  if(newSampleRate > 0.0)
+    freqToOmega = 2*PI/newSampleRate;
   calcCoeffs();
   return;
 }
@@ -69,7 +67,7 @@ void rsOnePoleFilter<TSig, TPar>::setShelvingGainInDecibels(TPar newGain)
 template<class TSig, class TPar>
 TPar rsOnePoleFilter<TSig, TPar>::getMagnitudeAt(TPar f)
 {
-  return onePoleMagnitudeAt(this->b0, this->b1, -this->a1, 2*PI*f*sampleRateRec);
+  return onePoleMagnitudeAt(this->b0, this->b1, -this->a1, freqToOmega*f);
     // we use a different sign-convention for the a1 coefficient here ...maybe fix this someday
 }
 
@@ -79,12 +77,7 @@ template<class TSig, class TPar>
 void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
 {
   typedef rsFirstOrderFilterBase<TSig, TPar> B; // B for "baseclass"
-
-  // maybe move these to FilterDesignFormulas - factor out, maybe together with biquad formulas
-  // BUT: make sure to be clear about the sign-convention for feedback coeffs. here we assume
-  // that the feedback coeffs are used with positive sign in the filter update
-  // these functions should then take only an omega as input (omega: w = 2*PI*cutoff/sampleRate)
-  TPar w = 2.0*PI*cutoff*sampleRateRec;
+  TPar w = freqToOmega*cutoff;
   TPar g = shelvingGain;
   switch(mode)
   {
@@ -96,19 +89,20 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
   case LOWSHELV_BLT:  { B::coeffsLowShelfBLT( w, g, &this->b0, &this->b1, &this->a1); } break;
   case HIGHSHELV_BLT: { B::coeffsHighShelfBLT(w, g, &this->b0, &this->b1, &this->a1); } break;
 
-  // these two need clean-up:
+  // these two need clean-up (and tests):
   case LOWSHELV_NMM:
     {
       // formula derived as special case of the Orfanidis equalizers:
       // TPar g    = rsDB2amp(shelvingGain);
       //TPar g    = shelvingGain;
-      TPar wc   = 2*PI*cutoff*sampleRateRec;
-      TPar wa   = 2*sampleRate*tan(wc/2);
+      //TPar wc   = 2*PI*cutoff*sampleRateRec;
+      TPar sampleRate = 2*PI/freqToOmega;
+      TPar wa   = 2*sampleRate*tan(w/2);
       TPar gb   = rsSqrt(g);
       TPar beta = rsSqrt( (gb*gb-1)/(g*g-gb*gb) );
       TPar pa   = -beta*wa;
       TPar za   = -g*beta*wa;
-      TPar s    = 0.5*sampleRateRec;
+      TPar s    = 0.5/sampleRate;
       TPar p    = (1+s*pa)/(1-s*pa);
       TPar z    = (1+s*za)/(1-s*za);
       b1        = -z;
@@ -125,13 +119,14 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       // formula derived as special case of the Orfanidis equalizers:
       //TPar g    = rsDB2amp(shelvingGain);  // wrong? shelvingGain is already linear
       //TPar g    = shelvingGain;
-      TPar wc   = 2*PI*cutoff*sampleRateRec; // redundant with w
-      TPar wa   = 2*sampleRate*tan(wc/2);
+      //TPar wc   = 2*PI*cutoff*sampleRateRec; // redundant with w
+      TPar sampleRate = 2*PI/freqToOmega;
+      TPar wa   = 2*sampleRate*tan(w/2);
       TPar gb   = rsSqrt(g);
       TPar beta = rsSqrt( (gb*gb-1)/(g*g-gb*gb) );
       TPar pa   = -beta*wa;
       TPar za   = -g*beta*wa;
-      TPar s    = 0.5*sampleRateRec;
+      TPar s    = 0.5/sampleRate;
       TPar p    = (1+s*pa)/(1-s*pa);
       TPar z    = (1+s*za)/(1-s*za);
       b1        = -p;
