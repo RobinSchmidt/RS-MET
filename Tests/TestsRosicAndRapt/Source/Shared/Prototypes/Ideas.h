@@ -3,7 +3,7 @@
 
 
 /*
-Graph synth:
+Graph synth ("Edge"):
 -there's a set of N vertices all of which have: 
  -x,y position
  -a list of connected other vertices, this list may contain duplications, for example, vertex 2 
@@ -15,6 +15,21 @@ Graph synth:
  list[k+1]
 -maybe the vertices themselves could move around in space (this needs to be updated only as often 
  as we visit a vertex)
+-maybe each edge (i.e. transition between two vertices) may have a transtion time associated with 
+ it
+-user may enter vertex tables in a text editor like:
+
+1 0 0
+0 2 3
+1 3 2
+
+1 1 0 2 3 1 2
+
+means: 3 vertices, bottom line is a sequence of transition times (if missing, transition times are
+all unity), 
+or:
+
+[1 0 0],[0 2 3],[1 3 2]
 
 -parametric equations:
  4-leaf clover: 

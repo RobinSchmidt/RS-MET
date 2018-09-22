@@ -462,7 +462,8 @@ void envelopeDeBeating()
   //   transformation and its inverse)..maybe take y = log(1+x) and x = exp(y)-1 to avoid
   //   log-of-zero problems
 
-  plotData(N, 0, 1/fs, &x[0], &env[0]);
+  plotData(N, 0, 1, &x[0], &env[0]);    // time axis in samples
+  //plotData(N, 0, 1/fs, &x[0], &env[0]); // time axis in seconds
 }
 
 void sineRecreation()

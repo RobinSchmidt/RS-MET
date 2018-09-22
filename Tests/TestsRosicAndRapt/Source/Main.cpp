@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
   //hilbertCurve();
   //circleFractals(); // rename to spirograph
   //lindenmayer();
-  triSawOsc();
+  //triSawOsc();
   //xoxosOsc();
 
   // Graphics:

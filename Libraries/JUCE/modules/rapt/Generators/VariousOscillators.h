@@ -63,10 +63,12 @@ public:
   inline void updatePhase()
   {
     p += inc;
-    while(p > 1)
-      p -= 1;
-    // maybe do also a wraparound at 0 -> allow negative frequencies
+    while(p >= 1) p -= 1;
+    while(p <  0) p += 1;
   }
+  // maybe factor out into a Phasor class - that could also have a phase-input (for 
+  // phase-modulation)...but this would require the wrap-around code in the update *and* in the
+  // read-out code
 
   /** Given a value between -1..1 (supposed to be the raw TriSaw output), this applies the shape
   formula with parameters t for the tension and s for the sigmoidity. */
