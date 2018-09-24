@@ -722,6 +722,9 @@ void triSawOscAntiAlias()
     x[n] = amp * osc.getSample();
   }
   rosic::writeToMonoWaveFile("TriSawSweep-AntiSigmoidLimited.wav", &x[0], N, 44100, 16);
+  // 20 sounds good, but it probably also be a function of asymmetry setting -> more asymmetry 
+  // should give more limiting...maybe use minSigmo = -2 + (k1+k2*|asym|)*inc where asym is the
+  // already limited asymmetry
 
 }
 

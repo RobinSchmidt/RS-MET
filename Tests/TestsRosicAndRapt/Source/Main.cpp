@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
   //circleFractals(); // rename to spirograph
   //lindenmayer();
   //triSawOsc();
-  triSawOscAntiAlias();
+  //triSawOscAntiAlias();
   //xoxosOsc();
 
   // Graphics:
@@ -282,7 +282,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-  //envelopeDeBeating();
+  envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
   //partialExtractionTriple();

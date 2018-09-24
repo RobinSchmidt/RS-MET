@@ -363,9 +363,9 @@ void biDirectionalFilter()
 }
 
 template<class T>
-std::vector<int> findPeakIndices(T* x, int N, bool includeFirst = false, bool includeLast = false)
+std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false, bool includeLast = false)
 {
-  std::vector<int> peaks;
+  std::vector<size_t> peaks;
 
   if(N == 0)
     return peaks;
@@ -379,8 +379,8 @@ std::vector<int> findPeakIndices(T* x, int N, bool includeFirst = false, bool in
       peaks.push_back(0); // the one and only element is a "peak"
   }
 
-  for(int n = 1; n < N-1; n++) {
-    if( RAPT::rsArray::isPeakOrPlateau(x, n) )
+  for(size_t n = 1; n < N-1; n++) {
+    if( RAPT::rsArray::isPeakOrPlateau(x, (int)n) )
       peaks.push_back(n);
   }
 
@@ -404,6 +404,24 @@ std::vector<int> findPeakIndices(T* x, int N, bool includeFirst = false, bool in
 //     * * *       * *     *  
 // seems better for envelope extraction
 
+template<class T>
+void getAmpEnvelope(T* x, int N, std::vector<T>& sampleTime, std::vector<T>& envValue)
+{
+  std::vector<T> xAbs(N);
+  RAPT::rsArray::applyFunction(&x[0], &xAbs[0], N, fabs);                  // absolute value
+  std::vector<size_t> peakIndices = findPeakIndices(&xAbs[0], N, true, true); // peak indices
+
+  // peak coordinates:
+  size_t M = peakIndices.size();
+  sampleTime.resize(M); 
+  envValue.resize(M);
+  for(size_t m = 0; m < M; m++) {
+    size_t n = peakIndices[m];
+    sampleTime[m] = (T) n;
+    envValue[m]   = xAbs[n];
+  }
+}
+
 
 void envelopeDeBeating()
 {
@@ -418,7 +436,7 @@ void envelopeDeBeating()
   double a2 = 0.5;   //           2
   double d1 = 0.2;   // decay time 1
   double d2 = 0.3;   //            2
-  int N = 5000;     // number of samples
+  int N = 30000;     // number of samples
   // If amplitudes and decay-times of both sinusoids are the same, the beating is most extreme
 
   // set up a modal filter bank to produce the output:
@@ -437,8 +455,14 @@ void envelopeDeBeating()
   rsSineEnvelopeViaQuadrature(&x[0], &env[0], N, (f1+f2)/2, fs, 2.0);
    // todo: maybe use instantaneous envelope algorithm
 
-  std::vector<int> peakIndices = findPeakIndices(&env[0], N);
+  Vec envTime, envValue;
+  getAmpEnvelope(&x[0], N, envTime, envValue);
+  int dummy =  0;
 
+  // todo: maybe make a class rsInterpolatingFunction
+  // setData(T *x, T* y, int N);
+  // setInterpolationMethod (linear, cubic spline, etc.)
+  // setTransform(forward, inverse); // like log/exp, square/sqrt, etc. nonlinear transform
 
 
   // de-beat:
@@ -462,7 +486,14 @@ void envelopeDeBeating()
   //   transformation and its inverse)..maybe take y = log(1+x) and x = exp(y)-1 to avoid
   //   log-of-zero problems
 
-  plotData(N, 0, 1, &x[0], &env[0]);    // time axis in samples
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays((int)envTime.size(), &envTime[0], &envValue[0]);
+  plt.plot();
+
+
+  //plotData(N, 0, 1, &x[0], &env[0]);    // time axis in samples
   //plotData(N, 0, 1/fs, &x[0], &env[0]); // time axis in seconds
 }
 
