@@ -15,6 +15,7 @@ void circleFractals();
 void hilbertCurve();
 void lindenmayer();
 void triSawOsc();
+void triSawOscAntiAlias();
 void xoxosOsc();
 
 

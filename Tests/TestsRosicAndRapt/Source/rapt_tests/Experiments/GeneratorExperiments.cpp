@@ -621,6 +621,52 @@ void triSawOsc()
   plt.plot();
 }
 
+void triSawOscAntiAlias()
+{
+  // We create an exponential sweep with the TriSaw oscillator and write it into a wave file for 
+  // investigating the aliasing behavior. As a crude and simple form of anti-aliasing, we limit the
+  // asymmetry parameter in a way to achieve some minimum absolute number of samples for the 
+  // transition.
+
+  double fs = 44100;   // sample rate
+  double fL = 500;     // lower frequency
+  double fU = fs/2;    // upper frequency
+  double length = 4;   // length in seconds
+  double asym   =  1;  // asymmetry
+  double sigmo  =  0;  // sigmoidity
+  double trans  =  2;  // minimum number of samples for transition
+  double amp    = 0.8; // amplitude
+
+  int N = (int) ceil(length*fs);
+
+  std::vector<double> f(N), x(N), xa(N);
+  RAPT::rsArray::fillWithRangeExponential(&f[0], N, fL, fU);
+
+  RAPT::rsTriSawOscillator<double> osc;
+  osc.setAsymmetry(asym);
+  osc.setAttackSigmoid(sigmo);
+  int n;
+
+  for(n = 0; n < N; n++) {
+    osc.setPhaseIncrement(f[n]/fs);
+    x[n] = amp * osc.getSample();
+  }
+  rosic::writeToMonoWaveFile("TriSawSweepNoAA.wav", &x[0], N, 44100, 16);
+
+  double tmp;
+  osc.reset();
+  for(n = 0; n < N; n++) {
+    osc.setPhaseIncrement(f[n]/fs);
+    tmp = osc.asymForTransitionSamples(trans);
+    tmp = RAPT::rsClip(asym, -tmp, tmp);
+    osc.setAsymmetry(tmp);
+    x[n] = amp * osc.getSample();
+  }
+  rosic::writeToMonoWaveFile("TriSawSweepLimitedAsym.wav", &x[0], N, 44100, 16);
+
+
+}
+
 void xoxosOsc()
 {
   // Oscillator based on an ellipse in the xy-plane
