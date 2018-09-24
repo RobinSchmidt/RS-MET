@@ -650,7 +650,7 @@ void triSawOscAntiAlias()
     osc.setPhaseIncrement(f[n]/fs);
     x[n] = amp * osc.getSample();
   }
-  rosic::writeToMonoWaveFile("TriSawSweepNoAA.wav", &x[0], N, 44100, 16);
+  rosic::writeToMonoWaveFile("TriSawSweep-SawNoAA.wav", &x[0], N, 44100, 16);
 
   double trans  =  2;  // minimum number of samples for transition
   double tmp;
@@ -662,7 +662,7 @@ void triSawOscAntiAlias()
     osc.setAsymmetry(tmp);
     x[n] = amp * osc.getSample();
   }
-  rosic::writeToMonoWaveFile("TriSawSweepLimitedAsym.wav", &x[0], N, 44100, 16);
+  rosic::writeToMonoWaveFile("TriSawSweep-SawLimitedAsym.wav", &x[0], N, 44100, 16);
 
   // maybe the minimum number of transition samples should itself be a function of frequency (i.e.
   // in create with frequency). For low frequencies, there should be no limit in order to not have 
@@ -679,13 +679,50 @@ void triSawOscAntiAlias()
     osc.setAsymmetry(tmp);
     x[n] = amp * osc.getSample();
   }
-  rosic::writeToMonoWaveFile("TriSawSweepLimitedAsym2.wav", &x[0], N, 44100, 16);
+  rosic::writeToMonoWaveFile("TriSawSweep-SawDynamicallyLimitedAsym.wav", &x[0], N, 44100, 16);
   // hmm...no the function trans(inc) = k1*inc + k2*inc^2 seems not suitable. in the low frequency 
   // range there's not enough limiting - we need a function that rises faster intitially - maybe 
   // once again, the rational map could be used.
   // ...maybe experiment with that in ToolChain
   // inc = k1 * ratMap(2*inc, k2); 
   // use 2*inc because at fs/2 the increment is 0.5 - at that freq, we want the limit to be k1
+
+
+  // to do something similar with the sigmoidity, we would need to set a lower limit for the 
+  // sigmoidity
+  // sigmo = rsMax(sigmoSetting, minSigmo)
+  // where minSigmo should be some function of the increment, we should probably want:
+  // minSigmo(inc=0.25) = 1 such that a triangle turns into a sine when inc=0.25
+  // minSigmo = rsMin(1, k0 + k1*inc)
+  // k0 should probably be = -2, so we may reach sigmo = -2 at inc = 0 (which is the lowest 
+  // meaningful setting)
+  // OK - let's create a sweep with 0 asymmetry and full negative sigmoidity for reference:
+  sigmo = -2;
+  osc.setAsymmetry(0);
+  osc.setAttackSigmoid(-2);
+  osc.setDecaySigmoid( -2);
+  osc.reset();
+  for(n = 0; n < N; n++) {
+    osc.setPhaseIncrement(f[n]/fs);
+    x[n] = amp * osc.getSample();
+  }
+  rosic::writeToMonoWaveFile("TriSawSweep-AntiSigmoidNoAA.wav", &x[0], N, 44100, 16);
+
+  // now with sigmoidity limiting:
+  k1 = 20; // with k1=12 at inc=0.25, minSigmo becomes 1 (12*0.25=3), 20 sounds good
+  double minSigmo;
+  osc.reset();
+  for(n = 0; n < N; n++) {
+    inc   = f[n]/fs;
+    minSigmo = RAPT::rsMin(1.0, -2 + k1*inc);
+    tmp = rsMax(sigmo, minSigmo);
+    osc.setAttackSigmoid(tmp);
+    osc.setDecaySigmoid( tmp);
+    osc.setPhaseIncrement(inc);
+    x[n] = amp * osc.getSample();
+  }
+  rosic::writeToMonoWaveFile("TriSawSweep-AntiSigmoidLimited.wav", &x[0], N, 44100, 16);
+
 }
 
 void xoxosOsc()
