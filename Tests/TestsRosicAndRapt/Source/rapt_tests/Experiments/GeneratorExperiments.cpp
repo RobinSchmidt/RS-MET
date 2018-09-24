@@ -634,7 +634,6 @@ void triSawOscAntiAlias()
   double length = 4;   // length in seconds
   double asym   =  1;  // asymmetry
   double sigmo  =  0;  // sigmoidity
-  double trans  =  2;  // minimum number of samples for transition
   double amp    = 0.8; // amplitude
 
   int N = (int) ceil(length*fs);
@@ -653,6 +652,7 @@ void triSawOscAntiAlias()
   }
   rosic::writeToMonoWaveFile("TriSawSweepNoAA.wav", &x[0], N, 44100, 16);
 
+  double trans  =  2;  // minimum number of samples for transition
   double tmp;
   osc.reset();
   for(n = 0; n < N; n++) {
@@ -664,7 +664,28 @@ void triSawOscAntiAlias()
   }
   rosic::writeToMonoWaveFile("TriSawSweepLimitedAsym.wav", &x[0], N, 44100, 16);
 
-
+  // maybe the minimum number of transition samples should itself be a function of frequency (i.e.
+  // in create with frequency). For low frequencies, there should be no limit in order to not have 
+  // too much lowpass character in the signal...
+  double k1 = 8, k2 = 0;
+  double inc;
+  osc.reset();
+  for(n = 0; n < N; n++) {
+    inc   = f[n]/fs;
+    trans = k1*inc + k2*inc*inc;
+    osc.setPhaseIncrement(inc);
+    tmp = osc.asymForTransitionSamples(trans);
+    tmp = RAPT::rsClip(asym, -tmp, tmp);
+    osc.setAsymmetry(tmp);
+    x[n] = amp * osc.getSample();
+  }
+  rosic::writeToMonoWaveFile("TriSawSweepLimitedAsym2.wav", &x[0], N, 44100, 16);
+  // hmm...no the function trans(inc) = k1*inc + k2*inc^2 seems not suitable. in the low frequency 
+  // range there's not enough limiting - we need a function that rises faster intitially - maybe 
+  // once again, the rational map could be used.
+  // ...maybe experiment with that in ToolChain
+  // inc = k1 * ratMap(2*inc, k2); 
+  // use 2*inc because at fs/2 the increment is 0.5 - at that freq, we want the limit to be k1
 }
 
 void xoxosOsc()
