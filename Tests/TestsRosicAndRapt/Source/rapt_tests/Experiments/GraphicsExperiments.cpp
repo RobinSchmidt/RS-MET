@@ -305,6 +305,7 @@ void phaseScopeLissajous()
   //psb.setLineDensity(0.3f);
   //psb.setPixelSpread(0.0f);
   //psb.setSize(800, 800);
+  //psb.setOneDimensionalMode(true); // for debug
 
   // create image:
   psb.reset();

@@ -460,6 +460,21 @@ void expGaussBell()
   plt.plot();
 }
 
+double remap2D_1(double x, double y)
+{
+  return x*y; // preliminary
+
+}
+void twoParamRemap()
+{
+  int N = 21;
+
+  GNUPlotter plt;
+  plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &remap2D_1); 
+  //plt.addDataArrays(N, &x[0], &y[0]);
+  plt.plot3D();
+}
+
 // fun stuff:
 
 //=================================================================================================

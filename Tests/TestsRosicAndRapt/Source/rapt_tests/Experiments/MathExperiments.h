@@ -10,6 +10,7 @@ void productLogPlot();
 void sinCosTable();
 void expBipolar();
 void expGaussBell();
+void twoParamRemap();
 
 // move to something like FunExperiments (maybe copy the mandelbrot stuff over there, too)
 bool groupString();
