@@ -462,16 +462,38 @@ void expGaussBell()
 
 double remap2D_1(double x, double y)
 {
-  return x*y; // preliminary
+  //return x*y; // preliminary
 
+  // let x = bend, y = bendAsym
+  double xAbs = x;
+  double target  = 1;
+  if(x < 0) {
+    xAbs   = -x;
+    target = -target;
+  }
+  return RAPT::rsLinToLin(xAbs, 0.0, 1.0, y, target);
+}
+double remap2D_2(double x, double y)
+{
+  double xAbs = x;
+  double target  = 1;
+  if(x < 0) {
+    xAbs   = -x;
+    target = -target;
+  }
+  return RAPT::rsLinToLin(xAbs, 0, 1, -y, target);
 }
 void twoParamRemap()
 {
-  int N = 21;
+  // ...figure out, if for every output pair (z1,z2) there is an input pair (x,y) that leads to
+  // the desired output pair...maybe try to find the inverse function 
+  // we have (z1,z2) = f(x,y) -> find (x,y) = g(z1,z2) where g is the inverse of z
+
+  int N = 11;
 
   GNUPlotter plt;
   plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &remap2D_1); 
-  //plt.addDataArrays(N, &x[0], &y[0]);
+  plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &remap2D_2); 
   plt.plot3D();
 }
 
