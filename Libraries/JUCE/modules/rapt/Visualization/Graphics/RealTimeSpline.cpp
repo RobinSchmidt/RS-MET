@@ -17,8 +17,9 @@ void rsRealTimeSpline<TCor, TWgt>::setDotBuffers(TCor* bufX, TCor* bufY, TWgt* b
 template<class TCor, class TWgt>
 int rsRealTimeSpline<TCor, TWgt>::updateDotBuffers(TCor inX, TCor inY)
 {
-  rsArray::pushFrontPopBack4(inX, x);
-  rsArray::pushFrontPopBack4(inY, y);
+  //rsArray::pushFrontPopBack4(inX, x);
+  //rsArray::pushFrontPopBack4(inY, y);
+  updatePointBuffers(inX, inY);
 
   if(density == 0.f) {
     dotsX[0] = inX;
@@ -33,6 +34,22 @@ int rsRealTimeSpline<TCor, TWgt>::updateDotBuffers(TCor inX, TCor inY)
   case CUBIC_HERMITE: return dotsCubicHermite();
   case QUADRATIC:     return dotsQuadratic();
   default:            return 0;
+  }
+}
+
+template<class TCor, class TWgt>
+void rsRealTimeSpline<TCor, TWgt>::updatePointBuffers(TCor newX, TCor newY)
+{
+  rsArray::pushFrontPopBack4(newX, x);
+  rsArray::pushFrontPopBack4(newY, y);
+}
+
+template<class TCor, class TWgt>
+void rsRealTimeSpline<TCor, TWgt>::shiftPointBuffers(TCor shiftX, TCor shiftY)
+{
+  for(int i = 0; i < 3; i++) {
+    x[i] += shiftX;
+    y[i] += shiftY;
   }
 }
 

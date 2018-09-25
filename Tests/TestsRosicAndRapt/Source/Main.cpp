@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
   //probabilityLogic();
   //productLogPlot();
   //sinCosTable();
-  twoParamRemap();
+  //twoParamRemap();
 
   // Filter:
   //bandSplittingTwoWay();
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
   //lineJoints();
   //lineTo();
   //polyLineRandom();
-  //phaseScopeLissajous();
+  phaseScopeLissajous();
   //splineArc();
   //triangles();
   //pixelCoverage();

@@ -153,6 +153,8 @@ public:
 
 protected:
 
+  virtual void moveTo(TSig newX, TSig newY);
+
   /** Adds a new line- or spline to the given x,y coordinates (in pixel coordinates).  */
   virtual void addSegmentTo(TSig x, TSig y);
 

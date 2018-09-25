@@ -172,7 +172,11 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 
   // transform to pixel coordinates and draw line:
   toPixelCoordinates(x, y);
-  addSegmentTo(x, y);
+
+  if(screenScanner.resetOccurred())
+    moveTo(x, y);        // start a new segment without drawing a connection from old datapoint
+  else
+    addSegmentTo(x, y);  // connect old datapoint with current
 }
 
 template<class TSig, class TPix, class TPar>
@@ -187,6 +191,13 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
   clearImage();
   scanPos = 0.0;
   splineGen.reset(TSig(0.5*image.getWidth()), TSig(0.5*image.getHeight()));
+}
+
+template<class TSig, class TPix, class TPar>
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::moveTo(TSig newX, TSig newY)
+{
+  splineGen.updatePointBuffers(newX, newY);
+  splineGen.shiftPointBuffers(-TSig(image.getWidth()), TSig(0));
 }
 
 template<class TSig, class TPix, class TPar>

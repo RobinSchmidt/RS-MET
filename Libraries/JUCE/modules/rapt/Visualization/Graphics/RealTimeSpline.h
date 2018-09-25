@@ -77,6 +77,13 @@ public:
   via setDotBuffers.  */
   int updateDotBuffers(TCor newX, TCor newY);
 
+
+  void updatePointBuffers(TCor newX, TCor newY);
+
+  void shiftPointBuffers(TCor shiftX, TCor shiftY);
+
+
+
   /** Resets the input point buffers to the given coodinate values. You will typically want to pass
   incoordinates that correspond to the origin of you coordinate system, either in pixel coordinates
   or in normalized device coordinates. */

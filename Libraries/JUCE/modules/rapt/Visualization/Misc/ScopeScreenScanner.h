@@ -41,6 +41,16 @@ public:
   ///** Sets a zoom factor. */
   //void setZoom(double newZoom);
 
+  //---------------------------------------------------------------------------------------------
+  // \name Inquiry:
+
+  /** Returns true if in the most recent call to getSample(), a reset event occurred. When calling 
+  this after getSample, calling code can figure out, if the x-ccordinate was reset due the 
+  getSample call and my decide to not connect the datapoints between the old and new/current 
+  sample. */
+  bool resetOccurred() { return samplesSinceReset == 0; }
+  // maybe we need to use samplesSinceReset == 1 because when getSample calls reset, the returned
+  // value does not yet inlude the jump - the value jump will occur in the next call
 
   //---------------------------------------------------------------------------------------------
   // \name Audio Processing
@@ -61,7 +71,6 @@ protected:
   T sampleRate, scanFreq, zoom;
   T sawPhase, sawInc;  // sawtooth phase and increment
   bool sync;
-
   T xOld;
 
   int samplesSinceReset, samplesSinceLastZero; 
@@ -79,17 +88,20 @@ inline T rsScopeScreenScanner<T>::getSample(T in)
 {
   T result = sawPhase;
   sawPhase += sawInc;
+  samplesSinceReset++;
 
   if(!sync)
   {
-    if(sawPhase > 1)
+    if(sawPhase > 1) {
       sawPhase -= 1;
+      samplesSinceReset = 0;
+    }
     return result;
   }
 
   // If we are here, we are in sync mode:
   in = lowpass.getSample(in); 
-  samplesSinceReset++;
+
   samplesSinceLastZero++;
   if(samplesSinceLastZero >= minZeroDistance)
   {
