@@ -489,12 +489,19 @@ void twoParamRemap()
   // the desired output pair...maybe try to find the inverse function 
   // we have (z1,z2) = f(x,y) -> find (x,y) = g(z1,z2) where g is the inverse of z
 
-  int N = 11;
+  // maybe plot contour lines on both functions z1(x,y), z2(x,y) and see if every possible pair
+  // of such contour lines has at least one intersection - done - yes - that seems to work
 
+  int N = 21;
   GNUPlotter plt;
   plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &remap2D_1); 
-  plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &remap2D_2); 
+  plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &remap2D_2);
+  plt.addCommand("set contour");
+  plt.addCommand("set cntrparam levels incr -1,0.2,1");
+  plt.addCommand("set view 0, 0");
   plt.plot3D();
+
+  //http://gnuplot.sourceforge.net/demo/contours.html
 }
 
 // fun stuff:
