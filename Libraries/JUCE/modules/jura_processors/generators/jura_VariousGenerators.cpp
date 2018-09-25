@@ -104,7 +104,7 @@ void TriSawOscModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setAsymmetry);
 
-  /*
+
   // for later, to replace AttackBending and DecayBending parameters - but that doesn't work yet:
   p = new Param("Bending", -1.0, 1.0, 0.0, Parameter::LINEAR);
   //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
@@ -115,8 +115,9 @@ void TriSawOscModule::createParameters()
   //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
   addObservedParameter(p);
   p->setValueChangeCallback<TriSawOscModule>(this, &TriSawOscModule::setBendAsym);
-  */
+
   
+  /*
   p = new Param("AttackBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
   //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
   //defaultValues.clear();
@@ -133,6 +134,7 @@ void TriSawOscModule::createParameters()
   //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setDecayBending);
+  */
 
 
   p = new Param("AttackSigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
@@ -217,10 +219,12 @@ void TriSawOscModule::updateBending()
   // hmm..well when bend b=1 and bendAsym a=1 then
   // ba = b+a = 2, bd = b-a = 0 but we actually want ba = 1, bd = 0
 
-  // that's not yet very nice:
-  oscCore.setAttackBending(rosic::clip(bend + bendAsym, -1., +1.) );
-  oscCore.setDecayBending( rosic::clip(bend - bendAsym, -1., +1.) );
-  // but maybe it doesn't get any better
+
+  //// that's not yet very nice:
+  //oscCore.setAttackBending(rosic::clip(bend + bendAsym, -1., +1.) );
+  //oscCore.setDecayBending( rosic::clip(bend - bendAsym, -1., +1.) );
+  //// but maybe it doesn't get any better
+
 
   //// this?
   //double s = 1 / (1 + abs(bendAsym));  // -1..1 -> 1..0..1
@@ -234,6 +238,23 @@ void TriSawOscModule::updateBending()
   //double s = 1 / sqrt(1 + bend*bend + bendAsym*bendAsym);
   //oscCore.setAttackBending(s * (bend+bendAsym));
   //oscCore.setDecayBending( s * (bend-bendAsym));
+
+
+  // from here: https://github.com/RobinSchmidt/RS-MET/issues/235#issuecomment-424092660
+  double bendAbs = bend;
+  double target  = 1;
+  if(bend < 0) {
+    bendAbs = -bend;
+    target  = -target;
+  }
+  oscCore.setAttackBending(juce::jmap(bendAbs,  bendAsym, target));
+  oscCore.setDecayBending( juce::jmap(bendAbs, -bendAsym, target));
+  // jmap Remaps a normalised value (between 0 and 1) to a target range.
+  // This effectively returns (targetRangeMin + value0To1 * (targetRangeMax - targetRangeMin)).
+  // why does this work? is really every possible combination of attack-bend and decay-bend 
+  // reachable? ...plot attack-bending as funtion of bend and bendAsym
+
+
 
 
 

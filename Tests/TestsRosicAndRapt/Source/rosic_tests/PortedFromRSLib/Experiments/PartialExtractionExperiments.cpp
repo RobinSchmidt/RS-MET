@@ -422,6 +422,20 @@ void getAmpEnvelope(T* x, int N, std::vector<T>& sampleTime, std::vector<T>& env
   }
 }
 
+template<class T>
+void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY)
+{
+  std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);
+  size_t M = peakIndices.size();
+  peaksX.resize(M); 
+  peaksY.resize(M);
+  for(size_t m = 0; m < M; m++) {
+    size_t n = peakIndices[m];
+    peaksX[m] = x[n];
+    peaksY[m] = y[n];
+    // todo: refine to subsample-precision
+  }
+}
 
 void envelopeDeBeating()
 {
@@ -457,7 +471,9 @@ void envelopeDeBeating()
 
   Vec envTime, envValue;
   getAmpEnvelope(&x[0], N, envTime, envValue);
-  int dummy =  0;
+
+  Vec envTime2, envValue2;
+  getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
 
   // todo: maybe make a class rsInterpolatingFunction
   // setData(T *x, T* y, int N);
@@ -489,7 +505,8 @@ void envelopeDeBeating()
 
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays((int)envTime.size(), &envTime[0], &envValue[0]);
+  plt.addDataArrays((int)envTime.size(),  &envTime[0],  &envValue[0]);
+  plt.addDataArrays((int)envTime2.size(), &envTime2[0], &envValue2[0]);
   plt.plot();
 
 
