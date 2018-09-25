@@ -460,10 +460,28 @@ void expGaussBell()
   plt.plot();
 }
 
+void remap2D(double in1, double in2, double* out1, double *out2)
+{
+  double abs1   = in1;
+  double target = 1;
+  if(in1 < 0) {
+    abs1   = -in1;
+    target = -target;
+  }
+  *out1 = RAPT::rsLinToLin(abs1, 0.0, 1.0,  in2, target);
+  *out2 = RAPT::rsLinToLin(abs1, 0.0, 1.0, -in2, target);
+}
+// in1:  primary parameter, some sort of "amount"
+// in2:  secondary parameter, some sort of "split", "difference", "distance"
+// out1: output amount 1
+// out2: output amount 2
+
 double remap2D_1(double x, double y)
 {
-  //return x*y; // preliminary
+  double out1, out2; remap2D(x, y, &out1, &out2);
+  return out1;
 
+  /*
   // let x = bend, y = bendAsym
   double xAbs = x;
   double target  = 1;
@@ -472,9 +490,14 @@ double remap2D_1(double x, double y)
     target = -target;
   }
   return RAPT::rsLinToLin(xAbs, 0.0, 1.0, y, target);
+  */
 }
 double remap2D_2(double x, double y)
 {
+  double out1, out2; remap2D(x, y, &out1, &out2);
+  return out2;
+
+  /*
   double xAbs = x;
   double target  = 1;
   if(x < 0) {
@@ -482,6 +505,7 @@ double remap2D_2(double x, double y)
     target = -target;
   }
   return RAPT::rsLinToLin(xAbs, 0, 1, -y, target);
+  */
 }
 void twoParamRemap()
 {
@@ -496,10 +520,25 @@ void twoParamRemap()
   GNUPlotter plt;
   plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &remap2D_1); 
   plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &remap2D_2);
-  plt.addCommand("set contour");
+  plt.addCommand("set hidden3d");
+  //plt.addCommand("set pm3d");
+  plt.addCommand("set palette gray");
+  plt.addCommand("set lmargin 0");         // margin between plot and left border
+  plt.addCommand("set tmargin 0");         // margin between plot and top border
+  plt.addCommand("set contour");       // draws contours on the base plane
+  //plt.addCommand("set contour surface"); // draws contours on the surface
+  //plt.addCommand("set contour both"); // draws contours on the surface and base plane
   plt.addCommand("set cntrparam levels incr -1,0.2,1");
+
+  //plt.addCommand("set palette rgbformulae 8, 9, 7");
+  //plt.addCommand("set style fill solid 1.0 noborder");
+  //plt.addCommand("set pm3d depthorder noborder");
+  //plt.addCommand("set pm3d lighting specular 0.6");
+
   plt.addCommand("set view 0, 0");
   plt.plot3D();
+
+
 
   //http://gnuplot.sourceforge.net/demo/contours.html
 }
