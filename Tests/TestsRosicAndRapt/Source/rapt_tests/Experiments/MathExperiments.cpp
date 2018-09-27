@@ -461,7 +461,7 @@ void expGaussBell()
 }
 
 
-void distributeAmounts(double amount, double spread, double* amount1, double *amount2)
+void spreadAmounts(double amount, double spread, double* amount1, double *amount2)
 {
   double absAmt = amount;
   double target = 1;
@@ -472,14 +472,15 @@ void distributeAmounts(double amount, double spread, double* amount1, double *am
   *amount1 = RAPT::rsLinToLin(absAmt, 0.0, 1.0,  spread, target);
   *amount2 = RAPT::rsLinToLin(absAmt, 0.0, 1.0, -spread, target);
 }
-double distributeAmounts1(double x, double y)
-{
-  double out1, out2; distributeAmounts(x, y, &out1, &out2);
+
+double spreadAmounts1(double x, double y)
+{ 
+  double out1, out2; spreadAmounts(x, y, &out1, &out2); 
   return out1;
 }
-double distributeAmounts2(double x, double y)
+double spreadAmounts2(double x, double y)
 {
-  double out1, out2; distributeAmounts(x, y, &out1, &out2);
+  double out1, out2; spreadAmounts(x, y, &out1, &out2);
   return out2;
 }
 void twoParamRemap()
@@ -493,8 +494,8 @@ void twoParamRemap()
 
   int N = 21;
   GNUPlotter plt;
-  plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &distributeAmounts1); 
-  plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &distributeAmounts2);
+  plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &spreadAmounts1); 
+  plt.addDataBivariateFunction(N, -1.0, +1.0, N, -1.0, +1.0, &spreadAmounts2);
   plt.addCommand("set hidden3d");
   //plt.addCommand("set pm3d");
   plt.addCommand("set palette gray");

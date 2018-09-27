@@ -40,6 +40,10 @@ public:
   /** Sets the juce::Label in which the descriptions for the widgets will appear. */
   virtual void setDescriptionField(RTextField* newDescriptionField) override;
 
+  // exmpty overrides ofr paint/OverChildren to avoid background and outline drawing
+  virtual void paint(Graphics &g) override {}
+  virtual void paintOverChildren(Graphics &g) override {}
+
 
 protected:
 
