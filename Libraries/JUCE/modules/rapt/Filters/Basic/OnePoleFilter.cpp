@@ -105,11 +105,11 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       TPar s    = 0.5/sampleRate;
       TPar p    = (1+s*pa)/(1-s*pa);
       TPar z    = (1+s*za)/(1-s*za);
-      b1        = -z;
-      a1        = -p;
+      this->b1  = -z;
+      this->a1  = -p;
       TPar n    = rsSqrt((1+this->a1*this->a1-2*this->a1) / (1+this->b1*this->b1-2*this->b1));
-      b0        = n;
-      b1       *= n;
+      this->b0  = n;
+      this->b1 *= n;
       // this seems overly complicated - can't we just derive the coeffs directly from 3 magnitude
       // constraints - should be a simple 3x3 linear system ...check this out....
     }
@@ -129,11 +129,11 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       TPar s    = 0.5/sampleRate;
       TPar p    = (1+s*pa)/(1-s*pa);
       TPar z    = (1+s*za)/(1-s*za);
-      b1        = -p;
-      a1        = -z;
+      this->b1  = -p;
+      this->a1  = -z;
       TPar n    = rsSqrt((1+this->a1*this->a1+2*this->a1) / (1+this->b1*this->b1+2*this->b1));
-      b0        = n;
-      b1       *= n;
+      this->b0  = n;
+      this->b1 *= n;
       // \todo get rid of the code duplication
     }
     break;
