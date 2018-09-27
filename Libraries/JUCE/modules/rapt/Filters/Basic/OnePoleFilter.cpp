@@ -7,7 +7,6 @@ rsOnePoleFilter<TSig, TPar>::rsOnePoleFilter()
   setSampleRate(44100.0);  // sampleRate = 44100 Hz by default
   setMode      (0);        // bypass by default
   setCutoff    (20000.0);  // cutoff = 20000 Hz by default
-  reset();                 // reset memorized samples to zero
 }
 
 // Setup:
@@ -108,7 +107,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       TPar z    = (1+s*za)/(1-s*za);
       b1        = -z;
       a1        = -p;
-      TPar n    = rsSqrt((1+a1*a1-2*a1) / (1+b1*b1-2*b1));
+      TPar n    = rsSqrt((1+this->a1*this->a1-2*this->a1) / (1+this->b1*this->b1-2*this->b1));
       b0        = n;
       b1       *= n;
       // this seems overly complicated - can't we just derive the coeffs directly from 3 magnitude
@@ -132,7 +131,7 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       TPar z    = (1+s*za)/(1-s*za);
       b1        = -p;
       a1        = -z;
-      TPar n    = rsSqrt((1+a1*a1+2*a1) / (1+b1*b1+2*b1));
+      TPar n    = rsSqrt((1+this->a1*this->a1+2*this->a1) / (1+this->b1*this->b1+2*this->b1));
       b0        = n;
       b1       *= n;
       // \todo get rid of the code duplication

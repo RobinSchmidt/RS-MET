@@ -16,6 +16,7 @@ class rsFirstOrderFilterBase
 
 public:
 
+
   //-----------------------------------------------------------------------------------------------
   /** \name Coefficient Computation */
 
