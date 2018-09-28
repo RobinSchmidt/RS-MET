@@ -140,8 +140,7 @@ void rsBiDirectionalFilter::applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar 
 
   // create and set up the filter:
   rsOnePoleFilter<TSig, TPar> flt;
-  flt.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS); // gives impulse invariant lowpass design - maybe switch
-                                         // to bilinear later
+  flt.setMode(rsOnePoleFilter<TSig, TPar>::LOWPASS_IIT); // impulse invariant - maybe switch to bilinear later
   flt.setSampleRate(fs);
   flt.setCutoff(fc);
 

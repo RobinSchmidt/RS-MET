@@ -280,6 +280,9 @@ template RAPT::rsEllipticSubBandFilter<float, float>;
 template RAPT::rsEllipticSubBandFilterDirectForm<float, float>;
 template RAPT::rsQuadratureNetwork<float, float>;
 
+template void RAPT::rsBiDirectionalFilter::applyLowpass(
+  double *x, double *y, int N, double fc, double fs, int numPasses, double gc);
+
 // Physics:
 template RAPT::rsParticleSystem<float>;
 

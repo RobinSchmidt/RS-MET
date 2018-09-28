@@ -362,6 +362,9 @@ void biDirectionalFilter()
   int dummy = 0;
 }
 
+
+
+// this should be moved to the library
 template<class T>
 std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false, bool includeLast = false)
 {
@@ -421,7 +424,6 @@ void getAmpEnvelope(T* x, int N, std::vector<T>& sampleTime, std::vector<T>& env
     envValue[m]   = xAbs[n];
   }
 }
-
 template<class T>
 void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY)
 {
@@ -450,7 +452,11 @@ void envelopeDeBeating()
   double a2 = 0.5;   //           2
   double d1 = 0.2;   // decay time 1
   double d2 = 0.3;   //            2
+  double fc = 10;   // smoothing lowpass cutoff
+  int np = 8;        // smoothing lowpass order/number of passes
   int N = 30000;     // number of samples
+
+
   // If amplitudes and decay-times of both sinusoids are the same, the beating is most extreme
 
   // set up a modal filter bank to produce the output:
@@ -476,31 +482,51 @@ void envelopeDeBeating()
   getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
 
   // add zeros to start and end of the array:
-  bool insertZeros = true;
-  if(insertZeros == true)
+  bool extrapolateEnds = true;
+  if(extrapolateEnds == true)
   {
+    double v; 
+    v = RAPT::rsInterpolateLinear(envTime2[0], envTime2[1], envValue2[0], envValue2[1], 0.0);
     RAPT::rsPrepend(envTime2, 0.0);
-    RAPT::rsPrepend(envValue2, 0.0);
+    RAPT::rsPrepend(envValue2, v);
+
+    int M = (int)envTime2.size()-1;
+    v = RAPT::rsInterpolateLinear(envTime2[M-1], envTime2[M], envValue2[M-1], envValue2[M], double(N));
+
     RAPT::rsAppend(envTime2, double(N));
-    RAPT::rsAppend(envValue2, 0.0);
+    RAPT::rsAppend(envValue2, v);
   }
+  // maybe don't use zeros but linear exptrapolation - yes - looks better
+  // ...but for production code we must include safety checks - envTime/Value2 may have less
+  // than 2 elements, etc.
 
   // get envelope signal by interpolating the peaks:
   Vec t(N), env(N);
   RAPT::rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
   typedef RAPT::rsInterpolatingFunction<double, double> IF;
   IF intFunc;
-  intFunc.setMode(IF::LINEAR);
+  //intFunc.setMode(IF::LINEAR);
+  intFunc.setMode(IF::CUBIC);
   //intFunc.setPreMap( &log);
   //intFunc.setPostMap(&exp);
   intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime.size(), 
     &t[0], &env[0], (int)t.size());
 
-  // perhaps the cubic interpolation is no good idea due to overshoot - instead use linear and 
-  // apply a bidirectional Bessel or Gaussian filter to the result
+  // maybe the bump can be avoided using a quartic interpolant
 
-  // the log/exp stuff is actually not good because the attack-phase should be inverted exp in case
-  // of exp....so perhaps better to just stick to simple linear
+  // smoothing:
+  //rsBiDirectionalFilter::applyLowpass(&env[0], &env[0], (int)env.size(), fc, fs, np);
+  // maybe instead of a filter, use an attack/release slew-rate limiter with zero attack in order
+  // to pass through the actual peaks
+
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays(N, &env[0]);
+  plt.addDataArrays((int)envTime.size(),  &envTime[0],  &envValue[0]);
+  //plt.addDataArrays((int)envTime2.size(), &envTime2[0], &envValue2[0]);
+  plt.plot();
+
 
 
   // de-beat:
@@ -523,13 +549,11 @@ void envelopeDeBeating()
   //   transformation and its inverse)..maybe take y = log(1+x) and x = exp(y)-1 to avoid
   //   log-of-zero problems
 
+  // perhaps the cubic interpolation is no good idea due to overshoot - instead use linear and 
+  // apply a bidirectional Bessel or Gaussian filter to the result
 
-  GNUPlotter plt;
-  plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays(N, &env[0]);
-  //plt.addDataArrays((int)envTime.size(),  &envTime[0],  &envValue[0]);
-  //plt.addDataArrays((int)envTime2.size(), &envTime2[0], &envValue2[0]);
-  plt.plot();
+  // the log/exp stuff is actually not good because the attack-phase should be inverted exp in case
+  // of exp....so perhaps better to just stick to simple linear
 }
 
 void sineRecreation()
