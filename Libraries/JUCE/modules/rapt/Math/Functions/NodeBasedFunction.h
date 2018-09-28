@@ -1,5 +1,5 @@
-#ifndef RAPT_INTERPOLATINGFUNCTION_H_INCLUDED
-#define RAPT_INTERPOLATINGFUNCTION_H_INCLUDED
+#ifndef RAPT_NODEBASEDFUNCTION_H_INCLUDED
+#define RAPT_NODEBASEDFUNCTION_H_INCLUDED
 
 /** A class for representing a node in a piecewise defined function. Each node has x- and 
 y-coodinates and a shape option that determines the shape of the function segment approaching the 
