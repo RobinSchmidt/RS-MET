@@ -95,11 +95,12 @@ void interpolatingFunction()
   RAPT::rsArray::fillWithRangeLinear(xi, M, xiMin, xiMax);
 
   intFunc.interpolate(x, y, N, xi, yi, M);
+    // todo: allow different types for x,y in the implementation
 
   // convert xi to double for plotter and plot:
   double xid[M];
   RAPT::rsArray::convertBuffer(xi, xid, M);
-  plotData(M, xid, yi);
+  //plotData(M, xid, yi);
   //GNUPlotter plt;
 }
 

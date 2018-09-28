@@ -1,7 +1,8 @@
-template<class T>
-void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds)
+template<class Tx, class Ty>
+void rsNumericDerivative(Tx *x, Ty *y, Ty *yd, int N, bool extrapolateEnds)
 {
-  T dxl, dxr, dx, a, b; 
+  Tx dxl, dxr, dx;
+  Ty a, b; 
 
   for(int n = 1; n < N-1; n++)
   {

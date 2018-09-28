@@ -129,8 +129,8 @@ the actual values of the m-th derivative at a data-point with index n is given b
 stored - we can just use evaluatePolynomialAndDerivativesAt instead of evaluatePolynomialAt and
 do some copying
 */
-template<class T>
-void rsInterpolateSpline(T *x, T *y, T **yd, int N, int M, T *xi, T *yi, int Ni);
+template<class Tx, class Ty>
+void rsInterpolateSpline(Tx *x, Ty *y, Ty **yd, int N, int M, Tx *xi, Ty *yi, int Ni);
 
 /** Given two length N arrays x, y with x-axis values and corresponding y-axis values, this
 function fills the array yi with values corresponding to the xi by spline interpolation
@@ -141,8 +141,8 @@ will be in terms of continuous derivatives, but it will also tend to oscillate m
 datapoints for higher smoothness values. With a value of 1, which is the default, a cubic spline
 will be used and the 1st derivative will match at the data points. Generally, a polynomial of
 order 2*smoothness+1 will be used. */
-template<class T>
-void rsInterpolateSpline(T *x, T *y, int N, T *xi, T *yi, int Ni, int smoothness = 1);
+template<class Tx, class Ty>
+void rsInterpolateSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni, int smoothness = 1);
 
 /** Given two points (x0,y0), (x1,y1), this function computes the cubic polynomial coefficients for
 a spline arc that has the parametric equations:
@@ -240,16 +240,16 @@ T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
   // same x2 and x3 and it is wasteful to recompute the coefficients each time
 }
 
-template<class T>
-void rsInterpolateSpline(T *x, T *y, T **yd, int N, int M, T *xi, T *yi, int Ni)
+template<class Tx, class Ty>
+void rsInterpolateSpline(Tx *x, Ty *y, Ty **yd, int N, int M, Tx *xi, Ty *yi, int Ni)
 {
-  int n = 0;            // index into input data
-  int i = 0;            // index into interpolated data
-  int m;                // index of the derivative
-  T scale, shift;       // scaler and shifter for the input value for the polynomial
-  T *a  = new T[2*M+2]; // polynomial coefficients
-  T *y0 = new T[M+1];   // y0 values and derivatives passed to getHermiteCoeffsM
-  T *y1 = new T[M+1];   // y1 values and derivatives passed to getHermiteCoeffsM
+  int n = 0;              // index into input data
+  int i = 0;              // index into interpolated data
+  int m;                  // index of the derivative
+  Tx scale, shift;        // scaler and shifter for the input value for the polynomial
+  Ty *a  = new Ty[2*M+2]; // polynomial coefficients
+  Ty *y0 = new Ty[M+1];   // y0 values and derivatives passed to getHermiteCoeffsM
+  Ty *y1 = new Ty[M+1];   // y1 values and derivatives passed to getHermiteCoeffsM
 
   while(n < N-1)
   {
@@ -266,10 +266,10 @@ void rsInterpolateSpline(T *x, T *y, T **yd, int N, int M, T *xi, T *yi, int Ni)
     getHermiteCoeffsM(y0, y1, a, M);
 
     // extra-/interpolate:
-    scale = 1.0 / scale;
+    scale = Tx(1) / scale;
     while(xi[i] < x[n+1] && i < Ni)
     {
-      yi[i] = rsPolynomial<T>::evaluatePolynomialAt(scale*(xi[i]-shift), a, 2*M+1);
+      yi[i] = rsPolynomial<Ty>::evaluatePolynomialAt(scale*(xi[i]-shift), a, 2*M+1);
       i++;
     }
 
@@ -279,7 +279,7 @@ void rsInterpolateSpline(T *x, T *y, T **yd, int N, int M, T *xi, T *yi, int Ni)
   // extrapolate tail:
   while(i < Ni)
   {
-    yi[i] = rsPolynomial<T>::evaluatePolynomialAt(scale*(xi[i]-shift), a, 2*M+1);
+    yi[i] = rsPolynomial<Ty>::evaluatePolynomialAt(scale*(xi[i]-shift), a, 2*M+1);
     i++;
   }
 
@@ -289,11 +289,11 @@ void rsInterpolateSpline(T *x, T *y, T **yd, int N, int M, T *xi, T *yi, int Ni)
   delete[] y1;
 }
 
-template<class T>
-void rsInterpolateSpline(T *x, T *y, int N, T *xi, T *yi, int Ni, int M)
+template<class Tx, class Ty>
+void rsInterpolateSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni, int M)
 {
   // compute numeric derivatives of y, to be used for the spline at data points:
-  T **yd = nullptr;
+  Ty **yd = nullptr;
   if(M > 0)
   {
     MatrixTools::rsAllocateMatrix(yd, M, N);

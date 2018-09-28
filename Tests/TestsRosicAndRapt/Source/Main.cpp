@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
   //bandLimitedStep();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions(); 
-//  splineInterpolationNonEquidistant();
+  splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
   //numericDiffAndInt();

@@ -23,8 +23,8 @@ linear extrapolation of the inner derivative values for the endpoints yd[0] and 
 otherwise it will use the (divided) forward difference at 0 and the backward difference at
 N-1. In a test with a sine function, the extrapolation gave more accurate reults at the
 endpoints compared to simple differences, so it's probably better to use extrapolation. */
-template<class T>
-void rsNumericDerivative(T *x, T *y, T *yd, int N, bool extrapolateEnds = true);
+template<class Tx, class Ty>
+void rsNumericDerivative(Tx *x, Ty *y, Ty *yd, int N, bool extrapolateEnds = true);
 
 /** Computes the numerical integral of a function defined by data points. Usage is similar to
 rsNumericDerivative... 
@@ -32,7 +32,7 @@ The parameter c is the integration constant and determines yi[0]. This shifts th
 resulting function up or down along the y-axis. */
 template<class T>
 void rsNumericIntegral(T *x, T *y, T *yi, int N, T c = T(0));
-// maybe rename to rsNumericIntegralTrapezoidal
+// maybe rename to rsNumericIntegralTrapezoidal, use Tx, Ty for datatypes
 
 
 // Maybe rename to NumericAnalysis and include the interpolation stuff into this file as well 
