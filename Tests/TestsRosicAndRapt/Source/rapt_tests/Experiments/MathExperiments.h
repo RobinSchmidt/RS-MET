@@ -4,6 +4,7 @@
 #include "../../Shared/Shared.h"
 
 void ellipseLineIntersections();
+void interpolatingFunction();
 void linearRegression();
 void probabilityLogic();
 void productLogPlot();

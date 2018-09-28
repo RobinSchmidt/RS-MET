@@ -48,6 +48,7 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
+  interpolatingFunction();
   //linearRegression();
   //probabilityLogic();
   //productLogPlot();

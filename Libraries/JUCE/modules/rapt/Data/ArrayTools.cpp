@@ -194,13 +194,6 @@ bool rsArray::contains(T *buffer, int length, T elementToFind)
   //return (rsFindFirstOccurrenceOf(buffer, length, elementToFind) != -1);
 }
 
-template <class T1, class T2>
-void rsArray::convertBuffer(T1 *source, T2 *destination, int length)
-{
-  for(int i = 0; i < length; i++)
-    destination[i] = (T2)source[i];
-}
-
 template <class T>
 void rsArray::convolve(T *x, int xLength, T *h, int hLength, T *y)
 {

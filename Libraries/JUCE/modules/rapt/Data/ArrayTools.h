@@ -112,7 +112,7 @@ public:
 
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>
-  static void convertBuffer(T1 *source, T2 *destination, int length);
+  static inline void convertBuffer(T1 *source, T2 *destination, int length);
 
   /** Convolves x with h and stored the result in x. The xLength parameter denotes the number of
   values in the x-array that will be considered as input signal. The actual array must be longer
@@ -564,6 +564,13 @@ inline bool rsArray::areBuffersEqual(T *buffer1, T *buffer2, int length)
       return false;
   }
   return true;
+}
+
+template <class T1, class T2>
+inline void rsArray::convertBuffer(T1 *source, T2 *destination, int length)
+{
+  for(int i = 0; i < length; i++)
+    destination[i] = (T2)source[i];
 }
 
 template <class T>

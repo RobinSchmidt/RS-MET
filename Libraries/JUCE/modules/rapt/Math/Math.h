@@ -12,6 +12,7 @@ namespace RAPT
 
 #include "Functions/BasicFunctions.h"
 #include "Functions/IntegerFunctions.h"
+#include "Functions/InterpolatingFunction.h"
 #include "Functions/NodeBasedFunction.h"
 #include "Functions/RealFunctions.h"
 #include "Functions/ComplexFunctions.h"

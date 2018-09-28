@@ -73,6 +73,36 @@ void ellipseLineIntersections()
   plt.plot();
 }
 
+void interpolatingFunction()
+{
+  typedef RAPT::rsInterpolatingFunction<float, double> IF;
+
+  // create data to interpolate:
+  int N = 5;
+  float  x[5] = { 2, 4, 5, 7, 8 };
+  double y[5] = { 1, 3, 1, 2, 3 };
+
+  // create and set up interpolating function object:
+  IF intFunc;
+  intFunc.setMode(IF::LINEAR);
+
+
+  static const int M = 500; // number of interpolated values
+  float  xi[M];  
+  double yi[M];
+  float  xiMin = 0;
+  float  xiMax = 10;
+  RAPT::rsArray::fillWithRangeLinear(xi, M, xiMin, xiMax);
+
+  intFunc.interpolate(x, y, N, xi, yi, M);
+
+  // convert xi to double for plotter and plot:
+  double xid[M];
+  RAPT::rsArray::convertBuffer(xi, xid, M);
+  plotData(M, xid, yi);
+  //GNUPlotter plt;
+}
+
 void linearRegression()
 {
   static const int N = 500;  // number of samples
