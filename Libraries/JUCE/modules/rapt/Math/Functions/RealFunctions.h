@@ -197,8 +197,8 @@ void rsLanden(T k, int M, T* v);
 
 /** Just returns the input value. The purpose of this function is to be used, when a function
 pointer is required, but it should behave neutrally. */
-template<class T>
-T rsIdentity(T x);
+//template<class T>
+//T rsIdentity(T x);
 
 /** Calculates the logistic function with slope parameter b. */
 RS_INLINE double rsLogistic(double x, double b);

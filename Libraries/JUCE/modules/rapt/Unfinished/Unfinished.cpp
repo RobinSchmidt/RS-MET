@@ -10,7 +10,6 @@ namespace RAPT
 #include "Math/GradientBasedMinimizer.cpp"
 #include "Math/MultiLayerPerceptron.cpp"
 #include "Math/FourierTransformer.cpp"
-#include "Math/Interpolation.cpp"
 #include "Math/NumberTheory.cpp"
 #include "Math/Transforms.cpp"
 #include "Math/Statistics.cpp"

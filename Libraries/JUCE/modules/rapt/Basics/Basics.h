@@ -37,8 +37,9 @@ inline void rsAssert(bool expression, const char *errorMessage = nullptr)
 
 inline void rsAssertFalse() { rsAssert(false); }
 
-template<class T> inline T rsUnityValue(T value) { return T(1); }
-template<class T> inline T rsZeroValue( T value) { return T(0); }
+template<class T> inline T rsUnityValue(T value) { return T(1);  }
+template<class T> inline T rsZeroValue( T value) { return T(0);  }
+template<class T> inline T rsIdentity(  T value) { return value; }
 template<class T> inline bool rsIsNaN(T x)
 {
   return x != x; // NaN is the only value that returns false for this, also, you can't

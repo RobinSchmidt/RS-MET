@@ -18,7 +18,6 @@ namespace RAPT
 #include "Math/MultiLayerPerceptron.h"
 #include "Math/DifferentialEquationSystem.h"
 #include "Math/FourierTransformer.h"
-#include "Math/Interpolation.h"
 #include "Math/NumberTheory.h"
 #include "Math/Transforms.h"
 #include "Math/Statistics.h"  // merge with the Statistics.h aleady present in the not "Unfinished" Math folder

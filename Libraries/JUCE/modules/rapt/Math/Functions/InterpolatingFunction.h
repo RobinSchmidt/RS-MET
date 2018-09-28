@@ -17,9 +17,9 @@ public:
   /** Enumeration of possible interpolation modes. */
   enum  
   {
-    LEFT_NEIGHBOUR,
-    RIGHT_NEIGHBOUR,
-    NEAREST_NEIGHBOUR,
+    //LEFT_NEIGHBOUR,
+    //RIGHT_NEIGHBOUR,
+    //NEAREST_NEIGHBOUR,
     LINEAR,             // this is the default
     CUBIC
     //QUARTIC,
@@ -34,7 +34,8 @@ public:
     this->x = x;
     this->y = y;
     this->numValues = numValues;
-    updateCoeffs();
+    updateCoeffs(); // maybe don't directly call it here, just set a "dirty" flag and update them
+                    // only when needed
   }
 
   void setMode(int newMode)
@@ -54,6 +55,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Evaluation:
 
+  void interpolate(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni);
+
+  /*
   Ty getValue(Tx x) const
   {
     return Ty(0); // preliminary
@@ -63,9 +67,12 @@ public:
   {
     return getValue(x);
   }
+  */
 
 
 protected:
+
+  void updateCoeffs();
 
   Tx *x = nullptr;
   Ty *y = nullptr;
@@ -73,7 +80,8 @@ protected:
   int numValues = 0;
   int mode = LINEAR;
 
-  // 
+  std::function<Ty(Ty)> preMap  = &rsIdentity<Ty>;
+  std::function<Ty(Ty)> postMap = &rsIdentity<Ty>;
 
 };
 

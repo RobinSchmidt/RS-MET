@@ -643,6 +643,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Interpolation.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -755,9 +758,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GradientBasedMinimizer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Interpolation.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Matrix.cpp">
@@ -2440,6 +2440,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Interpolation.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h"/>
@@ -2479,7 +2480,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\FunctionObjects.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GeometricFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GradientBasedMinimizer.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Interpolation.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Matrix.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\ModularInteger.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\MultiLayerPerceptron.h"/>

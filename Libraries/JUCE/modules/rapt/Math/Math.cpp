@@ -29,5 +29,6 @@ namespace RAPT
 
 #include "Numerics/RootFinder.cpp"
 #include "Numerics/NumericCalculus.cpp"
+#include "Numerics/Interpolation.cpp"
 
 }

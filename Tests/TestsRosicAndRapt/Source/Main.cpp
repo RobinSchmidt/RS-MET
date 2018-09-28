@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
   //probabilityLogic();
   //productLogPlot();
   //sinCosTable();
-  twoParamRemap();
+  //twoParamRemap();
 
   // Filter:
   //bandSplittingTwoWay();
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
   //bandLimitedStep();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions(); 
-  //splineInterpolationNonEquidistant();
+//  splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
   //numericDiffAndInt();
@@ -283,7 +283,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-//  envelopeDeBeating();
+  envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
   //partialExtractionTriple();

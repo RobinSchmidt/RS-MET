@@ -841,6 +841,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Interpolation.cpp">
+      <Filter>Juce Modules\rapt\Math\Numerics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.cpp">
       <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClCompile>
@@ -953,9 +956,6 @@
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GradientBasedMinimizer.cpp">
-      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Interpolation.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Matrix.cpp">
@@ -3039,6 +3039,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Interpolation.h">
+      <Filter>Juce Modules\rapt\Math\Numerics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.h">
       <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
@@ -3154,9 +3157,6 @@
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GradientBasedMinimizer.h">
-      <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Interpolation.h">
       <Filter>Juce Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Matrix.h">

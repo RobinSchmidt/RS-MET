@@ -22,11 +22,11 @@ void rsLanden(T k, int M, T* v)
   }
 }
 
-template<class T>
-T rsIdentity(T x)
-{
-  return x;
-}
+//template<class T>
+//T rsIdentity(T x)
+//{
+//  return x;
+//}
 
 template<class T>
 void rsEllipticIntegral(T k, T *K, T *Kprime, int M)
