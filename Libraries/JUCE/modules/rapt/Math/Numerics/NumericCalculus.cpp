@@ -50,13 +50,14 @@ void rsNumericDerivative(Tx *x, Ty *y, Ty *yd, int N, bool extrapolateEnds)
 
 
 
-template<class T>
-void rsNumericIntegral(T *x, T *y, T *yi, int N, T c)
+template<class Tx, class Ty>
+void rsNumericIntegral(Tx *x, Ty *y, Ty *yi, int N, Ty c)
 {
-  T xo, yo, zo, tmp;
+  Tx xo; 
+  Ty yo, zo, tmp;
   xo = x[0]; yo = y[0]; zo = c; yi[0] = zo;    // "old" values (at index n-1)
   for(int n = 1; n < N; n++) {
-    tmp = zo + (x[n]-xo)*(y[n]+yo)*T(0.5);     // compute integral by trapezoidal rule
+    tmp = zo + (x[n]-xo)*(y[n]+yo)*Ty(0.5);    // compute integral by trapezoidal rule
     xo = x[n]; yo = y[n]; zo = tmp;            // update integrator state variables
     yi[n] = tmp;                               // write integral to output array
     //rsAssert(rsIsFiniteNumber(tmp));

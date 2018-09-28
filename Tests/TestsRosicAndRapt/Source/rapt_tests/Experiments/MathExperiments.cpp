@@ -73,6 +73,15 @@ void ellipseLineIntersections()
   plt.plot();
 }
 
+double testFunc1(double x)
+{
+  return x*x;
+}
+double testFunc2(double x)
+{
+  //return exp(x);
+  return sqrt(rsMax(0.0,x));
+}
 void interpolatingFunction()
 {
   typedef RAPT::rsInterpolatingFunction<float, double> IF;
@@ -84,8 +93,21 @@ void interpolatingFunction()
 
   // create and set up interpolating function object:
   IF intFunc;
-  intFunc.setMode(IF::LINEAR);
+  //intFunc.setMode(IF::LINEAR);
+  intFunc.setMode(IF::CUBIC);
+  //intFunc.setPreMap( testFunc1);
+  //intFunc.setPostMap(testFunc2);
 
+  intFunc.setPreMap( &log);
+  intFunc.setPostMap(&exp);
+
+  //intFunc.setPostMap(sqrt);
+  //intFunc.setPreMap(std::function<double(double)>(&log));
+  //intFunc.setPostMap(&exp);
+
+  //std::function<double(double)> f = rsExp;
+  //std::function<double(double)> f = exp; // doesn't compile - why?
+  //std::function<double(double)> f = testFunc;  // compiles
 
   static const int M = 500; // number of interpolated values
   float  xi[M];  
@@ -100,7 +122,7 @@ void interpolatingFunction()
   // convert xi to double for plotter and plot:
   double xid[M];
   RAPT::rsArray::convertBuffer(xi, xid, M);
-  //plotData(M, xid, yi);
+  plotData(M, xid, yi);
   //GNUPlotter plt;
 }
 

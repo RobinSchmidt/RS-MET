@@ -30,8 +30,8 @@ void rsNumericDerivative(Tx *x, Ty *y, Ty *yd, int N, bool extrapolateEnds = tru
 rsNumericDerivative... 
 The parameter c is the integration constant and determines yi[0]. This shifts the overall 
 resulting function up or down along the y-axis. */
-template<class T>
-void rsNumericIntegral(T *x, T *y, T *yi, int N, T c = T(0));
+template<class Tx, class Ty>
+void rsNumericIntegral(Tx *x, Ty *y, Ty *yi, int N, Ty c = Ty(0));
 // maybe rename to rsNumericIntegralTrapezoidal, use Tx, Ty for datatypes
 
 

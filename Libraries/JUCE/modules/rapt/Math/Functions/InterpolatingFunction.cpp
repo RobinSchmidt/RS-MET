@@ -3,9 +3,11 @@ void rsInterpolatingFunction<Tx, Ty>::interpolate(Tx *x, Ty *y, int N, Tx *xi, T
 {
   // apply pre-mapping to y (use a temporary buffer t):
   Ty* t = y;
-  t = new Ty[N];  // todo: do this only, if preMap is not the identity function
-  for(int n = 0; n < N; n++)
-    t[n] = preMap(y[n]);
+  if(preMap != nullptr ) {
+    t = new Ty[N];  // todo: do this only, if preMap is not the identity function
+    for(int n = 0; n < N; n++)
+      t[n] = preMap(y[n]);
+  }
 
   switch(mode)
   {
@@ -14,8 +16,10 @@ void rsInterpolatingFunction<Tx, Ty>::interpolate(Tx *x, Ty *y, int N, Tx *xi, T
   }
 
   // apply post-mapping to yi (todo: do this only if postMap is not the identity): 
-  for(int n = 0; n < N; n++)
-    yi[n] = postMap(yi[n]);
+  if(postMap != nullptr) {
+    for(int n = 0; n < Ni; n++)
+      yi[n] = postMap(yi[n]);
+  }
 
   if(t != y)
     delete[] t;

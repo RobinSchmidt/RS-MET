@@ -45,6 +45,37 @@ public:
   }
 
 
+
+
+
+
+
+  //void setPreMap(const std::function<Ty(Ty)>& newPreMap)
+  void setPreMap(std::function<Ty(Ty)> newPreMap)
+  {
+    preMap = newPreMap;
+  }
+
+  void setPostMap(const std::function<Ty(Ty)>& newPostMap)
+  {
+    postMap = newPostMap;
+  }
+
+  void setPreMap(Ty(*f) (Ty x))
+  {
+    std::function<Ty(Ty)> tmp = f;
+    setPreMap(tmp);
+  }
+
+  void setPostMap(Ty(*f) (Ty x))
+  {
+    std::function<Ty(Ty)> tmp = f;
+    setPostMap(tmp);
+  }
+  // ok - this works - but needs clean up
+
+
+
   // void setPrePostMap
   // should allow to apply a mapping function to the y values before interpolation and another one
   // after (the post-mapping should tpyically be the inverse function of the forward mapping - for
@@ -80,8 +111,10 @@ protected:
   int numValues = 0;
   int mode = LINEAR;
 
-  std::function<Ty(Ty)> preMap  = &rsIdentity<Ty>;
-  std::function<Ty(Ty)> postMap = &rsIdentity<Ty>;
+  //std::function<Ty(Ty)> preMap  = &rsIdentity<Ty>;
+  //std::function<Ty(Ty)> postMap = &rsIdentity<Ty>;
+  std::function<Ty(Ty)> preMap  = nullptr;
+  std::function<Ty(Ty)> postMap = nullptr;
 
 };
 
