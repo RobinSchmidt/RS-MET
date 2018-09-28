@@ -444,8 +444,8 @@ void envelopeDeBeating()
   // try to remove the amplitude modulation from the envelope.
 
   double fs = 44100; // sample rate
-  double f1 = 440;   // frequency 1
-  double f2 = 445;   //           2
+  double f1 = 140;   // frequency 1
+  double f2 = 150;   //           2
   double a1 = 0.5;   // amplitude 1
   double a2 = 0.5;   //           2
   double d1 = 0.2;   // decay time 1
@@ -466,7 +466,7 @@ void envelopeDeBeating()
   // create signal and estimate envelope:
   Vec x(N), env(N);
   getImpulseResponse(mfb, &x[0], N);
-  rsSineEnvelopeViaQuadrature(&x[0], &env[0], N, (f1+f2)/2, fs, 2.0);
+  //rsSineEnvelopeViaQuadrature(&x[0], &env[0], N, (f1+f2)/2, fs, 2.0);
    // todo: maybe use instantaneous envelope algorithm
 
   Vec envTime, envValue;
@@ -475,10 +475,18 @@ void envelopeDeBeating()
   Vec envTime2, envValue2;
   getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
 
+  // add zeros to start and end of the array:
+  RAPT::rsPrepend(envTime2,  0.0);
+  RAPT::rsPrepend(envValue2, 0.0);
+  RAPT::rsAppend(envTime2,  double(N));
+  RAPT::rsAppend(envValue2, 0.0);
+
   // todo: maybe make a class rsInterpolatingFunction
   // setData(T *x, T* y, int N);
   // setInterpolationMethod (linear, cubic spline, etc.)
   // setTransform(forward, inverse); // like log/exp, square/sqrt, etc. nonlinear transform
+
+
 
 
   // de-beat:

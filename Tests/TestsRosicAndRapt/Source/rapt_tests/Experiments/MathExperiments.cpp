@@ -73,15 +73,7 @@ void ellipseLineIntersections()
   plt.plot();
 }
 
-double testFunc1(double x)
-{
-  return x*x;
-}
-double testFunc2(double x)
-{
-  //return exp(x);
-  return sqrt(rsMax(0.0,x));
-}
+
 void interpolatingFunction()
 {
   typedef RAPT::rsInterpolatingFunction<float, double> IF;
@@ -95,35 +87,29 @@ void interpolatingFunction()
   IF intFunc;
   //intFunc.setMode(IF::LINEAR);
   intFunc.setMode(IF::CUBIC);
-  //intFunc.setPreMap( testFunc1);
-  //intFunc.setPostMap(testFunc2);
-
   intFunc.setPreMap( &log);
   intFunc.setPostMap(&exp);
+  intFunc.setPreMap( nullptr);
+  intFunc.setPostMap(nullptr);
 
-  //intFunc.setPostMap(sqrt);
-  //intFunc.setPreMap(std::function<double(double)>(&log));
-  //intFunc.setPostMap(&exp);
 
-  //std::function<double(double)> f = rsExp;
-  //std::function<double(double)> f = exp; // doesn't compile - why?
-  //std::function<double(double)> f = testFunc;  // compiles
-
+  // do extra/interpolation:
   static const int M = 500; // number of interpolated values
   float  xi[M];  
   double yi[M];
   float  xiMin = 0;
   float  xiMax = 10;
   RAPT::rsArray::fillWithRangeLinear(xi, M, xiMin, xiMax);
-
   intFunc.interpolate(x, y, N, xi, yi, M);
-    // todo: allow different types for x,y in the implementation
 
   // convert xi to double for plotter and plot:
   double xid[M];
   RAPT::rsArray::convertBuffer(xi, xid, M);
-  plotData(M, xid, yi);
-  //GNUPlotter plt;
+  GNUPlotter plt;
+  plt.addDataArrays(M, xid, yi);
+  plt.setRange(xiMin, xiMax, 0.0, 4.0);
+  plt.plot();
+  // todo: plot the original data as points
 }
 
 void linearRegression()

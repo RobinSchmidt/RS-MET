@@ -15,7 +15,7 @@ void rsInterpolatingFunction<Tx, Ty>::interpolate(Tx *x, Ty *y, int N, Tx *xi, T
   case CUBIC:  rsInterpolateSpline(x, t, N, xi, yi, Ni, 1); break;
   }
 
-  // apply post-mapping to yi (todo: do this only if postMap is not the identity): 
+  // apply post-mapping to yi: 
   if(postMap != nullptr) {
     for(int n = 0; n < Ni; n++)
       yi[n] = postMap(yi[n]);

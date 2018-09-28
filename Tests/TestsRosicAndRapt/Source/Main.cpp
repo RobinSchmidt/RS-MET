@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
-  interpolatingFunction();
+  //interpolatingFunction();
   //linearRegression();
   //probabilityLogic();
   //productLogPlot();
@@ -284,7 +284,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-//  envelopeDeBeating();
+  envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
   //partialExtractionTriple();

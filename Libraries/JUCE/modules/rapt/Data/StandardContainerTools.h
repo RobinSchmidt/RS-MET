@@ -44,6 +44,12 @@ inline void rsInsertValue(std::vector<T>& v, T newElement, size_t index)
 }
 
 template<class T>
+inline void rsPrepend(std::vector<T>& v, const T& newElement)
+{
+  v.insert(v.begin(), newElement);
+}
+
+template<class T>
 inline void rsRemove(std::vector<T>& v, size_t index)
 {
   v.erase(v.begin() + index);
