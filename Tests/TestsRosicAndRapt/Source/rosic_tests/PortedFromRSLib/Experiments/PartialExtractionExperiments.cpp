@@ -464,7 +464,7 @@ void envelopeDeBeating()
   typedef std::vector<double> Vec;
 
   // create signal and estimate envelope:
-  Vec x(N), env(N);
+  Vec x(N);
   getImpulseResponse(mfb, &x[0], N);
   //rsSineEnvelopeViaQuadrature(&x[0], &env[0], N, (f1+f2)/2, fs, 2.0);
    // todo: maybe use instantaneous envelope algorithm
@@ -476,23 +476,36 @@ void envelopeDeBeating()
   getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
 
   // add zeros to start and end of the array:
-  RAPT::rsPrepend(envTime2,  0.0);
-  RAPT::rsPrepend(envValue2, 0.0);
-  RAPT::rsAppend(envTime2,  double(N));
-  RAPT::rsAppend(envValue2, 0.0);
+  bool insertZeros = true;
+  if(insertZeros == true)
+  {
+    RAPT::rsPrepend(envTime2, 0.0);
+    RAPT::rsPrepend(envValue2, 0.0);
+    RAPT::rsAppend(envTime2, double(N));
+    RAPT::rsAppend(envValue2, 0.0);
+  }
 
-  // todo: maybe make a class rsInterpolatingFunction
-  // setData(T *x, T* y, int N);
-  // setInterpolationMethod (linear, cubic spline, etc.)
-  // setTransform(forward, inverse); // like log/exp, square/sqrt, etc. nonlinear transform
+  // get envelope signal by interpolating the peaks:
+  Vec t(N), env(N);
+  RAPT::rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
+  typedef RAPT::rsInterpolatingFunction<double, double> IF;
+  IF intFunc;
+  intFunc.setMode(IF::LINEAR);
+  //intFunc.setPreMap( &log);
+  //intFunc.setPostMap(&exp);
+  intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime.size(), 
+    &t[0], &env[0], (int)t.size());
 
+  // perhaps the cubic interpolation is no good idea due to overshoot - instead use linear and 
+  // apply a bidirectional Bessel or Gaussian filter to the result
 
+  // the log/exp stuff is actually not good because the attack-phase should be inverted exp in case
+  // of exp....so perhaps better to just stick to simple linear
 
 
   // de-beat:
   // ideas:
   // -connect peaks (by lines or splines)
-
   // -filter out beating frequencies (requires to know/estimate them first)
   // -use a variation of the "True-Envelope" algorithm applied to the time-domain signal
   // -actually, what we want is an envelope of an envelope - maybe we can appyl the same algorithm
@@ -513,13 +526,10 @@ void envelopeDeBeating()
 
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays((int)envTime.size(),  &envTime[0],  &envValue[0]);
-  plt.addDataArrays((int)envTime2.size(), &envTime2[0], &envValue2[0]);
+  plt.addDataArrays(N, &env[0]);
+  //plt.addDataArrays((int)envTime.size(),  &envTime[0],  &envValue[0]);
+  //plt.addDataArrays((int)envTime2.size(), &envTime2[0], &envValue2[0]);
   plt.plot();
-
-
-  //plotData(N, 0, 1, &x[0], &env[0]);    // time axis in samples
-  //plotData(N, 0, 1/fs, &x[0], &env[0]); // time axis in seconds
 }
 
 void sineRecreation()

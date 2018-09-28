@@ -41,6 +41,7 @@ typedef RAPT::rsCoordinateMapper2D<double> rsCoordinateMapper2DD;
 
 typedef RAPT::rsRootFinder<float> rsRootFinderF;
 typedef RAPT::rsInterpolatingFunction<float, double> rsInterpolatingFunctionFD;
+typedef RAPT::rsInterpolatingFunction<double, double> rsInterpolatingFunctionDD;
 typedef RAPT::rsNodeBasedFunction<float> rsNodeBasedFunctionF;
 typedef RAPT::rsSinCosTable<float> rsSinCosTableF;
 typedef RAPT::rsSinCosTable<double> rsSinCosTableD;

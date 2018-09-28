@@ -234,6 +234,7 @@ template RAPT::rsPositiveBellFunctions<float>;
 template RAPT::rsParametricBellFunction<float>;
 template RAPT::rsRootFinder<float>;
 template RAPT::rsInterpolatingFunction<float, double>;
+template RAPT::rsInterpolatingFunction<double, double>;
 template RAPT::rsNodeBasedFunction<float>;
 template RAPT::rsSinCosTable<float>;
 template RAPT::rsSinCosTable<double>;
