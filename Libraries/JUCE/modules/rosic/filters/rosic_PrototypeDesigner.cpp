@@ -355,7 +355,7 @@ void rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex 
   // find poles:
   double *a = new double[N+1];        // Bessel-Polynomial coefficients
   //double a[20];
-  besselPolynomial(a, N);
+  RAPT::rsPolynomial<double>::besselPolynomial(a, N);
   reverse(a, N+1);                    // we actually use a reverse Bessel polynomial
 
   findPolynomialRoots(a, N, p);
@@ -402,7 +402,7 @@ void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex
 
   // construct lowpass denominator:
   double *a  = new double[N+1];
-  besselPolynomial(a, N);
+  RAPT::rsPolynomial<double>::besselPolynomial(a, N);
   reverse(a, N+1);   // leaving this out leads to a modified Bessel filter response - maybe 
                      // experiment a bit, response looks good
 
@@ -447,7 +447,7 @@ void rsPrototypeDesigner::papoulisMagnitudeSquaredDenominator(double *a, int N)
   fillWithZeros(a, 2*N+1);  // do we need this?
 
   // construct the polynomial L_N(w^2):
-  maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
+  RAPT::rsPolynomial<double>::maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
 
   // flip sign of coeffs for odd powers (substitute w^2 with -s^2):
   for(n = 1; n <= N; n += 2)

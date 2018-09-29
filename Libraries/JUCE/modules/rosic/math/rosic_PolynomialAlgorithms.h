@@ -2,6 +2,7 @@
 #define rosic_PolynomialAlgorithms_h
 
 // commented code is obsolete and superseded by templatized versions in RAPT
+// todo: replace also the functions involving complex ins/outs
 
 namespace rosic
 {
@@ -172,8 +173,6 @@ namespace rosic
   rsArray<Complex> getRootsOfCubicEquation(double a, double b, double c, double d);
 
 
-
-
 #ifdef NOT_DEFINED // faux commenting out
 
   /** Iteratively improves an initial estimate for the root of the cubic equation:
@@ -204,9 +203,6 @@ namespace rosic
   respectively. */
   void cubicCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, double *dy);
 
-#endif
-
-
   // \todo void cubicCoeffsFourPoints(double *a, double *x, double *y);
   // \todo void quinticCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, double *dy, double *d2y);
 
@@ -233,9 +229,7 @@ namespace rosic
   //void jacobiPolynomial(double *a, int order); // the U-polynomials
   //void maximallyDivergingMonotonicPolynomial(double *a, int order); // the T-polynomial
 
-
-
-
+#endif
 
 
   //-----------------------------------------------------------------------------------------------
