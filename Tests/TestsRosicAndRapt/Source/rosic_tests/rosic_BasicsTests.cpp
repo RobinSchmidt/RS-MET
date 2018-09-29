@@ -104,7 +104,7 @@ void testDerivativeComputation()
 
   double yd;
   for(int i = 0; i < 10; i++)
-    yd = rosic::getDelayedSampleAsymmetricHermiteM(0.5, &y[i], 3);
+    yd = RAPT::getDelayedSampleAsymmetricHermiteM(0.5, &y[i], 3);
 
   int dummy = 0;
 }
@@ -370,7 +370,7 @@ void rotes::plotOneSidedInterpolatorPolyphaseResponses(int M, double shape, doub
   for(int m = 0; m < 5; m++)
   {
     for(int n = M+1; n < inLength2; n++)
-      hd.m[m][n] = rosic::getDelayedSampleAsymmetricHermiteM(d[m], &x[n], M, shape); 
+      hd.m[m][n] = RAPT::getDelayedSampleAsymmetricHermiteM(d[m], &x[n], M, shape); 
   }
   Plotter::plotData(hd.numColumns, t, hd.m[0], hd.m[1], hd.m[2], hd.m[3], hd.m[4]);
   plotMagnitudeResponsesOf(hd, 8192, -60.0, 1);
@@ -397,13 +397,13 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   // linear:
   x0  = -1.0;  y0  =  0.0;  yd0 = +1.0;
   x1  =  0.0;  y1  = +1.0;  yd1 = +1.0;
-  rosic::fitCubicWithDerivative(x0, x1, y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
+  RAPT::fitCubicWithDerivative(x0, x1, y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
   for(n = 0; n < length/4; n++)
     yl[n] = a3*x[n]*x[n]*x[n] + a2*x[n]*x[n] + a1*x[n] + a0;
 
   x0  =  0.0;  y0  = +1.0;  yd0 = -1.0;
   x1  =  1.0;  y1  =  0.0;  yd1 = -1.0;
-  rosic::fitCubicWithDerivative(x0, x1, y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
+  RAPT::fitCubicWithDerivative(x0, x1, y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
   for(n = length/4; n < 2*length/4; n++)
     yl[n] = a3*x[n]*x[n]*x[n] + a2*x[n]*x[n] + a1*x[n] + a0;
 
@@ -411,7 +411,7 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   y0  =  0.0;  yd0 =  0.0;
   y1  = +1.0;  yd1 = +1.0;
   double xn;
-  rosic::fitCubicWithDerivativeFixedX(y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
+  RAPT::fitCubicWithDerivativeFixedX(y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
   for(n = 0; n < length/4; n++)
   {
     xn    = x[n] + 1.0;
@@ -420,7 +420,7 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
 
   y0 = +1.0;  yd0 = +1.0;
   y1 =  0.0;  yd1 = -1.0;
-  rosic::fitCubicWithDerivativeFixedX(y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
+  RAPT::fitCubicWithDerivativeFixedX(y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
   for(n = length/4; n < 2*length/4; n++)
   {
     xn    = x[n] + 0.0;
@@ -429,7 +429,7 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
 
   y0 = 0.0; yd0 = -1.0;
   y1 = 0.0; yd1 =  0.0;
-  rosic::fitCubicWithDerivativeFixedX(y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
+  RAPT::fitCubicWithDerivativeFixedX(y0, y1, yd0, yd1, &a3, &a2, &a1, &a0);
   for(n = 2*length/4; n < 3*length/4; n++)
   {
     xn    = x[n] - 1.0;
@@ -441,7 +441,7 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   // quintic:
   y0  =  0.0;  yd0 =  0.0;  ydd0 =  0.0;
   y1  = +1.0;  yd1 = +1.0;  ydd1 = +1.0;
-  rosic::fitQuinticWithDerivativesFixedX(y0, y1, yd0, yd1, ydd0, ydd1, &a5, &a4, &a3, &a2, &a1, &a0);
+  RAPT::fitQuinticWithDerivativesFixedX(y0, y1, yd0, yd1, ydd0, ydd1, &a5, &a4, &a3, &a2, &a1, &a0);
   for(n = 0; n < length/4; n++)
   {
     xn    = x[n] + 1.0;
@@ -451,7 +451,7 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
 
   y0 = +1.0;  yd0 = +1.0; ydd0 = +1.0;
   y1 =  0.0;  yd1 = -1.0; ydd1 = -2.0;
-  rosic::fitQuinticWithDerivativesFixedX(y0, y1, yd0, yd1, ydd0, ydd1, &a5, &a4, &a3, &a2, &a1, &a0);
+  RAPT::fitQuinticWithDerivativesFixedX(y0, y1, yd0, yd1, ydd0, ydd1, &a5, &a4, &a3, &a2, &a1, &a0);
   for(n = length/4; n < 2*length/4; n++)
   {
     xn    = x[n] + 0.0;
@@ -460,7 +460,7 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
 
   y0 =  0.0;  yd0 = -1.0; ydd0 = -2.0;
   y1 =  0.0;  yd1 =  0.0; ydd1 =  1.0;
-  rosic::fitQuinticWithDerivativesFixedX(y0, y1, yd0, yd1, ydd0, ydd1, &a5, &a4, &a3, &a2, &a1, &a0);
+  RAPT::fitQuinticWithDerivativesFixedX(y0, y1, yd0, yd1, ydd0, ydd1, &a5, &a4, &a3, &a2, &a1, &a0);
   for(n = 2*length/4; n < 3*length/4; n++)
   {
     xn    = x[n] - 1.0;
@@ -469,7 +469,7 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
 
   y0 =  0.0;  yd0 =  0.0; ydd0 = +1.0;
   y1 =  0.0;  yd1 =  0.0; ydd1 =  0.0;
-  rosic::fitQuinticWithDerivativesFixedX(y0, y1, yd0, yd1, ydd0, ydd1, &a5, &a4, &a3, &a2, &a1, &a0);
+  RAPT::fitQuinticWithDerivativesFixedX(y0, y1, yd0, yd1, ydd0, ydd1, &a5, &a4, &a3, &a2, &a1, &a0);
   for(n = 3*length/4; n < 4*length/4; n++)
   {
     xn    = x[n] - 2.0;

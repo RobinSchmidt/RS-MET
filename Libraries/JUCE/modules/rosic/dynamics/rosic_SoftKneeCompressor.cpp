@@ -69,7 +69,7 @@ void SoftKneeCompressor::calculateCubicCoefficients()
     yd2 = 0.0;
   }
   a4 = 0.0;
-  fitCubicWithDerivative(x1, x2, y1, y2, yd1, yd2, &a3, &a2, &a1, &a0);
+  RAPT::fitCubicWithDerivative(x1, x2, y1, y2, yd1, yd2, &a3, &a2, &a1, &a0);
 }
 
 void SoftKneeCompressor::calculateQuarticCoefficients()

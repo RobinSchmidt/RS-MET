@@ -232,7 +232,7 @@ void rosic::upsampleLinear(double *in, int inLength, double *out, int upsampling
     for(int m = 0; m < upsamplingFactor; m++)
     {
       double d      = 1.0 - (double) m / (double) upsamplingFactor;
-      out[offset+m] = rosic::getDelayedSampleLinear(d, &in[n]);
+      out[offset+m] = RAPT::getDelayedSampleLinear(d, &in[n]);
     }
     offset += upsamplingFactor;
   }
@@ -244,7 +244,7 @@ void rosic::upsampleLinear(double *in, int inLength, double *out, int upsampling
   for(int m = 0; m < upsamplingFactor; m++)
   {
     double d      = 1.0 - (double) m / (double) upsamplingFactor;
-    out[offset+m] = rosic::getDelayedSampleLinear(d, &tmpBuffer[1]);
+    out[offset+m] = RAPT::getDelayedSampleLinear(d, &tmpBuffer[1]);
   }
 }
 
@@ -271,7 +271,7 @@ void rosic::upsampleHermiteAsymmetric1(double *in, int inLength, double *out, in
     for(int m = 0; m < upsamplingFactor; m++)
     {
       double d      = 1.0 - (double) m / (double) upsamplingFactor;
-      out[offset+m] = rosic::getDelayedSampleAsymmetricHermite1(d, tmpPointer, shape);
+      out[offset+m] = RAPT::getDelayedSampleAsymmetricHermite1(d, tmpPointer, shape);
     }
     offset += upsamplingFactor;
   }
@@ -300,7 +300,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
     for(m = 0; m < upsamplingFactor; m++)
     {
       double d      = 1.0 - (double) m / (double) upsamplingFactor;
-      out[offset+m] = rosic::getDelayedSampleAsymmetricHermiteM(d, tmpPointer, M, shape);
+      out[offset+m] = RAPT::getDelayedSampleAsymmetricHermiteM(d, tmpPointer, M, shape);
     }
     offset += upsamplingFactor;
   }
@@ -313,7 +313,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
   for(m = 0; m < upsamplingFactor; m++)
   {
     double d      = 1.0 - (double) m / (double) upsamplingFactor;
-    out[offset+m] = rosic::getDelayedSampleAsymmetricHermiteM(d, &tmpBuffer[M+1], M, shape);
+    out[offset+m] = RAPT::getDelayedSampleAsymmetricHermiteM(d, &tmpBuffer[M+1], M, shape);
   }
 
   delete[] tmpBuffer;

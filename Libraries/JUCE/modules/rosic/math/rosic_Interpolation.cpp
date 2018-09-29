@@ -1,9 +1,4 @@
-//#include "rosic_Interpolation.h"
-//#include "rosic_LinearAlgebra.h"
-//#include "rosic_Matrix.h"
-//#include "rosic_PolynomialAlgorithms.h"
-//using namespace rosic;
-
+/*
 void rosic::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
                                    double yd2, double *a3, double *a2, double *a1, double *a0)
 {
@@ -44,7 +39,7 @@ void rosic::fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, do
   *a4 = -ydd1+7*yd1-15*y1+3*(*a2)+8*(*a1)+15*(*a0);
   *a5 = (ydd1-6*yd1+12*y1-2*(*a2)-6*(*a1)-12*(*a0))/2;
 }
-/*
+
 void rosic::getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
 {
   //int N = 2*M+1;
@@ -122,7 +117,6 @@ void rosic::getHermiteCoeffs3(double *y0, double *y1, double *a)
   a[6] =  (-k4+13*k3-68*k2+140*k1)/2;
   a[7] = -(-k4+12*k3-60*k2+120*k1)/6;
 }
-*/
 
 double rosic::getDelayedSampleLinear(double d, double *y)
 {
@@ -227,3 +221,4 @@ void rosic::fitCubicThroughFourPoints(double x0, double y0, double x1, double y1
   // "MUS421/EE367B Lecture 4" by Julius Smith ...this product formula with h_delta on page 13
   // -> generalize this function to compute coefficients for n-th order Lagrange interpolator
 }
+*/
