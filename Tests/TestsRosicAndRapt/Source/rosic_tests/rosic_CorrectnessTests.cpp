@@ -3,6 +3,7 @@ using namespace rotes;
 
 void rotes::testAllRosicClasses()
 {
+  // todo: split into unit tests and experiments, unit tests should return a bool
   testRosicString();
   testRosicBasics();
   testRosicFile();
@@ -11,11 +12,15 @@ void rotes::testAllRosicClasses()
   testRosicModulators();
   testRosicNonRealTime();
   testRosicOthers();
+  testRosicAnalysis();
+  testRosicEffects();
+  testRosicNumerical();
+  testRosicMath();
 }
 
 void rotes::testRosicAnalysis()
 {
-  testOscilloscopeBuffer();
+  //testOscilloscopeBuffer();  // creates plot
 }
 
 void rotes::testRosicBasics()
@@ -33,8 +38,8 @@ void rotes::testRosicFile()
 
 void rotes::testRosicEffects()
 {
-  testFastGeneralizedHadamardTransform();
-  testFeedbackDelayNetwork();
+  testFastGeneralizedHadamardTransform(); // returns bool 
+  //testFeedbackDelayNetwork();             // writes wave file
 }
 
 void rotes::testRosicFilter()
@@ -66,12 +71,12 @@ void rotes::testRosicFilter()
 void rotes::testRosicGenerators()
 {
   //testOscillatorStereo();
-  testLorentzSystem();
+  //testLorentzSystem();  // creates a plot
 }
 
 void rotes::testRosicModulators()
 {
-  testConsecutiveExponentialDecay();
+  //testConsecutiveExponentialDecay(); // creates a plot
 }
 
 void rotes::testRosicMath()
@@ -82,8 +87,8 @@ void rotes::testRosicMath()
   testPolynomialComposition();
   testPolynomialWeightedSum();
   testPolynomialIntegrationWithPolynomialLimits();
-  //testPolynomialRootFinder();
-  testLinLogEquationSolver();
+  testPolynomialRootFinder();
+  //testLinLogEquationSolver();  // creates plot
   testLinearSystemSolver();
 }
 
@@ -100,5 +105,5 @@ void rotes::testRosicNonRealTime()
 
 void rotes::testRosicOthers()
 {
-  testSlewRateLimiterLinear();
+  //testSlewRateLimiterLinear();  // creates plot
 }

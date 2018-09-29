@@ -126,7 +126,8 @@ void rosic::findPolynomialRoots(Complex *a, int order, Complex *roots)
     // deflate the deflated polynomial again by the monomial that corresponds to our most recently 
     // found root:
     Complex rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
-    dividePolynomialByMonomialInPlace(ad, j, r, &rem);
+    //dividePolynomialByMonomialInPlace(ad, j, r, &rem);
+    RAPT::rsPolynomial<Complex>::dividePolynomialByMonomialInPlace(ad, j, r, &rem);
   }
 
   rosic::sortComplexArrayByReIm(roots, order);

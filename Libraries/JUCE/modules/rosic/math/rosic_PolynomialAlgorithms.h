@@ -31,8 +31,6 @@ namespace rosic
   template <class T>
   void evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results, int numDerivatives);
 
-#endif
-
   /** Multiplies the polynomials represented by the coefficient vectors 'a' and 'b' and stores the 
   resulting coefficients in 'result'. The resulting polynom will be or order aOrder+bOrder and the 
   coefficient vector should have allocated space for 
@@ -74,6 +72,8 @@ namespace rosic
   which may be passed in as parameter "c" - this parameter is optional, it defaults to zero.  */
   template <class T>
   void polyIntegral(T *a, T *ai, int N, T c = T(0));
+
+#endif
 
   /** Creates an array of arrays with polynomial cofficients that represent the polynomial with 
   coefficients a[] raised to successive powers up to and including "highestPower". aPowers[0] 
@@ -274,7 +274,6 @@ namespace rosic
       results[i] *= constant;
     }
   }
-  */
 
   template <class T>
   void multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)
@@ -342,6 +341,8 @@ namespace rosic
       ai[n] = a[n-1] / n;
     ai[0] = c;
   }
+
+  */
 
   template <class T>
   void createPolynomialPowers(T *a, int N, T **aPowers, int highestPower)
@@ -413,7 +414,7 @@ namespace rosic
     T *A = new T[AN+1];
     T *B = new T[BN+1];
 
-    polyIntegral(p, P, pN);
+    RAPT::rsPolynomial<double>::polyIntegral(p, P, pN);
     composePolynomials(a, aN, P, PN, A);
     composePolynomials(b, bN, P, PN, B);
     subtractPolynomials(B, BN, A, AN, q);

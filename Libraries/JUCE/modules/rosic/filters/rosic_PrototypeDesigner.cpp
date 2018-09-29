@@ -271,10 +271,10 @@ void rsPrototypeDesigner::magSquaredNumAndDen(double *b, double *a, double *b2, 
 {
   double *am = new double[N+1];
   double *bm = new double[N+1];
-  polyCoeffsForNegativeArgument(b, bm, N);  // coeffs of N(-s)
-  polyCoeffsForNegativeArgument(a, am, N);  // coeffs of D(-s)
-  multiplyPolynomials(b, N, bm, N, b2);     // coeffs of N(s)*N(-s)
-  multiplyPolynomials(a, N, am, N, a2);     // coeffs of D(s)*D(-s)
+  RAPT::rsPolynomial<double>::polyCoeffsForNegativeArgument(b, bm, N);  // coeffs of N(-s)
+  RAPT::rsPolynomial<double>::polyCoeffsForNegativeArgument(a, am, N);  // coeffs of D(-s)
+  RAPT::rsPolynomial<double>::multiplyPolynomials(b, N, bm, N, b2);     // coeffs of N(s)*N(-s)
+  RAPT::rsPolynomial<double>::multiplyPolynomials(a, N, am, N, a2);     // coeffs of D(s)*D(-s)
   delete[] am;
   delete[] bm;
 }

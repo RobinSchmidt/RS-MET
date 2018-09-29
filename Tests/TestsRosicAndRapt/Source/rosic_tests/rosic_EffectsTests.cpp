@@ -89,7 +89,8 @@ bool rotes::testFeedbackDelayNetwork()
   //Plotter::plotData(N, t, hL);
 
 
-  rosic::writeToStereoWaveFile("d:\\TmpData\\FDNImpulseResponse.wav", hL, hR, N, 44100, 16);
+  //rosic::writeToStereoWaveFile("d:\\TmpData\\FDNImpulseResponse.wav", hL, hR, N, 44100, 16);
+  rosic::writeToStereoWaveFile("FDNImpulseResponse.wav", hL, hR, N, 44100, 16);
 
   delete[] hL;
   delete[] hR;
