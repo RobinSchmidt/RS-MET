@@ -353,7 +353,8 @@ void rosic::estimateEnvelope(double *x, double *y, int N, double sampleRate, dou
 void rosic::fft(double *signalBlock, int blockSize, Complex *spectrum, int fftSize)
 {
   rassert(fftSize >= blockSize);
-  static FourierTransformerBluestein transformer;
+  //static FourierTransformerBluestein transformer;  // produces memleak in test
+  FourierTransformerBluestein transformer;
   transformer.setBlockSize(fftSize);
   transformer.setNormalizationMode(FourierTransformerRadix2::NORMALIZE_ON_FORWARD_TRAFO);
   for(int n=0; n<blockSize; n++)
@@ -365,7 +366,8 @@ void rosic::fft(double *signalBlock, int blockSize, Complex *spectrum, int fftSi
 
 void rosic::ifft(Complex *spectrum, int fftSize, Complex *signalBlock)
 {
-  static FourierTransformerBluestein transformer;
+  //static FourierTransformerBluestein transformer;
+  FourierTransformerBluestein transformer;
   transformer.setBlockSize(fftSize);
   transformer.setNormalizationMode(FourierTransformerRadix2::NORMALIZE_ON_FORWARD_TRAFO);
   transformer.setDirection(FourierTransformerRadix2::INVERSE);
