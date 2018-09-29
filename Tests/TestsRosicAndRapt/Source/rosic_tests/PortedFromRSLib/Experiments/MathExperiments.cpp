@@ -285,7 +285,7 @@ void cubicInterpolationNonEquidistant() // turn into unit-test
   // interpolate:
   double x = 3.2; // abscissa value to interpolate at
   double y;       // interpolated value at x, computed via a- or b-coeffs
-  y = evaluatePolynomialAt(x,  a, 3);
+  y = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  a, 3);
 
 
   // do the same in normalized coordinates, such that x2=0, x3=1 - this is done by computing primed
@@ -309,7 +309,7 @@ void cubicInterpolationNonEquidistant() // turn into unit-test
   double b[4];
   fitCubicWithDerivativeFixedX(y2, y3, s2p, s3p, &b[3], &b[2], &b[1], &b[0]);
 
-  double yp = evaluatePolynomialAt(xp, b, 3);
+  double yp = RAPT::rsPolynomial<double>::evaluatePolynomialAt(xp, b, 3);
 
   double error = fabs(y-yp);
   testResult &= fabs(y-yp) < 1.e-10;
@@ -557,9 +557,9 @@ void splineInterpolationAreaNormalized()
   for(int n = 0; n < N; n++)
   {
     yl[n]  = rsInterpolateLinear(0.0, 1.0, y0[0], y1[0], x[n]);
-    yc[n]  = evaluatePolynomialAt(x[n], ac,  3);
-    yr1[n] = evaluatePolynomialAt(x[n], ar1, 4);
-    yr2[n] = evaluatePolynomialAt(x[n], ar2, 5);
+    yc[n]  = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x[n], ac,  3);
+    yr1[n] = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x[n], ar1, 4);
+    yr2[n] = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x[n], ar2, 5);
   }
 
   // create the running sums of the interpolants (which are approximations to integrals times N):

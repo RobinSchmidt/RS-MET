@@ -1,12 +1,6 @@
 #ifndef rosic_PolynomialAlgorithms_h
 #define rosic_PolynomialAlgorithms_h
 
-//// rosic-indcludes:
-//#include <limits.h>
-//#include <float.h>
-//#include "rosic_ComplexFunctions.h"
-//#include "../datastructures/rosic_Array.h"
-
 namespace rosic
 {
 
@@ -15,6 +9,8 @@ namespace rosic
 
   /** Evaluates the polynomial defined by the array of roots "r" at argument "x". */
   Complex evaluatePolynomialWithRoots(Complex x, Complex *r, int numRoots);
+
+#ifdef NOT_DEFINED
 
   /** Evaluates the polynomial defined by the array of coefficients "a" at argument "x".  The array 
   of coefficients must be of length order+1 and is interpreted as follows: a[0] is taken to be the 
@@ -34,6 +30,8 @@ namespace rosic
   derivative in results[1] and so on. @see: evaluatePolynomialAt() */
   template <class T>
   void evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results, int numDerivatives);
+
+#endif
 
   /** Multiplies the polynomials represented by the coefficient vectors 'a' and 'b' and stores the 
   resulting coefficients in 'result'. The resulting polynom will be or order aOrder+bOrder and the 
@@ -230,7 +228,7 @@ namespace rosic
 
   //-----------------------------------------------------------------------------------------------
   // template function definitions:
-
+  /*
   template <class T>
   T evaluatePolynomialAt(T x, T *a, int order)
   {
@@ -276,6 +274,7 @@ namespace rosic
       results[i] *= constant;
     }
   }
+  */
 
   template <class T>
   void multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)

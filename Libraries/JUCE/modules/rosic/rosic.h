@@ -124,7 +124,7 @@
 #include "datastructures/rosic_ExtensionsForSTL.h"
 
 // math:
-#include "math/rosic_Interpolation.h"
+//#include "math/rosic_Interpolation.h"  // supeseded by rapt
 #include "math/rosic_LinearAlgebra.h"
 #include "math/rosic_Matrix.h"
 #include "math/rosic_Vector.h"

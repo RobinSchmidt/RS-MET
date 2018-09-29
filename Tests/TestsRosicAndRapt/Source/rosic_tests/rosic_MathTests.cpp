@@ -57,11 +57,11 @@ bool rotes::testCubicCoeffsTwoPointsAndDerivatives()
   double yc, dyc;       // computed values
   double tol = 1.e-14;  // tolerance
 
-  evaluatePolynomialAndDerivativeAt(x[0], a, 3, &yc, &dyc);
+  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x[0], a, 3, &yc, &dyc);
   result &= isCloseTo( yc,  y[0], tol);
   result &= isCloseTo(dyc, dy[0], tol);
 
-  evaluatePolynomialAndDerivativeAt(x[1], a, 3, &yc, &dyc);
+  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x[1], a, 3, &yc, &dyc);
   result &= isCloseTo( yc,  y[1], tol);
   result &= isCloseTo(dyc, dy[1], tol);
 
@@ -111,9 +111,9 @@ bool rotes::testPolynomialComposition()
   // to the result of the 1st a-polynomial:
   double x = -3.0; // input value
   double y1, y2;
-  y1 = evaluatePolynomialAt(x,  a, na);
-  y1 = evaluatePolynomialAt(y1, b, nb);
-  y2 = evaluatePolynomialAt(x,  c, nc);
+  y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  a, na);
+  y1 = RAPT::rsPolynomial<double>:: evaluatePolynomialAt(y1, b, nb);
+  y2 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  c, nc);
   result &= (y1 == y2);
 
   return result;
@@ -185,15 +185,16 @@ bool rotes::testPolynomialIntegrationWithPolynomialLimits()
   polyIntegral(p, P, np);
 
   // compute integration limits for definite integral:
-  double lowerLimit = evaluatePolynomialAt(x, a, na);
-  double upperLimit = evaluatePolynomialAt(x, b, nb);
+  double lowerLimit = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, a, na);
+  double upperLimit = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, b, nb);
 
   // evaluate definite integral:
-  y1 = evaluatePolynomialAt(upperLimit, P, nP) - evaluatePolynomialAt(lowerLimit, P, nP);
+  y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(upperLimit, P, nP) 
+    - RAPT::rsPolynomial<double>::evaluatePolynomialAt(lowerLimit, P, nP);
 
 
   integratePolynomialWithPolynomialLimits(p, np, a, na, b, nb, q);
-  y2 = evaluatePolynomialAt(x, q, nq);
+  y2 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, q, nq);
 
   result &= isCloseTo(y2, y1, 1.e-13 * fabs(y1));
 

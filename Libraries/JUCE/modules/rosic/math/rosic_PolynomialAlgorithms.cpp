@@ -1,8 +1,3 @@
-//#include <limits>
-//
-//#include "rosic_PolynomialAlgorithms.h"
-//using namespace rosic;
-
 Complex rosic::evaluatePolynomialWithRoots(Complex s, Complex *r, int N)
 {
   Complex result = 1.0;
@@ -13,6 +8,7 @@ Complex rosic::evaluatePolynomialWithRoots(Complex s, Complex *r, int N)
   }
   return result;
 }
+
 
 // used in convergeToRootViaLaguerre:
 double evaluatePolynomialWithTwoDerivativesAndError(Complex *a, int order, Complex z, Complex *P)
@@ -385,13 +381,13 @@ double rosic::getRootNear(double x, double *a, int order, double min, double max
 {
   // Newton/Raphson iteration:
   double f, df, xNew;
-  evaluatePolynomialAndDerivativeAt(x, a, order, &f, &df);
+  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x, a, order, &f, &df);
   xNew  = x - f/df;
   int i = 1;
   while( xNew != x && i < maxIterations )
   {
     x    = xNew;
-    evaluatePolynomialAndDerivativeAt(x, a, order, &f, &df);
+    RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x, a, order, &f, &df);
     xNew = x - f/df;
     i++;
   }

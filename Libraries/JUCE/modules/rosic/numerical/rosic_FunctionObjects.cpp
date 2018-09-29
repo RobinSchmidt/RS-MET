@@ -246,20 +246,20 @@ void Polynomial::setCoefficients(const double* const newCoeffs)
 
 double Polynomial::getValueAt(double x)
 {
-  return rosic::evaluatePolynomialAt(x, coeffs, order);
+  return RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, coeffs, order);
 }
 
 double Polynomial::getFirstDerivativeAt(double x)
 {
   double f[2];  // f(x), f'(x)
-  rosic::evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 1);
+  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 1);
   return f[1];
 }
 
 double Polynomial::getSecondDerivativeAt(double x)
 {
   double f[3];  // f(x), f'(x), f''(x)
-  rosic::evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 2);
+  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 2);
   return f[2];
 }
 
