@@ -105,14 +105,14 @@ bool rotes::testPolynomialComposition()
   double a[na+1] = {2, -1, 5, 7, -3, 2}; // 2*x^5 - 3*x^4 + 7*x^3 + 5*x^2 - 1*x^1 + 2*x^0
   double b[nb+1] = {3,  1, 4, -5, 3};    // 3*x^4 - 5*x^3 + 4*x^2 + 1*x^1 - 3*x^0
   double c[nc+1];
-  composePolynomials(a, na, b, nb, c);
+  RAPT::rsPolynomial<double>::composePolynomials(a, na, b, nb, c);
 
   // check, if the composed c-polynomial returns the same result as applying the 2nd b-polynomial
   // to the result of the 1st a-polynomial:
   double x = -3.0; // input value
   double y1, y2;
   y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  a, na);
-  y1 = RAPT::rsPolynomial<double>:: evaluatePolynomialAt(y1, b, nb);
+  y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(y1, b, nb);
   y2 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  c, nc);
   result &= (y1 == y2);
 
@@ -131,7 +131,7 @@ bool rotes::testPolynomialWeightedSum()
   double r[rN+1];
 
   // r(x) = 2*p(x) + 3*q(x) = 4*x^5 - 6*x^4 + 20*x^3 + 28*x^2 - 11*x^1 + 12*x^0
-  weightedSumOfPolynomials(p, pN, 2.0, q, qN, 3.0, r);
+  RAPT::rsPolynomial<double>::weightedSumOfPolynomials(p, pN, 2.0, q, qN, 3.0, r);
   result &= (r[0] ==  12);
   result &= (r[1] == -11);
   result &= (r[2] ==  28);
@@ -141,7 +141,7 @@ bool rotes::testPolynomialWeightedSum()
 
   // exchange roles of function parameters (function takes the other branch, result should be the 
   // same):
-  weightedSumOfPolynomials(q, qN, 3.0, p, pN, 2.0, r);
+  RAPT::rsPolynomial<double>::weightedSumOfPolynomials(q, qN, 3.0, p, pN, 2.0, r);
   result &= (r[0] ==  12);
   result &= (r[1] == -11);
   result &= (r[2] ==  28);
@@ -151,7 +151,7 @@ bool rotes::testPolynomialWeightedSum()
 
   // use a truncated polynomial for p (such that p and q are of the same order):
   rosic::fillWithZeros(r, rN+1);
-  weightedSumOfPolynomials(p, qN, 2.0, q, qN, 3.0, r);
+  RAPT::rsPolynomial<double>::weightedSumOfPolynomials(p, qN, 2.0, q, qN, 3.0, r);
   result &= (r[0] ==  12);
   result &= (r[1] == -11);
   result &= (r[2] ==  28);
@@ -193,7 +193,7 @@ bool rotes::testPolynomialIntegrationWithPolynomialLimits()
     - RAPT::rsPolynomial<double>::evaluatePolynomialAt(lowerLimit, P, nP);
 
 
-  integratePolynomialWithPolynomialLimits(p, np, a, na, b, nb, q);
+  RAPT::rsPolynomial<double>::integratePolynomialWithPolynomialLimits(p, np, a, na, b, nb, q);
   y2 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, q, nq);
 
   result &= isCloseTo(y2, y1, 1.e-13 * fabs(y1));

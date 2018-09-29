@@ -1,6 +1,8 @@
 #ifndef rosic_PolynomialAlgorithms_h
 #define rosic_PolynomialAlgorithms_h
 
+// commented code is obsolete and superseded by templatized versions in RAPT
+
 namespace rosic
 {
 
@@ -10,7 +12,7 @@ namespace rosic
   /** Evaluates the polynomial defined by the array of roots "r" at argument "x". */
   Complex evaluatePolynomialWithRoots(Complex x, Complex *r, int numRoots);
 
-#ifdef NOT_DEFINED
+#ifdef NOT_DEFINED // faux commenting out
 
   /** Evaluates the polynomial defined by the array of coefficients "a" at argument "x".  The array 
   of coefficients must be of length order+1 and is interpreted as follows: a[0] is taken to be the 
@@ -73,8 +75,6 @@ namespace rosic
   template <class T>
   void polyIntegral(T *a, T *ai, int N, T c = T(0));
 
-#endif
-
   /** Creates an array of arrays with polynomial cofficients that represent the polynomial with 
   coefficients a[] raised to successive powers up to and including "highestPower". aPowers[0] 
   will have a single entry equal to unity (representing a[]^0), aPowers[1] will contain a copy 
@@ -118,6 +118,8 @@ namespace rosic
   as polynomial "q" which will be of order pN*max(aN, bN). */
   template<class T>
   void integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, int bN, T *q);
+
+#endif
 
   /** Converges to a complex root of a polynomial by means of Laguerre's method using the 
   "initialGuess" as first estimate. */
@@ -342,8 +344,6 @@ namespace rosic
     ai[0] = c;
   }
 
-  */
-
   template <class T>
   void createPolynomialPowers(T *a, int N, T **aPowers, int highestPower)
   {
@@ -423,7 +423,7 @@ namespace rosic
     delete[] A;
     delete[] B;
   }
-
+  */
 }
 
 #endif
