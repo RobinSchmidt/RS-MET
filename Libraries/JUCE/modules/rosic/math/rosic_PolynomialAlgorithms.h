@@ -171,6 +171,11 @@ namespace rosic
   two-element array (or a one-element array, when b is also zero). */
   rsArray<Complex> getRootsOfCubicEquation(double a, double b, double c, double d);
 
+
+
+
+#ifdef NOT_DEFINED // faux commenting out
+
   /** Iteratively improves an initial estimate for the root of the cubic equation:
   \f[ a x^3 + b x^2 + c x + d = 0               \f]
   by means of the Newton-Raphson iteration:
@@ -199,6 +204,8 @@ namespace rosic
   respectively. */
   void cubicCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, double *dy);
 
+#endif
+
 
   // \todo void cubicCoeffsFourPoints(double *a, double *x, double *y);
   // \todo void quinticCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, double *dy, double *d2y);
@@ -225,6 +232,9 @@ namespace rosic
   // \todo for Halpern filters (see Paarmann, page 255-259):
   //void jacobiPolynomial(double *a, int order); // the U-polynomials
   //void maximallyDivergingMonotonicPolynomial(double *a, int order); // the T-polynomial
+
+
+
 
 
 

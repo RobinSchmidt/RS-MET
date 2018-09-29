@@ -51,7 +51,7 @@ bool rotes::testCubicCoeffsTwoPointsAndDerivatives()
   double dy[2] = { 7, 3};
   double  a[4];
 
-  rosic::cubicCoeffsTwoPointsAndDerivatives(a, x, y, dy);
+  RAPT::rsPolynomial<double>::cubicCoeffsTwoPointsAndDerivatives(a, x, y, dy);
 
   // check results:
   double yc, dyc;       // computed values

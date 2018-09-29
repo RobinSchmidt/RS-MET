@@ -356,6 +356,7 @@ rsArray<Complex> rosic::getRootsOfCubicEquation(double a, double b, double c, do
   return roots;
 }
 
+/*
 double rosic::getCubicRootNear(double x, double a, double b, double c, double d,
                                double min, double max, int maxIterations)
 {
@@ -414,6 +415,10 @@ void rosic::cubicCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, 
              + y[0]*(3*x[1]+3*x[0]));
   a[3] = -s*(x[1]*(dy[1]+dy[0]) + x[0]*(-dy[1]-dy[0]) - 2*y[1] + 2*y[0]);
 }
+*/
+
+
+
 
 void rosic::besselPolynomial(double *a, int order)
 {
