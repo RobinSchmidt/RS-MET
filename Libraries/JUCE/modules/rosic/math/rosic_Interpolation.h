@@ -1,8 +1,8 @@
 #ifndef rosic_Interpolation_h
 #define rosic_Interpolation_h
 
-//// rosic-indcludes:
-//#include "rosic_ComplexFunctions.h"
+// commented functions are superseded by corresponding template functions in RAPT (and may eventually
+// be deleted)
 
 namespace rosic
 {
@@ -31,16 +31,16 @@ namespace rosic
   y0: (M+1)-element array containing y(0), y'(0), y''(0), y'''(0), etc.
   y1: (M+1)-element array containing y(1), y'(1), y''(1), y'''(1), etc.
   a:  (2*M+1)-element array for returning a0, a1, a2, a3, a4, a5, a6, a7, etc.  */
-  void getHermiteCoeffsM(double *y0, double *y1, double *a, int M);
+  //void getHermiteCoeffsM(double *y0, double *y1, double *a, int M);
 
   /** Optimized version of getHermiteCoeffsM for the case M == 1. */
-  void getHermiteCoeffs1(double *y0, double *y1, double *a);
+  //void getHermiteCoeffs1(double *y0, double *y1, double *a);
 
   /** Optimized version of getHermiteCoeffsM for the case M == 2. */
-  void getHermiteCoeffs2(double *y0, double *y1, double *a);
+  //void getHermiteCoeffs2(double *y0, double *y1, double *a);
 
   /** Optimized version of getHermiteCoeffsM for the case M == 3. */
-  void getHermiteCoeffs3(double *y0, double *y1, double *a);
+  //void getHermiteCoeffs3(double *y0, double *y1, double *a);
 
   /** Computes a delayed sample with a fractional delay of "d" (0 <= d <= 1) behind y[0]. To compute the output value, the function uses 
   y[0], y[-1], y[-2], ..., y[-(M+1)] to obtain finite difference approximations for a number "M" of derivatives and uses these as desired 

@@ -90,8 +90,13 @@ template class RAPT::rsRotationXY<double>;
 template class RAPT::rsRotationXYZ<double>;
 template class RAPT::rsCoordinateMapper<double>;
 template class RAPT::rsCoordinateMapper2D<double>;
-
 template class RAPT::rsFourierTransformerRadix2<double>;
+
+// Interpolation:
+template void RAPT::getHermiteCoeffsM(double *y0, double *y1, double *a, int M);
+template void RAPT::getHermiteCoeffs1(double *y0, double *y1, double *a);
+template void RAPT::getHermiteCoeffs2(double *y0, double *y1, double *a);
+template void RAPT::getHermiteCoeffs3(double *y0, double *y1, double *a);
 
 
 template class RAPT::rsStateVariableFilter<double, double>;

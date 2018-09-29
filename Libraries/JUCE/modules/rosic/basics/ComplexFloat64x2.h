@@ -1,7 +1,7 @@
 #ifndef RAPT_COMPLEXFLOAT64X2_H_INCLUDED
 #define RAPT_COMPLEXFLOAT64X2_H_INCLUDED
 
-/** In this file are some operattors and functions for complex variables where the real and
+/** In this file are some operators and functions for complex variables where the real and
 imaginary parts are each a SIMD vector. For some reason, the standard library functions of
 std::complex dont work anymore when the template parameter to std::complex is a SIMD type, so we
 provide explicit specializations here. */

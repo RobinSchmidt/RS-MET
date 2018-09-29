@@ -417,6 +417,7 @@ void rationalInterpolation()
   int dummy = 0;
 }
 
+// move to RAPT:
 void rsHermiteCoeffsS1R1(double *y0, double *y1, double *a)
 {
   // smoothness = 1, matching integrals = 1
@@ -430,7 +431,6 @@ void rsHermiteCoeffsS1R1(double *y0, double *y1, double *a)
   a[3] = -60*k2-4*k1+28*k0;
   a[4] = -(-60*k2-5*k1+30*k0)/2;
 }
-
 void rsHermiteCoeffsS1R2(double *y0, double *y1, double *a)
 {
   // smoothness = 1, matching integrals = 2
@@ -446,7 +446,6 @@ void rsHermiteCoeffsS1R2(double *y0, double *y1, double *a)
   a[4] = 2100*k3-1020*k2-15*k1+195*k0;
   a[5] = -840*k3+420*k2+7*k1-84*k0;
 }
-
 void splineInterpolationAreaNormalized()
 {
   // We interpolate between (x=0, y=y0), (x=1, y=y1), with derivatives y'(0)=yp0, y'(1)=yp1

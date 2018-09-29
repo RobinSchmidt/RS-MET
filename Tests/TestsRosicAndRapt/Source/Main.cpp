@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // todo: merge with unit tests for RSLib
+  runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
   //hyperbolicFunctions(); 
 //  splineInterpolationNonEquidistant();
   //rationalInterpolation();
-  //splineInterpolationAreaNormalized();
+  splineInterpolationAreaNormalized();
   //numericDiffAndInt();
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
@@ -379,7 +379,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //testAllRosicClasses();
+  testAllRosicClasses();
   //testRosicAnalysis();
   //testRosicBasics();
   //testRosicFile();

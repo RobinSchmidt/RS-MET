@@ -512,7 +512,9 @@ void envelopeDeBeating()
   intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime.size(), 
     &t[0], &env[0], (int)t.size());
 
-  // maybe the bump can be avoided using a quartic interpolant
+  // -maybe the bump can be avoided using a quartic interpolant
+  // -and/or: let the env start at 0 and use a segement of lower order by not prescribing values
+  //  for the derivative(s) at 0, same at the end
 
   // smoothing:
   //rsBiDirectionalFilter::applyLowpass(&env[0], &env[0], (int)env.size(), fc, fs, np);

@@ -44,7 +44,7 @@ void rosic::fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, do
   *a4 = -ydd1+7*yd1-15*y1+3*(*a2)+8*(*a1)+15*(*a0);
   *a5 = (ydd1-6*yd1+12*y1-2*(*a2)-6*(*a1)-12*(*a0))/2;
 }
-
+/*
 void rosic::getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
 {
   //int N = 2*M+1;
@@ -122,6 +122,7 @@ void rosic::getHermiteCoeffs3(double *y0, double *y1, double *a)
   a[6] =  (-k4+13*k3-68*k2+140*k1)/2;
   a[7] = -(-k4+12*k3-60*k2+120*k1)/6;
 }
+*/
 
 double rosic::getDelayedSampleLinear(double d, double *y)
 {
@@ -141,7 +142,7 @@ double rosic::getDelayedSampleAsymmetricHermite1(double d, double *y, double sha
   y1[1] = shape * (y[0]  - y[-1]);
 
   // compute polynomial coeffs:
-  getHermiteCoeffs1(y0, y1, a);
+  RAPT::getHermiteCoeffs1(y0, y1, a);
 
   // evaluate:
   double x = 1.0 - d;
@@ -173,7 +174,7 @@ double rosic::getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, dou
   }
 
   // compute polynomial coeffs:
-  getHermiteCoeffsM(y0, y1, a, M);
+  RAPT::getHermiteCoeffsM(y0, y1, a, M);
 
   // evaluate:
   double x = 1.0 - d;
