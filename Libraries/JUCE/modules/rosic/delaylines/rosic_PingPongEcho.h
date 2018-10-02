@@ -204,7 +204,7 @@ namespace rosic
       {
         // mono/normal:
         y1             = buffer1[tapOut];
-        tmp1           = inM + clip(feedback*y1, -2.0, 2.0);
+        tmp1           = inM + RAPT::rsClip(feedback*y1, -2.0, 2.0);
         tmp1           = filter1.getSample(tmp1);
         buffer1[tapIn] = tmp1;
         yL             = gLL*y1;
@@ -215,7 +215,7 @@ namespace rosic
         // mono/pingpong:
         y1             = buffer1[tapOut];
         y2             = buffer2[tapOut];
-        tmp1           = inM + clip(feedback*y2, -2.0, 2.0);
+        tmp1           = inM + RAPT::rsClip(feedback*y2, -2.0, 2.0);
         tmp1           = filter1.getSample(tmp1);
         buffer1[tapIn] = tmp1;
         buffer2[tapIn] = feedback*y1;
@@ -234,13 +234,13 @@ namespace rosic
 
       if( pingPongMode == false )
       {
-        tmp1 += clip(feedback*yL, -2.0, 2.0);
-        tmp2 += clip(feedback*yR, -2.0, 2.0);
+        tmp1 += RAPT::rsClip(feedback*yL, -2.0, 2.0);
+        tmp2 += RAPT::rsClip(feedback*yR, -2.0, 2.0);
       }
       else 
       {
-        tmp1 += clip(feedback*yR, -2.0, 2.0);
-        tmp2 += clip(feedback*yL, -2.0, 2.0);
+        tmp1 += RAPT::rsClip(feedback*yR, -2.0, 2.0);
+        tmp2 += RAPT::rsClip(feedback*yL, -2.0, 2.0);
       }
 
       tmp1           = filter1.getSample(tmp1);

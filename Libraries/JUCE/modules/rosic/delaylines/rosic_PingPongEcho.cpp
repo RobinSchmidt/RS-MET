@@ -61,7 +61,7 @@ void PingPongEcho::setDelayTime(double newDelayTime)
 {
   if( newDelayTime != delayTime )
   {
-    delayTime = clip(newDelayTime, 0.0, 4.25);  
+    delayTime = RAPT::rsClip(newDelayTime, 0.0, 4.25);  
     setupDelayInSamples();
   }
 }
@@ -109,7 +109,7 @@ void PingPongEcho::setupDelayInSamples()
     delayInSeconds = delayTime;
 
   double delayInSamples = sampleRate*delayInSeconds;
-  delayInSamples = clip(delayInSamples, 0.0, (double)length);
+  delayInSamples = RAPT::rsClip(delayInSamples, 0.0, (double)length);
 
   /*
   // update member delayTime to the clipped value:

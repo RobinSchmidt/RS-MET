@@ -212,7 +212,7 @@ namespace rosic
       y1  = delayBuffer1[tapOut];
 
       // add the feedback to the input:
-      tmp = inM + clip(feedback*y1, -2.0, 2.0);
+      tmp = inM + RAPT::rsClip(feedback*y1, -2.0, 2.0);
 
       // filter that signal with the embedded equalizer and feed it into the delayline:
       tmp                 = feedbackEqualizer.getSample(tmp);
@@ -236,7 +236,7 @@ namespace rosic
       y2 = delayBuffer2[tapOut];
 
       // apply cross-feedback (2nd -> 1st) and EQ and feed the result into the first delayline:
-      tmp                 = inM + clip(feedback*y2, -2.0, 2.0);
+      tmp                 = inM + RAPT::rsClip(feedback*y2, -2.0, 2.0);
       tmp                 = feedbackEqualizer.getSample(tmp);
       delayBuffer1[tapIn] = (float) tmp;
 

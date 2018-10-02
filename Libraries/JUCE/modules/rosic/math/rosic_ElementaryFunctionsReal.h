@@ -69,35 +69,35 @@ rosic_ComplexFunctions.h */
 //INLINE double acosh(double x);
 
 /** Symmetrized inverse hyperbolic cosine. */
-INLINE double acoshs(double x);
+//INLINE double acoshs(double x);
 
 ///** Inverse hyperbolic sine. */
 //INLINE double asinh(double x);
 
 /** Returns -1.0 if x is below low, 0.0 if x is between low and high and 1.0 if x is above high. */
-INLINE double belowOrAbove(double x, double low, double high);
+//INLINE double belowOrAbove(double x, double low, double high);
 
 /** Binomial coefficient for real n. */
-INLINE double binomialCoefficientReal(double n, int k);
+//INLINE double binomialCoefficientReal(double n, int k);
 
 // Bessel function J_n(x) */
 //INLINE double besselj(double x, double order);
 
 /** Returns the value of the n-th chebychev polynomial. */
-INLINE double cheby(double x, double n);
+//INLINE double cheby(double x, double n);
 
 /** Returns the value of the n-th chebychev polynomial. */
-INLINE double cheby(double x, int n);
+//INLINE double cheby(double x, int n);
 
 /** Returns the next greater integer number. */
 //INLINE double ceil(double x);
 
 /** Center clips the x at threshold t. */
-INLINE double centerClip(double x, double t);
+//INLINE double centerClip(double x, double t);
 
 /** Clips x into the range min...max. */
-template <class T>
-INLINE T clip(T x, T min, T max);
+//template <class T>
+//INLINE T clip(T x, T min, T max);
 
 /** Approximates cos^2(0.5*pi*x) over the domain -1.0...+1.0 via y = a*(1-x^2)^2 + (1-a)*(1-x^2)^3 with a == 0.565... (found visually -
 may be refined via optimization). */
@@ -243,7 +243,6 @@ INLINE double acosh(double x)
     return 0.0;
   }
 }
-*/
 
 INLINE double acoshs(double x)
 {
@@ -255,13 +254,13 @@ INLINE double acoshs(double x)
     return 0.0;
   }
 }
-
+*/
 // not needed anymore - provided in math.h
 //INLINE double asinh(double x)
 //{
 //  return log(x + sqrt(x*x+1) );
 //}
-
+/*
 INLINE double belowOrAbove(double x, double low, double high)
 {
   if(x < low)
@@ -311,13 +310,11 @@ INLINE double cheby(double x, int n)
   return t0;
 }
 
-/*
 INLINE double ceil(double x)
 {
   //double frac = x - floor(x);
   return x + (1-frac(x));
 }
-*/
 
 template <class T>
 INLINE T clip(T x, T min, T max)
@@ -328,7 +325,7 @@ INLINE T clip(T x, T min, T max)
     return min;
   else return x;
 }
-
+*/
 INLINE double cosSquaredApprox(double x)
 {
   // approximant: y = a*(1-x^2)^2 + (1-a)*(1-x^2)^3;

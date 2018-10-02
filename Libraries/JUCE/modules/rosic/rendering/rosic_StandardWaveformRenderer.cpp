@@ -35,7 +35,7 @@ void StandardWaveformRenderer::renderSawWaveform(double *buffer, int length)
 {
   int    N  = length;
   double k  = 0.5;  // more general: k = symmetry
-  int    N1 = clip(roundToInt(k*(N-1)), 1, N-1);
+  int    N1 = RAPT::rsClip(roundToInt(k*(N-1)), 1, N-1);
   int    N2 = N-N1;
   double s1 = 1.0 / (N1-1);
   double s2 = 1.0 / N2;
@@ -49,7 +49,7 @@ void StandardWaveformRenderer::renderSquareWaveform(  double *buffer, int length
 {
   int    N  = length;
   double k  = 0.5;  // more general: k = symmetry
-  int    N1 = clip(roundToInt(k*(N-1)), 1, N-1);
+  int    N1 = RAPT::rsClip(roundToInt(k*(N-1)), 1, N-1);
   //int    N2 = N-N1;
   for(int n=0; n<N1; n++)
     buffer[n] = +1.0;

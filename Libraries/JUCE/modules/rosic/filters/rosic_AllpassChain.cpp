@@ -47,7 +47,7 @@ void AllpassChain::setMode(int newMode, bool updateCoefficients)
 
 void AllpassChain::setFrequency(double newFrequency, bool updateCoefficients)
 {
-  frequency = clip(newFrequency, 2.0, 20000.0);
+  frequency = RAPT::rsClip(newFrequency, 2.0, 20000.0);
   if( updateCoefficients == true )
     updateCoeffs();
 }

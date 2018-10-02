@@ -76,6 +76,6 @@ double SlewRateLimiterLinear::calculateStepLimit(double unitStepTime)
 
 double SlewRateLimiterLinear::getSample(double in) // inline this
 {
-  y1 += clip(in-y1, -downwardLimit, upwardLimit);
+  y1 += RAPT::rsClip(in-y1, -downwardLimit, upwardLimit);
   return y1;
 }

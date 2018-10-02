@@ -52,7 +52,7 @@ namespace rosic
     /** Sets the panorama position as value in the range -1...+1 where -1 is hard-left and +1 is
     hard-right. */
     void setPanoramaPosition(double newPosition)
-    { p = clip(newPosition, -1.0, 1.0); calculateGainFactors(); }
+    { p = RAPT::rsClip(newPosition, -1.0, 1.0); calculateGainFactors(); }
 
     /** Sets a global gain in decibels */
     void setGain(double newGain)

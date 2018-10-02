@@ -214,7 +214,7 @@ void MipMappedWaveTable::fillWithSquare()
 {
   int    N  = tableLength;
   double k  = symmetry;
-  int    N1 = clip(roundToInt(k*(N-1)), 1, N-1);
+  int    N1 = RAPT::rsClip(roundToInt(k*(N-1)), 1, N-1);
   //int    N2 = N-N1;
   for(int n=0; n<N1; n++)
     prototypeTable[n] = +1.0;
@@ -228,7 +228,7 @@ void MipMappedWaveTable::fillWithSaw()
 {
   int    N  = tableLength;
   double k  = symmetry;
-  int    N1 = clip(roundToInt(k*(N-1)), 1, N-1);
+  int    N1 = RAPT::rsClip(roundToInt(k*(N-1)), 1, N-1);
   int    N2 = N-N1;
   double s1 = 1.0 / (N1-1);
   double s2 = 1.0 / N2;
@@ -245,7 +245,7 @@ void MipMappedWaveTable::fillWithSquare303()
   // generate the saw-wave:
   int    N  = tableLength;
   double k  = 0.5;
-  int    N1 = clip(roundToInt(k*(N-1)), 1, N-1);
+  int    N1 = RAPT::rsClip(roundToInt(k*(N-1)), 1, N-1);
   int    N2 = N-N1;
   double s1 = 1.0 / (N1-1);
   double s2 = 1.0 / N2;
@@ -278,7 +278,7 @@ void MipMappedWaveTable::fillWithSaw303()
   // generate the saw-wave:
   int    N  = tableLength;
   double k  = 0.5;
-  int    N1 = clip(roundToInt(k*(N-1)), 1, N-1);
+  int    N1 = RAPT::rsClip(roundToInt(k*(N-1)), 1, N-1);
   int    N2 = N-N1;
   double s1 = 1.0 / (N1-1);
   double s2 = 1.0 / N2;

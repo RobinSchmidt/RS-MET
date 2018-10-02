@@ -130,7 +130,7 @@ void TabulatedFunction::clipTableValues(double minTableValue, double maxTableVal
 {
   mutex.lock();
   for(int i=0; i<tableSize; i++)
-    funcTbl[i] = clip(funcTbl[i], minTableValue, maxTableValue);
+    funcTbl[i] = RAPT::rsClip(funcTbl[i], minTableValue, maxTableValue);
   mutex.unlock();
 }
 

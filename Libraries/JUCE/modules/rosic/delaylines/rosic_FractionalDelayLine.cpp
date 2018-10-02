@@ -49,7 +49,7 @@ void FractionalDelayLine::setSampleRate(double newSampleRate)
 
 void FractionalDelayLine::setDelayTime(double newDelayTime)
 {
-  delayTime = clip(newDelayTime, 0.0, 4.25);  
+  delayTime = RAPT::rsClip(newDelayTime, 0.0, 4.25);  
   setupDelayInSamples();
 }
 
@@ -97,7 +97,7 @@ void FractionalDelayLine::setupDelayInSamples()
     delayInSeconds = delayTime;
 
   delayInSamples = sampleRate*delayInSeconds;
-  delayInSamples = clip(delayInSamples, (double)(interpolatorMargin-1), 
+  delayInSamples = RAPT::rsClip(delayInSamples, (double)(interpolatorMargin-1), 
     (double) (length-1-interpolatorMargin));
 
   // update member delayTime to the clipped value:

@@ -90,7 +90,7 @@ void ModulatedDelayLine::setDelayModulationCycleLength(double newCycleLength)
 
 void ModulatedDelayLine::setDelayModulationDepth(double newDepth)
 {
-  delayModDepth = clip(newDepth, 0.0, 1.0);
+  delayModDepth = RAPT::rsClip(newDepth, 0.0, 1.0);
 }
 
 void ModulatedDelayLine::setDelayModulationPhaseLeft(double newPhase)
@@ -120,7 +120,7 @@ void ModulatedDelayLine::setAmplitudeModulationCycleLength(double newCycleLength
 
 void ModulatedDelayLine::setAmplitudeModulationDepth(double newDepth)
 {
-  ampModDepth = clip(newDepth, 0.0, 1.0);
+  ampModDepth = RAPT::rsClip(newDepth, 0.0, 1.0);
 }
 
 void ModulatedDelayLine::setAmplitudeModulationPhaseLeft(double newPhase)

@@ -121,7 +121,7 @@ int PiecewiseFunction::insertBreakpoint(double newX, double newY)
         // index:
         FunctionBreakpoint newBreakpoint;
         newBreakpoint.x = newX;
-        newBreakpoint.y = clip(newY, minY, maxY);
+        newBreakpoint.y = RAPT::rsClip(newY, minY, maxY);
 
         // insert the new breakpoint right before the breakpoint with the current index (this must
         // be done inside a mutex-lock):
@@ -172,7 +172,7 @@ bool PiecewiseFunction::modifyBreakpoint(int index, double newX, double newY)
         newX = breakpoints[index-1].x + minBreakpointDistance;
 
       breakpoints[index].x = newX;
-      breakpoints[index].y = clip(newY, minY, maxY);
+      breakpoints[index].y = RAPT::rsClip(newY, minY, maxY);
       calculateCubicCoefficients();
 
       return true;
@@ -190,7 +190,7 @@ bool PiecewiseFunction::modifyBreakpoint(int index, double newX, double newY)
         newX = breakpoints[index+1].x - minBreakpointDistance;
 
       breakpoints[index].x = newX;
-      breakpoints[index].y = clip(newY, minY, maxY);
+      breakpoints[index].y = RAPT::rsClip(newY, minY, maxY);
       calculateCubicCoefficients();
 
       return true;
@@ -340,7 +340,7 @@ bool PiecewiseFunction::setBreakpointY(int index, double newY)
 {
   if( index >= 0 && index <= lastBreakpointIndex() )
   {
-    breakpoints[index].y = clip(newY, minY, maxY);
+    breakpoints[index].y = RAPT::rsClip(newY, minY, maxY);
     calculateCubicCoefficients();
     return true;
   }

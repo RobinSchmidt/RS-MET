@@ -168,7 +168,7 @@ namespace rosic
       // estimate the period (taking into account the fractional part from this iteration and the 
       // previous one):
       tmpCandidate = (sampleCounter+frac-fracOld) * sampleRateRec;
-      tmpCandidate = clip(tmpCandidate, minPeriod, maxPeriod);
+      tmpCandidate = RAPT::rsClip(tmpCandidate, minPeriod, maxPeriod);
 
       // remember the current fractional part for the next time:
       fracOld = frac;

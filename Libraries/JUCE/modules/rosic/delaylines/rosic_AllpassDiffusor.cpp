@@ -21,7 +21,7 @@ AllpassDiffusor::~AllpassDiffusor()
 void AllpassDiffusor::setDiffusionAmount(double newAmount)
 {
   g = 0.01 * newAmount;
-  g = clip(g, -1.0, 1.0);
+  g = RAPT::rsClip(g, -1.0, 1.0);
 }
 
 //-------------------------------------------------------------------------------------------------

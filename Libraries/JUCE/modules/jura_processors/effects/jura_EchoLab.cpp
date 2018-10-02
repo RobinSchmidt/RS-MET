@@ -835,8 +835,8 @@ void EchoLabPlotEditor::mouseDrag(const juce::MouseEvent &e)
   double x = e.getMouseDownX() + e.getDistanceFromDragStartX();
   double y = e.getMouseDownY() + e.getDistanceFromDragStartY();
 
-  x = rosic::clip(x, 0.0, (double) getWidth());
-  y = rosic::clip(y, 0.0, (double) getHeight());      
+  x = RAPT::rsClip(x, 0.0, (double) getWidth());
+  y = RAPT::rsClip(y, 0.0, (double) getHeight());      
   fromPixelCoordinates(x, y);
 
   snapToGrid(x,y); // will snap only when activated

@@ -90,7 +90,7 @@ namespace rosic
 
     /** Sets the momentum constant for algorithms that use momentum. The value should be between
     0.0 (inclusive) and 1.0 (exclusive). */
-    virtual void setMomentum(double newMomentum) { momentum = clip(newMomentum, 0.0, 1.0); }
+    virtual void setMomentum(double newMomentum) { momentum = RAPT::rsClip(newMomentum, 0.0, 1.0); }
 
     //---------------------------------------------------------------------------------------------
     // inquiry:

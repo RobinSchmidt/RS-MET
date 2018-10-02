@@ -13,7 +13,7 @@ void romos::biquadBypassCoeffs(double *coeffs)
 
 void romos::biquadLowpassCoeffsBilinear1(double *coeffs, double f)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
 
   // can perhaps be simplified - see DAFX
 
@@ -29,7 +29,7 @@ void romos::biquadLowpassCoeffsBilinear1(double *coeffs, double f)
 
 void romos::biquadHighpassCoeffsBilinear1(double *coeffs, double f)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
 
   // can perhaps be simplified - see DAFX
 
@@ -45,7 +45,7 @@ void romos::biquadHighpassCoeffsBilinear1(double *coeffs, double f)
 
 void romos::biquadLowShelfCoeffsBilinear1(double *coeffs, double f, double g)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   g = rmax(g, NANO);
 
   double omegaPreWarped = tan(PI * f * processingStatus.getSystemSamplePeriod());
@@ -61,7 +61,7 @@ void romos::biquadLowShelfCoeffsBilinear1(double *coeffs, double f, double g)
 
 void romos::biquadHighShelfCoeffsBilinear1(double *coeffs, double f, double g)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   g = rmax(g, NANO);
 
   double omegaPreWarped = tan(PI * f * processingStatus.getSystemSamplePeriod());
@@ -90,7 +90,7 @@ void romos::biquadAllpassCoeffsBilinear1(double *coeffs, double f)
 
 void romos::biquadLowpassCoeffsBilinear2(double *coeffs, double f, double q)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = rmax(q, NANO);
    
   double omega  = f * processingStatus.getFreqToOmegaFactor();
@@ -108,7 +108,7 @@ void romos::biquadLowpassCoeffsBilinear2(double *coeffs, double f, double q)
 
 void romos::biquadHighpassCoeffsBilinear2(double *coeffs, double f, double q)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = rmax(q, NANO);
 
   double omega  = f * processingStatus.getFreqToOmegaFactor();
@@ -126,7 +126,7 @@ void romos::biquadHighpassCoeffsBilinear2(double *coeffs, double f, double q)
 
 void romos::biquadBandpassConstSkirtCoeffs(double *coeffs, double f, double q)
 {    
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = rmax(q, NANO);
 
   double omega = f * processingStatus.getFreqToOmegaFactor();
@@ -144,7 +144,7 @@ void romos::biquadBandpassConstSkirtCoeffs(double *coeffs, double f, double q)
 
 void romos::biquadBandpassConstPeakCoeffs(double *coeffs, double f, double q)
 {    
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = rmax(q, NANO);
 
   double omega = f * processingStatus.getFreqToOmegaFactor();
@@ -162,7 +162,7 @@ void romos::biquadBandpassConstPeakCoeffs(double *coeffs, double f, double q)
 
 void romos::biquadBandrejectCoeffs(double *coeffs, double f, double q)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = rmax(q, NANO);
 
   double omega = f * processingStatus.getFreqToOmegaFactor();
@@ -180,7 +180,7 @@ void romos::biquadBandrejectCoeffs(double *coeffs, double f, double q)
 
 void romos::biquadPeakCoeffs(double *coeffs, double f, double q, double g)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = rmax(q, NANO);
   g = rmax(g, NANO);
 
@@ -201,7 +201,7 @@ void romos::biquadPeakCoeffs(double *coeffs, double f, double q, double g)
 
 void romos::biquadLowShelfCoeffsBilinear2(double *coeffs, double f, double q, double g)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = rmax(q, NANO);
   g = rmax(g, NANO);
 
@@ -221,7 +221,7 @@ void romos::biquadLowShelfCoeffsBilinear2(double *coeffs, double f, double q, do
 
 void romos::biquadHighShelfCoeffsBilinear2(double *coeffs, double f, double q, double g)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = rmax(q, NANO);
   g = rmax(g, NANO);
 
@@ -241,7 +241,7 @@ void romos::biquadHighShelfCoeffsBilinear2(double *coeffs, double f, double q, d
 
 void romos::biquadAllpassCoeffsBilinear2(double *coeffs, double f, double q)
 {
-  f = clip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = rmax(q, NANO);
 
   double omega = f * processingStatus.getFreqToOmegaFactor();  
@@ -259,7 +259,7 @@ void romos::biquadAllpassCoeffsBilinear2(double *coeffs, double f, double q)
 
 void romos::ladderCoeffs(double *coeffs, int mode, double f, double r, double ag)
 {
-  f  = clip(f,  NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
+  f  = RAPT::rsClip(f,  NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   ag = rmax(ag, 0.0);
 
   // calculate intermediate variables:

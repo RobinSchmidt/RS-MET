@@ -250,7 +250,7 @@ namespace rosic
     //return x; // test
 
     const double r6 = 1.0/6.0;
-    x = clip(x, -SQRT2, SQRT2);
+    x = RAPT::rsClip(x, -SQRT2, SQRT2);
     return x - r6*x*x*x;
 
     //return clip(x, -1.0, 1.0);

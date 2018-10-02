@@ -350,15 +350,15 @@ void ParameterModule::parameterChanged(int index)
   {
   case 0:
   {
-    value = clip(parameters[0].value.asDouble(), minValue, maxValue);
+    value = RAPT::rsClip(parameters[0].value.asDouble(), minValue, maxValue);
     setParameter(0, rosic::rsString(value), false); // make the string reflect the possibly modified value
   }
   break;
   case 1:
   {
     minValue     = rmin(parameters[1].value.asDouble(), maxValue);
-    value        = clip(value, minValue, maxValue);
-    defaultValue = clip(defaultValue, minValue, maxValue);
+    value        = RAPT::rsClip(value, minValue, maxValue);
+    defaultValue = RAPT::rsClip(defaultValue, minValue, maxValue);
     setParameter(1, rosic::rsString(minValue), false);
     setParameter(0, rosic::rsString(value), false);
     setParameter(3, rosic::rsString(defaultValue), false);
@@ -367,8 +367,8 @@ void ParameterModule::parameterChanged(int index)
   case 2:
   {
     maxValue     = rmax(parameters[2].value.asDouble(), minValue);
-    value        = clip(value, minValue, maxValue);
-    defaultValue = clip(defaultValue, minValue, maxValue);
+    value        = RAPT::rsClip(value, minValue, maxValue);
+    defaultValue = RAPT::rsClip(defaultValue, minValue, maxValue);
     setParameter(2, rosic::rsString(maxValue), false);
     setParameter(0, rosic::rsString(value), false);
     setParameter(3, rosic::rsString(defaultValue), false);
@@ -376,7 +376,7 @@ void ParameterModule::parameterChanged(int index)
   break;
   case 3:
   {
-    defaultValue = clip(parameters[3].value.asDouble(), minValue, maxValue);
+    defaultValue = RAPT::rsClip(parameters[3].value.asDouble(), minValue, maxValue);
     setParameter(3, rosic::rsString(defaultValue), false);
   }
   break;
@@ -445,8 +445,8 @@ void ParameterModule::setMinMaxAndMapping(double newMin, double newMax, int newM
   else
     minValue = maxValue = newMin;
 
-  value        = clip(value, minValue, maxValue);
-  defaultValue = clip(defaultValue, minValue, maxValue);
+  value        = RAPT::rsClip(value, minValue, maxValue);
+  defaultValue = RAPT::rsClip(defaultValue, minValue, maxValue);
 
   setParameter(0, rosic::rsString(value), false);
   setParameter(1, rosic::rsString(minValue), false);
@@ -472,8 +472,8 @@ void ParameterModule::enforceConsistencyOfValues()
 {
   maxValue     = rmax(minValue, maxValue);
   minValue     = rmin(minValue, maxValue);
-  value        = clip(value, minValue, maxValue);
-  defaultValue = clip(defaultValue, minValue, maxValue);
+  value        = RAPT::rsClip(value, minValue, maxValue);
+  defaultValue = RAPT::rsClip(defaultValue, minValue, maxValue);
 
   /*
   // ... we also need to quantize the value when interval != 0.0

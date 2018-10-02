@@ -65,7 +65,7 @@ public:
 
   double DoEvaluate()
   {
-    return rosic::cheby(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+    return RAPT::rsCheby(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
   }
 };
 

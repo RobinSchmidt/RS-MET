@@ -64,7 +64,7 @@ void EchoLabDelayLine::setDelayTime(double newDelayTime)
 {
   if( newDelayTime != delayTime )
   {
-    delayTime = clip(newDelayTime, 0.0, 4.25);  
+    delayTime = RAPT::rsClip(newDelayTime, 0.0, 4.25);  
     setupDelayInSamples();
   }
 }
@@ -112,7 +112,7 @@ void EchoLabDelayLine::setupDelayInSamples()
     delayInSeconds = delayTime;
 
   delayInSamples = sampleRate*delayInSeconds;
-  delayInSamples = clip(delayInSamples, 0.0, (double)(length-1-1));
+  delayInSamples = RAPT::rsClip(delayInSamples, 0.0, (double)(length-1-1));
 
   // update member delayTime to the clipped value:
   delayInSeconds = delayInSamples / sampleRate;   

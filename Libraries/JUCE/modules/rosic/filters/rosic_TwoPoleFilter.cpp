@@ -43,13 +43,13 @@ void TwoPoleFilter::setMode(int newMode)
 
 void TwoPoleFilter::setFrequency(double newFrequency)
 {
-  frequency = clip(newFrequency, 2.0, 20000.0);
+  frequency = RAPT::rsClip(newFrequency, 2.0, 20000.0);
   updateCoeffs();
 }
 
 void TwoPoleFilter::setBandwidth(double newBandwidth)
 {
-  bandwidth = clip(newBandwidth, 0.25, 6.0);
+  bandwidth = RAPT::rsClip(newBandwidth, 0.25, 6.0);
   updateCoeffs();
 }
 
@@ -70,9 +70,9 @@ void TwoPoleFilter::setParameters(int newMode, double newFrequency, double newGa
 {
   if( newMode >= BYPASS && newMode < NUM_FILTER_MODES )
     mode = newMode;
-  frequency = clip(newFrequency, 2.0, 20000.0);
+  frequency = RAPT::rsClip(newFrequency, 2.0, 20000.0);
   gain = newGain;
-  bandwidth = clip(newBandwidth, 0.25, 6.0);
+  bandwidth = RAPT::rsClip(newBandwidth, 0.25, 6.0);
   updateCoeffs();
 }
 

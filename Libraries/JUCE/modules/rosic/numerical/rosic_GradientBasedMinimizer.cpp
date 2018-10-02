@@ -115,7 +115,7 @@ void GradientBasedMinimizer::minimizeViaBoldDriverWithMomentum()
       stepsize *= sigma;                           // decrease stepsize
       d         = -g;                              // reset direction to the negative gradient
     }
-    stepsize  = clip(stepsize, 0.000001, 100.0);
+    stepsize  = RAPT::rsClip(stepsize, 0.000001, 100.0);
     eOld = e;
 
     // evaluate gradient for next iteration:
@@ -260,7 +260,7 @@ void GradientBasedMinimizer::minimizeViaScaledConjugateGradient()
         lambda *= 0.5;
       else if( Delta < 0.25 )
         lambda *= 4.0;
-      lambda  = clip(lambda, DBL_MIN, DBL_MAX);
+      lambda  = RAPT::rsClip(lambda, DBL_MIN, DBL_MAX);
 
       success = true;
     }
@@ -271,7 +271,7 @@ void GradientBasedMinimizer::minimizeViaScaledConjugateGradient()
       // we don't actually perform the step - instead we jump out of the current iteration, such 
       // that the next iteration will attempt the step with the new value value of lambda:
       lambda *= 4.0;
-      lambda  = clip(lambda, DBL_MIN, DBL_MAX);
+      lambda  = RAPT::rsClip(lambda, DBL_MIN, DBL_MAX);
       success = false;
       step++;
       if( printInfo == true )

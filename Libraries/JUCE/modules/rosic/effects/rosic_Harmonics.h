@@ -95,8 +95,8 @@ namespace rosic
 
   INLINE void Harmonics::getSampleFrameStereo(double *inOutL, double *inOutR)
   {
-    double inL = clip(inFilterL.getSample(driveFactor * (*inOutL)), -1.0, 1.0);
-    double inR = clip(inFilterR.getSample(driveFactor * (*inOutR)), -1.0, 1.0);  
+    double inL = RAPT::rsClip(inFilterL.getSample(driveFactor * (*inOutL)), -1.0, 1.0);
+    double inR = RAPT::rsClip(inFilterR.getSample(driveFactor * (*inOutR)), -1.0, 1.0);  
 
     double tmpL  = 0.0;
     double tmpR  = 0.0;
@@ -110,8 +110,8 @@ namespace rosic
         {
           tmpL   = subbandFiltersL[i].getSample(inL);
           tmpR   = subbandFiltersR[i].getSample(inR);
-          tmpL   = cheby(tmpL, i+2); 
-          tmpR   = cheby(tmpR, i+2);
+          tmpL   = RAPT::rsCheby(tmpL, i+2); 
+          tmpR   = RAPT::rsCheby(tmpR, i+2);
           accuL += gainFactors[i]*tmpL;
           accuR += gainFactors[i]*tmpR;
         }

@@ -77,7 +77,7 @@ void CombFilter::setupDelayInSamples()
 {
   double delayInSeconds = 0.5 / frequency;
   delayInSamples = sampleRate*delayInSeconds;
-  delayInSamples = clip(delayInSamples, (double)(interpolatorMargin-1), 
+  delayInSamples = RAPT::rsClip(delayInSamples, (double)(interpolatorMargin-1), 
     (double) (length-1-interpolatorMargin));
 
   // calculate the integer and fractional parts of the delay:

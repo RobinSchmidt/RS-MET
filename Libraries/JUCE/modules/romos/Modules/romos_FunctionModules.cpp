@@ -14,7 +14,7 @@ void ClipperModule::initialize()
 }
 INLINE void ClipperModule::process(Module *module, double *in1, double *in2, double *in3, double *out, int voiceIndex)
 {
-  *out = clip(*in1, *in2, *in3);
+  *out = RAPT::rsClip(*in1, *in2, *in3);
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(ClipperModule);
 

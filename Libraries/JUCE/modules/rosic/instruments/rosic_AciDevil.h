@@ -310,7 +310,7 @@ namespace rosic
         if( note->gate == true && currentNote != -1)
         {
           int key = note->key + 12*note->octave + currentNote;
-          key = clip(key, 0, 127);
+          key = RAPT::rsClip(key, 0, 127);
 
           if( !slideToNextNote )
             triggerNote(key, note->accent);
@@ -364,14 +364,14 @@ namespace rosic
     double tmp;
     for(int i=1; i<=oversampling; i++)
     {
-      tmp  = oscillator.getSample();                // the raw oscillator signal 
-      tmp += subOscGain*subOscillator.getSample();  // suboscillator signal added
-      tmp  = hp1.getSample(tmp);                    // pre-filter highpass
-      tmp  = filter.getSample(tmp);                 // now it's filtered
-      tmp *= ampEnvOut;                             // amplified
-      tmp  = clip(clipperGain*tmp, -1.0, 1.0);      // distorted
-      tmp  = hp2.getSample(tmp);                    // may operate without oversampling....
-      tmp  = antiAliasFilter.getSample(tmp);        // anti-aliasing filtered
+      tmp  = oscillator.getSample();                   // the raw oscillator signal 
+      tmp += subOscGain*subOscillator.getSample();     // suboscillator signal added
+      tmp  = hp1.getSample(tmp);                       // pre-filter highpass
+      tmp  = filter.getSample(tmp);                    // now it's filtered
+      tmp *= ampEnvOut;                                // amplified
+      tmp  = RAPT::rsClip(clipperGain*tmp, -1.0, 1.0); // distorted
+      tmp  = hp2.getSample(tmp);                       // may operate without oversampling....
+      tmp  = antiAliasFilter.getSample(tmp);           // anti-aliasing filtered
     }
 
     return tmp * ampScaler;

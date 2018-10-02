@@ -142,7 +142,7 @@ namespace rosic
     switch( transferFunctionIndex )
     {
     case TANH:     y = tanhApprox(x);         break;
-    case HARDCLIP: y = clip(x, -1.0, 1.0);    break;
+    case HARDCLIP: y = RAPT::rsClip(x, -1.0, 1.0);    break;
       /*
     case CUBIC:
       {

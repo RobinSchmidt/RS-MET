@@ -133,7 +133,7 @@ void StereoPanPlotEditor::setupPanAccordingToMousePosition(double mouseX)
   double p     = mouseX;
   double dummy = 0.0;
   fromPixelCoordinates(p, dummy);
-  panParameter->setValue(rosic::clip(p, -1.0, 1.0), true, true);
+  panParameter->setValue(RAPT::rsClip(p, -1.0, 1.0), true, true);
 }
 
 //-------------------------------------------------------------------------------------------------
