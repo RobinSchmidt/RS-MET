@@ -117,7 +117,7 @@ namespace rosic
     void getMagnitudeResponse(double* frequencies, double* magnitudes, int numBins);
 
     /** Returns the global gain in decibels. */
-    double getGlobalGain() const { return amp2dB(globalGainFactor); }
+    double getGlobalGain() const { return RAPT::rsAmpToDb(globalGainFactor); }
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     // audio processing:

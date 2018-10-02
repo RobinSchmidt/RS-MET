@@ -141,7 +141,7 @@ void testCompensatedLinearInterpolator()
   rosic::rsFilterAnalyzer::getBiquadMagnitudeResponse(b0, b1, 0.0, a1, 0.0, w, mag, N, false); 
   rosic::scale(mag, mag, N, g);
   for(int n = 0; n < N; n++)
-    mag[n] = amp2dB(mag[n]);
+    mag[n] = RAPT::rsAmpToDb(mag[n]);
   rosic::clipBuffer(mag, N, -60.0, 20.0);
   Plotter::plotData(N, w, mag); 
 }
@@ -320,7 +320,7 @@ void plotMagnitudeResponsesOf(rosic::Matrix &x, int fftSize, double plotFloor, i
     rosic::copyBuffer(x.m[m], xPadded, length);
     fftMagnitudesAndPhases(xPadded, fftSize, magH.m[m], phsH.m[m], fftSize);
     for(int n = 0; n < numBins; n++)
-      magH.m[m][n] = rmax(amp2dB(magH.m[m][n] * ampScale * fftSize), plotFloor);
+      magH.m[m][n] = rmax(RAPT::rsAmpToDb(magH.m[m][n] * ampScale * fftSize), plotFloor);
   }
 
   double *frequencies = new double[numBins];
@@ -514,17 +514,17 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   rosic::copyBuffer(yl, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magL, phsL, fftSize);
   for(n=0; n<numBins; n++)
-    magL[n] = rmax(amp2dB(4 * magL[n] * fftSize/length), plotFloor);
+    magL[n] = rmax(RAPT::rsAmpToDb(4 * magL[n] * fftSize/length), plotFloor);
 
   rosic::copyBuffer(yc, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magC, phsC, fftSize);
   for(n=0; n<numBins; n++)
-    magC[n] = rmax(amp2dB(4 * magC[n] * fftSize/length), plotFloor);
+    magC[n] = rmax(RAPT::rsAmpToDb(4 * magC[n] * fftSize/length), plotFloor);
     
   rosic::copyBuffer(yq, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magQ, phsQ, fftSize);
   for(n=0; n<numBins; n++)
-    magQ[n] = rmax(amp2dB(4 * magQ[n] * fftSize/length), plotFloor);
+    magQ[n] = rmax(RAPT::rsAmpToDb(4 * magQ[n] * fftSize/length), plotFloor);
 
 
   Plotter::plotData(600, frequencies, magL, magC, magQ); 

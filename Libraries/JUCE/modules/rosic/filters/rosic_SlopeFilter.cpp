@@ -4,7 +4,7 @@
 SlopeFilter::SlopeFilter()
 {
   sampleRate = 44100.0;
-  slope      = amp2dB(sqrt(0.5));  // pinking by default: slope = -3.01 dB/oct
+  slope      = RAPT::rsAmpToDb(sqrt(0.5));  // pinking by default: slope = -3.01 dB/oct
   reset();
   updateCoefficients();
 }

@@ -685,7 +685,7 @@ namespace rosic
     const double& frequency, const double& bandwidthInOctaves, const double& gainFactor,
     const double& referenceGain)
   {
-    if( fabs( amp2dB(gainFactor/referenceGain) ) < 0.001 )
+    if( fabs( RAPT::rsAmpToDb(gainFactor/referenceGain) ) < 0.001 )
     {
       makeBypassBiquad(b0, b1, b2, a1, a2);
       return;

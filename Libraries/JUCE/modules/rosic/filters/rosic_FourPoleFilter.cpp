@@ -150,12 +150,12 @@ void FourPoleFilter::getMagnitudeResponse(double *frequencies, double *magnitude
     if( accumulate == false )
     {
       for(k=0; k<numBins; k++)
-        magnitudes[k] = amp2dBWithCheck(getMagnitudeAt(frequencies[k]));
+        magnitudes[k] = RAPT::rsAmpToDbWithCheck(getMagnitudeAt(frequencies[k]), 0.000001);
     }
     else
     {
       for(k=0; k<numBins; k++)
-        magnitudes[k] += amp2dBWithCheck(getMagnitudeAt(frequencies[k]));
+        magnitudes[k] += RAPT::rsAmpToDbWithCheck(getMagnitudeAt(frequencies[k]), 0.000001);
     }
   }
 }

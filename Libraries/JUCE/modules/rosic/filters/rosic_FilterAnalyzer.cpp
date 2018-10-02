@@ -245,7 +245,7 @@ void rsFilterAnalyzer::getPhases(Complex* H, double* phases, int length)
 void rsFilterAnalyzer::convertToDecibels(double* values, int length, double clipLowAmplitudeAt)
 {
   for(int k = 0; k < length; k++)
-    values[k] = amp2dBWithCheck(values[k], clipLowAmplitudeAt); 
+    values[k] = RAPT::rsAmpToDbWithCheck(values[k], clipLowAmplitudeAt); 
 }
 
 void rsFilterAnalyzer::clampValuesAboveNyquist(double* frequencies, double* values, int length, 

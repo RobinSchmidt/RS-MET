@@ -149,7 +149,7 @@ namespace rosic
     double getSubOscWaveform() const { return subOscillator.getBlendFactor(); }
 
     /** Returns the volume level for the suboscillator (in decibels). */
-    double getSubOscLevel() const { return amp2dB(subOscGain); }
+    double getSubOscLevel() const { return RAPT::rsAmpToDb(subOscGain); }
 
     /** Returns the filter's nominal cutoff frequency (in Hz). */
     double getCutoff() const { return cutoff; }
@@ -177,13 +177,13 @@ namespace rosic
     double getAmpDecay() const { return ampEnv.getDecay(); }
 
     /** Returns the amplitudes envelope's sustain level (in dB). */
-    double getAmpSustain() const { return amp2dB(ampEnv.getSustain()); }
+    double getAmpSustain() const { return RAPT::rsAmpToDb(ampEnv.getSustain()); }
 
     /** Returns the amplitudes envelope's release time (in milliseconds). */
     double getAmpRelease() const { return normalAmpRelease; }
 
     /** Returns the amount of drive for the clipper (in dB). */
-    double getClipperDrive() const { return amp2dB(clipperGain); }
+    double getClipperDrive() const { return RAPT::rsAmpToDb(clipperGain); }
 
     //-----------------------------------------------------------------------------------------------
     // audio processing:

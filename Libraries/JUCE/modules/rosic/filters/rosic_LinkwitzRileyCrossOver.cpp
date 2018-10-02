@@ -93,7 +93,7 @@ void rsLinkwitzRileyCrossOver::getHighpassMagnitudeResponse(double* frequencies,
     if( inDecibels == true )
     {
       for(int k=0; k<numBins; k++)
-        magnitudes[k] += amp2dB(H[k].getRadius());
+        magnitudes[k] += RAPT::rsAmpToDb(H[k].getRadius());
     }
     else 
     {
@@ -106,7 +106,7 @@ void rsLinkwitzRileyCrossOver::getHighpassMagnitudeResponse(double* frequencies,
     if( inDecibels == true )
     {
       for(int k=0; k<numBins; k++)
-        magnitudes[k] = amp2dB(H[k].getRadius());
+        magnitudes[k] = RAPT::rsAmpToDb(H[k].getRadius());
     }
     else 
     {

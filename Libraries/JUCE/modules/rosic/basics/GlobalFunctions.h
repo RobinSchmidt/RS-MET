@@ -16,11 +16,11 @@ namespace rosic
 
 
 /** Converts a raw amplitude value/factor to a value in decibels. */
-INLINE double amp2dB(double amp);
+//INLINE double amp2dB(double amp);
 
 /** Converts a raw amplitude value/factor to a value in decibels with a check, if the amplitude is close to zero (to avoid log-of-zero and
 related errors). */
-INLINE double amp2dBWithCheck(double amp, double lowAmplitude = 0.000001);
+//INLINE double amp2dBWithCheck(double amp, double lowAmplitude = 0.000001);
 
 /** Returns the index of the maximum value in an array of doubles where the array should be of
 length numValues. */
@@ -198,7 +198,7 @@ inline bool detectMemoryLeaks()
 
 //=================================================================================================
 //implementation:
-
+/*
 INLINE double amp2dB(double amp)
 {
   return 8.6858896380650365530225783783321 * log(amp);
@@ -212,7 +212,7 @@ INLINE double amp2dBWithCheck(double amp, double lowAmplitude)
   else
     return 8.6858896380650365530225783783321 * log(lowAmplitude);
 }
-
+*/
 template <class T>
 INLINE int arrayMaxIndex(T* theArray, int numValues)
 {

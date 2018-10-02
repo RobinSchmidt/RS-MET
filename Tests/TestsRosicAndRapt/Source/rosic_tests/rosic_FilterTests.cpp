@@ -805,7 +805,7 @@ void rotes::testSlopeFilter()
   fftMagnitudesAndPhases(impulseResponse, length, magnitudes, NULL, length);
 
   for(n=0; n<length; n++)
-    decibels[n] = amp2dB(length*magnitudes[n]);
+    decibels[n] = RAPT::rsAmpToDb(length*magnitudes[n]);
 
   Plotter::plotData(length/4, frequencies, decibels); 
 

@@ -9,7 +9,7 @@ rsPrototypeDesigner::rsPrototypeDesigner()
   prototypeMode         = LOWPASS_PROTOTYPE;
   numFinitePoles        = 2;
   numFiniteZeros        = 0;
-  Ap                    = amp2dB(sqrt(2.0)); // 3.01 dB passband ripple for lowpasses
+  Ap                    = RAPT::rsAmpToDb(sqrt(2.0)); // 3.01 dB passband ripple for lowpasses
   As                    = 60.0;              // 60.0 dB stopband attenuation for lowpasses
   A                     = 0.0;               // cut/boost in dB for shelvers
   A0                    = 0.0;               // reference gain in dB for shelvers

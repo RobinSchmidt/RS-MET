@@ -71,9 +71,9 @@ void DirectFormFilter::getMagnitudeResponse(double *frequencies, double *magnitu
     else if( !inDecibels && accumulate )
       magnitudes[k] *= H;
     else if( inDecibels && !accumulate )
-      magnitudes[k]  = amp2dBWithCheck(H, 0.0000001); // clip at -140 dB
+      magnitudes[k]  = RAPT::rsAmpToDbWithCheck(H, 0.0000001); // clip at -140 dB
     else if( inDecibels && accumulate )
-      magnitudes[k] += amp2dBWithCheck(H, 0.0000001);
+      magnitudes[k] += RAPT::rsAmpToDbWithCheck(H, 0.0000001);
   }
 }
 

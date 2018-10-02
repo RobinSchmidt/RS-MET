@@ -92,7 +92,7 @@ namespace rosic
   INLINE double LevelDetector::getLevel(double in)
   {
     const double lowAmplitude = 0.0000000000001; // to avoid log-of-zero in amp->dB conversion
-    return amp2dBWithCheck(getAmplitudeEnvelope(in), lowAmplitude);
+    return RAPT::rsAmpToDbWithCheck(getAmplitudeEnvelope(in), lowAmplitude);
   }
 
   INLINE double LevelDetector::getAmplitudeEnvelope(double in)

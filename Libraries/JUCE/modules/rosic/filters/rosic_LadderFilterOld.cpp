@@ -223,12 +223,12 @@ void LadderFilterOld::getMagnitudeResponse(double *frequencies, double *magnitud
     if(accumulate == false)
     {
       for(k=0; k<numBins; k++)
-        magnitudes[k] = amp2dBWithCheck(getMagnitudeAt(frequencies[k], true, true, true, s));
+        magnitudes[k] = RAPT::rsAmpToDbWithCheck(getMagnitudeAt(frequencies[k], true, true, true, s), 0.000001);
     }
     else
     {
       for(k=0; k<numBins; k++)
-        magnitudes[k] += amp2dBWithCheck(getMagnitudeAt(frequencies[k], true, true, true, s));
+        magnitudes[k] += RAPT::rsAmpToDbWithCheck(getMagnitudeAt(frequencies[k], true, true, true, s), 0.000001);
     }
   }
 }
@@ -245,7 +245,7 @@ double LadderFilterOld::getResonance()
 
 double LadderFilterOld::getDrive()
 {
-  return amp2dB(parameters->driveFactor);
+  return RAPT::rsAmpToDb(parameters->driveFactor);
 }
 
 int LadderFilterOld::getOutputStage()

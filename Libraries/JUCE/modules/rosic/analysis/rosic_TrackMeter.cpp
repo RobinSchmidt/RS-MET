@@ -78,10 +78,10 @@ SignalMeasures TrackMeter::getCurrentMeasurement(bool reset)
     return currentMeasures; // if this gets called multiple times during one sample
 
   // assign the measured levels:
-  currentMeasures.leftLevel  = rmax( -200.0, amp2dB(sqrt(maxLeftLevel))  );
-  currentMeasures.rightLevel = rmax( -200.0, amp2dB(sqrt(maxRightLevel)) );
-  currentMeasures.midLevel   = rmax( -200.0, amp2dB(sqrt(maxMidLevel))   );
-  currentMeasures.sideLevel  = rmax( -200.0, amp2dB(sqrt(maxSideLevel))  );
+  currentMeasures.leftLevel  = rmax( -200.0, RAPT::rsAmpToDb(sqrt(maxLeftLevel))  );
+  currentMeasures.rightLevel = rmax( -200.0, RAPT::rsAmpToDb(sqrt(maxRightLevel)) );
+  currentMeasures.midLevel   = rmax( -200.0, RAPT::rsAmpToDb(sqrt(maxMidLevel))   );
+  currentMeasures.sideLevel  = rmax( -200.0, RAPT::rsAmpToDb(sqrt(maxSideLevel))  );
 
   // calculate and assign the cross-correlation:
   double factor          = 1.0 / (double)sampleCounter;

@@ -208,7 +208,7 @@ void Plotter::plotComplexMagnitudes(int numValues, double *x, bool inDecibels,
   for(int i=0; i<numValues; i++)
   {
     if( inDecibels == true )
-      ym1[i] = amp2dB(y1[i].getRadius());
+      ym1[i] = RAPT::rsAmpToDb(y1[i].getRadius());
     else
       ym1[i] = y1[i].getRadius();
   }
@@ -223,7 +223,7 @@ void Plotter::plotComplexMagnitudes(int numValues, double *x, bool inDecibels,
     for(int i=0; i<numValues; i++)
     {
       if( inDecibels == true )
-        ym2[i] = amp2dB(y2[i].getRadius());
+        ym2[i] = RAPT::rsAmpToDb(y2[i].getRadius());
       else
         ym2[i] = y2[i].getRadius();
     }
@@ -234,7 +234,7 @@ void Plotter::plotComplexMagnitudes(int numValues, double *x, bool inDecibels,
     for(int i=0; i<numValues; i++)
     {
       if( inDecibels == true )
-        ym3[i] = amp2dB(y3[i].getRadius());
+        ym3[i] = RAPT::rsAmpToDb(y3[i].getRadius());
       else
         ym3[i] = y3[i].getRadius();
     }
@@ -245,7 +245,7 @@ void Plotter::plotComplexMagnitudes(int numValues, double *x, bool inDecibels,
     for(int i=0; i<numValues; i++)
     {
       if( inDecibels == true )
-        ym4[i] = amp2dB(y4[i].getRadius());
+        ym4[i] = RAPT::rsAmpToDb(y4[i].getRadius());
       else
         ym4[i] = y4[i].getRadius();
     }
@@ -256,7 +256,7 @@ void Plotter::plotComplexMagnitudes(int numValues, double *x, bool inDecibels,
     for(int i=0; i<numValues; i++)
     {
       if( inDecibels == true )
-        ym5[i] = amp2dB(y5[i].getRadius());
+        ym5[i] = RAPT::rsAmpToDb(y5[i].getRadius());
       else
         ym5[i] = y5[i].getRadius();
     }

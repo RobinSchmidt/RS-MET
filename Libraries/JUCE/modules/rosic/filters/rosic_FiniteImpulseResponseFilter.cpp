@@ -102,9 +102,9 @@ void FiniteImpulseResponseFilter::getMagnitudeResponse(double *frequencies, doub
     else if( inDecibels == false && accumulate == true )
       magnitudes[k] *= m;
     else if( inDecibels == true && accumulate == false )
-      magnitudes[k] = amp2dB(m);
+      magnitudes[k] = RAPT::rsAmpToDb(m);
     else if( inDecibels == true && accumulate == true )
-      magnitudes[k] += amp2dB(m);
+      magnitudes[k] += RAPT::rsAmpToDb(m);
   }
 }
 

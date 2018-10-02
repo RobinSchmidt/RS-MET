@@ -214,7 +214,7 @@ void Equalizer::getMagnitudeResponse(double *frequencies, double *magnitudes, in
     {
       for(unsigned int s=0; s<bands.size(); s++)
         magnitudes[k] *= bands[s].getMagnitudeAt(frequencies[k]);
-      magnitudes[k] = amp2dBWithCheck(magnitudes[k], 0.0001);
+      magnitudes[k] = RAPT::rsAmpToDbWithCheck(magnitudes[k], 0.0001);
     }
     else
       magnitudes[k] = -120.0;

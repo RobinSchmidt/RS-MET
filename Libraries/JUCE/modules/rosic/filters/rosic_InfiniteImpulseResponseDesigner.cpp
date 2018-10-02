@@ -5,7 +5,7 @@ rsInfiniteImpulseResponseDesigner::rsInfiniteImpulseResponseDesigner()
   sampleRate     = 44100.0;
   frequency      = 1000.0;
   setBandwidth(1.0); // sets up lowerFrequency and upperFrequency
-  gain           = amp2dB(0.25);
+  gain           = RAPT::rsAmpToDb(0.25);
   mode           = LOWPASS;
   prototypeOrder = 2;
 }

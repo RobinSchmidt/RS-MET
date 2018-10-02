@@ -77,7 +77,7 @@ inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSi
   std::vector<complex<TSig>> H = getFrequencyResponse(filter, w);
   std::vector<TSig> dB(N), phs(N);
   for(int k = 0; k < N; k++) {
-    dB[k]  = amp2dB(abs(H[k]));
+    dB[k]  = RAPT::rsAmpToDb(abs(H[k]));
     phs[k] = arg(H[k]); //-2*PI; // arg is in -pi..+pi, we want -2*pi..0 - check, if this is correct
   }
 

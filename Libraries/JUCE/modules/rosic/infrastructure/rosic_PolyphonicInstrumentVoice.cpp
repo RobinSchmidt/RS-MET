@@ -441,7 +441,7 @@ void PolyphonicInstrumentVoice::prepareForAmplitudeRamp(double newKey, double ne
     // of members currentLevel and currentAmplitude is then done in getSample:
     remainingAmpRampSamples = roundToInt(0.001*ampRampTime*sampleRate);
     //double levelDelta  = targetLevel - currentLevel;
-    double levelDelta  = targetLevel - amp2dB(currentAmplitude);
+    double levelDelta  = targetLevel - RAPT::rsAmpToDb(currentAmplitude);
     levelIncPerSample  = levelDelta / (double) remainingAmpRampSamples;
     ampFactorPerSample = dB2amp(levelIncPerSample);
   }
