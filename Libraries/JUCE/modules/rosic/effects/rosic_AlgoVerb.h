@@ -44,7 +44,7 @@ namespace rosic
 
     /** Sets the ratio between dry and wet between 0...1. */
     void setDryWetRatio(float newDryWet) 
-    { equalPowerGainFactors(newDryWet, &dryVol, &wetVol, 0.0, 1.0); }
+    { RAPT::rsEqualPowerGainFactors(newDryWet, &dryVol, &wetVol, 0.0, 1.0); }
 
     /** Sets the level of the dry signal (in dB). */
     //void setDryLevel(double newLevel){ dryVol = (float) dB2amp(newLevel); }

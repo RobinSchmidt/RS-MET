@@ -64,8 +64,8 @@ void CombBank::setStereoSpread(double newStereoSpread)
   stereoSpread   = newStereoSpread;
   double panOdd  = 0.01*stereoSpread;
   double panEven = -panOdd;
-  equalPowerGainFactors(panOdd,  &gainOddL,  &gainOddR,  -1.0, 1.0); 
-  equalPowerGainFactors(panEven, &gainEvenL, &gainEvenR, -1.0, 1.0); 
+  RAPT::rsEqualPowerGainFactors(panOdd,  &gainOddL,  &gainOddR,  -1.0, 1.0); 
+  RAPT::rsEqualPowerGainFactors(panEven, &gainEvenL, &gainEvenR, -1.0, 1.0); 
 }
 
 void CombBank::setDecayTime(double newDecayTime)   

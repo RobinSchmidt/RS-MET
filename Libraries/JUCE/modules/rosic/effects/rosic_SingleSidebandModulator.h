@@ -199,7 +199,7 @@ namespace rosic
 
     /** Sets the ratio between dry and wet between 0...1. */
     void setDryWetRatio(double newDryWet) 
-    { equalPowerGainFactors(newDryWet, &dry, &wet, 0.0, 1.0); }
+    { RAPT::rsEqualPowerGainFactors(newDryWet, &dry, &wet, 0.0, 1.0); }
 
     //---------------------------------------------------------------------------------------------
     // audio processing:

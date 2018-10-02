@@ -1023,7 +1023,7 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
 
       double panIndicatorSize = 32.0;
       double gL, gR;
-      rosic::equalPowerGainFactors(pn, &gL, &gR, -1.0, 1.0);
+      RAPT::rsEqualPowerGainFactors(pn, &gL, &gR, -1.0, 1.0);
       float  topLength        = (float) (fabs(gn)*gL*panIndicatorSize);
       float  bottomLength     = (float) (fabs(gn)*gR*panIndicatorSize);
       g.drawLine((float) x, 0.f,                (float) x, topLength,                         2.f);
@@ -1059,7 +1059,7 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
         g.setColour(currentColour.withMultipliedAlpha(0.75f));
 
         double pn2 = alternator * pn;
-        rosic::equalPowerGainFactors(pn2, &gL, &gR, -1.0, 1.0);
+        RAPT::rsEqualPowerGainFactors(pn2, &gL, &gR, -1.0, 1.0);
 
         panIndicatorSize = 40.0;
         topLength        = (float) (fabs(yAccu)*gL*panIndicatorSize);

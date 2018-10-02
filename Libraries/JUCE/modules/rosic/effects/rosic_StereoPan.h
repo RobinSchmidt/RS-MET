@@ -117,7 +117,7 @@ namespace rosic
     static void panLawSinCos(double p, double &gLL, double &gRL, double &gLR, double &gRR,
       bool centerNormalized = false)
     {
-      equalPowerGainFactors(p, &gLL, &gRR, -1.0, 1.0);
+      RAPT::rsEqualPowerGainFactors(p, &gLL, &gRR, -1.0, 1.0);
       gRL  = 0.0;
       gLR  = 0.0;
       if( centerNormalized == true )
@@ -224,7 +224,7 @@ namespace rosic
       double &gLR, double &gRR, bool centerNormalized = false)
     {
       // calculate preliminary gain factors:
-      equalPowerGainFactors(p, &gLL, &gRR, -1.0, 1.0);
+      RAPT::rsEqualPowerGainFactors(p, &gLL, &gRR, -1.0, 1.0);
       if( p >= 0.0 )
       {
         gRL = 0.0;

@@ -101,15 +101,15 @@ rosic_ComplexFunctions.h */
 
 /** Approximates cos^2(0.5*pi*x) over the domain -1.0...+1.0 via y = a*(1-x^2)^2 + (1-a)*(1-x^2)^3 with a == 0.565... (found visually -
 may be refined via optimization). */
-INLINE double cosSquaredApprox(double x);
+//INLINE double cosSquaredApprox(double x);
 
 /** Computes a sin/cos based equal power crossfade according to the value of x. The gain for the first signal will be stored in gain1,
 the gain for the second signal in gain2. If the range of x is not 0.0...1.0, use optional the xMin and xMax arguments to specify the
 range. For example, if x is a panning value between -100...+100, a constant power pan can be achieved via
 equalPowerGainFactors(x, gainL, gainR, -100.0, 100.0), or if x is a dry/wet control between 0.0...100.0:
 equalPowerGainFactors(x, gainDry, gainWet, 0.0, 100.0) */
-INLINE void equalPowerGainFactors(double x, double *gain1, double *gain2,
-  double xMin = 0.0, double xMax = 1.0);
+//INLINE void equalPowerGainFactors(double x, double *gain1, double *gain2,
+//  double xMin = 0.0, double xMax = 1.0);
 
 /** Evaluates the quartic polynomial y = a4*x^4 + a3*x^3 + a2*x^2 + a1*x + a0 at x. */
 INLINE double evaluateQuartic(double x, double a0, double a1, double a2, double a3, double a4);
@@ -325,7 +325,7 @@ INLINE T clip(T x, T min, T max)
     return min;
   else return x;
 }
-*/
+
 INLINE double cosSquaredApprox(double x)
 {
   // approximant: y = a*(1-x^2)^2 + (1-a)*(1-x^2)^3;
@@ -344,7 +344,7 @@ INLINE void equalPowerGainFactors(double x, double *gain1, double *gain2,
   double tmp = RAPT::rsLinToLin(x, xMin, xMax, 0.0, PI/2.0);
   sinCos(tmp, gain2, gain1);
 }
-
+*/
 INLINE double evaluateQuartic(double x, double a0, double a1, double a2, double a3, double a4)
 {
   double x2 = x*x;

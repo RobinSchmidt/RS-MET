@@ -214,7 +214,7 @@ void StereoDelay::setDryWet(double newDryWet)
   if( newDryWet >= 0.0 && newDryWet <= 100.0 )
   {
     dryWet = newDryWet;
-    equalPowerGainFactors(dryWet, &dryGain, &wetGain, 0.0, 100.0);
+    RAPT::rsEqualPowerGainFactors(dryWet, &dryGain, &wetGain, 0.0, 100.0);
     //wet = 0.01 * newDryWet;
     //dry = 1.0 - wet;
   }

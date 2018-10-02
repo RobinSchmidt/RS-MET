@@ -80,7 +80,7 @@ namespace rosic
 
     /** Sets the ratio between dry and wet between 0...1. */
     void setDryWetRatio(double newDryWet) 
-    { dryWetRatio = newDryWet; equalPowerGainFactors(dryWetRatio, &dry, &wet, 0.0, 1.0); }
+    { dryWetRatio = newDryWet; RAPT::rsEqualPowerGainFactors(dryWetRatio, &dry, &wet, 0.0, 1.0); }
 
     /** Switches the delayline into/out of ping-pong mode. */
     void setPingPongMode(bool shouldBePingPong) { pingPongMode = shouldBePingPong; }

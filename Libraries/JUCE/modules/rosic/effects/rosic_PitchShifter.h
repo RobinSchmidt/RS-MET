@@ -186,7 +186,7 @@ namespace rosic
     tmpR1 = delayLineR[tapOut] + fracPart * ( delayLineR[tapOut-1] - delayLineR[tapOut] );
 
     // apply the cos^2 weighting function and store the value:
-    weight = cosSquaredApprox( maxDistanceRec*(2.0*distance1-maxDistance) );
+    weight = RAPT::rsCosSquaredApprox( maxDistanceRec*(2.0*distance1-maxDistance) );
     //weight = cos(0.5*PI* maxDistanceRec*(2.0*distance1-maxDistance) ); weight *= weight;
     tmpL   = tmpL1 * weight;
     tmpR   = tmpR1 * weight;
@@ -212,7 +212,7 @@ namespace rosic
     tmpR1 = delayLineR[tapOut] + fracPart * ( delayLineR[tapOut-1] - delayLineR[tapOut] );
 
     // apply the cos^2 weighting function and store the value:
-    weight  = cosSquaredApprox( maxDistanceRec*(2.0*distance2-maxDistance) );
+    weight  = RAPT::rsCosSquaredApprox( maxDistanceRec*(2.0*distance2-maxDistance) );
     //weight = cos(0.5*PI* maxDistanceRec*(2.0*distance2-maxDistance) ); weight *= weight;
     tmpL   += tmpL1 * weight;
     tmpR   += tmpR1 * weight;

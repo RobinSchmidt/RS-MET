@@ -141,14 +141,14 @@ void Quadrifex::setEffectAlgorithm(int slotIndex, int newAlgorithmIndex)
 void Quadrifex::setDryWet(double newDryWet)
 {
   dryWet = newDryWet;
-  equalPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
+  RAPT::rsEqualPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
   wetFactor *= RAPT::rsDbToAmp(wetLevel);
 }
 
 void Quadrifex::setWetLevel(double newLevel)
 {
   wetLevel = newLevel;
-  equalPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
+  RAPT::rsEqualPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
   wetFactor *= RAPT::rsDbToAmp(wetLevel);
 }
 

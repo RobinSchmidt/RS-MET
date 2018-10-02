@@ -37,7 +37,7 @@ namespace rosic
 
     /** Sets the ratio between dry and wet between 0...1. */
     void setDryWetRatio(double newDryWet) 
-    { equalPowerGainFactors(newDryWet, &dry, &wet, 0.0, 1.0); }
+    { RAPT::rsEqualPowerGainFactors(newDryWet, &dry, &wet, 0.0, 1.0); }
 
     /** Sets the level for the wet signal. */
     void setLevel(double newLevel) { gain = RAPT::rsDbToAmp(newLevel) / sqrt((double)numActiveCombs); }

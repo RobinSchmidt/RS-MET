@@ -54,7 +54,7 @@ namespace rosic
     void setFeedbackInPercent(double newPercentage) { feedback = 0.01*newPercentage; }
 
     /** Sets the panorama position between -1...+1. */
-    void setPan(double newPan) { pan = newPan; equalPowerGainFactors(pan, &gL, &gR, -1.0, 1.0); }
+    void setPan(double newPan) { pan = newPan; RAPT::rsEqualPowerGainFactors(pan, &gL, &gR, -1.0, 1.0); }
 
     /** Switches the delayline into/out of ping-pong mode. */
     void setPingPongMode(bool shouldBePingPong) { pingPongMode = shouldBePingPong; }

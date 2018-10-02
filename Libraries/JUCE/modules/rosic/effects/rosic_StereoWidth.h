@@ -39,7 +39,7 @@ namespace rosic
     /** Adjusts the ratio between the mid and side signal where 0.0 means mid only and 1.0 means 
     side only. */
     void setMidSideRatio(double newRatio) 
-    { equalPowerGainFactors(newRatio, &midGain, &sideGain, 0.0, 1.0); }
+    { RAPT::rsEqualPowerGainFactors(newRatio, &midGain, &sideGain, 0.0, 1.0); }
 
     /** Adjusts the gain for the mid-signal - value is expected in dB. */
     void setMidGain(double newMidGain) { midGain = RAPT::rsDbToAmp(newMidGain); }

@@ -36,7 +36,7 @@ namespace rosic
 
     /** Sets the ratio between dry and wet between 0...1. */
     void setDryWetRatio(double newDryWet) 
-    { dryWetRatio = newDryWet; equalPowerGainFactors(dryWetRatio, &dry, &wet, 0.0, 1.0);  }
+    { dryWetRatio = newDryWet; RAPT::rsEqualPowerGainFactors(dryWetRatio, &dry, &wet, 0.0, 1.0);  }
 
     /** Switches the channels of the wet signal */
     void setSwitchWetLeftForRight(bool shouldSwitch);

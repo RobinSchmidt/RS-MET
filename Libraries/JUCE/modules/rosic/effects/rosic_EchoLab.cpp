@@ -68,7 +68,7 @@ void EchoLab::setDryWet(double newDryWet)
 {
   mutex.lock();
   dryWet = newDryWet;
-  equalPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
+  RAPT::rsEqualPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
   wetFactor *= RAPT::rsDbToAmp(wetLevel);
   mutex.unlock();
 }
@@ -77,7 +77,7 @@ void EchoLab::setWetLevel(double newLevel)
 {
   mutex.lock();
   wetLevel = newLevel;
-  equalPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
+  RAPT::rsEqualPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
   wetFactor *= RAPT::rsDbToAmp(wetLevel);
   mutex.unlock();
 }

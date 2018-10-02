@@ -56,7 +56,7 @@ namespace rosic
     void setBlendFactor(double newFactor) { blend = newFactor; }
 
     /** Sets the panorama position between -1...+1. */
-    void setPan(double newPan) { pan = newPan; equalPowerGainFactors(pan, &gL, &gR, -1.0, 1.0); }
+    void setPan(double newPan) { pan = newPan; RAPT::rsEqualPowerGainFactors(pan, &gL, &gR, -1.0, 1.0); }
 
 
     /** Sets the cycle-length/period by which the delay-times are modulated (in seconds or 

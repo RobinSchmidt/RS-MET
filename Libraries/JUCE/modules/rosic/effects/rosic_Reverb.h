@@ -53,7 +53,7 @@ public:
   /** Sets the ratio between dry and wet between 0...1. */
   void setDryWetRatio(double newDryWetRatio)
   {
-    equalPowerGainFactors(newDryWetRatio, &dryVol, &wetVol, 0.0, 1.0); wetVol *= 0.25;
+    RAPT::rsEqualPowerGainFactors(newDryWetRatio, &dryVol, &wetVol, 0.0, 1.0); wetVol *= 0.25;
   }
 // factor 0.25 (=1/sqrt(16)) compensates for the energy-addition of the 16 delayline-outputs
 

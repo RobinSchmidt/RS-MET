@@ -42,12 +42,12 @@ namespace rosic
 
     /** Sets the ratio between dry and wet between 0...1. */
     void setDryWetRatio(double newDryWet)
-    { dryWetRatio = newDryWet; equalPowerGainFactors(dryWetRatio, &dry, &wet, 0.0, 1.0);  }
+    { dryWetRatio = newDryWet; RAPT::rsEqualPowerGainFactors(dryWetRatio, &dry, &wet, 0.0, 1.0);  }
 
     /** Adjusts the ratio between the mid and side signal where 0.0 means mid only and 1.0 means
     side only. */
     void setMidSideRatio(double newRatio)
-    { equalPowerGainFactors(newRatio, &mid, &side, 0.0, 1.0); }
+    { RAPT::rsEqualPowerGainFactors(newRatio, &mid, &side, 0.0, 1.0); }
 
     /** Sets the cutoff frequency of a lowpass filter for the wet side signal. */
     void setLowpassCutoff(double newCutoff)
