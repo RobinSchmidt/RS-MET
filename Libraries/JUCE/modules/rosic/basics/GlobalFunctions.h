@@ -167,7 +167,7 @@ beats per minute (bpm). */
 //INLINE double wholeNotesToSeconds(double noteValue, double bpm);
 
 /** Wraps the number to the interval 0...length. */
-INLINE double wrapAround(double numberToWrap, double length);
+//INLINE double wrapAround(double numberToWrap, double length);
 
 /** This function should be called on program startup when automatic detection of memory leaks should be turned on. */
 /*
@@ -468,14 +468,14 @@ INLINE double wholeNotesToSeconds(double noteValue, double bpm)
 {
   return (240.0/bpm)*noteValue;
 }
-*/
+
 INLINE double wrapAround(double numberToWrap, double length)
 {
   while(numberToWrap < 0.0)
     numberToWrap += length;
   return fmod(numberToWrap, length);
 }
-
+*/
 
 } // namespace rosic
 
