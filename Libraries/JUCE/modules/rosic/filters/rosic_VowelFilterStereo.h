@@ -211,7 +211,7 @@ namespace rosic
     double sqrtg, gamma, w, s, c, gamog, denRec;
 
     // intermediate variables:
-    sqrtg  = sqrt(dB2amp(g1));                  // square root of the linear gain factor
+    sqrtg  = sqrt(RAPT::rsDbToAmp(g1));         // square root of the linear gain factor
     w      = 2.0*PI*f1*sampleRateRec;           // normalized radian center frequency (omega)
     sinCos(w, &s, &c);                          // sine and cosine of omega
     gamma  = sinh(0.5 * LN2 * b1 * w / s) * s;  // bandwidth parameter
@@ -227,7 +227,7 @@ namespace rosic
     
     // calculate the coefficients for the second formant filter:
 
-    sqrtg  = sqrt(dB2amp(g2));                  // square root of the linear gain factor
+    sqrtg  = sqrt(RAPT::rsDbToAmp(g2));         // square root of the linear gain factor
     w      = 2.0*PI*f2*sampleRateRec;           // normalized radian center frequency (omega)
     sinCos(w, &s, &c);                          // sine and cosine of omega
     gamma  = sinh(0.5 * LN2 * b2 * w / s) * s;  // bandwidth parameter

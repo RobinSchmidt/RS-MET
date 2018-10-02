@@ -42,13 +42,13 @@ namespace rosic
     { equalPowerGainFactors(newRatio, &midGain, &sideGain, 0.0, 1.0); }
 
     /** Adjusts the gain for the mid-signal - value is expected in dB. */
-    void setMidGain(double newMidGain) { midGain = dB2amp(newMidGain); }
+    void setMidGain(double newMidGain) { midGain = RAPT::rsDbToAmp(newMidGain); }
 
     /** Adjusts the gain for the side-signal - value is expected in dB. */
-    void setSideGain(double newSideGain) { sideGain = dB2amp(newSideGain); }
+    void setSideGain(double newSideGain) { sideGain = RAPT::rsDbToAmp(newSideGain); }
 
     /** Adjusts the global gain for the signal - value is expected in dB. */
-    void setGlobalGain(double newGlobalGain) { globalGain = ONE_OVER_SQRT2*dB2amp(newGlobalGain); }
+    void setGlobalGain(double newGlobalGain) { globalGain = ONE_OVER_SQRT2*RAPT::rsDbToAmp(newGlobalGain); }
 
     /** Selects, that the final output should be mixed to mono to quickly check mono 
     compatibility. */

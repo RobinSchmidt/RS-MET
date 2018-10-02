@@ -42,14 +42,14 @@ namespace rosic
     // parameter settings (set-functions):
 
     /** Sets the input signal gain / drive in dB. */
-    void setDrive(double newDrive) { driveFactor = dB2amp(newDrive); }
+    void setDrive(double newDrive) { driveFactor = RAPT::rsDbToAmp(newDrive); }
 
     /** Sets the amount of DC (direct current) to applied to the iput signal (after the drive, before 
     the waveshaper. */
     void setDC(double newDC) { dc = newDC; }
 
     /** Sets the threshold above which the transfer curve snaps off. */
-    void setThreshold(double newThreshold) { threshold = dB2amp(newThreshold); calculateCoefficients(); }
+    void setThreshold(double newThreshold) { threshold = RAPT::rsDbToAmp(newThreshold); calculateCoefficients(); }
 
     /** Sets the ratio - that is the reciprocal of the transfer function's slope above the the
     threshold. */

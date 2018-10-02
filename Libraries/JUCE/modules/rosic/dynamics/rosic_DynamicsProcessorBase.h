@@ -53,10 +53,10 @@ namespace rosic
     void setLookAheadTime(double newLookAheadTime);
 
     /** Sets up a gain factor for the input signal (in dB) .*/
-    void setInputGain(double newInputGain) { inputGainFactor = dB2amp(newInputGain); }
+    void setInputGain(double newInputGain) { inputGainFactor = RAPT::rsDbToAmp(newInputGain); }
 
     /** Sets up a gain factor for the output signal (in dB) .*/
-    void setOutputGain(double newOutputGain) { outputGainFactor = dB2amp(newOutputGain); }
+    void setOutputGain(double newOutputGain) { outputGainFactor = RAPT::rsDbToAmp(newOutputGain); }
 
     /** Sets the ratio between dry and wet between 0...1. */
     void setDryWetRatio(double newDryWet) 

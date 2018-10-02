@@ -34,7 +34,7 @@ namespace rosic
     void setStartLevel(double newStart) { setBreakpointLevel(0, newStart); }
 
     /** Sets the point where the envelope starts (in dB). */
-    void setStartInDecibels(double newStart) { setStartLevel(dB2amp(newStart)); }
+    void setStartInDecibels(double newStart) { setStartLevel(RAPT::rsDbToAmp(newStart)); }
 
     /** Sets the point where the envelope starts (in semitones). */
     void setStartInSemitones(double newStart) { setStartLevel(RAPT::rsPitchOffsetToFreqFactor(newStart)); }
@@ -43,7 +43,7 @@ namespace rosic
     void setPeakLevel(double newPeak) { setBreakpointLevel(1, newPeak); }
 
     /** Sets the highest point of the envelope (in dB). */
-    void setPeakInDecibels(double newPeak) { setPeakLevel(dB2amp(newPeak)); }
+    void setPeakInDecibels(double newPeak) { setPeakLevel(RAPT::rsDbToAmp(newPeak)); }
 
     /** Sets the highest point of the envelope (in semitones). */
     void setPeakInSemitones(double newPeak) { setPeakLevel(RAPT::rsPitchOffsetToFreqFactor(newPeak)); }
@@ -56,7 +56,7 @@ namespace rosic
     }
 
     /** Sets the sustain level (in dB). */
-    void setSustainInDecibels(double newSustain) { setSustainLevel(dB2amp(newSustain)); }
+    void setSustainInDecibels(double newSustain) { setSustainLevel(RAPT::rsDbToAmp(newSustain)); }
 
     /** Sets the sustain level (in semitones). */
     void setSustainInSemitones(double newSustain) 
@@ -66,7 +66,7 @@ namespace rosic
     void setEndLevel(double newEnd) { setBreakpointLevel(4, newEnd); }
 
     /** Sets the end point of the envelope (in dB). */
-    void setEndInDecibels(double newEnd) { setEndLevel(dB2amp(newEnd)); }
+    void setEndInDecibels(double newEnd) { setEndLevel(RAPT::rsDbToAmp(newEnd)); }
 
     /** Sets the end point of the envelope (in semitones). */
     void setEndInSemitones(double newEnd) { setEndLevel(RAPT::rsPitchOffsetToFreqFactor(newEnd)); }

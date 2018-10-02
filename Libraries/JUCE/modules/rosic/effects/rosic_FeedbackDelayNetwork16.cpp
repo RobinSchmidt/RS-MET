@@ -140,12 +140,12 @@ void FeedbackDelayNetwork16::setAllpassMode(bool shouldBeAllpass)
 
 void FeedbackDelayNetwork16::setDryVolume(double newDryVolume)
 {
-  dryVol = dB2amp(newDryVolume);
+  dryVol = RAPT::rsDbToAmp(newDryVolume);
 }
 
 void FeedbackDelayNetwork16::setWetVolume(double newWetVolume)
 {
-  wetVol = dB2amp(newWetVolume);
+  wetVol = RAPT::rsDbToAmp(newWetVolume);
 }
 
 void FeedbackDelayNetwork16::setWetLpfCutoff(double newWetLpfCutoff)

@@ -44,10 +44,10 @@ namespace rosic
     void setReleaseTime(double newRelease) { envFollower.setReleaseTime(newRelease); }
 
     /** Sets the level with which the input signal is passed through. */
-    void setPassThroughLevel(double newLevel) { passGain = dB2amp(newLevel); }
+    void setPassThroughLevel(double newLevel) { passGain = RAPT::rsDbToAmp(newLevel); }
 
     /** Sets the level with which the generated noise is mixed in. */
-    void setNoiseLevel(double newLevel) { noiseGain = dB2amp(newLevel); }
+    void setNoiseLevel(double newLevel) { noiseGain = RAPT::rsDbToAmp(newLevel); }
 
     /** sets the spectral slope for the noise generator in dB/oct. */
     void setNoiseSpectralSlope(double newSlope) { noiseGenerator.setSpectralSlope(newSlope); }

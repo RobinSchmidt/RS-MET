@@ -433,7 +433,7 @@ void rsInfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, do
       {
         double factor   = 1.0-prototypeDesigner.getPassbandGainRatio();
         double excessDb = -factor * gain;
-        normalizeFactor = dB2amp(-excessDb/numBiquads);
+        normalizeFactor = RAPT::rsDbToAmp(-excessDb/numBiquads);
       }
     }
   }
@@ -444,7 +444,7 @@ void rsInfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, do
     {
       if( RAPT::rsIsEven(prototypeDesigner.getOrder()) )
       {
-        normalizeFactor = 1.0 / dB2amp(prototypeDesigner.getPassbandRipple());
+        normalizeFactor = 1.0 / RAPT::rsDbToAmp(prototypeDesigner.getPassbandRipple());
         if( doesModeDoubleTheOrder() )
           normalizeFactor = pow(normalizeFactor, 1.0/prototypeDesigner.getOrder());
         else

@@ -163,8 +163,8 @@ void VoiceKillerModule::resetVoiceState(int voiceIndex)
 }
 void VoiceKillerModule::parameterChanged(int index)
 {
-  threshold = dB2amp(parameters[0].value.asDouble());
-  timeOut   =        parameters[1].value.asDouble();
+  threshold = RAPT::rsDbToAmp(parameters[0].value.asDouble());
+  timeOut   = parameters[1].value.asDouble();
 }
 void VoiceKillerModule::allocateMemory()
 {

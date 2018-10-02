@@ -318,7 +318,7 @@ void OnsetDetector::findOnsetsFromFluxMaxima()
   int k              = (m+1)*w+1;      // size of the neighborhood for the local mean
 
   float threshold    = 0.7f;                  // relative threshold
-  float absThreshold = (float)dB2amp(-60.0);  // absolute threshold in dB fo the RMS value of a
+  float absThreshold = (float)RAPT::rsDbToAmp(-60.0);  // absolute threshold in dB fo the RMS value of a
                                               // block to be considered at all
   bool  refineOnsets = false;                  // toggles onset time/strength refinement on
 

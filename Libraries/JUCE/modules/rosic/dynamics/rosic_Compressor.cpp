@@ -25,7 +25,7 @@ Compressor::~Compressor()
 void Compressor::updateAutoGainFactor()
 {
   if( autoGainActive == true )
-    autoGainFactor = dB2amp(-transferCurveAt(0.0));
+    autoGainFactor = RAPT::rsDbToAmp(-transferCurveAt(0.0));
   else
     autoGainFactor = 1.0;
 }

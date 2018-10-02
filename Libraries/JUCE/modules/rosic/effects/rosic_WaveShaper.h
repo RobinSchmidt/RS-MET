@@ -52,7 +52,7 @@ namespace rosic
     void setTransferFunction(int newTransferFunction);
 
     /** Sets the drive (gain) for the input (expected in dB). */
-    void setDrive(double newDrive) { driveFactor = dB2amp(newDrive); }
+    void setDrive(double newDrive) { driveFactor = RAPT::rsDbToAmp(newDrive); }
 
     /** Sets the DC offset to be added to the signal (expected as raw value). */
     void setDcOffset(double newDcOffset) { dcOffset = newDcOffset; }
@@ -62,7 +62,7 @@ namespace rosic
     void setOversampling(int newOversamplingFactor);
 
     /** Sets the global output volume (expected in dB). */
-    void setOutputLevel(double newOutputLevel) { outVolFactor  = dB2amp(newOutputLevel); }
+    void setOutputLevel(double newOutputLevel) { outVolFactor  = RAPT::rsDbToAmp(newOutputLevel); }
 
     /** Sets the amount of the effect in percent (scales the difference between the original and 
     distorted signal by a factor). */

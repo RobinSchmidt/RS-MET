@@ -37,7 +37,7 @@ minute (bpm). */
 INLINE double beatsToSeconds(double beat, double bpm);
 
 /** Converts a value in decibels to a raw amplitude value/factor. */
-INLINE double dB2amp(double x);
+//INLINE double dB2amp(double x);
 
 /** Converts an angle in degrees into radiant. */
 INLINE double degreeToRadiant(double degrees);
@@ -249,13 +249,13 @@ INLINE double beatsToSeconds(double beat, double bpm)
 {
   return (60.0/bpm)*beat;
 }
-
+/*
 INLINE double dB2amp(double dB)
 {
   return exp(dB * 0.11512925464970228420089957273422);
   //return pow(10.0, (0.05*dB)); // naive, inefficient version
 }
-
+*/
 INLINE double degreeToRadiant(double degrees)
 {
   return (PI/180.0)*degrees;

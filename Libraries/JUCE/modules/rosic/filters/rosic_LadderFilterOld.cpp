@@ -76,7 +76,7 @@ void LadderFilterOld::setMakeUp(double newMakeUp, bool updateCoefficients)
 
 void LadderFilterOld::setDrive(double newDrive)
 {
-  parameters->driveFactor = dB2amp(newDrive);
+  parameters->driveFactor = RAPT::rsDbToAmp(newDrive);
 }
 
 void LadderFilterOld::setDcOffset(double newDcOffset)

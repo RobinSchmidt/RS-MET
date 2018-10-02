@@ -138,7 +138,7 @@ void AciDevil::setPitchBend(double newPitchBend)
 void AciDevil::setMasterLevel(double newLevel)
 {
   level     = newLevel;
-  ampScaler = dB2amp(level);
+  ampScaler = RAPT::rsDbToAmp(level);
 }
 
 void AciDevil::setAccent(double newAccent)

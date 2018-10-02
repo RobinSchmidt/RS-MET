@@ -49,7 +49,7 @@ void SlopeFilter::updateCoefficients()
   static const double freq2 = 4000.0;
   static const double q     =    0.40406101782088438; // bandwidth is 3 octaves
 
-  double gainFactor = dB2amp(-2.0*slope);
+  double gainFactor = RAPT::rsDbToAmp(-2.0*slope);
 
   BiquadDesigner::calculateCookbookLowShelvCoeffs(s1b0, s1b1, s1b2, s1a1, s1a2, 1.0/sampleRate, freq1, q, gainFactor);
   BiquadDesigner::calculateCookbookLowShelvCoeffs(s2b0, s2b1, s2b2, s2a1, s2a2, 1.0/sampleRate, freq2, q, gainFactor);

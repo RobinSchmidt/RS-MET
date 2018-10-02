@@ -89,7 +89,7 @@ SignalMeasures TrackMeter::getCurrentMeasurement(bool reset)
   double meanSquareRight = factor * sumOfSquaresRight;
   double meanProduct     = factor * sumOfProducts;
   double normalizer      = sqrt(meanSquareLeft * meanSquareRight);
-  if(normalizer < dB2amp(-120.0))
+  if(normalizer < RAPT::rsDbToAmp(-120.0))
     currentMeasures.crossCorrelation = 0.0;
   else
     currentMeasures.crossCorrelation = meanProduct / normalizer;

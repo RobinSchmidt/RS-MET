@@ -45,10 +45,10 @@ namespace rosic
     void setModulatorFrequency(double newFrequency);
 
     /** Sets the volume level (in dB) of the upper sideband. */
-    void setUpperSidebandLevel(double newLevel) { usbFactor = dB2amp(newLevel); }
+    void setUpperSidebandLevel(double newLevel) { usbFactor = RAPT::rsDbToAmp(newLevel); }
 
     /** Sets the volume level (in dB) of the lower sideband. */
-    void setLowerSidebandLevel(double newLevel) { lsbFactor = dB2amp(newLevel); }
+    void setLowerSidebandLevel(double newLevel) { lsbFactor = RAPT::rsDbToAmp(newLevel); }
 
     /** Sets the factor for feeding back the output to the input. */
     void setFeedbackFactor(double newFactor) { feedbackFactor = newFactor; }

@@ -32,7 +32,7 @@ namespace rosic
     // parameter settings:
 
     /** Sets the limit which shall not be exceeded (in decibels). */
-    void setLimit(double newLimit) { limit = dB2amp(newLimit); }
+    void setLimit(double newLimit) { limit = RAPT::rsDbToAmp(newLimit); }
 
     //---------------------------------------------------------------------------------------------
     // audio processing:

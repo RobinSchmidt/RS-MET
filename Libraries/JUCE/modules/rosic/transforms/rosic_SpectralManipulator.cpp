@@ -38,10 +38,10 @@ void SpectralManipulator::applySlope(double *magnitudes, int length, double slop
   // this normalizer is good for waveforms with 1/n falloff of the harmonics:
   double normalizer = 1.0;
   if( slope > 0.0 )
-    normalizer = 1.0 / dB2amp( 0.5*slope*log2((double)length) )   ;
+    normalizer = 1.0 / RAPT::rsDbToAmp( 0.5*slope*log2((double)length) )   ;
 
   for(int k=0; k<length; k++)
-    magnitudes[k] *= normalizer * dB2amp(slope*log2(k));
+    magnitudes[k] *= normalizer * RAPT::rsDbToAmp(slope*log2(k));
 }
 
 void SpectralManipulator::applyBrickwallLowpass(double *magnitudes, int length,

@@ -215,7 +215,7 @@ void TrackMeterModuleEditor::rButtonClicked(RButton* buttonThatWasClicked)
 
     // calculate the fall-time:
     time    = 2.8;    
-    level   = 1.0-dB2amp(-24.0);    
+    level   = 1.0-RAPT::rsDbToAmp(-24.0);    
     tauFall = -time / log(1.0-level);
   }
 

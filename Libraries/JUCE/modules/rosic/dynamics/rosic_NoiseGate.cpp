@@ -56,7 +56,7 @@ void NoiseGate::setHoldTime(double newHoldTime)
 
 void NoiseGate::updateThresholds()
 {
-  openingThreshold = dB2amp(threshold);
-  closingThreshold = dB2amp(threshold-hysteresis);
+  openingThreshold = RAPT::rsDbToAmp(threshold);
+  closingThreshold = RAPT::rsDbToAmp(threshold-hysteresis);
 }
 

@@ -393,7 +393,7 @@ void MipMappedWaveTableStereo::renderMipMap()
 
   double slopeNormalizer = 1.0;
   if( spectralSlope > 0.0 )
-    slopeNormalizer = 1.0 / dB2amp( 0.5*spectralSlope*log2(0.5*m) )   ;
+    slopeNormalizer = 1.0 / RAPT::rsDbToAmp( 0.5*spectralSlope*log2(0.5*m) )   ;
     // this normalizer is good for waveforms with 1/n falloff of the harmonics
 
   double phi              = degreeToRadiant(phaseShift);
@@ -422,7 +422,7 @@ void MipMappedWaveTableStereo::renderMipMap()
     magSpectrumR[k] = pow(magSpectrumR[k], spectralContrast);
 
     // calculate weight for the magnitude at this bin:
-    weight = contrastNormalizer * slopeNormalizer * dB2amp(spectralSlope*log2(k));
+    weight = contrastNormalizer * slopeNormalizer * RAPT::rsDbToAmp(spectralSlope*log2(k));
     if( RAPT::rsIsEven(k) )
     {
       weight *= evenAmp;

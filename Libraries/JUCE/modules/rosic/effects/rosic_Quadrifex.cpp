@@ -142,14 +142,14 @@ void Quadrifex::setDryWet(double newDryWet)
 {
   dryWet = newDryWet;
   equalPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
-  wetFactor *= dB2amp(wetLevel);
+  wetFactor *= RAPT::rsDbToAmp(wetLevel);
 }
 
 void Quadrifex::setWetLevel(double newLevel)
 {
   wetLevel = newLevel;
   equalPowerGainFactors(dryWet, &dryFactor, &wetFactor, 0.0, 1.0);
-  wetFactor *= dB2amp(wetLevel);
+  wetFactor *= RAPT::rsDbToAmp(wetLevel);
 }
 
 //-------------------------------------------------------------------------------------------------

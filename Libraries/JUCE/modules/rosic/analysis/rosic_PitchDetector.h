@@ -153,7 +153,7 @@ namespace rosic
     y0 = filteredSignal;
 
     env = envFollower.getSample(fabs(inputSignal));
-    isAboveThreshold = env > dB2amp(-60.0);
+    isAboveThreshold = env > RAPT::rsDbToAmp(-60.0);
 
     if( y2 < 0.0 && y1 >= 0.0 )
     {

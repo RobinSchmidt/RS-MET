@@ -55,7 +55,7 @@ namespace rosic
     //void setGlobalGainFactor(double newFactor) { g = newFactor; }
 
     /** Sets a global gain value for the wet signal (in decibels). */
-    void setWetLevel(double newLevel) { g = dB2amp(newLevel); calculateGainFactors(); }
+    void setWetLevel(double newLevel) { g = RAPT::rsDbToAmp(newLevel); calculateGainFactors(); }
      //
 
     /** Sets the input gain for the signal that enters the delaylines as raw amplitude. */

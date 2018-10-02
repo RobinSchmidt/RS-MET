@@ -197,7 +197,7 @@ void FuncShaper::setInHighpassCutoff(double newInHighpassCutoff)
 void FuncShaper::setDrive(double newDrive)
 {
   drive         = newDrive;
-  driveFactor   = dB2amp(drive);
+  driveFactor   = RAPT::rsDbToAmp(drive);
   //fadeCountDown = numFadeSamples;
 }
 
@@ -240,7 +240,7 @@ void FuncShaper::setOutHighpassCutoff(double newOutHighpassCutoff)
 void FuncShaper::setOutVol(double newOutVol)
 {
   outVol        = newOutVol;
-  outVolFactor  = dB2amp(outVol);
+  outVolFactor  = RAPT::rsDbToAmp(outVol);
   //fadeCountDown = numFadeSamples;
 }
 

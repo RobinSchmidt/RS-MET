@@ -54,7 +54,7 @@ void OnePoleFilter::setShelvingGain(double newGain)
 
 void OnePoleFilter::setShelvingGainInDecibels(double newGain)
 {
-  setShelvingGain(dB2amp(newGain));
+  setShelvingGain(RAPT::rsDbToAmp(newGain));
 }
 
 void OnePoleFilter::setCoefficients(double newB0, double newB1, double newA1)
@@ -108,7 +108,7 @@ void OnePoleFilter::calcCoeffs()
   case LOWSHELV:
     {
       // formula derived as special case of the Orfanidis equalizers:
-      double g    = dB2amp(shelvingGain);
+      double g    = RAPT::rsDbToAmp(shelvingGain);
       double wc   = 2*PI*cutoff*sampleRateRec;
       double wa   = 2*sampleRate*tan(wc/2);
       double gb   = sqrt(g);
@@ -128,7 +128,7 @@ void OnePoleFilter::calcCoeffs()
   case HIGHSHELV:
     {
       // formula derived as special case of the Orfanidis equalizers:
-      double g    = dB2amp(shelvingGain);
+      double g    = RAPT::rsDbToAmp(shelvingGain);
       double wc   = 2*PI*cutoff*sampleRateRec;
       double wa   = 2*sampleRate*tan(wc/2);
       double gb   = sqrt(g);

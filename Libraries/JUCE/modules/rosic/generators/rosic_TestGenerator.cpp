@@ -36,7 +36,7 @@ void TestGenerator::setFrequency(double newFrequency)
 
 void TestGenerator::setLevel(double newLevel)
 {
-  sineOscillator.setAmplitude(dB2amp(newLevel));
+  sineOscillator.setAmplitude(RAPT::rsDbToAmp(newLevel));
   sineOscillator.trigger();
 }
 

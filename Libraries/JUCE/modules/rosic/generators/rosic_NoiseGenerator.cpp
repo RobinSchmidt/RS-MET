@@ -144,7 +144,7 @@ void NoiseGenerator::createNoiseSequence()
   int k;
   for(k=1; k<length/2; k++)
   {
-    magnitudes[k] = dB2amp(slope*log2(k));
+    magnitudes[k] = RAPT::rsDbToAmp(slope*log2(k));
     phases[k]     = randomUniform(0.0, 2.0*PI);
   }
 

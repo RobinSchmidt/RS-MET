@@ -121,7 +121,7 @@ void ToneControl::calcLowShelfCoeffs()
   }
 
   // assign/calculate some intermediate variables:
-  G       = dB2amp(lowGain);
+  G       = RAPT::rsDbToAmp(lowGain);
   G_B     = sqrt(G);
   epsilon = sqrt( (G*G-G_B*G_B)/(G_B*G_B-1.0) );
   beta    = 1/epsilon;
@@ -190,7 +190,7 @@ void ToneControl::calcHighShelfCoeffs()
   }
 
   // assign/calculate some intermediate variables:
-  G       = dB2amp(highGain);
+  G       = RAPT::rsDbToAmp(highGain);
   G_B     = sqrt(G);
   epsilon = sqrt( (G*G-G_B*G_B)/(G_B*G_B-1.0) );
   beta    = 1/epsilon;

@@ -117,7 +117,7 @@ void OscillatorStereo::setMute(bool shouldBeMuted)
 void OscillatorStereo::setLevel(double newLevel)
 {
   parameters->level     = newLevel;
-  parameters->amplitude = dB2amp(newLevel);
+  parameters->amplitude = RAPT::rsDbToAmp(newLevel);
   calculateKeyAndVelocityDependentParameters();
   //markPresetAsDirty();
 
@@ -577,9 +577,9 @@ void OscillatorStereo::reset()
 
 void OscillatorStereo::calculateKeyAndVelocityDependentParameters()
 {
-  scaledAmplitude  = dB2amp(parameters->level);
-  scaledAmplitude *= dB2amp(parameters->levelByKey * (double)(key-64)/63.0);
-  scaledAmplitude *= dB2amp(parameters->levelByVel * (double)(vel-64)/63.0);
+  scaledAmplitude  = RAPT::rsDbToAmp(parameters->level);
+  scaledAmplitude *= RAPT::rsDbToAmp(parameters->levelByKey * (double)(key-64)/63.0);
+  scaledAmplitude *= RAPT::rsDbToAmp(parameters->levelByVel * (double)(vel-64)/63.0);
     // this can be optimized algebraically to call dB2amp only once
 
   scaledStartPhase  = parameters->startPhase;

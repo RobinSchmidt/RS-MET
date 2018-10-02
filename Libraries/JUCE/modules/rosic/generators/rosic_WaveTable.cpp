@@ -128,7 +128,7 @@ void WaveTable::updateBuffers()
     contrastNormalizer = 1.0;
   double slopeNormalizer    = 1.0;
   if( spectralSlope > 0.0 )
-    slopeNormalizer = 1.0 / dB2amp( 0.5*spectralSlope*log2(0.5*tableLength) )   ;
+    slopeNormalizer = 1.0 / RAPT::rsDbToAmp( 0.5*spectralSlope*log2(0.5*tableLength) )   ;
       // good for waveforms with 1/n falloff of the harmonics
 
   double phi              = degreeToRadiant(phaseShift);
@@ -154,7 +154,7 @@ void WaveTable::updateBuffers()
     weight = 0.0;
   magL[0] *= weight;
   magR[0] *= weight;
-  weight   = contrastNormalizer*slopeNormalizer*evenAmp*dB2amp(spectralSlope*log2(tableLength/2));
+  weight   = contrastNormalizer*slopeNormalizer*evenAmp*RAPT::rsDbToAmp(spectralSlope*log2(tableLength/2));
   if( highestHarmonicToKeep < tableLength/2 )
     weight = 0.0;
   phsL[0] *= weight;
@@ -168,7 +168,7 @@ void WaveTable::updateBuffers()
     magR[k] = pow(magR[k], spectralContrast);
 
     // calculate weight for the magnitude at this bin:
-    weight = contrastNormalizer * slopeNormalizer * dB2amp(spectralSlope*log2(k));
+    weight = contrastNormalizer * slopeNormalizer * RAPT::rsDbToAmp(spectralSlope*log2(k));
     if( RAPT::rsIsEven(k) )
     {
       weight *= evenAmp;

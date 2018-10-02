@@ -63,7 +63,7 @@ namespace rosic
     void setSubOscWaveform(double newWaveform) { subOscillator.setBlendFactor(newWaveform); }
 
     /** Sets the volume level for the suboscillator (in decibels). */
-    void setSubOscLevel(double newLevel) { subOscGain = dB2amp(newLevel); }
+    void setSubOscLevel(double newLevel) { subOscGain = RAPT::rsDbToAmp(newLevel); }
 
     /** Sets the filter's nominal cutoff frequency (in Hz). */
     void setCutoff(double newCutoff); 
@@ -117,7 +117,7 @@ namespace rosic
     }
 
     /** Sets the amount of drive for the clipper (in dB). */
-    void setClipperDrive(double newDrive) { clipperGain = dB2amp(newDrive); }
+    void setClipperDrive(double newDrive) { clipperGain = RAPT::rsDbToAmp(newDrive); }
 
     /** Sets the DC offset for the clipper. */
     void setClipperDC(double newDC) { clipperDC = newDC; }

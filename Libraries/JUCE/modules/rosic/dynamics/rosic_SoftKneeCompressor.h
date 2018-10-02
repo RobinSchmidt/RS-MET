@@ -128,7 +128,7 @@ namespace rosic
 
     // calculate the compressor gain:
     double outLevel       = transferCurveAt(inLevel);
-    double compressorGain = dB2amp(outLevel-inLevel);
+    double compressorGain = RAPT::rsDbToAmp(outLevel-inLevel);
 
     // apply the attack/release smoothing and the addition Bessel filter for anti-aliasing:
     //compressorGain = -attackReleaseEnveloper.getSample(-compressorGain);

@@ -144,17 +144,17 @@ void TwoPoleFilter::updateCoeffs()
     BiquadDesigner::makeBypassBiquad(b0, b1, b2, a1, a2);
     break;
   case PEAK:
-    BiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth, dB2amp(gain), 1.0);
+    BiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth, RAPT::rsDbToAmp(gain), 1.0);
     break;
   case LOW_SHELF:
-    BiquadDesigner::calculateCookbookLowShelvCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, q2, dB2amp(0.5*gain));
+    BiquadDesigner::calculateCookbookLowShelvCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, q2, RAPT::rsDbToAmp(0.5*gain));
     // factor  0.5 because we define the characteristic frequency as the frequency where the dB-gain is one half of the dB-gain at DC
 
     //BiquadDesigner::calculateFirstOrderLowShelvCoeffsPrescribedNyQuist(b0, b1, b2, a1, a2, sampleRate, frequency, dB2amp(gain));
 
     break;
   case HIGH_SHELF:
-    BiquadDesigner::calculateCookbookHighShelvCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, q2, dB2amp(0.5*gain));
+    BiquadDesigner::calculateCookbookHighShelvCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, q2, RAPT::rsDbToAmp(0.5*gain));
     //BiquadDesigner::calculateFirstOrderHighShelvCoeffsPrescribedNyQuist(b0, b1, b2, a1, a2, sampleRate, frequency, dB2amp(gain));
     break;
   case LOWPASS6:
@@ -165,14 +165,14 @@ void TwoPoleFilter::updateCoeffs()
     }
     break;
   case LOWPASS12:
-    BiquadDesigner::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, dB2amp(gain));
+    BiquadDesigner::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, RAPT::rsDbToAmp(gain));
     break;
   case HIGHPASS6:
     //BiquadDesigner::calculateFirstOrderHighpassCoeffsBilinear(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency);
     BiquadDesigner::calculateFirstOrderHighpassCoeffsPrescribedNyquist(b0, b1, b2, a1, a2, sampleRate, frequency);
     break;
   case HIGHPASS12:
-    BiquadDesigner::calculateCookbookHighpassCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, dB2amp(gain));
+    BiquadDesigner::calculateCookbookHighpassCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, RAPT::rsDbToAmp(gain));
     break;
   case BANDREJECT:
     BiquadDesigner::calculateCookbookBandrejectCoeffsViaBandwidth(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth);
@@ -205,7 +205,7 @@ void TwoPoleFilter::updateCoeffs()
     BiquadDesigner::calculateZeroPairCoeffs(b0, b1, b2, a1, a2, radius, 2*PI*frequency/sampleRate);
     break;
   default:
-    BiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth, dB2amp(gain), 1.0);
+    BiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth, RAPT::rsDbToAmp(gain), 1.0);
   }
 }
 

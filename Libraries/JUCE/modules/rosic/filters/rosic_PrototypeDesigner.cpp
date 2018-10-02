@@ -775,8 +775,8 @@ void rsPrototypeDesigner::updatePolesAndZeros()
       case CHEBYCHEV:         makeChebychevLowShelv();                      break;
       case INVERSE_CHEBYCHEV: makeInverseChebychevLowShelv();               break;
       case ELLIPTIC:          makeEllipticLowShelv();                       break;
-      case BESSEL:            makeBesselLowShelv(  dB2amp(A), dB2amp(A0));  break;
-      case PAPOULIS:          makePapoulisLowShelv(dB2amp(A), dB2amp(A0));  break;
+      case BESSEL:            makeBesselLowShelv(  RAPT::rsDbToAmp(A), RAPT::rsDbToAmp(A0));  break;
+      case PAPOULIS:          makePapoulisLowShelv(RAPT::rsDbToAmp(A), RAPT::rsDbToAmp(A0));  break;
       }
     }
     stateIsDirty = false;
@@ -834,8 +834,8 @@ void rsPrototypeDesigner::makeButterworthLowShelv()
     makeBypass();
 
   // intermediate variables:
-  double G0   = dB2amp(A0);
-  double G    = dB2amp(A);
+  double G0   = RAPT::rsDbToAmp(A0);
+  double G    = RAPT::rsDbToAmp(A);
   double GB   = sqrt(G0*G);                                // (2),Eq.52
   double ep   = sqrt( (G*G-GB*GB) / (GB*GB-G0*G0) );       // (2),Eq.12
   double g0   = pow(G0, 1.0 / (double) N);                 // (2),Eq.94
@@ -901,8 +901,8 @@ void rsPrototypeDesigner::makeChebychevLowShelv()
   numFiniteZeros = N;
 
   // calculate the linear gain-factors:
-  double G0 = dB2amp(A0);
-  double G  = dB2amp(A);
+  double G0 = RAPT::rsDbToAmp(A0);
+  double G  = RAPT::rsDbToAmp(A);
 
   // catch some special cases:
   if( A0 == NEG_INF ) // lowpass-case
@@ -914,7 +914,7 @@ void rsPrototypeDesigner::makeChebychevLowShelv()
     makeBypass();
 
   // calculate intermediate variables:
-  double Gp    = dB2amp(A0 + Rp*A);
+  double Gp    = RAPT::rsDbToAmp(A0 + Rp*A);
   double ep    = sqrt( (G*G-Gp*Gp) / (Gp*Gp-G0*G0) );
   double g0    = pow(G0, 1.0 / (double) N);
   //double g     = pow(G,   1.0 / (double) N);
@@ -991,8 +991,8 @@ void rsPrototypeDesigner::makeInverseChebychevLowShelv()
   numFiniteZeros = N;
 
   // calculate the linear gain-factors:
-  double G0 = dB2amp(A0);
-  double G  = dB2amp(A);
+  double G0 = RAPT::rsDbToAmp(A0);
+  double G  = RAPT::rsDbToAmp(A);
 
   // catch some special cases:
   if( A0 == NEG_INF ) // lowpass-case
@@ -1005,7 +1005,7 @@ void rsPrototypeDesigner::makeInverseChebychevLowShelv()
 
   // calculate intermediate variables (\todo check if the gains have reasonable values):
   //double Gs    = dB2amp(Rs*G + (1.0-Rs)*G0);
-  double Gs    = dB2amp(A0 + Rs*A);
+  double Gs    = RAPT::rsDbToAmp(A0 + Rs*A);
   double es    = sqrt( (G*G-Gs*Gs) / (Gs*Gs-G0*G0) );
   //double g0    = pow(G0, 1.0 / (double) N);
   double g     = pow(G,   1.0 / (double) N);
@@ -1092,10 +1092,10 @@ void rsPrototypeDesigner::makeEllipticLowShelv()
     makeBypass();
 
   // intermediate variables:
-  double  G0  = dB2amp(A0);                            // reference amplitude
-  double  G   = dB2amp(A);                             // boost/cut amplitude
-  double  Gp  = dB2amp(A0 + Rp*A);                     // passband-amplitude (Rp near 1)
-  double  Gs  = dB2amp(A0 + Rs*A);                     // stopband-amplitude (Rs near 0)
+  double  G0  = RAPT::rsDbToAmp(A0);                            // reference amplitude
+  double  G   = RAPT::rsDbToAmp(A);                             // boost/cut amplitude
+  double  Gp  = RAPT::rsDbToAmp(A0 + Rp*A);                     // passband-amplitude (Rp near 1)
+  double  Gs  = RAPT::rsDbToAmp(A0 + Rs*A);                     // stopband-amplitude (Rs near 0)
   double  Gb  = sqrt(G0*G);                            // (2),Eq.52 (gain at the bandedges)
   double  ep  = sqrt( (G*G-Gp*Gp) / (Gp*Gp-G0*G0) );   // (2),Eq.12
   double  es  = sqrt( (G*G-Gs*Gs) / (Gs*Gs-G0*G0) );   // (2),Eq.39

@@ -214,9 +214,9 @@ void SamplePlayer::addSlave(SamplePlayer* newSlave)
 
 void SamplePlayer::calculateKeyAndVelocityDependentParameters()
 {
-  gainFactor  = dB2amp(parameters->getLevel());
-  gainFactor *= dB2amp(parameters->getLevelByKey() * (double)(key-64)/63.0);
-  gainFactor *= dB2amp(parameters->getLevelByVel() * (double)(vel-64)/63.0);
+  gainFactor  = RAPT::rsDbToAmp(parameters->getLevel());
+  gainFactor *= RAPT::rsDbToAmp(parameters->getLevelByKey() * (double)(key-64)/63.0);
+  gainFactor *= RAPT::rsDbToAmp(parameters->getLevelByVel() * (double)(vel-64)/63.0);
 
   /*
   // this can be optimized algebraically to call dB2amp only once:

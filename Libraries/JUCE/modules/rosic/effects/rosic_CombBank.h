@@ -40,7 +40,7 @@ namespace rosic
     { equalPowerGainFactors(newDryWet, &dry, &wet, 0.0, 1.0); }
 
     /** Sets the level for the wet signal. */
-    void setLevel(double newLevel) { gain = dB2amp(newLevel) / sqrt((double)numActiveCombs); }
+    void setLevel(double newLevel) { gain = RAPT::rsDbToAmp(newLevel) / sqrt((double)numActiveCombs); }
 
     /** Sets the reference pitch (as MIDI note number) - all the individual pitch-offsets of each 
     comb are with respect to this pitch. */

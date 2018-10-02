@@ -36,7 +36,7 @@ namespace rosic
     void setSampleRate(double newSampleRate);
 
     /** Sets the input signal gain / drive in dB. */
-    void setDrive(double newDrive) { driveFactor = dB2amp(newDrive); }
+    void setDrive(double newDrive) { driveFactor = RAPT::rsDbToAmp(newDrive); }
 
     /** Sets the ratio between the dry and wet signal. */
     void setDryWetRatio(double newRatio) { wet = newRatio; dry = 1.0-wet; }

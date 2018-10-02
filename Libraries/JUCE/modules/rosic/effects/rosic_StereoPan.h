@@ -56,7 +56,7 @@ namespace rosic
 
     /** Sets a global gain in decibels */
     void setGain(double newGain)
-    { g = dB2amp(newGain); calculateGainFactors(); }
+    { g = RAPT::rsDbToAmp(newGain); calculateGainFactors(); }
 
     /** Selects one of the pan-laws. @see panLaws */
     void setPanLaw(int newLaw) { panLaw = newLaw; calculateGainFactors(); }

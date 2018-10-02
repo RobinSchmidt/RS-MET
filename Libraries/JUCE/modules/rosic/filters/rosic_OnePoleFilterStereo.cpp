@@ -60,7 +60,7 @@ void OnePoleFilterStereo::setShelvingGain(double newGain)
 
 void OnePoleFilterStereo::setShelvingGainInDb(double newGainDb)
 {
-  setShelvingGain(dB2amp(newGainDb));
+  setShelvingGain(RAPT::rsDbToAmp(newGainDb));
 }
 
 void OnePoleFilterStereo::setCoeffs(double newB0, double newB1, double newA1)

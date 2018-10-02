@@ -137,7 +137,7 @@ void Open303::setPitchBend(double newPitchBend)
 void Open303::setMasterLevel(double newLevel)
 {
   level     = newLevel;
-  ampScaler = dB2amp(level);
+  ampScaler = RAPT::rsDbToAmp(level);
 }
 
 void Open303::setAccent(double newAccent)

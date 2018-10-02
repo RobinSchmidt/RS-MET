@@ -42,7 +42,7 @@ void TeeBeeFilter::setSampleRate(double newSampleRate)
 void TeeBeeFilter::setDrive(double newDrive)
 {
   drive       = newDrive;
-  driveFactor = dB2amp(drive);
+  driveFactor = RAPT::rsDbToAmp(drive);
 }
 
 void TeeBeeFilter::setMode(int newMode)

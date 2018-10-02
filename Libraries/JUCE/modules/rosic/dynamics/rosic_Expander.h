@@ -89,7 +89,7 @@ namespace rosic
 
     // calculate the expander gain:
     double outLevel    = transferCurveAt(inLevel);
-    double expanderGain = dB2amp(outLevel-inLevel);
+    double expanderGain = RAPT::rsDbToAmp(outLevel-inLevel);
 
     // apply the attack/release smoothing:
     //expanderGain     = attackReleaseEnveloper.getSample(expanderGain);

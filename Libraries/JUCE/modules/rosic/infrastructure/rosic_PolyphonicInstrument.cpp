@@ -69,7 +69,7 @@ bool PolyphonicInstrument::isSilent()
 void PolyphonicInstrument::setMasterLevel(double newMasterLevel)
 { 
   masterLevel     = newMasterLevel;
-  masterAmplitude = dB2amp(masterLevel);
+  masterAmplitude = RAPT::rsDbToAmp(masterLevel);
 }
 
 void PolyphonicInstrument::setVoiceLevelByKey(double newVoiceLevelByKey)

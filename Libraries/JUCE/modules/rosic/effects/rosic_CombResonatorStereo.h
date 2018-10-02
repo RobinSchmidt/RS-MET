@@ -35,7 +35,7 @@ namespace rosic
     { combL.setDryWetRatio(newDryWet); combR.setDryWetRatio(newDryWet); }
 
     /** Sets the level for the wet signal. */
-    void setLevel(double newLevel) { gain = dB2amp(newLevel); }
+    void setLevel(double newLevel) { gain = RAPT::rsDbToAmp(newLevel); }
 
     /** Sets the filter's nominal frequency in Hz. */
     void setFrequency(double newFrequency) 

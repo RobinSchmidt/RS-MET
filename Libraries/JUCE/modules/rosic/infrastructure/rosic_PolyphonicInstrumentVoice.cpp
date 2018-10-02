@@ -422,7 +422,7 @@ void PolyphonicInstrumentVoice::prepareForAmplitudeRamp(double newKey, double ne
     shouldRamp = false; // function was called while no note was being played
 
   targetLevel     = level + levelByVel*(newVel-64.0)/63.0 + levelByKey*(newKey-64.0)/63.0;
-  targetAmplitude = dB2amp(targetLevel);
+  targetAmplitude = RAPT::rsDbToAmp(targetLevel);
 
 
 
@@ -443,6 +443,6 @@ void PolyphonicInstrumentVoice::prepareForAmplitudeRamp(double newKey, double ne
     //double levelDelta  = targetLevel - currentLevel;
     double levelDelta  = targetLevel - RAPT::rsAmpToDb(currentAmplitude);
     levelIncPerSample  = levelDelta / (double) remainingAmpRampSamples;
-    ampFactorPerSample = dB2amp(levelIncPerSample);
+    ampFactorPerSample = RAPT::rsDbToAmp(levelIncPerSample);
   }
 }

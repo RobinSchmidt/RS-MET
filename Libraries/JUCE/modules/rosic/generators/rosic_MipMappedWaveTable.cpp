@@ -263,7 +263,7 @@ void MipMappedWaveTable::fillWithSquare303()
     */
 
   // switch polarity and apply tanh-shaping with dc-offset:
-  double a = dB2amp(36.9);
+  double a = RAPT::rsDbToAmp(36.9);
   double b = 4.37;
   for(int n=0; n<N; n++)
     prototypeTable[n] = -tanh(a*prototypeTable[n] + b);

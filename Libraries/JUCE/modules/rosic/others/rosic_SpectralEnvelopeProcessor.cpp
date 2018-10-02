@@ -68,7 +68,7 @@ void SpectralEnvelopeProcessor::estimateSpectralEnvelope(double *mag, double *en
     for(k=spectrumSize-1; k>=0; k--)
       env[k] = spectralSmoother.getSample(env[k]);
     for(k=spectrumSize-1; k>=0; k--)
-      env[k] = dB2amp(env[k]);
+      env[k] = RAPT::rsDbToAmp(env[k]);
   }
 
   /*

@@ -76,7 +76,7 @@ namespace rosic
     bool setUpperBandedgeFrequency(unsigned int index, double newUpperBandedgeFrequency);
 
     /** Changes the global gain in decibels. */
-    void setGlobalGain(double newGainInDB) { globalGainFactor = dB2amp(newGainInDB); }
+    void setGlobalGain(double newGainInDB) { globalGainFactor = RAPT::rsDbToAmp(newGainInDB); }
 
     /** Switches the equalizer inot mono-mode in which case only the 1st channel will be processed and the result will be copied into the 
     2nd channel as well. */

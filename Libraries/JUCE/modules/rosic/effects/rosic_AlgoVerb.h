@@ -50,10 +50,10 @@ namespace rosic
     //void setDryLevel(double newLevel){ dryVol = (float) dB2amp(newLevel); }
 
     /** Sets the level of the early reflections (in dB). */
-    void setEarlyReflectionLevel(double newLevel) { earlyVol = (float) dB2amp(newLevel); }
+    void setEarlyReflectionLevel(double newLevel) { earlyVol = (float) RAPT::rsDbToAmp(newLevel); }
 
     /** Sets the level of the late reverb (in dB). */
-    void setLateReverbLevel(double newLevel){ lateVol = (float) dB2amp(newLevel); }
+    void setLateReverbLevel(double newLevel){ lateVol = (float) RAPT::rsDbToAmp(newLevel); }
 
 
     //---------------------------------------------------------------------------------------------
