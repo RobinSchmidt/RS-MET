@@ -60,7 +60,7 @@ default 440 Hz. */
 
 /** Checks a pointer for nullity and if it is not NULL, it calls delete for the associated object
 and then sets the pointer to NULL. */
-INLINE void ifNotNullDeleteAndSetNull(void* pointer);
+//INLINE void ifNotNullDeleteAndSetNull(void* pointer);
 
 /** Maps an integer index in the range 0...numIndices-1 into a normalized floating point number in
 the range 0...1. */
@@ -124,7 +124,7 @@ INLINE T nextPowerOfTwo(T x);
 
 /** Maps a normalized floating point number in the range 0...1 into an integer index in the range
 0...numIndices-1. */
-INLINE int normalizedValueToIndex(float normalizedValue, int numIndices);
+//INLINE int normalizedValueToIndex(float normalizedValue, int numIndices);
 
 
 /** Maps the range x = [0...1] onto itself via a warping that is controlled by parameter "a" in
@@ -404,12 +404,12 @@ INLINE T nextPowerOfTwo(T x)
     accu *= 2;
   return accu;
 }
-
+/*
 INLINE int normalizedValueToIndex(float normalizedValue, int numIndices)
 {
   return (int)floor(normalizedValue*numIndices);
 }
-/*
+
 INLINE double pitchOffsetToFreqFactor(double pitchOffset)
 {
   return exp(0.057762265046662109118102676788181 * pitchOffset);
