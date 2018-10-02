@@ -1,13 +1,7 @@
 #ifndef GlobalFunctions_h
 #define GlobalFunctions_h
 
-//#include <math.h>
-//#include <stdlib.h>
-//#include "GlobalDefinitions.h"
-//
-//#if defined _MSC_VER
-//#include <crtdbg.h>
-//#endif
+// commented functions are superseded by templatized versions in RAPT
 
 /** Some basic functions */
 
@@ -24,13 +18,13 @@ related errors). */
 
 /** Returns the index of the maximum value in an array of doubles where the array should be of
 length numValues. */
-template <class T>
-INLINE int arrayMaxIndex(T* theArray, int numValues);
+//template <class T>
+//INLINE int arrayMaxIndex(T* theArray, int numValues);
 
 /** Returns the index of the minimum value in an array of doubles where the array should be of
 length numValues. */
-template <class T>
-INLINE int arrayMinIndex(T* theArray, int numValues);
+//template <class T>
+//INLINE int arrayMinIndex(T* theArray, int numValues);
 
 /** Converts a time-stamp given in beats into seconds acording to a tempo measured in beats per
 minute (bpm). */
@@ -212,7 +206,7 @@ INLINE double amp2dBWithCheck(double amp, double lowAmplitude)
   else
     return 8.6858896380650365530225783783321 * log(lowAmplitude);
 }
-*/
+
 template <class T>
 INLINE int arrayMaxIndex(T* theArray, int numValues)
 {
@@ -244,7 +238,7 @@ INLINE int arrayMinIndex(T* theArray, int numValues)
   }
   return minIndex;
 }
-
+*/
 INLINE double beatsToSeconds(double beat, double bpm)
 {
   return (60.0/bpm)*beat;

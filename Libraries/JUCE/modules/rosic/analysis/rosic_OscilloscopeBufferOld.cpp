@@ -192,8 +192,8 @@ void OscilloscopeBufferOld::updateDisplayBuffers()
       for(nw=0; nw<displayWidth; nw++)
       {
         nr      = decimationFactor*nw;
-        minIndex = arrayMinIndex(&(linearBuffer[c][nr]), decimationFactor);
-        maxIndex = arrayMaxIndex(&(linearBuffer[c][nr]), decimationFactor);
+        minIndex = RAPT::rsArray::minIndex(&(linearBuffer[c][nr]), decimationFactor);
+        maxIndex = RAPT::rsArray::maxIndex(&(linearBuffer[c][nr]), decimationFactor);
         minValue = linearBuffer[c][nr+minIndex];
         maxValue = linearBuffer[c][nr+maxIndex];
 
