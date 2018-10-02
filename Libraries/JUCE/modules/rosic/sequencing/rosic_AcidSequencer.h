@@ -103,7 +103,7 @@ namespace rosic
 
     /** Returns the length of one step (the time while gate is open) in samples. */
     int getStepLengthInSamples() const 
-    { return roundToInt(sampleRate*getStepLength()*beatsToSeconds(0.25, bpm)); }
+    { return roundToInt(sampleRate*getStepLength()*RAPT::rsBeatsToSeconds(0.25, bpm)); }
 
     /** Returns the selected sequencer mode @see sequencerModes. */
     int getSequencerMode() const { return sequencerMode; }
@@ -181,7 +181,7 @@ namespace rosic
     }
     else
     {
-      double secondsToNextStep = beatsToSeconds(0.25, bpm);
+      double secondsToNextStep = RAPT::rsBeatsToSeconds(0.25, bpm);
       double samplesToNextStep = secondsToNextStep * sampleRate;
       countDown                = roundToInt(samplesToNextStep);
 

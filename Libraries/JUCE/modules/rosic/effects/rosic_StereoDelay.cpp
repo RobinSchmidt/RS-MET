@@ -399,8 +399,8 @@ void StereoDelay::updateDelayTimes()
 {
   // calculate the desired total delay-time for the left and right delayline which includes the 
   // delay introduced by the allpass diffusors:
-  double dL = delayScaleL*beatsToSeconds(delayInBeatsL, bpm);
-  double dR = delayScaleR*beatsToSeconds(delayInBeatsR, bpm);
+  double dL = delayScaleL*RAPT::rsBeatsToSeconds(delayInBeatsL, bpm);
+  double dR = delayScaleR*RAPT::rsBeatsToSeconds(delayInBeatsR, bpm);
 
   // subtract the delay from the allpass diffusors to obtain the desired delay for the delay-lines:
   dL -= diffusorL.getDelayInSeconds();
@@ -411,8 +411,8 @@ void StereoDelay::updateDelayTimes()
   delayLineR.setDelayInSeconds(dR);
 
   // calculate and set the desired delay-time for the left and right wet signal delaylines:
-  dL = beatsToSeconds(wetDelayInBeatsL, bpm);
-  dR = beatsToSeconds(wetDelayInBeatsR, bpm);
+  dL = RAPT::rsBeatsToSeconds(wetDelayInBeatsL, bpm);
+  dR = RAPT::rsBeatsToSeconds(wetDelayInBeatsR, bpm);
   wetDelayLineL.setDelayInSeconds(dL);
   wetDelayLineR.setDelayInSeconds(dR);
 }

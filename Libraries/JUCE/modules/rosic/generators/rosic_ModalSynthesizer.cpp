@@ -19,7 +19,7 @@ void ModalFilter::setModalParameters(double frequency, double amplitude, double 
   double w      = 2*PI*frequency/sampleRate;
   double alpha  = 1.0 / (decayTime*sampleRate); 
   double A      = amplitude;
-  double phi    = wrapToInterval(degreeToRadiant(startPhase), 0, 2*PI);
+  double phi    = wrapToInterval(RAPT::rsDegreeToRadiant(startPhase), 0, 2*PI);
   double varphi = phi - PI/2;
   double P      = exp(-alpha);
   double r_im   = 0.5 * tan(varphi);

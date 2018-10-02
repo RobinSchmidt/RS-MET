@@ -107,7 +107,7 @@ void EchoLabDelayLine::setupDelayInSamples()
 {
   double delayInSeconds;
   if( tempoSync )
-    delayInSeconds = beatsToSeconds(delayTime, bpm);
+    delayInSeconds = RAPT::rsBeatsToSeconds(delayTime, bpm);
   else
     delayInSeconds = delayTime;
 

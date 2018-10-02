@@ -122,7 +122,7 @@ double LowFrequencyOscillator::getFrequency() const
 {
   double cycleLengthInSeconds;
   if( parameters->sync )
-    cycleLengthInSeconds = beatsToSeconds(parameters->cycleLength, parameters->bpm);
+    cycleLengthInSeconds = RAPT::rsBeatsToSeconds(parameters->cycleLength, parameters->bpm);
   else
     cycleLengthInSeconds = parameters->cycleLength;
   return 1.0/cycleLengthInSeconds;

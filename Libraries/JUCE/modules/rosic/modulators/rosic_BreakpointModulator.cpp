@@ -1026,7 +1026,7 @@ void BreakpointModulator::updateSamplesToNextBreakpoint()
   double timeDelta = data->breakpoints[rightIndex].timeStamp
     - data->breakpoints[leftIndex].timeStamp;
   if( data->syncMode == true )
-    timeDelta = beatsToSeconds(timeDelta, data->bpm);
+    timeDelta = RAPT::rsBeatsToSeconds(timeDelta, data->bpm);
 
   // convert to samples and use this length as initial value for our countdown-variable:
   double samplesExact     = timeScaleFactor * timeDelta * data->sampleRate;

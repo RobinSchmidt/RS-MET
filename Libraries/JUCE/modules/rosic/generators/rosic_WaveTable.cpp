@@ -131,10 +131,10 @@ void WaveTable::updateBuffers()
     slopeNormalizer = 1.0 / RAPT::rsDbToAmp( 0.5*spectralSlope*log2(0.5*tableLength) )   ;
       // good for waveforms with 1/n falloff of the harmonics
 
-  double phi              = degreeToRadiant(phaseShift);
-  double phiEvenOdd       = degreeToRadiant(0.5*evenOddPhaseShift);
-  double phiStereo        = degreeToRadiant(0.5*stereoPhaseShift);
-  double phiEvenOddStereo = degreeToRadiant(0.5*evenOddStereoPhaseShift);
+  double phi              = RAPT::rsDegreeToRadiant(phaseShift);
+  double phiEvenOdd       = RAPT::rsDegreeToRadiant(0.5*evenOddPhaseShift);
+  double phiStereo        = RAPT::rsDegreeToRadiant(0.5*stereoPhaseShift);
+  double phiEvenOddStereo = RAPT::rsDegreeToRadiant(0.5*evenOddStereoPhaseShift);
   double evenAmp, oddAmp, phiL, phiR;
   if( evenOddRatio > 0.5 )
   {

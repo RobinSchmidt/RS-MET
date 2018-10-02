@@ -95,12 +95,12 @@ void ModulatedDelayLine::setDelayModulationDepth(double newDepth)
 
 void ModulatedDelayLine::setDelayModulationPhaseLeft(double newPhase)
 {
-  delayOscL.setStartPhase(degreeToRadiant(newPhase));
+  delayOscL.setStartPhase(RAPT::rsDegreeToRadiant(newPhase));
 }
 
 void ModulatedDelayLine::setDelayModulationPhaseRight(double newPhase)
 {
-  delayOscR.setStartPhase(degreeToRadiant(newPhase));
+  delayOscR.setStartPhase(RAPT::rsDegreeToRadiant(newPhase));
 }
 
 void ModulatedDelayLine::setDelayModulationSyncMode(bool shouldBeSynced)
@@ -125,12 +125,12 @@ void ModulatedDelayLine::setAmplitudeModulationDepth(double newDepth)
 
 void ModulatedDelayLine::setAmplitudeModulationPhaseLeft(double newPhase)
 {
-  ampOscL.setStartPhase(degreeToRadiant(newPhase));
+  ampOscL.setStartPhase(RAPT::rsDegreeToRadiant(newPhase));
 }
 
 void ModulatedDelayLine::setAmplitudeModulationPhaseRight(double newPhase)
 {
-  ampOscR.setStartPhase(degreeToRadiant(newPhase));
+  ampOscR.setStartPhase(RAPT::rsDegreeToRadiant(newPhase));
 }
 
 void ModulatedDelayLine::setAmplitudeModulationSyncMode(bool shouldBeSynced)
@@ -172,7 +172,7 @@ void ModulatedDelayLine::setupDelayModulationFrequency()
 {
   double cycleLengthInSeconds = delayModCycle;
   if( delayModSync == true )
-    cycleLengthInSeconds = beatsToSeconds(delayModCycle, bpm);
+    cycleLengthInSeconds = RAPT::rsBeatsToSeconds(delayModCycle, bpm);
   delayOscL.setFrequency(1.0/cycleLengthInSeconds);
   delayOscR.setFrequency(1.0/cycleLengthInSeconds);
 }
@@ -181,7 +181,7 @@ void ModulatedDelayLine::setupAmplitudeModulationFrequency()
 {
   double cycleLengthInSeconds = ampModCycle;
   if( ampModSync == true )
-    cycleLengthInSeconds = beatsToSeconds(ampModCycle, bpm);
+    cycleLengthInSeconds = RAPT::rsBeatsToSeconds(ampModCycle, bpm);
   ampOscL.setFrequency(1.0/cycleLengthInSeconds);
   ampOscR.setFrequency(1.0/cycleLengthInSeconds);
 }

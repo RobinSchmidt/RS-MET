@@ -136,7 +136,7 @@ namespace rosic
     }
     else if( grainLengthUnit == BEATS )
     {
-      length = 1000.0 * beatsToSeconds(grainLengthInBeats, tempoInBpm);
+      length = 1000.0 * RAPT::rsBeatsToSeconds(grainLengthInBeats, tempoInBpm);
         // shouldn't be necessarry, but leaving it out leads to harsh noise sometimes - apparently
         // when the unit changes (load preset Shimmer, hit preset-minus button while feeding
         // sound into it to reprodcue it)

@@ -30,7 +30,7 @@ void PhaseStereoizer::setSampleRate(double newSampleRate)
 
 void PhaseStereoizer::setPhaseOffset(double newPhaseOffset)
 {
-  double phi = degreeToRadiant(newPhaseOffset);
+  double phi = RAPT::rsDegreeToRadiant(newPhaseOffset);
   sinFactor  = sin(phi);
   cosFactor  = cos(phi);
 }

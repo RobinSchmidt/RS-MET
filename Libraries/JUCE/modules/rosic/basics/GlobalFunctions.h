@@ -28,13 +28,13 @@ length numValues. */
 
 /** Converts a time-stamp given in beats into seconds acording to a tempo measured in beats per
 minute (bpm). */
-INLINE double beatsToSeconds(double beat, double bpm);
+//INLINE double beatsToSeconds(double beat, double bpm);
 
 /** Converts a value in decibels to a raw amplitude value/factor. */
 //INLINE double dB2amp(double x);
 
 /** Converts an angle in degrees into radiant. */
-INLINE double degreeToRadiant(double degrees);
+//INLINE double degreeToRadiant(double degrees);
 
 /** Frees the memory associated with the pointer ans sets the poiter itself to NULL */
 //INLINE void deleteAndNullifyPointer(void *pointer);
@@ -238,24 +238,23 @@ INLINE int arrayMinIndex(T* theArray, int numValues)
   }
   return minIndex;
 }
-*/
+
 INLINE double beatsToSeconds(double beat, double bpm)
 {
   return (60.0/bpm)*beat;
 }
-/*
+
 INLINE double dB2amp(double dB)
 {
   return exp(dB * 0.11512925464970228420089957273422);
   //return pow(10.0, (0.05*dB)); // naive, inefficient version
 }
-*/
+
 INLINE double degreeToRadiant(double degrees)
 {
   return (PI/180.0)*degrees;
 }
 
-/*
 INLINE void deleteAndNullifyPointer(void *pointer)
 {
   delete pointer;

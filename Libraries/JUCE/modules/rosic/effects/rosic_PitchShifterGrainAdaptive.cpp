@@ -93,7 +93,7 @@ void PitchShifterGrainAdaptive::setGrainLengthUnit(int newUnit)
   if( grainLengthUnit == MILLISECONDS )
     PitchShifter::setGrainLength(grainLengthInMilliseconds);
   else if( grainLengthUnit == BEATS )
-    PitchShifter::setGrainLength(1000.0*beatsToSeconds(grainLengthInBeats, tempoInBpm));
+    PitchShifter::setGrainLength(1000.0*RAPT::rsBeatsToSeconds(grainLengthInBeats, tempoInBpm));
 
   // else... unit is PITCH_CYCLES -> setGrainLength will be called in getSample()
 }

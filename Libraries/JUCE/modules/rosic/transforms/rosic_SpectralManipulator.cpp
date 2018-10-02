@@ -99,7 +99,7 @@ void SpectralManipulator::applyMagnitudeRandomization(double* /*magnitudes*/, in
 
 void SpectralManipulator::applyEvenOddPhaseShift(double *phases, int length, double shiftInDegrees)
 {
-  double phi = degreeToRadiant(0.5*shiftInDegrees);
+  double phi = RAPT::rsDegreeToRadiant(0.5*shiftInDegrees);
   int k;
   for(k=1; k<length; k+=2)
     phases[k] += phi;
@@ -110,7 +110,7 @@ void SpectralManipulator::applyEvenOddPhaseShift(double *phases, int length, dou
 void SpectralManipulator::applyStereoPhaseShift(double *phasesL, double *phasesR, int length,
                                                 double shiftInDegrees)
 {
-  double phi = degreeToRadiant(0.5*shiftInDegrees);
+  double phi = RAPT::rsDegreeToRadiant(0.5*shiftInDegrees);
   int k;
   for(k=1; k<length; k+=2)
   {
@@ -122,7 +122,7 @@ void SpectralManipulator::applyStereoPhaseShift(double *phasesL, double *phasesR
 void SpectralManipulator::applyEvenOddStereoPhaseShift(double *phasesL, double *phasesR,
                                                        int length, double shiftInDegrees)
 {
-  double phi = degreeToRadiant(0.5*shiftInDegrees);
+  double phi = RAPT::rsDegreeToRadiant(0.5*shiftInDegrees);
   int k;
   for(k=1; k<length; k+=2)
   {
