@@ -54,7 +54,7 @@ void SuperOscillator::setStartPhase(double newStartPhase)
 
 void SuperOscillator::setNumVoices(int newNumVoices)
 {
-	if( isOdd(newNumVoices) ) //check, if it is an odd number - only those are allowed
+	if( RAPT::rsIsOdd(newNumVoices) ) //check, if it is an odd number - only those are allowed
 		numVoices = newNumVoices;
 	ampScale   = 1.0 / sqrt((double)numVoices);
  freqsAreDirty = true;

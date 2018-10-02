@@ -67,7 +67,7 @@ void QuadratureNetwork::updateCoefficients()
 
   // evaluate lowpass transfer function at z=1 and obtain the gain factor:
   double desiredGain = 1.0;
-  if( isEven(order) )
+  if( RAPT::rsIsEven(order) )
     desiredGain = - dB2amp(designer.getPassbandRipple());
   Complex num = 1.0;
   Complex den = 1.0;

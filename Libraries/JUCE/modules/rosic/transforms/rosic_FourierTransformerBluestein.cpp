@@ -34,7 +34,7 @@ void FourierTransformerBluestein::setBlockSize(int newBlockSize)
     N = newBlockSize;
 
     // do the preprocessing for the Bluestein algorithm only when we really need it:
-    blockSizeIsPowerOfTwo = isPowerOfTwo(N);
+    blockSizeIsPowerOfTwo = RAPT::rsIsPowerOfTwo(N);
     if( !blockSizeIsPowerOfTwo )
     {
       M = nextPowerOfTwo(2*N-1);

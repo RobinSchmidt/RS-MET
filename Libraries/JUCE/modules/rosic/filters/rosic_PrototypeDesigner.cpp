@@ -31,7 +31,7 @@ void rsPrototypeDesigner::setOrder(int newOrder)
   if( newOrder >= 1 && newOrder != N )
   {
     N = newOrder;
-    if( isOdd(N) )
+    if( RAPT::rsIsOdd(N) )
     {
       r = 1;
       L = (N-1)/2;
@@ -140,7 +140,7 @@ void rsPrototypeDesigner::setStopbandGainRatio(double newStopbandGainRatio)
 
 void rsPrototypeDesigner::getNumBiquadsAndFirstOrderStages(int N, int &L, int &r)
 {
-  if( isOdd(N) )
+  if( RAPT::rsIsOdd(N) )
   {
     r = 1;
     L = (N-1)/2;
@@ -155,7 +155,7 @@ void rsPrototypeDesigner::getNumBiquadsAndFirstOrderStages(int N, int &L, int &r
 double rsPrototypeDesigner::ellipdeg(int N, double k_1)
 {
   int L;
-  if( isEven(N) )
+  if( RAPT::rsIsEven(N) )
     L = N/2;
   else
     L = (N-1)/2;
@@ -187,7 +187,7 @@ double rsPrototypeDesigner::ellipdeg(int N, double k_1)
 double rsPrototypeDesigner::ellipdeg1(int N, double k)
 {
   int L;
-  if( isEven(N) )
+  if( RAPT::rsIsEven(N) )
     L = N/2;
   else
     L = (N-1)/2;
@@ -619,7 +619,7 @@ Complex rsPrototypeDesigner::getFilterResponseAt(Complex s)
   int     Lz, Lp;
 
   // initialize the numerator and denominator:
-  if( isOdd(numFiniteZeros) )
+  if( RAPT::rsIsOdd(numFiniteZeros) )
   {
     num = -z[L+r-1].re;
     Lz  = (numFiniteZeros-1)/2;
@@ -629,7 +629,7 @@ Complex rsPrototypeDesigner::getFilterResponseAt(Complex s)
     num = 1.0;
     Lz  = numFiniteZeros/2;
   }
-  if( isOdd(numFinitePoles) )
+  if( RAPT::rsIsOdd(numFinitePoles) )
   {
     den = -p[L+r-1].re;
     Lp  = (numFinitePoles-1)/2;
@@ -686,7 +686,7 @@ int rsPrototypeDesigner::getNumFiniteZeros()
 
 int rsPrototypeDesigner::getNumNonRedundantFinitePoles()
 {
-  if( isEven(numFinitePoles) )
+  if( RAPT::rsIsEven(numFinitePoles) )
     return numFinitePoles/2;
   else
     return (numFinitePoles+1)/2;
@@ -694,7 +694,7 @@ int rsPrototypeDesigner::getNumNonRedundantFinitePoles()
 
 int rsPrototypeDesigner::getNumNonRedundantFiniteZeros()
 {
-  if( isEven(numFiniteZeros) )
+  if( RAPT::rsIsEven(numFiniteZeros) )
     return numFiniteZeros/2;
   else
     return (numFiniteZeros+1)/2;
@@ -949,7 +949,7 @@ void rsPrototypeDesigner::makeChebychevLowShelv()
 void rsPrototypeDesigner::makeInverseChebychevLowpass()
 {
   numFinitePoles = N;
-  if( isEven(N) )
+  if( RAPT::rsIsEven(N) )
     numFiniteZeros = N;
   else
     numFiniteZeros = N-1;
@@ -1041,7 +1041,7 @@ void rsPrototypeDesigner::makeInverseChebychevLowShelv()
 void rsPrototypeDesigner::makeEllipticLowpass()
 {
   numFinitePoles = N;
-  if( isEven(N) )
+  if( RAPT::rsIsEven(N) )
     numFiniteZeros = N;
   else
     numFiniteZeros = N-1;

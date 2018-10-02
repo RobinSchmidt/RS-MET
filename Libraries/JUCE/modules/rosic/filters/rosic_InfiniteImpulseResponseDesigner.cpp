@@ -110,7 +110,7 @@ int rsInfiniteImpulseResponseDesigner::getFinalFilterOrder()
 int rsInfiniteImpulseResponseDesigner::getNumBiquadStages()
 {
   int order = getFinalFilterOrder();
-  if( isEven(order) )
+  if( RAPT::rsIsEven(order) )
     return order/2;
   else
     return (order+1)/2;
@@ -262,7 +262,7 @@ void rsInfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex
 
   // because the PrototypeDesigner returns only one representant for each pair of complex 
   // conjugate poles/zeros, we now create the full set here:
-  if( isOdd(prototypeOrder) )
+  if( RAPT::rsIsOdd(prototypeOrder) )
   {
     // copy the real pole/zero to the end:
     protoPoles[prototypeOrder-1] = poles[prototypeOrder/2];
@@ -318,7 +318,7 @@ void rsInfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0,
   else
     finalOrder = prototypeOrder;
 
-  if( isEven(finalOrder) )
+  if( RAPT::rsIsEven(finalOrder) )
     numBiquads = finalOrder/2;
   else
     numBiquads = (finalOrder+1)/2;
@@ -327,7 +327,7 @@ void rsInfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0,
   if( mode == LOW_SHELV || mode == HIGH_SHELV || mode == PEAK || mode == BYPASS )
   {
     prototypeDesigner.setPrototypeMode(rsPrototypeDesigner::LOWSHELV_PROTOTYPE);
-    if( isCloseTo(gain, 0.0, 0.001) || mode == BYPASS ) // gains of zero yield a 'bypass' filter
+    if( RAPT::rsIsCloseTo(gain, 0.0, 0.001) || mode == BYPASS ) // gains of zero yield a 'bypass' filter
     {
       for(int b = 0; b < numBiquads; b++) // msvc gives an "unreachable code" warning here - but
       {                                   // the code is definitely reachable...hmmm
@@ -429,7 +429,7 @@ void rsInfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, do
     if(  prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::INVERSE_CHEBYCHEV
       || prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::ELLIPTIC )
     {
-      if( isEven(prototypeDesigner.getOrder()) )
+      if( RAPT::rsIsEven(prototypeDesigner.getOrder()) )
       {
         double factor   = 1.0-prototypeDesigner.getPassbandGainRatio();
         double excessDb = -factor * gain;
@@ -442,7 +442,7 @@ void rsInfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, do
     if(  prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::CHEBYCHEV
       || prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::ELLIPTIC )
     {
-      if( isEven(prototypeDesigner.getOrder()) )
+      if( RAPT::rsIsEven(prototypeDesigner.getOrder()) )
       {
         normalizeFactor = 1.0 / dB2amp(prototypeDesigner.getPassbandRipple());
         if( doesModeDoubleTheOrder() )

@@ -104,7 +104,7 @@ void FiniteImpulseResponseDesigner::getImpulseResponse(double *impulseResponse, 
 
 void FiniteImpulseResponseDesigner::getLowpassResponse(double *impulseResponse, int length, double omega, int windowType)
 {
-  rassert( length >= 1 && isOdd(length) ); // only odd lengths are supported
+  rassert( length >= 1 && RAPT::rsIsOdd(length) ); // only odd lengths are supported
 
   // we use a similar naming-convention as in the eq. 16-4 in dspguide, page 290:
   double *h  = impulseResponse;
@@ -169,7 +169,7 @@ void FiniteImpulseResponseDesigner::getDifferentiatorResponse(double *impulseRes
 
 void FiniteImpulseResponseDesigner::getHilbertTransformerResponse(double *impulseResponse, int length, int windowType)
 {
-  rassert( isOdd(length) ); // only odd lengths supported
+  rassert( RAPT::rsIsOdd(length) ); // only odd lengths supported
 
   double *h   = impulseResponse;
   double gain = 2.0/PI; 
@@ -178,7 +178,7 @@ void FiniteImpulseResponseDesigner::getHilbertTransformerResponse(double *impuls
 
   for(int i=M2; i<length; i++)
   {
-    if( isEven(i-M2) )  
+    if( RAPT::rsIsEven(i-M2) )  
     {
       h[i]         = 0;
       h[M2-(i-M2)] = 0;
@@ -195,7 +195,7 @@ void FiniteImpulseResponseDesigner::getHilbertTransformerResponse(double *impuls
 
 void FiniteImpulseResponseDesigner::spectralInversion(double *impulseResponse, int length)
 {
-  rassert( isOdd(length) ); // spectral inversion works only for odd lengths
+  rassert( RAPT::rsIsOdd(length) ); // spectral inversion works only for odd lengths
   for(int i=0; i<length; i++)
     impulseResponse[i] = -impulseResponse[i];
   impulseResponse[(length-1)/2] += 1.0;

@@ -49,7 +49,7 @@ void rsBiquadCascade::setNumStages(int newNumStages)
 
 void rsBiquadCascade::setOrder(int newOrder)
 {
-  if( isEven(newOrder) )
+  if( RAPT::rsIsEven(newOrder) )
     setNumStages(newOrder/2);
   else
     setNumStages( (newOrder+1)/2 );

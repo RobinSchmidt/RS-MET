@@ -55,7 +55,7 @@ bool rosic::solveLinearSystemInPlace(double** A, double* x, double* b, int N)
         p       = j;
       }
     }
-    if( isCloseTo(biggest, 0.0, 1.e-12) )
+    if( RAPT::rsIsCloseTo(biggest, 0.0, 1.e-12) )
     {
       matrixIsSingular = true;
       DEBUG_BREAK; 
@@ -151,7 +151,7 @@ bool rosic::invertMatrix(double** A, int N)
         p       = j;
       }
     }
-    if( isCloseTo(biggest, 0.0, 1.e-12) )
+    if( RAPT::rsIsCloseTo(biggest, 0.0, 1.e-12) )
     {
       matrixIsSingular = true;
       DEBUG_BREAK; 

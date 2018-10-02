@@ -73,30 +73,30 @@ the range 0...1. */
 INLINE float indexToNormalizedValue(int index, int numIndices);
 
 /** Checks, if x is close to some target-value within some tolerance. */
-INLINE bool isCloseTo(double x, double targetValue, double tolerance);
+//INLINE bool isCloseTo(double x, double targetValue, double tolerance);
 
 /** Checks, if x is even. */
-INLINE bool isEven(int x);
+//INLINE bool isEven(int x);
 
 /** Returns true, if x is not-a-number, false otherwise. */
-INLINE bool isNaN(double x)
-{
-  return !(x == x);
-  // comparison of a NaN to any number (including NaN itself) always returns false, so x == x 
-  // will return false if (and only if) x is NaN
-}
+//INLINE bool isNaN(double x)
+//{
+//  return !(x == x);
+//  // comparison of a NaN to any number (including NaN itself) always returns false, so x == x 
+//  // will return false if (and only if) x is NaN
+//}
 
 /** Checks, if x is odd. */
-INLINE bool isOdd(int x);
+//INLINE bool isOdd(int x);
 
 /** Checks, if x is a power of 2. */
-INLINE bool isPowerOfTwo(unsigned int x);
+//INLINE bool isPowerOfTwo(unsigned int x);
 
 /** Calculates the logarithm to base 2. */
-INLINE double log2(double x);
+//INLINE double log2(double x);
 
 /** Calculates logarithm to an arbitrary base b. */
-INLINE double logB(double x, double b);
+//INLINE double logB(double x, double b);
 
 /** Converts a value between inMin and inMax into a value between outMin and outMax where the
 mapping is linear for the input and the output. Example: y = linToLin(x, 0.0, 1.0, -96.0, 24.0)
@@ -110,19 +110,19 @@ mapping of the output is exponential. Example: y = linToExp(x, 0.0, 1.0, 20.0, 2
 the input x assumed to lie inside 0.0...1.0 to the range between 20.0...20000.0 where equal
 differences in the input lead to equal factors in the output. Make sure that the outMin value is
 greater than zero! */
-INLINE double linToExp(double in, double inMin, double inMax, double outMin, double outMax);
+//INLINE double linToExp(double in, double inMin, double inMax, double outMin, double outMax);
 
 /** Same as linToExp but adds an offset afterwards and compensates for that offset by scaling the
 offsetted value so as to hit the outMax correctly. */
-INLINE double linToExpWithOffset(double in, double inMin, double inMax, double outMin,
-  double outMax, double offset = 0.0);
+//INLINE double linToExpWithOffset(double in, double inMin, double inMax, double outMin,
+//  double outMax, double offset = 0.0);
 
 /** The Inverse of "linToExp" */
-INLINE double expToLin(double in, double inMin, double inMax, double outMin, double outMax);
+//INLINE double expToLin(double in, double inMin, double inMax, double outMin, double outMax);
 
 /** The Inverse of "linToExpWithOffset" */
-INLINE double expToLinWithOffset(double in, double inMin, double inMax, double outMin,
-  double outMax, double offset = 0.0);
+//INLINE double expToLinWithOffset(double in, double inMin, double inMax, double outMin,
+//  double outMax, double offset = 0.0);
 
 /** Returns a power of two which is greater than or equal to the input argument. */
 template <class T>
@@ -310,6 +310,7 @@ INLINE float indexToNormalizedValue(int index, int numIndices)
   return (float)(2*index+1) / (float)(2*numIndices);
 }
 
+/*
 INLINE bool isCloseTo(double x, double targetValue, double tolerance)
 {
   if(fabs(x-targetValue) <= tolerance)
@@ -355,7 +356,7 @@ INLINE double logB(double x, double b)
 {
   return log(x)/log(b);
 }
-/*
+
 INLINE double linToLin(double in, double inMin, double inMax, double outMin, double outMax)
 {
   // map input to the range 0.0...1.0:
@@ -367,7 +368,7 @@ INLINE double linToLin(double in, double inMin, double inMax, double outMin, dou
 
   return tmp;
 }
-*/
+
 INLINE double linToExp(double in, double inMin, double inMax, double outMin, double outMax)
 {
   // map input to the range 0.0...1.0:
@@ -399,13 +400,12 @@ INLINE double expToLinWithOffset(double in, double inMin, double inMax, double o
   double tmp = in*(inMax+offset)/inMax;
   tmp -= offset;
   return expToLin(tmp, inMin, inMax, outMin, outMax);
-  /*
-  double tmp = linToExp(in, inMin, inMax, outMin, outMax);
-  tmp += offset;
-  tmp *= outMax/(outMax+offset);
-  return tmp;
-  */
+  //double tmp = linToExp(in, inMin, inMax, outMin, outMax);
+  //tmp += offset;
+  //tmp *= outMax/(outMax+offset);
+  //return tmp;
 }
+*/
 
 template <class T>
 INLINE T nextPowerOfTwo(T x)

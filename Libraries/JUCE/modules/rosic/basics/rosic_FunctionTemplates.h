@@ -918,7 +918,7 @@ namespace rosic
 
     std::sort(tmpBuffer, &tmpBuffer[length]);
     T med;
-    if( isOdd(length) )
+    if( RAPT::rsIsOdd(length) )
       med = tmpBuffer[(length-1)/2];
     else
       med = (T) ( 0.5 * ( tmpBuffer[length/2] + tmpBuffer[length/2-1] ) );

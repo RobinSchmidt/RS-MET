@@ -332,7 +332,7 @@ void rsString::initFromDoubleValue(double doubleValue)
     *this = rsString("-INF");
     return;
   }
-  else if( isNaN(doubleValue) )
+  else if( RAPT::rsIsNaN(doubleValue) )
   {
     *this = rsString("NaN");
     return;

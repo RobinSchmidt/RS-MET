@@ -103,7 +103,7 @@ void rsPoleZeroMapper::sLowpassToHighpass(Complex *z,    Complex *p,    double *
   // sign-factor: kNew = k * (-1)^(length(p) + length(z)) * prod(z) / prod(p);
   // ..or maybe not? ..consult octave/matlab implementation
   int nz = getNumFiniteValues(z, N);
-  if( isOdd(N+nz) )
+  if( RAPT::rsIsOdd(N+nz) )
     *kNew = - *kNew;
 }
 
@@ -180,7 +180,7 @@ void rsPoleZeroMapper::sLowpassToBandreject(Complex *z,    Complex *p,    double
 
   // sign-factor - see m-file: kNew = k * (-1)^(length(p) + length(z)) * prod(z) / prod(p);
   int nz = getNumFiniteValues(z, N);
-  if( isOdd(N+nz) )
+  if( RAPT::rsIsOdd(N+nz) )
     *kNew = - *kNew;
 }
 

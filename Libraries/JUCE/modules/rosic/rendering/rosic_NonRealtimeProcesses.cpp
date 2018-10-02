@@ -151,7 +151,7 @@ void rosic::synthesizeModalPluckedString(double *x, int N, double frequency, dou
     d.v[m] = d0 / pow(h, decayExponent);
     p.v[m] = phase;
     a.v[m] = 1  / pow(h, amplitudeExponent);
-    if( isEven((int)h) )
+    if( RAPT::rsIsEven((int)h) )
       a.v[m] *= evenAmplitudeScaler;
     if( f.v[m] > 0.5*sampleRate ) // could happen due to inharmonicity
       a.v[m] = 0.0;
@@ -389,7 +389,7 @@ void rosic::fftMagnitudesAndPhases(double *signalBlock, int blockSize, double *m
   Complex *spectrum = new Complex[fftSize];
   fft(signalBlock, blockSize, spectrum, fftSize);
   int kMax;
-  if( isEven(fftSize) )
+  if( RAPT::rsIsEven(fftSize) )
     kMax = fftSize/2;
   else
     kMax = (fftSize-1)/2;
@@ -434,7 +434,7 @@ void rosic::minimumPhaseReconstruction(double *input, int numSamples, double *ou
   // apply cepstral window to make the cepstrum causal (left-to-zero indices are reflected into the
   // second half of the buffer):
   int n;
-  if( isEven(N) )
+  if( RAPT::rsIsEven(N) )
   {
     for(n = 1; n < N/2; n++)
       c[n] *= 2;

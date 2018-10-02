@@ -49,7 +49,7 @@ void DampingFilter::setSampleRate(double newSampleRate)
 
 void DampingFilter::setGlobalGainFactor(double newGlobalGainFactor)
 {
-  if( isNaN(newGlobalGainFactor) )
+  if( RAPT::rsIsNaN(newGlobalGainFactor) )
     DEBUG_BREAK;
 
   globalGainFactor = newGlobalGainFactor;
@@ -260,7 +260,8 @@ void DampingFilter::calculateCoefficients()
   // output samples
 
 
-  if( isNaN(b0) || isNaN(b1) || isNaN(b2) || isNaN(a1) || isNaN(a2) )
+  if( RAPT::rsIsNaN(b0) || RAPT::rsIsNaN(b1) || RAPT::rsIsNaN(b2) || RAPT::rsIsNaN(a1) 
+    || RAPT::rsIsNaN(a2) )
     DEBUG_BREAK;
 
   /*

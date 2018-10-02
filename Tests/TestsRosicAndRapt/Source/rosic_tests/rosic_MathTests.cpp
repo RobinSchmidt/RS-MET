@@ -58,12 +58,12 @@ bool rotes::testCubicCoeffsTwoPointsAndDerivatives()
   double tol = 1.e-14;  // tolerance
 
   RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x[0], a, 3, &yc, &dyc);
-  result &= isCloseTo( yc,  y[0], tol);
-  result &= isCloseTo(dyc, dy[0], tol);
+  result &= RAPT::rsIsCloseTo( yc,  y[0], tol);
+  result &= RAPT::rsIsCloseTo(dyc, dy[0], tol);
 
   RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x[1], a, 3, &yc, &dyc);
-  result &= isCloseTo( yc,  y[1], tol);
-  result &= isCloseTo(dyc, dy[1], tol);
+  result &= RAPT::rsIsCloseTo( yc,  y[1], tol);
+  result &= RAPT::rsIsCloseTo(dyc, dy[1], tol);
 
   return result;
 }
@@ -196,7 +196,7 @@ bool rotes::testPolynomialIntegrationWithPolynomialLimits()
   RAPT::rsPolynomial<double>::integratePolynomialWithPolynomialLimits(p, np, a, na, b, nb, q);
   y2 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, q, nq);
 
-  result &= isCloseTo(y2, y1, 1.e-13 * fabs(y1));
+  result &= RAPT::rsIsCloseTo(y2, y1, 1.e-13 * fabs(y1));
 
   return result;
 }

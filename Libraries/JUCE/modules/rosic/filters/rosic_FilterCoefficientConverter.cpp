@@ -94,7 +94,7 @@ void rsFilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, 
     order -= 1;
 
   int numBiquads;
-  if(isEven(order))
+  if(RAPT::rsIsEven(order))
     numBiquads = order/2;
   else
     numBiquads = (order+1)/2;
@@ -123,7 +123,7 @@ void rsFilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, 
   int order, double *b0, double *b1, double *b2, double *a1, double *a2)
 {
   int numBiquads;
-  if(isEven(order))
+  if(RAPT::rsIsEven(order))
     numBiquads = order/2;
   else
     numBiquads = (order+1)/2;
@@ -147,7 +147,7 @@ void rsFilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, 
   }
 
   // overwrite the coefficients of the last stage, when it must be a first order stage:
-  if(isOdd(order))
+  if(RAPT::rsIsOdd(order))
   {
     b0[b]            = 1.0;
     b1[numBiquads-1] = -zeros[order-1].re;

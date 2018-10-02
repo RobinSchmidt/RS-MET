@@ -108,8 +108,8 @@ bool testInOutEqual(Effect& eff, int numSamples, double tolerance)
     yL = xL = ng.getSample();
     yR = xR = ng.getSample();
     eff.getSampleFrameStereo(&yL, &yR);
-    result &= isCloseTo(yL, xL, tolerance);
-    result &= isCloseTo(yR, xR, tolerance);
+    result &= RAPT::rsIsCloseTo(yL, xL, tolerance);
+    result &= RAPT::rsIsCloseTo(yR, xR, tolerance);
     rsAssert(result == true);
   }
   return result;

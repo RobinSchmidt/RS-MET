@@ -33,7 +33,7 @@ FourierTransformerRadix2::~FourierTransformerRadix2()
 void FourierTransformerRadix2::setBlockSize(int newBlockSize)
 {
   // check new blocksize for validity:
-  if( newBlockSize >= 2 && isPowerOfTwo(newBlockSize) )
+  if( newBlockSize >= 2 && RAPT::rsIsPowerOfTwo(newBlockSize) )
   {
     // check, if the new blocksize is actually different from the old one in order to avoid
     // unnecesarry re-allocations and re-computations:
@@ -57,7 +57,7 @@ void FourierTransformerRadix2::setBlockSize(int newBlockSize)
       tmpBuffer = new Complex[N];
     }
   }
-  else if( !isPowerOfTwo(newBlockSize) || newBlockSize <= 1 )
+  else if( !RAPT::rsIsPowerOfTwo(newBlockSize) || newBlockSize <= 1 )
     DEBUG_BREAK; // this class can only deal with blocksizes >= 2 that are a power of two
 }
 

@@ -53,7 +53,7 @@ void SpectrumAnalyzer::setSampleRate(double newSampleRate)
 void SpectrumAnalyzer::setBlockSize(int newBlockSize)
 {
   // check new blocksize for validity:
-  if( newBlockSize >= 2 && isPowerOfTwo(newBlockSize) )
+  if( newBlockSize >= 2 && RAPT::rsIsPowerOfTwo(newBlockSize) )
   {
     blockSize = newBlockSize;
     fftSize   = blockSize;

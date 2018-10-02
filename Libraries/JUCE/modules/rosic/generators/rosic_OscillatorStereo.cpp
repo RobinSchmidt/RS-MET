@@ -517,7 +517,7 @@ void OscillatorStereo::getWaveformForDisplay(double **targetBuffer, int numSampl
   }
 
   // in case of odd display-widths, we need to repeat the pre-final value (otherwise a zero will result as final value):
-  if( isOdd(numSamplesToShow) )
+  if( RAPT::rsIsOdd(numSamplesToShow) )
   {
     targetBuffer[0][numSamplesToShow-1] = targetBuffer[0][numSamplesToShow-2];
     targetBuffer[1][numSamplesToShow-1] = targetBuffer[1][numSamplesToShow-2];

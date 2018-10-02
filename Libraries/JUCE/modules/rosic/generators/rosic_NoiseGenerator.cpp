@@ -57,7 +57,7 @@ void NoiseGenerator::setSharedMemoryAreaToUse(void *startAddress, int sizeInByte
   int sampleSizeInBytes = sizeof(double);
 
   length = sizeInBytes/sampleSizeInBytes; 
-  if( !isPowerOfTwo(length) )
+  if( !RAPT::rsIsPowerOfTwo(length) )
     length = nextPowerOfTwo(length) / 2;  // power of 2 and <= available space
   
   buffer = (double*) startAddress;

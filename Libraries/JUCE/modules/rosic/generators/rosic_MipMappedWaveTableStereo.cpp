@@ -365,7 +365,7 @@ void MipMappedWaveTableStereo::renderMipMap()
 
   // calculate the number of FFT-bins to fill (including the redundant bins):
   int m = rmin(prototypeWaveNumSamples, tableLength);
-  if( isOdd(m) )
+  if( RAPT::rsIsOdd(m) )
     m -= 1;
 
   // convert the real/imaginary representation of the spectrum into magnitude/phase and find the
@@ -423,7 +423,7 @@ void MipMappedWaveTableStereo::renderMipMap()
 
     // calculate weight for the magnitude at this bin:
     weight = contrastNormalizer * slopeNormalizer * dB2amp(spectralSlope*log2(k));
-    if( isEven(k) )
+    if( RAPT::rsIsEven(k) )
     {
       weight *= evenAmp;
       phiL    = phiEvenOdd - phiStereo - phiEvenOddStereo;
