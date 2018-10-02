@@ -102,7 +102,7 @@ void initializeInputSequences()
 
   int v, c, n;
 
-  randomUniform(-1.0, 1.0, 1);
+  RAPT::rsRandomUniform(-1.0, 1.0, 1);
 
   for(v = 0; v < maxNumVoices; v++)
   {
@@ -110,7 +110,7 @@ void initializeInputSequences()
     {
       for(n = 0; n < maxNumFrames; n++)
       {
-        x[v][c][n] = randomUniform(-1.0, 1.0);
+        x[v][c][n] = RAPT::rsRandomUniform(-1.0, 1.0);
         y[v][c][n] = 0.0;
         d[v][c][n] = 0.0;
       }
@@ -193,9 +193,9 @@ void generateImpulse(int N, double *x)
 
 void generateRandomSequence(int N, double *x, double xMin, double xMax, int seed)
 {
-  x[0] = randomUniform(xMin, xMax, seed);
+  x[0] = RAPT::rsRandomUniform(xMin, xMax, seed);
   for(int n = 1; n < N; n++)
-    x[n] = randomUniform(xMin, xMax);
+    x[n] = RAPT::rsRandomUniform(xMin, xMax);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -338,11 +338,11 @@ bool checkBlockProcessingAndPrintResult(romos::Module *module, double ***x, doub
 
   // now the actual block processing test with different (randomized) number of frames per block:
   module->resetStateForAllVoices();
-  randomUniform(0.0, 1.0, 7); // seed for the total number of samples
+  RAPT::rsRandomUniform(0.0, 1.0, 7); // seed for the total number of samples
   for(int i=1; i<=numTests; i++)
   {
     generateSilence(module->getNumOutputPins(), maxNumFramesToProcess, y[0]);
-    int numFramesToProcess = (int) randomUniform(0.01*maxNumFramesToProcess, maxNumFramesToProcess, -1);  // total number of samples to process
+    int numFramesToProcess = (int) RAPT::rsRandomUniform(0.01*maxNumFramesToProcess, maxNumFramesToProcess, -1);  // total number of samples to process
     module->resetStateForAllVoices();
     processModuleInBlocks(module, numFramesToProcess, x, y, NULL, false);
     resultCorrect = checkResult(y[0], d[0], module->getNumOutputPins(), numFramesToProcess, tolerance);
@@ -604,7 +604,7 @@ void processModuleInBlocksNoEvents(romos::Module *module, int numFrames, double 
   int blockStart   = startIndex;
   while( blockStart < startIndex + numFrames )
   {
-    int blockSize = (int) ::round(randomUniform(1.0, maxBlockSize));
+    int blockSize = (int) ::round(RAPT::rsRandomUniform(1.0, maxBlockSize));
     if( blockStart + blockSize > startIndex + numFrames )
       blockSize = startIndex + numFrames - blockStart;
     processBlock(module, inputs, outputs, blockStart, blockSize);

@@ -174,7 +174,7 @@ namespace rosic
       for(int r=0; r<numRows; r++)
       {
         for(int c=0; c<numColumns; c++)
-          m[r][c] = randomUniform(min, max);
+          m[r][c] = RAPT::rsRandomUniform(min, max);
       }
     }
 

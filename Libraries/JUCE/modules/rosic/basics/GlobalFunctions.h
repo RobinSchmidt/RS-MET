@@ -151,13 +151,13 @@ underlying integer pseudo random number generator is a linear congruential with 
 first call to initialize it - otherwise it will use 0 as seed. A negative number (as in the default
 argument) will indicate to not initialize the state and just generate a random number based on the
 last state (which is the case for a typical call). */
-INLINE double randomUniform(double min = 0.0, double max = 1.0, int seed = -1);
+//INLINE double randomUniform(double min = 0.0, double max = 1.0, int seed = -1);
 
 /** Returns the nearest integer (as double, without typecast). */
-INLINE double round(double x);
+//INLINE double round(double x);
 
 /** Converts a time value in seconds into a time value measured in beats. */
-INLINE double secondsToBeats(double timeInSeconds, double bpm);
+//INLINE double secondsToBeats(double timeInSeconds, double bpm);
 
 /** Returns the sign of x as double. */
 INLINE double sign(double x);
@@ -170,6 +170,7 @@ INLINE double wholeNotesToSeconds(double noteValue, double bpm);
 INLINE double wrapAround(double numberToWrap, double length);
 
 /** This function should be called on program startup when automatic detection of memory leaks should be turned on. */
+/*
 inline void checkForMemoryLeaksOnExit()
 {
 #if defined _MSC_VER
@@ -180,7 +181,6 @@ inline void checkForMemoryLeaksOnExit()
 #endif
 }
 
-
 inline bool detectMemoryLeaks()
 {
 #ifdef _MSC_VER 
@@ -189,7 +189,7 @@ inline bool detectMemoryLeaks()
   return false;
 #endif
 }
-
+*/
 //=================================================================================================
 //implementation:
 /*
@@ -431,7 +431,7 @@ INLINE double radiantToDegree(double radiant)
 {
   return (180.0/PI)*radiant;
 }
-*/
+
 INLINE double randomUniform(double min, double max, int seed)
 {
   static unsigned long state = 0;
@@ -440,7 +440,7 @@ INLINE double randomUniform(double min, double max, int seed)
   state = 1664525*state + 1013904223;                    // mod implicitely by integer overflow
   return min + (max-min) * ((1.0/4294967296.0) * state); // transform to desired range
 }
-
+*/
 INLINE double round(double x)
 {
   if(x-floor(x) >= 0.5)
@@ -448,12 +448,12 @@ INLINE double round(double x)
   else
     return floor(x);
 }
-
+/*
 INLINE double secondsToBeats(double timeInSeconds, double bpm)
 {
   return timeInSeconds*(bpm/60.0);
 }
-
+*/
 INLINE double sign(double x)
 {
   if(x<0)

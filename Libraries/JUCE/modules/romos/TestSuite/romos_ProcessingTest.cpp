@@ -149,14 +149,14 @@ bool ProcessingTest::doOutputsMatchDesiredOutputs(bool polyphonic)
 
 void ProcessingTest::fillInputSignalArraysRandomly(int seed)
 {
-  randomUniform(-1.0, 1.0, seed);
+  RAPT::rsRandomUniform(-1.0, 1.0, seed);
   for(int voiceIndex = 0; voiceIndex < maxNumVoices; voiceIndex++)
   {
     for(int pinIndex = 0; pinIndex < maxNumInputs; pinIndex++)
     {
       for(int frameIndex = 0; frameIndex < maxNumFrames; frameIndex++)
       {
-        inputs[voiceIndex][pinIndex][frameIndex] = randomUniform(-1.0, 1.0);
+        inputs[voiceIndex][pinIndex][frameIndex] = RAPT::rsRandomUniform(-1.0, 1.0);
       }
     }
   }
@@ -285,7 +285,7 @@ void ProcessingTest::processModuleInBlocksNoEvents(int numFrames, int startIndex
   int endIndex     = rmin(startIndex + numFrames - 1, numFramesToProcess - 1);
   while( blockStart <= endIndex )
   {
-    int blockSize = (int) ::round(randomUniform(1.0, maxBlockSize));
+    int blockSize = (int) ::round(RAPT::rsRandomUniform(1.0, maxBlockSize));
     if( blockStart + blockSize > endIndex + 1 )
       blockSize = endIndex - blockStart + 1;
     processBlock(blockStart, blockSize);

@@ -218,12 +218,12 @@ void rotes::testPolynomialRootFinder()
   Complex rTrue[maxN];   // true roots
   Complex rFound[maxN];  // roots that were found
   bool result = true;    // if this is still true at the end of the function, the test has passed
-  randomUniform(-range, range, 0);  // set seed
+  RAPT::rsRandomUniform(-range, range, 0);  // set seed
   int i, j, k;
   for(i = 1; i <= numTests; i++)
   {
     // polynomial order for this test:
-    int N = (int) randomUniform(1.0, maxN);
+    int N = (int) RAPT::rsRandomUniform(1.0, maxN);
 
     // generate a bunch of random roots:
     for(k = 0; k < N; k++)

@@ -90,11 +90,11 @@ bool ModularSystemTest::doOutputsMatchDesiredOutputs()
 
 void ModularSystemTest::fillInputSignalArraysRandomly(int seed)
 {
-  randomUniform(-1.0, 1.0, seed);
+  RAPT::rsRandomUniform(-1.0, 1.0, seed);
   for(int channelIndex = 0; channelIndex < numInputChannels; channelIndex++)
   {
     for(int frameIndex = 0; frameIndex < signalLength; frameIndex++)
-      inputs[channelIndex][frameIndex] = randomUniform(-1.0, 1.0); 
+      inputs[channelIndex][frameIndex] = RAPT::rsRandomUniform(-1.0, 1.0); 
   }
 
   rosic::convertBuffer(inputs[0], inputsFloat[0], signalLength);

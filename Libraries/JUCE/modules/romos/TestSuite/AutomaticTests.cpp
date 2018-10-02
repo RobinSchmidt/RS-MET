@@ -20,13 +20,13 @@ bool testSorting(bool verboseOutput)
 
   unsigned int i;
   int x, y;
-  randomUniform((double) xMin, (double) xMax, 1);
+  RAPT::rsRandomUniform((double) xMin, (double) xMax, 1);
   for(i = 0; i < numChildrenToCreate; i++)
   {
     //romos::Module *childModule = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
     romos::Module *childModule = moduleFactory.createModule("UnitDelay");
-    x = (int) randomUniform((double) xMin, (double) xMax);
-    y = (int) randomUniform((double) yMin, (double) yMax);
+    x = (int) RAPT::rsRandomUniform((double) xMin, (double) xMax);
+    y = (int) RAPT::rsRandomUniform((double) yMin, (double) yMax);
     childModule->setModuleName(rosic::rsString("Delay ") + rosic::rsString((int)i)); // to keep track of insertion order
     childModule->setPositionXY(x, y);
     testModule->addChildModule(childModule, false);

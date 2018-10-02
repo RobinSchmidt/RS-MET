@@ -103,7 +103,7 @@ void FractionalDelayLine::setupDelayInSamples()
   // update member delayTime to the clipped value:
   delayInSeconds = delayInSamples / sampleRate;   
   if( tempoSync )
-    delayTime = secondsToBeats(delayInSeconds, bpm);
+    delayTime = RAPT::rsSecondsToBeats(delayInSeconds, bpm);
   else
     delayTime = delayInSeconds;
 

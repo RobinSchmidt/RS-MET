@@ -261,7 +261,7 @@ namespace rosic
     void randomizeElements(double min, double max)
     {
       for(int i=0; i<dim; i++)    
-        v[i] = randomUniform(min, max);
+        v[i] = RAPT::rsRandomUniform(min, max);
     }
 
     /** Initializes the values of the vector with all zeros. */

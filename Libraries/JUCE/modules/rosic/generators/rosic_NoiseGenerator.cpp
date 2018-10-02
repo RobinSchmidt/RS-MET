@@ -140,12 +140,12 @@ void NoiseGenerator::createNoiseSequence()
   magnitudes[0]      = 0.0;
   phases[0]          = 0.0;
 
-  randomUniform(0.0, 1.0, seed);  // init random number generator
+  RAPT::rsRandomUniform(0.0, 1.0, seed);  // init random number generator
   int k;
   for(k=1; k<length/2; k++)
   {
     magnitudes[k] = RAPT::rsDbToAmp(slope*log2(k));
-    phases[k]     = randomUniform(0.0, 2.0*PI);
+    phases[k]     = RAPT::rsRandomUniform(0.0, 2.0*PI);
   }
 
   // zero out the magnitudes below the lowest frequency and above the highest frequency:

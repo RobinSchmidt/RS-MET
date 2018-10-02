@@ -87,7 +87,7 @@ void SpectralManipulator::applyEvenOddBalance(double *magnitudes, int length, do
 void SpectralManipulator::applyMagnitudeRandomization(double* /*magnitudes*/, int /*length*/,
                                                       double /*amount*/, int seed)
 {
-  randomUniform(0.0, 1.0, seed);
+  RAPT::rsRandomUniform(0.0, 1.0, seed);
   // \todo: write a class for this PNRG and create an instance on the stack here to make it
   // thread-safe (i.e. avoid that other threads spoil the state of PNRG during we are using it. */
 
