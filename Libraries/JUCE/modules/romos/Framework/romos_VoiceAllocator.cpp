@@ -95,7 +95,7 @@ int VoiceAllocator::noteOn(int key, int velocity)
     movePlayingVoiceToBottom(playingIndex);
 
   voiceStates[voiceToUse].key                = key;
-  voiceStates[voiceToUse].frequency          = pitchToFreq(key);  // preliminary - use tuning tables later
+  voiceStates[voiceToUse].frequency          = RAPT::rsPitchToFreq(key);  // preliminary - use tuning tables later
   voiceStates[voiceToUse].normalizedVelocity = velocity / 127.0;  
   voiceStates[voiceToUse].isPlaying          = true;
 

@@ -20,7 +20,7 @@ public:
   /** Sets a detuning in semitones. */
   inline void setDetune(double newDetune) 
   { 
-    tuneFactor = pitchOffsetToFreqFactor(newDetune); 
+    tuneFactor = RAPT::rsPitchOffsetToFreqFactor(newDetune); 
     updateOmega(); 
   }
 

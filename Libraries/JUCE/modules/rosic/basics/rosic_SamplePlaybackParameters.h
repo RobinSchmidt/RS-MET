@@ -309,7 +309,7 @@ namespace rosic
 
     /** @see setFundamentalFrequency() */
     //double getFundamentalFrequency() const { return pitchToFreq(rootKey+0.01*rootDetune); }
-    double getFundamentalFrequency() const { return pitchToFreq(rootKey); }
+    double getFundamentalFrequency() const { return RAPT::rsPitchToFreq(rootKey); }
 
     /** @see setSampleName() */
     char* getSampleName() const { return sampleName; }

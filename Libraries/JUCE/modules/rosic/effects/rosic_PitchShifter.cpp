@@ -186,7 +186,7 @@ void PitchShifter::updateIncrement()
   double detune    = detuneCoarse + 0.01*detuneFine;
 
   // calculate, to which tap-increment this corresponds:
-  double increment = pitchOffsetToFreqFactor(detune);
+  double increment = RAPT::rsPitchOffsetToFreqFactor(detune);
 
   // the difference between the hypotheticial increment for the read pointers and a unit increment
   // (which the write pointer has) gives the increment for the distance between the read and write

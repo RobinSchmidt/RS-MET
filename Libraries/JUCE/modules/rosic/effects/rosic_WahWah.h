@@ -100,8 +100,8 @@ namespace rosic
     //double pitchL = pitch + 0.5*depth*lfoL.getSample();
     //double pitchR = pitch + 0.5*depth*lfoR.getSample();
 
-    filterL.setFrequency(pitchToFreq(pitchL));
-    filterR.setFrequency(pitchToFreq(pitchR));
+    filterL.setFrequency(RAPT::rsPitchToFreq(pitchL));
+    filterR.setFrequency(RAPT::rsPitchToFreq(pitchR));
 
     double tmpL = filterL.getSample(*inOutL);
     double tmpR = filterR.getSample(*inOutR);

@@ -89,7 +89,7 @@ void PolyphonicInstrumentVoice::setPitchWheelRange(double newRange)
 {
   if( newRange >= 0.0 )
     pitchBendRange = newRange;
-  pitchBendFactor = pitchOffsetToFreqFactor(pitchBendRange*pitchBend);
+  pitchBendFactor = RAPT::rsPitchOffsetToFreqFactor(pitchBendRange*pitchBend);
 }
 
 void PolyphonicInstrumentVoice::setGlideTime(double newGlideTime)
@@ -338,7 +338,7 @@ void PolyphonicInstrumentVoice::glideToNote(int newKey, int newVelocity, int new
   {
     // calculate frequency multiplier per sample (multiplication is done in getSample)
     pitchIncPerSample   = pitchDelta / (double) remainingGlideSamples;
-    freqFactorPerSample = pitchOffsetToFreqFactor(pitchIncPerSample);
+    freqFactorPerSample = RAPT::rsPitchOffsetToFreqFactor(pitchIncPerSample);
   }
 
   isReleasing           = false;
@@ -360,7 +360,7 @@ void PolyphonicInstrumentVoice::triggerRelease(int noteToBeReleased, int noteToB
 void PolyphonicInstrumentVoice::setPitchBend(double newPitchBend)
 {
   pitchBend       = newPitchBend;
-  pitchBendFactor = pitchOffsetToFreqFactor(pitchBendRange*pitchBend);
+  pitchBendFactor = RAPT::rsPitchOffsetToFreqFactor(pitchBendRange*pitchBend);
 }
 
 void PolyphonicInstrumentVoice::reset()
@@ -405,7 +405,7 @@ double PolyphonicInstrumentVoice::getNoteFrequency(int noteNumber)
   if( tuningTable != NULL )
     return tuningTable->getFrequency(noteNumber);
   else
-    return pitchToFreq((double) noteNumber);
+    return RAPT::rsPitchToFreq((double) noteNumber);
 }
 
 double PolyphonicInstrumentVoice::getNoteFrequency(double noteNumber)
@@ -413,7 +413,7 @@ double PolyphonicInstrumentVoice::getNoteFrequency(double noteNumber)
   if( tuningTable != NULL )
     return tuningTable->getFrequency(noteNumber);
   else
-    return pitchToFreq(noteNumber);
+    return RAPT::rsPitchToFreq(noteNumber);
 }
 
 void PolyphonicInstrumentVoice::prepareForAmplitudeRamp(double newKey, double newVel, bool shouldRamp)

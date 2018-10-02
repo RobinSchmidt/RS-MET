@@ -140,13 +140,13 @@ curve is below the identity mapping (giving more precsion in the lower range). *
 double mapLinearToRational(double x, double a);
 
 /** Converts a picth-offset in semitones value into a frequency multiplication factor. */
-INLINE double pitchOffsetToFreqFactor(double pitchOffset);
+//INLINE double pitchOffsetToFreqFactor(double pitchOffset);
 
 /** Converts a MIDI-note value into a frequency in Hz assuming A4 = 440 Hz. */
-INLINE double pitchToFreq(double pitch);
+//INLINE double pitchToFreq(double pitch);
 
 /** Converts a MIDI-note value into a frequency in Hz for arbitrary master-tunings of A4. */
-INLINE double pitchToFreq(double pitch, double masterTuneA4);
+//INLINE double pitchToFreq(double pitch, double masterTuneA4);
 
 /** Converts an angle in radiant into degrees. */
 INLINE double radiantToDegree(double radiant);
@@ -419,7 +419,7 @@ INLINE int normalizedValueToIndex(float normalizedValue, int numIndices)
 {
   return (int)floor(normalizedValue*numIndices);
 }
-
+/*
 INLINE double pitchOffsetToFreqFactor(double pitchOffset)
 {
   return exp(0.057762265046662109118102676788181 * pitchOffset);
@@ -437,7 +437,7 @@ INLINE double pitchToFreq(double pitch, double masterTuneA4)
   return masterTuneA4 * 0.018581361171917516667460937040007
     * exp(0.057762265046662109118102676788181*pitch);
 }
-
+*/
 INLINE double radiantToDegree(double radiant)
 {
   return (180.0/PI)*radiant;

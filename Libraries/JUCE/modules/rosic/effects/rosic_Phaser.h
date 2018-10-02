@@ -111,8 +111,8 @@ namespace rosic
     //double pitchL = pitch + 0.5*depth*lfoL.getSample();
     //double pitchR = pitch + 0.5*depth*lfoR.getSample();
 
-    allpassL.setFrequency(pitchToFreq(pitchL));
-    allpassR.setFrequency(pitchToFreq(pitchR));
+    allpassL.setFrequency(RAPT::rsPitchToFreq(pitchL));
+    allpassR.setFrequency(RAPT::rsPitchToFreq(pitchR));
 
     yL = allpassL.getSample(*inOutL + feedbackFactor*yL);
     yR = allpassR.getSample(*inOutR + feedbackFactor*yR);

@@ -167,7 +167,7 @@ void RayBouncerAudioModule::setStateFromXml(const XmlElement& xmlState,
 void RayBouncerAudioModule::noteOn(int noteNumber, int velocity)
 {
   currentNote = noteNumber;
-  frequency = pitchToFreq(currentNote + tune);
+  frequency = RAPT::rsPitchToFreq(currentNote + tune);
   rayBouncer.setFrequencyAndSampleRate(frequency, sampleRate);
   rayBouncer.reset();
 }
@@ -182,7 +182,7 @@ void RayBouncerAudioModule::noteOn(int noteNumber, int velocity)
 void RayBouncerAudioModule::setTune(double newTune)
 {
   tune = newTune;
-  frequency = pitchToFreq(currentNote + tune);
+  frequency = RAPT::rsPitchToFreq(currentNote + tune);
   rayBouncer.setFrequencyAndSampleRate(frequency, sampleRate);
 }
 

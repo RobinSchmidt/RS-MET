@@ -167,7 +167,7 @@ void rotes::testModalFilterWithAttack()
   double A   = 1.0;    // amplitude as raw factor
   double fs  = 44100;  // samplerate in Hz
 
-  double df  = pitchOffsetToFreqFactor(dt);
+  double df  = RAPT::rsPitchOffsetToFreqFactor(dt);
 
   ModalFilterWithAttack mf;
   mf.setModalParameters(f, A, tp, td, phs, fs, df);

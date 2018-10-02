@@ -132,7 +132,7 @@ void AciDevil::setSampleRate(double newSampleRate)
 
 void AciDevil::setPitchBend(double newPitchBend)
 {
-  pitchWheelFactor = pitchOffsetToFreqFactor(pitchWheelRange*newPitchBend);
+  pitchWheelFactor = RAPT::rsPitchOffsetToFreqFactor(pitchWheelRange*newPitchBend);
 }
 
 void AciDevil::setMasterLevel(double newLevel)
@@ -271,7 +271,7 @@ void AciDevil::triggerNote(int noteNumber, bool hasAccent)
     ampEnv.setRelease(normalAmpRelease);
   }
 
-  oscFreq = pitchToFreq(noteNumber);
+  oscFreq = RAPT::rsPitchToFreq(noteNumber);
   pitchSlewLimiter.setState(oscFreq);
   mainEnv.trigger();
   ampEnv.noteOn(true, noteNumber, 64);
@@ -280,7 +280,7 @@ void AciDevil::triggerNote(int noteNumber, bool hasAccent)
 
 void AciDevil::slideToNote(int noteNumber, bool hasAccent)
 {
-  oscFreq = pitchToFreq(noteNumber);
+  oscFreq = RAPT::rsPitchToFreq(noteNumber);
 
   if( hasAccent )
   {
@@ -310,7 +310,7 @@ void AciDevil::releaseNote(int /*noteNumber*/)
   else
   {
     // initiate slide back:
-    oscFreq     = pitchToFreq(currentNote);
+    oscFreq     = RAPT::rsPitchToFreq(currentNote);
   }
 }
 
@@ -346,8 +346,8 @@ void AciDevil::calculateEnvModScalerAndOffset()
   }
   else
   {
-    double upRatio   = pitchOffsetToFreqFactor(      envUpFraction *envMod);
-    double downRatio = pitchOffsetToFreqFactor(-(1.0-envUpFraction)*envMod);
+    double upRatio   = RAPT::rsPitchOffsetToFreqFactor(      envUpFraction *envMod);
+    double downRatio = RAPT::rsPitchOffsetToFreqFactor(-(1.0-envUpFraction)*envMod);
     envScaler        = upRatio - downRatio;
     if( envScaler != 0.0 ) // avoid division by zero
       envOffset = - (downRatio - 1.0) / (upRatio - downRatio);

@@ -48,7 +48,7 @@ namespace rosic
     void setStartInDecibels(double newStart) { setStartLevel(dB2amp(newStart)); }
 
     /** Sets the point where the envelope starts (in semitones). */
-    void setStartInSemitones(double newStart) { setStartLevel(pitchOffsetToFreqFactor(newStart)); }  
+    void setStartInSemitones(double newStart) { setStartLevel(RAPT::rsPitchOffsetToFreqFactor(newStart)); }  
 
     /** Sets the highest point of the envelope (as raw value). */
     void setPeakLevel(double newPeak) { peakLevel = newPeak; }
@@ -57,7 +57,7 @@ namespace rosic
     void setPeakInDecibels(double newPeak) { setPeakLevel(dB2amp(newPeak)); }
 
     /** Sets the highest point of the envelope (in semitones). */
-    void setPeakInSemitones(double newPeak) { setPeakLevel(pitchOffsetToFreqFactor(newPeak)); }
+    void setPeakInSemitones(double newPeak) { setPeakLevel(RAPT::rsPitchOffsetToFreqFactor(newPeak)); }
 
     /** Sets the velocity dependence of the peak level as scaling factor of the peak by notes with 
     velocity == 127. Notes with velocity == 1 will use the reciprocal value and notes with 
@@ -71,7 +71,7 @@ namespace rosic
 
     /** Sets the velocity dependence of the peak level in semitones .... */
     void setPeakByVelInSemitones(double newPeakByVel) 
-    { setPeakLevelByVel(pitchOffsetToFreqFactor(newPeakByVel)); }
+    { setPeakLevelByVel(RAPT::rsPitchOffsetToFreqFactor(newPeakByVel)); }
 
     /** Sets the sustain level (as raw value). */
     void setSustainLevel(double newSustain) { sustainLevel = newSustain; }
@@ -81,7 +81,7 @@ namespace rosic
 
     /** Sets the sustain level (in semitones). */
     void setSustainInSemitones(double newSustain) 
-    { setSustainLevel(pitchOffsetToFreqFactor(newSustain)); }
+    { setSustainLevel(RAPT::rsPitchOffsetToFreqFactor(newSustain)); }
 
     /** Sets the end point of the envelope (as raw value). */
     void setEndLevel(double newEnd) { endLevel = newEnd; }
@@ -90,7 +90,7 @@ namespace rosic
     void setEndInDecibels(double newEnd) { setEndLevel(dB2amp(newEnd)); }
 
     /** Sets the end point of the envelope (in semitones). */
-    void setEndInSemitones(double newEnd) { setEndLevel(pitchOffsetToFreqFactor(newEnd)); }
+    void setEndInSemitones(double newEnd) { setEndLevel(RAPT::rsPitchOffsetToFreqFactor(newEnd)); }
 
     /** Sets the length of the attack phase (in milliseconds). */
     void setAttack(double newAttackTime);    

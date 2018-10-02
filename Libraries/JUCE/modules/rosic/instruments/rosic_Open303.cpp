@@ -131,7 +131,7 @@ void Open303::setSampleRate(double newSampleRate)
 
 void Open303::setPitchBend(double newPitchBend)
 {
-  pitchWheelFactor = pitchOffsetToFreqFactor(newPitchBend);
+  pitchWheelFactor = RAPT::rsPitchOffsetToFreqFactor(newPitchBend);
 }
 
 void Open303::setMasterLevel(double newLevel)
@@ -270,7 +270,7 @@ void Open303::triggerNote(int noteNumber, bool hasAccent)
     ampEnv.setRelease(normalAmpRelease);
   }
 
-  oscFreq = pitchToFreq(noteNumber);
+  oscFreq = RAPT::rsPitchToFreq(noteNumber);
   pitchSlewLimiter.setState(oscFreq);
   mainEnv.trigger();
   ampEnv.noteOn(true, noteNumber, 64);
@@ -279,7 +279,7 @@ void Open303::triggerNote(int noteNumber, bool hasAccent)
 
 void Open303::slideToNote(int noteNumber, bool hasAccent)
 {
-  oscFreq = pitchToFreq(noteNumber);
+  oscFreq = RAPT::rsPitchToFreq(noteNumber);
 
   if( hasAccent )
   {
@@ -309,7 +309,7 @@ void Open303::releaseNote(int /*noteNumber*/)
   else
   {
     // initiate slide back:
-    oscFreq     = pitchToFreq(currentNote);
+    oscFreq     = RAPT::rsPitchToFreq(currentNote);
   }
 }
 
@@ -345,8 +345,8 @@ void Open303::calculateEnvModScalerAndOffset()
   }
   else
   {
-    double upRatio   = pitchOffsetToFreqFactor(      envUpFraction *envMod);
-    double downRatio = pitchOffsetToFreqFactor(-(1.0-envUpFraction)*envMod);
+    double upRatio   = RAPT::rsPitchOffsetToFreqFactor(      envUpFraction *envMod);
+    double downRatio = RAPT::rsPitchOffsetToFreqFactor(-(1.0-envUpFraction)*envMod);
     envScaler        = upRatio - downRatio;
     if( envScaler != 0.0 ) // avoid division by zero
       envOffset = - (downRatio - 1.0) / (upRatio - downRatio);

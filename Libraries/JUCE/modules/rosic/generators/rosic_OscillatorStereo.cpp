@@ -198,7 +198,7 @@ void OscillatorStereo::setDetuneSemitones(double newDetuneSemitones)
   if( newDetuneSemitones != parameters->detuneSemitones )
   {
     parameters->detuneSemitones = newDetuneSemitones;
-    parameters->detuneFactor    = pitchOffsetToFreqFactor(newDetuneSemitones);
+    parameters->detuneFactor    = RAPT::rsPitchOffsetToFreqFactor(newDetuneSemitones);
     parameters->detuneFactorL   = parameters->detuneFactor * parameters->stereoDetuneFactorL;
     parameters->detuneFactorR   = parameters->detuneFactor * parameters->stereoDetuneFactorR;
 
@@ -233,7 +233,7 @@ void OscillatorStereo::setStereoDetuneSemitones(double newStereoDetuneSemitones)
   if( newStereoDetuneSemitones != parameters->stereoDetuneSemitones )
   {
     parameters->stereoDetuneSemitones = newStereoDetuneSemitones;
-    parameters->stereoDetuneFactorR   = pitchOffsetToFreqFactor(0.5*newStereoDetuneSemitones);
+    parameters->stereoDetuneFactorR   = RAPT::rsPitchOffsetToFreqFactor(0.5*newStereoDetuneSemitones);
     parameters->stereoDetuneFactorL   = 1.0 / parameters->stereoDetuneFactorR;
     parameters->detuneFactorL         = parameters->detuneFactor * parameters->stereoDetuneFactorL;
     parameters->detuneFactorR         = parameters->detuneFactor * parameters->stereoDetuneFactorR;

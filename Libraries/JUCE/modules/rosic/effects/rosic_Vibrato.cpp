@@ -67,7 +67,7 @@ void Vibrato::reset()
 
 void Vibrato::calculateDepthInSamples()
 {
-  double ratio = pitchOffsetToFreqFactor(0.5*depth);        // resampling ratio
+  double ratio = RAPT::rsPitchOffsetToFreqFactor(0.5*depth);        // resampling ratio
   d  = (ratio-1.0)*sampleRate / (2*PI*lfo.getFrequency()); // delay modulation depth in samples
   if( d > dA-3.0 )
   {

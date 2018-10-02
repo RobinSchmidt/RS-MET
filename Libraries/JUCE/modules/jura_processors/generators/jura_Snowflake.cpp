@@ -137,7 +137,7 @@ void Snowflake::reset()
 
 void Snowflake::noteOn(int noteNumber, int velocity)
 {
-  core.setFrequency(pitchToFreq(noteNumber)); // preliminary - use tuning table
+  core.setFrequency(RAPT::rsPitchToFreq(noteNumber)); // preliminary - use tuning table
   core.reset();
 }
 

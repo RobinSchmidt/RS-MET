@@ -231,7 +231,7 @@ void SamplePlayer::calculateKeyAndVelocityDependentParameters()
     + parameters->getTune()
     + parameters->getTuneByKey() * 0.01*(key-parameters->getRootKey())
     + parameters->getTuneByVel() * 0.01*(vel-64.0);
-  double freq = pitchToFreq(pitch);
+  double freq = RAPT::rsPitchToFreq(pitch);
   setPlaybackFrequencyNominal(freq);
 
   //double pitchOffset = 

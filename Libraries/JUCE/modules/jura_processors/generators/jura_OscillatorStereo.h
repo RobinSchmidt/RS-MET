@@ -92,7 +92,7 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override
   {
     wrappedOsc->setKeyAndVel(noteNumber, velocity);
-    wrappedOsc->setFrequencyNominal(rosic::pitchToFreq(noteNumber));
+    wrappedOsc->setFrequencyNominal(RAPT::rsPitchToFreq(noteNumber));
     wrappedOsc->reset();
      // preliminary - use tuning table - maybe baseclass AudioModuleWithMidiIn should maintain
      // a pointer to a TuningManager object - and maybe a subclass AudioModulePolyphonic can

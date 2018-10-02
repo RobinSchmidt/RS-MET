@@ -41,8 +41,8 @@ namespace rosic
     void setFrequency(double newFrequency) 
     { 
       pitch = RAPT::rsFreqToPitch(newFrequency); 
-      combL.setFrequency( pitchToFreq(pitch+pitchOffsetL) );
-      combR.setFrequency( pitchToFreq(pitch+pitchOffsetR) );
+      combL.setFrequency( RAPT::rsPitchToFreq(pitch+pitchOffsetL) );
+      combR.setFrequency( RAPT::rsPitchToFreq(pitch+pitchOffsetR) );
     }
 
     /** Sets a offset between the the pitches of the two combs (for left and right channel)
@@ -51,8 +51,8 @@ namespace rosic
     {
       pitchOffsetL = +0.5*newDetune;
       pitchOffsetR = -0.5*newDetune;
-      combL.setFrequency( pitchToFreq(pitch+pitchOffsetL) );
-      combR.setFrequency( pitchToFreq(pitch+pitchOffsetR) );
+      combL.setFrequency( RAPT::rsPitchToFreq(pitch+pitchOffsetL) );
+      combR.setFrequency( RAPT::rsPitchToFreq(pitch+pitchOffsetR) );
     }
 
     /** Sets the panorama position for the 1st comb (between -1...+1). */

@@ -72,7 +72,7 @@ void EllipseOscillatorAudioModule::reset()
 
 void EllipseOscillatorAudioModule::noteOn(int noteNumber, int velocity)
 {
-  oscCore.setFrequency(pitchToFreq(noteNumber)); // preliminary - use tuning table
+  oscCore.setFrequency(RAPT::rsPitchToFreq(noteNumber)); // preliminary - use tuning table
   //oscCore.reset();
 }
 
@@ -187,7 +187,7 @@ void TriSawOscModule::reset()
 
 void TriSawOscModule::noteOn(int noteNumber, int velocity)
 {
-  freq = pitchToFreq(noteNumber);
+  freq = RAPT::rsPitchToFreq(noteNumber);
   oscCore.setPhaseIncrement(freq/sampleRate); // maybe times 2 because it ranegs from -1..+1?
 }
 

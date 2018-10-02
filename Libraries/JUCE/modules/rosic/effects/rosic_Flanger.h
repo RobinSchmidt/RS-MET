@@ -90,8 +90,8 @@ namespace rosic
     //double pitchL = pitch + 0.5*depth*lfoL.getSample();
     //double pitchR = pitch + 0.5*depth*lfoR.getSample();
 
-    combL.setFrequency(pitchToFreq(pitchL));
-    combR.setFrequency(pitchToFreq(pitchR));
+    combL.setFrequency(RAPT::rsPitchToFreq(pitchL));
+    combR.setFrequency(RAPT::rsPitchToFreq(pitchR));
 
     *inOutL = combL.getSample(*inOutL);
     *inOutR = combR.getSample(*inOutR);

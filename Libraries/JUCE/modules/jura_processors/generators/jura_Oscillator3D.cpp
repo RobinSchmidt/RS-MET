@@ -141,6 +141,6 @@ void RotationOscillatorAudioModule::reset()
 
 void RotationOscillatorAudioModule::noteOn(int noteNumber, int velocity)
 {
-  oscCore.setFrequency(pitchToFreq(noteNumber));
+  oscCore.setFrequency(RAPT::rsPitchToFreq(noteNumber));
   oscCore.reset();
 }

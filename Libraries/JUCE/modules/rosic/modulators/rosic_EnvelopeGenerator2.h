@@ -50,7 +50,7 @@ namespace rosic
     void setStartInDecibels(double newStart) { setStartLevel(dB2amp(newStart)); }
 
     /** Sets the point where the envelope starts (in semitones). */
-    void setStartInSemitones(double newStart) { setStartLevel(pitchOffsetToFreqFactor(newStart)); }  
+    void setStartInSemitones(double newStart) { setStartLevel(RAPT::rsPitchOffsetToFreqFactor(newStart)); }  
 
 
     /** Sets the highest point of the envelope (as raw value). */
@@ -60,7 +60,7 @@ namespace rosic
     void setPeakInDecibels(double newPeak) { setPeakLevel(dB2amp(newPeak)); }
 
     /** Sets the highest point of the envelope (in semitones). */
-    void setPeakInSemitones(double newPeak) { setPeakLevel(pitchOffsetToFreqFactor(newPeak)); }
+    void setPeakInSemitones(double newPeak) { setPeakLevel(RAPT::rsPitchOffsetToFreqFactor(newPeak)); }
 
 
     /** Sets the sustain level (as raw value). */
@@ -71,7 +71,7 @@ namespace rosic
 
     /** Sets the sustain level (in semitones). */
     void setSustainInSemitones(double newSustain) 
-    { setSustainLevel(pitchOffsetToFreqFactor(newSustain)); }
+    { setSustainLevel(RAPT::rsPitchOffsetToFreqFactor(newSustain)); }
 
 
     /** Sets the end point of the envelope (as raw value). */
@@ -81,7 +81,7 @@ namespace rosic
     void setEndInDecibels(double newEnd) { setEndLevel(dB2amp(newEnd)); }
 
     /** Sets the end point of the envelope (in semitones). */
-    void setEndInSemitones(double newEnd) { setEndLevel(pitchOffsetToFreqFactor(newEnd)); }
+    void setEndInSemitones(double newEnd) { setEndLevel(RAPT::rsPitchOffsetToFreqFactor(newEnd)); }
 
 
     /** Sets the length of attack phase (in seconds). */

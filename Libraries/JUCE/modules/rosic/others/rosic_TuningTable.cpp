@@ -45,7 +45,7 @@ void TuningTable::resetToDefaults()
   masterTuneA4 = 440.0;
   detuneFactor = masterTuneA4 / 440.0;
   for(int i=0; i<128; i++)
-    table[i] = pitchToFreq((double) i);
+    table[i] = RAPT::rsPitchToFreq((double) i);
   //defaultState = true;
 }
 
@@ -104,7 +104,7 @@ bool TuningTable::isInDefaultState()
 
   for(int i=0; i<128; i++)
   {
-    if( table[i] != pitchToFreq((double) i) )
+    if( table[i] != RAPT::rsPitchToFreq((double) i) )
       return false;
   }
 
@@ -128,7 +128,7 @@ double TuningTable::getFrequency(double note)
     double pitch1 = RAPT::rsFreqToPitch(table[iPart]);
     double pitch2 = RAPT::rsFreqToPitch(table[iPart+1]);
     double pitch  = (1.0-fPart)*pitch1 + fPart*pitch2;
-    return detuneFactor * pitchToFreq(pitch);
+    return detuneFactor * RAPT::rsPitchToFreq(pitch);
   }
   else
     return 440.0;

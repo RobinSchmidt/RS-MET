@@ -38,8 +38,8 @@ void CombBank::setReferencePitch(double newPitch)
   referencePitch = newPitch;
   for(int i=0; i<maxNumCombs; i++)
   {
-    combsL[i].setFrequency( pitchToFreq(referencePitch + pitchOffsets[i] + 0.5*detune) );
-    combsR[i].setFrequency( pitchToFreq(referencePitch + pitchOffsets[i] - 0.5*detune) );
+    combsL[i].setFrequency( RAPT::rsPitchToFreq(referencePitch + pitchOffsets[i] + 0.5*detune) );
+    combsR[i].setFrequency( RAPT::rsPitchToFreq(referencePitch + pitchOffsets[i] - 0.5*detune) );
   }
 }
 
@@ -48,8 +48,8 @@ void CombBank::setDetune(double newDetune)
   detune = newDetune;
   for(int i=0; i<maxNumCombs; i++)
   {
-    combsL[i].setFrequency( pitchToFreq(referencePitch + pitchOffsets[i] + 0.5*detune) );
-    combsR[i].setFrequency( pitchToFreq(referencePitch + pitchOffsets[i] - 0.5*detune) );
+    combsL[i].setFrequency( RAPT::rsPitchToFreq(referencePitch + pitchOffsets[i] + 0.5*detune) );
+    combsR[i].setFrequency( RAPT::rsPitchToFreq(referencePitch + pitchOffsets[i] - 0.5*detune) );
   }
 }
 

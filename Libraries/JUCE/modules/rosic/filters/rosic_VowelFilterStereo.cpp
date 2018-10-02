@@ -112,7 +112,7 @@ void VowelFilterStereo::setAmount(double newAmount)
 
 void VowelFilterStereo::setShift(double newShift)
 {
-  shiftFactor = pitchOffsetToFreqFactor(newShift);
+  shiftFactor = RAPT::rsPitchOffsetToFreqFactor(newShift);
 }
 
 //-------------------------------------------------------------------------------------------------
