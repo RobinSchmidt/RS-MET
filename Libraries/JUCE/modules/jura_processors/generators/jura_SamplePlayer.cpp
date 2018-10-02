@@ -234,7 +234,7 @@ void SamplePlayerAudioModule::setRootKeyFromLoop()
   double freq = wrappedSamplePlayer->parameters->getNumPitchCyclesInLoop() / loopLength;
 
   // get the corresponding pitch and set it up as our 'RootKey' parameter:
-  double rootKey = freqToPitch(freq);
+  double rootKey = RAPT::rsFreqToPitch(freq);
   getParameterByName(juce::String("RootKey"))->setValue(rootKey, true, true);
 }
 

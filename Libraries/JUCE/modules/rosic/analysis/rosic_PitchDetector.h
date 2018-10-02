@@ -200,7 +200,7 @@ namespace rosic
 
   INLINE double PitchDetector::estimatePitch(double inputSignal)
   { 
-    return freqToPitch(estimateFundamentalFrequency(inputSignal));
+    return RAPT::rsFreqToPitch(estimateFundamentalFrequency(inputSignal));
       // this is inefficient (calls freqToPitch per sample, where it could have been called
       // only when the pitch has changed) 
   }

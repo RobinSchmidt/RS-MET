@@ -42,7 +42,7 @@ namespace rosic
     { combL.setDryWetRatio(newDryWet); combR.setDryWetRatio(newDryWet); }
 
     /** Sets the filter's nominal frequency in Hz. */
-    void setFrequency(double newFrequency) { pitch = freqToPitch(newFrequency); }
+    void setFrequency(double newFrequency) { pitch = RAPT::rsFreqToPitch(newFrequency); }
 
     /** Sets the feedback around the comb as raw factor. */
     void setFeedbackFactor(double newFeedbackFactor)

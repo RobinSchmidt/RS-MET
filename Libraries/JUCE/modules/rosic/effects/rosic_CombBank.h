@@ -49,7 +49,7 @@ namespace rosic
     /** Sets the reference frequency (in Hz) - all the individual pitch-offsets of each comb are 
     with respect to this pitch. */
     void setReferenceFrequency(double newFrequency) 
-    { setReferencePitch(freqToPitch(newFrequency)); }
+    { setReferencePitch(RAPT::rsFreqToPitch(newFrequency)); }
 
     /** Sets a offset between the the pitches for each comb-pair (for left and right channel)
     in semitones. */

@@ -6,7 +6,7 @@
 
 Phaser::Phaser()
 {
-  pitch          = freqToPitch(1000.0);
+  pitch          = RAPT::rsFreqToPitch(1000.0);
   dryWet         = 1.0;
   feedbackFactor = 0.0;
   bypass         = false;
@@ -31,7 +31,7 @@ void Phaser::setFilterMode(int newMode)
    
 void Phaser::setFrequency(double newFrequency)
 {
-  pitch = freqToPitch(newFrequency);
+  pitch = RAPT::rsFreqToPitch(newFrequency);
 }
 
 void Phaser::setQ(double newQ)

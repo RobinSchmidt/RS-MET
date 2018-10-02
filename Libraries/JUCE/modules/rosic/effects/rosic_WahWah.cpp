@@ -6,7 +6,7 @@
 
 WahWah::WahWah()
 {
-  pitch  = freqToPitch(1000.0);
+  pitch  = RAPT::rsFreqToPitch(1000.0);
   dryWet = 1.0;
   filterL.setMode(TwoPoleFilter::BANDPASS);
   filterR.setMode(TwoPoleFilter::BANDPASS);
@@ -30,7 +30,7 @@ void WahWah::setFilterMode(int newMode)
    
 void WahWah::setFrequency(double newFrequency)
 {
-  pitch = freqToPitch(newFrequency);
+  pitch = RAPT::rsFreqToPitch(newFrequency);
 }
 
 void WahWah::setGain(double newGain)

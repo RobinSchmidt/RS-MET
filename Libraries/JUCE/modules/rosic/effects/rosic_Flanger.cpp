@@ -6,7 +6,7 @@
 
 Flanger::Flanger()
 {
-  pitch  = freqToPitch(1000.0);
+  pitch  = RAPT::rsFreqToPitch(1000.0);
   reset();
 }
 

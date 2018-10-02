@@ -125,8 +125,8 @@ double TuningTable::getFrequency(double note)
   {
     int    iPart  = (int) note;
     double fPart  = note - (double) iPart;
-    double pitch1 = freqToPitch(table[iPart]);
-    double pitch2 = freqToPitch(table[iPart+1]);
+    double pitch1 = RAPT::rsFreqToPitch(table[iPart]);
+    double pitch2 = RAPT::rsFreqToPitch(table[iPart+1]);
     double pitch  = (1.0-fPart)*pitch1 + fPart*pitch2;
     return detuneFactor * pitchToFreq(pitch);
   }

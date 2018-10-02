@@ -82,7 +82,7 @@ void PolyphonicInstrumentVoice::setMasterTuneA4(double newTuneA4)
     targetFrequency = getNoteFrequency( noteList.front().getKey() );
   mutex.unlock();
 
-  targetPitch = freqToPitch(targetFrequency);
+  targetPitch = RAPT::rsFreqToPitch(targetFrequency);
 }
 
 void PolyphonicInstrumentVoice::setPitchWheelRange(double newRange)
@@ -319,9 +319,9 @@ void PolyphonicInstrumentVoice::glideToNote(int newKey, int newVelocity, int new
 
   // is this still necesarry, now that we directly update currentPitch as member variable?:
   if( tuningTable != NULL )
-    currentPitch = freqToPitch(currentFrequency, tuningTable->getMasterTuneA4() );
+    currentPitch = RAPT::rsFreqToPitch(currentFrequency, tuningTable->getMasterTuneA4() );
   else
-    currentPitch = freqToPitch(currentFrequency, 440.0);
+    currentPitch = RAPT::rsFreqToPitch(currentFrequency, 440.0);
 
   double pitchDelta     = targetPitch - currentPitch;
 

@@ -49,20 +49,20 @@ INLINE double degreeToRadiant(double degrees);
 INLINE double euclideanDistance(double x1, double y1, double x2, double y2);
 
 /** Calculates the exponential function with base 10. */
-INLINE double exp10(double x);
+//INLINE double exp10(double x);
 
 /** Calculates the exponential function with base 2. */
-INLINE double exp2(double x);
+//INLINE double exp2(double x);
 
 /** Calculates the factorial of some integer n >= 0. */
 //INLINE int factorial(int n);
 
 /** Converts a frequency in Hz into a MIDI-note value assuming A4 = 440 Hz. */
-INLINE double freqToPitch(double freq);
+//INLINE double freqToPitch(double freq);
 
 /** Converts a frequency in Hz into a MIDI-note value for tunings different than the
 default 440 Hz. */
-INLINE double freqToPitch(double freq, double masterTuneA4);
+//INLINE double freqToPitch(double freq, double masterTuneA4);
 
 /** Checks a pointer for nullity and if it is not NULL, it calls delete for the associated object
 and then sets the pointer to NULL. */
@@ -273,7 +273,7 @@ INLINE double euclideanDistance(double x1, double y1, double x2, double y2)
 {
   return sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 }
-
+/*
 INLINE double exp10(double x)
 {
   return exp(LN10*x);
@@ -294,7 +294,6 @@ INLINE double freqToPitch(double freq, double masterTuneA4)
   return 12.0 * log2(freq/masterTuneA4) + 69.0;
 }
 
-/*
 INLINE void ifNotNullDeleteAndSetNull(void* pointer)
 {
   if( pointer != NULL )

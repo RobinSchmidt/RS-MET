@@ -7,7 +7,7 @@
 CombBank::CombBank()
 {
   numActiveCombs = maxNumCombs;
-  referencePitch = freqToPitch(110.0);
+  referencePitch = RAPT::rsFreqToPitch(110.0);
   detune         = 0.0;
   pan1           = 0.0;
   pan2           = 1.0;

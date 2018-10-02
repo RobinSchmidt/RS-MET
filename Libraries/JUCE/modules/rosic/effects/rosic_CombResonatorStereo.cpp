@@ -6,7 +6,7 @@
 
 CombResonatorStereo::CombResonatorStereo()
 {
-  pitch        = freqToPitch(1000.0);
+  pitch        = RAPT::rsFreqToPitch(1000.0);
   pitchOffsetL = 0.0;
   pitchOffsetR = 0.0;
   pan1         = 0.0;

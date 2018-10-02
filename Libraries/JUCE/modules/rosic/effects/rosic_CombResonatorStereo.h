@@ -40,7 +40,7 @@ namespace rosic
     /** Sets the filter's nominal frequency in Hz. */
     void setFrequency(double newFrequency) 
     { 
-      pitch = freqToPitch(newFrequency); 
+      pitch = RAPT::rsFreqToPitch(newFrequency); 
       combL.setFrequency( pitchToFreq(pitch+pitchOffsetL) );
       combR.setFrequency( pitchToFreq(pitch+pitchOffsetR) );
     }
