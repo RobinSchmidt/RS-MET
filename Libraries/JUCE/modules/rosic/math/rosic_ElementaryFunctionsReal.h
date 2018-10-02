@@ -460,7 +460,7 @@ INLINE double powBipolar(double base, double exponent)
   if(base > 0.0)
     return pow(base, exponent);
   else if(base < 0.0)
-    return sign(base) * pow(fabs(base), exponent);
+    return RAPT::rsSign(base) * pow(fabs(base), exponent);
   else
     return 0.0;
 }
@@ -739,7 +739,7 @@ INLINE double srem(double x, double y)
   double z = fmod(x, y);
 
   if(fabs(z) > 0.5*y)
-    z = z - y*sign(z);
+    z = z - y*RAPT::rsSign(z);
 
   return z;
 }

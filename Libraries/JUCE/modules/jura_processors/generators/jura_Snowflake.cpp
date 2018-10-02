@@ -174,7 +174,7 @@ XmlElement Snowflake::convertXmlStateIfNecessary(const XmlElement& inputXml)
 
   if(!xml.hasAttribute("ResetRatio1")) {
     val = xml.getDoubleAttribute("CyclicReset", 1.0);
-    xml.setAttribute("ResetRatio1", rosic::round(val));
+    xml.setAttribute("ResetRatio1", ::round(val));
   }
 
   xml.removeAttribute("CyclicReset");

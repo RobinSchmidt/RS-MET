@@ -220,7 +220,7 @@ public:
 
   double DoEvaluate()
   {
-    return rosic::sign(m_nodes[0]->Evaluate());
+    return RAPT::rsSign(m_nodes[0]->Evaluate());
   }
 };
 

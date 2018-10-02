@@ -67,8 +67,8 @@ double UnivariateScalarFunction::findRootViaRidders(double xL, double xU)
       if( sq == 0.0 )
         return xM;
 
-      xN = xM + (xM-xL) * sign(fL-fU)*fM / sq; // Eq. 9.2.4
-      fN = getValueAt(xN);                     // 2nd evaluation
+      xN = xM + (xM-xL) * RAPT::rsSign(fL-fU)*fM / sq; // Eq. 9.2.4
+      fN = getValueAt(xN);                             // 2nd evaluation
       if( fN == 0.0 )
         return xN;
 

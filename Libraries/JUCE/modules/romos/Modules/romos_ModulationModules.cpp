@@ -39,9 +39,9 @@ void EnvelopeADSR::processWithoutTriggerFlagCheck(Module *module, const double *
   double sustain   = *Sus;
   double timeScale = 1.0;   // todo: make input
   double scl = timeScale * processingStatus.getSystemSampleRate();
-  unsigned long attackSamples  = (unsigned long)rosic::round(*Att * scl);
-  unsigned long decaySamples   = (unsigned long)rosic::round(*Dec * scl);
-  unsigned long releaseSamples = (unsigned long)rosic::round(*Rel * scl);
+  unsigned long attackSamples  = (unsigned long) ::round(*Att * scl);
+  unsigned long decaySamples   = (unsigned long) ::round(*Dec * scl);
+  unsigned long releaseSamples = (unsigned long) ::round(*Rel * scl);
 
   typedef RAPT::rsNodeBasedFunction<double> NBF;
   double a;

@@ -197,7 +197,7 @@ void TwoPoleFilter::updateCoeffs()
     {
       double tmpRadius = radius;
       if( fabs(radius) > 0.999999 )
-        tmpRadius = sign(radius) * 0.999999;
+        tmpRadius = RAPT::rsSign(radius) * 0.999999;
       BiquadDesigner::calculatePolePairCoeffs(b0, b1, b2, a1, a2, tmpRadius, 2*PI*frequency/sampleRate);
     }
     break;

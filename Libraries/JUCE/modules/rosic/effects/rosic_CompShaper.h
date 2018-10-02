@@ -107,7 +107,7 @@ namespace rosic
 
   INLINE double CompShaper::transferCurveAt(double x)
   {
-    double xs = sign(x);
+    double xs = RAPT::rsSign(x);
     double xa = fabs(x);
 
     if( xa < threshold-0.5*kneeWidth*0.01*threshold )

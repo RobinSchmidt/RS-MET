@@ -105,7 +105,7 @@ void BandlimitedImpulseTrain::initialize()
     numHarmonics = floor(0.5 * processingStatus.getSystemSampleRate() / absFreq);     \
   double ampScaler;                                                                   \
   if( numHarmonics > 0 )                                                              \
-    ampScaler = 0.5 * sign(*in1) / numHarmonics;                                      \
+    ampScaler = 0.5 * RAPT::rsSign(*in1) / numHarmonics;                              \
   else                                                                                \
     ampScaler = 0.0;                                                                  \
   double omega    = *in1 * processingStatus.getFreqToOmegaFactor();                   \
@@ -338,7 +338,7 @@ double BlitSaw::getDesiredFirstSample(double frequency, double startPhase)
     numHarmonics = floor(0.5 * processingStatus.getSystemSampleRate() / absFreq);
   double ampScaler;
   if(numHarmonics > 0)
-    ampScaler = 0.5 * sign(frequency) / numHarmonics;
+    ampScaler = 0.5 * RAPT::rsSign(frequency) / numHarmonics;
   else
     ampScaler = 0.0;
   double omega    = frequency * processingStatus.getFreqToOmegaFactor();

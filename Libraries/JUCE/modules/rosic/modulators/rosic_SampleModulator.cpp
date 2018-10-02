@@ -388,7 +388,7 @@ void SampleModulator::updateIncrement()
   // convert the number of cycles per whole note into a number of cycles per second if necesarry:
   double cyclesPerSecond;
   if( syncMode == true )
-    cyclesPerSecond = numCyclesPerTimeUnit / wholeNotesToSeconds(1.0, bpm);
+    cyclesPerSecond = numCyclesPerTimeUnit / RAPT::rsWholeNotesToSeconds(1.0, bpm);
   else
     cyclesPerSecond = numCyclesPerTimeUnit;
 

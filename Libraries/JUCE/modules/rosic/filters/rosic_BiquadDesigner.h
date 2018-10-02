@@ -658,7 +658,7 @@ namespace rosic
     // obtain the zero by interpolating the zero position between lowpass and peak or peak
     // and highpass:
     double m = morph;
-    m = sign(m) * (m*m);
+    m = RAPT::rsSign(m) * (m*m);
     //m = sign(m) * pow(abs(m), 1.5);
     double zd;
     //double a = -z_pk;

@@ -160,11 +160,11 @@ last state (which is the case for a typical call). */
 //INLINE double secondsToBeats(double timeInSeconds, double bpm);
 
 /** Returns the sign of x as double. */
-INLINE double sign(double x);
+//INLINE double sign(double x);
 
 /** Converts a time-stamp given in whole notes into seconds according to a tempo measured in
 beats per minute (bpm). */
-INLINE double wholeNotesToSeconds(double noteValue, double bpm);
+//INLINE double wholeNotesToSeconds(double noteValue, double bpm);
 
 /** Wraps the number to the interval 0...length. */
 INLINE double wrapAround(double numberToWrap, double length);
@@ -440,7 +440,7 @@ INLINE double randomUniform(double min, double max, int seed)
   state = 1664525*state + 1013904223;                    // mod implicitely by integer overflow
   return min + (max-min) * ((1.0/4294967296.0) * state); // transform to desired range
 }
-*/
+
 INLINE double round(double x)
 {
   if(x-floor(x) >= 0.5)
@@ -448,12 +448,12 @@ INLINE double round(double x)
   else
     return floor(x);
 }
-/*
+
 INLINE double secondsToBeats(double timeInSeconds, double bpm)
 {
   return timeInSeconds*(bpm/60.0);
 }
-*/
+
 INLINE double sign(double x)
 {
   if(x<0)
@@ -468,7 +468,7 @@ INLINE double wholeNotesToSeconds(double noteValue, double bpm)
 {
   return (240.0/bpm)*noteValue;
 }
-
+*/
 INLINE double wrapAround(double numberToWrap, double length)
 {
   while(numberToWrap < 0.0)

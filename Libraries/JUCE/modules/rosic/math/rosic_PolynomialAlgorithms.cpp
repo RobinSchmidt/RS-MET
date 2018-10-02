@@ -314,7 +314,7 @@ rsArray<Complex> rosic::getRootsOfCubicEquation(double a, double b, double c, do
   }
   else // both p and q are nonzero
   {
-    r = sign(q) * sqrt(fabs(p));
+    r = RAPT::rsSign(q) * sqrt(fabs(p));
     if( p > 0.0 )
     {
       phi       = asinh( q/(r*r*r) );

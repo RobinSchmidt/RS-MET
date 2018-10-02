@@ -549,10 +549,10 @@ double MipMappedWaveTableStereo::warpPhaseIndex(double unwarpedIndex)
   double a   = fullWavePhaseWarp;
   double b   = pow(20.0, halfWavePhaseWarp);
 
-  tmp = 2.0*tmp-1.0;                    // in -1...+1
-  tmp = sign(tmp) * pow(fabs(tmp), b);  // in -1...+1
-  tmp = (tmp-a) / (1.0-a*tmp);          // in -1...+1
-  tmp = 0.5*(tmp+1);                    // in  0...+1
+  tmp = 2.0*tmp-1.0;                            // in -1...+1
+  tmp = RAPT::rsSign(tmp) * pow(fabs(tmp), b);  // in -1...+1
+  tmp = (tmp-a) / (1.0-a*tmp);                  // in -1...+1
+  tmp = 0.5*(tmp+1);                            // in  0...+1
 
   return tmp * (double) prototypeWaveNumSamples;
 
