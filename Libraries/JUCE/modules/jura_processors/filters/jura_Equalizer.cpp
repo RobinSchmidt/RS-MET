@@ -634,7 +634,7 @@ int EqualizerPlotEditor::getBandIndexAtPixelPosition(int x, int y)
         equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex);
       yt       += globalGain;
       toPixelCoordinates(xt, yt);
-      if( euclideanDistance(xt, yt, xd, yd) < 3.0 )
+      if( RAPT::rsEuclideanDistance(xt, yt, xd, yd) < 3.0 )
         return i;
 
       // check if x,y is over the right bandwidth handle of the selected band:
@@ -644,7 +644,7 @@ int EqualizerPlotEditor::getBandIndexAtPixelPosition(int x, int y)
         equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex);
       yt       += globalGain;
       toPixelCoordinates(xt, yt);
-      if( euclideanDistance(xt, yt, xd, yd) < 3.0 )
+      if( RAPT::rsEuclideanDistance(xt, yt, xd, yd) < 3.0 )
         return i;
     }
   }
@@ -931,7 +931,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
     yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
       equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex) + globalGain;
     toPixelCoordinates(xt, yt);
-    if( euclideanDistance(xt, yt, xd, yd) < 3.0 )
+    if( RAPT::rsEuclideanDistance(xt, yt, xd, yd) < 3.0 )
       return BANDWIDTH_AND_GAIN_LEFT;
 
     // check if x,y is over the right bandwidth handle of the selected band:
@@ -940,7 +940,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
     yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
       equalizerModuleToEdit->selectedChannel, equalizerModuleToEdit->selectedIndex) + globalGain;
     toPixelCoordinates(xt, yt);
-    if( euclideanDistance(xt, yt, xd, yd) < 3.0 )
+    if( RAPT::rsEuclideanDistance(xt, yt, xd, yd) < 3.0 )
       return BANDWIDTH_AND_GAIN_RIGHT;
   }
 
@@ -952,7 +952,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
     yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
       equalizerModuleToEdit->selectedChannel, i) + globalGain;
     toPixelCoordinates(xt, yt);
-    if( euclideanDistance(xt, yt, xd, yd) < 4.0 )
+    if( RAPT::rsEuclideanDistance(xt, yt, xd, yd) < 4.0 )
       return FREQUENCY_AND_GAIN;
   }
 

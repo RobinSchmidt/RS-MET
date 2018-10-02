@@ -901,7 +901,7 @@ int EchoLabPlotEditor::getDragHandleAt(int x, int y)
     xt = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
     yt = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(i);
     toPixelCoordinates(xt, yt);
-    if( euclideanDistance(xt, yt, xd, yd) < 4.0 )
+    if( RAPT::rsEuclideanDistance(xt, yt, xd, yd) < 4.0 )
       return TIME_AND_GAIN;
   }
 

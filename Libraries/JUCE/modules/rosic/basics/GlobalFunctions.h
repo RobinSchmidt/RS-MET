@@ -40,7 +40,7 @@ minute (bpm). */
 //INLINE void deleteAndNullifyPointer(void *pointer);
 
 /** Returns the Euclidean distance between points at coordinates (x1,y1), (x2,y2). */
-INLINE double euclideanDistance(double x1, double y1, double x2, double y2);
+//INLINE double euclideanDistance(double x1, double y1, double x2, double y2);
 
 /** Calculates the exponential function with base 10. */
 //INLINE double exp10(double x);
@@ -64,7 +64,7 @@ INLINE void ifNotNullDeleteAndSetNull(void* pointer);
 
 /** Maps an integer index in the range 0...numIndices-1 into a normalized floating point number in
 the range 0...1. */
-INLINE float indexToNormalizedValue(int index, int numIndices);
+//INLINE float indexToNormalizedValue(int index, int numIndices);
 
 /** Checks, if x is close to some target-value within some tolerance. */
 //INLINE bool isCloseTo(double x, double targetValue, double tolerance);
@@ -260,13 +260,12 @@ INLINE void deleteAndNullifyPointer(void *pointer)
   delete pointer;
   pointer = NULL;
 }
-*/
 
 INLINE double euclideanDistance(double x1, double y1, double x2, double y2)
 {
   return sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 }
-/*
+
 INLINE double exp10(double x)
 {
   return exp(LN10*x);
@@ -295,14 +294,12 @@ INLINE void ifNotNullDeleteAndSetNull(void* pointer)
     pointer = NULL;
   }
 }
-*/
 
 INLINE float indexToNormalizedValue(int index, int numIndices)
 {
   return (float)(2*index+1) / (float)(2*numIndices);
 }
 
-/*
 INLINE bool isCloseTo(double x, double targetValue, double tolerance)
 {
   if(fabs(x-targetValue) <= tolerance)
