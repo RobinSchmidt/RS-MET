@@ -455,7 +455,7 @@ void rosic::minimumPhaseReconstruction(double *input, int numSamples, double *ou
 void rosic::crossCorrelation(double *x, int xLength, double *y, int yLength, double *result)
 {
   int length  = xLength + yLength - 1;
-  int fftSize = nextPowerOfTwo(length);
+  int fftSize = RAPT::rsNextPowerOfTwo(length);
   Complex *X  = new Complex[fftSize];
   Complex *Y  = new Complex[fftSize];
 

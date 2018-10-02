@@ -140,11 +140,11 @@ namespace rosic
 
     /** Returns the start phase for the delay-modulation of the left channel (in degrees). */
     double getDelayModulationPhaseLeft() const 
-    { return radiantToDegree(delayOscL.getStartPhase()); }
+    { return RAPT::rsRadiantToDegree(delayOscL.getStartPhase()); }
 
     /** Returns the start phase for the delay-modulation of the right channel (in degrees). */
     double getDelayModulationPhaseRight() const 
-    { return radiantToDegree(delayOscR.getStartPhase()); }
+    { return RAPT::rsRadiantToDegree(delayOscR.getStartPhase()); }
 
     /** Returns the cycle-length/period by which the amplitudes are modulated (in seconds or 
     beats). */
@@ -155,11 +155,11 @@ namespace rosic
 
     /** Returns the start phase for the amp-modulation of the left channel (in degrees). */
     double getAmplitudeModulationPhaseLeft() const 
-    { return radiantToDegree(ampOscL.getStartPhase()); }
+    { return RAPT::rsRadiantToDegree(ampOscL.getStartPhase()); }
 
     /** Returns the start phase for the amp-modulation of the right channel (in degrees). */
     double getAmplitudeModulationPhaseRight() const 
-    { return radiantToDegree(ampOscR.getStartPhase()); }
+    { return RAPT::rsRadiantToDegree(ampOscR.getStartPhase()); }
 
     //---------------------------------------------------------------------------------------------
     // audio processing:

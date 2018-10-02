@@ -245,7 +245,7 @@ public:
   {
     if(numAllocated < minNumElements)
     {
-      int sizeToAllocate = nextPowerOfTwo(minNumElements);
+      int sizeToAllocate = RAPT::rsNextPowerOfTwo(minNumElements);
 
       // we must enlarge the allocated memory:
       ElementType* tmpElements = new ElementType[sizeToAllocate];

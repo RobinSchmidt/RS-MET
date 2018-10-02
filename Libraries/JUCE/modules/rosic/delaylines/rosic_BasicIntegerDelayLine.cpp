@@ -7,7 +7,7 @@
 BasicIntegerDelayLine::BasicIntegerDelayLine(int maximumDelayInSamples)
 {
   //maximumDelayInSamples += 1;
-  maximumDelayInSamples  = nextPowerOfTwo(maximumDelayInSamples);
+  maximumDelayInSamples  = RAPT::rsNextPowerOfTwo(maximumDelayInSamples);
   bitMask                = maximumDelayInSamples-1;
   delayLine              = new double[(bitMask+1)];
   tapIn                  = 0;

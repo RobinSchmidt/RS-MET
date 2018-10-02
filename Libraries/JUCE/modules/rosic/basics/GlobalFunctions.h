@@ -119,8 +119,8 @@ offsetted value so as to hit the outMax correctly. */
 //  double outMax, double offset = 0.0);
 
 /** Returns a power of two which is greater than or equal to the input argument. */
-template <class T>
-INLINE T nextPowerOfTwo(T x);
+//template <class T>
+//INLINE T nextPowerOfTwo(T x);
 
 /** Maps a normalized floating point number in the range 0...1 into an integer index in the range
 0...numIndices-1. */
@@ -131,7 +131,7 @@ INLINE T nextPowerOfTwo(T x);
 the range ]-1...+1[. When a is zero, the mapping is the identity, when a is negative, the curve is
 above the identity-mapping (giving more precision in the upper range), when a is positive, the
 curve is below the identity mapping (giving more precsion in the lower range). */
-double mapLinearToRational(double x, double a);
+//double mapLinearToRational(double x, double a);
 
 /** Converts a picth-offset in semitones value into a frequency multiplication factor. */
 //INLINE double pitchOffsetToFreqFactor(double pitchOffset);
@@ -143,7 +143,7 @@ double mapLinearToRational(double x, double a);
 //INLINE double pitchToFreq(double pitch, double masterTuneA4);
 
 /** Converts an angle in radiant into degrees. */
-INLINE double radiantToDegree(double radiant);
+//INLINE double radiantToDegree(double radiant);
 
 /** Generates a random number that is uniformly distributed between min and max (inclusive). The
 underlying integer pseudo random number generator is a linear congruential with period length of
@@ -394,7 +394,6 @@ INLINE double expToLinWithOffset(double in, double inMin, double inMax, double o
   //tmp *= outMax/(outMax+offset);
   //return tmp;
 }
-*/
 
 template <class T>
 INLINE T nextPowerOfTwo(T x)
@@ -404,7 +403,7 @@ INLINE T nextPowerOfTwo(T x)
     accu *= 2;
   return accu;
 }
-/*
+
 INLINE int normalizedValueToIndex(float normalizedValue, int numIndices)
 {
   return (int)floor(normalizedValue*numIndices);
@@ -427,12 +426,12 @@ INLINE double pitchToFreq(double pitch, double masterTuneA4)
   return masterTuneA4 * 0.018581361171917516667460937040007
     * exp(0.057762265046662109118102676788181*pitch);
 }
-*/
+
 INLINE double radiantToDegree(double radiant)
 {
   return (180.0/PI)*radiant;
 }
-
+*/
 INLINE double randomUniform(double min, double max, int seed)
 {
   static unsigned long state = 0;

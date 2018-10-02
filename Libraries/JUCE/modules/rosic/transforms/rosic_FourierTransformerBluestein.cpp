@@ -37,7 +37,7 @@ void FourierTransformerBluestein::setBlockSize(int newBlockSize)
     blockSizeIsPowerOfTwo = RAPT::rsIsPowerOfTwo(N);
     if( !blockSizeIsPowerOfTwo )
     {
-      M = nextPowerOfTwo(2*N-1);
+      M = RAPT::rsNextPowerOfTwo(2*N-1);
       generateChirp();
     }
     else

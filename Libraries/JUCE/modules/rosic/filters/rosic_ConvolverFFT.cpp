@@ -121,7 +121,7 @@ void ConvolverFFT::allocateBuffers(int newImpulseResponseLength)
   if( newImpulseResponseLength != L )
   {
     L = newImpulseResponseLength;
-    M = nextPowerOfTwo(2*L);
+    M = RAPT::rsNextPowerOfTwo(2*L);
 
     if( x  != NULL ) delete[] x;
     if( y1 != NULL ) delete[] y1;

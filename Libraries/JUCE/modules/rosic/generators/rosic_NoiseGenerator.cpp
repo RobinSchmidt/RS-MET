@@ -9,7 +9,7 @@ NoiseGenerator::NoiseGenerator(int bufferLengthToAllocate)
   mutex.lock();
   if( bufferLengthToAllocate > 0 )
   {
-    length = nextPowerOfTwo(bufferLengthToAllocate); 
+    length = RAPT::rsNextPowerOfTwo(bufferLengthToAllocate); 
     buffer = new(std::nothrow) double[length];
     if( buffer == NULL )
     {
@@ -58,7 +58,7 @@ void NoiseGenerator::setSharedMemoryAreaToUse(void *startAddress, int sizeInByte
 
   length = sizeInBytes/sampleSizeInBytes; 
   if( !RAPT::rsIsPowerOfTwo(length) )
-    length = nextPowerOfTwo(length) / 2;  // power of 2 and <= available space
+    length = RAPT::rsNextPowerOfTwo(length) / 2;  // power of 2 and <= available space
   
   buffer = (double*) startAddress;
 
