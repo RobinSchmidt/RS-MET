@@ -344,7 +344,7 @@ INLINE double cosSquaredApprox(double x)
 INLINE void equalPowerGainFactors(double x, double *gain1, double *gain2,
   double xMin, double xMax)
 {
-  double tmp = linToLin(x, xMin, xMax, 0.0, PI/2.0);
+  double tmp = RAPT::rsLinToLin(x, xMin, xMax, 0.0, PI/2.0);
   sinCos(tmp, gain2, gain1);
 }
 
@@ -531,7 +531,7 @@ INLINE double randDbl()
 INLINE double random(double min, double max)
 {
   double tmp = (1.0/RAND_MAX) * rand();  // between 0...1
-  return linToLin(tmp, 0.0, 1.0, min, max);
+  return RAPT::rsLinToLin(tmp, 0.0, 1.0, min, max);
 }
 
 /*

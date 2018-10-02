@@ -489,8 +489,8 @@ double ParameterModule::mapNormalizedValue(double normalizedValue)
 {
   switch(mappingFunction)
   {
-  case EXPONENTIAL_MAPPING: return linToExp(normalizedValue, 0.0, 1.0, minValue, maxValue);
-  default:                  return linToLin(normalizedValue, 0.0, 1.0, minValue, maxValue);
+  case EXPONENTIAL_MAPPING: return RAPT::rsLinToExp(normalizedValue, 0.0, 1.0, minValue, maxValue);
+  default:                  return RAPT::rsLinToLin(normalizedValue, 0.0, 1.0, minValue, maxValue);
   }
 }
 
@@ -498,8 +498,8 @@ double ParameterModule::unmapToNormalizedValue(double mappedValue)
 {
   switch(mappingFunction)
   {
-  case EXPONENTIAL_MAPPING: return expToLin(mappedValue, minValue, maxValue, 0.0, 1.0);
-  default:                  return linToLin(mappedValue, minValue, maxValue, 0.0, 1.0);
+  case EXPONENTIAL_MAPPING: return RAPT::rsExpToLin(mappedValue, minValue, maxValue, 0.0, 1.0);
+  default:                  return RAPT::rsLinToLin(mappedValue, minValue, maxValue, 0.0, 1.0);
   }
 }
 

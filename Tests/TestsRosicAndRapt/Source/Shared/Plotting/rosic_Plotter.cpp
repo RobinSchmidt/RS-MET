@@ -30,7 +30,7 @@ void Plotter::plotTwoFunctions(double (*f1) (double), double (*f2) (double),
   for(int n=0; n<numPoints; n++)
   {
     tmp   = (double) n / (double) (numPoints-1);
-    tmp   = linToLin(tmp, 0.0, 1.0, xMin, xMax);
+    tmp   = RAPT::rsLinToLin(tmp, 0.0, 1.0, xMin, xMax);
     x[n]  = tmp;
     y1[n] = f1(tmp);
     y2[n] = f2(tmp);
@@ -54,7 +54,7 @@ void Plotter::plotFunctionFamily(double (*f) (double, double), double xMin, doub
   for(int n=0; n<numPoints; n++)
   {
     tmp   = (double) n / (double) (numPoints-1);
-    tmp   = linToLin(tmp, 0.0, 1.0, xMin, xMax);
+    tmp   = RAPT::rsLinToLin(tmp, 0.0, 1.0, xMin, xMax);
     x[n]  = tmp;
     y1[n] = f(tmp, p1);
     y2[n] = f(tmp, p2);
@@ -79,7 +79,7 @@ void Plotter::plotFunction(double (*f) (double), double xMin, double xMax, int n
   for(int n=0; n<numPoints; n++)
   {
     tmp  = (double) n / (double) (numPoints-1);
-    tmp  = linToLin(tmp, 0.0, 1.0, xMin, xMax);
+    tmp  = RAPT::rsLinToLin(tmp, 0.0, 1.0, xMin, xMax);
     x[n] = tmp;
     y[n] = f(tmp);
   }

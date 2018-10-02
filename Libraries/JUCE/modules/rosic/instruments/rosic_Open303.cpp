@@ -336,8 +336,8 @@ void Open303::calculateEnvModScalerAndOffset()
     const double sHiC = 0.864344900642434;       // constant in line eq. for scaler at high cutoff
 
     // do the calculation of the scaler and offset:
-    double e   = linToLin(envMod, 0.0, 80.0, 0.0, 1.0);
-    double c   = expToLin(cutoff, c0,  c1,   0.0, 1.0);
+    double e   = RAPT::rsLinToLin(envMod, 0.0, 80.0, 0.0, 1.0);
+    double c   = RAPT::rsExpToLin(cutoff, c0,  c1,   0.0, 1.0);
     double sLo = sLoF*e + sLoC;
     double sHi = sHiF*e + sHiC;
     envScaler  = (1-c)*sLo + c*sHi;

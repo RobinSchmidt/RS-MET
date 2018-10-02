@@ -41,6 +41,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // functions for analyzing filters in zero/pole/gain representation:
 
+//#ifdef NOT_DEFINED // faux commenting out
+
   /** Returns the complex frequency response of an "N"th analog filter with zeros, poles and gain 
   given in "z", "p", "k" at the radian frequency "w". */
   static Complex getAnalogFrequencyResponseAt(Complex* z, Complex* p, double k, int N, double w);
@@ -70,6 +72,8 @@ public:
   You may pass an initial guess for the radian frequency. */
   static double findAnalogFrequencyWithMagnitude(Complex* z, Complex* p, double* k, int N, 
     double magnitude, double initialGuess = 1.0);
+
+//#endif
 
   //-----------------------------------------------------------------------------------------------
   // functions for analyzing (cascaded) biquad filters:

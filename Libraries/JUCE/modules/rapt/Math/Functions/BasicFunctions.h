@@ -74,6 +74,7 @@ the clear-text parameters. */
 inline double rsLinToLin(double in, double inMin, double inMax, double outMin, double outMax)
 { return outMin + (outMax-outMin) * (in-inMin) / (inMax-inMin); }
 
+
 /** Converts a value between inMin and inMax into a value between outMin and outMax where the
 mapping of the output is exponential. Example: y = linToExp(x, 0.0, 1.0, 20.0, 20000.0) will map
 the input x assumed to lie inside 0.0...1.0 to the range between 20.0...20000.0 where equal

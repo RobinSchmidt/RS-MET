@@ -2,7 +2,8 @@
 #define rosic_PolynomialAlgorithms_h
 
 // commented code is obsolete and superseded by templatized versions in RAPT
-// todo: replace also the functions involving complex ins/outs
+// todo: replace also the functions involving complex ins/outs - maybe replace higher level code
+// that uses them before - for example, in rosic_FilterAnalyzer.h/cpp
 
 namespace rosic
 {
