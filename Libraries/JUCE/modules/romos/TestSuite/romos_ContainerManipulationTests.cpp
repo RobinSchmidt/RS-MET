@@ -239,19 +239,19 @@ bool ContainerizationAddedConstantsTest::runTest()
 
   moduleToTest->resetStateForAllVoices();   
   processModuleInFrames();
-  if( !areBuffersEqual(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+  if( !RAPT::rsArray::areBuffersEqual(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
     return false;
 
   containerizeSum();
   moduleToTest->resetStateForAllVoices();   
   processModuleInFrames();
-  if( !areBuffersEqual(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+  if( !RAPT::rsArray::areBuffersEqual(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
     return false;
 
   unContainerizeSum();
   moduleToTest->resetStateForAllVoices();   
   processModuleInFrames();
-  if( !areBuffersEqual(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+  if( !RAPT::rsArray::areBuffersEqual(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
     return false;
 
   static const int numIterations = 50;
@@ -264,7 +264,7 @@ bool ContainerizationAddedConstantsTest::runTest()
 
     //printModuleStructure(moduleToTest, 0);
 
-    if( !areBuffersEqual(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+    if( !RAPT::rsArray::areBuffersEqual(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
     {
       printModuleStructure(moduleToTest, 0);
       RAPT::rsAssert(false, "plotting code needs update");

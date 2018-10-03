@@ -113,8 +113,8 @@ bool testGain(bool verboseOutput)
 bool testSumDiff(bool verboseOutput)
 {
   romos::Module *testModule = TestModuleBuilder::createSumDiff("SumDiff", 0, 0, false);
-  add(     x[0][0], x[0][1], d[0][0], N);
-  subtract(x[0][0], x[0][1], d[0][1], N);
+  RAPT::rsArray::add(     x[0][0], x[0][1], d[0][0], N);
+  RAPT::rsArray::subtract(x[0][0], x[0][1], d[0][1], N);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
   moduleFactory.deleteModule(testModule);
@@ -124,8 +124,8 @@ bool testSumDiff(bool verboseOutput)
 bool testWrappedSumDiff(bool verboseOutput)
 {
   romos::Module *testModule = TestModuleBuilder::createSumDiff("WrappedSumDiff", 0, 0, false);
-  add(     x[0][0], x[0][1], d[0][0], N);
-  subtract(x[0][0], x[0][1], d[0][1], N);
+  RAPT::rsArray::add(     x[0][0], x[0][1], d[0][0], N);
+  RAPT::rsArray::subtract(x[0][0], x[0][1], d[0][1], N);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
   moduleFactory.deleteModule(testModule);
@@ -223,7 +223,7 @@ bool testContainerizationAddedConstants(bool verboseOutput)
     processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
     if( verboseOutput == true )
       printModuleStructure(testModule, 0);
-    if( !areBuffersEqual(y[0][0], d[0][0], N) )
+    if( !RAPT::rsArray::areBuffersEqual(y[0][0], d[0][0], N) )
     {
       printf("%s", "!!! ContainerizationAddedConstants failed !!!\n");
       //printModuleStructure(testModule, 0);
@@ -309,7 +309,7 @@ bool testAdderBlock(bool verboseOutput)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
   romos::Module *testModule = moduleFactory.createModule("Adder");
-  add(x[0][0], x[0][1], d[0][0], maxNumFrames);  // establish desired result
+  RAPT::rsArray::add(x[0][0], x[0][1], d[0][0], maxNumFrames);  // establish desired result
   bool result = checkBlockProcessingAndPrintResult(testModule, ppx, ppy, ppd, maxNumFrames, 50, "AdderBlock", 0.0);
   moduleFactory.deleteModule(testModule);
   return result; 
@@ -423,7 +423,7 @@ bool testAdderProcessingFunctions(int numVoicesToCheck)
   romos::Module *testModule = moduleFactory.createModule("Adder");
 
   for(int v = 0; v < numVoicesToCheck; v++) 
-    add(x[v][0], x[v][1], d[v][0], maxNumFrames);
+    RAPT::rsArray::add(x[v][0], x[v][1], d[v][0], maxNumFrames);
 
   std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
   bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, "Adder", &events);
@@ -449,7 +449,7 @@ bool testWrappedAdderProcessingFunctions(int numVoicesToCheck)
 {
   romos::Module *testModule =  TestModuleBuilder::createWrappedAdder("WrappedAdder", 0, 0, false);
   for(int v = 0; v < numVoicesToCheck; v++) 
-    add(x[v][0], x[v][1], d[v][0], maxNumFrames);
+    RAPT::rsArray::add(x[v][0], x[v][1], d[v][0], maxNumFrames);
   std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
   bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, 
     "WrappedAdder", &events);

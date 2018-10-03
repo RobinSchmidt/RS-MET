@@ -166,7 +166,7 @@ void rsFilterAnalyzer::getBiquadCascadeMagnitudeResponse(double* b0, double* b1,
     if( accumulate == false )
       copyBuffer(tmp, mag, numBins);  
     else
-      add(mag, tmp, mag, numBins);
+      RAPT::rsArray::add(mag, tmp, mag, numBins);
     clipBuffer(mag, numBins, -200.0, INF);  // avoid negative infinities
   }
   else

@@ -21,26 +21,26 @@ namespace rosic
 
   /** Adds the elements of 'buffer1' and 'buffer2' - type must define operator '+'. The 'result' buffer may be the same as 'buffer1' or
   'buffer2'. */
-  template <class T>
-  void add(T *buffer1, T *buffer2, T *result, int length);
+  //template <class T>
+  //void add(T *buffer1, T *buffer2, T *result, int length);
 
   /** Adds the scalar 'valueToAdd' to the elements of 'buffer' - the type must define operator '+'. The 'result' buffer may be the same as
   'buffer'. */
-  template <class T>
-  void add(T *buffer, T valueToAdd, T *result, int length);
+  //template <class T>
+  //void add(T *buffer, T valueToAdd, T *result, int length);
 
   /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offest may be non-integer in which case linear
   interpolation will be used. */
-  template <class T>
-  void addCircularShiftedCopy(T *buffer, int length, double offset, T weight);
+  //template <class T>
+  //void addCircularShiftedCopy(T *buffer, int length, double offset, T weight);
 
   /** Checks whether two buffer match element-wise with some tolerance. */
-  template <class T>
-  bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
+  //template <class T>
+  //bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
 
   /** Checks whether two buffer match element-wise. */
-  template <class T>
-  bool areBuffersEqual(T *buffer1, T *buffer2, int length);
+  //template <class T>
+  //bool areBuffersEqual(T *buffer1, T *buffer2, int length);
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward shifts use negative values for
   numPositions. If the absolute value of 'numPositions' is greater than the length of the buffer, it will use numPositions modulo the
@@ -290,7 +290,7 @@ namespace rosic
     else
       return T(0);
   }
-
+  /*
   template <class T>
   void add(T *buffer1, T *buffer2, T *result, int length)
   {
@@ -337,6 +337,7 @@ namespace rosic
     }
     return true;
   }
+  */
 
   template <class T>
   void circularShift(T *buffer, int length, int numPositions)
@@ -793,8 +794,8 @@ namespace rosic
       return; // avoid divide-by-zero
     T scaleFactor  = range/currentRange;
     T offset       = min - scaleFactor*currentMin;
-    scale(buffer, buffer, length, scaleFactor);
-    add(buffer, offset, buffer, length);
+    RAPT::rsArray::scale(buffer, buffer, length, scaleFactor);
+    RAPT::rsArray::add(buffer, offset, buffer, length);
   }
 
   template <class T>

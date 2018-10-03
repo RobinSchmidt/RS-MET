@@ -70,9 +70,9 @@ void GenerateDesiredOutput::forTestFilter1(int N, double *x, double *b0, double 
   double *dLeakInt = new double[N];
   GenerateDesiredOutput::forMovingAverage(  N, x, b0, b1, dMovAv);
   GenerateDesiredOutput::forLeakyIntegrator(N, x, c,      dLeakInt);
-  add(     dMovAv, dLeakInt, dSum,  N);
-  subtract(dMovAv, dLeakInt, dDiff, N);
-  multiply(dMovAv, dLeakInt, dProd, N);
+  RAPT::rsArray::add(     dMovAv, dLeakInt, dSum,  N);
+  RAPT::rsArray::subtract(dMovAv, dLeakInt, dDiff, N);
+  RAPT::rsArray::multiply(dMovAv, dLeakInt, dProd, N);
   delete[] dLeakInt;
   delete[] dMovAv;
 }

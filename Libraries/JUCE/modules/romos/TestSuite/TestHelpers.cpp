@@ -252,9 +252,9 @@ void getDesiredOutputForTestFilter1(int N, double *x, double *b0, double *b1, do
   double *dLeakInt = new double[N];
   getDesiredOutputForMovingAverage(  N, x, b0, b1, dMovAv);
   getDesiredOutputForLeakyIntegrator(N, x, c,      dLeakInt);
-  add(     dMovAv, dLeakInt, dSum,  N);
-  subtract(dMovAv, dLeakInt, dDiff, N);
-  multiply(dMovAv, dLeakInt, dProd, N);
+  RAPT::rsArray::add(     dMovAv, dLeakInt, dSum,  N);
+  RAPT::rsArray::subtract(dMovAv, dLeakInt, dDiff, N);
+  RAPT::rsArray::multiply(dMovAv, dLeakInt, dProd, N);
   delete[] dLeakInt;
   delete[] dMovAv;
 }
@@ -309,7 +309,7 @@ bool checkResult(double **y, double **d, int numChannels, int numFrames, double 
 {
   bool result = true;
   for(int c = 0; c < numChannels; c++)
-    result &= areBuffersApproximatelyEqual(y[c], d[c], numFrames, tolerance);
+    result &= RAPT::rsArray::areBuffersApproximatelyEqual(y[c], d[c], numFrames, tolerance);
   return result;
 }
 
@@ -384,7 +384,7 @@ bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFra
 
   processModuleInFrames(module, numFrames, x, y, events, false);
 
-  bool result = areBuffersEqual(d[0][0], y[0][0], numFrames);
+  bool result = RAPT::rsArray::areBuffersEqual(d[0][0], y[0][0], numFrames);
 
   //Plotter::plotData(numFrames, t, d[0][0], y[0][0]); 
 
@@ -403,7 +403,7 @@ bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFra
 
   processModuleInBlocks(module, numFrames, x, y, events, false);
 
-  bool result = areBuffersEqual(d[0][0], y[0][0], numFrames);
+  bool result = RAPT::rsArray::areBuffersEqual(d[0][0], y[0][0], numFrames);
 
   //Plotter::plotData(100, t, d[0][0], y[0][0]); 
 
@@ -428,7 +428,7 @@ bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoi
 
   bool result = true;
   for(v = 0; v < numVoicesToCheck; v++)
-    result &= areBuffersEqual(d[v][0], y[v][0], numFrames);
+    result &= RAPT::rsArray::areBuffersEqual(d[v][0], y[v][0], numFrames);
 
   //Plotter::plotData(50, t, d[0][0], y[0][0]); 
 
@@ -453,7 +453,7 @@ bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoi
 
   bool result = true;
   for(v = 0; v < numVoicesToCheck; v++)
-    result &= areBuffersEqual(d[v][0], y[v][0], numFrames);
+    result &= RAPT::rsArray::areBuffersEqual(d[v][0], y[v][0], numFrames);
 
   //Plotter::plotData(numFrames, t, d[1][0], y[1][0]); 
   //Plotter::plotData(50, t, &d[0][0][950], &y[0][0][950]); 

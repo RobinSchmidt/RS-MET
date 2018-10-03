@@ -208,8 +208,8 @@ void WaveTable::updateBuffers()
   // filtering/smoothing manipulations:
 
   double combOffset = 0.5*tableLength/ combHarmonic;
-  addCircularShiftedCopy(tmpL, tableLength, combOffset, 0.01*combAmount);
-  addCircularShiftedCopy(tmpR, tableLength, combOffset, 0.01*combAmount);
+  RAPT::rsArray::addCircularShiftedCopy(tmpL, tableLength, combOffset, 0.01*combAmount);
+  RAPT::rsArray::addCircularShiftedCopy(tmpR, tableLength, combOffset, 0.01*combAmount);
 
   copyBuffer(tmpL, waveBufferL, tableLength);
   copyBuffer(tmpR, waveBufferR, tableLength);

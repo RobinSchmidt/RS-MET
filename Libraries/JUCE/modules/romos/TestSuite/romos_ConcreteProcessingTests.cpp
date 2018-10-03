@@ -34,7 +34,7 @@ AdderTest::AdderTest()
 void AdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArray::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
@@ -95,7 +95,7 @@ WrappedAdderTest::WrappedAdderTest()
 void WrappedAdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArray::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
@@ -149,9 +149,9 @@ void SumDiffProdTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
   {
-    add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
-    subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
-    multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
+    RAPT::rsArray::add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArray::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
+    RAPT::rsArray::multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
   }
 }
 
@@ -165,9 +165,9 @@ void WrappedSumDiffProdTest::fillDesiredOutputSignalArrays(bool testModuleIsPoly
 {
   for(int v = 0; v < numVoicesToUse; v++) 
   {
-    add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
-    subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
-    multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
+    RAPT::rsArray::add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArray::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
+    RAPT::rsArray::multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
   }
 }
 

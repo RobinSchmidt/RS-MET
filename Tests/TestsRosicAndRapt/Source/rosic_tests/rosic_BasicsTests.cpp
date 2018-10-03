@@ -348,9 +348,9 @@ void rotes::plotOneSidedInterpolatorContinuousResponses(int M[5], double shape)
   double *x = createDeltaImpulse(inLength, 1);
   rosic::Matrix h = interpolateOneSidedHermite5M(x, inLength, oversampling, M, shape);
   double *t = new double[h.numColumns];
-  rosic::fillWithIndex(t, h.numColumns);
-  rosic::scale(t, t, h.numColumns, 1.0/oversampling);
-  rosic::add(t, -1.0, t, h.numColumns);
+  RAPT::rsArray::fillWithIndex(t, h.numColumns);
+  RAPT::rsArray::scale(t, t, h.numColumns, 1.0/oversampling);
+  RAPT::rsArray::add(t, -1.0, t, h.numColumns);
 
   Plotter::plotData(h.numColumns, t, h.m[0], h.m[1], h.m[2], h.m[3], h.m[4]);
   //plotMagnitudeResponsesOf(h, 8192, -120.0, 10, oversampling, 1.0/oversampling);

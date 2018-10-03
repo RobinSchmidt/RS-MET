@@ -144,8 +144,8 @@ void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double
   bool loop = true;  // make member
   if(loop == true) { // we need to ignore last element in mean computation
     double m;        // because it just repeats the first and is irrelevant
-    m = mean(&x[0], N-1); add(&x[0], -m, &x[0], N);
-    m = mean(&y[0], N-1); add(&y[0], -m, &y[0], N); }
+    m = RAPT::rsArray::mean(&x[0], N-1); RAPT::rsArray::add(&x[0], -m, &x[0], N);
+    m = RAPT::rsArray::mean(&y[0], N-1); RAPT::rsArray::add(&y[0], -m, &y[0], N); }
   else {
     removeMean(&x[0], N);
     removeMean(&y[0], N); }
