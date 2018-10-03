@@ -179,7 +179,6 @@
 #include "filters/rosic_LeakyIntegrator.h"
 #include "filters/rosic_PrototypeDesigner.h"
 #include "filters/rosic_PoleZeroMapper.h"
-#include "filters/rosic_InfiniteImpulseResponseDesigner.h"
 #include "filters/rosic_EngineersFilter.h"
 #include "filters/rosic_LinkwitzRileyCrossOver.h"
 #include "filters/rosic_CrossOver4Way.h"

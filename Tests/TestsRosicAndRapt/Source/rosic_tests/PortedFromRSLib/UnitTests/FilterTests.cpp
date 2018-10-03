@@ -125,6 +125,7 @@ bool testIIRDesign(int method, int mode, int protoOrder)
 {
   // method: 0..5, mode: 0..7, order: 1..20
   // Compare results from the old rosic and new rapt implementation
+  // ...obsolete now ...delete soon
 
   bool r = true;
 
@@ -143,7 +144,7 @@ bool testIIRDesign(int method, int mode, int protoOrder)
   //typedef rsPoleZeroMapperD   PZM2;
   //typedef rosic::rsFilterCoefficientConverter FCC1;
   //typedef rsFilterCoefficientConverterD FCC2;
-  typedef rosic::rsInfiniteImpulseResponseDesigner IIRD1;
+  typedef rosic::rsInfiniteImpulseResponseDesignerD IIRD1;
   typedef rsInfiniteImpulseResponseDesignerD   IIRD2;
 
   // maybe check here, if the enums in PTD1/PTD2, etc. match
@@ -206,12 +207,13 @@ bool testIIRDesign(int method, int mode, int protoOrder)
   iird1.setBandwidth(bw);
   iird2.setBandwidth(bw);
   size_t N2 = (size_t) iird1.getFinalFilterOrder();
-  std::vector<rosic::Complex> p1(N2), z1(N2);
+  //std::vector<rosic::Complex> p1(N2), z1(N2);
+  std::vector<std::complex<double>> p1(N2), z1(N2);
   std::vector<std::complex<double>> p2(N2), z2(N2);
   iird1.getPolesAndZeros(&p1[0], &z1[0]);
   iird2.getPolesAndZeros(&p2[0], &z2[0]);
-  r &= equal(p1, p2);
-  r &= equal(z1, z2);
+  //r &= equal(p1, p2);
+  //r &= equal(z1, z2);
 
   return r;
 }

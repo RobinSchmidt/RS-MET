@@ -54,6 +54,9 @@ typedef RAPT::rsPoleZeroMapper<double> rsPoleZeroMapperD;
 typedef RAPT::rsFilterCoefficientConverter<double> rsFilterCoefficientConverterD;
 typedef RAPT::rsInfiniteImpulseResponseDesigner<double> rsInfiniteImpulseResponseDesignerD;
 typedef RAPT::rsQuadratureNetwork<double, double> rsQuadratureNetwork;
+//typedef RAPT::rsLinkwitzRileyCrossOver<double, double> rsLinkwitzRileyCrossOver;
+//typedef RAPT::rsCrossOver4Way<double, double> rsCrossOver4Way;
+ // crossover does not yet work in ToolChain due to stereo/mono handling
 
 //typedef RAPT::rsEngineersFilter<double, double> rsEngineersFilterDD;
 //typedef RAPT::rsEngineersFilter<rsFloat64x2, double> rsEngineersFilterD2D;

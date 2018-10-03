@@ -381,9 +381,9 @@ void rotes::testFilterAnalyzer()
   int prototypeOrder        = 3;
 
   // the filter-designer:
-  rosic::rsInfiniteImpulseResponseDesigner designer;
+  rosic::rsInfiniteImpulseResponseDesignerD designer;
   designer.setApproximationMethod(rosic::rsPrototypeDesigner::BUTTERWORTH);
-  designer.setMode(rosic::rsInfiniteImpulseResponseDesigner::LOWPASS);
+  designer.setMode(rosic::rsInfiniteImpulseResponseDesignerD::LOWPASS);
   designer.setFrequency(filterFrequency);
   designer.setSampleRate(sampleRate);
   designer.setPrototypeOrder(prototypeOrder);
@@ -438,11 +438,11 @@ void rotes::testBiquadCascade()
 {
   double sampleRate = 44100.0;
 
-  rosic::rsInfiniteImpulseResponseDesigner designer;
+  rosic::rsInfiniteImpulseResponseDesignerD designer;
   rosic::rsBiquadCascade            biquadCascade;
 
   designer.setApproximationMethod(rosic::rsPrototypeDesigner::BUTTERWORTH);
-  designer.setMode(rosic::rsInfiniteImpulseResponseDesigner::BANDPASS);
+  designer.setMode(rosic::rsInfiniteImpulseResponseDesignerD::BANDPASS);
   designer.setPrototypeOrder(5);
   designer.setSampleRate(sampleRate);
   designer.setFrequency(5000.0);
@@ -999,13 +999,14 @@ void rotes::testPoleZeroMapping()
   double           fc = 5000.0;  // cutoff frequency in Hz
   double           fs = 44100.0; // samplerate in Hz
 
-  Complex z[2*N], p[2*N];        // arrays of poles and zeros
+  //Complex z[2*N], p[2*N];        // arrays of poles and zeros
+  std::complex<double> z[2*N], p[2*N];        // arrays of poles and zeros
   double  k = 1.0;               // filter gain
 
 
-  rosic::rsInfiniteImpulseResponseDesigner iirDesigner;
+  rosic::rsInfiniteImpulseResponseDesignerD iirDesigner;
   iirDesigner.setApproximationMethod(rosic::rsPrototypeDesigner::ELLIPTIC);
-  iirDesigner.setMode(rosic::rsInfiniteImpulseResponseDesigner::LOWPASS);
+  iirDesigner.setMode(rosic::rsInfiniteImpulseResponseDesignerD::LOWPASS);
   iirDesigner.setPrototypeOrder(N);
   iirDesigner.setSampleRate(fs);
   iirDesigner.setFrequency(fc);
@@ -1026,11 +1027,11 @@ void rotes::highOrderFilterPolesAndZeros()
   double Ap    =     1.0;  // passband ripple in dB
   double As    =    50.0;  // stopband rejection in dB
   double bw    =     1.0;  // bandwidth in octaves
-  int mode   = rosic::rsInfiniteImpulseResponseDesigner::BANDPASS;
+  int mode   = rosic::rsInfiniteImpulseResponseDesignerD::BANDPASS;
   int method = rosic::rsPrototypeDesigner::ELLIPTIC;
 
   // create and set up the filter designer object:
-  rosic::rsInfiniteImpulseResponseDesigner designer;
+  rosic::rsInfiniteImpulseResponseDesignerD designer;
   designer.setPrototypeOrder(N);
   designer.setSampleRate(fs);
   designer.setFrequency(fc);
@@ -1041,7 +1042,8 @@ void rotes::highOrderFilterPolesAndZeros()
   designer.setApproximationMethod(method);
 
   // compute poles and zeros:
-  Complex z[2*N], p[2*N];        // arrays of poles and zeros
+  //Complex z[2*N], p[2*N];        // arrays of poles and zeros
+  std::complex<double> z[2*N], p[2*N];        // arrays of poles and zeros
   designer.getPolesAndZeros(p, z);
 
   int dummy = 0;

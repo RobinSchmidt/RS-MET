@@ -156,7 +156,7 @@ void rsLinkwitzRileyCrossOver::resetBuffers()
 void rsLinkwitzRileyCrossOver::updateFilterCoefficients()
 {
   // create and set up a filter-designer object:
-  rsInfiniteImpulseResponseDesigner designer;
+  rsInfiniteImpulseResponseDesignerD designer;
   designer.setSampleRate(sampleRate);
   designer.setApproximationMethod(rsPrototypeDesigner::BUTTERWORTH);
   designer.setPrototypeOrder(butterworthOrder);
@@ -165,7 +165,7 @@ void rsLinkwitzRileyCrossOver::updateFilterCoefficients()
   // prototype poles
 
   // design the lowpasses:
-  designer.setMode(rsInfiniteImpulseResponseDesigner::LOWPASS);
+  designer.setMode(rsInfiniteImpulseResponseDesignerD::LOWPASS);
   lowpass1.setOrder(butterworthOrder);
   designer.getBiquadCascadeCoefficients(lowpass1.getAddressB0(), lowpass1.getAddressB1(), 
     lowpass1.getAddressB2(), lowpass1.getAddressA1(), lowpass1.getAddressA2() );

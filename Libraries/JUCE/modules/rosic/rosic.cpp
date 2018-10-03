@@ -103,7 +103,6 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "filters/rosic_PrototypeDesigner.cpp"
 #include "filters/rosic_PoleZeroMapper.cpp"
 #include "filters/rosic_FilterCoefficientConverter.cpp"
-#include "filters/rosic_InfiniteImpulseResponseDesigner.cpp"
 #include "filters/rosic_EngineersFilter.cpp"
 #include "filters/rosic_LinkwitzRileyCrossOver.cpp"
 #include "filters/rosic_CrossOver4Way.cpp"
