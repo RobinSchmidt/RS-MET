@@ -113,7 +113,7 @@ public:
 
   double DoEvaluate()
   {
-    return rosic::powBipolar(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+    return RAPT::rsPowBipolar(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
   }
 };
 

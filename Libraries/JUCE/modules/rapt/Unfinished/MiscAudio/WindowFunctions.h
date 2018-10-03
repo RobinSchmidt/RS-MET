@@ -60,15 +60,17 @@ T rsWindowedSinc(T x, T length, T stretch);
 
 
 // todo:
-// Generalize this to make a generic sum-of-cosines window where the Hanning- and Hamming windows
-// are a special case. This class includes also Blackman, Nutall, etc. windows. We may be able to
-// come up with other window shapes that supress sidebands even more than the existing stadard
-// windows.
-// Maybe have a parameter that switches between both ends zero (like octave),
-// both ends nonzero (like matlab), and start zero and end nonzero (peridoic, suitable for 
-// phase-vocoder analysis/resnthesis)
-// For reassingment, compute also (optionally) a derivative window wd and a time-ramped window wr
-// these can be optinal arguments that default to nullptr
+// -Generalize this to make a generic sum-of-cosines window where the Hanning- and Hamming windows
+//  are a special case. This class includes also Blackman, Nutall, etc. windows. We may be able to
+//  come up with other window shapes that supress sidebands even more than the existing stadard
+//  windows.
+// -Maybe have a parameter that switches between both ends zero (like octave),
+//  both ends nonzero (like matlab), and start zero and end nonzero (periodic, suitable for 
+//  phase-vocoder analysis/resnthesis)...or start nonzero and end zero
+//  for spectral analysis (without resynthesis), it seems best to have both ends nonzero in order 
+//  to not artificially shorten the window
+// -For reassingment, compute also (optionally) a derivative window wd and a time-ramped window wr
+//  these can be optional arguments that default to nullptr
 
 // requirements on windows:
 // for spectrum analysis:

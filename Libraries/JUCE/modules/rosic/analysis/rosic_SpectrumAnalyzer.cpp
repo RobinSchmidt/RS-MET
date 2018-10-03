@@ -134,12 +134,12 @@ void SpectrumAnalyzer::makeWindow()
 
   switch( windowFunction )
   {
-  case RECTANGULAR_WINDOW:  makeRectangularWindow(windowBuffer, blockSize);   break;
-  case HANNING_WINDOW:      makeHanningWindow(windowBuffer, blockSize);       break;
-  case HAMMING_WINDOW:      makeHammingWindow(windowBuffer, blockSize);       break;
-  case BLACKMAN_WINDOW:     makeBlackmanWindow(windowBuffer, blockSize);      break;
+  case RECTANGULAR_WINDOW:  RAPT::rsMakeRectangularWindow(windowBuffer, blockSize); break;
+  case HANNING_WINDOW:      RAPT::rsMakeHanningWindow(    windowBuffer, blockSize); break;
+  case HAMMING_WINDOW:      RAPT::rsMakeHammingWindow(    windowBuffer, blockSize); break;
+  case BLACKMAN_WINDOW:     RAPT::rsMakeBlackmanWindow(   windowBuffer, blockSize); break;
 
-  default: makeHanningWindow(windowBuffer, blockSize);
+  default: RAPT::rsMakeHanningWindow(windowBuffer, blockSize);
   }
 
   // normalize the window to unit mean:

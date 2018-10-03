@@ -141,35 +141,35 @@ return value, the fractional part in the second argument. */
 //INLINE double logistic(double x, double b);
 
 /** Fills the window-array with a Hamming-window. */
-INLINE void makeBlackmanWindow(double *window, int length);
+//INLINE void makeBlackmanWindow(double *window, int length);
 
 /** Fills the window-array with a cosine power window. */
-INLINE void makeCosinePowerWindow(double *window, int length, double power = 2.0);
+//INLINE void makeCosinePowerWindow(double *window, int length, double power = 2.0);
 
 /** Fills the window-array with a Hamming-window. */
-INLINE void makeHammingWindow(double *window, int length);
+//INLINE void makeHammingWindow(double *window, int length);
 
 /** Fills the window-array with a Hanning-window. */
-INLINE void makeHanningWindow(double *window, int length);
+//INLINE void makeHanningWindow(double *window, int length);
 
 /** Fills the window-array with a rectangular window. ...ahem trivial */
-INLINE void makeRectangularWindow(double *window, int length);
+//INLINE void makeRectangularWindow(double *window, int length);
 
 /** Minkowski distribution - a generalization of the gaussian distribution, where the exponent k inside the exponential is an addtional
 parameter. For k=2, it reduces to the Gaussian distribution. k<2 makes the distribution more spikey and the tails fatter, values k>2
 make the distribution more rectangular. */
-INLINE double minkowski(double x, double mu, double sigma, double k);
+//INLINE double minkowski(double x, double mu, double sigma, double k);
 
 /** Calculates the power of the absolute-value of some number and re-applies its original sign afterwards, if base==0, the result will be
 0 also. */
-INLINE double powBipolar(double base, double exponent);
+//INLINE double powBipolar(double base, double exponent);
 
 /** Power function for intergers. Multiplies the base exponent-1 time with itself and returns the result. */
 //INLINE int powInt(int base, int exponent);
 
 /** Generates a 2*pi periodic pulse wave with a duty-cycle (high level fraction) of d. The DC amount of -2*d is compensated such that the
 resulting waveform is DC-free. */
-INLINE double pulseWave(double x, double d);
+//INLINE double pulseWave(double x, double d);
 
 /** Quantizes x to the interval i. */
 INLINE double quant(double x, double i);
@@ -410,7 +410,7 @@ INLINE double logistic(double x, double b)
 {
   return 1.0 / (1 + exp(-b*x));
 }
-*/
+
 INLINE void makeBlackmanWindow(double *window, int length)
 {
   for(int n=0; n<length; n++)
@@ -467,7 +467,6 @@ INLINE double pulseWave(double x, double d)
     return -1.0 + 2*d;
 }
 
-/*
 INLINE int powInt(int base, int exponent)
 {
   int result = base;

@@ -403,7 +403,7 @@ namespace rosic
     if( applyMultiplicatively == false )
       return in + instantaneousDepth * depth * tmp;
     else
-      return in * powBipolar(tmp, instantaneousDepth*depth);
+      return in * RAPT::rsPowBipolar(tmp, instantaneousDepth*depth);
   }
 
   INLINE void Modulator::getSampleFrameStereo(double *inL, double *inR, 
@@ -445,7 +445,7 @@ namespace rosic
       break;
     case MULTIPLICATIVE:
       {
-        *modValue = powBipolar(tmp, depth);
+        *modValue = RAPT::rsPowBipolar(tmp, depth);
         *outL = (*inL) * (*modValue);
         *outR = (*inR) * (*modValue);
 

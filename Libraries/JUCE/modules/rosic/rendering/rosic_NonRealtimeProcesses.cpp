@@ -93,7 +93,7 @@ void rosic::synthesizePulseWave(double *x, int N, double frequency, double dutyC
   if( antiAlias == false )
   {
     for(int n=0; n<N; n++)
-      x[n] = pulseWave(w*n + phase, dutyCycle);
+      x[n] = RAPT::rsPulseWave(w*n + phase, dutyCycle);
   }
   else
   {

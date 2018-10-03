@@ -1363,9 +1363,9 @@ double BreakpointModulator::clipLevelToRange(double inLevel)
 double BreakpointModulator::scaleLevelByKeyAndVelocity(double unscaledLevel)
 {
   double scaledLevel;
-  scaledLevel = powBipolar(unscaledLevel, data->depth);
-  scaledLevel = powBipolar(scaledLevel,   pow(2.0, (0.01*data->depthByKey/12.0)*(currentKey-64)) );
-  scaledLevel = powBipolar(scaledLevel,   pow(2.0, (0.01*data->depthByVel/63.0)*(currentVel-64)) );
+  scaledLevel = RAPT::rsPowBipolar(unscaledLevel, data->depth);
+  scaledLevel = RAPT::rsPowBipolar(scaledLevel,   pow(2.0, (0.01*data->depthByKey/12.0)*(currentKey-64)) );
+  scaledLevel = RAPT::rsPowBipolar(scaledLevel,   pow(2.0, (0.01*data->depthByVel/63.0)*(currentVel-64)) );
   return scaledLevel;
 }
 
