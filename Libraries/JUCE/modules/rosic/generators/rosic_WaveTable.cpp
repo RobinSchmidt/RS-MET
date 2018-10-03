@@ -58,14 +58,14 @@ void WaveTable::getWaveform(double *targetBufferL, double *targetBufferR,
 {
   if( targetBufferLength == tableLength )
   {
-    copyBuffer(waveBufferL, targetBufferL, tableLength);
-    copyBuffer(waveBufferR, targetBufferR, tableLength);
+    RAPT::rsArray::copyBuffer(waveBufferL, targetBufferL, tableLength);
+    RAPT::rsArray::copyBuffer(waveBufferR, targetBufferR, tableLength);
   }
   else
   {
-    copyBufferWithLinearInterpolation(waveBufferL, tableLength, targetBufferL, 
+    RAPT::rsArray::copyBufferWithLinearInterpolation(waveBufferL, tableLength, targetBufferL, 
       targetBufferLength);
-    copyBufferWithLinearInterpolation(waveBufferR, tableLength, targetBufferR, 
+    RAPT::rsArray::copyBufferWithLinearInterpolation(waveBufferR, tableLength, targetBufferR, 
       targetBufferLength);
   }
 }
@@ -76,7 +76,7 @@ void WaveTable::getWaveform(double *targetBufferL, double *targetBufferR,
 void WaveTable::updateBuffers()
 {
   waveformRenderer.renderWaveForm(prototypeBufferL, tableLength);
-  copyBuffer(prototypeBufferL, prototypeBufferR, tableLength);
+  RAPT::rsArray::copyBuffer(prototypeBufferL, prototypeBufferR, tableLength);
   // \todo: let the waveformRenderer directly create a stereo waveform
 
   int    n, k;
@@ -110,8 +110,8 @@ void WaveTable::updateBuffers()
   double  *phsR      = new double[tableLength/2];
 
   // obtain magnitude and phase:
-  convertBuffer(tmpL, spectrumL, tableLength);
-  convertBuffer(tmpR, spectrumR, tableLength);
+  RAPT::rsArray::convertBuffer(tmpL, spectrumL, tableLength);
+  RAPT::rsArray::convertBuffer(tmpR, spectrumR, tableLength);
   fourierTransformer.setDirection(FourierTransformerRadix2::FORWARD);
   fourierTransformer.transformComplexBufferInPlace(spectrumL);
   fourierTransformer.transformComplexBufferInPlace(spectrumR);
@@ -211,8 +211,8 @@ void WaveTable::updateBuffers()
   RAPT::rsArray::addCircularShiftedCopy(tmpL, tableLength, combOffset, 0.01*combAmount);
   RAPT::rsArray::addCircularShiftedCopy(tmpR, tableLength, combOffset, 0.01*combAmount);
 
-  copyBuffer(tmpL, waveBufferL, tableLength);
-  copyBuffer(tmpR, waveBufferR, tableLength);
+  RAPT::rsArray::copyBuffer(tmpL, waveBufferL, tableLength);
+  RAPT::rsArray::copyBuffer(tmpR, waveBufferR, tableLength);
   const int numWarmUpCycles = 3;
   slewRateLimiter.reset();
   for(int c=0; c<numWarmUpCycles+1; c++)
@@ -255,15 +255,15 @@ void WaveTable::updateBuffers()
   // start-phase adjustment:
 
   double shift = -tableLength* startPhase                  /360.0;
-  circularShiftInterpolated(tmpL, tableLength, shift);
+  RAPT::rsArray::circularShiftInterpolated(tmpL, tableLength, shift);
   shift        = -tableLength*(startPhase+rightPhaseOffset)/360.0;
-  circularShiftInterpolated(tmpR, tableLength, shift);
+  RAPT::rsArray::circularShiftInterpolated(tmpR, tableLength, shift);
 
   //-----------------------------------------------------------------
   // manipulations done - copy temporary buffers into member-buffers:
 
-  copyBuffer(tmpL, waveBufferL, tableLength);
-  copyBuffer(tmpR, waveBufferR, tableLength);
+  RAPT::rsArray::copyBuffer(tmpL, waveBufferL, tableLength);
+  RAPT::rsArray::copyBuffer(tmpR, waveBufferR, tableLength);
 
   waveBufferL[tableLength] = waveBufferL[0]; // for interpolation
   waveBufferR[tableLength] = waveBufferR[0]; 

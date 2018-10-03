@@ -164,17 +164,17 @@ void rsFilterAnalyzer::getBiquadCascadeMagnitudeResponse(double* b0, double* b1,
   {  
     convertToDecibels(tmp, numBins, 0.0);    
     if( accumulate == false )
-      copyBuffer(tmp, mag, numBins);  
+      RAPT::rsArray::copyBuffer(tmp, mag, numBins);  
     else
       RAPT::rsArray::add(mag, tmp, mag, numBins);
-    clipBuffer(mag, numBins, -200.0, INF);  // avoid negative infinities
+    RAPT::rsArray::clipBuffer(mag, numBins, -200.0, INF);  // avoid negative infinities
   }
   else
   {
     if( accumulate == false )
-      copyBuffer(tmp, mag, numBins);  
+      RAPT::rsArray::copyBuffer(tmp, mag, numBins);  
     else
-      multiply(mag, tmp, mag, numBins);
+      RAPT::rsArray::multiply(mag, tmp, mag, numBins);
   }
 
   delete[] tmp;

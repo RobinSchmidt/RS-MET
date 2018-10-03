@@ -325,11 +325,11 @@ void rsPrototypeDesigner::getInverseFilter(Complex* z, Complex* p, double* k,
   //                // and gain zeros into zNew, pNew, kNew
 
   Complex *zTmp = new Complex[N]; // to make it work, when the new arrays are equal to the old ones
-  copyBuffer(z,    zTmp, N);
+  RAPT::rsArray::copyBuffer(z,    zTmp, N);
   //copyBuffer(p,    z,    N);  // yes, this was wrong
   //copyBuffer(zTmp, p,    N);
-  copyBuffer(p,    zNew,    N);
-  copyBuffer(zTmp, pNew,    N);
+  RAPT::rsArray::copyBuffer(p,    zNew,    N);
+  RAPT::rsArray::copyBuffer(zTmp, pNew,    N);
   *kNew = 1.0 / *k;
   delete[] zTmp;
 }
@@ -1186,8 +1186,8 @@ void rsPrototypeDesigner::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *
   zeroNegligibleImaginaryParts(zTmp, N, 1.e-11);
   onlyUpperHalfPlane(pTmp, pTmp, N);
   onlyUpperHalfPlane(zTmp, zTmp, N);
-  copyBuffer(pTmp, p, L+r);
-  copyBuffer(zTmp, z, L+r);
+  RAPT::rsArray::copyBuffer(pTmp, p, L+r);
+  RAPT::rsArray::copyBuffer(zTmp, z, L+r);
 
   // the caller is supposed to ensure that the real zero/pole, if present, is in zTmp[0], pTmp[0] - 
   // but we need it in the last positions z[L+r], p[L+r], so we reverse the arrays:

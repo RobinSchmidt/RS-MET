@@ -261,23 +261,23 @@ void rotes::testFiniteImpulseResponseDesigner()
   filter.setFrequency(10000.0);
 
   filter.getMagnitudeResponse(frequencies, magnitudes1, fftLength, true, false);
-  rosic::clipBuffer(magnitudes1, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clipBuffer(magnitudes1, fftLength, -200.0, 10.0);
 
   filter.setWindowType(WindowDesigner::BLACKMAN);
   filter.getMagnitudeResponse(frequencies, magnitudes2, fftLength, true, false);
-  rosic::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
 
   filter.setWindowType(WindowDesigner::HAMMING);
   filter.getMagnitudeResponse(frequencies, magnitudes3, fftLength, true, false);
-  rosic::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
 
   filter.setWindowType(WindowDesigner::HANN);
   filter.getMagnitudeResponse(frequencies, magnitudes4, fftLength, true, false);
-  rosic::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
 
   filter.setWindowType(WindowDesigner::COSINE_SQUARED);
   filter.getMagnitudeResponse(frequencies, magnitudes5, fftLength, true, false);
-  rosic::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
 
 
   //Plotter::plotData(fftLength/2, frequencies, magnitudes1, magnitudes2, magnitudes3, magnitudes4, magnitudes5);
@@ -318,17 +318,17 @@ void rotes::testConvolverPartitioned()
   double resultTrue[resultLength];
   double result[resultLength];
   double indices[resultLength];
-  rosic::fillWithIndex(indices,impulseLength);
+  RAPT::rsArray::fillWithIndex(indices,impulseLength);
 
-  rosic::fillWithZeros(impulse, impulseLength);
+  RAPT::rsArray::fillWithZeros(impulse, impulseLength);
   impulse[1000] = 1.0;
 
   //FiniteImpulseResponseDesigner designer;
   //designer.setMode(FiniteImpulseResponseDesigner::LOWPASS);
   //designer.getImpulseResponse(impulseResponse, responseLength);
-  rosic::fillWithRangeLinear(impulseResponse, responseLength, 1.5, 1.0);
+  RAPT::rsArray::fillWithRangeLinear(impulseResponse, responseLength, 1.5, 1.0);
 
-  rosic::convolve(impulse, impulseLength, impulseResponse, responseLength, resultTrue);
+  RAPT::rsArray::convolve(impulse, impulseLength, impulseResponse, responseLength, resultTrue);
 
 
   ConvolverPartitioned convolver;
@@ -426,7 +426,7 @@ void rotes::testFilterAnalyzer()
   rosic::rsFilterAnalyzer::getMagnitudes( H, magnitudes, numBins);
   rosic::rsFilterAnalyzer::convertToDecibels(magnitudes, numBins);
 
-  rosic::clipBuffer(magnitudes, numBins, -60.0, 20.0);
+  RAPT::rsArray::clipBuffer(magnitudes, numBins, -60.0, 20.0);
 
 
   Plotter::plotData(numBins, frequencies, magnitudes);
@@ -726,7 +726,7 @@ void rotes::testCrossover4Way2()
   //crossover.processBuffer(impulseResponsesFloat, numBins);  // !!! TODO: re-activate this and adapt data types
   crossover.processBuffer(impulseResponsePointers, numBins);
   double impulseResponses[8*numBins];
-  convertBuffer(impulseResponsesFloat, impulseResponses, 8*numBins);
+  RAPT::rsArray::convertBuffer(impulseResponsesFloat, impulseResponses, 8*numBins);
   double impulseResponseSum[numBins];
   for(int n=0; n<numBins; n++)
   {

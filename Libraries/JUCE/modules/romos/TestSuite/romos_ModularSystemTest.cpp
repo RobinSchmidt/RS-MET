@@ -97,8 +97,8 @@ void ModularSystemTest::fillInputSignalArraysRandomly(int seed)
       inputs[channelIndex][frameIndex] = RAPT::rsRandomUniform(-1.0, 1.0); 
   }
 
-  rosic::convertBuffer(inputs[0], inputsFloat[0], signalLength);
-  rosic::convertBuffer(inputs[1], inputsFloat[1], signalLength);
+  RAPT::rsArray::convertBuffer(inputs[0], inputsFloat[0], signalLength);
+  RAPT::rsArray::convertBuffer(inputs[1], inputsFloat[1], signalLength);
 }
 
 void ModularSystemTest::clearInputSignalArrays()
@@ -143,10 +143,10 @@ void ModularSystemTest::fillDesiredOutputSignalArrays()
 
 void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
 {
-  copyBuffer(inputs[0],      outputs[0],      signalLength);
-  copyBuffer(inputs[1],      outputs[1],      signalLength);
-  copyBuffer(inputsFloat[0], outputsFloat[0], signalLength);
-  copyBuffer(inputsFloat[1], outputsFloat[1], signalLength);
+  RAPT::rsArray::copyBuffer(inputs[0],      outputs[0],      signalLength);
+  RAPT::rsArray::copyBuffer(inputs[1],      outputs[1],      signalLength);
+  RAPT::rsArray::copyBuffer(inputsFloat[0], outputsFloat[0], signalLength);
+  RAPT::rsArray::copyBuffer(inputsFloat[1], outputsFloat[1], signalLength);
 
   int blockStart      = 0;
   int remainingFrames = signalLength;
@@ -181,8 +181,8 @@ void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
 
   if( useSinglePrecision == true )
   {
-    rosic::convertBuffer(outputsFloat[0], outputs[0], signalLength);
-    rosic::convertBuffer(outputsFloat[1], outputs[1], signalLength);
+    RAPT::rsArray::convertBuffer(outputsFloat[0], outputs[0], signalLength);
+    RAPT::rsArray::convertBuffer(outputsFloat[1], outputs[1], signalLength);
   }
 }
 

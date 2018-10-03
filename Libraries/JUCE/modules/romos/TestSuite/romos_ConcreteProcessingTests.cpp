@@ -21,7 +21,7 @@ IdentityTest::IdentityTest()
 void IdentityTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    copyBuffer(inputs[v][0], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArray::copyBuffer(inputs[v][0], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
@@ -181,8 +181,8 @@ void WrappedAdderNTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphoni
 {
   for(int v = 0; v < numVoicesToUse; v++) 
   {
-    copyBuffer(inputs[v][0],  desiredOutputs[v][0], numFramesToProcess);
-    scale(desiredOutputs[v][0], desiredOutputs[v][0], numFramesToProcess, (double) getAdderNumConnectedInputPins());
+    RAPT::rsArray::copyBuffer(inputs[v][0],  desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArray::scale(desiredOutputs[v][0], desiredOutputs[v][0], numFramesToProcess, (double) getAdderNumConnectedInputPins());
   }
 }  
 bool WrappedAdderNTest::runTest()

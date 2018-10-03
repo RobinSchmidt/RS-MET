@@ -67,7 +67,7 @@ void rotes::testOscilloscopeBuffer()
       // obtain the buffer to be shown:
       //oscBuf.updateDisplayBuffer();
       double *buf = oscBuf.getDisplayBuffer();
-      copyBuffer(buf, xb, 2*W);
+      RAPT::rsArray::copyBuffer(buf, xb, 2*W);
       int dummy = 0;
     }
   }

@@ -45,48 +45,48 @@ namespace rosic
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward shifts use negative values for
   numPositions. If the absolute value of 'numPositions' is greater than the length of the buffer, it will use numPositions modulo the
   length - so if the length is 6 and numPositions is 8, it will whift by 2 positions. */
-  template<class T>
-  void circularShift(T *buffer, int length, int numPositions);
+  //template<class T>
+  //void circularShift(T *buffer, int length, int numPositions);
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward shifts use negative values for
   numPositions. The function behaves analogous to circularShift(T*, int, int) but allows for non-integer shifts by using linear
   interpolation of the buffer. */
-  template <class T>
-  void circularShiftInterpolated(T *buffer, int length, double numPositions);
+  //template <class T>
+  //void circularShiftInterpolated(T *buffer, int length, double numPositions);
 
   /** Restricts the values in the buffer to the range between min and max for types that define the operators '<' and '>'. */
-  template <class T>
-  void clipBuffer(T *buffer, int length, T min, T max);
+  //template <class T>
+  //void clipBuffer(T *buffer, int length, T min, T max);
 
   /** Convolves an array x (seen as input signal) with another array h (seen as impulse response) and stores the result in the array y. The
   type must define the operators: *, += and a constructor that takes an int and initializes to zero when 0 is passed. The y array must be
   distinct form x and h and have a length of at least xLength+hLength-1. */
-  template <class T>
-  void convolve(T *x, int xLength, T *h, int hLength, T *y);
+  //template <class T>
+  //void convolve(T *x, int xLength, T *h, int hLength, T *y);
 
   /** Copies the data of one array into another one and converts the type if necessary. */
-  template <class T1, class T2>
-  void convertBuffer(T1 *source, T2 *destination, int length);
+  //template <class T1, class T2>
+  //void convertBuffer(T1 *source, T2 *destination, int length);
 
   /** Convolves x with h and stored the result in x. The xLength parameter denotes the number of values in the x-array that will be
   considered as input signal. The actual array must be longer than that (namely xLength+hLength-1) to store the appended values. */
-  template <class T>
-  void convolveInPlace(T *x, int xLength, T *h, int hLength);
+  //template <class T>
+  //void convolveInPlace(T *x, int xLength, T *h, int hLength);
 
   /** Copies the data of one array into another one. */
-  template <class T>
-  void copyBuffer(T *source, T *destination, int length);
+  //template <class T>
+  //void copyBuffer(T *source, T *destination, int length);
 
   /** Copies the data of one array into another one where the lengths of the source- and target-arrays may be different - in this case, the
   target array will be filled by linearly interpolating the values in the source array. The type T must define a multiplication operator
   with a left operand of type double and an addition operator with both operands of type T. At the right border of the source buffer, a
   periodicity assumption is made. */
-  template <class T>
-  void copyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination, int destinationLength);
+  //template <class T>
+  //void copyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination, int destinationLength);
 
   /** Computes the cumulative sum y[n] = x[n] + y[n-1] of some signal. */
-  template <class T>
-  void cumulativeSum(T *buffer, int length, int order = 1, bool periodic = false);
+  //template <class T>
+  //void cumulativeSum(T *buffer, int length, int order = 1, bool periodic = false);
 
   /** Computes the difference y[n] = x[n] - x[n-1] of some signal. The initial condition x[-1] is determined from the 'periodic'
   parameter - if true, the signal is assumed as periodic and the x[-1] sample will be assigned to he same value as the last in the
@@ -337,7 +337,6 @@ namespace rosic
     }
     return true;
   }
-  */
 
   template <class T>
   void circularShift(T *buffer, int length, int numPositions)
@@ -359,7 +358,6 @@ namespace rosic
       memcpy(  buffer,      tmp,                        na*sizeof(T));
     }
   }
-
 
   // for some reason, circularShiftInterpolated can't use the overloaded wrapAround function above
   // ...it would use the integer version there, if we don't specifically call a differently named
@@ -492,26 +490,24 @@ namespace rosic
     T y, y1; // for temporary storage of the y, y[n-1] samples
     for(int o=1; o<=order; o++)
     {
-      /*
-      if( periodic == true )
-      {
-        y1 = T(0);
-        // determine the correct intial condition by 'warming up' the filter:
-        int numWarmUpSamples = 1000;
-        int j = 0;
-        while( j < numWarmUpSamples )
-        {
-          for(int n=0; n<length; n++)
-          {
-            y  = buffer[n] + y1;
-            y1 = y;
-          }
-          j += length;
-        }
-      }
-      else
-        y1 = T(0);
-      */
+      //if( periodic == true )
+      //{
+      //  y1 = T(0);
+      //  // determine the correct intial condition by 'warming up' the filter:
+      //  int numWarmUpSamples = 1000;
+      //  int j = 0;
+      //  while( j < numWarmUpSamples )
+      //  {
+      //    for(int n=0; n<length; n++)
+      //    {
+      //      y  = buffer[n] + y1;
+      //      y1 = y;
+      //    }
+      //    j += length;
+      //  }
+      //}
+      //else
+      //  y1 = T(0);
       y1 = T(0);
       for(int n=0; n<length; n++)
       {
@@ -521,6 +517,7 @@ namespace rosic
       }
     }
   }
+  */
 
   template <class T>
   void difference(T *buffer, int length, int order, bool periodic)
@@ -915,7 +912,7 @@ namespace rosic
   T median(T *buffer, int length)
   {
     T* tmpBuffer = new T[length];
-    copyBuffer(buffer, tmpBuffer, length);
+    RAPT::rsArray::copyBuffer(buffer, tmpBuffer, length);
 
     std::sort(tmpBuffer, &tmpBuffer[length]);
     T med;

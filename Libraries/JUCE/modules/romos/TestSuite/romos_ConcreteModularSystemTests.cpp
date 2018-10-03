@@ -17,8 +17,8 @@ void BypassTest::createAndConnectTestChildModules()
 }
 void BypassTest::fillDesiredOutputSignalArrays()
 {
-  rosic::copyBuffer(inputs[0], desiredOutputs[0], signalLength);
-  rosic::copyBuffer(inputs[1], desiredOutputs[1], signalLength);
+  RAPT::rsArray::copyBuffer(inputs[0], desiredOutputs[0], signalLength);
+  RAPT::rsArray::copyBuffer(inputs[1], desiredOutputs[1], signalLength);
 }
 
 

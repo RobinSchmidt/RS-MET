@@ -239,7 +239,7 @@ void BeatDetector::computeBeatProbabilities()
   // outer loop over the number of passes
   for(int pass=1; pass<=numPasses; pass++)
   {
-    copyBuffer(beatProbabilities, beatProbabilitiesTmp, numOnsets);
+    RAPT::rsArray::copyBuffer(beatProbabilities, beatProbabilitiesTmp, numOnsets);
     for(int o=0; o<numOnsets; o++)
     {
       int   t  = onsets[o].timeInSamples;         // onset time in samples

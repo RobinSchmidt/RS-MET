@@ -76,8 +76,8 @@ double* WaveformDisplayBuffer::getDisplayBuffer()
 
 void WaveformDisplayBuffer::updateDisplayBuffer()
 {
-  copyBuffer(inputBuffer, displayBuffer, displayBufferLength);
-  circularShift(displayBuffer, displayBufferLength, -w);
+  RAPT::rsArray::copyBuffer(inputBuffer, displayBuffer, displayBufferLength);
+  RAPT::rsArray::circularShift(displayBuffer, displayBufferLength, -w);
     // shifts the most recently added min/max pair to the end of the linear buffer
 }
 
@@ -291,7 +291,7 @@ void SyncedWaveformDisplayBuffer::feedInputSampleWithSync(double x, double y)
 
       WaveformDisplayBuffer::feedInputSample(y);
       wd = w = displayBufferLength; // counteract wraparound in feedInputSample
-      copyBuffer(inputBuffer, displayBuffer, displayBufferLength);
+      RAPT::rsArray::copyBuffer(inputBuffer, displayBuffer, displayBufferLength);
 
       displayBuffer[0] = b0;
       displayBuffer[1] = b1;

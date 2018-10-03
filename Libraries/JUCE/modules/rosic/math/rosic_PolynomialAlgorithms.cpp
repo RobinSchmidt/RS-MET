@@ -103,7 +103,7 @@ void rosic::findPolynomialRoots(Complex *a, int order, Complex *roots)
   // allocate memory for the coefficients of the deflated polynomial and initialize it as 
   // non-deflated polynomial:
   Complex *ad = new Complex[order+1];
-  copyBuffer(a, ad, order+1);
+  RAPT::rsArray::copyBuffer(a, ad, order+1);
 
   // loop over the roots:
   for(int j = order; j >= 1; j--) 
@@ -137,7 +137,7 @@ void rosic::findPolynomialRoots(Complex *a, int order, Complex *roots)
 void rosic::findPolynomialRoots(double *a, int order, Complex *roots)
 {
   Complex *ac = new Complex[order+1];
-  convertBuffer(a, ac, order+1);
+  RAPT::rsArray::convertBuffer(a, ac, order+1);
   findPolynomialRoots(ac, order, roots);
   delete[] ac;
 }

@@ -139,10 +139,10 @@ void testCompensatedLinearInterpolator()
   // maybe try this stuff in DelayLine module for Liberty
 
   rosic::rsFilterAnalyzer::getBiquadMagnitudeResponse(b0, b1, 0.0, a1, 0.0, w, mag, N, false); 
-  rosic::scale(mag, mag, N, g);
+  RAPT::rsArray::scale(mag, mag, N, g);
   for(int n = 0; n < N; n++)
     mag[n] = RAPT::rsAmpToDb(mag[n]);
-  rosic::clipBuffer(mag, N, -60.0, 20.0);
+  RAPT::rsArray::clipBuffer(mag, N, -60.0, 20.0);
   Plotter::plotData(N, w, mag); 
 }
 
@@ -317,15 +317,15 @@ void plotMagnitudeResponsesOf(rosic::Matrix &x, int fftSize, double plotFloor, i
   rosic::fillWithZeros(xPadded, fftSize);
   for(int m = 0; m < 5; m++)
   {
-    rosic::copyBuffer(x.m[m], xPadded, length);
+    RAPT::rsArray::copyBuffer(x.m[m], xPadded, length);
     fftMagnitudesAndPhases(xPadded, fftSize, magH.m[m], phsH.m[m], fftSize);
     for(int n = 0; n < numBins; n++)
       magH.m[m][n] = rmax(RAPT::rsAmpToDb(magH.m[m][n] * ampScale * fftSize), plotFloor);
   }
 
   double *frequencies = new double[numBins];
-  rosic::fillWithIndex(frequencies, numBins);
-  rosic::scale(frequencies, frequencies, numBins, 2.0*freqScale/fftSize);  // wrong?
+  RAPT::rsArray::fillWithIndex(frequencies, numBins);
+  RAPT::rsArray::scale(frequencies, frequencies, numBins, 2.0*freqScale/fftSize);  // wrong?
 
   int plotMaxIndex = numBins / plotZoom;
 
@@ -509,19 +509,19 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
 
   double tmp[fftSize];
   double plotFloor = -120.0;
-  rosic::fillWithZeros(tmp, fftSize);
+  RAPT::rsArray::fillWithZeros(tmp, fftSize);
 
-  rosic::copyBuffer(yl, tmp, length);
+  RAPT::rsArray::copyBuffer(yl, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magL, phsL, fftSize);
   for(n=0; n<numBins; n++)
     magL[n] = rmax(RAPT::rsAmpToDb(4 * magL[n] * fftSize/length), plotFloor);
 
-  rosic::copyBuffer(yc, tmp, length);
+  RAPT::rsArray::copyBuffer(yc, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magC, phsC, fftSize);
   for(n=0; n<numBins; n++)
     magC[n] = rmax(RAPT::rsAmpToDb(4 * magC[n] * fftSize/length), plotFloor);
     
-  rosic::copyBuffer(yq, tmp, length);
+  RAPT::rsArray::copyBuffer(yq, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magQ, phsQ, fftSize);
   for(n=0; n<numBins; n++)
     magQ[n] = rmax(RAPT::rsAmpToDb(4 * magQ[n] * fftSize/length), plotFloor);

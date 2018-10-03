@@ -268,7 +268,7 @@ void MipMappedWaveTable::fillWithSquare303()
   for(int n=0; n<N; n++)
     prototypeTable[n] = -tanh(a*prototypeTable[n] + b);
 
-  circularShift(prototypeTable, N, N/2);
+  RAPT::rsArray::circularShift(prototypeTable, N, N/2);
 
   generateMipMap();
 }
