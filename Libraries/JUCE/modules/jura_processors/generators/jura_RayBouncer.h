@@ -67,7 +67,7 @@ protected:
 
   // embedded core DSP objects from the RAPT library:
   //RAPT::rsRayBouncerDriver<double> rayBouncer;
-  rsRayBouncerDriverD rayBouncer;
+  rosic::rsRayBouncerDriverD rayBouncer;
   //rsRayBouncerDriverD rayBouncer;
 
   int currentNote = 64;

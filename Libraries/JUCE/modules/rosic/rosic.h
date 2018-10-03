@@ -408,6 +408,11 @@
 // typedefs for RAPT instantiations (for convenience)..should these be wrapped into rosic
 // namespace?:
 
+// some more which are wrapped into rosic namespace (todo: clean this up and make it consistent):
+namespace rosic
+{
+
+
 typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
 
 typedef RAPT::rsSmoothingFilter<double, double> rsSmoothingFilterDD;
@@ -417,9 +422,7 @@ typedef RAPT::rsLadderFilter<rsFloat64x2, double> rsLadderD2D;
 typedef RAPT::rsRayBouncer<double> rsRayBouncerD;
 typedef RAPT::rsRayBouncerDriver<double> rsRayBouncerDriverD;
 
-// some more which are wrapped into rosic namespace (todo: clean this up and make it consistent):
-namespace rosic
-{
+
 
 typedef RAPT::rsPositiveSigmoids<double> rsPositiveSigmoidsD;
 typedef RAPT::rsNormalizedSigmoids<double> rsNormalizedSigmoidsD;

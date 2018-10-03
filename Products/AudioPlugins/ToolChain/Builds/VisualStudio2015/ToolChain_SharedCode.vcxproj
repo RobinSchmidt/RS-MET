@@ -2423,6 +2423,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\IntegerFunctions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\InterpolatingFunction.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Mappers.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2457,6 +2460,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Interpolation.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.cpp">
@@ -2571,9 +2577,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GradientBasedMinimizer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Interpolation.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Matrix.cpp">
@@ -3062,16 +3065,10 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_WaveformDisplayBuffer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalFunctions.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_ChannelMatrix2x2.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_Constants.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_FunctionTemplates.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_HelperFunctions.cpp">
@@ -3090,6 +3087,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_TabulatedFunction.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_TemplateInstantiations.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_WarpedAllpassInterpolator.cpp">
@@ -3344,9 +3344,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilterOld.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Equalizer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3593,6 +3590,18 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_WorkhorseVoice.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\GlobalFunctions.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_ElementaryFunctionsReal.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_EngineersFilterOld.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_FunctionTemplates.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Aggressor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3837,9 +3846,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctionsAlgorithms.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ElementaryFunctionsReal.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_IntegerFunctions.cpp">
@@ -4899,6 +4905,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\FunctionIterators.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\FunctionObjects.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\IntegerFunctions.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\InterpolatingFunction.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Mappers.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\MoebiusTransform.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\NodeBasedFunction.h"/>
@@ -4912,6 +4919,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Interpolation.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h"/>
@@ -4951,7 +4959,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\FunctionObjects.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GeometricFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\GradientBasedMinimizer.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Interpolation.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\Matrix.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\ModularInteger.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Math\MultiLayerPerceptron.h"/>
@@ -5133,16 +5140,15 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float64x2.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalDefinitions.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_ChannelMatrix2x2.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_Constants.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_FunctionTemplates.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_HelperFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_Interpolator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_NumberManipulations.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_SampleBuffer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_SamplePlaybackParameters.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_TabulatedFunction.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_TemplateInstantiations.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_WarpedAllpassInterpolator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_WindowDesigner.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_Array - Copy.h"/>
@@ -5228,7 +5234,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilterDirectForm.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilter.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilterOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Equalizer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EqualizerStereo.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FilterAnalyzer.h"/>
@@ -5311,6 +5316,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Workhorse.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_WorkhorseOscSection.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_WorkhorseVoice.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\GlobalFunctions.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_ElementaryFunctionsReal.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_EngineersFilterOld.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_FunctionTemplates.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Aggressor.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AggressorFilterSection.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AggressorOscSection.h"/>
@@ -5401,7 +5410,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Complex.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctionsAlgorithms.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ElementaryFunctionsReal.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_IntegerFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Interpolation.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_LinearAlgebra.h"/>
@@ -5509,6 +5517,7 @@
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tips.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\readme.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\ToDo.txt"/>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\ReadMe.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\minBlep.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\PolyphonyInRosic.txt"/>
