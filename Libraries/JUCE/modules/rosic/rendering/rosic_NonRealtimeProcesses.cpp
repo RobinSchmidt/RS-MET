@@ -25,7 +25,7 @@ void rosic::synthesizeWaveform(double *x, int N, int shape, double frequency, do
       if( antiAlias == false )
       {
         for(int n=0; n<N; n++)
-          x[n] = sawWave(w*n + phase);
+          x[n] = RAPT::rsSawWave(w*n + phase);
       }
       else
       {
@@ -45,7 +45,7 @@ void rosic::synthesizeWaveform(double *x, int N, int shape, double frequency, do
       if( antiAlias == false )
       {
         for(int n=0; n<N; n++)
-          x[n] = sqrWave(w*n + phase);
+          x[n] = RAPT::rsSqrWave(w*n + phase);
       }
       else
       {
@@ -65,7 +65,7 @@ void rosic::synthesizeWaveform(double *x, int N, int shape, double frequency, do
       if( antiAlias == false )
       {
         for(int n=0; n<N; n++)
-          x[n] = triWave(w*n + phase);
+          x[n] = RAPT::rsTriWave(w*n + phase);
       }
       else
       {

@@ -78,12 +78,12 @@ namespace rosic
     // calculate left/right weights:
     double tmp = 0.25 * PI * (x+1.0);
     double wl, wr;
-    sinCosApprox(tmp, &wr, &wl);  // wr=sin(tmp), wl=cos(tmp)
+    RAPT::rsSinCosApprox(tmp, &wr, &wl);  // wr=sin(tmp), wl=cos(tmp)
 
     // calculate top/bottom weights:
     tmp = 0.25 * PI * (y+1.0);
     double wt, wb;
-    sinCosApprox(tmp, &wt, &wb);  // wt=sin(tmp), wb=cos(tmp)
+    RAPT::rsSinCosApprox(tmp, &wt, &wb);  // wt=sin(tmp), wb=cos(tmp)
 
     // the overall 'edge' weights result from multiplication of the respective left/right, 
     // top/bottom weights:

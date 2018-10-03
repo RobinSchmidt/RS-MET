@@ -480,8 +480,8 @@ INLINE void LadderFilterOld::getSampleFrameStereo(double *inOutL, double *inOutR
   */
 
   double dc = parameters->dcOffset;
-  *inOutL   = tanhApprox(tmpL + dc) - dc;
-  *inOutR   = tanhApprox(tmpR - dc) + dc;
+  *inOutL   = RAPT::rsTanhApprox(tmpL + dc) - dc;
+  *inOutR   = RAPT::rsTanhApprox(tmpR - dc) + dc;
   *inOutL  *= makeupGain;
   *inOutR  *= makeupGain;
 }

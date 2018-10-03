@@ -5,11 +5,11 @@ UnaryFunctionPointer rosic::getWaveformFunction(int waveformIndex)
 {
   switch( waveformIndex )
   {
-  case SINE:     return &sin;          break;
-  case SAW:      return &sawWave;      break;
-  case SQUARE:   return &sqrWave;      break;
-  case TRIANGLE: return &triWave;      break;
-  default:       return &zeroFunction; break;
+  case SINE:     return &sin;                  break;
+  case SAW:      return &RAPT::rsSawWave;      break;
+  case SQUARE:   return &RAPT::rsSqrWave;      break;
+  case TRIANGLE: return &RAPT::rsTriWave;      break;
+  default:       return &RAPT::rsZeroFunction; break;
   }
 }
 

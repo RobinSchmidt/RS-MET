@@ -196,37 +196,37 @@ resulting waveform is DC-free. */
 //INLINE void sinCos(double x, double* sinResult, double* cosResult);
 
 /** Calculates hyperbloic sine and cosine of x -this is more efficient than calling sinh(x) and cosh(x) seperately. */
-INLINE void sinhCosh(double x, double* sinhResult, double* coshResult);
+//INLINE void sinhCosh(double x, double* sinhResult, double* coshResult);
 
 /** Calculates a parabolic approximation of the sine and cosine of x. */
-INLINE void sinCosApprox(double x, double* sinResult, double* cosResult);
+//INLINE void sinCosApprox(double x, double* sinResult, double* cosResult);
 
 /** Applies a softclipping with a tanh shaped transtion region between the linear part and the clipping value. */
-INLINE double softClip(double x, double lowClamp   = -1.0, double highClamp  =  1.0,
-  double lowKnee    =  0.1, double highKnee   =  0.1);
+//INLINE double softClip(double x, double lowClamp   = -1.0, double highClamp  =  1.0,
+//  double lowKnee    =  0.1, double highKnee   =  0.1);
 
 /** Generates a 2*pi periodic square wave. */
-INLINE double sqrWave(double x);
+//INLINE double sqrWave(double x);
 
 /** Same syntax as fmod but brings the result into the symmetric interval -y/2...y/2 */
-INLINE double srem(double x, double y);
+//INLINE double srem(double x, double y);
 
 /** The unit step function - returns 1 for x>=0, 0 else. */
-INLINE double step(double x);
+//INLINE double step(double x);
 
 /** Rational approximation of the hyperbolic tangent. */
-INLINE double tanhApprox(double x);
+//INLINE double tanhApprox(double x);
 
 /** Generates a 2*pi periodic triangle wave. */
-INLINE double triWave(double x);
+//INLINE double triWave(double x);
 
 /** Periodically wraps a number into an interval between min and max, for example, an arbitrary angle x may be wrapped into the interval
 0...2*PI via xWrapped = wrapToInterval(x, 0.0, 2*PI) or into the interval -PI...PI via xWrapped = wrapToInterval(x, -PI, PI). */
-INLINE double wrapToInterval(double x, double min, double max);
+//INLINE double wrapToInterval(double x, double min, double max);
 
 /** Just outputs the constant value 0.0 for all inputs - used as default function pointer when client code selects an invalid
 function-index, for example in the waveform-renderers. */
-INLINE double zeroFunction(double x);
+//INLINE double zeroFunction(double x);
 
 // wrapAround
 
@@ -524,9 +524,7 @@ INLINE double random(double min, double max)
   double tmp = (1.0/RAND_MAX) * rand();  // between 0...1
   return RAPT::rsLinToLin(tmp, 0.0, 1.0, min, max);
 }
-*/
 
-/*
 INLINE int rosic::roundToInt(double const x)
 {
   int n;
@@ -561,7 +559,6 @@ INLINE void sinCos(double x, double* sinResult, double* cosResult)
   *cosResult = cos(x);
 #endif
 }
-*/
 
 INLINE void sinhCosh(double x, double* sinhResult, double* coshResult)
 {
@@ -617,20 +614,18 @@ INLINE void sinCosApprox(double x, double* sinResult, double* cosResult)
 
 INLINE double rsSin(double x, int numTerms)
 {
-  /*
-  double accu = 1.0;
-  double n    = 1.0;
-  double nSq  = 1.0;
-  double xSq  = x*x;
-  double piSq = PI*PI;
-  for(int i=1; i<=numTerms; i++)
-  {
-    accu *= (1.0 - xSq / (piSq*nSq));
-    n    += 1.0;
-    nSq   = n*n;
-  }
-  return x*accu;
-  */
+  //double accu = 1.0;
+  //double n    = 1.0;
+  //double nSq  = 1.0;
+  //double xSq  = x*x;
+  //double piSq = PI*PI;
+  //for(int i=1; i<=numTerms; i++)
+  //{
+  //  accu *= (1.0 - xSq / (piSq*nSq));
+  //  n    += 1.0;
+  //  nSq   = n*n;
+  //}
+  //return x*accu;
 
   long double accu = 0.0;
   long double num  = x;
@@ -644,22 +639,20 @@ INLINE double rsSin(double x, int numTerms)
   }
   return (double)accu;
 
-  /*
-  double xSq   = x*x;
-  double num1  = x;      // first term is x^1
-  double accu1 = 0.0;    // accumulates the positive terms
-  double num2  = x*x*x;  // first term is x^3
-  double accu2 = 0.0;    // accumulates the negative terms
-  double x4    = num2*x; // x^4
-  for(int k=0; k<numTerms; k+=2)
-  {
-    accu1 += inverseFactorials[2*k+1] * num1;
-    num1  *= xSq;
-    accu2 -= inverseFactorials[2*k+3] * num2;
-    num2  *= xSq;
-  }
-  return accu1 - accu2;
-  */
+  //double xSq   = x*x;
+  //double num1  = x;      // first term is x^1
+  //double accu1 = 0.0;    // accumulates the positive terms
+  //double num2  = x*x*x;  // first term is x^3
+  //double accu2 = 0.0;    // accumulates the negative terms
+  //double x4    = num2*x; // x^4
+  //for(int k=0; k<numTerms; k+=2)
+  //{
+  //  accu1 += inverseFactorials[2*k+1] * num1;
+  //  num1  *= xSq;
+  //  accu2 -= inverseFactorials[2*k+3] * num2;
+  //  num2  *= xSq;
+  //}
+  //return accu1 - accu2;
 }
 
 INLINE double sawWave(double x)
@@ -778,7 +771,7 @@ INLINE double zeroFunction(double x)
 {
   return x = 0.0;
 }
-
+*/
 } // end namespace rosic
 
 #endif // #ifndef rosic_ElementaryFunctionsReal_h

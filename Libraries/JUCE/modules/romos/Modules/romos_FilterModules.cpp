@@ -274,12 +274,12 @@ INLINE void LadderFilter::process(Module *module, double *in1, double *in2, doub
     y[1] =            y[0] + c[0]*(y[0]-y[1]);
     y[2] =            y[1] + c[0]*(y[1]-y[2]);
     y[3] =            y[2] + c[0]*(y[2]-y[3]);
-    y[4] = tanhApprox(y[3] + c[0]*(y[3]-y[4]));
+    y[4] = RAPT::rsTanhApprox(y[3] + c[0]*(y[3]-y[4]));
   };
   break;
   case FEEDBACK:
   {
-    y[0] = *in1 - tanhApprox(c[1]*y[4]);
+    y[0] = *in1 - RAPT::rsTanhApprox(c[1]*y[4]);
     y[1] = y[0] + c[0]*(y[0]-y[1]);
     y[2] = y[1] + c[0]*(y[1]-y[2]);
     y[3] = y[2] + c[0]*(y[2]-y[3]);
@@ -289,10 +289,10 @@ INLINE void LadderFilter::process(Module *module, double *in1, double *in2, doub
   case EACH_STAGE:
   {
     y[0] =            *in1 - c[1]*y[4];
-    y[1] = tanhApprox(y[0] + c[0]*(y[0]-y[1]));
-    y[2] = tanhApprox(y[1] + c[0]*(y[1]-y[2]));
-    y[3] = tanhApprox(y[2] + c[0]*(y[2]-y[3]));
-    y[4] = tanhApprox(y[3] + c[0]*(y[3]-y[4]));
+    y[1] = RAPT::rsTanhApprox(y[0] + c[0]*(y[0]-y[1]));
+    y[2] = RAPT::rsTanhApprox(y[1] + c[0]*(y[1]-y[2]));
+    y[3] = RAPT::rsTanhApprox(y[2] + c[0]*(y[2]-y[3]));
+    y[4] = RAPT::rsTanhApprox(y[3] + c[0]*(y[3]-y[4]));
   };
   break;
   }

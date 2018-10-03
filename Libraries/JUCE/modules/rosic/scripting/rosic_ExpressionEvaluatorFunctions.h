@@ -194,7 +194,7 @@ public:
 
   double DoEvaluate()
   {
-    return rosic::sawWave(m_nodes[0]->Evaluate());
+    return RAPT::rsSawWave(m_nodes[0]->Evaluate());
   }
 
 };
@@ -246,16 +246,16 @@ public:
   double DoEvaluate()
   {
     if(m_nodes.size() < 2)
-      return rosic::softClip(m_nodes[0]->Evaluate());
+      return RAPT::rsSoftClip(m_nodes[0]->Evaluate());
     else if(m_nodes.size() < 3)
-      return rosic::softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+      return RAPT::rsSoftClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
     else if(m_nodes.size() < 4)
-      return rosic::softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate());
+      return RAPT::rsSoftClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate());
     else if(m_nodes.size() < 5)
-      return rosic::softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate(),
+      return RAPT::rsSoftClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate(),
         m_nodes[3]->Evaluate());
     else
-      return rosic::softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate(),
+      return RAPT::rsSoftClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate(),
         m_nodes[3]->Evaluate(), m_nodes[4]->Evaluate());
 
   }
@@ -281,7 +281,7 @@ public:
 
   double DoEvaluate()
   {
-    return rosic::step(m_nodes[0]->Evaluate());
+    return RAPT::rsStep(m_nodes[0]->Evaluate());
   }
 };
 

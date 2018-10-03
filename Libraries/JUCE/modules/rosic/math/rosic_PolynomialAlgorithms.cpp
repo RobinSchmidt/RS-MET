@@ -318,7 +318,7 @@ rsArray<Complex> rosic::getRootsOfCubicEquation(double a, double b, double c, do
     if( p > 0.0 )
     {
       phi       = asinh( q/(r*r*r) );
-      sinhCosh(phi/3.0, &sh, &ch);
+      RAPT::rsSinhCosh(phi/3.0, &sh, &ch);
       y[0] = Complex(r*sh,  sqrt(3.0)*r*ch);
       y[1] = Complex(r*sh, -sqrt(3.0)*r*ch);
       y[2] = -2.0*r*sh;
@@ -330,7 +330,7 @@ rsArray<Complex> rosic::getRootsOfCubicEquation(double a, double b, double c, do
       if( D > 0.0 )
       {
         phi  = acosh( q/(r*r*r) );
-        sinhCosh(phi/3.0, &sh, &ch);
+        RAPT::rsSinhCosh(phi/3.0, &sh, &ch);
         y[0] = Complex(r*ch,  sqrt(3.0)*r*sh);
         y[1] = Complex(r*ch, -sqrt(3.0)*r*sh);
         y[2] = -2.0*r*ch;

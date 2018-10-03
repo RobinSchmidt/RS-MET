@@ -99,7 +99,7 @@ namespace rosic
   {
     double x = ONE_OVER_SQRT2 * (*inOutL + *inOutR);  
       // todo: apply drive and filter to x
-    double m = tanhApprox( factor*x + offset );
+    double m = RAPT::rsTanhApprox( factor*x + offset );
 
     // test:
     //double x = *inOutL;  

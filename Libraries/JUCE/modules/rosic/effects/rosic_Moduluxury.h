@@ -217,7 +217,7 @@ namespace rosic
         case CONSTANT_POWER_PAN:
           {
             double s, c;
-            sinCosApprox(0.5 * PI * mod, &s, &c);
+            RAPT::rsSinCosApprox(0.5 * PI * mod, &s, &c);
             *outL = (*inL) * s;
             *outR = (*inR) * c;
           }

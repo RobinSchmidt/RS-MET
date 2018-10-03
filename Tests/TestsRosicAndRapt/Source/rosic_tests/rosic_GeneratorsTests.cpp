@@ -17,7 +17,7 @@ void rotes::testOscillatorStereo()
   prototypeWave[1] = &prototypeWaveFlat[0];
   int n;
   for(n=0; n<prototypeLength; n++)
-    prototypeWaveFlat[n] = sawWave( 2*PI*n / prototypeLength);
+    prototypeWaveFlat[n] = RAPT::rsSawWave( 2*PI*n / prototypeLength);
   MipMappedWaveTableStereo waveTable;
   waveTable.setWaveform(prototypeWave, prototypeLength);
 

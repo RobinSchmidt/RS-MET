@@ -36,8 +36,8 @@ Complex rosic::acdC(Complex w, double k)
   ellipticIntegral(k, &K, &Kprime);
   double R = Kprime/K;
 
-  u.re = srem(u.re, 4.0);
-  u.im = srem(u.im, 2.0*R);
+  u.re = RAPT::rsSrem(u.re, 4.0);
+  u.im = RAPT::rsSrem(u.im, 2.0*R);
 
   return u;
 }

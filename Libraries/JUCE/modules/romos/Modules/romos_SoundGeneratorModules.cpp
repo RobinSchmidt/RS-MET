@@ -365,7 +365,7 @@ double BlitSaw::getDesiredFirstSample(double frequency, double startPhase)
     sum1             = integratorState;
     sum2            += sum1;
     theta           += omega;
-    theta            = rosic::wrapToInterval(theta, 0.0, TWO_PI);
+    theta            = RAPT::rsWrapToInterval(theta, 0.0, TWO_PI);
   }
 
 
