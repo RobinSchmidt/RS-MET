@@ -968,7 +968,7 @@ void rotes::testEngineersFilter()
   RAPT::rsArray::fillWithRangeLinear(timeAxis, numSamples, 0.0, numSamples-1.0);
 
   // create and set up the filter:
-  rosic::rsEngineersFilterOld filter;
+  rosic::rsEngineersFilterMono filter;
   filter.setSampleRate(fs);
   filter.setFrequency(fc);
   filter.setBandwidth(bw);

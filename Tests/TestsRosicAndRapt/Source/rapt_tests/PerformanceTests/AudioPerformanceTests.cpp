@@ -164,6 +164,8 @@ void engineersFilterPerformance()
   // create input and allocate output signals:
   vector<double> xs = createNoise(numSamples, double(-1), double(+1));
 
+  /*
+  // this is obsolete:
   rosic::rsEngineersFilterOld filterScalar;
   filterScalar.setPrototypeOrder(order);
   filterScalar.setMode(rsInfiniteImpulseResponseDesignerF::BANDPASS);
@@ -172,6 +174,7 @@ void engineersFilterPerformance()
     filterScalar.getSampleFrameDirect1(&xs[n], &xs[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("rsEngineersFilterOld", cycles/numSamples);
+  */
 
   xs = createNoise(numSamples, double(-1), double(+1));
 

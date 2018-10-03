@@ -132,7 +132,8 @@ namespace rosic
     double yOld;
     double shiftInHz, sampleRate, feedbackFactor;
 
-    rsEngineersFilterOld halfbandFilter1, halfbandFilter2;
+    rsEngineersFilterMono halfbandFilter1, halfbandFilter2;
+    //rsEngineersFilterOld halfbandFilter1, halfbandFilter2;
     //FreqShifterHalfbandFilter halfbandFilter1, halfbandFilter2;
 
     SineOscillator   cosOsc1, sinOsc1, cosOsc2, sinOsc2;

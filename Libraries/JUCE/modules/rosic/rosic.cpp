@@ -140,6 +140,7 @@ template class RAPT::rsFilterCoefficientConverter<double>;
 template class RAPT::rsInfiniteImpulseResponseDesigner<double>;
 template class RAPT::rsEngineersFilter<double, double>;
 template class RAPT::rsEngineersFilter<rsFloat64x2, double>;
+
 template struct RAPT::rsFilterSpecificationZPK<double>;
 template struct RAPT::rsFilterSpecificationBA<double>;
 
@@ -184,11 +185,6 @@ template class RAPT::rsModalFilterWithAttack2<double, double>;
 //template class RAPT::rsStateVariableFilter<double, double>;
 template class RAPT::rsPhonoFilter<double, double>;
 template class RAPT::rsMovingAverage<double, double>;
-
-
-//template class RAPT::rsPrototypeDesigner<double>;
-//template class RAPT::rsInfiniteImpulseResponseDesigner<double>;
-//template class RAPT::rsEngineersFilter<double, double>;
 
 template class RAPT::rsLadderFilter2<double, double>;
 template class RAPT::rsLadderFilterZDF<double, double>;
@@ -298,7 +294,6 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 #include "filters/rosic_FilterCoefficientConverter.cpp"
 #include "filters/rosic_InfiniteImpulseResponseDesigner.cpp"
 #include "filters/rosic_EngineersFilter.cpp"
-#include "filters/rosic_EngineersFilterOld.cpp"
 #include "filters/rosic_LinkwitzRileyCrossOver.cpp"
 #include "filters/rosic_CrossOver4Way.cpp"
 #include "filters/rosic_DirectFormFilter.cpp"

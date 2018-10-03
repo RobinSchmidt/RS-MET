@@ -1,17 +1,28 @@
 #ifndef rosic_EngineersFilter_h
 #define rosic_EngineersFilter_h
 
+// todo: maybe put all RAPT instantiations into a common file pair (h/cpp) which should be included
+// as one of the first things in rosic.h/cpp
+
 namespace rosic
 {
 
-//=================================================================================================
 
-/** 
+/** Specialization of RAPT::rsEngineersFilter for double-precision mono signals. */
 
-There seems to be a bug when using elliptic and chebychev-2 bandpass/bandreject/peak filters - 
-any kind of filter with stopband zeros and order-doubling - seems like the zeros don't get mapped
-properly or something. It works correctly in the old rosic::EngineersFilterOld
-*/
+class rsEngineersFilterMono : public RAPT::rsEngineersFilter<double, double>
+{
+
+public:
+
+  INLINE double getSample(double in) { return getSampleDirect2(in); }
+  // maybe implement in RAPT::rsEngineersFilter and don't subclass here but use a typedef'd
+  // explicit instantiation
+
+};
+
+
+/** Specialization of RAPT::rsEngineersFilter for double-precision stereo signals. */
 
 class rsEngineersFilterStereo : public RAPT::rsEngineersFilter<rsFloat64x2, double>
 {
@@ -27,6 +38,8 @@ public:
   }
 
 };
+
+// rename to rsEngineersFilterD2D, or maybe rename the other to rsEngineersFilterMono
 
 }
 

@@ -791,7 +791,7 @@ void compareApproximationMethods()
 
 
   // create and set up the filter:
-  rsEngineersFilterDD flt;
+  rsEngineersFilterMono flt;
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   //flt.setMode(IIRD::LOWPASS);
@@ -901,6 +901,8 @@ void compareApproximationMethods()
 
 void compareOldAndNewEngineersFilter()
 {
+  // obsolete - the old version has been removed
+
   double fs    = 44100.0;  // samplerate
   double fc    =  1000.0;  // cutoff frequency
   double Ap    =     1.0;  // passband ripple in dB
@@ -910,7 +912,7 @@ void compareOldAndNewEngineersFilter()
   typedef RAPT::rsInfiniteImpulseResponseDesigner<double> IIRD;
   typedef RAPT::rsPrototypeDesigner<double> PTD;
 
-  rosic::rsEngineersFilterOld efOld;
+  rosic::rsEngineersFilterMono efOld;
   efOld.setPrototypeOrder(order);
   efOld.setSampleRate(fs);
   efOld.setFrequency(fc);
@@ -919,7 +921,7 @@ void compareOldAndNewEngineersFilter()
   efOld.setApproximationMethod(PTD::ELLIPTIC);
   efOld.setMode(IIRD::BANDPASS);
 
-  rosic::rsEngineersFilterDD  efNew;
+  rosic::rsEngineersFilterMono  efNew;
   efNew.setPrototypeOrder(order);
   efNew.setSampleRate(fs);
   efNew.setFrequency(fc);
@@ -986,7 +988,7 @@ void ringingTime()
   int    method    = PTD::ELLIPTIC;
 
   // create and set up the filter:
-  rsEngineersFilterDD flt;
+  rsEngineersFilterMono flt;
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setMode(IIRD::LOWPASS);

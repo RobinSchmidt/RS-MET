@@ -181,7 +181,6 @@
 #include "filters/rosic_PoleZeroMapper.h"
 #include "filters/rosic_InfiniteImpulseResponseDesigner.h"
 #include "filters/rosic_EngineersFilter.h"
-#include "filters/rosic_EngineersFilterOld.h"
 #include "filters/rosic_EllipticSubBandFilter.h"
 #include "filters/rosic_EllipticSubBandFilterDirectForm.h"
 #include "filters/rosic_LinkwitzRileyCrossOver.h"
@@ -455,8 +454,9 @@ typedef RAPT::rsPrototypeDesigner<double> rsPrototypeDesignerD;
 typedef RAPT::rsPoleZeroMapper<double> rsPoleZeroMapperD;
 typedef RAPT::rsFilterCoefficientConverter<double> rsFilterCoefficientConverterD;
 typedef RAPT::rsInfiniteImpulseResponseDesigner<double> rsInfiniteImpulseResponseDesignerD;
-typedef RAPT::rsEngineersFilter<double, double> rsEngineersFilterDD;
-typedef RAPT::rsEngineersFilter<rsFloat64x2, double> rsEngineersFilterD2D;
+
+//typedef RAPT::rsEngineersFilter<double, double> rsEngineersFilterDD;
+//typedef RAPT::rsEngineersFilter<rsFloat64x2, double> rsEngineersFilterD2D;
 
 
 typedef RAPT::rsLadderFilter2<double, double> rsLadderFilter2DD;  // the version from RSLib
