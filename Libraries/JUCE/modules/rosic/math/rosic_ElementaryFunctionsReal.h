@@ -172,19 +172,19 @@ resulting waveform is DC-free. */
 //INLINE double pulseWave(double x, double d);
 
 /** Quantizes x to the interval i. */
-INLINE double quant(double x, double i);
+//INLINE double quant(double x, double i);
 
 /** Quantizes x (assumed to be in -1.0 - 1.0) to a grid which represents a resolution of nBits bits. */
-INLINE double quantToBits(double x, double nBits);
+//INLINE double quantToBits(double x, double nBits);
 
 /** Returns the absolute value of x. */
-INLINE double rabs(double x);
+//INLINE double rabs(double x);
 
 /** Generates a pseudo-random number between min and max. */
-INLINE double random(double min=0.0, double max=1.0);
+//INLINE double random(double min=0.0, double max=1.0);
 
 /** Generates a random number between -1.0...+1.0 in double format. */
-INLINE double randDbl();
+//INLINE double randDbl();
 
 /** Calculates the sine of x assuming that x is in the range 0...pi/2 - this is not checked for. */
 INLINE double rsSin(double x, int numTerms = 16);
@@ -474,7 +474,6 @@ INLINE int powInt(int base, int exponent)
     result *= base;
   return result;
 }
-*/
 
 INLINE double quant(double x, double i)
 {
@@ -525,6 +524,7 @@ INLINE double random(double min, double max)
   double tmp = (1.0/RAND_MAX) * rand();  // between 0...1
   return RAPT::rsLinToLin(tmp, 0.0, 1.0, min, max);
 }
+*/
 
 /*
 INLINE int rosic::roundToInt(double const x)

@@ -35,7 +35,12 @@ std::vector<double> rsApplyFunction(const std::vector<double>& v, double p,
 // conversions to std::string:
 std::string toString(int n);
 
-
+// replace with own prng:
+inline double random(double min, double max)
+{
+  double tmp = (1.0/RAND_MAX) * rand();  // between 0...1
+  return RAPT::rsLinToLin(tmp, 0.0, 1.0, min, max);
+}
 
 // returns x^2 = x*x, useful for testing application of a unary function using a function pointer
 //double rsSquare(double x);

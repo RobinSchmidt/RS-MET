@@ -356,23 +356,17 @@ void rotes::testFiniteImpulseResponseFilter()
   filter.setMode(FiniteImpulseResponseDesigner::BANDPASS);
   filter.setFrequency(5000.0);
 
-
-
-
-
   // create some noise, filter it and write it into a file:
   static const int testLength = 44100;
   double noise[testLength];
   double filteredNoise[testLength];
   for(int n=0; n<testLength; n++)
   {
-    noise[n]         = rosic::random(-1.0, 1.0);
+    noise[n]         = random(-1.0, 1.0);
     filteredNoise[n] = filter.getSample(noise[n]);
   }
 
   //rosic::convolve(noise, testLength, impulseResponse, length, filteredNoise);
-
-
   //writeToStereoWaveFile("D:/TmpAudio/FilteredNoise.wav", noise, filteredNoise, testLength, 44100, 16);
 
   int dummy = 0;

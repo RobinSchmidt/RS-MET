@@ -106,8 +106,8 @@ namespace rosic
     {
       // todo: apply compander here...
 
-      outSampleL = quant(*inOutL, quantizationInterval);
-      outSampleR = quant(*inOutR, quantizationInterval);
+      outSampleL = RAPT::rsQuant(*inOutL, quantizationInterval);
+      outSampleR = RAPT::rsQuant(*inOutR, quantizationInterval);
       sampleCounter = 0;
     }
 

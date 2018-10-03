@@ -137,7 +137,7 @@ public:
 
   double DoEvaluate()
   {
-    return rosic::quant(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+    return RAPT::rsQuant(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
   }
 };
 
@@ -161,7 +161,7 @@ public:
 
   double DoEvaluate()
   {
-    return rosic::quantToBits(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+    return RAPT::rsQuantToBits(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
   }
 };
 

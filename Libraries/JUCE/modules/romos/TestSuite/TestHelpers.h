@@ -58,6 +58,12 @@ int findIndexOfMatchingNoteOff(const std::vector<NoteEvent> &events, NoteEvent n
 
 void sortEventsByTimeOfOccurence(const std::vector<NoteEvent> eventArray);
 
+// get rid - replace with own prng
+inline double random(double min, double max)
+{
+  double tmp = (1.0/RAND_MAX) * rand();  // between 0...1
+  return RAPT::rsLinToLin(tmp, 0.0, 1.0, min, max);
+}
 
 
 
