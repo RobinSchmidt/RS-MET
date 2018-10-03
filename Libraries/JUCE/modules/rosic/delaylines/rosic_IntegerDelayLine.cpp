@@ -36,7 +36,7 @@ int IntegerDelayLine::setDelayInSamples(int newDelayInSamples)
 
 void IntegerDelayLine::setDelayInSeconds(double newDelayInSeconds)
 {
-  delayInSeconds = rmax(0.0, newDelayInSeconds);
+  delayInSeconds = RAPT::rsMax(0.0, newDelayInSeconds);
   setDelayInSamples( roundToInt(sampleRate*delayInSeconds) );
 }
 

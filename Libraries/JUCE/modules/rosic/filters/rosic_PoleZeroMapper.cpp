@@ -381,8 +381,8 @@ void rsPoleZeroMapper::sPlanePrototypeToBandpass(Complex *prototypePoles, Comple
   k = 1;
   while( k+1 < 2*prototypeOrder )
   {
-    rsSwap(targetPoles[k], targetPoles[k+1]);
-    rsSwap(targetZeros[k], targetZeros[k+1]);
+    RAPT::rsSwap(targetPoles[k], targetPoles[k+1]);
+    RAPT::rsSwap(targetZeros[k], targetZeros[k+1]);
     k += 4;
   }
 
@@ -398,7 +398,7 @@ void rsPoleZeroMapper::prototypeToAnalogBandstop(Complex* poles, int numPoles, C
   double wc = sqrt(targetLowCutoff*targetHighCutoff); // center (radian) frequency
   double bw = targetHighCutoff - targetLowCutoff;     // bandwidth
 
-  int         order = 2 * rmax(numPoles, numZeros);
+  int         order = 2 * RAPT::rsMax(numPoles, numZeros);
   Complex* tmpPoles = new Complex[order];
   Complex* tmpZeros = new Complex[order];
 
@@ -490,10 +490,10 @@ void rsPoleZeroMapper::sPlanePrototypeToBandreject(Complex *prototypePoles,
   k = 1;
   while( k+1 < 2*prototypeOrder )
   {
-    rsSwap(targetPoles[k], targetPoles[k+1]);
+    RAPT::rsSwap(targetPoles[k], targetPoles[k+1]);
     int kp = (k-1)/4;
     if( !prototypeZeros[kp].isInfinite() )
-      rsSwap(targetZeros[k], targetZeros[k+1]); // don't want to swap the generated zeros at +-j*wc
+      RAPT::rsSwap(targetZeros[k], targetZeros[k+1]); // don't want to swap the generated zeros at +-j*wc
     k += 4;
   }
 }

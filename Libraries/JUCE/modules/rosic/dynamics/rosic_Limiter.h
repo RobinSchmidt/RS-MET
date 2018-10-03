@@ -56,7 +56,7 @@ namespace rosic
     // establish the mono sum of the (non-delayed) input signal and obtain its envelope:
     double tmpL = inputGainFactor * (*inOutL);
     double tmpR = inputGainFactor * (*inOutR);  
-    double inM  = rmax(fabs(tmpL), fabs(tmpR));
+    double inM  = RAPT::rsMax(fabs(tmpL), fabs(tmpR));
     double env  = levelDetector.attackReleaseFollower.getSample(inM);
 
     double limiterGain;

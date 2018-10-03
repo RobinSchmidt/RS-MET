@@ -26,7 +26,7 @@ BasicIntegerDelayLine::~BasicIntegerDelayLine()
 
 int BasicIntegerDelayLine::setDelayInSamples(int newDelayInSamples)
 {
-  int delayInSamples = rmax(0, newDelayInSamples);
+  int delayInSamples = RAPT::rsMax(0, newDelayInSamples);
 
   // cap the delay in samples to the maximum allowed delay-time:
   if( delayInSamples > bitMask )

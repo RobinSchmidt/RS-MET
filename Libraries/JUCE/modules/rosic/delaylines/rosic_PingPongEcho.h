@@ -228,7 +228,7 @@ namespace rosic
       tmp1 = wetInGain * (gLL*(*inOutL) + gRL*(*inOutR));
       tmp2 = wetInGain * (gLR*(*inOutL) + gRR*(*inOutR));
       if( stereoSwap == true )
-        rsSwap(tmp1, tmp2);
+        RAPT::rsSwap(tmp1, tmp2);
       yL   = buffer1[tapOut];
       yR   = buffer2[tapOut];
 

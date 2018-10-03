@@ -106,7 +106,7 @@ int rsString::numberOfRequiredCharacters(int number)
 
 int rsString::compareCharacterArrays(char *left, int leftLength, char *right, int rightLength)
 {
-  int minLength = rmin(leftLength, rightLength);
+  int minLength = RAPT::rsMin(leftLength, rightLength);
   for(int i=0; i<minLength; i++)
   {
     if(      compareCharacters(left[i], right[i]) == -1 )
@@ -159,7 +159,7 @@ rsString rsString::fromIntWithLeadingSpaces(int value, int minNumCharacters, boo
 {
   int absVal     = abs(value);
   int numSpaces  = 0;
-  int tmp        = 10*rmax(absVal, 1);
+  int tmp        = 10*RAPT::rsMax(absVal, 1);
   int upperLimit = powInt(10, minNumCharacters)-1;
   while( tmp < upperLimit )
   {
@@ -214,13 +214,13 @@ rsString rsString::createSpanOfCharacters(char character, int length)
 
 void rsString::padToLength(int desiredLength, char paddingCharacter)
 {
-  int missingLength = rmax(desiredLength - getLength(), 0);
+  int missingLength = RAPT::rsMax(desiredLength - getLength(), 0);
   *this += createSpanOfCharacters(paddingCharacter, missingLength);
 }
 
 void rsString::prePadToLength(int desiredLength, char paddingCharacter)
 {
-  int missingLength = rmax(desiredLength - getLength(), 0);
+  int missingLength = RAPT::rsMax(desiredLength - getLength(), 0);
   *this = createSpanOfCharacters(paddingCharacter, missingLength) + *this;
 }
 
@@ -251,8 +251,8 @@ double rsString::asDouble() const
 rsString rsString::toLowerCase(int start, int end) const
 {
   rsString result = *this;
-  start = rmax(start, 0);
-  end   = rmin(end, result.getLength()-1);
+  start = RAPT::rsMax(start, 0);
+  end   = RAPT::rsMin(end, result.getLength()-1);
   for(int i=start; i<=end; i++)
     result.cString[i] = tolower(result.cString[i]);
   return result;
@@ -261,8 +261,8 @@ rsString rsString::toLowerCase(int start, int end) const
 rsString rsString::toUpperCase(int start, int end) const
 {
   rsString result = *this;
-  start = rmax(start, 0);
-  end   = rmin(end, result.getLength()-1);
+  start = RAPT::rsMax(start, 0);
+  end   = RAPT::rsMin(end, result.getLength()-1);
   for(int i=start; i<=end; i++)
     result.cString[i] = toupper(result.cString[i]);
   return result;
@@ -298,7 +298,7 @@ void rsString::readFromBuffer(char *sourceBuffer)
 
 void rsString::writeIntoBuffer(char *targetBuffer, int maxNumCharactersToWrite) const
 {
-  int upperLimit = rmin(length+1, maxNumCharactersToWrite);
+  int upperLimit = RAPT::rsMin(length+1, maxNumCharactersToWrite);
   for(int i=0; i<upperLimit; i++)
     targetBuffer[i] = cString[i];
 }

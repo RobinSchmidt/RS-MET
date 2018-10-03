@@ -29,7 +29,7 @@ rosic::rsString ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module
     maxVariableNameLength;
   getMaxNameLengths(variableNames, container, maxAtomicVariableNameLength, maxContainerVariableNameLength);
   getMaxNameLengths(moduleNames,   container, maxAtomicModuleNameLength,   maxContainerModuleNameLength);
-  maxVariableNameLength = rmax(maxAtomicVariableNameLength, maxContainerVariableNameLength);
+  maxVariableNameLength = RAPT::rsMax(maxAtomicVariableNameLength, maxContainerVariableNameLength);
 
   // create the function entry code:
   code += S("romos::Module* TestModuleBuilder::create") + S(module->getName()) + 
@@ -240,7 +240,7 @@ void ModuleBuildCodeGenerator::getMaxNameLengths(rosic::rsArray<rosic::rsString>
 rosic::rsString ModuleBuildCodeGenerator::createPadding(rosic::rsString stringToPad, int desiredLength)
 {
   rassert( stringToPad.getLength() <= desiredLength );
-  int missingLength = rmax(desiredLength-stringToPad.getLength(), 0);
+  int missingLength = RAPT::rsMax(desiredLength-stringToPad.getLength(), 0);
   return rosic::rsString::createWhiteSpace(missingLength);
 }
 

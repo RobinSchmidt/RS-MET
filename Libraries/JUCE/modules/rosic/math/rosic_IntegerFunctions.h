@@ -70,8 +70,8 @@ namespace rosic
 
   INLINE unsigned int gcd(unsigned int m, unsigned int n)
   {
-    unsigned int lo  = rmin(n, m);
-    unsigned int hi  = rmax(n, m);
+    unsigned int lo  = RAPT::rsMin(n, m);
+    unsigned int hi  = RAPT::rsMax(n, m);
     unsigned int tmp = hi;
     while( lo != 0 )
     {

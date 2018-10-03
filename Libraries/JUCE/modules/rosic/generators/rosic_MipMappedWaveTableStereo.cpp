@@ -364,7 +364,7 @@ void MipMappedWaveTableStereo::renderMipMap()
   forwardTransformer.transformComplexBufferInPlace(inSpectrumR);
 
   // calculate the number of FFT-bins to fill (including the redundant bins):
-  int m = rmin(prototypeWaveNumSamples, tableLength);
+  int m = RAPT::rsMin(prototypeWaveNumSamples, tableLength);
   if( RAPT::rsIsOdd(m) )
     m -= 1;
 

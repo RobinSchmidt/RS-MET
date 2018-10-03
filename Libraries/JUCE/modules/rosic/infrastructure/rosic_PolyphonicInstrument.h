@@ -236,7 +236,7 @@ namespace rosic
 
   INLINE double PolyphonicInstrument::getCumulativePowerCompensator(double cumulativePower)
   {
-    double psq = rmax(1.0, cumulativePower);
+    double psq = RAPT::rsMax(1.0, cumulativePower);
     double a   = 0.005 * masterLevelByVoices;
     return 1.0 / pow(psq, a); // \todo maybe we can optimize the pow to an exp?
   }

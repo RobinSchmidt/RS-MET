@@ -356,7 +356,7 @@ void ParameterModule::parameterChanged(int index)
   break;
   case 1:
   {
-    minValue     = rmin(parameters[1].value.asDouble(), maxValue);
+    minValue     = RAPT::rsMin(parameters[1].value.asDouble(), maxValue);
     value        = RAPT::rsClip(value, minValue, maxValue);
     defaultValue = RAPT::rsClip(defaultValue, minValue, maxValue);
     setParameter(1, rosic::rsString(minValue), false);
@@ -366,7 +366,7 @@ void ParameterModule::parameterChanged(int index)
   break;
   case 2:
   {
-    maxValue     = rmax(parameters[2].value.asDouble(), minValue);
+    maxValue     = RAPT::rsMax(parameters[2].value.asDouble(), minValue);
     value        = RAPT::rsClip(value, minValue, maxValue);
     defaultValue = RAPT::rsClip(defaultValue, minValue, maxValue);
     setParameter(2, rosic::rsString(maxValue), false);
@@ -470,8 +470,8 @@ void ParameterModule::setValueFromSnapshots(int topLeftIndex, int topRightIndex,
 
 void ParameterModule::enforceConsistencyOfValues()
 {
-  maxValue     = rmax(minValue, maxValue);
-  minValue     = rmin(minValue, maxValue);
+  maxValue     = RAPT::rsMax(minValue, maxValue);
+  minValue     = RAPT::rsMin(minValue, maxValue);
   value        = RAPT::rsClip(value, minValue, maxValue);
   defaultValue = RAPT::rsClip(defaultValue, minValue, maxValue);
 

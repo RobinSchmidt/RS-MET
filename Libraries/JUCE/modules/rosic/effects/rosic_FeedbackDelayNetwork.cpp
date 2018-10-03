@@ -159,7 +159,7 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(double *x, int N, in
       // maybe this computation lends itself well to SSE2-optimization (do the 4 multiplications at
       // once)
     }
-    rsSwap(x, y);
+    RAPT::rsSwap(x, y);
     xContainsResult = !xContainsResult;
   }
   if( !xContainsResult )

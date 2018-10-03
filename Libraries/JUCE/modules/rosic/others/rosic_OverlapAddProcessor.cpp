@@ -10,9 +10,9 @@ OverlapAddProcessor::OverlapAddProcessor(int maxBlockSize, int maxOverlapFactor,
   this->maxBlockSize     = maxBlockSize;
   this->maxOverlapFactor = maxOverlapFactor;
   this->maxPaddingFactor = maxPaddingFactor;
-  blockSize              = rmin(1024, maxBlockSize);
-  overlapFactor          = rmin(2, maxOverlapFactor);
-  paddingFactor          = rmin(2, maxPaddingFactor);
+  blockSize              = RAPT::rsMin(1024, maxBlockSize);
+  overlapFactor          = RAPT::rsMin(2, maxOverlapFactor);
+  paddingFactor          = RAPT::rsMin(2, maxPaddingFactor);
   hopSize                = blockSize/overlapFactor;
   windowPower            = 2;
   useInputWindow         = true;

@@ -38,7 +38,7 @@ void WaveShaper::setTransferFunction(int newTransferFunction)
 
 void WaveShaper::setOversampling(int newOversamplingFactor)
 {
-  oversampling = rmax(1, newOversamplingFactor);
+  oversampling = RAPT::rsMax(1, newOversamplingFactor);
   if( oversampling > 1 )
   {
     upsamplerL.setSubDivision(oversampling);

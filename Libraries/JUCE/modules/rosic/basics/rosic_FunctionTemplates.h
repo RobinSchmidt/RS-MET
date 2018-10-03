@@ -238,20 +238,20 @@ namespace rosic
   //void reverse(T *buffer, int length);
 
   /** The maximum of two objects on which the ">"-operator is defined. */
-  template <class T>
-  INLINE T rmax(T in1, T in2);
+  //template <class T>
+  //INLINE T rmax(T in1, T in2);
 
   /** The maximum of four objects on which the ">"-operator is defined. */
-  template <class T>
-  INLINE T rmax(T in1, T in2, T in3, T in4);
+  //template <class T>
+  //INLINE T rmax(T in1, T in2, T in3, T in4);
 
   /** The minimum of two objects on which the ">"-operator is defined. */
-  template <class T>
-  INLINE T rmin(T in1, T in2);
+  //template <class T>
+  //INLINE T rmin(T in1, T in2);
 
   /** The minimum of four objects on which the ">"-operator is defined. */
-  template <class T>
-  INLINE T rmin(T in1, T in2, T in3, T in4);
+  //template <class T>
+  //INLINE T rmin(T in1, T in2, T in3, T in4);
 
   /** Scales the buffer by a constant factor. */
   //template <class T>
@@ -269,8 +269,8 @@ namespace rosic
   //INLINE T sum(T *buffer, int length);
 
   /** Swaps two objects of class T. */
-  template <class T>
-  INLINE void rsSwap(T &in1, T &in2);
+  //template <class T>
+  //INLINE void rsSwap(T &in1, T &in2);
 
   /** Forms a weighted sum of the two buffers. */
   //template <class T>
@@ -967,7 +967,7 @@ namespace rosic
       buffer[i]              = tmp;
     }
   }
-  */
+
 
   template <class T>
   INLINE T rmax(T in1, T in2)
@@ -977,11 +977,11 @@ namespace rosic
     else
       return in2;
   }
-
+ 
   template <class T>
   INLINE T rmax(T in1, T in2, T in3, T in4)
   {
-    return rmax(rmax(in1, in2), rmax(in3, in4));
+    return RAPT::rsMax(RAPT::rsMax(in1, in2), RAPT::rsMax(in3, in4));
   }
 
   template <class T>
@@ -996,10 +996,9 @@ namespace rosic
   template <class T>
   INLINE T rmin(T in1, T in2, T in3, T in4)
   {
-    return rmin(rmin(in1, in2), rmin(in3, in4));
+    return RAPT::rsMin(RAPT::rsMin(in1, in2), RAPT::rsMin(in3, in4));
   }
 
-  /*
   template <class T>
   void scale(T *buffer, T *result, int length, T scaleFactor)
   {
@@ -1022,7 +1021,6 @@ namespace rosic
       accu += buffer[n];
     return accu;
   }
-  */
 
   template <class T>
   INLINE void rsSwap(T &in1, T &in2)
@@ -1031,7 +1029,7 @@ namespace rosic
     in1   = in2;
     in2   = tmp;
   }
-  /*
+
   template <class T>
   INLINE void weightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, T weight2)
   {

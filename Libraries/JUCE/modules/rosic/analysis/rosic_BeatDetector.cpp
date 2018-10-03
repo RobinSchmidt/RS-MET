@@ -76,7 +76,7 @@ void BeatDetector::estimateTempi()
   std::vector<float> clusterWeights;
   for(unsigned int n=1; n<numOnsets; n++)
   {
-    unsigned int m = rmin(n, M);   // number of IOIs to consider
+    unsigned int m = RAPT::rsMin(n, M);   // number of IOIs to consider
 
     // cluster the onsets:
     clusterMeans.clear();
@@ -125,7 +125,7 @@ void BeatDetector::estimateTempi()
     for(unsigned int c=0; c<clusterWeights.size(); c++)
       weightSum += clusterWeights[c];
 
-    for(unsigned int t=0; t<rmin(numTempi,(unsigned int) clusterWeights.size()); t++)
+    for(unsigned int t=0; t<RAPT::rsMin(numTempi,(unsigned int) clusterWeights.size()); t++)
     {
       // find cluster with maximum weight:
       float maxWeight = 0.f;

@@ -119,7 +119,7 @@ void WaveTable::updateBuffers()
   fourierTransformer.getRealSignalMagnitudesAndPhases(tmpR, magR, phsR);
  
   double maxMag = RAPT::rsArray::maxValue(magL, tableLength/2);
-  maxMag = rmax(maxMag, RAPT::rsArray::maxValue(magR, tableLength/2)); // maximum magnitude
+  maxMag = RAPT::rsMax(maxMag, RAPT::rsArray::maxValue(magR, tableLength/2)); // maximum magnitude
 
   double contrastNormalizer; 
   if( maxMag != 0.0 )

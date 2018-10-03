@@ -54,7 +54,7 @@ void AllpassChain::setFrequency(double newFrequency, bool updateCoefficients)
 
 void AllpassChain::setQ(double newQ, bool updateCoefficients)
 {
-  q = rmax(newQ, 0.0);
+  q = RAPT::rsMax(newQ, 0.0);
   if( updateCoefficients == true )
     updateCoeffs();
 }

@@ -258,8 +258,8 @@ void ModalSynthesizer::resetModalFilters()
 
 void ModalSynthesizer::calculateModalFilterCoefficients()
 {
-  int nm = rmin(numModes, frequencies.dim, amplitudes.dim, decayTimes.dim);
-  nm = rmin(nm, startPhases.dim);
+  int nm = RAPT::rsMin(numModes, frequencies.dim, amplitudes.dim, decayTimes.dim);
+  nm = RAPT::rsMin(nm, startPhases.dim);
   for(int m=0; m<nm; m++)
   {
     modalFilters[m].setModalParameters(frequencies.v[m], amplitudes.v[m], decayTimes.v[m], 

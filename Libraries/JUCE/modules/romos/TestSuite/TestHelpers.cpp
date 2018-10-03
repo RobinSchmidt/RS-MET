@@ -139,9 +139,9 @@ void zeroDesiredOutputs()
 void writeInputSequencesToFile()
 {
   // restrict ranges (we don't want to wite the full arrays to the output):
-  int numFrames   = rmin(50, maxNumFrames);
-  int numVoices   = rmin(3,  maxNumVoices);
-  int numChannels = rmin(4,  maxNumIns);
+  int numFrames   = RAPT::rsMin(50, maxNumFrames);
+  int numVoices   = RAPT::rsMin(3,  maxNumVoices);
+  int numChannels = RAPT::rsMin(4,  maxNumIns);
 
   rosic::rsString s;
   char tmp[8];

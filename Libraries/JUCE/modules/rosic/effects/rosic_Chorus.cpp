@@ -53,7 +53,7 @@ void Chorus::calculateGainCompensation()
       tmp += ampScales[i]*ampScales[i];
   }
   tmp = sqrt(tmp);
-  tmp = rmax(tmp, 0.5);
+  tmp = RAPT::rsMax(tmp, 0.5);
   voiceGainCompensator = 1.0/tmp;
 }
 

@@ -170,7 +170,7 @@ void GradientBasedMinimizer::minimizeViaConjugateGradient()
       beta = (g*(g-gOld)) / (d*(g-gOld));   
     else
       beta = g*(g-gOld)   / (gOld*gOld);        // Polak/Ribiere 
-    beta = rmax(beta, 0.0);
+    beta = RAPT::rsMax(beta, 0.0);
 
     // compute new search direction:
     d = -g + beta*d;
@@ -289,7 +289,7 @@ void GradientBasedMinimizer::minimizeViaScaledConjugateGradient()
       beta = (g*(g-gOld)) / (d*(g-gOld));   
     else
       beta = g*(g-gOld)   / (gOld*gOld);        // Polak/Ribiere 
-    beta = rmax(beta, 0.0);
+    beta = RAPT::rsMax(beta, 0.0);
     d    = -g + beta*d;
 
     // done - next step:

@@ -267,7 +267,7 @@ void ProcessingTest::processModuleInBlocks()
 
 void ProcessingTest::processModuleInFramesNoEvents(int numFrames, int startIndex)
 {
-  int endIndex = rmin(startIndex + numFrames - 1, numFramesToProcess - 1);
+  int endIndex = RAPT::rsMin(startIndex + numFrames - 1, numFramesToProcess - 1);
   for(int frameIndex = startIndex; frameIndex <= endIndex; frameIndex++)
   {
     processFrame(frameIndex);
@@ -282,7 +282,7 @@ void ProcessingTest::processModuleInBlocksNoEvents(int numFrames, int startIndex
 {
   int maxBlockSize = romos::processingStatus.getBufferSize();
   int blockStart   = startIndex;
-  int endIndex     = rmin(startIndex + numFrames - 1, numFramesToProcess - 1);
+  int endIndex     = RAPT::rsMin(startIndex + numFrames - 1, numFramesToProcess - 1);
   while( blockStart <= endIndex )
   {
     int blockSize = (int) ::round(RAPT::rsRandomUniform(1.0, maxBlockSize));

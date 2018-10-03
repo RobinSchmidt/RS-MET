@@ -307,7 +307,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
 
   // tail:
   RAPT::rsArray::fillWithZeros(tmpBuffer, M+2);
-  for(i = 1; i <= rmin(M+1, inLength); i++)
+  for(i = 1; i <= RAPT::rsMin(M+1, inLength); i++)
     tmpBuffer[M+1-i] = in[inLength-i];
   tmpBuffer[M+1] = 0.0;
   for(m = 0; m < upsamplingFactor; m++)

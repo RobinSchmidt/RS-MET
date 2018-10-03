@@ -38,7 +38,7 @@ void ConvolverPartitioned::setImpulseResponse(double *newImpulseResponse, int ne
   {
     M = newLength;
 
-    directConvolver.setImpulseResponse(newImpulseResponse, rmin(newLength, directConvolutionLength));
+    directConvolver.setImpulseResponse(newImpulseResponse, RAPT::rsMin(newLength, directConvolutionLength));
 
     int accu          = directConvolutionLength;
     int currentLength = directConvolutionLength;

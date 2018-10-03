@@ -325,8 +325,8 @@ namespace rosic
   INLINE double ModalSynthesizer::getSample(double in)
   {
     double accu = 0.0;
-    int nm      = rmin(numModes, frequencies.dim, amplitudes.dim, decayTimes.dim);
-    nm          = rmin(nm, startPhases.dim);
+    int nm      = RAPT::rsMin(numModes, frequencies.dim, amplitudes.dim, decayTimes.dim);
+    nm          = RAPT::rsMin(nm, startPhases.dim);
     for(int m=0; m<nm; m++)
       accu += modalFilters[m].getSample(in);
     return accu;

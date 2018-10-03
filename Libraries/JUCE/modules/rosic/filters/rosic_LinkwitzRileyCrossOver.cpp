@@ -10,7 +10,7 @@ rsLinkwitzRileyCrossOver::rsLinkwitzRileyCrossOver(int newMaxButterworthOrder)
   maxButterworthOrder = newMaxButterworthOrder;
   sampleRate          = 44100.0;
   crossoverFrequency  = 1000.0;
-  butterworthOrder    = rmin(2, maxButterworthOrder);
+  butterworthOrder    = RAPT::rsMin(2, maxButterworthOrder);
   updateFilterCoefficients();
 }
 

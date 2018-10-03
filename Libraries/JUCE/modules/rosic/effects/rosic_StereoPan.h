@@ -150,10 +150,10 @@ namespace rosic
       bool /*centerNormalized = false*/)
     {
       double pn = 0.5*p+0.5;  // normalized to 0...1
-      gLL = rmin(2.0*(1.0-pn), 1.0);
+      gLL = RAPT::rsMin(2.0*(1.0-pn), 1.0);
       gRL = 0.0;
       gLR = 0.0;
-      gRR = rmin(2.0*pn, 1.0);
+      gRR = RAPT::rsMin(2.0*pn, 1.0);
     }
 
     /** Computes the gain factors for a linear channel weighting without cross-mixing and
@@ -179,10 +179,10 @@ namespace rosic
       double &gLR, double &gRR, bool centerNormalized = false)
     {
       double pn = 0.5*p+0.5;  // normalized to 0...1
-      gLL = rmin(2.0*(1.0-pn), 1.0);
+      gLL = RAPT::rsMin(2.0*(1.0-pn), 1.0);
       gRL = 0.0;
       gLR = 0.0;
-      gRR = rmin(2.0*pn, 1.0);
+      gRR = RAPT::rsMin(2.0*pn, 1.0);
       if( centerNormalized == true )
         normalizeSumOfSquares(gLL, gRL, gLR, gRR, 2.0);
       else

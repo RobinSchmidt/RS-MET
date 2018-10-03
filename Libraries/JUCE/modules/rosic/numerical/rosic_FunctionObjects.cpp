@@ -12,12 +12,12 @@
 
 double UnivariateScalarFunction::getFirstDerivativeAt(double x)
 {
-  return approximateDerivativeAt(x, 1, rmax(0.001*x, 1.e-14));
+  return approximateDerivativeAt(x, 1, RAPT::rsMax(0.001*x, 1.e-14));
 }
 
 double UnivariateScalarFunction::getSecondDerivativeAt(double x)
 {
-  double eps = rmax(0.001*x, 1.e-14);
+  double eps = RAPT::rsMax(0.001*x, 1.e-14);
   return (getFirstDerivativeAt(x+eps) - getFirstDerivativeAt(x-eps)) / (2*eps);
 }
 

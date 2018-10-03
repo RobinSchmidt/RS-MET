@@ -6,7 +6,7 @@
 
 DynamicsProcessorBase::DynamicsProcessorBase(int newLookAheadBufferSize)
 {
-  lookAheadBufferLength = rmax(newLookAheadBufferSize, 1);
+  lookAheadBufferLength = RAPT::rsMax(newLookAheadBufferSize, 1);
   lookAheadBufferL      = new double[lookAheadBufferLength];
   lookAheadBufferR      = new double[lookAheadBufferLength];
   tapIn                 = 0;

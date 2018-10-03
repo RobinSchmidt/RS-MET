@@ -29,14 +29,14 @@ void LevelDetector::setSampleRate(double newSampleRate)
 void LevelDetector::setAttackTime(double newAttackTime)
 {
   attackReleaseFollower.setAttackTime(newAttackTime);
-  double tau = rmin(attackReleaseFollower.getAttackTime(), attackReleaseFollower.getReleaseTime());
+  double tau = RAPT::rsMin(attackReleaseFollower.getAttackTime(), attackReleaseFollower.getReleaseTime());
   preSmoother.setTimeConstant(tau);
 }
 
 void LevelDetector::setReleaseTime(double newReleaseTime)
 {
   attackReleaseFollower.setReleaseTime(newReleaseTime);
-  double tau = rmin(attackReleaseFollower.getAttackTime(), attackReleaseFollower.getReleaseTime());
+  double tau = RAPT::rsMin(attackReleaseFollower.getAttackTime(), attackReleaseFollower.getReleaseTime());
   preSmoother.setTimeConstant(tau);
 }
 

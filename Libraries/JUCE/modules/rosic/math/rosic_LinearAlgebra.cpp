@@ -67,8 +67,8 @@ bool rosic::solveLinearSystemInPlace(double** A, double* x, double* b, int N)
     // exchange of two values in b):
     if( p != i )
     {
-      rsSwap(A[i], A[p]);
-      rsSwap(b[i], b[p]);
+      RAPT::rsSwap(A[i], A[p]);
+      RAPT::rsSwap(b[i], b[p]);
       p = i;
     }
 
@@ -163,8 +163,8 @@ bool rosic::invertMatrix(double** A, int N)
     // exchange of two values in b):
     if( p != i )
     {
-      rsSwap(tmpAP[i], tmpAP[p]);
-      rsSwap(A[i],     A[p]);
+      RAPT::rsSwap(tmpAP[i], tmpAP[p]);
+      RAPT::rsSwap(A[i],     A[p]);
       p = i;
     }
 

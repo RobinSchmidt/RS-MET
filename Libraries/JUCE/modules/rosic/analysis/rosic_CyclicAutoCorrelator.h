@@ -103,7 +103,7 @@ namespace rosic
   INLINE double rsCyclicAutoCorrelator::getCorrelationAndReset()
   {
     // determine the number of samples over which we have to average:
-    double numSamplesToAverage = (double) rmin(sampleCounter, oldCycleLength);
+    double numSamplesToAverage = (double) RAPT::rsMin(sampleCounter, oldCycleLength);
     if( numSamplesToAverage <= 0.0 )
     {
       numSamplesToAverage = 1.0;

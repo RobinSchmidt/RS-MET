@@ -619,10 +619,10 @@ void romos::retrieveModuleState(void *moduleAsVoid)
     }
   }
 
-  int numVoices     = rmin(maxNumVoices, module->getNumVoices());
-  int numInputPins  = rmin(maxNumPins,   (int) module->getNumInputPins());
-  int numOutputPins = rmin(maxNumPins,   (int) module->getNumOutputPins());
-  int numFrames     = rmin(maxNumFrames, processingStatus.getBufferSize());
+  int numVoices     = RAPT::rsMin(maxNumVoices, module->getNumVoices());
+  int numInputPins  = RAPT::rsMin(maxNumPins,   (int) module->getNumInputPins());
+  int numOutputPins = RAPT::rsMin(maxNumPins,   (int) module->getNumOutputPins());
+  int numFrames     = RAPT::rsMin(maxNumFrames, processingStatus.getBufferSize());
 
   double *pointer;
   int    frameDistance;

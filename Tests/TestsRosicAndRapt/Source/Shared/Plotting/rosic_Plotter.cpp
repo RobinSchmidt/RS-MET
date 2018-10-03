@@ -126,23 +126,23 @@ void Plotter::plotData(int numValues, double *x, double *y1, double *y2, double 
   double yMin    = RAPT::rsArray::minValue(y1, numValues);
   if( y2 != NULL ) 
   {
-    yMax = rmax( yMax, RAPT::rsArray::maxValue(y2, numValues) );
-    yMin = rmin( yMin, RAPT::rsArray::minValue(y2, numValues) );
+    yMax = RAPT::rsMax( yMax, RAPT::rsArray::maxValue(y2, numValues) );
+    yMin = RAPT::rsMin( yMin, RAPT::rsArray::minValue(y2, numValues) );
   }
   if( y3 != NULL ) 
   {
-    yMax = rmax( yMax, RAPT::rsArray::maxValue(y3, numValues) );
-    yMin = rmin( yMin, RAPT::rsArray::minValue(y3, numValues) );
+    yMax = RAPT::rsMax( yMax, RAPT::rsArray::maxValue(y3, numValues) );
+    yMin = RAPT::rsMin( yMin, RAPT::rsArray::minValue(y3, numValues) );
   }
   if( y4 != NULL ) 
   {
-    yMax = rmax( yMax, RAPT::rsArray::maxValue(y4, numValues) );
-    yMin = rmin( yMin, RAPT::rsArray::minValue(y4, numValues) );
+    yMax = RAPT::rsMax( yMax, RAPT::rsArray::maxValue(y4, numValues) );
+    yMin = RAPT::rsMin( yMin, RAPT::rsArray::minValue(y4, numValues) );
   }
   if( y5 != NULL ) 
   {
-    yMax = rmax( yMax, RAPT::rsArray::maxValue(y5, numValues) );
-    yMin = rmin( yMin, RAPT::rsArray::minValue(y5, numValues) );
+    yMax = RAPT::rsMax( yMax, RAPT::rsArray::maxValue(y5, numValues) );
+    yMin = RAPT::rsMin( yMin, RAPT::rsArray::minValue(y5, numValues) );
   }
   double yRange = yMax-yMin;
   if( yRange < 1.e-8 )

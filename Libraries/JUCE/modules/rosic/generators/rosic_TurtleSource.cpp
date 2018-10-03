@@ -187,7 +187,7 @@ void TurtleSource::updateWaveTable()
 void TurtleSource::updateLineCommandIndices()
 {
   //lineCommandIndices.resize(numLines);
-  lineCommandIndices.resize(rmax(numLines,1));
+  lineCommandIndices.resize(RAPT::rsMax(numLines,1));
   int j = 0;
   for(int i = 0; i < turtleCommands.size(); i++) {
     if(turtle.isLineCommand(turtleCommands[i])) {
@@ -447,10 +447,10 @@ void TurtleSource::updateIncrement()
   double oldInc = inc;
   double minLength = 1;
   for(int i = 0; i < numResetters; i++)
-    minLength = rmin(minLength, resetters[i].getInterval());
+    minLength = RAPT::rsMin(minLength, resetters[i].getInterval());
 
   for(int i = 0; i < numReversers; i++)
-    minLength = rmin(minLength, 2*reversers[i].getInterval());
+    minLength = RAPT::rsMin(minLength, 2*reversers[i].getInterval());
 
 
 
@@ -475,7 +475,7 @@ void TurtleSource::updateIncrement()
   */
 
 
-  turtleLowpass.setSampleRate(rmin(1/fabs(inc), 1.1)); // use 1.0 later
+  turtleLowpass.setSampleRate(RAPT::rsMin(1/fabs(inc), 1.1)); // use 1.0 later
   incUpToDate = true;
 }
 
@@ -487,10 +487,10 @@ void TurtleSource::updateMeanAndNormalizer()
   double minX = 0, maxX = 0, minY = 0, maxY = 0;
   int N = (int) tableX.size();
   for(int i = 0; i < N; i++) {
-    minX  = rmin(minX, tableX[i]);
-    maxX  = rmax(maxX, tableX[i]);
-    minY  = rmin(minY, tableY[i]);
-    maxY  = rmax(maxY, tableY[i]);
+    minX  = RAPT::rsMin(minX, tableX[i]);
+    maxX  = RAPT::rsMax(maxX, tableX[i]);
+    minY  = RAPT::rsMin(minY, tableY[i]);
+    maxY  = RAPT::rsMax(maxY, tableY[i]);
   }
 
   centerX = 0.5*(minX+maxX);
@@ -498,9 +498,9 @@ void TurtleSource::updateMeanAndNormalizer()
 
   minX -= centerX; maxX -= centerX;
   minY -= centerY; maxY -= centerY;
-  maxX  = rmax(fabs(minX), fabs(maxX));
-  maxY  = rmax(fabs(minY), fabs(maxY));
-  normalizer = 1.0 / rmax(maxX, maxY);
+  maxX  = RAPT::rsMax(fabs(minX), fabs(maxX));
+  maxY  = RAPT::rsMax(fabs(minY), fabs(maxY));
+  normalizer = 1.0 / RAPT::rsMax(maxX, maxY);
 
   // in free running mode, this so computed mean is sometimes (often) wrong because one cycle is
   // only part (for example half) of a larger shape - in this case, we would need the mean over two

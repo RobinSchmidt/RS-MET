@@ -98,8 +98,8 @@ bool rotes::testSnowflake()
   double xError = 0, yError = 0;
   for(n = 0; n < N; n++)
   {
-    xError = rmax(xError, fabs(xt[n]-xf[n]));
-    yError = rmax(yError, fabs(yt[n]-yf[n]));
+    xError = RAPT::rsMax(xError, fabs(xt[n]-xf[n]));
+    yError = RAPT::rsMax(yError, fabs(yt[n]-yf[n]));
     testResult &= xError == 0 && yError == 0;
     rsAssert(testResult);
   }
@@ -288,7 +288,7 @@ bool runTurtleTest(rosic::TurtleSource& ts1, rosic::TurtleSource& ts2, int numSa
   {
     ts1.getSampleFrameStereo(&x1[n], &y1[n]);
     ts2.getSampleFrameStereo(&x2[n], &y2[n]);
-    err = rmax(fabs(x2[n]-x1[n]), fabs(y2[n]-y1[n]));
+    err = RAPT::rsMax(fabs(x2[n]-x1[n]), fabs(y2[n]-y1[n]));
     //rsAssert(ts2.checkIndexConsistency());
 
     result &= err <= tol;

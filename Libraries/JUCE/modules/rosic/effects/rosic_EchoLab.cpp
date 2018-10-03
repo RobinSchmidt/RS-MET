@@ -290,7 +290,7 @@ bool EchoLab::setDelayLineParameterThreadSafe(int parameterIndex, int delayLineI
     switch( parameterIndex )
     {
     case DELAY_TIME:         
-      delayLines[delayLineIndex]->setDelayTime(rmax(0.01,newValue));          
+      delayLines[delayLineIndex]->setDelayTime(RAPT::rsMax(0.01,newValue));          
       break;
     case GAIN_FACTOR:        
       delayLines[delayLineIndex]->setGlobalGainFactor(newValue);   

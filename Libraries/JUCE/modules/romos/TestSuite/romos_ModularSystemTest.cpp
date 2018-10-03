@@ -160,7 +160,7 @@ void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
     if( events.size() > 0 )
     {
       numFramesUntilNextEvent = events[0].getDeltaFrames() - blockStart;
-      tmpBlockSize            = rmin(numFramesUntilNextEvent, blockSize);
+      tmpBlockSize            = RAPT::rsMin(numFramesUntilNextEvent, blockSize);
       if( numFramesUntilNextEvent == 0 )
       {
         NoteEvent currentEvent = events[0];

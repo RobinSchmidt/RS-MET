@@ -82,7 +82,7 @@ namespace rosic
     // establish the mono sum of the (non-delayed) input signal and obtain its envelope:
     double tmpL = inputGainFactor * (*inOutL);
     double tmpR = inputGainFactor * (*inOutR);  
-    double inM  = rmax(fabs(tmpL), fabs(tmpR));
+    double inM  = RAPT::rsMax(fabs(tmpL), fabs(tmpR));
     double env  = levelDetector.attackReleaseFollower.getSample(inM);
 
     // evaluate the opening-/closing-logic:
@@ -105,7 +105,7 @@ namespace rosic
       {
         gateGain    = 1.0;
         gateClosed  = false;
-        holdCounter = rmin(++holdCounter, numHoldSamples); // don't let it grow indefinitely
+        holdCounter = RAPT::rsMin(++holdCounter, numHoldSamples); // don't let it grow indefinitely
       }
     }
     else  // env is in between opening- and closing threshold

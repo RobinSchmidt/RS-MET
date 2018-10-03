@@ -89,7 +89,7 @@ void rsFilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, 
   Complex *zeros, int numZeros, double *b0, double *b1, double *b2, double *a1, double *a2,
   bool lastStageIsFirstOrder)
 {
-  int order = 2*rmax(numPoles, numZeros);
+  int order = 2*RAPT::rsMax(numPoles, numZeros);
   if(lastStageIsFirstOrder)
     order -= 1;
 

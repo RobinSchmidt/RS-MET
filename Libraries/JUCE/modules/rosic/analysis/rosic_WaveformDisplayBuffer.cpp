@@ -56,7 +56,7 @@ void WaveformDisplayBuffer::setDisplayWidth(int newDisplayWidth)
 {
   if( newDisplayWidth == displayWidth )
     return;
-  displayWidth        = rmax(newDisplayWidth, 1);
+  displayWidth        = RAPT::rsMax(newDisplayWidth, 1);
   displayBufferLength = 2*displayWidth;
   allocateBuffers();
   updateTimeVariables();

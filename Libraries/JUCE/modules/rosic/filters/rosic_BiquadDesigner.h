@@ -364,8 +364,8 @@ namespace rosic
     const double &bandwidth)
   {
     // to avoid divison by zero:
-    double f = rmax(0.0001, frequency);
-    double b = rmax(0.0001, bandwidth);
+    double f = RAPT::rsMax(0.0001, frequency);
+    double b = RAPT::rsMax(0.0001, bandwidth);
 
     double sine, cosine;
     calculateSineAndCosine(sine, cosine, f, oneOverSampleRate);
