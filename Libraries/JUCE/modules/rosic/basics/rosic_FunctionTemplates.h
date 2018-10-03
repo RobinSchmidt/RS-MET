@@ -16,8 +16,8 @@ namespace rosic
 
   /** Returns the absolute value of the input argument for types that define the comparison operators: '<', '>', the unary operator '-' and
   a constructor that takes an int and initializes to zero when 0 is passed.  */
-  template <class T>
-  T absT(T x);
+  //template <class T>
+  //T absT(T x);
 
   /** Adds the elements of 'buffer1' and 'buffer2' - type must define operator '+'. The 'result' buffer may be the same as 'buffer1' or
   'buffer2'. */
@@ -278,7 +278,7 @@ namespace rosic
 
   //=======================================================================================================================================
   // implementation:
-
+  /*
   template <class T>
   T absT(T x)
   {
@@ -289,7 +289,7 @@ namespace rosic
     else
       return T(0);
   }
-  /*
+
   template <class T>
   void add(T *buffer1, T *buffer2, T *result, int length)
   {
