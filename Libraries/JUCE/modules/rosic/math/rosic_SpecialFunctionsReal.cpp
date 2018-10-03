@@ -12,21 +12,21 @@ double rosic::besselI0(double x)
   // use the power series expansion (see Shenoi - Introduction to Digital Signal Processing and Filter Design, eq. 5.42, page 268):
 
   double x2 = 0.5*x;
-  double powers[numInverseFactorials];
+  double powers[RAPT::rsNumInverseFactorials];
   powers[0] = 1.0;
   powers[1] = x2;
-  for(int k=2; k<numInverseFactorials; k++)
+  for(int k=2; k<RAPT::rsNumInverseFactorials; k++)
     powers[k] = x2 * powers[k-1];
 
-  double tmp[numInverseFactorials];
+  double tmp[RAPT::rsNumInverseFactorials];
   tmp[0] = 0.0;
-  for(int k=1; k<numInverseFactorials; k++)
+  for(int k=1; k<RAPT::rsNumInverseFactorials; k++)
   {
-    tmp[k]  = inverseFactorials[k] * powers[k];
+    tmp[k]  = RAPT::rsInverseFactorials[k] * powers[k];
     tmp[k] *= tmp[k];
   }
 
-  double result = 1.0 + sum(tmp, numInverseFactorials);
+  double result = 1.0 + sum(tmp, RAPT::rsNumInverseFactorials);
 
   return result;
 }

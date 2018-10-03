@@ -236,7 +236,6 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 // rosic includes
 
 // basics (but we needed to intersperse some stuff from other folders)
-#include "basics/GlobalFunctions.cpp"
 #include "basics/rosic_ChannelMatrix2x2.cpp"
 #include "basics/rosic_Constants.cpp"                        // empty
 #include "basics/rosic_FunctionTemplates.cpp"                // empty
@@ -246,7 +245,6 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 #include "infrastructure/rosic_MutexLock.cpp"                // used by SampleBuffer
 #include "basics/rosic_SampleBuffer.cpp"
 #include "basics/rosic_SamplePlaybackParameters.cpp"
-#include "math/rosic_ElementaryFunctionsReal.cpp"            // used by SpecialFunctionsReal?
 #include "math/rosic_RealFunctionEvaluationAlgorithms.cpp"   // used by SpecialFunctionsReal
 #include "math/rosic_SpecialFunctionsReal.cpp"               // used by ComplexFunctions?
 #include "math/rosic_Complex.cpp"                            // used by ComplexFunctionsAlgorithms

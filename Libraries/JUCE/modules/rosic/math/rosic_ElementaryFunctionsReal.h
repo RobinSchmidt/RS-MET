@@ -24,9 +24,10 @@ namespace rosic
   // \todo maybe have special polynomials like cheby in an extra file - but maybe not
   // \todo move some of them into the cpp file
 
-  /** A table of reciprocal values of the factorial of some integer number n, that is: 1/n!, where n should be between 0...31 (inclusive)
-  - the values are tabulated and any value outside the range 0...31 will be an access violation. These numbers are useful for making
-  Taylor series approximations. */
+/** A table of reciprocal values of the factorial of some integer number n, that is: 1/n!, where n should be between 0...31 (inclusive)
+- the values are tabulated and any value outside the range 0...31 will be an access violation. These numbers are useful for making
+Taylor series approximations. */
+/*
 static const int numInverseFactorials = 32;
 static long double inverseFactorials[numInverseFactorials] =
 {
@@ -63,6 +64,7 @@ static long double inverseFactorials[numInverseFactorials] =
   1.0/265252859812191058636308480000000.0,
   1.0/8222838654177922817725562880000000.0  // == 1.2161250415535179 * 10^-34
 };
+*/
 
 /** Inverse hyperbolic cosine. The argument must be >= 1, for the general case use the complex version acosh_c defined in
 rosic_ComplexFunctions.h */

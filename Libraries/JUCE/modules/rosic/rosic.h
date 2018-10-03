@@ -81,7 +81,6 @@
 
 // basics:
 #include "basics/GlobalDefinitions.h"
-#include "basics/GlobalFunctions.h"
 #include "basics/rosic_Constants.h"
 
 //#include "basics/Float32x4.h"
@@ -101,7 +100,6 @@
 #include "math/rosic_CephesDeclarations.h"
 #include "math/rosic_RealFunctionEvaluationAlgorithms.h"
 #include "math/rosic_IntegerFunctions.h"
-#include "math/rosic_ElementaryFunctionsReal.h"
 #include "math/rosic_SpecialFunctionsReal.h"
 #include "math/rosic_Complex.h"
 #include "math/rosic_ComplexFunctions.h"
