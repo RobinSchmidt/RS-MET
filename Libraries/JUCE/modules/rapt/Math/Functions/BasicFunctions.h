@@ -144,11 +144,11 @@ inline void rsRangeConversionCoefficients(T inMin, T inMax, T outMin, T outMax,
 
 /** Rounds the given x to the closest integer. */
 template <class T>
-int rsRoundToInt(T x);
+inline int rsRoundToInt(T x) { return (int) ::round(x); }
 
 /** Returns +1 for x > 0, -1 for x < 0 and 0 for x == 0. */
 template <class T>
-T rsSign(T x);
+inline T rsSign(T x) { return T(T(0) < x) - (x < T(0)); }
 
 /** Swaps in1 and in2, if in1 > in2 */
 template <class T>

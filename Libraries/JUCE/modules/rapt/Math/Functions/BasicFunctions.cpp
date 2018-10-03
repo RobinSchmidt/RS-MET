@@ -276,29 +276,17 @@ inline void rsRangeConversionCoefficients(T inMin, T inMax, T outMin, T outMax, 
   *scale = (outMax-outMin) / (inMax-inMin);
   *shift = outMin - (*scale * inMin);
 }
-//inline void rsRangeConversionCoefficients(double inMin, double inMax,
-//  double outMin, double outMax, double *scale, double *shift)
+
+//template <class T>
+//inline int rsRoundToInt(T x)
 //{
-//  *scale = (outMax-outMin) / (inMax-inMin);
-//  *shift = outMin - (*scale * inMin);
+//  T xFloor = floor(x);
+//  T xFrac  = x-xFloor;
+//  if( xFrac >= 0.5 )
+//    return (int) xFloor + 1;
+//  else
+//    return (int) xFloor;
 //}
-
-template <class T>
-inline int rsRoundToInt(T x)
-{
-  T xFloor = floor(x);
-  T xFrac  = x-xFloor;
-  if( xFrac >= 0.5 )
-    return (int) xFloor + 1;
-  else
-    return (int) xFloor;
-}
-
-template <class T>
-inline T rsSign(T x)
-{
-  return T(T(0) < x) - (x < T(0));
-}
 
 template <class T>
 inline T rsSquare(T x)
