@@ -46,7 +46,7 @@ namespace rosic
 
   protected:
 
-    QuadratureNetwork quadratureNetwork;
+    rsQuadratureNetwork quadratureNetwork;
 
   };
 

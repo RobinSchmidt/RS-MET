@@ -80,7 +80,7 @@ namespace rosic
     bool   antiAlias;
 
     rsSubBandFilterMono upsamplingFilter, downsamplingFilter;
-    QuadratureNetwork               quadratureNetwork;
+    rsQuadratureNetwork               quadratureNetwork;
     SineOscillatorStereo            sineOscillator;
     MutexLock                       mutex;
 

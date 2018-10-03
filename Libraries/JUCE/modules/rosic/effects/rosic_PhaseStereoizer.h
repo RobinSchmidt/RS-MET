@@ -84,7 +84,7 @@ namespace rosic
     //=============================================================================================
 
     // embedded modules:
-    QuadratureNetwork quadratureNetwork;
+    rsQuadratureNetwork quadratureNetwork;
     LowpassHighpass   filterM, filterS;
 
   protected:

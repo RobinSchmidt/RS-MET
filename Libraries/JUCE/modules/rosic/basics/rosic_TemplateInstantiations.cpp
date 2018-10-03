@@ -89,6 +89,7 @@ template class RAPT::rsPrototypeDesigner<double>;
 template class RAPT::rsPoleZeroMapper<double>;
 template class RAPT::rsFilterCoefficientConverter<double>;
 template class RAPT::rsInfiniteImpulseResponseDesigner<double>;
+template class RAPT::rsQuadratureNetwork<double, double>;
 template class RAPT::rsEngineersFilter<double, double>;
 template class RAPT::rsEngineersFilter<rsFloat64x2, double>;
 
