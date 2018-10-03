@@ -120,7 +120,7 @@ namespace rosic
         return xs * (threshold + oneOverRatio * (xa-threshold)); 
     }
     else
-      return xs * evaluateQuartic(xa, a0, a1, a2, a3, a4);
+      return xs * RAPT::rsEvaluateQuartic(xa, a0, a1, a2, a3, a4);
   }
 
   INLINE void CompShaper::getSampleFrameStereo(double *inOutL, double *inOutR)

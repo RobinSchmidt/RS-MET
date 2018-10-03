@@ -114,7 +114,7 @@ namespace rosic
         return threshold + ratio * (x-threshold);
     }
     else
-      return evaluateQuartic(x, a0, a1, a2, a3, a4);
+      return RAPT::rsEvaluateQuartic(x, a0, a1, a2, a3, a4);
   }
 
   INLINE void SoftKneeExpander::getSampleFrameStereo(double *inOutL, double *inOutR)

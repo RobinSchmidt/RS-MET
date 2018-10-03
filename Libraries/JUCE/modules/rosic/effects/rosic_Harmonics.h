@@ -125,8 +125,8 @@ namespace rosic
         {
           tmpL   = subbandFiltersL[i].getSample(inL);
           tmpR   = subbandFiltersR[i].getSample(inR);
-          tmpL   = integerPower(tmpL, i+2); 
-          tmpR   = integerPower(tmpR, i+2);
+          tmpL   = RAPT::rsIntegerPower(tmpL, i+2); // optimize
+          tmpR   = RAPT::rsIntegerPower(tmpR, i+2);
           accuL += gainFactors[i]*tmpL;
           accuR += gainFactors[i]*tmpR;
         }

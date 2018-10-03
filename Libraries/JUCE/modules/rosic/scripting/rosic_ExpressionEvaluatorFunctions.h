@@ -37,11 +37,11 @@ public:
   double DoEvaluate()
   {
     if(m_nodes.size() < 2)
-      return rosic::gauss(m_nodes[0]->Evaluate(), 0.0, 1.0);
+      return RAPT::rsGauss(m_nodes[0]->Evaluate(), 0.0, 1.0);
     else if(m_nodes.size() < 3)
-      return rosic::gauss(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), 1.0);
+      return RAPT::rsGauss(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), 1.0);
     else
-      return rosic::gauss(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate());
+      return RAPT::rsGauss(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate());
   }
 };
 

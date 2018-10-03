@@ -225,7 +225,7 @@ void OscilloscopeBufferOld::calculateTimeAxisValues()
 int OscilloscopeBufferOld::getHindsight()
 {
   int hindsight = (int) ceil(sampleRate*timeWindowLength);
-  hindsight     = limit(hindsight, displayWidth, maxBufferSize-1);
+  hindsight     = RAPT::rsClip(hindsight, displayWidth, maxBufferSize-1);
 
   // update the decimation factor (integer division is approriate here, hindsight is the length 
   // of the time-slice in samples):

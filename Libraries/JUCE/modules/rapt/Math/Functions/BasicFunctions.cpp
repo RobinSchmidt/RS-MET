@@ -129,7 +129,7 @@ inline int rsIntAndFracPart(double x, double &frac)
   int i = (int)x;
   frac  = x - (double)i;
   return i;
-  // this version takes roughly 40 cycles
+  // this version takes roughly 40 cycles - use reference for i, too - avoid local variable
 
   /*
   double f = floor(x);

@@ -112,33 +112,33 @@ equalPowerGainFactors(x, gainDry, gainWet, 0.0, 100.0) */
 //  double xMin = 0.0, double xMax = 1.0);
 
 /** Evaluates the quartic polynomial y = a4*x^4 + a3*x^3 + a2*x^2 + a1*x + a0 at x. */
-INLINE double evaluateQuartic(double x, double a0, double a1, double a2, double a3, double a4);
+//INLINE double evaluateQuartic(double x, double a0, double a1, double a2, double a3, double a4);
 
 /** foldover at the specified value */
-INLINE double foldOver(double x, double min, double max);
+//INLINE double foldOver(double x, double min, double max);
 
 /** Returns the fractional part of x. */
-INLINE double frac(double x);
+//INLINE double frac(double x);
 
 // gamma function
 //double gamma(double x);
 
 /** Gaussian function (aka normal distribution) with mean mu and standard deviation sigma. */
-INLINE double gauss(double x, double mu, double sigma);
+//INLINE double gauss(double x, double mu, double sigma);
 
 /** Splits a double into integer and fractional part, the integer part is returned in the
 return value, the fractional part in the second argument. */
-INLINE int intAndFracPart(double x, double &frac);
+//INLINE int intAndFracPart(double x, double &frac);
 
 /** Computes an integer power of x by successively multiplying x with itself. */
-INLINE double integerPower(double x, int exponent);
+//INLINE double integerPower(double x, int exponent);
 
 /** Limits the value of an object.   ...redundant with clip */
-template <class T>
-INLINE T limit(T x, T lowerBound, T upperBound);
+//template <class T>
+//INLINE T limit(T x, T lowerBound, T upperBound);
 
 /** Calculates the logistic function with slope parameter b. */
-INLINE double logistic(double x, double b);
+//INLINE double logistic(double x, double b);
 
 /** Fills the window-array with a Hamming-window. */
 INLINE void makeBlackmanWindow(double *window, int length);
@@ -344,7 +344,7 @@ INLINE void equalPowerGainFactors(double x, double *gain1, double *gain2,
   double tmp = RAPT::rsLinToLin(x, xMin, xMax, 0.0, PI/2.0);
   sinCos(tmp, gain2, gain1);
 }
-*/
+
 INLINE double evaluateQuartic(double x, double a0, double a1, double a2, double a3, double a4)
 {
   double x2 = x*x;
@@ -375,14 +375,12 @@ INLINE int intAndFracPart(double x, double &frac)
   int i = (int)x;
   frac  = x - (double)i;
   return i;
-  // this version takes roughly 40 cycles
+  // this version takes roughly 40 cycles - try to pass i as reference, too - avoid local
 
-  /*
-  double f = floor(x);
-  frac     = x - f;
-  return roundToInt(f);
-  // this version takes roughly 50 cycles
-  */
+  //double f = floor(x);
+  //frac     = x - f;
+  //return roundToInt(f);
+  //// this version takes roughly 50 cycles
 }
 
 INLINE double integerPower(double x, int exponent)
@@ -403,18 +401,16 @@ INLINE T limit(T x, T lowerBound, T upperBound)
   return x;
 }
 
-/*
 INLINE double rosic::log10(double x)
 {
   return ONE_OVER_LN10*log(x);
 }
-*/
 
 INLINE double logistic(double x, double b)
 {
   return 1.0 / (1 + exp(-b*x));
 }
-
+*/
 INLINE void makeBlackmanWindow(double *window, int length)
 {
   for(int n=0; n<length; n++)
