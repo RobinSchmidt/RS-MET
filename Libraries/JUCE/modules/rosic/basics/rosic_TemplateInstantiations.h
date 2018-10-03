@@ -58,7 +58,9 @@ typedef RAPT::rsInfiniteImpulseResponseDesigner<double> rsInfiniteImpulseRespons
 //typedef RAPT::rsEngineersFilter<rsFloat64x2, double> rsEngineersFilterD2D;
 
 //typedef RAPT::rsEllipticSubBandFilterDirectForm<double, double> rsEllipticSubBandFilterDirectFormMono;
-typedef RAPT::rsEllipticSubBandFilterDirectForm<double, double> rsSubBandFilterMono;
+
+typedef RAPT::rsEllipticSubBandFilter<double, double> rsSubBandFilterMonoBQ; // biquad cascade
+typedef RAPT::rsEllipticSubBandFilterDirectForm<double, double> rsSubBandFilterMono; // direct form - rename to DF
 
 
 typedef RAPT::rsLadderFilter2<double, double> rsLadderFilter2DD;  // the version from RSLib

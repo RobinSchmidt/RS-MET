@@ -181,7 +181,7 @@
 #include "filters/rosic_PoleZeroMapper.h"
 #include "filters/rosic_InfiniteImpulseResponseDesigner.h"
 #include "filters/rosic_EngineersFilter.h"
-#include "filters/rosic_EllipticSubBandFilter.h"
+//#include "filters/rosic_EllipticSubBandFilter.h"
 #include "filters/rosic_LinkwitzRileyCrossOver.h"
 #include "filters/rosic_CrossOver4Way.h"
 #include "filters/rosic_LowpassHighpass.h"

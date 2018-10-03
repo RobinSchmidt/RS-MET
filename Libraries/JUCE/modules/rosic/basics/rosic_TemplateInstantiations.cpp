@@ -92,6 +92,7 @@ template class RAPT::rsInfiniteImpulseResponseDesigner<double>;
 template class RAPT::rsEngineersFilter<double, double>;
 template class RAPT::rsEngineersFilter<rsFloat64x2, double>;
 
+template class RAPT::rsEllipticSubBandFilter<double, double>;
 template class RAPT::rsEllipticSubBandFilterDirectForm<double, double>;
 
 template struct RAPT::rsFilterSpecificationZPK<double>;

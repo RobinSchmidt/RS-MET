@@ -98,7 +98,7 @@ namespace rosic
     BreakpointModulator   modulators[numModulators];
     MultiModeFilter       filters[10];
     DspScriptInterpreter  scriptInterpreter;
-    rsEllipticSubBandFilter upsamplerL, upsamplerR, antiAliasFilterL, antiAliasFilterR;
+    rsSubBandFilterMonoBQ upsamplerL, upsamplerR, antiAliasFilterL, antiAliasFilterR;
 
     //=============================================================================================
 

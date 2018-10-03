@@ -155,7 +155,7 @@ namespace rosic
 
 
     //EllipticSubBandFilterDirectForm antiAliasFilterL, antiAliasFilterR;
-    rsEllipticSubBandFilter antiAliasFilterL, antiAliasFilterR;
+    rsSubBandFilterMonoBQ antiAliasFilterL, antiAliasFilterR;
 
   };
 
