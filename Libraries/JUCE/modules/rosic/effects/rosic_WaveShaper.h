@@ -127,8 +127,8 @@ namespace rosic
 
     int    transferFunctionIndex, oversampling;
 
-    rsEllipticSubBandFilterDirectForm upsamplerL, upsamplerR;
-    rsEllipticSubBandFilterDirectForm antiAliasFilterL, antiAliasFilterR;
+    rsSubBandFilterMono upsamplerL, upsamplerR;
+    rsSubBandFilterMono antiAliasFilterL, antiAliasFilterR;
 
   };
 

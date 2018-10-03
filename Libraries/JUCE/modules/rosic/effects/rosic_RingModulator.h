@@ -72,7 +72,7 @@ namespace rosic
     double modulatorFrequency, sampleRate, feedbackFactor;
     bool   antiAlias;
 
-    rsEllipticSubBandFilterDirectForm upsamplingFilter, downsamplingFilter;
+    rsSubBandFilterMono upsamplingFilter, downsamplingFilter;
     SineOscillator                  sineOscillator;
     //NyquistBlocker   nyquistBlocker;
     MutexLock        mutex;

@@ -3,6 +3,8 @@ that break client code.
 
 
 Client-Code-Breaking Changes:
+
+2018/10/04: rosic::rsSubBandFilterDirectForm is now rsSubBandFilterMono
 2018/08/10: AudioModule::createEditor expects an int parameter now
 2018/08/09: ModulationSource subclasses now need to override getModulatorOutputSample() instead of updateModulationValue()
 

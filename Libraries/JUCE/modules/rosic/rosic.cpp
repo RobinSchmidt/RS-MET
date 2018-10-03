@@ -112,7 +112,6 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "filters/rosic_DualTwoPoleFilter.cpp"
 #include "filters/rosic_EllipticQuarterBandFilter.cpp"
 #include "filters/rosic_EllipticSubBandFilter.cpp"
-#include "filters/rosic_EllipticSubBandFilterDirectForm.cpp"
 #include "filters/rosic_Equalizer.cpp"
 #include "filters/rosic_EqualizerStereo.cpp"
 #include "filters/rosic_FiniteImpulseResponseDesigner.cpp"

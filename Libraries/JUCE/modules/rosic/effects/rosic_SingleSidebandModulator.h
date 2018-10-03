@@ -79,7 +79,7 @@ namespace rosic
     double modulatorFrequency, sampleRate, feedbackFactor, usbFactor, lsbFactor;
     bool   antiAlias;
 
-    rsEllipticSubBandFilterDirectForm upsamplingFilter, downsamplingFilter;
+    rsSubBandFilterMono upsamplingFilter, downsamplingFilter;
     QuadratureNetwork               quadratureNetwork;
     SineOscillatorStereo            sineOscillator;
     MutexLock                       mutex;

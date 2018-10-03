@@ -45,7 +45,7 @@ namespace rosic
     //=====================================================================================================================================
 
     StraightlinerVoice*             voiceArray;
-    rsEllipticSubBandFilterDirectForm antiAliasFilterL, antiAliasFilterR;
+    rsSubBandFilterMono antiAliasFilterL, antiAliasFilterR;
 
   protected:
       

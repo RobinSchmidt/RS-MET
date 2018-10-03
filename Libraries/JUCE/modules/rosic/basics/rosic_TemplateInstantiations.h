@@ -57,6 +57,9 @@ typedef RAPT::rsInfiniteImpulseResponseDesigner<double> rsInfiniteImpulseRespons
 //typedef RAPT::rsEngineersFilter<double, double> rsEngineersFilterDD;
 //typedef RAPT::rsEngineersFilter<rsFloat64x2, double> rsEngineersFilterD2D;
 
+//typedef RAPT::rsEllipticSubBandFilterDirectForm<double, double> rsEllipticSubBandFilterDirectFormMono;
+typedef RAPT::rsEllipticSubBandFilterDirectForm<double, double> rsSubBandFilterMono;
+
 
 typedef RAPT::rsLadderFilter2<double, double> rsLadderFilter2DD;  // the version from RSLib
 typedef RAPT::rsLadderFilterZDF<double, double> rsLadderFilterZDFDD;
