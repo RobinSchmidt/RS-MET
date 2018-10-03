@@ -33,7 +33,7 @@ void rotes::testConsecutiveExponentialDecay()
   RAPT::rsArray::cumulativeSum(impulseResponse, stepResponse, numSamples, 1);
 
 
-  double scaler = 1.0 / maxValue(stepResponse, numSamples);
+  double scaler = 1.0 / RAPT::rsArray::maxValue(stepResponse, numSamples);
   RAPT::rsArray::scale(stepResponse, stepResponse, numSamples, scaler);
   //ste
 

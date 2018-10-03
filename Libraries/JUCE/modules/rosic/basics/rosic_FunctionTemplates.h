@@ -147,29 +147,28 @@ namespace rosic
   //template <class T>
   //void fitIntoRange(T *buffer, int length, T min, T max);
 
-
-  template <class T>
-  void impulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder);
+  //template <class T>
+  //void impulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder);
 
   /** Interleaves a buffer of non-interleaved data. */
-  template <class T>
-  void interleave(T *buffer, int numFrames, int numElementsPerFrame);
+  //template <class T>
+  //void interleave(T *buffer, int numFrames, int numElementsPerFrame);
 
   /** Limits the passed value into the ranger between min and max (inclusive) and returns the result. */
-  template <class T>
-  T limitToRange(T value, T min, T max);
+  //template <class T>
+  //T limitToRange(T value, T min, T max);
 
   /** Finds and returns the maximum absolute value of the buffer. */
-  template <class T>
-  T maxAbs(T *buffer, int length);
+  //template <class T>
+  //T maxAbs(T *buffer, int length);
 
   /** Returns the index of maximum value of the buffer (">"-operator must be defined). */
-  template <class T>
-  INLINE int maxIndex(T *buffer, int length);
+  //template <class T>
+  //INLINE int maxIndex(T *buffer, int length);
 
   /** Returns the maximum value of the buffer (">"-operator must be defined). */
-  template <class T>
-  INLINE T maxValue(T *buffer, int length);
+  //template <class T>
+  //INLINE T maxValue(T *buffer, int length);
 
 
   /** Returns the maximum value of the element-wise difference of two buffers (the maximum is 
@@ -186,12 +185,12 @@ namespace rosic
 
 
   /** Returns the index of minimum value of the buffer ("<"-operator must be defined). */
-  template <class T>
-  INLINE int minIndex(T *buffer, int length);
+  //template <class T>
+  //INLINE int minIndex(T *buffer, int length);
 
   /** Returns the minimum value of the buffer ("<"-operator must be defined). */
-  template <class T>
-  INLINE T minValue(T *buffer, int length);
+  //template <class T>
+  //INLINE T minValue(T *buffer, int length);
 
   /** Computes the mean (i.e. the DC-component) from the passed buffer. The type must define 
   operators: +=, / and a constructor which takes an int and initializes to zero when 0 is passed 
@@ -764,7 +763,6 @@ namespace rosic
     }
     return maxIndex;
   }
-  */
 
   template <class T>
   void impulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder)
@@ -827,7 +825,6 @@ namespace rosic
     return max;
   }
 
-  /*
   template <class T>
   INLINE T maxError(T* x, T* y, int N)
   {
@@ -849,7 +846,6 @@ namespace rosic
     }
     return maxIdx;
   }
-  */
 
   template <class T>
   int maxIndex(T *buffer, int length)
@@ -894,6 +890,7 @@ namespace rosic
   {
     return buffer[minIndex(buffer, length)];
   }
+  */
 
   template <class T>
   T mean(T *buffer, int length)
@@ -928,7 +925,7 @@ namespace rosic
   template <class T>
   void normalize(T *buffer, int length, T maximum)
   {
-    T max   = maxAbs(buffer, length);;
+    T max   = RAPT::rsArray::maxAbs(buffer, length);;
     T scale = maximum / max;
     for(int i=0; i<length; i++)
       buffer[i] *= scale;

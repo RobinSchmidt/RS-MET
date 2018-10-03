@@ -151,8 +151,8 @@ void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double
     removeMean(&y[0], N); }
 
   // adjust maximum:
-  double maxX = maxAbs(&x[0], N);
-  double maxY = maxAbs(&y[0], N);
+  double maxX = RAPT::rsArray::maxAbs(&x[0], N);
+  double maxY = RAPT::rsArray::maxAbs(&y[0], N);
   double scl = 1.0 / max(maxX, maxY);
   scale(&x[0], &x[0], N, scl);
   scale(&y[0], &y[0], N, scl);

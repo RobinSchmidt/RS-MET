@@ -67,7 +67,7 @@ bool ModularSystemTest::doOutputsMatchDesiredOutputs()
   for(int channelIndex = 0; channelIndex < numOutputChannels; channelIndex++)
   {
     rosic::subtract(outputs[channelIndex], desiredOutputs[channelIndex], outputErrors[channelIndex], signalLength);
-    double maxErrorInChannel = rosic::maxAbs(outputErrors[channelIndex], signalLength);
+    double maxErrorInChannel = RAPT::rsArray::maxAbs(outputErrors[channelIndex], signalLength);
     if( maxErrorInChannel > maxError )
       maxError = maxErrorInChannel;
   }

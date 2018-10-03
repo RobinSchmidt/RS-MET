@@ -327,7 +327,7 @@ void OnsetDetector::findOnsetsFromFluxMaxima()
     int   n         = blockIndex-w;               // block under investigation
     float value     = flux[n];                    // flux of the block
     float localMean = mean(    &flux[n-m*w], k);  // mean of the block's neighborhood
-    float localMax  = maxValue(&flux[n-m*w], k);  // maximum in the block's neighborhood
+    float localMax  = RAPT::rsArray::maxValue(&flux[n-m*w], k);  // maximum in the block's neighborhood
 
     // onset decision function - an onset must the local maximum of the chunk and some threshold
     // above the local mean (modified with respect to Dixon so as to use a relative threshold):

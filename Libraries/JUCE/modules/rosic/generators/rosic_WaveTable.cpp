@@ -118,8 +118,8 @@ void WaveTable::updateBuffers()
   fourierTransformer.getRealSignalMagnitudesAndPhases(tmpL, magL, phsL);
   fourierTransformer.getRealSignalMagnitudesAndPhases(tmpR, magR, phsR);
  
-  double maxMag = maxValue(magL, tableLength/2);
-  maxMag = rmax(maxMag, maxValue(magR, tableLength/2)); // maximum magnitude
+  double maxMag = RAPT::rsArray::maxValue(magL, tableLength/2);
+  maxMag = rmax(maxMag, RAPT::rsArray::maxValue(magR, tableLength/2)); // maximum magnitude
 
   double contrastNormalizer; 
   if( maxMag != 0.0 )
@@ -232,23 +232,23 @@ void WaveTable::updateBuffers()
 
   if( polarityInvert == true )
   {
-    scale(tmpL, tmpL, tableLength, -1.0);
-    scale(tmpR, tmpR, tableLength, -1.0);
+    RAPT::rsArray::scale(tmpL, tmpL, tableLength, -1.0);
+    RAPT::rsArray::scale(tmpR, tmpR, tableLength, -1.0);
   }
   if( meanRemove == true )
   {
-    removeMean(tmpL, tableLength);
-    removeMean(tmpR, tableLength);
+    RAPT::rsArray::removeMean(tmpL, tableLength);
+    RAPT::rsArray::removeMean(tmpR, tableLength);
   }
   if( normalize == true )
   {
-    rosic::normalize(tmpL, tableLength, 1.0);
-    rosic::normalize(tmpR, tableLength, 1.0);
+    RAPT::rsArray::normalize(tmpL, tableLength, 1.0);
+    RAPT::rsArray::normalize(tmpR, tableLength, 1.0);
   }
   if( fitToRange == true )
   {
-    fitIntoRange(tmpL, tableLength, rangeMin, rangeMax);
-    fitIntoRange(tmpR, tableLength, rangeMin, rangeMax);
+    RAPT::rsArray::fitIntoRange(tmpL, tableLength, rangeMin, rangeMax);
+    RAPT::rsArray::fitIntoRange(tmpR, tableLength, rangeMin, rangeMax);
   }
 
   //-----------------------------------------------------------------

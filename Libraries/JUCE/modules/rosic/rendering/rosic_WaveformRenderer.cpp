@@ -32,7 +32,7 @@ void WaveformRenderer::renderWaveForm(double *targetBuffer, int length)
 
   // some optional post processing steps:
   if( fitToUnitRange == true )
-    rosic::fitIntoRange(targetBuffer, length, -1.0, 1.0);
+    RAPT::rsArray::fitIntoRange(targetBuffer, length, -1.0, 1.0);
   else
   {
     if( dcRemove == true )
