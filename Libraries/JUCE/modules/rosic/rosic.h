@@ -93,7 +93,6 @@
 #include "basics/rosic_ChannelMatrix2x2.h"
 #include "basics/rosic_HelperFunctions.h"
 #include "basics/rosic_NumberManipulations.h"
-#include "basics/rosic_FunctionTemplates.h"
 // we need to intersperse some includes from other directories before we can finish the includes
 // from basics (todo: fix the dependency structure/layering):
 #include "infrastructure/rosic_MutexLock.h"

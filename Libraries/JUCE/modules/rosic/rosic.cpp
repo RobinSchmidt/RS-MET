@@ -238,7 +238,6 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 // basics (but we needed to intersperse some stuff from other folders)
 #include "basics/rosic_ChannelMatrix2x2.cpp"
 #include "basics/rosic_Constants.cpp"                        // empty
-#include "basics/rosic_FunctionTemplates.cpp"                // empty
 #include "basics/rosic_HelperFunctions.cpp"
 #include "basics/rosic_Interpolator.cpp"
 #include "basics/rosic_NumberManipulations.cpp"              // empty
