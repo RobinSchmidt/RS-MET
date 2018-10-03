@@ -93,34 +93,34 @@ namespace rosic
   buffer - otherwise, it will be assigned to zero. When multiplying the result with the interval between successive samples, this
   function can be used for numeric differentiation. If the order is greater than 1, the operation will be performed iteratively on the
   respective result of the previous pass.  */
-  template <class T>
-  void difference(T *buffer, int length, int order = 1, bool periodic = false);
+  //template <class T>
+  //void difference(T *buffer, int length, int order = 1, bool periodic = false);
 
   /** De-interleaves a buffer of interleaved data. */
-  template <class T>
-  void deInterleave(T *buffer, int numFrames, int numElementsPerFrame);
+  //template <class T>
+  //void deInterleave(T *buffer, int numFrames, int numElementsPerFrame);
 
   /** Fills the passed array with a unit impulse. */
-  template <class T>
-  void fillWithImpulse(T *buffer, int length);
+  //template <class T>
+  //void fillWithImpulse(T *buffer, int length);
 
   /** Fills the passed array with the values of the indices - the type T must have a constructor that takes an int and performs appropriate
   conversion. */
-  template <class T>
-  void fillWithIndex(T *buffer, int length);
+  //template <class T>
+  //void fillWithIndex(T *buffer, int length);
 
   /** Fills the buffer with values ranging from min to max (both end-values inclusive). */
-  template <class T>
-  void fillWithRangeLinear(T *buffer, int length, double min, double max);
+  //template <class T>
+  //void fillWithRangeLinear(T *buffer, int length, double min, double max);
 
   /** Fills the passed array with one value at all indices. */
-  template <class T>
-  void fillWithValue(T *buffer, int length, T value);
+  //template <class T>
+  //void fillWithValue(T *buffer, int length, T value);
 
   /** Fills the passed array with all zeros - the type must have a constructor that takes an int and initializes to the zero element when 0
   is passed. */
-  template <class T>
-  void fillWithZeros(T *buffer, int length);
+  //template <class T>
+  //void fillWithZeros(T *buffer, int length);
 
   /** Filters the signal in input buffer x and stores the result in output buffer y. The filter realizes the difference equation:
   y[n] = b[0]*x[n] + b[1]*x[n-1] + b[2]*x[n-2] + ... + b[bOrder]*x[n-bOrder]
@@ -128,24 +128,24 @@ namespace rosic
   so the arrays of coefficients must have a length of their order + 1. The output buffer may have a different length than the input buffer.
   If it is longer, it will be assumed that the missing samples in the input buffer are zero. The input and output buffers may also be
   identical (i.e. point to the same location), in which case the filtering will be done in place. */
-  template <class T>
-  void filter(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a, int aOrder);
+  //template <class T>
+  //void filter(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a, int aOrder);
 
   /** Returns the index of the first value that matches the elementToFind, return -1 when no matching elemenet is found. */
-  template <class T>
-  int findIndexOf(T *buffer, T elementToFind, int length);
+  //template <class T>
+  //int findIndexOf(T *buffer, T elementToFind, int length);
 
   /** Returns the index of the maximum absolute value in the buffer. */
-  template <class T>
-  int findMaxAbs(T *buffer, int length);
+  //template <class T>
+  //int findMaxAbs(T *buffer, int length);
 
-  template <class T>
-  void filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
-    int aOrder, int numRingOutSamples = 10000);
+  //template <class T>
+  //void filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
+  //  int aOrder, int numRingOutSamples = 10000);
 
   /** Scales and offsets the passed buffer such that the minimum value hits 'min' and the maximum value hits 'max'. */
-  template <class T>
-  void fitIntoRange(T *buffer, int length, T min, T max);
+  //template <class T>
+  //void fitIntoRange(T *buffer, int length, T min, T max);
 
 
   template <class T>
@@ -517,7 +517,6 @@ namespace rosic
       }
     }
   }
-  */
 
   template <class T>
   void difference(T *buffer, int length, int order, bool periodic)
@@ -640,11 +639,6 @@ namespace rosic
     delete[] yOld;
   }
 
-
-
-
-
-
   template <class T>
   void filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
     int aOrder, int numRingOutSamples)
@@ -658,22 +652,20 @@ namespace rosic
     for(i=0; i<=bOrder; i++) xOld[i] = T(0);
     for(i=0; i<=aOrder; i++) yOld[i] = T(0);
 
-    /*
-    // backward pass through a portion of the x-buffer to warm up the filter:
-    for(n=rmin(xLength-1, 10000); n>=0; n--)
-    {
-      // compute y[n]:
-      tmp = b[0] * x[n];
-      for(i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
-      for(i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
+    //// backward pass through a portion of the x-buffer to warm up the filter:
+    //for(n=rmin(xLength-1, 10000); n>=0; n--)
+    //{
+    //  // compute y[n]:
+    //  tmp = b[0] * x[n];
+    //  for(i=1; i<=bOrder; i++) tmp += b[i] * xOld[i];
+    //  for(i=1; i<=aOrder; i++) tmp -= a[i] * yOld[i];
 
-      // update state buffers:
-      for(i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
-      for(i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
-      xOld[1] = x[n];
-      yOld[1] = tmp;
-    }
-    */
+    //  // update state buffers:
+    //  for(i=bOrder; i>=2; i--) xOld[i] = xOld[i-1];
+    //  for(i=aOrder; i>=2; i--) yOld[i] = yOld[i-1];
+    //  xOld[1] = x[n];
+    //  yOld[1] = tmp;
+    //}
 
     // compute the part of the signal where both buffers have values:
     int length = rmin(xLength, yLength);
@@ -772,6 +764,7 @@ namespace rosic
     }
     return maxIndex;
   }
+  */
 
   template <class T>
   void impulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder)

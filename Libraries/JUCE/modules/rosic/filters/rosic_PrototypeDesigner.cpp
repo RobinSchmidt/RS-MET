@@ -350,7 +350,7 @@ void rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex 
   int N)
 {
   // zeros are at infinity:
-  fillWithValue(z, N, Complex(INF, 0.0));
+  RAPT::rsArray::fillWithValue(z, N, Complex(INF, 0.0));
 
   // find poles:
   double *a = new double[N+1];        // Bessel-Polynomial coefficients
@@ -411,7 +411,7 @@ void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex
 
   // construct lowpass numerator:
   double *b = new double[N+1];
-  fillWithZeros(b, N+1);
+  RAPT::rsArray::fillWithZeros(b, N+1);
   b[0] = a[0];
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
@@ -444,7 +444,7 @@ void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex
 void rsPrototypeDesigner::papoulisMagnitudeSquaredDenominator(double *a, int N)
 {
   int n;
-  fillWithZeros(a, 2*N+1);  // do we need this?
+  RAPT::rsArray::fillWithZeros(a, 2*N+1);  // do we need this?
 
   // construct the polynomial L_N(w^2):
   RAPT::rsPolynomial<double>::maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
@@ -472,7 +472,7 @@ void rsPrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(Complex *z, Comple
   getLeftHalfPlaneRoots(a2, p, 2*N);
 
   // zeros are at infinity:
-  fillWithValue(z, N, Complex(INF, 0.0));
+  RAPT::rsArray::fillWithValue(z, N, Complex(INF, 0.0));
 
   // set gain at DC to unity:
   *k = sqrt(1.0/fabs(a2[2*N]));
@@ -522,7 +522,7 @@ void rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Compl
 
   // construct lowpass numerator:
   double *b2 = new double[2*N+1];
-  fillWithZeros(b2, 2*N+1);
+  RAPT::rsArray::fillWithZeros(b2, 2*N+1);
   b2[0] = 1.0;
 
   // end of "factor out" ...in general, we need to scale the b2-polynomial also by dividing through 
@@ -1135,8 +1135,8 @@ void rsPrototypeDesigner::makeEllipticLowShelv()
 
 void rsPrototypeDesigner::makeBesselLowShelv(double G, double G0)
 {
-  fillWithZeros(p, maxNumNonRedundantPoles);
-  fillWithZeros(z, maxNumNonRedundantPoles);
+  RAPT::rsArray::fillWithZeros(p, maxNumNonRedundantPoles);
+  RAPT::rsArray::fillWithZeros(z, maxNumNonRedundantPoles);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;
@@ -1158,8 +1158,8 @@ void rsPrototypeDesigner::makeBesselLowShelv(double G, double G0)
 
 void rsPrototypeDesigner::makePapoulisLowShelv(double G, double G0)
 {
-  fillWithZeros(p, maxNumNonRedundantPoles);
-  fillWithZeros(z, maxNumNonRedundantPoles);
+  RAPT::rsArray::fillWithZeros(p, maxNumNonRedundantPoles);
+  RAPT::rsArray::fillWithZeros(z, maxNumNonRedundantPoles);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;

@@ -46,7 +46,7 @@ void rotes::testWindowFunctions()
 {
   static const int windowLength = 51;
   double windowIndices[windowLength];
-  fillWithIndex(windowIndices, windowLength);
+  RAPT::rsArray::fillWithIndex(windowIndices, windowLength);
   double window[windowLength];
 
 
@@ -116,7 +116,7 @@ void testCompensatedLinearInterpolator()
 
   static const int N = 1024;
   double w[N];
-  rosic::fillWithRangeLinear(w, N, 0.0, PI);
+  RAPT::rsArray::fillWithRangeLinear(w, N, 0.0, PI);
   double mag[N];
 
   double d   = 0.5;
@@ -182,12 +182,12 @@ void rotes::testHermiteTwoPoint1()
 
   static const int N = 100;
   double x[N], y[2*N];
-  rosic::fillWithRangeLinear(x, N, 0.0, 1.0);
+  RAPT::rsArray::fillWithRangeLinear(x, N, 0.0, 1.0);
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
     RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 3, &y[2*n], 1);
-  deInterleave(y, N, 2);
+  RAPT::rsArray::deInterleave(y, N, 2);
 
   Plotter::plotData(N, x, y);
   //Plotter::plotData(N, x, y, &y[N]);
@@ -209,12 +209,12 @@ void rotes::testHermiteTwoPoint2()
 
   static const int N = 100;
   double x[N], y[3*N];
-  rosic::fillWithRangeLinear(x, N, 0.0, 1.0);
+  RAPT::rsArray::fillWithRangeLinear(x, N, 0.0, 1.0);
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
     RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 5, &y[3*n], 2);
-  deInterleave(y, N, 3);
+  RAPT::rsArray::deInterleave(y, N, 3);
 
   Plotter::plotData(N, x, y);
   //Plotter::plotData(N, x, y, &y[N]);
@@ -235,12 +235,12 @@ void rotes::testHermiteTwoPoint3()
 
   static const int N = 100;
   double x[N], y[4*N];
-  rosic::fillWithRangeLinear(x, N, 0.0, 1.0);
+  RAPT::rsArray::fillWithRangeLinear(x, N, 0.0, 1.0);
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
     RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 7, &y[4*n], 3);
-  deInterleave(y, N, 4);
+  RAPT::rsArray::deInterleave(y, N, 4);
 
   Plotter::plotData(N, x, y);
   //Plotter::plotData(N, x, y, &y[N]);
@@ -265,12 +265,12 @@ void rotes::testHermiteTwoPointM()
 
   static const int N = 400;
   double x[N], y[(M+1)*N];
-  rosic::fillWithRangeLinear(x, N, 0.0, 1.3);
+  RAPT::rsArray::fillWithRangeLinear(x, N, 0.0, 1.3);
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
     RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 7, &y[(M+1)*n], M);
-  deInterleave(y, N, M+1);
+  RAPT::rsArray::deInterleave(y, N, M+1);
 
   Plotter::plotData(N, x, y);
   //Plotter::plotData(N, x, y, &y[N], &y[2*N], &y[3*N]);
@@ -279,7 +279,7 @@ void rotes::testHermiteTwoPointM()
 double* createDeltaImpulse(int length, int impulseIndex)
 {
   double *d = new double[length];
-  rosic::fillWithZeros(d, length);
+  RAPT::rsArray::fillWithZeros(d, length);
   d[impulseIndex] = 1.0;
   return d;
 }
@@ -314,7 +314,7 @@ void plotMagnitudeResponsesOf(rosic::Matrix &x, int fftSize, double plotFloor, i
   rosic::Matrix magH(5, numBins, true);
   rosic::Matrix phsH(5, numBins, true);
   double *xPadded = new double[fftSize];
-  rosic::fillWithZeros(xPadded, fftSize);
+  RAPT::rsArray::fillWithZeros(xPadded, fftSize);
   for(int m = 0; m < 5; m++)
   {
     RAPT::rsArray::copyBuffer(x.m[m], xPadded, length);
@@ -365,7 +365,7 @@ void rotes::plotOneSidedInterpolatorPolyphaseResponses(int M, double shape, doub
   double *x = createDeltaImpulse(inLength2, inLength2/2);
 
   double *t = new double[inLength2];
-  rosic::fillWithIndex(t, inLength2);
+  RAPT::rsArray::fillWithIndex(t, inLength2);
   rosic::Matrix hd(5, inLength2, true);
   for(int m = 0; m < 5; m++)
   {
@@ -388,10 +388,10 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   static const int oversampling = 128;
   static const int length       = 4*oversampling+1;
   double x[length], yl[length], yc[length], yq[length];
-  rosic::fillWithRangeLinear(x,  length, -1.0, 3.0);
-  rosic::fillWithZeros(      yl, length           );  // linear
-  rosic::fillWithZeros(      yc, length           );  // cubic
-  rosic::fillWithZeros(      yq, length           );  // quintic
+  RAPT::rsArray::fillWithRangeLinear(x,  length, -1.0, 3.0);
+  RAPT::rsArray::fillWithZeros(      yl, length           );  // linear
+  RAPT::rsArray::fillWithZeros(      yc, length           );  // cubic
+  RAPT::rsArray::fillWithZeros(      yq, length           );  // quintic
   int n;
 
   // linear:
@@ -497,14 +497,14 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   double frequencies[numBins];
   double magL[numBins], phsL[numBins], magC[numBins], phsC[numBins], magQ[numBins], phsQ[numBins];
 
-  rosic::fillWithZeros(magL, numBins);
-  rosic::fillWithZeros(phsL, numBins);
-  rosic::fillWithZeros(magC, numBins);
-  rosic::fillWithZeros(phsC, numBins);
-  rosic::fillWithZeros(magQ, numBins);
-  rosic::fillWithZeros(phsQ, numBins);
-  rosic::fillWithIndex(frequencies, numBins);
-  rosic::scale(frequencies, frequencies, numBins, (double) 2*oversampling/fftSize);
+  RAPT::rsArray::fillWithZeros(magL, numBins);
+  RAPT::rsArray::fillWithZeros(phsL, numBins);
+  RAPT::rsArray::fillWithZeros(magC, numBins);
+  RAPT::rsArray::fillWithZeros(phsC, numBins);
+  RAPT::rsArray::fillWithZeros(magQ, numBins);
+  RAPT::rsArray::fillWithZeros(phsQ, numBins);
+  RAPT::rsArray::fillWithIndex(frequencies, numBins);
+  RAPT::rsArray::scale(frequencies, frequencies, numBins, (double) 2*oversampling/fftSize);
 
 
   double tmp[fftSize];

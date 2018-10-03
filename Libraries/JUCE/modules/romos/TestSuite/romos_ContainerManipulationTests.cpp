@@ -229,7 +229,7 @@ ContainerizationAddedConstantsTest::ContainerizationAddedConstantsTest()
 }
 void ContainerizationAddedConstantsTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  fillWithValue(desiredOutputs[0][0], numFramesToProcess, 136.0);
+  RAPT::rsArray::fillWithValue(desiredOutputs[0][0], numFramesToProcess, 136.0);
 }
 bool ContainerizationAddedConstantsTest::runTest()
 {

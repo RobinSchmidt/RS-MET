@@ -58,9 +58,9 @@ void rsLinkwitzRileyCrossOver::getLowpassMagnitudeResponse(double* frequencies, 
   if( accumulate == false )
   {
     if( inDecibels == true )
-      fillWithValue(magnitudes, numBins, 0.0);
+      RAPT::rsArray::fillWithValue(magnitudes, numBins, 0.0);
     else
-      fillWithValue(magnitudes, numBins, 1.0);
+      RAPT::rsArray::fillWithValue(magnitudes, numBins, 1.0);
   }
   lowpass1.getMagnitudeResponse(frequencies, sampleRate, magnitudes, numBins, true, true);
   lowpass2.getMagnitudeResponse(frequencies, sampleRate, magnitudes, numBins, true, true);
@@ -70,7 +70,7 @@ void rsLinkwitzRileyCrossOver::getLowpassFrequencyResponse(double* frequencies, 
   int numBins, bool accumulate)
 {
   if( accumulate == false )  
-    fillWithValue(H, numBins, Complex(1.0));
+    RAPT::rsArray::fillWithValue(H, numBins, Complex(1.0));
 
   double *w = new double[numBins];
   RAPT::rsArray::copyBuffer(frequencies, w, numBins);

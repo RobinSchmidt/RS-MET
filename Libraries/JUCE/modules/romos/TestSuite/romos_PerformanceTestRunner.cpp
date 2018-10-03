@@ -110,8 +110,8 @@ rosic::rsString PerformanceTestRunner::runInternalFunctionPerformanceTests()
 
   double x[numCalls];
   double y[numCalls];
-  rosic::fillWithIndex(x, numCalls);   // maybe use random values
-  rosic::fillWithIndex(y, numCalls);
+  RAPT::rsArray::fillWithIndex(x, numCalls);   // maybe use random values
+  RAPT::rsArray::fillWithIndex(y, numCalls);
 
 
   double minCyclesPerCall = pow(10.0, 100.0);

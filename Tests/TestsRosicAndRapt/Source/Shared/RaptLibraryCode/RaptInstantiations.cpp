@@ -52,6 +52,7 @@ template void rsArray::fillWithRangeLinear(double* x, int N, double min, double 
 template void rsArray::fillWithRangeExponential(double* x, int N, double min, double max);
 template void rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 template void rsArray::deConvolve(double *y, int yLength, double *h, int hLength, double *x);
+template void rsArray::deInterleave(double*, int, int);
 template void rsArray::sequenceSqrt(double *y, int yLength, double *x);
 template void rsArray::transposeSquareArray(double **in, double **out, int size);
 template void rsArray::cumulativeSum(double *x, double *y, int length, int order);
@@ -95,6 +96,7 @@ template void rsArray::copyBuffer(const rsUint32 *src, rsUint32 *dst, int N);
 template int rsArray::firstIndexWithNonZeroValue(rsUint32 *a, int N);
 template bool rsArray::contains(rsUint32 *buffer, int length, rsUint32 elementToFind);
 template void rsArray::fillWithZeros(rsUint32 *buffer, int length);
+template void rsArray::fillWithValue(char* buffer, int length, char value);
 
 template void rsArray::convertBuffer(std::complex<double> *source, std::complex<double> *destination, int length);
 template void rsArray::fillWithRandomValues(std::complex<double>* x, int N, double min, double max, int seed);

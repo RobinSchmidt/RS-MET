@@ -38,7 +38,7 @@ void WaveformBuffer::setWaveform(float* newWaveForm, int newLength, rsString new
 void WaveformBuffer::initWaveform(int newLength, rsString newName)
 {
   allocateMemory(newLength);
-  fillWithZeros(buffer, numSamples);
+  RAPT::rsArray::fillWithZeros(buffer, numSamples);
   name = newName;
 }
 
@@ -49,7 +49,7 @@ void WaveformBuffer::getWaveform(double *targetBuffer, int length)
 {
   if( buffer == NULL )
   {
-    fillWithZeros(targetBuffer, length);
+    RAPT::rsArray::fillWithZeros(targetBuffer, length);
     return;
   }
   if( length == numSamples )

@@ -383,7 +383,7 @@ MonoToPolyTest::MonoToPolyTest()
 void MonoToPolyTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    fillWithValue(desiredOutputs[v][0], numFramesToProcess, -1.0);
+    RAPT::rsArray::fillWithValue(desiredOutputs[v][0], numFramesToProcess, -1.0);
 }
 
 
@@ -400,14 +400,14 @@ void VoiceCombinerTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphoni
     // 0-th voice output contains the sum ( == numvoicesToUse), other voices are referred to the same value (because our output
     // is monophonic) - so all voices contain numVoicesToUse in this case:
     for(int v = 0; v < numVoicesToUse; v++) 
-      fillWithValue(desiredOutputs[v][0], numFramesToProcess, (double) numVoicesToUse);
+      RAPT::rsArray::fillWithValue(desiredOutputs[v][0], numFramesToProcess, (double) numVoicesToUse);
   }
   else
   {
     // 0-th voice output contains the passed through 0-th voice (unity), other voices are referred to the same value (because our output
     // is monophonic) - so all voices contaim unity in this case:
     for(int v = 0; v < numVoicesToUse; v++) 
-      fillWithValue(desiredOutputs[v][0], numFramesToProcess, 1.0);
+      RAPT::rsArray::fillWithValue(desiredOutputs[v][0], numFramesToProcess, 1.0);
   }
 }
 

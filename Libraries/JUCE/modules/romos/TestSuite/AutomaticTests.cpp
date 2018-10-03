@@ -463,7 +463,7 @@ bool testMonoToPoly(int numVoicesToCheck)
   romos::Module *testModule =  TestModuleBuilder::createMonoToPoly("MonoToPoly", 0, 0, true);
 
   for(int v = 0; v < numVoicesToCheck; v++) 
-    fillWithValue(d[v][0], maxNumFrames, -1.0);
+    RAPT::rsArray::fillWithValue(d[v][0], maxNumFrames, -1.0);
 
   bool result = true;
 
@@ -477,7 +477,7 @@ bool testMonoToPoly(int numVoicesToCheck)
     "MonoToPoly, Container Poly", &events);
 
   // now make the container monophonic (and adapt the 0th desired output accordingly):
-  fillWithValue(d[0][0], maxNumFrames, (double) -numVoicesToCheck);
+  RAPT::rsArray::fillWithValue(d[0][0], maxNumFrames, (double) -numVoicesToCheck);
   testModule->setPolyphonic(false);
   result &= checkProcessingInFramesMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0, 
     "MonoToPoly, Container Mono", &events);
@@ -556,7 +556,7 @@ bool testTriggerAndKill(int numVoicesToCheck)
   //int frameIndex, voiceIndex, pinIndex; // frameIndex, voiceIndex, pinIndex
 
   for(int v = 0; v < numVoicesToCheck; v++) 
-    fillWithValue(d[v][0], maxNumFrames, 0.0);
+    RAPT::rsArray::fillWithValue(d[v][0], maxNumFrames, 0.0);
 
   /*
   testModule->setPolyphonicRecursively(false);

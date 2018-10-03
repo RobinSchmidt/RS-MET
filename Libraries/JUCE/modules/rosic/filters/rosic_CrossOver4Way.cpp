@@ -91,7 +91,7 @@ int rsCrossOver4Way::getSlope(int treeLevel, int indexInLevel) const
 void rsCrossOver4Way::getMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, 
   int outputChannel, bool inDecibels)
 {
-  fillWithValue(magnitudes, numBins, -100.0);
+  RAPT::rsArray::fillWithValue(magnitudes, numBins, -100.0);
 
   if( !stage2[0].isActive() && !stage2[1].isActive() ) 
   {

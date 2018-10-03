@@ -87,7 +87,7 @@ void WaveformDisplayBuffer::updateTimeVariables()
   inc = displayBufferLength / numSamplesShown;
 
 
-  fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown)/(sampleRate));
+  RAPT::rsArray::fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown)/(sampleRate));
   //fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (2*numSamplesShown-1)/(2*sampleRate));
   //fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown-1)/(sampleRate));
 
@@ -102,8 +102,8 @@ void WaveformDisplayBuffer::updateTimeVariables()
 
 void WaveformDisplayBuffer::clearBuffers()
 {
-  fillWithZeros(inputBuffer,   displayBufferLength);
-  fillWithZeros(displayBuffer, displayBufferLength);
+  RAPT::rsArray::fillWithZeros(inputBuffer,   displayBufferLength);
+  RAPT::rsArray::fillWithZeros(displayBuffer, displayBufferLength);
 }
 
 void WaveformDisplayBuffer::allocateBuffers()

@@ -170,7 +170,7 @@ void rosic::rootsToCoeffs(Complex *r, Complex *a, int N)
   Complex *rF = new Complex[N]; 
   int nF = copyFiniteValues(r, rF, N);
 
-  fillWithZeros(a, N+1);
+  RAPT::rsArray::fillWithZeros(a, N+1);
   if( nF == 0 )
     a[0] = 1.0;
   else

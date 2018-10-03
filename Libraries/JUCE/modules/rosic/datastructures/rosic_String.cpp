@@ -360,11 +360,11 @@ int rsString::removeGarbageFromDoubleString(char *s, int length)
   //int dummy;
 
   // leave scientifically notated strings as is:
-  if( rosic::findIndexOf(s, 'e', length) != -1 || rosic::findIndexOf(s, 'E', length) != -1 )
+  if( RAPT::rsArray::findIndexOf(s, 'e', length) != -1 || RAPT::rsArray::findIndexOf(s, 'E', length) != -1 )
     return length;
 
   // leave integer notated strings (without point) as is:
-  int dotIndex = rosic::findIndexOf(s, '.', length);
+  int dotIndex = RAPT::rsArray::findIndexOf(s, '.', length);
   if( dotIndex == -1 )
     return length;
 

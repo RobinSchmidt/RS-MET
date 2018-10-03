@@ -8,7 +8,7 @@ void rosic::synthesizeWaveform(double *x, int N, int shape, double frequency, do
                                double phase, bool antiAlias)
 {
   double w = 2*PI*frequency/sampleRate;
-  fillWithZeros(x, N);
+  RAPT::rsArray::fillWithZeros(x, N);
   switch( shape )
   {
   case SINE:
@@ -89,7 +89,7 @@ void rosic::synthesizePulseWave(double *x, int N, double frequency, double dutyC
                                 double sampleRate, double phase, bool antiAlias)
 {
   double w = 2*PI*frequency/sampleRate;
-  fillWithZeros(x, N);
+  RAPT::rsArray::fillWithZeros(x, N);
   if( antiAlias == false )
   {
     for(int n=0; n<N; n++)
@@ -290,7 +290,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
   {
     if( n < M+2 )
     {
-      rosic::fillWithZeros(tmpBuffer, M+2);
+      RAPT::rsArray::fillWithZeros(tmpBuffer, M+2);
       for(i = 0; i <= n; i++)
         tmpBuffer[M+1-i] = in[n-i];
       tmpPointer = &tmpBuffer[M+1];
@@ -306,7 +306,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
   }
 
   // tail:
-  rosic::fillWithZeros(tmpBuffer, M+2);
+  RAPT::rsArray::fillWithZeros(tmpBuffer, M+2);
   for(i = 1; i <= rmin(M+1, inLength); i++)
     tmpBuffer[M+1-i] = in[inLength-i];
   tmpBuffer[M+1] = 0.0;

@@ -449,7 +449,7 @@ void Plotter::plotAnalogMagnitudeResponse(Complex *z, Complex *p, double k, int 
 {
   double *w = new double[resolution];
   double *m = new double[resolution];
-  fillWithRangeLinear(w, resolution, wl, wu);
+  RAPT::rsArray::fillWithRangeLinear(w, resolution, wl, wu);
   rosic::rsFilterAnalyzer::getAnalogMagnitudeResponse(z, p, k, N, w, m, resolution);
   Plotter::plotData(resolution, w, m);
   delete[] w;
@@ -460,7 +460,7 @@ void Plotter::plotAnalogPhaseResponse(Complex *z, Complex *p, double k, int N, d
 {
   double *w = new double[resolution];
   double *m = new double[resolution];
-  fillWithRangeLinear(w, resolution, wl, wu);
+  RAPT::rsArray::fillWithRangeLinear(w, resolution, wl, wu);
   rosic::rsFilterAnalyzer::getAnalogPhaseResponse(z, p, k, N, w, m, resolution);
   Plotter::plotData(resolution, w, m);
   delete[] w;

@@ -27,7 +27,7 @@ void rotes::testOscilloscopeBuffer()
   // create the absolute time-axis and the input signal: 
   int n;
   double t[L];
-  fillWithRangeLinear(t, L, 0.0, (double) (L-1) / fs);
+  RAPT::rsArray::fillWithRangeLinear(t, L, 0.0, (double) (L-1) / fs);
   //fillWithRangeLinear(t, L, 0.0, (double) L);  // test - show time-axis in samples
   double xL[L], xR[L], xM[L], xS[L];
   double w = 2.0*PI*f/fs;

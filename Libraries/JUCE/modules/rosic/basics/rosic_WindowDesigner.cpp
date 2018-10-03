@@ -3,7 +3,7 @@
 
 void WindowDesigner::getWindow(double *window, int length, int type)
 {
-  fillWithValue(window, length, 1.0);
+  RAPT::rsArray::fillWithValue(window, length, 1.0);
   applyWindow(window, length, type);
 }
 

@@ -117,7 +117,7 @@ void rsFilterAnalyzer::getBiquadCascadeFrequencyResponse(double* b0, double* b1,
 {
   if( accumulationMode == NO_ACCUMULATION )
   {
-    fillWithValue(H, numBins, Complex(1.0, 0.0));
+    RAPT::rsArray::fillWithValue(H, numBins, Complex(1.0, 0.0));
     multiplyWithBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numBiquads, w, H, numBins);
   }
   else if( accumulationMode == MULTIPLICATIVE_ACCUMULATION )

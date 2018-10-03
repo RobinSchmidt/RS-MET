@@ -35,15 +35,15 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
 {
   // some test code for development:
   int buf8[8];
-  rosic::fillWithIndex(buf8, 8);
+  RAPT::rsArray::fillWithIndex(buf8, 8);
   shuffleBuffer(buf8, 8);
 
   int buf16[16];
-  rosic::fillWithIndex(buf16, 16);
+  RAPT::rsArray::fillWithIndex(buf16, 16);
   shuffleBuffer(buf16, 16);
 
   int buf32[32];
-  rosic::fillWithIndex(buf32, 32);
+  RAPT::rsArray::fillWithIndex(buf32, 32);
   shuffleBuffer(buf32, 32);
 
 

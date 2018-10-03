@@ -214,6 +214,10 @@ public:
   template <class T1, class T2, class TR>
   static void divide(T1 *buffer1, T2 *buffer2, TR *result, int length);
 
+  /** Fills the passed array with a unit impulse. */
+  template <class T>
+  static inline void fillWithImpulse(T *buffer, int length);
+
   /** Fills the passed array with the values of the indices - the type T must have a
   constructor that takes an int and performs appropriate conversion. */
   template <class T>
@@ -257,6 +261,15 @@ public:
   template <class T>
   static void filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
     int aOrder, int numRingOutSamples = 10000);
+
+  /** Returns the index of the first value that matches the elementToFind, return -1 when no 
+  matching elemenet is found. */
+  template <class T>
+  static inline int findIndexOf(T *buffer, T elementToFind, int length);
+
+  /** Returns the index of the maximum absolute value in the buffer. */
+  template <class T>
+  static inline int findMaxAbs(T *buffer, int length);
 
   /** Returns the index of a peak or value in the length-N array x right or equal to n0 or -1 if 
   none is found. */
@@ -571,6 +584,40 @@ inline void rsArray::convertBuffer(T1 *source, T2 *destination, int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
+}
+
+template <class T>
+inline void rsArray::fillWithImpulse(T *buffer, int length)
+{
+  fillWithZeros(buffer, length);
+  buffer[0] = T(1);
+}
+
+template <class T>
+inline int rsArray::findIndexOf(T *buffer, T elementToFind, int length)
+{
+  for(int i = 0; i < length; i++)
+  {
+    if( buffer[i] == elementToFind )
+      return i;
+  }
+  return -1;
+}
+
+template <class T>
+inline int rsArray::findMaxAbs(T *buffer, int length)
+{
+  int maxIndex = 0;
+  T maxValue   = T(0);
+  for(int i=0; i<length; i++)
+  {
+    if( absT(buffer[i]) > maxValue )
+    {
+      maxValue = absT(buffer[i]);
+      maxIndex = i;
+    }
+  }
+  return maxIndex;
 }
 
 template <class T>

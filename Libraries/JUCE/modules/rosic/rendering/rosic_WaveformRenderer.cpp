@@ -27,7 +27,7 @@ void WaveformRenderer::renderWaveForm(double *targetBuffer, int length)
   case AUDIO_FILE:        waveBuffer.getWaveform(             targetBuffer, length); break;
   case ALGORITHM:         algorithmicRenderer.renderWaveform( targetBuffer, length); break;
   case MULTI_SEGMENT:     multiSegmentRenderer.renderWaveform(targetBuffer, length); break;
-  default:                fillWithZeros(                      targetBuffer, length);
+  default:                RAPT::rsArray::fillWithZeros(                      targetBuffer, length);
   }
 
   // some optional post processing steps:

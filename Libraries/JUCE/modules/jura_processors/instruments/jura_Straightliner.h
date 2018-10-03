@@ -56,8 +56,8 @@ public:
   {
     if(wrappedStraightliner->isSilent())
     {
-      rosic::fillWithZeros(inOutBuffer[0], numSamples);
-      rosic::fillWithZeros(inOutBuffer[1], numSamples);
+      RAPT::rsArray::fillWithZeros(inOutBuffer[0], numSamples);
+      RAPT::rsArray::fillWithZeros(inOutBuffer[1], numSamples);
     }
     else
     {

@@ -40,8 +40,8 @@ void rotes::testStringBufferCopying()
   static const int charBufferLength = 20;
   char charBufferOriginal[     charBufferLength];
   char charBufferReconstructed[charBufferLength]; 
-  rosic::fillWithValue(charBufferOriginal,      charBufferLength, 'X');
-  rosic::fillWithValue(charBufferReconstructed, charBufferLength, 'X');
+  RAPT::rsArray::fillWithValue(charBufferOriginal,      charBufferLength, 'X');
+  RAPT::rsArray::fillWithValue(charBufferReconstructed, charBufferLength, 'X');
   strcpy(charBufferOriginal, "0123456789");
 
   rsString string;

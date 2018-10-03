@@ -78,13 +78,13 @@ bool rotes::testFeedbackDelayNetwork()
   double *hR = new double[N];
 
 
-  rosic::fillWithImpulse(hL, N);
-  rosic::fillWithImpulse(hR, N);
+  RAPT::rsArray::fillWithImpulse(hL, N);
+  RAPT::rsArray::fillWithImpulse(hR, N);
   for(int n = 0; n < N; n++)
     fdn.processFrame(&hL[n], &hR[n]);
 
   double t[N];
-  rosic::fillWithIndex(t, N);
+  RAPT::rsArray::fillWithIndex(t, N);
   //Plotter::plotData(N, t, hL, hR);
   //Plotter::plotData(N, t, hL);
 

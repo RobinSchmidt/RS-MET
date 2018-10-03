@@ -12,7 +12,7 @@ void rotes::testConsecutiveExponentialDecay()
   double indices[numSamples];
   double impulseResponse[numSamples];
   double stepResponse[numSamples];
-  fillWithIndex(indices, numSamples);
+  RAPT::rsArray::fillWithIndex(indices, numSamples);
 
 
 

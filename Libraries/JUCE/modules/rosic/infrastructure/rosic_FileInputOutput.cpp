@@ -50,7 +50,7 @@ double** rosic::readFromWaveFile(const char* path, int& numChannels, int& numFra
     float *fBuffer = new float[numChannels*numFrames];
     file.read(fBuffer, numChannels*numFrames);
     if( numChannels > 1 )
-      deInterleave(fBuffer, numFrames, numChannels);
+      RAPT::rsArray::deInterleave(fBuffer, numFrames, numChannels);
 
     double *dBuffer = new double[numChannels*numFrames];
     for(int n=0; n<numChannels*numFrames; n++)

@@ -20,7 +20,7 @@ void plotImpulseResponse(T &module, int N, double fs)
   double *t = new double[N];  // time axis
   double *h = new double[N];  // impulse response
 
-  rosic::fillWithRangeLinear(t, N, 0.0, (N-1)/fs);
+  RAPT::rsArray::fillWithRangeLinear(t, N, 0.0, (N-1)/fs);
   getImpulseResponse(module, h, N);
   Plotter::plotData(N, t, h);
 
@@ -90,8 +90,8 @@ void rotes::testLadderFilter()
   double y[N];  // output signal
 
   rosic::synthesizeWaveform(x, N, rosic::SAW, fSaw, fs);
-  rosic::fillWithIndex(t, N);
-  rosic::fillWithZeros(y, N);
+  RAPT::rsArray::fillWithIndex(t, N);
+  RAPT::rsArray::fillWithZeros(y, N);
 
   int n;
   ladder.setCutoff(fcHi, true);
@@ -136,7 +136,7 @@ void rotes::testModalFilter()
 
 
   double t[N], h[N], h2[N];
-  fillWithIndex(t, N);
+  RAPT::rsArray::fillWithIndex(t, N);
   h[0]  = mf.getSample(1.0);
   h2[0] = mf2.getSample(1.0);
   for(int n = 1; n < N; n++)
@@ -206,7 +206,7 @@ void rotes::testBiquadPhasePlot()
 
   // create normalized radian frequency axis:
   double w[numBins];
-  fillWithRangeLinear(w, numBins, 0.0, PI);
+  RAPT::rsArray::fillWithRangeLinear(w, numBins, 0.0, PI);
 
   // obtain magnitude phase response:
   double m[numBins];
@@ -232,7 +232,7 @@ void rotes::testFiniteImpulseResponseDesigner()
 
   // plot the impulse response:
   double indices[length];
-  rosic::fillWithIndex(indices, length);
+  RAPT::rsArray::fillWithIndex(indices, length);
   //Plotter::plotData(length, indices, impulseResponse);
 
   // plot the magnitude response:
@@ -246,7 +246,7 @@ void rotes::testFiniteImpulseResponseDesigner()
   double magnitudes5[fftLength];
   double phases[fftLength];
   double sampleRate = 44100.0;
-  fillWithIndex(frequencies, fftLength);
+  RAPT::rsArray::fillWithIndex(frequencies, fftLength);
   scale(frequencies, frequencies, fftLength, sampleRate/fftLength);
   fftMagnitudesAndPhases(impulseResponse, length, magnitudes, phases, fftLength);
   //Plotter::plotData(fftLength/2, frequencies, magnitudes);
@@ -395,11 +395,11 @@ void rotes::testFilterAnalyzer()
   double b2[maxNumBiquads];
   double a1[maxNumBiquads];
   double a2[maxNumBiquads];
-  fillWithValue(b0, maxNumBiquads, -100.0);
-  fillWithValue(b1, maxNumBiquads, -100.0);
-  fillWithValue(b2, maxNumBiquads, -100.0);
-  fillWithValue(a1, maxNumBiquads, -100.0);
-  fillWithValue(a2, maxNumBiquads, -100.0);
+  RAPT::rsArray::fillWithValue(b0, maxNumBiquads, -100.0);
+  RAPT::rsArray::fillWithValue(b1, maxNumBiquads, -100.0);
+  RAPT::rsArray::fillWithValue(b2, maxNumBiquads, -100.0);
+  RAPT::rsArray::fillWithValue(a1, maxNumBiquads, -100.0);
+  RAPT::rsArray::fillWithValue(a2, maxNumBiquads, -100.0);
 
   int numBiquads = designer.getNumBiquadStages();
   designer.getBiquadCascadeCoefficients(b0, b1, b2, a1, a2);
@@ -712,9 +712,9 @@ void rotes::testCrossover4Way2()
 
   // impulse response variables:
   double indices[numBins];
-  fillWithIndex(indices, numBins);
+  RAPT::rsArray::fillWithIndex(indices, numBins);
   float impulseResponsesFloat[8*numBins];
-  fillWithZeros(impulseResponsesFloat, 8*numBins);
+  RAPT::rsArray::fillWithZeros(impulseResponsesFloat, 8*numBins);
   impulseResponsesFloat[0]       = 1.0;  // 1st sample of left input channel
   impulseResponsesFloat[numBins] = 1.0;  // 1st sample of right input channel
 
@@ -793,7 +793,7 @@ void rotes::testSlopeFilter()
   double magnitudes[length];
   double decibels[length];
 
-  fillWithIndex(frequencies, length);
+  RAPT::rsArray::fillWithIndex(frequencies, length);
   scale(frequencies, frequencies, length, sampleRate/length);
 
   fftMagnitudesAndPhases(impulseResponse, length, magnitudes, NULL, length);
@@ -965,7 +965,7 @@ void rotes::testEngineersFilter()
   double timeAxis[numSamples];  // time axis in samples
   double stepResp[numSamples];  // step response
   double impResp[numSamples];   // impulse response
-  fillWithRangeLinear(timeAxis, numSamples, 0.0, numSamples-1);
+  RAPT::rsArray::fillWithRangeLinear(timeAxis, numSamples, 0.0, numSamples-1.0);
 
   // create and set up the filter:
   rosic::rsEngineersFilterOld filter;

@@ -98,7 +98,7 @@ int findIndexOfMatchingNoteOff(const std::vector<NoteEvent> &events, NoteEvent n
 
 void initializeInputSequences()
 {
-  fillWithIndex(t, maxNumFrames); 
+  RAPT::rsArray::fillWithIndex(t, maxNumFrames); 
 
   int v, c, n;
 
@@ -274,11 +274,11 @@ void getDesiredOutputForFilterBlip(int N, double frequency, double q, double *de
   double coeffs[5];  romos::biquadBandpassConstSkirtCoeffs(coeffs, frequency, q);
 
   double *x  = new double[N];  generateImpulse(N, x);
-  double *b0 = new double[N];  fillWithValue(b0, N, coeffs[0]);
-  double *b1 = new double[N];  fillWithValue(b1, N, coeffs[1]);
-  double *b2 = new double[N];  fillWithValue(b2, N, coeffs[2]);
-  double *a1 = new double[N];  fillWithValue(a1, N, coeffs[3]);
-  double *a2 = new double[N];  fillWithValue(a2, N, coeffs[4]);
+  double *b0 = new double[N];  RAPT::rsArray::fillWithValue(b0, N, coeffs[0]);
+  double *b1 = new double[N];  RAPT::rsArray::fillWithValue(b1, N, coeffs[1]);
+  double *b2 = new double[N];  RAPT::rsArray::fillWithValue(b2, N, coeffs[2]);
+  double *a1 = new double[N];  RAPT::rsArray::fillWithValue(a1, N, coeffs[3]);
+  double *a2 = new double[N];  RAPT::rsArray::fillWithValue(a2, N, coeffs[4]);
 
   getDesiredOutputForBiquad(N, x, b0, b1, b2, a1, a2, desiredOutput); 
 
@@ -380,7 +380,7 @@ bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFra
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
   module->resetStateForAllVoices();
-  fillWithZeros(y[0][0], numFrames);
+  RAPT::rsArray::fillWithZeros(y[0][0], numFrames);
 
   processModuleInFrames(module, numFrames, x, y, events, false);
 
@@ -399,7 +399,7 @@ bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFra
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
   module->resetStateForAllVoices();
-  fillWithZeros(y[0][0], numFrames);
+  RAPT::rsArray::fillWithZeros(y[0][0], numFrames);
 
   processModuleInBlocks(module, numFrames, x, y, events, false);
 
@@ -422,7 +422,7 @@ bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoi
   int v;
 
   for(v = 0; v < numVoicesToCheck; v++)
-    fillWithZeros(y[v][0], numFrames);
+    RAPT::rsArray::fillWithZeros(y[v][0], numFrames);
     
   processModuleInFrames(module, numFrames, x, y, events, true);
 
@@ -447,7 +447,7 @@ bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoi
   int v;
 
   for(v = 0; v < numVoicesToCheck; v++)
-    fillWithZeros(y[v][0], numFrames);
+    RAPT::rsArray::fillWithZeros(y[v][0], numFrames);
     
   processModuleInBlocks(module, numFrames, x, y, events, true);
 
