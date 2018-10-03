@@ -124,7 +124,7 @@ void FeedbackDelayNetwork::setDiffusion(double newDiffusion)
   // a/b which has singularities quickly towards the ends of of the interval ...maybe some tan or
   // atan based formula could help?
 
-  sinCos(d*PI/4, &b, &a);
+  RAPT::rsSinCos(d*PI/4, &b, &a);
 
   // \todo - when introducing modulation for d (or the angle phi), check if it is better to
   // modulate the angle before or after the non linear mapping. if the modulation is applied before

@@ -144,7 +144,7 @@ void OscillatorStereo::setPan(double newPan)
 {
   parameters->pan = newPan;
   double p = 0.25*PI*(newPan+1.0);
-  sinCos(p, &(parameters->panFactorR), &(parameters->panFactorL) );
+  RAPT::rsSinCos(p, &(parameters->panFactorR), &(parameters->panFactorL) );
   //markPresetAsDirty();
 }
 
@@ -166,7 +166,7 @@ void OscillatorStereo::setMidSide(double newMidSide)
 {
   parameters->midSide = newMidSide;
   double x = 0.5 * PI * newMidSide;
-  sinCos(x, &(parameters->sideScale), &(parameters->midScale) );
+  RAPT::rsSinCos(x, &(parameters->sideScale), &(parameters->midScale) );
   //markPresetAsDirty();
 }
 

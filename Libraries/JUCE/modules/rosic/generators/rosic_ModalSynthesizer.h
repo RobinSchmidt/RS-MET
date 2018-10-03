@@ -304,7 +304,7 @@ namespace rosic
 
     // phase modulation by signal itself (feedback phase-modulation) and instantaneous envelope:
     double phaseModByEnv = -100.0;
-    sinCos((PI/180.0)*startPhase + phaseMod*z.im + phaseModByEnv*(z.getRadius()-1.0), &cr, &ci);
+    RAPT::rsSinCos((PI/180.0)*startPhase + phaseMod*z.im + phaseModByEnv*(z.getRadius()-1.0), &cr, &ci);
 
     /*
     // phase modulation by :

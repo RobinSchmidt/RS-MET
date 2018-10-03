@@ -99,7 +99,7 @@ void PolyphonicInstrument::setMidSideRatio(double newMidSideRatio)
 {
   midSideRatio = newMidSideRatio;
   double x = 0.5 * PI * midSideRatio;
-  sinCos(x, &sideScale, &midScale);
+  RAPT::rsSinCos(x, &sideScale, &midScale);
 }
 
 void PolyphonicInstrument::setMasterTuneA4(double newTuneA4)

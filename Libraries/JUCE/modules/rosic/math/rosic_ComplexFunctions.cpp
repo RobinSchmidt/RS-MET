@@ -119,7 +119,7 @@ Complex rosic::expC(Complex z)
 {
   Complex result;
   double tmp = exp(z.re);
-  sinCos(z.im, &result.im, &result.re);
+  RAPT::rsSinCos(z.im, &result.im, &result.re);
   result.re *= tmp;
   result.im *= tmp;
   return result;
@@ -184,7 +184,7 @@ Complex rosic::sqrtC(Complex z)
   double r = sqrt(z.getRadius());
   double p = 0.5*(z.getAngle());  
   double s, c;
-  sinCos(p, &s, &c);
+  RAPT::rsSinCos(p, &s, &c);
   return Complex(r*c, r*s);            // re = r*cos(p), im = r*sin(p)
 }
 

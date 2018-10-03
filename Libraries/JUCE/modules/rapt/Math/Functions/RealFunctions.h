@@ -654,6 +654,7 @@ T rsSech(T x)
   return (2*c)/(c*c+1);
 }
 
+/*
 RS_INLINE void rsSinCos(double x, double* sinResult, double* cosResult)
 {
 #  if defined RS_COMPILER_MS_X86
@@ -672,22 +673,21 @@ RS_INLINE void rsSinCos(double x, double* sinResult, double* cosResult)
    // http://www.gamedev.net/topic/598105-how-to-implement-sincos-on-vc-64bit/
 
 
-    /*
-    // old:
-    #ifndef RS_COMPILER_MICROSOFT
-      *sinResult = sin(x);
-      *cosResult = cos(x);
-    #else
-      double s, c;     // do we need these intermediate variables?
-      __asm fld x
-      __asm fsincos
-      __asm fstp c
-      __asm fstp s
-      *sinResult = s;
-      *cosResult = c;
-    #endif
-    */
+    //// old:
+    //#ifndef RS_COMPILER_MICROSOFT
+    //  *sinResult = sin(x);
+    //  *cosResult = cos(x);
+    //#else
+    //  double s, c;     // do we need these intermediate variables?
+    //  __asm fld x
+    //  __asm fsincos
+    //  __asm fstp c
+    //  __asm fstp s
+    //  *sinResult = s;
+    //  *cosResult = c;
+    //#endif
 }
+*/
 
 RS_INLINE void rsSinCos(float x, float* sinResult, float* cosResult)
 {

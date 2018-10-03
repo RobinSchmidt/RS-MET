@@ -150,6 +150,12 @@ inline int rsRoundToInt(T x) { return (int) ::round(x); }
 template <class T>
 inline T rsSign(T x) { return T(T(0) < x) - (x < T(0)); }
 
+/** Calculates sine and cosine of x - this may (depending on datatype, compiler and instruction 
+set) be more efficient than calling sin(x) and cos(x) seperately. */
+template<class T>
+inline void rsSinCos(T x, T* sinResult, T* cosResult);
+// move to RealFunctions
+
 /** Swaps in1 and in2, if in1 > in2 */
 template <class T>
 inline void rsSortAscending(T &in1, T &in2);
@@ -202,5 +208,54 @@ inline bool rsIsCloseTo(T x, T targetValue, T tolerance)
     return false;
 }
 
+// general fallback version:
+template<class T>
+inline void rsSinCos(T x, T* sinResult, T* cosResult)
+{
+  *sinResult = sin(x);
+  *cosResult = cos(x);
+}
+
+// explicit specialization for double:
+inline void rsSinCos(double x, double* sinResult, double* cosResult)
+{
+#if MSC_X86_ASM
+  double s, c;        // do we need these intermediate variables?
+  __asm fld x
+  __asm fsincos
+  __asm fstp c
+  __asm fstp s
+  *sinResult = s;
+  *cosResult = c;
+#else
+  *sinResult = sin(x);
+  *cosResult = cos(x);
+#endif
+}
+// here's some info, how to (not) optimize this in X64 builds:
+// http://www.gamedev.net/topic/598105-how-to-implement-sincos-on-vc-64bit/
+
+// taken from rosic - todo: edit coding style and use them as explicit specializations 
+// for efficiency:
+/*
+INLINE int rosic::roundToInt(double const x)
+{
+  int n;
+#if defined(__unix__) || defined(__GNUC__)
+  // 32-bit Linux, Gnu/AT&T syntax:
+  __asm ("fldl %1 \n fistpl %0 " : "=m"(n) : "m"(x) : "memory");
+#else
+  // 32-bit Windows, Intel/MASM syntax:
+  __asm fld qword ptr x;
+  __asm fistp dword ptr n;
+#endif
+  return n;
+}
+
+INLINE int rosic::roundToIntSSE2(double const x)
+{
+  return _mm_cvtsd_si32(_mm_load_sd(&x));
+}
+*/
 
 #endif

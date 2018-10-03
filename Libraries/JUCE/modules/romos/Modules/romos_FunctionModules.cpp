@@ -27,7 +27,7 @@ void SinCosModule::initialize()
 }
 INLINE void SinCosModule::process(Module *module, double *in, double *out, int voiceIndex)
 {
-  rosic::sinCos(2.0*PI*(*in), out, out+1);
+  RAPT::rsSinCos(2.0*PI*(*in), out, out+1);
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(SinCosModule);
 

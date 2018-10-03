@@ -187,13 +187,13 @@ resulting waveform is DC-free. */
 //INLINE double randDbl();
 
 /** Calculates the sine of x assuming that x is in the range 0...pi/2 - this is not checked for. */
-INLINE double rsSin(double x, int numTerms = 16);
+//INLINE double rsSin(double x, int numTerms = 16);
 
 /** Generates a 2*pi periodic saw wave. */
-INLINE double sawWave(double x);
+//INLINE double sawWave(double x);
 
 /** Calculates sine and cosine of x - this is more efficient than calling sin(x) and cos(x) seperately. */
-INLINE void sinCos(double x, double* sinResult, double* cosResult);
+//INLINE void sinCos(double x, double* sinResult, double* cosResult);
 
 /** Calculates hyperbloic sine and cosine of x -this is more efficient than calling sinh(x) and cosh(x) seperately. */
 INLINE void sinhCosh(double x, double* sinhResult, double* coshResult);
@@ -532,22 +532,19 @@ INLINE int rosic::roundToInt(double const x)
   int n;
 #if defined(__unix__) || defined(__GNUC__)
     // 32-bit Linux, Gnu/AT&T syntax:
-    __asm ("fldl %1 \n fistpl %0 " : "=m"(n) : "m"(x) : "memory" );
+  __asm ("fldl %1 \n fistpl %0 " : "=m"(n) : "m"(x) : "memory");
 #else
     // 32-bit Windows, Intel/MASM syntax:
-    __asm fld qword ptr x;
-    __asm fistp dword ptr n;
+  __asm fld qword ptr x;
+  __asm fistp dword ptr n;
 #endif
-    return n;
-  }
-  */
+  return n;
+}
 
-  /*
-  INLINE int rosic::roundToIntSSE2(double const x)
-  {
-    return _mm_cvtsd_si32(_mm_load_sd(&x));
-  }
-  */
+INLINE int rosic::roundToIntSSE2(double const x)
+{
+  return _mm_cvtsd_si32(_mm_load_sd(&x));
+}
 
 INLINE void sinCos(double x, double* sinResult, double* cosResult)
 {
@@ -564,6 +561,7 @@ INLINE void sinCos(double x, double* sinResult, double* cosResult)
   *cosResult = cos(x);
 #endif
 }
+*/
 
 INLINE void sinhCosh(double x, double* sinhResult, double* coshResult)
 {

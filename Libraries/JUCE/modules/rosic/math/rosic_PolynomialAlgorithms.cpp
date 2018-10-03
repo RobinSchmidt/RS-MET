@@ -306,7 +306,7 @@ rsArray<Complex> rosic::getRootsOfCubicEquation(double a, double b, double c, do
       phi  = PI/3.0;
       // checked with x^3+3*x^2+3*x+10
     }
-    sinCos(phi, &im, &re);
+    RAPT::rsSinCos(phi, &im, &re);
     re  *= tmp;
     im  *= tmp;
     y[0] = Complex(re,  im);

@@ -226,7 +226,7 @@ namespace rosic
   {
     // calculate intermediate variables:
     double omega  = 2.0 * PI * frequency * oneOverSampleRate;
-    sinCos(omega, &sinResult, &cosResult);
+    RAPT::rsSinCos(omega, &sinResult, &cosResult);
   }
 
   INLINE void BiquadDesigner::calculateFirstOrderLowpassCoeffs(double &b0, double &b1, double &b2,

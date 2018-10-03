@@ -296,7 +296,7 @@ INLINE void LadderFilterOld::calculateCoefficients()
   // calculate intermediate variables:
   double wc = 2 * PI * cutoff / parameters->sampleRate;
   double s, c;
-  sinCos(wc, &s, &c);             // c = cos(wc); s = sin(wc);
+  RAPT::rsSinCos(wc, &s, &c);             // c = cos(wc); s = sin(wc);
   double t  = tan(0.25*(wc-PI));
   double r  = parameters->resonanceSkewed;
 

@@ -274,7 +274,7 @@ void FourierTransformerRadix2::getRealSignalFromMagnitudesAndPhases(double *magn
   double  s, c;
   for(k = 1; k < N/2; k++)
   {
-    sinCos(phases[k], &s, &c);
+    RAPT::rsSinCos(phases[k], &s, &c);
     dBuffer[2*k]   = magnitudes[k] * c;
     dBuffer[2*k+1] = magnitudes[k] * s;
   }

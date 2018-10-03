@@ -95,7 +95,7 @@ void romos::biquadLowpassCoeffsBilinear2(double *coeffs, double f, double q)
    
   double omega  = f * processingStatus.getFreqToOmegaFactor();
   double s, c;  
-  sinCos(omega, &s, &c);
+  RAPT::rsSinCos(omega, &s, &c);
   double alpha = s   / (2.0*q);
   double a0r   = 1.0 / (1.0+alpha);
 
@@ -113,7 +113,7 @@ void romos::biquadHighpassCoeffsBilinear2(double *coeffs, double f, double q)
 
   double omega  = f * processingStatus.getFreqToOmegaFactor();
   double s, c;  
-  sinCos(omega, &s, &c);
+  RAPT::rsSinCos(omega, &s, &c);
   double alpha = s   / (2.0*q);
   double a0r   = 1.0 / (1.0+alpha);
 
@@ -131,7 +131,7 @@ void romos::biquadBandpassConstSkirtCoeffs(double *coeffs, double f, double q)
 
   double omega = f * processingStatus.getFreqToOmegaFactor();
   double s, c;    
-  sinCos(omega, &s, &c);
+  RAPT::rsSinCos(omega, &s, &c);
   double alpha = s   / (2.0*q);
   double a0r   = 1.0 / (1.0+alpha);
 
@@ -149,7 +149,7 @@ void romos::biquadBandpassConstPeakCoeffs(double *coeffs, double f, double q)
 
   double omega = f * processingStatus.getFreqToOmegaFactor();
   double s, c;    
-  sinCos(omega, &s, &c);
+  RAPT::rsSinCos(omega, &s, &c);
   double alpha = s   / (2.0*q);
   double a0r   = 1.0 / (1.0+alpha);
 
@@ -167,7 +167,7 @@ void romos::biquadBandrejectCoeffs(double *coeffs, double f, double q)
 
   double omega = f * processingStatus.getFreqToOmegaFactor();
   double s, c;    
-  sinCos(omega, &s, &c);
+  RAPT::rsSinCos(omega, &s, &c);
   double alpha = s   / (2.0*q);
   double a0r   = 1.0 / (1.0+alpha);
 
@@ -187,7 +187,7 @@ void romos::biquadPeakCoeffs(double *coeffs, double f, double q, double g)
   // maybe precompute alpha/A (it's used twice), likewise alpha*g
   double omega = f * processingStatus.getFreqToOmegaFactor();
   double s, c;    
-  sinCos(omega, &s, &c);
+  RAPT::rsSinCos(omega, &s, &c);
   double A     = sqrt(g);
   double alpha = s   / (2.0*q);
   double a0r   = 1.0 / (1.0+alpha/A);
@@ -207,7 +207,7 @@ void romos::biquadLowShelfCoeffsBilinear2(double *coeffs, double f, double q, do
 
   double omega = f * processingStatus.getFreqToOmegaFactor();  
   double s, c;    
-  sinCos(omega, &s, &c);  
+  RAPT::rsSinCos(omega, &s, &c);  
   double A     = sqrt(g);
   double beta  = sqrt(A) / q;
   double a0r   = 1.0 / ( (A+1.0) + (A-1.0)*c + beta*s);
@@ -227,7 +227,7 @@ void romos::biquadHighShelfCoeffsBilinear2(double *coeffs, double f, double q, d
 
   double omega = f * processingStatus.getFreqToOmegaFactor();  
   double s, c;    
-  sinCos(omega, &s, &c);  
+  RAPT::rsSinCos(omega, &s, &c);  
   double A     = sqrt(g);
   double beta  = sqrt(g) / q;
   double a0r   = 1.0 / ( (A+1.0) - (A-1.0)*c + beta*s);
@@ -246,7 +246,7 @@ void romos::biquadAllpassCoeffsBilinear2(double *coeffs, double f, double q)
 
   double omega = f * processingStatus.getFreqToOmegaFactor();  
   double s, c;    
-  sinCos(omega, &s, &c);  
+  RAPT::rsSinCos(omega, &s, &c);  
   double alpha = s   / (2.0*q);
   double a0r   = 1.0 / (1.0+alpha);
 
@@ -265,7 +265,7 @@ void romos::ladderCoeffs(double *coeffs, int mode, double f, double r, double ag
   // calculate intermediate variables:
   double wc = f * processingStatus.getFreqToOmegaFactor();
   double s, c;
-  sinCos(wc, &s, &c);             // c = cos(wc); s = sin(wc);
+  RAPT::rsSinCos(wc, &s, &c);             // c = cos(wc); s = sin(wc);
   double t = tan(0.25*(wc-PI));
 
   // map resonance to more intuitive behavior:

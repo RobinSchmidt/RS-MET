@@ -382,7 +382,7 @@ public:
   double DoEvaluate()
   {
     double tmp = exp(m_nodes[0]->Evaluate());
-    rosic::sinCos(m_nodes[1]->Evaluate(), m_refs[1], m_refs[0]);
+    RAPT::rsSinCos(m_nodes[1]->Evaluate(), m_refs[1], m_refs[0]);
     *m_refs[0] *= tmp;
     *m_refs[1] *= tmp;
     return 0.0;

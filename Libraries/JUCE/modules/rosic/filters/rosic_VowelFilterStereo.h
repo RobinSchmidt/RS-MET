@@ -213,7 +213,7 @@ namespace rosic
     // intermediate variables:
     sqrtg  = sqrt(RAPT::rsDbToAmp(g1));         // square root of the linear gain factor
     w      = 2.0*PI*f1*sampleRateRec;           // normalized radian center frequency (omega)
-    sinCos(w, &s, &c);                          // sine and cosine of omega
+    RAPT::rsSinCos(w, &s, &c);                  // sine and cosine of omega
     gamma  = sinh(0.5 * LN2 * b1 * w / s) * s;  // bandwidth parameter
     gamog  = gamma / sqrtg;                     // gamma over square root of gain
     denRec = 1.0 / (1.0 + gamog);               // reciprocal of common denominator
@@ -229,7 +229,7 @@ namespace rosic
 
     sqrtg  = sqrt(RAPT::rsDbToAmp(g2));         // square root of the linear gain factor
     w      = 2.0*PI*f2*sampleRateRec;           // normalized radian center frequency (omega)
-    sinCos(w, &s, &c);                          // sine and cosine of omega
+    RAPT::rsSinCos(w, &s, &c);                  // sine and cosine of omega
     gamma  = sinh(0.5 * LN2 * b2 * w / s) * s;  // bandwidth parameter
     gamog  = gamma / sqrtg;                     // gamma over square root of gain
     denRec = 1.0 / (1.0 + gamog);               // reciprocal of common denominator

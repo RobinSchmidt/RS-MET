@@ -172,7 +172,7 @@ namespace rosic
     // calculate intermediate variables:
     double wc = twoPiOverSampleRate * cutoff;
     double s, c;
-    sinCos(wc, &s, &c);             // c = cos(wc); s = sin(wc);
+    RAPT::rsSinCos(wc, &s, &c);             // c = cos(wc); s = sin(wc);
     double t  = tan(0.25*(wc-PI));
     double r  = resonanceSkewed;
 

@@ -46,7 +46,7 @@ double Complex::getAngle()
 void Complex::setRadius(double newRadius)
 {
   double phi = getAngle();
-  sinCos(phi, &im, &re);
+  RAPT::rsSinCos(phi, &im, &re);
   re *= newRadius;           // re = newRadius * cos(phi);
   im *= newRadius;           // im = newRadius * sin(phi);
 }
@@ -54,14 +54,14 @@ void Complex::setRadius(double newRadius)
 void Complex::setAngle(double newAngle)
 {
   double r = getRadius();
-  sinCos(newAngle, &im, &re);
+  RAPT::rsSinCos(newAngle, &im, &re);
   re *= r;                   // re = r * cos(newAngle);
   im *= r;                   // im = r * sin(newAngle);
 }
 
 void Complex::setRadiusAndAngle(double newRadius, double newAngle)
 {
-  sinCos(newAngle, &im, &re);
+  RAPT::rsSinCos(newAngle, &im, &re);
   re *= newRadius;           // re = newRadius * cos(newAngle);
   im *= newRadius;           // im = newRadius * sin(newAngle);
 }

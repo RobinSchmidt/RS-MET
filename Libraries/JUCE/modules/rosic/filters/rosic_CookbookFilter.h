@@ -249,7 +249,7 @@ namespace rosic
   omega  = (2.0*PI)*freq*sampleRateRec;
   //sine   = sin(omega);
   //cosine = cos(omega);
-  sinCos(omega, &sine, &cosine); // cheaper than sin and cos
+  RAPT::rsSinCos(omega, &sine, &cosine); // cheaper than sin and cos
   alpha  = sine/(2.0*q);
 
   switch(mode)
