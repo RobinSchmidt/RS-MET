@@ -36,9 +36,9 @@ void WaveformRenderer::renderWaveForm(double *targetBuffer, int length)
   else
   {
     if( dcRemove == true )
-      rosic::removeMean(targetBuffer, length);
+      RAPT::rsArray::removeMean(targetBuffer, length);
     if( normalize == true )
-      rosic::normalize(targetBuffer, length, 1.0);
+      RAPT::rsArray::normalize(targetBuffer, length, 1.0);
   }
 }
     

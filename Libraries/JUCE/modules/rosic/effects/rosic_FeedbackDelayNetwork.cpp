@@ -20,7 +20,7 @@ void shuffleBuffer(T *buffer, int length)
     s = s0;
     while( s < length )
     {
-      reverse(&buffer[s], k/2);
+      RAPT::rsArray::reverse(&buffer[s], k/2);
       s += k;
     }
     s0 /= 2;

@@ -147,15 +147,15 @@ void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double
     m = RAPT::rsArray::mean(&x[0], N-1); RAPT::rsArray::add(&x[0], -m, &x[0], N);
     m = RAPT::rsArray::mean(&y[0], N-1); RAPT::rsArray::add(&y[0], -m, &y[0], N); }
   else {
-    removeMean(&x[0], N);
-    removeMean(&y[0], N); }
+    RAPT::rsArray::removeMean(&x[0], N);
+    RAPT::rsArray::removeMean(&y[0], N); }
 
   // adjust maximum:
   double maxX = RAPT::rsArray::maxAbs(&x[0], N);
   double maxY = RAPT::rsArray::maxAbs(&y[0], N);
   double scl = 1.0 / max(maxX, maxY);
-  scale(&x[0], &x[0], N, scl);
-  scale(&y[0], &y[0], N, scl);
+  RAPT::rsArray::scale(&x[0], &x[0], N, scl);
+  RAPT::rsArray::scale(&y[0], &y[0], N, scl);
 }
 
 // other closed curves that can be generated:

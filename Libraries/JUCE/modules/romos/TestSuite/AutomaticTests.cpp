@@ -102,7 +102,7 @@ bool testModuleTypeRegistry()
 bool testGain(bool verboseOutput)
 {
   romos::Module *testModule = TestModuleBuilder::createGain("Gain", 0, 0, false);
-  multiply(x[0][0], x[0][1], d[0][0], N);  // create desired output
+  RAPT::rsArray::multiply(x[0][0], x[0][1], d[0][0], N);  // create desired output
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
 

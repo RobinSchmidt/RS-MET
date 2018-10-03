@@ -108,7 +108,7 @@ SubtractorTest::SubtractorTest()
 void SubtractorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArray::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
 }
 
 

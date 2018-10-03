@@ -34,7 +34,7 @@ void writeImpulseResponseToFile(const char *path, T &module, int N, int fs, int 
   double *h = new double[N];  
   getImpulseResponse(module, h, N);
 
-  rosic::normalize(h, N, 1.0);
+  RAPT::rsArray::normalize(h, N, 1.0);
 
   rosic::writeToMonoWaveFile(path, h, N, fs, numBits);
   delete[] h;
@@ -247,7 +247,7 @@ void rotes::testFiniteImpulseResponseDesigner()
   double phases[fftLength];
   double sampleRate = 44100.0;
   RAPT::rsArray::fillWithIndex(frequencies, fftLength);
-  scale(frequencies, frequencies, fftLength, sampleRate/fftLength);
+  RAPT::rsArray::scale(frequencies, frequencies, fftLength, sampleRate/fftLength);
   fftMagnitudesAndPhases(impulseResponse, length, magnitudes, phases, fftLength);
   //Plotter::plotData(fftLength/2, frequencies, magnitudes);
   //Plotter::plotData(fftLength/2, frequencies, phases);
@@ -794,7 +794,7 @@ void rotes::testSlopeFilter()
   double decibels[length];
 
   RAPT::rsArray::fillWithIndex(frequencies, length);
-  scale(frequencies, frequencies, length, sampleRate/length);
+  RAPT::rsArray::scale(frequencies, frequencies, length, sampleRate/length);
 
   fftMagnitudesAndPhases(impulseResponse, length, magnitudes, NULL, length);
 

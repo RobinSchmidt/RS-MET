@@ -195,22 +195,22 @@ namespace rosic
   /** Computes the mean (i.e. the DC-component) from the passed buffer. The type must define 
   operators: +=, / and a constructor which takes an int and initializes to zero when 0 is passed 
   and a typecast from int. */
-  template <class T>
-  T mean(T *buffer, int length);
+  //template <class T>
+  //T mean(T *buffer, int length);
 
   /** Returns the median of the passed buffer. */
-  template <class T>
-  T median(T *buffer, int length);
+  //template <class T>
+  //T median(T *buffer, int length);
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The 'result' buffer may be the same as 'buffer1'
   or 'buffer2'. */
-  template <class T>
-  void multiply(T *buffer1, T *buffer2, T *result, int length);
+  //template <class T>
+  //void multiply(T *buffer1, T *buffer2, T *result, int length);
 
   /** Normalizes the maximum value of the passed array. The type must define: >, *=, / and a constructor that takes an int and initializes
   to 0 when 0 is passed. Additionaly, it must be suitable for absT - that additionaly requires definition of unary '-' and '<'. */
-  template <class T>
-  void normalize(T *buffer, int length, T maximum);
+  //template <class T>
+  //void normalize(T *buffer, int length, T maximum);
 
   /** Rearranges/permutes and array of class T into bit-reversed order (in place). The 'length' MUST be the 'numBits' th power of two (this
   is not checked for). */
@@ -219,23 +219,23 @@ namespace rosic
 
   /** Rearranges/permutes and array of type T into bit-reversed order. The 'length' MUST be the 'numBits' th power of two (this is not
   checked for). */
-  template <class T>
-  INLINE void orderBitReversedOutOfPlace(T *inBuffer, T *outBuffer, int length, int numBits);
+  //template <class T>
+  //INLINE void orderBitReversedOutOfPlace(T *inBuffer, T *outBuffer, int length, int numBits);
 
   /** Returns the product of the elements in the buffer for types which define the multiplication operator (the *= version thereof) and a
   constructor which can take an int paramater as argument and initializes to the multiplicative neutral element of that class when 1 is
   passed . */
-  template <class T>
-  INLINE T product(T *buffer, int length);
+  //template <class T>
+  //INLINE T product(T *buffer, int length);
 
   /** Removes mean (i.e. the DC-component) from the passed buffer. The type must define operators: +=, -=, / and a constructor which takes
   an int and initializes to zero when 0 is passed and a typecast from int. */
-  template <class T>
-  void removeMean(T *buffer, int length);
+  //template <class T>
+  //void removeMean(T *buffer, int length);
 
   /** Reverses the order of the elements the passed array. */
-  template <class T>
-  void reverse(T *buffer, int length);
+  //template <class T>
+  //void reverse(T *buffer, int length);
 
   /** The maximum of two objects on which the ">"-operator is defined. */
   template <class T>
@@ -254,27 +254,27 @@ namespace rosic
   INLINE T rmin(T in1, T in2, T in3, T in4);
 
   /** Scales the buffer by a constant factor. */
-  template <class T>
-  void scale(T *buffer, T *result, int length, T scaleFactor);
+  //template <class T>
+  //void scale(T *buffer, T *result, int length, T scaleFactor);
   //void scale(T *buffer, int length, T scaleFactor);
 
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The 'result' buffer may be the same as 'buffer1'
   or 'buffer2'. */
-  template <class T>
-  void subtract(T *buffer1, T *buffer2, T *result, int length);
+  //template <class T>
+  //void subtract(T *buffer1, T *buffer2, T *result, int length);
 
   /** Returns the sum of the elements in the buffer for types which define the addition operator (the += version thereof) and a constructor
   which can take an int paramater as argument and initializes to the additive neutral element of that class when 0 is passed . */
-  template <class T>
-  INLINE T sum(T *buffer, int length);
+  //template <class T>
+  //INLINE T sum(T *buffer, int length);
 
   /** Swaps two objects of class T. */
   template <class T>
   INLINE void rsSwap(T &in1, T &in2);
 
   /** Forms a weighted sum of the two buffers. */
-  template <class T>
-  INLINE void weightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, T weight2);
+  //template <class T>
+  //INLINE void weightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, T weight2);
 
   //=======================================================================================================================================
   // implementation:
@@ -890,7 +890,6 @@ namespace rosic
   {
     return buffer[minIndex(buffer, length)];
   }
-  */
 
   template <class T>
   T mean(T *buffer, int length)
@@ -951,10 +950,24 @@ namespace rosic
   template <class T>
   void removeMean(T *buffer, int length)
   {
-    T m = mean(buffer, length);
+    T m = RAPT::rsArray::mean(buffer, length);
     for(int i=0; i<length; i++)
       buffer[i] -= m;
   }
+
+  template <class T>
+  void reverse(T *buffer, int length)
+  {
+    T tmp;
+    int lengthMinus1 = length-1;
+    for(int i=0; i<=(length-2)/2; i++)
+    {
+      tmp                    = buffer[lengthMinus1-i];
+      buffer[lengthMinus1-i] = buffer[i];
+      buffer[i]              = tmp;
+    }
+  }
+  */
 
   template <class T>
   INLINE T rmax(T in1, T in2)
@@ -986,19 +999,7 @@ namespace rosic
     return rmin(rmin(in1, in2), rmin(in3, in4));
   }
 
-  template <class T>
-  void reverse(T *buffer, int length)
-  {
-    T tmp;
-    int lengthMinus1 = length-1;
-    for(int i=0; i<=(length-2)/2; i++)
-    {
-      tmp                    = buffer[lengthMinus1-i];
-      buffer[lengthMinus1-i] = buffer[i];
-      buffer[i]              = tmp;
-    }
-  }
-
+  /*
   template <class T>
   void scale(T *buffer, T *result, int length, T scaleFactor)
   {
@@ -1021,6 +1022,7 @@ namespace rosic
       accu += buffer[n];
     return accu;
   }
+  */
 
   template <class T>
   INLINE void rsSwap(T &in1, T &in2)
@@ -1029,13 +1031,14 @@ namespace rosic
     in1   = in2;
     in2   = tmp;
   }
-
+  /*
   template <class T>
   INLINE void weightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, T weight2)
   {
     for(int n = 0; n < length; n++)
       result[n] = weight1 * buffer1[n] + weight2 * buffer2[n];
   }
+  */
 
 } // end namespace rosic
 

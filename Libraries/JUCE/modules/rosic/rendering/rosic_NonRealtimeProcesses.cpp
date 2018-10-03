@@ -129,7 +129,7 @@ void rosic::synthesizeModal(double *x, int N, Vector frequencies, Vector amplitu
   x[0] = synth.getSample(1.0);
   for(int n=1; n<N; n++)
     x[n] = synth.getSample(0.0);
-  normalize(x, N, 1.0);
+  RAPT::rsArray::normalize(x, N, 1.0);
 }
 
 void rosic::synthesizeModalPluckedString(double *x, int N, double frequency, double sampleRate,

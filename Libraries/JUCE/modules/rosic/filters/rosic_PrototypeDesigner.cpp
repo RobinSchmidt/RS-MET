@@ -282,7 +282,7 @@ void rsPrototypeDesigner::magSquaredNumAndDen(double *b, double *a, double *b2, 
 void rsPrototypeDesigner::shelvingMagSqrNumFromLowpassMagSqr(double *b2, double *a2, double k, 
   int N, double G0, double G, double *bShelf)
 {
-  weightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
+  RAPT::rsArray::weightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
 }
 
 // factor out shelvingMagSqrNumeratorFromLowpassMagSqr:
@@ -356,7 +356,7 @@ void rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex 
   double *a = new double[N+1];        // Bessel-Polynomial coefficients
   //double a[20];
   RAPT::rsPolynomial<double>::besselPolynomial(a, N);
-  reverse(a, N+1);                    // we actually use a reverse Bessel polynomial
+  RAPT::rsArray::reverse(a, N+1);     // we actually use a reverse Bessel polynomial
 
   findPolynomialRoots(a, N, p);
 
@@ -403,8 +403,8 @@ void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex
   // construct lowpass denominator:
   double *a  = new double[N+1];
   RAPT::rsPolynomial<double>::besselPolynomial(a, N);
-  reverse(a, N+1);   // leaving this out leads to a modified Bessel filter response - maybe 
-                     // experiment a bit, response looks good
+  RAPT::rsArray::reverse(a, N+1);   // leaving this out leads to a modified Bessel filter response 
+                                    // maybe experiment a bit, response looks good
 
   // find poles of the shelving filter:
   findPolynomialRoots(a, N, p);
@@ -1191,6 +1191,6 @@ void rsPrototypeDesigner::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *
 
   // the caller is supposed to ensure that the real zero/pole, if present, is in zTmp[0], pTmp[0] - 
   // but we need it in the last positions z[L+r], p[L+r], so we reverse the arrays:
-  reverse(p, L+r);
-  reverse(z, L+r);
+  RAPT::rsArray::reverse(p, L+r);
+  RAPT::rsArray::reverse(z, L+r);
 }

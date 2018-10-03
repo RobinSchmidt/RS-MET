@@ -132,11 +132,11 @@ void rsLinkwitzRileyCrossOver::getHighpassFrequencyResponse(double* frequencies,
   sumAllpass.getFrequencyResponse(w, tmpAllpass, numBins);
 
   if( accumulate == false ) 
-    subtract(tmpAllpass, tmpLowpass, H, numBins);
+    RAPT::rsArray::subtract(tmpAllpass, tmpLowpass, H, numBins);
   else
   {
-    subtract(tmpAllpass, tmpLowpass, tmpAllpass, numBins); // tmpAllpass is now the highpass-response
-    multiply(H, tmpAllpass, H, numBins);
+    RAPT::rsArray::subtract(tmpAllpass, tmpLowpass, tmpAllpass, numBins); // tmpAllpass is now the highpass-response
+    RAPT::rsArray::multiply(H, tmpAllpass, H, numBins);
   }
 
   delete[] tmpLowpass;

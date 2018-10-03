@@ -92,7 +92,7 @@ void NoiseFluteTest::fillDesiredOutputSignalArrays()
                                                   coeffs[4], desiredOutputs[0]);
   GenerateDesiredOutput::forBiquadWithFixedCoeffs(signalLength, desiredOutputs[1], coeffs[0],  coeffs[1],  coeffs[2],  coeffs[3],  
                                                   coeffs[4], desiredOutputs[1]);
-  rosic::scale(desiredOutputs[0], desiredOutputs[0], signalLength, 0.125);
-  rosic::scale(desiredOutputs[1], desiredOutputs[1], signalLength, 0.125);
+  RAPT::rsArray::scale(desiredOutputs[0], desiredOutputs[0], signalLength, 0.125);
+  RAPT::rsArray::scale(desiredOutputs[1], desiredOutputs[1], signalLength, 0.125);
 }
 

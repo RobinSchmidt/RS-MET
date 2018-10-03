@@ -238,7 +238,7 @@ void SawOscillatorPlotTest::fillInputSignalArraysWithTestSignal()
 }
 void SawOscillatorPlotTest::plotResult()
 {
-  double dc = rosic::mean(outputs[0][0], 50);
+  double dc = RAPT::rsArray::mean(outputs[0][0], 50);
 
   RAPT::rsAssert(false, "plotting code needs update");
   //Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0]);

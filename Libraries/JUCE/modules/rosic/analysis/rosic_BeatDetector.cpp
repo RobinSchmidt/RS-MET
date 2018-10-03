@@ -158,7 +158,7 @@ void BeatDetector::estimateTempi()
     // find median:
     for(unsigned int o=0; o<numOnsets; o++)
       tempoTrack[o] = tempoEstimates[o][t];
-    medianTempi[t] = median(tempoTrack, numOnsets);
+    medianTempi[t] = RAPT::rsArray::median(tempoTrack, numOnsets);
   }
   delete[] tempoTrack;
 

@@ -95,8 +95,8 @@ void WaveTable::updateBuffers()
   }
   if( timeReverse == true )
   {
-    reverse(tmpL, tableLength);
-    reverse(tmpR, tableLength);
+    RAPT::rsArray::reverse(tmpL, tableLength);
+    RAPT::rsArray::reverse(tmpR, tableLength);
   }
 
   //-----------------------------------------------------------------
