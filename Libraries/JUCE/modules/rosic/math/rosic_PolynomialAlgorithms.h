@@ -132,8 +132,6 @@ namespace rosic
 
   void findPolynomialRoots(double  *a, int order, Complex *roots);
 
-#endif
-
   /** Same as above but accepts real coefficients. */
   //void findPolynomialRootsInternal(double *a, int order, Complex *roots, bool polish = true);
 
@@ -156,6 +154,8 @@ namespace rosic
   this function only if you know in advance that the coefficients will indeed come out as purely 
   real */
   void rootsToCoeffs(Complex *r, double *a, int N);
+
+#endif
 
   /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by 
   \f[ x_0 = -\frac{b}{a} \f] */

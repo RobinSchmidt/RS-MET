@@ -142,7 +142,7 @@ void rosic::findPolynomialRoots(double *a, int order, Complex *roots)
   findPolynomialRoots(ac, order, roots);
   delete[] ac;
 }
-*/
+
 rsArray<Complex> rosic::getPolynomialCoefficientsFromRoots(rsArray<Complex> roots)
 {
   rsArray<Complex> coeffs;
@@ -199,7 +199,7 @@ void rosic::rootsToCoeffs(Complex *r, double *a, int N)
     a[n] = ac[n].re;
   delete[] ac;
 }
-
+*/
 double rosic::getRootOfLinearEquation(double a, double b)
 {
   if( a == 0.0 )

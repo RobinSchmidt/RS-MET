@@ -26,17 +26,18 @@ void rotes::testMathFunctions()
 
   //Plotter::plotFunction(besselI0, 0.0, 20.0);
 
-  rosic::rsArray<Complex> roots;
-  roots.appendElement(Complex( 2, 0));
-  roots.appendElement(Complex( 3, 0));
-  roots.appendElement(Complex(-1, 0));
+  std::vector<std::complex<double>> roots;
+  roots.push_back(std::complex<double>( 2, 0));
+  roots.push_back(std::complex<double>( 3, 0));
+  roots.push_back(std::complex<double>(-1, 0));
 
-  rosic::rsArray<Complex> coeffs = getPolynomialCoefficientsFromRoots(roots);
+  std::vector<std::complex<double>> coeffs = 
+    RAPT::rsPolynomial<double>::getPolynomialCoefficientsFromRoots(roots);
 
-  Complex coeffsDbg[8];
-  for(int i=0; i<8; i++)
+  std::complex<double> coeffsDbg[8];
+  for(size_t i = 0; i < 8; i++)
     coeffsDbg[i] = -1000;
-  for(int i=0; i<coeffs.getNumElements(); i++)
+  for(size_t i = 0; i < coeffs.size(); i++)
     coeffsDbg[i] = coeffs[i];
 
   int dummy = 0;
