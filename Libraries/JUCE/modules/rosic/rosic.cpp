@@ -73,8 +73,6 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "math/rosic_Vector.cpp"
 #include "math/rosic_Matrix.cpp"
 #include "math/rosic_MatrixVectorFunctions.cpp"
-//#include "math/rosic_Interpolation.cpp"                    // supeseded by rapt
-#include "math/rosic_PolynomialAlgorithms.cpp"
 #include "math/rosic_PrimeNumbers.cpp"
 #include "math/rosic_Transformations.cpp"
 

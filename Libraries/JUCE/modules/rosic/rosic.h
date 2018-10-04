@@ -126,7 +126,7 @@
 #include "math/rosic_Matrix.h"
 #include "math/rosic_Vector.h"
 #include "math/rosic_MatrixVectorFunctions.h"
-#include "math/rosic_PolynomialAlgorithms.h"
+//#include "math/rosic_PolynomialAlgorithms.h"
 #include "math/rosic_PrimeNumbers.h"
 //#include "math/rosic_PrimeArray.h"                  // not required to include
 #include "math/rosic_Transformations.h"

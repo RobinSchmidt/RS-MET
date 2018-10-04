@@ -155,8 +155,6 @@ namespace rosic
   real */
   void rootsToCoeffs(Complex *r, double *a, int N);
 
-#endif
-
   /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by 
   \f[ x_0 = -\frac{b}{a} \f] */
   double getRootOfLinearEquation(double a, double b);
@@ -173,6 +171,7 @@ namespace rosic
   two-element array (or a one-element array, when b is also zero). */
   rsArray<Complex> getRootsOfCubicEquation(double a, double b, double c, double d);
 
+#endif
 
 #ifdef NOT_DEFINED // faux commenting out
 

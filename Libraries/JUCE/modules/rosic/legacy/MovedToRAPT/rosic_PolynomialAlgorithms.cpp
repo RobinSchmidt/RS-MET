@@ -199,7 +199,7 @@ void rosic::rootsToCoeffs(Complex *r, double *a, int N)
     a[n] = ac[n].re;
   delete[] ac;
 }
-*/
+
 double rosic::getRootOfLinearEquation(double a, double b)
 {
   if( a == 0.0 )
@@ -357,7 +357,6 @@ rsArray<Complex> rosic::getRootsOfCubicEquation(double a, double b, double c, do
   return roots;
 }
 
-/*
 double rosic::getCubicRootNear(double x, double a, double b, double c, double d,
                                double min, double max, int maxIterations)
 {
