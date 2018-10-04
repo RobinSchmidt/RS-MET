@@ -773,7 +773,7 @@ void rotes::testCrossoverNewVsOld()
   double lowCrossoverFreq  = 250.0;
   double midCrossoverFreq  = 1000.0;
   double highCrossoverFreq = 6000.0;
-  int    slope11           = 48;   // middlemost slope
+  int    slope11           = 60;   // middlemost slope
   int    slope21           = 48;
   int    slope22           = 48;
   bool   active10          = true;
@@ -805,13 +805,12 @@ void rotes::testCrossoverNewVsOld()
   coNew.setBandActive(active11, 1, 1);
 
 
-  //typedef RAPT::rsArray AR;
 
   RAPT::rsNoiseGenerator<double> noiseGen;
-  static const int N = 100;  // number of samples
+  static const int N = 10000;  // number of samples
   double yo[8];
   double yn[8];
-  double tol = 1.e-13;
+  double tol = 1.e-12;
   for(int n = 0; n < N; n++)
   {
     yo[0] = yn[0] = noiseGen.getSample();
@@ -823,9 +822,6 @@ void rotes::testCrossoverNewVsOld()
 
     int dummy = 0;
   }
-
-
-  int dummy = 0;
 }
 
 void rotes::testSlopeFilter()
