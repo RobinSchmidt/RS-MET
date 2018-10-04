@@ -805,6 +805,25 @@ void rotes::testCrossoverNewVsOld()
   coNew.setBandActive(active11, 1, 1);
 
 
+  //typedef RAPT::rsArray AR;
+
+  RAPT::rsNoiseGenerator<double> noiseGen;
+  static const int N = 100;  // number of samples
+  double yo[8];
+  double yn[8];
+  double tol = 1.e-13;
+  for(int n = 0; n < N; n++)
+  {
+    yo[0] = yn[0] = noiseGen.getSample();
+    yo[1] = yn[1] = noiseGen.getSample();
+
+    coOld.processSampleFrame(yo);
+    coNew.processSampleFrameStereo(yn);
+    rsAssert(RAPT::rsArray::areBuffersApproximatelyEqual(yo, yn, 8, tol));
+
+    int dummy = 0;
+  }
+
 
   int dummy = 0;
 }
