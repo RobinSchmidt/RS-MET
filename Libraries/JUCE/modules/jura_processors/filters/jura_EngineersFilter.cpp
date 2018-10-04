@@ -519,11 +519,11 @@ void EngineersFilterModuleEditor::updateWidgetVisibility()
   rejectionSlider->setEnabled(sf->hasCurrentModeRejectionParameter());
   if( sf->hasCurrentModeGainParameter() )
   {
-    if( sf->getApproximationMethod() == rsPrototypeDesigner::CHEBYCHEV )
+    if( sf->getApproximationMethod() == rsPrototypeDesignerD::CHEBYCHEV )
       rippleSlider->setDescription("Ripple inside the boost/cut band in percent of dB-peak-gain");
-    if( sf->getApproximationMethod() == rsPrototypeDesigner::INVERSE_CHEBYCHEV )
+    if( sf->getApproximationMethod() == rsPrototypeDesignerD::INVERSE_CHEBYCHEV )
       rippleSlider->setDescription("Ripple outside the boost/cut band in percent of dB-peak-gain");
-    if( sf->getApproximationMethod() == rsPrototypeDesigner::ELLIPTIC )
+    if( sf->getApproximationMethod() == rsPrototypeDesignerD::ELLIPTIC )
       rippleSlider->setDescription("Ripple in- and outside the boost/cut band in percent of dB-peak-gain");
     rippleSlider->setStringConversionFunction(&percentToStringWithUnit2);
   }

@@ -2,7 +2,7 @@
 
 InstantaneousEnvelopeDetector::InstantaneousEnvelopeDetector()
 {
-  quadratureNetwork.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);
+  quadratureNetwork.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
   quadratureNetwork.setOrder(15);
   quadratureNetwork.setRipple(0.1);
   quadratureNetwork.setStopbandRejection(40.0);

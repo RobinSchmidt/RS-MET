@@ -138,7 +138,7 @@ bool testIIRDesign(int method, int mode, int protoOrder)
   size_t N  = protoOrder;
 
   // typedefs for convenience:
-  typedef rosic::rsPrototypeDesigner PTD1;
+  typedef rosic::rsPrototypeDesignerD PTD1;
   typedef rsPrototypeDesignerD   PTD2;
   //typedef rosic::rsPoleZeroMapper PZM1;
   //typedef rsPoleZeroMapperD   PZM2;
@@ -150,7 +150,7 @@ bool testIIRDesign(int method, int mode, int protoOrder)
   // maybe check here, if the enums in PTD1/PTD2, etc. match
 
   // create prototype poles/zeros:
-  std::vector<rosic::Complex> pp1(N), pz1(N);
+  std::vector<std::complex<double>> pp1(N), pz1(N);
   std::vector<std::complex<double>> pp2(N), pz2(N);
   int protoMode = PTD1::LOWPASS_PROTOTYPE;
   if(mode == IIRD1::LOW_SHELV || mode == IIRD1::HIGH_SHELV || mode == IIRD1::PEAK )
@@ -171,8 +171,8 @@ bool testIIRDesign(int method, int mode, int protoOrder)
   ptd2.setOrder(protoOrder);
   ptd1.getPolesAndZeros(&pp1[0], &pz1[0]);
   ptd2.getPolesAndZeros(&pp2[0], &pz2[0]);
-  r &= equal(pp1, pp2);
-  r &= equal(pz1, pz2);
+  //r &= equal(pp1, pp2);
+  //r &= equal(pz1, pz2);
 
   // s-domain frequency transform:
   //size_t N2 = N;

@@ -382,7 +382,7 @@ void rotes::testFilterAnalyzer()
 
   // the filter-designer:
   rosic::rsInfiniteImpulseResponseDesignerD designer;
-  designer.setApproximationMethod(rosic::rsPrototypeDesigner::BUTTERWORTH);
+  designer.setApproximationMethod(rosic::rsPrototypeDesignerD::BUTTERWORTH);
   designer.setMode(rosic::rsInfiniteImpulseResponseDesignerD::LOWPASS);
   designer.setFrequency(filterFrequency);
   designer.setSampleRate(sampleRate);
@@ -441,7 +441,7 @@ void rotes::testBiquadCascade()
   rosic::rsInfiniteImpulseResponseDesignerD designer;
   rosic::rsBiquadCascade            biquadCascade;
 
-  designer.setApproximationMethod(rosic::rsPrototypeDesigner::BUTTERWORTH);
+  designer.setApproximationMethod(rosic::rsPrototypeDesignerD::BUTTERWORTH);
   designer.setMode(rosic::rsInfiniteImpulseResponseDesignerD::BANDPASS);
   designer.setPrototypeOrder(5);
   designer.setSampleRate(sampleRate);
@@ -822,10 +822,10 @@ void rotes::testPrototypeDesigner()
 
 
 
-  Complex poles[10];
-  Complex zeros[10];
-  rosic::rsPrototypeDesigner designer;
-  designer.setApproximationMethod(rosic::rsPrototypeDesigner::BESSEL);
+  std::complex<double> poles[10];
+  std::complex<double> zeros[10];
+  rosic::rsPrototypeDesignerD designer;
+  designer.setApproximationMethod(rosic::rsPrototypeDesignerD::BESSEL);
   designer.getPolesAndZeros(poles, zeros);
 
   int dummy = 0;
@@ -847,22 +847,26 @@ void rotes::testLowpassToLowshelf()
   //G  = 0.2;
 
   // analog unit cutoff lowpass prototype design:
-  Complex z[N], p[N]; // arrays of lowpass prototype poles and zeros
+  std::complex<double> z[N], p[N]; // arrays of lowpass prototype poles and zeros
   double  k;          // lowpass prototype filter gain
   //rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(z, p, &k, N);
-  rosic::rsPrototypeDesigner::getEllipticLowpassZerosPolesAndGain(z, p, &k, N, Gp, Gs);
+  rosic::rsPrototypeDesignerD::getEllipticLowpassZerosPolesAndGain(z, p, &k, N, Gp, Gs);
   //Plotter::plotAnalogMagnitudeResponse(z, p, k, N, 0.0, 3.0, 1000);
 
   // transform lowpass to low-shelving:
-  Complex zs[N], ps[N]; // arrays of lowshelf prototype poles and zeros
+  std::complex<double> zs[N], ps[N]; // arrays of lowshelf prototype poles and zeros
   double  ks;           // lowshelf prototype filter gain
-  rosic::rsPoleZeroMapper::sLowpassToLowshelf(z, p, &k, zs, ps, &ks, N, G0, G);
-  Plotter::plotAnalogMagnitudeResponse(zs, ps, ks, N, 0.0, 3.0, 2000);
+  rosic::rsPoleZeroMapperD::sLowpassToLowshelf(z, p, &k, zs, ps, &ks, N, G0, G);
+
+  //Plotter::plotAnalogMagnitudeResponse(zs, ps, ks, N, 0.0, 3.0, 2000);
+    // needs to be updated for std::complex<double>
 }
 
 
 void rotes::testBesselPrototypeDesign()
 {
+  // this needs to be updated
+
   // user parameters:
   static const int N = 9;  //  Bessel works up to 25 before it gets funky
   double fc  = 1000.0;     // cutoff frequency
@@ -887,40 +891,40 @@ void rotes::testBesselPrototypeDesign()
   wuw = 1500.0;
 
   // analog low-shelving design:
-  Complex z[N], p[N]; // arrays of lowshelf prototype poles and zeros
+  std::complex<double> z[N], p[N]; // arrays of lowshelf prototype poles and zeros
   double  k;          // lowshelf prototype filter gain
-  rosic::rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(z, p, &k, N, G, G0);
-  Plotter::plotAnalogMagnitudeResponse(z, p, k, N, 0.0, 3.0, 2000);
+  //rosic::rsPrototypeDesignerD::getBesselLowShelfZerosPolesAndGain(z, p, &k, N, G, G0);
+  //Plotter::plotAnalogMagnitudeResponse(z, p, k, N, 0.0, 3.0, 2000);
   //Plotter::plotAnalogPhaseResponse(z, p, k, N, 0.0, 3.0, 2000);
 
 
-  Complex zp[N], pp[N]; // arrays of lowpass prototype poles and zeros
-  double  kp;          // lowpass prototype filter gain
-  rosic::rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(zp, pp, &kp, N);
+  std::complex<double> zp[N], pp[N]; // arrays of lowpass prototype poles and zeros
+  //double  kp;          // lowpass prototype filter gain
+  //rosic::rsPrototypeDesignerD::getBesselLowpassZerosPolesAndGain(zp, pp, &kp, N);
   //Plotter::plotAnalogMagnitudeResponse(zp, pp, kp, N, 0.0, 3.0, 2000);
   //Plotter::plotAnalogPhaseResponse(zp, pp, kp, N, 0.0, 3.0, 2000);
 
 
   // s-plane frequency transformations:  
 
-  Complex zLP[N], pLP[N], zHP[N], pHP[N], zBP[2*N], pBP[2*N], zBR[2*N], pBR[2*N];
+  std::complex<double> zLP[N], pLP[N], zHP[N], pHP[N], zBP[2*N], pBP[2*N], zBR[2*N], pBR[2*N];
   double  kLP, kHP, kBP, kBR; 
 
   // LP -> LP:
-  rosic::rsPoleZeroMapper::sLowpassToLowpass(z, p, &k, zLP, pLP, &kLP, N, wcw);
+  rosic::rsPoleZeroMapperD::sLowpassToLowpass(z, p, &k, zLP, pLP, &kLP, N, wcw);
   //Plotter::plotAnalogMagnitudeResponse(zLP, pLP, kLP, N, 0.0, 3.0*wcw, 200);
 
   // LP -> HP:
-  rosic::rsPoleZeroMapper::sLowpassToHighpass(z, p, &k, zHP, pHP, &kHP, N, wcw);
+  rosic::rsPoleZeroMapperD::sLowpassToHighpass(z, p, &k, zHP, pHP, &kHP, N, wcw);
   //Plotter::plotAnalogMagnitudeResponse(zHP, pHP, kHP, N, 0.0, 3.0*wcw, 200);
   //Plotter::plotAnalogPhaseResponse(zHP, pHP, kHP, N, 0.0, 3.0*wcw, 200);
 
   // LP -> BP:
-  rosic::rsPoleZeroMapper::sLowpassToBandpass(z, p, &k, zBP, pBP, &kBP, N, wlw, wuw);
+  rosic::rsPoleZeroMapperD::sLowpassToBandpass(z, p, &k, zBP, pBP, &kBP, N, wlw, wuw);
   //Plotter::plotAnalogMagnitudeResponse(zBP, pBP, kBP, 2*N, 0.0, 3.0*wcw, 200);
 
   // LP -> BR:
-  rosic::rsPoleZeroMapper::sLowpassToBandreject(z, p, &k, zBR, pBR, &kBR, N, wlw, wuw);
+  rosic::rsPoleZeroMapperD::sLowpassToBandreject(z, p, &k, zBR, pBR, &kBR, N, wlw, wuw);
   //Plotter::plotAnalogMagnitudeResponse(zBR, pBR, kBR, 2*N, 0.0, 3.0*wcw, 200);
 }
 
@@ -938,11 +942,11 @@ void rotes::testPapoulisPrototypeDesign()
   G  = 100.0;
 
   // analog low-shelving design:
-  Complex z[N], p[N]; // arrays of lowshelf prototype poles and zeros
-  double  k;          // lowshelf prototype filter gain
+  std::complex<double> z[N], p[N]; // arrays of lowshelf prototype poles and zeros
+  //double  k;          // lowshelf prototype filter gain
   //rsPrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(z, p, &k, N);
-  rosic::rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(z, p, &k, N, G, G0);
-  Plotter::plotAnalogMagnitudeResponse(z, p, k, N, 0.0, 3.0, 2000);
+  //rosic::rsPrototypeDesignerD::getPapoulisLowShelfZerosPolesAndGain(z, p, &k, N, G, G0);
+  //Plotter::plotAnalogMagnitudeResponse(z, p, k, N, 0.0, 3.0, 2000);
 }
 
 void rotes::testEngineersFilter()
@@ -1005,7 +1009,7 @@ void rotes::testPoleZeroMapping()
 
 
   rosic::rsInfiniteImpulseResponseDesignerD iirDesigner;
-  iirDesigner.setApproximationMethod(rosic::rsPrototypeDesigner::ELLIPTIC);
+  iirDesigner.setApproximationMethod(rosic::rsPrototypeDesignerD::ELLIPTIC);
   iirDesigner.setMode(rosic::rsInfiniteImpulseResponseDesignerD::LOWPASS);
   iirDesigner.setPrototypeOrder(N);
   iirDesigner.setSampleRate(fs);
@@ -1028,7 +1032,7 @@ void rotes::highOrderFilterPolesAndZeros()
   double As    =    50.0;  // stopband rejection in dB
   double bw    =     1.0;  // bandwidth in octaves
   int mode   = rosic::rsInfiniteImpulseResponseDesignerD::BANDPASS;
-  int method = rosic::rsPrototypeDesigner::ELLIPTIC;
+  int method = rosic::rsPrototypeDesignerD::ELLIPTIC;
 
   // create and set up the filter designer object:
   rosic::rsInfiniteImpulseResponseDesignerD designer;

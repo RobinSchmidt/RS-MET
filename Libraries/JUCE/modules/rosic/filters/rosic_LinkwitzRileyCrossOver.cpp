@@ -158,7 +158,7 @@ void rsLinkwitzRileyCrossOver::updateFilterCoefficients()
   // create and set up a filter-designer object:
   rsInfiniteImpulseResponseDesignerD designer;
   designer.setSampleRate(sampleRate);
-  designer.setApproximationMethod(rsPrototypeDesigner::BUTTERWORTH);
+  designer.setApproximationMethod(rsPrototypeDesignerD::BUTTERWORTH);
   designer.setPrototypeOrder(butterworthOrder);
   designer.setFrequency(crossoverFrequency);
   // \todo keep this object around as a member to avoid unnecessary re-calculations of the 

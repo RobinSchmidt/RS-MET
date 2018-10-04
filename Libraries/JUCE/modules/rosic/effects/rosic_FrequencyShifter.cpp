@@ -7,7 +7,7 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
 
   // design the filter as biquad cascade:
   rsEngineersFilterMono halfbandFilterBiquad;
-  halfbandFilterBiquad.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);
+  halfbandFilterBiquad.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
   halfbandFilterBiquad.setSampleRate(44100.0);
   halfbandFilterBiquad.setFrequency(11025);        // place passband edge exactly at sampleRate/4
   halfbandFilterBiquad.setRipple(0.1);
@@ -21,17 +21,17 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
   double a2[order/3+1];
   double b3[order/3+1];
   double a3[order/3+1];
-  rsFilterCoefficientConverter::biquadCascadeToDirectForm(order/6, 
+  rsFilterCoefficientConverterD::biquadCascadeToDirectForm(order/6, 
     halfbandFilterBiquad.getAddressB0(),                                                     
     halfbandFilterBiquad.getAddressB1(), halfbandFilterBiquad.getAddressB2(), 
     halfbandFilterBiquad.getAddressA1(), halfbandFilterBiquad.getAddressA2(),
     b1, a1);
-  rsFilterCoefficientConverter::biquadCascadeToDirectForm(order/6, 
+  rsFilterCoefficientConverterD::biquadCascadeToDirectForm(order/6, 
     halfbandFilterBiquad.getAddressB0()+order/6, 
     halfbandFilterBiquad.getAddressB1()+order/6, halfbandFilterBiquad.getAddressB2()+order/6, 
     halfbandFilterBiquad.getAddressA1()+order/6, halfbandFilterBiquad.getAddressA2()+order/6,
     b2, a2);
-  rsFilterCoefficientConverter::biquadCascadeToDirectForm(order/6, 
+  rsFilterCoefficientConverterD::biquadCascadeToDirectForm(order/6, 
     halfbandFilterBiquad.getAddressB0()+2*order/6, 
     halfbandFilterBiquad.getAddressB1()+2*order/6, halfbandFilterBiquad.getAddressB2()+2*order/6, 
     halfbandFilterBiquad.getAddressA1()+2*order/6, halfbandFilterBiquad.getAddressA2()+2*order/6,
@@ -53,14 +53,14 @@ FrequencyShifter::FrequencyShifter()
   feedbackFactor = 0.0;
   yOld           = 0.0;
 
-  halfbandFilter1.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);
+  halfbandFilter1.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
   halfbandFilter1.setSampleRate(44100.0);
   halfbandFilter1.setFrequency(11025);
   halfbandFilter1.setRipple(0.1);
   halfbandFilter1.setStopbandRejection(95.0);
   halfbandFilter1.setPrototypeOrder(24);
 
-  halfbandFilter2.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);
+  halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
   halfbandFilter2.setSampleRate(44100.0);
   halfbandFilter2.setFrequency(11025);
   halfbandFilter2.setRipple(0.1);

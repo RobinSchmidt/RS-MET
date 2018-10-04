@@ -945,8 +945,8 @@ void testPoleZeroMapper()
   //typedef std::complex<double> cmplx;
 
   // old version:
-  typedef rosic::rsPoleZeroMapper PZM; 
-  typedef rosic::Complex cmplx;
+  typedef rosic::rsPoleZeroMapperD PZM; 
+  typedef std::complex<double> cmplx;
 
   // create some pole/zero arrays:
   cmplx c1(1.,1.), c2(1.,-1.), c3(2.,2.), c4(2.,-2.), z(0.,0.);
