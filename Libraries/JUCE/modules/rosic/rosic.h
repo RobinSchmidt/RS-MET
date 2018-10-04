@@ -174,7 +174,6 @@
 #include "filters/rosic_LadderFilter.h"
 #include "filters/rosic_LadderFilterOld.h"
 #include "filters/rosic_LeakyIntegrator.h"
-#include "filters/rosic_EngineersFilter.h"
 #include "filters/rosic_LinkwitzRileyCrossOver.h"
 #include "filters/rosic_CrossOver4Way.h"
 #include "filters/rosic_LowpassHighpass.h"

@@ -2,7 +2,7 @@
 #define rosic_TemplateInstantiations_h
 
 // This file contains typedefs for explicit template instantiations for templates from the RAPT 
-// library. Sometimes we also create a subclass of a template call from RAPT in order to provide
+// library. Sometimes we also create a subclass of a template class from RAPT in order to provide
 // additional functionality such as converting between two doubles and rsFloat64x2 etc. to make it
 // more convenient to use the classes
 
@@ -98,6 +98,34 @@ typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundame
 typedef RAPT::rsCycleMarkFinder<double> rsCycleMarkFinderD;
 typedef RAPT::rsVariableSpeedPlayer<double, double> rsVariableSpeedPlayerDD;
 typedef RAPT::rsPhaseLockedCrossfader<double, double>  rsPhaseLockedCrossfaderDD;
+
+
+
+
+
+class rsEngineersFilterMono : public RAPT::rsEngineersFilter<double, double>
+{
+public:
+  inline double getSample(double in) { return getSampleDirect2(in); }
+  // maybe implement in RAPT::rsEngineersFilter and don't subclass here but use a typedef'd
+  // explicit instantiation
+};
+
+class rsEngineersFilterStereo : public RAPT::rsEngineersFilter<rsFloat64x2, double>
+{
+public:
+  inline void getSampleFrameStereo(double* left, double* right)
+  {
+    //rsFloat64x2 tmp = getSample(rsFloat64x2(*left, *right));
+    rsFloat64x2 tmp = getSampleDirect2(rsFloat64x2(*left, *right));
+    *left  = tmp[0];
+    *right = tmp[1];
+  }
+};
+
+
+
+
 
 }
 

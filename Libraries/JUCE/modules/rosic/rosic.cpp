@@ -97,7 +97,6 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "filters/rosic_ConvolverFFT.cpp"
 #include "filters/rosic_ConvolverPartitioned.cpp"
 #include "filters/rosic_CookbookFilter.cpp"
-#include "filters/rosic_EngineersFilter.cpp"
 #include "filters/rosic_LinkwitzRileyCrossOver.cpp"
 #include "filters/rosic_CrossOver4Way.cpp"
 #include "filters/rosic_TwoPoleFilter.cpp"
