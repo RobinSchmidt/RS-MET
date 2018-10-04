@@ -158,7 +158,7 @@ void rsCrossOver4Way::getMagnitudeResponse(double* frequencies, double* magnitud
     }
   }
 
-  rsFilterAnalyzer::clampValuesAboveNyquist(frequencies, magnitudes, numBins, 
+  rsFilterAnalyzerD::clampValuesAboveNyquist(frequencies, magnitudes, numBins, 
     stage1.getSampleRate(), -100.0);
   RAPT::rsArray::clipBuffer(magnitudes, numBins, -150.0, 10.0);
 }

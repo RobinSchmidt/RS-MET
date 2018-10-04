@@ -82,8 +82,10 @@ template class RAPT::rsPhaseScopeBuffer2<double, float, double>;
 template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
 
-//template class RAPT::rsBiquadCascade<double, double>;
+template class RAPT::rsBiquadCascade<double, double>;
 template class RAPT::rsBiquadCascade<rsFloat64x2, double>;
+
+template class RAPT::rsFilterAnalyzer<double>;
 
 template class RAPT::rsPrototypeDesigner<double>;
 template class RAPT::rsPoleZeroMapper<double>;

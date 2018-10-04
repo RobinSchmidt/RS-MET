@@ -38,6 +38,7 @@ typedef RAPT::rsFractionalDelayLine<double, double> rsFractionalDelayLineDD;
 typedef RAPT::rsOnePoleFilter<double, double> rsOnePoleFilterDD;
 
 
+
 typedef RAPT::rsNonlinearModalFilter<double, double> rsNonlinearModalFilterDD;
 typedef RAPT::rsModalFilter<double, double> rsModalFilterDD;
 typedef RAPT::rsModalFilterWithAttack<double, double> rsModalFilterWithAttackDD;
@@ -48,6 +49,9 @@ typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
 typedef RAPT::rsStateVariableFilter<double, double> rsStateVariableFilterDD;
 typedef RAPT::rsPhonoFilter<double, double> rsPhonoFilterDD;
 typedef RAPT::rsMovingAverage<double, double> rsMovingAverageDD;
+
+typedef RAPT::rsBiquadCascade<double, double> rsBiquadCascadeDD;
+typedef RAPT::rsFilterAnalyzer<double> rsFilterAnalyzerD;
 
 typedef RAPT::rsPrototypeDesigner<double> rsPrototypeDesignerD;
 typedef RAPT::rsPoleZeroMapper<double> rsPoleZeroMapperD;

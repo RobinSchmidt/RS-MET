@@ -261,6 +261,20 @@ namespace rosic
     return Complex(scale*z.re, -scale*z.im);
   }
 
+  // hacky stuff to convert/cast pointers between std::complex<double> and rosic::Complex 
+  // (eventually, we want to not use rosci rosic::Complex anymore, but for the transition, we may
+  // need to convert back and forth) - this works because ("array oriented access" section):
+  // https://en.cppreference.com/w/cpp/numeric/complex
+  inline std::complex<double>* rsCastPointer(Complex* p)
+  {
+    return reinterpret_cast<std::complex<double>*> (p);
+  }
+
+  inline Complex* rsCastPointer(std::complex<double>* p)
+  {
+    return reinterpret_cast<Complex*> (p);
+  }
+
 }  // end namespace rosic
 
 #endif // rosic_Complex_h
