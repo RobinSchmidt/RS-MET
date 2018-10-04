@@ -687,6 +687,7 @@ void rotes::testCrossover4Way()
 
 void rotes::testCrossover4Way2()
 {
+  /*
   static const int numBins = 4096;
   double sampleRate        = 44100.0;
   int    slope11           = 48;   // middlemost slope
@@ -698,7 +699,7 @@ void rotes::testCrossover4Way2()
   double lowClipValue      = -40.0;   // lower magnitude limit in dB for the plots
 
   // set up the crossover:
-  rosic::rsCrossOver4Way crossover;
+  rosic::rsCrossOver4WayStereo crossover;
   crossover.setSampleRate(sampleRate);
   crossover.setCrossoverFrequency(lowCrossoverFreq,  1, 0);
   crossover.setCrossoverFrequency(highCrossoverFreq, 1, 1);
@@ -736,7 +737,7 @@ void rotes::testCrossover4Way2()
   // plot impulse responses:
   Plotter::plotData(numBins, indices, &impulseResponses[0], &impulseResponses[2*numBins], &impulseResponses[4*numBins], 
     &impulseResponses[6*numBins], impulseResponseSum);
-
+  */
 
   /*
   // frequency response variables:
@@ -758,13 +759,13 @@ void rotes::testCrossover4Way2()
   Plotter::plotData(numBins, frequencies, magnitudesSum);
   */
 
-
-  delete impulseResponsePointers;
+  //delete impulseResponsePointers;
   int dummy = 0;
 }
 
 void rotes::testCrossoverNewVsOld()
 {
+  /*
   // just a function to check, if the new, templatized version of the crossover works as expected
   // by comparing it with the old implementation - when  the old implementation will be gone, this 
   // test code may be deleted, too
@@ -805,7 +806,6 @@ void rotes::testCrossoverNewVsOld()
   coNew.setBandActive(active11, 1, 1);
 
 
-
   RAPT::rsNoiseGenerator<double> noiseGen;
   static const int N = 10000;  // number of samples
   double yo[8];
@@ -822,6 +822,7 @@ void rotes::testCrossoverNewVsOld()
 
     int dummy = 0;
   }
+  */
 }
 
 void rotes::testSlopeFilter()

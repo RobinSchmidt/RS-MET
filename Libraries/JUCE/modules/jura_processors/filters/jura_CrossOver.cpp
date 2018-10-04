@@ -2,7 +2,7 @@
 // construction/destruction:
 
 CrossOverAudioModule::CrossOverAudioModule(CriticalSection* newPlugInLock, 
-  rosic::rsCrossOver4Way* crossOverToWrap) : AudioModule(newPlugInLock)
+  rosic::rsCrossOver4WayStereo* crossOverToWrap) : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
   //jassert(crossOverToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -11,7 +11,7 @@ CrossOverAudioModule::CrossOverAudioModule(CriticalSection* newPlugInLock,
     wrappedCrossOver   = crossOverToWrap;
   else
   {
-    wrappedCrossOver = new rosic::rsCrossOver4Way;
+    wrappedCrossOver = new rosic::rsCrossOver4WayStereo;
     wrappedCrossOverIsOwned = true;
   }
   wantsTempoSyncInfo = false;  // mmmhh...maybe better set it to false in the baseclass and to true in subclasses that need it
@@ -38,9 +38,9 @@ void CrossOverAudioModule::createStaticParameters()
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(lock, "Mono", 0.0, 1.0,  1.0, 0.0, Parameter::BOOLEAN);
-  addObservedParameter(p);
-  p->setValueChangeCallback(wrappedCrossOver, &rsCrossOver4Way::setMonoMode);
+  //p = new AutomatableParameter(lock, "Mono", 0.0, 1.0,  1.0, 0.0, Parameter::BOOLEAN);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback(wrappedCrossOver, &rsCrossOver4Way::setMonoMode);
 
   p = new AutomatableParameter(lock, "OnOff_1_1", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
@@ -728,11 +728,11 @@ CrossOverModuleEditor::CrossOverModuleEditor(CriticalSection *newPlugInLock, Cro
   slope22Slider->setStringConversionFunction(&decibelsPerOctaveToString);
 
 
-  addWidget( monoButton = new RButton(juce::String("Mono")) );
-  monoButton->assignParameter( crossOverModuleToEdit->getParameterByName("Mono") );
-  monoButton->setDescription(juce::String("Switch into mono-mode (saves CPU)"));
-  monoButton->setDescriptionField(infoField);
-  monoButton->setClickingTogglesState(true);
+  //addWidget( monoButton = new RButton(juce::String("Mono")) );
+  //monoButton->assignParameter( crossOverModuleToEdit->getParameterByName("Mono") );
+  //monoButton->setDescription(juce::String("Switch into mono-mode (saves CPU)"));
+  //monoButton->setDescriptionField(infoField);
+  //monoButton->setClickingTogglesState(true);
 
   plotColourScheme.setCurveColouringStrategy(PlotColourScheme::UNIFORM);
   //plotEditor = new CrossOverPlotEditor(juce::String(T("SpectrumEditor")));
@@ -796,7 +796,7 @@ void CrossOverModuleEditor::resized()
 
   w = 40;
   x = getWidth()-w-4;
-  monoButton->setBounds(x, y, w, h);
+  //monoButton->setBounds(x, y, w, h);
 
   x = 0;
   y = getPresetSectionBottom();

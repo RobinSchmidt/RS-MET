@@ -12,7 +12,7 @@ class CrossOverAudioModule : public AudioModule
 public:
 
   CrossOverAudioModule(CriticalSection *newPlugInLock, 
-    rosic::rsCrossOver4Way *crossOverToWrap = nullptr);
+    rosic::rsCrossOver4WayStereo *crossOverToWrap = nullptr);
 
   virtual ~CrossOverAudioModule();
 
@@ -36,6 +36,22 @@ public:
       return;
     else
     {
+      // we need:
+      // -read current sample frame into temporary buffer of length 8
+      // -process the sample frame
+      // -write results into appropriate output slots
+
+      /*
+      // needs test - nnaahh...this will probably not work
+      double sampleFrame[8];
+      for(n=0; n<length; n++)
+      {
+        sampleFrame[0] = pointers[0][n];
+        sampleFrame[1] = pointers[1][n];
+        wrappedCrossOver->processSampleFrameStereo(sampleFrame);
+      }
+      */
+
       //wrappedCrossOver->processBuffer(buffer.getSampleData(0, startSample), length);
         // fast but works only for buffers arranged continuously in memory...
 
@@ -56,10 +72,12 @@ public:
           pointers[c][n] = (float) sampleFrame[c];
       }
       */
+      /*
       float *pointers[8];
       for(int c=0; c<8; c++)
         pointers[c] = buffer.getWritePointer(c, startSample);
       wrappedCrossOver->processBuffer(pointers, length);
+      */
     }
   }
 
@@ -73,7 +91,7 @@ protected:
 
   void createStaticParameters();
 
-  rosic::rsCrossOver4Way *wrappedCrossOver;
+  rosic::rsCrossOver4WayStereo *wrappedCrossOver;
   bool wrappedCrossOverIsOwned = false;
 
   // adapter functions for the callbacks (boilerplate):
@@ -268,7 +286,7 @@ protected:
   // ...we may want to use a Tree class then.
   RSlider *frequency11Slider, *frequency21Slider, *frequency22Slider;
   RSlider *slope11Slider, *slope21Slider, *slope22Slider;
-  RButton *monoButton;
+  //RButton *monoButton;
 
 
   juce_UseDebuggingNewOperator;
