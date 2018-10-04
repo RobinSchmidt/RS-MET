@@ -1,3 +1,4 @@
+/*
 Complex rosic::evaluatePolynomialWithRoots(Complex s, Complex *r, int N)
 {
   Complex result = 1.0;
@@ -8,7 +9,7 @@ Complex rosic::evaluatePolynomialWithRoots(Complex s, Complex *r, int N)
   }
   return result;
 }
-
+*/
 
 // used in convergeToRootViaLaguerre:
 double evaluatePolynomialWithTwoDerivativesAndError(Complex *a, int order, Complex z, Complex *P)
@@ -28,7 +29,7 @@ double evaluatePolynomialWithTwoDerivativesAndError(Complex *a, int order, Compl
   P[2] *= 2.0;
   return err;
 }
-
+/*
 Complex rosic::convergeToRootViaLaguerre(Complex *a, int order, Complex initialGuess)
 {
   const double eps = std::numeric_limits<double>::epsilon(); 
@@ -141,7 +142,7 @@ void rosic::findPolynomialRoots(double *a, int order, Complex *roots)
   findPolynomialRoots(ac, order, roots);
   delete[] ac;
 }
-
+*/
 rsArray<Complex> rosic::getPolynomialCoefficientsFromRoots(rsArray<Complex> roots)
 {
   rsArray<Complex> coeffs;

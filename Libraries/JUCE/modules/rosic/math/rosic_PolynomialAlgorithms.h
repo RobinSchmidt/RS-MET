@@ -11,10 +11,10 @@ namespace rosic
   // \todo: implement differentiation and integration, make a class, implement some algos for 
   // rational functions (partial fraction expansion, differentiation, integration)
 
+#ifdef NOT_DEFINED // faux commenting out
+
   /** Evaluates the polynomial defined by the array of roots "r" at argument "x". */
   Complex evaluatePolynomialWithRoots(Complex x, Complex *r, int numRoots);
-
-#ifdef NOT_DEFINED // faux commenting out
 
   /** Evaluates the polynomial defined by the array of coefficients "a" at argument "x".  The array 
   of coefficients must be of length order+1 and is interpreted as follows: a[0] is taken to be the 
@@ -121,7 +121,6 @@ namespace rosic
   template<class T>
   void integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, int bN, T *q);
 
-#endif
 
   /** Converges to a complex root of a polynomial by means of Laguerre's method using the 
   "initialGuess" as first estimate. */
@@ -133,6 +132,7 @@ namespace rosic
 
   void findPolynomialRoots(double  *a, int order, Complex *roots);
 
+#endif
 
   /** Same as above but accepts real coefficients. */
   //void findPolynomialRootsInternal(double *a, int order, Complex *roots, bool polish = true);

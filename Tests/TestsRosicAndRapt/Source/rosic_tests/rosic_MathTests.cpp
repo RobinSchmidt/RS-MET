@@ -205,18 +205,16 @@ void rotes::testPolynomialRootFinder()
 {
   // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 as test function
   double a1[5] = {-52, -23, 21, -7, 1};
-  Complex r1[4];
-  rosic::findPolynomialRoots(a1, 4, r1); 
-
-
+  std::complex<double> r1[4];
+  RAPT::rsPolynomial<double>::findPolynomialRoots(a1, 4, r1); 
 
   static const int maxN     = 20;
   static const int numTests = 1000;
   double range = 10.0;   // range for the real and imaginary parts of the roots
   double tol   = 5.e-9; // tolerance
-  Complex a[maxN+1];     // polynomial coefficients
-  Complex rTrue[maxN];   // true roots
-  Complex rFound[maxN];  // roots that were found
+  std::complex<double> a[maxN+1];     // polynomial coefficients
+  std::complex<double> rTrue[maxN];   // true roots
+  std::complex<double> rFound[maxN];  // roots that were found
   bool result = true;    // if this is still true at the end of the function, the test has passed
   RAPT::rsRandomUniform(-range, range, 0);  // set seed
   int i, j, k;
@@ -228,15 +226,15 @@ void rotes::testPolynomialRootFinder()
     // generate a bunch of random roots:
     for(k = 0; k < N; k++)
     {
-      rTrue[k].re = random(-range, range);
-      rTrue[k].im = random(-range, range);
+      rTrue[k].real(random(-range, range));
+      rTrue[k].imag(random(-range, range));
     }
 
     // obtain polynomial coeffs:
-    rootsToCoeffs(rTrue, a, N);
+    RAPT::rsPolynomial<double>::rootsToCoeffs(rTrue, a, N);
 
     // find the roots:
-    rosic::findPolynomialRoots(a, N, rFound);
+    RAPT::rsPolynomial<double>::findPolynomialRoots(a, N, rFound);
 
     // try to find a matching root in the found roots for each of the true roots:
     for(j = 0; j < N; j++)
@@ -244,7 +242,7 @@ void rotes::testPolynomialRootFinder()
       bool matchFound = false;
       for(k = 0; k < N; k++)
       {
-        if( (rFound[j]-rTrue[k]).getRadius() < tol )
+        if( abs(rFound[j]-rTrue[k]) < tol )
         {
           matchFound = true;
           break;
