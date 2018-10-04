@@ -99,6 +99,33 @@ protected:
 template<class TSig, class TPar>
 inline void rsCrossOver4Way<TSig, TPar>::processSampleFrame(TSig* inOut)
 {
+  // new implementation - needs test:
+
+  TSig in = inOut[0];
+  for(int i = 0; i < 4; i++)
+    inOut[i] = 0.0;
+
+  if(!stage2[0].isActive() && !stage2[1].isActive()) {      // 2 bands
+    stage1.getSamplePair(&in, &inOut[0], &inOut[1]);
+  }
+  else if(stage2[0].isActive() && !stage2[1].isActive()) {  // 3 bands, lower band split further
+    stage1.getSamplePair(&in, &inOut[0],  &inOut[2]);
+    stage2[0].getSamplePair(&inOut[0], &inOut[0], &inOut[1]);
+    inOut[2] = highBranchCompensationAllpass.getSampleDirect2(inOut[2]);
+  }
+  else if(!stage2[0].isActive() && stage2[1].isActive()) {  // 3 bands, upper band split further
+    stage1.getSamplePair(&in, &inOut[0], &inOut[1]);
+    stage2[1].getSamplePair(&inOut[1], &inOut[1], &inOut[2]);
+    inOut[0] = lowBranchCompensationAllpass.getSampleDirect2(inOut[0]);
+  }
+  else  {                                                   // 4 bands
+    stage1.getSamplePair(&in, &inOut[0], &inOut[2]);
+    inOut[0] = lowBranchCompensationAllpass.getSampleDirect2(inOut[0]);
+    inOut[2] = highBranchCompensationAllpass.getSampleDirect2(inOut[2]);
+    stage2[0].getSamplePair(&inOut[0], &inOut[0], &inOut[1]);
+    stage2[1].getSamplePair(&inOut[2], &inOut[2], &inOut[3]);
+  }
+
   /*
   // needs update - multichannel should now be handled by using a multichannel signal type TSig
 
