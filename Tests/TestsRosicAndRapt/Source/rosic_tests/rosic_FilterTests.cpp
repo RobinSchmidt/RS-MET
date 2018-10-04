@@ -211,8 +211,8 @@ void rotes::testBiquadPhasePlot()
   // obtain magnitude phase response:
   double m[numBins];
   double p[numBins];
-  rosic::rsFilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numBiquads, w, m, numBins, false, false);
-  rosic::rsFilterAnalyzer::getBiquadCascadePhaseResponse(b0, b1, b2, a1, a2, numBiquads, w, p, numBins, false);
+  rosic::rsFilterAnalyzerD::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numBiquads, w, m, numBins, false, false);
+  rosic::rsFilterAnalyzerD::getBiquadCascadePhaseResponse(b0, b1, b2, a1, a2, numBiquads, w, p, numBins, false);
 
   // plot the (magnitude- and) phase response:
   Plotter::plotData(numBins, w, p);
@@ -418,13 +418,12 @@ void rotes::testFilterAnalyzer()
 
   //FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numBiquads, omegas, magnitudes, numBins, true);
 
-  rosic::rsFilterAnalyzer::getBiquadCascadeFrequencyResponse(         b0, b1, b2, a1, a2, numBiquads, omegas, H, numBins);
-  rosic::rsFilterAnalyzer::multiplyWithBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numBiquads, omegas, H, numBins);
-  rosic::rsFilterAnalyzer::addWithBiquadCascadeFrequencyResponse(     b0, b1, b2, a1, a2, numBiquads, omegas, H, numBins);
+  rosic::rsFilterAnalyzerD::getBiquadCascadeFrequencyResponse(         b0, b1, b2, a1, a2, numBiquads, omegas, rsCastPointer(H), numBins);
+  rosic::rsFilterAnalyzerD::multiplyWithBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numBiquads, omegas, rsCastPointer(H), numBins);
+  rosic::rsFilterAnalyzerD::addWithBiquadCascadeFrequencyResponse(     b0, b1, b2, a1, a2, numBiquads, omegas, rsCastPointer(H), numBins);
 
-
-  rosic::rsFilterAnalyzer::getMagnitudes( H, magnitudes, numBins);
-  rosic::rsFilterAnalyzer::convertToDecibels(magnitudes, numBins);
+  rosic::rsFilterAnalyzerD::getMagnitudes( rsCastPointer(H), magnitudes, numBins);
+  rosic::rsFilterAnalyzerD::convertToDecibels(magnitudes, numBins);
 
   RAPT::rsArray::clipBuffer(magnitudes, numBins, -60.0, 20.0);
 
@@ -467,8 +466,8 @@ void rotes::testBiquadCascade()
   }
 
   biquadCascade.getFrequencyResponse(omegas, H, numBins);
-  rosic::rsFilterAnalyzer::getMagnitudes(H, magnitudes, numBins);
-  rosic::rsFilterAnalyzer::getPhases(    H, phases,     numBins);
+  rosic::rsFilterAnalyzerD::getMagnitudes(rsCastPointer(H), magnitudes, numBins);
+  rosic::rsFilterAnalyzerD::getPhases(    rsCastPointer(H), phases,     numBins);
   //rsFilterAnalyzer::convertToDecibels(magnitudes, numBins);
 
   biquadCascade.getMagnitudeResponse(omegas, magnitudes, numBins, true, false);

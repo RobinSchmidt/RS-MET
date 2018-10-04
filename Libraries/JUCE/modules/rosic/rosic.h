@@ -150,7 +150,6 @@
 #include "filters/rosic_BiquadDesigner.h"
 #include "filters/rosic_AllpassChain.h"
 #include "filters/rosic_BiquadBase.h"
-#include "filters/rosic_FilterAnalyzer.h"
 #include "filters/rosic_BiquadCascade.h"
 #include "filters/rosic_BiquadMonoDF1.h"
 #include "filters/rosic_BiquadStereoDF1.h"

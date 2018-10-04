@@ -138,7 +138,7 @@ void testCompensatedLinearInterpolator()
   // -> test which version behaves best under modulation (witch d between 0.0 and 0.5 - these are the extremes for a1)
   // maybe try this stuff in DelayLine module for Liberty
 
-  rosic::rsFilterAnalyzer::getBiquadMagnitudeResponse(b0, b1, 0.0, a1, 0.0, w, mag, N, false); 
+  rosic::rsFilterAnalyzerD::getBiquadMagnitudeResponse(b0, b1, 0.0, a1, 0.0, w, mag, N, false); 
   RAPT::rsArray::scale(mag, mag, N, g);
   for(int n = 0; n < N; n++)
     mag[n] = RAPT::rsAmpToDb(mag[n]);
