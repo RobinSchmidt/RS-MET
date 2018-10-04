@@ -161,7 +161,6 @@
 #include "filters/rosic_ConvolverFFT.h"          // needs transforms folder
 #include "filters/rosic_ConvolverPartitioned.h"
 #include "filters/rosic_CookbookFilter.h"
-#include "filters/rosic_DirectFormFilter.h"
 #include "filters/rosic_TwoPoleFilter.h"
 #include "filters/rosic_DualTwoPoleFilter.h"
 #include "filters/rosic_EllipticQuarterBandFilter.h"

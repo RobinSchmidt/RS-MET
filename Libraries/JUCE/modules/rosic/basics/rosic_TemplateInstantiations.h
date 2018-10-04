@@ -51,6 +51,8 @@ typedef RAPT::rsPhonoFilter<double, double> rsPhonoFilterDD;
 typedef RAPT::rsMovingAverage<double, double> rsMovingAverageDD;
 
 typedef RAPT::rsBiquadCascade<double, double> rsBiquadCascadeDD;
+typedef RAPT::rsDirectFormFilter<double, double> rsDirectFormFilterDD;
+
 typedef RAPT::rsFilterAnalyzer<double> rsFilterAnalyzerD;
 
 typedef RAPT::rsPrototypeDesigner<double> rsPrototypeDesignerD;

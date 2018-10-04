@@ -60,7 +60,7 @@ namespace rosic
 
   protected:
 
-    DirectFormFilter  stage1, stage2, stage3;
+    rsDirectFormFilterDD  stage1, stage2, stage3;
 
   };
 

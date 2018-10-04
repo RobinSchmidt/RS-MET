@@ -84,6 +84,7 @@ template class RAPT::rsBreakpointModulator<double>;
 
 template class RAPT::rsBiquadCascade<double, double>;
 template class RAPT::rsBiquadCascade<rsFloat64x2, double>;
+template class RAPT::rsDirectFormFilter<double, double>;
 
 template class RAPT::rsFilterAnalyzer<double>;
 

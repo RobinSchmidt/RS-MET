@@ -100,7 +100,6 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "filters/rosic_EngineersFilter.cpp"
 #include "filters/rosic_LinkwitzRileyCrossOver.cpp"
 #include "filters/rosic_CrossOver4Way.cpp"
-#include "filters/rosic_DirectFormFilter.cpp"
 #include "filters/rosic_TwoPoleFilter.cpp"
 #include "filters/rosic_DualTwoPoleFilter.cpp"
 #include "filters/rosic_EllipticQuarterBandFilter.cpp"
