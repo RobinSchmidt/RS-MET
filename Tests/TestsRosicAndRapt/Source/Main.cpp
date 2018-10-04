@@ -12,6 +12,9 @@
 int main(int argc, char* argv[])
 {
 
+  // tempoarary throw-away-code:
+  testCrossoverNewVsOld();
+
   //===============================================================================================
   // RAPT tests:
 

@@ -124,6 +124,16 @@ public:
 };
 
 
+class rsCrossOver4WayStereo : public RAPT::rsCrossOver4Way<rsFloat64x2, double>
+{
+public:
+
+  inline void processSampleFrameStereo(double* inOut)
+  {
+    processSampleFrame(rsCastPointer(inOut));
+  }
+
+};
 
 
 

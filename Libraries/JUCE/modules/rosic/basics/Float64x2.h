@@ -240,6 +240,12 @@ inline rsFloat64x2 rsTan(const rsFloat64x2& x) { double* a = x.asArray(); return
 // now - so x[0], x[1] should also work
 
 
+// typecasting of pointers (to arrays) back and forth between double and rsFloat64x2:
+inline double* rsCastPointer(rsFloat64x2* p) { return reinterpret_cast<double*> (p);      }
+inline rsFloat64x2* rsCastPointer(double* p) { return reinterpret_cast<rsFloat64x2*> (p); }
+// test this! it's quite hacky
+
+
 
 //inline rsFloat64x2 exp(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(exp(a[0]), exp(a[1])); }
 // without the rs-prefix, i get a shitload of compiler errors related to RealFunctions.h - perhaps because i

@@ -16,6 +16,7 @@ namespace rotes
   void testBiquadCascade();
   void testCrossover4Way();
   void testCrossover4Way2();
+  void testCrossoverNewVsOld();
   void testSlopeFilter();
   void testPrototypeDesigner();
   void testLowpassToLowshelf();

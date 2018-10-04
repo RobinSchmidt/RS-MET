@@ -738,9 +738,6 @@ void rotes::testCrossover4Way2()
     &impulseResponses[6*numBins], impulseResponseSum);
 
 
-
-
-
   /*
   // frequency response variables:
   double  frequencies[numBins];
@@ -755,16 +752,60 @@ void rotes::testCrossover4Way2()
     frequencies[k] = 0.5 * k * sampleRate / (numBins-1);
     omegas[k]      = 2.0 * PI * frequencies[k] / sampleRate;
   }
-
   // compute and plot magnitude response of the sum:
   fftMagnitudesAndPhases(impulseResponseSum, numBins, magnitudesSum, NULL, numBins);
-  scale(magnitudesSum, numBins, (double)numBins);
+  RAPT::rsArray::scale(magnitudesSum, numBins, (double)numBins);
   Plotter::plotData(numBins, frequencies, magnitudesSum);
   */
 
 
-
   delete impulseResponsePointers;
+  int dummy = 0;
+}
+
+void rotes::testCrossoverNewVsOld()
+{
+  // just a function to check, if the new, templatized version of the crossover works as expected
+  // by comparing it with the old implementation - when  the old implementation will be gone, this 
+  // test code may be deleted, too
+
+  double sampleRate        = 44100.0;
+  double lowCrossoverFreq  = 250.0;
+  double midCrossoverFreq  = 1000.0;
+  double highCrossoverFreq = 6000.0;
+  int    slope11           = 48;   // middlemost slope
+  int    slope21           = 48;
+  int    slope22           = 48;
+  bool   active10          = true;
+  bool   active11          = true;
+
+  rosic::rsCrossOver4Way coOld;
+  coOld.setSampleRate(44100);
+  coOld.setSampleRate(sampleRate);
+  coOld.setCrossoverFrequency(lowCrossoverFreq,  1, 0);
+  coOld.setCrossoverFrequency(highCrossoverFreq, 1, 1);
+  coOld.setCrossoverFrequency(midCrossoverFreq,  0, 0);
+  coOld.setSlope(slope11, 0, 0);
+  coOld.setSlope(slope21, 1, 0);
+  coOld.setSlope(slope22, 1, 1);
+  coOld.setBandActive(active10, 1, 0);
+  coOld.setBandActive(active11, 1, 1);
+  coOld.setMonoMode(false);
+
+  rosic::rsCrossOver4WayStereo coNew;
+  coNew.setSampleRate(44100);
+  coNew.setSampleRate(sampleRate);
+  coNew.setCrossoverFrequency(lowCrossoverFreq,  1, 0);
+  coNew.setCrossoverFrequency(highCrossoverFreq, 1, 1);
+  coNew.setCrossoverFrequency(midCrossoverFreq,  0, 0);
+  coNew.setSlope(slope11, 0, 0);
+  coNew.setSlope(slope21, 1, 0);
+  coNew.setSlope(slope22, 1, 1);
+  coNew.setBandActive(active10, 1, 0);
+  coNew.setBandActive(active11, 1, 1);
+
+
+
   int dummy = 0;
 }
 
