@@ -85,7 +85,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 // filters
 #include "filters/rosic_AllpassChain.cpp"
 #include "filters/rosic_BiquadBase.cpp"
-#include "filters/rosic_BiquadCascade.cpp"
+//#include "filters/rosic_BiquadCascade.cpp"
 #include "filters/rosic_BiquadDesigner.cpp"
 #include "filters/rosic_BiquadMonoDF1.cpp"
 #include "filters/rosic_BiquadStereoDF1.cpp"

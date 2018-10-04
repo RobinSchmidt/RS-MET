@@ -438,7 +438,7 @@ void rotes::testBiquadCascade()
   double sampleRate = 44100.0;
 
   rosic::rsInfiniteImpulseResponseDesignerD designer;
-  rosic::rsBiquadCascade            biquadCascade;
+  rosic::rsBiquadCascadeDD            biquadCascade;
 
   designer.setApproximationMethod(rosic::rsPrototypeDesignerD::BUTTERWORTH);
   designer.setMode(rosic::rsInfiniteImpulseResponseDesignerD::BANDPASS);
@@ -448,8 +448,8 @@ void rotes::testBiquadCascade()
   designer.setBandwidth(1.0);
 
   biquadCascade.setNumStages(designer.getNumBiquadStages());
-  designer.getBiquadCascadeCoefficients(biquadCascade.getAddressB0(), biquadCascade.getAddressB1(), biquadCascade.getAddressB2(), 
-    biquadCascade.getAddressA1(), biquadCascade.getAddressA2() );
+  designer.getBiquadCascadeCoefficients(biquadCascade.getAddressB0(), biquadCascade.getAddressB1(), 
+    biquadCascade.getAddressB2(), biquadCascade.getAddressA1(), biquadCascade.getAddressA2() );
   //biquadCascade.turnIntoAllpass();
 
   // frequencies and response-stuff:
@@ -465,7 +465,7 @@ void rotes::testBiquadCascade()
     omegas[k]      = 2.0 * PI * frequencies[k] / sampleRate;
   }
 
-  biquadCascade.getFrequencyResponse(omegas, H, numBins);
+  biquadCascade.getFrequencyResponse(omegas, rsCastPointer(H), numBins);
   rosic::rsFilterAnalyzerD::getMagnitudes(rsCastPointer(H), magnitudes, numBins);
   rosic::rsFilterAnalyzerD::getPhases(    rsCastPointer(H), phases,     numBins);
   //rsFilterAnalyzer::convertToDecibels(magnitudes, numBins);
