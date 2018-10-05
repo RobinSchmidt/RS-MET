@@ -51,8 +51,8 @@ T rsNodeBasedFunction<T>::applyInverseFunction(T y) const
   //return rsRootFinder<T>::bisection(std::function<T(T)>(*this), getMinX(), getMaxX(), y);
   
   std::function<T(T)> f = *this;
-  return rsRootFinder<T>::bisection(f, getMinX(), getMaxX(), y);
-  //return rsRootFinder<T>::falsePosition(f, getMinX(), getMaxX(), y);
+  //return rsRootFinder<T>::bisection(f, getMinX(), getMaxX(), y);
+  return rsRootFinder<T>::falsePosition(f, getMinX(), getMaxX(), y);
 
   // false-position method should need only one step in a linear mapping...but may be slow for
   // rational/exponential mappings with a strong bending...maybe a more robust algorithm is needed
