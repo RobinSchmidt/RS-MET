@@ -93,5 +93,5 @@ void CombFilter::setupDelayInSamples()
     frac    = 0.0;
     tapOut += 1;
   }
-  tapOut = wrapAround(tapOut, length);
+  tapOut = RAPT::rsWrapAround(tapOut, length);
 }

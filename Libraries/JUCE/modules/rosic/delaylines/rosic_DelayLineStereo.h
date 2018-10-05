@@ -93,7 +93,7 @@ namespace rosic
 
   INLINE void DelayLineStereo::incrementWritePointer()
   {
-    tapIn = wrapAround(tapIn+1, length);
+    tapIn = RAPT::rsWrapAround(tapIn+1, length);
   }
  
   INLINE double DelayLineStereo::getLeftOutputHermiteAt(double delayInSamples)
@@ -122,7 +122,7 @@ namespace rosic
       fPart  = 0.0;
       iPart -= 1;
     }
-    iPart = wrapAround(tapIn-iPart-1, length);   // integer part of the read-position
+    iPart = RAPT::rsWrapAround(tapIn-iPart-1, length);   // integer part of the read-position
   }
 
 } // end namespace rosic

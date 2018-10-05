@@ -26,14 +26,17 @@ public:
   iteration, the size of the interval is halved. The order of convergence is linear (in each 
   iteration, we get one more correct binary digit in the root estimate) and convergence is 
   guaranteed. */
-  static T bisection(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
+  static T bisection(const std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
 
   /** Similar to bisection but doesn't use the midpoint of the current bracketing interval, but the
   point where a line between (xLeft,yLeft), (xRight,yRight) crosses the x-axis. Convergence is
   typically (for smooth functions, that are well approximated by a line near the root) faster than
   for bisection and convergence is guranteed. But for some functions, the convergence may also be 
   slower than bisection. The method is also known as "regula falsi". */
-  static T falsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
+  static T falsePosition(const std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
+
+  // todo: let caller pass a tolerance (maybe separate for x and y), state pathological conditions
+  // when no convergence can be epxected (like when the function has poles like 1/x)
 
 
   //static T modifiedFalsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);

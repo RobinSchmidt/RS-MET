@@ -240,6 +240,9 @@ double RWidget::openModalNumberEntryField(double numberToShowInitially)
   // entryField->enterModalState(true);  // ...but this doesn't work at all
   // maybe we should keep an RTextEntryField member and register ourselves as observer
 
+  // see here for Elan's solution:
+  // https://github.com/RobinSchmidt/RS-MET/issues/221#issuecomment-427450329
+
   double result = entryField->getText().getDoubleValue();
   removeChildComponent(entryField);
   delete entryField;

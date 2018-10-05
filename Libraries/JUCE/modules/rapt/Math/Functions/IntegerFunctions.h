@@ -180,7 +180,7 @@ TInt rsSum(TInt min, TInt max);
 
 /** Wraps an integer number into the permitted range (0...length-1). */
 template<class TInt>
-TInt rsWrapAround(TInt numberToWrap, TInt length);
+RS_INLINE TInt rsWrapAround(TInt numberToWrap, TInt length);
 
 // more to come: primeFactors (should return an array of pairs of BigInts with the factor itself 
 // and its exponent), etc..
@@ -231,5 +231,14 @@ RS_INLINE T rsProduct(T min, T max)
   }
 }
 
+template<class TInt>
+RS_INLINE TInt rsWrapAround(TInt numberToWrap, TInt length)
+{
+  while(numberToWrap >= length)
+    numberToWrap -= length;
+  while(numberToWrap < 0)
+    numberToWrap += length;
+  return numberToWrap;
+}
 
 #endif

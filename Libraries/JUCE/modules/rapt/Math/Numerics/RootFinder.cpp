@@ -1,5 +1,25 @@
 template<class T>
-T rsRootFinder<T>::bisection(std::function<T(T)>& f, T xL, T xR, T y)
+inline bool isConvergedToRoot(T xL, T xR, T yM, T xTol, T yTol)
+{
+  rsAssert(xR >= xL, "Upper limit below lower limit in rsRootFinder)");
+
+  if(abs(yM) <= yTol)    
+    return true;
+
+
+  T dx = xR-xL;             // for debug
+  T lx = xTol*abs(xL+xR);
+
+  if( (xR-xL) <= xTol*abs(xL+xR)) // x-tolerance is relative
+    return true;
+  // but this relative tolerance seems to be bad when the root or pole is exactly at 0
+
+  return false;
+}
+
+
+template<class T>
+T rsRootFinder<T>::bisection(const std::function<T(T)>& f, T xL, T xR, T y)
 {
   static const int maxNumIterations = 60; // should be enough for double-precision
   T tol = std::numeric_limits<T>::epsilon();
@@ -8,7 +28,8 @@ T rsRootFinder<T>::bisection(std::function<T(T)>& f, T xL, T xR, T y)
   for(int i = 1; i <= maxNumIterations; i++) {
     xM = T(0.5)*(xL+xR);
     fM = f(xM) - y;
-    if(fM == 0 || xR-xL <= fabs(xM*tol)) 
+    if(fM == 0 || xR-xL <= fabs(xM*tol))    // old
+    //if(isConvergedToRoot(xL, xR, fM, tol, tol))
       return xM; // done
     if(fL*fM > 0) { xL = xM; fL = fM; }
     else          { xR = xM;          }
@@ -18,7 +39,7 @@ T rsRootFinder<T>::bisection(std::function<T(T)>& f, T xL, T xR, T y)
 }
 
 template<class T>
-T rsRootFinder<T>::falsePosition(std::function<T(T)>& f, T xL, T xR, T y)
+T rsRootFinder<T>::falsePosition(const std::function<T(T)>& f, T xL, T xR, T y)
 {
   static const int maxNumIterations = 60; // should be enough for double-precision
   T tol = std::numeric_limits<T>::epsilon();
@@ -28,7 +49,8 @@ T rsRootFinder<T>::falsePosition(std::function<T(T)>& f, T xL, T xR, T y)
   for(int i = 1; i <= maxNumIterations; i++) {
     xM = rsLine2D<T>::zeroCrossing(xL, fL, xR, fR); // = xL - (xR-xL) * fL / (fR-fL)
     fM = f(xM) - y;
-    if(fM == 0 || xR-xL <= fabs(xM*tol)) 
+    if(fM == 0 || xR-xL <= fabs(xM*tol)) // old
+    //if(isConvergedToRoot(xL, xR, fM, tol, tol))
       return xM; // done
     if(fL*fM > 0) { xL = xM; fL = fM; }
     else          { xR = xM; fR = fM; }

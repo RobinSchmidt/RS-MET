@@ -63,7 +63,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "datastructures/rosic_String.cpp"
 
 // math (some of the cpp files in this folder are already included in the basics section):
-#include "math/rosic_IntegerFunctions.cpp"
+//#include "math/rosic_IntegerFunctions.cpp"
 #include "math/rosic_LinearAlgebra.cpp"
 #include "math/rosic_Vector.cpp"
 #include "math/rosic_Matrix.cpp"
@@ -131,7 +131,6 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "generators/rosic_MipMappedWaveTableStereo.cpp"
 #include "generators/rosic_BlendOscillator.cpp"
 #include "generators/rosic_LorentzSystem.cpp"
-#include "generators/rosic_ModalSynthesizer.cpp"            // replace with code from RSLib
 #include "generators/rosic_NoiseGenerator.cpp"
 #include "generators/rosic_NoiseGeneratorOld.cpp"           // can this be removed?
 #include "generators/rosic_Oscillator.cpp"

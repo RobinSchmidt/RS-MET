@@ -246,7 +246,7 @@ namespace rosic
     while( positionInt < 0 )
       positionInt += waveTable->tableLength;
     */
-    positionInt = wrapAround(positionInt, waveTable->tableLength);
+    positionInt = RAPT::rsWrapAround(positionInt, waveTable->tableLength);
     double tmp  = waveTable->getValueAt(positionInt, positionFrac);
 
     // apply rise-envelope before slewratelimiter to smooth discontinuities due to resetting the
@@ -278,7 +278,7 @@ namespace rosic
     }
 
     // wraparound the integer part of the position-pointer if necesarry:
-    positionInt = wrapAround(positionInt, waveTable->tableLength);
+    positionInt = RAPT::rsWrapAround(positionInt, waveTable->tableLength);
     /*
     while( positionInt >= waveTable->tableLength )
       positionInt -= waveTable->tableLength;
@@ -288,7 +288,7 @@ namespace rosic
 
     int positionInt2 = positionInt + roundToInt(waveTable->tableLength*parameters->stereoPhase/360.0);
        // to be optimized - integer offset can be precalulated
-    positionInt2 = wrapAround(positionInt2, waveTable->tableLength);
+    positionInt2 = RAPT::rsWrapAround(positionInt2, waveTable->tableLength);
 
     double tmpL = waveTable->getValueAt(positionInt,  positionFrac);
     double tmpR = waveTable->getValueAt(positionInt2, positionFrac);

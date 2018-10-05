@@ -104,7 +104,7 @@ namespace rosic
 
     // read out the dry signal from the delaylines for mixing dry/wet without additional 
     // comb-filter artifacts:
-    int readPos = wrapAround(tapIn-dA+1, length); 
+    int readPos = RAPT::rsWrapAround(tapIn-dA+1, length); 
     double dryL = bufferL[readPos];
     double dryR = bufferR[readPos];
 

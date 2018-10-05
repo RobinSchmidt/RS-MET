@@ -83,5 +83,5 @@ void DynamicsProcessorBase::setupLookAhead()
   lookAheadInSamples        = RAPT::rsClip(lookAheadInSamples, 0.0, (double)lookAheadBufferLength);
   int dInt                  = (int) round(lookAheadInSamples);
   tapOut                    = tapIn - dInt;
-  tapOut                    = wrapAround(tapOut, lookAheadBufferLength);
+  tapOut                    = RAPT::rsWrapAround(tapOut, lookAheadBufferLength);
 }

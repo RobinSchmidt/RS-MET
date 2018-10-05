@@ -285,8 +285,6 @@ public:
     return (x+1)*(x-1)*(x-2); // the roots could be adjustable member data
   }
 };
-
-
 bool testRootFinding(std::function<float(float)>& func, float xL, float xR, float targetRoot, 
   float targetY = 0.f)
 {
@@ -295,10 +293,10 @@ bool testRootFinding(std::function<float(float)>& func, float xL, float xR, floa
   float tol = std::numeric_limits<float>::epsilon();
 
   root = rsRootFinderF::bisection(func, xL, xR); 
-  result &= abs(root-targetRoot) <= tol;   // should it be < or <=?
+  result &= abs(root-targetRoot) <= tol*targetRoot;   // should it be < or <=?
 
   root = rsRootFinderF::falsePosition(func, xL, xR); 
-  result &= abs(root-targetRoot) <= tol;
+  result &= abs(root-targetRoot) <= tol*targetRoot;
 
   return result;
 }
@@ -311,6 +309,30 @@ bool rootFinderUnitTest()
   bool r = true;                 // test result
   float x, y;                    // function in/out values
   std::function<float(float)> f; // the function to find the roots of
+  //float root;
+
+
+
+  // moved temporarily up for debugging:
+  // that's the evil function from here https://github.com/RobinSchmidt/RS-MET/issues/249
+  float b = 5;
+  float a = 1.f/tanh(b);
+  f = [=] (float x)->float { return ((atanh(x/a)/b)+1.f)*0.5f; };
+  //r &= testRootFinding(f, 0.f, 1.f, 1.f, 1.f);
+
+  f = [] (float x)->float { return 1.f/(x-1); };        // has a pole at x=1
+  //r &= testRootFinding(f, -1.f, +2.f, 1.f, 0.f);  // biscetion works, false position fails
+
+  f = [] (float x)->float { return 1.f/x; };        // has a pole at x=0
+  //r &= testRootFinding(f, -1.f, +1.f, 0.f, 0.f);  // this fails
+
+  // make sure to test special cases where the root is exactly at one of the bracket values
+  // for example y = x^2 - 1 has roots at -1 and +1
+  // make sure it works also when the bracketing interval does not actually bracket the root
+
+
+
+
 
   // create example (lambda) function with roots at -1,+1,+2 and verify positions of roots:
   f = [] (float x)->float { return (x+1)*(x-1)*(x-2); };
@@ -348,11 +370,10 @@ bool rootFinderUnitTest()
   f = [] (float x)->float { return sin(x); };       // nice function - has a root at x=0
   r &= testRootFinding(f, -1.f, +1.f, 0.f, 0.f);
 
-  f = [] (float x)->float { return 1.f/x; };        // has a pole at x=0
-  //r &= testRootFinding(f, -1.f, +1.f, 0.f, 0.f);  // this fails
 
+  // it should probably return 0 as result - the location of jump from -inf to inf
 
-  //f = [] (float x)->float { return sin(x)/x; };     // is undefined at x=0
+  //f = [] (float x)->float { return (x*x)/x; };     // is undefined at x=0...but has a root there
 
   // can we somehow also check the numbers of iterations taken?
 

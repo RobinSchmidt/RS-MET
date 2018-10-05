@@ -35,7 +35,7 @@ inline void rsAssert(bool expression, const char *errorMessage = nullptr)
     rsError(errorMessage);
 }
 
-inline void rsAssertFalse() { rsAssert(false); }
+inline void rsAssertFalse(const char *errorMessage = nullptr) { rsAssert(false, errorMessage); }
 
 template<class T> inline T rsUnityValue(T value) { return T(1);  }
 template<class T> inline T rsZeroValue( T value) { return T(0);  }

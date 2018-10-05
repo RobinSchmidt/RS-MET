@@ -472,8 +472,8 @@ void OscillatorStereo::getWaveformForDisplay(double **targetBuffer, int numSampl
       // this is a bit dirty because if there wouldn't be a whole table-set in the mip-map, we
       // could get access violations - the clean way would be to account for wrapaorunds here....
 
-      tmpL         = waveTable->getValue(0, 0, wrapAround(readIndex+n+shift, waveTable->getTableLength()), 0.0);
-      tmpR         = waveTable->getValue(1, 0, wrapAround(readIndex+n+shift, waveTable->getTableLength()), 0.0);
+      tmpL         = waveTable->getValue(0, 0, RAPT::rsWrapAround(readIndex+n+shift, waveTable->getTableLength()), 0.0);
+      tmpR         = waveTable->getValue(1, 0, RAPT::rsWrapAround(readIndex+n+shift, waveTable->getTableLength()), 0.0);
       tmpM         = parameters->midScale  * (tmpL+tmpR);
       tmpS         = parameters->sideScale * (tmpL-tmpR);
       tmpArrayL[n] = parameters->amplitude * parameters->panFactorL * (tmpM+tmpS);

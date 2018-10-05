@@ -111,7 +111,8 @@ void rosic::synthesizePulseWave(double *x, int N, double frequency, double dutyC
 void rosic::synthesizeDecayingSine(double *x, int N, double frequency, double amplitude,
                                    double decayTime, double startPhase, double sampleRate)
 {
-  ModalFilter filter;
+  //ModalFilter filter;
+  RAPT::rsModalFilter<double, double> filter;
   filter.setModalParameters(frequency, amplitude, decayTime, startPhase, sampleRate);
   filter.reset();
 
@@ -123,13 +124,23 @@ void rosic::synthesizeDecayingSine(double *x, int N, double frequency, double am
 void rosic::synthesizeModal(double *x, int N, Vector frequencies, Vector amplitudes,
                             Vector decayTimes, Vector startPhases, double sampleRate)
 {
-  ModalSynthesizer synth;
-  synth.setModalParameters(frequencies, amplitudes, decayTimes, startPhases);
+  //ModalSynthesizer synth;
+  //synth.setModalParameters(frequencies, amplitudes, decayTimes, startPhases);
+
+  RAPT::rsAssertFalse("Needs to be updated to work with new RAPT version of the modal synth");
+
+  /*
+  Vector attackTimes(frequencies.dim);
+  attackTimes.initWithZeros();
+  RAPT::rsModalFilterBank<double, double> synth;
+  synth.setModalParameters(frequencies, amplitudes, attackTimes, decayTimes, startPhases);
+
   synth.setSampleRate(sampleRate);
   x[0] = synth.getSample(1.0);
   for(int n=1; n<N; n++)
     x[n] = synth.getSample(0.0);
   RAPT::rsArray::normalize(x, N, 1.0);
+  */
 }
 
 void rosic::synthesizeModalPluckedString(double *x, int N, double frequency, double sampleRate,

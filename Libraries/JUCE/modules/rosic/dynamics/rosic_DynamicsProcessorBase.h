@@ -116,8 +116,8 @@ namespace rosic
     *outR = lookAheadBufferR[tapOut];
 
     // increment tap-pointers:
-    tapIn  = wrapAround(tapIn+1,  lookAheadBufferLength);
-    tapOut = wrapAround(tapOut+1, lookAheadBufferLength);
+    tapIn  = RAPT::rsWrapAround(tapIn+1,  lookAheadBufferLength);
+    tapOut = RAPT::rsWrapAround(tapOut+1, lookAheadBufferLength);
   }
 
 } // end namespace rosic

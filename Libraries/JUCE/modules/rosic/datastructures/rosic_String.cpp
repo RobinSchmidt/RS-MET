@@ -160,7 +160,7 @@ rsString rsString::fromIntWithLeadingSpaces(int value, int minNumCharacters, boo
   int absVal     = abs(value);
   int numSpaces  = 0;
   int tmp        = 10*RAPT::rsMax(absVal, 1);
-  int upperLimit = powInt(10, minNumCharacters)-1;
+  int upperLimit = RAPT::rsPowInt(10, minNumCharacters)-1;
   while( tmp < upperLimit )
   {
     tmp *= 10;

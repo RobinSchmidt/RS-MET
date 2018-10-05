@@ -250,8 +250,8 @@ namespace rosic
     }
 
 
-    tapIn   = wrapAround(tapIn+1,  length);
-    tapOut  = wrapAround(tapOut+1, length);  // is not used here, however...
+    tapIn   = RAPT::rsWrapAround(tapIn+1,  length);
+    tapOut  = RAPT::rsWrapAround(tapOut+1, length);  // is not used here, however...
     *inOutL = dry * (*inOutL) + wet * yL;
     *inOutR = dry * (*inOutR) + wet * yR;
   }

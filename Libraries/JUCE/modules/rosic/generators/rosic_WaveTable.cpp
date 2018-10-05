@@ -278,9 +278,9 @@ void WaveTable::fillWithZeros()
 
 double WaveTable::getPrototypeValueAt(int channel, double phaseIndex)
 {
-  int    i = floorInt(phaseIndex);         // integer part
-  double f = phaseIndex - i;               // fractional part
-  int    j = wrapAround(i+1, tableLength); // next sample position
+  int    i = floorInt(phaseIndex);                 // integer part
+  double f = phaseIndex - i;                       // fractional part
+  int    j = RAPT::rsWrapAround(i+1, tableLength); // next sample position
 
   double x0, x1;
   if( channel == 0 )

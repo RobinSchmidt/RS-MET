@@ -196,7 +196,7 @@ TInt rsSum(TInt min, TInt max)
   else
     return (max*(max+1) - min*(min-1)) / 2;
 }
-
+/*
 template<class TInt>
 TInt rsWrapAround(TInt numberToWrap, TInt length)
 {
@@ -206,3 +206,4 @@ TInt rsWrapAround(TInt numberToWrap, TInt length)
     numberToWrap += length;
   return numberToWrap;
 }
+*/

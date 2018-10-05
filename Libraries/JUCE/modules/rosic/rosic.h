@@ -98,7 +98,7 @@
 #include "infrastructure/rosic_MutexLock.h"
 #include "math/rosic_CephesDeclarations.h" 
 #include "math/rosic_RealFunctionEvaluationAlgorithms.h"  // move to rapt
-#include "math/rosic_IntegerFunctions.h"                  // move to rapt
+//#include "math/rosic_IntegerFunctions.h"                  // move to rapt
 #include "math/rosic_SpecialFunctionsReal.h"              // move to rapt
 #include "math/rosic_Complex.h"
 #include "math/rosic_ComplexFunctions.h"
@@ -121,26 +121,26 @@
 #include "datastructures/rosic_ExtensionsForSTL.h" // // todo: merge with RAPT StandardContainerFunctions
 
 // math:
-#include "math/rosic_LinearAlgebra.h"
-#include "math/rosic_Matrix.h"
-#include "math/rosic_Vector.h"
-#include "math/rosic_MatrixVectorFunctions.h"
-#include "math/rosic_PrimeNumbers.h"
+#include "math/rosic_LinearAlgebra.h"                 // move to / merge with rapt
+#include "math/rosic_Matrix.h"                        // move to / merge with rapt
+#include "math/rosic_Vector.h"                        // move to / merge with rapt
+#include "math/rosic_MatrixVectorFunctions.h"         // move to / merge with rapt
+#include "math/rosic_PrimeNumbers.h"                  // move to / merge with rapt
 //#include "math/rosic_PrimeArray.h"                  // not required to include
-#include "math/rosic_Transformations.h"
+#include "math/rosic_Transformations.h"               // move to / merge with rapt
 
 // transforms:
 #include "transforms/rosic_FourierTransformerRadix2.h"      // replace by rapt version
 #include "transforms/rosic_FourierTransformerBluestein.h"   // replace by rapt version
-#include "transforms/rosic_SpectralManipulator.h"
+#include "transforms/rosic_SpectralManipulator.h"           // move to rapt
 #include "transforms/rosic_WaveletTransforms.h"             // move to rapt
 
 // numerical:
 #include "numerical/rosic_FunctionObjects.h"
-#include "numerical/rosic_GradientBasedMinimizer.h"
+#include "numerical/rosic_GradientBasedMinimizer.h"         // replace by rapt
 
 // neural:
-//#include "neural/rosic_MultiLayerPerceptron.h"
+//#include "neural/rosic_MultiLayerPerceptron.h"            // superseded by rapt
 //#include "neural/rosic_MultiLayerPerceptronErrorFunction.h"
 //#include "neural/rosic_MultiLayerPerceptronTrainer.h"
 
@@ -156,7 +156,7 @@
 #include "filters/rosic_CombResonator.h"
 #include "filters/rosic_ConvolverBruteForce.h"
 #include "filters/rosic_ConvolverFFT.h"          // needs transforms folder
-#include "filters/rosic_ConvolverPartitioned.h"
+#include "filters/rosic_ConvolverPartitioned.h"  
 #include "filters/rosic_CookbookFilter.h"
 #include "filters/rosic_TwoPoleFilter.h"
 #include "filters/rosic_DualTwoPoleFilter.h"
@@ -208,7 +208,6 @@
 #include "generators/rosic_MipMappedWaveTableStereo.h"
 #include "generators/rosic_BlendOscillator.h"
 #include "generators/rosic_LorentzSystem.h"
-#include "generators/rosic_ModalSynthesizer.h"
 #include "generators/rosic_NoiseGenerator.h"
 #include "generators/rosic_NoiseGeneratorOld.h"
 #include "generators/rosic_Oscillator.h"

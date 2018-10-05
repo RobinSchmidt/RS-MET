@@ -118,8 +118,8 @@ namespace rosic
     out = interpolatorL.getSample(frac, &(delayBufferL[tapOut]));
 
     // increment tap-pointers:
-    tapIn  = wrapAround(tapIn+1,  maxDelayInSamples);
-    tapOut = wrapAround(tapOut+1, maxDelayInSamples);
+    tapIn  = RAPT::rsWrapAround(tapIn+1,  maxDelayInSamples);
+    tapOut = RAPT::rsWrapAround(tapOut+1, maxDelayInSamples);
 
     return out;
   }
@@ -143,8 +143,8 @@ namespace rosic
     *inOutR = interpolatorR.getSample(frac, &(delayBufferR[tapOut]));
 
     // increment tap-pointers:
-    tapIn  = wrapAround(tapIn+1,  maxDelayInSamples);
-    tapOut = wrapAround(tapOut+1, maxDelayInSamples);
+    tapIn  = RAPT::rsWrapAround(tapIn+1,  maxDelayInSamples);
+    tapOut = RAPT::rsWrapAround(tapOut+1, maxDelayInSamples);
   }
 
 } // end namespace rosic

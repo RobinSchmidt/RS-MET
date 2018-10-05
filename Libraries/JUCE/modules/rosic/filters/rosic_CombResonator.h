@@ -116,8 +116,8 @@ namespace rosic
     yOld = interpolator.getSample(frac, &(buffer[tapOut]));
 
     // increment tap-pointers:
-    tapIn  = wrapAround(tapIn+1,  length);
-    tapOut = wrapAround(tapOut+1, length);
+    tapIn  = RAPT::rsWrapAround(tapIn+1,  length);
+    tapOut = RAPT::rsWrapAround(tapOut+1, length);
 
     return (1.0-dryWetRatio)*in + dryWetRatio*wetPolarity*correctionFilter.getSample(yOld);
   }

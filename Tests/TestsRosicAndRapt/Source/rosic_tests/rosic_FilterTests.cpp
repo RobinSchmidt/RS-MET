@@ -124,10 +124,12 @@ void rotes::testModalFilter()
   double pm  = 0.0;    // phase-modulation (for the 2nd implementation)
 
 
-  ModalFilter mf;
+  //ModalFilter mf;
+  RAPT::rsModalFilter<double, double> mf;
   mf.setModalParameters(f, A, td, phs, fs);
 
-  ModalFilter2 mf2;
+  //ModalFilter2 mf2;
+  RAPT::rsNonlinearModalFilter<double, double> mf2;
   mf2.setModalParameters(f, A, td, phs, fs);
   mf2.setPhaseModulation(pm);
 
@@ -169,7 +171,8 @@ void rotes::testModalFilterWithAttack()
 
   double df  = RAPT::rsPitchOffsetToFreqFactor(dt);
 
-  ModalFilterWithAttack mf;
+  //ModalFilterWithAttack mf;
+  RAPT::rsModalFilterWithAttack<double, double> mf;
   mf.setModalParameters(f, A, tp, td, phs, fs, df);
   //plotImpulseResponse(mf, (int)fs, (int)fs); // why fs two times?
   plotImpulseResponse(mf, (int)fs, 1.0);

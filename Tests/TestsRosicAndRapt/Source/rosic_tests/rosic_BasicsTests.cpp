@@ -13,8 +13,8 @@ void rotes::testBinomialCoefficients()
   {
     for(unsigned int k = 0; k <= n; k++)
     {
-      c1 = binomialCoefficient(      n, k);
-      c2 = binomialCoefficientUpTo20(n, k);
+      c1 = RAPT::rsBinomialCoefficient(      n, k);
+      c2 = RAPT::rsBinomialCoefficientUpTo20(n, k);
       rassert( c1 == c2 );
     }
   }

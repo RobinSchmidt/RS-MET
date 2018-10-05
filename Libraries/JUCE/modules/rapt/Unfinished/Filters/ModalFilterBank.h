@@ -477,8 +477,11 @@ public:
   //void setModalStartPhases(std::vector<TPar> newStartPhases);
 
   /** Sets all mode parameters at once. */
-  void setModalParameters(std::vector<TPar> newFrequencies, std::vector<TPar> newAmplitudes,
-    std::vector<TPar> newAttackTimes, std::vector<TPar> newDecayTimes, 
+  void setModalParameters(
+    std::vector<TPar> newFrequencies, 
+    std::vector<TPar> newAmplitudes,
+    std::vector<TPar> newAttackTimes, 
+    std::vector<TPar> newDecayTimes, 
     std::vector<TPar> newStartPhases);
 
 

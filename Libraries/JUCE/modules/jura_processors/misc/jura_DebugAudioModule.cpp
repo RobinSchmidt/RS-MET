@@ -30,7 +30,8 @@ void DebugAudioModule::createParameters()
   addObservedParameter(smoothParam);
 
 
-  testParam = p = new Param("Test", -1, +1, 0);
+  testParam = p = new Param("Test", -0.99999, +0.99999, 0);  // workaround
+  //testParam = p = new Param("Test", -1, +1, 0);
   p->setMapper(new rsParameterMapperTanh(-1, +1, 5));
   p->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setTestParam);
   addObservedParameter(p);
@@ -186,6 +187,7 @@ void DebugModuleEditor::resized()
   leftSlider  ->setBounds(x, y, w, wh); y += dy;
   rightSlider ->setBounds(x, y, w, wh); y += dy;
   testSlider  ->setBounds(x, y, w, wh); y += dy;
+  //testSlider  ->setBounds(x, y, 30, wh); y += dy; // for testing the text entry field
   smoothSlider->setBounds(x, y, w, wh); y += dy;
 
   if(nodeEditor)

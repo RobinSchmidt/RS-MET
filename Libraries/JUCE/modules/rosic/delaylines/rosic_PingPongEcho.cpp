@@ -122,7 +122,7 @@ void PingPongEcho::setupDelayInSamples()
 
   int dInt = (int) round(delayInSamples);
   tapOut   = tapIn - dInt;
-  tapOut   = wrapAround(tapOut, length);
+  tapOut   = RAPT::rsWrapAround(tapOut, length);
       
   //reset(); // don't reset to allow delaytime modulation
 }

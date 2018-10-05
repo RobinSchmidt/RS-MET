@@ -163,6 +163,8 @@ void MetaControlledParameter::setValue(double newValue, bool sendNotification, b
   newValue = restrictValueToParameterRange(newValue);
   double y = mapper->unmap(newValue);
   double x = metaMapper.unmap(y);
+  //jassert(x >= 0 && x <= 1);
+  x = RAPT::rsClip(x, 0.0, 1.0);
   setNormalizedValue(x, sendNotification, callCallbacks);
 
   // preliminary
