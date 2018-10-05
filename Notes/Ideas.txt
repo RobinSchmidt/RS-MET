@@ -27,6 +27,14 @@ CommandQueue:
  for undo, replay, etc.
 -fields for "Command":
  uint32: identifier, std::atomic<uint32> status, void* data
+ 
+Thread-Safety:
+-when the user sets a parameter (setCutoff, etc.), don't update the coeffs 
+ immediately but set a "dirty" flag (of type std::atomic_bool)
+-in getSample, check the flag, and if it's true, trigger the coefficient
+ update there
+-this also avoid recomputing the coeffs twice when the user calls setCutoff, 
+ setResonance in succession
 
 Polyphony:
 -have a Voice baseclass with virtual functions like

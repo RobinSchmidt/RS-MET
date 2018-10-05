@@ -44,10 +44,8 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 // basics (but we needed to intersperse some stuff from other folders)
 #include "basics/rosic_TemplateInstantiations.cpp"
 #include "basics/rosic_ChannelMatrix2x2.cpp"
-#include "basics/rosic_Constants.cpp"                        // empty
 #include "basics/rosic_HelperFunctions.cpp"
 #include "basics/rosic_Interpolator.cpp"
-#include "basics/rosic_NumberManipulations.cpp"              // empty
 #include "infrastructure/rosic_MutexLock.cpp"                // used by SampleBuffer
 #include "basics/rosic_SampleBuffer.cpp"
 #include "basics/rosic_SamplePlaybackParameters.cpp"
@@ -62,9 +60,6 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "basics/rosic_WindowDesigner.cpp"
 
 // datastructures
-#include "datastructures/rosic_Array.cpp"                    // empty
-#include "datastructures/rosic_ExtensionsForSTL.cpp"         // empty
-#include "datastructures/rosic_KeyValueMap.cpp"              // empty
 #include "datastructures/rosic_String.cpp"
 
 // math (some of the cpp files in this folder are already included in the basics section):
@@ -117,7 +112,6 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "filters/rosic_ToneControl.cpp"
 #include "filters/rosic_TwoPoleBandpass.cpp"
 #include "filters/rosic_VowelFilterStereo.cpp"
-#include "filters/rosic_WarpedBiquadMonoDF1.cpp"            // empty
 #include "filters/rosic_WhiteToPinkFilter.cpp"
 
 // rendering

@@ -118,10 +118,9 @@
 #include "datastructures/rosic_Array.h"
 #include "datastructures/rosic_String.h"
 #include "datastructures/rosic_KeyValueMap.h"
-#include "datastructures/rosic_ExtensionsForSTL.h"
+#include "datastructures/rosic_ExtensionsForSTL.h" // // todo: merge with RAPT StandardContainerFunctions
 
 // math:
-//#include "math/rosic_Interpolation.h"  // supeseded by rapt
 #include "math/rosic_LinearAlgebra.h"
 #include "math/rosic_Matrix.h"
 #include "math/rosic_Vector.h"
@@ -180,7 +179,6 @@
 #include "filters/rosic_ToneControl.h"
 #include "filters/rosic_TwoPoleBandpass.h"
 #include "filters/rosic_VowelFilterStereo.h"
-#include "filters/rosic_WarpedBiquadMonoDF1.h"
 #include "filters/rosic_WhiteToPinkFilter.h"
 
 // others:
