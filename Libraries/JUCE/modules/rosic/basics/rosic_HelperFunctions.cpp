@@ -1,6 +1,7 @@
 //#include "rosic_HelperFunctions.h"
 //using namespace rosic;
 
+// there's a similar (or even same?) function in rapt - so get rid of this:
 double rosic::findNearestUpwardZeroCrossing(float* buffer, int length, double searchStart)
 {
   // initialize the search pointers for above and below the search start

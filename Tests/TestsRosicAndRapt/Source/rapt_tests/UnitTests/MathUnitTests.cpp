@@ -285,6 +285,27 @@ public:
     return (x+1)*(x-1)*(x-2); // the roots could be adjustable member data
   }
 };
+
+
+bool testRootFinding(std::function<float(float)>& func, float xL, float xR, float targetRoot, 
+  float targetY = 0.f)
+{
+  bool result = true;
+  float root;
+  float tol = std::numeric_limits<float>::epsilon();
+
+  root = rsRootFinderF::bisection(func, xL, xR); 
+  result &= abs(root-targetRoot) <= tol;   // should it be < or <=?
+
+  root = rsRootFinderF::falsePosition(func, xL, xR); 
+  result &= abs(root-targetRoot) <= tol;
+
+  return result;
+}
+// todo: templatize this function and test with double and float, maybe include also a tolerance 
+// parameter - maybe the root-finder itself also needs a tolerance parameter...or maybe two - one 
+// for dx and one for dy...but maybe that should be optional for convenience
+
 bool rootFinderUnitTest()
 {
   bool r = true;                 // test result
@@ -319,6 +340,21 @@ bool rootFinderUnitTest()
   x = rsRootFinderF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
   x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
   x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+
+  // OK - this was to test that it works calling it with different types of paremeters for the 
+  // function (funtion-pointer, lambda function, functor). Now we want to test the robustness if 
+  // the actual algorithm by throwing some evil functions at it (we use lambda functions for this)
+
+  f = [] (float x)->float { return sin(x); };       // nice function - has a root at x=0
+  r &= testRootFinding(f, -1.f, +1.f, 0.f, 0.f);
+
+  f = [] (float x)->float { return 1.f/x; };        // has a pole at x=0
+  //r &= testRootFinding(f, -1.f, +1.f, 0.f, 0.f);  // this fails
+
+
+  //f = [] (float x)->float { return sin(x)/x; };     // is undefined at x=0
+
+  // can we somehow also check the numbers of iterations taken?
 
   return r;
 }
