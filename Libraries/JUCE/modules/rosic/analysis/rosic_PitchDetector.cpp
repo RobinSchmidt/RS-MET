@@ -21,7 +21,7 @@ PitchDetector::PitchDetector() : formantRemover(30)
 
   formantRemover.setOrder(30);
 
-  dcBlocker.setMode(OnePoleFilter::HIGHPASS);
+  dcBlocker.setMode(rsOnePoleFilterDD::HIGHPASS_MZT);
   dcBlocker.setCutoff(20.0);
   dcBlocker.setSampleRate(sampleRate);
 

@@ -20,11 +20,11 @@ TrackMeter::TrackMeter()
   midLevelExtractor.setMode(EnvelopeFollower::MEAN_SQUARE);
   sideLevelExtractor.setMode(EnvelopeFollower::MEAN_SQUARE);
 
-  productLevelExtractor.setMode(OnePoleFilter::LOWPASS);
+  productLevelExtractor.setMode(rsOnePoleFilterDD::LOWPASS_IIT);
   productLevelExtractor.setCutoff(0.25); ///< \todo setTimeConstant instead
-  meanSquareExtractorLeft.setMode(OnePoleFilter::LOWPASS);
+  meanSquareExtractorLeft.setMode(rsOnePoleFilterDD::LOWPASS_IIT);
   meanSquareExtractorLeft.setCutoff(0.25);
-  meanSquareExtractorRight.setMode(OnePoleFilter::LOWPASS);
+  meanSquareExtractorRight.setMode(rsOnePoleFilterDD::LOWPASS_IIT);
   meanSquareExtractorRight.setCutoff(0.25); 
 
   //setAttackTimeInMilliseconds(10.0);

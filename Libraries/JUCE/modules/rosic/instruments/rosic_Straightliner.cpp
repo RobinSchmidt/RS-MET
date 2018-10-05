@@ -49,7 +49,7 @@ Straightliner::Straightliner()
   antiAliasFilterR.setSubDivision(2.0);
 
   // setup the dc-blocker:
-  dcBlocker.setMode(OnePoleFilterStereo::HIGHPASS);
+  dcBlocker.setMode(rsOnePoleFilterStereo::HIGHPASS_MZT);
   dcBlocker.setCutoff(10.0);
 
   // assign the inherited TuningTable (from PolyphonicInstrument) to all the voices:

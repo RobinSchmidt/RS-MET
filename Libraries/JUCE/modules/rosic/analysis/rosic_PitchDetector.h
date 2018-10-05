@@ -104,7 +104,7 @@ namespace rosic
     double cycleCorrelation;
       // This keeps track of the cross-correlation between two successive cycles.
 
-    OnePoleFilter  dcBlocker;
+    rsOnePoleFilterDD  dcBlocker;
       // The dc-blocker filter for the signal in which we look for zero-crossings.
 
     FourPoleFilter lowpass;

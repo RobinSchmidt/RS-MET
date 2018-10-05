@@ -65,7 +65,7 @@ namespace rosic
 
     EnvelopeFollower leftLevelExtractor, rightLevelExtractor, midLevelExtractor, 
                      sideLevelExtractor;
-    OnePoleFilter    meanSquareExtractorLeft, meanSquareExtractorRight, productLevelExtractor;
+    rsOnePoleFilterDD meanSquareExtractorLeft, meanSquareExtractorRight, productLevelExtractor;
 
     SignalMeasures currentMeasures;
 

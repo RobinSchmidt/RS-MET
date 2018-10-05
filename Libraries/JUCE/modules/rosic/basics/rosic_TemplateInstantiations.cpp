@@ -82,6 +82,11 @@ template class RAPT::rsPhaseScopeBuffer2<double, float, double>;
 template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
 
+
+template class RAPT::rsOnePoleFilter<double, double>;
+template class RAPT::rsOnePoleFilter<rsFloat64x2, double>;
+template class RAPT::rsSmoothingFilter<double, double>;
+
 template class RAPT::rsBiquadCascade<double, double>;
 template class RAPT::rsBiquadCascade<rsFloat64x2, double>;
 template class RAPT::rsDirectFormFilter<double, double>;
@@ -105,7 +110,7 @@ template class RAPT::rsEllipticSubBandFilterDirectForm<double, double>;
 template struct RAPT::rsFilterSpecificationZPK<double>;
 template struct RAPT::rsFilterSpecificationBA<double>;
 
-template class RAPT::rsSmoothingFilter<double, double>;
+
 template class RAPT::rsLadderFilter<double, double>;
 template class RAPT::rsLadderFilter<rsFloat64x2, double>;
 
@@ -137,6 +142,7 @@ template class RAPT::rsSlewRateLimiterLinear<double, double>;
 //template class RAPT::rsBreakpointModulator<double>;
 
 template class RAPT::rsOnePoleFilter<double, double>;
+template class RAPT::rsOnePoleFilter<rsFloat64x2, double>;
 
 template class RAPT::rsModalFilter<double, double>;
 template class RAPT::rsNonlinearModalFilter<double, double>;

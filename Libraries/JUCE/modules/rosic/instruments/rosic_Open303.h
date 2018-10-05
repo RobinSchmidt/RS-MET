@@ -204,7 +204,7 @@ namespace rosic
     DecayEnvelope             mainEnv;
     LeakyIntegrator           pitchSlewLimiter, ampDeClicker; // ampEnv3; //ampEnv2, 
     LeakyIntegrator           rc1, rc2;
-    OnePoleFilter             hp1, hp2;                      // highpasses
+    rsOnePoleFilterDD         hp1, hp2;                      // highpasses
     rsEllipticQuarterBandFilter antiAliasFilter;
     AcidSequencer             sequencer;
 

@@ -53,7 +53,7 @@ namespace rosic
     MipMappedWaveTableStereo waveTableForOsc1, waveTableForOsc2, waveTableForOsc3, 
       waveTableForOsc4;
 
-    OnePoleFilterStereo dcBlocker;   // dc-blocker for the overall output signal
+    rsOnePoleFilterStereo dcBlocker;   // dc-blocker for the overall output signal
 
   };
 

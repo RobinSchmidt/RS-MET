@@ -254,6 +254,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  inline TPar getCutoff() const { return cutoff; }
+
+  inline TPar getShelvingGain() const { return shelvingGain; }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
   /** Returns the magnitude response of this filter at the given frqeuency (in Hz). */
   TPar getMagnitudeAt(TPar frequency);
   // hmmm...would be nice to have that in baseclass taking omega as input - rename this to

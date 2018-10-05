@@ -35,7 +35,7 @@ FuncShaper::FuncShaper()
 
   numFadeSamples  = (int) (sampleRate * 50.0/1000.0);
   fadeCountDown   = 0;
-  deClickingFilter.setMode(OnePoleFilterStereo::LOWPASS);
+  deClickingFilter.setMode(rsOnePoleFilterStereo::LOWPASS_IIT);
   deClickingFilter.setSampleRate(sampleRate);
   deClickingFilter.setCutoff(20.0);
 

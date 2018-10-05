@@ -100,7 +100,7 @@ namespace rosic
  protected:
 
   //embedded objects:
-  OnePoleFilter        dcBlocker;
+   rsOnePoleFilterDD    dcBlocker;
   rsSubBandFilterMonoBQ antiAliasFlt;
 
 	 //parameter variables:

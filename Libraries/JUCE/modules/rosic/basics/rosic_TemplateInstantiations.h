@@ -101,7 +101,17 @@ typedef RAPT::rsPhaseLockedCrossfader<double, double>  rsPhaseLockedCrossfaderDD
 
 
 
-
+class rsOnePoleFilterStereo : public RAPT::rsOnePoleFilter<rsFloat64x2, double>
+{
+public:
+  inline void getSampleFrameStereo(double *inL, double *inR, double *outL, double *outR)
+  {
+    rsFloat64x2 tmp = getSample(rsFloat64x2(*inL, *inR));
+    *outL = tmp[0];
+    *outR = tmp[1];
+  }
+};
+// not yet in use
 
 class rsEngineersFilterMono : public RAPT::rsEngineersFilter<double, double>
 {
@@ -123,17 +133,17 @@ public:
   }
 };
 
-
 class rsCrossOver4WayStereo : public RAPT::rsCrossOver4Way<rsFloat64x2, double>
 {
 public:
-
   inline void processSampleFrameStereo(double* inOut)
   {
     processSampleFrame(rsCastPointer(inOut));
   }
-
 };
+
+
+
 
 
 

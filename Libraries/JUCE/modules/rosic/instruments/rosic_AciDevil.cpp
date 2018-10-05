@@ -96,9 +96,9 @@ AciDevil::AciDevil()
   // -> filter/dist -> HP@46.9
   oscillator.setPulseWidth(50.0);
   subOscillator.setPulseWidth(50.0);
-  hp1.setMode(OnePoleFilter::HIGHPASS);
+  hp1.setMode(rsOnePoleFilterDD::HIGHPASS_MZT);
   hp1.setCutoff(60.8);
-  hp2.setMode(OnePoleFilter::HIGHPASS);
+  hp2.setMode(rsOnePoleFilterDD::HIGHPASS_MZT);
   hp2.setCutoff(46.9);
   filter.setFeedbackHighpassCutoff(150.0);      // copied from ABL
 

@@ -237,7 +237,7 @@ protected:
   double cutoff;
     // Cutoff frequency of this filter instance - this is not to be shared among voices
 
-  OnePoleFilterStereo allpass;
+  rsOnePoleFilterStereo allpass;
     // This is a first order allpass filter which is apllied before the actual ladder filter
 
   LadderFilterParameters* parameters;

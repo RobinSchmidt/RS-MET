@@ -14,7 +14,7 @@ TeeBeeFilter::TeeBeeFilter()
   sampleRate          = 44100.0;
   twoPiOverSampleRate = 2.0*PI/sampleRate;
 
-  feedbackHighpass.setMode(OnePoleFilter::HIGHPASS);
+  feedbackHighpass.setMode(rsOnePoleFilterDD::HIGHPASS_MZT);
   feedbackHighpass.setCutoff(150.0);
 
   setMode(LP_24);

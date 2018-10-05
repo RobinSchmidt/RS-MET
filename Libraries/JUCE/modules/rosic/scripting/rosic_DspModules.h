@@ -13,7 +13,7 @@ opposed to the instantaneous functions defined in ExpressionEvaluatorFunctions.h
 #include "rosic_ExpressionEvaluatorFunctions.h"
 #include "../delaylines/rosic_IntegerDelayLine.h"
 #include "../generators/rosic_SineOscillatorStereo.h"
-#include "../filters/rosic_OnePoleFilterStereo.h"
+//#include "../filters/rosic_OnePoleFilterStereo.h"
 
 //using namespace rosic;
 
@@ -33,7 +33,7 @@ namespace rosic
     FunctionNodeLowpass6(Expression *expression) : FunctionNode(expression)
     { 
       SetArgumentCount(2, 2, 0, 0, 0, 0); 
-      filter.setMode(OnePoleFilterStereo::LOWPASS);
+      filter.setMode(rsOnePoleFilterDD::LOWPASS_IIT);
     }
 
     double DoEvaluate()
@@ -49,11 +49,12 @@ namespace rosic
 
     void setFrequency(double newFrequency)
     {
-      if( newFrequency != filter.cutoff )
+      if( newFrequency != filter.getCutoff() )
         filter.setCutoff(newFrequency);
     }
 
-    OnePoleFilterStereo filter;
+    //rsOnePoleFilterStereo filter;
+    rsOnePoleFilterDD filter;
   };
 
   class FunctionFactoryLowpass6 : public FunctionFactory

@@ -25,7 +25,7 @@ LadderFilterOld::LadderFilterOld()
   //makeupGainSq  = 1.0;
 
   allpass.setSampleRate(parameters->sampleRate);
-  allpass.setMode(OnePoleFilterStereo::ALLPASS);
+  allpass.setMode(rsOnePoleFilterStereo::ALLPASS_BLT);
   //allpass.setCutoff(0.25*cutoff);
   allpass.setCutoff(20000.0);
   allpass.setShelvingGain(1.0);
@@ -297,7 +297,7 @@ void LadderFilterOld::addSlave(LadderFilterOld* newSlave)
 
 void LadderFilterOld::reset()
 {
-  allpass.resetBuffers();
+  allpass.reset();
   y1L   = 0.0;
   y2L   = 0.0;
   y3L   = 0.0;

@@ -135,7 +135,7 @@ namespace rosic
     double twoPiOverSampleRate; // 2*PI/sampleRate
     int    mode;                // the selected filter-mode
 
-    OnePoleFilter feedbackHighpass;
+    rsOnePoleFilterDD feedbackHighpass;
 
   };
 

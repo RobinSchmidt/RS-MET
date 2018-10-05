@@ -210,7 +210,7 @@ namespace rosic
     LowpassHighpass           inputFilterL, inputFilterR;
     TabulatedFunction         distortionCurve;
     LowpassHighpass           outputFilterL, outputFilterR;
-    OnePoleFilterStereo       deClickingFilter;
+    rsOnePoleFilterStereo     deClickingFilter;
     rsSubBandFilterMonoBQ upsamplerL, upsamplerR;
     rsSubBandFilterMonoBQ antiAliasFilterL, antiAliasFilterR;
 
@@ -313,8 +313,11 @@ namespace rosic
     if( fadeCountDown > 0 )
     {
       // warm up the deClickingFilter:
-      if( fadeCountDown == numFadeSamples )
-        deClickingFilter.setState(0.0, 0.0, oldOutL, oldOutR);
+      if(fadeCountDown == numFadeSamples)
+      {
+        deClickingFilter.setInternalState(rsFloat64x2(0.0, 0.0), rsFloat64x2(oldOutL, oldOutR));
+        //deClickingFilter.setState(0.0, 0.0, oldOutL, oldOutR);
+      }
 
       deClickingFilter.getSampleFrameStereo(outL, outR, outL, outR);
       fadeCountDown--;
