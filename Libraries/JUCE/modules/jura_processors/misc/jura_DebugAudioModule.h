@@ -24,6 +24,7 @@ public:
   void setLeftValue(double newValue);
   void setRightValue(double newValue);
   void setSmoothingTime(double newTime);
+  void setTestParam(double newValue);
 
 protected:
 
@@ -35,7 +36,8 @@ protected:
   double values[numValues] = { 0, 0 };
 
   Parameter *leftParam, *rightParam;
-  Parameter *smoothParam;
+  Parameter *smoothParam, *testParam;
+
 
   EqualizerAudioModule* eqModule = nullptr;
   // We use an equalizer to see if dealing with child-modules and works well. Also, the eq
@@ -69,7 +71,7 @@ protected:
   rsVectorPad *xyPad;
   rsNodeEditor *nodeEditor = nullptr;
 
-  ModulatableSlider *leftSlider, *rightSlider, *smoothSlider;
+  ModulatableSlider *leftSlider, *rightSlider, *smoothSlider, *testSlider;
   //AutomatableComboBox *modeComboBox;
   //AutomatableButton *invertButton;  
    // use ModulatabelSlider, etc later

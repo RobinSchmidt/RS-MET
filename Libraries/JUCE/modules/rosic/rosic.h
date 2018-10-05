@@ -83,23 +83,23 @@
 //#include "basics/Float32x4.h"
 #include "basics/Float64x2.h"
 #include "basics/rosic_TemplateInstantiations.h"
-#include "basics/GlobalDefinitions.h"
-#include "basics/rosic_Constants.h"
+#include "basics/GlobalDefinitions.h" 
+#include "basics/rosic_Constants.h"   // merge with rapt
 
 #ifdef _MSC_VER                       // i can't figure out, how to make this compile on mac
 #include "basics/ComplexFloat64x2.h"
 #endif
 
 #include "basics/rosic_ChannelMatrix2x2.h"
-#include "basics/rosic_HelperFunctions.h"
+#include "basics/rosic_HelperFunctions.h"       // move to rapt
 #include "basics/rosic_NumberManipulations.h"
 // we need to intersperse some includes from other directories before we can finish the includes
 // from basics (todo: fix the dependency structure/layering):
 #include "infrastructure/rosic_MutexLock.h"
-#include "math/rosic_CephesDeclarations.h"
-#include "math/rosic_RealFunctionEvaluationAlgorithms.h"
-#include "math/rosic_IntegerFunctions.h"
-#include "math/rosic_SpecialFunctionsReal.h"
+#include "math/rosic_CephesDeclarations.h" 
+#include "math/rosic_RealFunctionEvaluationAlgorithms.h"  // move to rapt
+#include "math/rosic_IntegerFunctions.h"                  // move to rapt
+#include "math/rosic_SpecialFunctionsReal.h"              // move to rapt
 #include "math/rosic_Complex.h"
 #include "math/rosic_ComplexFunctions.h"
 #include "_third_party/ExprEval_v3_4/expreval.h"
@@ -107,12 +107,12 @@
 #include "scripting/rosic_ExpressionEvaluatorComplexFunctions.h"
 #include "scripting/rosic_ExpressionEvaluator.h"
 // ..now we can finish the includes from "basics":
-#include "basics/rosic_Interpolator.h"                // needs ElementaryFunctionsReal
+#include "basics/rosic_Interpolator.h"                // needs ElementaryFunctionsReal, move to rapt
 #include "basics/rosic_SampleBuffer.h"                // needs MutexLock
 #include "basics/rosic_SamplePlaybackParameters.h"    // needs ElementaryFunctionsReal
 #include "basics/rosic_TabulatedFunction.h"           // needs ExpressionEvaluator, Mutexlock
-#include "basics/rosic_WarpedAllpassInterpolator.h"   // needs ElementaryFunctionsReal
-#include "basics/rosic_WindowDesigner.h"              // needs SpecialFunctionsReal
+#include "basics/rosic_WarpedAllpassInterpolator.h"   // needs ElementaryFunctionsReal, move to rapt
+#include "basics/rosic_WindowDesigner.h"              // needs SpecialFunctionsReal, move to rapt
 
 // datastructures:
 #include "datastructures/rosic_Array.h"
@@ -130,10 +130,10 @@
 #include "math/rosic_Transformations.h"
 
 // transforms:
-#include "transforms/rosic_FourierTransformerRadix2.h"
-#include "transforms/rosic_FourierTransformerBluestein.h"
+#include "transforms/rosic_FourierTransformerRadix2.h"      // replace by rapt version
+#include "transforms/rosic_FourierTransformerBluestein.h"   // replace by rapt version
 #include "transforms/rosic_SpectralManipulator.h"
-#include "transforms/rosic_WaveletTransforms.h"
+#include "transforms/rosic_WaveletTransforms.h"             // move to rapt
 
 // numerical:
 #include "numerical/rosic_FunctionObjects.h"
@@ -217,8 +217,8 @@
 #include "generators/rosic_FourOscSection.h"
 #include "generators/rosic_SampleOscillator.h"
 #include "generators/rosic_SamplePlayer.h"
-#include "generators/rosic_SineOscillator.h"
-#include "generators/rosic_SineOscillatorStereo.h"
+#include "generators/rosic_SineOscillator.h"         // move to rapt
+#include "generators/rosic_SineOscillatorStereo.h"   // move to rapt
 #include "generators/rosic_SuperOscillator.h"
 #include "generators/rosic_TestGenerator.h"
 

@@ -28,6 +28,12 @@ void DebugAudioModule::createParameters()
   smoothParam = new Parameter("Smoothing" , 0.0, 1000.0, 0.0, Parameter::LINEAR, 1.0);
   smoothParam->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setSmoothingTime);
   addObservedParameter(smoothParam);
+
+
+  testParam = p = new Param("Test", -1, +1, 0);
+  p->setMapper(new rsParameterMapperTanh(-1, +1, 5));
+  p->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setTestParam);
+  addObservedParameter(p);
 }
 
 AudioModuleEditor* DebugAudioModule::createEditor(int type)
@@ -100,6 +106,11 @@ void DebugAudioModule::setSmoothingTime(Parameter* p, double newTime)
     sp->setSmoothingTime(newTime);
 }
 
+void DebugAudioModule::setTestParam(double newValue)
+{
+  double value = newValue;
+}
+
 //=================================================================================================
 
 DebugModuleEditor::DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdit) 
@@ -145,6 +156,13 @@ void DebugModuleEditor::createWidgets()
   s->setDescription("Parameter smoothing in milliseconds");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToStringTotal5);
+
+  addWidget( testSlider = s = new Sld );
+  s->assignParameter( p = debugModule->getParameterByName("Test") );
+  s->setSliderName("Test");
+  s->setDescription("Test Parameter");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToStringTotal5);
 }
 
 void DebugModuleEditor::resized()
@@ -167,6 +185,7 @@ void DebugModuleEditor::resized()
   y = getPresetSectionBottom() + m;
   leftSlider  ->setBounds(x, y, w, wh); y += dy;
   rightSlider ->setBounds(x, y, w, wh); y += dy;
+  testSlider  ->setBounds(x, y, w, wh); y += dy;
   smoothSlider->setBounds(x, y, w, wh); y += dy;
 
   if(nodeEditor)
