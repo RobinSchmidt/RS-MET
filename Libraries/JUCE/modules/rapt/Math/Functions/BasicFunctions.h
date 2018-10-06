@@ -9,7 +9,7 @@
 /** Clips the value x into the range min...max such that for the returned value y, we have:
 min <= y <= max  */
 template<class T>
-T rsClip(T x, T min = T(-1), T max = T(+1));
+inline T rsClip(T x, T min = T(-1), T max = T(+1));
 
 ///** Adds the 2 (signed) 32 bit integer values and clips the result to the desired range.
 //Overflow is avoided by using 64-bit addition internally. */
@@ -198,6 +198,17 @@ inline T rsZeroValue(T value);
 
 //=================================================================================================
 // implementations:
+
+template<class T>
+inline T rsClip(T x, T min, T max)
+{
+  rsAssert(min <= max);
+  if(x < min)
+    return min;
+  if(x > max)
+    return max;
+  return x;
+}
 
 template<class T>
 inline bool rsIsCloseTo(T x, T targetValue, T tolerance)

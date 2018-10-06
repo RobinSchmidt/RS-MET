@@ -16,6 +16,7 @@
 // for fast sign function, see here:
 //http://stackoverflow.com/questions/1903954/is-there-a-standard-sign-function-signum-sgn-in-c-c
 
+/*
 template<class T>
 T rsClip(T x, T min, T max)
 {
@@ -26,6 +27,7 @@ T rsClip(T x, T min, T max)
     return max;
   return x;
 }
+*/
 
 //inline rsInt32 rsClippedSum(rsInt32 a, rsInt32 b, rsInt32 min, rsInt32 max)
 //{
