@@ -600,12 +600,12 @@ double rsPlotZoomer::transformToScrollBarCoordinateX(double x)
     return 0.0;
   if( theCoordinateSystem->isLogScaledX() )
   {
-    return expToLin(x, theCoordinateSystem->getMaximumRangeMinX(), 
+    return RAPT::rsExpToLin(x, theCoordinateSystem->getMaximumRangeMinX(), 
       theCoordinateSystem->getMaximumRangeMaxX(), 0.0, 1.0);
   }
   else
   {
-    return linToLin(x, theCoordinateSystem->getMaximumRangeMinX(), 
+    return RAPT::rsLinToLin(x, theCoordinateSystem->getMaximumRangeMinX(), 
       theCoordinateSystem->getMaximumRangeMaxX(), 0.0, 1.0);
   }
 }
@@ -616,12 +616,12 @@ double rsPlotZoomer::transformFromScrollBarCoordinateX(double x)
     return 0.0;
   if( theCoordinateSystem->isLogScaledX() )
   {
-    return linToExp(x, 0.0, 1.0, theCoordinateSystem->getMaximumRangeMinX(), 
+    return RAPT::rsLinToExp(x, 0.0, 1.0, theCoordinateSystem->getMaximumRangeMinX(), 
       theCoordinateSystem->getMaximumRangeMaxX());
   }
   else
   {
-    return linToLin(x, 0.0, 1.0, theCoordinateSystem->getMaximumRangeMinX(), 
+    return RAPT::rsLinToLin(x, 0.0, 1.0, theCoordinateSystem->getMaximumRangeMinX(), 
       theCoordinateSystem->getMaximumRangeMaxX());
   }
 }
@@ -632,12 +632,12 @@ double rsPlotZoomer::transformToScrollBarCoordinateY(double y)
     return 0.0;
   if( theCoordinateSystem->isLogScaledY() )
   {
-    return expToLin(y, theCoordinateSystem->getMaximumRangeMinY(), 
+    return RAPT::rsExpToLin(y, theCoordinateSystem->getMaximumRangeMinY(), 
       theCoordinateSystem->getMaximumRangeMaxY(), 0.0, 1.0);
   }
   else
   {
-    return linToLin(y, theCoordinateSystem->getMaximumRangeMinY(), 
+    return RAPT::rsLinToLin(y, theCoordinateSystem->getMaximumRangeMinY(), 
       theCoordinateSystem->getMaximumRangeMaxY(), 0.0, 1.0);
   }
 }
@@ -648,12 +648,12 @@ double rsPlotZoomer::transformFromScrollBarCoordinateY(double y)
     return 0.0;
   if( theCoordinateSystem->isLogScaledY() )
   {
-    return linToExp(y, 0.0, 1.0, theCoordinateSystem->getMaximumRangeMinY(), 
+    return RAPT::rsLinToExp(y, 0.0, 1.0, theCoordinateSystem->getMaximumRangeMinY(), 
       theCoordinateSystem->getMaximumRangeMaxY());
   }
   else
   {
-    return linToLin(y, 0.0, 1.0, theCoordinateSystem->getMaximumRangeMinY(), 
+    return RAPT::rsLinToLin(y, 0.0, 1.0, theCoordinateSystem->getMaximumRangeMinY(), 
       theCoordinateSystem->getMaximumRangeMaxY());
   }
 }

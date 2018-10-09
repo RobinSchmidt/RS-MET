@@ -322,14 +322,14 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 
     if( wrappedAudioModule->getTriggerInterval() != 0.0 )
     {
-      double timeInBeats = secondsToBeats(info.timeInSeconds, info.bpm);
+      double timeInBeats = RAPT::rsSecondsToBeats(info.timeInSeconds, info.bpm);
       // kludge - will probably not work when tempo changes - use ppqPosition here later....
 
       double timeToNextTriggerInBeats = wrappedAudioModule->getTriggerInterval()
         - fmod(timeInBeats, wrappedAudioModule->getTriggerInterval());
 
       timeToNextTriggerInSamples =
-        roundToInt(getSampleRate()*beatsToSeconds(timeToNextTriggerInBeats, info.bpm));
+        roundToInt(getSampleRate()*RAPT::rsBeatsToSeconds(timeToNextTriggerInBeats, info.bpm));
 
       if( timeToNextTriggerInSamples >= buffer.getNumSamples() )
         timeToNextTriggerInSamples = -1; // indicates that we don't need to trigger in this block

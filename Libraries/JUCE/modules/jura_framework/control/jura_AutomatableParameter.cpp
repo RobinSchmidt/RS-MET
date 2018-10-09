@@ -145,7 +145,7 @@ void AutomatableParameter::updateParameterFromAutomation()
   {
   case LINEAR:
     {
-      value = linToLin(
+      value = RAPT::rsLinToLin(
         automationValue, 0.0, 1.0, lowerAutomationLimit, upperAutomationLimit);
     }
     break;
@@ -154,14 +154,14 @@ void AutomatableParameter::updateParameterFromAutomation()
     {
       if( lowerAutomationLimit <= 0.0 )
         jassertfalse; // exponential scaling requires strictly positive minimum value
-      value = linToExp(
+      value = RAPT::rsLinToExp(
         automationValue, 0.0, 1.0, lowerAutomationLimit, upperAutomationLimit);
     }
     break;
 
   default: // linear mapping by default
     {
-      value = linToLin(
+      value = RAPT::rsLinToLin(
         automationValue, 0.0, 1.0, lowerAutomationLimit, upperAutomationLimit);
     }
   }
@@ -182,7 +182,7 @@ void AutomatableParameter::updateAutomationFromParameter()
   {
   case LINEAR:
     {
-      automationValue = linToLin(
+      automationValue = RAPT::rsLinToLin(
         tmpValue, lowerAutomationLimit, upperAutomationLimit, 0.0, 1.0);
     }
     break;
@@ -191,13 +191,13 @@ void AutomatableParameter::updateAutomationFromParameter()
       if( lowerAutomationLimit <= 0.0 )
         jassertfalse; // exponential scaling requires strictly positive minimum value
 
-      automationValue = expToLin(
+      automationValue = RAPT::rsExpToLin(
         tmpValue, lowerAutomationLimit, upperAutomationLimit, 0.0, 1.0);
     }
     break;
   default: // linear mapping by default
     {
-      automationValue = linToLin(
+      automationValue = RAPT::rsLinToLin(
         tmpValue, lowerAutomationLimit, upperAutomationLimit, 0.0, 1.0);
     }
   }

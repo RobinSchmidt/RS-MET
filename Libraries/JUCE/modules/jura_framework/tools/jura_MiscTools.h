@@ -52,6 +52,7 @@ inline double clip(double x, double min, double max)
   return x;
 }
 */
+/*
 inline double amp2dB(double amp)
 {
   return 8.6858896380650365530225783783321 * log(amp);
@@ -88,6 +89,7 @@ inline double expToLin(double in, double inMin, double inMax, double outMin, dou
   double tmp = log(in / inMin) / log(inMax / inMin);
   return outMin + tmp * (outMax - outMin);
 }
+*/
 inline int sign(double x)
 {
   if(x > 0.f)

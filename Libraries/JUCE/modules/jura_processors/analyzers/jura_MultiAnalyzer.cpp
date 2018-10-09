@@ -277,12 +277,12 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
 
       x1 = jmax(1.0, familyValuesX[0][minBin]);
       y1 = familyValuesY[k][minBin];
-      y1 = amp2dBWithCheck(y1, 0.00001);
+      y1 = RAPT::rsAmpToDbWithCheck(y1, 0.00001);
       toPixelCoordinates(x1, y1);
 
       x2 = jmax(1.0, familyValuesX[0][maxBin]);
       y2 = familyValuesY[k][maxBin];
-      y2 = amp2dBWithCheck(y2, 0.00001);
+      y2 = RAPT::rsAmpToDbWithCheck(y2, 0.00001);
       toPixelCoordinates(x2, y2);
 
       if( minBin > maxBin )

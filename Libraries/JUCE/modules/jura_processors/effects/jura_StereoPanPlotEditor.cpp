@@ -173,7 +173,7 @@ void StereoPanPlotEditor::updatePlot()
   for(int n=0; n<numValues; n++)
   {
     double tmp = (double) n / (double) (numValues-1);
-    tmp        = linToLin(tmp, 0.0, 1.0, -1.0, 1.0);
+    tmp        = RAPT::rsLinToLin(tmp, 0.0, 1.0, -1.0, 1.0);
     p[n]       = tmp;
     spTmp.setPanoramaPosition(p[n]);
     gLL[n]     = spTmp.getLeftToLeftGain();

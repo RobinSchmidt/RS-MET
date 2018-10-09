@@ -542,7 +542,7 @@ void MultiModeFreqResponseEditor::updatePlot()
   // overwrite the magnitude value at the bin closest to the cutoff-frequency with the magnitude at 
   // the exact cutoff frequency:
   double freq  = filterToEdit->getFrequencyNominal();
-  double level = amp2dBWithCheck(filterToEdit->getMagnitudeAt(freq), 0.000001);
+  double level = RAPT::rsAmpToDbWithCheck(filterToEdit->getMagnitudeAt(freq), 0.000001);
   level        = RAPT::rsClip(level, -120.0, +120.0);
 
   for(int bin=0; bin < (numBins-1); bin++)
@@ -628,13 +628,13 @@ double MultiModeFreqResponseEditor::yToReso(double y)
 
 double MultiModeFreqResponseEditor::qToY(double q)
 {
-  return -expToLin(q, 0.5, 50.0, -getHeight(), 0.0);
+  return -RAPT::rsExpToLin(q, 0.5, 50.0, -getHeight(), 0.0);
   //return 100.0;
 }
 
 double MultiModeFreqResponseEditor::yToQ(double y)
 {
-  return linToExp(-y, -getHeight(), 0.0, 0.5, 50.0);
+  return RAPT::rsLinToExp(-y, -getHeight(), 0.0, 0.5, 50.0);
 }
 
 //=================================================================================================

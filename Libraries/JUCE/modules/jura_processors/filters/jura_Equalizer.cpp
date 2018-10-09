@@ -317,7 +317,7 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   defaultValues.push_back(-18.0);
   defaultValues.push_back(-12.0);
   defaultValues.push_back( -6.0);
-  defaultValues.push_back(  amp2dB(sqrt(0.5))); // -3.01 dB - standard definition for cutoff frequencies
+  defaultValues.push_back( RAPT::rsAmpToDb(sqrt(0.5))); // -3.01 dB - standard definition for cutoff frequencies
   defaultValues.push_back(  0.0);
   defaultValues.push_back( +6.0);
   defaultValues.push_back(+12.0);
@@ -904,9 +904,9 @@ void EqualizerPlotEditor::mouseWheelMove(const MouseEvent& e, const MouseWheelDe
   {
     Parameter *p = equalizerModuleToEdit->bandwidthParameters[channel][index];
     double b     = p->getValue();
-    b  = expToLin(b, 0.25, 4.0, 0.0, 1.0);
+    b  = RAPT::rsExpToLin(b, 0.25, 4.0, 0.0, 1.0);
     b += 0.0625*wheel.deltaY;
-    b  = linToExp(b, 0.0, 1.0, 0.25, 4.0);
+    b  = RAPT::rsLinToExp(b, 0.0, 1.0, 0.25, 4.0);
     p->setValue(b, true, true);
     updatePlot();
   }
