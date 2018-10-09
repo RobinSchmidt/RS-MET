@@ -845,14 +845,14 @@ void EchoLabPlotEditor::mouseDrag(const juce::MouseEvent &e)
   {
     if( !e.mods.isCtrlDown() )
     {
-      y = clip(y, -1.0, 1.0);
+      y = RAPT::rsClip(y, -1.0, 1.0);
       selectedDelayLine->getParameterByName(juce::String("DelayTime"))->setValue(x, true, true);
       selectedDelayLine->getParameterByName(juce::String("Amplitude"))->setValue(y, true, true);
     }
     else
     {
-      x = clip( 0.02*e.getDistanceFromDragStartX(),  -1.0,  1.0);
-      y = clip(-2.0 *e.getDistanceFromDragStartY(), -99.0, 99.0);
+      x = RAPT::rsClip( 0.02*e.getDistanceFromDragStartX(),  -1.0,  1.0);
+      y = RAPT::rsClip(-2.0 *e.getDistanceFromDragStartY(), -99.0, 99.0);
       selectedDelayLine->getParameterByName(juce::String("Pan"))     ->setValue(x, true, true);
       selectedDelayLine->getParameterByName(juce::String("Feedback"))->setValue(y, true, true);
     }

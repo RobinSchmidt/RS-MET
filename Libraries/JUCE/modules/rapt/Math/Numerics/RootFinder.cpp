@@ -5,12 +5,14 @@ inline bool isConvergedToRoot(T xL, T xR, T yM, T xTol, T yTol)
 
   if(abs(yM) <= yTol)    
     return true;
+  // wait...this formula works only if the target-value yT for y is 0 - in general, we need to do: 
+  // if(abs(yM-yT) <= yTol*abs(yT)) to make the y-tolerance relative, too
 
 
   T dx = xR-xL;             // for debug
   T lx = xTol*abs(xL+xR);
 
-  if( (xR-xL) <= xTol*abs(xL+xR)) // x-tolerance is relative
+  if( (xR-xL) <= xTol*abs(xL+xR)*0.5) // x-tolerance is relative
     return true;
   // but this relative tolerance seems to be bad when the root or pole is exactly at 0
 

@@ -187,8 +187,8 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 
   double depthMin = target->getDefaultModulationDepthMin();
   double depthMax = target->getDefaultModulationDepthMax();
-  double depthDef = clip(0, depthMin, depthMax);      // default depth
-  depth = clip(target->getInitialModulationDepth(), depthMin, depthMax);
+  double depthDef = RAPT::rsClip(0.0, depthMin, depthMax);      // default depth
+  depth = RAPT::rsClip(target->getInitialModulationDepth(), depthMin, depthMax);
 
   juce::String name = source->getModulationSourceName(); // should we use the displayName here?
   depthParam = new 

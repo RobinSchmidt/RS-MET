@@ -957,7 +957,7 @@ void ModulatorCurveEditor::updatePlotCurveData(int curveIndex,
   {
     plotDataX[curveIndex][i] = startTime + (i*secondsPerPixel);
     plotDataY[curveIndex][i] = tmpModulator.getSample();
-    plotDataY[curveIndex][i] = clip(plotDataY[curveIndex][i], -100.0, +100.0);
+    plotDataY[curveIndex][i] = RAPT::rsClip(plotDataY[curveIndex][i], -100.0, +100.0);
   }
 
   // call CurveFamilyPlot::updatePlotImage() to reflect the new data on the GUI:

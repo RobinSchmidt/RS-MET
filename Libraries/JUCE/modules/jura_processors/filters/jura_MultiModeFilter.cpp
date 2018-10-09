@@ -473,15 +473,15 @@ void MultiModeFreqResponseEditor::setupFilterAccordingToMousePosition(double mou
   // convert them into a frequency and resonance/q/gain value:
   double gain = y;
   fromPixelCoordinates(x, gain);
-  gain = clip(gain, -60.0, 30.0);
+  gain = RAPT::rsClip(gain, -60.0, 30.0);
   double freq = x;
   double reso = yToReso(y);
   double q    = yToQ(y);
 
   // restrict ranges (ToDo: actually the filter should take care of the itself....):
-  freq = clip(freq, 20.0, 20000.0);
-  reso = clip(reso, 0.0, 100.0);
-  q    = clip(q, 0.5, 50.0);
+  freq = RAPT::rsClip(freq, 20.0, 20000.0);
+  reso = RAPT::rsClip(reso, 0.0, 100.0);
+  q    = RAPT::rsClip(q, 0.5, 50.0);
 
   // set up the filter and raise automation events to update other widgets that represent the
   // parameters:
@@ -543,7 +543,7 @@ void MultiModeFreqResponseEditor::updatePlot()
   // the exact cutoff frequency:
   double freq  = filterToEdit->getFrequencyNominal();
   double level = amp2dBWithCheck(filterToEdit->getMagnitudeAt(freq), 0.000001);
-  level        = clip(level, -120.0, +120.0);
+  level        = RAPT::rsClip(level, -120.0, +120.0);
 
   for(int bin=0; bin < (numBins-1); bin++)
   {

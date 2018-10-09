@@ -42,6 +42,7 @@ JUCE_API int getAvailableScreenPixelsBelow(const juce::Component* c);
 //static const double PI  = 3.1415926535897932384626433832795;
 static const double INF = std::numeric_limits<double>::infinity(); // move to rapt
 
+/*
 inline double clip(double x, double min, double max)
 {
   if(x > max)
@@ -50,6 +51,7 @@ inline double clip(double x, double min, double max)
     return min;
   return x;
 }
+*/
 inline double amp2dB(double amp)
 {
   return 8.6858896380650365530225783783321 * log(amp);

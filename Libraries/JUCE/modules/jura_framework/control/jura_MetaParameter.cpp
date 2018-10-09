@@ -21,8 +21,8 @@ bool rsMetaParameterMapper::removeNode(size_t index)
 
 size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
 {
-  x = clip(x, 0, 1); 
-  y = clip(y, 0, 1);                     // x and y must be in 0..1
+  x = RAPT::rsClip(x, 0.0, 1.0); 
+  y = RAPT::rsClip(y, 0.0, 1.0);             // x and y must be in 0..1
   if(index == 0)               x = 0;    // first node's x value is fixed at 0
   if(index == nodes.size()-1)  x = 1;    // last node's x value is fixed at 1
   return RAPT::rsNodeBasedFunction<double>::moveNode(index, x, y);
@@ -43,8 +43,8 @@ bool rsMetaParameterMapper::isNodeRemovable(size_t index) const
 size_t rsMetaParameterMapper::constrainNode(size_t i)
 {
   //return i; // preliminary
-  nodes[i].x = clip(nodes[i].x, 0, 1); 
-  nodes[i].y = clip(nodes[i].y, 0, 1);     // x and y must be in 0..1
+  nodes[i].x = RAPT::rsClip(nodes[i].x, 0.0, 1.0); 
+  nodes[i].y = RAPT::rsClip(nodes[i].y, 0.0, 1.0);     // x and y must be in 0..1
   i = RAPT::rsNodeBasedFunction<double>::moveNodeToSortedIndex(i);
   if(i == 0)               
     nodes[i].x = 0; // first node's x value is fixed at 0

@@ -83,8 +83,8 @@ template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
 
 
-template class RAPT::rsOnePoleFilter<double, double>;
-template class RAPT::rsOnePoleFilter<rsFloat64x2, double>;
+//template class RAPT::rsOnePoleFilter<double, double>;
+//template class RAPT::rsOnePoleFilter<rsFloat64x2, double>;
 template class RAPT::rsSmoothingFilter<double, double>;
 
 template class RAPT::rsBiquadCascade<double, double>;

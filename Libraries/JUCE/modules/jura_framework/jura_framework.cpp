@@ -46,6 +46,7 @@ namespace jura
 #include "gui/misc/jura_ColourSchemeComponent.cpp"
 #include "gui/misc/jura_RectangleComponent.cpp"
 #include "gui/misc/jura_MessageBoxes.cpp"
+#include "gui/misc/jura_RepaintManager.cpp"
 
 #include "gui/widgets/jura_RWidget.cpp"
 #include "gui/widgets/jura_RTextField.cpp"

@@ -397,7 +397,7 @@ void RSlider::mouseDrag(const MouseEvent& e)
       dragValue += scale*dragDelta;
       double x = normalizedValueOnMouseDown;  // in 0..1
       x += dragValue;                         // new x
-      x = clip(x, 0, 1);
+      x = RAPT::rsClip(x, 0.0, 1.0);
 
       // new:
       setNormalizedValue(x);

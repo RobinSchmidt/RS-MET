@@ -3389,9 +3389,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTableStereo.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_ModalSynthesizer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_NoiseGenerator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3560,10 +3557,16 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_InfiniteImpulseResponseDesigner.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_IntegerFunctions.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_Interpolation.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_LinkwitzRileyCrossOver.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_ModalSynthesizer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_OnePoleFilter.cpp">
@@ -3834,9 +3837,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctionsAlgorithms.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_IntegerFunctions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_LinearAlgebra.cpp">
@@ -5236,7 +5236,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTable.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTableOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTableStereo.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_ModalSynthesizer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_NoiseGenerator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_NoiseGeneratorOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Oscillator.h"/>
@@ -5293,8 +5292,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_FilterCoefficientConverter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_FunctionTemplates.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_InfiniteImpulseResponseDesigner.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_IntegerFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_Interpolation.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_LinkwitzRileyCrossOver.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_ModalSynthesizer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_OnePoleFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_OnePoleFilterStereo.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\rosic_PoleZeroMapper.h"/>
@@ -5392,7 +5393,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Complex.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctionsAlgorithms.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_IntegerFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_LinearAlgebra.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Matrix.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_MatrixVectorFunctions.h"/>

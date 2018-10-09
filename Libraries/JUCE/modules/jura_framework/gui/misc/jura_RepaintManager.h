@@ -15,9 +15,33 @@ Idea:
  needsRepaint - when the repinters spaws the repaints, it tries to casts the repaintees to 
  RepaintClient and if this it successful, it checks needsRepaint and repaints only, if this returns 
  true - if the cast fails, it will just spawn repaint
+-Modulatab
  
 
 
 */
+
+class JUCE_API rsRepaintManager : public juce::Timer
+{
+
+public:
+
+  rsRepaintManager();
+
+  void registerRepaintee(juce::Component* repaintee);
+
+  void deRegisterRepaintee(juce::Component* repaintee);
+
+  void setRepaintRate(double newRateInHz);
+
+
+
+
+protected:
+
+  std::vector<juce::Component*> repaintees;
+
+
+};
 
 #endif  

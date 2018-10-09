@@ -500,8 +500,8 @@ void rsNodeBasedFunctionEditor::setNodeShapeParam(rsDraggableNode* node, double 
 void rsNodeBasedFunctionEditor::clipIfDesired(double* x, double* y)
 {
   if(clipRanges) {
-    *x = clip(*x, xyMapper.getInMinX(), xyMapper.getInMaxX());
-    *y = clip(*y, xyMapper.getInMinY(), xyMapper.getInMaxY()); }
+    *x = RAPT::rsClip(*x, xyMapper.getInMinX(), xyMapper.getInMaxX());
+    *y = RAPT::rsClip(*y, xyMapper.getInMinY(), xyMapper.getInMaxY()); }
 }
 
 rsNodeBasedFunctionEditor::NodeParameterSet* 

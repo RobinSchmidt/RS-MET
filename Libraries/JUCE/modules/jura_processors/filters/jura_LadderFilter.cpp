@@ -121,7 +121,7 @@ double Ladder::getDecibelsAt(double frequency)  // rename to getDecibelsAt
 {
   double tmp = wrappedLadder.getMagnitudeResponseAt(frequency);
   tmp = amp2dBWithCheck(tmp, 0.000001);
-  tmp = clip(tmp, -120.0, +120.0);
+  tmp = RAPT::rsClip(tmp, -120.0, +120.0);
   return tmp;
 }
 

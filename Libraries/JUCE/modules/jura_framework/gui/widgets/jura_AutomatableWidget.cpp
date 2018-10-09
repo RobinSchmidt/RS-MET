@@ -679,7 +679,7 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menu)
     case MIDI_ASSIGN:
     {
       int result = (int)wrappedWidget->openModalNumberEntryField(ap->getAssignedMidiController());
-      result = (int)clip(result, 0, 127);
+      result = (int)RAPT::rsClip(result, 0, 127);
       ap->assignMidiController(result);
     } break;
     case MIDI_MIN:    ap->setLowerAutomationLimit(ap->getValue());   break;
@@ -1061,6 +1061,9 @@ ModulatableSlider::~ModulatableSlider()
 void ModulatableSlider::modulationsChanged()
 {
   repaint();
+
+  // maybe derive from juce::Timer and ehck here, if there are connections, and if so, start the 
+  // timer and if not, stop it
 }
 
 void ModulatableSlider::assignParameter(Parameter* p)

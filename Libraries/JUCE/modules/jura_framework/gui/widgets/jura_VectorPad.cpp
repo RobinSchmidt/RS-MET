@@ -132,6 +132,6 @@ void rsVectorPad::setParametersFromMouseEvent(const MouseEvent& e)
 
 void rsVectorPad::setParametersXY(double x, double y) // rename to setNormalizedParameters
 {
-  paramX->setNormalizedValue(clip(x, 0, 1), true, true);
-  paramY->setNormalizedValue(clip(y, 0, 1), true, true);
+  paramX->setNormalizedValue(RAPT::rsClip(x, 0.0, 1.0), true, true);
+  paramY->setNormalizedValue(RAPT::rsClip(y, 0.0, 1.0), true, true);
 }
