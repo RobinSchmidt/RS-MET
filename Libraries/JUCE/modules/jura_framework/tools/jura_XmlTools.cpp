@@ -106,10 +106,10 @@ bool isValidXmlAttributeName(const juce::String& s)
 
   // this works - let's keep it simple!
   typedef rosic::rsString S;
-  if(!S::isLetter(s[0]))
+  if(!(S::isLetter(s[0]) || s[0] == '_'))            // allow letters or underscores for 1st char
     return false;
   for(int i = 1; i < N; i++)
-    if(!S::isLetterOrDigit(s[i]))
+    if(!(S::isLetterOrDigit(s[i]) || s[i] == '_'))   // allow letters, digits or underscores
       return false;
 
   return true;
