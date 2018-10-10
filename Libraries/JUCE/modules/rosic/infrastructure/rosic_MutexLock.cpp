@@ -4,13 +4,9 @@
 MutexLock::MutexLock(char* mutexName)
 {
 #if defined (USE_WINAPI_CRITICAL_SECTION)
-
   InitializeCriticalSection(&cs);
-
 #elif defined (USE_PTHREADS_MUTEX)
-
   pthread_mutex_init(&mutex, NULL);
-
 #endif
 
   name = NULL;
@@ -25,13 +21,9 @@ MutexLock::MutexLock(char* mutexName)
 MutexLock::~MutexLock()
 {
 #if defined (USE_WINAPI_CRITICAL_SECTION)
-
   DeleteCriticalSection(&cs);
-
 #elif defined (USE_PTHREADS_MUTEX)
-
   pthread_mutex_destroy(&mutex);
-
 #endif
 
   delete[] name;
@@ -40,26 +32,22 @@ MutexLock::~MutexLock()
 void MutexLock::lock()
 {
 #if defined (USE_WINAPI_CRITICAL_SECTION)
-
   EnterCriticalSection(&cs);
-
 #elif defined (USE_PTHREADS_MUTEX)
-
   pthread_mutex_lock(&mutex);
-
+#else
+  mutex.lock();
 #endif
 }
 
 void MutexLock::unlock()
 {
 #if defined (USE_WINAPI_CRITICAL_SECTION)
-
   LeaveCriticalSection(&cs);
-
 #elif defined (USE_PTHREADS_MUTEX)
-
   pthread_mutex_unlock(&mutex);
-
+#else
+  mutex.unlock();
 #endif
 }
 

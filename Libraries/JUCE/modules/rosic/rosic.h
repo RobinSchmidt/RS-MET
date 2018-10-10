@@ -55,16 +55,20 @@
 #include <malloc.h>     // for alloca - try to get rid..
 #endif
 
-#if (defined (_WIN32) || defined (_WIN64))
-#define USE_WINAPI_CRITICAL_SECTION
-#elif (defined (MAC) || defined (LINUX))
-#define USE_PTHREADS_MUTEX
-#endif
+//#if (defined (_WIN32) || defined (_WIN64))
+//#define USE_WINAPI_CRITICAL_SECTION
+//#elif (defined (MAC) || defined (LINUX))
+//#define USE_PTHREADS_MUTEX
+//#endif
 
+// try to get rid of including windows.h - it has all sorts of weird #defines that lead to all 
+// sorts of compiler errors:
 #if defined (USE_WINAPI_CRITICAL_SECTION)
 #include <windows.h>
 #elif defined (USE_PTHREADS_MUTEX)
 #include <pthread.h>
+#else
+#include <mutex>
 #endif
 
 #if defined _MSC_VER
