@@ -249,6 +249,17 @@ public:
   Otherwise, the character itself is returned. */
   static char toUpperCase(char c);
 
+
+  static bool isUpperCaseLetter(const char c) { return c >= 65 && c <= 90; }
+
+  static bool isLowerCaseLetter(const char c) { return c >= 97 && c <= 122; }
+
+  static bool isLetter(const char c) { return isUpperCaseLetter(c) || isLowerCaseLetter(c); }
+
+  static bool isDigit(const char c) { return c >= 48 && c <= 57; }
+
+  static bool isLetterOrDigit(const char c) { return isLetter(c) || isDigit(c); }
+
   /** Creates a string from an integer number with some minimum number of characters, prepending
   whitespaces, if necessary. This is useful for alignment of strings representing numbers. It
   may also optionally include a plus sign for positive numbers to make them look more similar

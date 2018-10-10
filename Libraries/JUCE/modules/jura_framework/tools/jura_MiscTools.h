@@ -39,57 +39,8 @@ JUCE_API int getAvailableScreenPixelsBelow(const juce::Component* c);
 
 // update: RAPT is now included, so we may delete them? ...clean this up!
 
-//static const double PI  = 3.1415926535897932384626433832795;
 static const double INF = std::numeric_limits<double>::infinity(); // move to rapt
 
-/*
-inline double clip(double x, double min, double max)
-{
-  if(x > max)
-    return max;
-  if(x < min)
-    return min;
-  return x;
-}
-*/
-/*
-inline double amp2dB(double amp)
-{
-  return 8.6858896380650365530225783783321 * log(amp);
-}
-inline double amp2dBWithCheck(double amp, double lowAmplitude)
-{
-  if( amp >= lowAmplitude )
-    return amp2dB(amp);
-  else
-    return amp2dB(lowAmplitude);
-}
-inline double secondsToBeats(double timeInSeconds, double bpm)
-{
-  return timeInSeconds*(bpm/60.0);
-}
-inline double beatsToSeconds(double beat, double bpm)
-{
-  return (60.0/bpm)*beat;
-}
-inline double linToLin(double in, double inMin, double inMax, double outMin, double outMax)
-{
-  double tmp = (in - inMin) / (inMax - inMin);
-  tmp *= (outMax - outMin);
-  tmp += outMin;
-  return tmp;
-}
-inline double linToExp(double in, double inMin, double inMax, double outMin, double outMax)
-{
-  double tmp = (in - inMin) / (inMax - inMin);
-  return outMin * exp(tmp * (log(outMax / outMin)));
-}
-inline double expToLin(double in, double inMin, double inMax, double outMin, double outMax)
-{
-  double tmp = log(in / inMin) / log(inMax / inMin);
-  return outMin + tmp * (outMax - outMin);
-}
-*/
 inline int sign(double x)
 {
   if(x > 0.f)
@@ -150,6 +101,7 @@ inline bool isCloseTo(double x, double targetValue, double tolerance)
 
 
 // some little helper/convenience functions to deal with std::vectors (move to RAPT):
+// ...there already are corresponding function...but they use size_t insetad of int for the indices
 
 using namespace std;
 

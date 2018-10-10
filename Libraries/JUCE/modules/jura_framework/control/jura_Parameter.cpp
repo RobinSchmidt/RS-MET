@@ -44,7 +44,7 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   setRange(newMin, newMax);
   setScaling(newScaling);
 
-  name            = newName;
+  setName(newName);
   interval        = newInterval;
   defaultValue    = restrictValueToParameterRange(newDefault);
   value           = defaultValue;

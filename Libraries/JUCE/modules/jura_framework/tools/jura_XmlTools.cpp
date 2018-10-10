@@ -88,3 +88,38 @@ XmlElement* getChildElementByNameAndIndexAmongNameSakes(const XmlElement& xml,
     return child;
   }
 }
+
+
+// preliminary - copied from rosic::rsString for isValidXmlAttributeName:
+bool isUpperCaseLetter(const char c) { return c >= 65 && c <= 90; }
+bool isLowerCaseLetter(const char c) { return c >= 97 && c <= 122; }
+bool isLetter(const char c) { return isUpperCaseLetter(c) || isLowerCaseLetter(c); }
+bool isDigit(const char c) { return c >= 48 && c <= 57; }
+bool isLetterOrDigit(const char c) { return isLetter(c) || isDigit(c); }
+// todo: invoke the functions from rosic::rsString instead...but jura_framework does not yet 
+// include rosic.h (only rapt.h) and doing so gives all sorts of compiler errors...fix them!
+
+bool isValidXmlAttributeName(const juce::String& s)
+{
+  int N = s.length();
+  if(N == 0)
+    return false;
+
+  //CharPointer_UTF8 cp = s.getCharPointer();
+  //if(!cp[0].isLetter())
+  //  return false;
+  //for(int i = 1; i < N; i++)
+  //  if(!cp[i].isLetterOrDigit())
+  //    return false;
+  // ...dunno, why this doesn't compile - i don't understand, how the CharPointer_UTF8 class is 
+  // supposed to be used
+
+  // this works - let's keep it simple!
+  if(!isLetter(s[0]))
+    return false;
+  for(int i = 1; i < N; i++)
+    if(!isLetterOrDigit(s[i]))
+      return false;
+
+  return true;
+}

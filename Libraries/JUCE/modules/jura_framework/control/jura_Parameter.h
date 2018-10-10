@@ -285,6 +285,7 @@ public:
   virtual void setName(const juce::String& newName)
   {
     ScopedPointerLock spl(mutex);
+    jassert(isValidXmlAttributeName(newName));
     name = newName;
   }
 
