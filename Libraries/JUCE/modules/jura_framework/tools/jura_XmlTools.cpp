@@ -89,16 +89,6 @@ XmlElement* getChildElementByNameAndIndexAmongNameSakes(const XmlElement& xml,
   }
 }
 
-
-// preliminary - copied from rosic::rsString for isValidXmlAttributeName:
-bool isUpperCaseLetter(const char c) { return c >= 65 && c <= 90; }
-bool isLowerCaseLetter(const char c) { return c >= 97 && c <= 122; }
-bool isLetter(const char c) { return isUpperCaseLetter(c) || isLowerCaseLetter(c); }
-bool isDigit(const char c) { return c >= 48 && c <= 57; }
-bool isLetterOrDigit(const char c) { return isLetter(c) || isDigit(c); }
-// todo: invoke the functions from rosic::rsString instead...but jura_framework does not yet 
-// include rosic.h (only rapt.h) and doing so gives all sorts of compiler errors...fix them!
-
 bool isValidXmlAttributeName(const juce::String& s)
 {
   int N = s.length();
@@ -115,10 +105,11 @@ bool isValidXmlAttributeName(const juce::String& s)
   // supposed to be used
 
   // this works - let's keep it simple!
-  if(!isLetter(s[0]))
+  typedef rosic::rsString S;
+  if(!S::isLetter(s[0]))
     return false;
   for(int i = 1; i < N; i++)
-    if(!isLetterOrDigit(s[i]))
+    if(!S::isLetterOrDigit(s[i]))
       return false;
 
   return true;
