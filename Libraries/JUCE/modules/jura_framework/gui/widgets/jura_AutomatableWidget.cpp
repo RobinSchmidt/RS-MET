@@ -1061,9 +1061,6 @@ ModulatableSlider::~ModulatableSlider()
 void ModulatableSlider::modulationsChanged()
 {
   repaint();
-
-  // maybe derive from juce::Timer and ehck here, if there are connections, and if so, start the 
-  // timer and if not, stop it
 }
 
 void ModulatableSlider::assignParameter(Parameter* p)
@@ -1077,7 +1074,38 @@ void ModulatableSlider::assignParameter(Parameter* p)
 void ModulatableSlider::paint(Graphics& g)
 {
   AutomatableSlider::paint(g);
+  if(hasModulation())
+    g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
+}
+
+bool ModulatableSlider::hasModulation()
+{
   ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
   if(mp && mp->hasConnectedSources())
-    g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
+    return true;
+  return false;
+}
+
+//=================================================================================================
+
+void rsModulatableSliderAnimated::modulationsChanged()
+{
+  if(hasModulation())
+    startTimerHz(30);
+  else
+    stopTimer();
+  repaint(); // ...OnMessageThread?
+}
+
+void rsModulatableSliderAnimated::paint(Graphics& g)
+{
+  ModulatableSlider::repaint();
+
+  // todo: indicate modulated value
+
+}
+
+void rsModulatableSliderAnimated::timerCallback()
+{
+  repaint();
 }

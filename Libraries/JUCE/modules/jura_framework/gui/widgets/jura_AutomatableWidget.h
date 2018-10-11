@@ -498,11 +498,28 @@ public:
 
   ModulatableSlider();
   virtual ~ModulatableSlider();
+
   void modulationsChanged() override;
   void assignParameter(Parameter* parameterToAssign) override;
   void paint(Graphics& g) override;
 
+  bool hasModulation();
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableSlider)
+};
+
+//=================================================================================================
+
+class JUCE_API rsModulatableSliderAnimated : public ModulatableSlider, public juce::Timer
+{
+
+public:
+
+  void modulationsChanged() override;
+  void paint(Graphics& g) override;
+  void timerCallback() override;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulatableSliderAnimated)
 };
 
 
