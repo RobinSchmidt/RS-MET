@@ -1597,9 +1597,9 @@ void EqualizerModuleEditor::resized()
 
 void EqualizerModuleEditor::createWidgets()
 {
-  typedef ModulatableSlider Sld;
+  typedef rsModulatableSlider Sld;
   typedef RNamedComboBox Box;
-  typedef AutomatableButton Btn;
+  typedef rsAutomatableButton Btn;
   Sld* s;
   //Box* c;
   Btn* b;

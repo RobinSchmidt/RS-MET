@@ -120,7 +120,7 @@ protected:
   RTextField *globalLabel, *oscLabel, *filterLabel, *filterEnvLabel, *ampLabel, *sequencerLabel, 
     *normalLabel, *accentLabel, *subOscLabel;
 
-  AutomatableSlider *masterLevelSlider, *accentSlider, *slideTimeSlider, *waveformSlider, 
+  rsAutomatableSlider *masterLevelSlider, *accentSlider, *slideTimeSlider, *waveformSlider, 
     *subOscLevelSlider, *subOscWaveformSlider, *cutoffSlider, *resonanceSlider, *envModSlider, 
     *normalDecaySlider, *normalAttackSlider, *accentDecaySlider, *accentAttackSlider, 
     *upwardFractionSlider, *ampDecaySlider, *ampSustainSlider, *ampReleaseSlider, 
@@ -128,7 +128,7 @@ protected:
 
   RTextField *filterModeLabel;
 
-  AutomatableComboBox *filterModeBox;
+  rsAutomatableComboBox *filterModeBox;
   //RButton   *sequencerButton; 
 
   AcidSequencerModuleEditor *sequencerEditor;

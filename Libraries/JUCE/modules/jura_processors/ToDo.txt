@@ -269,7 +269,7 @@ Smoothing-Sytem:
   overriden version in ModulatableParameter
 
 ModSystem:
- -ModulatableSlider: show the modulation-range
+ -rsModulatableSlider: show the modulation-range
  -clean up the files
  -BUG: when ladder cutoff is modulated and one then changes the resonance, this display shows
   the mod plot with modulated cutoff
@@ -324,7 +324,7 @@ Framework:
   -when the popup menu gets dismissed by clicking somewhere else, the popUpIsOpen flag will
    not be set to false
   -solution: we need a rPopUpMenuDismissed callback in RPopUpMenuObserver, make sure, it gets 
-   properly called when a popup is dismissed, override the callback in AutomatableWidget and set
+   properly called when a popup is dismissed, override the callback in rsAutomatableWidget and set
    the flag false there
 
 MultiAnalyzer
@@ -453,7 +453,7 @@ AudioModuleChain: use inherited childModules array instead of "modules"
 
 RSlider: 
 -make default-values and enter-value available on right-click (it's currently only
- available in subclass AutomatableSlider)
+ available in subclass rsAutomatableSlider)
 
 ParameterManager: rename functions to addParameter, removeParameter
 

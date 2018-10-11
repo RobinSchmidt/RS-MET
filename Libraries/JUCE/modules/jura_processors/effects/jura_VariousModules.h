@@ -91,7 +91,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *decimationSlider, *quantizationSlider, *amountSlider;
+  rsModulatableSlider *decimationSlider, *quantizationSlider, *amountSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ public:
 protected:
   juce::Rectangle<int> globalRect, harmonicsRect;
   RTextField *globalLabel, *harmonicsLabel, *inFilterLabel, *outFilterLabel;
-  ModulatableSlider *driveSlider, *dryWetSlider, *inHighpassSlider, *inLowpassSlider,
+  rsModulatableSlider *driveSlider, *dryWetSlider, *inHighpassSlider, *inLowpassSlider,
     *outHighpassSlider, *outLowpassSlider;
   RSlider    *h02Slider, *h03Slider, *h04Slider, *h05Slider, *h06Slider, *h07Slider, *h08Slider,
     *h09Slider, *h10Slider, *h11Slider, *h12Slider;
@@ -145,7 +145,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *factorSlider, *offsetSlider;
+  rsModulatableSlider *factorSlider, *offsetSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *attackSlider, *releaseSlider;
+  rsModulatableSlider *attackSlider, *releaseSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -200,7 +200,7 @@ public:
 protected:
   WaveShaperAudioModule *waveShaperModuleToEdit;
   RComboBox *curveComboBox;
-  ModulatableSlider *driveSlider, *dcSlider, *amountSlider, *outputLevelSlider;
+  rsModulatableSlider *driveSlider, *dcSlider, *amountSlider, *outputLevelSlider;
   RSlider  *oversamplingSlider, *slopeSlider, *interceptSlider;
   rsDataPlot *plot;
   double *xValues, *yValues;
@@ -229,7 +229,7 @@ public:
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  ModulatableSlider *driveSlider, *outLevelSlider, *amountSlider, *thresholdSlider, *ratioSlider, 
+  rsModulatableSlider *driveSlider, *outLevelSlider, *amountSlider, *thresholdSlider, *ratioSlider, 
     *kneeSlider;
   RButton    *clipButton;
 };
@@ -267,7 +267,7 @@ public:
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  ModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
+  rsModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
     *outLevelSlider, *dryWetSlider, *thresholdSlider, *ratioSlider, *kneeSlider;
   RButton *autoGainButton, *limitButton, *antiAliasButton;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CompressorModuleEditor)
@@ -295,7 +295,7 @@ public:
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  ModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
+  rsModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
     *outLevelSlider, *dryWetSlider, *thresholdSlider, *ratioSlider, *kneeSlider;
   RButton    *gateButton;
 };
@@ -329,7 +329,7 @@ protected:
   virtual void createWidgets();
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  ModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
+  rsModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
     *outLevelSlider, *dryWetSlider, *limitSlider;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LimiterModuleEditor)
 };
@@ -356,7 +356,7 @@ public:
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  ModulatableSlider *attackSlider, *holdSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
+  rsModulatableSlider *attackSlider, *holdSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
     *outLevelSlider, *dryWetSlider, *thresholdSlider, *hysteresisSlider;
 };
 
@@ -386,7 +386,7 @@ public:
 protected:
   juce::Rectangle<int> toneParametersRect, decayParametersRect; //, otherParametersRect;
   RTextField *toneLabel, *decayLabel; //, *othersLabel;
-  ModulatableSlider *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, 
+  rsModulatableSlider *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, 
     *pan2Slider, *decayTimeSlider,*highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, 
     *lowFreqSlider;
   RButton *oddOnlyButton;
@@ -414,7 +414,7 @@ public:
 protected:
   juce::Rectangle<int> toneParametersRect, decayParametersRect; //, otherParametersRect;
   RTextField *toneLabel, *decayLabel; //, *othersLabel;
-  ModulatableSlider *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, 
+  rsModulatableSlider *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, 
     *pan2Slider, *decayTimeSlider, *highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, 
     *lowFreqSlider;
   RButton    *oddOnlyButton;
@@ -447,7 +447,7 @@ protected:
   juce::Rectangle<int> globalRect, filter1Rect, filter2Rect;
   RTextField *globalLabel, *filter1Label, *filter2Label;
   RComboBox  *modeComboBox1, *modeComboBox2;
-  ModulatableSlider *frequencySlider1, *gainSlider1, *bandwidthSlider1, *frequencySlider2, 
+  rsModulatableSlider *frequencySlider1, *gainSlider1, *bandwidthSlider1, *frequencySlider2, 
     *gainSlider2, *bandwidthSlider2, *serialParallelBlendSlider, *frequencyScaleSlider, 
     *gainScaleSlider, *bandwidthScaleSlider;
 };
@@ -478,7 +478,7 @@ protected:
   FourPoleFilterAudioModule *fourPoleFilterModuleToEdit;
   //RComboBox *modeComboBox;
   FourPoleFilterModeComboBox *modeComboBox;
-  ModulatableSlider *frequencySlider, *gainSlider, *bandwidthSlider;
+  rsModulatableSlider *frequencySlider, *gainSlider, *bandwidthSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -506,7 +506,7 @@ public:
 protected:
   LadderFilterAudioModule *ladderFilterModuleToEdit;
   RComboBox *modeComboBox;
-  ModulatableSlider *frequencySlider, *resonanceSlider, *makeUpSlider, *driveSlider, *orderSlider,
+  rsModulatableSlider *frequencySlider, *resonanceSlider, *makeUpSlider, *driveSlider, *orderSlider,
     *morphSlider;
 };
 
@@ -532,7 +532,7 @@ public:
   juce_UseDebuggingNewOperator;
 protected:
   SlopeFilterAudioModule *slopeFilterModuleToEdit;
-  ModulatableSlider *slopeSlider;
+  rsModulatableSlider *slopeSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -560,7 +560,7 @@ public:
 protected:
   TwoPoleFilterAudioModule *twoPoleFilterModuleToEdit;
   RComboBox *modeComboBox;
-  ModulatableSlider *frequencySlider, *gainSlider, *bandwidthSlider, *radiusSlider;
+  rsModulatableSlider *frequencySlider, *gainSlider, *bandwidthSlider, *radiusSlider;
 };
 
 //===============================================================================================
@@ -598,7 +598,7 @@ public:
   virtual void rButtonClicked(RButton *buttonThatWasClicked);
   virtual void resized();
 protected:
-  ModulatableSlider *delayTimeSlider, *dryWetSlider, *feedbackSlider, *panSlider, *highDampSlider,
+  rsModulatableSlider *delayTimeSlider, *dryWetSlider, *feedbackSlider, *panSlider, *highDampSlider,
     *lowDampSlider;
   RButton *pingPongButton, *tempoSyncButton, *trueStereoButton;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PingPongEchoModuleEditor)
@@ -624,7 +624,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *dryWetSlider, *firstEchoSlider, *preDelaySlider, *decayTimeSlider,
+  rsModulatableSlider *dryWetSlider, *firstEchoSlider, *preDelaySlider, *decayTimeSlider,
     *highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, *lowFreqSlider;
   RButton *pinkButton, *stereoSwapButton;
 };
@@ -649,7 +649,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *delaySlider;
+  rsModulatableSlider *delaySlider;
 };
 
 
@@ -711,7 +711,7 @@ public:
   juce_UseDebuggingNewOperator;
 protected:
   FlangerAudioModule *flangerModuleToEdit;
-  ModulatableSlider *depthSlider, *dryWetSlider, *frequencySlider, *feedbackSlider;
+  rsModulatableSlider *depthSlider, *dryWetSlider, *frequencySlider, *feedbackSlider;
   RButton *invertButton;
 };
 
@@ -740,7 +740,7 @@ public:
 protected:
   PhaserAudioModule *phaserModuleToEdit;
   RTextField *filterLabel;
-  ModulatableSlider *depthSlider, *dryWetSlider, *frequencySlider, *qSlider, *feedbackSlider,
+  rsModulatableSlider *depthSlider, *dryWetSlider, *frequencySlider, *qSlider, *feedbackSlider,
     *stagesSlider;
   RComboBox  *modeComboBox;
 };
@@ -767,7 +767,7 @@ public:
   juce_UseDebuggingNewOperator;
 protected:
   TremoloAudioModule *tremoloModuleToEdit;
-  ModulatableSlider *depthSlider;
+  rsModulatableSlider *depthSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -792,7 +792,7 @@ public:
   juce_UseDebuggingNewOperator;
 protected:
   VibratoAudioModule *vibratoModuleToEdit;
-  ModulatableSlider *depthSlider, *dryWetSlider;
+  rsModulatableSlider *depthSlider, *dryWetSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -820,7 +820,7 @@ public:
 protected:
   WahWahAudioModule *wahWahModuleToEdit;
   RTextField *filterLabel;
-  ModulatableSlider *depthSlider, *dryWetSlider, *frequencySlider, *gainSlider, *bandwidthSlider;
+  rsModulatableSlider *depthSlider, *dryWetSlider, *frequencySlider, *gainSlider, *bandwidthSlider;
   RComboBox  *modeComboBox;
 };
 
@@ -847,7 +847,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *formantScaleSlider, *formantOffsetSlider, *dryWetSlider;
+  rsModulatableSlider *formantScaleSlider, *formantOffsetSlider, *dryWetSlider;
   // blockSizeComboBox/Slider
 };
 
@@ -880,7 +880,7 @@ protected:
   juce::Rectangle<int> globalRect, voice1Rect, voice2Rect, voice3Rect, voice4Rect;
   RTextField *globalLabel;
   RButton    *voice1Button, *voice2Button, *voice3Button, *voice4Button;
-  ModulatableSlider *delaySlider, *cycleLengthSlider, *depthSlider, *globalFeedbackSlider, 
+  rsModulatableSlider *delaySlider, *cycleLengthSlider, *depthSlider, *globalFeedbackSlider, 
     *crossMixSlider, *feedback2Slider, *dryWetSlider, *stereoPhaseSlider;
   RSlider    *voice1DelaySlider, *voice1DepthSlider, *voice1AmpSlider,
     *voice2DelaySlider, *voice2DepthSlider, *voice2AmpSlider,
@@ -908,7 +908,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *shiftSlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider, *midSideSlider;
+  rsModulatableSlider *shiftSlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider, *midSideSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -931,7 +931,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *phaseOffsetSlider, *dryWetRatioSlider, *sideLowpassSlider, *sideHighpassSlider,
+  rsModulatableSlider *phaseOffsetSlider, *dryWetRatioSlider, *sideLowpassSlider, *sideHighpassSlider,
     *midSideRatioSlider, *gainSlider;
   RButton *channelSwapButton;
 };
@@ -956,7 +956,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider;
+  rsModulatableSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider;
   RButton *antiAliasButton;
 };
 
@@ -982,7 +982,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, 
+  rsModulatableSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, 
     *upperSidebandLevelSlider, *lowerSidebandLevelSlider, *dryWetSlider;
   RButton *antiAliasButton;
 };
@@ -1012,7 +1012,7 @@ protected:
   StereoPanAudioModule *stereoPanModuleToEdit;
   RTextField           *panLawLabel;
   RComboBox            *panLawComboBox;
-  ModulatableSlider    *panSlider, *gainSlider;
+  rsModulatableSlider    *panSlider, *gainSlider;
   StereoPanPlotEditor  *plot;
   double *xValues, *yValues;
   int    numValues;
@@ -1038,7 +1038,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *midSideRatioSlider, *gainSlider; // maybe include a correlation meter?
+  rsModulatableSlider *midSideRatioSlider, *gainSlider; // maybe include a correlation meter?
 };
 
 //===============================================================================================
@@ -1064,7 +1064,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *frequencySlider, *levelSlider;
+  rsModulatableSlider *frequencySlider, *levelSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -1087,7 +1087,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  ModulatableSlider *passLevelSlider, *noiseLevelSlider, *spectralSlopeSlider, *lowestFreqSlider,
+  rsModulatableSlider *passLevelSlider, *noiseLevelSlider, *spectralSlopeSlider, *lowestFreqSlider,
     *highestFreqSlider;
 };
 

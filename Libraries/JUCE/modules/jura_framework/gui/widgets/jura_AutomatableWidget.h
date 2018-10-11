@@ -4,7 +4,7 @@
 // rename file
 
 class rsModulationConnectionWidget;
-class AutomatableWidget;
+class rsAutomatableWidget;
 //class rsNodeEditor;
 
 /** Baseclass for rsAutomationSetup and rsModulationSetup. */
@@ -15,12 +15,12 @@ class JUCE_API rsParameterSetupBase : public ColourSchemeComponent, public RButt
 
 public:
 
-  rsParameterSetupBase(AutomatableWidget* widgetToModulate, MetaParameterManager* metaManager);
+  rsParameterSetupBase(rsAutomatableWidget* widgetToModulate, MetaParameterManager* metaManager);
   virtual ~rsParameterSetupBase() {}
 
 protected:
 
-  AutomatableWidget* widget;                 // our owner widget
+  rsAutomatableWidget* widget;                 // our owner widget
   MetaParameterManager* metaManager;
   RClickButtonNotifyOnMouseUp* closeButton; 
 
@@ -96,7 +96,7 @@ class JUCE_API rsAutomationSetup : public rsParameterSetupBase, public RComboBox
 
 public:
 
-  rsAutomationSetup(AutomatableWidget* widgetToAutomate, MetaParameterManager* metaManager);
+  rsAutomationSetup(rsAutomatableWidget* widgetToAutomate, MetaParameterManager* metaManager);
   virtual ~rsAutomationSetup();
 
   virtual void rButtonClicked(RButton *button) override;
@@ -153,7 +153,7 @@ public:
   will be assigned to its underlying Parameter assumed to be a ModulatableParameter) and you must 
   also pass a pointer to the MetaParameterManager object that should be used for attaching a
   meta-parameter to the modulation-depths of the connections to be made. */
-  rsModulationSetup(AutomatableWidget* widgetToModulate, MetaParameterManager* metaManager);
+  rsModulationSetup(rsAutomatableWidget* widgetToModulate, MetaParameterManager* metaManager);
 
   /** Destructor. */
   virtual ~rsModulationSetup();
@@ -229,21 +229,21 @@ protected:
 /** RWidget subclass that adds automation facilities either via MIDI or the host automation system 
 using setParameter(). If you want to make a widget automatable, derive it from some widget class 
 and also from this class, for example, like: 
-class JUCE_API AutomatableSlider : public RSlider, public AutomatableWidget
+class JUCE_API rsAutomatableSlider : public RSlider, public rsAutomatableWidget
 \todo: maybe move into jura_processors module (it's relevant only for audio plugins). 
 
 maybe rename to something that fits better (we now have also lumped in the modulation stuff)
 
 */
 
-class JUCE_API AutomatableWidget : virtual public RPopUpMenuObserver, public rsDeletor
+class JUCE_API rsAutomatableWidget : virtual public RPopUpMenuObserver, public rsDeletor
 {
 
 public:
 
-  AutomatableWidget(RWidget *widgetToWrap);
+  rsAutomatableWidget(RWidget *widgetToWrap);
 
-  virtual ~AutomatableWidget();
+  virtual ~rsAutomatableWidget();
 
   /** Returns true if the popup menu is currently open, false otherwise. */
   bool isPopUpOpen();
@@ -337,17 +337,17 @@ protected:
   rsModulationSetup* modSetup  = nullptr;  // ditto for modulation setup
   rsAutomationSetup* metaSetup = nullptr;  // ditto
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableWidget)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomatableWidget)
 };
 
 //=================================================================================================
 
-class JUCE_API AutomatableSlider : public RSlider, public AutomatableWidget
+class JUCE_API rsAutomatableSlider : public RSlider, public rsAutomatableWidget
 {
 
 public:
 
-  AutomatableSlider();
+  rsAutomatableSlider();
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
   virtual void mouseDown(const MouseEvent& e) override;
 
@@ -357,32 +357,32 @@ protected:
   virtual void addPopUpEnterValueItem();
   virtual void addPopUpDefaultValueItems();
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableSlider)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomatableSlider)
 };
 
 
-class JUCE_API AutomatableComboBox : public RComboBox, public AutomatableWidget
+class JUCE_API rsAutomatableComboBox : public RComboBox, public rsAutomatableWidget
 {
 
 public:
 
-  AutomatableComboBox();
+  rsAutomatableComboBox();
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void parameterChanged(Parameter* p) override;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableComboBox)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomatableComboBox)
 };
 
-class JUCE_API AutomatableButton : public RButton, public AutomatableWidget
+class JUCE_API rsAutomatableButton : public RButton, public rsAutomatableWidget
 {
 
 public:
 
-  AutomatableButton(const juce::String& buttonText = juce::String::empty);
+  rsAutomatableButton(const juce::String& buttonText = juce::String::empty);
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void parameterChanged(Parameter* p) override;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableButton)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomatableButton)
 };
 
 //=================================================================================================
@@ -391,7 +391,7 @@ public:
 setup. They need some special additional options in their popup menu such as facilities to set 
 min/max values and the modulation mode. */
 
-class JUCE_API rsModulationDepthSlider : public AutomatableSlider
+class JUCE_API rsModulationDepthSlider : public rsAutomatableSlider
 {
 
 public:
@@ -491,13 +491,13 @@ parameter.
  of flags for such things
 */
 
-class JUCE_API ModulatableSlider : public AutomatableSlider, public ModulationTargetObserver
+class JUCE_API rsModulatableSlider : public rsAutomatableSlider, public ModulationTargetObserver
 {
 
 public:
 
-  ModulatableSlider();
-  virtual ~ModulatableSlider();
+  rsModulatableSlider();
+  virtual ~rsModulatableSlider();
 
   void modulationsChanged() override;
   void assignParameter(Parameter* parameterToAssign) override;
@@ -505,12 +505,12 @@ public:
 
   bool hasModulation();
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableSlider)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulatableSlider)
 };
 
 //=================================================================================================
 
-class JUCE_API rsModulatableSliderAnimated : public ModulatableSlider, public juce::Timer
+class JUCE_API rsrsModulatableSliderAnimated : public rsModulatableSlider, public juce::Timer
 {
 
 public:
@@ -519,7 +519,7 @@ public:
   void paint(Graphics& g) override;
   void timerCallback() override;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulatableSliderAnimated)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsrsModulatableSliderAnimated)
 };
 
 

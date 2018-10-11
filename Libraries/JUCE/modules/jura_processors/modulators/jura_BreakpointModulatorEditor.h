@@ -48,9 +48,9 @@ protected:
   BreakpointModulatorAudioModule* modulatorToEdit;
 
   // widgets:
-  AutomatableSlider *timeScaleSlider, *timeScaleByKeySlider, *timeScaleByVelSlider,
+  rsAutomatableSlider *timeScaleSlider, *timeScaleByKeySlider, *timeScaleByVelSlider,
     *depthSlider, *depthByKeySlider, *depthByVelSlider;
-  //AutomatableButton *loopButton, *syncButton; // later - make them automatable
+  //rsAutomatableButton *loopButton, *syncButton; // later - make them automatable
   RButton *loopButton, *syncButton;
   RButton *editButton;
 

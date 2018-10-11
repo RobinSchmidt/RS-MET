@@ -445,8 +445,8 @@ void WaveOscEditorContextMenu::rSliderValueChanged(RSlider *sliderThatHasChanged
 
 void WaveOscEditorContextMenu::createWidgets()
 {
-  typedef AutomatableSlider Sld;  Sld* s;
-  typedef AutomatableButton Btn;  Btn* b;
+  typedef rsAutomatableSlider Sld;  Sld* s;
+  typedef rsAutomatableButton Btn;  Btn* b;
   typedef RTextField        Txf;  Txf* t;
 
   addWidget( ampHeadline = t = new Txf("Amplitude:") );

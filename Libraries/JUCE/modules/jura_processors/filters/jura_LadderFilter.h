@@ -112,8 +112,8 @@ protected:
 
   Ladder *ladderToEdit;
   rsLadderPlotEditor* plotEditor;
-  ModulatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
-  AutomatableComboBox *modeComboBox;
+  rsModulatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
+  rsAutomatableComboBox *modeComboBox;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LadderEditor)
 };

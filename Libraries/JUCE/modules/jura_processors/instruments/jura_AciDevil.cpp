@@ -164,9 +164,9 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
 
 void AciDevilModuleEditor::createWidgets()
 {
-  typedef AutomatableSlider Sld;
-  typedef AutomatableComboBox Box;
-  //typedef AutomatableButton Btn;
+  typedef rsAutomatableSlider Sld;
+  typedef rsAutomatableComboBox Box;
+  //typedef rsAutomatableButton Btn;
   typedef RTextField Lbl;
   Sld* s;
   Box* c;

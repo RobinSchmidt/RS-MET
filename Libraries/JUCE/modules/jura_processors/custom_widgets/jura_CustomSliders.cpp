@@ -1,5 +1,5 @@
 
-TuningSlider::TuningSlider(const juce::String& componentName) : AutomatableSlider()
+TuningSlider::TuningSlider(const juce::String& componentName) : rsAutomatableSlider()
 {
   //jassertfalse; // it needs to be checked carefully, if the popup menu works as intended
 }
@@ -14,7 +14,7 @@ void TuningSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   {
   case OCTAVE_UP:   applySemitoneShiftToValue( 12.0); break;
   case OCTAVE_DOWN: applySemitoneShiftToValue(-12.0); break;
-  default:          AutomatableSlider::rPopUpMenuChanged(menuThatHasChanged);
+  default:          rsAutomatableSlider::rPopUpMenuChanged(menuThatHasChanged);
   }
 }
 

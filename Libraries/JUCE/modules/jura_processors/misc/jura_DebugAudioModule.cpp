@@ -127,7 +127,7 @@ DebugModuleEditor::DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdi
 
 void DebugModuleEditor::createWidgets()
 {
-  typedef ModulatableSlider Sld;
+  typedef rsModulatableSlider Sld;
   Sld* s;
   Parameter* p;
 

@@ -258,7 +258,7 @@ void SnowflakeEditor::createWidgets()
   ScopedLock scopedLock(*lock);
   typedef RTextField Lbl;
   typedef RButton Btn;
-  typedef ModulatableSlider Sld;
+  typedef rsModulatableSlider Sld;
   Sld* s;
   Lbl* l;
   Btn* b;

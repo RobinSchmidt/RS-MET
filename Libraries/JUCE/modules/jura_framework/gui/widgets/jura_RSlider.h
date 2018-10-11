@@ -40,7 +40,7 @@ public:
 */
 
 //class JUCE_API RSlider : public RWidget, public RPopUpMenuObserver
-//class JUCE_API RSlider : public AutomatableWidget
+//class JUCE_API RSlider : public rsAutomatableWidget
 class JUCE_API RSlider : public RWidget
 {
 

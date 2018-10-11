@@ -309,7 +309,7 @@ void RayBouncerAudioModule::autoResetIfDesired()
 //  rayBouncerToEdit = newRayBouncerToEdit;
 //
 //  // create the widgets and assign the automatable parameters to them:
-//  addWidget( cutoffSlider = new AutomatableSlider() );
+//  addWidget( cutoffSlider = new rsAutomatableSlider() );
 //  cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
 //  cutoffSlider->setSliderName("Cutoff");
 //  cutoffSlider->setDescription("Cutoff frequency in Hz");

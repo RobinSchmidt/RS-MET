@@ -432,10 +432,10 @@ protected:
 
   // widgets:
   RTextField        *bandParametersLabel;
-  AutomatableButton *bypassButton;
+  rsAutomatableButton *bypassButton;
   RButton           *copyButton, *pasteButton, *invertButton;
   RNamedComboBox    *stereoModeComboBox, *gainRangeComboBox, *filterModeComboBox;
-  ModulatableSlider *frequencySlider, *gainSlider, *bandwidthSlider, *globalGainSlider;
+  rsModulatableSlider *frequencySlider, *gainSlider, *bandwidthSlider, *globalGainSlider;
   RRadioButton      *channelSelectButton1, *channelSelectButton2;
   RRadioButtonGroup channelSelectRadioGroup;
 

@@ -165,7 +165,7 @@ private:
     // \TODO (IMPORTANT): use a pointer such that a number of widgets can share the colour-scheme
     // - if NULL we may use a global default colorscheme object
 
-  friend class AutomatableWidget;
+  friend class rsAutomatableWidget;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RWidget)
 };
 

@@ -15,7 +15,7 @@ things:
 -somewhere have a ModulationManager object lying around, a pointer to that object should be passed
  to the constructor call of the ModulatableAudioModule baseclass
 -use objects of type ModulatableParameter for its parameters
--use objects of type ModulatableSlider for the sliders of the to-be-modulated parameters
+-use objects of type rsModulatableSlider for the sliders of the to-be-modulated parameters
 -every ModulationSource that should be available must be registered with the ModulationManager
  object
 -before producing a sample, your AudioModule must call applyModulations on the ModulationManager

@@ -1,4 +1,4 @@
-rsParameterSetupBase::rsParameterSetupBase(AutomatableWidget* widgetToSetup,
+rsParameterSetupBase::rsParameterSetupBase(rsAutomatableWidget* widgetToSetup,
   MetaParameterManager* metaManagerToUse)
   : rsDeletionRequester(widgetToSetup), widget(widgetToSetup), metaManager(metaManagerToUse)
 {
@@ -140,7 +140,7 @@ void rsMetaMapEditor::updateParameter()
 
 //=================================================================================================
 
-rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
+rsAutomationSetup::rsAutomationSetup(rsAutomatableWidget* widgetToAutomate,
   MetaParameterManager* metaManagerToUse)
   : rsParameterSetupBase(widgetToAutomate, metaManagerToUse)
 {
@@ -303,7 +303,7 @@ void rsAutomationSetup::updateWidgetVisibility()
 
 //=================================================================================================
 
-rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate, 
+rsModulationSetup::rsModulationSetup(rsAutomatableWidget* widgetToModulate, 
   MetaParameterManager* metaManagerToUse)
   : rsParameterSetupBase(widgetToModulate, metaManagerToUse)
 {
@@ -615,19 +615,19 @@ double rsModulationSetup::getClipMax()
 
 //=================================================================================================
 
-AutomatableWidget::AutomatableWidget(RWidget *widgetToWrap)
+rsAutomatableWidget::rsAutomatableWidget(RWidget *widgetToWrap)
 {
   wrappedWidget = widgetToWrap;
 }
 
-AutomatableWidget::~AutomatableWidget()
+rsAutomatableWidget::~rsAutomatableWidget()
 {
   delete rightClickPopUp;
   delete modSetup;
   delete metaSetup;
 }
 
-bool AutomatableWidget::isPopUpOpen()
+bool rsAutomatableWidget::isPopUpOpen()
 {
   return popUpIsOpen;
 
@@ -645,7 +645,7 @@ bool AutomatableWidget::isPopUpOpen()
   //  return rightClickPopUp->isOpen();
 }
 
-void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menu)
+void rsAutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menu)
 {
   if(menu != rightClickPopUp)
     return;
@@ -689,12 +689,12 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menu)
   }
 }
 
-void AutomatableWidget::rPopUpMenuDismissed(RPopUpMenu* menuThatwasDismissed)
+void rsAutomatableWidget::rPopUpMenuDismissed(RPopUpMenu* menuThatwasDismissed)
 {
   popUpIsOpen = false;
 }
 
-void AutomatableWidget::updatePopUpMenu()
+void rsAutomatableWidget::updatePopUpMenu()
 {
   if(rightClickPopUp == nullptr)
   {
@@ -708,14 +708,14 @@ void AutomatableWidget::updatePopUpMenu()
   addPopUpMenuItems();
 }
 
-void AutomatableWidget::addPopUpMenuItems()
+void rsAutomatableWidget::addPopUpMenuItems()
 {
   addPopUpMetaItems();
   addPopUpMidiItems();
   addPopUpModulationItems();
 }
 
-void AutomatableWidget::addPopUpMidiItems()
+void rsAutomatableWidget::addPopUpMidiItems()
 {
   AutomatableParameter* ap = getAutomatableParameter();
   if(ap != nullptr)
@@ -745,7 +745,7 @@ void AutomatableWidget::addPopUpMidiItems()
   }
 }
 
-void AutomatableWidget::addPopUpMetaItems()
+void rsAutomatableWidget::addPopUpMetaItems()
 {
   MetaControlledParameter* mcp = getMetaControlledParameter();
   if(mcp != nullptr)
@@ -764,14 +764,14 @@ void AutomatableWidget::addPopUpMetaItems()
   }
 }
 
-void AutomatableWidget::addPopUpModulationItems()
+void rsAutomatableWidget::addPopUpModulationItems()
 {
   ModulatableParameter* mp = getModulatableParameter();
   if(mp != nullptr)
     rightClickPopUp->addItem(MODULATION_SETUP, "Modulation setup");
 }
 
-void AutomatableWidget::openRightClickPopupMenu()
+void rsAutomatableWidget::openRightClickPopupMenu()
 {
   updatePopUpMenu();
   int w = jmax(wrappedWidget->getWidth(), rightClickPopUp->getRequiredWidth(true));
@@ -786,14 +786,14 @@ void AutomatableWidget::openRightClickPopupMenu()
   popUpIsOpen = true;
 }
 
-void AutomatableWidget::closePopUp()
+void rsAutomatableWidget::closePopUp()
 {
   if(rightClickPopUp != nullptr)
     rightClickPopUp->dismiss();
   popUpIsOpen = false;
 }
 
-void AutomatableWidget::showAutomationSetup()
+void rsAutomatableWidget::showAutomationSetup()
 {
   int wh = wrappedWidget->getHeight();       // widget height
   int x  = wrappedWidget->getScreenX();
@@ -807,7 +807,7 @@ void AutomatableWidget::showAutomationSetup()
   metaSetup->toFront(true);
 }
 // todo: get rid of code duplication
-void AutomatableWidget::showModulationSetup()
+void rsAutomatableWidget::showModulationSetup()
 {
   int wh = wrappedWidget->getHeight();       // widget height
   int x  = wrappedWidget->getScreenX();
@@ -821,7 +821,7 @@ void AutomatableWidget::showModulationSetup()
   modSetup->toFront(true);
 }
 
-void AutomatableWidget::deleteObject(rsDeletionRequester* objectToDelete)
+void rsAutomatableWidget::deleteObject(rsDeletionRequester* objectToDelete)
 {
   if(objectToDelete == modSetup)
     modSetup->setVisible(false);
@@ -831,27 +831,27 @@ void AutomatableWidget::deleteObject(rsDeletionRequester* objectToDelete)
     jassertfalse;
 }
 
-AutomatableParameter* AutomatableWidget::getAutomatableParameter()
+AutomatableParameter* rsAutomatableWidget::getAutomatableParameter()
 {
   return dynamic_cast<AutomatableParameter*> (wrappedWidget->assignedParameter);
 }
 
-MetaControlledParameter* AutomatableWidget::getMetaControlledParameter()
+MetaControlledParameter* rsAutomatableWidget::getMetaControlledParameter()
 {
   return dynamic_cast<MetaControlledParameter*> (wrappedWidget->assignedParameter);
 }
 
-ModulatableParameter* AutomatableWidget::getModulatableParameter()
+ModulatableParameter* rsAutomatableWidget::getModulatableParameter()
 {
   return dynamic_cast<ModulatableParameter*> (wrappedWidget->assignedParameter);
 }
 
-String AutomatableWidget::getParameterName()
+String rsAutomatableWidget::getParameterName()
 {
   return wrappedWidget->assignedParameter->getName();
 }
 
-MetaParameterManager* AutomatableWidget::getMetaParameterManager()
+MetaParameterManager* rsAutomatableWidget::getMetaParameterManager()
 {
   MetaControlledParameter* mcp = 
     dynamic_cast<MetaControlledParameter*> (wrappedWidget->assignedParameter);
@@ -863,13 +863,13 @@ MetaParameterManager* AutomatableWidget::getMetaParameterManager()
 
 //=================================================================================================
 
-AutomatableSlider::AutomatableSlider()
-  : AutomatableWidget(this)
+rsAutomatableSlider::rsAutomatableSlider()
+  : rsAutomatableWidget(this)
 {
 
 }
 
-void AutomatableSlider::mouseDown(const MouseEvent& e)
+void rsAutomatableSlider::mouseDown(const MouseEvent& e)
 {
   if(e.mods.isRightButtonDown())
   {
@@ -891,7 +891,7 @@ void AutomatableSlider::mouseDown(const MouseEvent& e)
   }
 }
 
-void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
+void rsAutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
   if( menuThatHasChanged != rightClickPopUp )
     return;
@@ -905,23 +905,23 @@ void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   {
   case ENTER_VALUE:   setValue(openModalNumberEntryField(getValue()),        true, false); break;
   case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true, false); break; //?
-  default: AutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
+  default: rsAutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
   }
 }
 
-void AutomatableSlider::addPopUpMenuItems()
+void rsAutomatableSlider::addPopUpMenuItems()
 {
   addPopUpEnterValueItem();
   addPopUpDefaultValueItems();
-  AutomatableWidget::addPopUpMenuItems();
+  rsAutomatableWidget::addPopUpMenuItems();
 }
 
-void AutomatableSlider::addPopUpEnterValueItem()
+void rsAutomatableSlider::addPopUpEnterValueItem()
 {
   rightClickPopUp->addItem(ENTER_VALUE, "Enter Value");
 }
 
-void AutomatableSlider::addPopUpDefaultValueItems()
+void rsAutomatableSlider::addPopUpDefaultValueItems()
 {
   if( defaultValues.size() > 0 )
   {
@@ -934,26 +934,26 @@ void AutomatableSlider::addPopUpDefaultValueItems()
 
 //=================================================================================================
 
-AutomatableComboBox::AutomatableComboBox()
-  : AutomatableWidget(this)
+rsAutomatableComboBox::rsAutomatableComboBox()
+  : rsAutomatableWidget(this)
 {
 
 }
 
-void AutomatableComboBox::mouseDown(const MouseEvent& e)
+void rsAutomatableComboBox::mouseDown(const MouseEvent& e)
 {
   if( e.mods.isRightButtonDown() )
   {
     if(!isPopUpOpen())
       openRightClickPopupMenu();
     else
-      AutomatableWidget::closePopUp();
+      rsAutomatableWidget::closePopUp();
   }
   else
     RComboBox::mouseDown(e);
 }
 
-void AutomatableComboBox::parameterChanged(Parameter* p)
+void rsAutomatableComboBox::parameterChanged(Parameter* p)
 {
   RWidget::parameterChanged(p);
   // not sure, why that's needed - isn't it supposed to be called anyway, i.e. if we don't override
@@ -963,13 +963,13 @@ void AutomatableComboBox::parameterChanged(Parameter* p)
 
 //=================================================================================================
 
-AutomatableButton::AutomatableButton(const juce::String& buttonText)
-  : RButton(buttonText), AutomatableWidget(this)
+rsAutomatableButton::rsAutomatableButton(const juce::String& buttonText)
+  : RButton(buttonText), rsAutomatableWidget(this)
 {
 
 }
 
-void AutomatableButton::mouseDown(const MouseEvent& e)
+void rsAutomatableButton::mouseDown(const MouseEvent& e)
 {
   if( e.mods.isRightButtonDown() )
   {
@@ -982,7 +982,7 @@ void AutomatableButton::mouseDown(const MouseEvent& e)
     RButton::mouseDown(e);
 }
 
-void AutomatableButton::parameterChanged(Parameter* p)
+void rsAutomatableButton::parameterChanged(Parameter* p)
 {
   RWidget::parameterChanged(p);
 }
@@ -996,7 +996,7 @@ void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menu)
   {
   case MOD_DEPTH_MIN: setModDepthMin(openModalNumberEntryField(getModDepthMin())); break;
   case MOD_DEPTH_MAX: setModDepthMax(openModalNumberEntryField(getModDepthMax())); break;
-  default: AutomatableSlider::rPopUpMenuChanged(menu);
+  default: rsAutomatableSlider::rPopUpMenuChanged(menu);
   }
   juce::String text = menu->getSelectedText();
   typedef ModulationConnection::modModes MM;
@@ -1008,7 +1008,7 @@ void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menu)
 
 void rsModulationDepthSlider::addPopUpMenuItems()
 {
-  AutomatableSlider::addPopUpMenuItems();
+  rsAutomatableSlider::addPopUpMenuItems();
   addPopUpMinMaxAndModeItems();
 }
 
@@ -1046,39 +1046,39 @@ void rsModulationConnectionWidget::resized()
 
 //=================================================================================================
 
-ModulatableSlider::ModulatableSlider() 
+rsModulatableSlider::rsModulatableSlider() 
 {
 
 }
 
-ModulatableSlider::~ModulatableSlider()
+rsModulatableSlider::~rsModulatableSlider()
 {
   ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
   if(mp)
     mp->deRegisterModulationTargetObserver(this);
 }
 
-void ModulatableSlider::modulationsChanged()
+void rsModulatableSlider::modulationsChanged()
 {
   repaint();
 }
 
-void ModulatableSlider::assignParameter(Parameter* p)
+void rsModulatableSlider::assignParameter(Parameter* p)
 {
-  AutomatableSlider::assignParameter(p);
+  rsAutomatableSlider::assignParameter(p);
   ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (p);
   if(mp)
     mp->registerModulationTargetObserver(this);
 }
 
-void ModulatableSlider::paint(Graphics& g)
+void rsModulatableSlider::paint(Graphics& g)
 {
-  AutomatableSlider::paint(g);
+  rsAutomatableSlider::paint(g);
   if(hasModulation())
     g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
 }
 
-bool ModulatableSlider::hasModulation()
+bool rsModulatableSlider::hasModulation()
 {
   ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
   if(mp && mp->hasConnectedSources())
@@ -1088,7 +1088,7 @@ bool ModulatableSlider::hasModulation()
 
 //=================================================================================================
 
-void rsModulatableSliderAnimated::modulationsChanged()
+void rsrsModulatableSliderAnimated::modulationsChanged()
 {
   if(hasModulation())
     startTimerHz(30);
@@ -1097,15 +1097,15 @@ void rsModulatableSliderAnimated::modulationsChanged()
   repaint(); // ...OnMessageThread?
 }
 
-void rsModulatableSliderAnimated::paint(Graphics& g)
+void rsrsModulatableSliderAnimated::paint(Graphics& g)
 {
-  ModulatableSlider::repaint();
+  rsModulatableSlider::repaint();
 
   // todo: indicate modulated value
 
 }
 
-void rsModulatableSliderAnimated::timerCallback()
+void rsrsModulatableSliderAnimated::timerCallback()
 {
   repaint();
 }

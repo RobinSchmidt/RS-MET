@@ -422,8 +422,8 @@ void EngineersFilterModuleEditor::parameterChanged(Parameter* param)
 
 void EngineersFilterModuleEditor::createWidgets()
 {
-  typedef AutomatableSlider Sld;
-  //typedef AutomatableComboBox Box;
+  typedef rsAutomatableSlider Sld;
+  //typedef rsAutomatableComboBox Box;
   Sld* s;
   //Box* c;
   Parameter* p;

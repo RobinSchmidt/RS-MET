@@ -1077,10 +1077,10 @@ void GenericAudioModuleEditor::createWidgets()
   // using the inherited addWidget method (this will add the widget to our inherited widgets
   // array)
 
-  typedef AutomatableButton   Btn;
-  typedef AutomatableComboBox Cmb;
-  typedef ModulatableSlider   Sld;
-  //typedef AutomatableSlider   Sld; // doesn't show modulation connection
+  typedef rsAutomatableButton   Btn;
+  typedef rsAutomatableComboBox Cmb;
+  typedef rsModulatableSlider   Sld;
+  //typedef rsAutomatableSlider   Sld; // doesn't show modulation connection
 
   Parameter *p;
   Sld *s;

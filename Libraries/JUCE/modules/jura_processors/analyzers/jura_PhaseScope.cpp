@@ -488,14 +488,14 @@ void PhaseScopeEditor::createWidgets()
   b->setDescription("Synchronize 1D scanning frequency to input");
   b->setDescriptionField(infoField);
 
-  addWidget( s = sliderScanFreq = new AutomatableSlider );
+  addWidget( s = sliderScanFreq = new rsAutomatableSlider );
   s->assignParameter( scope->getParameterByName("ScanFrequency") );
   s->setSliderName("ScanFreq");
   s->setDescription("Scanning frequency in 1D mode");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
-  addWidget( s = sliderNumCycles = new AutomatableSlider );
+  addWidget( s = sliderNumCycles = new rsAutomatableSlider );
   s->assignParameter( scope->getParameterByName("NumCycles") );
   s->setSliderName("NumCycles");
   s->setDescription("Number of cycles in synced 1D mode");
@@ -506,49 +506,49 @@ void PhaseScopeEditor::createWidgets()
 
 
   // geometric transforms:
-  addWidget(s = sliderScaleX = new AutomatableSlider);
+  addWidget(s = sliderScaleX = new rsAutomatableSlider);
   s->assignParameter(scope->getParameterByName("ScaleX"));
   s->setSliderName("ScaleX");
   s->setDescription("Scaling along x-direction");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
-  addWidget(s = sliderScaleY = new AutomatableSlider);
+  addWidget(s = sliderScaleY = new rsAutomatableSlider);
   s->assignParameter(scope->getParameterByName("ScaleY"));
   s->setSliderName("ScaleY");
   s->setDescription("Scaling along y-direction");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
-  //addWidget(s = sliderShearX = new AutomatableSlider);
+  //addWidget(s = sliderShearX = new rsAutomatableSlider);
   //s->assignParameter(scope->getParameterByName("ShearX"));
   //s->setSliderName("ShearX");
   //s->setDescription("Shearing along x-direction");
   //s->setDescriptionField(infoField);
   //s->setStringConversionFunction(&valueToString3);
 
-  //addWidget(s = sliderShearY = new AutomatableSlider);
+  //addWidget(s = sliderShearY = new rsAutomatableSlider);
   //s->assignParameter(scope->getParameterByName("ShearY"));
   //s->setSliderName("ShearY");
   //s->setDescription("Shearing along y-direction");
   //s->setDescriptionField(infoField);
   //s->setStringConversionFunction(&valueToString3);
 
-  addWidget(s = sliderRotation = new AutomatableSlider);
+  addWidget(s = sliderRotation = new rsAutomatableSlider);
   s->assignParameter(scope->getParameterByName("Rotation"));
   s->setSliderName("Rotation");
   s->setDescription("Rotation around origin");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&degreesToStringWithUnit0);
 
-  //addWidget(s = sliderShiftX = new AutomatableSlider);
+  //addWidget(s = sliderShiftX = new rsAutomatableSlider);
   //s->assignParameter(scope->getParameterByName("ShiftX"));
   //s->setSliderName("ShiftX");
   //s->setDescription("Shifting along x-direction");
   //s->setDescriptionField(infoField);
   //s->setStringConversionFunction(&valueToString3);
 
-  //addWidget(s = sliderShiftY = new AutomatableSlider);
+  //addWidget(s = sliderShiftY = new rsAutomatableSlider);
   //s->assignParameter(scope->getParameterByName("ShiftY"));
   //s->setSliderName("ShiftY");
   //s->setDescription("Shifting along y-direction");

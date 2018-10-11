@@ -4,7 +4,7 @@
 /** This class overrides RSlider to cater for some requirements that are specific to sliders that 
 set up a tuning parameter.  */
 
-class TuningSlider : public AutomatableSlider
+class TuningSlider : public rsAutomatableSlider
 {
 
 public:

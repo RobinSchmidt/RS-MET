@@ -71,9 +71,9 @@ protected:
   rsVectorPad *xyPad;
   rsNodeEditor *nodeEditor = nullptr;
 
-  ModulatableSlider *leftSlider, *rightSlider, *smoothSlider, *testSlider;
-  //AutomatableComboBox *modeComboBox;
-  //AutomatableButton *invertButton;  
+  rsModulatableSlider *leftSlider, *rightSlider, *smoothSlider, *testSlider;
+  //rsAutomatableComboBox *modeComboBox;
+  //rsAutomatableButton *invertButton;  
    // use ModulatabelSlider, etc later
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugModuleEditor)

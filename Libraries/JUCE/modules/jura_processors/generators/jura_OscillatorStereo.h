@@ -7,7 +7,7 @@
 plugIn or sub-module inside a plugin.  
 
 todo:
--make parameters modulatable (use ModulatableSlider/Parameter), where possible (and test it)
+-make parameters modulatable (use rsModulatableSlider/Parameter), where possible (and test it)
 -check, how Straightliner can handle additional modulation
 -add freq-offset parameter (as target for LFO)
 -make a separate gui editor and use the current only for straightliner - remove the "Mod" slider

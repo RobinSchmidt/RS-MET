@@ -174,7 +174,7 @@ protected:
 
   RComboBox *boxDrawMode;
 
-  AutomatableSlider *sliderScaleX, *sliderScaleY, *sliderShearX, *sliderShearY,
+  rsAutomatableSlider *sliderScaleX, *sliderScaleY, *sliderShearX, *sliderShearY,
     *sliderRotation, *sliderShiftX, *sliderShiftY,
     *sliderScanFreq, *sliderNumCycles; // , *sliderZoom;
   // use regular (non-automatable) sliders
