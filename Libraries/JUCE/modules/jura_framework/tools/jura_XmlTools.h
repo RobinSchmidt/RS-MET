@@ -32,7 +32,7 @@ child-elements with given name is smaller than the given index plus one. */
 JUCE_API XmlElement* getChildElementByNameAndIndexAmongNameSakes(const XmlElement& xml, 
   const juce::String& name, int index);
 
-JUCE_API bool isValidXmlAttributeName(const juce::String& s);
+//JUCE_API bool isValidXmlAttributeName(const juce::String& s);
 
 //XmlElement::isValidXmlName
 

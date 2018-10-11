@@ -89,20 +89,12 @@ XmlElement* getChildElementByNameAndIndexAmongNameSakes(const XmlElement& xml,
   }
 }
 
+/*
 bool isValidXmlAttributeName(const juce::String& s)
 {
   int N = s.length();
   if(N == 0)
     return false;
-
-  //CharPointer_UTF8 cp = s.getCharPointer();
-  //if(!cp[0].isLetter())
-  //  return false;
-  //for(int i = 1; i < N; i++)
-  //  if(!cp[i].isLetterOrDigit())
-  //    return false;
-  // ...dunno, why this doesn't compile - i don't understand, how the CharPointer_UTF8 class is 
-  // supposed to be used
 
   // this works - let's keep it simple!
   typedef rosic::rsString S;
@@ -114,3 +106,7 @@ bool isValidXmlAttributeName(const juce::String& s)
 
   return true;
 }
+// superfluous XmlElement::isValidXmlName should work for attributes also
+// see here
+// https://docstore.mik.ua/orelly/xml/xmlnut/ch02_04.htm
+*/
