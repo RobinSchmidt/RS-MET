@@ -1088,14 +1088,30 @@ bool rsModulatableSlider::hasModulation()
 
 //=================================================================================================
 
-void rsrsModulatableSliderAnimated::modulationsChanged()
+void rsModulatableSliderAnimated::modulationsChanged()
 {
   hasModConnections = hasModulation(); // update our flag
+
+  // or - even better than setting a flag would be to de/register with the RepaintManager!!
+
+  // maybe we have trigger a repaint one last time, after all connectiosn have been removed to get
+  // rid of the indicator?
 }
 
-void rsrsModulatableSliderAnimated::paint(Graphics& g)
+void rsModulatableSliderAnimated::paint(Graphics& g)
 {
   rsModulatableSlider::repaint();
 
-  // todo: indicate modulated value
+  ModulatableParameter* mp = getModulatableParameter();
+  if(mp != nullptr && hasModConnections)
+  {
+    double modValue = 0.5;  // preliminary
+    modValue = mp->getModulatedValue();
+    modValue = mp->valueToProportion(modValue); // unmap the 2nd (non-user defined) map
+
+    float x = (float) (modValue * getWidth());
+    float w = 4.f;  // mod-value indicator width
+    g.setColour(Colours::red.withAlpha(0.5f));  // preliminary
+    g.fillRect(x-w*0.5f, 0.f, w, (float) getHeight());
+  }
 }

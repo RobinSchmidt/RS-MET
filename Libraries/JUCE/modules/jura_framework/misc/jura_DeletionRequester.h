@@ -11,7 +11,7 @@ class JUCE_API rsDeletionRequester
 
 public:
 
-  /** Constructor. You should pass a valid pointer to an rsDeletorObject which will be used to 
+  /** Constructor. You should pass a valid pointer to an rsDeletor object which will be used to 
   issue the deletion request for this object. */
   rsDeletionRequester(rsDeletor* deletorToUse) : deletor(deletorToUse) {}
 
@@ -71,9 +71,9 @@ callback). Deferring the deletion to some later time is sometimes necessary when
 delete itself, because after being marked for deletion, it may still receive callbacks. For 
 example, a button that deletes itself (immediately) when clicking on it (on mouseDown), would still 
 receive a mouseUp event after that deletion, leading to an access violation. Think of a close 
-button that is part of a window. Clicking on may delete the window and with it the button. Such 
+button that is part of a window. Clicking on it may delete the window and with it the button. Such 
 things can be circumvented by deferring the deletion (although, in this case, it may also be an
-option to delet on mouseUp). */
+option to delete on mouseUp). */
 
 class JUCE_API rsGarbageCollector : public rsDeletor, public juce::Timer
 {

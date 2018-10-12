@@ -510,7 +510,7 @@ public:
 
 //=================================================================================================
 
-class JUCE_API rsrsModulatableSliderAnimated : public rsModulatableSlider, public rsRepaintClient
+class JUCE_API rsModulatableSliderAnimated : public rsModulatableSlider, public rsRepaintClient
 {
 
 public:
@@ -523,7 +523,7 @@ protected:
 
   bool hasModConnections = false;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsrsModulatableSliderAnimated)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulatableSliderAnimated)
 };
 
 #endif   
