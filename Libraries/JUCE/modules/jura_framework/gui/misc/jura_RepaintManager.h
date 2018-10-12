@@ -2,6 +2,16 @@
 #define jura_RepaintManager_h
 
 
+class rsRepaintClient
+{
+public:
+
+  virtual bool needsRepaint() = 0;
+
+};
+
+//=================================================================================================
+
 /*
 Idea:
 -RepaintManager derives from juce::Timer
@@ -28,22 +38,30 @@ public:
 
   rsRepaintManager();
 
-  void registerRepaintee(juce::Component* repaintee);
+  void registerRepaintee(juce::Component* repaintee)
+  {
+    RAPT::rsAppendIfNotAlreadyThere(repaintees, repaintee);
+  }
 
-  void deRegisterRepaintee(juce::Component* repaintee);
+  void deRegisterRepaintee(juce::Component* repaintee)
+  {
+    RAPT::rsRemoveFirstOccurrence(repaintees, repaintee);
+  }
 
-  void setRepaintRate(double newRateInHz);
-
+  void setRepaintRate(int newRateInHz)
+  {
+    if(newRateInHz <= 0)
+      stopTimer();
+    else
+      startTimerHz(newRateInHz);
+  }
 
   void timerCallback() override;
-
-
 
 
 protected:
 
   std::vector<juce::Component*> repaintees;
-
 
 };
 

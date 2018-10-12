@@ -98,8 +98,8 @@ inline bool rsContains(std::vector<T>& v, T elementToCheckFor)
 template<class T>
 inline void rsAppendIfNotAlreadyThere(std::vector<T>& v, T newElement)
 {
-  if(!contains(v, newElement))
-    append(v, newElement);
+  if(!rsContains(v, newElement))
+    rsAppend(v, newElement);
 }
 
 template<class T>
