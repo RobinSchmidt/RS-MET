@@ -1088,19 +1088,34 @@ bool rsModulatableSlider::hasModulation()
 
 //=================================================================================================
 
+rsModulatableSliderAnimated::rsModulatableSliderAnimated() : rsModulatableSlider() 
+{
+  hasModConnections = hasModulation();
+
+  // register at the repaint manager
+}
+
+rsModulatableSliderAnimated::~rsModulatableSliderAnimated()
+{
+  // de-register from the repaint manager
+}
+
 void rsModulatableSliderAnimated::modulationsChanged()
 {
   hasModConnections = hasModulation(); // update our flag
 
+  // hmmm...this functions seems to get called only when setting up modulations on the gui - not
+  // when modulations are recalled from a preset load
+
   // or - even better than setting a flag would be to de/register with the RepaintManager!!
 
-  // maybe we have trigger a repaint one last time, after all connectiosn have been removed to get
+  // maybe we have trigger a repaint one last time, after all connections have been removed to get
   // rid of the indicator?
 }
 
 void rsModulatableSliderAnimated::paint(Graphics& g)
 {
-  rsModulatableSlider::repaint();
+  rsModulatableSlider::paint(g);
 
   ModulatableParameter* mp = getModulatableParameter();
   if(mp != nullptr && hasModConnections)

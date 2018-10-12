@@ -515,6 +515,9 @@ class JUCE_API rsModulatableSliderAnimated : public rsModulatableSlider, public 
 
 public:
 
+  rsModulatableSliderAnimated();
+  virtual ~rsModulatableSliderAnimated();
+
   void modulationsChanged() override;
   bool needsRepaint() override { return hasModConnections; }
   void paint(Graphics& g) override;

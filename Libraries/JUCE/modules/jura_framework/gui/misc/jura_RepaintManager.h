@@ -9,6 +9,7 @@ public:
   virtual bool needsRepaint() = 0;
 
 };
+// hmm...maybe this class is not needed...we'll see
 
 //=================================================================================================
 

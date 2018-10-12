@@ -185,6 +185,9 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
 {
   ScopedLock scopedLock(*lock);
 
+  //typedef rsModulatableSlider Sld;
+  typedef rsModulatableSliderAnimated Sld;
+
   // assign the pointer to the edited object:
   jassert(newLadderToEdit != nullptr ); // you must pass a valid module here
   ladderToEdit = newLadderToEdit;
@@ -192,21 +195,21 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   plotEditor = new rsLadderPlotEditor(ladderToEdit);
   addChildColourSchemeComponent(plotEditor);
 
-  addWidget( cutoffSlider = new rsModulatableSlider() );
+  addWidget( cutoffSlider = new Sld );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
   cutoffSlider->setSliderName("Cutoff");
   cutoffSlider->setDescription("Cutoff frequency in Hz");
   cutoffSlider->setDescriptionField(infoField);
   cutoffSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( resonanceSlider = new rsModulatableSlider() );
+  addWidget( resonanceSlider = new Sld );
   resonanceSlider->assignParameter( ladderToEdit->getParameterByName("Resonance") );
   resonanceSlider->setSliderName("Resonance");
   resonanceSlider->setDescription("Amount of feedback");
   resonanceSlider->setDescriptionField(infoField);
   resonanceSlider->setStringConversionFunction(&valueToStringTotal5);
 
-  addWidget( spreadSlider = new rsModulatableSlider() );
+  addWidget( spreadSlider = new Sld );
   spreadSlider->assignParameter( ladderToEdit->getParameterByName("StereoSpread") );
   spreadSlider->setSliderName("Spread");
   spreadSlider->setDescription("Detunes cutoff frequencies of channels");
