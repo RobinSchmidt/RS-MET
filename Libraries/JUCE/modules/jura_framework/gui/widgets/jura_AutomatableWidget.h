@@ -510,17 +510,20 @@ public:
 
 //=================================================================================================
 
-class JUCE_API rsrsModulatableSliderAnimated : public rsModulatableSlider, public juce::Timer
+class JUCE_API rsrsModulatableSliderAnimated : public rsModulatableSlider, public rsRepaintClient
 {
 
 public:
 
   void modulationsChanged() override;
+  bool needsRepaint() override { return hasModConnections; }
   void paint(Graphics& g) override;
-  void timerCallback() override;
+
+protected:
+
+  bool hasModConnections = false;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsrsModulatableSliderAnimated)
 };
-
 
 #endif   

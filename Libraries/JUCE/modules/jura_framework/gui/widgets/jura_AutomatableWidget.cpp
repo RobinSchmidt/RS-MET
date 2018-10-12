@@ -1090,11 +1090,7 @@ bool rsModulatableSlider::hasModulation()
 
 void rsrsModulatableSliderAnimated::modulationsChanged()
 {
-  if(hasModulation())
-    startTimerHz(30);
-  else
-    stopTimer();
-  repaint(); // ...OnMessageThread?
+  hasModConnections = hasModulation(); // update our flag
 }
 
 void rsrsModulatableSliderAnimated::paint(Graphics& g)
@@ -1102,10 +1098,4 @@ void rsrsModulatableSliderAnimated::paint(Graphics& g)
   rsModulatableSlider::repaint();
 
   // todo: indicate modulated value
-
-}
-
-void rsrsModulatableSliderAnimated::timerCallback()
-{
-  repaint();
 }
