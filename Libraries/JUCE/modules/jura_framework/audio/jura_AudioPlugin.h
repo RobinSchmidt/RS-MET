@@ -278,11 +278,17 @@ public:
     pluginToEdit->editorHeight = getHeight();
   }
 
+  /** Returns a pointer to the repaint manager object that is used to trigger periodic calls to 
+  repaint for GUI animation. */
+  rsRepaintManager* getRepaintManager() { return &repaintManager; }
+
 protected:
 
   AudioModuleEditor* wrappedEditor;
 
   AudioPlugin* pluginToEdit;
+
+  rsRepaintManager repaintManager;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginEditor)
 };

@@ -35,6 +35,9 @@ public:
   void setRepaintRate(double newRateInHz);
 
 
+  void timerCallback() override;
+
+
 
 
 protected:

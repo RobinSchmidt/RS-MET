@@ -535,6 +535,17 @@ public:
   because you are not supposed to change the value of the pointer. */
   const AudioModule* getModuleToEdit() { return moduleToEdit; }
 
+
+  /** Returns a pointer to the parent AudioModuleEditor, if any and a nullptr if none. */
+  AudioModuleEditor* getParentAudioModuleEditor()
+  {
+    return dynamic_cast<AudioModuleEditor*>(getParentComponent());
+  }
+
+  /** Returns a pointer to the repaint manager object that is used to trigger periodic calls to 
+  repaint for GUI animation. */
+  rsRepaintManager* getRepaintManager();
+
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks:
 

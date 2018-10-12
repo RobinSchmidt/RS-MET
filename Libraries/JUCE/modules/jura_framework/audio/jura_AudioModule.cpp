@@ -810,6 +810,20 @@ int AudioModuleEditor::getPresetSectionBottom()
   return stateWidgetSet->getBottom();
 }
 
+rsRepaintManager* AudioModuleEditor::getRepaintManager()
+{
+  AudioModuleEditor* parentEditor = getParentAudioModuleEditor();
+  if(parentEditor != nullptr)
+    return parentEditor->getRepaintManager();
+
+  AudioPluginEditor* pluginEditor = dynamic_cast<AudioPluginEditor*>(getParentComponent());
+  if(pluginEditor != nullptr)
+    return pluginEditor->getRepaintManager();
+
+  jassertfalse; // an AudioModuleEditor should be child of another AudioModuleEditor or of an AudioPluginEditor
+  return nullptr;
+}
+
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
