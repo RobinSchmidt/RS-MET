@@ -7,7 +7,7 @@ bool runUnitTest(bool (*test)(), const string& name)
   //cout << "Testing: " + name + ": ";
   cout << name + ": ";
   bool passed = test();
-  rsAssert(passed); // break, if test fails
+  //rsAssert(passed); // break, if test fails
   if(passed)
     cout << "Passed\n";
   else
@@ -22,10 +22,12 @@ bool runAllUnitTests()
   // Data:
   passed &= runUnitTest(&float64x2UnitTest,        "rsFloat64x2");
   passed &= runUnitTest(&complexFloat64x2UnitTest, "std::complex<rsFloat64x2>");
+    // fails on linux ("illegal instruction") ...seems that illegal instruction is our
+    // rsAsserFalse debug-break
 
   // Math:
   passed &= runUnitTest(&coordinateMapperUnitTest,       "rsCoordinateMapper2D");
-  passed &= runUnitTest(&fitRationalUnitTest,            "fit rational");
+  passed &= runUnitTest(&fitRationalUnitTest,            "fit rational");   // fails on linux ("illegal instruction") - encounters singular matrix
   passed &= runUnitTest(&interpolatingFunctionUnitTest,  "rsInterpolatingFunction");
   passed &= runUnitTest(&resampleNonUniform,             "resampleNonUniform");
   passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
@@ -34,15 +36,15 @@ bool runAllUnitTests()
 
   passed &= runUnitTest(&testVector,                     "rsVector");
   passed &= runUnitTest(&testMatrix,                     "rsMatrix");
-  passed &= runUnitTest(&testMiscMath,                   "misc math");
-  passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");
+  passed &= runUnitTest(&testMiscMath,                   "misc math");  // fails on linux ("illegal instruction") - encounters a singular matrix
+  passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");  // fails on linux ("illegal instruction")
   passed &= runUnitTest(&testPolynomial,                 "rsPolynomial");
-  //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial  
+  //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial
   passed &= runUnitTest(&testDifferentialEquationSystem, "rsDifferentialEquationSystem");
   passed &= runUnitTest(&testIntegerFunctions,           "integer functions");
   passed &= runUnitTest(&testMoebiusTransform,           "rsMoebiusTransform");
-  passed &= runUnitTest(&testNumberTheory,               "number theory"); 
-  passed &= runUnitTest(&testRealFunctions,              "real functions"); 
+  passed &= runUnitTest(&testNumberTheory,               "number theory");
+  passed &= runUnitTest(&testRealFunctions,              "real functions");
   passed &= runUnitTest(&testTransforms,                 "transforms");
   passed &= runUnitTest(&testTriangle2D,                 "rsTriangle2D");
   passed &= runUnitTest(&testPoint2D,                    "rsPoint2D");
