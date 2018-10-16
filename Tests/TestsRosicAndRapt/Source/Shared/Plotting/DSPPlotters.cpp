@@ -23,7 +23,7 @@ void FilterPlotter<T>::setFrequenciesAreRadian(bool areRadian)
 }
 
 template <class T>
-void FilterPlotter<T>::addFilterSpecificationZPK(int numPoles, complex<T>* poles, int numZeros, 
+void FilterPlotter<T>::addFilterSpecificationZPK(int numPoles, complex<T>* poles, int numZeros,
   complex<T>* zeros, T gain, T sampleRate)
 {
   rsFilterSpecificationZPK<T> spec;
@@ -48,8 +48,8 @@ void FilterPlotter<T>::addFilterSpecificationZPK(const RAPT::rsFilterSpecificati
 }
 
 template <class T>
-void FilterPlotter<T>::addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs, 
-  int denominatorOrder, T* denominatorCoeffs, T sampleRate = inf)
+void FilterPlotter<T>::addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs,
+  int denominatorOrder, T* denominatorCoeffs, T sampleRate)
 {
   rsFilterSpecificationBA<T> spec;
   spec.b.resize(numeratorOrder+1);
@@ -70,7 +70,7 @@ void FilterPlotter<T>::addFilterSpecificationBA(const RAPT::rsFilterSpecificatio
 }
 
 template <class T>
-void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
+void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis,
   bool decibels)
 {
   vector<vector<vector<T>>> data(1);
@@ -142,7 +142,7 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& 
 {
   rsFilterSpecificationZPK<T> spec = filterSpecsZPK[index];
   //bool isDigital = spec.sampleRate != inf;
-  complex<T> j(0.0, 1.0);                          // imaginary unit                         
+  complex<T> j(0.0, 1.0);                          // imaginary unit
   vector<complex<T>> H(f.size());                  // frequency response
   for(int k = 0; k < f.size(); k++) {
     complex<T> s = j * complex<T>(freqScale*f[k]); // value on s-plane where we evaluate H
@@ -155,7 +155,7 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& 
 
 
     H[k] = spec.transferFunctionAt(s);
-    //H[k] = transferFunctionZPK(s, spec.z, spec.p, spec.k); 
+    //H[k] = transferFunctionZPK(s, spec.z, spec.p, spec.k);
   }
   return H;
 }
@@ -179,7 +179,7 @@ complex<T> FilterPlotter<T>::polynomialByRoots(complex<T> z, vector<complex<T>>&
 }
 
 template <class T>
-complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>>& z, 
+complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>>& z,
   vector<complex<T>>& p, std::complex<T> k)
 {
   complex<T> num = polynomialByRoots(s, z);
@@ -252,10 +252,10 @@ void FilterPlotter<T>::setupForPoleZeroPlot(int size)
   //bool zDomain = true;
   bool zDomain = false;
   double range = 0;
-  for(unsigned int i = 0; i < filterSpecsZPK.size(); i++) 
+  for(unsigned int i = 0; i < filterSpecsZPK.size(); i++)
   {
-    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].p));  
-    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].z)); 
+    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].p));
+    range   = fmax(range, maxAbsReIm(filterSpecsZPK[i].z));
     //zDomain = zDomain || (filterSpecsZPK[i].sampleRate != inf);
     zDomain = zDomain || filterSpecsZPK[i].isDigital();
   }
@@ -270,7 +270,7 @@ void FilterPlotter<T>::setupForPoleZeroPlot(int size)
   setPixelSize(size, size);
 
   if(zDomain == true)
-    addCommand("set object 1 ellipse at first 0,0 size 2,2 fs empty border rgb \"#808080\""); 
+    addCommand("set object 1 ellipse at first 0,0 size 2,2 fs empty border rgb \"#808080\"");
 }
 
 template <class T>
@@ -322,5 +322,5 @@ bool  FilterPlotter<T>::almostEqual(complex<T> x, complex<T> y, T thresh)
 }
 
 // template instantiations:
-template FilterPlotter<float>;
-template FilterPlotter<double>;
+template class FilterPlotter<float>;
+template class FilterPlotter<double>;
