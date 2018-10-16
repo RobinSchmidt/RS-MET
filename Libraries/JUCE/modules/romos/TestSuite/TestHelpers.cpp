@@ -1,9 +1,11 @@
 #include "AutomaticTests.h"
 
-#ifdef _MSC_VER
-#include <io.h>  // works on msc
+#if defined(_MSC_VER)
+#include <io.h>              // works on msc
+#elif defined(__APPLE__)
+#include <sys/uio.h>         // works on mac
 #else
-#include<sys/io.h>
+#include<sys/io.h>           // works on linux
 #include<fcntl.h>
 #endif
 #include<sys/stat.h>
@@ -177,6 +179,8 @@ void writeInputSequencesToFile()
   {
   #ifdef _MSC_VER
     _creat("c:\\tmp\\InputSequences.txt", S_IWRITE);
+  #elif defined(__APPLE__)
+    //_creat("c:\\tmp\\InputSequences.txt", S_IWRITE);
   #else
     creat("c:\\tmp\\InputSequences.txt", S_IWRITE);
   #endif
