@@ -12,7 +12,7 @@ inline double absFast(double x)
 
 void testAbsAndSign2(std::string &reportString)
 {
-  // Compares the performance of the standard library functions fabs(double x) and 
+  // Compares the performance of the standard library functions fabs(double x) and
   // rsAbsFast(double x)
 
   static const int N = 10000;   // number of tests
@@ -53,7 +53,7 @@ void testMultinomialCoefficients2(std::string &reportString)
   static const rsUint32 nMax = 12; // maximum value for the sum of the k-values to be tested
   rsUint32 k[mMax];
   rsUint32 result;
-    
+
   ::ProcessorCycleCounter counter;
   counter.init();
 
@@ -96,18 +96,18 @@ void testMultinomialCoefficients2(std::string &reportString)
 // https://code.google.com/p/primesieve/wiki/HowTo
 const int L1D_CACHE_SIZE = 32768;
 //typedef rsUint64 int64_t; // inserted by Robin Schmidt
-typedef rsInt64 int64_t; // inserted by Robin Schmidt
+//typedef rsInt64 int64_t; // inserted by Robin Schmidt
 /// Generate primes using the segmented sieve of Eratosthenes.
 /// This algorithm uses O(n log log n) operations and O(sqrt(n)) space.
 /// @param limit         Sieve primes <= limit.
 /// @param segment_size  Size of the sieve array in bytes.
 ///
-void segmented_sieve(int64_t limit, int segment_size = L1D_CACHE_SIZE)
+void segmented_sieve(rsInt64 limit, int segment_size = L1D_CACHE_SIZE)
 {
   int sqrt = (int) std::sqrt((double) limit);
-  int64_t count = (limit < 2) ? 0 : 1;
-  int64_t s = 2;
-  int64_t n = 3;
+  rsInt64 count = (limit < 2) ? 0 : 1;
+  rsInt64 s = 2;
+  rsInt64 n = 3;
 
   // vector used for sieving
   std::vector<char> segment(segment_size);
@@ -122,12 +122,12 @@ void segmented_sieve(int64_t limit, int segment_size = L1D_CACHE_SIZE)
   std::vector<int> primes;
   std::vector<int> next;
 
-  for (int64_t low = 0; low <= limit; low += segment_size)
+  for (rsInt64 low = 0; low <= limit; low += segment_size)
   {
     std::fill(segment.begin(), segment.end(), 1);
 
     // current segment = interval [low, high]
-    int64_t high = std::min(low + segment_size - 1, limit);
+    rsInt64 high = std::min(low + segment_size - 1, limit);
 
     // store small primes needed to cross off multiples
     for (; s * s <= high; s++)
@@ -289,9 +289,9 @@ void testMatrixAddressing(std::string &reportString)
   // pointer-arithmetic:     12   2      2     2.3    3.4    14
 
   // Conclusion:
-  // Accessing matrix elements via pointer arithmetic is faster than using a pointer array 
+  // Accessing matrix elements via pointer arithmetic is faster than using a pointer array
   // (i.e. pointer-to-pointer). Add to that, that the pointer array needs additional storage
-  // space - the relative increase in storage-size is given by 
+  // space - the relative increase in storage-size is given by
   // sizeof(size_t) / (N*sizeof(ElementType)) - the conclusion is that using pointer arithmetic
   // is better - both, in terms of speed and storage space. The advantages seem greatest for
   // medium sized matrices (a couple of thousands of elements), but even for smaller and larger
