@@ -16,6 +16,15 @@ class rsFirstOrderFilterBase
 
 public:
 
+  // for convenience:
+  typedef const TSig& CRSig;  // const reference to a signal value
+  //typedef const TPar& CRPar;  // const reference to a parameter value
+  // we need to pass signalvalues as const reference because otherwise, we get a compiler error 
+  // when instantiating the template with rsFloat64x2 for the signal type an compile for 32 bit
+  // ("formal parameter with requested alignment of 16 won't be aligned")
+  // ...when we want to instantiate it with rsFloat64x2 for TPar, too, we'll probably have to pass
+  // all parameters as const reference, too - that really sucks!
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Coefficient Computation */
@@ -145,7 +154,7 @@ public:
   }
 
   /** Sets up the internal state variables for both channels. */
-  inline void setInternalState(TSig newX1, TSig newY1)
+  inline void setInternalState(CRSig newX1, CRSig newY1)
   {
     x1 = newX1;
     y1 = newY1;
@@ -158,7 +167,7 @@ public:
   /** \name Processing */
 
   /** Calculates a single filtered output-sample. */
-  inline TSig getSample(TSig in)
+  inline TSig getSample(CRSig in)
   {
     y1 = b0*in + b1*x1 + a1*y1;
     x1 = in;
@@ -198,6 +207,8 @@ class rsOnePoleFilter : public rsFirstOrderFilterBase<TSig, TPar>
 {
 
 public:
+
+
 
   /** This is an enumeration of the available filter modes. */
   enum modes
