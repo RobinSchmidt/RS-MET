@@ -11,7 +11,7 @@
 #include "rosic_BasicsTests.h"
 #include "rosic_MathTests.h"
 #include "rosic_NumericalTests.h"
-#include "rosic_NonRealtimeTests.h"
+#include "rosic_NonRealTimeTests.h"
 #include "rosic_OthersTests.h"
 
 namespace rotes
