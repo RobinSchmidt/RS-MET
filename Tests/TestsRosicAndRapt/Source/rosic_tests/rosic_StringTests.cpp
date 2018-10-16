@@ -11,7 +11,7 @@ void rotes::testRosicString()
   testStringIntConversions();
   //testStringDoubleConversions();  // fails - why?
 }
- 
+
 void rotes::testCharacterComparisons()
 {
   char n = '0';
@@ -39,7 +39,7 @@ void rotes::testStringBufferCopying()
 {
   static const int charBufferLength = 20;
   char charBufferOriginal[     charBufferLength];
-  char charBufferReconstructed[charBufferLength]; 
+  char charBufferReconstructed[charBufferLength];
   RAPT::rsArray::fillWithValue(charBufferOriginal,      charBufferLength, 'X');
   RAPT::rsArray::fillWithValue(charBufferReconstructed, charBufferLength, 'X');
   strcpy(charBufferOriginal, "0123456789");
@@ -68,8 +68,8 @@ void rotes::testStringIntConversions(int numIterations)
 void rotes::testStringDoubleConversions()
 {
   testStringDoubleConversionsRandom(10000);
-  testStringDoubleConversionsSpecialValues(); 
-  testStringDoubleConversionsDenormals(); 
+  testStringDoubleConversionsSpecialValues();
+  testStringDoubleConversionsDenormals();
   testStringDoubleConversionsLarge();
 }
 
@@ -104,8 +104,9 @@ void rotes::testStringDoubleConversionsSpecialValues()
   numberReconstructed = numString.asDouble();
   if( numberReconstructed != numberOriginal )
   {
-    if( !(_isnan(numberReconstructed) && _isnan(numberOriginal)) )
-      DEBUG_BREAK; // direct equality check on NaNs seems to always return false 
+    //if( !(_isnan(numberReconstructed) && _isnan(numberOriginal)) )
+    if( !(RAPT::rsIsNaN(numberReconstructed) && RAPT::rsIsNaN(numberOriginal)) )
+      DEBUG_BREAK; // direct equality check on NaNs seems to always return false
   }
 }
 
@@ -134,7 +135,7 @@ void rotes::testStringDoubleConversionsGeometricProgression(double start, double
   if( absFactor < 1.0 )
   {
     limit = 0.0;
-    rassert(absFactor < 0.5); 
+    rassert(absFactor < 0.5);
     // factors between 0.5...1.0 will make the iteration stall at a finite denormal number
   }
   else if( absFactor > 1.0 )
@@ -166,7 +167,7 @@ rsString rotes::createStringWithAllPrintableCharacters()
 
   char cString[numPrintables+1];
   for(int i=0; i<numPrintables; i++)
-    cString[i] = i+firstPrintableIndex; 
+    cString[i] = i+firstPrintableIndex;
   cString[numPrintables] = '\0';
   return rsString(cString);
 }

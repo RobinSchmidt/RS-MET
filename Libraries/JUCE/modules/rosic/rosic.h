@@ -61,7 +61,7 @@
 //#define USE_PTHREADS_MUTEX
 //#endif
 
-// try to get rid of including windows.h - it has all sorts of weird #defines that lead to all 
+// try to get rid of including windows.h - it has all sorts of weird #defines that lead to all
 // sorts of compiler errors:
 #if defined (USE_WINAPI_CRITICAL_SECTION)
 #include <windows.h>
@@ -87,12 +87,12 @@
 //#include "basics/Float32x4.h"
 #include "basics/Float64x2.h"
 #include "basics/rosic_TemplateInstantiations.h"
-#include "basics/GlobalDefinitions.h" 
+#include "basics/GlobalDefinitions.h"
 #include "basics/rosic_Constants.h"   // merge with rapt
 
-#ifdef _MSC_VER                       // i can't figure out, how to make this compile on mac
+//#ifdef _MSC_VER                       // i can't figure out, how to make this compile on mac
 #include "basics/ComplexFloat64x2.h"
-#endif
+//#endif
 
 #include "basics/rosic_ChannelMatrix2x2.h"
 #include "basics/rosic_HelperFunctions.h"       // move to rapt
@@ -100,7 +100,7 @@
 // we need to intersperse some includes from other directories before we can finish the includes
 // from basics (todo: fix the dependency structure/layering):
 #include "infrastructure/rosic_MutexLock.h"
-#include "math/rosic_CephesDeclarations.h" 
+#include "math/rosic_CephesDeclarations.h"
 #include "math/rosic_RealFunctionEvaluationAlgorithms.h"  // move to rapt
 //#include "math/rosic_IntegerFunctions.h"                  // move to rapt
 #include "math/rosic_SpecialFunctionsReal.h"              // move to rapt
@@ -160,7 +160,7 @@
 #include "filters/rosic_CombResonator.h"
 #include "filters/rosic_ConvolverBruteForce.h"
 #include "filters/rosic_ConvolverFFT.h"          // needs transforms folder
-#include "filters/rosic_ConvolverPartitioned.h"  
+#include "filters/rosic_ConvolverPartitioned.h"
 #include "filters/rosic_CookbookFilter.h"
 #include "filters/rosic_TwoPoleFilter.h"
 #include "filters/rosic_DualTwoPoleFilter.h"
