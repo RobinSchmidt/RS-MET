@@ -17,19 +17,17 @@
 namespace rotes
 {
   void testAllRosicClasses();
-  void testRosicAnalysis(); 
-  void testRosicBasics(); 
-  void testRosicFile(); 
-  void testRosicEffects(); 
-  void testRosicFilter(); 
-  void testRosicGenerators(); 
-  void testRosicModulators(); 
-  void testRosicMath(); 
-  void testRosicNumerical(); 
-  void testRosicNonRealTime(); 
-  void testRosicOthers(); 
+  void testRosicAnalysis();
+  void testRosicBasics();
+  void testRosicFile();
+  void testRosicEffects();
+  void testRosicFilter();
+  void testRosicGenerators();
+  void testRosicModulators();
+  void testRosicMath();
+  void testRosicNumerical();
+  void testRosicNonRealTime();
+  void testRosicOthers();
 }
 
-#endif 
-
-
+#endif
