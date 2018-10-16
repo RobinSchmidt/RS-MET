@@ -10,6 +10,8 @@
 
 // try to get rid of these global variables - or at least wrap them into a namespace to not clutter
 // the global namespace
+namespace rsTestRomos
+{
 double x[maxNumVoices][maxNumIns][maxNumFrames];      // inputs
 double y[maxNumVoices][maxNumOuts][maxNumFrames];     // outputs
 double d[maxNumVoices][maxNumOuts][maxNumFrames];     // desired outputs
@@ -25,6 +27,8 @@ double *pd[maxNumVoices][maxNumOuts];                 // pointers to the outputs
 double **ppx[maxNumVoices];
 double **ppy[maxNumVoices];
 double **ppd[maxNumVoices];
+}
+using namespace rsTestRomos;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // generation of test event-arrays:

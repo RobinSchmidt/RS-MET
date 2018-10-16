@@ -10,6 +10,8 @@ using namespace romos;
 
 
 // arrays for I/O signals:
+namespace rsTestRomos
+{
 static const int maxNumVoices = 8;
 static const int maxNumIns    = 10;
 static const int maxNumOuts   = 10;
@@ -30,6 +32,7 @@ extern double *pd[maxNumVoices][maxNumOuts];                 // pointers to the 
 extern double **ppx[maxNumVoices];
 extern double **ppy[maxNumVoices];
 extern double **ppd[maxNumVoices];
+}
 
 
 /** Returns a vector containing a note-on and a corresponding note-off (indicated by velocity == 0).

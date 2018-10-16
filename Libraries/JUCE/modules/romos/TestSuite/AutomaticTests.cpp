@@ -1,4 +1,5 @@
 #include "AutomaticTests.h"
+using namespace rsTestRomos;
 
 bool runUnitTests()
 {

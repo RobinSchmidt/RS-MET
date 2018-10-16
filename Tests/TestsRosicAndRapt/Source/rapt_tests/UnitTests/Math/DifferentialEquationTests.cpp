@@ -4,11 +4,13 @@
 //using namespace RSCore;
 
 // create some arrays for the time-axis and the 3 time series created by the system:
+namespace rsTestODE
+{
 static const int maxNumDimensions = 3;
-static const int numValues        = 1000;
+static const int numValues         = 1000;
 double x[numValues], y[maxNumDimensions][numValues], error[maxNumDimensions][numValues];
-// we should really get rid of these global arrays...maybe use local arrays inside the functions
-// or at least, wrap a namespace around them
+}
+using namespace rsTestODE;
 
 class rsLorentzSystem : public rsDifferentialEquationSystemDbl
 {
