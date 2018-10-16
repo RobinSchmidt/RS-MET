@@ -1,8 +1,15 @@
 #include "AutomaticTests.h"
 
-#include <io.h>
-#include <sys\stat.h>
+#ifdef _MSC_VER
+#include <io.h>  // works on msc
+#else
+#include<sys/io.h>
+#include<fcntl.h>
+#endif
+#include<sys/stat.h>
 
+// try to get rid of these global variables - or at least wrap them into a namespace to not clutter
+// the global namespace
 double x[maxNumVoices][maxNumIns][maxNumFrames];      // inputs
 double y[maxNumVoices][maxNumOuts][maxNumFrames];     // outputs
 double d[maxNumVoices][maxNumOuts][maxNumFrames];     // desired outputs
@@ -11,9 +18,9 @@ double *px0[maxNumIns];                               // pointers to the inputs 
 double *py0[maxNumOuts];                              // pointers to the outputs of voice 0
 double *pd0[maxNumOuts];                              // pointers to the outputs of voice 0
 
-double *px[maxNumVoices][maxNumIns];                  // pointers to the inputs of all voices 
-double *py[maxNumVoices][maxNumOuts];                 // pointers to the outputs of all voices 
-double *pd[maxNumVoices][maxNumOuts];                 // pointers to the outputs of all voices 
+double *px[maxNumVoices][maxNumIns];                  // pointers to the inputs of all voices
+double *py[maxNumVoices][maxNumOuts];                 // pointers to the outputs of all voices
+double *pd[maxNumVoices][maxNumOuts];                 // pointers to the outputs of all voices
 
 double **ppx[maxNumVoices];
 double **ppy[maxNumVoices];
@@ -22,7 +29,7 @@ double **ppd[maxNumVoices];
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // generation of test event-arrays:
 
-std::vector<NoteEvent> generateNoteOnOffPair(unsigned int key, unsigned int velocity, 
+std::vector<NoteEvent> generateNoteOnOffPair(unsigned int key, unsigned int velocity,
                                              unsigned int deltaFramesForNoteOn, unsigned int durationInFrames)
 {
   std::vector<NoteEvent> result;
@@ -33,7 +40,7 @@ std::vector<NoteEvent> generateNoteOnOffPair(unsigned int key, unsigned int velo
   return result;
 }
 
-std::vector<NoteEvent> generateSimultaneousNotes(unsigned int key, unsigned int velocity, 
+std::vector<NoteEvent> generateSimultaneousNotes(unsigned int key, unsigned int velocity,
                                                  unsigned int deltaFramesForNoteOn, unsigned int durationInFrames,
                                                  unsigned int numNotes, unsigned int noteSpacing)
 {
@@ -98,7 +105,7 @@ int findIndexOfMatchingNoteOff(const std::vector<NoteEvent> &events, NoteEvent n
 
 void initializeInputSequences()
 {
-  RAPT::rsArray::fillWithIndex(t, maxNumFrames); 
+  RAPT::rsArray::fillWithIndex(t, maxNumFrames);
 
   int v, c, n;
 
@@ -164,7 +171,11 @@ void writeInputSequencesToFile()
   FILE *file = fopen("c:\\tmp\\InputSequences.txt", "w");
   if( file == NULL )
   {
+  #ifdef _MSC_VER
     _creat("c:\\tmp\\InputSequences.txt", S_IWRITE);
+  #else
+    creat("c:\\tmp\\InputSequences.txt", S_IWRITE);
+  #endif
     file = fopen("c:\\tmp\\InputSequences.txt", "w");
   }
   if( file != NULL )
@@ -228,14 +239,14 @@ void getDesiredOutputForMovingAverage(int N, double *x, double *b0, double *b1, 
 {
   d[0] = b0[0]*x[0] + b1[0]*0.0;  // assumes 0.0 as initial state of x[n-1] buffer
   for(int n = 1; n < N; n++)
-    d[n] = b0[n]*x[n] + b1[n]*x[n-1]; 
+    d[n] = b0[n]*x[n] + b1[n]*x[n-1];
 }
 
 void getDesiredOutputForLeakyIntegrator(int N, double *x, double *c, double *d)
 {
   d[0] = c[0]*x[0] + (1.0-c[0])*0.0;  // assumes 0.0 as initial state of y[n-1] buffer
   for(int n = 1; n < N; n++)
-    d[n] = c[n]*x[n] + (1.0-c[n])*d[n-1]; 
+    d[n] = c[n]*x[n] + (1.0-c[n])*d[n-1];
 }
 
 void getDesiredOutputForLeakyIntegratorDoubleDelay(int N, double *x, double *c, double *d)
@@ -243,11 +254,11 @@ void getDesiredOutputForLeakyIntegratorDoubleDelay(int N, double *x, double *c, 
   d[0] = c[0] * x[0] + (1.0 - c[0]) * 0.0;  // assumes 0.0 as initial state of y[n-1] buffer
   d[1] = c[1] * x[1] + (1.0 - c[1]) * 0.0;  // assumes 0.0 as initial state of y[n-2] buffer
   for(int n = 2; n < N; n++)
-    d[n] = c[n]*x[n] + (1.0-c[n])*d[n-2]; 
+    d[n] = c[n]*x[n] + (1.0-c[n])*d[n-2];
 }
 
 void getDesiredOutputForTestFilter1(int N, double *x, double *b0, double *b1, double *c, double *dSum, double *dDiff, double *dProd)
-{  
+{
   double *dMovAv   = new double[N];
   double *dLeakInt = new double[N];
   getDesiredOutputForMovingAverage(  N, x, b0, b1, dMovAv);
@@ -262,7 +273,7 @@ void getDesiredOutputForTestFilter1(int N, double *x, double *b0, double *b1, do
 void getDesiredOutputForBiquad(int N, double *x, double *b0, double *b1, double *b2, double *a1, double *a2, double *y)
 {
   // assumes 0.0 as initial values of all buffers:
-  y[0] = b0[0]*x[0];  
+  y[0] = b0[0]*x[0];
   y[1] = b0[1]*x[1] + b1[1]*x[0] - a1[1]*y[0];
   for(int n = 2; n < N; n++)
     y[n] = b0[n]*x[n] + b1[n]*x[n-1] + b2[n]*x[n-2] - a1[n]*y[n-1] - a2[n]*y[n-2];
@@ -280,7 +291,7 @@ void getDesiredOutputForFilterBlip(int N, double frequency, double q, double *de
   double *a1 = new double[N];  RAPT::rsArray::fillWithValue(a1, N, coeffs[3]);
   double *a2 = new double[N];  RAPT::rsArray::fillWithValue(a2, N, coeffs[4]);
 
-  getDesiredOutputForBiquad(N, x, b0, b1, b2, a1, a2, desiredOutput); 
+  getDesiredOutputForBiquad(N, x, b0, b1, b2, a1, a2, desiredOutput);
 
   delete[] x;
   delete[] b0;
@@ -323,7 +334,7 @@ bool checkAndPrintResult(double **y, double **d, int numChannels, int numFrames,
   return result;
 }
 
-bool checkBlockProcessingAndPrintResult(romos::Module *module, double ***x, double ***y, double ***d, 
+bool checkBlockProcessingAndPrintResult(romos::Module *module, double ***x, double ***y, double ***d,
                                         int maxNumFramesToProcess, int numTests, char *testName, double tolerance)
 {
   // 1st test - per sample processing:
@@ -359,8 +370,8 @@ bool checkBlockProcessingAndPrintResult(romos::Module *module, double ***x, doub
   return true;
 }
 
-bool checkProcessingFunctionsAndPrintResults(romos::Module *module, int numVoicesToCheck, int numFrames, 
-                                             double ***x, double ***y, double ***d, 
+bool checkProcessingFunctionsAndPrintResults(romos::Module *module, int numVoicesToCheck, int numFrames,
+                                             double ***x, double ***y, double ***d,
                                              double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
   bool result = true;
@@ -376,7 +387,7 @@ bool checkProcessingFunctionsAndPrintResults(romos::Module *module, int numVoice
   return result;
 }
 
-bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d, 
+bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d,
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
   module->resetStateForAllVoices();
@@ -386,7 +397,7 @@ bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFra
 
   bool result = RAPT::rsArray::areBuffersEqual(d[0][0], y[0][0], numFrames);
 
-  //Plotter::plotData(numFrames, t, d[0][0], y[0][0]); 
+  //Plotter::plotData(numFrames, t, d[0][0], y[0][0]);
 
   if( result == false )
     printf("%s %s %s", "!!! ", testName, " in frames, monophonic failed !!!\n");
@@ -395,7 +406,7 @@ bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFra
   return result;
 }
 
-bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d, 
+bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d,
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
   module->resetStateForAllVoices();
@@ -405,7 +416,7 @@ bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFra
 
   bool result = RAPT::rsArray::areBuffersEqual(d[0][0], y[0][0], numFrames);
 
-  //Plotter::plotData(100, t, d[0][0], y[0][0]); 
+  //Plotter::plotData(100, t, d[0][0], y[0][0]);
 
   if( result == false )
     printf("%s %s %s", "!!! ", testName, " in blocks, monophonic failed !!!\n");
@@ -414,8 +425,8 @@ bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFra
   return result;
 }
 
-bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames, 
-                                               double ***x, double ***y, double ***d, 
+bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames,
+                                               double ***x, double ***y, double ***d,
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
   module->resetStateForAllVoices();
@@ -423,14 +434,14 @@ bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoi
 
   for(v = 0; v < numVoicesToCheck; v++)
     RAPT::rsArray::fillWithZeros(y[v][0], numFrames);
-    
+
   processModuleInFrames(module, numFrames, x, y, events, true);
 
   bool result = true;
   for(v = 0; v < numVoicesToCheck; v++)
     result &= RAPT::rsArray::areBuffersEqual(d[v][0], y[v][0], numFrames);
 
-  //Plotter::plotData(50, t, d[0][0], y[0][0]); 
+  //Plotter::plotData(50, t, d[0][0], y[0][0]);
 
   if( result == false )
     printf("%s %s %s", "!!! ", testName, " in frames, polyphonic failed !!!\n");
@@ -439,8 +450,8 @@ bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoi
   return result;
 }
 
-bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames, 
-                                               double ***x, double ***y, double ***d, 
+bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames,
+                                               double ***x, double ***y, double ***d,
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
   module->resetStateForAllVoices();
@@ -448,15 +459,15 @@ bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoi
 
   for(v = 0; v < numVoicesToCheck; v++)
     RAPT::rsArray::fillWithZeros(y[v][0], numFrames);
-    
+
   processModuleInBlocks(module, numFrames, x, y, events, true);
 
   bool result = true;
   for(v = 0; v < numVoicesToCheck; v++)
     result &= RAPT::rsArray::areBuffersEqual(d[v][0], y[v][0], numFrames);
 
-  //Plotter::plotData(numFrames, t, d[1][0], y[1][0]); 
-  //Plotter::plotData(50, t, &d[0][0][950], &y[0][0][950]); 
+  //Plotter::plotData(numFrames, t, d[1][0], y[1][0]);
+  //Plotter::plotData(50, t, &d[0][0][950], &y[0][0][950]);
 
   if( result == false )
     printf("%s %s %s", "!!! ", testName, " in blocks, polyphonic failed !!!\n");
@@ -484,7 +495,7 @@ void establishInputBlock(romos::Module *module, double ***inputs, int blockStart
     {
       for(int n = 0; n < blockSize; n++)
       {
-        int offset = module->getInputPinMemoryOffset(n, 0, c); 
+        int offset = module->getInputPinMemoryOffset(n, 0, c);
         inputAddress[offset] = inputs[0][c][blockStart+n];
       }
     }
@@ -492,7 +503,7 @@ void establishInputBlock(romos::Module *module, double ***inputs, int blockStart
   else
   {
     int numPlayingVoices           = processingStatus.getNumPlayingVoices();
-    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices(); 
+    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices();
     for(int v = 0; v < numPlayingVoices; v++)
     {
       int voiceIndex = playingVoiceIndices[v];
@@ -527,7 +538,7 @@ void retrieveOutputBlock(romos::Module *module, double ***outputs, int blockStar
   else
   {
     int numPlayingVoices           = processingStatus.getNumPlayingVoices();
-    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices(); 
+    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices();
     for(int v = 0; v < numPlayingVoices; v++)
     {
       int voiceIndex = playingVoiceIndices[v];
@@ -535,7 +546,7 @@ void retrieveOutputBlock(romos::Module *module, double ***outputs, int blockStar
       {
         for(int n = 0; n < blockSize; n++)
         {
-          int offset = module->getOutputPinMemoryOffset(n, voiceIndex, c); 
+          int offset = module->getOutputPinMemoryOffset(n, voiceIndex, c);
           outputs[v][c][blockStart+n] = outputAddress[offset];
         }
       }
@@ -556,7 +567,7 @@ void processModuleInFramesNoEvents(romos::Module *module, int numFrames, double 
     processFrame(module, inputs, outputs, frameIndex);
 }
 
-void processModuleInFrames(romos::Module *module, int numFrames, double ***inputs, double ***outputs, std::vector<NoteEvent> *events, 
+void processModuleInFrames(romos::Module *module, int numFrames, double ***inputs, double ***outputs, std::vector<NoteEvent> *events,
                            bool polyphonic)
 {
   voiceAllocator.reset();
@@ -570,13 +581,13 @@ void processModuleInFrames(romos::Module *module, int numFrames, double ***input
     int numEventsHandled = 0;
     while( frameIndex < numFrames )
     {
-      NoteEvent e                 = events->at(numEventsHandled);      
+      NoteEvent e                 = events->at(numEventsHandled);
       int numFramesUntilNextEvent = e.getDeltaFrames() - frameIndex;
 
       // process chunk until the next event:
-      processModuleInFramesNoEvents(module, numFramesUntilNextEvent, inputs, outputs, frameIndex);  
+      processModuleInFramesNoEvents(module, numFramesUntilNextEvent, inputs, outputs, frameIndex);
 
-      voiceAllocator.noteOn(e.getKey(), e.getVelocity()); 
+      voiceAllocator.noteOn(e.getKey(), e.getVelocity());
 
       numEventsHandled++;
       frameIndex += numFramesUntilNextEvent;
@@ -594,7 +605,7 @@ void processModuleInFrames(romos::Module *module, int numFrames, double ***input
 void processBlock(romos::Module *module, double ***inputs, double ***outputs, int blockStart, int blockSize)
 {
   establishInputBlock(module, inputs, blockStart, blockSize);
-  module->processBlockOfSamples(blockSize);  
+  module->processBlockOfSamples(blockSize);
   retrieveOutputBlock(module, outputs, blockStart, blockSize);
 }
 
@@ -627,13 +638,13 @@ void processModuleInBlocks(romos::Module *module, int numFrames, double ***input
     int numEventsHandled = 0;
     while( blockStart < numFrames )
     {
-      NoteEvent e                 = events->at(numEventsHandled);      
+      NoteEvent e                 = events->at(numEventsHandled);
       int numFramesUntilNextEvent = e.getDeltaFrames() - blockStart;
 
       // process chunk until the next event:
       processModuleInBlocksNoEvents(module, numFramesUntilNextEvent, inputs, outputs, blockStart);
 
-      voiceAllocator.noteOn(e.getKey(), e.getVelocity()); 
+      voiceAllocator.noteOn(e.getKey(), e.getVelocity());
       numEventsHandled++;
 
       blockStart += numFramesUntilNextEvent;
@@ -681,7 +692,7 @@ void randomizeContainment(romos::Module *module)
       if( randomNumber < 1.0/3.0 )
         toBeContainerized.push_back(childModules[i]);
       else if( randomNumber < 2.0/3.0 )
-        toBeUnContainerized.push_back(childModules[i]);  
+        toBeUnContainerized.push_back(childModules[i]);
       else
       {
         // do nothing
@@ -714,7 +725,7 @@ void printModuleStructure(romos::Module *module, int indent)
   */
   printf("%s", "\n" );
 
-  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module); 
+  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
   if( container != NULL )
   {
     for(unsigned int i=0; i<container->getNumChildModules(); i++)

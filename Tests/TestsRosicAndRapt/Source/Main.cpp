@@ -12,6 +12,12 @@
 //#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.cpp"
 //#include "../../../Libraries/JUCE/modules/romos/romos.h"
 
+// the files
+// romos/TestSuite/TestHelpers.cpp and
+// rapt_tests/UnitTests/Math/DifferentiaEquationTests.cpp
+// oth define arrays x,y in the global namespace which clash. For some reason, only gcc complains
+// about this. solution: wrap into namespace
+
 int main(int argc, char* argv[])
 {
 
