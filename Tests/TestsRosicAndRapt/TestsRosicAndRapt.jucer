@@ -541,6 +541,19 @@
         <MODULEPATH id="romos" path="../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_WINDOWS>
+    <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" linuxCodeBlocksArchitecture="-m64" isDebug="1" optimisation="1"
+                       linkTimeOptimisation="0" targetName="TestsRosicAndRapt"/>
+        <CONFIGURATION name="Release" linuxCodeBlocksArchitecture="-m64" isDebug="0"
+                       optimisation="3" linkTimeOptimisation="1" targetName="TestsRosicAndRapt"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="romos" path="../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../Libraries/JUCE/modules"/>
+      </MODULEPATHS>
+    </CODEBLOCKS_LINUX>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="rapt" showAllCode="1" useLocalCopy="0"/>

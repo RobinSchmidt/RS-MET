@@ -6,7 +6,7 @@
 // new:
 #include "../../../Shared/Utilities/TestUtilities.h"
 #include "../../../Shared/Utilities/FileWriting.h" // includes rapt
-#include "../RSLib/Core/RSCore.h"            
+#include "../RSLib/Core/RSCore.h"
 using namespace RSLib;
 
 //typedef std::vector<double> rsVectorDbl; // get rid
@@ -14,7 +14,7 @@ using namespace RSLib;
 struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (double/float)
 {
 
-  rsAudioBuffer::rsAudioBuffer()
+  rsAudioBuffer()
   {
     numChannels = 0;
     numFrames   = 0;
@@ -22,7 +22,7 @@ struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (dou
     dataFlat    = NULL;
   }
 
-  rsAudioBuffer::~rsAudioBuffer()
+  ~rsAudioBuffer()
   {
     freeMemory();
   }
@@ -38,7 +38,7 @@ struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (dou
     }
   }
 
-  /** Returns the total number of samples in this buffer (== the number of channels times the 
+  /** Returns the total number of samples in this buffer (== the number of channels times the
   number of sample-frames). */
   int getSize()
   {
@@ -59,7 +59,7 @@ struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (dou
     delete[] dataFlat;
   }
 
-  int numChannels; 
+  int numChannels;
   int numFrames;
   double **data;     // data as 2D array, data[i][j] is the j-th frame of the i-th channel
   double *dataFlat;  // data as flat array, used internally
@@ -109,17 +109,17 @@ public:
   /** \name Setup */
 
   /** Sets the directory into which the samples and mapping files will be written. The soundfont
-  file will end up directly in this directory and for the samples, a subdirectory will be 
+  file will end up directly in this directory and for the samples, a subdirectory will be
   created. */
   void setOutputDirectory(const rsString& newDirectory);
 
-  /** Sets the name for the sample-map to be generated. This also determines the name for the 
+  /** Sets the name for the sample-map to be generated. This also determines the name for the
   sample subdirectory. */
   void setName(const rsString& newName);
 
-  /** Sets the range of keys for which samples should be rendered. Note that the keyrange of the 
-  output sample map is always the full keyboard - normally less than 127 samples are rendered in 
-  which case the lowest and highest rendered sample will have regions which extend to lowest or 
+  /** Sets the range of keys for which samples should be rendered. Note that the keyrange of the
+  output sample map is always the full keyboard - normally less than 127 samples are rendered in
+  which case the lowest and highest rendered sample will have regions which extend to lowest or
   highest key on the keyboard respectively. */
   void setKeyRangeToRender(int newLowKey, int newHighKey);
 
@@ -142,7 +142,7 @@ public:
 
   /** \name Sample-map generation: */
 
-  /** This is the single high-level function that you need to call to generate the whole 
+  /** This is the single high-level function that you need to call to generate the whole
   sample-map and write it to disk. If printProgress is true, an indication of the progress will
   be written to the console output. */
   void generateSampleMap(bool printProgress);
@@ -153,8 +153,8 @@ public:
   /** Generates all samples (for all keys) and writes them out to disk. */
   void generateAllSamples(bool printProgress);
 
-  /** Generates a sample for a particular key and writes it out to disk. The file written will be 
-  normalized to 0 dBFS and the normalization factor that has been used is stored internally to be 
+  /** Generates a sample for a particular key and writes it out to disk. The file written will be
+  normalized to 0 dBFS and the normalization factor that has been used is stored internally to be
   used later to set up a compensation gain in the sample-map file */
   void generateSampleForKey(int key);
 
@@ -162,11 +162,11 @@ public:
 protected:
 
   /** Override this to actually generate a sample for a particular key. You are supposed to write
-  your result into the member "buffer". You should not normalize the data there - this will be 
+  your result into the member "buffer". You should not normalize the data there - this will be
   taken care of by higher level functions. */
   virtual void writeUnnormalizedSampleForKeyToBuffer(int key) = 0;
 
-  /** Genereates a string for a region in the sfz file. The root determines the rootkey of the 
+  /** Genereates a string for a region in the sfz file. The root determines the rootkey of the
   sample to be used (and hence its filename) and lo and hi determine the lower and upper limit
   of the region for which this sample should be used. */
   rsString getRegionString(int root, int lo, int hi);
@@ -184,13 +184,13 @@ protected:
 
   rsAudioBuffer buffer;
 
-    
+
   double sampleRate;  // sample-rate for the wavefiles
   int    numBits;     // number of bits for the wavefiles
 
   int loKey, hiKey;   // lowest and highest key for which a sample has to be generated
 
-  bool ambience;      // determines whether ambience should be generated    
+  bool ambience;      // determines whether ambience should be generated
 
   //static const int fftSize = 262144;
   static const int fftSize = 131072;
@@ -228,7 +228,7 @@ public:
   /** Sets the level at which the rendering will be cut off. A reasonable level is -80 dB which is
   the default value. It's been made user-adjustable mainly to have a means to create shorter
   preview files. A few additional cycles will be generated for a smooth fade-out. */
-  void setTruncationLevel(double newLevel) 
+  void setTruncationLevel(double newLevel)
   {
     truncationLevel = newLevel;
   }
@@ -239,9 +239,9 @@ protected:
   /** Overriden to actually do the modal synthesis. */
   virtual void writeUnnormalizedSampleForKeyToBuffer(int key);
 
-  /** Interpolates between two sets of modal parameters given in p1, p2 according to the given 
+  /** Interpolates between two sets of modal parameters given in p1, p2 according to the given
   proportion (which should be a number between 0...1. */
-  rsModalBankParameters interpolateParameters(const rsModalBankParameters &p1, 
+  rsModalBankParameters interpolateParameters(const rsModalBankParameters &p1,
     const rsModalBankParameters &p2, double proportion);
 
   /** Returns a truncated parameter set which contains only those modes which are below the
@@ -254,8 +254,8 @@ protected:
   rsModalBankParameters *keyParameters[128];
     // parameters to be used for a particular key - we use a pointer array to have the option not
     // have specified parameters for each key but only a few of them (for example, for one key in
-    // each octave) - whenever the pointer is NULL, an interpolation of the parameters between the 
-    // two next neighbours that are defined will be used. if there's only one neighbour, it's 
+    // each octave) - whenever the pointer is NULL, an interpolation of the parameters between the
+    // two next neighbours that are defined will be used. if there's only one neighbour, it's
     // parameters will be used as is (which amounts to constant extrapolation)
 
   //rsModalFilterBank modalFilterBank;

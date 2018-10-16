@@ -95,7 +95,7 @@ void runModularTests()
 
   double someDouble = -0.4;
   double absOfSomeDouble = fabs(someDouble);
-  double abs2 = rAbs(someDouble);
+  double abs2 = RAPT::rsAbs(someDouble);
   //unsigned long long intAbsValue = *((unsigned long long*) &someDouble) & 0x7FFFFFFFFFFFFFFFULL;
   //abs2 = *((double*) &intAbsValue);
 
