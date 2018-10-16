@@ -35,6 +35,9 @@ inline void dontOptimize(T x)
     cout << x;
 }
 
+
+#ifdef _MSC_VER
+
 /** This class implements a CPU cycle counter which is useful for performance tests. It does not 
 literally count but instead measure the time stamps before and after a sequence of commands. Works 
 only with MSVC at the moment. 
@@ -113,7 +116,28 @@ protected:
 
 };
 
+#else
 
+/** Non-functional implementation for non MS compilers...just to make it compile. */
+
+class ProcessorCycleCounter  
+{
+public:
+  inline void init() {  }
+  inline long long getNumCyclesSinceInit() { return 0; }
+};
+
+class ProcessorCycleCounter2 : public ProcessorCycleCounter
+{
+
+};
+
+#endif
+
+
+
+
+//=================================================================================================
 
 /** (...not yet finished - just a stub). 
 

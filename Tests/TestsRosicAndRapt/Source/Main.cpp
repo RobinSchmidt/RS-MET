@@ -7,7 +7,8 @@
 #include "PerformanceTests/PerformanceTests.h" 
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 
-#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.h"
+//#include "../../JUCE/
+//#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.h"
 
 int main(int argc, char* argv[])
 {
