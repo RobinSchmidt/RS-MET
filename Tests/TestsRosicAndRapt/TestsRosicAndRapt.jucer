@@ -513,7 +513,8 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2015 targetFolder="Builds/VisualStudio2015" windowsTargetPlatformVersion="8.1">
+    <VS2015 targetFolder="Builds/VisualStudio2015" windowsTargetPlatformVersion="8.1"
+            extraDefs="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="TestsRosicAndRapt" debugInformationFormat="ProgramDatabase"
@@ -528,7 +529,7 @@
         <MODULEPATH id="romos" path="../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows">
+    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraDefs="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"
                        windowsCodeBlocksArchitecture="-m64"/>
@@ -541,7 +542,7 @@
         <MODULEPATH id="romos" path="../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_WINDOWS>
-    <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux">
+    <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux" extraDefs="DONT_SET_USING_JUCE_NAMESPACE=1&#10;JUCE_DONT_DECLARE_PROJECTINFO=1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" linuxCodeBlocksArchitecture="-m64" isDebug="1" optimisation="1"
                        linkTimeOptimisation="0" targetName="TestsRosicAndRapt"/>

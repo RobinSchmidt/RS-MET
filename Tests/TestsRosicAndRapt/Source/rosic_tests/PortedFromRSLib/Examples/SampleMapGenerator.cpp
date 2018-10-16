@@ -2,12 +2,23 @@
 
 // a quick and dirty implementation to create a directory which may not yet exist (but its parent
 // is assumed to exist) -  move to somewhere in RSLib, when when finished and cleaned:
+
+#ifdef _MSC_VER
 #include <direct.h>  // for msvc - otherwise maybe dirent.h
+#else
+//#include <dirent.h>
+#include <sys/stat.h>
+#endif
+
 void rsCreateDirectoryIfNonExistent(const RSLib::rsString &path)
 {
   char *cString = path.getAsZeroTerminatedString();
 
+#ifdef _MSC_VER
   if( _mkdir( cString ) != 0 )
+#else
+  if( mkdir(cString, 0777) != 0 )
+#endif
   {
     if( errno == EEXIST )
     {
@@ -32,7 +43,7 @@ void rsCreateDirectoryIfNonExistent(const RSLib::rsString &path)
 }
 
 // move to RSLib, write UnitTests:
-void rsWriteToWaveFile(const RSLib::rsString &path, rsAudioBuffer &buffer, int sampleRate, 
+void rsWriteToWaveFile(const RSLib::rsString &path, rsAudioBuffer &buffer, int sampleRate,
                        int numBits)
 {
   // create an interleaved buffer of floats for writing:
@@ -43,7 +54,7 @@ void rsWriteToWaveFile(const RSLib::rsString &path, rsAudioBuffer &buffer, int s
   // write to file and cleanup:
   rsOutputWaveFile file(path, sampleRate, numBits, buffer.numChannels);
   file.write(tmp, buffer.getSize());
-  
+
   delete[] tmp;
 }
 
@@ -62,7 +73,7 @@ SampleMapGenerator::SampleMapGenerator()
   loKey      = 0;
   hiKey      = 127;
   ambience   = false;
-    
+
   ft.setBlockSize(fftSize);
 }
 
@@ -73,9 +84,9 @@ SampleMapGenerator::~SampleMapGenerator()
 
 // Setup:
 
-void SampleMapGenerator::setOutputDirectory(const RSLib::rsString& newDirectory) 
-{ 
-  outputDirectory = newDirectory; 
+void SampleMapGenerator::setOutputDirectory(const RSLib::rsString& newDirectory)
+{
+  outputDirectory = newDirectory;
 }
 
 void SampleMapGenerator::setName(const RSLib::rsString& newName)
@@ -91,12 +102,12 @@ void SampleMapGenerator::setKeyRangeToRender(int newLowKey, int newHighKey)
   hiKey = newHighKey;
 }
 
-// Inquiry:  
+// Inquiry:
 
 RSLib::rsString SampleMapGenerator::getSampleFileName(int key)
 {
   key = rsClipToRange(key, loKey, hiKey);
-  return name + "K" 
+  return name + "K"
     + RSLib::rsString(key)    // use toStringWithLeadingZeros(key, 3)
     + ".wav";
 }
@@ -105,7 +116,7 @@ RSLib::rsString SampleMapGenerator::getSampleRelativePath(int key)
 {
   return sampleSubDirectory + getSampleFileName(key);
 }
-  
+
 RSLib::rsString SampleMapGenerator::getAmbienceRelativePath(int key)
 {
   return sampleSubDirectory + "Amb" + getSampleFileName(key);
@@ -120,7 +131,7 @@ void SampleMapGenerator::generateSampleMap(bool printProgress)
 
   generateAllSamples(printProgress); // temporarily commented
 
-  // normalize gain factors such that the maximum gain factor is 0.5 (arbitrary - maybe choose 
+  // normalize gain factors such that the maximum gain factor is 0.5 (arbitrary - maybe choose
   // a better value later - match straightliner's presets gains)
   rsNormalize(gains, 128, 0.5);
 
@@ -132,9 +143,9 @@ RSLib::rsString SampleMapGenerator::getRegionString(int root, int lo, int hi)
   RSLib::rsString s;
   s += "<region>";
   s += " sample="          + getSampleRelativePath(root);
-  s += " pitch_keycenter=" + RSLib::rsString(root);   
+  s += " pitch_keycenter=" + RSLib::rsString(root);
   s += " lokey="           + RSLib::rsString(lo);
-  s += " hikey="           + RSLib::rsString(hi);  
+  s += " hikey="           + RSLib::rsString(hi);
   s += " volume="          + rsDoubleToString2(rsAmp2dB(gains[root])) + "\n";
   return s;
 }
@@ -155,17 +166,17 @@ void SampleMapGenerator::generateSoundFontFile()
   sfz += " fil_veltrack=9000";
   sfz += " bend_up=1200";
   sfz += " bend_down=-1200";
-  //sfz += " pitchlfo_freq=7";  // this tiny unnoticable amount of vibrato is a workaround for 
+  //sfz += " pitchlfo_freq=7";  // this tiny unnoticable amount of vibrato is a workaround for
   //sfz += " pitchlfo_depth=1"; // sfz+'s failure to playback a sample as-is without aliasing
   sfz += "\n";
 
-  // each rendered sample is used for a one-key wide region except for the lowest and highest 
-  // rendered sample - these have regions that extend to the left and to right of the keyboard 
+  // each rendered sample is used for a one-key wide region except for the lowest and highest
+  // rendered sample - these have regions that extend to the left and to right of the keyboard
   // respectively:
-  sfz += getRegionString(loKey, 0, loKey);  
+  sfz += getRegionString(loKey, 0, loKey);
   for(int key = loKey+1; key < hiKey; key++)
     sfz += getRegionString(key, key, key);
-  sfz += getRegionString(hiKey, hiKey, 127);  
+  sfz += getRegionString(hiKey, hiKey, 127);
 
   // add the ambience group, if desired (move into function):
   if( ambience == true )
@@ -178,7 +189,7 @@ void SampleMapGenerator::generateSoundFontFile()
     sfz += " ampeg_sustain=0.0";
     sfz += " ampeg_release=3.0";
     sfz += " fil_type=lpf_1p";
-    sfz += " cutoff=600";    
+    sfz += " cutoff=600";
     sfz += " fil_keytrack=100";
     sfz += " fil_veltrack=3000 ";
     //sfz += " pitchlfo_freq=7";
@@ -193,9 +204,9 @@ void SampleMapGenerator::generateSoundFontFile()
 
         sfz += "<region>";
         sfz += " sample="          + getAmbienceRelativePath(key);
-        sfz += " pitch_keycenter=" + RSLib::rsString(key);   
+        sfz += " pitch_keycenter=" + RSLib::rsString(key);
         sfz += " lokey="           + RSLib::rsString(key);
-        sfz += " hikey="           + RSLib::rsString(key+11);  
+        sfz += " hikey="           + RSLib::rsString(key+11);
         sfz += " volume="          + rsDoubleToString2(rsAmp2dB(ambGains[key])-12);
         sfz += " pan=-100";
         sfz += " loop_mode=loop_continuous";
@@ -203,9 +214,9 @@ void SampleMapGenerator::generateSoundFontFile()
 
         sfz += "<region>";
         sfz += " sample="          + getAmbienceRelativePath(key);
-        sfz += " pitch_keycenter=" + RSLib::rsString(key);   
+        sfz += " pitch_keycenter=" + RSLib::rsString(key);
         sfz += " lokey="           + RSLib::rsString(key);
-        sfz += " hikey="           + RSLib::rsString(key+11);  
+        sfz += " hikey="           + RSLib::rsString(key+11);
         sfz += " volume="          + rsDoubleToString2(rsAmp2dB(ambGains[key])-12);
         sfz += " pan=100";
         sfz += " loop_mode=loop_continuous";
@@ -319,7 +330,7 @@ void SampleMapGenerator::generateSampleForKey(int key)
       delete[] phs;
     }
 
-    // \todo: this ambience signal will be used as is for the left channel and with 
+    // \todo: this ambience signal will be used as is for the left channel and with
     // offset of length/2 for the right channel (it should be looped and the decay/release should
     // be set approriately (it should probably depend on the release-time of the sample)
   }
@@ -327,21 +338,21 @@ void SampleMapGenerator::generateSampleForKey(int key)
 
 //=================================================================================================
 
-SampleMapGeneratorModal::SampleMapGeneratorModal()  
+SampleMapGeneratorModal::SampleMapGeneratorModal()
 {
   truncationLevel = -80.0;
-  for(int i = 0; i < 128; i++) 
+  for(int i = 0; i < 128; i++)
     keyParameters[i] = NULL;
 }
 
 SampleMapGeneratorModal::~SampleMapGeneratorModal()
 {
-  for(int i = 0; i < 128; i++) 
+  for(int i = 0; i < 128; i++)
     delete keyParameters[i];
 }
 
 
-void SampleMapGeneratorModal::setModalParametersForKey(int key, 
+void SampleMapGeneratorModal::setModalParametersForKey(int key,
   const rsModalBankParameters& newParameters)
 {
   delete keyParameters[key];
@@ -356,7 +367,7 @@ void SampleMapGeneratorModal::writeUnnormalizedSampleForKeyToBuffer(int key)
   if( keyParameters[key] != NULL )
     p = *(keyParameters[key]);      // use parameters from array as-is
   else
-  { 
+  {
     // find neighbours where parameters are defined:
     int keyL = key;
     int keyR = key;
@@ -372,7 +383,7 @@ void SampleMapGeneratorModal::writeUnnormalizedSampleForKeyToBuffer(int key)
     }
     if( keyL == -1 )
       p = *(keyParameters[keyR]);  // extrapolate leftward
-    else if( keyR == 128 )         
+    else if( keyR == 128 )
       p = *(keyParameters[keyL]);  // extrapolate rightward
     else
     {
@@ -441,7 +452,7 @@ void SampleMapGeneratorModal::writeUnnormalizedSampleForKeyToBuffer(int key)
   //{
   //  double rnd = rsRandomUniform(0.0, 1.0);
   //  p.f[m]   = p.f[m]   * (f0*p.f[m]   + rnd * df) / (f0*p.f[m]  );
-  //  p.f[m+1] = p.f[m+1] * (f0*p.f[m+1] - rnd * df) / (f0*p.f[m+1]); 
+  //  p.f[m+1] = p.f[m+1] * (f0*p.f[m+1] - rnd * df) / (f0*p.f[m+1]);
   //}
   for(int m = 0; m < p.f.dim; m++)
   {
@@ -461,10 +472,10 @@ void SampleMapGeneratorModal::writeUnnormalizedSampleForKeyToBuffer(int key)
     tmp += d;
   }
   */
- 
+
   /*
   // render side-signal with modified modal parameters:
-  modalFilterBank.setModalParameters(p.f, p.g, p.a, p.d, p.p);  
+  modalFilterBank.setModalParameters(p.f, p.g, p.a, p.d, p.p);
   modalFilterBank.resetModalFilters();
   buffer.data[1][0] = modalFilterBank.getSample(1.0);
   for(int n = 1; n < numSamples; n++)
@@ -520,7 +531,7 @@ rsVectorDbl truncateVector(const rsVectorDbl v, int numElementsToRetain)
   return rsVectorDbl(numElementsToRetain, v.v);
 }
 
-rsModalBankParameters SampleMapGeneratorModal::removeModesAbove(const rsModalBankParameters &p, 
+rsModalBankParameters SampleMapGeneratorModal::removeModesAbove(const rsModalBankParameters &p,
                                                                 double cutoff)
 {
   rsModalBankParameters r = p;
@@ -535,7 +546,7 @@ rsModalBankParameters SampleMapGeneratorModal::removeModesAbove(const rsModalBan
 
   /*
   // truncation via constructor of rsVectorDbl:
-  r.f = rsVectorDbl(cutoffIndex, r.f.v);  
+  r.f = rsVectorDbl(cutoffIndex, r.f.v);
   r.g = rsVectorDbl(cutoffIndex, r.g.v);
   r.a = rsVectorDbl(cutoffIndex, r.a.v);
   r.d = rsVectorDbl(cutoffIndex, r.d.v);
@@ -543,11 +554,11 @@ rsModalBankParameters SampleMapGeneratorModal::removeModesAbove(const rsModalBan
   */
 
   // new - should also truncate (i hope)
-  r.f.resize(cutoffIndex);  
-  r.g.resize(cutoffIndex);  
-  r.a.resize(cutoffIndex);  
-  r.d.resize(cutoffIndex);  
-  r.p.resize(cutoffIndex); 
+  r.f.resize(cutoffIndex);
+  r.g.resize(cutoffIndex);
+  r.a.resize(cutoffIndex);
+  r.d.resize(cutoffIndex);
+  r.p.resize(cutoffIndex);
   //RAPT::rsAssertFalse; // check, if code above truncates vectors as desired - yes, works
 
   return r;
