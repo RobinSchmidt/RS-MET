@@ -134,9 +134,10 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
   exponents.clear();
   T i  = 0;
   T np = 0;
-  T p  = (*primeTable)[0];
+  T p = (*primeTable)[0];
   while( p <= limit )
   {
+    p = (*primeTable)[i];  // new - still causes access violation for x=5
     if( x % p == 0 )
     {
       factors.push_back(p);
@@ -151,7 +152,7 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
       np++;
     }
     i++;
-    p = (*primeTable)[i];
+    //p = (*primeTable)[i]; // old - causes access violation, for x=4 for example
   }
   if( x != T(1) )
   {

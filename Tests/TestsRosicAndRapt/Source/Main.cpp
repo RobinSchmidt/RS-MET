@@ -113,6 +113,7 @@ int main(int argc, char* argv[])
   // just for fun:
   //groupString();
   //primeAlternatingSums();
+  divisibility();
 
 
   //===============================================================================================

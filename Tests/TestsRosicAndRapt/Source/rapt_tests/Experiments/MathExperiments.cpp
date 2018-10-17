@@ -738,3 +738,36 @@ void primeAlternatingSums()
 
   // ..but maybe it's actually faster to noodle around with that stuff in python or sage
 }
+
+class rsNumberDivisibilityInfo
+{
+public:
+  rsNumberDivisibilityInfo(rsUint32 number)
+  {
+    this->number = number;
+    RAPT::rsPrimeFactors(number, factors, exponents);
+
+    // todo: find divisors...
+  }
+
+  rsUint32 number;
+  std::vector<rsUint32> factors;
+  std::vector<rsUint32> exponents;
+  std::vector<rsUint32> divisors;
+
+protected:
+
+};
+
+void divisibility()
+{
+  rsUint32 max = 20;
+  std::vector<rsNumberDivisibilityInfo> numInfos;
+  numInfos.reserve(max);
+  for(rsUint32 i = 2; i <= max; i++)
+    numInfos.push_back(rsNumberDivisibilityInfo(i));
+
+  // todo: find highly composite and largely composite numbers...they can be useful for GUI sizes
+
+  int dummy = 0;
+}

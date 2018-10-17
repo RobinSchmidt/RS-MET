@@ -114,6 +114,12 @@ bool testPrimeFactorization(std::string &reportString)
   // do some randomized tests:
   rsFindPrimesUpTo(p, (rsUint32)100);
 
+  // todo: make a loop through the numbers 0...N where N is some upper limit. for each number, 
+  // obtain the factorization, then multiply all factors together (with approriate exponents, using
+  // rsPowInt) and check, if the result is the correct number). 0 should have 0 as factor and 1 
+  // should have 1 (both with exponent 1)...maybe use a helper function that turns a factorization
+  // back to the number (rsFromFactors or something)
+
 
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;
