@@ -509,6 +509,7 @@ int main(int argc, char* argv[])
 }
 
 // ToDo:
-// -fix access violation in rsPrimeFactors
+// -fix access violation in rsPrimeFactors - done
+// -use more efficient implementation for rsPowInt
 // -check that fabs or rsAbs is used everywhere where floating point numbers can occurr
 //  -maybe use rsAbs preferably because it may also be used for modular integers

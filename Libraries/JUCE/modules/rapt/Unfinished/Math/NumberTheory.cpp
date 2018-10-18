@@ -130,30 +130,23 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
     return;
   }
 
-
   T limit = rsIntSqrt(x);
-
   bool tableIsTemporary = (primeTable == nullptr);
-  if( tableIsTemporary )
-  {
+  if( tableIsTemporary ) {
     primeTable = new std::vector<T>;
     rsFindPrimesUpTo(*primeTable, limit);
   }
 
-
   T i  = 0;
   T np = 0;
-  T p = (*primeTable)[0];
-  while( p <= limit )
-  {
-    p = (*primeTable)[i];  // new - still causes access violation for x=5
-    if( x % p == 0 )
-    {
+  T p;
+  while( i  < primeTable->size() ) {
+    p = (*primeTable)[i];
+    if( x % p == 0 ) {
       factors.push_back(p);
       exponents.push_back(1);
       x /= p;
-      while( x % p == 0 )
-      {
+      while( x % p == 0 ) {
         exponents[np]++;
         x /= p;
       }
@@ -161,10 +154,8 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
       np++;
     }
     i++;
-    //p = (*primeTable)[i]; // old - causes access violation, for x=4 for example
   }
-  if( x != T(1) )
-  {
+  if( x != T(1) ) {
     factors.push_back(x);
     exponents.push_back(1);
   }
