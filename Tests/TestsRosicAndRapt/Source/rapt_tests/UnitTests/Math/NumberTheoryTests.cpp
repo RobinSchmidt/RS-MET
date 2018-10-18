@@ -84,6 +84,17 @@ bool testPrimeTableGeneration(std::string &reportString)
   return testResult;
 }
 
+// reconstructs a numkber from its prime factorization (which can be obtained by rsPrimeFactors) 
+// ...maybe move to RAPT library:
+rsUint32 rsPrimeProduct(std::vector<rsUint32>& factors, std::vector<rsUint32>& exponents)
+{
+  rsAssert(factors.size() == exponents.size());
+  rsUint32 r = 1;
+  for(size_t i = 0; i < factors.size(); i++)
+    r *= rsPowInt(factors[i], exponents[i]); // todo: switch algo for rsPowInt...see implementation comment
+  return r;
+}
+
 bool testPrimeFactorization(std::string &reportString)
 {
   std::string testName = "PrimeFactorization";
@@ -119,6 +130,13 @@ bool testPrimeFactorization(std::string &reportString)
   // rsPowInt) and check, if the result is the correct number). 0 should have 0 as factor and 1 
   // should have 1 (both with exponent 1)...maybe use a helper function that turns a factorization
   // back to the number (rsFromFactors or something)
+
+  rsUint32 N = 100;
+  for(rsUint32 i = 0; i <= N; i++) {
+    rsPrimeFactors(i, f, e);
+    rsUint32 j = rsPrimeProduct(f, e); // crashes for i == 5
+    testResult &= j == i;
+  }
 
 
   appendTestResultToReport(reportString, testName, testResult);

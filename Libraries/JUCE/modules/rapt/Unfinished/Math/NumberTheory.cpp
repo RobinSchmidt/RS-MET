@@ -117,10 +117,20 @@ void rsFillPrimeTable(T *primes, rsUint32 numPrimes, rsUint32 bufferSize)
   delete[] flags;
 }
 
+// todo: make it work also for negative numbers - in this case, the first factor should be -1
 template<class T>
 void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents, 
   std::vector<T> *primeTable)
 {
+  factors.clear();
+  exponents.clear();
+  if(x == 0 || x == 1) {
+    factors.push_back(x);
+    exponents.push_back(1);
+    return;
+  }
+
+
   T limit = rsIntSqrt(x);
 
   bool tableIsTemporary = (primeTable == nullptr);
@@ -130,8 +140,7 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
     rsFindPrimesUpTo(*primeTable, limit);
   }
 
-  factors.clear();
-  exponents.clear();
+
   T i  = 0;
   T np = 0;
   T p = (*primeTable)[0];

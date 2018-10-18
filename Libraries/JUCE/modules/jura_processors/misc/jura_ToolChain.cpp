@@ -188,43 +188,23 @@ AudioModuleEditor* ToolChain::createEditor(int type)
 
 void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
-  if(numChannels != 2)
-    return;
-
-  //ScopedLock scopedLock(*lock); already held by wrapping plugin
-
+  if(numChannels != 2) return;
+  //ScopedLock scopedLock(*lock); // lock already held by the wrapping plugin
   bool needsSmoothing  = smoothingManager->needsSmoothing();
   bool needsModulation = modManager.getNumConnections() > 0;
-
   if( !needsSmoothing && !needsModulation )
-  {
-    // in case of no modulations, we can use a faster loop
-    for(int i = 0; i < size(modules); i++)
+    for(size_t i = 0; i < modules.size(); i++)
       modules[i]->processBlock(inOutBuffer, numChannels, numSamples);
-  }
-  else
-  {
+  else {
     // we have to iterate through all the samples and for each sample update all the modulators and
-    // then compute a sample-frame from each non-modulator module
-    for(int n = 0; n < numSamples; n++)
-    {
-      if(needsSmoothing)
-      {
-        //smoothingManager->updateSmoothedValues(); // nope, the lock is not the problem
-        smoothingManager->updateSmoothedValuesNoLock();
-      }
-      if(needsModulation)
-        modManager.applyModulationsNoLock();
-      for(int i = 0; i < size(modules); i++)
-      {
-        //// for debug:
-        //double left  = inOutBuffer[0][n];
-        //double right = inOutBuffer[1][n];
-
+    // then compute a sample-frame from each non-modulator module:
+    for(int n = 0; n < numSamples; n++) {
+      if(needsSmoothing)   smoothingManager->updateSmoothedValuesNoLock();
+      if(needsModulation)  modManager.applyModulationsNoLock();
+      for(size_t i = 0; i < modules.size(); i++)
         modules[i]->processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
         // AudioModules that are subclasses of ModulationSource have not overriden this function.
         // That means, they inherit the empty baseclass method and do nothing in this call.
-      }
     }
   }
 }
@@ -252,8 +232,8 @@ void ToolChain::handleMidiMessage(MidiMessage message)
   // the modified sequence to the next module - we could have an appregiator in front of a
   // synth, for example
 
-  // all synthesizer modules should pass through the incoming audio and add their own signal
-  // (unless the use it inside for their own signal processing) -> this allows for layering
+  // all isntrument and source modules should pass through the incoming audio and add their own
+  // signal (unless the use it inside for their own signal processing) -> this allows for layering
 }
 
 /*

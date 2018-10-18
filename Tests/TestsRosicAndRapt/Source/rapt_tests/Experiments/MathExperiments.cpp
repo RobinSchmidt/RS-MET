@@ -745,7 +745,7 @@ public:
   rsNumberDivisibilityInfo(rsUint32 number)
   {
     this->number = number;
-    //RAPT::rsPrimeFactors(number, factors, exponents); // currently crashes
+    RAPT::rsPrimeFactors(number, factors, exponents); // currently crashes
 
     // todo: find divisors...
   }
