@@ -139,9 +139,9 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
 
   T i  = 0;
   T np = 0;
-  T p;
-  while( i  < primeTable->size() ) {
-    p = (*primeTable)[i];
+  T p = (*primeTable)[0];
+  while( p <= limit && i < primeTable->size() ) { // 2nd condition needed to avoid access violation
+    p = (*primeTable)[i];                         // for temporary tables
     if( x % p == 0 ) {
       factors.push_back(p);
       exponents.push_back(1);
