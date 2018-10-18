@@ -739,15 +739,34 @@ void primeAlternatingSums()
   // ..but maybe it's actually faster to noodle around with that stuff in python or sage
 }
 
+// naive implementation - can probably be optimized, if we know the prime factorization of n
+// see:/ https://www.quora.com/What-is-the-fastest-way-to-find-the-divisors-of-a-number#
+void rsFindDivisors(rsUint32 n, std::vector<rsUint32>& d)
+{
+  d.clear();
+  if(n == 0) return; // or should we say that 0 is divisible by any number?
+  for(rsUint32 i = 2; i <= rsIntSqrt(n); i++)
+    if(n % i == 0) {
+      d.push_back(i);
+      rsUint32 j = n/i;
+      if(j != i)
+        d.push_back(j);
+      // todo: optimze by using a divmod operation: divmod(n, j, i)
+    }
+  //RAPT::rsHeapSort(&d[0], (int)d.size());
+  std::sort(d.begin(), d.end());
+  //d.push_back(n);
+}
+// we do not add the trivial divisors 1 and n to the array...or should we?
+
 class rsNumberDivisibilityInfo
 {
 public:
   rsNumberDivisibilityInfo(rsUint32 number)
   {
     this->number = number;
-    RAPT::rsPrimeFactors(number, factors, exponents); // currently crashes
-
-    // todo: find divisors...
+    RAPT::rsPrimeFactors(number, factors, exponents);
+    rsFindDivisors(number, divisors);
   }
 
   rsUint32 getNumDivisors()
@@ -770,14 +789,15 @@ protected:
 
 void divisibility()
 {
-  rsUint32 max = 20;
+  rsUint32 max = 5040;
   std::vector<rsNumberDivisibilityInfo> numInfos;
   numInfos.reserve(max);
-  for(rsUint32 i = 2; i <= max; i++)
+  for(rsUint32 i = 0; i <= max; i++)
     numInfos.push_back(rsNumberDivisibilityInfo(i));
 
   // todo: find highly composite and largely composite numbers...they can be useful for GUI sizes
-  // https://www.quora.com/What-is-the-fastest-way-to-find-the-divisors-of-a-number#
+
+  // plot the number of non-trivial divisors as function of the 
 
   int dummy = 0;
 }
