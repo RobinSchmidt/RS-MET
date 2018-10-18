@@ -740,8 +740,8 @@ void primeAlternatingSums()
 }
 
 // naive implementation - can probably be optimized, if we know the prime factorization of n
-// see:/ https://www.quora.com/What-is-the-fastest-way-to-find-the-divisors-of-a-number#
-void rsFindDivisors(rsUint32 n, std::vector<rsUint32>& d)
+// see: https://www.quora.com/What-is-the-fastest-way-to-find-the-divisors-of-a-number#
+void rsFindNonTrivialDivisors(rsUint32 n, std::vector<rsUint32>& d)
 {
   d.clear();
   if(n == 0) return; // or should we say that 0 is divisible by any number?
@@ -751,13 +751,25 @@ void rsFindDivisors(rsUint32 n, std::vector<rsUint32>& d)
       rsUint32 j = n/i;
       if(j != i)
         d.push_back(j);
-      // todo: optimze by using a divmod operation: divmod(n, j, i)
+      // todo: optimize by using a divmod operation: divmod(n, j, i)
     }
   //RAPT::rsHeapSort(&d[0], (int)d.size());
   std::sort(d.begin(), d.end());
   //d.push_back(n);
 }
 // we do not add the trivial divisors 1 and n to the array...or should we?
+// the definition of divisors would include them: https://en.wikipedia.org/wiki/Divisor
+// ...unless we qualify them as nontrivial
+
+// computes the number of divisors of a number from the exponents of its prime-factorization
+// which must be passed as argument.
+rsUint32 rsNumDivisors(std::vector<rsUint32>& exponents)
+{
+  rsUint32 nd = 1;
+  for(size_t i = 0; i < exponents.size(); i++)
+    nd *= exponents[i] + 1;
+  return nd;
+}
 
 class rsNumberDivisibilityInfo
 {
@@ -766,16 +778,7 @@ public:
   {
     this->number = number;
     RAPT::rsPrimeFactors(number, factors, exponents);
-    rsFindDivisors(number, divisors);
-  }
-
-  rsUint32 getNumDivisors()
-  {
-    rsUint32 nd = 1;
-    for(size_t i = 0; i < exponents.size(); i++)
-      nd *= exponents[i] + 1;
-    // hmm...well...that function is suitable if we know only the prime-factorization...but here
-    // we can actually just use divisors.size() - maybe move that function to somehwere else
+    rsFindNonTrivialDivisors(number, divisors);
   }
 
   rsUint32 number;
@@ -791,13 +794,20 @@ void divisibility()
 {
   rsUint32 max = 5040;
   std::vector<rsNumberDivisibilityInfo> numInfos;
-  numInfos.reserve(max);
+  numInfos.reserve(max+1);
   for(rsUint32 i = 0; i <= max; i++)
     numInfos.push_back(rsNumberDivisibilityInfo(i));
 
   // todo: find highly composite and largely composite numbers...they can be useful for GUI sizes
 
-  // plot the number of non-trivial divisors as function of the 
+  // plot the number of non-trivial divisors as function of the number itself:
+  std:vector<int> numDivisors(numInfos.size());
+  for(size_t i = 0; i < numInfos.size(); i++)
+    numDivisors[i] = (int) numInfos[i].divisors.size();
 
-  int dummy = 0;
+  GNUPlotter plt;
+  plt.addDataArrays((int)numDivisors.size(), &numDivisors[0]);
+  plt.plot();
+  // todo: mark highly composite numbers with a big mark and largely composite numbers with a 
+  // smaller mark
 }
