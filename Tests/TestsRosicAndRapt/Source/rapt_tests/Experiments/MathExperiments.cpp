@@ -745,9 +745,18 @@ public:
   rsNumberDivisibilityInfo(rsUint32 number)
   {
     this->number = number;
-    RAPT::rsPrimeFactors(number, factors, exponents);
+    //RAPT::rsPrimeFactors(number, factors, exponents); // currently crashes
 
     // todo: find divisors...
+  }
+
+  rsUint32 getNumDivisors()
+  {
+    rsUint32 nd = 1;
+    for(size_t i = 0; i < exponents.size(); i++)
+      nd *= exponents[i] + 1;
+    // hmm...well...that function is suitable if we know only the prime-factorization...but here
+    // we can actually just use divisors.size() - maybe move that function to somehwere else
   }
 
   rsUint32 number;
@@ -768,6 +777,7 @@ void divisibility()
     numInfos.push_back(rsNumberDivisibilityInfo(i));
 
   // todo: find highly composite and largely composite numbers...they can be useful for GUI sizes
+  // https://www.quora.com/What-is-the-fastest-way-to-find-the-divisors-of-a-number#
 
   int dummy = 0;
 }

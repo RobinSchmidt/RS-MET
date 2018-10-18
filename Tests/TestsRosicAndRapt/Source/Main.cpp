@@ -507,3 +507,8 @@ int main(int argc, char* argv[])
   getchar();
   return(EXIT_SUCCESS);
 }
+
+// ToDo:
+// -fix access violation in rsPrimeFactors
+// -check that fabs or rsAbs is used everywhere where floating point numbers can occurr
+//  -maybe use rsAbs preferably because it may also be used for modular integers
