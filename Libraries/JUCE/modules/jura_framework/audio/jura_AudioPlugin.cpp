@@ -454,8 +454,10 @@ AudioPluginEditor::AudioPluginEditor(AudioModuleEditor* editorToWrap, AudioPlugi
     h = wrappedEditor->getHeight();
 
   // limit the size according to desired limits:
-  w = RAPT::rsClip(w, pluginToEdit->editorWidthMin,  pluginToEdit->editorWidthMax);
-  h = RAPT::rsClip(h, pluginToEdit->editorHeightMin, pluginToEdit->editorHeightMax);
+  //w = RAPT::rsClip(w, pluginToEdit->editorWidthMin,  pluginToEdit->editorWidthMax);
+  //h = RAPT::rsClip(h, pluginToEdit->editorHeightMin, pluginToEdit->editorHeightMax);
+  // ..but maybe that's not a good idea - we want to allow the gui size to be recalled 
+  // programatically, even when it'S not resizable by the user
 
   // set up resizing limits and initial size:
   bool resizable = pluginToEdit->editorWidthMin  != pluginToEdit->editorWidthMax;
