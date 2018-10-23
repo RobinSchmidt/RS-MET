@@ -396,6 +396,10 @@ public:
   template <class T>
   static T meanDifference(const T* buffer, int length);
 
+  /** Returns the mean of the squares of the values in the array. */
+  template<class T>
+  static T meanSquare(const T *x, int N);
+
   /** Returns the median of the passed buffer. */
   template <class T>
   static T median(T *buffer, int length);
@@ -465,6 +469,10 @@ public:
   left. */
   template <class T>
   static void rightShift(T *buffer, int length, int numPlaces);
+
+  /** Returns the square-root of mean of the squares (RMS value) of the values in the array. */
+  template<class T>
+  static T rootMeanSquare(const T *x, int N) { return rsSqrt(meanSquare(x, N)); }
 
   /** Scales the buffer by a constant factor. */
   template <class T1, class T2>

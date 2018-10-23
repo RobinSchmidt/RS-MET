@@ -408,6 +408,10 @@ namespace RAPT
   template <class T>
   void rsRemoveMean(T *buffer, int length);
 
+  /** Computes the RMS value of the given array. */
+  template<class T>
+  T rsRootMeanSquare(T *x, int N);
+
   /** Reverses the order of the elements the passed array. */
   template <class T>
   void reverse(T *buffer, int length);

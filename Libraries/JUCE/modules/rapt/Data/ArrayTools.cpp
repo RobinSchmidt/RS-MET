@@ -917,6 +917,12 @@ T rsArray::meanDifference(const T *x, int N)
   return s / (N-1);    // for N values, there are N-1 differences
 }
 
+template<class T>
+T rsArray::meanSquare(const T *x, int N)
+{
+  return sumOfSquares(x, N) / T(N);
+}
+
 template <class T>
 T rsArray::median(T *buffer, int length)
 {
