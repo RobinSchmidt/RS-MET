@@ -1097,7 +1097,7 @@ T rsArray::sum(T *buffer, int length)
 }
 
 template<class T>
-T rsArray::sumOfProducts(T *x, T *y, int N)
+T rsArray::sumOfProducts(const T *x, const T *y, int N)
 {
   T s = T(0);
   for(int n = 0; n < N; n++)
@@ -1106,7 +1106,7 @@ T rsArray::sumOfProducts(T *x, T *y, int N)
 }
 
 template<class T>
-T rsArray::sumOfSquares(T *x, int N)
+T rsArray::sumOfSquares(const T *x, int N)
 {
   return sumOfProducts(x, x, N);
 }

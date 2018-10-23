@@ -522,12 +522,12 @@ public:
   /** Given two arrays x and y of lengths N, this function computes the sum of the products 
   x[i]*y[i] where i runs from 0 to N-1. */
   template<class T>
-  static T sumOfProducts(T *x, T *y, int N);
+  static T sumOfProducts(const T *x, const T *y, int N);
 
   /** Given an array x of length N, this function commputes the sum of the squares of the values
   in x. */
   template<class T>
-  static T sumOfSquares(T *x, int N);
+  static T sumOfSquares(const T *x, int N);
 
   /** Swaps the contents of of buffer1 and buffer2 using an auxiliary buffer bufferTmp. All buffers
   are assumed to have a size of sizeInBytes. */
