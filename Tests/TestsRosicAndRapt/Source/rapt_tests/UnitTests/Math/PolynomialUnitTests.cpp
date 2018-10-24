@@ -32,6 +32,7 @@ bool testPolynomial()
   // polynomial class:
   testResult &= testPolynomialOperators(                      reportString);
 
+
   return testResult;
 }
 
@@ -1116,14 +1117,21 @@ bool testPolynomialOperators(std::string &reportString)
   std::string testName = "PolynomialOperators";
   bool testResult = true;
 
-  static const int N1 = 3;
-  static const int N2 = 4;
+  //static const int N1 = 3;
+  //static const int N2 = 4;
 
-  double a1[N1+1] = {7, 5, 3, 2};
-  double a2[N2+1] = {23, 19, 17, 13, 11};
-
+  //double a1[N1+1] = {7, 5, 3, 2};
+  //double a2[N2+1] = {23, 19, 17, 13, 11};
   //rsPolynomialD P1(a1, N1);
   //rsPolynomialD P2(a2, N2);
+
+  typedef rsPolynomialD PL;
+
+  PL p({ 7,  5,  3,  2});
+  PL q({23, 19, 17, 13, 11});
+  PL r = p + q;
+  //testResult &= r == {30, 24, 15, 11};
+  r = p - q;
 
   return testResult;
 }

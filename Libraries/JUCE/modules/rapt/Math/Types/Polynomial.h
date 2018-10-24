@@ -407,14 +407,18 @@ public:
   /** Adds two polynomials */
   rsPolynomial<T> operator+(const rsPolynomial<T>& q) {
     rsPolynomial<T> r(rsMax(getMaxOrder(), q.getMaxOrder()), true);
-    //weightedSum(&coeffs[0], getMaxOrder(), T(1), &(q.coeffs[0]), q.getMaxOrder(), T(1), &r[0]);
+    weightedSum(  coeffs.data(),   getMaxOrder(), T(1), 
+                q.coeffs.data(), q.getMaxOrder(), T(1), 
+                r.coeffs.data());
     return r;
   }
 
   /** Subtracts two polynomials */
   rsPolynomial<T> operator-(const rsPolynomial<T>& q) {
     rsPolynomial<T> r(rsMax(getMaxOrder(), q.getMaxOrder()), true);
-    //weightedSum(&coeffs[0], getMaxOrder(), T(1), &(q.coeffs[0]), q.getMaxOrder(), T(-1), &r[0]);
+    weightedSum(  coeffs.data(),   getMaxOrder(), T(+1), 
+                q.coeffs.data(), q.getMaxOrder(), T(-1), 
+                r.coeffs.data());
     return r;
   }
 
