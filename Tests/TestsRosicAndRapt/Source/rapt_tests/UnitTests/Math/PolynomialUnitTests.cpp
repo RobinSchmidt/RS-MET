@@ -342,7 +342,7 @@ bool testPolynomialDivision(std::string &reportString)
 
   // retrieve q(x) and r(x):
   double qq[9], rr[9];
-  rsPolynomialD::dividePolynomials(p, 8, d, 5, qq, rr);
+  rsPolynomialD::divide(p, 8, d, 5, qq, rr);
 
   // p(x)/d(x) = q(x) + r(x)/d(x)
 

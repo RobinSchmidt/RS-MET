@@ -45,8 +45,8 @@ public:
     int numDerivatives);
 
   /** Multiplies the polynomials represented by the coefficient vectors 'a' and 'b' and stores the
-  resulting coefficients in 'result'. The resulting polynom will be or order aOrder+bOrder and the
-  coefficient vector should have allocated space for
+  resulting coefficients in 'result'. The resulting polynomial will be or order aOrder+bOrder and 
+  the coefficient vector should have allocated space for
   (aOrder+1)+(bOrder+1)-1 = aOrder+bOrder+1 = aLength+bLength-1 elements. 
   Can work in place, i.e. result may point to the same array as a and/or b.   */
   static void multiply(T *a, int aOrder, T *b, int bOrder, T *result)
@@ -56,21 +56,24 @@ public:
 
   /** Divides the polynomials represented by the coefficient arrays 'dividend' and 'divisor' and
   stores the resulting coefficients for the quotient and remainder in the respective output arrays.
-  ?? The resulting quotient polynom will be of order dividendOrder-divisorOrder and the
+  ?? The resulting quotient polynomial will be of order dividendOrder-divisorOrder and the
   remainder polynom will be at most of order ??
   However, the output arrays must have the same length as the dividend, where
   remainder[divisorOrder...dividendOrder] and 
   quotient[dividendOrder-divisorOrder+1...dividendOrder] will be filled with zeros.  
   ...\todo check this comment */
-  static void dividePolynomials(T *dividend, int dividendOrder, T *divisor, int divisorOrder, 
-    T *quotient, T *remainder);
-  // rename to divide
+  static void divide(T* dividend, int dividendOrder, T* divisor, int divisorOrder, 
+    T* quotient, T* remainder);
 
   /** Divides the dividend by the monomial factor (x-x0) and stores the result in the same array
-  again. The remainder (which is just a numerical value) will be stored in 'remainder'. */
+  again. The remainder (which is just a numerical value) will be stored in 'remainder'. This 
+  function is useful for splitting off a linear factor, if x0 is a root of the dividend, in which 
+  case the remainder will come out as zero (check this). */
   template<class S>
-  static void dividePolynomialByMonomialInPlace(S *dividendAndResult, int dividendOrder, S x0, 
-    S *remainder);
+  static void divideByMonomialInPlace(S* dividendAndResult, int dividendOrder, S x0, S* remainder);
+  // maybe make a version that can store the result in a different array - make it so that the 
+  // result array may or may not point to the same array as the dividend
+  // 
 
   //static void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, T x0, 
   //  T *remainder);

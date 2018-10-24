@@ -14,8 +14,7 @@ void rsPolynomial<T>::evaluateWithDerivative(T x, T *a, int order, T *y, T *yd)
 {
   *y  = a[order];
   *yd = 0.0;
-  for(int i = order-1; i >= 0; i--)
-  {
+  for(int i = order-1; i >= 0; i--) {
     *yd = *yd * x + *y;
     *y  = *y  * x + a[i];
   }
@@ -27,8 +26,7 @@ void rsPolynomial<T>::evaluateWithDerivatives(T x, T *a, int order, T *results,
 {
   results[0] = a[order];
   rsArray::fillWithZeros(&results[1], numDerivatives);
-  for(int i = order-1; i >= 0; i--)
-  {
+  for(int i = order-1; i >= 0; i--) {
     int n = rsMin(numDerivatives, order-1);
     for(int j = n; j >= 1; j--)
       results[j] = results[j]*x + results[j-1];
@@ -38,12 +36,11 @@ void rsPolynomial<T>::evaluateWithDerivatives(T x, T *a, int order, T *results,
 }
 
 template <class T>
-void rsPolynomial<T>::dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
+void rsPolynomial<T>::divide(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
 {
   rsArray::copyBuffer(p, r, pOrder+1); // init remainder with p
   rsArray::fillWithZeros(q, pOrder+1); // init quotient with zeros
-  for(int k = pOrder-dOrder; k >= 0; k--)
-  {
+  for(int k = pOrder-dOrder; k >= 0; k--) {
     q[k] = r[dOrder+k] / d[dOrder];
     for(int j = dOrder+k-1; j >= k; j--)
       r[j] -= q[k] * d[j-k];
@@ -51,16 +48,14 @@ void rsPolynomial<T>::dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q
   rsArray::fillWithZeros(&r[dOrder], pOrder-dOrder+1);
 }
 
-
 template<class T>
 template<class S>
-void rsPolynomial<T>::dividePolynomialByMonomialInPlace(S *dividendAndResult, int dividendOrder,
+void rsPolynomial<T>::divideByMonomialInPlace(S *dividendAndResult, int dividendOrder,
   S x0, S *remainder)
 {
   *remainder = dividendAndResult[dividendOrder];
   dividendAndResult[dividendOrder] = T(0);
-  for(int i=dividendOrder-1; i>=0; i--)
-  {
+  for(int i=dividendOrder-1; i>=0; i--) {
     S swap               = dividendAndResult[i];
     dividendAndResult[i] = *remainder;
     *remainder           = swap + *remainder*x0;
@@ -404,7 +399,7 @@ void rsPolynomial<T>::findPolynomialRoots(const std::complex<T> *a, int order, s
     // found root:
     std::complex<T> rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
     //dividePolynomialByMonomialInPlace(ad, j, r, &rem); // old
-    rsPolynomial<std::complex<T>>::dividePolynomialByMonomialInPlace(ad, j, r, &rem);
+    rsPolynomial<std::complex<T>>::divideByMonomialInPlace(ad, j, r, &rem);
   }
 
   rsSortComplexArrayByReIm(roots, order);  // maybe leave this to client code
@@ -1225,7 +1220,7 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
     rsArray::copyBuffer(denominator, tmp, denominatorOrder+1);
     for(int m = 0; m < multiplicities[i]; m++)
     {
-      dividePolynomialByMonomialInPlace(tmp, denominatorOrder-m, poles[i], &remainder);
+      divideByMonomialInPlace(tmp, denominatorOrder-m, poles[i], &remainder);
       for(int j = 0; j < denominatorOrder; j++)
         A[j][k] = tmp[j];
       k++;

@@ -932,7 +932,7 @@ void partialFractionExpansion()
   for(int i = 0; i < M; i++)
   {
     RAPT::rsArray::copyBuffer(q, tmp, M+1);
-    RAPT::rsPolynomial<double>::dividePolynomialByMonomialInPlace(tmp, M, r[i], &dummy);
+    RAPT::rsPolynomial<double>::divideByMonomialInPlace(tmp, M, r[i], &dummy);
       // todo: use a function that does not do it "in-place" - avoids copying and is probably 
       // simpler. perhaps, here, we have to do that division in a loop from 1 up to the 
       // multiplicity of the root r[i] - but where would the result go in the coefficient matrix?
@@ -983,7 +983,7 @@ void partialFractionExpansion2()
     RAPT::rsArray::copyBuffer(denominator, tmp, denominatorOrder+1);
     for(int m = 0; m < multiplicities[i]; m++)
     {
-      RAPT::rsPolynomial<double>::dividePolynomialByMonomialInPlace(tmp, denominatorOrder-m, roots[i], &remainder);
+      RAPT::rsPolynomial<double>::divideByMonomialInPlace(tmp, denominatorOrder-m, roots[i], &remainder);
       for(int j = 0; j < denominatorOrder; j++)
         A[j][k] = tmp[j];
       k++;
