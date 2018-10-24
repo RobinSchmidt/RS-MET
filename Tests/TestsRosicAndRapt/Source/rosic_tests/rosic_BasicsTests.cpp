@@ -187,7 +187,7 @@ void rotes::testHermiteTwoPoint1()
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
-    RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 3, &y[2*n], 1);
+    RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 3, &y[2*n], 1);
   RAPT::rsArray::deInterleave(y, N, 2);
 
   Plotter::plotData(N, x, y);
@@ -214,7 +214,7 @@ void rotes::testHermiteTwoPoint2()
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
-    RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 5, &y[3*n], 2);
+    RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 5, &y[3*n], 2);
   RAPT::rsArray::deInterleave(y, N, 3);
 
   Plotter::plotData(N, x, y);
@@ -240,7 +240,7 @@ void rotes::testHermiteTwoPoint3()
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
-    RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 7, &y[4*n], 3);
+    RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 7, &y[4*n], 3);
   RAPT::rsArray::deInterleave(y, N, 4);
 
   Plotter::plotData(N, x, y);
@@ -270,7 +270,7 @@ void rotes::testHermiteTwoPointM()
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
-    RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 7, &y[(M+1)*n], M);
+    RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 7, &y[(M+1)*n], M);
   RAPT::rsArray::deInterleave(y, N, M+1);
 
   Plotter::plotData(N, x, y);

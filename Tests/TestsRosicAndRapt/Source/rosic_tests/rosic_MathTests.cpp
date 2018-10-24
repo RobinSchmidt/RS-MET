@@ -57,11 +57,11 @@ bool rotes::testCubicCoeffsTwoPointsAndDerivatives()
   double yc, dyc;       // computed values
   double tol = 1.e-14;  // tolerance
 
-  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x[0], a, 3, &yc, &dyc);
+  RAPT::rsPolynomial<double>::evaluateWithDerivative(x[0], a, 3, &yc, &dyc);
   result &= RAPT::rsIsCloseTo( yc,  y[0], tol);
   result &= RAPT::rsIsCloseTo(dyc, dy[0], tol);
 
-  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x[1], a, 3, &yc, &dyc);
+  RAPT::rsPolynomial<double>::evaluateWithDerivative(x[1], a, 3, &yc, &dyc);
   result &= RAPT::rsIsCloseTo( yc,  y[1], tol);
   result &= RAPT::rsIsCloseTo(dyc, dy[1], tol);
 
@@ -111,9 +111,9 @@ bool rotes::testPolynomialComposition()
   // to the result of the 1st a-polynomial:
   double x = -3.0; // input value
   double y1, y2;
-  y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  a, na);
-  y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(y1, b, nb);
-  y2 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  c, nc);
+  y1 = RAPT::rsPolynomial<double>::evaluate(x,  a, na);
+  y1 = RAPT::rsPolynomial<double>::evaluate(y1, b, nb);
+  y2 = RAPT::rsPolynomial<double>::evaluate(x,  c, nc);
   result &= (y1 == y2);
 
   return result;
@@ -185,16 +185,16 @@ bool rotes::testPolynomialIntegrationWithPolynomialLimits()
   RAPT::rsPolynomial<double>::polyIntegral(p, P, np);
 
   // compute integration limits for definite integral:
-  double lowerLimit = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, a, na);
-  double upperLimit = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, b, nb);
+  double lowerLimit = RAPT::rsPolynomial<double>::evaluate(x, a, na);
+  double upperLimit = RAPT::rsPolynomial<double>::evaluate(x, b, nb);
 
   // evaluate definite integral:
-  y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(upperLimit, P, nP) 
-    - RAPT::rsPolynomial<double>::evaluatePolynomialAt(lowerLimit, P, nP);
+  y1 = RAPT::rsPolynomial<double>::evaluate(upperLimit, P, nP) 
+    - RAPT::rsPolynomial<double>::evaluate(lowerLimit, P, nP);
 
 
   RAPT::rsPolynomial<double>::integratePolynomialWithPolynomialLimits(p, np, a, na, b, nb, q);
-  y2 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, q, nq);
+  y2 = RAPT::rsPolynomial<double>::evaluate(x, q, nq);
 
   result &= RAPT::rsIsCloseTo(y2, y1, 1.e-13 * fabs(y1));
 

@@ -252,14 +252,14 @@ double Polynomial::getValueAt(double x)
 double Polynomial::getFirstDerivativeAt(double x)
 {
   double f[2];  // f(x), f'(x)
-  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 1);
+  RAPT::rsPolynomial<double>::evaluateWithDerivatives(x, coeffs, order, f, 1);
   return f[1];
 }
 
 double Polynomial::getSecondDerivativeAt(double x)
 {
   double f[3];  // f(x), f'(x), f''(x)
-  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x, coeffs, order, f, 2);
+  RAPT::rsPolynomial<double>::evaluateWithDerivatives(x, coeffs, order, f, 2);
   return f[2];
 }
 

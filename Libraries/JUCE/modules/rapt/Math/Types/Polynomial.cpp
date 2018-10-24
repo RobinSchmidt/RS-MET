@@ -10,7 +10,7 @@ T rsPolynomial<T>::evaluate(T x, T *a, int order)
 }
 
 template <class T>
-void rsPolynomial<T>::evaluatePolynomialAndDerivativeAt(T x, T *a, int order, T *y, T *yd)
+void rsPolynomial<T>::evaluateWithDerivative(T x, T *a, int order, T *y, T *yd)
 {
   *y  = a[order];
   *yd = 0.0;
@@ -22,7 +22,7 @@ void rsPolynomial<T>::evaluatePolynomialAndDerivativeAt(T x, T *a, int order, T 
 }
 
 template <class T>
-void rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results,
+void rsPolynomial<T>::evaluateWithDerivatives(T x, T *a, int order, T *results,
   int numDerivatives)
 {
   results[0] = a[order];
@@ -761,13 +761,13 @@ T rsPolynomial<T>::getRootNear(T x, T *a, int order, T min, T max,
 {
   // Newton/Raphson iteration:
   T f, df, xNew;
-  evaluatePolynomialAndDerivativeAt(x, a, order, &f, &df);
+  evaluateWithDerivative(x, a, order, &f, &df);
   xNew  = x - f/df;
   int i = 1;
   while( xNew != x && i < maxIterations )
   {
     x    = xNew;
-    evaluatePolynomialAndDerivativeAt(x, a, order, &f, &df);
+    evaluateWithDerivative(x, a, order, &f, &df);
     xNew = x - f/df;
     i++;
   }

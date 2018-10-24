@@ -9,7 +9,7 @@ class rsPolynomial
 
 public:
 
-  // todo:  have a std::vector<T> member for the coeffs and define operators
+
 
 
   //===============================================================================================
@@ -34,17 +34,15 @@ public:
 
   /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
   argument 'x'. The value of the polynomial will be stored in y and the value of the derivative
-  will be stored in yd. @see: evaluatePolynomialAt() */
-  static void evaluatePolynomialAndDerivativeAt(T x, T *a, int order, T *y, T *yd);
-  // rename to evaluateWithDerivative
+  will be stored in yd. @see: evaluate() */
+  static void evaluateWithDerivative(T x, T *a, int order, T *y, T *yd);
 
   /** Evaluates the polynomial defined by the array of coefficients 'a' and a given number of
   derivatives at argument 'x'. The value of the polynomial will be stored in results[0], the 1st
   derivative in results[1] and so on. numDerivatives should be <= 31.
   @see: evaluatePolynomialAt() */
-  static void evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results, 
+  static void evaluateWithDerivatives(T x, T *a, int order, T *results, 
     int numDerivatives);
-  // rename to evaluateWithDerivatives
 
   /** Multiplies the polynomials represented by the coefficient vectors 'a' and 'b' and stores the
   resulting coefficients in 'result'. The resulting polynom will be or order aOrder+bOrder and the
@@ -386,6 +384,7 @@ public:
 
   // comment this function, maybe use a more efficent algorithm if all
   // poles are simple, (see also Experiments - there's something said about that)
+  // move to class rsRationalFunction
   static void rsPartialFractionExpansion(
     std::complex<T> *numerator, int numeratorOrder,
     std::complex<T> *denominator, int denominatorOrder,
@@ -399,7 +398,7 @@ public:
 
 
   /** Returns the maximum order that this poloynomial may have which is the length of the 
-  coefficient array minus one. When there a re trailing zero coefficients, the actual degree of
+  coefficient array minus one. When there are trailing zero coefficients, the actual degree of
   the polynomial is lower. */
   int getMaxOrder() const { return (int)coeffs.size()-1; }
   // int getOrder()

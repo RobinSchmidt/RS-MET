@@ -166,7 +166,7 @@ void papoulisL2(double *v, int N)
     rsPolynomial<double>::integratePolynomialWithPolynomialLimits(v, 2*k+1, a, 0, b, 2, v); // order: 2*N, length 2*N+1
 
     // scale, such that L^2(1) = 1:
-    double K = 1.0 / rsPolynomial<double>::evaluatePolynomialAt(1.0, v, 2*N);
+    double K = 1.0 / rsPolynomial<double>::evaluate(1.0, v, 2*N);
     RAPT::rsArray::scale(v, 2*N+1, K); 
   }
 }

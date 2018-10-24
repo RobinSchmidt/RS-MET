@@ -298,12 +298,12 @@ bool testFitQuarticWithDerivatives(std::string &reportString)
   rsPolynomial<double>::fitQuarticWithDerivatives(a, y, s0, s2);
 
   double tmp[2];
-  rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(0.0, a, 4, tmp, 1);
+  rsPolynomial<double>::evaluateWithDerivatives(0.0, a, 4, tmp, 1);
   testResult &= (tmp[0] == 1.0);
   testResult &= (tmp[1] == 1.0);
-  rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(1.0, a, 4, tmp, 1);
+  rsPolynomial<double>::evaluateWithDerivatives(1.0, a, 4, tmp, 1);
   testResult &= (tmp[0] == 2.0);
-  rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(2.0, a, 4, tmp, 1);
+  rsPolynomial<double>::evaluateWithDerivatives(2.0, a, 4, tmp, 1);
   testResult &= (tmp[0] ==  0.0);
   testResult &= (tmp[1] == -2.0);
 

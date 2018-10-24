@@ -1069,7 +1069,7 @@ void gaussianPrototype()
   RAPT::rsArray::fillWithRangeLinear(w, numBins, wMin, wMax);
   for(int i = 0; i < numBins; i++)
   {
-    m[i]  = 1.0 / (RAPT::rsPolynomial<double>::evaluatePolynomialAt(w[i], c, 2*N));
+    m[i]  = 1.0 / (RAPT::rsPolynomial<double>::evaluate(w[i], c, 2*N));
     mt[i] = exp(-g*w[i]*w[i]);  // ideal Gaussian response
   }
 
@@ -1109,8 +1109,8 @@ void halpernPrototype()
   RAPT::rsArray::fillWithRangeExponential(w, numBins, wMin, wMax);
   for(int i = 0; i < numBins; i++)
   {
-    mH[i] = 1.0 / (1.0 + eps*eps * RAPT::rsPolynomial<double>::evaluatePolynomialAt(w[i], aH, 2*N));
-    mP[i] = 1.0 / (1.0 + eps*eps * RAPT::rsPolynomial<double>::evaluatePolynomialAt(w[i], aP, 2*N));
+    mH[i] = 1.0 / (1.0 + eps*eps * RAPT::rsPolynomial<double>::evaluate(w[i], aH, 2*N));
+    mP[i] = 1.0 / (1.0 + eps*eps * RAPT::rsPolynomial<double>::evaluate(w[i], aP, 2*N));
 
     //mP[i] = 1.0 / (1.0 + eps*eps * evaluatePolynomialAt(w[i]*w[i], aP, N));
 
@@ -1142,8 +1142,8 @@ void plotMaxSteepResponse(double *p, int M, double *q, int N, double k)
     x = w[n]*w[n];
 
     // evaluate our filter's response:
-    num   = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, p, M);
-    den   = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, q, N);
+    num   = RAPT::rsPolynomial<double>::evaluate(x, p, M);
+    den   = RAPT::rsPolynomial<double>::evaluate(x, q, N);
     r[n]  = k * num / den;
 
     // evaluate the reference Butterworth response:

@@ -285,7 +285,7 @@ void cubicInterpolationNonEquidistant() // turn into unit-test
   // interpolate:
   double x = 3.2; // abscissa value to interpolate at
   double y;       // interpolated value at x, computed via a- or b-coeffs
-  y = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  a, 3);
+  y = RAPT::rsPolynomial<double>::evaluate(x,  a, 3);
 
 
   // do the same in normalized coordinates, such that x2=0, x3=1 - this is done by computing primed
@@ -309,7 +309,7 @@ void cubicInterpolationNonEquidistant() // turn into unit-test
   double b[4];
   fitCubicWithDerivativeFixedX(y2, y3, s2p, s3p, &b[3], &b[2], &b[1], &b[0]);
 
-  double yp = RAPT::rsPolynomial<double>::evaluatePolynomialAt(xp, b, 3);
+  double yp = RAPT::rsPolynomial<double>::evaluate(xp, b, 3);
 
   double error = fabs(y-yp);
   testResult &= fabs(y-yp) < 1.e-10;
@@ -557,9 +557,9 @@ void splineInterpolationAreaNormalized()
   for(int n = 0; n < N; n++)
   {
     yl[n]  = rsInterpolateLinear(0.0, 1.0, y0[0], y1[0], x[n]);
-    yc[n]  = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x[n], ac,  3);
-    yr1[n] = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x[n], ar1, 4);
-    yr2[n] = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x[n], ar2, 5);
+    yc[n]  = RAPT::rsPolynomial<double>::evaluate(x[n], ac,  3);
+    yr1[n] = RAPT::rsPolynomial<double>::evaluate(x[n], ar1, 4);
+    yr2[n] = RAPT::rsPolynomial<double>::evaluate(x[n], ar2, 5);
   }
 
   // create the running sums of the interpolants (which are approximations to integrals times N):
@@ -671,8 +671,8 @@ void shiftPolynomial()
   int n;
   for(n = 0; n < N; n++)
   {
-    y[n]   = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x[n],    p, order);
-    yst[n] = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x[n]-x0, p, order);
+    y[n]   = RAPT::rsPolynomial<double>::evaluate(x[n],    p, order);
+    yst[n] = RAPT::rsPolynomial<double>::evaluate(x[n]-x0, p, order);
   }
 
   // establish coeffs of q(x) = p(x-x0):
@@ -687,7 +687,7 @@ void shiftPolynomial()
 
   // evaluate q from x-array:
   for(n = 0; n < N; n++)
-    ys[n] = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x[n], q, order);
+    ys[n] = RAPT::rsPolynomial<double>::evaluate(x[n], q, order);
 
   plotData(N, x, y, yst, ys);
 }
@@ -852,7 +852,7 @@ void monotonicPolynomials()
   xMax = 3;
   RAPT::rsArray::fillWithRangeLinear(xPlt, Np, xMin, xMax);
   for(int n = 0; n < Np; n++)
-    yPlt[n] = RAPT::rsPolynomial<double>::evaluatePolynomialAt(xPlt[n], a, N);
+    yPlt[n] = RAPT::rsPolynomial<double>::evaluate(xPlt[n], a, N);
   plotData(Np, xPlt, yPlt);
 
   // Observations: When choosing the points where the derivative should vanish at equidistant

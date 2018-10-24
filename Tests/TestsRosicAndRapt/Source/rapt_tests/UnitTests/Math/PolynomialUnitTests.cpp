@@ -228,13 +228,13 @@ bool testCubicCoeffsFourPoints(std::string &reportString)
   double yc;            // computed value
   double tol = 1.e-14;  // tolerance
 
-  yc = rsPolynomialD::evaluatePolynomialAt(-1.0, a, 3);
+  yc = rsPolynomialD::evaluate(-1.0, a, 3);
   testResult &= rsIsCloseTo(yc,  y[0], tol);
-  yc = rsPolynomialD::evaluatePolynomialAt(0.0, a, 3);
+  yc = rsPolynomialD::evaluate(0.0, a, 3);
   testResult &= rsIsCloseTo(yc,  y[1], tol);
-  yc = rsPolynomialD::evaluatePolynomialAt(1.0, a, 3);
+  yc = rsPolynomialD::evaluate(1.0, a, 3);
   testResult &= rsIsCloseTo(yc,  y[2], tol);
-  yc = rsPolynomialD::evaluatePolynomialAt(2.0, a, 3);
+  yc = rsPolynomialD::evaluate(2.0, a, 3);
   testResult &= rsIsCloseTo(yc,  y[3], tol);
 
   return testResult;
@@ -256,11 +256,11 @@ bool testCubicCoeffsTwoPointsAndDerivatives(std::string &reportString)
   double yc, dyc;       // computed values
   double tol = 1.e-14;  // tolerance
 
-  rsPolynomialD::evaluatePolynomialAndDerivativeAt(x[0], a, 3, &yc, &dyc);
+  rsPolynomialD::evaluateWithDerivative(x[0], a, 3, &yc, &dyc);
   testResult &= rsIsCloseTo( yc,  y[0], tol);
   testResult &= rsIsCloseTo(dyc, dy[0], tol);
 
-  rsPolynomialD::evaluatePolynomialAndDerivativeAt(x[1], a, 3, &yc, &dyc);
+  rsPolynomialD::evaluateWithDerivative(x[1], a, 3, &yc, &dyc);
   testResult &= rsIsCloseTo( yc,  y[1], tol);
   testResult &= rsIsCloseTo(dyc, dy[1], tol);
 
@@ -268,10 +268,10 @@ bool testCubicCoeffsTwoPointsAndDerivatives(std::string &reportString)
   x[0] = 0.0;
   x[1] = 1.0;
   rsPolynomialD::cubicCoeffsTwoPointsAndDerivatives(a, x, y, dy);
-  rsPolynomialD::evaluatePolynomialAndDerivativeAt(x[0], a, 3, &yc, &dyc);
+  rsPolynomialD::evaluateWithDerivative(x[0], a, 3, &yc, &dyc);
   testResult &= rsIsCloseTo( yc,  y[0], tol);
   testResult &= rsIsCloseTo(dyc, dy[0], tol);
-  rsPolynomialD::evaluatePolynomialAndDerivativeAt(x[1], a, 3, &yc, &dyc);
+  rsPolynomialD::evaluateWithDerivative(x[1], a, 3, &yc, &dyc);
   testResult &= rsIsCloseTo( yc,  y[1], tol);
   testResult &= rsIsCloseTo(dyc, dy[1], tol);
 
@@ -301,18 +301,18 @@ bool testPolynomialEvaluation(std::string &reportString)
   double x0 = 2.0;     // point, where to evaluate
   double y[4], yt[4];  // evaluation results and target values
 
-  yt[0] = rsPolynomialD::evaluatePolynomialAt(x0, a,  5);
-  yt[1] = rsPolynomialD::evaluatePolynomialAt(x0, a1, 4);
-  yt[2] = rsPolynomialD::evaluatePolynomialAt(x0, a2, 3);
-  yt[3] = rsPolynomialD::evaluatePolynomialAt(x0, a3, 2);
+  yt[0] = rsPolynomialD::evaluate(x0, a,  5);
+  yt[1] = rsPolynomialD::evaluate(x0, a1, 4);
+  yt[2] = rsPolynomialD::evaluate(x0, a2, 3);
+  yt[3] = rsPolynomialD::evaluate(x0, a3, 2);
 
   // test evaluation of polynomial and 1st derivative:
-  rsPolynomialD::evaluatePolynomialAndDerivativeAt(x0, a, 5, &y[0], &y[1]);
+  rsPolynomialD::evaluateWithDerivative(x0, a, 5, &y[0], &y[1]);
   testResult &= yt[0] == y[0];
   testResult &= yt[1] == y[1];
 
   // test evaluation of polynomial and 1st 3 derivatives:
-  rsPolynomialD::evaluatePolynomialAndDerivativesAt(x0, a, 5, y, 3);
+  rsPolynomialD::evaluateWithDerivatives(x0, a, 5, y, 3);
   testResult &= yt[0] == y[0];
   testResult &= yt[1] == y[1];
   testResult &= yt[2] == y[2];
@@ -336,7 +336,7 @@ bool testPolynomialDivision(std::string &reportString)
   double r[5] = {3,  1, 4, -5, 3};      // r(x) =         3*x^4 - 5*x^3 + 4*x^2 + 1*x^1 - 3*x^0
 
   // establish polynomial p(x) = d(x)*q(x) + r(x):
-  double p[9];                                        // 8th order, 9 coeffs
+  double p[9];                                                       // 8th degree, 9 coeffs
   rsPolynomialD::multiplyPolynomials(d, 5, q, 3, p);                 // p(x) = d(x)*q(x)
   rsPolynomialD::weightedSumOfPolynomials(p, 8, 1.0, r, 4, 1.0, p);  // p(x) = d(x)*q(x) + r(x);
 
@@ -464,7 +464,7 @@ bool testPolynomialFiniteDifference(std::string &reportString)
   for(n = 0; n < numValues; n++)
   {
     x[n] = xMin + n*h;
-    y[n] = rsPolynomialD::evaluatePolynomialAt(x[n], a, order);
+    y[n] = rsPolynomialD::evaluate(x[n], a, order);
   }
   for(n = 0; n < numValues-1; n++)
     yf[n] = y[n+1] - y[n];
@@ -477,13 +477,13 @@ bool testPolynomialFiniteDifference(std::string &reportString)
   // check forward difference:
   rsPolynomialD::polyFiniteDifference(a, ad, order, 1, h);
   for(n = 0; n < numValues; n++)
-    yfc[n] = rsPolynomialD::evaluatePolynomialAt(x[n], ad, order-1);
+    yfc[n] = rsPolynomialD::evaluate(x[n], ad, order-1);
   testResult &= rsArray::areBuffersEqual(yf, yfc, numValues-1);
 
   // check backward difference:
   rsPolynomialD::polyFiniteDifference(a, ad, order, -1, h);
   for(n = 0; n < numValues; n++)
-    ybc[n] = rsPolynomialD::evaluatePolynomialAt(x[n], ad, order-1);
+    ybc[n] = rsPolynomialD::evaluate(x[n], ad, order-1);
   testResult &= rsArray::areBuffersEqual(&yb[1], &ybc[1], numValues-1);
 
   return testResult;
@@ -506,9 +506,9 @@ bool testPolynomialComposition(std::string &reportString)
   // to the result of the 1st a-polynomial:
   double x = -3.0; // input value
   double y1, y2;
-  y1 = rsPolynomialD::evaluatePolynomialAt(x,  a, na);
-  y1 = rsPolynomialD::evaluatePolynomialAt(y1, b, nb);
-  y2 = rsPolynomialD::evaluatePolynomialAt(x,  c, nc);
+  y1 = rsPolynomialD::evaluate(x,  a, na);
+  y1 = rsPolynomialD::evaluate(y1, b, nb);
+  y2 = rsPolynomialD::evaluate(x,  c, nc);
   testResult &= (y1 == y2);
 
   return testResult;
@@ -582,15 +582,15 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
   rsPolynomialD::polyIntegral(p, P, np);
 
   // compute integration limits for definite integral:
-  double lowerLimit = rsPolynomialD::evaluatePolynomialAt(x, a, na);
-  double upperLimit = rsPolynomialD::evaluatePolynomialAt(x, b, nb);
+  double lowerLimit = rsPolynomialD::evaluate(x, a, na);
+  double upperLimit = rsPolynomialD::evaluate(x, b, nb);
 
   // evaluate definite integral:
-  y1 = rsPolynomialD::evaluatePolynomialAt(upperLimit, P, nP) - rsPolynomialD::evaluatePolynomialAt(lowerLimit, P, nP);
+  y1 = rsPolynomialD::evaluate(upperLimit, P, nP) - rsPolynomialD::evaluate(lowerLimit, P, nP);
 
 
   rsPolynomialD::integratePolynomialWithPolynomialLimits(p, np, a, na, b, nb, q);
-  y2 = rsPolynomialD::evaluatePolynomialAt(x, q, nq);
+  y2 = rsPolynomialD::evaluate(x, q, nq);
 
   testResult &= rsIsCloseTo(y2, y1, 1.e-13 * fabs(y1));
 
@@ -618,7 +618,7 @@ bool testPolynomialInterpolation(std::string &reportString)
   int n;
   for(n = 0; n < N; n++)
   {
-    yc[n] = rsPolynomialD::evaluatePolynomialAt(x[n], a, N-1);
+    yc[n] = rsPolynomialD::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); 
   }
 
@@ -628,7 +628,7 @@ bool testPolynomialInterpolation(std::string &reportString)
   rsPolynomialD::rsInterpolatingPolynomial(a, x0, dx, y, N);
   for(n = 0; n < N; n++)
   {
-    yc[n] = rsPolynomialD::evaluatePolynomialAt(x0+n*dx, a, N-1);
+    yc[n] = rsPolynomialD::evaluate(x0+n*dx, a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); 
   }
 
@@ -779,12 +779,12 @@ bool testPolynomialBaseChange(std::string &reportString)
   // compute y in terms of Q-polynomials:
   double yQ = 0.0;
   for(i = 0; i <= N; i++)
-    yQ += a[i] * rsPolynomialD::evaluatePolynomialAt(x, Q[i], N);
+    yQ += a[i] * rsPolynomialD::evaluate(x, Q[i], N);
 
   // compute y in terms of R-polynomials:
   double yR = 0.0;
   for(i = 0; i <= N; i++)
-    yR += b[i] * rsPolynomialD::evaluatePolynomialAt(x, R[i], N);
+    yR += b[i] * rsPolynomialD::evaluate(x, R[i], N);
 
   testResult &= rsIsCloseTo(yQ, yR, 1.e-11);
 
