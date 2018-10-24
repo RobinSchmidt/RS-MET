@@ -180,8 +180,7 @@ public:
 
   /** Computes polynomial coefficients from the roots. \todo: get rid of that - replace by function
   below */
-  static std::vector<std::complex<T>> getPolynomialCoefficientsFromRoots(
-    std::vector<std::complex<T>> roots);
+  static std::vector<std::complex<T>> rootsToCoeffs(std::vector<std::complex<T>> roots);
 
   /** Computes polynomial coefficients from the roots. The roots should be passed in the array "r"
   of length "N", the coefficients will be returned in the array "a" of length "N" + 1. The

@@ -407,8 +407,7 @@ void rsPolynomial<T>::roots(T *a, int order, std::complex<T> *r)
 }
 
 template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::getPolynomialCoefficientsFromRoots(
-  std::vector<std::complex<T>> roots)
+std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(std::vector<std::complex<T>> roots)
 {
   std::vector<std::complex<T>> coeffs;
 

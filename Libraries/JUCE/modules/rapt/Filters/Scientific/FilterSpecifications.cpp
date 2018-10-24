@@ -78,8 +78,8 @@ rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA() const
 {
   rsFilterSpecificationBA<T> ba;
   ba.sampleRate = sampleRate;
-  ba.a = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(p); // rename: rootsToCoeffs
-  ba.b = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(z); // have also coeffsToRoots
+  ba.a = rsPolynomial<T>::rootsToCoeffs(p);
+  ba.b = rsPolynomial<T>::rootsToCoeffs(z);
   if(isDigital()){
     rsReverse(ba.a);
     rsReverse(ba.b);
