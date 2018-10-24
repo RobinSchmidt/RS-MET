@@ -364,7 +364,7 @@ bool testPolynomialArgumentShift(std::string &reportString)
 
   // establish coeffs of q(x) = p(x-x0):
   double q[order+1];
-  rsPolynomialD::polyCoeffsForShiftedArgument(p, q, order, x0);
+  rsPolynomialD::coeffsForShiftedArgument(p, q, order, x0);
 
   // check, if q-coeffs have correct values:
   testResult &= q[0] == -316;
@@ -387,14 +387,14 @@ bool testPolynomialDiffAndInt(std::string &reportString)
   double ad[5];
   double ai[7];
 
-  rsPolynomialD::polyDerivative(a, ad, 5);
+  rsPolynomialD::derivative(a, ad, 5);
   testResult &= (ad[0] == -1);
   testResult &= (ad[1] == 10);
   testResult &= (ad[2] == 21);
   testResult &= (ad[3] == -12);
   testResult &= (ad[4] == 10);
 
-  rsPolynomialD::polyIntegral(a, ai, 5, 2.0);
+  rsPolynomialD::integral(a, ai, 5, 2.0);
   testResult &= (ai[0] ==  2.0);
   testResult &= (ai[1] ==  2.0/1.0);
   testResult &= (ai[2] == -1.0/2.0);
@@ -475,13 +475,13 @@ bool testPolynomialFiniteDifference(std::string &reportString)
   yb[0] = 0;               // not existent, actually
 
   // check forward difference:
-  rsPolynomialD::polyFiniteDifference(a, ad, order, 1, h);
+  rsPolynomialD::finiteDifference(a, ad, order, 1, h);
   for(n = 0; n < numValues; n++)
     yfc[n] = rsPolynomialD::evaluate(x[n], ad, order-1);
   testResult &= rsArray::areBuffersEqual(yf, yfc, numValues-1);
 
   // check backward difference:
-  rsPolynomialD::polyFiniteDifference(a, ad, order, -1, h);
+  rsPolynomialD::finiteDifference(a, ad, order, -1, h);
   for(n = 0; n < numValues; n++)
     ybc[n] = rsPolynomialD::evaluate(x[n], ad, order-1);
   testResult &= rsArray::areBuffersEqual(&yb[1], &ybc[1], numValues-1);
@@ -579,7 +579,7 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
 
   // obtain coefficients of indefinite integral:
   double P[nP+1];
-  rsPolynomialD::polyIntegral(p, P, np);
+  rsPolynomialD::integral(p, P, np);
 
   // compute integration limits for definite integral:
   double lowerLimit = rsPolynomialD::evaluate(x, a, na);

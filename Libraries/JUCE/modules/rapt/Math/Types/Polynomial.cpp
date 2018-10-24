@@ -78,7 +78,7 @@ void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, in
 }
 */
 template <class T>
-void rsPolynomial<T>::polyCoeffsForNegativeArgument(T *a, T *am, int N)
+void rsPolynomial<T>::coeffsForNegativeArgument(T *a, T *am, int N)
 {
   T s = 1.0;
   for(int n = 0; n <= N; n++)
@@ -92,7 +92,7 @@ void rsPolynomial<T>::polyCoeffsForNegativeArgument(T *a, T *am, int N)
 // it reduces to polyCoeffsForNegativeArgument - this function is superfluous then
 
 template <class T>
-void rsPolynomial<T>::polyCoeffsForShiftedArgument(T *a, T *as, int N, T x0)
+void rsPolynomial<T>::coeffsForShiftedArgument(T *a, T *as, int N, T x0)
 {
   rsUint32 Nu = rsUint32(N); // used to fix warnings
   rsUint32 numLines = N+1;
@@ -114,14 +114,14 @@ void rsPolynomial<T>::polyCoeffsForShiftedArgument(T *a, T *as, int N, T x0)
 }
 
 template <class T>
-void rsPolynomial<T>::polyDerivative(T *a, T *ad, int N)
+void rsPolynomial<T>::derivative(T *a, T *ad, int N)
 {
   for(int n = 1; n <= N; n++)
     ad[n-1] = n * a[n];
 }
 
 template <class T>
-void rsPolynomial<T>::polyFiniteDifference(T *a, T *ad, int N, int direction, T h)
+void rsPolynomial<T>::finiteDifference(T *a, T *ad, int N, int direction, T h)
 {
   // (possibly alternating) powers of the stepsize h:
   T *hk = new T[N+1];
@@ -151,7 +151,7 @@ void rsPolynomial<T>::polyFiniteDifference(T *a, T *ad, int N, int direction, T 
 }
 
 template <class T>
-void rsPolynomial<T>::polyIntegral(T *a, T *ai, int N, T c)
+void rsPolynomial<T>::integral(T *a, T *ai, int N, T c)
 {
   for(int n = N+1; n >= 1; n--)
     ai[n] = a[n-1] / n;
@@ -243,7 +243,7 @@ void rsPolynomial<T>::integratePolynomialWithPolynomialLimits(T *p, int pN, T *a
   T *A = new T[AN+1];
   T *B = new T[BN+1];
 
-  polyIntegral(p, P, pN);               // P(x) is the antiderivative of p(x)
+  integral(p, P, pN);               // P(x) is the antiderivative of p(x)
   composePolynomials(a, aN, P, PN, A);  // A(x) = P(a(x))
   composePolynomials(b, bN, P, PN, B);  // B(x) = P(b(x))
   subtractPolynomials(B, BN, A, AN, q); // q(x) = B(x) - A(x)
@@ -1292,6 +1292,11 @@ division: can be reduced to multiplication: R = P/Q, U = S/T
   (we should have a function "reduce" for that that implements a polynomial gcd algorithm - or it 
   can be based on a linear-factor decomposition)
  -or maybe it should first find the roots
+
+maybe for testing, it will be convenient to use polynomials and rational functions with rational 
+coefficients -> make a rational number class (using unsigned integers for numerator and denominator
+and a bool for the negaive sign)..the (unsigned) integer class could also be a template parameter, 
+so we may use rsBigInteger
 
 */
 

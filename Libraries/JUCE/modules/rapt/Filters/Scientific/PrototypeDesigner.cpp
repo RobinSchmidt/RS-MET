@@ -327,16 +327,16 @@ template<class T>
 T rsPrototypeDesigner<T>::getRequiredEllipticOrder(T passbandFrequency, T passbandRipple, 
   T stopbandFrequency, T stopbandRipple)
 {
-  T Gp = pow(T(10), -passbandRipple/T(20));                     // (1),Eq.1
-  T Gs = pow(T(10), -stopbandRipple/T(20));                     // (1),Eq.1
-  T ep = sqrt(T(1) / (Gp*Gp) - T(1));                           // (1),Eq.2
-  T es = sqrt(T(1) / (Gs*Gs) - T(1));                           // (1),Eq.2
-  T k  = passbandFrequency / stopbandFrequency;                 // (1),Eq.3
-  T k1 = ep/es;                                                 // (1),Eq.3
+  T Gp = pow(T(10), -passbandRipple/T(20));      // (1),Eq.1
+  T Gs = pow(T(10), -stopbandRipple/T(20));      // (1),Eq.1
+  T ep = sqrt(T(1) / (Gp*Gp) - T(1));            // (1),Eq.2
+  T es = sqrt(T(1) / (Gs*Gs) - T(1));            // (1),Eq.2
+  T k  = passbandFrequency / stopbandFrequency;  // (1),Eq.3
+  T k1 = ep/es;                                  // (1),Eq.3
   T K, Kp, K1, K1p;
-  rsEllipticIntegral(k,  &K,  &Kp);                             // (1),Eq.19
+  rsEllipticIntegral(k,  &K,  &Kp);              // (1),Eq.19
   rsEllipticIntegral(k1, &K1, &K1p);
-  return (K1p*K)/(K1*Kp);                                       // (1),Eq.34
+  return (K1p*K)/(K1*Kp);                        // (1),Eq.34
 }
 
 template<class T>
@@ -344,10 +344,10 @@ void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N
 {
   T* am = new T[N+1];
   T* bm = new T[N+1];
-  rsPolynomial<T>::polyCoeffsForNegativeArgument(b, bm, N);  // coeffs of N(-s)
-  rsPolynomial<T>::polyCoeffsForNegativeArgument(a, am, N);  // coeffs of D(-s)
-  rsPolynomial<T>::multiply(b, N, bm, N, b2);                // coeffs of N(s)*N(-s)
-  rsPolynomial<T>::multiply(a, N, am, N, a2);                // coeffs of D(s)*D(-s)
+  rsPolynomial<T>::coeffsForNegativeArgument(b, bm, N);  // coeffs of N(-s)
+  rsPolynomial<T>::coeffsForNegativeArgument(a, am, N);  // coeffs of D(-s)
+  rsPolynomial<T>::multiply(b, N, bm, N, b2);            // coeffs of N(s)*N(-s)
+  rsPolynomial<T>::multiply(a, N, am, N, a2);            // coeffs of D(s)*D(-s)
   delete[] am;
   delete[] bm;
 }
@@ -458,7 +458,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
     k = (N-2)/2;
     for(r = 0; r <= k+1; r++)
       updateLegendrePolynomial(&P, P1, P2, r);  // generate Legendre polynomial of order k+1 in P
-    rsPolynomial<T>::polyDerivative(P, v, k+1); // take the derivative, store in v:
+    rsPolynomial<T>::derivative(P, v, k+1); // take the derivative, store in v:
     rsArray::convolve(v, k+1, v, k+1, v);       // square it
     v[2*k+1] = 0;                               // multiply ...
     for(r = 2*k+1; r >= 1; r--)                 // ... by (x+1)
@@ -522,11 +522,11 @@ template<class T>
 void rsPrototypeDesigner<T>::halpernPolynomial(T *a, int N)
 {  
   a[0] = 0;
-  T *a1 = &a[1];                               // index shift of one for multiplication by x in Eq. 8.19 
-  rsHalpernU(a1, N-1);                         // create U-polynomial
-  rsArray::convolve(a1, N, a1, N, a1);         // square U-polynomial
-  rsArray::scale(a1, 2*N-1, 2*N);              // apply squared scale factor
-  rsPolynomial<T>::polyIntegral(a, a, 2*N-1);  // compute integral from 0 to w
+  T *a1 = &a[1];                           // index shift of one for multiplication by x in Eq. 8.19 
+  rsHalpernU(a1, N-1);                     // create U-polynomial
+  rsArray::convolve(a1, N, a1, N, a1);     // square U-polynomial
+  rsArray::scale(a1, 2*N-1, 2*N);          // apply squared scale factor
+  rsPolynomial<T>::integral(a, a, 2*N-1);  // compute integral from 0 to w
 }
 
 template<class T>

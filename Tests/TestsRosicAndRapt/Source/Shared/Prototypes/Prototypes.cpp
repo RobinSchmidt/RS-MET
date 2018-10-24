@@ -151,10 +151,10 @@ void papoulisL2(double *v, int N)
     rsPolynomial<double>::legendrePolynomial(P, k+1);
 
     // take the derivative, store in v:
-    rsPolynomial<double>::polyDerivative(P, v, k+1);  // v has order k, length k+1
+    rsPolynomial<double>::derivative(P, v, k+1);  // v has order k, length k+1
 
     // square it:
-    RAPT::rsArray::convolve(v, k+1, v, k+1, v); // has order 2*k, length 2*k+1
+    RAPT::rsArray::convolve(v, k+1, v, k+1, v);   // has order 2*k, length 2*k+1
 
     // multiply by (x+1):
     double xp1[2] = { 1, 1};

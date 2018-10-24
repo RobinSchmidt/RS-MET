@@ -9,9 +9,6 @@ class rsPolynomial
 
 public:
 
-
-
-
   //===============================================================================================
   /** \name Static functions for computing with coefficient arrays */
 
@@ -83,18 +80,18 @@ public:
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "am") the coefficients for
   a polynomial q(x) such that q(x) = p(-x). This amounts to sign-inverting all coefficients which
   multiply odd powers of x. */
-  static void polyCoeffsForNegativeArgument(T *a, T *am, int N);
+  static void coeffsForNegativeArgument(T *a, T *am, int N);
 
   /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "aShifted") the coefficients
   for a polynomial q(x) such that q(x) = p(x-x0). */
-  static void polyCoeffsForShiftedArgument(T *a, T *aShifted, int N, T x0);
+  static void coeffsForShiftedArgument(T *a, T *aShifted, int N, T x0);
 
   /** Finds the coefficients of the derivative of the N-th order polynomial with coeffs in "a" and
   stores them in "ad". The order of the polynomial represented by the coeffs in "ad" will be
   N-1. The "ad" array may point to the same array as the "a" array, so you can use the same array
   for input and output. */
-  static void polyDerivative(T *a, T *ad, int N);
+  static void derivative(T *a, T *ad, int N);
 
   /** Given a polynomial p(x) via its coefficient array a, this function computes the coefficients
   of a polynomial q(x) = p(x+h) - p(x) if direction = 1, or q(x) = p(x) - p(x-h) if direction = -1.
@@ -104,13 +101,13 @@ public:
   approximation to the derivative using stepsize h.
   \todo provide a finite central difference q(x) = p(x+h/2) - p(x-h/2) when direction = 0
    ...could this be just the average between forward and backward difference? ...research! */
-  static void polyFiniteDifference(T *a, T *ad, int N, int direction = 1, T h = 1);
+  static void finiteDifference(T *a, T *ad, int N, int direction = 1, T h = 1);
 
   /** Finds the coefficients of the indefinite integral of the N-th order polynomial with coeffs
   in "a" and stores them in "ai". The order of the polynomial represented by the coeffs in "ai"
   will be N+1. The constant term in the ai[] polynomial is the arbitrary integration constant
   which may be passed in as parameter "c" - this parameter is optional, it defaults to zero.  */
-  static void polyIntegral(T *a, T *ai, int N, T c = T(0));
+  static void integral(T *a, T *ai, int N, T c = T(0));
 
   /** Creates an array of arrays with polynomial cofficients that represent the polynomial with
   coefficients a[] raised to successive powers up to and including "highestPower". aPowers[0]
@@ -147,7 +144,7 @@ public:
 
   /** Computes the definite integral of the polynomial "p" where the lower integration limit is
   given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"
-  are assumed to be of orders "pN", "aN" and "bN" respectively and the result wil be stored in
+  are assumed to be of orders "pN", "aN" and "bN" respectively and the result will be stored in
   as polynomial "q" which will be of order pN*max(aN, bN). */
   static void integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, 
     int bN, T *q);

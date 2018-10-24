@@ -76,14 +76,14 @@ bool rotes::testPolynomialDiffAndInt()
   double ad[5];
   double ai[7];
 
-  RAPT::rsPolynomial<double>::polyDerivative(a, ad, 5);
+  RAPT::rsPolynomial<double>::derivative(a, ad, 5);
   result &= (ad[0] == -1);
   result &= (ad[1] == 10);
   result &= (ad[2] == 21);
   result &= (ad[3] == -12);
   result &= (ad[4] == 10);
 
-  RAPT::rsPolynomial<double>::polyIntegral(a, ai, 5, 2.0);
+  RAPT::rsPolynomial<double>::integral(a, ai, 5, 2.0);
   result &= (ai[0] ==  2.0);
   result &= (ai[1] ==  2.0/1.0);
   result &= (ai[2] == -1.0/2.0);
@@ -182,7 +182,7 @@ bool rotes::testPolynomialIntegrationWithPolynomialLimits()
 
   // obtain coefficients of indefinite integral:
   double P[nP+1];
-  RAPT::rsPolynomial<double>::polyIntegral(p, P, np);
+  RAPT::rsPolynomial<double>::integral(p, P, np);
 
   // compute integration limits for definite integral:
   double lowerLimit = RAPT::rsPolynomial<double>::evaluate(x, a, na);

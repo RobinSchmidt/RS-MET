@@ -677,7 +677,7 @@ void shiftPolynomial()
 
   // establish coeffs of q(x) = p(x-x0):
   double q[order+1];
-  RAPT::rsPolynomial<double>::polyCoeffsForShiftedArgument(p, q, order, x0);
+  RAPT::rsPolynomial<double>::coeffsForShiftedArgument(p, q, order, x0);
 
   // test - use composePolynomials using p(r(x)) where r(x) = x-x0, with x0 = 2.0
   //double r[2] = {-2.0, 1};
@@ -786,7 +786,7 @@ void rsPolyWithDerivativeValues(double *a, int N, double *x, double *yp, double 
   A[N-1][N-1] = 1;
   RAPT::rsLinearAlgebra::rsSolveLinearSystem(A, a, yp, N);
   RAPT::rsArray::deAllocateSquareArray2D(A, N);  
-  RAPT::rsPolynomial<double>::polyIntegral(a, a, N-1, shift);
+  RAPT::rsPolynomial<double>::integral(a, a, N-1, shift);
 }
 void monotonicPolynomials()
 {
