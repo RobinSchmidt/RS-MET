@@ -337,7 +337,7 @@ bool testPolynomialDivision(std::string &reportString)
 
   // establish polynomial p(x) = d(x)*q(x) + r(x):
   double p[9];                                                       // 8th degree, 9 coeffs
-  rsPolynomialD::multiplyPolynomials(d, 5, q, 3, p);                 // p(x) = d(x)*q(x)
+  rsPolynomialD::multiply(d, 5, q, 3, p);                 // p(x) = d(x)*q(x)
   rsPolynomialD::weightedSumOfPolynomials(p, 8, 1.0, r, 4, 1.0, p);  // p(x) = d(x)*q(x) + r(x);
 
   // retrieve q(x) and r(x):

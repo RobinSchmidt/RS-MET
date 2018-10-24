@@ -37,13 +37,6 @@ void rsPolynomial<T>::evaluateWithDerivatives(T x, T *a, int order, T *results,
   rsArray::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
 }
 
-
-template <class T>
-void rsPolynomial<T>::multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)
-{
-  rsArray::convolve(a, aOrder+1, b, bOrder+1, result);
-}
-
 template <class T>
 void rsPolynomial<T>::dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
 {

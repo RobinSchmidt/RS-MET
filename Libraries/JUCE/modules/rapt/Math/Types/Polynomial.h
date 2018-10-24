@@ -49,8 +49,10 @@ public:
   coefficient vector should have allocated space for
   (aOrder+1)+(bOrder+1)-1 = aOrder+bOrder+1 = aLength+bLength-1 elements. 
   Can work in place, i.e. result may point to the same array as a and/or b.   */
-  static void multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result);
-  // rename to multiply
+  static void multiply(T *a, int aOrder, T *b, int bOrder, T *result)
+  {
+    rsArray::convolve(a, aOrder+1, b, bOrder+1, result);
+  }
 
   /** Divides the polynomials represented by the coefficient arrays 'dividend' and 'divisor' and
   stores the resulting coefficients for the quotient and remainder in the respective output arrays.

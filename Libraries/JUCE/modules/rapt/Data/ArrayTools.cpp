@@ -197,8 +197,7 @@ bool rsArray::contains(T *buffer, int length, T elementToFind)
 template <class T>
 void rsArray::convolve(T *x, int xLength, T *h, int hLength, T *y)
 {
-  for(int n = xLength+hLength-2; n >= 0; n--)
-  {
+  for(int n = xLength+hLength-2; n >= 0; n--) {
     T s = T(0);
     for(int k = rsMax(0, n-xLength+1); k <= rsMin(hLength-1, n); k++)
       s += h[k] * x[n-k];

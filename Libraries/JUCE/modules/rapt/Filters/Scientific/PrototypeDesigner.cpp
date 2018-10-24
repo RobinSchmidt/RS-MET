@@ -346,8 +346,8 @@ void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N
   T* bm = new T[N+1];
   rsPolynomial<T>::polyCoeffsForNegativeArgument(b, bm, N);  // coeffs of N(-s)
   rsPolynomial<T>::polyCoeffsForNegativeArgument(a, am, N);  // coeffs of D(-s)
-  rsPolynomial<T>::multiplyPolynomials(b, N, bm, N, b2);     // coeffs of N(s)*N(-s)
-  rsPolynomial<T>::multiplyPolynomials(a, N, am, N, a2);     // coeffs of D(s)*D(-s)
+  rsPolynomial<T>::multiply(b, N, bm, N, b2);                // coeffs of N(s)*N(-s)
+  rsPolynomial<T>::multiply(a, N, am, N, a2);                // coeffs of D(s)*D(-s)
   delete[] am;
   delete[] bm;
 }

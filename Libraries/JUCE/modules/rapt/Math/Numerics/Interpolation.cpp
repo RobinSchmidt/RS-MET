@@ -418,8 +418,8 @@ void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
   T c[5], d[5];                           // coeffs of:
   PL::polyDerivative(a, c, 3);            // c is dx/dt (a is x(t))
   PL::polyDerivative(b, d, 3);            // d is dy/dt (b is y(t))
-  PL::multiplyPolynomials(c, 2, c, 2, c); // c is (dx/dt)^2
-  PL::multiplyPolynomials(d, 2, d, 2, d); // d is (dy/dt)^2
+  PL::multiply(c, 2, c, 2, c);            // c is (dx/dt)^2
+  PL::multiply(d, 2, d, 2, d);            // d is (dy/dt)^2
   rsArray::add(c, d, c, 5);               // c is (dx/dt)^2 + (dy/dt)^2
   // The coeffs of our desired quartic are now in our c-array.
 

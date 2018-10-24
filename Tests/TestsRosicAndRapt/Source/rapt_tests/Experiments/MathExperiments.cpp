@@ -801,7 +801,7 @@ void divisibility()
   // todo: find highly composite and largely composite numbers...they can be useful for GUI sizes
 
   // plot the number of non-trivial divisors as function of the number itself:
-  std:vector<int> numDivisors(numInfos.size());
+  std::vector<int> numDivisors(numInfos.size());
   for(size_t i = 0; i < numInfos.size(); i++)
     numDivisors[i] = (int) numInfos[i].divisors.size();
 
