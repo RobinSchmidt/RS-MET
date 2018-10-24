@@ -1,9 +1,9 @@
 #include "MathUnitTests.h"
 
-// these files are not all compiled all by themselves separately in order to reduce the number of 
+// these files are not all compiled all by themselves separately in order to reduce the number of
 // compilation unit to improve build time:
 #include "Math/LinearAlgebraUnitTests.cpp" // produces linker errors
-#include "Math/PolynomialUnitTests.cpp" 
+#include "Math/PolynomialUnitTests.cpp"
 #include "Math/VectorUnitTests.cpp"
 #include "Math/MatrixUnitTests.cpp"
 #include "Math/MiscMathUnitTests.cpp"
@@ -29,7 +29,7 @@ bool coordinateMapperUnitTest()
   rsCoordinateMapper2DF mapper;
 
   mapper.setInputRange( 0.125f, 8.f, -50.f, +50.f);
-  mapper.setOutputRange(0.f,  400.f, 200.f,   0.f); 
+  mapper.setOutputRange(0.f,  400.f, 200.f,   0.f);
   mapper.mapperX.setLogScaled(true);
 
   float x, y;
@@ -45,26 +45,26 @@ bool correlationUnitTest()
 {
   bool r = true;      // test result
 
-  static const int N = 11;   // signal length (todo: make this a variable in a loop to test 
+  static const int N = 11;   // signal length (todo: make this a variable in a loop to test
                               // with different lengths)
   static const int M = 2*N-1; // length of correlation sequence
 
-  double x[N], y[N], xr[N], yr[N];  // inputs and reversed versions 
+  double x[N], y[N], xr[N], yr[N];  // inputs and reversed versions
   double c1[M], c2[M], c3[M];       // correlation sequences (results)
   rsArray::fillWithRandomValues(x, N, -1, +1, 0);
   rsArray::fillWithRandomValues(y, N, -1, +1, 1);
   rsArray::reverse(x, xr, N);
   rsArray::reverse(y, yr, N);
 
-  // obtain cross-correlation sequences via various algorithms: 
+  // obtain cross-correlation sequences via various algorithms:
   rsCrossCorrelationDirect(x, y, N, c1);
   rsCrossCorrelationFFT(   x, y, N, c2);
   rsArray::convolve(       x, N, yr, N, c3);
-  
+
   // results should all be the same up to roundoff:
 
-  // c3 is completely different - wtf? ...oh - it seems, the rsCrossCorrelation functions only 
-  // return the 2nd half of the array - well, yeah, the results are only of length N whereas 
+  // c3 is completely different - wtf? ...oh - it seems, the rsCrossCorrelation functions only
+  // return the 2nd half of the array - well, yeah, the results are only of length N whereas
   // rsArray::convolve produces a result of length 2*N-1
 
 
@@ -132,17 +132,17 @@ bool fitRationalUnitTest()
   // data as it features a pole within the range of data points, see the plot:
   // https://www.desmos.com/calculator/5le2p3qsvb
   // -can this be fixed by using x^5 instead of x^3 in the numerator? or replace x by x^5?
-  // -can the fitting routine be suitably generalized to allow the user to specify which 
+  // -can the fitting routine be suitably generalized to allow the user to specify which
   //  exponents he wants in the numerator and denominator?
   // -can we detect problems by checking if there are poles with in the x-range of datapoints?
-  // -can the algorithm be extended to choose itself a set of exponents that works? ..just 
+  // -can the algorithm be extended to choose itself a set of exponents that works? ..just
   //  systematically try a bunch of combinations of exponents and return the first one that works?
   //  ...or maybe try a few more and return one that works best - ...but how do we define best?
 
   return r;
 }
 /*
-todo: use te same approach to interpolate with arbitrary basis functions. we have N+M basis 
+todo: use te same approach to interpolate with arbitrary basis functions. we have N+M basis
 functions, N in the numerator and M in the denominator and use the relation
 yi = f(xi) = sum(i=0..N-1, ci*fi(xi)) / ( 1 + sum(i=N..L, ci*fi(xi)) ), where L = N+M-1
 this gives the matrix equation:
@@ -152,14 +152,14 @@ this gives the matrix equation:
 |f0(xL) f1(xL) ... fN-1(xL) -yL*fN(xL) ... -yL*fL(xL)|   |cL|   |yL|
 
 which can solved just the same way. When M=0 and fi = x^i, we interpolate with an N-1 th order
-polynomial - test with the results are the same as with regular polynomial interpolation. The 
+polynomial - test with the results are the same as with regular polynomial interpolation. The
 fitting routine should get as inputs the arrays of x and y values and an array of function-pointers
 for the basis functions (maybe std::function) and give back the coeffs as usual */
 
 
 
 bool interpolatingFunctionUnitTest()
-{	
+{
   bool r = true;      // test result
 
   rsNodeBasedFunctionF ipf; // rename to nbf
@@ -173,7 +173,7 @@ bool interpolatingFunctionUnitTest()
 
   // test adding datapoints:
 
-  // i: 0 
+  // i: 0
   // x: 0
   // y: 2
   i = ipf.addNode(0.f, 2.f); r &= i == 0;
@@ -231,7 +231,7 @@ bool interpolatingFunctionUnitTest()
   // y:  0  2  3  4  2  6  0  1
   i = ipf.moveNode(4, 3.f, 6.f); r &= i == 5;
 
- 
+
   // test removing datapoints:
 
   // i:  0  1  2  3  4  5  6
@@ -285,23 +285,23 @@ public:
     return (x+1)*(x-1)*(x-2); // the roots could be adjustable member data
   }
 };
-bool testRootFinding(std::function<float(float)>& func, float xL, float xR, float targetRoot, 
+bool testRootFinding(std::function<float(float)>& func, float xL, float xR, float targetRoot,
   float targetY = 0.f)
 {
   bool result = true;
   float root;
   float tol = std::numeric_limits<float>::epsilon();
 
-  root = rsRootFinderF::bisection(func, xL, xR); 
+  root = rsRootFinderF::bisection(func, xL, xR);
   result &= abs(root-targetRoot) <= tol*targetRoot;   // should it be < or <=?
 
-  root = rsRootFinderF::falsePosition(func, xL, xR); 
+  root = rsRootFinderF::falsePosition(func, xL, xR);
   result &= abs(root-targetRoot) <= tol*targetRoot;
 
   return result;
 }
-// todo: templatize this function and test with double and float, maybe include also a tolerance 
-// parameter - maybe the root-finder itself also needs a tolerance parameter...or maybe two - one 
+// todo: templatize this function and test with double and float, maybe include also a tolerance
+// parameter - maybe the root-finder itself also needs a tolerance parameter...or maybe two - one
 // for dx and one for dy...but maybe that should be optional for convenience
 
 bool rootFinderUnitTest()
@@ -363,8 +363,8 @@ bool rootFinderUnitTest()
   x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
   x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
 
-  // OK - this was to test that it works calling it with different types of paremeters for the 
-  // function (funtion-pointer, lambda function, functor). Now we want to test the robustness if 
+  // OK - this was to test that it works calling it with different types of paremeters for the
+  // function (funtion-pointer, lambda function, functor). Now we want to test the robustness if
   // the actual algorithm by throwing some evil functions at it (we use lambda functions for this)
 
   f = [] (float x)->float { return sin(x); };       // nice function - has a root at x=0
@@ -448,7 +448,7 @@ bool polynomialRootsUnitTest()
   r &= rr2 == 2;
 
   // x^3 - x, roots: -1, 0, +1, d = 4
-  d = P::discriminant(0,  -1, 0, 1);
+  d = P::cubicDiscriminant(0,  -1, 0, 1);
   P::rootsCubicComplex(0, -1, 0, 1, &cr1, &cr2, &cr3);
   r &= d   == 4;
   r &= cr1 == C(-1, 0);
@@ -457,7 +457,7 @@ bool polynomialRootsUnitTest()
   // has roundoff error, otherwise ok
 
   // x^3 + x, roots: 0, -i, +i, d = -4
-  d = P::discriminant( 0, 1, 0, 1);
+  d = P::cubicDiscriminant( 0, 1, 0, 1);
   P::rootsCubicComplex(0, 1, 0, 1, &cr1, &cr2, &cr3);
   r &= d   == -4;
   r &= cr1 == C(0,  0);
@@ -465,7 +465,7 @@ bool polynomialRootsUnitTest()
   r &= cr3 == C(0, +1);
   // totally wrong complex roots
 
-  float test; 
+  float test;
   test = cubicRootPQ(-1, 0);    // should find root at 0
   test = cubicRoot(0, 1, 0, 1); // this too
 
@@ -474,7 +474,7 @@ bool polynomialRootsUnitTest()
 
 
   // -18 + 33*x - 18*x^2 + 3*x^3, roots: 1, 2, 3, d = 324
-  d = P::discriminant( -18, 33, -18, 3);
+  d = P::cubicDiscriminant( -18, 33, -18, 3);
   P::rootsCubicComplex(-18, 33, -18, 3, &cr1, &cr2, &cr3);
   r &= d   == 324;
   r &= cr1 == C(1, 0);
@@ -482,7 +482,7 @@ bool polynomialRootsUnitTest()
   r &= cr3 == C(3, 0);
 
   // -6 + 15*x - 12*x^2 + 3*x^3, roots: 1, 1, 2, d = 0
-  d = P::discriminant( -6, 15, -12, 3);
+  d = P::cubicDiscriminant( -6, 15, -12, 3);
   P::rootsCubicComplex(-6, 15, -12, 3, &cr1, &cr2, &cr3);
   r &= d   == 0;
   r &= cr1 == C(1, 0);
@@ -490,7 +490,7 @@ bool polynomialRootsUnitTest()
   r &= cr3 == C(2, 0);
 
   // -15 + 27*x - 15*x^2 + 3*x^3, roots: 1, 2-i, 2+i, d = -1296
-  d = P::discriminant( -15, 27, -15, 3);
+  d = P::cubicDiscriminant( -15, 27, -15, 3);
   P::rootsCubicComplex(-15, 27, -15, 3, &cr1, &cr2, &cr3);
   r &= d   == -1296;
   r &= cr1 == C(1,  0);
@@ -501,7 +501,7 @@ bool polynomialRootsUnitTest()
 
 
   // todo: fix warnings, implement cubic qnd quartic formulas
-  
+
   // quartic p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52,  roots: 2+3i, 2-3i, -1, 4
 
   return r;

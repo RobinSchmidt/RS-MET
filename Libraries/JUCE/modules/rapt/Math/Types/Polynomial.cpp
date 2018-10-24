@@ -514,7 +514,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(T a, T b, T c, T d)
 {
   // catch degenerate cases where the leading coefficient is zero:
   if( a == 0.0 )
-    return getRootsOfQuadraticEquation(b, c, d);
+    return rootsQuadratic(b, c, d);
 
   std::vector<std::complex<T>> y(3);
   std::vector<std::complex<T>> roots(3);
@@ -633,7 +633,7 @@ void rsPolynomial<T>::rootsQuadraticReal(T c, T b, T a, T* x1, T* x2)
 // is the formula (numerically) the same as the pq-formula? if not, which one is better -> test
 
 template<class T>
-void rsPolynomial<T>::rootsQuadraticComplex(std::complex<T> c, std::complex<T> b, 
+void rsPolynomial<T>::rootsQuadraticComplex(std::complex<T> c, std::complex<T> b,
   std::complex<T> a, std::complex<T>* x1, std::complex<T>* x2)
 {
   std::complex<T> s = T(1) / (T(2)*a);
@@ -648,7 +648,7 @@ T rsPolynomial<T>::cubicDiscriminant(T d, T c, T b, T a)
   return b*b*c*c - T(4)*(a*c*c*c + b*b*b*d) - T(27)*a*a*d*d + T(18)*a*b*c*d;
 }
 
-template<class T> 
+template<class T>
 T rsCubeRoot(T x)
 {
   //return cbrt(x);
@@ -1235,13 +1235,13 @@ division: can be reduced to multiplication: R = P/Q, U = S/T
  -> W = R/U = (P/Q) / (S/T) = (P*T)/(Q*S)
  W.num = P*T; W.den = Q*S
  -maybe it can then be reduced to lowest terms - divide out common roots in numerator and denominator
-  (we should have a function "reduce" for that that implements a polynomial gcd algorithm - or it 
+  (we should have a function "reduce" for that that implements a polynomial gcd algorithm - or it
   can be based on a linear-factor decomposition)
  -or maybe it should first find the roots
 
-maybe for testing, it will be convenient to use polynomials and rational functions with rational 
+maybe for testing, it will be convenient to use polynomials and rational functions with rational
 coefficients -> make a rational number class (using unsigned integers for numerator and denominator
-and a bool for the negaive sign)..the (unsigned) integer class could also be a template parameter, 
+and a bool for the negaive sign)..the (unsigned) integer class could also be a template parameter,
 so we may use rsBigInteger
 ...rational numbers could be constructed from floating point numbers by computing their continued
 fraction expansion

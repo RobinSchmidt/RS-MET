@@ -96,9 +96,9 @@ bool rotes::testPolynomialDiffAndInt()
 }
 
 bool rotes::testPolynomialComposition()
-{  
+{
   bool result = true;
-  
+
   static const int na = 5;
   static const int nb = 4;
   static const int nc = na*nb;
@@ -139,7 +139,7 @@ bool rotes::testPolynomialWeightedSum()
   result &= (r[4] == - 6);
   result &= (r[5] ==   4);
 
-  // exchange roles of function parameters (function takes the other branch, result should be the 
+  // exchange roles of function parameters (function takes the other branch, result should be the
   // same):
   RAPT::rsPolynomial<double>::weightedSum(q, qN, 3.0, p, pN, 2.0, r);
   result &= (r[0] ==  12);
@@ -165,7 +165,7 @@ bool rotes::testPolynomialWeightedSum()
 bool rotes::testPolynomialIntegrationWithPolynomialLimits()
 {
   bool result = true;
-  
+
   static const int np = 5;
   static const int na = 3;
   static const int nb = 4;
@@ -189,7 +189,7 @@ bool rotes::testPolynomialIntegrationWithPolynomialLimits()
   double upperLimit = RAPT::rsPolynomial<double>::evaluate(x, b, nb);
 
   // evaluate definite integral:
-  y1 = RAPT::rsPolynomial<double>::evaluate(upperLimit, P, nP) 
+  y1 = RAPT::rsPolynomial<double>::evaluate(upperLimit, P, nP)
     - RAPT::rsPolynomial<double>::evaluate(lowerLimit, P, nP);
 
 
@@ -206,7 +206,7 @@ void rotes::testPolynomialRootFinder()
   // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 as test function
   double a1[5] = {-52, -23, 21, -7, 1};
   std::complex<double> r1[4];
-  RAPT::rsPolynomial<double>::findPolynomialRoots(a1, 4, r1); 
+  RAPT::rsPolynomial<double>::roots(a1, 4, r1);
 
   static const int maxN     = 20;
   static const int numTests = 1000;
@@ -234,7 +234,7 @@ void rotes::testPolynomialRootFinder()
     RAPT::rsPolynomial<double>::rootsToCoeffs(rTrue, a, N);
 
     // find the roots:
-    RAPT::rsPolynomial<double>::findPolynomialRoots(a, N, rFound);
+    RAPT::rsPolynomial<double>::roots(a, N, rFound);
 
     // try to find a matching root in the found roots for each of the true roots:
     for(j = 0; j < N; j++)
@@ -290,7 +290,7 @@ void rotes::testLinLogEquationSolver()
 
 
 
-  
+
   // x as function of y:
   RAPT::rsArray::fillWithRangeLinear(y, N, yMin, yMax);
   for(n = 0; n < N; n++)
@@ -314,7 +314,7 @@ void rotes::testLinLogEquationSolverOld()
 
   // \todo: use a double-loop that loops through values of y and c in some range and check results
   */
-  
+
 
 
   // interactive test:
@@ -328,7 +328,7 @@ void rotes::testLinLogEquationSolverOld()
   int n;
   //double x[N], xLin[N], xLog[N], y[N], yLin[N], yLog[N], f[N];
   double x[N], y[N], yLin[N], yLog[N];
-  
+
   // y as function of x:
   RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   for(n = 0; n < N; n++)
@@ -338,7 +338,7 @@ void rotes::testLinLogEquationSolverOld()
     y[n]    = yLin[n] + yLog[n];  // the sum of both parts
   }
   Plotter::plotData(N, x, y, yLin, yLog);
-  
+
   /*
   // x as function of y:
   rosic::fillWithRangeLinear(y, N, -50, 50);
@@ -357,8 +357,8 @@ void rotes::testLinLogEquationSolverOld()
   //Plotter::plotData(N, y, xLin);
   Plotter::plotData(N, y, x);
   */
- 
-  
+
+
   /*
   // g(x) = c*x + ln(x) + k
   rosic::fillWithRangeLinear(x, N, xMin, xMax);
@@ -370,7 +370,7 @@ void rotes::testLinLogEquationSolverOld()
   }
   Plotter::plotData(N, x, y, yLin, yLog);
   */
-  
+
   int dummy = 0;
 }
 

@@ -26,7 +26,7 @@ bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numEx
   C[k] = 1.0;
   //rsComplexDbl *roots = new rsComplexDbl[k];
   std::complex<T> *roots = new std::complex<T>[k];
-  rsPolynomial<T>::findPolynomialRoots(C, k, roots);
+  rsPolynomial<T>::roots(C, k, roots);
 
   // if all roots are real, compute exponents and weights:
   if( !rsAreAllValuesReal(roots, k, RS_EPS(T)) )
@@ -54,5 +54,5 @@ bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numEx
   // Can the algorithm be generalized to fit complex exponentials to complex datapoints? Or maybe
   // it already can do this when being instantiated with a complex datatype?
 
-  // see Numerical Methods for Scientists and Engineers (Hamming), Ch.39, page 617f 
+  // see Numerical Methods for Scientists and Engineers (Hamming), Ch.39, page 617f
 }

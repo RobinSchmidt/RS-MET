@@ -3648,7 +3648,7 @@
 	<vector>
 	<complex>
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Basics/Basics.h
+1539823419 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Basics/Basics.h
 	"Constants.h"
 	"TypeDefinitions.h"
 	"MacroDefinitions.h"
@@ -3670,7 +3670,7 @@
 	"Simd/Float64x2.h"
 	"Simd/ComplexFloat64x2.h"
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/ArrayTools.h
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/ArrayTools.h
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/MatrixTools.h
 
@@ -3738,7 +3738,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Types/Matrix.h
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Types/Polynomial.h
+1539832740 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Types/Polynomial.h
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Types/Vector.h
 
@@ -3754,7 +3754,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Numerics/NumericCalculus.h
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Numerics/Interpolation.h
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Numerics/Interpolation.h
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/AudioBasics/AudioBasics.h
 	"AudioFunctions.h"
@@ -4002,7 +4002,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Analysis/AutoCorrelationPitchDetector.h
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Analysis/ZeroCrossingPitchDetector.h
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Analysis/ZeroCrossingPitchDetector.h
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Sampling/PhaseVocoder.h
 
@@ -4022,7 +4022,7 @@
 	"MatrixTools.cpp"
 	"StandardContainerTools.cpp"
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/ArrayTools.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/ArrayTools.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/MatrixTools.cpp
 
@@ -4055,11 +4055,11 @@
 	"Numerics/NumericCalculus.cpp"
 	"Numerics/Interpolation.cpp"
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Misc/LinearAlgebra.cpp
+1539823419 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Misc/LinearAlgebra.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Misc/Statistics.cpp
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Misc/CurveFitting.cpp
+1539832740 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Misc/CurveFitting.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/BasicFunctions.cpp
 
@@ -4085,7 +4085,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Types/Matrix.cpp
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Types/Polynomial.cpp
+1539832740 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Types/Polynomial.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Types/Vector.cpp
 
@@ -4101,7 +4101,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Numerics/NumericCalculus.cpp
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Numerics/Interpolation.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Numerics/Interpolation.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/AudioBasics/AudioBasics.cpp
 	"AudioBasics.h"
@@ -4135,7 +4135,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Basic/SmoothingFilter.cpp
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/PrototypeDesigner.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/PrototypeDesigner.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/PoleZeroMapper.cpp
 
@@ -4143,7 +4143,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/InfiniteImpulseResponseDesigner.cpp
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/FilterAnalyzer.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/FilterAnalyzer.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/BiquadCascade.cpp
 
@@ -4161,7 +4161,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/QuadratureNetwork.cpp
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/FilterSpecifications.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Scientific/FilterSpecifications.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Filters/Musical/LadderFilter.cpp
 
@@ -4191,7 +4191,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Visualization/Graphics/ImageDrawer.cpp
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Visualization/Graphics/RealTimeSpline.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Visualization/Graphics/RealTimeSpline.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Visualization/Graphics/ImagePainter.cpp
 
@@ -4275,7 +4275,7 @@
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Math/OouraFFT/fft4g.cpp
 	<math.h>
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Math/NumberTheory.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Math/NumberTheory.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Math/Transforms.cpp
 
@@ -4299,7 +4299,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/MiscAudio/WindowFunctions.cpp
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/MiscAudio/AudioFunctions.cpp
+1539832740 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/MiscAudio/AudioFunctions.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/MiscAudio/BandwidthConverter.cpp
 
@@ -4337,7 +4337,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Sampling/PhaseVocoder.cpp
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Sampling/Resampler.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Sampling/Resampler.cpp
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Unfinished/Sampling/SampleManipulation.cpp
 
@@ -5032,7 +5032,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_OscilloscopeBufferOld.h
 
-1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_PitchDetector.h
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_PitchDetector.h
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_ScopeScreenScanner.h
 
@@ -6184,7 +6184,7 @@
 
 1539707855 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/infrastructure/rosic_PolyphonicInstrumentVoice.cpp
 
-1539707856 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/numerical/rosic_FunctionObjects.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/numerical/rosic_FunctionObjects.cpp
 
 1539707856 /home/rob/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/numerical/rosic_GradientBasedMinimizer.cpp
 
@@ -6290,7 +6290,7 @@
 	"GNUPlotter.h"
 	"../../../Libraries/JUCE/modules/rosic/rosic.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/Experiments/MathExperiments.h
+1539811360 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/Experiments/MathExperiments.h
 	"../../Shared/Shared.h"
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Shared.h
@@ -6542,7 +6542,7 @@
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Prototypes/ParticleBouncer.h
 	"rosic/rosic.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/Experiments/MathExperiments.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/Experiments/MathExperiments.cpp
 	"MathExperiments.h"
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/Experiments/FilterExperiments.cpp
@@ -6551,10 +6551,10 @@
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/Experiments/GeneratorExperiments.cpp
 	"GeneratorExperiments.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/Experiments/GraphicsExperiments.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/Experiments/GraphicsExperiments.cpp
 	"GraphicsExperiments.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/PortedFromRSLib/Experiments/MathExperiments.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/PortedFromRSLib/Experiments/MathExperiments.cpp
 	"MathExperiments.h"
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/PortedFromRSLib/Experiments/AnalysisExperiments.cpp
@@ -6566,7 +6566,7 @@
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/PortedFromRSLib/Experiments/DelayExperiments.cpp
 	"DelayExperiments.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/PortedFromRSLib/Experiments/FilterExperiments.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/PortedFromRSLib/Experiments/FilterExperiments.cpp
 	"FilterExperiments.h"
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/PortedFromRSLib/Experiments/MiscAudioExperiments.cpp
@@ -6596,7 +6596,7 @@
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/PortedFromRSLib/Experiments/SaturationExperiments.cpp
 	"SaturationExperiments.h"
 
-1539707858 source:/home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Main.cpp
+1539832509 source:/home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Main.cpp
 	"../JuceLibraryCode/JuceHeader.h"
 	"Shared/Shared.h"
 	"Experiments/Experiments.h"
@@ -6938,7 +6938,7 @@
 	"Utilities/TestInputCreation.cpp"
 	"Utilities/TestUtilities.cpp"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/RaptLibraryCode/RaptInstantiations.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/RaptLibraryCode/RaptInstantiations.cpp
 	"../../../../../Libraries/JUCE/modules/rapt/rapt.cpp"
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.cpp
@@ -6959,7 +6959,7 @@
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Plotting/rosic_Plotter.h
 	"../../../../../Libraries/JUCE/modules/rosic/rosic.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Prototypes/Prototypes.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Prototypes/Prototypes.cpp
 	"Prototypes.h"
 	"FilterDesign/PoleZeroPrototype.cpp"
 	"FilterDesign/PoleZeroMapper.cpp"
@@ -6979,7 +6979,7 @@
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerDigital.cpp
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Prototypes/FilterDesign/ComplementaryFilters.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Prototypes/FilterDesign/ComplementaryFilters.cpp
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/Shared/Prototypes/Probability.cpp
 
@@ -7062,7 +7062,7 @@
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/ImageUnitTests.cpp
 	"ImageUnitTests.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/MathUnitTests.cpp
+1540373920 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/MathUnitTests.cpp
 	"MathUnitTests.h"
 	"Math/LinearAlgebraUnitTests.cpp"
 	"Math/PolynomialUnitTests.cpp"
@@ -7083,7 +7083,7 @@
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/LinearAlgebraUnitTests.cpp
 	"LinearAlgebraUnitTests.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.cpp
+1540373919 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.cpp
 	"PolynomialUnitTests.h"
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/VectorUnitTests.cpp
@@ -7104,13 +7104,13 @@
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/MoebiusTransformTests.cpp
 	"MoebiusTransformTests.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/NumberTheoryTests.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/NumberTheoryTests.cpp
 	"NumberTheoryTests.h"
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/RealFunctionTests.cpp
 	"RealFunctionTests.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/TransformsTests.cpp
+1539832509 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/TransformsTests.cpp
 	"TransformsTests.h"
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/Math/Point2DTests.cpp
@@ -7127,14 +7127,14 @@
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/DrawingUnitTests.cpp
 
-1539714887 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/UnitTests.cpp
+1539715442 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rapt_tests/UnitTests/UnitTests.cpp
 	"UnitTests.h"
 
 1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/rosic_AnalysisTests.cpp
 	"rosic_AnalysisTests.h"
 	"../Shared/Plotting/rosic_Plotter.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/rosic_BasicsTests.cpp
+1540373952 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/rosic_BasicsTests.cpp
 	"rosic_BasicsTests.h"
 	"../Shared/Plotting/rosic_Plotter.h"
 
@@ -7157,7 +7157,7 @@
 	"../Shared/Plotting/rosic_Plotter.h"
 	"../Shared/Plotting/GNUPlotter.h"
 
-1539707858 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/rosic_MathTests.cpp
+1540373979 /home/rob/Programming/C++/RS-MET/Tests/TestsRosicAndRapt/Source/rosic_tests/rosic_MathTests.cpp
 	"rosic_MathTests.h"
 	"../Shared/Plotting/rosic_Plotter.h"
 

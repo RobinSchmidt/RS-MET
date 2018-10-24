@@ -132,7 +132,7 @@ bool testConvolution(std::string &reportString)
   // test in-place convolution where x == y:
   rsArray::fillWithZeros(y, yN);
   rsArray::copyBuffer(x, y, xN);
-  rsArray::convolve(y, xN, h, hN, y);  
+  rsArray::convolve(y, xN, h, hN, y);
   testResult &= rsArray::areBuffersEqual(y, yt, yN);
 
   // test in-place convolution where h == y:
@@ -144,7 +144,7 @@ bool testConvolution(std::string &reportString)
   // test in-place convolution where x == h == y:
   rsArray::fillWithZeros(y, yN);
   rsArray::copyBuffer(h, y, hN);
-  rsArray::convolve(y, xN, y, hN, y); 
+  rsArray::convolve(y, xN, y, hN, y);
   testResult &= y[0]  ==   4;
   testResult &= y[1]  == -12;
   testResult &= y[2]  ==  13;
@@ -223,7 +223,7 @@ bool testCubicCoeffsFourPoints(std::string &reportString)
   double  y[4] = {3, -2, 5, 1};
   double  a[4];
 
-  rsPolynomialD::rsCubicCoeffsFourPoints(a, &y[1]);
+  rsPolynomialD::cubicCoeffsFourPoints(a, &y[1]);
 
   double yc;            // computed value
   double tol = 1.e-14;  // tolerance
@@ -277,7 +277,7 @@ bool testCubicCoeffsTwoPointsAndDerivatives(std::string &reportString)
 
   // test, if the simplified algorithm for the special case returns the same coeffs:
   double b[4];
-  rsPolynomialD::rsCubicCoeffsTwoPointsAndDerivatives(b, y, dy);
+  rsPolynomialD::cubicCoeffsTwoPointsAndDerivatives(b, y, dy);
   testResult &= rsIsCloseTo(a[0], b[0], tol);
   testResult &= rsIsCloseTo(a[1], b[1], tol);
   testResult &= rsIsCloseTo(a[2], b[2], tol);
@@ -611,7 +611,7 @@ bool testPolynomialInterpolation(std::string &reportString)
 
   // get polynomial coefficients:
   double a[N];
-  rsPolynomialD::rsInterpolatingPolynomial(a, x, y, N);
+  rsPolynomialD::interpolant(a, x, y, N);
 
   // check, if the polynomial really matches the data:
   double yc[N];
@@ -619,17 +619,17 @@ bool testPolynomialInterpolation(std::string &reportString)
   for(n = 0; n < N; n++)
   {
     yc[n] = rsPolynomialD::evaluate(x[n], a, N-1);
-    testResult &= rsIsCloseTo(yc[n], y[n], tol); 
+    testResult &= rsIsCloseTo(yc[n], y[n], tol);
   }
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;
   double dx =  1.1;
-  rsPolynomialD::rsInterpolatingPolynomial(a, x0, dx, y, N);
+  rsPolynomialD::interpolant(a, x0, dx, y, N);
   for(n = 0; n < N; n++)
   {
     yc[n] = rsPolynomialD::evaluate(x0+n*dx, a, N-1);
-    testResult &= rsIsCloseTo(yc[n], y[n], tol); 
+    testResult &= rsIsCloseTo(yc[n], y[n], tol);
   }
 
   return testResult;
@@ -644,7 +644,7 @@ bool testPolynomialRootFinder(std::string &reportString)
   double a1[5] = {-52, -23, 21, -7, 1};
   //rsComplexDbl r1[4];
   std::complex<double> r1[4];
-  rsPolynomialD::findPolynomialRoots(a1, 4, r1);
+  rsPolynomialD::roots(a1, 4, r1);
 
   static const int maxN     = 20;
   static const int numTests = 1000;
@@ -671,7 +671,7 @@ bool testPolynomialRootFinder(std::string &reportString)
     rsPolynomialD::rootsToCoeffs(rTrue, a, N);
 
     // find the roots:
-    rsPolynomialD::findPolynomialRoots(a, N, rFound);
+    rsPolynomialD::roots(a, N, rFound);
 
     // try to find a matching root in the found roots for each of the true roots:
     for(j = 0; j < N; j++)
@@ -1034,7 +1034,7 @@ bool testPolynomialRecursion(std::string &reportString)
 
   // compute coefficient arrays for higher orders recursively:
   for(n = 2; n < N; n++)
-    rsPolynomialD::rsPolynomialRecursion(pa[n], w0, n, pa[n-1], w1, w1x, pa[n-2], w2);
+    rsPolynomialD::threeTermRecursion(pa[n], w0, n, pa[n-1], w1, w1x, pa[n-2], w2);
 
   // P2(x) = 5 + 2x + 3x^2:
   testResult &= a[2][0]==5 && a[2][1]==2 && a[2][2]==3;
@@ -1049,12 +1049,12 @@ bool testPolynomialRecursion(std::string &reportString)
   double t1[5], t2[5];
   rsArray::copyBuffer(a[2], t2, 5);
   rsArray::copyBuffer(a[3], t1, 5);
-  rsPolynomialD::rsPolynomialRecursion(t1, w0, 4, t1, w1, w1x, t2, w2);
+  rsPolynomialD::threeTermRecursion(t1, w0, 4, t1, w1, w1x, t2, w2);
   testResult &= rsArray::areBuffersEqual(a[4], t1, 5);
 
   // in-place application - 2nd input is reused as output:
   rsArray::copyBuffer(a[3], t1, 5);
-  rsPolynomialD::rsPolynomialRecursion(t2, w0, 4, t1, w1, w1x, t2, w2);
+  rsPolynomialD::threeTermRecursion(t2, w0, 4, t1, w1, w1x, t2, w2);
   testResult &= rsArray::areBuffersEqual(a[4], t2, 5);
 
   return testResult;
@@ -1078,7 +1078,7 @@ bool testJacobiPolynomials(std::string &reportString)
     pc[n] = &c[n][0];
 
   // gnereate the coefficient arrays:
-  rsPolynomialD::rsJacobiPolynomials(&pc[0], a, b, maxOrder);
+  rsPolynomialD::jacobiPolynomials(&pc[0], a, b, maxOrder);
 
   // check coefficients:
   testResult &= c[0][0]==1;
@@ -1094,15 +1094,15 @@ bool testJacobiPolynomials(std::string &reportString)
   L2[0] = 0;
   L2[1] = 1;
 
-  // L1 and L2 now contain Legendre polynomials of orders 0 and 1, we compute Legendre polynomial 
-  // of successively higher orders using recursion, using the two arrays alternately for the 
+  // L1 and L2 now contain Legendre polynomials of orders 0 and 1, we compute Legendre polynomial
+  // of successively higher orders using recursion, using the two arrays alternately for the
   // in-plce computed results:
-  rsPolynomialD::rsLegendrePolynomialRecursion(L1, 2, L2, L1);
-  rsPolynomialD::rsLegendrePolynomialRecursion(L2, 3, L1, L2);
-  rsPolynomialD::rsLegendrePolynomialRecursion(L1, 4, L2, L1);
-  rsPolynomialD::rsLegendrePolynomialRecursion(L2, 5, L1, L2);
-  rsPolynomialD::rsLegendrePolynomialRecursion(L1, 6, L2, L1);
-  rsPolynomialD::rsLegendrePolynomialRecursion(L2, 7, L1, L2);
+  rsPolynomialD::legendreRecursion(L1, 2, L2, L1);
+  rsPolynomialD::legendreRecursion(L2, 3, L1, L2);
+  rsPolynomialD::legendreRecursion(L1, 4, L2, L1);
+  rsPolynomialD::legendreRecursion(L2, 5, L1, L2);
+  rsPolynomialD::legendreRecursion(L1, 6, L2, L1);
+  rsPolynomialD::legendreRecursion(L2, 7, L1, L2);
 
   // check, if the 7th order Legendre coefficients are correct:
   testResult &= L2[0]==0 && L2[1]==-2.1875 && L2[2]==0  && L2[3]==19.6875 && L2[4]==0

@@ -13,7 +13,7 @@ public:
   /** \name Static functions for computing with coefficient arrays */
 
   /** Evaluates the polynomial defined by the array of roots "r" at argument "x". */
-  static std::complex<T> evaluateFromRoots(std::complex<T> x, 
+  static std::complex<T> evaluateFromRoots(std::complex<T> x,
     std::complex<T> *roots, int numRoots);
 
   /** Evaluates the polynomial defined by the array of coefficients "a" at argument "x".  The array
@@ -38,13 +38,13 @@ public:
   derivatives at argument 'x'. The value of the polynomial will be stored in results[0], the 1st
   derivative in results[1] and so on. numDerivatives should be <= 31.
   @see: evaluatePolynomialAt() */
-  static void evaluateWithDerivatives(T x, T *a, int order, T *results, 
+  static void evaluateWithDerivatives(T x, T *a, int order, T *results,
     int numDerivatives);
 
   /** Multiplies the polynomials represented by the coefficient vectors 'a' and 'b' and stores the
-  resulting coefficients in 'result'. The resulting polynomial will be or order aOrder+bOrder and 
+  resulting coefficients in 'result'. The resulting polynomial will be or order aOrder+bOrder and
   the coefficient vector should have allocated space for
-  (aOrder+1)+(bOrder+1)-1 = aOrder+bOrder+1 = aLength+bLength-1 elements. 
+  (aOrder+1)+(bOrder+1)-1 = aOrder+bOrder+1 = aLength+bLength-1 elements.
   Can work in place, i.e. result may point to the same array as a and/or b.   */
   static void multiply(T *a, int aOrder, T *b, int bOrder, T *result)
   {
@@ -56,23 +56,23 @@ public:
   ?? The resulting quotient polynomial will be of order dividendOrder-divisorOrder and the
   remainder polynom will be at most of order ??
   However, the output arrays must have the same length as the dividend, where
-  remainder[divisorOrder...dividendOrder] and 
-  quotient[dividendOrder-divisorOrder+1...dividendOrder] will be filled with zeros.  
+  remainder[divisorOrder...dividendOrder] and
+  quotient[dividendOrder-divisorOrder+1...dividendOrder] will be filled with zeros.
   ...\todo check this comment */
-  static void divide(T* dividend, int dividendOrder, T* divisor, int divisorOrder, 
+  static void divide(T* dividend, int dividendOrder, T* divisor, int divisorOrder,
     T* quotient, T* remainder);
 
   /** Divides the dividend by the monomial factor (x-x0) and stores the result in the same array
-  again. The remainder (which is just a numerical value) will be stored in 'remainder'. This 
-  function is useful for splitting off a linear factor, if x0 is a root of the dividend, in which 
+  again. The remainder (which is just a numerical value) will be stored in 'remainder'. This
+  function is useful for splitting off a linear factor, if x0 is a root of the dividend, in which
   case the remainder will come out as zero (check this). */
   template<class S>
   static void divideByMonomialInPlace(S* dividendAndResult, int dividendOrder, S x0, S* remainder);
-  // maybe make a version that can store the result in a different array - make it so that the 
+  // maybe make a version that can store the result in a different array - make it so that the
   // result array may or may not point to the same array as the dividend
-  // 
+  //
 
-  //static void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, T x0, 
+  //static void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, T x0,
   //  T *remainder);
 
 
@@ -150,7 +150,7 @@ public:
   given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"
   are assumed to be of orders "pN", "aN" and "bN" respectively and the result will be stored in
   as polynomial "q" which will be of order pN*max(aN, bN). */
-  static void integrateWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, 
+  static void integrateWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b,
     int bN, T *q);
 
   /** Given expansion coefficients a[k] of an arbitrary polynomial P(x) with given order in terms
@@ -211,25 +211,25 @@ public:
   static std::vector<std::complex<T>> rootsCubic(T a, T b, T c, T d);
 
 
-  /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and 
-  stores them in r1, r2. When the equation has two distinct real roots, they will be returned in 
-  ascending order, i.e. r1 < r2. In case of a (real) double root, we'll have r1 == r2 and when the 
-  roots of the equation are actually complex, the outputs will also be equal and contain the real 
+  /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and
+  stores them in r1, r2. When the equation has two distinct real roots, they will be returned in
+  ascending order, i.e. r1 < r2. In case of a (real) double root, we'll have r1 == r2 and when the
+  roots of the equation are actually complex, the outputs will also be equal and contain the real
   part of the complex conjugate pair. */
   static void rootsQuadraticReal(T a0, T a1, T a2, T* r1, T* r2);
 
-  static void rootsQuadraticComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2, 
+  static void rootsQuadraticComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2,
     std::complex<T>* x1, std::complex<T>* x2);
   // todo: make optimized version for real coefficients
 
-  /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f]. 
-  D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide, 
+  /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f].
+  D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide,
   D < 0: 1 real root and 2 complex conjugate roots */
   static T cubicDiscriminant(T a0, T a1, T a2, T a3);
 
   // todo: wite function quadraticDiscriminant
 
-  static void rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2, 
+  static void rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2,
     std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3);
   // under construction - does not yet work
 
@@ -343,7 +343,7 @@ public:
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
   order. */
   static void legendrePolynomial(T *a, int order);
-    // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function 
+    // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function
     // (move to prototypes)
 
   /** Computes the recursion coefficients (as used in rsPolynomialRecursion) for the Jacobi
@@ -369,9 +369,9 @@ public:
 
   // todo: void chebychevPolynomial(T *a, int order);
 
-  /** Constructs a polynomial p(x) of order 2*N+1 with the following properties: 
-  p(0) = 0, p(1) = 1, p'(x) >= 0 for all x (monotonically increasing), p'(1) = maximum possible 
-  when monotonicity is assumed. \todo: check if these properties are actually true. Such 
+  /** Constructs a polynomial p(x) of order 2*N+1 with the following properties:
+  p(0) = 0, p(1) = 1, p'(x) >= 0 for all x (monotonically increasing), p'(1) = maximum possible
+  when monotonicity is assumed. \todo: check if these properties are actually true. Such
   polynomials are used in Papoulis filters. */
   static void maxSlopeMonotonic(T *a, int N);
 
@@ -395,32 +395,32 @@ public:
 
   rsPolynomial(const std::vector<T>& coefficients) : coeffs(coefficients) {}
 
-  /** Returns the maximum order that this poloynomial may have which is the length of the 
+  /** Returns the maximum order that this poloynomial may have which is the length of the
   coefficient array minus one. When there are trailing zero coefficients, the actual degree of
   the polynomial is lower. */
   int getMaxOrder() const { return (int)coeffs.size()-1; }
   // int getOrder()
-  // should take into account traling zeros ..or maybe have a boolean flag 
+  // should take into account traling zeros ..or maybe have a boolean flag
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
   // value - client code must be explicit
 
   /** Adds two polynomials */
-  rsPolynomial<T> operator+(const rsPolynomial<T>& q) { 
+  rsPolynomial<T> operator+(const rsPolynomial<T>& q) {
     rsPolynomial<T> r(rsMax(getMaxOrder(), q.getMaxOrder()), true);
-    weightedSum(&coeffs[0], getMaxOrder(), T(1), &(q.coeffs[0]), q.getMaxOrder(), T(1), &r[0]);
+    //weightedSum(&coeffs[0], getMaxOrder(), T(1), &(q.coeffs[0]), q.getMaxOrder(), T(1), &r[0]);
     return r;
   }
 
   /** Subtracts two polynomials */
-  rsPolynomial<T> operator-(const rsPolynomial<T>& q) { 
+  rsPolynomial<T> operator-(const rsPolynomial<T>& q) {
     rsPolynomial<T> r(rsMax(getMaxOrder(), q.getMaxOrder()), true);
-    weightedSum(&coeffs[0], getMaxOrder(), T(1), &(q.coeffs[0]), q.getMaxOrder(), T(-1), &r[0]);
+    //weightedSum(&coeffs[0], getMaxOrder(), T(1), &(q.coeffs[0]), q.getMaxOrder(), T(-1), &r[0]);
     return r;
   }
 
 
     // maybe we whould take into account the possibility of trailing zero coeffs?
-    // maybe have two functions: degreeMax, 
+    // maybe have two functions: degreeMax,
 
 
 
@@ -430,19 +430,19 @@ protected:
 
 };
 
-// todo: implement a function that determines the number of real roots of a polynomial in an 
-// interval by means of Sturmian sequences (see Einführung in die computerorientierte Mathematik 
+// todo: implement a function that determines the number of real roots of a polynomial in an
+// interval by means of Sturmian sequences (see Einführung in die computerorientierte Mathematik
 // mit Sage, p.163ff)
 
 // \todo: implement differentiation and integration, make a class, implement some algos for
 // rational functions (partial fraction expansion, differentiation, integration)
 
-// \todo implement funcitons to construct coefficient arrays for certain recursively defined 
+// \todo implement funcitons to construct coefficient arrays for certain recursively defined
 // polynomials, such as Chebychev, etc. provide functions to evaluate linear combinations of
 // them efficiently (maybe look up Clenshaw algorithm)
 
 // wrap all (or many) of these functions into a class rsPolynom as static member functions
-// let class polynom have members T *a; int order; where a is the coefficient array an T is the 
+// let class polynom have members T *a; int order; where a is the coefficient array an T is the
 // type for the coefficients. implement operators +,-,*,/,% where the two latter should call
 // a general rsDivMod(T n, T d, T *q, T *r); function n: numerator, d: denominator, q: quotient
 // r: remainder
@@ -450,7 +450,7 @@ protected:
 // division of rsRational, the rsDivMod<T> function may be used
 // make an subclass rsRationalFunction : public rsRational<rsPolynom> that implements
 // integretaion and differentiation
-// maybe both rsPolynomial and rsRationalFunction should also be subclasses of 
+// maybe both rsPolynomial and rsRationalFunction should also be subclasses of
 // rsUnivariateScalarFunction
 
 #endif
