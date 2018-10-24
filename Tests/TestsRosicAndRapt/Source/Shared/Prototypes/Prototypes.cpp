@@ -129,7 +129,7 @@ void papoulisL2(double *v, int N)
     {
       // add the weighted Legendre polynomial of order r to our v polynomial:
       rsPolynomial<double>::legendrePolynomial(P, r);
-      rsPolynomial<double>::weightedSumOfPolynomials(v, r, 1.0, P, r, 2*r+1.0, v);
+      rsPolynomial<double>::weightedSum(v, r, 1.0, P, r, 2*r+1.0, v);
     }
 
     // square it:

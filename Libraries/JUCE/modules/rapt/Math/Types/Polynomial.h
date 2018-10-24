@@ -119,7 +119,7 @@ public:
   doesn't fill additional zeros. That means, you may pass an array of arrays in aPowers, where
   each sub-array has exactly the length that is strictly required. If you allocate more memory (for
   convenience or whatever), make sure to initialize the sub-arrays with zeros. */
-  static void createPolynomialPowers(T *a, int N, T **aPowers, int highestPower);
+  static void powers(T *a, int N, T **aPowers, int highestPower);
 
   /** Let A(x) and B(x) be polynomials represented by their coefficient arrays a[] and b[]
   respectively. This function creates the coefficients of a polynomial C(x), represented by the
@@ -130,17 +130,21 @@ public:
   an order of cN = aN*bN, where aN and bN are the orders of the a[] and b[] polynomials,
   respectively, so the caller has to make sure that the c[] array has at least a length of
   aN*bN+1. */
-  static void composePolynomials(T *a, int aN, T *b, int bN, T *c);
+  static void compose(T *a, int aN, T *b, int bN, T *c);
 
   /** Forms a weighted sum of two polynomials p(x) and q(x) with weights wp and wq respectively and
   stores the coeffficients of the resulting polynomial r(x) in the r-array. The polynomials p(x)
   and q(x) do not need to be of the same order and the resulting polynomial will have an order of
   max(pN, qN). */
-  static void weightedSumOfPolynomials(const T *p, int pN, T wp, const T *q, int qN, T wq, T *r);
+  static void weightedSum(const T *p, int pN, T wp, const T *q, int qN, T wq, T *r);
 
   /** Subtracts polynomial q(x) from polynomial p(x) and stores the coeffficients of the resulting
   polynomial in r(x) which is of order max(pN, qN). */
-  static void subtractPolynomials(const T *p, int pN, const T *q, int qN, T *r);
+  static void subtract(const T *p, int pN, const T *q, int qN, T *r)
+  {
+    weightedSum(p, pN, T(1), q, qN, T(-1), r);
+  }
+  // todo: write add
 
   /** Computes the definite integral of the polynomial "p" where the lower integration limit is
   given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"

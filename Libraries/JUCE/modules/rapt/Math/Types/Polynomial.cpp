@@ -159,7 +159,7 @@ void rsPolynomial<T>::integral(T *a, T *ai, int N, T c)
 }
 
 template <class T>
-void rsPolynomial<T>::createPolynomialPowers(T *a, int N, T **aPowers, int highestPower)
+void rsPolynomial<T>::powers(T *a, int N, T **aPowers, int highestPower)
 {
   aPowers[0][0] = 1;
   if(highestPower < 1)
@@ -170,7 +170,7 @@ void rsPolynomial<T>::createPolynomialPowers(T *a, int N, T **aPowers, int highe
 }
 
 template <class T>
-void rsPolynomial<T>::composePolynomials(T *a, int aN, T *b, int bN, T *c)
+void rsPolynomial<T>::compose(T *a, int aN, T *b, int bN, T *c)
 {
   int cN = aN*bN;
   T *an  = new T[cN+1];  // array for the successive powers of a[]
@@ -206,29 +206,21 @@ void rsPolynomial<T>::rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, 
 }
 
 template<class T>
-void rsPolynomial<T>::weightedSumOfPolynomials(const T *p, int pN, T wp, const T *q, int qN, T wq, T *r)
+void rsPolynomial<T>::weightedSum(const T *p, int pN, T wp, const T *q, int qN, T wq, T *r)
 {
   int i;
-  if(pN >= qN)
-  {
+  if(pN >= qN) {
     for(i = 0; i <= qN; i++)
       r[i] = wp*p[i] + wq*q[i];
     for(i = qN+1; i <= pN; i++)
       r[i] = wp*p[i];
   }
-  else
-  {
+  else {
     for(i = 0; i <= pN; i++)
       r[i] = wp*p[i] + wq*q[i];
     for(i = pN+1; i <= qN; i++)
       r[i] = wq*q[i];
   }
-}
-
-template<class T>
-void rsPolynomial<T>::subtractPolynomials(const T *p, int pN, const T *q, int qN, T *r)
-{
-  weightedSumOfPolynomials(p, pN, T(1), q, qN, T(-1), r);
 }
 
 template<class T>
@@ -243,10 +235,10 @@ void rsPolynomial<T>::integratePolynomialWithPolynomialLimits(T *p, int pN, T *a
   T *A = new T[AN+1];
   T *B = new T[BN+1];
 
-  integral(p, P, pN);               // P(x) is the antiderivative of p(x)
-  composePolynomials(a, aN, P, PN, A);  // A(x) = P(a(x))
-  composePolynomials(b, bN, P, PN, B);  // B(x) = P(b(x))
-  subtractPolynomials(B, BN, A, AN, q); // q(x) = B(x) - A(x)
+  integral(p, P, pN);        // P(x) is the antiderivative of p(x)
+  compose(a, aN, P, PN, A);  // A(x) = P(a(x))
+  compose(b, bN, P, PN, B);  // B(x) = P(b(x))
+  subtract(B, BN, A, AN, q); // q(x) = B(x) - A(x)
 
   delete[] P;
   delete[] A;

@@ -8,7 +8,7 @@ rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationB
   int Nb = (int)ba.b.size()-1;
   r.b.resize(std::max(Na,Nb)+1);
   r.a = ba.a;                // denominator is the same
-  rsPolynomial<std::complex<double>>::subtractPolynomials(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
+  rsPolynomial<std::complex<double>>::subtract(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
   return r;
 } // move to FilterPlotter or rapt rsFilterSpecificationBA
 

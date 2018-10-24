@@ -336,9 +336,9 @@ bool testPolynomialDivision(std::string &reportString)
   double r[5] = {3,  1, 4, -5, 3};      // r(x) =         3*x^4 - 5*x^3 + 4*x^2 + 1*x^1 - 3*x^0
 
   // establish polynomial p(x) = d(x)*q(x) + r(x):
-  double p[9];                                                       // 8th degree, 9 coeffs
-  rsPolynomialD::multiply(d, 5, q, 3, p);                 // p(x) = d(x)*q(x)
-  rsPolynomialD::weightedSumOfPolynomials(p, 8, 1.0, r, 4, 1.0, p);  // p(x) = d(x)*q(x) + r(x);
+  double p[9];                                          // 8th degree, 9 coeffs
+  rsPolynomialD::multiply(d, 5, q, 3, p);               // p(x) = d(x)*q(x)
+  rsPolynomialD::weightedSum(p, 8, 1.0, r, 4, 1.0, p);  // p(x) = d(x)*q(x) + r(x);
 
   // retrieve q(x) and r(x):
   double qq[9], rr[9];
@@ -500,7 +500,7 @@ bool testPolynomialComposition(std::string &reportString)
   double a[na+1] = {2, -1, 5,  7, -3, 2}; // 2*x^5 - 3*x^4 + 7*x^3 + 5*x^2 - 1*x^1 + 2*x^0
   double b[nb+1] = {3,  1, 4, -5,  3};    //         3*x^4 - 5*x^3 + 4*x^2 + 1*x^1 - 3*x^0
   double c[nc+1];
-  rsPolynomialD::composePolynomials(a, na, b, nb, c);
+  rsPolynomialD::compose(a, na, b, nb, c);
 
   // check, if the composed c-polynomial returns the same result as applying the 2nd b-polynomial
   // to the result of the 1st a-polynomial:
@@ -527,7 +527,7 @@ bool testPolynomialWeightedSum(std::string &reportString)
   double r[rN+1];
 
   // r(x) = 2*p(x) + 3*q(x) = 4*x^5 - 6*x^4 + 20*x^3 + 28*x^2 - 11*x^1 + 12*x^0
-  rsPolynomialD::weightedSumOfPolynomials(p, pN, 2.0, q, qN, 3.0, r);
+  rsPolynomialD::weightedSum(p, pN, 2.0, q, qN, 3.0, r);
   testResult &= (r[0] ==  12);
   testResult &= (r[1] == -11);
   testResult &= (r[2] ==  28);
@@ -537,7 +537,7 @@ bool testPolynomialWeightedSum(std::string &reportString)
 
   // exchange roles of function parameters (function takes the other branch, result should be the
   // same):
-  rsPolynomialD::weightedSumOfPolynomials(q, qN, 3.0, p, pN, 2.0, r);
+  rsPolynomialD::weightedSum(q, qN, 3.0, p, pN, 2.0, r);
   testResult &= (r[0] ==  12);
   testResult &= (r[1] == -11);
   testResult &= (r[2] ==  28);
@@ -547,7 +547,7 @@ bool testPolynomialWeightedSum(std::string &reportString)
 
   // use a truncated polynomial for p (such that p and q are of the same order):
   rsArray::fillWithZeros(r, rN+1);
-  rsPolynomialD::weightedSumOfPolynomials(p, qN, 2.0, q, qN, 3.0, r);
+  rsPolynomialD::weightedSum(p, qN, 2.0, q, qN, 3.0, r);
   testResult &= (r[0] ==  12);
   testResult &= (r[1] == -11);
   testResult &= (r[2] ==  28);

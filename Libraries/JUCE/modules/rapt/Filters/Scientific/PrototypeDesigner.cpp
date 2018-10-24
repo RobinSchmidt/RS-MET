@@ -450,7 +450,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
     rsArray::fillWithZeros(v, k+1);
     for(r = 0; r <= k; r++) {                  // create weighted sum of ...
       updateLegendrePolynomial(&P, P1, P2, r); // ... Legendre polynomials in v
-      rsPolynomial<T>::weightedSumOfPolynomials(v, r, T(1), P, r, 2*r+T(1), v); 
+      rsPolynomial<T>::weightedSum(v, r, T(1), P, r, 2*r+T(1), v); 
     }
     rsArray::convolve(v, k+1, v, k+1, v);      // square it
   }
