@@ -224,7 +224,7 @@ void rsPolynomial<T>::weightedSum(const T *p, int pN, T wp, const T *q, int qN, 
 }
 
 template<class T>
-void rsPolynomial<T>::integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b,
+void rsPolynomial<T>::integrateWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b,
   int bN, T *q)
 {
   int PN = pN+1;
@@ -246,7 +246,7 @@ void rsPolynomial<T>::integratePolynomialWithPolynomialLimits(T *p, int pN, T *a
 }
 
 template<class T>
-bool rsPolynomial<T>::rsPolynomialBaseChange(T **Q, T *a, T **R, T *b, int order)
+bool rsPolynomial<T>::baseChange(T **Q, T *a, T **R, T *b, int order)
 {
   return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, order+1);
 }
@@ -360,7 +360,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
 }
 
 template<class T>
-void rsPolynomial<T>::findPolynomialRoots(const std::complex<T> *a, int order, std::complex<T> *roots)
+void rsPolynomial<T>::roots(const std::complex<T> *a, int order, std::complex<T> *roots)
 {
   const T eps = T(2.0e-14); // for float, it was 2.0e-6 - use template numeric_limit<T>
 
@@ -390,7 +390,6 @@ void rsPolynomial<T>::findPolynomialRoots(const std::complex<T> *a, int order, s
     // deflate the deflated polynomial again by the monomial that corresponds to our most recently
     // found root:
     std::complex<T> rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
-    //dividePolynomialByMonomialInPlace(ad, j, r, &rem); // old
     rsPolynomial<std::complex<T>>::divideByMonomialInPlace(ad, j, r, &rem);
   }
 
@@ -399,11 +398,11 @@ void rsPolynomial<T>::findPolynomialRoots(const std::complex<T> *a, int order, s
 }
 
 template<class T>
-void rsPolynomial<T>::findPolynomialRoots(T *a, int order, std::complex<T> *roots)
+void rsPolynomial<T>::roots(T *a, int order, std::complex<T> *r)
 {
   std::complex<T> *ac = new std::complex<T>[order+1];
   rsArray::convertBuffer(a, ac, order+1);
-  findPolynomialRoots(ac, order, roots);
+  roots(ac, order, r);
   delete[] ac;
 }
 
@@ -430,28 +429,6 @@ std::vector<std::complex<T>> rsPolynomial<T>::getPolynomialCoefficientsFromRoots
   }
 
   return coeffs;
-
-  /*
-  // old:
-  std::vector<std::complex<T>> coeffs;
-
-  coeffs.ensureAllocatedSize(roots.getNumElements()+1);
-  coeffs.appendElement(1.0);
-
-  if( roots.getNumElements() < 1 )
-    return coeffs;
-
-  for(int i=0; i<roots.getNumElements(); i++)
-  {
-    std::complex<T> z = roots[i];
-    coeffs.appendElement(coeffs[i]);
-    for(int j=i; j>=1; j--)
-      coeffs[j] = coeffs[j-1] - z * coeffs[j];
-    coeffs[0] = -z * coeffs[0];
-  }
-
-  return coeffs;
-  */
 }
 
 template<class T>

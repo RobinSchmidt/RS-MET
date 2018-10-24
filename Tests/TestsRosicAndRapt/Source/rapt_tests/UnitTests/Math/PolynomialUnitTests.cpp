@@ -589,7 +589,7 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
   y1 = rsPolynomialD::evaluate(upperLimit, P, nP) - rsPolynomialD::evaluate(lowerLimit, P, nP);
 
 
-  rsPolynomialD::integratePolynomialWithPolynomialLimits(p, np, a, na, b, nb, q);
+  rsPolynomialD::integrateWithPolynomialLimits(p, np, a, na, b, nb, q);
   y2 = rsPolynomialD::evaluate(x, q, nq);
 
   testResult &= rsIsCloseTo(y2, y1, 1.e-13 * fabs(y1));
@@ -771,7 +771,7 @@ bool testPolynomialBaseChange(std::string &reportString)
   }
 
   // get the expansion coeffs in terms of R-polynomials:
-  rsPolynomialD::rsPolynomialBaseChange(Q, a, R, b, N);
+  rsPolynomialD::baseChange(Q, a, R, b, N);
 
   // select a value for the argument:
   double x = 2.0;

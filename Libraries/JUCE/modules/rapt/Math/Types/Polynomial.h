@@ -150,7 +150,7 @@ public:
   given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"
   are assumed to be of orders "pN", "aN" and "bN" respectively and the result will be stored in
   as polynomial "q" which will be of order pN*max(aN, bN). */
-  static void integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, 
+  static void integrateWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, 
     int bN, T *q);
 
   /** Given expansion coefficients a[k] of an arbitrary polynomial P(x) with given order in terms
@@ -161,7 +161,7 @@ public:
   The basis polynomials Q and R are passed as 2-dimensional arrays where the k-th row represents
   the coefficients of the k-th basis polynomial. If R is not a basis, the function will not succeed
   and return false, otherwise true. */
-  static bool rsPolynomialBaseChange(T **Q, T *a, T **R, T *b, int order);
+  static bool baseChange(T **Q, T *a, T **R, T *b, int order);
 
   /** Converges to a complex root of a polynomial by means of Laguerre's method using the
   "initialGuess" as first estimate. */
@@ -169,9 +169,9 @@ public:
     std::complex<T> initialGuess = std::complex<T>(0.0, 0.0));
 
   /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
-  static void findPolynomialRoots(const std::complex<T>* a, int order, std::complex<T>* roots);
+  static void roots(const std::complex<T>* a, int order, std::complex<T>* roots);
 
-  static void findPolynomialRoots(T *a, int order, std::complex<T> *roots);
+  static void roots(T *a, int order, std::complex<T> *roots);
 
   /** Same as above but accepts real coefficients. */
   //void findPolynomialRootsInternal(T *a, int order, Complex *roots, bool polish = true);

@@ -193,7 +193,7 @@ bool rotes::testPolynomialIntegrationWithPolynomialLimits()
     - RAPT::rsPolynomial<double>::evaluate(lowerLimit, P, nP);
 
 
-  RAPT::rsPolynomial<double>::integratePolynomialWithPolynomialLimits(p, np, a, na, b, nb, q);
+  RAPT::rsPolynomial<double>::integrateWithPolynomialLimits(p, np, a, na, b, nb, q);
   y2 = RAPT::rsPolynomial<double>::evaluate(x, q, nq);
 
   result &= RAPT::rsIsCloseTo(y2, y1, 1.e-13 * fabs(y1));

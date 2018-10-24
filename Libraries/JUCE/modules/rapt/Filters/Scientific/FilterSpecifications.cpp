@@ -137,15 +137,15 @@ rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK() const
   if(isDigital()) {
     std::vector<std::complex<T>> tmp = a;
     rsReverse(tmp);
-    rsPolynomial<T>::findPolynomialRoots(&tmp[0], (int)tmp.size()-1, &zpk.p[0]);
+    rsPolynomial<T>::roots(&tmp[0], (int)tmp.size()-1, &zpk.p[0]);
     tmp = b; 
     rsReverse(tmp);
-    rsPolynomial<T>::findPolynomialRoots(&tmp[0], (int)tmp.size()-1, &zpk.z[0]);
+    rsPolynomial<T>::roots(&tmp[0], (int)tmp.size()-1, &zpk.z[0]);
     zpk.k = b[0] / a[0];
   }
   else {
-    rsPolynomial<T>::findPolynomialRoots(&a[0], (int)a.size()-1, &zpk.p[0]);
-    rsPolynomial<T>::findPolynomialRoots(&b[0], (int)b.size()-1, &zpk.z[0]);
+    rsPolynomial<T>::roots(&a[0], (int)a.size()-1, &zpk.p[0]);
+    rsPolynomial<T>::roots(&b[0], (int)b.size()-1, &zpk.z[0]);
     zpk.k = b[b.size()-1] / a[a.size()-1];
   }
   zpk.sortPolesAndZeros();

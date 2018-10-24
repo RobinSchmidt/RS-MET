@@ -110,7 +110,7 @@ void halpernT2(double *c, int N)
   // integrate it from 0 to w:
   double a[1] = { 0 };    // lower integration limit (as polynomial)
   double b[2] = { 0, 1 }; // upper integration limit (as polynomial)
-  rsPolynomial<double>::integratePolynomialWithPolynomialLimits(s, 2*N-1, a, 0, b, 1, t);
+  rsPolynomial<double>::integrateWithPolynomialLimits(s, 2*N-1, a, 0, b, 1, t);
     // this is actually the same as just taking the antiderivative of s
 
   // copy to output:
@@ -141,7 +141,7 @@ void papoulisL2(double *v, int N)
     // integrate from -1 to 2*w^2-1
     double a[1] = { -1 };
     double b[3] = { -1, 0, 2};
-    rsPolynomial<double>::integratePolynomialWithPolynomialLimits(v, 2*k, a, 0, b, 2, v);
+    rsPolynomial<double>::integrateWithPolynomialLimits(v, 2*k, a, 0, b, 2, v);
   }
   else
   {
@@ -163,7 +163,7 @@ void papoulisL2(double *v, int N)
     // integrate from -1 to 2*w^2-1
     double a[1] = { -1 };
     double b[3] = { -1, 0, 2};
-    rsPolynomial<double>::integratePolynomialWithPolynomialLimits(v, 2*k+1, a, 0, b, 2, v); // order: 2*N, length 2*N+1
+    rsPolynomial<double>::integrateWithPolynomialLimits(v, 2*k+1, a, 0, b, 2, v); // order: 2*N, length 2*N+1
 
     // scale, such that L^2(1) = 1:
     double K = 1.0 / rsPolynomial<double>::evaluate(1.0, v, 2*N);

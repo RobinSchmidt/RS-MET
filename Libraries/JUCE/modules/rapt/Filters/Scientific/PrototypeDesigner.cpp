@@ -414,7 +414,7 @@ int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 {
   std::vector<Complex> rTmp; // maybe we can get rid of that temporary array
   rTmp.resize(N);
-  rsPolynomial<T>::findPolynomialRoots(a, N, &rTmp[0]);
+  rsPolynomial<T>::roots(a, N, &rTmp[0]);
   int numLeftRoots = rsOnlyLeftHalfPlane(&rTmp[0], r, N);
   rsAssert(numLeftRoots == ceil(0.5*N)); // maybe take this out later
   return numLeftRoots;
@@ -468,7 +468,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
   // integrate from -1 to 2*w^2-1:
   T a[1] = { -1 };  
   T b[3] = { -1, 0, 2};
-  rsPolynomial<T>::integratePolynomialWithPolynomialLimits(v, N-1, a, 0, b, 2, v);  
+  rsPolynomial<T>::integrateWithPolynomialLimits(v, N-1, a, 0, b, 2, v);  
   rsArray::scale(v, 2*N+1, 1.0 / rsArray::sum(v, 2*N+1));  // scale, such that L^2(1) = 1
 
   // clean up:
@@ -670,7 +670,7 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* 
   // find poles:
   T* a = new T[N+1];
   denominatorCoeffsFunction(a, N);
-  rsPolynomial<T>::findPolynomialRoots(a, N, p);
+  rsPolynomial<T>::roots(a, N, p);
 
   // set gain and scale poles to match Butterworth magnitude response asymptotically, if desired:
   bool matchButterworth = true; // maybe make this a parameter later
@@ -715,7 +715,7 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLS(Complex* z, Complex* p, T* 
   denominatorCoeffsFunction(a, N);
 
   // find poles of the shelving filter:
-  rsPolynomial<T>::findPolynomialRoots(a, N, p);
+  rsPolynomial<T>::roots(a, N, p);
 
   // construct lowpass numerator:
   T* b = new T[N+1];
