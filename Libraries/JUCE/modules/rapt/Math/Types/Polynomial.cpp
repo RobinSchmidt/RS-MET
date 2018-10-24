@@ -465,10 +465,9 @@ void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, T *a, int N)
 }
 
 template<class T>
-T rsPolynomial<T>::getRootOfLinearEquation(T a, T b)
+T rsPolynomial<T>::rootLinear(T a, T b)
 {
-  if( a == 0.0 )
-  {
+  if( a == 0.0 ) {  // hmm...maybe returning (+-)inf as root would actually be appropriate
     RS_DEBUG_BREAK;
     return 0.0;
   }
@@ -477,47 +476,41 @@ T rsPolynomial<T>::getRootOfLinearEquation(T a, T b)
 }
 
 template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfQuadraticEquation(
-  T a, T b, T c)
+std::vector<std::complex<T>> rsPolynomial<T>::rootsQuadratic(T a, T b, T c)
 {
   // catch degenerate case with zero leading coefficient:
-  if( a == 0.0 )
-  {
+  if( a == 0.0 ) {
     std::vector<std::complex<T>> roots(1);
-    roots[0] = getRootOfLinearEquation(b, c);
+    roots[0] = rootLinear(b, c);
     return roots;
   }
 
   std::vector<std::complex<T>> roots(2); // array to be returned
-  T D      = b*b - T(4)*a*c;   // discriminant
+  T D      = b*b - T(4)*a*c;   // discriminant ...use discriminant-function
   T factor = T(1) / (T(2)*a);  // common factor that appears everywhere
-  if( D > 0.0 )
-  {
+  if( D > 0.0 ) {
     // D > 0: two distinct real roots:
     T rsSqrt_D = rsSqrt(D);
-    roots[0]      = factor * (-b+rsSqrt_D);
-    roots[1]      = factor * (-b-rsSqrt_D);
+    roots[0]   = factor * (-b+rsSqrt_D);
+    roots[1]   = factor * (-b-rsSqrt_D);
   }
-  else if( D == 0.0 )
-  {
+  else if( D == 0.0 ) {
     // D == 0: a real root with multiplicity 2:
     roots[1] = roots[0] = std::complex<T>( -b * factor );
   }
-  else
-  {
+  else {
     // D < 0: two complex conjugate roots:
-    T imag = rsSqrt(-D) * factor;
-    T real = -b       * factor;
-    roots[0]    = std::complex<T>(real,  imag);
-    roots[1]    = std::complex<T>(real, -imag);
+    T imag   = rsSqrt(-D) * factor;
+    T real   = -b       * factor;
+    roots[0] = std::complex<T>(real,  imag);
+    roots[1] = std::complex<T>(real, -imag);
   }
 
   return roots;
 }
 
 template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
-  T a, T b, T c, T d)
+std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(T a, T b, T c, T d)
 {
   // catch degenerate cases where the leading coefficient is zero:
   if( a == 0.0 )
@@ -650,7 +643,7 @@ void rsPolynomial<T>::rootsQuadraticComplex(std::complex<T> c, std::complex<T> b
 }
 
 template<class T>
-T rsPolynomial<T>::discriminant(T d, T c, T b, T a)
+T rsPolynomial<T>::cubicDiscriminant(T d, T c, T b, T a)
 {
   return b*b*c*c - T(4)*(a*c*c*c + b*b*b*d) - T(27)*a*a*d*d + T(18)*a*b*c*d;
 }

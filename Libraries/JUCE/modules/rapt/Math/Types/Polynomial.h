@@ -196,21 +196,19 @@ public:
 
   /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
   \f[ x_0 = -\frac{b}{a} \f] */
-  static T getRootOfLinearEquation(T a, T b);
-    // rename to rootLinear
+  static T rootLinear(T a, T b);
 
   /** Computes the two roots of the quadratic equation: \f[ a x^2 + b x + c = 0 \f] which are
   given by: \f[ x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a} \f] and stores the result in two-element
   array which is returned. When the qudratic is degenerate (i.e, a == 0), it will fall back to the
-  getRootsOfLinearEquation() function, and return a one-element array.  */
-  static std::vector<std::complex<T>> getRootsOfQuadraticEquation(T a, T b, T c);
+  rootsLinear() function, and return a one-element array.  */
+  static std::vector<std::complex<T>> rootsQuadratic(T a, T b, T c);
 
   /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] and
   stores the result in the three-element array which is returned. When the cubic is degenerate
   (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and return a
   two-element array (or a one-element array, when b is also zero). */
-  static std::vector<std::complex<T>> getRootsOfCubicEquation(T a, T b, T c, 
-    T d);
+  static std::vector<std::complex<T>> rootsCubic(T a, T b, T c, T d);
 
 
   /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and 
@@ -227,7 +225,9 @@ public:
   /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f]. 
   D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide, 
   D < 0: 1 real root and 2 complex conjugate roots */
-  static T discriminant(T a0, T a1, T a2, T a3);
+  static T cubicDiscriminant(T a0, T a1, T a2, T a3);
+
+  // todo: wite function quadraticDiscriminant
 
   static void rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2, 
     std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3);
