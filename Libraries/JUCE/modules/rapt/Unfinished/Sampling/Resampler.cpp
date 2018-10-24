@@ -199,8 +199,8 @@ T rsZeroCrossingFinder::upwardCrossingFrac(T *x, int N, int n, int p)
     // refine linear zero estimate by Newton iteration on a higher order interpolating
     // polynomial using the zero of the linear interpolant as initial guess:
     T *a = new T[2*p+2];   // polynomial coefficients for interpolant (maybe use a static array)
-    rsPolynomial<T>::rsInterpolatingPolynomial(a, -q, 1, &x[n-q], 2*q+2);
-    f = rsPolynomial<T>::getRootNear(f, a, 2*q+1, 0.0, 1.0);
+    rsPolynomial<T>::interpolant(a, -q, 1, &x[n-q], 2*q+2);
+    f = rsPolynomial<T>::rootNear(f, a, 2*q+1, 0.0, 1.0);
     delete[] a;
   }
   return f;

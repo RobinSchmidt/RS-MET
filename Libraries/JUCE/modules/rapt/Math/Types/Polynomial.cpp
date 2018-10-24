@@ -192,7 +192,7 @@ void rsPolynomial<T>::compose(T *a, int aN, T *b, int bN, T *c)
 }
 
 template <class T>
-void rsPolynomial<T>::rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2)
+void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2)
 {
   rsAssert(order >= 2);
   int n = order;
@@ -682,39 +682,31 @@ void rsPolynomial<T>::rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, 
 }
 
 template<class T>
-T rsPolynomial<T>::getCubicRootNear(T x, T a, T b, T c, T d,
-                                T min, T max, int maxIterations)
+T rsPolynomial<T>::cubicRootNear(T x, T a, T b, T c, T d, T min, T max, int maxIterations)
 {
-  T f, df, xNew;
-
-  f    = ((a*x+b)*x+c)*x+d;
-  df   = (T(3)*a*x+T(2)*b)*x+c;
-  xNew = x - f/df;
+  T f    = ((a*x+b)*x+c)*x+d;
+  T df   = (T(3)*a*x+T(2)*b)*x+c;
+  T xNew = x - f/df;
   int i = 1;
-  while( xNew != x && i < maxIterations )
-  {
+  while( xNew != x && i < maxIterations ) {
     x    = xNew;
     f    = ((a*x+b)*x+c)*x+d;
     df   = (T(3)*a*x+T(2)*b)*x+c;
     xNew = x - f/df;
     i++;
   }
-
   return rsClip(xNew, min, max);
-  //return rsClipToRange(xNew, min, max);
 }
 
 template<class T>
-T rsPolynomial<T>::getRootNear(T x, T *a, int order, T min, T max,
-                          int maxIterations)
+T rsPolynomial<T>::rootNear(T x, T *a, int order, T min, T max, int maxIterations)
 {
   // Newton/Raphson iteration:
   T f, df, xNew;
   evaluateWithDerivative(x, a, order, &f, &df);
   xNew  = x - f/df;
   int i = 1;
-  while( xNew != x && i < maxIterations )
-  {
+  while( xNew != x && i < maxIterations ) {
     x    = xNew;
     evaluateWithDerivative(x, a, order, &f, &df);
     xNew = x - f/df;
@@ -745,7 +737,7 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy
 }
 
 template<class T>
-void rsPolynomial<T>::rsCubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy)
+void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy)
 {
   a[0] = y[0];
   a[1] = dy[0];
@@ -754,7 +746,7 @@ void rsPolynomial<T>::rsCubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy)
 }
 
 template<class T>
-void rsPolynomial<T>::rsCubicCoeffsFourPoints(T *a, T *y)
+void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, T *y)
 {
   a[0] = y[0];
   a[2] = T(0.5)*(y[-1]+y[1]-2*a[0]);
@@ -763,7 +755,7 @@ void rsPolynomial<T>::rsCubicCoeffsFourPoints(T *a, T *y)
 }
 
 template<class T>
-T** rsPolynomial<T>::rsVandermondeMatrix(T *x, int N)
+T** rsPolynomial<T>::vandermondeMatrix(T *x, int N)
 {
   T **A;
   rsArray::allocateSquareArray2D(A, N);
@@ -781,9 +773,9 @@ T** rsPolynomial<T>::rsVandermondeMatrix(T *x, int N)
 }
 
 template<class T>
-void rsPolynomial<T>::rsInterpolatingPolynomial(T *a, T *x, T *y, int N)
+void rsPolynomial<T>::interpolant(T *a, T *x, T *y, int N)
 {
-  T **A = rsVandermondeMatrix(x, N);
+  T **A = vandermondeMatrix(x, N);
   rsLinearAlgebra::rsSolveLinearSystem(A, a, y, N);
   rsArray::deAllocateSquareArray2D(A, N);
 
@@ -798,12 +790,12 @@ void rsPolynomial<T>::rsInterpolatingPolynomial(T *a, T *x, T *y, int N)
 }
 
 template<class T>
-void rsPolynomial<T>::rsInterpolatingPolynomial(T *a, T x0, T dx, T *y, int N)
+void rsPolynomial<T>::interpolant(T *a, T x0, T dx, T *y, int N)
 {
   T *x = new T[N];
   for(int n = 0; n < N; n++)
     x[n] = x0 + n*dx;
-  rsInterpolatingPolynomial(a, x, y, N);
+  interpolant(a, x, y, N);
   delete[] x;
 }
 
@@ -915,13 +907,11 @@ void rsPolynomial<T>::besselPolynomial(T *a, int order)
 template<class T>
 void rsPolynomial<T>::legendrePolynomial(T *a, int order)
 {
-  if(order == 0)
-  {
+  if(order == 0) {
     a[0] = 1.0;
     return;
   }
-  if(order == 1)
-  {
+  if(order == 1) {
     a[0] = 0.0;
     a[1] = 1.0;
     return;
@@ -937,26 +927,21 @@ void rsPolynomial<T>::legendrePolynomial(T *a, int order)
   T *b1 = new T [order+1];
   T *b2 = new T [order+1];
 
-  for(i = 0; i <= order; i++)
-  {
+  for(i = 0; i <= order; i++) {
     b1[i] = b2[i] = 0.0;
   }
   b2[1] = 1.0;
 
-  for(i = 3; i <= order; i++)
-  {
-    for(j = 0; j <= i; j++)
-    {
+  for(i = 3; i <= order; i++) {
+    for(j = 0; j <= i; j++) {
       b1[j] = b2[j];
       b2[j] = a[j];
       a[j]  = 0.0;
     }
-    for(j = i-2; j >= 0; j-=2)
-    {
+    for(j = i-2; j >= 0; j-=2) {
       a[j] -= (i-1)*b1[j]/i;
     }
-    for(j = i-1; j >= 0; j-=2)
-    {
+    for(j = i-1; j >= 0; j-=2) {
       a[j+1] += (2*i-1)*b2[j]/i;
     }
   }
@@ -965,7 +950,7 @@ void rsPolynomial<T>::legendrePolynomial(T *a, int order)
 }
 
 template<class T>
-void rsPolynomial<T>::rsJacobiPolynomialRecursionCoeffs(int n, T a, T b, T *w0, T *w1,
+void rsPolynomial<T>::jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1,
   T *w1x, T *w2)
 {
   T k = 2*n+a+b;
@@ -977,7 +962,7 @@ void rsPolynomial<T>::rsJacobiPolynomialRecursionCoeffs(int n, T a, T b, T *w0, 
 }
 
 template<class T>
-void rsPolynomial<T>::rsJacobiPolynomialRecursion(T *c, int n, T *c1, T *c2, T a, T b)
+void rsPolynomial<T>::jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b)
 {
   // initialization:
   if( n == 0 )
@@ -994,19 +979,19 @@ void rsPolynomial<T>::rsJacobiPolynomialRecursion(T *c, int n, T *c1, T *c2, T a
 
   // recursion:
   T w0, w1, w1x, w2;
-  rsJacobiPolynomialRecursionCoeffs(n, a, b, &w0, &w1, &w1x, &w2);
-  rsPolynomialRecursion(c, w0, n, c1, w1, w1x, c2, w2);
+  jacobiRecursionCoeffs(n, a, b, &w0, &w1, &w1x, &w2);
+  threeTermRecursion(c, w0, n, c1, w1, w1x, c2, w2);
 }
 
 template<class T>
-void rsPolynomial<T>::rsJacobiPolynomials(T **c, T a, T b, int maxOrder)
+void rsPolynomial<T>::jacobiPolynomials(T **c, T a, T b, int maxOrder)
 {
   for(int n = 0; n <= maxOrder; n++)
-    rsJacobiPolynomialRecursion(c[n], n, c[n-1], c[n-2], a, b);
+    jacobiRecursion(c[n], n, c[n-1], c[n-2], a, b);
 }
 
 template<class T>
-void rsPolynomial<T>::rsLegendrePolynomialRecursion(T *a, int n, T *a1, T *a2)
+void rsPolynomial<T>::legendreRecursion(T *a, int n, T *a1, T *a2)
 {
   if( n == 0 )
   {
@@ -1019,14 +1004,14 @@ void rsPolynomial<T>::rsLegendrePolynomialRecursion(T *a, int n, T *a1, T *a2)
     a[1] = 1.0;
     return;
   }
-  rsPolynomialRecursion(a, T(n), n, a1, 0.0, T(2)*n-T(1), a2, -(n-T(1)));
+  threeTermRecursion(a, T(n), n, a1, 0.0, T(2)*n-T(1), a2, -(n-T(1)));
 
   // Legendre polynomials are a special case of Jacobi polynomials, so this would also work:
-  // rsJacobiPolynomialRecursion(a, n, a1, a2, 0.0, 0.0);
+  // jacobiRecursion(a, n, a1, a2, 0.0, 0.0);
 }
 
 template<class T>
-void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
+void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
 {
   T *a,*p,*s,*v,c0,c1;
   int i,j,k;
@@ -1258,6 +1243,8 @@ maybe for testing, it will be convenient to use polynomials and rational functio
 coefficients -> make a rational number class (using unsigned integers for numerator and denominator
 and a bool for the negaive sign)..the (unsigned) integer class could also be a template parameter, 
 so we may use rsBigInteger
+...rational numbers could be constructed from floating point numbers by computing their continued
+fraction expansion
 
 */
 

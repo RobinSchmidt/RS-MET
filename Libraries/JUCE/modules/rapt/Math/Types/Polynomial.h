@@ -247,8 +247,7 @@ public:
   the arguments min and max give upper and lower bounds for the root (which will be returned in
   cases where the iteration diverges, which the caller should avoid in the first place) and
   maxIterations gives the maximum number of iteration steps. */
-  static T getCubicRootNear(T x, T a, T b, T c, T d, T min,
-    T max, int maxIterations = 10);
+  static T cubicRootNear(T x, T a, T b, T c, T d, T min, T max, int maxIterations = 10);
 
   /** Iteratively improves an initial estimate for the root of the polynomial equation:
   \f[ a[order] x^order + ... + a[1] x + a[0] = 0   \f]
@@ -257,8 +256,7 @@ public:
   the arguments min and max give upper and lower bounds for the root (which will be returned in
   cases where the iteration diverges, which you should avoid in the first place) and maxIterations
   gives the maximum number of iteration steps. */
-  static T getRootNear(T x, T *a, int order, T min, T max,
-    int maxIterations = 32);
+  static T rootNear(T x, T *a, int order, T min, T max, int maxIterations = 32);
 
   /** Computes coefficients a[0], a[1], a[2], a[3] for the cubic polynomial that goes through the
   points (x[0], y[0]) and (x[1], y[1]) and has first derivatives of dy[0] and dy[1] at these points
@@ -268,33 +266,33 @@ public:
   /** Simplified version of
   cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy)
   which assumes that x[0] = 0, x[1] = 1 - so we don't need to actually pass the x-array. */
-  static void rsCubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy);
+  static void cubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy);
 
   // \todo void cubicCoeffsFourPoints(T *a, T *x, T *y);
 
   /** Computes coefficients a[0], a[1], a[2], a[3] for the cubic polynomial that goes through the
   points (-1, y[-1]), (0, y[0]), (1, y[1]), (2, y[2]). NOTE, that the y-array is accessed at values
   y[-1]...y[2] - the caller should make sure, these values exist. */
-  static void rsCubicCoeffsFourPoints(T *a, T *y);
+  static void cubicCoeffsFourPoints(T *a, T *y);
 
   /** Allocates and fills an NxN matrix A wher A[i][j] are given by x[i]^j. The caller is
   responsible for deallocation. So it's used like:
   T **A = rsVandermondeMatrix(x, N);
   // ...do stuff with matrix A
   rsDeAllocateSquareArray2D(A, N);  */
-  static T** rsVandermondeMatrix(T *x, int N);
+  static T** vandermondeMatrix(T *x, int N);
     // move to rsMatrix
 
   /** Computes coefficients a[0],..., a[N-1] for a polynomial of order N-1 that goes through the N
   data points (x[0], y[0]),...,(x[N-1], y[N-1]). */
-  static void rsInterpolatingPolynomial(T *a, T *x, T *y, int N);
+  static void interpolant(T *a, T *x, T *y, int N);
     // maybe move to Interplation
 
   /** Like rsInterpolatingPolynomial(T *a, T *x, T *y, int N), but instead of
   passing an x-array, you should pass a start value x0 and an increment dx and it will use x-values
   given by x0, x0+dx, x0+2*dx,...,x0+(N-1)*dx, so this function assumes equidisant abscissa
   values. */
-  static void rsInterpolatingPolynomial(T *a, T x0, T dx, T *y, int N);
+  static void interpolant(T *a, T x0, T dx, T *y, int N);
 
   // \todo void quinticCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy,
   //                                                 T *d2y);
@@ -336,7 +334,7 @@ public:
   w0, w1, w2 are the weighting coeffients of the linear 3-term recurrence relation. The pointer for
   result "a" may point to the same memory location as either of the input argument arrays "a1",
   "a2", so the function may be used in place. */
-  static void rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2);
+  static void threeTermRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2);
 
   /** Fills the array with coefficients for a Bessel-polynomial of given order. */
   static void besselPolynomial(T *a, int order);
@@ -350,14 +348,12 @@ public:
 
   /** Computes the recursion coefficients (as used in rsPolynomialRecursion) for the Jacobi
   polynomial of order n (n >= 2) with parameters a and b. */
-  static void rsJacobiPolynomialRecursionCoeffs(int n, T a, T b, T *w0,
-    T *w1, T *w1x, T *w2);
+  static void jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1, T *w1x, T *w2);
 
   /** Given the coefficients of the Jacobi polynomials of orders n-1 and n-2 in c1 and c2, this
   function computes the coefficients of the next Jacobi polynomial of order n by using the 3 term
   recurrence relation with parameters a and b. */
-  static void rsJacobiPolynomialRecursion(T *c, int n, T *c1, T *c2, T a,
-    T b);
+  static void jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b);
 
   /** Computes the coefficients of the Jacobi polynomials of orders up to maxOrder with parameters
   a and b (usually alpha and beta in formulas). The 2D array "c" will contain the coefficients on
@@ -366,12 +362,10 @@ public:
   array of length 1 , the 2nd of length 2, etc. where the last one should have length
   maxOrder+1 (same as the outer). You may also use a square matrix for convenience - then unused
   elements will not be touched in this case. */
-  static void rsJacobiPolynomials(T **c, T a, T b, int maxOrder);
-    // rename to jacobi
+  static void jacobiPolynomials(T **c, T a, T b, int maxOrder);
 
-  /** Analog to rsJacobiPolynomialRecursion */
-  static void rsLegendrePolynomialRecursion(T *a, int n, T *a1, T *a2);
-   // rename to legendreRecursion
+  /** Analog to jacobiRecursion */
+  static void legendreRecursion(T *a, int n, T *a1, T *a2);
 
   // todo: void chebychevPolynomial(T *a, int order);
 
@@ -379,9 +373,7 @@ public:
   p(0) = 0, p(1) = 1, p'(x) >= 0 for all x (monotonically increasing), p'(1) = maximum possible 
   when monotonicity is assumed. \todo: check if these properties are actually true. Such 
   polynomials are used in Papoulis filters. */
-  static void maximumSlopeMonotonicPolynomial(T *a, int N);
-    // rename to maxSlopeMonotonic
-
+  static void maxSlopeMonotonic(T *a, int N);
 
   // \todo for Halpern filters:
   //void jacobiPolynomial(T *a, int order); // the U-polynomials
@@ -401,6 +393,7 @@ public:
 
   rsPolynomial(int order = 0, bool initWithZeros = true);
 
+  rsPolynomial(const std::vector<T>& coefficients) : coeffs(coefficients) {}
 
   /** Returns the maximum order that this poloynomial may have which is the length of the 
   coefficient array minus one. When there are trailing zero coefficients, the actual degree of
@@ -412,15 +405,18 @@ public:
   // value - client code must be explicit
 
   /** Adds two polynomials */
-  rsPolynomial<T> operator+(const rsPolynomial<T>& q)
-  { 
+  rsPolynomial<T> operator+(const rsPolynomial<T>& q) { 
     rsPolynomial<T> r(rsMax(getMaxOrder(), q.getMaxOrder()), true);
-
-    // something to do
-
+    weightedSum(&coeffs[0], getMaxOrder(), T(1), &(q.coeffs[0]), q.getMaxOrder(), T(1), &r[0]);
     return r;
   }
 
+  /** Subtracts two polynomials */
+  rsPolynomial<T> operator-(const rsPolynomial<T>& q) { 
+    rsPolynomial<T> r(rsMax(getMaxOrder(), q.getMaxOrder()), true);
+    weightedSum(&coeffs[0], getMaxOrder(), T(1), &(q.coeffs[0]), q.getMaxOrder(), T(-1), &r[0]);
+    return r;
+  }
 
 
     // maybe we whould take into account the possibility of trailing zero coeffs?

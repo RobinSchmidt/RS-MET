@@ -5,12 +5,12 @@ void updateLegendrePolynomial(T **P, T *P1, T *P2, int r)
 {
   if( rsIsEven(r) )
   {
-    rsPolynomial<T>::rsLegendrePolynomialRecursion(P1, r, P2, P1);
+    rsPolynomial<T>::legendreRecursion(P1, r, P2, P1);
     *P = P1;
   }
   else
   {
-    rsPolynomial<T>::rsLegendrePolynomialRecursion(P2, r, P1, P2);
+    rsPolynomial<T>::legendreRecursion(P2, r, P1, P2);
     *P = P2;
   }
 }

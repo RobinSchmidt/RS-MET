@@ -225,7 +225,7 @@ namespace rosic
     // that polynomial via Newton-Raphson iteration, using the zero-crossing from the fitted line
     // as initial estimate ...and return that value:
     //return getCubicRootNear(fracLinear, a, b, c, d, 0.0, 1.0);
-    return RAPT::rsPolynomial<double>::getCubicRootNear(fracLinear, a, b, c, d, 0.0, 1.0);
+    return RAPT::rsPolynomial<double>::cubicRootNear(fracLinear, a, b, c, d, 0.0, 1.0);
   }
 
 }

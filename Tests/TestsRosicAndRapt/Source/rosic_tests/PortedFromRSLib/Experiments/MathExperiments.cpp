@@ -781,7 +781,7 @@ void monotonicPolynomials()
 // system.
 void rsPolyWithDerivativeValues(double *a, int N, double *x, double *yp, double shift = 0)
 {
-  double **A = RAPT::rsPolynomial<double>::rsVandermondeMatrix(x, N);
+  double **A = RAPT::rsPolynomial<double>::vandermondeMatrix(x, N);
   RAPT::rsArray::fillWithZeros(A[N-1], N-1);
   A[N-1][N-1] = 1;
   RAPT::rsLinearAlgebra::rsSolveLinearSystem(A, a, yp, N);
