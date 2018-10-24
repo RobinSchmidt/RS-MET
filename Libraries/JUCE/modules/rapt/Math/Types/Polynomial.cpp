@@ -1,9 +1,5 @@
-
-//-----------------------------------------------------------------------------------------------
-// template function definitions - move to .cpp-file:
-
 template <class T>
-T rsPolynomial<T>::evaluatePolynomialAt(T x, T *a, int order)
+T rsPolynomial<T>::evaluate(T x, T *a, int order)
 {
   if(order < 0)
     return T(0);
@@ -279,7 +275,7 @@ bool rsPolynomial<T>::rsPolynomialBaseChange(T **Q, T *a, T **R, T *b, int order
 //-----------------------------------------------------------------------------------------------
 
 template<class T>
-std::complex<T> rsPolynomial<T>::evaluatePolynomialWithRoots(std::complex<T> s,
+std::complex<T> rsPolynomial<T>::evaluateFromRoots(std::complex<T> s,
   std::complex<T> *r, int N)
 {
   std::complex<T> result = 1.0;

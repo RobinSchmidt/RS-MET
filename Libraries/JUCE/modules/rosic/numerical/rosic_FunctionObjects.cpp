@@ -246,7 +246,7 @@ void Polynomial::setCoefficients(const double* const newCoeffs)
 
 double Polynomial::getValueAt(double x)
 {
-  return RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, coeffs, order);
+  return RAPT::rsPolynomial<double>::evaluate(x, coeffs, order);
 }
 
 double Polynomial::getFirstDerivativeAt(double x)

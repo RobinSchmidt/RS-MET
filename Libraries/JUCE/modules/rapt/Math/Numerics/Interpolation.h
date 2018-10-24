@@ -269,7 +269,7 @@ void rsInterpolateSpline(Tx *x, Ty *y, Ty **yd, int N, int M, Tx *xi, Ty *yi, in
     scale = Tx(1) / scale;
     while(xi[i] < x[n+1] && i < Ni)
     {
-      yi[i] = rsPolynomial<Ty>::evaluatePolynomialAt(scale*(xi[i]-shift), a, 2*M+1);
+      yi[i] = rsPolynomial<Ty>::evaluate(scale*(xi[i]-shift), a, 2*M+1);
       i++;
     }
 
@@ -279,7 +279,7 @@ void rsInterpolateSpline(Tx *x, Ty *y, Ty **yd, int N, int M, Tx *xi, Ty *yi, in
   // extrapolate tail:
   while(i < Ni)
   {
-    yi[i] = rsPolynomial<Ty>::evaluatePolynomialAt(scale*(xi[i]-shift), a, 2*M+1);
+    yi[i] = rsPolynomial<Ty>::evaluate(scale*(xi[i]-shift), a, 2*M+1);
     i++;
   }
 

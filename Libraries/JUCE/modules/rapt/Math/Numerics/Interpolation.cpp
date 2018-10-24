@@ -219,7 +219,7 @@ T getDelayedSampleAsymmetricHermiteM(T d, T *y, int M, T shape)
 
   // evaluate:
   T x = 1.0 - d;
-  T result = rsPolynomial<T>::evaluatePolynomialAt(x, a, N);
+  T result = rsPolynomial<T>::evaluate(x, a, N);
 
   // cleanup and return result:
   delete[] y0;
@@ -425,7 +425,7 @@ void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
 
   // Evaluate the integrand at the given t-values and perform numeric integration:
   for(int n = 0; n < N; n++)
-    s[n] = sqrt(rsMax(T(0), PL::evaluatePolynomialAt(t[n], c, 4))); // write and use optimized evaluateQuartic
+    s[n] = sqrt(rsMax(T(0), PL::evaluate(t[n], c, 4))); // write and use optimized evaluateQuartic
   rsNumericIntegral(t, s, s, N); // integration works in place (we use s for integrand and integral)
 }
 // todo: make a 3D version (the only difference is that we have 3 polynomials x(t),y(t),z(t) that 

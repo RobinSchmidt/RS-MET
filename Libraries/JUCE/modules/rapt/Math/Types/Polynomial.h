@@ -16,16 +16,14 @@ public:
   /** \name Static functions for computing with coefficient arrays */
 
   /** Evaluates the polynomial defined by the array of roots "r" at argument "x". */
-  static std::complex<T> evaluatePolynomialWithRoots(std::complex<T> x, std::complex<T> *r,
-    int numRoots);
-  // rename to evaluateFromRoots
+  static std::complex<T> evaluateFromRoots(std::complex<T> x, 
+    std::complex<T> *roots, int numRoots);
 
   /** Evaluates the polynomial defined by the array of coefficients "a" at argument "x".  The array
   of coefficients must be of length order+1 and is interpreted as follows: a[0] is taken to be the
   constant term, a[1] is the multiplier for x^1, a[2] the multiplier for x^2 and so on until
   a[order] which is the multiplier for a^order. */
-  static T evaluatePolynomialAt(T x, T *a, int order);
-  // rename to evaluate
+  static T evaluate(T x, T *a, int order);
 
   static inline T evaluateCubic(T x, T* a)
   {
