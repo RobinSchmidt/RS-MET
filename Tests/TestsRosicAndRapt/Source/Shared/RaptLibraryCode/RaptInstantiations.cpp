@@ -299,7 +299,7 @@ template class RAPT::rsBreakpointModulator<float>;
 
 // Analysis:
 template class RAPT::rsAutoCorrelationPitchDetector<double>;
-template class RAPT::rsEnvelopeExtractor<double>;
+//template class RAPT::rsEnvelopeExtractor<double>;
 
 // Visualization:
 template class RAPT::rsImage<float>;
