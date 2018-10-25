@@ -1462,16 +1462,20 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
     v = rsInterpolateLinear(envTime2[0], envTime2[1], envValue2[0], envValue2[1], 0.0);
     rsPrepend(envTime2, 0.0);
     rsPrepend(envValue2, v);
+    //rsPrepend(envValue2, 0.0);
 
     int M = (int)envTime2.size()-1;
     v = rsInterpolateLinear(envTime2[M-1], envTime2[M], envValue2[M-1], envValue2[M], double(N));
 
     rsAppend(envTime2, double(N));
     rsAppend(envValue2, v);
+    //rsAppend(envValue2, 0.0);
   }
-  // maybe don't use zeros but linear exptrapolation - yes - looks better
+  // maybe don't use zeros but linear extrapolation - yes - looks better
   // ...but for production code we must include safety checks - envTime/Value2 may have less
   // than 2 elements, etc.
+
+  // maybe use natural cubic splines (those with the tridiagonal matrix)
 
   // get envelope signal by interpolating the peaks:
   Vec t(N);
@@ -1487,7 +1491,7 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
 
   // -maybe the bump can be avoided using a quartic interpolant
   // -and/or: let the env start at 0 and use a segement of lower order by not prescribing values
-  //  for the derivative(s) at 0, same at the end
+  //  for the derivative(s) at 0, same at the end, i.e. a quadratic
 
   // smoothing:
   //rsBiDirectionalFilter::applyLowpass(&env[0], &env[0], (int)env.size(), fc, fs, np);
@@ -1495,7 +1499,6 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   // to pass through the actual peaks
 }
 
-// this should be moved to the library
 template<class T>
 std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(T* x, int N, 
   bool includeFirst, bool includeLast)
@@ -1555,6 +1558,7 @@ void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
     size_t n = peakIndices[m];
     sampleTime[m] = (T) n;
     envValue[m]   = xAbs[n];
+    // todo: refine to subsample-precision
   }
 }
 

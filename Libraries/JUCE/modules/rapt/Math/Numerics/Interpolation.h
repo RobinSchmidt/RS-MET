@@ -102,6 +102,9 @@ returns the y-value corresponding to x by linearly interpolating between x1, x2.
 the range of x1, x2, the function will extrapolate. */
 template<class T>
 T rsInterpolateLinear(T x1, T x2, T y1, T y2, T x);
+// maybe change interface to x1, y1, x2, y2 to make it consistent with other functions
+// but this is a change that would silently break client code
+// hmm...but then rsInterpolateCubicHermite would also have to be changed
 
 /** Given two length N arrays x, y with x-axis values and corresponding y-axis values, this
 function fills the array yi with values corresponding to the xi by linear interpolation
