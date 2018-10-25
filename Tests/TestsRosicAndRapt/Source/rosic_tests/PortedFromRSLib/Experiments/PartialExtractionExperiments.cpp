@@ -366,7 +366,8 @@ void biDirectionalFilter()
 
 // this should be moved to the library
 template<class T>
-std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false, bool includeLast = false)
+std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false, 
+  bool includeLast = false)
 {
   std::vector<size_t> peaks;
 
