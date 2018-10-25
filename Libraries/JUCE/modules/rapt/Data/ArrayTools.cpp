@@ -74,7 +74,7 @@ void rsArray::allocateSquareArray2D(T**& theArray, int size)
 }
 
 template <class T>
-void rsArray::applyFunction(T *inBuffer, T *outBuffer, int length, T (*f) (T))
+void rsArray::applyFunction(const T *inBuffer, T *outBuffer, int length, T (*f) (T))
 {
   for(int i = 0; i < length; i++)
     outBuffer[i] = f(inBuffer[i]);

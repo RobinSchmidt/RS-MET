@@ -856,7 +856,8 @@ public:
     bool includeLast = false);
 
 
-  static void getAmpEnvelope(T* x, int N, std::vector<T>& sampleTime, std::vector<T>& envValue);
+  static void getAmpEnvelope(const T* x, int N, std::vector<T>& sampleTime, 
+    std::vector<T>& envValue);
 
   static void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
 

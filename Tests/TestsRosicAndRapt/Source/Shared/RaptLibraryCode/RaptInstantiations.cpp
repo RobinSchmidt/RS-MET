@@ -65,7 +65,7 @@ template double rsArray::mean(double *x, int length);
 template double rsArray::maxDeviation(double *buffer1, double *buffer2, int length);
 template int rsArray::maxDeviationIndex(float *buffer1, float *buffer2, int length);
 
-template void rsArray::applyFunction(double *x, double *y, int N, double (*f) (double));
+template void rsArray::applyFunction(const double *x, double *y, int N, double (*f) (double));
 template void rsArray::negate(double *source, double *destination, int length);
 template void rsArray::filter(double *x, int xLength, double *y, int yLength,
   double *b, int bOrder, double *a, int aOrder);

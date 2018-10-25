@@ -50,7 +50,7 @@ public:
   /** Applies the function f given by the function-pointer to all elements in inBuffer and stores
   the result in outBuffer (both buffers may be equal). */
   template <class T>
-  static void applyFunction(T *inBuffer, T *outBuffer, int length, T (*f) (T));
+  static void applyFunction(const T* inBuffer, T* outBuffer, int length, T (*f) (T));
 
   /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
   template <class T>

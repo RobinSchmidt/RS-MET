@@ -393,68 +393,21 @@ void envelopeDeBeating()
   typedef std::vector<double> Vec;
 
   // create signal and estimate envelope:
-  Vec x(N);
+  Vec x(N), env(N);
   getImpulseResponse(mfb, &x[0], N);
   //rsSineEnvelopeViaQuadrature(&x[0], &env[0], N, (f1+f2)/2, fs, 2.0);
    // todo: maybe use instantaneous envelope algorithm
 
-  typedef RAPT::rsEnvelopeExtractor<double> EE;
 
-  Vec envTime, envValue;
-  EE::getAmpEnvelope(&x[0], N, envTime, envValue);
-
-  Vec envTime2, envValue2;
-  EE::getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
-
-  // add zeros to start and end of the array:
-  bool extrapolateEnds = true;
-  if(extrapolateEnds == true)
-  {
-    double v; 
-    v = RAPT::rsInterpolateLinear(envTime2[0], envTime2[1], envValue2[0], envValue2[1], 0.0);
-    RAPT::rsPrepend(envTime2, 0.0);
-    RAPT::rsPrepend(envValue2, v);
-
-    int M = (int)envTime2.size()-1;
-    v = RAPT::rsInterpolateLinear(envTime2[M-1], envTime2[M], envValue2[M-1], envValue2[M], double(N));
-
-    RAPT::rsAppend(envTime2, double(N));
-    RAPT::rsAppend(envValue2, v);
-  }
-  // maybe don't use zeros but linear exptrapolation - yes - looks better
-  // ...but for production code we must include safety checks - envTime/Value2 may have less
-  // than 2 elements, etc.
-
-  // get envelope signal by interpolating the peaks:
-  Vec t(N), env(N);
-  RAPT::rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
-  typedef RAPT::rsInterpolatingFunction<double, double> IF;
-  IF intFunc;
-  //intFunc.setMode(IF::LINEAR);
-  intFunc.setMode(IF::CUBIC);
-  //intFunc.setPreMap( &log);
-  //intFunc.setPostMap(&exp);
-  intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime.size(), 
-    &t[0], &env[0], (int)t.size());
-
-  // -maybe the bump can be avoided using a quartic interpolant
-  // -and/or: let the env start at 0 and use a segement of lower order by not prescribing values
-  //  for the derivative(s) at 0, same at the end
-
-  // smoothing:
-  //rsBiDirectionalFilter::applyLowpass(&env[0], &env[0], (int)env.size(), fc, fs, np);
-  // maybe instead of a filter, use an attack/release slew-rate limiter with zero attack in order
-  // to pass through the actual peaks
+  RAPT::rsEnvelopeExtractor<double>::sineEnvelopeWithDeBeating(&x[0], N, &env[0]);
 
   // plot:
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
   plt.addDataArrays(N, &env[0]);
-  plt.addDataArrays((int)envTime.size(),  &envTime[0],  &envValue[0]);
+  //plt.addDataArrays((int)envTime.size(),  &envTime[0],  &envValue[0]);
   //plt.addDataArrays((int)envTime2.size(), &envTime2[0], &envValue2[0]);
   plt.plot();
-
-
 
   // de-beat:
   // ideas:
