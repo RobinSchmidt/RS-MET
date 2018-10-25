@@ -830,6 +830,46 @@ protected:
 
 };
 
+//===============================================================================================
+
+template<class T>
+class rsEnvelopeExtractor
+{
+
+public:
+
+  //void setInterpolationMode(int newMode);
+  // linear, cubic
+
+  void extractEnvelope(const T* input, int length, T* envelope);
+
+
+  // convenience functions using settings suitable for various use cases:
+
+  /** Function suitable for extracting the envelope of an extracted partial.. */
+  static void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
+
+  // internal functions
+
+  // maybe move to rsArray:
+  static std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false,
+    bool includeLast = false);
+
+
+  static void getAmpEnvelope(T* x, int N, std::vector<T>& sampleTime, std::vector<T>& envValue);
+
+  static void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
+
+
+
+protected:
+
+
+
+
+  int mode = 0;
+
+};
 
 //===============================================================================================
 // move to AudioFunctions or maybe some sort of SinusoidalAnalysis/Modeling/Resynthesis class

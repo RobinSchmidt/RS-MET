@@ -1438,6 +1438,100 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 //=================================================================================================
 
 template<class T>
+void rsEnvelopeExtractor<T>::extractEnvelope(const T* x, int N, T* env)
+{
+
+}
+
+template<class T>
+void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env)
+{
+
+}
+
+// this should be moved to the library
+template<class T>
+std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(T* x, int N, 
+  bool includeFirst, bool includeLast)
+{
+  std::vector<size_t> peaks;
+
+  if(N == 0)
+    return peaks;
+
+  if(includeFirst){
+    if(N > 1) {
+      if(x[0] >= x[1])
+        peaks.push_back(0);
+    }
+    else
+      peaks.push_back(0); // the one and only element is a "peak"
+  }
+
+  for(size_t n = 1; n < N-1; n++) {
+    if( RAPT::rsArray::isPeakOrPlateau(x, (int)n) )
+      peaks.push_back(n);
+  }
+
+  if(includeLast){
+    if(N > 1) {
+      if(x[N-1] >= x[N-2])
+        peaks.push_back(N-1);
+    }
+  }
+
+  return peaks;
+}
+// what about situations where there are several values of the same height, like
+// 0 1 2 2 2 1 0 1 3 3 2 1 2 1
+//       *          *      *    desired peaks
+// ...actually, it seems like quadratic interpolation using 3 points seems unfair/asymmetric 
+// - probably it's better to use cubic interpolation and use two points to the left and two
+// to the right to find the actual peak location
+// or use >= as condition, then we would get
+// 0 1 2 2 2 1 0 1 3 3 2 1 2 1
+//     * * *       * *     *  
+// seems better for envelope extraction
+
+template<class T>
+void rsEnvelopeExtractor<T>::getAmpEnvelope(T* x, int N, 
+  std::vector<T>& sampleTime, std::vector<T>& envValue)
+{
+  std::vector<T> xAbs(N);
+  RAPT::rsArray::applyFunction(&x[0], &xAbs[0], N, fabs);                  // absolute value
+  std::vector<size_t> peakIndices = findPeakIndices(&xAbs[0], N, true, true); // peak indices
+
+  // peak coordinates:
+  size_t M = peakIndices.size();
+  sampleTime.resize(M); 
+  envValue.resize(M);
+  for(size_t m = 0; m < M; m++) {
+    size_t n = peakIndices[m];
+    sampleTime[m] = (T) n;
+    envValue[m]   = xAbs[n];
+  }
+}
+
+template<class T>
+void rsEnvelopeExtractor<T>::getPeaks(T *x, T *y, int N, 
+  std::vector<T>& peaksX, std::vector<T>& peaksY)
+{
+  std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);
+  size_t M = peakIndices.size();
+  peaksX.resize(M); 
+  peaksY.resize(M);
+  for(size_t m = 0; m < M; m++) {
+    size_t n = peakIndices[m];
+    peaksX[m] = x[n];
+    peaksY[m] = y[n];
+    // todo: refine to subsample-precision
+  }
+}
+
+
+//=================================================================================================
+
+template<class T>
 void rsSineQuadraturePart(T *x, T *y, int N, T f, T fs, bool backward)
 {
   rsOnePoleFilter<T,T> flt;
