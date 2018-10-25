@@ -108,7 +108,7 @@ public:
   sequence with the convolution product of the sequence with some other sequence or even with
   itself (such as when squaring polynomials). */
   template <class T>
-  static void convolve(T *x, int xLength, T *h, int hLength, T *y);
+  static void convolve(const T *x, int xLength, const T *h, int hLength, T *y);
 
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>

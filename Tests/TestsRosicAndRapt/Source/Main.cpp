@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 {
 
   // tempoarary throw-away-code:
-  testCrossoverNewVsOld();
+  //testCrossoverNewVsOld();
 
   //===============================================================================================
   // RAPT tests:
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+  //runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
   // just for fun:
   //groupString();
   //primeAlternatingSums();
-  divisibility();
+  //divisibility();
 
 
   //===============================================================================================
@@ -297,7 +297,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-// envelopeDeBeating();
+  envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
   //partialExtractionTriple();

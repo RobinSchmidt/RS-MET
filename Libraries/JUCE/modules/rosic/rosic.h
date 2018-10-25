@@ -385,6 +385,7 @@
 #include "unfinished/rosic_QuadSource.h"
 #include "unfinished/rosic_DualFilter.h"
 #include "unfinished/rosic_NewSynth.h"
+#include "unfinished/rosic_MiscUnfinished.h"
 
 
 // restore warning level in msvc:

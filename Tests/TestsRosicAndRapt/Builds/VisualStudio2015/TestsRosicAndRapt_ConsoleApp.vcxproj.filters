@@ -2416,6 +2416,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_EllipseOscillator.cpp">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_MiscUnfinished.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.cpp">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
@@ -4708,6 +4711,9 @@
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_EllipseOscillator.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_MiscUnfinished.h">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.h">

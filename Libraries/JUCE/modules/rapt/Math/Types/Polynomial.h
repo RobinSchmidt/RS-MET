@@ -22,7 +22,7 @@ public:
   a[order] which is the multiplier for a^order. */
   static T evaluate(T x, T *a, int order);
 
-  static inline T evaluateCubic(T x, T* a)
+  static inline T evaluateCubic(T x, const T* a)
   {
     return a[0] + (a[1] + (a[2] + a[3]*x)*x)*x;
     //T x2 = x*x;
@@ -46,7 +46,7 @@ public:
   the coefficient vector should have allocated space for
   (aOrder+1)+(bOrder+1)-1 = aOrder+bOrder+1 = aLength+bLength-1 elements.
   Can work in place, i.e. result may point to the same array as a and/or b.   */
-  static void multiply(T *a, int aOrder, T *b, int bOrder, T *result)
+  static void multiply(const T *a, int aOrder, const T *b, int bOrder, T *result)
   {
     rsArray::convolve(a, aOrder+1, b, bOrder+1, result);
   }
@@ -398,7 +398,9 @@ public:
   /** Returns the maximum order that this poloynomial may have which is the length of the
   coefficient array minus one. When there are trailing zero coefficients, the actual degree of
   the polynomial is lower. */
-  int getMaxOrder() const { return (int)coeffs.size()-1; }
+  int getMaxOrder() const { return (int)coeffs.size()-1; } // maybe deprecate this
+
+  int getDegree() const { return (int)coeffs.size()-1; }
   // int getOrder()
   // should take into account traling zeros ..or maybe have a boolean flag
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
@@ -406,22 +408,36 @@ public:
 
   /** Adds two polynomials */
   rsPolynomial<T> operator+(const rsPolynomial<T>& q) {
-    rsPolynomial<T> r(rsMax(getMaxOrder(), q.getMaxOrder()), true);
-    weightedSum(  coeffs.data(),   getMaxOrder(), T(1), 
-                q.coeffs.data(), q.getMaxOrder(), T(1), 
+    rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
+    weightedSum(  coeffs.data(),   getDegree(), T(1), 
+                q.coeffs.data(), q.getDegree(), T(1), 
                 r.coeffs.data());
     return r;
   }
 
   /** Subtracts two polynomials */
   rsPolynomial<T> operator-(const rsPolynomial<T>& q) {
-    rsPolynomial<T> r(rsMax(getMaxOrder(), q.getMaxOrder()), true);
-    weightedSum(  coeffs.data(),   getMaxOrder(), T(+1), 
-                q.coeffs.data(), q.getMaxOrder(), T(-1), 
+    rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
+    weightedSum(  coeffs.data(),   getDegree(), T(+1), 
+                q.coeffs.data(), q.getDegree(), T(-1), 
                 r.coeffs.data());
     return r;
   }
 
+  /** Multiplies two polynomials */
+  rsPolynomial<T> operator*(const rsPolynomial<T>& q) {
+    rsPolynomial<T> r(getDegree() + q.getDegree() + 1, false);
+    multiply(coeffs.data(), getDegree(), q.coeffs.data(), q.getDegree(), r.coeffs.data());
+    return r;
+  }
+
+  // divide - how to deal with the trailing zeros in quotient and/or remainder? should we cut them
+  // off...if so, what should be the numerical threshold?
+  // maybe we should also cutoff in add/subtract, if the trailing coeffs happen to add/subtract to
+  // zero? what about multiplication (i.e. convolution) - can trailing zeros happen there, too - or
+  // is that impossible? ...maybe try to get a zero with two very low (1st) order polynomials
+  // no - it can't happen - the highest power coeff is always the product of the two highest power
+  // coeffs of the input polynomials - and if they are assumed to be nonzero, so is their product
 
     // maybe we whould take into account the possibility of trailing zero coeffs?
     // maybe have two functions: degreeMax,
@@ -437,6 +453,10 @@ protected:
 // todo: implement a function that determines the number of real roots of a polynomial in an
 // interval by means of Sturmian sequences (see Einführung in die computerorientierte Mathematik
 // mit Sage, p.163ff)
+
+// make all the functions const correct
+
+// todo: implement polynomial GCD (i.e. adapt the integer gcd for polynomials)
 
 // \todo: implement differentiation and integration, make a class, implement some algos for
 // rational functions (partial fraction expansion, differentiation, integration)
