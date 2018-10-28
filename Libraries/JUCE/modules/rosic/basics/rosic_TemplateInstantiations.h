@@ -98,8 +98,7 @@ typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundame
 typedef RAPT::rsCycleMarkFinder<double> rsCycleMarkFinderD;
 typedef RAPT::rsVariableSpeedPlayer<double, double> rsVariableSpeedPlayerDD;
 typedef RAPT::rsPhaseLockedCrossfader<double, double>  rsPhaseLockedCrossfaderDD;
-
-
+typedef RAPT::rsEnvelopeExtractor<double> rsEnvelopeExtractorD;
 
 class rsOnePoleFilterStereo : public RAPT::rsOnePoleFilter<rsFloat64x2, double>
 {

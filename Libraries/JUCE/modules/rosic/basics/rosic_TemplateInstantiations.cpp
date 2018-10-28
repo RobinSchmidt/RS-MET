@@ -187,3 +187,4 @@ template class RAPT::rsTimeWarper<double, double>;
 template class RAPT::rsCycleMarkFinder<double>;
 template class RAPT::rsVariableSpeedPlayer<double, double>;
 template class RAPT::rsPhaseLockedCrossfader<double, double>;
+template class RAPT::rsEnvelopeExtractor<double>;

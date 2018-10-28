@@ -1013,6 +1013,10 @@ namespace RAPT
       buffer[i] -= m;
   }
 
+
+
+
+
   template <class T>
   void reverse(T *buffer, int length)
   {
@@ -1033,6 +1037,12 @@ namespace RAPT
     for(int i = length-1; i >= numPlaces; i--)
       buffer[i] = buffer[i-numPlaces];
     fillWithZeros(buffer, numPlaces);
+  }
+
+  template<class T>
+  T rsRootMeanSquare(T *x, int N)
+  {
+    return sqrt(rsSumOfSquares(x, N) / N);
   }
 
   template <class T1, class T2>
@@ -1091,7 +1101,7 @@ namespace RAPT
   template <class T>
   T rsSum(T *buffer, int length)
   {
-    T accu = T(0); // constructor call with 0 should initilizes to additive neutral element
+    T accu = T(0); // constructor call with 0 should initialize to additive neutral element
     for(int n = 0; n < length; n++)
       accu += buffer[n];
     return accu;

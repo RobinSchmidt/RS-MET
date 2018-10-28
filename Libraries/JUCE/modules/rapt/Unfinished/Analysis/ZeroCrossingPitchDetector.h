@@ -225,7 +225,7 @@ RS_INLINE T rsZeroCrossingPitchDetector<T>::getFractionalPartOfZeroCrossing()
   // with these coefficients for a cubic polynomial, we now compute the zero-crossing (root) of 
   // that polynomial via Newton-Raphson iteration, using the zero-crossing from the fitted line
   // as initial estimate ...and return that value:
-  return rsPolynomial<T>::getCubicRootNear(fracLinear, a, b, c, d, 0.0, 1.0);
+  return rsPolynomial<T>::cubicRootNear(fracLinear, a, b, c, d, 0.0, 1.0);
 }
 
 #endif

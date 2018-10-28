@@ -4,9 +4,13 @@
 //using namespace RSCore;
 
 // create some arrays for the time-axis and the 3 time series created by the system:
-static const int maxNumDimenstions = 3;
+namespace rsTestODE
+{
+static const int maxNumDimensions = 3;
 static const int numValues         = 1000;
-double x[numValues], y[maxNumDimenstions][numValues], error[maxNumDimenstions][numValues];
+double x[numValues], y[maxNumDimensions][numValues], error[maxNumDimensions][numValues];
+}
+using namespace rsTestODE;
 
 class rsLorentzSystem : public rsDifferentialEquationSystemDbl
 {

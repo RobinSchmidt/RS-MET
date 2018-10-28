@@ -50,7 +50,7 @@ public:
   /** Applies the function f given by the function-pointer to all elements in inBuffer and stores
   the result in outBuffer (both buffers may be equal). */
   template <class T>
-  static void applyFunction(T *inBuffer, T *outBuffer, int length, T (*f) (T));
+  static void applyFunction(const T* inBuffer, T* outBuffer, int length, T (*f) (T));
 
   /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
   template <class T>
@@ -108,7 +108,7 @@ public:
   sequence with the convolution product of the sequence with some other sequence or even with
   itself (such as when squaring polynomials). */
   template <class T>
-  static void convolve(T *x, int xLength, T *h, int hLength, T *y);
+  static void convolve(const T *x, int xLength, const T *h, int hLength, T *y);
 
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>
@@ -396,6 +396,10 @@ public:
   template <class T>
   static T meanDifference(const T* buffer, int length);
 
+  /** Returns the mean of the squares of the values in the array. */
+  template<class T>
+  static T meanSquare(const T *x, int N);
+
   /** Returns the median of the passed buffer. */
   template <class T>
   static T median(T *buffer, int length);
@@ -466,6 +470,10 @@ public:
   template <class T>
   static void rightShift(T *buffer, int length, int numPlaces);
 
+  /** Returns the square-root of mean of the squares (RMS value) of the values in the array. */
+  template<class T>
+  static T rootMeanSquare(const T *x, int N) { return rsSqrt(meanSquare(x, N)); }
+
   /** Scales the buffer by a constant factor. */
   template <class T1, class T2>
   static void scale(T1 *buffer, int length, T2 scaleFactor);
@@ -514,12 +522,12 @@ public:
   /** Given two arrays x and y of lengths N, this function computes the sum of the products 
   x[i]*y[i] where i runs from 0 to N-1. */
   template<class T>
-  static T sumOfProducts(T *x, T *y, int N);
+  static T sumOfProducts(const T *x, const T *y, int N);
 
   /** Given an array x of length N, this function commputes the sum of the squares of the values
   in x. */
   template<class T>
-  static T sumOfSquares(T *x, int N);
+  static T sumOfSquares(const T *x, int N);
 
   /** Swaps the contents of of buffer1 and buffer2 using an auxiliary buffer bufferTmp. All buffers
   are assumed to have a size of sizeInBytes. */

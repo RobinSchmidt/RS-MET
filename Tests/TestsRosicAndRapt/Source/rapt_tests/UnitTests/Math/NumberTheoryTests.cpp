@@ -84,6 +84,17 @@ bool testPrimeTableGeneration(std::string &reportString)
   return testResult;
 }
 
+// reconstructs a numkber from its prime factorization (which can be obtained by rsPrimeFactors) 
+// ...maybe move to RAPT library:
+rsUint32 rsPrimeProduct(std::vector<rsUint32>& factors, std::vector<rsUint32>& exponents)
+{
+  rsAssert(factors.size() == exponents.size());
+  rsUint32 r = 1;
+  for(size_t i = 0; i < factors.size(); i++)
+    r *= rsPowInt(factors[i], exponents[i]); // todo: switch algo for rsPowInt...see implementation comment
+  return r;
+}
+
 bool testPrimeFactorization(std::string &reportString)
 {
   std::string testName = "PrimeFactorization";
@@ -92,7 +103,15 @@ bool testPrimeFactorization(std::string &reportString)
   rsUint32 x;
   std::vector<rsUint32> p, f, e;
 
+  // factor all numbers from 0 to N and reconstruct them (todo: include negative numbers, too):
+  rsUint32 N = 100;
+  for(rsUint32 i = 0; i <= N; i++) {
+    rsPrimeFactors(i, f, e);
+    rsUint32 j = rsPrimeProduct(f, e); // crashes for i == 5
+    testResult &= j == i;
+  }
 
+  // factor some larger example numbers:
   x = 507996720; // = 2^4 * 3^2 * 5^1 * 7^3 * 11^2 * 17^1
   rsPrimeFactors(x, f, e);
   testResult &= f.size() == 6;
@@ -109,11 +128,6 @@ bool testPrimeFactorization(std::string &reportString)
   testResult &= f[0] ==  5 && e[0] == 3;
   testResult &= f[1] == 11 && e[1] == 2;
   testResult &= f[2] == 13 && e[2] == 4;
-
-
-  // do some randomized tests:
-  rsFindPrimesUpTo(p, (rsUint32)100);
-
 
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;

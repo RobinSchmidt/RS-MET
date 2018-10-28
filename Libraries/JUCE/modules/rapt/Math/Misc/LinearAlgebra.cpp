@@ -1,7 +1,7 @@
 ﻿template<class T>
 void rsLinearAlgebra::rsSolveLinearSystem2x2(const T A[2][2], T x[2], const T y[2])
 {
-  T det = (A[0][0]*A[1][1] - A[0][1]*A[1][0]); // for debugging
+  //T det = (A[0][0]*A[1][1] - A[0][1]*A[1][0]); // determinant, for debugging
   T s  = T(1) / (A[0][0]*A[1][1] - A[0][1]*A[1][0]);
   x[0] = s * (A[1][1]*y[0] - A[0][1]*y[1]);
   x[1] = s * (A[0][0]*y[1] - A[1][0]*y[0]);
@@ -31,6 +31,7 @@ void rsLinearAlgebra::rsSolveLinearSystem3x3(const T A[3][3], T x[3], const T y[
   x[0] = s*(A[0][1]*(A[2][2]*y[1]-A[1][2]*y[2])+A[0][2]*(A[1][1]*y[2]-A[2][1]*y[1])+(A[1][2]*A[2][1]-A[1][1]*A[2][2])*y[0]);
   x[1] =-s*(A[0][0]*(A[2][2]*y[1]-A[1][2]*y[2])+A[0][2]*(A[1][0]*y[2]-A[2][0]*y[1])+(A[1][2]*A[2][0]-A[1][0]*A[2][2])*y[0]);
   x[2] = s*(A[0][0]*(A[2][1]*y[1]-A[1][1]*y[2])+A[0][1]*(A[1][0]*y[2]-A[2][0]*y[1])+(A[1][1]*A[2][0]-A[1][0]*A[2][1])*y[0]);
+  // add: 3*2+2=8, sub: 3*3+3=12  mul: 3*10+9=39, div: 1
   */
 }
 
@@ -38,10 +39,10 @@ template<class T>
 bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 {
   bool   matrixIsSingular = false;
-  int    i, j, k, p;
-  double biggest;   // use T
-  T      multiplier;
-  T      tmpSum;
+  int i, j, k, p;
+  double biggest; // actually, it should be T, but then the pivot search doesn't work for complex
+  T multiplier;   // matrices because rsAbs returns a real number for complex inputs and two
+  T tmpSum;       // complex numbers can't be compared for size anyway -> figure out a solution
 
   // outermost loop over the rows to be scaled and subtracted from the rows below them:
   for(i = 0; i < N; i++)
@@ -52,10 +53,10 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
     biggest = 0.0;
     for(j = i; j < N; j++)
     {
-      if(abs(A[j][i]) > biggest)
-      {
-        biggest = abs(A[j][i]);
-        p       = j;
+      if(rsAbs(A[j][i]) > biggest)  // rsAbs because abs uses the integer version on linux and
+      {                             // fabs is only for floats (can't take modular integers, for
+        biggest = rsAbs(A[j][i]);   // example)
+        p = j;
       }
     }
     if(rsIsCloseTo(biggest, 0.0, 1.e-12))  // todo: use something based on std::numeric_limits<T>

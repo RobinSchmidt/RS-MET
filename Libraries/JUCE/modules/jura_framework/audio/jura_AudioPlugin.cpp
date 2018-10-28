@@ -41,7 +41,7 @@ AudioPlugin::~AudioPlugin()
     delete wrappedAudioModule;
     wrappedAudioModule = nullptr;
   }
-  delete editorBoundsConstrainer;
+  //delete editorBoundsConstrainer;
 }
 
 //void AudioPlugin::configureInsAndOuts()
@@ -157,7 +157,7 @@ AudioProcessorEditor* AudioPlugin::createEditor()
   AudioModuleEditor *moduleEditor = wrappedAudioModule->createEditor();
   AudioPluginEditor *pluginEditor = new AudioPluginEditor(moduleEditor, this);
   ParameterObserver::setGuiAutomationSwitch(true);    // now, widgets can be automated again
-  pluginEditor->setConstrainer(editorBoundsConstrainer);
+  //pluginEditor->setConstrainer(editorBoundsConstrainer);
   return pluginEditor;
 }
 
@@ -433,4 +433,39 @@ void AudioPluginWithMidiIn::setAudioModuleToWrap(AudioModule* moduleToWrap)
   wrappedModuleWithMidiIn = dynamic_cast<AudioModuleWithMidiIn*>(moduleToWrap);
   jassert(wrappedModuleWithMidiIn != nullptr); // trying to wrap a non-midi-enabled AudioModule
                                                // into a midi-enabled AudioPlugin?
+}
+
+//=================================================================================================
+
+AudioPluginEditor::AudioPluginEditor(AudioModuleEditor* editorToWrap, AudioPlugin* pluginToEdit)
+  : AudioProcessorEditor(pluginToEdit)
+{
+  this->pluginToEdit  = pluginToEdit;
+  this->wrappedEditor = editorToWrap;
+
+  // retrieve desired size from values stored in the plugin:
+  int w = pluginToEdit->editorWidth;
+  int h = pluginToEdit->editorHeight;
+
+  // ...unless there are none stored - then use intitial size of the editor that we wrap:
+  if(w == 0)
+    w = wrappedEditor->getWidth();
+  if(h == 0)
+    h = wrappedEditor->getHeight();
+
+  // limit the size according to desired limits:
+  //w = RAPT::rsClip(w, pluginToEdit->editorWidthMin,  pluginToEdit->editorWidthMax);
+  //h = RAPT::rsClip(h, pluginToEdit->editorHeightMin, pluginToEdit->editorHeightMax);
+  // ..but maybe that's not a good idea - we want to allow the gui size to be recalled 
+  // programatically, even when it'S not resizable by the user
+
+  // set up resizing limits and initial size:
+  bool resizable = pluginToEdit->editorWidthMin  != pluginToEdit->editorWidthMax;
+  resizable     &= pluginToEdit->editorHeightMin != pluginToEdit->editorHeightMax;
+  setResizable(resizable, resizable);
+  setResizeLimits(pluginToEdit->editorWidthMin, pluginToEdit->editorHeightMin, 
+    pluginToEdit->editorWidthMax, pluginToEdit->editorHeightMax);// must be called BEFORE setSize
+  setSize(w, h);
+
+  addAndMakeVisible(wrappedEditor);
 }

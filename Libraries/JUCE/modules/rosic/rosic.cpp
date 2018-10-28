@@ -330,6 +330,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "unfinished/rosic_QuadSource.cpp"
 #include "unfinished/rosic_DualFilter.cpp"
 #include "unfinished/rosic_NewSynth.cpp"
+#include "unfinished/rosic_MiscUnfinished.cpp"
 
 // restore warning level in msvc:
 #if defined _MSC_VER

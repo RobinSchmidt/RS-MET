@@ -362,12 +362,12 @@ void splineArc()
   float dx, dy, scaler = (1.f / (N-1));
   float length = 0.f;  // accumulated arc-length estimate
   t[0] = 0;
-  x[0] = PL::evaluatePolynomialAt(0, a, 3); // use optimized evaluateCubic (maybe inlined)
-  y[0] = PL::evaluatePolynomialAt(0, b, 3);
+  x[0] = PL::evaluate(0, a, 3); // use optimized evaluateCubic (maybe inlined)
+  y[0] = PL::evaluate(0, b, 3);
   for(int n = 1; n < N; n++) {
     t[n] = scaler * n;  // == n / N
-    x[n] = PL::evaluatePolynomialAt(t[n], a, 3);
-    y[n] = PL::evaluatePolynomialAt(t[n], b, 3);
+    x[n] = PL::evaluate(t[n], a, 3);
+    y[n] = PL::evaluate(t[n], b, 3);
     dx   = x[n]-x[n-1];
     dy   = y[n]-y[n-1];
     length += sqrt(dx*dx+dy*dy);

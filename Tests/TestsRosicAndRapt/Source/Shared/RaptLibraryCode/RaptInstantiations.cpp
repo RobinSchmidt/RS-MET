@@ -1,21 +1,21 @@
-/** Many RAPT functions and classes are written as C++ templates in order to be type independent. 
-This implies that the compiler does not actually compile any code unless the template gets 
-instantiated from somewhere inside the client code. That means, if you include the RAPT.h file from 
-somewhere in your client code, your code may compile correctly, but you'll get linker errors of the 
-type "unresolved external symbol". So, in order to make your code also link correctly, you'll have 
+/** Many RAPT functions and classes are written as C++ templates in order to be type independent.
+This implies that the compiler does not actually compile any code unless the template gets
+instantiated from somewhere inside the client code. That means, if you include the RAPT.h file from
+somewhere in your client code, your code may compile correctly, but you'll get linker errors of the
+type "unresolved external symbol". So, in order to make your code also link correctly, you'll have
 to include the RAPT.cpp somewhere - but if you include it in multiple places (because you need RAPT
-classes in many of your source files), you may get linker errors of the type "multiple definition" 
-or "symbol already defined" or something like that. It means that a particular template was 
+classes in many of your source files), you may get linker errors of the type "multiple definition"
+or "symbol already defined" or something like that. It means that a particular template was
 instantiated in multiple compilation units and now the linker does not know which one to link to.
-The only resolution i could think of was to consolidate all template instantiations into one 
+The only resolution i could think of was to consolidate all template instantiations into one
 single .cpp file in the client code. That file must include RAPT.cpp (and it must be the only file
 that does so), and you must request the compiler explicitly here to instantiate the templates that
 your client code will need. This way (1) instantiations are available to the linker in your project
-and (2) there will be only one such instantiation of a particular template for a particular type. 
-If somewhere you'll get an "undefined external symbol" error, add the respective request for 
-explicit template instantiation here. 
+and (2) there will be only one such instantiation of a particular template for a particular type.
+If somewhere you'll get an "undefined external symbol" error, add the respective request for
+explicit template instantiation here.
 
-For the demos here, we instantiate all classes and functions for "float" (because "double" would 
+For the demos here, we instantiate all classes and functions for "float" (because "double" would
 not show all the trunction-warnings that we get for "float").
 
 \todo: provide a predefined template instantiation file within the RAPT library folder, that
@@ -38,10 +38,10 @@ typedef std::complex<double> cmplxD;
 
 
 template bool RAPT::defaultLess(const int& left, const int& right);
-template void RAPT::rsHeapSort(int *buffer, int length, 
+template void RAPT::rsHeapSort(int *buffer, int length,
   bool (*lessThen)(const int& left, const int& right));
 template bool RAPT::rsIsSortedAscending(int *buffer, int length);
-template std::vector<int> RAPT::rsFindAllOccurencesOf(char* buffer, int bufferLength, 
+template std::vector<int> RAPT::rsFindAllOccurencesOf(char* buffer, int bufferLength,
   char* pattern, int patternLength);
 template int RAPT::rsFindHighestPeakIndex(double *buffer, int length); // move to rsArray
 // maybe move these into rsArray
@@ -65,11 +65,11 @@ template double rsArray::mean(double *x, int length);
 template double rsArray::maxDeviation(double *buffer1, double *buffer2, int length);
 template int rsArray::maxDeviationIndex(float *buffer1, float *buffer2, int length);
 
-template void rsArray::applyFunction(double *x, double *y, int N, double (*f) (double));
+template void rsArray::applyFunction(const double *x, double *y, int N, double (*f) (double));
 template void rsArray::negate(double *source, double *destination, int length);
-template void rsArray::filter(double *x, int xLength, double *y, int yLength, 
+template void rsArray::filter(double *x, int xLength, double *y, int yLength,
   double *b, int bOrder, double *a, int aOrder);
-template void rsArray::filterBiDirectional(double *x, int xLength, double *y, int yLength, 
+template void rsArray::filterBiDirectional(double *x, int xLength, double *y, int yLength,
   double *b, int bOrder, double *a, int aOrder, int numRingOutSamples);
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
@@ -124,47 +124,47 @@ template void rsLinearAlgebra::rsSolveLinearSystem2x2(const double A[2][2], doub
 template void rsLinearAlgebra::rsSolveLinearSystem3x3(const double A[3][3], double x[3], const double y[3]);
 template bool rsLinearAlgebra::rsSolveLinearSystem(double **A, double *x, double *b, int N);
 template bool rsLinearAlgebra::rsInvertMatrix(double **A, int N);
-template bool rsLinearAlgebra::rsSolveTridiagonalSystem(double *lowerDiagonal, double *mainDiagonal, 
+template bool rsLinearAlgebra::rsSolveTridiagonalSystem(double *lowerDiagonal, double *mainDiagonal,
   double *upperDiagonal, double *rightHandSide, double *solution, int N);
-template bool rsLinearAlgebra::rsChangeOfBasisColumnWise(double **A, double **B, double *va, 
+template bool rsLinearAlgebra::rsChangeOfBasisColumnWise(double **A, double **B, double *va,
   double *vb, int N);
-template bool rsLinearAlgebra::rsChangeOfBasisRowWise(double **A, double **B, double *va, 
+template bool rsLinearAlgebra::rsChangeOfBasisRowWise(double **A, double **B, double *va,
   double *vb, int N);
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, cmplxD *b, int N);
 
 
-template RAPT::rsMatrix<double>;
+template class RAPT::rsMatrix<double>;
 
-template RAPT::rsPolynomial<float>;
-template RAPT::rsPolynomial<double>;
-//template RAPT::rsPolynomial<int>; // template doesn't compile with int
-template void RAPT::rsPolynomial<double>::dividePolynomialByMonomialInPlace(double*, int, double, double*);
+template class RAPT::rsPolynomial<float>;
+template class RAPT::rsPolynomial<double>;
+//template  class RAPT::rsPolynomial<int>; // template doesn't compile with int
+template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
   // needs separate instantiation because function itself has a (second) template parameter
-template void RAPT::rsPolynomial<std::complex<double>>::subtractPolynomials(
-  const std::complex<double>* p, int pN, const std::complex<double>* q, int qN, 
+template void RAPT::rsPolynomial<std::complex<double>>::subtract(
+  const std::complex<double>* p, int pN, const std::complex<double>* q, int qN,
   std::complex<double>* r);
 
 
 // should go into an "Interpolation" class...or maybe CurveFitter
-//template void RAPT::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1, 
+//template void RAPT::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
 //  double yd2, double *a3, double *a2, double *a1, double *a0);
-template void RAPT::fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, double yd1, 
+template void RAPT::fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, double yd1,
   double *a3, double *a2, double *a1, double *a0);
 
 
-template RAPT::UnivariateScalarFunction<double>;
-template RAPT::UnivariateScalarFunctionViaPointer<double>;
-template RAPT::QuadraticTestErrorFunction<double>;
+template class RAPT::UnivariateScalarFunction<double>;
+template class RAPT::UnivariateScalarFunctionViaPointer<double>;
+template class RAPT::QuadraticTestErrorFunction<double>;
 
-template RAPT::GradientBasedMinimizer<double>;
+template class RAPT::GradientBasedMinimizer<double>;
 
-template RAPT::MultiLayerPerceptron<double>;
-template RAPT::MultiLayerPerceptronErrorFunction<double>;
-template RAPT::MultiLayerPerceptronTrainer<double>;
+template class RAPT::MultiLayerPerceptron<double>;
+template class RAPT::MultiLayerPerceptronErrorFunction<double>;
+template class RAPT::MultiLayerPerceptronTrainer<double>;
 
-template bool RAPT::rsCurveFitter::fitExponentialSum(double* y, int numValues, double* A, double* a, 
+template bool RAPT::rsCurveFitter::fitExponentialSum(double* y, int numValues, double* A, double* a,
   int numExponentials);
 
 template rsUint32 RAPT::rsBinomialCoefficient(rsUint32 n, rsUint32 k);
@@ -180,7 +180,7 @@ template void RAPT::rsStirlingNumbersFirstKind(int **s, int nMax);
 template void RAPT::rsFillPrimeTable(int*, rsUint32, rsUint32);
 template void RAPT::rsFindPrimesUpTo(std::vector<rsUint32>& primes, rsUint32 upperLimit);
 template void RAPT::rsFindPrimesUpTo(std::vector<rsUint64>& primes, rsUint64 upperLimit);
-template void RAPT::rsPrimeFactors(rsUint32 x, std::vector<rsUint32>& factors, 
+template void RAPT::rsPrimeFactors(rsUint32 x, std::vector<rsUint32>& factors,
   std::vector<rsUint32>& exponents, std::vector<rsUint32>* primeTable);
 
 template void RAPT::rsEGCD(int x, int y, int& a, int& b, int& g);
@@ -200,13 +200,13 @@ template void RAPT::rsCrossCorrelation(float x[], float y[], int N, float r[], b
 template void RAPT::rsAutoCorrelationFFT(float x[], int N, float r[]);
 
 
-template RAPT::rsFourierTransformerRadix2<float>;
-template RAPT::rsFourierTransformerBluestein<float>;
+template class RAPT::rsFourierTransformerRadix2<float>;
+template class RAPT::rsFourierTransformerBluestein<float>;
 
 
 
-template RAPT::rsSineIterator<double>;
-template RAPT::rsComplexExponentialIterator<double>;
+template class RAPT::rsSineIterator<double>;
+template class RAPT::rsComplexExponentialIterator<double>;
 
 template double RAPT::rsNormalizedSinc(double x);
 template double RAPT::rsSineIntegral(double x);
@@ -219,103 +219,104 @@ template int RAPT::rsFactorial(int n);
 template void RAPT::rsBinomialDistribution(double*, int, double);
 
 
-template RAPT::rsConicSection<float>;
-template RAPT::rsRotationXY<double>;
+template class RAPT::rsConicSection<float>;
+template class RAPT::rsRotationXY<double>;
 
-template RAPT::rsCoordinateMapper<float>;
-template RAPT::rsCoordinateMapper<double>;
-template RAPT::rsCoordinateMapper2D<float>;
-template RAPT::rsCoordinateMapper2D<double>;
+template class RAPT::rsCoordinateMapper<float>;
+template class RAPT::rsCoordinateMapper<double>;
+template class RAPT::rsCoordinateMapper2D<float>;
+template class RAPT::rsCoordinateMapper2D<double>;
 
-template RAPT::rsEllipse<float>;
-template RAPT::rsLine2D<float>;
-template RAPT::rsNormalizedSigmoids<float>;
-template RAPT::rsParametricSigmoid<float>;
-template RAPT::rsScaledAndShiftedSigmoid<float>;
-template RAPT::rsPositiveBellFunctions<float>;
-template RAPT::rsParametricBellFunction<float>;
-template RAPT::rsRootFinder<float>;
-template RAPT::rsInterpolatingFunction<float, double>;
-template RAPT::rsInterpolatingFunction<double, double>;
-template RAPT::rsNodeBasedFunction<float>;
-template RAPT::rsSinCosTable<float>;
-template RAPT::rsSinCosTable<double>;
-template RAPT::rsVector2D<float>;
-template RAPT::rsVector3D<float>;
+template class RAPT::rsEllipse<float>;
+template class RAPT::rsLine2D<float>;
+template class RAPT::rsNormalizedSigmoids<float>;
+template class RAPT::rsParametricSigmoid<float>;
+template class RAPT::rsScaledAndShiftedSigmoid<float>;
+template class RAPT::rsPositiveBellFunctions<float>;
+template class RAPT::rsParametricBellFunction<float>;
+template class RAPT::rsRootFinder<float>;
+template class RAPT::rsInterpolatingFunction<float, double>;
+template class RAPT::rsInterpolatingFunction<double, double>;
+template class RAPT::rsNodeBasedFunction<float>;
+template class RAPT::rsSinCosTable<float>;
+template class RAPT::rsSinCosTable<double>;
+template class RAPT::rsVector2D<float>;
+template class RAPT::rsVector3D<float>;
 
-template RAPT::rsFourierTransformerRadix2<double>;
+template class RAPT::rsFourierTransformerRadix2<double>;
 
 template void RAPT::rsStatistics::linearRegression(int N, float* x, float* y, float& a, float& b);
 template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float* y);
 template void RAPT::rsRemoveCorrelationBias(double x[], int N, double r[]);
 
 
-template RAPT::rsMultiArray<float>; 
+template class RAPT::rsMultiArray<float>;
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);
 template double RAPT::rsBandwidthConverter::absoluteBandwidthToQ(double fl, double fu);
 
 // Filters-Musical:
-template RAPT::rsSmoothingFilter<float, float>;
-template RAPT::rsLadderFilter<float, float>;
-template RAPT::rsLadderFilter<double, double>;
-//template RAPT::rsLadderFilter<rsFloat64x2, double>;
-//template RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
-template RAPT::rsPhasorFilter<float, float>;
-template RAPT::rsPhasorStateMapper<float>;
-template RAPT::rsStateVariableFilter<float, float>; 
+template class RAPT::rsSmoothingFilter<float, float>;
+template class RAPT::rsLadderFilter<float, float>;
+template class RAPT::rsLadderFilter<double, double>;
+//template class RAPT::rsLadderFilter<rsFloat64x2, double>;
+template class RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
+template class RAPT::rsPhasorFilter<float, float>;
+template class RAPT::rsPhasorStateMapper<float>;
+template class RAPT::rsStateVariableFilter<float, float>;
 
 // Filters-Scientific:
-template RAPT::rsPrototypeDesigner<float>;
-//template RAPT::rsPrototypeDesigner<double>;
-template RAPT::rsPoleZeroMapper<float>;
-template RAPT::rsFilterCoefficientConverter<float>;
-template RAPT::rsInfiniteImpulseResponseDesigner<float>;
-template RAPT::rsFilterAnalyzer<float>;
-template RAPT::rsBiquadCascade<float, float>;
-template RAPT::rsEngineersFilter<float, float>;
-template RAPT::rsLinkwitzRileyCrossOver<float, float>;
-template RAPT::rsCrossOver4Way<float, float>;
-template RAPT::rsDirectFormFilter<float, float>;
-template RAPT::rsEllipticSubBandFilter<float, float>;
-template RAPT::rsEllipticSubBandFilterDirectForm<float, float>;
-template RAPT::rsQuadratureNetwork<float, float>;
+template class RAPT::rsPrototypeDesigner<float>;
+//template class RAPT::rsPrototypeDesigner<double>;
+template class RAPT::rsPoleZeroMapper<float>;
+template class RAPT::rsFilterCoefficientConverter<float>;
+template class RAPT::rsInfiniteImpulseResponseDesigner<float>;
+template class RAPT::rsFilterAnalyzer<float>;
+template class RAPT::rsBiquadCascade<float, float>;
+template class RAPT::rsEngineersFilter<float, float>;
+template class RAPT::rsLinkwitzRileyCrossOver<float, float>;
+template class RAPT::rsCrossOver4Way<float, float>;
+template class RAPT::rsDirectFormFilter<float, float>;
+template class RAPT::rsEllipticSubBandFilter<float, float>;
+template class RAPT::rsEllipticSubBandFilterDirectForm<float, float>;
+template class RAPT::rsQuadratureNetwork<float, float>;
 
 template void RAPT::rsBiDirectionalFilter::applyLowpass(
   double *x, double *y, int N, double fc, double fs, int numPasses, double gc);
 
 // Physics:
-template RAPT::rsParticleSystem<float>;
+template class RAPT::rsParticleSystem<float>;
 
 // Generators:
-template RAPT::rsTriSawOscillator<float>;
-template RAPT::rsBouncillator<float>;
-template RAPT::rsRayBouncer<float>;
-template RAPT::rsNoiseGenerator<float>;
+template class RAPT::rsTriSawOscillator<float>;
+template class RAPT::rsBouncillator<float>;
+template class RAPT::rsRayBouncer<float>;
+template class RAPT::rsNoiseGenerator<float>;
 
 // Modulation:
-template RAPT::rsBreakpointModulator<float>;
+template class RAPT::rsBreakpointModulator<float>;
 
 // Analysis:
-template RAPT::rsAutoCorrelationPitchDetector<double>;
+template class RAPT::rsAutoCorrelationPitchDetector<double>;
+//template class RAPT::rsEnvelopeExtractor<double>;
 
 // Visualization:
-template RAPT::rsImage<float>;
-template RAPT::rsAlphaMask<float>;
-template RAPT::rsImagePainter<float, float, float>;
-template RAPT::rsLineDrawer<float, float, float>;
-template RAPT::rsPhaseScopeBuffer<float, float, double>;
+template class RAPT::rsImage<float>;
+template class RAPT::rsAlphaMask<float>;
+template class RAPT::rsImagePainter<float, float, float>;
+template class RAPT::rsLineDrawer<float, float, float>;
+template class RAPT::rsPhaseScopeBuffer<float, float, double>;
 
 // Modulators:
-//template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized
+//template class RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized
 
 // Offline:
-template RAPT::rsResampler<double, double>;
+template class RAPT::rsResampler<double, double>;
 
 // Unfinished:
-template RAPT::rsTwoBandSplitter<float, float>;
-template RAPT::rsMultiBandSplitter<float, float>;
+template class RAPT::rsTwoBandSplitter<float, float>;
+template class RAPT::rsMultiBandSplitter<float, float>;
 
 // misc audio functions
 template void RAPT::rsFadeOut(double* buffer, int start, int end);
@@ -334,28 +335,28 @@ template double RAPT::rsExactBlackmanWindow(double x, double length, double dumm
 template double RAPT::rsWindowedSinc(double x, double length, double stretch);
 
 
-template void RAPT::rsSineQuadraturePart(double *x, double *y, int N, double f, double fs, 
+template void RAPT::rsSineQuadraturePart(double *x, double *y, int N, double f, double fs,
   bool backward);
-template void RAPT::rsSineEnvelopeViaQuadrature(double *x, double *y, int N, double f, double fs, 
+template void RAPT::rsSineEnvelopeViaQuadrature(double *x, double *y, int N, double f, double fs,
   double smooth);
-template void RAPT::rsSineEnvelopeViaAmpFormula(double *x, double *y, int N, double f, double fs, 
+template void RAPT::rsSineEnvelopeViaAmpFormula(double *x, double *y, int N, double f, double fs,
   double smooth);
 template void RAPT::rsEnvelopedSine(double *y, int N, double f, double fs, double p, double *a);
-template void RAPT::rsEnvelopedPhaseCatchSine(double *y, int N, double f, double fs, double p0, 
+template void RAPT::rsEnvelopedPhaseCatchSine(double *y, int N, double f, double fs, double p0,
   double pk, int k, double *a, int sweepDirection);
-template void RAPT::rsRecreateSine(double *x, double *y, int N, double fx, double fy, double fs, 
+template void RAPT::rsRecreateSine(double *x, double *y, int N, double fx, double fy, double fs,
   double p0, double smooth);
-template void RAPT::rsRecreateSineWithPhaseCatch(double *x, double *y, int N, double fx, double fy, 
+template void RAPT::rsRecreateSineWithPhaseCatch(double *x, double *y, int N, double fx, double fy,
   double fs, double p0, double pk, int k, double smooth, int sweepDirection);
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0, double w);
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0);
 
 // move to rsFilterAnalyzer:
-template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0, 
+template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0,
   double A1, double A2, double w);
 
 
-template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(double *x, double *y, 
+template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(double *x, double *y,
   int N, double fc, double bw, double fs, int numPasses, double gc);
-template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(double *x, double *y, 
+template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(double *x, double *y,
   int N, double fc, double bw, double fs, int order, int numPasses, double gc);

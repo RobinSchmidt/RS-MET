@@ -21,21 +21,21 @@ double rsCorrelation(double pA, double pB, double pAB)
 
 //=================================================================================================
 
-char TriLogic::not(char a)
+char TriLogic::_not(char a)
 {
   if(a == 0) return 1;  // not(T) = F
   if(a == 1) return 0;  // not(F) = T
   return 2;             // not(U) = U
 }
 
-char TriLogic::and(char a, char b)
+char TriLogic::_and(char a, char b)
 {
   //        a a a
   //        T F U
-  //             
+  //
   //  b T   T F U
   //  b F   F F F
-  //  b U   U F U 
+  //  b U   U F U
 
   if(a == 0) return 0; // a=F column (3 cases handled)
   if(b == 0) return 0; // b=F row    (5 cases handled)
@@ -55,11 +55,11 @@ char TriLogic::and(char a, char b)
   // the same logical structure can be used?...make unit-test and try to optimize
 }
 
-char TriLogic::or(char a, char b)
+char TriLogic::_or(char a, char b)
 {
   //        a a a
   //        T F U
-  //             
+  //
   //  b T   T T T    gives 5T, 3U, 1F
   //  b F   T F U
   //  b U   T U U
@@ -86,7 +86,7 @@ char TriLogic::or(char a, char b)
 here, (1-a)*(1-b) is the probability that a and b are both false
 nand(a, b) = 1-a*b
 -xor(a, b) = or(and(a,not(b)),and(b,not(a))) = a + b - a*b*(3-a-b+a*b)
--maybe these functions can be extended to take a 3rd argument c for the correlation between 
+-maybe these functions can be extended to take a 3rd argument c for the correlation between
 a and b
 -and(a,b,c) should reduce to the form above when c=0: and(a,b,0) = a*b
 when c = +1: and(a=1,b=0,+1) = and(a=0,b=1,+1) = 0, and(a=1,b=1,+1) = a = b
@@ -94,16 +94,16 @@ when c = -1: and(a=1,b=1,-1) = and(a=0,b=0,-1) = 0
 ...maybe we can find more conditions that must hold and derive a general formula for and(a,b,c)
 maybe and(a,b,c) = a*b-c*xor(a,b) or  and(a,b,c) = a*b-c*a*b*xor(a,b)?
 -check, if the result is always in 0..1
--run numeric simulations using data of correlated 0s and 1s produced by some algorithm and 
+-run numeric simulations using data of correlated 0s and 1s produced by some algorithm and
 check, if the results predicted by the formula match the simulation result
--hmm.actually in leupold 2, p355, there is a formula: 
-P(A and B) = P(A|B) * P(B) = P(B|A) * P(A)...well, kinda obvious..so it seems like it's enough 
+-hmm.actually in leupold 2, p355, there is a formula:
+P(A and B) = P(A|B) * P(B) = P(B|A) * P(A)...well, kinda obvious..so it seems like it's enough
 to know either P(A|B) or P(B|A) along with P(A),P(B) to compute P(A and B)
--when a formula for "and" is established, a formula for "or" can be derived from 
+-when a formula for "and" is established, a formula for "or" can be derived from
 or(a,b) = not(and(not(a),not(b)))
--maybe it should also output two new correlation values for (a,result), (b,result) as side 
+-maybe it should also output two new correlation values for (a,result), (b,result) as side
 results
--maybe, as a further generalization, not only (symmetric) correlations can be used but 
+-maybe, as a further generalization, not only (symmetric) correlations can be used but
 conditional probabilities...maybe a correlation can be seen as a pair of symmetric conditational
 probabilities, where C = P(A|B) = P(B|A) but in general, these two conditional probabilities
 can be different -> look up - if that's the case, maybe bayes rule can be used for and(a,b)?
@@ -125,7 +125,7 @@ the rest stays the same (F and T = F etc.)
 -can (?) be modelled by probabilistic logic by using 0.5 as "unknown" - maybe by clamping unknown
 results to 0.5
 
--use that probabilistic logic in a cellular automaton - the new activation of each cell is a 
+-use that probabilistic logic in a cellular automaton - the new activation of each cell is a
 logical combination of its and neighbour activations
 -read out the celluar automaton one cell per sample, after each cycle compute new cell activations
 -have a global "fuzziness" parameter that crossfades all cell-activtions between hard 0/1 and 0.5
@@ -133,9 +133,9 @@ logical combination of its and neighbour activations
 -maybe use a 2D automaton with various readout rules (scan lines, diagonal, hilbert-curve, etc.)
 -needs on-the-fly sample-rate conversion - read out the automaton always at its "natural" rate and
 then convert to target sample-rate
--maybe neighbour correlations can be computed on the fly and be fed into the and/or operations 
+-maybe neighbour correlations can be computed on the fly and be fed into the and/or operations
 (maybe scaled by a factor)
--the cells could be initialized with random values, maybe with an optional "balancing" of 
+-the cells could be initialized with random values, maybe with an optional "balancing" of
 0s and 1s: just count the 1s, and if there are n too many, change n randomly chosen 1-cells to 0
 (or the other way around)
 

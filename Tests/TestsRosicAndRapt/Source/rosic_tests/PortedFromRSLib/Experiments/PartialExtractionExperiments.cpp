@@ -362,83 +362,6 @@ void biDirectionalFilter()
   int dummy = 0;
 }
 
-
-
-// this should be moved to the library
-template<class T>
-std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false, bool includeLast = false)
-{
-  std::vector<size_t> peaks;
-
-  if(N == 0)
-    return peaks;
-
-  if(includeFirst){
-    if(N > 1) {
-      if(x[0] >= x[1])
-        peaks.push_back(0);
-    }
-    else
-      peaks.push_back(0); // the one and only element is a "peak"
-  }
-
-  for(size_t n = 1; n < N-1; n++) {
-    if( RAPT::rsArray::isPeakOrPlateau(x, (int)n) )
-      peaks.push_back(n);
-  }
-
-  if(includeLast){
-    if(N > 1) {
-      if(x[N-1] >= x[N-2])
-        peaks.push_back(N-1);
-    }
-  }
-
-  return peaks;
-}
-// what about situations where there are several values of the same height, like
-// 0 1 2 2 2 1 0 1 3 3 2 1 2 1
-//       *          *      *    desired peaks
-// ...actually, it seems like quadratic interpolation using 3 points seems unfair/asymmetric 
-// - probably it's better to use cubic interpolation and use two points to the left and two
-// to the right to find the actual peak location
-// or use >= as condition, then we would get
-// 0 1 2 2 2 1 0 1 3 3 2 1 2 1
-//     * * *       * *     *  
-// seems better for envelope extraction
-
-template<class T>
-void getAmpEnvelope(T* x, int N, std::vector<T>& sampleTime, std::vector<T>& envValue)
-{
-  std::vector<T> xAbs(N);
-  RAPT::rsArray::applyFunction(&x[0], &xAbs[0], N, fabs);                  // absolute value
-  std::vector<size_t> peakIndices = findPeakIndices(&xAbs[0], N, true, true); // peak indices
-
-  // peak coordinates:
-  size_t M = peakIndices.size();
-  sampleTime.resize(M); 
-  envValue.resize(M);
-  for(size_t m = 0; m < M; m++) {
-    size_t n = peakIndices[m];
-    sampleTime[m] = (T) n;
-    envValue[m]   = xAbs[n];
-  }
-}
-template<class T>
-void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY)
-{
-  std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);
-  size_t M = peakIndices.size();
-  peaksX.resize(M); 
-  peaksY.resize(M);
-  for(size_t m = 0; m < M; m++) {
-    size_t n = peakIndices[m];
-    peaksX[m] = x[n];
-    peaksY[m] = y[n];
-    // todo: refine to subsample-precision
-  }
-}
-
 void envelopeDeBeating()
 {
   // We create two attack/decay sinusoids with frequencies close to each other such that the 
@@ -470,66 +393,21 @@ void envelopeDeBeating()
   typedef std::vector<double> Vec;
 
   // create signal and estimate envelope:
-  Vec x(N);
+  Vec x(N), env(N);
   getImpulseResponse(mfb, &x[0], N);
   //rsSineEnvelopeViaQuadrature(&x[0], &env[0], N, (f1+f2)/2, fs, 2.0);
    // todo: maybe use instantaneous envelope algorithm
 
-  Vec envTime, envValue;
-  getAmpEnvelope(&x[0], N, envTime, envValue);
 
-  Vec envTime2, envValue2;
-  getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
-
-  // add zeros to start and end of the array:
-  bool extrapolateEnds = true;
-  if(extrapolateEnds == true)
-  {
-    double v; 
-    v = RAPT::rsInterpolateLinear(envTime2[0], envTime2[1], envValue2[0], envValue2[1], 0.0);
-    RAPT::rsPrepend(envTime2, 0.0);
-    RAPT::rsPrepend(envValue2, v);
-
-    int M = (int)envTime2.size()-1;
-    v = RAPT::rsInterpolateLinear(envTime2[M-1], envTime2[M], envValue2[M-1], envValue2[M], double(N));
-
-    RAPT::rsAppend(envTime2, double(N));
-    RAPT::rsAppend(envValue2, v);
-  }
-  // maybe don't use zeros but linear exptrapolation - yes - looks better
-  // ...but for production code we must include safety checks - envTime/Value2 may have less
-  // than 2 elements, etc.
-
-  // get envelope signal by interpolating the peaks:
-  Vec t(N), env(N);
-  RAPT::rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
-  typedef RAPT::rsInterpolatingFunction<double, double> IF;
-  IF intFunc;
-  //intFunc.setMode(IF::LINEAR);
-  intFunc.setMode(IF::CUBIC);
-  //intFunc.setPreMap( &log);
-  //intFunc.setPostMap(&exp);
-  intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime.size(), 
-    &t[0], &env[0], (int)t.size());
-
-  // -maybe the bump can be avoided using a quartic interpolant
-  // -and/or: let the env start at 0 and use a segement of lower order by not prescribing values
-  //  for the derivative(s) at 0, same at the end
-
-  // smoothing:
-  //rsBiDirectionalFilter::applyLowpass(&env[0], &env[0], (int)env.size(), fc, fs, np);
-  // maybe instead of a filter, use an attack/release slew-rate limiter with zero attack in order
-  // to pass through the actual peaks
+  RAPT::rsEnvelopeExtractor<double>::sineEnvelopeWithDeBeating(&x[0], N, &env[0]);
 
   // plot:
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
   plt.addDataArrays(N, &env[0]);
-  plt.addDataArrays((int)envTime.size(),  &envTime[0],  &envValue[0]);
+  //plt.addDataArrays((int)envTime.size(),  &envTime[0],  &envValue[0]);
   //plt.addDataArrays((int)envTime2.size(), &envTime2[0], &envValue2[0]);
   plt.plot();
-
-
 
   // de-beat:
   // ideas:

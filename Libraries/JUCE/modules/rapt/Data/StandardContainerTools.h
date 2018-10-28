@@ -73,7 +73,7 @@ inline T rsLast(const std::vector<T>& v)
 template<class T>
 inline bool rsRemoveFirstOccurrence(std::vector<T>& v, T elementToRemove)
 {
-  for(size_t i = 0; i < size(v); i++)
+  for(size_t i = 0; i < v.size(); i++)
     if(v[i] == elementToRemove){
       rsRemove(v, i);
       return true; }
@@ -89,7 +89,7 @@ inline void rsReverse(std::vector<T>& v)
 template<class T>
 inline bool rsContains(std::vector<T>& v, T elementToCheckFor)
 {
-  for(size_t i = 0; i < size(v); i++)
+  for(size_t i = 0; i < v.size(); i++)
     if(v[i] == elementToCheckFor)
       return true;
   return false;

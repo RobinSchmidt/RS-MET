@@ -79,10 +79,10 @@ T rsSineFrequency(T y0, T y1, T y2, T smalll)
   rsAssert( fabs(y1) > smalll * (fabs(y0)+fabs(y2)), "y1 (numerically) zero is not allowed");
 
   // There's a recursion for the sine y[n] = a1*y[n-1] - y[n-2] where a1 = 2*cos(w) and the states
-  // y[n-1], y[n-2] are initialized as y[n-1] = A * sin(p - w), y[n-2] = A * sin(p - 2*w) which in 
-  // our notation here translates to y2 = a1*y1 - y0. This leads to a1 = (y0+y2)/y1 and 
+  // y[n-1], y[n-2] are initialized as y[n-1] = A * sin(p - w), y[n-2] = A * sin(p - 2*w) which in
+  // our notation here translates to y2 = a1*y1 - y0. This leads to a1 = (y0+y2)/y1 and
   // w = acos(a1/2):
-  return acos(0.5*(y0+y2)/y1); 
+  return acos(0.5*(y0+y2)/y1);
 }
 
 template<class T>
@@ -110,7 +110,7 @@ T refineFrequencyEstimate(T *x, int N, int n, T w)
   T w1;             // w measured with 1 sample offset
   T wr;             // refined w
 
-  //bool forward = true; 
+  //bool forward = true;
   bool forward = n+2 < N-1; // x[n+2] must be a valid index
 
   if( forward )
@@ -130,8 +130,8 @@ T refineFrequencyEstimate(T *x, int N, int n, T w)
               // the input value
   }
 
-  // at high w, we may get outliers that are worse than the unrefined values, so we return the 
-  // refined value only if the relative difference to the input value is below some threshold 
+  // at high w, we may get outliers that are worse than the unrefined values, so we return the
+  // refined value only if the relative difference to the input value is below some threshold
   // (which was found empirically):
   T thresh = 0.0001;
   T relativeDelta = (w-wr)/w;
@@ -144,8 +144,8 @@ T refineFrequencyEstimate(T *x, int N, int n, T w)
 template<class T>
 T rsSineFrequencyAt(T *x, int N, int n0, bool refine)
 {
-  // find indices of maxima/minima before and after the sample-index in question, taking into 
-  // account cases where our index n0 is not surrounded by peaks/valley in which case we take the 
+  // find indices of maxima/minima before and after the sample-index in question, taking into
+  // account cases where our index n0 is not surrounded by peaks/valley in which case we take the
   // two to the left or right to n0 and use these for extrapolation
   int nL = rsArray::findPeakOrValleyLeft( x, N, n0);
   int nR = rsArray::findPeakOrValleyRight(x, N, n0);
@@ -164,8 +164,8 @@ T rsSineFrequencyAt(T *x, int N, int n0, bool refine)
   //  return rsSineFrequencyAtCore(x, N, nL);
 
   // compute instantaneous frequencies at nL and nR:
-  T wL = rsSineFrequencyAtCore(x, N, nL); 
-  T wR = rsSineFrequencyAtCore(x, N, nR); 
+  T wL = rsSineFrequencyAtCore(x, N, nL);
+  T wR = rsSineFrequencyAtCore(x, N, nR);
 
   if( refine == true )
   {
@@ -179,8 +179,8 @@ T rsSineFrequencyAt(T *x, int N, int n0, bool refine)
 
 
 
-  // in case of upward sweeps, the frequency will be slightly underestimated and in case of 
-  // downward sweeps it will be overestimated. maybe this bias can be predicted and compensated 
+  // in case of upward sweeps, the frequency will be slightly underestimated and in case of
+  // downward sweeps it will be overestimated. maybe this bias can be predicted and compensated
   // for...
 
   // experimental: try to remove measurement bias by predicting and compensating (to use one of these,
@@ -240,7 +240,7 @@ inline bool isDownwardZeroCrossing(T x, int N, int n0)
 }
 
 template <class T>
-int rsFindZeroNear(T *x, int N, int n0, int searchDirection, bool upward, 
+int rsFindZeroNear(T *x, int N, int n0, int searchDirection, bool upward,
   bool downward)
 {
   int n;
@@ -277,7 +277,7 @@ T rsSubSamplePrecisionZeroCrossing(T *x, int N, int n0, int p)
 {
   // maybe factor out a function rsFractionalPartOfZeroCrossing
 
-  T *a = new T[2*p+2]; // polynomial coefficients for interpolant 
+  T *a = new T[2*p+2]; // polynomial coefficients for interpolant
   T nf;                     // fractional part of zero-crossing sample-index
 
   // adjust (reduce) p, when we are at the borders of the signal to avoid access violation
@@ -287,10 +287,10 @@ T rsSubSamplePrecisionZeroCrossing(T *x, int N, int n0, int p)
   nf = x[n0]/(x[n0]-x[n0+1]);    // linear zero
   if( p > 0 )
   {
-    // refine linear zero estimate by Newton iteration on a higher order interpolating 
+    // refine linear zero estimate by Newton iteration on a higher order interpolating
     // polynomial:
-    rsPolynomial<T>::rsInterpolatingPolynomial(a, -p, 1, &x[n0-p], 2*p+2);
-    nf = rsPolynomial<T>::getRootNear(nf, a, 2*p+1, 0.0, 1.0);
+    rsPolynomial<T>::interpolant(a, -p, 1, &x[n0-p], 2*p+2);
+    nf = rsPolynomial<T>::rootNear(nf, a, 2*p+1, 0.0, 1.0);
   }
 
   delete[] a;
@@ -310,7 +310,7 @@ T rsSinePhaseAtViaZeros(T *x, int N, int n0, int precision)
   {
 
   }
-  else if(x[n0] > 0.0) 
+  else if(x[n0] > 0.0)
   {
     // to the left, there's an upward zero crossing, to the right a downward one:
     nzl = rsFindZeroNear(x, N, n0, -1, true, false);
@@ -350,7 +350,7 @@ T rsSinePhaseAtViaZeros(T *x, int N, int n0, int precision)
 template<class T>
 T rsSineShiftAmount(T *x, int N, int n0, T p0, T w)
 {
-  // compute desired phase-shift: 
+  // compute desired phase-shift:
 
   //T p  = rsSinePhaseAt(x, N, n0, w);  // instantaneous phase at n0
   T p  = rsSinePhaseAtViaZeros(x, N, n0, 3); // test - with new function
@@ -362,7 +362,7 @@ T rsSineShiftAmount(T *x, int N, int n0, T p0, T w)
     dp += 2*PI;
   else if( dp > PI )
     dp -= 2*PI;
-    // todo: maybe provide an optional integer parameter to always shift left if its negative, always 
+    // todo: maybe provide an optional integer parameter to always shift left if its negative, always
     // right if it's positive and use the minimum distance if it's 0
 
   // return time-shift in samples:

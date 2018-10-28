@@ -83,6 +83,8 @@ inline rsInt8  rsAbs(rsInt8  x) { return  abs(x); }
 inline rsInt16 rsAbs(rsInt16 x) { return  abs(x); }
 inline rsInt32 rsAbs(rsInt32 x) { return  abs(x); }
 //inline rsInt64 rsAbs(rsInt64 x) { return  abs(x); } // doesn't work with MinGW gcc 4.7
+template<class T> inline T rsAbs(std::complex<T> z) { return abs(z); }
+
 
 
 

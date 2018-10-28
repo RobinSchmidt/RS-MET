@@ -102,6 +102,9 @@ returns the y-value corresponding to x by linearly interpolating between x1, x2.
 the range of x1, x2, the function will extrapolate. */
 template<class T>
 T rsInterpolateLinear(T x1, T x2, T y1, T y2, T x);
+// maybe change interface to x1, y1, x2, y2 to make it consistent with other functions
+// but this is a change that would silently break client code
+// hmm...but then rsInterpolateCubicHermite would also have to be changed
 
 /** Given two length N arrays x, y with x-axis values and corresponding y-axis values, this
 function fills the array yi with values corresponding to the xi by linear interpolation
@@ -234,7 +237,7 @@ T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
   s2 = ((y2-y1)/d1 + (y3-y2)*d1) / (d1+T(1));
   s3 = ((y3-y2)*d3 + (y4-y3)/d3) / (d3+T(1));
   fitCubicWithDerivativeFixedX(y2, y3, s2, s3, &a[3], &a[2], &a[1], &a[0]);
-  return rsPolynomial<T>::evaluatePolynomialAt(s*(x-x2), a, 3);
+  return rsPolynomial<T>::evaluate(s*(x-x2), a, 3);
   // maybe factor out a function that returns the polynomial coefficients (and s) because the
   // same set of coefficients my get used to interpolate at multiple values of x between the
   // same x2 and x3 and it is wasteful to recompute the coefficients each time
@@ -269,7 +272,7 @@ void rsInterpolateSpline(Tx *x, Ty *y, Ty **yd, int N, int M, Tx *xi, Ty *yi, in
     scale = Tx(1) / scale;
     while(xi[i] < x[n+1] && i < Ni)
     {
-      yi[i] = rsPolynomial<Ty>::evaluatePolynomialAt(scale*(xi[i]-shift), a, 2*M+1);
+      yi[i] = rsPolynomial<Ty>::evaluate(scale*(xi[i]-shift), a, 2*M+1);
       i++;
     }
 
@@ -279,7 +282,7 @@ void rsInterpolateSpline(Tx *x, Ty *y, Ty **yd, int N, int M, Tx *xi, Ty *yi, in
   // extrapolate tail:
   while(i < Ni)
   {
-    yi[i] = rsPolynomial<Ty>::evaluatePolynomialAt(scale*(xi[i]-shift), a, 2*M+1);
+    yi[i] = rsPolynomial<Ty>::evaluate(scale*(xi[i]-shift), a, 2*M+1);
     i++;
   }
 

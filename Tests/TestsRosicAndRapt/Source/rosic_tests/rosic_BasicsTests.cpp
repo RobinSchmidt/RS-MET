@@ -31,8 +31,8 @@ void rotes::testMathFunctions()
   roots.push_back(std::complex<double>( 3, 0));
   roots.push_back(std::complex<double>(-1, 0));
 
-  std::vector<std::complex<double>> coeffs = 
-    RAPT::rsPolynomial<double>::getPolynomialCoefficientsFromRoots(roots);
+  std::vector<std::complex<double>> coeffs =
+    RAPT::rsPolynomial<double>::rootsToCoeffs(roots);
 
   std::complex<double> coeffsDbg[8];
   for(size_t i = 0; i < 8; i++)
@@ -83,7 +83,7 @@ void rotes::testWindowFunctions()
   for(int w=0; w<numWindows; w++)
     add(windowSum, shiftedWindows[w], windowSum, signalLength);
 
-  //Plotter::plotData(signalLength, signalIndices, shiftedWindows[0], shiftedWindows[1], shiftedWindows[2], shiftedWindows[3], windowSum); 
+  //Plotter::plotData(signalLength, signalIndices, shiftedWindows[0], shiftedWindows[1], shiftedWindows[2], shiftedWindows[3], windowSum);
 
   */
 
@@ -110,7 +110,7 @@ void testDerivativeComputation()
   int dummy = 0;
 }
 
-  
+
 void testCompensatedLinearInterpolator()
 {
   double compensationAmount = 0.995; // 0: no compensation, 1:full compensation (but borderline (un)stable), 0.995 seems reasonable
@@ -133,21 +133,21 @@ void testCompensatedLinearInterpolator()
 
   double g  = 1.0+a1;
 
-  // for a delay of d samples, interpolate via 
+  // for a delay of d samples, interpolate via
   // w[n] = b0*x[n] + b1*x[n-1] - a1*w[n-1]; y[n] = g * w[n]  or
   // y[n] = g * (b0*x[n] + b1*x[n-1]) - a1*y[n-1]
   // -> test which version behaves best under modulation (witch d between 0.0 and 0.5 - these are the extremes for a1)
   // maybe try this stuff in DelayLine module for Liberty
 
-  rosic::rsFilterAnalyzerD::getBiquadMagnitudeResponse(b0, b1, 0.0, a1, 0.0, w, mag, N, false); 
+  rosic::rsFilterAnalyzerD::getBiquadMagnitudeResponse(b0, b1, 0.0, a1, 0.0, w, mag, N, false);
   RAPT::rsArray::scale(mag, mag, N, g);
   for(int n = 0; n < N; n++)
     mag[n] = RAPT::rsAmpToDb(mag[n]);
   RAPT::rsArray::clipBuffer(mag, N, -60.0, 20.0);
-  Plotter::plotData(N, w, mag); 
+  Plotter::plotData(N, w, mag);
 }
 
-void rotes::testInterpolation()  
+void rotes::testInterpolation()
 {
   //testHermiteTwoPoint1();
   //testHermiteTwoPoint2();
@@ -157,11 +157,11 @@ void rotes::testInterpolation()
   int M[5]    = {0, 1, 2, 3, 4};                 // numbers of controlled derivatives for the 5 curves
   //double d[5] = {0.125, 0.25, 0.5, 0.75, 0.875}; // delay values for polyphase responses
 
-  //double d[5] = {0.0, 0.05, 0.1, 0.15, 0.2}; 
+  //double d[5] = {0.0, 0.05, 0.1, 0.15, 0.2};
   double d[5] = {0.25, 0.3, 0.345, 0.4, 0.45};  // problem with the 1-derivative  interpolator at d = 0.345
   //double d[5] = {0.25, 0.3, 0.35, 0.4, 0.45};     // problem with the 2-derivatives interpolator at d = 0.35
-  //double d[5] = {0.1, 0.2, 0.3, 0.4, 0.5}; 
-  //double d[5] = {0.6, 0.7, 0.8, 0.9, 1.0}; 
+  //double d[5] = {0.1, 0.2, 0.3, 0.4, 0.5};
+  //double d[5] = {0.6, 0.7, 0.8, 0.9, 1.0};
 
   //plotOneSidedInterpolatorContinuousResponses(M, 1.0);
   plotOneSidedInterpolatorPolyphaseResponses(1, 1.0, d);
@@ -187,7 +187,7 @@ void rotes::testHermiteTwoPoint1()
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
-    RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 3, &y[2*n], 1);
+    RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 3, &y[2*n], 1);
   RAPT::rsArray::deInterleave(y, N, 2);
 
   Plotter::plotData(N, x, y);
@@ -214,7 +214,7 @@ void rotes::testHermiteTwoPoint2()
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
-    RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 5, &y[3*n], 2);
+    RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 5, &y[3*n], 2);
   RAPT::rsArray::deInterleave(y, N, 3);
 
   Plotter::plotData(N, x, y);
@@ -240,7 +240,7 @@ void rotes::testHermiteTwoPoint3()
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
-    RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 7, &y[4*n], 3);
+    RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 7, &y[4*n], 3);
   RAPT::rsArray::deInterleave(y, N, 4);
 
   Plotter::plotData(N, x, y);
@@ -270,7 +270,7 @@ void rotes::testHermiteTwoPointM()
 
   // evaluate polynomial and 3 derivatives:
   for(int n = 0; n < N; n++)
-    RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativesAt(x[n], a, 7, &y[(M+1)*n], M);
+    RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 7, &y[(M+1)*n], M);
   RAPT::rsArray::deInterleave(y, N, M+1);
 
   Plotter::plotData(N, x, y);
@@ -289,7 +289,7 @@ rosic::Matrix interpolateOneSidedHermite5M(double *x, int xLength, int oversampl
 {
   rosic::Matrix y(5, xLength*oversampling);
   for(int i = 0; i < 5; i++)
-    upsampleHermiteAsymmetricM(x, xLength, y.m[i], oversampling, M[i], shape); 
+    upsampleHermiteAsymmetricM(x, xLength, y.m[i], oversampling, M[i], shape);
   return y;
 }
 
@@ -304,7 +304,7 @@ rosic::Matrix rotes::createHermiteInterpolatorImpulseResponses(int inLength, int
 
 
 
-void plotMagnitudeResponsesOf(rosic::Matrix &x, int fftSize, double plotFloor, int plotZoom = 1, double freqScale = 1.0, 
+void plotMagnitudeResponsesOf(rosic::Matrix &x, int fftSize, double plotFloor, int plotZoom = 1, double freqScale = 1.0,
                               double ampScale = 1.0)
 {
   rassert(x.numRows == 5); // this function is written for matrices with 5 rows - \todo: generalize this
@@ -330,8 +330,8 @@ void plotMagnitudeResponsesOf(rosic::Matrix &x, int fftSize, double plotFloor, i
 
   int plotMaxIndex = numBins / plotZoom;
 
-  Plotter::plotData(plotMaxIndex, frequencies, magH.m[0], magH.m[1], magH.m[2], magH.m[3], magH.m[4]); 
-  //Plotter::plotData(plotMaxIndex, frequencies, phsH.m[0], phsH.m[1], phsH.m[2], phsH.m[3], phsH.m[4]); 
+  Plotter::plotData(plotMaxIndex, frequencies, magH.m[0], magH.m[1], magH.m[2], magH.m[3], magH.m[4]);
+  //Plotter::plotData(plotMaxIndex, frequencies, phsH.m[0], phsH.m[1], phsH.m[2], phsH.m[3], phsH.m[4]);
 
   delete[] frequencies;
   delete[] xPadded;
@@ -371,7 +371,7 @@ void rotes::plotOneSidedInterpolatorPolyphaseResponses(int M, double shape, doub
   for(int m = 0; m < 5; m++)
   {
     for(int n = M+1; n < inLength2; n++)
-      hd.m[m][n] = RAPT::getDelayedSampleAsymmetricHermiteM(d[m], &x[n], M, shape); 
+      hd.m[m][n] = RAPT::getDelayedSampleAsymmetricHermiteM(d[m], &x[n], M, shape);
   }
   Plotter::plotData(hd.numColumns, t, hd.m[0], hd.m[1], hd.m[2], hd.m[3], hd.m[4]);
   plotMagnitudeResponsesOf(hd, 8192, -60.0, 1);
@@ -521,14 +521,14 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   fftMagnitudesAndPhases(tmp, fftSize, magC, phsC, fftSize);
   for(n=0; n<numBins; n++)
     magC[n] = RAPT::rsMax(RAPT::rsAmpToDb(4 * magC[n] * fftSize/length), plotFloor);
-    
+
   RAPT::rsArray::copyBuffer(yq, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magQ, phsQ, fftSize);
   for(n=0; n<numBins; n++)
     magQ[n] = RAPT::rsMax(RAPT::rsAmpToDb(4 * magQ[n] * fftSize/length), plotFloor);
 
 
-  Plotter::plotData(600, frequencies, magL, magC, magQ); 
+  Plotter::plotData(600, frequencies, magL, magC, magQ);
 
 
     /*
@@ -537,7 +537,7 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   for(n=0; n<length; n++)
     decibels[n] = amp2dB(length*magnitudes[n]);
 
-  Plotter::plotData(length/4, frequencies, decibels); 
+  Plotter::plotData(length/4, frequencies, decibels);
   */
 
 

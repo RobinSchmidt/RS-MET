@@ -11,25 +11,23 @@
 #include "rosic_BasicsTests.h"
 #include "rosic_MathTests.h"
 #include "rosic_NumericalTests.h"
-#include "rosic_NonRealtimeTests.h"
+#include "rosic_NonRealTimeTests.h"
 #include "rosic_OthersTests.h"
 
 namespace rotes
 {
   void testAllRosicClasses();
-  void testRosicAnalysis(); 
-  void testRosicBasics(); 
-  void testRosicFile(); 
-  void testRosicEffects(); 
-  void testRosicFilter(); 
-  void testRosicGenerators(); 
-  void testRosicModulators(); 
-  void testRosicMath(); 
-  void testRosicNumerical(); 
-  void testRosicNonRealTime(); 
-  void testRosicOthers(); 
+  void testRosicAnalysis();
+  void testRosicBasics();
+  void testRosicFile();
+  void testRosicEffects();
+  void testRosicFilter();
+  void testRosicGenerators();
+  void testRosicModulators();
+  void testRosicMath();
+  void testRosicNumerical();
+  void testRosicNonRealTime();
+  void testRosicOthers();
 }
 
-#endif 
-
-
+#endif

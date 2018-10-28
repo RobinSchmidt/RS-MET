@@ -3,17 +3,26 @@
 // includes for unity build:
 #include "Shared/Shared.h"
 #include "Experiments/Experiments.h"
-#include "UnitTests/UnitTests.h" 
-#include "PerformanceTests/PerformanceTests.h" 
+#include "UnitTests/UnitTests.h"
+#include "PerformanceTests/PerformanceTests.h"
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 
-#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.h"
+//#include "../../JUCE/
+//#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.h" // doesn't exist on new pc. forgotten to add to the repo?
+//#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.cpp"
+//#include "../../../Libraries/JUCE/modules/romos/romos.h"
+
+// the files
+// romos/TestSuite/TestHelpers.cpp and
+// rapt_tests/UnitTests/Math/DifferentiaEquationTests.cpp
+// oth define arrays x,y in the global namespace which clash. For some reason, only gcc complains
+// about this. solution: wrap into namespace
 
 int main(int argc, char* argv[])
 {
 
   // tempoarary throw-away-code:
-  testCrossoverNewVsOld();
+  //testCrossoverNewVsOld();
 
   //===============================================================================================
   // RAPT tests:
@@ -21,7 +30,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+  //runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -74,7 +83,7 @@ int main(int argc, char* argv[])
 
   // Physics:
   //particleForceDistanceLaw();
-  //particleSystem(); 
+  //particleSystem();
 
   // Generators:
   //bouncillator();
@@ -104,6 +113,7 @@ int main(int argc, char* argv[])
   // just for fun:
   //groupString();
   //primeAlternatingSums();
+  //divisibility();
 
 
   //===============================================================================================
@@ -150,7 +160,7 @@ int main(int argc, char* argv[])
   //sineParameters();
   //bandLimitedStep();
   //cubicInterpolationNonEquidistant();   // move to unit tests
-  //hyperbolicFunctions(); 
+  //hyperbolicFunctions();
 //  splineInterpolationNonEquidistant();
   //rationalInterpolation();
 //splineInterpolationAreaNormalized();
@@ -187,7 +197,7 @@ int main(int argc, char* argv[])
   //crossCorrelationBestMatch();
   //combineFFTs(); // move to math experiments
   ////zeroCrossingPitchDetector(); // commented in header - why?
-  //instantaneousFrequency(); 
+  //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
@@ -287,7 +297,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-// envelopeDeBeating();
+  envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
   //partialExtractionTriple();
@@ -332,7 +342,7 @@ int main(int argc, char* argv[])
   //powRatioParametricSigmoid();
   //parametricSigmoid();
   //parametricSigmoid2();
-  //quinticParametricSigmoid(); 
+  //quinticParametricSigmoid();
   //septicParametricSigmoid();
   //saturator();
   //sigmoidScaleAndShift();
@@ -344,7 +354,7 @@ int main(int argc, char* argv[])
   // Performance Tests:
 
   // Analysis:
-  //testFourierTransformer(str); 
+  //testFourierTransformer(str);
   //testAutoCorrelationPitchDetector2(str);
 
   // Core:
@@ -455,7 +465,7 @@ int main(int argc, char* argv[])
   //runModularInteractiveTests();  // triggers assert due to plotting code
   romos::moduleFactory.clearRegisteredTypes(); // avoids memleak in unit tests
 
-  // important atomic modules for performance tests: 
+  // important atomic modules for performance tests:
   // Biquad: pure code, atomic module, wired model
   // Phasor
 
@@ -467,14 +477,14 @@ int main(int argc, char* argv[])
   if( detectMemoryLeaks() )
     std::cout << "\n\n!!! Memory leaks detected (pre exit of main()) !!! \n";
     //std::cout << "\n\n!!! Memory leaks detected !!! \n";
-  // If memory leaks occur even though no objects are actually created on the heap, it could mean 
-  // that some class in a library module has a static data member that does a dynamic memory 
+  // If memory leaks occur even though no objects are actually created on the heap, it could mean
+  // that some class in a library module has a static data member that does a dynamic memory
   // allocation or some global object is created somewhere that dynamically allocates memory.
 
   // todo: fix the memory leak - i guess it's in rosic - test it by building the project with
   // rapt only - doesn't work - try to figure out, where heap memory is allocated..
 
-  // set a debug-breakpoint _malloc_dbg in debug_heap.cpp and run the program - it gets called a 
+  // set a debug-breakpoint _malloc_dbg in debug_heap.cpp and run the program - it gets called a
   // bunch of times from the startup code - skipping through these, later there will be a call
   // from the offending memory allocating code from our codebase
   // ..it seems to come from romos - compiling with rapt and rosic only doesn't produce memleaks
@@ -482,11 +492,11 @@ int main(int argc, char* argv[])
   // ok - its in:
   // void BlitIntegratorInitialStates::createStateValueTables()
   // deleteStateValueTables(); is called after the memleaks were detected hmmm..
-  // solution: don't use global objects that freely lie around, instead use a 
-  // GlobalData class which is a singleton and encapsulates all sorts of data that should be 
+  // solution: don't use global objects that freely lie around, instead use a
+  // GlobalData class which is a singleton and encapsulates all sorts of data that should be
   // globally accessible
   // write a unit test for blit-saw (maybe there is one already) and change BlitSaw module to use
-  // that - then, before checking for memory leak, call GlobalData::cleanUp (their may be a 
+  // that - then, before checking for memory leak, call GlobalData::cleanUp (there may be a
   // GlobalData::initialize method as well that computes all the data/tables once and for all
   // or: allocate memory and compute the data-tables only when they are needed the first time
   // (lazy initialization)...can also be used for blep-tables, etc. - anything that needs globally
@@ -497,3 +507,9 @@ int main(int argc, char* argv[])
   getchar();
   return(EXIT_SUCCESS);
 }
+
+// ToDo:
+// -fix access violation in rsPrimeFactors - done
+// -use more efficient implementation for rsPowInt
+// -check that fabs or rsAbs is used everywhere where floating point numbers can occurr
+//  -maybe use rsAbs preferably because it may also be used for modular integers

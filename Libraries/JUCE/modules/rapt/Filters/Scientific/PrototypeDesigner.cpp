@@ -5,12 +5,12 @@ void updateLegendrePolynomial(T **P, T *P1, T *P2, int r)
 {
   if( rsIsEven(r) )
   {
-    rsPolynomial<T>::rsLegendrePolynomialRecursion(P1, r, P2, P1);
+    rsPolynomial<T>::legendreRecursion(P1, r, P2, P1);
     *P = P1;
   }
   else
   {
-    rsPolynomial<T>::rsLegendrePolynomialRecursion(P2, r, P1, P2);
+    rsPolynomial<T>::legendreRecursion(P2, r, P1, P2);
     *P = P2;
   }
 }
@@ -327,16 +327,16 @@ template<class T>
 T rsPrototypeDesigner<T>::getRequiredEllipticOrder(T passbandFrequency, T passbandRipple, 
   T stopbandFrequency, T stopbandRipple)
 {
-  T Gp = pow(T(10), -passbandRipple/T(20));                     // (1),Eq.1
-  T Gs = pow(T(10), -stopbandRipple/T(20));                     // (1),Eq.1
-  T ep = sqrt(T(1) / (Gp*Gp) - T(1));                           // (1),Eq.2
-  T es = sqrt(T(1) / (Gs*Gs) - T(1));                           // (1),Eq.2
-  T k  = passbandFrequency / stopbandFrequency;                 // (1),Eq.3
-  T k1 = ep/es;                                                 // (1),Eq.3
+  T Gp = pow(T(10), -passbandRipple/T(20));      // (1),Eq.1
+  T Gs = pow(T(10), -stopbandRipple/T(20));      // (1),Eq.1
+  T ep = sqrt(T(1) / (Gp*Gp) - T(1));            // (1),Eq.2
+  T es = sqrt(T(1) / (Gs*Gs) - T(1));            // (1),Eq.2
+  T k  = passbandFrequency / stopbandFrequency;  // (1),Eq.3
+  T k1 = ep/es;                                  // (1),Eq.3
   T K, Kp, K1, K1p;
-  rsEllipticIntegral(k,  &K,  &Kp);                             // (1),Eq.19
+  rsEllipticIntegral(k,  &K,  &Kp);              // (1),Eq.19
   rsEllipticIntegral(k1, &K1, &K1p);
-  return (K1p*K)/(K1*Kp);                                       // (1),Eq.34
+  return (K1p*K)/(K1*Kp);                        // (1),Eq.34
 }
 
 template<class T>
@@ -344,10 +344,10 @@ void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N
 {
   T* am = new T[N+1];
   T* bm = new T[N+1];
-  rsPolynomial<T>::polyCoeffsForNegativeArgument(b, bm, N);  // coeffs of N(-s)
-  rsPolynomial<T>::polyCoeffsForNegativeArgument(a, am, N);  // coeffs of D(-s)
-  rsPolynomial<T>::multiplyPolynomials(b, N, bm, N, b2);     // coeffs of N(s)*N(-s)
-  rsPolynomial<T>::multiplyPolynomials(a, N, am, N, a2);     // coeffs of D(s)*D(-s)
+  rsPolynomial<T>::coeffsForNegativeArgument(b, bm, N);  // coeffs of N(-s)
+  rsPolynomial<T>::coeffsForNegativeArgument(a, am, N);  // coeffs of D(-s)
+  rsPolynomial<T>::multiply(b, N, bm, N, b2);            // coeffs of N(s)*N(-s)
+  rsPolynomial<T>::multiply(a, N, am, N, a2);            // coeffs of D(s)*D(-s)
   delete[] am;
   delete[] bm;
 }
@@ -414,7 +414,7 @@ int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 {
   std::vector<Complex> rTmp; // maybe we can get rid of that temporary array
   rTmp.resize(N);
-  rsPolynomial<T>::findPolynomialRoots(a, N, &rTmp[0]);
+  rsPolynomial<T>::roots(a, N, &rTmp[0]);
   int numLeftRoots = rsOnlyLeftHalfPlane(&rTmp[0], r, N);
   rsAssert(numLeftRoots == ceil(0.5*N)); // maybe take this out later
   return numLeftRoots;
@@ -450,7 +450,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
     rsArray::fillWithZeros(v, k+1);
     for(r = 0; r <= k; r++) {                  // create weighted sum of ...
       updateLegendrePolynomial(&P, P1, P2, r); // ... Legendre polynomials in v
-      rsPolynomial<T>::weightedSumOfPolynomials(v, r, T(1), P, r, 2*r+T(1), v); 
+      rsPolynomial<T>::weightedSum(v, r, T(1), P, r, 2*r+T(1), v); 
     }
     rsArray::convolve(v, k+1, v, k+1, v);      // square it
   }
@@ -458,7 +458,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
     k = (N-2)/2;
     for(r = 0; r <= k+1; r++)
       updateLegendrePolynomial(&P, P1, P2, r);  // generate Legendre polynomial of order k+1 in P
-    rsPolynomial<T>::polyDerivative(P, v, k+1); // take the derivative, store in v:
+    rsPolynomial<T>::derivative(P, v, k+1); // take the derivative, store in v:
     rsArray::convolve(v, k+1, v, k+1, v);       // square it
     v[2*k+1] = 0;                               // multiply ...
     for(r = 2*k+1; r >= 1; r--)                 // ... by (x+1)
@@ -468,7 +468,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
   // integrate from -1 to 2*w^2-1:
   T a[1] = { -1 };  
   T b[3] = { -1, 0, 2};
-  rsPolynomial<T>::integratePolynomialWithPolynomialLimits(v, N-1, a, 0, b, 2, v);  
+  rsPolynomial<T>::integrateWithPolynomialLimits(v, N-1, a, 0, b, 2, v);  
   rsArray::scale(v, 2*N+1, 1.0 / rsArray::sum(v, 2*N+1));  // scale, such that L^2(1) = 1
 
   // clean up:
@@ -522,11 +522,11 @@ template<class T>
 void rsPrototypeDesigner<T>::halpernPolynomial(T *a, int N)
 {  
   a[0] = 0;
-  T *a1 = &a[1];                               // index shift of one for multiplication by x in Eq. 8.19 
-  rsHalpernU(a1, N-1);                         // create U-polynomial
-  rsArray::convolve(a1, N, a1, N, a1);         // square U-polynomial
-  rsArray::scale(a1, 2*N-1, 2*N);              // apply squared scale factor
-  rsPolynomial<T>::polyIntegral(a, a, 2*N-1);  // compute integral from 0 to w
+  T *a1 = &a[1];                           // index shift of one for multiplication by x in Eq. 8.19 
+  rsHalpernU(a1, N-1);                     // create U-polynomial
+  rsArray::convolve(a1, N, a1, N, a1);     // square U-polynomial
+  rsArray::scale(a1, 2*N-1, 2*N);          // apply squared scale factor
+  rsPolynomial<T>::integral(a, a, 2*N-1);  // compute integral from 0 to w
 }
 
 template<class T>
@@ -670,7 +670,7 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* 
   // find poles:
   T* a = new T[N+1];
   denominatorCoeffsFunction(a, N);
-  rsPolynomial<T>::findPolynomialRoots(a, N, p);
+  rsPolynomial<T>::roots(a, N, p);
 
   // set gain and scale poles to match Butterworth magnitude response asymptotically, if desired:
   bool matchButterworth = true; // maybe make this a parameter later
@@ -715,7 +715,7 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLS(Complex* z, Complex* p, T* 
   denominatorCoeffsFunction(a, N);
 
   // find poles of the shelving filter:
-  rsPolynomial<T>::findPolynomialRoots(a, N, p);
+  rsPolynomial<T>::roots(a, N, p);
 
   // construct lowpass numerator:
   T* b = new T[N+1];

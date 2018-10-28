@@ -88,7 +88,7 @@ bool float64x2UnitTest()
   y = rsMax(x12, x34); r &= y.get0() == 3.0; r &= y.get1() == 4.0;
   y = rsMax(x34, x12); r &= y.get0() == 3.0; r &= y.get1() == 4.0;
   y.set(1.0, 9.0);
-  y = rsClip(y, 2.0, 7.0); r &= y.get0() == 2.0; r &= y.get1() == 7.0; 
+  y = rsClip(y, 2.0, 7.0); r &= y.get0() == 2.0; r &= y.get1() == 7.0;
   y.set(-2.0, -3.0);
   y = rsAbs(y); r &= y.get0() == 2.0; r &= y.get1() == 3.0;
   y.set(-2.0, 3.0);
@@ -105,7 +105,7 @@ bool float64x2UnitTest()
 }
 
 bool complexFloat64x2UnitTest()
-{  
+{
   bool r = true;      // test result
 
   // we have 4 complex numbers z1[0] = 1 + 3i, z1[1] = 2 + 4i, z2[0] = 5 + 7i, z2[1] = 6 + 8i:
@@ -113,7 +113,7 @@ bool complexFloat64x2UnitTest()
   rsFloat64x2 re1(1, 2), im1(3, 4), re2(5, 6), im2(7, 8);
   std::complex<rsFloat64x2> z1(re1, im1), z2(re2, im2), w;
   //std::complex<rsFloat64x2> w; // for outputs
-  //std::complex<double> w0, w1;  
+  //std::complex<double> w0, w1;
 
   // addition:
   w = z1 + z2;
@@ -145,6 +145,8 @@ bool complexFloat64x2UnitTest()
   w  = rsExp(z1);
   r &= w0 == get0(w);
   r &= w1 == get1(w);
+  //r &= w0 == rosic::get0(w);
+  //r &= w1 == rosic::get1(w);
 
   return r;
 }

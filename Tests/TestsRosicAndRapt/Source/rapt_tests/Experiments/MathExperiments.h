@@ -16,6 +16,7 @@ void twoParamRemap();
 // move to something like FunExperiments (maybe copy the mandelbrot stuff over there, too)
 bool groupString();
 void primeAlternatingSums();
+void divisibility();
 
 
 

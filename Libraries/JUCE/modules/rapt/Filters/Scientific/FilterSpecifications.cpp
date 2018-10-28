@@ -78,8 +78,8 @@ rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA() const
 {
   rsFilterSpecificationBA<T> ba;
   ba.sampleRate = sampleRate;
-  ba.a = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(p); // rename: rootsToCoeffs
-  ba.b = rsPolynomial<T>::getPolynomialCoefficientsFromRoots(z); // have also coeffsToRoots
+  ba.a = rsPolynomial<T>::rootsToCoeffs(p);
+  ba.b = rsPolynomial<T>::rootsToCoeffs(z);
   if(isDigital()){
     rsReverse(ba.a);
     rsReverse(ba.b);
@@ -137,15 +137,15 @@ rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK() const
   if(isDigital()) {
     std::vector<std::complex<T>> tmp = a;
     rsReverse(tmp);
-    rsPolynomial<T>::findPolynomialRoots(&tmp[0], (int)tmp.size()-1, &zpk.p[0]);
+    rsPolynomial<T>::roots(&tmp[0], (int)tmp.size()-1, &zpk.p[0]);
     tmp = b; 
     rsReverse(tmp);
-    rsPolynomial<T>::findPolynomialRoots(&tmp[0], (int)tmp.size()-1, &zpk.z[0]);
+    rsPolynomial<T>::roots(&tmp[0], (int)tmp.size()-1, &zpk.z[0]);
     zpk.k = b[0] / a[0];
   }
   else {
-    rsPolynomial<T>::findPolynomialRoots(&a[0], (int)a.size()-1, &zpk.p[0]);
-    rsPolynomial<T>::findPolynomialRoots(&b[0], (int)b.size()-1, &zpk.z[0]);
+    rsPolynomial<T>::roots(&a[0], (int)a.size()-1, &zpk.p[0]);
+    rsPolynomial<T>::roots(&b[0], (int)b.size()-1, &zpk.z[0]);
     zpk.k = b[b.size()-1] / a[a.size()-1];
   }
   zpk.sortPolesAndZeros();

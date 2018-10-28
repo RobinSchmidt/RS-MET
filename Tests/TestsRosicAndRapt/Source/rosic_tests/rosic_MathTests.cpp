@@ -57,11 +57,11 @@ bool rotes::testCubicCoeffsTwoPointsAndDerivatives()
   double yc, dyc;       // computed values
   double tol = 1.e-14;  // tolerance
 
-  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x[0], a, 3, &yc, &dyc);
+  RAPT::rsPolynomial<double>::evaluateWithDerivative(x[0], a, 3, &yc, &dyc);
   result &= RAPT::rsIsCloseTo( yc,  y[0], tol);
   result &= RAPT::rsIsCloseTo(dyc, dy[0], tol);
 
-  RAPT::rsPolynomial<double>::evaluatePolynomialAndDerivativeAt(x[1], a, 3, &yc, &dyc);
+  RAPT::rsPolynomial<double>::evaluateWithDerivative(x[1], a, 3, &yc, &dyc);
   result &= RAPT::rsIsCloseTo( yc,  y[1], tol);
   result &= RAPT::rsIsCloseTo(dyc, dy[1], tol);
 
@@ -76,14 +76,14 @@ bool rotes::testPolynomialDiffAndInt()
   double ad[5];
   double ai[7];
 
-  RAPT::rsPolynomial<double>::polyDerivative(a, ad, 5);
+  RAPT::rsPolynomial<double>::derivative(a, ad, 5);
   result &= (ad[0] == -1);
   result &= (ad[1] == 10);
   result &= (ad[2] == 21);
   result &= (ad[3] == -12);
   result &= (ad[4] == 10);
 
-  RAPT::rsPolynomial<double>::polyIntegral(a, ai, 5, 2.0);
+  RAPT::rsPolynomial<double>::integral(a, ai, 5, 2.0);
   result &= (ai[0] ==  2.0);
   result &= (ai[1] ==  2.0/1.0);
   result &= (ai[2] == -1.0/2.0);
@@ -96,24 +96,24 @@ bool rotes::testPolynomialDiffAndInt()
 }
 
 bool rotes::testPolynomialComposition()
-{  
+{
   bool result = true;
-  
+
   static const int na = 5;
   static const int nb = 4;
   static const int nc = na*nb;
   double a[na+1] = {2, -1, 5, 7, -3, 2}; // 2*x^5 - 3*x^4 + 7*x^3 + 5*x^2 - 1*x^1 + 2*x^0
   double b[nb+1] = {3,  1, 4, -5, 3};    // 3*x^4 - 5*x^3 + 4*x^2 + 1*x^1 - 3*x^0
   double c[nc+1];
-  RAPT::rsPolynomial<double>::composePolynomials(a, na, b, nb, c);
+  RAPT::rsPolynomial<double>::compose(a, na, b, nb, c);
 
   // check, if the composed c-polynomial returns the same result as applying the 2nd b-polynomial
   // to the result of the 1st a-polynomial:
   double x = -3.0; // input value
   double y1, y2;
-  y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  a, na);
-  y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(y1, b, nb);
-  y2 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x,  c, nc);
+  y1 = RAPT::rsPolynomial<double>::evaluate(x,  a, na);
+  y1 = RAPT::rsPolynomial<double>::evaluate(y1, b, nb);
+  y2 = RAPT::rsPolynomial<double>::evaluate(x,  c, nc);
   result &= (y1 == y2);
 
   return result;
@@ -131,7 +131,7 @@ bool rotes::testPolynomialWeightedSum()
   double r[rN+1];
 
   // r(x) = 2*p(x) + 3*q(x) = 4*x^5 - 6*x^4 + 20*x^3 + 28*x^2 - 11*x^1 + 12*x^0
-  RAPT::rsPolynomial<double>::weightedSumOfPolynomials(p, pN, 2.0, q, qN, 3.0, r);
+  RAPT::rsPolynomial<double>::weightedSum(p, pN, 2.0, q, qN, 3.0, r);
   result &= (r[0] ==  12);
   result &= (r[1] == -11);
   result &= (r[2] ==  28);
@@ -139,9 +139,9 @@ bool rotes::testPolynomialWeightedSum()
   result &= (r[4] == - 6);
   result &= (r[5] ==   4);
 
-  // exchange roles of function parameters (function takes the other branch, result should be the 
+  // exchange roles of function parameters (function takes the other branch, result should be the
   // same):
-  RAPT::rsPolynomial<double>::weightedSumOfPolynomials(q, qN, 3.0, p, pN, 2.0, r);
+  RAPT::rsPolynomial<double>::weightedSum(q, qN, 3.0, p, pN, 2.0, r);
   result &= (r[0] ==  12);
   result &= (r[1] == -11);
   result &= (r[2] ==  28);
@@ -151,7 +151,7 @@ bool rotes::testPolynomialWeightedSum()
 
   // use a truncated polynomial for p (such that p and q are of the same order):
   RAPT::rsArray::fillWithZeros(r, rN+1);
-  RAPT::rsPolynomial<double>::weightedSumOfPolynomials(p, qN, 2.0, q, qN, 3.0, r);
+  RAPT::rsPolynomial<double>::weightedSum(p, qN, 2.0, q, qN, 3.0, r);
   result &= (r[0] ==  12);
   result &= (r[1] == -11);
   result &= (r[2] ==  28);
@@ -165,7 +165,7 @@ bool rotes::testPolynomialWeightedSum()
 bool rotes::testPolynomialIntegrationWithPolynomialLimits()
 {
   bool result = true;
-  
+
   static const int np = 5;
   static const int na = 3;
   static const int nb = 4;
@@ -182,19 +182,19 @@ bool rotes::testPolynomialIntegrationWithPolynomialLimits()
 
   // obtain coefficients of indefinite integral:
   double P[nP+1];
-  RAPT::rsPolynomial<double>::polyIntegral(p, P, np);
+  RAPT::rsPolynomial<double>::integral(p, P, np);
 
   // compute integration limits for definite integral:
-  double lowerLimit = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, a, na);
-  double upperLimit = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, b, nb);
+  double lowerLimit = RAPT::rsPolynomial<double>::evaluate(x, a, na);
+  double upperLimit = RAPT::rsPolynomial<double>::evaluate(x, b, nb);
 
   // evaluate definite integral:
-  y1 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(upperLimit, P, nP) 
-    - RAPT::rsPolynomial<double>::evaluatePolynomialAt(lowerLimit, P, nP);
+  y1 = RAPT::rsPolynomial<double>::evaluate(upperLimit, P, nP)
+    - RAPT::rsPolynomial<double>::evaluate(lowerLimit, P, nP);
 
 
-  RAPT::rsPolynomial<double>::integratePolynomialWithPolynomialLimits(p, np, a, na, b, nb, q);
-  y2 = RAPT::rsPolynomial<double>::evaluatePolynomialAt(x, q, nq);
+  RAPT::rsPolynomial<double>::integrateWithPolynomialLimits(p, np, a, na, b, nb, q);
+  y2 = RAPT::rsPolynomial<double>::evaluate(x, q, nq);
 
   result &= RAPT::rsIsCloseTo(y2, y1, 1.e-13 * fabs(y1));
 
@@ -206,7 +206,7 @@ void rotes::testPolynomialRootFinder()
   // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 as test function
   double a1[5] = {-52, -23, 21, -7, 1};
   std::complex<double> r1[4];
-  RAPT::rsPolynomial<double>::findPolynomialRoots(a1, 4, r1); 
+  RAPT::rsPolynomial<double>::roots(a1, 4, r1);
 
   static const int maxN     = 20;
   static const int numTests = 1000;
@@ -234,7 +234,7 @@ void rotes::testPolynomialRootFinder()
     RAPT::rsPolynomial<double>::rootsToCoeffs(rTrue, a, N);
 
     // find the roots:
-    RAPT::rsPolynomial<double>::findPolynomialRoots(a, N, rFound);
+    RAPT::rsPolynomial<double>::roots(a, N, rFound);
 
     // try to find a matching root in the found roots for each of the true roots:
     for(j = 0; j < N; j++)
@@ -290,7 +290,7 @@ void rotes::testLinLogEquationSolver()
 
 
 
-  
+
   // x as function of y:
   RAPT::rsArray::fillWithRangeLinear(y, N, yMin, yMax);
   for(n = 0; n < N; n++)
@@ -314,7 +314,7 @@ void rotes::testLinLogEquationSolverOld()
 
   // \todo: use a double-loop that loops through values of y and c in some range and check results
   */
-  
+
 
 
   // interactive test:
@@ -328,7 +328,7 @@ void rotes::testLinLogEquationSolverOld()
   int n;
   //double x[N], xLin[N], xLog[N], y[N], yLin[N], yLog[N], f[N];
   double x[N], y[N], yLin[N], yLog[N];
-  
+
   // y as function of x:
   RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   for(n = 0; n < N; n++)
@@ -338,7 +338,7 @@ void rotes::testLinLogEquationSolverOld()
     y[n]    = yLin[n] + yLog[n];  // the sum of both parts
   }
   Plotter::plotData(N, x, y, yLin, yLog);
-  
+
   /*
   // x as function of y:
   rosic::fillWithRangeLinear(y, N, -50, 50);
@@ -357,8 +357,8 @@ void rotes::testLinLogEquationSolverOld()
   //Plotter::plotData(N, y, xLin);
   Plotter::plotData(N, y, x);
   */
- 
-  
+
+
   /*
   // g(x) = c*x + ln(x) + k
   rosic::fillWithRangeLinear(x, N, xMin, xMax);
@@ -370,7 +370,7 @@ void rotes::testLinLogEquationSolverOld()
   }
   Plotter::plotData(N, x, y, yLin, yLog);
   */
-  
+
   int dummy = 0;
 }
 

@@ -54,8 +54,8 @@ std::complex<T> rsFilterAnalyzer<T>::getAnalogFrequencyResponseAt(Complex* z, Co
   int N, T w)
 {
   Complex s = Complex(0.0, w);
-  Complex n = rsPolynomial<T>::evaluatePolynomialWithRoots(s, z, N); 
-  Complex d = rsPolynomial<T>::evaluatePolynomialWithRoots(s, p, N); 
+  Complex n = rsPolynomial<T>::evaluateFromRoots(s, z, N); 
+  Complex d = rsPolynomial<T>::evaluateFromRoots(s, p, N); 
   return k * n/d;
 }
 

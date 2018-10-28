@@ -8,7 +8,7 @@ header files that the compiler may be using.
 #endif
 
 
-#ifdef _MSC_VER
+//#ifdef _MSC_VER
 
 #include "romos.h"
 
@@ -67,7 +67,7 @@ using namespace rosic;
 #include "TestSuite/TestHelpers.cpp"   // functions that have been removed
 #include "TestSuite/TestsMain.cpp"
 
-#endif
+//#endif
 
 
 

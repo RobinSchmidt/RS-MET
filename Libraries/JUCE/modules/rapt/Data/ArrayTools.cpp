@@ -74,7 +74,7 @@ void rsArray::allocateSquareArray2D(T**& theArray, int size)
 }
 
 template <class T>
-void rsArray::applyFunction(T *inBuffer, T *outBuffer, int length, T (*f) (T))
+void rsArray::applyFunction(const T *inBuffer, T *outBuffer, int length, T (*f) (T))
 {
   for(int i = 0; i < length; i++)
     outBuffer[i] = f(inBuffer[i]);
@@ -195,10 +195,9 @@ bool rsArray::contains(T *buffer, int length, T elementToFind)
 }
 
 template <class T>
-void rsArray::convolve(T *x, int xLength, T *h, int hLength, T *y)
+void rsArray::convolve(const T *x, int xLength, const T *h, int hLength, T *y)
 {
-  for(int n = xLength+hLength-2; n >= 0; n--)
-  {
+  for(int n = xLength+hLength-2; n >= 0; n--) {
     T s = T(0);
     for(int k = rsMax(0, n-xLength+1); k <= rsMin(hLength-1, n); k++)
       s += h[k] * x[n-k];
@@ -917,6 +916,12 @@ T rsArray::meanDifference(const T *x, int N)
   return s / (N-1);    // for N values, there are N-1 differences
 }
 
+template<class T>
+T rsArray::meanSquare(const T *x, int N)
+{
+  return sumOfSquares(x, N) / T(N);
+}
+
 template <class T>
 T rsArray::median(T *buffer, int length)
 {
@@ -1091,7 +1096,7 @@ T rsArray::sum(T *buffer, int length)
 }
 
 template<class T>
-T rsArray::sumOfProducts(T *x, T *y, int N)
+T rsArray::sumOfProducts(const T *x, const T *y, int N)
 {
   T s = T(0);
   for(int n = 0; n < N; n++)
@@ -1100,7 +1105,7 @@ T rsArray::sumOfProducts(T *x, T *y, int N)
 }
 
 template<class T>
-T rsArray::sumOfSquares(T *x, int N)
+T rsArray::sumOfSquares(const T *x, int N)
 {
   return sumOfProducts(x, x, N);
 }

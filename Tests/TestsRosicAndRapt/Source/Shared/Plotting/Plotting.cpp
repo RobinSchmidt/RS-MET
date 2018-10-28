@@ -1,7 +1,7 @@
 #ifndef RAPT_PLOTTING_CPP // why? i think, it may be deleted
 #define RAPT_PLOTTING_CPP
 
-#include "Plotting.h" 
+#include "Plotting.h"
 
 //void plotData(int N, float *x, float *y1, float *y2, float *y3, float *y4, float *y5)
 //{
@@ -38,11 +38,11 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   std::vector<double>& degrees, bool logFreq)
 {
   //rsAssert(size(f) == size(dB) && size(f) == size(degrees));
-  int N = (int) size(f);
+  int N = (int) f.size();
   GNUPlotter p;
   p.addDataArrays(N, &f[0], &dB[0]);
   p.addDataArrays(N, &f[0], &degrees[0]);
-  p.setPixelSize(1200, 400); 
+  p.setPixelSize(1200, 400);
   p.setTitle("Filter Frequency Response");
   //p.setGraphColors("A00000", "909000", "008000", "0000A0", "800080",
   //  "A00000", "909000", "008000", "0000A0", "800080" );
@@ -75,7 +75,7 @@ void plotData(int N, double *x, double *y1, double *y2, double *y3, double *y4, 
   plt.plotFunctionTables(N, x, y1, y2, y3, y4, y5);
 }
 
-void plotData(int N, double x0, double dx, double *y1, double *y2, double *y3, double *y4, 
+void plotData(int N, double x0, double dx, double *y1, double *y2, double *y3, double *y4,
   double *y5)
 {
   double *x = new double[N];
@@ -117,9 +117,9 @@ void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H)
   double *t = new double[numFrames];
   double *f = new double[numBins];
   //p.rangeLinear(t, numFrames, 0.0, H*(numFrames-1)/fs );
-  //p.rangeLinear(f, numBins,   0.0, 0.5*fs*(numBins-1)/numBins); 
+  //p.rangeLinear(f, numBins,   0.0, 0.5*fs*(numBins-1)/numBins);
   p.rangeLinear(t, numFrames, 0.0, tMax);
-  p.rangeLinear(f, numBins,   0.0, fMax); 
+  p.rangeLinear(f, numBins,   0.0, fMax);
 
 
   p.setDataPrecision(4);                                  // make temp files smaller
@@ -128,7 +128,7 @@ void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H)
   // set up style settings:
   //p.setAxisLabels("Time in s", "Frequency in Hz", "Level in dB");
   p.setPixelSize(800, 400);
-  p.addGraph("i 0 nonuniform matrix w image notitle");   
+  p.addGraph("i 0 nonuniform matrix w image notitle");
 
   //p.addCommand("set palette color");                  // this is used by default
   //p.addCommand("set palette color negative");         // reversed colors
@@ -141,7 +141,7 @@ void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H)
   double dbMin = -100.0;
   double dbMax =   10.0;
   p.setRange(0.0, tMax, 0.0, fMax, dbMin, dbMax);
-  // doesn't seem to have any effect on the color axis (z). it seems like GNUPlot uses 
+  // doesn't seem to have any effect on the color axis (z). it seems like GNUPlot uses
   // autoscaling for it, no matter what.
 
   p.plot();
