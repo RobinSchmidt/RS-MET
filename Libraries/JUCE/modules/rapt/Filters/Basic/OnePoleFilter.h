@@ -83,9 +83,17 @@ public:
   static inline void coeffsLowpassBLT(T w, T* b0, T* b1, T* a1)
   {
     T t = tan(0.5*w);
+
+    rsAssert(rsIsFiniteNumber(t));
+    // hmmm...maybe we should allow t == inf and set a1 = -1 in this case (that's the limiting 
+    // value)
+
+
     *a1 = (1-t) / (1+t);
     *b0 = 0.5*(1 - *a1);
     *b1 = *b0;
+    // w = 0:  t = 0 -> a1 = 1, b0,b1 = 0
+    // w = pi: t = inf -> a1,b0,b1 = NaN
   }
 
   /** Highpass via bilinear transform (from DAFX) */
@@ -216,11 +224,7 @@ public:
     HIGHSHELV_NMM,    // high shelving via nyquist magnitude match
 
   };
-  // \todo (maybe): let the user choose between LP/HP versions obtained via bilinear trafo and 
-  // impulse invariant trafo, magnitude-matched trafo
-  // i.e. have options LOWPASS_IIT (impulse invariant transform), 
-  // LOWPASS_BLT (bilinear tarnsform), LOWPASS_MZTI (matched z-transform improved), NFG (nyquist
-  // frequency gain - a la orfanidis - maybe can also be called PMM for pointwise magnitude match)
+  // NMM maybe can also be called PMM for pointwise magnitude match
 
   //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */

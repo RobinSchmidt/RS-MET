@@ -46,13 +46,9 @@ void rsOnePoleFilter<TSig, TPar>::setCutoff(TPar newCutoff)
 template<class TSig, class TPar>
 void rsOnePoleFilter<TSig, TPar>::setShelvingGain(TPar newGain)
 {
-  if( newGain > 0.0 )
-  {
-    shelvingGain = newGain;
-    calcCoeffs();
-  }
-  else
-    RS_DEBUG_BREAK; // this is a linear gain factor and must be >= 0.0
+  rsAssert(newGain >= 0.0) // this is a linear gain factor and must be >= 0.0
+  shelvingGain = newGain;
+  calcCoeffs();
 }
 
 template<class TSig, class TPar>
