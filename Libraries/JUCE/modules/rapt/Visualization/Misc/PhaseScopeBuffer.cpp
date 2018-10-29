@@ -173,7 +173,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
   // transform to pixel coordinates and draw line:
   toPixelCoordinates(x, y);
 
-  if(screenScanner.resetOccurred())
+  if(oneDimensonal && screenScanner.resetOccurred())
     moveTo(x, y);        // start a new segment without drawing a connection from old datapoint
   else
     addSegmentTo(x, y);  // connect old datapoint with current
