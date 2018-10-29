@@ -55,6 +55,14 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 
   if( assignedParameter != nullptr )
     assignedParameter->setValue((double) indexToSelect, sendNotification, sendNotification);
+  // check, if we have a bug here and may run into endless recursive cross-notifications between 
+  // the parameter and the combobox - put a breakpoint, look at the stack trace
+  // yes: plug in a BreakpointModulator in ToolChain and change the grid setting - endless 
+  // recursion
+  // possible solutions:
+  // -when the parameter notifies the combo-box about a parameter-change, we should recognize that
+  //  it is our assigned parameter and not call assignedParameter->setValue here (as it already has
+  //  been updated)
 
   setText(getItemText(indexToSelect));
 

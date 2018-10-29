@@ -64,7 +64,7 @@ public:
 
   /** Sets the buffers to be used for the produced points (x- and y-coordinates as well as weights
   (i.e. color/brightness values). These are the buffers that will be filled when you call
-  getDotsForInputPoint. */
+  updateDotBuffers. */
   void setDotBuffers(TCor* bufX, TCor* bufY, TWgt* bufWeights, int bufLengths);
 
   //-----------------------------------------------------------------------------------------------
@@ -77,12 +77,16 @@ public:
   via setDotBuffers.  */
   int updateDotBuffers(TCor newX, TCor newY);
 
-
+  /** Adds a new incoming datapoint to the front of our point buffers and discards the last. Called 
+  internally from updateDotBuffers, but there are situations where you may also need to call it 
+  yourself.  */
   void updatePointBuffers(TCor newX, TCor newY);
 
+  /** Shifts all the stored points in our point buffers by the specified amount. This can be 
+  necessary in a scope in 1D mode when the ray jumps from the right border of the screen back
+  to the left, i.e. wraps around. Then, all point locations must be shifted left by the screen 
+  width. */
   void shiftPointBuffers(TCor shiftX, TCor shiftY);
-
-
 
   /** Resets the input point buffers to the given coodinate values. You will typically want to pass
   incoordinates that correspond to the origin of you coordinate system, either in pixel coordinates
