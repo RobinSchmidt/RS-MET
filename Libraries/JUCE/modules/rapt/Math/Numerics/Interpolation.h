@@ -147,6 +147,22 @@ order 2*smoothness+1 will be used. */
 template<class Tx, class Ty>
 void rsInterpolateSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni, int smoothness = 1);
 
+
+/** Not yet finished.... */
+template<class Tx, class Ty>
+void rsNaturalCubicSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni);
+
+// todo: implement a natural cubic spline interpolation as describen here:
+// http://mathworld.wolfram.com/CubicSpline.html
+// i think, this can use the method above by assigning derivative values according to the 
+// tridiagonal system at the bottom instead of using a finite difference approximation
+// other links:
+// http://www.maths.nuigalway.ie/~niall/teaching/Archive/1617/MA378/2-2-CubicSplines.pdf
+
+// http://mathonline.wikidot.com/natural-cubic-spline-function-interpolation
+// http://mathonline.wikidot.com/natural-cubic-spline-function-interpolation-examples-1
+
+
 /** Given two points (x0,y0), (x1,y1), this function computes the cubic polynomial coefficients for
 a spline arc that has the parametric equations:
 x(t) = a0 + a1*t + a2*t^2 + a3*t^3
