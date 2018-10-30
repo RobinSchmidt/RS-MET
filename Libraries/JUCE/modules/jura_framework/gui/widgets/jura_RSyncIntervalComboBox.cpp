@@ -13,34 +13,34 @@ RSyncIntervalComboBox::RSyncIntervalComboBox(const String& componentName) : RCom
   addItem(6, "4 beats"  );
   addItem(7, "8 beats"  );
   addItem(8, "16 beats" );
-  selectItemByIndex(4, false);
+  selectItemByIndex(4, false, false);
 }
 
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void RSyncIntervalComboBox::setValue(double newValue, bool sendMessage)
+void RSyncIntervalComboBox::setValue(double newValue, bool sendMessage, bool updateParameter)
 {
   if( isCloseTo(newValue, 1.0/16.0, 1.0/64.0) )
-    selectItemByIndex(0, sendMessage);
+    selectItemByIndex(0, sendMessage, updateParameter);
   else if( isCloseTo(newValue, 1.0/8.0, 1.0/64.0) )
-    selectItemByIndex(1, sendMessage);
+    selectItemByIndex(1, sendMessage, updateParameter);
   else if( isCloseTo(newValue, 1.0/4.0, 1.0/64.0) )
-    selectItemByIndex(2, sendMessage);
+    selectItemByIndex(2, sendMessage, updateParameter);
   else if( isCloseTo(newValue, 1.0/2.0, 1.0/64.0) )
-    selectItemByIndex(3, sendMessage);
+    selectItemByIndex(3, sendMessage, updateParameter);
   else if( isCloseTo(newValue, 1.0, 1.0/64.0) )
-    selectItemByIndex(4, sendMessage);
+    selectItemByIndex(4, sendMessage, updateParameter);
   else if( isCloseTo(newValue, 2.0, 1.0/64.0) )
-    selectItemByIndex(5, sendMessage);
+    selectItemByIndex(5, sendMessage, updateParameter);
   else if( isCloseTo(newValue, 4.0, 1.0/64.0) )
-    selectItemByIndex(6, sendMessage);
+    selectItemByIndex(6, sendMessage, updateParameter);
   else if( isCloseTo(newValue, 8.0, 1.0/64.0) )
-    selectItemByIndex(7, sendMessage);
+    selectItemByIndex(7, sendMessage, updateParameter);
   else if( isCloseTo(newValue, 16.0, 1.0/64.0) )
-    selectItemByIndex(8, sendMessage);
+    selectItemByIndex(8, sendMessage, updateParameter);
   else
-    selectItemByIndex(4, sendMessage);
+    selectItemByIndex(4, sendMessage, updateParameter);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -68,8 +68,9 @@ public:
   @see addItem, removeItem, getNumItems */
   void clear(const bool dontSendChangeMessage = false);
 
-  /** Selects one of the items and optionally sends out a notification to our observers.  */
-  void selectItemByIndex(int indexToSelect, bool sendNotification);
+  /** Selects one of the items and optionally sends out a notification to our observers and/or sets
+  teh value of our assigne Parameter (if any) to the new value.  */
+  void selectItemByIndex(int indexToSelect, bool sendNotification, bool updateParameter);
 
   /** Assuming that the passed text matches one of the item-texts, this function sets the contents 
   of the combo-box's text field to the respective item. If there is no matching item, a debug-break 

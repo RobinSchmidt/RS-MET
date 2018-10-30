@@ -13,7 +13,7 @@ RTimeGridComboBox::RTimeGridComboBox(const String& componentName) : RComboBox(co
   addItem(6, "1/64" );
   addItem(7, "0.01" );
   addItem(8, "1/128");
-  selectItemByIndex(2, false);
+  selectItemByIndex(2, false, false);
 }
 
 //-------------------------------------------------------------------------------------------------

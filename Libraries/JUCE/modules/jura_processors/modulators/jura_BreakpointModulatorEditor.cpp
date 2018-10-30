@@ -515,7 +515,8 @@ void BreakpointParameterEditor::updateWidgetsAccordingToState()
   //  (int) rsModBreakpoint::STAIRSTEP);
   int shapeIndex = jmax(m->getBreakpointShape(selectedBreakpointIndex),
     (int) rosic::ModBreakpoint::STAIRSTEP);
-  shapeComboBox->selectItemByIndex(shapeIndex, false);
+  //shapeComboBox->selectItemByIndex(shapeIndex, false); // old
+  shapeComboBox->selectItemByIndex(shapeIndex, false, false);
   shapeSlider->setEnabled(false);
   if( shapeIndex >= 3 && shapeIndex <= 6 )
     shapeSlider->setEnabled(true);

@@ -22,7 +22,7 @@ public:
   /** Selects the option which corresponds to some numeric value - it is assumed that the passed
   value is very close to one of the available options (within a margin of 1.0/64.0), otherwise it
   will select the default option (1 beat). */
-  void setValue(double newValue, bool sendMessage = true);
+  void setValue(double newValue, bool sendMessage = true, bool updateParameter = true);
 
   //---------------------------------------------------------------------------------------------
   // inquiry:

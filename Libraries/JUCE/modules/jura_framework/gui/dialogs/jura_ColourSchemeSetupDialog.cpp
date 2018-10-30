@@ -14,7 +14,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
     juce::String("Selects the general appearance of the editors"));
   editorAppearanceComboBox->addItem(ColourScheme::DARK_ON_BRIGHT, "Dark on bright");
   editorAppearanceComboBox->addItem(ColourScheme::BRIGHT_ON_DARK, "Bright on dark");
-  editorAppearanceComboBox->selectItemByIndex(0, false);
+  editorAppearanceComboBox->selectItemByIndex(0, false, false);
   editorAppearanceComboBox->registerComboBoxObserver(this);
 
   addWidget( widgetAppearanceComboBox =
@@ -23,7 +23,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
     juce::String("Selects the general appearance of the widgets"));
   widgetAppearanceComboBox->addItem(ColourScheme::DARK_ON_BRIGHT, "Dark on bright");
   widgetAppearanceComboBox->addItem(ColourScheme::BRIGHT_ON_DARK, "Bright on dark");
-  widgetAppearanceComboBox->selectItemByIndex(0, false);
+  widgetAppearanceComboBox->selectItemByIndex(0, false, false);
   widgetAppearanceComboBox->registerComboBoxObserver(this);
 
   addWidget( plotAppearanceComboBox =
@@ -32,7 +32,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
     juce::String("Selects the general appearance of the plots"));
   plotAppearanceComboBox->addItem(ColourScheme::DARK_ON_BRIGHT, "Dark on bright");
   plotAppearanceComboBox->addItem(ColourScheme::BRIGHT_ON_DARK, "Bright on dark");
-  plotAppearanceComboBox->selectItemByIndex(0, false);
+  plotAppearanceComboBox->selectItemByIndex(0, false, false);
   plotAppearanceComboBox->registerComboBoxObserver(this);
 
   addWidget( saturationSlider = new RSlider(String("Saturation")) );
@@ -200,9 +200,9 @@ void ColourSchemeSetupDialog::changeListenerCallback(juce::ChangeBroadcaster *ob
 
 void ColourSchemeSetupDialog::updateWidgetsAccordingToState()
 {
-  editorAppearanceComboBox->selectItemByIndex(getEditorColourScheme().getAppearance(), false);
-  widgetAppearanceComboBox->selectItemByIndex(getWidgetColourScheme().getAppearance(), false);
-  plotAppearanceComboBox->selectItemByIndex(  getPlotColourScheme().getAppearance(),   false);
+  editorAppearanceComboBox->selectItemByIndex(getEditorColourScheme().getAppearance(), false, false);
+  widgetAppearanceComboBox->selectItemByIndex(getWidgetColourScheme().getAppearance(), false, false);
+  plotAppearanceComboBox->selectItemByIndex(  getPlotColourScheme().getAppearance(),   false, false);
 
   saturationSlider->setValue(getEditorColourScheme().getSaturationMultiplier(), false);
   gammaSlider->setValue(     getEditorColourScheme().getBrightnessGamma(),      false);

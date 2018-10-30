@@ -1927,7 +1927,7 @@ void QuadrifexModuleEditor::updateWidgetsAccordingToState()
   AudioModuleEditor::updateWidgetsAccordingToState();
 
   int routingIndex = quadrifexModuleToEdit->wrappedQuadrifex->getSlotRouting();
-  routingComboBox->selectItemByIndex(routingIndex, false);
+  routingComboBox->selectItemByIndex(routingIndex, false, false);
   routingDiagram->setSlotRouting(routingIndex);
   if( routingIndex ==  rosic::Quadrifex::MATRIX )
     matrixEditor->setVisible(true);

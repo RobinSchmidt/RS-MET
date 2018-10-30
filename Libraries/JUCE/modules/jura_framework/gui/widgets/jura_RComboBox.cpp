@@ -45,7 +45,7 @@ void RComboBox::clear(const bool dontSendChangeMessage)
   popUpMenu->clear();
 }
 
-void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
+void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification, bool updateParameter)
 {
   jassert( indexToSelect >= 0 && indexToSelect < popUpMenu->getNumTopLevelItems() );  // index out of range
   if( indexToSelect < 0 || indexToSelect >= popUpMenu->getNumTopLevelItems() )
@@ -53,8 +53,9 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 
   popUpMenu->selectItemByIndex(indexToSelect, false);
 
-  if( assignedParameter != nullptr )
-    assignedParameter->setValue((double) indexToSelect, sendNotification, sendNotification);
+  // old:
+  //if( assignedParameter != nullptr )
+  //  assignedParameter->setValue((double) indexToSelect, sendNotification, sendNotification);
   // check, if we have a bug here and may run into endless recursive cross-notifications between 
   // the parameter and the combobox - put a breakpoint, look at the stack trace
   // yes: plug in a BreakpointModulator in ToolChain and change the grid setting - endless 
@@ -63,6 +64,11 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
   // -when the parameter notifies the combo-box about a parameter-change, we should recognize that
   //  it is our assigned parameter and not call assignedParameter->setValue here (as it already has
   //  been updated)
+
+  // new:
+  if( assignedParameter != nullptr && updateParameter )
+    assignedParameter->setValue((double) indexToSelect, true, true);
+
 
   setText(getItemText(indexToSelect));
 
@@ -142,7 +148,7 @@ void RComboBox::assignParameter(Parameter* parameterToAssign)
 void RComboBox::parameterChanged(Parameter* p)
 {
   RTextField::parameterChanged(p);
-  selectItemByIndex((int)p->getValue(), true);
+  selectItemByIndex((int)p->getValue(), true, false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -202,7 +208,7 @@ void RComboBox::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 void RComboBox::updateWidgetFromAssignedParameter(bool sendNotification)
 {
   if( assignedParameter != NULL )
-    selectItemByIndex((int) assignedParameter->getRawValue(), sendNotification);
+    selectItemByIndex((int) assignedParameter->getRawValue(), sendNotification, false);
 }
 
 void RComboBox::mouseDown(const MouseEvent& e)
@@ -211,7 +217,7 @@ void RComboBox::mouseDown(const MouseEvent& e)
   {
     if (assignedParameter != NULL && e.mods.isCommandDown())
     {
-      selectItemByIndex((int)assignedParameter->getDefaultValue(), true);
+      selectItemByIndex((int)assignedParameter->getDefaultValue(), true, true);
       return;
     }
 
