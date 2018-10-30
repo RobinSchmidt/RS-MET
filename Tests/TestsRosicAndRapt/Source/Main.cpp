@@ -7,16 +7,12 @@
 #include "PerformanceTests/PerformanceTests.h"
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 
-//#include "../../JUCE/
-//#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.h" // doesn't exist on new pc. forgotten to add to the repo?
-//#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.cpp"
-//#include "../../../Libraries/JUCE/modules/romos/romos.h"
-
-// the files
-// romos/TestSuite/TestHelpers.cpp and
-// rapt_tests/UnitTests/Math/DifferentiaEquationTests.cpp
-// oth define arrays x,y in the global namespace which clash. For some reason, only gcc complains
-// about this. solution: wrap into namespace
+// crash (access violation) if runAllUnitTests and envelopeDeBeating are run one after another
+// it goes away when commenting out the code from
+// passed &= runUnitTest(&testDifferentialEquationSystem, "rsDifferentialEquationSystem");
+// to
+// passed &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
+// in UnitTests.cpp
 
 int main(int argc, char* argv[])
 {
@@ -30,7 +26,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // todo: merge with unit tests for RSLib
+  runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -161,9 +157,9 @@ int main(int argc, char* argv[])
   //bandLimitedStep();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions();
-//  splineInterpolationNonEquidistant();
+  //splineInterpolationNonEquidistant();
   //rationalInterpolation();
-//splineInterpolationAreaNormalized();
+  //splineInterpolationAreaNormalized();
   //numericDiffAndInt();
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header

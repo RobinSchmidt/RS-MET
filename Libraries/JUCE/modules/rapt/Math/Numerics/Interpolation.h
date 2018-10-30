@@ -239,7 +239,7 @@ T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
   fitCubicWithDerivativeFixedX(y2, y3, s2, s3, &a[3], &a[2], &a[1], &a[0]);
   return rsPolynomial<T>::evaluate(s*(x-x2), a, 3);
   // maybe factor out a function that returns the polynomial coefficients (and s) because the
-  // same set of coefficients my get used to interpolate at multiple values of x between the
+  // same set of coefficients may get used to interpolate at multiple values of x between the
   // same x2 and x3 and it is wasteful to recompute the coefficients each time
 }
 

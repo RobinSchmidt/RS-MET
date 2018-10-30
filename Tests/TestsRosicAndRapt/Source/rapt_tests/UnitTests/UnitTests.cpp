@@ -32,8 +32,6 @@ bool runAllUnitTests()
   passed &= runUnitTest(&resampleNonUniform,             "resampleNonUniform");
   passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
   passed &= runUnitTest(&correlationUnitTest,            "correlation");
-
-
   passed &= runUnitTest(&testVector,                     "rsVector");
   passed &= runUnitTest(&testMatrix,                     "rsMatrix");
   passed &= runUnitTest(&testMiscMath,                   "misc math");  // fails on linux ("illegal instruction") - encounters a singular matrix
@@ -49,8 +47,8 @@ bool runAllUnitTests()
   passed &= runUnitTest(&testTriangle2D,                 "rsTriangle2D");
   passed &= runUnitTest(&testPoint2D,                    "rsPoint2D");
   passed &= runUnitTest(&testPolygon2D,                  "rsPolygon2D");
-
   passed &= runUnitTest(&testMultiArray,                 "rsMultiArray");
+
 
   // Filters:
   //passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner"); // why commented?
@@ -60,6 +58,8 @@ bool runAllUnitTests()
   passed &= runUnitTest(&imagePainterUnitTest,   "rsImagePainter");
   passed &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
   //passed &= runUnitTest(&triangleRasterization2, "Triangle Rasterization 2"); // merge
+
+
 
   //...
   //...more to come...
