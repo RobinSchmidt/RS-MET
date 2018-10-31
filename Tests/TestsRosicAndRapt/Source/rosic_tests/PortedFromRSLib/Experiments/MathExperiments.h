@@ -7,6 +7,7 @@ void binomialDistribution();
 void sineParameters();
 void bandLimitedStep();
 void cubicInterpolationNonEquidistant();   // move to unit tests
+void naturalCubicSpline();
 void hyperbolicFunctions(); 
 void splineInterpolationNonEquidistant();
 void rationalInterpolation();

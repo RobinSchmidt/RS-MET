@@ -251,6 +251,29 @@ T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
 */
 
 
+void naturalCubicSpline()
+{
+  std::vector<double> x = { -5, -3, -1, 0, 1, 2, 3, 4, 5 };
+  int N = (int)x.size();
+  std::vector<double> y(N);
+  for(int i = 0; i < N; i++)
+    y[i] = 1 / (1 + x[i]*x[i]); // f(x) = 1 / (1 + x^2)
+
+  int Ni = 201;
+  std::vector<double> xi(Ni), yi(Ni);
+  RAPT::rsArray::fillWithRangeLinear(&x[0], Ni, -5.0, 5.0);
+
+
+  RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni);
+
+
+
+
+
+
+  GNUPlotter plt;
+}
+
 void cubicInterpolationNonEquidistant() // turn into unit-test
 {
   bool testResult = true;

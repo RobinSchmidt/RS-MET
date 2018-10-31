@@ -1,6 +1,13 @@
 #ifndef RAPT_LINEARALGEBRA_H_INCLUDED
 #define RAPT_LINEARALGEBRA_H_INCLUDED
 
+/** Collection of functions for linear algebra such as solving systems of linear equations, matrix 
+inversion, etc.
+
+ToDo: get rid of rs-prefix in the function names (they are now wrapped into a class which already 
+has the prefix)
+*/
+
 class rsLinearAlgebra
 {
 
