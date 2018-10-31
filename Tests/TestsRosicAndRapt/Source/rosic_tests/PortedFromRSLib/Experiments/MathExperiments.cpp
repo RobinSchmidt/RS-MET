@@ -261,17 +261,22 @@ void naturalCubicSpline()
 
   int Ni = 201;
   std::vector<double> xi(Ni), yi(Ni);
-  RAPT::rsArray::fillWithRangeLinear(&x[0], Ni, -5.0, 5.0);
+  RAPT::rsArray::fillWithRangeLinear(&xi[0], Ni, -5.0, 5.0);
 
 
   RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni);
 
-
+  RAPT::rsArray::fillWithZeros(&yi[0], Ni);  // preliminary
 
 
 
 
   GNUPlotter plt;
+  plt.addDataArrays(Ni, &xi[0], &yi[0]);
+  plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
+  plt.addDataArrays(N, &x[0], &y[0]);
+  plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#000000\" notitle");
+  plt.plot();
 }
 
 void cubicInterpolationNonEquidistant() // turn into unit-test
