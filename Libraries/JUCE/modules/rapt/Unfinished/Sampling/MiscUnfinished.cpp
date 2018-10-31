@@ -1454,28 +1454,29 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   Vec envTime2, envValue2;
   getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
 
-  // add zeros to start and end of the array:
-  bool extrapolateEnds = true;
-  if(extrapolateEnds == true)
-  {
-    double v; 
-    v = rsInterpolateLinear(envTime2[0], envTime2[1], envValue2[0], envValue2[1], 0.0);
-    rsPrepend(envTime2, 0.0);
-    rsPrepend(envValue2, v);
-    //rsPrepend(envValue2, 0.0);
 
+  // add start and end points to the arrays:
+  double v;
+  bool startAtZero = true;  // make these user parameters
+  bool endAtZero   = false;
+  if(startAtZero)
+    rsPrepend(envValue2, 0.0);
+  else {
+    v = rsInterpolateLinear(envTime2[0], envTime2[1], envValue2[0], envValue2[1], 0.0);
+    rsPrepend(envValue2, v);
+  }
+  rsPrepend(envTime2, 0.0);
+
+
+  if(endAtZero)
+    rsAppend(envValue2, 0.0);
+  else {
     int M = (int)envTime2.size()-1;
     v = rsInterpolateLinear(envTime2[M-1], envTime2[M], envValue2[M-1], envValue2[M], double(N));
-
-    rsAppend(envTime2, double(N));
     rsAppend(envValue2, v);
-    //rsAppend(envValue2, 0.0);
   }
-  // maybe don't use zeros but linear extrapolation - yes - looks better
-  // ...but for production code we must include safety checks - envTime/Value2 may have less
-  // than 2 elements, etc.
+  rsAppend(envTime2, double(N));
 
-  // maybe use natural cubic splines (those with the tridiagonal matrix)
 
   // get envelope signal by interpolating the peaks:
   Vec t(N);
