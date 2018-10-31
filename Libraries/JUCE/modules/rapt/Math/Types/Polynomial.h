@@ -29,6 +29,12 @@ public:
     //return a[0] + a[1]*x + a[2]*x2 + a[3]*x*x2;
   }
 
+  static inline T evaluateCubic(T x, const T& a, const T& b, const T& c, const T& d)
+  {
+    return a + (b + (c + d*x)*x)*x;
+  }
+
+
   /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
   argument 'x'. The value of the polynomial will be stored in y and the value of the derivative
   will be stored in yd. @see: evaluate() */

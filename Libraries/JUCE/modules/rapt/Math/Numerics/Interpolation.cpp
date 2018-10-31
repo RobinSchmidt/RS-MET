@@ -14,20 +14,20 @@ void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, in
 // repeated recomputation of still valid line-coeffs in case of upsampling
 
 template<class Tx, class Ty>
-void rsNaturalCubicSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni)
+void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni)
 {
   std::vector<Ty> a(N), b(N-1), c(N), d(N-1); // polynomial coeffs per segment - there are only N-1 segments
 
-  size_t i;
+  //size_t i;
 
   // establish array of a-coefficients - a[i] is actually the same as y[i] ...get rid
-  for(i = 0; i < N; i++) 
-    a[i] = y[i];
+  for(int i = 0; i < N; i++) 
+    a[i] = yIn[i];
 
   // establish the differences between the x-values:
   std::vector<Tx> h(N-1);
-  for(i = 0; i < h.size(); i++) 
-    h[i] = x[i+1] - x[i];
+  for(size_t i = 0; i < h.size(); i++) 
+    h[i] = xIn[i+1] - xIn[i];
 
 
   c[0] = c[N-1] = 0; // from the "natural" boundary conditions f''(0) = f''(N-1) = 0
@@ -35,37 +35,41 @@ void rsNaturalCubicSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni)
   // establish the (N-2)x(N-2) tridiagonal matrix for computing the remaining c-coefficients 
   // (Eq.19.240):
   std::vector<Ty> md(N-2), uld(N-3); // arrays for main diagonal and upper/lower diagonal
-  for(i = 0; i < md.size(); i++)
+  for(size_t i = 0; i < md.size(); i++)
     md[i] = 2*(h[i]+h[i+1]);
-  for(i = 0; i < uld.size(); i++)
+  for(size_t i = 0; i < uld.size(); i++)
     uld[i] = h[i+1];
 
   // establish the right-hand side for the tridiagonal system (Eq 19.239):
   std::vector<Ty> rhs(N-2);
-  for(i = 0; i < rhs.size(); i++)
+  for(size_t i = 0; i < rhs.size(); i++)
     rhs[i] = (a[i+2]-a[i+1])/h[i+1] - (a[i+1]-a[i])/h[i]; // ...check, if all indices are correct
 
   // solve the tridiagonal system:
   rsLinearAlgebra::rsSolveTridiagonalSystem(&uld[0], &md[0], &uld[0], &rhs[0], &c[1], N-2);
 
   // compute b-coefficients by Eq. 19.238:
-  for(i = 0; i < b.size(); i++)
+  for(size_t i = 0; i < b.size(); i++)
     b[i] = (a[i+1]-a[i])/h[i] - (2*c[i]+c[i+1])*h[i]/Ty(3);
 
   // compute d-coefficients by Eq. 19.237
-  for(i = 0; i < d.size(); i++)
+  for(size_t i = 0; i < d.size(); i++)
     d[i] = (c[i+1]-c[i])/(Ty(3)*h[i]);
 
 
-  // Equations from Bronstein, page 956
-
   // OK, we have our polynomial coeffs - now use them to do the actual interpolation:
 
-  //i = 0;
+  int i = 0;  // index into input data arrays (and polynomial coeffs)
+  int j = 0;  // index into output data arrays
+  for(int j = 0; j < Ni; j++) {
+    Tx x = xOut[j];
+    while(xIn[i+1] < x && i < N-2)
+      i++;
+    yOut[j] = rsPolynomial<Ty>::evaluateCubic(x-xIn[i], a[i], b[i], c[i], d[i]); // Eq.19.235
+  }
 
-  //while(xi[i+1] < x[i])
 
-
+  // Equations from Bronstein, page 956
 }
 
 

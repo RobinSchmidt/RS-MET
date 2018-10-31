@@ -264,9 +264,11 @@ void naturalCubicSpline()
   RAPT::rsArray::fillWithRangeLinear(&xi[0], Ni, -5.0, 5.0);
 
 
+  RAPT::rsArray::fillWithZeros(&yi[0], Ni);  // preliminary
+
   RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni);
 
-  RAPT::rsArray::fillWithZeros(&yi[0], Ni);  // preliminary
+
 
 
 
