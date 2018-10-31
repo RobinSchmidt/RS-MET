@@ -155,8 +155,8 @@ int main(int argc, char* argv[])
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();
-  naturalCubicSpline();
-  naturalCubicSpline2();
+  //naturalCubicSpline();
+  //naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions();
   //splineInterpolationNonEquidistant();

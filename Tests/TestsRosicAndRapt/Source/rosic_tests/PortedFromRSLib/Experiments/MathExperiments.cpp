@@ -286,7 +286,7 @@ void naturalCubicSpline2()
   double dxMax =  4.0;
   double yMin  = -1.0;
   double yMax  = +1.0;
-  double xScl  =  1.0;   // scale factor for x-values
+  double xScl  =  10000.0;   // scale factor for x-values
 
 
   createRandomDataXY(&x[0], &y[0], N, xScl*dxMin, xScl*dxMax, yMin, yMax);
