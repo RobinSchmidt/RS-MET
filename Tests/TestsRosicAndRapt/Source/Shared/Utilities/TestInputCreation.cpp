@@ -227,6 +227,24 @@ template std::vector<float> createNoise(int numSamples, float min, float max, in
 template std::vector<double> createNoise(int numSamples, double min, double max, int seed);
 
 
+void createRandomDataXY(double* x, double* y, int N, double dxMin, double dxMax,
+  double yMin, double yMax, int seedX, int seedY)
+{
+  RAPT::rsNoiseGenerator<double> ngX, ngY;
+  ngX.setRange(dxMin, dxMax);
+  ngX.setSeed(seedX);
+  ngX.reset();
+  ngY.setRange(yMin, yMax);
+  ngY.setSeed(seedY);
+  ngY.reset();
+  x[0] = ngX.getSample();
+  y[0] = ngY.getSample();
+  for(int i = 1; i < N; i++) {
+    x[i] = ngX.getSample() + x[i-1];
+    y[i] = ngY.getSample();
+  }
+}
+
 std::vector<double> createSineWave(int N, double f, double fs)
 {
   vector<double> x(N);

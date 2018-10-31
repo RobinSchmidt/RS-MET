@@ -25,7 +25,8 @@ public:
     //RIGHT_NEIGHBOUR,
     //NEAREST_NEIGHBOUR,
     LINEAR,             // this is the default
-    CUBIC
+    CUBIC,
+    NATURAL_CUBIC
     //QUARTIC,
     //QUINTIC,
   };

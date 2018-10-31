@@ -250,9 +250,10 @@ T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
 }
 */
 
-
 void naturalCubicSpline()
 {
+  // Tests the natural cubic spline interpolation using the test function 1/(1+x^2).
+
   std::vector<double> x = { -5, -3, -1, 0, 1, 2, 3, 4, 5 };
   int N = (int)x.size();
   std::vector<double> y(N);
@@ -263,13 +264,39 @@ void naturalCubicSpline()
   std::vector<double> xi(Ni), yi(Ni);
   RAPT::rsArray::fillWithRangeLinear(&xi[0], Ni, -6.0, 6.0);
 
-
-  RAPT::rsArray::fillWithZeros(&yi[0], Ni);  // preliminary
-
+  //RAPT::rsArray::fillWithZeros(&yi[0], Ni);  // preliminary
   RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni);
 
+  GNUPlotter plt;
+  plt.addDataArrays(Ni, &xi[0], &yi[0]);
+  plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
+  plt.addDataArrays(N, &x[0], &y[0]);
+  plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#000000\" notitle");
+  plt.plot();
+}
+
+void naturalCubicSpline2()
+{
+  // Tests the natural cubic spline interpolation using random values with random x-distances 
+  // between them. 
+
+  int N = 30; // number of input data points
+  std::vector<double> x(N), y(N);
+  double dxMin =  1.0;
+  double dxMax =  4.0;
+  double yMin  = -1.0;
+  double yMax  = +1.0;
+  double xScl  =  1.0;   // scale factor for x-values
 
 
+  createRandomDataXY(&x[0], &y[0], N, xScl*dxMin, xScl*dxMax, yMin, yMax);
+
+  int Ni = 501;
+  std::vector<double> xi(Ni), yi(Ni);
+  RAPT::rsArray::fillWithRangeLinear(&xi[0], Ni, x[0], x[N-1]);
+  RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni);
+
+  // maybe factor out (it's the same as above):
   GNUPlotter plt;
   plt.addDataArrays(Ni, &xi[0], &yi[0]);
   plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");

@@ -156,6 +156,7 @@ int main(int argc, char* argv[])
   //sineParameters();
   //bandLimitedStep();
   naturalCubicSpline();
+  naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions();
   //splineInterpolationNonEquidistant();

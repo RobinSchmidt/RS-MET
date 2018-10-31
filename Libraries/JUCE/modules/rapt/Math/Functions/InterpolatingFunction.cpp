@@ -11,8 +11,9 @@ void rsInterpolatingFunction<Tx, Ty>::interpolate(Tx *x, Ty *y, int N, Tx *xi, T
 
   switch(mode)
   {
-  case LINEAR: rsInterpolateSpline(x, t, N, xi, yi, Ni, 0); break;
-  case CUBIC:  rsInterpolateSpline(x, t, N, xi, yi, Ni, 1); break;
+  case LINEAR:        rsInterpolateSpline( x, t, N, xi, yi, Ni, 0); break;
+  case CUBIC:         rsInterpolateSpline( x, t, N, xi, yi, Ni, 1); break;
+  case NATURAL_CUBIC: rsNaturalCubicSpline(x, t, N, xi, yi, Ni);    break;
   }
 
   // apply post-mapping to yi: 

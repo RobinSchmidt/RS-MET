@@ -1484,6 +1484,7 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   IF intFunc;
   //intFunc.setMode(IF::LINEAR);
   intFunc.setMode(IF::CUBIC);
+  //intFunc.setMode(IF::NATURAL_CUBIC);
   //intFunc.setPreMap( &log);
   //intFunc.setPostMap(&exp);
   intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime.size(), &t[0], env, 
