@@ -259,17 +259,14 @@ void naturalCubicSpline()
   for(int i = 0; i < N; i++)
     y[i] = 1 / (1 + x[i]*x[i]); // f(x) = 1 / (1 + x^2)
 
-  int Ni = 201;
+  int Ni = 501;
   std::vector<double> xi(Ni), yi(Ni);
-  RAPT::rsArray::fillWithRangeLinear(&xi[0], Ni, -5.0, 5.0);
+  RAPT::rsArray::fillWithRangeLinear(&xi[0], Ni, -6.0, 6.0);
 
 
   RAPT::rsArray::fillWithZeros(&yi[0], Ni);  // preliminary
 
   RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni);
-
-
-
 
 
 

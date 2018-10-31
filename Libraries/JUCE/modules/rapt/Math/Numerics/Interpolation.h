@@ -148,7 +148,7 @@ template<class Tx, class Ty>
 void rsInterpolateSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni, int smoothness = 1);
 
 
-/** Not yet finished.... */
+/** Given arrays */
 template<class Tx, class Ty>
 void rsNaturalCubicSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni);
 
