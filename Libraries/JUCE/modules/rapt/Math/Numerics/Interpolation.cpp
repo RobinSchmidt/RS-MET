@@ -18,8 +18,6 @@ void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni)
 {
   std::vector<Ty> a(N), b(N-1), c(N), d(N-1); // polynomial coeffs per segment - there are only N-1 segments
 
-  //size_t i;
-
   // establish array of a-coefficients - a[i] is actually the same as y[i] ...get rid
   for(int i = 0; i < N; i++) 
     a[i] = yIn[i];
@@ -28,7 +26,6 @@ void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni)
   std::vector<Tx> h(N-1);
   for(size_t i = 0; i < h.size(); i++) 
     h[i] = xIn[i+1] - xIn[i];
-
 
   c[0] = c[N-1] = 0; // from the "natural" boundary conditions f''(0) = f''(N-1) = 0
 
@@ -43,7 +40,7 @@ void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni)
   // establish the right-hand side for the tridiagonal system (Eq 19.239):
   std::vector<Ty> rhs(N-2);
   for(size_t i = 0; i < rhs.size(); i++)
-    rhs[i] = (a[i+2]-a[i+1])/h[i+1] - (a[i+1]-a[i])/h[i]; // ...check, if all indices are correct
+    rhs[i] = Ty(3) * ((a[i+2]-a[i+1])/h[i+1] - (a[i+1]-a[i])/h[i]);
 
   // solve the tridiagonal system:
   rsLinearAlgebra::rsSolveTridiagonalSystem(&uld[0], &md[0], &uld[0], &rhs[0], &c[1], N-2);
