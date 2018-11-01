@@ -107,22 +107,22 @@ void rsVectorPad::mouseDrag(const MouseEvent& e)
 
 double rsVectorPad::pixelToNormalizedX(double x)
 {
-  return RAPT::rsLinToLin(x, leftMargin + 0.5, getWidth() - rightMargin - 0.5, 0, 1);
+  return RAPT::rsLinToLin(x, leftMargin + 0.5, getWidth() - rightMargin - 0.5, 0.0, 1.0);
 }
 
 double rsVectorPad::pixelToNormalizedY(double y)
 {
-  return RAPT::rsLinToLin(y, getHeight() - bottomMargin - 0.5, topMargin + 0.5, 0, 1);
+  return RAPT::rsLinToLin(y, getHeight() - bottomMargin - 0.5, topMargin + 0.5, 0.0, 1.0);
 }
 
 double rsVectorPad::normalizedToPixelX(double x)
 {
-  return RAPT::rsLinToLin(x, 0, 1, leftMargin + 0.5, getWidth() - rightMargin - 0.5);
+  return RAPT::rsLinToLin(x, 0.0, 1.0, leftMargin + 0.5, getWidth() - rightMargin - 0.5);
 }
 
 double rsVectorPad::normalizedToPixelY(double y)
 {
-  return RAPT::rsLinToLin(y, 0, 1, getHeight() - bottomMargin - 0.5, topMargin + 0.5);
+  return RAPT::rsLinToLin(y, 0.0, 1.0, getHeight() - bottomMargin - 0.5, topMargin + 0.5);
 }
 
 void rsVectorPad::setParametersFromMouseEvent(const MouseEvent& e)

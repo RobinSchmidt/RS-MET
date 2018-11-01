@@ -628,13 +628,13 @@ double MultiModeFreqResponseEditor::yToReso(double y)
 
 double MultiModeFreqResponseEditor::qToY(double q)
 {
-  return -RAPT::rsExpToLin(q, 0.5, 50.0, -getHeight(), 0.0);
+  return -RAPT::rsExpToLin(q, 0.5, 50.0, -(double)getHeight(), 0.0);
   //return 100.0;
 }
 
 double MultiModeFreqResponseEditor::yToQ(double y)
 {
-  return RAPT::rsLinToExp(-y, -getHeight(), 0.0, 0.5, 50.0);
+  return RAPT::rsLinToExp(-y, -(double)getHeight(), 0.0, 0.5, 50.0);
 }
 
 //=================================================================================================

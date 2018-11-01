@@ -64,7 +64,7 @@ bool testHyperbolicFunctions(std::string &reportString)
   double s, c, t, ts, tc, tt; // hyperbolic sine, cosine, tangent and their target values
   for(int n = 1; n <= N; n++)
   {
-    x  = rsLinToLin(n, 1, N, xMin, xMax);
+    x  = rsLinToLin((double)n, 1.0, (double)N, xMin, xMax);
     ts = sinh(x);
     tc = cosh(x);
     tt = tanh(x);

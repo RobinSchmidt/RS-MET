@@ -519,7 +519,7 @@ void phonoFilterPrototypePlot()
   double f[N], dB[N];
   for(int n = 0; n < N; n++)
   {
-    f[n]  = rsLinToExp(n, 0, N-1, fL, fH);
+    f[n]  = rsLinToExp((double)n, 0.0, (double)N-1, fL, fH);
     dB[n] = rsAmp2dB(rsPhonoFilterDD::prototypeMagnitudeAt(f[n]));
   }
   plotDataLogX(N, f, dB);
@@ -578,7 +578,7 @@ void phonoFilterModelPlot()
   for(int n = 0; n < N; n++)
   {
     // frequency in Hz:
-    fp[n]  = rsLinToExp(n, 0, N-1, fL, fH);
+    fp[n]  = rsLinToExp((double)n, 0.0, (double)N-1, fL, fH);
 
     // analog prototype gain:
     dBp[n] = rsAmp2dB(rsPhonoFilterDD::prototypeMagnitudeAt(fp[n]));
@@ -1566,16 +1566,16 @@ void ladderThresholds()
     yr[n] = tanh(drive * yr[n]);
 
 
-    //t  = yf[n] + yr[n];                // temporary signal used for thresholding
-    t  = yf[n];                        // temporary signal used for thresholding
-    //t  = x[n];                        // temporary signal used for thresholding
-    t  = rsLinToLin(t, lo, hi, -1, 1); // map lo..hi to -1..+1
-    t *= t;                            // ^2
-    t *= t;                            // ^4
-    t *= t;                            // ^8
-    t *= t;                            // ^16
-    t *= t;                            // ^32
-    a[n] = 1 / (1+t);                  // amplitude scaler for resonance
+    //t  = yf[n] + yr[n];                  // temporary signal used for thresholding
+    t  = yf[n];                            // temporary signal used for thresholding
+    //t  = x[n];                           // temporary signal used for thresholding
+    t  = rsLinToLin(t, lo, hi, -1.0, 1.0); // map lo..hi to -1..+1
+    t *= t;                                // ^2
+    t *= t;                                // ^4
+    t *= t;                                // ^8
+    t *= t;                                // ^16
+    t *= t;                                // ^32
+    a[n] = 1 / (1+t);                      // amplitude scaler for resonance
 
     //y[n] = yf[n] + a[n] * yr[n];  // preliminary
     y[n] = yf[n] + a[n] * (yr[n]-yf[n]);  // preliminary

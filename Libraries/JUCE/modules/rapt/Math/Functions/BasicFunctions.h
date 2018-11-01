@@ -25,11 +25,12 @@ inline T rsClip(T x, T min = T(-1), T max = T(+1));
 inline bool rsExOr(bool a, bool b);
 
 /** The inverse of "rsLinToExp" */
-inline double rsExpToLin(double in, double inMin, double inMax, double outMin, double outMax);
+template<class T>
+inline T rsExpToLin(T in, T inMin, T inMax, T outMin, T outMax);
 
 /** The inverse of "rsLinToExpWithOffset" */
-inline double rsExpToLinWithOffset(double in, double inMin, double inMax, double outMin,
-  double outMax, double offset = 0.0);
+template<class T>
+inline T rsExpToLinWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offset = 0.0);
 
 /** Checks, if x is close to some target-value within some tolerance. */
 inline bool rsIsCloseTo(double x, double targetValue, double tolerance);
@@ -71,7 +72,8 @@ mapping is linear for the input and the output. Example: y = rsLinToLin(x, 0.0, 
 will map the input x assumed to lie inside 0.0...1.0 to the range between -96.0...24.0. This
 function is useful to convert between normalized parameter representations between 0.0...1.0 and 
 the clear-text parameters. */
-inline double rsLinToLin(double in, double inMin, double inMax, double outMin, double outMax)
+template<class T>
+inline T rsLinToLin(T in, T inMin, T inMax, T outMin, T outMax)
 { return outMin + (outMax-outMin) * (in-inMin) / (inMax-inMin); }
 
 
@@ -80,12 +82,13 @@ mapping of the output is exponential. Example: y = linToExp(x, 0.0, 1.0, 20.0, 2
 the input x assumed to lie inside 0.0...1.0 to the range between 20.0...20000.0 where equal
 differences in the input lead to equal factors in the output. Make sure that the outMin value is
 greater than zero! */
-inline double rsLinToExp(double in, double inMin, double inMax, double outMin, double outMax);
+template<class T>
+inline T rsLinToExp(T in, T inMin, T inMax, T outMin, T outMax);
 
 /** Same as linToExp but adds an offset afterwards and compensates for that offset by scaling the
 offsetted value so as to hit the outMax correctly. */
-inline double rsLinToExpWithOffset(double in, double inMin, double inMax, double outMin,
-  double outMax, double offset = 0.0);
+template<class T>
+inline T rsLinToExpWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offset = 0.0);
 
 /** The maximum of two objects on which the ">"-operator is defined. */
 template <class T>
@@ -211,12 +214,93 @@ inline T rsClip(T x, T min, T max)
 }
 
 template<class T>
+inline T rsExpToLin(T in, T inMin, T inMax, T outMin, T outMax)
+{
+  T tmp = log(in / inMin) / log(inMax / inMin);
+  return outMin + tmp * (outMax - outMin);
+}
+
+template<class T>
+inline T rsExpToLinWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offset)
+{
+  T tmp = in * (inMax + offset) / inMax;
+  tmp -= offset;
+  return rsExpToLin(tmp, inMin, inMax, outMin, outMax);
+
+  //T tmp = linToExp(in, inMin, inMax, outMin, outMax);
+  //tmp += offset;
+  //tmp *= outMax/(outMax+offset);
+  //return tmp;
+}
+
+template<class T>
 inline bool rsIsCloseTo(T x, T targetValue, T tolerance)
 {
   if(rsAbs(x - targetValue) <= tolerance)
     return true;
   else
     return false;
+}
+
+template<class T>
+inline T rsLinToExp(T in, T inMin, T inMax, T outMin, T outMax)
+{
+  // map input to the range 0.0...1.0:
+  T tmp = (in - inMin) / (inMax - inMin);
+
+  // map the tmp-value exponentially to the range outMin...outMax:
+  return outMin * std::exp(tmp * (log(outMax / outMin)));
+}
+
+template<class T>
+inline T rsLinToExpWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offset)
+{
+  T tmp = rsLinToExp(in, inMin, inMax, outMin, outMax);
+  tmp += offset;
+  tmp *= outMax / (outMax + offset);
+  return tmp;
+}
+
+template <class T>
+inline T rsMax(T in1, T in2)
+{
+  if(in1 > in2)
+    return in1;
+  else
+    return in2;
+}
+
+template <class T>
+inline T rsMax(T in1, T in2, T in3)
+{
+  return rsMax(rsMax(in1, in2), in3);
+}
+
+template <class T>
+inline T rsMax(T in1, T in2, T in3, T in4)
+{
+  return rsMax(rsMax(in1, in2), rsMax(in3, in4));
+}
+
+template <class T>
+inline T rsMin(T in1, T in2)
+{
+  if(in1 < in2)
+    return in1;
+  else
+    return in2;
+}
+
+template <class T>
+inline T rsMin(T in1, T in2, T in3)
+{
+  return rsMin(rsMin(in1, in2), in3);
+}
+
+template <class T>
+inline T rsMin(T in1, T in2, T in3, T in4)
+{
+  return rsMin(rsMin(in1, in2), rsMin(in3, in4));
 }
 
 // general fallback version:

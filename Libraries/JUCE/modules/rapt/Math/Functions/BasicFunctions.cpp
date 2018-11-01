@@ -54,6 +54,7 @@ inline bool rsExOr(bool a, bool b)
   return (a && !b) || (!a && b);
 }
 
+/*
 inline double rsExpToLin(double in, double inMin, double inMax, double outMin, double outMax)
 {
   double tmp = log(in / inMin) / log(inMax / inMin);
@@ -66,13 +67,13 @@ inline double rsExpToLinWithOffset(double in, double inMin, double inMax, double
   double tmp = in * (inMax + offset) / inMax;
   tmp -= offset;
   return rsExpToLin(tmp, inMin, inMax, outMin, outMax);
-  /*
-  double tmp = linToExp(in, inMin, inMax, outMin, outMax);
-  tmp += offset;
-  tmp *= outMax/(outMax+offset);
-  return tmp;
-  */
+
+  //double tmp = linToExp(in, inMin, inMax, outMin, outMax);
+  //tmp += offset;
+  //tmp *= outMax/(outMax+offset);
+  //return tmp;
 }
+*/
 
 inline bool rsIsCloseTo(double x, double targetValue, double tolerance)
 {
@@ -176,7 +177,7 @@ inline double rsLinToLin(double in, double inMin, double inMax, double outMin, d
   return tmp;
 }
 */
-
+/*
 inline double rsLinToExp(double in, double inMin, double inMax, double outMin, double outMax)
 {
   // map input to the range 0.0...1.0:
@@ -194,7 +195,8 @@ inline double rsLinToExpWithOffset(double in, double inMin, double inMax, double
   tmp *= outMax / (outMax + offset);
   return tmp;
 }
-
+*/
+/*
 template <class T>
 inline T rsMax(T in1, T in2)
 {
@@ -236,6 +238,7 @@ inline T rsMin(T in1, T in2, T in3, T in4)
 {
   return rsMin(rsMin(in1, in2), rsMin(in3, in4));
 }
+*/
 
 template <class T>
 inline T rsNextPowerOfTwo(T x)
