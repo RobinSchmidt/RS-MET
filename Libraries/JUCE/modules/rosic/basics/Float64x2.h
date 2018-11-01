@@ -30,7 +30,7 @@ public:
   /** Constructor that initializes the elements from a 2-value array of doubles. */
   inline rsFloat64x2(double* values)
   {
-    //*this = _mm_load_pd(values); // doesnt work
+    //v = _mm_load_pd(values); // doesnt work
     v = _mm_setr_pd(values[0], values[1]);
   }
 
@@ -40,31 +40,31 @@ public:
   inline double* asArray() const { return (double*) &v; }
 
   /** Returns the vector element with index i (valid indices are 0 and 1). */
-  inline double get(size_t i)  { return asArray()[i]; }
+  inline double get(size_t i) const { return asArray()[i]; }
 
   /** Writes the two double into v0 and v1. */
-  inline void get(double& v0, double& v1) { _mm_storel_pd(&v0, v); _mm_storeh_pd(&v1, v); }
+  inline void get(double& v0, double& v1) const { _mm_storel_pd(&v0, v); _mm_storeh_pd(&v1, v); }
 
   /** Returns the 1st value (index 0). */
   //inline double get0() { double d; _mm_storel_pd(&d, v); return d; }
   //inline double get0() { return asArray()[0]; }
-  inline double get0() { return get(0); }
+  inline double get0() const { return get(0); }
     // todo: performance test all versions
     // use get(0)
 
   /** Returns the 2nd value (index 1). */
   //inline double get1() { double d; _mm_storeh_pd(&d, v); return d; }
   //inline double get1() { return asArray()[1]; }
-  inline double get1() { return get(1); }
+  inline double get1() const { return get(1); }
 
   /** Returns the sum of the values of both scalar elements in the vector. */
-  inline double getSum() { double* a = asArray(); return a[0]+a[1]; }
+  inline double getSum() const { double* a = asArray(); return a[0]+a[1]; }
 
   /** Returns the minimum of the values of both scalar elements in the vector. */
-  inline double getMin() { double* a = asArray(); return (a[0] < a[1]) ? a[0] : a[1]; }
+  inline double getMin() const { double* a = asArray(); return (a[0] < a[1]) ? a[0] : a[1]; }
 
   /** Returns the maximum of the values of both scalar elements in the vector. */
-  inline double getMax() { double* a = asArray(); return (a[0] > a[1]) ? a[0] : a[1]; }
+  inline double getMax() const { double* a = asArray(); return (a[0] > a[1]) ? a[0] : a[1]; }
 
 
   /** \name Setup */

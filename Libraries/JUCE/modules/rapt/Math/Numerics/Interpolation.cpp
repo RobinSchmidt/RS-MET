@@ -14,7 +14,7 @@ void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, in
 // repeated recomputation of still valid line-coeffs in case of upsampling
 
 template<class Tx, class Ty>
-void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni)
+void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni, Ty scaleRhs)
 {
   // Equations from Taschenbuch der Mathematik, (Bronstein u.a., 5.Auflage, Verlag Harri Deutsch), 
   // pages 955/956
@@ -44,8 +44,10 @@ void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni)
 
   // establish the right-hand side for the tridiagonal system (Eq. 19.239):
   std::vector<Ty> rhs(N-2);
+  Ty scl = scaleRhs * Ty(3);
   for(size_t i = 0; i < rhs.size(); i++)
-    rhs[i] = Ty(3) * ((a[i+2]-a[i+1])/h[i+1] - (a[i+1]-a[i])/h[i]);
+    rhs[i] = scl * ((a[i+2]-a[i+1])/h[i+1] - (a[i+1]-a[i])/h[i]);
+  // maybe introduce a scale factor - i think, when the rhs is 0, we get a linear interpolant
 
   // solve the tridiagonal system:
   rsLinearAlgebra::rsSolveTridiagonalSystem(&uld[0], &md[0], &uld[0], &rhs[0], &c[1], N-2);

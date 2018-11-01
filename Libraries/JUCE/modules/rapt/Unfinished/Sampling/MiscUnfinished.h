@@ -842,13 +842,26 @@ class rsEnvelopeExtractor
 
 public:
 
+  enum endPointModes
+  {
+    FREE_END = 0,
+    EXTRAPOLATE_END,
+    ZERO_END
+    //PERIODIC_END
+  };
+
   //void setInterpolationMode(int newMode);
   // linear, cubic
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
   /** Sets the mode by which the peaks should be interpolated to obtain the envelope signal at 
   sample-rate. Should be one of the enumerated values in rsInterpolatingFunction::modes. */
-  void setInterpolationMode(int newMode) { mode = newMode; }
+  void setInterpolationMode(int newMode) { interpolationMode = newMode; }
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   void extractEnvelope(const T* input, int length, T* envelope);
 
@@ -859,7 +872,9 @@ public:
   static void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
   // todo: make non static, let the user control various settings
 
-  // internal functions
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Internal Functions */
 
   // maybe move to rsArray:
   static std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false,
@@ -875,14 +890,17 @@ public:
 
 protected:
 
+  int interpolationMode = rsInterpolatingFunction<T>::LINEAR;
+  int startMode = endPointModes::FREE_END;
+  int endMode   = endPointModes::FREE_END;
 
-
-
-  int mode = 0;
-
+  // for the smoothing lowpass:
+  int smoothingOrder = 0;
+  T sampleRate       = 44100;
+  T smoothingFreq    = 22050;
 };
 
-//===============================================================================================
+//=================================================================================================
 // move to AudioFunctions or maybe some sort of SinusoidalAnalysis/Modeling/Resynthesis class
 
 

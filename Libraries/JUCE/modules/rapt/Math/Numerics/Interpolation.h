@@ -11,6 +11,7 @@ the range of the xIn value, the will linearly extrapolate beyond the original ra
 two initila and/or final points. */
 template<class T>
 void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength);
+// rename
 
 /** Computes coefficients for a cubic polynomial that goes through the 4 points (-1,y[-1]),
 (0,y[0]), (1,y[1]), (2,y[2]) that will have matched 1st derivatives when used on successive
@@ -146,11 +147,19 @@ will be used and the 1st derivative will match at the data points. Generally, a 
 order 2*smoothness+1 will be used. */
 template<class Tx, class Ty>
 void rsInterpolateSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni, int smoothness = 1);
+// rename to rsInterpolateHermite
 
 
-/** Given arrays */
+/** Given arrays....
+
+The value scaleRhs is a factor by which the interpolant can be morphed between linear (=0) and the
+actual, proper cubic spline (=1). It doesn't appear in the literature, but it may be a useful tweak
+in some situations. */
 template<class Tx, class Ty>
-void rsNaturalCubicSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni);
+void rsNaturalCubicSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni, Ty scaleRhs = Ty(1));
+// rename to rsInterpolateNaturalCubic, or maybe resampleNaturalSpline...or 
+// rsResampler::naturalSpline
+// ...or maybe wrap into class rsInterpolator
 
 // todo: implement a natural cubic spline interpolation as describen here:
 // http://mathworld.wolfram.com/CubicSpline.html

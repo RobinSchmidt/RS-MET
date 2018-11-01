@@ -286,15 +286,19 @@ void naturalCubicSpline2()
   double dxMax =  4.0;
   double yMin  = -1.0;
   double yMax  = +1.0;
-  double xScl  =  10000.0;   // scale factor for x-values
+  double xScl  =  1.0;   // scale factor for x-values
 
 
   createRandomDataXY(&x[0], &y[0], N, xScl*dxMin, xScl*dxMax, yMin, yMax);
 
-  int Ni = 501;
+  int Ni = 1001;
   std::vector<double> xi(Ni), yi(Ni);
   RAPT::rsArray::fillWithRangeLinear(&xi[0], Ni, x[0], x[N-1]);
-  RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni);
+
+  RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni, 1.0); // Natural
+  //RAPT::rsInterpolateSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni, 1);   // Hermite
+
+
 
   // maybe factor out (it's the same as above):
   GNUPlotter plt;
