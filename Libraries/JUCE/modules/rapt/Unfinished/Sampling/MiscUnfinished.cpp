@@ -1457,7 +1457,7 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
 
   // add start and end points to the arrays:
   double v;
-  bool startAtZero = true;  // make these user parameters
+  bool startAtZero = false;  // make these user parameters
   bool endAtZero   = false;
   if(startAtZero)
     rsPrepend(envValue2, 0.0);
@@ -1484,8 +1484,8 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   typedef rsInterpolatingFunction<double, double> IF;
   IF intFunc;
   //intFunc.setMode(IF::LINEAR);
-  //intFunc.setMode(IF::CUBIC);
-  intFunc.setMode(IF::NATURAL_CUBIC);
+  //intFunc.setMode(IF::CUBIC_HERMITE_1);
+  intFunc.setMode(IF::CUBIC_NATURAL);
   //intFunc.setPreMap( &log);
   //intFunc.setPostMap(&exp);
   intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime2.size(), &t[0], env, 
@@ -1494,9 +1494,12 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   // -maybe the bump can be avoided using a quartic interpolant
   // -and/or: let the env start at 0 and use a segement of lower order by not prescribing values
   //  for the derivative(s) at 0, same at the end, i.e. a quadratic
+  // -maybe apply heuristics, when to start and/or end at zero - maybe if the time-delta between
+  //  0 and first peak is below k*(time-delta between 1st and 2n peak) where k is some number < 1
+  //  do not go to zero
 
-  // smoothing:
-  //rsBiDirectionalFilter::applyLowpass(&env[0], &env[0], (int)env.size(), fc, fs, np);
+  // smoothing (test):
+  //rsBiDirectionalFilter::applyLowpass(env, env, N, 20.0, 44100.0, 4);
   // maybe instead of a filter, use an attack/release slew-rate limiter with zero attack in order
   // to pass through the actual peaks
 }

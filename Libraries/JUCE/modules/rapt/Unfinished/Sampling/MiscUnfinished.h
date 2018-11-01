@@ -832,6 +832,10 @@ protected:
 
 //===============================================================================================
 
+/** A class for non-realtime envelope extraction. you cann feed it some input signal, and the 
+rsEnvelopeExtractor object will return an extracted envelope signal of the same length at the same
+sample rate. */
+
 template<class T>
 class rsEnvelopeExtractor
 {
@@ -841,6 +845,11 @@ public:
   //void setInterpolationMode(int newMode);
   // linear, cubic
 
+  /** Sets the mode by which the peaks should be interpolated to obtain the envelope signal at 
+  sample-rate. Should be one of the enumerated values in rsInterpolatingFunction::modes. */
+  void setInterpolationMode(int newMode) { mode = newMode; }
+
+
   void extractEnvelope(const T* input, int length, T* envelope);
 
 
@@ -848,6 +857,7 @@ public:
 
   /** Function suitable for extracting the envelope of an extracted partial.. */
   static void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
+  // todo: make non static, let the user control various settings
 
   // internal functions
 

@@ -11,9 +11,13 @@ void rsInterpolatingFunction<Tx, Ty>::interpolate(Tx *x, Ty *y, int N, Tx *xi, T
 
   switch(mode)
   {
-  case LINEAR:        rsInterpolateSpline( x, t, N, xi, yi, Ni, 0); break;
-  case CUBIC:         rsInterpolateSpline( x, t, N, xi, yi, Ni, 1); break;
-  case NATURAL_CUBIC: rsNaturalCubicSpline(x, t, N, xi, yi, Ni);    break;
+  case LINEAR:        rsInterpolateSpline( x, t, N, xi, yi, Ni, 0); break; // rename to rsInterpolateHermite
+  case CUBIC_NATURAL: rsNaturalCubicSpline(x, t, N, xi, yi, Ni);    break;
+  case CUBIC_HERMITE: rsInterpolateSpline( x, t, N, xi, yi, Ni, 1); break;
+  default: {
+    rsError("Unknown interpolation mode");
+    rsInterpolateSpline(x, t, N, xi, yi, Ni, 0); // handle error gracefully in release build
+  };
   }
 
   // apply post-mapping to yi: 

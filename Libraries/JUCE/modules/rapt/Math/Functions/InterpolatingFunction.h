@@ -18,18 +18,31 @@ public:
 
   //rsInterpolatingFunction();
 
-  /** Enumeration of possible interpolation modes. */
-  enum  
+  /** Enumeration of possible interpolation modes. 
+  LINEAR: 
+   Connects the data points with straight line segments.
+  CUBIC_NATURAL:
+   Connects the data points with cubic segments such that at the data points the value, first and 
+   second derivatives are matched for the incoming and outgoing segment. The denomination as 
+   "natural" comes from how the end points are handled - in the case of a natural spline, the 
+   condition is that the 2nd derivative should vanish at the endpoints.
+  CUBIC_HERMITE_1: 
+   This also uses cubic segments but instead of requiring the second derivative to match at the 
+   datapoints it prescribes actual values for the first derivative where the target values are 
+   obtained from the data using finite differences. */
+  enum modes
   {
     //LEFT_NEIGHBOUR,
     //RIGHT_NEIGHBOUR,
     //NEAREST_NEIGHBOUR,
     LINEAR,             // this is the default
-    CUBIC,
-    NATURAL_CUBIC
+    CUBIC_NATURAL,
+    CUBIC_HERMITE
     //QUARTIC,
     //QUINTIC,
+    //SINC // ...or maybe use a subclass or entirely different class for that
   };
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup:

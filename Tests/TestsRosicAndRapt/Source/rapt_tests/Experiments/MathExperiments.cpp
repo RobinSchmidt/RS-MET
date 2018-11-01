@@ -86,7 +86,7 @@ void interpolatingFunction()
   // create and set up interpolating function object:
   IF intFunc;
   //intFunc.setMode(IF::LINEAR);
-  intFunc.setMode(IF::CUBIC);
+  intFunc.setMode(IF::CUBIC_HERMITE);
   intFunc.setPreMap( &log);
   intFunc.setPostMap(&exp);
   intFunc.setPreMap( nullptr);
@@ -110,6 +110,7 @@ void interpolatingFunction()
   plt.setRange(xiMin, xiMax, 0.0, 4.0);
   plt.plot();
   // todo: plot the original data as points
+  // todo: plot all the different possible interpolants in one plot for comparison
 }
 
 void linearRegression()

@@ -409,6 +409,15 @@ void envelopeDeBeating()
   //plt.addDataArrays((int)envTime2.size(), &envTime2[0], &envValue2[0]);
   plt.plot();
 
+  // Observations:
+  // f1 = 140, f2 = 150, a1 = 0.5, a2 = 0.5, d1 = 0.2, d2 = 0.3:
+  //  -natural spline without smoothing, startAtZero=1, endAtZero=0, gives reasonable result
+  // f1 = 140, f2 = 145, a1 = 0.5, a2 = 0.5, d1 = 0.2, d2 = 0.3:
+  //  -natural spline shows strong overshoot
+  //  -linear looks reasonable but should probably use smoothing
+  //  -
+ 
+
   // de-beat:
   // ideas:
   // -connect peaks (by lines or splines)
