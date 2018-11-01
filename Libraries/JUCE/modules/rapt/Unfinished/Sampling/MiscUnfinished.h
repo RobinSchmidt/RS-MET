@@ -890,7 +890,7 @@ public:
 
 protected:
 
-  int interpolationMode = rsInterpolatingFunction<T>::LINEAR;
+  int interpolationMode = rsInterpolatingFunction<T, T>::LINEAR;
   int startMode = endPointModes::FREE_END;
   int endMode   = endPointModes::FREE_END;
 
