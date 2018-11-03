@@ -860,6 +860,21 @@ public:
   sample-rate. Should be one of the enumerated values in rsInterpolatingFunction::modes. */
   void setInterpolationMode(int newMode) { interpolationMode = newMode; }
 
+  /** Sets the way the starting point of the envelope is handled...
+  @se endPointModes */
+  void setStartMode(int newStartMode) { startMode = newStartMode; }
+
+  void setEndMode(int newEndMode) { endMode = newEndMode; }
+
+  /** Sets the cutoff frequency and the number of passes of the bidirectional smoothing filter that
+  can be applied to the extracted envelope as pots processing. If numPasses is set to zero, 
+  smoothing is turned off. */
+  void setSmoothing(double cutoff, int numPasses) 
+  { smoothingFreq = cutoff; smoothingOrder = numPasses; }
+
+  /** Sets the sample-rate. This setting is relevant for the smoothing filter (if any). */
+  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
@@ -889,6 +904,9 @@ public:
 
 
 protected:
+
+  // void applySmoothing
+  // void setUpEndValues
 
   int interpolationMode = rsInterpolatingFunction<T, T>::LINEAR;
   int startMode = endPointModes::FREE_END;

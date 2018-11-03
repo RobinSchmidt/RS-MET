@@ -254,10 +254,10 @@ void Parameter::setScalingFromString(String newScalingString)
 void Parameter::setMapper(rsParameterMapper* newMapper)
 {
   scaling = CUSTOM;
-  if(mapper != newMapper)
-  {
+  if(mapper != newMapper) {
     delete mapper;
     mapper = newMapper;
+    normalizedValue = valueToProportion(value); // make normalized and actual value consistent
   }
 }
 
