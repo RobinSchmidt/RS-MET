@@ -888,6 +888,8 @@ public:
   // todo: make non static, let the user control various settings
 
 
+protected:
+
   //-----------------------------------------------------------------------------------------------
   /** \name Internal Functions */
 
@@ -900,10 +902,6 @@ public:
     std::vector<T>& envValue);
 
   static void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
-
-
-
-protected:
 
   // void applySmoothing
   // void setUpEndValues
