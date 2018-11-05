@@ -1454,40 +1454,14 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   Vec envTime2, envValue2;
   getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
 
-
-  // add start and end points to the arrays:
-  double v;
-  bool startAtZero = false;  // make these user parameters
-  bool endAtZero   = false;
-  if(startAtZero)
-    rsPrepend(envValue2, 0.0);
-  else {
-    v = rsInterpolateLinear(envTime2[0], envTime2[1], envValue2[0], envValue2[1], 0.0);
-    rsPrepend(envValue2, v);
-  }
-  rsPrepend(envTime2, 0.0);
-
-
-  if(endAtZero)
-    rsAppend(envValue2, 0.0);
-  else {
-    int M = (int)envTime2.size()-1;
-    v = rsInterpolateLinear(envTime2[M-1], envTime2[M], envValue2[M-1], envValue2[M], double(N));
-    rsAppend(envValue2, v);
-  }
-  rsAppend(envTime2, double(N));
-
+  setupEndValues(envTime2, envValue2, N);
 
   // get envelope signal by interpolating the peaks:
   Vec t(N);
   rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
   typedef rsInterpolatingFunction<double, double> IF;
   IF intFunc;
-  //intFunc.setMode(IF::LINEAR);
-  //intFunc.setMode(IF::CUBIC_HERMITE_1);
-  intFunc.setMode(IF::CUBIC_NATURAL);
-  //intFunc.setPreMap( &log);
-  //intFunc.setPostMap(&exp);
+  intFunc.setMode(interpolationMode);
   intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime2.size(), &t[0], env, 
     (int)t.size());
 
@@ -1502,6 +1476,32 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   //rsBiDirectionalFilter::applyLowpass(env, env, N, 20.0, 44100.0, 4);
   // maybe instead of a filter, use an attack/release slew-rate limiter with zero attack in order
   // to pass through the actual peaks
+}
+
+template<class T>
+void rsEnvelopeExtractor<T>::setupEndValues(std::vector<T>& envTime, std::vector<T>& envValue, int N)
+{
+  double v;
+  if(startMode == ZERO_END) {
+    rsPrepend(envValue, 0.0);
+    rsPrepend(envTime, 0.0);
+  }
+  else if(startMode == EXTRAPOLATE_END) {
+    v = rsInterpolateLinear(envTime[0], envTime[1], envValue[0], envValue[1], 0.0);
+    rsPrepend(envValue, v);
+    rsPrepend(envTime, 0.0);
+  }
+
+  if(endMode == ZERO_END) {
+    rsAppend(envValue, 0.0);
+    rsAppend(envTime, double(N));
+  }
+  else if(endMode == EXTRAPOLATE_END) {
+    int M = (int)envTime.size()-1;
+    v = rsInterpolateLinear(envTime[M-1], envTime[M], envValue[M-1], envValue[M], double(N));
+    rsAppend(envValue, v);
+    rsAppend(envTime, double(N));
+  }
 }
 
 template<class T>

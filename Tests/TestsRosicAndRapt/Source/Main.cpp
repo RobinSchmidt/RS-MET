@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
   //sineParameters();
   //bandLimitedStep();
   //naturalCubicSpline();
-  naturalCubicSpline2();
+  //naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions();
   //splineInterpolationNonEquidistant();
@@ -390,7 +390,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  testAllRosicClasses();
+  //testAllRosicClasses();
   //testRosicAnalysis();
   //testRosicBasics();
   //testRosicFile();

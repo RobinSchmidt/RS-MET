@@ -860,6 +860,8 @@ public:
   sample-rate. Should be one of the enumerated values in rsInterpolatingFunction::modes. */
   void setInterpolationMode(int newMode) { interpolationMode = newMode; }
 
+  //void setInterpolationTension(T newTension) { interpolationTension = newTension; }
+
   /** Sets the way the starting point of the envelope is handled...
   @se endPointModes */
   void setStartMode(int newStartMode) { startMode = newStartMode; }
@@ -881,11 +883,9 @@ public:
   void extractEnvelope(const T* input, int length, T* envelope);
 
 
-  // convenience functions using settings suitable for various use cases:
-
-  /** Function suitable for extracting the envelope of an extracted partial.. */
-  static void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
-  // todo: make non static, let the user control various settings
+  /** Function suitable for extracting the envelope of an extracted partial that shows beating 
+  between two nearby modes. */
+  void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
 
 
 protected:
@@ -904,9 +904,11 @@ protected:
   static void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
 
   // void applySmoothing
-  // void setUpEndValues
+  void setupEndValues(std::vector<T>& envTime, std::vector<T>& envValue, int N);
 
   int interpolationMode = rsInterpolatingFunction<T, T>::LINEAR;
+  //T interpolationTension = T(0);
+
   int startMode = endPointModes::FREE_END;
   int endMode   = endPointModes::FREE_END;
 

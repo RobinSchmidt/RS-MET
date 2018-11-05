@@ -399,7 +399,23 @@ void envelopeDeBeating()
    // todo: maybe use instantaneous envelope algorithm
 
 
-  RAPT::rsEnvelopeExtractor<double>::sineEnvelopeWithDeBeating(&x[0], N, &env[0]);
+  //rsEnvelopeExtractor<T>
+
+  typedef RAPT::rsEnvelopeExtractor<double> EE;
+  EE envExtractor;
+  envExtractor.setInterpolationMode(rsInterpolatingFunction<double, double>::CUBIC_NATURAL);
+  envExtractor.setSampleRate(fs);
+  //envExtractor.setSmoothing(20.0, 4);
+  //envExtractor.setStartMode(EE::FREE_END);
+  envExtractor.setEndMode(  EE::FREE_END);
+  envExtractor.setStartMode(EE::ZERO_END);
+  //envExtractor.setEndMode(  EE::ZERO_END);
+  //envExtractor.setStartMode(EE::EXTRAPOLATE_END);
+  //envExtractor.setEndMode(  EE::EXTRAPOLATE_END);
+  envExtractor.sineEnvelopeWithDeBeating(&x[0], N, &env[0]);
+
+
+  //RAPT::rsEnvelopeExtractor<double>::sineEnvelopeWithDeBeating(&x[0], N, &env[0]);
 
   // plot:
   GNUPlotter plt;
