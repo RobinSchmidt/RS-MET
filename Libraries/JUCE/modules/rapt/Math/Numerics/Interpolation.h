@@ -9,8 +9,8 @@ to the xOut values by linearly interpolating the yIn array. Array xOut and yOut 
 outLength. xIn must be strictly monotonically increasing. If the xOut array contains values outside
 the range of the xIn value, the will linearly extrapolate beyond the original range based on the 
 two initila and/or final points. */
-template<class T>
-void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength);
+template<class Tx, class Ty>
+void resampleNonUniformLinear(Tx* xIn, Ty* yIn, int inLength, Tx* xOut, Ty* yOut, int outLength);
 // rename
 
 /** Computes coefficients for a cubic polynomial that goes through the 4 points (-1,y[-1]),
@@ -101,8 +101,8 @@ void fitCubicThroughFourPoints(T x0, T y0, T x1, T y1, T x2,
 /** Given two x-axis values x1, x2 and the corresponding y-axis values y1, y2, this function
 returns the y-value corresponding to x by linearly interpolating between x1, x2. If x is outside
 the range of x1, x2, the function will extrapolate. */
-template<class T>
-T rsInterpolateLinear(T x1, T x2, T y1, T y2, T x);
+template<class Tx, class Ty>
+Ty rsInterpolateLinear(Tx x1, Tx x2, Ty y1, Ty y2, Tx x);
 // maybe change interface to x1, y1, x2, y2 to make it consistent with other functions
 // but this is a change that would silently break client code
 // hmm...but then rsInterpolateCubicHermite would also have to be changed
@@ -215,13 +215,13 @@ void cubicSplineArcLength2D(T* a, T* b, T* t, T* s, int N);
 //===============================================================================================
 // implementation of template-functions (move to cpp file):
 
-template<class T>
-T rsInterpolateLinear(T x1, T x2, T y1, T y2, T x)
+template<class Tx, class Ty>
+Ty rsInterpolateLinear(Tx x1, Tx x2, Ty y1, Ty y2, Tx x)
 {
   if(x1 == x2)
-    return T(0.5) * (y1+y2); // at a discontinuity, we return the average
-  T a = (y2-y1) / (x2-x1);
-  T b = y1 - a*x1;
+    return Ty(0.5) * (y1+y2); // at a discontinuity, we return the average
+  Ty a = (y2-y1) / (x2-x1);
+  Ty b = y1 - a*x1;
   return a*x + b;
     // factor out computation of a and b
 }

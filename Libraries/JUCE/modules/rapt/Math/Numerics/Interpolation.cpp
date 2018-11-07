@@ -1,10 +1,10 @@
-template<class T>
-void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, int outLength)
+template<class Tx, class Ty>
+void resampleNonUniformLinear(Tx* xIn, Ty* yIn, int inLength, Tx* xOut, Ty* yOut, int outLength)
 {
   // code copied and adapted from from rsTimeWarper::invertMonotonousWarpMap
   int i = 0;
   for(int n = 0; n < outLength; n++) {
-    T x = xOut[n];
+    Tx x = xOut[n];
     while(xIn[i+1] < x && i < inLength-2)
       i++;
     yOut[n] = rsInterpolateLinear(xIn[i], xIn[i+1], yIn[i], yIn[i+1], x);
@@ -16,6 +16,12 @@ void resampleNonUniformLinear(T* xIn, T* yIn, int inLength, T* xOut, T* yOut, in
 template<class Tx, class Ty>
 void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni, Ty scaleRhs)
 {
+  if(N <= 3) {
+    resampleNonUniformLinear(xIn, yIn, N, xOut, yOut, Ni);  // preliminary
+    return;
+  }
+
+
   // Equations from Taschenbuch der Mathematik, (Bronstein u.a., 5.Auflage, Verlag Harri Deutsch), 
   // pages 955/956
 

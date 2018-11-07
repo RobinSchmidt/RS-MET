@@ -402,13 +402,15 @@ void envelopeDeBeating()
   //rsEnvelopeExtractor<T>
 
   typedef RAPT::rsEnvelopeExtractor<double> EE;
+  typedef RAPT::rsInterpolatingFunction<double, double> IF;
   EE envExtractor;
-  envExtractor.setInterpolationMode(rsInterpolatingFunction<double, double>::CUBIC_NATURAL);
+  envExtractor.setInterpolationMode(IF::CUBIC_NATURAL);
+  //envExtractor.setInterpolationMode(IF::LINEAR);
   envExtractor.setSampleRate(fs);
   //envExtractor.setSmoothing(20.0, 4);
-  //envExtractor.setStartMode(EE::FREE_END);
+  envExtractor.setStartMode(EE::FREE_END);
   envExtractor.setEndMode(  EE::FREE_END);
-  envExtractor.setStartMode(EE::ZERO_END);
+  //envExtractor.setStartMode(EE::ZERO_END);
   //envExtractor.setEndMode(  EE::ZERO_END);
   //envExtractor.setStartMode(EE::EXTRAPOLATE_END);
   //envExtractor.setEndMode(  EE::EXTRAPOLATE_END);

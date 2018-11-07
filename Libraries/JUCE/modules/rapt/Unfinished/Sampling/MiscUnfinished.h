@@ -830,7 +830,7 @@ protected:
 
 };
 
-//===============================================================================================
+//=================================================================================================
 
 /** A class for non-realtime envelope extraction. you cann feed it some input signal, and the 
 rsEnvelopeExtractor object will return an extracted envelope signal of the same length at the same
@@ -844,9 +844,9 @@ public:
 
   enum endPointModes
   {
-    FREE_END = 0,
-    EXTRAPOLATE_END,
-    ZERO_END
+    FREE_END = 0,      // should be used only together with spline interpolation
+    EXTRAPOLATE_END,   // uses linear extrapolation to obtain end values
+    ZERO_END           // clamps the respective end value at zero
     //PERIODIC_END
   };
 
@@ -862,17 +862,19 @@ public:
 
   //void setInterpolationTension(T newTension) { interpolationTension = newTension; }
 
-  /** Sets the way the starting point of the envelope is handled...
-  @se endPointModes */
+  /** Sets the way the starting point of the envelope is handled. It should be one of the options
+  in  @see endPointModes. */
   void setStartMode(int newStartMode) { startMode = newStartMode; }
 
+  /** Sets the way the endpoint of the envelope is handled. It should be one of the options
+  in  @see endPointModes. */
   void setEndMode(int newEndMode) { endMode = newEndMode; }
 
   /** Sets the cutoff frequency and the number of passes of the bidirectional smoothing filter that
   can be applied to the extracted envelope as pots processing. If numPasses is set to zero, 
   smoothing is turned off. */
-  void setSmoothing(double cutoff, int numPasses) 
-  { smoothingFreq = cutoff; smoothingOrder = numPasses; }
+  //void setSmoothing(double cutoff, int numPasses) 
+  //{ smoothingFreq = cutoff; smoothingOrder = numPasses; }
 
   /** Sets the sample-rate. This setting is relevant for the smoothing filter (if any). */
   void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; }
@@ -880,11 +882,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  void extractEnvelope(const T* input, int length, T* envelope);
+  //void extractEnvelope(const T* input, int length, T* envelope);
 
 
   /** Function suitable for extracting the envelope of an extracted partial that shows beating 
-  between two nearby modes. */
+  between two nearby modes. The input signal is an array of given length that presumably contains 
+  two (or maybbe more) sinusoids of nearby frequencies and the output is the envelope. */
   void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
 
 

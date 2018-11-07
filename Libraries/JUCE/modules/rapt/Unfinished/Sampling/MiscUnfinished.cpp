@@ -1437,11 +1437,11 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 
 //=================================================================================================
 
-template<class T>
-void rsEnvelopeExtractor<T>::extractEnvelope(const T* x, int N, T* env)
-{
-
-}
+//template<class T>
+//void rsEnvelopeExtractor<T>::extractEnvelope(const T* x, int N, T* env)
+//{
+//
+//}
 
 template<class T>
 void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env)
@@ -1453,10 +1453,12 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
 
   Vec envTime2, envValue2;
   getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
+  // maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
+  // skip the de-beating process
 
   setupEndValues(envTime2, envValue2, N);
 
-  // get envelope signal by interpolating the peaks:
+  // get envelope signal by interpolating the peaks (factor out):
   Vec t(N);
   rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
   typedef rsInterpolatingFunction<double, double> IF;
@@ -1481,26 +1483,35 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
 template<class T>
 void rsEnvelopeExtractor<T>::setupEndValues(std::vector<T>& envTime, std::vector<T>& envValue, int N)
 {
-  double v;
+  if(envTime.size() < 2) {
+    rsPrepend(envValue, T(0));
+    rsPrepend(envTime,  T(0));
+    rsAppend( envValue, T(0));
+    rsAppend( envTime,  T(N));
+    return;
+  }
+
+
+  T v;
   if(startMode == ZERO_END) {
-    rsPrepend(envValue, 0.0);
-    rsPrepend(envTime, 0.0);
+    rsPrepend(envValue, T(0));
+    rsPrepend(envTime,  T(0));
   }
   else if(startMode == EXTRAPOLATE_END) {
     v = rsInterpolateLinear(envTime[0], envTime[1], envValue[0], envValue[1], 0.0);
-    rsPrepend(envValue, v);
-    rsPrepend(envTime, 0.0);
+    rsPrepend(envValue, rsMax(v, T(0)));
+    rsPrepend(envTime,  T(0));
   }
 
   if(endMode == ZERO_END) {
-    rsAppend(envValue, 0.0);
-    rsAppend(envTime, double(N));
+    rsAppend(envValue, T(0));
+    rsAppend(envTime,  T(N));
   }
   else if(endMode == EXTRAPOLATE_END) {
     int M = (int)envTime.size()-1;
-    v = rsInterpolateLinear(envTime[M-1], envTime[M], envValue[M-1], envValue[M], double(N));
-    rsAppend(envValue, v);
-    rsAppend(envTime, double(N));
+    v = rsInterpolateLinear(envTime[M-1], envTime[M], envValue[M-1], envValue[M], T(N));
+    rsAppend(envValue, rsMax(v, T(0)));
+    rsAppend(envTime,  T(N));
   }
 }
 
