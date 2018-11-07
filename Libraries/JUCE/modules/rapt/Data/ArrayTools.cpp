@@ -916,12 +916,6 @@ T rsArray::meanDifference(const T *x, int N)
   return s / (N-1);    // for N values, there are N-1 differences
 }
 
-template<class T>
-T rsArray::meanSquare(const T *x, int N)
-{
-  return sumOfSquares(x, N) / T(N);
-}
-
 template <class T>
 T rsArray::median(T *buffer, int length)
 {
@@ -1093,21 +1087,6 @@ T rsArray::sum(T *buffer, int length)
   for(int n = 0; n < length; n++)
     accu += buffer[n];
   return accu;
-}
-
-template<class T>
-T rsArray::sumOfProducts(const T *x, const T *y, int N)
-{
-  T s = T(0);
-  for(int n = 0; n < N; n++)
-    s += x[n]*y[n];
-  return s;
-}
-
-template<class T>
-T rsArray::sumOfSquares(const T *x, int N)
-{
-  return sumOfProducts(x, x, N);
 }
 
 inline void rsArray::swapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes)
