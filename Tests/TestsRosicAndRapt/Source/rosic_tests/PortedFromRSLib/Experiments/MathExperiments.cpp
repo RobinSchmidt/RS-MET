@@ -934,7 +934,7 @@ void parametricBell()
   static const int N = 1000;
   double center =  10.0;  // center of the bell
   double width  =  4.0;   // width
-  double flat   =  0.5;   // relative length of flat top zone (between 0 and 1) 
+  double flat   =  0.5;   // relative length of flat top zone (between 0 and 1)
 
   // create and set up parametric bell object:
   rsParametricBellFunction<double> bell;
@@ -947,7 +947,7 @@ void parametricBell()
   double xMax =  center + 1.2 * width/2;
   double x[N];
   RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
-  double yl[N], yc[N], yq[N], yh[N]; // linear, cubic, quintic, heptic
+  double yl[N], yc[N], yq[N], yh[N], yb[N]; // linear, cubic, quintic, heptic, bump
   int n;
 
   // create the family of curves (we look at different shapes for the prototype bell):
@@ -963,9 +963,12 @@ void parametricBell()
   bell.setPrototypeBell(&rsPositiveBellFunctions<double>::heptic);
   for(n = 0; n < N; n++)
     yh[n] = bell.getValue(x[n]);
+  bell.setPrototypeBell(&rsPositiveBellFunctions<double>::bump);
+  for(n = 0; n < N; n++)
+    yb[n] = bell.getValue(x[n]);
 
   GNUPlotter plt;
-  plt.addDataArrays(N, x, yl, yc, yq, yh);
+  plt.addDataArrays(N, x, yl, yc, yq, yh, yb);
   plt.plot();
 }
 

@@ -47,7 +47,7 @@ T rsPositiveBellFunctions<T>::bump(T x)
   if(x > 1)
     return 0;
   else
-    return exp(T(-1)/(T(1)-x*x));
+    return T(EULER) * exp(T(-1)/(T(1)-x*x));
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();
-  //parametricBell();
+  parametricBell();
   //partialFractionExpansion();
   //partialFractionExpansion2();
   //partialFractionExpansionQuadratic();
