@@ -24,8 +24,7 @@ T rsPositiveBellFunctions<T>::quintic(T x)
 {
   if(x > 1)
     return 0;
-  else
-  {
+  else {
     T x2 = x*x;
     return 1 + (-10 + 15*x - 6*x2) * x*x2; // 1 - 10*x^3 + 15*x^4 - 6*x^5
   }
@@ -36,11 +35,19 @@ T rsPositiveBellFunctions<T>::heptic(T x)
 {
   if(x > 1)
     return 0;
-  else
-  {
+  else {
     T x2 = x*x;
     return 1 + (-35 + 84*x - 70*x2 + 20*x2*x) * x2*x2; // 1 - 35*x^4 + 84*x^5 - 70*x^6 + 20*x^7
   }
+}
+
+template<class T>
+T rsPositiveBellFunctions<T>::bump(T x)
+{
+  if(x > 1)
+    return 0;
+  else
+    return exp(T(-1)/(T(1)-x*x));
 }
 
 //-------------------------------------------------------------------------------------------------

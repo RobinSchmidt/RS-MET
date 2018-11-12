@@ -27,6 +27,12 @@ public:
   f'''(0) = 0 and f'''(1) = 0. */
   static T heptic(T x);
 
+  /** Implements the one-dimensional bump function which is both smooth (in the sense of having 
+  continuous derivatives of all orders) and compactly supported (it's support is the interval 
+  (-1, 1)). 
+  https://en.wikipedia.org/wiki/Bump_function */
+  static T bump(T x);
+
 };
 
 //=================================================================================================

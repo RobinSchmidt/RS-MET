@@ -480,59 +480,48 @@ void RTreeView::updateScrollBarBoundsAndVisibility()
   bool leftRightBarNeeded2 = false;
   bool upDownBarNeeded2    = false;
 
-  if( upDownBarNeeded )
-  {
+  if( upDownBarNeeded ) {
     availableWidth      -= scrollBarThickness;
     leftRightBarNeeded2  = requiredWidth  > availableWidth;
   }
-  if( leftRightBarNeeded )
-  {
+  if( leftRightBarNeeded ) {
     availableHeight  -= scrollBarThickness;
     upDownBarNeeded2  = requiredHeight > availableHeight;
   }
 
-  if( (upDownBarNeeded == false) &&  (upDownBarNeeded2 == true) )
-  {
+  if( (upDownBarNeeded == false) &&  (upDownBarNeeded2 == true) ) {
     upDownBarNeeded  = true;
     availableWidth  -= scrollBarThickness;
   }
-  if( (leftRightBarNeeded == false) && (leftRightBarNeeded2 == true) )
-  {
+  if( (leftRightBarNeeded == false) && (leftRightBarNeeded2 == true) ) {
     leftRightBarNeeded  = true;
     availableHeight    -= scrollBarThickness;
   }
 
   // OK, done with the mess - now set up the scrollbars:
-  if( upDownBarNeeded )
-  {
+  if( upDownBarNeeded ) {
     upDownScrollBar->setVisible(true);
     upDownScrollBar->setBounds(getWidth()-scrollBarThickness, 0, scrollBarThickness,
       availableHeight);
     upDownScrollBar->setRangeLimits(0.0, requiredHeight);
     upDownScrollBar->setCurrentRange(-yOffset, availableHeight);
-  }
-  else
-  {
+  } else {
     yOffset = 0;
     upDownScrollBar->setVisible(false);
   }
 
-  if( leftRightBarNeeded )
-  {
+  if( leftRightBarNeeded ) {
     leftRightScrollBar->setVisible(true);
     leftRightScrollBar->setBounds(0, getHeight()-scrollBarThickness, availableWidth,
       scrollBarThickness);
     leftRightScrollBar->setRangeLimits(0.0, requiredWidth);
     leftRightScrollBar->setCurrentRange(-xOffset, availableWidth);
-  }
-  else
-  {
+  } else {
     xOffset = 0;
     leftRightScrollBar->setVisible(false);
   }
 
-  if( upDownBarNeeded && leftRightBarNeeded )
-  {
+  if( upDownBarNeeded && leftRightBarNeeded ) {
     upDownScrollBar->setBounds(getWidth()-scrollBarThickness, 0, scrollBarThickness,
       availableHeight+outlineThickness);
     leftRightScrollBar->setBounds(0, getHeight()-scrollBarThickness,
