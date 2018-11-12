@@ -17,8 +17,10 @@ template<class Tx, class Ty>
 void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni, Ty scaleRhs)
 {
   if(N <= 3) {
-    resampleNonUniformLinear(xIn, yIn, N, xOut, yOut, Ni);  // preliminary
+    resampleNonUniformLinear(xIn, yIn, N, xOut, yOut, Ni);
     return;
+    // preliminary...maybe we should use a line when N==2 and a quadratic when N==3
+    // ...what about N==1 - maybe just fill the output array with a constant?
   }
 
 

@@ -92,6 +92,12 @@ public:
 
   virtual void parameterChanged(Parameter* p) override;
 
+  /** Sets the minimum width and height for the popup menu that appears on clicking. */
+  virtual void setMinPopUpSize(int newMinWidth, int newMinHeight)
+  {
+    minPopUpWidth = newMinWidth; minPopUpHeight = newMinHeight;
+  }
+
   /** Sets the maximum width and height for the popup menu that appears on clicking. */
   virtual void setMaxPopUpSize(int newMaxWidth, int newMaxHeight)
   {
@@ -166,6 +172,7 @@ protected:
   bool dontOpenPopUpOnNextMouseClick;
 
   int maxPopUpWidth = INT_MAX, maxPopUpHeight = INT_MAX;
+  int minPopUpWidth = 0, minPopUpHeight = 0;
 
 private:
 

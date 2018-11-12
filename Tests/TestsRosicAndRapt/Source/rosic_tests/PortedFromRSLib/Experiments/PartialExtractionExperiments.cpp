@@ -369,7 +369,7 @@ void envelopeDeBeating()
   // try to remove the amplitude modulation from the envelope.
 
   double fs = 44100; // sample rate
-  double f1 = 140;   // frequency 1
+  double f1 = 147;   // frequency 1
   double f2 = 150;   //           2
   double a1 = 0.5;   // amplitude 1
   double a2 = 0.5;   //           2
