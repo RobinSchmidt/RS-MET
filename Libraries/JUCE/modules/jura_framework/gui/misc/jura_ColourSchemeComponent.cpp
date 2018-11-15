@@ -24,19 +24,16 @@ void ColourSchemeComponent::setDescriptionField(RTextField *newDescriptionField,
   ScopedLock scopedLock(arrayLock);
   descriptionField = newDescriptionField;
   int i;
-  for(i=0; i<widgets.size(); i++)
-    widgets[i]->setDescriptionField(newDescriptionField);
-  for(i=0; i<widgetSets.size(); i++)
-    widgetSets[i]->setDescriptionField(newDescriptionField);
-  for(i=0; i<plots.size(); i++)
-    plots[i]->setDescriptionField(newDescriptionField);
+  for(const auto & widget : widgets)
+	  widget->setDescriptionField(newDescriptionField);
+  for(const auto & widgetSet : widgetSets)
+	  widgetSet->setDescriptionField(newDescriptionField);
+  for(const auto & plot : plots)
+    plot->setDescriptionField(newDescriptionField);
   if( callAlsoForChildColourSchemeComponents == true )
   {
-    for(i=0; i<childColourSchemeComponents.size(); i++)
-    {
-      childColourSchemeComponents[i]->setDescriptionField(newDescriptionField, 
-        callAlsoForChildColourSchemeComponents);
-    }
+    for(const auto & component : childColourSchemeComponents)
+		component->setDescriptionField(newDescriptionField, callAlsoForChildColourSchemeComponents);
   }
 }
 
@@ -124,14 +121,14 @@ void ColourSchemeComponent::copyColourSettingsFrom(const ColourSchemeComponent *
 void ColourSchemeComponent::setWidgetsVisible(bool shouldBeVisible)
 {
   ScopedLock scopedLock(arrayLock);
-  for(int i=0; i<widgets.size(); i++)
+  for(const auto & widget : widgets)
   {
-    Component* comp = dynamic_cast<Component*> (widgets[i]);
+    Component* comp = dynamic_cast<Component*> (widget);
     if( comp != NULL )
       comp->setVisible(shouldBeVisible);
   }
-  for(int i=0; i<widgetSets.size(); i++)
-    widgetSets[i]->setVisible(shouldBeVisible);
+  for(const auto & widgetSet : widgetSets)
+	widgetSet->setVisible(shouldBeVisible);
 }
 
 void ColourSchemeComponent::setColourSchemeFromXml(const XmlElement& xml)
