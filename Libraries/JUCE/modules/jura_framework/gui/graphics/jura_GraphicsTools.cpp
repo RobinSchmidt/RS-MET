@@ -891,8 +891,8 @@ void drawBitmapText(Graphics &g, const String &text, double x, double y, double 
   else if(justification.testFlags(vFlags & Justification::bottom))
     y = y+h;
 
-  int  xInt = roundFloatToInt((float)x);
-  int  yInt = roundFloatToInt((float)y);
+  int  xInt = roundToInt((float)x);
+  int  yInt = roundToInt((float)y);
   drawBitmapFontText(g, xInt, yInt, text, font, color, -1, justification);
 }
 

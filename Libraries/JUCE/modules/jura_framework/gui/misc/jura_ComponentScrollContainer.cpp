@@ -62,9 +62,9 @@ void ComponentScrollContainer::scrollBarMoved(RScrollBar* scrollBarThatHasMoved,
   const double newRangeStart)
 {
   if( scrollBarThatHasMoved == upDownScrollBar )
-    yOffset = -roundDoubleToInt(newRangeStart);
+    yOffset = -roundToInt(newRangeStart);
   else if( scrollBarThatHasMoved == leftRightScrollBar )
-    xOffset = -roundDoubleToInt(newRangeStart);
+    xOffset = -roundToInt(newRangeStart);
   contentComponent->setTopLeftPosition(xOffset, yOffset); // we'll see if thsi works
 }
 

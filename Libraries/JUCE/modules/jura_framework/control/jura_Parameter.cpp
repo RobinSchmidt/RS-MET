@@ -473,7 +473,7 @@ void Parameter::callValueChangeCallbacks(double argument)
   if( valueChangeCallbackDouble != nullptr )
     valueChangeCallbackDouble->call(argument);
   if( valueChangeCallbackInt != nullptr )
-    valueChangeCallbackInt->call(juce::roundDoubleToInt(argument));
+    valueChangeCallbackInt->call(juce::roundToInt(argument));
   if( valueChangeCallbackBool != nullptr )
     valueChangeCallbackBool->call(argument >= 0.5);
 }

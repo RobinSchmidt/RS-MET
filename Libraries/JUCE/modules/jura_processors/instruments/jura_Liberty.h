@@ -880,7 +880,7 @@ protected:
   /** Converts a coordinate given in pixels to the corresponding coordinate in pin-distances. */
   virtual int inPinDistances(int pixels) const 
   { 
-    return roundDoubleToInt(pixels / (double) pinDistance); 
+    return roundToInt(pixels / (double) pinDistance);
   }
 
   /** Returns a pixel value (x- or y-coordinate) that is at the nearest grid position with respect 
