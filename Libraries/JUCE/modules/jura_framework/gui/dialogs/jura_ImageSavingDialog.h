@@ -4,8 +4,8 @@
 /** This class is to be used as content component for a DialogWindow object for saving images - it 
 is mainly intended to export the contents of a Component to image files. */
 
-class ImageSavingDialog : public Component, public ButtonListener, public ComboBoxListener,
-  public LabelListener
+class ImageSavingDialog : public Component, public Button::Listener, public ComboBox::Listener,
+	public Label::Listener
 {
 
 public:
