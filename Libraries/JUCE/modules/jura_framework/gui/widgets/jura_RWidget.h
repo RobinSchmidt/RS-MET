@@ -139,10 +139,10 @@ public:
   /** Thickness for the outline of the widget (in pixels). */
   static const int outlineThickness = 2;
 
-protected:
-
   /** Opens a modal field for manually entering a value and returns the value entered. */
   virtual double openModalNumberEntryField(double numberToShowInitially);
+
+protected:
 
   /** The assigned Parameter object. Typically, a widget is for displaying and manipulating a 
   parameter object (but it can be used also without attaching a parameter). */
