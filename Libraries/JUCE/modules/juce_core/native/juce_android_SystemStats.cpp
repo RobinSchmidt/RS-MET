@@ -26,7 +26,7 @@ namespace juce
 #define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD) \
  STATICMETHOD (newProxyInstance, "newProxyInstance", "(Ljava/lang/ClassLoader;[Ljava/lang/Class;Ljava/lang/reflect/InvocationHandler;)Ljava/lang/Object;") \
 
- DECLARE_JNI_CLASS (JavaProxy, "java/lang/reflect/Proxy");
+ DECLARE_JNI_CLASS (JavaProxy, "java/lang/reflect/Proxy")
 #undef JNI_CLASS_MEMBERS
 
 JNIClassBase::JNIClassBase (const char* cp)   : classPath (cp), classRef (0)
@@ -47,7 +47,7 @@ Array<JNIClassBase*>& JNIClassBase::getClasses()
 
 void JNIClassBase::initialise (JNIEnv* env)
 {
-    classRef = (jclass) env->NewGlobalRef (env->FindClass (classPath));
+    classRef = (jclass) env->NewGlobalRef (LocalRef<jobject> (env->FindClass (classPath)));
     jassert (classRef != 0);
 
     initialiseFields (env);
@@ -133,9 +133,14 @@ LocalRef<jobject> CreateJavaInterface (AndroidInterfaceImplementer* implementer,
         }
     }
 
-    auto invocationHandler = LocalRef<jobject> (env->CallStaticObjectMethod (JuceAppActivity,
-                                                                             JuceAppActivity.createInvocationHandler,
-                                                                             reinterpret_cast<jlong> (implementer)));
+    auto invocationHandler = LocalRef<jobject> (env->CallObjectMethod (android.activity,
+                                                                       JuceAppActivity.createInvocationHandler,
+                                                                       reinterpret_cast<jlong> (implementer)));
+
+    // CreateJavaInterface() is expected to be called just once for a given implementer
+    jassert (implementer->invocationHandler == nullptr);
+
+    implementer->invocationHandler = GlobalRef (invocationHandler);
 
     return LocalRef<jobject> (env->CallStaticObjectMethod (JavaProxy, JavaProxy.newProxyInstance,
                                                            classLoader.get(), classArray.get(),
@@ -156,10 +161,19 @@ LocalRef<jobject> CreateJavaInterface (AndroidInterfaceImplementer* implementer,
     return CreateJavaInterface (implementer, StringArray (interfaceName));
 }
 
+AndroidInterfaceImplementer::~AndroidInterfaceImplementer()
+
+{
+    if (invocationHandler != nullptr)
+        getEnv()->CallVoidMethod (android.activity,
+                                  JuceAppActivity.invocationHandlerContextDeleted,
+                                  invocationHandler.get());
+}
+
 jobject AndroidInterfaceImplementer::invoke (jobject /*proxy*/, jobject method, jobjectArray args)
 {
     auto* env = getEnv();
-    return env->CallObjectMethod (method, Method.invoke, javaSubClass.get(), args);
+    return env->CallObjectMethod (method, JavaMethod.invoke, javaSubClass.get(), args);
 }
 
 jobject juce_invokeImplementer (JNIEnv* env, jlong thisPtr, jobject proxy, jobject method, jobjectArray args)
@@ -184,6 +198,35 @@ JUCE_JNI_CALLBACK (JUCE_JOIN_MACRO (JUCE_ANDROID_ACTIVITY_CLASSNAME, _00024Nativ
                    void, (JNIEnv* env, jobject /*object*/, jlong thisPtr))
 {
     juce_dispatchDelete (env, thisPtr);
+}
+
+//==============================================================================
+AppPausedResumedListener::AppPausedResumedListener (Owner& ownerToUse)
+    : owner (ownerToUse)
+{
+}
+
+jobject AppPausedResumedListener::invoke (jobject proxy, jobject method, jobjectArray args)
+{
+    auto* env = getEnv();
+
+    auto methodName = juceString ((jstring) env->CallObjectMethod (method, JavaMethod.getName));
+
+    int numArgs = args != nullptr ? env->GetArrayLength (args) : 0;
+
+    if (methodName == "appPaused" && numArgs == 0)
+    {
+        owner.appPaused();
+        return nullptr;
+    }
+
+    if (methodName == "appResumed" && numArgs == 0)
+    {
+        owner.appResumed();
+        return nullptr;
+    }
+
+    return AndroidInterfaceImplementer::invoke (proxy, method, args);
 }
 
 //==============================================================================
@@ -321,7 +364,7 @@ namespace AndroidStatsHelpers
     #define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD) \
      STATICMETHOD (getProperty, "getProperty", "(Ljava/lang/String;)Ljava/lang/String;")
 
-    DECLARE_JNI_CLASS (SystemClass, "java/lang/System");
+    DECLARE_JNI_CLASS (SystemClass, "java/lang/System")
     #undef JNI_CLASS_MEMBERS
 
     static inline String getSystemProperty (const String& name)
@@ -339,7 +382,7 @@ namespace AndroidStatsHelpers
     }
 
     #define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD)
-    DECLARE_JNI_CLASS (BuildClass, "android/os/Build");
+    DECLARE_JNI_CLASS (BuildClass, "android/os/Build")
     #undef JNI_CLASS_MEMBERS
 
     static inline String getAndroidOsBuildValue (const char* fieldName)
@@ -366,6 +409,11 @@ String SystemStats::getDeviceDescription()
             + "-" + AndroidStatsHelpers::getAndroidOsBuildValue ("SERIAL");
 }
 
+String SystemStats::getDeviceManufacturer()
+{
+    return AndroidStatsHelpers::getAndroidOsBuildValue ("MANUFACTURER");
+}
+
 bool SystemStats::isOperatingSystem64Bit()
 {
    #if JUCE_64BIT
@@ -385,7 +433,7 @@ String SystemStats::getCpuModel()
     return readPosixConfigFileValue ("/proc/cpuinfo", "Hardware");
 }
 
-int SystemStats::getCpuSpeedInMegaherz()
+int SystemStats::getCpuSpeedInMegahertz()
 {
     int maxFreqKHz = 0;
 

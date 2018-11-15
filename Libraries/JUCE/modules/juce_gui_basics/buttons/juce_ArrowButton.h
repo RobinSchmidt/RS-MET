@@ -32,6 +32,8 @@ namespace juce
     A button with an arrow in it.
 
     @see Button
+
+    @tags{GUI}
 */
 class JUCE_API  ArrowButton  : public Button
 {
@@ -52,7 +54,7 @@ public:
     ~ArrowButton();
 
     /** @internal */
-    void paintButton (Graphics&, bool isMouseOverButton, bool isButtonDown) override;
+    void paintButton (Graphics&, bool, bool) override;
 
 private:
     Colour colour;

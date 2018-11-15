@@ -20,8 +20,18 @@
   ==============================================================================
 */
 
-
 #include "juce_blocks_basics.h"
+
+#if ! JUCE_HAS_CONSTEXPR
+ #ifndef JUCE_DEMO_RUNNER
+  #error "The juce_blocks_basics module requires a compiler that supports constexpr"
+ #endif
+#else
+
+namespace juce
+{
+ #include "littlefoot/juce_LittleFootRemoteHeap.h"
+}
 
 #include "protocol/juce_BitPackingUtilities.h"
 #include "protocol/juce_BlocksProtocolDefinitions.h"
@@ -35,3 +45,5 @@
 #include "topology/juce_RuleBasedTopologySource.cpp"
 #include "visualisers/juce_DrumPadLEDProgram.cpp"
 #include "visualisers/juce_BitmapLEDProgram.cpp"
+
+#endif

@@ -23,7 +23,10 @@
 namespace juce
 {
 
-/** Describes a phyiscal connection between two ports of two block devices. */
+/** Describes a phyiscal connection between two ports of two block devices.
+
+    @tags{Blocks}
+*/
 struct BlockDeviceConnection
 {
     Block::UID device1, device2;
@@ -34,7 +37,10 @@ struct BlockDeviceConnection
 };
 
 
-/** Describes a set of blocks and the connections between them. */
+/** Describes a set of blocks and the connections between them.
+
+    @tags{Blocks}
+*/
 struct BlockTopology
 {
     Block::Array blocks;
@@ -42,6 +48,24 @@ struct BlockTopology
 
     bool operator== (const BlockTopology&) const noexcept;
     bool operator!= (const BlockTopology&) const noexcept;
+
+    Block::Ptr getBlockWithUID (Block::UID deviceID)
+    {
+        for (auto&& block : blocks)
+            if (block->uid == deviceID)
+                return block;
+
+        return {};
+    }
+
+    const Block::Ptr getBlockWithUID (Block::UID deviceID) const
+    {
+        for (auto&& block : blocks)
+            if (block->uid == deviceID)
+                return block;
+
+        return {};
+    }
 };
 
 } // namespace juce

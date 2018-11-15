@@ -35,6 +35,8 @@ namespace juce
     button state changes.
 
     @see Button, ShapeButton, TextButton
+
+    @tags{GUI}
 */
 class JUCE_API  ImageButton  : public Button
 {
@@ -141,7 +143,7 @@ protected:
     /** @internal */
     bool hitTest (int x, int y) override;
     /** @internal */
-    void paintButton (Graphics&, bool isMouseOver, bool isButtonDown) override;
+    void paintButton (Graphics&, bool, bool) override;
 
 private:
     //==============================================================================

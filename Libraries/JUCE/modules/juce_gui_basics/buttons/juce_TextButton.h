@@ -33,6 +33,8 @@ namespace juce
     text on it.
 
     @see Button, DrawableButton
+
+    @tags{GUI}
 */
 class JUCE_API  TextButton  : public Button
 {
@@ -97,7 +99,7 @@ public:
 
     //==============================================================================
     /** @internal */
-    void paintButton (Graphics&, bool isMouseOverButton, bool isButtonDown) override;
+    void paintButton (Graphics&, bool, bool) override;
     /** @internal */
     void colourChanged() override;
 

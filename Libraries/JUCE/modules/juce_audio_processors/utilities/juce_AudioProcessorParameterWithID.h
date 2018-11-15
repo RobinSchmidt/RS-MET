@@ -31,11 +31,13 @@ namespace juce
     This abstract base class is used by some AudioProcessorParameter helper classes.
 
     @see AudioParameterFloat, AudioParameterInt, AudioParameterBool, AudioParameterChoice
+
+    @tags{Audio}
 */
 class JUCE_API  AudioProcessorParameterWithID  : public AudioProcessorParameter
 {
 public:
-    /** Creation of this object requires providing a name and ID which will be
+    /** The creation of this object requires providing a name and ID which will be
         constant for its lifetime.
     */
     AudioProcessorParameterWithID (const String& parameterID,

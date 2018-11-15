@@ -27,9 +27,9 @@ namespace juce
 /**
     Utility class for linearly smoothed values like volume etc. that should
     not change abruptly but as a linear ramp, to avoid audio glitches.
-*/
 
-//==============================================================================
+    @tags{Audio}
+*/
 template <typename FloatType>
 class LinearSmoothedValue
 {
@@ -60,10 +60,19 @@ public:
 
     //==============================================================================
     /** Set a new target value.
-        @param newValue New target value
+
+        @param newValue     The new target value
+        @param force        If true, the value will be set immediately, bypassing the ramp
     */
-    void setValue (FloatType newValue) noexcept
+    void setValue (FloatType newValue, bool force = false) noexcept
     {
+        if (force)
+        {
+            target = currentValue = newValue;
+            countdown = 0;
+            return;
+        }
+
         if (target != newValue)
         {
             target = newValue;
@@ -155,16 +164,16 @@ public:
         {
             if (buffer.getNumChannels() == 1)
             {
-                FloatType* samples = buffer.getWritePointer(0);
+                auto samples = buffer.getWritePointer(0);
 
-                for (int i = 0; i < numSamples; i++)
+                for (int i = 0; i < numSamples; ++i)
                     samples[i] *= getNextValue();
             }
             else
             {
-                for (int i = 0; i < numSamples; i++)
+                for (int i = 0; i < numSamples; ++i)
                 {
-                    const FloatType gain = getNextValue();
+                    auto gain = getNextValue();
 
                     for (int channel = 0; channel < buffer.getNumChannels(); channel++)
                         buffer.setSample (channel, i, buffer.getSample (channel, i) * gain);
@@ -175,6 +184,26 @@ public:
         {
             buffer.applyGain (0, numSamples, target);
         }
+    }
+
+    //==============================================================================
+    /** Skip the next numSamples samples.
+        This is identical to calling getNextValue numSamples times. It returns
+        the new current value.
+        @see getNextValue
+    */
+    FloatType skip (int numSamples) noexcept
+    {
+        if (numSamples >= countdown)
+        {
+            currentValue = target;
+            countdown = 0;
+            return target;
+        }
+
+        currentValue += (step * static_cast<FloatType> (numSamples));
+        countdown -= numSamples;
+        return currentValue;
     }
 
 private:

@@ -53,6 +53,8 @@ namespace juce
     @endcode
 
     The call-out will resize and position itself when the content changes size.
+
+    @tags{GUI}
 */
 class JUCE_API  CallOutBox    : public Component,
                                 private Timer
@@ -80,7 +82,7 @@ public:
     ~CallOutBox();
 
     //==============================================================================
-    /** Changes the length of the arrow. */
+    /** Changes the base width of the arrow. */
     void setArrowSize (float newSize);
 
     /** Updates the position and size of the box.

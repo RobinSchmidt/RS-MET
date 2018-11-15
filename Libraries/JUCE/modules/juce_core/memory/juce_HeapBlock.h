@@ -79,10 +79,17 @@ namespace HeapBlockHelper
     that the system's malloc() function doesn't throw).
 
     @see Array, OwnedArray, MemoryBlock
+
+    @tags{Core}
 */
 template <class ElementType, bool throwOnFailure = false>
 class HeapBlock
 {
+private:
+    template <class OtherElementType>
+    using AllowConversion = typename std::enable_if<std::is_base_of<typename std::remove_pointer<ElementType>::type,
+                                                                    typename std::remove_pointer<OtherElementType>::type>::value>::type;
+
 public:
     //==============================================================================
     /** Creates a HeapBlock which is initially just a null pointer.
@@ -142,6 +149,30 @@ public:
     HeapBlock& operator= (HeapBlock&& other) noexcept
     {
         std::swap (data, other.data);
+        return *this;
+    }
+
+    /** Converting move constructor.
+        Only enabled if this is a HeapBlock<Base*> and the other object is a HeapBlock<Derived*>,
+        where std::is_base_of<Base, Derived>::value == true.
+    */
+    template <class OtherElementType, bool otherThrowOnFailure, typename = AllowConversion<OtherElementType>>
+    HeapBlock (HeapBlock<OtherElementType, otherThrowOnFailure>&& other) noexcept
+        : data (reinterpret_cast<ElementType*> (other.data))
+    {
+        other.data = nullptr;
+    }
+
+    /** Converting move assignment operator.
+        Only enabled if this is a HeapBlock<Base*> and the other object is a HeapBlock<Derived*>,
+        where std::is_base_of<Base, Derived>::value == true.
+    */
+    template <class OtherElementType, bool otherThrowOnFailure, typename = AllowConversion<OtherElementType>>
+    HeapBlock& operator= (HeapBlock<OtherElementType, otherThrowOnFailure>&& other) noexcept
+    {
+        free();
+        data = reinterpret_cast<ElementType*> (other.data);
+        other.data = nullptr;
         return *this;
     }
 
@@ -294,7 +325,7 @@ public:
     }
 
     /** This typedef can be used to get the type of the heapblock's elements. */
-    typedef ElementType Type;
+    using Type = ElementType;
 
 private:
     //==============================================================================
@@ -308,6 +339,9 @@ private:
         HeapBlockHelper::ThrowOnFail<throwOnFailure>::checkPointer (data);
        #endif
     }
+
+    template <class OtherElementType, bool otherThrowOnFailure>
+    friend class HeapBlock;
 
    #if ! (defined (JUCE_DLL) || defined (JUCE_DLL_BUILD))
     JUCE_DECLARE_NON_COPYABLE (HeapBlock)

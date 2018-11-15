@@ -130,8 +130,13 @@ enum class Type  : uint8
     float_  = 'f'
 };
 
+const int numBytesInType = 4;
+
 //==============================================================================
-/** Defines a native function that the program can call. */
+/** Defines a native function that the program can call.
+
+    @tags{Blocks}
+*/
 struct NativeFunction
 {
     using ImplementationFunction = int32 (*) (void*, const int32*);
@@ -140,11 +145,11 @@ struct NativeFunction
         The format of nameAndArgumentTypes is "name/[return type][arg1][arg2..]"
         So for example "int foobar (float, bool)" would be "foobar/ifb"
     */
-    NativeFunction (const char* nameAndArgumentTypes, ImplementationFunction fn) noexcept
+    NativeFunction (const char* nameAndArgumentTypes, ImplementationFunction fn)
         : nameAndArguments (nameAndArgumentTypes), function (fn),
           functionID (createID (nameAndArgumentTypes)), returnType(), numArgs()
     {
-        const int slash = indexOfSlash (nameAndArgumentTypes);
+        auto slash = indexOfSlash (nameAndArgumentTypes);
 
         if (slash > 0)
         {
@@ -162,11 +167,9 @@ struct NativeFunction
     uint8 numArgs;                      /**< The number of arguments that the function takes. */
 
     /** Converts a function signature to its hashed ID. */
-    static FunctionID createID (const char* nameAndArgTypes) noexcept
+    static FunctionID createID (const char* nameAndArgTypes)
     {
-        jassert (nameAndArgTypes != nullptr && nameAndArgTypes[0] != 0); // the name cannot be an empty string!
-        int hash = 0, i = 0;
-        const int slash = indexOfSlash (nameAndArgTypes);
+        auto slash = indexOfSlash (nameAndArgTypes);
 
         jassert (slash > 0); // The slash can't be the first character in this string!
         jassert (nameAndArgTypes[slash + 1] != 0);  // The slash must be followed by a return type character
@@ -175,9 +178,11 @@ struct NativeFunction
         jassert (juce::String (nameAndArgTypes).substring (slash + 1).containsOnly ("vifb"));
         jassert (juce::String (nameAndArgTypes).substring (slash + 2).containsOnly ("ifb")); // arguments must only be of these types
 
+        uint32 hash = 0, i = 0;
+
         for (; nameAndArgTypes[i] != 0; ++i)
-            if (i != slash + 1)
-                hash = hash * 31 + nameAndArgTypes[i];
+            if (i != (uint32) (slash + 1))
+                hash = hash * 31u + (uint32) nameAndArgTypes[i];
 
         return static_cast<FunctionID> (hash + i);
     }
@@ -185,6 +190,8 @@ struct NativeFunction
 private:
     static int indexOfSlash (const char* nameAndArgs) noexcept
     {
+        jassert (nameAndArgs != nullptr && nameAndArgs[0] != 0); // the name cannot be an empty string!
+
         for (int i = 0; nameAndArgs[i] != 0; ++i)
             if (nameAndArgs[i] == '/')
                 return i;
@@ -209,6 +216,8 @@ private:
       2 bytes - byte offset of function 2 code
                 etc..
       ...function code...
+
+    @tags{Blocks}
 */
 struct Program
 {
@@ -226,7 +235,7 @@ struct Program
     uint16 calculateChecksum() const noexcept
     {
         auto size = getProgramSize();
-        uint16 n = (uint16) size;
+        auto n = (uint16) size;
 
         for (uint32 i = 2; i < size; ++i)
             n += (n * 2) + programStart[i];
@@ -377,7 +386,7 @@ struct Program
 
     //==============================================================================
     static constexpr uint32 programHeaderSize = 10;
-    const uint8* programStart = 0;
+    const uint8* programStart = nullptr;
     const uint32 maxProgramSize;
 
 private:
@@ -406,6 +415,8 @@ private:
     Program code goes at address 0, followed by any shared data the program needs
     globals are at the top end of the buffer
     stack space stretches downwards from the start of the globals
+
+    @tags{Blocks}
 */
 template <int programAndHeapSpace, int stackAndGlobalsSpace>
 struct Runner

@@ -32,6 +32,8 @@ namespace juce
     A button that contains a filled shape.
 
     @see Button, ImageButton, TextButton, ArrowButton
+
+    @tags{GUI}
 */
 class JUCE_API  ShapeButton  : public Button
 {
@@ -106,7 +108,7 @@ public:
     void setBorderSize (BorderSize<int> border);
 
     /** @internal */
-    void paintButton (Graphics&, bool isMouseOverButton, bool isButtonDown) override;
+    void paintButton (Graphics&, bool, bool) override;
 
 private:
     //==============================================================================

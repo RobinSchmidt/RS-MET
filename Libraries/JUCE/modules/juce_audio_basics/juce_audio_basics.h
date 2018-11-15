@@ -31,7 +31,7 @@
 
   ID:               juce_audio_basics
   vendor:           juce
-  version:          5.2.0
+  version:          5.4.1
   name:             JUCE audio and MIDI data classes
   description:      Classes for audio buffer manipulation, midi message handling, synthesis, etc.
   website:          http://www.juce.com/juce
@@ -84,6 +84,7 @@
 #include "buffers/juce_FloatVectorOperations.h"
 #include "buffers/juce_AudioSampleBuffer.h"
 #include "buffers/juce_AudioChannelSet.h"
+#include "buffers/juce_AudioProcessLoadMeasurer.h"
 #include "effects/juce_Decibels.h"
 #include "effects/juce_IIRFilter.h"
 #include "effects/juce_LagrangeInterpolator.h"
@@ -98,13 +99,13 @@
 #include "midi/juce_MidiRPN.h"
 #include "mpe/juce_MPEValue.h"
 #include "mpe/juce_MPENote.h"
-#include "mpe/juce_MPEZone.h"
 #include "mpe/juce_MPEZoneLayout.h"
 #include "mpe/juce_MPEInstrument.h"
 #include "mpe/juce_MPEMessages.h"
 #include "mpe/juce_MPESynthesiserBase.h"
 #include "mpe/juce_MPESynthesiserVoice.h"
 #include "mpe/juce_MPESynthesiser.h"
+#include "mpe/juce_MPEUtils.h"
 #include "sources/juce_AudioSource.h"
 #include "sources/juce_PositionableAudioSource.h"
 #include "sources/juce_BufferingAudioSource.h"

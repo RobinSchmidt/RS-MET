@@ -40,6 +40,8 @@ namespace juce
     see the FileDragAndDropTarget class.
 
     @see DragAndDropContainer, FileDragAndDropTarget
+
+    @tags{GUI}
 */
 class JUCE_API  DragAndDropTarget
 {
@@ -48,9 +50,7 @@ public:
     virtual ~DragAndDropTarget()  {}
 
     //==============================================================================
-    /** Contains details about the source of a drag-and-drop operation.
-        The contents of this
-    */
+    /** Contains details about the source of a drag-and-drop operation. */
     class JUCE_API  SourceDetails
     {
     public:

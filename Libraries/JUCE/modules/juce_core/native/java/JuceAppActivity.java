@@ -30,10 +30,14 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+$$JuceAndroidCameraImports$$       // If you get an error here, you need to re-save your project with the Projucer!
+$$JuceAndroidVideoImports$$        // If you get an error here, you need to re-save your project with the Projucer!
+import android.net.http.SslError;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Handler;
+import android.os.Message;
 import android.os.ParcelUuid;
 import android.os.Environment;
 import android.view.*;
@@ -47,6 +51,11 @@ import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
+$$JuceAndroidWebViewImports$$         // If you get an error here, you need to re-save your project with the Projucer!
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import java.lang.Runnable;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
@@ -70,7 +79,7 @@ $$JuceAndroidMidiImports$$         // If you get an error here, you need to re-s
 
 
 //==============================================================================
-public class JuceAppActivity   extends Activity
+public class JuceAppActivity   extends $$JuceAppActivityBaseClass$$
 {
     //==============================================================================
     static
@@ -81,8 +90,11 @@ public class JuceAppActivity   extends Activity
     //==============================================================================
     public boolean isPermissionDeclaredInManifest (int permissionID)
     {
-        String permissionToCheck = getAndroidPermissionName(permissionID);
+        return isPermissionDeclaredInManifest (getAndroidPermissionName (permissionID));
+    }
 
+    public boolean isPermissionDeclaredInManifest (String permissionToCheck)
+    {
         try
         {
             PackageInfo info = getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS);
@@ -107,6 +119,7 @@ public class JuceAppActivity   extends Activity
     private static final int JUCE_PERMISSIONS_BLUETOOTH_MIDI = 2;
     private static final int JUCE_PERMISSIONS_READ_EXTERNAL_STORAGE = 3;
     private static final int JUCE_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 4;
+    private static final int JUCE_PERMISSIONS_CAMERA = 5;
 
     private static String getAndroidPermissionName (int permissionID)
     {
@@ -117,6 +130,7 @@ public class JuceAppActivity   extends Activity
                                                           // use string value as this is not defined in SDKs < 16
             case JUCE_PERMISSIONS_READ_EXTERNAL_STORAGE:  return "android.permission.READ_EXTERNAL_STORAGE";
             case JUCE_PERMISSIONS_WRITE_EXTERNAL_STORAGE: return Manifest.permission.WRITE_EXTERNAL_STORAGE;
+            case JUCE_PERMISSIONS_CAMERA:                 return Manifest.permission.CAMERA;
         }
 
         // unknown permission ID!
@@ -184,6 +198,7 @@ public class JuceAppActivity   extends Activity
         setVolumeControlStream (AudioManager.STREAM_MUSIC);
 
         permissionCallbackPtrMap = new HashMap<Integer, Long>();
+        appPausedResumedListeners = new HashMap<Long, AppPausedResumedListener>();
     }
 
     @Override
@@ -200,6 +215,11 @@ public class JuceAppActivity   extends Activity
     {
         suspendApp();
 
+        Long[] keys = appPausedResumedListeners.keySet().toArray (new Long[appPausedResumedListeners.keySet().size()]);
+
+        for (Long k : keys)
+            appPausedResumedListeners.get (k).appPaused();
+
         try
         {
             Thread.sleep (1000); // This is a bit of a hack to avoid some hard-to-track-down
@@ -214,6 +234,11 @@ public class JuceAppActivity   extends Activity
     {
         super.onResume();
         resumeApp();
+
+        Long[] keys = appPausedResumedListeners.keySet().toArray (new Long[appPausedResumedListeners.keySet().size()]);
+
+        for (Long k : keys)
+            appPausedResumedListeners.get (k).appResumed();
     }
 
     @Override
@@ -227,6 +252,32 @@ public class JuceAppActivity   extends Activity
     {
         launchApp (getApplicationInfo().publicSourceDir,
                    getApplicationInfo().dataDir);
+    }
+
+    // Need to override this as the default implementation always finishes the activity.
+    @Override
+    public void onBackPressed()
+    {
+        ComponentPeerView focusedView = getViewWithFocusOrDefaultView();
+
+        if (focusedView == null)
+            return;
+
+        focusedView.backButtonPressed();
+    }
+
+    private ComponentPeerView getViewWithFocusOrDefaultView()
+    {
+        for (int i = 0; i < viewHolder.getChildCount(); ++i)
+        {
+            if (viewHolder.getChildAt (i).hasFocus())
+                return (ComponentPeerView) viewHolder.getChildAt (i);
+        }
+
+        if (viewHolder.getChildCount() > 0)
+            return (ComponentPeerView) viewHolder.getChildAt (0);
+
+        return null;
     }
 
     //==============================================================================
@@ -314,11 +365,14 @@ public class JuceAppActivity   extends Activity
     {
         ComponentPeerView v = new ComponentPeerView (this, opaque, host);
         viewHolder.addView (v);
+        addAppPausedResumedListener (v, host);
         return v;
     }
 
     public final void deleteView (ComponentPeerView view)
     {
+        removeAppPausedResumedListener (view, view.host);
+
         view.host = 0;
 
         ViewGroup group = (ViewGroup) (view.getParent());
@@ -424,7 +478,9 @@ public class JuceAppActivity   extends Activity
     public final String getClipboardContent()
     {
         ClipboardManager clipboard = (ClipboardManager) getSystemService (CLIPBOARD_SERVICE);
-        return clipboard.getText().toString();
+
+        CharSequence content = clipboard.getText();
+        return content != null ? content.toString() : new String();
     }
 
     public final void setClipboardContent (String newText)
@@ -537,8 +593,27 @@ public class JuceAppActivity   extends Activity
     public native void alertDismissed (long callback, int id);
 
     //==============================================================================
+    public interface AppPausedResumedListener
+    {
+        void appPaused();
+        void appResumed();
+    }
+
+    private Map<Long, AppPausedResumedListener> appPausedResumedListeners;
+
+    public void addAppPausedResumedListener (AppPausedResumedListener l, long listenerHost)
+    {
+        appPausedResumedListeners.put (new Long (listenerHost), l);
+    }
+
+    public void removeAppPausedResumedListener (AppPausedResumedListener l, long listenerHost)
+    {
+        appPausedResumedListeners.remove (new Long (listenerHost));
+    }
+
+    //==============================================================================
     public final class ComponentPeerView extends ViewGroup
-                                         implements View.OnFocusChangeListener
+                                         implements View.OnFocusChangeListener, AppPausedResumedListener
     {
         public ComponentPeerView (Context context, boolean opaque_, long host)
         {
@@ -561,6 +636,27 @@ public class JuceAppActivity   extends Activity
 
             colorMatrix.set (colorTransform);
             paint.setColorFilter (new ColorMatrixColorFilter (colorMatrix));
+
+            java.lang.reflect.Method method = null;
+
+            try
+            {
+                method = getClass().getMethod ("setLayerType", int.class, Paint.class);
+            }
+            catch (SecurityException e)     {}
+            catch (NoSuchMethodException e) {}
+
+            if (method != null)
+            {
+                try
+                {
+                    int layerTypeNone = 0;
+                    method.invoke (this, layerTypeNone, null);
+                }
+                catch (java.lang.IllegalArgumentException e) {}
+                catch (java.lang.IllegalAccessException e) {}
+                catch (java.lang.reflect.InvocationTargetException e) {}
+            }
         }
 
         //==============================================================================
@@ -644,6 +740,7 @@ public class JuceAppActivity   extends Activity
         private native void handleKeyDown (long host, int keycode, int textchar);
         private native void handleKeyUp (long host, int keycode, int textchar);
         private native void handleBackButton (long host);
+        private native void handleKeyboardHidden (long host);
 
         public void showKeyboard (String type)
         {
@@ -655,12 +752,22 @@ public class JuceAppActivity   extends Activity
                 {
                     imm.showSoftInput (this, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
                     imm.setInputMethod (getWindowToken(), type);
+                    keyboardDismissListener.startListening();
                 }
                 else
                 {
                     imm.hideSoftInputFromWindow (getWindowToken(), 0);
+                    keyboardDismissListener.stopListening();
                 }
             }
+        }
+
+        public void backButtonPressed()
+        {
+            if (host == 0)
+                return;
+
+            handleBackButton (host);
         }
 
         @Override
@@ -676,7 +783,7 @@ public class JuceAppActivity   extends Activity
                     return super.onKeyDown (keyCode, event);
                 case KeyEvent.KEYCODE_BACK:
                 {
-                    handleBackButton (host);
+                    ((Activity) getContext()).onBackPressed();
                     return true;
                 }
 
@@ -716,6 +823,65 @@ public class JuceAppActivity   extends Activity
 
             return false;
         }
+
+        //==============================================================================
+        private final class KeyboardDismissListener
+        {
+            public KeyboardDismissListener (ComponentPeerView viewToUse)
+            {
+                view = viewToUse;
+            }
+
+            private void startListening()
+            {
+                view.getViewTreeObserver().addOnGlobalLayoutListener(viewTreeObserver);
+            }
+
+            private void stopListening()
+            {
+                view.getViewTreeObserver().removeGlobalOnLayoutListener(viewTreeObserver);
+            }
+
+            private class TreeObserver implements ViewTreeObserver.OnGlobalLayoutListener
+            {
+                TreeObserver()
+                {
+                    keyboardShown = false;
+                }
+
+                @Override
+                public void onGlobalLayout()
+                {
+                    Rect r = new Rect();
+
+                    ViewGroup parentView = (ViewGroup) getParent();
+
+                    if (parentView == null)
+                        return;
+
+                    parentView.getWindowVisibleDisplayFrame (r);
+
+                    int diff = parentView.getHeight() - (r.bottom - r.top);
+
+                    // Arbitrary threshold, surely keyboard would take more than 20 pix.
+                    if (diff < 20 && keyboardShown)
+                    {
+                        keyboardShown = false;
+                        handleKeyboardHidden (view.host);
+                    }
+
+                    if (! keyboardShown && diff > 20)
+                        keyboardShown = true;
+                };
+
+                private boolean keyboardShown;
+            };
+
+            private ComponentPeerView view;
+            private TreeObserver viewTreeObserver = new TreeObserver();
+        }
+
+        private KeyboardDismissListener keyboardDismissListener = new KeyboardDismissListener(this);
 
         // this is here to make keyboard entry work on a Galaxy Tab2 10.1
         @Override
@@ -793,6 +959,29 @@ public class JuceAppActivity   extends Activity
         {
             return true; //xxx needs to check overlapping views
         }
+
+        //==============================================================================
+        private native void handleAppPaused (long host);
+        private native void handleAppResumed (long host);
+
+        @Override
+        public void appPaused()
+        {
+            if (host == 0)
+                return;
+
+            handleAppPaused (host);
+        }
+
+        @Override
+        public void appResumed()
+        {
+            if (host == 0)
+                return;
+
+            // Ensure that navigation/status bar visibility is correctly restored.
+            handleAppResumed (host);
+        }
     }
 
     //==============================================================================
@@ -800,11 +989,13 @@ public class JuceAppActivity   extends Activity
                                           implements SurfaceHolder.Callback
     {
         private long nativeContext = 0;
+        private boolean forVideo;
 
-        NativeSurfaceView (Context context, long nativeContextPtr)
+        NativeSurfaceView (Context context, long nativeContextPtr, boolean createdForVideo)
         {
             super (context);
             nativeContext = nativeContextPtr;
+            forVideo = createdForVideo;
         }
 
         public Surface getNativeSurface()
@@ -822,38 +1013,51 @@ public class JuceAppActivity   extends Activity
         @Override
         public void surfaceChanged (SurfaceHolder holder, int format, int width, int height)
         {
-            surfaceChangedNative (nativeContext, holder, format, width, height);
+            if (forVideo)
+                surfaceChangedNativeVideo (nativeContext, holder, format, width, height);
+            else
+                surfaceChangedNative (nativeContext, holder, format, width, height);
         }
 
         @Override
         public void surfaceCreated (SurfaceHolder holder)
         {
-            surfaceCreatedNative (nativeContext, holder);
+            if (forVideo)
+                surfaceCreatedNativeVideo (nativeContext, holder);
+            else
+                surfaceCreatedNative (nativeContext, holder);
         }
 
         @Override
         public void surfaceDestroyed (SurfaceHolder holder)
         {
-            surfaceDestroyedNative (nativeContext, holder);
+            if (forVideo)
+                surfaceDestroyedNativeVideo (nativeContext, holder);
+            else
+                surfaceDestroyedNative (nativeContext, holder);
         }
 
         @Override
         protected void dispatchDraw (Canvas canvas)
         {
             super.dispatchDraw (canvas);
-            dispatchDrawNative (nativeContext, canvas);
+
+            if (forVideo)
+                dispatchDrawNativeVideo (nativeContext, canvas);
+            else
+                dispatchDrawNative (nativeContext, canvas);
         }
 
         //==============================================================================
         @Override
-        protected void onAttachedToWindow ()
+        protected void onAttachedToWindow()
         {
             super.onAttachedToWindow();
             getHolder().addCallback (this);
         }
 
         @Override
-        protected void onDetachedFromWindow ()
+        protected void onDetachedFromWindow()
         {
             super.onDetachedFromWindow();
             getHolder().removeCallback (this);
@@ -865,11 +1069,17 @@ public class JuceAppActivity   extends Activity
         private native void surfaceDestroyedNative (long nativeContextptr, SurfaceHolder holder);
         private native void surfaceChangedNative (long nativeContextptr, SurfaceHolder holder,
                                                   int format, int width, int height);
+
+        private native void dispatchDrawNativeVideo (long nativeContextPtr, Canvas canvas);
+        private native void surfaceCreatedNativeVideo (long nativeContextptr, SurfaceHolder holder);
+        private native void surfaceDestroyedNativeVideo (long nativeContextptr, SurfaceHolder holder);
+        private native void surfaceChangedNativeVideo (long nativeContextptr, SurfaceHolder holder,
+                                                       int format, int width, int height);
     }
 
-    public NativeSurfaceView createNativeSurfaceView (long nativeSurfacePtr)
+    public NativeSurfaceView createNativeSurfaceView (long nativeSurfacePtr, boolean forVideo)
     {
-        return new NativeSurfaceView (this, nativeSurfacePtr);
+        return new NativeSurfaceView (this, nativeSurfacePtr, forVideo);
     }
 
     //==============================================================================
@@ -912,15 +1122,29 @@ public class JuceAppActivity   extends Activity
     //==============================================================================
     public static class NativeInvocationHandler implements InvocationHandler
     {
-        public NativeInvocationHandler (long nativeContextRef)
+        public NativeInvocationHandler (Activity activityToUse, long nativeContextRef)
         {
+            activity = activityToUse;
             nativeContext = nativeContextRef;
+        }
+
+        public void nativeContextDeleted()
+        {
+            nativeContext = 0;
         }
 
         @Override
         public void finalize()
         {
-            dispatchFinalize (nativeContext);
+            activity.runOnUiThread (new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            if (nativeContext != 0)
+                                                dispatchFinalize (nativeContext);
+                                        }
+                                    });
         }
 
         @Override
@@ -930,15 +1154,21 @@ public class JuceAppActivity   extends Activity
         }
 
         //==============================================================================
+        Activity activity;
         private long nativeContext = 0;
 
         private native void dispatchFinalize (long nativeContextRef);
         private native Object dispatchInvoke (long nativeContextRef, Object proxy, Method method, Object[] args);
     }
 
-    public static InvocationHandler createInvocationHandler (long nativeContextRef)
+    public InvocationHandler createInvocationHandler (long nativeContextRef)
     {
-        return new NativeInvocationHandler (nativeContextRef);
+        return new NativeInvocationHandler (this, nativeContextRef);
+    }
+
+    public void invocationHandlerContextDeleted (InvocationHandler handler)
+    {
+        ((NativeInvocationHandler) handler).nativeContextDeleted();
     }
 
     //==============================================================================
@@ -1336,6 +1566,81 @@ public class JuceAppActivity   extends Activity
         startActivity (new Intent (Intent.ACTION_VIEW, Uri.parse (url)));
     }
 
+    private native boolean webViewPageLoadStarted (long host, WebView view, String url);
+    private native void webViewPageLoadFinished (long host, WebView view, String url);
+$$JuceAndroidWebViewNativeCode$$ // If you get an error here, you need to re-save your project with the Projucer!
+    private native void webViewReceivedSslError (long host, WebView view, SslErrorHandler handler, SslError error);
+    private native void webViewCloseWindowRequest (long host, WebView view);
+    private native void webViewCreateWindowRequest (long host, WebView view);
+
+    //==============================================================================
+    public class JuceWebViewClient   extends WebViewClient
+    {
+        public JuceWebViewClient (long hostToUse)
+        {
+            host = hostToUse;
+        }
+
+        public void hostDeleted()
+        {
+            synchronized (hostLock)
+            {
+                host = 0;
+            }
+        }
+
+        @Override
+        public void onPageFinished (WebView view, String url)
+        {
+            if (host == 0)
+                return;
+
+            webViewPageLoadFinished (host, view, url);
+        }
+
+        @Override
+        public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error)
+        {
+            if (host == 0)
+                return;
+
+            webViewReceivedSslError (host, view, handler, error);
+        }
+        $$JuceAndroidWebViewCode$$ // If you get an error here, you need to re-save your project with the Projucer!
+
+        private long host;
+        private final Object hostLock = new Object();
+    }
+
+    public class JuceWebChromeClient    extends WebChromeClient
+    {
+        public JuceWebChromeClient (long hostToUse)
+        {
+            host = hostToUse;
+        }
+
+        @Override
+        public void onCloseWindow (WebView window)
+        {
+            webViewCloseWindowRequest (host, window);
+        }
+
+        @Override
+        public boolean onCreateWindow (WebView view, boolean isDialog,
+                                       boolean isUserGesture, Message resultMsg)
+        {
+            webViewCreateWindowRequest (host, view);
+            return false;
+        }
+
+        private long host;
+        private final Object hostLock = new Object();
+    }
+
+    $$JuceAndroidCameraCode$$ // If you get an error here, you need to re-save your project with the Projucer!
+    $$JuceAndroidVideoCode$$ // If you get an error here, you need to re-save your project with the Projucer!
+
+    //==============================================================================
     public static final String getLocaleValue (boolean isRegion)
     {
         java.util.Locale locale = java.util.Locale.getDefault();

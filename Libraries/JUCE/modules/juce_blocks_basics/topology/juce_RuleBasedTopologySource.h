@@ -29,6 +29,8 @@ namespace juce
 
     Given an input PhysicalTopologySource and a set of Rule objects, this class
      will apply the rules and present the resulting topology to clients.
+
+    @tags{Blocks}
 */
 class RuleBasedTopologySource  : public TopologySource
 {
@@ -43,7 +45,7 @@ public:
 
     //==========================================================================
     /** Returns the currently active topology. */
-    BlockTopology getCurrentTopology() const;
+    BlockTopology getCurrentTopology() const override;
 
     /** A rule that can transform parts of a topology. */
     struct Rule
@@ -71,10 +73,16 @@ public:
     */
     void addRule (Rule*);
 
+    /** Sets the TopologySource as active, occupying the midi port and trying to connect to the block devices */
+    void setActive (bool shouldBeActive) override;
+
+    /** Returns true, if the TopologySource is currently trying to connect the block devices */
+    bool isActive() const override;
+
 private:
     //==========================================================================
     struct Internal;
-    juce::ScopedPointer<Internal> internal;
+    std::unique_ptr<Internal> internal;
 };
 
 } // namespace juce

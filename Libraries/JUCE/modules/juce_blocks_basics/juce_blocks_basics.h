@@ -31,7 +31,7 @@
 
   ID:               juce_blocks_basics
   vendor:           juce
-  version:          5.2.0
+  version:          5.4.1
   name:             Provides low-level control over ROLI BLOCKS devices
   description:      JUCE wrapper for low-level control over ROLI BLOCKS devices.
   website:          http://developer.roli.com
@@ -49,6 +49,12 @@
 //==============================================================================
 #include <juce_events/juce_events.h>
 #include <juce_audio_devices/juce_audio_devices.h>
+
+#if ! JUCE_HAS_CONSTEXPR
+ #ifndef JUCE_DEMO_RUNNER
+  #error "The juce_blocks_basics module requires a compiler that supports constexpr"
+ #endif
+#else
 
 namespace juce
 {
@@ -78,5 +84,6 @@ namespace juce
 {
  #include "littlefoot/juce_LittleFootRunner.h"
  #include "littlefoot/juce_LittleFootCompiler.h"
- #include "littlefoot/juce_LittleFootRemoteHeap.h"
 }
+
+#endif
