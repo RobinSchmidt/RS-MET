@@ -48,7 +48,22 @@ T rsPositiveBellFunctions<T>::bump(T x)
     return 0;
   else
     return T(EULER) * exp(T(-1)/(T(1)-x*x));
+  // can we find its antiderivative for use as sigmoid?
+  // http://www.wolframalpha.com/input/?i=integral+of+exp(-1%2F(1-x%5E2))
+  // hmm...only in terms of a series - but maybe that's good enough
+  // the derivative is also interesting - maybe for use as a smooth sawtooth wave:
+  // http://www.wolframalpha.com/input/?i=derivative+of+exp(-1%2F(1-x%5E2))
 }
+
+template<class T>
+T rsPositiveBellFunctions<T>::bump(T x, T p)
+{
+  if(x > 1)
+    return 0;
+  else
+    return T(EULER) * exp(T(-1)/(T(1) - pow(rsAbs(x), p))); // exp(-1/(1-|x|^p))
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // class rsParametricBellFunction:

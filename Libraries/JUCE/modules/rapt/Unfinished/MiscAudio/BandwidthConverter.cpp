@@ -67,3 +67,10 @@ T rsBandwidthConverter::multipassScalerButterworth(int M, int N, T g)
   // \todo to apply this to bilinear-transform based digital filters, we should replace w by 
   // wd = tan(...) and solve....
 }
+
+// for energy normalization, use the total energy formula (that i have obtained via sage)
+// E = pi*gamma(M - 1/2/N)/(N*gamma(M)*gamma(-1/2/N + 1)*sin(1/2*pi/N)) // 1/2 -> 0.5 
+// E = pi*gamma(M - 0.5/N)/(N*gamma(M)*gamma(-0.5/N + 1)*sin(0.5*pi/N)) // k = 0.5/N
+// k = 0.5/N
+// E = pi*gamma(M-k) / (N*gamma(M)*gamma(1-k)*sin(k*pi)) 
+// maybe compare the energy normalization to the formula above

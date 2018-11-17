@@ -148,6 +148,14 @@ public:
   static T getRequiredEllipticOrder(T passbandFrequency, T passbandRipple, T stopbandFrequency, 
     T stopbandRipple);
 
+  /** Computes the total area under magnitude-squared response of a Butterworth filter of given 
+  order. You may also specify the number of passes, if the filter is to be applied multiple times
+  (for example 2x in bidirectional filtering or in Linkwitz/Riley filters, but you may also run the
+  filter several times to approximate a gaussian filter. In such cases, it may make sense to scale 
+  the cutoff frequency inversely with the factor returned by this function in order to have the 
+  filter output energies comparable. */
+  static T butterworthEnergy(int order, int numPasses = 1);
+
   /** Given the arrays of polynomial coefficients "b" and "a" of a transfer function 
   H(s) = N(s)/D(s), this function returns the polynomial coefficients of the corresponding 
   magnitude-squared function H(s)*H(-s) = (N(s)*N(-s)) / (D(s)*D(-s)). "N" is the order of the 

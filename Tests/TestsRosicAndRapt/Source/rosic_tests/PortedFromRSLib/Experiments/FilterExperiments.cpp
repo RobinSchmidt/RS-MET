@@ -178,6 +178,14 @@ void bandwidthScaling()
   plotData(N, w, p[0], p[1], p[2], p[3], p[4]);
 }
 
+void butterworthEnergy()
+{
+  int N = 5;  // Butterworth order
+  int M = 8;  // number of passes
+  double E = RAPT::rsPrototypeDesigner<double>::butterworthEnergy(N, M);
+  int dummy = 0;
+}
+
 void biquadModulation()
 {
   // Compares the responses of different biquad implementation structures (DF1, DF2, SVF, etc.) to

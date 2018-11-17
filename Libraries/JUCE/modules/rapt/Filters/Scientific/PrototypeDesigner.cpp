@@ -340,6 +340,23 @@ T rsPrototypeDesigner<T>::getRequiredEllipticOrder(T passbandFrequency, T passba
 }
 
 template<class T>
+T rsPrototypeDesigner<T>::butterworthEnergy(int N, int M)
+{
+  T k = T(0.5)/N;
+  return T(PI*tgamma(M-k) / (N*tgamma(M)*tgamma(1-k)*sin(k*PI)));
+
+  // The formula was found with SageMath, using this input:
+  // var("N M")
+  // assume(N >= 1)
+  // assume(M >= 1)
+  // assume(N, 'integer')
+  // assume(M, 'integer')
+  // assume(2*M*N-1 > 0)   # follows from N >= 1, M >= 1 but sage needs it
+  // f(x) = 1 / (1 + x^(2*N))^M
+  // integral(f(x), x, -oo, oo)
+}
+
+template<class T>
 void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N)
 {
   T* am = new T[N+1];
