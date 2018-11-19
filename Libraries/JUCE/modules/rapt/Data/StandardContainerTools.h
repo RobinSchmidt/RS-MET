@@ -20,6 +20,26 @@ inline void rsAppend(std::vector<T>& v, T newElement)
 }
 
 template<class T>
+inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
+{
+  size_t nv = v.size();  // old size of v
+  size_t nw = w.size();  // 
+  v.resize(v.size() + w.size()); // if v and w are the same, this will also change the size of w, 
+  rsArray::copyBuffer(&w[0], &v[nv], (int)nw);  // ...that's why we needed to figure out nw before
+
+  // another implementation - looks safer but the above works, too
+  //if(&v[0] == &w[0]) {       // appending a vector to itself, we need a temporary...
+  //  std::vector<T> tmp(w);
+  //  rsAppend(v, tmp);
+  //}
+  //else {
+  //  size_t nv = v.size();    // old size of v
+  //  v.resize(v.size() + w.size());
+  //  rsArray::copyBuffer(&w[0], &v[nv], (int)w.size());
+  //}
+}
+
+template<class T>
 inline bool rsAreVectorsEqual(const std::vector<T>& v, const std::vector<T>& w, double tolerance)
 {
   if(v.size() != w.size())

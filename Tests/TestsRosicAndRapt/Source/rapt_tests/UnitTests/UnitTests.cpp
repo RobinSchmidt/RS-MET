@@ -20,6 +20,7 @@ bool runAllUnitTests()
   bool passed = true;  // test result
 
   // Data:
+  passed &= runUnitTest(&arrayUnitTest,            "rsArray and std::vector stuff");
   passed &= runUnitTest(&float64x2UnitTest,        "rsFloat64x2");
   passed &= runUnitTest(&complexFloat64x2UnitTest, "std::complex<rsFloat64x2>");
     // fails on linux ("illegal instruction") ...seems that illegal instruction is our

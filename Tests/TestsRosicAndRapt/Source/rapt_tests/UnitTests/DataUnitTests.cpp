@@ -12,6 +12,26 @@ using namespace RAPT;
 //  return accu;
 //}
 
+bool arrayUnitTest()
+{
+  bool r = true;      // test result
+
+  typedef std::vector<int> Vec;
+  Vec v({ 1,2,3 }), w({4,5});
+  Vec u = v;
+  rsAppend(u, w);
+  r &= u == Vec({1,2,3,4,5});
+  u = v;
+  rsAppend(u, u);
+  r &= u == Vec({1,2,3,1,2,3});
+
+
+
+
+
+  return r;
+}
+
 bool float64x2UnitTest()
 {
   bool r = true;      // test result
