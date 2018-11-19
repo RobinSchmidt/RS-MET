@@ -131,7 +131,7 @@ void TestPluginAudioProcessor::setParameter(int index, float value)
   {
   case CUTOFF: 
   {
-    cutoff = RAPT::rsLinToExp(value, 0, 1, 20, 20000);
+    cutoff = RAPT::rsLinToExp((double)value, 0.0, 1.0, 20.0, 20000.0);
     ladder.setCutoff(cutoff);
   } break;
   case RESO: 

@@ -8,10 +8,16 @@ class JUCE_API ConstantModulationSource : public ModulationSource
 {
 public:
   void setModulationValue(double newValue) { modValue = newValue; }
-  virtual void updateModulationValue() override 
+
+  virtual double getModulatorOutputSample() override
   {
-    // nothing to do here, modValue is just a constant
+    return modValue;
   }
+
+  //virtual void updateModulationValue() override 
+  //{
+  //  // nothing to do here, modValue is just a constant
+  //}
 };
 
 UnitTestParameter::UnitTestParameter() 
@@ -258,7 +264,7 @@ void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
   // todo: test meta-attachment, cross-coupling
 
 
-  mapper->initToDefaults(); // to not thwart subsequent tests
+  mapper->initToIdentity(); // to not thwart subsequent tests
 }
 
 void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
