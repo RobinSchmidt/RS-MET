@@ -76,3 +76,24 @@ void rsNumericIntegral(Tx *x, Ty *y, Ty *yi, int N, Ty c)
 //  lengths of the path-segments in the summation)
 // -write N-dimensional integration functions that return the amount of N+1 space contained in
 //  some hyperblock between x1, x2 (both of dimensionality N)
+
+
+template<class Tx, class Ty>
+Ty rsNumericIntegrator<Tx, Ty>::integrate(const std::function<Ty(Tx)>& f, Tx a, Tx b)
+{
+  rsError("Not yet implemented");
+
+  return Ty(0);
+}
+
+// Ideas: 
+// -let the user set the sample evaluation points by passing a pointer to an array of Tx
+// -alternatively, the user may set just a number and then the object auotmatically generates
+//  the sample points
+// -for this automatic sample poitn generation, the user may select between different algorithms,
+//  by default, we just choose them equidistantly
+// -use a (cubic) natural spline based on the datapoints and compute the integral as sum over the
+//  integrals of the spline segments (for this, we need to split the spline generator such that it
+//  can spit out arrays of polynomial coefficients like:
+//  void getCubicNaturalSplineCoeffs(Tx* x, int N, Ty* a, Ty* b, Ty* c, Ty* d);
+//  ...this may be also useful for rsInterpolatingFunction

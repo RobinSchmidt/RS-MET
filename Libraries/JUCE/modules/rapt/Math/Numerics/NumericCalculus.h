@@ -28,8 +28,7 @@ void rsNumericDerivative(Tx *x, Ty *y, Ty *yd, int N, bool extrapolateEnds = tru
 
 /** Computes the numerical integral of a function defined by data points, i.e. the function:
 \f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
-into the 
-function. Usage is similar to rsNumericDerivative. The parameter c can also be seen as an 
+into the function. Usage is similar to rsNumericDerivative. The parameter c can also be seen as an 
 integration constant and determines yi[0] that shifts the overall resulting function up or down 
 along the y-axis. */
 template<class Tx, class Ty>
@@ -43,6 +42,32 @@ void rsNumericIntegral(Tx *x, Ty *y, Ty *yi, int N, Ty c = Ty(0));
 // integration stuff may depend on intrepolation and if we templatize the functions, we need to 
 // take care that everything is defined before it gets used.
 
+/** just a stub, at the moment */
+
+template<class Tx, class Ty>
+class rsNumericIntegrator
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  void setNumberOfSamplePoints(int newNumSamples) { numSamples = newNumSamples; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Integration
+
+  /** Computes the definite integral of f in the interval from a to b. */
+  Ty integrate(const std::function<Ty(Tx)>& f, Tx a, Tx b);
+
+
+protected:
+
+  int numSamples = 10;
+
+};
 
 
 #endif
