@@ -10,6 +10,21 @@ namespace romos
 class FormulaModule1In1Out : public AtomicModule
 {
   CREATE_COMMON_DECLARATIONS_1(FormulaModule1In1Out);
+
+public:
+
+  virtual void setFormula(const std::string& newFormula);
+  virtual void resetVoiceState(int voiceIndex);
+
+protected:
+  virtual void allocateMemory();
+  virtual void freeMemory();
+  virtual void updateEvaluatorFormulas();
+
+  std::vector<rosic::ExpressionEvaluator*> evaluators;
+  std::string formula;
+
+  double *variables;
 };
 class FormulaModule1In1OutTypeInfo : public ModuleTypeInfo
 {

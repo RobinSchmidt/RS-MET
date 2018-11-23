@@ -58,8 +58,8 @@ namespace rosic
     void assignVariable(const char* name, double value);
     /**< Assigns a variable name to a numeric vaule. This function should be called for each 
     identifier which is containend in the expression (before or after an  expression was set). It
-    can be called (for each idnetifier) as many times as you wish to re-assign identifiers to new
-    numeric values withoud needing to re-parse the expression again (parse once, evaluate many). */
+    can be called (for each identifier) as many times as you wish to re-assign identifiers to new
+    numeric values without needing to re-parse the expression again (parse once, evaluate many). */
 
     double* getVariableAddress(const char* name);
     /**< Returns the memory adress of a variable. Can be used to access the value of this variable
