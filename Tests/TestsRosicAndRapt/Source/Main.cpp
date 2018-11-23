@@ -7,6 +7,8 @@
 #include "PerformanceTests/PerformanceTests.h"
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 
+#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.h"
+
 // crash (access violation) if runAllUnitTests and envelopeDeBeating are run one after another
 // it goes away when commenting out the code from
 // passed &= runUnitTest(&testDifferentialEquationSystem, "rsDifferentialEquationSystem");
@@ -26,7 +28,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+  //runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -210,7 +212,7 @@ int main(int argc, char* argv[])
 
   // Filter:
   //bandwidthScaling();
-  butterworthEnergy();
+  //butterworthEnergy();
   //stateVariableFilter();
   //stateVariableFilterMorph();
   //stateVectorFilter();   // just a stub, at the moment
@@ -296,7 +298,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-  envelopeDeBeating();
+  //envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
   //partialExtractionTriple();
@@ -458,7 +460,7 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Modular:
 
-  //runModularUnitTests();
+  runModularUnitTests();
   //runModularPerformanceTests(true);  // produces a memleak
   //testModularCodeGenerator();
   //runModularInteractiveTests();  // triggers assert due to plotting code

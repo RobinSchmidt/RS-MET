@@ -321,10 +321,7 @@ void TestFilter1Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 }
 
 
-
-
-BiquadMacroTest::BiquadMacroTest()
-: ProcessingTest("BiquadMacro")
+BiquadMacroTest::BiquadMacroTest() : ProcessingTest("BiquadMacro")
 {
   tolerance    = 1.e-14;
   moduleToTest = TestModuleBuilder::createBiquadMacro(name, 0, 0, false);
@@ -332,12 +329,11 @@ BiquadMacroTest::BiquadMacroTest()
 void BiquadMacroTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++)
-    GenerateDesiredOutput::forBiquad(numFramesToProcess, inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3], inputs[v][4], inputs[v][5], 
-                                     desiredOutputs[v][0]);
+    GenerateDesiredOutput::forBiquad(numFramesToProcess, inputs[v][0], inputs[v][1], inputs[v][2], 
+      inputs[v][3], inputs[v][4], inputs[v][5], desiredOutputs[v][0]);
 }
 
-BiquadAtomicTest::BiquadAtomicTest()
-: ProcessingTest("BiquadAtomic")
+BiquadAtomicTest::BiquadAtomicTest() : ProcessingTest("BiquadAtomic")
 {
   tolerance    = 1.e-14;
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
@@ -346,10 +342,22 @@ BiquadAtomicTest::BiquadAtomicTest()
 void BiquadAtomicTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++)
-    GenerateDesiredOutput::forBiquad(numFramesToProcess, inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3], inputs[v][4], inputs[v][5], 
-                                     desiredOutputs[v][0]);
+    GenerateDesiredOutput::forBiquad(numFramesToProcess, 
+      inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3], inputs[v][4], inputs[v][5], 
+      desiredOutputs[v][0]);
 }
 
+Formula1In1OutTest::Formula1In1OutTest() : ProcessingTest("Formula1In1Out")
+{
+  //tolerance    = 1.e-14;
+  moduleToTest = moduleFactory.createModule("Formula1In1Out");
+}
+void Formula1In1OutTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
+{
+  for(int v = 0; v < numVoicesToUse; v++)
+    GenerateDesiredOutput::forFormula1In1Out(numFramesToProcess, inputs[v][0], desiredOutputs[v][0]);
+    // tanh(2*x^2) is our example formula
+}
 
 BlipTest::BlipTest()
 : ProcessingTest("Blip")

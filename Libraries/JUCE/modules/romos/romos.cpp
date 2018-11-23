@@ -40,6 +40,7 @@ using namespace rosic;
 #include "Modules/romos_DelayModules.cpp"
 #include "Modules/romos_FilterModules.cpp"
 #include "Modules/romos_FunctionModules.cpp"
+#include "Modules/romos_FormulaModules.cpp"
 #include "Modules/romos_InfrastructuralModules.cpp"
 #include "Modules/romos_ModulationModules.cpp"
 #include "Modules/romos_SoundGeneratorModules.cpp"

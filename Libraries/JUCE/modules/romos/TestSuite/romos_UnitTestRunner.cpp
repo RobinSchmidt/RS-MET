@@ -43,6 +43,9 @@ bool UnitTestRunner::runProcessingTests()
   UnitTest *test; 
   bool testsPassed = true; 
 
+  // new:
+  test = new Formula1In1OutTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
+
   test = new IdentityTest();                   testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new AdderTest();                      testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new Adder3Test();                     testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -63,6 +66,7 @@ bool UnitTestRunner::runProcessingTests()
   test = new TestFilter1Test();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new BiquadMacroTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new BiquadAtomicTest();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
+ 
   test = new BlipTest();                       testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new MonoToPolyTest();                 testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new VoiceCombinerTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;

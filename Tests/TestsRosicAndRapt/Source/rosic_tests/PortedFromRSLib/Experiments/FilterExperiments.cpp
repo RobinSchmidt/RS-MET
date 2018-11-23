@@ -183,6 +183,9 @@ void butterworthEnergy()
   int N = 5;  // Butterworth order
   int M = 8;  // number of passes
   double E = RAPT::rsPrototypeDesigner<double>::butterworthEnergy(N, M);
+
+  // todo: maybe make plots of both normalizing functions (energy and cutoff based
+
   int dummy = 0;
 }
 

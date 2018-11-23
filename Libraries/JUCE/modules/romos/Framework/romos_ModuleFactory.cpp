@@ -129,6 +129,7 @@ void ModuleFactory::registerStandardModules()
   registerModuleType(new SaturatorTypeInfo);  // a+b*tanh(c*x+d), a,b,c,d adjusted by width/center
   registerModuleType(new SinCosTypeInfo);     // sin(2*pi*x),cos(2*pi*x)
   registerModuleType(new TriSawTypeInfo);
+  registerModuleType(new FormulaModule1In1OutTypeInfo);
 
   // Delays:
   registerModuleType(new UnitDelayTypeInfo);  // y = x[n-1]

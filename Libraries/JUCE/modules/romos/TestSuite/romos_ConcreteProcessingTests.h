@@ -208,6 +208,17 @@ protected:
   virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
 };
 
+/** Test for the 1-in, 1-out formula. */
+class Formula1In1OutTest : public ProcessingTest
+{
+public:
+  Formula1In1OutTest();
+protected:
+  virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
+};
+
+
+
 // factor out a class BiquadTest - the fillDesiredOutputSignalArrays is the same for both classes
 
 
@@ -256,6 +267,8 @@ protected:
   virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
   //virtual void runTest();
 };
+
+
 
 // next: UnitDelay, MonoToPoly, PolyToMono, 
 // In3Out5 -> then with d1 and d4 set to mono, then set to poly, d4 shifted leftward ...try to cover all cases...

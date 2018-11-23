@@ -92,8 +92,7 @@ void GenerateDesiredOutput::forBiquad(int N, double *x, double *b0, double *b1, 
   double y0   = 0.0;
   double y1   = 0.0;
   double y2   = 0.0;
-  for(int n = 0; n < N; n++)
-  {
+  for(int n = 0; n < N; n++) {
     y0   = b0[n] * x[n] + b1[n] * x1 + b2[n] * x2 - a1[n] * y1 - a2[n] * y2;
     x2   = x1;
     x1   = x[n];
@@ -105,8 +104,8 @@ void GenerateDesiredOutput::forBiquad(int N, double *x, double *b0, double *b1, 
 }
 
 
-void GenerateDesiredOutput::forBiquadWithFixedCoeffs(int N, double  *x, double  b0, double  b1, double  b2, double  a1, double  a2, 
-                                                     double *d)
+void GenerateDesiredOutput::forBiquadWithFixedCoeffs(int N, double  *x, double  b0, double  b1, 
+  double  b2, double  a1, double  a2, double *d)
 {
   double *b0a = new double[N];  RAPT::rsArray::fillWithValue(b0a, N, b0);
   double *b1a = new double[N];  RAPT::rsArray::fillWithValue(b1a, N, b1);
@@ -121,6 +120,12 @@ void GenerateDesiredOutput::forBiquadWithFixedCoeffs(int N, double  *x, double  
   delete[] b2a;
   delete[] a1a;
   delete[] a2a;
+}
+
+void GenerateDesiredOutput::forFormula1In1Out(int N, double *x, double *d)
+{
+  for(int n = 0; n < N; n++) 
+    d[n] = tanh(2 * x[n]*x[n]); // tanh(2*x^2) is our example formula
 }
 
 

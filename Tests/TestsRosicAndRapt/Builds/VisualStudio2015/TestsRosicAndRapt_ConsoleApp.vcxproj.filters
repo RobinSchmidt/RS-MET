@@ -1102,6 +1102,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FilterModules.cpp">
       <Filter>Juce Modules\romos\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FormulaModules.cpp">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FunctionModules.cpp">
       <Filter>Juce Modules\romos\Modules</Filter>
     </ClCompile>
@@ -3306,6 +3309,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FilterModules.h">
       <Filter>Juce Modules\romos\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FormulaModules.h">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FunctionModules.h">
       <Filter>Juce Modules\romos\Modules</Filter>
     </ClInclude>
@@ -3379,6 +3385,9 @@
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestHelpers.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestsMain.h">
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\romos.h">

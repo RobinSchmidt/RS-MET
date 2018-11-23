@@ -53,6 +53,7 @@
 #include "Modules/romos_DelayModules.h"
 #include "Modules/romos_FilterModules.h"
 #include "Modules/romos_FunctionModules.h"
+#include "Modules/romos_FormulaModules.h"
 #include "Modules/romos_InfrastructuralModules.h"
 #include "Modules/romos_ModulationModules.h"
 #include "Modules/romos_SoundGeneratorModules.h"

@@ -33,6 +33,8 @@ public:
   static void forBiquadWithFixedCoeffs(int N, double  *x, double  b0, double  b1, double  b2, double  a1, double  a2, double *d);
 
 
+  static void forFormula1In1Out(int N, double *x, double *d);
+
   static void forTestFilter1(int N, double  *x, double *b0, double *b1, double *c,
     double *dSum, double *dDiff, double *dProd);
 
