@@ -24,7 +24,7 @@ protected:
   std::vector<rosic::ExpressionEvaluator*> evaluators;
   std::string formula;
 
-  double *variables;
+  double *variables; // not yet used and may not be needed - we'll see
 };
 class FormulaModule1In1OutTypeInfo : public ModuleTypeInfo
 {

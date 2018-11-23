@@ -15,16 +15,14 @@ INLINE void FormulaModule1In1Out::process(Module *module, double *in, double *ou
 
   evaluator->assignVariable("In", *in); 
   // maybe use getVariableAddress - the doc says, it's more efficient than assignVariable
-  // 
 
   //// for debug:
   //double tmp1, tmp2;
   //tmp1 = tanh(2 * (*in) * (*in));
   //tmp2 = evaluator->evaluateExpression(); // this should become our output
+  ////RAPT::rsAssert(tmp1 == tmp2);
 
-  *out = evaluator->evaluateExpression();  // still fails test
-
-  //*out = tanh(2 * (*in) * (*in)); // preliminary: y = tanh(2*x^2)
+  *out = evaluator->evaluateExpression();
 }
 
 void FormulaModule1In1Out::resetVoiceState(int voiceIndex)

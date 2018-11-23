@@ -349,7 +349,7 @@ void BiquadAtomicTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic
 
 Formula1In1OutTest::Formula1In1OutTest() : ProcessingTest("Formula1In1Out")
 {
-  //tolerance    = 1.e-14;
+  tolerance    = 1.e-14;
   moduleToTest = moduleFactory.createModule("Formula1In1Out");
   FormulaModule1In1Out* formulaModule = static_cast<FormulaModule1In1Out*> (moduleToTest);
   formulaModule->setFormula("tanh(2*In^2)");
