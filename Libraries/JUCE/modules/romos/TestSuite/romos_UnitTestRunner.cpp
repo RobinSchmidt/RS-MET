@@ -43,7 +43,8 @@ bool UnitTestRunner::runProcessingTests()
   UnitTest *test; 
   bool testsPassed = true; 
 
-
+  // copied, to run that one first for debug:
+  test = new WrappedAdderNTest(); testsPassed &= test->runTestAndPrintResultToConsole(); delete test; // fails
 
 
   test = new IdentityTest();                   testsPassed &= test->runTestAndPrintResultToConsole(); delete test;

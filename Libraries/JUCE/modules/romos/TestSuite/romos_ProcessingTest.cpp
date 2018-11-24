@@ -100,7 +100,7 @@ bool ProcessingTest::runTest()
 void ProcessingTest::handleTestResult(bool didTestPass)
 {
   if(!didTestPass) {
-    //RS_DEBUG_BREAK;
+    RS_DEBUG_BREAK;
     plotDesiredAndActualOutput(0, 0, numFramesToProcess, 0);
     // WrappedAdderN seems to output a scaled down version of the desired output
     // SummedDiffs outputs all zeros
