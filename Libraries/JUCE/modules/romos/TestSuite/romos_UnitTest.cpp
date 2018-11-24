@@ -19,16 +19,12 @@ UnitTest::~UnitTest()
 bool UnitTest::runTestAndPrintResultToConsole()
 {
   printf("%s %s %s", "Running ", name, "...\n");
-
-
-
   bool testPassed = runTest();
-
   if( testPassed )
     printf("%s", " passed.\n");
   else
     printf("%s", " FAILED !!!\n");
-
+  handleTestResult(testPassed);
   return testPassed;
 }
 

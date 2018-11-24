@@ -72,13 +72,13 @@ bool ProcessingTest::runTest()
   moduleToTest->resetStateForAllVoices();
   processModuleInFrames();
   monoInFramesPassed = doOutputsMatchDesiredOutputs(false);
-  //plotDesiredAndActualOutput(0, 0, numFramesToProcess, 0);
+  handleTestResult(monoInFramesPassed);
 
   clearOutputSignalArrays();
   moduleToTest->resetStateForAllVoices();
   processModuleInBlocks();
   monoInBlocksPassed = doOutputsMatchDesiredOutputs(false);
-  //plotDesiredAndActualOutput(0, 0, numFramesToProcess, 0);
+  handleTestResult(monoInBlocksPassed);
 
   setTestPolyphonic(true);
 
@@ -86,15 +86,26 @@ bool ProcessingTest::runTest()
   moduleToTest->resetStateForAllVoices();
   processModuleInFrames();
   polyInFramesPassed = doOutputsMatchDesiredOutputs(true);
-  //plotDesiredAndActualOutput(1, 0, numFramesToProcess, 0);
+  handleTestResult(polyInFramesPassed);
 
   clearOutputSignalArrays();
   moduleToTest->resetStateForAllVoices();
   processModuleInBlocks();
   polyInBlocksPassed = doOutputsMatchDesiredOutputs(true);
-  //plotDesiredAndActualOutput(1, 0, numFramesToProcess, 0);
+  handleTestResult(polyInBlocksPassed);
 
   return monoInFramesPassed && monoInBlocksPassed && polyInFramesPassed && polyInBlocksPassed;
+}
+
+void ProcessingTest::handleTestResult(bool didTestPass)
+{
+  if(!didTestPass) {
+    //RS_DEBUG_BREAK;
+    plotDesiredAndActualOutput(0, 0, numFramesToProcess, 0);
+    // WrappedAdderN seems to output a scaled down version of the desired output
+    // SummedDiffs outputs all zeros
+    // BiquadMacro's output signal is totally different from the desired
+  }
 }
 
 void ProcessingTest::initTest()
@@ -443,10 +454,16 @@ void ProcessingTest::setTestPolyphonic(bool shouldBePolyphonic)
 // information output functions:
 
 
-void ProcessingTest::plotDesiredAndActualOutput(int voiceIndex, int pinIndex, int numFramesToPlot, int startFrame)
+void ProcessingTest::plotDesiredAndActualOutput(int voiceIndex, int pinIndex, int numFramesToPlot, 
+  int startFrame)
 {
-  RAPT::rsAssert(false, "plotting code needs update");
-  //Plotter::plotData(numFramesToPlot, &timeAxis[startFrame], desiredOutputs[voiceIndex][pinIndex], outputs[voiceIndex][pinIndex]);
+#ifdef RS_DEBUG_PLOTTING
+  GNUPlotter plt;
+  plt.plot(numFramesToPlot, 
+    &timeAxis[startFrame], 
+    desiredOutputs[voiceIndex][pinIndex], 
+    outputs[voiceIndex][pinIndex]);
+#endif
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

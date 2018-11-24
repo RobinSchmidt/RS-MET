@@ -76,6 +76,8 @@ void rsNumericIntegral(Tx *x, Ty *y, Ty *yi, int N, Ty c)
 //  lengths of the path-segments in the summation)
 // -write N-dimensional integration functions that return the amount of N+1 space contained in
 //  some hyperblock between x1, x2 (both of dimensionality N)
+//  -maybe we somehow need a function that takes in a function of N variables and returns a 
+//   function of N-1 variables (maybe using std::function)
 
 
 template<class Tx, class Ty>

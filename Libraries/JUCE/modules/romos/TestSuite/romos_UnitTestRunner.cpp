@@ -43,8 +43,8 @@ bool UnitTestRunner::runProcessingTests()
   UnitTest *test; 
   bool testsPassed = true; 
 
-  // new:
-  test = new Formula1In1OutTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
+
+
 
   test = new IdentityTest();                   testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new AdderTest();                      testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -57,16 +57,16 @@ bool UnitTestRunner::runProcessingTests()
   test = new WrappedAdderTest();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new SumDiffProdTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new WrappedSumDiffProdTest();         testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-  test = new WrappedAdderNTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-  test = new SummedDiffsTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
+  test = new WrappedAdderNTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test; // fails
+  test = new SummedDiffsTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test; // fails
   test = new MovingAverageTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new DelayedConnectionTest();          testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new LeakyIntegratorTest();            testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new LeakyIntegratorDoubleDelayTest(); testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new TestFilter1Test();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-  test = new BiquadMacroTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
+  test = new BiquadMacroTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test; // fails
   test = new BiquadAtomicTest();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
- 
+  test = new Formula1In1OutTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
   test = new BlipTest();                       testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new MonoToPolyTest();                 testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new VoiceCombinerTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -90,7 +90,7 @@ bool UnitTestRunner::runContainerManipulationTests()
   test = new Containerize01();                     testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new Containerize02();                     testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new OutputModuleDeletion();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-  test = new ContainerizationAddedConstantsTest(); testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
+  test = new ContainerizationAddedConstantsTest(); testsPassed &= test->runTestAndPrintResultToConsole(); delete test; // fails
   test = new PinSortingTest();                     testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
 
 

@@ -58,8 +58,13 @@ protected:
   //-------------------------------------------------------------------------------------------------------------------------------------
   // running the test:
 
-  /** This function runs the tests and returns true when the tests have passed and false when the tests have failed. */
-  virtual bool runTest();
+  /** This function runs the tests and returns true when the tests have passed and false when the 
+  tests have failed. */
+  virtual bool runTest() override;
+
+  /** Overriden in order to trigger plotting of tareget signal and actual output signal in case of
+  failure. */
+  virtual void handleTestResult(bool didTestPass) override;
 
   /** Function to do some setup stuff like connecting the moduleToTest member to some feeder/retriever modules etc. It is called as first
   thing in runTest, and when you override runTest in a subclass, you should most probabaly call it there, too. */
