@@ -99,14 +99,14 @@ bool ExpressionEvaluator::assignVariable(char* name, double value)
   return false;
 }
 
-
-bool ExpressionEvaluator::getVariableAdress(char* name, double* adress)
+double* ExpressionEvaluator::getVariableAddress(char* name)
 {
+  return pVariableList->GetAddress(name);
 
- if( err == EXPR_ERROR_NOERROR )
-  return true;
- else
-  return false;
+ //if( err == EXPR_ERROR_NOERROR )
+ // return true;
+ //else
+ // return false;
 }
 
 

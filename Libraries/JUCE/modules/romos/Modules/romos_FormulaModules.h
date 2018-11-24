@@ -20,11 +20,11 @@ protected:
   virtual void allocateMemory();
   virtual void freeMemory();
   virtual void updateEvaluatorFormulas();
+  virtual void updateInputVariables();
 
   std::vector<rosic::ExpressionEvaluator*> evaluators;
   std::string formula;
-
-  double *variables; // not yet used and may not be needed - we'll see
+  std::vector<double*> inVariables; // pointers to the input variables in the expression evaluator object
 };
 class FormulaModule1In1OutTypeInfo : public ModuleTypeInfo
 {

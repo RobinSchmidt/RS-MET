@@ -50,9 +50,12 @@ public:
  virtual bool assignVariable(char* name, double value);
  /**< Assigns a variable name to a numeric vaule. */
 
- virtual bool getVariableAdress(char* name, double* adress);
- /**< Returns the memory adress of a variable. Can be used to access the value
-      of this variable faster than via calling assignVariable(). */
+
+ virtual double* getVariableAddress(char* name);
+ //virtual bool getVariableAdress(char* name, double* adress);
+ /**< Returns the memory address of the variable with given name (or a nullptr 
+ if a varaible with this name does not exist). Can be used to access the value
+ of this variable faster than via calling assignVariable().  */
 
  //---------------------------------------------------------------------------
  // others:
