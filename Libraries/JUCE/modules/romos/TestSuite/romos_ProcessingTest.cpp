@@ -100,11 +100,8 @@ bool ProcessingTest::runTest()
 void ProcessingTest::handleTestResult(bool didTestPass)
 {
   if(!didTestPass) {
-    RS_DEBUG_BREAK;
-    plotDesiredAndActualOutput(0, 0, numFramesToProcess, 0);
-    // WrappedAdderN seems to output a scaled down version of the desired output
-    // SummedDiffs outputs all zeros
-    // BiquadMacro's output signal is totally different from the desired
+    //RS_DEBUG_BREAK;
+    //plotDesiredAndActualOutput(0, 0, numFramesToProcess, 0);
   }
 }
 

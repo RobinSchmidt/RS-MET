@@ -10,6 +10,10 @@ void FormulaModule1In1Out::initialize()
 }
 INLINE void FormulaModule1In1Out::process(Module *module, double *in, double *out, int voiceIndex)
 {
+  //*out = *in;
+  //return; // for debugging memelak
+
+
   FormulaModule1In1Out *evaluatorModule = static_cast<FormulaModule1In1Out*> (module);
   rosic::ExpressionEvaluator* evaluator = evaluatorModule->evaluators[voiceIndex];
 
@@ -43,6 +47,7 @@ void FormulaModule1In1Out::allocateMemory()
 
 void FormulaModule1In1Out::freeMemory()
 {
+  AtomicModule::freeMemory();
   for(int i = 0; i < getNumVoices(); i++)
     delete evaluators[i];
   evaluators.clear();

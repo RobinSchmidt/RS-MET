@@ -11,7 +11,7 @@ bool UnitTestRunner::runAllTestsAndPrintResultsToConsole()
   bool result = true;
 
   result &= runGlobalFrameworkTests();
-  result &= runProcessingTests();
+  result &= runProcessingTests();  // causes memleak
   result &= runContainerManipulationTests();
   result &= runSystemTests();
 
@@ -43,10 +43,6 @@ bool UnitTestRunner::runProcessingTests()
   UnitTest *test; 
   bool testsPassed = true; 
 
-  // copied, to run that one first for debug:
-  test = new WrappedAdderNTest(); testsPassed &= test->runTestAndPrintResultToConsole(); delete test; // fails
-
-
   test = new IdentityTest();                   testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new AdderTest();                      testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new Adder3Test();                     testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -58,20 +54,19 @@ bool UnitTestRunner::runProcessingTests()
   test = new WrappedAdderTest();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new SumDiffProdTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new WrappedSumDiffProdTest();         testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-  test = new WrappedAdderNTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test; // fails
-  test = new SummedDiffsTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test; // fails
+  test = new WrappedAdderNTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
+  test = new SummedDiffsTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new MovingAverageTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new DelayedConnectionTest();          testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new LeakyIntegratorTest();            testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new LeakyIntegratorDoubleDelayTest(); testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new TestFilter1Test();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-  test = new BiquadMacroTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test; // fails
+  test = new BiquadMacroTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new BiquadAtomicTest();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
-  test = new Formula1In1OutTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
   test = new BlipTest();                       testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new MonoToPolyTest();                 testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new VoiceCombinerTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-
+  test = new Formula1In1OutTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   //test = new PolyBlipStereoTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   //test = new GateAndKillTest();  testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
 

@@ -9,7 +9,6 @@ bool runModularUnitTests()
   romos::UnitTestRunner testRunner;
   bool testsPassed = testRunner.runAllTestsAndPrintResultsToConsole();
 
-
   if( testsPassed == false )
     printf("%s", "At least one unit test FAILED !!! FAILED !!! FAILED !!! FAILED !!! FAILED !!!\n");
   else
