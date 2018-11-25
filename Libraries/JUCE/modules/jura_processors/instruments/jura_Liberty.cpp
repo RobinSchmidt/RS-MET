@@ -108,6 +108,17 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module,
   xmlState->setAttribute("Y",    juce::String(module->getPositionY())  );
   xmlState->setAttribute("Poly", juce::String((int)module->isPolyphonic())  );
 
+  // some subclasses of romos::Module have a state themselves in a form of a std::map of key/value
+  // pairs of strings (for eaxmple, the Formula module maybe have something like 
+  // key: "Formula", value: "y=tanh(x)" or something) - we store these key/value pairs as 
+  // additional attributes in the xml
+  std::map<std::string, std::string> stateMap = module->getState();
+  if(!stateMap.empty())
+    addAttributesFromMap(*xmlState, stateMap);
+  // maybe we should use a child element in order to avoid potentila name conflicts? what if the 
+  // module itself has an attribute "Name" or "X"?
+  // no - better: let the romos::Module baseclass already handle the Name, X, etc. settings
+
   unsigned int i;
   romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
   if( container != NULL )

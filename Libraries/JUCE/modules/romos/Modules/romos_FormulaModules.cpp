@@ -29,22 +29,23 @@ void FormulaModule1In1Out::resetVoiceState(int voiceIndex)
   // ...more to do?
 }
 
-std::map<std::string, std::string> FormulaModule1In1Out::getState()
+std::map<std::string, std::string> FormulaModule1In1Out::getState() const
 {
-  std::map<std::string, std::string> state;
+  std::map<std::string, std::string> state = Module::getState();
   state.emplace("Formula", formula);
   return state;
 }
 
 bool FormulaModule1In1Out::setState(const std::map<std::string, std::string>& state)
 {
+  bool result = Module::setState(state);
   if(RAPT::rsContains(state, std::string("Formula"))) 
   {
     std::string tmp = state.at(std::string("Formula"));
     RAPT::rsAssert(isFormulaValid(tmp));
     if(isFormulaValid(tmp)) {
       setFormula(tmp);
-      return true;
+      return result;
     }
     else
       return false;

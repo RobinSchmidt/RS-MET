@@ -154,7 +154,7 @@ public:
   of key/value pairs. This map is supposed to have been once created by the (also overriden) 
   getState() function. The boolean return value should inform the caller, if setting up the state 
   was successful. */
-  virtual bool setState(const std::map<std::string, std::string>& state) { return true; }
+  virtual bool setState(const std::map<std::string, std::string>& state); // { return true; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry:
@@ -191,10 +191,10 @@ public:
 
   /** A function that can be overriden by Module subclasses to return a state in the form
   of list of key/value pairs. */
-  virtual std::map<std::string, std::string> getState()
-  {
-    return std::map<std::string, std::string>(); // return empty map by default
-  }
+  virtual std::map<std::string, std::string> getState() const;
+  //{
+  //  return std::map<std::string, std::string>(); // return empty map by default
+  //}
 
 
 

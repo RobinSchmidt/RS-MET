@@ -204,6 +204,20 @@ void romos::Module::updateInputPointersAndInFrameStrides()
   }
 }
 
+bool romos::Module::setState(const std::map<std::string, std::string>& state)
+{
+  std::string tmp; 
+ 
+  // maybe we should also check here, if these keys actually exist?
+  tmp = state.at(std::string("Name")); name = tmp;
+  tmp = state.at(std::string("X"));    x = std::stoi(tmp);
+  tmp = state.at(std::string("Y"));    y = std::stoi(tmp);
+  if(!isTopLevelModule()) {
+    tmp = state.at(std::string("Poly"));
+    polyphonic = (bool) std::stoi(tmp);
+  }
+  return true;
+}
 
 //-------------------------------------------------------------------------------------------------
 // inquiry:
@@ -216,6 +230,16 @@ int romos::Module::getNumVoices() const
     return voiceAllocator.getNumVoices();
   else
     return 1;
+}
+
+std::map<std::string, std::string> romos::Module::getState() const
+{
+  std::map<std::string, std::string> state;
+  state.emplace("Name", name.asStdString());
+  state.emplace("X",    std::to_string(x));
+  state.emplace("Y",    std::to_string(y));
+  state.emplace("Poly", std::to_string(polyphonic));
+  return state;
 }
 
 romos::Module* romos::Module::getTopLevelModule()

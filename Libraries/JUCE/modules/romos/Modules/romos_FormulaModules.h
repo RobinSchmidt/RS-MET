@@ -18,7 +18,7 @@ public:
   virtual void resetVoiceState(int voiceIndex);
   virtual std::string getFormula() { return formula; }
 
-  virtual std::map<std::string, std::string> getState() override;
+  virtual std::map<std::string, std::string> getState() const override;
   virtual bool setState(const std::map<std::string, std::string>& state) override;
 
 protected:
