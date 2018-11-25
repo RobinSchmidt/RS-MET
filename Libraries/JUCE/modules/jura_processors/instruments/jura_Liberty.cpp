@@ -103,10 +103,11 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module,
 
   XmlElement *xmlState = new XmlElement(rosicToJuce(module->getTypeName()));
 
-  xmlState->setAttribute("Name", rosicToJuce(module->getName())    );
-  xmlState->setAttribute("X",    juce::String(module->getPositionX())  );
-  xmlState->setAttribute("Y",    juce::String(module->getPositionY())  );
-  xmlState->setAttribute("Poly", juce::String((int)module->isPolyphonic())  );
+  // old - should not bee needed anymore since we use module->getState();:
+  //xmlState->setAttribute("Name", rosicToJuce(module->getName())    );
+  //xmlState->setAttribute("X",    juce::String(module->getPositionX())  );
+  //xmlState->setAttribute("Y",    juce::String(module->getPositionY())  );
+  //xmlState->setAttribute("Poly", juce::String((int)module->isPolyphonic())  );
 
   // some subclasses of romos::Module have a state themselves in a form of a std::map of key/value
   // pairs of strings (for eaxmple, the Formula module maybe have something like 
@@ -172,10 +173,10 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
     return;
   }
 
-  module->setModuleName( juceToRosic(xmlState.getStringAttribute(juce::String(("Name")), 
-    juce::String(("NoName"))))         );
-  if( !module->isTopLevelModule() )
-    module->setPolyphonic( xmlState.getBoolAttribute(juce::String(("Poly")), false) );
+  //module->setModuleName( juceToRosic(xmlState.getStringAttribute(juce::String(("Name")), 
+  //  juce::String(("NoName"))))         );
+  //if( !module->isTopLevelModule() )
+  //  module->setPolyphonic( xmlState.getBoolAttribute(juce::String(("Poly")), false) );
 
   // this call is needed only to recall the position of the top-level module's I/O modules 
   // - the other modules are already inserted at their right positions inside the recursive call:
@@ -185,6 +186,10 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
 
   // module->setPositionXY not needed because we assign x, y in the loop and the toplevel module 
   // should always reamain at (0,0) 
+
+
+  std::map<std::string, std::string> moduleState = getAttributesAsMap(xmlState);
+  module->setState(moduleState);
 
   if(  module->isContainerModule() || module->isTopLevelModule() )
   {
@@ -213,17 +218,20 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
         }
         else
         {
-          //rosic::rsString moduleName = juceToRosic(childState->getStringAttribute("Name"));
-          std::string moduleName = (childState->getStringAttribute("Name")).toStdString();
-          int x = childState->getIntAttribute("X", 0);
-          int y = childState->getIntAttribute("Y", 0);
-          bool poly = childState->getBoolAttribute("Poly", false);
+          //// retrieving these attributes here may be redundant with module->setState above (which 
+          //// will be called in the recursive call to createAndSetupEmbeddedModulesFromXml - so maybe 
+          //// we can delete it and create the module with an empty string and posititon 0,0, mono
+          //std::string moduleName = (childState->getStringAttribute("Name")).toStdString();
+          //int x = childState->getIntAttribute("X", 0);
+          //int y = childState->getIntAttribute("Y", 0);
+          //bool poly = childState->getBoolAttribute("Poly", false);
+          //// although it doesn't hurt..we'll see
 
-          //romos::Module *newModule = container->addChildModule(typeIdentifier, moduleName, 
-          //  x, y, poly, false);
-          romos::Module *newModule = container->addChildModule(moduleTypeName.asStdString(), 
-            moduleName, x, y, poly, false);
+          //romos::Module *newModule = container->addChildModule(moduleTypeName.asStdString(), 
+          //  moduleName, x, y, poly, false);
 
+          romos::Module *newModule = container->addChildModule(
+            moduleTypeName.asStdString(), "", 0, 0, false, false);
           createAndSetupEmbeddedModulesFromXml(*childState, newModule);
         }
       }
