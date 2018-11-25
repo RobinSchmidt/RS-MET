@@ -18,8 +18,8 @@ public:
   virtual void resetVoiceState(int voiceIndex);
   virtual std::string getFormula() { return formula; }
 
-  virtual rosic::KeyValueMap<std::string, std::string> getState() override;
-  virtual void setState(const rosic::KeyValueMap<std::string, std::string>& state) override;
+  virtual std::map<std::string, std::string> getState() override;
+  virtual void setState(const std::map<std::string, std::string>& state) override;
 
 protected:
   virtual void allocateMemory();

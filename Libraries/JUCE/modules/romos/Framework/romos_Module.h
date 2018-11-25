@@ -153,7 +153,7 @@ public:
 
   /** A function that can be overriden by Module subclasses to set themselves up from a list of 
   key/value pairs that was supposed once created by the (also overriden) getState() function. */
-  virtual void setState(const rosic::KeyValueMap<std::string, std::string>& state) {}
+  virtual void setState(const std::map<std::string, std::string>& state) {}
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry:
@@ -190,9 +190,9 @@ public:
 
   /** A function that can be overriden by Module subclasses to return a state in the form
   of list of key/value pairs. */
-  virtual rosic::KeyValueMap<std::string, std::string> getState()
+  virtual std::map<std::string, std::string> getState()
   {
-    return rosic::KeyValueMap<std::string, std::string>(); // return empty map by default
+    return std::map<std::string, std::string>(); // return empty map by default
   }
 
 
