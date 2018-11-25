@@ -150,10 +150,11 @@ public:
   virtual void updateInputPointersAndInFrameStrides();
     // rename to updateInPointersAndStrides
 
-
-  /** A function that can be overriden by Module subclasses to set themselves up from a list of 
-  key/value pairs that was supposed once created by the (also overriden) getState() function. */
-  virtual void setState(const std::map<std::string, std::string>& state) {}
+  /** A hook function that can be overriden by Module subclasses to set themselves up from a map 
+  of key/value pairs. This map is supposed to have been once created by the (also overriden) 
+  getState() function. The boolean return value should inform the caller, if setting up the state 
+  was successful. */
+  virtual bool setState(const std::map<std::string, std::string>& state) { return true; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry:

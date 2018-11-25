@@ -35,7 +35,7 @@ std::map<std::string, std::string> FormulaModule1In1Out::getState()
   state.emplace("Formula", formula);
   return state;
 }
-
+/*
 // move to RAPT:
 template<class Key, class Value>
 bool rsContains(const std::map<Key, Value>& map, const Key& key)
@@ -45,35 +45,26 @@ bool rsContains(const std::map<Key, Value>& map, const Key& key)
     return false;
   return true;
 }
-
-void FormulaModule1In1Out::setState(const std::map<std::string, std::string>& state)
+*/
+bool FormulaModule1In1Out::setState(const std::map<std::string, std::string>& state)
 {
-  //std::string tmp = state.find("Formula");
-  //std::string tmp = state[state.find("Formula")];
-
-  if(rsContains(state, std::string("Formula"))) 
+  if(RAPT::rsContains(state, std::string("Formula"))) 
   {
     std::string tmp = state.at(std::string("Formula"));
     RAPT::rsAssert(isFormulaValid(tmp));
-    setFormula(tmp);
+    if(isFormulaValid(tmp)) {
+      setFormula(tmp);
+      return true;
+    }
+    else
+      return false;
     // hmm...setFormula sets the formula only when it is valid - maybe we should set it
     // when it is invalid anyway. that would be more friendly behavior, if the user enters invalid
     // formulas in an xml state. It would be weird, if the module would keep the old formula 
     // without notifying the user - maybe the best thing would be to pop up an error message
   }
   else
-  {
-    // return false
-  }
-
-
-  //auto iterator = state.find("Formula");
-  //if( iterator == state.end() )
-  //  return;  // maybe we should return false, i.e. make that function bool
-
-  //std::string tmp = state[iterator];
-  //RAPT::rsAssert(isFormulaValid(tmp));
-  //setFormula(tmp);
+    return false;
 }
 
 void FormulaModule1In1Out::allocateMemory()

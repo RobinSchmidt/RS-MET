@@ -19,7 +19,7 @@ public:
   virtual std::string getFormula() { return formula; }
 
   virtual std::map<std::string, std::string> getState() override;
-  virtual void setState(const std::map<std::string, std::string>& state) override;
+  virtual bool setState(const std::map<std::string, std::string>& state) override;
 
 protected:
   virtual void allocateMemory();

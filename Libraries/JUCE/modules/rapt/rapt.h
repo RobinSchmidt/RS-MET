@@ -33,6 +33,7 @@
 #include <cstdio>        // to fix warning in gcc when using printf
 #include <complex>       // included already by ctgmath ...but not on gcc/windows?
 #include <vector>
+#include <map>
 #include <functional>
 #include <algorithm>
 #include <cstring>

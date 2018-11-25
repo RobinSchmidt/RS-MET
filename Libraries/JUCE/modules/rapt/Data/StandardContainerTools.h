@@ -1,8 +1,8 @@
 #ifndef RAPT_STANDARDCONTAINER_H_INCLUDED
 #define RAPT_STANDARDCONTAINER_H_INCLUDED
 
-/** A collection of (convenience) functions for the container classes of the C++ standard library 
-such as std::vector, etc. */
+/** A collection of convenience functions for the container classes of the C++ standard template 
+library (STL), such as std::vector, std::map, etc. */
 
 //=================================================================================================
 // functions for std::vector
@@ -19,6 +19,7 @@ inline void rsAppend(std::vector<T>& v, T newElement)
   v.push_back(newElement);
 }
 
+/** Appends vector w to vector v. */
 template<class T>
 inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
 {
@@ -174,8 +175,18 @@ inline std::vector<T> operator-(const std::vector<T>& x, const std::vector<T>& y
   return result;
 }
 
-
 //=================================================================================================
+// functions for std::map
+
+/** Checks, if a map contains a given key. */
+template<class Key, class Value>
+inline bool rsContains(const std::map<Key, Value>& map, const Key& key)
+{
+  auto iterator = map.find(key);
+  if( iterator == map.end() )
+    return false;
+  return true;
+}
 
 
 
