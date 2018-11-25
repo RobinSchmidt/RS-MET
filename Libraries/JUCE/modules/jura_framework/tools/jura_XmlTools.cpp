@@ -89,6 +89,30 @@ XmlElement* getChildElementByNameAndIndexAmongNameSakes(const XmlElement& xml,
   }
 }
 
+void addAttributesFromMap(XmlElement& xml, std::map<std::string, std::string>& map)
+{
+  std::map<std::string, std::string>::iterator it = map.begin();
+  while(it != map.end()) {
+    std::string key   = it->first;
+    std::string value = it->second;
+    xml.setAttribute(juce::String(key), juce::String(value));
+    it++;
+  }
+  // see here:
+  // https://thispointer.com/how-to-iterate-over-a-map-in-c/
+}
+
+std::map<std::string, std::string> getAttributesAsMap(const XmlElement& xml)
+{
+  std::map<std::string, std::string> map;
+  for(int i = 0; i < xml.getNumAttributes(); i++) {
+    std::string name  = xml.getAttributeName(i).toStdString();
+    std::string value = xml.getAttributeValue(i).toStdString();
+    map.emplace(name, value);
+  }
+  return map;
+}
+
 /*
 bool isValidXmlAttributeName(const juce::String& s)
 {

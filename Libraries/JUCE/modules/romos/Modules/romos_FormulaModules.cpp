@@ -35,17 +35,7 @@ std::map<std::string, std::string> FormulaModule1In1Out::getState()
   state.emplace("Formula", formula);
   return state;
 }
-/*
-// move to RAPT:
-template<class Key, class Value>
-bool rsContains(const std::map<Key, Value>& map, const Key& key)
-{
-  auto iterator = map.find(key);
-  if( iterator == map.end() )
-    return false;
-  return true;
-}
-*/
+
 bool FormulaModule1In1Out::setState(const std::map<std::string, std::string>& state)
 {
   if(RAPT::rsContains(state, std::string("Formula"))) 

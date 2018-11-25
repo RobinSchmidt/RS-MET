@@ -32,6 +32,15 @@ child-elements with given name is smaller than the given index plus one. */
 JUCE_API XmlElement* getChildElementByNameAndIndexAmongNameSakes(const XmlElement& xml, 
   const juce::String& name, int index);
 
+/** Takes a std::map of std::strings (for eky and value) and for each key/value pair in the map,
+adds a cooresponding attribute to the given XmlElement. */
+JUCE_API void addAttributesFromMap(XmlElement& xml, std::map<std::string, std::string>& map);
+
+/** Returnsa std::map of std::string containing all attributes in the given XmlElement as key/value 
+pairs. */
+JUCE_API std::map<std::string, std::string> getAttributesAsMap(const XmlElement& xml);
+
+
 //JUCE_API bool isValidXmlAttributeName(const juce::String& s);
 
 //XmlElement::isValidXmlName
