@@ -504,3 +504,51 @@ void LibertyLadderFilterModuleEditor::resized()
   y += dy;
   saturationModeComboBox->setBounds(x, y, w, h);
 }
+
+//-------------------------------------------------------------------------------------------------
+
+LibertyFormulaModuleEditor::LibertyFormulaModuleEditor(LibertyAudioModule *newLiberty,
+  romos::Module* newModuleToEdit) : ModulePropertiesEditor(newLiberty, newModuleToEdit)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  formula1In1OutModule = dynamic_cast<FormulaModule1In1Out*> (newModuleToEdit);
+
+  formulaField = new LibertyTextEntryField("Formula");
+  formulaField->registerTextEntryFieldObserver(this);
+  addWidget(formulaField, true, true);
+
+  updateWidgetsFromModuleState(); // todo: implement this and obtain formula from the field
+}
+
+void LibertyFormulaModuleEditor::resized()
+{
+  ScopedLock scopedLock(*plugInLock);
+  ModulePropertiesEditor::resized();
+
+  int x, y, w, h;
+  x  = 4;
+  y  = getHeadlineBottom()+4;
+  w  = getWidth()/2 - 8;
+  h  = 16;
+  int dy = h + 4;
+
+  formulaField->setBounds(x, y, w, h);
+  y += dy;
+}
+
+void LibertyFormulaModuleEditor::textChanged(RTextEntryField *entryField)
+{
+  if(entryField == formulaField)
+  {
+    std::string newFormula = entryField->getText().toStdString();
+    if(formula1In1OutModule->isFormulaValid(newFormula))    {
+      formula1In1OutModule->setFormula(newFormula);
+      formulaField->markTextAsInvalid(false);
+    }
+    else
+      formulaField->markTextAsInvalid(true);
+  }
+  else
+    ModulePropertiesEditor::textChanged(entryField);
+}

@@ -13,7 +13,8 @@ class FormulaModule1In1Out : public AtomicModule
 
 public:
 
-  virtual void setFormula(const std::string& newFormula);
+  virtual bool isFormulaValid(const std::string& formulaToTest);
+  virtual bool setFormula(const std::string& newFormula);
   virtual void resetVoiceState(int voiceIndex);
 
 protected:
@@ -22,6 +23,7 @@ protected:
   virtual void updateEvaluatorFormulas();
   virtual void updateInputVariables();
 
+  rosic::ExpressionEvaluator trialEvaluator;
   std::vector<rosic::ExpressionEvaluator*> evaluators;
   std::string formula;
   std::vector<double*> inVariables; // pointers to the input variables in the expression evaluator object

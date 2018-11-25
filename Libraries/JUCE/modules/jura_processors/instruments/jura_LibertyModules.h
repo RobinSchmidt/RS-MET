@@ -111,6 +111,30 @@ protected:
   LibertyNamedComboBox *filterModeComboBox, *saturationModeComboBox;
 };
 
+class LibertyFormulaModuleEditor : public ModulePropertiesEditor /*, RTextEntryFieldObserver*/
+{
+public:
+  LibertyFormulaModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit);   
+  virtual void resized() override;
+  virtual void textChanged(RTextEntryField *entryField) override;
+  //virtual void somethingWasTypedIn(RTextEntryField *entryField) { }
+  // maybe implement this to give feedback (about in/valditiy of formula) while the user is typing
+
+protected:
+  LibertyTextEntryField* formulaField;
+  romos::FormulaModule1In1Out* formula1In1OutModule;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LibertyFormulaModuleEditor)
+};
+
+
+
+// after implementing a new type of editor, in order to make sure the right type of editor
+// is created (instead of the generic one), modify the dispatcher function (add a dispatch
+// path for the new editor type)
+// ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule
+
+
+
 
 
 

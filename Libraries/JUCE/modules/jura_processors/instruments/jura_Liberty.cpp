@@ -811,6 +811,7 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
   else if(type == "BiquadDesigner") currentEditor = new BiquadDesignerModuleEditor(lbrtyMd, mdl);
   else if(type == "LadderFilter")   currentEditor = new LibertyLadderFilterModuleEditor(lbrtyMd, mdl);
   else if(type == "VoiceKiller")    currentEditor = new VoiceKillerModuleEditor(lbrtyMd, mdl);
+  else if(type == "Formula1In1Out") currentEditor = new LibertyFormulaModuleEditor(lbrtyMd, mdl);
   else                              currentEditor = new ModulePropertiesEditor(lbrtyMd, mdl); // generic
   // todo: optimize away all these string-comparisons
   // maybe make a map from type-id to creator-function

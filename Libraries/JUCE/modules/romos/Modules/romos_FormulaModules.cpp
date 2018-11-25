@@ -47,10 +47,19 @@ void FormulaModule1In1Out::freeMemory()
   inVariables.clear();
 }
 
-void FormulaModule1In1Out::setFormula(const std::string& newFormula)
+bool FormulaModule1In1Out::isFormulaValid(const std::string& formulaToTest)
 {
-  formula = newFormula;
-  updateEvaluatorFormulas();
+  return trialEvaluator.setExpressionString(formulaToTest.c_str());
+}
+
+bool FormulaModule1In1Out::setFormula(const std::string& newFormula)
+{
+  if(isFormulaValid(newFormula)) {
+    formula = newFormula;
+    updateEvaluatorFormulas();
+    return true;
+  }
+  return false;
 }
 
 void FormulaModule1In1Out::updateEvaluatorFormulas()
@@ -67,8 +76,17 @@ void FormulaModule1In1Out::updateInputVariables()
     inVariables[i] = evaluators[i]->getVariableAddress("In");
 }
 
-
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(FormulaModule1In1Out);
+
+/* Maybe, with a little trick, the formula module can be made to have memory:
+old = 0;  // "declaration" of memory variable "old"
+out = old;
+old = In;
+out;
+...try it...If it works, we can build modules with memory (for example filters) from the 
+formula module. ..but no - that doesn't work because the "declaration" would reset it in each
+call, so out would alsway be zero. We somehow need to be able to declare variables without
+assigning them to a value - check the ExprEval doc, if we can create variables. */
 
 
 }
