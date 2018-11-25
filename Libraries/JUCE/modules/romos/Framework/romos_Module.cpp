@@ -214,7 +214,7 @@ bool romos::Module::setState(const std::map<std::string, std::string>& state)
   tmp = state.at(std::string("Y"));    y = std::stoi(tmp);
   if(!isTopLevelModule()) {
     tmp = state.at(std::string("Poly"));
-    polyphonic = (bool) std::stoi(tmp);
+    polyphonic = std::stoi(tmp) != 0;
   }
   return true;
 }

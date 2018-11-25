@@ -27,8 +27,8 @@ protected:
   virtual void updateEvaluatorFormulas();
   virtual void updateInputVariables();
 
-  rosic::ExpressionEvaluator trialEvaluator;
-  std::vector<rosic::ExpressionEvaluator*> evaluators;
+  rosic::ExpressionEvaluator trialEvaluator; // to validate formulas maybe rename to formulaValidator
+  std::vector<rosic::ExpressionEvaluator*> evaluators; // the evaluators used for actual dsp
   std::string formula;
   std::vector<double*> inVariables; // pointers to the input variables in the expression evaluator object
 };
@@ -44,6 +44,10 @@ public:
     //hasHeader = false;
   }
 };
+
+//-------------------------------------------------------------------------------------------------
+// a formula module with multiple ins and outs:
+
 
 }
 

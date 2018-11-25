@@ -59,6 +59,7 @@ rosic::rsString PerformanceTestRunner::runAtomicModulePerformanceTests()
   test = new BiquadDesignerPerformanceTest();           report += test->runTestsAndGetReport();  delete test;
   test = new BandlimitedImpulseTrainPerformanceTest();  report += test->runTestsAndGetReport();  delete test;
   test = new SawOscillatorPerformanceTest();            report += test->runTestsAndGetReport();  delete test;
+  test = new FormulaPerformanceTest();                  report += test->runTestsAndGetReport();  delete test;
 
   printf("%s", "\n");
   return report;

@@ -461,7 +461,7 @@ int main(int argc, char* argv[])
   // Modular:
 
   runModularUnitTests();
-  //runModularPerformanceTests(true);  // produces a memleak
+  runModularPerformanceTests(true);  // produces a memleak
   //testModularCodeGenerator();
   //runModularInteractiveTests();  // triggers assert due to plotting code
   romos::moduleFactory.clearRegisteredTypes(); // avoids memleak in unit tests

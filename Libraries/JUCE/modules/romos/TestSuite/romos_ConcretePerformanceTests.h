@@ -84,6 +84,13 @@ public:
   SawOscillatorPerformanceTest();
 };
 
+class FormulaPerformanceTest : public PerformanceTest
+{
+public:
+  FormulaPerformanceTest() : PerformanceTest("Formula1In1Out")
+  { moduleToTest = moduleFactory.createModule("Formula1In1Out"); }
+};
+
 
 } // end namespace romos
 

@@ -103,22 +103,11 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module,
 
   XmlElement *xmlState = new XmlElement(rosicToJuce(module->getTypeName()));
 
-  // old - should not bee needed anymore since we use module->getState();:
-  //xmlState->setAttribute("Name", rosicToJuce(module->getName())    );
-  //xmlState->setAttribute("X",    juce::String(module->getPositionX())  );
-  //xmlState->setAttribute("Y",    juce::String(module->getPositionY())  );
-  //xmlState->setAttribute("Poly", juce::String((int)module->isPolyphonic())  );
-
-  // some subclasses of romos::Module have a state themselves in a form of a std::map of key/value
-  // pairs of strings (for eaxmple, the Formula module maybe have something like 
-  // key: "Formula", value: "y=tanh(x)" or something) - we store these key/value pairs as 
-  // additional attributes in the xml
   std::map<std::string, std::string> stateMap = module->getState();
   if(!stateMap.empty())
     addAttributesFromMap(*xmlState, stateMap);
-  // maybe we should use a child element in order to avoid potentila name conflicts? what if the 
-  // module itself has an attribute "Name" or "X"?
-  // no - better: let the romos::Module baseclass already handle the Name, X, etc. settings
+  else
+    jassertfalse;
 
   unsigned int i;
   romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
@@ -167,69 +156,31 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module,
 void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& xmlState, 
   romos::Module *module)
 {
-  if( module == NULL )
-  {
-    jassertfalse;
-    return;
-  }
-
-  //module->setModuleName( juceToRosic(xmlState.getStringAttribute(juce::String(("Name")), 
-  //  juce::String(("NoName"))))         );
-  //if( !module->isTopLevelModule() )
-  //  module->setPolyphonic( xmlState.getBoolAttribute(juce::String(("Poly")), false) );
-
-  // this call is needed only to recall the position of the top-level module's I/O modules 
-  // - the other modules are already inserted at their right positions inside the recursive call:
-  //module->setPositionXY( xmlState.getIntAttribute(juce::String(("X")), 0), 
-  //                       xmlState.getIntAttribute(juce::String(("Y")), 0), false);
-  //...mmhh. does not work
-
-  // module->setPositionXY not needed because we assign x, y in the loop and the toplevel module 
-  // should always reamain at (0,0) 
-
+  if( module == nullptr ) { jassertfalse; return; }
 
   std::map<std::string, std::string> moduleState = getAttributesAsMap(xmlState);
   module->setState(moduleState);
 
-  if(  module->isContainerModule() || module->isTopLevelModule() )
-  {
+  if(  module->isContainerModule() || module->isTopLevelModule() ) {
     romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
-    for(int i=0; i<xmlState.getNumChildElements(); i++)
-    {
+    for(int i=0; i<xmlState.getNumChildElements(); i++) {
       XmlElement* childState = xmlState.getChildElement(i);
       rosic::rsString moduleTypeName = juceToRosic(childState->getTagName()); // get rid of that intermediate format
 
-      //int typeIdentifier = romos::ModuleTypeRegistry::getSoleInstance()
-      //  ->getModuleIdentifierFromTypeString(moduleTypeName);
-
       int typeIdentifier = romos::moduleFactory.getModuleId(moduleTypeName.asStdString());
+      if( typeIdentifier != -1 ) {
 
-      //if( typeIdentifier != romos::ModuleTypeRegistry::UNKNOWN_MODULE_TYPE )
-      if( typeIdentifier != -1 )
-      {
+        // verify that this is useless and then delete this old code:
         //if(  module->isTopLevelModule() 
         //  && romos::ModuleTypeRegistry::isIdentifierInputOrOutput(typeIdentifier) )
         //if( module->isTopLevelModule() && (module->isInputModule() || module->isOutputModule()) )
            // noo - this is wrong - we are not interested in whethere the "module" is I/O but rather
            // the child to be added should be I/O
-        if( module->isTopLevelModule() && (moduleTypeName == "AudioInput" || moduleTypeName == "AudioOutput") )
-        {
+
+        if( module->isTopLevelModule() && (moduleTypeName == "AudioInput" || moduleTypeName == "AudioOutput") ) {
           // do nothing when this is the top-level module and the to-be-added child is an I/O module
         }
-        else
-        {
-          //// retrieving these attributes here may be redundant with module->setState above (which 
-          //// will be called in the recursive call to createAndSetupEmbeddedModulesFromXml - so maybe 
-          //// we can delete it and create the module with an empty string and posititon 0,0, mono
-          //std::string moduleName = (childState->getStringAttribute("Name")).toStdString();
-          //int x = childState->getIntAttribute("X", 0);
-          //int y = childState->getIntAttribute("Y", 0);
-          //bool poly = childState->getBoolAttribute("Poly", false);
-          //// although it doesn't hurt..we'll see
-
-          //romos::Module *newModule = container->addChildModule(moduleTypeName.asStdString(), 
-          //  moduleName, x, y, poly, false);
-
+        else {
           romos::Module *newModule = container->addChildModule(
             moduleTypeName.asStdString(), "", 0, 0, false, false);
           createAndSetupEmbeddedModulesFromXml(*childState, newModule);
@@ -239,9 +190,7 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
     container->sortChildModuleArray();
   }
   else
-  {
     restoreModuleTypeSpecificStateDataFromXml(module, xmlState);
-  }  
 }
 
 void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, romos::Module *module)

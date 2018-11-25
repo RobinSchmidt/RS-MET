@@ -9,17 +9,17 @@ void FormulaModule1In1Out::initialize()
   initOutputPins({ "y" });
   setFormula("y=x");
 }
+
 INLINE void FormulaModule1In1Out::process(Module *module, double *in, double *out, int voiceIndex)
 {
   FormulaModule1In1Out *evaluatorModule = static_cast<FormulaModule1In1Out*> (module);
   if(evaluatorModule->inVariables[voiceIndex] == nullptr) { 
     *out = 0; 
-    return; 
-  }
+    return;  }
 
   rosic::ExpressionEvaluator* evaluator = evaluatorModule->evaluators[voiceIndex];
-  //evaluator->assignVariable("In", *in); 
-  *(evaluatorModule->inVariables[voiceIndex]) = *in;  // probably more efficient than assignVariable
+  //evaluator->assignVariable("x", *in); 
+  *(evaluatorModule->inVariables[voiceIndex]) = *in;  // more efficient than assignVariable
   *out = evaluator->evaluateExpression();
 }
 
