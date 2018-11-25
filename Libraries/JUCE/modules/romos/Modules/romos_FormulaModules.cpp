@@ -5,8 +5,9 @@ namespace romos
 
 void FormulaModule1In1Out::initialize()
 {
-  initInputPins({ "In" });
-  initOutputPins({ "Out" });
+  initInputPins({ "x" });
+  initOutputPins({ "y" });
+  setFormula("y=x");
 }
 INLINE void FormulaModule1In1Out::process(Module *module, double *in, double *out, int voiceIndex)
 {
@@ -73,7 +74,7 @@ void FormulaModule1In1Out::updateInputVariables()
 {
   RAPT::rsAssert(inVariables.size() == evaluators.size());
   for(int i = 0; i < evaluators.size(); i++)
-    inVariables[i] = evaluators[i]->getVariableAddress("In");
+    inVariables[i] = evaluators[i]->getVariableAddress("x");
 }
 
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(FormulaModule1In1Out);

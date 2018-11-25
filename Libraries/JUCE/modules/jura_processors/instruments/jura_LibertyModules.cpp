@@ -539,8 +539,7 @@ void LibertyFormulaModuleEditor::resized()
 
 void LibertyFormulaModuleEditor::textChanged(RTextEntryField *entryField)
 {
-  if(entryField == formulaField)
-  {
+  if(entryField == formulaField) {
     std::string newFormula = entryField->getText().toStdString();
     if(formula1In1OutModule->isFormulaValid(newFormula))    {
       formula1In1OutModule->setFormula(newFormula);
@@ -551,4 +550,10 @@ void LibertyFormulaModuleEditor::textChanged(RTextEntryField *entryField)
   }
   else
     ModulePropertiesEditor::textChanged(entryField);
+}
+
+void LibertyFormulaModuleEditor::updateWidgetsFromModuleState()
+{
+  std::string formula = formula1In1OutModule->getFormula();
+  formulaField->setText(formula);
 }

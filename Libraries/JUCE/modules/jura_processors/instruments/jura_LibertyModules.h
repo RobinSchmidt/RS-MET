@@ -120,6 +120,8 @@ public:
   //virtual void somethingWasTypedIn(RTextEntryField *entryField) { }
   // maybe implement this to give feedback (about in/valditiy of formula) while the user is typing
 
+  virtual void updateWidgetsFromModuleState() override;
+
 protected:
   LibertyTextEntryField* formulaField;
   romos::FormulaModule1In1Out* formula1In1OutModule;

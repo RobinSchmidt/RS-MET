@@ -21,7 +21,10 @@ public:
   // setup:
 
   /** Sets up the text to be shown. */
-  virtual void setText(const juce::String &newText);
+  virtual void setText(const juce::String& newText);
+
+  /** Sets up the text to be shown. */
+  virtual void setTextFromStdString(const std::string& newText) { setText(juce::String(newText)); }
 
   /** Sets the justification for positioning the text. */
   virtual void setJustification(const Justification& newJustification);

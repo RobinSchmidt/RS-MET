@@ -16,6 +16,7 @@ public:
   virtual bool isFormulaValid(const std::string& formulaToTest);
   virtual bool setFormula(const std::string& newFormula);
   virtual void resetVoiceState(int voiceIndex);
+  virtual std::string getFormula() { return formula; }
 
 protected:
   virtual void allocateMemory();
