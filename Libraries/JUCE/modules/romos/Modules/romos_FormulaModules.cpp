@@ -29,6 +29,20 @@ void FormulaModule1In1Out::resetVoiceState(int voiceIndex)
   // ...more to do?
 }
 
+rosic::KeyValueMap<std::string, std::string> FormulaModule1In1Out::getState()
+{
+  rosic::KeyValueMap<std::string, std::string> state;
+
+  // ...
+
+  return state;
+}
+
+void FormulaModule1In1Out::setState(const rosic::KeyValueMap<std::string, std::string>& state)
+{
+
+}
+
 void FormulaModule1In1Out::allocateMemory()
 {
   AtomicModule::allocateMemory();

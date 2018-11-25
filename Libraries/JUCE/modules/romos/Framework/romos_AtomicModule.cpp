@@ -45,7 +45,7 @@ void AtomicModule::initInputPins(const std::vector<std::string>& pinNames)
     rosic::appendElement(audioInputNames, rosic::rsString(pinNames[i]));
     rosic::appendElement(inputPins,       AudioInputPinData());
   }
-  numInputs = inputPins.size();
+  numInputs = (int) inputPins.size();
 }
 /*
 void AtomicModule::initOutputPins(int numberOfPins, const char*, ...)

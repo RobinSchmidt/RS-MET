@@ -518,7 +518,7 @@ LibertyFormulaModuleEditor::LibertyFormulaModuleEditor(LibertyAudioModule *newLi
   formulaField->registerTextEntryFieldObserver(this);
   addWidget(formulaField, true, true);
 
-  updateWidgetsFromModuleState(); // todo: implement this and obtain formula from the field
+  updateWidgetsFromModuleState();
 }
 
 void LibertyFormulaModuleEditor::resized()
@@ -557,3 +557,16 @@ void LibertyFormulaModuleEditor::updateWidgetsFromModuleState()
   std::string formula = formula1In1OutModule->getFormula();
   formulaField->setText(formula);
 }
+
+// todo: 
+// -save/recall formula (maybe use rosic::KeyValueMap for that - the romos::Module baseclass
+//  should define member functions getState/setState that return/take a KeyValueMap
+// -make field bigger and multiline
+
+// Maybe:
+// -allow use to set names of in/out variables
+// -allow user to set name of the formula field (like "y=sin(x)", for example)
+
+// Allow multiple inputs and outputs:
+// -have two additional text entry fields "Inputs", "Outputs" that list the I/O variables
+//  for example: Inputs: Freq, Q, Outputs: a1, k for ladder coeff computation
