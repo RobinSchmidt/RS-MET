@@ -7,9 +7,9 @@ namespace romos
 //-------------------------------------------------------------------------------------------------
 
 /** A module that a applies a user defined formula y = f(x) with one input and one output. */
-class FormulaModule1In1Out : public AtomicModule // rename to FormulaModule_1_1
+class FormulaModule_1_1 : public AtomicModule // rename to FormulaModule_1_1
 {
-  CREATE_COMMON_DECLARATIONS_1(FormulaModule1In1Out);
+  CREATE_COMMON_DECLARATIONS_1(FormulaModule_1_1);
 
 public:
 
@@ -33,22 +33,22 @@ protected:
   std::string formula;
   std::vector<double*> inVariables; // pointers to the input variables in the expression evaluator object
 };
-class FormulaModule1In1OutTypeInfo : public ModuleTypeInfo
+class FormulaModule_1_1TypeInfo : public ModuleTypeInfo
 {
 public:
-  FormulaModule1In1OutTypeInfo() {
+  FormulaModule_1_1TypeInfo() {
     shortName    = "Formula";
-    fullName     = "Formula1In1Out"; // maybe use _1_1
+    fullName     = "Formula_1_1";
     description  = "A custom formula with one input and one output";
     category     = "Functions";
-    createModule =  []()->Module* { return new FormulaModule1In1Out; };
+    createModule =  []()->Module* { return new FormulaModule_1_1; };
   }
 };
 
 //-------------------------------------------------------------------------------------------------
 
 /** A formula module with multiple inputs and one output. */
-class FormulaModule_N_1 : public FormulaModule1In1Out
+class FormulaModule_N_1 : public FormulaModule_1_1
 {
   CREATE_COMMON_DECLARATIONS_N(FormulaModule_N_1);
 

@@ -209,13 +209,18 @@ bool romos::Module::setState(const std::map<std::string, std::string>& state)
   std::string tmp; 
  
   // maybe we should also check here, if these keys actually exist?
-  tmp = state.at(std::string("Name")); name = tmp;
-  tmp = state.at(std::string("X"));    x = std::stoi(tmp);
-  tmp = state.at(std::string("Y"));    y = std::stoi(tmp);
+  tmp = state.at(std::string("Name"));
+  setModuleName(tmp);
+
+  tmp = state.at(std::string("X")); int xTmp = std::stoi(tmp);
+  tmp = state.at(std::string("Y")); int yTmp = std::stoi(tmp);
+  setPositionXY(xTmp, yTmp);
+
   if(!isTopLevelModule()) {
     tmp = state.at(std::string("Poly"));
-    polyphonic = std::stoi(tmp) != 0;
+    setPolyphonic(std::stoi(tmp) != 0);
   }
+
   return true;
 }
 

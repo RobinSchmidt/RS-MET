@@ -512,7 +512,7 @@ LibertyFormulaModuleEditor::LibertyFormulaModuleEditor(LibertyAudioModule *newLi
 {
   ScopedLock scopedLock(*plugInLock);
 
-  formula1In1OutModule = dynamic_cast<FormulaModule1In1Out*> (newModuleToEdit);
+  formula1In1OutModule = dynamic_cast<FormulaModule_1_1*> (newModuleToEdit);
 
   formulaField = new LibertyTextEntryField("Formula");
   formulaField->registerTextEntryFieldObserver(this);

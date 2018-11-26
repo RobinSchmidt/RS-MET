@@ -3,16 +3,16 @@ namespace romos
 
 //-------------------------------------------------------------------------------------------------
 
-void FormulaModule1In1Out::initialize()
+void FormulaModule_1_1::initialize()
 {
   initInputPins({ "x" });
   initOutputPins({ "y" });
   setFormula("y=x");
 }
 
-INLINE void FormulaModule1In1Out::process(Module *module, double *in, double *out, int voiceIndex)
+INLINE void FormulaModule_1_1::process(Module *module, double *in, double *out, int voiceIndex)
 {
-  FormulaModule1In1Out *evaluatorModule = static_cast<FormulaModule1In1Out*> (module);
+  FormulaModule_1_1 *evaluatorModule = static_cast<FormulaModule_1_1*> (module);
   if(evaluatorModule->inVariables[voiceIndex] == nullptr) { 
     *out = 0; 
     return;  }
@@ -23,20 +23,20 @@ INLINE void FormulaModule1In1Out::process(Module *module, double *in, double *ou
   *out = evaluator->evaluateExpression();
 }
 
-void FormulaModule1In1Out::resetVoiceState(int voiceIndex)
+void FormulaModule_1_1::resetVoiceState(int voiceIndex)
 {
   AtomicModule::resetVoiceState(voiceIndex);
   // ...more to do?
 }
 
-std::map<std::string, std::string> FormulaModule1In1Out::getState() const
+std::map<std::string, std::string> FormulaModule_1_1::getState() const
 {
   std::map<std::string, std::string> state = Module::getState();
   state.emplace("Formula", formula);
   return state;
 }
 
-bool FormulaModule1In1Out::setState(const std::map<std::string, std::string>& state)
+bool FormulaModule_1_1::setState(const std::map<std::string, std::string>& state)
 {
   bool result = Module::setState(state);
   if(RAPT::rsContains(state, std::string("Formula"))) 
@@ -58,7 +58,7 @@ bool FormulaModule1In1Out::setState(const std::map<std::string, std::string>& st
     return false;
 }
 
-void FormulaModule1In1Out::allocateMemory()
+void FormulaModule_1_1::allocateMemory()
 {
   AtomicModule::allocateMemory();
   inVariables.resize(getNumVoices());
@@ -68,7 +68,7 @@ void FormulaModule1In1Out::allocateMemory()
   updateInputVariables();
 }
 
-void FormulaModule1In1Out::freeMemory()
+void FormulaModule_1_1::freeMemory()
 {
   AtomicModule::freeMemory();
   for(int i = 0; i < getNumVoices(); i++)
@@ -77,12 +77,12 @@ void FormulaModule1In1Out::freeMemory()
   inVariables.clear();
 }
 
-bool FormulaModule1In1Out::isFormulaValid(const std::string& formulaToTest)
+bool FormulaModule_1_1::isFormulaValid(const std::string& formulaToTest)
 {
   return trialEvaluator.setExpressionString(formulaToTest.c_str());
 }
 
-bool FormulaModule1In1Out::setFormula(const std::string& newFormula)
+bool FormulaModule_1_1::setFormula(const std::string& newFormula)
 {
   if(isFormulaValid(newFormula)) {
     formula = newFormula;
@@ -92,21 +92,21 @@ bool FormulaModule1In1Out::setFormula(const std::string& newFormula)
   return false;
 }
 
-void FormulaModule1In1Out::updateEvaluatorFormulas()
+void FormulaModule_1_1::updateEvaluatorFormulas()
 {
   for(int i = 0; i < evaluators.size(); i++)
     evaluators[i]->setExpressionString(formula.c_str());
   updateInputVariables();
 }
 
-void FormulaModule1In1Out::updateInputVariables()
+void FormulaModule_1_1::updateInputVariables()
 {
   RAPT::rsAssert(inVariables.size() == evaluators.size());
   for(int i = 0; i < evaluators.size(); i++)
     inVariables[i] = evaluators[i]->getVariableAddress("x");
 }
 
-CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(FormulaModule1In1Out);
+CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(FormulaModule_1_1);
 
 /* Maybe, with a little trick, the formula module can be made to have memory:
 old = 0;  // "declaration" of memory variable "old"
@@ -136,7 +136,7 @@ INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, 
 
 std::map<std::string, std::string> FormulaModule_N_1::getState() const
 {
-  std::map<std::string, std::string> state = FormulaModule1In1Out::getState();
+  std::map<std::string, std::string> state = FormulaModule_1_1::getState();
 
   // ...
 
@@ -145,7 +145,7 @@ std::map<std::string, std::string> FormulaModule_N_1::getState() const
 
 bool FormulaModule_N_1::setState(const std::map<std::string, std::string>& state)
 {
-  bool result = FormulaModule1In1Out::setState(state);
+  bool result = FormulaModule_1_1::setState(state);
 
   //...
 
@@ -160,14 +160,14 @@ void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInV
 
 void FormulaModule_N_1::allocateMemory()
 {
-  FormulaModule1In1Out::allocateMemory();
+  FormulaModule_1_1::allocateMemory();
 
   // ...
 }
 
 void FormulaModule_N_1::freeMemory()
 {
-  FormulaModule1In1Out::freeMemory();
+  FormulaModule_1_1::freeMemory();
 
   // ...
 }
