@@ -118,5 +118,11 @@ formula module. ..but no - that doesn't work because the "declaration" would res
 call, so out would alsway be zero. We somehow need to be able to declare variables without
 assigning them to a value - check the ExprEval doc, if we can create variables. */
 
+//-------------------------------------------------------------------------------------------------
+
+
+
+
+
 
 }
