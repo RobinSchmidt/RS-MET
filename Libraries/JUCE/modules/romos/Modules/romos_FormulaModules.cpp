@@ -1,6 +1,6 @@
 namespace romos
 {
-    
+
 //-------------------------------------------------------------------------------------------------
 
 void FormulaModule1In1Out::initialize()
@@ -120,8 +120,64 @@ assigning them to a value - check the ExprEval doc, if we can create variables. 
 
 //-------------------------------------------------------------------------------------------------
 
+void FormulaModule_N_1::initialize()
+{
+  initInputPins({ "x" });
+  initOutputPins({ "y" });
+  setFormula("y=x");
+}
+
+INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, int voiceIndex)
+{
+  *out = 0;
+
+  // ...
+}
+
+std::map<std::string, std::string> FormulaModule_N_1::getState() const
+{
+  std::map<std::string, std::string> state = FormulaModule1In1Out::getState();
+
+  // ...
+
+  return state;
+}
+
+bool FormulaModule_N_1::setState(const std::map<std::string, std::string>& state)
+{
+  bool result = FormulaModule1In1Out::setState(state);
+
+  //...
+
+  return result;
+}
+
+void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInVars)
+{
+  // ...
+}
 
 
+void FormulaModule_N_1::allocateMemory()
+{
+  FormulaModule1In1Out::allocateMemory();
+
+  // ...
+}
+
+void FormulaModule_N_1::freeMemory()
+{
+  FormulaModule1In1Out::freeMemory();
+
+  // ...
+}
+
+void FormulaModule_N_1::updateInputVariables()
+{
+  //FormulaModule1In1Out::updateInputVariables();
+}
+
+CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_1);
 
 
 

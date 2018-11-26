@@ -56,9 +56,12 @@ public:
 
   // overrides:
   virtual bool setFormula(const std::string& newFormula);
-  virtual void resetVoiceState(int voiceIndex);
+  //virtual void resetVoiceState(int voiceIndex);
   virtual std::map<std::string, std::string> getState() const override;
   virtual bool setState(const std::map<std::string, std::string>& state) override;
+
+  // new functions:
+  virtual void setInputVariables(const std::vector<std::string>& newInputVariables);
 
 protected:
 
