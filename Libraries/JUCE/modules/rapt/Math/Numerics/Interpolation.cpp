@@ -80,6 +80,10 @@ void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni, T
   }
 
   // todo: maybe refactor to separate the coefficient computation from the actual interpolation
+  // the polynomial coefficients themselves could be very useful as basis for numerical 
+  // integration - just add up the definite integrals over the spline segments between the
+  // integration limits - maybe numeric differentiation could also be improved by using the 
+  // spline
 }
 
 template<class T>

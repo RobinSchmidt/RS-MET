@@ -62,6 +62,7 @@ public:
 
   // new functions:
   virtual void setInputVariables(const std::vector<std::string>& newInputVariables);
+  // rename to setInputNames - maybe the baseclass should have such a function, too
 
 protected:
 
