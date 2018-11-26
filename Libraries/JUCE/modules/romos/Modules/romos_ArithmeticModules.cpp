@@ -32,11 +32,32 @@ void ConstantModule::freeMemory()
 {
   // nothing to do here as well
 }
-void ConstantModule::setModuleName(const rosic::rsString& newName)
+
+
+// move to rosic or rapt
+std::string rsDoubleToString(double value)
 {
-  value = newName.asDouble();
-  //Module::setModuleName(rosic::rsString::fromDouble(value));
-  Module::setModuleName(rosic::rsString(value));
+  char tmpString[64];
+  sprintf(tmpString, "%lg", value);
+  return std::string(tmpString);
+}
+
+void ConstantModule::setModuleName(const std::string& newName)
+{
+  // old - using rsString:
+  //value = newName.asDouble();
+  ////Module::setModuleName(rosic::rsString::fromDouble(value));
+  //Module::setModuleName(rosic::rsString(value));
+
+  try {
+    value = std::stod(newName);
+    //value = atof(newName.c_str());
+  }
+  catch(const std::invalid_argument& ia) {
+    value = 0.0;
+  }
+  Module::setModuleName(rsDoubleToString(value));
+  //Module::setModuleName(std::to_string(value));  // produces trailing zeros
 }
 CREATE_ASSIGN_FUNCTION_POINTERS(ConstantModule);
 
@@ -44,18 +65,8 @@ CREATE_ASSIGN_FUNCTION_POINTERS(ConstantModule);
 
 void IdentityModule::initialize()
 {
-  //initInputPins(1, "");
-  //initOutputPins(1, "");
-  // crashes in release build
-
-  //initInputPins(1, "In");
-  //initOutputPins(1, "Out");
-  // also crashes
-
   initInputPins({ "" });
   initOutputPins({ "" });
-  // doesn't crash
-
   hasHeaderFlag = false;
 }
 INLINE void IdentityModule::process(Module *module, double *ins, double *outs, int voiceIndex)

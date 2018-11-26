@@ -89,7 +89,7 @@ protected:
   virtual void deleteAudioOutput(int index);
 
   /** Constructor. Protected because instances should be created only through the ModuleFactory. */
-  AtomicModule(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
+  AtomicModule(const std::string& name = std::string(), int x = 0, int y = 0, 
     bool polyphonic = false);
 
   /** Destructor. Protected because instances should be deleted only through the ModuleFactory. */
@@ -213,7 +213,7 @@ class ModuleWithParameters : public AtomicModule, public ParameterMixIn
 
 protected:
 
-  ModuleWithParameters(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
+  ModuleWithParameters(const std::string& name = std::string(), int x = 0, int y = 0, 
     bool polyphonic = false) : AtomicModule(name, x, y, polyphonic)
   {
 
@@ -265,7 +265,7 @@ public:
 protected:
 
 
-  ModuleProxy(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
+  ModuleProxy(const std::string& name = std::string(), int x = 0, int y = 0, 
     bool polyphonic = false);
   virtual ~ModuleProxy();
 

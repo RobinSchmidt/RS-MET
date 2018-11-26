@@ -294,7 +294,7 @@ public:
 
   // re-overriden to fall back to Module::setModuleName(rosic::rsString(value)); - we don't want 
   // to set the value here
-  virtual void setModuleName(const rosic::rsString& newName);
+  virtual void setModuleName(const std::string& newName);
 
   /** Sets the minimum- and maximum-values and the mapping function simultaneously. We have this 
   function because min, max and mapping  must satisfy certain contraints (for example min <= max, 

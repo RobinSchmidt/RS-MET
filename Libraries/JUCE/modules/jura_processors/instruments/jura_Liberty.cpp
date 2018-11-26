@@ -643,7 +643,7 @@ void ModularStructureTreeView::createAndHangInSubTree(RTreeViewNode *parentNodeT
   //if(true)  // preliminary
   //if( moduleToCreateSubTreeFor->hasTreeNode() )
   {
-    juce::String name = juce::String( moduleToCreateSubTreeFor->getName().getRawString() );
+    juce::String name = juce::String( moduleToCreateSubTreeFor->getName().c_str() );
     RTreeViewNode *newNode = new RTreeViewNode(name);
     newNode->setUserData(moduleToCreateSubTreeFor);
     parentNodeToUse->addChildNode(newNode);
@@ -1335,7 +1335,7 @@ void ModularBlockDiagramPanel::textChanged(RTextEntryField *rTextEntryFieldThatH
   if( selectedModules.size() == 1 )
   {
     char* newName = toZeroTerminatedString(nameEntryField->getText());
-    selectedModules[0]->setModuleName(rosic::rsString(newName));
+    selectedModules[0]->setModuleName(std::string(newName));
     nameEntryField->setVisible(false);
     grabKeyboardFocus(); // to move it away from the entry field
     delete newName;
@@ -1441,7 +1441,7 @@ void ModularBlockDiagramPanel::openModuleNameEntryField()
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
   if( selectedModules.size() == 1 )
   {
-    juce::String name = juce::String(selectedModules[0]->getName().getRawString());
+    juce::String name = juce::String(selectedModules[0]->getName().c_str());
     nameEntryField->setText(name);
     int x, y, w, h;
     getRectangleForModuleInPixels(selectedModules[0], x, y, w, h, false);
@@ -2144,7 +2144,7 @@ void ModularBlockDiagramPanel::drawModule(Graphics &g, romos::Module *moduleToDr
   g.setColour(plotColourScheme.getCurveColourUniform(0));
   g.drawRect(x, y, w, h, t);
 
-  juce::String name = juce::String( moduleToDraw->getName().getRawString() );
+  juce::String name = juce::String( moduleToDraw->getName().c_str() );
 
   if( moduleToDraw->hasHeader() )
   {
@@ -2375,7 +2375,7 @@ int ModularBlockDiagramPanel::getRequiredWidthForModuleInPixels(romos::Module *m
   if( module == NULL )
     return 0;
 
-  juce::String name = juce::String( module->getName().getRawString() );
+  juce::String name = juce::String( module->getName().c_str() );
   int width = bigFont->getTextPixelWidth(name, bigFont->getDefaultKerning());
 
   if( dynamic_cast<romos::AudioInputModule*> (module) || dynamic_cast<romos::AudioOutputModule*> (module) )

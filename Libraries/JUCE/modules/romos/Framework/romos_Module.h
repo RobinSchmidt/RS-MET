@@ -95,7 +95,7 @@ public:
   // \name Setup:
 
   /** Sets the name of the module. */
-  virtual void setModuleName(const rosic::rsString& newName);
+  virtual void setModuleName(const std::string& newName);
 
   /** Changes the name of one of the input- or output pins. */
   //virtual void setPinName(int kind, int direction, int pinIndex, const rosic::rsString &newName);
@@ -181,7 +181,7 @@ public:
 
 
   /** Returns the name. */
-  virtual rosic::rsString getName() const { return name; }
+  virtual std::string getName() const { return name; }
 
   /** Returns the identifier of the module class. This is one of the values defined in the 
   moduleIdentifiers enumeration and can be used to infer the kind of the module at runtime (aka 
@@ -565,7 +565,7 @@ protected:
   virtual void allocateAudioOutputs();
 
   /** Constructor. Protected because instances should be created only through the ModuleFactory. */
-  Module(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
+  Module(const std::string& name = std::string(), int x = 0, int y = 0, 
     bool polyphonic = false);
 
   /** Destructor. Protected because instances should be deleted only through the ModuleFactory. */
@@ -592,8 +592,8 @@ protected:
   int  x, y;                 // position on the GUI block-diagram
 
 
-  //std::string name;
-  rosic::rsString name;      // use std::string
+  std::string name;
+  //rosic::rsString name;      // use std::string
   // have shortName, longName, description, write a function getLongName etc. - inside this
   // function, check, if the variables here are empty and if so, show the long/short/etc names
   // from the typeInfo pointer

@@ -720,7 +720,7 @@ void printModuleStructure(romos::Module *module, int indent)
   printf("%s", spaces);
   delete[] spaces;
 
-  printf("%s", module->getName().getRawString() );
+  printf("%s", module->getName().c_str() );
   /*
   printf("%s", " - #AI: " );
   printf("%d", module->getNumAudioInputs() );

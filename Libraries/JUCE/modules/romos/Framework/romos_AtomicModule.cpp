@@ -9,7 +9,7 @@ using namespace romos;
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-romos::AtomicModule::AtomicModule(const rosic::rsString &name, int x, int y, bool polyphonic) 
+romos::AtomicModule::AtomicModule(const std::string& name, int x, int y, bool polyphonic) 
 : Module(name, x, y, polyphonic)
 {
 
@@ -288,7 +288,7 @@ int romos::ParameterMixIn::findIndexOfParameterWithName(const rosic::rsString &n
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-romos::ModuleProxy::ModuleProxy(const rosic::rsString &name, int x, int y, bool polyphonic) 
+romos::ModuleProxy::ModuleProxy(const std::string& name, int x, int y, bool polyphonic) 
 : AtomicModule(name, x, y, polyphonic)
 {
 

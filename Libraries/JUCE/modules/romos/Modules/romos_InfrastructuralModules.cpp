@@ -398,9 +398,10 @@ void ParameterModule::parameterChanged(int index)
 
   int dummy = 0;
 }
-void ParameterModule::setModuleName(const rosic::rsString& newName)
+void ParameterModule::setModuleName(const std::string& newName)
 {
-  // overriden to avoid setting the value according to the name (which the ConstantModule baseclass would do)
+  // overriden to avoid setting the value according to the name (which the ConstantModule 
+  // baseclass would do)
   AtomicModule::setModuleName(newName);
 }
 

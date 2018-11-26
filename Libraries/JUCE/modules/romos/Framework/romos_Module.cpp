@@ -57,7 +57,7 @@ void AudioInputPinData::copyDataFrom(const AudioInputPinData &other)
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-romos::Module::Module(const rosic::rsString &_name, int _x, int _y, bool _polyphonic)
+romos::Module::Module(const std::string&_name, int _x, int _y, bool _polyphonic)
 {
   parentModule         = nullptr;
   processFrame         = nullptr;
@@ -94,7 +94,7 @@ void romos::Module::cleanUp()
 //-------------------------------------------------------------------------------------------------
 // setup::
 
-void romos::Module::setModuleName(const rsString& newName)
+void romos::Module::setModuleName(const std::string& newName)
 {
   // \todo this function seems to be called twice when entering a new name - find out why, fix it
   if( name != newName )
@@ -240,7 +240,7 @@ int romos::Module::getNumVoices() const
 std::map<std::string, std::string> romos::Module::getState() const
 {
   std::map<std::string, std::string> state;
-  state.emplace("Name", name.asStdString());
+  state.emplace("Name", name);
   state.emplace("X",    std::to_string(x));
   state.emplace("Y",    std::to_string(y));
   state.emplace("Poly", std::to_string(polyphonic));
@@ -587,11 +587,11 @@ void romos::writeModuleStateToConsole(void *module, bool waitForKeyAfterOutput)
   int maxPinIndex;
 
   if( m->getParentModule() != NULL )
-    printf("%s %s", m->getParentModule()->getName().getRawString(), ": ");
+    printf("%s %s", m->getParentModule()->getName().c_str(), ": ");
 
   double pinValue;
 
-  printf("%s %s", m->getName().getRawString(), " ");
+  printf("%s %s", m->getName().c_str(), " ");
   //printf("%s %s", m->getTypeNameOld().getRawString(), " ");
   printf("%s %s", m->getTypeName().c_str(), " ");
   printf("%s", "Ins: ");

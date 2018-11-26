@@ -286,14 +286,14 @@ void romos::processContainerAllPolyBlock(Module *module, int voiceIndex, int blo
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ContainerModule::ContainerModule(const rosic::rsString &name, int x, int y, bool polyphonic)
+ContainerModule::ContainerModule(const std::string& name, int x, int y, bool polyphonic)
 : Module(name, x, y, polyphonic)
 {
   tmpOutFrame          = NULL;
   //moduleTypeIdentifier = ModuleTypeRegistry::CONTAINER; // not strictly necessary, factory will set this up also
 
-  if( name == rosic::rsString() )
-    setModuleName(rosic::rsString("Container"));
+  if( name == std::string() )
+    setModuleName(std::string("Container"));
 
   assignProcessingFunctions();
   updateHasDelayedConnectionsFlag();
@@ -366,17 +366,18 @@ void ContainerModule::disconnectInputPin(int inputPinIndex)
   getAudioInputModule(inputPinIndex)->disconnectInputPin(0);
 }
 
-romos::Module* ContainerModule::addAudioInputModule(rosic::rsString name, int x, int y, bool sortModuleArrayAfterInsertion)
+romos::Module* ContainerModule::addAudioInputModule(std::string name, int x, int y, 
+  bool sortModuleArrayAfterInsertion)
 {
-  if( name.isEmpty() )
-    name = rosic::rsString("In") + rosic::rsString(getNumInputPins()+1);
+  if( name.empty() )
+    name = std::string("In") + std::to_string(getNumInputPins()+1);
 
   //Module *newModule = ModuleFactory::createModule(ModuleTypeRegistry::AUDIO_INPUT, name, x, y, this->isPolyphonic());
   //newModule->typeInfo = moduleFactory.getModuleTypeInfo("AudioInput");
     // can be deleted when we create the newModule with the newFactory later (but until then, we 
     // need to manually set the typeInfo pointer here
 
-  Module *newModule = moduleFactory.createModule("AudioInput", name.asStdString(), x, y, this->isPolyphonic());
+  Module *newModule = moduleFactory.createModule("AudioInput", name, x, y, this->isPolyphonic());
   newModule->parentModule = this;
   rosic::appendElement(childModules, (romos::Module*) newModule);
 
@@ -392,17 +393,18 @@ romos::Module* ContainerModule::addAudioInputModule(rosic::rsString name, int x,
   return newModule;
 }
 
-romos::Module* ContainerModule::addAudioOutputModule(rosic::rsString name, int x, int y, bool sortModuleArrayAfterInsertion)
+romos::Module* ContainerModule::addAudioOutputModule(std::string name, int x, int y, 
+  bool sortModuleArrayAfterInsertion)
 {
-  if( name.isEmpty() )
-    name = rosic::rsString("Out") + rosic::rsString(getNumOutputPins()+1);
+  if( name.empty() )
+    name = std::string("Out") + std::to_string(getNumOutputPins()+1);
 
   //Module *newModule = ModuleFactory::createModule(ModuleTypeRegistry::AUDIO_OUTPUT, name, x, y, this->isPolyphonic());
   //newModule->typeInfo = moduleFactory.getModuleTypeInfo("AudioOutput");
   // can be deleted when we create the newModule with the newFactory later (but until then, we 
   // need to manually set the typeInfo pointer here
 
-  Module *newModule = moduleFactory.createModule("AudioOutput", name.asStdString(), x, y, this->isPolyphonic());
+  Module *newModule = moduleFactory.createModule("AudioOutput", name, x, y, this->isPolyphonic());
 
   newModule->parentModule = this;
   rosic::appendElement(childModules, (romos::Module*) newModule);
@@ -635,7 +637,7 @@ ContainerModule* ContainerModule::containerizeModules(std::vector<Module*> modul
         numContainerInputs++;
         int sourceOutIndex = module->inputPins[pinIndex].outputIndex; // temporary storage - value needed later
         romos::Module *inputModule = container->addAudioInputModule(
-                                       rosic::rsString("In") + rosic::rsString(numContainerInputs), 1, 2*numContainerInputs, false);
+          std::string("In") + std::to_string(numContainerInputs), 1, 2*numContainerInputs, false);
 
         // redirect the source of the pin to the new input module:
         module->connectInputPinTo(pinIndex, inputModule, 0);
@@ -658,7 +660,7 @@ ContainerModule* ContainerModule::containerizeModules(std::vector<Module*> modul
         // create output module:
         numContainerOutputs++;
         romos::Module *outputModule =
-          container->addAudioOutputModule(rosic::rsString("Out") + rosic::rsString(numContainerOutputs),
+          container->addAudioOutputModule(std::string("Out") + std::to_string(numContainerOutputs),
                                           xMax+20, 2*numContainerOutputs, false);
 
         // re-connect the pins of the outside target modules to the output pin of the container and re-connect the original source to the

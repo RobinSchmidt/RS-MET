@@ -28,7 +28,7 @@ bool testSorting(bool verboseOutput)
     romos::Module *childModule = moduleFactory.createModule("UnitDelay");
     x = (int) RAPT::rsRandomUniform((double) xMin, (double) xMax);
     y = (int) RAPT::rsRandomUniform((double) yMin, (double) yMax);
-    childModule->setModuleName(rosic::rsString("Delay ") + rosic::rsString((int)i)); // to keep track of insertion order
+    childModule->setModuleName(std::string("Delay ") + std::to_string((int)i)); // to keep track of insertion order
     childModule->setPositionXY(x, y);
     testModule->addChildModule(childModule, false);
   }

@@ -58,8 +58,8 @@ public:
   /** Adds an audio input to this module. A name for the pin (and module) can optionally be passed. 
   If empty, the function will assign a default name. The return value is a pointer to the added 
   module. */
-  virtual Module* addAudioInputModule(rosic::rsString name = rosic::rsString(), int x = 1, 
-    int y = 1, bool sortModuleArrayAfterInsertion = true);
+  virtual Module* addAudioInputModule(std::string name = std::string(), int x = 1, int y = 1, 
+    bool sortModuleArrayAfterInsertion = true);
 
   /** Adds an audio input to this module. A name for the pin can optionally be passed. */
   //void addAudioInput(const rosic::rsString &pinName = rosic::rsString());
@@ -67,8 +67,8 @@ public:
   /** Adds an audio output to this module. A name for the pin (and module) can optionally be 
   passed. If empty, the function will assign a default name. The return value is a pointer to the 
   added module. */
-  virtual Module* addAudioOutputModule(rosic::rsString name = rosic::rsString(), int x = 1, 
-    int y = 1, bool sortModuleArrayAfterInsertion = true);
+  virtual Module* addAudioOutputModule(std::string name = std::string(), int x = 1, int y = 1, 
+    bool sortModuleArrayAfterInsertion = true);
 
 
   //virtual Module* addChildModule(NULL, ModuleTypeRegistry::ADD, rosic::rsString(""),  10,  2, false);
@@ -410,7 +410,7 @@ protected:
   virtual void updateHasDelayedConnectionsFlag();
 
   /** Constructor. */
-  ContainerModule(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, 
+  ContainerModule(const std::string& name = std::string(), int x = 0, int y = 0, 
     bool polyphonic = false);
 
   /** Destructor. Deletes all sub modules as well. */
