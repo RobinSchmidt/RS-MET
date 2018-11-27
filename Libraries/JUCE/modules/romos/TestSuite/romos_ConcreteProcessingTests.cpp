@@ -349,10 +349,9 @@ void BiquadAtomicTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic
 
 Formula1In1OutTest::Formula1In1OutTest() : ProcessingTest("Formula_1_1")
 {
-  tolerance    = 1.e-14;
+  tolerance    = 1.e-14;  // shouldn't 0 also work?
   moduleToTest = moduleFactory.createModule("Formula_1_1");
   FormulaModule_1_1* formulaModule = static_cast<FormulaModule_1_1*> (moduleToTest);
-  //formulaModule->setFormula("tanh(2*In^2)");
   formulaModule->setFormula("tanh(2*x^2)");
 }
 void Formula1In1OutTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
@@ -361,6 +360,53 @@ void Formula1In1OutTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphon
     GenerateDesiredOutput::forFormula1In1Out(numFramesToProcess, inputs[v][0], desiredOutputs[v][0]);
     // tanh(2*x^2) is our example formula
 }
+
+
+
+Formula_N_1Test::Formula_N_1Test() : ProcessingTest("Formula_N_1")
+{
+  moduleToTest = moduleFactory.createModule("Formula_N_1");
+  FormulaModule_N_1* formulaModule = static_cast<FormulaModule_N_1*> (moduleToTest);
+  formulaModule->setFormula("tanh(2*x^2)");
+}
+bool Formula_N_1Test::runTest()
+{
+  bool result = true;
+  FormulaModule_N_1* formulaModule = static_cast<FormulaModule_N_1*> (moduleToTest);
+
+
+  //formulaModule->setFormula("x1 + x2");
+  //formulaModule->setInputVariables("x1, x2");
+
+
+  formulaModule->setFormula("a*x + b");
+  formulaModule->setInputVariables("x, a, b");
+
+  //formulaModule->setInputVariables("x: input, a: slope, b: y-intercept");
+
+  return result;
+}
+
+//void Formula_N_1Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
+//{
+//
+//}
+
+
+
+/*
+class Formula_N_1Test : public ProcessingTest
+{
+public:
+  Formula_N_1Test();
+  virtual bool runTest() override;
+protected:
+  virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
+};
+*/
+
+
+
 
 BlipTest::BlipTest()
 : ProcessingTest("Blip")

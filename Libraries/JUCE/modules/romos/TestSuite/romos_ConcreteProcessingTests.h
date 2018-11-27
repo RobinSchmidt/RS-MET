@@ -218,6 +218,16 @@ protected:
 };
 
 
+class Formula_N_1Test : public ProcessingTest
+{
+public:
+  Formula_N_1Test();
+  virtual bool runTest() override;
+protected:
+  //virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
+};
+
+
 
 // factor out a class BiquadTest - the fillDesiredOutputSignalArrays is the same for both classes
 

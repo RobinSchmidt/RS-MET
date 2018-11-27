@@ -135,6 +135,15 @@ INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, 
   // ...
 }
 
+bool FormulaModule_N_1::setFormula(const std::string& newFormula)
+{
+  bool result = FormulaModule_1_1::setFormula(newFormula);
+
+  // more to do?
+
+  return result;
+}
+
 std::map<std::string, std::string> FormulaModule_N_1::getState() const
 {
   std::map<std::string, std::string> state = FormulaModule_1_1::getState();
@@ -157,9 +166,41 @@ bool FormulaModule_N_1::setState(const std::map<std::string, std::string>& state
   return result;
 }
 
+// use function from RAPT::rsArray - but needs adaption of parameter types (constness)
+inline int findIndexOf(const char* buffer, char elementToFind, int length)
+{
+  for(int i = 0; i < length; i++) {
+    if( buffer[i] == elementToFind )
+      return i;
+  }
+  return -1;
+}
+
+//http://www.cplusplus.com/reference/string/string/substr/
+// move to rosic:
+std::vector<std::string> tokenize(const std::string& str, const char splitChar)
+{
+  std::vector<std::string> result;
+  int start = 0;
+  while(start < str.size()) {
+    int delta = findIndexOf(&str[start], splitChar, str.size()-start);
+    if(delta == -1)
+      break;
+    std::string token = str.substr(start, delta);
+    result.push_back(token);
+    start += delta+1; // +1 for the splitChar itself
+  }
+  result.push_back(str.substr(start, str.size()-start)); // add tail
+  return result;
+}
+
 bool FormulaModule_N_1::setInputVariables(const std::string& newInputs)
 {
-  std::vector<std::string> strArr; // string array to collect variable names
+  std::vector<std::string> strArr = tokenize(newInputs, ','); // collect variable names in array
+
+  // todo:
+  // -clean up variable names: remove whitespaces and everything behind the colon
+  // -check, if variable names are valid
 
 
   setInputVariables(strArr);

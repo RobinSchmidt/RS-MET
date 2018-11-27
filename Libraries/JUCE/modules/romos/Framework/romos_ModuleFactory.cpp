@@ -130,6 +130,7 @@ void ModuleFactory::registerStandardModules()
   registerModuleType(new SinCosTypeInfo);     // sin(2*pi*x),cos(2*pi*x)
   registerModuleType(new TriSawTypeInfo);
   registerModuleType(new FormulaModule_1_1TypeInfo);
+  registerModuleType(new FormulaModule_N_1TypeInfo);
 
   // Delays:
   registerModuleType(new UnitDelayTypeInfo);  // y = x[n-1]

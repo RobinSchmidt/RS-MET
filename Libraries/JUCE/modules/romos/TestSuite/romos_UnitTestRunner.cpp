@@ -43,6 +43,8 @@ bool UnitTestRunner::runProcessingTests()
   UnitTest *test; 
   bool testsPassed = true; 
 
+  test = new Formula_N_1Test();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
+
   test = new IdentityTest();                   testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new AdderTest();                      testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new Adder3Test();                     testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -67,6 +69,7 @@ bool UnitTestRunner::runProcessingTests()
   test = new MonoToPolyTest();                 testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new VoiceCombinerTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new Formula1In1OutTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
+  
   //test = new PolyBlipStereoTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   //test = new GateAndKillTest();  testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
 
