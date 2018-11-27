@@ -378,9 +378,16 @@ bool Formula_N_1Test::runTest()
   //formulaModule->setFormula("x1 + x2");
   //formulaModule->setInputVariables("x1, x2");
 
-
   formulaModule->setFormula("a*x + b");
+
   formulaModule->setInputVariables("x, a, b");
+  result &= formulaModule->getNumInputPins() == 3;
+  result &= formulaModule->getAudioInputPinName(0) == "x";
+  result &= formulaModule->getAudioInputPinName(1) == "a";
+  result &= formulaModule->getAudioInputPinName(2) == "b";
+
+  // todo: run an actual processing test comparing outputs to desired outputs
+
 
   //formulaModule->setInputVariables("x: input, a: slope, b: y-intercept");
 

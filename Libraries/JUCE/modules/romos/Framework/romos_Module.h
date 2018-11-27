@@ -275,6 +275,13 @@ public:
   /** Returns the name of one of our pins. */
   virtual rosic::rsString getPinName(int kind, int direction, int pinIndex) const = 0;
 
+  /** Returns the name of one of our audio input pins. Convenience function. */
+  inline rosic::rsString getAudioInputPinName(int pinIndex) const
+  { return getPinName(AUDIO, INCOMING, pinIndex); }
+
+
+
+
   /** Returns the number of audio input pins. */
   virtual unsigned int getNumInputPins() const { return (unsigned int)inputPins.size(); }
     // rename to getNumAudioInputs

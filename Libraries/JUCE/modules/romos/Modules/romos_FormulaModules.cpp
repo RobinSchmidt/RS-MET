@@ -176,14 +176,18 @@ inline int findIndexOf(const char* buffer, char elementToFind, int length)
   return -1;
 }
 
-//http://www.cplusplus.com/reference/string/string/substr/
+// http://www.cplusplus.com/reference/string/string/substr/
 // move to rosic:
 std::vector<std::string> tokenize(const std::string& str, const char splitChar)
 {
   std::vector<std::string> result;
   int start = 0;
   while(start < str.size()) {
+
     int delta = findIndexOf(&str[start], splitChar, str.size()-start);
+    // use http://www.cplusplus.com/reference/string/string/find/
+
+
     if(delta == -1)
       break;
     std::string token = str.substr(start, delta);
@@ -194,14 +198,22 @@ std::vector<std::string> tokenize(const std::string& str, const char splitChar)
   return result;
 }
 
+void removeChar(std::string& str, const char chr)
+{
+  std::string::iterator end_pos = std::remove(str.begin(), str.end(), chr);
+  str.erase(end_pos, str.end());
+  // from https://stackoverflow.com/questions/83439/remove-spaces-from-stdstring-in-c
+}
+
 bool FormulaModule_N_1::setInputVariables(const std::string& newInputs)
 {
   std::vector<std::string> strArr = tokenize(newInputs, ','); // collect variable names in array
 
-  // todo:
-  // -clean up variable names: remove whitespaces and everything behind the colon
-  // -check, if variable names are valid
-
+  for(size_t i = 0; i < strArr.size(); i++) {
+    removeChar(strArr[i], ' '); // remove whitespaces
+    // todo: remove anything after a colon to allow comments - but maybe keep the strings after
+    // the colon in a separate array to be used for the infoline whe user hovers over pins
+  }
 
   setInputVariables(strArr);
   return true; // preliminary
@@ -209,14 +221,16 @@ bool FormulaModule_N_1::setInputVariables(const std::string& newInputs)
 
 void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInVars)
 {
+  // todo:
+  // -check, if variable names are valid
+  // -have a boolean return value to report error, when names are invalid
+
   size_t oldSize = audioInputNames.size(); // == inputPins.size()
   size_t newSize = newInVars.size();
   audioInputNames.resize(newSize);
   inputPins.resize(newSize);
   for(size_t i = 0; i < newSize; i++)
     audioInputNames[i] = newInVars[i];
-
-  int dummy = 0;
 }
 
 void FormulaModule_N_1::allocateMemory()
