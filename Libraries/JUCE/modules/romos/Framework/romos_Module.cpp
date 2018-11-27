@@ -464,7 +464,7 @@ void romos::Module::getMidpointCoordinates(std::vector<Module*> &modules, int &x
 
 void romos::Module::allocateMemory()
 {
-  //allocateAudioInputs();
+  //allocateAudioInputs();  // not necessarry anymore - all audio data is stored in output pins
   allocateAudioOutputs();
 }
 

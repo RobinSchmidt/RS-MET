@@ -125,6 +125,7 @@ void FormulaModule_N_1::initialize()
   initInputPins({ "x" });
   initOutputPins({ "y" });
   setFormula("y=x");
+  setInputVariables("x"); // does this make the call to initInputPins superfluous? check this out
 }
 
 INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, int voiceIndex)
@@ -137,26 +138,45 @@ INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, 
 std::map<std::string, std::string> FormulaModule_N_1::getState() const
 {
   std::map<std::string, std::string> state = FormulaModule_1_1::getState();
-
-  // ...
-
+  state.emplace("Inputs", inputVariableString);
   return state;
 }
 
 bool FormulaModule_N_1::setState(const std::map<std::string, std::string>& state)
 {
   bool result = FormulaModule_1_1::setState(state);
-
-  //...
-
+  if(RAPT::rsContains(state, std::string("Inputs"))) {
+    std::string inputStr = state.at(std::string("Inputs"));
+    result &= setInputVariables(inputStr);
+  }
+  else {
+    setInputVariables("x");
+    result = false;
+  }
+  RAPT::rsAssert(result);
   return result;
+}
+
+bool FormulaModule_N_1::setInputVariables(const std::string& newInputs)
+{
+  std::vector<std::string> strArr; // string array to collect variable names
+
+
+  setInputVariables(strArr);
+  return true; // preliminary
 }
 
 void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInVars)
 {
-  // ...
-}
+  size_t oldSize = audioInputNames.size(); // == inputPins.size()
+  size_t newSize = newInVars.size();
+  audioInputNames.resize(newSize);
+  inputPins.resize(newSize);
+  for(size_t i = 0; i < newSize; i++)
+    audioInputNames[i] = newInVars[i];
 
+  int dummy = 0;
+}
 
 void FormulaModule_N_1::allocateMemory()
 {

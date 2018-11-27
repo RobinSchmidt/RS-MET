@@ -53,7 +53,7 @@ void ConstantModule::setModuleName(const std::string& newName)
     value = std::stod(newName);
     //value = atof(newName.c_str());
   }
-  catch(const std::invalid_argument& ia) {
+  catch(const std::invalid_argument&) {
     value = 0.0;
   }
   Module::setModuleName(rsDoubleToString(value));

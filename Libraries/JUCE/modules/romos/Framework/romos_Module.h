@@ -598,6 +598,12 @@ protected:
   // function, check, if the variables here are empty and if so, show the long/short/etc names
   // from the typeInfo pointer
 
+  // hmm...maybe it was not such a good idea to switch to std::string
+  // https://stackoverflow.com/questions/5058676/stdstring-implementation-in-gcc-and-its-memory-overhead-for-short-strings
+  // http://jovislab.com/blog/?p=76
+  // https://www.oreilly.com/library/view/optimized-c/9781491922057/ch04.html
+  // maybe i really should do a measurement (sizeof)
+
   ModuleTypeInfo *typeInfo = nullptr; 
   // not yet used - should later be set on construction by the factory and replace the
   // moduleTypeIdentifier variable

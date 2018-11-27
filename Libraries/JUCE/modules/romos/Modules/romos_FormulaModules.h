@@ -60,16 +60,34 @@ public:
   virtual std::map<std::string, std::string> getState() const override;
   virtual bool setState(const std::map<std::string, std::string>& state) override;
 
-  // new functions:
-  virtual void setInputVariables(const std::vector<std::string>& newInputVariables);
-  // rename to setInputNames - maybe the baseclass should have such a function, too
+
+  /** Sets up the input variables from a string that encodes what input variables the fomula 
+  should have using a simple syntax. If the formula is, for example, y = a*x + b, we would have the 
+  3 input variables a, b, x. These could be set up, by using the string: "a; b; x" - i.e. variable
+  names a re separated by a semicolon
+
+  ...todo: allow comments/descriptions after a colon, like  "x: input value; a: slope; b: offset",
+  and state clearly how white-space is handled, what valid variable names are, etc. (i.e. start 
+  with letter (or underscore or maybe not), contain letters and numbers, etc.) */
+  virtual bool setInputVariables(const std::string& newInputs);
+
+
+
+
+
 
 protected:
+
+
+  virtual void setInputVariables(const std::vector<std::string>& newInputVariables);
+
 
   // overrides:
   virtual void allocateMemory();
   virtual void freeMemory();
   virtual void updateInputVariables();
+
+  std::string inputVariableString;   // the string that specifies the input variables
 
   std::vector<double**> inVariables; // 1st index: voice, 2nd index: variable, masks inherited
                                      // variable of same name

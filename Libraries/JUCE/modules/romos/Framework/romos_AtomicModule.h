@@ -112,6 +112,8 @@ protected:
   // and override these
   // maybe have a class ModuleTypeInfo - done - the new ModuleRegistry2 also serves as factory
   // ..when all code is changed to use this new class, get rid of the arrays above
+  // ...hmm...but this wouldn't allow renaming of the pins at runtime - but such a feature is
+  // only needed for very few modules ...hmmm
 
 
 private:
