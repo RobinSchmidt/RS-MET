@@ -514,9 +514,22 @@ LibertyFormulaModuleEditor::LibertyFormulaModuleEditor(LibertyAudioModule *newLi
 
   formula1In1OutModule = dynamic_cast<FormulaModule_1_1*> (newModuleToEdit);
 
-  formulaField = new LibertyTextEntryField("Formula");
+  formulaLabel = new RTextField("Formula:");
+  formulaLabel->setDescription("The formula to compute y as function of x");
+  formulaLabel->setJustification(juce::Justification::centred);
+  addWidget(formulaLabel, true, true);
+
+  /*
+  formulaField = new LibertyTextEntryField("y=x");
+  formulaField->setMultiline(true);
   formulaField->registerTextEntryFieldObserver(this);
   addWidget(formulaField, true, true);
+  */
+
+  formulaEditor = new RTextEditor("y=x");
+  formulaEditor->setMultiLine(true);
+  formulaEditor->addListener(this);
+  addWidget(formulaEditor, true, true);
 
   updateWidgetsFromModuleState();
 }
@@ -526,6 +539,7 @@ void LibertyFormulaModuleEditor::resized()
   ScopedLock scopedLock(*plugInLock);
   ModulePropertiesEditor::resized();
 
+  int m = 4;  // margin
   int x, y, w, h;
   x  = 4;
   y  = getHeadlineBottom()+4;
@@ -533,35 +547,73 @@ void LibertyFormulaModuleEditor::resized()
   h  = 16;
   int dy = h + 4;
 
-  formulaField->setBounds(x, y, w, h);
+  int labelWidth = 52;
+  formulaLabel->setBounds(x, y, labelWidth, 16);
+  int xEditor = x+labelWidth+m;
+  formulaEditor->setBounds(xEditor, y, getWidth()-xEditor, 48);
   y += dy;
 }
 
-void LibertyFormulaModuleEditor::textChanged(RTextEntryField *entryField)
+void LibertyFormulaModuleEditor::rTextEditorTextChanged(RTextEditor& editor)
 {
-  if(entryField == formulaField) {
-    std::string newFormula = entryField->getText().toStdString();
+  if(&editor == formulaEditor) {
+    std::string newFormula = formulaEditor->getText().toStdString();
     if(formula1In1OutModule->isFormulaValid(newFormula))    {
       formula1In1OutModule->setFormula(newFormula);
-      formulaField->markTextAsInvalid(false);
+      //formulaEditor->markTextAsInvalid(false);
     }
-    else
-      formulaField->markTextAsInvalid(true);
+    //else
+    //  formulaEditor->markTextAsInvalid(true);
   }
-  else
-    ModulePropertiesEditor::textChanged(entryField);
 }
 
 void LibertyFormulaModuleEditor::updateWidgetsFromModuleState()
 {
   std::string formula = formula1In1OutModule->getFormula();
-  formulaField->setText(formula);
+  formulaEditor->setText(formula);
 }
 
+//-------------------------------------------------------------------------------------------------
+
+LibertyFormula_N_1ModuleEditor::LibertyFormula_N_1ModuleEditor(LibertyAudioModule *newLiberty,
+  romos::Module* newModuleToEdit) : LibertyFormulaModuleEditor(newLiberty, newModuleToEdit)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  formula_N_1Module = dynamic_cast<FormulaModule_N_1*> (newModuleToEdit);
+
+  inputsField = new LibertyTextEntryField("x");
+  inputsField->registerTextEntryFieldObserver(this);
+  addWidget(inputsField, true, true);
+
+  updateWidgetsFromModuleState();
+}
+
+void LibertyFormula_N_1ModuleEditor::resized()
+{
+  LibertyFormulaModuleEditor::resized();
+}
+
+void LibertyFormula_N_1ModuleEditor::textChanged(RTextEntryField *entryField)
+{
+  if(entryField == inputsField) 
+  {
+    // ...
+  }
+}
+
+void LibertyFormula_N_1ModuleEditor::updateWidgetsFromModuleState()
+{
+  LibertyFormulaModuleEditor::updateWidgetsFromModuleState();
+}
+
+
+
+
+
 // todo: 
-// -save/recall formula (maybe use rosic::KeyValueMap for that - the romos::Module baseclass
-//  should define member functions getState/setState that return/take a KeyValueMap
-// -make field bigger and multiline
+// -make formula field bigger and multiline
+// -add labels to the fields
 
 // Maybe:
 // -allow use to set names of in/out variables

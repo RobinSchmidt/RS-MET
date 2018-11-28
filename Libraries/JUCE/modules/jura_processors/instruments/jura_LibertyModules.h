@@ -111,21 +111,44 @@ protected:
   LibertyNamedComboBox *filterModeComboBox, *saturationModeComboBox;
 };
 
-class LibertyFormulaModuleEditor : public ModulePropertiesEditor /*, RTextEntryFieldObserver*/
+class LibertyFormulaModuleEditor : public ModulePropertiesEditor, public RTextEditorListener
 {
 public:
   LibertyFormulaModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit);   
   virtual void resized() override;
-  virtual void textChanged(RTextEntryField *entryField) override;
+
+
+  virtual void rTextEditorTextChanged(RTextEditor& editor) override;
+
+
+  //virtual void textChanged(RTextEntryField *entryField) override;
   //virtual void somethingWasTypedIn(RTextEntryField *entryField) { }
   // maybe implement this to give feedback (about in/valditiy of formula) while the user is typing
 
   virtual void updateWidgetsFromModuleState() override;
 
 protected:
-  LibertyTextEntryField* formulaField;
+  RTextField *formulaLabel;
+  //LibertyTextEntryField* formulaField;
+  //LibertyTextEntryField* formulaField;
+  RTextEditor* formulaEditor;
   romos::FormulaModule_1_1* formula1In1OutModule;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LibertyFormulaModuleEditor)
+};
+
+class LibertyFormula_N_1ModuleEditor : public LibertyFormulaModuleEditor
+{
+public:
+  LibertyFormula_N_1ModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit);
+  virtual void resized() override;
+  virtual void textChanged(RTextEntryField *entryField) override;
+
+  virtual void updateWidgetsFromModuleState() override;
+
+protected:
+  LibertyTextEntryField* inputsField;
+  romos::FormulaModule_N_1* formula_N_1Module;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LibertyFormula_N_1ModuleEditor)
 };
 
 
