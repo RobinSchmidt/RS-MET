@@ -146,6 +146,8 @@ public:
   virtual void updateWidgetsFromModuleState() override;
 
 protected:
+
+  RTextField *inputsLabel;
   LibertyTextEntryField* inputsField;
   romos::FormulaModule_N_1* formula_N_1Module;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LibertyFormula_N_1ModuleEditor)

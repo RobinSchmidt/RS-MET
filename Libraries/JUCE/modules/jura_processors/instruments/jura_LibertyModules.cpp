@@ -528,6 +528,7 @@ LibertyFormulaModuleEditor::LibertyFormulaModuleEditor(LibertyAudioModule *newLi
 
   formulaEditor = new RTextEditor("y=x");
   formulaEditor->setMultiLine(true);
+  formulaEditor->setDescription(formulaLabel->getDescription());
   formulaEditor->addListener(this);
   addWidget(formulaEditor, true, true);
 
@@ -582,8 +583,14 @@ LibertyFormula_N_1ModuleEditor::LibertyFormula_N_1ModuleEditor(LibertyAudioModul
 
   formula_N_1Module = dynamic_cast<FormulaModule_N_1*> (newModuleToEdit);
 
+  inputsLabel = new RTextField("Inputs:");
+  inputsLabel->setDescription("Input variable names (comma separated)");
+  inputsLabel->setJustification(juce::Justification::centred);
+  addWidget(inputsLabel, true, true);
+
   inputsField = new LibertyTextEntryField("x");
   inputsField->registerTextEntryFieldObserver(this);
+  inputsLabel->setDescription(inputsLabel->getDescription());
   addWidget(inputsField, true, true);
 
   updateWidgetsFromModuleState();
@@ -592,6 +599,15 @@ LibertyFormula_N_1ModuleEditor::LibertyFormula_N_1ModuleEditor(LibertyAudioModul
 void LibertyFormula_N_1ModuleEditor::resized()
 {
   LibertyFormulaModuleEditor::resized();
+
+  int m = 4; // margin
+  int labelWidth = formulaLabel->getWidth();
+  int xEditor = formulaEditor->getX();
+  int xLabel  = formulaLabel->getX();
+  int y  = formulaEditor->getBottom()+m;
+
+  inputsLabel->setBounds(xLabel, y, labelWidth, 16);
+  inputsField->setBounds(xEditor, y, getWidth()-labelWidth, 16);
 }
 
 void LibertyFormula_N_1ModuleEditor::textChanged(RTextEntryField *entryField)
@@ -599,6 +615,7 @@ void LibertyFormula_N_1ModuleEditor::textChanged(RTextEntryField *entryField)
   if(entryField == inputsField) 
   {
     // ...
+    int dummy = 0;
   }
 }
 
