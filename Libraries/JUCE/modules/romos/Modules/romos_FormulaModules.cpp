@@ -207,6 +207,7 @@ void removeChar(std::string& str, const char chr)
 
 bool FormulaModule_N_1::setInputVariables(const std::string& newInputs)
 {
+  inputVariableString = newInputs;
   std::vector<std::string> strArr = tokenize(newInputs, ','); // collect variable names in array
 
   for(size_t i = 0; i < strArr.size(); i++) {
@@ -231,6 +232,7 @@ void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInV
   inputPins.resize(newSize);
   for(size_t i = 0; i < newSize; i++)
     audioInputNames[i] = newInVars[i];
+  numInputs = (int) inputPins.size();  // try to get rid of numInputs - i think, it's redundant
 }
 
 void FormulaModule_N_1::allocateMemory()

@@ -71,7 +71,8 @@ public:
   with letter (or underscore or maybe not), contain letters and numbers, etc.) */
   virtual bool setInputVariables(const std::string& newInputs);
 
-
+  /** Returns the string that defines the input variables. */
+  virtual std::string getInputVariables() { return inputVariableString; }
 
 
 

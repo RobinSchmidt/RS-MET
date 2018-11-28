@@ -612,9 +612,10 @@ void LibertyFormula_N_1ModuleEditor::resized()
 
 void LibertyFormula_N_1ModuleEditor::textChanged(RTextEntryField *entryField)
 {
-  if(entryField == inputsField) 
-  {
-    // ...
+  if(entryField == inputsField) {
+    std::string newInputsStr = inputsField->getText().toStdString();
+    bool success = formula_N_1Module->setInputVariables(newInputsStr);
+    // ...we may need to notify the structure panel that it should redraw the module block
     int dummy = 0;
   }
 }
@@ -622,19 +623,19 @@ void LibertyFormula_N_1ModuleEditor::textChanged(RTextEntryField *entryField)
 void LibertyFormula_N_1ModuleEditor::updateWidgetsFromModuleState()
 {
   LibertyFormulaModuleEditor::updateWidgetsFromModuleState();
+  std::string inputsStr = formula_N_1Module->getInputVariables();
+  inputsField->setText(inputsStr);
 }
 
-
-
-
-
 // todo: 
-// -make formula field bigger and multiline
-// -add labels to the fields
 
 // Maybe:
 // -allow use to set names of in/out variables
-// -allow user to set name of the formula field (like "y=sin(x)", for example)
+// -allow user to set name of the block (like "y=sin(x)" instead of "Formula", for example)
+// -allow GUI parameters in the formulas - so we have: Formula, Inputs, Outputs, Parameters
+// -maybe get rid of the simpler formulas - absorb everything in the multi I/O class (if there's
+//  no or negligible performance hit in doing so)
+// -test adding removing input variables that are connected
 
 // Allow multiple inputs and outputs:
 // -have two additional text entry fields "Inputs", "Outputs" that list the I/O variables
