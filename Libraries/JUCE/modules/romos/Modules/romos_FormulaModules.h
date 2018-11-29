@@ -90,8 +90,14 @@ protected:
 
   std::string inputVariableString;   // the string that specifies the input variables
 
-  std::vector<double**> inVariables; // 1st index: voice, 2nd index: variable, masks inherited
-                                     // variable of same name
+
+  //std::vector<double**> inVariablesN;
+  std::vector<std::vector<double*>> inVariablesN;
+   // 1st index: voice, 2nd index: variable
+   // makes inherited inVariables variable obsolete (it's not used in this subclass)
+
+  static double dummyInput; // = 0, that's where we point to, when we don't find a variable in the
+                            // expression evaluator objects - maybe move to Module baseclass
 };
 class FormulaModule_N_1TypeInfo : public ModuleTypeInfo
 {

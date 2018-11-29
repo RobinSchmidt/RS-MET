@@ -120,6 +120,8 @@ assigning them to a value - check the ExprEval doc, if we can create variables. 
 
 //-------------------------------------------------------------------------------------------------
 
+double FormulaModule_N_1::dummyInput = 0.0;
+
 void FormulaModule_N_1::initialize()
 {
   initInputPins({ "x" });
@@ -138,9 +140,7 @@ INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, 
 bool FormulaModule_N_1::setFormula(const std::string& newFormula)
 {
   bool result = FormulaModule_1_1::setFormula(newFormula);
-
-  // more to do?
-
+  updateInputVariables(); 
   return result;
 }
 
@@ -166,6 +166,9 @@ bool FormulaModule_N_1::setState(const std::map<std::string, std::string>& state
   return result;
 }
 
+
+// move to rosic:
+
 // use function from RAPT::rsArray - but needs adaption of parameter types (constness)
 inline int findIndexOf(const char* buffer, char elementToFind, int length)
 {
@@ -175,9 +178,7 @@ inline int findIndexOf(const char* buffer, char elementToFind, int length)
   }
   return -1;
 }
-
 // http://www.cplusplus.com/reference/string/string/substr/
-// move to rosic:
 std::vector<std::string> tokenize(const std::string& str, const char splitChar)
 {
   std::vector<std::string> result;
@@ -197,13 +198,13 @@ std::vector<std::string> tokenize(const std::string& str, const char splitChar)
   result.push_back(str.substr(start, str.size()-start)); // add tail
   return result;
 }
-
 void removeChar(std::string& str, const char chr)
 {
   std::string::iterator end_pos = std::remove(str.begin(), str.end(), chr);
   str.erase(end_pos, str.end());
   // from https://stackoverflow.com/questions/83439/remove-spaces-from-stdstring-in-c
 }
+
 
 bool FormulaModule_N_1::setInputVariables(const std::string& newInputs)
 {
@@ -233,25 +234,45 @@ void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInV
   for(size_t i = 0; i < newSize; i++)
     audioInputNames[i] = newInVars[i];
   numInputs = (int) inputPins.size();  // try to get rid of numInputs - i think, it's redundant
+  updateInputVariables();
 }
 
 void FormulaModule_N_1::allocateMemory()
 {
-  FormulaModule_1_1::allocateMemory();
-
-  // ...
+  AtomicModule::allocateMemory();
+  inVariablesN.resize(getNumVoices());     // sole difference to baseclass - maybe refactor
+  evaluators.resize(getNumVoices());
+  for(int i = 0; i < getNumVoices(); i++)
+    evaluators[i] = new rosic::ExpressionEvaluator;
+  updateInputVariables();
 }
 
 void FormulaModule_N_1::freeMemory()
 {
-  FormulaModule_1_1::freeMemory();
-
-  // ...
+  AtomicModule::freeMemory();
+  for(int i = 0; i < getNumVoices(); i++)
+    delete evaluators[i];
+  evaluators.clear();
+  inVariablesN.clear(); // sole difference to baseclass - maybe refactor
+  // maybe we should set all input pointers to point to the dummyInput - maybe this should be
+  // done in the baseclass as well, like
+  // invalidateInputVariablePointers();
 }
 
 void FormulaModule_N_1::updateInputVariables()
 {
-  //FormulaModule1In1Out::updateInputVariables();
+  RAPT::rsAssert(inVariablesN.size() == evaluators.size());
+  for(size_t i = 0; i < evaluators.size(); i++) {        // loop over the voices
+    for(size_t j = 0; j < inVariablesN[i].size(); j++) { // loop over the input variables
+      std::string varName = audioInputNames[j].asStdString();
+      double* varPtr = evaluators[i]->getVariableAddress(varName.c_str());
+      if(varPtr != nullptr)
+        inVariablesN[i][j] = varPtr;
+      else
+        inVariablesN[i][j] = &dummyInput;  // points to a zero valued memory location
+    }
+  }
+  int dummy = 0;
 }
 
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_1);
