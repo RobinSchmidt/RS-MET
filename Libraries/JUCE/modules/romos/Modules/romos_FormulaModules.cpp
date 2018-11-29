@@ -263,6 +263,7 @@ void FormulaModule_N_1::updateInputVariables()
 {
   RAPT::rsAssert(inVariablesN.size() == evaluators.size());
   for(size_t i = 0; i < evaluators.size(); i++) {        // loop over the voices
+    inVariablesN[i].resize(audioInputNames.size());
     for(size_t j = 0; j < inVariablesN[i].size(); j++) { // loop over the input variables
       std::string varName = audioInputNames[j].asStdString();
       double* varPtr = evaluators[i]->getVariableAddress(varName.c_str());
