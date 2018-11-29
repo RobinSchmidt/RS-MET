@@ -184,7 +184,7 @@ std::vector<std::string> tokenize(const std::string& str, const char splitChar)
   int start = 0;
   while(start < str.size()) {
 
-    int delta = findIndexOf(&str[start], splitChar, str.size()-start);
+    int delta = findIndexOf(&str[start], splitChar, (int)str.size()-start);
     // use http://www.cplusplus.com/reference/string/string/find/
 
 

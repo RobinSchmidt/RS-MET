@@ -635,7 +635,10 @@ void LibertyFormula_N_1ModuleEditor::updateWidgetsFromModuleState()
 // -allow GUI parameters in the formulas - so we have: Formula, Inputs, Outputs, Parameters
 // -maybe get rid of the simpler formulas - absorb everything in the multi I/O class (if there's
 //  no or negligible performance hit in doing so)
-// -test adding removing input variables that are connected
+// -test adding removing input variables that are connected - maybe try to do this in a unit test
+//  -update the connections in a sensible way, when the inputs change
+//  -if the old inputs are x,a,b and the new inputs are x,b - make sure that whatever is connected
+//   to b stays coennected
 
 // Allow multiple inputs and outputs:
 // -have two additional text entry fields "Inputs", "Outputs" that list the I/O variables

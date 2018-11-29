@@ -10,6 +10,7 @@ bool UnitTestRunner::runAllTestsAndPrintResultsToConsole()
 {
   bool result = true;
 
+  result &= runMiscTests();
   result &= runGlobalFrameworkTests();
   result &= runProcessingTests();  // causes memleak
   result &= runContainerManipulationTests();
@@ -114,6 +115,20 @@ bool UnitTestRunner::runSystemTests()
   printTestResultToConsole(testsPassed, testName);
   return testsPassed;
 }
+
+bool UnitTestRunner::runMiscTests()
+{
+  bool testsPassed = true; 
+  const char *testName = "MiscTests"; 
+  printf("%s %s", testName, ":\n");
+
+  testsPassed &= testFormulaModules();
+
+
+  printTestResultToConsole(testsPassed, testName);
+  return testsPassed;
+}
+
 
 void UnitTestRunner::printTestResultToConsole(bool testPassed, const char *testName)
 {

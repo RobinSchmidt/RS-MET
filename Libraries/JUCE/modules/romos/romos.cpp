@@ -63,6 +63,7 @@ using namespace rosic;
 #include "TestSuite/romos_TestEventGenerator.cpp"
 #include "TestSuite/romos_TestModuleBuilder.cpp"
 #include "TestSuite/romos_UnitTest.cpp"
+#include "TestSuite/MiscTests.cpp"
 #include "TestSuite/romos_UnitTestRunner.cpp"
 #include "TestSuite/TestFilter.cpp"    // these two do not yet compile - maybe they use old
 #include "TestSuite/TestHelpers.cpp"   // functions that have been removed

@@ -70,6 +70,7 @@
 #include "TestSuite/romos_ModularSystemTest.h"
 #include "TestSuite/romos_ModuleBuildCodeGenerator.h"
 #include "TestSuite/romos_TestModuleBuilder.h" // not needed anymore when new testsuite is complete
+#include "TestSuite/MiscTests.h"
 #include "TestSuite/romos_UnitTestRunner.h"
 //#include "TestSuite/romos_ConcretePerformanceTests.h"
 #include "TestSuite/romos_PerformanceTestRunner.h"

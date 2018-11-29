@@ -1123,6 +1123,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.cpp">
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\MiscTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.cpp">
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClCompile>
@@ -3331,6 +3334,9 @@
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\MiscTests.h">
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.h">

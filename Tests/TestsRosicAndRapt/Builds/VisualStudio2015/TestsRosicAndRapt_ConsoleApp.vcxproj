@@ -922,6 +922,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\MiscTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2531,6 +2534,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_SoundGeneratorModules.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\AutomaticTests.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\MiscTests.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcretePerformanceTests.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteProcessingTests.h"/>

@@ -39,7 +39,7 @@ public:
   virtual bool runSystemTests();
 
 
-
+  virtual bool runMiscTests();
 
 
   // separate into runTestsWithoutEvents, rundTestsWithEvents, runProcessingStatusTests, etc.
