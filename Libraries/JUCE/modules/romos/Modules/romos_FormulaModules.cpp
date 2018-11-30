@@ -278,6 +278,9 @@ void FormulaModule_N_1::freeMemory()
 
 void FormulaModule_N_1::updateInputVariables()
 {
+  std::vector<std::pair<AudioConnection, std::string>> 
+    inputConnections = getInputVariableConnections();
+
   RAPT::rsAssert(inVariablesN.size() == evaluators.size());
   for(size_t i = 0; i < evaluators.size(); i++) {        // loop over the voices
     inVariablesN[i].resize(audioInputNames.size());
@@ -290,11 +293,26 @@ void FormulaModule_N_1::updateInputVariables()
         inVariablesN[i][j] = &dummyInput;  // points to a zero valued memory location
     }
   }
+
+  restoreInputVariableConnections(inputConnections);
   int dummy = 0;
 }
 
+std::vector<std::pair<AudioConnection, std::string>> 
+FormulaModule_N_1::getInputVariableConnections()
+{
+  std::vector<std::pair<AudioConnection, std::string>> cons;
+
+
+  return cons;
+}
+
+void FormulaModule_N_1::restoreInputVariableConnections(
+  const std::vector<std::pair<AudioConnection, std::string>>& connections)
+{
+
+}
+
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_1);
-
-
 
 }

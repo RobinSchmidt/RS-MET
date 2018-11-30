@@ -81,9 +81,16 @@ bool romos::testFormulaModules()
   result &= inCons[2].getSourceModule() == constant5;
   result &= inCons[3].getSourceModule() == constant7;
 
- 
-
-
+  // remove 2nd input variable ("b") - this should result in the connection from 3 to b 
+  // (pinIndex 1) to disappear, instead 5 should now be connected to pin 1 and 7 to pin 2:
+  formula_N_1->setInputVariables("a,c,d");
+  inCons = formula_N_1->getIncomingAudioConnections();
+  RAPT::rsAssert(inCons.size() == 3);
+  result &= inCons.size() == 3;
+  result &= inCons[0].getSourceModule() == constant2;
+  result &= inCons[1].getSourceModule() == constant5;
+  result &= inCons[2].getSourceModule() == constant7;
+  // this test still fails (as expected) - todo: implement pin re-assignment
 
   return result;
 }

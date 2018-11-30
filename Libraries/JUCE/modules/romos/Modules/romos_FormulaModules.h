@@ -21,6 +21,7 @@ public:
   virtual std::map<std::string, std::string> getState() const override;
   virtual bool setState(const std::map<std::string, std::string>& state) override;
 
+
 protected:
 
   virtual void allocateMemory();
@@ -77,10 +78,19 @@ public:
 
 
 
+
+
 protected:
 
-
   virtual void setInputVariables(const std::vector<std::string>& newInputVariables);
+
+  /** Returns a array of pairs of an incoming audio-connection and an associated input variable 
+  name. This is needed to restore the desired connections after a call to updateInputVariables. */
+  virtual std::vector<std::pair<AudioConnection, std::string>>
+    getInputVariableConnections();
+
+  virtual void restoreInputVariableConnections(
+    const std::vector<std::pair<AudioConnection, std::string>>& connections);
 
 
   // overrides:
