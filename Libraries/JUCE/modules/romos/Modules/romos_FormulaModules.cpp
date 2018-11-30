@@ -96,7 +96,9 @@ void FormulaModule_1_1::updateEvaluatorFormulas()
 {
   for(int i = 0; i < evaluators.size(); i++)
   {
-    evaluators[i]->initVariableList();  // experimental
+    evaluators[i]->initVariableList();  // without it, the evaluator may still remember old input
+                                        // variables from previous formulas - maybe that can be
+                                        // exploited for introducing memory variables later
     evaluators[i]->setExpressionString(formula.c_str());
   }
   updateInputVariables();

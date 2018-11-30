@@ -10,12 +10,11 @@ bool romos::testFormulaModules()
   // actually, we don't really need this container...yet...but later we may want to make tests for
   // the updating of the connectivity when the input variables change...
 
-  /*
-  MDL* constant3    = cm->addChildModule("Constant", "3", 2, 4, false, false);
-  MDL* constant5    = cm->addChildModule("Constant", "5", 2, 6, false, false);
-  MDL* constant7    = cm->addChildModule("Constant", "7", 2, 8, false, false);
+  MDL* constant2 = cm->addChildModule("Constant", "2", 2, 4, false, false);
+  MDL* constant3 = cm->addChildModule("Constant", "3", 2, 4, false, false);
+  MDL* constant5 = cm->addChildModule("Constant", "5", 2, 6, false, false);
+  MDL* constant7 = cm->addChildModule("Constant", "7", 2, 8, false, false);
   MDL* audioOutput1 = cm->addChildModule("AudioOutput", "Out1", 20, 6, false, false);
-  */
 
   FormulaModule_N_1* formula_N_1 = (FormulaModule_N_1*)
     cm->addChildModule("Formula_N_1", "Formula_N_1", 13, 6, false, false);
@@ -60,29 +59,31 @@ bool romos::testFormulaModules()
   formula_N_1->setFormula("y = a*x + b + c");
   formula_N_1->setInputVariables("a,b,c,d");
   FormulaModule_N_1::process(formula_N_1, ins, outs, 0);
-  result &= outs[0] == 3 + 5; //...but we get c + d - but that's coincidence - the expression                            
-  // evaluator actaully still knows "x" which has a value 2, so we get: 2*2 + 3 + 5 = 12 - 
-  // we should set all variables to zero that appear in the formula but don't have an input
-  // associated with them...but we should also make sure, that the constants (e, pi, etc.) are
-  // not touched
+  result &= outs[0] == 3 + 5;
 
-  // maybe we need to uncomment and use ExpressionEvaluator::initVariableList
-  // ...Ok - seems to work
+  // check, how the module connectivity behaves when inputs are added or removed...
 
+  formula_N_1->setFormula("y = a + b + c + d");
+  formula_N_1->setInputVariables("a,b,c,d");
+  
+  cm->addAudioConnection(formula_N_1, 0, audioOutput1, 0);
+  cm->addAudioConnection(constant2, 0, formula_N_1,  0);  // a = 2
+  cm->addAudioConnection(constant3, 0, formula_N_1,  1);  // b = 3
+  cm->addAudioConnection(constant5, 0, formula_N_1,  2);  // c = 5
+  cm->addAudioConnection(constant7, 0, formula_N_1,  3);  // d = 7
+
+  std::vector<AudioConnection> inCons;
+  inCons = formula_N_1->getIncomingAudioConnections();
+  RAPT::rsAssert(inCons.size() == 4);
+  result &= inCons.size() == 4;
+  result &= inCons[0].getSourceModule() == constant2;
+  result &= inCons[1].getSourceModule() == constant3;
+  result &= inCons[2].getSourceModule() == constant5;
+  result &= inCons[3].getSourceModule() == constant7;
+
+ 
 
 
 
   return result;
-
-
-
-
-  /*
-  cm->addAudioConnection(formula_N_1, 0, audioOutput1, 0);
-  cm->addAudioConnection(constant3,   0, formula_N_1,  0);  // x = 3
-  cm->addAudioConnection(constant5,   0, formula_N_1,  1);  // a = 5
-  cm->addAudioConnection(constant7,   0, formula_N_1,  2);  // b = 7
-  */
-
-
 }
