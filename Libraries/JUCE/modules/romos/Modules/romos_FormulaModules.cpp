@@ -116,7 +116,9 @@ out;
 ...try it...If it works, we can build modules with memory (for example filters) from the 
 formula module. ..but no - that doesn't work because the "declaration" would reset it in each
 call, so out would alsway be zero. We somehow need to be able to declare variables without
-assigning them to a value - check the ExprEval doc, if we can create variables. */
+assigning them to a value - check the ExprEval doc, if we can create variables. Maybe we can
+introdcue memory variables, by just doing some assignments *after* all the outputs have been 
+calculated. */
 
 //-------------------------------------------------------------------------------------------------
 
@@ -132,9 +134,19 @@ void FormulaModule_N_1::initialize()
 
 INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, int voiceIndex)
 {
-  *out = 0;
+  FormulaModule_N_1 *formulaModule = static_cast<FormulaModule_N_1*> (module);
+  rosic::ExpressionEvaluator* evaluator = formulaModule->evaluators[voiceIndex];
 
-  // ...
+  for(unsigned int i = 0; i < formulaModule->numInputs; i++) 
+    *(formulaModule->inVariablesN[voiceIndex][i]) = in[i]; // inject inputs
+  // what, if the expression contains variables that don't appear in our inputVariablesN? maybe, we
+  // should set them to zero
+
+  *out = evaluator->evaluateExpression();
+
+  // in a multi-output module later, we need to just call evaluator->evaluateExpression(); 
+  // and then collect the outputs outputs here - the subclass can actually call the baseclass 
+  // method and then collect
 }
 
 bool FormulaModule_N_1::setFormula(const std::string& newFormula)
