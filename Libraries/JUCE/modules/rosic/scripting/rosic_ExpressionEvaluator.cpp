@@ -152,13 +152,15 @@ double ExpressionEvaluator::evaluateExpression()
 //-------------------------------------------------------------------------------------------------
 // variable assignments:
 
-/*
+
 void ExpressionEvaluator::initVariableList()
 {
   mutex.lock();
 
   valueList.Clear();
-  valueList.AddDefaultValues();  // this call raises an access violation in vallist.cpp line 134
+  valueList.AddDefaultValues();  // adds "E" and "PI"
+  //valueList.Add("PI", PI,    false);
+  //valueList.Add("E",  EULER, false);
   valueList.Add("pi", PI,    false);
   valueList.Add("e",  EULER, false);
 
@@ -168,8 +170,6 @@ void ExpressionEvaluator::initVariableList()
 
   mutex.unlock();
 }
-*/
-
 
 void ExpressionEvaluator::initFunctionList()
 {

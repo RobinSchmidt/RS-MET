@@ -67,6 +67,7 @@ bool romos::testFormulaModules()
   // not touched
 
   // maybe we need to uncomment and use ExpressionEvaluator::initVariableList
+  // ...Ok - seems to work
 
 
 

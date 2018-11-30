@@ -204,5 +204,7 @@ void ValueList::Clear()
         {
         delete m_values[pos];
         }
+    m_values.clear();  // added by Robin Schmidt - without it, there's an access violation when
+                       // calling Add() after Clear()
     }
 

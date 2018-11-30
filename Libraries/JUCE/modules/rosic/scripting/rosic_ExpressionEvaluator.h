@@ -49,7 +49,7 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // variable assignments:
 
-    //void initVariableList();
+    void initVariableList();
     /** Clears the variable list and thereafter adds the standard constants. */
 
     void initFunctionList();

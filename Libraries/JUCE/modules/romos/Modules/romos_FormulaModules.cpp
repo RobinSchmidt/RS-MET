@@ -95,7 +95,10 @@ bool FormulaModule_1_1::setFormula(const std::string& newFormula)
 void FormulaModule_1_1::updateEvaluatorFormulas()
 {
   for(int i = 0; i < evaluators.size(); i++)
+  {
+    evaluators[i]->initVariableList();  // experimental
     evaluators[i]->setExpressionString(formula.c_str());
+  }
   updateInputVariables();
 }
 
