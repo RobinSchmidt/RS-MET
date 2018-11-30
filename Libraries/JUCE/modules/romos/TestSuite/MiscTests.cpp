@@ -60,7 +60,13 @@ bool romos::testFormulaModules()
   formula_N_1->setFormula("y = a*x + b + c");
   formula_N_1->setInputVariables("a,b,c,d");
   FormulaModule_N_1::process(formula_N_1, ins, outs, 0);
-  result &= outs[0] == 3 + 5; //...but we get c + d
+  result &= outs[0] == 3 + 5; //...but we get c + d - but that's coincidence - the expression                            
+  // evaluator actaully still knows "x" which has a value 2, so we get: 2*2 + 3 + 5 = 12 - 
+  // we should set all variables to zero that appear in the formula but don't have an input
+  // associated with them...but we should also make sure, that the constants (e, pi, etc.) are
+  // not touched
+
+  // maybe we need to uncomment and use ExpressionEvaluator::initVariableList
 
 
 
