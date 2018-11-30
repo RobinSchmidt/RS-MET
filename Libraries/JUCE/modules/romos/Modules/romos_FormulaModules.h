@@ -98,6 +98,8 @@ protected:
 
   static double dummyInput; // = 0, that's where we point to, when we don't find a variable in the
                             // expression evaluator objects - maybe move to Module baseclass
+
+  friend bool testFormulaModules(); // unit test, needs access to protected members
 };
 class FormulaModule_N_1TypeInfo : public ModuleTypeInfo
 {
