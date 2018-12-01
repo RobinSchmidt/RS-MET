@@ -244,6 +244,9 @@ void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInV
   // -check, if variable names are valid
   // -have a boolean return value to report error, when names are invalid
 
+  std::vector<std::pair<AudioConnection, std::string>> 
+    inputConnections = getInputVariableConnections(); // remember connectivity
+
   size_t oldSize = audioInputNames.size(); // == inputPins.size()
   size_t newSize = newInVars.size();
   audioInputNames.resize(newSize);
@@ -252,6 +255,9 @@ void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInV
     audioInputNames[i] = newInVars[i];
   numInputs = (int) inputPins.size();  // try to get rid of numInputs - i think, it's redundant
   updateInputVariables();
+
+  restoreInputVariableConnections(inputConnections); // restore connectivity
+  int dummy = 0;
 }
 
 void FormulaModule_N_1::allocateMemory()
@@ -278,9 +284,6 @@ void FormulaModule_N_1::freeMemory()
 
 void FormulaModule_N_1::updateInputVariables()
 {
-  std::vector<std::pair<AudioConnection, std::string>> 
-    inputConnections = getInputVariableConnections();
-
   RAPT::rsAssert(inVariablesN.size() == evaluators.size());
   for(size_t i = 0; i < evaluators.size(); i++) {        // loop over the voices
     inVariablesN[i].resize(audioInputNames.size());
@@ -293,18 +296,21 @@ void FormulaModule_N_1::updateInputVariables()
         inVariablesN[i][j] = &dummyInput;  // points to a zero valued memory location
     }
   }
-
-  restoreInputVariableConnections(inputConnections);
-  int dummy = 0;
 }
 
 std::vector<std::pair<AudioConnection, std::string>> 
 FormulaModule_N_1::getInputVariableConnections()
 {
-  std::vector<std::pair<AudioConnection, std::string>> cons;
-
-
-  return cons;
+  std::vector<std::pair<AudioConnection, std::string>> pairs;
+  std::vector<AudioConnection> cons = getIncomingAudioConnections();
+  for(size_t i = 0; i < cons.size(); i++) {
+    AudioConnection connection = cons[i];
+    int inPinIndex = connection.getTargetInputIndex();
+    std::string inPinName = audioInputNames[i].asStdString();
+    pairs.push_back(std::pair<AudioConnection, std::string>(connection, inPinName));
+  }
+  int debug = pairs.size();
+  return pairs;
 }
 
 void FormulaModule_N_1::restoreInputVariableConnections(

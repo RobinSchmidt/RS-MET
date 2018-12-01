@@ -91,6 +91,7 @@ bool romos::testFormulaModules()
   result &= inCons[1].getSourceModule() == constant5;
   result &= inCons[2].getSourceModule() == constant7;
   // this test still fails (as expected) - todo: implement pin re-assignment
+  // ..oh - and we have memory leaks!
 
   return result;
 }
