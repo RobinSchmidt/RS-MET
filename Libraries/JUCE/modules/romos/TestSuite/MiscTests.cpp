@@ -93,5 +93,9 @@ bool romos::testFormulaModules()
   // this test still fails (as expected) - todo: implement pin re-assignment
   // ..oh - and we have memory leaks!
 
+  //formula_N_1->setInputVariables("d,a,c"); // permute inputs, see if connections get permuted accordingly
+
+
+
   return result;
 }

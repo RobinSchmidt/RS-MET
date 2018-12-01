@@ -309,14 +309,23 @@ FormulaModule_N_1::getInputVariableConnections()
     std::string inPinName = audioInputNames[i].asStdString();
     pairs.push_back(std::pair<AudioConnection, std::string>(connection, inPinName));
   }
-  int debug = pairs.size();
   return pairs;
 }
 
 void FormulaModule_N_1::restoreInputVariableConnections(
   const std::vector<std::pair<AudioConnection, std::string>>& connections)
 {
-
+  // disconnect all inputs and create all connections anew - that's easiest to implement, but
+  // maybe it can optimized later
+  disconnectAllInputPins();
+  for(size_t i = 0; i < connections.size(); i++) {
+    AudioConnection con = connections[i].first;
+    std::string inPinName = connections[i].second;
+    size_t inPinIndex = RAPT::rsFind(audioInputNames, rosic::rsString(inPinName));
+    if(inPinIndex < audioInputNames.size())
+      connectInputPinTo((int)inPinIndex, con.getSourceModule(), con.getSourceOutputIndex());
+  }
+  // maybe it should return whether or not the connections were actually modified
 }
 
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_1);
