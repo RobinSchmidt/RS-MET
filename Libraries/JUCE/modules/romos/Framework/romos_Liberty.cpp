@@ -16,6 +16,11 @@ Liberty::Liberty()
   // ...naahh - the top-level module needs special treatment - it should not be available in the
   // menu - maybe
   topLevelModule = moduleFactory.createTopLevelModule("Instrument", 0, 0, false);
+
+
+  // these are useful only for development and testing - not for the Liberty product:
+  moduleFactory.removeModuleType("Formula_1_1");
+  moduleFactory.removeModuleType("Formula_N_1");
 }
 
 Liberty::~Liberty()

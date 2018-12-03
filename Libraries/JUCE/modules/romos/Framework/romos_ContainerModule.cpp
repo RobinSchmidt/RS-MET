@@ -1225,8 +1225,20 @@ void romos::ContainerModule::updatePointersInInputModules()
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
     AudioInputModule *inModule = getAudioInputModule(i);
-    inModule->inputPins[0] = inputPins[i];
-      // copies all the pin-data from this container's i-th input pin into the input-pin of the i-th input module
+
+    //inModule->inputPins[0] = inputPins[i];
+
+    if(inModule != nullptr)
+      inModule->inputPins[0] = inputPins[i];
+      // copies all the pin-data from this container's i-th input pin into the input-pin of the 
+      // i-th input module
+    else
+    {
+      // hmm...what else? in what sort of situation may this happen?
+    }
+
+
+      
   }
 
 
