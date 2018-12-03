@@ -7,6 +7,7 @@ namespace romos
 //-------------------------------------------------------------------------------------------------
 
 /** A module that a applies a user defined formula y = f(x) with one input and one output. */
+
 class FormulaModule_1_1 : public AtomicModule // rename to FormulaModule_1_1
 {
   CREATE_COMMON_DECLARATIONS_1(FormulaModule_1_1);
@@ -15,7 +16,7 @@ public:
 
   virtual bool isFormulaValid(const std::string& formulaToTest);
   virtual bool setFormula(const std::string& newFormula);
-  virtual void resetVoiceState(int voiceIndex);
+  virtual void resetVoiceState(int voiceIndex) override;
   virtual std::string getFormula() { return formula; }
 
   virtual std::map<std::string, std::string> getState() const override;
@@ -49,6 +50,7 @@ public:
 //-------------------------------------------------------------------------------------------------
 
 /** A formula module with multiple inputs and one output. */
+
 class FormulaModule_N_1 : public FormulaModule_1_1
 {
   CREATE_COMMON_DECLARATIONS_N(FormulaModule_N_1);
@@ -56,8 +58,8 @@ class FormulaModule_N_1 : public FormulaModule_1_1
 public:
 
   // overrides:
-  virtual bool setFormula(const std::string& newFormula);
-  //virtual void resetVoiceState(int voiceIndex);
+  virtual bool setFormula(const std::string& newFormula) override;
+  //virtual void resetVoiceState(int voiceIndex) override;
   virtual std::map<std::string, std::string> getState() const override;
   virtual bool setState(const std::map<std::string, std::string>& state) override;
 
@@ -76,10 +78,6 @@ public:
   virtual std::string getInputVariables() { return inputVariableString; }
 
 
-
-
-
-
 protected:
 
   virtual void setInputVariables(const std::vector<std::string>& newInputVariables);
@@ -94,9 +92,9 @@ protected:
 
 
   // overrides:
-  virtual void allocateMemory();
-  virtual void freeMemory();
-  virtual void updateInputVariables();
+  virtual void allocateMemory() override;
+  virtual void freeMemory() override;
+  virtual void updateInputVariables() override;
 
   std::string inputVariableString;   // the string that specifies the input variables
 
@@ -122,6 +120,57 @@ public:
     createModule =  []()->Module* { return new FormulaModule_N_1; };
   }
 };
+
+//-------------------------------------------------------------------------------------------------
+
+/** A formula module with multiple inputs and multiple outputs. */
+
+class FormulaModule_N_M : public FormulaModule_N_1
+{
+  CREATE_COMMON_DECLARATIONS_N(FormulaModule_N_M);
+
+  virtual bool setFormula(const std::string& newFormula) override;
+  //virtual void resetVoiceState(int voiceIndex) override;
+  virtual std::map<std::string, std::string> getState() const override;
+  virtual bool setState(const std::map<std::string, std::string>& state) override;
+
+
+  virtual bool setOutputVariables(const std::string& newOutputs);
+
+  /** Returns the string that defines the output variables. */
+  virtual std::string getOutputVariables() { return outputVariableString; }
+
+public:
+
+
+  virtual void setOutputVariables(const std::vector<std::string>& newOutputVariables);
+
+
+  virtual void allocateMemory() override;
+  virtual void freeMemory() override;
+  virtual void updateOutputVariables();
+
+  std::string outputVariableString;
+
+  std::vector<std::vector<double*>> outVariablesM;
+
+
+  friend bool testFormulaModules(); // unit test, needs access to protected members
+};
+class FormulaModule_N_MTypeInfo : public ModuleTypeInfo
+{
+public:
+  FormulaModule_N_MTypeInfo() {
+    shortName    = "Formula";
+    fullName     = "Formula_N_M";
+    description  = "A custom formula with multiple inputs and multiple outputs";
+    category     = "Functions";
+    createModule =  []()->Module* { return new FormulaModule_N_1; };
+  }
+};
+
+
+
 
 
 

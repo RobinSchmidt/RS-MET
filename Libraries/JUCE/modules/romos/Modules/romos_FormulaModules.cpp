@@ -144,8 +144,6 @@ INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, 
 
   for(unsigned int i = 0; i < formulaModule->numInputs; i++) 
     *(formulaModule->inVariablesN[voiceIndex][i]) = in[i]; // inject inputs
-  // what, if the expression contains variables that don't appear in our inputVariablesN? maybe, we
-  // should set them to zero
 
   *out = evaluator->evaluateExpression();
 
@@ -257,7 +255,6 @@ void FormulaModule_N_1::setInputVariables(const std::vector<std::string>& newInV
   updateInputVariables();
 
   restoreInputVariableConnections(inputConnections); // restore connectivity
-  int dummy = 0;
 }
 
 void FormulaModule_N_1::allocateMemory()
@@ -329,5 +326,97 @@ void FormulaModule_N_1::restoreInputVariableConnections(
 }
 
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_1);
+
+
+//-------------------------------------------------------------------------------------------------
+
+void FormulaModule_N_M::initialize()
+{
+  initInputPins({ "x" });
+  initOutputPins({ "y" });
+  setFormula("y=x");
+  setInputVariables("x"); // does this make the call to initInputPins superfluous? check this out
+  setOutputVariables("y");
+}  
+
+INLINE void FormulaModule_N_M::process(Module *module, double *in, double *out, int voiceIndex)
+{
+  FormulaModule_N_1::process(module, in, out, voiceIndex);
+  FormulaModule_N_M *formulaModule = static_cast<FormulaModule_N_M*> (module);
+  rosic::ExpressionEvaluator* evaluator = formulaModule->evaluators[voiceIndex];
+
+  // todo: collect output variables from evaluator object and store them in the "out" array
+}
+
+bool FormulaModule_N_M::setFormula(const std::string& newFormula)
+{
+  bool result = FormulaModule_N_1::setFormula(newFormula);
+  updateOutputVariables(); 
+  return result;
+}
+
+std::map<std::string, std::string> FormulaModule_N_M::getState() const
+{
+  std::map<std::string, std::string> state = FormulaModule_N_1::getState();
+  state.emplace("Outputs", outputVariableString);
+  return state;
+}
+
+bool FormulaModule_N_M::setState(const std::map<std::string, std::string>& state)
+{
+  bool result = FormulaModule_N_1::setState(state);
+  if(RAPT::rsContains(state, std::string("Outputs"))) {
+    std::string outputStr = state.at(std::string("Outputs"));
+    result &= setOutputVariables(outputStr);
+  }
+  else {
+    setOutputVariables("y");
+    result = false;
+  }
+  RAPT::rsAssert(result);
+  return result;
+}
+
+bool FormulaModule_N_M::setOutputVariables(const std::string& newOutputs)
+{
+  outputVariableString = newOutputs;
+  std::vector<std::string> strArr = tokenize(newOutputs, ',');
+  for(size_t i = 0; i < strArr.size(); i++)
+    removeChar(strArr[i], ' ');
+  setOutputVariables(strArr);
+  return true; // preliminary
+}
+
+void FormulaModule_N_M::setOutputVariables(const std::vector<std::string>& newOutVars)
+{
+  //std::vector<std::pair<AudioConnection, std::string>>
+  //  outputConnections = getOutputVariableConnections();
+
+  size_t oldSize = audioOutputNames.size();
+  size_t newSize = newOutVars.size();
+  audioOutputNames.resize(newSize);
+  //inputPins.resize(newSize);
+  for(size_t i = 0; i < newSize; i++)
+    audioOutputNames[i] = newOutVars[i];
+
+  if(newSize != outFrameStride) {
+    outFrameStride = (int) newSize;
+    allocateAudioOutputs(); // or maybe call allocateMemory?
+  }
+  updateOutputVariables();
+
+  //restoreOutputVariableConnections(outputConnections);
+}
+
+
+
+
+
+
+
+CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_M);
+
+
+
 
 }

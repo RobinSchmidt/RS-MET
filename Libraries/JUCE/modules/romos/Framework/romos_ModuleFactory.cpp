@@ -131,6 +131,8 @@ void ModuleFactory::registerStandardModules()
   registerModuleType(new TriSawTypeInfo);
   registerModuleType(new FormulaModule_1_1TypeInfo);
   registerModuleType(new FormulaModule_N_1TypeInfo);
+  registerModuleType(new FormulaModule_N_MTypeInfo);
+
 
   // Delays:
   registerModuleType(new UnitDelayTypeInfo);  // y = x[n-1]
