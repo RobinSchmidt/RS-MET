@@ -101,9 +101,15 @@ void ModuleFactory::registerModuleType(ModuleTypeInfo* info)
 
 void ModuleFactory::removeModuleType(const std::string& fullTypeName)
 {
+  ensureTypeInfoArrayAllocated();
   for(size_t i = 0; i < typeInfos->size(); i++)
-    if((*typeInfos)[i]->fullName == fullTypeName)
+    if((*typeInfos)[i]->fullName == fullTypeName) {
+      delete (*typeInfos)[i];
       RAPT::rsRemove(*typeInfos, i);
+      break;
+    }
+  for(size_t i = 0; i < typeInfos->size(); i++) // update type ids
+    (*typeInfos)[i]->id = (int)i;
 }
 
 void ModuleFactory::registerStandardModules()
