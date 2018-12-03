@@ -307,6 +307,11 @@ private:
 
 };
 
+// functions for std::string:
+void removeChar(std::string& str, const char chr);
+std::vector<std::string> tokenize(const std::string& str, const char splitChar);
+
+
 } // end namespace rosic
 
 #endif

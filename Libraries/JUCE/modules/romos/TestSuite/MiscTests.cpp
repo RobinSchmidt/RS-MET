@@ -94,7 +94,7 @@ bool romos::testFormulaModules()
   result &= inCons[0].getSourceModule() == constant2;
   result &= inCons[1].getSourceModule() == constant5;
   result &= inCons[2].getSourceModule() == constant7;
-  // ..oh - and we have memory leaks!
+
 
   //formula_N_1->setInputVariables("d,a,c"); // permute inputs, see if connections get permuted accordingly
 
@@ -120,7 +120,6 @@ bool romos::testFormulaModules()
   result &= outCons[1].getTargetModule() == audioOutput2;
   result &= outCons[2].getTargetModule() == audioOutput3;
 
-  
   // remove the middle output variable y, check if x and z outputs stay connected to their
   // respective target modules/pins:
   formula_N_M->setOutputVariables("x,z");
@@ -130,6 +129,26 @@ bool romos::testFormulaModules()
   result &= outCons[0].getTargetModule() == audioOutput1;
   result &= outCons[1].getTargetModule() == audioOutput3;
 
+  // check, if the output variables can be used as memory:
+  formula_N_M->setInputVariables("x");
+  formula_N_M->setOutputVariables("y");
+  formula_N_M->setFormula("y = y + x");  // a simple integrator / running sum
+  formula_N_M->resetStateForAllVoices();
+  FormulaModule_N_M::process(formula_N_M, ins, outs, 0);
+  result &= outs[0] == 2;
+  FormulaModule_N_M::process(formula_N_M, ins, outs, 0);
+  result &= outs[0] == 4;
+  FormulaModule_N_M::process(formula_N_M, ins, outs, 0);
+  result &= outs[0] == 6;
 
+  // maybe try a biquad, then a lorenz-system - we somehow need a way to initialize all variables
+  // (to zero, or better, to user-defined values)
+
+
+
+  // todo: do real-world tests with liberty, introduce memory variables (in
+  // FormulaModule_1_1)
+
+  moduleFactory.deleteModule(cm);
   return result;
 }

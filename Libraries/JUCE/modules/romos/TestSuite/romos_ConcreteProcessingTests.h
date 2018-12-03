@@ -190,6 +190,8 @@ protected:
   virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
 };
 
+
+
 /** A biquad made from basic modules (unit-delay, multiply, etc.).  */
 class BiquadMacroTest : public ProcessingTest
 {
@@ -204,6 +206,15 @@ class BiquadAtomicTest : public ProcessingTest
 {
 public:
   BiquadAtomicTest();
+protected:
+  virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
+};
+
+/** Test for a biquad realized by the Formula module. */
+class BiquadFormulaTest : public ProcessingTest
+{
+public:
+  BiquadFormulaTest();
 protected:
   virtual void fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic);
 };

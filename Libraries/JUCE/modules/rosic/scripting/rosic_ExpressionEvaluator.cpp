@@ -223,6 +223,13 @@ double* ExpressionEvaluator::getVariableAddress(const char* name)
   return result;
 }
 
+void ExpressionEvaluator::resetVariables()
+{
+  mutex.lock();
+  valueList.Reset();
+  mutex.unlock();
+}
+
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 /*

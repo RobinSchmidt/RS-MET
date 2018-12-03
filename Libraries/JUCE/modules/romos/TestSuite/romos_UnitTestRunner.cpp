@@ -66,6 +66,7 @@ bool UnitTestRunner::runProcessingTests()
   test = new TestFilter1Test();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new BiquadMacroTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new BiquadAtomicTest();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
+  test = new BiquadFormulaTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
   test = new BlipTest();                       testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new MonoToPolyTest();                 testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new VoiceCombinerTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;

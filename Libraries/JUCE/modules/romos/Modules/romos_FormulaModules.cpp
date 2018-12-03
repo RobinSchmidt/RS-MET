@@ -26,7 +26,7 @@ INLINE void FormulaModule_1_1::process(Module *module, double *in, double *out, 
 void FormulaModule_1_1::resetVoiceState(int voiceIndex)
 {
   AtomicModule::resetVoiceState(voiceIndex);
-  // ...more to do?
+  resetVariables(voiceIndex);
 }
 
 std::map<std::string, std::string> FormulaModule_1_1::getState() const
@@ -56,6 +56,11 @@ bool FormulaModule_1_1::setState(const std::map<std::string, std::string>& state
   }
   else
     return false;
+}
+
+void FormulaModule_1_1::resetVariables(int voiceIndex)
+{
+  evaluators[voiceIndex]->resetVariables();
 }
 
 void FormulaModule_1_1::allocateMemory()
@@ -113,18 +118,6 @@ void FormulaModule_1_1::updateInputVariables()
 
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(FormulaModule_1_1);
 
-/* Maybe, with a little trick, the formula module can be made to have memory:
-old = 0;  // "declaration" of memory variable "old"
-out = old;
-old = In;
-out;
-...try it...If it works, we can build modules with memory (for example filters) from the 
-formula module. ..but no - that doesn't work because the "declaration" would reset it in each
-call, so out would alsway be zero. We somehow need to be able to declare variables without
-assigning them to a value - check the ExprEval doc, if we can create variables. Maybe we can
-introdcue memory variables, by just doing some assignments *after* all the outputs have been 
-calculated. */
-
 //-------------------------------------------------------------------------------------------------
 
 double FormulaModule_N_1::dummyInput = 0.0;
@@ -141,15 +134,9 @@ INLINE void FormulaModule_N_1::process(Module *module, double *in, double *out, 
 {
   FormulaModule_N_1 *formulaModule = static_cast<FormulaModule_N_1*> (module);
   rosic::ExpressionEvaluator* evaluator = formulaModule->evaluators[voiceIndex];
-
   for(unsigned int i = 0; i < formulaModule->numInputs; i++) 
     *(formulaModule->inVariablesN[voiceIndex][i]) = in[i]; // inject inputs
-
   *out = evaluator->evaluateExpression();
-
-  // in a multi-output module later, we need to just call evaluator->evaluateExpression(); 
-  // and then collect the outputs outputs here - the subclass can actually call the baseclass 
-  // method and then collect
 }
 
 bool FormulaModule_N_1::setFormula(const std::string& newFormula)
@@ -180,46 +167,6 @@ bool FormulaModule_N_1::setState(const std::map<std::string, std::string>& state
   RAPT::rsAssert(result);
   return result;
 }
-
-
-// move to rosic:
-
-// use function from RAPT::rsArray - but needs adaption of parameter types (constness)
-inline int findIndexOf(const char* buffer, char elementToFind, int length)
-{
-  for(int i = 0; i < length; i++) {
-    if( buffer[i] == elementToFind )
-      return i;
-  }
-  return -1;
-}
-// http://www.cplusplus.com/reference/string/string/substr/
-std::vector<std::string> tokenize(const std::string& str, const char splitChar)
-{
-  std::vector<std::string> result;
-  int start = 0;
-  while(start < str.size()) {
-
-    int delta = findIndexOf(&str[start], splitChar, (int)str.size()-start);
-    // use http://www.cplusplus.com/reference/string/string/find/
-
-
-    if(delta == -1)
-      break;
-    std::string token = str.substr(start, delta);
-    result.push_back(token);
-    start += delta+1; // +1 for the splitChar itself
-  }
-  result.push_back(str.substr(start, str.size()-start)); // add tail
-  return result;
-}
-void removeChar(std::string& str, const char chr)
-{
-  std::string::iterator end_pos = std::remove(str.begin(), str.end(), chr);
-  str.erase(end_pos, str.end());
-  // from https://stackoverflow.com/questions/83439/remove-spaces-from-stdstring-in-c
-}
-
 
 bool FormulaModule_N_1::setInputVariables(const std::string& newInputs)
 {
@@ -343,10 +290,15 @@ INLINE void FormulaModule_N_M::process(Module *module, double *in, double *out, 
 {
   FormulaModule_N_1::process(module, in, out, voiceIndex);
   FormulaModule_N_M *formulaModule = static_cast<FormulaModule_N_M*> (module);
-  //rosic::ExpressionEvaluator* evaluator = formulaModule->evaluators[voiceIndex];
-
   for(unsigned int i = 0; i < formulaModule->outFrameStride; i++) 
     out[i] = *(formulaModule->outVariablesM[voiceIndex][i]); // collect outputs
+}
+
+void FormulaModule_N_M::resetVoiceState(int voiceIndex)
+{
+  FormulaModule_N_1::resetVoiceState(voiceIndex);
+  for(unsigned int i = 0; i < outFrameStride; i++) 
+    *(outVariablesM[voiceIndex][i]) = 0.0; // reset outputs
 }
 
 bool FormulaModule_N_M::setFormula(const std::string& newFormula)
@@ -460,7 +412,7 @@ void FormulaModule_N_M::restoreOutputVariableConnections(
     std::string outPinName = connections[i].second;
     size_t outPinIndex = RAPT::rsFind(audioOutputNames, rosic::rsString(outPinName));
     if(outPinIndex < audioOutputNames.size())
-      con.getTargetModule()->connectInputPinTo(con.getTargetInputIndex(), this, outPinIndex);
+      con.getTargetModule()->connectInputPinTo(con.getTargetInputIndex(), this, (int)outPinIndex);
   }
 }
 

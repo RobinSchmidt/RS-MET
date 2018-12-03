@@ -347,6 +347,30 @@ void BiquadAtomicTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic
       desiredOutputs[v][0]);
 }
 
+
+BiquadFormulaTest::BiquadFormulaTest() : ProcessingTest("BiquadFormula")
+{
+  FormulaModule_N_1* formulaModule = 
+    (FormulaModule_N_1*) moduleFactory.createModule("Formula_N_1");
+
+  formulaModule->setInputVariables("x,b0,b1,b2,a1,a2");
+  //formulaModule->setOutputVariables("x,y,z");
+  formulaModule->setFormula("y = b0*x + b1*x1 + b2*x2 - a1*y1 - a2*y2; x2 = x1; x1 = x; y2 = y1; y1 = y");
+
+  moduleToTest = formulaModule;
+}
+void BiquadFormulaTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
+{
+  // function is the same in all 3 biquad test classes - factor it out into a BiquadTest baseclass
+  for(int v = 0; v < numVoicesToUse; v++)
+    GenerateDesiredOutput::forBiquad(numFramesToProcess, 
+      inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3], inputs[v][4], inputs[v][5], 
+      desiredOutputs[v][0]);
+}
+// make a test for a lorenz-system
+
+
+
 Formula1In1OutTest::Formula1In1OutTest() : ProcessingTest("Formula_1_1")
 {
   tolerance    = 1.e-14;  // shouldn't 0 also work?

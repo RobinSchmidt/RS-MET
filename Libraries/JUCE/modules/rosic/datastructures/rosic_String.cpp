@@ -1,8 +1,4 @@
-//#include "rosic_String.h"
-//using namespace rosic;
 
-//-------------------------------------------------------------------------------------------------
-// static data members:
 
 //const rsString rsString::empty;
 
@@ -414,3 +410,45 @@ int rsString::removeGarbageFromDoubleString(char *s, int length)
 
   return length;
 }
+
+//=================================================================================================
+// functions for std::string:
+
+// use function from RAPT::rsArray - but needs adaption of parameter types (constness)
+inline int findIndexOf(const char* buffer, char elementToFind, int length)
+{
+  for(int i = 0; i < length; i++) {
+    if( buffer[i] == elementToFind )
+      return i;
+  }
+  return -1;
+}
+
+void rosic::removeChar(std::string& str, const char chr)
+{
+  std::string::iterator end_pos = std::remove(str.begin(), str.end(), chr);
+  str.erase(end_pos, str.end());
+  // from https://stackoverflow.com/questions/83439/remove-spaces-from-stdstring-in-c
+}
+
+std::vector<std::string> rosic::tokenize(const std::string& str, const char splitChar)
+{
+  std::vector<std::string> result;
+  int start = 0;
+  while(start < str.size()) {
+
+    int delta = findIndexOf(&str[start], splitChar, (int)str.size()-start);
+    // use http://www.cplusplus.com/reference/string/string/find/
+
+
+    if(delta == -1)
+      break;
+    std::string token = str.substr(start, delta);
+    result.push_back(token);
+    start += delta+1; // +1 for the splitChar itself
+  }
+  result.push_back(str.substr(start, str.size()-start)); // add tail
+  return result;
+}
+
+

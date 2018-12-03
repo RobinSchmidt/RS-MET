@@ -14,9 +14,9 @@ class FormulaModule_1_1 : public AtomicModule // rename to FormulaModule_1_1
 
 public:
 
+  virtual void resetVoiceState(int voiceIndex) override;
   virtual bool isFormulaValid(const std::string& formulaToTest);
   virtual bool setFormula(const std::string& newFormula);
-  virtual void resetVoiceState(int voiceIndex) override;
   virtual std::string getFormula() { return formula; }
 
   virtual std::map<std::string, std::string> getState() const override;
@@ -25,6 +25,8 @@ public:
 
 protected:
 
+  virtual void resetVariables(int voiceIndex);
+  //void setInitialVariableValues()
   virtual void allocateMemory();
   virtual void freeMemory();
   virtual void updateEvaluatorFormulas();
@@ -129,8 +131,11 @@ class FormulaModule_N_M : public FormulaModule_N_1
 {
   CREATE_COMMON_DECLARATIONS_N(FormulaModule_N_M);
 
+
+public:
+
+  virtual void resetVoiceState(int voiceIndex) override;
   virtual bool setFormula(const std::string& newFormula) override;
-  //virtual void resetVoiceState(int voiceIndex) override;
   virtual std::map<std::string, std::string> getState() const override;
   virtual bool setState(const std::map<std::string, std::string>& state) override;
 
@@ -140,8 +145,8 @@ class FormulaModule_N_M : public FormulaModule_N_1
   /** Returns the string that defines the output variables. */
   virtual std::string getOutputVariables() { return outputVariableString; }
 
-public:
 
+protected:
 
   virtual void setOutputVariables(const std::vector<std::string>& newOutputVariables);
 

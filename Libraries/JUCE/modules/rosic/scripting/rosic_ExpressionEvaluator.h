@@ -65,6 +65,10 @@ namespace rosic
     /**< Returns the memory adress of a variable. Can be used to access the value of this variable
     faster than via calling assignVariable(). */
 
+    void resetVariables();
+    /**< Resets the values of all variables to zero.
+    ToDo: allow the reset value to be something other than zero (to be set by user)  */
+
     //---------------------------------------------------------------------------------------------
     // inquiry:
 
@@ -81,7 +85,7 @@ namespace rosic
     without needing to parse the expression again. The boolean return value indicates if the 
     parsing was successful. Expressions must end with a semicolon. */
 
-    ExprEval::ValueList    valueList;     // list of values (variables and constants
+    ExprEval::ValueList    valueList;     // list of values (variables and constants)
     ExprEval::FunctionList functionList;  // list of functions
     ExprEval::Expression   expression;    // the expression object
 
