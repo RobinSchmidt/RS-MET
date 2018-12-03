@@ -145,6 +145,12 @@ public:
 
   virtual void setOutputVariables(const std::vector<std::string>& newOutputVariables);
 
+  virtual std::vector<std::pair<AudioConnection, std::string>>
+    getOutputVariableConnections();
+
+  virtual void restoreOutputVariableConnections(
+    const std::vector<std::pair<AudioConnection, std::string>>& connections);
+
 
   virtual void allocateMemory() override;
   virtual void freeMemory() override;

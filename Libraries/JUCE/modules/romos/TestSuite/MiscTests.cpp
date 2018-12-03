@@ -120,7 +120,7 @@ bool romos::testFormulaModules()
   result &= outCons[1].getTargetModule() == audioOutput2;
   result &= outCons[2].getTargetModule() == audioOutput3;
 
-  /*
+  
   // remove the middle output variable y, check if x and z outputs stay connected to their
   // respective target modules/pins:
   formula_N_M->setOutputVariables("x,z");
@@ -129,8 +129,6 @@ bool romos::testFormulaModules()
   result &= outCons.size() == 2;
   result &= outCons[0].getTargetModule() == audioOutput1;
   result &= outCons[1].getTargetModule() == audioOutput3;
-  */
-
 
 
   return result;

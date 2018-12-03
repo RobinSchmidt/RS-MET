@@ -403,13 +403,12 @@ bool FormulaModule_N_M::setOutputVariables(const std::string& newOutputs)
 
 void FormulaModule_N_M::setOutputVariables(const std::vector<std::string>& newOutVars)
 {
-  //std::vector<std::pair<AudioConnection, std::string>>
-  //  outputConnections = getOutputVariableConnections();
+  std::vector<std::pair<AudioConnection, std::string>>
+    outputConnections = getOutputVariableConnections();
 
   size_t oldSize = audioOutputNames.size();
   size_t newSize = newOutVars.size();
   audioOutputNames.resize(newSize);
-  //inputPins.resize(newSize);
   for(size_t i = 0; i < newSize; i++)
     audioOutputNames[i] = newOutVars[i];
 
@@ -419,7 +418,7 @@ void FormulaModule_N_M::setOutputVariables(const std::vector<std::string>& newOu
   }
   updateOutputVariables();
 
-  //restoreOutputVariableConnections(outputConnections);
+  restoreOutputVariableConnections(outputConnections);
 }
 
 void FormulaModule_N_M::updateOutputVariables()
@@ -438,10 +437,33 @@ void FormulaModule_N_M::updateOutputVariables()
   }
 }
 
+std::vector<std::pair<AudioConnection, std::string>> 
+FormulaModule_N_M::getOutputVariableConnections()
+{
+  std::vector<std::pair<AudioConnection, std::string>> pairs;
+  std::vector<AudioConnection> cons = getOutgoingAudioConnections();
+  for(size_t i = 0; i < cons.size(); i++) {
+    AudioConnection connection = cons[i];
+    int outPinIndex = connection.getSourceOutputIndex();
+    std::string outPinName = audioOutputNames[i].asStdString();
+    pairs.push_back(std::pair<AudioConnection, std::string>(connection, outPinName));
+  }
+  return pairs;
+}
+
+void FormulaModule_N_M::restoreOutputVariableConnections(
+  const std::vector<std::pair<AudioConnection, std::string>>& connections)
+{
+  disconnectAllOutputPins();
+  for(size_t i = 0; i < connections.size(); i++) {
+    AudioConnection con = connections[i].first;
+    std::string outPinName = connections[i].second;
+    size_t outPinIndex = RAPT::rsFind(audioOutputNames, rosic::rsString(outPinName));
+    if(outPinIndex < audioOutputNames.size())
+      con.getTargetModule()->connectInputPinTo(con.getTargetInputIndex(), this, outPinIndex);
+  }
+}
 
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_M);
-
-
-
 
 }
