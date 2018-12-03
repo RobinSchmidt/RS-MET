@@ -98,7 +98,7 @@ bool romos::testFormulaModules()
 
   //formula_N_1->setInputVariables("d,a,c"); // permute inputs, see if connections get permuted accordingly
 
-
+  // test formula with mutiple outputs:
   formula_N_M->setInputVariables("a,b,c,d");
   formula_N_M->setOutputVariables("x,y,z");
   formula_N_M->setFormula("x = a + b; y = b + c; z = c + d");
@@ -107,9 +107,29 @@ bool romos::testFormulaModules()
   result &= outs[1] == 3 + 5;
   result &= outs[2] == 5 + 7;
 
+  // connect and check the outputs of the multi-out formula:
+  cm->addAudioConnection(formula_N_M, 0, audioOutput1, 0);
+  cm->addAudioConnection(formula_N_M, 1, audioOutput2, 0);
+  cm->addAudioConnection(formula_N_M, 2, audioOutput3, 0);
 
+  std::vector<AudioConnection> outCons;
+  outCons = formula_N_M->getOutgoingAudioConnections();
+  RAPT::rsAssert(outCons.size() == 3);
+  result &= outCons.size() == 3;
+  result &= outCons[0].getTargetModule() == audioOutput1;
+  result &= outCons[1].getTargetModule() == audioOutput2;
+  result &= outCons[2].getTargetModule() == audioOutput3;
 
-
+  /*
+  // remove the middle output variable y, check if x and z outputs stay connected to their
+  // respective target modules/pins:
+  formula_N_M->setOutputVariables("x,z");
+  outCons = formula_N_M->getOutgoingAudioConnections();
+  RAPT::rsAssert(outCons.size() == 2);
+  result &= outCons.size() == 2;
+  result &= outCons[0].getTargetModule() == audioOutput1;
+  result &= outCons[1].getTargetModule() == audioOutput3;
+  */
 
 
 
