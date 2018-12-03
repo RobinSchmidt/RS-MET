@@ -343,9 +343,10 @@ INLINE void FormulaModule_N_M::process(Module *module, double *in, double *out, 
 {
   FormulaModule_N_1::process(module, in, out, voiceIndex);
   FormulaModule_N_M *formulaModule = static_cast<FormulaModule_N_M*> (module);
-  rosic::ExpressionEvaluator* evaluator = formulaModule->evaluators[voiceIndex];
+  //rosic::ExpressionEvaluator* evaluator = formulaModule->evaluators[voiceIndex];
 
-  // todo: collect output variables from evaluator object and store them in the "out" array
+  for(unsigned int i = 0; i < formulaModule->outFrameStride; i++) 
+    out[i] = *(formulaModule->outVariablesM[voiceIndex][i]); // collect outputs
 }
 
 bool FormulaModule_N_M::setFormula(const std::string& newFormula)
@@ -375,6 +376,19 @@ bool FormulaModule_N_M::setState(const std::map<std::string, std::string>& state
   }
   RAPT::rsAssert(result);
   return result;
+}
+
+void FormulaModule_N_M::allocateMemory()
+{
+  FormulaModule_N_1::allocateMemory();
+  outVariablesM.resize(getNumVoices());
+  updateOutputVariables();
+}
+
+void FormulaModule_N_M::freeMemory()
+{
+  FormulaModule_N_1::freeMemory();
+  outVariablesM.clear();
 }
 
 bool FormulaModule_N_M::setOutputVariables(const std::string& newOutputs)
@@ -408,10 +422,21 @@ void FormulaModule_N_M::setOutputVariables(const std::vector<std::string>& newOu
   //restoreOutputVariableConnections(outputConnections);
 }
 
-
-
-
-
+void FormulaModule_N_M::updateOutputVariables()
+{
+  RAPT::rsAssert(outVariablesM.size() == evaluators.size());
+  for(size_t i = 0; i < evaluators.size(); i++) {         // loop over the voices
+    outVariablesM[i].resize(audioOutputNames.size());
+    for(size_t j = 0; j < outVariablesM[i].size(); j++) { // loop over the output variables
+      std::string varName = audioOutputNames[j].asStdString();
+      double* varPtr = evaluators[i]->getVariableAddress(varName.c_str());
+      if(varPtr != nullptr)
+        outVariablesM[i][j] = varPtr;
+      else
+        outVariablesM[i][j] = &dummyInput;  // points to a zero valued memory location
+    }
+  }
+}
 
 
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_M);

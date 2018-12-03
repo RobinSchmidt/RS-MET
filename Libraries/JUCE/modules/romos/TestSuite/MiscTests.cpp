@@ -14,7 +14,11 @@ bool romos::testFormulaModules()
   MDL* constant3 = cm->addChildModule("Constant", "3", 2, 4, false, false);
   MDL* constant5 = cm->addChildModule("Constant", "5", 2, 6, false, false);
   MDL* constant7 = cm->addChildModule("Constant", "7", 2, 8, false, false);
-  MDL* audioOutput1 = cm->addChildModule("AudioOutput", "Out1", 20, 6, false, false);
+  MDL* audioOutput1 = cm->addChildModule("AudioOutput", "Out1", 20, 4, false, false);
+  MDL* audioOutput2 = cm->addChildModule("AudioOutput", "Out2", 20, 6, false, false);
+  MDL* audioOutput3 = cm->addChildModule("AudioOutput", "Out3", 20, 8, false, false);
+
+
 
   FormulaModule_N_M* formula_N_M = (FormulaModule_N_M*)
     cm->addChildModule("Formula_N_M", "Formula_N_M", 13, 6, false, false);
@@ -94,7 +98,18 @@ bool romos::testFormulaModules()
 
   //formula_N_1->setInputVariables("d,a,c"); // permute inputs, see if connections get permuted accordingly
 
-  // maybe use a FormulaNM inputs all the time
+
+  formula_N_M->setInputVariables("a,b,c,d");
+  formula_N_M->setOutputVariables("x,y,z");
+  formula_N_M->setFormula("x = a + b; y = b + c; z = c + d");
+  FormulaModule_N_M::process(formula_N_M, ins, outs, 0);
+  result &= outs[0] == 2 + 3;
+  result &= outs[1] == 3 + 5;
+  result &= outs[2] == 5 + 7;
+
+
+
+
 
 
 

@@ -362,7 +362,7 @@ public:
   virtual double* getOutputPointer(int pinIndex) const; // to be overriden by PointerRedirectModule
     // rename to getAudioOutputAddress
 
-  /** Returns the distance between succsessive dample frames in the output signal buffers. 
+  /** Returns the distance between succsessive sample frames in the output signal buffers. 
   Normally, this is the same as the number of output-pins, but PointerRedirectModules (and 
   subclasses thereof) require some special treatment which is why the function is overriden there. 
   A PointerRedirectModule returns the frame-stride for its connected source-module, by delegating 

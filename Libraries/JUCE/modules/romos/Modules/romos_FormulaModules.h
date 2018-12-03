@@ -165,7 +165,7 @@ public:
     fullName     = "Formula_N_M";
     description  = "A custom formula with multiple inputs and multiple outputs";
     category     = "Functions";
-    createModule =  []()->Module* { return new FormulaModule_N_1; };
+    createModule =  []()->Module* { return new FormulaModule_N_M; };
   }
 };
 
