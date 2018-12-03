@@ -21,7 +21,7 @@ bool romos::testFormulaModules()
 
 
   FormulaModule_N_M* formula_N_M = (FormulaModule_N_M*)
-    cm->addChildModule("Formula_N_M", "Formula_N_M", 13, 6, false, false);
+    cm->addChildModule("Formula", "Formula", 13, 6, false, false);
 
   cm->sortChildModuleArray();
 

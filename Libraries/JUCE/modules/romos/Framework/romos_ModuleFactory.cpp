@@ -99,6 +99,13 @@ void ModuleFactory::registerModuleType(ModuleTypeInfo* info)
   typeInfos->push_back(info);
 }
 
+void ModuleFactory::removeModuleType(const std::string& fullTypeName)
+{
+  for(size_t i = 0; i < typeInfos->size(); i++)
+    if((*typeInfos)[i]->fullName == fullTypeName)
+      RAPT::rsRemove(*typeInfos, i);
+}
+
 void ModuleFactory::registerStandardModules()
 {
 

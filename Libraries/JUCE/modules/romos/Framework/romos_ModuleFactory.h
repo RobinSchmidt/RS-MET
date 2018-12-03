@@ -132,6 +132,10 @@ public:
   new and forget about it. This object takes over responsibility for deleting it */
   void registerModuleType(ModuleTypeInfo* newTypeInfoToAdd);
 
+  /** Removes the module type with given name (if it is found in the list of registered types, 
+  otherwise does nothing). */
+  void removeModuleType(const std::string& fullTypeName);
+
   /** Registers all the standard module types that are commonly used. */
   void registerStandardModules();
 

@@ -173,7 +173,7 @@ class FormulaModule_N_MTypeInfo : public ModuleTypeInfo
 public:
   FormulaModule_N_MTypeInfo() {
     shortName    = "Formula";
-    fullName     = "Formula_N_M";
+    fullName     = "Formula"; // "Formula_N_M";
     description  = "A custom formula with multiple inputs and multiple outputs";
     category     = "Functions";
     createModule =  []()->Module* { return new FormulaModule_N_M; };

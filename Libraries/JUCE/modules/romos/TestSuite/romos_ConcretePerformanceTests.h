@@ -84,12 +84,31 @@ public:
   SawOscillatorPerformanceTest();
 };
 
-class FormulaPerformanceTest : public PerformanceTest
+class Formula11PerformanceTest : public PerformanceTest
 {
 public:
-  FormulaPerformanceTest() : PerformanceTest("Formula1In1Out")
-  { moduleToTest = moduleFactory.createModule("Formula1In1Out"); }
+  Formula11PerformanceTest() : PerformanceTest("Formula_1_1")
+  { moduleToTest = moduleFactory.createModule("Formula_1_1"); }
 };
+
+class FormulaN1PerformanceTest : public PerformanceTest
+{
+public:
+  FormulaN1PerformanceTest() : PerformanceTest("Formula_N_1")
+  { moduleToTest = moduleFactory.createModule("Formula_N_1"); }
+};
+
+class FormulaNMPerformanceTest : public PerformanceTest
+{
+public:
+  FormulaNMPerformanceTest() : PerformanceTest("Formula_N_M")
+  { moduleToTest = moduleFactory.createModule("Formula"); }
+};
+
+// The performance penalty for using FormulaNM instead of Formula11 is about 10% (for a trivial
+// identity formula y=x)...hmm...i guess that justifies removing the _1_1 and _N_1 versions from
+// Liberty and include only the _N_M case
+
 
 
 } // end namespace romos
