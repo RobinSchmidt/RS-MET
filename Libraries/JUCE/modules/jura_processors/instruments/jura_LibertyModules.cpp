@@ -557,6 +557,7 @@ void LibertyFormulaModuleEditor::resized()
 
 void LibertyFormulaModuleEditor::rTextEditorTextChanged(RTextEditor& editor)
 {
+  ScopedLock scopedLock(*plugInLock);
   if(&editor == formulaEditor) {
     std::string newFormula = formulaEditor->getText().toStdString();
     if(formula1In1OutModule->isFormulaValid(newFormula))    {
@@ -570,6 +571,7 @@ void LibertyFormulaModuleEditor::rTextEditorTextChanged(RTextEditor& editor)
 
 void LibertyFormulaModuleEditor::updateWidgetsFromModuleState()
 {
+  ScopedLock scopedLock(*plugInLock);
   std::string formula = formula1In1OutModule->getFormula();
   formulaEditor->setText(formula);
 }
@@ -598,6 +600,8 @@ LibertyFormula_N_1ModuleEditor::LibertyFormula_N_1ModuleEditor(LibertyAudioModul
 
 void LibertyFormula_N_1ModuleEditor::resized()
 {
+  ScopedLock scopedLock(*plugInLock);
+
   LibertyFormulaModuleEditor::resized();
 
   int m = 4; // margin
@@ -612,6 +616,7 @@ void LibertyFormula_N_1ModuleEditor::resized()
 
 void LibertyFormula_N_1ModuleEditor::textChanged(RTextEntryField *entryField)
 {
+  ScopedLock scopedLock(*plugInLock);
   if(entryField == inputsField) {
     std::string newInputsStr = inputsField->getText().toStdString();
     bool success = formula_N_1Module->setInputVariables(newInputsStr);
@@ -622,15 +627,75 @@ void LibertyFormula_N_1ModuleEditor::textChanged(RTextEntryField *entryField)
 
 void LibertyFormula_N_1ModuleEditor::updateWidgetsFromModuleState()
 {
+  ScopedLock scopedLock(*plugInLock);
   LibertyFormulaModuleEditor::updateWidgetsFromModuleState();
   std::string inputsStr = formula_N_1Module->getInputVariables();
   inputsField->setText(inputsStr);
 }
 
+//-------------------------------------------------------------------------------------------------
+
+LibertyFormula_N_MModuleEditor::LibertyFormula_N_MModuleEditor(LibertyAudioModule *newLiberty,
+  romos::Module* newModuleToEdit) : LibertyFormula_N_1ModuleEditor(newLiberty, newModuleToEdit)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  formula_N_MModule = dynamic_cast<FormulaModule_N_M*> (newModuleToEdit);
+
+  outputsLabel = new RTextField("Outputs:");
+  outputsLabel->setDescription("Output variable names (comma separated)");
+  outputsLabel->setJustification(juce::Justification::centred);
+  addWidget(outputsLabel, true, true);
+
+  outputsField = new LibertyTextEntryField("y");
+  outputsField->registerTextEntryFieldObserver(this);
+  outputsField->setDescription(outputsField->getDescription());
+  addWidget(outputsField, true, true);
+
+  updateWidgetsFromModuleState();
+}
+
+void LibertyFormula_N_MModuleEditor::resized()
+{
+  ScopedLock scopedLock(*plugInLock);
+  LibertyFormula_N_1ModuleEditor::resized();
+
+  int m = 4; // margin
+  int labelWidth = formulaLabel->getWidth();
+  int xEditor = formulaEditor->getX();
+  int xLabel  = formulaLabel->getX();
+  int y  = inputsLabel->getBottom()+m;
+
+  outputsLabel->setBounds(xLabel, y, labelWidth, 16);
+  outputsField->setBounds(xEditor, y, getWidth()-labelWidth, 16);
+}
+
+void LibertyFormula_N_MModuleEditor::textChanged(RTextEntryField *entryField)
+{
+  ScopedLock scopedLock(*plugInLock);
+  if(entryField == outputsField) {
+    std::string newOutputsStr = outputsField->getText().toStdString();
+    bool success = formula_N_MModule->setOutputVariables(newOutputsStr);
+    // ...we may need to notify the structure panel that it should redraw the module block
+    int dummy = 0;
+  }
+  else
+    LibertyFormula_N_1ModuleEditor::textChanged(entryField);
+}
+
+void LibertyFormula_N_MModuleEditor::updateWidgetsFromModuleState()
+{
+  ScopedLock scopedLock(*plugInLock);
+  LibertyFormula_N_1ModuleEditor::updateWidgetsFromModuleState();
+  std::string outputsStr = formula_N_MModule->getOutputVariables();
+  outputsField->setText(outputsStr);
+}
+
+
+
 // todo: 
 
 // Maybe:
-// -allow use to set names of in/out variables
 // -allow user to set name of the block (like "y=sin(x)" instead of "Formula", for example)
 // -allow GUI parameters in the formulas - so we have: Formula, Inputs, Outputs, Parameters
 // -maybe get rid of the simpler formulas - absorb everything in the multi I/O class (if there's
@@ -639,7 +704,3 @@ void LibertyFormula_N_1ModuleEditor::updateWidgetsFromModuleState()
 //  -update the connections in a sensible way, when the inputs change
 //  -if the old inputs are x,a,b and the new inputs are x,b - make sure that whatever is connected
 //   to b stays coennected
-
-// Allow multiple inputs and outputs:
-// -have two additional text entry fields "Inputs", "Outputs" that list the I/O variables
-//  for example: Inputs: Freq, Q, Outputs: a1, k for ladder coeff computation

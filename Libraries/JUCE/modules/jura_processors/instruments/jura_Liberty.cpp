@@ -781,6 +781,7 @@ void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
   else if(type == "VoiceKiller")    currentEditor = new VoiceKillerModuleEditor(lbrtyMd, mdl);
   else if(type == "Formula_1_1")    currentEditor = new LibertyFormulaModuleEditor(lbrtyMd, mdl);
   else if(type == "Formula_N_1")    currentEditor = new LibertyFormula_N_1ModuleEditor(lbrtyMd, mdl);
+  else if(type == "Formula_N_M")    currentEditor = new LibertyFormula_N_MModuleEditor(lbrtyMd, mdl);
   else                              currentEditor = new ModulePropertiesEditor(lbrtyMd, mdl); // generic
   // todo: optimize away all these string-comparisons
   // maybe make a map from type-id to creator-function

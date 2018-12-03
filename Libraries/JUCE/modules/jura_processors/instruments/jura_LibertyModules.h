@@ -111,6 +111,9 @@ protected:
   LibertyNamedComboBox *filterModeComboBox, *saturationModeComboBox;
 };
 
+
+
+
 class LibertyFormulaModuleEditor : public ModulePropertiesEditor, public RTextEditorListener
 {
 public:
@@ -135,6 +138,7 @@ protected:
   romos::FormulaModule_1_1* formula1In1OutModule;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LibertyFormulaModuleEditor)
 };
+// rename to LibertyFormula_1_1Editor
 
 class LibertyFormula_N_1ModuleEditor : public LibertyFormulaModuleEditor
 {
@@ -151,6 +155,26 @@ protected:
   LibertyTextEntryField* inputsField;
   romos::FormulaModule_N_1* formula_N_1Module;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LibertyFormula_N_1ModuleEditor)
+};
+
+
+
+
+class LibertyFormula_N_MModuleEditor : public LibertyFormula_N_1ModuleEditor
+{
+public:
+  LibertyFormula_N_MModuleEditor(LibertyAudioModule *newLiberty, romos::Module* newModuleToEdit);
+  virtual void resized() override;
+  virtual void textChanged(RTextEntryField *entryField) override;
+
+  virtual void updateWidgetsFromModuleState() override;
+
+protected:
+
+  RTextField *outputsLabel;
+  LibertyTextEntryField* outputsField;
+  romos::FormulaModule_N_M* formula_N_MModule;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LibertyFormula_N_MModuleEditor)
 };
 
 
