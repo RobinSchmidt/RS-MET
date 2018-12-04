@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
   //primeAlternatingSums();
   //divisibility();
 
-  // third party code
+  // third party code:
   sampleTailExtenderTest();
 
 

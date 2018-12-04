@@ -29,8 +29,8 @@ std::vector<double> createPluckedString(int numSamples, double frequency, double
   d = mfb.modeDecayTimes(f, 10, 1.0);
   a = d;
 
+  mfb.setReferenceFrequency(frequency);
   mfb.setReferenceAttack(0.02);
-
   mfb.setModalParameters(f, g, a, d, p);
 
   // factor out - maybe let rsModalFilterBank itself be able to produce its impulse response
@@ -44,15 +44,22 @@ std::vector<double> createPluckedString(int numSamples, double frequency, double
 
 void sampleTailExtenderTest()
 {
-  SampleTailExtender ste;
-
-  int N = 3*44100;
-  double f = 440;
+  int N = 10*44100;
+  double f = 220;
   double fs = 44100;
 
+  // create test signal:
   std::vector<double> x = createPluckedString(N, f, fs);
-
   rosic::writeToMonoWaveFile("TestPluck.wav", &x[0], N, fs, 16);
+
+
+  // extend test signal:
+  SampleTailExtender ste;
+  ste.setSynthesisStartPointInSeconds(1.5);
+  ste.setDecayRate(2.2);
+  //ste.setCutoffThresholdInDecibels(-70);
+  std::vector<double> y = ste.extendSample(x, fs, 9);
+  rosic::writeToMonoWaveFile("TestPluckExtended.wav", &y[0], (int)y.size(), fs, 16);
 
   int dummy = 0;
 }
