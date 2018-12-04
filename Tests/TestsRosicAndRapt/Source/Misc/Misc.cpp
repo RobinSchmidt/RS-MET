@@ -22,10 +22,14 @@ std::vector<double> createPluckedString(int numSamples, double frequency, double
   std::vector<double> p(numModes);  // start-phases
 
   RAPT::rsArray::fillWithRangeLinear(&f[0], numModes, 1.0, double(numModes));
-  for(int k = 0; k < numModes; k++) g[k] = 1.0 / (k+1);  // amplitudes follow 1/k rule
+  double amp = 0.1;
+  double c = 0.4;
+  for(int k = 0; k < numModes; k++) g[k] = amp / pow(k+1.0, c);  // amplitudes follow 1/k^c rule
   p = mfb.randomModePhases(g);
-  d = mfb.modeDecayTimes(f, 10, 0.5);
+  d = mfb.modeDecayTimes(f, 10, 1.0);
   a = d;
+
+  mfb.setReferenceAttack(0.02);
 
   mfb.setModalParameters(f, g, a, d, p);
 
@@ -48,7 +52,7 @@ void sampleTailExtenderTest()
 
   std::vector<double> x = createPluckedString(N, f, fs);
 
-
+  rosic::writeToMonoWaveFile("TestPluck.wav", &x[0], N, fs, 16);
 
   int dummy = 0;
 }
