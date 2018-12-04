@@ -141,7 +141,7 @@ std::vector<int> SampleTailExtender::getIndicesOfHarmonics (const std::vector<do
     std::vector<int> harmonics;
     
     double maxFrequency = 10000.;
-    int maxBin = (int) maxFrequency / (float (sampleRate) / float (audioFrameSize) );
+    int maxBin = (int) (maxFrequency / (float (sampleRate) / float (audioFrameSize) ));
     
     for (int i = 2; i < maxBin; i++)
     {

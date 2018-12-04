@@ -387,6 +387,8 @@
 #include "unfinished/rosic_NewSynth.h"
 #include "unfinished/rosic_MiscUnfinished.h"
 
+// third party:
+#include "_third_party/SampleTailExtender/SampleTailExtender.h"
 
 // restore warning level in msvc:
 #if defined _MSC_VER

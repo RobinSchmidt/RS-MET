@@ -332,6 +332,12 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "unfinished/rosic_NewSynth.cpp"
 #include "unfinished/rosic_MiscUnfinished.cpp"
 
+// third party:
+#include "_third_party/SampleTailExtender/FFT.cpp"
+//#include "_third_party/SampleTailExtender/libs/kiss_fft130/kiss_fft.c" // clashes with already included kiss_fft_ v1_2_6 - can we get rid of that?
+#include "_third_party/SampleTailExtender/HarmonicAnalyser.cpp"
+#include "_third_party/SampleTailExtender/SampleTailExtender.cpp"
+
 // restore warning level in msvc:
 #if defined _MSC_VER
 #pragma warning(pop)

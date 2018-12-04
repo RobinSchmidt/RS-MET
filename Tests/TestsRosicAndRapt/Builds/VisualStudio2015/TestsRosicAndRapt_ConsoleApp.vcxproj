@@ -1201,6 +1201,18 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\fftsg_h.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\kiss_fft.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\FFT.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\HarmonicAnalyser.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\SampleTailExtender.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2610,6 +2622,13 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\kiss_fft.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\MarkHenning\TuningMap.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\MarkHenning\TuningMapOriginal.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\_kiss_fft_guts.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\kiss_fft.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\kissfft.hh"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\FFT.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\HarmonicAnalyser.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\SampleTailExtender.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\SampleTailExtensionHelperFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_cholesky.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_eig.h"/>
@@ -3025,6 +3044,7 @@
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\readme.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tips.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\readme.txt"/>
+    <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\README.md"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\ToDo.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\ReadMe.txt"/>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\legacy\minBlep.txt"/>
