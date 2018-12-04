@@ -113,6 +113,9 @@ int main(int argc, char* argv[])
   //primeAlternatingSums();
   //divisibility();
 
+  // third party code
+  sampleTailExtenderTest();
+
 
   //===============================================================================================
   // Tests for dragged over RSLib code:

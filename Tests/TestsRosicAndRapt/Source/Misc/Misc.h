@@ -3,6 +3,10 @@
 #include "../rosic_tests/PortedFromRSLib/ExamplesRSLib.h"
 
 
+void sampleTailExtenderTest();
+
+
+
 class MemLeakTest
 {
   //std::vector<ModuleTypeInfo*> typeInfos; // having this as member causes the memleak
