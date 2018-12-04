@@ -144,6 +144,11 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // as is used in the rsSmoothingFilter. Elan says, this responds better to modulation. i think,
   // coeff = a or coeff = -a
 
+  // also, it would perhaps make more sense to apply the compensation gain at the input side rather
+  // than the output because it depends on the feedback gain k which scales y[4], so it may be the
+  // case that gain*in - k*y[4] makes both terms fit together better. make tests with both variants
+  // maybe use a unit impulse as input and switch between reso = 0 and reso = 1 (and back) in the 
+  // middle of the signal and see which variant produces a smoother output
 }
 
 template<class TSig, class TPar>
