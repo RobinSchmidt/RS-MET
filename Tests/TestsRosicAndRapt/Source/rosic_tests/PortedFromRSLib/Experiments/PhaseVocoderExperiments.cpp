@@ -234,6 +234,15 @@ void spectrogramSine()
   int dummy = 0;
 }
 
+
+
+void sinusoidalModel1()
+{
+
+  int dummy = 0;
+}
+
+
 /*
 
 Experiment with different window versions: symmetric (w[0]==w[N-1]), periodic (w[1]==w[N-1])

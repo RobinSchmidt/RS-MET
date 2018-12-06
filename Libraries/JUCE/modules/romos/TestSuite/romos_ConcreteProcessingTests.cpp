@@ -374,6 +374,7 @@ void BiquadFormulaTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphoni
 Formula1In1OutTest::Formula1In1OutTest() : ProcessingTest("Formula_1_1")
 {
   tolerance    = 1.e-14;  // shouldn't 0 also work?
+  moduleFactory.registerModuleType(new FormulaModule_1_1TypeInfo); 
   moduleToTest = moduleFactory.createModule("Formula_1_1");
   FormulaModule_1_1* formulaModule = static_cast<FormulaModule_1_1*> (moduleToTest);
   formulaModule->setFormula("tanh(2*x^2)");
@@ -389,6 +390,7 @@ void Formula1In1OutTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphon
 
 Formula_N_1Test::Formula_N_1Test() : ProcessingTest("Formula_N_1")
 {
+  moduleFactory.registerModuleType(new FormulaModule_N_1TypeInfo); 
   moduleToTest = moduleFactory.createModule("Formula_N_1");
   FormulaModule_N_1* formulaModule = static_cast<FormulaModule_N_1*> (moduleToTest);
   formulaModule->setFormula("tanh(2*x^2)");

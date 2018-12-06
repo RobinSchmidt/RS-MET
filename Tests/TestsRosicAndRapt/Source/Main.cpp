@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
   //divisibility();
 
   // third party code:
-  sampleTailExtenderTest();
+  //sampleTailExtenderTest();
 
 
   //===============================================================================================
@@ -314,6 +314,7 @@ int main(int argc, char* argv[])
   //grainRoundTrip();        // under construction
   //plotWindows();
   //spectrogramSine();
+  sinusoidalModel1();
 
   // Physics:
   //doublePendulum(); // takes long
@@ -463,8 +464,8 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Modular:
 
-  runModularUnitTests();
-  runModularPerformanceTests(true);  // produces a memleak
+  //runModularUnitTests();
+  //runModularPerformanceTests(true);  // produces a memleak
   //testModularCodeGenerator();
   //runModularInteractiveTests();  // triggers assert due to plotting code
   romos::moduleFactory.clearRegisteredTypes(); // avoids memleak in unit tests

@@ -88,14 +88,27 @@ class Formula11PerformanceTest : public PerformanceTest
 {
 public:
   Formula11PerformanceTest() : PerformanceTest("Formula_1_1")
-  { moduleToTest = moduleFactory.createModule("Formula_1_1"); }
+  { 
+    //moduleFactory.registerModuleType(new FormulaModule_1_1TypeInfo); 
+    // may have to be re-activated if the unit-tests are not run before the performance tests
+    // ...find a better solution..
+
+    moduleToTest = moduleFactory.createModule("Formula_1_1"); 
+
+  }
 };
 
 class FormulaN1PerformanceTest : public PerformanceTest
 {
 public:
   FormulaN1PerformanceTest() : PerformanceTest("Formula_N_1")
-  { moduleToTest = moduleFactory.createModule("Formula_N_1"); }
+  { 
+    //moduleFactory.registerModuleType(new FormulaModule_N_1TypeInfo);
+    // may have to be re-activated if the unit-tests are not run before the performance tests
+    // ...find a better solution..
+
+    moduleToTest = moduleFactory.createModule("Formula_N_1"); 
+  }
 };
 
 class FormulaNMPerformanceTest : public PerformanceTest

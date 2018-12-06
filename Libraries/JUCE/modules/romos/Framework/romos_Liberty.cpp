@@ -9,8 +9,9 @@ Liberty::Liberty()
   //populateModuleTypeRegistry();
 
   // these are useful only for development and testing - not for the Liberty product:
-  moduleFactory.removeModuleType("Formula_1_1");
-  moduleFactory.removeModuleType("Formula_N_1");
+  //moduleFactory.removeModuleType("Formula_1_1");
+  //moduleFactory.removeModuleType("Formula_N_1");
+  // not needed anymore - they are not registered by default anymore
 
   //topLevelModule = (TopLevelModule*) ModuleFactory::createModule(
   //  ModuleTypeRegistry::TOP_LEVEL_MODULE, "Instrument", 0, 0, false);
