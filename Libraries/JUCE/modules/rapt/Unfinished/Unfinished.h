@@ -63,6 +63,7 @@ namespace RAPT
 
 // under construction:
 #include "Sampling/PhaseVocoder.h"
+#include "Sampling/SinusoidalModel.h"
 #include "Sampling/MiscUnfinished.h"
 #include "Sampling/SampleManipulation.h"
 

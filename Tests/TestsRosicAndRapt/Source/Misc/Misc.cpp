@@ -50,7 +50,7 @@ void sampleTailExtenderTest()
 
   // create test signal:
   std::vector<double> x = createPluckedString(N, f, fs);
-  rosic::writeToMonoWaveFile("TestPluck.wav", &x[0], N, fs, 16);
+  rosic::writeToMonoWaveFile("TestPluck.wav", &x[0], N, (int)fs, 16);
 
 
   // extend test signal:
@@ -59,7 +59,7 @@ void sampleTailExtenderTest()
   ste.setDecayRate(2.2);
   //ste.setCutoffThresholdInDecibels(-70);
   std::vector<double> y = ste.extendSample(x, fs, 9);
-  rosic::writeToMonoWaveFile("TestPluckExtended.wav", &y[0], (int)y.size(), fs, 16);
+  rosic::writeToMonoWaveFile("TestPluckExtended.wav", &y[0], (int)y.size(), (int)fs, 16);
 
   int dummy = 0;
 }

@@ -48,6 +48,7 @@ namespace RAPT
 
 // under construction:
 #include "Sampling/PhaseVocoder.cpp"
+#include "Sampling/SinusoidalModel.cpp"
 #include "Sampling/MiscUnfinished.cpp"
 #include "Sampling/SampleManipulation.cpp"
 
