@@ -91,6 +91,8 @@ void attackDecayFilter()
   double phs = 45;     // phase in degrees
   double a   = 1.0;    // amplitude as raw factor
 
+  ta = 0.00001; // for comparison - todo: allow exact zero attack value
+
   // create and set up the filter:
   rsModalFilterWithAttackDD mf;
   mf.setModalParameters(f, a, ta, td, phs, fs);

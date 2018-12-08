@@ -238,6 +238,27 @@ void spectrogramSine()
 
 void sinusoidalModel1()
 {
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  RAPT::rsSinusoidalPartial<double> partial;
+  RAPT::rsSinusoidalModel<double> model;
+  RAPT::rsSinusoidalSynthesizer<double> synthesizer;
+
+
+  partial.appendDataPoint(ISP(0.0, 100.0, 0.5, 0.0)); // time, freq, amp, phase
+  partial.appendDataPoint(ISP(0.2, 100.0, 0.5, 0.0));
+
+  // cycles[m] = cycles[m-1] + 0.5*(freq[m]+freq[m-1]) * (time[m]-time[m-1])
+  // ...hmm...i really think this should not be part of the data structure - it should be computed 
+  // during synthesis
+
+  // other idea: maybe instead of representing amplitude and phase, we can use a complex amplitude?
+  // ...but that can actually be left to the synthesis algorithm - we may have one that uses amp 
+  // and phase and another one that uses real/imag
+
+
+  model.addPartial(partial);
+  double fs = 44100;
+  //std::vector<double> x = synthesizer.synthesize(model, fs);
 
   int dummy = 0;
 }

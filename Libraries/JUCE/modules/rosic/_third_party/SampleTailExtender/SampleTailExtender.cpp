@@ -241,7 +241,7 @@ double SampleTailExtender::getTunedFrequency (const std::vector<double>& magnitu
 //=================================================================================
 std::vector<double> SampleTailExtender::synthesiseSinusoid (int numSamples, double magnitude, double phase, double frequency, double sampleRate)
 {
-    std::vector<double> sinusoid;
+    std::vector<double> sinusoid(numSamples);
     
     for (double i = 0; i < numSamples; i += 1)
     {
@@ -255,7 +255,7 @@ std::vector<double> SampleTailExtender::synthesiseSinusoid (int numSamples, doub
         p += r;
         
         double sample = magnitude * cos (p);
-        sinusoid.push_back (sample);
+        sinusoid[i] = sample;
     }
     
     return sinusoid;
