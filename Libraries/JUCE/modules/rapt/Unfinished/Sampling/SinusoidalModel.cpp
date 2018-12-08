@@ -2,6 +2,16 @@
 
 
 
+
+template<class T>
+T rsSinusoidalModel<T>::getEndTime() const
+{
+  T end = T(0);
+  for(size_t i = 0; i < partials.size(); i++)
+    end = rsMax(end, partials[i].getEndTime());
+  return end;
+}
+
 /*
 
 Ideas:

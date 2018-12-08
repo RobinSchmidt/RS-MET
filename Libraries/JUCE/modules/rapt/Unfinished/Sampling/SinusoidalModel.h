@@ -115,6 +115,18 @@ public:
   /** Removes the partial with given index from the model. */
   void removePartial(size_t index) { rsRemove(partials, index); }
 
+
+  /** \name Inquiry */
+
+  /** Returns the end time of the whole sound, i.e. the end time of the partial that ends last. */
+  T getEndTime() const;
+
+  /** Returns the number of partials in this model. */
+  size_t getNumPartials() const { return partials.size(); }
+
+  /** Returns a reference to the partial with given index. */
+  const rsSinusoidalPartial<T>& getPartial(size_t index) const { return partials[index]; }
+
 protected:
 
   std::vector<rsSinusoidalPartial<T>> partials;
@@ -156,7 +168,7 @@ public:
 
   /** Takes in an array of audio samples and returns the sinusoidal model that approximates the
   sample data. */
-  rsSinusoidalModel analyze(T* sampleData, int numSamples, T sampleRate);
+  rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate);
 
 protected:
 

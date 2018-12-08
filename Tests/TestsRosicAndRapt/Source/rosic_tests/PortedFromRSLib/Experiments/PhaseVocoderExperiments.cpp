@@ -235,6 +235,32 @@ void spectrogramSine()
 }
 
 
+template<class T>
+void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSamples, 
+  T sampleRate)
+{
+  int nStart = (int) floor(sampleRate * partial.getStartTime());
+  int nEnd   = (int) ceil( sampleRate * partial.getEndTime());
+
+  // maybe restrict them to 0...numSamples-1
+
+  int N = nEnd - nStart;
+
+  // todo: create arrays for non-interpolated t,f,a,p and interpolate them
+
+  std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
+  std::vector<T> s(N);                   // the sinusoid
+}
+
+template<class T>
+std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleRate)
+{
+  int N = (int) ceil(sampleRate * model.getEndTime()); // number of samples
+  std::vector<T> x(N);
+  for(size_t i = 0; i < model.getNumPartials(); i++)
+    synthesizePartial(model.getPartial(i), &x[0], N, sampleRate);
+  return x;
+}
 
 void sinusoidalModel1()
 {
@@ -246,6 +272,11 @@ void sinusoidalModel1()
 
   partial.appendDataPoint(ISP(0.0, 100.0, 0.5, 0.0)); // time, freq, amp, phase
   partial.appendDataPoint(ISP(0.2, 100.0, 0.5, 0.0));
+  partial.appendDataPoint(ISP(0.4, 150.0, 0.5, 0.0));
+  partial.appendDataPoint(ISP(0.6, 100.0, 0.5, 0.0));
+  partial.appendDataPoint(ISP(0.8, 200.0, 0.5, 0.0));
+  partial.appendDataPoint(ISP(1.0, 100.0, 0.5, 0.0));
+
 
   // cycles[m] = cycles[m-1] + 0.5*(freq[m]+freq[m-1]) * (time[m]-time[m-1])
   // ...hmm...i really think this should not be part of the data structure - it should be computed 
@@ -255,10 +286,10 @@ void sinusoidalModel1()
   // ...but that can actually be left to the synthesis algorithm - we may have one that uses amp 
   // and phase and another one that uses real/imag
 
-
   model.addPartial(partial);
   double fs = 44100;
   //std::vector<double> x = synthesizer.synthesize(model, fs);
+  std::vector<double> x = synthesizeSinusoidal(model, fs);
 
   int dummy = 0;
 }

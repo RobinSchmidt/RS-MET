@@ -189,3 +189,10 @@ template class RAPT::rsCycleMarkFinder<double>;
 template class RAPT::rsVariableSpeedPlayer<double, double>;
 template class RAPT::rsPhaseLockedCrossfader<double, double>;
 template class RAPT::rsEnvelopeExtractor<double>;
+
+
+template class RAPT::rsInstantaneousSineParams<double>;
+template class RAPT::rsSinusoidalPartial<double>;
+template class RAPT::rsSinusoidalModel<double>;
+template class RAPT::rsSinusoidalSynthesizer<double>;
+template class RAPT::rsSinusoidalAnalyzer<double>;
