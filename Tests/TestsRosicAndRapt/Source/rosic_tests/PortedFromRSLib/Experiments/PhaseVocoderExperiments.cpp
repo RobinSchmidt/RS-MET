@@ -267,7 +267,8 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   for(size_t m = 0; m < M; m++)
   {
     T wp1 = fmod(upd[m], 2*PI); // 0..2*pi
-    T wp2 = wpd[m] + PI;        // 0..2*pi
+    //T wp2 = wpd[m] + PI;        // 0..2*pi
+    T wp2 = fmod(wpd[m], 2*PI); // 0..2*pi
     T d   = wp2-wp1;            // -2*pi..2*pi, delta between target and integrated frequency
     if(d < 0) d += 2*PI;        // 0..2*PI
     if(d > PI)                  // choose adjustment direction of smaller phase difference
@@ -283,9 +284,29 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
   for(size_t n = 0; n < N; n++)          // fill time-array
     t[n] = (nStart + n) / sampleRate;    // ...optimize
+
+  // interpolate phase:
+  //rsInterpolateLinear(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
   rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+
+  // interpolate amplitude:
   //rsNaturalCubicSpline(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
   rsInterpolateLinear(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
+
+  // it seems cubic interpolation for the phase and linear for the amplitude is most suitable,
+  // although, for the amplitude, we may also use cubic - but linear for the phase leads to aduible
+  // artifacts (sort of clicks) at the segement junctions
+  // -maybe linear interpolation of frequency with subsequent integration would work (due to the
+  //  smoothing effect of integration) - but that would make it difficult to incorporate the 
+  //  target phases (i think, we would have to produce an interpolated phase-delta array and add 
+  //  that to an interpolated preliminary unwrapped-phase array)
+  // -maybe using cubic interpolation for frequency, than integrating and then adding an 
+  //  interpolated phase-delta array could give and even smoother freq-trajectory? maybe try it
+  // -or maybe use higher order numeric integration on the non-interpolated freq-data?
+  // -maybe the synthesizer should have "presets" for most useful combinations of synthesis 
+  //  parameters
+
+
   // maybe the user should be able to select the interpolation method and maybe a bidirectional 
   // smoothing filter (this should be set separately for amplitude and phase)
 
@@ -299,8 +320,8 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   //plt.addDataArrays((int)M, &td[0], &upd[0]);
   //plt.addDataArrays((int)N, &t[0],  &p[0]); // interpolated phase
   //plt.addDataArrays((int)N, &t[0],  &a[0]);   // interpolated amplitude
-  //plt.addDataArrays((int)N, &t[0],  &s[0]);   // produced sinusoid
-  //plt.plot();
+  plt.addDataArrays((int)N, &t[0],  &s[0]);   // produced sinusoid
+  plt.plot();
 }
 
 template<class T>
@@ -320,14 +341,23 @@ void sinusoidalModel1()
   RAPT::rsSinusoidalModel<double> model;
   //RAPT::rsSinusoidalSynthesizer<double> synthesizer;
 
+  double stretch = 1.0;
+  partial.appendDataPoint(ISP(stretch*0.0, 100.0, 0.4, 0.0)); // time, freq, amp, phase
+  partial.appendDataPoint(ISP(stretch*0.4, 100.0, 0.2,  PI/2));
+  partial.appendDataPoint(ISP(stretch*0.8, 150.0, 0.8, -PI/2));
+  partial.appendDataPoint(ISP(stretch*1.2, 100.0, 0.4, 0.0));
+  partial.appendDataPoint(ISP(stretch*1.6, 200.0, 0.2,  PI));
+  partial.appendDataPoint(ISP(stretch*2.0, 100.0, 0.8, 0.0));
 
-  partial.appendDataPoint(ISP(0.0, 100.0, 0.4, 0.0)); // time, freq, amp, phase
-  partial.appendDataPoint(ISP(0.2, 100.0, 0.2, 0.0));
-  partial.appendDataPoint(ISP(0.4, 150.0, 0.8, 0.0));
-  partial.appendDataPoint(ISP(0.6, 100.0, 0.4, 0.0));
-  partial.appendDataPoint(ISP(0.8, 200.0, 0.2, 0.0));
-  partial.appendDataPoint(ISP(1.0, 100.0, 0.8, 0.0));
+  //// test with all phases zero:
+  //partial.appendDataPoint(ISP(stretch*0.0, 100.0, 0.4, 0.0)); // time, freq, amp, phase
+  //partial.appendDataPoint(ISP(stretch*0.4, 100.0, 0.2, 0.0));
+  //partial.appendDataPoint(ISP(stretch*0.8, 150.0, 0.8, 0.0));
+  //partial.appendDataPoint(ISP(stretch*1.2, 100.0, 0.4, 0.0));
+  //partial.appendDataPoint(ISP(stretch*1.6, 200.0, 0.2, 0.0));
+  //partial.appendDataPoint(ISP(stretch*2.0, 100.0, 0.8, 0.0));
 
+  // it seems, the phase is still wrong and there's one sample too little in the resulting signal
 
   // cycles[m] = cycles[m-1] + 0.5*(freq[m]+freq[m-1]) * (time[m]-time[m-1])
   // ...hmm...i really think this should not be part of the data structure - it should be computed 
@@ -338,7 +368,8 @@ void sinusoidalModel1()
   // and phase and another one that uses real/imag
 
   model.addPartial(partial);
-  double fs = 44100;
+  //double fs = 44100;
+  double fs = 4000; // for plot
   //std::vector<double> x = synthesizer.synthesize(model, fs);
   std::vector<double> x = synthesizeSinusoidal(model, fs);
 
