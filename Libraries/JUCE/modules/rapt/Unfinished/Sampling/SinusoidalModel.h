@@ -87,6 +87,14 @@ public:
     return instParams[instParams.size()-1].getTime(); 
   }
 
+  inline size_t getNumDataPoints() const { return instParams.size(); }
+
+  inline rsInstantaneousSineParams<T> getDataPoint(size_t index) const 
+  { 
+    return instParams[index]; 
+  }
+
+
 
   //rsInstantaneousSineParams<T> getInstantaneousParameters() const;
 
@@ -168,7 +176,7 @@ public:
 
   /** Takes in an array of audio samples and returns the sinusoidal model that approximates the
   sample data. */
-  rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate);
+  rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate) const;
 
 protected:
 

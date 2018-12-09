@@ -12,6 +12,31 @@ T rsSinusoidalModel<T>::getEndTime() const
   return end;
 }
 
+
+
+template<class T>
+std::vector<T> rsSinusoidalSynthesizer<T>::synthesize(
+  const rsSinusoidalModel<T>& model, T sampleRate) const
+{
+  std::vector<T> x;
+
+
+  return x;
+}
+
+
+
+template<class T>
+rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyze(
+  T* sampleData, int numSamples, T sampleRate) const
+{
+  rsSinusoidalModel<T> model;
+
+
+  return model;
+}
+
+
 /*
 
 Ideas:

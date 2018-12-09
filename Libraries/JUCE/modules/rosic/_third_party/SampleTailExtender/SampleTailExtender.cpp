@@ -243,7 +243,7 @@ std::vector<double> SampleTailExtender::synthesiseSinusoid (int numSamples, doub
 {
     std::vector<double> sinusoid(numSamples);
     
-    for (double i = 0; i < numSamples; i += 1)
+    for(int i = 0; i < numSamples; i += 1)
     {
         double p = phase + (i / sampleRate) * frequency * 2. * M_PI;
         

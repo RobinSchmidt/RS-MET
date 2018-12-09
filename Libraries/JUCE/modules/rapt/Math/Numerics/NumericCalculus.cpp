@@ -68,6 +68,9 @@ void rsNumericIntegral(Tx *x, Ty *y, Ty *yi, int N, Ty c)
 //  approximate the integral by cubic segments - this may use the yi array first for the numeric
 //  derivative values (after numeric derivative is adapted for in-place use) and then overwrite 
 //  them with the integral values)
+// -for this, obtain natural cubic spline interpolation coeffs for all segments, integrate them to
+//  quartic segments, obatin the segment integrals by evaluating the quartics at the starts/ends
+//  and add them all up
 // -make a simplified version that doesn't need an x-array (assume distance 1 between x-values)
 // -implement path-integration - the path is defined by an array of vectors (taking the role of x)
 //  and there should be a function value associated with each vector passed in another array 

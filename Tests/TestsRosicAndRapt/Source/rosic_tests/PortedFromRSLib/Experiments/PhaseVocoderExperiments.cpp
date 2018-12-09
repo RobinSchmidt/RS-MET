@@ -246,10 +246,53 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
 
   int N = nEnd - nStart;
 
-  // todo: create arrays for non-interpolated t,f,a,p and interpolate them
+  // create arrays for non-interpolated instantaneous parameter data:
+  size_t M = partial.getNumDataPoints();
+  std::vector<T> td(M), fd(M), ad(M), wpd(M), upd(M), cd(M); // cd: cycle data
+  for(size_t m = 0; m < M; m++) {
+    rsInstantaneousSineParams<T> dp = partial.getDataPoint(m);
+    td[m]  = dp.getTime();          // time data
+    fd[m]  = dp.getFrequency();     // frequency data
+    ad[m]  = dp.getAmplitude();     // amplitude data
+    wpd[m] = dp.getWrappedPhase();  // wrapped phase data
+  }
 
+  // obtain uwrapped phase data points by numerically integrating the frequency:
+  rsNumericIntegral(&td[0], &fd[0], &upd[0], (int)M, wpd[0]);
+  upd = 2*PI*upd; // we need to multiply with 2*pi at some point before synthesis
+
+  //cycles[m] = cycles[m-1] + 0.5*(freq[m]+freq[m-1]) * (time[m]-time[m-1])
+  // ...ok, this formula is exactly what the numerical integral does
+  // cycles is unwrappedPhase/(2*PI)
+
+
+  // incorporate the target phase values into the unwrapped phase:
+  // ...
+
+
+
+  // interpolate the parameter data to sample-rate:
   std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
   std::vector<T> s(N);                   // the sinusoid
+
+  // ...fill t-array...
+
+
+  //rsNaturalCubicSpline(&td[0], &fd[0], m, &t[0], &f[0], N);
+  //rsNaturalCubicSpline(&td[0], &ad[0], m, &t[0], &a[0], N);
+  // ...for the interpolated phase values...hmmm...maybe we don't need to interpolate frequency
+  // but just the unwrapped phase?
+
+  // maybe we need to numerically integrate the instantaneous frequency before interpolation to 
+  // give preliminary unwrapped phase values at the datapoints, to these add/subtract a suitable
+  // value that is needed to reach the target phase (that value has also to be added to all 
+  // unwrapped phase values that come after the current point) - and then interpolate this 
+  // unwrapped phase function
+
+  GNUPlotter plt;
+  //plt.addDataArrays(M, &td[0], &fd[0]);
+  plt.addDataArrays((int)M, &td[0], &upd[0]);
+  plt.plot();
 }
 
 template<class T>
@@ -267,7 +310,7 @@ void sinusoidalModel1()
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
   RAPT::rsSinusoidalModel<double> model;
-  RAPT::rsSinusoidalSynthesizer<double> synthesizer;
+  //RAPT::rsSinusoidalSynthesizer<double> synthesizer;
 
 
   partial.appendDataPoint(ISP(0.0, 100.0, 0.5, 0.0)); // time, freq, amp, phase
