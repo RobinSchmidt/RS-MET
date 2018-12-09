@@ -265,11 +265,12 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   // incorporate the target phase values into the unwrapped phase:
   for(size_t m = 0; m < M; m++)
   {
-    T wp1 = fmod(upd[m], 2*PI);    // in 0..2*pi
-    T wp2 = wpd[m] + PI;           // in 0..2*pi
-    T d   = wp2-wp1;
+    T wp1 = fmod(upd[m], 2*PI);    // 0..2*pi
+    T wp2 = wpd[m] + PI;           // 0..2*pi
+    T d   = wp2-wp1;               // -2*pi..2*pi
+    if(d < 0) d += 2*PI;           // 0..2*PI
     if(d > PI)       // choose direction of smaller phase difference
-      d = 2*PI - d;  // ...check, if this is correct
+      d = 2*PI - d;  // in 0...pi ...check, if this formula is correct 
     for(size_t k = m; k < M; k++)
       upd[m] += d;
   }
