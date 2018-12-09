@@ -241,7 +241,7 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
 {
   // figure out number of samples to produce:
   int nStart = (int) floor(sampleRate * partial.getStartTime());
-  int nEnd   = (int) ceil( sampleRate * partial.getEndTime());
+  int nEnd   = (int) ceil( sampleRate * partial.getEndTime()) + 1;
   nStart = rsClip(nStart, 0, numSamples-1);
   nEnd   = rsClip(nEnd,   0, numSamples-1);
   int N = nEnd - nStart;
@@ -263,17 +263,16 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   upd = 2*PI*upd; // convert from "number of cycles passed" to radians
 
   // incorporate the target phase values into the unwrapped phase:
-  bool accumulatePhaseDeltas = false;  // make user parameter - experiment, which is better
+  bool accumulatePhaseDeltas = false;  // make user parameter - experiment, which is better - note
+  // that accumulation gives rise to an O(M^2) complexity of the algorithm
   for(size_t m = 0; m < M; m++)
   {
     T wp1 = fmod(upd[m], 2*PI); // 0..2*pi
-    //T wp2 = wpd[m] + PI;        // 0..2*pi - wrong!
     T wp2 = fmod(wpd[m], 2*PI); // 0..2*pi
-    T d   = wp2-wp1;            // -2*pi..2*pi, delta between target and integrated frequency
+    T d   = wp2-wp1;            // -2*pi..2*pi, delta between target phase and integrated frequency
     if(d < 0) d += 2*PI;        // 0..2*PI
     if(d > PI)                  // choose adjustment direction of smaller phase difference
       d -= 2*PI;                // -pi..pi
-    //  d = 2*PI - d;             // in 0...pi ...check, if this formula is correct - wrong!
     upd[m] += d;                // re-adjust final unwrapped phase
     if(accumulatePhaseDeltas)
       for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
@@ -295,7 +294,7 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   rsInterpolateLinear(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
 
   // it seems cubic interpolation for the phase and linear for the amplitude is most suitable,
-  // although, for the amplitude, we may also use cubic - but linear for the phase leads to aduible
+  // although, for the amplitude, we may also use cubic - but linear for the phase leads to audible
   // artifacts (sort of clicks) at the segement junctions
   // -maybe linear interpolation of frequency with subsequent integration would work (due to the
   //  smoothing effect of integration) - but that would make it difficult to incorporate the 
@@ -304,6 +303,8 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   // -maybe using cubic interpolation for frequency, than integrating and then adding an 
   //  interpolated phase-delta array could give and even smoother freq-trajectory? maybe try it
   // -or maybe use higher order numeric integration on the non-interpolated freq-data?
+  // -but when smoothing comes into play later, linear interpolation of the phase might be not so
+  //  bad as it is without smoothing
   // -maybe the synthesizer should have "presets" for most useful combinations of synthesis 
   //  parameters
 
@@ -328,7 +329,7 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
 template<class T>
 std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleRate)
 {
-  int N = (int) ceil(sampleRate * model.getEndTime()); // number of samples
+  int N = (int) ceil(sampleRate * model.getEndTime()) + 2; // number of samples
   std::vector<T> x(N);
   for(size_t i = 0; i < model.getNumPartials(); i++)
     synthesizePartial(model.getPartial(i), &x[0], N, sampleRate);
@@ -370,7 +371,7 @@ void sinusoidalModel1()
 
   model.addPartial(partial);
   //double fs = 44100;
-  double fs = 4000; // for plot
+  double fs = 1000; // for plot
   //std::vector<double> x = synthesizer.synthesize(model, fs);
   std::vector<double> x = synthesizeSinusoidal(model, fs);
 
