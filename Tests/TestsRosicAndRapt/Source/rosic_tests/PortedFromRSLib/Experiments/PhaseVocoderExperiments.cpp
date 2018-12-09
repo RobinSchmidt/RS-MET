@@ -239,12 +239,13 @@ template<class T>
 void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSamples, 
   T sampleRate)
 {
+  // figure out number of samples to produce:
   int nStart = (int) floor(sampleRate * partial.getStartTime());
   int nEnd   = (int) ceil( sampleRate * partial.getEndTime());
-
-  // maybe restrict them to 0...numSamples-1
-
+  nStart = rsClip(nStart, 0, numSamples-1);
+  nEnd   = rsClip(nEnd,   0, numSamples-1);
   int N = nEnd - nStart;
+
 
   // create arrays for non-interpolated instantaneous parameter data:
   size_t M = partial.getNumDataPoints();
@@ -278,15 +279,20 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
 
   // interpolate the amplitude and unwrapped phase data to sample-rate:
   std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
-  std::vector<T> s(N);                   // the sinusoid
   for(size_t n = 0; n < N; n++)          // fill time-array
     t[n] = (nStart + n) / sampleRate;
   rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
-  rsNaturalCubicSpline(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
+  //rsNaturalCubicSpline(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
+  rsInterpolateLinear(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
   // maybe the user should be able to select the interpolation method and maybe a bidirectional 
   // smoothing filter (this should be set separately for amplitude and phase)
 
-  //rsNaturalCubicSpline(&td[0], &fd[0], m, &t[0], &f[0], N);
+
+  // synthesize the sinusoid and add it to what's already there:
+  std::vector<T> s(N); // needed here only for plotting
+  for(size_t n = 0; n < N; n++)
+    s[n] = x[nStart+n] += a[n] * sin(p[n]);
+
 
   // ...for the interpolated phase values...hmmm...maybe we don't need to interpolate frequency
   // but just the unwrapped phase?
@@ -300,9 +306,10 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   GNUPlotter plt;
   //plt.addDataArrays(M, &td[0], &fd[0]);
   //plt.addDataArrays((int)M, &td[0], &upd[0]);
-  //plt.addDataArrays((int)N, &t[0],  &p[0]);
-  plt.addDataArrays((int)N, &t[0],  &a[0]);
-  plt.plot();
+  //plt.addDataArrays((int)N, &t[0],  &p[0]); // interpolated phase
+  //plt.addDataArrays((int)N, &t[0],  &a[0]);   // interpolated amplitude
+  //plt.addDataArrays((int)N, &t[0],  &s[0]);   // produced sinusoid
+  //plt.plot();
 }
 
 template<class T>
@@ -340,10 +347,12 @@ void sinusoidalModel1()
   // and phase and another one that uses real/imag
 
   model.addPartial(partial);
-  double fs = 4410;
+  double fs = 44100;
   //std::vector<double> x = synthesizer.synthesize(model, fs);
   std::vector<double> x = synthesizeSinusoidal(model, fs);
 
+
+  rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
   int dummy = 0;
 }
 
