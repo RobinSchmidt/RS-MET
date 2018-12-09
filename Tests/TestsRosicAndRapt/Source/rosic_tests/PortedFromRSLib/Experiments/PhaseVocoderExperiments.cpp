@@ -264,6 +264,7 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
 
   // incorporate the target phase values into the unwrapped phase:
   bool accumulatePhaseDeltas = true;  // make user parameter - experiment, which is better
+                                      // hmm...without, it dproduce wrong phases - why?
   for(size_t m = 0; m < M; m++)
   {
     T wp1 = fmod(upd[m], 2*PI); // 0..2*pi
@@ -276,7 +277,7 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
     upd[m] += d;                // re-adjust final unwrapped phase
     if(accumulatePhaseDeltas)
       for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
-        upd[m] += d;
+        upd[k] += d;
   }
   // maybe the unwrapped phase computation should be factored out into a function 
 
