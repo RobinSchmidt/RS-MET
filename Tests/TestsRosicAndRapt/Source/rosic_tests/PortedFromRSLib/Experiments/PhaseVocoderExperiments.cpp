@@ -263,17 +263,17 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   upd = 2*PI*upd; // convert from "number of cycles passed" to radians
 
   // incorporate the target phase values into the unwrapped phase:
-  bool accumulatePhaseDeltas = true;  // make user parameter - experiment, which is better
-                                      // hmm...without, it dproduce wrong phases - why?
+  bool accumulatePhaseDeltas = false;  // make user parameter - experiment, which is better
   for(size_t m = 0; m < M; m++)
   {
     T wp1 = fmod(upd[m], 2*PI); // 0..2*pi
-    //T wp2 = wpd[m] + PI;        // 0..2*pi
+    //T wp2 = wpd[m] + PI;        // 0..2*pi - wrong!
     T wp2 = fmod(wpd[m], 2*PI); // 0..2*pi
     T d   = wp2-wp1;            // -2*pi..2*pi, delta between target and integrated frequency
     if(d < 0) d += 2*PI;        // 0..2*PI
     if(d > PI)                  // choose adjustment direction of smaller phase difference
-      d = 2*PI - d;             // in 0...pi ...check, if this formula is correct 
+      d -= 2*PI;                // -pi..pi
+    //  d = 2*PI - d;             // in 0...pi ...check, if this formula is correct - wrong!
     upd[m] += d;                // re-adjust final unwrapped phase
     if(accumulatePhaseDeltas)
       for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
@@ -375,7 +375,7 @@ void sinusoidalModel1()
   std::vector<double> x = synthesizeSinusoidal(model, fs);
 
 
-  rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
+  //rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
   int dummy = 0;
 }
 
