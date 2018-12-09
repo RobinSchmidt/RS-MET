@@ -246,10 +246,9 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   nEnd   = rsClip(nEnd,   0, numSamples-1);
   int N = nEnd - nStart;
 
-
   // create arrays for non-interpolated instantaneous parameter data:
   size_t M = partial.getNumDataPoints();
-  std::vector<T> td(M), fd(M), ad(M), wpd(M), upd(M), cd(M); // cd: cycle data
+  std::vector<T> td(M), fd(M), ad(M), wpd(M);
   for(size_t m = 0; m < M; m++) {
     rsInstantaneousSineParams<T> dp = partial.getDataPoint(m);
     td[m]  = dp.getTime();          // time data
@@ -258,51 +257,42 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
     wpd[m] = dp.getWrappedPhase();  // wrapped phase data
   }
 
-  // obtain uwrapped phase data points by numerically integrating the frequency:
+  // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
+  std::vector<T> upd(M);
   rsNumericIntegral(&td[0], &fd[0], &upd[0], (int)M, wpd[0]);
-  upd = 2*PI*upd; // we need to multiply with 2*pi at some point before synthesis
+  upd = 2*PI*upd; // convert from "number of cycles passed" to radians
 
   // incorporate the target phase values into the unwrapped phase:
+  bool accumulatePhaseDeltas = true;  // make user parameter - experiment, which is better
   for(size_t m = 0; m < M; m++)
   {
-    T wp1 = fmod(upd[m], 2*PI);    // 0..2*pi
-    T wp2 = wpd[m] + PI;           // 0..2*pi
-    T d   = wp2-wp1;               // -2*pi..2*pi
-    if(d < 0) d += 2*PI;           // 0..2*PI
-    if(d > PI)       // choose direction of smaller phase difference
-      d = 2*PI - d;  // in 0...pi ...check, if this formula is correct 
-    for(size_t k = m; k < M; k++)
-      upd[m] += d;
+    T wp1 = fmod(upd[m], 2*PI); // 0..2*pi
+    T wp2 = wpd[m] + PI;        // 0..2*pi
+    T d   = wp2-wp1;            // -2*pi..2*pi, delta between target and integrated frequency
+    if(d < 0) d += 2*PI;        // 0..2*PI
+    if(d > PI)                  // choose adjustment direction of smaller phase difference
+      d = 2*PI - d;             // in 0...pi ...check, if this formula is correct 
+    upd[m] += d;                // re-adjust final unwrapped phase
+    if(accumulatePhaseDeltas)
+      for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
+        upd[m] += d;
   }
   // maybe the unwrapped phase computation should be factored out into a function 
-
-
 
   // interpolate the amplitude and unwrapped phase data to sample-rate:
   std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
   for(size_t n = 0; n < N; n++)          // fill time-array
-    t[n] = (nStart + n) / sampleRate;
+    t[n] = (nStart + n) / sampleRate;    // ...optimize
   rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
   //rsNaturalCubicSpline(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
   rsInterpolateLinear(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
   // maybe the user should be able to select the interpolation method and maybe a bidirectional 
   // smoothing filter (this should be set separately for amplitude and phase)
 
-
   // synthesize the sinusoid and add it to what's already there:
-  std::vector<T> s(N); // needed here only for plotting
+  std::vector<T> s(N); // needed here only for plotting, remove for production code
   for(size_t n = 0; n < N; n++)
     s[n] = x[nStart+n] += a[n] * sin(p[n]);
-
-
-  // ...for the interpolated phase values...hmmm...maybe we don't need to interpolate frequency
-  // but just the unwrapped phase?
-
-  // maybe we need to numerically integrate the instantaneous frequency before interpolation to 
-  // give preliminary unwrapped phase values at the datapoints, to these add/subtract a suitable
-  // value that is needed to reach the target phase (that value has also to be added to all 
-  // unwrapped phase values that come after the current point) - and then interpolate this 
-  // unwrapped phase function
 
   GNUPlotter plt;
   //plt.addDataArrays(M, &td[0], &fd[0]);
