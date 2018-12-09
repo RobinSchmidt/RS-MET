@@ -261,25 +261,33 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   rsNumericIntegral(&td[0], &fd[0], &upd[0], (int)M, wpd[0]);
   upd = 2*PI*upd; // we need to multiply with 2*pi at some point before synthesis
 
-  //cycles[m] = cycles[m-1] + 0.5*(freq[m]+freq[m-1]) * (time[m]-time[m-1])
-  // ...ok, this formula is exactly what the numerical integral does
-  // cycles is unwrappedPhase/(2*PI)
-
-
   // incorporate the target phase values into the unwrapped phase:
-  // ...
+  for(size_t m = 0; m < M; m++)
+  {
+    T wp1 = fmod(upd[m], 2*PI);    // in 0..2*pi
+    T wp2 = wpd[m] + PI;           // in 0..2*pi
+    T d   = wp2-wp1;
+    if(d > PI)       // choose direction of smaller phase difference
+      d = 2*PI - d;  // ...check, if this is correct
+    for(size_t k = m; k < M; k++)
+      upd[m] += d;
+  }
+  // maybe the unwrapped phase computation should be factored out into a function 
 
 
 
-  // interpolate the parameter data to sample-rate:
+  // interpolate the amplitude and unwrapped phase data to sample-rate:
   std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
   std::vector<T> s(N);                   // the sinusoid
-
-  // ...fill t-array...
-
+  for(size_t n = 0; n < N; n++)          // fill time-array
+    t[n] = (nStart + n) / sampleRate;
+  rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+  rsNaturalCubicSpline(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
+  // maybe the user should be able to select the interpolation method and maybe a bidirectional 
+  // smoothing filter (this should be set separately for amplitude and phase)
 
   //rsNaturalCubicSpline(&td[0], &fd[0], m, &t[0], &f[0], N);
-  //rsNaturalCubicSpline(&td[0], &ad[0], m, &t[0], &a[0], N);
+
   // ...for the interpolated phase values...hmmm...maybe we don't need to interpolate frequency
   // but just the unwrapped phase?
 
@@ -291,7 +299,9 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
 
   GNUPlotter plt;
   //plt.addDataArrays(M, &td[0], &fd[0]);
-  plt.addDataArrays((int)M, &td[0], &upd[0]);
+  //plt.addDataArrays((int)M, &td[0], &upd[0]);
+  //plt.addDataArrays((int)N, &t[0],  &p[0]);
+  plt.addDataArrays((int)N, &t[0],  &a[0]);
   plt.plot();
 }
 
@@ -313,12 +323,12 @@ void sinusoidalModel1()
   //RAPT::rsSinusoidalSynthesizer<double> synthesizer;
 
 
-  partial.appendDataPoint(ISP(0.0, 100.0, 0.5, 0.0)); // time, freq, amp, phase
-  partial.appendDataPoint(ISP(0.2, 100.0, 0.5, 0.0));
-  partial.appendDataPoint(ISP(0.4, 150.0, 0.5, 0.0));
-  partial.appendDataPoint(ISP(0.6, 100.0, 0.5, 0.0));
-  partial.appendDataPoint(ISP(0.8, 200.0, 0.5, 0.0));
-  partial.appendDataPoint(ISP(1.0, 100.0, 0.5, 0.0));
+  partial.appendDataPoint(ISP(0.0, 100.0, 0.4, 0.0)); // time, freq, amp, phase
+  partial.appendDataPoint(ISP(0.2, 100.0, 0.2, 0.0));
+  partial.appendDataPoint(ISP(0.4, 150.0, 0.8, 0.0));
+  partial.appendDataPoint(ISP(0.6, 100.0, 0.4, 0.0));
+  partial.appendDataPoint(ISP(0.8, 200.0, 0.2, 0.0));
+  partial.appendDataPoint(ISP(1.0, 100.0, 0.8, 0.0));
 
 
   // cycles[m] = cycles[m-1] + 0.5*(freq[m]+freq[m-1]) * (time[m]-time[m-1])
@@ -330,7 +340,7 @@ void sinusoidalModel1()
   // and phase and another one that uses real/imag
 
   model.addPartial(partial);
-  double fs = 44100;
+  double fs = 4410;
   //std::vector<double> x = synthesizer.synthesize(model, fs);
   std::vector<double> x = synthesizeSinusoidal(model, fs);
 

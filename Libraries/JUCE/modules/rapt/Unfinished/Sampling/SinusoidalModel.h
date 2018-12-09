@@ -39,7 +39,7 @@ protected:
   T time = 0;      // in seconds
   T freq = 0;      // in Hz
   T gain = 0;      // as raw factor
-  T phase = 0;     // radians in [0,2*pi) ...really - or is it [-pi, pi)? ...check atan2
+  T phase = 0;     // radians in [-pi, pi]
   //int cycles = 0;  // number of cycles passed: unwrapped phase = phase + 2*pi*cycles
 
 };
