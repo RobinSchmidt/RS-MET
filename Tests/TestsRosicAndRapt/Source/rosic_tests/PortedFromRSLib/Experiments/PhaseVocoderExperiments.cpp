@@ -369,6 +369,64 @@ rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
 // maybe factor out common code...maybe something like applyMatrixFunction with different
 // input and output types for the template parameter
 
+template<class T>
+std::vector<int> peakIndices(T* x, int N, T threshToMax = 0)
+{
+  T max = RAPT::rsArray::maxValue(x, N);
+  std::vector<int> peaks;
+  for(int i = 1; i < N-1; i++)
+    if(x[i] > x[i-1] && x[i] > x[i+1] && x[i] > threshToMax*max)
+      peaks.push_back(i);
+  return peaks;
+} 
+// move to library, maybe have additional criteria like a threshold with respect to the rms, minimum
+// distance between the peaks, etc.
+
+template<class T>
+void fitQuadratic_m1_0_1(T *a, T *y)
+{
+  T ym1 = y[0];
+  T y0  = y[1];
+  T y1  = y[2];
+  a[0] = y0;
+  a[1] = 0.5*(y1-ym1);
+  a[2] = y1 - a[0] - a[1];
+}
+// move to library, get rid of intermediate vars
+
+template<class T>
+T quadraticExtremumPosition(T *a)
+{
+  return T(-0.5) * a[1]/a[2];
+}
+
+
+
+template<class T>
+RAPT::rsInstantaneousSineParams<T> peakSineParams(std::complex<T>* s, int k, T time, T fs)
+{
+  RAPT::rsInstantaneousSineParams<T> params;
+  params.time = time;
+
+  // coeffs of parabolic interpolant of log-magnitudes:
+  T a[3], y[3];
+  y[0] = log(abs(s[k-1]));   // left
+  y[1] = log(abs(s[k]));     // mid
+  y[2] = log(abs(s[k+1]));   // right
+  fitQuadratic_m1_0_1(a, y);
+
+  T d = quadraticExtremumPosition(a);
+
+  T bin = k + d;
+  // preliminary:
+  params.freq  = 0;  // we need the sampleRate to compute physical frequency
+  params.gain  = 0;
+  params.phase = 0;
+
+  return params;
+}
+// this function should compute only binIndex, magnitude and phase...or maybe only the magnitude
+
 
 template<class T>
 rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate)
@@ -397,6 +455,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   // ...maybe plot the spectrogram here...
 
   // Initializations:
+  typedef RAPT::rsInstantaneousSineParams<double> InstParams;
   typedef RAPT::rsSinusoidalPartial<double> Partial;
   //std::vector<Partial> partials;     // array of active partials (empty at first)
   int numFrames  = stft.getNumRows();
@@ -410,6 +469,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 
 
   std::vector<Partial> activeTracks, finishedTracks;
+  std::vector<InstParams> instPeakParams;
 
   // maybe we need separate arrays for activePartials and finishedPartials
 
@@ -431,8 +491,16 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     plotData(numBins/64, &freqs[0], pMag); // for development
 
     // find spectral peaks:
+    T peakThresh = 0.0001; // 80 dB
+    std::vector<int> peaks = peakIndices(pMag, numBins, peakThresh);
 
     // determine exact peak frequencies, amplitudes and phases:
+    instPeakParams.resize(peaks.size());
+    for(size_t i = 0; i < peaks.size(); i++)
+    {
+      //T peakBin
+      instPeakParams[i] = peakSineParams(pCmp, peaks[i], time, sampleRate);
+    }
 
     // for all current spectral peaks, find a corresponding partner among the activePartials
     // -when a partner is found, continue the track
@@ -441,11 +509,8 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     //  zero-amplitude value is appended and the partial is moved from active to finished
     //  
 
-
     // maybe make a subclass of rsSinusoidalPartial that has some additional data fields that are 
     // relevant only during analysis and may be dropped later
-
-
 
     frameIndex += frameStep;
   }
@@ -454,6 +519,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 
 
   int dummy = 0;
+
 
 
 

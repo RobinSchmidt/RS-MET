@@ -11,7 +11,7 @@ public:
 
 
   /** Constructor. */
-  rsInstantaneousSineParams(T time, T frequency, T amplitude, T phase/*, int numCycles*/)
+  rsInstantaneousSineParams(T time = 0, T frequency = 0, T amplitude = 0, T phase = 0)
   {
     this->time   = time;
     this->freq   = frequency;
@@ -34,7 +34,7 @@ public:
   //inline T getUnwrappedPhase() const { return phase + 2*PI*cycles; }
 
 
-protected:
+//protected:
 
   T time = 0;      // in seconds
   T freq = 0;      // in Hz
