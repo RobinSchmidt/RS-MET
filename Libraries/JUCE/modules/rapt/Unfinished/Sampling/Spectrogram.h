@@ -15,7 +15,7 @@ public:
   enum windowTypes
   {
     RECTANGULAR_WINDOW = 0,
-    HANNING_WINDOW
+    HANNING_WINDOW           // use qualifier ZN
     // HAMMING_WINDOW,
     // BLACKMAN_HARRIS_WINDOW,
   };
@@ -31,11 +31,35 @@ public:
 
   /** \name Setup */
 
-  void setBlockSize(int newBlockSize) { blockSize = newBlockSize; }
+  /** Sets the size (in samples) of the blocks/frames for analysis and synthesis (todo: allow 
+  different sizes for analysis and synthesis) */
+  void setBlockSize(int newBlockSize) 
+  { 
+    if(newBlockSize != blockSize) {
+      blockSize = newBlockSize;
+      updateAnalysisWindow();
+      updateSynthesisWindow();
+      // update fourier transformer(s)
+    }
+  }
 
+  /** Sets the time-delta between successive blocks/frames in samples (value used for analysis and
+  synthesis - todo: allow different values for both) */
   void setHopSize(int newHopSize) { hopSize = newHopSize; }
 
+  /** Sets the amout of zero-padding as an integer factor. 
+  ...padding should be applied symmetrically at front and back such that the phase stays measured
+  at the center of the frame */
   void setZeroPaddingFactor(int newFactor) { zeroPaddingFactor = newFactor; }
+
+
+  void setAnalysisWindowType(int newType) 
+  { 
+    analysisWindowType = newType; 
+    updateAnalysisWindow();
+  }
+
+  //updateAnalysisWindow();
 
 
 
@@ -68,12 +92,19 @@ public:
 
   /** \name Audio Processing */
 
+  rsMatrix<std::complex<T>> complexSpectrogram(T *signal, int numSamples);
+
+
+
+  /** \name Static Processing Functions */
+
   /** Creates a Hanning window that starts with a zero value in w[0] and ends with a nonzero
   value in w[N-1] = w[1], such that the nominal and nonexistent value w[N] would be zero again.
   That means, the window has a period length of N. Such a window is suitable for applications
-  where it is important that suitably overlapped windows sum up to a constant, like in the
-  phase-vocoder. */
+  where it is important that suitably overlapped windows sum up to a constant, like when identity
+  resynthesis is required. */
   static void hanningWindowZN(T *w, int N);
+  // maybe have a version NZ, ZZ, NN
 
   /** Computes a short-time FFT spectrum ... */
   static void shortTimeSpectrum(T *signal, int numSamples, int blockCenter, T *window,
@@ -142,13 +173,25 @@ protected:
 
   /** \name Internal */
 
+  void updateAnalysisWindow();
+
+  void updateSynthesisWindow();
+
+  static void fillWindowArray(T* w, int length, int type);
 
   /** \name Data */
 
-  int blockSize = 512;
+  int blockSize = 0;    // initialized in constructor which also generates the window functions   
   int hopSize   = 128;
+  // maybe we should also distiguish between analysisa and synthesis hop-and block-size
+
   int zeroPaddingFactor = 1;
-  int windowType = HANNING_WINDOW;
+  int analysisWindowType  = HANNING_WINDOW;
+  int synthesisWindowType = HANNING_WINDOW;
+
+  std::vector<T> analysisWindow, synthesisWindow;
+
+
 
 
   //T fs;   // samplerate
@@ -159,7 +202,7 @@ protected:
 
   // Ba, Ha, Ka: // analysis blocksize, hopsize, number of frequencies
 
-  // FourierTransformerBluestein 
+  //rsFourierTransformerBluestein<T> analysisTransformer, synthesisTransformer;
 
 
 };

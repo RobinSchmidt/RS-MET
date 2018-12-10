@@ -4,6 +4,7 @@ template<class T>
 rsSpectrogram<T>::rsSpectrogram()
 {
   //init();
+  setBlockSize(512);
 }
 
 template<class T>
@@ -37,6 +38,18 @@ T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
 }
 
 // Processing:
+
+
+template<class T>
+rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(T *signal, int numSamples)
+{
+  // preliminary - call static function - later, we should use an object of type 
+  // rsFourierTransformerBluestein for more efficiency (it does some pre-computations)
+  return complexSpectrogram(
+    signal, numSamples, &analysisWindow[0], blockSize, hopSize, zeroPaddingFactor);
+}
+
+
 
 template<class T>
 void rsSpectrogram<T>::hanningWindowZN(T *w, int N)
@@ -225,6 +238,32 @@ void rsSpectrogram<T>::init()
   //Nf = Nb*2;      // FFT size
 }
 */
+
+template<class T>
+void rsSpectrogram<T>::updateAnalysisWindow()
+{
+  analysisWindow.resize(blockSize); // later: analysisBlockSize
+  fillWindowArray(&analysisWindow[0], blockSize, analysisWindowType);
+  // todo: create also the time-derivative and the time-ramped window for time/frequency 
+  // reassignment later
+}
+
+template<class T>
+void rsSpectrogram<T>::updateSynthesisWindow()
+{
+  synthesisWindow.resize(blockSize); // later: synthesisBlockSize
+  fillWindowArray(&synthesisWindow[0], blockSize, synthesisWindowType);
+}
+
+template<class T>
+void rsSpectrogram<T>::fillWindowArray(T* w, int length, int type)
+{
+  switch(type)
+  {
+  case RECTANGULAR_WINDOW: rsArray::fillWithValue(w, length, T(1)); break;
+  case HANNING_WINDOW:     hanningWindowZN(       w, length);       break;
+  }
+}
 
 
 

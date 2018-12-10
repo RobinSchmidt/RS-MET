@@ -346,14 +346,6 @@ std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleR
 template<class T>
 rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate)
 {
-  rsSpectrogram<T> spectrogram;
-
-  spectrogram.setBlockSize(2048);
-  spectrogram.setHopSize(256);
-  spectrogram.setZeroPaddingFactor(1);
-  size_t numBins = spectrogram.getNumNonRedundantBins();
-
-
   // -maybe pre-process the input signal by flattening the pitch and make the period coincide with
   //  a fraction of the analysis frame size 
   // -we should keep the time warping map around and when done with the analysis, use it to 
@@ -364,6 +356,19 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   //  the algorithm work well under this (suboptimal) condition, too
 
 
+  rsSpectrogram<T> sp;  // maybe it should be called rsSpectrogramProcessor because
+                        // the spectrogram itself it the STFT matrix
+  sp.setBlockSize(2048);
+  sp.setHopSize(256);
+  sp.setZeroPaddingFactor(1);
+  size_t numBins = sp.getNumNonRedundantBins();
+  rsMatrix<std::complex<T>> s = sp.complexSpectrogram(sampleData, numSamples);
+
+  int dummy = 0;
+
+
+
+
 
   typedef RAPT::rsSinusoidalPartial<double> Partial;
   std::vector<Partial> partials; 
@@ -371,8 +376,8 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 
 
   // algorithm:
-  // -obtain a spectrogram
-  // -initialize the set of active partials to be empty
+  // -obtain a spectrogram (done)
+  // -initialize the set of active partials to be empty (done)
   // -scan through this spectrogram from right to left - i.e. start at the end
   // -for each frame m, do:
   //  -find the spectral peaks in the frame
