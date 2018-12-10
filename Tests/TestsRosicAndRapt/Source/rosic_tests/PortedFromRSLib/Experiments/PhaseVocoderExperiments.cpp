@@ -398,7 +398,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 
   // Initializations:
   typedef RAPT::rsSinusoidalPartial<double> Partial;
-  std::vector<Partial> partials;     // array of active partials (empty at first)
+  //std::vector<Partial> partials;     // array of active partials (empty at first)
   int numFrames  = stft.getNumRows();
   int numBins    = stft.getNumColumns();
   int frameStep  = +1;  // +1: scan through frames forward, -1: backward
@@ -407,6 +407,11 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   if(frameStep == -1)
     rsSwap(firstFrame, lastFrame);
   int frameIndex  = firstFrame;
+
+
+  std::vector<Partial> activeTracks, finishedTracks;
+
+  // maybe we need separate arrays for activePartials and finishedPartials
 
   //bool plotShortTimeSpectra = true;
 
@@ -425,7 +430,22 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 
     plotData(numBins/64, &freqs[0], pMag); // for development
 
-    // find spectral peaks
+    // find spectral peaks:
+
+    // determine exact peak frequencies, amplitudes and phases:
+
+    // for all current spectral peaks, find a corresponding partner among the activePartials
+    // -when a partner is found, continue the track
+    // -when no partner is found, create a new track
+    // -all active partials that have not been used in this continuation are killed - a final 
+    //  zero-amplitude value is appended and the partial is moved from active to finished
+    //  
+
+
+    // maybe make a subclass of rsSinusoidalPartial that has some additional data fields that are 
+    // relevant only during analysis and may be dropped later
+
+
 
     frameIndex += frameStep;
   }
