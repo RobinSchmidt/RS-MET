@@ -88,7 +88,7 @@ typedef RAPT::rsInstantaneousFundamentalEstimator<double> rsInstantaneousFundame
 typedef RAPT::rsZeroCrossingPitchDetector<double> rsZeroCrossingPitchDetectorD;
 typedef RAPT::rsAutoCorrelationPitchDetector<double> rsAutoCorrelationPitchDetectorD;
 
-typedef RAPT::rsPhaseVocoder<double> rsPhaseVocoderD;
+typedef RAPT::rsSpectrogram<double> rsSpectrogramD;
 
 typedef RAPT::rsDoublePendulum<double, double> rsDoublePendulumDD;
 

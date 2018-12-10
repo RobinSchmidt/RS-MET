@@ -180,7 +180,7 @@ public:
 
 protected:
 
-  rsPhaseVocoder<T> phsVoc; 
+  rsSpectrogram<T> phsVoc; 
 
 };
 

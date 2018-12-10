@@ -80,7 +80,7 @@ void grainRoundTrip()
   static const int M = 2*K;      // FFT size
   int n0 = B/2;                  // time index of STFT frame
 
-  rsPhaseVocoderD pv;             // for conveniently calling the static functions
+  rsSpectrogramD pv;             // for conveniently calling the static functions
                                        
   // create analysis and synthesis windows:
   double wa[B], ws[B];
@@ -110,12 +110,12 @@ void plotWindows()
   static const int N  = 1000;           // number of samples in the test signal
 
 
-  int J = rsPhaseVocoderD::getNumFrames(N, H);
+  int J = rsSpectrogramD::getNumFrames(N, H);
                                       
   // create the window function:
   double wa[B], ws[B], w[B];
-  rsPhaseVocoderD::hanningWindowZN(wa, B);
-  rsPhaseVocoderD::hanningWindowZN(ws, B);
+  rsSpectrogramD::hanningWindowZN(wa, B);
+  rsSpectrogramD::hanningWindowZN(ws, B);
   RAPT::rsArray::multiply(wa, ws, w, B);
 
     // todo: try different window functions: Hmaming, Blackman, versions with both ends nonzero
@@ -139,7 +139,7 @@ void plotWindows()
     RAPT::rsArray::addInto(yw, N, w, B, n-B/2);
     n += H;
   }
-  double s = rsPhaseVocoderD::getWindowSum(wa, ws, B, H);
+  double s = rsSpectrogramD::getWindowSum(wa, ws, B, H);
   RAPT::rsArray::scale(yw, N, 1/s);
   plt.addDataArrays(N, yw);
 
@@ -181,7 +181,7 @@ void spectrogramSine()
 
   // create the window function:
   double w[B];
-  rsPhaseVocoderD::hanningWindowZN(w, B); // todo: create also the time-derivative and the 
+  rsSpectrogramD::hanningWindowZN(w, B); // todo: create also the time-derivative and the 
                                           // time-ramped window for reassignment later
 
   // create the test signal:
@@ -190,7 +190,7 @@ void spectrogramSine()
   RAPT::rsArray::scale(x, N/2, 0.1);   // amplitude switch in the middle of the signal
 
   // compute the complex spectrogram:
-  rsMatrix<rsComplexDbl> s = rsPhaseVocoderD::complexSpectrogram(x, N, w, B, H, P);
+  rsMatrix<rsComplexDbl> s = rsSpectrogramD::complexSpectrogram(x, N, w, B, H, P);
   int F = s.getNumRows();
 
   // compute (magnitude) spectrogram and phasogram:
@@ -217,7 +217,7 @@ void spectrogramSine()
   plotSpectrogram(F, K, dB, fs, H);
 
   // resynthesize and plot signal:
-  std::vector<double> y  = rsPhaseVocoderD::synthesize(s, w, B, H, w);
+  std::vector<double> y  = rsSpectrogramD::synthesize(s, w, B, H, w);
   plotVector(y);
 
   // free dynamically memory:
@@ -346,7 +346,7 @@ std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleR
 template<class T>
 rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate)
 {
-  rsPhaseVocoder<T> phsVoc;
+  rsSpectrogram<T> phsVoc;
 
   phsVoc.setBlockSize(2048);
   phsVoc.setHopSize(256);

@@ -3,23 +3,11 @@
 
 /** This is .... under construction ...
 
-todo:
--maybe factor out a class rsSpectrogramProcessor - the phase vocoder is actually a higher level
- of analysis on top of the spectrogram
- -actually, the original phase vocoder relies on multiplication of the signal with various complex
-  sinusoids ("heterodyning") and a filter bank - maybe rename the class here to rsSpectrogram and 
-  additionally implement a true phase vocoder (see DAFX, Ch. 8 - Time-frequency processing)
-  -maybe that true phase vocoder may be extended by allowing the complex sinusoids to be not 
-  necessarily harmonic and vary in frequency (and maybe also allowing the filters to have 
-  time-variying bandwidths) - this could be used to track the frequency of the partial being 
-  analyzed (but requires a preliminary knowlegde of the frequency trajectory of the partial=
-  ...maybe we can firsat obtain preliminary (rough) frequency tracks by spectrogram processing and
-  the refine them by a time-varying phase vocoder approach...and then use that data to refine 
-  further etc. until it converges
+
 -implement move contructors for rsArray and rsMatrix  */
 
 template<class T>
-class rsPhaseVocoder
+class rsSpectrogram
 {
 
 public:
@@ -35,10 +23,10 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  rsPhaseVocoder();
+  rsSpectrogram();
 
   /** Destructor. */
-  ~rsPhaseVocoder();
+  ~rsSpectrogram();
 
 
   /** \name Setup */
@@ -131,9 +119,9 @@ public:
   /** Computes the amplitude modulation signal that would be imposed on a signal when doing an
   analysis/synthesis roundtrip with the given analysis- and synthesis-windows and block- and
   hop-size. This can be used for demodulating a resynthesized signal, making the
-  analysis/resynthesis/demodulation roundtrip a unity-operation.
-  Note: In typical phase-vocoder implementations, these window-shapes and block- and hopssize are
-  chose such that this amplzide modulation signal comes out as a constant value (or, even better,
+  analysis/resynthesis/demodulation roundtrip a identity-operation (up to roundoff).
+  Note: In typical phase-vocoder implementations, these window-shapes and block- and hopssizes are
+  chosen such that this amplzide modulation signal comes out as a constant value (or, even better,
   unity). To make the implementation more flexible with regard to the choice of these parameters,
   this function can be can be used to get the modulation signal and divide by it for
   demodulation. */

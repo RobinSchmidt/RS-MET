@@ -1,13 +1,13 @@
 // Construction/Destruction:
 
 template<class T>
-rsPhaseVocoder<T>::rsPhaseVocoder()
+rsSpectrogram<T>::rsSpectrogram()
 {
   //init();
 }
 
 template<class T>
-rsPhaseVocoder<T>::~rsPhaseVocoder()
+rsSpectrogram<T>::~rsSpectrogram()
 {
 
 }
@@ -18,7 +18,7 @@ rsPhaseVocoder<T>::~rsPhaseVocoder()
 // Inquiry:
 
 template<class T>
-int rsPhaseVocoder<T>::getNumFrames(int N, int H)
+int rsSpectrogram<T>::getNumFrames(int N, int H)
 {
   int tmp = N+H-1;
   int F = tmp/H;
@@ -28,7 +28,7 @@ int rsPhaseVocoder<T>::getNumFrames(int N, int H)
 }
 
 template<class T>
-T rsPhaseVocoder<T>::getWindowSum(T *wa, T *ws, int B, int H)
+T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
 {
   T s = 0;
   for(int n = 0; n < B; n += H)
@@ -39,7 +39,7 @@ T rsPhaseVocoder<T>::getWindowSum(T *wa, T *ws, int B, int H)
 // Processing:
 
 template<class T>
-void rsPhaseVocoder<T>::hanningWindowZN(T *w, int N)
+void rsSpectrogram<T>::hanningWindowZN(T *w, int N)
 {
   T s = 2*PI/N; // for a window that ends with zero: w[N-1]=0, this would be s=2*PI/(N-1)
   for(int n = 0; n < N; n++)
@@ -49,7 +49,7 @@ void rsPhaseVocoder<T>::hanningWindowZN(T *w, int N)
 // x: signal, N: number of samples, n: block center sample, w: window, B: blocksize, M: FFT size,
 // X: complex short-time spectrum (output)
 template<class T>
-void rsPhaseVocoder<T>::shortTimeSpectrum(T *x, int N, int n, T *w,
+void rsSpectrogram<T>::shortTimeSpectrum(T *x, int N, int n, T *w,
   int B, int M, std::complex<T> *X)
 {
   int pad = (M-B)/2;                        // amount of pre/post zero padding
@@ -70,7 +70,7 @@ void rsPhaseVocoder<T>::shortTimeSpectrum(T *x, int N, int n, T *w,
 }
 
 template<class T>
-rsMatrix<std::complex<T>> rsPhaseVocoder<T>::complexSpectrogram(T *x, int N, T *w,
+rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(T *x, int N, T *w,
   int B, int H, int P)
 {
   // x: signal, N: number of samples, w: window, B: blocksize, H: hopsize, P: padding factor
@@ -94,7 +94,7 @@ rsMatrix<std::complex<T>> rsPhaseVocoder<T>::complexSpectrogram(T *x, int N, T *
 }
 
 template<class T>
-std::vector<T> rsPhaseVocoder<T>::synthesize(const rsMatrix<std::complex<T>> &s, T *ws,
+std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s, T *ws,
   int B, int H, T *wa)
 {
   // s: spectrogram, ws: synthesis-window, B: block size, H: hop size, wa: analysis window,
@@ -107,7 +107,7 @@ std::vector<T> rsPhaseVocoder<T>::synthesize(const rsMatrix<std::complex<T>> &s,
 }
 
 template<class T>
-rsMatrix<T> rsPhaseVocoder<T>::timeReassignment(T *x, int N,
+rsMatrix<T> rsSpectrogram<T>::timeReassignment(T *x, int N,
   const rsMatrix<std::complex<T>> &s, T *wr, int B, int H)
 {
   // x: signal, N: number of samples, s: complex spectrogram, wr: time-ramped window, B: blocksize,
@@ -124,7 +124,7 @@ rsMatrix<T> rsPhaseVocoder<T>::timeReassignment(T *x, int N,
 }
 
 template<class T>
-rsMatrix<T> rsPhaseVocoder<T>::frequencyReassignment(T *x, int N,
+rsMatrix<T> rsSpectrogram<T>::frequencyReassignment(T *x, int N,
   const rsMatrix<std::complex<T>> &s, T *wd, int B, int H)
 {
   // x: signal, N: number of samples, s: complex spectrogram, wd: window derivative, B: blocksize,
@@ -162,7 +162,7 @@ void addInto(T *x, int N, T *y, int L, int n = 0)
 */
 
 template<class T>
-std::vector<T> rsPhaseVocoder<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &s,
+std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &s,
   T *w, int B, int H)
 {
   // w: window, B: blocksize, H: hopsize, s: complex spectrogram
@@ -200,7 +200,7 @@ std::vector<T> rsPhaseVocoder<T>::synthesizeRaw(const rsMatrix<std::complex<T>> 
 }
 
 template<class T>
-std::vector<T> rsPhaseVocoder<T>::getModulation(T *wa, T *ws, int B, int H, int F)
+std::vector<T> rsSpectrogram<T>::getModulation(T *wa, T *ws, int B, int H, int F)
 {
   // wa: analysis window, ws: synthesis-window, B: block size, H: hop size, F: number of frames
   int N = (F-1) * H + B/2;      // number of samples
@@ -217,11 +217,29 @@ std::vector<T> rsPhaseVocoder<T>::getModulation(T *wa, T *ws, int B, int H, int 
 // Misc:
 /*
 template<class T>
-void rsPhaseVocoder<T>::init()
+void rsSpectrogram<T>::init()
 {
   //fs = 44100.0;   // samplerate
   //Nb = 512;       // block size
   //Nh = Nb/2;      // hop size
   //Nf = Nb*2;      // FFT size
 }
+*/
+
+
+
+/*
+todo:
+
+-the original phase vocoder relies on multiplication of the signal with various complex
+ sinusoids ("heterodyning") and a filter bank - maybe additionally implement a true phase vocoder
+ (see DAFX, Ch. 8 - Time-frequency processing)
+-maybe that true phase vocoder may be extended by allowing the complex sinusoids to be not 
+ necessarily harmonic and vary in frequency (and maybe also allowing the filters to have 
+ time-variying bandwidths) - this could be used to track the frequency of the partial being 
+ analyzed (but requires a preliminary knowlegde of the frequency trajectory of the partial=
+ ...maybe we can firsat obtain preliminary (rough) frequency tracks by spectrogram processing and
+ the refine them by a time-varying phase vocoder approach...and then use that data to refine 
+ further etc. until it converges
+
 */
