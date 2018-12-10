@@ -47,7 +47,7 @@ namespace RAPT
 //#include "Analysis/ResponseGetters.cpp"
 
 // under construction:
-#include "Sampling/PhaseVocoder.cpp"
+#include "Sampling/Spectrogram.cpp"
 #include "Sampling/SinusoidalModel.cpp"
 #include "Sampling/MiscUnfinished.cpp"
 #include "Sampling/SampleManipulation.cpp"

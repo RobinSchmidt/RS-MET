@@ -346,12 +346,12 @@ std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleR
 template<class T>
 rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate)
 {
-  rsSpectrogram<T> phsVoc;
+  rsSpectrogram<T> spectrogram;
 
-  phsVoc.setBlockSize(2048);
-  phsVoc.setHopSize(256);
-  phsVoc.setZeroPaddingFactor(1);
-  size_t numBins = phsVoc.getNumNonRedundantBins();
+  spectrogram.setBlockSize(2048);
+  spectrogram.setHopSize(256);
+  spectrogram.setZeroPaddingFactor(1);
+  size_t numBins = spectrogram.getNumNonRedundantBins();
 
 
   // -maybe pre-process the input signal by flattening the pitch and make the period coincide with
