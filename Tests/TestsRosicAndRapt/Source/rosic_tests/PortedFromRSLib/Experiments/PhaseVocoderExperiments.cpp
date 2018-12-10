@@ -343,6 +343,33 @@ std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleR
   return x;
 }
 
+// move to library:
+template<class T>
+rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
+{
+  int N = A.getNumRows();
+  int M = A.getNumColumns();
+  rsMatrix<T> mags(N, M);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < M; j++)
+      mags(i, j) = abs(A(i, j));
+  return mags;
+}
+template<class T>
+rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
+{
+  int N = A.getNumRows();
+  int M = A.getNumColumns();
+  rsMatrix<T> phases(N, M);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < M; j++)
+      phases(i, j) = arg(A(i, j));
+  return phases;
+}
+// maybe factor out common code...maybe something like applyMatrixFunction with different
+// input and output types for the template parameter
+
+
 template<class T>
 rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate)
 {
@@ -363,6 +390,10 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   sp.setZeroPaddingFactor(1);
   size_t numBins = sp.getNumNonRedundantBins();
   rsMatrix<std::complex<T>> s = sp.complexSpectrogram(sampleData, numSamples);
+  rsMatrix<T> mag = matrixMagnitudes(s);
+  rsMatrix<T> phs = matrixPhases(s);
+
+  // ...maybe plot the spectrogram here...
 
   int dummy = 0;
 
