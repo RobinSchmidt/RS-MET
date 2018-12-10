@@ -3,7 +3,7 @@
 template<class T>
 rsPhaseVocoder<T>::rsPhaseVocoder()
 {
-  init();
+  //init();
 }
 
 template<class T>
@@ -167,12 +167,12 @@ std::vector<T> rsPhaseVocoder<T>::synthesizeRaw(const rsMatrix<std::complex<T>> 
 {
   // w: window, B: blocksize, H: hopsize, s: complex spectrogram
 
-  int F  = s.getNumRows();                // number of frames
-  int K  = s.getNumColumns();             // number of (non-redundant) bins
-  int N  = (F-1) * H + B/2;               // number of samples
-  int M  = (K-1) * 2;                     // FFT size
-  int k0 = (M-B) / 2;                     // read start in resynthesized grain before the
-                                          // resynthesis window is applied
+  int F  = s.getNumRows();           // number of frames
+  int K  = s.getNumColumns();        // number of (non-redundant) bins
+  int N  = (F-1) * H + B/2;          // number of samples
+  int M  = (K-1) * 2;                // FFT size
+  int k0 = (M-B) / 2;                // read start in resynthesized grain before the
+                                     // resynthesis window is applied
   std::vector<T> y(N);               // allocate signal
   std::vector<T> g(B);               // grain
   std::complex<T> *Y = new std::complex<T>[M];  // short-time spectrum
@@ -203,9 +203,9 @@ template<class T>
 std::vector<T> rsPhaseVocoder<T>::getModulation(T *wa, T *ws, int B, int H, int F)
 {
   // wa: analysis window, ws: synthesis-window, B: block size, H: hop size, F: number of frames
-  int N = (F-1) * H + B/2;         // number of samples
-  std::vector<T> y(N);        // modulation signal
-  T *w = new T[B];       // product-window
+  int N = (F-1) * H + B/2;      // number of samples
+  std::vector<T> y(N);          // modulation signal
+  T *w = new T[B];              // product-window
   for(int n = 0; n < B; n++)
     w[n] = wa[n] * ws[n];
   for(int i = 0; i < F; i++)
@@ -215,7 +215,7 @@ std::vector<T> rsPhaseVocoder<T>::getModulation(T *wa, T *ws, int B, int H, int 
 }
 
 // Misc:
-
+/*
 template<class T>
 void rsPhaseVocoder<T>::init()
 {
@@ -224,4 +224,4 @@ void rsPhaseVocoder<T>::init()
   //Nh = Nb/2;      // hop size
   //Nf = Nb*2;      // FFT size
 }
-
+*/

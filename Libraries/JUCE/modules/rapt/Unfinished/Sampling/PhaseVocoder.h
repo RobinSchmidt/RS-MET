@@ -6,6 +6,16 @@
 todo:
 -maybe factor out a class rsSpectrogramProcessor - the phase vocoder is actually a higher level
  of analysis on top of the spectrogram
+ -actually, the original phase vocoder relies on multiplication of the signal with various complex
+  sinusoids ("heterodyning") and a filter bank - maybe rename the class here to rsSpectrogram and 
+  additionally implement a true phase vocoder (see DAFX, Ch. 8 - Time-frequency processing)
+  -maybe that true phase vocoder may be extended by allowing the complex sinusoids to be not 
+  necessarily harmonic and vary in frequency (and maybe also allowing the filters to have 
+  time-variying bandwidths) - this could be used to track the frequency of the partial being 
+  analyzed (but requires a preliminary knowlegde of the frequency trajectory of the partial=
+  ...maybe we can firsat obtain preliminary (rough) frequency tracks by spectrogram processing and
+  the refine them by a time-varying phase vocoder approach...and then use that data to refine 
+  further etc. until it converges
 -implement move contructors for rsArray and rsMatrix  */
 
 template<class T>
@@ -13,6 +23,14 @@ class rsPhaseVocoder
 {
 
 public:
+
+  enum windowTypes
+  {
+    RECTANGULAR_WINDOW = 0,
+    HANNING_WINDOW
+    // HAMMING_WINDOW,
+    // BLACKMAN_HARRIS_WINDOW,
+  };
 
   /** \name Construction/Destruction */
 
@@ -25,9 +43,25 @@ public:
 
   /** \name Setup */
 
+  void setBlockSize(int newBlockSize) { blockSize = newBlockSize; }
+
+  void setHopSize(int newHopSize) { hopSize = newHopSize; }
+
+  void setZeroPaddingFactor(int newFactor) { zeroPaddingFactor = newFactor; }
+
 
 
   /** \name Inquiry */
+
+
+
+  size_t getFftSize() const { return blockSize * zeroPaddingFactor; }
+
+  size_t getNumNonRedundantBins() const { return getFftSize()/2 + 1; }
+
+
+
+
 
 
   /** Computes the required number of frames, given the length of the signal and the hopsize.
@@ -107,10 +141,13 @@ public:
     int blockSize, int hopSize, int numFrames);
 
 
+    // is this formula also correct for odd fft sizes? verify?
+
+
   /** \name Misc */
 
   /** Sets up the analysis/synthesis parameters to default values. */
-  void init();
+  //void init();
 
 
 protected:
@@ -119,6 +156,12 @@ protected:
 
 
   /** \name Data */
+
+  int blockSize = 512;
+  int hopSize   = 128;
+  int zeroPaddingFactor = 1;
+  int windowType = HANNING_WINDOW;
+
 
   //T fs;   // samplerate
 

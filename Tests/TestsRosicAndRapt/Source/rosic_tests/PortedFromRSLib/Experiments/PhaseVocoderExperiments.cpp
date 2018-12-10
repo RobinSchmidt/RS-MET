@@ -182,7 +182,7 @@ void spectrogramSine()
   // create the window function:
   double w[B];
   rsPhaseVocoderD::hanningWindowZN(w, B); // todo: create also the time-derivative and the 
-                                         // time-ramped window for reassignment later
+                                          // time-ramped window for reassignment later
 
   // create the test signal:
   double x[N];
@@ -278,7 +278,10 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
       for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
         upd[k] += d;
   }
-  // maybe the unwrapped phase computation should be factored out into a function 
+  // maybe the unwrapped phase computation should be factored out into a function
+  // maybe provide an alternative implementation that uses the measured (unwrapped) phases y and 
+  // the measured instantaneous frequencies as y'' in a Hermite interpolation scheme (this is how
+  // it's described in the literature)
 
   // interpolate the amplitude and unwrapped phase data to sample-rate:
   std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
@@ -320,6 +323,7 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   for(size_t n = 0; n < N; n++)
     s[n] = x[nStart+n] += a[n] * sin(p[n]);
 
+
   GNUPlotter plt;
   //plt.addDataArrays(M, &td[0], &fd[0]);
   //plt.addDataArrays((int)M, &td[0], &upd[0]);
@@ -339,34 +343,89 @@ std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleR
   return x;
 }
 
+template<class T>
+rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate)
+{
+  rsPhaseVocoder<T> phsVoc;
+
+  phsVoc.setBlockSize(2048);
+  phsVoc.setHopSize(256);
+  phsVoc.setZeroPaddingFactor(1);
+  size_t numBins = phsVoc.getNumNonRedundantBins();
+
+
+  // -maybe pre-process the input signal by flattening the pitch and make the period coincide with
+  //  a fraction of the analysis frame size 
+  // -we should keep the time warping map around and when done with the analysis, use it to 
+  //  re-map the time-instants in the model
+  // -we should also keep the corresponding (instantaneous) frequency modifier around and apply
+  //  the inverse to the freq data in the model
+  //  ...but later - first, let's see how far we get without such a pre-processing and try to make 
+  //  the algorithm work well under this (suboptimal) condition, too
+
+
+
+  typedef RAPT::rsSinusoidalPartial<double> Partial;
+  std::vector<Partial> partials; 
+
+
+
+  // algorithm:
+  // -obtain a spectrogram
+  // -initialize the set of active partials to be empty
+  // -scan through this spectrogram from right to left - i.e. start at the end
+  // -for each frame m, do:
+  //  -find the spectral peaks in the frame
+  //  -for each peak k in the frame, do:
+  //   -figure out its exact frequency, amplitude and phase (and maybe time, if re-assignment is 
+  //    used)
+  //   -try to find a match in the set of active partials:
+  //    -if a match is found, prepend the new datapoint to that matched partial
+  //    -if no match is found, start a new partial at frame m+1 with zero amplitude and prepend
+  //     the new datapoint (time m)
+  //   -if there are active partials that have not been used up by this matching procedure, prepend
+  //    a datapoint with amplitude zero at time m into them - they end now
+  // 
+  // -whenever a partial is created at time m, it will fade in from amplitude 0 at m-1 and whenever
+  //  one is killed (i.e. not continued from m+1 to m), it will fade out to reach zero at time m
+
+  // -maybe after this is all done, we may go over the data a second time to see if we can merge
+  //  and/or remove partials
+
+
+  // -find peak frequency by (parabolic) interpolation (or maybe cubic?)
+  // -evaluate complex amplitude at peak-freq
+  // -compute magnitude phase from interpolated complex amplitude and store in one of the partials
+  // -if no suitable partial is found for continuation, start a new partial iff there is a 
+  //  fitting candidate peak in the frame to the left and right - if so, create a partial spanning
+  //  these 3 frames - so, each partial is at least 3 frames long...hmm...or maybe look only one 
+  //  frame backward (when the scanning/sweeping direction is forward
+  // -start scanning forward to the spectrogram after the transient has passed, later extend the
+  //  partials towards the start by scanning backward from the start position
+  // -maybe later find (multiple) transients via the onset detector
+
+
+
+  rsSinusoidalModel<T> model;
+  // model.addPartials(partials);
+  return model;
+}
+
+
 void sinusoidalModel1()
 {
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
-  RAPT::rsSinusoidalModel<double> model;
+  RAPT::rsSinusoidalModel<double> model, model2;
   //RAPT::rsSinusoidalSynthesizer<double> synthesizer;
 
   double stretch = 1.0;
-  partial.appendDataPoint(ISP(stretch*0.0, 100.0, 0.4, 0.0)); // time, freq, amp, phase
+  partial.appendDataPoint(ISP(stretch*0.0, 100.0, 0.4, 0.0));    // time, freq, amp, phase
   partial.appendDataPoint(ISP(stretch*0.4, 100.0, 0.2,  PI/2));
   partial.appendDataPoint(ISP(stretch*0.8, 150.0, 0.8, -PI/2));
   partial.appendDataPoint(ISP(stretch*1.2, 100.0, 0.4, 0.0));
   partial.appendDataPoint(ISP(stretch*1.6, 200.0, 0.2,  PI));
   partial.appendDataPoint(ISP(stretch*2.0, 100.0, 0.8, 0.0));
-
-  //// test with all phases zero:
-  //partial.appendDataPoint(ISP(stretch*0.0, 100.0, 0.4, 0.0)); // time, freq, amp, phase
-  //partial.appendDataPoint(ISP(stretch*0.4, 100.0, 0.2, 0.0));
-  //partial.appendDataPoint(ISP(stretch*0.8, 150.0, 0.8, 0.0));
-  //partial.appendDataPoint(ISP(stretch*1.2, 100.0, 0.4, 0.0));
-  //partial.appendDataPoint(ISP(stretch*1.6, 200.0, 0.2, 0.0));
-  //partial.appendDataPoint(ISP(stretch*2.0, 100.0, 0.8, 0.0));
-
-  // it seems, the phase is still wrong and there's one sample too little in the resulting signal
-
-  // cycles[m] = cycles[m-1] + 0.5*(freq[m]+freq[m-1]) * (time[m]-time[m-1])
-  // ...hmm...i really think this should not be part of the data structure - it should be computed 
-  // during synthesis
 
   // other idea: maybe instead of representing amplitude and phase, we can use a complex amplitude?
   // ...but that can actually be left to the synthesis algorithm - we may have one that uses amp 
@@ -377,6 +436,13 @@ void sinusoidalModel1()
   //double fs = 5000; // for plot
   //std::vector<double> x = synthesizer.synthesize(model, fs);
   std::vector<double> x = synthesizeSinusoidal(model, fs);
+
+  // make a sinusoidal analysis of the sound that we have just created and re-create the sound
+  // from the model that results from this analysis:
+  model2 = analyzeSinusoidal(&x[0], (int)x.size(), fs);
+  std::vector<double> y = synthesizeSinusoidal(model2, fs);
+
+
 
 
   rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);

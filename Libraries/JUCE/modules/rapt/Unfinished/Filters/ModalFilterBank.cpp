@@ -614,3 +614,29 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TP
   return r;
 }
 
+/*
+Idea 
+
+use an adjustable mix of different imput signals: 
+-unit impulse: pluck/strike, maybe use other kinds of impulse-like signals
+-white noise: blowing, maybe use different kinds of noises - different probability densities,
+ maybe coloring, maybe a bimodal density could be interesting as well
+
+modeling a scraping input signal:
+-use impulse train with adjustable random jitter
+-amplitude for each pulse may also be randomized and/or be a function of the time passed since the
+ previous pulse in order to normalize the energy over time (denser pulses should be more quiet)
+-maybe use a box-filter to give each pulse a width - maybe that width can also be randomized (then
+ the amplitude normalizer should also take into account the width)
+-maybe use pairs or triples of pulses
+-maybe add two or more of such scrape models
+
+
+modeling transients:
+-transients are modeled as superposition attack/decay envelope filters (i.e. zero frequency) with
+ delay
+-maybe an interative matching procedure can be used to find the parameters of the filters
+
+-or maybe use modeling in terms of a general pole/zero model
+
+*/
