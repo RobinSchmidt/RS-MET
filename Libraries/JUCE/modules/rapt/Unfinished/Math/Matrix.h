@@ -233,6 +233,12 @@ public:
     return data->m;
   }
 
+  /** Returns a pointer to the row with geiven index. */
+  T* getRowPointer(int index) const
+  {
+    return data->m[index];
+  }
+
   // getRank, getConditionNumber, getTrace, getDeterminant, getFrobeniusNorm, getEuclideanNorm
 
   //rsMatrix getSubMatrix(int fromRow, int toRow, int fromColumn, int toColumn);
@@ -247,6 +253,8 @@ public:
   {
     return data->m[i][j];
   }
+
+
 
   ///** Accesses the element at given index-pair for reading. */
   //const T& operator()(const int i, const int j) const

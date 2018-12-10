@@ -71,6 +71,8 @@ public:
 
   size_t getNumNonRedundantBins() const { return getFftSize()/2 + 1; }
 
+  int getHopSize() const { return hopSize; }
+
 
 
 

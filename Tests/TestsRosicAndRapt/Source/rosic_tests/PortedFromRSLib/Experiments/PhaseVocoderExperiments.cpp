@@ -383,32 +383,63 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   //  the algorithm work well under this (suboptimal) condition, too
 
 
+  // Obtain a spectrogram:
   rsSpectrogram<T> sp;  // maybe it should be called rsSpectrogramProcessor because
                         // the spectrogram itself it the STFT matrix
-  sp.setBlockSize(2048);
-  sp.setHopSize(256);
+  sp.setBlockSize(4096);
+  sp.setHopSize(2048);
   sp.setZeroPaddingFactor(1);
-  size_t numBins = sp.getNumNonRedundantBins();
-  rsMatrix<std::complex<T>> s = sp.complexSpectrogram(sampleData, numSamples);
-  rsMatrix<T> mag = matrixMagnitudes(s);
-  rsMatrix<T> phs = matrixPhases(s);
+  //size_t numBins = sp.getNumNonRedundantBins();
+  rsMatrix<std::complex<T>> stft = sp.complexSpectrogram(sampleData, numSamples);
+  rsMatrix<T> mag = matrixMagnitudes(stft);
+  rsMatrix<T> phs = matrixPhases(stft);
 
   // ...maybe plot the spectrogram here...
+
+  // Initializations:
+  typedef RAPT::rsSinusoidalPartial<double> Partial;
+  std::vector<Partial> partials;     // array of active partials (empty at first)
+  int numFrames  = stft.getNumRows();
+  int numBins    = stft.getNumColumns();
+  int frameStep  = +1;  // +1: scan through frames forward, -1: backward
+  int firstFrame = 0; 
+  int lastFrame  = numFrames-1;
+  if(frameStep == -1)
+    rsSwap(firstFrame, lastFrame);
+  int frameIndex  = firstFrame;
+
+  //bool plotShortTimeSpectra = true;
+
+  // needed for plotting only:
+  std::vector<T> freqs(numBins);
+  for(int i = 0; i < numBins; i++)
+    freqs[i] = i * sampleRate / sp.getFftSize();
+
+  // loop over the frames:
+  while(frameIndex != lastFrame) {
+
+    T time = frameIndex * sp.getHopSize() / sampleRate;
+    T* pMag = mag.getRowPointer(frameIndex);
+    T* pPhs = phs.getRowPointer(frameIndex);
+    std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
+
+    //plotData(numBins/64, &freqs[0], pMag); // for development
+
+    // find spectral peaks
+
+    frameIndex += frameStep;
+  }
+
+  // if(frameStep == -1) time-reverse all partials
+
 
   int dummy = 0;
 
 
 
-
-
-  typedef RAPT::rsSinusoidalPartial<double> Partial;
-  std::vector<Partial> partials; 
-
-
-
   // algorithm:
-  // -obtain a spectrogram (done)
-  // -initialize the set of active partials to be empty (done)
+
+
   // -scan through this spectrogram from right to left - i.e. start at the end
   // -for each frame m, do:
   //  -find the spectral peaks in the frame
