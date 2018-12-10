@@ -423,7 +423,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     T* pPhs = phs.getRowPointer(frameIndex);
     std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
 
-    //plotData(numBins/64, &freqs[0], pMag); // for development
+    plotData(numBins/64, &freqs[0], pMag); // for development
 
     // find spectral peaks
 
@@ -516,16 +516,26 @@ void sinusoidalModel1()
 
 void sinusoidalAnalysis1()
 {
-  double sampleRate = 1024;  // in Hz
-  double frequency  = 128;   // in Hz
-  double length     = 1.0;   // in seconds
-  double startPhase = 0.0;   // in radians
+  double sampleRate = 48000;  // in Hz
+  double frequency  = 100;    // in Hz
+  double length     = 0.2;    // in seconds
+  double startPhase = 0.0;    // in radians
+  int    blockSize  = 1024;   // a bit larger than 2 cycles (1 is 480 samples with 100Hz@48kHz)
+  int    hopSize    = 256;
+  int    zeroPad    = 1;
 
-  //int block
+  // create signal:
+  double period = sampleRate / frequency;    // in samples
+  int N = (int)ceil(length * sampleRate);    // number of samples
+  std::vector<double> x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = sin(n * 2*PI*frequency/sampleRate + startPhase);
 
+  // find model for the signal:
+  rsSinusoidalModel<double> model = analyzeSinusoidal(&x[0], N, sampleRate);
 
-  double period = sampleRate / frequency;          // in samples
-  int numSamples = (int)ceil(length * sampleRate);
+  // todo: resynthesize and create residual
+
 
   int dummy = 0;
 }

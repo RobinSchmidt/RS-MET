@@ -11,6 +11,8 @@ void spectrogramSine();
 
 void sinusoidalModel1();
 
+void sinusoidalAnalysis1();
+
 
 // resynthesis:
 

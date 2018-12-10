@@ -314,7 +314,8 @@ int main(int argc, char* argv[])
   //grainRoundTrip();        // under construction
   //plotWindows();
   //spectrogramSine();
-  sinusoidalModel1();
+  sinusoidalAnalysis1();
+  //sinusoidalModel1();
 
   // Physics:
   //doublePendulum(); // takes long
