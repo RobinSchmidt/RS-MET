@@ -479,6 +479,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 }
 
 
+// rename to testSinusoidalSynthesis1
 void sinusoidalModel1()
 {
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
@@ -509,12 +510,36 @@ void sinusoidalModel1()
   model2 = analyzeSinusoidal(&x[0], (int)x.size(), fs);
   std::vector<double> y = synthesizeSinusoidal(model2, fs);
 
-
-
-
   rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
   int dummy = 0;
 }
+
+void sinusoidalAnalysis1()
+{
+  double sampleRate = 1024;  // in Hz
+  double frequency  = 128;   // in Hz
+  double length     = 1.0;   // in seconds
+  double startPhase = 0.0;   // in radians
+
+  //int block
+
+
+  double period = sampleRate / frequency;          // in samples
+  int numSamples = (int)ceil(length * sampleRate);
+
+  int dummy = 0;
+}
+
+
+// make various tests for the sinusoidal analysis of increasing level of difficulty:
+// 1: single sinusoid with stable frequency and amplitude
+//  -check, if the frequency a nd ampltude is etsimated accurately
+//  -try frequencies that coincide with bin-centers (best case) and those that fall halfway 
+//   between bins (worts case) and some intermediate cases
+// 2: single sinuosoid with time-variying amplitude
+// 3: two sinusoids with stable freq and amp
+//  -check, how each influences the analysis of the other - as function of their frequencies
+// ....
 
 
 /*
