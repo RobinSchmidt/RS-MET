@@ -415,7 +415,6 @@ void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
 // interpolate between two values that are supposed to wrapping around and alway be in xMin..xMax, 
 // for example -1..1, 0..1, 0..2*pi, -pi..pi, etc. t is the interpolation parameter between 0..1 
 // where such that x = (1-t)*x0 + t*x1 = x0 + t*(x1-x0)
-
 template<class T> 
 T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
 {
@@ -446,33 +445,89 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
 // move to library and check if it is correct (maybe by a unit test?)...and if it can be simplified
 
 
-/*
+
 template<class T>
-RAPT::rsInstantaneousSineParams<T> peakSineParams(std::complex<T>* s, int k, T time, T fs)
+size_t findBestMatch(T freq, std::vector<RAPT::rsSinusoidalPartial<double>>& tracks,
+  T maxFreqDeviation, const std::vector<bool>& trackContinued)
 {
-  RAPT::rsInstantaneousSineParams<T> params;
-  params.time = time;
-
-  // coeffs of parabolic interpolant of log-magnitudes:
-  T a[3], y[3];
-  y[0] = log(abs(s[k-1]));   // left
-  y[1] = log(abs(s[k]));     // mid
-  y[2] = log(abs(s[k+1]));   // right
-  fitQuadratic_m1_0_1(a, y);
-
-  T d = quadraticExtremumPosition(a);
-
-  T bin = k + d;
-  // preliminary:
-  params.freq  = 0;  // we need the sampleRate to compute physical frequency
-  params.gain  = 0;
-  params.phase = 0;
-
-  return params;
+  T dfMin = RS_INF(T);  
+  size_t bestIndex = 0;
+  for(size_t i = 0; i < tracks.size(); i++) {
+    T trackFreq = tracks[i].getEndFreq();
+    T df = rsAbs(freq - trackFreq);
+    if(df < dfMin && trackContinued[i] == false) { // look only in those that are not already continued
+      dfMin = df;
+      bestIndex = i;
+    }
+  }
+  if(dfMin < maxFreqDeviation)
+    return bestIndex;
+  else
+    return tracks.size();
 }
-// this function should compute only binIndex, magnitude and phase...or maybe only the magnitude
-*/
 
+// this implements the peak continuation step
+template<class T>
+void continuePartialTracks(
+  std::vector<RAPT::rsInstantaneousSineParams<double>>& newPeakData,
+  std::vector<RAPT::rsSinusoidalPartial<double>>& activeTracks,
+  std::vector<RAPT::rsSinusoidalPartial<double>>& finishedTracks,
+  T maxFreqDeviation, T frameTimeDelta, int direction) // additionally needed information
+{
+  // -create an array of index pairs for continuation (1st index: track (in activeTracks)
+  //  to be coninued, 2nd index: peak index peakData to be appended
+  // -create an array of track indices that have been discontinued
+  // -create and array of peak indices that create a new track
+
+  // initializations:
+  typedef std::pair<size_t, size_t> IndexPair;
+  std::vector<IndexPair> continuationPairs;  // 1st: activeTracks, 2nd: newPeakData
+  std::vector<size_t> killTrackIndices;      // index into activeTracks
+  std::vector<size_t> birthPeakIndices;      // index into newPeakData
+  size_t pkIdx;                              // peak index
+  size_t trkIdx;                             // track index
+  size_t numActiveTracks = activeTracks.size();
+  std::vector<bool> trackContinued(numActiveTracks);
+  for(trkIdx = 0; trkIdx < numActiveTracks; trkIdx++)
+    trackContinued[trkIdx] = false;
+
+  // loop over the new peaks to figure out birthes and continuations:
+  for(pkIdx = 0; pkIdx < newPeakData.size(); pkIdx++) {
+
+    trkIdx = findBestMatch(newPeakData[pkIdx].freq, activeTracks, 
+      maxFreqDeviation, trackContinued); // looks only in those that are not already continued
+
+    if(trkIdx == activeTracks.size())  // no match found
+      birthPeakIndices.push_back(pkIdx);
+    else {
+      continuationPairs.push_back(IndexPair(trkIdx, pkIdx));
+      trackContinued[trkIdx] = true;
+    }
+  }
+
+  // loop over the "trackContinued" array to figure out deaths:
+  for(trkIdx = 0; trkIdx < numActiveTracks; trkIdx++) {
+    if(trackContinued[trkIdx] == false)
+      killTrackIndices.push_back(trkIdx);
+  }
+
+
+
+
+
+  int dummy = 0;
+
+  // for all current spectral peaks in newPeakData, find a corresponding partner among the 
+  //  activeTracks
+  // -when a partner is found, continue the track
+  // -when no partner is found, create a new track ("birth")
+  // -all active partials that have not been used in this continuation are killed - a final 
+  //  zero-amplitude value is appended and the partial is moved from active to finished ("death")
+  //  
+
+  // maybe make a subclass of rsSinusoidalPartial that has some additional data fields that are 
+  // relevant only during analysis and may be dropped later
+}
 
 template<class T>
 rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate)
@@ -491,12 +546,10 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   int hopSize = 2048;
   int zeroPaddingFactor = 2;
 
-  // test:
-  blockSize = 1024;
-  hopSize = 32;
-  zeroPaddingFactor = 1;
-
-
+  //// test:
+  //blockSize = 1024;
+  //hopSize = 32;
+  //zeroPaddingFactor = 1;
 
   // Obtain a spectrogram:
   rsSpectrogram<T> sp;  // maybe it should be called rsSpectrogramProcessor because
@@ -528,7 +581,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 
 
   // ...maybe plot the spectrogram here...
-  plotPhasogram(numFrames, numBins, phs.getDataPointer(), sampleRate, sp.getHopSize());
+  //plotPhasogram(numFrames, numBins, phs.getDataPointer(), sampleRate, sp.getHopSize());
 
 
   std::vector<Partial> activeTracks, finishedTracks;
@@ -552,42 +605,35 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     T* pPhs = phs.getRowPointer(frameIndex);
     std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
 
-    plotData(numBins/64, &freqs[0], pMag); // for development
-    plotData(numBins/64, &freqs[0], pPhs);
+    //plotData(numBins/64, &freqs[0], pMag); // for development
+    //plotData(numBins/64, &freqs[0], pPhs);
 
     // find spectral peaks:
-    //T peakThresh = 0.01; // 40 dB ...this should be somewhere above the sidelobe level
     T peakThresh = rsDbToAmp(-30.0); // should be somewhere above the sidelobe level
     std::vector<int> peaks = peakIndices(pMag, numBins, peakThresh);
 
-    // determine exact peak frequencies, amplitudes and phases:
+    // determine exact peak frequencies, amplitudes (exact phases are left for later):
     instPeakParams.resize(peaks.size());
     for(size_t i = 0; i < peaks.size(); i++) {
       T peakBin, peakAmp;
       spectralMaximumPositionAndValue(pMag, peaks[i], &peakBin, &peakAmp);
       T peakFreq = peakBin*sampleRate/sp.getFftSize();
       T peakPhase = 0; // preliminary - see comment below function for ideas 
-
       instPeakParams[i].time  = time;
       instPeakParams[i].freq  = peakFreq;
       instPeakParams[i].gain  = peakAmp;
       instPeakParams[i].phase = peakPhase;
-
-      int dummy = 0;
     }
 
-    // for all current spectral peaks, find a corresponding partner among the activePartials
-    // -when a partner is found, continue the track
-    // -when no partner is found, create a new track
-    // -all active partials that have not been used in this continuation are killed - a final 
-    //  zero-amplitude value is appended and the partial is moved from active to finished
-    //  
-
-    // maybe make a subclass of rsSinusoidalPartial that has some additional data fields that are 
-    // relevant only during analysis and may be dropped later
+    // peak continuation, birth or death:
+    double maxFreqDelta = 2*binDelta; // replace factor 2 by adjustable parameter
+    continuePartialTracks(instPeakParams, activeTracks, finishedTracks, 
+      maxFreqDelta, frameDelta, frameStep);
 
     frameIndex += frameStep;
   }
+
+  // move remaining activeTracks to finishedTracks
 
   // if(frameStep == -1) time-reverse all partials
 
@@ -630,7 +676,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 
 
   rsSinusoidalModel<T> model;
-  // model.addPartials(partials);
+  // model.addPartials(finishedTracks);
   return model;
 }
 /*
@@ -712,9 +758,9 @@ void sinusoidalAnalysis1()
   int    zeroPad    = 1;
 
 
-  // test
-  frequency = 5000;
-  length = 0.05; 
+  //// test
+  //frequency = 5000;
+  //length = 0.05; 
 
   // create signal:
   double period = sampleRate / frequency;    // in samples

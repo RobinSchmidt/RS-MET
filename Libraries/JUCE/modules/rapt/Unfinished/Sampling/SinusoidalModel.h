@@ -87,6 +87,23 @@ public:
     return instParams[instParams.size()-1].getTime(); 
   }
 
+
+
+  inline T getStartFreq() const 
+  { 
+    if(instParams.size() == 0) 
+      return T(0);
+    return instParams[0].getFrequency(); 
+  }
+
+  inline T getEndFreq() const 
+  { 
+    if(instParams.size() == 0) 
+      return T(0);
+    return instParams[instParams.size()-1].getFrequency(); 
+  }
+
+
   inline size_t getNumDataPoints() const { return instParams.size(); }
 
   inline rsInstantaneousSineParams<T> getDataPoint(size_t index) const 
