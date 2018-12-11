@@ -412,6 +412,39 @@ void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
   *val = rsDbToAmp(a[0] + (a[1] + a[2]*d)*d);
 }
 
+// interpolate between two values that are supposed to wrapping around and alway be in xMin..xMax, 
+// for example -1..1, 0..1, 0..2*pi, -pi..pi, etc. t is the interpolation parameter between 0..1 
+// where such that x = (1-t)*x0 + t*x1 = x0 + t*(x1-x0)
+
+template<class T> 
+T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
+{
+  T r  = xMax - xMin;  // range
+  T du = x1 + r - x0;  // upper difference
+  T dm = x1     - x0;  // middle difference
+  T dl = x1 - r - x0;  // lower difference
+  T au = rsAbs(du);
+  T am = rsAbs(dm);
+  T al = rsAbs(dl);
+  T x;
+
+  // add an appropriate fraction the delta that has the smalles absolute value to x0:
+  if(au < am && au < al)
+    x = x0 + t*du;
+  else if(am < al)
+    x = x0 + t*dm;
+  else
+    x = x0 + t*dl;
+
+  // re-wrap result into allowed interval:
+  if(x > xMax)
+    x -= r;
+  else if(x < xMin)
+    x += r;
+  return x;
+}
+// move to library and check if it is correct (maybe by a unit test?)...and if it can be simplified
+
 
 /*
 template<class T>
@@ -502,6 +535,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
 
     plotData(numBins/64, &freqs[0], pMag); // for development
+    plotData(numBins/64, &freqs[0], pPhs);
 
     // find spectral peaks:
     //T peakThresh = 0.01; // 40 dB ...this should be somewhere above the sidelobe level
@@ -516,12 +550,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
       T peakFreq = peakBin*sampleRate/sp.getFftSize();
       T peakPhase = 0; // preliminary
 
-      instPeakParams[i].time  = time;
-      instPeakParams[i].freq  = peakFreq;
-      instPeakParams[i].gain  = peakAmp;
-      instPeakParams[i].phase = peakPhase;
 
-      /*
       // how do we best compute the instantaneous phase - linear interpolation?
       int binInt  = peaks[i];
       T   binFrac = peakBin-binInt;
@@ -530,12 +559,23 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
         binFrac  = 1-binFrac;
       }
       //T amp2 = (1-binFrac)*pMag[binInt] + binFrac*pMag[binInt+1]; // another way to compute amplitude - vary bad
-      std::complex<T> binCmpVal = (1-binFrac)*pCmp[binInt] + binFrac*pCmp[binInt+1]; 
-      T binMag = abs(binCmpVal);
-      T binPhs = arg(binCmpVal);
+      //std::complex<T> binCmpVal = (1-binFrac)*pCmp[binInt] + binFrac*pCmp[binInt+1]; 
+      //T binMag = abs(binCmpVal);
+      //T binPhs = arg(binCmpVal);
       // complex value at peak-bin
-      */
+      T phs0 = pPhs[binInt];   // just for debug
+      T phs1 = pPhs[binInt+1]; // dito
+      peakPhase = rsInterpolateWrapped(pPhs[binInt], pPhs[binInt+1], binFrac, -PI, PI);
+      // hmm...it doesn't seem to make sense to interpolate the phase between bind like that - it 
+      // does not seem to be a smooth function - it jumps erratically between bins ...but the 
+      // phasograms in the DAFX book surely look like the FFT phase is almost a constant with 
+      // respect to bin-index near the sinudsoids...plot phasograms...
 
+
+      instPeakParams[i].time  = time;
+      instPeakParams[i].freq  = peakFreq;
+      instPeakParams[i].gain  = peakAmp;
+      instPeakParams[i].phase = peakPhase;
 
       int dummy = 0;
     }
