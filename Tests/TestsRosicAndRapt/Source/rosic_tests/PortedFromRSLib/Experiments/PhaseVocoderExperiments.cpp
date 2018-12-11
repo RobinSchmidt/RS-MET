@@ -466,7 +466,12 @@ size_t findBestMatch(T freq, std::vector<RAPT::rsSinusoidalPartial<double>>& tra
     return tracks.size();
 }
 
-// this implements the peak continuation step
+// this implements the peak continuation step - for all current spectral peaks in newPeakData, find 
+// a corresponding continuation partner among the activeTracks - 3 situations have to be handled:
+// -when a partner is found, continue the track
+// -when no partner is found, create a new track ("birth")
+// -all active tracks that have not been used in this continuation are killed (i.e. moved to 
+//  finishedTracks
 template<class T>
 void continuePartialTracks(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
@@ -474,10 +479,6 @@ void continuePartialTracks(
   std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
   T maxFreqDeviation, T frameTimeDelta, int direction) // additionally needed information
 {
-  // -create an array of index pairs for continuation (1st index: track (in activeTracks)
-  //  to be coninued, 2nd index: peak index peakData to be appended
-  // -create an array of track indices that have been discontinued
-  // -create and array of peak indices that create a new track
 
   // initializations:
   typedef std::pair<size_t, size_t> IndexPair;
@@ -491,13 +492,17 @@ void continuePartialTracks(
   for(trkIdx = 0; trkIdx < numActiveTracks; trkIdx++)
     trackContinued[trkIdx] = false;
 
+  // Figure out which tracks have to be continued (and if so, which new peak data should be 
+  // appended), which tracks have to be discontinued ("death") and for which peaks a new track
+  // has to be created ("birth"):
+
   // loop over the new peaks to figure out birthes and continuations:
   for(pkIdx = 0; pkIdx < newPeakData.size(); pkIdx++) {
 
     trkIdx = findBestMatch(newPeakData[pkIdx].freq, activeTracks, 
       maxFreqDeviation, trackContinued); // looks only in those that are not already continued
 
-    if(trkIdx == activeTracks.size())  // no match found
+    if(trkIdx == activeTracks.size())    // no match found
       birthPeakIndices.push_back(pkIdx);
     else {
       continuationPairs.push_back(IndexPair(trkIdx, pkIdx));
@@ -511,6 +516,7 @@ void continuePartialTracks(
       killTrackIndices.push_back(trkIdx);
   }
 
+  // We have figured out the desired continuations, deaths and birthes. Now, we actually do them:
 
   size_t i;
 
@@ -522,8 +528,15 @@ void continuePartialTracks(
   }
 
   // kill discontinued tracks (where no matching peak was found for track):
-  // rsRemove(activeTracks, killTrackIndices);
-  // ...this function should take an array of indices to remove - this array may be unordered
+  for(i = killTrackIndices.size()-1; i >= 0; i--) {
+    trkIdx = killTrackIndices[i];
+    rsAppend(finishedTracks, activeTracks[trkIdx]);  
+
+    // todo: append an additional datapoint with zero amplitude to the killed track for a smooth
+    // fade out
+
+    rsRemove(activeTracks, trkIdx);
+  }
 
   // create new tracks (where no matching track was found for peak):
   for(i = 0; i < birthPeakIndices.size(); i++)
@@ -532,22 +545,11 @@ void continuePartialTracks(
     RAPT::rsInstantaneousSineParams<T> newData = newPeakData[pkIdx];
     RAPT::rsSinusoidalPartial<T> newTrack;
     newTrack.appendDataPoint(newData);
-    // todo: append an additional datapoint with zero amplitude for smooth "fade-in"
+
+    // todo: append an additional datapoint with zero amplitude for smooth fade-in
+
     activeTracks.push_back(newTrack);
   }
-
-  int dummy = 0;
-
-  // for all current spectral peaks in newPeakData, find a corresponding partner among the 
-  //  activeTracks
-  // -when a partner is found, continue the track
-  // -when no partner is found, create a new track ("birth")
-  // -all active partials that have not been used in this continuation are killed - a final 
-  //  zero-amplitude value is appended and the partial is moved from active to finished ("death")
-  //  
-
-  // maybe make a subclass of rsSinusoidalPartial that has some additional data fields that are 
-  // relevant only during analysis and may be dropped later
 }
 
 template<class T>
