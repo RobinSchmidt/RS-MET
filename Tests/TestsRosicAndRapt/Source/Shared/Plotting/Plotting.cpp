@@ -105,7 +105,8 @@ void plotVector(std::vector<double> v)
 }
 
 // use shorter variable names here...
-void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H)
+void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H, 
+  double dbMin, double dbMax)
 {
   // fs: sample rate, H: hop size
 
@@ -116,8 +117,6 @@ void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H)
   double fMax =  0.5*fs*(numBins-1)/numBins;
   double *t = new double[numFrames];
   double *f = new double[numBins];
-  //p.rangeLinear(t, numFrames, 0.0, H*(numFrames-1)/fs );
-  //p.rangeLinear(f, numBins,   0.0, 0.5*fs*(numBins-1)/numBins);
   p.rangeLinear(t, numFrames, 0.0, tMax);
   p.rangeLinear(f, numBins,   0.0, fMax);
 
@@ -137,9 +136,9 @@ void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H)
   p.addCommand("set palette rgbformulae 30,31,32");     // colors printable as grayscale
 
 
-                                                        // maybe use signal-dependent values later:
-  double dbMin = -100.0;
-  double dbMax =   10.0;
+  // maybe use signal-dependent values later:
+  //double dbMin = -100.0;
+  //double dbMax =   10.0;
   p.setRange(0.0, tMax, 0.0, fMax, dbMin, dbMax);
   // doesn't seem to have any effect on the color axis (z). it seems like GNUPlot uses
   // autoscaling for it, no matter what.
@@ -147,6 +146,14 @@ void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H)
   p.plot();
   delete[] t;
   delete[] f;
+}
+// maybe factor out a matrix plotting function
+
+
+void plotPhasogram(int numFrames, int numBins, double **phases, double sampleRate, int hopSize)
+{
+  plotSpectrogram(numFrames, numBins, phases, sampleRate, hopSize, -PI, PI);
+  // a bit dirty to abuse the spectrogram...clean up..
 }
 
 void plotMagnitudeResponse(const RAPT::rsFilterSpecificationBA<double>& specBA)

@@ -114,9 +114,14 @@ void plotVector(std::vector<double> v);
 
 /** Plots the magnitude spectrogram given in s against time axis t (of length numFrames) and
 frequency axis f (of length numBins). */
-void plotSpectrogram(int numFrames, int numBins, double **magnitudes, double sampleRate,
-  int hopSize);
+void plotSpectrogram(int numFrames, int numBins, double **decibels, double sampleRate,
+  int hopSize, double dbMin = -100, double dbMax = +10);
 // introduce parameters to control scaling of time- and frequency axis..
+
+void plotPhasogram(int numFrames, int numBins, double **phases, double sampleRate,
+  int hopSize);
+
+
 
 // various convenience functions to plot filter responses for b/a specifications:
 void plotMagnitudeResponse(const RAPT::rsFilterSpecificationBA<double>& specBA);

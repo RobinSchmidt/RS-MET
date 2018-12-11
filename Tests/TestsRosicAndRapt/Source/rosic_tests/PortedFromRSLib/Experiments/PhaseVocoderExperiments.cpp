@@ -384,7 +384,7 @@ std::vector<int> peakIndices(T* x, int N, T threshToMax = 0)
 
 // move to library:
 template<class T>
-void fitQuadratic_m1_0_1(T *a, T *y)
+void fitQuadratic_m1_0_1(T *a, T *y)  // x = -1,0,+1
 {
   a[0] = y[1];
   a[1] = 0.5*(y[2]-y[0]);
@@ -486,19 +486,30 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   //  ...but later - first, let's see how far we get without such a pre-processing and try to make 
   //  the algorithm work well under this (suboptimal) condition, too
 
+  // make function parameters:
+  int blockSize = 4096;
+  int hopSize = 2048;
+  int zeroPaddingFactor = 2;
+
+  // test:
+  blockSize = 1024;
+  hopSize = 32;
+  zeroPaddingFactor = 1;
+
+
 
   // Obtain a spectrogram:
   rsSpectrogram<T> sp;  // maybe it should be called rsSpectrogramProcessor because
                         // the spectrogram itself it the STFT matrix
-  sp.setBlockSize(4096);
-  sp.setHopSize(2048);
-  sp.setZeroPaddingFactor(2);
+  sp.setBlockSize(blockSize);
+  sp.setHopSize(hopSize);
+  sp.setZeroPaddingFactor(zeroPaddingFactor);
   //size_t numBins = sp.getNumNonRedundantBins();
   rsMatrix<std::complex<T>> stft = sp.complexSpectrogram(sampleData, numSamples);
   rsMatrix<T> mag = matrixMagnitudes(stft);
   rsMatrix<T> phs = matrixPhases(stft);
 
-  // ...maybe plot the spectrogram here...
+
 
   // Initializations:
   typedef RAPT::rsInstantaneousSineParams<double> InstParams;
@@ -512,6 +523,12 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   if(frameStep == -1)
     rsSwap(firstFrame, lastFrame);
   int frameIndex  = firstFrame;
+  double binDelta   = sampleRate / sp.getFftSize();
+  double frameDelta = sp.getHopSize() / sampleRate;
+
+
+  // ...maybe plot the spectrogram here...
+  plotPhasogram(numFrames, numBins, phs.getDataPointer(), sampleRate, sp.getHopSize());
 
 
   std::vector<Partial> activeTracks, finishedTracks;
@@ -529,7 +546,8 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   // loop over the frames:
   while(frameIndex != lastFrame) {
 
-    T time = frameIndex * sp.getHopSize() / sampleRate;
+    //T time = frameIndex * sp.getHopSize() / sampleRate;
+    T time = frameIndex * frameDelta;
     T* pMag = mag.getRowPointer(frameIndex);
     T* pPhs = phs.getRowPointer(frameIndex);
     std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
@@ -548,29 +566,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
       T peakBin, peakAmp;
       spectralMaximumPositionAndValue(pMag, peaks[i], &peakBin, &peakAmp);
       T peakFreq = peakBin*sampleRate/sp.getFftSize();
-      T peakPhase = 0; // preliminary
-
-
-      // how do we best compute the instantaneous phase - linear interpolation?
-      int binInt  = peaks[i];
-      T   binFrac = peakBin-binInt;
-      if(binFrac < 0) {
-        binInt  -= 1;
-        binFrac  = 1-binFrac;
-      }
-      //T amp2 = (1-binFrac)*pMag[binInt] + binFrac*pMag[binInt+1]; // another way to compute amplitude - vary bad
-      //std::complex<T> binCmpVal = (1-binFrac)*pCmp[binInt] + binFrac*pCmp[binInt+1]; 
-      //T binMag = abs(binCmpVal);
-      //T binPhs = arg(binCmpVal);
-      // complex value at peak-bin
-      T phs0 = pPhs[binInt];   // just for debug
-      T phs1 = pPhs[binInt+1]; // dito
-      peakPhase = rsInterpolateWrapped(pPhs[binInt], pPhs[binInt+1], binFrac, -PI, PI);
-      // hmm...it doesn't seem to make sense to interpolate the phase between bind like that - it 
-      // does not seem to be a smooth function - it jumps erratically between bins ...but the 
-      // phasograms in the DAFX book surely look like the FFT phase is almost a constant with 
-      // respect to bin-index near the sinudsoids...plot phasograms...
-
+      T peakPhase = 0; // preliminary - see comment below function for ideas 
 
       instPeakParams[i].time  = time;
       instPeakParams[i].freq  = peakFreq;
@@ -597,9 +593,6 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 
 
   int dummy = 0;
-
-
-
 
   // algorithm:
 
@@ -636,11 +629,41 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   // -maybe later find (multiple) transients via the onset detector
 
 
-
   rsSinusoidalModel<T> model;
   // model.addPartials(partials);
   return model;
 }
+/*
+      // how do we best compute the instantaneous phase - linear interpolation?
+      int binInt  = peaks[i];
+      T   binFrac = peakBin-binInt;
+      if(binFrac < 0) {
+        binInt  -= 1;
+        binFrac  = 1-binFrac;
+      }
+      //T amp2 = (1-binFrac)*pMag[binInt] + binFrac*pMag[binInt+1]; // another way to compute amplitude - vary bad
+      //std::complex<T> binCmpVal = (1-binFrac)*pCmp[binInt] + binFrac*pCmp[binInt+1]; 
+      //T binMag = abs(binCmpVal);
+      //T binPhs = arg(binCmpVal);
+      // complex value at peak-bin
+      T phs0 = pPhs[binInt];   // just for debug
+      T phs1 = pPhs[binInt+1]; // dito
+      peakPhase = rsInterpolateWrapped(pPhs[binInt], pPhs[binInt+1], binFrac, -PI, PI);
+      // hmm...it doesn't seem to make sense to interpolate the phase between bind like that - it 
+      // does not seem to be a smooth function - it jumps erratically between bins - maybe we need 
+      // a completely different way to obtain the instantaneus phase...maybe by comparing values in
+      // different frames? or maybe by correlating the function with a complex sine that has 
+      // exactly the frequency? maybe the Goertzel algo can be used?:
+      // https://en.wikipedia.org/wiki/Goertzel_algorithm
+      // https://www.embedded.com/design/configurable-systems/4006427/A-DSP-algorithm-for-frequency-analysis
+      // https://www.st.com/content/ccc/resource/technical/document/design_tip/group0/20/06/95/0b/c3/8d/4a/7b/DM00446805/files/DM00446805.pdf/jcr:content/translations/en.DM00446805.pdf
+      // https://stackoverflow.com/questions/13499852/scipy-fourier-transform-of-a-few-selected-frequencies
+      // https://stackoverflow.com/questions/13499852/scipy-fourier-transform-of-a-few-selected-frequencies
+      // https://stackoverflow.com/questions/11579367/implementation-of-goertzel-algorithm-in-c
+      //...if we go down that route, we may also use the obtained amplitude
+      // for refinig our amplitude estimate...ok - for now, just leave the instantaneous phase 
+      // measurement at zero
+*/
 
 
 // rename to testSinusoidalSynthesis1
@@ -687,6 +710,11 @@ void sinusoidalAnalysis1()
   int    blockSize  = 1024;   // a bit larger than 2 cycles (1 is 480 samples with 100Hz@48kHz)
   int    hopSize    = 256;
   int    zeroPad    = 1;
+
+
+  // test
+  frequency = 5000;
+  length = 0.05; 
 
   // create signal:
   double period = sampleRate / frequency;    // in samples
