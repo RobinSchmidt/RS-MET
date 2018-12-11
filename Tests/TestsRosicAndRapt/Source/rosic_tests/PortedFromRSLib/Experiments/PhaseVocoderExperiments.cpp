@@ -382,26 +382,38 @@ std::vector<int> peakIndices(T* x, int N, T threshToMax = 0)
 // move to library, maybe have additional criteria like a threshold with respect to the rms, minimum
 // distance between the peaks, etc.
 
+// move to library:
 template<class T>
 void fitQuadratic_m1_0_1(T *a, T *y)
 {
-  T ym1 = y[0];
-  T y0  = y[1];
-  T y1  = y[2];
-  a[0] = y0;
-  a[1] = 0.5*(y1-ym1);
-  a[2] = y1 - a[0] - a[1];
+  a[0] = y[1];
+  a[1] = 0.5*(y[2]-y[0]);
+  a[2] = y[2] - a[0] - a[1];
 }
-// move to library, get rid of intermediate vars
-
 template<class T>
 T quadraticExtremumPosition(T *a)
 {
   return T(-0.5) * a[1]/a[2];
 }
+template<class T> 
+void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
+{
+  // coeffs of parabolic interpolant:
+  T lowAmp = 0.0000001; // -140 dB - to prevent log-of-zero
+  T a[3], y[3];
+  y[0] = rsAmpToDbWithCheck(x[k-1], lowAmp);   // left
+  y[1] = rsAmpToDbWithCheck(x[k],   lowAmp);   // mid
+  y[2] = rsAmpToDbWithCheck(x[k+1], lowAmp);   // right
+  fitQuadratic_m1_0_1(a, y);
+
+  // find maximum position and evaluate parabola there:
+  T d  = quadraticExtremumPosition(a);
+  *pos = k + d;
+  *val = rsDbToAmp(a[0] + (a[1] + a[2]*d)*d);
+}
 
 
-
+/*
 template<class T>
 RAPT::rsInstantaneousSineParams<T> peakSineParams(std::complex<T>* s, int k, T time, T fs)
 {
@@ -426,6 +438,7 @@ RAPT::rsInstantaneousSineParams<T> peakSineParams(std::complex<T>* s, int k, T t
   return params;
 }
 // this function should compute only binIndex, magnitude and phase...or maybe only the magnitude
+*/
 
 
 template<class T>
@@ -496,10 +509,18 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
 
     // determine exact peak frequencies, amplitudes and phases:
     instPeakParams.resize(peaks.size());
-    for(size_t i = 0; i < peaks.size(); i++)
-    {
-      //T peakBin
-      instPeakParams[i] = peakSineParams(pCmp, peaks[i], time, sampleRate);
+    for(size_t i = 0; i < peaks.size(); i++) {
+      T peakBin, peakAmp;
+      spectralMaximumPositionAndValue(pMag, peaks[i], &peakBin, &peakAmp);
+      T peakFreq = peakBin*sampleRate/sp.getFftSize();
+      T peakPhase = 0; // preliminary
+
+      instPeakParams[i].time  = time;
+      instPeakParams[i].freq  = peakFreq;
+      instPeakParams[i].gain  = peakAmp;
+      instPeakParams[i].phase = peakPhase;
+
+      int dummy = 0;
     }
 
     // for all current spectral peaks, find a corresponding partner among the activePartials
@@ -619,6 +640,7 @@ void sinusoidalAnalysis1()
 
   // find model for the signal:
   rsSinusoidalModel<double> model = analyzeSinusoidal(&x[0], N, sampleRate);
+    // we need to pass the desired blockSize, hopSize and zeroPadding factor to the function
 
   // todo: resynthesize and create residual
 
