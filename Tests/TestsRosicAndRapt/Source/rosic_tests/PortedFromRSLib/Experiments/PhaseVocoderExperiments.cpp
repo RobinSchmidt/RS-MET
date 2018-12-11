@@ -459,7 +459,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
                         // the spectrogram itself it the STFT matrix
   sp.setBlockSize(4096);
   sp.setHopSize(2048);
-  sp.setZeroPaddingFactor(1);
+  sp.setZeroPaddingFactor(2);
   //size_t numBins = sp.getNumNonRedundantBins();
   rsMatrix<std::complex<T>> stft = sp.complexSpectrogram(sampleData, numSamples);
   rsMatrix<T> mag = matrixMagnitudes(stft);
@@ -504,7 +504,8 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     plotData(numBins/64, &freqs[0], pMag); // for development
 
     // find spectral peaks:
-    T peakThresh = 0.0001; // 80 dB
+    //T peakThresh = 0.01; // 40 dB ...this should be somewhere above the sidelobe level
+    T peakThresh = rsDbToAmp(-30.0); // should be somewhere above the sidelobe level
     std::vector<int> peaks = peakIndices(pMag, numBins, peakThresh);
 
     // determine exact peak frequencies, amplitudes and phases:
@@ -519,6 +520,22 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
       instPeakParams[i].freq  = peakFreq;
       instPeakParams[i].gain  = peakAmp;
       instPeakParams[i].phase = peakPhase;
+
+      /*
+      // how do we best compute the instantaneous phase - linear interpolation?
+      int binInt  = peaks[i];
+      T   binFrac = peakBin-binInt;
+      if(binFrac < 0) {
+        binInt  -= 1;
+        binFrac  = 1-binFrac;
+      }
+      //T amp2 = (1-binFrac)*pMag[binInt] + binFrac*pMag[binInt+1]; // another way to compute amplitude - vary bad
+      std::complex<T> binCmpVal = (1-binFrac)*pCmp[binInt] + binFrac*pCmp[binInt+1]; 
+      T binMag = abs(binCmpVal);
+      T binPhs = arg(binCmpVal);
+      // complex value at peak-bin
+      */
+
 
       int dummy = 0;
     }
