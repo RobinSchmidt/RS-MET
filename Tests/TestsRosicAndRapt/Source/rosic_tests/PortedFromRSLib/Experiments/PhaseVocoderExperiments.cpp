@@ -469,9 +469,9 @@ size_t findBestMatch(T freq, std::vector<RAPT::rsSinusoidalPartial<double>>& tra
 // this implements the peak continuation step
 template<class T>
 void continuePartialTracks(
-  std::vector<RAPT::rsInstantaneousSineParams<double>>& newPeakData,
-  std::vector<RAPT::rsSinusoidalPartial<double>>& activeTracks,
-  std::vector<RAPT::rsSinusoidalPartial<double>>& finishedTracks,
+  std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
+  std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
+  std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
   T maxFreqDeviation, T frameTimeDelta, int direction) // additionally needed information
 {
   // -create an array of index pairs for continuation (1st index: track (in activeTracks)
@@ -512,8 +512,26 @@ void continuePartialTracks(
   }
 
 
+  size_t i;
 
+  // continue matched tracks with new peaks:
 
+  // kill discontinued tracks (where no matching peak was found for track):
+  // rsRemove(activeTracks, killTrackIndices);
+
+  // create new tracks (where no matching track was found for peak):
+  for(i = 0; i < birthPeakIndices.size(); i++)
+  {
+    pkIdx = birthPeakIndices[i];
+    RAPT::rsInstantaneousSineParams<T> newData = newPeakData[pkIdx];
+    RAPT::rsSinusoidalPartial<T> newTrack;
+    newTrack.appendDataPoint(newData);
+
+    // todo: append an additional datapoint with zero amplitude for smooth "fade-in"
+
+    activeTracks.push_back(newTrack);
+    int dummy = 0;
+  }
 
   int dummy = 0;
 
