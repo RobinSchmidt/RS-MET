@@ -515,9 +515,15 @@ void continuePartialTracks(
   size_t i;
 
   // continue matched tracks with new peaks:
+  for(i = 0; i < continuationPairs.size(); i++) {
+    trkIdx = continuationPairs[i].first;
+    pkIdx  = continuationPairs[i].second;
+    activeTracks[trkIdx].appendDataPoint(newPeakData[pkIdx]);
+  }
 
   // kill discontinued tracks (where no matching peak was found for track):
   // rsRemove(activeTracks, killTrackIndices);
+  // ...this function should take an array of indices to remove - this array may be unordered
 
   // create new tracks (where no matching track was found for peak):
   for(i = 0; i < birthPeakIndices.size(); i++)
@@ -526,11 +532,8 @@ void continuePartialTracks(
     RAPT::rsInstantaneousSineParams<T> newData = newPeakData[pkIdx];
     RAPT::rsSinusoidalPartial<T> newTrack;
     newTrack.appendDataPoint(newData);
-
     // todo: append an additional datapoint with zero amplitude for smooth "fade-in"
-
     activeTracks.push_back(newTrack);
-    int dummy = 0;
   }
 
   int dummy = 0;
@@ -651,12 +654,14 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     frameIndex += frameStep;
   }
 
-  // move remaining activeTracks to finishedTracks
+  rsSinusoidalModel<T> model;
+  // model.addPartials(finishedTracks);
+  // model.addPartials(activeTracks);
 
-  // if(frameStep == -1) time-reverse all partials
+  // if(frameStep == -1) time-reverse all partials (well, reverse the arrays such that the time 
+  // runs forward)
 
-
-  int dummy = 0;
+  return model;
 
   // algorithm:
 
@@ -693,9 +698,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   // -maybe later find (multiple) transients via the onset detector
 
 
-  rsSinusoidalModel<T> model;
-  // model.addPartials(finishedTracks);
-  return model;
+
 }
 /*
       // how do we best compute the instantaneous phase - linear interpolation?
