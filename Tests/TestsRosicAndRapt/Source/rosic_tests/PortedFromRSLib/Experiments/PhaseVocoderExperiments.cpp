@@ -542,9 +542,11 @@ void continuePartialTracks(
   }
 
   // kill discontinued tracks (where no matching peak was found for a track):
-  for(i = killTrackIndices.size()-1; i >= 0; i--) {
-    trkIdx = killTrackIndices[i];
-    rsAppend(finishedTracks, activeTracks[trkIdx]);  
+  if(killTrackIndices.size() > 0) {
+    for(i = killTrackIndices.size()-1; i >= 0; i--) {
+      trkIdx = killTrackIndices[i];
+      rsAppend(finishedTracks, activeTracks[trkIdx]);
+    }
 
     // todo: append an additional datapoint with zero amplitude to the killed track for a smooth
     // fade out (needs to take into account frameTimeDelta and direction to figure out the time for
@@ -817,7 +819,6 @@ void sinusoidalAnalysis1()
     // we need to pass the desired blockSize, hopSize and zeroPadding factor to the function
 
   // todo: resynthesize and create residual
-
 
   int dummy = 0;
 }

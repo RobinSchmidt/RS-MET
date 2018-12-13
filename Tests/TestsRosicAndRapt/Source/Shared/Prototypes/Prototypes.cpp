@@ -11,6 +11,8 @@
 #include "Polygon.cpp"
 #include "Drawing.cpp"
 
+#include "SinusoidalModeling.cpp"
+
 using namespace RAPT;
 
 double signalValueViaSincAt(double *x, int N, double t, double sincLength, double stretch,

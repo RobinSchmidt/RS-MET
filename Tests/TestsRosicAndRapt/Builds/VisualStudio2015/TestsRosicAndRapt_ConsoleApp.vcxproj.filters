@@ -511,6 +511,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\Prototypes.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\SinusoidalModeling.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
@@ -2641,6 +2644,9 @@
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Prototypes.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\SinusoidalModeling.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h">

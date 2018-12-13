@@ -6,7 +6,7 @@
 //=================================================================================================
 
 /** A class for representing a value in three valued logic. The truth value of a proposition can be
-either false (0,F), true (1,T) or unknown (2,U). */
+either false (0 or F), true (1 or T) or unknown (2 or U). */
 
 class TriLogic
 {

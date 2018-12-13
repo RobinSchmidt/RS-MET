@@ -229,6 +229,10 @@
           <FILE id="BgSGtz" name="Prototypes.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Prototypes.cpp"/>
           <FILE id="Pe1gBO" name="Prototypes.h" compile="0" resource="0" file="Source/Shared/Prototypes/Prototypes.h"/>
           <FILE id="cwWYDw" name="ReadMe.txt" compile="0" resource="0" file="Source/Shared/Prototypes/ReadMe.txt"/>
+          <FILE id="bBS3vJ" name="SinusoidalModeling.cpp" compile="0" resource="0"
+                file="Source/Shared/Prototypes/SinusoidalModeling.cpp"/>
+          <FILE id="nSHhWW" name="SinusoidalModeling.h" compile="0" resource="0"
+                file="Source/Shared/Prototypes/SinusoidalModeling.h"/>
           <FILE id="u50Oe6" name="Tensor.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Tensor.cpp"/>
           <FILE id="FEh1t3" name="Tensor.h" compile="0" resource="0" file="Source/Shared/Prototypes/Tensor.h"/>
         </GROUP>
