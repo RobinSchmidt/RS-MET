@@ -281,7 +281,10 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   // maybe the unwrapped phase computation should be factored out into a function
   // maybe provide an alternative implementation that uses the measured (unwrapped) phases y and 
   // the measured instantaneous frequencies as y'' in a Hermite interpolation scheme (this is how
-  // it's described in the literature)
+  // it's described in the literature). to unwrap the phase of datapoint m, take the phase of m-1
+  // and add the integral over t[m-1]..t[m] of the average frequency (f[m-1]+f[m])/2 and choose
+  // p[m] + 2*pi*k as unwrapped where k is chosen such that p[m] is closest to value obtained from
+  // integration
 
   // interpolate the amplitude and unwrapped phase data to sample-rate:
   std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
@@ -321,7 +324,10 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   // synthesize the sinusoid and add it to what's already there:
   std::vector<T> s(N); // needed here only for plotting, remove for production code
   for(size_t n = 0; n < N; n++)
-    s[n] = x[nStart+n] += a[n] * sin(p[n]);
+    s[n] = x[nStart+n] += a[n] * cos(p[n]);
+  // we use the cosine (not the sine) because that's what's used in the literature - probably 
+  // because it's consistent with representing real sinusoids as the real part of complex
+  // sinusoids (using the sine, we would have to take the imaginary part instead)
 
 
   GNUPlotter plt;
@@ -427,7 +433,7 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
   T al = rsAbs(dl);
   T x;
 
-  // add an appropriate fraction the delta that has the smalles absolute value to x0:
+  // add an appropriate fraction the delta that has the smallest absolute difference to x0:
   if(au < am && au < al)
     x = x0 + t*du;
   else if(am < al)
@@ -509,6 +515,14 @@ void continuePartialTracks(
       trackContinued[trkIdx] = true;
     }
   }
+  // Actually, it would be better to run the loop over the active tracks and find a match for
+  // each track among the new peaks. This would allow to search for a frequency that is not exactly 
+  // the last value in the respective track but one that is obtained by extrapolation of the 
+  // frequency trajectory so far (linear prediction or polynomial extrapolation). Also, the search 
+  // could take advantage of the fact that the peak array is sorted by frequency (to use binary 
+  // instead of linear search). This would imply that we would have to work with a boolean 
+  // "peakUsed" array instead of "trackContinued". Maybe keep both variants in a prototype 
+  // implementation.
 
   // loop over the "trackContinued" array to figure out deaths:
   for(trkIdx = 0; trkIdx < numActiveTracks; trkIdx++) {
@@ -527,18 +541,20 @@ void continuePartialTracks(
     activeTracks[trkIdx].appendDataPoint(newPeakData[pkIdx]);
   }
 
-  // kill discontinued tracks (where no matching peak was found for track):
+  // kill discontinued tracks (where no matching peak was found for a track):
   for(i = killTrackIndices.size()-1; i >= 0; i--) {
     trkIdx = killTrackIndices[i];
     rsAppend(finishedTracks, activeTracks[trkIdx]);  
 
     // todo: append an additional datapoint with zero amplitude to the killed track for a smooth
-    // fade out
+    // fade out (needs to take into account frameTimeDelta and direction to figure out the time for
+    // the datapoint...actually just their product - maybe passed as one parameter)...but maybe the
+    // fade-in/out may be shorter than one hopSize?
 
     rsRemove(activeTracks, trkIdx);
   }
 
-  // create new tracks (where no matching track was found for peak):
+  // create new tracks (where no matching track was found for a peak):
   for(i = 0; i < birthPeakIndices.size(); i++)
   {
     pkIdx = birthPeakIndices[i];
@@ -691,14 +707,16 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   // -find peak frequency by (parabolic) interpolation (or maybe cubic?)
   // -evaluate complex amplitude at peak-freq
   // -compute magnitude phase from interpolated complex amplitude and store in one of the partials
-  // -if no suitable partial is found for continuation, start a new partial iff there is a 
-  //  fitting candidate peak in the frame to the left and right - if so, create a partial spanning
-  //  these 3 frames - so, each partial is at least 3 frames long...hmm...or maybe look only one 
-  //  frame backward (when the scanning/sweeping direction is forward
+
   // -start scanning forward to the spectrogram after the transient has passed, later extend the
   //  partials towards the start by scanning backward from the start position
   // -maybe later find (multiple) transients via the onset detector
 
+
+  // references:
+  // http://www.cerlsoundgroup.org/Loris/
+  // https://ccrma.stanford.edu/~juan/ATS_manual.html
+  // http://clam-project.org/
 
 
 }
@@ -732,6 +750,8 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
       //...if we go down that route, we may also use the obtained amplitude
       // for refinig our amplitude estimate...ok - for now, just leave the instantaneous phase 
       // measurement at zero
+
+      https://ccrma.stanford.edu/~jos/sasp/Phase_Interpolation_Peak.html
 */
 
 
@@ -811,6 +831,8 @@ void sinusoidalAnalysis1()
 // 2: single sinuosoid with time-variying amplitude
 // 3: two sinusoids with stable freq and amp
 //  -check, how each influences the analysis of the other - as function of their frequencies
+// 4: several sinusoids with various frequencies and start and endpoints
+// 5: periodic sounds like triangle, square, saw
 // ....
 
 
