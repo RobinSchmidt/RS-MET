@@ -330,9 +330,9 @@ template double RAPT::rsGetShiftForBestMatch(double *x1, double *x2, int N, bool
 
 template double RAPT::rsCentroid(double *x, int N);
 template double RAPT::rsCentroidOfEnergy(double *x, int N);
-template double RAPT::rsRaisedCosineWindow(double x, double length, double p);
-template double RAPT::rsExactBlackmanWindow(double x, double length, double dummy);
-template double RAPT::rsWindowedSinc(double x, double length, double stretch);
+template double RAPT::rsWindowFunction::rsRaisedCosineWindow(double x, double length, double p);
+template double RAPT::rsWindowFunction::rsExactBlackmanWindow(double x, double length, double dummy);
+template double RAPT::rsWindowFunction::rsWindowedSinc(double x, double length, double stretch);
 
 
 template void RAPT::rsSineQuadraturePart(double *x, double *y, int N, double f, double fs,

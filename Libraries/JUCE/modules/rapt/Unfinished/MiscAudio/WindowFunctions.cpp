@@ -1,5 +1,5 @@
 template<class T>
-T rsCosineSquaredWindow(T x, T length)
+T rsWindowFunction::rsCosineSquaredWindow(T x, T length)
 {
   if( rsAbs(x) > 0.5*length )
     return 0.0;
@@ -8,7 +8,7 @@ T rsCosineSquaredWindow(T x, T length)
 }
 
 template<class T>
-T rsRaisedCosineWindow(T x, T length, T p)
+T rsWindowFunction::rsRaisedCosineWindow(T x, T length, T p)
 {
   if( rsAbs(x) > 0.5*length )
     return 0.0;
@@ -18,7 +18,7 @@ T rsRaisedCosineWindow(T x, T length, T p)
 }
 
 template<class T>
-T rsExactBlackmanWindow(T x, T length, T p)
+T rsWindowFunction::rsExactBlackmanWindow(T x, T length, T p)
 {
   if( rsAbs(x) > 0.5*length )
     return 0.0;
@@ -33,7 +33,7 @@ T rsExactBlackmanWindow(T x, T length, T p)
 }
 
 template<class T>
-void rsBlackmanWindow(T *window, int length)
+void rsWindowFunction::rsBlackmanWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 0.42 - 0.5*cos( 2.0*PI*n / (T) (length-1))
@@ -41,21 +41,21 @@ void rsBlackmanWindow(T *window, int length)
 }
 
 template<class T>
-void rsCosinePowerWindow(T *window, int length, T power)
+void rsWindowFunction::rsCosinePowerWindow(T *window, int length, T power)
 {
   for(int n = 0; n < length; n++)
     window[n] = pow( sin(PI * (T) n / (T) length), power );
 }
 
 template<class T>
-void rsHammingWindow(T *window, int length)
+void rsWindowFunction::rsHammingWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 0.54 -  0.46 * cos(2.0*PI*n / (T) (length-1)) ;
 }
 
 template<class T>
-void rsHanningWindow(T *window, int length)
+void rsWindowFunction::rsHanningWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 0.5 * ( 1.0 - cos(2.0*PI*n / (T) (length-1)) );
@@ -63,7 +63,7 @@ void rsHanningWindow(T *window, int length)
 // i think, this is the HanningWindowZZ? ...make also a HanningWindowNN
 
 template<class T>
-void rsHanningWindowZN(T *w, int N)
+void rsWindowFunction::rsHanningWindowZN(T *w, int N)
 {
   T s = 2*PI/N; // for a window that ends with zero: w[N-1]=0, this would be s=2*PI/(N-1)
   for(int n = 0; n < N; n++)
@@ -72,14 +72,14 @@ void rsHanningWindowZN(T *w, int N)
 
 
 template<class T>
-void rsRectangularWindow(T *window, int length)
+void rsWindowFunction::rsRectangularWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 1.0;
 }
 
 template<class T>
-T rsWindowedSinc(T x, T length, T stretch)
+T rsWindowFunction::rsWindowedSinc(T x, T length, T stretch)
 {
   return rsNormalizedSinc(x/stretch) * rsCosineSquaredWindow(x, length);
 }

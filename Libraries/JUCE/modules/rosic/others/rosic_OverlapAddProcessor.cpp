@@ -173,7 +173,7 @@ void OverlapAddProcessor::initReadPointers()
 
 void OverlapAddProcessor::generateWindowFunction()
 {
-  RAPT::rsCosinePowerWindow(w, blockSize, (double) windowPower);
+  RAPT::rsWindowFunction::rsCosinePowerWindow(w, blockSize, (double) windowPower);
 }
 
 void OverlapAddProcessor::calculateCompensationGain()

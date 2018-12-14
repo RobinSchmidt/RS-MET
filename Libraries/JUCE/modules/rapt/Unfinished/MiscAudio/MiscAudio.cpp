@@ -508,7 +508,7 @@ T rsMaxCorrelationLag(T *x1, T *x2, int N, bool deBias)
   // obtain windowed signals:
   T *y1 = new T[N];  // x1, windowed
   T *y2 = new T[N];  // x2, windowed
-  rsHammingWindow(y1, N);  // now, y1 contains the window
+  rsWindowFunction::rsHammingWindow(y1, N);  // now, y1 contains the window
                            // Hamming seems to be better than Hann and Blackman
                            // ...hmm...but not for the cycle marks
   for(int n = 0; n < N; n++)

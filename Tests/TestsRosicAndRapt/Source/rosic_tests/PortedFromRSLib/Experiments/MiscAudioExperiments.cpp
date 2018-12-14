@@ -336,9 +336,9 @@ void windowFunctionsContinuous()
   RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
-    wHann[n]          = rsRaisedCosineWindow( x[n], length, 0.0);
-    wHamming[n]       = rsRaisedCosineWindow( x[n], length, 0.08);
-    wExactBlackman[n] = rsExactBlackmanWindow(     x[n], length);
+    wHann[n]          = rsWindowFunction::rsRaisedCosineWindow( x[n], length, 0.0);
+    wHamming[n]       = rsWindowFunction::rsRaisedCosineWindow( x[n], length, 0.08);
+    wExactBlackman[n] = rsWindowFunction::rsExactBlackmanWindow(x[n], length);
   }
 
   plotData(N, x, wHann, wHamming, wExactBlackman);
@@ -361,8 +361,8 @@ void windowedSinc()
   for(int n = 0; n < N; n++)
   {
     s[n] = rsNormalizedSinc(x[n]/stretch);
-    w[n] = rsCosineSquaredWindow(x[n], length);
-    y[n] = rsWindowedSinc(x[n], length, stretch);
+    w[n] = rsWindowFunction::rsCosineSquaredWindow(x[n], length);
+    y[n] = rsWindowFunction::rsWindowedSinc(x[n], length, stretch);
   }
 
   plotData(N, x, y, s, w);

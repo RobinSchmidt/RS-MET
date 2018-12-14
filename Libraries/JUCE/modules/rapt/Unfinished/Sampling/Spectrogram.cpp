@@ -261,7 +261,7 @@ void rsSpectrogram<T>::fillWindowArray(T* w, int length, int type)
   switch(type)
   {
   case RECTANGULAR_WINDOW: rsArray::fillWithValue(w, length, T(1)); break;
-  case HANNING_WINDOW:     rsHanningWindowZN(     w, length);       break;
+  case HANNING_WINDOW:     rsWindowFunction::rsHanningWindowZN(     w, length);       break;
 
     // todo: provide Hamming, Blackman-Harris, Blackman-Nutall, Gaussian etc.
 
