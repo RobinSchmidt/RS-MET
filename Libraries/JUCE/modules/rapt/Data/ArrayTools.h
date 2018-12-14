@@ -4,6 +4,8 @@
 /** A collection of functions that operate on 1-dimensional arrays. 
 \todo get rid of the rs-prefixes, rename to rsArrayTools or let the template-parameter apply
 ot the whole class...but this may result in excessive code to be generated
+
+todo: declare all input arrays as const
 */
 
 class rsArray
@@ -517,7 +519,7 @@ public:
   paramater as argument and initializes to the additive neutral element of that class when 0
   is passed . */
   template <class T>
-  static T sum(T *buffer, int length);
+  static T sum(const T* buffer, int length);
 
   /** Given two arrays x and y of lengths N, this function computes the sum of the products 
   x[i]*y[i] where i runs from 0 to N-1. */

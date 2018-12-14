@@ -94,7 +94,7 @@ public:
 
   /** \name Audio Processing */
 
-  rsMatrix<std::complex<T>> complexSpectrogram(T *signal, int numSamples);
+  rsMatrix<std::complex<T>> complexSpectrogram(const T *signal, int numSamples) const;
 
 
 
@@ -109,15 +109,15 @@ public:
   // maybe have a version NZ, ZZ, NN
 
   /** Computes a short-time FFT spectrum ... */
-  static void shortTimeSpectrum(T *signal, int numSamples, int blockCenter, T *window,
+  static void shortTimeSpectrum(const T* signal, int numSamples, int blockCenter, const T* window,
     int blockSize, int fftSize, std::complex<T> *spectrum);
 
   /** Computes the complex spectrogram of the given signal using the given analysis window (the
   length of which should be equal to the given blockSize), using the given hopSize. The optional
   padFactor parameter determines the amount of zero-padding for the FFT (it should be chosen such
   that fftSiize = padFactor*blockSize is a power of two). */
-  static rsMatrix<std::complex<T>> complexSpectrogram(T *signal, int numSamples,
-    T *window, int blockSize, int hopSize, int padFactor = 1);
+  static rsMatrix<std::complex<T>> complexSpectrogram(const T* signal, int numSamples,
+    const T* window, int blockSize, int hopSize, int padFactor = 1);
 
   /** Given a complex spectrogram, this function synthesizes a signal using given synthesis
   window, blockSize and hopSize. You must also pass the analysis window that was used - this is

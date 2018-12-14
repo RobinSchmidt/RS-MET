@@ -41,7 +41,7 @@ T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
 
 
 template<class T>
-rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(T *signal, int numSamples)
+rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T *signal, int numSamples) const
 {
   // preliminary - call static function - later, we should use an object of type 
   // rsFourierTransformerBluestein for more efficiency (it does some pre-computations)
@@ -62,7 +62,7 @@ void rsSpectrogram<T>::hanningWindowZN(T *w, int N)
 // x: signal, N: number of samples, n: block center sample, w: window, B: blocksize, M: FFT size,
 // X: complex short-time spectrum (output)
 template<class T>
-void rsSpectrogram<T>::shortTimeSpectrum(T *x, int N, int n, T *w,
+void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, const T* w,
   int B, int M, std::complex<T> *X)
 {
   int pad = (M-B)/2;                        // amount of pre/post zero padding
@@ -83,7 +83,7 @@ void rsSpectrogram<T>::shortTimeSpectrum(T *x, int N, int n, T *w,
 }
 
 template<class T>
-rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(T *x, int N, T *w,
+rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N, const T* w,
   int B, int H, int P)
 {
   // x: signal, N: number of samples, w: window, B: blocksize, H: hopsize, P: padding factor

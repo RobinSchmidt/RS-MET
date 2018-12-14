@@ -262,7 +262,12 @@ void sinusoidalModel1()
 
   // make a sinusoidal analysis of the sound that we have just created and re-create the sound
   // from the model that results from this analysis:
-  model2 = analyzeSinusoidal(&x[0], (int)x.size(), fs);
+  SinusoidalAnalyzer<double> sa;
+  sa.setBlockSize(2048);
+  sa.setHopSize(256);
+  sa.setZeroPaddingFactor(2);
+  //sa.setWindowType...
+  model2 = sa.analyze(&x[0], (int)x.size(), fs);
   std::vector<double> y = synthesizeSinusoidal(model2, fs);
 
   rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
@@ -271,18 +276,22 @@ void sinusoidalModel1()
 
 void sinusoidalAnalysis1()
 {
+  // test signal parameters:
   double sampleRate = 48000;  // in Hz
   double frequency  = 100;    // in Hz
   double length     = 0.2;    // in seconds
   double startPhase = 0.0;    // in radians
-  int    blockSize  = 1024;   // a bit larger than 2 cycles (1 is 480 samples with 100Hz@48kHz)
-  int    hopSize    = 256;
-  int    zeroPad    = 1;
-
 
   //// test
   //frequency = 5000;
   //length = 0.05; 
+
+  // create and set up analyzer:
+  SinusoidalAnalyzer<double> sa;
+  sa.setBlockSize(1024);
+  sa.setHopSize(256);
+  sa.setZeroPaddingFactor(1);
+  //sa.setWindowType...
 
   // create signal:
   double period = sampleRate / frequency;    // in samples
@@ -292,8 +301,8 @@ void sinusoidalAnalysis1()
     x[n] = sin(n * 2*PI*frequency/sampleRate + startPhase);
 
   // find model for the signal:
-  rsSinusoidalModel<double> model = analyzeSinusoidal(&x[0], N, sampleRate);
-    // we need to pass the desired blockSize, hopSize and zeroPadding factor to the function
+  rsSinusoidalModel<double> model = sa.analyze(&x[0], N, sampleRate);
+
 
   // todo: resynthesize and create residual
 

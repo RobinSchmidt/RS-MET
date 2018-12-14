@@ -346,7 +346,8 @@ void continuePartialTracks(
 }
 
 template<class T>
-rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate)
+rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
+  T* sampleData, int numSamples, T sampleRate) const
 {
   // -maybe pre-process the input signal by flattening the pitch and make the period coincide with
   //  a fraction of the analysis frame size 
@@ -357,36 +358,17 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   //  ...but later - first, let's see how far we get without such a pre-processing and try to make 
   //  the algorithm work well under this (suboptimal) condition, too
 
-  // make function parameters:
-  int blockSize = 4096;
-  int hopSize = 2048;
-  int zeroPaddingFactor = 2;
-
-  //// test:
-  //blockSize = 1024;
-  //hopSize = 32;
-  //zeroPaddingFactor = 1;
-
   // Obtain a spectrogram:
-  rsSpectrogram<T> sp;  // maybe it should be called rsSpectrogramProcessor because
-                        // the spectrogram itself it the STFT matrix
-  sp.setBlockSize(blockSize);
-  sp.setHopSize(hopSize);
-  sp.setZeroPaddingFactor(zeroPaddingFactor);
-  //size_t numBins = sp.getNumNonRedundantBins();
   rsMatrix<std::complex<T>> stft = sp.complexSpectrogram(sampleData, numSamples);
   rsMatrix<T> mag = matrixMagnitudes(stft);
   rsMatrix<T> phs = matrixPhases(stft);
 
-
-
   // Initializations:
   typedef RAPT::rsInstantaneousSineParams<double> InstParams;
   typedef RAPT::rsSinusoidalPartial<double> Partial;
-  //std::vector<Partial> partials;     // array of active partials (empty at first)
   int numFrames  = stft.getNumRows();
   int numBins    = stft.getNumColumns();
-  int frameStep  = +1;  // +1: scan through frames forward, -1: backward
+  int frameStep  = +1;  // +1: scan through frames forward, -1: backward - make user parameter
   int firstFrame = 0; 
   int lastFrame  = numFrames-1;
   if(frameStep == -1)
@@ -421,7 +403,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     //plotData(numBins/64, &freqs[0], pPhs);
 
     // find spectral peaks:
-    T peakThresh = rsDbToAmp(-30.0); // should be somewhere above the sidelobe level
+    T peakThresh = rsDbToAmp(-30.0); // should be somewhere above the sidelobe level - make user parameter
     std::vector<int> peaks = peakIndices(pMag, numBins, peakThresh);
 
     // determine exact peak frequencies, amplitudes (exact phases are left for later):
@@ -438,7 +420,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     }
 
     // peak continuation, birth or death:
-    double maxFreqDelta = 2*binDelta; // replace factor 2 by adjustable parameter
+    double maxFreqDelta = 2*binDelta; // replace factor 2 by user parameter
     continuePartialTracks(instPeakParams, activeTracks, finishedTracks, 
       maxFreqDelta, frameDelta, frameStep);
 
@@ -491,8 +473,11 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   // https://ccrma.stanford.edu/~juan/ATS_manual.html
   // http://clam-project.org/
 }
-template RAPT::rsSinusoidalModel<double> analyzeSinusoidal(double* sampleData, int numSamples, 
-  double sampleRate);
+//template RAPT::rsSinusoidalModel<double> analyzeSinusoidal(double* sampleData, int numSamples, 
+//  double sampleRate);
+
+template class SinusoidalAnalyzer<double>;
+
 
 /*
 // how do we best compute the instantaneous phase - linear interpolation?

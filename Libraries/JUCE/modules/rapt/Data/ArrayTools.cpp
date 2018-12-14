@@ -1087,7 +1087,7 @@ void rsArray::subtract(T *buffer1, T *buffer2, T *result, int length)
 }
 
 template <class T>
-T rsArray::sum(T *buffer, int length)
+T rsArray::sum(const T* buffer, int length)
 {
   T accu = T(0); // constructor call with 0 should initilizes to additive neutral element
   for(int n = 0; n < length; n++)

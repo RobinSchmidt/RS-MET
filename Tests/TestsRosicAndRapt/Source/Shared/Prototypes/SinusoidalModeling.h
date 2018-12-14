@@ -5,8 +5,8 @@ template<class T>
 std::vector<T> synthesizeSinusoidal(const RAPT::rsSinusoidalModel<T>& model, T sampleRate);
 
 
-template<class T>
-RAPT::rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate);
+//template<class T>
+//RAPT::rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate);
 
 
 
@@ -22,7 +22,7 @@ public:
   inline void setBlockSize(int newBlockSize)      { sp.setBlockSize(newBlockSize); }
   inline void setHopSize(int newHopSize)          { sp.setHopSize(newHopSize); }
   inline void setZeroPaddingFactor(int newFactor) { sp.setZeroPaddingFactor(newFactor); }
-  inline void setAnalysisWindowType(int newType)  { sp.setAnalysisWindowType(newType); }
+  inline void setWindowType(int newType)          { sp.setAnalysisWindowType(newType); }
   //setRootKey/setFundamentalFrequency, 
 
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate) const;
