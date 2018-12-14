@@ -33,7 +33,7 @@ T rsExactBlackmanWindow(T x, T length, T p)
 }
 
 template<class T>
-void rsMakeBlackmanWindow(T *window, int length)
+void rsBlackmanWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 0.42 - 0.5*cos( 2.0*PI*n / (T) (length-1))
@@ -41,28 +41,38 @@ void rsMakeBlackmanWindow(T *window, int length)
 }
 
 template<class T>
-void rsMakeCosinePowerWindow(T *window, int length, T power)
+void rsCosinePowerWindow(T *window, int length, T power)
 {
   for(int n = 0; n < length; n++)
     window[n] = pow( sin(PI * (T) n / (T) length), power );
 }
 
 template<class T>
-void rsMakeHammingWindow(T *window, int length)
+void rsHammingWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 0.54 -  0.46 * cos(2.0*PI*n / (T) (length-1)) ;
 }
 
 template<class T>
-void rsMakeHanningWindow(T *window, int length)
+void rsHanningWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 0.5 * ( 1.0 - cos(2.0*PI*n / (T) (length-1)) );
 }
+// i think, this is the HanningWindowZZ? ...make also a HanningWindowNN
 
 template<class T>
-void rsMakeRectangularWindow(T *window, int length)
+void rsHanningWindowZN(T *w, int N)
+{
+  T s = 2*PI/N; // for a window that ends with zero: w[N-1]=0, this would be s=2*PI/(N-1)
+  for(int n = 0; n < N; n++)
+    w[n] = 0.5*(1-cos(s*n));
+}
+
+
+template<class T>
+void rsRectangularWindow(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 1.0;

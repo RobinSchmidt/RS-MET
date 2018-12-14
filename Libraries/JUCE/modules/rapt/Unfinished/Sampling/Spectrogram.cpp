@@ -49,8 +49,7 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T *signal, 
     signal, numSamples, &analysisWindow[0], blockSize, hopSize, zeroPaddingFactor);
 }
 
-
-
+/*
 template<class T>
 void rsSpectrogram<T>::hanningWindowZN(T *w, int N)
 {
@@ -58,6 +57,7 @@ void rsSpectrogram<T>::hanningWindowZN(T *w, int N)
   for(int n = 0; n < N; n++)
     w[n] = 0.5*(1-cos(s*n));
 }
+*/
 
 // x: signal, N: number of samples, n: block center sample, w: window, B: blocksize, M: FFT size,
 // X: complex short-time spectrum (output)
@@ -261,7 +261,10 @@ void rsSpectrogram<T>::fillWindowArray(T* w, int length, int type)
   switch(type)
   {
   case RECTANGULAR_WINDOW: rsArray::fillWithValue(w, length, T(1)); break;
-  case HANNING_WINDOW:     hanningWindowZN(       w, length);       break;
+  case HANNING_WINDOW:     rsHanningWindowZN(     w, length);       break;
+
+    // todo: provide Hamming, Blackman-Harris, Blackman-Nutall, Gaussian etc.
+
   }
 }
 

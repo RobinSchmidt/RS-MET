@@ -105,7 +105,7 @@ public:
   That means, the window has a period length of N. Such a window is suitable for applications
   where it is important that suitably overlapped windows sum up to a constant, like when identity
   resynthesis is required. */
-  static void hanningWindowZN(T *w, int N);
+  //static void hanningWindowZN(T *w, int N);
   // maybe have a version NZ, ZZ, NN
 
   /** Computes a short-time FFT spectrum ... */

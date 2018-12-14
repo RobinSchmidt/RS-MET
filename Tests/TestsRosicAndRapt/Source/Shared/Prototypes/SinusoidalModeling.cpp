@@ -511,4 +511,11 @@ peakPhase = rsInterpolateWrapped(pPhs[binInt], pPhs[binInt+1], binFrac, -PI, PI)
 // measurement at zero
 
 https://ccrma.stanford.edu/~jos/sasp/Phase_Interpolation_Peak.html
+
+
+see here for window functions:
+https://en.wikipedia.org/wiki/Window_function
+implement blackman-harris and maybe blackman-nutall, dolph-chebychev - i think, low sidelobes are
+important for sinusoidal parameter estimation...maybe gaussian for frequency estimation? or use 
+re-assignment?
 */

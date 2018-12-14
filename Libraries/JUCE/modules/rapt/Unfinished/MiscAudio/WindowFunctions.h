@@ -1,7 +1,8 @@
 #ifndef RAPT_WINDOWFUNCTIONS_H
 #define RAPT_WINDOWFUNCTIONS_H
 
-// todo: wrap into a class rsWindowFunctions
+// todo: wrap into a class rsWindowFunctions...get rid of the "make" prefixes - just use
+// rsBlahWindow
 
 /** Returns the value of a zero-centered cosine-squared shaped window of given length, having
 nonzero values in the range -length/2...+length/2 */
@@ -33,23 +34,33 @@ T rsExactBlackmanWindow(T x, T length, T dummy = 0.0);
 
 /** Fills the window-array with a Hamming-window. */
 template<class T>
-void rsMakeBlackmanWindow(T *window, int length);
+void rsBlackmanWindow(T *window, int length);
 
 /** Fills the window-array with a cosine power window. */
 template<class T>
-void rsMakeCosinePowerWindow(T *window, int length, T power = 2.0);
+void rsCosinePowerWindow(T *window, int length, T power = 2.0);
 
 /** Fills the window-array with a Hamming-window. */
 template<class T>
-void rsMakeHammingWindow(T *window, int length);
+void rsHammingWindow(T *window, int length);
 
 /** Fills the window-array with a Hanning-window. */
 template<class T>
-void rsMakeHanningWindow(T *window, int length);
+void rsHanningWindow(T *window, int length);
+// todo: rename to specify the values at endpoints as done in rsHanningWindowZN
+
+/** Creates a Hanning window that starts with a zero value in w[0] and ends with a nonzero
+value in w[N-1] = w[1], such that the nominal and nonexistent value w[N] would be zero again.
+That means, the window has a period length of N. Such a window is suitable for applications
+where it is important that suitably overlapped windows sum up to a constant, like when identity
+resynthesis is required. */
+template<class T>
+void rsHanningWindowZN(T *window, int length);
+// maybe have a version NZ, ZZ, NN
 
 /** Fills the window-array with a rectangular window. ...ahem trivial */
 template<class T>
-void rsMakeRectangularWindow(T *window, int length);
+void rsRectangularWindow(T *window, int length);
 
 /** Returns the value of a cosine-squared windowed (normalized) sinc function. It has nonzero
 values in the range -length/2...+length/2 and zero crossings at integer multiples of the
