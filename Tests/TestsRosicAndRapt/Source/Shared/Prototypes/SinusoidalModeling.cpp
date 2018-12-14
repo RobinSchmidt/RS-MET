@@ -289,7 +289,15 @@ void continuePartialTracks(
   // could take advantage of the fact that the peak array is sorted by frequency (to use binary 
   // instead of linear search). This would imply that we would have to work with a boolean 
   // "peakUsed" array instead of "trackContinued". Maybe keep both variants in a prototype 
-  // implementation.
+  // implementation. ...well, actually, it would be possible to use extrapolation with the current
+  // loop over the peaks as well - we'd just have to replace
+  // T trackFreq = tracks[i].getEndFreq();
+  // by
+  // T trackFreq = getTrackFreq(tracks[i])
+  // where getTrackFreq would be a function that performs the extrapolation - but still the 
+  // advantage of binary serach would remain - moreover, looping over the tracks is the way it's
+  // described in the literature as well. ..maybe try to cook up a situation where this actually 
+  // makes a difference
 
   // loop over the "trackContinued" array to figure out deaths:
   for(trkIdx = 0; trkIdx < numActiveTracks; trkIdx++) {
@@ -344,7 +352,7 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   //  a fraction of the analysis frame size 
   // -we should keep the time warping map around and when done with the analysis, use it to 
   //  re-map the time-instants in the model
-  // -we should also keep the corresponding (instantaneous) frequency modifier around and apply
+  // -we should also keep the corresponding (instantaneous) frequency scaler map around and apply
   //  the inverse to the freq data in the model
   //  ...but later - first, let's see how far we get without such a pre-processing and try to make 
   //  the algorithm work well under this (suboptimal) condition, too
@@ -387,15 +395,11 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
   double binDelta   = sampleRate / sp.getFftSize();
   double frameDelta = sp.getHopSize() / sampleRate;
 
-
   // ...maybe plot the spectrogram here...
   //plotPhasogram(numFrames, numBins, phs.getDataPointer(), sampleRate, sp.getHopSize());
 
-
   std::vector<Partial> activeTracks, finishedTracks;
   std::vector<InstParams> instPeakParams;
-
-  // maybe we need separate arrays for activePartials and finishedPartials
 
   //bool plotShortTimeSpectra = true;
 
@@ -413,10 +417,10 @@ rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRa
     T* pPhs = phs.getRowPointer(frameIndex);
     std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
 
-                                                             //plotData(numBins/64, &freqs[0], pMag); // for development
-                                                             //plotData(numBins/64, &freqs[0], pPhs);
+    //plotData(numBins/64, &freqs[0], pMag); // for development
+    //plotData(numBins/64, &freqs[0], pPhs);
 
-                                                             // find spectral peaks:
+    // find spectral peaks:
     T peakThresh = rsDbToAmp(-30.0); // should be somewhere above the sidelobe level
     std::vector<int> peaks = peakIndices(pMag, numBins, peakThresh);
 
@@ -506,7 +510,7 @@ binFrac  = 1-binFrac;
 T phs0 = pPhs[binInt];   // just for debug
 T phs1 = pPhs[binInt+1]; // dito
 peakPhase = rsInterpolateWrapped(pPhs[binInt], pPhs[binInt+1], binFrac, -PI, PI);
-// hmm...it doesn't seem to make sense to interpolate the phase between bind like that - it 
+// hmm...it doesn't seem to make sense to interpolate the phase between bins like that - it 
 // does not seem to be a smooth function - it jumps erratically between bins - maybe we need 
 // a completely different way to obtain the instantaneus phase...maybe by comparing values in
 // different frames? or maybe by correlating the function with a complex sine that has 
@@ -518,7 +522,7 @@ peakPhase = rsInterpolateWrapped(pPhs[binInt], pPhs[binInt+1], binFrac, -PI, PI)
 // https://stackoverflow.com/questions/13499852/scipy-fourier-transform-of-a-few-selected-frequencies
 // https://stackoverflow.com/questions/11579367/implementation-of-goertzel-algorithm-in-c
 //...if we go down that route, we may also use the obtained amplitude
-// for refinig our amplitude estimate...ok - for now, just leave the instantaneous phase 
+// for refining our amplitude estimate...ok - for now, just leave the instantaneous phase 
 // measurement at zero
 
 https://ccrma.stanford.edu/~jos/sasp/Phase_Interpolation_Peak.html

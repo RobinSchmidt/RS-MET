@@ -209,7 +209,7 @@ public:
     if(nodes.size() == 0)
       return 0;
 
-    // todo: switch endpoint-mode (clamp, extrapolate, periocic, ...):
+    // todo: switch endpoint-mode (clamp, extrapolate, periodic, ...):
     if(x < nodes[0].x)
       return nodes[0].y;
     size_t i = firstIndexOfGreaterX(x);
