@@ -346,8 +346,8 @@ void windowFunctionsContinuous()
 
 void windowFunctionSpectra()
 {
-  int windowLength = 64;
-  int fftSize = 8192;
+  int windowLength = 32;
+  int fftSize = 2048;
 
   // create various window functions:
   typedef RAPT::rsWindowFunction WF;
@@ -358,6 +358,8 @@ void windowFunctionSpectra()
   WF::createWindow(&hamming[0],     N, WF::HAMMING_WINDOW);
   WF::createWindow(&blackman[0],    N, WF::BLACKMAN_WINDOW);
 
+  // todo: normalize the windows to have unit gain at DC
+
   // maybe optionally plot the window functions themselves
 
   // maybe have a function plotSpectra that takes a bunch of arrays and an FFT size..
@@ -365,6 +367,7 @@ void windowFunctionSpectra()
   //plotData(N, x, wHann, wHamming, wExactBlackman);
 
   SpectrumPlotter<double> plt;
+  plt.setFftSize(fftSize);
   plt.plotDecibelSpectra(N, &rectangular[0], &hanning[0], &hamming[0], &blackman[0]);
 
   /*
