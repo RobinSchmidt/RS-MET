@@ -259,18 +259,8 @@ template<class T>
 void rsSpectrogram<T>::fillWindowArray(T* w, int length, int type)
 {
   rsWindowFunction::createWindow(w, length, type);
-  // ...actually, this function is obsoletet now
-
-  /*
-  switch(type)
-  {
-  case RECTANGULAR_WINDOW: rsArray::fillWithValue(w, length, T(1)); break;
-  case HANNING_WINDOW:     rsWindowFunction::hanningZN(     w, length);       break;
-
-    // todo: provide Hamming, Blackman-Harris, Blackman-Nutall, Gaussian etc.
-
-  }
-  */
+  // ...actually, this function is obsolete now...but maybe not when we later create derivative and
+  // ramp windows for time/frequency reassignment
 }
 
 

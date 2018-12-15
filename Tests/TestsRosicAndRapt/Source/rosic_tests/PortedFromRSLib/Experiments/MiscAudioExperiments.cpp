@@ -344,6 +344,33 @@ void windowFunctionsContinuous()
   plotData(N, x, wHann, wHamming, wExactBlackman);
 }
 
+void windowFunctionSpectra()
+{
+  int windowLength = 512;
+  int fftSize = 8192;
+
+  // create various window functions:
+  typedef RAPT::rsWindowFunction WF;
+  int N = windowLength;
+  std::vector<double> rectangular(N), hanning(N), hamming(N), blackman(N);
+  WF::createWindow(&rectangular[0], N, WF::RECTANGULAR_WINDOW);
+  WF::createWindow(&hanning[0],     N, WF::HANNING_WINDOW);
+  WF::createWindow(&hamming[0],     N, WF::HAMMING_WINDOW);
+  WF::createWindow(&blackman[0],    N, WF::BLACKMAN_WINDOW);
+
+  // maybe optionally plot the window functions themselves
+
+  // maybe have a function plotSpectra that takes a bunch of arrays and an FFT size..
+
+  //plotData(N, x, wHann, wHamming, wExactBlackman);
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &hanning[0]);
+  plt.addDataArrays(N, &hamming[0]);
+  plt.addDataArrays(N, &blackman[0]);
+  plt.plot();
+};
+
 
 void windowedSinc()
 {

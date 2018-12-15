@@ -12,16 +12,6 @@ class rsSpectrogram
 
 public:
 
-  /*
-  enum windowTypes
-  {
-    RECTANGULAR_WINDOW = 0,
-    HANNING_WINDOW           // use qualifier ZN
-    // HAMMING_WINDOW,
-    // BLACKMAN_HARRIS_WINDOW,
-  };
-  */
-
   /** \name Construction/Destruction */
 
   /** Constructor. */

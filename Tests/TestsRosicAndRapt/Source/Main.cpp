@@ -285,6 +285,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
+  windowFunctionSpectra();
   //windowedSinc();
 
   // Modulator:

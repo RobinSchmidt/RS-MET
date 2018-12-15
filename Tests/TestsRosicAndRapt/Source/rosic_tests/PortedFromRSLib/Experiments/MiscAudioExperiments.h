@@ -12,6 +12,7 @@ void stretchedCorrelation();
 void taperedFourierSeries();
 void transientModeling();
 void windowFunctionsContinuous();
+void windowFunctionSpectra();
 void windowedSinc();
 
 #endif
