@@ -22,9 +22,10 @@ public:
 
   /** Writes window function values into the array w of length N. The type should be one of the 
   values in enum windowTypes. Some windows have an adjustable parameter - for these, the value of 
-  this parameter is passe din param. */
+  this parameter is passed in param. */
   template<class T>
-  static void createWindow(T* w, int N, int type, T param = 0);
+  static void createWindow(T* w, int N, int type, bool normalizeMean, T param = 0);
+  // bool normalize
 
 
   /** Returns the value of a zero-centered cosine-squared shaped window of given length, having

@@ -1,5 +1,5 @@
 template<class T>
-void rsWindowFunction::createWindow(T* w, int N, int type, T param)
+void rsWindowFunction::createWindow(T* w, int N, int type, bool normalizeMean, T param)
 {
   switch( type )
   {
@@ -10,6 +10,11 @@ void rsWindowFunction::createWindow(T* w, int N, int type, T param)
   case BLACKMAN_WINDOW:     blackman(   w, N); break;
     // more types to come...
   default: rectangular(w, N);
+  }
+
+  if(normalizeMean) {
+    T m = rsArray::mean(w, N);
+    rsArray::scale(w, N, T(1)/m);
   }
 }
 

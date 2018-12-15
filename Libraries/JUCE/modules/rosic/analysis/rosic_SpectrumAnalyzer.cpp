@@ -132,8 +132,10 @@ void SpectrumAnalyzer::makeWindow()
   for(n=0; n<maxBlockSize; n++)
     windowBuffer[n] = 0.0;
 
-  RAPT::rsWindowFunction::createWindow(windowBuffer, blockSize, windowType);
+  RAPT::rsWindowFunction::createWindow(windowBuffer, blockSize, windowType, true);
+  // todo: use flat top window - better for ampltude estimation
 
+  /*
   // normalize the window to unit mean (maybe move this to RAPT::rsWindowFunction or RAPT::rsArray):
   double sum          = 0.0;
   for(n=0; n<blockSize; n++)
@@ -142,4 +144,5 @@ void SpectrumAnalyzer::makeWindow()
   double scaler = 1.0 / mean;
   for(n=0; n<blockSize; n++)
     windowBuffer[n] *= scaler;
+    */
 }

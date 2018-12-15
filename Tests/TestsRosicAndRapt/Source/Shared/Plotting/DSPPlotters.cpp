@@ -354,8 +354,14 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x
   for(size_t i = 0; i < inputArrays.size(); i++) {
     RAPT::rsArray::convertBuffer(inputArrays[i], &tmp[0], signalLength);
     transformer.transformComplexBufferInPlace(&tmp[0]);
+
+    // this may be not quite correct at DC (i think, because we need to incorporate the value
+    // at fftSize/2 or something?)
+    T compFactor = T(fftSize) / T(signalLength);
     for(size_t k = 0; k < N; k++)
-      dB[k] = RAPT::rsAmpToDbWithCheck(abs(tmp[k]), ampFloor);
+      dB[k] = RAPT::rsAmpToDbWithCheck(compFactor * abs(tmp[k]), ampFloor);
+
+
     addDataArrays(fftSize/2, &dB[0]); // maybe fftSize/2 or (fftSize+1)/2
     int dummy = 0;
   }

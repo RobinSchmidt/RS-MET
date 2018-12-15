@@ -353,10 +353,10 @@ void windowFunctionSpectra()
   typedef RAPT::rsWindowFunction WF;
   int N = windowLength;
   std::vector<double> rectangular(N), hanning(N), hamming(N), blackman(N);
-  WF::createWindow(&rectangular[0], N, WF::RECTANGULAR_WINDOW);
-  WF::createWindow(&hanning[0],     N, WF::HANNING_WINDOW);
-  WF::createWindow(&hamming[0],     N, WF::HAMMING_WINDOW);
-  WF::createWindow(&blackman[0],    N, WF::BLACKMAN_WINDOW);
+  WF::createWindow(&rectangular[0], N, WF::RECTANGULAR_WINDOW, true);
+  WF::createWindow(&hanning[0],     N, WF::HANNING_WINDOW,     true);
+  WF::createWindow(&hamming[0],     N, WF::HAMMING_WINDOW,     true);
+  WF::createWindow(&blackman[0],    N, WF::BLACKMAN_WINDOW,    true);
 
   // todo: normalize the windows to have unit gain at DC
 
@@ -369,6 +369,12 @@ void windowFunctionSpectra()
   SpectrumPlotter<double> plt;
   plt.setFftSize(fftSize);
   plt.plotDecibelSpectra(N, &rectangular[0], &hanning[0], &hamming[0], &blackman[0]);
+
+  // the DC value looks wrong - i guess it's because the value at N/2 leaks into it? maybe at
+  // DC, we need to take only the real part?
+  // also, they are all too low in value - probably bcs the FFT size is larger than the 
+  // windowLength - we may have to multiply all values by fftSize/windowLength?
+
 
   /*
   GNUPlotter plt;
