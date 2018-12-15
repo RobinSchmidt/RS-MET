@@ -12,6 +12,7 @@ class rsSpectrogram
 
 public:
 
+  /*
   enum windowTypes
   {
     RECTANGULAR_WINDOW = 0,
@@ -19,6 +20,7 @@ public:
     // HAMMING_WINDOW,
     // BLACKMAN_HARRIS_WINDOW,
   };
+  */
 
   /** \name Construction/Destruction */
 
@@ -52,7 +54,7 @@ public:
   at the center of the frame */
   void setZeroPaddingFactor(int newFactor) { zeroPaddingFactor = newFactor; }
 
-
+  /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */
   void setAnalysisWindowType(int newType) 
   { 
     analysisWindowType = newType; 
@@ -188,8 +190,8 @@ protected:
   // maybe we should also distiguish between analysisa and synthesis hop-and block-size
 
   int zeroPaddingFactor = 1;
-  int analysisWindowType  = HANNING_WINDOW;
-  int synthesisWindowType = HANNING_WINDOW;
+  int analysisWindowType  = rsWindowFunction::HANNING_WINDOW_ZN;
+  int synthesisWindowType = rsWindowFunction::HANNING_WINDOW_ZN;
 
   std::vector<T> analysisWindow, synthesisWindow;
 

@@ -258,7 +258,10 @@ void rsSpectrogram<T>::updateSynthesisWindow()
 template<class T>
 void rsSpectrogram<T>::fillWindowArray(T* w, int length, int type)
 {
-  // call rsWindowFunction::createWindow
+  rsWindowFunction::createWindow(w, length, type);
+  // ...actually, this function is obsoletet now
+
+  /*
   switch(type)
   {
   case RECTANGULAR_WINDOW: rsArray::fillWithValue(w, length, T(1)); break;
@@ -267,6 +270,7 @@ void rsSpectrogram<T>::fillWindowArray(T* w, int length, int type)
     // todo: provide Hamming, Blackman-Harris, Blackman-Nutall, Gaussian etc.
 
   }
+  */
 }
 
 

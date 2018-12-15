@@ -31,15 +31,6 @@ namespace rosic
       LINEAR_PREDICTION
     };
 
-    // get rid -
-    enum windowFunctions
-    {
-      RECTANGULAR_WINDOW = 0,
-      HANNING_WINDOW,
-      HAMMING_WINDOW,
-      BLACKMAN_WINDOW
-    };
-
     //---------------------------------------------------------------------------------------------
     // construction/destruction:
 
@@ -119,7 +110,7 @@ namespace rosic
     int    blockSize;
     int    fftSize;
     int    sampleCounter;
-    int    windowFunction;
+    int    windowType;
     bool   midSideMode;
 
     double*  magnitudePointer[maxNumChannels];

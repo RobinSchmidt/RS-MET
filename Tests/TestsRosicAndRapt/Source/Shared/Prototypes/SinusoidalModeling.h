@@ -22,6 +22,8 @@ public:
   inline void setBlockSize(int newBlockSize)      { sp.setBlockSize(newBlockSize); }
   inline void setHopSize(int newHopSize)          { sp.setHopSize(newHopSize); }
   inline void setZeroPaddingFactor(int newFactor) { sp.setZeroPaddingFactor(newFactor); }
+
+  /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */
   inline void setWindowType(int newType)          { sp.setAnalysisWindowType(newType); }
   //setRootKey/setFundamentalFrequency, 
 

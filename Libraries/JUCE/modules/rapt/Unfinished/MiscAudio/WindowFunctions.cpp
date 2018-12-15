@@ -5,6 +5,7 @@ void rsWindowFunction::createWindow(T* w, int N, int type, T param)
   {
   case RECTANGULAR_WINDOW:  rectangular(w, N); break;
   case HANNING_WINDOW:      hanning(    w, N); break;
+  case HANNING_WINDOW_ZN:   hanningZN(  w, N); break;
   case HAMMING_WINDOW:      hamming(    w, N); break;
   case BLACKMAN_WINDOW:     blackman(   w, N); break;
     // more types to come...

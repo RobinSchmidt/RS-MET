@@ -13,7 +13,8 @@ public:
   enum windowTypes
   {
     RECTANGULAR_WINDOW = 0,
-    HANNING_WINDOW,
+    HANNING_WINDOW,    // add qualifier (either ZZ or NN, i think)
+    HANNING_WINDOW_ZN, // start at zero ends nonzero - sums to constant with overlap 1
     HAMMING_WINDOW,
     BLACKMAN_WINDOW
   };

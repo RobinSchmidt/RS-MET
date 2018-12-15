@@ -6,13 +6,13 @@
 
 SpectrumAnalyzer::SpectrumAnalyzer()
 {
-  sampleRate     = 44100.0;
-  numChannels    = 2;
-  blockSize      = 8192;
-  fftSize        = 1*blockSize;
-  windowFunction = HANNING_WINDOW;
-  sampleCounter  = 0;
-  midSideMode    = false;
+  sampleRate    = 44100.0;
+  numChannels   = 2;
+  blockSize     = 8192;
+  fftSize       = 1*blockSize;
+  windowType    = RAPT::rsWindowFunction::HANNING_WINDOW; // maybe use a flat-top window
+  sampleCounter = 0;
+  midSideMode   = false;
 
   fourierTransformer.setBlockSize(blockSize);
 
@@ -132,17 +132,9 @@ void SpectrumAnalyzer::makeWindow()
   for(n=0; n<maxBlockSize; n++)
     windowBuffer[n] = 0.0;
 
-  switch( windowFunction )
-  {
-  case RECTANGULAR_WINDOW:  RAPT::rsWindowFunction::rectangular(windowBuffer, blockSize); break;
-  case HANNING_WINDOW:      RAPT::rsWindowFunction::hanning(    windowBuffer, blockSize); break;
-  case HAMMING_WINDOW:      RAPT::rsWindowFunction::hamming(    windowBuffer, blockSize); break;
-  case BLACKMAN_WINDOW:     RAPT::rsWindowFunction::blackman(   windowBuffer, blockSize); break;
+  RAPT::rsWindowFunction::createWindow(windowBuffer, blockSize, windowType);
 
-  default: RAPT::rsWindowFunction::hanning(windowBuffer, blockSize);
-  }
-
-  // normalize the window to unit mean:
+  // normalize the window to unit mean (maybe move this to RAPT::rsWindowFunction or RAPT::rsArray):
   double sum          = 0.0;
   for(n=0; n<blockSize; n++)
     sum        += windowBuffer[n];
