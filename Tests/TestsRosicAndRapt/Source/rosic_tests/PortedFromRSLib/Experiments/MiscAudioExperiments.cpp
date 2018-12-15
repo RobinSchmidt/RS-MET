@@ -346,7 +346,7 @@ void windowFunctionsContinuous()
 
 void windowFunctionSpectra()
 {
-  int windowLength = 512;
+  int windowLength = 64;
   int fftSize = 8192;
 
   // create various window functions:
@@ -365,7 +365,7 @@ void windowFunctionSpectra()
   //plotData(N, x, wHann, wHamming, wExactBlackman);
 
   SpectrumPlotter<double> plt;
-  plt.plotDecibelSpectra(N, &hanning[0], &hamming[0], &blackman[0]);
+  plt.plotDecibelSpectra(N, &rectangular[0], &hanning[0], &hamming[0], &blackman[0]);
 
   /*
   GNUPlotter plt;

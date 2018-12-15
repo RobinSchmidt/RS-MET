@@ -338,10 +338,31 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x
   transformer.setDirection(        FT::FORWARD);
   transformer.setBlockSize(fftSize);
 
+  // use this for y-axis minimum - let the user set it up:
+  T dBFloor = -120;
+  T ampFloor = RAPT::rsDbToAmp(dBFloor);
 
 
-  int dummy = 0;
+  std::vector<T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
+
+  int N = rsMax(signalLength, fftSize);
+
+  std::vector<std::complex<T>> tmp(N);
+  std::vector<T> dB(N);
+  RAPT::rsArray::fillWithZeros(&tmp[0], N);
+
+  for(size_t i = 0; i < inputArrays.size(); i++) {
+    RAPT::rsArray::convertBuffer(inputArrays[i], &tmp[0], signalLength);
+    transformer.transformComplexBufferInPlace(&tmp[0]);
+    for(size_t k = 0; k < N; k++)
+      dB[k] = RAPT::rsAmpToDbWithCheck(abs(tmp[k]), ampFloor);
+    addDataArrays(fftSize, &dB[0]); // maybe fftSize/2 or (fftSize+1)/2
+    int dummy = 0;
+  }
+
+  plot();
 }
+// maybe factor out addSpectra
 
 // template instantiations:
 template class SpectrumPlotter<float>;
