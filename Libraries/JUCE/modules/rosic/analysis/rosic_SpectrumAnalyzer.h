@@ -31,6 +31,7 @@ namespace rosic
       LINEAR_PREDICTION
     };
 
+    // get rid -
     enum windowFunctions
     {
       RECTANGULAR_WINDOW = 0,

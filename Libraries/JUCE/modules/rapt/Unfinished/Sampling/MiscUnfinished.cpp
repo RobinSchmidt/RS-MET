@@ -594,7 +594,7 @@ void rsCycleMarkFinder<T>::applyWindow(T* x, int N)
   T halfN = T(0.5) * T(N);
   for(int n = 0; n < N; n++)
   {
-    x[n] *= rsWindowFunction::rsCosineSquaredWindow(T(n)-halfN, T(N));  // seems best among those that were tested
+    x[n] *= rsWindowFunction::cosineSquared(T(n)-halfN, T(N));  // seems best among those that were tested
     //x[n] *= rsWindowFunction::rsRaisedCosineWindow(T(n)-halfN, T(N), 0.08);  // Hamming - produces large spikes of the error
     //x[n] *= rsWindowFunction::rsRaisedCosineWindow(T(n)-halfN, T(N), 0.07672);  // equiripple sidelobes - also spikes
     //x[n] *= rsWindowFunction::rsExactBlackmanWindow(T(n)-halfN, T(N));  // similar to rsCosineSquaredWindow

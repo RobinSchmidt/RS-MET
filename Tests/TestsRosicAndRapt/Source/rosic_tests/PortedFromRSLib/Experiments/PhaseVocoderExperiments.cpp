@@ -84,8 +84,8 @@ void grainRoundTrip()
                                        
   // create analysis and synthesis windows:
   double wa[B], ws[B];
-  rsWindowFunction::rsHanningWindowZN(wa, B);
-  rsWindowFunction::rsHanningWindowZN(ws, B);
+  rsWindowFunction::hanningZN(wa, B);
+  rsWindowFunction::hanningZN(ws, B);
     // try other windows - actually, the roundtrip work even with random sequences
 
   // create the test signal:
@@ -114,8 +114,8 @@ void plotWindows()
                                       
   // create the window function:
   double wa[B], ws[B], w[B];
-  rsWindowFunction::rsHanningWindowZN(wa, B);
-  rsWindowFunction::rsHanningWindowZN(ws, B);
+  rsWindowFunction::hanningZN(wa, B);
+  rsWindowFunction::hanningZN(ws, B);
   RAPT::rsArray::multiply(wa, ws, w, B);
 
     // todo: try different window functions: Hmaming, Blackman, versions with both ends nonzero
@@ -181,8 +181,8 @@ void spectrogramSine()
 
   // create the window function:
   double w[B];
-  rsWindowFunction::rsHanningWindowZN(w, B); // todo: create also the time-derivative and the 
-                           // time-ramped window for reassignment later
+  rsWindowFunction::hanningZN(w, B); // todo: create also the time-derivative and the 
+                                     // time-ramped window for reassignment later
 
   // create the test signal:
   double x[N];

@@ -10,10 +10,26 @@ class rsWindowFunction
 
 public:
 
+  enum windowTypes
+  {
+    RECTANGULAR_WINDOW = 0,
+    HANNING_WINDOW,
+    HAMMING_WINDOW,
+    BLACKMAN_WINDOW
+  };
+
+
+  /** Writes window function values into the array w of length N. The type should be one of the 
+  values in enum windowTypes. Some windows have an adjustable parameter - for these, the value of 
+  this parameter is passe din param. */
+  template<class T>
+  static void createWindow(T* w, int N, int type, T param = 0);
+
+
   /** Returns the value of a zero-centered cosine-squared shaped window of given length, having
   nonzero values in the range -length/2...+length/2 */
   template<class T>
-  static T rsCosineSquaredWindow(T x, T length);
+  static T cosineSquared(T x, T length);
     // turn this into a rsCosinePowerWindow function
 
   /** Returns the value of a zero-centered cosine shaped window on a platform of given length,
@@ -26,7 +42,7 @@ public:
   http://en.wikipedia.org/wiki/Window_function#Hamming_window
   \todo verify this experimentally */
   template<class T>
-  static T rsRaisedCosineWindow(T x, T length, T p = 0.0);
+  static T raisedCosine(T x, T length, T p = 0.0);
 
   /** Retruns a value of the "exact" Blackman window. Compared to the unqualified "Blackman"
   window, this exact version uses coefficients for the terms that place place zeros at the third
@@ -36,23 +52,23 @@ public:
   References:
   http://en.wikipedia.org/wiki/Window_function#Blackman_windows  */
   template<class T>
-  static T rsExactBlackmanWindow(T x, T length, T dummy = 0.0);
+  static T exactBlackman(T x, T length, T dummy = 0.0);
 
-  /** Fills the window-array with a Hamming-window. */
+  /**  */
   template<class T>
-  static void rsBlackmanWindow(T *window, int length);
+  static void blackman(T *window, int length);
 
   /** Fills the window-array with a cosine power window. */
   template<class T>
-  static void rsCosinePowerWindow(T *window, int length, T power = 2.0);
+  static void cosinePower(T *window, int length, T power = 2.0);
 
   /** Fills the window-array with a Hamming-window. */
   template<class T>
-  static void rsHammingWindow(T *window, int length);
+  static void hamming(T *window, int length);
 
   /** Fills the window-array with a Hanning-window. */
   template<class T>
-  static void rsHanningWindow(T *window, int length);
+  static void hanning(T *window, int length);
   // todo: rename to specify the values at endpoints as done in rsHanningWindowZN
 
   /** Creates a Hanning window that starts with a zero value in w[0] and ends with a nonzero
@@ -61,18 +77,18 @@ public:
   where it is important that suitably overlapped windows sum up to a constant, like when identity
   resynthesis is required. */
   template<class T>
-  static void rsHanningWindowZN(T *window, int length);
+  static void hanningZN(T *window, int length);
   // maybe have a version NZ, ZZ, NN
 
   /** Fills the window-array with a rectangular window. ...ahem trivial */
   template<class T>
-  static void rsRectangularWindow(T *window, int length);
+  static void rectangular(T *window, int length);
 
   /** Returns the value of a cosine-squared windowed (normalized) sinc function. It has nonzero
   values in the range -length/2...+length/2 and zero crossings at integer multiples of the
   "stretch" parameter. */
   template<class T>
-  static T rsWindowedSinc(T x, T length, T stretch);
+  static T windowedSinc(T x, T length, T stretch);
   //...hmm...this does not really belong here - maybe move to and FIR filter or interpolation class
 
 };

@@ -142,7 +142,7 @@ void sincResamplerModulation()
 
   // select window-function:
   FunctionPointer3DoublesToDouble wnd;
-  wnd = rsWindowFunction::rsRaisedCosineWindow;
+  wnd = rsWindowFunction::raisedCosine;
   //wnd = rsExactBlackmanWindow;
 
   // select window-parameter (only relevant, if wnd = rsRaisedCosineWindow is used):
@@ -208,7 +208,7 @@ void sincResamplerPassbandRipple()
   // select window-function:
   FunctionPointer3DoublesToDouble wnd;
   //wnd = rsWindowFunction::rsRaisedCosineWindow;
-  wnd = rsWindowFunction::rsExactBlackmanWindow;
+  wnd = rsWindowFunction::exactBlackman;
 
   // select window-parameter (only relevant, if wnd = rsRaisedCosineWindow is used):
   double wp;
@@ -252,7 +252,7 @@ void sincResamplerPassbandRipple()
 
 
 double windowedSincWeightSum(double sincLength, double stretch, double tf, 
-  FunctionPointer3DoublesToDouble windowFunction = rsWindowFunction::rsRaisedCosineWindow, 
+  FunctionPointer3DoublesToDouble windowFunction = rsWindowFunction::raisedCosine, 
   double windowParameter = 0.0)
 {
   int L = (int) floor(sincLength);
@@ -295,7 +295,7 @@ void sincResamplerSumOfTapWeights()
   // select window-function:
   FunctionPointer3DoublesToDouble wnd;
   //wnd = rsWindowFunction::rsRaisedCosineWindow;
-  wnd = rsWindowFunction::rsExactBlackmanWindow;
+  wnd = rsWindowFunction::exactBlackman;
 
   // select window-parameter (only relevant, if wnd = rsRaisedCosineWindow is used):
   double wp;
