@@ -364,11 +364,16 @@ void windowFunctionSpectra()
 
   //plotData(N, x, wHann, wHamming, wExactBlackman);
 
+  SpectrumPlotter<double> plt;
+  plt.plotDecibelSpectra(N, &hanning[0], &hamming[0], &blackman[0]);
+
+  /*
   GNUPlotter plt;
   plt.addDataArrays(N, &hanning[0]);
   plt.addDataArrays(N, &hamming[0]);
   plt.addDataArrays(N, &blackman[0]);
   plt.plot();
+  */
 };
 
 

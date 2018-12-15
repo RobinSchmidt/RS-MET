@@ -194,6 +194,38 @@ protected:
 // numerator and denominator, quotient-rule and maybe chain-rule to evaluate the derivative of the
 // phase-response)
 
+
+template <class T>
+class SpectrumPlotter : public GNUPlotter
+{
+
+public:
+
+  /** Given up to 10 signal buffers of length "signalLength", this function performs an FFT on each 
+  of them and plot the spectral magintudes as decibel values.  
+  (the FFT size is determined by setFfftSize and may be different from signalLength) */
+  //template <class T>
+  void plotDecibelSpectra(int signalLength, T *x0, T *x1 = nullptr, T *x2 = nullptr, 
+    T *x3 = nullptr, T *x4 = nullptr, T *x5 = nullptr, T *x6 = nullptr, T *x7 = nullptr, 
+    T *x8 = nullptr, T *x9 = nullptr);
+
+
+  void setFftSize(int newSize) { fftSize = newSize; }
+
+  // setSampleRate, etc...
+
+protected:
+
+
+  int fftSize = 2048;
+
+  RAPT::rsFourierTransformerBluestein<T> transformer;
+
+
+};
+
+
+
 // todo: make a class SpectrogramPlotter
 
 #endif

@@ -372,7 +372,30 @@ public:
   /** Executes GNUPlot with the appropriate commandline parameter to read the command file. */
   void invokeGNUPlot();
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Handling variable argument lists */
 
+  template<class T> 
+  static T nullValue(T);
+
+  static std::string nullValue(std::string);
+
+  template<class T>
+  static std::vector<T> collectLeadingNonNullArguments(T a0, T a1, T a2, T a3, T a4, T a5, T a6, 
+    T a7, T a8, T a9);
+
+  template<class T>
+  static void append(std::vector<T>& v, const std::vector<T>& appendix);
+
+  template<class T>
+  static std::vector<std::vector<T>> wrapIntoVectors(int N, T *a0, T *a1, T *a2, T *a3, T *a4, 
+    T *a5, T *a6, T *a7, T *a8, T *a9);
+
+  static void addToStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CSR s2, CSR s3, CSR s4, 
+    CSR s5, CSR s6, CSR s7, CSR s8, CSR s9);
+
+  static void setStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CSR s2, CSR s3, CSR s4, 
+    CSR s5, CSR s6, CSR s7, CSR s8, CSR s9);
 
 
 protected:
@@ -425,29 +448,6 @@ protected:
   std::string sd(int x);           // conversion of integers for data file
 
 
-  // functions for the handling of variable argument lists
-
-  template<class T> 
-  T nullValue(T);
-
-  std::string nullValue(std::string);
-
-  template<class T>
-  std::vector<T> collectLeadingNonNullArguments(T a0, T a1, T a2, T a3, T a4, T a5, T a6, T a7, T a8, 
-    T a9);
-
-  template<class T>
-  void append(std::vector<T>& v, const std::vector<T>& appendix);
-
-  template<class T>
-  std::vector<std::vector<T>> wrapIntoVectors(int N, T *a0, T *a1, T *a2, T *a3, T *a4, T *a5, T *a6, 
-    T *a7, T *a8, T *a9);
-
-  void addToStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CSR s2, CSR s3, CSR s4, 
-    CSR s5, CSR s6, CSR s7, CSR s8, CSR s9);
-
-  void setStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CSR s2, CSR s3, CSR s4, CSR s5, 
-    CSR s6, CSR s7, CSR s8, CSR s9);
 
 
   /** \name Data */

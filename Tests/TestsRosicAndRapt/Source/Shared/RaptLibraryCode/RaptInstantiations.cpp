@@ -203,6 +203,9 @@ template void RAPT::rsAutoCorrelationFFT(float x[], int N, float r[]);
 template class RAPT::rsFourierTransformerRadix2<float>;
 template class RAPT::rsFourierTransformerBluestein<float>;
 
+template class RAPT::rsFourierTransformerRadix2<double>;
+template class RAPT::rsFourierTransformerBluestein<double>;
+
 
 
 template class RAPT::rsSineIterator<double>;

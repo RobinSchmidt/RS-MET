@@ -324,3 +324,26 @@ bool  FilterPlotter<T>::almostEqual(complex<T> x, complex<T> y, T thresh)
 // template instantiations:
 template class FilterPlotter<float>;
 template class FilterPlotter<double>;
+
+//=================================================================================================
+
+
+template <class T>
+void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x2, T *x3, T *x4, 
+  T *x5, T *x6, T *x7, T *x8, T *x9)
+{
+  // maybe factor out into setupTransformer:
+  typedef RAPT::rsFourierTransformerRadix2<T> FT;
+  transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+  transformer.setDirection(        FT::FORWARD);
+  transformer.setBlockSize(fftSize);
+
+
+
+  int dummy = 0;
+}
+
+// template instantiations:
+template class SpectrumPlotter<float>;
+template class SpectrumPlotter<double>;
+
