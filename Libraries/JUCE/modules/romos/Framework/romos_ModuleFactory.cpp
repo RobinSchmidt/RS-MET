@@ -153,6 +153,7 @@ void ModuleFactory::registerStandardModules()
   // Sources
   registerModuleType(new WhiteNoiseTypeInfo);
   registerModuleType(new PhasorTypeInfo);
+  registerModuleType(new SineOscillatorTypeInfo);
   registerModuleType(new BandlimitedImpulseTrainTypeInfo);
   registerModuleType(new DualBlitSawTypeInfo);
 

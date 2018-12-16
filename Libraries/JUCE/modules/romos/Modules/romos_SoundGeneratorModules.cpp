@@ -55,17 +55,20 @@ INLINE void Phasor::process(Module* module, double* in1, double* in2, double* in
   int voiceIndex)
 {
   Phasor *phasor = static_cast<Phasor*> (module);
+  *out = *in2 + (*in3 - *in2) * phasor->phases[voiceIndex];  // generate output signal
+  updatePhase(phasor, *in1, voiceIndex);
+}
 
-  // generate output signal:
-  *out = *in2 + (*in3 - *in2) * phasor->phases[voiceIndex];
-
-  // phase increment and wraparound:
-  phasor->phases[voiceIndex] += *in1 * processingStatus.getSystemSamplePeriod();
+INLINE void Phasor::updatePhase(Phasor* phasor, double freq, int voiceIndex)
+{
+  // increment and wraparound:
+  phasor->phases[voiceIndex] += freq * processingStatus.getSystemSamplePeriod();
   while(phasor->phases[voiceIndex] >= 1.0)
     phasor->phases[voiceIndex] -= 1.0;
   while(phasor->phases[voiceIndex] <  0.0)
     phasor->phases[voiceIndex] += 1.0;
 }
+
 void Phasor::resetVoiceState(int voiceIndex)
 {
   AtomicModule::resetVoiceState(voiceIndex);
@@ -82,8 +85,24 @@ void Phasor::freeMemory()
   delete[] phases;
   phases = nullptr;
 }
-//CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(Phasor);
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(Phasor);
+
+//-------------------------------------------------------------------------------------------------
+
+void SineOscillator::initialize()
+{
+  initInputPins({ "Freq", "Phase" });
+  initOutputPins({ "" });
+}
+INLINE void SineOscillator::process(Module* module, double* Freq, double* Phase, double* out, 
+  int voiceIndex)
+{
+  //SineOscillator* sinOsc = static_cast<SineOscillator*> (module);
+  Phasor *phasor = static_cast<Phasor*> (module);
+  *out = sin(2*PI*phasor->phases[voiceIndex] + *Phase);
+  updatePhase(phasor, *Freq, voiceIndex);
+}
+CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(SineOscillator);
 
 //-------------------------------------------------------------------------------------------------
 

@@ -64,9 +64,11 @@ class Phasor : public AtomicModule
 public:
   virtual void resetVoiceState(int voiceIndex);
 protected:
+  inline static void updatePhase(Phasor* phasor, double freq, int voiceIndex);
   virtual void allocateMemory();
   virtual void freeMemory();
   double *phases;
+  friend class SineOscillator;
 };
 class PhasorTypeInfo : public ModuleTypeInfo
 {
@@ -84,6 +86,26 @@ public:
 // has occurred. the fractional part f (in 0..1) can be used to indicate the exact sub-sample
 // time-instant at which the reset occurred (is there a convention, how to interpret this in
 // max/msp, reaktor, etc? figure out)
+
+//-------------------------------------------------------------------------------------------------
+
+class SineOscillator : public Phasor
+{
+  CREATE_COMMON_DECLARATIONS_2(SineOscillator);
+};
+class SineOscillatorTypeInfo : public ModuleTypeInfo
+{
+public:
+  SineOscillatorTypeInfo() {
+    shortName    = "SinOsc";
+    fullName     = "SineOscillator";
+    description  = "Sine wave oscillator with adjustable frequency and phase";
+    category     = "Sources";
+    createModule =  []()->Module* { return new SineOscillator; };
+    hasHeader = false;
+  }
+};
+// maybe it should have an amplitude input, too?
 
 //-------------------------------------------------------------------------------------------------
 

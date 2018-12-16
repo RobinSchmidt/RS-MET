@@ -371,7 +371,6 @@ void windowFunctionSpectra()
   WF::createWindow(&truncGauss4[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/4.);
   WF::createWindow(&truncGauss5[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/5.);
 
-
   // maybe optionally plot the window functions themselves
 
   SpectrumPlotter<double> plt;
