@@ -352,36 +352,33 @@ void windowFunctionSpectra()
   // create various window functions:
   typedef RAPT::rsWindowFunction WF;
   int N = windowLength;
-  std::vector<double> rectangular(N), hanning(N), hamming(N), blackman(N), blackmanHarris(N), 
-    blackmanNutall(N);
+  std::vector<double> rectangular(N), triangular(N), hanning(N), hamming(N), 
+    blackman(N), blackmanHarris(N),  blackmanNutall(N), nutall(N),
+    truncGauss2(N), truncGauss3(N), truncGauss4(N), truncGauss5(N); // 2,3,4,5 = 1/sigma
 
   WF::createWindow(&rectangular[0],    N, WF::RECTANGULAR_WINDOW, true);
+  WF::createWindow(&triangular[0],     N, WF::TRIANGULAR,         true);
   WF::createWindow(&hanning[0],        N, WF::HANNING_WINDOW,     true);
   WF::createWindow(&hamming[0],        N, WF::HAMMING_WINDOW,     true);
+
   WF::createWindow(&blackman[0],       N, WF::BLACKMAN_WINDOW,    true);
   WF::createWindow(&blackmanHarris[0], N, WF::BLACKMAN_HARRIS,    true);
   WF::createWindow(&blackmanNutall[0], N, WF::BLACKMAN_NUTALL,    true);
+  WF::createWindow(&nutall[0],         N, WF::NUTALL,             true);
 
-  // todo: normalize the windows to have unit gain at DC
+  WF::createWindow(&truncGauss2[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/2.);
+  WF::createWindow(&truncGauss3[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/3.);
+  WF::createWindow(&truncGauss4[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/4.);
+  WF::createWindow(&truncGauss5[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/5.);
+
 
   // maybe optionally plot the window functions themselves
 
-  // maybe have a function plotSpectra that takes a bunch of arrays and an FFT size..
-
-  //plotData(N, x, wHann, wHamming, wExactBlackman);
-
   SpectrumPlotter<double> plt;
   plt.setFftSize(fftSize);
-  plt.plotDecibelSpectra(N, &rectangular[0], &hanning[0], &hamming[0], &blackman[0], 
-    &blackmanHarris[0], &blackmanNutall[0]);
-
-  /*
-  GNUPlotter plt;
-  plt.addDataArrays(N, &hanning[0]);
-  plt.addDataArrays(N, &hamming[0]);
-  plt.addDataArrays(N, &blackman[0]);
-  plt.plot();
-  */
+  //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
+  //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
+  plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 };
 
 

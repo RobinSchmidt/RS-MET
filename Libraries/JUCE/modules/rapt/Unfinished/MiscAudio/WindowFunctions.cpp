@@ -1,15 +1,22 @@
 template<class T>
-void rsWindowFunction::createWindow(T* w, int N, int type, bool normalizeMean, T param)
+void rsWindowFunction::createWindow(T* w, int N, int type, bool normalizeMean, T p)
 {
   switch( type )
   {
   case RECTANGULAR_WINDOW:  rectangular(w, N); break;
+  case TRIANGULAR:          triangular( w, N); break;
+    // insert other polynomial windows here...
+
   case HANNING_WINDOW:      hanning(    w, N); break;
   case HANNING_WINDOW_ZN:   hanningZN(  w, N); break;
   case HAMMING_WINDOW:      hamming(    w, N); break;
-  case BLACKMAN_WINDOW:     blackman(   w, N); break;
+
+  case BLACKMAN_WINDOW:     blackman(      w, N); break;
   case BLACKMAN_HARRIS:     blackmanHarris(w, N); break;
   case BLACKMAN_NUTALL:     blackmanNutall(w, N); break;
+  case NUTALL:              nutall(        w, N); break;
+
+  case TRUNCATED_GAUSSIAN:  truncatedGaussian(w, N, p); break; // p is the sigma
 
     // more types to come...
   default: rectangular(w, N);
@@ -167,6 +174,17 @@ void rsWindowFunction::rectangular(T *window, int length)
 {
   for(int n = 0; n < length; n++)
     window[n] = 1.0;
+}
+
+template<class T>
+void rsWindowFunction::triangular(T *w, int N)
+{
+  T m = T(0.5)*T(N-1);
+  T L = N;        // could also be N-1 or N+1, see wikipedia article - maybe let the user choose
+  T s = T(2)/L;
+  for(int n = 0; n < N; n++)
+    w[n] = 1 - rsAbs((n-m)*s);
+  // https://en.wikipedia.org/wiki/Window_function#Triangular_window
 }
 
 template<class T>

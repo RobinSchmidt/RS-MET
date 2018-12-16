@@ -1,10 +1,11 @@
 #ifndef RAPT_WINDOWFUNCTIONS_H
 #define RAPT_WINDOWFUNCTIONS_H
 
-// todo: wrap into a class rsWindowFunctions...get rid of the "make" prefixes - just use
-// rsBlahWindow
+/** A class to create various window functions that are useful for spectral analysis and FIR filter
+design. Some functions fill an array with values of the window function, other functions allow to 
+evaluate the continuous time window function to be evaluated at arbitrary inputs. The functions are 
+all static and the class only serves for putting them all under the same umbrella. */
 
-//template<class T>
 class rsWindowFunction
 {
 
@@ -13,12 +14,17 @@ public:
   enum windowTypes
   {
     RECTANGULAR_WINDOW = 0,
+    TRIANGULAR,
     HANNING_WINDOW,    // add qualifier (either ZZ or NN, i think)
     HANNING_WINDOW_ZN, // start at zero ends nonzero - sums to constant with overlap 1
     HAMMING_WINDOW,
+
     BLACKMAN_WINDOW,
     BLACKMAN_HARRIS,
-    BLACKMAN_NUTALL
+    BLACKMAN_NUTALL,
+    NUTALL,
+
+    TRUNCATED_GAUSSIAN
   };
   // maybe remove the "WINDOW"
 
@@ -61,7 +67,8 @@ public:
 
   /** Blackman window.
   mainlobe width: ~3
-  sidelobe rejection: ~58 dB  */
+  sidelobe rejection: ~58 dB
+  sidelobe rolloff: yes (figure out numerical value)  */
   template<class T>
   static void blackman(T *window, int length);
 
@@ -119,9 +126,17 @@ public:
   
   /** Fills the array with a rectangular window (i.e. just all ones).
   mainlobe width: 1 (by definition)
-  sidelobe rejection: ~13.2 dB  */
+  sidelobe rejection: ~13.2 dB  
+  sidelodbe rolloff: 6 dB/oct  (verify)  */
   template<class T>
   static void rectangular(T *window, int length);
+
+  /** Triangular window.
+  mainlobe width: 2
+  sidelobe rejection: 26.5 dB
+  sidelobe rolloff: 12 dB/oct   */
+  template<class T>
+  static void triangular(T *window, int length);
 
   /** Returns the value of a cosine-squared windowed (normalized) sinc function. It has nonzero
   values in the range -length/2...+length/2 and zero crossings at integer multiples of the
