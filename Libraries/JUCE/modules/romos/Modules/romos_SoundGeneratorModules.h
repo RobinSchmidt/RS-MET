@@ -91,7 +91,7 @@ public:
 
 class SineOscillator : public Phasor
 {
-  CREATE_COMMON_DECLARATIONS_2(SineOscillator);
+  CREATE_COMMON_DECLARATIONS_3(SineOscillator);
 };
 class SineOscillatorTypeInfo : public ModuleTypeInfo
 {
@@ -99,7 +99,7 @@ public:
   SineOscillatorTypeInfo() {
     shortName    = "SinOsc";
     fullName     = "SineOscillator";
-    description  = "Sine wave oscillator with adjustable frequency and phase";
+    description  = "Sine wave oscillator with adjustable frequency, amplitude and phase";
     category     = "Sources";
     createModule =  []()->Module* { return new SineOscillator; };
     hasHeader = false;

@@ -91,18 +91,19 @@ CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(Phasor);
 
 void SineOscillator::initialize()
 {
-  initInputPins({ "Freq", "Phase" });
+  initInputPins({ "Freq", "Amp", "Phase" });
   initOutputPins({ "" });
+  inputPins[1].setDefaultValue(1); // Amp is 1 by default
 }
-INLINE void SineOscillator::process(Module* module, double* Freq, double* Phase, double* out, 
-  int voiceIndex)
+INLINE void SineOscillator::process(Module* module, double* Freq, double* Amp, double* Phase, 
+  double* out, int voiceIndex)
 {
   //SineOscillator* sinOsc = static_cast<SineOscillator*> (module);
   Phasor *phasor = static_cast<Phasor*> (module);
-  *out = sin(2*PI*phasor->phases[voiceIndex] + *Phase);
+  *out = *Amp * sin(2*PI* (phasor->phases[voiceIndex] + *Phase));
   updatePhase(phasor, *Freq, voiceIndex);
 }
-CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_2(SineOscillator);
+CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(SineOscillator);
 
 //-------------------------------------------------------------------------------------------------
 
