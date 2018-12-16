@@ -77,6 +77,23 @@ public:
   template<class T>
   static void blackmanNutall(T *window, int length);
 
+  /** Nutall window. */
+  template<class T>
+  static void nutall(T *window, int length);
+
+  /** Flat top window. This has a flat top in the frequency domain, making it suitable for 
+  estimation of spectral amplitudes (when the frequency is off the bin-center, its amplitude is 
+  still well represented by the bin-center). */
+  template<class T>
+  static void flatTop(T *window, int length);
+
+  /** Truncated Gaussian window. The magnitude response of this has also an (approximate) gaussian 
+  shape which translates to a parabola for the respective dB values. This makes it suitable for 
+  frequency estimation by parabolic interpolation. */
+  template<class T>
+  static void truncatedGaussian(T *window, int length, T sigma);
+
+
   /** Fills the window-array with a cosine power window. */
   template<class T>
   static void cosinePower(T *window, int length, T power = 2.0);

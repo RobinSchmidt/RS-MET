@@ -85,9 +85,48 @@ void rsWindowFunction::blackmanNutall(T* w, int N)
   //https://en.wikipedia.org/wiki/Window_function#Blackman%E2%80%93Nuttall_window
 }
 
+template<class T>
+void rsWindowFunction::nutall(T* w, int N)
+{
+  T a0 = 0.355768, a1 = 0.487396, a2 = 0.144232, a3 = 0.012604;
+  for(int n = 0; n < N; n++) {
+    T s = T(2*PI*n)/T(N-1);  // factor out: c = T(2*PI)/T(N-1), do here: s = c*n
+    w[n] = a0 - a1*cos(s) + a2*cos(2*s) - a3*cos(3*s);
+  }
+  // https://en.wikipedia.org/wiki/Window_function#Nuttall_window,_continuous_first_derivative
+}
+
+template<class T>
+void rsWindowFunction::flatTop(T* w, int N)
+{
+  T a0 = 0.21557895, a1 = 0.41663158, a2 = 0.277263158, a3 = 0.083578947, a4 = 0.006947368;
+  for(int n = 0; n < N; n++) {
+    T s = T(2*PI*n)/T(N-1);
+    w[n] = a0 - a1*cos(s) + a2*cos(2*s) - a3*cos(3*s) + a4*cos(4*s);
+  }
+  //https://en.wikipedia.org/wiki/Window_function#Flat_top_window
+}
+
+template<class T>
+void rsWindowFunction::truncatedGaussian(T* w, int N, T sigma)
+{
+  T m = T(0.5)*(N-1);  // mu, midpoint, center
+  for(int n = 0; n < N; n++) {
+    T t = (n-m)/(sigma*m);
+    w[n] = exp(T(-0.5) * t*t);
+  }
+  // https://en.wikipedia.org/wiki/Window_function#Gaussian_window 
+}
+
+// todo: confined gaussian: 
+// https://en.wikipedia.org/wiki/Window_function#Confined_Gaussian_window
+
+
+
 // maybe make windows that minimize the sidlobe level with a given number of cosine terms
 // Blackman-Nutall looks close to equiripple sidelobes so this would be close to an optimal
 // 4-term window...could be used for windowed sinc filters and spectrum analysis
+// but maybe for filters, equiripple is less desirable than a falloff for the tails
 
 
 
