@@ -16,8 +16,11 @@ public:
     HANNING_WINDOW,    // add qualifier (either ZZ or NN, i think)
     HANNING_WINDOW_ZN, // start at zero ends nonzero - sums to constant with overlap 1
     HAMMING_WINDOW,
-    BLACKMAN_WINDOW
+    BLACKMAN_WINDOW,
+    BLACKMAN_HARRIS,
+    BLACKMAN_NUTALL
   };
+  // maybe remove the "WINDOW"
 
 
   /** Writes window function values into the array w of length N. The type should be one of the 
@@ -56,9 +59,23 @@ public:
   template<class T>
   static T exactBlackman(T x, T length, T dummy = 0.0);
 
-  /**  */
+  /** Blackman window.
+  mainlobe width: ~3
+  sidelobe rejection: ~58 dB  */
   template<class T>
   static void blackman(T *window, int length);
+
+  /** Blackman-Harris window.
+  mainlobe width: ~4, 
+  sidelobe rejection: ~92 dB */
+  template<class T>
+  static void blackmanHarris(T *window, int length);
+
+  /** Blackman-Nutall window. 
+  mainlobe width: ~4 (slighty narrower than Blackman-Harris)
+  sidelobe rejection: ~96.8 dB */
+  template<class T>
+  static void blackmanNutall(T *window, int length);
 
   /** Fills the window-array with a cosine power window. */
   template<class T>
@@ -82,7 +99,10 @@ public:
   static void hanningZN(T *window, int length);
   // maybe have a version NZ, ZZ, NN
 
-  /** Fills the window-array with a rectangular window. ...ahem trivial */
+  
+  /** Fills the array with a rectangular window (i.e. just all ones).
+  mainlobe width: 1 (by definition)
+  sidelobe rejection: ~13.2 dB  */
   template<class T>
   static void rectangular(T *window, int length);
 

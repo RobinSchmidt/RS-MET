@@ -8,6 +8,9 @@ void rsWindowFunction::createWindow(T* w, int N, int type, bool normalizeMean, T
   case HANNING_WINDOW_ZN:   hanningZN(  w, N); break;
   case HAMMING_WINDOW:      hamming(    w, N); break;
   case BLACKMAN_WINDOW:     blackman(   w, N); break;
+  case BLACKMAN_HARRIS:     blackmanHarris(w, N); break;
+  case BLACKMAN_NUTALL:     blackmanNutall(w, N); break;
+
     // more types to come...
   default: rectangular(w, N);
   }
@@ -59,6 +62,35 @@ void rsWindowFunction::blackman(T *window, int length)
     window[n] = 0.42 - 0.5*cos( 2.0*PI*n / (T) (length-1))
     + 0.08*cos(4.0*PI*n / (T) (length-1)) ;
 }
+
+template<class T>
+void rsWindowFunction::blackmanHarris(T* w, int N)
+{
+  T a0 = 0.35875, a1 = 0.48829, a2 = 0.14128, a3 = 0.01168;
+  for(int n = 0; n < N; n++) {
+    T s = T(2*PI*n)/T(N-1);
+    w[n] = a0 - a1*cos(s) + a2*cos(2*s) - a3*cos(3*s);
+  }
+  // https://en.wikipedia.org/wiki/Window_function#Blackman%E2%80%93Harris_window
+}
+
+template<class T>
+void rsWindowFunction::blackmanNutall(T* w, int N)
+{
+  T a0 = 0.3635819, a1 = 0.4891775, a2 = 0.1365995, a3 = 0.0106411;
+  for(int n = 0; n < N; n++) {
+    T s = T(2*PI*n)/T(N-1);
+    w[n] = a0 - a1*cos(s) + a2*cos(2*s) - a3*cos(3*s);
+  }
+  //https://en.wikipedia.org/wiki/Window_function#Blackman%E2%80%93Nuttall_window
+}
+
+// maybe make windows that minimize the sidlobe level with a given number of cosine terms
+// Blackman-Nutall looks close to equiripple sidelobes so this would be close to an optimal
+// 4-term window...could be used for windowed sinc filters and spectrum analysis
+
+
+
 
 template<class T>
 void rsWindowFunction::cosinePower(T *window, int length, T power)
