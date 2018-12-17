@@ -344,6 +344,37 @@ void windowFunctionsContinuous()
   plotData(N, x, wHann, wHamming, wExactBlackman);
 }
 
+
+// move to library (maybe)
+template<class T>
+void normalizeMean(T* x, int N) 
+{
+  T m = RAPT::rsArray::mean(x, N);
+  RAPT::rsArray::scale(x, N, T(1)/m);
+}
+void cosSumWindow2(double* w, int N) // 2 term
+{
+  double a0 = 0.5, a1 = 0.5;
+  for(int n = 0; n < N; n++) {
+    //double t = RAPT::rsLinToLin(double(n), -1.0, double(N), -1.0, +1.0);  // optimize, NN
+    //double t = RAPT::rsLinToLin(double(n), 0.0, double(N-1), -1.0, +1.0);  // optimize, ZZ
+    double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0);  // ZN
+    w[n] = a0 + a1*cos(PI*t);
+  }
+  normalizeMean(w, N);
+  // with the ZN mapping (first sample 0, last nonzero), the zeros are exactly at every other zero 
+  // of the rectangular window - best for comparing to rectangular - but for spectral analysis or 
+  // filter design NN is better (the zeros are a bit more narrowly spaced), the ZZ mapping is not 
+  // useful - it spaces the zeros wider than necessarry
+}
+// coeffs for k-term windows for increasing k:
+// a0 == (1/2), a1 == (1/2)
+// a0 == (3/8), a1 == (1/2), a2 == (1/8)
+// a0 == (5/16), a1 == (15/32), a2 == (3/16), a3 == (1/32)
+// a0 == (35/128), a1 == (7/16), a2 == (7/32), a3 == (1/16), a4 == (1/128)
+// these windows are probably nice for filter design because the provide a sidelobe rolloff with 
+// increasing steepness
+
 void windowFunctionSpectra()
 {
   int windowLength = 128;
@@ -371,13 +402,19 @@ void windowFunctionSpectra()
   WF::createWindow(&truncGauss4[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/4.);
   WF::createWindow(&truncGauss5[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/5.);
 
+  // under construction:
+  std::vector<double> cosSumWnd2(N), cosSumWnd3(N), cosSumWnd4(N), cosSumWnd5(N);
+  cosSumWindow2(&cosSumWnd2[0], N);
+
+
   // maybe optionally plot the window functions themselves
 
   SpectrumPlotter<double> plt;
   plt.setFftSize(fftSize);
   //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
-  plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
+  //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
+  plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0]);
 };
 
 
