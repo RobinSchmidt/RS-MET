@@ -109,6 +109,65 @@ protected:
 
 //=================================================================================================
 
+/** Another go at a general ordinary differential equation solver. 
+
+-maybe rename to rsExplicitInitialValueSolver (and provide also an implicit one)
+-maybe factor out a solver that doesn't carry around x and where f only depends on y
+-maybe move the state variables to a subclass (rsMultiStepInitialValueSolver or something)
+*/
+
+template<class Tx, class Ty>
+class rsInitialValueSolver 
+{
+
+public:
+
+
+  /** \name Setup */
+
+  void setStepSize(Tx newSize) { h = newSize; }
+
+
+
+
+  /** \name Evaluation */
+
+  Ty getSampleForwardEuler()
+  {
+    f0 = f(x, y);
+    x += h;
+    y += h*f0;
+    return y;
+  }
+
+
+
+  //Ty getSampleRungeKutta4();
+  //Ty getSampleAdamsBashforth2();
+  //Ty getSampleAdamsBashforth4();
+
+  // rsCubicSpline<Tx, Ty> getSolution(Tx x0, Tx x1, double accuracy);
+  // should produce an object of class rsCubicSpline that represents the solution
+
+
+
+protected:
+
+  Tx x = 0;
+  Ty y = 0;
+  Tx h = 1;  // step size
+
+  std::function<Ty(Tx,Ty)> f; // this is the "f" in y'(x) = f(x,y)
+
+  // state variables for multistep methods:
+  Ty f0, f1, f2, f3, f4; // f(x[n],y[n]), f(x[n-1],y[n-1]), ...
+
+};
+
+
+
+//=================================================================================================
+
 /** A class for representing a particular kind of string with which we can do some computations 
 just like with numbers. The set of all such strings forms a group (see group theory). The group 
 operation (which we call addition here) is to concatenate two strings and then delete all pairs of

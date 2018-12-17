@@ -356,9 +356,9 @@ void cosSumWindow2(double* w, int N) // 2 term
 {
   double a0 = 0.5, a1 = 0.5;
   for(int n = 0; n < N; n++) {
-    //double t = RAPT::rsLinToLin(double(n), -1.0, double(N), -1.0, +1.0);  // optimize, NN
-    //double t = RAPT::rsLinToLin(double(n), 0.0, double(N-1), -1.0, +1.0);  // optimize, ZZ
-    double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0);  // ZN
+    //double t = RAPT::rsLinToLin(double(n), -1.0, double(N), -1.0, +1.0);   // NN - good for filter design and spectrum analysis
+    //double t = RAPT::rsLinToLin(double(n), 0.0, double(N-1), -1.0, +1.0);  // ZZ - good for nothing
+    double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0);      // ZN - good for comparison with rectangular
     w[n] = a0 + a1*cos(PI*t);
   }
   normalizeMean(w, N);
@@ -367,13 +367,47 @@ void cosSumWindow2(double* w, int N) // 2 term
   // filter design NN is better (the zeros are a bit more narrowly spaced), the ZZ mapping is not 
   // useful - it spaces the zeros wider than necessarry
 }
-// coeffs for k-term windows for increasing k:
-// a0 == (1/2), a1 == (1/2)
-// a0 == (3/8), a1 == (1/2), a2 == (1/8)
-// a0 == (5/16), a1 == (15/32), a2 == (3/16), a3 == (1/32)
-// a0 == (35/128), a1 == (7/16), a2 == (7/32), a3 == (1/16), a4 == (1/128)
+void cosSumWindow3(double* w, int N) // 3 term
+{
+  double a0 = 3./8, a1 = 1./2, a2 = 1./8;
+  for(int n = 0; n < N; n++) {
+    double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0); 
+    w[n] = a0 + a1*cos(PI*t) + a2*cos(2*PI*t) ;
+  }
+  normalizeMean(w, N);
+}
+void cosSumWindow4(double* w, int N) // 4 term
+{
+  double a0 = 5./16, a1 = 15./32, a2 = 3./16, a3 = 1./32;
+  for(int n = 0; n < N; n++) {
+    double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0); 
+    w[n] = a0 + a1*cos(PI*t) + a2*cos(2*PI*t) + a3*cos(3*PI*t);
+  }
+  normalizeMean(w, N);
+}
+void cosSumWindow5(double* w, int N) // 5 term
+{
+  double a0 = 35./128, a1 = 7./16, a2 = 7./32, a3 = 1./16, a4 = 1./128;
+  for(int n = 0; n < N; n++) {
+    double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0); 
+    w[n] = a0 + a1*cos(PI*t) + a2*cos(2*PI*t) + a3*cos(3*PI*t) + a4*cos(4*PI*t);
+  }
+  normalizeMean(w, N);
+}
 // these windows are probably nice for filter design because the provide a sidelobe rolloff with 
 // increasing steepness
+// the mainlobe width is equal to k and the sidelobe rolloff slope equal to 
+// (2*k-1) * 6 dB/oct (i think)
+// maybe check, if the higher order windows also can be made to sum to a constant for certain 
+// overlap factors - if so, they may be useful for spectrogram analysis/resynthesis
+// we require more and more even derivatives to be zero at the end of the window support (the
+// odd derivatives are all zero anyway)
+// todo: 
+// -find coeffs for equiripple k-term windows numerically (maybe with numpy/scipy)
+// -maybe we can blend between continuity and equiripple/minimax coeffs
+// -maybe also allow blend between various orders (k-values) to provide a tradeoff between 
+//  mainlobe width and sidelobe rejection
+
 
 void windowFunctionSpectra()
 {
@@ -405,6 +439,9 @@ void windowFunctionSpectra()
   // under construction:
   std::vector<double> cosSumWnd2(N), cosSumWnd3(N), cosSumWnd4(N), cosSumWnd5(N);
   cosSumWindow2(&cosSumWnd2[0], N);
+  cosSumWindow3(&cosSumWnd3[0], N);
+  cosSumWindow4(&cosSumWnd4[0], N);
+  cosSumWindow5(&cosSumWnd5[0], N);
 
 
   // maybe optionally plot the window functions themselves
@@ -414,7 +451,7 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
-  plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0]);
+  plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
 };
 
 
