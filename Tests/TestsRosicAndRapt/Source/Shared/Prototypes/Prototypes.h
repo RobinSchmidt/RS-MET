@@ -109,7 +109,12 @@ protected:
 
 //=================================================================================================
 
-/** Another go at a general ordinary differential equation solver. 
+/** Another go at a general ordinary differential equation solver with a probably more convenient
+interface than the old one (which required subclassing to define a concrete ODE (system)).
+
+References
+(1) Numerical Recipies
+(2) Mathematik, Ahrens et al, 4.Aufl.
 
 -maybe rename to rsExplicitInitialValueSolver (and provide also an implicit one)
 -maybe factor out a solver that doesn't carry around x and where f only depends on y
@@ -140,11 +145,40 @@ public:
     return y;
   }
 
+  Ty getSampleRungeKutta4()
+  {
+    Ty k1 = f(x,         y);
+    Ty k2 = f(x + 0.5*h, y + 0.5*h*k1);
+    Ty k3 = f(x + 0.5*h, y + 0.5*h*k2);
+    Ty k4 = f(x +     h, y +     h*k3);
+    x += h;
+    y += (h/6.) * (k1 + 2*k2 + 2*k3 + k4); // optimize away division
+    return y;
+  }
 
 
-  //Ty getSampleRungeKutta4();
-  //Ty getSampleAdamsBashforth2();
-  //Ty getSampleAdamsBashforth4();
+  Ty getSampleAdamsBashforth2()
+  {
+    f0 = f(x, y);  // new evaluation
+    x += h;
+    y += 0.5*h*(3*f0 - f1);
+    f1 = f0;
+    return y;
+  }
+  // todo: make sure f0, f1, are initialized correctly (do this by doing an RK step)
+  // see (2) page 481
+
+
+  Ty getSampleAdamsBashforth4()
+  {
+    f0 = f(x, y);  // new evaluation
+    x += h;
+    y += (h/24.) * (55*f0 - 59*f1 + 37*f2 - 9*f3);
+    f3 = f2;
+    f2 = f1;
+    f1 = f0;
+    return y;
+  }
 
   // rsCubicSpline<Tx, Ty> getSolution(Tx x0, Tx x1, double accuracy);
   // should produce an object of class rsCubicSpline that represents the solution
