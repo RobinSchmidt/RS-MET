@@ -419,3 +419,26 @@ void FormulaModule_N_M::restoreOutputVariableConnections(
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_M);
 
 }
+
+/*
+Ideas:
+Make an ordinary differential equation solver based on an expression evaluator. The ODE is 
+expressed as y' = f(x,y) where y, y' are vectors and f is a vector valued function (maybe we can 
+absorb the independent variable x into the vector y as well - we'll see)
+-inputs: parameters to the ODE, maybe time in case of non-autonomous systems (we need an absolute 
+ time module then, that outputs the time passed since note-start in samples or seconds)
+-outputs: elements of the vector y (maybe not all of them)
+-the formula should then give expressions for all the element functions of f
+-we need to establish a convention for the notation for this - maybe if the output variables are
+ named x,y,z, the derivatives could be named xp, yp, zp (p for prime) or dx, dy, dz as shothand
+ for dx/dt, dy/dt, dz/dt, or xd, yd, zd (d for "dot" or "derivative")
+-on the GUI teh user selects the algorithm (Euler, Runge-Kutta, etc.) and maybe the set size...
+ but maybe the stepsize should be an input to make it dependent on sample-rate, frequency, etc.
+-maybe the solver needs an internal stepsize independent from the sampl-rate/frequency and a 
+ resampler
+-for the implementation either use multiple inheritance (from ExpressionEvaluator and 
+ std::function) for the definition of the function f and have an ODESolver object for each 
+ expression evaluator that points to the std::function part or have a subclass of std::function
+ that maintains its expression evaluator as member...maybe that's better because it's more 
+ generally useful
+*/

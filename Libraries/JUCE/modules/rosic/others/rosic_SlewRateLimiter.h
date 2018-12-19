@@ -4,6 +4,8 @@
 //// rosic-indcludes:
 //#include "../math/rosic_ElementaryFunctionsReal.h"
 
+// remove - this class is replaced by rapt version
+
 namespace rosic
 {
 
@@ -96,8 +98,6 @@ namespace rosic
       y1 = in + coeffRelease * (y1-in);
     return y1;
   }
-
-
 
   //-----------------------------------------------------------------------------------------------
   // a class to facilitate the use of stereo-slewrate limiters (a better solution would be to use

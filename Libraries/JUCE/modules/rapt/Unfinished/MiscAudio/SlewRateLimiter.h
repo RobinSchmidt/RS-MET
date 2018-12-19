@@ -75,7 +75,6 @@ protected:
 
 };
 
-
 //-----------------------------------------------------------------------------------------------
 // inlined functions:
 
@@ -89,45 +88,58 @@ RS_INLINE TSig rsSlewRateLimiter<TSig, TPar>::getSample(TSig in)
   return y1;
 }
 
-//-----------------------------------------------------------------------------------------------
-// a class to facilitate the use of stereo-slewrate limiters (a better solution would be to use
-// a template parameter SampleFrame in the class above - if a double is passed as 
-// template-parameter, we would have a mono version, if some kind of "DoublePair" is passed, we 
-// would have stereo and we could even pass multichannel arrays)
-/*
-class rsSlewRateLimiterStereo
+
+//=================================================================================================
+
+template<class TSig, class TPar>
+class rsSlewRateLimiterWithHold : public rsSlewRateLimiter<TSig, TPar>
 {
 
 public:
 
-  void setSampleRate(double newSampleRate)
+  void setSampleRate(TPar newSampleRate) override
   {
-    left.setSampleRate(newSampleRate); right.setSampleRate(newSampleRate);
+    rsSlewRateLimiter2<TSig, TPar>::setSampleRate(newSampleRate);
+    holdSamples = rsRound(holdTime * sampleRate);
   }
 
-  void setAttackTime(double newAttackTime)
+  void setHoldTime(TPar newHoldTime)
   {
-    left.setAttackTime(newAttackTime); right.setAttackTime(newAttackTime);
+    holdTime = newHoldTime;
+    holdSamples = rsRound(holdTime * sampleRate);
   }
 
-  void setReleaseTime(double newReleaseTime)
-  {
-    left.setReleaseTime(newReleaseTime); right.setReleaseTime(newReleaseTime);
-  }
+  RS_INLINE TSig getSample(TSig in) override;
 
-  void getSampleFrameStereo(double *inOutL, double *inOutR)
+  void reset() override
   {
-    *inOutL = left.getSample(*inOutL);
-    *inOutR = right.getSample(*inOutR);
+    rsSlewRateLimiter2<TSig, TPar>::reset();
+    sampleCounter = 0;
   }
-
-  void reset() { left.reset(); right.reset(); }
 
 protected:
 
-  rsSlewRateLimiter left, right;
+  TPar holdTime = 0;
+  int holdSamples = 0;
+  int sampleCounter = 0;
 
 };
-*/
+
+template<class TSig, class TPar>
+RS_INLINE TSig rsSlewRateLimiterWithHold<TSig, TPar>::getSample(TSig in)
+{
+  if(y1 > in) {
+    if(sampleCounter >= holdSamples)
+      y1 = in + coeffRelease * (y1-in);
+    else
+      sampleCounter++;
+  }
+  else {
+    y1 = in + coeffAttack  * (y1-in);
+    sampleCounter = 0;
+  }
+  return y1;
+}
+
 
 #endif

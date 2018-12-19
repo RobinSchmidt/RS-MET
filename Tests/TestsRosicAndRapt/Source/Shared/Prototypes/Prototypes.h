@@ -117,7 +117,12 @@ References
 (2) Mathematik, Ahrens et al, 4.Aufl.
 
 -maybe rename to rsExplicitInitialValueSolver (and provide also an implicit one)
--maybe factor out a solver that doesn't carry around x and where f only depends on y
+-maybe factor out a solver that doesn't carry around x and where f only depends on y - or maybe
+ subsume systems that depend explicitly on x by incorporating an identity function into the vector
+ of functions f(y), i.e. f(y1, y2, y3, ...) = (y1, f2(y1,y2,y3..), f3(y1,y2,y3..), ...), the 
+ derivative of y1 is always 1, so x += h translates to y1 += 1*h in the new notation. that would 
+ simplify interface and implementation but requires more understanding from the user and does not 
+ allow to have a different datatype for x
 -maybe move the state variables to a subclass (rsMultiStepInitialValueSolver or something)
 */
 
@@ -173,7 +178,7 @@ public:
   {
     f0 = f(x, y);  // new evaluation
     x += h;
-    y += (h/24.) * (55*f0 - 59*f1 + 37*f2 - 9*f3);
+    y += (h/24.) * (55*f0 - 59*f1 + 37*f2 - 9*f3); // optimize away division
     f3 = f2;
     f2 = f1;
     f1 = f0;
