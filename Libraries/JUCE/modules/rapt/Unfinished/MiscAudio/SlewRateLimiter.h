@@ -100,13 +100,13 @@ public:
   void setSampleRate(TPar newSampleRate) //override ..is only for runtime polymorphism
   {
     rsSlewRateLimiter<TSig, TPar>::setSampleRate(newSampleRate);
-    holdSamples = rsRoundToInt(holdTime * sampleRate);
+    holdSamples = rsRoundToInt(0.001 * holdTime * sampleRate);
   }
 
   void setHoldTime(TPar newHoldTime)
   {
     holdTime = newHoldTime;
-    holdSamples = rsRoundToInt(holdTime * sampleRate);
+    holdSamples = rsRoundToInt(0.001 * holdTime * sampleRate);
   }
 
   RS_INLINE TSig getSample(TSig in); // override;

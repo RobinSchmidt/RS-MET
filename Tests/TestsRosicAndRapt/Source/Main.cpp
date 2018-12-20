@@ -290,7 +290,7 @@ int main(int argc, char* argv[])
   //windowedSinc();
 
   // Modulator:
-  //breakpointModulator();
+  breakpointModulator();
   //breakpointModulatorSmoothFadeOut();
   //triSawModulator();
 

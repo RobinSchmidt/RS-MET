@@ -402,10 +402,45 @@ void combineFFTs()
 
 void envelopeFollower()
 {
+  double fs = 4000;
+  double f  = 100;
+  int N = 8000;
+  int nRelease = 3*N/4;
+
+  // create enveloped sawtooth wave as input signal:
+  rsBreakpointModulatorD bm;
+  bm.setSampleRate(fs);
+  std::vector<double> x(N), e(N);
+  createWaveform(&x[0], N, 1, f, fs, 0.0, false);
+  int n;
+  bm.noteOn(false, 64, 64);
+  for(n = 0; n < nRelease; n++) {
+    e[n]  = bm.getSample();
+    x[n] *= e[n];;
+  }
+  bm.noteOff();
+  for(n = nRelease; n < N; n++) {
+    e[n]  = bm.getSample();
+    x[n] *= e[n];;
+  }
+
+  // try to recover the envelope via envelope following:
   RAPT::rsSlewRateLimiterWithHold<double, double> ef;
+  ef.setAttackTime(10.0);
+  ef.setReleaseTime(100.0);
+  ef.setHoldTime(1000.0/f); // length of one cycle in milliseconds
+  ef.setSampleRate(fs);
+  std::vector<double> e2(N);
+  for(n = 0; n < N; n++)
+    e2[n] = ef.getSample(fabs(x[n]));
 
 
-  int dummy = 0;
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays(N, &e[0]);
+  plt.addDataArrays(N, &e2[0]);
+  plt.plot();
 }
 
 void instantaneousFrequency()
