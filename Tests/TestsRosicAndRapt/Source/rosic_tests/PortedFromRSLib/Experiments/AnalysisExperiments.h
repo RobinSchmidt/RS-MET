@@ -13,6 +13,9 @@ void crossCorrelationBestMatch();
 
 void combineFFTs(); // move to RSMath experiments
 
+
+void envelopeFollower();
+
 //void zeroCrossingPitchDetector();
 
 void instantaneousFrequency();

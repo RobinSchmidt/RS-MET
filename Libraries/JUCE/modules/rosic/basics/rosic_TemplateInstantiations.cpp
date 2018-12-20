@@ -140,6 +140,7 @@ template class RAPT::rsMultiBandSplitter<rsFloat64x2, double>;
 template class RAPT::rsHalfWaveSaturator<double, double>;
 template class RAPT::rsSaturator<double, double>;
 template class RAPT::rsSlewRateLimiterLinear<double, double>;
+template class RAPT::rsSlewRateLimiterWithHold<double, double>;
 //template class RAPT::rsBreakpointModulator<double>;
 
 template class RAPT::rsOnePoleFilter<double, double>;

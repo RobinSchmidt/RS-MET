@@ -400,6 +400,13 @@ void combineFFTs()
   }
 }
 
+void envelopeFollower()
+{
+  RAPT::rsSlewRateLimiterWithHold<double, double> ef;
+
+
+  int dummy = 0;
+}
 
 void instantaneousFrequency()
 {

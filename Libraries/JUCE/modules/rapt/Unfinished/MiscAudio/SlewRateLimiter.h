@@ -97,23 +97,23 @@ class rsSlewRateLimiterWithHold : public rsSlewRateLimiter<TSig, TPar>
 
 public:
 
-  void setSampleRate(TPar newSampleRate) override
+  void setSampleRate(TPar newSampleRate) //override ..is only for runtime polymorphism
   {
-    rsSlewRateLimiter2<TSig, TPar>::setSampleRate(newSampleRate);
-    holdSamples = rsRound(holdTime * sampleRate);
+    rsSlewRateLimiter<TSig, TPar>::setSampleRate(newSampleRate);
+    holdSamples = rsRoundToInt(holdTime * sampleRate);
   }
 
   void setHoldTime(TPar newHoldTime)
   {
     holdTime = newHoldTime;
-    holdSamples = rsRound(holdTime * sampleRate);
+    holdSamples = rsRoundToInt(holdTime * sampleRate);
   }
 
-  RS_INLINE TSig getSample(TSig in) override;
+  RS_INLINE TSig getSample(TSig in); // override;
 
-  void reset() override
+  void reset() // override
   {
-    rsSlewRateLimiter2<TSig, TPar>::reset();
+    rsSlewRateLimiter<TSig, TPar>::reset();
     sampleCounter = 0;
   }
 
