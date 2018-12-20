@@ -402,16 +402,16 @@ void combineFFTs()
 
 void envelopeFollower()
 {
-  double fs = 4000;
-  double f  = 100;
-  int N = 8000;
+  double fs = 2000;
+  double f  = 100.5;
+  int N = 4000;
   int nRelease = 3*N/4;
 
   // create enveloped sawtooth wave as input signal:
   rsBreakpointModulatorD bm;
   bm.setSampleRate(fs);
   std::vector<double> x(N), e(N);
-  createWaveform(&x[0], N, 1, f, fs, 0.0, false);
+  createWaveform(&x[0], N, 1, f, fs, 0.0, true);
   int n;
   bm.noteOn(false, 64, 64);
   for(n = 0; n < nRelease; n++) {
@@ -425,22 +425,37 @@ void envelopeFollower()
   }
 
   // try to recover the envelope via envelope following:
+  double k = 2.0;  // multiplier for hold in term of cycle length
   RAPT::rsSlewRateLimiterWithHold<double, double> ef;
-  ef.setAttackTime(10.0);
+  ef.setAttackTime(1.0);
   ef.setReleaseTime(100.0);
-  ef.setHoldTime(1000.0/f); // length of one cycle in milliseconds
+  ef.setHoldTime(k * 1000.0/f); // length of one cycle in milliseconds
   ef.setSampleRate(fs);
   std::vector<double> e2(N);
   for(n = 0; n < N; n++)
     e2[n] = ef.getSample(fabs(x[n]));
 
+  rosic::InstantaneousEnvelopeDetector ied;
+  std::vector<double> e3(N);
+  for(n = 0; n < N; n++)
+    e3[n] = ied.getInstantaneousEnvelope(x[n]);
 
 
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
   plt.addDataArrays(N, &e[0]);
   plt.addDataArrays(N, &e2[0]);
+  //plt.addDataArrays(N, &e3[0]);
   plt.plot();
+
+  // Observations: 
+  // -the anti-aliasing makes the maximum excursion of each cycle different, resulting in an 
+  //  undesired modulation of the detected envelope
+  // -maybe try instantaneous envelope detecto based on a 90° filter
+  //  -hmm - the raw instantaneous envelope is really bad - but maybe applying a lowpass or
+  //   slew rate limiter to that could work?
+  // -maybe we should suppress the Gibbs-ripples by lowpassing the input signal befor going into
+  //  the envelope detector...maybe Butterworth or Bessel filter
 }
 
 void instantaneousFrequency()
