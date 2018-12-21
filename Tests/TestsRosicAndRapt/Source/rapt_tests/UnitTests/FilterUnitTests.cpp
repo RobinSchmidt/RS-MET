@@ -209,6 +209,20 @@ std::vector<int> movingMax(const std::vector<int>& x, int L)
     r[i] = max; }
   return r;
 }
+
+bool testMovingMaxFilter(rsMovingMaximumFilter<int>& flt, const std::vector<int>& x, int L)
+{
+  std::vector<int> target = movingMax(x, L);
+
+  std::vector<int> result(x.size());
+  flt.setLength(L);
+  flt.reset();
+  for(size_t n = 0; n < x.size(); n++) 
+    result[n] = flt.getSample(x[n]);
+
+  return result == target;
+}
+
 bool movingMaximumUnitTest()
 {
   bool r = true;   
@@ -222,6 +236,19 @@ bool movingMaximumUnitTest()
   std::vector<int> vMax5 = movingMax(v, 5);
 
   rsMovingMaximumFilter<int> flt(8);
+  //r &= testMovingMaxFilter(flt, v, 0);
+  r &= testMovingMaxFilter(flt, v, 1);
+  r &= testMovingMaxFilter(flt, v, 2);
+  r &= testMovingMaxFilter(flt, v, 3);
+  r &= testMovingMaxFilter(flt, v, 4);
+  r &= testMovingMaxFilter(flt, v, 5);
+  r &= testMovingMaxFilter(flt, v, 6);
+  r &= testMovingMaxFilter(flt, v, 7);
+  //r &= testMovingMaxFilter(flt, v, 8); 
+  // 8 doesn't work - maybe it needs to be strictly less than capacity
+  // ...maybe write a loop for these tests
+
+
 
   size_t N = v.size();
   size_t n;
@@ -230,7 +257,6 @@ bool movingMaximumUnitTest()
   flt.setLength(1);
   flt.reset();
   for(n = 0; n < N; n++) tmp[n] = flt.getSample(v[n]);
-
   r &= tmp == vMax1;
 
 
