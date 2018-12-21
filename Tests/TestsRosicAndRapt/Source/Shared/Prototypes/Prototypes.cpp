@@ -360,6 +360,17 @@ rsRingBuffer<T>::rsRingBuffer(size_t capacity)
 }
 
 template<class T>
+void rsRingBuffer<T>::reset()
+{
+  RAPT::rsArray::fillWithZeros(&data[0], (int)data.size());
+  rightIndex = 0;
+  updateLeftIndex();
+}
+
+
+
+
+template<class T>
 rsDoubleEndedQueue<T>::rsDoubleEndedQueue(size_t capacity)
 {
   //size_t c = RAPT::rsNextPowerOfTwo(capacity);

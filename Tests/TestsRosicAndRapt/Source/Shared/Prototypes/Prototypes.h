@@ -217,29 +217,42 @@ public:
 
   rsRingBuffer(size_t capacity);
 
-  void setLength(size_t newLength);
 
-  //inline int getLength() const { return wrap(writeIndex - readIndex); }
+  /** Sets up a new buffer length and adjusts the left index accodingly, leaving the right index
+  where it is. The reason to do it that way and not the otherway around is that in a delayline,
+  the right index represents the write-head and the left index represents the read-head and on a
+  change of  the delay time, we want to move the read-head. */
+  void setLength(size_t newLength) 
+  {
+    length = newLength;
+    updateLeftIndex();
+  }
+
+  inline size_t getLength() const { return length; }
+
+
 
   inline T getSample(T in)
   {
-    data[writeIndex] = in;
-    T out = data[readIndex];
-    writeIndex = wrap(writeIndex+1);
-    readIndex  = wrap(readIndex+1);
+    data[rightIndex] = in;     // right index is write index
+    T out = data[leftIndex];   // left index is read index
+    rightIndex = wrap(rightIndex+1);
+    leftIndex  = wrap(leftIndex+1);
     return out;
   }
+  // rename to pushRightPopLeft maybe make a subclass delayline that defines an alias function
+  // name getSample...any maybe merge class with rsDoubleEndedQueue
 
   /** Returns the maximum value in the range between the two pointers. */
-#undef min  // sucks to have that here! fuck winmindef.h!
   T getMaximum()
   {
-    size_t i = writeIndex-1;
-    T ex = RS_MIN(T);  // opposite extremum as initial value
-    while(i != readIndex-1) {
+    size_t i = wrap(rightIndex-1);
+    size_t j = wrap(leftIndex-1);
+    T ex = data[i];
+    while(i != j) {
       if(data[i] > ex)  // or >= or maybe use a comparison function and rename function to
         ex = data[i];   // getOptimum/Extremum
-      i--;
+      i = wrap(i-1);
     }
     return ex;
   }
@@ -251,9 +264,19 @@ protected:
 
   inline size_t wrap(size_t i) const { return i & mask; } 
 
+  /** Updates the current left index according right index and length. */
+  void updateLeftIndex()  { leftIndex = wrap(rightIndex - length); } 
+
+  /** Updates the current right index according left index and length. */
+  //void updateRightIndex() { rightIndex = wrap(leftIndex + length); } 
+  // maybe uncomment if needed - it's not typically used
+
+
+
   std::vector<T> data;
   size_t mask;
-  size_t writeIndex = 0, readIndex = 0; 
+  size_t rightIndex = 0, leftIndex = 0; 
+  size_t length = 0;
   // maybe name them generally rightEnd, leftEnd or something ... rgt, lft. L,R - then we may
   // also make rsDoubleEndedQueue a subclass and inherit the data and wrap function
 
@@ -333,7 +356,7 @@ protected:
 
   std::vector<T> data;  // maybe use pointer to T later,,,but bad for debugging...hmm
   //int mask;
-  int head = 0, tail = 0;
+  int head = 0, tail = 0; // head: rightIndex, tail: leftIndex
 
 
   //size_t head = 0, tail = 0;
@@ -351,6 +374,8 @@ public:
   rsMovingMaximumFilter(size_t maxLength);
 
 
+  void setLength(size_t newLength) { rngBuf.setLength(newLength); }
+
   inline T getSample(T in)
   {
     T oldest = rngBuf.getSample(in);
@@ -360,6 +385,12 @@ public:
     return maxVal;
   
     //return oldest; // preliminary
+  }
+
+  void reset()
+  {
+    rngBuf.reset();
+    //dqueue.reset();
   }
 
 protected:

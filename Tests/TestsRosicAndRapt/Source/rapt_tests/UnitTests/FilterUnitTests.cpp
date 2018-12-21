@@ -223,7 +223,15 @@ bool movingMaximumUnitTest()
 
   rsMovingMaximumFilter<int> flt(8);
 
+  size_t N = v.size();
+  size_t n;
+  std::vector<int> tmp(N);
 
+  flt.setLength(1);
+  flt.reset();
+  for(n = 0; n < N; n++) tmp[n] = flt.getSample(v[n]);
+
+  r &= tmp == vMax1;
 
 
   //// test if masking works also for negative integers:
@@ -236,7 +244,6 @@ bool movingMaximumUnitTest()
   //// yes
   //// test, if it also works when neagtive integers are forced to unsigned int -> yes
   //// we may use unsigned int (size_t) and masking in rsDoubleEndedQueue
-
 
   return r;
 }
