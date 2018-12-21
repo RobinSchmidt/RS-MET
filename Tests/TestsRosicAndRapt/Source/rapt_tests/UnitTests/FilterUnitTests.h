@@ -5,6 +5,7 @@
 
 bool prototypeDesignUnitTest();
 bool filterSpecUnitTest();
+bool movingMaximumUnitTest();
 
 
 #endif

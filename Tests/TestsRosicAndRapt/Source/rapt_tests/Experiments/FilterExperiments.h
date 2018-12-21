@@ -10,6 +10,7 @@ void bandSplitFreqResponses();
 void complementaryFiltersIIR();
 void firstOrderFilters();
 void ladderResonanceManipulation();
+// insert movingAverage here
 void nonUniformMovingAverage();
 void smoothingFilterOrders();
 void smoothingFilterTransitionTimes();

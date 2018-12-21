@@ -411,7 +411,7 @@ void envelopeFollower()
   rsBreakpointModulatorD bm;
   bm.setSampleRate(fs);
   std::vector<double> x(N), e(N);
-  createWaveform(&x[0], N, 1, f, fs, 0.0, true);
+  createWaveform(&x[0], N, 1, f, fs, 0.0, true); // use anti-aliasing
   int n;
   bm.noteOn(false, 64, 64);
   for(n = 0; n < nRelease; n++) {
@@ -424,21 +424,36 @@ void envelopeFollower()
     x[n] *= e[n];;
   }
 
+  // roll off the Gibbs-ripples by applying a Butterworth lowpass filter
+  rosic::rsEngineersFilterMono lpf;
+  lpf.setSampleRate(fs);
+  lpf.setFrequency(fs/6);
+  lpf.setApproximationMethod(rosic::rsPrototypeDesignerD::BUTTERWORTH);
+  //lpf.setApproximationMethod(rosic::rsPrototypeDesignerD::BESSEL);
+  lpf.setOrder(5);
+  std::vector<double> y(N);
+  for(n = 0; n < N; n++)
+    y[n] = lpf.getSample(x[n]);
+
   // try to recover the envelope via envelope following:
-  double k = 2.0;  // multiplier for hold in term of cycle length
+  double k = 0.0;  // multiplier for hold in terms of cycle length
+  double p = 1.0;  // power to be applied before env-detector
   RAPT::rsSlewRateLimiterWithHold<double, double> ef;
   ef.setAttackTime(1.0);
   ef.setReleaseTime(100.0);
   ef.setHoldTime(k * 1000.0/f); // length of one cycle in milliseconds
   ef.setSampleRate(fs);
   std::vector<double> e2(N);
-  for(n = 0; n < N; n++)
-    e2[n] = ef.getSample(fabs(x[n]));
+  for(n = 0; n < N; n++) {
+    double tmp = pow(fabs(y[n]), p);
+    tmp = ef.getSample(tmp);
+    e2[n] = pow(tmp, 1/p);
+  }
 
   rosic::InstantaneousEnvelopeDetector ied;
   std::vector<double> e3(N);
   for(n = 0; n < N; n++)
-    e3[n] = ied.getInstantaneousEnvelope(x[n]);
+    e3[n] = ied.getInstantaneousEnvelope(y[n]);
 
 
   GNUPlotter plt;
@@ -446,6 +461,7 @@ void envelopeFollower()
   plt.addDataArrays(N, &e[0]);
   plt.addDataArrays(N, &e2[0]);
   //plt.addDataArrays(N, &e3[0]);
+  plt.setPixelSize(1200, 400);
   plt.plot();
 
   // Observations: 
@@ -456,6 +472,13 @@ void envelopeFollower()
   //   slew rate limiter to that could work?
   // -maybe we should suppress the Gibbs-ripples by lowpassing the input signal befor going into
   //  the envelope detector...maybe Butterworth or Bessel filter
+  // -maybe try to use a power p at the input and its inverse power 1/p at the output of the 
+  //  detector if p < 1, the peaks get less influence - does not seem to be useful
+  // -maybe use a post-filter, too (Bessel)
+  // -i think, instead of the current "hold" implementation, we need to apply a sort of 
+  //  moving-maximum filter to the output of the slewrate limiter (which then doesn't need hold)
+  //  -how would we implement that efficiently. i.e. without searching for a maximum in a circular
+  //   buffer each sample? maybe on-the-fly decimation?
 }
 
 void instantaneousFrequency()

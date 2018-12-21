@@ -189,7 +189,7 @@ template<class TSig, class TCoef>
 inline TSig rsBiquadCascade<TSig, TCoef>::getSampleDirect2(CRSig in)
 {
   TSig x, y, g;
-  x = in;
+  y = x = in; // y = ... to make it work also with 0 stages as bypass
 
   // calculate current output-sample (y[n]) of all the BiQuad-stages (the output of one stage is 
   // the input for the next stage):

@@ -191,3 +191,48 @@ bool filterSpecUnitTest()
 
   return r;
 }
+
+
+// (naive) reference implementation of moving maximum "filter":
+#undef min
+#undef max 
+std::vector<int> movingMax(const std::vector<int>& x, int L)
+{
+  std::vector<int> r(x.size());
+  for(int i = 0; i < (int)r.size(); i++) {
+    int max = std::numeric_limits<int>::min();
+    for(int k = 0; k < L; k++) {
+      if(i-k < 0)
+        break;
+      if(x[i-k] > max)
+        max = x[i-k];
+    }
+    r[i] = max;
+    int dummy = 0;
+  }
+  return r;
+}
+bool movingMaximumUnitTest()
+{
+  bool r = true;   
+
+  std::vector<int> v = { 1,2,6,8,3,2,7,3,2,6,7,2,5,8,8,4,3,1,5,7,8,4,3,2,5,7,8,6 };
+
+
+  std::vector<int> vMax1 = movingMax(v, 1);
+  std::vector<int> vMax2 = movingMax(v, 2);
+  std::vector<int> vMax3 = movingMax(v, 3);
+
+
+
+
+
+
+
+
+  return r;
+}
+// todo: movingMedian, movingMinimum, movingQuantile
+// efficient O(log(N)) implementation: insert the new incoming value into a sorted list
+// hmmm....but in a linked list, we don't have random access...maybe with memmove, it's not
+// so inefficient to insert into a sorted array?

@@ -53,7 +53,9 @@ bool runAllUnitTests()
 
   // Filters:
   //passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner"); // why commented?
-  passed &= runUnitTest(&filterSpecUnitTest, "rsFilterSpecification (BA/ZPK)");
+  passed &= runUnitTest(&filterSpecUnitTest,    "rsFilterSpecification (BA/ZPK)");
+  passed &= runUnitTest(&movingMaximumUnitTest, "moving maximum filter");
+
 
   // Visualization:
   passed &= runUnitTest(&imagePainterUnitTest,   "rsImagePainter");
