@@ -347,6 +347,38 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 // maybe apply this factor also to "in" because it would be weird to pass the input through
 // undistorted ...but might be interesting to explore
 
+
+//=================================================================================================
+
+
+template<class T>
+rsRingBuffer<T>::rsRingBuffer(size_t capacity)
+{
+  size_t c = RAPT::rsNextPowerOfTwo(capacity);
+  data.resize(c);
+  mask = c-1;
+}
+
+template<class T>
+rsDoubleEndedQueue<T>::rsDoubleEndedQueue(size_t capacity)
+{
+  //size_t c = RAPT::rsNextPowerOfTwo(capacity);
+  data.resize(capacity);
+  //mask = c-1;
+}
+
+template<class T>
+rsMovingMaximumFilter<T>::rsMovingMaximumFilter(size_t maxLength) 
+  : rngBuf(maxLength), dqueue(maxLength)
+{
+
+
+  int dummy = 0;
+}
+
+template class rsMovingMaximumFilter<int>;
+
+
 //=================================================================================================
 
 rsGroupString rsGroupString::inverse() const

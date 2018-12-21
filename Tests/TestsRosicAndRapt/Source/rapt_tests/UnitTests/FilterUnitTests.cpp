@@ -202,32 +202,40 @@ std::vector<int> movingMax(const std::vector<int>& x, int L)
   for(int i = 0; i < (int)r.size(); i++) {
     int max = std::numeric_limits<int>::min();
     for(int k = 0; k < L; k++) {
-      if(i-k < 0)
+      if(i-k < 0) 
         break;
       if(x[i-k] > max)
-        max = x[i-k];
-    }
-    r[i] = max;
-    int dummy = 0;
-  }
+        max = x[i-k]; }
+    r[i] = max; }
   return r;
 }
 bool movingMaximumUnitTest()
 {
   bool r = true;   
 
-  std::vector<int> v = { 1,2,6,8,3,2,7,3,2,6,7,2,5,8,8,4,3,1,5,7,8,4,3,2,5,7,8,6 };
-
-
+  //std::vector<int> v = { 1,2,6,8,3,2,7,3,2,6,7,2,5,8,8,4,3,1,5,7,8,4,3,2,5,7,8,6 };
+  std::vector<int> v = { 1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1 };
   std::vector<int> vMax1 = movingMax(v, 1);
   std::vector<int> vMax2 = movingMax(v, 2);
   std::vector<int> vMax3 = movingMax(v, 3);
+  std::vector<int> vMax4 = movingMax(v, 4);
+  std::vector<int> vMax5 = movingMax(v, 5);
+
+  rsMovingMaximumFilter<int> flt(8);
 
 
 
 
-
-
+  //// test if masking works also for negative integers:
+  ////int tmp, mask = 7;
+  //unsigned int tmp, mask = 7;
+  //tmp = 10 & mask;  // 2
+  //tmp = -6 & mask;  // 2
+  //tmp = 11 & mask;  // 3
+  //tmp = -5 & mask;  // 3
+  //// yes
+  //// test, if it also works when neagtive integers are forced to unsigned int -> yes
+  //// we may use unsigned int (size_t) and masking in rsDoubleEndedQueue
 
 
   return r;
@@ -236,3 +244,18 @@ bool movingMaximumUnitTest()
 // efficient O(log(N)) implementation: insert the new incoming value into a sorted list
 // hmmm....but in a linked list, we don't have random access...maybe with memmove, it's not
 // so inefficient to insert into a sorted array?
+/*
+                   10                  20                  30
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0  2n digit of index
+1 2 3 4 5 6 7 8 9 8 7 6 5 4 3 2 1 2 3 4 5 6 7 8 9 8 7 6 5 4 3     v 
+1 2 3 4 5 6 7 8 9 9 8 7 6 5 4 3 2 2 3 4 5 6 7 8 9 9 8 7 6 5 4     vMax2
+1 2 3 4 5 6 7 8 9 9 9 9 8 8 7 5 4 3
+
+// see here:
+https://stackoverflow.com/questions/8905525/computing-a-moving-maximum
+https://stackoverflow.com/questions/4802038/implement-a-queue-in-which-push-rear-pop-front-and-get-min-are-all-consta
+
+https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
+https://www.nayuki.io/res/sliding-window-minimum-maximum-algorithm/SlidingWindowMinMax.hpp
+
+*/

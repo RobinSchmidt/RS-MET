@@ -204,7 +204,184 @@ protected:
 };
 
 
+//=================================================================================================
+// stuff for sliding maximum filter:
 
+
+template<class T>
+class rsRingBuffer
+{
+
+public:
+
+
+  rsRingBuffer(size_t capacity);
+
+  void setLength(size_t newLength);
+
+  //inline int getLength() const { return wrap(writeIndex - readIndex); }
+
+  inline T getSample(T in)
+  {
+    data[writeIndex] = in;
+    T out = data[readIndex];
+    writeIndex = wrap(writeIndex+1);
+    readIndex  = wrap(readIndex+1);
+    return out;
+  }
+
+  /** Returns the maximum value in the range between the two pointers. */
+#undef min  // sucks to have that here! fuck winmindef.h!
+  T getMaximum()
+  {
+    size_t i = writeIndex-1;
+    T ex = RS_MIN(T);  // opposite extremum as initial value
+    while(i != readIndex-1) {
+      if(data[i] > ex)  // or >= or maybe use a comparison function and rename function to
+        ex = data[i];   // getOptimum/Extremum
+      i--;
+    }
+    return ex;
+  }
+
+
+  void reset();
+
+protected:
+
+  inline size_t wrap(size_t i) const { return i & mask; } 
+
+  std::vector<T> data;
+  size_t mask;
+  size_t writeIndex = 0, readIndex = 0; 
+  // maybe name them generally rightEnd, leftEnd or something ... rgt, lft. L,R - then we may
+  // also make rsDoubleEndedQueue a subclass and inherit the data and wrap function
+
+};
+
+
+
+template<class T>
+class rsDoubleEndedQueue
+{
+
+public:
+
+  /** ...actual capacity will be a power of two */
+  rsDoubleEndedQueue(size_t minCapacity);
+
+  //void setMaximumLength(int newLength);
+
+
+  inline void pushFront(T value)
+  {
+    head = wrap(head+1);
+    data[head] = value;
+  }
+
+  inline void pushBack(T  value)
+  {
+    tail = wrap(tail-1);
+    data[tail] = value;
+  }
+
+  inline T popFront()
+  {
+    T value = data[head];
+    head = wrap(head-1);
+    return value;
+  }
+
+  inline T popBack()
+  {
+    T value = data[tail];
+    tail = wrap(tail+1);
+    return value;
+  }
+
+  // this sort of generalizes a delayline - a regular integer delayline/ringbuffer would fill the 
+  // queue initially with L zeros and then for each incoming sample do a pushFront/popBack so the 
+  // ringbuffer has a fixed length L and can only write at the front and read at the back (and this
+  // read/write is combined into a single operation). this dequeue here can read and write 
+  // arbitarily from/to both ends...maybe factor out a ringbuffer...or...is it really exactly the 
+  // same?
+
+  inline int getLength() const { return head - tail; }
+
+  inline T readHead() const { return data[head]; }
+
+  inline T readTail() const { return data[tail]; }
+
+  // or maybe readFirst/Last Front/Back
+
+
+
+  //void writeData(T x);
+
+  //T readData();
+
+protected:
+
+  inline int wrap(int i) const 
+  { 
+    int N = (int) data.size();
+    while(i >= N) i -= N;
+    while(i <  0) i += N;
+    return i;
+  } 
+  // does this work for unsigned int as well? can we use a mask? i think so
+
+  std::vector<T> data;  // maybe use pointer to T later,,,but bad for debugging...hmm
+  //int mask;
+  int head = 0, tail = 0;
+
+
+  //size_t head = 0, tail = 0;
+  //size_t mask;
+  // or do we need int to correctly wrap around values below 0?
+};
+
+
+template<class T>
+class rsMovingMaximumFilter
+{
+
+public:
+
+  rsMovingMaximumFilter(size_t maxLength);
+
+
+  inline T getSample(T in)
+  {
+    T oldest = rngBuf.getSample(in);
+
+    T maxVal = rngBuf.getMaximum();
+
+    return maxVal;
+  
+    //return oldest; // preliminary
+  }
+
+protected:
+
+  rsRingBuffer<T> rngBuf;
+  rsDoubleEndedQueue<T> dqueue;
+
+};
+
+// generalize to allow for movingMinimum or movingWhatever filter - it should take a comparison
+// function as parameter, i.e. a function that takes two T-values as input and returns a bool 
+// where the default is 
+// bool greater(a, b) { return a > b; }  // or maybe greaterOrEqual?
+// maybe call it rsMovingSelector ...and even more general concept would be a moving aggregator 
+// which could also be something like a moving median (or r-th quantile)
+//
+
+// https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
+
+
+
+// the stuff below is just for playing around - maybe move code elsewhere:
 //=================================================================================================
 
 /** A class for representing a particular kind of string with which we can do some computations 
