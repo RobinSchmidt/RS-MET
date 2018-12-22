@@ -207,29 +207,37 @@ protected:
 //=================================================================================================
 // stuff for sliding maximum filter:
 
-
-
 template<class T>
 class rsBuffer
 {
 
 public:
 
+  /** The actual capacity will be the next power of two of given value. */
+  rsBuffer(size_t capacity);
+
+  /** Initializes all the buffer elements with given value (default is zero). */
+  void initBufferValues(T value = T(0));
+
 protected:
 
+  inline size_t wrap(size_t i) const { return i & mask; } 
+
+  std::vector<T> data;
+  size_t mask;
 
 };
 
-
+//-------------------------------------------------------------------------------------------------
 
 template<class T>
-class rsRingBuffer
+class rsRingBuffer : public rsBuffer<T>
 {
 
 public:
 
 
-  rsRingBuffer(size_t capacity);
+  rsRingBuffer(size_t capacity) : rsBuffer(capacity) {}
 
 
   /** Sets up a new buffer length and adjusts the left index accodingly, leaving the right index
@@ -276,8 +284,6 @@ public:
 
 protected:
 
-  inline size_t wrap(size_t i) const { return i & mask; } 
-
   /** Updates the current left index according right index and length. */
   void updateLeftIndex()  { leftIndex = wrap(rightIndex - length); } 
 
@@ -285,63 +291,65 @@ protected:
   //void updateRightIndex() { rightIndex = wrap(leftIndex + length); } 
   // maybe uncomment if needed - it's not typically used
 
-  std::vector<T> data;
-  size_t mask;
   size_t rightIndex = 0, leftIndex = 0; // rename back to writeIndex, readIndex
   size_t length = 0; // rename to capacity ..or use data.size()
   // maybe name them generally rightEnd, leftEnd or something ... rgt, lft. L,R - then we may
   // also make rsDoubleEndedQueue a subclass and inherit the data and wrap function
 };
 
-
+//-------------------------------------------------------------------------------------------------
 
 template<class T>
-class rsDoubleEndedQueue : public rsRingBuffer<T>
+class rsDoubleEndedQueue : public rsBuffer<T>
 {
 
 public:
 
-  /** ...actual capacity will be a power of two */
-  rsDoubleEndedQueue(size_t capacity) : rsRingBuffer<T>(capacity) {}
-
-  //void setMaximumLength(int newLength);
-
+  rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity) {}
 
   inline void pushFront(T value)
   {
-    rightIndex = wrap(rightIndex+1);
-    length++;
-    data[rightIndex] = value;
+    RAPT::rsAssert(!isFull(), "Trying to push onto full deque");
+    data[head] = value;
+    head = wrap(head+1);
   }
 
   inline void pushBack(T  value)
   {
-    leftIndex = wrap(leftIndex-1);
-    length++;
-    data[leftIndex] = value;
+    RAPT::rsAssert(!isFull(), "Trying to push onto full deque");
+    data[tail] = value;
+    tail = wrap(tail-1);
   }
 
   inline T popFront()
   {
-    T value = data[rightIndex];
-    rightIndex = wrap(rightIndex-1);
-    length--;
-    return value;
+    RAPT::rsAssert(!isEmpty(), "Trying to pop from empty deque");
+    head = wrap(head-1);
+    return data[head];
   }
 
   inline T popBack()
   {
-    T value = data[leftIndex];
-    leftIndex = wrap(leftIndex+1);
-    length--;
-    return value;
+    RAPT::rsAssert(!isEmpty(), "Trying to pop from empty deque");
+    tail = wrap(tail+1);
+    return data[tail];
   }
 
   // maybe the push operations should ensure that the capacity is large enough and if it isn't,
   // increase it
 
-  inline bool isEmpty() const { return getLength() == 0; }
-  // wrong! getLength returns the capacity...or well...no
+  inline size_t getLength() const { 
+    return wrap(head - tail - 1); }
+
+  inline size_t getMaxLength() const { 
+    return data.size()-2; } // -2? or -1? check...
+
+  inline bool isEmpty() const { 
+    return getLength() == 0; }
+
+  inline bool isFull() const { 
+    return getLength() > getMaxLength(); } 
+
 
   // this sort of generalizes a delayline - a regular integer delayline/ringbuffer would fill the 
   // queue initially with L zeros and then for each incoming sample do a pushFront/popBack so the 
@@ -357,44 +365,30 @@ public:
   //inline int getLength() const { return head - tail; }
   // 
 
-  inline T readHead() const { return data[rightIndex]; }
+  inline T readHead() const 
+  { 
+    RAPT::rsAssert(!isEmpty(), "Trying to read from empty deque");
+    return data[wrap(head-1)]; 
+  }
 
-  inline T readTail() const { return data[leftIndex]; }
+  inline T readTail() const 
+  { 
+    RAPT::rsAssert(!isEmpty(), "Trying to read from empty deque");
+    return data[wrap(tail+1)]; 
+  }
+  // maybe we should assert that queue is not empty
 
   // or maybe readFirst/Last Front/Back
-
-
-
-  //void writeData(T x);
-
-  //T readData();
 
   void reset();
 
 protected:
 
+  size_t head = 1, tail = 0;
 
-  /*
-  inline int wrap(int i) const 
-  { 
-    int N = (int) data.size();
-    while(i >= N) i -= N;
-    while(i <  0) i += N;
-    return i;
-  } 
-  // does this work for unsigned int as well? can we use a mask? i think so
-
-  std::vector<T> data;  // maybe use pointer to T later,,,but bad for debugging...hmm
-  //int mask;
-  int head = 0, tail = 0; // head: rightIndex, tail: leftIndex
-  */
-
-
-  //size_t head = 0, tail = 0;
-  //size_t mask;
-  // or do we need int to correctly wrap around values below 0?
 };
 
+//-------------------------------------------------------------------------------------------------
 
 template<class T>
 class rsMovingMaximumFilter

@@ -352,7 +352,7 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 
 
 template<class T>
-rsRingBuffer<T>::rsRingBuffer(size_t capacity)
+rsBuffer<T>::rsBuffer(size_t capacity)
 {
   size_t c = RAPT::rsNextPowerOfTwo(capacity);
   data.resize(c);
@@ -360,22 +360,31 @@ rsRingBuffer<T>::rsRingBuffer(size_t capacity)
 }
 
 template<class T>
+void rsBuffer<T>::initBufferValues(T value)
+{
+  RAPT::rsArray::fillWithValue(&data[0], (int)data.size(), value);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
 void rsRingBuffer<T>::reset()
 {
-  RAPT::rsArray::fillWithZeros(&data[0], (int)data.size());
+  initBufferValues(0);
   rightIndex = 0;
   updateLeftIndex();
 }
+
+//-------------------------------------------------------------------------------------------------
 
 
 
 template<class T>
 void rsDoubleEndedQueue<T>::reset()
 {
-  RAPT::rsArray::fillWithZeros(&data[0], (int)data.size());
-  leftIndex = 0;
-  rightIndex = 0;
-  length = 0;
+  initBufferValues(0);
+  head = 1;
+  tail = 0;
 }
 
 /*
@@ -387,6 +396,8 @@ rsDoubleEndedQueue<T>::rsDoubleEndedQueue(size_t capacity)
   //mask = c-1;
 }
 */
+
+//-------------------------------------------------------------------------------------------------
 
 template<class T>
 rsMovingMaximumFilter<T>::rsMovingMaximumFilter(size_t maxLength) 
