@@ -1,5 +1,8 @@
 #include "FilterUnitTests.h"
 
+//#include "../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
+#include "../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
+
 // maybe move somewhere else for sharing
 bool isCloseTo(complex<float> x, complex<float> y, float tol)
 {
@@ -247,6 +250,8 @@ bool movingMaximumUnitTest()
   //r &= testMovingMaxFilter(flt, v, 8);
   // 8 doesn't work - maybe it needs to be strictly less than capacity
   // ...maybe write a loop for these tests
+
+  std::vector<int> vMax3_Nayuki = computeSlidingWindowMinOrMax(v, 3, true);
 
 
 
