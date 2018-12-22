@@ -234,20 +234,42 @@ public:
 
   inline T getSample(T in)
   {
-    data[rightIndex] = in;     // right index is write index
-    T out = data[leftIndex];   // left index is read index
     rightIndex = wrap(rightIndex+1);
     leftIndex  = wrap(leftIndex+1);
+    data[rightIndex] = in;     // right index is write index
+    T out = data[leftIndex];   // left index is read index
+    //rightIndex = wrap(rightIndex+1);
+    //leftIndex  = wrap(leftIndex+1);
     return out;
   }
   // rename to pushRightPopLeft maybe make a subclass delayline that defines an alias function
   // name getSample...any maybe merge class with rsDoubleEndedQueue
 
+  // question: where should the pointers be after a sample has been produced - already in the 
+  // position for the next sample or still in the position of the most recent sample? in the former 
+  // case we'd do pre-increment, in the latter, post-increment
+  // advantages of pre-increment:
+  // -we could call getSample and after that getMaximum - the pointers would still be valid in the
+  //  call to getMaximum and we could call more buffer-analysis functions per sample
+
+  // for maximum extraction, it makes more sense to
+  // -increment write pointer
+  // -write new data
+  // -find maximum
+  // -increment read pointer
+  // mixing calls to getSample and getMaximum is messy becuase getSample manipulates the pointers
+  // in a way that makes it inconvenient to extract the maximum
+
+
+
+
   /** Returns the maximum value in the range between the two pointers. */
   T getMaximum()
   {
-    size_t i = wrap(rightIndex-1);
-    size_t j = wrap(leftIndex-1);
+    //size_t i = wrap(rightIndex-1);
+    //size_t j = wrap(leftIndex-1);
+    size_t i = rightIndex;
+    size_t j = leftIndex;
     T ex = data[i];
     while(i != j) {
       if(data[i] > ex)  // or >= or maybe use a comparison function and rename function to

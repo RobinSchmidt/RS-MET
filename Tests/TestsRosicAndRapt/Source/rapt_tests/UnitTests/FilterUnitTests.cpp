@@ -200,8 +200,10 @@ std::vector<int> movingMax(const std::vector<int>& x, int L)
 {
   std::vector<int> r(x.size());
   for(int i = 0; i < (int)r.size(); i++) {
-    int max = std::numeric_limits<int>::min();
+    //int max = std::numeric_limits<int>::min();
+    int max = x[i];
     for(int k = 0; k < L; k++) {
+    //for(int k = 1; k <= L; k++) {
       if(i-k < 0) 
         break;
       if(x[i-k] > max)
@@ -209,7 +211,6 @@ std::vector<int> movingMax(const std::vector<int>& x, int L)
     r[i] = max; }
   return r;
 }
-
 bool testMovingMaxFilter(rsMovingMaximumFilter<int>& flt, const std::vector<int>& x, int L)
 {
   std::vector<int> target = movingMax(x, L);
@@ -222,6 +223,9 @@ bool testMovingMaxFilter(rsMovingMaximumFilter<int>& flt, const std::vector<int>
 
   return result == target;
 }
+// currently length L=1 means to take the maximum over one sample, i.e. just use the value of the
+// n-the cell. a better convention would be to have that result when L=0 - then L means the maximum
+// delay
 
 bool movingMaximumUnitTest()
 {
@@ -236,7 +240,7 @@ bool movingMaximumUnitTest()
   std::vector<int> vMax5 = movingMax(v, 5);
 
   rsMovingMaximumFilter<int> flt(8);
-  //r &= testMovingMaxFilter(flt, v, 0);
+  //r &= testMovingMaxFilter(flt, v, 0);  // doesn't work
   r &= testMovingMaxFilter(flt, v, 1);
   r &= testMovingMaxFilter(flt, v, 2);
   r &= testMovingMaxFilter(flt, v, 3);
