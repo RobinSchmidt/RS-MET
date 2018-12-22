@@ -305,8 +305,13 @@ class rsDoubleEndedQueue : public rsBuffer<T>
 
 public:
 
-  rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity) {}
+  /** Constructor. Allocates enough memory for an internal buffer to hold the "capacity" number of 
+  queued values. The memory allocated for the buffer will be the smallest power of two that is 
+  greater or equal to the desired capacity plus 2 (two additional and unusable index value are 
+  required to make the index arithemetic work right). */
+  rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+2) {}
 
+  /** Appends a value to right/head side of the queue. */
   inline void pushFront(T value)
   {
     RAPT::rsAssert(!isFull(), "Trying to push onto full deque");
@@ -314,13 +319,15 @@ public:
     head = wrap(head+1);
   }
 
-  inline void pushBack(T  value)
+  /** Appends a value to left/tail side of the queue. */
+  inline void pushBack(T value)
   {
     RAPT::rsAssert(!isFull(), "Trying to push onto full deque");
     data[tail] = value;
     tail = wrap(tail-1);
   }
 
+  /** Removes a value from the right/head side of the queue and returns it. */
   inline T popFront()
   {
     RAPT::rsAssert(!isEmpty(), "Trying to pop from empty deque");
@@ -328,6 +335,7 @@ public:
     return data[head];
   }
 
+  /** Removes a value from the left/tail side of the queue and returns it. */
   inline T popBack()
   {
     RAPT::rsAssert(!isEmpty(), "Trying to pop from empty deque");
@@ -335,42 +343,54 @@ public:
     return data[tail];
   }
 
-  // maybe the push operations should ensure that the capacity is large enough and if it isn't,
-  // increase it
-
-  inline size_t getLength() const { 
-    return wrap(head - tail - 1); }
-
-  inline size_t getMaxLength() const { 
-    return data.size()-2; } // -2? or -1? check...
-
-  inline bool isEmpty() const { 
-    return getLength() == 0; }
-
-  inline bool isFull() const { 
-    return getLength() > getMaxLength(); } 
-
+  /** Returns the value at the head of the queue, i.e. the rightmost value. */
   inline T readHead() const 
   { 
     RAPT::rsAssert(!isEmpty(), "Trying to read from empty deque");
     return data[wrap(head-1)]; 
   }
 
+  /** Returns the value at the tail of the queue, i.e. the leftmost value. */
   inline T readTail() const 
   { 
     RAPT::rsAssert(!isEmpty(), "Trying to read from empty deque");
     return data[wrap(tail+1)]; 
   }
-  // maybe we should assert that queue is not empty
-
   // or maybe readFirst/Last Front/Back
+
+
+  //inline T popBack(size_t numElements)
+
+  // maybe the push operations should ensure that the capacity is large enough and if it isn't,
+  // increase it
+
+  /** Returns the number of values that are currently in the queue. */
+  inline size_t getLength() const { return wrap(head - tail - 1); }
+
+  /** Returns the maximum allowed length for the queue. Due to the way, the head- and tail pointers 
+  operate, the usable length is 2 less than the size of the underlying data buffer. */
+  inline size_t getMaxLength() const { return data.size()-2; }
+
+  /** Returns true if the queue is empty. */
+  inline bool isEmpty() const { return getLength() == 0; }
+
+  /** Returns true, if the queue is full. */
+  inline bool isFull() const { return getLength() > getMaxLength(); } 
+
+
 
   void reset();
 
 protected:
 
   size_t head = 1, tail = 0; // chek out correct terminology in the literature
-
+  // The head-pointer is always one position to the right of rightmost value and the tail pointer
+  // is always one position to the left of the leftmost value (both with wraparound). This is 
+  // required in order to compute the length of the queue from the had/tail indices. Placing them
+  // directly ON the leftmost/rightmost values would not allow to distiguish between an empty
+  // and one-element queue (in both cases, we would have head == tail). So the actual queued values 
+  // are at indices i with: tail < i < head, not: tail <= i <= head and when head = tail + 1, the
+  // queue is empty because no index i fits in between tail and head
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -404,6 +424,9 @@ public:
     while(!dqueue.isEmpty() && dqueue.readTail() < in)  // Nayuki's Step 2
       dqueue.popBack();
     dqueue.pushBack(in);
+    // maybe we could further reduce the worst case processing cost by using binary search to 
+    // adjust the new tail-pointer instead of linearly popping elements one by one? search
+    // between tail and head for the first element that is >= in (or not < in)
 
     if(!dqueue.isEmpty()) {         // happens when length is set to zero
       T maxVal = dqueue.readHead();
@@ -416,9 +439,9 @@ public:
   }
 
   /** Computes an output sample using a naive algorithm that scans the whole ringbuffer for its 
-  maximum value. The algorithm has complexity O(L) where L is the length of the filter. The 
-  implementation is mainly for testing purposes and should probably not be used in production
-  code. */
+  maximum value. The algorithm has a per sample complexity O(L) where L is the length of the 
+  filter. The implementation is mainly for testing purposes and should probably not be used in 
+  production code. */
   inline T getSampleNaive(T in)
   {
     rngBuf.getSample(in);  // output of getSample not needed here

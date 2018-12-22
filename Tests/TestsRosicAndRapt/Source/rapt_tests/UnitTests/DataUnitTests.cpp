@@ -32,7 +32,9 @@ bool doubleEndedQueueUnitTest()
 {
   bool r = true; 
 
-  rsDoubleEndedQueue<int> q(8);  // []
+  //rsDoubleEndedQueue<int> q(8);  // []
+
+  rsDoubleEndedQueue<int> q(6);  // []
 
   r &= q.isEmpty();
   r &= q.getLength() == 0;
