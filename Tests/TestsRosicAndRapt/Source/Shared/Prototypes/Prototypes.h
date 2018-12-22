@@ -350,21 +350,6 @@ public:
   inline bool isFull() const { 
     return getLength() > getMaxLength(); } 
 
-
-  // this sort of generalizes a delayline - a regular integer delayline/ringbuffer would fill the 
-  // queue initially with L zeros and then for each incoming sample do a pushFront/popBack so the 
-  // ringbuffer has a fixed length L and can only write at the front and read at the back (and this
-  // read/write is combined into a single operation). this dequeue here can read and write 
-  // arbitarily from/to both ends...maybe factor out a ringbuffer...or...is it really exactly the 
-  // same?
-  // not sure if subclassing is the best way - it uses the same data and wrap function but the 
-  // meaning of getLength and reset are different...hmmm - also we could get rid of 
-  // inc/decrementing length in push/pop (getLength would then have to 
-  // return wrap(rightIndex-leftIndex)...maybe we should have a performance test
-
-  //inline int getLength() const { return head - tail; }
-  // 
-
   inline T readHead() const 
   { 
     RAPT::rsAssert(!isEmpty(), "Trying to read from empty deque");
@@ -398,56 +383,50 @@ public:
 
   rsMovingMaximumFilter(size_t maxLength);
 
-
+  /** Sets up the length of the filter, i.e. the number of samples within which a maximum is 
+  searched. */
   void setLength(size_t newLength) { rngBuf.setLength(newLength); }
 
-
+  /** Returns up the length of the filter, i.e. the number of samples within which a maximum is 
+  searched. */
   size_t getLength() const { return rngBuf.getLength(); }
 
-  inline T getSampleNaive(T in)  // naive version - only for tests
+
+  /** \name Processing */
+
+  /** Computes and returns an output sample using an algorithm based on a double ended queue. This
+  algorithm has an amortized complexity of O(1) per sample. For an explanation of the algorithm, 
+  see: https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm  */
+  inline T getSample(T in)
+  {
+    T oldest = rngBuf.getSample(in);
+
+    while(!dqueue.isEmpty() && dqueue.readTail() < in)  // Nayuki's Step 2
+      dqueue.popBack();
+    dqueue.pushBack(in);
+
+    if(!dqueue.isEmpty()) {         // happens when length is set to zero
+      T maxVal = dqueue.readHead();
+      if(maxVal == oldest)
+        dqueue.popFront();          // Nayuki's Step 3
+      return maxVal;
+    }
+    else
+      return in;
+  }
+
+  /** Computes an output sample using a naive algorithm that scans the whole ringbuffer for its 
+  maximum value. The algorithm has complexity O(L) where L is the length of the filter. The 
+  implementation is mainly for testing purposes and should probably not be used in production
+  code. */
+  inline T getSampleNaive(T in)
   {
     rngBuf.getSample(in);  // output of getSample not needed here
     T maxVal = rngBuf.getMaximum();
     return maxVal;
   }
 
-
-  inline T getSample(T in) // does not work yet
-  {
-    T oldest = rngBuf.getSample(in);
-
-
-    // https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
-
-    /*
-    // Step 2:
-    while(!dqueue.isEmpty() && dqueue.readHead() < in)
-      dqueue.popFront();
-    dqueue.pushFront(in);
-
-    // Step 3:
-    if(dqueue.readTail() == oldest)
-      dqueue.popBack();
-    */
-    
-    while(!dqueue.isEmpty() && dqueue.readTail() < in)  // Nayuki's Step 2
-      dqueue.popBack();
-    dqueue.pushBack(in);
-
-    T maxVal = in; 
-    if(!dqueue.isEmpty()) {         // happens when length is set to zero
-      maxVal = dqueue.readHead();
-      if(maxVal == oldest)
-        dqueue.popFront();          // Nayuki's Step 3
-    }
-
-    //// Step 3:
-    //if(!dqueue.isEmpty() && dqueue.readHead() == oldest)
-    //  dqueue.popFront();
-
-    return maxVal;
-  }
-
+  /** Resets the filter to its initial state. */
   void reset()
   {
     rngBuf.reset();
