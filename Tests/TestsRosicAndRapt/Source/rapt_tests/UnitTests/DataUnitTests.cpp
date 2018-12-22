@@ -32,18 +32,58 @@ bool doubleEndedQueueUnitTest()
 {
   bool r = true; 
 
-  rsDoubleEndedQueue<int> q(8);
+  rsDoubleEndedQueue<int> q(8);  // []
 
   r &= q.isEmpty();
   r &= q.getLength() == 0;
 
-  q.pushFront(5);   //
+  q.pushFront(5);                // [5]
   r &= q.getLength() == 1;
   r &= q.readHead()  == 5;
-  r &= q.readTail()  == 5;   // false
+  r &= q.readTail()  == 5;
 
+  q.pushFront(6);                // [5 6]
+  r &= q.getLength() == 2;
+  r &= q.readHead()  == 6;
+  r &= q.readTail()  == 5;
 
+  q.pushFront(7);                // [5 6 7]
+  r &= q.getLength() == 3;
+  r &= q.readHead()  == 7;
+  r &= q.readTail()  == 5;
 
+  q.pushBack(4);                 // [4 5 6 7]
+  r &= q.getLength() == 4;
+  r &= q.readHead()  == 7;
+  r &= q.readTail()  == 4;
+
+  q.pushBack(3);                 // [3 4 5 6 7]
+  r &= q.getLength() == 5;
+  r &= q.readHead()  == 7;
+  r &= q.readTail()  == 3;
+
+  q.popFront();                  // [3 4 5 6]
+  r &= q.getLength() == 4;
+  r &= q.readHead()  == 6;
+  r &= q.readTail()  == 3;
+
+  q.popBack();                   // [4 5 6]
+  r &= q.getLength() == 3;
+  r &= q.readHead()  == 6;
+  r &= q.readTail()  == 4;
+
+  q.reset();                     // []
+  r &= q.isEmpty();
+  r &= q.getLength() == 0;
+
+  q.pushBack(5);                 // [5]
+  r &= q.getLength() == 1;
+  r &= q.readHead()  == 5;
+  r &= q.readTail()  == 5;
+
+  // see what happens, when we try to overfill the queue...the best thing would be, if it would 
+  // automatically resize - figure out the size limit in terms of buffer length (i think, it's
+  // buffer size -1 or -2)
 
   return r;
 }
