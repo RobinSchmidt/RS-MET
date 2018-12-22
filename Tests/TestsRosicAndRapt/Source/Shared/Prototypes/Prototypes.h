@@ -272,9 +272,10 @@ public:
     size_t j = leftIndex;
     T ex = data[i];
     while(i != j) {
+      i = wrap(i-1);
       if(data[i] > ex)  // or >= or maybe use a comparison function and rename function to
         ex = data[i];   // getOptimum/Extremum
-      i = wrap(i-1);
+
     }
     return ex;
   }

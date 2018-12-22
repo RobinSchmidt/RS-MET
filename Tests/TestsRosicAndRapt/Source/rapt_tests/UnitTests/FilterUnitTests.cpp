@@ -202,8 +202,8 @@ std::vector<int> movingMax(const std::vector<int>& x, int L)
   for(int i = 0; i < (int)r.size(); i++) {
     //int max = std::numeric_limits<int>::min();
     int max = x[i];
-    for(int k = 0; k < L; k++) {
-    //for(int k = 1; k <= L; k++) {
+    //for(int k = 1; k < L; k++) {
+    for(int k = 1; k <= L; k++) {
       if(i-k < 0) 
         break;
       if(x[i-k] > max)
@@ -240,7 +240,7 @@ bool movingMaximumUnitTest()
   std::vector<int> vMax5 = movingMax(v, 5);
 
   rsMovingMaximumFilter<int> flt(8);
-  //r &= testMovingMaxFilter(flt, v, 0);  // doesn't work
+  r &= testMovingMaxFilter(flt, v, 0); 
   r &= testMovingMaxFilter(flt, v, 1);
   r &= testMovingMaxFilter(flt, v, 2);
   r &= testMovingMaxFilter(flt, v, 3);
