@@ -367,9 +367,7 @@ void rsRingBuffer<T>::reset()
   updateLeftIndex();
 }
 
-
-
-
+/*
 template<class T>
 rsDoubleEndedQueue<T>::rsDoubleEndedQueue(size_t capacity)
 {
@@ -377,6 +375,7 @@ rsDoubleEndedQueue<T>::rsDoubleEndedQueue(size_t capacity)
   data.resize(capacity);
   //mask = c-1;
 }
+*/
 
 template<class T>
 rsMovingMaximumFilter<T>::rsMovingMaximumFilter(size_t maxLength) 

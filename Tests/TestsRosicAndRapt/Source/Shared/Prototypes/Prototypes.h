@@ -282,42 +282,51 @@ protected:
 
 
 template<class T>
-class rsDoubleEndedQueue
+class rsDoubleEndedQueue : public rsRingBuffer<T>
 {
 
 public:
 
   /** ...actual capacity will be a power of two */
-  rsDoubleEndedQueue(size_t minCapacity);
+  rsDoubleEndedQueue(size_t capacity) : rsRingBuffer<T>(capacity) {}
 
   //void setMaximumLength(int newLength);
 
 
   inline void pushFront(T value)
   {
-    head = wrap(head+1);
-    data[head] = value;
+    rightIndex = wrap(rightIndex+1);
+    length++;
+    data[rightIndex] = value;
   }
 
   inline void pushBack(T  value)
   {
-    tail = wrap(tail-1);
-    data[tail] = value;
+    leftIndex = wrap(leftIndex-1);
+    length++;
+    data[leftIndex] = value;
   }
 
   inline T popFront()
   {
-    T value = data[head];
-    head = wrap(head-1);
+    T value = data[rightIndex];
+    rightIndex = wrap(rightIndex-1);
+    length--;
     return value;
   }
 
   inline T popBack()
   {
-    T value = data[tail];
-    tail = wrap(tail+1);
+    T value = data[leftIndex];
+    leftIndex = wrap(leftIndex+1);
+    length--;
     return value;
   }
+
+  // maybe the push operations should ensure that the capacity is large enough and if it isn't,
+  // increase it
+
+  inline bool isEmpty() const { return getLength() == 0; }
 
   // this sort of generalizes a delayline - a regular integer delayline/ringbuffer would fill the 
   // queue initially with L zeros and then for each incoming sample do a pushFront/popBack so the 
@@ -326,11 +335,11 @@ public:
   // arbitarily from/to both ends...maybe factor out a ringbuffer...or...is it really exactly the 
   // same?
 
-  inline int getLength() const { return head - tail; }
+  //inline int getLength() const { return head - tail; }
 
-  inline T readHead() const { return data[head]; }
+  inline T readHead() const { return data[rightIndex]; }
 
-  inline T readTail() const { return data[tail]; }
+  inline T readTail() const { return data[leftIndex]; }
 
   // or maybe readFirst/Last Front/Back
 
@@ -342,6 +351,8 @@ public:
 
 protected:
 
+
+  /*
   inline int wrap(int i) const 
   { 
     int N = (int) data.size();
@@ -354,6 +365,7 @@ protected:
   std::vector<T> data;  // maybe use pointer to T later,,,but bad for debugging...hmm
   //int mask;
   int head = 0, tail = 0; // head: rightIndex, tail: leftIndex
+  */
 
 
   //size_t head = 0, tail = 0;
@@ -373,21 +385,40 @@ public:
 
   void setLength(size_t newLength) { rngBuf.setLength(newLength); }
 
-  inline T getSample(T in)
+  inline T getSampleNaive(T in)  // naive version - only for tests
+  {
+    rngBuf.getSample(in);  // output of getSample not needed here
+    T maxVal = rngBuf.getMaximum();
+    return maxVal;
+  }
+
+
+  inline T getSample(T in) // does not work yet
   {
     T oldest = rngBuf.getSample(in);
 
-    T maxVal = rngBuf.getMaximum();
 
+    // https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
+
+    // Step 2:
+    while(!dqueue.isEmpty() && dqueue.readHead() < in)
+      dqueue.popFront();
+    dqueue.pushFront(in);
+
+    // Step 3:
+    if(dqueue.readTail() == oldest)
+      dqueue.popBack();
+
+    //T maxVal = rngBuf.getMaximum();
+
+    T maxVal = dqueue.readHead();
     return maxVal;
-  
-    //return oldest; // preliminary
   }
 
   void reset()
   {
     rngBuf.reset();
-    //dqueue.reset();
+    dqueue.reset();
   }
 
 protected:

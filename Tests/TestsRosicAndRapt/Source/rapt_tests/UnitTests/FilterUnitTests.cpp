@@ -220,7 +220,7 @@ bool testMovingMaxFilter(rsMovingMaximumFilter<int>& flt, const std::vector<int>
   flt.setLength(L);
   flt.reset();
   for(size_t n = 0; n < x.size(); n++) 
-    result[n] = flt.getSample(x[n]);
+    result[n] = flt.getSampleNaive(x[n]);  // remove the "Naive" later
 
   return result == target;
 }
@@ -252,6 +252,7 @@ bool movingMaximumUnitTest()
   // ...maybe write a loop for these tests
 
   std::vector<int> vMax3_Nayuki = computeSlidingWindowMinOrMax(v, 3, true);
+  // seems to compute a maximum where the window is centered over the current datapoint
 
 
 
