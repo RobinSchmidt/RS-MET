@@ -208,6 +208,20 @@ protected:
 // stuff for sliding maximum filter:
 
 
+
+template<class T>
+class rsBuffer
+{
+
+public:
+
+protected:
+
+
+};
+
+
+
 template<class T>
 class rsRingBuffer
 {
@@ -273,7 +287,7 @@ protected:
 
   std::vector<T> data;
   size_t mask;
-  size_t rightIndex = 0, leftIndex = 0; 
+  size_t rightIndex = 0, leftIndex = 0; // rename back to writeIndex, readIndex
   size_t length = 0; // rename to capacity ..or use data.size()
   // maybe name them generally rightEnd, leftEnd or something ... rgt, lft. L,R - then we may
   // also make rsDoubleEndedQueue a subclass and inherit the data and wrap function

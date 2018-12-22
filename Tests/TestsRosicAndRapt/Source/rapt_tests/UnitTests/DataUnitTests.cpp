@@ -25,6 +25,22 @@ bool arrayUnitTest()
   rsAppend(u, u);
   r &= u == Vec({1,2,3,1,2,3});
 
+  return r;
+}
+
+bool doubleEndedQueueUnitTest()
+{
+  bool r = true; 
+
+  rsDoubleEndedQueue<int> q(8);
+
+  r &= q.isEmpty();
+  r &= q.getLength() == 0;
+
+  q.pushFront(5);   //
+  r &= q.getLength() == 1;
+  r &= q.readHead()  == 5;
+  r &= q.readTail()  == 5;   // false
 
 
 

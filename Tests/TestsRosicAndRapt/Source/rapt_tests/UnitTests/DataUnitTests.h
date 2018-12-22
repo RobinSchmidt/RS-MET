@@ -4,6 +4,7 @@
 #include "../../Shared/Shared.h"
 
 bool arrayUnitTest();
+bool doubleEndedQueueUnitTest();
 bool float64x2UnitTest();
 bool complexFloat64x2UnitTest();
 
