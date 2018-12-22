@@ -220,7 +220,7 @@ bool testMovingMaxFilter(rsMovingMaximumFilter<int>& flt, const std::vector<int>
   flt.setLength(L);
   flt.reset();
   for(size_t n = 0; n < x.size(); n++) 
-    result[n] = flt.getSampleNaive(x[n]);  // remove the "Naive" later
+    result[n] = flt.getSample(x[n]);  // remove the "Naive" later
 
   return result == target;
 }

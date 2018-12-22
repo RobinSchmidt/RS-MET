@@ -274,7 +274,7 @@ protected:
   std::vector<T> data;
   size_t mask;
   size_t rightIndex = 0, leftIndex = 0; 
-  size_t length = 0;
+  size_t length = 0; // rename to capacity ..or use data.size()
   // maybe name them generally rightEnd, leftEnd or something ... rgt, lft. L,R - then we may
   // also make rsDoubleEndedQueue a subclass and inherit the data and wrap function
 };
@@ -327,6 +327,7 @@ public:
   // increase it
 
   inline bool isEmpty() const { return getLength() == 0; }
+  // wrong! getLength returns the capacity...or well...no
 
   // this sort of generalizes a delayline - a regular integer delayline/ringbuffer would fill the 
   // queue initially with L zeros and then for each incoming sample do a pushFront/popBack so the 
@@ -334,8 +335,13 @@ public:
   // read/write is combined into a single operation). this dequeue here can read and write 
   // arbitarily from/to both ends...maybe factor out a ringbuffer...or...is it really exactly the 
   // same?
+  // not sure if subclassing is the best way - it uses the same data and wrap function but the 
+  // meaning of getLength and reset are different...hmmm - also we could get rid of 
+  // inc/decrementing length in push/pop (getLength would then have to 
+  // return wrap(rightIndex-leftIndex)...maybe we should have a performance test
 
   //inline int getLength() const { return head - tail; }
+  // 
 
   inline T readHead() const { return data[rightIndex]; }
 
@@ -348,6 +354,8 @@ public:
   //void writeData(T x);
 
   //T readData();
+
+  void reset();
 
 protected:
 

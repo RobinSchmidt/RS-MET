@@ -367,6 +367,17 @@ void rsRingBuffer<T>::reset()
   updateLeftIndex();
 }
 
+
+
+template<class T>
+void rsDoubleEndedQueue<T>::reset()
+{
+  RAPT::rsArray::fillWithZeros(&data[0], (int)data.size());
+  leftIndex = 0;
+  rightIndex = 0;
+  length = 0;
+}
+
 /*
 template<class T>
 rsDoubleEndedQueue<T>::rsDoubleEndedQueue(size_t capacity)
