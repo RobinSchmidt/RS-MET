@@ -429,22 +429,21 @@ public:
     if(dqueue.readTail() == oldest)
       dqueue.popBack();
     */
-
-    // Step 2:
-    while(!dqueue.isEmpty() && dqueue.readTail() < in)
+    
+    while(!dqueue.isEmpty() && dqueue.readTail() < in)  // Nayuki's Step 2
       dqueue.popBack();
     dqueue.pushBack(in);
 
-
-
     T maxVal = in; 
-    if(!dqueue.isEmpty())           // happens when length is set to zero - maybe catch that
-      maxVal = dqueue.readHead();   // situation already earlier
+    if(!dqueue.isEmpty()) {         // happens when length is set to zero
+      maxVal = dqueue.readHead();
+      if(maxVal == oldest)
+        dqueue.popFront();          // Nayuki's Step 3
+    }
 
-    // Step 3:
-    if(dqueue.readHead() == oldest)
-      dqueue.popFront();
-
+    //// Step 3:
+    //if(!dqueue.isEmpty() && dqueue.readHead() == oldest)
+    //  dqueue.popFront();
 
     return maxVal;
   }
