@@ -234,52 +234,29 @@ public:
 
   inline T getSample(T in)
   {
-    rightIndex = wrap(rightIndex+1);
-    leftIndex  = wrap(leftIndex+1);
-    data[rightIndex] = in;     // right index is write index
-    T out = data[leftIndex];   // left index is read index
-    //rightIndex = wrap(rightIndex+1);
-    //leftIndex  = wrap(leftIndex+1);
+    rightIndex = wrap(rightIndex+1); // incremenet before write/read to allow further operations
+    leftIndex  = wrap(leftIndex+1);  // after getSample (indices must be still valid)
+    data[rightIndex] = in;           // right index is write index
+    T out = data[leftIndex];         // left index is read index
     return out;
   }
   // rename to pushRightPopLeft maybe make a subclass delayline that defines an alias function
   // name getSample...any maybe merge class with rsDoubleEndedQueue
-
-  // question: where should the pointers be after a sample has been produced - already in the 
-  // position for the next sample or still in the position of the most recent sample? in the former 
-  // case we'd do pre-increment, in the latter, post-increment
-  // advantages of pre-increment:
-  // -we could call getSample and after that getMaximum - the pointers would still be valid in the
-  //  call to getMaximum and we could call more buffer-analysis functions per sample
-
-  // for maximum extraction, it makes more sense to
-  // -increment write pointer
-  // -write new data
-  // -find maximum
-  // -increment read pointer
-  // mixing calls to getSample and getMaximum is messy becuase getSample manipulates the pointers
-  // in a way that makes it inconvenient to extract the maximum
-
 
 
 
   /** Returns the maximum value in the range between the two pointers. */
   T getMaximum()
   {
-    //size_t i = wrap(rightIndex-1);
-    //size_t j = wrap(leftIndex-1);
     size_t i = rightIndex;
-    size_t j = leftIndex;
     T ex = data[i];
-    while(i != j) {
+    while(i != leftIndex) {
       i = wrap(i-1);
       if(data[i] > ex)  // or >= or maybe use a comparison function and rename function to
         ex = data[i];   // getOptimum/Extremum
-
     }
     return ex;
   }
-
 
   void reset();
 
@@ -294,15 +271,12 @@ protected:
   //void updateRightIndex() { rightIndex = wrap(leftIndex + length); } 
   // maybe uncomment if needed - it's not typically used
 
-
-
   std::vector<T> data;
   size_t mask;
   size_t rightIndex = 0, leftIndex = 0; 
   size_t length = 0;
   // maybe name them generally rightEnd, leftEnd or something ... rgt, lft. L,R - then we may
   // also make rsDoubleEndedQueue a subclass and inherit the data and wrap function
-
 };
 
 
