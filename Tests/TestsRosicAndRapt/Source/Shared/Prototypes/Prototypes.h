@@ -299,6 +299,12 @@ protected:
 
 //-------------------------------------------------------------------------------------------------
 
+/** Implements the double-ended queue data structure. This implementation provides a static, finite 
+capacity that has to be passed at construction time.
+
+ToDo: allow to dynamically resize the capacity at runtime - but such resize operations should be an
+absolute exception in realtime code (only a last resort) */
+
 template<class T>
 class rsDoubleEndedQueue : public rsBuffer<T>
 {
@@ -310,6 +316,9 @@ public:
   greater or equal to the desired capacity plus 2 (two additional and unusable index value are 
   required to make the index arithemetic work right). */
   rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+2) {}
+
+
+  /** \name Data Access */
 
   /** Appends a value to right/head side of the queue. */
   inline void pushFront(T value)
@@ -358,11 +367,20 @@ public:
   }
   // or maybe readFirst/Last Front/Back
 
+  /** Clears the queue and optionally resets the data in the underlying buffer to all zeros. The 
+  clearing of the queue itself just resets some pointers/indices, turning the data into 
+  inaccessible garbage - but it should have no effect for the functionality of the queue whether 
+  this data buffer is uninitialized/garbage or all zeros. */
+  void clear(bool cleanGarbage = false)
+  {
+    head = 1;
+    tail = 0;
+    if(cleanGarbage)
+      initBufferValues(0);
+  }
 
-  //inline T popBack(size_t numElements)
 
-  // maybe the push operations should ensure that the capacity is large enough and if it isn't,
-  // increase it
+  /** \name Inquiry */
 
   /** Returns the number of values that are currently in the queue. */
   inline size_t getLength() const { return wrap(head - tail - 1); }
@@ -376,10 +394,8 @@ public:
 
   /** Returns true, if the queue is full. */
   inline bool isFull() const { return getLength() > getMaxLength(); } 
+  // shouldn't that be >= ?
 
-
-
-  void reset();
 
 protected:
 
@@ -392,6 +408,10 @@ protected:
   // are at indices i with: tail < i < head, not: tail <= i <= head and when head = tail + 1, the
   // queue is empty because no index i fits in between tail and head
 };
+
+// maybe make convenience subclasses rsQueue and rsStack - both datastructures have different 
+// subsets of functionality of the double ended queue actually, but the convenience functions could
+// have more stacky or queuey names like push/pop/top, enqueue/dequeue/front/back
 
 //-------------------------------------------------------------------------------------------------
 
@@ -453,7 +473,7 @@ public:
   void reset()
   {
     rngBuf.reset();
-    dqueue.reset();
+    dqueue.clear();
   }
 
 protected:

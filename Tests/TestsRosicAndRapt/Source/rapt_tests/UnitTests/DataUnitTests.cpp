@@ -74,7 +74,7 @@ bool doubleEndedQueueUnitTest()
   r &= q.readHead()  == 6;
   r &= q.readTail()  == 4;
 
-  q.reset();                     // []
+  q.clear();                     // []
   r &= q.isEmpty();
   r &= q.getLength() == 0;
 

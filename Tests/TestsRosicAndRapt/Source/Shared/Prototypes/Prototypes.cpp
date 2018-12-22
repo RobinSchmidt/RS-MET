@@ -378,14 +378,15 @@ void rsRingBuffer<T>::reset()
 //-------------------------------------------------------------------------------------------------
 
 
-
+/*
 template<class T>
-void rsDoubleEndedQueue<T>::reset()
+void rsDoubleEndedQueue<T>::clear()
 {
   initBufferValues(0);
   head = 1;
   tail = 0;
 }
+*/
 
 /*
 template<class T>
