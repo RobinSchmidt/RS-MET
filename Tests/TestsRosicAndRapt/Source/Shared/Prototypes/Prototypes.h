@@ -384,7 +384,7 @@ public:
 
 protected:
 
-  size_t head = 1, tail = 0;
+  size_t head = 1, tail = 0; // chek out correct terminology in the literature
 
 };
 
@@ -401,6 +401,9 @@ public:
 
   void setLength(size_t newLength) { rngBuf.setLength(newLength); }
 
+
+  size_t getLength() const { return rngBuf.getLength(); }
+
   inline T getSampleNaive(T in)  // naive version - only for tests
   {
     rngBuf.getSample(in);  // output of getSample not needed here
@@ -416,6 +419,7 @@ public:
 
     // https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
 
+    /*
     // Step 2:
     while(!dqueue.isEmpty() && dqueue.readHead() < in)
       dqueue.popFront();
@@ -424,10 +428,24 @@ public:
     // Step 3:
     if(dqueue.readTail() == oldest)
       dqueue.popBack();
+    */
 
-    //T maxVal = rngBuf.getMaximum();
+    // Step 2:
+    while(!dqueue.isEmpty() && dqueue.readTail() < in)
+      dqueue.popBack();
+    dqueue.pushBack(in);
 
-    T maxVal = dqueue.readHead();
+
+
+    T maxVal = in; 
+    if(!dqueue.isEmpty())           // happens when length is set to zero - maybe catch that
+      maxVal = dqueue.readHead();   // situation already earlier
+
+    // Step 3:
+    if(dqueue.readHead() == oldest)
+      dqueue.popFront();
+
+
     return maxVal;
   }
 
