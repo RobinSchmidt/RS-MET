@@ -300,10 +300,10 @@ protected:
 //-------------------------------------------------------------------------------------------------
 
 /** Implements the double-ended queue data structure. This implementation provides a static, finite 
-capacity that has to be passed at construction time.
-
-ToDo: allow to dynamically resize the capacity at runtime - but such resize operations should be an
-absolute exception in realtime code (only a last resort) */
+capacity that has to be passed at construction time. Due to implementation details, the actual 
+capacity is always a power of two minus two, so when you pass an arbitrary number to the 
+constructor that is not of the form 2^k - 2 the smallest possible k will be chosen such that 
+2^k - 2 is greater than or equal to your requested capacity. */
 
 template<class T>
 class rsDoubleEndedQueue : public rsBuffer<T>
@@ -387,13 +387,14 @@ public:
 
   /** Returns the maximum allowed length for the queue. Due to the way, the head- and tail pointers 
   operate, the usable length is 2 less than the size of the underlying data buffer. */
-  inline size_t getMaxLength() const { return data.size()-2; }
+  inline size_t getMaxLength() const { return data.size()-2; } // -1?
 
   /** Returns true if the queue is empty. */
   inline bool isEmpty() const { return getLength() == 0; }
 
   /** Returns true, if the queue is full. */
-  inline bool isFull() const { return getLength() > getMaxLength(); } 
+  inline bool isFull() const { return getLength() >= getMaxLength(); } 
+  //inline bool isFull() const { return getLength() > getMaxLength(); } 
   // shouldn't that be >= ?
 
 
@@ -408,6 +409,20 @@ protected:
   // are at indices i with: tail < i < head, not: tail <= i <= head and when head = tail + 1, the
   // queue is empty because no index i fits in between tail and head
 };
+
+/*
+ToDo: 
+-allow to dynamically resize the capacity at runtime - but such resize operations should be an
+absolute exception in realtime code (only a last resort) 
+-maybe provide push-functions that take a vector argument and pop-functions that pop a range of
+values at once
+-maybe provide some sort of random access functions:
+T fromFront(size_t i) where i = 0 returns the front element, 1 the one after the front, etc.
+or fromHead - analogously for fromBack/fromTail/fromRight
+-maybe binary index search functions (at which index, counted from front (or back) does the value
+in the que get greater than some value
+size_t searchFromFront...this may become relevant for optimizing the moving maximum filter
+*/
 
 // maybe make convenience subclasses rsQueue and rsStack - both datastructures have different 
 // subsets of functionality of the double ended queue actually, but the convenience functions could
