@@ -303,7 +303,11 @@ protected:
 capacity that has to be passed at construction time. Due to implementation details, the actual 
 capacity is always a power of two minus two, so when you pass an arbitrary number to the 
 constructor that is not of the form 2^k - 2 the smallest possible k will be chosen such that 
-2^k - 2 is greater than or equal to your requested capacity. */
+2^k - 2 is greater than or equal to your requested capacity. 
+
+The implementation is based on a circular buffer. Wikipedia says, the C++ std::deque class uses a 
+multiple-array implementation which is probably not so good for realtime purposes:
+https://en.wikipedia.org/wiki/Double-ended_queue */
 
 template<class T>
 class rsDoubleEndedQueue : public rsBuffer<T>
@@ -313,7 +317,7 @@ public:
 
   /** Constructor. Allocates enough memory for an internal buffer to hold the "capacity" number of 
   queued values. The memory allocated for the buffer will be the smallest power of two that is 
-  greater or equal to the desired capacity plus 2 (two additional and unusable index value are 
+  greater or equal to the desired capacity plus 1 (two additional and unusable index value are 
   required to make the index arithemetic work right). */
   rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+2) {}
 
@@ -365,7 +369,7 @@ public:
     RAPT::rsAssert(!isEmpty(), "Trying to read from empty deque");
     return data[wrap(tail+1)]; 
   }
-  // or maybe readFirst/Last Front/Back
+  // or maybe readFirst/Last Front/Back or peekFront/peekBack
 
   /** Clears the queue and optionally resets the data in the underlying buffer to all zeros. The 
   clearing of the queue itself just resets some pointers/indices, turning the data into 
@@ -387,7 +391,8 @@ public:
 
   /** Returns the maximum allowed length for the queue. Due to the way, the head- and tail pointers 
   operate, the usable length is 2 less than the size of the underlying data buffer. */
-  inline size_t getMaxLength() const { return data.size()-2; } // -1?
+  //inline size_t getMaxLength() const { return data.size()-1; } //
+  inline size_t getMaxLength() const { return data.size()-2; } //
 
   /** Returns true if the queue is empty. */
   inline bool isEmpty() const { return getLength() == 0; }

@@ -34,7 +34,10 @@ bool doubleEndedQueueUnitTest()
 
   //rsDoubleEndedQueue<int> q(8);  // []
 
-  rsDoubleEndedQueue<int> q(6);  // []  maybe 7?
+  rsDoubleEndedQueue<int> q(5);  // []
+
+  r &= q.getMaxLength() == 6;     // a power of 2 minus 2, >= requested size
+  //r &= q.getMaxLength() == 7;     // a power of 2 minus 1, >= requested size
 
   r &= q.isEmpty();
   r &= q.getLength() == 0;
@@ -78,14 +81,38 @@ bool doubleEndedQueueUnitTest()
   r &= q.isEmpty();
   r &= q.getLength() == 0;
 
-  q.pushBack(5);                 // [5]
+  q.pushBack(1);                 // [1]
   r &= q.getLength() == 1;
-  r &= q.readHead()  == 5;
-  r &= q.readTail()  == 5;
+  r &= q.readHead()  == 1;
+  r &= q.readTail()  == 1;
 
-  // see what happens, when we try to overfill the queue...the best thing would be, if it would 
-  // automatically resize - figure out the size limit in terms of buffer length (i think, it's
-  // buffer size -1 or -2)
+  int i;
+  for(i = 2; i <= 6; i++)        // [1 2 3 4 5 6]
+    q.pushFront(i);
+
+  r &= q.getLength() == 6;
+  r &= q.readHead()  == 6;
+  r &= q.readTail()  == 1;
+
+  r &= q.isFull();
+
+
+  //// this triggers an assertion but actually still works - however, the MovingMax filter does not
+  //// work properly anymore when we fill the deque up to bufferSize-1
+  //q.pushFront(7);                // [1 2 3 4 5 6 7]
+  //r &= q.getLength() == 7;
+  //r &= q.readHead()  == 7;
+  //r &= q.readTail()  == 1;
+
+
+
+
+  //// this does not work anymore due to overflow:
+  //q.pushFront(8);                // [1 2 3 4 5 6 7 8]
+  //r &= q.getLength() == 8;
+  //r &= q.readHead()  == 8;
+  //r &= q.readTail()  == 1;
+  //// the best thing would be, if it would automatically resize
 
   return r;
 }
