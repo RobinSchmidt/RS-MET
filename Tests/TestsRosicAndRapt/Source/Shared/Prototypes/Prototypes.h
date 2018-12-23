@@ -299,6 +299,13 @@ protected:
 
 //-------------------------------------------------------------------------------------------------
 
+
+template<class T>
+bool rsGreater(const T& a, const T& b);
+
+template<class T>
+bool rsLess(const T& a, const T& b);  // merge with function in RAPT...SortAndSearch
+
 /** Implements the double-ended queue data structure. This implementation provides a static, finite 
 capacity that has to be passed at construction time. Due to implementation details, the actual 
 capacity is always a power of two minus two, so when you pass an arbitrary number to the 
@@ -398,9 +405,10 @@ public:
   inline bool isEmpty() const { return getLength() == 0; }
 
   /** Returns true, if the queue is full. */
-  inline bool isFull() const { return getLength() >= getMaxLength(); } 
-  //inline bool isFull() const { return getLength() > getMaxLength(); } 
-  // shouldn't that be >= ?
+  //inline bool isFull() const { return getLength() >= getMaxLength(); } 
+  inline bool isFull() const { return getLength() > getMaxLength(); } 
+  // shouldn't that be >= ? ...somehow it seems, it can actually take one more entry ...but only
+  // under certain conditions? more tests needed....
 
 
 protected:
@@ -447,9 +455,16 @@ public:
   searched. */
   void setLength(size_t newLength) { rngBuf.setLength(newLength); }
 
+
+  void setComparisonFunction(const std::function<bool(const T&, const T&)>& greaterThan) 
+  { 
+    greater = greaterThan; 
+  }
+
   /** Returns up the length of the filter, i.e. the number of samples within which a maximum is 
   searched. */
   size_t getLength() const { return rngBuf.getLength(); }
+
 
 
   /** \name Processing */
@@ -499,7 +514,9 @@ public:
 protected:
 
   rsRingBuffer<T> rngBuf;
-  rsDoubleEndedQueue<T> dqueue;
+  rsDoubleEndedQueue<T> dqueue; // rename to deque
+
+  std::function<bool(const T&, const T&)> greater; // = &rsGreater;
 
 };
 

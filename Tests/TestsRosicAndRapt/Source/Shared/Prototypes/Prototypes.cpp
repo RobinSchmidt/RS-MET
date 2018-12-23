@@ -350,6 +350,19 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 
 //=================================================================================================
 
+template<class T>
+bool rsGreater(const T& a, const T& b)
+{
+  return a > b;
+}
+template bool rsGreater(const int&, const int&);
+
+template<class T>
+bool rsLess(const T& a, const T& b)
+{
+  return a < b;
+}
+
 
 template<class T>
 rsBuffer<T>::rsBuffer(size_t capacity)

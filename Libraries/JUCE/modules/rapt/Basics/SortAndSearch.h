@@ -1,11 +1,17 @@
 #ifndef RAPT_SORTANDSEARCH_H_INCLUDED
 #define RAPT_SORTANDSEARCH_H_INCLUDED
 
+// move to the "Data" folder
 // this file contains functions for sorting arrays, finding elements and related stuff
 // maybe wrap into a class or two classes rsSort, rsSearch
 // todo: rename lessThan, defaultLess, etc to "before" - because x may come before y even if x > y 
 //       because one may want to sort in descending order
-// todo: let the less comparator be a std::function
+// todo: let the less comparator be a std::function, rename to rsLess, have also rsGreater, 
+// rsLessOrEqual, rsGreaterOrEqual (or maybe derive the less-or-equal condition from:
+// equal(a, b) = !less(a,b) && !less(b,a); lessOrEqual(a,b) = less(a,b) || equal(a,b)
+// (the logic can be optimized/simplified)
+// add binary search functions (there's an implementation elsewhere in the library)
+
 
 // maybe implement https://en.wikipedia.org/wiki/Smoothsort see also 
 // http://www.cs.utexas.edu/users/EWD/ewd07xx/EWD796a.PDF
@@ -27,7 +33,7 @@ void rsBuildMaxHeap(T *buffer, int length,
   bool (*lessThen)(const T& left, const T& right));
 
 /** Assuming that the sub-trees rooted at 2*i+1 (left subtree) and 2*i+2 (right subtree) are
-max-heaps but buffer[i] itself violates the max-heap property (by being smaller that one of
+max-heaps but buffer[i] itself violates the max-heap property (by being smaller than one of
 its child nodes), this function lets buffer[i] 'float down' the max-heap so that the tree rooted
 at i becomes itself a max-heap. heapSize is the number of elements in the array for which the
 max-heap property holds, so heapSize <= length. The complexity is O(log(n))
@@ -44,9 +50,7 @@ child-nodes, the max-heap property remains unchanged. We may thus invoke maxHeap
 the max-heap property of the root node (let it float down). Then we iterate the invokation of
 maxHeapify for subarrays with linearly shrinking size. The (worst case) complexity is
 O(n*log(n)).
-Reference: Introduction to Algorithms, 2nd Ed, p. 136
-\todo let it take a pointer to a comparator function as optinal argument (if NULL is passed, it
-will use a default comparator function which is based on the < operator of the class) */
+Reference: Introduction to Algorithms, 2nd Ed, p. 136 */
 template <class T>
 void rsHeapSort(T *buffer, int length, 
   bool (*lessThen)(const T& left, const T& right) = defaultLess);
@@ -64,7 +68,8 @@ std::vector<int> rsFindAllOccurencesOf(T* buffer, int bufferLength, T* pattern, 
 
 /** Returns the first occurrence of an element in the passed buffer and its index, -1 if the
 element is not found in the buffer. The optional searchStart parameter can be used to skip an
-initial section in the search. */
+initial section in the search. This is a simple linear search with complexity O(n) and doesn't 
+assume the buffer to be sorted. */
 template <class T>
 int rsFindFirstOccurrenceOf(const T *buffer, const int length, const T &elementToFind,
   const int searchStart = 0);
