@@ -438,6 +438,7 @@ void envelopeFollower()
   // try to recover the envelope via envelope following:
   double k = 0.0;  // multiplier for hold in terms of cycle length
   double p = 1.0;  // power to be applied before env-detector
+  double gain = 1.23; // to compensate gain loss due to lowpass
   RAPT::rsSlewRateLimiterWithHold<double, double> ef;
   ef.setAttackTime(1.0);
   ef.setReleaseTime(100.0);
@@ -446,21 +447,67 @@ void envelopeFollower()
   std::vector<double> e2(N);
   for(n = 0; n < N; n++) {
     double tmp = pow(fabs(y[n]), p);
-    tmp = ef.getSample(tmp);
+    tmp = gain * ef.getSample(tmp);
     e2[n] = pow(tmp, 1/p);
   }
 
+  // apply moving minimum/maximum filter, compute also their average as moving-center:
+  size_t maxLength = (size_t) (4.0 * fs/f);
+  int filterLength = (int) ceil(fs/f);          // one cycle
+  rsMovingMaximumFilter<double> mmf(maxLength); 
+  mmf.setLength(filterLength);
+  std::vector<double> eMax(N), eMin(N), eCnt(N);
+
+
+  for(n = 0; n < N; n++) 
+    eMax[n] = mmf.getSample(e2[n]);
+  mmf.reset();
+  mmf.setComparisonFunction(&rsLess);
+  for(n = 0; n < N; n++) {
+    eMin[n] = mmf.getSample(e2[n]);
+    eCnt[n] = 0.5 * (eMax[n]+eMin[n]);
+  }
+  // half a cycle is not enough for the moving-max filter length because a rectified saw becomes a 
+  // triangle of half the original frequency
+
+  // the detected envelope looks delayed compared to the original one - we fix this by 
+  // time-shifting - of course, this is possible only in non realtime scenarios:
+  RAPT::rsArray::leftShift(&eCnt[0], N, 3*filterLength/2); // factor 3/2 ad hoc
+
+
+
+  // maybe ise a linear slewrate limiter after the moving-max to smooth out the steps - maybe that
+  // should be adaptive in such a way that it may go from min to max in one filter-length - i.e.
+  // use detected min/max values to adjust the maximum slew rate
+
+  // actually, i seems not necessarry to apply the moving-max to the env-follower output - we
+  // could apply it directly to the (rectified) signal - let's try it:
+  //mmf.setComparisonFunction(&rsGreater);
+  //mmf.reset();
+  //for(n = 0; n < N; n++) 
+  //  eMax[n] = mmf.getSample(fabs(y[n]));
+  //mmf.reset();
+  //for(n = 0; n < N; n++) {
+  //  eMin[n] = -mmf.getSample(-fabs(x[n]));
+  //  eCnt[n] = 0.5 * (eMax[n]+eMin[n]);
+  //}
+  // no - the other one was better
+
+
+
   rosic::InstantaneousEnvelopeDetector ied;
-  std::vector<double> e3(N);
+  std::vector<double> e4(N);
   for(n = 0; n < N; n++)
-    e3[n] = ied.getInstantaneousEnvelope(y[n]);
+    e4[n] = ied.getInstantaneousEnvelope(y[n]);
 
 
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
   plt.addDataArrays(N, &e[0]);
   plt.addDataArrays(N, &e2[0]);
-  //plt.addDataArrays(N, &e3[0]);
+  //plt.addDataArrays(N, &eMax[0]);
+  //plt.addDataArrays(N, &eMin[0]);
+  plt.addDataArrays(N, &eCnt[0]);
   plt.setPixelSize(1200, 400);
   plt.plot();
 

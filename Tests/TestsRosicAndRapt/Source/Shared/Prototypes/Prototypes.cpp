@@ -356,12 +356,14 @@ bool rsGreater(const T& a, const T& b)
   return a > b;
 }
 template bool rsGreater(const int&, const int&);
+template bool rsGreater(const double&, const double&);
 
 template<class T>
 bool rsLess(const T& a, const T& b)
 {
   return a < b;
 }
+template bool rsLess(const double&, const double&);
 
 
 template<class T>
@@ -425,6 +427,7 @@ rsMovingMaximumFilter<T>::rsMovingMaximumFilter(size_t maxLength)
 }
 
 template class rsMovingMaximumFilter<int>;
+template class rsMovingMaximumFilter<double>;
 
 
 //=================================================================================================

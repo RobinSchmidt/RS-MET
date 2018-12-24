@@ -479,20 +479,23 @@ public:
   see: https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm  */
   inline T getSample(T in)
   {
-    T oldest = rngBuf.getSample(in);
-
-    //while(!dqueue.isEmpty() && in > dqueue.readTail())  // Nayuki's Step 2
-    while(!dqueue.isEmpty() && greater(in, dqueue.readTail()) )  // Nayuki's Step 2
+    // accept new incoming sample - this corresponds to 
+    // Nayuki's Step 2 - "increment the array range’s right endpoint"
+    while(!dqueue.isEmpty() && greater(in, dqueue.readTail()) )  
       dqueue.popBack();
     dqueue.pushBack(in);
     // maybe we could further reduce the worst case processing cost by using binary search to 
     // adjust the new tail-pointer instead of linearly popping elements one by one? search
-    // between tail and head for the first element that is >= in (or not < in)
+    // between tail and head for the first element that is >= in (or not < in) - but maybe that 
+    // would destroy the amortized O(1) cost?
 
-    if(!dqueue.isEmpty()) {         // happens when length is set to zero
+    // update delayline (forget oldest sample and remember current sample for later), this 
+    // corresponds to Nayuki's Step 3 - "increment the array range’s left endpoint":
+    T oldest = rngBuf.getSample(in);
+    if(!dqueue.isEmpty()) {            // happens when length is set to zero
       T maxVal = dqueue.readHead();
       if(maxVal == oldest)
-        dqueue.popFront();          // Nayuki's Step 3
+        dqueue.popFront();          
       return maxVal;
     }
     else
