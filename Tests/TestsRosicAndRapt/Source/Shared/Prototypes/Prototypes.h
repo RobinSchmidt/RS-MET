@@ -453,7 +453,7 @@ public:
 
   /** Sets up the length of the filter, i.e. the number of samples within which a maximum is 
   searched. */
-  void setLength(size_t newLength) { rngBuf.setLength(newLength); }
+  void setLength(size_t newLength) { delayLine.setLength(newLength); }
 
   /** Sets the "greater-than" comparison function. Note that you can actually also pass a function
   that implements a less-than comparison in which case the whole filter turns into a moving-minimum
@@ -468,7 +468,7 @@ public:
 
   /** Returns up the length of the filter, i.e. the number of samples within which a maximum is 
   searched. */
-  size_t getLength() const { return rngBuf.getLength(); }
+  size_t getLength() const { return delayLine.getLength(); }
 
 
 
@@ -481,21 +481,23 @@ public:
   {
     // accept new incoming sample - this corresponds to 
     // Nayuki's Step 2 - "increment the array range’s right endpoint"
-    while(!dqueue.isEmpty() && greater(in, dqueue.readTail()) )  
-      dqueue.popBack();
-    dqueue.pushBack(in);
+    while(!maxDeque.isEmpty() && greater(in, maxDeque.readTail()) )  
+      maxDeque.popBack();
+    maxDeque.pushBack(in);
     // maybe we could further reduce the worst case processing cost by using binary search to 
     // adjust the new tail-pointer instead of linearly popping elements one by one? search
     // between tail and head for the first element that is >= in (or not < in) - but maybe that 
     // would destroy the amortized O(1) cost?
+    // maybe using a "greater" function instead of a > operator is not such a good idea, 
+    // performance-wise
 
     // update delayline (forget oldest sample and remember current sample for later), this 
     // corresponds to Nayuki's Step 3 - "increment the array range’s left endpoint":
-    T oldest = rngBuf.getSample(in);
-    if(!dqueue.isEmpty()) {            // happens when length is set to zero
-      T maxVal = dqueue.readHead();
+    T oldest = delayLine.getSample(in);
+    if(!maxDeque.isEmpty()) {            // happens when length is set to zero
+      T maxVal = maxDeque.readHead();
       if(maxVal == oldest)
-        dqueue.popFront();          
+        maxDeque.popFront();          
       return maxVal;
     }
     else
@@ -508,22 +510,22 @@ public:
   production code. */
   inline T getSampleNaive(T in)
   {
-    rngBuf.getSample(in);  // output of getSample not needed here
-    T maxVal = rngBuf.getMaximum(); // maybe pass greater function to the maximum finder
+    delayLine.getSample(in);  // output of getSample not needed here
+    T maxVal = delayLine.getMaximum(); // maybe pass greater function to the maximum finder
     return maxVal;
   }
 
   /** Resets the filter to its initial state. */
   void reset()
   {
-    rngBuf.reset();
-    dqueue.clear();
+    delayLine.reset();
+    maxDeque.clear();
   }
 
 protected:
 
-  rsRingBuffer<T> rngBuf;
-  rsDoubleEndedQueue<T> dqueue; // rename to deque
+  rsRingBuffer<T> delayLine;
+  rsDoubleEndedQueue<T> maxDeque; // maybe have also a minDeque (maybe in subclass)
 
   bool (*greater)(const T&, const T&) = &rsGreater;
   //std::function<bool(const T&, const T&)> greater; // = &rsGreater;
@@ -539,6 +541,53 @@ protected:
 //
 // https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
 
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
+class rsSlewRateLimiterLinear
+{
+
+public:
+
+
+  /** \name Setup */
+
+  /** Sets the maximum upward change from one sample to the next. */
+  void setUpwardLimit(const T& newLimit)
+  {
+    upwardLimit = newLimit;
+  }
+
+  /** Sets the maximum downward change from one sample to the next. */
+  void setDownwardLimit(const T& newLimit)
+  {
+    downwardLimit = newLimit;
+  }
+
+  /** Convenience function to set both, upward and downward limits, to the same value. */
+  void setLimits(const T& newLimit)
+  {
+    setUpwardLimit(newLimit);
+    setDownwardLimit(newLimit);
+  }
+
+
+  /** \name Processing */
+
+  T getSample(T in)
+  {
+    y1 += rsClip(in-y1, -downwardLimit, upwardLimit);
+    return y1;
+  }
+
+  void reset() { y1 = T(0); }
+
+protected:
+
+  T upwardLimit, downwardLimit;  
+  T y1;                          // previous output sample
+
+};
 
 
 // the stuff below is just for playing around - maybe move code elsewhere:

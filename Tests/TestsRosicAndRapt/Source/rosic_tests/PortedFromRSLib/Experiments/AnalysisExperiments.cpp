@@ -456,8 +456,7 @@ void envelopeFollower()
   int filterLength = (int) ceil(fs/f);          // one cycle
   rsMovingMaximumFilter<double> mmf(maxLength); 
   mmf.setLength(filterLength);
-  std::vector<double> eMax(N), eMin(N), eCnt(N);
-
+  std::vector<double> eMax(N), eMin(N), eCnt(N); // min/max/center=(min+max)/2
 
   for(n = 0; n < N; n++) 
     eMax[n] = mmf.getSample(e2[n]);
@@ -470,15 +469,17 @@ void envelopeFollower()
   // half a cycle is not enough for the moving-max filter length because a rectified saw becomes a 
   // triangle of half the original frequency
 
-  // the detected envelope looks delayed compared to the original one - we fix this by 
-  // time-shifting - of course, this is possible only in non realtime scenarios:
-  RAPT::rsArray::leftShift(&eCnt[0], N, 3*filterLength/2); // factor 3/2 ad hoc
-
-
 
   // maybe ise a linear slewrate limiter after the moving-max to smooth out the steps - maybe that
   // should be adaptive in such a way that it may go from min to max in one filter-length - i.e.
-  // use detected min/max values to adjust the maximum slew rate
+  // use detected min/max values to adjust the maximum slew rate - maybe that should be applied to 
+  // the max-filter output
+  ::rsSlewRateLimiterLinear<double> slwLmtr;
+  std::vector<double> eSmth(N);
+  for(n = 0; n < N; n++) {
+    slwLmtr.setLimits( (eMax[n]-eMin[n]) / filterLength );
+    eSmth[n] = slwLmtr.getSample(eCnt[n]);
+  }
 
   // actually, i seems not necessarry to apply the moving-max to the env-follower output - we
   // could apply it directly to the (rectified) signal - let's try it:
@@ -493,6 +494,11 @@ void envelopeFollower()
   //}
   // no - the other one was better
 
+  // the detected envelope looks delayed compared to the original one - we fix this by 
+  // time-shifting - of course, this is possible only in non realtime scenarios:
+  int shiftAmount = 3*filterLength/2; // factor 3/2 ad hoc
+  RAPT::rsArray::leftShift(&eCnt[0],  N, shiftAmount); 
+  RAPT::rsArray::leftShift(&eSmth[0], N, shiftAmount); 
 
 
   rosic::InstantaneousEnvelopeDetector ied;
@@ -504,10 +510,11 @@ void envelopeFollower()
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
   plt.addDataArrays(N, &e[0]);
-  plt.addDataArrays(N, &e2[0]);
+  //plt.addDataArrays(N, &e2[0]);
   //plt.addDataArrays(N, &eMax[0]);
   //plt.addDataArrays(N, &eMin[0]);
-  plt.addDataArrays(N, &eCnt[0]);
+  //plt.addDataArrays(N, &eCnt[0]);
+  plt.addDataArrays(N, &eSmth[0]);
   plt.setPixelSize(1200, 400);
   plt.plot();
 

@@ -417,13 +417,11 @@ rsDoubleEndedQueue<T>::rsDoubleEndedQueue(size_t capacity)
 
 template<class T>
 rsMovingMaximumFilter<T>::rsMovingMaximumFilter(size_t maxLength) 
-  : rngBuf(maxLength), dqueue(maxLength)
+  : delayLine(maxLength), maxDeque(maxLength)
 {
   //greater = rsGreater;
   //greater = rsGreater<const T&, const T&>;
   //greater = std::function<bool(const T&, const T&)>(&rsGreater);
-
-  int dummy = 0;
 }
 
 template class rsMovingMaximumFilter<int>;
