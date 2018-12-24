@@ -455,11 +455,16 @@ public:
   searched. */
   void setLength(size_t newLength) { rngBuf.setLength(newLength); }
 
-
-  void setComparisonFunction(const std::function<bool(const T&, const T&)>& greaterThan) 
-  { 
-    greater = greaterThan; 
+  /** Sets the "greater-than" comparison function. Note that you can actually also pass a function
+  that implements a less-than comparison in which case the whole filter turns into a moving-minimum
+  filter. */
+  void setComparisonFunction(bool (*greaterThan)(const T&, const T&))
+  {
+    greater = greaterThan;
   }
+  //void setComparisonFunction(const std::function<bool(const T&, const T&)>& greaterThan) 
+  //{ greater = greaterThan; }
+
 
   /** Returns up the length of the filter, i.e. the number of samples within which a maximum is 
   searched. */
@@ -476,7 +481,8 @@ public:
   {
     T oldest = rngBuf.getSample(in);
 
-    while(!dqueue.isEmpty() && dqueue.readTail() < in)  // Nayuki's Step 2
+    //while(!dqueue.isEmpty() && in > dqueue.readTail())  // Nayuki's Step 2
+    while(!dqueue.isEmpty() && greater(in, dqueue.readTail()) )  // Nayuki's Step 2
       dqueue.popBack();
     dqueue.pushBack(in);
     // maybe we could further reduce the worst case processing cost by using binary search to 
@@ -500,7 +506,7 @@ public:
   inline T getSampleNaive(T in)
   {
     rngBuf.getSample(in);  // output of getSample not needed here
-    T maxVal = rngBuf.getMaximum();
+    T maxVal = rngBuf.getMaximum(); // maybe pass greater function to the maximum finder
     return maxVal;
   }
 
@@ -516,7 +522,8 @@ protected:
   rsRingBuffer<T> rngBuf;
   rsDoubleEndedQueue<T> dqueue; // rename to deque
 
-  std::function<bool(const T&, const T&)> greater; // = &rsGreater;
+  bool (*greater)(const T&, const T&) = &rsGreater;
+  //std::function<bool(const T&, const T&)> greater; // = &rsGreater;
 
 };
 
@@ -524,10 +531,9 @@ protected:
 // function as parameter, i.e. a function that takes two T-values as input and returns a bool 
 // where the default is 
 // bool greater(a, b) { return a > b; }  // or maybe greaterOrEqual?
-// maybe call it rsMovingSelector ...and even more general concept would be a moving aggregator 
-// which could also be something like a moving median (or r-th quantile)
+// maybe call it rsMovingSelector, movingExtremum ...and even more general concept would be a 
+// moving aggregator which could also be something like a moving median (or r-th quantile)
 //
-
 // https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
 
 

@@ -417,7 +417,9 @@ template<class T>
 rsMovingMaximumFilter<T>::rsMovingMaximumFilter(size_t maxLength) 
   : rngBuf(maxLength), dqueue(maxLength)
 {
-
+  //greater = rsGreater;
+  //greater = rsGreater<const T&, const T&>;
+  //greater = std::function<bool(const T&, const T&)>(&rsGreater);
 
   int dummy = 0;
 }
