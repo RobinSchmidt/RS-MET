@@ -664,14 +664,35 @@ public:
 
   rsMinMaxSmoother(size_t maxLength) : minMaxFilter(maxLength) {}
 
+
+  /** \name Setup */
+
   /** Sets the smoothing length in samples. */
-  void setLength(size_t newLength) { minMaxFilter.setLength(newLength); }
+  void setLength(size_t newLength) 
+  {
+    minMaxFilter.setLength(newLength);
+    updateSlewRateLimitingFactor();
+  }
+
+  void setSlewRateLimiting(T newAmount)
+  {
+    slewLimitingAmount = newAmount;
+    updateSlewRateLimitingFactor();
+  }
+
+  void setMinMaxMin(T newMix)
+  {
+    mix = newMix;
+  }
+
+
+  /** \name Processing */
 
   T getSample(T in)
   {
     T minVal, maxVal;
     minMaxFilter.getMinMax(in, &minVal, &maxVal);
-    slewLimiter.setLimits((maxVal-minVal) / minMaxFilter.getLength()); // optimize away division
+    slewLimiter.setLimits((maxVal-minVal) * limitingFactor);
     return slewLimiter.getSample( (1-mix)*minVal + mix*maxVal );
   }
 
@@ -683,6 +704,13 @@ public:
 
 protected:
 
+  void updateSlewRateLimitingFactor()
+  {
+    limitingFactor = 1.0 / (slewLimitingAmount * minMaxFilter.getLength());
+  }
+
+  T limitingFactor = 0.0;
+  T slewLimitingAmount = 1.0;
   T mix = 0.5; // mixing between minimum an maximum output, 0: min only, 1: max only
   rsMovingMinMaxFilter<T> minMaxFilter;
   ::rsSlewRateLimiterLinear<T> slewLimiter;
