@@ -558,11 +558,11 @@ class rsMovingMinMaxFilter : public rsMovingMaximumFilter<T>
 
 public:
 
+  rsMovingMinMaxFilter(size_t maxLength) : rsMovingMaximumFilter(maxLength), minDeque(maxLength) {}
 
   void setLessThanFunction(bool (*lessThan)(const T&, const T&)) { less = lessThan; }
 
-
-  inline T getMinMax(T in, T* minVal, T* maxVal)
+  inline void getMinMax(T in, T* minVal, T* maxVal)
   {
     // update deque tails:
     while(!maxDeque.isEmpty() && greater(in, maxDeque.readTail()) )
@@ -644,8 +644,8 @@ public:
 
 protected:
 
-  T upwardLimit, downwardLimit;  
-  T y1;                          // previous output sample
+  T upwardLimit = RS_INF(T), downwardLimit = RS_INF(T);  
+  T y1;  // previous output sample
 
 };
 
@@ -661,6 +661,8 @@ class rsMinMaxSmoother
 {
 
 public:
+
+  rsMinMaxSmoother(size_t maxLength) : minMaxFilter(maxLength) {}
 
   /** Sets the smoothing length in samples. */
   void setLength(size_t newLength) { minMaxFilter.setLength(newLength); }
@@ -683,7 +685,7 @@ protected:
 
   T mix = 0.5; // mixing between minimum an maximum output, 0: min only, 1: max only
   rsMovingMinMaxFilter<T> minMaxFilter;
-  rsSlewRateLimiterLinear<T> slewLimiter;
+  ::rsSlewRateLimiterLinear<T> slewLimiter;
 
 };
 

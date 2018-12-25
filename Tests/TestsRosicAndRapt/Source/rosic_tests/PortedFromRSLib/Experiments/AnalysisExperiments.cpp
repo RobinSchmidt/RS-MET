@@ -454,9 +454,9 @@ void envelopeFollower()
 
   // apply moving minimum/maximum filter, compute also their average as moving-center:
   size_t maxLength = (size_t) (4.0 * fs/f);
-  int filterLength = (int) ceil(fs/f);          // one cycle
+  int smoothingLength = (int) ceil(fs/f);          // one cycle
   rsMovingMaximumFilter<double> mmf(maxLength); 
-  mmf.setLength(filterLength);
+  mmf.setLength(smoothingLength);
   std::vector<double> eMax(N), eMin(N), eCnt(N); // min/max/center=(min+max)/2
 
   for(n = 0; n < N; n++) 
@@ -478,9 +478,19 @@ void envelopeFollower()
   ::rsSlewRateLimiterLinear<double> slwLmtr;
   std::vector<double> eSmth(N);
   for(n = 0; n < N; n++) {
-    slwLmtr.setLimits( (eMax[n]-eMin[n]) / filterLength );
+    slwLmtr.setLimits( (eMax[n]-eMin[n]) / smoothingLength );
     eSmth[n] = slwLmtr.getSample(eCnt[n]);
   }
+
+  // create the min/max smoothed signal again, this time using the rsMinMaxFilter class (should give
+  // the same result):
+  rsMinMaxSmoother<double> minMaxSmoother(maxLength);
+  minMaxSmoother.setLength(smoothingLength);
+  std::vector<double> eSmth2(N);
+  for(n = 0; n < N; n++) 
+    eSmth2[n] = minMaxSmoother.getSample(e2[n]);
+  // yes - works - is the same indeed. maybe delete code where we do all this stuff manually here
+
 
   // maybe apply another Bessel filter to the minmax-smoothed output
   // give the dynamics processors a smoothing parameter (in ms)
@@ -500,7 +510,7 @@ void envelopeFollower()
 
   // the detected envelope looks delayed compared to the original one - we fix this by 
   // time-shifting - of course, this is possible only in non realtime scenarios:
-  int shiftAmount = 3*filterLength/2; // factor 3/2 ad hoc
+  int shiftAmount = 3*smoothingLength/2; // factor 3/2 ad hoc
   //RAPT::rsArray::leftShift(&eCnt[0],  N, shiftAmount); 
   //RAPT::rsArray::leftShift(&eSmth[0], N, shiftAmount); 
 
@@ -520,6 +530,7 @@ void envelopeFollower()
   //plt.addDataArrays(N, &eMin[0]);
   //plt.addDataArrays(N, &eCnt[0]);
   plt.addDataArrays(N, &eSmth[0]);
+  plt.addDataArrays(N, &eSmth2[0]);
   plt.setPixelSize(1200, 400);
   plt.plot();
 
