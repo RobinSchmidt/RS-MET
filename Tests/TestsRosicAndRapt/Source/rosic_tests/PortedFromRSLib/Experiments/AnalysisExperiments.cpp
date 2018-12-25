@@ -428,9 +428,10 @@ void envelopeFollower()
   rosic::rsEngineersFilterMono lpf;
   lpf.setSampleRate(fs);
   lpf.setFrequency(fs/6);
+  //lpf.setFrequency(fs/16);
   lpf.setApproximationMethod(rosic::rsPrototypeDesignerD::BUTTERWORTH);
   //lpf.setApproximationMethod(rosic::rsPrototypeDesignerD::BESSEL);
-  lpf.setOrder(5);
+  lpf.setOrder(6);
   std::vector<double> y(N);
   for(n = 0; n < N; n++)
     y[n] = lpf.getSample(x[n]);
@@ -461,7 +462,7 @@ void envelopeFollower()
   for(n = 0; n < N; n++) 
     eMax[n] = mmf.getSample(e2[n]);
   mmf.reset();
-  mmf.setComparisonFunction(&rsLess);
+  mmf.setGreaterThanFunction(&rsLess);
   for(n = 0; n < N; n++) {
     eMin[n] = mmf.getSample(e2[n]);
     eCnt[n] = 0.5 * (eMax[n]+eMin[n]);
@@ -480,6 +481,9 @@ void envelopeFollower()
     slwLmtr.setLimits( (eMax[n]-eMin[n]) / filterLength );
     eSmth[n] = slwLmtr.getSample(eCnt[n]);
   }
+
+  // maybe apply another Bessel filter to the minmax-smoothed output
+  // give the dynamics processors a smoothing parameter (in ms)
 
   // actually, i seems not necessarry to apply the moving-max to the env-follower output - we
   // could apply it directly to the (rectified) signal - let's try it:
@@ -509,8 +513,9 @@ void envelopeFollower()
 
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
+  //plt.addDataArrays(N, &y[0]);   // lowpassed for reducing gibbs gurgle
   plt.addDataArrays(N, &e[0]);
-  //plt.addDataArrays(N, &e2[0]);
+  plt.addDataArrays(N, &e2[0]);
   //plt.addDataArrays(N, &eMax[0]);
   //plt.addDataArrays(N, &eMin[0]);
   //plt.addDataArrays(N, &eCnt[0]);

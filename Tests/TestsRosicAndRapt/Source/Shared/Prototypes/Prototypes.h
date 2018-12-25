@@ -221,12 +221,15 @@ public:
 
 protected:
 
+  /** Wraparound */
   inline size_t wrap(size_t i) const { return i & mask; } 
 
   std::vector<T> data;
   size_t mask;
 
 };
+// maybe this class should be named rsRingBuffer or rsCircularBuffer or rsRingBufferBase and the 
+// class below should be named rsDelayLine
 
 //-------------------------------------------------------------------------------------------------
 
@@ -292,7 +295,7 @@ protected:
   // maybe uncomment if needed - it's not typically used
 
   size_t rightIndex = 0, leftIndex = 0; // rename back to writeIndex, readIndex
-  size_t length = 0; // rename to capacity ..or use data.size()
+  size_t length = 0; // rename to capacity ..or use data.size() - nope it's the current length
   // maybe name them generally rightEnd, leftEnd or something ... rgt, lft. L,R - then we may
   // also make rsDoubleEndedQueue a subclass and inherit the data and wrap function
 };
@@ -443,6 +446,12 @@ size_t searchFromFront...this may become relevant for optimizing the moving maxi
 
 //-------------------------------------------------------------------------------------------------
 
+/** Implements a realtime moving maximum filter, that is: a filter that looks at audio samples
+x[n], x[n-1],..., x[n-k] and extracts the maximum value in this range of samples. The algorithm is 
+based on a double ended queue and has an amortized complexity of O(1) per sample (a naive 
+implementation would have complexity O(k) per sample). For an explanation of the algorithm, 
+see: https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm  */
+
 template<class T>
 class rsMovingMaximumFilter
 {
@@ -454,11 +463,14 @@ public:
   /** Sets up the length of the filter, i.e. the number of samples within which a maximum is 
   searched. */
   void setLength(size_t newLength) { delayLine.setLength(newLength); }
+  // todo: we may have to update the content of the maxDeque - when this is called during running 
+  // the filter and new length is shorter than the old, some values that are currently in the deque
+  // will never be removed - so we should remove them in the moment, when the length changes
 
   /** Sets the "greater-than" comparison function. Note that you can actually also pass a function
   that implements a less-than comparison in which case the whole filter turns into a moving-minimum
   filter. */
-  void setComparisonFunction(bool (*greaterThan)(const T&, const T&))
+  void setGreaterThanFunction(bool (*greaterThan)(const T&, const T&))
   {
     greater = greaterThan;
   }
@@ -474,9 +486,7 @@ public:
 
   /** \name Processing */
 
-  /** Computes and returns an output sample using an algorithm based on a double ended queue. This
-  algorithm has an amortized complexity of O(1) per sample. For an explanation of the algorithm, 
-  see: https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm  */
+  /** Computes and returns an output sample.  */
   inline T getSample(T in)
   {
     // accept new incoming sample - this corresponds to 
@@ -487,9 +497,10 @@ public:
     // maybe we could further reduce the worst case processing cost by using binary search to 
     // adjust the new tail-pointer instead of linearly popping elements one by one? search
     // between tail and head for the first element that is >= in (or not < in) - but maybe that 
-    // would destroy the amortized O(1) cost?
+    // would destroy the amortized O(1) cost? ...but actually, i don't think so
     // maybe using a "greater" function instead of a > operator is not such a good idea, 
-    // performance-wise
+    // performance-wise - we should do performance tests and maybe for production code, provide
+    // a version of getSample that just uses >
 
     // update delayline (forget oldest sample and remember current sample for later), this 
     // corresponds to Nayuki's Step 3 - "increment the array range’s left endpoint":
@@ -505,7 +516,7 @@ public:
   }
 
   /** Computes an output sample using a naive algorithm that scans the whole ringbuffer for its 
-  maximum value. The algorithm has a per sample complexity O(L) where L is the length of the 
+  maximum value. The algorithm has a per sample complexity O(k) where k is the length of the 
   filter. The implementation is mainly for testing purposes and should probably not be used in 
   production code. */
   inline T getSampleNaive(T in)
@@ -525,21 +536,70 @@ public:
 protected:
 
   rsRingBuffer<T> delayLine;
-  rsDoubleEndedQueue<T> maxDeque; // maybe have also a minDeque (maybe in subclass)
+  rsDoubleEndedQueue<T> maxDeque;
 
   bool (*greater)(const T&, const T&) = &rsGreater;
   //std::function<bool(const T&, const T&)> greater; // = &rsGreater;
 
 };
 
-// generalize to allow for movingMinimum or movingWhatever filter - it should take a comparison
-// function as parameter, i.e. a function that takes two T-values as input and returns a bool 
-// where the default is 
-// bool greater(a, b) { return a > b; }  // or maybe greaterOrEqual?
 // maybe call it rsMovingSelector, movingExtremum ...and even more general concept would be a 
 // moving aggregator which could also be something like a moving median (or r-th quantile)
 //
 // https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
+
+/** A variant of the rsMovingMaximumFilter that also extracts the minimum. It's slightly more 
+economic to extract min and max with a single filter object rather than using separate filters for
+min and max (specifically, the delayline can be shared by both filters). */
+
+template<class T>
+class rsMovingMinMaxFilter : public rsMovingMaximumFilter<T>
+{
+
+public:
+
+
+  void setLessThanFunction(bool (*lessThan)(const T&, const T&)) { less = lessThan; }
+
+
+  inline T getMinMax(T in, T* minVal, T* maxVal)
+  {
+    // update deque tails:
+    while(!maxDeque.isEmpty() && greater(in, maxDeque.readTail()) )
+      maxDeque.popBack();
+    maxDeque.pushBack(in);
+    while(!minDeque.isEmpty() && less(   in, minDeque.readTail()) )
+      minDeque.popBack();
+    minDeque.pushBack(in);
+
+    // update delayline and init outputs:
+    T oldest = delayLine.getSample(in);
+    *maxVal = *minVal = in;
+
+    // update deque heads:
+    if(!maxDeque.isEmpty()) {
+      *maxVal = maxDeque.readHead();
+      if(*maxVal == oldest)
+        maxDeque.popFront(); }
+    if(!minDeque.isEmpty()) {
+      *minVal = minDeque.readHead();
+      if(*minVal == oldest)
+        minDeque.popFront(); }
+  }
+  // hmm...maybe that shouldn't be inlined...we'll see
+
+  void reset()
+  {
+    rsMovingMaximumFilter::reset();
+    minDeque.clear();
+  }
+
+protected:
+
+  rsDoubleEndedQueue<T> minDeque;
+  bool (*less)(const T&, const T&) = &rsLess;
+
+};
 
 //-------------------------------------------------------------------------------------------------
 
@@ -586,6 +646,44 @@ protected:
 
   T upwardLimit, downwardLimit;  
   T y1;                          // previous output sample
+
+};
+
+//-------------------------------------------------------------------------------------------------
+
+/** A class for applying a special kind of nonlinear smoothing algorithm....
+
+
+...good for post-processing the raw output of an envelope follower to make it smoother.  */
+
+template<class T>
+class rsMinMaxSmoother
+{
+
+public:
+
+  /** Sets the smoothing length in samples. */
+  void setLength(size_t newLength) { minMaxFilter.setLength(newLength); }
+
+  T getSample(T in)
+  {
+    T minVal, maxVal;
+    minMaxFilter.getMinMax(in, &minVal, &maxVal);
+    slewLimiter.setLimits((maxVal-minVal) / minMaxFilter.getLength()); // optimize away division
+    return slewLimiter.getSample( (1-mix)*minVal + mix*maxVal );
+  }
+
+  void reset()
+  {
+    minMaxFilter.reset();
+    slewLimiter.reset();
+  }
+
+protected:
+
+  T mix = 0.5; // mixing between minimum an maximum output, 0: min only, 1: max only
+  rsMovingMinMaxFilter<T> minMaxFilter;
+  rsSlewRateLimiterLinear<T> slewLimiter;
 
 };
 
