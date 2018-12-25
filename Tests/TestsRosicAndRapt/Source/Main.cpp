@@ -60,6 +60,7 @@ int main(int argc, char* argv[])
   //expGaussBell();
   //interpolatingFunction();
   //linearRegression();
+  //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();
   //sinCosTable();
@@ -76,7 +77,7 @@ int main(int argc, char* argv[])
   //nonUniformMovingAverage();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
-  //prototypeDesign();  // old implementation - tddo: check gains of prototype filters
+  //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
 
   // Physics:

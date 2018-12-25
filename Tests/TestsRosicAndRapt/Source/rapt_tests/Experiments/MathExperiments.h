@@ -6,6 +6,7 @@
 void ellipseLineIntersections();
 void interpolatingFunction();
 void linearRegression();
+void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();
 void sinCosTable();

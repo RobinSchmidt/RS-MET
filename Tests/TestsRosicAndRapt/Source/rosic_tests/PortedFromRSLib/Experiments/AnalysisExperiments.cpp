@@ -497,8 +497,8 @@ void envelopeFollower()
   // the detected envelope looks delayed compared to the original one - we fix this by 
   // time-shifting - of course, this is possible only in non realtime scenarios:
   int shiftAmount = 3*filterLength/2; // factor 3/2 ad hoc
-  RAPT::rsArray::leftShift(&eCnt[0],  N, shiftAmount); 
-  RAPT::rsArray::leftShift(&eSmth[0], N, shiftAmount); 
+  //RAPT::rsArray::leftShift(&eCnt[0],  N, shiftAmount); 
+  //RAPT::rsArray::leftShift(&eSmth[0], N, shiftAmount); 
 
 
   rosic::InstantaneousEnvelopeDetector ied;

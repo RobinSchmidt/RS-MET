@@ -153,6 +153,48 @@ void linearRegression()
 }
 
 
+/*
+Idea: we model the signal x(t) by a polynomial such that:
+x(t) = a0 + a1*t + a2*t^2 + a3*t^3 + ... + aN*t^N
+and we have signal values x(0), x(-1), x(-2), x(-3),... available. We want to find the 
+polynomial coeffs and then evaluate x(1) to predict/extrapolate the signal value at t=1 
+(conveniently, at t=1, the evaluation of the polynomial boils down to a sum over the coeffs)
+We get a linear system of equations:
+x( 0) = a0
+x(-1) = a0 -   a1 +    a2 -    a3 +     a4 -      a5 + ...
+x -2) = a0 - 2*a1 +  4*a2 -  8*a3 +  16*a4 -   32*a5 + ... 
+x(-3) = a0 - 3*a1 +  9*a2 - 27*a3 +  81*a4 -  243*a5 + ...
+x(-4) = a0 - 4*a1 + 16*a2 - 64*a3 + 256*a4 - 1024*a5 + ...
+...
+hmm...the matrix entries grow exponentially - that's probably not good for numerical 
+conditioning - maybe the prediction can be made without explictly solving the system by 
+somehow constructing the Netwon polynomial?....figure that out
+
+but maybe a rational function is better than a polynomial?
+        a0 + a1*t + a2*t^2 + a3*t^3 + ... + aN*t^N
+x(t) = --------------------------------------------
+        b0 + b1*t + b2*t^2 + b3*t^3 + ... + bM*t^M
+this also leads to a linear system of equations:
+x( 0) *  b0                             = a0
+x(-1) * (b0 -   b1 +   b2 -   b3 + ...) = a0 -   a1 +    a2 -    a3 + ...
+x(-2) * (b0 - 2*b1 + 4*b2 - 8*b3 + ...) = a0 - 2*a1 +  4*a2 -  8*a3 + ...
+...
+the advantage of the rational function might be that it doesn't necessarily grow so much, in 
+fact, if N==M, it approaches aN/bM as t -> inf and if M > N, it approaches zero
+maybe try a biquadratic -> 6 coeffs a0,a1,a2,b0,b1,b2 but actually we have only 5 degrees of 
+freedom due to being able to normalize the polynomials (make them monic and drag a "gain" 
+factor before the fraction or something) so we would use 5 samples
+*/
+
+void polynomialPrediction()
+{
+
+}
+
+double biquadraticPrediction(double x0, double x1, double x2, double x3, double x4)
+{
+
+}
 
 
 // maybe move to RAPT into the Statistics section
