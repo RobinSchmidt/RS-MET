@@ -18,6 +18,7 @@ void twoParamRemap();
 bool groupString();
 void primeAlternatingSums();
 void divisibility();
+void arithmeticDerivative();
 
 
 

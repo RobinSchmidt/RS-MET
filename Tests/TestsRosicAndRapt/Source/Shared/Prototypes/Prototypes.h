@@ -680,7 +680,7 @@ public:
     updateSlewRateLimitingFactor();
   }
 
-  void setMinMaxMin(T newMix)
+  void setMinMaxMix(T newMix)
   {
     mix = newMix;
   }

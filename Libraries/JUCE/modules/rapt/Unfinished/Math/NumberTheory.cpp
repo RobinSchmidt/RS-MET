@@ -134,7 +134,11 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
   bool tableIsTemporary = (primeTable == nullptr);
   if( tableIsTemporary ) {
     primeTable = new std::vector<T>;
-    rsFindPrimesUpTo(*primeTable, limit);
+
+    //rsFindPrimesUpTo(*primeTable, limit);
+    rsFindPrimesUpTo(*primeTable, x); 
+    // this function takes the rsIntSqrt itself internally and we dont want sqrt(sqrt(x))...
+    // take a closer look, make unit test
   }
 
   T i  = 0;

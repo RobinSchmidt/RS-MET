@@ -905,3 +905,46 @@ void divisibility()
   // todo: mark highly composite numbers with a big mark and largely composite numbers with a 
   // smaller mark
 }
+
+
+// computes the "arithmetic derivative" of given natural number (todo: generalize to integers and
+// rationals)
+rsUint32 numDeriv(rsUint32 n)  // number derivative
+{
+  if(n == 0 || n == 1)
+    return 0;
+
+  std::vector<rsUint32> p, e; // prime factors and exponents
+  RAPT::rsPrimeFactors(n, p, e);
+
+  double s = 0; // sum of fractions - use a rational number class later
+  for(int i = 0; i < p.size(); i++)
+    s += (double)e[i] / (double)p[i];
+
+  double ns = n*s;
+  rsUint32 d = (rsUint32) round(ns); // the derivative
+
+  return d;
+}
+void arithmeticDerivative()
+{
+  int N = 100;
+  std::vector<rsUint32> x(N), d(N); // numbers and their derivatives
+  for(int i = 0; i < N; i++) {
+    x[i] = i;
+    d[i] = numDeriv(i);
+  }
+  int dummy = 0;
+}
+/*
+https://oeis.org/A003415/list
+[0,0,1,1,4,1,5,1,12,6,7,1,16,1,9,8,32,1,21,1,24,
+10,13,1,44,10,15,27,32,1,31,1,80,14,19,12,60,1,21,
+16,68,1,41,1,48,39,25,1,112,14,45,20,56,1,81,16,
+92,22,31,1,92,1,33,51,192,18,61,1,72,26,59,1,156,
+1,39,55,80,18,71]
+*/
+// https://en.wikipedia.org/wiki/Arithmetic_derivative
+// https://web.archive.org/web/20050426071741/http://web.mit.edu/lwest/www/intmain.pdf
+// http://oeis.org/wiki/Arithmetic_derivative
+

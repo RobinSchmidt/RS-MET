@@ -452,84 +452,47 @@ void envelopeFollower()
     e2[n] = pow(tmp, 1/p);
   }
 
-  // apply moving minimum/maximum filter, compute also their average as moving-center:
+  // apply the min/max smoother:
   size_t maxLength = (size_t) (4.0 * fs/f);
   int smoothingLength = (int) ceil(fs/f);          // one cycle
-  rsMovingMaximumFilter<double> mmf(maxLength); 
-  mmf.setLength(smoothingLength);
-  std::vector<double> eMax(N), eMin(N), eCnt(N); // min/max/center=(min+max)/2
-
-  for(n = 0; n < N; n++) 
-    eMax[n] = mmf.getSample(e2[n]);
-  mmf.reset();
-  mmf.setGreaterThanFunction(&rsLess);
-  for(n = 0; n < N; n++) {
-    eMin[n] = mmf.getSample(e2[n]);
-    eCnt[n] = 0.5 * (eMax[n]+eMin[n]);
-  }
-  // half a cycle is not enough for the moving-max filter length because a rectified saw becomes a 
-  // triangle of half the original frequency
-
-
-  // maybe ise a linear slewrate limiter after the moving-max to smooth out the steps - maybe that
-  // should be adaptive in such a way that it may go from min to max in one filter-length - i.e.
-  // use detected min/max values to adjust the maximum slew rate - maybe that should be applied to 
-  // the max-filter output
-  ::rsSlewRateLimiterLinear<double> slwLmtr;
-  std::vector<double> eSmth(N);
-  for(n = 0; n < N; n++) {
-    slwLmtr.setLimits( (eMax[n]-eMin[n]) / smoothingLength );
-    eSmth[n] = slwLmtr.getSample(eCnt[n]);
-  }
-
-  // create the min/max smoothed signal again, this time using the rsMinMaxFilter class (should give
-  // the same result):
   rsMinMaxSmoother<double> minMaxSmoother(maxLength);
   minMaxSmoother.setLength(smoothingLength);
-  std::vector<double> eSmth2(N);
+  minMaxSmoother.setSlewRateLimiting(1.0);
+  minMaxSmoother.setMinMaxMix(0.5);
+  std::vector<double> eSmth(N);
   for(n = 0; n < N; n++) 
-    eSmth2[n] = minMaxSmoother.getSample(e2[n]);
-  // yes - works - is the same indeed. maybe delete code where we do all this stuff manually here
+    eSmth[n] = minMaxSmoother.getSample(e2[n]);
 
-
-  // maybe apply another Bessel filter to the minmax-smoothed output
+  // maybe apply another Bessel filter to the minmax-smoothed output to get rid of the jaggies
   // give the dynamics processors a smoothing parameter (in ms)
+  std::vector<double> eSmth2(N);
+  lpf.setFrequency(f/2);
+  lpf.setApproximationMethod(rosic::rsPrototypeDesignerD::BESSEL);
+  lpf.setOrder(6);
+  lpf.reset();
+  for(n = 0; n < N; n++)
+    eSmth2[n] = lpf.getSample(eSmth[n]);
 
-  // actually, i seems not necessarry to apply the moving-max to the env-follower output - we
-  // could apply it directly to the (rectified) signal - let's try it:
-  //mmf.setComparisonFunction(&rsGreater);
-  //mmf.reset();
-  //for(n = 0; n < N; n++) 
-  //  eMax[n] = mmf.getSample(fabs(y[n]));
-  //mmf.reset();
-  //for(n = 0; n < N; n++) {
-  //  eMin[n] = -mmf.getSample(-fabs(x[n]));
-  //  eCnt[n] = 0.5 * (eMax[n]+eMin[n]);
-  //}
-  // no - the other one was better
 
   // the detected envelope looks delayed compared to the original one - we fix this by 
   // time-shifting - of course, this is possible only in non realtime scenarios:
   int shiftAmount = 3*smoothingLength/2; // factor 3/2 ad hoc
-  //RAPT::rsArray::leftShift(&eCnt[0],  N, shiftAmount); 
-  //RAPT::rsArray::leftShift(&eSmth[0], N, shiftAmount); 
+  RAPT::rsArray::leftShift(&eSmth[0],  N, shiftAmount); 
+  RAPT::rsArray::leftShift(&eSmth2[0], N, shiftAmount+5); 
 
 
-  rosic::InstantaneousEnvelopeDetector ied;
-  std::vector<double> e4(N);
-  for(n = 0; n < N; n++)
-    e4[n] = ied.getInstantaneousEnvelope(y[n]);
+  //rosic::InstantaneousEnvelopeDetector ied;
+  //std::vector<double> e4(N);
+  //for(n = 0; n < N; n++)
+  //  e4[n] = ied.getInstantaneousEnvelope(y[n]);
 
 
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
   //plt.addDataArrays(N, &y[0]);   // lowpassed for reducing gibbs gurgle
   plt.addDataArrays(N, &e[0]);
-  plt.addDataArrays(N, &e2[0]);
-  //plt.addDataArrays(N, &eMax[0]);
-  //plt.addDataArrays(N, &eMin[0]);
-  //plt.addDataArrays(N, &eCnt[0]);
-  plt.addDataArrays(N, &eSmth[0]);
+  //plt.addDataArrays(N, &e2[0]);
+  //plt.addDataArrays(N, &eSmth[0]);
   plt.addDataArrays(N, &eSmth2[0]);
   plt.setPixelSize(1200, 400);
   plt.plot();
