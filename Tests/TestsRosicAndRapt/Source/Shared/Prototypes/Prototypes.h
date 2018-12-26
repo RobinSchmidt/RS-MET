@@ -657,8 +657,11 @@ then applying a linear slew rate limiter to the result where the limit on the sl
 adaptively updated according to the current values of min and max such that that it could gor from 
 min to max in the same given number of samples (or some fraction or multiple thereof).
 
-
-...good for post-processing the raw output of an envelope follower to make it smoother.  */
+It is good for post-processing the raw output of an envelope follower to make it smoother. The raw
+envelope follower output will typically show parasitic oscillations with the signal's frequency. 
+Setting up a smopther with a length equal to the cycle-length of the (enveloped) input wave will
+give optimal smoothing for the signal - in an ideal situation, the oscillations in the detected 
+envelope will be completely flattened out. */
 
 template<class T>
 class rsMinMaxSmoother
@@ -705,7 +708,10 @@ public:
   {
     T minVal, maxVal;
     minMaxFilter.getMinMax(in, &minVal, &maxVal);
-    slewLimiter.setLimits((maxVal-minVal) * limitingFactor);
+    if(limitingFactor == RS_INF(T))
+      slewLimiter.setLimits(limitingFactor); // avoids 0 * inf = NaN in case maxVal == minVal
+    else
+      slewLimiter.setLimits((maxVal-minVal) * limitingFactor);
     return slewLimiter.getSample( (1-mix)*minVal + mix*maxVal );
   }
 

@@ -492,7 +492,7 @@ void envelopeFollower()
   //plt.addDataArrays(N, &y[0]);   // lowpassed for reducing gibbs gurgle
   plt.addDataArrays(N, &e[0]);
   //plt.addDataArrays(N, &e2[0]);
-  //plt.addDataArrays(N, &eSmth[0]);
+  plt.addDataArrays(N, &eSmth[0]);
   plt.addDataArrays(N, &eSmth2[0]);
   plt.setPixelSize(1200, 400);
   plt.plot();
