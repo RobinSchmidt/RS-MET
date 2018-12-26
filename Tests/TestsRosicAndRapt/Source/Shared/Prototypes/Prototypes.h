@@ -651,7 +651,11 @@ protected:
 
 //-------------------------------------------------------------------------------------------------
 
-/** A class for applying a special kind of nonlinear smoothing algorithm....
+/** A class for applying a special kind of nonlinear smoothing algorithm. It is based on min/max
+filtering over a certain number of samples and taking an adjustable linear combination of both and 
+then applying a linear slew rate limiter to the result where the limit on the slew rate is 
+adaptively updated according to the current values of min and max such that that it could gor from 
+min to max in the same given number of samples (or some fraction or multiple thereof).
 
 
 ...good for post-processing the raw output of an envelope follower to make it smoother.  */
@@ -674,12 +678,20 @@ public:
     updateSlewRateLimitingFactor();
   }
 
+  /** Adjusts the scaling factor for the slew-rate. With a factor of one, the slew rate is set up
+  such that a transition between the currently measured min and max can occur in between L samples
+  where L is the length of the min-max filter. An amount of zero turn slew rate limitig off and 
+  amounts higher than one make the whole thing sluggish and are probably not useful. */
   void setSlewRateLimiting(T newAmount)
   {
     slewLimitingAmount = newAmount;
     updateSlewRateLimitingFactor();
   }
 
+  /** Sets the mix between min and max which is used as output signal (before it goes into the 
+  adaptive, linear slew rate limiter) where 0 corresponds to min only, 1 corresponds to max only 
+  and 0.5 to the arithmetic mean between min and max (todo: maybe a generalized mean could be 
+  useful?). */
   void setMinMaxMix(T newMix)
   {
     mix = newMix;
@@ -688,6 +700,7 @@ public:
 
   /** \name Processing */
 
+  /** Processes one sample at a time. */
   T getSample(T in)
   {
     T minVal, maxVal;
@@ -696,6 +709,7 @@ public:
     return slewLimiter.getSample( (1-mix)*minVal + mix*maxVal );
   }
 
+  /** Resets the filter to its initial state. */
   void reset()
   {
     minMaxFilter.reset();

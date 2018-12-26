@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
   //groupString();
   //primeAlternatingSums();
   //divisibility();
-  arithmeticDerivative();
+  //arithmeticDerivative();
 
   // third party code:
   //sampleTailExtenderTest();
