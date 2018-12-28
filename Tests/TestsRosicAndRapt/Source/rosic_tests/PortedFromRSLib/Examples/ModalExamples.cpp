@@ -470,19 +470,48 @@ void rsModalParameterGenerator<T>::getPhases(std::vector<T>& p, const std::vecto
 }
 
 template<class T>
+T rsModalParameterGenerator<T>::modeDecayTime(T f, T fc, T p)
+{
+  if(p == 0.0) 
+    return 1.0;
+  T k = pow(fc, -p);
+  if(k == 1.0)
+    return 1.0;
+  return (1-k) / ((1-k*2) + pow(f/fc, p));
+}
+
+
+
+template<class T>
 void rsModalParameterGenerator<T>::getAmplitudes(std::vector<T>& a, const std::vector<T>& freqs)
 {
   a.resize(freqs.size());
   for(size_t i = 0; i < a.size(); i++) {
     T f   = freqs[i];
-    a[i]  = amplitude;
-    a[i] *= modeDecayTime(f, ampCutoff, ampSlope);  // rename this function
+    a[i]  = amplitude * pow(f, -ampSlope1);
+    a[i] *= modeDecayTime(f, ampCutoff, ampSlope2);  // rename this function
     if(RAPT::rsIsEven(i+1))
       a[i] *= evenAmpScale;
   }
 
   //p.g = applyCombWeighting(p.g, p.f, 7);
   // todo: incorporate ampCombHarmonic, ampCombAmount
+}
+
+template<class T>
+void rsModalParameterGenerator<T>::getDecayTimes(std::vector<T>& d, const std::vector<T>& freqs)
+{
+  d.resize(freqs.size());
+  for(size_t i = 0; i < d.size(); i++) 
+  {
+    T f = freqs[i];
+    d[i]  = pow(f, -decaySlope1);
+    d[i] *= modeDecayTime(f, decayCutoff, decaySlope2);
+    if(RAPT::rsIsEven(i+1))
+      d[i] *= evenDecayScale;
+
+    // apply decayCombHarmonic, decayCombAmount
+  }
 }
 
 template<class T>
@@ -508,29 +537,6 @@ void rsModalParameterGenerator<T>::getAttackTimes(std::vector<T>& a,
   }
 }
 
-template<class T>
-T rsModalParameterGenerator<T>::modeDecayTime(T f, T fc, T p)
-{
-  T k = pow(fc, -p);
-  return (1-k) / ((1-k*2) + pow(f/fc, p));
-}
-
-template<class T>
-void rsModalParameterGenerator<T>::getDecayTimes(std::vector<T>& d, const std::vector<T>& freqs)
-{
-  d.resize(freqs.size());
-  for(size_t i = 0; i < d.size(); i++) 
-  {
-    T f = freqs[i];
-    d[i] = modeDecayTime(f, decayCutoff, decaySlope);
-    if(RAPT::rsIsEven(i+1))
-      d[i] *= evenDecayScale;
-
-    // apply decayCombHarmonic, decayCombAmount
-  }
-}
-
-
 void createPiano1()
 {
   // Trying to create a piano like sound, features:
@@ -547,9 +553,10 @@ void createPiano1()
 
   // amplitude:
   mpg.setAmplitude(1.0);
-  mpg.setAmpCutoff(1.0);
-  mpg.setAmpSlope(0.8);
-  mpg.setEvenAmpScale(1.3);
+  mpg.setAmpSlope1(1.0);
+  mpg.setAmpCutoff(2.0);
+  mpg.setAmpSlope2(0.0);
+  mpg.setEvenAmpScale(1.0);
   //mpg.setAmpCombHarmonic(7.0);
   //mpg.setAmpCombAmount(1.0);
 
@@ -559,8 +566,9 @@ void createPiano1()
 
   // decay;
   mpg.setDecay(0.5);
-  mpg.setDecayCutoff(1.0);
-  mpg.setDecaySlope(0.5);
+  mpg.setDecaySlope1(0.5);
+  mpg.setDecayCutoff(2.0);
+  mpg.setDecaySlope2(0.0);
   mpg.setEvenDecayScale(0.5);
   //mpg.setDecayCombHarmonic(7.0);
   //mpg.setDecayCombAmount(0.5);

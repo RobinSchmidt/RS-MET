@@ -51,9 +51,11 @@ public:
 
   void setAmplitude(T newAmplitude) { amplitude = newAmplitude; }
 
+  void setAmpSlope1(T newSlope) { ampSlope1 = newSlope; }
+
   void setAmpCutoff(T newCutoff) { ampCutoff = newCutoff; }
 
-  void setAmpSlope(T newSlope) { ampSlope = newSlope; }
+  void setAmpSlope2(T newSlope) { ampSlope2 = newSlope; }
 
   void setEvenAmpScale(T newScale) { evenAmpScale = newScale; }
 
@@ -79,9 +81,11 @@ public:
 
   void setDecay(T newDecay) { decayTime = newDecay; }
 
+  void setDecaySlope1(T newSlope) { decaySlope1 = newSlope; }
+
   void setDecayCutoff(T newCutoff) { decayCutoff = newCutoff; }
 
-  void setDecaySlope(T newSlope) { decaySlope = newSlope; }
+  void setDecaySlope2(T newSlope) { decaySlope2 = newSlope; }
 
   void setEvenDecayScale(T newScale) { evenDecayScale = newScale; }
 
@@ -143,8 +147,9 @@ protected:
 
   // amplitude related:
   T amplitude       = 1.0;
-  T ampCutoff       = 1;      // as harmonic number
-  T ampSlope        = 0.0;    // in dB/oct..or maybe as direct exponent/power
+  T ampSlope1       = 1.0;
+  T ampCutoff       = 2.0;    // as harmonic number, must be > 1
+  T ampSlope2       = 0.0;    // additional slope above cutoff as direct exponent/power
   T evenAmpScale    = 1.0;    // amplitude scaler for even harmonics
   T ampCombHarmonic = 7.0;    // harmonic number of 1st notch
   T ampCombAmount   = 0.0;
@@ -156,8 +161,9 @@ protected:
 
   // envelope related:
   T decayTime         = 1.0;
-  T decayCutoff       = 1.0;
-  T decaySlope        = 0.0;
+  T decaySlope1       = 1.0;
+  T decayCutoff       = 2.0;
+  T decaySlope2       = 0.0;
   T evenDecayScale    = 1.0;    // decay-time scaler for even harmonics
   T decayCombHarmonic = 7.0;
   T decayCombAmount   = 0.0;
