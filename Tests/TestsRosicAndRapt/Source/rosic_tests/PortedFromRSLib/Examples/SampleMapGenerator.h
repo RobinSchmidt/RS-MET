@@ -66,25 +66,26 @@ struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (dou
 
 };
 
-struct rsModalBankParameters // maybe move to RSLib
+
+template<class T>
+struct rsModalBankParameters // maybe move to RAPT, together with rsModalParameterGenerator
 {
-  //int numModes;        // number of modes
+  //int numModes;    // number of modes
 
-  double frequency;    // reference frequency in Hz - deprecate - shall be determined by the key
+  T frequency;       // reference frequency in Hz - deprecate - shall be determined by the key
+  T gain;            // overall gain factor
+  T attack;          // attack time in seconds
+  T decay;           // decay time in seconds
 
-  double gain;         // overall gain factor
-  double attack;       // attack time in seconds
-  double decay;        // decay time in seconds
-
-  std::vector<double> f;       // relative frequencies   // maybe use rsArray instead of rsVector
-  std::vector<double> g;       // gains
-  std::vector<double> a;       // relative attack times
-  std::vector<double> d;       // relative decay times
-  std::vector<double> p;       // start-phases
+  std::vector<T> f;  // relative frequencies
+  std::vector<T> g;  // gains
+  std::vector<T> a;  // relative attack times
+  std::vector<T> d;  // relative decay times
+  std::vector<T> p;  // start-phases
 };
 
-
-
+template struct rsModalBankParameters<double>;
+typedef rsModalBankParameters<double> rsModalBankParametersD;
 
 
 
@@ -223,7 +224,7 @@ public:
 
   /** \name Setup */
 
-  void setModalParametersForKey(int key, const rsModalBankParameters& newParameters);
+  void setModalParametersForKey(int key, const rsModalBankParametersD& newParameters);
 
   /** Sets the level at which the rendering will be cut off. A reasonable level is -80 dB which is
   the default value. It's been made user-adjustable mainly to have a means to create shorter
@@ -241,17 +242,17 @@ protected:
 
   /** Interpolates between two sets of modal parameters given in p1, p2 according to the given
   proportion (which should be a number between 0...1. */
-  rsModalBankParameters interpolateParameters(const rsModalBankParameters &p1,
-    const rsModalBankParameters &p2, double proportion);
+  rsModalBankParametersD interpolateParameters(const rsModalBankParametersD &p1,
+    const rsModalBankParametersD &p2, double proportion);
 
   /** Returns a truncated parameter set which contains only those modes which are below the
   given cutoff frequency. */
-  rsModalBankParameters removeModesAbove(const rsModalBankParameters &p, double cutoff);
+  rsModalBankParametersD removeModesAbove(const rsModalBankParametersD &p, double cutoff);
 
 
   /** \name Data */
 
-  rsModalBankParameters *keyParameters[128];
+  rsModalBankParametersD *keyParameters[128];
     // parameters to be used for a particular key - we use a pointer array to have the option not
     // have specified parameters for each key but only a few of them (for example, for one key in
     // each octave) - whenever the pointer is NULL, an interpolation of the parameters between the

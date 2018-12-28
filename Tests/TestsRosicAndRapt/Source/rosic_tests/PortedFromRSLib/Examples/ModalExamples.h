@@ -25,8 +25,8 @@ class rsModalParameterGenerator
 
 public:
 
-  rsModalBankParameters getModalParameters();
-    // rsModalBankParameters should be templatized, too
+  rsModalBankParameters<T> getModalParameters();
+
 
 
   // data:

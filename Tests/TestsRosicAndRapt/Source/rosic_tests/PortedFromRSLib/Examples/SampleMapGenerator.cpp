@@ -353,16 +353,16 @@ SampleMapGeneratorModal::~SampleMapGeneratorModal()
 
 
 void SampleMapGeneratorModal::setModalParametersForKey(int key,
-  const rsModalBankParameters& newParameters)
+  const rsModalBankParametersD& newParameters)
 {
   delete keyParameters[key];
-  keyParameters[key] = new rsModalBankParameters(newParameters);
+  keyParameters[key] = new rsModalBankParametersD(newParameters);
 }
 
 
 void SampleMapGeneratorModal::writeUnnormalizedSampleForKeyToBuffer(int key)
 {
-  rsModalBankParameters p;
+  rsModalBankParametersD p;
 
   if( keyParameters[key] != NULL )
     p = *(keyParameters[key]);      // use parameters from array as-is
@@ -504,10 +504,10 @@ double rsWeightedGeometricMean(double y1, double y2, double w1)
 
 }
 
-rsModalBankParameters SampleMapGeneratorModal::interpolateParameters(
-  const rsModalBankParameters &p1, const rsModalBankParameters &p2, double proportion)
+rsModalBankParametersD SampleMapGeneratorModal::interpolateParameters(
+  const rsModalBankParametersD &p1, const rsModalBankParametersD &p2, double proportion)
 {
-  rsModalBankParameters r = p1;  // result, assigment just to reserve memory
+  rsModalBankParametersD r = p1;  // result, assigment just to reserve memory
   double w1 = 1-proportion;      // weight for parameter set 1
 
   r.frequency = rsWeightedGeometricMean(p1.frequency, p2.frequency, w1);
@@ -520,7 +520,9 @@ rsModalBankParameters SampleMapGeneratorModal::interpolateParameters(
     r.g[i] = rsWeightedGeometricMean(p1.g[i], p2.g[i], w1);
     r.a[i] = rsWeightedGeometricMean(p1.a[i], p2.a[i], w1);
     r.d[i] = rsWeightedGeometricMean(p1.d[i], p2.d[i], w1);
-    r.p[i] = w1*p1.p[i] + (1-w1)*p2.p[i]; // weighted arithmetic mean
+
+    r.p[i] = w1*p1.p[i] + (1-w1)*p2.p[i]; 
+     // weighted arithmetic mean - todo: use wrapped-interpolation (see sine-modeling code)
   }
 
   return r;
@@ -531,10 +533,10 @@ rsVectorDbl truncateVector(const rsVectorDbl v, int numElementsToRetain)
   return rsVectorDbl(numElementsToRetain, v.v);
 }
 
-rsModalBankParameters SampleMapGeneratorModal::removeModesAbove(const rsModalBankParameters &p,
-                                                                double cutoff)
+rsModalBankParametersD SampleMapGeneratorModal::removeModesAbove(
+  const rsModalBankParametersD &p, double cutoff)
 {
-  rsModalBankParameters r = p;
+  rsModalBankParametersD r = p;
 
   int cutoffIndex = 0;
   int i;

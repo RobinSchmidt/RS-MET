@@ -278,10 +278,10 @@ rsModalBankParameters modalParametersGuitar110Hz()
 }
 */
 
-rsModalBankParameters modalParametersOrganBass55Hz()
+rsModalBankParametersD modalParametersOrganBass55Hz()
 {
   int numPartials = 400;  
-  rsModalBankParameters p;
+  rsModalBankParametersD p;
 
   p.frequency = 55.0;
   p.attack    = 0.15;
@@ -299,9 +299,9 @@ rsModalBankParameters modalParametersOrganBass55Hz()
 }
 
 
-rsModalBankParameters modalParametersPiano110Hz()
+rsModalBankParametersD modalParametersPiano110Hz()
 {
-  rsModalBankParameters p;
+  rsModalBankParametersD p;
 
   p.frequency = 110.0;
   p.attack    = 0.02;
@@ -375,7 +375,7 @@ void createModalFilterBankExamples()
 
   // it seems like the modal synth doesn't admit zero mode amplitude? check this out...
 
-  rsModalBankParameters p;
+  rsModalBankParametersD p;
 
   //p = modalParametersGuitar55Hz();
   //p = modalParametersGuitar110Hz();
@@ -411,9 +411,9 @@ void createModalFilterBankExamples()
 
 
 template<class T>
-rsModalBankParameters rsModalParameterGenerator<T>::getModalParameters()
+rsModalBankParameters<T> rsModalParameterGenerator<T>::getModalParameters()
 {
-  rsModalBankParameters mp;
+  rsModalBankParameters<T> mp;
 
   // ...
 
@@ -428,7 +428,7 @@ void createPiano1()
   // -harmonics expose comb-filter like profile
 
   rsModalParameterGenerator<double> mpg;
-  rsModalBankParameters mp = mpg.getModalParameters();
+  rsModalBankParametersD mp = mpg.getModalParameters();
 
   double sampleRate    = 44100;
 
@@ -468,7 +468,7 @@ void createBass1()
   g.setName("Bass1");
 
   int numPartials = 800; 
-  rsModalBankParameters p;
+  rsModalBankParametersD p;
   
   // A1, 55 Hz (key 33)
   p.frequency = 55.0;
@@ -522,7 +522,7 @@ void createGong1()
   g.setName("Gong1");
 
   int numPartials = 71;    // 71: number of modes for 55 Hz
-  rsModalBankParameters p;
+  rsModalBankParametersD p;
   
 
   // A1, 55 Hz (key 33)
@@ -571,7 +571,7 @@ void createPluck1()
   g.setName("Pluck1");
 
   int numPartials = 800; 
-  rsModalBankParameters p;
+  rsModalBankParametersD p;
 
   // A0, 22.5 Hz (key 21)
   p.frequency = 22.5;  // will be overwritten anyway
