@@ -83,7 +83,7 @@ public:
 
 protected:
 
-  void getFrequencies(std::vector<T>& f);
+  void getFrequencies(std::vector<T>& f); // maybe rename to getRelativeFrequencies or getFrequencyRatios
 
   void getPhases(std::vector<T>& p);
 

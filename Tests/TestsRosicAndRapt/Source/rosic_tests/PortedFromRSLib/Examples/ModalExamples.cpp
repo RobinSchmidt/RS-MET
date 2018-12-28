@@ -464,8 +464,24 @@ void rsModalParameterGenerator<T>::getPhases(std::vector<T>& p)
 }
 
 template<class T>
-void rsModalParameterGenerator<T>::getAmplitudes(std::vector<T>& a, const std::vector<T>& f)
+void rsModalParameterGenerator<T>::getAmplitudes(std::vector<T>& a, const std::vector<T>& freqs)
 {
+  a.resize(freqs.size());
+
+  T p = -1; // general rolloff of high frequencies - let user define this in dB/oct
+
+  for(size_t i = 0; i < a.size(); i++) {
+    T f   = freqs[i];
+    a[i]  = amplitude;
+    a[i] *= pow(f, p);
+    //a[i] *= pow(1/f, ampSlope);
+    //a[i] *= 1 / (1 + pow(f/lowpassCutoff, lowpassSlope) ); // rolloff above cutoff
+
+    if(RAPT::rsIsEven(i+1))
+      a[i] *= evenAmpScale;
+  }
+
+  //p.g = applyCombWeighting(p.g, p.f, 7);
   // amplitude, lowpassSlope, lowpassCutoff, evenAmpScal, ampCombHarmonic, ampCombAmount
 }
 
