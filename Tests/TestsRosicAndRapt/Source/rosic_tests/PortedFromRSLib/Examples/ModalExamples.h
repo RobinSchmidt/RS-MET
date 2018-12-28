@@ -81,6 +81,18 @@ public:
 
 
 
+  /** \name Static function */
+
+
+  /** Gives the relative mode decay time for mode with relative frequency f given a (relative)
+  cutoff frequency fc and an ultimate slope of the decay-time function (with respect to f)
+  determined by the exponent p
+  d(f) = a / (b + (f/fc)^p) where a and b are adjusted such that d(f=1)=1 and d(f=fc)=1/2
+  fc must be > 1 */
+  static T modeDecayTime(T f, T fc, T p);
+  // rename and use also for amplitude
+
+
 protected:
 
   void getFrequencies(std::vector<T>& f); 
@@ -91,9 +103,15 @@ protected:
 
   void getAmplitudes(std::vector<T>& a, const std::vector<T>& f);
 
-  void getAttackTimes(std::vector<T>& a, const std::vector<T>& f);
 
   void getDecayTimes(std::vector<T>& d, const std::vector<T>& f);
+
+  void getAttackTimes(std::vector<T>& a, const std::vector<T>& f, const std::vector<T>& d);
+
+
+
+
+
 
 
 
@@ -111,7 +129,7 @@ protected:
 
   // amplitude related:
   T amplitude       = 1.0;
-  T lowpassSlope    = 0.0;    // in dB/oct
+  T lowpassSlope    = 0.0;    // in dB/oct..or maybe as direct exponent
   T lowpassCutoff   = 1;      // as harmonic number
   T evenAmpScale    = 1.0;    // amplitude scaler for even harmonics
   T ampCombHarmonic = 7.0;    // harmonic number of 1st notch
@@ -123,14 +141,20 @@ protected:
   T phaseRandomness    = 0;
 
   // envelope related:
-  T attackTime        = 0.1;
   T decayTime         = 1.0;
+  T decayCutoff       = 1.0;
+  T decaySlope        = 0.0;
   T evenDecayScale    = 1.0;    // decay-time scaler for even harmonics
   T decayCombHarmonic = 7.0;
   T decayCombAmount   = 0.0;
 
+  T attackTime        = 0.1;
+  T attackDecayRatioLimit = 0.99;
+
   int maxNumPartials = 1024;
   //int numPartials    = 0;
+
+
 
   std::vector<T> tmp; // for temporary values
   RAPT::rsNoiseGenerator2<T> prng;

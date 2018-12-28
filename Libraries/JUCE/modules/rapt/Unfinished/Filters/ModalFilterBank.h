@@ -526,7 +526,9 @@ public:
 
 
   /** \name Static member functions  */
-  //        useful for setting up vectors of modal parameters
+  // useful for setting up vectors of modal parameters - these should go into a class
+  // rsModalParameterGenerator
+
 
   /** Gives the relative mode decay time for mode with relative frequency f given a (relative)
   cutoff frequency fc and an ultimate slope of the decay-time function (with respect to f)

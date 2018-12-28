@@ -429,8 +429,8 @@ rsModalBankParameters<T> rsModalParameterGenerator<T>::getModalParameters()
   getFrequencies(mp.f);
   getAmplitudes( mp.g, mp.f);
   getPhases(     mp.p, mp.f);
-  getAttackTimes(mp.a, mp.f);
   getDecayTimes( mp.d, mp.f);
+  getAttackTimes(mp.a, mp.f, mp.d);
 
   return mp;
 }
@@ -492,17 +492,32 @@ void rsModalParameterGenerator<T>::getAmplitudes(std::vector<T>& a, const std::v
 }
 
 template<class T>
-void rsModalParameterGenerator<T>::getAttackTimes(std::vector<T>& a, const std::vector<T>& f)
+void rsModalParameterGenerator<T>::getAttackTimes(std::vector<T>& a, 
+  const std::vector<T>& f, const std::vector<T>& d)
 {
-  // attackTime
+  // attackTime, attackDecayRatioLimit
 }
 
 template<class T>
-void rsModalParameterGenerator<T>::getDecayTimes(std::vector<T>& d, const std::vector<T>& f)
+T rsModalParameterGenerator<T>::modeDecayTime(T f, T fc, T p)
 {
+  T k = pow(fc, -p);
+  return (1-k) / ((1-k*2) + pow(f/fc, p));
+}
 
+template<class T>
+void rsModalParameterGenerator<T>::getDecayTimes(std::vector<T>& d, const std::vector<T>& freqs)
+{
+  d.resize(freqs.size());
+  for(size_t i = 0; i < d.size(); i++) 
+  {
+    T f = freqs[i];
+    d[i] = modeDecayTime(f, decayCutoff, decaySlope);
+    if(RAPT::rsIsEven(i+1))
+      d[i] *= evenDecayScale;
 
-  // decayTime, evenDecayScale, decayCombHarmonic, decayCombAmount
+    // apply decayCombHarmonic, decayCombAmount
+  }
 }
 
 
