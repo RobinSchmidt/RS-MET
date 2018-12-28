@@ -462,7 +462,7 @@ void rsModalParameterGenerator<T>::getPhases(std::vector<T>& p, const std::vecto
 {
   p.resize(f.size());
   prng.setSeed(phaseRandomSeed);
-  prng.setOrder(phaseRandomShape);
+  //prng.setOrder(phaseRandomShape);
   prng.setRange(-PI*phaseRandomness, +PI*phaseRandomness);
   for(size_t i = 0; i < p.size(); i++) {
     p[i] = prng.getSample();
@@ -495,7 +495,23 @@ template<class T>
 void rsModalParameterGenerator<T>::getAttackTimes(std::vector<T>& a, 
   const std::vector<T>& f, const std::vector<T>& d)
 {
-  // attackTime, attackDecayRatioLimit
+  a.resize(f.size());
+
+  // attack should perhaps be a function of frequency plus some function of decay
+  // attack = a*func(freq) + b*func(decay) maybe a*freq^p + b*decay^q or maybe
+  // a*(1/freq)^p + b*decay^q
+
+  // preliminary - make them adjustable members:
+  T attackFreqCoeff  = 0.0;
+  T attackFreqPower  = 1.0;
+  T attackDecayCoeff = 0.1;
+  T attackDecayPower = 1.0;
+
+  for(size_t i = 0; i < a.size(); i++) {
+    a[i]  = attackFreqCoeff  * pow(f[i], -attackFreqPower);
+    a[i] += attackDecayCoeff * pow(d[i],  attackDecayPower);
+    a[i]  = RAPT::rsMin(a[i], attackDecayRatioLimit*d[i]);
+  }
 }
 
 template<class T>

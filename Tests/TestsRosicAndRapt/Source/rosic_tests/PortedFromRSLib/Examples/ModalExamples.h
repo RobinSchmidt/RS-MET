@@ -137,7 +137,7 @@ protected:
 
   // phase related:
   int phaseRandomSeed  = 0;
-  int phaseRandomShape = 0;  // shape of the distribution: 0: uniform, 1: triangular, 2: parabolic
+  //int phaseRandomShape = 1;  // shape of the distribution: 1: uniform, 2: triangular, 3: parabolic
   T phaseRandomness    = 0;
 
   // envelope related:
@@ -148,16 +148,14 @@ protected:
   T decayCombHarmonic = 7.0;
   T decayCombAmount   = 0.0;
 
-  T attackTime        = 0.1;
+  T attackTime        = 1.0;
   T attackDecayRatioLimit = 0.99;
 
   int maxNumPartials = 1024;
   //int numPartials    = 0;
 
-
-
   std::vector<T> tmp; // for temporary values
-  RAPT::rsNoiseGenerator2<T> prng;
+  RAPT::rsNoiseGenerator<T> prng;
 };
 
 
