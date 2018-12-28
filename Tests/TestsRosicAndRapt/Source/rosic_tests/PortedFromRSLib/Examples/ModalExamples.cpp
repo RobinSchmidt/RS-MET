@@ -103,8 +103,7 @@ rsVectorDbl scaleAtIntervals(rsVectorDbl v, int startIndex, int interval, double
 }
 */
 
-
-
+// move into class rsModalParameterGenerator
 double combAmplitude(double frequency, double notchDistance, double notchOffset = 0, 
                      double ampFloor = 0, double shape = 1)
 {
@@ -411,10 +410,51 @@ void createModalFilterBankExamples()
 }
 
 
+template<class T>
+rsModalBankParameters rsModalParameterGenerator<T>::getModalParameters()
+{
+  rsModalBankParameters mp;
+
+  // ...
+
+  return mp;
+}
+
+void createPiano1()
+{
+  // Trying to create a piano like sound, features:
+  // -partials are slightly inharmonic
+  // -even partials decay at different rate than odd nd may have different amplitude
+  // -harmonics expose comb-filter like profile
+
+  rsModalParameterGenerator<double> mpg;
+  rsModalBankParameters mp = mpg.getModalParameters();
+
+  double sampleRate    = 44100;
+
+  double frequency     = 100;
+  double amplitude     = 1.0;
+  double attackTime    = 0.1;
+  double decayTime     = 1.0;
+
+  int    numPartials   = 50;
+
+  double lowpassSlope  = 0.0;    // in dB/oct
+  double lowpassCutoff = 10;     // as harmonic number
+
+  double inharmonicity = 0.0;
+  double evenAmplitude = 1.0;    // amplitude scaler for even harmonics
+  double evenDecay     = 1.0;    // decay-time scaler for even harmonics
+
+  double combHarmonic  = 7.0;
+  double combAmount    = 1.0;
 
 
 
 
+
+  int dummy = 0;
+}
 
 
 

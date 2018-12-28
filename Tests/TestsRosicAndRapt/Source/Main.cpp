@@ -201,7 +201,7 @@ int main(int argc, char* argv[])
   //autoCorrelationPitchDetectorOffline();
   //crossCorrelationBestMatch();
   //combineFFTs(); // move to math experiments
-  envelopeFollower();
+//  envelopeFollower();
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
@@ -318,7 +318,7 @@ int main(int argc, char* argv[])
   //grainRoundTrip();        // under construction
   //plotWindows();
   //spectrogramSine();
-  sinusoidalAnalysis1();
+//  sinusoidalAnalysis1();
   //sinusoidalModel1();
 
   // Physics:
@@ -338,7 +338,8 @@ int main(int argc, char* argv[])
   //sineShift();
   //sineShift2();
   //pitchDetectWithSilence();
-  ////// tests with Elan's example files:
+
+  ////// tests with Elan's example files (they don't work unless the files are available):
   ////pitchDetectA3();
   ////phaseLockSaxophone();
   ////phaseLockSaxophone2();
@@ -391,6 +392,8 @@ int main(int argc, char* argv[])
   //createInsertionSortSound();  // move somewhere else
   //createModalFilterExamples();
   //createModalFilterBankExamples(); // takes long
+  createPiano1();
+
   // sample-map creations (they take long):
   //createBass1();
   //createGong1();
