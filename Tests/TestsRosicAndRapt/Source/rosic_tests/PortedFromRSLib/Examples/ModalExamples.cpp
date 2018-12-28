@@ -473,22 +473,16 @@ template<class T>
 void rsModalParameterGenerator<T>::getAmplitudes(std::vector<T>& a, const std::vector<T>& freqs)
 {
   a.resize(freqs.size());
-
-  T p = -1; // general rolloff of high frequencies - let user define this in dB/oct
-
   for(size_t i = 0; i < a.size(); i++) {
     T f   = freqs[i];
     a[i]  = amplitude;
-    a[i] *= pow(f, p);
-    //a[i] *= pow(1/f, ampSlope);
-    //a[i] *= 1 / (1 + pow(f/lowpassCutoff, lowpassSlope) ); // rolloff above cutoff
-
+    a[i] *= modeDecayTime(f, ampCutoff, ampSlope);  // rename this function
     if(RAPT::rsIsEven(i+1))
       a[i] *= evenAmpScale;
   }
 
   //p.g = applyCombWeighting(p.g, p.f, 7);
-  // todo: incorporate lowpassSlope, lowpassCutoff, ampCombHarmonic, ampCombAmount
+  // todo: incorporate ampCombHarmonic, ampCombAmount
 }
 
 template<class T>
@@ -545,6 +539,35 @@ void createPiano1()
   // -harmonics expose comb-filter like profile
 
   rsModalParameterGenerator<double> mpg;
+
+  // frequency:
+  mpg.setSampleRate(44100);
+  mpg.setFrequency(100);
+  mpg.setInharmonicity(0.0);
+
+  // amplitude:
+  mpg.setAmplitude(1.0);
+  mpg.setAmpCutoff(1.0);
+  mpg.setAmpSlope(0.8);
+  mpg.setEvenAmpScale(1.3);
+  //mpg.setAmpCombHarmonic(7.0);
+  //mpg.setAmpCombAmount(1.0);
+
+  // phase:
+  mpg.setPhaseRandomness(1.0);
+  mpg.setPhaseRandomSeed(0);
+
+  // decay;
+  mpg.setDecay(0.5);
+  mpg.setDecayCutoff(1.0);
+  mpg.setDecaySlope(0.5);
+  mpg.setEvenDecayScale(0.5);
+  //mpg.setDecayCombHarmonic(7.0);
+  //mpg.setDecayCombAmount(0.5);
+
+  // attack:
+  mpg.setAttack(0.1);
+
   rsModalBankParametersD mp = mpg.getModalParameters();
 
 

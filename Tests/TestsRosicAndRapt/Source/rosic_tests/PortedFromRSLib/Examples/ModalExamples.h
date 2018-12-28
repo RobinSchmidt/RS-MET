@@ -37,7 +37,7 @@ public:
 
   void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
 
-  void setReferenceFrequency(T newFrequency) { frequency = newFrequency; }
+  void setFrequency(T newFrequency) { frequency = newFrequency; }
 
   void setInharmonicity(T newInharmonicity) { inharmonicity = newInharmonicity; }
 
@@ -51,11 +51,11 @@ public:
 
   void setAmplitude(T newAmplitude) { amplitude = newAmplitude; }
 
-  void setLowpassSlope(T newSlope) { lowpassSlope = newSlope; }
+  void setAmpCutoff(T newCutoff) { ampCutoff = newCutoff; }
 
-  void setLowpassCutoff(T newCutoff) { lowpassCutoff = newCutoff; }
+  void setAmpSlope(T newSlope) { ampSlope = newSlope; }
 
-  void setEvenAmpScale(T newScaler) { evenAmpScale = newScale; }
+  void setEvenAmpScale(T newScale) { evenAmpScale = newScale; }
 
   void setAmpCombHarmonic(T newHarmonic) { ampCombHarmonic = newHarmonic; }
 
@@ -64,14 +64,24 @@ public:
 
   /** \name Phase parameters */
 
+  void setPhaseRandomness(T newRandomness) { phaseRandomness = newRandomness; }
+
+  void setPhaseRandomSeed(int newSeed) { phaseRandomSeed = newSeed; }
+
+  // void setStartPhase(T newPhase);
+  // void setPhaseShiftByFreq(T newShift)
+  // shift = (f-1)*shiftByFreq * 2*PI; // shift of individual harmonic
+  // and/or shift = i*shiftByIndex * 2*PI;
 
 
 
-  /** \name Envelope parameters */
+  /** \name Decay parameters */
 
-  void setReferenceAttack(T newAttack) { attackTime = newAttack; }
+  void setDecay(T newDecay) { decayTime = newDecay; }
 
-  void setReferenceDecay(T newDecay) { decayTime = newDecay; }
+  void setDecayCutoff(T newCutoff) { decayCutoff = newCutoff; }
+
+  void setDecaySlope(T newSlope) { decaySlope = newSlope; }
 
   void setEvenDecayScale(T newScale) { evenDecayScale = newScale; }
 
@@ -80,9 +90,13 @@ public:
   void setDecayCombAmount(T newAmount) { decayCombAmount = newAmount; }
 
 
+  /** \name Attack parameters */
 
-  /** \name Static function */
+  void setAttack(T newAttack) { attackTime = newAttack; }
 
+
+
+  /** \name Static functions */
 
   /** Gives the relative mode decay time for mode with relative frequency f given a (relative)
   cutoff frequency fc and an ultimate slope of the decay-time function (with respect to f)
@@ -129,8 +143,8 @@ protected:
 
   // amplitude related:
   T amplitude       = 1.0;
-  T lowpassSlope    = 0.0;    // in dB/oct..or maybe as direct exponent
-  T lowpassCutoff   = 1;      // as harmonic number
+  T ampCutoff       = 1;      // as harmonic number
+  T ampSlope        = 0.0;    // in dB/oct..or maybe as direct exponent/power
   T evenAmpScale    = 1.0;    // amplitude scaler for even harmonics
   T ampCombHarmonic = 7.0;    // harmonic number of 1st notch
   T ampCombAmount   = 0.0;
