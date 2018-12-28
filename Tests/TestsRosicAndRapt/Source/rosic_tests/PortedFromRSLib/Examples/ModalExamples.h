@@ -83,9 +83,11 @@ public:
 
 protected:
 
-  void getFrequencies(std::vector<T>& f); // maybe rename to getRelativeFrequencies or getFrequencyRatios
+  void getFrequencies(std::vector<T>& f); 
+  // maybe rename to getRelativeFrequencies or getFrequencyRatios, also assigns numPartials so it 
+  // should be always called before getPhases
 
-  void getPhases(std::vector<T>& p);
+  void getPhases(std::vector<T>& p, const std::vector<T>& f);
 
   void getAmplitudes(std::vector<T>& a, const std::vector<T>& f);
 
@@ -128,8 +130,10 @@ protected:
   T decayCombAmount   = 0.0;
 
   int maxNumPartials = 1024;
+  //int numPartials    = 0;
 
   std::vector<T> tmp; // for temporary values
+  RAPT::rsNoiseGenerator2<T> prng;
 };
 
 

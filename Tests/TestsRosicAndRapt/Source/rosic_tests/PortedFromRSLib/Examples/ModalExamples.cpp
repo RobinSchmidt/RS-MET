@@ -428,7 +428,7 @@ rsModalBankParameters<T> rsModalParameterGenerator<T>::getModalParameters()
 
   getFrequencies(mp.f);
   getAmplitudes( mp.g, mp.f);
-  getPhases(     mp.p);
+  getPhases(     mp.p, mp.f);
   getAttackTimes(mp.a, mp.f);
   getDecayTimes( mp.d, mp.f);
 
@@ -458,9 +458,15 @@ void rsModalParameterGenerator<T>::getFrequencies(std::vector<T>& f)
 }
 
 template<class T>
-void rsModalParameterGenerator<T>::getPhases(std::vector<T>& p)
+void rsModalParameterGenerator<T>::getPhases(std::vector<T>& p, const std::vector<T>& f)
 {
-  // phaseRandomSeed, phaseRandomShape, phaseRandomness
+  p.resize(f.size());
+  prng.setSeed(phaseRandomSeed);
+  prng.setOrder(phaseRandomShape);
+  prng.setRange(-PI*phaseRandomness, +PI*phaseRandomness);
+  for(size_t i = 0; i < p.size(); i++) {
+    p[i] = prng.getSample();
+  }
 }
 
 template<class T>
@@ -482,7 +488,7 @@ void rsModalParameterGenerator<T>::getAmplitudes(std::vector<T>& a, const std::v
   }
 
   //p.g = applyCombWeighting(p.g, p.f, 7);
-  // amplitude, lowpassSlope, lowpassCutoff, evenAmpScal, ampCombHarmonic, ampCombAmount
+  // todo: incorporate lowpassSlope, lowpassCutoff, ampCombHarmonic, ampCombAmount
 }
 
 template<class T>
@@ -494,10 +500,10 @@ void rsModalParameterGenerator<T>::getAttackTimes(std::vector<T>& a, const std::
 template<class T>
 void rsModalParameterGenerator<T>::getDecayTimes(std::vector<T>& d, const std::vector<T>& f)
 {
+
+
   // decayTime, evenDecayScale, decayCombHarmonic, decayCombAmount
 }
-
-
 
 
 void createPiano1()
@@ -509,11 +515,6 @@ void createPiano1()
 
   rsModalParameterGenerator<double> mpg;
   rsModalBankParametersD mp = mpg.getModalParameters();
-
-
-
-
-
 
 
   int dummy = 0;
