@@ -430,24 +430,7 @@ void createPiano1()
   rsModalParameterGenerator<double> mpg;
   rsModalBankParametersD mp = mpg.getModalParameters();
 
-  double sampleRate    = 44100;
 
-  double frequency     = 100;
-  double amplitude     = 1.0;
-  double attackTime    = 0.1;
-  double decayTime     = 1.0;
-
-  int    numPartials   = 50;
-
-  double lowpassSlope  = 0.0;    // in dB/oct
-  double lowpassCutoff = 10;     // as harmonic number
-
-  double inharmonicity = 0.0;
-  double evenAmplitude = 1.0;    // amplitude scaler for even harmonics
-  double evenDecay     = 1.0;    // decay-time scaler for even harmonics
-
-  double combHarmonic  = 7.0;
-  double combAmount    = 1.0;
 
 
 
