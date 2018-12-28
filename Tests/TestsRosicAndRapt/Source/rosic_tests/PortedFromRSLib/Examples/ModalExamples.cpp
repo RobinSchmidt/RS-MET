@@ -225,6 +225,7 @@ std::vector<double> stiffStringRatios(double frequency, double sampleRate, doubl
 
   return v;
 }
+// function superseded by rsModalParameterGenerator::getFrequencies
 
 /*
 struct rsModalBankParameters
@@ -409,16 +410,79 @@ void createModalFilterBankExamples()
   rosic::writeToMonoWaveFile("ModalSynthTest.wav", y, numSamples, (int) sampleRate, 16);
 }
 
+template<class T>
+rsModalParameterGenerator<T>::rsModalParameterGenerator()
+{
+  tmp.resize(maxNumPartials);
+}
 
 template<class T>
 rsModalBankParameters<T> rsModalParameterGenerator<T>::getModalParameters()
 {
   rsModalBankParameters<T> mp;
 
-  // ...
+  mp.frequency = frequency;
+  mp.gain      = amplitude;
+  mp.attack    = attackTime;
+  mp.decay     = decayTime;
+
+  getFrequencies(mp.f);
+  getAmplitudes( mp.g, mp.f);
+  getPhases(     mp.p);
+  getAttackTimes(mp.a, mp.f);
+  getDecayTimes( mp.d, mp.f);
 
   return mp;
 }
+
+
+template<class T>
+void rsModalParameterGenerator<T>::getFrequencies(std::vector<T>& f)
+{
+  int numPartials = 0;
+
+  // for harmonic partials or stiff-string inharmonicity (todo: make a switch to allow for other
+  // partial frequency ratios):
+  T B = inharmonicity;
+  T s = 1.0 / sqrt(1+B); // to scale 1st entry to unity
+  for(int i = 0; i < maxNumPartials; i++) {
+    int n = i+1;
+    tmp[i] = s * n * sqrt(1+B*n*n);
+    if(frequency*tmp[i] >= sampleRate/2)
+      break;
+    numPartials++;
+  }
+
+  f.resize(numPartials);
+  RAPT::rsArray::copyBuffer(&tmp[0], &f[0], numPartials);
+}
+
+template<class T>
+void rsModalParameterGenerator<T>::getPhases(std::vector<T>& p)
+{
+  // phaseRandomSeed, phaseRandomShape, phaseRandomness
+}
+
+template<class T>
+void rsModalParameterGenerator<T>::getAmplitudes(std::vector<T>& a, const std::vector<T>& f)
+{
+  // amplitude, lowpassSlope, lowpassCutoff, evenAmpScal, ampCombHarmonic, ampCombAmount
+}
+
+template<class T>
+void rsModalParameterGenerator<T>::getAttackTimes(std::vector<T>& a, const std::vector<T>& f)
+{
+  // attackTime
+}
+
+template<class T>
+void rsModalParameterGenerator<T>::getDecayTimes(std::vector<T>& d, const std::vector<T>& f)
+{
+  // decayTime, evenDecayScale, decayCombHarmonic, decayCombAmount
+}
+
+
+
 
 void createPiano1()
 {

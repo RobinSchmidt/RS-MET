@@ -16,6 +16,7 @@ void createGong1();
 void createPluck1();
 
 
+
 /** A class to generate the low-level parameters for each mode from a bunch of higher level macro
 parameters. */
 
@@ -24,6 +25,9 @@ class rsModalParameterGenerator
 {
 
 public:
+
+
+  rsModalParameterGenerator();
 
   rsModalBankParameters<T> getModalParameters();
 
@@ -79,6 +83,22 @@ public:
 
 protected:
 
+  void getFrequencies(std::vector<T>& f);
+
+  void getPhases(std::vector<T>& p);
+
+  void getAmplitudes(std::vector<T>& a, const std::vector<T>& f);
+
+  void getAttackTimes(std::vector<T>& a, const std::vector<T>& f);
+
+  void getDecayTimes(std::vector<T>& d, const std::vector<T>& f);
+
+
+
+
+
+
+
   // data:
 
   // frequency related:
@@ -96,9 +116,9 @@ protected:
   T ampCombAmount   = 0.0;
 
   // phase related:
-  int phaseRandomSeed = 0;
+  int phaseRandomSeed  = 0;
   int phaseRandomShape = 0;  // shape of the distribution: 0: uniform, 1: triangular, 2: parabolic
-  T phaseRandomness = 0;
+  T phaseRandomness    = 0;
 
   // envelope related:
   T attackTime        = 0.1;
@@ -107,8 +127,9 @@ protected:
   T decayCombHarmonic = 7.0;
   T decayCombAmount   = 0.0;
 
+  int maxNumPartials = 1024;
 
-  int maxNumPartials = 50;
+  std::vector<T> tmp; // for temporary values
 };
 
 
