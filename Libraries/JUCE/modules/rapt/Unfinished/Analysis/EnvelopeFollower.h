@@ -25,7 +25,7 @@ here's an article about optimizing root-mean calculations:
 http://www.embedded.com/design/configurable-systems/4006520/Improve-your-root-mean-calculations */
 
 template<class TSig, class TPar>
-class rsEnvelopeFollower : public rsSlewRateLimiter<TSig, TPar>
+class rsEnvelopeFollower : public rsSlewRateLimiter
 {
 
 public:
@@ -92,7 +92,7 @@ protected:
 template<class TSig, class TPar>
 RS_INLINE TSig rsEnvelopeFollower<TSig, TPar>::applySmoothing(TSig in)
 {
-  return rsSlewRateLimiter<TSig, TPar>::getSample(in);
+  return rsSlewRateLimiter::getSample(in);
 }
 
 template<class TSig, class TPar>
