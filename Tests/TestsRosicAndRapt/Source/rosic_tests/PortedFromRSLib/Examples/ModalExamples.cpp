@@ -123,7 +123,7 @@ std::vector<double> applyCombWeighting(std::vector<double> v, std::vector<double
 }
 
 
-std::vector<double> pseudoHarmonicRatios12TET(int numPartials)
+std::vector<double> pseudoHarmonicRatios12TET(int numPartials) // only 0..20
 {
   double tmp[21];
   long double s = pow(2.0, 1.0/12.0); // basis
@@ -192,6 +192,21 @@ std::vector<double> ratios12TET(int numPartials)
 
   for(int n = 21; n < numPartials; n++)
     r[n] = pow(s, 54+n-21);
+
+  // maybe use a formula:
+  // b  = pow(2.0, 1.0/12.0); // basis - can be generalized
+  // fn = b^k where k = round(logB(n*f0, b)...or maybe use a special rounding:
+
+  // roundedExponent(target, basis)
+  // a  = logB(target, basis);
+  // af = floor(a);
+  // ac = ceil(a);
+  // yf = pow(basis, yf);
+  // yc = pow(basis, yc);
+  // if(fabs(target-yc) < fabs(target-yf))
+  //   return ac;
+  // else
+  //   return af;
 
 
   //double dbg[200];
@@ -480,7 +495,16 @@ T rsModalParameterGenerator<T>::modeDecayTime(T f, T fc, T p)
   return (1-k) / ((1-k*2) + pow(f/fc, p));
 }
 
-
+template<class T>
+T rsModalParameterGenerator<T>::combAmplitude(T frequency, T notchDistance, T amount,
+  T notchOffset, T shape)
+{
+  T c = PI/notchDistance;
+  T a = fabs(sin(c*(frequency-notchOffset)));
+  a = pow(a, shape);
+  a = (1-amount) + amount*a;
+  return a;
+}
 
 template<class T>
 void rsModalParameterGenerator<T>::getAmplitudes(std::vector<T>& a, const std::vector<T>& freqs)
@@ -490,12 +514,10 @@ void rsModalParameterGenerator<T>::getAmplitudes(std::vector<T>& a, const std::v
     T f   = freqs[i];
     a[i]  = amplitude * pow(f, -ampSlope1);
     a[i] *= modeDecayTime(f, ampCutoff, ampSlope2);  // rename this function
+    a[i] *= combAmplitude(f, ampCombHarmonic, ampCombAmount);
     if(RAPT::rsIsEven(i+1))
       a[i] *= evenAmpScale;
   }
-
-  //p.g = applyCombWeighting(p.g, p.f, 7);
-  // todo: incorporate ampCombHarmonic, ampCombAmount
 }
 
 template<class T>
@@ -507,10 +529,9 @@ void rsModalParameterGenerator<T>::getDecayTimes(std::vector<T>& d, const std::v
     T f = freqs[i];
     d[i]  = pow(f, -decaySlope1);
     d[i] *= modeDecayTime(f, decayCutoff, decaySlope2);
+    d[i] *= combAmplitude(f, decayCombHarmonic, decayCombAmount);
     if(RAPT::rsIsEven(i+1))
       d[i] *= evenDecayScale;
-
-    // apply decayCombHarmonic, decayCombAmount
   }
 }
 
@@ -578,6 +599,10 @@ void createPiano1()
 
   rsModalBankParametersD mp = mpg.getModalParameters();
 
+  // plot:
+  //GNUPlotter plt;
+
+  // ...
 
   int dummy = 0;
 }

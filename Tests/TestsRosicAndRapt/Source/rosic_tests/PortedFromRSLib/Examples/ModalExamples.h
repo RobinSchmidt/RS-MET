@@ -110,6 +110,9 @@ public:
   static T modeDecayTime(T f, T fc, T p);
   // rename and use also for amplitude
 
+  static T combAmplitude(T frequency, T notchDistance, T amount = 1, T notchOffset = 0,
+    T shape = 1);
+
 
 protected:
 

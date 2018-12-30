@@ -413,3 +413,43 @@ void modalBankTransient()
 
   int dummy = 0;
 }
+
+/** Energy of the envelope given by a weighted sum of 4 exponential decays:
+f(t) = A*exp(a*t) + B*exp(b*t) - C*exp(c*t) - D*exp(d*t)
+all coeffs are assumed to be positive */
+template<class T>
+T fourExpEnergy(T A, T a, T B, T b, T C, T c, T D, T d)
+{
+  //// Sage code that was used to find this monster formula:
+  //var("t A B C D a b c d")
+  //f(t) = A*exp(a*t) + B*exp(b*t) - C*exp(c*t) - D*exp(d*t)
+  //e(t) = (f(t))^2
+  //assume(A > 0)
+  //assume(B > 0)
+  //assume(C > 0)
+  //assume(D > 0)
+  //assume(a < 0)
+  //assume(b < 0)
+  //assume(c < 0)
+  //assume(d < 0)
+  //assume(exp(b+a)-1 < 0)
+  //energy = integral(e(t), t, 0, oo)
+
+  T A2 = A*A,  B2 = B*B,  C2 = C*C,  D2 = D*D;
+  T A3 = A*A2, B3 = B*B2, C3 = C*C2, D3 = D*D2;
+  T A4 = A*A3, B4 = B*B3, C4 = C*C3, D4 = D*D3;
+
+  T a2 = a*a,  b2 = b*b,  c2 = c*c,  d2 = d*d;
+  T a3 = a*a2, b3 = b*b2, c3 = c*c2, d3 = d*d2;
+  T a4 = a*a3, b4 = b*b3, c4 = c*c3, d4 = d*d3;
+
+  T E  = -1/2*((D2*a3*b2 + D2*a2*b3)*c4 + (C2*a3*b2 + C2*a2*b3 + (B2*a2 + A2*b2 + (A2 + 4*A*B + B2)*a*b)*c3 + (B2*a3 + A2*b3 + (A2 + 4*A*B + 2*B2 - 4*(A + B)*C + C2)*a2*b + (2*A2 + 4*A*B + B2 - 4*(A + B)*C + C2)*a*b2)*c2 + ((B2 - 4*B*C + C2)*a3*b + (A2 + 4*A*B + B2 - 4*(A + B)*C + 2*C2)*a2*b2 + (A2 - 4*A*C + C2)*a*b3)*c)*d4 + (D2*a4*b2 + 2*D2*a3*b3 + D2*a2*b4)*c3 + (C2*a4*b2 + 2*C2*a3*b3 + C2*a2*b4 + (B2*a2 + A2*b2 + (A2 + 4*A*B + B2)*a*b)*c4 + (2*B2*a3 + 2*A2*b3 + (2*A2 + 8*A*B + 4*B2 - 4*(A + B)*C + C2 - 4*(A + B - C)*D + D2)*a2*b + (4*A2 + 8*A*B + 2*B2 - 4*(A + B)*C + C2 - 4*(A + B - C)*D + D2)*a*b2)*c3 + (B2*a4 + A2*b4 + (A2 + 4*A*B + 4*B2 - 4*(A + 2*B)*C + 2*C2 - 4*(A + B - C)*D + D2)*a3*b + 2*(2*A2 + 6*A*B + 2*B2 - 6*(A + B)*C + 2*C2 - 4*(A + B - C)*D + D2)*a2*b2 + (4*A2 + 4*A*B + B2 - 4*(2*A + B)*C + 2*C2 - 4*(A + B - C)*D + D2)*a*b3)*c2 + ((B2 - 4*B*C + C2)*a4*b + (A2 + 4*A*B + 2*B2 - 4*(A + 2*B)*C + 4*C2 - 4*(A + B - C)*D + D2)*a3*b2 + (2*A2 + 4*A*B + B2 - 4*(2*A + B)*C + 4*C2 - 4*(A + B - C)*D + D2)*a2*b3 + (A2 - 4*A*C + C2)*a*b4)*c)*d3 + (D2*a4*b3 + D2*a3*b4)*c2 + (C2*a4*b3 + C2*a3*b4 + (B2*a3 + A2*b3 + (A2 + 4*A*B + 2*B2 - 4*(A + B)*D + D2)*a2*b + (2*A2 + 4*A*B + B2 - 4*(A + B)*D + D2)*a*b2)*c4 + (B2*a4 + A2*b4 + (A2 + 4*A*B + 4*B2 - 4*(A + B)*C + C2 - 4*(A + 2*B - C)*D + 2*D2)*a3*b + 2*(2*A2 + 6*A*B + 2*B2 - 4*(A + B)*C + C2 - 2*(3*A + 3*B - 2*C)*D + 2*D2)*a2*b2 + (4*A2 + 4*A*B + B2 - 4*(A + B)*C + C2 - 4*(2*A + B - C)*D + 2*D2)*a*b3)*c3 + ((2*B2 - 4*B*C + C2 - 4*(B - C)*D + D2)*a4*b + 2*(A2 + 4*A*B + 2*B2 - 2*(2*A + 3*B)*C + 2*C2 - 2*(2*A + 3*B - 3*C)*D + 2*D2)*a3*b2 + 2*(2*A2 + 4*A*B + B2 - 2*(3*A + 2*B)*C + 2*C2 - 2*(3*A + 2*B - 3*C)*D + 2*D2)*a2*b3 + (2*A2 - 4*A*C + C2 - 4*(A - C)*D + D2)*a*b4)*c2 + ((B2 - 4*B*C + 2*C2 - 4*(B - C)*D + D2)*a4*b2 + (A2 + 4*A*B + B2 - 4*(A + B)*C + 4*C2 - 4*(A + B - 2*C)*D + 2*D2)*a3*b3 + (A2 - 4*A*C + 2*C2 - 4*(A - C)*D + D2)*a2*b4)*c)*d2 + (((B2 - 4*B*D + D2)*a3*b + (A2 + 4*A*B + B2 - 4*(A + B)*D + 2*D2)*a2*b2 + (A2 - 4*A*D + D2)*a*b3)*c4 + ((B2 - 4*B*D + D2)*a4*b + (A2 + 4*A*B + 2*B2 - 4*(A + B)*C + C2 - 4*(A + 2*B - C)*D + 4*D2)*a3*b2 + (2*A2 + 4*A*B + B2 - 4*(A + B)*C + C2 - 4*(2*A + B - C)*D + 4*D2)*a2*b3 + (A2 - 4*A*D + D2)*a*b4)*c3 + ((B2 - 4*B*C + C2 - 4*(B - C)*D + 2*D2)*a4*b2 + (A2 + 4*A*B + B2 - 4*(A + B)*C + 2*C2 - 4*(A + B - 2*C)*D + 4*D2)*a3*b3 + (A2 - 4*A*C + C2 - 4*(A - C)*D + 2*D2)*a2*b4)*c2 + ((C2 + 4*C*D + D2)*a4*b3 + (C2 + 4*C*D + D2)*a3*b4)*c)*d)/(((a2*b + a*b2)*c3 + (a3*b + 2*a2*b2 + a*b3)*c2 + (a3*b2 + a2*b3)*c)*d4 + ((a2*b + a*b2)*c4 + 2*(a3*b + 2*a2*b2 + a*b3)*c3 + (a4*b + 4*a3*b2 + 4*a2*b3 + a*b4)*c2 + (a4*b2 + 2*a3*b3 + a2*b4)*c)*d3 + ((a3*b + 2*a2*b2 + a*b3)*c4 + (a4*b + 4*a3*b2 + 4*a2*b3 + a*b4)*c3 + 2*(a4*b2 + 2*a3*b3 + a2*b4)*c2 + (a4*b3 + a3*b4)*c)*d2 + ((a3*b2 + a2*b3)*c4 + (a4*b2 + 2*a3*b3 + a2*b4)*c3 + (a4*b3 + a3*b4)*c2)*d);
+
+  return E;
+}
+
+void fourExponentials()
+{
+
+  int dummy = 0;
+}
