@@ -14,5 +14,6 @@ void biquadImpulseResponseDesign();
 void modalBankTransient(); // tests the use of nonlinear feedback to produce transients
 
 void fourExponentials();
+void modalWithFancyEnv();
 
 #endif

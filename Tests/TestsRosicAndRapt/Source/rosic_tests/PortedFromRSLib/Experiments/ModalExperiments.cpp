@@ -530,3 +530,42 @@ void fourExponentials()
   // be a fraction of LateDecay and the EarlyAttack a fraction of LateAttack
   // EarlyAttack, LateAttack, AttackBlend - same for Decay - maybe have an overall time-scale
 }
+
+void modalWithFancyEnv()
+{
+  // Here, we create a mode with an envelope consisting of 4 exponentials
+
+  // user parameters:
+  double sampleRate  = 44100;
+  double frequency   = 220;
+  double amplitude   = 1.0;
+  double phase       = 0.0;
+  double attackEarly = 0.05;  // maybe rename to attackFast/Slow
+  double attackBlend = 0.2;
+  double attackLate  = 0.3;
+  double decayEarly  = 1.0;
+  double decayBlend  = 0.2;
+  double decayLate   = 3.0;
+
+  // coeffs of the 4 filters (maybe use float later - and the SSE2 rsFloat32X4):
+  double b0_0, b1_0, a1_0, a2_0,
+         b0_1, b1_1, a1_1, a2_1,
+         b0_2, b1_2, a1_2, a2_2,
+         b0_3, b1_3, a1_3, a2_3;
+
+  double w = 2*PI*frequency/sampleRate;  // omega
+  double A = amplitude;                  // include energy normalizer later
+  double p = phase, fs = sampleRate;     // shortcuts
+
+  // design the 4 decaying sine filters:
+  rsDampedSineFilter(w, (1-attackBlend)*A, attackEarly*fs, p, &b0_0, &b1_0, &a1_0, &a2_0);
+  rsDampedSineFilter(w,    attackBlend *A, attackLate *fs, p, &b0_1, &b1_1, &a1_1, &a2_1);
+  rsDampedSineFilter(w,  (1-decayBlend)*A, decayEarly *fs, p, &b0_2, &b1_2, &a1_2, &a2_2);
+  rsDampedSineFilter(w,     decayBlend *A, decayLate  *fs, p, &b0_3, &b1_3, &a1_3, &a2_3);
+
+
+  int dummy = 0;
+
+  //void rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2);
+
+}

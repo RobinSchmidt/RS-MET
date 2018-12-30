@@ -277,7 +277,8 @@ int main(int argc, char* argv[])
   //dampedSineFilterDesign();
   //biquadImpulseResponseDesign();
   //modalBankTransient();
-  fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
+  //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
+  modalWithFancyEnv();
 
   // Misc Audio:
   //centroid();
