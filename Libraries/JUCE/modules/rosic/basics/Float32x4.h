@@ -1,7 +1,140 @@
 #ifndef RAPT_FLOAT32X4_H_INCLUDED
 #define RAPT_FLOAT32X4_H_INCLUDED
 
+//#include <emmintrin.h>
+//#include <xmmintrin.h>
+
 //=================================================================================================
+
+class rsFloat32x4
+{
+public:
+
+  /** \name Construction */
+
+  /** Standard constructor. Leaves both elements uninitialized. */
+  inline rsFloat32x4() { /*v = _mm_setzero_pd();*/ }
+
+  /** Constructor to copy an existing __m128 vector of values. */
+  inline rsFloat32x4(const __m128 rhs) : v(rhs) {}
+
+  /** Constructor that initializes both elements to the given value. */
+  inline rsFloat32x4(float a) : v(_mm_set1_ps(a)) {}
+
+  /** Constructs a value from int (needed for implicit conversions). */
+  inline rsFloat32x4(int a) : v(_mm_set1_ps(float(a))) {}
+
+  /** Constructor that initializes the elements from four floats. */
+  inline rsFloat32x4(float a, float b, float c, float d) : v(_mm_setr_ps(a, b, c, d)) {}
+
+  /** Constructor that initializes the elements from a 2-value array of floats. */
+  inline rsFloat32x4(float* v) { v = _mm_setr_ps(v[0], v[1], v[2], v[3]); }
+
+  /** \name Inquiry */
+
+  /** Returns our vector as array of 2 floats. */
+  inline float* asArray() const { return (float*) &v; }
+
+  /** Returns the vector element with index i (valid indices are 0 and 1). */
+  inline float get(size_t i) const { return asArray()[i]; }
+
+  /** Writes the two float into v0 and v1. */
+  //inline void get(float& v0, float& v1) const { _mm_storel_pd(&v0, v); _mm_storeh_pd(&v1, v); }
+
+
+  /** Returns the sum of the values of both scalar elements in the vector. */
+  inline float getSum() const { float* a = asArray(); return a[0]+a[1]+a[2]+a[3]; }
+
+  /** Returns the minimum of the values of both scalar elements in the vector. */
+  //inline float getMin() const { float* a = asArray(); return (a[0] < a[1]) ? a[0] : a[1]; }
+
+  /** Returns the maximum of the values of both scalar elements in the vector. */
+  //inline float getMax() const { float* a = asArray(); return (a[0] > a[1]) ? a[0] : a[1]; }
+
+
+  /** \name Setup */
+
+  /** Sets both elements to a. */
+  inline void set(float a) { v = _mm_set1_ps(a); }
+
+  /** Sets the first element to a and the second element to b. */
+  inline void set(float a, float b, float c, float d) { v = _mm_setr_ps(a, b, c, d); }
+
+  /** Sets the vector element with index i (valid indices are 0 and 1). */
+  inline void set(size_t i, float a)  { asArray()[i] = a; }
+
+
+  /** \name Constants */
+
+  /** Returns a vector that has a zero for all scalar elements. */
+  inline static rsFloat32x4 zero() { static const __m128 z = _mm_setzero_ps(); return z; }
+
+  /** Returns a vector that has a one for all scalar elements. */
+  inline static rsFloat32x4 one()  { static const __m128 o = _mm_set1_ps(1.f); return o; }
+
+  /** Returns a vector that has for both scalars a zero for the sign bit and the rest ones. This is
+  useful for implementing the abs function. */
+  //inline static rsFloat32x4 signBitZero()
+  //{
+  //  static const long long i = 0x7fffffffffffffff; // use 32 bit integer
+  //  static const float    d = *((float*)(&i));
+  //  static const __m128d   r = _mm_set1_pd(d);
+  //  return r;
+  //}
+
+  /** Returns a vector that has for both scalars a one for the sign bit and the rest zeros. This is
+  useful for implementing the sign function. */
+  //inline static rsFloat32x4 signBitOne()
+  //{
+  //  static const long long i = 0x8000000000000000;
+  //  static const float    d = *((float*)(&i));
+  //  static const __m128d   r = _mm_set1_pd(d);
+  //  return r;
+  //}
+
+
+  /** \name Operators */
+
+  /** Allows the two float values to be accessed (for reading and writing) as if this would be an
+  array of two floats. Valid indices are 0 and 1. */
+  inline float& operator[](const int i) const { return asArray()[i]; }
+  // maybe with this, we can get rid of set/get...hmm...but maybe not (or not just yet), they use
+  // different operations - maybe they are faster? or safer (i.e. compatible with more
+  // compilers? - test this first)
+
+  // arithmetic operators:
+  inline rsFloat32x4& operator+=(const rsFloat32x4& b) { v = _mm_add_ps(v, b); return *this; }
+  inline rsFloat32x4& operator-=(const rsFloat32x4& b) { v = _mm_sub_ps(v, b); return *this; }
+  inline rsFloat32x4& operator*=(const rsFloat32x4& b) { v = _mm_mul_ps(v, b); return *this; }
+  inline rsFloat32x4& operator/=(const rsFloat32x4& b) { v = _mm_div_ps(v, b); return *this; }
+
+
+
+  /** Comparison for equality. For two vectors to be considered equal, all scalar elements must be
+  equal. */
+  inline bool operator==(const rsFloat32x4& b) const
+  {
+    return (this[0] == b[0]) && (this[1] == b[1] && this[2] == b[2]) && (this[3] == b[3]);
+  }
+
+
+  inline bool operator<(const rsFloat32x4& b) const
+  {
+    return (this[0] < b[0]) && (this[1] < b[1] && this[2] < b[2]) && (this[3] < b[3]);
+  }
+
+  inline rsFloat32x4& operator=(const __m128& rhs) { v = rhs; return *this; }
+
+  inline operator __m128() const { return v; }
+
+
+protected:
+
+  __m128 v; 
+};
+
+
+#ifdef BLAH // code below obsolete
 
 /** This is datatype to represent 4 32-bit floating point numbers at once.
 THIS IS NOT USABLE YET (it currently uses 4 actual floats)
@@ -136,5 +269,7 @@ protected:
   float v[4];  // vector of 4 float values - this will have to be replaced by the SSE type
 
 };
+
+#endif
 
 #endif
