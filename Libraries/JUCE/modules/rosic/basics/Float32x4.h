@@ -6,6 +6,9 @@
 
 //=================================================================================================
 
+/** This class was copied/pasted/edited from rsFloat64x2 and is completely analogous. 
+...but it's not yet complete and not yet tested... */
+
 class rsFloat32x4
 {
 public:
@@ -27,20 +30,23 @@ public:
   /** Constructor that initializes the elements from four floats. */
   inline rsFloat32x4(float a, float b, float c, float d) : v(_mm_setr_ps(a, b, c, d)) {}
 
-  /** Constructor that initializes the elements from a 2-value array of floats. */
-  inline rsFloat32x4(float* v) { v = _mm_setr_ps(v[0], v[1], v[2], v[3]); }
+  /** Constructor that initializes the elements from a 4-value array of floats. */
+  inline rsFloat32x4(float* p) { v = _mm_setr_ps(p[0], p[1], p[2], p[3]); }
 
   /** \name Inquiry */
 
-  /** Returns our vector as array of 2 floats. */
+  /** Returns our vector as array of 4 floats. */
   inline float* asArray() const { return (float*) &v; }
 
-  /** Returns the vector element with index i (valid indices are 0 and 1). */
+  /** Returns the vector element with index i (valid indices are 0,1,2,3). */
   inline float get(size_t i) const { return asArray()[i]; }
 
   /** Writes the two float into v0 and v1. */
   //inline void get(float& v0, float& v1) const { _mm_storel_pd(&v0, v); _mm_storeh_pd(&v1, v); }
 
+  /** Writes our vecotr into the 4-element float array p. (needs test, maybe implement a similar 
+  function for rsFloat64x2 - this has beedn added after copy/paste ) */
+  inline void get(float* p) { _mm_store1_ps(p, v); }
 
   /** Returns the sum of the values of both scalar elements in the vector. */
   inline float getSum() const { float* a = asArray(); return a[0]+a[1]+a[2]+a[3]; }
@@ -132,6 +138,16 @@ protected:
 
   __m128 v; 
 };
+
+// binary arithmetic operators:
+inline rsFloat32x4 operator+(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_add_ps(a, b); }
+inline rsFloat32x4 operator-(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_sub_ps(a, b); }
+inline rsFloat32x4 operator*(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_mul_ps(a, b); }
+inline rsFloat32x4 operator/(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_div_ps(a, b); }
+inline rsFloat32x4 operator+(const rsFloat32x4& a) { return a; }                    // unary plus
+inline rsFloat32x4 operator-(const rsFloat32x4& a) { return rsFloat32x4(0.f) - a; } // unary minus
+
+
 
 
 #ifdef BLAH // code below obsolete

@@ -84,7 +84,7 @@
 
 
 // basics:
-//#include "basics/Float32x4.h"
+#include "basics/Float32x4.h"
 #include "basics/Float64x2.h"
 #include "basics/rosic_TemplateInstantiations.h"
 #include "basics/GlobalDefinitions.h"
