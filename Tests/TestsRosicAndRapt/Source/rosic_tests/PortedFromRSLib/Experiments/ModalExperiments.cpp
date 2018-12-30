@@ -536,35 +536,58 @@ void modalWithFancyEnv()
   // Here, we create a mode with an envelope consisting of 4 exponentials
 
   // user parameters:
-  double sampleRate  = 44100;
-  double frequency   = 220;
-  double amplitude   = 1.0;
-  double phase       = 0.0;
-  double attackEarly = 0.05;  // maybe rename to attackFast/Slow
-  double attackBlend = 0.2;
-  double attackLate  = 0.3;
-  double decayEarly  = 1.0;
-  double decayBlend  = 0.2;
-  double decayLate   = 3.0;
+  double length      = 10.0;
+  double sampleRate  = 48000;
 
+  double frequency   = 220;
+  double amplitude   = 2.5;
+  double phase       = 0.0;
+
+  double attackEarly = 0.01;  // maybe rename to attackFast/Slow
+  double attackBlend = 0.7;
+  double attackLate  = 0.3;
+
+  double decayEarly  = 0.2;
+  double decayBlend  = 0.1;
+  double decayLate   = 2.0;
+
+  // derived parameters and abbreviations:
+  double f = frequency;
+  double w = 2*PI*frequency/sampleRate;  // omega
+  double A = amplitude;                  // include energy normalizer later
+  double p = phase, fs = sampleRate;     // shortcuts
+
+  /*
+  // design the 4 decaying sine filters:
   // coeffs of the 4 filters (maybe use float later - and the SSE2 rsFloat32X4):
   double b0_0, b1_0, a1_0, a2_0,
          b0_1, b1_1, a1_1, a2_1,
          b0_2, b1_2, a1_2, a2_2,
          b0_3, b1_3, a1_3, a2_3;
-
-  double w = 2*PI*frequency/sampleRate;  // omega
-  double A = amplitude;                  // include energy normalizer later
-  double p = phase, fs = sampleRate;     // shortcuts
-
-  // design the 4 decaying sine filters:
   rsDampedSineFilter(w, (1-attackBlend)*A, attackEarly*fs, p, &b0_0, &b1_0, &a1_0, &a2_0);
   rsDampedSineFilter(w,    attackBlend *A, attackLate *fs, p, &b0_1, &b1_1, &a1_1, &a2_1);
   rsDampedSineFilter(w,  (1-decayBlend)*A, decayEarly *fs, p, &b0_2, &b1_2, &a1_2, &a2_2);
   rsDampedSineFilter(w,     decayBlend *A, decayLate  *fs, p, &b0_3, &b1_3, &a1_3, &a2_3);
+  */
 
+
+  rsModalFilterDD f0, f1, f2, f3;
+  f0.setModalParameters(f, -(1-attackBlend)*A, attackEarly, p, fs);
+  f1.setModalParameters(f, -   attackBlend *A, attackLate,  p, fs);
+  f2.setModalParameters(f,  (1-decayBlend) *A, decayEarly,  p, fs);
+  f3.setModalParameters(f,     decayBlend  *A, decayLate,   p, fs);
+
+
+  // synthesize the sound:
+  int numSamples = (int) ceil(length*sampleRate);
+  std::vector<double> x(numSamples);
+  x[0] = f0.getSample(1) + f1.getSample(1) + f2.getSample(1) + f3.getSample(1);
+  for(int n = 1; n < numSamples; n++)
+    x[n] = f0.getSample(0) + f1.getSample(0) + f2.getSample(0) + f3.getSample(0);
 
   int dummy = 0;
+
+  rosic::writeToMonoWaveFile("ModalWithFanyEnv.wav", &x[0], numSamples, (int)fs);
 
   //void rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2);
 
