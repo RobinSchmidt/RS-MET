@@ -50,6 +50,7 @@
 //#include <stdio.h>
 //#include <new>
 //#include <iterator>
+#include <emmintrin.h>    // SSE2
 
 #ifndef __APPLE__
 #include <malloc.h>     // for alloca - try to get rid..

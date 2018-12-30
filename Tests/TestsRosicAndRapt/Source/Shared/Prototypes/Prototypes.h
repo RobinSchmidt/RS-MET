@@ -109,6 +109,41 @@ protected:
 
 //=================================================================================================
 
+/** A filter representing a mode that uses four parallel decaying sine filters with different decay
+rates but otherwise the same parameters. The different decay rates mix to create interesting 
+envelope shapes. */
+
+class rsModalFilterFloatSSE2
+{
+
+  void setParameters(
+    double omega,   double energy,  double phase, 
+    double decay1,  double decay2,  double decayBlend,
+    double attack1, double attack2, double attackBlend);
+  // attack/decay times are given in samples the same way as in
+  // rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2);
+
+
+
+  inline rsFloat32x4 getSample(rsFloat32x4 in)
+  {
+    rsFloat32x4 y = b0*in + b1*x1 - a1*y1 - a2*y2; // todo: use all plusses (more efficient)
+    x1 = in;  // maybe multiply by b0 at the output instead of input for better reponse to amplitude
+    y2 = y1;  // modulation, try (transposed) direct form 2
+    y1 = y;
+    return y;
+  }
+  // the actual output sample is the horizontal sum of the 4 values in the vector but it makes 
+  // sense to first accumulate all modes and then do a single horizontal sum in the end
+
+protected:
+
+  rsFloat32x4 b0, b1, a1, a2, x1, y1, y2;
+
+};
+
+//=================================================================================================
+
 /** Another go at a general ordinary differential equation solver with a probably more convenient
 interface than the old one (which required subclassing to define a concrete ODE (system)).
 
