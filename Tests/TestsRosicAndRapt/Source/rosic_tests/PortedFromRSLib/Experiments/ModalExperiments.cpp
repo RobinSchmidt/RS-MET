@@ -443,13 +443,90 @@ T fourExpEnergy(T A, T a, T B, T b, T C, T c, T D, T d)
   T a3 = a*a2, b3 = b*b2, c3 = c*c2, d3 = d*d2;
   T a4 = a*a3, b4 = b*b3, c4 = c*c3, d4 = d*d3;
 
-  T E  = -1/2*((D2*a3*b2 + D2*a2*b3)*c4 + (C2*a3*b2 + C2*a2*b3 + (B2*a2 + A2*b2 + (A2 + 4*A*B + B2)*a*b)*c3 + (B2*a3 + A2*b3 + (A2 + 4*A*B + 2*B2 - 4*(A + B)*C + C2)*a2*b + (2*A2 + 4*A*B + B2 - 4*(A + B)*C + C2)*a*b2)*c2 + ((B2 - 4*B*C + C2)*a3*b + (A2 + 4*A*B + B2 - 4*(A + B)*C + 2*C2)*a2*b2 + (A2 - 4*A*C + C2)*a*b3)*c)*d4 + (D2*a4*b2 + 2*D2*a3*b3 + D2*a2*b4)*c3 + (C2*a4*b2 + 2*C2*a3*b3 + C2*a2*b4 + (B2*a2 + A2*b2 + (A2 + 4*A*B + B2)*a*b)*c4 + (2*B2*a3 + 2*A2*b3 + (2*A2 + 8*A*B + 4*B2 - 4*(A + B)*C + C2 - 4*(A + B - C)*D + D2)*a2*b + (4*A2 + 8*A*B + 2*B2 - 4*(A + B)*C + C2 - 4*(A + B - C)*D + D2)*a*b2)*c3 + (B2*a4 + A2*b4 + (A2 + 4*A*B + 4*B2 - 4*(A + 2*B)*C + 2*C2 - 4*(A + B - C)*D + D2)*a3*b + 2*(2*A2 + 6*A*B + 2*B2 - 6*(A + B)*C + 2*C2 - 4*(A + B - C)*D + D2)*a2*b2 + (4*A2 + 4*A*B + B2 - 4*(2*A + B)*C + 2*C2 - 4*(A + B - C)*D + D2)*a*b3)*c2 + ((B2 - 4*B*C + C2)*a4*b + (A2 + 4*A*B + 2*B2 - 4*(A + 2*B)*C + 4*C2 - 4*(A + B - C)*D + D2)*a3*b2 + (2*A2 + 4*A*B + B2 - 4*(2*A + B)*C + 4*C2 - 4*(A + B - C)*D + D2)*a2*b3 + (A2 - 4*A*C + C2)*a*b4)*c)*d3 + (D2*a4*b3 + D2*a3*b4)*c2 + (C2*a4*b3 + C2*a3*b4 + (B2*a3 + A2*b3 + (A2 + 4*A*B + 2*B2 - 4*(A + B)*D + D2)*a2*b + (2*A2 + 4*A*B + B2 - 4*(A + B)*D + D2)*a*b2)*c4 + (B2*a4 + A2*b4 + (A2 + 4*A*B + 4*B2 - 4*(A + B)*C + C2 - 4*(A + 2*B - C)*D + 2*D2)*a3*b + 2*(2*A2 + 6*A*B + 2*B2 - 4*(A + B)*C + C2 - 2*(3*A + 3*B - 2*C)*D + 2*D2)*a2*b2 + (4*A2 + 4*A*B + B2 - 4*(A + B)*C + C2 - 4*(2*A + B - C)*D + 2*D2)*a*b3)*c3 + ((2*B2 - 4*B*C + C2 - 4*(B - C)*D + D2)*a4*b + 2*(A2 + 4*A*B + 2*B2 - 2*(2*A + 3*B)*C + 2*C2 - 2*(2*A + 3*B - 3*C)*D + 2*D2)*a3*b2 + 2*(2*A2 + 4*A*B + B2 - 2*(3*A + 2*B)*C + 2*C2 - 2*(3*A + 2*B - 3*C)*D + 2*D2)*a2*b3 + (2*A2 - 4*A*C + C2 - 4*(A - C)*D + D2)*a*b4)*c2 + ((B2 - 4*B*C + 2*C2 - 4*(B - C)*D + D2)*a4*b2 + (A2 + 4*A*B + B2 - 4*(A + B)*C + 4*C2 - 4*(A + B - 2*C)*D + 2*D2)*a3*b3 + (A2 - 4*A*C + 2*C2 - 4*(A - C)*D + D2)*a2*b4)*c)*d2 + (((B2 - 4*B*D + D2)*a3*b + (A2 + 4*A*B + B2 - 4*(A + B)*D + 2*D2)*a2*b2 + (A2 - 4*A*D + D2)*a*b3)*c4 + ((B2 - 4*B*D + D2)*a4*b + (A2 + 4*A*B + 2*B2 - 4*(A + B)*C + C2 - 4*(A + 2*B - C)*D + 4*D2)*a3*b2 + (2*A2 + 4*A*B + B2 - 4*(A + B)*C + C2 - 4*(2*A + B - C)*D + 4*D2)*a2*b3 + (A2 - 4*A*D + D2)*a*b4)*c3 + ((B2 - 4*B*C + C2 - 4*(B - C)*D + 2*D2)*a4*b2 + (A2 + 4*A*B + B2 - 4*(A + B)*C + 2*C2 - 4*(A + B - 2*C)*D + 4*D2)*a3*b3 + (A2 - 4*A*C + C2 - 4*(A - C)*D + 2*D2)*a2*b4)*c2 + ((C2 + 4*C*D + D2)*a4*b3 + (C2 + 4*C*D + D2)*a3*b4)*c)*d)/(((a2*b + a*b2)*c3 + (a3*b + 2*a2*b2 + a*b3)*c2 + (a3*b2 + a2*b3)*c)*d4 + ((a2*b + a*b2)*c4 + 2*(a3*b + 2*a2*b2 + a*b3)*c3 + (a4*b + 4*a3*b2 + 4*a2*b3 + a*b4)*c2 + (a4*b2 + 2*a3*b3 + a2*b4)*c)*d3 + ((a3*b + 2*a2*b2 + a*b3)*c4 + (a4*b + 4*a3*b2 + 4*a2*b3 + a*b4)*c3 + 2*(a4*b2 + 2*a3*b3 + a2*b4)*c2 + (a4*b3 + a3*b4)*c)*d2 + ((a3*b2 + a2*b3)*c4 + (a4*b2 + 2*a3*b3 + a2*b4)*c3 + (a4*b3 + a3*b4)*c2)*d);
+  T E = -1.0/2.0*((D2*a3*b2 + D2*a2*b3)*c4 + (C2*a3*b2 + C2*a2*b3 + (B2*a2 + A2*b2 
+    + (A2 + 4*A*B + B2)*a*b)*c3 + (B2*a3 + A2*b3 + (A2 + 4*A*B + 2*B2 - 4*(A + B)*C + C2)*a2*b 
+    + (2*A2 + 4*A*B + B2 - 4*(A + B)*C + C2)*a*b2)*c2 + ((B2 - 4*B*C + C2)*a3*b 
+    + (A2 + 4*A*B + B2 - 4*(A + B)*C + 2*C2)*a2*b2 + (A2 - 4*A*C + C2)*a*b3)*c)*d4 
+    + (D2*a4*b2 + 2*D2*a3*b3 + D2*a2*b4)*c3 + (C2*a4*b2 + 2*C2*a3*b3 + C2*a2*b4 
+    + (B2*a2 + A2*b2 + (A2 + 4*A*B + B2)*a*b)*c4 + (2*B2*a3 + 2*A2*b3 
+    + (2*A2 + 8*A*B + 4*B2 - 4*(A + B)*C + C2 - 4*(A + B - C)*D + D2)*a2*b 
+    + (4*A2 + 8*A*B + 2*B2 - 4*(A + B)*C + C2 - 4*(A + B - C)*D + D2)*a*b2)*c3 
+    + (B2*a4 + A2*b4 + (A2 + 4*A*B + 4*B2 - 4*(A + 2*B)*C + 2*C2 - 4*(A + B - C)*D + D2)*a3*b 
+    + 2*(2*A2 + 6*A*B + 2*B2 - 6*(A + B)*C + 2*C2 - 4*(A + B - C)*D + D2)*a2*b2 
+    + (4*A2 + 4*A*B + B2 - 4*(2*A + B)*C   + 2*C2 - 4*(A + B - C)*D + D2)*a*b3)*c2 
+    + ((B2 - 4*B*C + C2)*a4*b + (A2 + 4*A*B + 2*B2 - 4*(A + 2*B)*C 
+    + 4*C2 - 4*(A + B - C)*D + D2)*a3*b2 + (2*A2 + 4*A*B + B2 - 4*(2*A + B)*C 
+    + 4*C2 - 4*(A + B - C)*D + D2)*a2*b3 + (A2 - 4*A*C + C2)*a*b4)*c)*d3 
+    + (D2*a4*b3 + D2*a3*b4)*c2 + (C2*a4*b3 + C2*a3*b4 + (B2*a3 + A2*b3 
+    + (A2 + 4*A*B + 2*B2 - 4*(A + B)*D + D2)*a2*b + (2*A2 + 4*A*B + B2 - 4*(A + B)*D + D2)*a*b2)*c4 
+    + (B2*a4 + A2*b4 + (A2 + 4*A*B + 4*B2 - 4*(A + B)*C + C2 - 4*(A + 2*B - C)*D + 2*D2)*a3*b 
+    + 2*(2*A2 + 6*A*B + 2*B2 - 4*(A + B)*C + C2 - 2*(3*A + 3*B - 2*C)*D + 2*D2)*a2*b2 
+    + (4*A2 + 4*A*B + B2     - 4*(A + B)*C + C2 - 4*(2*A + B - C)*D 
+    + 2*D2)*a*b3)*c3 + ((2*B2 - 4*B*C + C2 - 4*(B - C)*D + D2)*a4*b 
+    + 2*(A2 + 4*A*B + 2*B2 - 2*(2*A + 3*B)*C + 2*C2 - 2*(2*A + 3*B - 3*C)*D + 2*D2)*a3*b2 
+    + 2*(2*A2 + 4*A*B + B2 - 2*(3*A + 2*B)*C + 2*C2 - 2*(3*A + 2*B - 3*C)*D + 2*D2)*a2*b3 
+    +   (2*A2 - 4*A*C + C2 - 4*(A - C)*D + D2)*a*b4)*c2 
+    + ((B2 - 4*B*C + 2*C2 - 4*(B - C)*D + D2)*a4*b2 
+    + (A2 + 4*A*B + B2 - 4*(A + B)*C + 4*C2 - 4*(A + B - 2*C)*D + 2*D2)*a3*b3 
+    + (A2 - 4*A*C + 2*C2 - 4*(A - C)*D + D2)*a2*b4)*c)*d2 + (((B2 - 4*B*D + D2)*a3*b 
+    + (A2 + 4*A*B + B2 - 4*(A + B)*D + 2*D2)*a2*b2 + (A2 - 4*A*D + D2)*a*b3)*c4 
+    + ((B2 - 4*B*D + D2)*a4*b + (A2 + 4*A*B + 2*B2 - 4*(A + B)*C + C2 - 4*(A + 2*B - C)*D 
+    + 4*D2)*a3*b2 + (2*A2 + 4*A*B + B2 - 4*(A + B)*C + C2 - 4*(2*A + B - C)*D 
+    + 4*D2)*a2*b3 + (A2 - 4*A*D + D2)*a*b4)*c3 + ((B2 - 4*B*C + C2 - 4*(B - C)*D + 2*D2)*a4*b2 
+    + (A2 + 4*A*B + B2 - 4*(A + B)*C + 2*C2 - 4*(A + B - 2*C)*D + 4*D2)*a3*b3 
+    + (A2 - 4*A*C + C2 - 4*(A - C)*D + 2*D2)*a2*b4)*c2 + ((C2 + 4*C*D + D2)*a4*b3 
+    + (C2 + 4*C*D + D2)*a3*b4)*c)*d)
+    /
+    (((a2*b + a*b2)*c3 + (a3*b + 2*a2*b2 + a*b3)*c2 
+    + (a3*b2 + a2*b3)*c)*d4 + ((a2*b + a*b2)*c4 + 2*(a3*b + 2*a2*b2 + a*b3)*c3 
+    + (a4*b + 4*a3*b2 + 4*a2*b3 + a*b4)*c2 + (a4*b2 + 2*a3*b3 + a2*b4)*c)*d3 
+    + ((a3*b + 2*a2*b2 + a*b3)*c4 + (a4*b + 4*a3*b2 + 4*a2*b3 + a*b4)*c3 
+    + 2*(a4*b2 + 2*a3*b3 + a2*b4)*c2 + (a4*b3 + a3*b4)*c)*d2 + ((a3*b2 + a2*b3)*c4 
+    + (a4*b2 + 2*a3*b3 + a2*b4)*c3 + (a4*b3 + a3*b4)*c2)*d);
+
+  // frequent patterns: 4*(A + B)*C, 4*(A - C)*D, 4*(A + B - C)*D
 
   return E;
 }
 
 void fourExponentials()
 {
+  // f(t) = A*exp(a*t) + B*exp(b*t) - C*exp(c*t) - D*exp(d*t)
+  // A,a,B,b are reposnibel for the decay, C,c,D,d for the attack
 
-  int dummy = 0;
+  double A, B, C, D, a, b, c, d;
+
+  A = 0.2;  a = -1/10.0;  // late decay, a = -1/tau_a, 
+  B = 1-A;  b = -1/2.0;   // early decay
+  C = 0.8;  c = -1/3.0;
+  D = 1-C;  d = -1/0.2;
+
+  double E = fourExpEnergy(A, a, B, b, C, c, D, d); 
+  double normalizer = 1/sqrt(E);
+
+  // create time axis and evaluate function, evaluate also it's square and plot it
+  double tMin = 0, tMax = 30;
+  static const int N = 500;
+  double t[N], env[N], env2[N], energy[N]; // energy is accumulated energy up to t
+  RAPT::rsArray::fillWithRangeLinear(t, N, tMin, tMax);
+  for(int n = 0; n < N; n++) {
+    env[n]  = A*exp(a*t[n]) + B*exp(b*t[n]) - C*exp(c*t[n]) - D*exp(d*t[n]);
+    env[n] *= normalizer; // energy normalization
+    env2[n] = env[n]*env[n];
+  }
+
+  RAPT::rsNumericIntegral(t, env2, energy, N);
+  // if the envelope is decayed to zero at the end, the final value in the energy array should be
+  // close to 1 - the accumulated energy from 0 to infinity of the whole (normalized) envelope 
+  // should be 1
+
+  // plot envelope and its square:
+  GNUPlotter plt;
+  plt.addDataArrays(N, t, env, env2, energy);
+  plt.plot();
+ 
+  // the additional parameters are actually quite useful to shape the envelope - but i still need
+  // to figure out how to parameterize it in the most user-friendly way. maybe EarlyDecay should
+  // be a fraction of LateDecay and the EarlyAttack a fraction of LateAttack
+  // EarlyAttack, LateAttack, AttackBlend - same for Decay - maybe have an overall time-scale
 }
