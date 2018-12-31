@@ -141,13 +141,13 @@ public:
 
   inline float getSample(float in)
   {
-    // verbose with intermediates for debugging:
-    rsFloat32x4 vecIn  = rsFloat32x4(in);
-    rsFloat32x4 vecOut = getSampleVector(vecIn);
-    float scalarOut = vecOut.getSum();
-    return scalarOut;
+    //// verbose with intermediates for debugging:
+    //rsFloat32x4 vecIn  = rsFloat32x4(in);
+    //rsFloat32x4 vecOut = getSampleVector(vecIn);
+    //float scalarOut = vecOut.getSum();
+    //return scalarOut;
 
-    //return getSampleVector(rsFloat32x4(in)).getSum();;
+    return getSampleVector(rsFloat32x4(in)).getSum();;
   }
 
   void reset()

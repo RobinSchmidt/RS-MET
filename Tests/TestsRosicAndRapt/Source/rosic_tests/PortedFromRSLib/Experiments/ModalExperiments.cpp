@@ -581,23 +581,27 @@ void modalWithFancyEnv()
   y[0] = mf.getSample(1.f);
   for(int n = 1; n < numSamples; n++)
     y[n] = mf.getSample(0.f);
-  // something is wrong - the scalars y[2],y[3] are assigned to NaN in the getSampleVector
-  // ...make unit test for rsFloat32x4
-  // ahhh - i think, we need to put a minus sign to the filters 0 and 1
-
 
   // compute error due to single precision floating point precision in optimized filter:
   std::vector<double> err(numSamples);
   for(int n = 0; n < numSamples; n++)
     err[n] = x[n] - y[n];
 
-  GNUPlotter plt;
-  plt.addDataArrays(5000, &err[10000]);
-  plt.plot();
+  //GNUPlotter plt;
+  //plt.addDataArrays(5000, &err[10000]);
+  //plt.plot();
+  // the error is also in the shape of a sinewave with amplitude of order 0.01
 
+  // maybe normalize the error for writing to wavefile:
+  RAPT::rsArray::normalize(&err[0], numSamples, 1.0);
+  // absolute error is greatest when signals are loudest ...roughly - maybe consider relative
+  // error...at least, the error doesn't seem to get much worse over time maybe try frequency
+  // that is "more irrational" ...however, all in all, it looks good - single precision seems
+  // to be good enough for rock'n'roll
 
-  rosic::writeToMonoWaveFile("ModalWithFancyEnvDbl.wav", &x[0], numSamples, (int)fs);
-  //rosic::writeToMonoWaveFile("ModalWithFancyEnvFlt.wav", &y[0], numSamples, (int)fs);
+  rosic::writeToMonoWaveFile("ModalWithFancyEnvDbl.wav", &x[0],   numSamples, (int)fs);
+  rosic::writeToMonoWaveFile("ModalWithFancyEnvFlt.wav", &y[0],   numSamples, (int)fs);
+  rosic::writeToMonoWaveFile("ModalWithFancyEnvErr.wav", &err[0], numSamples, (int)fs);
 }
 
 
