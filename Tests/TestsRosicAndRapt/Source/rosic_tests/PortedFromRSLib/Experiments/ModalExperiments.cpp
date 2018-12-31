@@ -608,6 +608,11 @@ void modalWithFancyEnv()
   // ...or something
   // we can also adjust the phase of the second wave...but then it more and more turns into a 
   // full blown additional mode with its full parameter set...hmmm
+  // ...maybe we should have a bunch of simple modes and another bunch of more complex modes and 
+  // the user can choose to model a given mode with whatever version of the modal filter he wants
+  // or better: just auto-detect, if a given feature is used or not and allocate the appropriate
+  // mode filter for it ...maybe especially the faster decaying modes do not need such a fancy
+  // envelope?
 
   // ToDo next: perfomrance tests and tweaking to get the best possible performance, try:
   // -addition instead of subtraction in difference equation

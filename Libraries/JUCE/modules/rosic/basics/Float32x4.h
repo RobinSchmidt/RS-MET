@@ -180,8 +180,8 @@ function that operate simultaneously on all elements:
 
 math:
 __m128 _mm_sqrt_ps(__m128 a)              square root
-__m128 _mm_rcp_ps(__m128 a)               reciprocal
-__m128 _mm_rsqrt_ps(__m128 a)             reciprocal square root
+__m128 _mm_rcp_ps(__m128 a)               (approximate?) reciprocal
+__m128 _mm_rsqrt_ps(__m128 a)             (approximate?) reciprocal square root
 __m128 _mm_min_ps(__m128 a, __m128 b)     minimum
 __m128 _mm_max_ps(__m128 a, __m128 b)     maximum
 

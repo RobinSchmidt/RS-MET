@@ -360,6 +360,9 @@ void dampedSineFilter(double w, double A, double d, double p,
   *a2 = float(P*P);                // = P^2
   *b0 = float(A*sp);               // = A*sin(p)
   *b1 = float(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
+
+  // because values will be rounded to float anyway, we could use a polynomial approximation
+  // of sin/cos?
 }
 
 void rsModalFilterFloatSSE2::setParameters(
