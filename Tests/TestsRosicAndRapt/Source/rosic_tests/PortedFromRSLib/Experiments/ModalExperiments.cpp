@@ -582,6 +582,31 @@ void modalWithFancyEnv()
   for(int n = 1; n < numSamples; n++)
     y[n] = mf.getSample(0.f);
 
+  // experiment: add a signal with a frequency slightly offset but otherwise the same parameters
+  // to get mode-beating:
+  mf.reset();
+  double df = 4.0;
+  double dw = 2*PI*df/fs;
+  mf.setParameters(w+dw, amplitude, p, 
+    fs*attackEarly, fs*attackLate, attackBlend,
+    fs*decayEarly,  fs*decayLate,  decayBlend);
+  std::vector<double> z(numSamples); // we convert the floats back to double on the fly
+  z[0] = mf.getSample(1.f) + y[0];
+  for(int n = 1; n < numSamples; n++)
+    z[n] = 0.25*mf.getSample(0.f) + y[n];
+  // question what is the perceived frequency as function of the two beating mode freqs and 
+  // amplitudes - when the amplitudes are equal, it's the arithemtic mean but if they are 
+  // unequal, it's supposed to be skewed toward the louder mode - but by what function? maybe
+  // just a weighted arithmetic mean? that would be simple enough and make sense - if we want to 
+  // provide a mode-beating parameter at some stage, we need a formula to adjust the master
+  // frequency according to the delta-f. 
+  // maybe have a beating parameter b in 0..1 and do
+  // freq1 = masterFreq -    b  * beatFreq
+  // freq2 = masterFreq + (1-b) * beatFreq
+  // out = (1-b)*sineWithFreq1 + b*sineWithFreq2
+  // ...or soemthing
+
+
   // compute error due to single precision floating point precision in optimized filter:
   std::vector<double> err(numSamples);
   for(int n = 0; n < numSamples; n++)
@@ -602,6 +627,7 @@ void modalWithFancyEnv()
   rosic::writeToMonoWaveFile("ModalWithFancyEnvDbl.wav", &x[0],   numSamples, (int)fs);
   rosic::writeToMonoWaveFile("ModalWithFancyEnvFlt.wav", &y[0],   numSamples, (int)fs);
   rosic::writeToMonoWaveFile("ModalWithFancyEnvErr.wav", &err[0], numSamples, (int)fs);
+  rosic::writeToMonoWaveFile("ModalWithFancyEnvBeating.wav", &z[0],   numSamples, (int)fs);
 }
 
 
