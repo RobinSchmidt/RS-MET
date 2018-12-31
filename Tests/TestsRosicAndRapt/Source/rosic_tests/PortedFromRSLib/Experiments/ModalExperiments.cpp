@@ -539,7 +539,8 @@ void modalWithFancyEnv()
   double length      = 10.0;
   double sampleRate  = 48000;
 
-  double frequency   = 220;
+  //double frequency   = 220;
+  double frequency   = 100*GOLDEN_RATIO;
   double amplitude   = 2.5;
   double phase       = 0.0;
 
