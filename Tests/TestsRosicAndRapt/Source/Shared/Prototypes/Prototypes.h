@@ -116,16 +116,18 @@ envelope shapes. */
 class rsModalFilterFloatSSE2
 {
 
+public:
+
   void setParameters(
     double omega,   double energy,  double phase, 
-    double decay1,  double decay2,  double decayBlend,
-    double attack1, double attack2, double attackBlend);
+    double attack1, double attack2, double attackBlend,
+    double decay1,  double decay2,  double decayBlend);
   // attack/decay times are given in samples the same way as in
   // rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2);
 
 
 
-  inline rsFloat32x4 getSample(rsFloat32x4 in)
+  inline rsFloat32x4 getSampleVector(rsFloat32x4 in)
   {
     rsFloat32x4 y = b0*in + b1*x1 - a1*y1 - a2*y2; // todo: use all plusses (more efficient)
     x1 = in;  // maybe multiply by b0 at the output instead of input for better reponse to amplitude
@@ -135,6 +137,13 @@ class rsModalFilterFloatSSE2
   }
   // the actual output sample is the horizontal sum of the 4 values in the vector but it makes 
   // sense to first accumulate all modes and then do a single horizontal sum in the end
+
+  inline float getSample(float in)
+  {
+    return getSampleVector(rsFloat32x4(in)).getSum();
+  }
+
+
 
 protected:
 

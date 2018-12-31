@@ -364,8 +364,9 @@ void dampedSineFilter(double w, double A, double d, double p,
 
 void rsModalFilterFloatSSE2::setParameters(
   double w, double E, double p, 
-  double dec1, double dec2, double decB, 
-  double att1, double att2, double attB)
+  double att1, double att2, double attB,
+  double dec1, double dec2, double decB
+  )
 {
   double A = E;  // preliminary
   // todo: compute energy, divide A by sqrt(energy), optimize computations (some values are 
