@@ -275,7 +275,10 @@ bool float32x4UnitTest()
 
 
 
-
+  // reductions to scalar:
+  float s;
+  x.set(1, 2, 3, 4);
+  s = x.getSum(); r &= s == 10.f;
 
   return r;
 

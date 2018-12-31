@@ -376,6 +376,10 @@ void rsModalFilterFloatSSE2::setParameters(
   dampedSineFilter(w,    attB *A, att2, p, &b0[1], &b1[1], &a1[1], &a2[1]);
   dampedSineFilter(w, (1-decB)*A, dec1, p, &b0[2], &b1[2], &a1[2], &a2[2]);
   dampedSineFilter(w,    decB *A, dec2, p, &b0[3], &b1[3], &a1[3], &a2[3]);
+
+  // filters 0 and 1 need a minus sign to make the final getSum work:
+  b0[0] = -b0[0], b1[0] = -b1[0];
+  b0[1] = -b0[1], b1[1] = -b1[1];
 }
 
 //=================================================================================================

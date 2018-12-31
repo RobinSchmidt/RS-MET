@@ -64,6 +64,9 @@ public:
   /** Sets the 4 elements to the given numbers. */
   inline void set(float a, float b, float c, float d) { v = _mm_setr_ps(a, b, c, d); }
 
+  /** Sets the 4 elements to the given integers, thereby converting them to float. */
+  inline void set(int a, int b, int c, int d) { set((float) a, (float) b, (float) c, (float) d); }
+
   /** Sets the vector element with index i (valid indices are 0 and 1). */
   //inline void set(size_t i, float a)  { asArray()[i] = a; }
   // redundant with array access operator - maybe delete from rsFloat64x2, too

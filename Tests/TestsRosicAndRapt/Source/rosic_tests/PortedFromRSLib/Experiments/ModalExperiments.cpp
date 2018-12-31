@@ -583,12 +583,17 @@ void modalWithFancyEnv()
     y[n] = mf.getSample(0.f);
   // something is wrong - the scalars y[2],y[3] are assigned to NaN in the getSampleVector
   // ...make unit test for rsFloat32x4
+  // ahhh - i think, we need to put a minus sign to the filters 0 and 1
 
 
   // compute error due to single precision floating point precision in optimized filter:
   std::vector<double> err(numSamples);
   for(int n = 0; n < numSamples; n++)
     err[n] = x[n] - y[n];
+
+  GNUPlotter plt;
+  plt.addDataArrays(5000, &err[10000]);
+  plt.plot();
 
 
   rosic::writeToMonoWaveFile("ModalWithFancyEnvDbl.wav", &x[0], numSamples, (int)fs);
