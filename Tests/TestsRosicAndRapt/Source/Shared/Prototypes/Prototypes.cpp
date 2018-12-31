@@ -347,6 +347,35 @@ template class rsStateVectorFilter<double, double>; // explicit instantiation
 // maybe apply this factor also to "in" because it would be weird to pass the input through
 // undistorted ...but might be interesting to explore
 
+//=================================================================================================
+
+void dampedSineFilter(double w, double A, double d, double p, 
+  float* b0, float* b1, float* a1, float* a2)
+{
+  double cw, sw, cp, sp, P;
+  rsSinCos(w, &sw, &cw);
+  rsSinCos(p, &sp, &cp);
+  P = exp(-1.0/d);                 // = exp(-alpha), pole radius
+  *a1 = float(-2*P*cw);            // = -2*P*cos(w)
+  *a2 = float(P*P);                // = P^2
+  *b0 = float(A*sp);               // = A*sin(p)
+  *b1 = float(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
+}
+
+void rsModalFilterFloatSSE2::setParameters(
+  double w, double E, double p, 
+  double dec1, double dec2, double decB, 
+  double att1, double att2, double attB)
+{
+  double A = E;  // preliminary
+  // todo: compute energy, divide A by sqrt(energy), optimize computations (some values are 
+  // computed 4 times (cw,sw,cp,sp) in the 4 calls below - but do this in production code):
+
+  dampedSineFilter(w, (1-attB)*A, att1, p, &b0[0], &b1[0], &a1[0], &a2[0]);
+  dampedSineFilter(w,    attB *A, att2, p, &b0[1], &b1[1], &a1[1], &a2[1]);
+  dampedSineFilter(w, (1-decB)*A, dec1, p, &b0[2], &b1[2], &a1[2], &a2[2]);
+  dampedSineFilter(w,    decB *A, dec2, p, &b0[3], &b1[3], &a1[3], &a2[3]);
+}
 
 //=================================================================================================
 

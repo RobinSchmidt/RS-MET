@@ -587,8 +587,25 @@ void modalWithFancyEnv()
 
   int dummy = 0;
 
-  rosic::writeToMonoWaveFile("ModalWithFanyEnv.wav", &x[0], numSamples, (int)fs);
+  rosic::writeToMonoWaveFile("ModalWithFancyEnv.wav", &x[0], numSamples, (int)fs);
 
   //void rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2);
 
 }
+
+
+
+
+
+/*
+Ideas:
+-user defines modal parameters for various keys and velocities (at least two keys at two 
+ velocities)
+-for key/vel in between the defined ones, an appropriate interpolation is used (maybe
+ log -> natural cubic spline -> exp), outside the range, extrapolation is used - for the spline, 
+ it may make sense to just use the a0, a1 polynomial coeffs of the endpoints - a2 is zero anyway 
+ due to the "natural" end conditions and in extrapolation we artificially set a3 also to zero in 
+ order to prevent the polynomial from going crazy
+-maybe we can emulate mode-beating by using two modes of nearby frequencies (not necessarily with 
+ the same envelope/amplitude
+*/
