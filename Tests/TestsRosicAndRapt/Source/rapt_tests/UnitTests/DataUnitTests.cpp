@@ -239,9 +239,7 @@ bool float32x4UnitTest()
   // getters:
   //float y0, y1, y2, y3;
   //y.get(y0, y1, y2, y3); r &= y0 == a && y1 == b && y2 == c && y3 == d;
-  y.get(arr); r &= arr[0] == c && arr[1] == d && arr[2] == b && arr[2] == a;
-  // FAILS!!
-
+  y.get(arr); r &= arr[0] == c && arr[1] == d && arr[2] == b && arr[3] == a;
 
   // assignment and equality:
   y = x1; r &= y == x1;  // abcd again
