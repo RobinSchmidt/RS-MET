@@ -604,7 +604,16 @@ void modalWithFancyEnv()
   // freq1 = masterFreq -    b  * beatFreq
   // freq2 = masterFreq + (1-b) * beatFreq
   // out = (1-b)*sineWithFreq1 + b*sineWithFreq2
-  // ...or soemthing
+  // ...or something
+  // we can also adjust the phase of the second wave...but then it more and more turns into a 
+  // full blown additional mode with its full parameter set...hmmm
+
+  // ToDo next: perfomrance tests and tweaking to get the best possible performance, try:
+  // -addition instead of subtraction in difference equation
+  // -(transposed) direct form 2
+  // -make the y a member variable...hmm - we actually already have y1 - oh - no - that
+  //  can't be used because it's nnede later to update y2
+
 
 
   // compute error due to single precision floating point precision in optimized filter:

@@ -111,23 +111,23 @@ protected:
 
 /** A filter representing a mode that uses four parallel decaying sine filters with different decay
 rates but otherwise the same parameters. The different decay rates mix to create interesting 
-envelope shapes. */
+envelope shapes. It uses a single rsFloat32x4 variable for the signal, i.e. it computes four 
+parallel filters at once using SSE2 vector instructions. */
 
 class rsModalFilterFloatSSE2
 {
 
 public:
 
-
+  /** Sets up the mode parameters. Omega is the radian frequency (2*pi*f/fs), the phase is in 
+  radians and the decay time constants are in samples. See also rsDampedSineFilter. */
   void setParameters(
     double omega,   double energy,  double phase, 
     double attack1, double attack2, double attackBlend,
     double decay1,  double decay2,  double decayBlend);
-  // attack/decay times are given in samples the same way as in
-  // rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2);
 
-
-
+  /** Produces the vector of the 4 outputs of the 4 individual decaying sine filters. The actual 
+  scalar output sample would be the sum of these 4. */
   inline rsFloat32x4 getSampleVector(rsFloat32x4 in)
   {
     rsFloat32x4 y = b0*in + b1*x1 - a1*y1 - a2*y2; // todo: use all plusses (more efficient)
@@ -136,24 +136,15 @@ public:
     y1 = y;
     return y;
   }
-  // the actual output sample is the horizontal sum of the 4 values in the vector but it makes 
-  // sense to first accumulate all modes and then do a single horizontal sum in the end
 
-  inline float getSample(float in)
-  {
-    //// verbose with intermediates for debugging:
-    //rsFloat32x4 vecIn  = rsFloat32x4(in);
-    //rsFloat32x4 vecOut = getSampleVector(vecIn);
-    //float scalarOut = vecOut.getSum();
-    //return scalarOut;
+  /** Produces a scalar output sample that adds up all the 4 decaying sines. Whne a single mode is
+  synthesiszed, you can use this function. When many modes are added, it makes more sense to just
+  call the vector function and accumulate the vectors and do just a single sum after the 
+  accumulation. */
+  inline float getSample(float in) { return getSampleVector(rsFloat32x4(in)).getSum(); }
 
-    return getSampleVector(rsFloat32x4(in)).getSum();;
-  }
-
-  void reset()
-  {
-    x1 = y1 = y2 = 0;
-  }
+  /** Resets the state variables to all zeros. */
+  void reset() { x1 = y1 = y2 = 0; }
 
 protected:
 
