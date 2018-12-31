@@ -244,6 +244,14 @@ bool float32x4UnitTest()
   // assignment and equality:
   y = x1; r &= y == x1;  // abcd again
 
+  // binary arithmetic operators:
+  rsFloat32x4 z, x;
+  x.set(1.f, 2.f, 3.f, 4.f);
+  y.set(5.f, 6.f, 7.f, 8.f);
+  z = x + y; r &= z[0] == 6 && z[1] == 8 && z[2] == 10 && z[3] == 12;
+  z = y - x; r &= z[0] == 4 && z[1] == 4 && z[2] == 4 && z[3] == 4;
+  z = x * y; r &= z[0] == 5 && z[1] == 12 && z[2] == 21 && z[3] == 32;
+  z = z / x; r &= z == y;
 
 
   return r;

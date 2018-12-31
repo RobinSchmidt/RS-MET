@@ -40,15 +40,11 @@ public:
 
   /** Returns the vector element with index i (valid indices are 0,1,2,3). */
   inline float get(size_t i) const { return asArray()[i]; }
-
-  /** Writes the two float into v0 and v1. */
-  //inline void get(float& v0, float& v1) const { _mm_storel_pd(&v0, v); _mm_storeh_pd(&v1, v); }
+  // redundant with [] ...but this is const
 
   /** Writes our vecotr into the 4-element float array p. (needs test, maybe implement a similar 
   function for rsFloat64x2 - this has beedn added after copy/paste ) */
-  //inline void get(float* p) { _mm_store1_ps(p, v); }  // FAILS!!
-  inline void get(float* p) { _mm_store_ps(p, v); }
-
+  inline void get(float* p) const { _mm_store_ps(p, v); }
 
   /** Returns the sum of the values of both scalar elements in the vector. */
   inline float getSum() const { float* a = asArray(); return a[0]+a[1]+a[2]+a[3]; }
@@ -173,7 +169,9 @@ __m128 _mm_set_ps(float z, float y, float x, float w)  Sets the four SP FP value
 __m128 _mm_setr_ps(float z, float y, float x, float w) Sets the four SP FP values to the four inputs in reverse order. 
 ..check which one actually reverses - the reference seems contradictory there
 
-
+store:
+void _mm_store_ps(float *p, __m128 a)    Stores four SP FP values. The address must be 16-byte-aligned. 
+void _mm_storeu_ps(float *p, __m128 a)   Stores four SP FP values. The address need not be 16-byte-aligned. 
 
 function that operate simultaneously on all elements:
 
