@@ -263,4 +263,7 @@ inline rsFloat64x2* rsCastPointer(double* p) { return reinterpret_cast<rsFloat64
 // for evaluating elementary math functions without resorting to the scalar versions, see:
 // http://ito-lab.naist.jp/~n-sibata/pdfs/isc10simd.pdf
 
+// reference:
+// http://www.info.univ-angers.fr/pub/richer/ens/l3info/ao/intel_intrinsics.pdf
+
 #endif

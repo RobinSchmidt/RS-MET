@@ -46,7 +46,9 @@ public:
 
   /** Writes our vecotr into the 4-element float array p. (needs test, maybe implement a similar 
   function for rsFloat64x2 - this has beedn added after copy/paste ) */
-  inline void get(float* p) { _mm_store1_ps(p, v); }
+  //inline void get(float* p) { _mm_store1_ps(p, v); }  // FAILS!!
+  inline void get(float* p) { _mm_store_ps(p, v); }
+
 
   /** Returns the sum of the values of both scalar elements in the vector. */
   inline float getSum() const { float* a = asArray(); return a[0]+a[1]+a[2]+a[3]; }
@@ -60,14 +62,15 @@ public:
 
   /** \name Setup */
 
-  /** Sets both elements to a. */
+  /** Sets all 4 elements to the given number a. */
   inline void set(float a) { v = _mm_set1_ps(a); }
 
-  /** Sets the first element to a and the second element to b. */
+  /** Sets the 4 elements to the given numbers. */
   inline void set(float a, float b, float c, float d) { v = _mm_setr_ps(a, b, c, d); }
 
   /** Sets the vector element with index i (valid indices are 0 and 1). */
-  inline void set(size_t i, float a)  { asArray()[i] = a; }
+  //inline void set(size_t i, float a)  { asArray()[i] = a; }
+  // redundant with array access operator - maybe delete from rsFloat64x2, too
 
 
   /** \name Constants */
@@ -153,8 +156,52 @@ inline rsFloat32x4 operator-(const rsFloat32x4& a) { return rsFloat32x4(0.f) - a
 
 
 
+/*
 
-#ifdef BLAH // code below obsolete
+// reference:
+// http://www.info.univ-angers.fr/pub/richer/ens/l3info/ao/intel_intrinsics.pdf
+
+load:
+__m128 _mm_load1_ps(float* p)    Loads a single SP FP value, copying it into all four words
+__m128 _mm_load_ps(float* p)     Loads four SP FP values. The address must be 16-byte-aligned
+__m128 _mm_loadu_ps(float* p)    Loads four SP FP values. The address need not be 16-byte-aligned. 
+
+set:
+__m128 _mm_setzero_ps(void)                            Clears the four SP FP values. 
+__m128 _mm_set1_ps(float w )                           Sets the four SP FP values to w. 
+__m128 _mm_set_ps(float z, float y, float x, float w)  Sets the four SP FP values to the four inputs. 
+__m128 _mm_setr_ps(float z, float y, float x, float w) Sets the four SP FP values to the four inputs in reverse order. 
+..check which one actually reverses - the reference seems contradictory there
+
+
+
+function that operate simultaneously on all elements:
+
+math:
+__m128 _mm_sqrt_ps(__m128 a)              square root
+__m128 _mm_rcp_ps(__m128 a)               reciprocal
+__m128 _mm_rsqrt_ps(__m128 a)             reciprocal square root
+__m128 _mm_min_ps(__m128 a, __m128 b)     minimum
+__m128 _mm_max_ps(__m128 a, __m128 b)     maximum
+
+comparisons:
+__m128 _mm_cmpeq_ps(__m128 a, __m128 b)    equality
+__m128 _mm_cmplt_ps(__m128 a, __m128 b)    less than
+__m128 _mm_cmple_ps(__m128 a, __m128 b)    less or equal
+__m128 _mm_cmpgt_ps(__m128 a, __m128 b)    greater than
+__m128 _mm_cmpge_ps(__m128 a, __m128 b)    greater or equal
+__m128 _mm_cmpneq_ps(__m128 a, __m128 b)   inequality
+__m128 _mm_cmpnlt_ps(__m128 a, __m128 b)   not less than
+...reference page 38
+the ps suffix operates on all elements, the same functions with the ss suffix operate only on the 
+1st and pass through all other values
+
+
+
+*/
+
+
+#ifdef BLAH // code below obsolete - but maybe keep it as fall back when no SSE is available
 
 /** This is datatype to represent 4 32-bit floating point numbers at once.
 THIS IS NOT USABLE YET (it currently uses 4 actual floats)

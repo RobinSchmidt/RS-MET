@@ -169,6 +169,20 @@ for performance tests:
  significant - a bit like testing medication against placebos
 
 
+This video has a method of creating all pythagorean triples:
+https://www.youtube.com/watch?v=QJYmyhnaaek
+these are related to rational points on the unit circle - maybe these rational points can be used 
+to implement a recursive oscillator based on rational numbers - like a filter with a pole pair on 
+the unit circle but operating entirely on rational numbers?
+maybe:
+zNew = a*zOld;   // a,z are rational complex numbers both on the unit circle
+-maybe then looking only at the numerator and/or denominator gives interesting patterns?
+-or maybe we can also apply a modulo operation on the num or den or mangle them in other ways?
+-maybe use two oscillators with different frequencies and somehow mangle the 
+ numerators/denominators of both with a formula to produce a final output 
+ ...like y = (den(x1) + den(x2)) mod num(x1) ...or whatever
+-maybe experiment a bit with that in python/sage
+
 */
 
 #endif

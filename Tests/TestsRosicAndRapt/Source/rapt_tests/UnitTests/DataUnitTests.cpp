@@ -213,25 +213,45 @@ bool float32x4UnitTest()
 {
   bool r = true;      // test result
 
-  float s = 2.f, t = 3.f, u = 5.f, v = 7.f;
+  float a = 2.f, b = 3.f, c = 5.f, d = 7.f;
 
-  // construct from a float:
-  rsFloat32x4 x1(t);  r &= x1[0] == t && x1[1] == t && x1[2] == t && x1[3] == t;
+  // construct from a float and array access:
+  rsFloat32x4 x1(a);  r &= x1[0] == a && x1[1] == a && x1[2] == a && x1[3] == a;
 
   // construct from 4 floats:
-  rsFloat32x4 x2(s, t, u, v); 
-  r &= x2[0] == s && x2[1] == t && x2[2] == u && x2[3] == v;
+  rsFloat32x4 x2(a, b, c, d); 
+  r &= x2[0] == a && x2[1] == b && x2[2] == c && x2[3] == d;
 
   // construct from array of floats:
-  float arr[4] = { s, t, u, v };
-  rsFloat32x4 x3(arr); r &= x3[0] == s && x3[1] == t && x3[2] == u && x3[3] == v;
+  float arr[4] = { a, b, c, d };
+  rsFloat32x4 x3(arr); r &= x3[0] == a && x3[1] == b && x3[2] == c && x3[3] == d;
 
   // construction from another instance and == operator:
   rsFloat32x4 y(x3); r &= y == x3;
 
+  // setters:
+  y[0] = d; r &= y[0] == d && y[1] == b && y[2] == c && y[3] == d;
+  y[1] = c; r &= y[0] == d && y[1] == c && y[2] == c && y[3] == d;
+  y.set(c); r &= y[0] == c && y[1] == c && y[2] == c && y[3] == c;
+  y.set(a, b, c, d); r &= y[0] == a && y[1] == b && y[2] == c && y[3] == d;
+  y.set(c, d, b, a); r &= y[0] == c && y[1] == d && y[2] == b && y[3] == a; // cdba
+
+  // getters:
+  //float y0, y1, y2, y3;
+  //y.get(y0, y1, y2, y3); r &= y0 == a && y1 == b && y2 == c && y3 == d;
+  y.get(arr); r &= arr[0] == c && arr[1] == d && arr[2] == b && arr[2] == a;
+  // FAILS!!
+
+
+  // assignment and equality:
+  y = x1; r &= y == x1;  // abcd again
+
 
 
   return r;
+
+  // when we later have a rsFloat64x4 class (SSE3), maybe templatize this unit test such that
+  // it can be used with any kind of 4-vector
 }
 
 bool complexFloat64x2UnitTest()
