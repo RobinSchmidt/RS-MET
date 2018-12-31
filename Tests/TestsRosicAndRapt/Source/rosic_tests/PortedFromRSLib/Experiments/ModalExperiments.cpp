@@ -582,6 +582,7 @@ void modalWithFancyEnv()
   for(int n = 1; n < numSamples; n++)
     y[n] = mf.getSample(0.f);
   // something is wrong - the scalars y[2],y[3] are assigned to NaN in the getSampleVector
+  // ...make unit test for rsFloat32x4
 
 
   // compute error due to single precision floating point precision in optimized filter:

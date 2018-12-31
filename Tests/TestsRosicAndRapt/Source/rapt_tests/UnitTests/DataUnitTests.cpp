@@ -209,6 +209,18 @@ bool float64x2UnitTest()
   return r;
 }
 
+bool float32x4UnitTest()
+{
+  bool r = true;      // test result
+
+  // construct from a float:
+  float t = 3.0;
+  rsFloat32x4 x11(t);  r &= x11[0] == t && x11[1] == t && x11[2] == t && x11[3] == t;
+
+
+  return r;
+}
+
 bool complexFloat64x2UnitTest()
 {
   bool r = true;      // test result
