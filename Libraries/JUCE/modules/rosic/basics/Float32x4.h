@@ -101,8 +101,8 @@ public:
 
   /** \name Operators */
 
-  /** Allows the two float values to be accessed (for reading and writing) as if this would be an
-  array of two floats. Valid indices are 0 and 1. */
+  /** Allows the four float values to be accessed (for reading and writing) as if this would be an
+  array of four floats. Valid indices are 0,1,2,3. */
   inline float& operator[](const int i) const { return asArray()[i]; }
   // maybe with this, we can get rid of set/get...hmm...but maybe not (or not just yet), they use
   // different operations - maybe they are faster? or safer (i.e. compatible with more
@@ -120,7 +120,11 @@ public:
   equal. */
   inline bool operator==(const rsFloat32x4& b) const
   {
-    return (this[0] == b[0]) && (this[1] == b[1] && this[2] == b[2]) && (this[3] == b[3]);
+    float* a = asArray();
+    return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3];
+    //return (this[0] == b[0]) && (this[1] == b[1]) && (this[2] == b[2]) && (this[3] == b[3]); // stack overflow - why?
+    // todo: check, if there's an intrinsic vector comparison function...
+    // check with rsFloat64x2, too - and why there is no stack overflow when using this[0]....
   }
 
 

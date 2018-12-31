@@ -213,9 +213,22 @@ bool float32x4UnitTest()
 {
   bool r = true;      // test result
 
+  float s = 2.f, t = 3.f, u = 5.f, v = 7.f;
+
   // construct from a float:
-  float t = 3.0;
-  rsFloat32x4 x11(t);  r &= x11[0] == t && x11[1] == t && x11[2] == t && x11[3] == t;
+  rsFloat32x4 x1(t);  r &= x1[0] == t && x1[1] == t && x1[2] == t && x1[3] == t;
+
+  // construct from 4 floats:
+  rsFloat32x4 x2(s, t, u, v); 
+  r &= x2[0] == s && x2[1] == t && x2[2] == u && x2[3] == v;
+
+  // construct from array of floats:
+  float arr[4] = { s, t, u, v };
+  rsFloat32x4 x3(arr); r &= x3[0] == s && x3[1] == t && x3[2] == u && x3[3] == v;
+
+  // construction from another instance and == operator:
+  rsFloat32x4 y(x3); r &= y == x3;
+
 
 
   return r;
