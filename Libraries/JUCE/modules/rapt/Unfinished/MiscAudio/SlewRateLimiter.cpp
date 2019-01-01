@@ -93,13 +93,13 @@ double rsSlewRateLimiterWithHold::getSample(double in)
 void rsSlewRateLimiterWithHold::setSampleRate(double newSampleRate) //override ..is only for runtime polymorphism
 {
   rsSlewRateLimiter::setSampleRate(newSampleRate);
-  holdSamples = rsRoundToInt(holdTime * sampleRate);
+  holdSamples = (int)round(holdTime * sampleRate);
 }
 
 void rsSlewRateLimiterWithHold::setHoldTime(double newHoldTime)
 {
   holdTime = newHoldTime;
-  holdSamples = rsRoundToInt(holdTime * sampleRate);
+  holdSamples = (int)round(holdTime * sampleRate);
 }
 
 void rsSlewRateLimiterWithHold::reset() // override

@@ -27,9 +27,11 @@ public:
     watchedStateManager = stateManagerToWatch;
   }
 
-protected:
+
 
   StateManager* watchedStateManager;
+
+protected:
 
   juce_UseDebuggingNewOperator;
 };
