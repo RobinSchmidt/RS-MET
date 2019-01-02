@@ -455,12 +455,12 @@ void AudioModule::setStateFromXml(const XmlElement& xml, const juce::String& sta
 {
   ScopedLock scopedLock(*lock);
 
-  bool smoothingIsBypassed = true;
-  if (smoothingManager != nullptr)
-  {
-    smoothingIsBypassed = smoothingManager->isSmoothingBypassed();
-    smoothingManager->setBypassSmoothing(true);
-  }
+  //bool smoothingIsBypassed = true;
+  //if (smoothingManager != nullptr)
+  //{
+  //  smoothingIsBypassed = smoothingManager->isSmoothingBypassed();
+  //  smoothingManager->setBypassSmoothing(true);
+  //}
 
   XmlElement convertedState = convertXmlStateIfNecessary(xml);
   recallParametersFromXml(convertedState);
@@ -469,23 +469,17 @@ void AudioModule::setStateFromXml(const XmlElement& xml, const juce::String& sta
   {
     recallMetaMappingFromXml(convertedState);
     recallMetaValuesFromXml(convertedState);
-    // maybe this should be done before retrieving the parameter values - because when you change
-    // a parameter range in the code and then load an older preset, a parameter that is connected
-    // to a meta parameter will get the wrong value.
   }
 
   recallChildModulesFromXml(convertedState, markAsClean);
 
-  // this call we need for setting our parent dirty when some embedded sub-module loads a state
-  // - when the call was due to the outer parent loading its state, the subsequent call to
-  // setStateName may set it back to 'clean'
   if( parent != NULL )
     parent->markStateAsDirty();
 
   setStateName(stateName, markAsClean);
 
-  if (smoothingManager != nullptr)
-    smoothingManager->setBypassSmoothing(smoothingIsBypassed); // restore old bypass state
+  //if (smoothingManager != nullptr)
+  //  smoothingManager->setBypassSmoothing(smoothingIsBypassed); // restore old bypass state
 }
 
 XmlElement AudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
