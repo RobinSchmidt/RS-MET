@@ -142,7 +142,8 @@ public:
 
 protected:
 
-  __m128 v; 
+  //__m128 v;
+  __declspec(align(16)) __m128 v; // the value (define and ALIGN(N) macro for gcc/msc)
 };
 
 // binary arithmetic operators:

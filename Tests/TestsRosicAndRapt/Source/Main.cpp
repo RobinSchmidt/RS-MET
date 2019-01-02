@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
   //callbackPerformance();
   //matrixAdressingTest();
   simdPerformance(1.0, rsFloat64x2(1.0));
-  //simdPerformance(1.f, rsFloat32x4(1.f)); // we need to implement the math functions...
+  simdPerformance(1.f, rsFloat32x4(1.f));
   //sinCosPerformance();
 
   //fftPerformance();

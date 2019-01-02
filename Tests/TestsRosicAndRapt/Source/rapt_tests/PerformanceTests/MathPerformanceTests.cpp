@@ -120,12 +120,12 @@ void simdPerformance(TScalar scl, TVector vec)
 {
   static const int N = 5000;  // number of vector operations
 
-  TScalar zeroS = 0.0;
-  TScalar oneS  = 1.0;
-  TScalar accuS = 0.0;
-  TVector zeroV = 0.0;
-  TVector oneV  = 1.0;
-  TVector accuV = 0.0;
+  TScalar zeroS = 0;
+  TScalar oneS  = 1;
+  TScalar accuS = 0;
+  TVector zeroV = 0;
+  TVector oneV  = 1;
+  TVector accuV = 0;
 
   ::ProcessorCycleCounter counter;
   double cycles;
@@ -209,10 +209,10 @@ void simdPerformance(TScalar scl, TVector vec)
   printPerformanceTestResult("vec1 = -vec1      ", k*cycles);
 
 
-  TVector x = 10.0;
+  TVector x = 10;
 
   // clip:
-  counter.init(); for(n = 0; n < N; n++) x = rsClip(x, -1.0, 1.0);
+  counter.init(); for(n = 0; n < N; n++) x = rsClip(x, -1, 1);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("clip", k*cycles);
 
@@ -275,7 +275,7 @@ void simdPerformance(TScalar scl, TVector vec)
   // rsFloat32x4:
 }
 template void simdPerformance(double, rsFloat64x2);
-//template void simdPerformance(float, rsFloat32x4);
+template void simdPerformance(float, rsFloat32x4);
 
 
 void rsSinCos1(double x, double* s, double* c)
