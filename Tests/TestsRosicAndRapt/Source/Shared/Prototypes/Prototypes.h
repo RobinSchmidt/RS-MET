@@ -143,6 +143,18 @@ public:
   accumulation. */
   inline float getSample(float in) { return getSampleVector(rsFloat32x4(in)).getSum(); }
 
+  /*
+  // just for performance testing - to see how the conversion and summing affects performance, get
+  // rid of these things:
+  inline float getSample(float in) 
+  { 
+    static const rsFloat32x4 x = 1.f;
+    rsFloat32x4 y = getSampleVector(x);
+    return 1.f; 
+  }
+  */
+  
+
   /** Resets the state variables to all zeros. */
   void reset() { x1 = y1 = y2 = 0; }
 

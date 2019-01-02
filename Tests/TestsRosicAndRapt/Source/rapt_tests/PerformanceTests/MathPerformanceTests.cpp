@@ -114,18 +114,20 @@ void matrixAdressingTest()
 //  dontOptimize(&x);
 //  printPerformanceTestResult(name, k*cycles);
 //}
-void simdPerformanceFloat64x2()
+
+template<class TScalar, class TVector>
+void simdPerformance(TScalar scl, TVector vec)
 {
   static const int N = 5000;  // number of vector operations
 
-  double zeroS = 0.0;
-  double oneS  = 1.0;
-  double accuS = 0.0;
-  rsFloat64x2 zeroV = 0.0;
-  rsFloat64x2 oneV  = 1.0;
-  rsFloat64x2 accuV = 0.0;
+  TScalar zeroS = 0.0;
+  TScalar oneS  = 1.0;
+  TScalar accuS = 0.0;
+  TVector zeroV = 0.0;
+  TVector oneV  = 1.0;
+  TVector accuV = 0.0;
 
-  ProcessorCycleCounter counter;
+  ::ProcessorCycleCounter counter;
   double cycles;
   double k = 1.0/(2*N);
   int n;
@@ -207,7 +209,7 @@ void simdPerformanceFloat64x2()
   printPerformanceTestResult("vec1 = -vec1      ", k*cycles);
 
 
-  rsFloat64x2 x = 10.0;
+  TVector x = 10.0;
 
   // clip:
   counter.init(); for(n = 0; n < N; n++) x = rsClip(x, -1.0, 1.0);
@@ -262,12 +264,19 @@ void simdPerformanceFloat64x2()
 
   // Results:
   // approximate relative costs of operations: we set the cost of 1 addition = 1
+
+  // rsFloat64x2:
   // add: 1, sub: 1.5, mul: 1, div: 9.5, unary minus: 1.5
   // interesting: mul costs the same as add but sub is more expensive
   // is this true also for scalar double?
   // rsClip: 1, rsSign: 3.5, rsAbs: 4
   // rsSqrt: 12.5, rsExp: 10, rsLog: 7, rsSin: 15, rsCos: 15, rsTan: 15
+  
+  // rsFloat32x4:
 }
+template void simdPerformance(double, rsFloat64x2);
+//template void simdPerformance(float, rsFloat32x4);
+
 
 void rsSinCos1(double x, double* s, double* c)
 {

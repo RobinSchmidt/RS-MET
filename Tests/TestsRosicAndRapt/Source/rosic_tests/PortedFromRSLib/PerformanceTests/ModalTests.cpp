@@ -1,17 +1,19 @@
 #include "ModalTests.h"
 
 // move to PerformanceTestTools:
-template<class T>
-double getCyclesPerSample(T &module, int numSamples = 1000, int numTests = 5)
+template<class TMod, class TSig>
+double getCyclesPerSample(TMod &module, int numSamples = 1000, int numTests = 5, 
+  TSig dummy = 1.0) // the dummy is to let the compiler determine the signal type
 {  
   ::ProcessorCycleCounter counter;
 
   // create noise to be used as input signal:
-  double *x = new double[numSamples];
+  TSig *x = new TSig[numSamples];
   RAPT::rsArray::fillWithRandomValues(x, numSamples, -1.0, 1.0, 0);
 
   // do the test numTests times, use the minimum as result:
-  double y, cycles, minCycles;
+  TSig y; 
+  double cycles, minCycles;
   minCycles = RS_INF(double);
   for(int i = 1; i <= numTests; i++)
   {
@@ -67,6 +69,10 @@ double getCyclesPerSampleBlockWise(T &module,
   return minCycles / numSamples;
 }
 
+
+
+
+
 void testModalFilter3(std::string &reportString)
 {
   double fs  = 44100;  // samplerate in Hz
@@ -86,7 +92,7 @@ void testModalFilter3(std::string &reportString)
   rsModalFilterDD mf;
   mf.setModalParameters(f, A, td, phs, fs);
 
-  double cyclesPerSample = getCyclesPerSample(mf, numSamples);
+  double cyclesPerSample = getCyclesPerSample(mf, numSamples, numTests, 1.0);
   printPerformanceTestResult("ModalFilter", cyclesPerSample);
 
   mf.reset();
@@ -95,20 +101,21 @@ void testModalFilter3(std::string &reportString)
 
   rsModalFilterWithAttackDD mfa;
   mfa.setModalParameters(f, A, ta, td, phs, fs);
-  cyclesPerSample = getCyclesPerSample(mfa, numSamples);
+  cyclesPerSample = getCyclesPerSample(mfa, numSamples, numTests, 1.0);
   printPerformanceTestResult("ModalFilterAttack", cyclesPerSample);
 
   rsModalFilterWithAttackDD mfa2;
   mfa2.setModalParameters(f, A, ta, td, phs, fs);
-  cyclesPerSample = getCyclesPerSample(mfa2, numSamples);
+  cyclesPerSample = getCyclesPerSample(mfa2, numSamples, numTests, 1.0);
   printPerformanceTestResult("ModalFilterAttack2", cyclesPerSample);
 
   rsModalFilterFloatSSE2 mf4; // 4 because of the 4 sinusoids
   mf4.setParameters(w, A, phs, 0.1*ta, ta, 0.5, 0.1*td, td, 0.5);
-  cyclesPerSample = getCyclesPerSample(mf4, numSamples);
+  cyclesPerSample = getCyclesPerSample(mf4, numSamples, numTests, 1.f);
   printPerformanceTestResult("ModalFilterFloatSSE2", cyclesPerSample);
   // very slow - maybe because of double->float->double conversion and/or the summing of the 4
-  // modes - make a separate test function
+  // modes - hmm...that doesn't seem to make much of a difference - make performance tests
+  // of rsFloat32x4...
 
 
 
@@ -149,7 +156,7 @@ void testModalFilterBank(std::string &reportString)
   mfb.setReferenceDecay(decay);
 
   mfb.reset();
-  double cyclesPerSample = getCyclesPerSample(mfb, numSamples) / numPartials;
+  double cyclesPerSample = getCyclesPerSample(mfb, numSamples, 5, 1.0) / numPartials;
   printPerformanceTestResult("ModalFilterBank", cyclesPerSample);
 
   mfb.reset();

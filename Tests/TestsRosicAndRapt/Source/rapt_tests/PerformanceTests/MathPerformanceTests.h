@@ -5,7 +5,11 @@
 
 void fftPerformance();
 void matrixAdressingTest();
-void simdPerformanceFloat64x2();
+//void simdPerformanceFloat64x2();
+
+template<class TScalar, class TVector>
+void simdPerformance(TScalar scl, TVector vec);
+
 void sinCosPerformance();
 
 #endif
