@@ -80,25 +80,25 @@ public:
   /** Returns a vector that has a one for all scalar elements. */
   inline static rsFloat32x4 one()  { static const __m128 o = _mm_set1_ps(1.f); return o; }
 
-  /** Returns a vector that has for both scalars a zero for the sign bit and the rest ones. This is
+  /** Returns a vector that has for all scalars a zero for the sign bit and the rest ones. This is
   useful for implementing the abs function. */
-  //inline static rsFloat32x4 signBitZero()
-  //{
-  //  static const long long i = 0x7fffffffffffffff; // use 32 bit integer
-  //  static const float    d = *((float*)(&i));
-  //  static const __m128d   r = _mm_set1_pd(d);
-  //  return r;
-  //}
+  inline static rsFloat32x4 signBitZero()
+  {
+    static const RAPT::rsInt32 i = 0x7fffffff;
+    static const float   d = *((float*)(&i));
+    static const __m128  r = _mm_set1_ps(d);
+    return r;
+  }
 
-  /** Returns a vector that has for both scalars a one for the sign bit and the rest zeros. This is
+  /** Returns a vector that has for all scalars a one for the sign bit and the rest zeros. This is
   useful for implementing the sign function. */
-  //inline static rsFloat32x4 signBitOne()
-  //{
-  //  static const long long i = 0x8000000000000000;
-  //  static const float    d = *((float*)(&i));
-  //  static const __m128d   r = _mm_set1_pd(d);
-  //  return r;
-  //}
+  inline static rsFloat32x4 signBitOne()
+  {
+    static const RAPT::rsInt32 i = 0x80000000;
+    static const float   d = *((float*)(&i));
+    static const __m128  r = _mm_set1_ps(d);
+    return r;
+  }
 
 
   /** \name Operators */
@@ -153,6 +153,33 @@ inline rsFloat32x4 operator/(const rsFloat32x4& a, const rsFloat32x4& b) { retur
 inline rsFloat32x4 operator+(const rsFloat32x4& a) { return a; }                    // unary plus
 inline rsFloat32x4 operator-(const rsFloat32x4& a) { return rsFloat32x4(0.f) - a; } // unary minus
 
+// limiting functions::
+inline rsFloat32x4 rsMin(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_min_ps(a, b); }
+inline rsFloat32x4 rsMax(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_max_ps(a, b); }
+inline rsFloat32x4 rsClip(const rsFloat32x4& x, const rsFloat32x4& min, const rsFloat32x4& max)
+{
+  return rsMax(rsMin(x, max), min);
+}
+
+// bit-manipulations and related functions:
+inline rsFloat32x4 rsBitAnd(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_and_ps(a, b); }
+inline rsFloat32x4 rsBitOr( const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_or_ps( a, b); }
+inline rsFloat32x4 rsBitXor(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_xor_ps(a, b); }
+inline rsFloat32x4 rsAbs(const rsFloat32x4& a) { return rsBitAnd(a, rsFloat32x4::signBitZero()); }
+inline rsFloat32x4 rsSign(const rsFloat32x4& a)
+{
+  rsFloat32x4 signOnly = rsBitAnd(a, rsFloat32x4::signBitOne());
+  return rsBitOr(signOnly, rsFloat32x4::one());
+}
+
+// math functions (except for sqrt, we need to fall back to the scalar versions):
+inline rsFloat32x4 rsSqrt(const rsFloat32x4& a) { return _mm_sqrt_ps(a); }
+inline rsFloat32x4 rsExp(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(exp(a[0]), exp(a[1]), exp(a[2]), exp(a[3])); }
+inline rsFloat32x4 rsLog(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(log(a[0]), log(a[1]), log(a[2]), log(a[3])); }
+inline rsFloat32x4 rsSin(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(sin(a[0]), sin(a[1]), sin(a[2]), sin(a[3])); }
+inline rsFloat32x4 rsCos(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(cos(a[0]), cos(a[1]), cos(a[2]), cos(a[3])); }
+inline rsFloat32x4 rsTan(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(tan(a[0]), tan(a[1]), tan(a[2]), tan(a[3])); }
+// maybe implement recriprocal and reciprocal sqrt (there are intrinsics for these)
 
 
 /*
