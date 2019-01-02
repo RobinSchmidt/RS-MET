@@ -658,4 +658,5 @@ Ideas:
  order to prevent the polynomial from going crazy
 -maybe we can emulate mode-beating by using two modes of nearby frequencies (not necessarily with 
  the same envelope/amplitude
+-have an SFZ export function - user selects keyrange, numKeysPerSample, NumVelsPerSample
 */

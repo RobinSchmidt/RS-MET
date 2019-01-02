@@ -76,7 +76,7 @@ bool testModalFilter2(std::string &reportString)
   testResult &= err < 1.e-7;
     // 4 orders of magnitude less precise than rsModalFilterWithAttack (with GCC)
 
-
+  //cout << reportString;
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }

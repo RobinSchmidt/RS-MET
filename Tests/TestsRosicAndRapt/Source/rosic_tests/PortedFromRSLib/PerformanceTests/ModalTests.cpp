@@ -75,31 +75,42 @@ void testModalFilter3(std::string &reportString)
   double f   = 55;     // frequency in Hz
   double phs = 45;     // phase in degrees
   double A   = 1.5;    // amplitude as raw factor
-  
-  int blockSize  = 512;
-  int numSamples = 10000;
 
+  int blockSize  = 512;
+  int numSamples = 3000;
+  int numTests   = 5;
+
+
+  double w = 2*PI*f/fs;
 
   rsModalFilterDD mf;
   mf.setModalParameters(f, A, td, phs, fs);
 
-  double cyclesPerSample = getCyclesPerSample(mf, 1000);
+  double cyclesPerSample = getCyclesPerSample(mf, numSamples);
   printPerformanceTestResult("ModalFilter", cyclesPerSample);
 
   mf.reset();
-  double cyclesPerSampleBlockWise = getCyclesPerSampleBlockWise(mf, numSamples, 5, blockSize);
+  double cyclesPerSampleBlockWise = getCyclesPerSampleBlockWise(mf, numSamples, numTests, blockSize);
   printPerformanceTestResult("  blockwise:", cyclesPerSampleBlockWise);
 
   rsModalFilterWithAttackDD mfa;
   mfa.setModalParameters(f, A, ta, td, phs, fs);
-  cyclesPerSample = getCyclesPerSample(mfa, 1000);
+  cyclesPerSample = getCyclesPerSample(mfa, numSamples);
   printPerformanceTestResult("ModalFilterAttack", cyclesPerSample);
-
 
   rsModalFilterWithAttackDD mfa2;
   mfa2.setModalParameters(f, A, ta, td, phs, fs);
-  cyclesPerSample = getCyclesPerSample(mfa2, 1000);
+  cyclesPerSample = getCyclesPerSample(mfa2, numSamples);
   printPerformanceTestResult("ModalFilterAttack2", cyclesPerSample);
+
+  rsModalFilterFloatSSE2 mf4; // 4 because of the 4 sinusoids
+  mf4.setParameters(w, A, phs, 0.1*ta, ta, 0.5, 0.1*td, td, 0.5);
+  cyclesPerSample = getCyclesPerSample(mf4, numSamples);
+  printPerformanceTestResult("ModalFilterFloatSSE2", cyclesPerSample);
+  // very slow - maybe because of double->float->double conversion and/or the summing of the 4
+  // modes - make a separate test function
+
+
 
   /*
   rsNonlinearModalFilter nmf;
