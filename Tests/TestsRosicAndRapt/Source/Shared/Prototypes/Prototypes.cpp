@@ -385,6 +385,41 @@ void rsModalFilterFloatSSE2::setParameters(
   b0[1] = -b0[1], b1[1] = -b1[1];
 }
 
+
+rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF1(rsFloat32x4 in)
+{
+  rsFloat32x4 y  = b0*in + b1*x1 - a1*y1 - a2*y2; 
+  x1 = in;
+  y2 = y1;
+  y1 = y;  // without: 23, with: 486
+  return y; 
+  // without the y2 = y1; y1 = y; lines, it's just 6 cycles, with the 1st of them only about 22
+  // and with both more than 400 - really - wtf? using a member instead of a local for y does not
+  // help, re-ordering the member variables also has no effect - maybe look at the generated asm
+}
+rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF2(rsFloat32x4 in)
+{
+  register rsFloat32x4 tmp = in - a1*y1 - a2*y2; 
+  register rsFloat32x4 out = b0*tmp + b1*y1;
+  y2 = y1;
+  //y1 = tmp;   // without: 7 cycles, with: 330 ..declaring the temp variables register does not help
+  return out;
+  // see https://ccrma.stanford.edu/~jos/fp/Direct_Form_II.html
+  // we use y for the v-values here
+}
+
+rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestTDF2(rsFloat32x4 in)
+{
+  rsFloat32x4 y = b0*in + y1; 
+  y1 = b1*in - a1*y + y2;
+  y2 = -a2*y;                // b2*in - a2*y but b2 is zero
+  return y;
+  // https://ccrma.stanford.edu/~jos/fp/Transposed_Direct_Forms.html
+  // this takes 870 cycles - this is unreasonable! could the measurement be flawed?
+  // this stays also slow when commenting one of the two middle lines
+}
+
+
 //=================================================================================================
 
 template<class T>

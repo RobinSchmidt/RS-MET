@@ -315,7 +315,7 @@ void sinCosPerformance()
 
   float x[N], ySin[N], yCos[N];
   rsArray::fillWithRandomValues(x, N, xMin, xMax, 0);
-  ProcessorCycleCounter2 counter;
+  PerformanceCounterQPC counter;
   int n;
 
   rsSinCosTableF table(1024);

@@ -137,22 +137,28 @@ public:
     return y;
   }
 
+
   /** Produces a scalar output sample that adds up all the 4 decaying sines. Whne a single mode is
   synthesiszed, you can use this function. When many modes are added, it makes more sense to just
   call the vector function and accumulate the vectors and do just a single sum after the 
   accumulation. */
   inline float getSample(float in) { return getSampleVector(rsFloat32x4(in)).getSum(); }
 
-  /*
-  // just for performance testing - to see how the conversion and summing affects performance, get
-  // rid of these things:
-  inline float getSample(float in) 
-  { 
-    static const rsFloat32x4 x = 1.f;
-    rsFloat32x4 y = getSampleVector(x);
-    return 1.f; 
-  }
-  */
+
+
+  // some test functions for performance measurements:
+  rsFloat32x4 getSampleVectorTestDF1( rsFloat32x4 in);
+  rsFloat32x4 getSampleVectorTestDF2( rsFloat32x4 in); 
+  rsFloat32x4 getSampleVectorTestTDF2(rsFloat32x4 in);
+  //inline float getSample(float in) 
+  //{ 
+  //  static const rsFloat32x4 x = 1.f;
+  //  //rsFloat32x4 y = getSampleVectorTestDF1(x);
+  //  rsFloat32x4 y = getSampleVectorTestDF2(x);
+  //  //rsFloat32x4 y = getSampleVectorTestTDF2(x);
+  //  return 1.f; 
+  //}
+  
   
 
   /** Resets the state variables to all zeros. */
@@ -160,7 +166,9 @@ public:
 
 protected:
 
-  rsFloat32x4 b0 = 0, b1 = 0, a1 = 0, a2 = 0, x1 = 0, y1 = 0, y2 = 0;
+  rsFloat32x4 x1 = 0, y1 = 0, y2 = 0, b0 = 0, b1 = 0, a1 = 0, a2 = 0;
+  //rsFloat32x4 b0 = 0, b1 = 0, a1 = 0, a2 = 0, x1 = 0, y1 = 0, y2 = 0;
+  //rsFloat32x4 tmp;
 
 };
 

@@ -6,6 +6,8 @@ double getCyclesPerSample(TMod &module, int numSamples = 1000, int numTests = 5,
   TSig dummy = 1.0) // the dummy is to let the compiler determine the signal type
 {  
   ::ProcessorCycleCounter counter;
+  //::PerformanceCounterQPC counter;
+  //::PerformanceCounterPMC counter;
 
   // create noise to be used as input signal:
   TSig *x = new TSig[numSamples];
@@ -21,7 +23,7 @@ double getCyclesPerSample(TMod &module, int numSamples = 1000, int numTests = 5,
     for(int n = 0; n < numSamples; n++)
       y = module.getSample(x[n]);
     cycles = (double) counter.getNumCyclesSinceInit();
-    if( cycles < minCycles )
+    if( cycles < minCycles && cycles > 0 )
       minCycles = cycles;
   }
 
@@ -83,7 +85,7 @@ void testModalFilter3(std::string &reportString)
   double A   = 1.5;    // amplitude as raw factor
 
   int blockSize  = 512;
-  int numSamples = 3000;
+  int numSamples = 2048;
   int numTests   = 5;
 
 

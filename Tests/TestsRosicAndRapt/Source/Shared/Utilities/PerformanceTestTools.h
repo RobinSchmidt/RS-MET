@@ -42,13 +42,15 @@ inline void dontOptimize(T x)
 literally count but instead measure the time stamps before and after a sequence of commands. Works 
 only with MSVC at the moment. 
 
+based on __rdtsc()
+
 hmm...maybe we should update this using QueryPerformanceCounter, etc. - see here:
 https://en.wikipedia.org/wiki/Time_Stamp_Counter
 https://msdn.microsoft.com/en-us/library/windows/desktop/dn553408(v=vs.85).aspx
 
 */
 
-class ProcessorCycleCounter  
+class ProcessorCycleCounter  // rename to PerformanceCounterTSC
 {
 
 public:
@@ -90,11 +92,32 @@ protected:
 };
 
 //=================================================================================================
+/** Another implementation based on __readpmc  */
+
+class PerformanceCounterPMC
+{
+
+public:
+
+  inline void init() { initTime = readPMC(0); }
+
+  inline int64_t getNumCyclesSinceInit() { return readPMC(0) - initTime; }
+
+protected:
+
+  inline int64_t readPMC(int32_t n) { return __readpmc(n); }
+  // triggers exception: Privileged instruction 
+
+  int64_t initTime; 
+
+};
+
+//=================================================================================================
 
 /** A cycle counter based on 
 https://msdn.microsoft.com/en-us/library/windows/desktop/dn553408(v=vs.85).aspx */
 
-class ProcessorCycleCounter2
+class PerformanceCounterQPC
 {
 
 public:
@@ -120,14 +143,14 @@ protected:
 
 /** Non-functional implementation for non MS compilers...just to make it compile. */
 
-class ProcessorCycleCounter  
+class PerformanceCounterQPC
 {
 public:
   inline void init() {  }
   inline long long getNumCyclesSinceInit() { return 0; }
 };
 
-class ProcessorCycleCounter2 : public ProcessorCycleCounter
+class PerformanceCounterQPC : public ProcessorCycleCounter
 {
 
 };
