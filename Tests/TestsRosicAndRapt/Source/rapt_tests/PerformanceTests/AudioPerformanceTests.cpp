@@ -133,6 +133,13 @@ void ladderPerformance()
   printPerformanceTestResult("rsLadderFilter<double, double>", cycles/numSamples);
 
   // vector signal, scalar coeffs...
+  RAPT::rsLadderFilter<rsFloat64x2, double> filterVS;
+  filterVS.setCutoff(1000);
+  filterVS.setResonance(0.5);
+  counter.init(); 
+  for(n = 0; n < numSamples; n++) yv[n] = filterVS.getSample(xv[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("rsLadderFilter<rsFloat64x2, double>", cycles/numSamples);
 
   // vector-signal, vector-coeffs:
   RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2> filterVV;
@@ -151,6 +158,54 @@ void ladderPerformance()
   // linear: 60 (scalar), 70 (vector)
   // clip:   70-75 cycles (scalar and vector)
   // div:    90 (scalar), 105 (vector)
+}
+
+// maybe generalize this function for use with any kind of filter - we just need to factor out
+// the class-specific setup code:
+template<class TSig, class TPar>
+double getStateVectorFilterCyclesPerSample(TSig sig, TPar par, int numSamples, int numTests)
+{
+  rsStateVectorFilter<TSig, TPar> flt;
+  flt.setupFromBiquad(TPar(1), TPar(2), TPar(0.5), TPar(-0.5), TPar(0.25));
+  TSig y;
+  double minCycles = DBL_MAX;
+
+  PerformanceCounterTSC counter;
+  for(int i = 1; i <= numTests; i++) {
+    counter.init();
+    for(int n = 0; n < numSamples; n++)
+      y = flt.getSample(0);
+    double cycles = (double)counter.getNumCyclesSinceInit();
+    if(cycles > 0 && cycles < minCycles)
+      minCycles = cycles;
+  }
+  dontOptimize(&y);
+
+  return minCycles/numSamples;
+}
+
+void stateVectorFilterPerformance()
+{
+  int numSamples = 2000;
+  int numTests = 10;
+  double cycles;
+
+  // double precision:
+  cycles = getStateVectorFilterCyclesPerSample(1.0, 1.0, numSamples, numTests);
+  printPerformanceTestResult("rsStateVectorFilter<double, double>", cycles);
+
+  cycles = getStateVectorFilterCyclesPerSample(rsFloat64x2(1.0), 1.0, numSamples, numTests);
+  printPerformanceTestResult("rsStateVectorFilter<rsFloat64x2, double>", cycles);
+
+  // single precision:
+  cycles = getStateVectorFilterCyclesPerSample(1.f, 1.f, numSamples, numTests);
+  printPerformanceTestResult("rsStateVectorFilter<float, float>", cycles);
+
+  cycles = getStateVectorFilterCyclesPerSample(rsFloat32x4(1.f), 1.f, numSamples, numTests);
+  printPerformanceTestResult("rsStateVectorFilter<rsFloat32x4, float>", cycles);
+
+  cycles = getStateVectorFilterCyclesPerSample(rsFloat32x4(1.f), rsFloat32x4(1.f), numSamples, numTests);
+  printPerformanceTestResult("rsStateVectorFilter<rsFloat32x4, rsFloat32x4>", cycles);
 }
 
 void engineersFilterPerformance()

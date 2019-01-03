@@ -5,6 +5,7 @@
 
 void filterSignConventionPerformance();
 void ladderPerformance();
+void stateVectorFilterPerformance();
 void engineersFilterPerformance();
 void turtleGraphicsPerformance();
 

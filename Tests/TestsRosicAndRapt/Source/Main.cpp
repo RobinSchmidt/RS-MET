@@ -45,8 +45,9 @@ int main(int argc, char* argv[])
 
   //fftPerformance();
   //filterSignConventionPerformance();
-  //ladderPerformance();
-  //engineersFilterPerformance();
+  ladderPerformance();
+  stateVectorFilterPerformance();
+  engineersFilterPerformance();
   //turtleGraphicsPerformance();
 
   //-----------------------------------------------------------------------------------------------

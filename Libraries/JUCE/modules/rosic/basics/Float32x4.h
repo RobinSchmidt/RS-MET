@@ -27,6 +27,9 @@ public:
   /** Constructs a value from int (needed for implicit conversions). */
   inline rsFloat32x4(int a) : v(_mm_set1_ps(float(a))) {}
 
+  /** Constructs a value from double (needed for implicit conversions). */
+  inline rsFloat32x4(double a) : v(_mm_set1_ps(float(a))) {}
+
   /** Constructor that initializes the elements from four floats. */
   inline rsFloat32x4(float a, float b, float c, float d) : v(_mm_setr_ps(a, b, c, d)) {}
 
@@ -136,10 +139,33 @@ public:
   }
 
 
+  // maybe these operators really should return an rsFloat32x4 - like the agner fog implementation
+
   inline bool operator<(const rsFloat32x4& b) const
   {
-    return (this[0] < b[0]) && (this[1] < b[1] && this[2] < b[2]) && (this[3] < b[3]);
+    float* a = asArray();
+    return a[0] < b[0] && a[1] < b[1] && a[2] < b[2] && a[3] < b[3];
   }
+
+  inline bool operator>(const rsFloat32x4& b) const
+  {
+    float* a = asArray();
+    return a[0] > b[0] && a[1] > b[1] && a[2] > b[2] && a[3] > b[3];
+  }
+
+  inline bool operator>=(const rsFloat32x4& b) const
+  {
+    float* a = asArray();
+    return a[0] >= b[0] && a[1] >= b[1] && a[2] >= b[2] && a[3] >= b[3];
+  }
+
+  inline bool operator<=(const rsFloat32x4& b) const
+  {
+    float* a = asArray();
+    return a[0] <= b[0] && a[1] <= b[1] && a[2] <= b[2] && a[3] <= b[3];
+  }
+
+
 
   inline rsFloat32x4& operator=(const __m128& rhs) { v = rhs; return *this; }
   //inline rsFloat32x4& operator=(__m128 const & rhs) { v = rhs; return *this;  }

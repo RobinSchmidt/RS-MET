@@ -240,13 +240,13 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
 {
   // compute and set up poles from a1, a2:
   TPar d = TPar(0.25)*a1*a1 - a2;  // discriminant, term inside sqrt
-  TPar p = -a1*0.5;                // -p/2 in p-q-formula, term before +/- sqrt
+  TPar p = -a1*TPar(0.5);          // -p/2 in p-q-formula, term before +/- sqrt
   if(d >= 0) {                     // d >= 0: we have 2 real poles
-    TPar sq = sqrt(d);
+    TPar sq = rsSqrt(d);
     setPoles(p+sq, 0, p-sq, 0);
   }
   else {                           // d < 0: we have complex conjugate poles
-    TPar sq = sqrt(-d);
+    TPar sq = rsSqrt(-d);
     setPoles(p, sq, p, -sq);
   }
 
@@ -261,7 +261,7 @@ void rsStateVectorFilter<TSig, TPar>::setupFromBiquad(
 template<class TSig, class TPar>
 void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
 {
-  TPar minDelta = 0.001; // actually  2 * minimum pole-distance
+  TPar minDelta = TPar(0.001); // actually  2 * minimum pole-distance
     // with 0.001, impulse response of a cookbook lowpass (1kHz@44.1kHz, q=0.5) is visually 
     // indistiguishable from the correct, desired one and the mixing coeffs are around 9.
     // With 0.0001, mixing coeffs raise to about 90. Maybe make more formal tests, 
@@ -273,9 +273,9 @@ void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
   TPar delta;
   if(xy == 0) { // two real poles
     delta = xx - yy;
-    if(abs(delta) < minDelta) {
-      TPar avg = 0.5*(xx+yy);
-      TPar d2  = 0.5*minDelta;
+    if(rsAbs(delta) < minDelta) {
+      TPar avg = TPar(0.5)*(xx+yy);
+      TPar d2  = TPar(0.5)*minDelta;
       if(xx >= yy) {
         xx = avg + d2;
         yy = avg - d2;
@@ -288,8 +288,8 @@ void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
   }
   else {
     delta = xy + yx; // + because they have opposite signs
-    if(abs(delta) < minDelta) {
-      TPar d2  = 0.5*minDelta;
+    if(rsAbs(delta) < minDelta) {
+      TPar d2  = TPar(0.5)*minDelta;
       if(xy > 0) {
         xy = +d2;
         yx = -d2;
@@ -308,8 +308,12 @@ void rsStateVectorFilter<TSig, TPar>::makePolesDistinct()
 
 }
 
-
-template class rsStateVectorFilter<double, double>; // explicit instantiation
+// explicit instantiations:
+template class rsStateVectorFilter<double, double>;
+template class rsStateVectorFilter<rsFloat64x2, double>;
+template class rsStateVectorFilter<float, float>;
+template class rsStateVectorFilter<rsFloat32x4, float>;
+template class rsStateVectorFilter<rsFloat32x4, rsFloat32x4>;
 
 // can the mixing coeffs be computed more simply - from the b-coeffs of the biquad?
 
