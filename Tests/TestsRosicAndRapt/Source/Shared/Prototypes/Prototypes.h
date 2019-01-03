@@ -169,6 +169,9 @@ protected:
   //rsFloat32x4 b0 = 0, b1 = 0, a1 = 0, a2 = 0, x1 = 0, y1 = 0, y2 = 0;
   //rsFloat32x4 tmp;
 
+  rsFloat32x4 x2 = 0, b2 = 0; // test - make a full biquad
+
+
 };
 
 class rsModalBank

@@ -210,7 +210,7 @@ void stateVectorFilterPerformance()
 
 void engineersFilterPerformance()
 {
-  int numSamples = 10000;
+  int numSamples = 2000;
   int order      = 20;      
   PerformanceCounterTSC counter;
   double cycles;
@@ -219,20 +219,19 @@ void engineersFilterPerformance()
   // create input and allocate output signals:
   vector<double> xs = createNoise(numSamples, double(-1), double(+1));
 
-  /*
-  // this is obsolete:
-  rosic::rsEngineersFilterOld filterScalar;
+  // scalar version (mono):
+  rosic::rsEngineersFilterMono filterScalar;
   filterScalar.setPrototypeOrder(order);
   filterScalar.setMode(rsInfiniteImpulseResponseDesignerF::BANDPASS);
   counter.init(); 
   for(n = 0; n < numSamples; n++) 
-    filterScalar.getSampleFrameDirect1(&xs[n], &xs[n]);
+    xs[n] = filterScalar.getSample(xs[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("rsEngineersFilterOld", cycles/numSamples);
-  */
-
+  printPerformanceTestResult("rsEngineersFilterMono", cycles/numSamples);
+  
   xs = createNoise(numSamples, double(-1), double(+1));
 
+  // vector version (stereo):
   rosic::rsEngineersFilterStereo filterVector;
   filterVector.setPrototypeOrder(order);
   filterVector.setMode(rsInfiniteImpulseResponseDesignerF::BANDPASS);
@@ -242,8 +241,10 @@ void engineersFilterPerformance()
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("rsEngineersFilterStereo", cycles/numSamples);
 
-  // the performance gain is just a factor of 1.4, not 2...maybe try to have the filter coeffs of
-  // type rsFloar64x2 too?
+  // Here, the performance gain is indeed a factor of 2 - it works exactly as it should
+  // Both, scalar and vector version take about 550 cycles per sample with order=20 and 
+  // bandpass setting (which doubles the actual order to 40 biquads). That makes 
+  // 550/40 = 13.75 cycles per sample (pair) per biquad. 
 }
 
 void turtleGraphicsPerformance()
