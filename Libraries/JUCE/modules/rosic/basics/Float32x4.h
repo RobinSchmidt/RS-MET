@@ -67,6 +67,12 @@ public:
   /** Sets the 4 elements to the given integers, thereby converting them to float. */
   inline void set(int a, int b, int c, int d) { set((float) a, (float) b, (float) c, (float) d); }
 
+
+  inline void set(const __m128& a) { v = a; }
+
+
+
+
   /** Sets the vector element with index i (valid indices are 0 and 1). */
   //inline void set(size_t i, float a)  { asArray()[i] = a; }
   // redundant with array access operator - maybe delete from rsFloat64x2, too
@@ -136,15 +142,17 @@ public:
   }
 
   inline rsFloat32x4& operator=(const __m128& rhs) { v = rhs; return *this; }
+  //inline rsFloat32x4& operator=(__m128 const & rhs) { v = rhs; return *this;  }
+
 
   inline operator __m128() const { return v; }
 
 
 protected:
 
-  //__m128 v;
+  __m128 v;
   //__declspec(align(16)) __m128 v; // the value (define and ALIGN(N) macro for gcc/msc)
-  __declspec(align(32)) __m128 v;
+  //__declspec(align(32)) __m128 v;
 };
 
 // binary arithmetic operators:

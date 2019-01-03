@@ -13,7 +13,7 @@ void testFourierTransformer(std::string &reportString)
 
   rsFourierTransformerRadix2D ft;
   ft.setBlockSize(bufferSize);
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
   counter.init();
   int b;
   for(b = 0; b < numBuffers; b++)
@@ -56,7 +56,7 @@ void testAutoCorrelationPitchDetector2(std::string &reportString)
   double fe; // frequency estimate (irrelevant in performance test)
   double block[blockSize];   
   int b, n;
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
   counter.init();
   for(b = 0; b < numBlocks; b++)
   {

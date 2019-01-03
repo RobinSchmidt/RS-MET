@@ -142,25 +142,24 @@ public:
   synthesiszed, you can use this function. When many modes are added, it makes more sense to just
   call the vector function and accumulate the vectors and do just a single sum after the 
   accumulation. */
-  inline float getSample(float in) { return getSampleVector(rsFloat32x4(in)).getSum(); }
+  //inline float getSample(float in) { return getSampleVector(rsFloat32x4(in)).getSum(); }
 
 
 
-  // some test functions for performance measurements:
+  // some test functions for performance measurements (not inlined, so we can look at the generated 
+  // assembly code):
   rsFloat32x4 getSampleVectorTestDF1( rsFloat32x4 in);
   rsFloat32x4 getSampleVectorTestDF2( rsFloat32x4 in); 
   rsFloat32x4 getSampleVectorTestTDF2(rsFloat32x4 in);
-  //inline float getSample(float in) 
-  //{ 
-  //  static const rsFloat32x4 x = 1.f;
-  //  //rsFloat32x4 y = getSampleVectorTestDF1(x);
-  //  rsFloat32x4 y = getSampleVectorTestDF2(x);
-  //  //rsFloat32x4 y = getSampleVectorTestTDF2(x);
-  //  return 1.f; 
-  //}
+  inline float getSample(float in) 
+  { 
+    static const rsFloat32x4 x = 1.f;
+    rsFloat32x4 y = getSampleVectorTestDF1(x);
+    //rsFloat32x4 y = getSampleVectorTestDF2(x);
+    //rsFloat32x4 y = getSampleVectorTestTDF2(x);
+    return 1.f; 
+  }
   
-  
-
   /** Resets the state variables to all zeros. */
   void reset() { x1 = y1 = y2 = 0; }
 
@@ -169,6 +168,30 @@ protected:
   rsFloat32x4 x1 = 0, y1 = 0, y2 = 0, b0 = 0, b1 = 0, a1 = 0, a2 = 0;
   //rsFloat32x4 b0 = 0, b1 = 0, a1 = 0, a2 = 0, x1 = 0, y1 = 0, y2 = 0;
   //rsFloat32x4 tmp;
+
+};
+
+class rsModalBank
+{
+
+protected:
+
+
+  static const int maxNumModes = 1024;
+  rsModalFilterFloatSSE2 modeFilters[maxNumModes];
+
+  struct ModeParameters
+  {
+    float frequency, amplitude, phase, attack1, attack2, attackBlend, decay1, decay2, decayBlend;
+  };
+  ModeParameters modeParams[maxNumModes];
+
+
+  double sampleRate;
+  int numModes;
+
+
+  //std::vector<rsModalFilterFloatSSE2> modeFilters;
 
 };
 

@@ -21,7 +21,7 @@ void testAbsAndSign2(std::string &reportString)
   RAPT::rsArray::fillWithRandomValues(x, N, -N, N, 0);
   int n;
 
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
   counter.init();
   for(n = 0; n < N; n++)
     y[n] = fabs(x[n]);
@@ -54,7 +54,7 @@ void testMultinomialCoefficients2(std::string &reportString)
   rsUint32 k[mMax];
   rsUint32 result;
 
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
   counter.init();
 
   // we use the same nested loop computation as in the unit test - refer to the comments there for
@@ -164,7 +164,7 @@ void testPrimeSieves(std::string &reportString)
   //static const rsUint64 maxPrime = 1000;
     // we should measure for different values of maxPrime - the algorithms may scale differently
 
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
   double cyclesPerNumber;
 
   //rsArray<rsUint64> pa;
@@ -224,7 +224,7 @@ void runMatrixTest(std::string &reportString, int numRows, int numColumns, int n
   rsMatrixDbl A(numRows, numColumns);
   A.randomizeElements(-1.0, 1.0);
 
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
   counter.init();
   for(int i = 1; i <= numRuns; i++)
     A = 2.0 * ((A*trans(A))*A + A);  // A := 2 * ((A*A^T)*A + A)
@@ -265,7 +265,7 @@ void testMatrixAddressing(std::string &reportString)
   }
 
   // measure copying a into b via pointer-to-pointer access:
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
   counter.init();
   for(i = 0; i < N; i++){
     for(j = 0; j < M; j++)

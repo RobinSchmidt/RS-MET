@@ -397,16 +397,30 @@ rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF1(rsFloat32x4 in)
   // and with both more than 400 - really - wtf? using a member instead of a local for y does not
   // help, re-ordering the member variables also has no effect - maybe look at the generated asm
 }
+/*
 rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF2(rsFloat32x4 in)
 {
   register rsFloat32x4 tmp = in - a1*y1 - a2*y2; 
   register rsFloat32x4 out = b0*tmp + b1*y1;
   y2 = y1;
-  //y1 = tmp;   // without: 7 cycles, with: 330 ..declaring the temp variables register does not help
+  y1 = tmp;   // without: 7 cycles, with: 330 ..declaring the temp variables register does not help
   return out;
   // see https://ccrma.stanford.edu/~jos/fp/Direct_Form_II.html
   // we use y for the v-values here
 }
+*/
+/*
+// this implementation of DF2 avoids additional local variables by using the input as temporary for
+// the intermediate signal - but i did not yet verify its correctness:
+rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF2(rsFloat32x4 tmp)
+{
+  tmp -= (a1*y1 + a2*y2);
+  y2 = y1;
+  y1 = b0*tmp + b1*y1;
+  return y1;
+}
+*/
+
 
 rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestTDF2(rsFloat32x4 in)
 {
@@ -418,6 +432,14 @@ rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestTDF2(rsFloat32x4 in)
   // this takes 870 cycles - this is unreasonable! could the measurement be flawed?
   // this stays also slow when commenting one of the two middle lines
 }
+// maybe render some actual sounds using hundreds of modes and compare the time taken to render
+// a looong sample - it should take a couple of seconds to render the whole sound - this may be 
+// close to a real-world application
+
+// Idea have a ModalSynth class that lets the user insert different types of mode filters
+// simple decaying sines, attack/decay-sines, 4-env-sines, nonlinear modes (perhaps with amplitude
+// dependent frequency - they should have a second "sidechain" input where we feed back the total
+// summed output - so the nonlinear effects may depend on the total output value
 
 
 //=================================================================================================

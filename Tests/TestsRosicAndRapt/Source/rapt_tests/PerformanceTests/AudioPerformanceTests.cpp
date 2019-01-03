@@ -17,7 +17,7 @@ void filterSignConventionPerformance()
   Real g;
 
   // signals and bookeeping:
-  ProcessorCycleCounter counter;
+  PerformanceCounterTSC counter;
   double cycles;
   vector<Real> x = createNoise(numSamples, double(-1), double(+1));
   vector<Real> y(numSamples);
@@ -113,7 +113,7 @@ void filterSignConventionPerformance()
 void ladderPerformance()
 {
   int numSamples = 20000;
-  ProcessorCycleCounter counter;
+  PerformanceCounterTSC counter;
   int n;
 
   // create input and allocate output signals:
@@ -157,7 +157,7 @@ void engineersFilterPerformance()
 {
   int numSamples = 10000;
   int order      = 20;      
-  ProcessorCycleCounter counter;
+  PerformanceCounterTSC counter;
   double cycles;
   int n;
 
@@ -198,7 +198,7 @@ void turtleGraphicsPerformance()
   //int order = 5;
   std::vector<double> x, y;
 
-  ProcessorCycleCounter counter;
+  PerformanceCounterTSC counter;
   double cycles;
 
   counter.init(); 

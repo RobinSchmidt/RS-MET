@@ -5,9 +5,9 @@ template<class TMod, class TSig>
 double getCyclesPerSample(TMod &module, int numSamples = 1000, int numTests = 5, 
   TSig dummy = 1.0) // the dummy is to let the compiler determine the signal type
 {  
-  ::ProcessorCycleCounter counter;
-  //::PerformanceCounterQPC counter;
-  //::PerformanceCounterPMC counter;
+  //::PerformanceCounterTSC counter;
+  ::PerformanceCounterQPC counter;
+  //::PerformanceCounterPMC counter;  // requires privileged instructions
 
   // create noise to be used as input signal:
   TSig *x = new TSig[numSamples];
@@ -38,7 +38,7 @@ double getCyclesPerSampleBlockWise(T &module,
                                    int numTests = 5, 
                                    int blockSize = 512)
 {  
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
 
   double *x = new double[numSamples];
   double *y = new double[numSamples];
@@ -85,8 +85,9 @@ void testModalFilter3(std::string &reportString)
   double A   = 1.5;    // amplitude as raw factor
 
   int blockSize  = 512;
-  int numSamples = 2048;
-  int numTests   = 5;
+  //int numSamples = 2048;
+  int numSamples = 1000000;
+  int numTests   = 15;
 
 
   double w = 2*PI*f/fs;
@@ -115,11 +116,6 @@ void testModalFilter3(std::string &reportString)
   mf4.setParameters(w, A, phs, 0.1*ta, ta, 0.5, 0.1*td, td, 0.5);
   cyclesPerSample = getCyclesPerSample(mf4, numSamples, numTests, 1.f);
   printPerformanceTestResult("ModalFilterFloatSSE2", cyclesPerSample);
-  // very slow - maybe because of double->float->double conversion and/or the summing of the 4
-  // modes - hmm...that doesn't seem to make much of a difference - make performance tests
-  // of rsFloat32x4...
-
-
 
   /*
   rsNonlinearModalFilter nmf;
@@ -128,6 +124,9 @@ void testModalFilter3(std::string &reportString)
   std::cout << cyclesPerSample;
   */
 }
+
+
+
 
 void testModalFilterBank(std::string &reportString)
 {

@@ -14,7 +14,7 @@ void testSincInterpolator(std::string &reportString, double ratio, int sincLengt
   double *x = new double[xN];       // input signal
   double *y = new double[yN];       // output signal
 
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
   counter.init();
   rsResamplerDD::transposeSinc(x, xN, y, yN, ratio, sincLength, true);
   double cycles = (double) counter.getNumCyclesSinceInit();

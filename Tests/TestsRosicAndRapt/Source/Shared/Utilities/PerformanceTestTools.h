@@ -40,17 +40,9 @@ inline void dontOptimize(T x)
 
 /** This class implements a CPU cycle counter which is useful for performance tests. It does not 
 literally count but instead measure the time stamps before and after a sequence of commands. Works 
-only with MSVC at the moment. 
+only with MSVC at the moment. It's based on the __rdtsc() compiler intrinsic. */
 
-based on __rdtsc()
-
-hmm...maybe we should update this using QueryPerformanceCounter, etc. - see here:
-https://en.wikipedia.org/wiki/Time_Stamp_Counter
-https://msdn.microsoft.com/en-us/library/windows/desktop/dn553408(v=vs.85).aspx
-
-*/
-
-class ProcessorCycleCounter  // rename to PerformanceCounterTSC
+class PerformanceCounterTSC
 {
 
 public:
@@ -58,13 +50,13 @@ public:
   /** Resets the counter to zero. */
   inline void init()
   {  
-    initTime = ReadTSC();
+    initTime = readTimeStampCounter();
   }
 
   /** Returns the number of CPU-cycles since the last call to init(). */
   inline __int64 getNumCyclesSinceInit()
   {
-    return ReadTSC() - initTime;
+    return readTimeStampCounter() - initTime;
   }
 
 protected:
@@ -73,7 +65,7 @@ protected:
 
   /** Function for reading the time-stamp counter - this is taken from Agner Fog's optimization 
   tutorials (check there for a new version, maybe a version fo GCC). */
-  __int64 ReadTSC()  // Returns time stamp counter
+  __int64 readTimeStampCounter()
   {
 #ifdef _MSC_VER
     int     dummy[4];      // For unused returns
@@ -85,14 +77,14 @@ protected:
 #else
     return 0;
 #endif
-
-    // maybe convert the ifdefs into ifs: if( isMicrosoftCompiler() )
   }
 
 };
 
 //=================================================================================================
-/** Another implementation based on __readpmc  */
+
+/** Another implementation based on __readpmc ...but it doesn't work yet because it requires access
+to privileged instruction ...see Agner Fog's testp.pdf */
 
 class PerformanceCounterPMC
 {
@@ -105,8 +97,24 @@ public:
 
 protected:
 
-  inline int64_t readPMC(int32_t n) { return __readpmc(n); }
-  // triggers exception: Privileged instruction 
+  inline int64_t readPMC(int32_t n) 
+  { 
+    int64_t pmc;
+    try {
+      pmc = __readpmc(n);
+    }
+    catch(...) {
+      return 0;
+    }
+    return pmc;
+    //return __readpmc(n); 
+  }
+  // triggers exception: Privileged instruction - hmm - and for some reason, the exception handler 
+  // doesn't trigger. instead, it crashes with an "unhandled exception"
+  // here it says: "This intrinsic is available in kernel mode only"
+  // https://docs.microsoft.com/en-us/cpp/intrinsics/readpmc?view=vs-2017
+  // https://docs.microsoft.com/en-us/windows-hardware/drivers/gettingstarted/user-mode-and-kernel-mode
+  // it's currently not usable
 
   int64_t initTime; 
 
@@ -156,6 +164,12 @@ class PerformanceCounterQPC : public ProcessorCycleCounter
 };
 
 #endif
+
+/* Maybe make another version based on this:
+https://docs.microsoft.com/en-us/windows/desktop/api/sysinfoapi/nf-sysinfoapi-gettickcount64
+and/or this:
+https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/ntifs/nf-ntifs-kequeryperformancecounter
+*/
 
 
 
@@ -303,7 +317,7 @@ protected:
 
   std::vector<std::vector<double>> means, variances;
 
-  ProcessorCycleCounter cpuCounter;
+  PerformanceCounterTSC cpuCounter;
 
 };
 // test with 2 functions (like Ooura FFT, rsFFT), 5 input sizes (128...2048), 30 runs

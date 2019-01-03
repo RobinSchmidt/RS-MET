@@ -32,7 +32,7 @@ void callbackPerformance()
   // callback to a std::function? ...try it
 
   int numCalls = 10000;  // number of function calls
-  ProcessorCycleCounter counter;
+  PerformanceCounterTSC counter;
   int n;
   double x = 1.0;
   double cycles;

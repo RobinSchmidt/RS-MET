@@ -4,7 +4,7 @@ void testFlagArray(std::string &reportString)
 {
   static const rsUint32 numFlags = 1000000;
 
-  ::ProcessorCycleCounter counter;
+  ::PerformanceCounterTSC counter;
   double cyclesPerFlag;
   int i;
 

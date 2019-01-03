@@ -60,7 +60,7 @@ void matrixAdressingTest()
   rsArray::fillWithRandomValues(af, int(N*M), -1.0, +1.0, 0);
 
   // measure copying a into b via pointer-to-pointer access:
-  ProcessorCycleCounter counter;
+  PerformanceCounterTSC counter;
   counter.init();
   for(i = 0; i < N; i++){
     for(j = 0; j < M; j++)
