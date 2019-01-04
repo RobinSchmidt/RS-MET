@@ -416,7 +416,7 @@ void modalBankTransient()
 
 /** Energy of the envelope given by a weighted sum of 4 exponential decays:
 f(t) = A*exp(a*t) + B*exp(b*t) - C*exp(c*t) - D*exp(d*t)
-all coeffs are assumed to be positive */
+all uppercase coeffs are assumed to be positive and lowercase coeffs negative */
 template<class T>
 T fourExpEnergy(T A, T a, T B, T b, T C, T c, T D, T d)
 {

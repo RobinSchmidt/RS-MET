@@ -78,8 +78,8 @@ double getCyclesPerSampleBlockWise(T &module,
 void testModalFilter3(std::string &reportString)
 {
   double fs  = 44100;  // samplerate in Hz
-  double ta  = 0.02;   // decay time in seconds
-  double td  = 0.1;    // decay time constant in seconds
+  double ta  = 0.1;    // decay time in seconds
+  double td  = 0.5;    // decay time constant in seconds
   double f   = 55;     // frequency in Hz
   double phs = 45;     // phase in degrees
   double A   = 1.5;    // amplitude as raw factor
@@ -91,6 +91,7 @@ void testModalFilter3(std::string &reportString)
 
 
   double w = 2*PI*f/fs;
+  double p = RAPT::rsDegreeToRadiant(phs);
 
   rsModalFilterDD mf;
   mf.setModalParameters(f, A, td, phs, fs);
@@ -113,7 +114,7 @@ void testModalFilter3(std::string &reportString)
   printPerformanceTestResult("ModalFilterAttack2", cyclesPerSample);
 
   rsModalFilterFloatSSE2 mf4; // 4 because of the 4 sinusoids
-  mf4.setParameters(w, A, phs, 0.1*ta, ta, 0.5, 0.1*td, td, 0.5);
+  mf4.setParameters(w, A, p, 0.1*ta*fs, ta*fs, 0.5, 0.1*td*fs, td*fs, 0.5);
   cyclesPerSample = getCyclesPerSample(mf4, numSamples, numTests, 1.f);
   printPerformanceTestResult("ModalFilterFloatSSE2", cyclesPerSample);
 
@@ -140,7 +141,7 @@ void testModalFilter3(std::string &reportString)
   // maybe check also the output signals - could it be that the filter is unstable and the 
   // arithmetic produces exceptions/errors that depend on which coeffs are active? denormals
   // or something? yes - actually, the coeffs are even denormal - figure out, why - fix it and
-  // test again
+  // test again - yeah - fuck - it was the denormals!
 }
 
 void testModalFilterBank(std::string &reportString)
