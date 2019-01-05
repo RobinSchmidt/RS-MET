@@ -367,6 +367,10 @@ void dampedSineFilter(double w, double A, double d, double p,
 
   // because values will be rounded to float anyway, we could use a polynomial approximation
   // of sin/cos?
+
+  // i tried to bake the minus sign into the a-coeffs such that the difference equation can be 
+  // implemented with all plusses - but that didn't give any performance advantage, so i changed
+  // it back for consistency with DSP literature
 }
 
 void rsModalFilterFloatSSE2::setParameters(

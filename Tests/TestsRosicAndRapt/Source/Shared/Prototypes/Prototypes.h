@@ -134,9 +134,9 @@ public:
   inline rsFloat32x4 getSample(rsFloat32x4 in)
   {
     //return getSampleDF1(in);       // 21.2 cycles
-    //return getSampleTDF1(in);      // 14.1 cycles
+    return getSampleTDF1(in);      // 12.1 cycles
     //return getSampleDF2(in);       // 21.3 cycles
-    return getSampleTDF2(in);      // 16.1 cycles
+    //return getSampleTDF2(in);      // 16.1 cycles
   }
 
   /** Produces a scalar output sample that adds up all the 4 decaying sines. Whne a single mode is
@@ -159,18 +159,18 @@ public:
   see: https://ccrma.stanford.edu/~jos/fp/Direct_Form_I.html  */
   inline rsFloat32x4 getSampleDF1(rsFloat32x4 in)
   {
-    rsFloat32x4 y = b0*in + b1*x1 - a1*v1 - a2*v2; // todo: use all plusses (more efficient)
-    x1 = in;  // maybe multiply by b0 at the output instead of input for better reponse to amplitude
-    v2 = v1;  // modulation, try (transposed) direct form 2
+    rsFloat32x4 y = b0*in + b1*x1 - a1*v1 - a2*v2;
+    x1 = in;
+    v2 = v1;
     v1 = y;
     return y;
   }
 
   /** Computes a 4-vector of output samples using a transposed direct form 1 implementation. 
   see: https://ccrma.stanford.edu/~jos/fp/Transposed_Direct_Forms.html  */
-  inline rsFloat32x4 getSampleTDF1(rsFloat32x4 in)
+  inline rsFloat32x4 getSampleTDF1(rsFloat32x4 t)
   {
-    rsFloat32x4 t = in + v1; 
+    t += v1; 
     v1 = -a1*t + v2;
     v2 = -a2*t;
     rsFloat32x4 y = b0*t + x1; // x1 == s3
