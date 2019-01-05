@@ -145,6 +145,10 @@ public:
   accumulation. */
   inline float getSample(float in) { return getSample(rsFloat32x4(in)).getSum(); }
 
+  /** Convenience function, if you need the output in double-precision format (of, course, the 
+  actual precision is single anyway - it's just converted to double). */
+  inline double getSample(double in) { return double(getSample(float(in))); }
+
 
   /*
   // some test functions for performance measurements (not inlined, so we can look at the generated 

@@ -68,14 +68,21 @@ bool testModalFilter2(std::string &reportString)
   // check class rsModalFilterWithAttack2:
   rsModalFilterWithAttack2DD mfa2;
   mfa2.setModalParameters(f, A, ta, td, phs, fs);
-
   getImpulseResponse(mfa2, x1, N);
-  //plotData(N, 0, 1/fs, xt, x1);
   err = RAPT::rsArray::maxDeviation(xt, x1, N);
   testResult &= err < 1.e-7;
     // 4 orders of magnitude less precise than rsModalFilterWithAttack (with GCC)
 
-  // todo: check rsModalFilterFloat32x4_SSE2
+  // check rsModalFilterFloatSSE2 - has wrong amplitude:
+  rsModalFilterFloatSSE2 mf_f32x4;
+  double scaledA = A*scaler;
+  mf_f32x4.setParameters(w, scaledA, p, ta*fs, ta*fs, 0.0, td*fs, td*fs, 0.0);
+  getImpulseResponse(mf_f32x4, x1, N);
+  plotData(N, 0, 1/fs, xt, x1); 
+  // the amplitude is too low - we need to incorporate the scaler ...but just using scaler*A seems
+  // to be wrong - why?
+
+
 
   //cout << reportString;
   appendTestResultToReport(reportString, testName, testResult);
