@@ -133,10 +133,10 @@ public:
   scalar output sample would be the sum of these 4. */
   inline rsFloat32x4 getSample(rsFloat32x4 in)
   {
-    return getSampleDF1(in);
+    //return getSampleDF1(in);
     //return getSampleDF2(in);
     //return getSampleTDF1(in);
-    //return getSampleTDF2(in);
+    return getSampleTDF2(in);
   }
 
   /** Produces a scalar output sample that adds up all the 4 decaying sines. Whne a single mode is
@@ -180,14 +180,25 @@ public:
     return y;
   }
 
-  inline rsFloat32x4 getSampleDF2(rsFloat32x4 in)
+  inline rsFloat32x4 getSampleDF2(rsFloat32x4 tmp)
   {
-    rsFloat32x4 y = b0*in + b1*x1 - a1*v1 - a2*v2; // todo: use all plusses (more efficient)
-    x1 = in;  // maybe multiply by b0 at the output instead of input for better reponse to amplitude
-    v2 = v1;  // modulation, try (transposed) direct form 2
-    v1 = y;
-    return y;
+    tmp -= (a1*v1 + a2*v2); 
+    rsFloat32x4 out = b0*tmp + b1*v1;
+    v2 = v1;
+    v1 = tmp;
+    return out;
+    // see https://ccrma.stanford.edu/~jos/fp/Direct_Form_II.html
   }
+
+  inline rsFloat32x4 getSampleTDF2(rsFloat32x4 in)
+  {
+    rsFloat32x4 y = b0*in + v1;
+    v1 = b1*in - a1*y + v2;
+    v2 = -a2*y;
+    return y;
+    // see https://ccrma.stanford.edu/~jos/fp/Transposed_Direct_Forms.html
+  }
+
 
 
 
