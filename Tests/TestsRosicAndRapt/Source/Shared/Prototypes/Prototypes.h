@@ -246,13 +246,25 @@ public:
     return y.getSum();
   }
 
+  void reset()
+  {
+    for(int i = 0; i < numModes; i++)
+      modeFilters[i].reset();
+    // sampleCounter = 0;
+  }
+
 
 protected:
 
   static const int maxNumModes  = 1024;
   rsModalFilterFloatSSE2 modeFilters[maxNumModes];
   int numModes;
-
+  // int sampleCounter = 0;
+  // maybe need a system to switch off modes that have gone silent - maybe sort the modes by their
+  // decayTimes (descending) and at each sample (or block) decrease the upper loop limit for the
+  // loop over the modes in getSample. but we would also have to re-activate them when we get a new
+  // nonzero input/excitation - the whole thing would make sense only for impulse excitation - for
+  // continuous excitation (like noise), all modes must remain active all the time
 };
 
 
@@ -272,6 +284,10 @@ protected:
 // a high and a low velocity setting. on note-on, these datapoints are interpolated for the current
 // note and velocity setting. if the incoming note is outside the range of defined key, use linear
 // extrapolation
+// maybe the user should not specify the low-level per mode parameters but instead macro parameters
+// like inharmonicity, attack, decay, attackByFreq, decayByFreq, etc. - perhaps have selectors
+// for harmonic-series, stiff-string series, bar-series, 12-TET series, etc and have also an option
+// to enter formulas
 
 
 /*

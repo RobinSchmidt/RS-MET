@@ -104,6 +104,23 @@ protected:
 
 };
 
+// todo: allow for bi-, tri- and multimodal distributions: for example to get 3 bells at -1, 0, 1,
+// first select (according to some probability), which bell is 
+
+// getSampleTriModal
+//   double selector = selectorGenerator.getSample(); // in 0..1
+//   double randomVal = randomGenerator.getSample();
+//   if(selector < thresh1)
+//     return randomVal + offset1;
+//   if(selector > thresh2)
+//     return randomVal + offset2; 
+//   return randomVal
+
+// thresh1/2 would determine the weights of the 3 modes, for example with thresh1 = 0.3, 
+// thresh2 = 0.7, we would have a 30% chance to get a sample of the low mode a 40% chance for the
+// middle mode and again a 30% chance for the high mode - we could give the user parameters
+// modeCenter, modeSpread, modeSkew
+
 
 
 #endif

@@ -119,6 +119,14 @@ void testModalFilter3(std::string &reportString)
   //cyclesPerSample = getCyclesPerSample(mf4, numSamples, numTests, 1.f);
   printPerformanceTestResult("ModalFilterFloatSSE2", cyclesPerSample);
 
+  // For a CPU running at 2 GHz and a with a sample rate of 50 kHz, we have a contingent of
+  // 2*10^9 / 50000 = 40000 cycles per sample to allocate. If one mode takes 12.1 cycles for
+  // a sample (as it currently does), we can produce a total 40000/12.1 = 3305 modes.
+  // Can we also split the load to several cores? and with the 256-bit wide octfloats of AVX, we 
+  // could also double the number of modes or with AVX2 even quadruple it. the intel core i3
+  // actually supports AVX2:
+  // https://ark.intel.com/products/84695/Intel-Core-i3-5005U-Processor-3M-Cache-2-00-GHz-
+
 
 
 
@@ -131,21 +139,6 @@ void testModalFilter3(std::string &reportString)
   double cyclesPerSample = getCyclesPerSample(nmf);
   std::cout << cyclesPerSample;
   */
-
-  // The rsModalFilterFloatSSE2 version performs very badly when the difference equation is 
-  // implemented correctly - compare that to the stereo version of EngineersFilter which takes
-  // 13.75 cycles per sample and biquad - for scalar double and rsFloat64x2. Try a modal filter
-  // based on rsFloat64x2 ...and/or maybe the inlining in the loop over the stages helps? Try
-  // a ModalBank with rsFloat32x4. ...when removing certain simple state-update instructions from
-  // the difference equation, it runs like lightning - 7 cycles per sample and mode - but adding
-  // the update back let's the cycles skyrocket to several hundreds :-(  ...this is very weird!
-  // maybe other implementation structures could be better (try a rotating phasor). Maybe also
-  // make a test of rsBiquadCascade<rsFloat32x4, rsFloat32x4> - see if it also takes just 13.75
-  // cycles per 4-vector - try it also on the other machine
-  // maybe check also the output signals - could it be that the filter is unstable and the 
-  // arithmetic produces exceptions/errors that depend on which coeffs are active? denormals
-  // or something? yes - actually, the coeffs are even denormal - figure out, why - fix it and
-  // test again - yeah - fuck - it was the denormals!
 }
 
 void testModalFilterBank(std::string &reportString)
