@@ -575,7 +575,7 @@ void modalWithFancyEnv()
   // slightyl different due to single precision processing:
 
   rsModalFilterFloatSSE2 mf;
-  mf.setParameters(w, amplitude, p, 
+  mf.setParametersTwoEnvs(w, amplitude, p, 
     fs*attackEarly, fs*attackLate, attackBlend,
     fs*decayEarly,  fs*decayLate,  decayBlend);
   std::vector<double> y(numSamples); // we convert the floats back to double on the fly
@@ -586,15 +586,15 @@ void modalWithFancyEnv()
   // experiment: add a signal with a frequency slightly offset but otherwise the same parameters
   // to get mode-beating:
   mf.reset();
-  double df = 4.0;
+  double df = 7.0;
   double dw = 2*PI*df/fs;
-  mf.setParameters(w+dw, amplitude, p, 
+  mf.setParametersTwoEnvs(w+dw, amplitude, p, 
     fs*attackEarly, fs*attackLate, attackBlend,
     fs*decayEarly,  fs*decayLate,  decayBlend);
   std::vector<double> z(numSamples); // we convert the floats back to double on the fly
   z[0] = mf.getSample(1.f) + y[0];
   for(int n = 1; n < numSamples; n++)
-    z[n] = 0.25*mf.getSample(0.f) + y[n];
+    z[n] = 0.125*mf.getSample(0.f) + y[n];
   // question what is the perceived frequency as function of the two beating mode freqs and 
   // amplitudes - when the amplitudes are equal, it's the arithemtic mean but if they are 
   // unequal, it's supposed to be skewed toward the louder mode - but by what function? maybe

@@ -121,10 +121,19 @@ public:
 
   /** Sets up the mode parameters. Omega is the radian frequency (2*pi*f/fs), the phase is in 
   radians and the decay time constants are in samples. See also rsDampedSineFilter. */
-  void setParameters(
+  void setParametersTwoEnvs(
     double omega,   double amplitude, double phase, 
     double attack1, double attack2,   double attackBlend,
     double decay1,  double decay2,    double decayBlend);
+
+  // maybe try another parametrization:
+  // freq, amp, phase, att1, dec1, freqSpread, phaseSpread, scaleAtt2, scaleDec2, blend
+  // Freq, Amp, Phase, Attack, Decay
+  // FreqSpread, PhaseSpread, AttackSpread, DecaySpread, blend
+  void setParameters(double omega, double amplitude, double phase, double attack, double decay,
+    double deltaOmega = 0, double phaseDelta = 0, double blend = 0.5, 
+    double attackScale = 1.0, double decayScale = 1.0);
+
 
 
   /** \name Processing */

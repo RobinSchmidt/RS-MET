@@ -76,7 +76,7 @@ bool testModalFilter2(std::string &reportString)
   // check rsModalFilterFloatSSE2:
   rsModalFilterFloatSSE2 mf_f32x4;
   double scaledA = A*scaler;
-  mf_f32x4.setParameters(w, scaledA, p, td2*fs, td2*fs, 0.0, td*fs, td*fs, 0.0);
+  mf_f32x4.setParametersTwoEnvs(w, scaledA, p, td2*fs, td2*fs, 0.0, td*fs, td*fs, 0.0);
   getImpulseResponse(mf_f32x4, x1, N);
   plotData(N, 0, 1/fs, xt, x1); 
   err = RAPT::rsArray::maxDeviation(xt, x1, N);

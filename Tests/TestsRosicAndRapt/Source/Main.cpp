@@ -280,7 +280,7 @@ int main(int argc, char* argv[])
   //biquadImpulseResponseDesign();
   //modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
-  //modalWithFancyEnv();
+  modalWithFancyEnv();
 
   // Misc Audio:
   //centroid();
