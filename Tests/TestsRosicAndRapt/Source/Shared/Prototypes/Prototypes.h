@@ -133,10 +133,10 @@ public:
   scalar output sample would be the sum of these 4. */
   inline rsFloat32x4 getSample(rsFloat32x4 in)
   {
-    //return getSampleDF1(in);
-    return getSampleTDF1(in);
-    //return getSampleDF2(in);
-    //return getSampleTDF2(in);
+    //return getSampleDF1(in);       // 21.2 cycles
+    //return getSampleTDF1(in);      // 14.1 cycles
+    //return getSampleDF2(in);       // 21.3 cycles
+    return getSampleTDF2(in);      // 16.1 cycles
   }
 
   /** Produces a scalar output sample that adds up all the 4 decaying sines. Whne a single mode is
@@ -150,27 +150,13 @@ public:
   inline double getSample(double in) { return double(getSample(float(in))); }
 
 
-  /*
-  // some test functions for performance measurements (not inlined, so we can look at the generated 
-  // assembly code):
-  rsFloat32x4 getSampleVectorTestDF1( rsFloat32x4 in);
-  rsFloat32x4 getSampleVectorTestDF2( rsFloat32x4 in); 
-  rsFloat32x4 getSampleVectorTestTDF2(rsFloat32x4 in);
-  inline float getSample(float in) 
-  { 
-    static const rsFloat32x4 x = 1.f;
-    rsFloat32x4 y = getSampleVector(x);
-    //rsFloat32x4 y = getSampleVectorTestDF1(x);
-    //rsFloat32x4 y = getSampleVectorTestDF2(x);
-    //rsFloat32x4 y = getSampleVectorTestTDF2(x);
-    return 1.f; 
-  }
-  */
+
   
   /** Resets the state variables to all zeros. */
   void reset() { x1 = v1 = v2 = 0; }
 
-
+  /** Computes a 4-vector of output samples using a direct form 1 implementation. 
+  see: https://ccrma.stanford.edu/~jos/fp/Direct_Form_I.html  */
   inline rsFloat32x4 getSampleDF1(rsFloat32x4 in)
   {
     rsFloat32x4 y = b0*in + b1*x1 - a1*v1 - a2*v2; // todo: use all plusses (more efficient)
@@ -180,6 +166,8 @@ public:
     return y;
   }
 
+  /** Computes a 4-vector of output samples using a transposed direct form 1 implementation. 
+  see: https://ccrma.stanford.edu/~jos/fp/Transposed_Direct_Forms.html  */
   inline rsFloat32x4 getSampleTDF1(rsFloat32x4 in)
   {
     rsFloat32x4 t = in + v1; 
@@ -190,7 +178,8 @@ public:
     return y;
   }
 
-
+  /** Computes a 4-vector of output samples using a direct form 2 implementation. 
+  see: https://ccrma.stanford.edu/~jos/fp/Direct_Form_II.html  */
   inline rsFloat32x4 getSampleDF2(rsFloat32x4 tmp)
   {
     tmp -= (a1*v1 + a2*v2); 
@@ -198,25 +187,22 @@ public:
     v2 = v1;
     v1 = tmp;
     return out;
-    // see https://ccrma.stanford.edu/~jos/fp/Direct_Form_II.html
   }
 
+  /** Computes a 4-vector of output samples using a transposed direct form 2 implementation. 
+  see: https://ccrma.stanford.edu/~jos/fp/Transposed_Direct_Forms.html */
   inline rsFloat32x4 getSampleTDF2(rsFloat32x4 in)
   {
     rsFloat32x4 y = b0*in + v1;
     v1 = b1*in - a1*y + v2;
     v2 = -a2*y;
     return y;
-    // see https://ccrma.stanford.edu/~jos/fp/Transposed_Direct_Forms.html
   }
-
-
-
 
 protected:
 
   rsFloat32x4 x1 = 0, v1 = 0, v2 = 0, b0 = 0, b1 = 0, a1 = 0, a2 = 0;
-  // maybe make a subclass for DF1 and TDF2 that need to store x1 - save one memory cell for the
+  // maybe make a subclass for DF1 and TDF1 that need to store x1 - save one memory cell for the
   // other forms
 
 };

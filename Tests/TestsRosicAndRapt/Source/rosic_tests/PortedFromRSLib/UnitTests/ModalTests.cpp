@@ -78,7 +78,7 @@ bool testModalFilter2(std::string &reportString)
   double scaledA = A*scaler;
   mf_f32x4.setParameters(w, scaledA, p, td2*fs, td2*fs, 0.0, td*fs, td*fs, 0.0);
   getImpulseResponse(mf_f32x4, x1, N);
-  plotData(N, 0, 1/fs, xt, x1); 
+  //plotData(N, 0, 1/fs, xt, x1); 
   err = RAPT::rsArray::maxDeviation(xt, x1, N);
   testResult &= err < 0.002;
 

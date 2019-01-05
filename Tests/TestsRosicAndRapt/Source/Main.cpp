@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
   //passed &= testHighOrderFilter(  str);  // fails
 
 
-  passed &= testModalFilter2(str);
+  //passed &= testModalFilter2(str);
   ////passed &= testModalSynth(str);         // triggers assert
 
   ////passed &= testNumberManipulations( str); // triggers assert (calls the two below)
