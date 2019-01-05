@@ -146,7 +146,9 @@ public:
 
   /** \name Setup */
 
-  /** Sets all the mode parameters - this triggers a calculation of the filter coefficients. */
+  /** Sets all the mode parameters - this triggers a calculation of the filter coefficients.
+  Parameters: frequency is in Hz, amplitude is a raw factor, decayTime in seconds, 
+  startPhase in degrees and sampleRate also in Hz. */
   void setModalParameters(TPar frequency, TPar amplitude, TPar decayTime, TPar startPhase, 
     TPar sampleRate);
 

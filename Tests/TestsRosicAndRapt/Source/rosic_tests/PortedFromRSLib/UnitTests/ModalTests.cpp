@@ -65,16 +65,17 @@ bool testModalFilter2(std::string &reportString)
   err = RAPT::rsArray::maxDeviation(xt, x1, N);
   testResult &= err < 1.e-11;
 
-
-
   // check class rsModalFilterWithAttack2:
   rsModalFilterWithAttack2DD mfa2;
   mfa2.setModalParameters(f, A, ta, td, phs, fs);
 
   getImpulseResponse(mfa2, x1, N);
+  //plotData(N, 0, 1/fs, xt, x1);
   err = RAPT::rsArray::maxDeviation(xt, x1, N);
   testResult &= err < 1.e-7;
     // 4 orders of magnitude less precise than rsModalFilterWithAttack (with GCC)
+
+  // todo: check rsModalFilterFloat32x4_SSE2
 
   //cout << reportString;
   appendTestResultToReport(reportString, testName, testResult);

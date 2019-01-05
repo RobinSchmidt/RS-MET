@@ -155,8 +155,8 @@ template<class TSig, class TPar>
 void rsModalFilter<TSig, TPar>::setModalParameters(TPar frequency, TPar amplitude, TPar decayTime, 
   TPar startPhase, TPar sampleRate)
 {
-  rsDampedSineFilter(2*PI*frequency/sampleRate, amplitude, decayTime*sampleRate, startPhase,
-    &b0, &b1, &a1, &a2);  
+  rsDampedSineFilter(2*PI*frequency/sampleRate, amplitude, decayTime*sampleRate, 
+    RAPT::rsDegreeToRadiant(startPhase), &b0, &b1, &a1, &a2);  
 }
 
 template<class TSig, class TPar>
@@ -383,7 +383,7 @@ void rsModalFilterWithAttack2<TSig, TPar>::setModalParameters(TPar frequency, TP
 
   TPar tau1, tau2, scaler;
   TPar w = 2*PI*frequency/sampleRate;
-  TPar p = startPhase;
+  TPar p = RAPT::rsDegreeToRadiant(startPhase);
   tau1 = decayTime;
   expDiffScalerAndTau2(tau1, attackTime, &tau2, &scaler);
 

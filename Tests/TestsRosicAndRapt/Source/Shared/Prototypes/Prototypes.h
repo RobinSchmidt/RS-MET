@@ -164,22 +164,32 @@ public:
   */
   
   /** Resets the state variables to all zeros. */
-  void reset() { x1 = y1 = y2 = 0; }
+  void reset() { x1 = v1 = v2 = 0; }
 
 
   inline rsFloat32x4 getSampleDF1(rsFloat32x4 in)
   {
-    rsFloat32x4 y = b0*in + b1*x1 - a1*y1 - a2*y2; // todo: use all plusses (more efficient)
+    rsFloat32x4 y = b0*in + b1*x1 - a1*v1 - a2*v2; // todo: use all plusses (more efficient)
     x1 = in;  // maybe multiply by b0 at the output instead of input for better reponse to amplitude
-    y2 = y1;  // modulation, try (transposed) direct form 2
-    y1 = y;
+    v2 = v1;  // modulation, try (transposed) direct form 2
+    v1 = y;
+    return y;
+  }
+
+  inline rsFloat32x4 getSampleDF2(rsFloat32x4 in)
+  {
+    rsFloat32x4 y = b0*in + b1*x1 - a1*v1 - a2*v2; // todo: use all plusses (more efficient)
+    x1 = in;  // maybe multiply by b0 at the output instead of input for better reponse to amplitude
+    v2 = v1;  // modulation, try (transposed) direct form 2
+    v1 = y;
     return y;
   }
 
 
+
 protected:
 
-  rsFloat32x4 x1 = 0, y1 = 0, y2 = 0, b0 = 0, b1 = 0, a1 = 0, a2 = 0;
+  rsFloat32x4 x1 = 0, v1 = 0, v2 = 0, b0 = 0, b1 = 0, a1 = 0, a2 = 0;
   // maybe make a subclass for DF1 and TDF2 that need to store x1 - save one memory cell for the
   // other forms
 
