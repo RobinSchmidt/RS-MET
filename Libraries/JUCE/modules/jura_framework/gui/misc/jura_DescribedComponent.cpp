@@ -55,8 +55,5 @@ void DescribedComponent::mouseExit(const MouseEvent &e)
 
 void DescribedComponent::repaintOnMessageThread()
 {
-  if(MessageManager::getInstance()->isThisTheMessageThread())
-    repaint();
-  else
-    MessageManager::callAsync( [this]{repaint();} );
+	triggerAsyncUpdate();
 }

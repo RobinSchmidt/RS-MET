@@ -54,7 +54,7 @@ protected:
 /** This class serves as base class for various GUI-objects that may have a description which 
 can be made to appear in some dedicated Label.  */
 
-class JUCE_API DescribedComponent : virtual public Component, public DescribedItem
+class JUCE_API DescribedComponent : virtual public Component, public DescribedItem, public AsyncUpdater
 {
 
 public:
@@ -80,6 +80,8 @@ public:
   controllers or automation and should repaint a slider), but triggering repaint from the audio 
   thread (or any other thread than the message thread) isn't allowed in juce. */
   void repaintOnMessageThread();
+
+  void handleAsyncUpdate() override { repaint(); }
 
   juce_UseDebuggingNewOperator;
 };

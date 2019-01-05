@@ -75,7 +75,7 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification, bool
   if( sendNotification == true )
     sendComboBoxChangeNotifications();
 
-  repaint();
+  repaintOnMessageThread();
 }
 
 void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNotification)
