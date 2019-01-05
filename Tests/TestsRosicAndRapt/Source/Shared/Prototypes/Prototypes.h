@@ -122,9 +122,9 @@ public:
   /** Sets up the mode parameters. Omega is the radian frequency (2*pi*f/fs), the phase is in 
   radians and the decay time constants are in samples. See also rsDampedSineFilter. */
   void setParameters(
-    double omega,   double energy,  double phase, 
-    double attack1, double attack2, double attackBlend,
-    double decay1,  double decay2,  double decayBlend);
+    double omega,   double amplitude, double phase, 
+    double attack1, double attack2,   double attackBlend,
+    double decay1,  double decay2,    double decayBlend);
 
 
   /** \name Processing */
@@ -132,14 +132,14 @@ public:
   /** Produces the vector of the 4 outputs of the 4 individual decaying sine filters. The actual 
   scalar output sample would be the sum of these 4. */
   inline rsFloat32x4 getSample(rsFloat32x4 in)
-  {
-    //return getSampleDF1(in);       // 21.2 cycles
-    return getSampleTDF1(in);      // 12.1 cycles
-    //return getSampleDF2(in);       // 21.3 cycles
-    //return getSampleTDF2(in);      // 16.1 cycles
+  {                                  // cpu-cycles per call
+    //return getSampleDF1(in);       //   21.2
+    return getSampleTDF1(in);        //   12.1      -> most efficient version
+    //return getSampleDF2(in);       //   21.3
+    //return getSampleTDF2(in);      //   16.1
   }
 
-  /** Produces a scalar output sample that adds up all the 4 decaying sines. Whne a single mode is
+  /** Produces a scalar output sample that adds up all the 4 decaying sines. When a single mode is
   synthesiszed, you can use this function. When many modes are added, it makes more sense to just
   call the vector function and accumulate the vectors and do just a single sum after the 
   accumulation. */
@@ -174,6 +174,7 @@ public:
     v1 = -a1*t + v2;
     v2 = -a2*t;
     rsFloat32x4 y = b0*t + x1; // x1 == s3
+    //y  = b0*t + x1; // use member instead of stack variable - no good idea, increases cpu load
     x1 = b1*t;
     return y;
   }
@@ -201,22 +202,79 @@ public:
 
 protected:
 
+  //rsFloat32x4 y; // trying to reduce cpu load in TDF1 by using a member instead of stack 
+                   // allocated variable - but that actually increases cpu load
+
   rsFloat32x4 x1 = 0, v1 = 0, v2 = 0, b0 = 0, b1 = 0, a1 = 0, a2 = 0;
   // maybe make a subclass for DF1 and TDF1 that need to store x1 - save one memory cell for the
-  // other forms
+  // other forms - actually, it turned out that TDF1 is the most cpu efficient version and this one
+  // needs the additional storage cell. but maybe when we later use thousands of these filters, the
+  // memory footprint becomes more relevant - do performance tests under such realistic conditions
+  // later - it may turn out to be advantegeous to switch to TDF2 with its lower memory footprint.
+};
+
+//-------------------------------------------------------------------------------------------------
+
+/** Implements a whole bank of filters of type rsModalFilterFloatSSE2. */
+
+class rsModalBankFloatSSE2
+{
+
+public:
+
+  void setModeParameters(int numModes,
+    double* omegas,   double* amplitudes, double* phases, 
+    double* attacks1, double* attacks2,   double* attackBlends,
+    double* decays1,  double* decays2,    double* decayBlends);
+
+
+  inline float getSample(float in) 
+  { 
+    rsFloat32x4 x(in);
+    rsFloat32x4 y(0);
+    for(int i = 0; i < numModes; i++)
+      y += modeFilters[i].getSample(x);
+    return y.getSum();
+  }
+
+
+protected:
+
+  static const int maxNumModes  = 1024;
+  rsModalFilterFloatSSE2 modeFilters[maxNumModes];
+  int numModes;
 
 };
 
 
+class rsModalBankPolyFloatSSE2
+{
 
+public:
+
+
+protected:
+
+  static const int maxNumVoices = 16;
+  rsModalBankFloatSSE2 modalBanks[maxNumVoices];
+
+};
+// let the user define the modal parameters at various keys and for each key that is defined, have 
+// a high and a low velocity setting. on note-on, these datapoints are interpolated for the current
+// note and velocity setting. if the incoming note is outside the range of defined key, use linear
+// extrapolation
+
+
+/*
 class rsModalBank
 {
 
 protected:
 
+  static const int maxNumVoices = 16;
+  static const int maxNumModes  = 1024;
 
-  static const int maxNumModes = 1024;
-  rsModalFilterFloatSSE2 modeFilters[maxNumModes];
+  rsModalFilterFloatSSE2 modeFilters[maxNumVoices][maxNumModes];
 
   struct ModeParameters
   {
@@ -232,6 +290,7 @@ protected:
   //std::vector<rsModalFilterFloatSSE2> modeFilters;
 
 };
+*/
 
 //=================================================================================================
 

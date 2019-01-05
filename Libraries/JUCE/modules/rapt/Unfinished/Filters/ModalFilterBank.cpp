@@ -71,18 +71,21 @@ void rsTwoPoleFilter<TSig, TPar>::reset()
 //    *g = -*g;
 //}
 
-template<class T>
-void rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2)
+template<class TPar, class TCof>
+void rsDampedSineFilter(TPar w, TPar A, TPar d, TPar p, TCof *b0, TCof *b1, TCof *a1, TCof *a2)
 {
-  T cw, sw, cp, sp, P;
+  TPar cw, sw, cp, sp, P;
   rsSinCos(w, &sw, &cw);
   rsSinCos(p, &sp, &cp);
-  P   = exp(-1.0/d);        // = exp(-alpha), pole radius
-  *a1 = -2*P*cw;            // = -2*P*cos(w)
-  *a2 = P*P;                // = P^2
-  *b0 = A*sp;               // = A*sin(p)
-  *b1 = A*P*(sw*cp-cw*sp);  // = A*P*sin(w-p) via addition theorem
+  P   = exp(-1.0/d);              // = exp(-alpha), pole radius
+  *a1 = TCof(-2*P*cw);            // = -2*P*cos(w)
+  *a2 = TCof(P*P);                // = P^2
+  *b0 = TCof(A*sp);               // = A*sin(p)
+  *b1 = TCof(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
 }
+// i tried to bake the minus sign into the a-coeffs such that the difference equation can be 
+// implemented with all plusses - but that didn't give any performance advantage, so i changed
+// it back for consistency with DSP literature
 
 template<class T>
 T findDecayScalerLess1(T c)

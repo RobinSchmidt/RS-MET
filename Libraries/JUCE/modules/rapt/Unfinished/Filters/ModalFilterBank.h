@@ -70,10 +70,12 @@ A: amplitude
 d: normalized decay time constant (= tau*fs, tau: time (in s) to decay to A/e = A*0.3678...)
 p: start phase in radians. 
 
-move to FilterDesignFormulas, change sign convention for a-coeffs
-*/
-template<class T>
-void rsDampedSineFilter(T w, T A, T d, T p, T *b0, T *b1, T *a1, T *a2);
+You can use different datatypes for the parameters and coefficients (for example, double and float)
+
+move to FilterDesignFormulas, change sign convention for a-coeffs */
+template<class TPar, class TCof>
+void rsDampedSineFilter(TPar w, TPar A, TPar d, TPar p, TCof *b0, TCof *b1, TCof *a1, TCof *a2);
+
 
 /** This is actually almost the same as rsDampedSineFilter, just that here the phase is given in
 degrees.
