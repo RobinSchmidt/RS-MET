@@ -134,9 +134,9 @@ public:
   inline rsFloat32x4 getSample(rsFloat32x4 in)
   {
     //return getSampleDF1(in);
+    return getSampleTDF1(in);
     //return getSampleDF2(in);
-    //return getSampleTDF1(in);
-    return getSampleTDF2(in);
+    //return getSampleTDF2(in);
   }
 
   /** Produces a scalar output sample that adds up all the 4 decaying sines. Whne a single mode is
@@ -179,6 +179,17 @@ public:
     v1 = y;
     return y;
   }
+
+  inline rsFloat32x4 getSampleTDF1(rsFloat32x4 in)
+  {
+    rsFloat32x4 t = in + v1; 
+    v1 = -a1*t + v2;
+    v2 = -a2*t;
+    rsFloat32x4 y = b0*t + x1; // x1 == s3
+    x1 = b1*t;
+    return y;
+  }
+
 
   inline rsFloat32x4 getSampleDF2(rsFloat32x4 tmp)
   {
