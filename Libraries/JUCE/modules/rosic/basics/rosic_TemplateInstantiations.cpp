@@ -1,4 +1,5 @@
 #include <rapt/rapt.cpp>
+#include "Float32x4.h"
 
 // Ouura FFT instantiations (trying to fix linker errors on mac):
 template void RAPT::bitrv2conj(int, int*, double*);
@@ -24,6 +25,7 @@ template void RAPT::dfst(int, double *, double *, int *, double *);
 // old state - maybe it was using the rapt version in rosic that made the difference...)
 
 
+template void RAPT::rsArray::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
 
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrixNew<double>;

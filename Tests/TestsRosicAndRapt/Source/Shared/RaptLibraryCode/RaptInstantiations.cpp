@@ -73,6 +73,7 @@ template void rsArray::filterBiDirectional(double *x, int xLength, double *y, in
   double *b, int bOrder, double *a, int aOrder, int numRingOutSamples);
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
+//template void rsArray::fillWithRandomValues(rosic::rsFloat32x4* x, int N, double min, double max, int seed);
 template void rsArray::divide(double *buffer1, double *buffer2, double *result, int length);
 template int rsArray::maxAbsIndex(const double* const buffer, int length);
 template void rsArray::reverse(double* x, double* y, int length);

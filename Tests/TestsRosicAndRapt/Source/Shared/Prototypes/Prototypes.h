@@ -126,9 +126,48 @@ public:
     double attack1, double attack2, double attackBlend,
     double decay1,  double decay2,  double decayBlend);
 
+
+  /** \name Processing */
+
   /** Produces the vector of the 4 outputs of the 4 individual decaying sine filters. The actual 
   scalar output sample would be the sum of these 4. */
-  inline rsFloat32x4 getSampleVector(rsFloat32x4 in)
+  inline rsFloat32x4 getSample(rsFloat32x4 in)
+  {
+    return getSampleDF1(in);
+    //return getSampleDF2(in);
+    //return getSampleTDF1(in);
+    //return getSampleTDF2(in);
+  }
+
+  /** Produces a scalar output sample that adds up all the 4 decaying sines. Whne a single mode is
+  synthesiszed, you can use this function. When many modes are added, it makes more sense to just
+  call the vector function and accumulate the vectors and do just a single sum after the 
+  accumulation. */
+  inline float getSample(float in) { return getSample(rsFloat32x4(in)).getSum(); }
+
+
+  /*
+  // some test functions for performance measurements (not inlined, so we can look at the generated 
+  // assembly code):
+  rsFloat32x4 getSampleVectorTestDF1( rsFloat32x4 in);
+  rsFloat32x4 getSampleVectorTestDF2( rsFloat32x4 in); 
+  rsFloat32x4 getSampleVectorTestTDF2(rsFloat32x4 in);
+  inline float getSample(float in) 
+  { 
+    static const rsFloat32x4 x = 1.f;
+    rsFloat32x4 y = getSampleVector(x);
+    //rsFloat32x4 y = getSampleVectorTestDF1(x);
+    //rsFloat32x4 y = getSampleVectorTestDF2(x);
+    //rsFloat32x4 y = getSampleVectorTestTDF2(x);
+    return 1.f; 
+  }
+  */
+  
+  /** Resets the state variables to all zeros. */
+  void reset() { x1 = y1 = y2 = 0; }
+
+
+  inline rsFloat32x4 getSampleDF1(rsFloat32x4 in)
   {
     rsFloat32x4 y = b0*in + b1*x1 - a1*y1 - a2*y2; // todo: use all plusses (more efficient)
     x1 = in;  // maybe multiply by b0 at the output instead of input for better reponse to amplitude
@@ -138,41 +177,15 @@ public:
   }
 
 
-  /** Produces a scalar output sample that adds up all the 4 decaying sines. Whne a single mode is
-  synthesiszed, you can use this function. When many modes are added, it makes more sense to just
-  call the vector function and accumulate the vectors and do just a single sum after the 
-  accumulation. */
-  //inline float getSample(float in) { return getSampleVector(rsFloat32x4(in)).getSum(); }
-
-
-
-  // some test functions for performance measurements (not inlined, so we can look at the generated 
-  // assembly code):
-  rsFloat32x4 getSampleVectorTestDF1( rsFloat32x4 in);
-  rsFloat32x4 getSampleVectorTestDF2( rsFloat32x4 in); 
-  rsFloat32x4 getSampleVectorTestTDF2(rsFloat32x4 in);
-  inline float getSample(float in) 
-  { 
-    static const rsFloat32x4 x = 1.f;
-    rsFloat32x4 y = getSampleVectorTestDF1(x);
-    //rsFloat32x4 y = getSampleVectorTestDF2(x);
-    //rsFloat32x4 y = getSampleVectorTestTDF2(x);
-    return 1.f; 
-  }
-  
-  /** Resets the state variables to all zeros. */
-  void reset() { x1 = y1 = y2 = 0; }
-
 protected:
 
   rsFloat32x4 x1 = 0, y1 = 0, y2 = 0, b0 = 0, b1 = 0, a1 = 0, a2 = 0;
-  //rsFloat32x4 b0 = 0, b1 = 0, a1 = 0, a2 = 0, x1 = 0, y1 = 0, y2 = 0;
-  //rsFloat32x4 tmp;
-
-  rsFloat32x4 x2 = 0, b2 = 0; // test - make a full biquad
-
+  // maybe make a subclass for DF1 and TDF2 that need to store x1 - save one memory cell for the
+  // other forms
 
 };
+
+
 
 class rsModalBank
 {

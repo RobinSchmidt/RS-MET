@@ -419,6 +419,7 @@ rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF1(rsFloat32x4 in) // te
   return y; 
 }
 */
+/*
 rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF1(rsFloat32x4 in)
 {
   rsFloat32x4 y  = b0*in + b1*x1 - a1*y1 - a2*y2; 
@@ -430,6 +431,7 @@ rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF1(rsFloat32x4 in)
   // and with both more than 400 - really - wtf? using a member instead of a local for y does not
   // help, re-ordering the member variables also has no effect - maybe look at the generated asm
 }
+*/
 /*
 rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF2(rsFloat32x4 in)
 {
@@ -453,8 +455,7 @@ rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestDF2(rsFloat32x4 tmp)
   return y1;
 }
 */
-
-
+/*
 rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestTDF2(rsFloat32x4 in)
 {
   rsFloat32x4 y = b0*in + y1; 
@@ -465,6 +466,7 @@ rsFloat32x4 rsModalFilterFloatSSE2::getSampleVectorTestTDF2(rsFloat32x4 in)
   // this takes 870 cycles - this is unreasonable! could the measurement be flawed?
   // this stays also slow when commenting one of the two middle lines
 }
+*/
 // maybe render some actual sounds using hundreds of modes and compare the time taken to render
 // a looong sample - it should take a couple of seconds to render the whole sound - this may be 
 // close to a real-world application

@@ -115,8 +115,12 @@ void testModalFilter3(std::string &reportString)
 
   rsModalFilterFloatSSE2 mf4; // 4 because of the 4 sinusoids
   mf4.setParameters(w, A, p, 0.1*ta*fs, ta*fs, 0.5, 0.1*td*fs, td*fs, 0.5);
-  cyclesPerSample = getCyclesPerSample(mf4, numSamples, numTests, 1.f);
+  cyclesPerSample = getCyclesPerSample(mf4, numSamples, numTests, rsFloat32x4(1.f));
+  //cyclesPerSample = getCyclesPerSample(mf4, numSamples, numTests, 1.f);
   printPerformanceTestResult("ModalFilterFloatSSE2", cyclesPerSample);
+
+
+
 
   // todo: check, how just instatiating the template with vector types performs:
   //rsModalFilterWithAttack<rsFloat64x2, rsFloat64x2> mfa64x2;
