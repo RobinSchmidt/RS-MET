@@ -2,6 +2,44 @@
 namespace rosic
 {
 
+struct rsModalUserParameters
+{
+  double frequency   = 440;   // in Hz
+  double amplitude   = 1.0;   // as raw factor ...or should we use decibels?
+  double phase       = 0.0;   // in degrees
+  double attack      = 50;    // in milliseconds
+  double decay       = 500;   // in milliseconds
+  double freqSpread  = 0;     // in Hz
+  double phaseDelta  = 0;
+  double blend       = 0.5;
+  double attackScale = 1.0;
+  double decayScale  = 1.0;
+};
+
+class rsModalAlgoParameters
+{
+
+public:
+
+  /** Sets our members by converting a set of user parameters for a modal filter to the 
+  corresponding set of algorithm parameters. */
+  void setFromUserParameters(const rsModalUserParameters& userParams, double sampleRate);
+
+protected:
+
+  double w;      // 2*pi*f/fs
+  double A;      // raw amplitude factor
+  double p;      // phase in radians
+  double att;    // attack in samples
+  double dec;    // decay in samples
+  double dw;     // delta omega
+  double dp;     // phase delta in radians
+  double b;      // blend
+  double attScl; // attack scale
+  double decScl; // decay scale
+};
+
+
 /**  */
 
 class rsModalSynth

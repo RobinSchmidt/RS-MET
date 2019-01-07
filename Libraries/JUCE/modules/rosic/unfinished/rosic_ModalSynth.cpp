@@ -1,5 +1,23 @@
 using namespace rosic;
 
+
+void rsModalAlgoParameters::setFromUserParameters(const rsModalUserParameters& usrPars, double fs)
+{
+  w      = 2 * PI * usrPars.frequency / fs;
+  A      = usrPars.amplitude;
+  p      = RAPT::rsDegreeToRadiant(usrPars.phase);
+  att    = 0.001 * usrPars.attack * fs;
+  dec    = 0.001 * usrPars.decay  * fs;
+  dw     = 2 * PI * usrPars.freqSpread / fs;
+  dp     = RAPT::rsDegreeToRadiant(usrPars.phaseDelta);
+  b      = usrPars.blend;
+  attScl = usrPars.attackScale;
+  decScl = usrPars.decayScale;
+}
+
+
+
+
 void rsModalSynth::setFreqRatioProfile1(int newProfile)
 {
   freqRatioProfile1 = newProfile;
