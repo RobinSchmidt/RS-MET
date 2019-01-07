@@ -35,10 +35,10 @@ public:
   scalar output sample would be the sum of these 4. */
   inline rsFloat32x4 getSample(rsFloat32x4 in)
   {                                  // CPU-cycles per call (on Athlon 5050e, todo: Core i3-7100U)
-                                     //return getSampleDF1(in);       //   21.2
+    //return getSampleDF1(in);       //   21.2
     return getSampleTDF1(in);        //   12.1      -> most efficient version
-                                     //return getSampleDF2(in);       //   21.3
-                                     //return getSampleTDF2(in);      //   16.1
+    //return getSampleDF2(in);       //   21.3
+    //return getSampleTDF2(in);      //   16.1
   }
 
   /** Produces a scalar output sample that adds up all the 4 decaying sines. When a single mode is

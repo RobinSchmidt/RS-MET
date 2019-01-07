@@ -15,12 +15,18 @@ public:
     double* decays1,  double* decays2,    double* decayBlends);
 
 
-  inline float getSample(float in) 
-  { 
-    rsFloat32x4 x(in);
+
+
+  inline rsFloat32x4 getSample(rsFloat32x4 in)
+  {
     rsFloat32x4 y(0);
     for(int i = 0; i < numModes; i++)
-      y += modeFilters[i].getSample(x);
+      y += modeFilters[i].getSample(in);
+  }
+
+  inline float getSample(float in) 
+  { 
+    rsFloat32x4 y = getSample(rsFloat32x4(in));
     return y.getSum();
   }
 
