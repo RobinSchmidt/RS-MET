@@ -33,6 +33,16 @@ public:
   }
 
 
+
+  /** \name Inquiry */
+
+  //int getTotalLength(double threshold = 0.000001); // cut off at -120 dB
+  // see getRingingTimeEstimate in RAPT::rsBiquadCascade for hwo to compute this - but it may be
+  // better to compute it in rsModalSynth where we have the decay-times available - it would be
+  // wasteful to re-compute the decay time from the filter-coeffs
+
+
+
   /** \name Processing */
 
   inline rsFloat32x4 getSample(rsFloat32x4 in)
@@ -47,6 +57,11 @@ public:
     rsFloat32x4 y = getSample(rsFloat32x4(in));
     return y.getSum();
   }
+
+  // maybe the getSample functions should be made virtual in a baseclass rsModalBank, such 
+  // that we can use a pointer to a baseclass in rsModalSynth and instantiate either a SSE2 or
+  // AVX2 subclass based on the available CPU. the function call overhead will be dwarfed by
+  // the loop over the modes anyway
 
   void reset()
   {

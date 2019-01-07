@@ -40,7 +40,7 @@ protected:
 };
 
 
-/**  */
+/** A monophonic modal synthesizer.... */
 
 class rsModalSynth
 {
@@ -115,6 +115,13 @@ public:
 
   inline void getSampleFrameStereo(double* outL, double* outR)
   {
+    //if(noteAge > decayLength)
+    //  return;
+    // todo: we should actually somehow reset the note-length whenever we receive a new excitation
+    // but then "noteAge" is the wrong name...but maybe we don't need this cutting off of notes 
+    // anyway - when we use continuous excitation signals, it doesn't make sense anymore anyway
+
+
     float x = getExcitation(); // later maybe pass the input signal to the exciter
     rsFloat32x4 y = modalBank.getSample( rsFloat32x4(x) );
     *outL = *outR = y.getSum();  // preliminary - later do stereo mixing
@@ -195,6 +202,7 @@ protected:
 
 
   int noteAge = 0;
+  int decayLength = INT_MAX;
   double sampleRate = 44100;
 
   std::atomic_bool freqRatiosAreReady = false;
@@ -210,6 +218,19 @@ protected:
 // to enter formulas
 
 
+/** A polyphonic version of the modal synthesizer. */
+
+class rsModalSynthPoly : public rsModalSynth // public rsPolyphonicInstrument
+{
+
+public:
+
+protected:
+
+  static const int maxNumVoices = 16; // factor out into rsPolyphonicInstrument
+  rsModalBankFloatSSE2 modalBanks[maxNumVoices];
+
+};
 
 
 

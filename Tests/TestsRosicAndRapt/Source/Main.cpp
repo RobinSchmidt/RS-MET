@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
   // Tests for dragged over RSLib code:
 
   //int dummy;
-  std::string str;
+  //std::string str;    // causes a memleak
   bool passed = true;
 
   //-----------------------------------------------------------------------------------------------
@@ -280,7 +280,7 @@ int main(int argc, char* argv[])
   //biquadImpulseResponseDesign();
   //modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
-  modalWithFancyEnv();
+  //modalWithFancyEnv();
 
   // Misc Audio:
   //centroid();
@@ -388,8 +388,8 @@ int main(int argc, char* argv[])
   // Modal:
   //testModalFilter2(str);    // this is actually a unit test
   //testModalSynth(str);      // this too ...move elsewhere
-  testModalFilter3(str);
-  testModalFilterBank(str);
+  //testModalFilter3(str);
+  //testModalFilterBank(str);
 
   //-----------------------------------------------------------------------------------------------
   // Examples:
@@ -398,7 +398,7 @@ int main(int argc, char* argv[])
   //createInsertionSortSound();  // move somewhere else
   //createModalFilterExamples();
   //createModalFilterBankExamples(); // takes long
-  //createPiano1();
+  createPiano1();
 
   // sample-map creations (they take long):
   //createBass1();
