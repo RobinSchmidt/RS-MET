@@ -52,6 +52,7 @@ public:
   {
     HARMONIC = 0,
     STIFF_STRING,
+    //TWELVE_TONE_EQUAL,
     //POWER_RULE,
     //RECTANGULAR_MEMBRANE,
     //CIRCULAR_MEMBRANE,
@@ -61,10 +62,10 @@ public:
 
   /** \name Setup */
 
-  /** Selects one of the predefined frequency ratio profiles. For example, a "harmonic" prfile means 
-  that the ratios should be 1,2,3,4,5, etc. i.e. the n-th partial has a frequency ratio (with 
-  respect to the fundamental) of n. The "stiff-string" setting uses the formula  n * sqrt(1+B*n^2) 
-  where B is the "inharmonicity" parameter, see Eq 10, here:
+  /** Selects one of the predefined frequency ratio profiles for the top-left slot. For example, a 
+  "harmonic" profile means that the ratios should be 1,2,3,4,5, etc. i.e. the n-th partial has a 
+  frequency ratio (with respect to the fundamental) of n. The "stiff-string" setting uses the 
+  formula  n * sqrt(1+B*n^2) where B is the "inharmonicity" parameter, see Eq 10, here:
   http://www.simonhendry.co.uk/wp/wp-content/uploads/2012/08/inharmonicity.pdf
   http://www.jbsand.dk/div/StivStreng.pdf
   ...more profiles are to come, including circular membranes and totally made up fantasy formulas */
@@ -72,17 +73,17 @@ public:
   // todo: let the user define their own profiles and load them from an xml and/or define a formula
 
   void setFreqRatioProfile2(int newProfile);
-
-  /** The raw frequency ratios, as determined by the selected frequency ratio profile, may be 
-  re-adjusted, for example to coincide with the intervals of 12-tone equal temperament. This 
-  parameter sets up, how much they should be re-adjusted (range: 0..1). */
-  //void setFreqRatioAdjustment(double newAdjustmentAmount);
-  // maybe we should just have two freq-ratio profiles on the same footing and the the user
-  // interpolate between the two - or maybe even 4 and use a vector-pad bilinear (or bi-log-linear) 
-  // interpolation scheme
+  void setFreqRatioProfile3(int newProfile);
+  void setFreqRatioProfile4(int newProfile);
 
 
-  void setFreqRatioMix(double newMix);
+
+  /** We use a vector mix/morph between 4 frequency ratio profiles. This sets the x-coordinate of the mixing 
+  vector. */
+  void setFreqRatioMixX(double newMix);
+
+  /** @see setFreqRatioMixX - same for the y-coordinate. */
+  void setFreqRatioMixY(double newMix);
 
   /** Sets the inharmonicity parameter for the stiff string frequency ratio profile. */
   void setInharmonicity(double newInharmonicity);
@@ -115,17 +116,24 @@ public:
 
 protected:
 
-  /** Fills the "ratios" array with the frequency ratios of given "profile". */
-  void fillFreqRatios(double* ratios, int profile);
+  /** Fills the "ratios" array with the frequency ratios of given "profile" and the logRatios array
+  with their logarithms. */
+  void fillFreqRatios(double* ratios, double *logRatios, int profile);
+
 
   void fillFreqRatiosHarmonic(double* ratios);
   void fillFreqRatiosStiffString(double* ratios, double B);
-
   void updateFreqRatios();
 
-  int freqRatioProfile1 = HARMONIC;
-  int freqRatioProfile2 = HARMONIC;
-  double freqRatioMix   = 0.0;
+  int freqRatioProfile1 = HARMONIC;  // top-left
+  int freqRatioProfile2 = HARMONIC;  // top-right
+  int freqRatioProfile3 = HARMONIC;  // bottom-left
+  int freqRatioProfile4 = HARMONIC;  // bottom-right
+  double freqRatioMixX  = 0.5;
+  double freqRatioMixY  = 0.5;
+
+
+
   double inharmonicity  = 0.0;
 
   static const int maxNumModes = rsModalBankFloatSSE2::maxNumModes; // for convenience
@@ -135,10 +143,18 @@ protected:
   //static const int maxNumVoices = 16;
   //rsModalBankFloatSSE2 modalBanks[maxNumVoices];
 
+  // frequency ratio arrays and their logarithmic versions:
   double freqRatios[maxNumModes];   // the final mix/interpolation of freq ratios
   double freqRatios1[maxNumModes];
   double freqRatios2[maxNumModes];
+  double freqRatios3[maxNumModes];
+  double freqRatios4[maxNumModes];
+  double freqRatiosLog1[maxNumModes];
+  double freqRatiosLog2[maxNumModes];
+  double freqRatiosLog3[maxNumModes];
+  double freqRatiosLog4[maxNumModes];
   bool logLinearFreqInterpolation = false;
+
 
   int noteAge = 0;
 
