@@ -331,6 +331,10 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "unfinished/rosic_DualFilter.cpp"
 #include "unfinished/rosic_NewSynth.cpp"
 #include "unfinished/rosic_MiscUnfinished.cpp"
+#include "unfinished/rosic_ModalFilters.cpp"
+#include "unfinished/rosic_ModalFilterBank.cpp"
+#include "unfinished/rosic_ModalSynth.cpp"
+
 
 // third party:
 #include "_third_party/SampleTailExtender/FFT.cpp"

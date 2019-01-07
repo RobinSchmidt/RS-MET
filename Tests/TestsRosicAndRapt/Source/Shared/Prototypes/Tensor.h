@@ -8,26 +8,43 @@
 A tensor can be seen as an r-dimensional array of values. Here, r is called the "rank" of the 
 tensor and it is the number of indices. This is not to be confused with the dimensionality of the 
 underlying vector space - which is the number of values over which each of the indices can run. For
-example, 3x3 matrix is a 2-dimensional array (2 indices) where each index runs over 3 values. Such 
-a matrix could represent a tensor of rank 2. Tensors are always (hyper) cubical in shape - which in 
-the case of rank 2 boils down to a square matrix - a 2x3 matrix, for example, can not be 
-interpreted as tensor.
+example, a 3x3 matrix is a 2-dimensional array (2 indices) where each index runs over 3 values. 
+Such a matrix could represent a tensor of rank 2 when the underlying vector space is 3 dimensional.
+Tensors are always (hyper) cubical in shape - which in the case of rank 2 boils down to a square 
+matrix - a 2x3 matrix, for example, can not be interpreted as tensor.
 
-A tensor can also be interpreted as a function that takes a list of vectors and/or covectors as 
-inputs and produces a scalar as result. This function is linear in all its inputs. If normal 
-vectors are represented column-vectors, covectors can be seen as row-vectors - they are also 
-functions that take one vector as input and produce a scalar, which in this case, is basically the 
-familiar scalar product. Covectors live in a vector space that is dual to the regular space in 
-which the vectors live. 
+Mathematically, tensors are defined to obey certain transformation rules when you change the basis
+of the vector space. Not just any hypercubical array of values qualifies as a tensor. It must obey
+these transformation rules - otherwise, it's not a tensor. In a regular vector, for example - seen 
+as a tensor of rank 1, the component values must change inversely to the way the basis vectors 
+change under a given change of basis (which is a linear transformation, represented by a matrix). 
+That's why the components of a vector are called contravariant - they change contrary to the basis 
+vectors. This equal and opposite change ensures, besides other things, that the scalar product of 
+two vectors stays invariant under a change of basis. So, the scalar product - and therefore also 
+the norm of a vector - is independent from the basis chosen - as it must be to be interpreted as a 
+geometrical quantity. The same must be true for any physical quantity: they just are what they are 
+and their values should not depend on any particular choice of coordinate system. That's why 
+physical quantities usually *are* tensors.
+
+In addition to the vector space of the regular vectors, there's a dual space of so-called 
+covectors. The components of these covectors are covariant - they change excatly in the same way as
+the basis vectors do under a change of basis. A tensor can also be interpreted as a function that 
+takes a bunch of vectors and/or covectors as inputs and produces a scalar as result. This function 
+is linear in all its inputs. That's why a tensor is also sometimes called a multilinear form. If 
+regular vectors are represented as column-vectors, covectors can be seen as row-vectors - they are 
+also functions that take one vector as input and produce a scalar, which in this case, is basically 
+the familiar scalar product. But this scalar product is usually generalized to include a matrix in 
+the middle - which in this context is known as the metric tensor that defines the "metric", i.e. 
+the distance measure, of the vector space. If the metric tensor is the identity matrix, then it 
+reduces to the plain old scalar product. 
 
 In tensors, there are two kinds of indices: upper and lower, i.e. superscripts and subscripts. The 
-upper indices are also called contravariant and the lower indices covariant. It is sometimes 
-convenient to split the total rank of a tensor into an upper and lower part such that r = m+n and
+upper indices are the contravariant ones and the lower indices the covariant ones. It is sometimes 
+convenient to split the total rank r of a tensor into an upper and lower part such that r = m+n and
 the pair of upper/lower ranks is written as (m,n). A vector has a single upper index and a covector
-has a single lower index. In this notation, they have ranks (1,0) or (0,1) respectively.
-
-
-*/
+has a single lower index. In this notation, they have ranks (1,0) or (0,1) respectively. In this
+notation, a rank (m,n) tensor would take n vectors and m covectors as inputs (or is it the other 
+way around? look up..) and produce a scalar output. */
 
 class Tensor
 {
@@ -80,7 +97,7 @@ public:
   bool isSymmetric(int index1, int index2) const;
 
   /** Returns true, of the tensor is anti symmetric with respect to the given pair of indices. When 
-  you retrieve the the component with exchanged indices, you'll get the negative of the value without 
+  you retrieve the component with exchanged indices, you'll get the negative of the value without 
   exchange.*/
   bool isAntiSymmetric(int index1, int index2) const;
 

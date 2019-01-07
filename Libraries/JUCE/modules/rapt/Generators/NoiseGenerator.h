@@ -120,6 +120,13 @@ protected:
 // thresh2 = 0.7, we would have a 30% chance to get a sample of the low mode a 40% chance for the
 // middle mode and again a 30% chance for the high mode - we could give the user parameters
 // modeCenter, modeSpread, modeSkew
+// In the modal synthesizer, we could make these chances dependent on the output signal to 
+// establish a nonlinear, probabilistic feedback loop interaction between exciter and resonator
+// when the output signal value is strongly negative, we should have a high chance of getting a 
+// positive excitation impulse value (i.e. choose the generator with positive center) and vice 
+// versa - this cort of simulates the probability for slip/slide events in abowed string - if the 
+// string is under tension in one direction it has a higher chance to slip into the other direction
+// ....well, loosely speaking
 
 
 

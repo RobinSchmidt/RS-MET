@@ -387,6 +387,9 @@
 #include "unfinished/rosic_DualFilter.h"
 #include "unfinished/rosic_NewSynth.h"
 #include "unfinished/rosic_MiscUnfinished.h"
+#include "unfinished/rosic_ModalFilters.h"
+#include "unfinished/rosic_ModalFilterBank.h"
+#include "unfinished/rosic_ModalSynth.h"
 
 // third party:
 #include "_third_party/SampleTailExtender/SampleTailExtender.h"
