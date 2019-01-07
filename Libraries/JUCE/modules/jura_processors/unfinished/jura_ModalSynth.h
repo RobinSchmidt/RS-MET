@@ -12,16 +12,24 @@ public:
   virtual void createParameters();
 
   // overriden from AudioModule baseclass:
-  AudioModuleEditor* createEditor(int type) override;
+  //AudioModuleEditor* createEditor(int type) override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
+  virtual void noteOn( int key, int vel) override { core->noteOn(key, vel); }
+  virtual void noteOff(int key)          override { core->noteOn(key, 0); }
+
 
 protected:
 
+  void populateFreqRatioProfileParam(Parameter* p);
 
-  Parameter *modeRatiosX, *modeRatiosY;
+  Parameter *ratioProfileTopLeft, *ratioProfileTopRight, *ratioProfileBottomLeft, 
+    *ratioProfileBottomRight;
+
+  Parameter *freqRatiosX, *freqRatiosY;
+
   ParameterWithKeyVelScaling *attack, *decay;
 
   rosic::rsModalSynth core;
