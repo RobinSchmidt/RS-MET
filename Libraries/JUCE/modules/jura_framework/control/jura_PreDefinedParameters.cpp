@@ -60,3 +60,15 @@ double ParameterGridInterval::getValue() const
   int index = (int)value;
   return gridIntervalValueArray[index];
 }
+
+//-------------------------------------------------------------------------------------------------
+
+ParameterWithKeyVelScaling::ParameterWithKeyVelScaling(const juce::String& name, double min, 
+  double max, double defaultValue, int scaling, double interval)
+  : Parameter(name, min, max, defaultValue, scaling, interval)
+  , keyParam(name + "ByKey", -200.0, 200.0, 0.0, LINEAR, 0.01)
+  , velParam(name + "ByVel", -200.0, 200.0, 0.0, LINEAR, 0.01)
+{
+
+
+}

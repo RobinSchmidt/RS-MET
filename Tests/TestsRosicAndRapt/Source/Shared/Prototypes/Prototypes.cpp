@@ -352,7 +352,7 @@ template class rsStateVectorFilter<rsFloat32x4, rsFloat32x4>;
 // undistorted ...but might be interesting to explore
 
 //=================================================================================================
-
+/*
 void rsModalFilterFloatSSE2::setParametersTwoEnvs(
   double w, double A, double p, 
   double att1, double att2, double attB,
@@ -391,7 +391,7 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 
   // maybe dw, dp should also be scaled by b(lend) and not just by 0.5
 }
-
+*/
 
 
 // Idea have a ModalSynth class that lets the user insert different types of mode filters

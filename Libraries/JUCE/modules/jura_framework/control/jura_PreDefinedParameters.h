@@ -153,4 +153,33 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterGridInterval)
 };
 
+
+/** A parameter that has attached key- and velocity scaling parameters. */
+
+class ParameterWithKeyVelScaling : public Parameter
+{
+
+public:
+
+  ParameterWithKeyVelScaling(const juce::String& name, double min = 0.0, double max = 1.0,
+    double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
+
+  //void setKeyScaleCallback();
+  //void setVelScaleCallback();
+
+  void setKeyScaleRange(double minValue, double maxValue, double defaultValue);
+  void setVelScaleRange(double minValue, double maxValue, double defaultValue);
+
+  Parameter* getKeyScalingParameter() { return &keyParam; }
+  Parameter* getVelScalingParameter() { return &velParam; }
+
+
+protected:
+
+  Parameter keyParam, velParam;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterWithKeyVelScaling)
+};
+
 #endif

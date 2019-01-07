@@ -139,3 +139,15 @@ void rsModalSynth::updateFreqRatios()
 
   freqRatiosAreReady = true;
 }
+
+
+/*
+Ideas:
+-let the user insert different types of mode filters (simple decaying sines, attack/decay-sines, 
+ 4-env-sines, nonlinear modes (perhaps with amplitude dependent frequency - they should have a 
+ second "sidechain" input where we feed back the total summed output - so the nonlinear effects may
+ depend on the total output value
+
+
+*/
+
