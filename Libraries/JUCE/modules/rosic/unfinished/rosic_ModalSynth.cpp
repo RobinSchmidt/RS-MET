@@ -69,19 +69,35 @@ void rsModalSynth::fillFreqRatios(double* ratios, double *logRatios, int profile
 
 void rsModalSynth::noteOn(int key, int vel)
 {
-  // todo: update the freqRatios according to key/vel
+  // todo: update the freqRatios according to key/vel - these should depend on key/vel
 
-  // todo: update the modal filter bank - recompute filter coeffs, reset states,...
 
-  double f0 = rsPitchToFreq(key);
+  phaseGenerator.setSeed(phaseRandomSeed);
+  phaseGenerator.setRange(-phaseRandomness*PI, phaseRandomness*PI);
+
+  double f0 = RAPT::rsPitchToFreq(key);
   double r, f;
-  for(int m = 0; m < numPartialsLimit; m++) {
+  double w, A, p, att, dec;
+  double ampSlopeExponent = -1;  // preliminary, -1 should result from a setting of -6.02 dB/oct
+  int m = 0;
+  for(m = 0; m < numPartialsLimit; m++) {
     r = freqRatios[m];
     f = f0 * r;
+    if( f > 0.5*sampleRate )
+      break;
 
-
+    // compute modal filter algorithm parameters (preliminary) and set up the filter:
+    w = 2 * PI * f / sampleRate;              // optimize - precompute 2*PI/fs
+    A = amplitude * pow(r, ampSlopeExponent); // maybe this can be expressed via exp?
+    p = phaseGenerator.getSample();
+    att = 0.001 * attack * sampleRate;
+    dec = 0.001 * decay  * sampleRate;
+    modalBank.setModalFilterParameters(m, w, A, p, att, dec
+      /*,deltaOmega, phaseDelta, blend, attackScale, decayScale*/);
   }
 
+  modalBank.setNumModes(m); // is this correct? or off by one? check this!
+  modalBank.reset();        // maybe allow a partial reset
   noteAge = 0;
 }
 

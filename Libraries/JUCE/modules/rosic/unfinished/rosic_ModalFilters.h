@@ -76,7 +76,7 @@ public:
     v1 = -a1*t + v2;
     v2 = -a2*t;
     rsFloat32x4 y = b0*t + x1; // x1 == s3
-                               //y  = b0*t + x1; // use member instead of stack variable - no good idea, increases cpu load
+    //y  = b0*t + x1; // use member instead of stack variable - no good idea, increases cpu load
     x1 = b1*t;
     return y;
   }
@@ -115,5 +115,7 @@ protected:
   // later - it may turn out to be advantegeous to switch to TDF2 with its lower memory footprint.
 };
 
+// maybe templatize and make two explicit instantiations for rsFloat32x4 (SSE2) and 
+// rsFloat32x16 (AVX2), maybe have two template arguments - for the scalar and vector type
 
 }

@@ -63,6 +63,7 @@ public:
     NUM_FREQ_RATIO_PROFILES
   };
 
+
   /** \name Setup */
 
   void setSampleRate(double newRate) { sampleRate = newRate; }
@@ -157,11 +158,13 @@ protected:
 
 
   // macro parameters for modal filters:
+  double amplitude = 1.0; // maybe have a level parameter in dB with key and vel scaling as in Straightliner
   double spectralSlope = 0, spectralSlopeByKey = 0, spectralSlopeByVel = 0;
-  double attack = 0, attackByKey = 0, attackByVel = 0;
-  double decay = 0, decayByKey = 0, decayByVel = 0;
+  double attack = 50, attackByKey = 0, attackByVel = 0;
+  double decay = 500, decayByKey = 0, decayByVel = 0;
   double phaseRandomness = 1.0;
   int phaseRandomSeed = 0;
+  int phaseRandomShape = 1; // determines the probability distribution ...later
   // double evenScale, evenScaleByKey, evenScaleByVel
   // double decayCombFreq
   //...more parameters to come....
@@ -169,6 +172,8 @@ protected:
 
 
   rsModalBankFloatSSE2 modalBank;
+
+  RAPT::rsNoiseGenerator<double> phaseGenerator;
 
 
 

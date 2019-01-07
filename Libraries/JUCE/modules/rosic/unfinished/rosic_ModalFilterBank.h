@@ -9,13 +9,31 @@ class rsModalBankFloatSSE2
 
 public:
 
-  void setModeParameters(int numModes,
-    double* omegas,   double* amplitudes, double* phases, 
-    double* attacks1, double* attacks2,   double* attackBlends,
-    double* decays1,  double* decays2,    double* decayBlends);
+  /** \name Setup */
+
+  //void setModeParameters(int numModes,
+  //  double* omegas,   double* amplitudes, double* phases, 
+  //  double* attacks1, double* attacks2,   double* attackBlends,
+  //  double* decays1,  double* decays2,    double* decayBlends);
+
+  /** Sets the parameters for the filter with given index. */
+  void setModalFilterParameters(int index,
+    double omega, double amplitude, double phase, double attack, double decay,
+    double deltaOmega = 0, double phaseDelta = 0, double blend = 0.5,
+    double attackScale = 1.0, double decayScale = 1.0)
+  {
+    modeFilters[index].setParameters(omega, amplitude, phase, attack, decay,
+      deltaOmega, phaseDelta, blend, attackScale, decayScale);
+  }
+
+  void setNumModes(int newNumModes) 
+  { 
+    RAPT::rsAssert(newNumModes <= maxNumModes);
+    numModes = newNumModes;  
+  }
 
 
-
+  /** \name Processing */
 
   inline rsFloat32x4 getSample(rsFloat32x4 in)
   {
@@ -36,6 +54,7 @@ public:
       modeFilters[i].reset();
     // sampleCounter = 0;
   }
+  // maybe allow a partial reset (scale all state variables by a given number between 0 and 1)
 
 
 
