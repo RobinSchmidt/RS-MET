@@ -104,5 +104,12 @@ rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator,
 rsPolynomialIterator,
 for the polynomial iterators, see Salomon - Computer Graphics, page 275ff ("Fast Calculation of the 
 Curve" and page 698 ("Forward Differences")
+
+here's an interesting thread about a recursive sine oscillator:
+https://dsp.stackexchange.com/questions/124/how-to-implement-a-digital-oscillator
+especially the amplitude drift compensation approach with a taylor expansion of
+1 / (sqrt(re^2 + im^2)) ~= (1/2) * (3 - (re^2 + im^2))
+every 1000 (ot something) samples
+
 */
 #endif

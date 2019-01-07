@@ -231,7 +231,7 @@ void rsStateVectorFilter<TSig, TPar>::setImpulseResponseStart(TPar h[3])
   // equations here
 
   // or maybe use a fudgePoles function called at the end of setPoles to make sure, they are
-  // somewhat distinct
+  // somewhat distinct - yep, that's what's currently being done
 }
 
 template<class TSig, class TPar>

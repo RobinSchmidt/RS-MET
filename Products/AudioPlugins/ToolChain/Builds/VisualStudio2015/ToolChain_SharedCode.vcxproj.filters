@@ -578,6 +578,15 @@
     <Filter Include="Juce Modules\rosic\_third_party\ooura_fft">
       <UniqueIdentifier>{078EF113-87E3-B4FE-4E43-0461DCD0FA98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130">
+      <UniqueIdentifier>{F891FD79-F2D1-16EB-FED7-83937BAC4984}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\SampleTailExtender\libs">
+      <UniqueIdentifier>{01AB885C-786C-7264-0978-06F98C4D7D29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\SampleTailExtender">
+      <UniqueIdentifier>{23249F52-E1F6-555E-F3DE-3A4CC20C2CD1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rosic\_third_party\soundtouch">
       <UniqueIdentifier>{447B93E0-F603-5EE1-ABE6-6139F4C1F1C1}</UniqueIdentifier>
     </Filter>
@@ -2878,6 +2887,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_DualFilter.cpp">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_ModalSynth.cpp">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.cpp">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClCompile>
@@ -3208,10 +3220,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\PhaseVocoder.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
@@ -3314,6 +3329,9 @@
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\MiscTests.cpp">
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.cpp">
@@ -3594,6 +3612,18 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\fftsg_h.c">
       <Filter>Juce Modules\rosic\_third_party\ooura_fft</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\kiss_fft.c">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\FFT.cpp">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\HarmonicAnalyser.cpp">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\SampleTailExtender.cpp">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.cpp">
       <Filter>Juce Modules\rosic\_third_party\soundtouch</Filter>
@@ -4613,6 +4643,15 @@
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_MiscUnfinished.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilterBank.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilters.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalSynth.cpp">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.cpp">
@@ -7020,6 +7059,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_DualFilter.h">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_ModalSynth.h">
+      <Filter>Juce Modules\jura_processors\unfinished</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.h">
       <Filter>Juce Modules\jura_processors\unfinished</Filter>
     </ClInclude>
@@ -7386,10 +7428,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\PhaseVocoder.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h">
@@ -7495,6 +7540,9 @@
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\MiscTests.h">
       <Filter>Juce Modules\romos\TestSuite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.h">
@@ -7722,6 +7770,27 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\MarkHenning\TuningMapOriginal.h">
       <Filter>Juce Modules\rosic\_third_party\MarkHenning</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\_kiss_fft_guts.h">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\kiss_fft.h">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\kissfft.hh">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\FFT.h">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\HarmonicAnalyser.h">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\SampleTailExtender.h">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\SampleTailExtensionHelperFunctions.h">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.h">
       <Filter>Juce Modules\rosic\_third_party\soundtouch</Filter>
     </ClInclude>
@@ -7854,7 +7923,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\ComplexFloat64x2.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4 - Copy.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h-broken.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float64x2.h">
@@ -8889,6 +8964,15 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_MiscUnfinished.h">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilterBank.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilters.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalSynth.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.h">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
@@ -8983,6 +9067,9 @@
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\readme.txt">
       <Filter>Juce Modules\rosic\_third_party\ooura_fft</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\README.md">
+      <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\ToDo.txt">
       <Filter>Juce Modules\rosic\infrastructure</Filter>

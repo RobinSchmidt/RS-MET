@@ -141,7 +141,7 @@ public:
   /** Produces the vector of the 4 outputs of the 4 individual decaying sine filters. The actual 
   scalar output sample would be the sum of these 4. */
   inline rsFloat32x4 getSample(rsFloat32x4 in)
-  {                                  // cpu-cycles per call
+  {                                  // CPU-cycles per call (on Athlon 5050e, todo: Core i3-7100U)
     //return getSampleDF1(in);       //   21.2
     return getSampleTDF1(in);        //   12.1      -> most efficient version
     //return getSampleDF2(in);       //   21.3
@@ -454,9 +454,9 @@ public:
 
 
   /** Sets up a new buffer length and adjusts the left index accodingly, leaving the right index
-  where it is. The reason to do it that way and not the otherway around is that in a delayline,
+  where it is. The reason to do it that way and not the other way around is that in a delayline,
   the right index represents the write-head and the left index represents the read-head and on a
-  change of  the delay time, we want to move the read-head. */
+  change of the delay time, we want to move the read-head. */
   void setLength(size_t newLength) 
   {
     length = newLength;
@@ -537,8 +537,8 @@ public:
 
   /** Constructor. Allocates enough memory for an internal buffer to hold the "capacity" number of 
   queued values. The memory allocated for the buffer will be the smallest power of two that is 
-  greater or equal to the desired capacity plus 1 (two additional and unusable index value are 
-  required to make the index arithemetic work right). */
+  greater or equal to the desired capacity plus 1 (two additional and unusable index values are 
+  required to make the index arithmetic work right). */
   rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+2) {}
 
 
@@ -626,10 +626,10 @@ public:
 
 protected:
 
-  size_t head = 1, tail = 0; // chek out correct terminology in the literature
+  size_t head = 1, tail = 0; // check out correct terminology in the literature
   // The head-pointer is always one position to the right of rightmost value and the tail pointer
   // is always one position to the left of the leftmost value (both with wraparound). This is 
-  // required in order to compute the length of the queue from the had/tail indices. Placing them
+  // required in order to compute the length of the queue from the head/tail indices. Placing them
   // directly ON the leftmost/rightmost values would not allow to distiguish between an empty
   // and one-element queue (in both cases, we would have head == tail). So the actual queued values 
   // are at indices i with: tail < i < head, not: tail <= i <= head and when head = tail + 1, the
@@ -864,12 +864,12 @@ protected:
 /** A class for applying a special kind of nonlinear smoothing algorithm. It is based on min/max
 filtering over a certain number of samples and taking an adjustable linear combination of both and 
 then applying a linear slew rate limiter to the result where the limit on the slew rate is 
-adaptively updated according to the current values of min and max such that that it could gor from 
+adaptively updated according to the current values of min and max such that that it could go from 
 min to max in the same given number of samples (or some fraction or multiple thereof).
 
 It is good for post-processing the raw output of an envelope follower to make it smoother. The raw
 envelope follower output will typically show parasitic oscillations with the signal's frequency. 
-Setting up a smopther with a length equal to the cycle-length of the (enveloped) input wave will
+Setting up a smoother with a length equal to the cycle-length of the (enveloped) input wave will
 give optimal smoothing for the signal - in an ideal situation, the oscillations in the detected 
 envelope will be completely flattened out. */
 
@@ -893,7 +893,7 @@ public:
 
   /** Adjusts the scaling factor for the slew-rate. With a factor of one, the slew rate is set up
   such that a transition between the currently measured min and max can occur in between L samples
-  where L is the length of the min-max filter. An amount of zero turn slew rate limitig off and 
+  where L is the length of the min-max filter. An amount of zero turns slew rate limitig off and 
   amounts higher than one make the whole thing sluggish and are probably not useful. */
   void setSlewRateLimiting(T newAmount)
   {

@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="TestsRosicAndRapt\Source\Misc">
@@ -1350,6 +1351,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\pstats.c">
       <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\tailscrap.m">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\test_real.c">
       <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
@@ -2446,6 +2450,15 @@
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_MiscUnfinished.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilterBank.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilters.cpp">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalSynth.cpp">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.cpp">
@@ -3746,7 +3759,13 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\ComplexFloat64x2.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4 - Copy.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h-broken.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float64x2.h">
@@ -4779,6 +4798,15 @@
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_MiscUnfinished.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilterBank.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilters.h">
+      <Filter>Juce Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalSynth.h">
       <Filter>Juce Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.h">

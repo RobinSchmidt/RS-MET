@@ -2303,6 +2303,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_DualFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_ModalSynth.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2633,10 +2636,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\PhaseVocoder.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
@@ -2739,6 +2745,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\MiscTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.cpp">
@@ -3015,6 +3024,18 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\fftsg_h.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\kiss_fft.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\FFT.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\HarmonicAnalyser.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\SampleTailExtender.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.cpp">
@@ -4037,6 +4058,15 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_MiscUnfinished.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilterBank.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilters.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalSynth.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4848,6 +4878,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_ClassConversions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_DualFilter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_ModalSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_NewSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\unfinished\jura_QuadSource.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h"/>
@@ -4970,8 +5001,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\SlewRateLimiterLinear.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\PhaseVocoder.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\Image.h"/>
@@ -5007,6 +5039,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_SoundGeneratorModules.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\AutomaticTests.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\MiscTests.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcretePerformanceTests.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteProcessingTests.h"/>
@@ -5082,6 +5115,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\kiss_fft.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\MarkHenning\TuningMap.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\MarkHenning\TuningMapOriginal.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\_kiss_fft_guts.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\kiss_fft.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\libs\kiss_fft130\kissfft.hh"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\FFT.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\HarmonicAnalyser.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\SampleTailExtender.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\SampleTailExtensionHelperFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_cholesky.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_eig.h"/>
@@ -5126,7 +5166,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_TrackMeter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_WaveformDisplayBuffer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\ComplexFloat64x2.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4 - Copy.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h-broken.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float64x2.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalDefinitions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_ChannelMatrix2x2.h"/>
@@ -5471,6 +5513,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_DualFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_EllipseOscillator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_MiscUnfinished.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilterBank.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalFilters.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_ModalSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_NewSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_Polyphony.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource.h"/>
@@ -5504,6 +5549,7 @@
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\readme.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tips.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\readme.txt"/>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\README.md"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MovedToRAPT\ReadMe.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\minBlep.txt"/>
