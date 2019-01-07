@@ -69,10 +69,18 @@ void rsModalSynth::fillFreqRatios(double* ratios, double *logRatios, int profile
 
 void rsModalSynth::noteOn(int key, int vel)
 {
+  // todo: update the freqRatios according to key/vel
+
   // todo: update the modal filter bank - recompute filter coeffs, reset states,...
 
-  // i think, we should indeed have 4 freq-ratio profiles and the x- and y-positions should have
-  // key- and velocity dependency
+  double f0 = rsPitchToFreq(key);
+  double r, f;
+  for(int m = 0; m < numPartialsLimit; m++) {
+    r = freqRatios[m];
+    f = f0 * r;
+
+
+  }
 
   noteAge = 0;
 }

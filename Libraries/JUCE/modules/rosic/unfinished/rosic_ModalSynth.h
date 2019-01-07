@@ -56,11 +56,16 @@ public:
     //POWER_RULE,
     //RECTANGULAR_MEMBRANE,
     //CIRCULAR_MEMBRANE,
+    //IDEAL_BAR,
+    //CUSTOM_FORMULA,
+    //CUSTOM_DATA,
 
     NUM_FREQ_RATIO_PROFILES
   };
 
   /** \name Setup */
+
+  void setSampleRate(double newRate) { sampleRate = newRate; }
 
   /** Selects one of the predefined frequency ratio profiles for the top-left slot. For example, a 
   "harmonic" profile means that the ratios should be 1,2,3,4,5, etc. i.e. the n-th partial has a 
@@ -76,8 +81,6 @@ public:
   void setFreqRatioProfile3(int newProfile);
   void setFreqRatioProfile4(int newProfile);
 
-
-
   /** We use a vector mix/morph between 4 frequency ratio profiles. This sets the x-coordinate of the mixing 
   vector. */
   void setFreqRatioMixX(double newMix);
@@ -86,11 +89,25 @@ public:
   void setFreqRatioMixY(double newMix);
 
   /** Sets the inharmonicity parameter for the stiff string frequency ratio profile. */
-  void setInharmonicity(double newInharmonicity);
-
+  void setInharmonicity(double newInharmonicity) { inharmonicity = newInharmonicity; }
 
   /** Sets a limit for the number of partials - use this to keep CPU load under control. */
-  //void setMaxNumPartials(int newMax);
+  void setMaxNumPartials(int newMax) { numPartialsLimit = newMax; }
+
+
+  void setSpectralSlope(double newSlope) { spectralSlope = newSlope; }
+  void setAttack(double newAttack) { attack = newAttack; } 
+  void setDecay(double newDecay) { decay = newDecay; }
+  void setPhaseRandomness(double newRandomness) { phaseRandomness = newRandomness; }
+  void setPhaseRandomSeed(int newSeed) { phaseRandomSeed = newSeed; }
+
+  void setSpectralSlopeByKey(double newSlopeByKey) { spectralSlopeByKey = newSlopeByKey; }
+  void setAttackByKey(double newAttackByKey) { attackByKey = newAttackByKey; } 
+  void setDecayByKey(double newDecayByKey) { decayByKey = newDecayByKey; }
+
+  void setSpectralSlopeByVel(double newSlopeByKey) { spectralSlopeByVel = newSlopeByKey; }
+  void setAttackByVel(double newAttackByVel) { attackByVel = newAttackByVel; } 
+  void setDecayByVel(double newDecayByVel) { decayByVel = newDecayByVel; }
 
 
   /** \name Processing */
@@ -125,19 +142,35 @@ protected:
   void fillFreqRatiosStiffString(double* ratios, double B);
   void updateFreqRatios();
 
+
+  static const int maxNumModes = rsModalBankFloatSSE2::maxNumModes; // for convenience
+
+  // modal frequency settings:
+  int numPartialsLimit  = maxNumModes;
   int freqRatioProfile1 = HARMONIC;  // top-left
   int freqRatioProfile2 = HARMONIC;  // top-right
   int freqRatioProfile3 = HARMONIC;  // bottom-left
   int freqRatioProfile4 = HARMONIC;  // bottom-right
   double freqRatioMixX  = 0.5;
   double freqRatioMixY  = 0.5;
-
-
-
   double inharmonicity  = 0.0;
 
-  static const int maxNumModes = rsModalBankFloatSSE2::maxNumModes; // for convenience
+
+  // macro parameters for modal filters:
+  double spectralSlope = 0, spectralSlopeByKey = 0, spectralSlopeByVel = 0;
+  double attack = 0, attackByKey = 0, attackByVel = 0;
+  double decay = 0, decayByKey = 0, decayByVel = 0;
+  double phaseRandomness = 1.0;
+  int phaseRandomSeed = 0;
+  // double evenScale, evenScaleByKey, evenScaleByVel
+  // double decayCombFreq
+  //...more parameters to come....
+
+
+
   rsModalBankFloatSSE2 modalBank;
+
+
 
   // move to subclass rsModalSynthPoly
   //static const int maxNumVoices = 16;
@@ -157,6 +190,7 @@ protected:
 
 
   int noteAge = 0;
+  double sampleRate = 44100;
 
   std::atomic_bool freqRatiosAreReady = false;
 };
