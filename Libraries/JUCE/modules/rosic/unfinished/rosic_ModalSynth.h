@@ -23,7 +23,17 @@ public:
   instead of being yet more powers of the twelfth-root-of-two. */
   static void twelveTonePseudoHarmonic(double* r, int N);
 
-  static void idealBar(double* r, int N);
+  /** Calculates the relative frequencies of the vibrational modes of a stiff rod with both ends 
+  free. Reference: discussion on the Xylophone in Dave Benson's 'Mathematics and Music' */
+  static void rodFreeFree(double* r, int N);
+
+  /** Calculates the relative frequencies of the vibrational modes of a stiff rod with one free end 
+  and one clamped end. Reference: discussion on the Mbira in Dave Benson's 'Mathematics and 
+  Music' */
+  static void rodFreeClamped(double* r, int N);
+
+
+  //static void idealBar(double* r, int N);
 
   //static void circularMembrane(double* r, int N);
 

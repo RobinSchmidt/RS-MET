@@ -9,6 +9,7 @@ void rsModalFrequencyGenerator::harmonic(double* r, int N)
 void rsModalFrequencyGenerator::twelveTone(double* r, int N)
 {
   twelveTone21(r, N);
+  long double s = pow(2.0, 1.0/12.0); // basis
   for(int n = 21; n < N; n++)
     r[n] = pow(s, 54+n-21);
 
@@ -35,10 +36,56 @@ void rsModalFrequencyGenerator::twelveTonePseudoHarmonic(double* r, int N)
     r[i] = double(i+1);
 }
 
+void rsModalFrequencyGenerator::rodFreeFree(double* r, int N)
+{
+  RAPT::rsAssert(N >= 6);
+  r[0] = 4.7300407448627040260240481;
+  r[1] = 7.8532046240958375564770667;
+  r[2] = 10.9956078380016709066690325;
+  r[3] = 14.1371654912574641771059179;
+  r[4] = 17.2787596573994814380910740;
+  r[5] = 20.4203522456260610909364112;
+  double m, c;
+  int i;
+  for(i = 6; i < N; i++) {
+    m = i+1;
+    c = (m+0.5)*PI;
+    r[i] = c - pow(-1, m) * 2 * exp(-c) - 4*exp(-2*c);
+  }
+  c = r[0]*r[0];
+  for(i = 0; i < N; i++)
+    r[i] = r[i]*r[i] / c;
+  // ...verify and optimize....
+}
+
+void rsModalFrequencyGenerator::rodFreeClamped(double* r, int N)
+{
+  RAPT::rsAssert(N >= 6);
+  r[0] = 1.8751040687119611664453082;
+  r[1] = 4.6940911329741745764363918;
+  r[2] = 7.8547574382376125648610086;
+  r[3] = 10.9955407348754669906673491;
+  r[4] = 14.1371683910464705809170468;
+  r[5] = 17.2787595320882363335439284;
+  double m, c;
+  int i;
+  for(i = 6; i < N; i++) {
+    m = i+1;
+    c = (m-0.5)*PI;
+    r[i] = c - pow(-1, m) * 2 * exp(-c) - 4 * exp(-2*c);
+  }
+  c = r[0]*r[0];
+  for(i = 0; i < N; i++)
+    r[i] = r[i]*r[i] / c;
+  // ....verify and optimize...
+}
+
+/*
 void rsModalFrequencyGenerator::idealBar(double* r, int N)
 {
 
 }
+*/
 
 void rsModalFrequencyGenerator::stiffString(double* r, int N, double B)
 {
@@ -80,6 +127,11 @@ void rsModalFrequencyGenerator::twelveTone21(double* r, int N)
   for(int i = 0; i < RAPT::rsMin(N, 21); i++)
     r[i] = tmp[i];
 }
+
+//=================================================================================================
+
+
+
 
 
 
