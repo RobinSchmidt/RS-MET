@@ -134,6 +134,8 @@ namespace jura
 #include "instruments/jura_LibertyModules.h"
 #endif
 
+#include "unfinished/jura_ModalSynth.h"
+
 #include "misc/jura_ChannelMatrix2x2.h"
 #include "misc/jura_DspWorkbench.h"
 #include "misc/jura_DebugAudioModule.h"

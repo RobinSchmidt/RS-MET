@@ -81,11 +81,12 @@ namespace jura
 #include "instruments/jura_Quadrigen.cpp" 
 #include "instruments/jura_Quadriga.cpp"
 #include "instruments/jura_Workhorse.cpp"
-
 #ifdef _MSC_VER
 #include "instruments/jura_Liberty.cpp" // Liberty not yet available on gcc 
 #include "instruments/jura_LibertyModules.cpp"
 #endif
+
+#include "unfinished/jura_ModalSynth.cpp"
 
 #include "misc/jura_ChannelMatrix2x2.cpp"
 #include "misc/jura_DspWorkbench.cpp"

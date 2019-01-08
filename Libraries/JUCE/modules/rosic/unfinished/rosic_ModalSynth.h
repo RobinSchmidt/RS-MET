@@ -2,43 +2,68 @@
 namespace rosic
 {
 
-struct rsModalUserParameters
-{
-  double frequency   = 440;   // in Hz
-  double amplitude   = 1.0;   // as raw factor ...or should we use decibels?
-  double phase       = 0.0;   // in degrees
-  double attack      = 50;    // in milliseconds
-  double decay       = 500;   // in milliseconds
-  double freqSpread  = 0;     // in Hz
-  double phaseDelta  = 0;
-  double blend       = 0.5;
-  double attackScale = 1.0;
-  double decayScale  = 1.0;
-};
+/** A class for generating the frequency ratios of the modes for modal synthesis. */
 
-class rsModalAlgoParameters
+class rsModalFrequencyGenerator
 {
 
 public:
 
-  /** Sets our members by converting a set of user parameters for a modal filter to the 
-  corresponding set of algorithm parameters. */
-  void setFromUserParameters(const rsModalUserParameters& userParams, double sampleRate);
+  /** Fills the array "r" of length "N" with the frequency ratios corresponding to a harmonic 
+  series. */
+  static void harmonic(double* r, int N);
 
-protected:
 
-  double w;      // 2*pi*f/fs
-  double A;      // raw amplitude factor
-  double p;      // phase in radians
-  double att;    // attack in samples
-  double dec;    // decay in samples
-  double dw;     // delta omega
-  double dp;     // phase delta in radians
-  double b;      // blend
-  double attScl; // attack scale
-  double decScl; // decay scale
+  static void twelveTonePseudoHarmonic(double* r, int N);
+
+  static void idealBar(double* r, int N);
+
+  //static void circularMembrane(double* r, int N);
+
+
+  static void stiffString(double* r, int N, double B);
+
 };
 
+// not yet used, but may (or may not) be useful later
+//struct rsModalUserParameters
+//{
+//  double frequency   = 440;   // in Hz
+//  double amplitude   = 1.0;   // as raw factor ...or should we use decibels?
+//  double phase       = 0.0;   // in degrees
+//  double attack      = 50;    // in milliseconds
+//  double decay       = 500;   // in milliseconds
+//  double freqSpread  = 0;     // in Hz
+//  double phaseDelta  = 0;
+//  double blend       = 0.5;
+//  double attackScale = 1.0;
+//  double decayScale  = 1.0;
+//};
+//
+//class rsModalAlgoParameters
+//{
+//
+//public:
+//
+//  /** Sets our members by converting a set of user parameters for a modal filter to the 
+//  corresponding set of algorithm parameters. */
+//  void setFromUserParameters(const rsModalUserParameters& userParams, double sampleRate);
+//
+//protected:
+//
+//  double w;      // 2*pi*f/fs
+//  double A;      // raw amplitude factor
+//  double p;      // phase in radians
+//  double att;    // attack in samples
+//  double dec;    // decay in samples
+//  double dw;     // delta omega
+//  double dp;     // phase delta in radians
+//  double b;      // blend
+//  double attScl; // attack scale
+//  double decScl; // decay scale
+//};
+
+//=================================================================================================
 
 /** A monophonic modal synthesizer.... */
 
@@ -50,13 +75,18 @@ public:
   /** A selection of predefined frequency ratio profiles. */
   enum freqRatioProfiles
   {
+    // 0-parametric:
     HARMONIC = 0,
-    STIFF_STRING,
-    //TWELVE_TONE_EQUAL,
-    //POWER_RULE,
-    //RECTANGULAR_MEMBRANE,
+    TWELVE_TONE_EQUAL,
+    IDEAL_BAR,
     //CIRCULAR_MEMBRANE,
-    //IDEAL_BAR,
+
+    // 1-parametric:
+    //STIFF_STRING,            // stiffness/inharmonicity
+    //POWER_RULE,              // power/exponent
+    //RECTANGULAR_MEMBRANE,    // aspect ratio (0..1)
+    //ELLIPTIC_MEMBRANE        // dito
+
     //CUSTOM_FORMULA,
     //CUSTOM_DATA,
 
@@ -68,9 +98,9 @@ public:
 
   void setSampleRate(double newRate) { sampleRate = newRate; }
 
-  /** Selects one of the predefined frequency ratio profiles for the top-left slot. For example, a 
-  "harmonic" profile means that the ratios should be 1,2,3,4,5, etc. i.e. the n-th partial has a 
-  frequency ratio (with respect to the fundamental) of n. The "stiff-string" setting uses the 
+  /** Selects one of the predefined frequency ratio profiles for the top-left slot. For example, a
+  "harmonic" profile means that the ratios should be 1,2,3,4,5, etc. i.e. the n-th partial has a
+  frequency ratio (with respect to the fundamental) of n. The "stiff-string" setting uses the
   formula  n * sqrt(1+B*n^2) where B is the "inharmonicity" parameter, see Eq 10, here:
   http://www.simonhendry.co.uk/wp/wp-content/uploads/2012/08/inharmonicity.pdf
   http://www.jbsand.dk/div/StivStreng.pdf
@@ -82,7 +112,7 @@ public:
   void setFreqRatioProfile3(int newProfile);
   void setFreqRatioProfile4(int newProfile);
 
-  /** We use a vector mix/morph between 4 frequency ratio profiles. This sets the x-coordinate of the mixing 
+  /** We use a vector mix/morph between 4 frequency ratio profiles. This sets the x-coordinate of the mixing
   vector. */
   void setFreqRatioMixX(double newMix);
 
@@ -97,17 +127,17 @@ public:
 
 
   void setSpectralSlope(double newSlope) { spectralSlope = newSlope; }
-  void setAttack(double newAttack) { attack = newAttack; } 
+  void setAttack(double newAttack) { attack = newAttack; }
   void setDecay(double newDecay) { decay = newDecay; }
   void setPhaseRandomness(double newRandomness) { phaseRandomness = newRandomness; }
   void setPhaseRandomSeed(int newSeed) { phaseRandomSeed = newSeed; }
 
   void setSpectralSlopeByKey(double newSlopeByKey) { spectralSlopeByKey = newSlopeByKey; }
-  void setAttackByKey(double newAttackByKey) { attackByKey = newAttackByKey; } 
+  void setAttackByKey(double newAttackByKey) { attackByKey = newAttackByKey; }
   void setDecayByKey(double newDecayByKey) { decayByKey = newDecayByKey; }
 
   void setSpectralSlopeByVel(double newSlopeByKey) { spectralSlopeByVel = newSlopeByKey; }
-  void setAttackByVel(double newAttackByVel) { attackByVel = newAttackByVel; } 
+  void setAttackByVel(double newAttackByVel) { attackByVel = newAttackByVel; }
   void setDecayByVel(double newDecayByVel) { decayByVel = newDecayByVel; }
 
 
@@ -123,7 +153,7 @@ public:
 
 
     float x = getExcitation(); // later maybe pass the input signal to the exciter
-    rsFloat32x4 y = modalBank.getSample( rsFloat32x4(x) );
+    rsFloat32x4 y = modalBank.getSample(rsFloat32x4(x));
     *outL = *outR = y.getSum();  // preliminary - later do stereo mixing
     noteAge++;
   }
@@ -138,6 +168,12 @@ public:
 
   void noteOn(int key, int velocity);
 
+  void reset()
+  {
+    modalBank.reset();
+    //noteAge = 0;
+  }
+
 
 protected:
 
@@ -146,8 +182,8 @@ protected:
   void fillFreqRatios(double* ratios, double *logRatios, int profile);
 
 
-  void fillFreqRatiosHarmonic(double* ratios);
-  void fillFreqRatiosStiffString(double* ratios, double B);
+  //void fillFreqRatiosHarmonic(double* ratios);
+  //void fillFreqRatiosStiffString(double* ratios, double B);
   void updateFreqRatios();
 
 

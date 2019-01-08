@@ -14,28 +14,35 @@ void ModalSynthAudioModule::createParameters()
   typedef Parameter Param;
   Param* p;
 
-  ratioProfileTopLeft = p = new Param("FreqProfileTopLeft", 0, 2, 0, Parameter::STRING, 1);
+  //int numOptions = 0;  // number of string parameters - can we generally pass 0?
+
+  ratioProfileTopLeft = p = new Param("FreqProfileTopLeft", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
   addObservedParameter(p);
 
-  ratioProfileTopLeft = p = new Param("FreqProfileTopRight", 0, 2, 0, Parameter::STRING, 1);
+  ratioProfileTopLeft = p = new Param("FreqProfileTopRight", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
   addObservedParameter(p);
 
-  ratioProfileTopLeft = p = new Param("FreqProfileBottomLeft", 0, 2, 0, Parameter::STRING, 1);
+  ratioProfileTopLeft = p = new Param("FreqProfileBottomLeft", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
   addObservedParameter(p);
 
-  ratioProfileTopLeft = p = new Param("FreqProfileBottomRight", 0, 2, 0, Parameter::STRING, 1);
+  ratioProfileTopLeft = p = new Param("FreqProfileBottomRight", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
+  addObservedParameter(p);
+
+  //maxNumModes = p = new Param("MaxNumModes", 10.0, 1024.0, 1024.0, Parameter::EXPONENTIAL, 1.0);
+  maxNumModes = p = new Param("MaxNumModes", 10.0, 1024.0, 32.0, Parameter::EXPONENTIAL, 1.0);
+  p->setValueChangeCallback<MS>(&core, &MS::setMaxNumPartials);
   addObservedParameter(p);
 
   freqRatiosX = p = new Param("FreqRatiosX", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
-  p->setValueChangeCallback<MS>(core, &MS::setFreqRatioMixX);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioMixX);
   addObservedParameter(p);
 
   freqRatiosY = p = new Param("FreqRatiosY", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
-  p->setValueChangeCallback<MS>(core, &MS::setFreqRatioMixY);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioMixY);
   addObservedParameter(p);
 }
 
@@ -69,7 +76,11 @@ void ModalSynthAudioModule::reset()
 
 void ModalSynthAudioModule::populateFreqRatioProfileParam(Parameter* p)
 {
-
+  p->addStringValue("Harmonic");
+  p->addStringValue("StiffString");
+  //p->addStringValue("PowerRule");
+  //....
+  int dummy = 0;
 }
 
 //=================================================================================================

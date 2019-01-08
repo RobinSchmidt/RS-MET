@@ -50,6 +50,7 @@ public:
     rsFloat32x4 y(0);
     for(int i = 0; i < numModes; i++)
       y += modeFilters[i].getSample(in);
+    return y;
   }
 
   inline float getSample(float in) 

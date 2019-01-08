@@ -1,6 +1,22 @@
 using namespace rosic;
 
+void rsModalFrequencyGenerator::harmonic(double* r, int N)
+{
+  for(int i = 0; i < N; i++)
+    r[i] = double(i+1);
+}
 
+void rsModalFrequencyGenerator::stiffString(double* r, int N, double B)
+{
+  for(int i = 0; i < N; i++) {
+    double n = double(i+1);
+    r[i] = n*sqrt(1+B*n*n);
+  }
+}
+
+
+
+/*
 void rsModalAlgoParameters::setFromUserParameters(const rsModalUserParameters& usrPars, double fs)
 {
   w      = 2 * PI * usrPars.frequency / fs;
@@ -14,9 +30,9 @@ void rsModalAlgoParameters::setFromUserParameters(const rsModalUserParameters& u
   attScl = usrPars.attackScale;
   decScl = usrPars.decayScale;
 }
+*/
 
-
-
+//=================================================================================================
 
 void rsModalSynth::setFreqRatioProfile1(int newProfile)
 {
@@ -57,11 +73,14 @@ void rsModalSynth::setFreqRatioMixY(double newMix)
 
 void rsModalSynth::fillFreqRatios(double* ratios, double *logRatios, int profile)
 {
+  typedef rsModalFrequencyGenerator MFG;
+  int N = maxNumModes;
   switch(profile)
   {
-  case HARMONIC:     fillFreqRatiosHarmonic(ratios);                   break;
-  case STIFF_STRING: fillFreqRatiosStiffString(ratios, inharmonicity); break;
-  default: fillFreqRatiosHarmonic(ratios);
+  case HARMONIC:     MFG::harmonic(   ratios, N);                break;
+
+  //case STIFF_STRING: MFG::stiffString(ratios, N, inharmonicity); break;
+  default: MFG::harmonic(ratios, N);
   };
   RAPT::rsArray::applyFunction(ratios, logRatios, maxNumModes, &log);
   updateFreqRatios();
@@ -101,6 +120,7 @@ void rsModalSynth::noteOn(int key, int vel)
   noteAge = 0;
 }
 
+/*
 void rsModalSynth::fillFreqRatiosHarmonic(double* ratios)
 {
   for(int i = 0; i < maxNumModes; i++)
@@ -114,6 +134,7 @@ void rsModalSynth::fillFreqRatiosStiffString(double* ratios, double B)
     ratios[i] = n*sqrt(1+B*n*n);
   }
 }
+*/
 
 void rsModalSynth::updateFreqRatios()
 {

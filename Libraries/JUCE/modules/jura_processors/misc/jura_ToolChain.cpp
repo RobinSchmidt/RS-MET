@@ -564,8 +564,9 @@ void ToolChain::populateModuleFactory()
   f.registerModuleType([](CS cs)->AM { return new MultiBandEffect(cs); }, s, "MultiBandEffect");
 
   // Instruments:
+  f.registerModuleType([](CS cs)->AM { return new ModalSynthAudioModule(cs);   }, s, "ModalSynth");
   f.registerModuleType([](CS cs)->AM { return new QuadrifexAudioModule(cs);    }, s, "Quadrifex");
-  f.registerModuleType([](CS cs)->AM { return new NewSynthAudioModule(cs);      }, s, "NewSynth");
+  f.registerModuleType([](CS cs)->AM { return new NewSynthAudioModule(cs);     }, s, "NewSynth");
   //f.registerModuleType([](CS cs)->AM { return new MagicCarpetAudioModule(cs);   }, s, "MagicCarpet");
   //f.registerModuleType([](CS cs)->AM { return new SimpleSamplerAudioModule(cs); }, s, "SimpleSampler");
   //f.registerModuleType([](CS cs)->AM { return new KeyShotAudioModule(cs);       }, s, "KeyShot");

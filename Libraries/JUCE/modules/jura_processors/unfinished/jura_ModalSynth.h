@@ -17,8 +17,8 @@ public:
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
-  virtual void noteOn( int key, int vel) override { core->noteOn(key, vel); }
-  virtual void noteOff(int key)          override { core->noteOn(key, 0); }
+  virtual void noteOn( int key, int vel) override { core.noteOn(key, vel); }
+  virtual void noteOff(int key)          override { core.noteOn(key, 0); }
 
 
 protected:
@@ -29,6 +29,8 @@ protected:
     *ratioProfileBottomRight;
 
   Parameter *freqRatiosX, *freqRatiosY;
+
+  Parameter *maxNumModes;
 
   ParameterWithKeyVelScaling *attack, *decay;
 
