@@ -6,12 +6,79 @@ void rsModalFrequencyGenerator::harmonic(double* r, int N)
     r[i] = double(i+1);
 }
 
+void rsModalFrequencyGenerator::twelveTone(double* r, int N)
+{
+  twelveTone21(r, N);
+  for(int n = 21; n < N; n++)
+    r[n] = pow(s, 54+n-21);
+
+  // maybe use a formula:
+  // b  = pow(2.0, 1.0/12.0); // basis - can be generalized
+  // fn = b^k where k = round(logB(n*f0, b)...or maybe use a special rounding:
+
+  // roundedExponent(target, basis)
+  // a  = logB(target, basis);
+  // af = floor(a);
+  // ac = ceil(a);
+  // yf = pow(basis, yf);
+  // yc = pow(basis, yc);
+  // if(fabs(target-yc) < fabs(target-yf))
+  //   return ac;
+  // else
+  //   return af;
+}
+
+void rsModalFrequencyGenerator::twelveTonePseudoHarmonic(double* r, int N)
+{
+  twelveTone21(r, N);
+  for(int i = 21; i < N; i++)
+    r[i] = double(i+1);
+}
+
+void rsModalFrequencyGenerator::idealBar(double* r, int N)
+{
+
+}
+
 void rsModalFrequencyGenerator::stiffString(double* r, int N, double B)
 {
   for(int i = 0; i < N; i++) {
     double n = double(i+1);
     r[i] = n*sqrt(1+B*n*n);
   }
+}
+
+void rsModalFrequencyGenerator::twelveTone21(double* r, int N)
+{
+  double tmp[21];
+  long double s = pow(2.0, 1.0/12.0); // basis
+
+                         //  #    ratio
+  tmp[0]  = pow(s,  0);  //  1    1.0
+  tmp[1]  = pow(s, 12);  //  2    2.0
+  tmp[2]  = pow(s, 19);  //  3    2.9966141537533639
+  tmp[3]  = 4.0;         //  4    4.0
+  tmp[4]  = pow(s, 28);  //  5    5.0396841995794937
+  tmp[5]  = pow(s, 31);  //  6    5.9932283075067279
+  tmp[6]  = pow(s, 34);  //  7    7.1271897451227169
+  tmp[7]  = 8.0;         //  8    8.0
+  tmp[8]  = pow(s, 38);  //  9    8.9796963864749877
+  tmp[9]  = pow(s, 40);  // 10   10.079368399158989
+  tmp[10] = pow(s, 42);  // 11   11.313708498984765
+  tmp[11] = pow(s, 43);  // 12   11.986456615013459
+  tmp[12] = pow(s, 44);  // 13   12.699208415745600
+  tmp[13] = pow(s, 46);  // 14   14.254379490245437
+  tmp[14] = pow(s, 47);  // 15   15.101989002907104
+  tmp[15] = 16.0;        // 16   16.0  
+  tmp[16] = pow(s, 49);  // 17   16.951409509748732
+  tmp[17] = pow(s, 50);  // 18   17.959392772949979
+  tmp[18] = pow(s, 51);  // 19   19.027313840043551
+  tmp[19] = pow(s, 52);  // 20   20.158736798317982
+  tmp[20] = pow(s, 53);  // 21   21.357437666720561
+  // optimize - get rid of calling pow - use direct constants (or can the compiler do that?)
+
+  for(int i = 0; i < RAPT::rsMin(N, 21); i++)
+    r[i] = tmp[i];
 }
 
 
@@ -169,6 +236,8 @@ Ideas:
  second "sidechain" input where we feed back the total summed output - so the nonlinear effects may
  depend on the total output value
 
+
+ a lot of code can be dragged in from ModalExample.h/cpp in rosic_tests/PortedFromRSLib/Examples
 
 */
 

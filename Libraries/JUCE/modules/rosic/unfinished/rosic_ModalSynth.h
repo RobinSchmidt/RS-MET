@@ -13,7 +13,14 @@ public:
   series. */
   static void harmonic(double* r, int N);
 
+  /** The mode frequencies are powers of the twelfth-root-of-two, but for the lower modes, not all
+  powers are used but only those that are close to harmonic ratios. This mode tuning will play 
+  maximally consonant in 12-TET in the sense explained here:
+  http://sethares.engr.wisc.edu/consemi.html */
+  static void twelveTone(double* r, int N);
 
+  /** The lower modes are the same as in twelveTone but the upper modes follow a harmonic series 
+  instead of being yet more powers of the twelfth-root-of-two. */
   static void twelveTonePseudoHarmonic(double* r, int N);
 
   static void idealBar(double* r, int N);
@@ -22,6 +29,13 @@ public:
 
 
   static void stiffString(double* r, int N, double B);
+
+protected:
+
+  /** First 21 modes for the 12-TET based tunings. Used by twelveTone and 
+  twelveTonePseudoHarmonic */
+  static void twelveTone21(double* r, int N);
+
 
 };
 
