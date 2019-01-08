@@ -164,11 +164,11 @@ public:
   ParameterWithKeyVelScaling(const juce::String& name, double min = 0.0, double max = 1.0,
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
 
-  //void setKeyScaleCallback();
-  //void setVelScaleCallback();
-
   void setKeyScaleRange(double minValue, double maxValue, double defaultValue);
   void setVelScaleRange(double minValue, double maxValue, double defaultValue);
+
+  void setKeyScaleCallback();
+  void setVelScaleCallback();
 
   Parameter* getKeyScalingParameter() { return &keyParam; }
   Parameter* getVelScalingParameter() { return &velParam; }

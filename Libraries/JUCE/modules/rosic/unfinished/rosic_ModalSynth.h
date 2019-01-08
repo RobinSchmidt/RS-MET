@@ -253,8 +253,8 @@ protected:
   double spectralSlope = 0, spectralSlopeByKey = 0, spectralSlopeByVel = 0;
   //double attack = 50, attackByKey = 0, attackByVel = 0;
   //double decay = 500, decayByKey = 0, decayByVel = 0;
-  double attack = 5, attackByKey = 0, attackByVel = 0;
-  double decay = 500, decayByKey = 0, decayByVel = 0;
+  double attack = 5, attackByRatio = -1.0, attackByKey = 0, attackByVel = 0;
+  double decay = 500, decayByRatio = -0.3, decayByKey = 0, decayByVel = 0;
   double phaseRandomness = 1.0;
   int phaseRandomSeed = 0;
   int phaseRandomShape = 1; // determines the probability distribution ...later

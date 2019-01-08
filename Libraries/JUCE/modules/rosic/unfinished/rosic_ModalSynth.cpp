@@ -259,6 +259,21 @@ void rsModalSynth::noteOn(int key, int vel)
     p = phaseGenerator.getSample();
     att = 0.001 * attack * sampleRate;
     dec = 0.001 * decay  * sampleRate;
+
+
+    // scale attack/decay according to key, vel and - importantly - r
+    att *= pow(r, attackByRatio);
+    dec *= pow(r, decayByRatio);
+
+    // pow(r, x) = exp(x*log(r))
+    // at the end, all the various scalings (by key, vel, ratio) should be incorporated into a 
+    // weigthed sum and a single call to exp should be done - it may involve log(r) - we probably
+    // should store that into an array in updateFreqRatios (it's computed there anyway)...maybe get
+    // completely rid of linear interpolation of mode frequency - do it always in log domain as we
+    // need the log of the ratio here anyway...do, for example
+    // dec *= exp(decByRatio*x*log(r) + c1*decByKey*(key-refKey) + c2*decByVel*(vel-refVel))
+    // here c1, c2 are appropriate fixed constants (maybe log(2)? - we'll see)
+
     modalBank.setModalFilterParameters(m, w, A, p, att, dec
       /*,deltaOmega, phaseDelta, blend, attackScale, decayScale*/);
   }
