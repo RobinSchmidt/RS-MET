@@ -248,10 +248,13 @@ void rsModalSynth::noteOn(int key, int vel)
   double ampSlopeExponent = -1;  // preliminary, -1 should result from a setting of -6.02 dB/oct
   int m = 0;
   for(m = 0; m < numPartialsLimit; m++) {
+
     r = freqRatios[m];
     f = f0 * r;
     if( f > 0.5*sampleRate )
       break;
+
+    double rLog = freqRatiosLog[m];
 
     // compute modal filter algorithm parameters (preliminary) and set up the filter:
     w = 2 * PI * f / sampleRate;              // optimize - precompute 2*PI/fs
@@ -261,18 +264,33 @@ void rsModalSynth::noteOn(int key, int vel)
     dec = 0.001 * decay  * sampleRate;
 
 
-    // scale attack/decay according to key, vel and - importantly - r
-    att *= pow(r, attackByRatio);
-    dec *= pow(r, decayByRatio);
 
-    // pow(r, x) = exp(x*log(r))
+    // scale attack/decay according to key, vel and - importantly - r
+
+    //att *= pow(r, attackByRatio);
+    //dec *= pow(r, decayByRatio);
+
+    // to optimize this, use pow(r, x) = exp(x*log(r)) - log r is computed anyway in 
+    // updateFreqRatios - we should store it in a member array there and should get completely rid
+    // of linear interpolation of mode frequency (it doesn't seem to be useful anyway) - do it 
+    // always in logarithmic (pitch) domain as we need the log of the ratio here anyway
     // at the end, all the various scalings (by key, vel, ratio) should be incorporated into a 
-    // weigthed sum and a single call to exp should be done - it may involve log(r) - we probably
-    // should store that into an array in updateFreqRatios (it's computed there anyway)...maybe get
-    // completely rid of linear interpolation of mode frequency - do it always in log domain as we
-    // need the log of the ratio here anyway...do, for example
-    // dec *= exp(decByRatio*x*log(r) + c1*decByKey*(key-refKey) + c2*decByVel*(vel-refVel))
-    // here c1, c2 are appropriate fixed constants (maybe log(2)? - we'll see)
+    // weigthed sum and a single call to exp should be done, like this:
+    // dec *= exp(c1*decByRatio*log(r) + c2*decByKey*(key-refKey) + c3*decByVel*(vel-refVel))
+    // here c1,c2,c3 are appropriate fixed constants (maybe log(2)? - we'll see - check how 
+    // straightliner handles key and vel scaling and use the same rule here)
+    // OK - the optimization is implemented below - todo add the pther scalers...
+
+    // test:
+    //double s1, s2;
+    //s1 = pow(r, decayByRatio);
+    //s2 = exp(rLog*decayByRatio);  // should be the same - yep, works
+
+    // this is more efficient and extensible at negligible cost by adding more scalers later:
+    att *= exp(rLog * attackByRatio);
+    dec *= exp(rLog * decayByRatio );
+
+
 
     modalBank.setModalFilterParameters(m, w, A, p, att, dec
       /*,deltaOmega, phaseDelta, blend, attackScale, decayScale*/);
@@ -303,23 +321,15 @@ void rsModalSynth::updateFreqRatios()
 {
   freqRatiosAreReady = false;
 
-  // obtain frequency ratios by bilinear interpolation either of the frequencies themselves or
-  // the associated pitches:
+  // obtain frequency ratios by bilinear interpolation of the associated pitches:
   double rt, rb, r;  // ratio for top and bottom and final result
-  if(interpolatePitches)
-    for(int i = 0; i < maxNumModes; i++) {
-      rt = (1-freqRatioMixX)*freqRatiosLog1[i] + freqRatioMixX*freqRatiosLog2[i];
-      rb = (1-freqRatioMixX)*freqRatiosLog3[i] + freqRatioMixX*freqRatiosLog4[i];
-      r  = (1-freqRatioMixY)*rt + freqRatioMixY*rb;
-      freqRatios[i] = exp(r);
-    }
-  else
-    for(int i = 0; i < maxNumModes; i++) {
-      rt = (1-freqRatioMixX)*freqRatios1[i] + freqRatioMixX*freqRatios2[i];
-      rb = (1-freqRatioMixX)*freqRatios3[i] + freqRatioMixX*freqRatios4[i];
-      r  = (1-freqRatioMixY)*rt + freqRatioMixY*rb;
-      freqRatios[i] = r;
-    }
+  for(int i = 0; i < maxNumModes; i++) {
+    rt = (1-freqRatioMixX)*freqRatiosLog1[i] + freqRatioMixX*freqRatiosLog2[i];
+    rb = (1-freqRatioMixX)*freqRatiosLog3[i] + freqRatioMixX*freqRatiosLog4[i];
+    r  = (1-freqRatioMixY)*rt + freqRatioMixY*rb;
+    freqRatiosLog[i] = r;
+    freqRatios[i] = exp(r);
+  }
 
   freqRatiosAreReady = true;
 }

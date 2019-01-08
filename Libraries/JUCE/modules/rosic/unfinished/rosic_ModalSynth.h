@@ -246,7 +246,7 @@ protected:
   double freqRatioMixX  = 0.5;
   double freqRatioMixY  = 0.5;
   double inharmonicity  = 0.0;
-  bool interpolatePitches = true;
+  //bool interpolatePitches = true;  // alway do it like this
 
   // macro parameters for modal filters:
   double amplitude = 1.0; // maybe have a level parameter in dB with key and vel scaling as in Straightliner
@@ -273,7 +273,8 @@ protected:
   //rsModalBankFloatSSE2 modalBanks[maxNumVoices];
 
   // frequency ratio arrays and their logarithmic versions:
-  double freqRatios[maxNumModes];   // the final mix/interpolation of freq ratios
+  double freqRatios[maxNumModes];     // the final mix/interpolation of freq ratios
+  double freqRatiosLog[maxNumModes];  // logarithms of final freq ratios
   double freqRatios1[maxNumModes];
   double freqRatios2[maxNumModes];
   double freqRatios3[maxNumModes];
@@ -282,6 +283,7 @@ protected:
   double freqRatiosLog2[maxNumModes];
   double freqRatiosLog3[maxNumModes];
   double freqRatiosLog4[maxNumModes];
+  // maybe keep only the log-ratios...we'll see
 
   int noteAge = 0;
   int decayLength = INT_MAX;
