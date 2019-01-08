@@ -56,6 +56,7 @@ void rsModalFrequencyGenerator::rodFreeFree(double* r, int N)
   for(i = 0; i < N; i++)
     r[i] = r[i]*r[i] / c;
   // ...verify and optimize....
+  // Reference: Music: A Mathematical Offering (Dave Benson), page 119 
 }
 
 void rsModalFrequencyGenerator::rodFreeClamped(double* r, int N)
@@ -78,6 +79,7 @@ void rsModalFrequencyGenerator::rodFreeClamped(double* r, int N)
   for(i = 0; i < N; i++)
     r[i] = r[i]*r[i] / c;
   // ....verify and optimize...
+  // Reference: Music: A Mathematical Offering (Dave Benson), page 123 
 }
 
 /*

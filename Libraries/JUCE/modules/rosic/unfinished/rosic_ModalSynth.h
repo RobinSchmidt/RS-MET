@@ -2,7 +2,24 @@
 namespace rosic
 {
 
-/** A class for generating the frequency ratios of the modes for modal synthesis. */
+/** A class for generating the frequency ratios of the modes for modal synthesis. In the very 
+simplest case, the frequency ratios are just all he integers, giving a harmonic series. There are
+other formulas, some of which are based on musical considerations, some on physical ones and some
+ad-hoc. For the physically inspired mode frequency ratios, such as those of a rod with two free 
+ends, note that these values are computed from a theoretically idealized situation. In a practical 
+instrument, the mode frequencies may be shifted away from these idealized ones due to non-ideal or 
+even purposefully changed shapes - and there seems to be no real musical significance of the 
+*exact* values computed by some of the physically based formulas which are based on simple, 
+idealized geometries. In fact, it's the job of a good instrument maker to adjust physical 
+parameters such as shapes in order tweak the mode frequencies from the ratios obtained from simple
+geometries into more musically meaningful ones - so it seems to be a rather pointless excersise to 
+exactly hit these exact frequency ratios of simply shaped resonators - however, if they are given 
+in a book, we may want to have code for that. They may serve as a starting point for finding more 
+musically interesting ratios that preserve some general qualities of the underlying instrument 
+classes. But the true power of modal synthesis actually lies in the fact that we have *direct* 
+access to the modal frequencies and may tune them individually to musical taste rather than 
+indirectly tweaking them in complicated interrelated ways by altering a (possibly complicated) 
+geometry of a physical resonator. */
 
 class rsModalFrequencyGenerator
 {
@@ -24,12 +41,11 @@ public:
   static void twelveTonePseudoHarmonic(double* r, int N);
 
   /** Calculates the relative frequencies of the vibrational modes of a stiff rod with both ends 
-  free. Reference: discussion on the Xylophone in Dave Benson's 'Mathematics and Music' */
+  free. */
   static void rodFreeFree(double* r, int N);
 
   /** Calculates the relative frequencies of the vibrational modes of a stiff rod with one free end 
-  and one clamped end. Reference: discussion on the Mbira in Dave Benson's 'Mathematics and 
-  Music' */
+  and one clamped end. */
   static void rodFreeClamped(double* r, int N);
 
 
