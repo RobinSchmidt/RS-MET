@@ -18,18 +18,22 @@ void ModalSynthAudioModule::createParameters()
 
   ratioProfileTopLeft = p = new Param("FreqProfileTopLeft", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfile1);
   addObservedParameter(p);
 
   ratioProfileTopLeft = p = new Param("FreqProfileTopRight", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfile2);
   addObservedParameter(p);
 
   ratioProfileTopLeft = p = new Param("FreqProfileBottomLeft", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfile3);
   addObservedParameter(p);
 
   ratioProfileTopLeft = p = new Param("FreqProfileBottomRight", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfile4);
   addObservedParameter(p);
 
   //maxNumModes = p = new Param("MaxNumModes", 10.0, 1024.0, 1024.0, Parameter::EXPONENTIAL, 1.0);
@@ -76,11 +80,15 @@ void ModalSynthAudioModule::reset()
 
 void ModalSynthAudioModule::populateFreqRatioProfileParam(Parameter* p)
 {
-  p->addStringValue("Harmonic");
-  p->addStringValue("StiffString");
-  //p->addStringValue("PowerRule");
-  //....
-  int dummy = 0;
+  // make sure that the order is the same as in the enumerations in rsModalSynth
+
+  // 0-parametric settings:
+  p->addStringValue("All Harmonics");
+  p->addStringValue("Odd Harmonics");
+  p->addStringValue("Pseudo Harmonic 12-TET");
+  p->addStringValue("12-TET");
+  p->addStringValue("Rod Free/Free");
+  p->addStringValue("Rod Free/Clamped");
 }
 
 //=================================================================================================

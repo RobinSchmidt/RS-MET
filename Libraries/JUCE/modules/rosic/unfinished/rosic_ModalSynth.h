@@ -28,7 +28,9 @@ public:
 
   /** Fills the array "r" of length "N" with the frequency ratios corresponding to a harmonic 
   series. */
-  static void harmonic(double* r, int N);
+  static void allHarmonics(double* r, int N);
+
+  static void oddHarmonics(double* r, int N);
 
   /** The mode frequencies are powers of the twelfth-root-of-two, but for the lower modes, not all
   powers are used but only those that are close to harmonic ratios. This mode tuning will play 
@@ -53,7 +55,8 @@ public:
 
   //static void circularMembrane(double* r, int N);
 
-
+  /** Frequency ratios of a stiff string, such as a piano string. the parameter B controls the 
+  amount of stiffness and hence the amount of inharmonicity. */
   static void stiffString(double* r, int N, double B);
 
 protected:
@@ -112,13 +115,21 @@ class rsModalSynth
 
 public:
 
+
+  rsModalSynth();
+
+
   /** A selection of predefined frequency ratio profiles. */
   enum freqRatioProfiles
   {
     // 0-parametric:
-    HARMONIC = 0,
+    ALL_HARMONICS = 0,
+    ODD_HARMONICS,
+    TWELVE_TONE_PSEUDO_HARMONIC,
     TWELVE_TONE_EQUAL,
-    IDEAL_BAR,
+    ROD_FREE_FREE,
+    ROD_FREE_CLAMPED,
+    //IDEAL_BAR,
     //CIRCULAR_MEMBRANE,
 
     // 1-parametric:
@@ -141,10 +152,7 @@ public:
   /** Selects one of the predefined frequency ratio profiles for the top-left slot. For example, a
   "harmonic" profile means that the ratios should be 1,2,3,4,5, etc. i.e. the n-th partial has a
   frequency ratio (with respect to the fundamental) of n. The "stiff-string" setting uses the
-  formula  n * sqrt(1+B*n^2) where B is the "inharmonicity" parameter, see Eq 10, here:
-  http://www.simonhendry.co.uk/wp/wp-content/uploads/2012/08/inharmonicity.pdf
-  http://www.jbsand.dk/div/StivStreng.pdf
-  ...more profiles are to come, including circular membranes and totally made up fantasy formulas */
+  formula  n * sqrt(1+B*n^2) where B is the "inharmonicity" parameter, etc. */
   void setFreqRatioProfile1(int newProfile);
   // todo: let the user define their own profiles and load them from an xml and/or define a formula
 
@@ -231,19 +239,21 @@ protected:
 
   // modal frequency settings:
   int numPartialsLimit  = maxNumModes;
-  int freqRatioProfile1 = HARMONIC;  // top-left
-  int freqRatioProfile2 = HARMONIC;  // top-right
-  int freqRatioProfile3 = HARMONIC;  // bottom-left
-  int freqRatioProfile4 = HARMONIC;  // bottom-right
+  int freqRatioProfile1 = ALL_HARMONICS;  // top-left
+  int freqRatioProfile2 = ALL_HARMONICS;  // top-right
+  int freqRatioProfile3 = ALL_HARMONICS;  // bottom-left
+  int freqRatioProfile4 = ALL_HARMONICS;  // bottom-right
   double freqRatioMixX  = 0.5;
   double freqRatioMixY  = 0.5;
   double inharmonicity  = 0.0;
-
+  bool interpolatePitches = true;
 
   // macro parameters for modal filters:
   double amplitude = 1.0; // maybe have a level parameter in dB with key and vel scaling as in Straightliner
   double spectralSlope = 0, spectralSlopeByKey = 0, spectralSlopeByVel = 0;
-  double attack = 50, attackByKey = 0, attackByVel = 0;
+  //double attack = 50, attackByKey = 0, attackByVel = 0;
+  //double decay = 500, decayByKey = 0, decayByVel = 0;
+  double attack = 5, attackByKey = 0, attackByVel = 0;
   double decay = 500, decayByKey = 0, decayByVel = 0;
   double phaseRandomness = 1.0;
   int phaseRandomSeed = 0;
@@ -257,8 +267,6 @@ protected:
   rsModalBankFloatSSE2 modalBank;
 
   RAPT::rsNoiseGenerator<double> phaseGenerator;
-
-
 
   // move to subclass rsModalSynthPoly
   //static const int maxNumVoices = 16;
@@ -274,8 +282,6 @@ protected:
   double freqRatiosLog2[maxNumModes];
   double freqRatiosLog3[maxNumModes];
   double freqRatiosLog4[maxNumModes];
-  bool logLinearFreqInterpolation = false;
-
 
   int noteAge = 0;
   int decayLength = INT_MAX;

@@ -1,9 +1,15 @@
 using namespace rosic;
 
-void rsModalFrequencyGenerator::harmonic(double* r, int N)
+void rsModalFrequencyGenerator::allHarmonics(double* r, int N)
 {
   for(int i = 0; i < N; i++)
     r[i] = double(i+1);
+}
+
+void rsModalFrequencyGenerator::oddHarmonics(double* r, int N)
+{
+  for(int i = 0; i < N; i++)
+    r[i] = double(2*i+1);
 }
 
 void rsModalFrequencyGenerator::twelveTone(double* r, int N)
@@ -73,7 +79,7 @@ void rsModalFrequencyGenerator::rodFreeClamped(double* r, int N)
   for(i = 6; i < N; i++) {
     m = i+1;
     c = (m-0.5)*PI;
-    r[i] = c - pow(-1, m) * 2 * exp(-c) - 4 * exp(-2*c);
+    r[i] = c - pow(-1, m) * 2 * exp(-c) - 4 * exp(-2*c); 
   }
   c = r[0]*r[0];
   for(i = 0; i < N; i++)
@@ -95,6 +101,9 @@ void rsModalFrequencyGenerator::stiffString(double* r, int N, double B)
     double n = double(i+1);
     r[i] = n*sqrt(1+B*n*n);
   }
+  // see:
+  // http://www.simonhendry.co.uk/wp/wp-content/uploads/2012/08/inharmonicity.pdf  Eq.10
+  // http://www.jbsand.dk/div/StivStreng.pdf
 }
 
 void rsModalFrequencyGenerator::twelveTone21(double* r, int N)
@@ -155,6 +164,14 @@ void rsModalAlgoParameters::setFromUserParameters(const rsModalUserParameters& u
 
 //=================================================================================================
 
+rsModalSynth::rsModalSynth()
+{
+  setFreqRatioProfile1(ALL_HARMONICS);
+  setFreqRatioProfile2(ALL_HARMONICS);
+  setFreqRatioProfile3(ALL_HARMONICS);
+  setFreqRatioProfile4(ALL_HARMONICS);
+}
+
 void rsModalSynth::setFreqRatioProfile1(int newProfile)
 {
   freqRatioProfile1 = newProfile;
@@ -198,10 +215,16 @@ void rsModalSynth::fillFreqRatios(double* ratios, double *logRatios, int profile
   int N = maxNumModes;
   switch(profile)
   {
-  case HARMONIC:     MFG::harmonic(   ratios, N);                break;
+  case ALL_HARMONICS:               MFG::allHarmonics(            ratios, N); break;
+  case ODD_HARMONICS:               MFG::oddHarmonics(            ratios, N); break;
+  case TWELVE_TONE_PSEUDO_HARMONIC: MFG::twelveTonePseudoHarmonic(ratios, N); break;
+  case TWELVE_TONE_EQUAL:           MFG::twelveTone(              ratios, N); break;
+  case ROD_FREE_FREE:               MFG::rodFreeFree(             ratios, N); break;
+  case ROD_FREE_CLAMPED:            MFG::rodFreeClamped(          ratios, N); break;
 
   //case STIFF_STRING: MFG::stiffString(ratios, N, inharmonicity); break;
-  default: MFG::harmonic(ratios, N);
+
+  default: MFG::allHarmonics(ratios, N);
   };
   RAPT::rsArray::applyFunction(ratios, logRatios, maxNumModes, &log);
   updateFreqRatios();
@@ -209,6 +232,10 @@ void rsModalSynth::fillFreqRatios(double* ratios, double *logRatios, int profile
 
 void rsModalSynth::noteOn(int key, int vel)
 {
+  if(vel == 0)
+    return; // note off
+
+
   // todo: update the freqRatios according to key/vel - these should depend on key/vel
 
 
@@ -264,7 +291,7 @@ void rsModalSynth::updateFreqRatios()
   // obtain frequency ratios by bilinear interpolation either of the frequencies themselves or
   // the associated pitches:
   double rt, rb, r;  // ratio for top and bottom and final result
-  if(logLinearFreqInterpolation) // maybe rename to pitchInterpolation
+  if(interpolatePitches)
     for(int i = 0; i < maxNumModes; i++) {
       rt = (1-freqRatioMixX)*freqRatiosLog1[i] + freqRatioMixX*freqRatiosLog2[i];
       rb = (1-freqRatioMixX)*freqRatiosLog3[i] + freqRatioMixX*freqRatiosLog4[i];
