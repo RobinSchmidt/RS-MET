@@ -89,12 +89,10 @@ void ModalSynthAudioModule::createParameters()
 
 }
 
-/*
 AudioModuleEditor* ModalSynthAudioModule::createEditor(int type)
 {
   return new ModalSynthEditor(this);
 }
-*/
 
 void ModalSynthAudioModule::processBlock(double **buf, int numChannels, int numSamples)
 {
@@ -138,11 +136,30 @@ ModalSynthEditor::ModalSynthEditor(jura::ModalSynthAudioModule *newModalSynthMod
   ScopedLock scopedLock(*lock);
   modalModule = newModalSynthModuleToEdit;
   createWidgets();
-  setSize(500, 460);
+  setSize(480, 400);
 }
 
 void ModalSynthEditor::resized()
 {
+  AudioModuleEditor::resized();
+  int m  = 4; // margin
+  int y  = getPresetSectionBottom() + m;
+  int wh = 16;     // widget height
+  int w  = getWidth() / 3;
+  int x  = 0;
+  int xyPadSize = w;
+
+  // freq-ratio widgets:
+  boxTopLeftRatios->setBounds(    2*w, y, w, wh);
+  boxTopRightRatios->setBounds(     0, y, w, wh);
+  xyPadRatios->setBounds(           w, y, w, w);
+  y += w-wh;
+  boxBottomLeftRatios->setBounds( 2*w, y, w, wh);
+  boxBottomRightRatios->setBounds(  0, y, w, wh);
+
+
+  //int size = jmin(getWidth(), getHeight()-y);
+  //xyPad->setBounds(0, y, xyPadSize, xyPadSize);
 
 }
 
@@ -179,7 +196,6 @@ void ModalSynthEditor::createWidgets()
   box->setDescriptionField(infoField);
   //box->registerComboBoxObserver(this);  // may be needed later
 
-
   addWidget(xyPadRatios = new rsVectorPad);
   xyPadRatios->assignParameterX(modalModule->getParameterByName("FreqRatiosX"));
   xyPadRatios->assignParameterY(modalModule->getParameterByName("FreqRatiosY"));
@@ -194,5 +210,7 @@ void ModalSynthEditor::createWidgets()
   sld->setDescription("Maximum number of modes to be produced (to control CPU load)");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToString0);
+
+  // maybe have also sliders for freq ratio x/y
 
 }
