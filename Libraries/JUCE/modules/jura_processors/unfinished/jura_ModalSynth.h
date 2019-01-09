@@ -70,10 +70,15 @@ protected:
 
   ModalSynthAudioModule* modalModule;
 
-  rsVectorPad *xyPad;
+
+  RSlider   *sldMaxNumModes;
+  RComboBox *boxTopLeftRatios, *boxTopRightRatios, *boxBottomLeftRatios, *boxBottomRightRatios;
+  rsVectorPad *xyPadRatios;
+
+
 
   //rsSlider *leftSlider, *rightSlider, *smoothSlider, *testSlider;
-  //rsComboBox *modeComboBox;
+
   //rsButton *invertButton;  
   // use ModulatabelSlider, etc later
 
