@@ -71,9 +71,11 @@ protected:
   ModalSynthAudioModule* modalModule;
 
 
-  RSlider   *sldMaxNumModes;
+
   RComboBox *boxTopLeftRatios, *boxTopRightRatios, *boxBottomLeftRatios, *boxBottomRightRatios;
   rsVectorPad *xyPadRatios;
+  RSlider *sldMaxNumModes, *sldRatiosX, *sldRatiosY;
+
 
 
 

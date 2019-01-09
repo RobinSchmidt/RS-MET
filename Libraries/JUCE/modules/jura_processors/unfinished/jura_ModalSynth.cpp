@@ -150,12 +150,18 @@ void ModalSynthEditor::resized()
   int xyPadSize = w;
 
   // freq-ratio widgets:
-  boxTopLeftRatios->setBounds(    2*w, y, w, wh);
-  boxTopRightRatios->setBounds(     0, y, w, wh);
+  boxTopLeftRatios->setBounds(      0, y, w, wh);
+  boxTopRightRatios->setBounds(   2*w, y, w, wh);
   xyPadRatios->setBounds(           w, y, w, w);
   y += w-wh;
-  boxBottomLeftRatios->setBounds( 2*w, y, w, wh);
-  boxBottomRightRatios->setBounds(  0, y, w, wh);
+  boxBottomLeftRatios->setBounds(   0, y, w, wh);
+  boxBottomRightRatios->setBounds(2*w, y, w, wh);
+  y = xyPadRatios->getY() + (w-wh)/2;
+  sldRatiosX->setBounds(    0+m, y, w-2*m, wh);
+  sldRatiosY->setBounds(  2*w+m, y, w-2*m, wh);
+  x = xyPadRatios->getX();
+  y = xyPadRatios->getBottom();
+  sldMaxNumModes->setBounds(x, y, w, wh);
 
 
   //int size = jmin(getWidth(), getHeight()-y);
@@ -204,12 +210,32 @@ void ModalSynthEditor::createWidgets()
   // it would be nice, if the xy-pad would show a plot of the resulting freq-ratios
   // maybe show the 4 edge freq-ratios in plots next to the middle xy-pad-plot
 
+  addWidget( sld = sldRatiosX = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("FreqRatiosX") );
+  sld->setSliderName("RatiosX");
+  sld->setDescription("X-coordinate of the ratio vector morph");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&valueToStringTotal5);
+
+  addWidget( sld = sldRatiosY = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("FreqRatiosY") );
+  sld->setSliderName("RatiosY");
+  sld->setDescription("Y-coordinate of the ratio vector morph");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&valueToStringTotal5);
+
   addWidget( sld = sldMaxNumModes = new Sld );
   sld->assignParameter( modalModule->getParameterByName("MaxNumModes") );
   sld->setSliderName("MaxNumModes");
   sld->setDescription("Maximum number of modes to be produced (to control CPU load)");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToString0);
+
+
+
+
+
+
 
   // maybe have also sliders for freq ratio x/y
 
