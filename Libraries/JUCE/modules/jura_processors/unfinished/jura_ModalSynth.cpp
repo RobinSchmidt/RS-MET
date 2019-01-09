@@ -75,17 +75,43 @@ void ModalSynthAudioModule::createParameters()
   addObservedParameter(p);
 
 
-
-
-
-  //attack = pkv = new ParamKV("Attack", 0.1, 100.0, 5.0, Parameter::EXPONENTIAL, 0.0);
   attack = p = new Param("Attack", 0.0, 100.0, 5.0, Parameter::LINEAR, 0.0); // linear seems better for attack
   p->setValueChangeCallback<MS>(&core, &MS::setAttack);
   addObservedParameter(p);
 
+  attackByRatio = p = new Param("AttackByRatio", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<MS>(&core, &MS::setAttackByRatio);
+  addObservedParameter(p);
+
+  attackByKey = p = new Param("AttackByKey", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<MS>(&core, &MS::setAttackByKey);
+  addObservedParameter(p);
+
+  attackByVel = p = new Param("AttackByVel", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<MS>(&core, &MS::setAttackByVel);
+  addObservedParameter(p);
+
+
   decay = p = new Param("Decay", 10.0, 10000.0, 5.0, Parameter::EXPONENTIAL, 0.0);
   p->setValueChangeCallback<MS>(&core, &MS::setDecay);
   addObservedParameter(p);
+
+  decayByRatio = p = new Param("DecayByRatio", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<MS>(&core, &MS::setDecayByRatio);
+  addObservedParameter(p);
+
+  decayByKey = p = new Param("DecayByKey", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<MS>(&core, &MS::setDecayByKey);
+  addObservedParameter(p);
+
+  decayByVel = p = new Param("DecayByVel", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<MS>(&core, &MS::setDecayByVel);
+  addObservedParameter(p);
+
+
+
+
+
 
 }
 
@@ -168,14 +194,28 @@ void ModalSynthEditor::resized()
   x = m; 
   int sw = getWidth()/2 - 2*m;   // slider width
   int sw2 = (sw-12) / 3;   // width of the attached Rat/Key/Vel sliders
-  int xk = x + sw/3;
-  //int xv = x + 2*sw/3;
+  int xk = x + sw/3 + 4;
   int xv = x + sw - sw2;
   int dy = wh-2;
+
   sldAmp       ->setBounds(x,  y, sw,  wh);  y += dy;
   sldAmpByRatio->setBounds(x,  y, sw2, wh);
   sldAmpByKey  ->setBounds(xk, y, sw2, wh);
   sldAmpByVel  ->setBounds(xv, y, sw2, wh);
+  int dy2 = dy+2*m;
+  y += dy2;
+  sldAttack       ->setBounds(x,  y, sw,  wh);  y += dy;
+  sldAttackByRatio->setBounds(x,  y, sw2, wh);
+  sldAttackByKey  ->setBounds(xk, y, sw2, wh);
+  sldAttackByVel  ->setBounds(xv, y, sw2, wh);
+  y += dy2;
+  sldDecay       ->setBounds(x,  y, sw,  wh);  y += dy;
+  sldDecayByRatio->setBounds(x,  y, sw2, wh);
+  sldDecayByKey  ->setBounds(xk, y, sw2, wh);
+  sldDecayByVel  ->setBounds(xv, y, sw2, wh);
+
+
+
 
 
 
@@ -315,6 +355,101 @@ void ModalSynthEditor::createWidgets()
 
 
 
+  addWidget( sld = sldAttack = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("Attack") );
+  sld->setSliderName("Attack");
+  sld->setDescription("Attack time");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&millisecondsToStringWithUnit2);
+
+  addWidget( sld = sldAttackByRatio = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AttackByRatio") );
+  sld->setSliderName("R");
+  sld->setDescription("Attack dependency on frequency ratio");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+  addWidget( sld = sldAttackByKey = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AttackByKey") );
+  sld->setSliderName("K");
+  sld->setDescription("Attack dependency on key");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+  addWidget( sld = sldAttackByVel = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AttackByVel") );
+  sld->setSliderName("V");
+  sld->setDescription("Attack dependency on velocity");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+
+
+  addWidget( sld = sldDecay = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("Decay") );
+  sld->setSliderName("Decay");
+  sld->setDescription("Decay time");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&millisecondsToStringWithUnit2);
+
+  addWidget( sld = sldDecayByRatio = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("DecayByRatio") );
+  sld->setSliderName("R");
+  sld->setDescription("Decay dependency on frequency ratio");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+  addWidget( sld = sldDecayByKey = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("DecayByKey") );
+  sld->setSliderName("K");
+  sld->setDescription("Decay dependency on key");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+  addWidget( sld = sldDecayByVel = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("DecayByVel") );
+  sld->setSliderName("V");
+  sld->setDescription("Decay dependency on velocity");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+
+
+
+
+
   // envelope:
+  /*
+  addWidget( sld = sldAmp = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("Amplitude") );
+  sld->setSliderName("Amplitude");
+  sld->setDescription("Overall amplitude");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&valueToStringTotal5);
+
+  addWidget( sld = sldAmpByRatio = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AmplitudeByRatio") );
+  sld->setSliderName("R");
+  sld->setDescription("Mode amplitude dependency on frequency ratio");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+  addWidget( sld = sldAmpByKey = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AmplitudeByKey") );
+  sld->setSliderName("K");
+  sld->setDescription("Amplitude dependency on key");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+  addWidget( sld = sldAmpByVel = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AmplitudeByVel") );
+  sld->setSliderName("V");
+  sld->setDescription("Amplitude dependency on velocity");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+  */
+
+
+
 
 }

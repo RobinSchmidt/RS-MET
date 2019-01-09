@@ -331,6 +331,7 @@ void rsModalSynth::updateFreqRatios()
     rt = (1-freqRatioMixX)*freqRatiosLog1[i] + freqRatioMixX*freqRatiosLog2[i];
     rb = (1-freqRatioMixX)*freqRatiosLog3[i] + freqRatioMixX*freqRatiosLog4[i];
     r  = (1-freqRatioMixY)*rt + freqRatioMixY*rb;
+    //r  = freqRatioMixY*rt + (1-freqRatioMixY)*rb;
     freqRatiosLog[i] = r;
     freqRatios[i] = exp(r);
   }
