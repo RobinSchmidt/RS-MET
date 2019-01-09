@@ -253,7 +253,35 @@ void ModalSynthEditor::resized()
 
   mmhh...but actually, there are much more amplitude and decay- related widgets to come, so it
   doesn't make much sense to think too much about layout now
+
+  above vector pad:
+
+  Level   Detune   Tuning
+  K   V   K    V   12-TET
+
+  below vector pad:
+
+  Attack     AmpSlope    AttScl
+  R  K V     K      V    DecScl
+  Decay       Blend      FreqDelta
+  R K V       R K V      R     K V
+
+
+
+
+
+  AmpCutoffHP     AmpCutoffSlopeHP
+  K  V            K  V
+  AmpCutoffLP     AmpCutoffSlopeLP
+  K  V            K  V
+
+
+  PhaseRandomSeed, PhaseRandomness, PhaseDelta, etc....
+
+
   */
+
+
 
   //int size = jmin(getWidth(), getHeight()-y);
   //xyPad->setBounds(0, y, xyPadSize, xyPadSize);

@@ -251,7 +251,6 @@ void rsModalSynth::noteOn(int key, int vel)
   // as long at minimum nonzero velocity 1 ...check this
 
 
-
   phaseGenerator.setSeed(phaseRandomSeed);
   phaseGenerator.setRange(-phaseRandomness*PI, phaseRandomness*PI);
 
@@ -275,7 +274,20 @@ void rsModalSynth::noteOn(int key, int vel)
 
     //A = amplitude * pow(r, ampSlopeExponent); // maybe this can be expressed via exp?
     //A = amp * pow(r, ampByRatio); 
-    A = amp * exp(rLog * ampByRatio);  // should be the same - yes - works
+    //A = amp * exp(rLog * ampByRatio);  // should be the same - yes - works - but is obsolete
+
+    double kk = 0;  // preliminary - will later controld spectral slope dependency on key/vel
+    double kv = 0;
+    A  = amp * exp(ck * ampByKey + cv * ampByVel);  // key and velocity scaling
+    A *= exp(rLog * (ampSlope + kk*ampSlopeByKey + kv*ampSlopeByVel) );
+    // A*= 
+
+    // todo: the amplitude should be computed like that:
+    // A =  amp * exp(ck * ampByKey + cv *ampByVel);
+    // A *= exp(rLog * (ampByRatio + kk*slopeByKey + kv*slopeByVel) )
+    // maybe rename ampByRatio to ampSlope, kk and kv are yet other constants like ck and cv before
+    // the loop - in the end, everything can be lumped into a single call to exp
+    // maybe other terms related to lowpass and highpass should be added later
 
     // actually, it doesn't semm to be enough to scale amplitude by ratio, key and vel - we
     // also need to scale the ampByRatio itself by key and vel - which is not the same thing
@@ -288,8 +300,6 @@ void rsModalSynth::noteOn(int key, int vel)
     // this is more efficient and extensible at negligible cost by adding more scalers later:
     att *= exp(rLog*attackByRatio + ck*attackByKey + cv*attackByVel);
     dec *= exp(rLog*decayByRatio  + ck*decayByKey  + cv*decayByVel);
-
-    // scale attack/decay according to key, vel and - importantly - r
 
     //att *= pow(r, attackByRatio);
     //dec *= pow(r, decayByRatio);

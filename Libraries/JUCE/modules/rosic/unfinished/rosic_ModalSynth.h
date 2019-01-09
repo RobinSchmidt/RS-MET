@@ -179,10 +179,17 @@ public:
 
   // ByRatio, ByKey, ByVel parameters should be passed as percentage values
 
+  // replace amp by level:
   void setAmplitude(       double newAmp)        { amp        = newAmp; }
-  void setAmplitudeByRatio(double newAmpByRatio) { ampByRatio = 0.01*newAmpByRatio; }
+  void setAmplitudeByRatio(double newAmpByRatio) { ampByRatio = 0.01*newAmpByRatio; } // obsolete
   void setAmplitudeByKey(  double newAmpByKey)   { ampByKey   = 0.01*newAmpByKey; }
   void setAmplitudeByVel(  double newAmpByVel)   { ampByVel   = 0.01*newAmpByVel; }
+
+  // maybe insert Tune/Key/Vel
+
+  void setAmpSlope(     double newAmpSlope)      { ampSlope        = newAmpSlope; }
+  void setAmpSlopeByKey(double newAmpSlopeByKey) { ampSlopeByKey   = 0.01*newAmpSlopeByKey; }
+  void setAmpSlopeByVel(double newAmpSlopeByVel) { ampSlopeByVel   = 0.01*newAmpSlopeByVel; }
 
   void setAttack(       double newAttack)        { attack        = newAttack; }
   void setAttackByRatio(double newAttackByRatio) { attackByRatio = 0.01*newAttackByRatio; }
@@ -264,7 +271,9 @@ protected:
   // macro parameters for modal filters (maybe wrap into a class):
   //double amplitude = 1.0; // maybe have a level parameter in dB with key and vel scaling as in Straightliner
   //double spectralSlope = 0, spectralSlopeByKey = 0, spectralSlopeByVel = 0;
-  double amp    = 1.0, ampByRatio    = -1.0, ampByKey    = 0, ampByVel    = 0;
+  double amp    = 1.0, ampByRatio    = -1.0, ampByKey    = 0, ampByVel    = 0; // get rid of ampByRatio
+
+  double ampSlope = 0, ampSlopeByKey = 0, ampSlopeByVel = 0;
   double attack = 5,   attackByRatio = -1.0, attackByKey = 0, attackByVel = 0;
   double decay  = 500, decayByRatio  = -0.3, decayByKey  = 0, decayByVel  = 0;
 
