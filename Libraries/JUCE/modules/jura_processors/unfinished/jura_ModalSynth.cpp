@@ -21,7 +21,7 @@ void ModalSynthAudioModule::createParameters()
   // mode frequency parameters:
 
   //maxNumModes = p = new Param("MaxNumModes", 10.0, 1024.0, 1024.0, Parameter::EXPONENTIAL, 1.0);
-  maxNumModes = p = new Param("MaxNumModes", 10.0, 1024.0, 32.0, Parameter::EXPONENTIAL, 1.0);
+  maxNumModes = p = new Param("MaxNumModes", 1.0, 1024.0, 32.0, Parameter::EXPONENTIAL, 1.0);
   p->setValueChangeCallback<MS>(&core, &MS::setMaxNumPartials);
   addObservedParameter(p);
   // maybe use 32 as defualt value only for debug builds ...or use 1024 always and in debug mode

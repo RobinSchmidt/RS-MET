@@ -235,8 +235,21 @@ void rsModalSynth::noteOn(int key, int vel)
   if(vel == 0)
     return; // note off
 
-
   // todo: update the freqRatios according to key/vel - these should depend on key/vel
+
+  // i think, for scaling the attack/decay time-values by key, we should use the scaler
+  // 2^( decByKey * (key - refKey) / 12 )
+  // if decByKey = 1, this would scale the time up by factor 2 when key is and octave above
+  // the reference key (which should probably be 64. this translates to:
+  // exp( log(2) * decByKey * (key - refKey) / 12 ) = exp(ck*decByKey)
+  // with ck = log(2)*(key-refKey)/12
+  //int refKey = 64;
+  double ck = (LN2/12.0) * double(key-64);  // 64 is the neutral reference key
+  double cv = (LN2/63.0) * double(vel-64);  // 64 is the neutral reference velocity
+  //cv = 0; // preliminary
+  // i think., the cv formula would make time stwice as long at full velocity 127 and half
+  // as long at minimum nonzero velocity 1 ...check this
+
 
 
   phaseGenerator.setSeed(phaseRandomSeed);
@@ -254,20 +267,27 @@ void rsModalSynth::noteOn(int key, int vel)
     if( f > 0.5*sampleRate )
       break;
 
-    double rLog = freqRatiosLog[m];
+    double rLog = freqRatiosLog[m]; // maybe rename to cr for consistency with ck, cv
 
     // compute modal filter algorithm parameters (preliminary) and set up the filter:
     w = 2 * PI * f / sampleRate;              // optimize - precompute 2*PI/fs
+    p = phaseGenerator.getSample();
 
     //A = amplitude * pow(r, ampSlopeExponent); // maybe this can be expressed via exp?
-    A = amp * pow(r, ampByRatio);
+    //A = amp * pow(r, ampByRatio); 
+    A = amp * exp(rLog * ampByRatio);  // should be the same - yes - works
 
+    // actually, it doesn't semm to be enough to scale amplitude by ratio, key and vel - we
+    // also need to scale the ampByRatio itself by key and vel - which is not the same thing
 
-    p = phaseGenerator.getSample();
+    // i think, we should have Level with Key/Vel and Slope also with Key/Vel
+
     att = 0.001 * attack * sampleRate;
     dec = 0.001 * decay  * sampleRate;
 
-
+    // this is more efficient and extensible at negligible cost by adding more scalers later:
+    att *= exp(rLog*attackByRatio + ck*attackByKey + cv*attackByVel);
+    dec *= exp(rLog*decayByRatio  + ck*decayByKey  + cv*decayByVel);
 
     // scale attack/decay according to key, vel and - importantly - r
 
@@ -290,18 +310,13 @@ void rsModalSynth::noteOn(int key, int vel)
     //s1 = pow(r, decayByRatio);
     //s2 = exp(rLog*decayByRatio);  // should be the same - yep, works
 
-    // this is more efficient and extensible at negligible cost by adding more scalers later:
-    att *= exp(rLog * attackByRatio);
-    dec *= exp(rLog * decayByRatio );
-
-
 
     modalBank.setModalFilterParameters(m, w, A, p, att, dec
       /*,deltaOmega, phaseDelta, blend, attackScale, decayScale*/);
   }
 
   modalBank.setNumModes(m); // is this correct? or off by one? check this!
-  modalBank.reset();        // maybe allow a partial reset
+  //modalBank.reset();        // maybe allow a partial reset
   noteAge = 0;
 }
 
@@ -346,6 +361,10 @@ void rsModalSynth::updateFreqRatios()
 
 
 /*
+ToDo:
+-implement ratio/key/vel tracking for amp/attack/decay
+-implement attackScale / decayScale / Blend (blend also by ratio/key/vel)
+
 Ideas:
 -actually, it would be a good opportunity to insert tah as module into the NewSynth
 -let the user insert different types of mode filters (simple decaying sines, attack/decay-sines, 
