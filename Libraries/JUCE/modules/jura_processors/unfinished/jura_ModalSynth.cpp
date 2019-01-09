@@ -188,9 +188,9 @@ void ModalSynthEditor::resized()
   int x  = 0;
   int xyPadSize = w;
   int dy = wh-2;
-  int sw = getWidth()/2 - 2*m;   // slider width
-  int sw2 = (sw-12) / 3;   // width of the attached Rat/Key/Vel sliders
-  int xk = x + sw/3 + 4;
+  int sw = getWidth()/3 - 2*m;   // slider width
+  int sw2 = (sw-12) / 2;   // width of the attached Rat/Key/Vel sliders
+  int xk = x;
   int xv = x + sw - sw2;
 
   // global widgets:
@@ -199,11 +199,12 @@ void ModalSynthEditor::resized()
   sldLevelByKey->setBounds(xk, y, sw2, wh);
   sldLevelByVel->setBounds(xv, y, sw2, wh);
 
+  sldMaxNumModes->setBounds(x+sw+m, y, sw, wh);
 
-
-  y = sldLevelByVel->getBottom() + m;
 
   // freq-ratio widgets:
+
+  y = sldLevelByVel->getBottom() + m;
   boxTopLeftRatios->setBounds(      0, y, w, wh);
   boxTopRightRatios->setBounds(   2*w, y, w, wh);
   xyPadRatios->setBounds(           w, y, w, w);
@@ -215,11 +216,16 @@ void ModalSynthEditor::resized()
   sldRatiosY->setBounds(  2*w+m, y, w-2*m, wh);
   x = xyPadRatios->getX();
   y = xyPadRatios->getBottom();
-  sldMaxNumModes->setBounds(x, y, w, wh);
+
 
   // amplitude spectrum:
-  y = sldMaxNumModes->getBottom() + m;
-  x = m; 
+
+  y   = xyPadRatios->getBottom() + m;
+  sw  = getWidth()/2 - 2*m;   // slider width
+  sw2 = (sw-12) / 3;   // width of the attached Rat/Key/Vel sliders
+  x   = m; 
+  xk  = x + sw/3 + 4;
+  xv  = x + sw - sw2;
   sldAmpSlope     ->setBounds(x,  y, sw,  wh);  y += dy;
   sldAmpSlopeByKey->setBounds(xk, y, sw2, wh);
   sldAmpSlopeByVel->setBounds(xv, y, sw2, wh);
@@ -343,6 +349,17 @@ void ModalSynthEditor::createWidgets()
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsToStringWithUnit2);
 
+
+  addWidget( sld = sldMaxNumModes = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("MaxNumModes") );
+  sld->setSliderName("MaxNumModes");
+  sld->setDescription("Maximum number of modes to be produced (to control CPU load)");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&valueToString0);
+
+
+
+
   // tuning stuff...
 
 
@@ -398,19 +415,14 @@ void ModalSynthEditor::createWidgets()
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToStringTotal5);
 
-  addWidget( sld = sldMaxNumModes = new Sld );
-  sld->assignParameter( modalModule->getParameterByName("MaxNumModes") );
-  sld->setSliderName("MaxNumModes");
-  sld->setDescription("Maximum number of modes to be produced (to control CPU load)");
-  sld->setDescriptionField(infoField);
-  sld->setStringConversionFunction(&valueToString0);
+
 
 
   // amplitude spectrum:
 
   addWidget( sld = sldAmpSlope = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AmpSlope") );
-  sld->setSliderName("R");
+  sld->setSliderName("AmpSlope");
   sld->setDescription("Slope of amplitude spectrum");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);  // use dB/oct
