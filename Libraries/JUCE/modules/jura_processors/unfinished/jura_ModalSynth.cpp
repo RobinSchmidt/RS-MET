@@ -2,7 +2,7 @@ ModalSynthAudioModule::ModalSynthAudioModule(CriticalSection *lockToUse)
   : AudioModuleWithMidiIn(lockToUse)
 {
   ScopedLock scopedLock(*lock);
-  setModuleTypeName("ModalSynth"); // find a better name - maybe Modacous?
+  setModuleTypeName("ModalSynth"); // find a better name - maybe Modacous? Synthacous?
   createParameters();
 }
 
@@ -14,8 +14,26 @@ void ModalSynthAudioModule::createParameters()
   typedef Parameter Param;
   typedef ParameterWithKeyVelScaling ParamKV;
   Param* p;
-  //ParamKV* pkv;
 
+
+  // global parameters:
+  level = p = new Param("Level", -48, 12.0, 0.0, Parameter::LINEAR, 0.0);
+  p->setValueChangeCallback<MS>(&core, &MS::setLevel);
+  addObservedParameter(p);
+
+  levelByKey = p = new Param("LevelByKey", -24, 24.0, 0.0, Parameter::LINEAR, 0.0);
+  p->setValueChangeCallback<MS>(&core, &MS::setLevelByKey);
+  addObservedParameter(p);
+
+  levelByVel = p = new Param("LevelByVel", -24, 24.0, 0.0, Parameter::LINEAR, 0.0);
+  p->setValueChangeCallback<MS>(&core, &MS::setLevelByVel);
+  addObservedParameter(p);
+
+  // drag maxNumModes above xy-pad
+
+  // excitation: impulse, noise (amplitudes)
+
+  // ....detune, key, vel
 
 
   // mode frequency parameters:
@@ -56,23 +74,23 @@ void ModalSynthAudioModule::createParameters()
   addObservedParameter(p);
 
 
-  // mode amplitude and envelope parameters:
+  // mode amplitude and envelope parameters - when setting both to zero, the modal filter can
+  // filter input signals
 
-  amp = p = new Param("Amplitude", 0.01, 10.0, 1.0, Parameter::EXPONENTIAL, 0.0);
-  p->setValueChangeCallback<MS>(&core, &MS::setAmplitude);
+
+
+  ampSlope = p = new Param("AmpSlope", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<MS>(&core, &MS::setAmpSlope);
   addObservedParameter(p);
 
-  ampByRatio = p = new Param("AmplitudeByRatio", -200, 100, 0.0, Parameter::LINEAR, 0.01);
-  p->setValueChangeCallback<MS>(&core, &MS::setAmplitudeByRatio);
+  ampSlopeByKey = p = new Param("AmpSlopeByKey", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<MS>(&core, &MS::setAmpSlopeByKey);
   addObservedParameter(p);
 
-  ampByKey = p = new Param("AmplitudeByKey", -200, 100, 0.0, Parameter::LINEAR, 0.01);
-  p->setValueChangeCallback<MS>(&core, &MS::setAmplitudeByKey);
+  ampSlopeByVel = p = new Param("AmpSlopeByVel", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<MS>(&core, &MS::setAmpSlopeByVel);
   addObservedParameter(p);
 
-  ampByVel = p = new Param("AmplitudeByVel", -200, 100, 0.0, Parameter::LINEAR, 0.01);
-  p->setValueChangeCallback<MS>(&core, &MS::setAmplitudeByVel);
-  addObservedParameter(p);
 
 
   attack = p = new Param("Attack", 0.0, 100.0, 10.0, Parameter::LINEAR, 0.0); // linear seems better for attack
@@ -107,11 +125,6 @@ void ModalSynthAudioModule::createParameters()
   decayByVel = p = new Param("DecayByVel", -200, 100, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<MS>(&core, &MS::setDecayByVel);
   addObservedParameter(p);
-
-
-
-
-
 
 }
 
@@ -174,6 +187,21 @@ void ModalSynthEditor::resized()
   int w  = getWidth() / 3;
   int x  = 0;
   int xyPadSize = w;
+  int dy = wh-2;
+  int sw = getWidth()/2 - 2*m;   // slider width
+  int sw2 = (sw-12) / 3;   // width of the attached Rat/Key/Vel sliders
+  int xk = x + sw/3 + 4;
+  int xv = x + sw - sw2;
+
+  // global widgets:
+
+  sldLevel->setBounds(x,  y, sw,  wh);  y += dy;
+  sldLevelByKey->setBounds(xk, y, sw2, wh);
+  sldLevelByVel->setBounds(xv, y, sw2, wh);
+
+
+
+  y = sldLevelByVel->getBottom() + m;
 
   // freq-ratio widgets:
   boxTopLeftRatios->setBounds(      0, y, w, wh);
@@ -189,19 +217,12 @@ void ModalSynthEditor::resized()
   y = xyPadRatios->getBottom();
   sldMaxNumModes->setBounds(x, y, w, wh);
 
-  // amplitude:
+  // amplitude spectrum:
   y = sldMaxNumModes->getBottom() + m;
   x = m; 
-  int sw = getWidth()/2 - 2*m;   // slider width
-  int sw2 = (sw-12) / 3;   // width of the attached Rat/Key/Vel sliders
-  int xk = x + sw/3 + 4;
-  int xv = x + sw - sw2;
-  int dy = wh-2;
-
-  sldAmp       ->setBounds(x,  y, sw,  wh);  y += dy;
-  sldAmpByRatio->setBounds(x,  y, sw2, wh);
-  sldAmpByKey  ->setBounds(xk, y, sw2, wh);
-  sldAmpByVel  ->setBounds(xv, y, sw2, wh);
+  sldAmpSlope     ->setBounds(x,  y, sw,  wh);  y += dy;
+  sldAmpSlopeByKey->setBounds(xk, y, sw2, wh);
+  sldAmpSlopeByVel->setBounds(xv, y, sw2, wh);
   int dy2 = dy+2*m;
   y += dy2;
   sldAttack       ->setBounds(x,  y, sw,  wh);  y += dy;
@@ -297,6 +318,40 @@ void ModalSynthEditor::createWidgets()
   Sld* sld;
   Box* box;
 
+
+
+  // global:
+
+  addWidget( sld = sldLevel = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("Level") );
+  sld->setSliderName("Level");
+  sld->setDescription("Overall ouput level");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&decibelsToStringWithUnit2);
+
+  addWidget( sld = sldLevelByKey = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("LevelByKey") );
+  sld->setSliderName("Key");
+  sld->setDescription("Key tracking of overall ouput level");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&decibelsToStringWithUnit2);
+
+  addWidget( sld = sldLevelByVel = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("LevelByVel") );
+  sld->setSliderName("Vel");
+  sld->setDescription("Velocity tracking of overall ouput level");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&decibelsToStringWithUnit2);
+
+  // tuning stuff...
+
+
+
+
+
+
+  // frequency ratios:
+
   addWidget( box = boxTopLeftRatios = new Box );
   box->assignParameter( modalModule->getParameterByName("RatiosTopLeft") );
   box->setDescription("Mode frequency ratios in top left corner");
@@ -351,35 +406,29 @@ void ModalSynthEditor::createWidgets()
   sld->setStringConversionFunction(&valueToString0);
 
 
-  // amplitude:
+  // amplitude spectrum:
 
-  addWidget( sld = sldAmp = new Sld );
-  sld->assignParameter( modalModule->getParameterByName("Amplitude") );
-  sld->setSliderName("Amplitude");
-  sld->setDescription("Overall amplitude");
-  sld->setDescriptionField(infoField);
-  sld->setStringConversionFunction(&valueToStringTotal5);
-
-  addWidget( sld = sldAmpByRatio = new Sld );
-  sld->assignParameter( modalModule->getParameterByName("AmplitudeByRatio") );
+  addWidget( sld = sldAmpSlope = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AmpSlope") );
   sld->setSliderName("R");
-  sld->setDescription("Mode amplitude dependency on frequency ratio");
+  sld->setDescription("Slope of amplitude spectrum");
   sld->setDescriptionField(infoField);
-  sld->setStringConversionFunction(&percentToStringWithUnit2);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);  // use dB/oct
 
-  addWidget( sld = sldAmpByKey = new Sld );
-  sld->assignParameter( modalModule->getParameterByName("AmplitudeByKey") );
+  addWidget( sld = sldAmpSlopeByKey = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AmpSlopeByKey") );
   sld->setSliderName("K");
-  sld->setDescription("Amplitude dependency on key");
+  sld->setDescription("Key tracking of spectral slope");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
 
-  addWidget( sld = sldAmpByVel = new Sld );
-  sld->assignParameter( modalModule->getParameterByName("AmplitudeByVel") );
+  addWidget( sld = sldAmpSlopeByVel = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AmpSlopeByVel") );
   sld->setSliderName("V");
-  sld->setDescription("Amplitude dependency on velocity");
+  sld->setDescription("Velocity tracking of spectral slope");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
+
 
 
 

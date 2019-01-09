@@ -257,8 +257,13 @@ void rsModalSynth::noteOn(int key, int vel)
   double f0 = RAPT::rsPitchToFreq(key);
   double r, f;
   double w, A, p, att, dec;
-  double ampSlopeExponent = -1;  // preliminary, -1 should result from a setting of -6.02 dB/oct
+  //double ampSlopeExponent = -1;  // preliminary, -1 should result from a setting of -6.02 dB/oct
   int m = 0;
+
+
+  double amp = RAPT::rsDbToAmp(level + ck*levelByKey + cv*levelByVel); 
+  //amp *= exp(ck * ampByKey + cv * ampByVel);
+
   for(m = 0; m < numPartialsLimit; m++) {
 
     r = freqRatios[m];
@@ -278,9 +283,8 @@ void rsModalSynth::noteOn(int key, int vel)
 
     double kk = 0;  // preliminary - will later controld spectral slope dependency on key/vel
     double kv = 0;
-    A  = amp * exp(ck * ampByKey + cv * ampByVel);  // key and velocity scaling
-    A *= exp(rLog * (ampSlope + kk*ampSlopeByKey + kv*ampSlopeByVel) );
-    // A*= 
+    //A  = amp * exp(ck * ampByKey + cv * ampByVel);  // key and velocity scaling
+    A = amp * exp(rLog * (ampSlope + kk*ampSlopeByKey + kv*ampSlopeByVel) );
 
     // todo: the amplitude should be computed like that:
     // A =  amp * exp(ck * ampByKey + cv *ampByVel);

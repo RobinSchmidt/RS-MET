@@ -26,27 +26,24 @@ protected:
   void populateFreqRatioProfileParam(Parameter* p);
 
 
+  // global parameters
+  Parameter *level, *levelByKey, *levelByVel;
+  Parameter *detune, *detuneByKey, *detuneByVel;
+
   // frequency parameters:
   Parameter *maxNumModes;
   Parameter *ratioProfileTopLeft, *ratioProfileTopRight, *ratioProfileBottomLeft, 
     *ratioProfileBottomRight;
   Parameter *freqRatiosX, *freqRatiosY; // should also have key/vel scaling
 
-  // have a general "Tune" parameter (maybe also with ByKey, ByVel options) because the percieved 
-  // frequency may not coincide with the lowest frequency - and when ratios are key/vel dependent,
-  // that may also change as function of key/vel
-
-  // amp and envelope parameters:
-  Parameter *amp,    *ampByRatio,    *ampByKey,    *ampByVel;
+  // amplitude-spectrum and envelope parameters:
+  Parameter *ampSlope, *ampSlopeByKey, *ampSlopeByVel;
   Parameter *attack, *attackByRatio, *attackByKey, *attackByVel;
   Parameter *decay,  *decayByRatio,  *decayByKey,  *decayByVel;
   Parameter *attackScale, *decayScale, *freqDelta, *phaseDelta;
   Parameter *blend,  *blendByKey,  *blendByVel;
 
-
-
-
-  // phase parameters:
+  // phase-spectrum parameters:
 
 
 
@@ -74,14 +71,17 @@ protected:
 
   ModalSynthAudioModule* modalModule;
 
+  // global parameters:
+  RSlider *sldLevel, *sldLevelByKey, *sldLevelByVel;
+  RSlider *sldDetune, *sldDetuneByKey, *sldDetuneByVel;
 
-
+  // freq-ratio parameters:
   RComboBox *boxTopLeftRatios, *boxTopRightRatios, *boxBottomLeftRatios, *boxBottomRightRatios;
   rsVectorPad *xyPadRatios;
   RSlider *sldMaxNumModes, *sldRatiosX, *sldRatiosY;
 
-
-  RSlider *sldAmp,    *sldAmpByRatio,    *sldAmpByKey,    *sldAmpByVel;
+  // magnitude spectrum parameters:
+  RSlider *sldAmpSlope, *sldAmpSlopeByKey, *sldAmpSlopeByVel;
   RSlider *sldAttack, *sldAttackByRatio, *sldAttackByKey, *sldAttackByVel;
   RSlider *sldDecay,  *sldDecayByRatio,  *sldDecayByKey,  *sldDecayByVel;
   RSlider *sldAttackScale, *sldDecayScale, *sldFreqDelta, *sldPhaseDelta;
