@@ -40,6 +40,10 @@ protected:
   Parameter *amp,    *ampByRatio,    *ampByKey,    *ampByVel;
   Parameter *attack, *attackByRatio, *attackByKey, *attackByVel;
   Parameter *decay,  *decayByRatio,  *decayByKey,  *decayByVel;
+  Parameter *attackScale, *decayScale, *freqDelta, *phaseDelta;
+  Parameter *blend,  *blendByKey,  *blendByVel;
+
+
 
 
   // phase parameters:
@@ -77,7 +81,11 @@ protected:
   RSlider *sldMaxNumModes, *sldRatiosX, *sldRatiosY;
 
 
-
+  RSlider *sldAmp,    *sldAmpByRatio,    *sldAmpByKey,    *sldAmpByVel;
+  RSlider *sldAttack, *sldAttackByRatio, *sldAttackByKey, *sldAttackByVel;
+  RSlider *sldDecay,  *sldDecayByRatio,  *sldDecayByKey,  *sldDecayByVel;
+  RSlider *sldAttackScale, *sldDecayScale, *sldFreqDelta, *sldPhaseDelta;
+  RSlider *sldBlend,  *sldBlendByKey,  *sldBlendByVel;
 
   //rsSlider *leftSlider, *rightSlider, *smoothSlider, *testSlider;
 

@@ -163,6 +163,57 @@ void ModalSynthEditor::resized()
   y = xyPadRatios->getBottom();
   sldMaxNumModes->setBounds(x, y, w, wh);
 
+  // amplitude:
+  y = sldMaxNumModes->getBottom() + m;
+  x = m; 
+  int sw = getWidth()/2 - 2*m;   // slider width
+  int sw2 = (sw-12) / 3;   // width of the attached Rat/Key/Vel sliders
+  int xk = x + sw/3;
+  //int xv = x + 2*sw/3;
+  int xv = x + sw - sw2;
+  int dy = wh-2;
+  sldAmp       ->setBounds(x,  y, sw,  wh);  y += dy;
+  sldAmpByRatio->setBounds(x,  y, sw2, wh);
+  sldAmpByKey  ->setBounds(xk, y, sw2, wh);
+  sldAmpByVel  ->setBounds(xv, y, sw2, wh);
+
+
+
+
+
+  
+  /* Layout ideas for the amplitude/envelope widgets:
+
+   Attack    Amplitude   AttackScale    
+   R K V     R K V       DecayScale
+   Decay     Blend       FreqDelta 
+   R K V     R K V       PhaseDelta
+
+
+   Attack      Amplitude   Decay
+   R K V       R K V       R K V
+
+   AttScl      Blend       DecScl
+   FreqDelta   R K V       PhaseDelta
+
+
+   Amplitude       FreqScale
+   R K V           R K V
+   Attack          Decay
+   R K V           R K V
+   AttScl          DecScl
+            Blend
+
+
+  PhaseRandomness
+
+  PhaseSeed
+
+  PhaseAlternate 
+
+  mmhh...but actually, there are much more amplitude and decay- related widgets to come, so it
+  doesn't make much sense to think too much about layout now
+  */
 
   //int size = jmin(getWidth(), getHeight()-y);
   //xyPad->setBounds(0, y, xyPadSize, xyPadSize);
@@ -232,11 +283,38 @@ void ModalSynthEditor::createWidgets()
   sld->setStringConversionFunction(&valueToString0);
 
 
+  // amplitude:
+
+  addWidget( sld = sldAmp = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("Amplitude") );
+  sld->setSliderName("Amplitude");
+  sld->setDescription("Overall amplitude");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&valueToStringTotal5);
+
+  addWidget( sld = sldAmpByRatio = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AmplitudeByRatio") );
+  sld->setSliderName("R");
+  sld->setDescription("Mode amplitude dependency on frequency ratio");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+  addWidget( sld = sldAmpByKey = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AmplitudeByKey") );
+  sld->setSliderName("K");
+  sld->setDescription("Amplitude dependency on key");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
+
+  addWidget( sld = sldAmpByVel = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("AmplitudeByVel") );
+  sld->setSliderName("V");
+  sld->setDescription("Amplitude dependency on velocity");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&percentToStringWithUnit2);
 
 
 
-
-
-  // maybe have also sliders for freq ratio x/y
+  // envelope:
 
 }
