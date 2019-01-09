@@ -179,23 +179,16 @@ public:
 
   // ByRatio, ByKey, ByVel parameters should be passed as percentage values
 
-  /*
-  // replace amp by level:
-  void setAmplitude(       double newAmp)        { amp        = newAmp; }
-  void setAmplitudeByRatio(double newAmpByRatio) { ampByRatio = 0.01*newAmpByRatio; } // obsolete
-  void setAmplitudeByKey(  double newAmpByKey)   { ampByKey   = 0.01*newAmpByKey; }
-  void setAmplitudeByVel(  double newAmpByVel)   { ampByVel   = 0.01*newAmpByVel; }
-  */
 
   void setLevel(       double newLevel)        { level      = newLevel; }
-  void setLevelByKey(  double newLevelByKey)   { levelByKey = 0.01*newLevelByKey; }
-  void setLevelByVel(  double newLevelByVel)   { levelByVel = 0.01*newLevelByVel; }
+  void setLevelByKey(  double newLevelByKey)   { levelByKey = newLevelByKey; }
+  void setLevelByVel(  double newLevelByVel)   { levelByVel = newLevelByVel; }
 
   // insert Tune/Key/Vel
 
-  void setAmpSlope(     double newAmpSlope)      { ampSlope        = newAmpSlope; }
-  void setAmpSlopeByKey(double newAmpSlopeByKey) { ampSlopeByKey   = 0.01*newAmpSlopeByKey; }
-  void setAmpSlopeByVel(double newAmpSlopeByVel) { ampSlopeByVel   = 0.01*newAmpSlopeByVel; }
+  void setAmpSlope(     double newAmpSlope)      { ampSlope      = newAmpSlope; }
+  void setAmpSlopeByKey(double newAmpSlopeByKey) { ampSlopeByKey = 0.01*newAmpSlopeByKey; }
+  void setAmpSlopeByVel(double newAmpSlopeByVel) { ampSlopeByVel = 0.01*newAmpSlopeByVel; }
   // i think, amp-slope should be in dB/oct, not in %
 
 

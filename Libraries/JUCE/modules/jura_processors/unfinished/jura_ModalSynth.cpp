@@ -244,42 +244,7 @@ void ModalSynthEditor::resized()
 
 
 
-
-
-
-
-  
   /* Layout ideas for the amplitude/envelope widgets:
-
-   Attack    Amplitude   AttackScale    
-   R K V     R K V       DecayScale
-   Decay     Blend       FreqDelta 
-   R K V     R K V       PhaseDelta
-
-
-   Attack      Amplitude   Decay
-   R K V       R K V       R K V
-
-   AttScl      Blend       DecScl
-   FreqDelta   R K V       PhaseDelta
-
-
-   Amplitude       FreqScale
-   R K V           R K V
-   Attack          Decay
-   R K V           R K V
-   AttScl          DecScl
-            Blend
-
-
-  PhaseRandomness
-
-  PhaseSeed
-
-  PhaseAlternate 
-
-  mmhh...but actually, there are much more amplitude and decay- related widgets to come, so it
-  doesn't make much sense to think too much about layout now
 
   above vector pad:
 
@@ -293,26 +258,14 @@ void ModalSynthEditor::resized()
   Decay       Blend      FreqDelta
   R K V       R K V      R     K V
 
-
-
-
-
   AmpCutoffHP     AmpCutoffSlopeHP
   K  V            K  V
   AmpCutoffLP     AmpCutoffSlopeLP
   K  V            K  V
 
-
   PhaseRandomSeed, PhaseRandomness, PhaseDelta, etc....
 
-
   */
-
-
-
-  //int size = jmin(getWidth(), getHeight()-y);
-  //xyPad->setBounds(0, y, xyPadSize, xyPadSize);
-
 }
 
 void ModalSynthEditor::createWidgets()
@@ -337,14 +290,14 @@ void ModalSynthEditor::createWidgets()
 
   addWidget( sld = sldLevelByKey = new Sld );
   sld->assignParameter( modalModule->getParameterByName("LevelByKey") );
-  sld->setSliderName("Key");
+  sld->setSliderName("K");
   sld->setDescription("Key tracking of overall ouput level");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   addWidget( sld = sldLevelByVel = new Sld );
   sld->assignParameter( modalModule->getParameterByName("LevelByVel") );
-  sld->setSliderName("Vel");
+  sld->setSliderName("V");
   sld->setDescription("Velocity tracking of overall ouput level");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsToStringWithUnit2);
@@ -416,8 +369,6 @@ void ModalSynthEditor::createWidgets()
   sld->setStringConversionFunction(&valueToStringTotal5);
 
 
-
-
   // amplitude spectrum:
 
   addWidget( sld = sldAmpSlope = new Sld );
@@ -440,8 +391,6 @@ void ModalSynthEditor::createWidgets()
   sld->setDescription("Velocity tracking of spectral slope");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
-
-
 
 
   addWidget( sld = sldAttack = new Sld );
@@ -471,7 +420,6 @@ void ModalSynthEditor::createWidgets()
   sld->setDescription("Attack dependency on velocity");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&percentToStringWithUnit2);
-
 
 
   addWidget( sld = sldDecay = new Sld );

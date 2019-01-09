@@ -284,7 +284,14 @@ void rsModalSynth::noteOn(int key, int vel)
     double kk = 0;  // preliminary - will later controld spectral slope dependency on key/vel
     double kv = 0;
     //A  = amp * exp(ck * ampByKey + cv * ampByVel);  // key and velocity scaling
-    A = amp * exp(rLog * (ampSlope + kk*ampSlopeByKey + kv*ampSlopeByVel) );
+    //A = amp * exp(rLog * (ampSlope + kk*ampSlopeByKey + kv*ampSlopeByVel) );
+
+    // if ampSlope is in dB/oct, we need to figure out the octaves = log2(r) and do
+    // db2amp(slope*octaves
+    double octs  = RAPT::rsLog2(r);  // = something * rLog -> optimize
+    double slope = ampSlope; // + kk*ampSlopeByKey + kv*ampSlopeByVel
+    A = amp * RAPT::rsDbToAmp(slope*octs);
+
 
     // todo: the amplitude should be computed like that:
     // A =  amp * exp(ck * ampByKey + cv *ampByVel);
