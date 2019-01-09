@@ -258,7 +258,11 @@ void rsModalSynth::noteOn(int key, int vel)
 
     // compute modal filter algorithm parameters (preliminary) and set up the filter:
     w = 2 * PI * f / sampleRate;              // optimize - precompute 2*PI/fs
-    A = amplitude * pow(r, ampSlopeExponent); // maybe this can be expressed via exp?
+
+    //A = amplitude * pow(r, ampSlopeExponent); // maybe this can be expressed via exp?
+    A = amp * pow(r, ampByRatio);
+
+
     p = phaseGenerator.getSample();
     att = 0.001 * attack * sampleRate;
     dec = 0.001 * decay  * sampleRate;
@@ -337,6 +341,7 @@ void rsModalSynth::updateFreqRatios()
 
 /*
 Ideas:
+-actually, it would be a good opportunity to insert tah as module into the NewSynth
 -let the user insert different types of mode filters (simple decaying sines, attack/decay-sines, 
  4-env-sines, nonlinear modes (perhaps with amplitude dependent frequency - they should have a 
  second "sidechain" input where we feed back the total summed output - so the nonlinear effects may
@@ -344,6 +349,8 @@ Ideas:
 
 
  a lot of code can be dragged in from ModalExample.h/cpp in rosic_tests/PortedFromRSLib/Examples
+
+
 
 */
 

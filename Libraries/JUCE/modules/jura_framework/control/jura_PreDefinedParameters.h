@@ -154,7 +154,13 @@ public:
 };
 
 
-/** A parameter that has attached key- and velocity scaling parameters. */
+
+
+
+/** A parameter that has attached key- and velocity scaling parameters. 
+...this class is not usable yet. i think, it should have pointer parameters for keyParam and 
+velParam and these need to be added to the AudioModule (pointers, because the AudioModule will 
+delete them in its destructor) */
 
 class ParameterWithKeyVelScaling : public Parameter
 {

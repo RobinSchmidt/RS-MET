@@ -25,14 +25,28 @@ protected:
 
   void populateFreqRatioProfileParam(Parameter* p);
 
+
+  // frequency parameters:
+  Parameter *maxNumModes;
   Parameter *ratioProfileTopLeft, *ratioProfileTopRight, *ratioProfileBottomLeft, 
     *ratioProfileBottomRight;
+  Parameter *freqRatiosX, *freqRatiosY; // should also have key/vel scaling
 
-  Parameter *freqRatiosX, *freqRatiosY;
+  // have a general "Tune" parameter (maybe also with ByKey, ByVel options) because the percieved 
+  // frequency may not coincide with the lowest frequency - and when ratios are key/vel dependent,
+  // that may also change as function of key/vel
 
-  Parameter *maxNumModes;
+  // amp and envelope parameters:
+  Parameter *amp,    *ampByRatio,    *ampByKey,    *ampByVel;
+  Parameter *attack, *attackByRatio, *attackByKey, *attackByVel;
+  Parameter *decay,  *decayByRatio,  *decayByKey,  *decayByVel;
 
-  ParameterWithKeyVelScaling *attack, *decay;
+
+  // phase parameters:
+
+
+
+
 
   rosic::rsModalSynth core;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModalSynthAudioModule)

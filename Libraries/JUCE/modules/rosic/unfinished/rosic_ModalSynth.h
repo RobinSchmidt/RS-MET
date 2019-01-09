@@ -173,20 +173,33 @@ public:
   /** Sets a limit for the number of partials - use this to keep CPU load under control. */
   void setMaxNumPartials(int newMax) { numPartialsLimit = newMax; }
 
+  //void setSpectralSlope(double newSlope) { spectralSlope = newSlope; }
+  //void setSpectralSlopeByKey(double newSlopeByKey) { spectralSlopeByKey = newSlopeByKey; }
+  //void setSpectralSlopeByVel(double newSlopeByKey) { spectralSlopeByVel = newSlopeByKey; }
 
-  void setSpectralSlope(double newSlope) { spectralSlope = newSlope; }
-  void setAttack(double newAttack) { attack = newAttack; }
-  void setDecay(double newDecay) { decay = newDecay; }
+  // ByRatio, ByKey, ByVel parameters should be passed as percentage values
+
+  void setAmplitude(       double newAmp)        { amp        = newAmp; }
+  void setAmplitudeByRatio(double newAmpByRatio) { ampByRatio = 0.01*newAmpByRatio; }
+  void setAmplitudeByKey(  double newAmpByKey)   { ampByKey   = 0.01*newAmpByKey; }
+  void setAmplitudeByVel(  double newAmpByVel)   { ampByVel   = 0.01*newAmpByVel; }
+
+  void setAttack(       double newAttack)        { attack        = newAttack; }
+  void setAttackByRatio(double newAttackByRatio) { attackByRatio = 0.01*newAttackByRatio; }
+  void setAttackByKey(  double newAttackByKey)   { attackByKey   = 0.01*newAttackByKey; }
+  void setAttackByVel(  double newAttackByVel)   { attackByVel   = 0.01*newAttackByVel; }
+
+  void setDecay(       double newDecay)        { decay        = newDecay; }
+  void setDecayByRatio(double newDecayByRatio) { decayByRatio = 0.01*newDecayByRatio; }
+  void setDecayByKey(  double newDecayByKey)   { decayByKey   = 0.01*newDecayByKey; }
+  void setDecayByVel(  double newDecayByVel)   { decayByVel   = 0.01*newDecayByVel; }
+
   void setPhaseRandomness(double newRandomness) { phaseRandomness = newRandomness; }
   void setPhaseRandomSeed(int newSeed) { phaseRandomSeed = newSeed; }
 
-  void setSpectralSlopeByKey(double newSlopeByKey) { spectralSlopeByKey = newSlopeByKey; }
-  void setAttackByKey(double newAttackByKey) { attackByKey = newAttackByKey; }
-  void setDecayByKey(double newDecayByKey) { decayByKey = newDecayByKey; }
 
-  void setSpectralSlopeByVel(double newSlopeByKey) { spectralSlopeByVel = newSlopeByKey; }
-  void setAttackByVel(double newAttackByVel) { attackByVel = newAttackByVel; }
-  void setDecayByVel(double newDecayByVel) { decayByVel = newDecayByVel; }
+
+
 
 
   /** \name Processing */
@@ -248,13 +261,13 @@ protected:
   double inharmonicity  = 0.0;
   //bool interpolatePitches = true;  // alway do it like this
 
-  // macro parameters for modal filters:
-  double amplitude = 1.0; // maybe have a level parameter in dB with key and vel scaling as in Straightliner
-  double spectralSlope = 0, spectralSlopeByKey = 0, spectralSlopeByVel = 0;
-  //double attack = 50, attackByKey = 0, attackByVel = 0;
-  //double decay = 500, decayByKey = 0, decayByVel = 0;
-  double attack = 5, attackByRatio = -1.0, attackByKey = 0, attackByVel = 0;
-  double decay = 500, decayByRatio = -0.3, decayByKey = 0, decayByVel = 0;
+  // macro parameters for modal filters (maybe wrap into a class):
+  //double amplitude = 1.0; // maybe have a level parameter in dB with key and vel scaling as in Straightliner
+  //double spectralSlope = 0, spectralSlopeByKey = 0, spectralSlopeByVel = 0;
+  double amp    = 1.0, ampByRatio    = -1.0, ampByKey    = 0, ampByVel    = 0;
+  double attack = 5,   attackByRatio = -1.0, attackByKey = 0, attackByVel = 0;
+  double decay  = 500, decayByRatio  = -0.3, decayByKey  = 0, decayByVel  = 0;
+
   double phaseRandomness = 1.0;
   int phaseRandomSeed = 0;
   int phaseRandomShape = 1; // determines the probability distribution ...later
