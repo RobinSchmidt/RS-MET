@@ -29,29 +29,29 @@ void ModalSynthAudioModule::createParameters()
 
   ratioProfileTopLeft = p = new Param("RatiosTopLeft", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
-  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfile1);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfileTopLeft);
   addObservedParameter(p);
 
   ratioProfileTopLeft = p = new Param("RatiosTopRight", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
-  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfile2);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfileTopRight);
   addObservedParameter(p);
 
   ratioProfileTopLeft = p = new Param("RatiosBottomLeft", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
-  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfile3);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfileBottomLeft);
   addObservedParameter(p);
 
   ratioProfileTopLeft = p = new Param("RatiosBottomRight", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
-  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfile4);
+  p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfileBottomRight);
   addObservedParameter(p);
 
-  freqRatiosX = p = new Param("FreqRatiosX", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
+  freqRatiosX = p = new Param("FreqRatiosX", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioMixX);
   addObservedParameter(p);
 
-  freqRatiosY = p = new Param("FreqRatiosY", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
+  freqRatiosY = p = new Param("FreqRatiosY", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioMixY);
   addObservedParameter(p);
 
@@ -75,7 +75,7 @@ void ModalSynthAudioModule::createParameters()
   addObservedParameter(p);
 
 
-  attack = p = new Param("Attack", 0.0, 100.0, 5.0, Parameter::LINEAR, 0.0); // linear seems better for attack
+  attack = p = new Param("Attack", 0.0, 100.0, 10.0, Parameter::LINEAR, 0.0); // linear seems better for attack
   p->setValueChangeCallback<MS>(&core, &MS::setAttack);
   addObservedParameter(p);
 
@@ -92,7 +92,7 @@ void ModalSynthAudioModule::createParameters()
   addObservedParameter(p);
 
 
-  decay = p = new Param("Decay", 10.0, 10000.0, 5.0, Parameter::EXPONENTIAL, 0.0);
+  decay = p = new Param("Decay", 10.0, 10000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   p->setValueChangeCallback<MS>(&core, &MS::setDecay);
   addObservedParameter(p);
 

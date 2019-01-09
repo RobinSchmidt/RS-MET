@@ -153,12 +153,12 @@ public:
   "harmonic" profile means that the ratios should be 1,2,3,4,5, etc. i.e. the n-th partial has a
   frequency ratio (with respect to the fundamental) of n. The "stiff-string" setting uses the
   formula  n * sqrt(1+B*n^2) where B is the "inharmonicity" parameter, etc. */
-  void setFreqRatioProfile1(int newProfile);
+  void setFreqRatioProfileTopLeft(int newProfile);
   // todo: let the user define their own profiles and load them from an xml and/or define a formula
 
-  void setFreqRatioProfile2(int newProfile);
-  void setFreqRatioProfile3(int newProfile);
-  void setFreqRatioProfile4(int newProfile);
+  void setFreqRatioProfileTopRight(int newProfile);
+  void setFreqRatioProfileBottomLeft(int newProfile);
+  void setFreqRatioProfileBottomRight(int newProfile);
 
   /** We use a vector mix/morph between 4 frequency ratio profiles. This sets the x-coordinate of the mixing
   vector. */
@@ -252,12 +252,12 @@ protected:
 
   // modal frequency settings:
   int numPartialsLimit  = maxNumModes;
-  int freqRatioProfile1 = ALL_HARMONICS;  // top-left
-  int freqRatioProfile2 = ALL_HARMONICS;  // top-right
-  int freqRatioProfile3 = ALL_HARMONICS;  // bottom-left
-  int freqRatioProfile4 = ALL_HARMONICS;  // bottom-right
-  double freqRatioMixX  = 0.5;
-  double freqRatioMixY  = 0.5;
+  int freqRatioProfileTopLeft     = ALL_HARMONICS;
+  int freqRatioProfileTopRight    = ALL_HARMONICS;
+  int freqRatioProfileBottomLeft  = ALL_HARMONICS;
+  int freqRatioProfileBottomRight = ALL_HARMONICS;
+  double freqRatioMixX  = 0.0;
+  double freqRatioMixY  = 0.0;
   double inharmonicity  = 0.0;
   //bool interpolatePitches = true;  // alway do it like this
 
@@ -288,14 +288,14 @@ protected:
   // frequency ratio arrays and their logarithmic versions:
   double freqRatios[maxNumModes];     // the final mix/interpolation of freq ratios
   double freqRatiosLog[maxNumModes];  // logarithms of final freq ratios
-  double freqRatios1[maxNumModes];
-  double freqRatios2[maxNumModes];
-  double freqRatios3[maxNumModes];
-  double freqRatios4[maxNumModes];
-  double freqRatiosLog1[maxNumModes];
-  double freqRatiosLog2[maxNumModes];
-  double freqRatiosLog3[maxNumModes];
-  double freqRatiosLog4[maxNumModes];
+  double freqRatiosTopLeft[maxNumModes];
+  double freqRatiosTopRight[maxNumModes];
+  double freqRatiosBottomLeft[maxNumModes];
+  double freqRatiosBottomRight[maxNumModes];
+  double freqRatiosLogTopLeft[maxNumModes];
+  double freqRatiosLogTopRight[maxNumModes];
+  double freqRatiosLogBottomLeft[maxNumModes];
+  double freqRatiosLogBottomRight[maxNumModes];
   // maybe keep only the log-ratios...we'll see
 
   int noteAge = 0;

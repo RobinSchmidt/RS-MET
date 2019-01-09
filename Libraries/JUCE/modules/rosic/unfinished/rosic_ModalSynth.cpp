@@ -166,34 +166,34 @@ void rsModalAlgoParameters::setFromUserParameters(const rsModalUserParameters& u
 
 rsModalSynth::rsModalSynth()
 {
-  setFreqRatioProfile1(ALL_HARMONICS);
-  setFreqRatioProfile2(ALL_HARMONICS);
-  setFreqRatioProfile3(ALL_HARMONICS);
-  setFreqRatioProfile4(ALL_HARMONICS);
+  setFreqRatioProfileTopLeft(ALL_HARMONICS);
+  setFreqRatioProfileTopRight(ALL_HARMONICS);
+  setFreqRatioProfileBottomLeft(ALL_HARMONICS);
+  setFreqRatioProfileBottomRight(ALL_HARMONICS);
 }
 
-void rsModalSynth::setFreqRatioProfile1(int newProfile)
+void rsModalSynth::setFreqRatioProfileTopLeft(int newProfile)
 {
-  freqRatioProfile1 = newProfile;
-  fillFreqRatios(freqRatios1, freqRatiosLog1, freqRatioProfile1);
+  freqRatioProfileTopLeft = newProfile;
+  fillFreqRatios(freqRatiosTopLeft, freqRatiosLogTopLeft, freqRatioProfileTopLeft);
 }
 
-void rsModalSynth::setFreqRatioProfile2(int newProfile)
+void rsModalSynth::setFreqRatioProfileTopRight(int newProfile)
 {
-  freqRatioProfile2 = newProfile;
-  fillFreqRatios(freqRatios2, freqRatiosLog2, freqRatioProfile2);
+  freqRatioProfileTopRight = newProfile;
+  fillFreqRatios(freqRatiosTopRight, freqRatiosLogTopRight, freqRatioProfileTopRight);
 }
 
-void rsModalSynth::setFreqRatioProfile3(int newProfile)
+void rsModalSynth::setFreqRatioProfileBottomLeft(int newProfile)
 {
-  freqRatioProfile3 = newProfile;
-  fillFreqRatios(freqRatios3, freqRatiosLog3, freqRatioProfile3);
+  freqRatioProfileBottomLeft = newProfile;
+  fillFreqRatios(freqRatiosBottomLeft, freqRatiosLogBottomLeft, freqRatioProfileBottomLeft);
 }
 
-void rsModalSynth::setFreqRatioProfile4(int newProfile)
+void rsModalSynth::setFreqRatioProfileBottomRight(int newProfile)
 {
-  freqRatioProfile4 = newProfile;
-  fillFreqRatios(freqRatios4, freqRatiosLog4, freqRatioProfile4);
+  freqRatioProfileBottomRight = newProfile;
+  fillFreqRatios(freqRatiosBottomRight, freqRatiosLogBottomRight, freqRatioProfileBottomRight);
 }
 
 void rsModalSynth::setFreqRatioMixX(double newMix)
@@ -327,11 +327,16 @@ void rsModalSynth::updateFreqRatios()
 
   // obtain frequency ratios by bilinear interpolation of the associated pitches:
   double rt, rb, r;  // ratio for top and bottom and final result
+
+
+  double mixX = 0.5 * (freqRatioMixX + 1.0);
+  double mixY = 0.5 * (freqRatioMixY + 1.0);
+
   for(int i = 0; i < maxNumModes; i++) {
-    rt = (1-freqRatioMixX)*freqRatiosLog1[i] + freqRatioMixX*freqRatiosLog2[i];
-    rb = (1-freqRatioMixX)*freqRatiosLog3[i] + freqRatioMixX*freqRatiosLog4[i];
-    r  = (1-freqRatioMixY)*rt + freqRatioMixY*rb;
-    //r  = freqRatioMixY*rt + (1-freqRatioMixY)*rb;
+    rt = (1-mixX)*freqRatiosLogTopLeft[i]    + mixX*freqRatiosLogTopRight[i];
+    rb = (1-mixX)*freqRatiosLogBottomLeft[i] + mixX*freqRatiosLogBottomRight[i];
+    //r  = (1-mixY)*rt + mixY*rb;
+    r  = (1-mixY)*rb + mixY*rt;
     freqRatiosLog[i] = r;
     freqRatios[i] = exp(r);
   }
@@ -348,10 +353,15 @@ Ideas:
  second "sidechain" input where we feed back the total summed output - so the nonlinear effects may
  depend on the total output value
 
+-we need something like a highpass with keytracking or some sort of additional highpassish 
+ amplitude weighting function
 
  a lot of code can be dragged in from ModalExample.h/cpp in rosic_tests/PortedFromRSLib/Examples
 
 
-
+Observations:
+-with Attack = 50ms and Decay = 1000ms with -100% byRatio, there are strange comb-like effects
+ -maybe it's because at the higher frequencies the attack (which has no ratio-tracking) actually
+  becomes longer than the Decay such that attck/decay sort of reverse their roles?
 */
 
