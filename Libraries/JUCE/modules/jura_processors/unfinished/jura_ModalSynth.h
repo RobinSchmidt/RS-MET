@@ -43,6 +43,9 @@ protected:
   Parameter *attackScale, *decayScale, *freqDelta, *phaseDelta;
   Parameter *blend,  *blendByKey,  *blendByVel;
 
+  // actually, we not have to store the pointers in member variables if ywe don't need to refer
+  // to them - LowestMode/HighestMode
+
   // phase-spectrum parameters:
 
 
@@ -78,7 +81,8 @@ protected:
   // freq-ratio parameters:
   RComboBox *boxTopLeftRatios, *boxTopRightRatios, *boxBottomLeftRatios, *boxBottomRightRatios;
   rsVectorPad *xyPadRatios;
-  RSlider *sldMaxNumModes, *sldRatiosX, *sldRatiosY;
+  RSlider *sldLowestMode, *sldHighestMode;
+  RSlider /* *sldMaxNumModes, */ *sldRatiosX, *sldRatiosY;
 
   // magnitude spectrum parameters:
   RSlider *sldAmpSlope, *sldAmpSlopeByKey, *sldAmpSlopeByVel;

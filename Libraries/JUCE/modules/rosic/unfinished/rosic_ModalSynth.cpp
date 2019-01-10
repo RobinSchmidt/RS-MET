@@ -425,6 +425,10 @@ Ideas:
 
  a lot of code can be dragged in from ModalExample.h/cpp in rosic_tests/PortedFromRSLib/Examples
 
+-look at the straightliner osc fo inspiration for more parameters for ampltude and pahse spectrum
+ for example, use LowestHarmonic/HighestHarmonic
+
+
 
 Observations:
 -with Attack = 50ms and Decay = 1000ms with -100% byRatio, there are strange comb-like effects

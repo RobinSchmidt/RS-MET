@@ -179,6 +179,13 @@ public:
   void setMaxNumPartials(int newMax) { numPartialsLimit = newMax; }
     // rename to setMaxPartialIndex, add setMinPartialIndex -> brickwall highpass
 
+
+  void setLowestMode(int newLimit) { lowestMode = newLimit; }
+
+  void setHighestMode(int newLimit) { highestMode = newLimit; }
+
+
+
   //void setSpectralSlope(double newSlope) { spectralSlope = newSlope; }
   //void setSpectralSlopeByKey(double newSlopeByKey) { spectralSlopeByKey = newSlopeByKey; }
   //void setSpectralSlopeByVel(double newSlopeByKey) { spectralSlopeByVel = newSlopeByKey; }
@@ -337,7 +344,11 @@ protected:
   double level = 0, levelByKey = 0, levelByVel = 0;
 
   // modal frequency settings:
-  int numPartialsLimit  = maxNumModes;
+  int numPartialsLimit  = maxNumModes;  // obsolete
+
+  int lowestMode  = 1;
+  int highestMode = maxNumModes;
+
   int freqRatioProfileTopLeft     = ALL_HARMONICS;
   int freqRatioProfileTopRight    = ALL_HARMONICS;
   int freqRatioProfileBottomLeft  = ALL_HARMONICS;

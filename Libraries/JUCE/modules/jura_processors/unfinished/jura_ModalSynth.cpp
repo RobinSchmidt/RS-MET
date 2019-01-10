@@ -45,6 +45,21 @@ void ModalSynthAudioModule::createParameters()
   // maybe use 32 as defualt value only for debug builds ...or use 1024 always and in debug mode
   // just set it initially to something lower
 
+
+  p = new Param("LowestMode", 1.0, 1024.0, 1.0, Parameter::EXPONENTIAL, 1.0);
+  p->setValueChangeCallback<MS>(&core, &MS::setLowestMode);
+  addObservedParameter(p);
+
+  p = new Param("HighestMode", 1.0, 1024.0, 1024.0, Parameter::EXPONENTIAL, 1.0);
+  p->setValue(32, false, false); // for debug
+  p->setValueChangeCallback<MS>(&core, &MS::setHighestMode);
+  addObservedParameter(p);
+
+
+
+
+
+
   ratioProfileTopLeft = p = new Param("RatiosTopLeft", 0, 1, 0, Parameter::STRING, 1);
   populateFreqRatioProfileParam(p);
   p->setValueChangeCallback<MS>(&core, &MS::setFreqRatioProfileTopLeft);
@@ -199,7 +214,12 @@ void ModalSynthEditor::resized()
   sldLevelByKey->setBounds(xk, y, sw2, wh);
   sldLevelByVel->setBounds(xv, y, sw2, wh);
 
-  sldMaxNumModes->setBounds(x+sw+m, y, sw, wh);
+  y = sldLevel->getY();
+  sldLowestMode->setBounds( x+sw+m, y, sw, wh); y += dy;
+  sldHighestMode->setBounds(x+sw+m, y, sw, wh);
+
+
+  //sldMaxNumModes->setBounds(x+sw+m, y, sw, wh);
 
 
   // freq-ratio widgets:
@@ -302,15 +322,28 @@ void ModalSynthEditor::createWidgets()
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&decibelsToStringWithUnit2);
 
-
+  /*
   addWidget( sld = sldMaxNumModes = new Sld );
   sld->assignParameter( modalModule->getParameterByName("MaxNumModes") );
   sld->setSliderName("MaxNumModes");
   sld->setDescription("Maximum number of modes to be produced (to control CPU load)");
   sld->setDescriptionField(infoField);
   sld->setStringConversionFunction(&valueToString0);
+  */
 
+  addWidget( sld = sldLowestMode = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("LowestMode") );
+  sld->setSliderName("Lowest Mode");
+  sld->setDescription("Lowest mode index to produce (brickwall highpass)");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&valueToString0);
 
+  addWidget( sld = sldHighestMode = new Sld );
+  sld->assignParameter( modalModule->getParameterByName("HighestMode") );
+  sld->setSliderName("Highest Mode");
+  sld->setDescription("Highest mode index to produce (brickwall lowpass and CPU load limiter)");
+  sld->setDescriptionField(infoField);
+  sld->setStringConversionFunction(&valueToString0);
 
 
   // tuning stuff...
