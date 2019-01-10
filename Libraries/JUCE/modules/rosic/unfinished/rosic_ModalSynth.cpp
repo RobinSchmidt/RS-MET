@@ -363,7 +363,7 @@ void rsModalSynth::noteOn(int key, int vel)
   modalBank.setLowModeIndex( lowestMode-1); // modalBank counts modes from 0, rsModalSynth from 1
   //modalBank.setHighModeIndex(highestMode-1);
   //modalBank.setHighModeIndex(RAPT::rsMin(m, highestMode-1)); // check this - correct or off by 1?
-  modalBank.setHighModeIndex(RAPT::rsMin(m, highestMode)-1);
+  modalBank.setHighModeIndex(RAPT::rsMin(m, highestMode)-1);  // ...this looks better
   noteAge = 0;
 
   //modalBank.reset();        // maybe allow a partial reset

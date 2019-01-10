@@ -95,15 +95,15 @@ void ModalSynthAudioModule::createParameters()
 
 
 
-  ampSlope = p = new Param("AmpSlope", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  ampSlope = p = new Param("AmpSlope", -12, 12, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<MS>(&core, &MS::setAmpSlope);
   addObservedParameter(p);
 
-  ampSlopeByKey = p = new Param("AmpSlopeByKey", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  ampSlopeByKey = p = new Param("AmpSlopeByKey", -12, 12, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<MS>(&core, &MS::setAmpSlopeByKey);
   addObservedParameter(p);
 
-  ampSlopeByVel = p = new Param("AmpSlopeByVel", -200, 100, 0.0, Parameter::LINEAR, 0.01);
+  ampSlopeByVel = p = new Param("AmpSlopeByVel", -12, 12, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<MS>(&core, &MS::setAmpSlopeByVel);
   addObservedParameter(p);
 
@@ -410,21 +410,21 @@ void ModalSynthEditor::createWidgets()
   sld->setSliderName("AmpSlope");
   sld->setDescription("Slope of amplitude spectrum");
   sld->setDescriptionField(infoField);
-  sld->setStringConversionFunction(&percentToStringWithUnit2);  // use dB/oct
+  sld->setStringConversionFunction(&decibelsPerOctaveToString2);  // use dB/oct
 
   addWidget( sld = sldAmpSlopeByKey = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AmpSlopeByKey") );
   sld->setSliderName("K");
   sld->setDescription("Key tracking of spectral slope");
   sld->setDescriptionField(infoField);
-  sld->setStringConversionFunction(&percentToStringWithUnit2);
+  sld->setStringConversionFunction(&decibelsPerOctaveToString2);
 
   addWidget( sld = sldAmpSlopeByVel = new Sld );
   sld->assignParameter( modalModule->getParameterByName("AmpSlopeByVel") );
   sld->setSliderName("V");
   sld->setDescription("Velocity tracking of spectral slope");
   sld->setDescriptionField(infoField);
-  sld->setStringConversionFunction(&percentToStringWithUnit2);
+  sld->setStringConversionFunction(&decibelsPerOctaveToString2);
 
 
   addWidget( sld = sldAttack = new Sld );
