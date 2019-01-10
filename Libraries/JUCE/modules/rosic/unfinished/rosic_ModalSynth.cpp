@@ -366,7 +366,7 @@ void rsModalSynth::noteOn(int key, int vel)
   modalBank.setHighModeIndex(RAPT::rsMin(m, highestMode)-1);  // ...this looks better
   noteAge = 0;
 
-  //modalBank.reset();        // maybe allow a partial reset
+  modalBank.reset();        // maybe allow a partial reset
   // i think, i in this note more modes become (re)activated than in the previous node, then 
   // without reset, the new modes will start from an old state (when they were active the last 
   // time) - this is not good - maybe we should reset modes when they are turned off, i.e.
