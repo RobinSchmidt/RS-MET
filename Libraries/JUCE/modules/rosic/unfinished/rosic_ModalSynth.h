@@ -180,27 +180,54 @@ public:
 
   // ByRatio, ByKey, ByVel parameters should be passed as percentage values
 
-
+  /** Sets the overall level in decibels.*/
   void setLevel(       double newLevel)        { level      = newLevel; }
+
+  /** Sets the key tracking of overall level. The unit is +-dB at extreme keys with respect to the
+  neutral reference key 64. When you set LevelByKey to 10 dB, the level will be unchanged, if the 
+  key is 64, 10 dB louder when the key is 127 and 10 dB quieter when the key is 1. */
   void setLevelByKey(  double newLevelByKey)   { levelByKey = newLevelByKey; }
+
+  /** Velocity tracking of overall level. Unit is +-dB at extreme velocities */
   void setLevelByVel(  double newLevelByVel)   { levelByVel = newLevelByVel; }
 
   // insert Tune/Key/Vel
 
+  /** The slope of the magnitude spectrum in dB/oct. Actually, due to the different attack and 
+  decay-rates, this slope changes over time - this here sets the reference slope that applies 
+  when all attack and decay times are equal for each mode. */
   void setAmpSlope(     double newAmpSlope)      { ampSlope      = newAmpSlope; }
-  void setAmpSlopeByKey(double newAmpSlopeByKey) { ampSlopeByKey = newAmpSlopeByKey; }
-  void setAmpSlopeByVel(double newAmpSlopeByVel) { ampSlopeByVel = newAmpSlopeByVel; }
-  // amp-slope is in dB/oct, byKey and byVel are in +- additional dB/oct at extreme keys/vels
 
+  /** Key tracking of the slope of magnitude spectrum. The unit is +-dB/oct at extreme keys. */
+  void setAmpSlopeByKey(double newAmpSlopeByKey) { ampSlopeByKey = newAmpSlopeByKey; }
+
+  /** Velocity tracking of slope of magnitude spectrum. */
+  void setAmpSlopeByVel(double newAmpSlopeByVel) { ampSlopeByVel = newAmpSlopeByVel; }
+
+  /** Reference attack time in milliseconds. */
   void setAttack(       double newAttack)        { attack        = newAttack; }
+
+  /** Dependency of the attack time on the modal frequency ratio in percent. At 100%, it means that
+  a mode that has twice the frequency of the fundamental will also have twice the attack time, at 
+  -100% it will have half the attack time (typically you will want to use negative values - higher 
+  frequency modes develope faster in time). */
   void setAttackByRatio(double newAttackByRatio) { attackByRatio = 0.01*newAttackByRatio; }
+
+  /** Key tracking of the attack time in percent. 100% means, that a note that is an octave above
+  the reference key 64 will get twice the attack time. Similarly to setAttackByRatio, you will 
+  typically want negative values. */
   void setAttackByKey(  double newAttackByKey)   { attackByKey   = 0.01*newAttackByKey; }
+
+  /** Velocity tracking of attack time in percent. 100% means... */
   void setAttackByVel(  double newAttackByVel)   { attackByVel   = 0.01*newAttackByVel; }
 
+
+  // decay parameters are entirely analogous to attack parameters:
   void setDecay(       double newDecay)        { decay        = newDecay; }
   void setDecayByRatio(double newDecayByRatio) { decayByRatio = 0.01*newDecayByRatio; }
   void setDecayByKey(  double newDecayByKey)   { decayByKey   = 0.01*newDecayByKey; }
   void setDecayByVel(  double newDecayByVel)   { decayByVel   = 0.01*newDecayByVel; }
+
 
   void setPhaseRandomness(double newRandomness) { phaseRandomness = newRandomness; }
   void setPhaseRandomSeed(int newSeed) { phaseRandomSeed = newSeed; }
