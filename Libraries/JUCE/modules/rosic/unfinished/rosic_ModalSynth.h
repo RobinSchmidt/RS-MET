@@ -176,7 +176,7 @@ public:
   void setInharmonicity(double newInharmonicity) { inharmonicity = newInharmonicity; }
 
   /** Sets a limit for the number of partials - use this to keep CPU load under control. */
-  void setMaxNumPartials(int newMax) { numPartialsLimit = newMax; }
+  //void setMaxNumPartials(int newMax) { numPartialsLimit = newMax; }
     // rename to setMaxPartialIndex, add setMinPartialIndex -> brickwall highpass
 
 
@@ -249,8 +249,11 @@ public:
   /** \name Inquiry */
 
 
-  int getMaxNumPartials() const { return numPartialsLimit; }
+  //int getMaxNumPartials() const { return numPartialsLimit; }
 
+  int getLowestMode() const { return lowestMode; }
+
+  int getHighestMode() const { return highestMode; }
 
   // these functions are mostly for reference and doing plots to verify the expected behavior - for
   // realtime purposes, optimized computations can be used
@@ -344,7 +347,7 @@ protected:
   double level = 0, levelByKey = 0, levelByVel = 0;
 
   // modal frequency settings:
-  int numPartialsLimit  = maxNumModes;  // obsolete
+  //int numPartialsLimit  = maxNumModes;  // obsolete
 
   int lowestMode  = 1;
   int highestMode = maxNumModes;

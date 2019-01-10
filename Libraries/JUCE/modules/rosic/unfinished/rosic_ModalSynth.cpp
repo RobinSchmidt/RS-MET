@@ -330,35 +330,16 @@ void rsModalSynth::noteOn(int key, int vel)
   double w, A, p, att, dec;
   int m = 0;
 
-  //double amp = RAPT::rsDbToAmp(level + ck*levelByKey + cv*levelByVel); 
-  //amp *= exp(ck * ampByKey + cv * ampByVel);
-
-  for(m = 0; m < numPartialsLimit; m++) {
+  for(m = lowestMode-1; m < highestMode; m++) {
 
     r = freqRatios[m];
     f = f0 * r;
     if( f > 0.5*sampleRate )
       break;
 
-
     // compute modal radian frequency and phase:
     w = 2 * PI * f / sampleRate;              // optimize - precompute 2*PI/fs
     p = phaseGenerator.getSample();
-
-    //A = amplitude * pow(r, ampSlopeExponent); // maybe this can be expressed via exp?
-    //A = amp * pow(r, ampByRatio); 
-    //A = amp * exp(rLog * ampByRatio);  // should be the same - yes - works - but is obsolete
-
-    //double kk = 0;  // preliminary - will later controld spectral slope dependency on key/vel
-    //double kv = 0;
-    ////A  = amp * exp(ck * ampByKey + cv * ampByVel);  // key and velocity scaling
-    ////A = amp * exp(rLog * (ampSlope + kk*ampSlopeByKey + kv*ampSlopeByVel) );
-
-    //// if ampSlope is in dB/oct, we need to figure out the octaves = log2(r) and do
-    //// db2amp(slope*octaves
-    //double octs  = RAPT::rsLog2(r);  // = something * rLog -> optimize
-    //double slope = ampSlope; // + kk*ampSlopeByKey + kv*ampSlopeByVel
-    //A = amp * RAPT::rsDbToAmp(slope*octs);
 
     // compute modal amplitude:
     A = getModeAmplitude(m, key, vel);

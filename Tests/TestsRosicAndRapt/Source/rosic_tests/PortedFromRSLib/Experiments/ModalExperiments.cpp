@@ -650,30 +650,36 @@ void stemPlot(int N, double *x, double *y)
 {
   GNUPlotter plt;
   plt.addDataArrays(N, x, y);
-  plt.addDataArrays(N, x, y);
+  plt.addDataArrays(N, x, y); // can probably be done without adding the data twice
   plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
   plt.plot();
 }
 
 void plotModalLevelSpectrum(const rosic::rsModalSynth& ms, int key, int vel)
 {
-  int M = ms.getMaxNumPartials();
+  int mL = ms.getLowestMode();
+  int mH = ms.getHighestMode();
+  int M = mH - mL + 1;
   std::vector<double> f(M), a(M);
-  for(int m = 0; m < M; m++) {
-    f[m] = ms.getModeFreqRatio(m, key, vel);  // relative frequency
-    a[m] = ms.getModeLevel(    m, key, vel);  // decibels
+  for(int m = mL-1; m < mH; m++) {
+    int i = m-mL+1;
+    f[i]  = ms.getModeFreqRatio(m, key, vel);  // relative frequency
+    a[i]  = ms.getModeLevel(    m, key, vel);  // decay time in milliseconds
   }
   stemPlot(M, &f[0], &a[0]);
 }
 
+// todo: merge bothe functions - too much repetition!
 void plotModalDecaySpectrum(const rosic::rsModalSynth& ms, int key, int vel)
 {
-  int M = ms.getMaxNumPartials();
+  int mL = ms.getLowestMode();
+  int mH = ms.getHighestMode();
+  int M = mH - mL + 1;
   std::vector<double> f(M), d(M);
-  for(int m = 0; m < M; m++) {
-    //f[m] = ms.getModeFrequency(m, key, vel);  // plot absolute frequencies in Hz
-    f[m] = ms.getModeFreqRatio(m, key, vel);  // relative frequency
-    d[m] = ms.getModeDecay(    m, key, vel);  // decay time in milliseconds
+  for(int m = mL-1; m < mH; m++) {
+    int i = m-mL+1;
+    f[i]  = ms.getModeFreqRatio(m, key, vel);  // relative frequency
+    d[i]  = ms.getModeDecay(    m, key, vel);  // decay time in milliseconds
   }
   stemPlot(M, &f[0], &d[0]);
 }
@@ -697,7 +703,9 @@ void modalSynthSpectra()
 
   // global parameters:
   ms.setSampleRate(44100);
-  ms.setMaxNumPartials(32);
+  ms.setLowestMode(1);
+  ms.setHighestMode(32);
+
   ms.setLevel(0.0);                    // in dB
   ms.setLevelByKey(0.0);               // in +- dB at extreme keys
   ms.setLevelByVel(0.0);               // in +- dB at extreme velocities
@@ -718,8 +726,8 @@ void modalSynthSpectra()
   ms.setDecayByVel(-50);               // in %
 
   // plot:
-  //plotModalLevelSpectrum(ms, 64, 64);
-  plotModalDecaySpectrum(ms, 64, 64);
+  plotModalLevelSpectrum(ms, 64, 64);
+  //plotModalDecaySpectrum(ms, 64, 64);
 
   // todo: figure out why there are comb filtering artifacts on retrigger
 }

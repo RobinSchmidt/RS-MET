@@ -38,12 +38,12 @@ void ModalSynthAudioModule::createParameters()
 
   // mode frequency parameters:
 
-  //maxNumModes = p = new Param("MaxNumModes", 10.0, 1024.0, 1024.0, Parameter::EXPONENTIAL, 1.0);
-  maxNumModes = p = new Param("MaxNumModes", 1.0, 1024.0, 32.0, Parameter::EXPONENTIAL, 1.0);
-  p->setValueChangeCallback<MS>(&core, &MS::setMaxNumPartials);
-  addObservedParameter(p);
-  // maybe use 32 as defualt value only for debug builds ...or use 1024 always and in debug mode
-  // just set it initially to something lower
+  ////maxNumModes = p = new Param("MaxNumModes", 10.0, 1024.0, 1024.0, Parameter::EXPONENTIAL, 1.0);
+  //maxNumModes = p = new Param("MaxNumModes", 1.0, 1024.0, 32.0, Parameter::EXPONENTIAL, 1.0);
+  //p->setValueChangeCallback<MS>(&core, &MS::setMaxNumPartials);
+  //addObservedParameter(p);
+  //// maybe use 32 as defualt value only for debug builds ...or use 1024 always and in debug mode
+  //// just set it initially to something lower
 
 
   p = new Param("LowestMode", 1.0, 1024.0, 1.0, Parameter::EXPONENTIAL, 1.0);
@@ -51,8 +51,9 @@ void ModalSynthAudioModule::createParameters()
   addObservedParameter(p);
 
   p = new Param("HighestMode", 1.0, 1024.0, 1024.0, Parameter::EXPONENTIAL, 1.0);
-  p->setValue(32, false, false); // for debug
+  //p->setValue(32, false, false); // for debug
   p->setValueChangeCallback<MS>(&core, &MS::setHighestMode);
+  p->setNormalizedValue(0.03125, true, true); // maps to 32
   addObservedParameter(p);
 
 
