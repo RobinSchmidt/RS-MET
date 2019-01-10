@@ -238,9 +238,11 @@ double rsModalSynth::getModeAmplitude(int i, int k, int v) const
 
 double rsModalSynth::getModeLevel(int i, int k, int v) const
 {
-  double dB   = level + levelByKey*(k-64) + levelByVel*(v-64);
+  double dB   = level + levelByKey*(k-64)/63. + levelByVel*(v-64)/63.;
   double octs = getModeRelativePitch(i, k, v) / 12.0; // how many octaves is the mode above f0
-  dB += ampSlope * octs; // todo: add ampSlopeByKey*(k-64) + ampSlopeByVel*(v-64)
+  double kk = ampSlopeByKey*(k-64)/63.;
+  double kv = ampSlopeByVel*(v-64)/63.;
+  dB += octs * (ampSlope + kk + kv);
   return dB;
 }
 

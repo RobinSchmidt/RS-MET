@@ -188,9 +188,9 @@ public:
   // insert Tune/Key/Vel
 
   void setAmpSlope(     double newAmpSlope)      { ampSlope      = newAmpSlope; }
-  void setAmpSlopeByKey(double newAmpSlopeByKey) { ampSlopeByKey = 0.01*newAmpSlopeByKey; }
-  void setAmpSlopeByVel(double newAmpSlopeByVel) { ampSlopeByVel = 0.01*newAmpSlopeByVel; }
-  // i think, amp-slope should be in dB/oct, not in %
+  void setAmpSlopeByKey(double newAmpSlopeByKey) { ampSlopeByKey = newAmpSlopeByKey; }
+  void setAmpSlopeByVel(double newAmpSlopeByVel) { ampSlopeByVel = newAmpSlopeByVel; }
+  // amp-slope is in dB/oct, byKey and byVel are in +- additional dB/oct at extreme keys/vels
 
   void setAttack(       double newAttack)        { attack        = newAttack; }
   void setAttackByRatio(double newAttackByRatio) { attackByRatio = 0.01*newAttackByRatio; }

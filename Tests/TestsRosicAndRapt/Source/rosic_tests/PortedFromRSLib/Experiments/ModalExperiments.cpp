@@ -695,11 +695,11 @@ void modalSynthSpectra()
   ms.setInharmonicity(0.0);            // relevant only for stiff string tuning
   ms.setMaxNumPartials(32);
   ms.setAmpSlope(-2.0);                // in dB/oct
-  ms.setAmpSlopeByKey( -50);           // in % ....let it be in +- dB/oct at extreme keys
-  ms.setAmpSlopeByVel(-100);           // in % .... similar
+  ms.setAmpSlopeByKey(-3.0);           // in +- dB/oct at extreme keys
+  ms.setAmpSlopeByVel(+4.0);           // in +- dB/oct at extreme velocities
   ms.setLevel(0.0);                    // in dB
-  ms.setLevelByKey(-12.0);             // in +- dB at extreme keys
-  ms.setLevelByVel(+12.0);             // in +- dB at extreme velocities
+  ms.setLevelByKey(0.0);             // in +- dB at extreme keys
+  ms.setLevelByVel(0.0);             // in +- dB at extreme velocities
   ms.setAttack(10.0);                  // in ms
   ms.setAttackByRatio(-50);            // in % ...
   ms.setAttackByKey(-50);              // in %
