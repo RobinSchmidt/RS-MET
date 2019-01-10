@@ -281,6 +281,7 @@ int main(int argc, char* argv[])
   //modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
+  modalSynthSpectra();
 
   // Misc Audio:
   //centroid();

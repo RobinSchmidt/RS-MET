@@ -172,6 +172,7 @@ public:
 
   /** Sets a limit for the number of partials - use this to keep CPU load under control. */
   void setMaxNumPartials(int newMax) { numPartialsLimit = newMax; }
+    // rename to setMaxPartialIndex, add setMinPartialIndex -> brickwall highpass
 
   //void setSpectralSlope(double newSlope) { spectralSlope = newSlope; }
   //void setSpectralSlopeByKey(double newSlopeByKey) { spectralSlopeByKey = newSlopeByKey; }
@@ -190,7 +191,6 @@ public:
   void setAmpSlopeByKey(double newAmpSlopeByKey) { ampSlopeByKey = 0.01*newAmpSlopeByKey; }
   void setAmpSlopeByVel(double newAmpSlopeByVel) { ampSlopeByVel = 0.01*newAmpSlopeByVel; }
   // i think, amp-slope should be in dB/oct, not in %
-
 
   void setAttack(       double newAttack)        { attack        = newAttack; }
   void setAttackByRatio(double newAttackByRatio) { attackByRatio = 0.01*newAttackByRatio; }
@@ -233,6 +233,9 @@ public:
     if(noteAge == 0)
       return 1.f;
     return 0.f;
+
+    // todo: scale impulse by user adjustable factor and add noise while note is on (also with
+    // use adjustable factor
   }
 
   void noteOn(int key, int velocity);

@@ -16,4 +16,6 @@ void modalBankTransient(); // tests the use of nonlinear feedback to produce tra
 void fourExponentials();
 void modalWithFancyEnv();
 
+void modalSynthSpectra();
+
 #endif

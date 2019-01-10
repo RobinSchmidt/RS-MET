@@ -647,6 +647,49 @@ void modalWithFancyEnv()
 
 
 
+void plotModalAmplitudeSpectrum(const rosic::rsModalSynth& ms, int key, int vel)
+{
+
+
+  GNUPlotter plt;
+}
+
+void modalSynthSpectra()
+{
+  // A testbed to set up various parameters in rosic::rsModalSynth and plot resulting spectra in 
+  // order to check that the implementations produces the expected results.
+
+  rosic::rsModalSynth ms;
+  ms.setSampleRate(44100);
+  ms.setFreqRatioProfileTopLeft(    ms.ALL_HARMONICS);
+  ms.setFreqRatioProfileTopRight(   ms.ALL_HARMONICS);
+  ms.setFreqRatioProfileBottomLeft( ms.ALL_HARMONICS);
+  ms.setFreqRatioProfileBottomRight(ms.ALL_HARMONICS);
+  ms.setFreqRatioMixX(0.0);            // -1..+1, 0 means eqaul mix
+  ms.setFreqRatioMixY(0.0);   
+  ms.setInharmonicity(0.0);            // relevant only for stiff string tuning
+  ms.setMaxNumPartials(1024);
+  ms.setAmpSlope(-3.0);                // in dB/oct
+  ms.setAmpSlopeByKey( -50);           // in % ....
+  ms.setAmpSlopeByVel(-100);           // in % ....
+  ms.setLevel(0.0);                    // in dB
+  ms.setLevelByKey(-12.0);             // in +- dB at extreme keys
+  ms.setLevelByVel(+12.0);             // in +- dB at extreme velocities
+  ms.setAttack(10.0);                  // in ms
+  ms.setAttackByRatio(-50);            // in % ...
+  ms.setAttackByKey(-50);              // in %
+  ms.setAttackByVel(-50);              //
+  ms.setDecay(1000);                   // in ms
+  ms.setDecayByRatio(-50);             // in %
+  ms.setDecayByKey(-50);               // in %
+  ms.setDecayByVel(-50);               // in %
+
+
+  plotModalAmplitudeSpectrum(ms, 64, 64);
+
+  // todo: figure out why there are comb filtering artifacts on retrigger
+}
+
 /*
 Ideas:
 -user defines modal parameters for various keys and velocities (at least two keys at two 

@@ -76,6 +76,7 @@ inline T rsPitchOffsetToFreqFactor(T pitchOffset)
   return exp(0.057762265046662109118102676788181 * pitchOffset);
   //return pow(2.0, pitchOffset/12.0); // naive, slower but numerically more precise
 }
+// rename to rsPitchShiftToFreqRatio
 
 /** Converts a MIDI-note value into a frequency in Hz assuming A4 = 440 Hz. */
 template<class T>
