@@ -220,14 +220,37 @@ double rsModalSynth::getModeFrequency(int i, int k, int v) const
   return RAPT::rsPitchToFreq(k) * getModeFreqRatio(i, k, v);
 }
 
+double rsModalSynth::getModeRelativePitch(int i, int k, int v) const
+{
+  double r = getModeFreqRatio(i, k, v);
+  return FREQFACTOR2PITCHOFFSET(r); // move as function to rapt
+  //return RAPT::rsFreqFactorToPitchOffset(r);
+  // todo: (maybe) store mode-pitches instead of the natural log - we'll see which one is more
+  // convenient in terms of writing optimized code - i think, we could return here
+  // something * freqRatiosLog[i]
+}
+
 double rsModalSynth::getModeAmplitude(int i, int k, int v) const
 {
-  return 0;
+  double dB = getModeLevel(i, k, v);
+  return RAPT::rsDbToAmp(dB);
+}
+
+double rsModalSynth::getModeLevel(int i, int k, int v) const
+{
+  double dB   = level + levelByKey*(k-64) + levelByVel*(v-64);
+  double octs = getModeRelativePitch(i, k, v) / 12.0; // how many octaves is the mode above f0
+  dB += ampSlope * octs; // todo: add ampSlopeByKey*(k-64) + ampSlopeByVel*(v-64)
+  return dB;
 }
 
 double rsModalSynth::getModeAttack(int i, int k, int v) const
 {
-  return 0;
+  double cr  = getTimeCoeffByIndex(i);
+  double ck  = getTimeCoeffByKey(k);
+  double cv  = getTimeCoeffByVel(v);
+  double att = attack * exp(cr*attackByRatio  + ck*attackByKey  + cv*attackByVel);
+  return att;
 }
 
 double rsModalSynth::getModeDecay(int i, int k, int v) const
@@ -235,7 +258,7 @@ double rsModalSynth::getModeDecay(int i, int k, int v) const
   double cr  = getTimeCoeffByIndex(i);
   double ck  = getTimeCoeffByKey(k);
   double cv  = getTimeCoeffByVel(v);
-  double dec = decay  * exp(cr*decayByRatio  + ck*decayByKey  + cv*decayByVel);
+  double dec = decay * exp(cr*decayByRatio  + ck*decayByKey  + cv*decayByVel);
   return dec;
 }
 
@@ -364,22 +387,6 @@ void rsModalSynth::noteOn(int key, int vel)
   noteAge = 0;
 }
 
-/*
-void rsModalSynth::fillFreqRatiosHarmonic(double* ratios)
-{
-  for(int i = 0; i < maxNumModes; i++)
-    ratios[i] = double(i+1);
-}
-
-void rsModalSynth::fillFreqRatiosStiffString(double* ratios, double B)
-{
-  for(int i = 0; i < maxNumModes; i++) {
-    double n = double(i+1);
-    ratios[i] = n*sqrt(1+B*n*n);
-  }
-}
-*/
-
 void rsModalSynth::updateFreqRatios()
 {
   freqRatiosAreReady = false;
@@ -426,5 +433,9 @@ Observations:
 -with Attack = 50ms and Decay = 1000ms with -100% byRatio, there are strange comb-like effects
  -maybe it's because at the higher frequencies the attack (which has no ratio-tracking) actually
   becomes longer than the Decay such that attck/decay sort of reverse their roles?
+
+
+see here for how to figure out mode decay times from samples:
+  https://ccrma.stanford.edu/~jos/pasp/Sinusoidal_modeling.html
 */
 

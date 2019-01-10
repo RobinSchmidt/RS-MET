@@ -645,13 +645,25 @@ void modalWithFancyEnv()
   rosic::writeToMonoWaveFile("ModalWithFancyEnvBeating.wav", &z[0],   numSamples, (int)fs);
 }
 
-
-
-void plotModalAmplitudeSpectrum(const rosic::rsModalSynth& ms, int key, int vel)
+// move to plotting tools:
+void stemPlot(int N, double *x, double *y)
 {
-
-
   GNUPlotter plt;
+  plt.addDataArrays(N, x, y);
+  plt.addDataArrays(N, x, y);
+  plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
+  plt.plot();
+}
+
+void plotModalLevelSpectrum(const rosic::rsModalSynth& ms, int key, int vel)
+{
+  int M = ms.getMaxNumPartials();
+  std::vector<double> f(M), a(M);
+  for(int m = 0; m < M; m++) {
+    f[m] = ms.getModeFreqRatio(m, key, vel);  // relative frequency
+    a[m] = ms.getModeLevel(    m, key, vel);  // decibels
+  }
+  stemPlot(M, &f[0], &a[0]);
 }
 
 void plotModalDecaySpectrum(const rosic::rsModalSynth& ms, int key, int vel)
@@ -659,13 +671,11 @@ void plotModalDecaySpectrum(const rosic::rsModalSynth& ms, int key, int vel)
   int M = ms.getMaxNumPartials();
   std::vector<double> f(M), d(M);
   for(int m = 0; m < M; m++) {
-    f[m] = ms.getModeFrequency(m, key, vel);  // plot absolute frequencies in Hz
+    //f[m] = ms.getModeFrequency(m, key, vel);  // plot absolute frequencies in Hz
+    f[m] = ms.getModeFreqRatio(m, key, vel);  // relative frequency
     d[m] = ms.getModeDecay(    m, key, vel);  // decay time in milliseconds
   }
-  GNUPlotter plt;
-  plt.addDataArrays(M, &f[0], &d[0]);
-  plt.setGraphStyles("impulses");
-  plt.plot();
+  stemPlot(M, &f[0], &d[0]);
 }
 
 void modalSynthSpectra()
@@ -683,10 +693,10 @@ void modalSynthSpectra()
   ms.setFreqRatioMixX(0.0);            // -1..+1, 0 means eqaul mix
   ms.setFreqRatioMixY(0.0);   
   ms.setInharmonicity(0.0);            // relevant only for stiff string tuning
-  ms.setMaxNumPartials(128);
-  ms.setAmpSlope(-3.0);                // in dB/oct
-  ms.setAmpSlopeByKey( -50);           // in % ....
-  ms.setAmpSlopeByVel(-100);           // in % ....
+  ms.setMaxNumPartials(32);
+  ms.setAmpSlope(-2.0);                // in dB/oct
+  ms.setAmpSlopeByKey( -50);           // in % ....let it be in +- dB/oct at extreme keys
+  ms.setAmpSlopeByVel(-100);           // in % .... similar
   ms.setLevel(0.0);                    // in dB
   ms.setLevelByKey(-12.0);             // in +- dB at extreme keys
   ms.setLevelByVel(+12.0);             // in +- dB at extreme velocities
@@ -700,8 +710,8 @@ void modalSynthSpectra()
   ms.setDecayByVel(-50);               // in %
 
   // plot:
-  //plotModalAmplitudeSpectrum(ms, 64, 64);
-  plotModalDecaySpectrum(ms, 64, 64);
+  plotModalLevelSpectrum(ms, 64, 64);
+  //plotModalDecaySpectrum(ms, 64, 64);
 
   // todo: figure out why there are comb filtering artifacts on retrigger
 }

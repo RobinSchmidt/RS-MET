@@ -222,8 +222,14 @@ public:
   /** Absolute frequency in Hz of a given mode at given key and velocity. */
   double getModeFrequency(int modeIndex, int key, int vel) const;
 
+  double getModeRelativePitch(int modeIndex, int key, int vel) const;
+
+
+
   /** Amplitude of given mode... */
   double getModeAmplitude(int modeIndex, int key, int vel) const;
+
+  double getModeLevel(int modeIndex, int key, int vel) const;
 
   double getModeAttack(int modeIndex, int key, int vel) const;
 
@@ -293,11 +299,7 @@ protected:
   with their logarithms. */
   void fillFreqRatios(double* ratios, double *logRatios, int profile);
 
-
-  //void fillFreqRatiosHarmonic(double* ratios);
-  //void fillFreqRatiosStiffString(double* ratios, double B);
   void updateFreqRatios();
-
 
   static const int maxNumModes = rsModalBankFloatSSE2::maxNumModes; // for convenience
 
@@ -329,8 +331,6 @@ protected:
   // double evenScale, evenScaleByKey, evenScaleByVel
   // double decayCombFreq
   //...more parameters to come....
-
-
 
   rsModalBankFloatSSE2 modalBank;
 
