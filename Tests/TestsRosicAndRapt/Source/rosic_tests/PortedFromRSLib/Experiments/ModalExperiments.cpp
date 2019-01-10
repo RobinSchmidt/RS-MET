@@ -654,11 +654,26 @@ void plotModalAmplitudeSpectrum(const rosic::rsModalSynth& ms, int key, int vel)
   GNUPlotter plt;
 }
 
+void plotModalDecaySpectrum(const rosic::rsModalSynth& ms, int key, int vel)
+{
+  int M = ms.getMaxNumPartials();
+  std::vector<double> f(M), d(M);
+  for(int m = 0; m < M; m++) {
+    f[m] = ms.getModeFrequency(m, key, vel);  // plot absolute frequencies in Hz
+    d[m] = ms.getModeDecay(    m, key, vel);  // decay time in milliseconds
+  }
+  GNUPlotter plt;
+  plt.addDataArrays(M, &f[0], &d[0]);
+  plt.setGraphStyles("impulses");
+  plt.plot();
+}
+
 void modalSynthSpectra()
 {
   // A testbed to set up various parameters in rosic::rsModalSynth and plot resulting spectra in 
   // order to check that the implementations produces the expected results.
 
+  // set up the modal synth:
   rosic::rsModalSynth ms;
   ms.setSampleRate(44100);
   ms.setFreqRatioProfileTopLeft(    ms.ALL_HARMONICS);
@@ -668,7 +683,7 @@ void modalSynthSpectra()
   ms.setFreqRatioMixX(0.0);            // -1..+1, 0 means eqaul mix
   ms.setFreqRatioMixY(0.0);   
   ms.setInharmonicity(0.0);            // relevant only for stiff string tuning
-  ms.setMaxNumPartials(1024);
+  ms.setMaxNumPartials(128);
   ms.setAmpSlope(-3.0);                // in dB/oct
   ms.setAmpSlopeByKey( -50);           // in % ....
   ms.setAmpSlopeByVel(-100);           // in % ....
@@ -684,8 +699,9 @@ void modalSynthSpectra()
   ms.setDecayByKey(-50);               // in %
   ms.setDecayByVel(-50);               // in %
 
-
-  plotModalAmplitudeSpectrum(ms, 64, 64);
+  // plot:
+  //plotModalAmplitudeSpectrum(ms, 64, 64);
+  plotModalDecaySpectrum(ms, 64, 64);
 
   // todo: figure out why there are comb filtering artifacts on retrigger
 }

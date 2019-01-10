@@ -207,6 +207,46 @@ public:
 
 
 
+  /** \name Inquiry */
+
+
+  int getMaxNumPartials() const { return numPartialsLimit; }
+
+
+  // these functions are mostly for reference and doing plots to verify the expected behavior - for
+  // realtime purposes, optimized computations can be used
+
+  /** Frequency ratio of given mode at given key and velocity */
+  double getModeFreqRatio(int modeIndex, int key, int vel) const;
+
+  /** Absolute frequency in Hz of a given mode at given key and velocity. */
+  double getModeFrequency(int modeIndex, int key, int vel) const;
+
+  /** Amplitude of given mode... */
+  double getModeAmplitude(int modeIndex, int key, int vel) const;
+
+  double getModeAttack(int modeIndex, int key, int vel) const;
+
+  double getModeDecay(int modeIndex, int key, int vel) const;
+
+
+  // getModePitch, getModeLevel
+
+
+  // to compute the total decay time, we use the formula
+  // decay = baseDecay * exp(cr*decayByRatio  + ck*decayByKey  + cv*decayByVel);
+  // these 3 functions compute the coefficients cr, ck, cv (maybe make protected):
+  double getTimeCoeffByIndex(int index) const;
+  double getTimeCoeffByKey(int key) const;
+  double getTimeCoeffByVel(int vel) const;
+
+
+  //int getMaxNumModes() const { return maxNumModes; }
+
+
+
+
+
 
 
 

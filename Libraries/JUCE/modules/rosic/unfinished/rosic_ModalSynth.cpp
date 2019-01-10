@@ -208,6 +208,63 @@ void rsModalSynth::setFreqRatioMixY(double newMix)
   updateFreqRatios();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+double rsModalSynth::getModeFreqRatio(int i, int k, int v) const
+{
+  return freqRatios[i];
+}
+
+double rsModalSynth::getModeFrequency(int i, int k, int v) const
+{
+  return RAPT::rsPitchToFreq(k) * getModeFreqRatio(i, k, v);
+}
+
+double rsModalSynth::getModeAmplitude(int i, int k, int v) const
+{
+  return 0;
+}
+
+double rsModalSynth::getModeAttack(int i, int k, int v) const
+{
+  return 0;
+}
+
+double rsModalSynth::getModeDecay(int i, int k, int v) const
+{
+  double cr  = getTimeCoeffByIndex(i);
+  double ck  = getTimeCoeffByKey(k);
+  double cv  = getTimeCoeffByVel(v);
+  double dec = decay  * exp(cr*decayByRatio  + ck*decayByKey  + cv*decayByVel);
+  return dec;
+}
+
+double rsModalSynth::getTimeCoeffByIndex(int i) const
+{
+  double cr = freqRatiosLog[i];
+  return cr;
+}
+
+double rsModalSynth::getTimeCoeffByKey(int key) const
+{
+  double ck = (LN2/12.0) * double(key-64); // 64 is the neutral reference key
+  return ck;
+}
+
+double rsModalSynth::getTimeCoeffByVel(int vel) const
+{
+  double cv = (LN2/63.0) * double(vel-64); // 64 is the neutral reference velocity
+  return cv;
+}
+// i think, for scaling the attack/decay time-values by key, we should use the scaler
+// 2^( decByKey * (key - refKey) / 12 )
+// if decByKey = 1, this would scale the time up by factor 2 when key is and octave above
+// the reference key (which should probably be 64. this translates to:
+// exp( log(2) * decByKey * (key - refKey) / 12 ) = exp(ck*decByKey)
+// i think., the cv formula would make times twice as long at full velocity 127 and half
+// as long at minimum nonzero velocity 1 ...check this
+
+//-------------------------------------------------------------------------------------------------
 
 void rsModalSynth::fillFreqRatios(double* ratios, double *logRatios, int profile)
 {
@@ -237,19 +294,8 @@ void rsModalSynth::noteOn(int key, int vel)
 
   // todo: update the freqRatios according to key/vel - these should depend on key/vel
 
-  // i think, for scaling the attack/decay time-values by key, we should use the scaler
-  // 2^( decByKey * (key - refKey) / 12 )
-  // if decByKey = 1, this would scale the time up by factor 2 when key is and octave above
-  // the reference key (which should probably be 64. this translates to:
-  // exp( log(2) * decByKey * (key - refKey) / 12 ) = exp(ck*decByKey)
-  // with ck = log(2)*(key-refKey)/12
-  //int refKey = 64;
-  double ck = (LN2/12.0) * double(key-64);  // 64 is the neutral reference key
-  double cv = (LN2/63.0) * double(vel-64);  // 64 is the neutral reference velocity
-  //cv = 0; // preliminary
-  // i think., the cv formula would make time stwice as long at full velocity 127 and half
-  // as long at minimum nonzero velocity 1 ...check this
-
+  double ck = getTimeCoeffByKey(key);  // maybe rename to ckt - or can the same coeffs be used for
+  double cv = getTimeCoeffByVel(vel);  // other things too (amplitudes)?
 
   phaseGenerator.setSeed(phaseRandomSeed);
   phaseGenerator.setRange(-phaseRandomness*PI, phaseRandomness*PI);
@@ -257,9 +303,7 @@ void rsModalSynth::noteOn(int key, int vel)
   double f0 = RAPT::rsPitchToFreq(key);
   double r, f;
   double w, A, p, att, dec;
-  //double ampSlopeExponent = -1;  // preliminary, -1 should result from a setting of -6.02 dB/oct
   int m = 0;
-
 
   double amp = RAPT::rsDbToAmp(level + ck*levelByKey + cv*levelByVel); 
   //amp *= exp(ck * ampByKey + cv * ampByVel);
@@ -271,7 +315,9 @@ void rsModalSynth::noteOn(int key, int vel)
     if( f > 0.5*sampleRate )
       break;
 
-    double rLog = freqRatiosLog[m]; // maybe rename to cr for consistency with ck, cv
+    //double rLog = freqRatiosLog[m]; // maybe rename to cr for consistency with ck, cv
+
+    double cr = getTimeCoeffByIndex(m);  // optimize later ...or inline computation
 
     // compute modal filter algorithm parameters (preliminary) and set up the filter:
     w = 2 * PI * f / sampleRate;              // optimize - precompute 2*PI/fs
@@ -292,7 +338,6 @@ void rsModalSynth::noteOn(int key, int vel)
     double slope = ampSlope; // + kk*ampSlopeByKey + kv*ampSlopeByVel
     A = amp * RAPT::rsDbToAmp(slope*octs);
 
-
     // todo: the amplitude should be computed like that:
     // A =  amp * exp(ck * ampByKey + cv *ampByVel);
     // A *= exp(rLog * (ampByRatio + kk*slopeByKey + kv*slopeByVel) )
@@ -305,31 +350,9 @@ void rsModalSynth::noteOn(int key, int vel)
 
     // i think, we should have Level with Key/Vel and Slope also with Key/Vel
 
-    att = 0.001 * attack * sampleRate;
-    dec = 0.001 * decay  * sampleRate;
-
-    // this is more efficient and extensible at negligible cost by adding more scalers later:
-    att *= exp(rLog*attackByRatio + ck*attackByKey + cv*attackByVel);
-    dec *= exp(rLog*decayByRatio  + ck*decayByKey  + cv*decayByVel);
-
-    //att *= pow(r, attackByRatio);
-    //dec *= pow(r, decayByRatio);
-
-    // to optimize this, use pow(r, x) = exp(x*log(r)) - log r is computed anyway in 
-    // updateFreqRatios - we should store it in a member array there and should get completely rid
-    // of linear interpolation of mode frequency (it doesn't seem to be useful anyway) - do it 
-    // always in logarithmic (pitch) domain as we need the log of the ratio here anyway
-    // at the end, all the various scalings (by key, vel, ratio) should be incorporated into a 
-    // weigthed sum and a single call to exp should be done, like this:
-    // dec *= exp(c1*decByRatio*log(r) + c2*decByKey*(key-refKey) + c3*decByVel*(vel-refVel))
-    // here c1,c2,c3 are appropriate fixed constants (maybe log(2)? - we'll see - check how 
-    // straightliner handles key and vel scaling and use the same rule here)
-    // OK - the optimization is implemented below - todo add the pther scalers...
-
-    // test:
-    //double s1, s2;
-    //s1 = pow(r, decayByRatio);
-    //s2 = exp(rLog*decayByRatio);  // should be the same - yep, works
+    double ts = 0.001 * sampleRate; // time-scaler - take out of the loop
+    att = ts * attack * exp(cr*attackByRatio + ck*attackByKey + cv*attackByVel);
+    dec = ts * decay  * exp(cr*decayByRatio  + ck*decayByKey  + cv*decayByVel);
 
 
     modalBank.setModalFilterParameters(m, w, A, p, att, dec
