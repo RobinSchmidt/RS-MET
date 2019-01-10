@@ -685,7 +685,8 @@ void modalSynthSpectra()
 
   // set up the modal synth:
   rosic::rsModalSynth ms;
-  ms.setSampleRate(44100);
+
+  // freq ratio parameters:
   ms.setFreqRatioProfileTopLeft(    ms.ALL_HARMONICS);
   ms.setFreqRatioProfileTopRight(   ms.ALL_HARMONICS);
   ms.setFreqRatioProfileBottomLeft( ms.ALL_HARMONICS);
@@ -693,25 +694,32 @@ void modalSynthSpectra()
   ms.setFreqRatioMixX(0.0);            // -1..+1, 0 means eqaul mix
   ms.setFreqRatioMixY(0.0);   
   ms.setInharmonicity(0.0);            // relevant only for stiff string tuning
+
+  // global parameters:
+  ms.setSampleRate(44100);
   ms.setMaxNumPartials(32);
+  ms.setLevel(0.0);                    // in dB
+  ms.setLevelByKey(0.0);               // in +- dB at extreme keys
+  ms.setLevelByVel(0.0);               // in +- dB at extreme velocities
+
+  // amplitude spectrum parameters:
   ms.setAmpSlope(-2.0);                // in dB/oct
   ms.setAmpSlopeByKey(-3.0);           // in +- dB/oct at extreme keys
   ms.setAmpSlopeByVel(+4.0);           // in +- dB/oct at extreme velocities
-  ms.setLevel(0.0);                    // in dB
-  ms.setLevelByKey(0.0);             // in +- dB at extreme keys
-  ms.setLevelByVel(0.0);             // in +- dB at extreme velocities
+
+  // envelope parameters:
   ms.setAttack(10.0);                  // in ms
-  ms.setAttackByRatio(-50);            // in % ...
+  ms.setAttackByRatio(-50);            // in %
   ms.setAttackByKey(-50);              // in %
-  ms.setAttackByVel(-50);              //
+  ms.setAttackByVel(-50);              // in %
   ms.setDecay(1000);                   // in ms
   ms.setDecayByRatio(-50);             // in %
   ms.setDecayByKey(-50);               // in %
   ms.setDecayByVel(-50);               // in %
 
   // plot:
-  plotModalLevelSpectrum(ms, 64, 64);
-  //plotModalDecaySpectrum(ms, 64, 64);
+  //plotModalLevelSpectrum(ms, 64, 64);
+  plotModalDecaySpectrum(ms, 64, 64);
 
   // todo: figure out why there are comb filtering artifacts on retrigger
 }

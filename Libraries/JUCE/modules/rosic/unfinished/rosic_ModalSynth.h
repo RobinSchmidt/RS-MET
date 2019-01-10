@@ -108,7 +108,12 @@ protected:
 
 //=================================================================================================
 
-/** A monophonic modal synthesizer.... */
+/** A monophonic modal synthesizer. The parameters for the modes (their relative frequencies, 
+amplitudes, decay times, attack times, etc.) are set up in terms of higher level macro parameters.
+When you trigger a note, an impulse is fed inot the bank of modal filters and you hear the impulse
+response 
+
+ToDo: let it process incoming audio, add noise to the excitation signal while the note is on */
 
 class rsModalSynth
 {
@@ -249,22 +254,20 @@ public:
   /** Absolute frequency in Hz of a given mode at given key and velocity. */
   double getModeFrequency(int modeIndex, int key, int vel) const;
 
+  /** Pitch offset of given mode with respect to the fundamental in semitones. */
   double getModeRelativePitch(int modeIndex, int key, int vel) const;
 
-
-
-  /** Amplitude of given mode... */
+  /** Amplitude of given mode as raw factor. */
   double getModeAmplitude(int modeIndex, int key, int vel) const;
 
+  /** Level of given mode in decibels. */
   double getModeLevel(int modeIndex, int key, int vel) const;
 
+  /** Attack time of given mode in milliseconds. */
   double getModeAttack(int modeIndex, int key, int vel) const;
 
+  /** Decay time of given mode in milliseconds. */
   double getModeDecay(int modeIndex, int key, int vel) const;
-
-
-  // getModePitch, getModeLevel
-
 
   // to compute the total decay time, we use the formula
   // decay = baseDecay * exp(cr*decayByRatio  + ck*decayByKey  + cv*decayByVel);

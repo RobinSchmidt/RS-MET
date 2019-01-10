@@ -330,7 +330,7 @@ void rsModalSynth::noteOn(int key, int vel)
   double w, A, p, att, dec;
   int m = 0;
 
-  double amp = RAPT::rsDbToAmp(level + ck*levelByKey + cv*levelByVel); 
+  //double amp = RAPT::rsDbToAmp(level + ck*levelByKey + cv*levelByVel); 
   //amp *= exp(ck * ampByKey + cv * ampByVel);
 
   for(m = 0; m < numPartialsLimit; m++) {
@@ -340,11 +340,8 @@ void rsModalSynth::noteOn(int key, int vel)
     if( f > 0.5*sampleRate )
       break;
 
-    //double rLog = freqRatiosLog[m]; // maybe rename to cr for consistency with ck, cv
 
-    double cr = getTimeCoeffByIndex(m);  // optimize later ...or inline computation
-
-    // compute modal filter algorithm parameters (preliminary) and set up the filter:
+    // compute modal radian frequency and phase:
     w = 2 * PI * f / sampleRate;              // optimize - precompute 2*PI/fs
     p = phaseGenerator.getSample();
 
@@ -352,30 +349,28 @@ void rsModalSynth::noteOn(int key, int vel)
     //A = amp * pow(r, ampByRatio); 
     //A = amp * exp(rLog * ampByRatio);  // should be the same - yes - works - but is obsolete
 
-    double kk = 0;  // preliminary - will later controld spectral slope dependency on key/vel
-    double kv = 0;
-    //A  = amp * exp(ck * ampByKey + cv * ampByVel);  // key and velocity scaling
-    //A = amp * exp(rLog * (ampSlope + kk*ampSlopeByKey + kv*ampSlopeByVel) );
+    //double kk = 0;  // preliminary - will later controld spectral slope dependency on key/vel
+    //double kv = 0;
+    ////A  = amp * exp(ck * ampByKey + cv * ampByVel);  // key and velocity scaling
+    ////A = amp * exp(rLog * (ampSlope + kk*ampSlopeByKey + kv*ampSlopeByVel) );
 
-    // if ampSlope is in dB/oct, we need to figure out the octaves = log2(r) and do
-    // db2amp(slope*octaves
-    double octs  = RAPT::rsLog2(r);  // = something * rLog -> optimize
-    double slope = ampSlope; // + kk*ampSlopeByKey + kv*ampSlopeByVel
-    A = amp * RAPT::rsDbToAmp(slope*octs);
+    //// if ampSlope is in dB/oct, we need to figure out the octaves = log2(r) and do
+    //// db2amp(slope*octaves
+    //double octs  = RAPT::rsLog2(r);  // = something * rLog -> optimize
+    //double slope = ampSlope; // + kk*ampSlopeByKey + kv*ampSlopeByVel
+    //A = amp * RAPT::rsDbToAmp(slope*octs);
 
-    // todo: the amplitude should be computed like that:
-    // A =  amp * exp(ck * ampByKey + cv *ampByVel);
-    // A *= exp(rLog * (ampByRatio + kk*slopeByKey + kv*slopeByVel) )
-    // maybe rename ampByRatio to ampSlope, kk and kv are yet other constants like ck and cv before
-    // the loop - in the end, everything can be lumped into a single call to exp
-    // maybe other terms related to lowpass and highpass should be added later
+    // compute modal amplitude:
+    A = getModeAmplitude(m, key, vel);
+    // calling this function here is HORRIBLY inefficient - some things can be precomputed outside
+    // the loop and a lot of back-and-forth between linear and logarithmic representations of
+    // frequency/pitch and amplitude/decibels should be consolidated into a single call to exp 
+    // (if possible - or at least, less back-and forth), similarly to the envelope time 
+    // calcluations below - optimize!
 
-    // actually, it doesn't semm to be enough to scale amplitude by ratio, key and vel - we
-    // also need to scale the ampByRatio itself by key and vel - which is not the same thing
-
-    // i think, we should have Level with Key/Vel and Slope also with Key/Vel
-
-    double ts = 0.001 * sampleRate; // time-scaler - take out of the loop
+    // compute modal envelope parameters:
+    double cr = getTimeCoeffByIndex(m);  // optimize later ...or inline computation
+    double ts = 0.001 * sampleRate;      // time-scaler - take out of the loop
     att = ts * attack * exp(cr*attackByRatio + ck*attackByKey + cv*attackByVel);
     dec = ts * decay  * exp(cr*decayByRatio  + ck*decayByKey  + cv*decayByVel);
 
