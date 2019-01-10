@@ -360,9 +360,17 @@ void rsModalSynth::noteOn(int key, int vel)
       /*,deltaOmega, phaseDelta, blend, attackScale, decayScale*/);
   }
 
-  modalBank.setNumModes(m); // is this correct? or off by one? check this!
-  //modalBank.reset();        // maybe allow a partial reset
+  modalBank.setLowModeIndex( lowestMode-1); // modalBank counts modes from 0, rsModalSynth from 1
+  //modalBank.setHighModeIndex(highestMode-1);
+  //modalBank.setHighModeIndex(RAPT::rsMin(m, highestMode-1)); // check this - correct or off by 1?
+  modalBank.setHighModeIndex(RAPT::rsMin(m, highestMode)-1);
   noteAge = 0;
+
+  //modalBank.reset();        // maybe allow a partial reset
+  // i think, i in this note more modes become (re)activated than in the previous node, then 
+  // without reset, the new modes will start from an old state (when they were active the last 
+  // time) - this is not good - maybe we should reset modes when they are turned off, i.e.
+  // loop from highestMode to maxNumModes and call reset for each - or something
 }
 
 void rsModalSynth::updateFreqRatios()

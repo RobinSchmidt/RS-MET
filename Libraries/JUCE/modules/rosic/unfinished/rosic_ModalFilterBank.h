@@ -26,12 +26,28 @@ public:
       deltaOmega, phaseDelta, blend, attackScale, decayScale);
   }
 
+  /*
   void setNumModes(int newNumModes) 
   { 
     RAPT::rsAssert(newNumModes <= maxNumModes);
     numModes = newNumModes;  
   }
+  */
 
+  /** Index of the lowest mode to be produced (range: 0..maxNumModes-1). */
+  void setLowModeIndex(int newIndex)
+  {
+    RAPT::rsAssert(newIndex >= 0 && newIndex < maxNumModes);
+    lowModeIndex = newIndex;
+  }
+
+
+  /** Index of the highest mode to be produced (range: 0..maxNumModes-1). */
+  void setHighModeIndex(int newIndex)
+  {
+    RAPT::rsAssert(newIndex >= 0 && newIndex < maxNumModes);
+    highModeIndex = newIndex;
+  }
 
 
   /** \name Inquiry */
@@ -48,7 +64,7 @@ public:
   inline rsFloat32x4 getSample(rsFloat32x4 in)
   {
     rsFloat32x4 y(0);
-    for(int i = 0; i < numModes; i++)
+    for(int i = lowModeIndex; i <= highModeIndex; i++)
       y += modeFilters[i].getSample(in);
     return y;
   }
@@ -66,21 +82,26 @@ public:
 
   void reset()
   {
-    for(int i = 0; i < numModes; i++)
+    for(int i = 0; i < maxNumModes; i++)
       modeFilters[i].reset();
     // sampleCounter = 0;
   }
   // maybe allow a partial reset (scale all state variables by a given number between 0 and 1)
 
+  // maybe have a function resetActiveModes that only runs the loop from lowModeIndex to
+  // highModeIndex - might be more efficient - but actually it's not something to be called at 
+  // sample-rate anyway, so who cares?
 
 
   static const int maxNumModes = 1024; // maybe factor out into a baseclass
 
 protected:
 
-
   rsModalFilterFloatSSE2 modeFilters[maxNumModes];
-  int numModes;
+  int lowModeIndex  = 0;
+  int highModeIndex = maxNumModes-1;
+
+  //int numModes;
   // int sampleCounter = 0;
   // maybe need a system to switch off modes that have gone silent - maybe sort the modes by their
   // decayTimes (descending) and at each sample (or block) decrease the upper loop limit for the
