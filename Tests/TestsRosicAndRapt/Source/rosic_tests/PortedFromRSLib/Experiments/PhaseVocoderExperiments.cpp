@@ -235,7 +235,7 @@ void spectrogramSine()
 }
 
 // rename to testSinusoidalSynthesis1
-void sinusoidalModel1()
+void sinusoidalSynthesis1()
 {
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;

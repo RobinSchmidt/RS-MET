@@ -9,7 +9,9 @@ void grainRoundTrip();        // under construction
 void plotWindows();
 void spectrogramSine();
 
-void sinusoidalModel1();
+
+
+void sinusoidalSynthesis1();
 
 void sinusoidalAnalysis1();
 

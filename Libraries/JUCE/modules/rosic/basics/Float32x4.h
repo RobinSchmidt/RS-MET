@@ -220,7 +220,8 @@ inline rsFloat32x4 rsTan(const rsFloat32x4& x) { float* a = x.asArray(); return 
 
 
 // see here for optimized vector math functions - free and open-source:
-// http://gruntthepeon.free.fr/ssemath/
+// http://gruntthepeon.free.fr/ssemath/ 
+// code is available in the _third_party folder of rosic
 
 /*
 

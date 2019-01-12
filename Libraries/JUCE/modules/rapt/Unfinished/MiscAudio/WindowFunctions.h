@@ -6,6 +6,9 @@ design. Some functions fill an array with values of the window function, other f
 evaluate the continuous time window function to be evaluated at arbitrary inputs. The functions are 
 all static and the class only serves for putting them all under the same umbrella. */
 
+// i think, i need to double all values of the mainlobe width - because the lobe is two-sided and 
+// here, i only considered the right half
+
 class rsWindowFunction
 {
 

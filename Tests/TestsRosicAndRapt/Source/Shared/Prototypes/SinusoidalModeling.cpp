@@ -220,8 +220,9 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
 
 
 template<class T>
-size_t findBestMatch(T freq, std::vector<RAPT::rsSinusoidalPartial<double>>& tracks,
-  T maxFreqDeviation, const std::vector<bool>& trackContinued)
+size_t SinusoidalAnalyzer<T>::findBestMatch(T freq, 
+  std::vector<RAPT::rsSinusoidalPartial<double>>& tracks, T maxFreqDeviation, 
+  const std::vector<bool>& trackContinued) const
 {
   T dfMin = RS_INF(T);  
   size_t bestIndex = 0;
@@ -239,18 +240,13 @@ size_t findBestMatch(T freq, std::vector<RAPT::rsSinusoidalPartial<double>>& tra
     return tracks.size();
 }
 
-// this implements the peak continuation step - for all current spectral peaks in newPeakData, find 
-// a corresponding continuation partner among the activeTracks - 3 situations have to be handled:
-// -when a partner is found, continue the track
-// -when no partner is found, create a new track ("birth")
-// -all active tracks that have not been used in this continuation are killed (i.e. moved to 
-//  finishedTracks
+
 template<class T>
-void continuePartialTracks(
+void SinusoidalAnalyzer<T>::continuePartialTracks(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
   std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-  T maxFreqDeviation, T frameTimeDelta, int direction) // additionally needed information
+  T maxFreqDeviation, T frameTimeDelta, int direction) const // additionally needed information
 {
 
   // initializations:
@@ -307,7 +303,8 @@ void continuePartialTracks(
 
   // We have figured out the desired continuations, deaths and birthes. Now, we actually do them:
 
-  size_t i;
+  //size_t i;
+  int i; // must be signed because we use a >= 0 comparison in the killTrack.. loop
 
   // continue matched tracks with new peaks:
   for(i = 0; i < continuationPairs.size(); i++) {
@@ -318,7 +315,7 @@ void continuePartialTracks(
 
   // kill discontinued tracks (where no matching peak was found for a track):
   if(killTrackIndices.size() > 0) {
-    for(i = killTrackIndices.size()-1; i >= 0; i--) {
+    for(i = (int) killTrackIndices.size()-1; i >= 0; i--) {
       trkIdx = killTrackIndices[i];
       rsAppend(finishedTracks, activeTracks[trkIdx]);
     }
@@ -344,6 +341,11 @@ void continuePartialTracks(
     activeTracks.push_back(newTrack);
   }
 }
+
+
+
+
+
 
 template<class T>
 rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(

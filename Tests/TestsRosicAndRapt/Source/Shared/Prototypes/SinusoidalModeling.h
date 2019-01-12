@@ -31,6 +31,43 @@ public:
 
 protected:
 
+  /** For a given frequency (belonging to a psectral peak of the current frame), search through the
+  tracks array to find the one that is closest in frequency, if it is within a given range around 
+  the peak-frequency and for which the trackContinued flag is false (i.e. the track has not been 
+  used up by another current peak frequency already - each track can be continued only with one
+  partner). Called from continuePartialTracks */
+  size_t findBestMatch(T frequency, std::vector<RAPT::rsSinusoidalPartial<double>>& tracks,
+    T maxFreqDeviation, const std::vector<bool>& trackContinued) const;
+
+  /** This function implements the peak continuation step - for all current spectral peaks in 
+  newPeakData, find a corresponding continuation partner among the activeTracks - 3 situations have 
+  to be handled:
+  -when a partner is found, continue the track, i.e. append the newPeakData to the corresponding
+   track in activeTracks
+  -when no partner is found, create a new track ("birth"), i.e. start a new track in activeTracks
+  -all active tracks that have not been used in this continuation are killed (i.e. moved to 
+   finishedTracks */
+  void continuePartialTracks(
+    std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
+    T maxFreqDeviation, T frameTimeDelta, int direction) const;
+  // rename to continuePartialTracks1 and let continuePartialTracks be a dispatcher that selects
+  // between continuePartialTracks1/continuePartialTracks2
+
+  /** Alternative version of the peak-tracking algoritm. This one loops over all the tracks to find 
+  the best match in newPeakData instead of looping over all peaks to find a best match in the 
+  activeTracks, i.e. the roles are reversed. This is, how it's described in the literature
+  Not yet finished
+  */
+  void continuePartialTracks2(
+    std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
+    T maxFreqDeviation, T frameTimeDelta, int direction) const;
+
+
+
   RAPT::rsSpectrogram<T> sp;   // spectrogram processor
 
 };

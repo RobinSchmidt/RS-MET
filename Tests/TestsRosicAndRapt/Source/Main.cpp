@@ -167,7 +167,7 @@ int main(int argc, char* argv[])
   //naturalCubicSpline();
   //naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
-  hyperbolicFunctions();
+  //hyperbolicFunctions();
   //splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
@@ -281,7 +281,7 @@ int main(int argc, char* argv[])
   //modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
-  modalSynthSpectra();
+  //modalSynthSpectra();
 
   // Misc Audio:
   //centroid();
@@ -323,8 +323,9 @@ int main(int argc, char* argv[])
   //grainRoundTrip();        // under construction
   //plotWindows();
   //spectrogramSine();
-//  sinusoidalAnalysis1();
-  //sinusoidalModel1();
+  sinusoidalSynthesis1();
+  sinusoidalAnalysis1();
+
 
   // Physics:
   //doublePendulum(); // takes long
