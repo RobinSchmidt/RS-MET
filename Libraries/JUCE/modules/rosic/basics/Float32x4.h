@@ -218,6 +218,10 @@ inline rsFloat32x4 rsTan(const rsFloat32x4& x) { float* a = x.asArray(); return 
 // maybe implement recriprocal and reciprocal sqrt (there are intrinsics for these)
 
 
+
+// see here for optimized vector math functions - free and open-source:
+// http://gruntthepeon.free.fr/ssemath/
+
 /*
 
 // reference:
@@ -259,6 +263,8 @@ __m128 _mm_cmpnlt_ps(__m128 a, __m128 b)   not less than
 ...reference page 38
 the ps suffix operates on all elements, the same functions with the ss suffix operate only on the 
 1st and pass through all other values
+
+
 
 
 

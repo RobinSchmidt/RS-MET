@@ -128,6 +128,10 @@ void plotMagnitudeResponse(const RAPT::rsFilterSpecificationBA<double>& specBA);
 void plotPolesAndZeros(    const RAPT::rsFilterSpecificationBA<double>& specBA);
 void showFilterPlots(      const RAPT::rsFilterSpecificationBA<double>& specBA);
 
+/** Plots y against x using stems, i.e impulses with a filled circle - suitable to draw discrete 
+time signals. */
+void stemPlot(int N, double *x, double *y);
+
 
 
 #endif

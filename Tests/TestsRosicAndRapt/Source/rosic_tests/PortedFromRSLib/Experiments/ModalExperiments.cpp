@@ -644,7 +644,7 @@ void modalWithFancyEnv()
   rosic::writeToMonoWaveFile("ModalWithFancyEnvErr.wav", &err[0], numSamples, (int)fs);
   rosic::writeToMonoWaveFile("ModalWithFancyEnvBeating.wav", &z[0],   numSamples, (int)fs);
 }
-
+/*
 // move to plotting tools:
 void stemPlot(int N, double *x, double *y)
 {
@@ -654,7 +654,7 @@ void stemPlot(int N, double *x, double *y)
   plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
   plt.plot();
 }
-
+*/
 void plotModalLevelSpectrum(const rosic::rsModalSynth& ms, int key, int vel)
 {
   int mL = ms.getLowestMode();

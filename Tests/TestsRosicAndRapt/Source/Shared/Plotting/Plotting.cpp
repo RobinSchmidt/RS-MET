@@ -177,6 +177,16 @@ void showFilterPlots(const RAPT::rsFilterSpecificationBA<double>& specBA)
   plotPolesAndZeros(specBA);
 }
 
+void stemPlot(int N, double *x, double *y)
+{
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, y);
+  plt.addDataArrays(N, x, y); // can probably be done without adding the data twice
+  plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
+  plt.plot();
+}
+
+
 
 
 

@@ -1,0 +1,7 @@
+The code is taken from here:
+
+http://gruntthepeon.free.fr/ssemath/
+
+where it says:
+
+"The functions below are licensed under the zlib license, so you can do basically what you want with them."

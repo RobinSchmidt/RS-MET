@@ -167,7 +167,7 @@ int main(int argc, char* argv[])
   //naturalCubicSpline();
   //naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
-  //hyperbolicFunctions();
+  hyperbolicFunctions();
   //splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();

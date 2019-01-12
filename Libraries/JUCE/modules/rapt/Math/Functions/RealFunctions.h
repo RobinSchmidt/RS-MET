@@ -895,7 +895,7 @@ RS_INLINE double rsStep(double x)
 template<class T>
 T rsTanh(T x)
 {
-  if(x > 350.0)  // avoid internal overflow
+  if(x > 350.0)  // avoid internal overflow - what about -350?
     return 1.0;
   T c = exp(2*x);
   return (c-1)/(c+1);
