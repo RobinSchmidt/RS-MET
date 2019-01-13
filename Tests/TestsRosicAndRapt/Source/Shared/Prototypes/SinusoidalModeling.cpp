@@ -301,7 +301,11 @@ void SinusoidalAnalyzer<T>::continuePartialTracks(
       killTrackIndices.push_back(trkIdx);
   }
 
+
+
+
   // We have figured out the desired continuations, deaths and birthes. Now, we actually do them:
+  // factor out:
 
   //size_t i;
   int i; // must be signed because we use a >= 0 comparison in the killTrack.. loop
@@ -341,6 +345,23 @@ void SinusoidalAnalyzer<T>::continuePartialTracks(
     activeTracks.push_back(newTrack);
   }
 }
+
+
+
+  template<class T>
+  void SinusoidalAnalyzer<T>::applyContinuations(
+    std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
+    std::vector<size_t>& births, std::vector<size_t>& deaths,
+    std::vector<std::pair<size_t, size_t>>& continuations)
+  {
+
+
+  }
+
+
+
 
 
 

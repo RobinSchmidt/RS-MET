@@ -54,17 +54,33 @@ protected:
     T maxFreqDeviation, T frameTimeDelta, int direction) const;
   // rename to continuePartialTracks1 and let continuePartialTracks be a dispatcher that selects
   // between continuePartialTracks1/continuePartialTracks2
+  // or rename to findContinuations
+
+
+  /** Internal function called from continuePartialTracks... */
+  void applyContinuations(
+    std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
+    std::vector<size_t>& births, std::vector<size_t>& deaths,
+    std::vector<std::pair<size_t, size_t>>& continuations);
+
+
+
+
+
+
 
   /** Alternative version of the peak-tracking algoritm. This one loops over all the tracks to find 
   the best match in newPeakData instead of looping over all peaks to find a best match in the 
   activeTracks, i.e. the roles are reversed. This is, how it's described in the literature
   Not yet finished
   */
-  void continuePartialTracks2(
-    std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
-    std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
-    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-    T maxFreqDeviation, T frameTimeDelta, int direction) const;
+  //void continuePartialTracks2(
+  //  std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
+  //  std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
+  //  std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
+  //  T maxFreqDeviation, T frameTimeDelta, int direction) const;
 
 
 
