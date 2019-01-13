@@ -240,9 +240,8 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq,
     return tracks.size();
 }
 
-
 template<class T>
-void SinusoidalAnalyzer<T>::continuePartialTracks(
+void SinusoidalAnalyzer<T>::continuePartialTracks1(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
@@ -301,6 +300,14 @@ void SinusoidalAnalyzer<T>::continuePartialTracks(
   }
 
   applyContinuations(newPeakData, aliveTracks, deadTracks, births, deaths, continuations);
+}
+
+template<class T>
+size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T frequency, 
+  std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks, T maxFreqDeviation, 
+  const std::vector<bool>& peakUsed) const
+{
+  return peaks.size();  // preliminary
 }
 
 template<class T>
@@ -442,8 +449,9 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
 
     // peak continuation, birth or death:
     double maxFreqDelta = 2*binDelta; // replace factor 2 by user parameter
-    continuePartialTracks(instPeakParams, activeTracks, finishedTracks, 
-      maxFreqDelta, frameDelta, frameStep);
+
+    continuePartialTracks1(instPeakParams, activeTracks, finishedTracks, 
+      maxFreqDelta, frameDelta, frameStep); // todo: dispatch between tracking algorithms
 
     frameIndex += frameStep;
   }

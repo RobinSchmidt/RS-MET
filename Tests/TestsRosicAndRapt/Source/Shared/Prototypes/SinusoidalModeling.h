@@ -27,6 +27,7 @@ public:
   inline void setWindowType(int newType)          { sp.setAnalysisWindowType(newType); }
   //setRootKey/setFundamentalFrequency, 
 
+
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate) const;
 
 protected:
@@ -47,7 +48,7 @@ protected:
   -when no partner is found, create a new track ("birth"), i.e. start a new track in activeTracks
   -all active tracks that have not been used in this continuation are killed (i.e. moved to 
    finishedTracks */
-  void continuePartialTracks(
+  void continuePartialTracks1(
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
     std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
@@ -55,6 +56,15 @@ protected:
   // rename to continuePartialTracks1 and let continuePartialTracks be a dispatcher that selects
   // between continuePartialTracks1/continuePartialTracks2
   // or rename to findContinuations
+
+
+  /** For a given frequency, search through the peaks array to find one that is closest in 
+  frequency, subject to the constraint that is within a given maximum deviation and that the 
+  peakUnused flag is false. This is the dual function to findBestMatchingTrack for the other way
+  of organizing the loops ...  Not yet implemented   */
+  size_t findBestMatchingPeak(T frequency, std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks,
+    T maxFreqDeviation, const std::vector<bool>& peakUsed) const;
+
 
 
   /** Internal function called from continuePartialTracks... */
