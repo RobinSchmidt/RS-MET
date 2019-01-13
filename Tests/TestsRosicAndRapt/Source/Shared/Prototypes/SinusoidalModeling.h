@@ -31,12 +31,12 @@ public:
 
 protected:
 
-  /** For a given frequency (belonging to a psectral peak of the current frame), search through the
+  /** For a given frequency (belonging to a spectral peak of the current frame), search through the
   tracks array to find the one that is closest in frequency, if it is within a given range around 
   the peak-frequency and for which the trackContinued flag is false (i.e. the track has not been 
   used up by another current peak frequency already - each track can be continued only with one
   partner). Called from continuePartialTracks */
-  size_t findBestMatch(T frequency, std::vector<RAPT::rsSinusoidalPartial<double>>& tracks,
+  size_t findBestMatchingTrack(T frequency, std::vector<RAPT::rsSinusoidalPartial<double>>& tracks,
     T maxFreqDeviation, const std::vector<bool>& trackContinued) const;
 
   /** This function implements the peak continuation step - for all current spectral peaks in 

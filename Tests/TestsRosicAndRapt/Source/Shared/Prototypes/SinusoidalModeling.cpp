@@ -220,7 +220,7 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
 
 
 template<class T>
-size_t SinusoidalAnalyzer<T>::findBestMatch(T freq, 
+size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq, 
   std::vector<RAPT::rsSinusoidalPartial<double>>& tracks, T maxFreqDeviation, 
   const std::vector<bool>& trackContinued) const
 {
@@ -244,19 +244,18 @@ size_t SinusoidalAnalyzer<T>::findBestMatch(T freq,
 template<class T>
 void SinusoidalAnalyzer<T>::continuePartialTracks(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
-  std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
-  std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
+  std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
+  std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
   T maxFreqDeviation, T frameTimeDelta, int direction) const // additionally needed information
 {
-
   // initializations:
   typedef std::pair<size_t, size_t> IndexPair;
-  std::vector<IndexPair> continuationPairs;  // 1st: activeTracks, 2nd: newPeakData
-  std::vector<size_t> killTrackIndices;      // index into activeTracks
-  std::vector<size_t> birthPeakIndices;      // index into newPeakData
-  size_t pkIdx;                              // peak index
-  size_t trkIdx;                             // track index
-  size_t numActiveTracks = activeTracks.size();
+  std::vector<IndexPair> continuations;  // 1st: activeTracks, 2nd: newPeakData
+  std::vector<size_t> deaths;            // index into activeTracks
+  std::vector<size_t> births;            // index into newPeakData
+  size_t pkIdx;                          // peak index
+  size_t trkIdx;                         // track index
+  size_t numActiveTracks = aliveTracks.size();
   std::vector<bool> trackContinued(numActiveTracks);
   for(trkIdx = 0; trkIdx < numActiveTracks; trkIdx++)
     trackContinued[trkIdx] = false;
@@ -268,13 +267,13 @@ void SinusoidalAnalyzer<T>::continuePartialTracks(
   // loop over the new peaks to figure out birthes and continuations:
   for(pkIdx = 0; pkIdx < newPeakData.size(); pkIdx++) {
 
-    trkIdx = findBestMatch(newPeakData[pkIdx].freq, activeTracks, 
+    trkIdx = findBestMatchingTrack(newPeakData[pkIdx].freq, aliveTracks, 
       maxFreqDeviation, trackContinued); // looks only in those that are not already continued
 
-    if(trkIdx == activeTracks.size())    // no match found
-      birthPeakIndices.push_back(pkIdx);
+    if(trkIdx == aliveTracks.size())     // no match found, so a new track is born
+      births.push_back(pkIdx);
     else {
-      continuationPairs.push_back(IndexPair(trkIdx, pkIdx));
+      continuations.push_back(IndexPair(trkIdx, pkIdx));
       trackContinued[trkIdx] = true;
     }
   }
@@ -298,55 +297,10 @@ void SinusoidalAnalyzer<T>::continuePartialTracks(
   // loop over the "trackContinued" array to figure out deaths:
   for(trkIdx = 0; trkIdx < numActiveTracks; trkIdx++) {
     if(trackContinued[trkIdx] == false)
-      killTrackIndices.push_back(trkIdx);
+      deaths.push_back(trkIdx);
   }
 
-  applyContinuations(newPeakData, activeTracks, finishedTracks,
-    birthPeakIndices, killTrackIndices, continuationPairs);
-
-
-  /*
-  // We have figured out the desired continuations, deaths and birthes. Now, we actually do them:
-  // factor out:
-
-  //size_t i;
-  int i; // must be signed because we use a >= 0 comparison in the killTrack.. loop
-
-  // continue matched tracks with new peaks:
-  for(i = 0; i < continuationPairs.size(); i++) {
-    trkIdx = continuationPairs[i].first;
-    pkIdx  = continuationPairs[i].second;
-    activeTracks[trkIdx].appendDataPoint(newPeakData[pkIdx]);
-  }
-
-  // kill discontinued tracks (where no matching peak was found for a track):
-  if(killTrackIndices.size() > 0) {
-    for(i = (int) killTrackIndices.size()-1; i >= 0; i--) {
-      trkIdx = killTrackIndices[i];
-      rsAppend(finishedTracks, activeTracks[trkIdx]);
-    }
-
-    // todo: append an additional datapoint with zero amplitude to the killed track for a smooth
-    // fade out (needs to take into account frameTimeDelta and direction to figure out the time for
-    // the datapoint...actually just their product - maybe passed as one parameter)...but maybe the
-    // fade-in/out may be shorter than one hopSize?
-
-    rsRemove(activeTracks, trkIdx);
-  }
-
-  // create new tracks (where no matching track was found for a peak):
-  for(i = 0; i < birthPeakIndices.size(); i++)
-  {
-    pkIdx = birthPeakIndices[i];
-    RAPT::rsInstantaneousSineParams<T> newData = newPeakData[pkIdx];
-    RAPT::rsSinusoidalPartial<T> newTrack;
-    newTrack.appendDataPoint(newData);
-
-    // todo: append an additional datapoint with zero amplitude for smooth fade-in
-
-    activeTracks.push_back(newTrack);
-  }
-  */
+  applyContinuations(newPeakData, aliveTracks, deadTracks, births, deaths, continuations);
 }
 
 template<class T>
