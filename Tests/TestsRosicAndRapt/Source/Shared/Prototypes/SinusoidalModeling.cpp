@@ -301,9 +301,11 @@ void SinusoidalAnalyzer<T>::continuePartialTracks(
       killTrackIndices.push_back(trkIdx);
   }
 
+  applyContinuations(newPeakData, activeTracks, finishedTracks,
+    birthPeakIndices, killTrackIndices, continuationPairs);
 
 
-
+  /*
   // We have figured out the desired continuations, deaths and birthes. Now, we actually do them:
   // factor out:
 
@@ -344,21 +346,63 @@ void SinusoidalAnalyzer<T>::continuePartialTracks(
 
     activeTracks.push_back(newTrack);
   }
+  */
 }
 
+template<class T>
+void SinusoidalAnalyzer<T>::applyContinuations(
+  std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
+  std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
+  std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
+  std::vector<size_t>& births, std::vector<size_t>& deaths,
+  std::vector<std::pair<size_t, size_t>>& continuations) const
+{
+  size_t pkIdx;   // peak index
+  size_t trkIdx;  // track index
+  int i;          // signed because we use a >= 0 comparison in the deaths loop - 
+                  // why actually? - because in the loop, we remove them from the end of the 
+                  // aliveTracks array to not mess up the indices inside the loop
 
-
-  template<class T>
-  void SinusoidalAnalyzer<T>::applyContinuations(
-    std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
-    std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
-    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-    std::vector<size_t>& births, std::vector<size_t>& deaths,
-    std::vector<std::pair<size_t, size_t>>& continuations)
-  {
-
-
+  // continue matched tracks with new peaks:
+  for(i = 0; i < continuations.size(); i++) {
+    trkIdx = continuations[i].first;
+    pkIdx  = continuations[i].second;
+    aliveTracks[trkIdx].appendDataPoint(newPeaks[pkIdx]);
   }
+
+  // maybe we should assert that deaths is sorted ascending - because when we remove tracks from
+  // the aliveTracks array, we must do so from behind in order to not mess up the array indexes
+  // inside the loop...
+
+  // kill discontinued tracks (where no matching peak was found for a track):
+  if(deaths.size() > 0) {  // can we get rid of this if? i think so
+    for(i = (int) deaths.size()-1; i >= 0; i--) {
+      trkIdx = deaths[i];
+      rsAppend(deadTracks, aliveTracks[trkIdx]);
+
+      // todo: append an additional datapoint with zero amplitude to the killed track for a smooth
+      // fade out (needs to take into account frameTimeDelta and direction to figure out the time 
+      // for the datapoint...actually just their product - maybe passed as one parameter)...but 
+      // maybe the fade-in/out may be shorter than one hopSize?
+
+      rsRemove(aliveTracks, trkIdx); 
+    }
+  }
+
+  // create new tracks (where no matching track was found for a peak):
+  for(i = 0; i < births.size(); i++)
+  {
+    pkIdx = births[i];
+    RAPT::rsInstantaneousSineParams<T> newData = newPeaks[pkIdx];
+    RAPT::rsSinusoidalPartial<T> newTrack;
+    newTrack.appendDataPoint(newData);
+
+    // todo: append an additional datapoint with zero amplitude for smooth fade-in
+
+    aliveTracks.push_back(newTrack);
+  }
+
+}
 
 
 
