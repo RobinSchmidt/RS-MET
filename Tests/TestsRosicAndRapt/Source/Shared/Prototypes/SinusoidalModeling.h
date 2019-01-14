@@ -52,7 +52,7 @@ protected:
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
     std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-    T maxFreqDeviation, T frameTimeDelta, int direction) const;
+    T maxFreqDeviation, T frameTimeDelta) const;
   // rename to continuePartialTracks1 and let continuePartialTracks be a dispatcher that selects
   // between continuePartialTracks1/continuePartialTracks2
   // or rename to findContinuations
@@ -69,7 +69,7 @@ protected:
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
     std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-    T maxFreqDeviation, T frameTimeDelta, int direction) const;
+    T maxFreqDeviation, T frameTimeDelta) const;
 
 
 

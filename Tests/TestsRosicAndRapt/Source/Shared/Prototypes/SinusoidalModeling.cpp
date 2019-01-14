@@ -245,7 +245,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
-  T maxFreqDeviation, T frameTimeDelta, int direction) const // additionally needed information
+  T maxFreqDeviation, T frameTimeDelta) const // additionally needed information
 {
   // initializations:
   typedef std::pair<size_t, size_t> IndexPair;
@@ -338,7 +338,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks2(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
-  T maxFreqDeviation, T frameTimeDelta, int direction) const
+  T maxFreqDeviation, T frameTimeDelta) const
 {
   // initializations:
   typedef std::pair<size_t, size_t> IndexPair;
@@ -459,11 +459,11 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
   typedef RAPT::rsSinusoidalPartial<double> Partial;
   int numFrames  = stft.getNumRows();
   int numBins    = stft.getNumColumns();
-  int frameStep  = +1;  // +1: scan through frames forward, -1: backward - make user parameter
+  //int frameStep  = +1;  // +1: scan through frames forward, -1: backward - make user parameter
   int firstFrame = 0; 
   int lastFrame  = numFrames-1;
-  if(frameStep == -1)
-    rsSwap(firstFrame, lastFrame);
+  //if(frameStep == -1)
+  //  rsSwap(firstFrame, lastFrame);
   int frameIndex  = firstFrame;
   double binDelta   = sampleRate / sp.getFftSize();
   double frameDelta = sp.getHopSize() / sampleRate;
@@ -511,12 +511,14 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
     }
 
     // peak continuation, birth or death:
-    double maxFreqDelta = 2*binDelta; // replace factor 2 by user parameter
+    double maxFreqDelta = 2*binDelta; 
+    // replace factor 2 by user parameter - the minimum allowed value should also depend on the 
+    // width of the main lobe of the analysis window
 
-    continuePartialTracks1(instPeakParams, activeTracks, finishedTracks, 
-      maxFreqDelta, frameDelta, frameStep); // todo: dispatch between tracking algorithms
+    // todo: dispatch between tracking algorithms:
+    continuePartialTracks2(instPeakParams, activeTracks, finishedTracks, maxFreqDelta, frameDelta);
 
-    frameIndex += frameStep;
+    frameIndex += 1;
   }
 
   rsSinusoidalModel<T> model;
