@@ -462,11 +462,8 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
   typedef RAPT::rsSinusoidalPartial<double> Partial;
   int numFrames  = stft.getNumRows();
   int numBins    = stft.getNumColumns();
-  //int frameStep  = +1;  // +1: scan through frames forward, -1: backward - make user parameter
   int firstFrame = 0; 
   int lastFrame  = numFrames-1;
-  //if(frameStep == -1)
-  //  rsSwap(firstFrame, lastFrame);
   int frameIndex  = firstFrame;
   double binDelta   = sampleRate / sp.getFftSize();
   double frameDelta = sp.getHopSize() / sampleRate;
@@ -506,7 +503,8 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
       T peakBin, peakAmp;
       spectralMaximumPositionAndValue(pMag, peaks[i], &peakBin, &peakAmp);
       T peakFreq = peakBin*sampleRate/sp.getFftSize();
-      T peakPhase = 0; // preliminary - see comment below function for ideas 
+      //T peakPhase = 0; // preliminary - see comment below function for ideas 
+      T peakPhase = pPhs[peaks[i]]; // preliminary - maybe use interpolation later
       instPeakParams[i].time  = time;
       instPeakParams[i].freq  = peakFreq;
       instPeakParams[i].gain  = peakAmp;
@@ -516,62 +514,49 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
     // peak continuation, birth or death:
     double maxFreqDelta = 2*binDelta; 
     // replace factor 2 by user parameter - the minimum allowed value should also depend on the 
-    // width of the main lobe of the analysis window
+    // width of the main lobe of the analysis window and later we should also let it have a 
+    // dependeny on the bin-center frequency - it seems to make more sense to use member variables
+    // for these things: freqDelta, freqDeltaSlope
 
     // todo: dispatch between tracking algorithms:
     continuePartialTracks0(instPeakParams, activeTracks, finishedTracks, maxFreqDelta, frameDelta);
+      // does it actually need the frameDelta info - if not, remove the parameter
 
     frameIndex += 1;
   }
 
   rsSinusoidalModel<T> model;
-  // model.addPartials(finishedTracks);
-  // model.addPartials(activeTracks);
-
-  // if(frameStep == -1) time-reverse all partials (well, reverse the arrays such that the time 
-  // runs forward)
+  model.addPartials(finishedTracks);
+  model.addPartials(activeTracks);
 
   return model;
 
   // algorithm:
 
-
-  // -scan through this spectrogram from right to left - i.e. start at the end
+  // -scan through this spectrogram from left to right
   // -for each frame m, do:
   //  -find the spectral peaks in the frame
   //  -for each peak k in the frame, do:
   //   -figure out its exact frequency, amplitude and phase (and maybe time, if re-assignment is 
   //    used)
   //   -try to find a match in the set of active partials:
-  //    -if a match is found, prepend the new datapoint to that matched partial
-  //    -if no match is found, start a new partial at frame m+1 with zero amplitude and prepend
-  //     the new datapoint (time m)
-  //   -if there are active partials that have not been used up by this matching procedure, prepend
-  //    a datapoint with amplitude zero at time m into them - they end now
-  // 
-  // -whenever a partial is created at time m, it will fade in from amplitude 0 at m-1 and whenever
-  //  one is killed (i.e. not continued from m+1 to m), it will fade out to reach zero at time m
+  //    -if a match is found, append the new datapoint to that matched partial
+  //    -if no match is found, start a new partial 
+  //   -if there are active partials that have not been used up by this matching procedure,
+  //    they end now
 
-  // -maybe after this is all done, we may go over the data a second time to see if we can merge
-  //  and/or remove partials
-
+  // -todo: post-processing: after this is all done, go over the data a second time to see if we 
+  //  can merge partials and/or remove partials whose length is below a user-defined threshold
 
   // -find peak frequency by (parabolic) interpolation (or maybe cubic?)
   // -evaluate complex amplitude at peak-freq
   // -compute magnitude phase from interpolated complex amplitude and store in one of the partials
-
-  // -start scanning forward to the spectrogram after the transient has passed, later extend the
-  //  partials towards the start by scanning backward from the start position
-  // -maybe later find (multiple) transients via the onset detector
-
 
   // references:
   // http://www.cerlsoundgroup.org/Loris/
   // https://ccrma.stanford.edu/~juan/ATS_manual.html
   // http://clam-project.org/
 }
-//template RAPT::rsSinusoidalModel<double> analyzeSinusoidal(double* sampleData, int numSamples, 
-//  double sampleRate);
 
 template class SinusoidalAnalyzer<double>;
 

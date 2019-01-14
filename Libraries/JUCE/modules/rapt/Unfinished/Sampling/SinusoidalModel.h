@@ -154,6 +154,14 @@ public:
   /** Removes the partial with given index from the model. */
   void removePartial(size_t index) { rsRemove(partials, index); }
 
+  /** Appends multiple partials to the model at once. */
+  void addPartials(const std::vector<rsSinusoidalPartial<T>>& partialsToAdd)
+  {
+    for(size_t i = 0; i < partialsToAdd.size(); i++)
+      addPartial(partialsToAdd[i]);
+    // we need to make a deep copy
+  }
+
 
   /** \name Inquiry */
 
