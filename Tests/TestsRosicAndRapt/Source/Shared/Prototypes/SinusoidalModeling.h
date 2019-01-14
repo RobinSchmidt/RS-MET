@@ -65,33 +65,30 @@ protected:
   size_t findBestMatchingPeak(T frequency, std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks,
     T maxFreqDeviation, const std::vector<bool>& peakUsed) const;
 
+
+  /** Alternative version of the peak-tracking algoritm. This one loops over all the tracks to find 
+  the best match in newPeakData instead of looping over all peaks to find a best match in the 
+  activeTracks, i.e. the roles are reversed. This is, how it's described in the literature */
   void continuePartialTracks2(
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
     std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
     T maxFreqDeviation, T frameTimeDelta) const;
 
-
-
-
-  /** Internal function called from continuePartialTracks... */
+  /** Internal function called from continuePartialTracks1/2... */
   void applyContinuations(
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
     std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
     std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
     std::vector<size_t>& births, std::vector<size_t>& deaths,
-    std::vector<std::pair<size_t, size_t>>& continuations,
-    T fadeTime) const;
+    std::vector<std::pair<size_t, size_t>>& continuations) const;
 
 
+  // fade-in and fade-out times for partials (in seconds):
+  T fadeInTime  = 0.01;
+  T fadeOutTime = 0.01;
 
 
-
-  /** Alternative version of the peak-tracking algoritm. This one loops over all the tracks to find 
-  the best match in newPeakData instead of looping over all peaks to find a best match in the 
-  activeTracks, i.e. the roles are reversed. This is, how it's described in the literature
-  Not yet finished
-  */
   //void continuePartialTracks2(
   //  std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
   //  std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,

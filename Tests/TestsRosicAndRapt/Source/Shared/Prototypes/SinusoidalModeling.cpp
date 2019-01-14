@@ -305,8 +305,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
   }
 
   // we have figured out the deaths, births and continuations - apply them:
-  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations, 
-    frameTimeDelta);
+  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations);
 }
 
 template<class T>
@@ -371,8 +370,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks2(
   }
 
   // we have figured out the deaths, births and continuations - apply them:
-  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations, 
-    frameTimeDelta);
+  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations);
 }
 
 template<class T>
@@ -381,7 +379,7 @@ void SinusoidalAnalyzer<T>::applyContinuations(
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
   std::vector<size_t>& births, std::vector<size_t>& deaths,
-  std::vector<std::pair<size_t, size_t>>& continuations, T fadeTime) const
+  std::vector<std::pair<size_t, size_t>>& continuations) const
 {
   size_t pkIdx;   // peak index
   size_t trkIdx;  // track index
@@ -409,11 +407,15 @@ void SinusoidalAnalyzer<T>::applyContinuations(
     for(i = (int) deaths.size()-1; i >= 0; i--) {
       trkIdx = deaths[i];
       track  = aliveTracks[trkIdx];
-      params = track.getLastDataPoint(); // this returns a copy, so we may manipulate it without affecting the last datapoint
-      params.time  += fadeTime;     // maybe the fade-out time can be made independent from the hopsize/frame-delta?
-      params.gain   = 0.0;
-      params.phase += 2*PI*fadeTime*params.freq; // is this correct?
-      track.appendDataPoint(params);
+
+      if(fadeOutTime > T(0)) {
+        params = track.getLastDataPoint(); // returns a copy
+        params.time  += fadeOutTime;
+        params.gain   = 0.0;
+        params.phase += 2*PI*fadeOutTime*params.freq; // is this correct? maybe it should be wrapped to -pi...+pi?
+        track.appendDataPoint(params);
+      }
+
       rsAppend(deadTracks, track);
       rsRemove(aliveTracks, trkIdx); 
     }
@@ -421,16 +423,17 @@ void SinusoidalAnalyzer<T>::applyContinuations(
 
   // create new tracks by creating a fresh track from the peaks that should give birth and also 
   // prepend a "fade-in" datapoint:
-  for(i = 0; i < births.size(); i++)
-  {
+  for(i = 0; i < births.size(); i++) {
     pkIdx  = births[i];
     params = newPeaks[pkIdx];
     RAPT::rsSinusoidalPartial<T> newTrack;
     newTrack.appendDataPoint(params);
-    params.time  -= fadeTime;
-    params.gain   = 0.0;
-    params.phase -= 2*PI*fadeTime*params.freq; // is this correct?
-    newTrack.prependDataPoint(params);
+    if(fadeInTime > T(0)) {
+      params.time  -= fadeInTime;
+      params.gain   = 0.0;
+      params.phase -= 2*PI*fadeInTime*params.freq; // is this correct?
+      newTrack.prependDataPoint(params);
+    }
     aliveTracks.push_back(newTrack);
   }
 }
