@@ -242,20 +242,19 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq,
 
 template<class T>
 void SinusoidalAnalyzer<T>::continuePartialTracks1(
-  std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
+  std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
   T maxFreqDeviation, T frameTimeDelta, int direction) const // additionally needed information
 {
   // initializations:
   typedef std::pair<size_t, size_t> IndexPair;
-  std::vector<IndexPair> continuations;  // 1st: activeTracks, 2nd: newPeakData
-  std::vector<size_t> deaths;            // index into activeTracks
-  std::vector<size_t> births;            // index into newPeakData
-  size_t pkIdx;                          // peak index
-  size_t trkIdx;                         // track index
+  std::vector<IndexPair> continuations;               // 1st: activeTracks, 2nd: newPeaks
+  std::vector<size_t> deaths;                         // index into activeTracks
+  std::vector<size_t> births;                         // index into newPeaks
+  size_t pkIdx, trkIdx;                               // peak index, track index
   size_t numActiveTracks = aliveTracks.size();
-  std::vector<bool> trackContinued(numActiveTracks);
+  std::vector<bool> trackContinued(numActiveTracks);  // true, if track has already been continued
   for(trkIdx = 0; trkIdx < numActiveTracks; trkIdx++)
     trackContinued[trkIdx] = false;
 
@@ -264,9 +263,9 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
   // has to be created ("birth"):
 
   // loop over the new peaks to figure out birthes and continuations:
-  for(pkIdx = 0; pkIdx < newPeakData.size(); pkIdx++) {
+  for(pkIdx = 0; pkIdx < newPeaks.size(); pkIdx++) {
 
-    trkIdx = findBestMatchingTrack(newPeakData[pkIdx].freq, aliveTracks, 
+    trkIdx = findBestMatchingTrack(newPeaks[pkIdx].freq, aliveTracks, 
       maxFreqDeviation, trackContinued); // looks only in those that are not already continued
 
     if(trkIdx == aliveTracks.size())     // no match found, so a new track is born
@@ -299,7 +298,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
       deaths.push_back(trkIdx);
   }
 
-  applyContinuations(newPeakData, aliveTracks, deadTracks, births, deaths, continuations);
+  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations);
 }
 
 template<class T>
@@ -309,6 +308,31 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T frequency,
 {
   return peaks.size();  // preliminary
 }
+
+template<class T>
+void SinusoidalAnalyzer<T>::continuePartialTracks2(
+  std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
+  std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
+  std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
+  T maxFreqDeviation, T frameTimeDelta, int direction) const
+{
+  // initializations:
+  typedef std::pair<size_t, size_t> IndexPair;
+  std::vector<IndexPair> continuations;               // 1st: aliveTracks, 2nd: newPeaks
+  std::vector<size_t> deaths;                         // index into aliveTracks
+  std::vector<size_t> births;                         // index into newPeaks
+  size_t pkIdx, trkIdx;                               // peak index, track index
+  size_t numNewPeaks = newPeaks.size();
+  std::vector<bool> peakUsed(numNewPeaks);            // true, if peak is already used up
+  for(pkIdx = 0; pkIdx < numNewPeaks; pkIdx++)
+    peakUsed[pkIdx] = false;
+
+
+
+
+
+}
+
 
 template<class T>
 void SinusoidalAnalyzer<T>::applyContinuations(

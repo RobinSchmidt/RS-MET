@@ -65,6 +65,13 @@ protected:
   size_t findBestMatchingPeak(T frequency, std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks,
     T maxFreqDeviation, const std::vector<bool>& peakUsed) const;
 
+  void continuePartialTracks2(
+    std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
+    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
+    T maxFreqDeviation, T frameTimeDelta, int direction) const;
+
+
 
 
   /** Internal function called from continuePartialTracks... */
