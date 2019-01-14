@@ -229,7 +229,7 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq,
   for(size_t i = 0; i < tracks.size(); i++) {
     T trackFreq = tracks[i].getEndFreq();
     T df = rsAbs(freq - trackFreq);
-    if(df < dfMin && trackContinued[i] == false) { // look only in those that are not already continued
+    if(df <= dfMin && trackContinued[i] == false) { // look only at tracks that are not already continued
       dfMin = df;
       bestIndex = i;
     }
@@ -309,11 +309,24 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
 }
 
 template<class T>
-size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T frequency, 
+size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T freq, 
   std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks, T maxFreqDeviation, 
   const std::vector<bool>& peakUsed) const
 {
-  return peaks.size();  // preliminary
+  T dfMin = RS_INF(T);  
+  size_t bestIndex = 0;
+  for(size_t i = 0; i < peaks.size(); i++) {
+    T peakFreq = peaks[i].freq;
+    T df = rsAbs(freq - peakFreq);
+    if(df <= dfMin && peakUsed[i] == false) { // look only at peaks that are not already used up
+      dfMin = df;
+      bestIndex = i;
+    }
+  }
+  if(dfMin < maxFreqDeviation)
+    return bestIndex;
+  else
+    return peaks.size();
 }
 
 // todo: get rid of the direction switch - it complicates the code and the same thing can be more 
