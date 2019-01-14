@@ -334,7 +334,7 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T freq,
 // after processing
 
 template<class T>
-void SinusoidalAnalyzer<T>::continuePartialTracks2(
+void SinusoidalAnalyzer<T>::continuePartialTracks0(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
@@ -519,7 +519,7 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
     // width of the main lobe of the analysis window
 
     // todo: dispatch between tracking algorithms:
-    continuePartialTracks2(instPeakParams, activeTracks, finishedTracks, maxFreqDelta, frameDelta);
+    continuePartialTracks0(instPeakParams, activeTracks, finishedTracks, maxFreqDelta, frameDelta);
 
     frameIndex += 1;
   }

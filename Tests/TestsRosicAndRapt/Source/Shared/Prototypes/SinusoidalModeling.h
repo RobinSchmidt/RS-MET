@@ -19,6 +19,9 @@ class SinusoidalAnalyzer
 
 public:
 
+
+  /** \name Setup */
+
   inline void setBlockSize(int newBlockSize)      { sp.setBlockSize(newBlockSize); }
   inline void setHopSize(int newHopSize)          { sp.setHopSize(newHopSize); }
   inline void setZeroPaddingFactor(int newFactor) { sp.setZeroPaddingFactor(newFactor); }
@@ -27,7 +30,36 @@ public:
   inline void setWindowType(int newType)          { sp.setAnalysisWindowType(newType); }
   //setRootKey/setFundamentalFrequency, 
 
+  /** Sets the fade-in time in seconds for newborn partial tracks. Whenever a new track is born, we 
+  prepend a datapoint with the same frequency, zero amplitude, a time-stamp given by the time of 
+  the new track-start minus the fade-in time and a phase set to an appropriate value according to 
+  frequency and fade-time. If you set this to zero, the additional fade-in datapoint will be left 
+  out. */
+  void setFadeInTime(T newTime) { fadeInTime = newTime; }
 
+  /** Sets the fade-out time in seconds for partial tracks that have died. Whenever a track dies, 
+  we append an additional datapoint with the same frequency, zero amplitude, time-stamp given by 
+  the time of death plus the fade-out time and a phase set to an appropriate value according to 
+  frequency and fade-time. If you set this to zero, the additional fade-out datapoint will be left 
+  out.  */
+  void setFadeOutTime(T newTime) { fadeOutTime = newTime; }
+
+  // void setContinuationAlgorithm
+
+
+
+
+  /** \name Inquiry */
+
+  // T getRequiredWindowSize(int windowType, T freqDelta, T sampleRate);
+
+
+
+
+  /** \name Processing */
+
+  /** Analyzes the given input sound and returns the sinusoidal model object that models the given 
+  sound. */
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate) const;
 
 protected:
@@ -69,7 +101,7 @@ protected:
   /** Alternative version of the peak-tracking algoritm. This one loops over all the tracks to find 
   the best match in newPeakData instead of looping over all peaks to find a best match in the 
   activeTracks, i.e. the roles are reversed. This is, how it's described in the literature */
-  void continuePartialTracks2(
+  void continuePartialTracks0(
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
     std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
@@ -84,17 +116,13 @@ protected:
     std::vector<std::pair<size_t, size_t>>& continuations) const;
 
 
+
+
   // fade-in and fade-out times for partials (in seconds):
   T fadeInTime  = 0.01;
   T fadeOutTime = 0.01;
 
-
-  //void continuePartialTracks2(
-  //  std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
-  //  std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
-  //  std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-  //  T maxFreqDeviation, T frameTimeDelta, int direction) const;
-
+  int contAlgo = 0;  // peak continuation algorithm
 
 
   RAPT::rsSpectrogram<T> sp;   // spectrogram processor
