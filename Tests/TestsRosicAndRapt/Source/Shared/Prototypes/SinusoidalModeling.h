@@ -23,8 +23,11 @@ public:
   /** \name Setup */
 
   inline void setBlockSize(int newBlockSize)      { sp.setBlockSize(newBlockSize); }
+
   inline void setHopSize(int newHopSize)          { sp.setHopSize(newHopSize); }
+
   inline void setZeroPaddingFactor(int newFactor) { sp.setZeroPaddingFactor(newFactor); }
+    // maybe replace by setFftSize - be consistent with the SMS tools
 
   /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */
   inline void setWindowType(int newType)          { sp.setAnalysisWindowType(newType); }
@@ -65,9 +68,6 @@ public:
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate) const;
   // rename to analyzeSample
 
-
-
-
   /** Analyzes the given spectrogram and return the sinusoidal model for it */
   RAPT::rsSinusoidalModel<T> analyzeSpectrogram(
     const RAPT::rsMatrix<std::complex<T>>& spectrogram, T sampleRate) const;
@@ -99,7 +99,7 @@ protected:
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
     std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-    T maxFreqDeviation, T frameTimeDelta) const;
+    T maxFreqDeviation) const;
   // rename to continuePartialTracks1 and let continuePartialTracks be a dispatcher that selects
   // between continuePartialTracks1/continuePartialTracks2
   // or rename to findContinuations
@@ -120,7 +120,7 @@ protected:
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
     std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-    T maxFreqDeviation, T frameTimeDelta) const;
+    T maxFreqDeviation) const;
 
   /** Internal function called from continuePartialTracks1/2... */
   void applyContinuations(

@@ -245,7 +245,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
-  T maxFreqDeviation, T frameTimeDelta) const // additionally needed information
+  T maxFreqDeviation) const
 {
   // initializations:
   typedef std::pair<size_t, size_t> IndexPair;
@@ -338,7 +338,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks0(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
-  T maxFreqDeviation, T frameTimeDelta) const
+  T maxFreqDeviation) const
 {
   // initializations:
   typedef std::pair<size_t, size_t> IndexPair;
@@ -445,48 +445,24 @@ rsMatrix<std::complex<T>> SinusoidalAnalyzer<T>::getComplexSpectrogram(
   return sp.complexSpectrogram(sampleData, numSamples);
 }
 
-
 template<class T>
 RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
   const RAPT::rsMatrix<std::complex<T>>& stft, T sampleRate) const
 {
-  return rsSinusoidalModel<T>(); // preliminary - an empty model
-}
-
-
-
-
-template<class T>
-rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
-  T* sampleData, int numSamples, T sampleRate) const
-{
-  // -maybe pre-process the input signal by flattening the pitch and make the period coincide with
-  //  a fraction of the analysis frame size 
-  // -we should keep the time warping map around and when done with the analysis, use it to 
-  //  re-map the time-instants in the model
-  // -we should also keep the corresponding (instantaneous) frequency scaler map around and apply
-  //  the inverse to the freq data in the model
-  //  ...but later - first, let's see how far we get without such a pre-processing and try to make 
-  //  the algorithm work well under this (suboptimal) condition, too
-
-  // Obtain a spectrogram:
-  //rsMatrix<std::complex<T>> stft = sp.complexSpectrogram(sampleData, numSamples);
-  rsMatrix<std::complex<T>> stft = getComplexSpectrogram(sampleData, numSamples);
-  rsMatrix<T> mag = matrixMagnitudes(stft);
-  rsMatrix<T> phs = matrixPhases(stft);
-
-  // maybe make an analyze function that takes the epctrogrm as input
-
   // Initializations:
   typedef RAPT::rsInstantaneousSineParams<double> InstParams;
-  typedef RAPT::rsSinusoidalPartial<double> Partial;
+  typedef RAPT::rsSinusoidalPartial<double> Partial;  // rename to SineTrack
   int numFrames  = stft.getNumRows();
   int numBins    = stft.getNumColumns();
   int firstFrame = 0; 
   int lastFrame  = numFrames-1;
   int frameIndex  = firstFrame;
-  double binDelta   = sampleRate / sp.getFftSize();
-  double frameDelta = sp.getHopSize() / sampleRate;
+  T binDelta   = sampleRate / sp.getFftSize();
+  T frameDelta = sp.getHopSize() / sampleRate;
+
+
+  rsMatrix<T> mag = matrixMagnitudes(stft);
+  rsMatrix<T> phs = matrixPhases(stft);
 
   // ...maybe plot the spectrogram here...
   //plotPhasogram(numFrames, numBins, phs.getDataPointer(), sampleRate, sp.getHopSize());
@@ -539,8 +515,7 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
     // for these things: freqDelta, freqDeltaSlope
 
     // todo: dispatch between tracking algorithms:
-    continuePartialTracks0(instPeakParams, activeTracks, finishedTracks, maxFreqDelta, frameDelta);
-      // does it actually need the frameDelta info - if not, remove the parameter
+    continuePartialTracks0(instPeakParams, activeTracks, finishedTracks, maxFreqDelta);
 
     frameIndex += 1;
   }
@@ -557,8 +532,8 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
   // -for each frame m, do:
   //  -find the spectral peaks in the frame
   //  -for each peak k in the frame, do:
-  //   -figure out its exact frequency, amplitude and phase (and maybe time, if re-assignment is 
-  //    used)
+  //   -figure out its exact frequency, amplitude and phase (and maybe later time, if re-assignment 
+  //    is used)
   //   -try to find a match in the set of active partials:
   //    -if a match is found, append the new datapoint to that matched partial
   //    -if no match is found, start a new partial 
@@ -576,6 +551,23 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
   // http://www.cerlsoundgroup.org/Loris/
   // https://ccrma.stanford.edu/~juan/ATS_manual.html
   // http://clam-project.org/
+}
+
+template<class T>
+rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
+  T* sampleData, int numSamples, T sampleRate) const
+{
+  // -maybe pre-process the input signal by flattening the pitch and make the period coincide with
+  //  a fraction of the analysis frame size 
+  // -we should keep the time warping map around and when done with the analysis, use it to 
+  //  re-map the time-instants in the model
+  // -we should also keep the corresponding (instantaneous) frequency scaler map around and apply
+  //  the inverse to the freq data in the model
+  //  ...but later - first, let's see how far we get without such a pre-processing and try to make 
+  //  the algorithm work well under this (suboptimal) condition, too
+
+  rsMatrix<std::complex<T>> stft = getComplexSpectrogram(sampleData, numSamples);
+  return analyzeSpectrogram(stft, sampleRate);
 }
 
 template class SinusoidalAnalyzer<double>;
