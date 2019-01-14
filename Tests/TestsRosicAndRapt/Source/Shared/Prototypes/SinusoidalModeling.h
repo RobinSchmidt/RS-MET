@@ -49,12 +49,34 @@ public:
 
   // void setContinuationAlgorithm
 
+  /** Sets the maximum allowed frequency difference that a sinusoidal track may have between 
+  successive frames in order to be considered a stable sinusoid. This maximum allowed difference
+  may increase towards higher frequencies, so this here is the baseline value that is used at zero
+  frequency. At higher frequencies an higher threshold may be used according to 
+  setMaxFreqDeltaSlope.  */
+  void setMaxFreqDeltaBase(T newDifference) { maxFreqDeltaBase = newDifference; }
 
+
+  /** Sets the amount by which the maximum allowed frequency difference increases with 
+  frequency. */
+  void setMaxFreqDeltaSlope(T newSlope) { maxFreqDeltaSlope = newSlope; }
 
 
   /** \name Inquiry */
 
   // T getRequiredWindowSize(int windowType, T freqDelta, T sampleRate);
+
+  /** Returns the maximum allowed frequency difference that a sinusoidal track may have between 
+  successive frames in order to be considered a stable sinusoid. This maximum allowed difference
+  may different at different frequencies, so you should pass a reference frequency. Mainly for 
+  internal use. - maybe we should distinguis between a function that returns the raw parameter and 
+  one that returns the final computed value  */
+  T getMaxFreqDelta(T referenceFreq) const 
+  { 
+    return maxFreqDeltaBase + maxFreqDeltaSlope*referenceFreq; 
+  }
+  // todo: check SMS tool which formula is used there (this here is my ad-hoc formula)
+  // i think, the value should depend on (be proportional to) the hop-size
 
 
 
@@ -84,8 +106,8 @@ protected:
   the peak-frequency and for which the trackContinued flag is false (i.e. the track has not been 
   used up by another current peak frequency already - each track can be continued only with one
   partner). Called from continuePartialTracks */
-  size_t findBestMatchingTrack(T frequency, std::vector<RAPT::rsSinusoidalPartial<double>>& tracks,
-    T maxFreqDeviation, const std::vector<bool>& trackContinued) const;
+  size_t findBestMatchingTrack(T frequency, std::vector<RAPT::rsSinusoidalPartial<double>>& tracks, 
+    const std::vector<bool>& trackContinued) const;
 
   /** This function implements the peak continuation step - for all current spectral peaks in 
   newPeakData, find a corresponding continuation partner among the activeTracks - 3 situations have 
@@ -98,8 +120,7 @@ protected:
   void continuePartialTracks1(
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
-    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-    T maxFreqDeviation) const;
+    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks) const;
   // rename to continuePartialTracks1 and let continuePartialTracks be a dispatcher that selects
   // between continuePartialTracks1/continuePartialTracks2
   // or rename to findContinuations
@@ -109,8 +130,8 @@ protected:
   frequency, subject to the constraint that is within a given maximum deviation and that the 
   peakUnused flag is false. This is the dual function to findBestMatchingTrack for the other way
   of organizing the loops ...  Not yet implemented   */
-  size_t findBestMatchingPeak(T frequency, std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks,
-    T maxFreqDeviation, const std::vector<bool>& peakUsed) const;
+  size_t findBestMatchingPeak(T frequency, std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks, 
+    const std::vector<bool>& peakUsed) const;
 
 
   /** Alternative version of the peak-tracking algoritm. This one loops over all the tracks to find 
@@ -119,8 +140,7 @@ protected:
   void continuePartialTracks0(
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
-    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks,
-    T maxFreqDeviation) const;
+    std::vector<RAPT::rsSinusoidalPartial<T>>& finishedTracks) const;
 
   /** Internal function called from continuePartialTracks1/2... */
   void applyContinuations(
@@ -136,6 +156,10 @@ protected:
   // fade-in and fade-out times for partials (in seconds):
   T fadeInTime  = 0.01;
   T fadeOutTime = 0.01;
+
+  // frequency difference threshold parameters:
+  T maxFreqDeltaBase  = 100;
+  T maxFreqDeltaSlope = 0.01;
 
   int contAlgo = 0;  // peak continuation algorithm
 

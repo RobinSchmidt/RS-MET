@@ -221,7 +221,7 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
 
 template<class T>
 size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq, 
-  std::vector<RAPT::rsSinusoidalPartial<double>>& tracks, T maxFreqDeviation, 
+  std::vector<RAPT::rsSinusoidalPartial<double>>& tracks, 
   const std::vector<bool>& trackContinued) const
 {
   T dfMin = RS_INF(T);  
@@ -234,7 +234,7 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq,
       bestIndex = i;
     }
   }
-  if(dfMin < maxFreqDeviation)
+  if(dfMin < getMaxFreqDelta(freq))
     return bestIndex;
   else
     return tracks.size();
@@ -244,8 +244,7 @@ template<class T>
 void SinusoidalAnalyzer<T>::continuePartialTracks1(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
-  std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
-  T maxFreqDeviation) const
+  std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks) const
 {
   // initializations:
   typedef std::pair<size_t, size_t> IndexPair;
@@ -264,10 +263,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
 
   // loop over the new peaks to figure out birthes and continuations:
   for(pkIdx = 0; pkIdx < newPeaks.size(); pkIdx++) {
-
-    trkIdx = findBestMatchingTrack(newPeaks[pkIdx].freq, aliveTracks, 
-      maxFreqDeviation, trackContinued); // looks only in those that are not already continued
-
+    trkIdx = findBestMatchingTrack(newPeaks[pkIdx].freq, aliveTracks, trackContinued); // looks only in those that are not already continued
     if(trkIdx == aliveTracks.size())     // no match found, so a new track is born
       births.push_back(pkIdx);
     else {
@@ -310,7 +306,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
 
 template<class T>
 size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T freq, 
-  std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks, T maxFreqDeviation, 
+  std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks,
   const std::vector<bool>& peakUsed) const
 {
   T dfMin = RS_INF(T);  
@@ -323,7 +319,7 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T freq,
       bestIndex = i;
     }
   }
-  if(dfMin < maxFreqDeviation)
+  if(dfMin < getMaxFreqDelta(freq))
     return bestIndex;
   else
     return peaks.size();
@@ -337,8 +333,7 @@ template<class T>
 void SinusoidalAnalyzer<T>::continuePartialTracks0(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
-  std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
-  T maxFreqDeviation) const
+  std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks) const
 {
   // initializations:
   typedef std::pair<size_t, size_t> IndexPair;
@@ -353,8 +348,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks0(
 
   // loop over the alive tracks to figure out deaths and continuations:
   for(trkIdx = 0; trkIdx < aliveTracks.size(); trkIdx++) {
-    pkIdx = findBestMatchingPeak(aliveTracks[trkIdx].getEndFreq(), newPeaks, 
-      maxFreqDeviation, peakUsed);      // looks only at peaks that are not already used up
+    pkIdx = findBestMatchingPeak(aliveTracks[trkIdx].getEndFreq(), newPeaks, peakUsed); // looks only at peaks that are not already used up
     if(pkIdx == newPeaks.size())        // no match found, so the track dies
       deaths.push_back(trkIdx);
     else {
@@ -508,14 +502,14 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
     }
 
     // peak continuation, birth or death:
-    double maxFreqDelta = 2*binDelta; 
+    //double maxFreqDelta = 2*binDelta; 
     // replace factor 2 by user parameter - the minimum allowed value should also depend on the 
     // width of the main lobe of the analysis window and later we should also let it have a 
     // dependeny on the bin-center frequency - it seems to make more sense to use member variables
     // for these things: freqDelta, freqDeltaSlope
 
     // todo: dispatch between tracking algorithms:
-    continuePartialTracks0(instPeakParams, activeTracks, finishedTracks, maxFreqDelta);
+    continuePartialTracks0(instPeakParams, activeTracks, finishedTracks);
 
     frameIndex += 1;
   }
