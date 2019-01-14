@@ -269,6 +269,16 @@ void sinusoidalSynthesis1()
   //sa.setWindowType...
   model2 = sa.analyze(&x[0], (int)x.size(), fs);
   std::vector<double> y = synthesizeSinusoidal(model2, fs);
+  // maybe try the following parameters: 
+  // maxFreqDeviation df = 100
+  // windowType = Hamming -> B = 4, L = -42.7
+  // windowSize M >= B * fs / df = 4 * 44100 / 100 = 1764 -> use 1765 for odd size
+  // threshold t >= L = -42.7 -> use t = -30
+
+  // maybe make a class SineModelPlotter which can plot the sinusoidal trajectories over the 
+  // spectrogram and maybe plot also the time-domain waveform
+  // - maybe have also a visualization of input and resynthesized signal
+
 
   rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
   int dummy = 0;

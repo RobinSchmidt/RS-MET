@@ -438,6 +438,23 @@ void SinusoidalAnalyzer<T>::applyContinuations(
   }
 }
 
+template<class T>
+rsMatrix<std::complex<T>> SinusoidalAnalyzer<T>::getComplexSpectrogram(
+  T* sampleData, int numSamples) const
+{
+  return sp.complexSpectrogram(sampleData, numSamples);
+}
+
+
+template<class T>
+RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
+  const RAPT::rsMatrix<std::complex<T>>& stft, T sampleRate) const
+{
+  return rsSinusoidalModel<T>(); // preliminary - an empty model
+}
+
+
+
 
 template<class T>
 rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
@@ -453,9 +470,12 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
   //  the algorithm work well under this (suboptimal) condition, too
 
   // Obtain a spectrogram:
-  rsMatrix<std::complex<T>> stft = sp.complexSpectrogram(sampleData, numSamples);
+  //rsMatrix<std::complex<T>> stft = sp.complexSpectrogram(sampleData, numSamples);
+  rsMatrix<std::complex<T>> stft = getComplexSpectrogram(sampleData, numSamples);
   rsMatrix<T> mag = matrixMagnitudes(stft);
   rsMatrix<T> phs = matrixPhases(stft);
+
+  // maybe make an analyze function that takes the epctrogrm as input
 
   // Initializations:
   typedef RAPT::rsInstantaneousSineParams<double> InstParams;
