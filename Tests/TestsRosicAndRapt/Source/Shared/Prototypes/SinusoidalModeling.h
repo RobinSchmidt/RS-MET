@@ -86,8 +86,6 @@ protected:
 
 
 
-
-
   /** Alternative version of the peak-tracking algoritm. This one loops over all the tracks to find 
   the best match in newPeakData instead of looping over all peaks to find a best match in the 
   activeTracks, i.e. the roles are reversed. This is, how it's described in the literature

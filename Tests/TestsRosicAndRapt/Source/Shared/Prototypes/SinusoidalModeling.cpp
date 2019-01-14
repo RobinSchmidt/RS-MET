@@ -290,7 +290,13 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
   // where getTrackFreq would be a function that performs the extrapolation - but still the 
   // advantage of binary serach would remain - moreover, looping over the tracks is the way it's
   // described in the literature as well. ..maybe try to cook up a situation where this actually 
-  // makes a difference
+  // makes a difference - i think, it makes a difference, if there are two competing possible 
+  // matchings - in this function, the one with the lower track-index is chosen, in the other, the 
+  // one with the loew peak index is chosen - actually, in this case, the one with the smaller 
+  // frequency difference should be chosen - how can we achieve this? maybe first collect all 
+  // candidate matchings and if a peak or track index appears twice (or more often), select one?
+  // that would let us get rid of the bool-arrays and the difference between the two versions of 
+  // the algo disappears, so we may keep only one -> check, how Serra's SMS tools do it
 
   // loop over the "trackContinued" array to figure out deaths:
   for(trkIdx = 0; trkIdx < numActiveTracks; trkIdx++) {
@@ -298,6 +304,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
       deaths.push_back(trkIdx);
   }
 
+  // we have figured out the deaths, births and continuations - apply them:
   applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations);
 }
 
@@ -308,6 +315,10 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T frequency,
 {
   return peaks.size();  // preliminary
 }
+
+// todo: get rid of the direction switch - it complicates the code and the same thing can be more 
+// easily achieved by just reversing the audio before processing and reversing the model data 
+// after processing
 
 template<class T>
 void SinusoidalAnalyzer<T>::continuePartialTracks2(
@@ -327,12 +338,27 @@ void SinusoidalAnalyzer<T>::continuePartialTracks2(
   for(pkIdx = 0; pkIdx < numNewPeaks; pkIdx++)
     peakUsed[pkIdx] = false;
 
+  // loop over the alive tracks to figure out deaths and continuations:
+  for(trkIdx = 0; trkIdx < aliveTracks.size(); trkIdx++) {
+    pkIdx = findBestMatchingPeak(aliveTracks[trkIdx].getEndFreq(), newPeaks, 
+      maxFreqDeviation, peakUsed);      // looks only at peaks that are not already used up
+    if(pkIdx == newPeaks.size())        // no match found, so the track dies
+      deaths.push_back(trkIdx);
+    else {
+      continuations.push_back(IndexPair(trkIdx, pkIdx));
+      peakUsed[pkIdx] = true;
+    }
+  }
 
+  // loop over the "peakUsed" array to figure out births:
+  for(pkIdx = 0; pkIdx < numNewPeaks; pkIdx++) {
+    if(peakUsed[pkIdx] == false)
+      births.push_back(pkIdx);
+  }
 
-
-
+  // we have figured out the deaths, births and continuations - apply them:
+  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations);
 }
-
 
 template<class T>
 void SinusoidalAnalyzer<T>::applyContinuations(
