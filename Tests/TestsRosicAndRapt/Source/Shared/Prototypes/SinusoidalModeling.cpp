@@ -305,7 +305,8 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
   }
 
   // we have figured out the deaths, births and continuations - apply them:
-  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations);
+  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations, 
+    frameTimeDelta);
 }
 
 template<class T>
@@ -370,7 +371,8 @@ void SinusoidalAnalyzer<T>::continuePartialTracks2(
   }
 
   // we have figured out the deaths, births and continuations - apply them:
-  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations);
+  applyContinuations(newPeaks, aliveTracks, deadTracks, births, deaths, continuations, 
+    frameTimeDelta);
 }
 
 template<class T>
@@ -379,7 +381,7 @@ void SinusoidalAnalyzer<T>::applyContinuations(
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
   std::vector<size_t>& births, std::vector<size_t>& deaths,
-  std::vector<std::pair<size_t, size_t>>& continuations) const
+  std::vector<std::pair<size_t, size_t>>& continuations, T frameTimeDelta) const
 {
   size_t pkIdx;   // peak index
   size_t trkIdx;  // track index
@@ -398,20 +400,24 @@ void SinusoidalAnalyzer<T>::applyContinuations(
   // the aliveTracks array, we must do so from behind in order to not mess up the array indexes
   // inside the loop...
 
-  // kill discontinued tracks (where no matching peak was found for a track):
+  rsSinusoidalPartial<T> track;
+  rsInstantaneousSineParams<T> params;
+
+  // kill discontinued tracks by appending an additonal "fade-out" datapoint at the end of the 
+  // track and moving them from the aliveTracks to the deadTracks array:
   if(deaths.size() > 0) {  // can we get rid of this if? i think so
     for(i = (int) deaths.size()-1; i >= 0; i--) {
       trkIdx = deaths[i];
-      rsAppend(deadTracks, aliveTracks[trkIdx]);
-
-      // todo: append an additional datapoint with zero amplitude to the killed track for a smooth
-      // fade out (needs to take into account frameTimeDelta and direction to figure out the time 
-      // for the datapoint...actually just their product - maybe passed as one parameter)...but 
-      // maybe the fade-in/out may be shorter than one hopSize?
-
+      track  = aliveTracks[trkIdx];
+      params = track.getLastDataPoint(); // this returns a copy, so we may manipulate it withut affecting the last datapoint
+      params.time += frameTimeDelta;     // maybe the fade-out time can be made independent from the hopsize/frame-delta?
+      params.gain  = 0.0;
+      track.appendDataPoint(params);
+      rsAppend(deadTracks, track);
       rsRemove(aliveTracks, trkIdx); 
     }
   }
+
 
   // create new tracks (where no matching track was found for a peak):
   for(i = 0; i < births.size(); i++)

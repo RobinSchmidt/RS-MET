@@ -47,7 +47,7 @@ public:
 //=================================================================================================
 
 template<class T>
-class rsSinusoidalPartial
+class rsSinusoidalPartial  // maybe rename to rsSinusoidalTrack
 {
 
 public:
@@ -106,9 +106,23 @@ public:
 
   inline size_t getNumDataPoints() const { return instParams.size(); }
 
+
+  /** Returns the data point at given index. */
   inline rsInstantaneousSineParams<T> getDataPoint(size_t index) const 
   { 
     return instParams[index]; 
+  }
+
+  /** Returns the first data point. */
+  inline rsInstantaneousSineParams<T> getFirstDataPoint() const 
+  { 
+    return instParams[0]; 
+  }
+
+  /** Returns the last data point. */
+  inline rsInstantaneousSineParams<T> getLastDataPoint() const 
+  { 
+    return instParams[instParams.size()-1]; 
   }
 
 
