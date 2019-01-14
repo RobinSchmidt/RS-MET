@@ -81,7 +81,7 @@ protected:
     std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
     std::vector<size_t>& births, std::vector<size_t>& deaths,
     std::vector<std::pair<size_t, size_t>>& continuations,
-    T frameTimeDelta) const;
+    T fadeTime) const;
 
 
 
