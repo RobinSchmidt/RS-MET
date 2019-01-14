@@ -262,23 +262,33 @@ void sinusoidalSynthesis1()
 
   // make a sinusoidal analysis of the sound that we have just created and re-create the sound
   // from the model that results from this analysis:
-  SinusoidalAnalyzer<double> sa;
-  sa.setBlockSize(2048);
-  sa.setHopSize(256);
-  sa.setZeroPaddingFactor(2);
-  //sa.setWindowType...
-  model2 = sa.analyze(&x[0], (int)x.size(), fs);
-  std::vector<double> y = synthesizeSinusoidal(model2, fs);
   // maybe try the following parameters: 
   // maxFreqDeviation df = 100
   // windowType = Hamming -> B = 4, L = -42.7
-  // windowSize M >= B * fs / df = 4 * 44100 / 100 = 1764 -> use 1765 for odd size
+  // windowSize M >= B * fs / df = 4 * 44100 / 100 = 1764 -> use 1801 for odd size
   // threshold t >= L = -42.7 -> use t = -30
-
+  // i think, the Blackman-Nutall window is superior to the Blackman-Harris window - it has a
+  // slightly narrower mainlobe and better sidelobe rejection
+  SinusoidalAnalyzer<double> sa;
+  sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
+  sa.setMaxFreqDeltaBase(100);
+  //sa.setBlockSize(1801);  // does not yet work
+  //sa.setHopSize(225);
+  sa.setBlockSize(2048);
+  sa.setHopSize(256);
+  sa.setRelativeLevelThreshold(-40);
+  sa.setZeroPaddingFactor(2);
+  model2 = sa.analyze(&x[0], (int)x.size(), fs);
+  std::vector<double> y = synthesizeSinusoidal(model2, fs);
+  // there are loads of spurious partials - also, we need to wrap the phase into -pi..pi for the 
+  // fade-in/out datapoints, we may also need to apply fade-outs to all tracks that are alive until
+  // the end to properly finish them (there are spurious partials with length 2 which shouldn't 
+  // happen)
+  // there's one non-spurious track - but it seems to not represent the actual signal very well
+  // -> make tests with simpler signals and implement plotting facilities
   // maybe make a class SineModelPlotter which can plot the sinusoidal trajectories over the 
   // spectrogram and maybe plot also the time-domain waveform
   // - maybe have also a visualization of input and resynthesized signal
-
 
   rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
   int dummy = 0;

@@ -177,7 +177,7 @@ protected:
 
   int blockSize = 0;    // initialized in constructor which also generates the window functions   
   int hopSize   = 128;
-  // maybe we should also distiguish between analysisa and synthesis hop-and block-size
+  // maybe we should also distiguish between analysis and synthesis hop-and block-size
 
   int zeroPaddingFactor = 1;
   int analysisWindowType  = rsWindowFunction::HANNING_WINDOW_ZN;

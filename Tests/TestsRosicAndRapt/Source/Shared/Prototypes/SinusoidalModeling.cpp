@@ -325,10 +325,6 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T freq,
     return peaks.size();
 }
 
-// todo: get rid of the direction switch - it complicates the code and the same thing can be more 
-// easily achieved by just reversing the audio before processing and reversing the model data 
-// after processing
-
 template<class T>
 void SinusoidalAnalyzer<T>::continuePartialTracks0(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
@@ -474,8 +470,7 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
   // loop over the frames:
   while(frameIndex != lastFrame) {
 
-    //T time = frameIndex * sp.getHopSize() / sampleRate;
-    T time = frameIndex * frameDelta;
+    T time  = frameIndex * frameDelta;
     T* pMag = mag.getRowPointer(frameIndex);
     T* pPhs = phs.getRowPointer(frameIndex);
     std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
@@ -484,40 +479,29 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
     //plotData(numBins/64, &freqs[0], pPhs);
 
     // find spectral peaks:
-    T peakThresh = rsDbToAmp(-30.0); // should be somewhere above the sidelobe level - make user parameter
-    std::vector<int> peaks = peakIndices(pMag, numBins, peakThresh);
+    std::vector<int> peaks = peakIndices(pMag, numBins, magThreshold);
 
-    // determine exact peak frequencies, amplitudes (exact phases are left for later):
+    // determine exact peak frequencies, amplitudes and phases:
     instPeakParams.resize(peaks.size());
     for(size_t i = 0; i < peaks.size(); i++) {
       T peakBin, peakAmp;
       spectralMaximumPositionAndValue(pMag, peaks[i], &peakBin, &peakAmp);
-      T peakFreq = peakBin*sampleRate/sp.getFftSize();
-      //T peakPhase = 0; // preliminary - see comment below function for ideas 
-      T peakPhase = pPhs[peaks[i]]; // preliminary - maybe use interpolation later
+      T peakFreq  = peakBin*sampleRate/sp.getFftSize();
+      T peakPhase = pPhs[peaks[i]];      // maybe use interpolation later
       instPeakParams[i].time  = time;
       instPeakParams[i].freq  = peakFreq;
       instPeakParams[i].gain  = peakAmp;
       instPeakParams[i].phase = peakPhase;
     }
 
-    // peak continuation, birth or death:
-    //double maxFreqDelta = 2*binDelta; 
-    // replace factor 2 by user parameter - the minimum allowed value should also depend on the 
-    // width of the main lobe of the analysis window and later we should also let it have a 
-    // dependeny on the bin-center frequency - it seems to make more sense to use member variables
-    // for these things: freqDelta, freqDeltaSlope
-
-    // todo: dispatch between tracking algorithms:
+    // peak continuation, birth or death - todo: dispatch between tracking algorithms:
     continuePartialTracks0(instPeakParams, activeTracks, finishedTracks);
-
     frameIndex += 1;
   }
 
   rsSinusoidalModel<T> model;
   model.addPartials(finishedTracks);
   model.addPartials(activeTracks);
-
   return model;
 
   // algorithm:

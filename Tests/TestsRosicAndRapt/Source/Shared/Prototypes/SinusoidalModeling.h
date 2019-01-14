@@ -62,6 +62,14 @@ public:
   void setMaxFreqDeltaSlope(T newSlope) { maxFreqDeltaSlope = newSlope; }
 
 
+  /** Sets the magnitude threshold, above which a spectral peak must be, to be considered a 
+  potential sinusoidal track. The threshold is in decibels and relative to the global maximum of
+  the spectrum. A value of -40 means that peaks that are 40 dB below the global maximum are not 
+  considered. The value should typically be less than the sidelobe level of the analysis window in
+  order to not pick up on sidelobes. */
+  void setRelativeLevelThreshold(T newThreshold) { magThreshold = rsDbToAmp(newThreshold); }
+
+
   /** \name Inquiry */
 
   // T getRequiredWindowSize(int windowType, T freqDelta, T sampleRate);
@@ -160,6 +168,8 @@ protected:
   // frequency difference threshold parameters:
   T maxFreqDeltaBase  = 100;
   T maxFreqDeltaSlope = 0.01;
+
+  T magThreshold = 0.0;
 
   int contAlgo = 0;  // peak continuation algorithm
 

@@ -69,20 +69,20 @@ public:
   static T exactBlackman(T x, T length, T dummy = 0.0);
 
   /** Blackman window.
-  mainlobe width: ~3
+  mainlobe width: ~6
   sidelobe rejection: ~58 dB
   sidelobe rolloff: yes (figure out numerical value)  */
   template<class T>
   static void blackman(T *window, int length);
 
   /** Blackman-Harris window.
-  mainlobe width: ~4, 
+  mainlobe width: ~8, 
   sidelobe rejection: ~92 dB */
   template<class T>
   static void blackmanHarris(T *window, int length);
 
   /** Blackman-Nutall window. 
-  mainlobe width: ~4 (slighty narrower than Blackman-Harris)
+  mainlobe width: ~8 (slighty narrower than Blackman-Harris)
   sidelobe rejection: ~96.8 dB */
   template<class T>
   static void blackmanNutall(T *window, int length);
@@ -108,11 +108,15 @@ public:
   template<class T>
   static void cosinePower(T *window, int length, T power = 2.0);
 
-  /** Fills the window-array with a Hamming-window. */
+  /** Fills the window-array with a Hamming-window. 
+  mainlobe width: 4 
+  sidelobe rejection: ~42.7 dB  */
   template<class T>
   static void hamming(T *window, int length);
 
-  /** Fills the window-array with a Hanning-window. */
+  /** Fills the window-array with a Hanning-window. 
+  mainlobe width: 4 
+  sidelobe rejection: ~31.5 dB  */
   template<class T>
   static void hanning(T *window, int length);
   // todo: rename to specify the values at endpoints as done in rsHanningWindowZN
@@ -128,14 +132,14 @@ public:
 
   
   /** Fills the array with a rectangular window (i.e. just all ones).
-  mainlobe width: 1 (by definition)
+  mainlobe width: 2 
   sidelobe rejection: ~13.2 dB  
   sidelodbe rolloff: 6 dB/oct  (verify)  */
   template<class T>
   static void rectangular(T *window, int length);
 
   /** Triangular window.
-  mainlobe width: 2
+  mainlobe width: 4 (verify)
   sidelobe rejection: 26.5 dB
   sidelobe rolloff: 12 dB/oct   */
   template<class T>
