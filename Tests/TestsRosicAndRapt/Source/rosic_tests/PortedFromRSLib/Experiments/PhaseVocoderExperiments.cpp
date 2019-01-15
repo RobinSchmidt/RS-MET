@@ -292,8 +292,7 @@ void sinusoidalSynthesis1()
 
   plotSineModel(sa, &x[0], (int) x.size(), fs);
 
-  rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
-  int dummy = 0;
+  //rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
 }
 
 void sinusoidalAnalysis1()
