@@ -376,19 +376,82 @@ template class SpectrumPlotter<double>;
 //=================================================================================================
 
 template <class T>
+void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int numBins, 
+  T **s, T fs, int H, T dbMin, T dbMax)
+{
+  // fs: sample rate, H: hop size
+
+  // create time- and frequency axis and add the data:
+  double tMax = H*(numFrames-1)/fs;
+  double fMax =  0.5*fs*(numBins-1)/numBins;
+  double *t = new double[numFrames];
+  double *f = new double[numBins];
+  p.rangeLinear(t, numFrames, 0.0, tMax);
+  p.rangeLinear(f, numBins,   0.0, fMax);
+
+
+  p.setDataPrecision(4);                                  // make temp files smaller
+  p.addDataMatrix(numFrames, numBins, t, f, s);
+
+  // set up style settings:
+  //p.setAxisLabels("Time in s", "Frequency in Hz", "Level in dB");
+  p.setPixelSize(800, 400);
+  p.addGraph("i 0 nonuniform matrix w image notitle");
+
+  //p.addCommand("set palette color");                  // this is used by default
+  //p.addCommand("set palette color negative");         // reversed colors
+  //p.addCommand("set palette gray negative");          // maximum is black
+  //p.addCommand("set palette gray");                   // maximum is white
+  p.addCommand("set palette rgbformulae 30,31,32");     // colors printable as grayscale
+
+
+  // maybe use signal-dependent values later:
+  //double dbMin = -100.0;
+  //double dbMax =   10.0;
+  p.setRange(0.0, tMax, 0.0, fMax, dbMin, dbMax);
+  // doesn't seem to have any effect on the color axis (z). it seems like GNUPlot uses
+  // autoscaling for it, no matter what.
+
+  delete[] t;
+  delete[] f;
+}
+
+
+
+
+//=================================================================================================
+
+template <class T>
 void SinusoidalModelPlotter<T>::plot(const SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
 {
+  GNUPlotter plt;
 
-  bool plotSpectrogram = true; // make parameter - maybe make a class SineModelPlotter - we have
-                               // too many parameters for a simple function
-  RAPT::rsMatrix<std::complex<T>> stft = sa.getComplexSpectrogram(x, N);
+  // todo: plot the spectrogram underneath the sine tracks - when doing so, the tracks are not 
+  // plotted
+  bool plotSpectrogram = false; // make member, let user set it
+  if(plotSpectrogram == true)
+  {
+    RAPT::rsMatrix<std::complex<T>> stft = sa.getComplexSpectrogram(x, N);
+
+    int numBins   = stft.getNumRows();
+    int numFrames = stft.getNumColumns();
+
+    RAPT::rsMatrix<T> dB(stft.getNumRows(), stft.getNumColumns());
+    for(int i = 0; i < dB.getNumRows(); i++)
+      for(int j = 0; j < dB.getNumColumns(); j++)
+        dB(i, j) = rsAmpToDb(abs(stft(i, j)));
+
+    dB.transpose();
+
+    addSpectrogramData(plt, numFrames, numBins, dB.getDataPointer(), fs, sa.getHopSize(), 
+      minDb, maxDb);
+  }
 
 
-  // todo: plot the spectrogram underneath the sine tracks
 
   RAPT::rsSinusoidalModel<double> model = sa.analyze(x, N, fs);
   std::vector<float> t, f; // we plot frequency vs time
-  GNUPlotter plt;
+
   for(size_t i = 0; i < model.getNumPartials(); i++) {
     rsSinusoidalPartial<double> p = model.getPartial(i);
     size_t L = p.getNumDataPoints();

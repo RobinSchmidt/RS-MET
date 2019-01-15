@@ -108,6 +108,9 @@ void plotVector(std::vector<double> v)
 void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H, 
   double dbMin, double dbMax)
 {
+  // todo:
+  // code copied to class SpectrogramPlotter - call it here and delete code below
+
   // fs: sample rate, H: hop size
 
   GNUPlotter p;

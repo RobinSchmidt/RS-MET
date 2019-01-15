@@ -86,7 +86,8 @@ public:
   // todo: check SMS tool which formula is used there (this here is my ad-hoc formula)
   // i think, the value should depend on (be proportional to) the hop-size
 
-
+  /** Returns the analysis hop size. */
+  int getHopSize() const { return sp.getHopSize(); }
 
 
   /** \name Processing */

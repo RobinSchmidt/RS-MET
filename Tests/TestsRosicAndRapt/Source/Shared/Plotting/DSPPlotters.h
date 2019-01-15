@@ -224,9 +224,30 @@ protected:
 
 };
 
+//=================================================================================================
+
+/** A class for plotting spectrograms */
+
+template<class T>
+class SpectrogramPlotter
+{
+
+public:
 
 
+  //static void plotSpectrogram(int numFrames, int numBins, double **decibels, double sampleRate,
+  //  int hopSize, double dbMin = -100, double dbMax = +10);
 
+  void addSpectrogramData(GNUPlotter& plt, int numFrames, int numBins, T **decibels, 
+    T sampleRate, int hopSize, T dbMin = -100, T dbMax = 0);
+
+
+protected:
+
+  T minFreq = 0, maxFreq = RS_INF(T);
+  T minDb = -100, maxDb = 0;
+
+};
 
 //=================================================================================================
 
@@ -235,12 +256,13 @@ protected:
 #include "../Prototypes/SinusoidalModeling.h" // should not be necessary - figure out why this is needed
 
 template<class T>
-class SinusoidalModelPlotter
+class SinusoidalModelPlotter : public SpectrogramPlotter<T>
 {
 
 public:
 
   void plot(const SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
+  // rename to plotSineTracks - factor out addSineTrackData function
 
 protected:
 
