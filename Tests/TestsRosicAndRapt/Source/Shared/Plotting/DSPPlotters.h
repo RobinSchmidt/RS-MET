@@ -224,25 +224,29 @@ protected:
 
 };
 
+
+
+
+
 //=================================================================================================
 
 /** A class for plotting the analysis results of the sinusoidal model */
-/*
+
+#include "../Prototypes/SinusoidalModeling.h" // should not be necessary - figure out why this is needed
+
 template<class T>
 class SinusoidalModelPlotter
 {
 
 public:
 
-  void plot(const SinusoidalAnalyzer& sa, T* sampleData, int N, T sampleRate);
+  void plot(const SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
 
 protected:
 
 };
-*/
 
+// todo: make a baseclass SpectrogramPlotter
 
-
-// todo: make a class SpectrogramPlotter
 
 #endif

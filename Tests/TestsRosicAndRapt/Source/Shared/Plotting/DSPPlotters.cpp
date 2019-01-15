@@ -373,3 +373,38 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x
 template class SpectrumPlotter<float>;
 template class SpectrumPlotter<double>;
 
+//=================================================================================================
+
+template <class T>
+void SinusoidalModelPlotter<T>::plot(const SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
+{
+
+  bool plotSpectrogram = true; // make parameter - maybe make a class SineModelPlotter - we have
+                               // too many parameters for a simple function
+  RAPT::rsMatrix<std::complex<T>> stft = sa.getComplexSpectrogram(x, N);
+
+
+  // todo: plot the spectrogram underneath the sine tracks
+
+  RAPT::rsSinusoidalModel<double> model = sa.analyze(x, N, fs);
+  std::vector<float> t, f; // we plot frequency vs time
+  GNUPlotter plt;
+  for(size_t i = 0; i < model.getNumPartials(); i++) {
+    rsSinusoidalPartial<double> p = model.getPartial(i);
+    size_t L = p.getNumDataPoints();
+    t.resize(L);
+    f.resize(L);
+    for(size_t j = 0; j < L; j++) {
+      t[j] = (float)p.getDataPoint(j).time;
+      f[j] = (float)p.getDataPoint(j).freq;
+    }
+    plt.addDataArrays((int)L, &t[0], &f[0]);
+    plt.setGraphColor((int)i+1, "000000");
+  }
+
+  plt.plot();
+}
+
+
+
+template class SinusoidalModelPlotter<double>;

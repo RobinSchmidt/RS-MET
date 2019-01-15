@@ -188,26 +188,8 @@ void stemPlot(int N, double *x, double *y)
 
 void plotSineModel(const SinusoidalAnalyzer<double>& sa, double* x, int N, double fs)
 {
-  RAPT::rsSinusoidalModel<double> model = sa.analyze(x, N, fs);
-
-  // todo: plot the spectrogram underneath the sine tracks, let the sine tracks all use the same
-  // color
-
-  std::vector<float> t, f; // we plot frequency vs time
-  GNUPlotter plt;
-  for(size_t i = 0; i < model.getNumPartials(); i++) {
-    rsSinusoidalPartial<double> p = model.getPartial(i);
-    size_t L = p.getNumDataPoints();
-    t.resize(L);
-    f.resize(L);
-    for(size_t j = 0; j < L; j++) {
-      t[j] = p.getDataPoint(j).time;
-      f[j] = p.getDataPoint(j).freq;
-    }
-    plt.addDataArrays(L, &t[0], &f[0]);
-  }
-
-  plt.plot();
+  SinusoidalModelPlotter<double> plt;
+  plt.plot(sa, x, N, fs);
 }
 
 
