@@ -299,20 +299,10 @@ void sinusoidalAnalysis1()
 {
   // test signal parameters:
   double sampleRate = 48000;  // in Hz
-  double frequency  = 100;    // in Hz
+  double frequency  = 3000;   // in Hz
   double length     = 0.2;    // in seconds
   double startPhase = 0.0;    // in radians
 
-  //// test
-  //frequency = 5000;
-  //length = 0.05; 
-
-  // create and set up analyzer:
-  SinusoidalAnalyzer<double> sa;
-  sa.setBlockSize(1024);
-  sa.setHopSize(256);
-  sa.setZeroPaddingFactor(1);
-  //sa.setWindowType...
 
   // create signal:
   double period = sampleRate / frequency;    // in samples
@@ -321,8 +311,25 @@ void sinusoidalAnalysis1()
   for(int n = 0; n < N; n++)
     x[n] = sin(n * 2*PI*frequency/sampleRate + startPhase);
 
+
+  // create and set up analyzer:
+  SinusoidalAnalyzer<double> sa;
+  sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
+  sa.setMaxFreqDeltaBase(100);
+  sa.setBlockSize(1024);
+  sa.setHopSize(256);
+  sa.setZeroPaddingFactor(2);
+  sa.setRelativeLevelThreshold(-25);
+
+  plotSineModel(sa, &x[0], (int) x.size(), sampleRate);
+
   // find model for the signal:
   rsSinusoidalModel<double> model = sa.analyze(&x[0], N, sampleRate);
+
+  // ok - aside from spurious tracks at the start/end (transients?) it looks good -> clean up by
+  // delting spurious tracks and "finalize" tracks by applying fade-outs
+  // ->figure out, why we get spurious tracks, even at a threshold of -25 dB which is clearly above
+  // the sidelobe level of -42 dB of the Hamming window
 
 
   // todo: resynthesize and create residual

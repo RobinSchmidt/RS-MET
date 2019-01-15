@@ -323,7 +323,7 @@ int main(int argc, char* argv[])
   //grainRoundTrip();        // under construction
   //plotWindows();
   //spectrogramSine();
-  sinusoidalSynthesis1();
+  //sinusoidalSynthesis1();
   sinusoidalAnalysis1();
 
 
