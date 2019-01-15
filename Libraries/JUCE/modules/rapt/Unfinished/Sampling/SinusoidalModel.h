@@ -100,6 +100,12 @@ public:
     return instParams[instParams.size()-1].getTime(); 
   }
 
+  /** Returns the total length in seconds. */
+  inline T getLength() const
+  {
+    return getEndTime() - getStartTime();
+  }
+
 
 
   inline T getStartFreq() const 

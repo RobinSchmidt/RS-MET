@@ -320,7 +320,9 @@ void sinusoidalAnalysis1()
   sa.setHopSize(256);
   sa.setZeroPaddingFactor(4);
   sa.setRelativeLevelThreshold(-25);
-
+  sa.setFadeInTime(0.01);
+  sa.setFadeOutTime(0.01);
+  sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
   plotSineModel(sa, &x[0], (int) x.size(), sampleRate);
 
   // find model for the signal:
@@ -337,6 +339,9 @@ void sinusoidalAnalysis1()
   // window - this creates higher sidelobes. well within the signal, the window spectrum looks as
   // expected - OK - all is good. these are just transient artifacts and we should clean them up
   // by deleting the spurious tracks
+
+  // todo: implement zero-phase windowing, arbitrary window-sizes and hop-sizes for spectrogram 
+  // -> always check identity resynthesis with unit test
 
   // todo: resynthesize and create residual
 

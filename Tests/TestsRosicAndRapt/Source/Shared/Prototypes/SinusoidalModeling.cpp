@@ -566,7 +566,12 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
 template<class T>
 void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
 {
+  // todo: merge partials (before removing spurious ones)
 
+  // remove spurious partials (maybe factor out):
+  for(int i = (int)model.getNumPartials()-1; i >= 0; i--)  
+    if(model.getPartial(i).getLength() < minTrackLength)
+      model.removePartial(i);
 }
 
 template class SinusoidalAnalyzer<double>;
