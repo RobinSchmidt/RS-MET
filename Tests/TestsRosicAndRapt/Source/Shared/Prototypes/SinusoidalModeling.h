@@ -69,6 +69,10 @@ public:
   order to not pick up on sidelobes. */
   void setRelativeLevelThreshold(T newThreshold) { magThreshold = rsDbToAmp(newThreshold); }
 
+  /** Sets the minimum length (in seconds) that a track must have in order to be considered a 
+  stable partial. */
+  void setMinimumTrackLength(T newLength) { minTrackLength = newLength; }
+
 
   /** \name Inquiry */
 
@@ -159,12 +163,18 @@ protected:
     std::vector<size_t>& births, std::vector<size_t>& deaths,
     std::vector<std::pair<size_t, size_t>>& continuations) const;
 
+  /** Applies some post-processing to the model to clean it up such as deleting spurious tracks, 
+  merging tracks that seem to represent a single partial, etc. */
+  void cleanUpModel(RAPT::rsSinusoidalModel<T>& model) const;
+
 
 
 
   // fade-in and fade-out times for partials (in seconds):
   T fadeInTime  = 0.01;
   T fadeOutTime = 0.01;
+
+  T minTrackLength = 0;
 
   // frequency difference threshold parameters:
   T maxFreqDeltaBase  = 100;

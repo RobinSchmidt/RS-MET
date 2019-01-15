@@ -327,7 +327,7 @@ void sinusoidalAnalysis1()
   rsSinusoidalModel<double> model = sa.analyze(&x[0], N, sampleRate);
 
   // ok - aside from spurious tracks at the start/end (transients?) it looks good -> clean up by
-  // delting spurious tracks and "finalize" tracks by applying fade-outs
+  // deleting spurious tracks and "finalize" tracks by applying fade-outs
   // ->figure out, why we get spurious tracks, even at a threshold of -25 dB which is clearly above
   // the sidelobe level of -42 dB of the Hamming window - hmm - there are indeed sidelobes in the 
   // spectrum that are higher than that - why? is the window messed up? the window spectrum looks 
@@ -336,7 +336,7 @@ void sinusoidalAnalysis1()
   // this is like imposing an additional rectangular window - zeroing out the left half of the
   // window - this creates higher sidelobes. well within the signal, the window spectrum looks as
   // expected - OK - all is good. these are just transient artifacts and we should clean them up
-  // by deleting the spurioud tracks
+  // by deleting the spurious tracks
 
   // todo: resynthesize and create residual
 

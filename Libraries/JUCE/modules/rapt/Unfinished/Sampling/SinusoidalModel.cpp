@@ -1,6 +1,24 @@
+template<class T>
+void rsSinusoidalPartial<T>::applyFadeIn(T fadeTime)
+{
+  rsInstantaneousSineParams<T> params = getFirstDataPoint();
+  params.time  -= fadeTime;
+  params.gain   = 0.0;
+  params.phase -= 2*PI*fadeTime*params.freq; // is this correct? we need to wrap to -pi..pi
+  prependDataPoint(params);
+}
 
+template<class T>
+void rsSinusoidalPartial<T>::applyFadeOut(T fadeTime)
+{
+  rsInstantaneousSineParams<T> params = getLastDataPoint();
+  params.time  += fadeTime;
+  params.gain   = 0.0;
+  params.phase += 2*PI*fadeTime*params.freq; // wrap to -pi...+pi?
+  appendDataPoint(params);
+}
 
-
+//=================================================================================================
 
 
 template<class T>

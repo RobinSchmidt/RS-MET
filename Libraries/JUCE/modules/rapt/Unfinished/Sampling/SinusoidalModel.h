@@ -55,6 +55,7 @@ public:
 
   /** \name Setup */
 
+  /** Appends the given datapoint at the end. */
   inline void appendDataPoint(const rsInstantaneousSineParams<T>& params)
   {
     rsAssert(params.getTime() >= getEndTime()); // can only append to the end for insertion at random
@@ -62,11 +63,23 @@ public:
     rsAppend(instParams, params);
   }
 
+  /** Prepends given datapoint at the front. */
   inline void prependDataPoint(const rsInstantaneousSineParams<T>& params)
   {
     rsAssert(params.getTime() <= getStartTime()); // can only prepend at the start
     rsPrepend(instParams, params);
   }
+
+  /** Prepends a zero amplitude datapoint at the front with frequency equal to the start 
+  frequency, a time-stamp given by the start time minus the fadeTime and appropriately chosen 
+  phase. */
+  void applyFadeIn(T fadeTime);
+
+
+  /** Appends a zero amplitude datapoint at the front with frequency equal to the end
+  frequency, a time-stamp given by the end time plus the fadeTime and appropriately chosen 
+  phase. */
+  void applyFadeOut(T fadeTime);
 
   // maybe have insertDataPoint function
 

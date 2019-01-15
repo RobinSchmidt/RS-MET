@@ -400,15 +400,8 @@ void SinusoidalAnalyzer<T>::applyContinuations(
     for(i = (int) deaths.size()-1; i >= 0; i--) {
       trkIdx = deaths[i];
       track  = aliveTracks[trkIdx];
-
-      if(fadeOutTime > T(0)) {
-        params = track.getLastDataPoint(); // returns a copy
-        params.time  += fadeOutTime;
-        params.gain   = 0.0;
-        params.phase += 2*PI*fadeOutTime*params.freq; // is this correct? maybe it should be wrapped to -pi...+pi?
-        track.appendDataPoint(params);
-      }
-
+      if(fadeOutTime > T(0))
+        track.applyFadeOut(fadeOutTime);
       rsAppend(deadTracks, track);
       rsRemove(aliveTracks, trkIdx); 
     }
@@ -421,12 +414,8 @@ void SinusoidalAnalyzer<T>::applyContinuations(
     params = newPeaks[pkIdx];
     RAPT::rsSinusoidalPartial<T> newTrack;
     newTrack.appendDataPoint(params);
-    if(fadeInTime > T(0)) {
-      params.time  -= fadeInTime;
-      params.gain   = 0.0;
-      params.phase -= 2*PI*fadeInTime*params.freq; // is this correct?
-      newTrack.prependDataPoint(params);
-    }
+    if(fadeInTime > T(0)) 
+      newTrack.applyFadeIn(fadeInTime);
     aliveTracks.push_back(newTrack);
   }
 }
@@ -494,7 +483,7 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
 
 
     //plotData(numBins, pMag);
-    plotDecibels(numBins, &freqs[0], pMag); // for development
+    //plotDecibels(numBins, &freqs[0], pMag); // for development
     //plotData(numBins, &freqs[0], pMag); // for development
     //plotData(numBins, &freqs[0], pPhs);
 
@@ -519,10 +508,16 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
     frameIndex += 1;
   }
 
+  // create and return the model data structure:
   rsSinusoidalModel<T> model;
-  model.addPartials(finishedTracks);
-  model.addPartials(activeTracks);
+  model.addPartials(finishedTracks);       // add the finished tracks to the model
+  if(fadeOutTime > T(0))                   // "finalize" active tracks by applying fade-out...
+    for(size_t i = 0; i < activeTracks.size(); i++)
+      activeTracks[i].applyFadeOut(fadeOutTime);
+  model.addPartials(activeTracks);         // ...and add them, too
+  cleanUpModel(model);                     // remove spurious tracks, merge, etc.
   return model;
+
 
   // algorithm:
 
@@ -566,6 +561,12 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
 
   rsMatrix<std::complex<T>> stft = getComplexSpectrogram(sampleData, numSamples);
   return analyzeSpectrogram(stft, sampleRate);
+}
+
+template<class T>
+void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
+{
+
 }
 
 template class SinusoidalAnalyzer<double>;
