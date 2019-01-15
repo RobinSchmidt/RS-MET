@@ -148,8 +148,11 @@ std::vector<int> peakIndices(T* x, int N, T threshToMax = 0)
   T max = RAPT::rsArray::maxValue(x, N);
   std::vector<int> peaks;
   for(int i = 1; i < N-1; i++)
+  {
+    T dbg = x[i];
     if(x[i] > x[i-1] && x[i] > x[i+1] && x[i] > threshToMax*max)
       peaks.push_back(i);
+  }
   return peaks;
 } 
 // move to library, maybe have additional criteria like a threshold with respect to the rms, minimum
@@ -435,6 +438,17 @@ rsMatrix<std::complex<T>> SinusoidalAnalyzer<T>::getComplexSpectrogram(
   return sp.complexSpectrogram(sampleData, numSamples);
 }
 
+
+
+void plotDecibels(int N, double* x, double *mag)
+{
+  double* dB = new double[N];
+  for(int i = 0; i < N; i++)
+    dB[i] = rsAmpToDbWithCheck(mag[i], 0.00000001);
+  plotData(N, x, dB);
+  delete[] dB;
+}
+
 template<class T>
 RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
   const RAPT::rsMatrix<std::complex<T>>& stft, T sampleRate) const
@@ -465,7 +479,10 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
   // needed for plotting only:
   std::vector<T> freqs(numBins);
   for(int i = 0; i < numBins; i++)
-    freqs[i] = i * sampleRate / sp.getFftSize();
+  {
+    //freqs[i] = i * sampleRate / sp.getFftSize(); // plot against actual frequency
+    freqs[i] = i;  // plot against bin idex
+  }
 
   // loop over the frames:
   while(frameIndex != lastFrame) {
@@ -475,8 +492,11 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
     T* pPhs = phs.getRowPointer(frameIndex);
     std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
 
-    //plotData(numBins/64, &freqs[0], pMag); // for development
-    //plotData(numBins/64, &freqs[0], pPhs);
+
+    //plotData(numBins, pMag);
+    plotDecibels(numBins, &freqs[0], pMag); // for development
+    //plotData(numBins, &freqs[0], pMag); // for development
+    //plotData(numBins, &freqs[0], pPhs);
 
     // find spectral peaks:
     std::vector<int> peaks = peakIndices(pMag, numBins, magThreshold);

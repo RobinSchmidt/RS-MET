@@ -318,7 +318,7 @@ void sinusoidalAnalysis1()
   sa.setMaxFreqDeltaBase(100);
   sa.setBlockSize(1024);
   sa.setHopSize(256);
-  sa.setZeroPaddingFactor(2);
+  sa.setZeroPaddingFactor(4);
   sa.setRelativeLevelThreshold(-25);
 
   plotSineModel(sa, &x[0], (int) x.size(), sampleRate);
@@ -329,7 +329,9 @@ void sinusoidalAnalysis1()
   // ok - aside from spurious tracks at the start/end (transients?) it looks good -> clean up by
   // delting spurious tracks and "finalize" tracks by applying fade-outs
   // ->figure out, why we get spurious tracks, even at a threshold of -25 dB which is clearly above
-  // the sidelobe level of -42 dB of the Hamming window
+  // the sidelobe level of -42 dB of the Hamming window - hmm - there are indeed sidelobes in the 
+  // spectrum that are higher than that - why? is the window messed up? the window spectrum looks 
+  // kinda strange anyway - plot the window and its spectrum
 
 
   // todo: resynthesize and create residual
