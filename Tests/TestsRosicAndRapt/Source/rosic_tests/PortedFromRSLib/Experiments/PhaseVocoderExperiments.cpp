@@ -278,8 +278,8 @@ void sinusoidalSynthesis1()
   sa.setHopSize(256);
   sa.setRelativeLevelThreshold(-40);
   sa.setZeroPaddingFactor(2);
-  model2 = sa.analyze(&x[0], (int)x.size(), fs);
-  std::vector<double> y = synthesizeSinusoidal(model2, fs);
+  //model2 = sa.analyze(&x[0], (int)x.size(), fs);
+  //std::vector<double> y = synthesizeSinusoidal(model2, fs);
   // there are loads of spurious partials - also, we need to wrap the phase into -pi..pi for the 
   // fade-in/out datapoints, we may also need to apply fade-outs to all tracks that are alive until
   // the end to properly finish them (there are spurious partials with length 2 which shouldn't 
@@ -289,6 +289,8 @@ void sinusoidalSynthesis1()
   // maybe make a class SineModelPlotter which can plot the sinusoidal trajectories over the 
   // spectrogram and maybe plot also the time-domain waveform
   // - maybe have also a visualization of input and resynthesized signal
+
+  plotSineModel(sa, &x[0], (int) x.size(), fs);
 
   rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
   int dummy = 0;

@@ -224,6 +224,23 @@ protected:
 
 };
 
+//=================================================================================================
+
+/** A class for plotting the analysis results of the sinusoidal model */
+/*
+template<class T>
+class SinusoidalModelPlotter
+{
+
+public:
+
+  void plot(const SinusoidalAnalyzer& sa, T* sampleData, int N, T sampleRate);
+
+protected:
+
+};
+*/
+
 
 
 // todo: make a class SpectrogramPlotter

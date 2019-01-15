@@ -2,7 +2,7 @@
 #define RAPT_EXECUTABLES_SHARED_H
 
 
-#include "Plotting/Plotting.h"
+
 
 //#include "RaptLibraryCode/RaptTypedefInstantiations.h"
 #include "Utilities/TestInputCreation.h"
@@ -12,6 +12,10 @@
 
 //#include "Prototypes/LindenmayerSystem.h"
 #include "Prototypes/Prototypes.h"
+
+#include "Plotting/Plotting.h"
+
+
 
 //#include "rosic/rosic.h"
 

@@ -186,6 +186,18 @@ void stemPlot(int N, double *x, double *y)
   plt.plot();
 }
 
+void plotSineModel(const SinusoidalAnalyzer<double>& sa, double* x, int N, double fs)
+{
+  RAPT::rsSinusoidalModel<double> model = sa.analyze(x, N, fs);
+
+
+  //RAPT::rsSinusoidalAnalyzer
+  //rosic::Sinus
+
+  GNUPlotter plt;
+
+
+}
 
 
 

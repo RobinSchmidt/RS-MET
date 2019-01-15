@@ -134,4 +134,9 @@ void stemPlot(int N, double *x, double *y);
 
 
 
+#include "../Prototypes/SinusoidalModeling.h" // should not be necessary - figure out why this is needed
+void plotSineModel(const SinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
+  double sampleRate);
+
+
 #endif
