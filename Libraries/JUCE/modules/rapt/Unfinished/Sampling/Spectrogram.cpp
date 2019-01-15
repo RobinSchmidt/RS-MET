@@ -59,6 +59,7 @@ void rsSpectrogram<T>::hanningWindowZN(T *w, int N)
 }
 */
 
+
 // x: signal, N: number of samples, n: block center sample, w: window, B: blocksize, M: FFT size,
 // X: complex short-time spectrum (output)
 template<class T>
@@ -75,6 +76,17 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, const T* w,
   rsArray::copySection(x, N, Xs, n-B/2, B); // copy signal section into FFT buffer (convert to complex)
   for(int i = 0; i < B; i++)                // apply window
     Xs[i] *= w[i];
+
+
+//// plot the windowed segment:
+//#ifdef RS_DEBUG_PLOTTING
+//  std::vector<T> dbg(M);
+//  for(int i = 0; i < M; i++)
+//    dbg[i] = real(X[i]);
+//  GNUPlotter plt;
+//  plt.plotArrays(M, &dbg[0]);
+//#endif
+
 
   // shift buffer to make the window center the reference for phase values
   // ...

@@ -67,6 +67,15 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
 
 
 
+template<class T>
+void plotArrays(int N, T *y1, T *y2, T *y3, T *y4, T *y5, T *y6, T *y7, T *y8, T *y9)
+{
+  GNUPlotter plt;
+  plt.plotArrays(N, y1, y2, y3, y4, y5, y6, y7, y8, y9);
+}
+template void  plotArrays(int N, double *y1, double *y2, double *y3, double *y4, double *y5, 
+  double *y6, double *y7, double *y8, double *y9);
+
 // new from RSLib test - needs testing:
 
 void plotData(int N, double *x, double *y1, double *y2, double *y3, double *y4, double *y5)

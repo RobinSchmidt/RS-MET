@@ -48,6 +48,7 @@
 //#define RS_DEBUG_PLOTTING
 #ifdef RS_DEBUG_PLOTTING
 #include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
+//#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/Plotting.h"
 #endif
 // todo: make it work also in other projects (maybe i need to drag the GNUPlotCPP code into the
 // rapt module and conditionally compile it ...but then i will need to uncomment the define

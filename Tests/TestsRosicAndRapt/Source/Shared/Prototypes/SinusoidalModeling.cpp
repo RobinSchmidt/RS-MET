@@ -440,7 +440,7 @@ rsMatrix<std::complex<T>> SinusoidalAnalyzer<T>::getComplexSpectrogram(
 
 
 
-void plotDecibels(int N, double* x, double *mag)
+void plotDecibels(int N, double* x, double *mag) // for debug-plotting
 {
   double* dB = new double[N];
   for(int i = 0; i < N; i++)

@@ -332,7 +332,11 @@ void sinusoidalAnalysis1()
   // the sidelobe level of -42 dB of the Hamming window - hmm - there are indeed sidelobes in the 
   // spectrum that are higher than that - why? is the window messed up? the window spectrum looks 
   // kinda strange anyway - plot the window and its spectrum
-
+  // aaahhh - OK - it is because the first few frames have the switch-on - in the very first frame,
+  // this is like imposing an additional rectangular window - zeroing out the left half of the
+  // window - this creates higher sidelobes. well within the signal, the window spectrum looks as
+  // expected - OK - all is good. these are just transient artifacts and we should clean them up
+  // by deleting the spurioud tracks
 
   // todo: resynthesize and create residual
 

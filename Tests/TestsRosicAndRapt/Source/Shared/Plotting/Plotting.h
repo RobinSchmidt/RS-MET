@@ -98,6 +98,10 @@ inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSi
 
 // new, dragged over from RSLib tests (TestUtilities.h):
 
+template<class T>
+void plotArrays(int N, T *y1, T *y2 = nullptr, T *y3 = nullptr, T *y4 = nullptr, T *y5 = nullptr,
+  T *y6 = nullptr, T *y7 = nullptr, T *y8 = nullptr, T *y9 = nullptr);
+
 // convenience functions for interfacing with the Plotter class (they manage instantiation and
 // setup of Plotter objects for frequently used cases):
 void plotData(int N, double *x, double *y1, double *y2 = NULL, double *y3 = NULL,
