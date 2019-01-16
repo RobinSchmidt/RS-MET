@@ -6,8 +6,7 @@
 
 //=================================================================================================
 
-/** This class was copied/pasted/edited from rsFloat64x2 and is completely analogous. 
-...but it's not yet complete and not yet tested... */
+/** This class was copied/pasted/edited from rsFloat64x2 and is completely analogous. */
 
 class rsFloat32x4
 {
@@ -45,8 +44,8 @@ public:
   inline float get(size_t i) const { return asArray()[i]; }
   // redundant with [] ...but this is const
 
-  /** Writes our vecotr into the 4-element float array p. (needs test, maybe implement a similar 
-  function for rsFloat64x2 - this has beedn added after copy/paste ) */
+  /** Writes our vector into the 4-element float array p. (needs test, maybe implement a similar 
+  function for rsFloat64x2 - this has been added after copy/paste ) */
   inline void get(float* p) const { _mm_store_ps(p, v); }
 
   /** Returns the sum of the values of both scalar elements in the vector. */

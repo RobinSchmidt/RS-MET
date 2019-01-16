@@ -138,7 +138,9 @@ void rsPrimeFactors(T x, std::vector<T>& factors, std::vector<T>& exponents,
     //rsFindPrimesUpTo(*primeTable, limit);
     rsFindPrimesUpTo(*primeTable, x); 
     // this function takes the rsIntSqrt itself internally and we dont want sqrt(sqrt(x))...
-    // take a closer look, make unit test
+    // take a closer look, make unit test - the unit tests now take MUCH longer such that it feels
+    // like a hang - but i think, it takes legitimately a long time (the unit test code for these
+    // factorings is currently commented out)
   }
 
   T i  = 0;

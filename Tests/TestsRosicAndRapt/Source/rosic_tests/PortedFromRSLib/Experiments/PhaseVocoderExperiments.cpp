@@ -231,6 +231,7 @@ void spectrogramSine()
     err[n] = x[n] - y[n];
 
   // todo: experiment with non-power-of-2 blocksizes, maybe also use odd blocksizes, etc.
+  // turn into unit test - use noisy input signals
   int dummy = 0;
 }
 
