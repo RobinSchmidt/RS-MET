@@ -6,6 +6,7 @@
 #include "ImageUnitTests.h"
 #include "DrawingUnitTests.h"
 #include "FilterUnitTests.h"
+#include "MiscUnitTests.h"
 
 bool runAllUnitTests();
 

@@ -167,12 +167,12 @@ void spectrogramSine()
 {
   static const int B  = 512;            // blocksize
   static const int H  = B/4;            // hopsize
-  static const int N  = 10000;           // number of samples in the test signal
+  static const int N  = 10000;          // number of samples in the test signal
   static const int P  = 1;              // zero-padding factor
   static const int M  = B*P;            // FFT size
   static const int K  = M/2 + 1;        // number of non-redundant bins
   double           fs = 44100;          // samplerate
-  double           f  = 5000;            // sinusoid frequency
+  double           f  = 5000;           // sinusoid frequency
 
   // A hopsize of B/4 will result in a constant when overlapping successive frames, assuming that
   // the window is applied twice (once in the analysis stage and once in the synthesis stage). This

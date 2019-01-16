@@ -257,6 +257,9 @@
     <Filter Include="Juce Modules\rosic\_third_party\soundtouch">
       <UniqueIdentifier>{447B93E0-F603-5EE1-ABE6-6139F4C1F1C1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\SSE-Math">
+      <UniqueIdentifier>{B75058B2-1DA8-A5B8-F563-4D6BE269D820}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rosic\_third_party\tnt">
       <UniqueIdentifier>{C4BE953C-C662-76BD-46BE-1DF0C975DBBC}</UniqueIdentifier>
     </Filter>
@@ -410,6 +413,9 @@
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\MathUnitTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\MiscUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTests.cpp">
@@ -1033,6 +1039,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram - Copy.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
@@ -1434,6 +1443,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.cpp">
       <Filter>Juce Modules\rosic\_third_party\soundtouch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SSE-Math\sse_mathfun_test.c">
+      <Filter>Juce Modules\rosic\_third_party\SSE-Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_BeatDetector.cpp">
       <Filter>Juce Modules\rosic\analysis</Filter>
@@ -2553,6 +2565,9 @@
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\MathUnitTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\MiscUnitTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClInclude>
@@ -3270,6 +3285,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram - Copy.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
@@ -3630,6 +3648,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.h">
       <Filter>Juce Modules\rosic\_third_party\soundtouch</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SSE-Math\sse_mathfun.h">
+      <Filter>Juce Modules\rosic\_third_party\SSE-Math</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_cholesky.h">
       <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
     </ClInclude>
@@ -3759,13 +3780,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\ComplexFloat64x2.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4 - Copy.h">
-      <Filter>Juce Modules\rosic\basics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h">
-      <Filter>Juce Modules\rosic\basics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h-broken.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float64x2.h">
@@ -4885,6 +4900,9 @@
     </None>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\README.md">
       <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
+    </None>
+    <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SSE-Math\License.txt">
+      <Filter>Juce Modules\rosic\_third_party\SSE-Math</Filter>
     </None>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\ToDo.txt">
       <Filter>Juce Modules\rosic\infrastructure</Filter>

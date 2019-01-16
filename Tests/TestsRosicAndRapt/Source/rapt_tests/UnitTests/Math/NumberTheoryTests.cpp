@@ -100,11 +100,9 @@ bool testPrimeFactorization(std::string &reportString)
   std::string testName = "PrimeFactorization";
   bool testResult = true;
 
-  rsUint32 x;
-  std::vector<rsUint32> p, f, e;
-
 
   // factor all numbers from 0 to N and reconstruct them (todo: include negative numbers, too):
+  std::vector<rsUint32> p, f, e;
   rsUint32 N = 100;
   for(rsUint32 i = 0; i <= N; i++) {
     rsPrimeFactors(i, f, e);
@@ -118,7 +116,7 @@ bool testPrimeFactorization(std::string &reportString)
   // with taking the integer square-root twice in rsPrimeFactors ...figure out...
 
   // factor some larger example numbers:
-  x = 507996720; // = 2^4 * 3^2 * 5^1 * 7^3 * 11^2 * 17^1
+  rsUint32 x = 507996720; // = 2^4 * 3^2 * 5^1 * 7^3 * 11^2 * 17^1
   rsPrimeFactors(x, f, e);
   testResult &= f.size() == 6;
   testResult &= f[0] ==  2 && e[0] == 4;

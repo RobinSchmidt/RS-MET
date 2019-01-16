@@ -6,6 +6,7 @@
 #include "../rapt_tests/UnitTests/MathUnitTests.cpp"
 #include "../rapt_tests/UnitTests/DrawingUnitTests.cpp"
 #include "../rapt_tests/UnitTests/UnitTests.cpp"
+#include "../rapt_tests/UnitTests/MiscUnitTests.cpp"
 
 #include "../rosic_tests/rosic_AnalysisTests.cpp"
 #include "../rosic_tests/rosic_BasicsTests.cpp"

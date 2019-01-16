@@ -102,6 +102,9 @@
           <FILE id="n0ecux" name="MathUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/MathUnitTests.cpp"/>
           <FILE id="xAAX6K" name="MathUnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/MathUnitTests.h"/>
+          <FILE id="fkkHCy" name="MiscUnitTests.cpp" compile="0" resource="0"
+                file="Source/rapt_tests/UnitTests/MiscUnitTests.cpp"/>
+          <FILE id="D8zWcF" name="MiscUnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/MiscUnitTests.h"/>
           <FILE id="f93wHx" name="UnitTests.cpp" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.cpp"/>
           <FILE id="S3Y8ov" name="UnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.h"/>
         </GROUP>
