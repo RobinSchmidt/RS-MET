@@ -60,6 +60,8 @@ void rsSpectrogram<T>::hanningWindowZN(T *w, int N)
 */
 
 
+
+
 // x: signal, N: number of samples, n: block center sample, w: window, B: blocksize, M: FFT size,
 // X: complex short-time spectrum (output)
 template<class T>
@@ -89,7 +91,11 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, const T* w,
 
 
   // shift buffer to make the window center the reference for phase values
-  // ...
+
+  //rsArray::swapDataBuffers(X, &X[B/2], &swapBufferAna[0], sizeof(T));
+  // does not work yet because this is a static function has no access to member variables
+
+
 
   rsFFT(X, M);                        // transform to frequency domain
 }
@@ -214,6 +220,9 @@ std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &
     }
     rsIFFT(Y, M);
 
+    // i think, here, we need to swap 1st/2nd half of the buffers later, wehn zero-phase windowing
+    // is implemented
+
     // apply synthesis-window and overlap/add into output signal:
     for(k = 0; k < B; k++)
       g[k] = Y[k0+k].real() * w[k];  // k0 != 0, if zero-padding was used
@@ -258,6 +267,8 @@ void rsSpectrogram<T>::updateAnalysisWindow()
   fillWindowArray(&analysisWindow[0], blockSize, analysisWindowType);
   // todo: create also the time-derivative and the time-ramped window for time/frequency 
   // reassignment later
+
+  swapBufferAna.resize(blockSize/2); // or (blockSize+1)/2 ? -> try with odd blockSizes
 }
 
 template<class T>
@@ -265,6 +276,7 @@ void rsSpectrogram<T>::updateSynthesisWindow()
 {
   synthesisWindow.resize(blockSize); // later: synthesisBlockSize
   fillWindowArray(&synthesisWindow[0], blockSize, synthesisWindowType);
+  swapBufferSyn.resize(blockSize/2); // or (blockSize+1)/2 ? -> try with odd blockSizes
 }
 
 template<class T>

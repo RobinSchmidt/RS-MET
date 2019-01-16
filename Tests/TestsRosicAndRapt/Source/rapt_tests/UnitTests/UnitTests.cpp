@@ -65,7 +65,7 @@ bool runAllUnitTests()
   //passed &= runUnitTest(&triangleRasterization2, "Triangle Rasterization 2"); // merge
 
   // Misc:
-  passed &= runUnitTest(&spectrogramUnitTest,   "Spectrogram");
+  passed &= runUnitTest(&spectrogramUnitTest,   "rsSpectrogram");
 
 
 

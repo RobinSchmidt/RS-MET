@@ -185,6 +185,9 @@ protected:
 
   std::vector<T> analysisWindow, synthesisWindow;
 
+  // buffers used for swapping first and second half of window for zero-phase windowing
+  std::vector<std::complex<T>> swapBufferAna, swapBufferSyn;
+
 
 
 

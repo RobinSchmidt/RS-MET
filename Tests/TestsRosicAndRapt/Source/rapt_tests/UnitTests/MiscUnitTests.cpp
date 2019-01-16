@@ -52,5 +52,12 @@ bool spectrogramUnitTest()
   r &= testSpectrogramResynthesis(128, 64, 500, 128); // H = B/2
   r &= testSpectrogramResynthesis(128, 32, 500, 128); // H = B/4
 
+  // todo: implement zero-phase windowing in rsSpectrogram
+
+  // todo: try block-sizes that are not a power of two, window functions that don't have natural
+  // perfect reconstruction properties (i.e. demodulate the output)
+
+
+
   return r;
 }
