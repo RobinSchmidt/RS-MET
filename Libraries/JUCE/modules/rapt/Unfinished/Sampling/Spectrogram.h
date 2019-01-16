@@ -120,8 +120,9 @@ public:
   window w of length B (which is the blocksize) with hopsize H. The number of equals the number
   of columns in the matrix s - each row is one short-time spectrum (of positive frequencies only
   due to symmetry). */
-  static std::vector<T> synthesize(const rsMatrix<std::complex<T>> &spectrogram,
+  std::vector<T> synthesize(const rsMatrix<std::complex<T>> &spectrogram,
     T *synthesisWindow, int blockSize, int hopSize, T *analysisWindow);
+  // remove all parameters except the first - access members instead
 
   /** Given a signal and its complex spectrogram, this function computes the matrix of time
   reassignments for each time/frequency value. The rampedWindow array should be a time-ramped
@@ -129,6 +130,7 @@ public:
   static rsMatrix<T> timeReassignment(T *signal, int numSamples,
     const rsMatrix<std::complex<T>> &spectrogram, T *rampedWindow, int blockSize,
     int hopSize);
+  // not yet implemented - probably needs to be made non-static
 
   /** Given a signal and its complex spectrogram, this function computes the matrix of frequency
   reassignments for each time/frequency value. The derivativeWindow array should be the derivative
@@ -136,12 +138,14 @@ public:
   static rsMatrix<T> frequencyReassignment(T *signal, int numSamples,
     const rsMatrix<std::complex<T>> &spectrogram, T *derivativeWindow, int blockSize,
     int hopSize);
+  // not yet implemented - probably needs to be made non-static
 
   /** Used inside synthesize() - this is the raw resynthesis in the sense that any amplitude
   modulation artifacts that result from overlapping grains that don't sum up to unity are not
   yet compensated for. If you want that compensation, use synthesize().  */
-  static std::vector<T> synthesizeRaw(const rsMatrix<std::complex<T>> &spectrogram,
+  std::vector<T> synthesizeRaw(const rsMatrix<std::complex<T>> &spectrogram,
     T *window, int blockSize, int hopSize);
+  // remove all parameters except the first - access members instead
 
   /** Computes the amplitude modulation signal that would be imposed on a signal when doing an
   analysis/synthesis roundtrip with the given analysis- and synthesis-windows and block- and
@@ -152,8 +156,9 @@ public:
   unity). To make the implementation more flexible with regard to the choice of these parameters,
   this function can be can be used to get the modulation signal and divide by it for
   demodulation. */
-  static std::vector<T> getModulation(T *analysisWindow, T *synthesisWindow,
+  std::vector<T> getModulation(T *analysisWindow, T *synthesisWindow,
     int blockSize, int hopSize, int numFrames);
+  // remove all parameters except numFrames - access members instead
 
 
     // is this formula also correct for odd fft sizes? verify?

@@ -222,7 +222,12 @@ void spectrogramSine()
   plotSpectrogram(F, K, dB, fs, H);
 
   // resynthesize and plot signal:
-  std::vector<double> y  = rsSpectrogramD::synthesize(s, w, B, H, w);
+  // sp.setSynthesisBlockSize(B);
+  // sp.setSynthesisHopSize(H);
+  // sp.setSynthesisWindowType(W); 
+  // ...
+  //std::vector<double> y  = rsSpectrogramD::synthesize(s, w, B, H, w);
+  std::vector<double> y  = sp.synthesize(s, w, B, H, w);
   plotVector(y);
 
   // free dynamically memory:
