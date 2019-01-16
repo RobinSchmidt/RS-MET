@@ -422,7 +422,7 @@ void SinusoidalAnalyzer<T>::applyContinuations(
 
 template<class T>
 rsMatrix<std::complex<T>> SinusoidalAnalyzer<T>::getComplexSpectrogram(
-  T* sampleData, int numSamples) const
+  T* sampleData, int numSamples)
 {
   return sp.complexSpectrogram(sampleData, numSamples);
 }
@@ -440,7 +440,7 @@ void plotDecibels(int N, double* x, double *mag) // for debug-plotting
 
 template<class T>
 RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
-  const RAPT::rsMatrix<std::complex<T>>& stft, T sampleRate) const
+  const RAPT::rsMatrix<std::complex<T>>& stft, T sampleRate)
 {
   // Initializations:
   typedef RAPT::rsInstantaneousSineParams<double> InstParams;
@@ -548,7 +548,7 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
 
 template<class T>
 rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
-  T* sampleData, int numSamples, T sampleRate) const
+  T* sampleData, int numSamples, T sampleRate)
 {
   // -maybe pre-process the input signal by flattening the pitch and make the period coincide with
   //  a fraction of the analysis frame size 

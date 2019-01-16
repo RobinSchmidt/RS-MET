@@ -261,7 +261,7 @@ class SinusoidalModelPlotter : public SpectrogramPlotter<T>
 
 public:
 
-  void plot(const SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
+  void plot(SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
   // rename to plotSineTracks - factor out addSineTrackData function
 
 protected:

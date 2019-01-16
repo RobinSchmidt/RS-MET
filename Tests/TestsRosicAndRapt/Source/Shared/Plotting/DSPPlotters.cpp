@@ -422,7 +422,7 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
 //=================================================================================================
 
 template <class T>
-void SinusoidalModelPlotter<T>::plot(const SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
+void SinusoidalModelPlotter<T>::plot(SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
 {
   GNUPlotter plt;
 

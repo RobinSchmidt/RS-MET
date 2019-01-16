@@ -41,7 +41,7 @@ T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
 
 
 template<class T>
-rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T *signal, int numSamples) const
+rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T *signal, int numSamples)
 {
   // preliminary - call static function - later, we should use an object of type 
   // rsFourierTransformerBluestein for more efficiency (it does some pre-computations)

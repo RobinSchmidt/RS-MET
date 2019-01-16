@@ -20,9 +20,10 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
     x[n] = prng.getSample();
 
   typedef RAPT::rsSpectrogram<double> SP; // spectrogram processor
+  SP sp;
 
   // compute the complex spectrogram:
-  rsMatrix<rsComplexDbl> s = SP::complexSpectrogram(&x[0], N, &w[0], B, H, 1);
+  rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(&x[0], N, &w[0], B, H, 1);
   //int F = s.getNumRows();
   // todo: let the function take an FFT-size parameter instead of a zero-padding factor (maybe)
   // facilitates having an FFT size independent from the block-size

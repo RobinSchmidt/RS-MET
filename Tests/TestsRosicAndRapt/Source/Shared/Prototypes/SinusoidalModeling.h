@@ -100,17 +100,17 @@ public:
 
   /** Analyzes the given input sound and returns the sinusoidal model object that models the given 
   sound. */
-  RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate) const;
+  RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate);
   // rename to analyzeSample
 
   /** Analyzes the given spectrogram and return the sinusoidal model for it */
   RAPT::rsSinusoidalModel<T> analyzeSpectrogram(
-    const RAPT::rsMatrix<std::complex<T>>& spectrogram, T sampleRate) const;
+    const RAPT::rsMatrix<std::complex<T>>& spectrogram, T sampleRate);
 
   /** Creates and returns a complex spectrogram from the given sample data. Used internally by 
   analyze, so client code needs to call this directly only if it wants to see/plot/investigate the 
   underlying spectrogram analysis result. */
-  RAPT::rsMatrix<std::complex<T>> getComplexSpectrogram(T* sampleData, int numSamples) const;
+  RAPT::rsMatrix<std::complex<T>> getComplexSpectrogram(T* sampleData, int numSamples);
 
 protected:
 

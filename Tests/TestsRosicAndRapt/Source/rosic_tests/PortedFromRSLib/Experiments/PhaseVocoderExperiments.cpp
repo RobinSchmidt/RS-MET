@@ -190,7 +190,12 @@ void spectrogramSine()
   RAPT::rsArray::scale(x, N/2, 0.1);   // amplitude switch in the middle of the signal
 
   // compute the complex spectrogram:
-  rsMatrix<rsComplexDbl> s = rsSpectrogramD::complexSpectrogram(x, N, w, B, H, P);
+  rsSpectrogramD sp;
+  // sp.setAnalysisBlockSize(B);
+  // sp.setAnalysisHopSize(H);
+  // sp.setAnalysisWindowType(W); 
+  // ...
+  rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N, w, B, H, P);
   int F = s.getNumRows();
 
   // compute (magnitude) spectrogram and phasogram:

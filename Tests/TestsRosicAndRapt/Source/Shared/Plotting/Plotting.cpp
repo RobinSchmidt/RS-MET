@@ -198,7 +198,7 @@ void stemPlot(int N, double *x, double *y)
   plt.plot();
 }
 
-void plotSineModel(const SinusoidalAnalyzer<double>& sa, double* x, int N, double fs)
+void plotSineModel(SinusoidalAnalyzer<double>& sa, double* x, int N, double fs)
 {
   SinusoidalModelPlotter<double> plt;
   plt.plot(sa, x, N, fs);
