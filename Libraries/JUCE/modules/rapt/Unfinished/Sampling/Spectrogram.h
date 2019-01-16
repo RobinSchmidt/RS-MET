@@ -53,6 +53,14 @@ public:
 
   //updateAnalysisWindow();
 
+  /** Sets the time origin for each analysis window to the center of the respective window. This is 
+  relevant for the phase spectrum. The natural time origin for each DFT buffer is the sample zero 
+  of the window - but the center seems more meaningful. By default, this option is set to true. */
+  void setTimeOriginAtWindowCenter(bool shouldBeAtCenter)
+  {
+    timeOriginAtWindowCenter = shouldBeAtCenter;
+  }
+
 
 
   /** \name Inquiry */
@@ -186,7 +194,7 @@ protected:
   reference for measuring the phase - a sinusoid that starts at the center sample will have zero 
   phase. This function is applied before transforming a windowed grain to the frequency domain and
   after syntehsizing a grain from a short time spectrum. */
-  void swapForZeroPhase(std::complex<T>* X, int blockSize);
+  void swapForZeroPhase(std::complex<T>* X, int length);
   // todo: comment about the even/odd window size issue, maybe rename to shiftOriginToCenter or
   // something
 
@@ -205,8 +213,10 @@ protected:
 
   // buffers used for swapping first and second half of window for zero-phase windowing
   //std::vector<std::complex<T>> swapBufferAna, swapBufferSyn;
-  std::vector<std::complex<T>> swapBuffer;
+  //std::vector<std::complex<T>> swapBuffer;
 
+
+  bool timeOriginAtWindowCenter = true;
 
 
 

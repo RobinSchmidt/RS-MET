@@ -51,6 +51,9 @@ bool spectrogramUnitTest()
 
   // last parameter not yet used in function..
 
+
+  r &= testSpectrogramResynthesis(8, 4, 20, 8);
+  //r &= testSpectrogramResynthesis(7, 3, 20, 8);  // odd size window
   r &= testSpectrogramResynthesis(128, 64, 500, 128); // H = B/2
   r &= testSpectrogramResynthesis(128, 32, 500, 128); // H = B/4
 

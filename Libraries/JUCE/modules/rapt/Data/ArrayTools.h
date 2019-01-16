@@ -70,6 +70,8 @@ public:
   and numPositions is 8, it will whift by 2 positions. */
   template<class T>
   static void circularShift(T *buffer, int length, int numPositions);
+  // allocates temporary heap memory - todo: make a version that doesn't and uses a workspace
+  // that is passed inot the function - but keep the one without workspace as convenience function
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward
   shifts use negative values for numPositions. The function behaves analogous to
