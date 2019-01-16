@@ -180,6 +180,17 @@ protected:
 
   static void fillWindowArray(T* w, int length, int type);
 
+  /** Given a buffer of complex values, this functions swaps the first and second half which is the 
+  same as a circular shift by half of the buffer size. This shifts the time-origin of buffer from 
+  sample zero to the center of the buffer. That means that the center of the buffer becomes the 
+  reference for measuring the phase - a sinusoid that starts at the center sample will have zero 
+  phase. This function is applied before transforming a windowed grain to the frequency domain and
+  after syntehsizing a grain from a short time spectrum. */
+  void swapForZeroPhase(std::complex<T>* X, int blockSize);
+  // todo: comment about the even/odd window size issue, maybe rename to shiftOriginToCenter or
+  // something
+
+
   /** \name Data */
 
   int blockSize = 0;    // initialized in constructor which also generates the window functions   
@@ -193,7 +204,8 @@ protected:
   std::vector<T> analysisWindow, synthesisWindow;
 
   // buffers used for swapping first and second half of window for zero-phase windowing
-  std::vector<std::complex<T>> swapBufferAna, swapBufferSyn;
+  //std::vector<std::complex<T>> swapBufferAna, swapBufferSyn;
+  std::vector<std::complex<T>> swapBuffer;
 
 
 

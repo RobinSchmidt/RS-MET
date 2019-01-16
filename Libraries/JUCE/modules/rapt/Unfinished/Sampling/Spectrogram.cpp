@@ -91,8 +91,12 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, const T* w,
 
 
   // shift buffer to make the window center the reference for phase values
-
   //rsArray::swapDataBuffers(X, &X[B/2], &swapBufferAna[0], sizeof(T));
+  // maybe factor out into function swapForZeroPhase and write a comment, why this is necessary
+  // maybe have just one swap-buffer that is used for analysis and synthesis - size should be
+  // determined by the maximum of both blockSizes
+  swapForZeroPhase(X, B);
+
   // does not work yet because this is a static function has no access to member variables
 
 
@@ -222,6 +226,7 @@ std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &
 
     // i think, here, we need to swap 1st/2nd half of the buffers later, wehn zero-phase windowing
     // is implemented
+    swapForZeroPhase(Y, B);
 
     // apply synthesis-window and overlap/add into output signal:
     for(k = 0; k < B; k++)
@@ -268,7 +273,7 @@ void rsSpectrogram<T>::updateAnalysisWindow()
   // todo: create also the time-derivative and the time-ramped window for time/frequency 
   // reassignment later
 
-  swapBufferAna.resize(blockSize/2); // or (blockSize+1)/2 ? -> try with odd blockSizes
+  swapBuffer.resize(blockSize/2); // or (blockSize+1)/2 ? -> try with odd blockSizes
 }
 
 template<class T>
@@ -276,7 +281,7 @@ void rsSpectrogram<T>::updateSynthesisWindow()
 {
   synthesisWindow.resize(blockSize); // later: synthesisBlockSize
   fillWindowArray(&synthesisWindow[0], blockSize, synthesisWindowType);
-  swapBufferSyn.resize(blockSize/2); // or (blockSize+1)/2 ? -> try with odd blockSizes
+  swapBuffer.resize(blockSize/2); // or (blockSize+1)/2 ? -> try with odd blockSizes
 }
 
 template<class T>
@@ -287,6 +292,14 @@ void rsSpectrogram<T>::fillWindowArray(T* w, int length, int type)
   // ramp windows for time/frequency reassignment
 }
 
+template<class T>
+void rsSpectrogram<T>::swapForZeroPhase(std::complex<T>* X, int B)
+{
+  // maybe make this optional
+  //rsArray::swapDataBuffers(X, &X[B/2], &swapBuffer[0], sizeof(T));
+  // something is wrong - the analysis/resynthesis works but in the spectrogram there are visible
+  // artifacts
+}
 
 
 /*
