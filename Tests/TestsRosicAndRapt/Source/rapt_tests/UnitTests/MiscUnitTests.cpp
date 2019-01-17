@@ -29,7 +29,6 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   // facilitates having an FFT size independent from the block-size
 
   // resynthesize signal from spectrogram:
-  //std::vector<double> y  = SP::synthesize(s, &w[0], B, H, &w[0]);
   std::vector<double> y  = sp.synthesize(s, &w[0], B, H, &w[0]);
 
   // check, if resynthesized matches original signal:
@@ -57,10 +56,11 @@ bool spectrogramUnitTest()
   r &= testSpectrogramResynthesis(128, 64, 500, 128); // H = B/2
   r &= testSpectrogramResynthesis(128, 32, 500, 128); // H = B/4
 
-  // todo: implement zero-phase windowing in rsSpectrogram
-
   // todo: try block-sizes that are not a power of two, window functions that don't have natural
   // perfect reconstruction properties (i.e. demodulate the output)
+
+  // let the spectrogram class have a direct setFftSize function, let it use an 
+  // rsFourierTransformer object, allow arbitrary FFT sizes
 
 
 

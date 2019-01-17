@@ -3,7 +3,7 @@
 template<class T>
 rsSpectrogram<T>::rsSpectrogram()
 {
-  //init();
+  fft.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO);
   setBlockSize(512);
 }
 
@@ -15,6 +15,16 @@ rsSpectrogram<T>::~rsSpectrogram()
 
 // Setup:
 
+template<class T>
+void rsSpectrogram<T>::setBlockSize(int newBlockSize) 
+{ 
+  if(newBlockSize != blockSize) {
+    blockSize = newBlockSize;
+    updateAnalysisWindow();
+    updateSynthesisWindow();
+    fft.setBlockSize(newBlockSize);
+  }
+}
 
 // Inquiry:
 

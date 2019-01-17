@@ -25,15 +25,7 @@ public:
 
   /** Sets the size (in samples) of the blocks/frames for analysis and synthesis (todo: allow 
   different sizes for analysis and synthesis) */
-  void setBlockSize(int newBlockSize) 
-  { 
-    if(newBlockSize != blockSize) {
-      blockSize = newBlockSize;
-      updateAnalysisWindow();
-      updateSynthesisWindow();
-      // update fourier transformer(s)
-    }
-  }
+  void setBlockSize(int newBlockSize);
 
   /** Sets the time-delta between successive blocks/frames in samples (value used for analysis and
   synthesis - todo: allow different values for both) */
@@ -43,6 +35,7 @@ public:
   ...padding should be applied symmetrically at front and back such that the phase stays measured
   at the center of the frame */
   void setZeroPaddingFactor(int newFactor) { zeroPaddingFactor = newFactor; }
+  // get rid - replace by setTransformSize ot setFftSize
 
   /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */
   void setAnalysisWindowType(int newType) 
@@ -55,7 +48,8 @@ public:
 
   /** Sets the time origin for each analysis window to the center of the respective window. This is 
   relevant for the phase spectrum. The natural time origin for each DFT buffer is the sample zero 
-  of the window - but the center seems more meaningful. By default, this option is set to true. */
+  of the buffer - but the center often seems more meaningful. By default, this option is set to 
+  true. */
   void setTimeOriginAtWindowCenter(bool shouldBeAtCenter)
   {
     timeOriginAtWindowCenter = shouldBeAtCenter;
@@ -217,6 +211,9 @@ protected:
 
 
   bool timeOriginAtWindowCenter = true;
+
+  /** The Fourier transformer object. */
+  rsFourierTransformerBluestein<T> fft;
 
 
 

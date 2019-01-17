@@ -401,6 +401,16 @@ void rsModalSynth::updateFreqRatios()
 ToDo:
 -implement ratio/key/vel tracking for amp/attack/decay
 -implement attackScale / decayScale / Blend (blend also by ratio/key/vel)
+-allow negative mixing, i.e. subtraction of the 2nd pair of filters -> let the mixing coeff for
+ the two pairs be outside the 0..1 range
+-to implement different mode ratios at different keys, render two sets of mode-ratios, one for key 
+ 0 (or 1) and one for key 127 and interpolate according to the played key - at key=64 we should 
+ get the unmodified mode ratios
+ -it seems impractical to recompute all mode-ratios from the underlying formulas each time a new 
+  key is struck - this way, we can efficiently implement keyscaling of the mode-ratios
+ -maybe do a similar thing for velocity scaling (but key-scaling first - it's more important)
+ -this would mean that in the end, we have a twofold bilinear interpolation. the first according
+  to the vector pad, the second according to key/vel
 
 Ideas:
 -actually, it would be a good opportunity to insert tah as module into the NewSynth
