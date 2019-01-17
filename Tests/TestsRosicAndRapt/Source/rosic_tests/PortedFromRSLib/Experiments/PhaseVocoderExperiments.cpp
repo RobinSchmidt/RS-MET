@@ -94,7 +94,11 @@ void grainRoundTrip()
 
   // obtain short-time spectrum:
   rsComplexDbl X[M];
-  pv.shortTimeSpectrum(x, N, n0, wa, B, M, X);
+  pv.setBlockSize(B);
+  //pv.setTrafoSize(B);
+  pv.setAnalysisWindowType(RAPT::rsWindowFunction::HANNING_WINDOW_ZN);
+  //pv.setZeroPaddingFactor(1);
+  pv.shortTimeSpectrum(x, N, n0, X);
 
   // under construction - not yet complete
 
@@ -144,7 +148,6 @@ void plotWindows()
   plt.addDataArrays(N, yw);
 
 
-
   //int n0; 
 
   plt.plot();
@@ -173,6 +176,8 @@ void spectrogramSine()
   static const int K  = M/2 + 1;        // number of non-redundant bins
   double           fs = 44100;          // samplerate
   double           f  = 5000;           // sinusoid frequency
+  int W = RAPT::rsWindowFunction::HANNING_WINDOW_ZN;
+
 
   // A hopsize of B/4 will result in a constant when overlapping successive frames, assuming that
   // the window is applied twice (once in the analysis stage and once in the synthesis stage). This
@@ -183,6 +188,7 @@ void spectrogramSine()
   double w[B];
   rsWindowFunction::hanningZN(w, B); // todo: create also the time-derivative and the 
                                      // time-ramped window for reassignment later
+  //...obsolete - the object creates the widown itself now
 
   // create the test signal:
   double x[N];
@@ -191,11 +197,12 @@ void spectrogramSine()
 
   // compute the complex spectrogram:
   rsSpectrogramD sp;
-  // sp.setAnalysisBlockSize(B);
-  // sp.setAnalysisHopSize(H);
-  // sp.setAnalysisWindowType(W); 
-  // ...
-  rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N, w, B, H, P);
+  sp.setBlockSize(B);
+  sp.setHopSize(H);
+  sp.setAnalysisWindowType(W);
+  sp.setSynthesisWindowType(W); 
+  //rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N, w, B, H, P);
+  rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N);
   int F = s.getNumRows();
 
   // compute (magnitude) spectrogram and phasogram:

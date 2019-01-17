@@ -44,6 +44,15 @@ public:
     updateAnalysisWindow();
   }
 
+  void setSynthesisWindowType(int newType) 
+  { 
+    synthesisWindowType = newType; 
+    updateSynthesisWindow();
+  }
+
+
+  // todo: maybe have distinct setAnalysisBlockSize, setSynthesisBlockSize, setAnalysisHopSize, ..
+
   //updateAnalysisWindow();
 
   /** Sets the time origin for each analysis window to the center of the respective window. This is 
@@ -88,7 +97,15 @@ public:
 
   /** \name Audio Processing */
 
-  rsMatrix<std::complex<T>> complexSpectrogram(const T *signal, int numSamples);
+  //rsMatrix<std::complex<T>> complexSpectrogram(const T *signal, int numSamples);
+
+
+  /** Computes a short-time FFT spectrum ... */
+  void shortTimeSpectrum(const T* signal, int numSamples, int blockCenter, std::complex<T>* spectrum);
+
+  /** Computes the complex spectrogram of the given signal x of the given length in samples. */
+  rsMatrix<std::complex<T>> complexSpectrogram(const T* signal, int numSamples);
+
 
 
 
@@ -102,18 +119,8 @@ public:
   //static void hanningWindowZN(T *w, int N);
   // maybe have a version NZ, ZZ, NN
 
-  /** Computes a short-time FFT spectrum ... */
-  void shortTimeSpectrum(const T* signal, int numSamples, int blockCenter, const T* window,
-    int blockSize, int fftSize, std::complex<T> *spectrum);
-  // get rid of parameters window, blockSize, fftSize -> access corresponding members instead
 
-  /** Computes the complex spectrogram of the given signal using the given analysis window (the
-  length of which should be equal to the given blockSize), using the given hopSize. The optional
-  padFactor parameter determines the amount of zero-padding for the FFT (it should be chosen such
-  that fftSiize = padFactor*blockSize is a power of two). */
-  rsMatrix<std::complex<T>> complexSpectrogram(const T* signal, int numSamples,
-    const T* window, int blockSize, int hopSize, int padFactor = 1);
-  // get rid of parameters window, blockSize, hopSize, padFactor
+
 
   /** Given a complex spectrogram, this function synthesizes a signal using given synthesis
   window, blockSize and hopSize. You must also pass the analysis window that was used - this is
@@ -195,11 +202,14 @@ protected:
 
   /** \name Data */
 
-  int blockSize = 0;    // initialized in constructor which also generates the window functions   
-  int hopSize   = 128;
-  // maybe we should also distiguish between analysis and synthesis hop-and block-size
 
   int zeroPaddingFactor = 1;
+  int blockSize = 0;    // initialized in constructor which also generates the window functions   
+  int hopSize   = 128;
+  // int trafoSize = 0;  // FFT size - use later
+  // maybe we should also distiguish between analysis and synthesis hop-and block-size
+
+
   int analysisWindowType  = rsWindowFunction::HANNING_WINDOW_ZN;
   int synthesisWindowType = rsWindowFunction::HANNING_WINDOW_ZN;
 

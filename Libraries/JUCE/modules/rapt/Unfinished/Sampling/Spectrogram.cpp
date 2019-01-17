@@ -22,7 +22,7 @@ void rsSpectrogram<T>::setBlockSize(int newBlockSize)
     blockSize = newBlockSize;
     updateAnalysisWindow();
     updateSynthesisWindow();
-    fft.setBlockSize(newBlockSize);
+    fft.setBlockSize(newBlockSize); // later, this should not be done here - instead in setTrafoSize
   }
 }
 
@@ -49,7 +49,7 @@ T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
 
 // Processing:
 
-
+/* obsolete:
 template<class T>
 rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T *signal, int numSamples)
 {
@@ -58,6 +58,7 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T *signal, 
   return complexSpectrogram(
     signal, numSamples, &analysisWindow[0], blockSize, hopSize, zeroPaddingFactor);
 }
+*/
 
 /*
 template<class T>
@@ -75,12 +76,16 @@ void rsSpectrogram<T>::hanningWindowZN(T *w, int N)
 // x: signal, N: number of samples, n: block center sample, w: window, B: blocksize, M: FFT size,
 // X: complex short-time spectrum (output)
 template<class T>
-void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, const T* w,
-  int B, int M, std::complex<T> *X)
+void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<T> *X)
 {
-  int pad = (M-B)/2;                        // amount of pre/post zero padding
-  if(pad > 0)
-  {
+  T*  w = &analysisWindow[0];
+  int B = blockSize;
+  int M = B*zeroPaddingFactor; // later: fftSize
+
+  // maybe factor out into prepareTransformBuffer(x, N, n, X) - this also facilitates unit-tests 
+  // for the buffer preparation:
+  int pad = (M-B)/2;                        // amount of pre/post zero padding - check, if this works for odd sizes
+  if(pad > 0) {
     rsArray::fillWithZeros(X, pad);         // pre padding
     rsArray::fillWithZeros(&X[M-pad], pad); // post padding
   }
@@ -91,7 +96,7 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, const T* w,
 
   swapForZeroPhase(X, M);
 
-  /*
+/*
 // plot the windowed segment:
 #ifdef RS_DEBUG_PLOTTING
   std::vector<T> dbg(M);
@@ -102,17 +107,26 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, const T* w,
 #endif
 */
 
-  rsFFT(X, M);                        // transform to frequency domain
+
+  // transform to frequency domain
+  //fft.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
+  //fft.setBlockSize(M);
+  //fft.transformComplexBufferInPlace(X);
+
+  rsFFT(X, M);   // old
 }
 
 template<class T>
-rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N, const T* w,
-  int B, int H, int P)
+rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N)
 {
-  // x: signal, N: number of samples, w: window, B: blocksize, H: hopsize, P: padding factor
+  // x: signal, N: number of samples
 
+  T*  w = &analysisWindow[0];
+  int B = blockSize;
+  int H = hopSize;
+  int P = zeroPaddingFactor; // obsolete
   int F = getNumFrames(N, H);                  // number of STFT frames
-  int M = B * P;                               // FFT size (maybe use L)
+  int M = B * P;                               // FFT size (maybe use L) - use trafoSize later
   int K = M/2 + 1;                             // number of non-redundant bins
   rsMatrix<std::complex<T>> s(F, K);           // spectrogram (only positive frequency bins)
   T a = 2 / rsArray::sum(w, B);                // amplitude scaler
@@ -120,7 +134,8 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
   std::complex<T> *X = new std::complex<T>[M]; // short-time spectrum centered at sample n
   for(int i = 0; i < F; i++)                   // loop over frames
   {
-    shortTimeSpectrum(x, N, n, w, B, M, X);    // obtain STFT centered at n
+    //shortTimeSpectrum(x, N, n, w, B, M, X);    // obtain STFT centered at n
+    shortTimeSpectrum(x, N, n, X);             // obtain STFT centered at n
     for(int j = 0; j < K; j++)                 // collect results for positive frequencies
       s(i, j) = a * X[j];
     n += H;                                    // advance n by the hop size

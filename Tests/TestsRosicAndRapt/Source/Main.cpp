@@ -320,8 +320,8 @@ int main(int argc, char* argv[])
 
   // Phase Vocoder:
   //phaseRepresentation();
-  //grainRoundTrip();        // under construction
-  //plotWindows();
+  grainRoundTrip();        // under construction
+  //plotWindows();    // move near plotWidowSpectra
   spectrogramSine();
   //sinusoidalSynthesis1();
   sinusoidalAnalysis1();
