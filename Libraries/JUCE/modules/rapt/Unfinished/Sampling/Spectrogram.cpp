@@ -152,9 +152,8 @@ std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
   int H = hopSize;
   T*  wa = &analysisWindow[0];
   T*  ws = &synthesisWindow[0];
-  //std::vector<T> y = synthesizeRaw(s, ws, B, H);
   std::vector<T> y = synthesizeRaw(s);
-  std::vector<T> m = getModulation(wa, ws, B, H, s.getNumRows());
+  std::vector<T> m = getRoundTripModulation(s.getNumRows());
   T a = rsArray::sum(wa, B) / 2;
   for(unsigned int n = 0; n < y.size(); n++)
     y[n] *= (a/m[n]);
@@ -187,10 +186,10 @@ rsMatrix<T> rsSpectrogram<T>::frequencyReassignment(T *x, int N,
 
   rsMatrix<T> fr;
 
-  // use the complexSpectrogram function to compute a spectrogram with the ramped window and then
-  // apply the frequency reassignment formula using the original spectrogram s and the "ramped"
-  // spectrogram to compute corresponding value of the frequency reassignment matrix fr
-  // ...
+  // use the complexSpectrogram function to compute a spectrogram with the derivative window and 
+  // then apply the frequency reassignment formula using the original spectrogram s and the 
+  // "derivative" spectrogram to compute corresponding value of the frequency reassignment matrix 
+  // fr
 
   return fr;
 }
@@ -239,9 +238,14 @@ std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &
 }
 
 template<class T>
-std::vector<T> rsSpectrogram<T>::getModulation(T *wa, T *ws, int B, int H, int F)
+std::vector<T> rsSpectrogram<T>::getRoundTripModulation(int F)
 {
-  // wa: analysis window, ws: synthesis-window, B: block size, H: hop size, F: number of frames
+  //  F: number of frames
+
+  T*  wa = &analysisWindow[0];
+  T*  ws = &synthesisWindow[0];
+  int B  = blockSize;
+  int H  = hopSize;
   int N = (F-1) * H + B/2;      // number of samples
   std::vector<T> y(N);          // modulation signal
   T *w = new T[B];              // product-window

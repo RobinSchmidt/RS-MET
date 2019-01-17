@@ -165,10 +165,7 @@ public:
   unity). To make the implementation more flexible with regard to the choice of these parameters,
   this function can be can be used to get the modulation signal and divide by it for
   demodulation. */
-  std::vector<T> getModulation(T *analysisWindow, T *synthesisWindow,
-    int blockSize, int hopSize, int numFrames);
-  // remove all parameters except numFrames - access members instead
-  // renam to getRoundTripModulation
+  std::vector<T> getRoundTripModulation(int numFrames);
 
 
     // is this formula also correct for odd fft sizes? verify?
