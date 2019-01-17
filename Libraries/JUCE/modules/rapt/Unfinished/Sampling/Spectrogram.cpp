@@ -3,7 +3,7 @@
 template<class T>
 rsSpectrogram<T>::rsSpectrogram()
 {
-  fft.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO);
+  transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO);
   setBlockSize(512);
 }
 
@@ -22,7 +22,7 @@ void rsSpectrogram<T>::setBlockSize(int newBlockSize)
     blockSize = newBlockSize;
     updateAnalysisWindow();
     updateSynthesisWindow();
-    fft.setBlockSize(newBlockSize); // later, this should not be done here - instead in setTrafoSize
+    transformer.setBlockSize(newBlockSize); // later, this should not be done here - instead in setTrafoSize
   }
 }
 
@@ -49,32 +49,7 @@ T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
 
 // Processing:
 
-/* obsolete:
-template<class T>
-rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T *signal, int numSamples)
-{
-  // preliminary - call static function - later, we should use an object of type 
-  // rsFourierTransformerBluestein for more efficiency (it does some pre-computations)
-  return complexSpectrogram(
-    signal, numSamples, &analysisWindow[0], blockSize, hopSize, zeroPaddingFactor);
-}
-*/
-
-/*
-template<class T>
-void rsSpectrogram<T>::hanningWindowZN(T *w, int N)
-{
-  T s = 2*PI/N; // for a window that ends with zero: w[N-1]=0, this would be s=2*PI/(N-1)
-  for(int n = 0; n < N; n++)
-    w[n] = 0.5*(1-cos(s*n));
-}
-*/
-
-
-
-
-// x: signal, N: number of samples, n: block center sample, w: window, B: blocksize, M: FFT size,
-// X: complex short-time spectrum (output)
+// x: signal, N: number of samples, n: block center sample, X: complex short-time spectrum (output)
 template<class T>
 void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<T> *X)
 {
@@ -107,13 +82,7 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<
 #endif
 */
 
-
-  // transform to frequency domain
-  //fft.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
-  //fft.setBlockSize(M);
-  //fft.transformComplexBufferInPlace(X);
-
-  rsFFT(X, M);   // old
+  fft(X, M);
 }
 
 template<class T>
@@ -222,14 +191,18 @@ std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &
       Y[k]   = s(i, k);
       Y[M-k] = conj(Y[k]);
     }
-    rsIFFT(Y, M);
+
+    ifft(Y, M);
+    //rsIFFT(Y, M);
 
 
     swapForZeroPhase(Y, M);
 
-    // apply synthesis-window and overlap/add into output signal:
+    // apply synthesis-window:
     for(k = 0; k < B; k++)
       g[k] = Y[k0+k].real() * w[k];  // k0 != 0, if zero-padding was used
+
+    // overlap/add into output signal:
     rsArray::addInto(y.data(), N, g.data(), B, i*H-B/2);
   }
 
@@ -258,16 +231,6 @@ std::vector<T> rsSpectrogram<T>::getRoundTripModulation(int F)
 }
 
 // Misc:
-/*
-template<class T>
-void rsSpectrogram<T>::init()
-{
-  //fs = 44100.0;   // samplerate
-  //Nb = 512;       // block size
-  //Nh = Nb/2;      // hop size
-  //Nf = Nb*2;      // FFT size
-}
-*/
 
 template<class T>
 void rsSpectrogram<T>::updateAnalysisWindow()
@@ -276,8 +239,6 @@ void rsSpectrogram<T>::updateAnalysisWindow()
   fillWindowArray(&analysisWindow[0], blockSize, analysisWindowType);
   // todo: create also the time-derivative and the time-ramped window for time/frequency 
   // reassignment later
-
-  //swapBuffer.resize(blockSize/2); // or (blockSize+1)/2 ? -> try with odd blockSizes
 }
 
 template<class T>
@@ -285,7 +246,6 @@ void rsSpectrogram<T>::updateSynthesisWindow()
 {
   synthesisWindow.resize(blockSize); // later: synthesisBlockSize
   fillWindowArray(&synthesisWindow[0], blockSize, synthesisWindowType);
-  //swapBuffer.resize(blockSize/2); // or (blockSize+1)/2 ? -> try with odd blockSizes
 }
 
 template<class T>
@@ -301,6 +261,26 @@ void rsSpectrogram<T>::swapForZeroPhase(std::complex<T>* X, int L)
 {
   if(timeOriginAtWindowCenter)
     rsArray::circularShift(X, L, -L/2);  // todo: maybe pass tmpBuffer as workspace
+}
+
+template<class T>
+void rsSpectrogram<T>::fft(std::complex<T> *X, int M)
+{
+  //transformer.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
+  //transformer.setBlockSize(M);
+  //transformer.transformComplexBufferInPlace(X);
+
+  rsFFT(X, M);   // old
+}
+
+template<class T>
+void rsSpectrogram<T>::ifft(std::complex<T> *X, int M)
+{
+  //transformer.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
+  //transformer.setBlockSize(M);
+  //transformer.transformComplexBufferInPlace(X);
+
+  rsIFFT(X, M);  // old
 }
 
 

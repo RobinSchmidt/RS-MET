@@ -196,6 +196,19 @@ protected:
   void swapForZeroPhase(std::complex<T>* X, int length);
   // todo: comment about the even/odd window size issue, maybe rename to shiftOriginToCenter or
   // something
+  // make a unit test that ensures that applying this function twice gives an identity operation
+  // -if this is not the case for odd windows, we may have to use two functions - one for forward, 
+  // the other for backward shift ..maybe shiftZeroToCenter, shiftCenterToZero
+  // or applyAnalysisPhaseAdjustment, applySynthesisPhaseAdjustment ..or TimeAdjustment
+  // of shiftForAnalysis, shiftForSynthesis
+
+  /** Performs the forward FFT on given complex buffer X of length M */
+  void fft(std::complex<T>* X, int M);
+
+  /** Performs the inverse FFT on given complex buffer X of length M */
+  void ifft(std::complex<T>* X, int M);
+
+
 
 
   /** \name Data */
@@ -221,7 +234,7 @@ protected:
   bool timeOriginAtWindowCenter = true;
 
   /** The Fourier transformer object. */
-  rsFourierTransformerBluestein<T> fft;
+  rsFourierTransformerBluestein<T> transformer;
 
 
 
