@@ -145,11 +145,15 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
 }
 
 template<class T>
-std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s, T *ws,
-  int B, int H, T *wa)
+std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
 {
-  // s: spectrogram, ws: synthesis-window, B: block size, H: hop size, wa: analysis window,
-  std::vector<T> y = synthesizeRaw(s, ws, B, H);
+  // s: spectrogram
+  int B = blockSize;
+  int H = hopSize;
+  T*  wa = &analysisWindow[0];
+  T*  ws = &synthesisWindow[0];
+  //std::vector<T> y = synthesizeRaw(s, ws, B, H);
+  std::vector<T> y = synthesizeRaw(s);
   std::vector<T> m = getModulation(wa, ws, B, H, s.getNumRows());
   T a = rsArray::sum(wa, B) / 2;
   for(unsigned int n = 0; n < y.size(); n++)
@@ -191,33 +195,14 @@ rsMatrix<T> rsSpectrogram<T>::frequencyReassignment(T *x, int N,
   return fr;
 }
 
-/*
-// add length-L array y into length-N array x starting at n
 template<class T>
-void addInto(T *x, int N, T *y, int L, int n = 0)
+std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &s)
 {
-  int r = 0;                // read start
-  if(n < 0)
-  {
-    L += n;
-    r -= n;
-    n  = 0;
-  }
-  int d = n + L - N;        // number of overhanging values
-  if(d > 0)
-    L -= d;
-  for(int i = 0; i < L; i++)
-    x[n+i] += y[r+i];
-}
-// the index manipulation code can be factored out
-*/
+  // s: complex spectrogram
 
-template<class T>
-std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &s,
-  T *w, int B, int H)
-{
-  // w: window, B: blocksize, H: hopsize, s: complex spectrogram
-
+  int B  = blockSize;
+  int H  = hopSize;
+  T*  w  = &synthesisWindow[0];
   int F  = s.getNumRows();           // number of frames
   int K  = s.getNumColumns();        // number of (non-redundant) bins
   int N  = (F-1) * H + B/2;          // number of samples
@@ -240,8 +225,7 @@ std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &
     }
     rsIFFT(Y, M);
 
-    // i think, here, we need to swap 1st/2nd half of the buffers later, wehn zero-phase windowing
-    // is implemented
+
     swapForZeroPhase(Y, M);
 
     // apply synthesis-window and overlap/add into output signal:

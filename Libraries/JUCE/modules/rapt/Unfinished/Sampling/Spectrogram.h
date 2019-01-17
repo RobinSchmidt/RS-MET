@@ -118,6 +118,7 @@ public:
   resynthesis is required. */
   //static void hanningWindowZN(T *w, int N);
   // maybe have a version NZ, ZZ, NN
+  // moved to rsWindowFunction
 
 
 
@@ -129,9 +130,7 @@ public:
   window w of length B (which is the blocksize) with hopsize H. The number of equals the number
   of columns in the matrix s - each row is one short-time spectrum (of positive frequencies only
   due to symmetry). */
-  std::vector<T> synthesize(const rsMatrix<std::complex<T>> &spectrogram,
-    T *synthesisWindow, int blockSize, int hopSize, T *analysisWindow);
-  // remove all parameters except the first - access members instead
+  std::vector<T> synthesize(const rsMatrix<std::complex<T>> &spectrogram);
 
   /** Given a signal and its complex spectrogram, this function computes the matrix of time
   reassignments for each time/frequency value. The rampedWindow array should be a time-ramped
@@ -151,23 +150,25 @@ public:
 
   /** Used inside synthesize() - this is the raw resynthesis in the sense that any amplitude
   modulation artifacts that result from overlapping grains that don't sum up to unity are not
-  yet compensated for. If you want that compensation, use synthesize().  */
-  std::vector<T> synthesizeRaw(const rsMatrix<std::complex<T>> &spectrogram,
-    T *window, int blockSize, int hopSize);
-  // remove all parameters except the first - access members instead
+  yet compensated for. If you want that compensation, use synthesize(). For properly chosen 
+  analysis and synthesis windows and hop-size and block-size, the demodulation step can be 
+  legitimately skipped because the overallped windows add up to unity - but this is not the case
+  in general. */
+  std::vector<T> synthesizeRaw(const rsMatrix<std::complex<T>> &spectrogram);
 
   /** Computes the amplitude modulation signal that would be imposed on a signal when doing an
   analysis/synthesis roundtrip with the given analysis- and synthesis-windows and block- and
   hop-size. This can be used for demodulating a resynthesized signal, making the
   analysis/resynthesis/demodulation roundtrip a identity-operation (up to roundoff).
   Note: In typical phase-vocoder implementations, these window-shapes and block- and hopssizes are
-  chosen such that this amplzide modulation signal comes out as a constant value (or, even better,
+  chosen such that this amplitude modulation signal comes out as a constant value (or, even better,
   unity). To make the implementation more flexible with regard to the choice of these parameters,
   this function can be can be used to get the modulation signal and divide by it for
   demodulation. */
   std::vector<T> getModulation(T *analysisWindow, T *synthesisWindow,
     int blockSize, int hopSize, int numFrames);
   // remove all parameters except numFrames - access members instead
+  // renam to getRoundTripModulation
 
 
     // is this formula also correct for odd fft sizes? verify?

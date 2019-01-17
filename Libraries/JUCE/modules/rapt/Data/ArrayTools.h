@@ -39,7 +39,8 @@ public:
   template <class T>
   static void addCircularShiftedCopy(T *buffer, int length, double offset, T weight);
 
-  // add length-L array y into length-N array x starting at n
+  /** Adds length-L array y into length-N array x starting at n (in x), taking care of not reading 
+  beyond the limits of y and writing beyond the limits of x */
   template<class T>
   static void addInto(T *x, int N, T *y, int L, int n = 0);
 

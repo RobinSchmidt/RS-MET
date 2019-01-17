@@ -184,11 +184,11 @@ void spectrogramSine()
   // is the desired condition for perfect resynthesis without modulation artifcats - i.e. no 
   // explicit demodulation will be necessarry.
 
-  // create the window function:
-  double w[B];
-  rsWindowFunction::hanningZN(w, B); // todo: create also the time-derivative and the 
-                                     // time-ramped window for reassignment later
-  //...obsolete - the object creates the widown itself now
+  //// create the window function:
+  //double w[B];
+  //rsWindowFunction::hanningZN(w, B); // todo: create also the time-derivative and the 
+  //                                   // time-ramped window for reassignment later
+  ////...obsolete - the object creates the widown itself now
 
   // create the test signal:
   double x[N];
@@ -201,7 +201,6 @@ void spectrogramSine()
   sp.setHopSize(H);
   sp.setAnalysisWindowType(W);
   sp.setSynthesisWindowType(W); 
-  //rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N, w, B, H, P);
   rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N);
   int F = s.getNumRows();
 
@@ -229,12 +228,7 @@ void spectrogramSine()
   plotSpectrogram(F, K, dB, fs, H);
 
   // resynthesize and plot signal:
-  // sp.setSynthesisBlockSize(B);
-  // sp.setSynthesisHopSize(H);
-  // sp.setSynthesisWindowType(W); 
-  // ...
-  //std::vector<double> y  = rsSpectrogramD::synthesize(s, w, B, H, w);
-  std::vector<double> y  = sp.synthesize(s, w, B, H, w);
+  std::vector<double> y  = sp.synthesize(s);
   plotVector(y);
 
   // free dynamically memory:

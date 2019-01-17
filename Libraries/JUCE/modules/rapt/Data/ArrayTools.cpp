@@ -64,6 +64,7 @@ void rsArray::addInto(T *x, int N, T *y, int L, int n)
   for(int i = 0; i < L; i++)
     x[n+i] += y[r+i];
 }
+// the index manipulation code can be factored out
 
 template<class T>
 void rsArray::allocateSquareArray2D(T**& theArray, int size)

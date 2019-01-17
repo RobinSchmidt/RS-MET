@@ -35,7 +35,8 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   // facilitates having an FFT size independent from the block-size
 
   // resynthesize signal from spectrogram:
-  std::vector<double> y  = sp.synthesize(s, &w[0], B, H, &w[0]);
+  std::vector<double> y  = sp.synthesize(s);
+  //std::vector<double> y  = sp.synthesize(s, &w[0], B, H, &w[0]);
 
   // check, if resynthesized matches original signal:
   double tol = 1.e-13;
