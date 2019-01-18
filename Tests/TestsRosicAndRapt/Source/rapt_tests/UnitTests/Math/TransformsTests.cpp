@@ -299,7 +299,6 @@ bool testFourierTrafoArbitrary(int N)
   //RAPT::rsBluesteinFFT(&X[0], N);
   //r &= rsAlmostEqual(T, X, tol);
 
-
   // use the rsFourierTransformerRadix2 object:
   FTB ft;
   ft.setBlockSize(N);
@@ -308,8 +307,14 @@ bool testFourierTrafoArbitrary(int N)
   ft.transformComplexBuffer(&x[0], &X[0]);
   r &= rsAlmostEqual(T, X, tol);
 
+  // now test inverse trafos:
+  //AR::copyBuffer(&T[0], &x[0], N); // target spectrum into signal buffer x for in-place iFFT
+  //RAPT::rsIFFT(&x[0], N);
+  //r &= rsAlmostEqual(t, x, tol);
 
-
+  ft.setDirection(FTR2::INVERSE);
+  ft.transformComplexBuffer(&T[0], &x[0]);
+  r &= rsAlmostEqual(t, x, tol);
 
   return r;
 }
