@@ -259,8 +259,17 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
   ft.setBlockSize(N);
   ft.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO); // is actually the default setting anyway
   ft.setDirection(FT::FORWARD);
-  // ...
+  ft.transformComplexBuffer(&x[0], &X[0]);
+  r &= rsAlmostEqual(T, X, tol);
 
+  // now test inverse trafos:
+  AR::copyBuffer(&T[0], &x[0], N); // target spectrum into signal buffer x for in-place iFFT
+  RAPT::rsIFFT(&x[0], N);
+  r &= rsAlmostEqual(t, x, tol);
+
+  ft.setDirection(FT::INVERSE);
+  ft.transformComplexBuffer(&T[0], &x[0]);
+  r &= rsAlmostEqual(t, x, tol);
 
   return r;
 }

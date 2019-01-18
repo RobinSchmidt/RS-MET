@@ -100,7 +100,7 @@ void rsIFFT(std::complex<T> *a, int N)
   rsConjugate(a, N);
   rsArray::scale(a, N, T(1)/N);
   // \todo check, if this works for arbitrary (non power-of-two) N
-  // shouldn't it be possible to just use a "sign" in the core FFt routine that just switches the
+  // shouldn't it be possible to just use a "sign" in the core FFT routine that just switches the
   // exponent of the twiddle factor to be positive or negative (->more efficient, we don't need to
   // iterate through the arrays - but i'm not sure, if it works with arbitrary lengths)
 }
