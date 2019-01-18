@@ -21,6 +21,7 @@ bool testTransforms()
   testResult &= testSmbFFT(dummy);
   testResult &= testRsFFT(dummy);
   testResult &= testFourierTransformerRadix2(dummy);
+  testResult &= testVariousFourierTransforms(dummy);
 
   //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
@@ -193,6 +194,47 @@ bool testFourierTransformerRadix2(std::string &reportString)
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
+
+bool testFourierTrafoRadix2(int N)
+{
+  bool r = true;
+
+
+  return r;
+}
+
+bool testFourierTrafoArbitrary(int N)
+{
+  bool r = true;
+
+
+  return r;
+}
+
+bool testVariousFourierTransforms(std::string &reportString)
+{
+  std::string testName = "various Fourier transforms";
+  bool testResult = true;
+
+  // We create random complex signal buffers of various lengths and transform them to the 
+  // frequency domain using various implementations and compare the results - they should 
+  // all be the same. Then we also compare the corresponding inverse FFT implementations.
+
+  int maxTrafoSize = 32;
+
+  // test radix-2 transforms:
+  for(int i = 1; i <= maxTrafoSize; i *= 2) 
+    testResult &= testFourierTrafoRadix2(i);
+
+  // test arbitrary size transforms:
+  for(int i = 1; i <= maxTrafoSize; i++) 
+    testResult &= testFourierTrafoArbitrary(i);
+
+
+  appendTestResultToReport(reportString, testName, testResult);
+  return testResult;
+}
+
 
 bool testCorrelation(std::string &reportString)
 {

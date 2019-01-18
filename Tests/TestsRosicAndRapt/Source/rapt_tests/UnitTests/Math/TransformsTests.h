@@ -8,6 +8,7 @@ bool testTransforms();
 bool testSmbFFT(std::string &reportString);
 bool testRsFFT( std::string &reportString);
 bool testFourierTransformerRadix2(std::string &reportString);
+bool testVariousFourierTransforms(std::string &reportString);
 
 
 

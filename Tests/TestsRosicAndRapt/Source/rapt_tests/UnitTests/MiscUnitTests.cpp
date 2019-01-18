@@ -50,6 +50,29 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   return r;
 }
 
+// a subclass of rsSpectrogram, so we can access protected variables from test code
+class rsSpectrogramUnitTest : public RAPT::rsSpectrogram<double>
+{
+
+public:
+
+  bool testTransforms()
+  {
+    bool r = true;
+
+
+    return r;
+  }
+
+  bool runTests()
+  {
+    bool r = true;
+    r &= testTransforms();
+    return r;
+  }
+
+};
+
 
 bool spectrogramUnitTest()
 {
@@ -69,7 +92,8 @@ bool spectrogramUnitTest()
   // let the spectrogram class have a direct setFftSize function, let it use an 
   // rsFourierTransformer object, allow arbitrary FFT sizes
 
-
+  rsSpectrogramUnitTest tester;
+  r &= tester.runTests();
 
   return r;
 }
