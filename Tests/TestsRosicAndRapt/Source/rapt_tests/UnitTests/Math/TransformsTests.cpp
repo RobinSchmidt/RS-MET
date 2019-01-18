@@ -195,9 +195,42 @@ bool testFourierTransformerRadix2(std::string &reportString)
   return testResult;
 }
 
-bool testFourierTrafoRadix2(int N)
+// move to test tools or library:
+template<class T>
+void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max, unsigned long seed = 0)
+{
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setRange(min, max);
+  prng.setSeed(seed);
+  for(size_t n = 0; n < N; n++)
+    x[n] = complex<T>(prng.getSample(), prng.getSample());
+}
+template<class T> // convenience function for std::vector
+void rsFillWithComplexRandomValues(std::vector<std::complex<T>>& x, T min, T max, 
+  unsigned long seed = 0)
+{
+  rsFillWithComplexRandomValues(&x[0], x.size(), min, max, seed);
+}
+
+
+
+bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRadix2
 {
   bool r = true;
+  std::vector<complex<double>> x(N), X(N);  // signal and spectrum
+  std::vector<complex<double>> t(N), T(N);  // target signal and target spectrum
+
+
+  typedef RAPT::rsArray AR;
+
+  // fill x and t with the same N random values:
+  rsFillWithComplexRandomValues(x, -1.0, 1.0);
+  AR::copyBuffer(&x[0], &t[0], N);
+
+  // compute target spectrum by using the naive DFT implementation:
+  AR::copyBuffer(&t[0], &T[0], N); // because DFT works in place
+  RAPT::rsDFT(&T[0], N);
+
 
 
   return r;
@@ -219,6 +252,9 @@ bool testVariousFourierTransforms(std::string &reportString)
   // We create random complex signal buffers of various lengths and transform them to the 
   // frequency domain using various implementations and compare the results - they should 
   // all be the same. Then we also compare the corresponding inverse FFT implementations.
+
+  // ToDo: maybe test also for single-precision, i.e. templatize the functions called in the loops
+  // below:
 
   int maxTrafoSize = 32;
 
