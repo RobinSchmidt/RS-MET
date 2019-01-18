@@ -103,7 +103,6 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
   std::complex<T> *X = new std::complex<T>[M]; // short-time spectrum centered at sample n
   for(int i = 0; i < F; i++)                   // loop over frames
   {
-    //shortTimeSpectrum(x, N, n, w, B, M, X);    // obtain STFT centered at n
     shortTimeSpectrum(x, N, n, X);             // obtain STFT centered at n
     for(int j = 0; j < K; j++)                 // collect results for positive frequencies
       s(i, j) = a * X[j];
@@ -266,21 +265,21 @@ void rsSpectrogram<T>::swapForZeroPhase(std::complex<T>* X, int L)
 template<class T>
 void rsSpectrogram<T>::fft(std::complex<T> *X, int M)
 {
-  transformer.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
-  transformer.setBlockSize(M);
-  transformer.transformComplexBufferInPlace(X);
+  //transformer.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
+  //transformer.setBlockSize(M);
+  //transformer.transformComplexBufferInPlace(X);
 
-  //rsFFT(X, M);   // old
+  rsFFT(X, M);   // old
 }
 
 template<class T>
 void rsSpectrogram<T>::ifft(std::complex<T> *X, int M)
 {
-  transformer.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
-  transformer.setBlockSize(M);
-  transformer.transformComplexBufferInPlace(X);
+  //transformer.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
+  //transformer.setBlockSize(M);
+  //transformer.transformComplexBufferInPlace(X);
 
-  //rsIFFT(X, M);  // old
+  rsIFFT(X, M);  // old
 }
 
 

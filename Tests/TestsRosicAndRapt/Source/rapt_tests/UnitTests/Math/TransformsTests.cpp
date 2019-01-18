@@ -195,44 +195,6 @@ bool testFourierTransformerRadix2(std::string &reportString)
   return testResult;
 }
 
-
-
-// move to test tools or library:
-template<class T>
-void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max, 
-  unsigned long seed = 0)
-{
-  RAPT::rsNoiseGenerator<double> prng;
-  prng.setRange(min, max);
-  prng.setSeed(seed);
-  for(size_t n = 0; n < N; n++)
-    x[n] = complex<T>(prng.getSample(), prng.getSample());
-}
-template<class T> // convenience function for std::vector
-void rsFillWithComplexRandomValues(std::vector<std::complex<T>>& x, T min, T max, 
-  unsigned long seed = 0)
-{
-  rsFillWithComplexRandomValues(&x[0], x.size(), min, max, seed);
-}
-template<class T>
-T rsMaxComplexError(std::complex<T>* target, std::complex<T>* actual, size_t N)
-{
-  T maxErr = T(0);
-  for(size_t n = 0; n < N; n++)
-    maxErr = RAPT::rsMax(maxErr, abs(target[n]-actual[n]));
-  return maxErr;
-}
-template<class T>
-bool rsAlmostEqual(std::vector<std::complex<T>>& x, std::vector<std::complex<T>>& y, T tolerance)
-{
-  RAPT::rsAssert(x.size() == y.size());
-  T maxErr = rsMaxComplexError(&x[0], &y[0], x.size());
-  return maxErr <= tolerance;
-}
-
-
-
-
 bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRadix2
 {
   bool r = true;

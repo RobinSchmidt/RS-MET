@@ -56,10 +56,26 @@ class rsSpectrogramUnitTest : public RAPT::rsSpectrogram<double>
 
 public:
 
+  bool testForwardTrafo(int N)
+  {
+    bool r = true;
+
+    return r;
+  }
+
+  bool testInversTrafo(int N)
+  {
+    bool r = true;
+
+    return r;
+  }
+
   bool testTransforms()
   {
     bool r = true;
 
+    r &= testForwardTrafo(8);
+    r &= testForwardTrafo(16);
 
     return r;
   }
