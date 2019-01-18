@@ -195,6 +195,8 @@ bool testFourierTransformerRadix2(std::string &reportString)
   return testResult;
 }
 
+
+
 // move to test tools or library:
 template<class T>
 void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max, 
@@ -229,14 +231,17 @@ bool rsAlmostEqual(std::vector<std::complex<T>>& x, std::vector<std::complex<T>>
 }
 
 
+
+
 bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRadix2
 {
   bool r = true;
+  double tol = 1.e-13; // 1.e-13 works up to N=32
+  typedef RAPT::rsArray AR;
+  typedef RAPT::rsFourierTransformerRadix2<double> FT;
   std::vector<complex<double>> x(N), X(N);  // signal and spectrum
   std::vector<complex<double>> t(N), T(N);  // target signal and target spectrum
 
-  typedef RAPT::rsArray AR;
-  typedef RAPT::rsFourierTransformerRadix2<double> FT;
 
   // fill x and t with the same N random values:
   rsFillWithComplexRandomValues(x, -1.0, 1.0);
@@ -246,12 +251,9 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
   AR::copyBuffer(&t[0], &T[0], N); // because DFT works in place
   RAPT::rsDFT(&T[0], N);
 
-  // compute spectrum via RAPT::rsRadix2FFT
+  // compute spectrum via RAPT::rsRadix2FFT and compare:
   AR::copyBuffer(&x[0], &X[0], N);
   RAPT::rsRadix2FFT(&X[0], N);
-
-  // compare:
-  double tol = 1.e-13; // 1.e-13 works up to N=32
   r &= rsAlmostEqual(T, X, tol);
 
   // use the rsFourierTransformerRadix2 object:
@@ -277,6 +279,36 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
 bool testFourierTrafoArbitrary(int N)
 {
   bool r = true;
+  double tol = 1.e-13; // 1.e-13 works up to N=32
+  typedef RAPT::rsArray AR;
+  typedef RAPT::rsFourierTransformerRadix2<double> FTR2;
+  typedef RAPT::rsFourierTransformerBluestein<double> FTB;
+  std::vector<complex<double>> x(N), X(N);  // signal and spectrum
+  std::vector<complex<double>> t(N), T(N);  // target signal and target spectrum
+
+  // fill x and t with the same N random values:
+  rsFillWithComplexRandomValues(x, -1.0, 1.0);
+  AR::copyBuffer(&x[0], &t[0], N);
+
+  // compute target spectrum by using the naive DFT implementation:
+  AR::copyBuffer(&t[0], &T[0], N); // because DFT works in place
+  RAPT::rsDFT(&T[0], N);
+
+  //// compute spectrum via RAPT::rsBluesteinFFT and compare (not yet implemented):
+  //AR::copyBuffer(&x[0], &X[0], N);
+  //RAPT::rsBluesteinFFT(&X[0], N);
+  //r &= rsAlmostEqual(T, X, tol);
+
+
+  // use the rsFourierTransformerRadix2 object:
+  FTB ft;
+  ft.setBlockSize(N);
+  ft.setNormalizationMode(FTR2::NORMALIZE_ON_INVERSE_TRAFO); // is actually the default setting anyway
+  ft.setDirection(FTR2::FORWARD);
+  ft.transformComplexBuffer(&x[0], &X[0]);
+  r &= rsAlmostEqual(T, X, tol);
+
+
 
 
   return r;
