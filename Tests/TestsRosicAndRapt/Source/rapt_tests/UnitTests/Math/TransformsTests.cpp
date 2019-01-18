@@ -197,7 +197,8 @@ bool testFourierTransformerRadix2(std::string &reportString)
 
 // move to test tools or library:
 template<class T>
-void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max, unsigned long seed = 0)
+void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max, 
+  unsigned long seed = 0)
 {
   RAPT::rsNoiseGenerator<double> prng;
   prng.setRange(min, max);
@@ -211,7 +212,21 @@ void rsFillWithComplexRandomValues(std::vector<std::complex<T>>& x, T min, T max
 {
   rsFillWithComplexRandomValues(&x[0], x.size(), min, max, seed);
 }
-
+template<class T>
+T rsMaxComplexError(std::complex<T>* target, std::complex<T>* actual, size_t N)
+{
+  T maxErr = T(0);
+  for(size_t n = 0; n < N; n++)
+    maxErr = RAPT::rsMax(maxErr, abs(target[n]-actual[n]));
+  return maxErr;
+}
+template<class T>
+bool rsAlmostEqual(std::vector<std::complex<T>>& x, std::vector<std::complex<T>>& y, T tolerance)
+{
+  RAPT::rsAssert(x.size() == y.size());
+  T maxErr = rsMaxComplexError(&x[0], &y[0], x.size());
+  return maxErr <= tolerance;
+}
 
 
 bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRadix2
@@ -220,8 +235,8 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
   std::vector<complex<double>> x(N), X(N);  // signal and spectrum
   std::vector<complex<double>> t(N), T(N);  // target signal and target spectrum
 
-
   typedef RAPT::rsArray AR;
+  typedef RAPT::rsFourierTransformerRadix2<double> FT;
 
   // fill x and t with the same N random values:
   rsFillWithComplexRandomValues(x, -1.0, 1.0);
@@ -231,6 +246,20 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
   AR::copyBuffer(&t[0], &T[0], N); // because DFT works in place
   RAPT::rsDFT(&T[0], N);
 
+  // compute spectrum via RAPT::rsRadix2FFT
+  AR::copyBuffer(&x[0], &X[0], N);
+  RAPT::rsRadix2FFT(&X[0], N);
+
+  // compare:
+  double tol = 1.e-13; // 1.e-13 works up to N=32
+  r &= rsAlmostEqual(T, X, tol);
+
+  // use the rsFourierTransformerRadix2 object:
+  FT ft;
+  ft.setBlockSize(N);
+  ft.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO); // is actually the default setting anyway
+  ft.setDirection(FT::FORWARD);
+  // ...
 
 
   return r;
@@ -256,16 +285,17 @@ bool testVariousFourierTransforms(std::string &reportString)
   // ToDo: maybe test also for single-precision, i.e. templatize the functions called in the loops
   // below:
 
+  int minTrafoSize = 2;  // todo: allow trafo size = 1 in rsFourierTransformerRadix2
   int maxTrafoSize = 32;
 
+
   // test radix-2 transforms:
-  for(int i = 1; i <= maxTrafoSize; i *= 2) 
+  for(int i = minTrafoSize; i <= maxTrafoSize; i *= 2) 
     testResult &= testFourierTrafoRadix2(i);
 
   // test arbitrary size transforms:
-  for(int i = 1; i <= maxTrafoSize; i++) 
+  for(int i = minTrafoSize; i <= maxTrafoSize; i++) 
     testResult &= testFourierTrafoArbitrary(i);
-
 
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;

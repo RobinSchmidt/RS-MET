@@ -66,7 +66,7 @@ void smbFft(T *fftBuffer, long fftFrameSize, long sign)
 }
 
 template<class T>
-void rsDFT(std::complex<T> *x, int N)
+void rsDFT(std::complex<T> *x, int N) // maybe have a boolean "inverse" parameter
 {
   std::complex<T> *X = new std::complex<T>[N];
   for(int k = 0; k < N; k++)
@@ -130,7 +130,9 @@ template<class T>
 void rsRadix2FFT(std::complex<T> *a, int N)
 {
   // The algorithm was ported from algorithm 4.2 in the book "Inside the FFT black box" and 
-  // then simplified. All twiddle factors are computed on the fly via recursion.
+  // then simplified. All twiddle factors are computed on the fly via recursion. There's just one
+  // single complex exponential (i.e. a sin/cos pair) evaluation in the whole routine. That's 
+  // perhaps not very advisable from a numeric point of view but very nice mathematically. 
 
   int np = 1;          // NumOfProblems
   int h  = N/2;        // HalfSize -> distance between butterflied values?
