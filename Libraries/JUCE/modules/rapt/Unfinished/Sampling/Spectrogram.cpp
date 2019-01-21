@@ -4,6 +4,9 @@ template<class T>
 rsSpectrogram<T>::rsSpectrogram()
 {
   transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO);
+  // todo: provide option: NEVER_NORMALIZE - we normalize oruselves here in this class, taking
+  // into account the effect of the window
+
   setBlockSize(512);
 }
 
@@ -265,21 +268,29 @@ void rsSpectrogram<T>::swapForZeroPhase(std::complex<T>* X, int L)
 template<class T>
 void rsSpectrogram<T>::fft(std::complex<T> *X, int M)
 {
-  //transformer.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
-  //transformer.setBlockSize(M);
-  //transformer.transformComplexBufferInPlace(X);
+  transformer.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
+  transformer.setBlockSize(M);
+  transformer.transformComplexBufferInPlace(X);
 
-  rsFFT(X, M);   // old
+  //rsFFT(X, M);   // old
+
+  // i think, we have an error with respect to the normalization - the output spectrum is scaled
+  // to very low values - why? we should scale by 1/N after the forward transform...or maybe, 
+  // actually by 1/sum(window) or 1/sqrt(energy(window))? ...maybe we should have the option to not
+  // scale at all in the transform and instead leave the sclaing to the outlying code here
+  // aaahh - yes - in complexSpectrogram, we scale by 2/sum(window) - and then the transformer 
+  // object scales once again! yes - the best solution seems to be to have an option 
+  // NEVER_NORMALIZE in rsForuierTransformer
 }
 
 template<class T>
 void rsSpectrogram<T>::ifft(std::complex<T> *X, int M)
 {
-  //transformer.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
-  //transformer.setBlockSize(M);
-  //transformer.transformComplexBufferInPlace(X);
+  transformer.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
+  transformer.setBlockSize(M);
+  transformer.transformComplexBufferInPlace(X);
 
-  rsIFFT(X, M);  // old
+  //rsIFFT(X, M);  // old
 }
 
 
