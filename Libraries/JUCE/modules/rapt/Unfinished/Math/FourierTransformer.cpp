@@ -84,7 +84,7 @@ template<class T>
 void rsFourierTransformerRadix2<T>::setNormalizationMode(int newNormalizationMode)
 {
   if( newNormalizationMode >= NORMALIZE_ON_FORWARD_TRAFO &&
-      newNormalizationMode <= ORTHONORMAL_TRAFO )
+      newNormalizationMode <= NEVER_NORMALIZE )
   {
     normalizationMode = newNormalizationMode;
     updateNormalizationFactor();
@@ -302,22 +302,24 @@ void rsFourierTransformerRadix2<T>::getRealSignalFromMagnitudesAndPhases(T *magn
   transformSymmetricSpectrum(tmpBuffer, signal);
 }
 
+template<class T>
+T rsFourierTransformerRadix2<T>::getNormalizationFactor(int N, int dir, int mode)
+{
+  if( (mode == NORMALIZE_ON_FORWARD_TRAFO && dir == FORWARD) ||
+      (mode == NORMALIZE_ON_INVERSE_TRAFO && dir == INVERSE)    )
+    return T(1.0) / (T) N;
+  else if( mode == ORTHONORMAL_TRAFO )
+    return T(1.0) / rsSqrt((T) N);
+  else
+    return T(1.0);
+}
+
 // pre-calculations:
 
 template<class T>
 void rsFourierTransformerRadix2<T>::updateNormalizationFactor()
 {
-  if( (normalizationMode == NORMALIZE_ON_FORWARD_TRAFO && direction == FORWARD) ||
-      (normalizationMode == NORMALIZE_ON_INVERSE_TRAFO && direction == INVERSE)    )
-  {
-    normalizationFactor = T(1.0) / (T) N;
-  }
-  else if( normalizationMode == ORTHONORMAL_TRAFO )
-  {
-    normalizationFactor = T(1.0) / rsSqrt((T) N);
-  }
-  else
-    normalizationFactor = T(1.0);
+  normalizationFactor = getNormalizationFactor(N, direction, normalizationMode);
 }
 
 //=================================================================================================
@@ -405,7 +407,7 @@ template<class T>
 void rsFourierTransformerBluestein<T>::setNormalizationMode(int newNormalizationMode)
 {
   if( newNormalizationMode >= rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO &&
-      newNormalizationMode <= rsFourierTransformerRadix2<T>::ORTHONORMAL_TRAFO )
+      newNormalizationMode <= rsFourierTransformerRadix2<T>::NEVER_NORMALIZE )
   {
     normalizationMode = newNormalizationMode;
     updateNormalizationFactor();
@@ -533,18 +535,7 @@ void rsFourierTransformerBluestein<T>::generateChirp()
 template<class T>
 void rsFourierTransformerBluestein<T>::updateNormalizationFactor()
 {
-  if( (normalizationMode == rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO &&
-       direction == rsFourierTransformerRadix2<T>::FORWARD) ||
-      (normalizationMode == rsFourierTransformerRadix2<T>::NORMALIZE_ON_INVERSE_TRAFO &&
-       direction == rsFourierTransformerRadix2<T>::INVERSE)    )
-  {
-    normalizationFactor = T(1.0) / (T) N;
-  }
-  else if( normalizationMode == rsFourierTransformerRadix2<T>::ORTHONORMAL_TRAFO )
-  {
-    normalizationFactor = T(1.0) / sqrt((T) N);
-  }
-  else
-    normalizationFactor = T(1.0);
+  normalizationFactor = rsFourierTransformerRadix2<T>::getNormalizationFactor(
+    N, direction, normalizationMode);
 }
 

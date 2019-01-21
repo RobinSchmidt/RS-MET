@@ -216,8 +216,8 @@ void spectrogramSine()
     for(j = 0; j < K; j++)
     {
       mag[i][j] = abs(s(i, j));
-      //dB[i][j]  = rsMax(rsAmp2dB(mag[i][j]), -50.0);
-      dB[i][j]  = rsMax(rsAmp2dB(mag[i][j]), -250.0);
+      dB[i][j]  = rsMax(rsAmp2dB(mag[i][j]), -50.0);
+      //dB[i][j]  = rsMax(rsAmp2dB(mag[i][j]), -250.0);
       phs[i][j] = arg(s(i, j));
     }
   }

@@ -3,10 +3,7 @@
 template<class T>
 rsSpectrogram<T>::rsSpectrogram()
 {
-  transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO);
-  // todo: provide option: NEVER_NORMALIZE - we normalize oruselves here in this class, taking
-  // into account the effect of the window
-
+  transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NEVER_NORMALIZE);
   setBlockSize(512);
 }
 

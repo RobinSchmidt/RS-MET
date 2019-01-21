@@ -22,7 +22,8 @@ public:
   {
     NORMALIZE_ON_FORWARD_TRAFO, // divide by blockSize on forward FFT
     NORMALIZE_ON_INVERSE_TRAFO, // divide by blockSize on inverse FFT (default)
-    ORTHONORMAL_TRAFO           // divide by sqrt(blockSize) on both transforms
+    ORTHONORMAL_TRAFO,          // divide by sqrt(blockSize) on both transforms
+    NEVER_NORMALIZE             // no normalization at all
   };
 
 
@@ -53,6 +54,9 @@ public:
 
   /** Sets the mode for normalization of the output (@see: normalizationModes). */
   void setNormalizationMode(int newNormalizationMode);
+
+
+
 
 
   /** \name Transforms */
@@ -118,6 +122,11 @@ public:
     return binIndex*sampleRate/fftSize;
   }
 
+  /** Returns the normalization factor to applied after the forward and/or inverse transform, 
+  according to the block-size, direction of the transform and normalization mode. */
+  static T getNormalizationFactor(int blockSize, int direction, int normalizationMode);
+
+
 protected:
 
   /** \name Internal Functions */
@@ -125,6 +134,8 @@ protected:
   /** Updates the normalizationFactor member variable acording to a new blockSize, direction or
   normalizationMode. */
   void updateNormalizationFactor();
+
+
 
 
   /** \name Data */
