@@ -99,6 +99,10 @@ bool spectrogramUnitTest()
 
   // last parameter not yet used in function..
 
+  rsSpectrogramUnitTest tester;
+  r &= tester.runTests();
+
+
 
   r &= testSpectrogramResynthesis(8, 4, 20, 8);
   //r &= testSpectrogramResynthesis(7, 3, 20, 8);  // odd size window
@@ -112,8 +116,7 @@ bool spectrogramUnitTest()
   // let the spectrogram class have a direct setFftSize function, let it use an 
   // rsFourierTransformer object, allow arbitrary FFT sizes
 
-  rsSpectrogramUnitTest tester;
-  r &= tester.runTests();
+
 
   return r;
 }

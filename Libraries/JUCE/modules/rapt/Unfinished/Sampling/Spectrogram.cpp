@@ -265,21 +265,21 @@ void rsSpectrogram<T>::swapForZeroPhase(std::complex<T>* X, int L)
 template<class T>
 void rsSpectrogram<T>::fft(std::complex<T> *X, int M)
 {
-  //transformer.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
-  //transformer.setBlockSize(M);
-  //transformer.transformComplexBufferInPlace(X);
+  transformer.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
+  transformer.setBlockSize(M);
+  transformer.transformComplexBufferInPlace(X);
 
-  rsFFT(X, M);   // old
+  //rsFFT(X, M);   // old
 }
 
 template<class T>
 void rsSpectrogram<T>::ifft(std::complex<T> *X, int M)
 {
-  //transformer.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
-  //transformer.setBlockSize(M);
-  //transformer.transformComplexBufferInPlace(X);
+  transformer.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
+  transformer.setBlockSize(M);
+  transformer.transformComplexBufferInPlace(X);
 
-  rsIFFT(X, M);  // old
+  //rsIFFT(X, M);  // old
 }
 
 
