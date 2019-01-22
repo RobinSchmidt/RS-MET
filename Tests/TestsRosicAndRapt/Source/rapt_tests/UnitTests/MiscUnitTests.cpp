@@ -8,21 +8,9 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   int N = signalLength;
   int M = fftSize;
 
-  // generate the window function (todo: let the spectrogram class do that by itself):
-  std::vector<double> w(B);
-  RAPT::rsWindowFunction::createWindow(&w[0], B, windowType, true);
-
-  // generate a sequence of random numbers:
-  std::vector<double> x(N);
-  int n;
-  RAPT::rsNoiseGenerator<double> prng;
-  for(n = 0; n < N; n++)
-    x[n] = prng.getSample();
-
-  typedef RAPT::rsSpectrogram<double> SP; // spectrogram processor
-  SP sp;
-
-  // compute the complex spectrogram:
+  // compute the complex spectrogram of a sequence of random numbers:
+  std::vector<double> x = rsRandomVector(N, -1, +1);
+  RAPT::rsSpectrogram<double> sp;  // spectrogram processor
   sp.setAnalysisWindowType(windowType);
   sp.setSynthesisWindowType(windowType);
   sp.setBlockSize(B);
@@ -35,17 +23,17 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   // facilitates having an FFT size independent from the block-size
 
   // resynthesize signal from spectrogram:
-  std::vector<double> y  = sp.synthesize(s);
-  //std::vector<double> y  = sp.synthesize(s, &w[0], B, H, &w[0]);
+  std::vector<double> y = sp.synthesize(s);
 
   // check, if resynthesized matches original signal:
   double tol = 1.e-13;
+  int n;
   std::vector<double> err(N);
   for(n = 0; n < N; n++)         // create error signal
     err[n] = x[n] - y[n];
   for(n = 0; n < N; n++)
     r &= abs(err[n]) <= tol;
-  //plotVector(err);  // may be uncommented to plot error signal, if something is going wrong
+  plotVector(err);  // may be uncommented to plot error signal, if something is going wrong
 
   return r;
 }
@@ -63,7 +51,7 @@ public:
     return r;
   }
 
-  bool testInversTrafo(int N)
+  bool testInverseTrafo(int N)
   {
     bool r = true;
 
@@ -104,6 +92,7 @@ bool spectrogramUnitTest()
 
   // todo: try block-sizes that are not a power of two, window functions that don't have natural
   // perfect reconstruction properties (i.e. demodulate the output)
+  // test resynthesis with zero-padding
 
   // let the spectrogram class have a direct setFftSize function, let it use an 
   // rsFourierTransformer object, allow arbitrary FFT sizes

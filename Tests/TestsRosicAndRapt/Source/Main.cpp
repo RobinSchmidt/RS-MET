@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // todo: merge with unit tests for RSLib
+  runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -322,9 +322,9 @@ int main(int argc, char* argv[])
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
   //plotWindows();    // move near plotWidowSpectra
-  spectrogramSine();
+  //spectrogramSine();
   //sinusoidalSynthesis1();
-  //sinusoidalAnalysis1();
+  sinusoidalAnalysis1();
 
 
   // Physics:
