@@ -33,7 +33,9 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
     err[n] = x[n] - y[n];
   for(n = 0; n < N; n++)
     r &= abs(err[n]) <= tol;
-  plotVector(err);  // may be uncommented to plot error signal, if something is going wrong
+  //plotVector(y);
+  if(r == false)
+    plotVector(err);  // plot error signal, if something goes wrong
 
   return r;
 }
@@ -47,6 +49,14 @@ public:
   bool testForwardTrafo(int N)
   {
     bool r = true;
+    std::vector<double> x = rsRandomVector(N, -1, +1);
+    rsMatrix<rsComplexDbl> s = complexSpectrogram(&x[0], N);
+
+
+    // ...
+
+
+
 
     return r;
   }
