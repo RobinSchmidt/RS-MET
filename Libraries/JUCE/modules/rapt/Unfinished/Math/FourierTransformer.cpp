@@ -475,6 +475,7 @@ void rsFourierTransformerBluestein<T>::transformComplexBufferInPlace(std::comple
     buffer[n] = y[n] * c[n];
 
   // That's it! Bluestein-FFT done.
+  // ToDo: check, that this works also for the inverse transform, i.e. arbitrary size inverse FFT
 }
 
 template<class T>

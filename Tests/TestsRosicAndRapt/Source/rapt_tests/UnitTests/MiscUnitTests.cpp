@@ -57,8 +57,8 @@ public:
   bool testInverseTrafo(int N, double tol)
   {
     std::vector<std::complex<double>> y, x = rsComplexRandomVector(N, -1.0, +1.0); y = x;
-    ifft(  &y[0], N);  // actual
-    rsIFFT(&x[0], N);  // target
+    ifft(  &y[0], N); RAPT::rsArray::scale(&y[0], N, 1.0/N); // actual
+    rsIFFT(&x[0], N);                                        // target
     return rsAlmostEqual(x, y, tol);
   }
 
@@ -75,11 +75,11 @@ public:
   bool testTransforms()
   {
     bool r = true;
-
+    r &= testTrafos(  2, 1.e-15);
+    r &= testTrafos(  4, 1.e-15);
     r &= testTrafos(  8, 1.e-15);
-    r &= testTrafos( 16, 1.e-15);
-    r &= testTrafos(128, 1.e-14);
-
+    r &= testTrafos( 16, 1.e-14);
+    r &= testTrafos(128, 1.e-13);
     return r;
   }
 
@@ -101,7 +101,8 @@ bool spectrogramUnitTest()
 
   rsSpectrogramUnitTest tester;
   r &= tester.runTests();
-
+  // this fails the transformer object seems to compute a scrabled forward FFT when it should 
+  // compute and inverse FFT - but testVariousFourierTransforms passes - so where is the bug?
 
 
   r &= testSpectrogramResynthesis(8, 4, 20, 8);

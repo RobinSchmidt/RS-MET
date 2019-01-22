@@ -261,7 +261,7 @@ bool testFourierTrafoArbitrary(int N)
   //RAPT::rsBluesteinFFT(&X[0], N);
   //r &= rsAlmostEqual(T, X, tol);
 
-  // use the rsFourierTransformerRadix2 object:
+  // use the rsFourierTransformerBluestein object:
   FTB ft;
   ft.setBlockSize(N);
   ft.setNormalizationMode(FTR2::NORMALIZE_ON_INVERSE_TRAFO); // is actually the default setting anyway
