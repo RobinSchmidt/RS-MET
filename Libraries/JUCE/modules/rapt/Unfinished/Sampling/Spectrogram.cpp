@@ -3,7 +3,11 @@
 template<class T>
 rsSpectrogram<T>::rsSpectrogram()
 {
-  transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NEVER_NORMALIZE);
+  //transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NEVER_NORMALIZE);
+
+  transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_INVERSE_TRAFO);
+   // why do we need this?
+
   setBlockSize(512);
 }
 
@@ -279,7 +283,7 @@ void rsSpectrogram<T>::ifft(std::complex<T> *X, int M)
   transformer.setBlockSize(M);
   transformer.transformComplexBufferInPlace(X);
 
-  //rsIFFT(X, M);  // old
+  //rsIFFT(X, M);  // old - does scale by 1/M
 }
 
 

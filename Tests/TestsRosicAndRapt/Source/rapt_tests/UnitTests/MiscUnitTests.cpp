@@ -57,8 +57,9 @@ public:
   bool testInverseTrafo(int N, double tol)
   {
     std::vector<std::complex<double>> y, x = rsComplexRandomVector(N, -1.0, +1.0); y = x;
-    ifft(  &y[0], N); RAPT::rsArray::scale(&y[0], N, 1.0/N); // actual
-    rsIFFT(&x[0], N);                                        // target
+    //ifft(  &y[0], N); RAPT::rsArray::scale(&y[0], N, 1.0/N); // actual
+    ifft(  &y[0], N);  // actual
+    rsIFFT(&x[0], N);  // target
     return rsAlmostEqual(x, y, tol);
   }
 
@@ -68,9 +69,6 @@ public:
     r &= testInverseTrafo(N, tol);
     return r;
   }
-
-
-
 
   bool testTransforms()
   {
@@ -97,13 +95,11 @@ bool spectrogramUnitTest()
 {
   bool r = true;      // test result
 
-  // last parameter not yet used in function..
-
   rsSpectrogramUnitTest tester;
   r &= tester.runTests();
-  // this fails the transformer object seems to compute a scrabled forward FFT when it should 
-  // compute and inverse FFT - but testVariousFourierTransforms passes - so where is the bug?
 
+
+  // last parameter not yet used in function..
 
   r &= testSpectrogramResynthesis(8, 4, 20, 8);
   //r &= testSpectrogramResynthesis(7, 3, 20, 8);  // odd size window
@@ -113,11 +109,32 @@ bool spectrogramUnitTest()
   // todo: try block-sizes that are not a power of two, window functions that don't have natural
   // perfect reconstruction properties (i.e. demodulate the output)
   // test resynthesis with zero-padding
+  // test resynthesis with and without demodulation (without, we should use 
+  // window/blocksize/hopsize that doesn't need demodulation)
 
   // let the spectrogram class have a direct setFftSize function, let it use an 
   // rsFourierTransformer object, allow arbitrary FFT sizes
 
+  // why do we need to scale the output of the ifft? in complexSpectrogram, there is already a 
+  // scaling by 2 / rsArray::sum(w, B); ...aahh - but it's applied to the STFT matrix *after* the
+  // STFT has been computed - so, we should probably use no nromalziation
 
+  // how it should work:
+  // -on forward FFT, scale spectral values by 1 / sum(window) (or 2 / sum(..) bcs of negative 
+  //  freqs)
+  // -on inverse FFT, no scaling should be applied
+
+  // how it actually works:
+  // -on forward FFT, it is scaled as is should
+  // -on inverse FFT, it is scaled by 1/N - why does this work? there must be a hidden inverse
+  //  scaling somewhere - maybe in applyDemodulation? -> figure out
+
+  // try identity resynthesis without demodulation of a DC signal
+
+
+
+  // this fails the transformer object seems to compute a scrabled forward FFT when it should 
+  // compute and inverse FFT - but testVariousFourierTransforms passes - so where is the bug?
 
   return r;
 }
