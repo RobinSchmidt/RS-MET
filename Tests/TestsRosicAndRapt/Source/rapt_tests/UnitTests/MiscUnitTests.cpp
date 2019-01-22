@@ -46,34 +46,39 @@ class rsSpectrogramUnitTest : public RAPT::rsSpectrogram<double>
 
 public:
 
-  bool testForwardTrafo(int N)
+  bool testForwardTrafo(int N, double tol)
   {
-    bool r = true;
-    std::vector<double> x = rsRandomVector(N, -1, +1);
-    rsMatrix<rsComplexDbl> s = complexSpectrogram(&x[0], N);
+    std::vector<std::complex<double>> y, x = rsComplexRandomVector(N, -1.0, +1.0); y = x;
+    fft(  &y[0], N);  // actual
+    rsFFT(&x[0], N);  // target
+    return rsAlmostEqual(x, y, tol);
+  }
 
+  bool testInverseTrafo(int N, double tol)
+  {
+    std::vector<std::complex<double>> y, x = rsComplexRandomVector(N, -1.0, +1.0); y = x;
+    ifft(  &y[0], N);  // actual
+    rsIFFT(&x[0], N);  // target
+    return rsAlmostEqual(x, y, tol);
+  }
 
-    // ...
-
-
-
-
+  bool testTrafos(int N, double tol)
+  {
+    bool r = testForwardTrafo(N, tol);
+    r &= testInverseTrafo(N, tol);
     return r;
   }
 
-  bool testInverseTrafo(int N)
-  {
-    bool r = true;
 
-    return r;
-  }
+
 
   bool testTransforms()
   {
     bool r = true;
 
-    r &= testForwardTrafo(8);
-    r &= testForwardTrafo(16);
+    r &= testTrafos(  8, 1.e-15);
+    r &= testTrafos( 16, 1.e-15);
+    r &= testTrafos(128, 1.e-14);
 
     return r;
   }

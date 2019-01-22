@@ -69,6 +69,14 @@ void rsFillWithComplexRandomValues(std::vector<std::complex<T>>& x, T min, T max
 {
   rsFillWithComplexRandomValues(&x[0], x.size(), min, max, seed);
 }
+template<class T> // yet more convenient function
+std::vector<std::complex<T>> rsComplexRandomVector(int N, T min, T max, unsigned long seed = 0)
+{
+  std::vector<std::complex<T>> x(N);
+  rsFillWithComplexRandomValues(x, min, max, seed);
+  return x;
+}
+
 
 template<class T>
 T rsMaxComplexError(std::complex<T>* target, std::complex<T>* actual, size_t N)
