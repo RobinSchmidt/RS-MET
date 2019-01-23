@@ -26,7 +26,9 @@ public:
 
   inline void setHopSize(int newHopSize)          { sp.setHopSize(newHopSize); }
 
-  inline void setZeroPaddingFactor(int newFactor) { sp.setZeroPaddingFactor(newFactor); }
+  inline void setTrafoSize(int newSize)           { sp.setTrafoSize(newSize); }
+
+  //inline void setZeroPaddingFactor(int newFactor) { sp.setZeroPaddingFactor(newFactor); }
     // maybe replace by setFftSize - be consistent with the SMS tools
 
   /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */

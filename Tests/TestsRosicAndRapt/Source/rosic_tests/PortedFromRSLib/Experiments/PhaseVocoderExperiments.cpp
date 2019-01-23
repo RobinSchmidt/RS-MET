@@ -288,9 +288,9 @@ void sinusoidalSynthesis1()
   //sa.setBlockSize(1801);  // does not yet work
   //sa.setHopSize(225);
   sa.setBlockSize(2048);
+  sa.setTrafoSize(4096);
   sa.setHopSize(256);
   sa.setRelativeLevelThreshold(-40);
-  sa.setZeroPaddingFactor(2);
   //model2 = sa.analyze(&x[0], (int)x.size(), fs);
   //std::vector<double> y = synthesizeSinusoidal(model2, fs);
   // there are loads of spurious partials - also, we need to wrap the phase into -pi..pi for the 
@@ -330,8 +330,9 @@ void sinusoidalAnalysis1()
   sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
   sa.setMaxFreqDeltaBase(100);
   sa.setBlockSize(1024);
+  sa.setTrafoSize(4096);
   sa.setHopSize(256);
-  sa.setZeroPaddingFactor(4);
+  //sa.setZeroPaddingFactor(4);
   sa.setRelativeLevelThreshold(-25);
   sa.setFadeInTime(0.01);
   sa.setFadeOutTime(0.01);

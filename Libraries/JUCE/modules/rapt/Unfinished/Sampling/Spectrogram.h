@@ -34,10 +34,12 @@ public:
   /** Sets the amout of zero-padding as an integer factor. 
   ...padding should be applied symmetrically at front and back such that the phase stays measured
   at the center of the frame */
-  void setZeroPaddingFactor(int newFactor) { zeroPaddingFactor = newFactor; }
+  //void setZeroPaddingFactor(int newFactor) { zeroPaddingFactor = newFactor; }
   // get rid - replace by setTransformSize ot setFftSize
 
-  void setTrafoSize(int newSize) { trafoSize = newSize; }
+  /** Sets the FFT size to be used. It should be >= the block size. If it's greater, the blocks 
+  will be zero padded to the desired FFT size. */
+  void setTrafoSize(int newSize);
 
 
   /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */
@@ -73,7 +75,11 @@ public:
 
 
 
-  size_t getFftSize() const { return blockSize * zeroPaddingFactor; }
+  //size_t getFftSize() const { return blockSize * zeroPaddingFactor; }
+
+  size_t getFftSize() const { return trafoSize; }
+  // rename to getTrafoSize
+
 
   size_t getNumNonRedundantBins() const { return getFftSize()/2 + 1; }
 
@@ -217,10 +223,11 @@ protected:
   /** \name Data */
 
 
-  int zeroPaddingFactor = 1;
+  //int zeroPaddingFactor = 1;
+  int trafoSize = 0;    // FFT size - initialized in constructor
   int blockSize = 0;    // initialized in constructor which also generates the window functions   
   int hopSize   = 128;
-  // int trafoSize = 0;  // FFT size - use later
+
   // maybe we should also distiguish between analysis and synthesis hop-and block-size
 
 

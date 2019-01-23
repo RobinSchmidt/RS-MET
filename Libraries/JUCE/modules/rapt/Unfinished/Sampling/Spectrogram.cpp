@@ -8,6 +8,7 @@ rsSpectrogram<T>::rsSpectrogram()
   transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_INVERSE_TRAFO);
    // why do we need this?
 
+  setTrafoSize(512);
   setBlockSize(512);
 }
 
@@ -20,13 +21,24 @@ rsSpectrogram<T>::~rsSpectrogram()
 // Setup:
 
 template<class T>
-void rsSpectrogram<T>::setBlockSize(int newBlockSize) 
+void rsSpectrogram<T>::setBlockSize(int newSize) 
 { 
-  if(newBlockSize != blockSize) {
-    blockSize = newBlockSize;
+  rsAssert(newSize <= trafoSize, "FFT size should be >= block size");
+  if(newSize != blockSize) {
+    blockSize = newSize;
     updateAnalysisWindow();
     updateSynthesisWindow();
-    transformer.setBlockSize(newBlockSize); // later, this should not be done here - instead in setTrafoSize
+    //transformer.setBlockSize(newSize); // later, this should not be done here - instead in setTrafoSize
+  }
+}
+
+template<class T>
+void rsSpectrogram<T>::setTrafoSize(int newSize) 
+{ 
+  rsAssert(newSize >= blockSize, "FFT size should be >= block size");
+  if(newSize != trafoSize) {
+    trafoSize = newSize;
+    transformer.setBlockSize(trafoSize);
   }
 }
 
@@ -59,7 +71,8 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<
 {
   T*  w = &analysisWindow[0];
   int B = blockSize;
-  int M = B*zeroPaddingFactor; // later: fftSize
+  //int M = B*zeroPaddingFactor; // later: fftSize
+  int M = trafoSize;
 
   // maybe factor out into prepareTransformBuffer(x, N, n, X) - this also facilitates unit-tests 
   // for the buffer preparation:
@@ -97,9 +110,10 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
   T*  w = &analysisWindow[0];
   int B = blockSize;
   int H = hopSize;
-  int P = zeroPaddingFactor; // obsolete
+  //int P = zeroPaddingFactor; // obsolete
   int F = getNumFrames(N, H);                  // number of STFT frames
-  int M = B * P;                               // FFT size (maybe use L) - use trafoSize later
+  //int M = B * P;                               // FFT size (maybe use L) - use trafoSize later
+  int M = trafoSize;
   int K = M/2 + 1;                             // number of non-redundant bins
   rsMatrix<std::complex<T>> s(F, K);           // spectrogram (only positive frequency bins)
   T a = 2 / rsArray::sum(w, B);                // amplitude scaler
