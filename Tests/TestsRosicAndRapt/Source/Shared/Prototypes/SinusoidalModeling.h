@@ -20,20 +20,13 @@ class SinusoidalAnalyzer
 public:
 
 
-  /** \name Setup */
+  /** \name High level setup */
 
-  inline void setBlockSize(int newBlockSize)      { sp.setBlockSize(newBlockSize); }
-
-  inline void setHopSize(int newHopSize)          { sp.setHopSize(newHopSize); }
-
-  inline void setTrafoSize(int newSize)           { sp.setTrafoSize(newSize); }
-
-  //inline void setZeroPaddingFactor(int newFactor) { sp.setZeroPaddingFactor(newFactor); }
-    // maybe replace by setFftSize - be consistent with the SMS tools
-
-  /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */
-  inline void setWindowType(int newType)          { sp.setAnalysisWindowType(newType); }
-  //setRootKey/setFundamentalFrequency, 
+  // Good choices for sinusoidal analysis with a minimum resolvable frequency delta df:
+  // Window: Blackman-Harris
+  // ...
+  // todo: make a function setParameterPreset(int index, double df, double fs)
+  // maybe it should slo include setting the maxFreqDeltaBase and maxFreqDeltaSlope variables
 
   /** Sets the fade-in time in seconds for newborn partial tracks. Whenever a new track is born, we 
   prepend a datapoint with the same frequency, zero amplitude, a time-stamp given by the time of 
@@ -49,6 +42,37 @@ public:
   out.  */
   void setFadeOutTime(T newTime) { fadeOutTime = newTime; }
 
+  /** Sets the minimum length (in seconds) that a track must have in order to be considered a 
+  stable partial. */
+  void setMinimumTrackLength(T newLength) { minTrackLength = newLength; }
+
+
+
+  /** \name Low level setup */
+
+  /** Sets the FFT size for the underlying spectrogram analysis. Should be >= the block size. */
+  inline void setTrafoSize(int newSize)      { sp.setTrafoSize(newSize); }
+
+  /** Sets the block size for the underlying spectrogram analysis. Should be <= the FFT size. */
+  inline void setBlockSize(int newBlockSize) { sp.setBlockSize(newBlockSize); }
+
+  /** Sets FFT size and block size for the underlying spectrogram at the same time (setting them 
+  simultaneously avoids potential temporary violations of trafoSize >= blockSize (which triggers an
+  assertion) during setup). */
+  inline void setBlockAndTrafoSize(int newBlockSize, int newTrafoSize)
+  {
+    sp.setBlockAndTrafoSize(newBlockSize, newTrafoSize);
+  }
+  
+  /** Sets the hop size for the underlying spectrogram analysis. Should typically be some fraction 
+  of the block size (such as 1/2, 1/4 or something). */
+  inline void setHopSize(int newHopSize)     { sp.setHopSize(newHopSize); }
+
+  /** Sets the analysis window type for the underlying spectrogram analysis. Should be one of the 
+  type in RAPT::rsWindowFunction::windowTypes. The window type affects the time-frequency tradeoff
+  and the precision of the partial frequency estimation.... */
+  inline void setWindowType(int newType)     { sp.setAnalysisWindowType(newType); }
+
   // void setContinuationAlgorithm
 
   /** Sets the maximum allowed frequency difference that a sinusoidal track may have between 
@@ -58,11 +82,9 @@ public:
   setMaxFreqDeltaSlope.  */
   void setMaxFreqDeltaBase(T newDifference) { maxFreqDeltaBase = newDifference; }
 
-
   /** Sets the amount by which the maximum allowed frequency difference increases with 
   frequency. */
   void setMaxFreqDeltaSlope(T newSlope) { maxFreqDeltaSlope = newSlope; }
-
 
   /** Sets the magnitude threshold, above which a spectral peak must be, to be considered a 
   potential sinusoidal track. The threshold is in decibels and relative to the global maximum of
@@ -71,9 +93,6 @@ public:
   order to not pick up on sidelobes. */
   void setRelativeLevelThreshold(T newThreshold) { magThreshold = rsDbToAmp(newThreshold); }
 
-  /** Sets the minimum length (in seconds) that a track must have in order to be considered a 
-  stable partial. */
-  void setMinimumTrackLength(T newLength) { minTrackLength = newLength; }
 
 
   /** \name Inquiry */

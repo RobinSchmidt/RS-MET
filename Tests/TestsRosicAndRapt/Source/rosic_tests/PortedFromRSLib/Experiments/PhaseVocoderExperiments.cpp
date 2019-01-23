@@ -285,10 +285,10 @@ void sinusoidalSynthesis1()
   SinusoidalAnalyzer<double> sa;
   sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
   sa.setMaxFreqDeltaBase(100);
+  sa.setTrafoSize(4096);
+  sa.setBlockSize(2048);
   //sa.setBlockSize(1801);  // does not yet work
   //sa.setHopSize(225);
-  sa.setBlockSize(2048);
-  sa.setTrafoSize(4096);
   sa.setHopSize(256);
   sa.setRelativeLevelThreshold(-40);
   //model2 = sa.analyze(&x[0], (int)x.size(), fs);
@@ -302,6 +302,15 @@ void sinusoidalSynthesis1()
   // maybe make a class SineModelPlotter which can plot the sinusoidal trajectories over the 
   // spectrogram and maybe plot also the time-domain waveform
   // - maybe have also a visualization of input and resynthesized signal
+
+  // when the frequency is systematically under- or overestimated (i.e. estimation errors do not 
+  // average out to zero during a sinusoidal track), we may still hope that the time-domain 
+  // resynthesis works well, if the phase-values can compensate that error. if that's not possible
+  // (it may be especially problematic at high frequencies) - try using a smaller hop size (halving 
+  // the hop-size should double the frequency at which freq-error compensation by phase still 
+  // works)
+
+
 
   plotSineModel(sa, &x[0], (int) x.size(), fs);
 
@@ -329,8 +338,8 @@ void sinusoidalAnalysis1()
   SinusoidalAnalyzer<double> sa;
   sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
   sa.setMaxFreqDeltaBase(100);
-  sa.setBlockSize(1024);
   sa.setTrafoSize(4096);
+  sa.setBlockSize(1024);
   sa.setHopSize(256);
   //sa.setZeroPaddingFactor(4);
   sa.setRelativeLevelThreshold(-25);

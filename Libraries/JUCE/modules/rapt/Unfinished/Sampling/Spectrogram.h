@@ -27,20 +27,19 @@ public:
   different sizes for analysis and synthesis) */
   void setBlockSize(int newBlockSize);
 
-  /** Sets the time-delta between successive blocks/frames in samples (value used for analysis and
-  synthesis - todo: allow different values for both) */
-  void setHopSize(int newHopSize) { hopSize = newHopSize; }
-
-  /** Sets the amout of zero-padding as an integer factor. 
-  ...padding should be applied symmetrically at front and back such that the phase stays measured
-  at the center of the frame */
-  //void setZeroPaddingFactor(int newFactor) { zeroPaddingFactor = newFactor; }
-  // get rid - replace by setTransformSize ot setFftSize
-
   /** Sets the FFT size to be used. It should be >= the block size. If it's greater, the blocks 
   will be zero padded to the desired FFT size. */
   void setTrafoSize(int newSize);
 
+  /** Sets FFT size and block size at the same time (setting them simultaneously avoids potential
+  temporary violations of trafoSize >= blockSize (which triggers an assertion) during setup). */
+  void setBlockAndTrafoSize(int newBlockSize, int newTrafoSize);
+
+
+
+  /** Sets the time-delta between successive blocks/frames in samples (value used for analysis and
+  synthesis - todo: allow different values for both) */
+  void setHopSize(int newHopSize) { hopSize = newHopSize; }
 
   /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */
   void setAnalysisWindowType(int newType) 
@@ -218,24 +217,17 @@ protected:
   void ifft(std::complex<T>* X, int M);
 
 
-
-
   /** \name Data */
 
-
-  //int zeroPaddingFactor = 1;
   int trafoSize = 0;    // FFT size - initialized in constructor
   int blockSize = 0;    // initialized in constructor which also generates the window functions   
   int hopSize   = 128;
-
   // maybe we should also distiguish between analysis and synthesis hop-and block-size
-
 
   int analysisWindowType  = rsWindowFunction::HANNING_WINDOW_ZN;
   int synthesisWindowType = rsWindowFunction::HANNING_WINDOW_ZN;
 
   std::vector<T> analysisWindow, synthesisWindow;
-
 
   bool timeOriginAtWindowCenter = true;
 

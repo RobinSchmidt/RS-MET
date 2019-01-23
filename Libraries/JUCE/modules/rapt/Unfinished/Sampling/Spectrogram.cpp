@@ -23,24 +23,45 @@ rsSpectrogram<T>::~rsSpectrogram()
 template<class T>
 void rsSpectrogram<T>::setBlockSize(int newSize) 
 { 
+  setBlockAndTrafoSize(newSize, trafoSize);
+  /*
   rsAssert(newSize <= trafoSize, "FFT size should be >= block size");
   if(newSize != blockSize) {
     blockSize = newSize;
     updateAnalysisWindow();
     updateSynthesisWindow();
-    //transformer.setBlockSize(newSize); // later, this should not be done here - instead in setTrafoSize
   }
+  */
 }
 
 template<class T>
 void rsSpectrogram<T>::setTrafoSize(int newSize) 
 { 
+  setBlockAndTrafoSize(blockSize, newSize);
+  /*
   rsAssert(newSize >= blockSize, "FFT size should be >= block size");
   if(newSize != trafoSize) {
     trafoSize = newSize;
     transformer.setBlockSize(trafoSize);
   }
+  */
 }
+
+template<class T>
+void rsSpectrogram<T>::setBlockAndTrafoSize(int newBlockSize, int newTrafoSize)
+{
+  rsAssert(newTrafoSize >= newBlockSize, "FFT size should be >= block size");
+  if(newBlockSize != blockSize) {
+    blockSize = newBlockSize;
+    updateAnalysisWindow();
+    updateSynthesisWindow();
+  }
+  if(newTrafoSize != trafoSize) {
+    trafoSize = newTrafoSize;
+    transformer.setBlockSize(trafoSize);
+  }
+}
+
 
 // Inquiry:
 
@@ -71,7 +92,6 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<
 {
   T*  w = &analysisWindow[0];
   int B = blockSize;
-  //int M = B*zeroPaddingFactor; // later: fftSize
   int M = trafoSize;
 
   // maybe factor out into prepareTransformBuffer(x, N, n, X) - this also facilitates unit-tests 
@@ -110,9 +130,7 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
   T*  w = &analysisWindow[0];
   int B = blockSize;
   int H = hopSize;
-  //int P = zeroPaddingFactor; // obsolete
   int F = getNumFrames(N, H);                  // number of STFT frames
-  //int M = B * P;                               // FFT size (maybe use L) - use trafoSize later
   int M = trafoSize;
   int K = M/2 + 1;                             // number of non-redundant bins
   rsMatrix<std::complex<T>> s(F, K);           // spectrogram (only positive frequency bins)
@@ -206,16 +224,11 @@ std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &
   {
     // create symmetrized FFT spectrum and transform to time domain:
     Y[0] = s(i, 0);
-    for(k = 1; k < K; k++)
-    {
+    for(k = 1; k < K; k++) {
       Y[k]   = s(i, k);
       Y[M-k] = conj(Y[k]);
     }
-
     ifft(Y, M);
-    //rsIFFT(Y, M);
-
-
     swapForZeroPhase(Y, M);
 
     // apply synthesis-window:

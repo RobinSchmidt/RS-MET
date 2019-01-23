@@ -13,9 +13,10 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   RAPT::rsSpectrogram<double> sp;  // spectrogram processor
   sp.setAnalysisWindowType(windowType);
   sp.setSynthesisWindowType(windowType);
-  sp.setBlockSize(B);
-  sp.setHopSize(H);
   //sp.setTrafoSize(M);
+  //sp.setBlockSize(B);
+  sp.setBlockAndTrafoSize(B, M);
+  sp.setHopSize(H);
   rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(&x[0], N);
   int numFrames = s.getNumRows();  
   // todo: let the function take an FFT-size parameter instead of a zero-padding factor (maybe)
@@ -101,12 +102,11 @@ bool spectrogramUnitTest()
   rsSpectrogramUnitTest tester;
   r &= tester.runTests();
 
-  // last parameter not yet used in function..
-
   r &= testSpectrogramResynthesis(8, 4, 20, 8);
-  //r &= testSpectrogramResynthesis(7, 3, 20, 8);  // odd size window
-  r &= testSpectrogramResynthesis(128, 64, 500, 128); // H = B/2
-  r &= testSpectrogramResynthesis(128, 32, 500, 128); // H = B/4 - windows add up to 1.5 and there's a fade-in artifact
+  //r &= testSpectrogramResynthesis(7, 3, 20, 8);     // odd size window
+  r &= testSpectrogramResynthesis(128, 64, 500, 128);  // H = B/2
+  r &= testSpectrogramResynthesis(128, 32, 500, 128);  // H = B/4 - windows add up to 1.5 and there's a fade-in artifact
+  r &= testSpectrogramResynthesis(128, 32, 500, 256);  // M = 2*B -> zero padding by factor 2
 
   // todo: try block-sizes that are not a power of two, window functions that don't have natural
   // perfect reconstruction properties (i.e. demodulate the output)
@@ -130,8 +130,6 @@ bool spectrogramUnitTest()
   // -on forward FFT, it is scaled as is should
   // -on inverse FFT, it is scaled by 1/N - why does this work? there must be a hidden inverse
   //  scaling somewhere - maybe in applyDemodulation? -> figure out
-
-
 
 
   // this fails the transformer object seems to compute a scrabled forward FFT when it should 
