@@ -102,11 +102,30 @@ bool spectrogramUnitTest()
   rsSpectrogramUnitTest tester;
   r &= tester.runTests();
 
-  r &= testSpectrogramResynthesis(8, 4, 20, 8);
-  //r &= testSpectrogramResynthesis(7, 3, 20, 8);     // odd size window
+  // parameters to the function (in order)
+  // B: block size
+  // H: hop size
+  // N: signal length
+  // M: FFT size
+
+  // maybe use the parameter order: N, M, B, H (values should decrease, 
+  // i.e. N >= M >= B > H...well, maybe not necessarrily N >= M - but that will be the typical
+  // case for real world signals)
+
+
+  // try under which conditions the analysis/resynthesis roundtrip is an identity operation:
+  r &= testSpectrogramResynthesis(  8,  4, 20,  8);   // B = M = 2^k, H = B/2   - works
+  r &= testSpectrogramResynthesis(  6,  3, 20,  6);   // B = M = even, H = B/2  - works
+  r &= testSpectrogramResynthesis( 12,  4, 50, 16);   // B even, M = 2^k > B, H = B/3 - works
+  //r &= testSpectrogramResynthesis(7, 3, 20, 8);     // B odd, M=2^k > B - fails!
+  //r &= testSpectrogramResynthesis(7, 3, 20, 7);       // B = M odd, H = floor(B/2) - fails spectacularly!!
+  //r &= testSpectrogramResynthesis( 13,  4, 50, 16);   // fails
   r &= testSpectrogramResynthesis(128, 64, 500, 128);  // H = B/2
   r &= testSpectrogramResynthesis(128, 32, 500, 128);  // H = B/4 - windows add up to 1.5 and there's a fade-in artifact
   r &= testSpectrogramResynthesis(128, 32, 500, 256);  // M = 2*B -> zero padding by factor 2
+
+  // ...eventually the ideal goal would be that identity resynthesis works for any combination of
+  // blockSize, trafoSize >= blockSize, hopSize < blockSize
 
   // todo: try block-sizes that are not a power of two, window functions that don't have natural
   // perfect reconstruction properties (i.e. demodulate the output)

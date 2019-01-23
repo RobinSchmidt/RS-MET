@@ -4,9 +4,14 @@ template<class T>
 rsSpectrogram<T>::rsSpectrogram()
 {
   //transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NEVER_NORMALIZE);
+  // this is, how it should work
 
   transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_INVERSE_TRAFO);
-   // why do we need this?
+  // and this is how it actually works - why do we need the normalizaion on iFFT? ...see comment in 
+  // synthesize - there seems to be an additional unnormalization - but it's weird that it works 
+  // anyway because the normalization just divides by the FFT size whereas this "unnormalization" 
+  // multiplies by the sum of window values which is a different number, unless a rectangular 
+  // window is used -> weird -> figure out
 
   setTrafoSize(512);
   setBlockSize(512);
@@ -24,27 +29,12 @@ template<class T>
 void rsSpectrogram<T>::setBlockSize(int newSize) 
 { 
   setBlockAndTrafoSize(newSize, trafoSize);
-  /*
-  rsAssert(newSize <= trafoSize, "FFT size should be >= block size");
-  if(newSize != blockSize) {
-    blockSize = newSize;
-    updateAnalysisWindow();
-    updateSynthesisWindow();
-  }
-  */
 }
 
 template<class T>
 void rsSpectrogram<T>::setTrafoSize(int newSize) 
 { 
   setBlockAndTrafoSize(blockSize, newSize);
-  /*
-  rsAssert(newSize >= blockSize, "FFT size should be >= block size");
-  if(newSize != trafoSize) {
-    trafoSize = newSize;
-    transformer.setBlockSize(trafoSize);
-  }
-  */
 }
 
 template<class T>
@@ -61,7 +51,6 @@ void rsSpectrogram<T>::setBlockAndTrafoSize(int newBlockSize, int newTrafoSize)
     transformer.setBlockSize(trafoSize);
   }
 }
-
 
 // Inquiry:
 
@@ -293,7 +282,8 @@ template<class T>
 void rsSpectrogram<T>::swapForZeroPhase(std::complex<T>* X, int L)
 {
   if(timeOriginAtWindowCenter)
-    rsArray::circularShift(X, L, -L/2);  // todo: maybe pass tmpBuffer as workspace
+    rsArray::circularShift(X, L, -L/2);  
+    // optimize: pass tmpBuffer as workspace to avoid temporary memory allocation
 }
 
 template<class T>
