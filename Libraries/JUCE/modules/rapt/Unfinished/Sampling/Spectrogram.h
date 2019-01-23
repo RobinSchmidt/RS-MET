@@ -37,6 +37,9 @@ public:
   void setZeroPaddingFactor(int newFactor) { zeroPaddingFactor = newFactor; }
   // get rid - replace by setTransformSize ot setFftSize
 
+  void setTrafoSize(int newSize) { trafoSize = newSize; }
+
+
   /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */
   void setAnalysisWindowType(int newType) 
   { 
@@ -226,29 +229,15 @@ protected:
 
   std::vector<T> analysisWindow, synthesisWindow;
 
-  // buffers used for swapping first and second half of window for zero-phase windowing
-  //std::vector<std::complex<T>> swapBufferAna, swapBufferSyn;
-  //std::vector<std::complex<T>> swapBuffer;
-
 
   bool timeOriginAtWindowCenter = true;
 
   /** The Fourier transformer object. */
   rsFourierTransformerBluestein<T> transformer;
 
-
-
-  //T fs;   // samplerate
-
-  //int Nb;      // block size
-  //int Nh;      // hop size
-  //int Nf;      // FFT size
-
-  // Ba, Ha, Ka: // analysis blocksize, hopsize, number of frequencies
-
-  //rsFourierTransformerBluestein<T> analysisTransformer, synthesisTransformer;
-
-
+  // buffers used for swapping first and second half of window for zero-phase windowing
+  //std::vector<std::complex<T>> swapBufferAna, swapBufferSyn;
+  //std::vector<std::complex<T>> swapBuffer;
 };
 
 #endif

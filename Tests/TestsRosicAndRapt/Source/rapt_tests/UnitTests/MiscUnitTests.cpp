@@ -17,8 +17,7 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   sp.setHopSize(H);
   //sp.setTrafoSize(M);
   rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(&x[0], N);
-  //rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(&x[0], N, &w[0], B, H, 1);
-  //int F = s.getNumRows();
+  int numFrames = s.getNumRows();  
   // todo: let the function take an FFT-size parameter instead of a zero-padding factor (maybe)
   // facilitates having an FFT size independent from the block-size
 
@@ -36,6 +35,10 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   //plotVector(y);
   if(r == false)
     plotVector(err);  // plot error signal, if something goes wrong
+
+  // plot the modulation signal resulting from analysis/resynthesis roundtrip:
+  std::vector<double> mod = sp.getRoundTripModulation(numFrames);
+  plotVector(mod);
 
   return r;
 }
@@ -98,13 +101,12 @@ bool spectrogramUnitTest()
   rsSpectrogramUnitTest tester;
   r &= tester.runTests();
 
-
   // last parameter not yet used in function..
 
   r &= testSpectrogramResynthesis(8, 4, 20, 8);
   //r &= testSpectrogramResynthesis(7, 3, 20, 8);  // odd size window
   r &= testSpectrogramResynthesis(128, 64, 500, 128); // H = B/2
-  r &= testSpectrogramResynthesis(128, 32, 500, 128); // H = B/4
+  r &= testSpectrogramResynthesis(128, 32, 500, 128); // H = B/4 - windows add up to 1.5 and there's a fade-in artifact
 
   // todo: try block-sizes that are not a power of two, window functions that don't have natural
   // perfect reconstruction properties (i.e. demodulate the output)
@@ -129,7 +131,6 @@ bool spectrogramUnitTest()
   // -on inverse FFT, it is scaled by 1/N - why does this work? there must be a hidden inverse
   //  scaling somewhere - maybe in applyDemodulation? -> figure out
 
-  // try identity resynthesis without demodulation of a DC signal
 
 
 

@@ -126,7 +126,10 @@ std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
   T*  ws = &synthesisWindow[0];
   std::vector<T> y = synthesizeRaw(s);
   std::vector<T> m = getRoundTripModulation(s.getNumRows());
-  T a = rsArray::sum(wa, B) / 2;
+
+  T a = rsArray::sum(wa, B) / 2;  // might this be the additional scaling because of which we
+                                  // need to set NORMALIZE_ON_INVERSE_TRAFO?
+
   for(unsigned int n = 0; n < y.size(); n++)
     y[n] *= (a/m[n]);
   return y;
@@ -288,6 +291,24 @@ void rsSpectrogram<T>::ifft(std::complex<T> *X, int M)
 
 
 /*
+Notes:
+-the identity analysis/resynthesis works, but only if the final demodulation step is executed
+-when using H = B/4, it almost works even without the demodulation step, when using the 
+ HANNING_ZN window for analysis and synthesis
+ -we need H = B/4 instead of H = B/2 because the window is applied twice, once in the analysis
+  and then again in the synthesis
+ -at the start and end of the resynthesized signal, there's a little fade-in/fade-out of length 
+  B/4 (i think), because the first window starts n = 0-B/2 - where for perfect overlap/add, it 
+  should start at n = 0-3*B/4
+ -the overlapped windows add up to 1.5 instead of 1.0
+-maybe in practice it's indeed best to just do the final demodulation step but choose windows 
+ where this step does not have to do very much (or almost nothing)
+-maybe we could prepend and append dummy sections of length B before analysis and cut them off 
+ after resynthesis to deal with the fade-in/out issues (that's not very elegant, though)
+
+
+
+
 todo:
 
 -the original phase vocoder relies on multiplication of the signal with various complex
