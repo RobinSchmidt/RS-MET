@@ -347,7 +347,7 @@ void sinusoidalAnalysis1()
   //double sampleRate = 48000;  // in Hz
   double sampleRate = 50000;  // in Hz
   double length     = 0.2;    // in seconds
-  double frequency  = 3000;   // in Hz
+  double frequency  = 1000;   // in Hz
   double amplitude  = 3.0;    // raw factor
   double phase      = 0.0;    // in radians
 
@@ -390,34 +390,32 @@ void sinusoidalAnalysis1()
   // todo: implement zero-phase windowing, arbitrary window-sizes and hop-sizes for spectrogram 
   // -> always check identity resynthesis with unit test
 
-  // todo: resynthesize and create residual
+  // resynthesize signal from model:
   std::vector<double> y = synthesizeSinusoidal(model, sampleRate);
+  plotVector(y);  // plot resynthsized signal
+  // the fade-in looks wrong, otherwise, it's looks good already
+  // figure out, how many fade-in/out samples are to be expected - check, it tha's the case
 
-  // creation of residual is a bit more compicated than straightforward subtraction because the
+  // creation of residual is a bit more complicated than straightforward subtraction because the
   // output of the model does not have the same length, due to fade-in/out - we need to figure out
   // the number of prependedn and appended samples
-
   int numFadeInSamples = -model.getStartSampleIndex(sampleRate); // rename to numPreZeroSamples
   int Nr = y.size();          // length of residual signal in samples
   std::vector<double> r(Nr);
   int n;
-  int n0 = numFadeInSamples; // shorthand
-  for(n = 0; n < n0; n++)
-    r[n] = -y[n];
-  //for(n = n0; n < Nr; n++)  // check, if upper limit is correct - nope! acces violation
-  //  r[n] = x[n-n0] - y[n];
-  for(n = n0; n < x.size()+n0; n++)  // check, if upper limit is correct
-    r[n] = x[n-n0] - y[n];
-  for(n = x.size()+n0; n < Nr; n++)
-    r[n] = -y[n];
-
-  plotVector(r);
-
+  int n0 = numFadeInSamples;  // shorthand
+  for(n = 0; n < n0; n++)           r[n] =          -y[n];
+  for(n = n0; n < x.size()+n0; n++) r[n] = x[n-n0] - y[n];
+  for(n = x.size()+n0; n < Nr; n++) r[n] =          -y[n];
   // maybe factor out the creation of the modeling-residual into a function (that takes the original
   // signal, the model, the model output, and the samplerate as inputs (maybe have a convenience 
   // function that generates the model output internally and then calls the other one)
 
-  // we maybe have to make a disticntion between various cases (numfadeInSamples > or < 0, etc)
+  // we maybe have to make a distinction between various cases (numfadeInSamples > or < 0, etc)
+
+  plotVector(r);
+  // there is something weird going on in the fade-in and fade-out - fade-in is cut off and 
+  // fade-out has a phase-jump
 
   int dummy = 0;
 }
