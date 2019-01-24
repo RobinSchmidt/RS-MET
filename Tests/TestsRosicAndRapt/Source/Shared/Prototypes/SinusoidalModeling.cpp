@@ -106,18 +106,19 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
 template<class T>
 std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleRate)
 {
-  int N = (int) ceil(sampleRate * model.getEndTime()) + 1; // number of samples
-  // we may have to take into account a non-zero starttime, too - maybe implement
-  // getStartSampleIndex, getEndSampleIndex, getLengthInSamples in the model
+  //// old - assumes modeled sound starts at sample 0:
+  //int N = (int) ceil(sampleRate * model.getEndTime()) + 1; // number of samples
+  //std::vector<T> x(N);
+  //for(size_t i = 0; i < model.getNumPartials(); i++)
+  //  synthesizePartial(model.getPartial(i), &x[0], N, sampleRate);
 
-  //int N = model.getLengthInSamples(sampleRate);
-  //int test = model.getLengthInSamples(sampleRate);
-
+  // new - modeled sound may have a nonzero start-sample:
+  int n0 = model.getStartSampleIndex(sampleRate);
+  int N  = model.getLengthInSamples(sampleRate);
   std::vector<T> x(N);
   for(size_t i = 0; i < model.getNumPartials(); i++)
-    synthesizePartial(model.getPartial(i), &x[0], N, sampleRate);
-    // we may need to pass &x[-start] or something
-
+    synthesizePartial(model.getPartial(i), &x[-n0], N, sampleRate); // needs more tests
+   
   return x;
 }
 // template instantiation:
