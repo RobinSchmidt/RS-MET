@@ -273,6 +273,8 @@ void sinusoidalSynthesis1()
   //std::vector<double> x = synthesizer.synthesize(model, fs);
   std::vector<double> x = synthesizeSinusoidal(model, fs);
 
+
+
   // make a sinusoidal analysis of the sound that we have just created and re-create the sound
   // from the model that results from this analysis:
   // maybe try the following parameters: 
@@ -310,29 +312,48 @@ void sinusoidalSynthesis1()
   // the hop-size should double the frequency at which freq-error compensation by phase still 
   // works)
 
-
-
   plotSineModel(sa, &x[0], (int) x.size(), fs);
 
   //rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
+}
+
+
+
+
+
+
+// (move to test tools):
+std::vector<double> createSinusoid(size_t N, double frequency, double sampleRate,
+  double amplitude = 1.0, double phase = 0.0)
+{
+  std::vector<double> x(N);
+  double w = 2*PI*frequency/sampleRate;
+  for(size_t n = 0; n < x.size(); n++)
+    x[n] = amplitude * sin(w*n + phase);
+  return x;
+}
+// adds a sinusoid with given parameters into the vector:
+void addSinusoid(std::vector<double>& x, double frequency, double sampleRate,
+  double amplitude = 1.0, double phase = 0.0)
+{
+  double w = 2*PI*frequency/sampleRate;
+  for(size_t n = 0; n < x.size(); n++)
+    x[n] += amplitude * sin(w*n + phase);
 }
 
 void sinusoidalAnalysis1()
 {
   // test signal parameters:
   double sampleRate = 48000;  // in Hz
-  double frequency  = 3000;   // in Hz
   double length     = 0.2;    // in seconds
-  double startPhase = 0.0;    // in radians
-
+  double frequency  = 3000;   // in Hz
+  double amplitude  = 3.0;    // raw factor
+  double phase      = 0.0;    // in radians
 
   // create signal:
-  double period = sampleRate / frequency;    // in samples
-  int N = (int)ceil(length * sampleRate);    // number of samples
-  std::vector<double> x(N);
-  for(int n = 0; n < N; n++)
-    x[n] = sin(n * 2*PI*frequency/sampleRate + startPhase);
-
+  double period = sampleRate / frequency;         // in samples
+  size_t N = (size_t)ceil(length * sampleRate);   // number of samples
+  std::vector<double> x = createSinusoid(N, frequency, sampleRate, amplitude, phase);
 
   // create and set up analyzer:
   SinusoidalAnalyzer<double> sa;
@@ -341,15 +362,17 @@ void sinusoidalAnalysis1()
   sa.setTrafoSize(4096);
   sa.setBlockSize(1024);
   sa.setHopSize(256);
-  //sa.setZeroPaddingFactor(4);
   sa.setRelativeLevelThreshold(-25);
   sa.setFadeInTime(0.01);
   sa.setFadeOutTime(0.01);
   sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
+  //sa.setFadeInTime(0.0);
+  //sa.setFadeOutTime(0.0);
+  //sa.setMinimumTrackLength(0.001); 
   plotSineModel(sa, &x[0], (int) x.size(), sampleRate);
 
   // find model for the signal:
-  rsSinusoidalModel<double> model = sa.analyze(&x[0], N, sampleRate);
+  rsSinusoidalModel<double> model = sa.analyze(&x[0], (int)N, sampleRate);
 
   // ok - aside from spurious tracks at the start/end (transients?) it looks good -> clean up by
   // deleting spurious tracks and "finalize" tracks by applying fade-outs
@@ -363,19 +386,34 @@ void sinusoidalAnalysis1()
   // expected - OK - all is good. these are just transient artifacts and we should clean them up
   // by deleting the spurious tracks
 
-
   // todo: implement zero-phase windowing, arbitrary window-sizes and hop-sizes for spectrogram 
   // -> always check identity resynthesis with unit test
 
   // todo: resynthesize and create residual
+  std::vector<double> y = synthesizeSinusoidal(model, sampleRate);
+
+  // creation of residual is a bit more compicated than straightforward subtraction because the
+  // output of the model does not have the same length, due to fade-in/out - we need to figure out
+  // the number of prependedn and appended samples
+
+  //int numFadeInSamples = model.getNumFadeInSamples();
+
+
+
+
 
   int dummy = 0;
+}
+
+void sinusoidalAnalysis2()
+{
+
 }
 
 
 // make various tests for the sinusoidal analysis of increasing level of difficulty:
 // 1: single sinusoid with stable frequency and amplitude
-//  -check, if the frequency a nd ampltude is etsimated accurately
+//  -check, if the frequency and ampltude is etsimated accurately
 //  -try frequencies that coincide with bin-centers (best case) and those that fall halfway 
 //   between bins (worts case) and some intermediate cases
 // 2: single sinuosoid with time-variying amplitude

@@ -13,7 +13,11 @@ void spectrogramSine();
 
 void sinusoidalSynthesis1();
 
-void sinusoidalAnalysis1();
+void sinusoidalAnalysis1();   // a single, static sinusoid
+void sinusoidalAnalysis2();   // two single, static sinusoids
+
+
+
 
 
 // resynthesis:

@@ -44,7 +44,9 @@ void createPulseWave(double *x, int N, double frequency, double dutyCycle, doubl
 at samplerate fs. */
 void createSineWave(double *x, int N, double f, double a, double fs);
 
-std::vector<double> createSineWave(int N, double f, double fs); // convenicne function
+std::vector<double> createSineWave(int N, double f, double fs); // conveniecne function
+
+
 
 /** Creates a sine-wave of length N (in samples) with an instantaneous frequency given by f at each 
 sample and an amplitude given by a, at samplerate fs. */

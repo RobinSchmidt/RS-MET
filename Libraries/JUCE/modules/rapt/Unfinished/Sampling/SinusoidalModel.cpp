@@ -22,17 +22,27 @@ void rsSinusoidalPartial<T>::applyFadeOut(T fadeTime)
 
 //=================================================================================================
 
+template<class T>
+T rsSinusoidalModel<T>::getStartTime() const
+{
+  if(partials.size() == 0)
+    return T(0);
+  T start = RS_INF(T);
+  for(size_t i = 0; i < partials.size(); i++)
+    start = rsMin(start, partials[i].getStartTime());
+  return start;
+}
 
 template<class T>
 T rsSinusoidalModel<T>::getEndTime() const
 {
-  T end = T(0);
+  if(partials.size() == 0)
+    return T(0);
+  T end = -RS_INF(T);
   for(size_t i = 0; i < partials.size(); i++)
     end = rsMax(end, partials[i].getEndTime());
   return end;
 }
-
-
 
 template<class T>
 std::vector<T> rsSinusoidalSynthesizer<T>::synthesize(

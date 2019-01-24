@@ -107,9 +107,17 @@ template<class T>
 std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleRate)
 {
   int N = (int) ceil(sampleRate * model.getEndTime()) + 1; // number of samples
+  // we may have to take into account a non-zero starttime, too - maybe implement
+  // getStartSampleIndex, getEndSampleIndex, getLengthInSamples in the model
+
+  //int N = model.getLengthInSamples(sampleRate);
+  //int test = model.getLengthInSamples(sampleRate);
+
   std::vector<T> x(N);
   for(size_t i = 0; i < model.getNumPartials(); i++)
     synthesizePartial(model.getPartial(i), &x[0], N, sampleRate);
+    // we may need to pass &x[-start] or something
+
   return x;
 }
 // template instantiation:

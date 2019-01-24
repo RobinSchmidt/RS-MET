@@ -184,8 +184,24 @@ public:
 
   /** \name Inquiry */
 
+  /** Returns the start time of the whole sound, i.e. the start time of the partial that starts 
+  first. */
+  T getStartTime() const;
+
   /** Returns the end time of the whole sound, i.e. the end time of the partial that ends last. */
   T getEndTime() const;
+
+  /** Returns the start-sample index at a given sample-rate as determined by the start time. */
+  int getStartSampleIndex(T sampleRate) const { return (int)floor(getStartTime() * sampleRate); }
+
+  /** Returns the end-sample index at a given sample-rate as determined by the end time. */
+  int getEndSampleIndex(T sampleRate) const { return (int)ceil(getEndTime() * sampleRate); }
+
+  /** Returns the total length in samples for the sound at a given sample rate. */
+  int getLengthInSamples(T sampleRate) const 
+  { 
+    return  getEndSampleIndex(sampleRate) - getStartSampleIndex(sampleRate) + 1;
+  }
 
   /** Returns the number of partials in this model. */
   size_t getNumPartials() const { return partials.size(); }
