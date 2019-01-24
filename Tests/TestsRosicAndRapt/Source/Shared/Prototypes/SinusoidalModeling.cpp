@@ -116,6 +116,7 @@ std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleR
   int n0 = model.getStartSampleIndex(sampleRate);
   int N  = model.getLengthInSamples(sampleRate);
   std::vector<T> x(N);
+  RAPT::rsArray::fillWithZeros(&x[0], N);
   for(size_t i = 0; i < model.getNumPartials(); i++)
     synthesizePartial(model.getPartial(i), &x[-n0], N, sampleRate); // needs more tests
    

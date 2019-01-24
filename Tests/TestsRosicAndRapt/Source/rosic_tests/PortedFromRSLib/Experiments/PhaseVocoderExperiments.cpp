@@ -344,7 +344,8 @@ void addSinusoid(std::vector<double>& x, double frequency, double sampleRate,
 void sinusoidalAnalysis1()
 {
   // test signal parameters:
-  double sampleRate = 48000;  // in Hz
+  //double sampleRate = 48000;  // in Hz
+  double sampleRate = 50000;  // in Hz
   double length     = 0.2;    // in seconds
   double frequency  = 3000;   // in Hz
   double amplitude  = 3.0;    // raw factor
@@ -396,11 +397,27 @@ void sinusoidalAnalysis1()
   // output of the model does not have the same length, due to fade-in/out - we need to figure out
   // the number of prependedn and appended samples
 
-  //int numFadeInSamples = model.getNumFadeInSamples();
+  int numFadeInSamples = -model.getStartSampleIndex(sampleRate); // rename to numPreZeroSamples
+  int Nr = y.size();          // length of residual signal in samples
+  std::vector<double> r(Nr);
+  int n;
+  int n0 = numFadeInSamples; // shorthand
+  for(n = 0; n < n0; n++)
+    r[n] = -y[n];
+  //for(n = n0; n < Nr; n++)  // check, if upper limit is correct - nope! acces violation
+  //  r[n] = x[n-n0] - y[n];
+  for(n = n0; n < x.size()+n0; n++)  // check, if upper limit is correct
+    r[n] = x[n-n0] - y[n];
+  for(n = x.size()+n0; n < Nr; n++)
+    r[n] = -y[n];
 
+  plotVector(r);
 
+  // maybe factor out the creation of the modeling-residual into a function (that takes the original
+  // signal, the model, the model output, and the samplerate as inputs (maybe have a convenience 
+  // function that generates the model output internally and then calls the other one)
 
-
+  // we maybe have to make a disticntion between various cases (numfadeInSamples > or < 0, etc)
 
   int dummy = 0;
 }
