@@ -318,15 +318,34 @@ void sinusoidalSynthesis1()
   //plotSineModel(model, fs);
   plotTwoSineModels(model, model2, fs);
 
+  // in some way, the plot of the original model is actually wrong - it does not really represent 
+  // what is synthesized because the synthesizer uses spline interpolation for the frequency tracks 
+  // and  the plot uses linear interpolation - we should perhaps plot a sort of spline-interpolated
+  // model as reference (maybe have a function upsampleSinusoidalModel or something)
 
   //rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
 }
 
 void sinusoidalSynthesis2()
 {
+  // a sinusoid with a stable frequency - we want to test fade-in/out
+  double fs = 2000; // sample rate
 
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  RAPT::rsSinusoidalPartial<double> partial;
+  RAPT::rsSinusoidalModel<double> model, model2;
+
+  //partial.prependDataPoint(ISP(-0.1, 100.0, 0.5, 0.0)); // first section is wrong
+  partial.appendDataPoint( ISP( 0.0, 100.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.1, 100.0, 0.5, 0.0));
+  partial.appendDataPoint( ISP( 0.2, 100.0, 1.0, 0.0));
+
+  model.addPartial(partial);
+  std::vector<double> x = synthesizeSinusoidal(model, fs);
+
+  plotVector(x);
 }
-
+  // maybe try a single linear sweep
 
 
 // (move to test tools):

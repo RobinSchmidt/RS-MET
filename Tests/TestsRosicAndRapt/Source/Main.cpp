@@ -323,7 +323,7 @@ int main(int argc, char* argv[])
   //grainRoundTrip();        // under construction
   //plotWindows();    // move near plotWidowSpectra
   //spectrogramSine();
-  sinusoidalSynthesis1();
+  //sinusoidalSynthesis1();
   sinusoidalSynthesis2();
   //sinusoidalAnalysis1();
 

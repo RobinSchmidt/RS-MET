@@ -439,7 +439,6 @@ void SinusoidalModelPlotter<T>::addModelToPlot(
       f[j] = (float)p.getDataPoint(j).freq;
     }
     plt.addDataArrays((int)L, &t[0], &f[0]);
-    //plt.setGraphColor((int)i+1, graphColor); // use member graphIndex instead of i+1
     plt.setGraphColor(graphIndex, graphColor);
     graphIndex++;
   }
@@ -460,7 +459,7 @@ void SinusoidalModelPlotter<T>::plotTwoModels(
   const RAPT::rsSinusoidalModel<T>& model1, const RAPT::rsSinusoidalModel<T>& model2, T fs)
 {
   GNUPlotter plt;
-  addModelToPlot(model1, plt, "000000", fs);
+  addModelToPlot(model1, plt, "000000", fs);  // black
   addModelToPlot(model2, plt, "0000FF", fs);  // blue
   plt.plot();
 }
