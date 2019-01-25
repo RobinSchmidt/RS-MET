@@ -250,12 +250,16 @@ void spectrogramSine()
 // rename to testSinusoidalSynthesis1
 void sinusoidalSynthesis1()
 {
+  double stretch = 1.0;
+  double fs = 44100;
+  //double fs = 5000; // for plot
+
+
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
   RAPT::rsSinusoidalModel<double> model, model2;
-  //RAPT::rsSinusoidalSynthesizer<double> synthesizer;
+  //RAPT::rsSinusoidalSynthesizer<double> synthesizer;  
 
-  double stretch = 1.0;
   partial.appendDataPoint(ISP(stretch*0.0, 100.0, 0.4, 0.0));    // time, freq, amp, phase
   partial.appendDataPoint(ISP(stretch*0.4, 100.0, 0.2,  PI/2));
   partial.appendDataPoint(ISP(stretch*0.8, 150.0, 0.8, -PI/2));
@@ -268,8 +272,6 @@ void sinusoidalSynthesis1()
   // and phase and another one that uses real/imag
 
   model.addPartial(partial);
-  double fs = 44100;
-  //double fs = 5000; // for plot
   //std::vector<double> x = synthesizer.synthesize(model, fs);
   std::vector<double> x = synthesizeSinusoidal(model, fs);
 
@@ -318,6 +320,12 @@ void sinusoidalSynthesis1()
 }
 
 
+void sinusoidalSynthesis2()
+{
+
+}
+
+
 
 
 
@@ -346,10 +354,12 @@ void sinusoidalAnalysis1()
   // test signal parameters:
   //double sampleRate = 48000;  // in Hz
   double sampleRate = 50000;  // in Hz
-  double length     = 0.2;    // in seconds
+  double length     = 0.2;    // in seconds -> 10000 samples at 50kHz
   double frequency  = 1000;   // in Hz
   double amplitude  = 3.0;    // raw factor
   double phase      = 0.0;    // in radians
+
+  phase = PI/2; // for test
 
   // create signal:
   double period = sampleRate / frequency;         // in samples
@@ -363,17 +373,26 @@ void sinusoidalAnalysis1()
   sa.setTrafoSize(4096);
   sa.setBlockSize(1024);
   sa.setHopSize(256);
-  sa.setRelativeLevelThreshold(-25);
-  sa.setFadeInTime(0.01);
-  sa.setFadeOutTime(0.01);
+  //sa.setRelativeLevelThreshold(-25);  // some spurious tracks will occur (with Hamming window)
+  sa.setRelativeLevelThreshold(-15);    // no spurious tracks will occur (with Hamming window)
+  sa.setFadeInTime(0.01);    // -> 500 samples @50kHz
+  sa.setFadeOutTime(0.01);   // -> 500 samples @50kHz
   sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
   //sa.setFadeInTime(0.0);
   //sa.setFadeOutTime(0.0);
   //sa.setMinimumTrackLength(0.001); 
-  plotSineModel(sa, &x[0], (int) x.size(), sampleRate);
+  //plotSineModel(sa, &x[0], (int) x.size(), sampleRate);
 
   // find model for the signal:
   rsSinusoidalModel<double> model = sa.analyze(&x[0], (int)N, sampleRate);
+
+
+  // problem: fade-out seems to be twice as long as it should, fade-in prepends section of all 
+  // zeros
+  // i think, the bug is in the synthesis - make an experiment to synthesize one partial that 
+  // contains datapoints with negative time-stamps - maybe first make a class 
+  // SinusoidalSynthesizer (the parameter setup will become more complex later, so it will get too
+  // messy passing them as function parameters)
 
   // ok - aside from spurious tracks at the start/end (transients?) it looks good -> clean up by
   // deleting spurious tracks and "finalize" tracks by applying fade-outs
@@ -387,8 +406,6 @@ void sinusoidalAnalysis1()
   // expected - OK - all is good. these are just transient artifacts and we should clean them up
   // by deleting the spurious tracks
 
-  // todo: implement zero-phase windowing, arbitrary window-sizes and hop-sizes for spectrogram 
-  // -> always check identity resynthesis with unit test
 
   // resynthesize signal from model:
   std::vector<double> y = synthesizeSinusoidal(model, sampleRate);
@@ -400,20 +417,21 @@ void sinusoidalAnalysis1()
   // output of the model does not have the same length, due to fade-in/out - we need to figure out
   // the number of prependedn and appended samples
   int numFadeInSamples = -model.getStartSampleIndex(sampleRate); // rename to numPreZeroSamples
-  int Nr = y.size();          // length of residual signal in samples
-  std::vector<double> r(Nr);
-  int n;
+  int Nr = (int)y.size();     // length of residual signal in samples
+  std::vector<double> r(Nr);  // residual
+  int n;                      // loop variable (sample index)
   int n0 = numFadeInSamples;  // shorthand
-  for(n = 0; n < n0; n++)           r[n] =          -y[n];
-  for(n = n0; n < x.size()+n0; n++) r[n] = x[n-n0] - y[n];
-  for(n = x.size()+n0; n < Nr; n++) r[n] =          -y[n];
+  int nx = (int) x.size();    // dito
+  for(n = 0;     n < n0;    n++) r[n] = 0       - y[n];
+  for(n = n0;    n < nx+n0; n++) r[n] = x[n-n0] - y[n];
+  for(n = nx+n0; n < Nr;    n++) r[n] = 0       - y[n];
   // maybe factor out the creation of the modeling-residual into a function (that takes the original
   // signal, the model, the model output, and the samplerate as inputs (maybe have a convenience 
   // function that generates the model output internally and then calls the other one)
 
   // we maybe have to make a distinction between various cases (numfadeInSamples > or < 0, etc)
 
-  plotVector(r);
+  //plotVector(r);
   // there is something weird going on in the fade-in and fade-out - fade-in is cut off and 
   // fade-out has a phase-jump
 

@@ -1,8 +1,10 @@
 #pragma once
 
+// todo: move file to library
 
 template<class T>
 std::vector<T> synthesizeSinusoidal(const RAPT::rsSinusoidalModel<T>& model, T sampleRate);
+// todo: move to class SinusoidalSynthesizer
 
 
 //template<class T>
@@ -10,8 +12,44 @@ std::vector<T> synthesizeSinusoidal(const RAPT::rsSinusoidalModel<T>& model, T s
 
 
 
+/** A class for synthesizing a sound from a sinusoidal model. */
 
-/** Prototype of STFT based sinusoidal analyzer */
+template<class T>
+class SinusoidalSynthesizer
+{
+
+public:
+
+
+  /** \name Setup */
+
+  void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
+
+  // setAmplitudeInterpolationMethod
+  // setPhaseInterpolationMethod
+  // etc.
+
+
+
+  /** \name Processing */
+
+  std::vector<T> synthesize(const RAPT::rsSinusoidalModel<T>& model);
+
+  // synthesizePartial(...)
+
+
+protected:
+
+
+  T sampleRate = 44100;
+
+};
+
+
+//=================================================================================================
+
+/** Creates a sinusoidal model of an input sound by means of identifying and tracking stable 
+sinusoidal partials in its spectrogram. */
 
 template<class T>
 class SinusoidalAnalyzer

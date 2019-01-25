@@ -323,8 +323,9 @@ int main(int argc, char* argv[])
   //grainRoundTrip();        // under construction
   //plotWindows();    // move near plotWidowSpectra
   //spectrogramSine();
-  //sinusoidalSynthesis1();
-  sinusoidalAnalysis1();
+  sinusoidalSynthesis1();
+  sinusoidalSynthesis2();
+  //sinusoidalAnalysis1();
 
 
   // Physics:
@@ -400,7 +401,7 @@ int main(int argc, char* argv[])
   //createInsertionSortSound();  // move somewhere else
   //createModalFilterExamples();
   //createModalFilterBankExamples(); // takes long
-  createPiano1();
+  //createPiano1();
 
   // sample-map creations (they take long):
   //createBass1();

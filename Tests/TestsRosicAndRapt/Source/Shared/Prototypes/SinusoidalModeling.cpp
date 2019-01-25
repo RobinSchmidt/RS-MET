@@ -55,8 +55,8 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   for(size_t n = 0; n < N; n++)          // fill time-array
     t[n] = (nStart + n) / sampleRate;    // ...optimize
 
-                                         // interpolate phase:
-                                         //rsInterpolateLinear(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+  // interpolate phase:
+  //rsInterpolateLinear(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
   rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
 
   // interpolate amplitude:
