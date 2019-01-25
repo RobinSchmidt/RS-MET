@@ -1,15 +1,11 @@
 #pragma once
 
-// todo: move file to library
-
-template<class T>
-std::vector<T> synthesizeSinusoidal(const RAPT::rsSinusoidalModel<T>& model, T sampleRate);
-// todo: move to class SinusoidalSynthesizer
-
+// todo: move file to library - maybe split into two files analyzer and synthesizer - or maybe 
+// merge with the SinusoidalModel file
 
 //template<class T>
-//RAPT::rsSinusoidalModel<T> analyzeSinusoidal(T* sampleData, int numSamples, T sampleRate);
-
+//std::vector<T> synthesizeSinusoidal(const RAPT::rsSinusoidalModel<T>& model, T sampleRate);
+//// todo: move to class SinusoidalSynthesizer
 
 
 /** A class for synthesizing a sound from a sinusoidal model. */
@@ -33,7 +29,10 @@ public:
 
   /** \name Processing */
 
-  std::vector<T> synthesize(const RAPT::rsSinusoidalModel<T>& model);
+  std::vector<T> synthesize(const RAPT::rsSinusoidalModel<T>& model) const;
+
+
+  //void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSamples) const;
 
   // synthesizePartial(...)
 

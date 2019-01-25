@@ -104,7 +104,7 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
 }
 
 template<class T>
-std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleRate)
+std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& model) const
 {
   //// old - assumes modeled sound starts at sample 0:
   //int N = (int) ceil(sampleRate * model.getEndTime()) + 1; // number of samples
@@ -122,11 +122,17 @@ std::vector<T> synthesizeSinusoidal(const rsSinusoidalModel<T>& model, T sampleR
    
   return x;
 }
+
 // template instantiation:
-template std::vector<double> synthesizeSinusoidal(const RAPT::rsSinusoidalModel<double>& model, 
-  double sampleRate);
+//template std::vector<double> synthesizeSinusoidal(const RAPT::rsSinusoidalModel<double>& model, 
+//  double sampleRate);
+template class SinusoidalSynthesizer<double>;
+
+
+//=================================================================================================
 
 // move to library:
+
 template<class T>
 rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
 {
@@ -230,7 +236,7 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
 }
 // move to library and check if it is correct (maybe by a unit test?)...and if it can be simplified
 
-
+//=================================================================================================
 
 template<class T>
 size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq, 

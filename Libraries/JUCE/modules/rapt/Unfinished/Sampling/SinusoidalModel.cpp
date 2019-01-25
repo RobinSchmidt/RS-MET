@@ -22,6 +22,17 @@ void rsSinusoidalPartial<T>::applyFadeOut(T fadeTime)
   appendDataPoint(params);
 }
 
+// idea: maybe the fade-in/out should not be a fixed time but somehow extend over a time between 
+// one half cycle and one full cycle - or some number of cycles - so the sinusoid starts at a time
+// instant that coincides with a zero crossing. that alone would avoid discontinuties, even if 
+// there's no amplitude fade. (i think) with an additional linear fade-in, it would avoid 
+// discontinuities in the derivative, too
+// the fade-in/out, if too short, can also lead to overshooting artifacts in the amplitude 
+// envelope, when cubic interpolation is used
+// maybe, instead of doing fade-in/out by appending additional data points, we should just 
+// extrapolate the envelope beyond the end points and apply an *additional* envelope
+// ->experimentation is required
+
 //=================================================================================================
 
 template<class T>
@@ -46,27 +57,22 @@ T rsSinusoidalModel<T>::getEndTime() const
   return end;
 }
 
-template<class T>
-std::vector<T> rsSinusoidalSynthesizer<T>::synthesize(
-  const rsSinusoidalModel<T>& model, T sampleRate) const
-{
-  std::vector<T> x;
 
-
-  return x;
-}
+//=================================================================================================
+// Analyzer:
 
 
 
-template<class T>
-rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyze(
-  T* sampleData, int numSamples, T sampleRate) const
-{
-  rsSinusoidalModel<T> model;
+//=================================================================================================
+// Synthesizer:
 
 
-  return model;
-}
+
+
+//=================================================================================================
+// Transformations:
+
+
 
 
 /*

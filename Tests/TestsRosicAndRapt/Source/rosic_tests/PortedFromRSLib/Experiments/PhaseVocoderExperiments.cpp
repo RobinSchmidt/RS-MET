@@ -247,18 +247,29 @@ void spectrogramSine()
   int dummy = 0;
 }
 
+
+// convenience function:
+std::vector<double> synthesizeSinusoidal(
+  const RAPT::rsSinusoidalModel<double>& model, double sampleRate)
+{
+  SinusoidalSynthesizer<double> synth;
+  synth.setSampleRate(sampleRate);
+  return synth.synthesize(model);
+}
+
 // rename to testSinusoidalSynthesis1
 void sinusoidalSynthesis1()
 {
   double stretch = 1.0;
-  double fs = 44100;
-  //double fs = 5000; // for plot
+  //double fs = 44100;
+  double fs = 5000; // for plot
 
 
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
   RAPT::rsSinusoidalModel<double> model, model2;
-  //RAPT::rsSinusoidalSynthesizer<double> synthesizer;  
+  //RAPT::rsSinusoidalSynthesizer<double> synth;
+  //SinusoidalSynthesizer<double> synth;
 
   partial.appendDataPoint(ISP(stretch*0.0, 100.0, 0.4, 0.0));    // time, freq, amp, phase
   partial.appendDataPoint(ISP(stretch*0.4, 100.0, 0.2,  PI/2));
@@ -274,6 +285,8 @@ void sinusoidalSynthesis1()
   model.addPartial(partial);
   //std::vector<double> x = synthesizer.synthesize(model, fs);
   std::vector<double> x = synthesizeSinusoidal(model, fs);
+  //synth.setSampleRate(fs);
+  //std::vector<double> x = synth.synthesize(model);
 
 
 
@@ -290,11 +303,14 @@ void sinusoidalSynthesis1()
   sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
   sa.setMaxFreqDeltaBase(100);
   sa.setTrafoSize(4096);
-  sa.setBlockSize(2048);
+  sa.setBlockSize(512);
+  //sa.setBlockSize(1024);
+  //sa.setBlockSize(2048);
   //sa.setBlockSize(1801);  // does not yet work
   //sa.setHopSize(225);
   sa.setHopSize(256);
-  sa.setRelativeLevelThreshold(-40);
+  sa.setRelativeLevelThreshold(-15);
+  //sa.setRelativeLevelThreshold(-40);
   //model2 = sa.analyze(&x[0], (int)x.size(), fs);
   //std::vector<double> y = synthesizeSinusoidal(model2, fs);
   // there are loads of spurious partials - also, we need to wrap the phase into -pi..pi for the 
@@ -315,18 +331,15 @@ void sinusoidalSynthesis1()
   // works)
 
   plotSineModel(sa, &x[0], (int) x.size(), fs);
+  // todo: plot both models original and analyzed into the same plot
 
   //rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
 }
-
 
 void sinusoidalSynthesis2()
 {
 
 }
-
-
-
 
 
 

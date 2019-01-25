@@ -3,6 +3,9 @@
 
 //=================================================================================================
 
+/** Data structure to hold and edit the instantaneous parameters of a sinusoidal partial at one 
+instant of time. */
+
 template<class T>
 class rsInstantaneousSineParams
 {
@@ -45,6 +48,9 @@ public:
 };
 
 //=================================================================================================
+
+/** Data structure to hold and edit the information about one single sinusoidal partial. This is 
+effectively an array of rsInstantaneousSineParams objects ordered by time-stamp.  */
 
 template<class T>
 class rsSinusoidalPartial  // maybe rename to rsSinusoidalTrack
@@ -159,6 +165,15 @@ protected:
 
 //=================================================================================================
 
+/** Data structure to hold the information of a sinusoidal model for a complete sound. This is 
+effectively an array of rsSinusoidalPartial objects. 
+
+todo: currently, the partials are in no particular order - maybe order them somehow (perhaps by 
+start-time and then by frequency - or maybe by amplitude or even a psychoacoustic "importance"
+measure?) . yes - it would be interesting to have a getPartialImportance() function that analyzes
+according to amplitude, masking, etc. - can be used to "simplify" models - but maybe that should be
+done in a dedicated class */
+
 template<class T>
 class rsSinusoidalModel
 {
@@ -217,46 +232,29 @@ protected:
 
 //=================================================================================================
 
-template<class T>
-class rsSinusoidalSynthesizer
-{
+// Analyzer:
 
-public:
 
-  /** Given a sinusoidal model data-structure, this function synthesizes the audio signal from that 
-  model. */
-  std::vector<T> synthesize(const rsSinusoidalModel<T>& model, T sampleRate) const;
 
-};
+
 
 //=================================================================================================
 
-template<class T>
-class rsSinusoidalAnalyzer
-{
-
-public:
+// Synthesizer:
 
 
-  /** \name Setup */
 
-  //inline void setBlockSize(int newBlockSize) const;
 
-  //inline void setHopSize(int newHopSize) const;
 
-  //setRootKey/setFundamentalFrequency, 
+//=================================================================================================
 
-  /** \name Processing */
+// Transformations:
 
-  /** Takes in an array of audio samples and returns the sinusoidal model that approximates the
-  sample data. */
-  rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate) const;
+// ideas: removeNoisyPartials, denoisePartials, harmonifyPartials, phaseLockPartials, ...
 
-protected:
 
-  rsSpectrogram<T> phsVoc; 
 
-};
+
 
 
 #endif
