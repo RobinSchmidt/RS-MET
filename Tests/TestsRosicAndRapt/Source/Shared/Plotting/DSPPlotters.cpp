@@ -439,15 +439,13 @@ void SinusoidalModelPlotter<T>::addModelToPlot(
       f[j] = (float)p.getDataPoint(j).freq;
     }
     plt.addDataArrays((int)L, &t[0], &f[0]);
-    plt.setGraphColor((int)i+1, graphColor); // use member graphIndex instead of i+1
+    //plt.setGraphColor((int)i+1, graphColor); // use member graphIndex instead of i+1
+    plt.setGraphColor(graphIndex, graphColor);
+    graphIndex++;
   }
   // maybe factor out an addPartialToPlot function - may become useful when we want to plot 
   // partials seperately
 }
-// the graph colors don't work yet - i think it's because the loop index starts at 0 again - we 
-// need a member variable to count the graphs - each plotted partial needs to increment that 
-// variable
-
 
 template <class T>
 void SinusoidalModelPlotter<T>::plotModel(const RAPT::rsSinusoidalModel<T>& model, T fs)

@@ -239,6 +239,9 @@ public:
 
 protected:
 
+  int graphIndex = 1; 
+  // counter for the graphs that have been added to a plot, needed to correctly set up the colors
+
 };
 
 // todo: make a baseclass SpectrogramPlotter
