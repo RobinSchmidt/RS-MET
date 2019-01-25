@@ -138,7 +138,7 @@ void stemPlot(int N, double *x, double *y);
 
 
 /** Convenience function. Uses class SinusoidalModelPlotter. */
-void plotSineModel(SinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
+void plotSinusoidalAnalysisResult(SinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
   double sampleRate);
 
 

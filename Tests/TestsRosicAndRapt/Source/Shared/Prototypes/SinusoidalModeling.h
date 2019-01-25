@@ -29,12 +29,13 @@ public:
 
   /** \name Processing */
 
+  /** Synthesizes a sound from a sinusoidal model and returns it as std::vector. */
   std::vector<T> synthesize(const RAPT::rsSinusoidalModel<T>& model) const;
 
 
-  //void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSamples) const;
-
-  // synthesizePartial(...)
+  /** Writes the given sinusoidal partial into the buffer x which is assumed to be of length 
+  xLength. Used internally by synthesize(). */
+  void synthesizePartial(const RAPT::rsSinusoidalPartial<T>& partial, T* x, int xLength) const;
 
 
 protected:

@@ -330,7 +330,7 @@ void sinusoidalSynthesis1()
   // the hop-size should double the frequency at which freq-error compensation by phase still 
   // works)
 
-  plotSineModel(sa, &x[0], (int) x.size(), fs);
+  plotSinusoidalAnalysisResult(sa, &x[0], (int) x.size(), fs);
   // todo: plot both models original and analyzed into the same plot
 
   //rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);

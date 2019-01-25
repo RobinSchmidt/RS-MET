@@ -187,6 +187,7 @@ complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>
   return k * num/den;
 }
 
+// i think, this can be deleted (was moved to RAPT - check this and if so, delete):
 /*
 template <class T>
 FilterSpecificationBA<T> FilterPlotter<T>::zpk2ba(const FilterSpecificationZPK<T>& zpk)
@@ -422,7 +423,7 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
 //=================================================================================================
 
 template <class T>
-void SinusoidalModelPlotter<T>::plot(SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
+void SinusoidalModelPlotter<T>::plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
 {
   GNUPlotter plt;
 
@@ -446,8 +447,6 @@ void SinusoidalModelPlotter<T>::plot(SinusoidalAnalyzer<T>& sa, T* x, int N, T f
     addSpectrogramData(plt, numFrames, numBins, dB.getDataPointer(), fs, sa.getHopSize(), 
       minDb, maxDb);
   }
-
-
 
   RAPT::rsSinusoidalModel<double> model = sa.analyze(x, N, fs);
   std::vector<float> t, f; // we plot frequency vs time

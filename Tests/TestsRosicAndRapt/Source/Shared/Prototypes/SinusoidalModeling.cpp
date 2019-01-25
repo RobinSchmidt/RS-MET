@@ -1,15 +1,19 @@
 
+
 template<class T>
-void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSamples, 
-  T sampleRate)
+void SinusoidalSynthesizer<T>::synthesizePartial(
+  const rsSinusoidalPartial<T>& partial, T* x, int xLength) const 
 {
   // figure out number of samples to produce:
   int nStart = (int) floor(sampleRate * partial.getStartTime());
   int nEnd   = (int) ceil( sampleRate * partial.getEndTime()) + 1;
-  nStart = rsClip(nStart, 0, numSamples);
-  nEnd   = rsClip(nEnd,   0, numSamples);
-  int N = nEnd - nStart;
+  nStart = rsClip(nStart, 0, xLength);
+  nEnd   = rsClip(nEnd,   0, xLength);
+  int N = nEnd - nStart;  // number of samples to generate
+  // verify, if this is right
 
+
+  // factor out:
   // create arrays for non-interpolated instantaneous parameter data:
   size_t M = partial.getNumDataPoints();
   std::vector<T> td(M), fd(M), ad(M), wpd(M);
@@ -21,12 +25,15 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
     wpd[m] = dp.getWrappedPhase();  // wrapped phase data
   }
 
+
+
+  // factor out:
   // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
   std::vector<T> upd(M);
   rsNumericIntegral(&td[0], &fd[0], &upd[0], (int)M, wpd[0]);
   upd = 2*PI*upd; // convert from "number of cycles passed" to radians
 
-                  // incorporate the target phase values into the unwrapped phase:
+  // incorporate the target phase values into the unwrapped phase:
   bool accumulatePhaseDeltas = false;  // make user parameter - experiment, which is better - note
                                        // that accumulation gives rise to an O(M^2) complexity of the algorithm
   for(size_t m = 0; m < M; m++)
@@ -50,6 +57,8 @@ void synthesizePartial(const rsSinusoidalPartial<T>& partial, T* x, int numSampl
   // p[m] + 2*pi*k as unwrapped where k is chosen such that p[m] is closest to value obtained from
   // integration
 
+
+  // factor out:
   // interpolate the amplitude and unwrapped phase data to sample-rate:
   std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
   for(size_t n = 0; n < N; n++)          // fill time-array
@@ -118,7 +127,7 @@ std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& 
   std::vector<T> x(N);
   RAPT::rsArray::fillWithZeros(&x[0], N);
   for(size_t i = 0; i < model.getNumPartials(); i++)
-    synthesizePartial(model.getPartial(i), &x[-n0], N, sampleRate); // needs more tests
+    synthesizePartial(model.getPartial(i), &x[-n0], N); // needs more tests
    
   return x;
 }
