@@ -204,6 +204,20 @@ void plotSinusoidalAnalysisResult(SinusoidalAnalyzer<double>& sa, double* x, int
   plt.plotAnalysisResult(sa, x, N, fs);
 }
 
+void plotSineModel(const RAPT::rsSinusoidalModel<double>& model, double fs)
+{
+  SinusoidalModelPlotter<double> plt;
+  plt.plotModel(model, fs);
+}
+
+void plotTwoSineModels(
+  const RAPT::rsSinusoidalModel<double>& model1, 
+  const RAPT::rsSinusoidalModel<double>& model2, 
+  double fs)
+{
+  SinusoidalModelPlotter<double> plt;
+  plt.plotTwoModels(model1, model2, fs);
+}
 
 
 

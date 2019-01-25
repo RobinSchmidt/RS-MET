@@ -211,7 +211,29 @@ public:
 
   //void plot(SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
 
+
+
+  //GNUPlotter plt;
+
+  void addModelToPlot(const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt, 
+    const std::string& graphColor, T sampleRate);
+
+  /** Plots the frequency tracks of a single sine model. */
+  void plotModel(const RAPT::rsSinusoidalModel<T>& model, T sampleRate);
+
+  /** Plots the frequency tracks of two sine models into one plot - useful for comparing original 
+  and analyzed models. */
+  void plotTwoModels(
+    const RAPT::rsSinusoidalModel<T>& model1, 
+    const RAPT::rsSinusoidalModel<T>& model2, 
+    T sampleRate);
+  // maybe have functions for plotting even more models - this can be useful to compare analysis
+  // results with different parameter settings
+
+
   void plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
+
+  // maybe have a setSampleRate function
 
   // rename to plotSineTracks - factor out addSineTrackData function
 

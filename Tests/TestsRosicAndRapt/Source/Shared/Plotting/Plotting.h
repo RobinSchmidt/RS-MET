@@ -137,8 +137,18 @@ time signals. */
 void stemPlot(int N, double *x, double *y);
 
 
+// functions for plotting sinusoidal model data:
+
 /** Convenience function. Uses class SinusoidalModelPlotter. */
 void plotSinusoidalAnalysisResult(SinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
+  double sampleRate);
+
+
+void plotSineModel(const RAPT::rsSinusoidalModel<double>& model, double sampleRate);
+
+void plotTwoSineModels(
+  const RAPT::rsSinusoidalModel<double>& model1, 
+  const RAPT::rsSinusoidalModel<double>& model2, 
   double sampleRate);
 
 

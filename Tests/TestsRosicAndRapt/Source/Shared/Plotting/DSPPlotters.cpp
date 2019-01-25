@@ -422,11 +422,57 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
 
 //=================================================================================================
 
+
+template <class T>
+void SinusoidalModelPlotter<T>::addModelToPlot(
+  const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt, const std::string& graphColor, 
+  T sampleRate)
+{
+  std::vector<float> t, f; // we plot frequency vs time
+  for(size_t i = 0; i < model.getNumPartials(); i++) {
+    rsSinusoidalPartial<double> p = model.getPartial(i);
+    size_t L = p.getNumDataPoints();
+    t.resize(L);
+    f.resize(L);
+    for(size_t j = 0; j < L; j++) {
+      t[j] = (float)p.getDataPoint(j).time;
+      f[j] = (float)p.getDataPoint(j).freq;
+    }
+    plt.addDataArrays((int)L, &t[0], &f[0]);
+    plt.setGraphColor((int)i+1, graphColor); // use member graphIndex instead of i+1
+  }
+  // maybe factor out an addPartialToPlot function - may become useful when we want to plot 
+  // partials seperately
+}
+// the graph colors don't work yet - i think it's because the loop index starts at 0 again - we 
+// need a member variable to count the graphs - each plotted partial needs to increment that 
+// variable
+
+
+template <class T>
+void SinusoidalModelPlotter<T>::plotModel(const RAPT::rsSinusoidalModel<T>& model, T fs)
+{
+  GNUPlotter plt;
+  addModelToPlot(model, plt, "000000", fs);
+  plt.plot();
+}
+
+template <class T>
+void SinusoidalModelPlotter<T>::plotTwoModels(
+  const RAPT::rsSinusoidalModel<T>& model1, const RAPT::rsSinusoidalModel<T>& model2, T fs)
+{
+  GNUPlotter plt;
+  addModelToPlot(model1, plt, "000000", fs);
+  addModelToPlot(model2, plt, "0000FF", fs);  // blue
+  plt.plot();
+}
+
 template <class T>
 void SinusoidalModelPlotter<T>::plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
 {
   GNUPlotter plt;
 
+  // factor out an addSpectrogramToPlot or something
   // todo: plot the spectrogram underneath the sine tracks - when doing so, the tracks are not 
   // plotted
   bool plotSpectrogram = false; // make member, let user set it
@@ -448,21 +494,9 @@ void SinusoidalModelPlotter<T>::plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T*
       minDb, maxDb);
   }
 
+  // create model and add it to the plot:
   RAPT::rsSinusoidalModel<double> model = sa.analyze(x, N, fs);
-  std::vector<float> t, f; // we plot frequency vs time
-
-  for(size_t i = 0; i < model.getNumPartials(); i++) {
-    rsSinusoidalPartial<double> p = model.getPartial(i);
-    size_t L = p.getNumDataPoints();
-    t.resize(L);
-    f.resize(L);
-    for(size_t j = 0; j < L; j++) {
-      t[j] = (float)p.getDataPoint(j).time;
-      f[j] = (float)p.getDataPoint(j).freq;
-    }
-    plt.addDataArrays((int)L, &t[0], &f[0]);
-    plt.setGraphColor((int)i+1, "000000");
-  }
+  addModelToPlot(model, plt, "000000", fs);
 
   plt.plot();
 }

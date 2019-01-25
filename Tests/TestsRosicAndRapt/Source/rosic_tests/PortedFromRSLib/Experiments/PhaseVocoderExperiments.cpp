@@ -311,27 +311,13 @@ void sinusoidalSynthesis1()
   sa.setHopSize(256);
   sa.setRelativeLevelThreshold(-15);
   //sa.setRelativeLevelThreshold(-40);
-  //model2 = sa.analyze(&x[0], (int)x.size(), fs);
-  //std::vector<double> y = synthesizeSinusoidal(model2, fs);
-  // there are loads of spurious partials - also, we need to wrap the phase into -pi..pi for the 
-  // fade-in/out datapoints, we may also need to apply fade-outs to all tracks that are alive until
-  // the end to properly finish them (there are spurious partials with length 2 which shouldn't 
-  // happen)
-  // there's one non-spurious track - but it seems to not represent the actual signal very well
-  // -> make tests with simpler signals and implement plotting facilities
-  // maybe make a class SineModelPlotter which can plot the sinusoidal trajectories over the 
-  // spectrogram and maybe plot also the time-domain waveform
-  // - maybe have also a visualization of input and resynthesized signal
+  model2 = sa.analyze(&x[0], (int)x.size(), fs);            // try to recover model from sound
+  //std::vector<double> y = synthesizeSinusoidal(model2, fs); // resynthesize sound from recovered model
 
-  // when the frequency is systematically under- or overestimated (i.e. estimation errors do not 
-  // average out to zero during a sinusoidal track), we may still hope that the time-domain 
-  // resynthesis works well, if the phase-values can compensate that error. if that's not possible
-  // (it may be especially problematic at high frequencies) - try using a smaller hop size (halving 
-  // the hop-size should double the frequency at which freq-error compensation by phase still 
-  // works)
+  //plotSinusoidalAnalysisResult(sa, &x[0], (int) x.size(), fs); // should plot spectrogram under tracks - but that doesn't work yet
+  //plotSineModel(model, fs);
+  plotTwoSineModels(model, model2, fs);
 
-  plotSinusoidalAnalysisResult(sa, &x[0], (int) x.size(), fs);
-  // todo: plot both models original and analyzed into the same plot
 
   //rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
 }
@@ -469,6 +455,13 @@ void sinusoidalAnalysis2()
 // 5: periodic sounds like triangle, square, saw
 // ....
 
+// Notes (move to documentation of SinusoidalAnalyzer):
+// when the frequency is systematically under- or overestimated (i.e. estimation errors do not 
+// average out to zero during a sinusoidal track), we may still hope that the time-domain 
+// resynthesis works well, if the phase-values can compensate that error. if that's not possible
+// (it may be especially problematic at high frequencies) - try using a smaller hop size (halving 
+// the hop-size should double the frequency at which freq-error compensation by phase still 
+// works)
 
 /*
 
