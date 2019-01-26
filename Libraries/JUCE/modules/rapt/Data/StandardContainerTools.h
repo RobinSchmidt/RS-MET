@@ -170,6 +170,17 @@ inline std::vector<T> operator*(const T& x, const std::vector<T>& v)
   return result;
 }
 
+/** Adds a scalar to a vector. */
+template<class T>
+inline std::vector<T> operator+(const std::vector<T>& v, const T& x)
+{
+  std::vector<T> result(v.size());
+  for(int i = 0; i < v.size(); i++)
+    result[i] = v[i] + x;
+  return result;
+}
+
+
 /** Adds two vectors element wise. */
 template<class T>
 inline std::vector<T> operator+(const std::vector<T>& x, const std::vector<T>& y)

@@ -10,22 +10,16 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   nEnd   = rsClip(nEnd,   0, xLength);
   int N = nEnd - nStart;  // number of samples to generate
 
-  // factor out:
   // create arrays for non-interpolated instantaneous parameter data:
-  size_t M = partial.getNumDataPoints();
-  std::vector<T> td(M), fd(M), ad(M), wpd(M);
-  for(size_t m = 0; m < M; m++) {
-    rsInstantaneousSineParams<T> dp = partial.getDataPoint(m);
-    //td[m]  = dp.getTime();          // time data
-    td[m]  = dp.getTime() + timeShift; // time data
-    fd[m]  = dp.getFrequency();        // frequency data
-    ad[m]  = dp.getAmplitude();        // amplitude data
-    wpd[m] = dp.getWrappedPhase();     // wrapped phase data
-  }
+  std::vector<T> td, fd, ad, wpd;
+  partial.getDataArrays(td, fd, ad, wpd);
+  td = td + timeShift;
+  //td += timeShift; // todo: implement this operator
 
 
   // factor out:
   // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
+  size_t M = partial.getNumDataPoints();
   std::vector<T> upd(M);
   rsNumericIntegral(&td[0], &fd[0], &upd[0], (int)M, wpd[0]);
   upd = 2*PI*upd; // convert from "number of cycles passed" to radians

@@ -4,7 +4,6 @@ void rsSinusoidalPartial<T>::applyFadeIn(T fadeTime)
   rsInstantaneousSineParams<T> params = getFirstDataPoint();
   params.time  -= fadeTime;
   params.gain   = 0.0;
-  //params.gain   = 0.5;  // for test
   params.phase -= 2*PI*fadeTime*params.freq;               // is this correct? 
   params.phase  = rsWrapToInterval(params.phase, -PI, PI); // or should it be 0..2*PI? check synthesis
   prependDataPoint(params);
@@ -16,7 +15,6 @@ void rsSinusoidalPartial<T>::applyFadeOut(T fadeTime)
   rsInstantaneousSineParams<T> params = getLastDataPoint();
   params.time  += fadeTime;
   params.gain   = 0.0;
-  //params.gain   = 0.5;   // for test
   params.phase += 2*PI*fadeTime*params.freq;
   params.phase  = rsWrapToInterval(params.phase, -PI, PI);
   appendDataPoint(params);
@@ -32,6 +30,24 @@ void rsSinusoidalPartial<T>::applyFadeOut(T fadeTime)
 // maybe, instead of doing fade-in/out by appending additional data points, we should just 
 // extrapolate the envelope beyond the end points and apply an *additional* envelope
 // ->experimentation is required
+
+template<class T>
+void rsSinusoidalPartial<T>::getDataArrays(
+  std::vector<T>& t, std::vector<T>& f, std::vector<T>& a, std::vector<T>& p) const
+{
+  size_t M = getNumDataPoints();
+  t.resize(M);
+  f.resize(M);
+  a.resize(M);
+  p.resize(M);
+  for(size_t m = 0; m < M; m++) {
+    rsInstantaneousSineParams<T> dp = getDataPoint(m);
+    t[m] = dp.getTime();         // time data
+    f[m] = dp.getFrequency();    // frequency data
+    a[m] = dp.getAmplitude();    // amplitude data
+    p[m] = dp.getWrappedPhase(); // (wrapped) phase data
+  }
+}
 
 //=================================================================================================
 

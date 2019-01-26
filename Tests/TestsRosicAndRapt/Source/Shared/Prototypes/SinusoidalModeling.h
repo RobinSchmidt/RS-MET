@@ -30,6 +30,9 @@ public:
 
 
 
+
+
+
   /** \name Processing */
 
   /** Synthesizes a sound from a sinusoidal model and returns it as std::vector. */

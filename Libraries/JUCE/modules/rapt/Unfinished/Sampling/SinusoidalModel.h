@@ -112,8 +112,6 @@ public:
     return getEndTime() - getStartTime();
   }
 
-
-
   inline T getStartFreq() const 
   { 
     if(instParams.size() == 0) 
@@ -129,6 +127,7 @@ public:
   }
 
 
+  /** Returns the number of data points in this partial */
   inline size_t getNumDataPoints() const { return instParams.size(); }
 
 
@@ -149,6 +148,11 @@ public:
   { 
     return instParams[instParams.size()-1]; 
   }
+
+  /** Fills the 4 given vectors with the data from our data points - useful for plotting and 
+  creating interpolated data arrays. */
+  void getDataArrays(std::vector<T>& time, std::vector<T>& freq, std::vector<T>& gain, 
+    std::vector<T>& phase) const;
 
 
 
