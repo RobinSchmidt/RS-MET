@@ -3,10 +3,6 @@
 // todo: move file to library - maybe split into two files analyzer and synthesizer - or maybe 
 // merge with the SinusoidalModel file
 
-//template<class T>
-//std::vector<T> synthesizeSinusoidal(const RAPT::rsSinusoidalModel<T>& model, T sampleRate);
-//// todo: move to class SinusoidalSynthesizer
-
 
 /** A class for synthesizing a sound from a sinusoidal model. */
 
@@ -32,10 +28,13 @@ public:
   /** Synthesizes a sound from a sinusoidal model and returns it as std::vector. */
   std::vector<T> synthesize(const RAPT::rsSinusoidalModel<T>& model) const;
 
-
   /** Writes the given sinusoidal partial into the buffer x which is assumed to be of length 
-  xLength. Used internally by synthesize(). */
-  void synthesizePartial(const RAPT::rsSinusoidalPartial<T>& partial, T* x, int xLength) const;
+  xLength. You may also pass an argument that time-shifts the partial's time-stamps with respect
+  to their stored values. This is useful for synthesizing models that don't start at time zero. 
+  The function is used internally by synthesize() and client code does not need to deal with it
+  directly (but can, if needed). */
+  void synthesizePartial(const RAPT::rsSinusoidalPartial<T>& partial, T* x, int xLength, 
+    T timeShift = T(0)) const;
 
 
 protected:
@@ -44,7 +43,6 @@ protected:
   T sampleRate = 44100;
 
 };
-
 
 //=================================================================================================
 

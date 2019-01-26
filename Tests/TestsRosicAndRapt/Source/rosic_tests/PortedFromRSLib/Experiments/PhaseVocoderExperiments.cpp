@@ -335,7 +335,7 @@ void sinusoidalSynthesis2()
   RAPT::rsSinusoidalPartial<double> partial;
   RAPT::rsSinusoidalModel<double> model, model2;
 
-  //partial.prependDataPoint(ISP(-0.1, 100.0, 0.5, 0.0)); // first section is wrong
+  partial.prependDataPoint(ISP(-0.1, 100.0, 0.5, 0.0));
   partial.appendDataPoint( ISP( 0.0, 100.0, 1.0, 0.0));
   partial.appendDataPoint( ISP( 0.1, 100.0, 0.5, 0.0));
   partial.appendDataPoint( ISP( 0.2, 100.0, 1.0, 0.0));

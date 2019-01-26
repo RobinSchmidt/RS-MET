@@ -1,17 +1,14 @@
 
-
 template<class T>
 void SinusoidalSynthesizer<T>::synthesizePartial(
-  const rsSinusoidalPartial<T>& partial, T* x, int xLength) const 
+  const rsSinusoidalPartial<T>& partial, T* x, int xLength, T timeShift) const 
 {
   // figure out number of samples to produce:
-  int nStart = (int) floor(sampleRate * partial.getStartTime());
-  int nEnd   = (int) ceil( sampleRate * partial.getEndTime()) + 1;
+  int nStart = (int) floor(sampleRate * (partial.getStartTime() + timeShift));
+  int nEnd   = (int) ceil( sampleRate * (partial.getEndTime()   + timeShift)) + 1;
   nStart = rsClip(nStart, 0, xLength);
   nEnd   = rsClip(nEnd,   0, xLength);
   int N = nEnd - nStart;  // number of samples to generate
-  // verify, if this is right
-
 
   // factor out:
   // create arrays for non-interpolated instantaneous parameter data:
@@ -19,10 +16,11 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   std::vector<T> td(M), fd(M), ad(M), wpd(M);
   for(size_t m = 0; m < M; m++) {
     rsInstantaneousSineParams<T> dp = partial.getDataPoint(m);
-    td[m]  = dp.getTime();          // time data
-    fd[m]  = dp.getFrequency();     // frequency data
-    ad[m]  = dp.getAmplitude();     // amplitude data
-    wpd[m] = dp.getWrappedPhase();  // wrapped phase data
+    //td[m]  = dp.getTime();          // time data
+    td[m]  = dp.getTime() + timeShift; // time data
+    fd[m]  = dp.getFrequency();        // frequency data
+    ad[m]  = dp.getAmplitude();        // amplitude data
+    wpd[m] = dp.getWrappedPhase();     // wrapped phase data
   }
 
 
@@ -121,13 +119,13 @@ std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& 
   //for(size_t i = 0; i < model.getNumPartials(); i++)
   //  synthesizePartial(model.getPartial(i), &x[0], N, sampleRate);
 
-  // new - modeled sound may have a nonzero start-sample:
-  int n0 = model.getStartSampleIndex(sampleRate);
-  int N  = model.getLengthInSamples(sampleRate);
+  // new - modeled sound may have a nonzero start-time:
+  //int n0 = model.getStartSampleIndex(sampleRate);
+  int N = model.getLengthInSamples(sampleRate);
   std::vector<T> x(N);
   RAPT::rsArray::fillWithZeros(&x[0], N);
   for(size_t i = 0; i < model.getNumPartials(); i++)
-    synthesizePartial(model.getPartial(i), &x[-n0], N); // needs more tests
+    synthesizePartial(model.getPartial(i), &x[0], N, -model.getStartTime()); 
    
   return x;
 }
