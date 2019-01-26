@@ -15,21 +15,19 @@ public:
 
   /** \name Setup */
 
+  /** Sets the synthesis sample rate. */
   void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
 
-  // setAmplitudeInterpolationMethod
-  // setPhaseInterpolationMethod
-  // etc.
+  /** Switches the amplitude interpolation method between cubic (true) and linear (false). */
+  void setCubicAmplitudeInterpolation(bool shouldBeCubic) { cubicAmplitude = shouldBeCubic; }
 
-
+  /** Switches the phase interpolation method between cubic (true) and linear (false). */
+  void setCubicPhaseInterpolation(bool shouldBeCubic) { cubicPhase = shouldBeCubic; }
 
 
   /** \name Inquiry */
 
   T getSampleRate() const { return sampleRate; }
-
-
-
 
 
 
@@ -56,6 +54,9 @@ protected:
 
 
   T sampleRate = 44100;
+
+  bool cubicPhase = true;
+  bool cubicAmplitude = true;
 
   bool accumulatePhaseDeltas = true;  
   // Notes: accumulation gives rise to an O(M^2) complexity of the phase unwrapping algorithm (M is 

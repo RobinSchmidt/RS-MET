@@ -378,11 +378,11 @@ void sinusoidalAnalysis1()
   double phase      = 0.0;    // in radians
 
   phase = PI/2; // for test
-  //frequency = 800;    // good
-  //frequency = 808;    // bad
-  frequency = 809;    // bad
-  //frequency = 810;  // good
-  //frequency = 1000 * GOLDEN_RATIO/2;  // also test - gives phase error at the start
+  //frequency = 800;
+  //frequency = 808;
+  //frequency = 809;
+  //frequency = 810;
+  frequency = 1000 * GOLDEN_RATIO/2;
   //frequency = 1000 * SQRT2_INV;
 
   // create signal:

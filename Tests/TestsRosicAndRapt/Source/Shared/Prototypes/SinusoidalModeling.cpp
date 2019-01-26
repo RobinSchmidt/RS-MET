@@ -37,20 +37,24 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
 
 
   // factor out:
-  size_t M = td.size();
-
   // interpolate the amplitude and unwrapped phase data to sample-rate:
-  std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
+  // create time axis:
+  size_t M = td.size();
+  std::vector<T> t(N), a(N), p(N); // interpolated instantaneous data
   for(size_t n = 0; n < N; n++)          // fill time-array
     t[n] = (nStart + n) / sampleRate;    // ...optimize
 
   // interpolate phase:
-  //rsInterpolateLinear(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
-  rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+  if(cubicPhase)
+    rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+  else
+    rsInterpolateLinear( &td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
 
   // interpolate amplitude:
-  rsNaturalCubicSpline(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
-  //rsInterpolateLinear(&td[0], &ad[0],  (int)M, &t[0], &a[0], (int)N);
+  if(cubicAmplitude)
+    rsNaturalCubicSpline(&td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+  else
+    rsInterpolateLinear( &td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
 
   // it seems cubic interpolation for the phase and linear for the amplitude is most suitable,
   // although, for the amplitude, we may also use cubic - but linear for the phase leads to audible
@@ -70,7 +74,6 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   // -maybe the synthesizer should have "presets" for most useful combinations of synthesis 
   //  parameters
 
-
   // maybe the user should be able to select the interpolation method and maybe a bidirectional 
   // smoothing filter (this should be set separately for amplitude and phase)
 
@@ -83,7 +86,7 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   // sinusoids (using the sine, we would have to take the imaginary part instead)
 
 
-  GNUPlotter plt;
+  //GNUPlotter plt;
   //plt.addDataArrays(M, &td[0], &fd[0]);
   //plt.addDataArrays((int)M, &td[0], &upd[0]);
   //plt.addDataArrays((int)N, &t[0],  &p[0]); // interpolated phase
@@ -91,7 +94,6 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   //plt.addDataArrays((int)N, &t[0],  &s[0]);   // produced sinusoid
   //plt.plot();
 }
-
 
 template<class T>
 std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
@@ -107,8 +109,7 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   up = 2*PI*up; // convert from "number of cycles passed" to radians
 
   // incorporate the target phase values into the unwrapped phase:
-  for(size_t m = 0; m < M; m++)
-  {
+  for(size_t m = 0; m < M; m++) {
     T wp1 = fmod(up[m], 2*PI);  // 0..2*pi
     T wp2 = fmod(wp[m], 2*PI);  // 0..2*pi
     T d   = wp2-wp1;            // -2*pi..2*pi, delta between target phase and integrated frequency
