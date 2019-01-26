@@ -57,6 +57,12 @@ protected:
 
   T sampleRate = 44100;
 
+  bool accumulatePhaseDeltas = true;  
+  // Notes: accumulation gives rise to an O(M^2) complexity of the phase unwrapping algorithm (M is 
+  // the number of data points) - but without accumulation there may be phase errors by 180° at 
+  // certain datapoints after the unwrapping - figure out what's going on, maybe change the 
+  // unwrapping algorithm completely
+
 };
 
 //=================================================================================================

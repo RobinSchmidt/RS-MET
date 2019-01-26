@@ -32,43 +32,13 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   // create arrays for non-interpolated instantaneous parameter data:
   std::vector<T> td, fd, ad, wpd;
   partial.getDataArrays(td, fd, ad, wpd);
-  td = td + timeShift;
-  //td += timeShift; // todo: implement this operator
+  td = td + timeShift; // todo: implement vector += scalar operator and use: td += timeShift;
+  std::vector<T> upd = unwrapPhase(td, fd, wpd);
 
 
   // factor out:
-  // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
-  size_t M = partial.getNumDataPoints();
-  std::vector<T> upd(M);
-  rsNumericIntegral(&td[0], &fd[0], &upd[0], (int)M, wpd[0]);
-  upd = 2*PI*upd; // convert from "number of cycles passed" to radians
+  size_t M = td.size();
 
-  // incorporate the target phase values into the unwrapped phase:
-  bool accumulatePhaseDeltas = false;  // make user parameter - experiment, which is better - note
-                                       // that accumulation gives rise to an O(M^2) complexity of the algorithm
-  for(size_t m = 0; m < M; m++)
-  {
-    T wp1 = fmod(upd[m], 2*PI); // 0..2*pi
-    T wp2 = fmod(wpd[m], 2*PI); // 0..2*pi
-    T d   = wp2-wp1;            // -2*pi..2*pi, delta between target phase and integrated frequency
-    if(d < 0) d += 2*PI;        // 0..2*PI
-    if(d > PI)                  // choose adjustment direction of smaller phase difference
-      d -= 2*PI;                // -pi..pi
-    upd[m] += d;                // re-adjust final unwrapped phase
-    if(accumulatePhaseDeltas)
-      for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
-        upd[k] += d;
-  }
-  // maybe the unwrapped phase computation should be factored out into a function
-  // maybe provide an alternative implementation that uses the measured (unwrapped) phases y and 
-  // the measured instantaneous frequencies as y'' in a Hermite interpolation scheme (this is how
-  // it's described in the literature). to unwrap the phase of datapoint m, take the phase of m-1
-  // and add the integral over t[m-1]..t[m] of the average frequency (f[m-1]+f[m])/2 and choose
-  // p[m] + 2*pi*k as unwrapped where k is chosen such that p[m] is closest to value obtained from
-  // integration
-
-
-  // factor out:
   // interpolate the amplitude and unwrapped phase data to sample-rate:
   std::vector<T> t(N), f(N), a(N), p(N); // interpolated instantaneous data
   for(size_t n = 0; n < N; n++)          // fill time-array
@@ -132,11 +102,33 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   RAPT::rsAssert(wp.size() == M);
   std::vector<T> up(M);  // unwrapped phase
 
+  // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
+  rsNumericIntegral(&t[0], &f[0], &up[0], (int)M, wp[0]);
+  up = 2*PI*up; // convert from "number of cycles passed" to radians
 
+  // incorporate the target phase values into the unwrapped phase:
+  for(size_t m = 0; m < M; m++)
+  {
+    T wp1 = fmod(up[m], 2*PI);  // 0..2*pi
+    T wp2 = fmod(wp[m], 2*PI);  // 0..2*pi
+    T d   = wp2-wp1;            // -2*pi..2*pi, delta between target phase and integrated frequency
+    if(d < 0) d += 2*PI;        // 0..2*PI
+    if(d > PI)                  // choose adjustment direction of smaller phase difference
+      d -= 2*PI;                // -pi..pi
+    up[m] += d;                 // re-adjust final unwrapped phase
+    if(accumulatePhaseDeltas)
+      for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
+        up[k] += d;
+  }
+  // maybe provide an alternative implementation that uses the measured (unwrapped) phases y and 
+  // the measured instantaneous frequencies as y'' in a Hermite interpolation scheme (this is how
+  // it's described in the literature). to unwrap the phase of datapoint m, take the phase of m-1
+  // and add the integral over t[m-1]..t[m] of the average frequency (f[m-1]+f[m])/2 and choose
+  // p[m] + 2*pi*k as unwrapped where k is chosen such that p[m] is closest to value obtained from
+  // integration - use this function here as dispatcher between the different algorithms
 
   return up;
 }
-
 
 // template instantiation:
 template class SinusoidalSynthesizer<double>;

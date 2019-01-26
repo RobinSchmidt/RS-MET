@@ -444,6 +444,8 @@ void sinusoidalAnalysis1()
   //  -maybe check, if it may have to do with the phase interpolation - selecting the direction
   //   of interpolations that is nearest - maybe there's a bug in this? 
   //   ->make unit test ->plot interpolated phase
+  // setting bool accumulatePhaseDeltas = true; fixes the problem
+
 }
 
 void sinusoidalAnalysis2()

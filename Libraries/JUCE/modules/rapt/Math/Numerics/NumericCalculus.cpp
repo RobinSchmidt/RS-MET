@@ -1,5 +1,5 @@
 template<class Tx, class Ty>
-void rsNumericDerivative(Tx *x, Ty *y, Ty *yd, int N, bool extrapolateEnds)
+void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
 {
   Tx dxl, dxr, dx;
   Ty a, b; 
@@ -51,7 +51,7 @@ void rsNumericDerivative(Tx *x, Ty *y, Ty *yd, int N, bool extrapolateEnds)
 
 
 template<class Tx, class Ty>
-void rsNumericIntegral(Tx *x, Ty *y, Ty *yi, int N, Ty c)
+void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)
 {
   Tx xo; 
   Ty yo, zo, tmp;

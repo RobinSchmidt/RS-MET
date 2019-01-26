@@ -24,7 +24,7 @@ otherwise it will use the (divided) forward difference at 0 and the backward dif
 N-1. In a test with a sine function, the extrapolation gave more accurate results at the
 endpoints compared to simple differences, so it's probably better to use extrapolation. */
 template<class Tx, class Ty>
-void rsNumericDerivative(Tx *x, Ty *y, Ty *yd, int N, bool extrapolateEnds = true);
+void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds = true);
 
 /** Computes the numerical integral of a function defined by data points, i.e. the function:
 \f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
@@ -32,7 +32,7 @@ into the function. Usage is similar to rsNumericDerivative. The parameter c can 
 integration constant and determines yi[0] that shifts the overall resulting function up or down 
 along the y-axis. */
 template<class Tx, class Ty>
-void rsNumericIntegral(Tx *x, Ty *y, Ty *yi, int N, Ty c = Ty(0));
+void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 // maybe rename to rsNumericIntegralTrapezoidal, use Tx, Ty for datatypes
 // maybe rename parameters to x, f, F
 
