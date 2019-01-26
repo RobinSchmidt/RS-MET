@@ -222,8 +222,9 @@ void plotTwoSineModels(
 void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
   const SinusoidalSynthesizer<double>& synth, double* x, int Nx)
 {
-  std::vector<double> y = synth.synthesize(model);
-  //plotVector(y);  // plot resynthesized signal
+  typedef std::vector<double> Vec;
+
+  Vec y = synth.synthesize(model);
 
   // creation of residual is a bit more complicated than straightforward subtraction because the
   // output of the model does not have the same length, due to fade-in/out - we need to figure out
@@ -231,23 +232,23 @@ void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model,
   int numFadeInSamples = -model.getStartSampleIndex(synth.getSampleRate()); // preZeroSamples
   int Ny = (int)y.size();     // length of residual signal in samples
   int Nr = Ny;
-  std::vector<double> r(Nr);  // residual
-  int n;                      // loop variable (sample index)
-  int n0 = numFadeInSamples;  // shorthand
-  for(n = 0;     n < n0;    n++) r[n] = 0       - y[n];
-  for(n = n0;    n < Nx+n0; n++) r[n] = x[n-n0] - y[n];
-  for(n = Nx+n0; n < Nr;    n++) r[n] = 0       - y[n];
-  // i think, the shifting might be wrong? - maybe we should just create a zero-padded version of 
-  // the x-signal that has the same length as y and r
+  Vec r(Nr);  // residual
 
-  //plotVector(r);
+  // Here, we assume that the resynthesized signal extends beyond the ends of the original due to
+  // additional fade-in/out datapoints - but can we really always assume this?
+  Vec xv   = RAPT::toVector(x, Nx);
+  Vec pre  = RAPT::rsConstantVector((size_t) numFadeInSamples, 0.0);
+  xv = RAPT::rsConcatenate(pre, xv);
+  Vec post = RAPT::rsConstantVector(y.size()-xv.size() , 0.0);
+  xv = RAPT::rsConcatenate(xv, post);
+  for(size_t n = 0; n < r.size(); n++)
+    r[n] = xv[n] - y[n];
 
-  // todo: we need to plot all 3 signals (original, resynthesized, residual) into a single plot
 
   GNUPlotter plt;
+  plt.addDataArrays(Nr, &xv[0]);
   plt.addDataArrays(Ny, &y[0]);
   plt.addDataArrays(Nr, &r[0]);
-  //plt.addDataArrays(Nx, x);  // still wrong - must be shifted in time
   plt.plot();
 }
 

@@ -8,6 +8,15 @@ library (STL), such as std::vector, std::map, etc. */
 // functions for std::vector
 
 template<class T>
+inline std::vector<T> rsConstantVector(size_t size, T value)
+{
+  std::vector<T> v(size);
+  for(size_t i = 0; i < size; i++)
+    v[i] = value;
+  return v;
+}
+
+template<class T>
 inline size_t rsSize(const std::vector<T>& v)
 {
   return v.size();
@@ -38,6 +47,16 @@ inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
   //  v.resize(v.size() + w.size());
   //  rsArray::copyBuffer(&w[0], &v[nv], (int)w.size());
   //}
+}
+
+
+template<class T>
+inline std::vector<T> rsConcatenate(std::vector<T>& v, const std::vector<T>& w)
+{
+  std::vector<T> r(v.size() + w.size());
+  for(size_t i = 0; i < v.size(); i++) r[i]            = v[i];
+  for(size_t i = 0; i < w.size(); i++) r[i + v.size()] = w[i];
+  return r;
 }
 
 template<class T>
