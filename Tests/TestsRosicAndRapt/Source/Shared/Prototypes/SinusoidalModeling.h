@@ -46,6 +46,11 @@ public:
   void synthesizePartial(const RAPT::rsSinusoidalPartial<T>& partial, T* x, int xLength, 
     T timeShift = T(0)) const;
 
+  /** Given an array of time-stamps and corresponing frequency and wrapped phase values, this 
+  function computes the corresponding array of unwrapped phase values. */
+  std::vector<T> unwrapPhase(const std::vector<T>& time, 
+    const std::vector<T>& freq, const std::vector<T>& wrappedPhase) const; 
+
 
 protected:
 

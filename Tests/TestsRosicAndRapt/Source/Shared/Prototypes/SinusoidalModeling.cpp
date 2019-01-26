@@ -1,3 +1,22 @@
+template<class T>
+std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& model) const
+{
+  //// old - assumes modeled sound starts at sample 0:
+  //int N = (int) ceil(sampleRate * model.getEndTime()) + 1; // number of samples
+  //std::vector<T> x(N);
+  //for(size_t i = 0; i < model.getNumPartials(); i++)
+  //  synthesizePartial(model.getPartial(i), &x[0], N, sampleRate);
+
+  // new - modeled sound may have a nonzero start-time:
+  //int n0 = model.getStartSampleIndex(sampleRate);
+  int N = model.getLengthInSamples(sampleRate);
+  std::vector<T> x(N);
+  RAPT::rsArray::fillWithZeros(&x[0], N);
+  for(size_t i = 0; i < model.getNumPartials(); i++)
+    synthesizePartial(model.getPartial(i), &x[0], N, -model.getStartTime()); 
+
+  return x;
+}
 
 template<class T>
 void SinusoidalSynthesizer<T>::synthesizePartial(
@@ -103,25 +122,21 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   //plt.plot();
 }
 
-template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& model) const
-{
-  //// old - assumes modeled sound starts at sample 0:
-  //int N = (int) ceil(sampleRate * model.getEndTime()) + 1; // number of samples
-  //std::vector<T> x(N);
-  //for(size_t i = 0; i < model.getNumPartials(); i++)
-  //  synthesizePartial(model.getPartial(i), &x[0], N, sampleRate);
 
-  // new - modeled sound may have a nonzero start-time:
-  //int n0 = model.getStartSampleIndex(sampleRate);
-  int N = model.getLengthInSamples(sampleRate);
-  std::vector<T> x(N);
-  RAPT::rsArray::fillWithZeros(&x[0], N);
-  for(size_t i = 0; i < model.getNumPartials(); i++)
-    synthesizePartial(model.getPartial(i), &x[0], N, -model.getStartTime()); 
-   
-  return x;
+template<class T>
+std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
+  const std::vector<T>& f, const std::vector<T>& wp) const
+{
+  size_t M = t.size();
+  RAPT::rsAssert(f.size()  == M);
+  RAPT::rsAssert(wp.size() == M);
+  std::vector<T> up(M);  // unwrapped phase
+
+
+
+  return up;
 }
+
 
 // template instantiation:
 template class SinusoidalSynthesizer<double>;
