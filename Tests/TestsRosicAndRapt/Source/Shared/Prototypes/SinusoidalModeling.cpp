@@ -24,7 +24,6 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   }
 
 
-
   // factor out:
   // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
   std::vector<T> upd(M);
@@ -131,8 +130,6 @@ std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& 
 }
 
 // template instantiation:
-//template std::vector<double> synthesizeSinusoidal(const RAPT::rsSinusoidalModel<double>& model, 
-//  double sampleRate);
 template class SinusoidalSynthesizer<double>;
 
 

@@ -325,7 +325,7 @@ int main(int argc, char* argv[])
   //spectrogramSine();
   //sinusoidalSynthesis1();
   sinusoidalSynthesis2();
-  //sinusoidalAnalysis1();
+  sinusoidalAnalysis1();
 
 
   // Physics:

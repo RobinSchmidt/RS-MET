@@ -424,12 +424,9 @@ void sinusoidalAnalysis1()
   // expected - OK - all is good. these are just transient artifacts and we should clean them up
   // by deleting the spurious tracks
 
-
   // resynthesize signal from model:
   std::vector<double> y = synthesizeSinusoidal(model, sampleRate);
   plotVector(y);  // plot resynthsized signal
-  // the fade-in looks wrong, otherwise, it's looks good already
-  // figure out, how many fade-in/out samples are to be expected - check, it tha's the case
 
   // creation of residual is a bit more complicated than straightforward subtraction because the
   // output of the model does not have the same length, due to fade-in/out - we need to figure out
@@ -449,9 +446,9 @@ void sinusoidalAnalysis1()
 
   // we maybe have to make a distinction between various cases (numfadeInSamples > or < 0, etc)
 
-  //plotVector(r);
-  // there is something weird going on in the fade-in and fade-out - fade-in is cut off and 
-  // fade-out has a phase-jump
+  plotVector(r);
+  // there are discontinuities in the fade-in/out sections...maybe plot original, resynthesized and
+  // error in one plot
 
   int dummy = 0;
 }
