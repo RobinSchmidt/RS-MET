@@ -52,7 +52,8 @@ public:
 
   /** \name Processing */
 
-  /** Synthesizes a sound from a sinusoidal model and returns it as std::vector. */
+  /** Synthesizes a sound from a sinusoidal model and returns it as std::vector. The sound will be
+  synthesized at a sample-rate that you can set up via setSampleRate. */
   std::vector<T> synthesize(const RAPT::rsSinusoidalModel<T>& model) const;
 
   /** Writes the given sinusoidal partial into the buffer x which is assumed to be of length 
@@ -75,10 +76,11 @@ protected:
   bool cubicPhase = true;
   bool cubicAmplitude = false;
   bool accumulatePhaseDeltas = true;
-  // Notes: accumulation gives rise to an O(M^2) complexity of the phase unwrapping algorithm (M is 
-  // the number of data points) - but without accumulation there may be phase errors by 180° at 
-  // certain datapoints after the unwrapping - figure out what's going on, maybe change the 
-  // unwrapping algorithm completely
+  // Notes: accumulation gives rise to an O(M^2) complexity of the phase unwrapping algorithm where 
+  // M is the number of data points in the respective partial - but without accumulation there may 
+  // be phase errors by 180° at certain datapoints after the unwrapping - figure out what's going 
+  // on, maybe change the unwrapping algorithm completely or rather let the user select between 
+  // various algorithms
 
 };
 
@@ -95,6 +97,7 @@ public:
 
 
   /** \name High level setup */
+
 
   // Good choices for sinusoidal analysis with a minimum resolvable frequency delta df:
   // Window: Blackman-Harris
@@ -187,6 +190,22 @@ public:
 
   /** Returns the analysis hop size. */
   int getHopSize() const { return sp.getHopSize(); }
+
+
+
+  /** Returns the minimum block size that is required to resolve two adjacent partials that are 
+  separated by the given frequency difference "freqDelta" at a given sample rate. Because this
+  resolvability depends on the mainlobe width of the chosen analysis window, you must also tell 
+  the function, which type of window you want to use. */
+  static int getRequiredBlockSize(int windowType, T freqDelta, T sampleRate);
+
+  /** Returns minimum possible amplitude threshold that can reasoably be used for a given window 
+  type without mistakenly picking up the sidelobes of the window as partials. With margin = 0, this 
+  is actually just the sidelobe level of the window function itself. A margin of ...dB proved to
+  be reasonable in practice */
+  static T getRequiredThreshold(int windowType, T dBmargin);
+  // should return the sidelobe level of given window in dB 
+  // todo: maybe provide a deafult margin -> figure out reasonable value empirically
 
 
   /** \name Processing */

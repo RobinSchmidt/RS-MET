@@ -28,6 +28,61 @@ void rsWindowFunction::createWindow(T* w, int N, int type, bool normalizeMean, T
   }
 }
 
+
+template<class T>
+T rsWindowFunction::getMainLobeWidth(int type, T param)
+{
+  switch( type )
+  {
+  case RECTANGULAR_WINDOW:  return T(2);
+
+  //case TRIANGULAR:          return T(4);  // not sure yet -> plot and verify
+  case HANNING_WINDOW:      return T(4);
+  case HANNING_WINDOW_ZN:   return T(4);
+  case HAMMING_WINDOW:      return T(4);
+
+  case BLACKMAN_WINDOW:     return T(6);
+
+  case BLACKMAN_HARRIS:     return T(8);
+  case BLACKMAN_NUTALL:     return T(8);
+
+  default: 
+  {
+    rsAssert(false); // not yet implemented for the given window type
+    return T(0);
+  }
+  }
+}
+
+template<class T>
+T rsWindowFunction::getSideLobeLevel(int type, T param)
+{
+  switch( type )
+  {
+  case RECTANGULAR_WINDOW:  return T(-13.2);
+
+  case TRIANGULAR:          return T(-26.5);
+
+  case HANNING_WINDOW:      return T(-31.5);
+  case HANNING_WINDOW_ZN:   return T(-31.5);
+  case HAMMING_WINDOW:      return T(-42.7);
+
+  case BLACKMAN_WINDOW:     return T(-58);
+
+  case BLACKMAN_HARRIS:     return T(-92);
+  case BLACKMAN_NUTALL:     return T(-96.8);
+
+  default: 
+  {
+    rsAssert(false); // not yet implemented for the given window type
+    return T(0);
+  }
+  }
+  // todo: verify these values in plots
+}
+
+
+
 template<class T>
 T rsWindowFunction::cosineSquared(T x, T length)
 {

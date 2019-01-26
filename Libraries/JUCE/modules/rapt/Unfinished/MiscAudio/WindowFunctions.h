@@ -33,11 +33,28 @@ public:
 
 
   /** Writes window function values into the array w of length N. The type should be one of the 
-  values in enum windowTypes. Some windows have an adjustable parameter - for these, the value of 
-  this parameter is passed in param. */
+  values in enum windowTypes. If normalizeMean is true, the window values will be scaled such that 
+  they have a mean value of unity. This will give the window function unit gain at DC which is 
+  often desirable. Some windows have an adjustable parameter - for these, the value of this 
+  parameter is passed in param. */
   template<class T>
   static void createWindow(T* w, int N, int type, bool normalizeMean, T param = 0);
-  // bool normalize
+
+  /** Returns the width of the main lobe of given window in frequency bins. Those values are not
+  exact but just rule-of-thumb values obtained from reading off the spectrum of the respective 
+  window. For windows that don't have any parameters, you should nevertheless pass a dummy 
+  value, so the compiler can figure out the template type. ...later it may be used to compute 
+  mainlobe widths for parametrized windows but this is not yet implemented */
+  template<class T>
+  static T getMainLobeWidth(int type, T param);
+
+  /** Returns the level (in decibels) of the highest sidelobe of the given window (just as the 
+  mainlobe width, these values are also just rule-of-thumb values). The mainlobe is supposed to be
+  normalized to 0dB and the returned value is a negative number. */
+  template<class T>
+  static T getSideLobeLevel(int type, T param);
+
+  // maybe have also a getSideLobeRollOff function
 
 
   /** Returns the value of a zero-centered cosine-squared shaped window of given length, having

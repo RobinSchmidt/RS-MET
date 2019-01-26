@@ -1,20 +1,11 @@
 template<class T>
 std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& model) const
 {
-  //// old - assumes modeled sound starts at sample 0:
-  //int N = (int) ceil(sampleRate * model.getEndTime()) + 1; // number of samples
-  //std::vector<T> x(N);
-  //for(size_t i = 0; i < model.getNumPartials(); i++)
-  //  synthesizePartial(model.getPartial(i), &x[0], N, sampleRate);
-
-  // new - modeled sound may have a nonzero start-time:
-  //int n0 = model.getStartSampleIndex(sampleRate);
   int N = model.getLengthInSamples(sampleRate);
   std::vector<T> x(N);
   RAPT::rsArray::fillWithZeros(&x[0], N);
   for(size_t i = 0; i < model.getNumPartials(); i++)
     synthesizePartial(model.getPartial(i), &x[0], N, -model.getStartTime()); 
-
   return x;
 }
 
@@ -35,7 +26,6 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   td = td + timeShift; // todo: implement vector += scalar operator and use: td += timeShift;
   std::vector<T> upd = unwrapPhase(td, fd, wpd);
 
-
   // factor out:
   // interpolate the amplitude and unwrapped phase data to sample-rate:
   // create time axis:
@@ -45,16 +35,12 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
     t[n] = (nStart + n) / sampleRate;    // ...optimize
 
   // interpolate phase:
-  if(cubicPhase)
-    rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
-  else
-    rsInterpolateLinear( &td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+  if(cubicPhase) rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+  else           rsInterpolateLinear( &td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
 
   // interpolate amplitude:
-  if(cubicAmplitude)
-    rsNaturalCubicSpline(&td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
-  else
-    rsInterpolateLinear( &td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+  if(cubicAmplitude) rsNaturalCubicSpline(&td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+  else               rsInterpolateLinear( &td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
 
   // it seems cubic interpolation for the phase and linear for the amplitude is most suitable,
   // although, for the amplitude, we may also use cubic - but linear for the phase leads to audible
@@ -74,8 +60,14 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   // -maybe the synthesizer should have "presets" for most useful combinations of synthesis 
   //  parameters
 
-  // maybe the user should be able to select the interpolation method and maybe a bidirectional 
-  // smoothing filter (this should be set separately for amplitude and phase)
+  // maybe let the select to apply a bidirectional smoothing filter to the amplitude and/or phase
+  // ...and/or maybe to the frequency data before integration (but then it would have to opreate on
+  // non-uniformly sampled data). when one is to be applied to the phase, we should first subtract
+  // out the linear trend, then apply it and add the trend back
+
+  // maybe provide hook-functions that can manipulate the amplitude/phase data after interpolation
+  // maybe have subclasses that also work with real and imaginare parts instead of magnitude/phase
+  // (and apply filters to those) ...but that is already something for the transformations
 
   // synthesize the sinusoid and add it to what's already there:
   std::vector<T> s(N); // needed here only for plotting, remove for production code
@@ -178,11 +170,11 @@ std::vector<int> peakIndices(T* x, int N, T threshToMax = 0)
   return peaks;
 } 
 // move to library, maybe have additional criteria like a threshold with respect to the rms, minimum
-// distance between the peaks, etc.
+// distance between the peaks, etc. - or maybe make member function of the analyzer
 
 // move to library:
 template<class T>
-void fitQuadratic_m1_0_1(T *a, T *y)  // x = -1,0,+1
+void fitQuadratic_m1_0_1(T *a, T *y)  // x = -1,0,+1 - maybe y should be the first input - make consistent with other library functions
 {
   a[0] = y[1];
   a[1] = 0.5*(y[2]-y[0]);
@@ -210,7 +202,7 @@ void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
   *val = rsDbToAmp(a[0] + (a[1] + a[2]*d)*d);
 }
 
-// interpolate between two values that are supposed to wrapping around and alway be in xMin..xMax, 
+// interpolate between two values that are supposed to wrapping around and always be in xMin..xMax,
 // for example -1..1, 0..1, 0..2*pi, -pi..pi, etc. t is the interpolation parameter between 0..1 
 // where such that x = (1-t)*x0 + t*x1 = x0 + t*(x1-x0)
 template<class T> 
@@ -225,7 +217,7 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
   T al = rsAbs(dl);
   T x;
 
-  // add an appropriate fraction the delta that has the smallest absolute difference to x0:
+  // add an appropriate fraction of the delta that has the smallest absolute difference to x0:
   if(au < am && au < al)
     x = x0 + t*du;
   else if(am < al)
@@ -243,6 +235,19 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
 // move to library and check if it is correct (maybe by a unit test?)...and if it can be simplified
 
 //=================================================================================================
+
+template<class T>
+int SinusoidalAnalyzer<T>::getRequiredBlockSize(int type, T df, T fs) const
+{
+  T B = rsWindowFunction::getMainLobeWidth(type, 0.0); // later maybe pass a window parameter
+  return (int) ceil(B*fs/df);
+}
+
+template<class T>
+T SinusoidalAnalyzer<T>::getRequiredThreshold(int type, T margin) const
+{
+  return rsWindowFunction::getSideLobeLevel(type, 0.0) + margin;
+}
 
 template<class T>
 size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq, 

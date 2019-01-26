@@ -1,4 +1,5 @@
 #include "PhaseVocoderExperiments.h"
+// rename to SineModelExperiments
 
 void phaseRepresentation()
 {
@@ -297,13 +298,14 @@ void sinusoidalSynthesis1()
   sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
   sa.setMaxFreqDeltaBase(100);
   sa.setTrafoSize(4096);
-  //sa.setBlockSize(512);
-  sa.setBlockSize(1024);
+  //sa.setBlockSize(256);    // gives total nonsense results
+  sa.setBlockSize(512);      // can't really follow the freq-trajectory (does some averaging)
+  //sa.setBlockSize(1024);
   //sa.setBlockSize(2048);
   //sa.setBlockSize(1801);  // does not yet work
   //sa.setHopSize(225);
-  sa.setHopSize(256);
-  //sa.setHopSize(128);
+  //sa.setHopSize(256);
+  sa.setHopSize(128);
   sa.setRelativeLevelThreshold(-15);
   //sa.setRelativeLevelThreshold(-40);
   model2 = sa.analyze(&x[0], (int)x.size(), fs);            // try to recover model from sound
@@ -444,7 +446,6 @@ void sinusoidalAnalysis1()
   //   of interpolations that is nearest - maybe there's a bug in this? 
   //   ->make unit test ->plot interpolated phase
   // setting bool accumulatePhaseDeltas = true; fixes the problem
-
 }
 
 void sinusoidalAnalysis2()
