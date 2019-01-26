@@ -324,7 +324,7 @@ int main(int argc, char* argv[])
   //plotWindows();    // move near plotWidowSpectra
   //spectrogramSine();
   //sinusoidalSynthesis1();
-  sinusoidalSynthesis2();
+  //sinusoidalSynthesis2();
   sinusoidalAnalysis1();
 
 
