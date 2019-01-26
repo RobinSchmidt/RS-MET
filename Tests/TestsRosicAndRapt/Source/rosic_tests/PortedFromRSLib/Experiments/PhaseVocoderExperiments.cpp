@@ -261,34 +261,27 @@ std::vector<double> synthesizeSinusoidal(
 void sinusoidalSynthesis1()
 {
   double stretch = 1.0;
-  //double fs = 44100;
-  double fs = 5000; // for plot
+  double fs = 44100;  // use for writing to wavefile
+  //double fs = 5000; // use for plotting the signal
 
-
+  // create the datapoints for a singole partial:
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
-  RAPT::rsSinusoidalModel<double> model, model2;
-  //RAPT::rsSinusoidalSynthesizer<double> synth;
-  //SinusoidalSynthesizer<double> synth;
-
-  partial.appendDataPoint(ISP(stretch*0.0, 100.0, 0.4, 0.0));    // time, freq, amp, phase
+  partial.appendDataPoint(ISP(stretch*0.0, 100.0, 0.4,  PI/2));    // time, freq, amp, phase
   partial.appendDataPoint(ISP(stretch*0.4, 100.0, 0.2,  PI/2));
   partial.appendDataPoint(ISP(stretch*0.8, 150.0, 0.8, -PI/2));
-  partial.appendDataPoint(ISP(stretch*1.2, 100.0, 0.4, 0.0));
+  partial.appendDataPoint(ISP(stretch*1.2, 100.0, 0.4,  0.0));
   partial.appendDataPoint(ISP(stretch*1.6, 200.0, 0.2,  PI));
-  partial.appendDataPoint(ISP(stretch*2.0, 100.0, 0.8, 0.0));
+  partial.appendDataPoint(ISP(stretch*2.0, 100.0, 0.8,  PI/2));
 
-  // other idea: maybe instead of representing amplitude and phase, we can use a complex amplitude?
-  // ...but that can actually be left to the synthesis algorithm - we may have one that uses amp 
-  // and phase and another one that uses real/imag
-
+  // create a model, add the partial to it and synthesize the sound:
+  RAPT::rsSinusoidalModel<double> model;
   model.addPartial(partial);
-  //std::vector<double> x = synthesizer.synthesize(model, fs);
-  std::vector<double> x = synthesizeSinusoidal(model, fs);
-  //synth.setSampleRate(fs);
-  //std::vector<double> x = synth.synthesize(model);
-
-
+  SinusoidalSynthesizer<double> synth;
+  synth.setSampleRate(fs);
+  synth.setCubicAmplitudeInterpolation(true);
+  synth.setCubicPhaseInterpolation(true);
+  std::vector<double> x = synth.synthesize(model);
 
   // make a sinusoidal analysis of the sound that we have just created and re-create the sound
   // from the model that results from this analysis:
@@ -299,16 +292,18 @@ void sinusoidalSynthesis1()
   // threshold t >= L = -42.7 -> use t = -30
   // i think, the Blackman-Nutall window is superior to the Blackman-Harris window - it has a
   // slightly narrower mainlobe and better sidelobe rejection
+  RAPT::rsSinusoidalModel<double> model2;
   SinusoidalAnalyzer<double> sa;
   sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
   sa.setMaxFreqDeltaBase(100);
   sa.setTrafoSize(4096);
-  sa.setBlockSize(512);
-  //sa.setBlockSize(1024);
+  //sa.setBlockSize(512);
+  sa.setBlockSize(1024);
   //sa.setBlockSize(2048);
   //sa.setBlockSize(1801);  // does not yet work
   //sa.setHopSize(225);
   sa.setHopSize(256);
+  //sa.setHopSize(128);
   sa.setRelativeLevelThreshold(-15);
   //sa.setRelativeLevelThreshold(-40);
   model2 = sa.analyze(&x[0], (int)x.size(), fs);            // try to recover model from sound
@@ -324,6 +319,10 @@ void sinusoidalSynthesis1()
   // model as reference (maybe have a function upsampleSinusoidalModel or something)
 
   //rosic::writeToMonoWaveFile("SinusoidalSynthesisTest.wav", &x[0], (int)x.size(), (int)fs, 16);
+
+  // Observations:
+  // -when the sound is synthesized with linear phase interpolation, the analyzed model shows 
+  //  sections of constant frequency (almost, the frequency jitters a bit around the constant) 
 }
 
 void sinusoidalSynthesis2()

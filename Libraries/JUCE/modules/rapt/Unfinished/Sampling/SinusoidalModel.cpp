@@ -107,6 +107,7 @@ Ideas:
  information?
  -or: use a gaussian window - in this case the parabolic interpolation is actually exact:
   https://ccrma.stanford.edu/~jos/sasp/Quadratic_Interpolation_Spectral_Peaks.html
+  https://ccrma.stanford.edu/~jos/sasp/Gaussian_Window_Transform_I.html#fig:gaussianWindow
 
 -peak picking/continuation:
 -to match a peak in the k-th frame with exisitng active sinusoids, find the one that is closest in 

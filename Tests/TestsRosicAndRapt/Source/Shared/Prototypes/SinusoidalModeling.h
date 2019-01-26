@@ -4,7 +4,18 @@
 // merge with the SinusoidalModel file
 
 
-/** A class for synthesizing a sound from a sinusoidal model. */
+/** A class for synthesizing a sound from a sinusoidal model via interpolating the instantaneous 
+phases and amplitudes of the partials up to the sample-rate and driving an oscillator bank with 
+these interpolated values. The (unwrapped) instantaneous phases are obtained by numerically 
+integrating the instantaneous frequency values and then re-adjusting the results according to the 
+stored phase values. Then, these instantaneous phase values (which are still at datapoint-rate) are 
+interpolated up to the sample-rate. A similar but simpler procedure is done to the instantaneous 
+amplitudes (there's no integration or unwrapping involved here). 
+
+\todo:
+This synthesis algorithm here is conceptually straightforward (and perhaps the most accurate? 
+maybe - verify) but also quite expensive - implement a more efficient synthesis algorithm by 
+generating main-lobes, iFFT, overlap/add as in Xavier Serra's SMS framework */
 
 template<class T>
 class SinusoidalSynthesizer
@@ -15,20 +26,28 @@ public:
 
   /** \name Setup */
 
-  /** Sets the synthesis sample rate. */
+  /** Sets the synthesis sample rate that will be used in synthesize(). */
   void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
 
-  /** Switches the amplitude interpolation method between cubic (true) and linear (false). */
+  /** Switches the amplitude interpolation method between cubic (true) and linear (false). By 
+  default, the amplitude is interpolated linearly between datapoints, mainly to avoid 
+  overshooting artifacts, when the model has "fade-in/out" datapoints that are very close to the
+  actual data points. When this is not the case, using cubic interpolation may give a "rounder"
+  sounding result. */
   void setCubicAmplitudeInterpolation(bool shouldBeCubic) { cubicAmplitude = shouldBeCubic; }
 
-  /** Switches the phase interpolation method between cubic (true) and linear (false). */
+  /** Switches the phase interpolation method between cubic (true) and linear (false). By default,
+  the phase is interpolated cubically between datapoints because linear interpolation may lead to
+  audible discontinuities in the derivative of the resulting sound (or is it the 2nd derivative? 
+  check this!). */
   void setCubicPhaseInterpolation(bool shouldBeCubic) { cubicPhase = shouldBeCubic; }
 
 
   /** \name Inquiry */
 
+  /** Returns the sample-rate at which this synthesizer will synthesize a sound when asked to do 
+  so by calling synthesize(). */
   T getSampleRate() const { return sampleRate; }
-
 
 
   /** \name Processing */
@@ -52,13 +71,10 @@ public:
 
 protected:
 
-
   T sampleRate = 44100;
-
   bool cubicPhase = true;
-  bool cubicAmplitude = true;
-
-  bool accumulatePhaseDeltas = true;  
+  bool cubicAmplitude = false;
+  bool accumulatePhaseDeltas = true;
   // Notes: accumulation gives rise to an O(M^2) complexity of the phase unwrapping algorithm (M is 
   // the number of data points) - but without accumulation there may be phase errors by 180° at 
   // certain datapoints after the unwrapping - figure out what's going on, maybe change the 
