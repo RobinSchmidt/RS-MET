@@ -222,20 +222,14 @@ void plotTwoSineModels(
 void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
   const SinusoidalSynthesizer<double>& synth, double* x, int Nx)
 {
-  typedef std::vector<double> Vec;
-
-  Vec y = synth.synthesize(model);
-
-  // creation of residual is a bit more complicated than straightforward subtraction because the
-  // output of the model does not have the same length, due to fade-in/out - we need to figure out
-  // the number of prependedn and appended samples
-  int numFadeInSamples = -model.getStartSampleIndex(synth.getSampleRate()); // preZeroSamples
-  int Ny = (int)y.size();     // length of residual signal in samples
-  int Nr = Ny;
-  Vec r(Nr);  // residual
-
+  // Synthesize model output and create residual:
   // Here, we assume that the resynthesized signal extends beyond the ends of the original due to
   // additional fade-in/out datapoints - but can we really always assume this?
+  typedef std::vector<double> Vec;
+  Vec y = synth.synthesize(model);
+  int numFadeInSamples = -model.getStartSampleIndex(synth.getSampleRate()); // preZeroSamples
+  int N = (int)y.size();     // length of residual signal in samples
+  Vec r(N);                  // residual
   Vec xv   = RAPT::toVector(x, Nx);
   Vec pre  = RAPT::rsConstantVector((size_t) numFadeInSamples, 0.0);
   xv = RAPT::rsConcatenate(pre, xv);
@@ -244,11 +238,11 @@ void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model,
   for(size_t n = 0; n < r.size(); n++)
     r[n] = xv[n] - y[n];
 
-
+  // plot original, resynthesized and residual signals:
   GNUPlotter plt;
-  plt.addDataArrays(Nr, &xv[0]);
-  plt.addDataArrays(Ny, &y[0]);
-  plt.addDataArrays(Nr, &r[0]);
+  plt.addDataArrays(N, &xv[0]);
+  plt.addDataArrays(N, &y[0]);
+  plt.addDataArrays(N, &r[0]);
   plt.plot();
 }
 

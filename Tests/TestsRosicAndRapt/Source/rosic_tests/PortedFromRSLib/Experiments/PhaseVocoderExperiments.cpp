@@ -372,12 +372,18 @@ void sinusoidalAnalysis1()
   // test signal parameters:
   //double sampleRate = 48000;  // in Hz
   double sampleRate = 50000;  // in Hz
-  double length     = 0.2;    // in seconds -> 10000 samples at 50kHz
+  double length     = 0.1;    // in seconds -> 10000 samples at 50kHz
   double frequency  = 1000;   // in Hz
   double amplitude  = 3.0;    // raw factor
   double phase      = 0.0;    // in radians
 
   phase = PI/2; // for test
+  //frequency = 800;    // good
+  //frequency = 808;    // bad
+  frequency = 809;    // bad
+  //frequency = 810;  // good
+  //frequency = 1000 * GOLDEN_RATIO/2;  // also test - gives phase error at the start
+  //frequency = 1000 * SQRT2_INV;
 
   // create signal:
   double period = sampleRate / frequency;         // in samples
@@ -391,6 +397,7 @@ void sinusoidalAnalysis1()
   sa.setTrafoSize(4096);
   sa.setBlockSize(1024);
   sa.setHopSize(256);
+  //sa.setHopSize(512);
   //sa.setRelativeLevelThreshold(-25);  // some spurious tracks will occur (with Hamming window)
   sa.setRelativeLevelThreshold(-15);    // no spurious tracks will occur (with Hamming window)
   sa.setFadeInTime(0.01);    // -> 500 samples @50kHz
@@ -421,8 +428,22 @@ void sinusoidalAnalysis1()
   synth.setSampleRate(sampleRate);
   plotSineResynthesisResult(model, synth, &x[0], (int) N);
 
-  // there are discontinuities in the fade-in/out sections - why?
+  // there are discontinuities in the fade-in/out sections because the original signal has the hard
+  // switch on/off discontinuities in it which the resynthesized signal doesn't have - so the 
+  // discontinuities are to be expected
 
+  // When using zero fade-times, the model is too short - i think this is because we use a small
+  // hopSize and the spectrogram assumes a hopSize of blocksize/2 to compute the required number of
+  // frames - check this - hmm...but it happens also when the hopSize actually is blocksize/2
+  // ...it seems that generally, out models are one frame (or more?) to short? -> experiment with
+  // this - it should all work also when there is no fade-in/out whatsoever
+
+  // for some frequencies, there seems to be phase error by 180° - the phase is exactly opposite
+  // from the desired value (for example 809Hz@50kHz)
+  // -figure out, if this is a probelm in the analysis or synthesis
+  //  -maybe check, if it may have to do with the phase interpolation - selecting the direction
+  //   of interpolations that is nearest - maybe there's a bug in this? 
+  //   ->make unit test ->plot interpolated phase
 }
 
 void sinusoidalAnalysis2()
