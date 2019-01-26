@@ -219,6 +219,26 @@ void plotTwoSineModels(
   plt.plotTwoModels(model1, model2, fs);
 }
 
+void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
+  const SinusoidalSynthesizer<double>& synth, double* x, int Nx)
+{
+  std::vector<double> y = synth.synthesize(model);
+  plotVector(y);  // plot resynthsized signal
+
+  // creation of residual is a bit more complicated than straightforward subtraction because the
+  // output of the model does not have the same length, due to fade-in/out - we need to figure out
+  // the number of prependedn and appended samples
+  int numFadeInSamples = -model.getStartSampleIndex(synth.getSampleRate()); // preZeroSamples
+  int Nr = (int)y.size();     // length of residual signal in samples
+  std::vector<double> r(Nr);  // residual
+  int n;                      // loop variable (sample index)
+  int n0 = numFadeInSamples;  // shorthand
+  for(n = 0;     n < n0;    n++) r[n] = 0       - y[n];
+  for(n = n0;    n < Nx+n0; n++) r[n] = x[n-n0] - y[n];
+  for(n = Nx+n0; n < Nr;    n++) r[n] = 0       - y[n];
+
+  plotVector(r);
+}
 
 
 #endif

@@ -404,14 +404,6 @@ void sinusoidalAnalysis1()
   // find model for the signal:
   rsSinusoidalModel<double> model = sa.analyze(&x[0], (int)N, sampleRate);
 
-
-  // problem: fade-out seems to be twice as long as it should, fade-in prepends section of all 
-  // zeros
-  // i think, the bug is in the synthesis - make an experiment to synthesize one partial that 
-  // contains datapoints with negative time-stamps - maybe first make a class 
-  // SinusoidalSynthesizer (the parameter setup will become more complex later, so it will get too
-  // messy passing them as function parameters)
-
   // ok - aside from spurious tracks at the start/end (transients?) it looks good -> clean up by
   // deleting spurious tracks and "finalize" tracks by applying fade-outs
   // ->figure out, why we get spurious tracks, even at a threshold of -25 dB which is clearly above
@@ -424,33 +416,13 @@ void sinusoidalAnalysis1()
   // expected - OK - all is good. these are just transient artifacts and we should clean them up
   // by deleting the spurious tracks
 
-  // resynthesize signal from model:
-  std::vector<double> y = synthesizeSinusoidal(model, sampleRate);
-  plotVector(y);  // plot resynthsized signal
+  // creat and set up a sinusoidal synthesizer object and plot resynthesis result:
+  SinusoidalSynthesizer<double> synth;
+  synth.setSampleRate(sampleRate);
+  plotSineResynthesisResult(model, synth, &x[0], (int) N);
 
-  // creation of residual is a bit more complicated than straightforward subtraction because the
-  // output of the model does not have the same length, due to fade-in/out - we need to figure out
-  // the number of prependedn and appended samples
-  int numFadeInSamples = -model.getStartSampleIndex(sampleRate); // rename to numPreZeroSamples
-  int Nr = (int)y.size();     // length of residual signal in samples
-  std::vector<double> r(Nr);  // residual
-  int n;                      // loop variable (sample index)
-  int n0 = numFadeInSamples;  // shorthand
-  int nx = (int) x.size();    // dito
-  for(n = 0;     n < n0;    n++) r[n] = 0       - y[n];
-  for(n = n0;    n < nx+n0; n++) r[n] = x[n-n0] - y[n];
-  for(n = nx+n0; n < Nr;    n++) r[n] = 0       - y[n];
-  // maybe factor out the creation of the modeling-residual into a function (that takes the original
-  // signal, the model, the model output, and the samplerate as inputs (maybe have a convenience 
-  // function that generates the model output internally and then calls the other one)
+  // there are discontinuities in the fade-in/out sections - why?
 
-  // we maybe have to make a distinction between various cases (numfadeInSamples > or < 0, etc)
-
-  plotVector(r);
-  // there are discontinuities in the fade-in/out sections...maybe plot original, resynthesized and
-  // error in one plot
-
-  int dummy = 0;
 }
 
 void sinusoidalAnalysis2()

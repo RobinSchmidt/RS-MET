@@ -23,6 +23,13 @@ public:
 
 
 
+
+  /** \name Inquiry */
+
+  T getSampleRate() const { return sampleRate; }
+
+
+
   /** \name Processing */
 
   /** Synthesizes a sound from a sinusoidal model and returns it as std::vector. */

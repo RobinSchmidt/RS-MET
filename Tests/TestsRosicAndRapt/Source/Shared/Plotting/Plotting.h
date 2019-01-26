@@ -143,7 +143,6 @@ void stemPlot(int N, double *x, double *y);
 void plotSinusoidalAnalysisResult(SinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
   double sampleRate);
 
-
 void plotSineModel(const RAPT::rsSinusoidalModel<double>& model, double sampleRate);
 
 void plotTwoSineModels(
@@ -151,5 +150,12 @@ void plotTwoSineModels(
   const RAPT::rsSinusoidalModel<double>& model2, 
   double sampleRate);
 
+/** Plots the results of a sinusoidal synthesis of given model using given synthesizer object and
+plots also the original signal x (of length N) and the synthesis error. */
+void plotSineResynthesisResult(
+  const RAPT::rsSinusoidalModel<double>& model,
+  const SinusoidalSynthesizer<double>& synth,
+  double* x, int N);
+// todo: make x and n optional arguments
 
 #endif
