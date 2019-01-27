@@ -313,19 +313,18 @@ void sineParameterEstimation()
   //int window     = WF::BLACKMAN_HARRIS;
 
   // tests:                             // errors (with Hamming window, 1 kHz @ 10 kHz):
+  //blockSize = 49; trafoSize =  97;    // f: -1.08, a: 0.013,  p: 1.5e-14   good
+  //blockSize = 49; trafoSize =  98;    // f: -1.08, a: 0.018,  p: 1.2e-14   good
+  //blockSize = 49; trafoSize =  99;    // f: -1.19, a: 0.021,  p: 1.7e-14   good
+  //blockSize = 49; trafoSize = 100;    // f: -1.34, a: 0.023,  p: 1.6e-14   good 
 
   //blockSize = 50; trafoSize =  99;    // f: -1.07, a: -0.003, p: -0.003    ok
-  //blockSize = 50; trafoSize = 100;    // f: -1.22, a: -0.001, p: -9.9e-5   good
+  //blockSize = 50; trafoSize = 100;    // f: -1.22, a: -0.001, p: -9.9e-5   ok
   //blockSize = 50; trafoSize = 101;    // f: -1.38, a: -0.001, p: 0.003     ok
-
-  //blockSize = 49; trafoSize =  97;    // f: -1.08, a: 0.013,  p: 1.5e-14   good
-  blockSize = 49; trafoSize =  98;    // f: -1.08, a: 0.01,   p: -0.641    bad
-  //blockSize = 49; trafoSize =  99;    // f: -1.19, a: 0.021,  p: 1.7e-14   good
-  //blockSize = 49; trafoSize = 100;    // f: -1.34, a: 0.023,  p: -0.628    bad    p = -2*PI/10
 
   //blockSize = 500; trafoSize = 500;   // f: -7.7e-8, a: -1.1e-6, p: -9.3e-8
   //blockSize = 250; trafoSize = 500;   // f: -0.049,  a: -1.9e-5, p: -7.4e-7
-  //blockSize = 249; trafoSize = 500;   // f: -0.050,  a: 0.005,   p: -0.628    large phase error (actually -2*PI/10)
+  blockSize = 249; trafoSize = 500;   // f: -0.050,  a: 0.005,   p: -0.628    large phase error (actually -2*PI/10)
   //blockSize = 500; trafoSize = 4000;  // highly oversampled spectrum
 
   // generate cosine wave:
@@ -373,12 +372,10 @@ void sineParameterEstimation()
   double phaseError = targetPhase - phaseEstimate;
 
   // Observations:
-  // for blockSize = 249; trafoSize = 500; we get a phase error of exactly -2*PI/10 - this is not a
-  // random error - something must be systematically wrong
+  // -when the blockSize is odd, we can estimate the phase much more accurately which is consistent
+  //  with what Xavier Serra says in his lectures
 
   // todo: 
-  // -try different blockSizes and trafoSizes - in particular, try even/odd numbers for both, etc.
-  //  -check the phase-error for odd blocksize and trafoSize = 2*blockSize
   // -plot the analyzed short-time spectrum, a highly oversampled version of it (->zero padding),
   //  the fitted parabola and a mark at the found frequency/amplitude (and maybe another mark at
   //  the correct freq/amp)

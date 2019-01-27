@@ -83,6 +83,19 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<
   fft(X, trafoSize);
 }
 
+// B: blockSize, M: trafoSize, L: amount of left-padding, R: amount of right-padding
+template<class T>
+void rsSpectrogram<T>::getLeftRightPaddingAmount(int B, int M, int* L, int* R)
+{
+  int P = M-B;        // total amount of padding
+  if(rsIsEven(B)) {
+    *L = P/2;
+    *R = P - *L; }
+  else {
+    *R = P/2;
+    *L = P - *R; }
+}
+
 template<class T>
 void rsSpectrogram<T>::prepareTrafoBuffer(const T* x, int N, int n, std::complex<T> *X)
 {
@@ -90,16 +103,28 @@ void rsSpectrogram<T>::prepareTrafoBuffer(const T* x, int N, int n, std::complex
   int B = blockSize;
   int M = trafoSize;
 
-  int pad = (M-B)/2;                        
+  // new:
+  int L, R;
+  getLeftRightPaddingAmount(B, M, &L, &R);
+  rsArray::fillWithZeros( X,      L); // left zero padding
+  rsArray::fillWithZeros(&X[M-R], R); // right zero padding
+  std::complex<T> *Xs = &X[L];        // pointer, from which we write into the X-array
+
+
+  /*
+  // old:
   // amount of pre/post zero padding - check, if this works for odd sizes - nope, it doesn't - 
   // unless M is also odd - we need to distinguish 4 cases: B even/odd, M even/odd and need 
   // two different numbers for prePad and postPad - maybe test with 4/8, 4/9, 5/8, 5/9
-
+  int pad = (M-B)/2; 
   if(pad > 0) {
     rsArray::fillWithZeros(X, pad);         // pre padding
     rsArray::fillWithZeros(&X[M-pad], pad); // post padding
   }
   std::complex<T> *Xs = &X[pad];            // pointer, from which we write into the X-array
+  */
+
+
   rsArray::copySection(x, N, Xs, n-B/2, B); // copy signal section into FFT buffer (convert to complex)
   for(int i = 0; i < B; i++)                // apply window
     Xs[i] *= w[i];

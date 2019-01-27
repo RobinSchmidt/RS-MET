@@ -108,6 +108,11 @@ public:
   static T getWindowSum(T *wa, T *ws, int B, int H);
 
 
+  /** Computes the number of required zero valued samples to prepend and append for given block 
+  size and transform size. We use a zero-padding such that the actual audio data sits in the middle
+  of a transform buffer with zero padding to the left and right */
+  static void getLeftRightPaddingAmount(int blockSize, int trafoSize, int* left, int* right);
+
 
   /** \name Audio Processing */
 
