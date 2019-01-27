@@ -464,7 +464,7 @@ void sinusoidalAnalysis2()
   // analysis parameters:
   double freqRes  = f2-f1;   // frequency resolution
   double dBmargin = 20;      // dB margin over sidelobe level
-  int padFactor = 1;         // zero padding factor
+  int padFactor = 2;         // zero padding factor
   int window    = RAPT::rsWindowFunction::HAMMING_WINDOW;
 
 
@@ -494,7 +494,7 @@ void sinusoidalAnalysis2()
 
   // create and set up analyzer and try to recover the model from the sound
   SinusoidalAnalyzer<double> sa;
-  int blockSize = sa.getRequiredBlockSize(window, freqRes, fs);
+  int blockSize = sa.getRequiredBlockSize(window, freqRes, fs); // +1 for test
   int hopSize   = blockSize/8; // small hopSize needed, otherwise analyzed model has too short tracks
   //int trafoSize = RAPT::rsNextPowerOfTwo(blockSize);  // or maybe use blockSize itself
   int trafoSize = padFactor*blockSize;
@@ -519,7 +519,6 @@ void sinusoidalAnalysis2()
   synth.setSampleRate(fs);
   plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 
-
   // Observations:
   // -when the hopSize is too small (like blockSize/2), the analyzed tracks are too short
   // -for 1000 and 1107 Hz, there's a largish amplitude error in the estimates (over 0.06) when
@@ -527,7 +526,9 @@ void sinusoidalAnalysis2()
   //  a larger phase error (so large, that the residual is actually louder with zero-padding)
   //  -could this be a bug that messes up the phase when zero padding is used? it seems to be a
   //   a systematic error
-
+  //  -the computed blockSize is even (1649) - when used as is, the phase error appears, when 
+  //   adding 1 to get 1650, the phase error disappears - there's clearly something wrong with 
+  //   zero-padding when the blockSize is odd
 
   // maybe allow time varying frequencies and amplitudes - but maybe in next test - ramp up the
   // complexity

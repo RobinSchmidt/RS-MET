@@ -247,6 +247,10 @@ template<class T>
 T SinusoidalAnalyzer<T>::getRequiredThreshold(int type, T margin) const
 {
   return rsWindowFunction::getSideLobeLevel(type, 0.0) + margin;
+  // todo: maybe if we constrain the peak-conditions further, such that a peak must be higher than
+  // 2,3,4,... of its neighbours to the left and right, we can use lower thresholds without picking 
+  // up sidelobes and maybe this number should depend on the mainlobe width of the window 
+  // ...hmm...but those peaks will be buried in sidelobes from other partials anyway
 }
 
 template<class T>
