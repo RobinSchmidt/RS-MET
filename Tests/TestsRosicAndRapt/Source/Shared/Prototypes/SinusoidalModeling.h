@@ -229,7 +229,7 @@ public:
   respect to the highest peak) below which peaks will not be reported. For example, if your 
   maximum peak is 5 and threshToMax = 0.1, then all peaks above 0.5 will be reported. If you pass 
   zero, it effectively turns the thresholding off. */
-  std::vector<int> peakIndices(T* x, int N, T threshToMax = T(0));
+  static std::vector<int> peakIndices(T* x, int N, T threshToMax = T(0));
   // todo: that function seems to be more generally useful - maybe move out of the class (and maybe 
   // into rsArray)
 
@@ -237,7 +237,7 @@ public:
   x[k-1] < x[k] < x[k+1], this function computes the exact location of the peak 
   pos = k + d, where d is some number between -1..+1 and the actual y-value of the peak at that 
   exact location by fitting a quadratic parabola to the dB-values around x[k]. */
-  void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val);
+  static void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val);
 
 protected:
 

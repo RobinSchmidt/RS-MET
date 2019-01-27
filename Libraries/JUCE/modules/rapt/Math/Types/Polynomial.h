@@ -319,7 +319,7 @@ public:
   quadratic parabola y(x) = a[2]*x^2 + a[1]*x + a[0]. Note that a[2] must be nonzero, otherwise the
   parabola degenerates to a line and there will be no extremum - which will lead to a division by
   zero in the formula. */
-  static T quadraticExtremumPosition(T *a);
+  static T quadraticExtremumPosition(T *a); // maybe inline this
 
   /** Fits the quartic defined by y(x) = a[4]*x^4 + a3*x^3 + a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]) and also matches the derivatives (slopes)

@@ -292,6 +292,7 @@ void sineParameterEstimation()
   // analysis and visualize the results.
 
   typedef RAPT::rsWindowFunction WF;
+  typedef SinusoidalAnalyzer<double> SA;
 
   // signal parameters:
   double sampleRate = 10000;    // sample rate
@@ -343,18 +344,26 @@ void sineParameterEstimation()
   //plotVector(phases);
 
   // todo: 
-  // -factor out the sine-parameter estimation code from the sinusoidal analyzer to make it
-  //  availabe for the test
-  // -analyze the sine parameters
-  // -compare with target values 
   // -plot the analyzed short-time spectrum, a highly oversampled version of it (->zero padding),
   //  the fitted parabola and a mark at the found frequency/amplitude (and maybe another mark at
   //  the correct freq/amp)
   // -maybe somehow also visualize the phase estimation (not yet sure, how)
 
-  double targetPhase = startPhase + 2*PI*frequency*anaTime; // actual phase of cosine at anaTime
+  // estimate the sine parameters:
+  std::vector<int> peaks = SA::peakIndices(&magnitudes[0], trafoSize/2, 0.1);
+  int peakIndex = peaks[0]; // we should find one and only one peak, if everything works as it should
+  double peakBin, freqEstimate, ampEstimate, phaseEstimate; 
+  SA::spectralMaximumPositionAndValue(&magnitudes[0], peakIndex, &peakBin, &ampEstimate);
+  freqEstimate  = peakBin*sampleRate/sp.getFftSize(); // maybe we should have a function sp.getBinFrequency(peakBin)
+  phaseEstimate = phases[peakIndex]; // maybe use interpolation later
 
-  double freqEstimate, ampEstimate, phaseEstimate; // to be computed...
+  // compute errors with respect to true values:
+  double targetPhase = startPhase + 2*PI*frequency*anaTime; // actual phase of cosine at anaTime
+  targetPhase = RAPT::rsWrapToInterval(targetPhase, -PI, PI);
+  double freqError  = frequency - freqEstimate;
+  double levelError = rsAmp2dB(amplitude / ampEstimate);
+  double phaseError = targetPhase - phaseEstimate;
+
   
 
   GNUPlotter plt;
