@@ -113,6 +113,22 @@ void plotVector(std::vector<double> v)
   delete[] y;
 }
 
+void plotComplexVectorReIm(std::vector<std::complex<double>> v)
+{
+  GNUPlotter plt;
+  int N = (int) v.size();
+  double *y = new double[N];
+  for(int n = 0; n < N; n++) 
+    y[n] = real(v[n]);
+  plt.addDataArrays(N, y);
+  for(int n = 0; n < N; n++) 
+    y[n] = imag(v[n]);
+  plt.addDataArrays(N, y);
+  delete[] y;
+  plt.plot();
+}
+
+
 // use shorter variable names here...
 void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H, 
   double dbMin, double dbMax)

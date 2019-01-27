@@ -326,7 +326,7 @@ int main(int argc, char* argv[])
   sineParameterEstimation();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
-  //sinusoidalAnalysis1();
+  sinusoidalAnalysis1();
   //sinusoidalAnalysis2();
 
 

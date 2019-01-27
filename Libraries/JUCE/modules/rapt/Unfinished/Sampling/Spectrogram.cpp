@@ -79,15 +79,16 @@ T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
 template<class T>
 void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<T> *X)
 {
-  // maybe factor out everything except the call to fft into a function prepareTrafoBuffer for
-  // more convenient testing
+  prepareTrafoBuffer(x, N, n, X);
+  fft(X, trafoSize);
+}
 
+template<class T>
+void rsSpectrogram<T>::prepareTrafoBuffer(const T* x, int N, int n, std::complex<T> *X)
+{
   T*  w = &analysisWindow[0];
   int B = blockSize;
   int M = trafoSize;
-
-  // maybe factor out into prepareTransformBuffer(x, N, n, X) - this also facilitates unit-tests 
-  // for the buffer preparation:
   int pad = (M-B)/2;                        // amount of pre/post zero padding - check, if this works for odd sizes
   if(pad > 0) {
     rsArray::fillWithZeros(X, pad);         // pre padding
@@ -110,8 +111,6 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<
   plt.plotArrays(M, &dbg[0]);
 #endif
 */
-
-  fft(X, M);
 }
 
 template<class T>

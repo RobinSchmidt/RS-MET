@@ -113,15 +113,22 @@ public:
 
   //rsMatrix<std::complex<T>> complexSpectrogram(const T *signal, int numSamples);
 
+  /** Computes the complex spectrogram of the given signal x of the given length in samples. */
+  rsMatrix<std::complex<T>> complexSpectrogram(const T* signal, int numSamples);
+
 
   /** Computes a short-time FFT spectrum ... */
   void shortTimeSpectrum(const T* signal, int numSamples, int blockCenter, 
     std::complex<T>* spectrum);
 
+  /** Writes a segment from the signal x (assumend to be of length N) centered at n into the 
+  complex buffer X - completely with windowing, zero-padding and shifting (if applicable), ready
+  to pass to the FFT routine. Used internally by shortTimeSpectrum. */
+  void prepareTrafoBuffer(const T* x, int N, int n, std::complex<T> *X);
 
 
-  /** Computes the complex spectrogram of the given signal x of the given length in samples. */
-  rsMatrix<std::complex<T>> complexSpectrogram(const T* signal, int numSamples);
+
+
 
 
 

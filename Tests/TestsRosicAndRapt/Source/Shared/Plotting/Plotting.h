@@ -116,6 +116,10 @@ void plotDataLogX(int N, double *x, double *y1, double *y2 = NULL, double *y3 = 
 
 void plotVector(std::vector<double> v);
 
+void plotComplexVectorReIm(std::vector<std::complex<double>> v);
+
+
+
 /** Plots the magnitude spectrogram given in s against time axis t (of length numFrames) and
 frequency axis f (of length numBins). */
 void plotSpectrogram(int numFrames, int numBins, double **decibels, double sampleRate,

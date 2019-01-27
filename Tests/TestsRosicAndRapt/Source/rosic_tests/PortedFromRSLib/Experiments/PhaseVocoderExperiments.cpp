@@ -268,7 +268,7 @@ void sineParameterEstimation()
   //int window     = WF::HANNING_WINDOW_ZN;
   //int window     = WF::BLACKMAN_WINDOW;
 
-  trafoSize = 8000; // test
+  //trafoSize = 8000; // test
 
   // generate cosine wave:
   int numSamples = (int) ceil(length*sampleRate); // number of samples
@@ -279,13 +279,14 @@ void sineParameterEstimation()
   //plotVector(x);
 
   // obtain short time spectrum at the desired time-instant:
-  int anaIndex = (int) round(anaTime);  // sample index at which to center the analysis window
+  int anaIndex = (int) round(anaTime*sampleRate); // sample index at which to center the analysis window
   rsSpectrogramD sp;
   sp.setAnalysisWindowType(window);
   sp.setTimeOriginAtWindowCenter(true);
   sp.setBlockAndTrafoSize(blockSize, trafoSize);
-  std::vector<std::complex<double>> complexSpectrum(trafoSize);
-  sp.shortTimeSpectrum(&x[0], numSamples, anaIndex, &complexSpectrum[0]);
+  std::vector<std::complex<double>> trafoBuffer(trafoSize), complexSpectrum(trafoSize);
+  sp.prepareTrafoBuffer(&x[0], numSamples, anaIndex, &trafoBuffer[0]);
+  sp.shortTimeSpectrum( &x[0], numSamples, anaIndex, &complexSpectrum[0]);
   std::vector<double> magnitudes(trafoSize), decibels(trafoSize), phases(trafoSize);
   double scaler = sp.getAnalysisScaler();
   for(int k = 0; k < trafoSize; k++) {
@@ -293,17 +294,10 @@ void sineParameterEstimation()
     decibels[k]   = rsMax(rsAmp2dB(magnitudes[k]), -100.0);
     phases[k]     = arg(complexSpectrum[k]);
   }
+  plotComplexVectorReIm(trafoBuffer);
   //plotVector(magnitudes);
   plotVector(decibels);
   //plotVector(phases);
-
-  // the amplitude is -6 dB while it should 0 dB - there's a factor of 2 missing somewhere?
-  // ...hmm - but it seems to be not exactly 2 - when multiplying by 2, we don't land at 0 dB
-  // but at 0.03 dB for the peak (with Hamming window - with Blackman over 0.04) - with the
-  // Rectangular window, it's exactly at 0 dB
-  // hmmm - maybe check, why the sinusoidal analysis gets correct result anyway - there must be
-  // some scaling hidden somewhere in the computations
-
 
 
   GNUPlotter plt;
