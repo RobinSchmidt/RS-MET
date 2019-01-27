@@ -267,8 +267,9 @@ void sineParameterEstimation()
   int window     = WF::HAMMING_WINDOW;
   //int window     = WF::HANNING_WINDOW_ZN;
   //int window     = WF::BLACKMAN_WINDOW;
+  //int window     = WF::BLACKMAN_HARRIS;
 
-  //trafoSize = 8000; // test
+  trafoSize = 4000; // test
 
   // generate cosine wave:
   int numSamples = (int) ceil(length*sampleRate); // number of samples
@@ -294,11 +295,21 @@ void sineParameterEstimation()
     decibels[k]   = rsMax(rsAmp2dB(magnitudes[k]), -100.0);
     phases[k]     = arg(complexSpectrum[k]);
   }
-  plotComplexVectorReIm(trafoBuffer);
+  //plotComplexVectorReIm(trafoBuffer);
   //plotVector(magnitudes);
   plotVector(decibels);
   //plotVector(phases);
 
+  // todo: 
+  // -factor out the sind-parameter estimation code from the sinusoidal analyzer to make it
+  //  availabe for the test
+  // -analyze the sine parameters
+  // -compare with target values 
+
+  double targetPhase = startPhase + 2*PI*frequency*anaTime; // actual phase of cosine at anaTime
+
+  double freqEstimate, ampEstimate, phaseEstimate; // to be computed...
+  
 
   GNUPlotter plt;
 }
