@@ -109,7 +109,10 @@ public:
 
 
   /** Computes a short-time FFT spectrum ... */
-  void shortTimeSpectrum(const T* signal, int numSamples, int blockCenter, std::complex<T>* spectrum);
+  void shortTimeSpectrum(const T* signal, int numSamples, int blockCenter, 
+    std::complex<T>* spectrum);
+
+
 
   /** Computes the complex spectrogram of the given signal x of the given length in samples. */
   rsMatrix<std::complex<T>> complexSpectrogram(const T* signal, int numSamples);

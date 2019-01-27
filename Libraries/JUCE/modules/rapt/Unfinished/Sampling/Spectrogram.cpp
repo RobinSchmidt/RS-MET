@@ -79,6 +79,9 @@ T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
 template<class T>
 void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<T> *X)
 {
+  // maybe factor out everything except the call to fft into a function prepareTrafoBuffer for
+  // more convenient testing
+
   T*  w = &analysisWindow[0];
   int B = blockSize;
   int M = trafoSize;

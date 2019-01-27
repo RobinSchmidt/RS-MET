@@ -246,8 +246,52 @@ void sineParameterEstimation()
 {
   // A testbed for experimenting with different block sizes, transform sizes and window functions
   // to investigate, how these choices affect the accuracy of the estimation of sinusoidal 
-  // parameters. We feed a single sinewave with known frequency, amplitude and phase into the 
+  // parameters. We feed a single cossine wave with known frequency, amplitude and phase into the 
   // analysis and visualize the results.
+
+  // signal parameters:
+  double sampleRate = 10000;    // sample rate
+  double frequency  =  1000;    // signal frequency
+  double amplitude  =  1;       // signal amplitude
+  double startPhase =  0;       // start phase (of the cosine)
+  double length     =  0.1;     // length in seconds
+
+  // analysis parameters:
+  double anaTime = length/2; // time instant of analysis (exact only up to sample-rate)
+  int blockSize  = 512;
+  int trafoSize  = 512;
+  int window     = RAPT::rsWindowFunction::HAMMING_WINDOW;
+
+  // generate cosine wave:
+  int numSamples = (int) ceil(length*sampleRate); // number of samples
+  double w = 2*PI*frequency/sampleRate;
+  std::vector<double> x(numSamples);
+  for(int n = 0; n < numSamples; n++)
+    x[n] = cos(w*n + startPhase);
+  //plotVector(x);
+
+  // obtain short time spectrum at the desired time-instant:
+  int anaIndex = (int) round(anaTime);  // sample index at which to center the analysis window
+  rsSpectrogramD sp;
+  sp.setAnalysisWindowType(window);
+  sp.setTimeOriginAtWindowCenter(true);
+  sp.setBlockAndTrafoSize(blockSize, trafoSize);
+  std::vector<std::complex<double>> complexSpectrum(trafoSize);
+  sp.shortTimeSpectrum(&x[0], numSamples, anaIndex, &complexSpectrum[0]);
+  std::vector<double> magnitudes(trafoSize), decibels(trafoSize), phases(trafoSize);
+  for(int k = 0; k < trafoSize; k++) {
+    magnitudes[k] = abs(complexSpectrum[k]);
+    decibels[k]   = rsMax(rsAmp2dB(magnitudes[k]), -100.0);
+    phases[k]     = arg(complexSpectrum[k]);
+  }
+  //plotVector(magnitudes);
+  plotVector(decibels);
+  //plotVector(phases);
+
+
+
+
+
 
 
   GNUPlotter plt;
