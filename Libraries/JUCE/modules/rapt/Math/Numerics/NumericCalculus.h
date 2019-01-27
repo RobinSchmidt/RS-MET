@@ -30,7 +30,8 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 \f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
 into the function. Usage is similar to rsNumericDerivative. The parameter c can also be seen as an 
 integration constant and determines yi[0] that shifts the overall resulting function up or down 
-along the y-axis. */
+along the y-axis. The algorithm uses a trapezoidal rule, i.e. it sums up the areas under the 
+trapezoids defined by a piecewise linear interpolant that passes through the datapoints. */
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 // maybe rename to rsNumericIntegralTrapezoidal, use Tx, Ty for datatypes

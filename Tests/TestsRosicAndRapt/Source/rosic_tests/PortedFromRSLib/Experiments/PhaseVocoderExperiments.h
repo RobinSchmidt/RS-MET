@@ -9,7 +9,7 @@ void grainRoundTrip();        // under construction
 void plotWindows();
 void spectrogramSine();
 
-
+void sineParameterEstimation();
 
 void sinusoidalSynthesis1();
 void sinusoidalSynthesis2();  // tests partial with negative time-stamps

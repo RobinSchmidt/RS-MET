@@ -185,12 +185,6 @@ void spectrogramSine()
   // is the desired condition for perfect resynthesis without modulation artifcats - i.e. no 
   // explicit demodulation will be necessarry.
 
-  //// create the window function:
-  //double w[B];
-  //rsWindowFunction::hanningZN(w, B); // todo: create also the time-derivative and the 
-  //                                   // time-ramped window for reassignment later
-  ////...obsolete - the object creates the widown itself now
-
   // create the test signal:
   double x[N];
   createSineWave(x, N, f, 1.0, fs);
@@ -248,6 +242,16 @@ void spectrogramSine()
   int dummy = 0;
 }
 
+void sineParameterEstimation()
+{
+  // A testbed for experimenting with different block sizes, transform sizes and window functions
+  // to investigate, how these choices affect the accuracy of the estimation of sinusoidal 
+  // parameters. We feed a single sinewave with known frequency, amplitude and phase into the 
+  // analysis and visualize the results.
+
+
+  GNUPlotter plt;
+}
 
 // convenience function:
 std::vector<double> synthesizeSinusoidal(

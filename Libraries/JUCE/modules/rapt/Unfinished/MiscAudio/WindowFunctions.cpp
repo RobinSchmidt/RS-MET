@@ -185,7 +185,7 @@ void rsWindowFunction::truncatedGaussian(T* w, int N, T sigma)
 
 
 
-// maybe make windows that minimize the sidlobe level with a given number of cosine terms
+// maybe make windows that minimize the sidelobe level with a given number of cosine terms
 // Blackman-Nutall looks close to equiripple sidelobes so this would be close to an optimal
 // 4-term window...could be used for windowed sinc filters and spectrum analysis
 // but maybe for filters, equiripple is less desirable than a falloff for the tails
@@ -247,3 +247,26 @@ T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 {
   return rsNormalizedSinc(x/stretch) * cosineSquared(x, length);
 }
+
+// ideas:
+
+// implement minimax optimized windows that have the minimum (maximum) sidelobe level
+// for a 2-term window, use Hamming as starting point, for 3-term start with blackman and 
+// 4-term with blackman-nutall -> this can probably done in SciPy using the optimizer
+// povide them here under the names MiniMax2, MiniMax3, etc.
+// or MinSideLobe2, etc. - or maybe we should start numbering at 0 - a rectangular window is
+// 0th order, hanning/hamming windows are 1st order, blackman is 2nd order, blackman-harris 3rd, 
+// etc. ...maybe we can have a similar hirarchy for polynomial windows: rectangular is 0th order,
+// triangular is 1st order, parabolic (aka Welch) 2nd, etc.
+// hmm - here, it looks like that the flat-top window is also equiripple, so maybe the minimax 
+// optimized windows all will end up being flat-top? (bcs i think minimax and equiripple conditions 
+// imply each other - verify that):
+// https://www.mathworks.com/help/signal/ug/generalized-cosine-windows.html
+
+// can we also somehow optimize the mainlobe? maybe, if we put a constraint on the maximum 
+// sidelobe-level, i.e. find the window that has the smallest mainlobe width given a maximum
+// sidelobe-level -> a constrained optimization problem? maybe use the min-sidelobe windows as
+// starting points. if it works out, maybe provide the resulting windows for several selected 
+// sidelobe levels, like -20, -30, -40, ... - but: which order (i.e. number of cosine terms) should 
+// we use for that? that should probably depend on the desired sidelobe level maybe make and 
+// interact in the notebook where the user can enter the desired parameters
