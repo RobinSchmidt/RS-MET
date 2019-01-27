@@ -89,7 +89,10 @@ void rsSpectrogram<T>::prepareTrafoBuffer(const T* x, int N, int n, std::complex
   T*  w = &analysisWindow[0];
   int B = blockSize;
   int M = trafoSize;
-  int pad = (M-B)/2;                        // amount of pre/post zero padding - check, if this works for odd sizes
+
+  int pad = (M-B)/2;                        
+  // amount of pre/post zero padding - check, if this works for odd sizes - nope, it doesn't
+
   if(pad > 0) {
     rsArray::fillWithZeros(X, pad);         // pre padding
     rsArray::fillWithZeros(&X[M-pad], pad); // post padding
