@@ -262,6 +262,8 @@ void sineParameterEstimation()
   int trafoSize  = 512;
   int window     = RAPT::rsWindowFunction::HAMMING_WINDOW;
 
+  trafoSize = 4096; // test
+
   // generate cosine wave:
   int numSamples = (int) ceil(length*sampleRate); // number of samples
   double w = 2*PI*frequency/sampleRate;
@@ -279,8 +281,9 @@ void sineParameterEstimation()
   std::vector<std::complex<double>> complexSpectrum(trafoSize);
   sp.shortTimeSpectrum(&x[0], numSamples, anaIndex, &complexSpectrum[0]);
   std::vector<double> magnitudes(trafoSize), decibels(trafoSize), phases(trafoSize);
+  double scaler = sp.getAnalysisScaler();
   for(int k = 0; k < trafoSize; k++) {
-    magnitudes[k] = abs(complexSpectrum[k]);
+    magnitudes[k] = scaler * abs(complexSpectrum[k]);
     decibels[k]   = rsMax(rsAmp2dB(magnitudes[k]), -100.0);
     phases[k]     = arg(complexSpectrum[k]);
   }
@@ -288,9 +291,7 @@ void sineParameterEstimation()
   plotVector(decibels);
   //plotVector(phases);
 
-
-
-
+  // the amplitude is -6 dB while it should 0 dB - there's a factor of 2 missing somewhere
 
 
 

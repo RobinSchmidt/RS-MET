@@ -85,6 +85,12 @@ public:
   int getHopSize() const { return hopSize; }
 
 
+  /** Returns the amplitude scale factor by which the outputs of shortTimeSpectrum() has to be 
+  scaled to obtain the actual amplitude of a real sinusoid. This is used internally but made 
+  available mostly for testing purposes. */
+  T getAnalysisScaler() const { return 2. / rsArray::sum(&analysisWindow[0], blockSize); }
+    // the factor two comes from the fact that two complex sinusoids sum up to one real sinusoid 
+    // and we count only one of the two symmetric magnitude values
 
 
 
