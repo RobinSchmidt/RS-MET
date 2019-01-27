@@ -176,25 +176,7 @@ T quadraticExtremumPosition(T *a)
 }
 */
 
-template<class T> 
-void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
-{
-  // coeffs of parabolic interpolant:
-  T lowAmp = 0.0000001; // -140 dB - to prevent log-of-zero
-  T a[3], y[3];
-  y[0] = rsAmpToDbWithCheck(x[k-1], lowAmp);   // left
-  y[1] = rsAmpToDbWithCheck(x[k],   lowAmp);   // mid
-  y[2] = rsAmpToDbWithCheck(x[k+1], lowAmp);   // right
-  rsPolynomial<T>::fitQuadratic_m1_0_1(a, y);
 
-  // find maximum position and evaluate parabola there:
-  T d  = rsPolynomial<T>::quadraticExtremumPosition(a);
-  *pos = k + d;
-  *val = rsDbToAmp(a[0] + (a[1] + a[2]*d)*d);
-
-  // todo: we should safeguard against a[2] == 0 (a degenerate parabola that has no extremum) which
-  // will lead to div-by-zero in quadraticExtremumPosition
-}
 
 // interpolate between two values that are supposed to wrapping around and always be in xMin..xMax,
 // for example -1..1, 0..1, 0..2*pi, -pi..pi, etc. t is the interpolation parameter between 0..1 
@@ -585,8 +567,25 @@ std::vector<int> SinusoidalAnalyzer<T>::peakIndices(T* x, int N, T threshToMax)
   return peaks;
 } 
 
+template<class T> 
+void SinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
+{
+  // find coeffs of parabolic interpolant (maybe factor out, so we can plot the parabola):
+  T lowAmp = 0.0000001; // -140 dB - to prevent log-of-zero
+  T a[3], y[3];
+  y[0] = rsAmpToDbWithCheck(x[k-1], lowAmp);   // left
+  y[1] = rsAmpToDbWithCheck(x[k],   lowAmp);   // mid
+  y[2] = rsAmpToDbWithCheck(x[k+1], lowAmp);   // right
+  rsPolynomial<T>::fitQuadratic_m1_0_1(a, y);
 
+  // find maximum position and evaluate parabola there:
+  T d  = rsPolynomial<T>::quadraticExtremumPosition(a);
+  *pos = k + d;
+  *val = rsDbToAmp(a[0] + (a[1] + a[2]*d)*d);
 
+  // todo: we should safeguard against a[2] == 0 (a degenerate parabola that has no extremum) which
+  // will lead to div-by-zero in quadraticExtremumPosition
+}
 
 template<class T>
 rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
