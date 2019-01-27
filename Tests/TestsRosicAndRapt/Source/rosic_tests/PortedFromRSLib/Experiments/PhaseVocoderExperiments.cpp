@@ -319,7 +319,7 @@ void sineParameterEstimation()
   //blockSize = 50; trafoSize = 101;    // f: -1.38, a: -0.001, p: 0.003     ok
 
   //blockSize = 49; trafoSize =  97;    // f: -1.08, a: 0.013,  p: 1.5e-14   good
-  //blockSize = 49; trafoSize =  98;    // f: -1.08, a: 0.01,   p: -0.641    bad
+  blockSize = 49; trafoSize =  98;    // f: -1.08, a: 0.01,   p: -0.641    bad
   //blockSize = 49; trafoSize =  99;    // f: -1.19, a: 0.021,  p: 1.7e-14   good
   //blockSize = 49; trafoSize = 100;    // f: -1.34, a: 0.023,  p: -0.628    bad    p = -2*PI/10
 
