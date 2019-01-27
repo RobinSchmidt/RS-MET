@@ -312,7 +312,11 @@ void sineParameterEstimation()
   //int window     = WF::BLACKMAN_WINDOW;
   //int window     = WF::BLACKMAN_HARRIS;
 
-  trafoSize = 4000; // test
+  // tests:                             // errors (with Hamming window, 1 kHz @ 10 kHz):
+  //blockSize = 500; trafoSize = 500;   // f: -7.7e-8, a: -1.1e-6, p: -9.3e-8
+  //blockSize = 250; trafoSize = 500;   // f: -0.049,  a: -1.9e-5, p: -7.4e-7
+  blockSize = 249; trafoSize = 500;   // f: -0.050,  a: 0.005,   p: -0.628    large phase error (actually -2*PI/10)
+  //blockSize = 500; trafoSize = 4000; // highly oversampled spectrum
 
   // generate cosine wave:
   int numSamples = (int) ceil(length*sampleRate); // number of samples
@@ -343,12 +347,6 @@ void sineParameterEstimation()
   plotVector(decibels);
   //plotVector(phases);
 
-  // todo: 
-  // -plot the analyzed short-time spectrum, a highly oversampled version of it (->zero padding),
-  //  the fitted parabola and a mark at the found frequency/amplitude (and maybe another mark at
-  //  the correct freq/amp)
-  // -maybe somehow also visualize the phase estimation (not yet sure, how)
-
   // estimate the sine parameters:
   std::vector<int> peaks = SA::peakIndices(&magnitudes[0], trafoSize/2, 0.1);
   int peakIndex = peaks[0]; // we should find one and only one peak, if everything works as it should
@@ -364,8 +362,17 @@ void sineParameterEstimation()
   double levelError = rsAmp2dB(amplitude / ampEstimate);
   double phaseError = targetPhase - phaseEstimate;
 
-  
+  // Observations:
+  // for blockSize = 249; trafoSize = 500; we get a phase error of exactly -2*PI/10 - this is not a
+  // random error - something must be systematically wrong
 
+  // todo: 
+  // -try different blockSizes and trafoSizes - in particular, try even/odd numbers for both, etc.
+  //  -check the phase-error for odd blocksize and trafoSize = 2*blockSize
+  // -plot the analyzed short-time spectrum, a highly oversampled version of it (->zero padding),
+  //  the fitted parabola and a mark at the found frequency/amplitude (and maybe another mark at
+  //  the correct freq/amp)
+  // -maybe somehow also visualize the phase estimation (not yet sure, how)
   GNUPlotter plt;
 }
 
