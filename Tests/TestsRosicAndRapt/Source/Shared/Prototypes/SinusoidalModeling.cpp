@@ -156,28 +156,6 @@ rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
 // maybe factor out common code...maybe something like applyMatrixFunction with different
 // input and output types for the template parameter
 
-
-
-
-/*
-// move to library:
-template<class T>
-void fitQuadratic_m1_0_1(T *a, T *y)  // x = -1,0,+1 - maybe y should be the first input - make consistent with other library functions
-{
-  a[0] = y[1];
-  a[1] = 0.5*(y[2]-y[0]);
-  a[2] = y[2] - a[0] - a[1];
-}
-
-template<class T>
-T quadraticExtremumPosition(T *a)
-{
-  return T(-0.5) * a[1]/a[2];
-}
-*/
-
-
-
 // interpolate between two values that are supposed to wrapping around and always be in xMin..xMax,
 // for example -1..1, 0..1, 0..2*pi, -pi..pi, etc. t is the interpolation parameter between 0..1 
 // where such that x = (1-t)*x0 + t*x1 = x0 + t*(x1-x0)
@@ -213,10 +191,18 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
 //=================================================================================================
 
 template<class T>
-int SinusoidalAnalyzer<T>::getRequiredBlockSize(int type, T df, T fs) const
+int SinusoidalAnalyzer<T>::getRequiredBlockSize(int type, T df, T fs, bool oddSize) const
 {
   T B = rsWindowFunction::getMainLobeWidth(type, 0.0); // later maybe pass a window parameter
-  return (int) ceil(B*fs/df);
+  int size = (int) ceil(B*fs/df);
+  if(oddSize && rsIsEven(size))   // maybe remove, if linear interpolation is used for the phase
+    size += 1;
+  return size;
+  // Because the phase estimation is much more accurate for odd block sizes (because the phase 
+  // spectrum of window functions is flat over the mainlobe for odd block sizes, for even sizes it 
+  // has a linear trend), this will always return an odd number so you may use the returned value 
+  // as your blockSize without further ado. or: maybe, if linear interpolation is used for phase 
+  // estimation, we can get equally good results with even block-sizes? -> try it!
 }
 
 template<class T>
@@ -502,10 +488,16 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
     for(size_t i = 0; i < peaks.size(); i++) {
       T peakBin, peakAmp;
       spectralMaximumPositionAndValue(pMag, peaks[i], &peakBin, &peakAmp);
-      T peakFreq  = peakBin*sampleRate/sp.getFftSize();
-      T peakPhase = pPhs[peaks[i]];      // maybe use interpolation later
+
+      //T peakFreq  = peakBin*sampleRate/sp.getFftSize();
+
+      // maybe later let the user select the phase-interpolation method between no-interpolation, 
+      // linear and maybe others (maybe interpolate in the complex domain and then extract phase):
+      //T peakPhase = pPhs[peaks[i]];      // maybe use interpolation later
+      T peakPhase = RAPT::rsArray::interpolatedValueAt(pPhs, numBins, peakBin);
+
       instPeakParams[i].time  = time;
-      instPeakParams[i].freq  = peakFreq;
+      instPeakParams[i].freq  = peakBin*sampleRate/sp.getFftSize(); // use getBinFrequency(peakBin);
       instPeakParams[i].gain  = peakAmp;
       instPeakParams[i].phase = peakPhase;
     }
@@ -619,6 +611,21 @@ template class SinusoidalAnalyzer<double>;
 
 
 /*
+
+Ideas:
+-use a Dolph-Chebychev window and let the user only select the amplitude threshold for partials
+ -the window will then be automatically tuned such the sidelobes are some reasonable margin below 
+  the detection threshold (the margin has to figured out empirically - maybe 15 or 20 dB)
+ -this, in turn, determines the mainlobe width of the window which in turn determines the required
+  block-size
+ ...soo in the high-level setup, the user just selects frequency resolution amplitude threshold 
+ (and possibly the margin - but maybe not) and anything else can then be set up automatically
+ ...nevertheless, provide the low-level setup anyway
+ -maybe the allowed frequency deviation between two frames (which should be proportional to the 
+  hopSize) can be set up in a way that is independent from the hopSize - maybe in Hz/s
+  10 Hz/s means the frequency is allowed to change by 10 Hz in one second
+
+
 // how do we best compute the instantaneous phase - linear interpolation?
 int binInt  = peaks[i];
 T   binFrac = peakBin-binInt;

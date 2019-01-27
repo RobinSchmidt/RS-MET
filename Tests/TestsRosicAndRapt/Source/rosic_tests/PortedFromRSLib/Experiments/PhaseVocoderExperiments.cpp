@@ -318,14 +318,14 @@ void sineParameterEstimation()
   //blockSize = 49; trafoSize =  99;    // f: -1.19, a: 0.021,  p: 1.7e-14   good
   //blockSize = 49; trafoSize = 100;    // f: -1.34, a: 0.023,  p: 1.6e-14   good 
 
-  //blockSize = 50; trafoSize =  99;    // f: -1.07, a: -0.003, p: -0.003    ok
-  //blockSize = 50; trafoSize = 100;    // f: -1.22, a: -0.001, p: -9.9e-5   ok
-  //blockSize = 50; trafoSize = 101;    // f: -1.38, a: -0.001, p: 0.003     ok
+  //blockSize = 50; trafoSize =  99;    // f: -1.07, a: -0.003, p: -0.003,-0.0005    ok
+  //blockSize = 50; trafoSize = 100;    // f: -1.22, a: -0.001, p: -9.9e-5, -0.0005   ok
+  blockSize = 50; trafoSize = 101;    // f: -1.38, a: -0.001, p: 0.003, -0.0004     ok
 
   //blockSize = 500; trafoSize = 500;   // f: -7.7e-8, a: -1.1e-6, p: -9.3e-8
   //blockSize = 250; trafoSize = 500;   // f: -0.049,  a: -1.9e-5, p: -7.4e-7
-  blockSize = 249; trafoSize = 500;   // f: -0.050,  a: 0.005,   p: -0.628    large phase error (actually -2*PI/10)
-  //blockSize = 500; trafoSize = 4000;  // highly oversampled spectrum
+  //blockSize = 249; trafoSize = 500;   // f: -0.050,  a: 0.005,   p: -0.628    large phase error (actually -2*PI/10)
+  //blockSize = 499; trafoSize = 4000;  // highly oversampled spectrum
 
   // generate cosine wave:
   int numSamples = (int) ceil(length*sampleRate); // number of samples
@@ -358,11 +358,13 @@ void sineParameterEstimation()
 
   // estimate the sine parameters:
   std::vector<int> peaks = SA::peakIndices(&magnitudes[0], trafoSize/2, 0.1);
-  int peakIndex = peaks[0]; // we should find one and only one peak, if everything works as it should
-  double peakBin, freqEstimate, ampEstimate, phaseEstimate; 
-  SA::spectralMaximumPositionAndValue(&magnitudes[0], peakIndex, &peakBin, &ampEstimate);
-  freqEstimate  = peakBin*sampleRate/sp.getFftSize(); // maybe we should have a function sp.getBinFrequency(peakBin)
-  phaseEstimate = phases[peakIndex]; // maybe use interpolation later
+  int peakIndex = peaks[0]; // peak index, we should find one and only one peak, if everything works as it should
+  double peakPos, freqEstimate, ampEstimate, phaseEstimate; 
+  SA::spectralMaximumPositionAndValue(&magnitudes[0], peakIndex, &peakPos, &ampEstimate);
+  freqEstimate  = peakPos*sampleRate/sp.getFftSize(); // maybe we should have a function sp.getBinFrequency(peakBin)
+
+  //phaseEstimate = phases[peakIndex]; // maybe use interpolation later
+  phaseEstimate = RAPT::rsArray::interpolatedValueAt(&phases[0], (int) phases.size(), peakPos);
 
   // compute errors with respect to true values:
   double targetPhase = startPhase + 2*PI*frequency*anaTime; // actual phase of cosine at anaTime
@@ -373,7 +375,11 @@ void sineParameterEstimation()
 
   // Observations:
   // -when the blockSize is odd, we can estimate the phase much more accurately which is consistent
-  //  with what Xavier Serra says in his lectures
+  //  with what Xavier Serra says in his lectures - interesingly, that remains true even if we use
+  //  linear interpolation ofr the phase - although that does tpyically improve the accuracy, it 
+  //  does so only by a factor 10 - and in some cases (B = 50, M = 101), it even gets worse (by 
+  //  factor 5). ...so we should probably go with odd size windows - although the errors are very 
+  //  small in any case, so it probably doesn't matter
 
   // todo: 
   // -plot the analyzed short-time spectrum, a highly oversampled version of it (->zero padding),

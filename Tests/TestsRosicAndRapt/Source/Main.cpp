@@ -323,11 +323,11 @@ int main(int argc, char* argv[])
   //grainRoundTrip();        // under construction
   //plotWindows();    // move near plotWidowSpectra
   //spectrogramSine();
-  sineParameterEstimation();
+  //sineParameterEstimation();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
-  sinusoidalAnalysis1();
-  //sinusoidalAnalysis2();
+  //sinusoidalAnalysis1();
+  sinusoidalAnalysis2();
 
 
   // Physics:

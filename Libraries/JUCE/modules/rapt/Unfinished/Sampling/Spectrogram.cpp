@@ -102,35 +102,15 @@ void rsSpectrogram<T>::prepareTrafoBuffer(const T* x, int N, int n, std::complex
   T*  w = &analysisWindow[0];
   int B = blockSize;
   int M = trafoSize;
-
-  // new:
   int L, R;
   getLeftRightPaddingAmount(B, M, &L, &R);
-  rsArray::fillWithZeros( X,      L); // left zero padding
-  rsArray::fillWithZeros(&X[M-R], R); // right zero padding
-  std::complex<T> *Xs = &X[L];        // pointer, from which we write into the X-array
-
-
-  /*
-  // old:
-  // amount of pre/post zero padding - check, if this works for odd sizes - nope, it doesn't - 
-  // unless M is also odd - we need to distinguish 4 cases: B even/odd, M even/odd and need 
-  // two different numbers for prePad and postPad - maybe test with 4/8, 4/9, 5/8, 5/9
-  int pad = (M-B)/2; 
-  if(pad > 0) {
-    rsArray::fillWithZeros(X, pad);         // pre padding
-    rsArray::fillWithZeros(&X[M-pad], pad); // post padding
-  }
-  std::complex<T> *Xs = &X[pad];            // pointer, from which we write into the X-array
-  */
-
-
-  rsArray::copySection(x, N, Xs, n-B/2, B); // copy signal section into FFT buffer (convert to complex)
+  rsArray::fillWithZeros( X,      L);       // left zero padding
+  rsArray::fillWithZeros(&X[M-R], R);       // right zero padding
+  std::complex<T> *Xs = &X[L];              // pointer, from which we write into the X-array
+  rsArray::copySection(x, N, Xs, n-B/2, B); // copy signal section into FFT buffer
   for(int i = 0; i < B; i++)                // apply window
     Xs[i] *= w[i];
-
   swapForZeroPhase(X, M);
-
 /*
 // plot the windowed segment:
 #ifdef RS_DEBUG_PLOTTING

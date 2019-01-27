@@ -197,7 +197,8 @@ public:
   closer together than that, they may appear as a single partial to the analyzer. Because this
   resolvability depends on the mainlobe width of the chosen analysis window, you must also tell 
   the function, which type of window you want to use. */
-  static int getRequiredBlockSize(int windowType, T frequencyResolution, T sampleRate);
+  static int getRequiredBlockSize(int windowType, T frequencyResolution, T sampleRate, 
+    bool oddSize = false);
 
   /** Returns minimum possible amplitude threshold that can reasonably be used for a given window 
   type without mistakenly picking up the sidelobes of the window as partials. With margin = 0, this 
@@ -213,7 +214,8 @@ public:
   /** Analyzes the given input sound and returns the sinusoidal model object that models the given 
   sound. */
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate);
-  // rename to analyzeSample
+  // rename to analyzeSample, maybe don't let the user pass the sampleRate, instead have a 
+  // setSampleRate function - this would be consistent with the synthesizer
 
   /** Analyzes the given spectrogram and return the sinusoidal model for it */
   RAPT::rsSinusoidalModel<T> analyzeSpectrogram(
