@@ -308,14 +308,18 @@ public:
   static void fitQuadratic(T *a, T *x, T *y);
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
-  3 points (0,y[0]), (1,y[1]), (2,y[2]).
-  \todo - maybe it's simpler to compute and more convenient to use if we fit a quadratic to
-  (-1,y[-1]), (0,y[0]), (1,y[1]). ...but changing this behaviour will affect client code in a way,
-  that might not be immediately apparent - we should keep this function and give the other function
-  a different name [....] - do this as soon a all code from the legacy codebase is copied over.
-  ..OK done - renamed to fitQuadratic_0_1_2 - the other one can be named just fitQuadratic
-  */
+  3 points (0,y[0]), (1,y[1]), (2,y[2]). */
   static void fitQuadratic_0_1_2(T *a, T *y);
+
+  /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
+  3 points (-1,y[0]), (0,y[1]), (1,y[2]). */
+  static void fitQuadratic_m1_0_1(T *a, T *y);
+
+  /** Returns the position (i.e. the x-coordinate) of the extremum (minimum or maximum) of the 
+  quadratic parabola y(x) = a[2]*x^2 + a[1]*x + a[0]. Note that a[2] must be nonzero, otherwise the
+  parabola degenerates to a line and there will be no extremum - which will lead to a division by
+  zero in the formula. */
+  static T quadraticExtremumPosition(T *a);
 
   /** Fits the quartic defined by y(x) = a[4]*x^4 + a3*x^3 + a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]) and also matches the derivatives (slopes)

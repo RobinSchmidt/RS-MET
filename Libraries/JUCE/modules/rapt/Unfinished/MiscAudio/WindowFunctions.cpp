@@ -263,6 +263,21 @@ T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 // imply each other - verify that):
 // https://www.mathworks.com/help/signal/ug/generalized-cosine-windows.html
 
+// or maybe just use the Dolph-Chebychev window:
+// https://en.wikipedia.org/wiki/Window_function#Dolph%E2%80%93Chebyshev_window
+// https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window.html
+
+// here is a paper:
+// http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.77.5098&rep=rep1&type=pdf
+
+// this has c-code - but should probably be used only for a reference prototype since the 
+// computation has complexity O(N^2)
+// http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
+
+// but the Dolph-Chebychev window is not a sum-of-cosines type, so maybe we should obtain coeffs
+// for optimized sum-of-cosine types anyway as they can be used for efficient windowed-sinc 
+// interpolation via trig-recursions
+
 // can we also somehow optimize the mainlobe? maybe, if we put a constraint on the maximum 
 // sidelobe-level, i.e. find the window that has the smallest mainlobe width given a maximum
 // sidelobe-level -> a constrained optimization problem? maybe use the min-sidelobe windows as

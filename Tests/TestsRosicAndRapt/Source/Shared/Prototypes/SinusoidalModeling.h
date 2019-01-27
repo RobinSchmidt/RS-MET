@@ -224,6 +224,13 @@ public:
   underlying spectrogram analysis result. */
   RAPT::rsMatrix<std::complex<T>> getComplexSpectrogram(T* sampleData, int numSamples);
 
+  /** Returns an array of indices of peaks in the given array x of length N. A peak at index i is 
+  defined by the condition x[i-1] < x[i] < x[i+1]. You can also pass a relative threshold (with 
+  respect to the highest peak) below which peaks will not be reported. For example, if your 
+  maximum peak is 5 and threshToMax = 0.1, then all peaks above 0.5 will be reported. If you pass 
+  zero, it effectively turns the thresholding off. */
+  std::vector<int> peakIndices(T* x, int N, T threshToMax = T(0));
+
 protected:
 
   /** For a given frequency (belonging to a spectral peak of the current frame), search through the

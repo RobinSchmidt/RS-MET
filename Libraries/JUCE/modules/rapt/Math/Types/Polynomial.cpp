@@ -822,6 +822,20 @@ void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, T *y)
 }
 
 template<class T>
+void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, T *y) 
+{
+  a[0] = y[1];
+  a[1] = T(0.5)*(y[2]-y[0]);
+  a[2] = y[2] - a[0] - a[1];
+}
+
+template<class T>
+T rsPolynomial<T>::quadraticExtremumPosition(T *a)
+{
+  return T(-0.5) * a[1]/a[2];
+}
+
+template<class T>
 void rsPolynomial<T>::fitQuarticWithDerivatives(T *a, T *y, T s0, T s2)
 {
   a[0] = y[0];

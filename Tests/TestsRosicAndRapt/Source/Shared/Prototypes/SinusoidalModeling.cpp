@@ -156,22 +156,10 @@ rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
 // maybe factor out common code...maybe something like applyMatrixFunction with different
 // input and output types for the template parameter
 
-template<class T>
-std::vector<int> peakIndices(T* x, int N, T threshToMax = 0)
-{
-  T max = RAPT::rsArray::maxValue(x, N);
-  std::vector<int> peaks;
-  for(int i = 1; i < N-1; i++)
-  {
-    T dbg = x[i];
-    if(x[i] > x[i-1] && x[i] > x[i+1] && x[i] > threshToMax*max)
-      peaks.push_back(i);
-  }
-  return peaks;
-} 
-// move to library, maybe have additional criteria like a threshold with respect to the rms, minimum
-// distance between the peaks, etc. - or maybe make member function of the analyzer
 
+
+
+/*
 // move to library:
 template<class T>
 void fitQuadratic_m1_0_1(T *a, T *y)  // x = -1,0,+1 - maybe y should be the first input - make consistent with other library functions
@@ -180,11 +168,14 @@ void fitQuadratic_m1_0_1(T *a, T *y)  // x = -1,0,+1 - maybe y should be the fir
   a[1] = 0.5*(y[2]-y[0]);
   a[2] = y[2] - a[0] - a[1];
 }
+
 template<class T>
 T quadraticExtremumPosition(T *a)
 {
   return T(-0.5) * a[1]/a[2];
 }
+*/
+
 template<class T> 
 void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
 {
@@ -194,12 +185,15 @@ void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
   y[0] = rsAmpToDbWithCheck(x[k-1], lowAmp);   // left
   y[1] = rsAmpToDbWithCheck(x[k],   lowAmp);   // mid
   y[2] = rsAmpToDbWithCheck(x[k+1], lowAmp);   // right
-  fitQuadratic_m1_0_1(a, y);
+  rsPolynomial<T>::fitQuadratic_m1_0_1(a, y);
 
   // find maximum position and evaluate parabola there:
-  T d  = quadraticExtremumPosition(a);
+  T d  = rsPolynomial<T>::quadraticExtremumPosition(a);
   *pos = k + d;
   *val = rsDbToAmp(a[0] + (a[1] + a[2]*d)*d);
+
+  // todo: we should safeguard against a[2] == 0 (a degenerate parabola that has no extremum) which
+  // will lead to div-by-zero in quadraticExtremumPosition
 }
 
 // interpolate between two values that are supposed to wrapping around and always be in xMin..xMax,
@@ -576,6 +570,23 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
   // https://ccrma.stanford.edu/~juan/ATS_manual.html
   // http://clam-project.org/
 }
+
+template<class T>
+std::vector<int> SinusoidalAnalyzer<T>::peakIndices(T* x, int N, T threshToMax)
+{
+  T max = RAPT::rsArray::maxValue(x, N);
+  std::vector<int> peaks;
+  for(int i = 1; i < N-1; i++)
+  {
+    T dbg = x[i];
+    if(x[i] > x[i-1] && x[i] > x[i+1] && x[i] > threshToMax*max)
+      peaks.push_back(i);
+  }
+  return peaks;
+} 
+
+
+
 
 template<class T>
 rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(

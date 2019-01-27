@@ -106,6 +106,48 @@ void grainRoundTrip()
   int dummy = 0;
 }
 
+
+//-------------------------------------------------------------------------------------------------
+// Dolph-Chebychev window generation code from here:
+// http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
+// not recommended for production use because the complexity is O(N^2) - instead use an iFFT 
+// approach
+// References:
+// [1] Lyons, R., "Understanding Digital Signal Processing", Prentice Hall, 2004.
+// [2] Antoniou, A., "Digital Filters", McGraw-Hill, 2000.
+
+// This function computes the chebyshev polyomial T_n(x)
+double cheby_poly(int n, double x){
+  double res;
+  if (fabs(x) <= 1) res = cos(n*acos(x));
+  else              res = cosh(n*acosh(x));
+  return res;
+}
+// calculate a chebyshev window of size N, store coeffs in out as in Antoniou
+//  -out should be array of size N 
+//  -atten is the required sidelobe attenuation (e.g. if you want -60dB atten, use '60')
+void cheby_win(double *out, int N, double atten){
+  int nn, i;
+  double M, n, sum = 0, max=0;
+  double tg = pow(10,atten/20);  /* 1/r term [2], 10^gamma [2] */
+  double x0 = cosh((1.0/(N-1))*acosh(tg));
+  M = (N-1)/2;
+  if(N%2==0) M = M + 0.5; /* handle even length windows */
+  for(nn=0; nn<(N/2+1); nn++){
+    n = nn-M;
+    sum = 0;
+    for(i=1; i<=M; i++){
+      sum += cheby_poly(N-1,x0*cos(PI*i/N))*cos(2.0*n*PI*i/N);
+    }
+    out[nn] = tg + 2*sum;
+    out[N-nn-1] = out[nn];
+    if(out[nn]>max)max=out[nn];
+  }
+  for(nn=0; nn<N; nn++) out[nn] /= max; /* normalise everything */
+  return;
+}
+//-------------------------------------------------------------------------------------------------
+
 void plotWindows()
 {
   // Plots the overlapping windows an their sum
@@ -246,7 +288,7 @@ void sineParameterEstimation()
 {
   // A testbed for experimenting with different block sizes, transform sizes and window functions
   // to investigate, how these choices affect the accuracy of the estimation of sinusoidal 
-  // parameters. We feed a single cossine wave with known frequency, amplitude and phase into the 
+  // parameters. We feed a single cosine wave with known frequency, amplitude and phase into the 
   // analysis and visualize the results.
 
   typedef RAPT::rsWindowFunction WF;
@@ -301,10 +343,14 @@ void sineParameterEstimation()
   //plotVector(phases);
 
   // todo: 
-  // -factor out the sind-parameter estimation code from the sinusoidal analyzer to make it
+  // -factor out the sine-parameter estimation code from the sinusoidal analyzer to make it
   //  availabe for the test
   // -analyze the sine parameters
   // -compare with target values 
+  // -plot the analyzed short-time spectrum, a highly oversampled version of it (->zero padding),
+  //  the fitted parabola and a mark at the found frequency/amplitude (and maybe another mark at
+  //  the correct freq/amp)
+  // -maybe somehow also visualize the phase estimation (not yet sure, how)
 
   double targetPhase = startPhase + 2*PI*frequency*anaTime; // actual phase of cosine at anaTime
 
