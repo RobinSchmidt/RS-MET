@@ -422,7 +422,7 @@ void windowFunctionSpectra()
     truncGauss2(N), truncGauss3(N), truncGauss4(N), truncGauss5(N); // 2,3,4,5 = 1/sigma
 
   WF::createWindow(&rectangular[0],    N, WF::RECTANGULAR_WINDOW, true);
-  WF::createWindow(&triangular[0],     N, WF::TRIANGULAR,         true);
+  WF::createWindow(&triangular[0],     N, WF::TRIANGULAR_WINDOW,  true);
   WF::createWindow(&hanning[0],        N, WF::HANNING_WINDOW,     true);
   WF::createWindow(&hamming[0],        N, WF::HAMMING_WINDOW,     true);
 

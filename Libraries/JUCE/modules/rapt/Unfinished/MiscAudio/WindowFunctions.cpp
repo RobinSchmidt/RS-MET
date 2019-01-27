@@ -4,7 +4,7 @@ void rsWindowFunction::createWindow(T* w, int N, int type, bool normalizeMean, T
   switch( type )
   {
   case RECTANGULAR_WINDOW:  rectangular(w, N); break;
-  case TRIANGULAR:          triangular( w, N); break;
+  case TRIANGULAR_WINDOW:   triangular( w, N); break;
     // insert other polynomial windows here...
 
   case HANNING_WINDOW:      hanning(    w, N); break;
@@ -36,7 +36,7 @@ T rsWindowFunction::getMainLobeWidth(int type, T param)
   {
   case RECTANGULAR_WINDOW:  return T(2);
 
-  //case TRIANGULAR:          return T(4);  // not sure yet -> plot and verify
+  //case TRIANGULAR_WINDOW:   return T(4);  // not sure yet -> plot and verify
   case HANNING_WINDOW:      return T(4);
   case HANNING_WINDOW_ZN:   return T(4);
   case HAMMING_WINDOW:      return T(4);
@@ -61,7 +61,7 @@ T rsWindowFunction::getSideLobeLevel(int type, T param)
   {
   case RECTANGULAR_WINDOW:  return T(-13.2);
 
-  case TRIANGULAR:          return T(-26.5);
+  case TRIANGULAR_WINDOW:   return T(-26.5);
 
   case HANNING_WINDOW:      return T(-31.5);
   case HANNING_WINDOW_ZN:   return T(-31.5);

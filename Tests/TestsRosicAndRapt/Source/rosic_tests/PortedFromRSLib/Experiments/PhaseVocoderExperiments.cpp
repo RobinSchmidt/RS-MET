@@ -249,6 +249,8 @@ void sineParameterEstimation()
   // parameters. We feed a single cossine wave with known frequency, amplitude and phase into the 
   // analysis and visualize the results.
 
+  typedef RAPT::rsWindowFunction WF;
+
   // signal parameters:
   double sampleRate = 10000;    // sample rate
   double frequency  =  1000;    // signal frequency
@@ -258,18 +260,22 @@ void sineParameterEstimation()
 
   // analysis parameters:
   double anaTime = length/2; // time instant of analysis (exact only up to sample-rate)
-  int blockSize  = 512;
-  int trafoSize  = 512;
-  int window     = RAPT::rsWindowFunction::HAMMING_WINDOW;
+  int blockSize  = 500;
+  int trafoSize  = 500;
+  //int window     = WF::RECTANGULAR_WINDOW;
+  //int window     = WF::TRIANGULAR_WINDOW;
+  int window     = WF::HAMMING_WINDOW;
+  //int window     = WF::HANNING_WINDOW_ZN;
+  //int window     = WF::BLACKMAN_WINDOW;
 
-  trafoSize = 4096; // test
+  trafoSize = 8000; // test
 
   // generate cosine wave:
   int numSamples = (int) ceil(length*sampleRate); // number of samples
   double w = 2*PI*frequency/sampleRate;
   std::vector<double> x(numSamples);
   for(int n = 0; n < numSamples; n++)
-    x[n] = cos(w*n + startPhase);
+    x[n] = amplitude * cos(w*n + startPhase);
   //plotVector(x);
 
   // obtain short time spectrum at the desired time-instant:
@@ -291,7 +297,12 @@ void sineParameterEstimation()
   plotVector(decibels);
   //plotVector(phases);
 
-  // the amplitude is -6 dB while it should 0 dB - there's a factor of 2 missing somewhere
+  // the amplitude is -6 dB while it should 0 dB - there's a factor of 2 missing somewhere?
+  // ...hmm - but it seems to be not exactly 2 - when multiplying by 2, we don't land at 0 dB
+  // but at 0.03 dB for the peak (with Hamming window - with Blackman over 0.04) - with the
+  // Rectangular window, it's exactly at 0 dB
+  // hmmm - maybe check, why the sinusoidal analysis gets correct result anyway - there must be
+  // some scaling hidden somewhere in the computations
 
 
 
