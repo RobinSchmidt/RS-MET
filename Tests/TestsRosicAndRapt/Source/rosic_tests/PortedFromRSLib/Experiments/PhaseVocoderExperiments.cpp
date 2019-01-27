@@ -431,7 +431,7 @@ void sinusoidalAnalysis1()
   // expected - OK - all is good. these are just transient artifacts and we should clean them up
   // by deleting the spurious tracks
 
-  // creat and set up a sinusoidal synthesizer object and plot resynthesis result:
+  // create and set up a sinusoidal synthesizer object and plot resynthesis result:
   SinusoidalSynthesizer<double> synth;
   synth.setSampleRate(sampleRate);
   plotSineResynthesisResult(model, synth, &x[0], (int) N);
@@ -454,7 +454,7 @@ void sinusoidalAnalysis2()
   // input signal parameters:
   double fs = 44100; // sample rate
   double f1 = 1000;  // 1st frequency
-  double f2 = 1100;  // 2nd frequency
+  double f2 = 1107;  // 2nd frequency
   double a1 = 1.0;   // 1st amplitude
   double a2 = 1.0;   // 2nd amplitude
   double p1 = PI/2;  // 1st start phase
@@ -462,9 +462,11 @@ void sinusoidalAnalysis2()
   double L  = 0.2;   // length in seconds
 
   // analysis parameters:
-  double freqRes = f2-f1;   // frequency resolution
-  double margin  = 20;      // dB margin over sidlobe level
-  int    window  = RAPT::rsWindowFunction::HAMMING_WINDOW;
+  double freqRes  = f2-f1;   // frequency resolution
+  double dBmargin = 20;      // dB margin over sidelobe level
+  int padFactor = 1;         // zero padding factor
+  int window    = RAPT::rsWindowFunction::HAMMING_WINDOW;
+
 
   // create a model and synthesize the sound:
 
@@ -485,13 +487,47 @@ void sinusoidalAnalysis2()
 
   std::vector<double> x = synthesizeSinusoidal(model, fs);
   //plotSineModel(model, fs); // we need a margin for the y-axis - otherwise it looks like nothing
-  plotVector(x);
+  //plotVector(x);
 
   // analyze the produced sound again and compare the original model and analysis result
   // ...
 
-
+  // create and set up analyzer and try to recover the model from the sound
+  SinusoidalAnalyzer<double> sa;
+  int blockSize = sa.getRequiredBlockSize(window, freqRes, fs);
+  int hopSize   = blockSize/8; // small hopSize needed, otherwise analyzed model has too short tracks
+  //int trafoSize = RAPT::rsNextPowerOfTwo(blockSize);  // or maybe use blockSize itself
+  int trafoSize = padFactor*blockSize;
+  double levelThresh = sa.getRequiredThreshold(window, dBmargin);
+  sa.setWindowType(window);
+  sa.setRelativeLevelThreshold(levelThresh);
+  sa.setBlockAndTrafoSize(blockSize, trafoSize);
+  //sa.setBlockSize(blockSize);
+  //sa.setTrafoSize(trafoSize);
+  sa.setHopSize(hopSize);
+  sa.setMaxFreqDeltaBase(10);  // 10 Hz variation allowed between frames
+  sa.setFadeInTime(0.01);
+  sa.setFadeOutTime(0.01);
+  sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
+  rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
   //plotTwoSineModels(model, model2, fs);
+  // ...try to use the lowest possible values that give a good result
+
+
+  // create and set up a sinusoidal synthesizer object and plot resynthesis result:
+  SinusoidalSynthesizer<double> synth;
+  synth.setSampleRate(fs);
+  plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
+
+
+  // Observations:
+  // -when the hopSize is too small (like blockSize/2), the analyzed tracks are too short
+  // -for 1000 and 1107 Hz, there's a largish amplitude error in the estimates (over 0.06) when
+  //  using a padFactor of 1, using a larger padFactor, the amplitude error gets smaller but we get
+  //  a larger phase error (so large, that the residual is actually louder with zero-padding)
+  //  -could this be a bug that messes up the phase when zero padding is used? it seems to be a
+  //   a systematic error
+
 
   // maybe allow time varying frequencies and amplitudes - but maybe in next test - ramp up the
   // complexity
