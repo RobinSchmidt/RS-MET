@@ -378,6 +378,10 @@ void sinusoidalAnalysis1()
   double amplitude  = 3.0;    // raw factor
   double phase      = 0.0;    // in radians
 
+  // analsis parameters:
+  int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
+  double freqRes = 100; // frequency resolution
+
   phase = PI/2; // for test
   //frequency = 800;
   //frequency = 808;
@@ -393,7 +397,7 @@ void sinusoidalAnalysis1()
 
   // create and set up analyzer:
   SinusoidalAnalyzer<double> sa;
-  sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
+  sa.setWindowType(window);
   sa.setMaxFreqDeltaBase(100);
   sa.setTrafoSize(4096);
   sa.setBlockSize(1024);
@@ -408,6 +412,9 @@ void sinusoidalAnalysis1()
   //sa.setFadeOutTime(0.0);
   //sa.setMinimumTrackLength(0.001); 
   //plotSineModel(sa, &x[0], (int) x.size(), sampleRate);
+
+  int minBlockSize = sa.getRequiredBlockSize(window, freqRes, sampleRate);
+  double maxLevelThresh = sa.getRequiredThreshold(window, 0.0);
 
   // find model for the signal:
   rsSinusoidalModel<double> model = sa.analyze(&x[0], (int)N, sampleRate);
@@ -438,19 +445,56 @@ void sinusoidalAnalysis1()
   // frames - check this - hmm...but it happens also when the hopSize actually is blocksize/2
   // ...it seems that generally, out models are one frame (or more?) to short? -> experiment with
   // this - it should all work also when there is no fade-in/out whatsoever
-
-  // for some frequencies, there seems to be phase error by 180° - the phase is exactly opposite
-  // from the desired value (for example 809Hz@50kHz)
-  // -figure out, if this is a probelm in the analysis or synthesis
-  //  -maybe check, if it may have to do with the phase interpolation - selecting the direction
-  //   of interpolations that is nearest - maybe there's a bug in this? 
-  //   ->make unit test ->plot interpolated phase
-  // setting bool accumulatePhaseDeltas = true; fixes the problem
 }
 
 void sinusoidalAnalysis2()
 {
+  // Two sinusoids at 1000 and 1100 Hz
 
+  // input signal parameters:
+  double fs = 44100; // sample rate
+  double f1 = 1000;  // 1st frequency
+  double f2 = 1100;  // 2nd frequency
+  double a1 = 1.0;   // 1st amplitude
+  double a2 = 1.0;   // 2nd amplitude
+  double p1 = PI/2;  // 1st start phase
+  double p2 = PI/2;  // 2nd start phase
+  double L  = 0.2;   // length in seconds
+
+  // analysis parameters:
+  double freqRes = f2-f1;   // frequency resolution
+  double margin  = 20;      // dB margin over sidlobe level
+  int    window  = RAPT::rsWindowFunction::HAMMING_WINDOW;
+
+  // create a model and synthesize the sound:
+
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  RAPT::rsSinusoidalPartial<double> partial1, partial2;
+  RAPT::rsSinusoidalModel<double> model;
+
+  double p1e = p1 + 2*PI*f1*L; // end phase for 1st partial
+  partial1.prependDataPoint(ISP(0.0, f1, a1, p1));
+  partial1.appendDataPoint( ISP(L,   f1, a1, p1e));
+
+  double p2e = p2 + 2*PI*f2*L; // end phase for 2nd partial
+  partial2.prependDataPoint(ISP(0.0, f2, a2, p2));
+  partial2.appendDataPoint( ISP(L,   f2, a2, p2e));
+
+  model.addPartial(partial1);
+  model.addPartial(partial2);
+
+  std::vector<double> x = synthesizeSinusoidal(model, fs);
+  //plotSineModel(model, fs); // we need a margin for the y-axis - otherwise it looks like nothing
+  plotVector(x);
+
+  // analyze the produced sound again and compare the original model and analysis result
+  // ...
+
+
+  //plotTwoSineModels(model, model2, fs);
+
+  // maybe allow time varying frequencies and amplitudes - but maybe in next test - ramp up the
+  // complexity
 }
 
 

@@ -191,15 +191,15 @@ public:
   /** Returns the analysis hop size. */
   int getHopSize() const { return sp.getHopSize(); }
 
-
-
-  /** Returns the minimum block size that is required to resolve two adjacent partials that are 
-  separated by the given frequency difference "freqDelta" at a given sample rate. Because this
+  /** Returns the minimum block size that is required to obtain a given frequency resolution at a 
+  given sample rate. This resolution gives the minimum frequency difference by which two partials 
+  have to be separated in order to be resolved as two distinct partials. If their frequencies are 
+  closer together than that, they may appear as a single partial to the analyzer. Because this
   resolvability depends on the mainlobe width of the chosen analysis window, you must also tell 
   the function, which type of window you want to use. */
-  static int getRequiredBlockSize(int windowType, T freqDelta, T sampleRate);
+  static int getRequiredBlockSize(int windowType, T frequencyResolution, T sampleRate);
 
-  /** Returns minimum possible amplitude threshold that can reasoably be used for a given window 
+  /** Returns minimum possible amplitude threshold that can reasonably be used for a given window 
   type without mistakenly picking up the sidelobes of the window as partials. With margin = 0, this 
   is actually just the sidelobe level of the window function itself. A margin of ...dB proved to
   be reasonable in practice */
@@ -209,8 +209,6 @@ public:
 
 
   /** \name Processing */
-
-
 
   /** Analyzes the given input sound and returns the sinusoidal model object that models the given 
   sound. */
@@ -252,14 +250,12 @@ protected:
   // between continuePartialTracks1/continuePartialTracks2
   // or rename to findContinuations
 
-
   /** For a given frequency, search through the peaks array to find one that is closest in 
   frequency, subject to the constraint that is within a given maximum deviation and that the 
   peakUnused flag is false. This is the dual function to findBestMatchingTrack for the other way
-  of organizing the loops ...  Not yet implemented   */
+  of organizing the loops */
   size_t findBestMatchingPeak(T frequency, std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks, 
     const std::vector<bool>& peakUsed) const;
-
 
   /** Alternative version of the peak-tracking algoritm. This one loops over all the tracks to find 
   the best match in newPeakData instead of looping over all peaks to find a best match in the 

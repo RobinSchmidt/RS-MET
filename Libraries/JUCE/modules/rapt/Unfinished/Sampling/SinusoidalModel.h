@@ -19,7 +19,8 @@ public:
     this->time   = time;
     this->freq   = frequency;
     this->gain   = amplitude;
-    this->phase  = phase;
+    //this->phase  = phase;
+    this->phase  = rsWrapToInterval(phase, -PI, PI);
     //this->cycles = numCycles;
   }
 
