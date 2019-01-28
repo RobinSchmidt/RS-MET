@@ -183,7 +183,7 @@ double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
 void cheby_win(double *out, int N, double atten)
 {
   int nn, i;
-  double M, n, sum = 0, max=0;
+  double M, n, sum = 0; // max=0;
   double tg = pow(10,atten/20);         // 1/r term [2], 10^gamma [2]
   double x0 = cosh((1.0/(N-1))*acosh(tg));
   M = (N-1)/2;
@@ -196,10 +196,10 @@ void cheby_win(double *out, int N, double atten)
     }
     out[nn] = tg + 2*sum;
     out[N-nn-1] = out[nn];
-    if(out[nn]>max)max=out[nn];
+    //if(out[nn]>max)max=out[nn];
   }
-  for(nn=0; nn<N; nn++) out[nn] /= max; // normalise everything
-  //RAPT::rsArray::normalizeMean(out, N);
+  //for(nn=0; nn<N; nn++) out[nn] /= max; // normalise everything
+  RAPT::rsArray::normalizeMean(out, N);
   return;
 }
 
