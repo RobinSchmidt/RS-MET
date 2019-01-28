@@ -968,6 +968,13 @@ void rsArray::normalize(T *buffer, int length, T maximum, bool subtractMean)
     buffer[i] *= scale;
 }
 
+template<class T>
+void rsArray::normalizeMean(T* x, int N, T newMean) 
+{
+  T m = mean(x, N);
+  scale(x, N, newMean/m);
+}
+
 template <class T>
 void rsArray::orderBitReversed(T *buffer, int N, int log2N)
 {

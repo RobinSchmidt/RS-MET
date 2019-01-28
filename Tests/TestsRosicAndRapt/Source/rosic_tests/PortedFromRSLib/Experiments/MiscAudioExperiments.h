@@ -11,6 +11,8 @@ void slewRateLimiterLinear();
 void stretchedCorrelation();
 void taperedFourierSeries();
 void transientModeling();
+
+//void plotWindows();  
 void windowFunctionsContinuous();
 void windowFunctionSpectra();
 void windowedSinc();

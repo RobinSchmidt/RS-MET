@@ -106,7 +106,6 @@ void grainRoundTrip()
   int dummy = 0;
 }
 
-
 //-------------------------------------------------------------------------------------------------
 // Dolph-Chebychev window generation code from here:
 // http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
@@ -115,24 +114,27 @@ void grainRoundTrip()
 // References:
 // [1] Lyons, R., "Understanding Digital Signal Processing", Prentice Hall, 2004.
 // [2] Antoniou, A., "Digital Filters", McGraw-Hill, 2000.
-
+/*
 // This function computes the chebyshev polyomial T_n(x)
-double cheby_poly(int n, double x){
+double cheby_poly(int n, double x)
+{
   double res;
   if (fabs(x) <= 1) res = cos(n*acos(x));
   else              res = cosh(n*acosh(x));
   return res;
 }
+
 // calculate a chebyshev window of size N, store coeffs in out as in Antoniou
 //  -out should be array of size N 
 //  -atten is the required sidelobe attenuation (e.g. if you want -60dB atten, use '60')
-void cheby_win(double *out, int N, double atten){
+void cheby_win(double *out, int N, double atten)
+{
   int nn, i;
   double M, n, sum = 0, max=0;
-  double tg = pow(10,atten/20);  /* 1/r term [2], 10^gamma [2] */
+  double tg = pow(10,atten/20);         // 1/r term [2], 10^gamma [2]
   double x0 = cosh((1.0/(N-1))*acosh(tg));
   M = (N-1)/2;
-  if(N%2==0) M = M + 0.5; /* handle even length windows */
+  if(N%2==0) M = M + 0.5;               // handle even length windows 
   for(nn=0; nn<(N/2+1); nn++){
     n = nn-M;
     sum = 0;
@@ -143,10 +145,13 @@ void cheby_win(double *out, int N, double atten){
     out[N-nn-1] = out[nn];
     if(out[nn]>max)max=out[nn];
   }
-  for(nn=0; nn<N; nn++) out[nn] /= max; /* normalise everything */
+  for(nn=0; nn<N; nn++) out[nn] /= max; // normalise everything
   return;
 }
-//-------------------------------------------------------------------------------------------------
+*/
+// code moved to Prototypes and can be deleted
+
+
 
 void plotWindows()
 {
@@ -158,14 +163,14 @@ void plotWindows()
 
 
   int J = rsSpectrogramD::getNumFrames(N, H);
-                                      
+
   // create the window function:
   double wa[B], ws[B], w[B];
   rsWindowFunction::hanningZN(wa, B);
   rsWindowFunction::hanningZN(ws, B);
   RAPT::rsArray::multiply(wa, ws, w, B);
 
-    // todo: try different window functions: Hmaming, Blackman, versions with both ends nonzero
+  // todo: try different window functions: Hmaming, Blackman, versions with both ends nonzero
 
   double yw[N];             // sum of windows
   RAPT::rsArray::fillWithZeros(yw, N);
@@ -190,7 +195,6 @@ void plotWindows()
   RAPT::rsArray::scale(yw, N, 1/s);
   plt.addDataArrays(N, yw);
 
-
   //int n0; 
 
   plt.plot();
@@ -208,6 +212,8 @@ void plotWindows()
   // hopsize, such that sum(wa*ws) = const ...but i think, that is exactly what the demodulation
   // function already does
 }
+
+//-------------------------------------------------------------------------------------------------
 
 void spectrogramSine()
 {
@@ -589,22 +595,23 @@ void sinusoidalAnalysis1()
 
 void sinusoidalAnalysis2()
 {
-  // Two sinusoids at 1000 and 1100 Hz
+  // Two sinusoids at around 1000 and 1100 Hz
 
   // input signal parameters:
   double fs = 44100; // sample rate
-  double f1 = 1000;  // 1st frequency
+  double f1 = 1011;  // 1st frequency
   double f2 = 1107;  // 2nd frequency
   double a1 = 1.0;   // 1st amplitude
   double a2 = 1.0;   // 2nd amplitude
   double p1 = PI/2;  // 1st start phase
   double p2 = PI/2;  // 2nd start phase
-  double L  = 0.2;   // length in seconds
+  double L  = 0.1;   // length in seconds
 
   // analysis parameters:
   double freqRes  = f2-f1;   // frequency resolution
   double dBmargin = 20;      // dB margin over sidelobe level
-  int padFactor = 2;         // zero padding factor
+  double blockSizeFactor = 1.0;  // factor by which to to make blockSize longer than necessary
+  int zeroPaddingFactor = 1;         // zero padding factor
   int window    = RAPT::rsWindowFunction::HAMMING_WINDOW;
 
 
@@ -634,10 +641,10 @@ void sinusoidalAnalysis2()
 
   // create and set up analyzer and try to recover the model from the sound
   SinusoidalAnalyzer<double> sa;
-  int blockSize = sa.getRequiredBlockSize(window, freqRes, fs); // +1 for test
+  int blockSize = blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs); // +1 for test
   int hopSize   = blockSize/8; // small hopSize needed, otherwise analyzed model has too short tracks
   //int trafoSize = RAPT::rsNextPowerOfTwo(blockSize);  // or maybe use blockSize itself
-  int trafoSize = padFactor*blockSize;
+  int trafoSize = zeroPaddingFactor*blockSize;
   double levelThresh = sa.getRequiredThreshold(window, dBmargin);
   sa.setWindowType(window);
   sa.setRelativeLevelThreshold(levelThresh);
@@ -650,7 +657,7 @@ void sinusoidalAnalysis2()
   sa.setFadeOutTime(0.01);
   sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
-  //plotTwoSineModels(model, model2, fs);
+  plotTwoSineModels(model, model2, fs);
   // ...try to use the lowest possible values that give a good result
 
 
@@ -661,14 +668,21 @@ void sinusoidalAnalysis2()
 
   // Observations:
   // -when the hopSize is too small (like blockSize/2), the analyzed tracks are too short
-  // -for 1000 and 1107 Hz, there's a largish amplitude error in the estimates (over 0.06) when
-  //  using a padFactor of 1, using a larger padFactor, the amplitude error gets smaller but we get
-  //  a larger phase error (so large, that the residual is actually louder with zero-padding)
-  //  -could this be a bug that messes up the phase when zero padding is used? it seems to be a
-  //   a systematic error
-  //  -the computed blockSize is even (1649) - when used as is, the phase error appears, when 
-  //   adding 1 to get 1650, the phase error disappears - there's clearly something wrong with 
-  //   zero-padding when the blockSize is odd
+  // -when using a blockFactor = 2, we can estimate the frequencies more accurately, but the 
+  //  amplitude envelope gets an additional fade-in/out charakter
+
+  // -idea: 
+  //  -the first few frames have lots of zero valued samples which lead to an amplitude error,
+  //   for example, in the first frame only half of the samples in the buffer are nonzero
+  //  -maybe we should take this situation into account already in the spectrogram processor
+  //   by multiplying the analyzed amplitudes by an appropriate compensation factor
+  //  -maybe this compensation factor should be number of inital zero-samples divided by the
+  //   blockSize - or by the ratio of the sum of used window samples over the sum of all window
+  //   samples
+  //  -something like 
+  //   if(n <= blockSize/2)  // or <?
+  //     a *= getLeftBoundaryCompensation(n)
+
 
   // maybe allow time varying frequencies and amplitudes - but maybe in next test - ramp up the
   // complexity

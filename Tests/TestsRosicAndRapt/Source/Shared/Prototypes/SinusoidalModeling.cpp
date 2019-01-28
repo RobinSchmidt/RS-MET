@@ -613,6 +613,15 @@ template class SinusoidalAnalyzer<double>;
 /*
 
 Ideas:
+
+Peak-Tracking:
+-maybe instead of looping over the tracks or peaks and greedily picking the closest match in the 
+ respective other array, we should first collect all candidate matches and then decide which gets
+ assigned to which based on the whole picture
+-maybe a single peak can actually correspond to two tracks (if two tracks cross each other in the
+ current frame) and maybe the peak's amplitude should then be split between the two tracks
+
+Window:
 -use a Dolph-Chebychev window and let the user only select the amplitude threshold for partials
  -the window will then be automatically tuned such the sidelobes are some reasonable margin below 
   the detection threshold (the margin has to figured out empirically - maybe 15 or 20 dB)
@@ -624,6 +633,8 @@ Ideas:
  -maybe the allowed frequency deviation between two frames (which should be proportional to the 
   hopSize) can be set up in a way that is independent from the hopSize - maybe in Hz/s
   10 Hz/s means the frequency is allowed to change by 10 Hz in one second
+
+-
 
 
 // how do we best compute the instantaneous phase - linear interpolation?

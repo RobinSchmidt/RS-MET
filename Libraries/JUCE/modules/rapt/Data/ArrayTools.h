@@ -427,6 +427,11 @@ public:
   template <class T>
   static void normalize(T *buffer, int length, T maximum, bool subtractMean = false);
 
+  /** Normalizes the mean of the array to the given value (default 1) - useful for window functions
+  and lowpass filters that should have unit gain at DC. */
+  template <class T>
+  static void normalizeMean(T* x, int N, T newMean = T(1));
+
   /** Rearranges/permutes and array of class T into bit-reversed order (in place). The 'length'
   MUST be the 'numBits' th power of two (this is not checked for). */
   //template <class T>

@@ -313,10 +313,14 @@ void transientModeling()
   // estimation in order to obtain more "analog" coefficients might fail because a lot of coeffs
   // might then be used to model the bandlimitation of the oversampled signal.
 
-
-
   int dummy = 0;
 }
+
+
+
+
+
+
 
 void windowFunctionsContinuous()
 {
@@ -344,7 +348,7 @@ void windowFunctionsContinuous()
   plotData(N, x, wHann, wHamming, wExactBlackman);
 }
 
-
+/*
 // move to library (maybe)
 template<class T>
 void normalizeMean(T* x, int N) 
@@ -352,6 +356,8 @@ void normalizeMean(T* x, int N)
   T m = RAPT::rsArray::mean(x, N);
   RAPT::rsArray::scale(x, N, T(1)/m);
 }
+*/
+
 void cosSumWindow2(double* w, int N) // 2 term
 {
   double a0 = 0.5, a1 = 0.5;
@@ -361,7 +367,7 @@ void cosSumWindow2(double* w, int N) // 2 term
     double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0);      // ZN - good for comparison with rectangular
     w[n] = a0 + a1*cos(PI*t);
   }
-  normalizeMean(w, N);
+  RAPT::rsArray::normalizeMean(w, N);
   // with the ZN mapping (first sample 0, last nonzero), the zeros are exactly at every other zero 
   // of the rectangular window - best for comparing to rectangular - but for spectral analysis or 
   // filter design NN is better (the zeros are a bit more narrowly spaced), the ZZ mapping is not 
@@ -374,7 +380,7 @@ void cosSumWindow3(double* w, int N) // 3 term
     double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0); 
     w[n] = a0 + a1*cos(PI*t) + a2*cos(2*PI*t) ;
   }
-  normalizeMean(w, N);
+  RAPT::rsArray::normalizeMean(w, N);
 }
 void cosSumWindow4(double* w, int N) // 4 term
 {
@@ -383,7 +389,7 @@ void cosSumWindow4(double* w, int N) // 4 term
     double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0); 
     w[n] = a0 + a1*cos(PI*t) + a2*cos(2*PI*t) + a3*cos(3*PI*t);
   }
-  normalizeMean(w, N);
+  RAPT::rsArray::normalizeMean(w, N);
 }
 void cosSumWindow5(double* w, int N) // 5 term
 {
@@ -392,7 +398,7 @@ void cosSumWindow5(double* w, int N) // 5 term
     double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0); 
     w[n] = a0 + a1*cos(PI*t) + a2*cos(2*PI*t) + a3*cos(3*PI*t) + a4*cos(4*PI*t);
   }
-  normalizeMean(w, N);
+  RAPT::rsArray::normalizeMean(w, N);
 }
 // these windows are probably nice for filter design because the provide a sidelobe rolloff with 
 // increasing steepness
@@ -407,6 +413,21 @@ void cosSumWindow5(double* w, int N) // 5 term
 // -maybe we can blend between continuity and equiripple/minimax coeffs
 // -maybe also allow blend between various orders (k-values) to provide a tradeoff between 
 //  mainlobe width and sidelobe rejection
+// they were obtained with Sage by imposing contraints on the derivative values at the window
+// endpoints, for example, for the 3rd order window:
+//
+// var("t a0 a1 a2 a3")
+// f(t)  = a0 + a1*cos(pi*t) + a2*cos(2*pi*t) + a3*cos(3*pi*t)
+// f2(t) = diff(f(t), t, 2) # 2nd derivative
+// f4(t) = diff(f(t), t, 4) # 4th derivative
+// eq1 = f(0)  == 1         # 1st requirement
+// eq2 = f(1)  == 0         # 2nd requirement
+// eq3 = f2(1) == 0         # 3rd requirement
+// eq4 = f4(1) == 0         # 4th requirement
+// solve([eq1,eq2,eq3,eq4],[a0,a1,a2,a3])
+//
+// giving the result: a0 == (5/16), a1 == (15/32), a2 == (3/16), a3 == (1/32)
+// don't count the constant term a0 as term - reduce all numbers in the names by 1
 
 
 void windowFunctionSpectra()
@@ -444,6 +465,11 @@ void windowFunctionSpectra()
   cosSumWindow5(&cosSumWnd5[0], N);
 
 
+  std::vector<double> cheby20(N), cheby40(N), cheby60(N), cheby80(N);
+  cheby_win(&cheby20[0], N, 20);
+
+
+
   // maybe optionally plot the window functions themselves
 
   SpectrumPlotter<double> plt;
@@ -452,6 +478,8 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
   plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
+  //plt.plotDecibelSpectra(N, &cheby20[0]);
+
 };
 
 

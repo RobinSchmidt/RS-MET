@@ -43,6 +43,20 @@ void halpernT2(double *c, int N);
 polynomial in Eq. 8.14 in Paarmann: Design and Analysis of Analog Filters */
 void papoulisL2(double *c, int N);
 
+/** Calculates a chebyshev window of size N, store coeffs in out as in Antoniou
+  -out should be array of size N 
+  -atten is the required sidelobe attenuation (e.g. if you want -60dB atten, use '60') 
+Dolph-Chebychev window generation code from here:
+http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
+not recommended for production use because the complexity is O(N^2) - instead use an iFFT 
+approach
+References:
+[1] Lyons, R., "Understanding Digital Signal Processing", Prentice Hall, 2004.
+[2] Antoniou, A., "Digital Filters", McGraw-Hill, 2000.  */
+void cheby_win(double *out, int N, double atten);
+
+
+
 //=================================================================================================
 
 template<class TSig, class TPar>
@@ -736,6 +750,25 @@ protected:
   ::rsSlewRateLimiterLinear<T> slewLimiter;
 
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // the stuff below is just for playing around - maybe move code elsewhere:

@@ -141,6 +141,12 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
   std::complex<T> *X = new std::complex<T>[M]; // short-time spectrum centered at sample n
   for(int i = 0; i < F; i++)                   // loop over frames
   {
+    // todo: maybe obtain amplitude compensation factors for the first few and last few frames 
+    // which are not filled completely with samples leading to amplitude estimation errors
+    // ...if we do this, the resynthesis should apply inverse factors
+
+
+
     shortTimeSpectrum(x, N, n, X);             // obtain STFT centered at n
     for(int j = 0; j < K; j++)                 // collect results for positive frequencies
       s(i, j) = a * X[j];

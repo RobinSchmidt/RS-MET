@@ -173,6 +173,35 @@ void papoulisL2(double *v, int N)
   }
 }
 
+double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
+{
+  double res;
+  if (fabs(x) <= 1) res = cos(n*acos(x));
+  else              res = cosh(n*acosh(x));
+  return res;
+}
+void cheby_win(double *out, int N, double atten)
+{
+  int nn, i;
+  double M, n, sum = 0, max=0;
+  double tg = pow(10,atten/20);         // 1/r term [2], 10^gamma [2]
+  double x0 = cosh((1.0/(N-1))*acosh(tg));
+  M = (N-1)/2;
+  if(N%2==0) M = M + 0.5;               // handle even length windows 
+  for(nn=0; nn<(N/2+1); nn++){
+    n = nn-M;
+    sum = 0;
+    for(i=1; i<=M; i++){
+      sum += cheby_poly(N-1,x0*cos(PI*i/N))*cos(2.0*n*PI*i/N);
+    }
+    out[nn] = tg + 2*sum;
+    out[N-nn-1] = out[nn];
+    if(out[nn]>max)max=out[nn];
+  }
+  for(nn=0; nn<N; nn++) out[nn] /= max; // normalise everything
+  return;
+}
+
 //=================================================================================================
 
 template<class TSig, class TPar>

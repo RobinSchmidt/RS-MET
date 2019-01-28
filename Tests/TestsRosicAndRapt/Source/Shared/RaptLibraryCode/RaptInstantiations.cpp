@@ -61,6 +61,7 @@ template double rsArray::minValue(double *x, int length);
 template double rsArray::maxValue(double *x, int length);
 template double rsArray::maxAbs(double *x, int length);
 template void rsArray::normalize(double *buffer, int length, double maximum, bool subtractMean);
+template void rsArray::normalizeMean(double *x, int N, double newMean);
 template double rsArray::mean(double *x, int length);
 template double rsArray::maxDeviation(double *buffer1, double *buffer2, int length);
 template int rsArray::maxDeviationIndex(float *buffer1, float *buffer2, int length);

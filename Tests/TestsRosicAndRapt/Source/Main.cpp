@@ -293,7 +293,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  //windowFunctionSpectra();
+  windowFunctionSpectra();
   //windowedSinc();
 
   // Modulator:
@@ -321,9 +321,9 @@ int main(int argc, char* argv[])
   // Phase Vocoder:
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
-  //plotWindows();    // move near plotWidowSpectra
   //spectrogramSine();
   //sineParameterEstimation();
+  //plotWindows();   // rename to plotOverlappingWindowSum
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
   //sinusoidalAnalysis1();
