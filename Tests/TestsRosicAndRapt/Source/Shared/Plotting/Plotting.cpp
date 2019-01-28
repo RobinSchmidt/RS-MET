@@ -236,17 +236,61 @@ void plotTwoSineModels(
 }
 
 
+// move to library:
+template<class T>
+void rsResizeWithInit(std::vector<double>& v, size_t newSize, T value)
+{
+  size_t oldSize = v.size();
+  v.resize(newSize);
+  for(size_t i = oldSize; i < newSize; i++)   
+    v[i] = value;
+}
+template<class T>
+void rsPadLeft(std::vector<double>& v, size_t amount, T value)
+{
+  if(amount == 0) 
+    return;
+  size_t oldSize = v.size();
+  v.resize(oldSize+amount);
+  for(size_t i = v.size()-1; i >= amount; i++)
+    v[i] = v[i-amount];
+  for(size_t i = 0; i < amount; i++)
+    v[i] = value;
+  // maybe, it can be done with memmove and memset more efficiently?
+}
+
 // x: original input of length N, model: a sinusoidal moded
-void getPaddedSignals(double* x, int Nx, 
+void getPaddedSignals(double* xIn, int Nx, 
   const RAPT::rsSinusoidalModel<double>& model,
   const SinusoidalSynthesizer<double>& synth,
-  std::vector<double>& xPadded, std::vector<double>& modelOutput)
+  std::vector<double>& x, std::vector<double>& y)
 {
   typedef std::vector<double> Vec;
 
-  Vec y = synth.synthesize(model);
-  int numFadeInSamples = -model.getStartSampleIndex(synth.getSampleRate()); // preZeroSamples
+  // synthesize y from the model:
+  y = synth.synthesize(model);
+  int nf = model.getStartSampleIndex(synth.getSampleRate()); // # fade-in samples
+ 
+  size_t n;
+  if(nf < 0) {
+    // obtain a version of x with an appropriate number of zeros prepended
+    nf = -nf;
+    x.resize(Nx+nf);
+    for(n = 0; n < nf; n++)        x[n] = 0;
+    for(n = nf; n < x.size(); n++) x[n] = xIn[n-nf];
+  }
+  else {
+    rsPadLeft(y, nf, 0.0);       // prepend zeros to y, if nf > 0
+    x = RAPT::toVector(xIn, Nx);
+  }
 
+  // extend the shorter of both signals with zeros:
+  size_t nx = x.size();
+  size_t ny = y.size();
+  if(nx > ny)
+    rsResizeWithInit(y, nx, 0.0);
+  else if(ny > nx)
+    rsResizeWithInit(x, ny, 0.0);
 }
 
 void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
@@ -258,11 +302,14 @@ void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model,
   // todo: make it work also for the case when the model sound is shorter than the original sound
 
   typedef std::vector<double> Vec;
-  Vec xp, yp, r;  // xp: padded x, yp: padded model output, r = xp-yp: residual
+  Vec xp, yp;        // xp: padded x, yp: padded model output
   getPaddedSignals(x, Nx, model, synth, xp, yp);
-  r.resize(xp.size());
-  //....
+  Vec r = xp - yp;   // residual
 
+
+  //r.resize(xp.size());
+  //for(size_t n = 0; n < r.size(); n++)
+  //  r[n] = xv[n] - y[n];
 
   /*
   Vec y = synth.synthesize(model);
@@ -276,14 +323,16 @@ void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model,
   xv = RAPT::rsConcatenate(xv, post);
   for(size_t n = 0; n < r.size(); n++)
     r[n] = xv[n] - y[n];
+  */
+
 
   // plot original, resynthesized and residual signals:
+  int N = (int)yp.size();
   GNUPlotter plt;
-  plt.addDataArrays(N, &xv[0]);
-  plt.addDataArrays(N, &y[0]);
+  plt.addDataArrays(N, &xp[0]);
+  plt.addDataArrays(N, &yp[0]);
   plt.addDataArrays(N, &r[0]);
   plt.plot();
-  */
 }
 
 

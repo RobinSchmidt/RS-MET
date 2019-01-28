@@ -611,7 +611,7 @@ void sinusoidalAnalysis2()
   double freqRes  = f2-f1;   // frequency resolution
   double dBmargin = 20;      // dB margin over sidelobe level
   double blockSizeFactor = 1.0;  // factor by which to to make blockSize longer than necessary
-  int zeroPaddingFactor = 1;         // zero padding factor
+  int zeroPaddingFactor = 2;         // zero padding factor
   int window    = RAPT::rsWindowFunction::HAMMING_WINDOW;
 
 
@@ -651,16 +651,16 @@ void sinusoidalAnalysis2()
   sa.setBlockAndTrafoSize(blockSize, trafoSize);
   sa.setHopSize(hopSize);
 
-  sa.setMaxFreqDeltaBase(20);  // Hz variation allowed between frames - todo: have a parameter
-                               // that is independent from the hopSize
-  sa.setFadeInTime(0);
-  sa.setFadeOutTime(0);
-  sa.setMinimumTrackLength(0);
+  //sa.setMaxFreqDeltaBase(20);  // Hz variation allowed between frames - todo: have a parameter
+  //                             // that is independent from the hopSize
+  //sa.setFadeInTime(0);
+  //sa.setFadeOutTime(0);
+  //sa.setMinimumTrackLength(0);
 
-  //sa.setMaxFreqDeltaBase(10);  // 10 Hz variation allowed between frames
-  //sa.setFadeInTime(0.01);
-  //sa.setFadeOutTime(0.01);
-  //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
+  sa.setMaxFreqDeltaBase(10);  // 10 Hz variation allowed between frames
+  sa.setFadeInTime(0.01);
+  sa.setFadeOutTime(0.01);
+  sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
 
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
   plotTwoSineModels(model, model2, fs);
