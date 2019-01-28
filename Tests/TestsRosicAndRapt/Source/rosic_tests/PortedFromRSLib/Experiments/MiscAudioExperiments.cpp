@@ -492,9 +492,9 @@ void windowFunctionSpectra()
   // get 5.7 - more research needed - try to figure out, how the equations above were derived - 
   // maybe they can be reverse engineered to give the normalized mainlobe width in terms of DFT 
   // bins - or maybe we can from the normalized frequency wc compute the bin-index..
-
   // see also here - the window has impulses at its endpoints:
   // https://ccrma.stanford.edu/~jos/sasp/Example_Chebyshev_Windows_Transforms.html
+
 
 
 

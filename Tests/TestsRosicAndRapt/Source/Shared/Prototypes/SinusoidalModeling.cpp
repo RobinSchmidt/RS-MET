@@ -633,6 +633,8 @@ Window:
  -maybe the allowed frequency deviation between two frames (which should be proportional to the 
   hopSize) can be set up in a way that is independent from the hopSize - maybe in Hz/s
   10 Hz/s means the frequency is allowed to change by 10 Hz in one second
+ -but also have a look at the phase-response - make sure, the window doesn't mess up phase 
+  measurement
 
 -
 
