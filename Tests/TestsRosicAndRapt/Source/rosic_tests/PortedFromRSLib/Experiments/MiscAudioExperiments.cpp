@@ -433,7 +433,8 @@ void cosSumWindow5(double* w, int N) // 5 term
 void windowFunctionSpectra()
 {
   int windowLength = 128;
-  int fftSize = 8192;
+  //int fftSize = 8192;
+  int fftSize = 16384;
 
   // create various window functions:
   typedef RAPT::rsWindowFunction WF;
@@ -464,11 +465,36 @@ void windowFunctionSpectra()
   cosSumWindow4(&cosSumWnd4[0], N);
   cosSumWindow5(&cosSumWnd5[0], N);
 
-  std::vector<double> cheby20(N), cheby40(N), cheby60(N), cheby80(N);
-  cheby_win(&cheby20[0], N, 20);
-  cheby_win(&cheby40[0], N, 40);
-  cheby_win(&cheby60[0], N, 60);
-  cheby_win(&cheby80[0], N, 80);
+  std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
+  cheby_win(&cheby20[0], N,  20);
+  cheby_win(&cheby40[0], N,  40);
+  cheby_win(&cheby60[0], N,  60);
+  cheby_win(&cheby80[0], N,  80);
+  cheby_win(&cheby100[0], N, 100);
+  cheby_win(&chebyTweak[0], N, 46.5); // tweakable
+  // 17.5: mainlobe-width matches rectangular window
+  // 46.5: matches cosSumWnd2
+
+  // compute chebychev window mainlobe width:
+  // https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window_Main_Lobe_Width.html
+  //double r  = rsDbToAmp(-60.0);   // plug attenuation here
+  //double x0 = cosh(acosh(1/r) / (N-1));
+  //double wc = 2*acos(1/x0);
+  //double B  = 2*wc;
+  // hmm...these formulas seem to compute the cutoff frequency in radians dependning on N and give
+  // a too small value - we actually want a value independent of N - maybe just leave out the 
+  // division by N-1? ...try it:
+  double r  = rsDbToAmp(-17.5);   // plug attenuation here
+  double x0 = cosh(acosh(1/r));
+  double wc = 2*acos(1/x0);
+  double B  = 2*wc;
+  // no - that doesn't seem to work, for an attenuation of 17.5 dB, we should get a value of 2 but 
+  // get 5.7 - more research needed - try to figure out, how the equations above were derived - 
+  // maybe they can be reverse engineered to give the normalized mainlobe width in terms of DFT 
+  // bins - or maybe we can from the normalized frequency wc compute the bin-index..
+
+  // see also here - the window has impulses at its endpoints:
+  // https://ccrma.stanford.edu/~jos/sasp/Example_Chebyshev_Windows_Transforms.html
 
 
 
@@ -480,7 +506,11 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
-  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0]);
+  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+
+
+  //plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
+  //plt.plotDecibelSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);
 };
 
 
