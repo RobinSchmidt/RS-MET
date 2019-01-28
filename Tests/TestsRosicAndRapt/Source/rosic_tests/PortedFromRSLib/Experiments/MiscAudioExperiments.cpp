@@ -464,9 +464,11 @@ void windowFunctionSpectra()
   cosSumWindow4(&cosSumWnd4[0], N);
   cosSumWindow5(&cosSumWnd5[0], N);
 
-
   std::vector<double> cheby20(N), cheby40(N), cheby60(N), cheby80(N);
   cheby_win(&cheby20[0], N, 20);
+  cheby_win(&cheby40[0], N, 40);
+  cheby_win(&cheby60[0], N, 60);
+  cheby_win(&cheby80[0], N, 80);
 
 
 
@@ -477,9 +479,8 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
-  plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
-  //plt.plotDecibelSpectra(N, &cheby20[0]);
-
+  //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
+  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0]);
 };
 
 

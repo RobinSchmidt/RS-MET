@@ -199,6 +199,7 @@ void cheby_win(double *out, int N, double atten)
     if(out[nn]>max)max=out[nn];
   }
   for(nn=0; nn<N; nn++) out[nn] /= max; // normalise everything
+  //RAPT::rsArray::normalizeMean(out, N);
   return;
 }
 
