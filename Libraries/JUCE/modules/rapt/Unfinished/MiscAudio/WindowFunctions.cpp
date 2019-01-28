@@ -257,7 +257,11 @@ T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 // or MinSideLobe2, etc. - or maybe we should start numbering at 0 - a rectangular window is
 // 0th order, hanning/hamming windows are 1st order, blackman is 2nd order, blackman-harris 3rd, 
 // etc. ...maybe we can have a similar hirarchy for polynomial windows: rectangular is 0th order,
-// triangular is 1st order, parabolic (aka Welch) 2nd, etc.
+// triangular is 1st order, parabolic (aka Welch) 2nd, etc. - for the even order windows, also 
+// provide their inverses ...or maybe have two indexes that determine the smoothness at the center
+// 0 and the endpoints +-1. like polyWindow23 is 2nd order smooth at the center and 3rd order 
+// smooth at +-1
+// drag over the cosine-sum windows from the prototypes that satisfy smoothness constraints
 // hmm - here, it looks like that the flat-top window is also equiripple, so maybe the minimax 
 // optimized windows all will end up being flat-top? (bcs i think minimax and equiripple conditions 
 // imply each other - verify that):
@@ -285,3 +289,7 @@ T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 // sidelobe levels, like -20, -30, -40, ... - but: which order (i.e. number of cosine terms) should 
 // we use for that? that should probably depend on the desired sidelobe level maybe make and 
 // interact in the notebook where the user can enter the desired parameters
+
+// add closed form formulas for the window spectra, where such formulas are available - for example
+// for a sum-of-cosines window type, we get a corresponing sum-of-sincs in the frequency domain
+

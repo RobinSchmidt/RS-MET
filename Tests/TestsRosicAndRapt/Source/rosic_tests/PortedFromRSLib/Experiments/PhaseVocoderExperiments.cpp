@@ -649,13 +649,19 @@ void sinusoidalAnalysis2()
   sa.setWindowType(window);
   sa.setRelativeLevelThreshold(levelThresh);
   sa.setBlockAndTrafoSize(blockSize, trafoSize);
-  //sa.setBlockSize(blockSize);
-  //sa.setTrafoSize(trafoSize);
   sa.setHopSize(hopSize);
-  sa.setMaxFreqDeltaBase(10);  // 10 Hz variation allowed between frames
-  sa.setFadeInTime(0.01);
-  sa.setFadeOutTime(0.01);
-  sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
+
+  sa.setMaxFreqDeltaBase(20);  // Hz variation allowed between frames - todo: have a parameter
+                               // that is independent from the hopSize
+  sa.setFadeInTime(0);
+  sa.setFadeOutTime(0);
+  sa.setMinimumTrackLength(0);
+
+  //sa.setMaxFreqDeltaBase(10);  // 10 Hz variation allowed between frames
+  //sa.setFadeInTime(0.01);
+  //sa.setFadeOutTime(0.01);
+  //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
+
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
   plotTwoSineModels(model, model2, fs);
   // ...try to use the lowest possible values that give a good result
@@ -667,9 +673,23 @@ void sinusoidalAnalysis2()
   plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 
   // Observations:
-  // -when the hopSize is too small (like blockSize/2), the analyzed tracks are too short
   // -when using a blockFactor = 2, we can estimate the frequencies more accurately, but the 
   //  amplitude envelope gets an additional fade-in/out charakter
+
+  // -when the hopSize is too small (like blockSize/2), the analyzed tracks are too short
+  //  -rsSpectrogram::getNumFrames looks good - the number of frames is not to blame
+  //  -or: maybe we should use more frames such that the first frame is centered pre-zero such that
+  //   it contains at least one valid sample (i.e. the rightmost sample of the first block should
+  //   have index n >= 0)?
+  //  -maybe our allowe freq-delta is too small, such that the start- and end peaks don't get 
+  //   connected to the main track
+  //  -yes - this makes sense, because when reducing the hopSize by factor two, the same allowed
+  //   freq delta allows for twice as fast frequency changes
+  //  -generally, we should probably set up parameters in such a way, that the allowed freq-delta
+  //   corresponds to the bin-distance of the FFT bins - the gives a heuristic to select the 
+  //   hopSize - as a function of the normalized frequency delta (like, in Hz per second)
+  //
+
 
   // -idea: 
   //  -the first few frames have lots of zero valued samples which lead to an amplitude error,
@@ -682,6 +702,7 @@ void sinusoidalAnalysis2()
   //  -something like 
   //   if(n <= blockSize/2)  // or <?
   //     a *= getLeftBoundaryCompensation(n)
+  //  -maybe have functions in rsSpectrogram setEdgeCompensation
 
 
   // maybe allow time varying frequencies and amplitudes - but maybe in next test - ramp up the

@@ -235,13 +235,36 @@ void plotTwoSineModels(
   plt.plotTwoModels(model1, model2, fs);
 }
 
+
+// x: original input of length N, model: a sinusoidal moded
+void getPaddedSignals(double* x, int Nx, 
+  const RAPT::rsSinusoidalModel<double>& model,
+  const SinusoidalSynthesizer<double>& synth,
+  std::vector<double>& xPadded, std::vector<double>& modelOutput)
+{
+  typedef std::vector<double> Vec;
+
+  Vec y = synth.synthesize(model);
+  int numFadeInSamples = -model.getStartSampleIndex(synth.getSampleRate()); // preZeroSamples
+
+}
+
 void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
   const SinusoidalSynthesizer<double>& synth, double* x, int Nx)
 {
   // Synthesize model output and create residual:
   // Here, we assume that the resynthesized signal extends beyond the ends of the original due to
-  // additional fade-in/out datapoints - but can we really always assume this?
+  // additional fade-in/out datapoints - but can we really always assume this? no, we can't
+  // todo: make it work also for the case when the model sound is shorter than the original sound
+
   typedef std::vector<double> Vec;
+  Vec xp, yp, r;  // xp: padded x, yp: padded model output, r = xp-yp: residual
+  getPaddedSignals(x, Nx, model, synth, xp, yp);
+  r.resize(xp.size());
+  //....
+
+
+  /*
   Vec y = synth.synthesize(model);
   int numFadeInSamples = -model.getStartSampleIndex(synth.getSampleRate()); // preZeroSamples
   int N = (int)y.size();     // length of residual signal in samples
@@ -260,6 +283,7 @@ void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model,
   plt.addDataArrays(N, &y[0]);
   plt.addDataArrays(N, &r[0]);
   plt.plot();
+  */
 }
 
 

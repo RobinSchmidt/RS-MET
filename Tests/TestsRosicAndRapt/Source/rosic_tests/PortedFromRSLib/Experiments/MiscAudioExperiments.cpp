@@ -495,6 +495,10 @@ void windowFunctionSpectra()
   // see also here - the window has impulses at its endpoints:
   // https://ccrma.stanford.edu/~jos/sasp/Example_Chebyshev_Windows_Transforms.html
 
+  // i think, w = 2*pi*f/fs together with f = k*fs/N gives a bin index k = M*w/2pi where k is 
+  // actually our desired bin-width B and w is equal to wc above...soo we get the equation
+  // wc = B*2pi/N = 2*acos(1/x0) = 2*acos(1/cosh(acosh(1/r) / (N-1))) for N - is that correct?
+
 
 
 

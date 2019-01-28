@@ -300,7 +300,6 @@ protected:
   // fade-in and fade-out times for partials (in seconds):
   T fadeInTime  = 0.01;
   T fadeOutTime = 0.01;
-
   T minTrackLength = 0;
 
   // frequency difference threshold parameters:

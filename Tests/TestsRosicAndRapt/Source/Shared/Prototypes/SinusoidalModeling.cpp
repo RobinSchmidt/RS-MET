@@ -603,8 +603,10 @@ void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
 
   // remove spurious partials (maybe factor out):
   for(int i = (int)model.getNumPartials()-1; i >= 0; i--)  
-    if(model.getPartial(i).getLength() < minTrackLength)
+    if(model.getPartial(i).getLength() <= minTrackLength) 
       model.removePartial(i);
+  // We use <= instead of < to remove zero-length tracks, even when minTrackLength == 0, so we 
+  // allow only for tracks that are *strictly* longer than 0 when minTrackLength == 0.
 }
 
 template class SinusoidalAnalyzer<double>;

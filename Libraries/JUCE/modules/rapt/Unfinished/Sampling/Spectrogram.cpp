@@ -58,10 +58,10 @@ template<class T>
 int rsSpectrogram<T>::getNumFrames(int N, int H)
 {
   int tmp = N+H-1;
-  int F = tmp/H;
-  if(tmp%H > 0)
-    F += 1;
-  return F; // F == ceil((N+H-1)/H)
+  int F = tmp/H;   // integer division gives floor(tmp/H)
+  if(tmp%H > 0)    // if there was a truncated fractional part in the floor-division... 
+    F += 1;        // ...add 1 to get the ceil (otherwise floor == ceil)
+  return F;        // F == ceil((N+H-1)/H)
 }
 
 template<class T>

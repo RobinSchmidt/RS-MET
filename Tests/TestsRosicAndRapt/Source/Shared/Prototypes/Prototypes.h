@@ -786,12 +786,14 @@ protected:
     //Node *older;  // we'll see, if we need this
   };
 
+  /** ...Will also update our newestNode pointer */
   void insert(Node node)
   {
     //newestNode->newer = ...  // update "newer" pointer of current newest node
     // ...
   }
 
+  /** ...Will also update our oldestNode pointer. */
   void remove(Node node)
   {
     Node* tmp = oldestNode->newer;
