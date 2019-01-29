@@ -33,12 +33,13 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
     t[n] = (nStart + n) / sampleRate;    // ...optimize
 
   // interpolate amplitude:
-  std::vector<T> a(N);
-  std::vector<T> ad  = partial.getAmplitudeArray();
-  if(cubicAmplitude) 
-    rsNaturalCubicSpline(&td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
-  else               
-    rsInterpolateLinear( &td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+  std::vector<T> a = getInterpolatedAmplitudes(partial, td, t);
+  //std::vector<T> a(N);
+  //std::vector<T> ad  = partial.getAmplitudeArray();
+  //if(cubicAmplitude) 
+  //  rsNaturalCubicSpline(&td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+  //else               
+  //  rsInterpolateLinear( &td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
 
   // interpolate phase:
   std::vector<T> p(N);
@@ -99,7 +100,26 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
 }
 
 template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(const std::vector<T>& t)
+std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedAmplitudes(
+  const RAPT::rsSinusoidalPartial<T>& partial, 
+  const std::vector<T>& td, 
+  const std::vector<T>& t) const
+{
+  int M = (int) td.size(); // td: time axis data
+  int N = (int) t.size();  // t: interpolated time axis (to sample-rate)
+  std::vector<T> a(N);     // a: interpolated amplitude values
+  std::vector<T> ad  = partial.getAmplitudeArray();
+  RAPT::rsAssert(ad.size() == M);
+  if(cubicAmplitude) 
+    rsNaturalCubicSpline(&td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+  else               
+    rsInterpolateLinear( &td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+  return a;
+}
+
+template<class T>
+std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(
+  const RAPT::rsSinusoidalPartial<T>& partial, const std::vector<T>& t) const
 {
   int N = (int) t.size();  // t: time axis
   std::vector<T> p(N);     // p: interpolated phase values
@@ -109,16 +129,7 @@ std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(const std::vector
   return p;
 }
 
-template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedAmplitudes(const std::vector<T>& t)
-{
-  int N = (int) t.size();  // t: time axis
-  std::vector<T> a(N);     // a: interpolated amplitude values
 
-  // ...
-
-  return a;
-}
 
 template<class T>
 std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,

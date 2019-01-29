@@ -74,11 +74,15 @@ public:
 
 
 
+  std::vector<T> getInterpolatedAmplitudes(const RAPT::rsSinusoidalPartial<T>& partial, 
+    const std::vector<T>& timeAxisCoarse, const std::vector<T>& timeAxisFine) const;
 
-  std::vector<T> getInterpolatedPhases(const std::vector<T>& timeAxis);
+
+  std::vector<T> getInterpolatedPhases(const RAPT::rsSinusoidalPartial<T>& partial,
+    const std::vector<T>& timeAxis) const;
 
 
-  std::vector<T> getInterpolatedAmplitudes(const std::vector<T>& timeAxis);
+
 
 
 

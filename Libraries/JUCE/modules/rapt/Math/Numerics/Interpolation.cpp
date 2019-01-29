@@ -1,5 +1,6 @@
 template<class Tx, class Ty>
-void resampleNonUniformLinear(Tx* xIn, Ty* yIn, int inLength, Tx* xOut, Ty* yOut, int outLength)
+void resampleNonUniformLinear(const Tx* xIn, const Ty* yIn, int inLength, 
+  const Tx* xOut, Ty* yOut, int outLength)
 {
   // code copied and adapted from from rsTimeWarper::invertMonotonousWarpMap
   int i = 0;
@@ -14,7 +15,8 @@ void resampleNonUniformLinear(Tx* xIn, Ty* yIn, int inLength, Tx* xOut, Ty* yOut
 // repeated recomputation of still valid line-coeffs in case of upsampling
 
 template<class Tx, class Ty>
-void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni, Ty scaleRhs)
+void rsNaturalCubicSpline(const Tx *xIn, const Ty *yIn, int N, const Tx *xOut, Ty *yOut, 
+  int Ni, Ty scaleRhs)
 {
   if(N <= 3) {
     resampleNonUniformLinear(xIn, yIn, N, xOut, yOut, Ni);
@@ -83,7 +85,7 @@ void rsNaturalCubicSpline(Tx *xIn, Ty *yIn, int N, Tx *xOut, Ty *yOut, int Ni, T
   // the polynomial coefficients themselves could be very useful as basis for numerical 
   // integration - just add up the definite integrals over the spline segments between the
   // integration limits - maybe numeric differentiation could also be improved by using the 
-  // spline
+  // spline - we could just evaluate the spline's derivative at the datapoints
 }
 
 template<class T>

@@ -11,7 +11,8 @@ outLength. xIn must be strictly monotonically increasing. If the xOut array cont
 the range of the xIn value, the will linearly extrapolate beyond the original range based on the 
 two initila and/or final points. */
 template<class Tx, class Ty>
-void resampleNonUniformLinear(Tx* xIn, Ty* yIn, int inLength, Tx* xOut, Ty* yOut, int outLength);
+void resampleNonUniformLinear(const Tx* xIn, const Ty* yIn, int inLength, 
+  const Tx* xOut, Ty* yOut, int outLength);
 // rename
 
 /** Computes coefficients for a cubic polynomial that goes through the 4 points (-1,y[-1]),
@@ -122,7 +123,7 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax);
 function fills the array yi with values corresponding to the xi by linear interpolation
 (or extrapolation, if necessary) of the input data. The xi and yi arrays are of length Ni. */
 template<class T>
-void rsInterpolateLinear(T *x, T *y, int N, T *xi, T *yi, int Ni);
+void rsInterpolateLinear(const T *x, const T *y, int N, const T *xi, T *yi, int Ni);
 
 /** Given four x-axis values x1, x2, x3, x4 and the corresponding y-axis values y1, y2, y3, y4,
 this function returns the y-value corresponding to x by cubic hermite interpolation. It is
@@ -167,7 +168,7 @@ The value scaleRhs is a factor by which the interpolant can be morphed between l
 actual, proper cubic spline (=1). It doesn't appear in the literature, but it may be a useful tweak
 in some situations. */
 template<class Tx, class Ty>
-void rsNaturalCubicSpline(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni, Ty scaleRhs = Ty(1));
+void rsNaturalCubicSpline(const Tx *x, const Ty *y, int N, const Tx *xi, Ty *yi, int Ni, Ty scaleRhs = Ty(1));
 // rename to rsInterpolateNaturalCubic, or maybe resampleNaturalSpline...or 
 // rsResampler::naturalSpline
 // ...or maybe wrap into class rsInterpolator
@@ -238,7 +239,7 @@ Ty rsInterpolateLinear(Tx x1, Tx x2, Ty y1, Ty y2, Tx x)
 }
 
 template<class T>
-void rsInterpolateLinear(T *x, T *y, int N, T *xi, T *yi, int Ni)
+void rsInterpolateLinear(const T *x, const T *y, int N, const T *xi, T *yi, int Ni)
 {
   int n = 0;  // index into input data
   int i = 0;  // index into interpolated data
