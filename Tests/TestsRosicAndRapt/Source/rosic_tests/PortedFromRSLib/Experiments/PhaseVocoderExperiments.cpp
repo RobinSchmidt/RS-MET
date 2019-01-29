@@ -639,8 +639,8 @@ void sinusoidalAnalysis2()
   //double fs = 10000;   // sample rate
   double f1 =  1011;   // 1st frequency
   double f2 =  1107;   // 2nd frequency
-  double a1 = 1.0;     // 1st amplitude
-  double a2 = 1.0;     // 2nd amplitude
+  double a1 = 0.5;     // 1st amplitude
+  double a2 = 0.5;     // 2nd amplitude
   double p1 = PI/2;    // 1st start phase
   double p2 = PI/2;    // 2nd start phase
   double L  = 0.3;     // length in seconds
@@ -719,6 +719,8 @@ void sinusoidalAnalysis2()
   model.removePartial( 1);
   model2.removePartial(1);
   plotModelOutputComparison(model, model2, synth);
+
+
 
 
 

@@ -280,12 +280,19 @@ void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model,
   getPaddedSignals(x, Nx, model, synth, xp, yp);
   Vec r = xp - yp;   // residual
 
-  // plot original, resynthesized and residual signals:
+  // write results to wavefile, if desired:
   int N = (int)yp.size();
+  bool writeToWaveFile = false;  // make user parameter
+  if(writeToWaveFile == true) {
+    int fs = (int) synth.getSampleRate();
+    rosic::writeToMonoWaveFile("SineModeling_Original.wav",      &xp[0], N, fs, 16);
+    rosic::writeToMonoWaveFile("SineModeling_Resynthesized.wav", &yp[0], N, fs, 16);
+    rosic::writeToMonoWaveFile("SineModeling_Residual.wav",      &r[0],  N, fs, 16);
+  }
+
+  // plot original, resynthesized and residual signals:
   Vec t(N);
-
   createTimeAxis(N, &t[0], synth.getSampleRate());
-
   GNUPlotter plt;
   plt.addDataArrays(N, &t[0],  &xp[0]);
   plt.addDataArrays(N, &t[0], &yp[0]);

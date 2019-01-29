@@ -24,33 +24,34 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   //std::vector<T> td, fd, ad, wpd;
   //partial.getDataArrays(td, fd, ad, wpd);  // obsolete soon
 
-  std::vector<T> td = partial.getTimeArray();
-  std::vector<T> fd = partial.getFrequencyArray();
-  std::vector<T> ad = partial.getAmplitudeArray();
-  std::vector<T> wpd = partial.getPhaseArray();   // rename to pd
-  td = td + timeShift; // todo: implement vector += scalar operator and use: td += timeShift;
-
-
-
-  std::vector<T> upd = unwrapPhase(td, fd, wpd);
-
-  // factor out:
-  // interpolate the amplitude and unwrapped phase data to sample-rate:
   // create time axis:
+  std::vector<T> td = partial.getTimeArray();
+  td = td + timeShift; // todo: implement vector += scalar operator and use: td += timeShift;
   size_t M = td.size();
-  std::vector<T> t(N), a(N), p(N); // interpolated instantaneous data
+  std::vector<T> t(N);
   for(size_t n = 0; n < N; n++)          // fill time-array
     t[n] = (nStart + n) / sampleRate;    // ...optimize
 
-
+  // interpolate amplitude:
+  std::vector<T> a(N);
+  std::vector<T> ad  = partial.getAmplitudeArray();
+  if(cubicAmplitude) 
+    rsNaturalCubicSpline(&td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+  else               
+    rsInterpolateLinear( &td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
 
   // interpolate phase:
-  if(cubicPhase) rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
-  else           rsInterpolateLinear( &td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+  std::vector<T> p(N);
+  std::vector<T> fd  = partial.getFrequencyArray();
+  std::vector<T> wpd = partial.getPhaseArray();   // rename to pd
+  std::vector<T> upd = unwrapPhase(td, fd, wpd);
+  if(cubicPhase) 
+    rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+  else           
+    rsInterpolateLinear( &td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
 
-  // interpolate amplitude:
-  if(cubicAmplitude) rsNaturalCubicSpline(&td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
-  else               rsInterpolateLinear( &td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+
+
 
   // it seems cubic interpolation for the phase and linear for the amplitude is most suitable,
   // although, for the amplitude, we may also use cubic - but linear for the phase leads to audible
@@ -678,4 +679,15 @@ https://en.wikipedia.org/wiki/Window_function
 implement blackman-harris and maybe blackman-nutall, dolph-chebychev - i think, low sidelobes are
 important for sinusoidal parameter estimation...maybe gaussian for frequency estimation? or use 
 re-assignment?
+*/
+
+
+/*
+Ideas for transformations:
+-insert phase anomalies into partials - maybe at regular intervals, offset the phase by a certain
+ dp (delta-phi) - this should impose some sort of periodic pattern, maybe a sort of robotization
+ ...but maybe that time-interval of the phase anomalies could be different for different partials
+ "Phase-Bumper"
+
+
 */
