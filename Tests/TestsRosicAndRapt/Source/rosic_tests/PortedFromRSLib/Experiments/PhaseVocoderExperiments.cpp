@@ -396,6 +396,53 @@ void sineParameterEstimation()
 }
 
 
+void phaseInterpolation() // rename to sineModelPhaseInterpolation
+{
+  // Tests various phase interpolation methods of SinusoidalSynthesizer - we create a sinusoidal 
+  // partial and let the synthesizer generate the phases and plot the results
+  // todo: maybe optionally plot the (numeric) derivative of the phase arrays instead of the phase
+  // arrays theselves)
+
+  double fs = 10000;  // sample rate
+  int N = 1000;       // number of samples
+
+  // create data for some not too boring frequency trajectory:
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  RAPT::rsSinusoidalPartial<double> partial;
+  partial.prependDataPoint(ISP( 0.0,  1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.01,  800.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.02, 1200.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.03, 1100.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.04,  700.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.05,  500.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.06,  500.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.07,  600.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.08,  800.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.09,  900.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 0.10, 1000.0, 1.0, 0.0));
+
+  // create and set up the synth and create time-axis at sample-rate:
+  SinusoidalSynthesizer<double> synth;
+  synth.setSampleRate(fs);
+  std::vector<double> td = partial.getTimeArray();
+  std::vector<double> t(N);
+  for(size_t n = 0; n < N; n++) 
+    t[n] = n / fs;// fill time-array
+
+  // let the synth generate the phases:
+  std::vector<double> p1 = synth.phasesViaTweakedIntegral(partial, td, t);
+  std::vector<double> p2 = synth.phasesCubicHermite(      partial, td, t);
+
+  RAPT::rsArray::unwrap(&p2[0], N, 2*PI);
+
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0], &p1[0]);
+  plt.addDataArrays(N, &t[0], &p2[0]);
+  plt.plot();
+}
+
+
 // move to RAPT::rsArray, maybe make cubic versions
 template<class T>
 void applyFadeIn(T* x, int N, int numFadeSamples)

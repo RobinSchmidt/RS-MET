@@ -27,6 +27,9 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   std::vector<T> t(N);
   for(size_t n = 0; n < N; n++)          // fill time-array
     t[n] = (nStart + n) * Ts;
+
+
+
   std::vector<T> a = getInterpolatedAmplitudes(partial, td, t);
   std::vector<T> p = getInterpolatedPhases(    partial, td, t);
 
@@ -143,8 +146,8 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
   std::vector<T> p(N);     // p: interpolated phase values
   std::vector<T> fd = partial.getFrequencyArray();
   std::vector<T> pd = partial.getPhaseArray();
-  //std::vector<T> wd = (2*PI/sampleRate) * fd;    // omegas - maybe compute them on-the-fly in the loop
-  T f2w = 2*PI/sampleRate; // factor to convert from frequency f to omega w
+  T f2w = T(2*PI)/sampleRate; // factor to convert from frequency f to omega w
+  T Ts  = T(1)/sampleRate;    // sampling interval
 
   T y0[2];   // p0,w0, phase and normalized radian freq at start of current cubic segment
   T y1[2];   // p1,w1, phase and normalized radian freq at end of current cubic segment
@@ -159,7 +162,7 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
     w0 = f2w*f0; w1 = f2w*f1;   // start and end omega of segment
 
     dt  = t1 - t0;              // length of segment (in seconds)
-    fa  = 0.5 * (f0 + f1);      // average frequency of segment (in Hz)
+    fa  = 0.5 * (f0 + f1);      // average frequency of segment (in Hz) - todo: maybe try geometric mean, or generalized mean
     k   = round(dt * fa);       // number of cycles passed between t0 and t1
     p1 += 2*k*PI;               // adjust end-phase of segment
     // ...phase adjustment is still questionable - is the formula for k really the most reasonable?
@@ -181,7 +184,7 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
 
     // evaluate cubic at the sample-points:
     T dtR = T(1) / dt; // the reciprocal scaling must be applied to the argument of the polynomial
-    while(n*sampleRate < t1) {
+    while(n*Ts < t1) {
       p[n] = rsPolynomial<T>::evaluate(dtR*(t[n]-t0), a, 3);
       n++;
       if(n == N)
@@ -194,6 +197,9 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
 
   return p;
 }
+
+// idea: maybe the frequency interpolation should be done in the log-domain, i.e. interpolate
+// pitches instead of frequencies
 
 
 

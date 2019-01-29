@@ -324,10 +324,11 @@ int main(int argc, char* argv[])
   //spectrogramSine();
   //sineParameterEstimation();
   //plotWindows();   // rename to plotOverlappingWindowSum
+  phaseInterpolation();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
   //sinusoidalAnalysis1();
-  sinusoidalAnalysis2();
+  //sinusoidalAnalysis2();
 
 
   // Physics:
