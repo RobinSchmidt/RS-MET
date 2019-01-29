@@ -636,8 +636,9 @@ void sinusoidalAnalysis2()
 
   // input signal parameters:
   double fs = 44100;   // sample rate
-  double f1 = 1011;    // 1st frequency
-  double f2 = 1107;    // 2nd frequency
+  //double fs = 10000;   // sample rate
+  double f1 =  1011;   // 1st frequency
+  double f2 =  1107;   // 2nd frequency
   double a1 = 1.0;     // 1st amplitude
   double a2 = 1.0;     // 2nd amplitude
   double p1 = PI/2;    // 1st start phase

@@ -786,6 +786,36 @@ RS_INLINE rsMatrix<T> outerProduct(const rsVector<T> &a, const rsVector<T> &b)
 }
     // not tested
 
+
+
+template<class T>
+rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
+{
+  int N = A.getNumRows();
+  int M = A.getNumColumns();
+  rsMatrix<T> mags(N, M);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < M; j++)
+      mags(i, j) = abs(A(i, j));
+  return mags;
+}
+
+template<class T>
+rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
+{
+  int N = A.getNumRows();
+  int M = A.getNumColumns();
+  rsMatrix<T> phases(N, M);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < M; j++)
+      phases(i, j) = arg(A(i, j));
+  return phases;
+}
+// maybe factor out common code...maybe something like applyMatrixFunction with different
+// input and output types for the template parameter
+
+
+
 // typedefs for explicit instantiations:
 typedef rsMatrix<double> rsMatrixDbl;
 

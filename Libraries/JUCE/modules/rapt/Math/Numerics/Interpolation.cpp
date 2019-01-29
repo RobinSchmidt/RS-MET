@@ -351,6 +351,38 @@ void fitCubicThroughFourPoints(T x0, T y0, T x1, T y1, T x2,
   // Lagrange interpolator
 }
 
+template<class T> 
+T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
+{
+  RAPT::rsAssert(xMin <= x0 && x0 <= xMax);
+  RAPT::rsAssert(xMin <= x1 && x1 <= xMax);
+
+  T r  = xMax - xMin;  // range
+  T du = x1 + r - x0;  // upper difference
+  T dm = x1     - x0;  // middle difference
+  T dl = x1 - r - x0;  // lower difference
+  T au = rsAbs(du);
+  T am = rsAbs(dm);
+  T al = rsAbs(dl);
+  T x;
+
+  // add an appropriate fraction of the delta that has the smallest absolute difference to x0:
+  if(au < am && au < al)
+    x = x0 + t*du;
+  else if(am < al)
+    x = x0 + t*dm;
+  else
+    x = x0 + t*dl;
+
+  // re-wrap result into allowed interval:
+  if(x > xMax)
+    x -= r;
+  else if(x < xMin)
+    x += r;
+  return x;
+}
+// check if it is correct (maybe by a unit test?)...and if it can be simplified
+
 template<class T>
 void cubicSplineArcCoeffs2D(T x1, T dx1, T y1, T dy1, T x2, T dx2, T y2, T dy2, T* a, T* b)
 {

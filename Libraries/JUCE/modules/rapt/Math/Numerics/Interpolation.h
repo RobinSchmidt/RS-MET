@@ -1,7 +1,8 @@
 #ifndef RAPT_INTERPOLATION_H
 #define RAPT_INTERPOLATION_H
 
-// \todo wrap into class rsInterpolation ...or maybe merge with Interpolator
+// \todo wrap into class rsInterpolation ...or maybe merge with Interpolator from the Unfinished
+// folder
 
 /** Given two arrays of input abscissa- and ordinate values xIn, yIn of length inLength and an
 array of new abscissa values xOut, this function fills the array yOut with values that correspond 
@@ -106,6 +107,15 @@ Ty rsInterpolateLinear(Tx x1, Tx x2, Ty y1, Ty y2, Tx x);
 // maybe change interface to x1, y1, x2, y2 to make it consistent with other functions
 // but this is a change that would silently break client code
 // hmm...but then rsInterpolateCubicHermite would also have to be changed
+
+/** Linearly interpolates between two values x0, x1 where the values are supposed to be wrapping 
+around and always be in xMin..xMax, for example -1..1, 0..1, 0..2*pi, -pi..pi, etc. t is the 
+interpolation parameter between 0..1 such that x = (1-t)*x0 + t*x1 = x0 + t*(x1-x0). When the value
+is restricted to a given range, we have two possible directions of the interpolation path - we can 
+go forward or backward from x0 to x1 (with wrap around) as t traverses 0..1. This function chooses
+the direction for which the absolute distance between x0 and x1 is shorter. */
+template<class T> 
+T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax);
 
 /** Given two length N arrays x, y with x-axis values and corresponding y-axis values, this
 function fills the array yi with values corresponding to the xi by linear interpolation

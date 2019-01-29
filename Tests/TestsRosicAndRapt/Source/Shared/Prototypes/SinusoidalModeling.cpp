@@ -78,13 +78,13 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   // sinusoids (using the sine, we would have to take the imaginary part instead)
 
 
-  GNUPlotter plt;
-  //plt.addDataArrays(M, &td[0], &fd[0]);
-  //plt.addDataArrays((int)M, &td[0], &upd[0]);
-  plt.addDataArrays((int)N, &t[0],  &p[0]); // interpolated phase
-  plt.addDataArrays((int)N, &t[0],  &a[0]);   // interpolated amplitude
-  //plt.addDataArrays((int)N, &t[0],  &s[0]);   // produced sinusoid
-  plt.plot();
+  //GNUPlotter plt;
+  ////plt.addDataArrays(M, &td[0], &fd[0]);
+  ////plt.addDataArrays((int)M, &td[0], &upd[0]);
+  //plt.addDataArrays((int)N, &t[0],  &p[0]); // interpolated phase
+  //plt.addDataArrays((int)N, &t[0],  &a[0]);   // interpolated amplitude
+  ////plt.addDataArrays((int)N, &t[0],  &s[0]);   // produced sinusoid
+  //plt.plot();
 }
 
 template<class T>
@@ -126,11 +126,10 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
 // template instantiation:
 template class SinusoidalSynthesizer<double>;
 
-
 //=================================================================================================
 
 // move to library:
-
+/*
 template<class T>
 rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
 {
@@ -187,6 +186,7 @@ T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
   return x;
 }
 // move to library and check if it is correct (maybe by a unit test?)...and if it can be simplified
+*/
 
 //=================================================================================================
 
