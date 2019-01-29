@@ -120,7 +120,11 @@ public:
   void setFadeOutTime(T newTime) { fadeOutTime = newTime; }
 
   /** Sets the minimum length (in seconds) that a track must have in order to be considered a 
-  stable partial. */
+  stable partial. If you have set up some fade-in and fade-out times, this minimum length should
+  be at least the sum of these two fade times (because each track will be guaranteed to be at least
+  faedInTime+fadeOutTime seconds long - so a value less than that for minTrackLength will 
+  effectively turn the threshold off (well, of course, if you want to turn it off, you can do it 
+  like that). */
   void setMinimumTrackLength(T newLength) { minTrackLength = newLength; }
 
 

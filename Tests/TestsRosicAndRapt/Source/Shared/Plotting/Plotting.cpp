@@ -235,30 +235,9 @@ void plotTwoSineModels(
   plt.plotTwoModels(model1, model2, fs);
 }
 
-
-// move to library:
-template<class T>
-void rsResizeWithInit(std::vector<double>& v, size_t newSize, T value)
-{
-  size_t oldSize = v.size();
-  v.resize(newSize);
-  for(size_t i = oldSize; i < newSize; i++)   
-    v[i] = value;
-}
-template<class T>
-void rsPadLeft(std::vector<double>& v, size_t amount, T value)
-{
-  if(amount == 0) 
-    return;
-  size_t oldSize = v.size();
-  v.resize(oldSize+amount);
-  for(size_t i = v.size()-1; i >= amount; i++)
-    v[i] = v[i-amount];
-  for(size_t i = 0; i < amount; i++)
-    v[i] = value;
-  // maybe, it can be done with memmove and memset more efficiently?
-}
-
+// Produces a vector x from the array xIn of length N and a vector y from the model in such a way
+// that they are time aligned even in cases when the lengths dont match by padding an appropriate
+// number of zero samples where necessarry
 // x: original input of length N, model: a sinusoidal moded
 void getPaddedSignals(double* xIn, int Nx, 
   const RAPT::rsSinusoidalModel<double>& model,
@@ -280,7 +259,7 @@ void getPaddedSignals(double* xIn, int Nx,
     for(n = nf; n < x.size(); n++) x[n] = xIn[n-nf];
   }
   else {
-    rsPadLeft(y, nf, 0.0);       // prepend zeros to y, if nf > 0
+    RAPT::rsPadLeft(y, nf, 0.0);       // prepend zeros to y, if nf > 0
     x = RAPT::toVector(xIn, Nx);
   }
 
@@ -288,43 +267,18 @@ void getPaddedSignals(double* xIn, int Nx,
   size_t nx = x.size();
   size_t ny = y.size();
   if(nx > ny)
-    rsResizeWithInit(y, nx, 0.0);
+    RAPT::rsResizeWithInit(y, nx, 0.0);
   else if(ny > nx)
-    rsResizeWithInit(x, ny, 0.0);
+    RAPT::rsResizeWithInit(x, ny, 0.0);
 }
-
 void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
   const SinusoidalSynthesizer<double>& synth, double* x, int Nx)
 {
   // Synthesize model output and create residual:
-  // Here, we assume that the resynthesized signal extends beyond the ends of the original due to
-  // additional fade-in/out datapoints - but can we really always assume this? no, we can't
-  // todo: make it work also for the case when the model sound is shorter than the original sound
-
   typedef std::vector<double> Vec;
   Vec xp, yp;        // xp: padded x, yp: padded model output
   getPaddedSignals(x, Nx, model, synth, xp, yp);
   Vec r = xp - yp;   // residual
-
-
-  //r.resize(xp.size());
-  //for(size_t n = 0; n < r.size(); n++)
-  //  r[n] = xv[n] - y[n];
-
-  /*
-  Vec y = synth.synthesize(model);
-  int numFadeInSamples = -model.getStartSampleIndex(synth.getSampleRate()); // preZeroSamples
-  int N = (int)y.size();     // length of residual signal in samples
-  Vec r(N);                  // residual
-  Vec xv   = RAPT::toVector(x, Nx);
-  Vec pre  = RAPT::rsConstantVector((size_t) numFadeInSamples, 0.0);
-  xv = RAPT::rsConcatenate(pre, xv);
-  Vec post = RAPT::rsConstantVector(y.size()-xv.size() , 0.0);
-  xv = RAPT::rsConcatenate(xv, post);
-  for(size_t n = 0; n < r.size(); n++)
-    r[n] = xv[n] - y[n];
-  */
-
 
   // plot original, resynthesized and residual signals:
   int N = (int)yp.size();

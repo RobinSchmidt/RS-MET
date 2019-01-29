@@ -395,13 +395,43 @@ void sineParameterEstimation()
   GNUPlotter plt;
 }
 
+
+// move to RAPT::rsArray, maybe make cubic versions
+template<class T>
+void applyFadeIn(T* x, int N, int numFadeSamples)
+{
+  int nf = rsMin(numFadeSamples, N);
+  for(int n = 0; n < nf; n++) {
+    T t = T(n) / T(nf);
+    x[n] *= t;
+  }
+}
+template<class T>
+void applyFadeOut(T* x, int N, int numFadeSamples)
+{
+  int nf = rsMin(numFadeSamples, N);
+  for(int n = 0; n < nf; n++) {
+    T t = T(n) / T(nf);
+    x[N-n-1] *= t;
+  }
+}
+template<class T>
+void applyFadeInAndOut(T* x, int N, int numFadeSamples)
+{
+  applyFadeIn( &x[0], N, numFadeSamples);
+  applyFadeOut(&x[0], N, numFadeSamples);
+}
+
 // convenience function:
 std::vector<double> synthesizeSinusoidal(
-  const RAPT::rsSinusoidalModel<double>& model, double sampleRate)
+  const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime = 0.0)
 {
   SinusoidalSynthesizer<double> synth;
   synth.setSampleRate(sampleRate);
-  return synth.synthesize(model);
+  std::vector<double> x = synth.synthesize(model);
+  if(fadeTime > 0.0)
+    applyFadeInAndOut( &x[0], (int) x.size(), fadeTime*sampleRate);
+  return x;
 }
 
 // rename to testSinusoidalSynthesis1
@@ -523,10 +553,7 @@ void sinusoidalAnalysis1()
   double frequency  = 1000;   // in Hz
   double amplitude  = 3.0;    // raw factor
   double phase      = 0.0;    // in radians
-
-  // analsis parameters:
-  int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
-  double freqRes = 100; // frequency resolution
+  double fadeCycles = 5.0;    // number of cycles for fade in
 
   phase = PI/2; // for test
   //frequency = 800;
@@ -536,31 +563,41 @@ void sinusoidalAnalysis1()
   frequency = 1000 * GOLDEN_RATIO/2;
   //frequency = 1000 * SQRT2_INV;
 
+  double fadeTime = fadeCycles/frequency;  // in seconds
+
+
+  // analsis parameters:
+  int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
+  //int window = RAPT::rsWindowFunction::BLACKMAN_WINDOW;
+  double freqRes = frequency; // frequency resolution
+  int zeroPadFactor = 2;
+
   // create signal:
   double period = sampleRate / frequency;         // in samples
   size_t N = (size_t)ceil(length * sampleRate);   // number of samples
   std::vector<double> x = createSinusoid(N, frequency, sampleRate, amplitude, phase);
+  applyFadeInAndOut(&x[0], (int)N, sampleRate*fadeTime);
 
   // create and set up analyzer:
   SinusoidalAnalyzer<double> sa;
+  int blockSize = sa.getRequiredBlockSize(window, freqRes, sampleRate);
+  int hopSize = blockSize/2;
+  double maxLevelThresh = sa.getRequiredThreshold(window, 0.0);
   sa.setWindowType(window);
-  sa.setMaxFreqDeltaBase(100);
-  sa.setTrafoSize(4096);
-  sa.setBlockSize(1024);
-  sa.setHopSize(256);
-  //sa.setHopSize(512);
+  sa.setMaxFreqDeltaBase(20);
+  sa.setBlockAndTrafoSize(blockSize, zeroPadFactor*blockSize);
+  sa.setHopSize(hopSize);
   //sa.setRelativeLevelThreshold(-25);  // some spurious tracks will occur (with Hamming window)
   sa.setRelativeLevelThreshold(-15);    // no spurious tracks will occur (with Hamming window)
-  sa.setFadeInTime(0.01);    // -> 500 samples @50kHz
-  sa.setFadeOutTime(0.01);   // -> 500 samples @50kHz
-  sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
-  //sa.setFadeInTime(0.0);
-  //sa.setFadeOutTime(0.0);
-  //sa.setMinimumTrackLength(0.001); 
+  //sa.setFadeInTime(0.01);    // -> 500 samples @50kHz
+  //sa.setFadeOutTime(0.01);   // -> 500 samples @50kHz
+  //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
+  sa.setFadeInTime(0);
+  sa.setFadeOutTime(0);
+  sa.setMinimumTrackLength(0); 
   //plotSineModel(sa, &x[0], (int) x.size(), sampleRate);
 
-  int minBlockSize = sa.getRequiredBlockSize(window, freqRes, sampleRate);
-  double maxLevelThresh = sa.getRequiredThreshold(window, 0.0);
+
 
   // find model for the signal:
   rsSinusoidalModel<double> model = sa.analyze(&x[0], (int)N, sampleRate);
@@ -598,21 +635,24 @@ void sinusoidalAnalysis2()
   // Two sinusoids at around 1000 and 1100 Hz
 
   // input signal parameters:
-  double fs = 44100; // sample rate
-  double f1 = 1011;  // 1st frequency
-  double f2 = 1107;  // 2nd frequency
-  double a1 = 1.0;   // 1st amplitude
-  double a2 = 1.0;   // 2nd amplitude
-  double p1 = PI/2;  // 1st start phase
-  double p2 = PI/2;  // 2nd start phase
-  double L  = 0.1;   // length in seconds
+  double fs = 44100;   // sample rate
+  double f1 = 1011;    // 1st frequency
+  double f2 = 1107;    // 2nd frequency
+  double a1 = 1.0;     // 1st amplitude
+  double a2 = 1.0;     // 2nd amplitude
+  double p1 = PI/2;    // 1st start phase
+  double p2 = PI/2;    // 2nd start phase
+  double L  = 0.3;     // length in seconds
+  double fade = 0.03;  // fade-in/out time for original signal
 
   // analysis parameters:
   double freqRes  = f2-f1;   // frequency resolution
   double dBmargin = 20;      // dB margin over sidelobe level
   double blockSizeFactor = 1.0;  // factor by which to to make blockSize longer than necessary
   int zeroPaddingFactor = 2;         // zero padding factor
-  int window    = RAPT::rsWindowFunction::HAMMING_WINDOW;
+  int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
+  //int window = RAPT::rsWindowFunction::BLACKMAN_WINDOW;
+  //int window = RAPT::rsWindowFunction::BLACKMAN_HARRIS;
 
 
   // create a model and synthesize the sound:
@@ -632,9 +672,10 @@ void sinusoidalAnalysis2()
   model.addPartial(partial1);
   model.addPartial(partial2);
 
-  std::vector<double> x = synthesizeSinusoidal(model, fs);
+  std::vector<double> x = synthesizeSinusoidal(model, fs, fade);
   //plotSineModel(model, fs); // we need a margin for the y-axis - otherwise it looks like nothing
-  //plotVector(x);
+  plotVector(x);
+
 
   // analyze the produced sound again and compare the original model and analysis result
   // ...
@@ -643,7 +684,6 @@ void sinusoidalAnalysis2()
   SinusoidalAnalyzer<double> sa;
   int blockSize = blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs); // +1 for test
   int hopSize   = blockSize/8; // small hopSize needed, otherwise analyzed model has too short tracks
-  //int trafoSize = RAPT::rsNextPowerOfTwo(blockSize);  // or maybe use blockSize itself
   int trafoSize = zeroPaddingFactor*blockSize;
   double levelThresh = sa.getRequiredThreshold(window, dBmargin);
   sa.setWindowType(window);
@@ -651,16 +691,16 @@ void sinusoidalAnalysis2()
   sa.setBlockAndTrafoSize(blockSize, trafoSize);
   sa.setHopSize(hopSize);
 
-  //sa.setMaxFreqDeltaBase(20);  // Hz variation allowed between frames - todo: have a parameter
-  //                             // that is independent from the hopSize
-  //sa.setFadeInTime(0);
-  //sa.setFadeOutTime(0);
-  //sa.setMinimumTrackLength(0);
+  sa.setMaxFreqDeltaBase(20);  // Hz variation allowed between frames - todo: have a parameter
+                               // that is independent from the hopSize
+  sa.setFadeInTime(0);
+  sa.setFadeOutTime(0);
+  sa.setMinimumTrackLength(0);
 
-  sa.setMaxFreqDeltaBase(10);  // 10 Hz variation allowed between frames
-  sa.setFadeInTime(0.01);
-  sa.setFadeOutTime(0.01);
-  sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
+  //sa.setMaxFreqDeltaBase(10);  // 10 Hz variation allowed between frames
+  //sa.setFadeInTime(0.01);
+  //sa.setFadeOutTime(0.01);
+  //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
 
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
   plotTwoSineModels(model, model2, fs);
@@ -674,14 +714,17 @@ void sinusoidalAnalysis2()
 
   // Observations:
   // -when using a blockFactor = 2, we can estimate the frequencies more accurately, but the 
-  //  amplitude envelope gets an additional fade-in/out charakter
-
+  //  amplitude envelope gets an additional fade-in/out character
+  // -towards the ends, we have large frequency estimation errors which in turn lead to temporary 
+  //  phase inversions which totally destroys the time-domain subtraction approach
+  // -but maybe that will be less problematic with natural sounds where the sinusoids do not start
+  //  or end abruptly - i think, this is a switch on/off artifact 
   // -when the hopSize is too small (like blockSize/2), the analyzed tracks are too short
-  //  -rsSpectrogram::getNumFrames looks good - the number of frames is not to blame
+  //  -rsSpectrogram::getNumFrames looks good - the number of spectrogram frames is not to blame
   //  -or: maybe we should use more frames such that the first frame is centered pre-zero such that
   //   it contains at least one valid sample (i.e. the rightmost sample of the first block should
   //   have index n >= 0)?
-  //  -maybe our allowe freq-delta is too small, such that the start- and end peaks don't get 
+  //  -maybe our allowed freq-delta is too small, such that the start- and end peaks don't get 
   //   connected to the main track
   //  -yes - this makes sense, because when reducing the hopSize by factor two, the same allowed
   //   freq delta allows for twice as fast frequency changes
@@ -690,8 +733,7 @@ void sinusoidalAnalysis2()
   //   hopSize - as a function of the normalized frequency delta (like, in Hz per second)
   //
 
-
-  // -idea: 
+  // -idea - ToDo next: 
   //  -the first few frames have lots of zero valued samples which lead to an amplitude error,
   //   for example, in the first frame only half of the samples in the buffer are nonzero
   //  -maybe we should take this situation into account already in the spectrogram processor
@@ -703,6 +745,12 @@ void sinusoidalAnalysis2()
   //   if(n <= blockSize/2)  // or <?
   //     a *= getLeftBoundaryCompensation(n)
   //  -maybe have functions in rsSpectrogram setEdgeCompensation
+  // ...or actually this error occurs only because in the synthesis of the sinusoid we cut it off
+  // abruptly - this is not supposed to happen in natural signals - here, the sample values outside
+  // the range 0..N-1 actually *are* zero, so this edge-compensation would make sense only for 
+  // spectrograms that are cut out from some original signal
+  // -fade-in/out can sometimes help, but there still seem to be phase-inversions with certain 
+  //  settings - maybe it's the synthesis? make a unit test for the phase-interpolation
 
 
   // maybe allow time varying frequencies and amplitudes - but maybe in next test - ramp up the

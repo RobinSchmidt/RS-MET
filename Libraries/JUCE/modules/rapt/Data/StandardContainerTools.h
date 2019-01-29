@@ -150,6 +150,35 @@ inline T rsGetAndRemoveLast(std::vector<T>& v)
   return result;
 }
 
+/** Resizes the vector to the given new size and if this new size is greater than the old size, 
+intializes all the new entries at the end with "value". */
+template<class T>
+inline void rsResizeWithInit(std::vector<double>& v, size_t newSize, T value)
+{
+  size_t oldSize = v.size();
+  v.resize(newSize);
+  for(size_t i = oldSize; i < newSize; i++)
+    v[i] = value;
+}
+
+/** Prepends "amount" copies of "value" to the vector, i.e. increases the size of the vector by 
+"amount", shifts all values "amount" places to the right and inserts "amount" number of "value"s 
+at the front. */
+template<class T>
+inline void rsPadLeft(std::vector<double>& v, size_t amount, T value)
+{
+  if(amount == 0) 
+    return;
+  size_t oldSize = v.size();
+  v.resize(oldSize+amount);
+  for(size_t i = v.size()-1; i >= amount; i--)
+    v[i] = v[i-amount];
+  for(size_t i = 0; i < amount; i++)
+    v[i] = value;
+  // maybe, it can be done with memmove and memset more efficiently?
+}
+
+
 /** Converts C-array to std::vector. */
 template<class T>
 inline std::vector<T> toVector(T* theArray, size_t size) // rename to rsToVector
