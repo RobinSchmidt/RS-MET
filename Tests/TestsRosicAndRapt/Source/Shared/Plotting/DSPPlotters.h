@@ -149,7 +149,7 @@ class SpectrumPlotter : public GNUPlotter
 
 public:
 
-  enum class FreqAxisUnits
+  enum class FreqAxisUnits  // maybe rename to FreqAxisUnit
   {
     binIndex = 0,
     normalized,

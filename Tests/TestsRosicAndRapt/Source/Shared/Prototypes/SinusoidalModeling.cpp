@@ -34,6 +34,8 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   for(size_t n = 0; n < N; n++)          // fill time-array
     t[n] = (nStart + n) / sampleRate;    // ...optimize
 
+
+
   // interpolate phase:
   if(cubicPhase) rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
   else           rsInterpolateLinear( &td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
@@ -88,6 +90,28 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
 }
 
 template<class T>
+std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(const std::vector<T>& t)
+{
+  int N = (int) t.size();  // t: time axis
+  std::vector<T> p(N);     // p: interpolated phase values
+
+  // ...
+
+  return p;
+}
+
+template<class T>
+std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedAmplitudes(const std::vector<T>& t)
+{
+  int N = (int) t.size();  // t: time axis
+  std::vector<T> a(N);     // a: interpolated amplitude values
+
+  // ...
+
+  return a;
+}
+
+template<class T>
 std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   const std::vector<T>& f, const std::vector<T>& wp) const
 {
@@ -126,66 +150,25 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
 // template instantiation:
 template class SinusoidalSynthesizer<double>;
 
-//=================================================================================================
-
-// move to library:
 /*
-template<class T>
-rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
-{
-  int N = A.getNumRows();
-  int M = A.getNumColumns();
-  rsMatrix<T> mags(N, M);
-  for(int i = 0; i < N; i++)
-    for(int j = 0; j < M; j++)
-      mags(i, j) = abs(A(i, j));
-  return mags;
-}
-template<class T>
-rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
-{
-  int N = A.getNumRows();
-  int M = A.getNumColumns();
-  rsMatrix<T> phases(N, M);
-  for(int i = 0; i < N; i++)
-    for(int j = 0; j < M; j++)
-      phases(i, j) = arg(A(i, j));
-  return phases;
-}
-// maybe factor out common code...maybe something like applyMatrixFunction with different
-// input and output types for the template parameter
-
-// interpolate between two values that are supposed to wrapping around and always be in xMin..xMax,
-// for example -1..1, 0..1, 0..2*pi, -pi..pi, etc. t is the interpolation parameter between 0..1 
-// where such that x = (1-t)*x0 + t*x1 = x0 + t*(x1-x0)
-template<class T> 
-T rsInterpolateWrapped(T x0, T x1, T t, T xMin, T xMax)
-{
-  T r  = xMax - xMin;  // range
-  T du = x1 + r - x0;  // upper difference
-  T dm = x1     - x0;  // middle difference
-  T dl = x1 - r - x0;  // lower difference
-  T au = rsAbs(du);
-  T am = rsAbs(dm);
-  T al = rsAbs(dl);
-  T x;
-
-  // add an appropriate fraction of the delta that has the smallest absolute difference to x0:
-  if(au < am && au < al)
-    x = x0 + t*du;
-  else if(am < al)
-    x = x0 + t*dm;
-  else
-    x = x0 + t*dl;
-
-  // re-wrap result into allowed interval:
-  if(x > xMax)
-    x -= r;
-  else if(x < xMin)
-    x += r;
-  return x;
-}
-// move to library and check if it is correct (maybe by a unit test?)...and if it can be simplified
+Ideas:
+-let the user select between different phase-interpolation methods:
+ -integrate-freq and re-adjust (unwrapped) phase (with or without accumulation - or maybe only 
+  with), this can be done with linear interpolation or natural cubic splines
+ -hermite interpolation where the target-derivative values are obtained from the frequency data, 
+  like (x0,y0,y0') = (t0,p0,w0) and (x1,y1,y1') = (t1,p1,w1) where w0 = 2*pi*f0/fs, etc.
+  ...but instead of p1 use p1 + k*2*pi for a suitably chosen k, maybe k = round(dt*fa) where
+  dt = t1-t0, fa = (f0+f1)/2 (time-delta and average frequency over the interval)
+  -the formula for fa is simple but maybe a better estimate for the average frequency can be 
+   obtained by taking into account the frequency derivative (which can be computed numerically) and
+   using the integral of hermite polynomial: fa = 1/(t1-t0) * integral_t0^t1 f(t) dt where f(t)
+   is the cubic hermite polynomial
+  -if we have a numeric frequency derivative available anyway, we could also use quintic hermite 
+   interpolation for the phase
+-for amplitude interpolation, we could also let the user choose hermite interpolation - maybe 
+ that's less susceptible to overshooting artifacts when we add small fade-in/out sections... but
+ maybe it's similar to natural cubic splines -> try it, be sure to try numeric differentiation with
+ and without extrapolation
 */
 
 //=================================================================================================
@@ -638,7 +621,15 @@ Window:
  -but also have a look at the phase-response - make sure, the window doesn't mess up phase 
   measurement
 
--
+-when a Chebychev window is used, we may make the block-size a function of the threshold (because
+ the width of the mainlobe gets smaller with higher thresholds, we may choose smaller block-sizes
+-use an adaptive (time-varying) amplitude threshold - high at the beginning (like -20..-30) - we
+ can use smaller block-sizes in transient portions of the sound and therefore have better 
+ time-resolution there. the idea is that at the beginning, all partials still have high amplitude,
+ so a higher threshold is justified - later in the decay phase, we can use lower thresholds 
+ (-40..-80) to not loose track of the more highly damped partials (...this applies mostly to
+ decaying sounds, like guitar - for steady sounds, like flute, the situation is different)
+-maybe we should first figure out, where the transients are via an onset-detector
 
 
 // how do we best compute the instantaneous phase - linear interpolation?

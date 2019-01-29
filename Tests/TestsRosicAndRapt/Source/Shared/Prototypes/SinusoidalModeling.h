@@ -23,6 +23,14 @@ class SinusoidalSynthesizer
 
 public:
 
+  /** Enumeration of the available phase interpolation methods. */
+  enum class PhaseInterpolationMethod
+  {
+    cubicHermite = 0,
+    quinticHermite,
+    tweakedFreqIntegral
+  };
+
 
   /** \name Setup */
 
@@ -64,17 +72,37 @@ public:
   void synthesizePartial(const RAPT::rsSinusoidalPartial<T>& partial, T* x, int xLength, 
     T timeShift = T(0)) const;
 
+
+
+
+  std::vector<T> getInterpolatedPhases(const std::vector<T>& timeAxis);
+
+
+  std::vector<T> getInterpolatedAmplitudes(const std::vector<T>& timeAxis);
+
+
+
   /** Given an array of time-stamps and corresponing frequency and wrapped phase values, this 
   function computes the corresponding array of unwrapped phase values. */
   std::vector<T> unwrapPhase(const std::vector<T>& time, 
     const std::vector<T>& freq, const std::vector<T>& wrappedPhase) const; 
 
 
+
+
+
 protected:
 
   T sampleRate = 44100;
-  bool cubicPhase = true;
+
   bool cubicAmplitude = false;
+
+  PhaseInterpolationMethod phaseInterpolation = PhaseInterpolationMethod::tweakedFreqIntegral;
+  // later use quinticHermite by default
+
+
+  // maybe get rid of these:
+  bool cubicPhase = true;
   bool accumulatePhaseDeltas = true;
   // Notes: accumulation gives rise to an O(M^2) complexity of the phase unwrapping algorithm where 
   // M is the number of data points in the respective partial - but without accumulation there may 

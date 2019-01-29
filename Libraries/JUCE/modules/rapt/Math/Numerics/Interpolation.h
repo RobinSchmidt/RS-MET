@@ -108,7 +108,8 @@ Ty rsInterpolateLinear(Tx x1, Tx x2, Ty y1, Ty y2, Tx x);
 // but this is a change that would silently break client code
 // hmm...but then rsInterpolateCubicHermite would also have to be changed
 
-/** Linearly interpolates between two values x0, x1 where the values are supposed to be wrapping 
+/** !!! NOT YET TESTED !!!
+Linearly interpolates between two values x0, x1 where the values are supposed to be wrapping 
 around and always be in xMin..xMax, for example -1..1, 0..1, 0..2*pi, -pi..pi, etc. t is the 
 interpolation parameter between 0..1 such that x = (1-t)*x0 + t*x1 = x0 + t*(x1-x0). When the value
 is restricted to a given range, we have two possible directions of the interpolation path - we can 
