@@ -144,8 +144,8 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
   // the quintic hermite would have to duplicate most of the code her, maybe instead let a boolean
   // "qunitic" parameter be passed here and do if(quitic) here at appropriate places
 
-  bool quintic = false;
-  //bool quintic = true; // does not yet work
+  //bool quintic = false;
+  bool quintic = true; // does not yet work
 
   // init data arrays:
   std::vector<T> pd = partial.getPhaseArray();     // pd: phase data
@@ -156,7 +156,8 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
   std::vector<T> fdd;           // fdd: frequency derivative data
   if(quintic) {
     fdd.resize(M);
-    rsNumericDerivative(&td[0], &fd[0], &fdd[0], M, true);
+    rsNumericDerivative(&td[0], &fd[0], &fdd[0], M, false);
+    //plotVector(fdd);
   }
 
   // declare some variables and loop over datapoints:

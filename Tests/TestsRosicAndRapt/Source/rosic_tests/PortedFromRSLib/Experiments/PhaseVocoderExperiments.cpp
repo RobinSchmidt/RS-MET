@@ -429,6 +429,12 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   for(size_t n = 0; n < N; n++) 
     t[n] = n / fs;// fill time-array
 
+  // synthesize and plot the sound:
+  RAPT::rsSinusoidalModel<double> model;
+  model.addPartial(partial);
+  std::vector<double> x = synth.synthesize(model);
+  //plotVector(x);
+
   // let the synth generate the phases:
   std::vector<double> p1 = synth.phasesViaTweakedIntegral(partial, td, t);
   std::vector<double> p2 = synth.phasesCubicHermite(      partial, td, t); // quintic looks wrong
@@ -444,6 +450,9 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   std::vector<double> dp = (0.5/PI) * (p2-p1); 
   // normalized difference between the algorithms - at the datapoints, it must be an integer 
   // corresponding to the k in the formula pu = p + k*2*PI
+
+
+
 
   // plot:
   GNUPlotter plt;
