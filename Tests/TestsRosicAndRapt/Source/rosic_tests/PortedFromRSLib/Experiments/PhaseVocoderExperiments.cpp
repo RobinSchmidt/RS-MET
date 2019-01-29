@@ -431,7 +431,7 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
 
   // let the synth generate the phases:
   std::vector<double> p1 = synth.phasesViaTweakedIntegral(partial, td, t);
-  std::vector<double> p2 = synth.phasesCubicHermite(      partial, td, t); // the derivative looks wrong
+  std::vector<double> p2 = synth.phasesCubicHermite(      partial, td, t); // quintic looks wrong
   RAPT::rsArray::unwrap(&p2[0], N, 2*PI);
 
   // array for plotting the phase datapoints:
@@ -448,8 +448,8 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   // plot:
   GNUPlotter plt;
   //plt.addDataArrays(M, &td[0], &pd[0]);
-  //plt.addDataArrays(N, &t[0],  &p1[0]);
-  //plt.addDataArrays(N, &t[0],  &p2[0]);
+  plt.addDataArrays(N, &t[0],  &p1[0]);
+  plt.addDataArrays(N, &t[0],  &p2[0]);
   plt.addDataArrays(N, &t[0],  &dp[0]);
   //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
   plt.plot();

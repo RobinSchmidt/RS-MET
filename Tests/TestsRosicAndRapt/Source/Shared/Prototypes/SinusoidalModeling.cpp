@@ -145,17 +145,18 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
   // "qunitic" parameter be passed here and do if(quitic) here at appropriate places
 
   bool quintic = false;
+  //bool quintic = true; // does not yet work
 
   // init data arrays:
-  std::vector<T> pd = partial.getPhaseArray();
-  std::vector<T> fd = partial.getFrequencyArray();
-  int M = (int) td.size();      // td: time axis data
-  int N = (int) t.size();       // t:  interpolated time axis (to sample-rate)
-  std::vector<T> p(N);          // p:  interpolated phase values
-  std::vector<T> dd;            // dd: frequency derivative
+  std::vector<T> pd = partial.getPhaseArray();     // pd: phase data
+  std::vector<T> fd = partial.getFrequencyArray(); // fd: freq data
+  int M = (int) td.size();      // td:  time axis data
+  int N = (int) t.size();       // t:   interpolated time axis (to sample-rate)
+  std::vector<T> p(N);          // p:   interpolated phase values
+  std::vector<T> fdd;           // fdd: frequency derivative data
   if(quintic) {
-    dd.resize(M);
-    rsNumericDerivative(&td[0], &fd[0], &dd[0], M, true);
+    fdd.resize(M);
+    rsNumericDerivative(&td[0], &fd[0], &fdd[0], M, true);
   }
 
   // declare some variables and loop over datapoints:
@@ -174,14 +175,12 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
 
 
 
-
-    T w0p = 0, w1p = 0; // for the quintic interpolation later - not yet used
-    if(quintic)
-    {
-      // ...
+    T f0d = 0, f1d = 0; // frequency derivative at start and end
+    T w0d = 0, w1d = 0; // for the quintic interpolation later - not yet used
+    if(quintic)  {
+      f0d = fdd[m];  f1d = fdd[m+1];
+      w0d = f2w*f0d; w1d = f2w*f1d;
     }
-
-    
 
 
     T fa  = 0.5 * (f0 + f1);      // average frequency of segment (in Hz) - todo: maybe try geometric mean, or generalized mean
@@ -193,24 +192,21 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
     // make a function, meanFreq(f0, f1, dt, f0p, f1p)
 
 
-
-
-
-    // compute cubic Hermite coefficients for the current segment:
+    // compute cubic or quintic Hermite coefficients for the current segment:
     T scl = dt;
     y0[0] = p0;            // initial phase
     y1[0] = p1;            // final phase
     y0[1] = w0*scl;        // initial phase derivative
     y1[1] = w1*scl;        // final phase derivative
     if(quintic) {
-      y0[2] = w0p*scl;     // initial omega derivative
-      y1[2] = w1p*scl;     // final omega derivative
+      y0[2] = w0d*scl;     // initial omega derivative
+      y1[2] = w1d*scl;     // final omega derivative
       getHermiteCoeffs2(y0, y1, a);
     }
     else
       getHermiteCoeffs1(y0, y1, a);
 
-    // evaluate cubic at the sample-points:
+    // evaluate polynomial at the sample-points:
     scl = T(1) / scl;
     int order = 3 + 2*quintic;     // 3 or 5
     while(n*Ts < t1) {
