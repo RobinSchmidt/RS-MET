@@ -143,7 +143,46 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
   std::vector<T> p(N);     // p: interpolated phase values
   std::vector<T> fd = partial.getFrequencyArray();
   std::vector<T> pd = partial.getPhaseArray();
+  //std::vector<T> wd = (2*PI/sampleRate) * fd;    // omegas - maybe compute them on-the-fly in the loop
+  T f2w = 2*PI/sampleRate; // factor to convert from frequency f to omega w
 
+  T y0[2];   // p0,w0, phase and normalized radian freq at start of current cubic segment
+  T y1[2];   // p1,w1, phase and normalized radian freq at end of current cubic segment
+  T a[4];    // cubic polynomial coefficients
+  int n = 0; // sample index
+  T t0, t1, f0, f1, p0, p1, w0, w1, dt, fa, k;
+  for(int m = 0; m < M-1; m++)  // loop over the datapoints
+  {
+    t0 = td[m];  t1 = td[m+1];  // start and end time of segment
+    f0 = fd[m];  f1 = fd[m+1];  // start and end frequency of segment
+    p0 = pd[m];  p1 = pd[m+1];  // start and end phase of segment (p1 still needs to be adjusted)
+    w0 = f2w*f0; w1 = f2w*f1;   // start and end omega of segment
+
+    dt  = t1 - t0;              // length of segment (in seconds)
+    fa  = 0.5 * (f0 + f1);      // average frequency of segment (in Hz)
+    k   = round(dt * fa);       // number of cycles passed between t0 and t1
+    p1 += 2*k*PI;               // adjust end-phase of segment
+    // ...phase adjustment is still questionable - is the formula for k really the most reasonable?
+    // and/or maybe computation of fa should also take p0 and p1 into account?
+
+
+
+    // get cubic coefficients:
+
+    //...
+
+    // evaluate cubic at the sample-points:
+    while(n*sampleRate < t1)
+    {
+      //...
+
+      n++;
+      if(n == N)
+        break;    // we are done, interpolated phases are ready
+    }
+
+
+  }
 
 
 
@@ -173,9 +212,14 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
     T wp1 = fmod(up[m], 2*PI);  // 0..2*pi
     T wp2 = fmod(wp[m], 2*PI);  // 0..2*pi
     T d   = wp2-wp1;            // -2*pi..2*pi, delta between target phase and integrated frequency
+
+    // these adjustments here are related to the phase-desync bursts in resynthesized signals (the
+    // resynthesized phases get temporarily desynchronized from the original phases, leading to
+    // short sinusodial bursts in the residual) - but commenting them out leads to even more bursts
     if(d < 0) d += 2*PI;        // 0..2*PI
     if(d > PI)                  // choose adjustment direction of smaller phase difference
       d -= 2*PI;                // -pi..pi
+
     up[m] += d;                 // re-adjust final unwrapped phase
     if(accumulatePhaseDeltas)
       for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
