@@ -141,6 +141,9 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
   const std::vector<T>& td,
   const std::vector<T>& t) const
 {
+  // the quintic hermite would have to duplicate most of the code her, maybe instead let a boolean
+  // "qunitic" parameter be passed here and do if(quitic) here at appropriate places
+
   int M = (int) td.size(); // td: time axis data
   int N = (int) t.size();  // t: interpolated time axis (to sample-rate)
   std::vector<T> p(N);     // p: interpolated phase values
@@ -178,16 +181,14 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
     // the normalization to the interval 0..1 on the x-axis see the code for rsInterpolateSpline - the 
     // scale and shift variables - scale == dt, shift == t0 - so, i think, it should be:
     //T scaler = 1;
-    T scaler = dt;    // nope, the derivative looks wrong - maybe it must be in samples
+    //T scaler = dt;    // nope, the derivative looks wrong - maybe it must be in samples
     //T scaler = dt*Ts; // even more wron
+    T scaler = dt*sampleRate; // why do we have to multiply by the sampleRate?
     y0[1] *= scaler;
     y1[1] *= scaler;
     getHermiteCoeffs1(y0, y1, a);
 
-
-
     // evaluate cubic at the sample-points:
-    //T dtR = T(1) / dt; // the reciprocal scaling must be applied to the argument of the polynomial
     scaler = T(1) / scaler;
     while(n*Ts < t1) {
       p[n] = rsPolynomial<T>::evaluate(scaler*(t[n]-t0), a, 3);
@@ -197,8 +198,6 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
     }
 
   }
-
-
 
   return p;
 }
