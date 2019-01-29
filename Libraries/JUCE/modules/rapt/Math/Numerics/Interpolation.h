@@ -293,13 +293,13 @@ void rsInterpolateSpline(Tx *x, Ty *y, Ty **yd, int N, int M, Tx *xi, Ty *yi, in
   while(n < N-1)
   {
     // compute coeffs for spline and shift- and scale values:
-    shift = x[n];
-    scale = x[n+1]-x[n];
-    y0[0] = y[n];
+    shift = x[n];                    // maybe rename to x0
+    scale = x[n+1]-x[n];             // maybe rename to dx
+    y0[0] = y[n];                    // y-values are taken as is
     y1[0] = y[n+1];
     for(m = 1; m <= M; m++)
     {
-      y0[m] = yd[m-1][n]   * scale;
+      y0[m] = yd[m-1][n]   * scale;  // y' and higher derivatives have to be scaled by dx
       y1[m] = yd[m-1][n+1] * scale;
     }
     getHermiteCoeffsM(y0, y1, a, M);

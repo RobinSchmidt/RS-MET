@@ -177,15 +177,20 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
     // i think, this is not yet quite correct - i think, the derivatives must be scaled by dt for 
     // the normalization to the interval 0..1 on the x-axis see the code for rsInterpolateSpline - the 
     // scale and shift variables - scale == dt, shift == t0 - so, i think, it should be:
-    y0[1] *= dt;
-    y1[1] *= dt;
+    //T scaler = 1;
+    T scaler = dt;    // nope, the derivative looks wrong - maybe it must be in samples
+    //T scaler = dt*Ts; // even more wron
+    y0[1] *= scaler;
+    y1[1] *= scaler;
     getHermiteCoeffs1(y0, y1, a);
 
 
+
     // evaluate cubic at the sample-points:
-    T dtR = T(1) / dt; // the reciprocal scaling must be applied to the argument of the polynomial
+    //T dtR = T(1) / dt; // the reciprocal scaling must be applied to the argument of the polynomial
+    scaler = T(1) / scaler;
     while(n*Ts < t1) {
-      p[n] = rsPolynomial<T>::evaluate(dtR*(t[n]-t0), a, 3);
+      p[n] = rsPolynomial<T>::evaluate(scaler*(t[n]-t0), a, 3);
       n++;
       if(n == N)
         break;    // we are done, interpolated phases are ready

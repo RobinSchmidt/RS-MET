@@ -431,15 +431,27 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
 
   // let the synth generate the phases:
   std::vector<double> p1 = synth.phasesViaTweakedIntegral(partial, td, t);
-  std::vector<double> p2 = synth.phasesCubicHermite(      partial, td, t);
-
+  std::vector<double> p2 = synth.phasesCubicHermite(      partial, td, t); // the derivative looks wrong
   RAPT::rsArray::unwrap(&p2[0], N, 2*PI);
 
+  // array for plotting the phase datapoints:
+  std::vector<double> pd = partial.getPhaseArray();
+  std::vector<double> fd = partial.getFrequencyArray();
+  int M = (int) pd.size();
+  pd = synth.unwrapPhase(td, fd, pd);
+  //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
 
+  // plot:
   GNUPlotter plt;
-  plt.addDataArrays(N, &t[0], &p1[0]);
-  plt.addDataArrays(N, &t[0], &p2[0]);
+  plt.addDataArrays(M, &td[0], &pd[0]);
+  plt.addDataArrays(N, &t[0],  &p1[0]);
+  plt.addDataArrays(N, &t[0],  &p2[0]);
+  plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
   plt.plot();
+
+  // Observations:
+  // -the cubic hermite phase is 2pi behind the the integrated phase from datapoint 4 onwards
+  // -the slope of the cubic phase at the datapoints is still wrong (close to 0 everywhere)
 }
 
 
