@@ -166,21 +166,27 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
     // and/or maybe computation of fa should also take p0 and p1 into account?
 
 
+    // compute cubic Hermite coefficients for the current segment:
+    y0[0] = p0;  // initial phase
+    y0[1] = w0;  // initial phase derivative
+    y1[0] = p1;  // final phase
+    y1[1] = w1;  // final phase derivative
+    // i think, this is not yet quite correct - i think, the derivatives must be scaled by dt for 
+    // the normalization to the interval 0..1 on the x-axis see the code for rsInterpolateSpline - the 
+    // scale and shift variables - scale == dt, shift == t0 - so, i think, it should be:
+    y0[1] *= dt;
+    y1[1] *= dt;
+    getHermiteCoeffs1(y0, y1, a);
 
-    // get cubic coefficients:
-
-    //...
 
     // evaluate cubic at the sample-points:
-    while(n*sampleRate < t1)
-    {
-      //...
-
+    T dtR = T(1) / dt; // the reciprocal scaling must be applied to the argument of the polynomial
+    while(n*sampleRate < t1) {
+      p[n] = rsPolynomial<T>::evaluate(dtR*(t[n]-t0), a, 3);
       n++;
       if(n == N)
         break;    // we are done, interpolated phases are ready
     }
-
 
   }
 
