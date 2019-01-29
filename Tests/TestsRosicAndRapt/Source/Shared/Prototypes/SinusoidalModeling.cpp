@@ -152,6 +152,9 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
   T f2w = T(2*PI)/sampleRate; // factor to convert from frequency f to omega w
   T Ts  = T(1)/sampleRate;    // sampling interval
 
+  // wait! no - we don't need to deal with the sample-rate here at all - all values are in physical
+  // units!
+
   T y0[2];   // p0,w0, phase and normalized radian freq at start of current cubic segment
   T y1[2];   // p1,w1, phase and normalized radian freq at end of current cubic segment
   T a[4];    // cubic polynomial coefficients
@@ -171,32 +174,24 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
     // ...phase adjustment is still questionable - is the formula for k really the most reasonable?
     // and/or maybe computation of fa should also take p0 and p1 into account?
 
-
     // compute cubic Hermite coefficients for the current segment:
-    y0[0] = p0;  // initial phase
-    y0[1] = w0;  // initial phase derivative
-    y1[0] = p1;  // final phase
-    y1[1] = w1;  // final phase derivative
-    // i think, this is not yet quite correct - i think, the derivatives must be scaled by dt for 
-    // the normalization to the interval 0..1 on the x-axis see the code for rsInterpolateSpline - the 
-    // scale and shift variables - scale == dt, shift == t0 - so, i think, it should be:
-    //T scaler = 1;
-    //T scaler = dt;    // nope, the derivative looks wrong - maybe it must be in samples
-    //T scaler = dt*Ts; // even more wron
-    T scaler = dt*sampleRate; // why do we have to multiply by the sampleRate?
-    y0[1] *= scaler;
-    y1[1] *= scaler;
+    //T scl = dt*sampleRate; // scaler for interval transformation - why do we have to multiply by the sampleRate?
+    T scl = dt;
+    //T scl = 1;
+    y0[0] = p0;            // initial phase
+    y0[1] = w0*scl;        // initial phase derivative
+    y1[0] = p1;            // final phase
+    y1[1] = w1*scl;        // final phase derivative
     getHermiteCoeffs1(y0, y1, a);
 
     // evaluate cubic at the sample-points:
-    scaler = T(1) / scaler;
+    scl = T(1) / scl;
     while(n*Ts < t1) {
-      p[n] = rsPolynomial<T>::evaluate(scaler*(t[n]-t0), a, 3);
+      p[n] = rsPolynomial<T>::evaluate(scl*(t[n]-t0), a, 3);
       n++;
       if(n == N)
         break;    // we are done, interpolated phases are ready
     }
-
   }
 
   return p;

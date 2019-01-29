@@ -443,10 +443,10 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
 
   // plot:
   GNUPlotter plt;
-  plt.addDataArrays(M, &td[0], &pd[0]);
+  //plt.addDataArrays(M, &td[0], &pd[0]);
   plt.addDataArrays(N, &t[0],  &p1[0]);
   plt.addDataArrays(N, &t[0],  &p2[0]);
-  plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
+  //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
   plt.plot();
 
   // Observations:
