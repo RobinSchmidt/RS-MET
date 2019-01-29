@@ -144,52 +144,77 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
   // the quintic hermite would have to duplicate most of the code her, maybe instead let a boolean
   // "qunitic" parameter be passed here and do if(quitic) here at appropriate places
 
-  int M = (int) td.size(); // td: time axis data
-  int N = (int) t.size();  // t: interpolated time axis (to sample-rate)
-  std::vector<T> p(N);     // p: interpolated phase values
-  std::vector<T> fd = partial.getFrequencyArray();
+  bool quintic = false;
+
+  // init data arrays:
   std::vector<T> pd = partial.getPhaseArray();
-  //T f2w = T(2*PI)/sampleRate; // factor to convert from frequency f to omega w
+  std::vector<T> fd = partial.getFrequencyArray();
+  int M = (int) td.size();      // td: time axis data
+  int N = (int) t.size();       // t:  interpolated time axis (to sample-rate)
+  std::vector<T> p(N);          // p:  interpolated phase values
+  std::vector<T> dd;            // dd: frequency derivative
+  if(quintic) {
+    dd.resize(M);
+    rsNumericDerivative(&td[0], &fd[0], &dd[0], M, true);
+  }
 
-  T f2w = T(2*PI); // factor to convert from frequency f to radian frequency omega w
-  T Ts  = T(1)/sampleRate;    // sampling interval
+  // declare some variables and loop over datapoints:
+  T f2w = T(2*PI);         // factor to convert from frequency f to radian frequency omega w
+  T Ts  = T(1)/sampleRate; // sampling interval
+  T y0[3];                 // p0,w0,w0' phase, omega, omega' at start of current segment
+  T y1[3];                 // p1,w1,w1' phase, omega, omega' at end of current segment
+  T a[6];                  // polynomial coefficients (3rd or 5th order)
+  int n = 0;               // sample index
+  for(int m = 0; m < M-1; m++) {  // loop over the datapoints
+    T t0 = td[m],  t1 = td[m+1];  // start and end time of segment
+    T p0 = pd[m],  p1 = pd[m+1];  // start and preliminary end phase of segment
+    T f0 = fd[m],  f1 = fd[m+1];  // start and end frequency of segment
+    T w0 = f2w*f0, w1 = f2w*f1;   // start and end omega of segment
+    T dt = t1 - t0;               // length of segment (in seconds)
 
-  // wait! no - we don't need to deal with the sample-rate here at all (except for the loop 
-  // condition) - all values are in physical units!
 
-  T y0[2];   // p0,w0, phase and normalized radian freq at start of current cubic segment
-  T y1[2];   // p1,w1, phase and normalized radian freq at end of current cubic segment
-  T a[4];    // cubic polynomial coefficients
-  int n = 0; // sample index
-  T t0, t1, f0, f1, p0, p1, w0, w1, dt, fa, k;
-  for(int m = 0; m < M-1; m++)  // loop over the datapoints
-  {
-    t0 = td[m];  t1 = td[m+1];  // start and end time of segment
-    f0 = fd[m];  f1 = fd[m+1];  // start and end frequency of segment
-    p0 = pd[m];  p1 = pd[m+1];  // start and end phase of segment (p1 still needs to be adjusted)
-    w0 = f2w*f0; w1 = f2w*f1;   // start and end omega of segment
 
-    dt  = t1 - t0;              // length of segment (in seconds)
-    fa  = 0.5 * (f0 + f1);      // average frequency of segment (in Hz) - todo: maybe try geometric mean, or generalized mean
-    k   = round(dt * fa);       // number of cycles passed between t0 and t1
-    p1 += 2*k*PI;               // adjust end-phase of segment
+
+    T w0p = 0, w1p = 0; // for the quintic interpolation later - not yet used
+    if(quintic)
+    {
+      // ...
+    }
+
+    
+
+
+    T fa  = 0.5 * (f0 + f1);      // average frequency of segment (in Hz) - todo: maybe try geometric mean, or generalized mean
+    T k   = round(dt * fa);       // number of cycles passed between t0 and t1
+    p1   += 2*k*PI;               // adjust end-phase of segment
     // ...phase adjustment is still questionable - is the formula for k really the most reasonable?
-    // and/or maybe computation of fa should also take p0 and p1 into account?
+    // and/or maybe computation of fa should also take p0 and p1 into account? for quintic 
+    // interpolation use the integral over a cubic hermite frequency interpolant
+    // make a function, meanFreq(f0, f1, dt, f0p, f1p)
+
+
+
+
 
     // compute cubic Hermite coefficients for the current segment:
-    //T scl = dt*sampleRate; // scaler for interval transformation - why do we have to multiply by the sampleRate?
     T scl = dt;
-    //T scl = 1;
     y0[0] = p0;            // initial phase
-    y0[1] = w0*scl;        // initial phase derivative
     y1[0] = p1;            // final phase
+    y0[1] = w0*scl;        // initial phase derivative
     y1[1] = w1*scl;        // final phase derivative
-    getHermiteCoeffs1(y0, y1, a);
+    if(quintic) {
+      y0[2] = w0p*scl;     // initial omega derivative
+      y1[2] = w1p*scl;     // final omega derivative
+      getHermiteCoeffs2(y0, y1, a);
+    }
+    else
+      getHermiteCoeffs1(y0, y1, a);
 
     // evaluate cubic at the sample-points:
     scl = T(1) / scl;
+    int order = 3 + 2*quintic;     // 3 or 5
     while(n*Ts < t1) {
-      p[n] = rsPolynomial<T>::evaluate(scl*(t[n]-t0), a, 3);
+      p[n] = rsPolynomial<T>::evaluate(scl*(t[n]-t0), a, order);
       n++;
       if(n == N)
         break;    // we are done, interpolated phases are ready
