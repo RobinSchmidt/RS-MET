@@ -149,11 +149,13 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
   std::vector<T> p(N);     // p: interpolated phase values
   std::vector<T> fd = partial.getFrequencyArray();
   std::vector<T> pd = partial.getPhaseArray();
-  T f2w = T(2*PI)/sampleRate; // factor to convert from frequency f to omega w
+  //T f2w = T(2*PI)/sampleRate; // factor to convert from frequency f to omega w
+
+  T f2w = T(2*PI); // factor to convert from frequency f to radian frequency omega w
   T Ts  = T(1)/sampleRate;    // sampling interval
 
-  // wait! no - we don't need to deal with the sample-rate here at all - all values are in physical
-  // units!
+  // wait! no - we don't need to deal with the sample-rate here at all (except for the loop 
+  // condition) - all values are in physical units!
 
   T y0[2];   // p0,w0, phase and normalized radian freq at start of current cubic segment
   T y1[2];   // p1,w1, phase and normalized radian freq at end of current cubic segment

@@ -441,11 +441,16 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   pd = synth.unwrapPhase(td, fd, pd);
   //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
 
+  std::vector<double> dp = (0.5/PI) * (p2-p1); 
+  // normalized difference between the algorithms - at the datapoints, it must be an integer 
+  // corresponding to the k in the formula pu = p + k*2*PI
+
   // plot:
   GNUPlotter plt;
   //plt.addDataArrays(M, &td[0], &pd[0]);
-  plt.addDataArrays(N, &t[0],  &p1[0]);
-  plt.addDataArrays(N, &t[0],  &p2[0]);
+  //plt.addDataArrays(N, &t[0],  &p1[0]);
+  //plt.addDataArrays(N, &t[0],  &p2[0]);
+  plt.addDataArrays(N, &t[0],  &dp[0]);
   //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
   plt.plot();
 
