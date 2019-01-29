@@ -42,7 +42,7 @@ public:
 
   T time = 0;      // in seconds
   T freq = 0;      // in Hz
-  T gain = 0;      // as raw factor
+  T gain = 0;      // as raw factor - rename to amp
   T phase = 0;     // radians in [-pi, pi]
   //int cycles = 0;  // number of cycles passed: unwrapped phase = phase + 2*pi*cycles
 
@@ -154,6 +154,18 @@ public:
   creating interpolated data arrays. */
   void getDataArrays(std::vector<T>& time, std::vector<T>& freq, std::vector<T>& gain, 
     std::vector<T>& phase) const;
+
+
+  std::vector<T> getTimeArray() const;
+
+  std::vector<T> getFrequencyArray() const;
+
+  std::vector<T> getAmplitudeArray() const;
+
+  std::vector<T> getPhaseArray() const;
+
+
+
 
 
 

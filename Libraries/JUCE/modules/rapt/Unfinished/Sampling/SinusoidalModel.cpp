@@ -49,6 +49,46 @@ void rsSinusoidalPartial<T>::getDataArrays(
   }
 }
 
+template<class T>
+std::vector<T> rsSinusoidalPartial<T>::getTimeArray() const
+{
+  size_t M = getNumDataPoints();
+  std::vector<T> t(M);
+  for(size_t m = 0; m < M; m++)
+    t[m] = getDataPoint(m).getTime();
+  return t;
+}
+
+template<class T>
+std::vector<T> rsSinusoidalPartial<T>::getFrequencyArray() const
+{
+  size_t M = getNumDataPoints();
+  std::vector<T> f(M);
+  for(size_t m = 0; m < M; m++)
+    f[m] = getDataPoint(m).getFrequency();
+  return f;
+}
+
+template<class T>
+std::vector<T> rsSinusoidalPartial<T>::getAmplitudeArray() const
+{
+  size_t M = getNumDataPoints();
+  std::vector<T> a(M);
+  for(size_t m = 0; m < M; m++)
+    a[m] = getDataPoint(m).getAmplitude();
+  return a;
+}
+
+template<class T>
+std::vector<T> rsSinusoidalPartial<T>::getPhaseArray() const
+{
+  size_t M = getNumDataPoints();
+  std::vector<T> p(M);
+  for(size_t m = 0; m < M; m++)
+    p[m] = getDataPoint(m).getWrappedPhase();
+  return p;
+}
+
 //=================================================================================================
 
 template<class T>

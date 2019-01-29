@@ -21,9 +21,17 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   int N = nEnd - nStart;  // number of samples to generate
 
   // create arrays for non-interpolated instantaneous parameter data:
-  std::vector<T> td, fd, ad, wpd;
-  partial.getDataArrays(td, fd, ad, wpd);
+  //std::vector<T> td, fd, ad, wpd;
+  //partial.getDataArrays(td, fd, ad, wpd);  // obsolete soon
+
+  std::vector<T> td = partial.getTimeArray();
+  std::vector<T> fd = partial.getFrequencyArray();
+  std::vector<T> ad = partial.getAmplitudeArray();
+  std::vector<T> wpd = partial.getPhaseArray();   // rename to pd
   td = td + timeShift; // todo: implement vector += scalar operator and use: td += timeShift;
+
+
+
   std::vector<T> upd = unwrapPhase(td, fd, wpd);
 
   // factor out:
