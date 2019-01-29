@@ -457,7 +457,7 @@ void sinusoidalSynthesis1()
   SinusoidalSynthesizer<double> synth;
   synth.setSampleRate(fs);
   synth.setCubicAmplitudeInterpolation(true);
-  synth.setCubicPhaseInterpolation(true);
+  //synth.setCubicPhaseInterpolation(true);
   std::vector<double> x = synth.synthesize(model);
 
   // make a sinusoidal analysis of the sound that we have just created and re-create the sound

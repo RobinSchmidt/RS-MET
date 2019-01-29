@@ -48,7 +48,7 @@ public:
   the phase is interpolated cubically between datapoints because linear interpolation may lead to
   audible discontinuities in the derivative of the resulting sound (or is it the 2nd derivative? 
   check this!). */
-  void setCubicPhaseInterpolation(bool shouldBeCubic) { cubicPhase = shouldBeCubic; }
+  //void setCubicPhaseInterpolation(bool shouldBeCubic) { cubicPhase = shouldBeCubic; }
 
 
   /** \name Inquiry */
@@ -73,21 +73,19 @@ public:
     T timeShift = T(0)) const;
 
 
-
   std::vector<T> getInterpolatedAmplitudes(const RAPT::rsSinusoidalPartial<T>& partial, 
     const std::vector<T>& timeAxisCoarse, const std::vector<T>& timeAxisFine) const;
 
-
-  std::vector<T> getInterpolatedPhases(const RAPT::rsSinusoidalPartial<T>& partial,
-    const std::vector<T>& timeAxis) const;
-
-
-
-
+  std::vector<T> getInterpolatedPhases(const RAPT::rsSinusoidalPartial<T>& partial, 
+    const std::vector<T>& timeAxisCoarse, const std::vector<T>& timeAxisFine) const;
 
 
   /** Given an array of time-stamps and corresponing frequency and wrapped phase values, this 
-  function computes the corresponding array of unwrapped phase values. */
+  function computes the corresponding array of unwrapped phase values by numerically integrating
+  the frequency array and then re-adjusting the resulting (unwrapped) phases to have a value that 
+  is consistent with the wrappedPhase values (i.e. a suitable multiple of 2*pi shifted from the 
+  stored value). To integrate the frequecy data, we also need the time axis because the data may
+  be nonuniformly sampled. */
   std::vector<T> unwrapPhase(const std::vector<T>& time, 
     const std::vector<T>& freq, const std::vector<T>& wrappedPhase) const; 
 
@@ -106,8 +104,8 @@ protected:
 
 
   // maybe get rid of these:
-  bool cubicPhase = true;
-  bool accumulatePhaseDeltas = true;
+  //bool cubicPhase = true;
+  //bool accumulatePhaseDeltas = true;
   // Notes: accumulation gives rise to an O(M^2) complexity of the phase unwrapping algorithm where 
   // M is the number of data points in the respective partial - but without accumulation there may 
   // be phase errors by 180° at certain datapoints after the unwrapping - figure out what's going 

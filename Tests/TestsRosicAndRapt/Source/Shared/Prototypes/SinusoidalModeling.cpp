@@ -20,38 +20,23 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   nEnd   = rsClip(nEnd,   0, xLength);
   int N = nEnd - nStart;  // number of samples to generate
 
-  // create arrays for non-interpolated instantaneous parameter data:
-  //std::vector<T> td, fd, ad, wpd;
-  //partial.getDataArrays(td, fd, ad, wpd);  // obsolete soon
-
-  // create time axis:
+  // create time axis and interpolate instantaneous amplitude and phase up to sample rate:
   std::vector<T> td = partial.getTimeArray();
   td = td + timeShift; // todo: implement vector += scalar operator and use: td += timeShift;
-  size_t M = td.size();
+  T Ts = T(1) / sampleRate;  // sampling interval
   std::vector<T> t(N);
   for(size_t n = 0; n < N; n++)          // fill time-array
-    t[n] = (nStart + n) / sampleRate;    // ...optimize
-
-  // interpolate amplitude:
+    t[n] = (nStart + n) * Ts;
   std::vector<T> a = getInterpolatedAmplitudes(partial, td, t);
-  //std::vector<T> a(N);
-  //std::vector<T> ad  = partial.getAmplitudeArray();
-  //if(cubicAmplitude) 
-  //  rsNaturalCubicSpline(&td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
-  //else               
-  //  rsInterpolateLinear( &td[0], &ad[0], (int)M, &t[0], &a[0], (int)N);
+  std::vector<T> p = getInterpolatedPhases(    partial, td, t);
 
-  // interpolate phase:
-  std::vector<T> p(N);
-  std::vector<T> fd  = partial.getFrequencyArray();
-  std::vector<T> wpd = partial.getPhaseArray();   // rename to pd
-  std::vector<T> upd = unwrapPhase(td, fd, wpd);
-  if(cubicPhase) 
-    rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
-  else           
-    rsInterpolateLinear( &td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
-
-
+  // synthesize the sinusoid and add it to what's already there:
+  std::vector<T> s(N); // needed here only for plotting, remove for production code
+  for(size_t n = 0; n < N; n++)
+    s[n] = x[nStart+n] += a[n] * cos(p[n]);
+  // we use the cosine (not the sine) because that's what's used in the literature - probably 
+  // because it's consistent with representing real sinusoids as the real part of complex
+  // sinusoids (using the sine, we would have to take the imaginary part instead)
 
 
   // it seems cubic interpolation for the phase and linear for the amplitude is most suitable,
@@ -80,14 +65,6 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   // maybe provide hook-functions that can manipulate the amplitude/phase data after interpolation
   // maybe have subclasses that also work with real and imaginare parts instead of magnitude/phase
   // (and apply filters to those) ...but that is already something for the transformations
-
-  // synthesize the sinusoid and add it to what's already there:
-  std::vector<T> s(N); // needed here only for plotting, remove for production code
-  for(size_t n = 0; n < N; n++)
-    s[n] = x[nStart+n] += a[n] * cos(p[n]);
-  // we use the cosine (not the sine) because that's what's used in the literature - probably 
-  // because it's consistent with representing real sinusoids as the real part of complex
-  // sinusoids (using the sine, we would have to take the imaginary part instead)
 
 
   //GNUPlotter plt;
@@ -119,12 +96,22 @@ std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedAmplitudes(
 
 template<class T>
 std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(
-  const RAPT::rsSinusoidalPartial<T>& partial, const std::vector<T>& t) const
+  const RAPT::rsSinusoidalPartial<T>& partial, 
+  const std::vector<T>& td, 
+  const std::vector<T>& t) const
 {
-  int N = (int) t.size();  // t: time axis
+  int M = (int) td.size(); // td: time axis data
+  int N = (int) t.size();  // t: interpolated time axis (to sample-rate)
   std::vector<T> p(N);     // p: interpolated phase values
+  std::vector<T> fd  = partial.getFrequencyArray();
+  std::vector<T> wpd = partial.getPhaseArray();       // rename to pd
+  std::vector<T> upd = unwrapPhase(td, fd, wpd);
 
-  // ...
+  bool cubicPhase = true; // was user parameter - but linear phase interpolation makes no sense
+  if(cubicPhase) 
+    rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+  else           
+    rsInterpolateLinear( &td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
 
   return p;
 }
@@ -145,6 +132,7 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   up = 2*PI*up; // convert from "number of cycles passed" to radians
 
   // incorporate the target phase values into the unwrapped phase:
+  bool accumulatePhaseDeltas = true; // not accumulating makes no sense, i think
   for(size_t m = 0; m < M; m++) {
     T wp1 = fmod(up[m], 2*PI);  // 0..2*pi
     T wp2 = fmod(wp[m], 2*PI);  // 0..2*pi
