@@ -80,6 +80,14 @@ public:
     const std::vector<T>& timeAxisCoarse, const std::vector<T>& timeAxisFine) const;
 
 
+
+
+  std::vector<T> phasesViaTweakedIntegral(const RAPT::rsSinusoidalPartial<T>& partial,
+    const std::vector<T>& timeAxisCoarse, const std::vector<T>& timeAxisFine) const;
+
+  std::vector<T> phasesCubicHermite(const RAPT::rsSinusoidalPartial<T>& partial,
+    const std::vector<T>& timeAxisCoarse, const std::vector<T>& timeAxisFine) const;
+
   /** Given an array of time-stamps and corresponing frequency and wrapped phase values, this 
   function computes the corresponding array of unwrapped phase values by numerically integrating
   the frequency array and then re-adjusting the resulting (unwrapped) phases to have a value that 
@@ -94,6 +102,12 @@ public:
 
 
 protected:
+
+
+
+
+
+
 
   T sampleRate = 44100;
 

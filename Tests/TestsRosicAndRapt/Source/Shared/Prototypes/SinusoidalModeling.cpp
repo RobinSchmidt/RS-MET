@@ -100,6 +100,22 @@ std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(
   const std::vector<T>& td, 
   const std::vector<T>& t) const
 {
+  typedef PhaseInterpolationMethod PIM;
+  switch(phaseInterpolation)
+  {
+  case PIM:: tweakedFreqIntegral: return phasesViaTweakedIntegral(partial, td, t);
+  case PIM:: cubicHermite:        return phasesCubicHermite(      partial, td, t);
+  //case PIM:: quinticHermite:      return phasesQuinticHermite( partial, td, t);
+  default: return phasesCubicHermite(partial, td, t);
+  }
+}
+
+template<class T>
+std::vector<T> SinusoidalSynthesizer<T>::phasesViaTweakedIntegral(
+  const RAPT::rsSinusoidalPartial<T>& partial,
+  const std::vector<T>& td,
+  const std::vector<T>& t) const
+{
   int M = (int) td.size(); // td: time axis data
   int N = (int) t.size();  // t: interpolated time axis (to sample-rate)
   std::vector<T> p(N);     // p: interpolated phase values
@@ -115,6 +131,26 @@ std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(
 
   return p;
 }
+
+template<class T>
+std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
+  const RAPT::rsSinusoidalPartial<T>& partial,
+  const std::vector<T>& td,
+  const std::vector<T>& t) const
+{
+  int M = (int) td.size(); // td: time axis data
+  int N = (int) t.size();  // t: interpolated time axis (to sample-rate)
+  std::vector<T> p(N);     // p: interpolated phase values
+  std::vector<T> fd = partial.getFrequencyArray();
+  std::vector<T> pd = partial.getPhaseArray();
+
+
+
+
+  return p;
+}
+
+
 
 
 
