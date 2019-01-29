@@ -432,7 +432,7 @@ void cosSumWindow5(double* w, int N) // 5 term
 
 void windowFunctionSpectra()
 {
-  int windowLength = 16;
+  int windowLength = 11;
   //int windowLength = 128;
 
   int fftSize = 8192;
@@ -482,7 +482,7 @@ void windowFunctionSpectra()
   double r  = rsDbToAmp(-17.5);   // plug attenuation here - the formula should give a width of around 2 at 17.5
   double x0 = cosh(acosh(1/r) / (N-1)); // == chebyPoly(1/r, 1/(N-1))?
   double wc = 2*acos(1/x0);
-  double wcRect = 4*PI/N; // mainlobe width of rectangular window for reference
+  double w0Rect = 2*PI/N; // first zero of rectangular window for reference
   //double B  = 2*wc;
   double k = N*wc/(2*PI); // see below
   // hmm...these formulas seem to compute the cutoff frequency in radians dependning on N and give
@@ -505,24 +505,40 @@ void windowFunctionSpectra()
   // maybe let the SpectrumPlotter scale the frequency axis in different ways - in particular,
   // let it go from 0...PI and see if the formula above for wc gives the right value on that axis
 
+  // oookay - i think, for the rectangular window, the mainlobe width is defined as the first zero 
+  // of the spectrum which occurs at 2*PI/N radians
+  // for the chebycev window, the cutoff is measured at the point where the mainlobe crosses the
+  // attenuation for the first time - that's a little bit below the first zero, but for a rough
+  // computation of mainlobe width, it should be good enough - but maybe we can find a formula
+  // for the zeros of the chebychev spectrum - it's defined in the freq-domain anyway - i think, 
+  // we need a formula for the zeros of chebychev polynomials
+  // Tn(x) = cos(n*acos(x)) for x < 1, so we need to solve cos(n*acos(x)) = 0 for x 
+  // let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
+
+
 
 
 
   // maybe optionally plot the window functions themselves
 
+  typedef SpectrumPlotter<double> SP;
+  typedef SP::FreqAxisUnits FU;
+
   SpectrumPlotter<double> plt;
   plt.setFftSize(fftSize);
-  //plt.setFreqAxisUnit(); // options: binIndex, omega, hertz (currently, it shows the bin index)
+  //plt.setFreqAxisUnit(FU::binIndex);
+  //plt.setFreqAxisUnit(FU::normalized);
+  plt.setFreqAxisUnit(FU::omega);
   //plt.setZoom(); // show only low portion up to 1/zoom of the spectrum
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
-  plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
+  //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
   //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
 
 
-  //plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
+  plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
   //plt.plotDecibelSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);
 };
 

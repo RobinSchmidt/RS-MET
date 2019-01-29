@@ -282,11 +282,25 @@ void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model,
 
   // plot original, resynthesized and residual signals:
   int N = (int)yp.size();
+  Vec t(N);
+
+  createTimeAxis(N, &t[0], synth.getSampleRate());
+
   GNUPlotter plt;
-  plt.addDataArrays(N, &xp[0]);
-  plt.addDataArrays(N, &yp[0]);
-  plt.addDataArrays(N, &r[0]);
+  plt.addDataArrays(N, &t[0],  &xp[0]);
+  plt.addDataArrays(N, &t[0], &yp[0]);
+  plt.addDataArrays(N, &t[0], &r[0]);
+  plt.setPixelSize(1200, 400);
   plt.plot();
+}
+
+void plotModelOutputComparison(
+  const RAPT::rsSinusoidalModel<double>& model1,
+  const RAPT::rsSinusoidalModel<double>& model2,
+  const SinusoidalSynthesizer<double>& synth)
+{
+  std::vector<double> x = synth.synthesize(model1); // reference signal
+  plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 }
 
 

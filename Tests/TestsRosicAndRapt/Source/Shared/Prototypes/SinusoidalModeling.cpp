@@ -78,13 +78,13 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
   // sinusoids (using the sine, we would have to take the imaginary part instead)
 
 
-  //GNUPlotter plt;
+  GNUPlotter plt;
   //plt.addDataArrays(M, &td[0], &fd[0]);
   //plt.addDataArrays((int)M, &td[0], &upd[0]);
-  //plt.addDataArrays((int)N, &t[0],  &p[0]); // interpolated phase
-  //plt.addDataArrays((int)N, &t[0],  &a[0]);   // interpolated amplitude
+  plt.addDataArrays((int)N, &t[0],  &p[0]); // interpolated phase
+  plt.addDataArrays((int)N, &t[0],  &a[0]);   // interpolated amplitude
   //plt.addDataArrays((int)N, &t[0],  &s[0]);   // produced sinusoid
-  //plt.plot();
+  plt.plot();
 }
 
 template<class T>

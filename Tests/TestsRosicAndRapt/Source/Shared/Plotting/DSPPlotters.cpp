@@ -333,6 +333,8 @@ template <class T>
 void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x2, T *x3, T *x4, 
   T *x5, T *x6, T *x7, T *x8, T *x9)
 {
+  RAPT::rsAssert(signalLength <= fftSize);
+
   // maybe factor out into setupTransformer:
   typedef RAPT::rsFourierTransformerRadix2<T> FT;
   transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
@@ -343,10 +345,12 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x
   T dBFloor = -120;
   T ampFloor = RAPT::rsDbToAmp(dBFloor);
 
-
   std::vector<T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
 
   int N = rsMax(signalLength, fftSize);
+  int maxBin = fftSize/2; // later have a user option for that -> zoom
+
+  std::vector<T> f = getFreqAxis(maxBin);
 
   std::vector<std::complex<T>> tmp(N);
   std::vector<T> dB(N);
@@ -361,14 +365,37 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x
     for(size_t k = 0; k < N; k++)
       dB[k] = RAPT::rsAmpToDbWithCheck(compFactor * abs(tmp[k]), ampFloor);
 
-
-    addDataArrays(fftSize/2, &dB[0]); // maybe fftSize/2 or (fftSize+1)/2
+    addDataArrays(maxBin, &f[0], &dB[0]);
+    //addDataArrays(fftSize/2, &dB[0]); // maybe fftSize/2 or (fftSize+1)/2
     int dummy = 0;
   }
 
   plot();
 }
 // maybe factor out addSpectra
+
+template <class T>
+std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)
+{
+  std::vector<T> f(maxBin);
+
+  // todo: check everything for off-by-one errors
+
+  GNUPlotter::rangeLinear(&f[0], maxBin+1, T(0), T(maxBin));
+  T scaler = T(1);
+  T r = T(1) / T(fftSize);
+  typedef FreqAxisUnits FU;
+  switch(freqAxisUnit)
+  {
+  case FU::normalized: scaler = r*T(1);       break;
+  case FU::omega:      scaler = r*T(2*PI);    break;
+  case FU::hertz:      scaler = r*sampleRate; break;
+  }
+
+  RAPT::rsArray::scale(&f[0], maxBin, scaler); 
+
+  return f;
+}
 
 // template instantiations:
 template class SpectrumPlotter<float>;

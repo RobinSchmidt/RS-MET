@@ -293,7 +293,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  windowFunctionSpectra();
+  //windowFunctionSpectra();
   //windowedSinc();
 
   // Modulator:
@@ -327,7 +327,7 @@ int main(int argc, char* argv[])
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
   //sinusoidalAnalysis1();
-  //sinusoidalAnalysis2();
+  sinusoidalAnalysis2();
 
 
   // Physics:

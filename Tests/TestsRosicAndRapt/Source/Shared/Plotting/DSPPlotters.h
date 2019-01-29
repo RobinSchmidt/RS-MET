@@ -149,6 +149,15 @@ class SpectrumPlotter : public GNUPlotter
 
 public:
 
+  enum class FreqAxisUnits
+  {
+    binIndex = 0,
+    normalized,
+    omega,
+    hertz
+  };
+
+
   /** Given up to 10 signal buffers of length "signalLength", this function performs an FFT on each 
   of them and plot the spectral magintudes as decibel values.  
   (the FFT size is determined by setFfftSize and may be different from signalLength) */
@@ -158,12 +167,23 @@ public:
     T *x8 = nullptr, T *x9 = nullptr);
 
 
+
+
   void setFftSize(int newSize) { fftSize = newSize; }
 
-  // setSampleRate, etc...
+  void setFreqAxisUnit(FreqAxisUnits newUnit) { freqAxisUnit = newUnit; }
+
+  /** Sets the sample rate - this affects the scaling of the frequency axis, if it's scaled in 
+  Hz. */
+  void setSampleRate(T newRate) { sampleRate = newRate; }
 
 protected:
 
+  std::vector<T> getFreqAxis(int maxBin);
+
+  FreqAxisUnits freqAxisUnit = FreqAxisUnits::binIndex;
+
+  T sampleRate = 1;
 
   int fftSize = 2048;
 

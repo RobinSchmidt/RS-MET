@@ -430,7 +430,7 @@ std::vector<double> synthesizeSinusoidal(
   synth.setSampleRate(sampleRate);
   std::vector<double> x = synth.synthesize(model);
   if(fadeTime > 0.0)
-    applyFadeInAndOut( &x[0], (int) x.size(), fadeTime*sampleRate);
+    applyFadeInAndOut( &x[0], (int) x.size(), int (fadeTime*sampleRate));
   return x;
 }
 
@@ -576,7 +576,7 @@ void sinusoidalAnalysis1()
   double period = sampleRate / frequency;         // in samples
   size_t N = (size_t)ceil(length * sampleRate);   // number of samples
   std::vector<double> x = createSinusoid(N, frequency, sampleRate, amplitude, phase);
-  applyFadeInAndOut(&x[0], (int)N, sampleRate*fadeTime);
+  applyFadeInAndOut(&x[0], (int)N, int(sampleRate*fadeTime));
 
   // create and set up analyzer:
   SinusoidalAnalyzer<double> sa;
@@ -674,7 +674,7 @@ void sinusoidalAnalysis2()
 
   std::vector<double> x = synthesizeSinusoidal(model, fs, fade);
   //plotSineModel(model, fs); // we need a margin for the y-axis - otherwise it looks like nothing
-  plotVector(x);
+  //plotVector(x);
 
 
   // analyze the produced sound again and compare the original model and analysis result
@@ -682,8 +682,8 @@ void sinusoidalAnalysis2()
 
   // create and set up analyzer and try to recover the model from the sound
   SinusoidalAnalyzer<double> sa;
-  int blockSize = blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs); // +1 for test
-  int hopSize   = blockSize/8; // small hopSize needed, otherwise analyzed model has too short tracks
+  int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs));
+  int hopSize   = blockSize/10; // small hopSize needed, otherwise analyzed model has too short tracks
   int trafoSize = zeroPaddingFactor*blockSize;
   double levelThresh = sa.getRequiredThreshold(window, dBmargin);
   sa.setWindowType(window);
@@ -703,14 +703,47 @@ void sinusoidalAnalysis2()
   //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
 
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
-  plotTwoSineModels(model, model2, fs);
+  //plotTwoSineModels(model, model2, fs);
   // ...try to use the lowest possible values that give a good result
 
 
   // create and set up a sinusoidal synthesizer object and plot resynthesis result:
   SinusoidalSynthesizer<double> synth;
   synth.setSampleRate(fs);
-  plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
+  //plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
+
+  //plotModelOutputComparison(model, model2, synth);
+
+  // test - synthesize and resynthesize only one partial
+  model.removePartial( 1);
+  model2.removePartial(1);
+  plotModelOutputComparison(model, model2, synth);
+
+
+
+  // ToDo next:
+  // -check what cuases the large phase errors for some settings at start and end - maybe there's
+  //  a bug in generating the synthesis phases
+  //  -maybe make a functions checkConsistency(SineModel& model, SineModel& targetModel) and/or
+  //  -make a function to write a model into a textfile
+  // -it seems that the maximum phase error is pi/2, a quarter period - maybe it has to do with the
+  //  wrap-around phase-interpolation that uses smaller of the two possible interpolation distances
+  //  -maybe that's not always appropriate - experiment with different phase-interpolation 
+  //   algorithms in the synthesizer - maybe have options: smallest distance, always forward,
+  //   always backward
+  // -changing hopSize = blockSize/8 to hopSize = blockSize/10 moves the section with the error
+  //  to the middle of the signal - so yes - it really has to do with wrong choice of the phase
+  //  interpolation direction - at some point during the synthesis, the interpolator reverses the
+  //  direction and that's what cuases the phase deviation
+  // -maybe the phase-interpolator should choose the forward or backward direction once for each 
+  //  partial (based on the first two datapoints) and then stick to that choice for the whole 
+  //  length of the partial
+  // -maybe synthesize and resynthesize only the first or second partial for easier comparison,
+  //  maybe with a function 
+  //  plotPartialResynthesis(model, 0, model2, 0); // plots original and resynthesized 1st partial
+  //  plotPartialResynthesis(model, 1, model2, 1); // ...2nd
+
+
 
   // Observations:
   // -when using a blockFactor = 2, we can estimate the frequencies more accurately, but the 
@@ -733,7 +766,7 @@ void sinusoidalAnalysis2()
   //   hopSize - as a function of the normalized frequency delta (like, in Hz per second)
   //
 
-  // -idea - ToDo next: 
+  // -idea: 
   //  -the first few frames have lots of zero valued samples which lead to an amplitude error,
   //   for example, in the first frame only half of the samples in the buffer are nonzero
   //  -maybe we should take this situation into account already in the spectrogram processor

@@ -162,4 +162,9 @@ void plotSineResynthesisResult(
   double* x, int N);
 // todo: make x and n optional arguments
 
+void plotModelOutputComparison(
+  const RAPT::rsSinusoidalModel<double>& model1,
+  const RAPT::rsSinusoidalModel<double>& model2,
+  const SinusoidalSynthesizer<double>& synth);
+
 #endif
