@@ -430,6 +430,11 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   partial.appendDataPoint( ISP(  4*ts, 1000.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  5*ts, 1000.0, 1.0, 0.0));
 
+  //partial.prependDataPoint(ISP( 0*ts, 1000.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP( 5*ts, 1050.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(10*ts, 1100.0, 1.0, 0.0));
+
+
   // create and set up the synth and create time-axis at sample-rate:
   SinusoidalSynthesizer<double> synth;
   synth.setSampleRate(fs);
@@ -464,7 +469,7 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   pd = synth.unwrapPhase(td, fd, pd);
   //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
 
-  std::vector<double> dp = (0.5/PI) * (pc-pi); 
+  std::vector<double> dp = (0.5/PI) * (pc-pq); 
   // normalized difference between the algorithms - at the datapoints, it must be an integer 
   // corresponding to the k in the formula pu = p + k*2*PI
 
@@ -475,7 +480,7 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   plt.addDataArrays(N, &t[0],  &pi[0]);
   plt.addDataArrays(N, &t[0],  &pc[0]);
   plt.addDataArrays(N, &t[0],  &pq[0]);
-  //plt.addDataArrays(N, &t[0],  &dp[0]);
+  plt.addDataArrays(N, &t[0],  &dp[0]);
   //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
   plt.plot();
 
@@ -793,7 +798,7 @@ void sinusoidalAnalysis2()
   //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
 
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
-  //plotTwoSineModels(model, model2, fs);
+  plotTwoSineModels(model, model2, fs);
   // ...try to use the lowest possible values that give a good result
 
 
@@ -801,8 +806,9 @@ void sinusoidalAnalysis2()
   SinusoidalSynthesizer<double> synth;
 
   typedef SinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
-  synth.setPhaseInterpolation(PIM::cubicHermite);
-  //synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  //synth.setPhaseInterpolation(PIM::cubicHermite);
+  //synth.setPhaseInterpolation(PIM::quinticHermite);
+  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   synth.setSampleRate(fs);
   //plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 
@@ -834,10 +840,20 @@ void sinusoidalAnalysis2()
   // -maybe the phase-interpolator should choose the forward or backward direction once for each 
   //  partial (based on the first two datapoints) and then stick to that choice for the whole 
   //  length of the partial
-  // -maybe synthesize and resynthesize only the first or second partial for easier comparison,
-  //  maybe with a function 
-  //  plotPartialResynthesis(model, 0, model2, 0); // plots original and resynthesized 1st partial
-  //  plotPartialResynthesis(model, 1, model2, 1); // ...2nd
+  // -hmmm...or maybe this happens because the frequency estimate is biased - when resynthesizing,
+  //  the bias accumulates over time until it gets big enough to cause a phase-jump by 2pi?
+  //  ...the interpolation algorithm then reduces this jump to pi by switching the direction?
+  //  -solution: maybe during analysis, we should already de-bias the frequency estimates, ideally
+  //   to make them consistent with the phases - modify the frequency data in such a way that the
+  //   numeric integral of it at all times hits a phase that is consistent with the stored phase
+  // -try to figure this out with a single sinusoid that leads to biased frequency estimates
+  // -plot the derivative of the analyzed phase of a sound that exhibits a phase-desync burst
+  // -the desync burst is very audible in the resynthesized signal, so it should be possible to 
+  //  detect such a situation
+  // -when reducing the amplitude of the 2nd partial to 0, the remaining 1st partial does not show
+  //  the desync - maybe the presence of the 2nd partial introduces the frequency bias?
+  // -have a function partial.getAverageFrequency - witz that, we may be able to figure out, if 
+  //  it's indeed a freq estimation bias issue
 
 
 
