@@ -105,33 +105,10 @@ public:
     const std::vector<T>& freq, const std::vector<T>& wrappedPhase) const; 
 
 
-  /** Modifies the frequency values in the given partial, such that when they are numerically 
-  integrated (via a trapezoidal rule), the resulting phase values end up at values that are 
-  consistent with the stored phase values, i.e. differ from the stored values only by a multiple of
-  2*pi. This is helpful to remove a bias in the estimated frequency values that may have occured 
-  during analysis, so it is a recommended post-processing step to refine the frequency estimates. 
-  Such a bias can result in temporary phase desynchronization issues of a resynthesized signal with
-  respect to the original signal, leading to sinusoidal bursts in the resiudal - which are clearly 
-  undesirable. Such desync bursts would occur whenever the accumulated frequency bias crosses a 
-  multiple of pi (i think - verify). */
-  void enforceFreqPhaseConsitency(RAPT::rsSinusoidalPartial<T>& partial);
-  // or maybe call it deBiasFreqEstimates
-  // maybe return the maximum phase difference that occured between the integrated freq and adjusted 
-  // (by k*2*pi) stored phase from one point to the next - this value should be much less than pi. 
-  // if it gets close to pi, it may mean that the hop-size was too small, so we may use this as 
-  // feedback for the user, if the hopsize parameter was good enough, so they may decide to anaylze 
-  // again with smaller hopSize
-
-
 
 
 
 protected:
-
-
-
-
-
 
 
   T sampleRate = 44100;
@@ -313,6 +290,28 @@ public:
   pos = k + d, where d is some number between -1..+1 and the actual y-value of the peak at that 
   exact location by fitting a quadratic parabola to the dB-values around x[k]. */
   static void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val);
+
+  /** Modifies the frequency values in the given partial, such that when they are numerically 
+  integrated (via a trapezoidal rule), the resulting phase values end up at values that are 
+  consistent with the stored phase values, i.e. differ from the stored values only by a multiple of
+  2*pi. This is helpful to remove a bias in the estimated frequency values that may have occured 
+  during analysis, so it is a recommended post-processing step to refine the frequency estimates. 
+  Such a bias can result in temporary phase desynchronization issues of a resynthesized signal with
+  respect to the original signal, leading to sinusoidal bursts in the resiudal - which are clearly 
+  undesirable. Such desync bursts would occur whenever the accumulated frequency bias crosses a 
+  multiple of pi (i think - verify). */
+  static void makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPartial<T>& partial);
+  // or maybe call it deBiasFreqEstimates ...or maybe the name should somehow reflect, that the 
+  // frequencies are modified, becaus we could also make it consisten by adjusting the phases - 
+  // which is no good idea (it is, in fact, actually exactly what the synthesized does in case of
+  // incosistency), because phase errors don't accumulate, so we can assume that they are more or 
+  // less correct at each datapoint (which is not true for accumulated freq, if there's a bias in
+  // the freq estimate) ..makeFreqsConsistentWithPhase
+  // maybe return the maximum phase difference that occured between the integrated freq and adjusted 
+  // (by k*2*pi) stored phase from one point to the next - this value should be much less than pi. 
+  // if it gets close to pi, it may mean that the hop-size was too small, so we may use this as 
+  // feedback for the user, if the hopsize parameter was good enough, so they may decide to anaylze 
+  // again with smaller hopSize
 
 protected:
 

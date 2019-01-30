@@ -278,40 +278,6 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   return up;
 }
 
-
-
-template<class T>
-T unwrapToTarget(T value, T targetEstimate, T range)
-{
-  // preliminary silly algorithm - todo: use something based on fmod and round
-  if(value < target)
-    while(rsAbs(value-targetEstimate) > T(0.5)*range)
-      value += range;
-  else
-    while(rsAbs(value-targetEstimate) > T(0.5)*range)
-      value -= range;
-  return value;
-}
-
-template<class T>
-T findCosistentPhase(T phase, T phaseEstimate, T range) 
-{
-  return unwrapToTarget(phase, targetEstimate, T(2*PI));
-  // check this
-}
-
-template<class T>
-void SinusoidalSynthesizer<T>::enforceFreqPhaseConsitency(RAPT::rsSinusoidalPartial<T>& partial)
-{
-  
-  // the phaseEstimate is obtained by integrating freq over the length of the segment
-
-  // the desired average frequencies are computed by...
-  // 
-
-}
-
-
 // template instantiation:
 template class SinusoidalSynthesizer<double>;
 
@@ -726,6 +692,39 @@ void SinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(T *x, int k, T* pos,
   // todo: we should safeguard against a[2] == 0 (a degenerate parabola that has no extremum) which
   // will lead to div-by-zero in quadraticExtremumPosition
 }
+
+
+// maybe move to library:
+template<class T>
+T unwrapToTarget(T value, T targetEstimate, T range)
+{
+  // preliminary silly algorithm - todo: use something based on fmod and round
+  if(value < target)
+    while(rsAbs(value-targetEstimate) > T(0.5)*range)
+      value += range;
+  else
+    while(rsAbs(value-targetEstimate) > T(0.5)*range)
+      value -= range;
+  return value;
+}
+template<class T>
+T findCosistentPhase(T phase, T phaseEstimate, T range) 
+{
+  return unwrapToTarget(phase, targetEstimate, T(2*PI));
+  // check this
+}
+
+template<class T>
+void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPartial<T>& partial)
+{
+
+  // the phaseEstimate is obtained by integrating freq over the length of the segment
+
+  // the desired average frequencies are computed by...
+  // 
+
+}
+
 
 template<class T>
 rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
