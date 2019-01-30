@@ -127,6 +127,10 @@ public:
     return instParams[instParams.size()-1].getFrequency(); 
   }
 
+  /** Computes and returns the mean frequency of this partial. */
+  T getMeanFreq() const;
+
+
 
   /** Returns the number of data points in this partial */
   inline size_t getNumDataPoints() const { return instParams.size(); }

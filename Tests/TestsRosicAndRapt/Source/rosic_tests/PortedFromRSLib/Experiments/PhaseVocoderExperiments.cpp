@@ -737,7 +737,7 @@ void sinusoidalAnalysis2()
   double a2 = 0.5;     // 2nd amplitude
   double p1 = PI/2;    // 1st start phase
   double p2 = PI/2;    // 2nd start phase
-  double L  = 0.3;     // length in seconds
+  double L  = 0.2;     // length in seconds
   double fade = 0.03;  // fade-in/out time for original signal
 
   // analysis parameters:
@@ -798,7 +798,7 @@ void sinusoidalAnalysis2()
   //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
 
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
-  plotTwoSineModels(model, model2, fs);
+  //plotTwoSineModels(model, model2, fs);
   // ...try to use the lowest possible values that give a good result
 
 
@@ -813,6 +813,14 @@ void sinusoidalAnalysis2()
   //plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 
   //plotModelOutputComparison(model, model2, synth);
+
+  // figure out, if there's a bias in the frequency etsimates (such a bias may lead to phase
+  // desync bursts if it accumulates long enough to cause a jump by 2pi in the syntesis at some
+  // instant):
+  double f1a = model2.getPartial(0).getMeanFreq();
+  double f2a = model2.getPartial(1).getMeanFreq();
+  double freqBias1 = f1 - f1a;
+  double freqBias2 = f2 - f2a;
 
   // test - synthesize and resynthesize only one partial
   model.removePartial( 1);
@@ -846,6 +854,8 @@ void sinusoidalAnalysis2()
   //  -solution: maybe during analysis, we should already de-bias the frequency estimates, ideally
   //   to make them consistent with the phases - modify the frequency data in such a way that the
   //   numeric integral of it at all times hits a phase that is consistent with the stored phase
+  //   ...maybe this leads to a tridiagonal system of equations - the average frequency of each 
+  //   segments depends on two datapoints - that couples all the frequencies ...i think
   // -try to figure this out with a single sinusoid that leads to biased frequency estimates
   // -plot the derivative of the analyzed phase of a sound that exhibits a phase-desync burst
   // -the desync burst is very audible in the resynthesized signal, so it should be possible to 

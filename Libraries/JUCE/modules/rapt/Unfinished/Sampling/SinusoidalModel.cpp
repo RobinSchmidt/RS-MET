@@ -31,6 +31,25 @@ void rsSinusoidalPartial<T>::applyFadeOut(T fadeTime)
 // extrapolate the envelope beyond the end points and apply an *additional* envelope
 // ->experimentation is required
 
+
+template<class T>
+T rsSinusoidalPartial<T>::getMeanFreq() const
+{
+  size_t M = getNumDataPoints();
+  if(M == 0) return T(0);
+  if(M == 1) return getStartFreq();
+  T freqSum   = T(0);
+  T weightSum = T(0);
+  for(size_t m = 0; m < M-1; m++)
+  {
+    T fm = 0.5 * (instParams[m].freq + instParams[m+1].freq); // mean freq between point m and m+1
+    T dt = instParams[m+1].time - instParams[m].time;         // duration of segment
+    freqSum   += dt*fm;
+    weightSum += dt;
+  }
+  return freqSum / weightSum;
+}
+
 template<class T>
 void rsSinusoidalPartial<T>::getDataArrays(
   std::vector<T>& t, std::vector<T>& f, std::vector<T>& a, std::vector<T>& p) const

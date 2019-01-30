@@ -60,7 +60,7 @@ template void RAPT::getHermiteCoeffs3(double *y0, double *y1, double *a);
 template double RAPT::getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, double shape);
 template double RAPT::getDelayedSampleAsymmetricHermite1(double d, double *y, double shape);
 template double RAPT::getDelayedSampleLinear(double d, double *y);
-template void RAPT::rsNaturalCubicSpline(double *x, double *y, int N, double *xi, double *yi, int Ni, double scaleRhs);
+template void RAPT::rsNaturalCubicSpline(const double *x, const double *y, int N, const double *xi, double *yi, int Ni, double scaleRhs);
 
 
 
