@@ -404,30 +404,35 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   // arrays theselves)
 
   double fs = 10000;  // sample rate
-  int N = 1000;       // number of samples
+  //int N = 1000;       // number of samples
+
+  double ts = 0.01; // timescale
 
   // create data for some not too boring frequency trajectory:
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
-  partial.prependDataPoint(ISP( 0.0,  1000.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.01,  800.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.02, 1200.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.03, 1100.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.04,  700.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.05,  500.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.06,  500.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.07,  600.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.08,  800.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.09,  900.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP( 0.10, 1000.0, 1.0, 0.0));
+  //partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(  1*ts,  800.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(  2*ts, 1200.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(  3*ts, 1100.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(  4*ts,  700.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(  5*ts,  500.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(  6*ts,  500.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(  7*ts,  600.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(  8*ts,  800.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP(  9*ts,  900.0, 1.0, 0.0));
+  //partial.appendDataPoint( ISP( 10*ts, 1000.0, 1.0, 0.0));
+
+  partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  1*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  2*ts, 1100.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  3*ts, 1200.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  4*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  5*ts, 1000.0, 1.0, 0.0));
 
   // create and set up the synth and create time-axis at sample-rate:
   SinusoidalSynthesizer<double> synth;
   synth.setSampleRate(fs);
-  std::vector<double> td = partial.getTimeArray();
-  std::vector<double> t(N);
-  for(size_t n = 0; n < N; n++) 
-    t[n] = n / fs;// fill time-array
 
   // synthesize and plot the sound:
   RAPT::rsSinusoidalModel<double> model;
@@ -435,10 +440,22 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   std::vector<double> x = synth.synthesize(model);
   //plotVector(x);
 
+
+
+  int N = (int) x.size();
+  std::vector<double> td = partial.getTimeArray();
+  std::vector<double> t(N);
+  for(size_t n = 0; n < N; n++) 
+    t[n] = n / fs;// fill time-array
+
+
+
   // let the synth generate the phases:
-  std::vector<double> p1 = synth.phasesViaTweakedIntegral(partial, td, t);
-  std::vector<double> p2 = synth.phasesCubicHermite(      partial, td, t); // quintic looks wrong
-  RAPT::rsArray::unwrap(&p2[0], N, 2*PI);
+  std::vector<double> pi = synth.phasesViaTweakedIntegral(partial, td, t);
+  std::vector<double> pc = synth.phasesHermite(partial, td, t, false); 
+  std::vector<double> pq = synth.phasesHermite(partial, td, t, true); // quintic looks wrong
+  RAPT::rsArray::unwrap(&pc[0], N, 2*PI);
+  RAPT::rsArray::unwrap(&pq[0], N, 2*PI);
 
   // array for plotting the phase datapoints:
   std::vector<double> pd = partial.getPhaseArray();
@@ -447,19 +464,18 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   pd = synth.unwrapPhase(td, fd, pd);
   //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
 
-  std::vector<double> dp = (0.5/PI) * (p2-p1); 
+  std::vector<double> dp = (0.5/PI) * (pc-pi); 
   // normalized difference between the algorithms - at the datapoints, it must be an integer 
   // corresponding to the k in the formula pu = p + k*2*PI
-
-
 
 
   // plot:
   GNUPlotter plt;
   //plt.addDataArrays(M, &td[0], &pd[0]);
-  plt.addDataArrays(N, &t[0],  &p1[0]);
-  plt.addDataArrays(N, &t[0],  &p2[0]);
-  plt.addDataArrays(N, &t[0],  &dp[0]);
+  plt.addDataArrays(N, &t[0],  &pi[0]);
+  plt.addDataArrays(N, &t[0],  &pc[0]);
+  plt.addDataArrays(N, &t[0],  &pq[0]);
+  //plt.addDataArrays(N, &t[0],  &dp[0]);
   //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
   plt.plot();
 
@@ -783,6 +799,10 @@ void sinusoidalAnalysis2()
 
   // create and set up a sinusoidal synthesizer object and plot resynthesis result:
   SinusoidalSynthesizer<double> synth;
+
+  typedef SinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
+  synth.setPhaseInterpolation(PIM::cubicHermite);
+  //synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   synth.setSampleRate(fs);
   //plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 

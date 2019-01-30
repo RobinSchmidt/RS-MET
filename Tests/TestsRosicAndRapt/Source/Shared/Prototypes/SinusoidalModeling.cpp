@@ -107,9 +107,10 @@ std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(
   switch(phaseInterpolation)
   {
   case PIM:: tweakedFreqIntegral: return phasesViaTweakedIntegral(partial, td, t);
-  case PIM:: cubicHermite:        return phasesCubicHermite(      partial, td, t);
+  //case PIM:: cubicHermite:        return phasesCubicHermite(      partial, td, t);
   //case PIM:: quinticHermite:      return phasesQuinticHermite( partial, td, t);
-  default: return phasesCubicHermite(partial, td, t);
+  default: return phasesHermite(partial, td, t, 
+    phaseInterpolation == PhaseInterpolationMethod::quinticHermite);
   }
 }
 
@@ -136,16 +137,21 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesViaTweakedIntegral(
 }
 
 template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
+std::vector<T> SinusoidalSynthesizer<T>::phasesHermite(
   const RAPT::rsSinusoidalPartial<T>& partial,
   const std::vector<T>& td,
-  const std::vector<T>& t) const
+  const std::vector<T>& t, bool quintic) const
 {
   // the quintic hermite would have to duplicate most of the code her, maybe instead let a boolean
   // "qunitic" parameter be passed here and do if(quitic) here at appropriate places
 
   //bool quintic = false;
-  bool quintic = true; // does not yet work
+  //bool quintic = true; 
+  // does not yet work - maybe the computed k works only with cubic  interpolation and with
+  // quitic phase inetrpolation we should use also another formula for k? ...but why should
+  // that be the case...but it seems indeed that the computed k messes up the quintic
+  // interpolation method - so maybe we must be consistent - for quintic phase use cubic 
+  // frequency estimation of fa
 
   // init data arrays:
   std::vector<T> pd = partial.getPhaseArray();     // pd: phase data
@@ -183,9 +189,11 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesCubicHermite(
       w0d = f2w*f0d; w1d = f2w*f1d;
     }
 
-
     T fa  = 0.5 * (f0 + f1);      // average frequency of segment (in Hz) - todo: maybe try geometric mean, or generalized mean
+    //T fa  = sqrt(f0 * f1);
     T k   = round(dt * fa);       // number of cycles passed between t0 and t1
+    //T k   = floor(dt * fa); 
+    //k -= 1;
     p1   += 2*k*PI;               // adjust end-phase of segment
     // ...phase adjustment is still questionable - is the formula for k really the most reasonable?
     // and/or maybe computation of fa should also take p0 and p1 into account? for quintic 

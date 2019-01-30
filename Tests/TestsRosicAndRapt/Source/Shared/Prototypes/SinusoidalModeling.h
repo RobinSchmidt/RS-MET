@@ -50,6 +50,12 @@ public:
   check this!). */
   //void setCubicPhaseInterpolation(bool shouldBeCubic) { cubicPhase = shouldBeCubic; }
 
+  void setPhaseInterpolation(PhaseInterpolationMethod method) 
+  { 
+    phaseInterpolation = method; 
+  }
+
+
 
   /** \name Inquiry */
 
@@ -85,8 +91,9 @@ public:
   std::vector<T> phasesViaTweakedIntegral(const RAPT::rsSinusoidalPartial<T>& partial,
     const std::vector<T>& timeAxisCoarse, const std::vector<T>& timeAxisFine) const;
 
-  std::vector<T> phasesCubicHermite(const RAPT::rsSinusoidalPartial<T>& partial,
-    const std::vector<T>& timeAxisCoarse, const std::vector<T>& timeAxisFine) const;
+  std::vector<T> phasesHermite(const RAPT::rsSinusoidalPartial<T>& partial,
+    const std::vector<T>& timeAxisCoarse, const std::vector<T>& timeAxisFine, 
+    bool quintic) const;
 
   /** Given an array of time-stamps and corresponing frequency and wrapped phase values, this 
   function computes the corresponding array of unwrapped phase values by numerically integrating
