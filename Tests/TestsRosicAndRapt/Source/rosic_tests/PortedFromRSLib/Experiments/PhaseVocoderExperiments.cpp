@@ -731,7 +731,7 @@ void sinusoidalAnalysis2()
   // input signal parameters:
   double fs = 44100;   // sample rate
   //double fs = 10000;   // sample rate
-  double f1 =  1011;   // 1st frequency
+  double f1 =  1011;   // 1st frequency, 1011 gives nice desync burst
   double f2 =  1107;   // 2nd frequency
   double a1 = 0.5;     // 1st amplitude
   double a2 = 0.5;     // 2nd amplitude

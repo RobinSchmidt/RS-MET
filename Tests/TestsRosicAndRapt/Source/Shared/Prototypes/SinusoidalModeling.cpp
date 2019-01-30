@@ -278,6 +278,40 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   return up;
 }
 
+
+
+template<class T>
+T unwrapToTarget(T value, T targetEstimate, T range)
+{
+  // preliminary silly algorithm - todo: use something based on fmod and round
+  if(value < target)
+    while(rsAbs(value-targetEstimate) > T(0.5)*range)
+      value += range;
+  else
+    while(rsAbs(value-targetEstimate) > T(0.5)*range)
+      value -= range;
+  return value;
+}
+
+template<class T>
+T findCosistentPhase(T phase, T phaseEstimate, T range) 
+{
+  return unwrapToTarget(phase, targetEstimate, T(2*PI));
+  // check this
+}
+
+template<class T>
+void SinusoidalSynthesizer<T>::enforceFreqPhaseConsitency(RAPT::rsSinusoidalPartial<T>& partial)
+{
+  
+  // the phaseEstimate is obtained by integrating freq over the length of the segment
+
+  // the desired average frequencies are computed by...
+  // 
+
+}
+
+
 // template instantiation:
 template class SinusoidalSynthesizer<double>;
 

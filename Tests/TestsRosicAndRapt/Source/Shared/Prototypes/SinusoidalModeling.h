@@ -105,6 +105,24 @@ public:
     const std::vector<T>& freq, const std::vector<T>& wrappedPhase) const; 
 
 
+  /** Modifies the frequency values in the given partial, such that when they are numerically 
+  integrated (via a trapezoidal rule), the resulting phase values end up at values that are 
+  consistent with the stored phase values, i.e. differ from the stored values only by a multiple of
+  2*pi. This is helpful to remove a bias in the estimated frequency values that may have occured 
+  during analysis, so it is a recommended post-processing step to refine the frequency estimates. 
+  Such a bias can result in temporary phase desynchronization issues of a resynthesized signal with
+  respect to the original signal, leading to sinusoidal bursts in the resiudal - which are clearly 
+  undesirable. Such desync bursts would occur whenever the accumulated frequency bias crosses a 
+  multiple of pi (i think - verify). */
+  void enforceFreqPhaseConsitency(RAPT::rsSinusoidalPartial<T>& partial);
+  // or maybe call it deBiasFreqEstimates
+  // maybe return the maximum phase difference that occured between the integrated freq and adjusted 
+  // (by k*2*pi) stored phase from one point to the next - this value should be much less than pi. 
+  // if it gets close to pi, it may mean that the hop-size was too small, so we may use this as 
+  // feedback for the user, if the hopsize parameter was good enough, so they may decide to anaylze 
+  // again with smaller hopSize
+
+
 
 
 
