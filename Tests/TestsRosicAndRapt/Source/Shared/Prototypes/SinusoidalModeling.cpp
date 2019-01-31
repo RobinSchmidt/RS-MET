@@ -715,6 +715,16 @@ T findCosistentPhase(T phase, T phaseEstimate)
 }
 
 template<class T>
+T phaseError(T p1, T p2)
+{
+  p1  = fmod(p1, 2*PI); // 0..2pi
+  p2  = fmod(p2, 2*PI); // 0..2pi
+  T d = p2-p1;          // -2pi..2pi
+  d   = fmod(d, 2*PI);  // 0..2pi - nope! it gets negative, even close to -2pi
+  return d;
+}
+
+template<class T>
 void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPartial<T>& partial)
 {
   std::vector<T> t = partial.getTimeArray();
@@ -736,9 +746,10 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
     a[m] = (qp-p[m])/(dt*2*PI);           // "new" average freq, consistent with p[m] and p[m+1]
 
     // check, if new a[m] is indeed consistent (for debug):
-    q = p[m] + a[m] * dt * 2*PI;                // same computation as above - should now give
-    T err = fmod(q, 2*PI) - fmod(p[m+1], 2*PI); // a phase q that is consistent with p[m+1]
-    RAPT::rsAssert(rsAbs(err) < 1.e-13);
+    q = p[m] + a[m] * dt * 2*PI;      // same computation as above - should now give
+    T error = phaseError(q, p[m+1]);  // a phase q that is consistent with p[m+1]
+    RAPT::rsAssert(error < 1.e-13);
+
   }
 
   // OK - we have our new desired average frequencies for the segments - from these, we now compute
