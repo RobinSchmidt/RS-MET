@@ -166,6 +166,8 @@ template class RAPT::MultiLayerPerceptron<double>;
 template class RAPT::MultiLayerPerceptronErrorFunction<double>;
 template class RAPT::MultiLayerPerceptronTrainer<double>;
 
+template double RAPT::rsInterpolateWrapped(double, double, double, double, double);
+
 template bool RAPT::rsCurveFitter::fitExponentialSum(double* y, int numValues, double* A, double* a,
   int numExponentials);
 

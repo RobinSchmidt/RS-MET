@@ -281,6 +281,13 @@ bool testWrap(std::string &reportString)
   r &= (d = RAPT::rsWrapToInterval(+4.0, -2.0, +3.0)) == -1.0;  // x above range
   r &= (d = RAPT::rsWrapToInterval(-3.0, -2.0, +3.0)) == +2.0;  // x below range
 
+  // interpolation of a wrapping value (maybe rename to rsInterpolatePeriodic):
+  r &= (d = RAPT::rsInterpolateWrapped(4.0, 6.0, 0.5, 0.0, 10.0)) ==  5.0;
+  r &= (d = RAPT::rsInterpolateWrapped(6.0, 4.0, 0.5, 0.0, 10.0)) ==  5.0;
+  r &= (d = RAPT::rsInterpolateWrapped(7.0, 1.0, 0.5, 0.0, 10.0)) ==  9.0;
+  r &= (d = RAPT::rsInterpolateWrapped(1.0, 7.0, 0.5, 0.0, 10.0)) ==  9.0;
+  r &= (d = RAPT::rsInterpolateWrapped(9.0, 3.0, 0.5, 0.0, 10.0)) ==  1.0;
+  r &= (d = RAPT::rsInterpolateWrapped(3.0, 9.0, 0.5, 0.0, 10.0)) ==  1.0;
 
   appendTestResultToReport(reportString, testName, r);
   return r;

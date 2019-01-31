@@ -767,8 +767,8 @@ void sinusoidalAnalysis2()
   double dBmargin = 20;      // dB margin over sidelobe level
   double blockSizeFactor = 1.0;  // factor by which to to make blockSize longer than necessary
   int zeroPaddingFactor = 4;         // zero padding factor
-  int window = RAPT::rsWindowFunction::HANNING_WINDOW_ZN;
-  //int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
+  //int window = RAPT::rsWindowFunction::HANNING_WINDOW_ZN;
+  int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
   //int window = RAPT::rsWindowFunction::BLACKMAN_WINDOW;
   //int window = RAPT::rsWindowFunction::BLACKMAN_HARRIS;
 
@@ -799,7 +799,7 @@ void sinusoidalAnalysis2()
 
   // create and set up analyzer and try to recover the model from the sound
   SinusoidalAnalyzer<double> sa;
-  int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs));
+  int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs, false));
   int hopSize   = blockSize/2;
   int trafoSize = zeroPaddingFactor*blockSize;
   double levelThresh = sa.getRequiredThreshold(window, dBmargin);
@@ -860,6 +860,7 @@ void sinusoidalAnalysis2()
   // -with the Hanning window and oversampling/zero-padding of 4, we observe a residual that
   //  increases in volume over time - apparently there's some error-accumulation over time
   //  going on
+  // -whether the window is even or odd does not seem to make a big difference
 
 
   // todo: replace all fmods with RAPT::rsWrapToInterval (fmod does not do a proper modulo but a
