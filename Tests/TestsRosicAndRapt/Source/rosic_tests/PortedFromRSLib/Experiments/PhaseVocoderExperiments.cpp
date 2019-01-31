@@ -759,7 +759,7 @@ void sinusoidalAnalysis2()
   double a2 = 0.2;     // 2nd amplitude
   double p1 = PI/2;    // 1st start phase
   double p2 = PI/2;    // 2nd start phase
-  double L  = 0.2;     // length in seconds
+  double L  = 9.2;     // length in seconds
   double fade = 0.03;  // fade-in/out time for original signal
 
   // analysis parameters:
@@ -768,8 +768,8 @@ void sinusoidalAnalysis2()
   double blockSizeFactor = 1.0;  // factor by which to to make blockSize longer than necessary
   int zeroPaddingFactor = 4;         // zero padding factor
   //int window = RAPT::rsWindowFunction::HANNING_WINDOW_ZN;
-  int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
-  //int window = RAPT::rsWindowFunction::BLACKMAN_WINDOW;
+  //int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
+  int window = RAPT::rsWindowFunction::BLACKMAN_WINDOW;
   //int window = RAPT::rsWindowFunction::BLACKMAN_HARRIS;
 
 
@@ -828,17 +828,15 @@ void sinusoidalAnalysis2()
   SinusoidalSynthesizer<double> synth;
 
   typedef SinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
-  //synth.setPhaseInterpolation(PIM::cubicHermite);
-  synth.setPhaseInterpolation(PIM::quinticHermite);
+  synth.setPhaseInterpolation(PIM::cubicHermite);
+  //synth.setPhaseInterpolation(PIM::quinticHermite);
   //synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   synth.setSampleRate(fs);
   //plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 
   //plotModelOutputComparison(model, model2, synth);
 
-  // figure out, if there's a bias in the frequency etsimates (such a bias may lead to phase
-  // desync bursts if it accumulates long enough to cause a jump by 2pi in the syntesis at some
-  // instant):
+  // figure out, if there's a bias in the frequency estimates:
   double f1a = model2.getPartial(0).getMeanFreq();
   double f2a = model2.getPartial(1).getMeanFreq();
   double freqBias1 = f1 - f1a;
@@ -847,8 +845,8 @@ void sinusoidalAnalysis2()
   // test - synthesize and resynthesize only one partial
   //model.removePartial( 1);
   //model2.removePartial(1);
-  //writeTwoSineModelOutputsToFile("TestTwoSinesResynthesis.wav", model, model2, synth, true);
-  plotModelOutputComparison(model, model2, synth);
+  writeTwoSineModelOutputsToFile("TestTwoSinesResynthesis.wav", model, model2, synth, true);
+  //plotModelOutputComparison(model, model2, synth);
 
 
   // Observations:
@@ -861,54 +859,8 @@ void sinusoidalAnalysis2()
   //  increases in volume over time - apparently there's some error-accumulation over time
   //  going on
   // -whether the window is even or odd does not seem to make a big difference
-
-
-  // todo: replace all fmods with RAPT::rsWrapToInterval (fmod does not do a proper modulo but a
-  // remainder instead, which gives a different result from modulo when the input is negative)
-
-  // ToDo next:
-  // -check what cuases the large phase errors for some settings at start and end - maybe there's
-  //  a bug in generating the synthesis phases
-  //  -maybe make a functions checkConsistency(SineModel& model, SineModel& targetModel) and/or
-  //  -make a function to write a model into a textfile
-  // -it seems that the maximum phase error is pi/2, a quarter period - maybe it has to do with the
-  //  wrap-around phase-interpolation that uses smaller of the two possible interpolation distances
-  //  -maybe that's not always appropriate - experiment with different phase-interpolation 
-  //   algorithms in the synthesizer - maybe have options: smallest distance, always forward,
-  //   always backward
-  // -changing hopSize = blockSize/8 to hopSize = blockSize/10 moves the section with the error
-  //  to the middle of the signal - so yes - it really has to do with wrong choice of the phase
-  //  interpolation direction - at some point during the synthesis, the interpolator reverses the
-  //  direction and that's what cuases the phase deviation
-  // -maybe the phase-interpolator should choose the forward or backward direction once for each 
-  //  partial (based on the first two datapoints) and then stick to that choice for the whole 
-  //  length of the partial
-  // -hmmm...or maybe this happens because the frequency estimate is biased - when resynthesizing,
-  //  the bias accumulates over time until it gets big enough to cause a phase-jump by 2pi?
-  //  ...the interpolation algorithm then reduces this jump to pi by switching the direction?
-  //  -solution: maybe during analysis, we should already de-bias the frequency estimates, ideally
-  //   to make them consistent with the phases - modify the frequency data in such a way that the
-  //   numeric integral of it at all times hits a phase that is consistent with the stored phase
-  //   ...maybe this leads to a tridiagonal system of equations - the average frequency of each 
-  //   segments depends on two datapoints - that couples all the frequencies ...i think
-  // -try to figure this out with a single sinusoid that leads to biased frequency estimates
-  // -plot the derivative of the analyzed phase of a sound that exhibits a phase-desync burst
-  // -the desync burst is very audible in the resynthesized signal, so it should be possible to 
-  //  detect such a situation
-  // -when reducing the amplitude of the 2nd partial to 0, the remaining 1st partial does not show
-  //  the desync - maybe the presence of the 2nd partial introduces the frequency bias?
-  // -have a function partial.getAverageFrequency - witz that, we may be able to figure out, if 
-  //  it's indeed a freq estimation bias issue
-
-
-
-  // Observations:
   // -when using a blockFactor = 2, we can estimate the frequencies more accurately, but the 
   //  amplitude envelope gets an additional fade-in/out character
-  // -towards the ends, we have large frequency estimation errors which in turn lead to temporary 
-  //  phase inversions which totally destroys the time-domain subtraction approach
-  // -but maybe that will be less problematic with natural sounds where the sinusoids do not start
-  //  or end abruptly - i think, this is a switch on/off artifact 
   // -when the hopSize is too small (like blockSize/2), the analyzed tracks are too short
   //  -rsSpectrogram::getNumFrames looks good - the number of spectrogram frames is not to blame
   //  -or: maybe we should use more frames such that the first frame is centered pre-zero such that
@@ -918,10 +870,6 @@ void sinusoidalAnalysis2()
   //   connected to the main track
   //  -yes - this makes sense, because when reducing the hopSize by factor two, the same allowed
   //   freq delta allows for twice as fast frequency changes
-  //  -generally, we should probably set up parameters in such a way, that the allowed freq-delta
-  //   corresponds to the bin-distance of the FFT bins - the gives a heuristic to select the 
-  //   hopSize - as a function of the normalized frequency delta (like, in Hz per second)
-  //
 
   // -idea: 
   //  -the first few frames have lots of zero valued samples which lead to an amplitude error,
@@ -939,13 +887,15 @@ void sinusoidalAnalysis2()
   // abruptly - this is not supposed to happen in natural signals - here, the sample values outside
   // the range 0..N-1 actually *are* zero, so this edge-compensation would make sense only for 
   // spectrograms that are cut out from some original signal
-  // -fade-in/out can sometimes help, but there still seem to be phase-inversions with certain 
-  //  settings - maybe it's the synthesis? make a unit test for the phase-interpolation
-
+  // -generally, we should probably set up parameters in such a way, that the allowed freq-delta
+  //  corresponds to the bin-distance of the FFT bins - the gives a heuristic to select the 
+  //  hopSize - as a function of the normalized frequency delta (like, in Hz per second)
 
   // maybe allow time varying frequencies and amplitudes - but maybe in next test - ramp up the
   // complexity
 }
+
+
 
 
 // make various tests for the sinusoidal analysis of increasing level of difficulty:

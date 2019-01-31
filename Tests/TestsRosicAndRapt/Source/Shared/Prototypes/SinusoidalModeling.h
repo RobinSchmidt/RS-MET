@@ -115,8 +115,9 @@ protected:
 
   bool cubicAmplitude = false;
 
-  PhaseInterpolationMethod phaseInterpolation = PhaseInterpolationMethod::tweakedFreqIntegral;
-  // later use quinticHermite by default
+  //PhaseInterpolationMethod phaseInterpolation = PhaseInterpolationMethod::tweakedFreqIntegral;
+  PhaseInterpolationMethod phaseInterpolation = PhaseInterpolationMethod::cubicHermite;
+  // later use quinticHermite by default ..or maybe make tests, which is better
 
 
   // maybe get rid of these:
@@ -325,6 +326,10 @@ public:
   // again with smaller hopSize
   // maybe this function should be part of the rsSinusoidalPartial class - it may be useful for
   // transformation/effect algorithms that mangle the datapoints, too
+  // after a couple of tests, it actually seeems to disimprove the freq estimates - sometimes they 
+  // tends to alternate between two wrong values below and above the correct value...maybe the 
+  // end-condition / additional equation is a bad choice? or maybe the whole thing is a bad idea
+  // anyway? -> more experiments needed
 
 protected:
 

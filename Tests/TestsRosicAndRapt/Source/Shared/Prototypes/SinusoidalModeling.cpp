@@ -890,6 +890,11 @@ void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
   //// de-bias the frequency estimates in the remaining, non-spurious partials:
   //for(int i = 0; i < model.getNumPartials(); i++)
   //  makeFreqsConsistentWithPhases(model.getModifiablePartialRef(i));
+
+  // maybe have an option to delete redundant datapoints, i.e. datapoints that remain constant
+  // over a long time, such as 1000Hz, 1000Hz, 1000Hz, ...., 1000Hz, 1000Hz - just keep the outer
+  // two or maybe the outer 4 (because of the interpolation) economizeModel or something
+  // or simplifyModel, simplifyPartial
 }
 
 template class SinusoidalAnalyzer<double>;
