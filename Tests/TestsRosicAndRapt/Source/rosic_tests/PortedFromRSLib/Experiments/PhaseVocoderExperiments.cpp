@@ -528,6 +528,21 @@ std::vector<double> synthesizeSinusoidal(
   return x;
 }
 
+/*
+void writeTwoSineModelOutputsToFile(
+  const char* fileName,
+  const RAPT::rsSinusoidalModel<double>& model1,
+  const RAPT::rsSinusoidalModel<double>& model2,
+  const SinusoidalSynthesizer<double>& synth)
+{
+  std::vector<double> x1 = synth.synthesize(model1);
+  std::vector<double> x2 = synth.synthesize(model2);
+  //  rosic::writeToStereoWaveFile(fileName, &x1[0], &x2[0], x1.si
+
+}
+*/
+
+
 // rename to testSinusoidalSynthesis1
 void sinusoidalSynthesis1()
 {
@@ -778,7 +793,7 @@ void sinusoidalAnalysis2()
   // create and set up analyzer and try to recover the model from the sound
   SinusoidalAnalyzer<double> sa;
   int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs));
-  int hopSize   = blockSize/10;
+  int hopSize   = blockSize/15;
   int trafoSize = zeroPaddingFactor*blockSize;
   double levelThresh = sa.getRequiredThreshold(window, dBmargin);
   sa.setWindowType(window);
@@ -823,11 +838,9 @@ void sinusoidalAnalysis2()
   double freqBias2 = f2 - f2a;
 
   // test - synthesize and resynthesize only one partial
-  model.removePartial( 1);
-  model2.removePartial(1);
+  //model.removePartial( 1);
+  //model2.removePartial(1);
   plotModelOutputComparison(model, model2, synth);
-
-
 
   // todo: replace all fmods with RAPT::rsWrapToInterval (fmod does not do a proper modulo but a
   // remainder instead, which gives a different result from modulo when the input is negative)

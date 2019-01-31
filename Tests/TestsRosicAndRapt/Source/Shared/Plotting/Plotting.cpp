@@ -235,42 +235,6 @@ void plotTwoSineModels(
   plt.plotTwoModels(model1, model2, fs);
 }
 
-// Produces a vector x from the array xIn of length N and a vector y from the model in such a way
-// that they are time aligned even in cases when the lengths dont match by padding an appropriate
-// number of zero samples where necessarry
-// x: original input of length N, model: a sinusoidal moded
-void getPaddedSignals(double* xIn, int Nx, 
-  const RAPT::rsSinusoidalModel<double>& model,
-  const SinusoidalSynthesizer<double>& synth,
-  std::vector<double>& x, std::vector<double>& y)
-{
-  typedef std::vector<double> Vec;
-
-  // synthesize y from the model:
-  y = synth.synthesize(model);
-  int nf = model.getStartSampleIndex(synth.getSampleRate()); // # fade-in samples
- 
-  size_t n;
-  if(nf < 0) {
-    // obtain a version of x with an appropriate number of zeros prepended
-    nf = -nf;
-    x.resize(Nx+nf);
-    for(n = 0; n < nf; n++)        x[n] = 0;
-    for(n = nf; n < x.size(); n++) x[n] = xIn[n-nf];
-  }
-  else {
-    RAPT::rsPadLeft(y, nf, 0.0);       // prepend zeros to y, if nf > 0
-    x = RAPT::toVector(xIn, Nx);
-  }
-
-  // extend the shorter of both signals with zeros:
-  size_t nx = x.size();
-  size_t ny = y.size();
-  if(nx > ny)
-    RAPT::rsResizeWithInit(y, nx, 0.0);
-  else if(ny > nx)
-    RAPT::rsResizeWithInit(x, ny, 0.0);
-}
 void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
   const SinusoidalSynthesizer<double>& synth, double* x, int Nx)
 {

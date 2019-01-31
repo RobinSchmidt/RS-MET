@@ -302,6 +302,39 @@ Ideas:
  and without extrapolation
 */
 
+void getPaddedSignals(double* xIn, int Nx, 
+  const RAPT::rsSinusoidalModel<double>& model,
+  const SinusoidalSynthesizer<double>& synth,
+  std::vector<double>& x, std::vector<double>& y)
+{
+  typedef std::vector<double> Vec;
+
+  // synthesize y from the model:
+  y = synth.synthesize(model);
+  int nf = model.getStartSampleIndex(synth.getSampleRate()); // # fade-in samples
+
+  size_t n;
+  if(nf < 0) {
+    // obtain a version of x with an appropriate number of zeros prepended
+    nf = -nf;
+    x.resize(Nx+nf);
+    for(n = 0; n < nf; n++)        x[n] = 0;
+    for(n = nf; n < x.size(); n++) x[n] = xIn[n-nf];
+  }
+  else {
+    RAPT::rsPadLeft(y, nf, 0.0);       // prepend zeros to y, if nf > 0
+    x = RAPT::toVector(xIn, Nx);
+  }
+
+  // extend the shorter of both signals with zeros:
+  size_t nx = x.size();
+  size_t ny = y.size();
+  if(nx > ny)
+    RAPT::rsResizeWithInit(y, nx, 0.0);
+  else if(ny > nx)
+    RAPT::rsResizeWithInit(x, ny, 0.0);
+}
+
 //=================================================================================================
 
 template<class T>
@@ -774,14 +807,10 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   // we don't change the original data anyway, we just use it here internally for our computations:
   for(m = 0; m < M; m++)
     p[m] = RAPT::rsWrapToInterval(p[m], 0, 2*PI);
-  plotVector(p); 
+  //plotVector(p); 
   // the measured phase vector has an anomaly at m = 31 - could our phase-estimating code in the fft
   // be wrong? mayb it tries to linearly interpolate between opposite extreme values - switch off
   // phase interpolation! -> yep - that's the bug!
- 
-
-
-
 
   std::vector<T> a(M-1);   // average frequencies (optimized code could avoid this array, too)
   for(m = 0; m < M-1; m++) {
@@ -857,9 +886,9 @@ void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
   // exactly zero length makes no sense, so it should not occur - each partial must have a start and 
   // end and a finite time interval in between
 
-  // de-bias the frequency estimates in the remaining, non-spurious partials:
-  for(int i = 0; i < model.getNumPartials(); i++)
-    makeFreqsConsistentWithPhases(model.getModifiablePartialRef(i));
+  //// de-bias the frequency estimates in the remaining, non-spurious partials:
+  //for(int i = 0; i < model.getNumPartials(); i++)
+  //  makeFreqsConsistentWithPhases(model.getModifiablePartialRef(i));
 }
 
 template class SinusoidalAnalyzer<double>;
