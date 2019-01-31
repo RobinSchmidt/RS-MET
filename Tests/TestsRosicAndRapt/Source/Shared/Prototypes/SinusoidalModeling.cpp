@@ -643,9 +643,16 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
       T peakPhase = pPhs[peaks[i]];      // maybe use interpolation later
 
       //T peakPhase = RAPT::rsArray::interpolatedValueAt(pPhs, numBins, peakBin);
-      // simple linear interpolation is wrong here - it returns a toally wrong value when the 
+      // simple linear interpolation is wrong here - it returns a totally wrong value when the 
       // phases of the bins are close to -pi and pi or vice versa - we need wrapped interpolation
       // ...but really unit-test the wrapped interpolation first
+
+      // wrapped linear interpolation:
+      //int k = peaks[i];
+      //peakPhase = rsInterpolateWrapped(pPhs[k], pPhs[k+1], peakBin-floor(peakBin), -PI, PI);
+      // strangely, with this interpolation, we may get louder residuals (w Hamming, zp=2) - maybe 
+      // make it optional and do more tests
+
 
       instPeakParams[i].time  = time;
       instPeakParams[i].freq  = peakBin*sampleRate/sp.getFftSize(); // use getBinFrequency(peakBin);
