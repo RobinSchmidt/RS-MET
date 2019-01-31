@@ -778,7 +778,7 @@ void sinusoidalAnalysis2()
   // create and set up analyzer and try to recover the model from the sound
   SinusoidalAnalyzer<double> sa;
   int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs));
-  int hopSize   = blockSize/10; // small hopSize needed, otherwise analyzed model has too short tracks
+  int hopSize   = blockSize/10;
   int trafoSize = zeroPaddingFactor*blockSize;
   double levelThresh = sa.getRequiredThreshold(window, dBmargin);
   sa.setWindowType(window);
@@ -798,7 +798,7 @@ void sinusoidalAnalysis2()
   //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
 
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
-  //plotTwoSineModels(model, model2, fs);
+  plotTwoSineModels(model, model2, fs);
   // ...try to use the lowest possible values that give a good result
 
 

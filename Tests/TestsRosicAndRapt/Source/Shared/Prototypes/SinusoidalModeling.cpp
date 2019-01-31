@@ -751,10 +751,17 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   for(m = 0; m < M-1; m++) {
     T dt = t[m+1] - t[m];                 // length of time interval t[m]...t[m+1] "delta-t"
     a[m] = T(0.5) * (f[m] + f[m+1]);      // "old" average freq in interval t[m]...t[m+1]
-    T q  = p[m] + a[m] * dt * 2*PI;       // computed phase - we may get rid of factor 2 here and later where it gets canceled out again
+    T q  = p[m] + a[m] * dt * 2*PI;       // computed phase
     T ps = p[m+1];                        // stored phase at end of current interval
     T qp = findCosistentPhase(p[m+1], q); // q' - adjusted phase 
     a[m] = (qp-p[m])/(dt*2*PI);           // "new" average freq, consistent with p[m] and p[m+1]
+
+    T dq = q - qp;  // |dq| should be (much) less than pi - otherwise the hopSize is too small for
+                    // correctly estimating frequencies from phase-differences
+
+    // at m=31 and m = 32, we get a large dq (around 1.7) - this leads to wildly alternating new
+    // frequencies - something is wrong - and decreasing the hop-size tends to make the problem
+    // even worse - check findConsistentPhase
 
     // check, if new a[m] is indeed consistent (for debug):
     q = p[m] + a[m] * dt * 2*PI;                     // same computation as above - should now give
@@ -776,6 +783,10 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   // finally, write the new frequencies into the datapoints of the partial:
   for(m = 0; m < M; m++)
     partial.setFrequency(m, f[m]);
+
+  // this actually increases the freq-estimate bias in sinusoidalAnalysis2 - do i have a 
+  // theory bug? the implementation seems good..the assert doesn't trigger - or maybe the hopsize
+  // is indeed too small and we get an adjustment by more than pi?
 }
 
 
