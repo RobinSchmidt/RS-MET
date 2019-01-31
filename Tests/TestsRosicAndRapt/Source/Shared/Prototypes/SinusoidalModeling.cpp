@@ -1,3 +1,49 @@
+
+// helper functions (maybe  move into class rsSinusoidalPartial )
+
+// useful for freq de-biasing and for phase interpolation in synthesis
+template<class T>
+T findCosistentPhase(T storedPhase, T computedPhase) 
+{
+  T p = storedPhase;     // 0..2pi
+  T q = computedPhase;   // 0..inf
+  T tmp = p;
+  T k   = 0;
+  T d;
+  while(true) {
+    tmp = p + 2*k*PI;
+    d   = q - tmp;
+    if(rsAbs(d) < PI)
+      break;
+    k  += T(1);
+  }
+  return tmp;
+}
+
+// whoa - this is very tricky - isn't there a simpler way for this?
+template<class T>
+T phaseError(T p1, T p2)
+{
+  p1  = RAPT::rsWrapToInterval(p1, 0, 2*PI);  // 0..2pi  // rename to rsWrapToRange...or just rsWrap
+  p2  = RAPT::rsWrapToInterval(p2, 0, 2*PI);  // 0..2pi
+  T d = p2-p1;                                // -2pi..2pi
+  d   = RAPT::rsWrapToInterval(d,  0, 2*PI);  // 0..2pi
+  return d;
+}
+template<class T>
+bool arePhasesConsistent(T p1, T p2, T tol = 1.e-13)
+{
+  T d = phaseError(p1, p2);
+  if(d < tol)
+    return true;
+  if(d-2*PI < tol)
+    return true;
+  return false;
+}
+
+
+//=================================================================================================
+
 template<class T>
 std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& model) const
 {
@@ -191,14 +237,18 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesHermite(
 
     T fa  = 0.5 * (f0 + f1);      // average frequency of segment (in Hz) - todo: maybe try geometric mean, or generalized mean
     //T fa  = sqrt(f0 * f1);
-    T k   = round(dt * fa);       // number of cycles passed between t0 and t1
+
+
+    //T k   = round(dt * fa);       // number of cycles passed between t0 and t1
     //T k   = floor(dt * fa); 
     //k -= 1;
-    p1   += 2*k*PI;               // adjust end-phase of segment
+    //p1   += 2*k*PI;               // adjust end-phase of segment
     // ...phase adjustment is still questionable - is the formula for k really the most reasonable?
     // and/or maybe computation of fa should also take p0 and p1 into account? for quintic 
     // interpolation use the integral over a cubic hermite frequency interpolant
     // make a function, meanFreq(f0, f1, dt, f0p, f1p)
+
+    p1 = findCosistentPhase(p1, p0 + 2*PI*fa*dt) ;
 
 
     // compute cubic or quintic Hermite coefficients for the current segment:
@@ -252,8 +302,8 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   // incorporate the target phase values into the unwrapped phase:
   bool accumulatePhaseDeltas = true; // not accumulating makes no sense, i think
   for(size_t m = 0; m < M; m++) {
-    T wp1 = fmod(up[m], 2*PI);  // 0..2*pi
-    T wp2 = fmod(wp[m], 2*PI);  // 0..2*pi
+    T wp1 = RAPT::rsWrapToInterval(up[m], 0, 2*PI);  // 0..2*pi
+    T wp2 = RAPT::rsWrapToInterval(wp[m], 0, 2*PI);  // 0..2*pi
     T d   = wp2-wp1;            // -2*pi..2*pi, delta between target phase and integrated frequency
 
     // these adjustments here are related to the phase-desync bursts in resynthesized signals (the
@@ -652,6 +702,8 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
       //peakPhase = rsInterpolateWrapped(pPhs[k], pPhs[k+1], peakBin-floor(peakBin), -PI, PI);
       // strangely, with this interpolation, we may get louder residuals (w Hamming, zp=2) - maybe 
       // make it optional and do more tests
+      // maybe also try to interpolate the real and imaginary parts and the extratc the phase and
+      // do tests, which one is best
 
 
       instPeakParams[i].time  = time;
@@ -738,65 +790,8 @@ void SinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(T *x, int k, T* pos,
 }
 
 
-// maybe move to library:
-template<class T>
-T unwrapToTarget(T value, T targetEstimate, T range)
-{
-  // preliminary silly algorithm - todo: use something based on fmod and round
-  if(value < targetEstimate)
-    while(rsAbs(value-targetEstimate) > T(0.5)*range)
-      value += range;
-  else
-    while(rsAbs(value-targetEstimate) > T(0.5)*range)
-      value -= range;
-  return value;
-  // maybe the while-loop sometimes takes one iteration too much?
-}
-template<class T>
-T findCosistentPhase(T storedPhase, T computedPhase) 
-{
-  T p = storedPhase;     // 0..2pi
-  T q = computedPhase;   // 0..inf
-
-  T tmp = p;
-  T k   = 0;
-  T d;
-  while(true)
-  {
-    tmp = p + 2*k*PI;
-    d   = q - tmp;
-    if(rsAbs(d) < PI)
-      break;
-    k  += T(1);
-  }
-
-  return tmp;
 
 
-  //return unwrapToTarget(storedPhase, computedPhase, T(2*PI)); // preliminary
-  // check this
-}
-
-// whoa - this is very tricky - isn't there a simpler way for this?
-template<class T>
-T phaseError(T p1, T p2)
-{
-  p1  = RAPT::rsWrapToInterval(p1, 0, 2*PI);  // 0..2pi  // rename to rsWrapToRange...or just rsWrap
-  p2  = RAPT::rsWrapToInterval(p2, 0, 2*PI);  // 0..2pi
-  T d = p2-p1;                                // -2pi..2pi
-  d   = RAPT::rsWrapToInterval(d,  0, 2*PI);  // 0..2pi
-  return d;
-}
-template<class T>
-bool arePhasesConsistent(T p1, T p2, T tol = 1.e-13)
-{
-  T d = phaseError(p1, p2);
-  if(d < tol)
-    return true;
-  if(d-2*PI < tol)
-    return true;
-  return false;
-}
 
 template<class T>
 void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPartial<T>& partial)
@@ -815,9 +810,6 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   for(m = 0; m < M; m++)
     p[m] = RAPT::rsWrapToInterval(p[m], 0, 2*PI);
   //plotVector(p); 
-  // the measured phase vector has an anomaly at m = 31 - could our phase-estimating code in the fft
-  // be wrong? mayb it tries to linearly interpolate between opposite extreme values - switch off
-  // phase interpolation! -> yep - that's the bug!
 
   std::vector<T> a(M-1);   // average frequencies (optimized code could avoid this array, too)
   for(m = 0; m < M-1; m++) {
@@ -829,7 +821,9 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
     a[m] = (qp-p[m])/(dt*2*PI);           // "new" average freq, consistent with p[m] and p[m+1]
 
     T dq = q - qp;  // |dq| should be (much) less than pi - otherwise the hopSize is too small for
-                    // correctly estimating frequencies from phase-differences
+    // correctly estimating frequencies from phase-differences - maybe return the maximum dp as
+    // feedback and/or maybe have a function getMaximumPhaseDeviation (where the deviation is 
+    // measured with respect to integrated frequency)
 
     // at m=31 and m = 32, we get a large dq (around 1.7) - this leads to wildly alternating new
     // frequencies - something is wrong - and decreasing the hop-size tends to make the problem

@@ -759,7 +759,7 @@ void sinusoidalAnalysis2()
   double a2 = 0.2;     // 2nd amplitude
   double p1 = PI/2;    // 1st start phase
   double p2 = PI/2;    // 2nd start phase
-  double L  = 9.2;     // length in seconds
+  double L  = 0.2;     // length in seconds
   double fade = 0.03;  // fade-in/out time for original signal
 
   // analysis parameters:
@@ -829,8 +829,8 @@ void sinusoidalAnalysis2()
 
   typedef SinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
   //synth.setPhaseInterpolation(PIM::cubicHermite);
-  //synth.setPhaseInterpolation(PIM::quinticHermite);
-  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  synth.setPhaseInterpolation(PIM::quinticHermite);
+  //synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   synth.setSampleRate(fs);
   //plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 
@@ -847,8 +847,8 @@ void sinusoidalAnalysis2()
   // test - synthesize and resynthesize only one partial
   //model.removePartial( 1);
   //model2.removePartial(1);
-  writeTwoSineModelOutputsToFile("TestTwoSinesResynthesis.wav", model, model2, synth, true);
-  //plotModelOutputComparison(model, model2, synth);
+  //writeTwoSineModelOutputsToFile("TestTwoSinesResynthesis.wav", model, model2, synth, true);
+  plotModelOutputComparison(model, model2, synth);
 
 
   // Observations:
