@@ -753,13 +753,13 @@ void sinusoidalAnalysis2()
   // input signal parameters:
   double fs = 44100;   // sample rate
   //double fs = 10000;   // sample rate
-  double f1 =  1011;   // 1st frequency, 1011 gives nice desync burst
+  double f1 =  1011;   // 1st frequency
   double f2 =  1107;   // 2nd frequency
   double a1 = 1.0;     // 1st amplitude
   double a2 = 1.0;     // 2nd amplitude
   double p1 = PI/2;    // 1st start phase
   double p2 = PI/2;    // 2nd start phase
-  double L  = 9.2;     // length in seconds
+  double L  = 9.2;     // length in seconds - use 0.2 for plot and 9.2 for wavefile generation
   double fade = 0.03;  // fade-in/out time for original signal
 
   // analysis parameters:
@@ -820,8 +820,8 @@ void sinusoidalAnalysis2()
 
   typedef SinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
   //synth.setPhaseInterpolation(PIM::cubicHermite);
-  synth.setPhaseInterpolation(PIM::quinticHermite);
-  //synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  //synth.setPhaseInterpolation(PIM::quinticHermite);
+  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   synth.setSampleRate(fs);
   //plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 
@@ -859,6 +859,9 @@ void sinusoidalAnalysis2()
   //  -with a Hamming window, there's still more of the sinusoids left in the residual due to 
   //  estimation error - even going up to zeroPadding = 8 doesn't help much with the Hamming
   //  window
+  // -for the quintic, it does not seem to make a big difference, if the numeric frequency 
+  //  derivative is used for the target 2nd derivative or if it's just set to zero - which is quite
+  //  surprising
   // -interestingly, the Hanning window seems to perform better than the Hamming window
   // -with the Hanning window and oversampling/zero-padding of 4, we observe a residual that
   //  increases in volume over time - apparently there's some error-accumulation over time
@@ -866,6 +869,11 @@ void sinusoidalAnalysis2()
   // -whether the window is even or odd does not seem to make a big difference
   // -when using a blockFactor = 2, we can estimate the frequencies more accurately, but the 
   //  amplitude envelope gets an additional fade-in/out character
+  // -todo: try a Gaussian window - it may improve the frequency estimate due to the fact of having
+  //  and exact parabola as transform
+  //  -maybe try to fit a function other than the parabola to the mainlobe
+  //  -if a chebychev window is used, maybe we can try to just fit the appropriate chebychev window
+  //   spectrum (which is known analytically)
 
   // -idea: 
   //  -the first few frames have lots of zero valued samples which lead to an amplitude error,
@@ -894,7 +902,52 @@ void sinusoidalAnalysis2()
 
 void sinusoidalAnalysis3()
 {
+  // A sinusoidal sweep
 
+  // input signal parameters:
+  double fs = 44100;   // sample rate
+  double f1 = 1000;    // start frequency
+  double f2 = 1100;    // end frequency
+  double a1 = 1.0;     // start amplitude
+  double a2 = 1.0;     // end amplitude
+  double p1 = PI/2;    // start phase
+  double L  = 0.25;     // length in seconds
+
+
+  // analysis parameters:
+  typedef RAPT::rsWindowFunction WF;
+  double freqRes  = std::min(f2, f1); // frequency resolution
+  double dBmargin = 20;               // dB margin over sidelobe level
+  double blockSizeFactor = 1.0;       // factor by which to to make blockSize longer than necessary
+  int zeroPaddingFactor = 4;          // zero padding factor
+  //int window = WF::HANNING_WINDOW_ZN;
+  int window = WF::HAMMING_WINDOW;
+  //int window = WF::BLACKMAN_WINDOW;
+  //int window = WF::BLACKMAN_HARRIS;
+
+
+  // create a model and synthesize the sound:
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  RAPT::rsSinusoidalPartial<double> partial;
+  RAPT::rsSinusoidalModel<double> model;
+
+  double p2 = 0; // end phase todo: set it up correctly integrate frequency sweep analytically to
+                 // figure out what the end value must be
+  partial.prependDataPoint(ISP(0.0, f1, a1, p1));
+  partial.appendDataPoint( ISP(L,   f2, a2, p2));
+  model.addPartial(partial);
+  std::vector<double> x = synthesizeSinusoidal(model, fs);
+  plotSineModel(model, fs);
+  plotVector(x);
+
+
+
+
+
+  // todo: there's alot of code duplication with respect to sinusoidalAnalysis3 - maybe we should 
+  // make a class SineModelExperiment which factors out all the common code - we will likely need 
+  // many more experiments with different input signals and lots of code will have to be duplicated
+  // without such a class
 }
 
 // make various tests for the sinusoidal analysis of increasing level of difficulty:

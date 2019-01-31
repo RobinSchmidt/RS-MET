@@ -228,11 +228,12 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesHermite(
 
 
 
+    T s = 1.0;  // make parameter, 1: regular quintic, 0: quitic with 0 2nd derivative
     T f0d = 0, f1d = 0; // frequency derivative at start and end
-    T w0d = 0, w1d = 0; // for the quintic interpolation later - not yet used
+    T w0d = 0, w1d = 0; // for the quintic interpolation
     if(quintic)  {
-      f0d = fdd[m];  f1d = fdd[m+1]; // setting them to zero gives an interpolant similar to the
-      w0d = f2w*f0d; w1d = f2w*f1d;  // cubic, but not exactly the same
+      f0d = s*fdd[m]; f1d = s*fdd[m+1]; // setting them to zero gives an interpolant similar to the
+      w0d = f2w*f0d;  w1d = f2w*f1d;    // cubic, but not exactly the same
     }
 
     T fa  = 0.5 * (f0 + f1);      // average frequency of segment (in Hz) - todo: maybe try geometric mean, or generalized mean
