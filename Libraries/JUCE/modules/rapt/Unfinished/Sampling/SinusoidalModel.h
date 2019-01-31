@@ -217,6 +217,8 @@ public:
     // we need to make a deep copy
   }
 
+  // maybe have a replacePartial function
+
 
   /** \name Inquiry */
 
@@ -242,12 +244,24 @@ public:
   /** Returns the number of partials in this model. */
   size_t getNumPartials() const { return partials.size(); }
 
-  /** Returns a reference to the partial with given index. */
+  /** Returns a constant reference to the partial with given index. Use this when you need inquire
+  information about this partial and its datapoints but don't intend to modify the data .*/
   const rsSinusoidalPartial<T>& getPartial(size_t index) const { return partials[index]; }
+  // maybe rename to getConstPartialRef
+
+  /** Returns a non-constant, i.e. modifiable reference to the partial with given index. Use this, 
+  when you intend to manipulate the data of the partial. */
+  rsSinusoidalPartial<T>& getModifiablePartialRef(size_t index) { return partials[index]; }
+
+
 
 protected:
 
   std::vector<rsSinusoidalPartial<T>> partials;
+
+
+  //friend class ::SinusoidalAnalyzer; // needs dirct access to the partials array
+  // todo: remove the namespace-level up ::, hen the analyzer is moved to rapt
 
 };
 
@@ -272,6 +286,15 @@ protected:
 // Transformations:
 
 // ideas: removeNoisyPartials, denoisePartials, harmonifyPartials, phaseLockPartials, ...
+// -maybe it would make sense to consider the de-trended, unwrapped phase signal and apply signal
+//  processing algorithsm to that
+// -in general, this seems to be a good oppottunity to apply non-uniform filters (although the 
+//  analyzer will produce uniformly sampled data, a general model may be non-uniformly sampled)
+//  -maybe to test such algorithms, take the analysis data and "poke holes" in it (i.e. delete some 
+//   datapoints in the middle)
+//  -maybe a sinusoid with vibrato and tremolo is a good prototypical test case, maybe the waveform
+//   of the vibrato could be initially squarish and we apply a lowpass to get a more sinusoidal 
+//   vibrato (or maybe use TriSaw vibrato)
 
 
 

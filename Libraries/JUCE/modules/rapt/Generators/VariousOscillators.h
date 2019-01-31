@@ -100,6 +100,8 @@ public:
     else 
       y = shape2(b0 + b1*p);  // downward section
 
+    // y = clip(y/(1-s), T(-1), T(+1)); // just an idea - s: squarishness parameter
+
     rsAssert(rsIsFiniteNumber(y));
     updatePhase();
     return y;

@@ -723,6 +723,11 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   // the desired average frequencies are computed by...
   // 
 
+  // maybe we should have a switch, if we run the loop over the datapoints forward or backward - in
+  // the backward case, we set the two last frequencies equal and in the forward case the two first
+  // frequencies...can a more symmetric way be found and one that doens't enforce two equal 
+  // frequencies - think about, how we could provide the "missing equation" in other ways
+
 }
 
 
@@ -753,7 +758,13 @@ void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
     if(model.getPartial(i).getLength() <= minTrackLength) 
       model.removePartial(i);
   // We use <= instead of < to remove zero-length tracks, even when minTrackLength == 0, so we 
-  // allow only for tracks that are *strictly* longer than 0 when minTrackLength == 0.
+  // allow only for tracks that are *strictly* longer than 0 when minTrackLength == 0. A track with
+  // exactly zero length makes no sense, so it should not occur - each partial must have a start and 
+  // end and a finite time interval in between
+
+  // de-bias the frequency estimates in the remaining, non-spurious partials:
+  for(int i = 0; i < model.getNumPartials(); i++)
+    makeFreqsConsistentWithPhases(model.getModifiablePartialRef(i));
 }
 
 template class SinusoidalAnalyzer<double>;

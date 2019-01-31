@@ -142,4 +142,8 @@ e2 = f(-1) == -1
 e3 = f(0)  == p
 solve([e1,e2,e3],[a,b,c])
 
+maybe use clip(x / (1-s), -1, +1) where s is a "squarishness" parameter. when 1, the denominator is
+0, so the output just alternates between -1 and +1 according to the numerator, so that would give a 
+square wave (or general pulse-wave, if h is != 0.5) - adds another degree of flexibility
+
 */

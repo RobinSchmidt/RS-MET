@@ -312,6 +312,8 @@ public:
   // if it gets close to pi, it may mean that the hop-size was too small, so we may use this as 
   // feedback for the user, if the hopsize parameter was good enough, so they may decide to anaylze 
   // again with smaller hopSize
+  // maybe this function should be part of the rsSinusoidalPartial class - it may be useful for
+  // transformation/effect algorithms that mangle the datapoints, too
 
 protected:
 
