@@ -842,16 +842,20 @@ void sinusoidalAnalysis2()
 
   // Observations:
   // -with amplitudes == 1, using a Blackman window with zero-padding of 4 and resynthesis with
-  //  -tweaked-integral/cubic natural: residual starts at -inf, jumps to -90 then to -84 in the 16
-  //   bit wavefile
+  //  -tweaked-integral/cubic natural: residual starts at -inf, jumps to -90dB then to -84 in the 
+  //   16 bit wavefile
   //  -hermite cubic: resdidual between -60 and -63 all the time
   //  -quintic hermite: resdidual between -57 and -60 all the time
   //  ->the winner is the cubic natural in this case, but the residual gets worse (louder) over 
   //    time, whereas it stays constant for the hermite schemes - i think for signals shorter than
-  //    20s, i guess cubic natural will outperform the others, for longer samples, the error 
+  //    20 sec, i guess cubic natural will outperform the others, for longer samples, the error 
   //    accumulation for the cubic natural may make one of the others preferable 
   //   ->can we have an interpolation that combines the advantages of hermite and natural (very 
   //     good accuracy that doesn't get worse over time)?
+  // -could it have to do with the frequency estimation bias (the freq is slightly overestimated,
+  //  enforcing a too steep slope at the datapoints which will have to be compensated by a 
+  //  shallower slope somewhere in between the datapoints) - could it be that the "stiffness" of
+  //  the natural spline due to the 2nd derivative constraint counteracts that effect?
   //  -with a Hamming window, there's still more of the sinusoids left in the residual due to 
   //  estimation error - even going up to zeroPadding = 8 doesn't help much with the Hamming
   //  window
@@ -862,15 +866,6 @@ void sinusoidalAnalysis2()
   // -whether the window is even or odd does not seem to make a big difference
   // -when using a blockFactor = 2, we can estimate the frequencies more accurately, but the 
   //  amplitude envelope gets an additional fade-in/out character
-  // -when the hopSize is too small (like blockSize/2), the analyzed tracks are too short
-  //  -rsSpectrogram::getNumFrames looks good - the number of spectrogram frames is not to blame
-  //  -or: maybe we should use more frames such that the first frame is centered pre-zero such that
-  //   it contains at least one valid sample (i.e. the rightmost sample of the first block should
-  //   have index n >= 0)?
-  //  -maybe our allowed freq-delta is too small, such that the start- and end peaks don't get 
-  //   connected to the main track
-  //  -yes - this makes sense, because when reducing the hopSize by factor two, the same allowed
-  //   freq delta allows for twice as fast frequency changes
 
   // -idea: 
   //  -the first few frames have lots of zero valued samples which lead to an amplitude error,
