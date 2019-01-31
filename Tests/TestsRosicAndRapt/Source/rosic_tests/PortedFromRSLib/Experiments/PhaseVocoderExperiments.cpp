@@ -528,19 +528,26 @@ std::vector<double> synthesizeSinusoidal(
   return x;
 }
 
-/*
 void writeTwoSineModelOutputsToFile(
   const char* fileName,
   const RAPT::rsSinusoidalModel<double>& model1,
   const RAPT::rsSinusoidalModel<double>& model2,
-  const SinusoidalSynthesizer<double>& synth)
+  const SinusoidalSynthesizer<double>& synth, bool writeResidualFile = false)
 {
-  std::vector<double> x1 = synth.synthesize(model1);
-  std::vector<double> x2 = synth.synthesize(model2);
-  //  rosic::writeToStereoWaveFile(fileName, &x1[0], &x2[0], x1.si
+  // we need some awkwardness here to get two time-aligned outputs...
+  std::vector<double> x = synth.synthesize(model1);
+  std::vector<double> x1, x2;
+  getPaddedSignals(&x[0], (int) x.size(), model2, synth, x1, x2);
+  rosic::writeToStereoWaveFile(fileName, &x1[0], &x2[0], (int) x1.size(), (int)synth.getSampleRate());
 
+  if(writeResidualFile) {
+    std::vector<double> r = x2 - x1;
+    rosic::writeToMonoWaveFile("Residual.wav", &r[0], (int)r.size(), (int)synth.getSampleRate());
+    // todo: incorporate given filename into the resiudal filename - we really should have 
+    // wave-writing function that take a std::string instead of const char*
+  }
 }
-*/
+
 
 
 // rename to testSinusoidalSynthesis1
@@ -748,25 +755,25 @@ void sinusoidalAnalysis2()
   //double fs = 10000;   // sample rate
   double f1 =  1011;   // 1st frequency, 1011 gives nice desync burst
   double f2 =  1107;   // 2nd frequency
-  double a1 = 0.5;     // 1st amplitude
-  double a2 = 0.5;     // 2nd amplitude
+  double a1 = 0.2;     // 1st amplitude
+  double a2 = 0.2;     // 2nd amplitude
   double p1 = PI/2;    // 1st start phase
   double p2 = PI/2;    // 2nd start phase
-  double L  = 0.2;     // length in seconds
+  double L  = 9.2;     // length in seconds
   double fade = 0.03;  // fade-in/out time for original signal
 
   // analysis parameters:
   double freqRes  = f2-f1;   // frequency resolution
   double dBmargin = 20;      // dB margin over sidelobe level
   double blockSizeFactor = 1.0;  // factor by which to to make blockSize longer than necessary
-  int zeroPaddingFactor = 2;         // zero padding factor
-  int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
+  int zeroPaddingFactor = 4;         // zero padding factor
+  int window = RAPT::rsWindowFunction::HANNING_WINDOW_ZN;
+  //int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
   //int window = RAPT::rsWindowFunction::BLACKMAN_WINDOW;
   //int window = RAPT::rsWindowFunction::BLACKMAN_HARRIS;
 
 
   // create a model and synthesize the sound:
-
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial1, partial2;
   RAPT::rsSinusoidalModel<double> model;
@@ -793,7 +800,7 @@ void sinusoidalAnalysis2()
   // create and set up analyzer and try to recover the model from the sound
   SinusoidalAnalyzer<double> sa;
   int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs));
-  int hopSize   = blockSize/15;
+  int hopSize   = blockSize/2;
   int trafoSize = zeroPaddingFactor*blockSize;
   double levelThresh = sa.getRequiredThreshold(window, dBmargin);
   sa.setWindowType(window);
@@ -813,7 +820,7 @@ void sinusoidalAnalysis2()
   //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
 
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
-  plotTwoSineModels(model, model2, fs);
+  //plotTwoSineModels(model, model2, fs);
   // ...try to use the lowest possible values that give a good result
 
 
@@ -840,7 +847,20 @@ void sinusoidalAnalysis2()
   // test - synthesize and resynthesize only one partial
   //model.removePartial( 1);
   //model2.removePartial(1);
-  plotModelOutputComparison(model, model2, synth);
+  writeTwoSineModelOutputsToFile("TestTwoSinesResynthesis.wav", model, model2, synth, true);
+  //plotModelOutputComparison(model, model2, synth);
+
+
+  // Observations:
+  // -using a Blackman window with zero-padding of 4 practically nulls the residual, with a 
+  //  Hamming window, there's still a little bit of the sinusoids left in the residual due to 
+  //  estimation error - even going up to zeroPadding = 8 doesn't help much with the Hamming
+  //  window
+  // -interestingly, the Hanning window seems to perform better than the Hamming window
+  // -with the Hanning window and oversampling/zero-padding of 4, we observe a residual that
+  //  increases in volume over time - apparently there's some error-accumulation over time
+  //  going on
+
 
   // todo: replace all fmods with RAPT::rsWrapToInterval (fmod does not do a proper modulo but a
   // remainder instead, which gives a different result from modulo when the input is negative)
