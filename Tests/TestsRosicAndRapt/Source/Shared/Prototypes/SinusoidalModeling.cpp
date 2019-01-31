@@ -699,7 +699,7 @@ template<class T>
 T unwrapToTarget(T value, T targetEstimate, T range)
 {
   // preliminary silly algorithm - todo: use something based on fmod and round
-  if(value < target)
+  if(value < targetEstimate)
     while(rsAbs(value-targetEstimate) > T(0.5)*range)
       value += range;
   else
@@ -708,15 +708,47 @@ T unwrapToTarget(T value, T targetEstimate, T range)
   return value;
 }
 template<class T>
-T findCosistentPhase(T phase, T phaseEstimate, T range) 
+T findCosistentPhase(T phase, T phaseEstimate) 
 {
-  return unwrapToTarget(phase, targetEstimate, T(2*PI));
+  return unwrapToTarget(phase, phaseEstimate, T(2*PI));
   // check this
 }
 
 template<class T>
 void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPartial<T>& partial)
 {
+  std::vector<T> t = partial.getTimeArray();
+  std::vector<T> f = partial.getFrequencyArray();
+  std::vector<T> p = partial.getPhaseArray();
+  // for optimization, we could do away with obtaining these arrays, working on them and then 
+  // writing the frequency back. Instead, we could operate directly on the datapoints- 
+  // but the algorithm is clearer that way - maybe optimize later
+
+  size_t M = t.size(), m;
+  RAPT::rsAssert(M >= 2);  // valid partials should have at least two datapoints
+  std::vector<T> a(M-1);   // average frequencies (optimized code could avoid this array, too)
+  for(m = 0; m < M-1; m++) {
+    T dt = t[m+1] - t[m];                 // length of time interval t[m]...t[m+1] "delta-t"
+    a[m] = T(0.5) * (f[m] + f[m+1]);      // "old" average freq in interval t[m]...t[m+1]
+    T q  = p[m] + a[m] * dt * 2*PI;       // computed phase - we may get rid of factor 2 here and later where it gets canceled out again
+    T ps = p[m+1];                        // stored phase at end of current interval
+    T qp = findCosistentPhase(p[m+1], q); // q' - adjusted phase 
+    a[m] = (qp-p[m])/(dt*2*PI);           // "new" average freq, consistent with p[m] and p[m+1]
+
+    // check, if new a[m] is indeed consistent (for debug):
+    q = p[m] + a[m] * dt * 2*PI;                // same computation as above - should now give
+    T err = fmod(q, 2*PI) - fmod(p[m+1], 2*PI); // a phase q that is consistent with p[m+1]
+    RAPT::rsAssert(rsAbs(err) < 1.e-13);
+  }
+
+  // OK - we have our new desired average frequencies for the segments - from these, we now compute
+  // the new frequencies at the datapoints (we are actually one equation short of determining all 
+  // frequencies, so we make the choice that the last two datapoint should have the same frequency
+  // as our additional equation/condition
+
+
+
+
 
   // the phaseEstimate is obtained by integrating freq over the length of the segment
 
@@ -727,6 +759,8 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   // the backward case, we set the two last frequencies equal and in the forward case the two first
   // frequencies...can a more symmetric way be found and one that doens't enforce two equal 
   // frequencies - think about, how we could provide the "missing equation" in other ways
+
+
 
 }
 
