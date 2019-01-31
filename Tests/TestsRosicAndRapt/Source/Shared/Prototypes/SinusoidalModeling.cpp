@@ -607,8 +607,12 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
 
       // maybe later let the user select the phase-interpolation method between no-interpolation, 
       // linear and maybe others (maybe interpolate in the complex domain and then extract phase):
-      //T peakPhase = pPhs[peaks[i]];      // maybe use interpolation later
-      T peakPhase = RAPT::rsArray::interpolatedValueAt(pPhs, numBins, peakBin);
+      T peakPhase = pPhs[peaks[i]];      // maybe use interpolation later
+
+      //T peakPhase = RAPT::rsArray::interpolatedValueAt(pPhs, numBins, peakBin);
+      // simple linear interpolation is wrong here - it returns a toally wrong value when the 
+      // phases of the bins are close to -pi and pi or vice versa - we need wrapped interpolation
+      // ...but really unit-test the wrapped interpolation first
 
       instPeakParams[i].time  = time;
       instPeakParams[i].freq  = peakBin*sampleRate/sp.getFftSize(); // use getBinFrequency(peakBin);
@@ -706,11 +710,30 @@ T unwrapToTarget(T value, T targetEstimate, T range)
     while(rsAbs(value-targetEstimate) > T(0.5)*range)
       value -= range;
   return value;
+  // maybe the while-loop sometimes takes one iteration too much?
 }
 template<class T>
-T findCosistentPhase(T phase, T phaseEstimate) 
+T findCosistentPhase(T storedPhase, T computedPhase) 
 {
-  return unwrapToTarget(phase, phaseEstimate, T(2*PI));
+  T p = storedPhase;     // 0..2pi
+  T q = computedPhase;   // 0..inf
+
+  T tmp = p;
+  T k   = 0;
+  T d;
+  while(true)
+  {
+    tmp = p + 2*k*PI;
+    d   = q - tmp;
+    if(rsAbs(d) < PI)
+      break;
+    k  += T(1);
+  }
+
+  return tmp;
+
+
+  //return unwrapToTarget(storedPhase, computedPhase, T(2*PI)); // preliminary
   // check this
 }
 
@@ -741,17 +764,30 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   std::vector<T> t = partial.getTimeArray();
   std::vector<T> f = partial.getFrequencyArray();
   std::vector<T> p = partial.getPhaseArray();
+  int M = (int) t.size(), m;
+  RAPT::rsAssert(M >= 2);  // valid partials should have at least two datapoints
   // for optimization, we could do away with obtaining these arrays, working on them and then 
   // writing the frequency back. Instead, we could operate directly on the datapoints- 
   // but the algorithm is clearer that way - maybe optimize later
 
-  int M = (int) t.size(), m;
-  RAPT::rsAssert(M >= 2);  // valid partials should have at least two datapoints
+  // wrap the phases from -pi..+pi to 0..2pi - it's more convenient to deal with this interval and
+  // we don't change the original data anyway, we just use it here internally for our computations:
+  for(m = 0; m < M; m++)
+    p[m] = RAPT::rsWrapToInterval(p[m], 0, 2*PI);
+  plotVector(p); 
+  // the measured phase vector has an anomaly at m = 31 - could our phase-estimating code in the fft
+  // be wrong? mayb it tries to linearly interpolate between opposite extreme values - switch off
+  // phase interpolation! -> yep - that's the bug!
+ 
+
+
+
+
   std::vector<T> a(M-1);   // average frequencies (optimized code could avoid this array, too)
   for(m = 0; m < M-1; m++) {
     T dt = t[m+1] - t[m];                 // length of time interval t[m]...t[m+1] "delta-t"
     a[m] = T(0.5) * (f[m] + f[m+1]);      // "old" average freq in interval t[m]...t[m+1]
-    T q  = p[m] + a[m] * dt * 2*PI;       // computed phase
+    T q  = p[m] + a[m] * dt * 2*PI;       // computed phase at end of interval
     T ps = p[m+1];                        // stored phase at end of current interval
     T qp = findCosistentPhase(p[m+1], q); // q' - adjusted phase 
     a[m] = (qp-p[m])/(dt*2*PI);           // "new" average freq, consistent with p[m] and p[m+1]
@@ -761,7 +797,7 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
 
     // at m=31 and m = 32, we get a large dq (around 1.7) - this leads to wildly alternating new
     // frequencies - something is wrong - and decreasing the hop-size tends to make the problem
-    // even worse - check findConsistentPhase
+    // even worse - check findConsistentPhase - could id have to with range 0..2pi vs. -pi..+pi?
 
     // check, if new a[m] is indeed consistent (for debug):
     q = p[m] + a[m] * dt * 2*PI;                     // same computation as above - should now give

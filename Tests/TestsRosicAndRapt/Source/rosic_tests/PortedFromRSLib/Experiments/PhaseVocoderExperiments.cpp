@@ -829,7 +829,8 @@ void sinusoidalAnalysis2()
 
 
 
-  //RAPT::rsWrapToInterval
+  // todo: replace all fmods with RAPT::rsWrapToInterval (fmod does not do a proper modulo but a
+  // remainder instead, which gives a different result from modulo when the input is negative)
 
   // ToDo next:
   // -check what cuases the large phase errors for some settings at start and end - maybe there's
