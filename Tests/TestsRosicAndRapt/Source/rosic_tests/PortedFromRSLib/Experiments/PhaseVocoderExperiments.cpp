@@ -755,22 +755,23 @@ void sinusoidalAnalysis2()
   //double fs = 10000;   // sample rate
   double f1 =  1011;   // 1st frequency, 1011 gives nice desync burst
   double f2 =  1107;   // 2nd frequency
-  double a1 = 0.2;     // 1st amplitude
-  double a2 = 0.2;     // 2nd amplitude
+  double a1 = 1.0;     // 1st amplitude
+  double a2 = 1.0;     // 2nd amplitude
   double p1 = PI/2;    // 1st start phase
   double p2 = PI/2;    // 2nd start phase
   double L  = 9.2;     // length in seconds
   double fade = 0.03;  // fade-in/out time for original signal
 
   // analysis parameters:
+  typedef RAPT::rsWindowFunction WF;
   double freqRes  = f2-f1;   // frequency resolution
   double dBmargin = 20;      // dB margin over sidelobe level
   double blockSizeFactor = 1.0;  // factor by which to to make blockSize longer than necessary
   int zeroPaddingFactor = 4;         // zero padding factor
-  //int window = RAPT::rsWindowFunction::HANNING_WINDOW_ZN;
-  //int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
-  int window = RAPT::rsWindowFunction::BLACKMAN_WINDOW;
-  //int window = RAPT::rsWindowFunction::BLACKMAN_HARRIS;
+  //int window = WF::HANNING_WINDOW_ZN;
+  //int window = WF::HAMMING_WINDOW;
+  int window = WF::BLACKMAN_WINDOW;
+  //int window = WF::BLACKMAN_HARRIS;
 
 
   // create a model and synthesize the sound:
@@ -793,9 +794,7 @@ void sinusoidalAnalysis2()
   //plotSineModel(model, fs); // we need a margin for the y-axis - otherwise it looks like nothing
   //plotVector(x);
 
-
   // analyze the produced sound again and compare the original model and analysis result
-  // ...
 
   // create and set up analyzer and try to recover the model from the sound
   SinusoidalAnalyzer<double> sa;
@@ -807,29 +806,21 @@ void sinusoidalAnalysis2()
   sa.setRelativeLevelThreshold(levelThresh);
   sa.setBlockAndTrafoSize(blockSize, trafoSize);
   sa.setHopSize(hopSize);
-
   sa.setMaxFreqDeltaBase(20);  // Hz variation allowed between frames - todo: have a parameter
                                // that is independent from the hopSize
   sa.setFadeInTime(0);
   sa.setFadeOutTime(0);
   sa.setMinimumTrackLength(0);
-
-  //sa.setMaxFreqDeltaBase(10);  // 10 Hz variation allowed between frames
-  //sa.setFadeInTime(0.01);
-  //sa.setFadeOutTime(0.01);
-  //sa.setMinimumTrackLength(0.021);  // should be a little above fadeInTime+fadeOutTime
-
   rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
   //plotTwoSineModels(model, model2, fs);
   // ...try to use the lowest possible values that give a good result
-
 
   // create and set up a sinusoidal synthesizer object and plot resynthesis result:
   SinusoidalSynthesizer<double> synth;
 
   typedef SinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
-  synth.setPhaseInterpolation(PIM::cubicHermite);
-  //synth.setPhaseInterpolation(PIM::quinticHermite);
+  //synth.setPhaseInterpolation(PIM::cubicHermite);
+  synth.setPhaseInterpolation(PIM::quinticHermite);
   //synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   synth.setSampleRate(fs);
   //plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
@@ -850,8 +841,18 @@ void sinusoidalAnalysis2()
 
 
   // Observations:
-  // -using a Blackman window with zero-padding of 4 practically nulls the residual, with a 
-  //  Hamming window, there's still a little bit of the sinusoids left in the residual due to 
+  // -with amplitudes == 1, using a Blackman window with zero-padding of 4 and resynthesis with
+  //  -tweaked-integral/cubic natural: residual starts at -inf, jumps to -90 then to -84 in the 16
+  //   bit wavefile
+  //  -hermite cubic: resdidual between -60 and -63 all the time
+  //  -quintic hermite: resdidual between -57 and -60 all the time
+  //  ->the winner is the cubic natural in this case, but the residual gets worse (louder) over 
+  //    time, whereas it stays constant for the hermite schemes - i think for signals shorter than
+  //    20s, i guess cubic natural will outperform the others, for longer samples, the error 
+  //    accumulation for the cubic natural may make one of the others preferable 
+  //   ->can we have an interpolation that combines the advantages of hermite and natural (very 
+  //     good accuracy that doesn't get worse over time)?
+  //  -with a Hamming window, there's still more of the sinusoids left in the residual due to 
   //  estimation error - even going up to zeroPadding = 8 doesn't help much with the Hamming
   //  window
   // -interestingly, the Hanning window seems to perform better than the Hamming window
@@ -896,7 +897,10 @@ void sinusoidalAnalysis2()
 }
 
 
+void sinusoidalAnalysis3()
+{
 
+}
 
 // make various tests for the sinusoidal analysis of increasing level of difficulty:
 // 1: single sinusoid with stable frequency and amplitude
