@@ -724,7 +724,7 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   // writing the frequency back. Instead, we could operate directly on the datapoints- 
   // but the algorithm is clearer that way - maybe optimize later
 
-  size_t M = t.size(), m;
+  int M = (int) t.size(), m;
   RAPT::rsAssert(M >= 2);  // valid partials should have at least two datapoints
   std::vector<T> a(M-1);   // average frequencies (optimized code could avoid this array, too)
   for(m = 0; m < M-1; m++) {
@@ -744,24 +744,18 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   // OK - we have our new desired average frequencies for the segments - from these, we now compute
   // the new frequencies at the datapoints (we are actually one equation short of determining all 
   // frequencies, so we make the choice that the last two datapoint should have the same frequency
-  // as our additional equation/condition
-
-
-
-
-
-  // the phaseEstimate is obtained by integrating freq over the length of the segment
-
-  // the desired average frequencies are computed by...
-  // 
-
+  // as our additional equation/condition:
+  f[M-1] = f[M-2] = a[M-2];
+  for(m = M-3; m >= 0; m--)
+    f[m] = 2*a[m] - f[m+1];
   // maybe we should have a switch, if we run the loop over the datapoints forward or backward - in
   // the backward case, we set the two last frequencies equal and in the forward case the two first
   // frequencies...can a more symmetric way be found and one that doens't enforce two equal 
   // frequencies - think about, how we could provide the "missing equation" in other ways
 
-
-
+  // finally, write the new frequencies into the datapoints of the partial:
+  for(m = 0; m < M; m++)
+    partial.setFrequency(m, f[m]);
 }
 
 

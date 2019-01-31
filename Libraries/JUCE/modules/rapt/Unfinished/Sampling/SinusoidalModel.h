@@ -90,6 +90,9 @@ public:
 
   // maybe have insertDataPoint function
 
+  /** Sets the frequency for the datapoint at index i. */
+  void setFrequency(int i, T newFreq) { instParams[i].freq = newFreq; }
+
 
   /** \name Inquiry */
 
