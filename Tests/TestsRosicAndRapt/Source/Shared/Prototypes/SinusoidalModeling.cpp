@@ -714,14 +714,25 @@ T findCosistentPhase(T phase, T phaseEstimate)
   // check this
 }
 
+// whoa - this is very tricky - isn't there a simpler way for this?
 template<class T>
 T phaseError(T p1, T p2)
 {
-  p1  = RAPT::rsWrapToInterval(p1, 0, 2*PI); // 0..2pi  // rename to rsWrapToRange...or just rsWrap
-  p2  = RAPT::rsWrapToInterval(p2, 0, 2*PI); // 0..2pi
-  T d = p2-p1;                            // -2pi..2pi
+  p1  = RAPT::rsWrapToInterval(p1, 0, 2*PI);  // 0..2pi  // rename to rsWrapToRange...or just rsWrap
+  p2  = RAPT::rsWrapToInterval(p2, 0, 2*PI);  // 0..2pi
+  T d = p2-p1;                                // -2pi..2pi
   d   = RAPT::rsWrapToInterval(d,  0, 2*PI);  // 0..2pi
   return d;
+}
+template<class T>
+bool arePhasesConsistent(T p1, T p2, T tol = 1.e-13)
+{
+  T d = phaseError(p1, p2);
+  if(d < tol)
+    return true;
+  if(d-2*PI < tol)
+    return true;
+  return false;
 }
 
 template<class T>
@@ -746,10 +757,8 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
     a[m] = (qp-p[m])/(dt*2*PI);           // "new" average freq, consistent with p[m] and p[m+1]
 
     // check, if new a[m] is indeed consistent (for debug):
-    q = p[m] + a[m] * dt * 2*PI;      // same computation as above - should now give
-    T error = phaseError(q, p[m+1]);  // a phase q that is consistent with p[m+1]
-    RAPT::rsAssert(error < 1.e-13);
-
+    q = p[m] + a[m] * dt * 2*PI;                     // same computation as above - should now give
+    RAPT::rsAssert(arePhasesConsistent(q, p[m+1]));  // a phase q that is consistent with p[m+1]
   }
 
   // OK - we have our new desired average frequencies for the segments - from these, we now compute
