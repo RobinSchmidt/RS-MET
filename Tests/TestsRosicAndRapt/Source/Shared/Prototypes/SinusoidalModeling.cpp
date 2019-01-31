@@ -717,10 +717,10 @@ T findCosistentPhase(T phase, T phaseEstimate)
 template<class T>
 T phaseError(T p1, T p2)
 {
-  p1  = fmod(p1, 2*PI); // 0..2pi
-  p2  = fmod(p2, 2*PI); // 0..2pi
-  T d = p2-p1;          // -2pi..2pi
-  d   = fmod(d, 2*PI);  // 0..2pi - nope! it gets negative, even close to -2pi
+  p1  = RAPT::rsWrapToInterval(p1, 0, 2*PI); // 0..2pi  // rename to rsWrapToRange...or just rsWrap
+  p2  = RAPT::rsWrapToInterval(p2, 0, 2*PI); // 0..2pi
+  T d = p2-p1;                            // -2pi..2pi
+  d   = RAPT::rsWrapToInterval(d,  0, 2*PI);  // 0..2pi
   return d;
 }
 

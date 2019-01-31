@@ -12,6 +12,7 @@ bool testRealFunctions()
   //testResult &= testHyperbolicFunctions(dummy); // test doesn't pass
   testResult &= testSinc(               dummy);
   testResult &= testFunctionIterators(  dummy);
+  testResult &= testWrap(               dummy);
 
   //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
@@ -264,3 +265,23 @@ bool testFunctionIterators(std::string &reportString)
   return testResult;
 }
 */
+
+bool testWrap(std::string &reportString)
+{
+  std::string testName = "WrapAround";
+  bool r = true;
+
+  double d;
+
+  // wrap numbers into the range -2...+3
+  r &= (d = RAPT::rsWrapToInterval(-2.0, -2.0, +3.0)) == -2.0;  // x at left limit
+  r &= (d = RAPT::rsWrapToInterval(+3.0, -2.0, +3.0)) == -2.0;  // x at right limit - wraps back to left
+  r &= (d = RAPT::rsWrapToInterval(+2.0, -2.0, +3.0)) == +2.0;  // x inside range
+  r &= (d = RAPT::rsWrapToInterval(-1.0, -2.0, +3.0)) == -1.0;  // x inside range
+  r &= (d = RAPT::rsWrapToInterval(+4.0, -2.0, +3.0)) == -1.0;  // x above range
+  r &= (d = RAPT::rsWrapToInterval(-3.0, -2.0, +3.0)) == +2.0;  // x below range
+
+
+  appendTestResultToReport(reportString, testName, r);
+  return r;
+}
