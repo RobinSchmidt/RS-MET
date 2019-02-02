@@ -50,6 +50,8 @@ Polyphony:
 class LadderVoice : public Voice
 {
   
+public:
+  
   void noteOn(int key, int vel) override;
   // etc...
   

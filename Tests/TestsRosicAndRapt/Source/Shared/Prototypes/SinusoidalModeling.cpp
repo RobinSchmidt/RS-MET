@@ -845,7 +845,16 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   // maybe we should have a switch, if we run the loop over the datapoints forward or backward - in
   // the backward case, we set the two last frequencies equal and in the forward case the two first
   // frequencies...can a more symmetric way be found and one that doens't enforce two equal 
-  // frequencies - think about, how we could provide the "missing equation" in other ways
+  // frequencies - think about, how we could provide the "missing equation" in other ways - maybe 
+  // an equation that involves all datapoints on the same footing? maybe a condition that minimizes
+  // the tendency to produce alternating corrections in successive datapoints? ...maybe keep the
+  // old freqs data available, compute the new freqs, obtain their difference, 
+  // lowpass this difference, apply the lowpassed corrections to the old data
+  // or: use the f array as computed above as preliminary and then apply an "equalize" function
+  // that looks at a pair of neighbours at a time and adjusts their frequencies in a way to make 
+  // them as close to equal as possible while maintaining the phase constraint, choose first 
+  // pairs (0,1),(2,3),(4,5) etc. and then do it again with (1,2),(3,4),(5,6) to couple 1 to 2, too
+  // etc maybe iterate until it converges to something
 
   // finally, write the new frequencies into the datapoints of the partial:
   for(m = 0; m < M; m++)
@@ -888,9 +897,10 @@ void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
   // exactly zero length makes no sense, so it should not occur - each partial must have a start and 
   // end and a finite time interval in between
 
-  //// de-bias the frequency estimates in the remaining, non-spurious partials:
-  //for(int i = 0; i < model.getNumPartials(); i++)
-  //  makeFreqsConsistentWithPhases(model.getModifiablePartialRef(i));
+  // de-bias the frequency estimates in the remaining, non-spurious partials:
+  if(forceFreqPhaseConsistency)
+    for(int i = 0; i < model.getNumPartials(); i++)
+      makeFreqsConsistentWithPhases(model.getModifiablePartialRef(i));
 
   // maybe have an option to delete redundant datapoints, i.e. datapoints that remain constant
   // over a long time, such as 1000Hz, 1000Hz, 1000Hz, ...., 1000Hz, 1000Hz - just keep the outer

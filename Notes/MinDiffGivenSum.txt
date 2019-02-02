@@ -1,0 +1,126 @@
+Consider the problem of wanting to figure out the numbers at N datapoints, 
+given the N-1 sums of successive datapoints when we want the sum of the squared 
+differences between successive datapoints to become a minimum.
+
+Example:
+
+index: 1     2     3
+value: 10    10    30 
+sums:     20    40  
+
+10+10 = 20 (sum of datapoint 1 and 2), 10+30 = 40 (sum of datapoint 2 and 3)
+
+the sum of squares of differences, which we shall call D, is:
+
+D = (10-10)^2 + (30-10)^2 = 400
+
+with the values: 5, 15, 25, we would still get the same sums (5+15=20, 15+25=40)
+but smaller D = (15-5)^2 + (25-15)^2 = 200. What we want is a formula or at 
+least an algorithm to find the N values v1,v2,v3,...,vN given the M=N-1 sums 
+s1,s2,s3,...,sM) that solve this minimization problem.
+
+With 5 datapoints, the problem would be
+
+minimize:    (v2-v1)^2 + (v3-v2)^2 + (v4-v3)^2 + (v5-v4)^2 = D
+constraints: v1+v2 = s1, v2+v3 = s2, v3+v4 = s3, v4+v5 = s4
+
+The partial derivatives of D with respect to the vn are:
+
+dD/dv1 =            - 2*(v2-v1) 
+dD/dv2 =  2*(v2-v1) - 2*(v3-v2)
+dD/dv3 =  2*(v3-v2) - 2*(v4-v3)
+dD/dv4 =  2*(v4-v3) - 2*(v5-v4)
+dD/dv5 =  2*(v5-v4)        
+
+for a minimum, these partial derivatives must all be zero. But we also have the
+constraints, so instead of minimzing D(v1,v2,..,vN), we define the Lagrangian 
+function:
+
+L(v1,v2,..vN,w1,w2,..,wM) 
+= D(v1,v2,..,vN) + something =
+(v2-v1)^2 + (v3-v2)^2 + (v4-v3)^2 + (v5-v4)^2 
++ w1*(v1+v2-s1) + w2*(v2+v3-s2) + w3*(v3+v4-s3) + w4*(v4+v5-s4)
+
+the partial derivatives of L with respect to our data values vn and the 
+Lagrange multipliers wm are:
+
+dL/dv1 =           - 2*(v2-v1) + w1
+dL/dv2 = 2*(v2-v1) - 2*(v3-v2) + w1 + w2
+dL/dv3 = 2*(v3-v2) - 2*(v4-v3) + w2 + w3
+dL/dv4 = 2*(v4-v3) - 2*(v5-v4) + w3 + w4
+dL/dv5 = 2*(v5-v4)                  + w4
+dL/dw1 = v1 + v2 - s1
+dL/dw2 = v2 + v3 - s2
+dL/dw3 = v3 + v4 - s3
+dL/dw4 = v4 + v5 - s4
+
+These must all be zero - let's write this as a matrix-vector equation, defining 
+the vector V = (v1 w1 v2 w2 ... wM vN), i.e. we interleave the Lagrange 
+multipliers wm with the originaln data values vn. With this definition, the 
+matrix equation to solve looks like:
+
+
+ v1 w1 v2 w2 v3 w3 v4 w4 v5   ...just for orientation what the columns multiply
+ 
+| 2  1 -2  0  0  0  0  0  0|   |v1|   |0 |
+|-2  1  4  1 -2  0  0  0  0|   |w1|   |0 |
+| 0  0 -2  1  4  1 -2  0  0|   |v2|   |0 |
+| 0  0  0  0 -2  1  4  1 -2|   |w2|   |0 |
+| 0  0  0  0  0  0 -2  1  2| * |v3| = |0 |
+| 1  0  1  0  0  0  0  0  0|   |w3|   |s1|
+| 0  0  1  0  1  0  0  0  0|   |v4|   |s2|
+| 0  0  0  0  1  0  1  0  0|   |w4|   |s3|
+| 0  0  0  0  0  0  1  0  1|   |v5|   |s4|
+
+
+let's re-arrange it to a pentadiagonal system:
+
+| 2  1 -2  0  0  0  0  0  0|   |v1|   |0 |
+| 1  0  1  0  0  0  0  0  0|   |w3|   |s1|
+|-2  1  4  1 -2  0  0  0  0|   |w1|   |0 |
+| 0  0  1  0  1  0  0  0  0|   |v4|   |s2|
+| 0  0 -2  1  4  1 -2  0  0| * |v2| = |0 |
+| 0  0  0  0  1  0  1  0  0|   |w4|   |s3|
+| 0  0  0  0 -2  1  4  1 -2|   |w2|   |0 |
+| 0  0  0  0  0  0  1  0  1|   |v5|   |s4|
+| 0  0  0  0  0  0 -2  1  2|   |v3|   |0 |
+
+OK - the matrix looks very orderly now and is in fact symmetric. After solving 
+the system with a pentadiagonal linear system solver, v1,v2,... can be located 
+at....hmm...the distance between two vn is always 3 (with wraparound) - but is 
+that still true for general N?
+May the Lagrange multiplier have a meaningful interpretaion? May they be worth 
+to keep around as additional data?
+
+here's a nice article on solving pentadiagonal systems:
+
+https://www.hindawi.com/journals/mpe/2015/232456/
+
+i think, Numerical Recipies has a recipie for that, too.
+
+For using this for the frequency estimation problem in 
+makeFreqsConsistentWithPhases, it may become slightly more complicated because
+we need to take into account some extra factors...what were our sums s1,s2,.. 
+here, will become 2 times the desired, new average frequencies, but maybe we 
+should also take the interval lengths into account. Maybe the (v2-v1)^2 etc. 
+terms should be weighted by the reciprocal of the time-difference between the 
+two data points - the idea is that for data points which are far apart in time, 
+a big difference between the values is more likely to occur and to be considered
+less problematic (the frequency has more time to sweep up or down). i think, 
+this would change all the -2 entires in the matrix to some other numbers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

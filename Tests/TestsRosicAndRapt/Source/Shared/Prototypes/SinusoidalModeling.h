@@ -233,6 +233,15 @@ public:
   void setRelativeLevelThreshold(T newThreshold) { magThreshold = rsDbToAmp(newThreshold); }
 
 
+  /** Selects whether or not makeFreqsConsistentWithPhases should be applied to all partials as 
+  post-processing/refinement step.
+  This is still a very experimental feature - still under construction. In particular, the current
+  implementation may lead to freq-estimates that alternate around the correct value. */
+  void setFreqPhaseConsistency(bool shouldBeEnforced)
+  {
+    forceFreqPhaseConsistency = shouldBeEnforced;
+  }
+
 
   /** \name Inquiry */
 
@@ -399,6 +408,8 @@ protected:
   T magThreshold = 0.0;
 
   int contAlgo = 0;  // peak continuation algorithm
+
+  bool forceFreqPhaseConsistency = false;
 
 
   RAPT::rsSpectrogram<T> sp;   // spectrogram processor

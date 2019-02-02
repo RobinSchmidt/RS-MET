@@ -796,7 +796,7 @@ void sinusoidalAnalysis2()
 
   // analyze the produced sound again and compare the original model and analysis result
 
-  // create and set up analyzer and try to recover the model from the sound
+  // create and set up analyzer and try to recover the model from the sound:
   SinusoidalAnalyzer<double> sa;
   int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs, false));
   int hopSize   = blockSize/2;
@@ -907,16 +907,17 @@ void sinusoidalAnalysis3()
   // input signal parameters:
   double fs = 44100;   // sample rate
   double f1 = 1000;    // start frequency
-  double f2 = 1100;    // end frequency
-  double a1 = 1.0;     // start amplitude
-  double a2 = 1.0;     // end amplitude
+  double f2 = 1010;    // end frequency
+  double a1 = 0.25;    // start amplitude
+  double a2 = 0.25;    // end amplitude
   double p1 = PI/2;    // start phase
-  double L  = 0.25;     // length in seconds
+  double L  = 0.3;     // length in seconds
 
 
   // analysis parameters:
   typedef RAPT::rsWindowFunction WF;
-  double freqRes  = std::min(f2, f1); // frequency resolution
+  //double freqRes  = std::min(f2, f1); // frequency resolution
+  double freqRes  = 1000.0;
   double dBmargin = 20;               // dB margin over sidelobe level
   double blockSizeFactor = 1.0;       // factor by which to to make blockSize longer than necessary
   int zeroPaddingFactor = 4;          // zero padding factor
@@ -937,17 +938,86 @@ void sinusoidalAnalysis3()
   partial.appendDataPoint( ISP(L,   f2, a2, p2));
   model.addPartial(partial);
   std::vector<double> x = synthesizeSinusoidal(model, fs);
-  plotSineModel(model, fs);
-  plotVector(x);
+  //plotSineModel(model, fs);
+  //plotVector(x);
+
+  // create and set up analyzer and try to recover the model from the sound:
+  SinusoidalAnalyzer<double> sa;
+  int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs, false));
+  int hopSize   = blockSize/2;
+  int trafoSize = zeroPaddingFactor*blockSize;
+  double levelThresh = sa.getRequiredThreshold(window, dBmargin);
+  sa.setWindowType(window);
+  sa.setRelativeLevelThreshold(levelThresh);
+  sa.setBlockAndTrafoSize(blockSize, trafoSize);
+  sa.setHopSize(hopSize);
+  sa.setMaxFreqDeltaBase(20);
+  sa.setFadeInTime(0);
+  sa.setFadeOutTime(0);
+  sa.setMinimumTrackLength(0);
+  sa.setFreqPhaseConsistency(true);
+  rsSinusoidalModel<double> model2 = sa.analyze(&x[0], (int)x.size(), fs);
+  plotTwoSineModels(model, model2, fs);
 
 
+  // figure out, if there's a bias in the frequency estimates:
+  double fa = model2.getPartial(0).getMeanFreq(); // maybe have a getMeanFreq that takes two time-stamps as parameters
+  double freqBias = fa - (f1+f2)/2;
+
+  // create and set up a sinusoidal synthesizer object and plot resynthesis result:
+  SinusoidalSynthesizer<double> synth;
+  typedef SinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
+  //synth.setPhaseInterpolation(PIM::cubicHermite);
+  //synth.setPhaseInterpolation(PIM::quinticHermite);
+  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  synth.setSampleRate(fs);
+  //plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
+  writeTwoSineModelOutputsToFile("TestSineSweepResynthesis.wav", model, model2, synth, true);
+  plotModelOutputComparison(model, model2, synth);
 
 
+  // Observations:
+  // -it seems the measured phase is offset from actual phase by an amount that depends on the
+  //  sweeping speed
+  // -the resynthesized signal is shotrer than the original one - why?
+  // -even for a very small sweep amount like 1000 to 1002 Hz, the resynthesized signal is very 
+  //  much out of phase with the original - is the error in the analysis or synthesis?
+  //  ->compute correct phase at the datapoint time-instants and compare with the measured
+  //  data
+  // -maybe plot a phase spectrogram, see video 02 - Sinusoidal model 2, 11:32 - we should take the 
+  //  time derivative of the phase spectrum - i stable sinusoid should have a constant value, a 
+  //  sweeping sinuosid a constantly increasing color (and then jump back, like a sawtooth wave)
+  // -with 1000 and 1100, there's some symmetry - in the first half, blue is consitently leading in
+  //  the second half, blue is lagging
+  // -figure out, if the phase, measurement, freq-measurement or both are to blame
+  // -if the freq-measurement is too inaccurate, maybe try the reassignment apporach for estimating
+  //  the frequency - let the user switch between freq-estimation algos:
+  //  parabolic, reassignment, maybe phase-delta? 
+  // -maybe after the partials have been figured out roughly, refine the estimates by the 
+  //  heterodyning phase-vocoder approach and/or görtzel algorithm
+  // -maybe try a global de-biasing of the freq-estimates (the local re-adjustment turned out to 
+  //  not not work very well due to the tendency of producing alternating corrections, but maybe a 
+  //  global dibiasing works better - maybe try to compensate the bias by adding something or by 
+  //  multiplying by a factor - try which works better
+  //  -or: maybe the tendency to alternate can somehow by counteracted algorithmically? maybe by a 
+  //   lowpass/averaging scheme? ...or mayb detect alternations and do averaging, if it's detected
+  // -figure out, how the spectrum of a (windowed) sine sweep actually looks like - especially
+  //  the phase-spectrum
+  // -can we somehow compute a freq-slope for each bin and frame just from the data within the 
+  //  frame?
+  // -todo: make the makeFreqsConsistentWithPhases a user option that can be set from client code
+  //  and experiment with that
 
   // todo: there's alot of code duplication with respect to sinusoidalAnalysis3 - maybe we should 
   // make a class SineModelExperiment which factors out all the common code - we will likely need 
   // many more experiments with different input signals and lots of code will have to be duplicated
   // without such a class
+  // maybe it should have functions like
+  // setInputSineSweep(f1, f2, a1, a2, L)
+  // setInputTwoSines(f1, f2, a1, a2, L)
+  // setInputWobblySine()
+  // setInputSawtooth()..
+  // runExperiment()
 }
 
 // make various tests for the sinusoidal analysis of increasing level of difficulty:
