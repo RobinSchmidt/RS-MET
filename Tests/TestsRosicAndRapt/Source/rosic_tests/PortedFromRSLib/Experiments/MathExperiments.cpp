@@ -4,6 +4,68 @@ typedef std::complex<double> rsComplexDbl; // maybe get rid of that
 
 
 
+void bandMatrix()
+{
+  // under construction - we want an algorithm for solving band-diagonal linear systems - ideally 
+  // without requiring extra storage 
+
+  static const int N = 8;    // size of the matrix: NxN
+  int nu = 2;                // number of superdiagonals (upper, right diagonals)
+  int nl = 3;                // number of subdiagonals (lower, left digonals);
+  double A[N][N];            // the matrix
+  double b[N], x[N];         // right hand side and solution vector
+
+  // fill the matrix with zeros:
+  int i, j;
+  for(i = 0; i < N; i++)
+    for(j = 0; j < N; j++)
+      A[i][j] = 0;
+
+  // fill the diagonals:
+  for(i = 0; i < N; i++) {
+    int js = RAPT::rsClip(i - nu, 0, N-1);  // start value for colmun index j
+    int je = RAPT::rsClip(i + nu, 0, N-1);  // end value for column index j
+    for(j = js; j <= je; j++)               // inner loop has (at most) nu + nl + 1 iterations
+      A[i][j] = 10*(i+1) + j+1;
+  }
+
+  // fill the right hand side vector b:
+  for(i = 0; i < N; i++)
+    b[i] = 3*(i+1);  // whatever...some values
+
+  // Gaussian elimination where the subtraction of rows is restricted to only those rows which are
+  // not zero already:
+  int p[N];       // index of pivot row
+  double pivAbs;  // absolute value of pivot element
+  for(i = 0; i < N; i++) {
+    // search for pivot row:
+    p[i] = i;     // preliminary
+    pivAbs = 0;
+    for(j = i; j < i+nl; j++) {
+      if(fabs(A[j][i]) > pivAbs) {
+        pivAbs = fabs(A[j][i]);
+        p[i] = j;
+      }
+    }
+
+
+    // ....
+
+
+
+  }
+
+  // todo: Even though the above Gaussian elemination has only O(N * (nl+nu+1)) time complexity, it
+  // still uses O(N^2) memory to store the full matrix. We need a storage scheme that only needs
+  // O(N * (nl+nu+1)) as well. maybe make a class rsBandMatrix where we my conveniently access 
+  // elements via A(i,j) - the () operator "translates" the indices i,j to actual memory locations
+  // of the respective storage format
+
+
+
+}
+
+
 void binomialDistribution()
 {
   int    n = 20;                       // number of coin tosses

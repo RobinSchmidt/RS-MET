@@ -3,6 +3,8 @@
 
 #include "../../../Shared/Shared.h"
 
+
+void bandMatrix();
 void binomialDistribution();
 void sineParameters();
 void bandLimitedStep();

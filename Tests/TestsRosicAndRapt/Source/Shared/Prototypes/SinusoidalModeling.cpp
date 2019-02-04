@@ -791,8 +791,23 @@ void SinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(T *x, int k, T* pos,
 }
 
 
+template<class T>
+void rsMinSqrDiffWithGivnSum(T* x, T* s, int N)
+{
+  // x: values to be computed, s: desired sum-values (constraints)
 
 
+  // todo: this is very preliminary, just for proof of concept and uses a standard Gaussian 
+  // elimination algorithm to solve the linear system, which has a complexity of O(N^3). But the 
+  // system is pentadigonal, so an O(N) algorithm is possible...so we need an algorithm for 
+  // pentadiagonal systems in the library - or even better: an algorithm for general band-diagonal
+  // matrices
+
+  // maybe this is suitable:
+  // https://www.boost.org/doc/libs/1_69_0/libs/numeric/ublas/doc/index.html
+
+  // https://www.boost.org/doc/libs/1_69_0/libs/numeric/ublas/doc/banded.html
+}
 
 template<class T>
 void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPartial<T>& partial)
@@ -838,7 +853,7 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   // OK - we have our new desired average frequencies for the segments - from these, we now compute
   // the new frequencies at the datapoints (we are actually one equation short of determining all 
   // frequencies, so we make the choice that the last two datapoint should have the same frequency
-  // as our additional equation/condition:
+  // as our additional equation/condition):
   f[M-1] = f[M-2] = a[M-2];
   for(m = M-3; m >= 0; m--)
     f[m] = 2*a[m] - f[m+1];
@@ -855,6 +870,13 @@ void SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases(RAPT::rsSinusoidalPart
   // them as close to equal as possible while maintaining the phase constraint, choose first 
   // pairs (0,1),(2,3),(4,5) etc. and then do it again with (1,2),(3,4),(5,6) to couple 1 to 2, too
   // etc maybe iterate until it converges to something
+  // see the textfile MinDiffGivenSum.txt - the additional equation should be to minimize the 
+  // sum-of-squared-differences - this leads to a constrained optimization problem soluble via 
+  // Lagrange mulitpliers
+  
+  // preliminary:
+  std::vector<T> sum = 2.0 * a;
+  rsMinSqrDiffWithGivnSum(&f[0], &sum[0], M);
 
   // finally, write the new frequencies into the datapoints of the partial:
   for(m = 0; m < M; m++)

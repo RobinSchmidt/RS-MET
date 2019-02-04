@@ -2,7 +2,7 @@ Consider the problem of wanting to figure out the numbers at N datapoints,
 given the N-1 sums of successive datapoints when we want the sum of the squared 
 differences between successive datapoints to become a minimum.
 
-Example:
+Example with 3 datapoints:
 
 index: 1     2     3
 value: 10    10    30 
@@ -33,7 +33,7 @@ dD/dv4 =  2*(v4-v3) - 2*(v5-v4)
 dD/dv5 =  2*(v5-v4)        
 
 for a minimum, these partial derivatives must all be zero. But we also have the
-constraints, so instead of minimzing D(v1,v2,..,vN), we define the Lagrangian 
+constraints, so instead of minimizing D(v1,v2,..,vN), we define the Lagrangian 
 function:
 
 L(v1,v2,..vN,w1,w2,..,wM) 
@@ -56,12 +56,12 @@ dL/dw4 = v4 + v5 - s4
 
 These must all be zero - let's write this as a matrix-vector equation, defining 
 the vector V = (v1 w1 v2 w2 ... wM vN), i.e. we interleave the Lagrange 
-multipliers wm with the originaln data values vn. With this definition, the 
+multipliers wm with the original N data values vn. With this definition, the 
 matrix equation to solve looks like:
 
 
  v1 w1 v2 w2 v3 w3 v4 w4 v5   ...just for orientation what the columns multiply
- 
+  
 | 2  1 -2  0  0  0  0  0  0|   |v1|   |0 |
 |-2  1  4  1 -2  0  0  0  0|   |w1|   |0 |
 | 0  0 -2  1  4  1 -2  0  0|   |v2|   |0 |
@@ -89,15 +89,28 @@ OK - the matrix looks very orderly now and is in fact symmetric. After solving
 the system with a pentadiagonal linear system solver, v1,v2,... can be located 
 at....hmm...the distance between two vn is always 3 (with wraparound) - but is 
 that still true for general N?
-May the Lagrange multiplier have a meaningful interpretaion? May they be worth 
-to keep around as additional data?
 
 here's a nice article on solving pentadiagonal systems:
 
 https://www.hindawi.com/journals/mpe/2015/232456/
 
-i think, Numerical Recipies has a recipie for that, too.
+Numerical Recipies has a recipie for band-digonal systems. What if 
+the matrix becomes singular? Can this happen and if so, what does it mean - i 
+think, there will be always a solution to this problem but could there also be 
+a continuum of solutions - and if so, which one should we choose? ...maybe some 
+sort of minimum-norm solution? this norm would depend on the error-weights
+(see below) - we could scale all weights by the same constant and increasing
+that constant would increase the relative weight of v-components with respect
+to the w-components in the norm. ...but these are probably not big issues 
 
+  
+
+  
+  
+  
+  
+  
+   
 For using this for the frequency estimation problem in 
 makeFreqsConsistentWithPhases, it may become slightly more complicated because
 we need to take into account some extra factors...what were our sums s1,s2,.. 
@@ -107,7 +120,24 @@ terms should be weighted by the reciprocal of the time-difference between the
 two data points - the idea is that for data points which are far apart in time, 
 a big difference between the values is more likely to occur and to be considered
 less problematic (the frequency has more time to sweep up or down). i think, 
-this would change all the -2 entires in the matrix to some other numbers
+this would change all the -2 entires in the matrix to some other numbers - or 
+maybe the weight should be the reciprocal of the square-root of the duration to 
+cancel the square in the numerator (a linear sweep over a certain amount of 
+time should get the same penalty for the same ratio of (f1-f0)/(t1-t0)), so if 
+the freq changes by 100Hz in 5 sec should get the same penalty (increase of D) 
+as a change by 10 Hz in 0.5s
+
+May the Lagrange multiplier have a meaningful interpretation? May they be worth 
+to keep around as additional data?  Each multiplier is a measure by how much we 
+could increase/decrease the objective function by loosening the corresponding 
+constraint - maybe we should look at the lambda spectrum for various signals 
+and see, if we see something - could it have to do with the derivative or 
+curvature or other features of the freq-trajectory? the Lagrange multiplier is
+equal to the derivative of the optimum value with respect to the constraint 
+constant... or something
+
+see here at 8 min
+https://www.youtube.com/watch?v=m-G3K2GPmEQ&list=PLSQl0a2vh4HC5feHa6Rc5c0wbRTx56nF7&index=98
 
 
 

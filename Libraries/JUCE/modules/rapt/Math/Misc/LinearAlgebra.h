@@ -54,7 +54,7 @@ public:
   /** Solves the linear system just as solveLinearSystem() does - but doesn't allocate temporary 
   heap memory and instead destroys the coefficient matrix A and the target vector b during the 
   process because the computation is done in place. In fact, the function solveLinearSystem() just 
-  makes temporary copies of the matrix A and target vector b and the calls this function with these 
+  makes temporary copies of the matrix A and target vector b and then calls this function with these 
   copies to do the actual computation. If you don't need the matrix or vector anymore after solving 
   the system, you can use this function directly to get rid of the copying overhead. The algorithm 
   is Gaussian elimination with partial pivoting (...i think -> verify this). */

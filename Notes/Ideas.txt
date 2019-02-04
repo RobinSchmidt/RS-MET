@@ -33,8 +33,8 @@ Thread-Safety:
  immediately but set a "dirty" flag (of type std::atomic_bool)
 -in getSample, check the flag, and if it's true, trigger the coefficient
  update there
--this also avoid recomputing the coeffs twice when the user calls setCutoff, 
- setResonance in succession
+-this also avoids recomputing the coeffs twice when the user calls setCutoff, 
+ setResonance in succession at the same sample
 
 Polyphony:
 -have a Voice baseclass with virtual functions like
