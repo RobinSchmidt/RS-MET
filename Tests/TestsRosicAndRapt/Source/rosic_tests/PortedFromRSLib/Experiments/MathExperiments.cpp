@@ -92,10 +92,9 @@ void pentaDiagnonalMatrix()
   // not referenced?
 
 
-  // the solution vector is supposed to be x = { 1,2,3,4,5,6,7,8,9,10 }
 
-  // the first algorithm "PTRANS1":
-  double mu[10], alpha[10], beta[10], gamma[10], z[10];
+  // the first algorithm "PTRANS-I":
+  double mu[10], alpha[10], beta[10], gamma[10], z[10], x[10];
   
   // Step 3:
   mu[0]    = d[0]; 
@@ -112,7 +111,7 @@ void pentaDiagnonalMatrix()
   
   // Step 5:
   int i;
-  for(i = 2; i <= N-3; i++){
+  for(i = 2; i <= N-3; i++) {
     gamma[i] =  c[i] - alpha[i-2]*e[i];
     mu[i]    =  d[i] - beta[i-2]*e[i] - alpha[i-1]*gamma[i];
     alpha[i] = (a[i] - beta[i-1]*gamma[i]) / mu[i];
@@ -128,6 +127,15 @@ void pentaDiagnonalMatrix()
   z[N-1]     = (y[N-1] - z[N-2]*e[N-1] - z[N-2]*gamma[N-1]) / mu[N-1];
   
   // Step 6:
+  x[N-1] = z[N-1];
+  x[N-2] = z[N-2] - alpha[N-2]*x[N-1];
+  for(i = N-3; i >= 0; i--)
+    x[i] = z[i] - alpha[i]*x[i+1] - beta[i]*x[i+2];
+
+  // the solution vector is supposed to be x = { 1,2,3,4,5,6,7,8,9,10 }  
+  // ...nope - that's still wrong...maybe make a unit test
+  
+
   
   
   
@@ -135,7 +143,7 @@ void pentaDiagnonalMatrix()
 
 
 
-  // the second algorithm "PTRANS2":
+  // the second algorithm "PTRANS-II":
 
 
 
