@@ -110,6 +110,27 @@ void pentaDiagnonalMatrix()
   beta[1]  = b[1] / mu[1];
   z[1]     = (y[1]-z[0]*gamma[1]) / mu[1];
   
+  // Step 5:
+  int i;
+  for(i = 2; i <= N-3; i++){
+    gamma[i] =  c[i] - alpha[i-2]*e[i];
+    mu[i]    =  d[i] - beta[i-2]*e[i] - alpha[i-1]*gamma[i];
+    alpha[i] = (a[i] - beta[i-1]*gamma[i]) / mu[i];
+    beta[i]  =  b[i] / mu[i];
+    z[i]     = (y[i] - z[i-2]*e[i] - z[i-1]*gamma[i]) / mu[i];
+  }
+  gamma[N-2] =  c[N-2] - alpha[N-4]*e[N-2];
+  mu[N-2]    =  d[N-2] - beta[N-4]*e[N-2] - alpha[N-3]*gamma[N-2];
+  alpha[N-2] = (a[N-2] - beta[N-3]*gamma[N-2]) / mu[N-2];
+  gamma[N-1] =  c[N-1] - alpha[N-3]*e[N-1];
+  mu[N-1]    =  d[N-1] - beta[N-3]*e[N-1] - alpha[N-2]*gamma[N-1];
+  z[N-2]     = (y[N-2] - z[N-3]*e[N-2] - z[N-3]*gamma[N-2]) / mu[N-2];
+  z[N-1]     = (y[N-1] - z[N-2]*e[N-1] - z[N-2]*gamma[N-1]) / mu[N-1];
+  
+  // Step 6:
+  
+  
+  
 
 
 
