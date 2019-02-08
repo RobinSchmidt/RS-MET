@@ -81,14 +81,40 @@ void pentaDiagnonalMatrix()
   // Transformations" by KARAWIA, see here: https://arxiv.org/pdf/1409.4802.pdf
 
   static const int N = 10; // we use the 10x10 matrix in section 4 of the paper
-  double d[10] = {1,2,3,-4,5,6,7,-1,1,8};   // main diagonal
-  double a[9]  = {2,2,1,5,-7,3,-1,4,5};     // 1st superdiagonal
-  double b[8]  = {1,5,-2,1,5,2,4,-3};       // 2nd superdiagonal
-  double c[10] = {0,3,2,1,2,1,2,1,-2,4};    // 1st subdiagonal
-  double e[10] = {0,0,1,3,15,2,2,2,-1};     // 2nd subdiagonal
+  double d[10] = { 1,2,3,-4,5,6,7,-1,1,8 };    // main diagonal
+  double a[9]  = { 2,2,1,5,-7,3,-1,4,5 };      // 1st superdiagonal
+  double b[8]  = { 1,5,-2,1,5,2,4,-3 };        // 2nd superdiagonal
+  double c[10] = { 0,3,2,1,2,1,2,1,-2,4 };     // 1st subdiagonal
+  double e[10] = { 0,0,1,3,15,2,2,2,-1 };      // 2nd subdiagonal
+  double y[10] = { 8,33,8,24,29,98,17,57,108}; // right hand side
   // in the paper, they filled up the subdiagonals with leading zeros - probably for more 
-  // convenient indexing?
+  // convenient indexing? should we fill the superdiagonals with trailing zeros, too - or are they
+  // not referenced?
 
+
+  // the solution vector is supposed to be x = { 1,2,3,4,5,6,7,8,9,10 }
+
+  // the first algorithm "PTRANS1":
+  double mu[10], alpha[10], beta[10], gamma[10], z[10];
+  
+  // Step 3:
+  mu[0]    = d[0]; 
+  alpha[0] = a[0]/mu[0];
+  beta[0]  = b[0]/mu[0];
+  z[0]     = y[0]/mu[0];
+  
+  // Step 4:
+  gamma[1] = c[1];
+  mu[1]    = d[1] - alpha[0]*gamma[1];
+  alpha[1] = (a[1]-beta[0]*gamma[1]) / mu[1];
+  beta[1]  = b[1] / mu[1];
+  z[1]     = (y[1]-z[0]*gamma[1]) / mu[1];
+  
+
+
+
+
+  // the second algorithm "PTRANS2":
 
 
 
