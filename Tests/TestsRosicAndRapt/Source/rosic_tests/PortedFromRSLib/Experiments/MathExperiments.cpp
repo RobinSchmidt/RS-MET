@@ -13,10 +13,11 @@ void bandMatrix()
   int nu = 2;                // number of superdiagonals (upper, right diagonals)
   int nl = 3;                // number of subdiagonals (lower, left digonals);
   double A[N][N];            // the matrix
-  double b[N], x[N];         // right hand side and solution vector
+  double b[N];               // right hand side
+  //double x[N];               // solution vector
 
   // fill the matrix with zeros:
-  int i, j;
+  int i, j, k;
   for(i = 0; i < N; i++)
     for(j = 0; j < N; j++)
       A[i][j] = 0;
@@ -48,21 +49,51 @@ void bandMatrix()
       }
     }
 
+    // subtract pivot row from rows below it (this may still be wrong):
+    int je = RAPT::rsClip(i + nu, 0, N-1);
+    for(j = i+1; j <= je; j++)
+    {
+      if(j == p[i])
+        continue;
+      double multiplier = A[j][i] / A[p[i]][i];
+      b[j] -= multiplier * b[p[i]];
+      for(k = i; k < N; k++)   // can this loop also be restricted?
+        A[j][k] -= multiplier * A[p[i]][k];
+    }
 
     // ....
-
-
-
   }
+
+  // ...this is still under construction
 
   // todo: Even though the above Gaussian elemination has only O(N * (nl+nu+1)) time complexity, it
   // still uses O(N^2) memory to store the full matrix. We need a storage scheme that only needs
   // O(N * (nl+nu+1)) as well. maybe make a class rsBandMatrix where we my conveniently access 
   // elements via A(i,j) - the () operator "translates" the indices i,j to actual memory locations
-  // of the respective storage format
+  // of the respective storage format (and correctly returns zero, if the combination i,j refers to
+  // a position where the matrix element indeed is zero)
+}
+
+
+void pentaDiagnonalMatrix()
+{
+  // The algorithm is based on the paper "On Solving Pentadiagonal Linear Systems via 
+  // Transformations" by KARAWIA, see here: https://arxiv.org/pdf/1409.4802.pdf
+
+  static const int N = 10; // we use the 10x10 matrix in section 4 of the paper
+  double d[10] = {1,2,3,-4,5,6,7,-1,1,8};   // main diagonal
+  double a[9]  = {2,2,1,5,-7,3,-1,4,5};     // 1st superdiagonal
+  double b[8]  = {1,5,-2,1,5,2,4,-3};       // 2nd superdiagonal
+  double c[10] = {0,3,2,1,2,1,2,1,-2,4};    // 1st subdiagonal
+  double e[10] = {0,0,1,3,15,2,2,2,-1};     // 2nd subdiagonal
+  // in the paper, they filled up the subdiagonals with leading zeros - probably for more 
+  // convenient indexing?
 
 
 
+
+
+  int dummy = 0;
 }
 
 

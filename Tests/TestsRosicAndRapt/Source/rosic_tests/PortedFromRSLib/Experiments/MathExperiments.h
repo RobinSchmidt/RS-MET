@@ -5,6 +5,7 @@
 
 
 void bandMatrix();
+void pentaDiagnonalMatrix();
 void binomialDistribution();
 void sineParameters();
 void bandLimitedStep();

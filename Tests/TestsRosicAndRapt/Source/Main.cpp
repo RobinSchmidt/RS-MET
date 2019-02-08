@@ -160,7 +160,8 @@ int main(int argc, char* argv[])
   // Experiments:
 
   // Math:
-  bandMatrix();
+  //bandMatrix();                       // under construction
+  pentaDiagnonalMatrix();
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();
