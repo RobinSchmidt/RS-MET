@@ -1,0 +1,65 @@
+Comsider the task of solving the 6x6 pentadiagonal system of equations:
+  
+d0 u0 v0 00 00 00 00   x0   b0
+l0 d1 u1 v1 00 00 00   x1   b1
+m0 l1 d2 u2 v2 00 00   x2   b2
+00 m1 l2 d3 u3 v3 00 * x3 = b3
+00 00 m2 l3 d4 u4 v4   x4   b4
+00 00 00 m3 l4 d5 u5   x5   b5
+00 00 00 00 m4 l5 d6   x6   b6
+
+we want to bring it into the upper triangular and tridiagonal form:
+
+D0 U0 V0 00 00 00 00   x0   B0
+00 D1 U1 V1 00 00 00   x1   B1
+00 00 D2 U2 V2 00 00   x2   B2
+00 00 00 D3 U3 V3 00 * x3 = B3
+00 00 00 00 D4 U4 V4   x4   B4
+00 00 00 00 00 D5 U5   x5   B5
+00 00 00 00 00 00 D6   x6   B6
+
+let's initialize:
+D0 = d0, U0 = u0, V0 = v0, B0 = b0
+L0 = l0, D1 = d1, U1 = u1, V1 = v1
+and subtract k=L0/D0 times the 1st row (index 0) from the 2nd row (index 1), 
+this gives for the new first two rows:
+
+D0 U0 V0 00 00 00 00   x0   B0
+L0 D1 U1 V1 00 00 00   x1   B1
+...other rows stay the same...
+
+where the new, updated values of the 2nd row are: 
+L0 = L0-k*D0=0, D1 = D1-k*U0, U1 = U1-k*V0, V1 = V1-k*0 = V1, B1 = B1-k*B0
+Lets now define M0=m0 and also subtract k=M0/D0 times the first row (index 0) 
+from the 3rd row (index 2), this gives:
+
+D0 U0 V0 00 00 00 00   x0   B0
+L0 D1 U1 V1 00 00 00   x1   B1
+M0 L1 D2 U2 V2 00 00   x2   B2
+...no changes...
+
+where the new, updated values of the 3rd row are:
+M0 = M0 - k*D0=0, L1 = L1 - k*U0, D2 = D2 - k*V0, 
+U2 = U2-k*0 = U2, V2 = V2 - k*0 = V2, B2 = B2 - k*B0
+now we have obtained an all-zero first column except for the fist element at
+position 0,0, where the element is D0. We proceed in the same manner to create 
+more zero-colums. The algorithm is generally
+
+1:
+init arrays D=d, U=u, V=v, L=l, M=m, B=b
+
+2:
+for(i = 0; i < N-2; i++)
+{
+  k       = L[i]/D[i];
+  L[i]   -= k*D[i];      // should give 0
+  D[i+1] -= k*U[i];
+  U[i+1] -= k*V[i];
+  k       = M[i]/D[i];
+  M[i]   -= k*D[i];
+  L[i+1] -= k*U[i];
+  D[i+2] -= k*V[i];
+}
+
+
+

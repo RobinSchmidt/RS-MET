@@ -81,20 +81,27 @@ void pentaDiagnonalMatrix()
   // Transformations" by KARAWIA, see here: https://arxiv.org/pdf/1409.4802.pdf
 
   static const int N = 10; // we use the 10x10 matrix in section 4 of the paper
-  double d[10] = { 1,2,3,-4,5,6,7,-1,1,8 };    // main diagonal
-  double a[9]  = { 2,2,1,5,-7,3,-1,4,5 };      // 1st superdiagonal
-  double b[8]  = { 1,5,-2,1,5,2,4,-3 };        // 2nd superdiagonal
-  double c[10] = { 0,3,2,1,2,1,2,1,-2,4 };     // 1st subdiagonal
-  double e[10] = { 0,0,1,3,15,2,2,2,-1 };      // 2nd subdiagonal
-  double y[10] = { 8,33,8,24,29,98,17,57,108}; // right hand side
+  double d[10] = { 1,2,3,-4,5,6,7,-1,1,8 };       // main diagonal
+  double a[9]  = { 2,2,1,5,-7,3,-1,4,5 };         // 1st superdiagonal
+  double b[8]  = { 1,5,-2,1,5,2,4,-3 };           // 2nd superdiagonal
+  double c[10] = { 0,3,2,1,2,1,2,1,-2,4 };        // 1st subdiagonal
+  double e[10] = { 0,0,1,3,1,5,2,2,2,-1 };        // 2nd subdiagonal
+  double y[10] = { 8,33,8,24,29,98,99,17,57,108}; // right hand side
+  //double y[10] = { 8,33,8,24,29,82,71,17,57,108}; // right hand side
   // in the paper, they filled up the subdiagonals with leading zeros - probably for more 
   // convenient indexing? should we fill the superdiagonals with trailing zeros, too - or are they
   // not referenced?
+  // in the paper, the solution vector y is given as rhs in the matrix equation differently than as 
+  // vector - apparently, the authors made a mistake
 
 
 
   // the first algorithm "PTRANS-I":
   double mu[10], alpha[10], beta[10], gamma[10], z[10], x[10];
+  
+  // Steps 1 and 2 just check the matrix for singularity - we assume here that the matrix
+  // is nonsingular - actually, we assume even more: that the system is soluble without
+  // explicit pivoting (the algo implicitly chooses always the element at [i][i] as pivot)
   
   // Step 3:
   mu[0]    = d[0]; 
@@ -134,16 +141,49 @@ void pentaDiagnonalMatrix()
 
   // the solution vector is supposed to be x = { 1,2,3,4,5,6,7,8,9,10 }  
   // ...nope - that's still wrong...maybe make a unit test
+  // the mu-values are correct, though
   
-
-  
-  
-  
-
-
-
 
   // the second algorithm "PTRANS-II":
+  double sigma[10], phi[10], rho[10], psi[10], w[10];
+  
+  // Step 3:
+  psi[N-1]   = d[N-1];
+  sigma[N-1] = c[N-1]/psi[N-1];
+  phi[N-1]   = e[N-1]/psi[N-1];
+  w[N-1]     = y[N-1]/psi[N-1];
+  
+  // Step 4:
+  rho[N-2]   =  a[N-2];
+  psi[N-2]   =  d[N-2] - sigma[N-1]*rho[N-2];
+  sigma[N-2] = (c[N-2] - phi[N-1]*rho[N-2]) / psi[N-2];
+  phi[N-2]   =  e[N-2] / psi[N-2];
+  w[N-2]     = (y[N-2] - w[N-1]*rho[N-2]) / psi[N-2];
+  
+  // Step 5:
+  for(i = N-3; i >= 2; i--) {
+    rho[i]   =  a[i] - sigma[i+2]*b[i];
+    psi[i]   =  d[i] - phi[i+2]*b[i] - sigma[i+1]*rho[i];
+    sigma[i] = (c[i] - phi[i+1]*rho[i]) / psi[i];
+    phi[i]   =  e[i] / psi[i];
+    w[i]     = (y[i] - w[i+2]*b[i] - w[i+1]*rho[i]) / psi[i];
+  }
+  rho[1]   =  a[1] - sigma[3]*b[1];
+  psi[1]   =  d[1] - phi[3]*b[1] - sigma[2]*rho[1];
+  sigma[1] = (c[1] - phi[3]*rho[1]) / psi[1];
+  rho[0]   =  a[0] - sigma[2]*b[0];
+  psi[0]   =  d[0] - phi[2]*b[0] - sigma[1]*rho[0];
+  w[1]     = (y[1] - w[3]*b[1] - w[2]*rho[1]) / psi[1];
+  w[0]     = (y[0] - w[2]*b[0] - w[1]*rho[0]) / psi[0];
+  
+  // Step 6:
+  x[0] = w[0];
+  x[1] = w[1] - sigma[1]*x[0];
+  for(i = 2; i <= N-1; i++)
+    x[i] = w[i] - sigma[i]*x[i-1] - phi[i]*x[i-2];
+
+  // the 2nd algo gives also a wrong result - but a different one - double-check everything!
+  // psi[0] is wrong
 
 
 
