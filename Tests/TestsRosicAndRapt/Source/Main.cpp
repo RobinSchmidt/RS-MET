@@ -161,7 +161,8 @@ int main(int argc, char* argv[])
 
   // Math:
   //bandMatrix();                       // under construction
-  pentaDiagnonalMatrix();
+  //pentaDiagnonalMatrix();
+  pentaDiagnonalMatrix2();
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();

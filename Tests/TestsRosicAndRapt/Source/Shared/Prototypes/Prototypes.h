@@ -24,6 +24,23 @@ of optimizations), for tweaking an algorithm's internal parameters which might n
 in the production-code versions, and to create reference output for the unit-tests for production 
 code. */
 
+
+/** Solves the pentadiagonal linear system of equations.. */
+std::vector<double> solvePentaDiagnonalSystem(
+  std::vector<double>& lowerDiag1, std::vector<double>& lowerDiag2,
+  std::vector<double>& mainDiag, 
+  std::vector<double>& upperDiag1, std::vector<double>& upperDiag2,
+  std::vector<double>& righHandSide);
+
+/** Multiplies a pentadiagonal matrix with a vector...  */
+std::vector<double> pentaDiagMatVecMul(
+  std::vector<double>& lowerDiag1, std::vector<double>& lowerDiag2,
+  std::vector<double>& mainDiag, 
+  std::vector<double>& upperDiag1, std::vector<double>& upperDiag2,
+  std::vector<double>& input);
+
+
+
 /** Prototype for rsResampler::signalValueViaSincAt(). It provides as additional parameters for 
 tweaking: 
 -pointer to a window-function

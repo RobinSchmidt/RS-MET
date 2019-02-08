@@ -15,6 +15,76 @@
 
 using namespace RAPT;
 
+std::vector<double> solvePentaDiagnonalSystem(
+  std::vector<double>& M, std::vector<double>& L,
+  std::vector<double>& D,
+  std::vector<double>& U, std::vector<double>& V,
+  std::vector<double>& B)
+{
+  int N = (int) D.size();
+  rsAssert(B.size() == N);
+  rsAssert(M.size() == N-2);
+  rsAssert(L.size() == N-1);
+  rsAssert(V.size() == N-2);
+  rsAssert(U.size() == N-1);
+
+  // Gaussian elimination without pivot-search - we just always use D[i] as pivot element:
+  int i;
+  double k;
+  for(i = 0; i < N-2; i++) {
+    k       = L[i]/D[i];
+    //L[i]   -= k*D[i];          // should give 0
+    D[i+1] -= k*U[i];
+    B[i+1] -= k*B[i];    
+    U[i+1] -= k*V[i];
+    k       = M[i]/D[i];
+    //M[i]   -= k*D[i];          // should give 0
+    L[i+1] -= k*U[i];
+    D[i+2] -= k*V[i];
+    B[i+2] -= k*B[i];
+    int dummy = 0;
+  }
+  k       = L[i]/D[i];     // a final partial step outside the loop
+  //L[i]   -= k*D[i];        // should give 0
+  D[i+1] -= k*U[i];
+  B[i+1] -= k*B[i];
+
+  // we may get rid of the steps where 0 should result we could directly assign the values or maybe
+  // just leave the step out (i think, the values are not needed in subsequent steps)
+  // maybe use += (define k with negative sign)
+  // maybe split the function into 2: elimination and backsubstitution (but have a convenience 
+  // function that calls both)
+  // maybe return the minimum absolute pivot that was encountered
+
+  // Gaussian elimination is done - now do the backsubstitution to find the solution vector:
+  std::vector<double> x(N);
+  x[N-1] =  B[N-1]                  / D[N-1];
+  x[N-2] = (B[N-2] - U[N-2]*x[N-1]) / D[N-2];
+  for(i = N-3; i >= 0; i--)
+    x[i] = (B[i] - U[i]*x[i+1] - V[i]*x[i+2]) / D[i];
+
+  return x;
+}
+
+std::vector<double> pentaDiagMatVecMul(
+  std::vector<double>& m, std::vector<double>& l,
+  std::vector<double>& d,
+  std::vector<double>& u, std::vector<double>& v,
+  std::vector<double>& x)
+{
+  int N = (int) d.size();
+  int i;
+  std::vector<double> c(N);
+  c[0] = d[0]*x[0] + u[0]*x[1] + v[0]*x[2];
+  c[1] = l[0]*x[0] + d[1]*x[1] + u[1]*x[2] + v[1]*x[3];
+  for(i = 2; i < N-2; i++)
+    c[i] = m[i-2]*x[i-2] + l[i-1]*x[i-1] + d[i]*x[i] + u[i]*x[i+1] + v[i]*x[i+2];
+  c[i] = m[i-2]*x[i-2] + l[i-1]*x[i-1] + d[i]*x[i] + u[i]*x[i+1];
+  i++;
+  c[i] = m[i-2]*x[i-2] + l[i-1]*x[i-1] + d[i]*x[i];
+  return c;
+}
+
 double signalValueViaSincAt(double *x, int N, double t, double sincLength, double stretch,
   //FunctionPointer3DoublesToDouble windowFunction, 
   double (*windowFunction)(double,double,double),

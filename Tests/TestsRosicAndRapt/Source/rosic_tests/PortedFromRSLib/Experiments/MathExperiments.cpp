@@ -185,8 +185,76 @@ void pentaDiagnonalMatrix()
   // the 2nd algo gives also a wrong result - but a different one - double-check everything!
   // psi[0] is wrong
 
+  int dummy = 0;
+}
 
 
+void pentaDiagnonalMatrix2()
+{
+  typedef std::vector<double> Vec;
+  //int N = 9;
+  //Vec d = { 2,0,4,0,4,0,4,0,2 };
+  //Vec u = { 1,1,1,1,1,1,1,1   };
+  //Vec v = {-2,0,-2,0,-2,0,-2  };
+
+  int N = 7;
+  Vec d ={ 4,4,4,4,4,4,4 };
+  Vec u ={ 1,1,1,1,1,1 };
+  Vec v ={ 1,1,1,1,1 };
+  Vec l = u, m = v;
+  Vec b ={ 1,2,3,4,5,6,7 };
+
+  //Vec x(N);
+  Vec D=d, U=u, V=v, L=l, M=m, B=b;  // maybe use the original vectors directly in the algo
+  //int i;
+
+  /*
+  double k;
+  for(i = 0; i < N-2; i++) {
+    k       = L[i]/D[i];
+    //L[i]   -= k*D[i];          // should give 0
+    D[i+1] -= k*U[i];
+    B[i+1] -= k*B[i];    
+    U[i+1] -= k*V[i];
+    k       = M[i]/D[i];
+    //M[i]   -= k*D[i];          // should give 0
+    L[i+1] -= k*U[i];
+    D[i+2] -= k*V[i];
+    B[i+2] -= k*B[i];
+    int dummy = 0;
+  }
+  k       = L[i]/D[i];     // a final partial step outside the loop
+  //L[i]   -= k*D[i];        // should give 0
+  D[i+1] -= k*U[i];
+  B[i+1] -= k*B[i];
+
+  // we may get rid of the steps where 0 should result we could directly assign the values or maybe
+  // just leave the step out (i think, the values are not needed in subsequent steps)
+  // maybe use += (define k with negative sign)
+
+  // Gaussian elimination is done - now do the backsubstitution to find the solution vector:
+
+  x[N-1] =  B[N-1]                  / D[N-1];
+  x[N-2] = (B[N-2] - U[N-2]*x[N-1]) / D[N-2];
+  for(i = N-3; i >= 0; i--)
+    x[i] = (B[i] - U[i]*x[i+1] - V[i]*x[i+2]) / D[i];
+  */
+  Vec x = solvePentaDiagnonalSystem(M, L, D, U, V, B);
+
+  // let's verify the result by multiplying the original pentadiagonal matrix with the found 
+  // solution vector (factor the multiplication out into library function 
+  // rsLinearAlgebra::mulMatVecPentaDiag):
+  /*
+  Vec c(N);
+  c[0] = d[0]*x[0] + u[0]*x[1] + v[0]*x[2];
+  c[1] = l[0]*x[0] + d[1]*x[1] + u[1]*x[2] + v[1]*x[3];
+  for(i = 2; i < N-2; i++)
+    c[i] = m[i-2]*x[i-2] + l[i-1]*x[i-1] + d[i]*x[i] + u[i]*x[i+1] + v[i]*x[i+2];
+  c[i] = m[i-2]*x[i-2] + l[i-1]*x[i-1] + d[i]*x[i] + u[i]*x[i+1];
+  i++;
+  c[i] = m[i-2]*x[i-2] + l[i-1]*x[i-1] + d[i]*x[i];
+  */
+  Vec c = pentaDiagMatVecMul(m, l, d, u, v, x); // should be equal to b (up to roundoff)
 
   int dummy = 0;
 }
