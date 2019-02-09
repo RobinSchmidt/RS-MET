@@ -1,4 +1,4 @@
-Comsider the task of solving the 6x6 pentadiagonal system of equations:
+Consider the task of solving the 7x7 pentadiagonal system of equations:
   
 d0 u0 v0 00 00 00 00   x0   b0
 l0 d1 u1 v1 00 00 00   x1   b1
@@ -90,6 +90,50 @@ and the x4 case shows also the general pattern for i down to 0:
 
 x[i] = (B[i] - U[i]*x[i+1] - V[i]*x[i+2]) / D[i]
 
+===============================================================================
+
+Band-Diagonal system with pivoting
+
+Let's now consider the more general case of a band-diagonal, for example, with
+Nu = 3 upper diagonals (superdiagonals) and Nl = 2 lower diagonals 
+(subdiagonals)
+
+D0 U0 V0 W0 00 00 00 00   x0   B0
+L0 D1 U1 V1 W1 00 00 00   x1   B1
+M0 L1 D2 U2 V2 W2 00 00   x2   B2
+00 M1 L2 D3 U3 V3 W3 00 * x3 = B3
+00 00 M2 L3 D4 U4 V4 W4   x4   B4
+00 00 00 M3 L4 D5 U5 V5   x5   B5
+00 00 00 00 M4 L5 D6 U6   x6   B6
+00 00 00 00 00 M5 L6 D7   x7   B7
+
+We'll store only the diagonals, appropriately padded with zeros, such that 
+elements that are in one column in the original matrix are still in one column
+in the storage format:
+
+00 00 00 W0 W1 W2 W3 W4
+00 00 V0 V1 V2 V3 V4 V5
+00 U0 U1 U2 U3 U4 U5 U6
+D0 D1 D2 D3 D4 D5 D6 D7
+L0 L1 L2 L3 L4 L5 L6 00
+M0 M1 M2 M3 M4 M5 00 00
+
+note that the storgae matrix needs only (Nu+Nl+1)xN space whereas the originla 
+matrix needs NxN. Nevertheless, with the format chosen, we can still do the 
+regular elementary row operations and they
+
+
+https://stackoverflow.com/questions/2733336/what-is-the-best-algorithm-for-solving-a-band-diagonal-matrix
+
+http://www.netlib.org/utk/people/JackDongarra/etemplates/node387.html
+says: "there is no simple bound on how much the bandwidth can grow because of pivoting"
+
+https://en.wikipedia.org/wiki/Band_matrix
+
+how lapck stores band-matrices:
+http://laplace.physics.ubc.ca/410/Doc/linsys/ex3/Lecture.pdf
+
+looks like we should translate the lapack routine dgbsv to c++ for this purpose
 
 
 

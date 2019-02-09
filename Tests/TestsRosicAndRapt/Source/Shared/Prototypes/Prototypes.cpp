@@ -31,7 +31,9 @@ std::vector<double> solvePentaDiagnonalSystem(
   // Gaussian elimination without pivot-search - we just always use D[i] as pivot element:
   int i;
   double k;
+  std::vector<double> piv(N-1);  // pivot elements for inspection only
   for(i = 0; i < N-2; i++) {
+    piv[i]  = D[i];              // pivot element
     k       = L[i]/D[i];
     //L[i]   -= k*D[i];          // should give 0
     D[i+1] -= k*U[i];
@@ -44,6 +46,7 @@ std::vector<double> solvePentaDiagnonalSystem(
     B[i+2] -= k*B[i];
     int dummy = 0;
   }
+  piv[i]  = D[i];
   k       = L[i]/D[i];     // a final partial step outside the loop
   //L[i]   -= k*D[i];        // should give 0
   D[i+1] -= k*U[i];
