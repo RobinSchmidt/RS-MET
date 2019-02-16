@@ -171,7 +171,7 @@ std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
     std::vector<T> m = getRoundTripModulation(s.getNumRows());
     for(unsigned int n = 0; n < y.size(); n++)
       y[n] *= (a/m[n]);
-    rsPlotVector(m);
+    //rsPlotVector(m);
   }
   else
     rsArray::scale(&y[0], (int) y.size(), a);

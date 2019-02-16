@@ -76,7 +76,13 @@ public:
   "add up to unity" properties. With, for example, the (the "zn" version of) the Hanning window 
   and a hop-size equal to blockSize/4, such demodulation should not be necessarry because in this
   case, the windows indeed do add up to unity, so you may save some computation time by not doing 
-  this step. That's why it can be switched on and off by client code - and for testing purposes. */
+  this step. That's why it can be switched on and off by client code - and for testing purposes. 
+
+  ToDo: even with the zn-hanning window it doesn't yet work right because it currently seems to 
+  add up not to unity but to some other constant (1.5 in case of H = B/4 - we seem to miss a 
+  scaling somewhere..... also, at the moment, there are transient artifacts at the start and 
+  end (fade in/out due to not overlapping enough windows): workaround: prepend and append one
+  block-length of zero samples (which can be removed after resynthesis). */
   void setOutputDemodulation(bool shouldDemodulate)
   {
     demodulateOutput = shouldDemodulate;

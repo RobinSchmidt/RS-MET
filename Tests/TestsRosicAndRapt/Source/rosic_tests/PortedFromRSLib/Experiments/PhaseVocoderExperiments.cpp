@@ -224,7 +224,7 @@ void spectrogramSine()
   static const int B  = 512;            // blocksize
   static const int H  = B/4;            // hopsize
   static const int N  = 10000;          // number of samples in the test signal
-  static const int P  = 4;              // zero-padding factor
+  static const int P  = 2;              // zero-padding factor
   static const int M  = B*P;            // FFT size
   static const int K  = M/2 + 1;        // number of non-redundant bins
   double           fs = 44100;          // samplerate
@@ -235,7 +235,17 @@ void spectrogramSine()
   // A hopsize of B/4 will result in a constant when overlapping successive frames, assuming that
   // the window is applied twice (once in the analysis stage and once in the synthesis stage). This
   // is the desired condition for perfect resynthesis without modulation artifcats - i.e. no 
-  // explicit demodulation will be necessarry.
+  // explicit demodulation will be necessarry. ..todo: currently, this constant is not unity but 
+  // rather 1.5 - so without demodulation, the resynthesized signal will be too loud by factor 1.5
+  // compared to the original (this does not happen with demodulation, because the demodulation
+  // compensates for that factor as well)
+
+  // Note that at the beginning and end of the signal, the demodulation signal is not constant 
+  // everywhere - there are still fade-in and fade-out artifacts du to the fact that at start and 
+  // end, we do not yet have the full number of overlapping windows. ..this fade-in and out is also 
+  // compensated by the demodulation but perhaps that may lead to artifacts. As a workaround, it is
+  // possible to prepend and append a block of zeros (length B should be enough, perhaps even more 
+  // than enough) to the signal before analysis and remove these paddings after resynthesis. 
 
   // create the test signal:
   double x[N];
@@ -280,7 +290,13 @@ void spectrogramSine()
   std::vector<double> err(N);
   for(int n = 0; n < N; n++)
     err[n] = x[n] - y[n];
-  //plotVector(err);
+  plotVector(err);
+
+  // Observations:
+  // -for B = 512, H = B/4, P = 1,2,4 the resynthesis error is of the order of 5.e-16, with 
+  //  P = 3 about 6.e-13 and with P = 5 about 1.e-12 - so when the zero padding factor is a power 
+  //  of two, the numerical roundoff properties are better, but more general zero-padding factors
+  //  also work in principle
 
   // todo: experiment with non-power-of-2 blocksizes, maybe also use odd blocksizes, etc.
   // turn into unit test - use noisy input signals

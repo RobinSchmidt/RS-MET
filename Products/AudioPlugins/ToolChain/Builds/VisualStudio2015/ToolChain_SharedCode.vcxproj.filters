@@ -590,6 +590,9 @@
     <Filter Include="Juce Modules\rosic\_third_party\soundtouch">
       <UniqueIdentifier>{447B93E0-F603-5EE1-ABE6-6139F4C1F1C1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\SSE-Math">
+      <UniqueIdentifier>{B75058B2-1DA8-A5B8-F563-4D6BE269D820}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rosic\_third_party\tnt">
       <UniqueIdentifier>{C4BE953C-C662-76BD-46BE-1DF0C975DBBC}</UniqueIdentifier>
     </Filter>
@@ -2908,6 +2911,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.cpp">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\DebugTools.cpp">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Plotting.cpp">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.cpp">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClCompile>
@@ -3627,6 +3636,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.cpp">
       <Filter>Juce Modules\rosic\_third_party\soundtouch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SSE-Math\sse_mathfun_test.c">
+      <Filter>Juce Modules\rosic\_third_party\SSE-Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_BeatDetector.cpp">
       <Filter>Juce Modules\rosic\analysis</Filter>
@@ -7083,7 +7095,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Constants.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\DebugTools.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Plotting.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h">
@@ -7794,6 +7812,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.h">
       <Filter>Juce Modules\rosic\_third_party\soundtouch</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SSE-Math\sse_mathfun.h">
+      <Filter>Juce Modules\rosic\_third_party\SSE-Math</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_cholesky.h">
       <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
     </ClInclude>
@@ -7923,13 +7944,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\ComplexFloat64x2.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4 - Copy.h">
-      <Filter>Juce Modules\rosic\basics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h">
-      <Filter>Juce Modules\rosic\basics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float32x4.h-broken.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\Float64x2.h">
@@ -9070,6 +9085,9 @@
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SampleTailExtender\README.md">
       <Filter>Juce Modules\rosic\_third_party\SampleTailExtender</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\SSE-Math\License.txt">
+      <Filter>Juce Modules\rosic\_third_party\SSE-Math</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\ToDo.txt">
       <Filter>Juce Modules\rosic\infrastructure</Filter>
