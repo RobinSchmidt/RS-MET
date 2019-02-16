@@ -19,12 +19,10 @@ not needed. */
 #ifdef RS_PLOTTING
 #include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
 
-
-
 template<class T>
 inline void rsPlotVector(std::vector<T> v)
 {
-  int N = (int) v.size();
+  int N = (int)v.size();
   double *y = new T[N];
   for(int n = 0; n < N; n++)
     y[n] = v[n];
@@ -33,33 +31,10 @@ inline void rsPlotVector(std::vector<T> v)
   delete[] y;
 }
 
-
 #else
 
 // dummy plotting functions to satisfy the compiler when no plotting is desired:
 
 inline void rsPlotVector(std::vector<double> v) {}
 
-
 #endif
-
-
-
-// old:
-//// uncomment if you want to plot from rapt code (should be done only temporarily for debugging
-//// sessions in the test project - trying to actually plot stuff will produce linker errors in other
-//// projects):
-//#define RS_DEBUG_PLOTTING
-//#ifdef RS_DEBUG_PLOTTING
-//#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
-////#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/Plotting.h"
-//#endif
-//// todo: make it work also in other projects (maybe i need to drag the GNUPlotCPP code into the
-//// rapt module and conditionally compile it ...but then i will need to uncomment the define
-//// wheneve i want to plot from the test project)
-//// maybe define it in the jucer file for the test project - all other projects may then uncomment
-//// it here but the test project doens't have to
-
-
-
-

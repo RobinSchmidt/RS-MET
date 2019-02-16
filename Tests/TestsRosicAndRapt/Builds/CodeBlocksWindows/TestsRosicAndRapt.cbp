@@ -20,6 +20,7 @@
           <Add option="-DDEBUG=1"/>
           <Add option="-D_DEBUG=1"/>
           <Add option="-DDONT_SET_USING_JUCE_NAMESPACE="/>
+          <Add option="-DRS_PLOTTING="/>
           <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
           <Add option="-DJUCE_APP_VERSION=1.0.0"/>
           <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
@@ -55,6 +56,7 @@
           <Add option="-D__MINGW_EXTENSION="/>
           <Add option="-DNDEBUG=1"/>
           <Add option="-DDONT_SET_USING_JUCE_NAMESPACE="/>
+          <Add option="-DRS_PLOTTING="/>
           <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
           <Add option="-DJUCE_APP_VERSION=1.0.0"/>
           <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
