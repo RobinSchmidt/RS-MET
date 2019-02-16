@@ -43,7 +43,9 @@
 //#include <iostream>       // only for printing debug info
 
 
-//#define RS_PLOTTING
+
+
+#define RS_PLOTTING
 
 //// uncomment if you want to plot from rapt code (should be done only temporarily for debugging
 //// sessions in the test project - trying to actually plot stuff will produce linker errors in other
@@ -59,6 +61,8 @@
 //// maybe define it in the jucer file for the test project - all other projects may then uncomment
 //// it here but the test project doens't have to
 
+
+#include "Basics/Plotting.h"             // included by itself (not via Basics.h) to avoid wrapping into namespace
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
 #include "Data/Data.h"                   // data structures like arrays, lists, files, etc.
 #include "Math/Math.h"                   // interpolation, transforms, linear algebra, numerical analysis

@@ -1,4 +1,6 @@
-//#define RS_PLOTTING
+//#define RS_PLOTTING  // somehow, it doesn't work to define it here - it needs to be defined
+// in rapt.h - that's bad - figure out a better solution - maybe define it in the jucer-file
+// when nothing else helps
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
