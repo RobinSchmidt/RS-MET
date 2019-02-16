@@ -114,7 +114,7 @@ void plotData(int N, double x0, double dx, double *y1, double *y2 = NULL, double
 void plotDataLogX(int N, double *x, double *y1, double *y2 = NULL, double *y3 = NULL,
   double *y4 = NULL, double *y5 = NULL);
 
-void plotVector(std::vector<double> v);
+void plotVector(std::vector<double> v);  // replace by RAPT::rsPlotVector
 
 void plotComplexVectorReIm(std::vector<std::complex<double>> v);
 

@@ -102,6 +102,7 @@ void plotDataLogX(int N, double *x, double *y1, double *y2, double *y3, double *
   plt.plotFunctionTables(N, x, y1, y2, y3, y4, y5);
 }
 
+// replace by RAPT::rsPlotVector
 void plotVector(std::vector<double> v)
 {
   int N = (int) v.size();

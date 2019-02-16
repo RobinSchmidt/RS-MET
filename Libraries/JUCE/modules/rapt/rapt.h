@@ -43,19 +43,21 @@
 //#include <iostream>       // only for printing debug info
 
 
-// uncomment if you want to plot from rapt code (should be done only temporarily for debugging
-// sessions in the test project - trying to actually plot stuff will produce linker errors in other
-// projects):
-#define RS_DEBUG_PLOTTING
-#ifdef RS_DEBUG_PLOTTING
-#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
-//#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/Plotting.h"
-#endif
-// todo: make it work also in other projects (maybe i need to drag the GNUPlotCPP code into the
-// rapt module and conditionally compile it ...but then i will need to uncomment the define
-// wheneve i want to plot from the test project)
-// maybe define it in the jucer file for the test project - all other projects may then uncomment
-// it here but the test project doens't have to
+//#define RS_PLOTTING
+
+//// uncomment if you want to plot from rapt code (should be done only temporarily for debugging
+//// sessions in the test project - trying to actually plot stuff will produce linker errors in other
+//// projects):
+//#define RS_DEBUG_PLOTTING
+//#ifdef RS_DEBUG_PLOTTING
+//#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
+////#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/Plotting.h"
+//#endif
+//// todo: make it work also in other projects (maybe i need to drag the GNUPlotCPP code into the
+//// rapt module and conditionally compile it ...but then i will need to uncomment the define
+//// wheneve i want to plot from the test project)
+//// maybe define it in the jucer file for the test project - all other projects may then uncomment
+//// it here but the test project doens't have to
 
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
 #include "Data/Data.h"                   // data structures like arrays, lists, files, etc.

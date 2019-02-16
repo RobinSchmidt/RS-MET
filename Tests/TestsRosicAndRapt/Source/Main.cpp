@@ -1,3 +1,5 @@
+//#define RS_PLOTTING
+
 #include "../JuceLibraryCode/JuceHeader.h"
 
 // includes for unity build:
