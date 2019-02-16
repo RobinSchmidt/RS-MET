@@ -7,7 +7,7 @@ namespace RAPT
 #include "Constants.h"
 #include "TypeDefinitions.h"
 #include "MacroDefinitions.h"
-//#include "DebugTools.h"
+#include "DebugTools.h"
 //#include "MathBasics.h"  // add from RSLib
 #include "SortAndSearch.h"
 
@@ -19,31 +19,6 @@ inline void rsSwap(T& x, T& y)
   x = y;
   y = t;
 }
-
-
-
-// move to a file "DebugTools.h/cpp" that also has facilities for logging, plotting, etc.
-
-/** This function should be used to indicate a runtime error. */
-inline void rsError(const char *errorMessage = nullptr)
-{
-  //printf("%s", errorMessage);
-  RS_DEBUG_BREAK;
-  // \todo have some conditional compilation code based on the DEBUG macro (trigger a break),
-  // maybe open an error message box, etc.
-}
-
-/** This function should be used for runtime assertions. */
-inline void rsAssert(bool expression, const char *errorMessage = nullptr)
-{
-  if( expression == false )
-    rsError(errorMessage);
-}
-
-inline void rsAssertFalse(const char *errorMessage = nullptr) { rsAssert(false, errorMessage); }
-
-
-
 
 template<class T> inline T rsUnityValue(T value) { return T(1);  }
 template<class T> inline T rsZeroValue( T value) { return T(0);  }
