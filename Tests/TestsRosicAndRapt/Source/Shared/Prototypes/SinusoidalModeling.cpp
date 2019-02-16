@@ -803,6 +803,11 @@ void rsMinSqrDiffWithGivnSum(T* x, T* s, int N)
   // pentadiagonal systems in the library - or even better: an algorithm for general band-diagonal
   // matrices
 
+  // this thesis: https://web.stanford.edu/group/SOL/dissertations/bradley-thesis.pdf
+  // says that for symmetric, positive definite matrices, scaling to unit diagonal is effective for
+  // making the problem better conditioned
+
+
   // maybe this is suitable:
   // https://www.boost.org/doc/libs/1_69_0/libs/numeric/ublas/doc/index.html
 

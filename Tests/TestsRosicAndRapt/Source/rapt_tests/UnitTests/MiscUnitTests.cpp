@@ -151,8 +151,8 @@ bool spectrogramUnitTest()
   //  scaling somewhere - maybe in applyDemodulation? -> figure out
 
 
-  // this fails the transformer object seems to compute a scrabled forward FFT when it should 
-  // compute and inverse FFT - but testVariousFourierTransforms passes - so where is the bug?
+  // this fails the transformer object seems to compute a scrambled forward FFT when it should 
+  // compute an inverse FFT - but testVariousFourierTransforms passes - so where is the bug?
 
   return r;
 }

@@ -77,8 +77,9 @@ void grainRoundTrip()
 
   static const int N = 16;       // number of samples in x
   static const int B = 16;       // blocksize
-  static const int K = B/2;      // number of bins (= FFTSize/2)
-  static const int M = 2*K;      // FFT size
+  //static const int K = B/2;      // number of bins (= FFTSize/2)
+  //static const int M = 2*K;      // FFT size
+  static const int M = 16;       // FFT size
   int n0 = B/2;                  // time index of STFT frame
 
   rsSpectrogramD pv;             // for conveniently calling the static functions
@@ -96,10 +97,13 @@ void grainRoundTrip()
   // obtain short-time spectrum:
   rsComplexDbl X[M];
   pv.setBlockSize(B);
-  //pv.setTrafoSize(B);
+  pv.setTrafoSize(B);
   pv.setAnalysisWindowType(RAPT::rsWindowFunction::HANNING_WINDOW_ZN);
   //pv.setZeroPaddingFactor(1);
   pv.shortTimeSpectrum(x, N, n0, X);
+
+
+
 
   // under construction - not yet complete
 
@@ -220,7 +224,7 @@ void spectrogramSine()
   static const int B  = 512;            // blocksize
   static const int H  = B/4;            // hopsize
   static const int N  = 10000;          // number of samples in the test signal
-  static const int P  = 1;              // zero-padding factor
+  static const int P  = 4;              // zero-padding factor
   static const int M  = B*P;            // FFT size
   static const int K  = M/2 + 1;        // number of non-redundant bins
   double           fs = 44100;          // samplerate
@@ -240,10 +244,11 @@ void spectrogramSine()
 
   // compute the complex spectrogram:
   rsSpectrogramD sp;
-  sp.setBlockSize(B);
+  sp.setBlockAndTrafoSize(B, M);
   sp.setHopSize(H);
   sp.setAnalysisWindowType(W);
   sp.setSynthesisWindowType(W); 
+  //sp.setOutputDemodulation(false); // with appropriate settings, demodulation should be superfluous
   rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N);
   int F = s.getNumRows();
 
@@ -252,15 +257,10 @@ void spectrogramSine()
   MatrixTools::rsAllocateMatrix(mag, F, K);
   MatrixTools::rsAllocateMatrix(phs, F, K);
   MatrixTools::rsAllocateMatrix(dB,  F, K);
-
-  int i, j;
-  for(i = 0; i < F; i++)
-  {
-    for(j = 0; j < K; j++)
-    {
+  for(int i = 0; i < F; i++) {
+    for(int  j = 0; j < K; j++) {
       mag[i][j] = abs(s(i, j));
       dB[i][j]  = rsMax(rsAmp2dB(mag[i][j]), -50.0);
-      //dB[i][j]  = rsMax(rsAmp2dB(mag[i][j]), -250.0);
       phs[i][j] = arg(s(i, j));
     }
   }
@@ -269,25 +269,26 @@ void spectrogramSine()
   // ...
 
   // plot the magnitude spectrogram (later: with or without reassignment):
-  plotSpectrogram(F, K, dB, fs, H);
+  //plotSpectrogram(F, K, dB, fs, H);
 
   // resynthesize and plot signal:
   std::vector<double> y  = sp.synthesize(s);
-  plotVector(y);
+  //plotVector(y);
+
+  // create error andn plot signal:
+  //double err[N];
+  std::vector<double> err(N);
+  for(int n = 0; n < N; n++)
+    err[n] = x[n] - y[n];
+  //plotVector(err);
+
+  // todo: experiment with non-power-of-2 blocksizes, maybe also use odd blocksizes, etc.
+  // turn into unit test - use noisy input signals
 
   // free dynamically memory:
   MatrixTools::rsDeAllocateMatrix(mag, F, K);
   MatrixTools::rsDeAllocateMatrix(phs, F, K);
   MatrixTools::rsDeAllocateMatrix(dB,  F, K);
-
-  // create error signal:
-  double err[N];
-  for(int n = 0; n < N; n++)
-    err[n] = x[n] - y[n];
-
-  // todo: experiment with non-power-of-2 blocksizes, maybe also use odd blocksizes, etc.
-  // turn into unit test - use noisy input signals
-  int dummy = 0;
 }
 
 void sineParameterEstimation()

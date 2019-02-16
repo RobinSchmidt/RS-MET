@@ -3,9 +3,7 @@
 namespace RAPT
 {
 
-
-
-
+#include "DebugTools.cpp"
 #include "SortAndSearch.cpp"
 
 }

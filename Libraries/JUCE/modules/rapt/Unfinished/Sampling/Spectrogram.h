@@ -41,7 +41,7 @@ public:
   synthesis - todo: allow different values for both) */
   void setHopSize(int newHopSize) { hopSize = newHopSize; }
 
-  /** Should be one of the type in RAPt::rsWindowFunction::windowTypes */
+  /** Should be one of the type in RAPT::rsWindowFunction::windowTypes */
   void setAnalysisWindowType(int newType) 
   { 
     analysisWindowType = newType; 
@@ -68,6 +68,19 @@ public:
     timeOriginAtWindowCenter = shouldBeAtCenter;
   }
 
+  /** Selects whether or not the output signal should be demodulated by the product of the 
+  analysis- and synthesis window. When this product does not add up to unity when summed over all
+  blocks, the raw resynthesized output will show an amplitude modulation given by these summed 
+  window products. The demodulation step is for undoing this modulation such that an identity 
+  analysis/resynthesis roundtrip is possible even with windows that do not satsify these nice 
+  "add up to unity" properties. With, for example, the (the "zn" version of) the Hanning window 
+  and a hop-size equal to blockSize/4, such demodulation should not be necessarry because in this
+  case, the windows indeed do add up to unity, so you may save some computation time by not doing 
+  this step. That's why it can be switched on and off by client code - and for testing purposes. */
+  void setOutputDemodulation(bool shouldDemodulate)
+  {
+    demodulateOutput = shouldDemodulate;
+  }
 
 
   /** \name Inquiry */
@@ -251,6 +264,7 @@ protected:
   std::vector<T> analysisWindow, synthesisWindow;
 
   bool timeOriginAtWindowCenter = true;
+  bool demodulateOutput = true;
 
   /** The Fourier transformer object. */
   rsFourierTransformerBluestein<T> transformer;

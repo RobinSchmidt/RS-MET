@@ -652,6 +652,9 @@ rsBigFloat rsBigFloat::toBase(rsUint64 newBase, rsUint32 numDigitsToUse, bool ex
 
   return result;
 }
+// edit: i just found this article - may be worth a read in this context:
+// https://www.exploringbinary.com/number-of-digits-required-for-round-trip-conversions/
+
 
 /*
 // the apporach of converting the fractionand muliplying the result by an appropriate power of the

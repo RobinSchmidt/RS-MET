@@ -323,7 +323,7 @@ int main(int argc, char* argv[])
   // Phase Vocoder:
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
-  //spectrogramSine();
+  spectrogramSine();
   //sineParameterEstimation();
   //plotWindows();   // rename to plotOverlappingWindowSum
   //phaseInterpolation();
@@ -331,7 +331,7 @@ int main(int argc, char* argv[])
   //sinusoidalSynthesis2();
   //sinusoidalAnalysis1();
   //sinusoidalAnalysis2();
-  sinusoidalAnalysis3();
+  //sinusoidalAnalysis3();
 
 
   // Physics:

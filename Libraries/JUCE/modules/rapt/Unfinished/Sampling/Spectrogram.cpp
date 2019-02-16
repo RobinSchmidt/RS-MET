@@ -165,13 +165,16 @@ std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
   T*  wa = &analysisWindow[0];
   T*  ws = &synthesisWindow[0];
   std::vector<T> y = synthesizeRaw(s);
-  std::vector<T> m = getRoundTripModulation(s.getNumRows());
-
   T a = rsArray::sum(wa, B) / 2;  // might this be the additional scaling because of which we
                                   // need to set NORMALIZE_ON_INVERSE_TRAFO?
-
-  for(unsigned int n = 0; n < y.size(); n++)
-    y[n] *= (a/m[n]);
+  if(demodulateOutput == true) {
+    std::vector<T> m = getRoundTripModulation(s.getNumRows());
+    for(unsigned int n = 0; n < y.size(); n++)
+      y[n] *= (a/m[n]);
+    //plotVector(m); // todo: make this available here ..without all these inconvenient ifdefs
+  }
+  else
+    rsArray::scale(&y[0], (int) y.size(), a);
   return y;
 }
 

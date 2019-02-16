@@ -222,7 +222,7 @@ void pentaDiagnonalMatrix2()
   // matrix, from the freq-estimation problem we seem to already loose 3 decimal digits of 
   // precision which seems not very good considering that in practice we'll have matrices with
   // hundreds or even thousands of entries
-  // maybe convert into a regular (non-diagonla) NxN matrix and use the regular Gaussian 
+  // maybe convert into a regular (non-diagonal) NxN matrix and use the regular Gaussian 
   // elminination solver for comparison - to figure out, if it's worth to implement pivoting for
   // freq-estimation
 
