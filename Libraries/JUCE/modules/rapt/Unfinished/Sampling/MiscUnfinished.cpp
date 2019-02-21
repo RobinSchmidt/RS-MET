@@ -1782,7 +1782,7 @@ void rsRecreateSine(T *x, T *y, int N, T fx, T fy, T fs, T p0, T smooth)
 template<class T>
 T getMaxShortTimeRMS(T* x, int N, int averagingLength)
 {
-  rsMovingAverage<T> ma;
+  rsMovingAverage<T, T> ma;
   ma.setLengthInSamples(averagingLength);
   T maxRms = T(0);
   for(int n = 0; n < N; n++) {

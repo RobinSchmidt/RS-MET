@@ -194,6 +194,9 @@ template class RAPT::rsPhaseLockedCrossfader<double, double>;
 template class RAPT::rsEnvelopeExtractor<double>;
 
 
+template double RAPT::getMaxShortTimeRMS(double* x, int N, int averagingLength);
+
+
 template class RAPT::rsInstantaneousSineParams<double>;
 template class RAPT::rsSinusoidalPartial<double>;
 template class RAPT::rsSinusoidalModel<double>;
