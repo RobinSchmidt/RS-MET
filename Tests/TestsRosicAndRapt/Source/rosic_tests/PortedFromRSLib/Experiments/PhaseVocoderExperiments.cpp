@@ -260,7 +260,7 @@ void spectrogramSine()
   sp.setSynthesisWindowType(W); 
   //sp.setOutputDemodulation(false); // with appropriate settings, demodulation should be superfluous
   rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N);
-  int F = s.getNumRows();
+  int F = s.getNumRows();    // number of frames
 
   // compute (magnitude) spectrogram and phasogram:
   double **mag, **phs, **dB;
@@ -285,21 +285,21 @@ void spectrogramSine()
   std::vector<double> y  = sp.synthesize(s);
   //plotVector(y);
 
-  // create error andn plot signal:
-  //double err[N];
+  // create error and plot signal:
   std::vector<double> err(N);
   for(int n = 0; n < N; n++)
     err[n] = x[n] - y[n];
   plotVector(err);
 
   // Observations:
-  // -for B = 512, H = B/4, P = 1,2,4 the resynthesis error is of the order of 5.e-16, with 
-  //  P = 3 about 6.e-13 and with P = 5 about 1.e-12 - so when the zero padding factor is a power 
-  //  of two, the numerical roundoff properties are better, but more general zero-padding factors
-  //  also work in principle
+  // -for B = 512, H = B/4, P = 1,2,4 the resynthesis error is of the order of 5.e-16 (~2*eps), 
+  //  with P = 3 about 6.e-13 and with P = 5 about 1.e-12 - so when the zero padding factor is a 
+  //  power of two, the numerical roundoff properties are better, but more general zero-padding 
+  //  factors also work in principle
 
   // todo: experiment with non-power-of-2 blocksizes, maybe also use odd blocksizes, etc.
   // turn into unit test - use noisy input signals
+
 
   // free dynamically memory:
   MatrixTools::rsDeAllocateMatrix(mag, F, K);

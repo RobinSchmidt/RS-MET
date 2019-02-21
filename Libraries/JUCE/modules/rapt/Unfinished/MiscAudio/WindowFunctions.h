@@ -167,20 +167,20 @@ public:
   "stretch" parameter. */
   template<class T>
   static T windowedSinc(T x, T length, T stretch);
-  //...hmm...this does not really belong here - maybe move to and FIR filter or interpolation class
+  //...hmm...this does not really belong here - maybe move to FIR filter or interpolation class
 
 };
 
 // todo:
 // -Generalize this to make a generic sum-of-cosines window where the Hanning- and Hamming windows
 //  are a special case. This class includes also Blackman, Nutall, etc. windows. We may be able to
-//  come up with other window shapes that supress sidebands even more than the existing stadard
+//  come up with other window shapes that supress sidebands even more than the existing standard
 //  windows.
 // -Maybe have a parameter that switches between both ends zero (like octave),
 //  both ends nonzero (like matlab), and start zero and end nonzero (periodic, suitable for 
 //  phase-vocoder analysis/resnthesis)...or start nonzero and end zero
-//  for spectral analysis (without resynthesis), it seems best to have both ends nonzero in order 
-//  to not artificially shorten the window
+//  -for spectral analysis (without resynthesis), it seems best to have both ends nonzero in order 
+//   to not artificially shorten the window
 // -For reassingment, compute also (optionally) a derivative window wd and a time-ramped window wr
 //  these can be optional arguments that default to nullptr
 
@@ -196,8 +196,7 @@ public:
 // -low sidelobes are most important - their height ultimately determines the ripple and leakage
 // -mainlobe width is less important since the transition width can be narrowed arbitrarily by
 //  using a longer filter/interpolator
-// -a decreasing sidelobe level means less aliasing into the low frequency range in case of 
-//  windowed sinc interpolators - aliasing is confined to higher frequency ranges where it is
-//  less objectionable
+// -a sidelobe rolloff means less aliasing into the low frequency range in case of windowed sinc
+//  interpolators - aliasing is confined to higher frequency ranges where it is less objectionable
 
 #endif

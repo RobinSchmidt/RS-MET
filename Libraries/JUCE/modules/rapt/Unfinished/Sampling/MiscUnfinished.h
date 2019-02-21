@@ -1001,5 +1001,10 @@ template<class T>
 void rsRecreateSineWithPhaseCatch(T *x, T *y, int N, T fx, T fy, T fs, T p0, T pk, int k, 
   T smooth = 0.0, int sweepDirection = 0);
 
+/** Computes the maximum of a short-time RMS signal with given averaging length in samples. It uses
+a recursive moving average box filter for efficient implementation. */
+template<class T>
+T getMaxShortTimeRMS(T* x, int N, int averagingLength);
+
 
 #endif

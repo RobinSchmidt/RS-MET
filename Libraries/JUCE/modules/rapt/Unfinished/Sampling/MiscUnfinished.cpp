@@ -1778,3 +1778,17 @@ void rsRecreateSine(T *x, T *y, int N, T fx, T fy, T fs, T p0, T smooth)
   // factor out the sine creation part - should take an amplitude array as input
 }
 */
+
+template<class T>
+T getMaxShortTimeRMS(T* x, int N, int averagingLength)
+{
+  rsMovingAverage<T> ma;
+  ma.setLengthInSamples(averagingLength);
+  T maxRms = T(0);
+  for(int n = 0; n < N; n++) {
+    T rms = sqrt( ma.getSample(x[n]*x[n]) );
+    if(rms > maxRms)
+      maxRms = rms;
+  }
+  return maxRms;
+}

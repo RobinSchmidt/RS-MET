@@ -287,7 +287,7 @@ T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 // sidelobe-level -> a constrained optimization problem? maybe use the min-sidelobe windows as
 // starting points. if it works out, maybe provide the resulting windows for several selected 
 // sidelobe levels, like -20, -30, -40, ... - but: which order (i.e. number of cosine terms) should 
-// we use for that? that should probably depend on the desired sidelobe level maybe make and 
+// we use for that? that should probably depend on the desired sidelobe level. maybe make an 
 // interact in the notebook where the user can enter the desired parameters
 
 // add closed form formulas for the window spectra, where such formulas are available - for example
