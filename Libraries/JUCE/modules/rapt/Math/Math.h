@@ -6,7 +6,8 @@ namespace RAPT
   
 // make a nested namespace Math
 
-#include "Misc/LinearAlgebra.h"
+#include "LinearAlgebra/LinearAlgebra.h"
+
 #include "Misc/Statistics.h"
 #include "Misc/CurveFitting.h"
 

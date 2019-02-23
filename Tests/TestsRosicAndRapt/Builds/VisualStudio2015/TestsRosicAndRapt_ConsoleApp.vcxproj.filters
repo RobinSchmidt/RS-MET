@@ -125,6 +125,9 @@
     <Filter Include="Juce Modules\rapt\Math\Geometry">
       <UniqueIdentifier>{A92C163B-047A-B8DF-8B62-09F85B7DAD53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Math\LinearAlgebra">
+      <UniqueIdentifier>{08074227-EAD1-86DA-9E00-A2B2D5EA3D34}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Math\Misc">
       <UniqueIdentifier>{DEEB57E5-E46E-1D4B-3CE9-8685142BFFC9}</UniqueIdentifier>
     </Filter>
@@ -859,10 +862,10 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.cpp">
       <Filter>Juce Modules\rapt\Math\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.cpp">
-      <Filter>Juce Modules\rapt\Math\Misc</Filter>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LinearAlgebra.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.cpp">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
@@ -3090,10 +3093,10 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h">
       <Filter>Juce Modules\rapt\Math\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.h">
-      <Filter>Juce Modules\rapt\Math\Misc</Filter>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LinearAlgebra.h">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.h">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h">

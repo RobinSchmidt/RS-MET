@@ -3,7 +3,8 @@
 namespace RAPT
 {
 
-#include "Misc/LinearAlgebra.cpp"
+#include "LinearAlgebra/LinearAlgebra.cpp"
+
 #include "Misc/Statistics.cpp"
 #include "Misc/CurveFitting.cpp"
 

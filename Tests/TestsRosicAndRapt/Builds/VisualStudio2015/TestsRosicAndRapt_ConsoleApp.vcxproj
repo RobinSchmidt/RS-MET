@@ -646,10 +646,10 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LinearAlgebra.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
@@ -2474,8 +2474,8 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Ellipse.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\GeometricTransformations.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LinearAlgebra.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Interpolation.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.h"/>
