@@ -6,8 +6,14 @@ namespace LaPackCPP {
 // wrappers/delegators here inside the namspace - todo: clean this up! try to get rid and if
 // impossible, at least inline them and maybe move to some other file
 
+// some silly headers define these as macros - leading to utterly inscrutable compiler errors of 
+// the forms
+// 'char' should be preceded by ';'
+// 'double' followed by 'char' is illegal
+// etc.
 #undef min
 #undef max
+#undef small
 
 inline long min(long x, long y) {  return std::min(x, y); }
 inline long max(long x, long y) {  return std::max(x, y); }
@@ -3868,7 +3874,7 @@ int la_wwaddw(integer *n, T *x, T *y, T *w)
 // Auxiliary routines:
 
 // LAPACK computational routine (version 3.7.0)
-VOID chla_transtype(char *ret_val, ftnlen ret_val_len, integer *trans)
+void chla_transtype(char *ret_val, ftnlen ret_val_len, integer *trans)
 {
   if (*trans == 111) {
     *(unsigned char *)ret_val = 'N';
@@ -4861,54 +4867,36 @@ integer iparmq(integer *ispec, char *name__, char *opts, integer *n, integer
 template<class T>
 int labad(T *small, T *large)
 {
-
-  /* Builtin functions */
-  //double d_lg10(doublereal *), sqrt(doublereal);
-
-
-  /*     If it looks like we're on a Cray, take the square root of */
-  /*     SMALL and LARGE to avoid overflow and underflow problems. */
-  if (d_lg10(large) > 2e3) {
+  // If it looks like we're on a Cray, take the square root of
+  // SMALL and LARGE to avoid overflow and underflow problems.
+  if(d_lg10(large) > 2e3) {
     *small = sqrt(*small);
     *large = sqrt(*large);
   }
-
   return 0;
-
-  /*     End of DLABAD */
-
-} /* dlabad_ */
+}
 
 //-------------------------------------------------------------------------------------------------
 
 // dlacn2_ - LAPACK auxiliary routine (version 3.7.0) */
 template<class T>
-int lacn2(integer *n, T *v, T *x, integer *isgn, T *est, integer *kase, integer *isave)
+int lacn2(int *n, T *v, T *x, int *isgn, T *est, int *kase, int *isave)
 {
-  /* Table of constant values */
-  static integer c__1 = 1;
+  // Table of constant values
+  static int c__1 = 1;
   static T c_b11 = 1.;
 
-  /* System generated locals */
-  integer i__1;
+  // System generated locals
+  int i__1;
   T d__1;
 
-  /* Builtin functions */
-  //double d_sign(doublereal *, doublereal *);
-  //integer i_dnnt(doublereal *);
-
-  /* Local variables */
-  static integer i__;
+  // Local variables 
+  static int i__;
   static  T temp;
-  //extern doublereal dasum_(integer *, doublereal *, integer *);
-  static integer jlast;
-  //extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
-  //  doublereal *, integer *);
-  //extern integer idamax_(integer *, doublereal *, integer *);
-  static  T altsgn, estold;
+  static int jlast;
+  static T altsgn, estold;
 
-
-  /* Parameter adjustments */
+  // Parameter adjustments
   --isave;
   --isgn;
   --x;
@@ -5312,20 +5300,16 @@ doublereal lamch(char *cmach, ftnlen cmach_len)
   //                     // all the calls
 
 
-  static doublereal c_b2 = 0.;  // hmm..it seems, this is the dummy in the original code
+  static double c_b2 = 0.;  // hmm..it seems, this is the dummy in the original code
 
   /* System generated locals */
   doublereal ret_val;
 
   /* Local variables */
-  static doublereal rnd, eps;
-  //extern integer minexponent_(doublereal *), maxexponent_(doublereal *);
-  //extern doublereal huge_(doublereal *), tiny_(doublereal *);
-  static doublereal rmach;
-  //extern logical lsame_(char *, char *, ftnlen, ftnlen);
-  //extern doublereal radix_(doublereal *);
-  static doublereal small, sfmin;
-  //extern doublereal digits_(doublereal *), epsilon_(doublereal *);
+  static double rnd, eps;
+  static double rmach;
+  static double small, sfmin;
+
 
   /*     Assume rounding, not chopping. Always. */
   rnd = 1.;

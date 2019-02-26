@@ -3,6 +3,8 @@
 namespace RAPT
 {
 
+//#include "LinearAlgebra/LaPackCPP/LaPack.cpp"  // multiple definition errors
+#include "LinearAlgebra/BandDiagonalSolver.cpp"
 #include "LinearAlgebra/LinearAlgebra.cpp"
 
 #include "Misc/Statistics.cpp"

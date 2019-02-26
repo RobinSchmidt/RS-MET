@@ -6,6 +6,8 @@ namespace RAPT
   
 // make a nested namespace Math
 
+#include "LinearAlgebra/LaPackCPP/LaPack.hpp"
+#include "LinearAlgebra/BandDiagonalSolver.hpp"
 #include "LinearAlgebra/LinearAlgebra.h"
 
 #include "Misc/Statistics.h"

@@ -68,6 +68,7 @@ T pow_di(T *ap, integer *bp)
   return(pow);
 }
 
+
 integer s_cmp(char *a0, char *b0, ftnlen la, ftnlen lb)
 {
   register unsigned char *a, *aend, *b, *bend;
@@ -142,7 +143,6 @@ void s_copy(register char *a, register char *b, ftnlen la, ftnlen lb)
       *a++ = ' ';
   }
 }
-
 
 
 

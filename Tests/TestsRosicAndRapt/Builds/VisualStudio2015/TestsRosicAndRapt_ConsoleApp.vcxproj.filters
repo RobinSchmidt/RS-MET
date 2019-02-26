@@ -125,6 +125,9 @@
     <Filter Include="Juce Modules\rapt\Math\Geometry">
       <UniqueIdentifier>{A92C163B-047A-B8DF-8B62-09F85B7DAD53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP">
+      <UniqueIdentifier>{0DE0D24E-A93E-C92A-A788-BC24EC896495}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Math\LinearAlgebra">
       <UniqueIdentifier>{08074227-EAD1-86DA-9E00-A2B2D5EA3D34}</UniqueIdentifier>
     </Filter>
@@ -861,6 +864,24 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.cpp">
       <Filter>Juce Modules\rapt\Math\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\Blas.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LaPack.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LaPackBanded.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LibF2C.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\XBlas.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\BandDiagonalSolver.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LinearAlgebra.cpp">
       <Filter>Juce Modules\rapt\Math\LinearAlgebra</Filter>
@@ -3093,6 +3114,24 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h">
       <Filter>Juce Modules\rapt\Math\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\Blas.hpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LaPack.hpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LaPackBanded.hpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LibF2C.hpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\XBlas.hpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\BandDiagonalSolver.hpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LinearAlgebra.h">
       <Filter>Juce Modules\rapt\Math\LinearAlgebra</Filter>
     </ClInclude>
@@ -4861,6 +4900,12 @@
     </None>
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
+    </None>
+    <None Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </None>
+    <None Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
     </None>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Ideas.txt">
       <Filter>Juce Modules\rapt\Modulators</Filter>

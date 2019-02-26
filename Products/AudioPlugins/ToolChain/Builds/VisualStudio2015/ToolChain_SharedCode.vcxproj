@@ -2462,10 +2462,28 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\Blas.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LaPack.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LaPackBanded.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LibF2C.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\XBlas.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\BandDiagonalSolver.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LinearAlgebra.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
@@ -4946,8 +4964,14 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Ellipse.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\GeometricTransformations.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\Blas.hpp"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LaPack.hpp"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LaPackBanded.hpp"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LibF2C.hpp"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\XBlas.hpp"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\BandDiagonalSolver.hpp"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LinearAlgebra.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\CurveFitting.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\LinearAlgebra.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Interpolation.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.h"/>
@@ -5544,6 +5568,8 @@
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\Notes.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\ToDo.txt"/>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt"/>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Ideas.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InputSequences.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Documentation.txt"/>
