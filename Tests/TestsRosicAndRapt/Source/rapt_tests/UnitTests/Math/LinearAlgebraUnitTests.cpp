@@ -30,12 +30,53 @@ bool testBandDiagonalSolver(std::string &reportString)
   static const int N  = 9;
   static const int kl = 3;
   static const int ku = 2;
+  //static const int M  = kl+ku+1;  // # rows in band storare format
 
-  typedef rsBandDiagonalSolver<double>::Algorithm ALGO;
+  // We solve the following 9x9 system A*x = b for x:
+  // 11 12 13 00 00 00 00 00 00     1     74
+  // 21 22 23 24 00 00 00 00 00     2    230
+  // 31 32 33 34 35 00 00 00 00     3    505
+  // 41 42 43 44 45 46 00 00 00     4    931
+  // 00 52 53 54 55 56 57 00 00  *  5 = 1489
+  // 00 00 63 64 65 66 67 68 00     6   2179
+  // 00 00 00 74 75 76 77 78 79     7   3001
+  // 00 00 00 00 85 86 87 88 89     8   3055
+  // 00 00 00 00 00 96 97 98 99     9   2930
+
+  // create right-hand-side vector b and target values for solution vector x
+  double b[N] = { 74,230,505,931,1489,2179,3001,3055,2930 };  // the right hand side in A*x = b
+  double x[N] = { 1,2,3,4,5,6,7,8,9 };                        // target values for x
+
+  // create solver object and set up coefficient matrix:
   rsBandDiagonalSolver<double> solver(N, kl, ku);
+  for(int k = -kl; k <= ku; k++) {
+    for(int n = 0; n < N - abs(k); n++) {
+      double val = (n+1)*10 + n+1;
+      if(k < 0)
+        val += -k*10;
+      else
+        val += k;
+      solver.setDiagonalElement(k, n, val); // sets up the coeff matrix
+    }
+  }
 
+  // solve the system with the 3 different solver routines:
+  typedef rsBandDiagonalSolver<double>::Algorithm ALGO;
+  double xGbsvxx[N], xGbsvx[N], xGbsv[N];                // results of the 3 algorithms
+  solver.setAlgorithm(ALGO::gbsv);
+  solver.solve(b, xGbsv, 1);
+  solver.setAlgorithm(ALGO::gbsvx);
+  solver.solve(b, xGbsvx, 1);
+  solver.setAlgorithm(ALGO::gbsvxx);
+  solver.solve(b, xGbsvxx, 1);
 
-
+  // compute maximum errors in the 3 solutions and check if it is below some thresholds:
+  double errGbsv   = rsArray::maxDeviation(x, xGbsv, N);   // rename to maxDistance
+  double errGbsvx  = rsArray::maxDeviation(x, xGbsvx, N);
+  double errGbsvxx = rsArray::maxDeviation(x, xGbsvxx, N);
+  testResult &= errGbsv    < 2e-9;
+  testResult &= errGbsvx   < 3e-10;
+  testResult &= errGbsvxx == 0.0;
 
   return testResult;
 }
