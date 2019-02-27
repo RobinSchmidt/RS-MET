@@ -6,6 +6,9 @@
 //bool testLinearAlgebra(std::string &reportString);
 bool testLinearAlgebra();
 
+
+bool testBandDiagonalSolver(std::string &reportString);
+
 bool testLinearSystem2x2(std::string &reportString);
 bool testLinearSystem3x3(std::string &reportString);
 bool testLinearSystemViaGauss(std::string &reportString);
@@ -18,5 +21,7 @@ bool testMatrixVectorMultiply(std::string &reportString);
 bool testMatrixMultiply(std::string &reportString);
 
 bool testChangeOfBasis(std::string &reportString);
+
+
 
 #endif

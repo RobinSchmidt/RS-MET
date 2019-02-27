@@ -8,6 +8,7 @@ bool testLinearAlgebra()
   std::string reportString = "LinearAlgebra"; // dummy-string - delete later
   bool testResult = true;
 
+  testResult &= testBandDiagonalSolver(   reportString);
   testResult &= testLinearSystem2x2(      reportString);
   testResult &= testLinearSystem3x3(      reportString);
   testResult &= testLinearSystemViaGauss( reportString);
@@ -17,6 +18,24 @@ bool testLinearAlgebra()
   testResult &= testMatrixVectorMultiply( reportString);
   testResult &= testMatrixMultiply(       reportString);
   testResult &= testChangeOfBasis(        reportString);
+
+  return testResult;
+}
+
+bool testBandDiagonalSolver(std::string &reportString)
+{
+  //std::string testName = "BandDiagonalSolver";
+  bool testResult = true;
+
+  static const int N  = 9;
+  static const int kl = 3;
+  static const int ku = 2;
+
+  typedef rsBandDiagonalSolver<double>::Algorithm ALGO;
+  rsBandDiagonalSolver<double> solver(N, kl, ku);
+
+
+
 
   return testResult;
 }
