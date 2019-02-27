@@ -1,8 +1,18 @@
-//#include <rapt/Math/LinearAlgebra/LaPackCPP/LaPack.cpp>
+
+// this is a bit messy and dirty - the goal is that the typed lapack functions get compiled exactly
+// once and the templates get instantiated also exactly once (for each relevant datatype) - and 
+// these instantiations and compilations should take place in the rosic compilation unit rosic.obj 
+// and not additionally in rapt.obj and/or Shared.obj (the latter is relevant only for the test 
+// project)
+#include <rapt/Math/LinearAlgebra/LaPackCPP/LaPack.hpp>  // why do we need this?
+#include <rapt/Math/LinearAlgebra/LaPackCPP/LaPack.cpp>
+
 #include <rapt/rapt.cpp>
 #include "Float32x4.h"
 
+
 // todo: move template instantiations from LaPack.cpp (and Blas, etc.) to here
+
 
 
 // Ouura FFT instantiations (trying to fix linker errors on mac):

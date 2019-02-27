@@ -1,10 +1,11 @@
 
 namespace LaPackCPP {
 
-void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
-  int m, int n, int kl, int ku, double alpha,
-  const double *a, int lda, const double *x, int incx,
-  double beta, double *y, int incy, enum blas_prec_type prec)
+template<class T>
+void blas_gbmv_x(enum blas_order_type order, enum blas_trans_type trans,
+  int m, int n, int kl, int ku, T alpha,
+  const T *a, int lda, const T *x, int incx,
+  T beta, T *y, int incy, enum blas_prec_type prec)
 {
   // LOCAL VARIABLES 
   //
@@ -37,19 +38,19 @@ void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
   {
     int ky, iy, kx, jx, j, i, rbound, lbound, ra, la, lenx, leny;
     int incaij, aij, incai1, incai2, astart, ai;
-    double *y_i = y;
-    const double *a_i = a;
-    const double *x_i = x;
-    double alpha_i = alpha;
-    double beta_i = beta;
-    double tmp1;
-    double tmp2;
-    double result;
-    double sum;
-    double prod;
-    double a_elem;
-    double x_elem;
-    double y_elem;
+    T *y_i = y;
+    const T *a_i = a;
+    const T *x_i = x;
+    T alpha_i = alpha;
+    T beta_i = beta;
+    T tmp1;
+    T tmp2;
+    T result;
+    T sum;
+    T prod;
+    T a_elem;
+    T x_elem;
+    T y_elem;
 
     if(order != blas_colmajor && order != blas_rowmajor)
       BLAS_error(routine_name, -1, order, NULL);
@@ -180,19 +181,19 @@ void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
   {
     int ky, iy, kx, jx, j, i, rbound, lbound, ra, la, lenx, leny;
     int incaij, aij, incai1, incai2, astart, ai;
-    double *y_i = y;
-    const double *a_i = a;
-    const double *x_i = x;
-    double alpha_i = alpha;
-    double beta_i = beta;
-    double head_tmp1, tail_tmp1;
-    double head_tmp2, tail_tmp2;
-    double result;
-    double head_sum, tail_sum;
-    double head_prod, tail_prod;
-    double a_elem;
-    double x_elem;
-    double y_elem;
+    T *y_i = y;
+    const T *a_i = a;
+    const T *x_i = x;
+    T alpha_i = alpha;
+    T beta_i = beta;
+    T head_tmp1, tail_tmp1;
+    T head_tmp2, tail_tmp2;
+    T result;
+    T head_sum, tail_sum;
+    T head_prod, tail_prod;
+    T a_elem;
+    T x_elem;
+    T y_elem;
     FPU_FIX_DECL;
 
     if(order != blas_colmajor && order != blas_rowmajor)
@@ -295,7 +296,7 @@ void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
         a_elem = a_i[aij];
         {
           /* Compute double_double = double * double. */
-          double a1, a2, b1, b2, con;
+          T a1, a2, b1, b2, con;
 
           con = x_elem * split;
           a1 = con - x_elem;
@@ -312,8 +313,8 @@ void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
         }
         {
           /* Compute double-double = double-double + double-double. */
-          double bv;
-          double s1, s2, t1, t2;
+          T bv;
+          T s1, s2, t1, t2;
 
           /* Add two hi words. */
           s1 = head_sum + head_prod;
@@ -344,7 +345,7 @@ void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
 
       {
         /* Compute double-double = double-double * double. */
-        double a11, a21, b1, b2, c11, c21, c2, con, t1, t2;
+        T a11, a21, b1, b2, c11, c21, c2, con, t1, t2;
 
         con = head_sum * split;
         a11 = con - head_sum;
@@ -368,7 +369,7 @@ void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
       y_elem = y_i[iy];
       {
         /* Compute double_double = double * double. */
-        double a1, a2, b1, b2, con;
+        T a1, a2, b1, b2, con;
 
         con = beta_i * split;
         a1 = con - beta_i;
@@ -384,8 +385,8 @@ void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
       }
       {
         /* Compute double-double = double-double + double-double. */
-        double bv;
-        double s1, s2, t1, t2;
+        T bv;
+        T s1, s2, t1, t2;
 
         /* Add two hi words. */
         s1 = head_tmp1 + head_tmp2;
@@ -431,9 +432,10 @@ void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans,
 
 //-------------------------------------------------------------------------------------------------
 
-void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m, int n, int kl,
-  int ku, double alpha, const double *a, int lda, const double *head_x, const double *tail_x,
-  int incx, double beta, double *y, int incy, enum blas_prec_type prec)
+template<class T>
+void blas_gbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m, int n, int kl,
+  int ku, T alpha, const T *a, int lda, const T *head_x, const T *tail_x,
+  int incx, T beta, T *y, int incy, enum blas_prec_type prec)
 {
   static const char routine_name[] = "BLAS_dgbmv2_x";
 
@@ -444,23 +446,23 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
   {
     int iy0, iy, ix0, jx, j, i, rbound, lbound, ra, la, lenx, leny;
     int incaij, aij, incai1, incai2, astart, ai;
-    double *y_i = y;
-    const double *a_i = a;
-    const double *head_x_i = head_x;
-    const double *tail_x_i = tail_x;
-    double alpha_i = alpha;
-    double beta_i = beta;
-    double tmp1;
-    double tmp2;
-    double tmp3;
-    double tmp4;
-    double result;
-    double sum1;
-    double sum2;
-    double prod;
-    double a_elem;
-    double x_elem;
-    double y_elem;
+    T *y_i = y;
+    const T *a_i = a;
+    const T *head_x_i = head_x;
+    const T *tail_x_i = tail_x;
+    T alpha_i = alpha;
+    T beta_i = beta;
+    T tmp1;
+    T tmp2;
+    T tmp3;
+    T tmp4;
+    T result;
+    T sum1;
+    T sum2;
+    T prod;
+    T a_elem;
+    T x_elem;
+    T y_elem;
 
 
     if(order != blas_colmajor && order != blas_rowmajor)
@@ -600,23 +602,23 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
   {
     int iy0, iy, ix0, jx, j, i, rbound, lbound, ra, la, lenx, leny;
     int incaij, aij, incai1, incai2, astart, ai;
-    double *y_i = y;
-    const double *a_i = a;
-    const double *head_x_i = head_x;
-    const double *tail_x_i = tail_x;
-    double alpha_i = alpha;
-    double beta_i = beta;
-    double head_tmp1, tail_tmp1;
-    double head_tmp2, tail_tmp2;
-    double head_tmp3, tail_tmp3;
-    double head_tmp4, tail_tmp4;
-    double result;
-    double head_sum1, tail_sum1;
-    double head_sum2, tail_sum2;
-    double head_prod, tail_prod;
-    double a_elem;
-    double x_elem;
-    double y_elem;
+    T *y_i = y;
+    const T *a_i = a;
+    const T *head_x_i = head_x;
+    const T *tail_x_i = tail_x;
+    T alpha_i = alpha;
+    T beta_i = beta;
+    T head_tmp1, tail_tmp1;
+    T head_tmp2, tail_tmp2;
+    T head_tmp3, tail_tmp3;
+    T head_tmp4, tail_tmp4;
+    T result;
+    T head_sum1, tail_sum1;
+    T head_sum2, tail_sum2;
+    T head_prod, tail_prod;
+    T a_elem;
+    T x_elem;
+    T y_elem;
     FPU_FIX_DECL;
 
     if(order != blas_colmajor && order != blas_rowmajor)
@@ -719,7 +721,7 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
         a_elem = a_i[aij];
         {
           /* Compute double_double = double * double. */
-          double a1, a2, b1, b2, con;
+          T a1, a2, b1, b2, con;
 
           con = x_elem * split;
           a1 = con - x_elem;
@@ -736,8 +738,8 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
         }
         {
           /* Compute double-double = double-double + double-double. */
-          double bv;
-          double s1, s2, t1, t2;
+          T bv;
+          T s1, s2, t1, t2;
 
           /* Add two hi words. */
           s1 = head_sum1 + head_prod;
@@ -764,7 +766,7 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
         x_elem = tail_x_i[jx];
         {
           /* Compute double_double = double * double. */
-          double a1, a2, b1, b2, con;
+          T a1, a2, b1, b2, con;
 
           con = x_elem * split;
           a1 = con - x_elem;
@@ -781,8 +783,8 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
         }
         {
           /* Compute double-double = double-double + double-double. */
-          double bv;
-          double s1, s2, t1, t2;
+          T bv;
+          T s1, s2, t1, t2;
 
           /* Add two hi words. */
           s1 = head_sum2 + head_prod;
@@ -813,7 +815,7 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
 
       {
         /* Compute double-double = double-double * double. */
-        double a11, a21, b1, b2, c11, c21, c2, con, t1, t2;
+        T a11, a21, b1, b2, c11, c21, c2, con, t1, t2;
 
         con = head_sum1 * split;
         a11 = con - head_sum1;
@@ -836,7 +838,7 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
       }
       {
         /* Compute double-double = double-double * double. */
-        double a11, a21, b1, b2, c11, c21, c2, con, t1, t2;
+        T a11, a21, b1, b2, c11, c21, c2, con, t1, t2;
 
         con = head_sum2 * split;
         a11 = con - head_sum2;
@@ -859,8 +861,8 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
       }
       {
         /* Compute double-double = double-double + double-double. */
-        double bv;
-        double s1, s2, t1, t2;
+        T bv;
+        T s1, s2, t1, t2;
 
         /* Add two hi words. */
         s1 = head_tmp1 + head_tmp2;
@@ -887,7 +889,7 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
       y_elem = y_i[iy];
       {
         /* Compute double_double = double * double. */
-        double a1, a2, b1, b2, con;
+        T a1, a2, b1, b2, con;
 
         con = beta_i * split;
         a1 = con - beta_i;
@@ -903,8 +905,8 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
       }
       {
         /* Compute double-double = double-double + double-double. */
-        double bv;
-        double s1, s2, t1, t2;
+        T bv;
+        T s1, s2, t1, t2;
 
         /* Add two hi words. */
         s1 = head_tmp4 + head_tmp3;
@@ -950,34 +952,6 @@ void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m
 }				/* end BLAS_dgbmv2_x */
 
 //-------------------------------------------------------------------------------------------------
-
-void BLAS_error(const char *rname, int iflag, int ival, char *form, ...)
-{
-#if !defined(CONFIG_USE_XERBLA)
-{
-  va_list argptr;
-  va_start(argptr, form);
-  fprintf(stderr, "Error #%d from routine %s:\n", iflag, rname);
-  if(form)
-    vfprintf(stderr, form, argptr);
-  else if(iflag < 0)
-    fprintf(stderr,
-      "  Parameter number %d to routine %s had the illegal value %d\n",
-      -iflag, rname, ival);
-  else
-    fprintf(stderr, "  Unknown error code %d from routine %s\n",
-      iflag, rname);
-  exit(iflag);
-}
-#else
-{
-  int ln, argno;
-  ln = strlen(rname);
-  argno = -iflag;
-  xerbla_array(rname, &ln, &argno);
-}
-#endif
-}
 
 
 }

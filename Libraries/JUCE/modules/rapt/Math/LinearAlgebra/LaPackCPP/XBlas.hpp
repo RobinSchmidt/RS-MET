@@ -107,10 +107,10 @@ prec   Specifies the internal precision to be used.
         = blas_prec_extra : anything at least 1.5 times as accurate
                             than double, and wider than 80-bits.
                             We use double-double in our implementation. */
-void blas_dgbmv_x(enum blas_order_type order, enum blas_trans_type trans, int m, int n, int kl,
-  int ku, double alpha, const double *a, int lda, const double *x, int incx, double beta,
-  double *y, int incy, enum blas_prec_type prec);
-// todo: templatize! ...if possible, get rid of the "d"
+template<class T>
+void blas_gbmv_x(enum blas_order_type order, enum blas_trans_type trans, int m, int n, int kl,
+  int ku, T alpha, const T *a, int lda, const T *x, int incx, T beta, T *y, int incy, 
+  enum blas_prec_type prec);
 
 //-------------------------------------------------------------------------------------------------
 
@@ -145,9 +145,10 @@ prec   Specifies the internal precision to be used.
        = blas_prec_double: double precision.
        = blas_prec_extra : anything at least 1.5 times as accurate
          than double, and wider than 80-bits. We use double-double in our implementation. */
-void blas_dgbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m, int n, int kl,
-  int ku, double alpha, const double *a, int lda, const double *head_x, const double *tail_x,
-  int incx, double beta, double *y, int incy, enum blas_prec_type prec);
+template<class T>
+void blas_gbmv2_x(enum blas_order_type order, enum blas_trans_type trans, int m, int n, int kl,
+  int ku, T alpha, const T *a, int lda, const T *head_x, const T *tail_x,
+  int incx, T beta, T *y, int incy, enum blas_prec_type prec);
 
 //-------------------------------------------------------------------------------------------------
 

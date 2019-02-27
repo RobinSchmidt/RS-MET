@@ -63,6 +63,17 @@ public:
     A[i] = value;
   }
 
+  /** Sets the elements of the coefficient matrix in LAPACK's band-sotrage format. The passed 
+  "newMatrix" array must be of size (kl+ku+1)*N where N is the size of the linear system, kl is the
+  number of subdiagonals and ku the number of superdiagonals. These numbers are given by a call to
+  the class constructor or a call to setSystemSize. For details on the band-storage  format, see 
+  the comment at the bottom of the .cpp file. */
+  void setCoefficientMatrix(T* newMatrix)
+  {
+    for(int i = 0; i < N*lda; i++)
+      A[i] = newMatrix[i];
+  }
+
   /** Selects whether or not equilibration should be used (if necessarry). Affects computations 
   only when gbsvx or gbsvxx is selected for the algorithm - gbsv never equilibrates. */
   void setEquilibration(bool shouldEquilibrate);
@@ -73,7 +84,7 @@ public:
   /** Returns information about the computations in the most recent call to solve(). A zero value 
   indicates successful exit. For the meaning of other values, refer to the documentation of "INFO" 
   parameter of the lapack routines gbvsv, gbsvx and gbsvxx. */
-  long getInfo() { return info; }
+  long getInfo() const { return info; }
 
   /** Returns reciprocal condition number of the matrix in the most recent call to solve() where 
   gbsvx or gbsvxx has been used. */
@@ -160,7 +171,7 @@ protected:
   long N;       // matrix size is N x N
   long kl;      // number of subdiagonals
   long ku;      // number of superdiagonals
-  long lda;     // leading dimension (ld) of matrix A ins band storage format
+  long lda;     // leading dimension (ld) of matrix A in band storage format
   long ldab;    // leading dimension af matrix AB in gbsv, same as ld of AF in gbsvx and gbsvxx
 
   // right-hand-side size parameters:
@@ -168,8 +179,8 @@ protected:
   long ldb;     // = N, redundant - maybe get rid
 
   // workspace buffers:
-  std::vector<T> A;        // coefficient matrix in band-storage
-  std::vector<T> AF;       // factored form of A or matrix AB in gbsv
+  std::vector<T> A;        // coefficient matrix in band-storage, size N*(kl+ku+1)
+  std::vector<T> AF;       // factored form of A or matrix AB in gbsv, size N*(2*kl+ku+1)
   std::vector<T> work;     // workspace, size 4*N
   std::vector<T> R, C;     // row and column scale factors for equilibration, size N
   std::vector<long> iwork; // integer workspace, size N

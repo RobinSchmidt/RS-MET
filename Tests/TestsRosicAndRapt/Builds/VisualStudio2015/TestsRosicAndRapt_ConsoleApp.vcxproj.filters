@@ -877,6 +877,12 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LibF2C.cpp">
       <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\TemplateInstantiations.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\TypedFunctions.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\XBlas.cpp">
       <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
     </ClCompile>

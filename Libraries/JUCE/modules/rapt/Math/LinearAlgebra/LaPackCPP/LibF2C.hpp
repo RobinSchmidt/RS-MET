@@ -19,7 +19,7 @@ typedef long ftnlen;        // replace with int
 //#define VOID void
 
 static const logical TRUE_ = 1;
-static const logical FALSE_ = 1;
+static const logical FALSE_ = 0;
 
 
 //// try to get rid of them:
@@ -30,19 +30,18 @@ static const logical FALSE_ = 1;
 template<class T> T d_lg10(T *);
 template<class T> T d_sign(T *, T *);
 template<class T> integer i_dnnt(T *);
-template<class T> integer i_nint(T *);
+
+//template<class T> integer i_nint(T *)
+template<class T>
+inline integer i_nint(T *x)
+{
+  return (integer)(*x >= 0 ? floor(*x + .5) : -floor(.5 - *x));
+}
+
 template<class T> T pow_di(T *, integer *);
+
 integer i_len(char *, ftnlen);
-//inline integer i_len(char *s, ftnlen n)
-//{
-//  return(n);
-//}
-
-
-
-
 integer s_cmp(char *, char *, ftnlen, ftnlen);
-
 void s_copy(char *, char *, ftnlen, ftnlen);
 
 

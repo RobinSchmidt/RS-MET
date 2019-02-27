@@ -9,7 +9,7 @@ namespace RAPT
 //#endif
 // ...nope - that conditional compilation also doesn't work
 
-#include "LinearAlgebra/BandDiagonalSolver.cpp"
+//#include "LinearAlgebra/BandDiagonalSolver.cpp"
 #include "LinearAlgebra/LinearAlgebra.cpp"
 
 #include "Misc/Statistics.cpp"

@@ -7,8 +7,8 @@ void rsBandDiagonalSolver<T>::setSystemSize(int matrixSize, int numSubDiagonals,
   N    = matrixSize;
   kl   = numSubDiagonals;
   ku   = numSuperDiagonals;
-  lda  = kl+ku+1;    // number of rows in A
-  ldab = 2*kl+ku+1;  // number of rows in factored version of A
+  lda  = kl+ku+1;    // number of rows in A, maybe rename to M
+  ldab = 2*kl+ku+1;  // number of rows in AF (factored version of A)
   ldb  = N;          // redundant - maybe get rid
   allocateMatrix();
 }

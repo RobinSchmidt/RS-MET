@@ -658,6 +658,12 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LibF2C.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\TemplateInstantiations.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\TypedFunctions.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\XBlas.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
