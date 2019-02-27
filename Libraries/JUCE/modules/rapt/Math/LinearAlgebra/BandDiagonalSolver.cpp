@@ -25,7 +25,7 @@ void rsBandDiagonalSolver<T>::setEquilibration(bool shouldEquilibrate)
 // computation:
 
 template<class T>
-void rsBandDiagonalSolver<T>::solve(T* B, T* X, int numRightHandSides)
+void rsBandDiagonalSolver<T>::solve(T* X, T* B, int numRightHandSides)
 {
   nrhs = numRightHandSides;
   allocateBuffers();
