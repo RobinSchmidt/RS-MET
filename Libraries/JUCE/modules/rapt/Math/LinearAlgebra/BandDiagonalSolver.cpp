@@ -31,20 +31,21 @@ void rsBandDiagonalSolver<T>::solve(T* B, T* X, int numRightHandSides)
   allocateBuffers();
   if(algo == Algorithm::gbsv) {
     prepareForGbsv(B, X);
-    gbsv(&N, &kl, &ku, &nrhs, &AF[0], &ldab, &ipiv[0], &X[0], &ldb, &info);
+    LaPackCPP::gbsv(&N, &kl, &ku, &nrhs, &AF[0], &ldab, &ipiv[0], &X[0], &ldb, &info);
   }
   else if(algo == Algorithm::gbsvx) {
-    gbsvx(&fact, &trans, &N, &kl, &ku, &nrhs, &A[0], &lda, &AF[0], &ldab, &ipiv[0], &equed, &R[0],
-      &C[0], &B[0], &ldb, &X[0], &ldb, &rcond, &ferr[0], &berr[0], &work[0], &iwork[0], &info,
-      0, 0, 0); 
+    LaPackCPP::gbsvx(&fact, &trans, &N, &kl, &ku, &nrhs, &A[0], &lda, &AF[0], &ldab, &ipiv[0], 
+      &equed, &R[0], &C[0], &B[0], &ldb, &X[0], &ldb, &rcond, &ferr[0], &berr[0], &work[0], 
+      &iwork[0], &info, 0, 0, 0); 
   }
   else if(algo == Algorithm::gbsvxx) {
-    gbsvxx(&fact, &trans, &N, &kl, &ku, &nrhs, &A[0], &lda, &AF[0], &ldab, &ipiv[0], &equed, &R[0], 
-      &C[0], &B[0], &ldb, &X[0], &ldb, &rcond, &rpvgrw, &berr[0], &n_err_bnds, &err_bnds_norm[0], 
-      &err_bnds_comp[0], &nparams, &params[0], &work[0], &iwork[0], &info, 0, 0, 0); 
+    LaPackCPP::gbsvxx(&fact, &trans, &N, &kl, &ku, &nrhs, &A[0], &lda, &AF[0], &ldab, &ipiv[0], 
+      &equed, &R[0], &C[0], &B[0], &ldb, &X[0], &ldb, &rcond, &rpvgrw, &berr[0], &n_err_bnds, 
+      &err_bnds_norm[0], &err_bnds_comp[0], &nparams, &params[0], &work[0], &iwork[0], &info, 
+      0, 0, 0); 
   }
   else
-    xerbla("invalid algo in rsBandDiagonalSolver::solve", 0, 0);
+    LaPackCPP::xerbla("invalid algo in rsBandDiagonalSolver::solve", 0, 0);
 }
 
 // memory allocation:
@@ -82,6 +83,13 @@ void rsBandDiagonalSolver<T>::prepareForGbsv(T* B, T* X)
     for(int r = 0; r < lda; r++)         // ...for being replaced by gbsv
       AF[c*ldab + kl+r] = A[c*lda + r];
 }
+
+template<class T>
+void rsBandDiagonalSolver<T>::error(char* message)
+{
+  LaPackCPP::xerbla(message, 0, 0);
+}
+
 
 /* Notes on the storage format for band-diagonal matrices in LAPACK:
 

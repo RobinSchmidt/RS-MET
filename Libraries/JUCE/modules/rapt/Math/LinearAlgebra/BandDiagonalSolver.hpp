@@ -50,7 +50,7 @@ public:
   {
     int i = diagElemIndex(diagIndex, elemIndex);
     if(i < 0 || i >= (int)A.size())
-      xerbla("invalid index in rsBandDiagonalSolver::setDiagonalElement", 0, 0);
+      error("invalid index in rsBandDiagonalSolver::setDiagonalElement");
     A[i] = value;
   }
 
@@ -59,7 +59,7 @@ public:
   {
     int i = rowColToArrayIndex(rowIndex, columnIndex);
     if(i < 0 || i >= (int)A.size())
-      xerbla("invalid index in rsBandDiagonalSolver::setElement", 0, 0);
+      error("invalid index in rsBandDiagonalSolver::setElement");
     A[i] = value;
   }
 
@@ -163,6 +163,11 @@ protected:
   appropriate offsets to leave space for the factored form) and B into X because gbsv replaces the
   right-hand side B with the solution X. */
   void prepareForGbsv(T* B, T* X);
+
+  /** Error function - delegates to the blas function xerbla - but we don't want to call xerbla 
+  here in the hpp file because calling blas/lapack/etc. functions here in the header screws up the 
+  build-system for the RS-MET codebase. */
+  void error(char* message);
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */

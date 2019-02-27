@@ -10,8 +10,11 @@
 #include <rapt/rapt.cpp>
 #include "Float32x4.h"
 
+// todo: move template instantiations from LaPack.cpp (and Blas, etc.) to here - i mean the 
+// functions gbsv, etc. ....maybe 
 
-// todo: move template instantiations from LaPack.cpp (and Blas, etc.) to here
+
+template class RAPT::rsBandDiagonalSolver<double>;
 
 
 
