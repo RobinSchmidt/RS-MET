@@ -1,5 +1,9 @@
+//#include <rapt/Math/LinearAlgebra/LaPackCPP/LaPack.cpp>
 #include <rapt/rapt.cpp>
 #include "Float32x4.h"
+
+// todo: move template instantiations from LaPack.cpp (and Blas, etc.) to here
+
 
 // Ouura FFT instantiations (trying to fix linker errors on mac):
 template void RAPT::bitrv2conj(int, int*, double*);
