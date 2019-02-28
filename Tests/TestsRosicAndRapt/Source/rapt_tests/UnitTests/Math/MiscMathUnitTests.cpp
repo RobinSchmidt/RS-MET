@@ -150,6 +150,17 @@ void rsMinSqrDifFixSum(const std::vector<T>& s, std::vector<T>& v)
     d2[i+1] =  0; }
   d2[i] = -2;
 
+  // establish right-hand side vector:
+  std::vector<T> b(Nm);
+  int j = 0;
+  for(i = 0; i <= Nm-2; i += 2) {
+    b[i]   = 0;
+    b[i+1] = s[j];
+    j++;
+  }
+  b[Nm-1] = 0;
+
+
 
   int dummy = 0;
 }
