@@ -127,13 +127,11 @@ bool testGradientBasedOptimization(std::string &reportString)
 // s: array of desired sums between adjacent array elements (length N-1)
 // v: output array (length N)
 template<class T>
-void rsMinSqrDifFixSum(const std::vector<T>& s, std::vector<T>& v)
+std::vector<T> rsMinSqrDifFixSum(const std::vector<T>& s)
 {
-  int Nv = (int) v.size();  // number of values
   int Ns = (int) s.size();  // number of sums
+  int Nv = Ns + 1;          // number of values
   int Nm = Nv + Ns;         // number of linear equations, matrix size
-  RAPT::rsAssert( Ns == Nv-1 );
-
   typedef std::vector<T> Vec;
 
   // establish the diagonals for the matrix:
@@ -168,13 +166,12 @@ void rsMinSqrDifFixSum(const std::vector<T>& s, std::vector<T>& v)
   // should be equal to b, if the solver is legit:
   Vec b2 = pentaDiagMatVecMul(d2, d1, d0, d1, d2, x);
 
-
+  Vec v(Nv);
   for(i = 0; i < Nv; i++)
-    v[i] = x[2*i];  // does this alyays work? the last valid index in x should be twice the last 
+    v[i] = x[2*i];  // does this always work? the last valid index in x should be twice the last 
                     // valid index in v... try even and odd lengths for v
 
-
-  int dummy = 0;
+  return v;
 }
 
 bool testMinSqrDifFixSum(std::string &reportString)
@@ -187,19 +184,21 @@ bool testMinSqrDifFixSum(std::string &reportString)
   std::string testName = "MinSqrDifFixSum";
   bool testResult = true;
 
+  std::vector<double> s, v;
 
-  std::vector<double> s;
-
-  //s = { 20 };        // crashes - treat as special case
-  //s = { 20, 30 };    // 7.5, 12.5, 17.5 - optimal
-  //s = { 20, 30, 40 };  // 8.33, 11.66, 18.33, 21.66 - suboptimal?
-  //s = { 20, 30, 40, 50 }; // 7.5, 12.5, 17.5, 22.5, 27.5 - optimal
-  //s = { 20, 30, 40, 50, 60 }; // 8, 12, 18, 22, 28, 32 - suboptimal?
-  s = { 20, 30, 40, 50, 60, 70 }; // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5 - optimal
-  int N = (int) s.size() + 1;
-  std::vector<double> v(N);
-
-  rsMinSqrDifFixSum(s, v);
+  //s = { 20 };        
+  //v = rsMinSqrDifFixSum(s);     // crashes - treat as special case
+  s = { 20, 30 };    
+  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5 - optimal
+  s = { 20, 30, 40 };  
+  v = rsMinSqrDifFixSum(s);       // 8.33, 11.66, 18.33, 21.66 - suboptimal?
+  s = { 20, 30, 40, 50 }; 
+  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5 - optimal
+  s = { 20, 30, 40, 50, 60 }; 
+  v = rsMinSqrDifFixSum(s);       // 8, 12, 18, 22, 28, 32 - suboptimal?
+  s = { 20, 30, 40, 50, 60, 70 }; 
+  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5 - optimal
+  return testResult;
 
   // maybe when the length of the sum vector s is odd (i.e. length of v is even) we need to do 
   // something special? the computed solution looks suboptimal - calculate N=4 case by hand - see,
@@ -207,7 +206,7 @@ bool testMinSqrDifFixSum(std::string &reportString)
   // it seems, the longer the vector, the less strong the suboptimality...maybe it sort of averages
   // out for longer vectors...figure out
 
-  return testResult;
+
 }
 
 
