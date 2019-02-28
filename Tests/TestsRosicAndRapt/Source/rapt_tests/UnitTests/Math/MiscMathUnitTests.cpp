@@ -123,13 +123,32 @@ bool testGradientBasedOptimization(std::string &reportString)
 //
 //}
 
+
+
 // s: array of desired sums between adjacent array elements (length N-1)
 // v: output array (length N)
 template<class T>
 void rsMinSqrDifFixSum(const std::vector<T>& s, std::vector<T>& v)
 {
-  int N = (int) v.size();
-  RAPT::rsAssert( (int) s.size() == N-1 );
+  int Nv = (int) v.size();  // number of values
+  int Ns = (int) s.size();  // number of sums
+  int Nm = Nv + Ns;         // number of linear equations, matrix size
+  RAPT::rsAssert( Ns == Nv-1 );
+
+  // establish the diagonals for the matrix:
+  std::vector<T> d0(Nm), d1(Nm-1), d2(Nm-2);
+  int i;
+  d0[0] = 2;
+  for(i = 1; i < Nm; i += 2) {
+    d0[i]   = 0;
+    d0[i+1] = 4; }
+  d0[Nm-1] = 2;    // could we use index i here, too?
+  for(i = 0; i < Nm-1; i++)
+    d1[i] = 1;
+  for(i = 0; i < Nm-3; i += 2) {
+    d2[i]   = -2;
+    d2[i+1] =  0; }
+  d2[i] = -2;
 
 
   int dummy = 0;
@@ -144,8 +163,9 @@ bool testMinSqrDifFixSum(std::string &reportString)
   bool testResult = true;
 
 
+  std::vector<double> s = { 20, 40, 30, 20 }; // array of desired sums
   //std::vector<double> s = { 20, 40, 30, 20, 50 }; // array of desired sums
-  std::vector<double> s = { 20, 40 }; 
+  //std::vector<double> s = { 20, 40 }; 
   int N = (int) s.size() + 1;
   std::vector<double> v(N);
 
