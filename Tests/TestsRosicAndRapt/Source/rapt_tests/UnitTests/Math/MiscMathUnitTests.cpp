@@ -127,7 +127,7 @@ bool testGradientBasedOptimization(std::string &reportString)
 // s: array of desired sums between adjacent array elements (length N-1)
 // v: output array (length N)
 template<class T>
-std::vector<T> rsMinSqrDifFixSum(const std::vector<T>& s)
+std::vector<T> rsMinSqrDifFixSum(const std::vector<T>& s, bool evenWeightFix = false)
 {
   int Ns = (int) s.size();  // number of sums
   int Nv = Ns + 1;          // number of values
@@ -149,16 +149,12 @@ std::vector<T> rsMinSqrDifFixSum(const std::vector<T>& s)
     d2[i+1] =  0; }
   d2[i] = -2;
 
-
-
   // experimental - error weighting for even number of datapoints / odd number of sums:
-  if(RAPT::rsIsEven(Nv))
+  if(evenWeightFix && RAPT::rsIsEven(Nv))
   {
     //d2[i] /= 2; d2[0] /= 2;
     d2[i] = d2[0] = 0; // seems like the error at the ends should not count at all - maybe make
   }                    // that fix optional - or let the user select error-weights
-
-
 
   // establish right-hand side vector:
   std::vector<T> b(Nm);
@@ -200,15 +196,17 @@ bool testMinSqrDifFixSum(std::string &reportString)
   //s = { 20 };        
   //v = rsMinSqrDifFixSum(s);     // crashes - treat as special case
   //s = { 20, 30 };    
-  //v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5 - optimal
+  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5
   s = { 20, 30, 40 };  
-  v = rsMinSqrDifFixSum(s);       // 8.33, 11.66, 18.33, 21.66 - suboptimal?
+  v = rsMinSqrDifFixSum(s);       // 8.33, 11.66, 18.33, 21.66
   s = { 20, 30, 40, 50 }; 
-  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5 - optimal
+  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5
   s = { 20, 30, 40, 50, 60 }; 
-  v = rsMinSqrDifFixSum(s);       // 8, 12, 18, 22, 28, 32 - suboptimal?
+  v = rsMinSqrDifFixSum(s);       // 8, 12, 18, 22, 28, 32
   s = { 20, 30, 40, 50, 60, 70 }; 
-  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5 - optimal
+  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5
+  s = { 20, 30, 40, 50, 60, 70, 80 }; 
+  v = rsMinSqrDifFixSum(s);       // 7.86, 12.14, 17.86, 22.14, 27.86, 32.14, 37.86, 42.14
   return testResult;
 
 
@@ -223,6 +221,14 @@ bool testMinSqrDifFixSum(std::string &reportString)
   // sum-of-squared-differences than for example v = { 7.5, 12.5, 17.5, 22.5 } - so the math works
   // out correctly. maybe my minimization criterion is not well suited for even N - maybe i should
   // give the two outermost squared differences less weight (maybe 1/2)
+
+  // probably the best and most flexible way to deal with this is to give the user the option to 
+  // apply a weight to each squared difference - we will need that anyway for the freq-estimation.
+  // is there a meaningful way to apply weights to the constraints as well? or rather some sort of
+  // slack-variables maybe instead of requiring the hard constraint 
+  // v1 + v2 = s1 -> v1 + v2 - s1 = 0, require k * (v1 + v2 - s1)^2 = min ...but i think, for the 
+  // frequency-estimation problem, hard constraints are actually appropriate - but maybe for other
+  // problems...wait...that makes the whole thing nonlinear - so screw it
 
 
 }
