@@ -8,6 +8,8 @@ bool testMiscMath()
   testResult &= testExponentialCurveFitting(  dummy);
   testResult &= testRootFinding(              dummy);
   testResult &= testGradientBasedOptimization(dummy);
+  testResult &= testMinSqrDifFixSum(          dummy);
+
   //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
   //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
 
@@ -113,6 +115,47 @@ bool testGradientBasedOptimization(std::string &reportString)
 
   return testResult;
 }
+
+// for production code later use plain c-arrays..
+//template<class T>
+//void rsMinSqrDifFixSum(const T* s, int N, T* v)
+//{
+//
+//}
+
+// s: array of desired sums between adjacent array elements (length N-1)
+// v: output array (length N)
+template<class T>
+void rsMinSqrDifFixSum(const std::vector<T>& s, std::vector<T>& v)
+{
+  int N = (int) v.size();
+  RAPT::rsAssert( (int) s.size() == N-1 );
+
+
+  int dummy = 0;
+}
+
+
+bool testMinSqrDifFixSum(std::string &reportString)
+{
+  // Test minimization of the sum of the squares of the differences between adjacent array elements
+  // when their sums are given fixed values.
+  std::string testName = "MinSqrDifFixSum";
+  bool testResult = true;
+
+
+  //std::vector<double> s = { 20, 40, 30, 20, 50 }; // array of desired sums
+  std::vector<double> s = { 20, 40 }; 
+  int N = (int) s.size() + 1;
+  std::vector<double> v(N);
+
+  rsMinSqrDifFixSum(s, v);
+
+
+
+  return testResult;
+}
+
 
 bool testMultiLayerPerceptronOld(std::string &reportString)
 {
