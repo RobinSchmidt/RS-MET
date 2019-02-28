@@ -161,23 +161,17 @@ void rsMinSqrDifFixSum(const std::vector<T>& s, std::vector<T>& v)
   }
   b[Nm-1] = 0;
 
-  // temporaries, because things get messed up in the solver:
-  Vec bt = b; 
-  Vec l2 = d2, l1 = d1, d = d0, u1 = d1, u2 = d2;
+  // use temporaries, because things get messed up in the solver:
+  Vec bt = b, l2 = d2, l1 = d1, d = d0, u1 = d1, u2 = d2;
   Vec x = solvePentaDiagnonalSystem(l2, l1, d, u1, u2, bt);
-
-
-  // aaahhh...i know - we can't use the same array for lower and upper diagonals because they get
-  // messed up in the solver we need separate u1, u2, d, l1, l2 arrays
-
-  // result seems wrong - todo: hand-calculate solution for the case s = { 20, 40 } to figure out, 
-  // where it goes wrong...or maybe use an even simpler case s = { 20 } - we should get 
-  // v = { 10, 10 }
-  // verify result of solver using matrix-vector-multiply (to make sure, the problem is not the 
-  // solver)
 
   // should be equal to b, if the solver is legit:
   Vec b2 = pentaDiagMatVecMul(d2, d1, d0, d1, d2, x);
+
+
+  for(i = 0; i < Nv; i++)
+    v[i] = x[2*i];  // does this alyays work? the last valid index in x should be twice the last 
+                    // valid index in v... try even and odd lengths for v
 
 
   int dummy = 0;
@@ -188,19 +182,25 @@ bool testMinSqrDifFixSum(std::string &reportString)
   // Test minimization of the sum of the squares of the differences between adjacent array elements
   // when their sums are given fixed values.
 
-  // not yet complete
+  // not yet complete - maybe move to experiments
 
   std::string testName = "MinSqrDifFixSum";
   bool testResult = true;
 
 
-  std::vector<double> s = { 20, 30, 40, 50 }; // array of desired sums
+  //std::vector<double> s = { 20, 30, 40, 50 }; // optimal solution: 7.5, 12.5, 17.5, 22.5, 27.5
+  //std::vector<double> s = { 20, 30, 40, 50, 60 }; // seems to give a suboptimal solution - verify
+  std::vector<double> s = { 20, 30, 40, 50, 60, 70 };
   //std::vector<double> s = { 20, 40, 30, 20, 50 }; // array of desired sums
   //std::vector<double> s = { 20, 40 }; 
   int N = (int) s.size() + 1;
   std::vector<double> v(N);
 
   rsMinSqrDifFixSum(s, v);
+
+
+  // maybe when the length of the sum vector s is odd (i.e. length of v is even) we need to do 
+  // something special? the computed solution looks suboptimal
 
 
 

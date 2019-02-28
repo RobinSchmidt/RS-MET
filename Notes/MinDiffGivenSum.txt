@@ -89,6 +89,10 @@ OK - the matrix looks very orderly now and is in fact symmetric. After solving
 the system with a pentadiagonal linear system solver, v1,v2,... can be located 
 at....hmm...the distance between two vn is always 3 (with wraparound) - but is 
 that still true for general N?
+hmmm - it seems to also re-arrange the v1,w1,v2,w2,...vector - in the 
+implementation, the desired values appear in positions 0,2,4,6,8 - that's even 
+better - no complicated index compuation required!
+
 
 here's a nice article on solving pentadiagonal systems:
 
