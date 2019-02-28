@@ -25,7 +25,7 @@ in the production-code versions, and to create reference output for the unit-tes
 code. */
 
 
-/** Solves the pentadiagonal linear system of equations.. */
+/** Solves the pentadiagonal linear system of equations. This messes up the vector b. */
 std::vector<double> solvePentaDiagnonalSystem(
   std::vector<double>& lowerDiag1, std::vector<double>& lowerDiag2,
   std::vector<double>& mainDiag, 

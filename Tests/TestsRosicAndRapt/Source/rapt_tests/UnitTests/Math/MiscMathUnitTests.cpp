@@ -123,6 +123,7 @@ bool testGradientBasedOptimization(std::string &reportString)
 //
 //}
 
+// maybe move this also to prototypes:
 // s: array of desired sums between adjacent array elements (length N-1)
 // v: output array (length N)
 template<class T>
@@ -133,8 +134,10 @@ void rsMinSqrDifFixSum(const std::vector<T>& s, std::vector<T>& v)
   int Nm = Nv + Ns;         // number of linear equations, matrix size
   RAPT::rsAssert( Ns == Nv-1 );
 
+  typedef std::vector<T> Vec;
+
   // establish the diagonals for the matrix:
-  std::vector<T> d0(Nm), d1(Nm-1), d2(Nm-2);
+  Vec d0(Nm), d1(Nm-1), d2(Nm-2);
   int i;
   d0[0] = 2;
   for(i = 1; i < Nm; i += 2) {
@@ -158,13 +161,23 @@ void rsMinSqrDifFixSum(const std::vector<T>& s, std::vector<T>& v)
   }
   b[Nm-1] = 0;
 
-  std::vector<T> x = solvePentaDiagnonalSystem(d2, d1, d0, d1, d2, b);
+  // temporaries, because things get messed up in the solver:
+  Vec bt = b; 
+  Vec l2 = d2, l1 = d1, d = d0, u1 = d1, u2 = d2;
+  Vec x = solvePentaDiagnonalSystem(l2, l1, d, u1, u2, bt);
+
+
+  // aaahhh...i know - we can't use the same array for lower and upper diagonals because they get
+  // messed up in the solver we need separate u1, u2, d, l1, l2 arrays
 
   // result seems wrong - todo: hand-calculate solution for the case s = { 20, 40 } to figure out, 
   // where it goes wrong...or maybe use an even simpler case s = { 20 } - we should get 
   // v = { 10, 10 }
   // verify result of solver using matrix-vector-multiply (to make sure, the problem is not the 
   // solver)
+
+  // should be equal to b, if the solver is legit:
+  Vec b2 = pentaDiagMatVecMul(d2, d1, d0, d1, d2, x);
 
 
   int dummy = 0;
@@ -181,9 +194,9 @@ bool testMinSqrDifFixSum(std::string &reportString)
   bool testResult = true;
 
 
-  //std::vector<double> s = { 20, 40, 30, 20 }; // array of desired sums
+  std::vector<double> s = { 20, 30, 40, 50 }; // array of desired sums
   //std::vector<double> s = { 20, 40, 30, 20, 50 }; // array of desired sums
-  std::vector<double> s = { 20, 40 }; 
+  //std::vector<double> s = { 20, 40 }; 
   int N = (int) s.size() + 1;
   std::vector<double> v(N);
 
