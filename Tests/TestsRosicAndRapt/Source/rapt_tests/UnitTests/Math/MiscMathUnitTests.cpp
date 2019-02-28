@@ -123,8 +123,6 @@ bool testGradientBasedOptimization(std::string &reportString)
 //
 //}
 
-
-
 // s: array of desired sums between adjacent array elements (length N-1)
 // v: output array (length N)
 template<class T>
@@ -160,23 +158,32 @@ void rsMinSqrDifFixSum(const std::vector<T>& s, std::vector<T>& v)
   }
   b[Nm-1] = 0;
 
+  std::vector<T> x = solvePentaDiagnonalSystem(d2, d1, d0, d1, d2, b);
+
+  // result seems wrong - todo: hand-calculate solution for the case s = { 20, 40 } to figure out, 
+  // where it goes wrong...or maybe use an even simpler case s = { 20 } - we should get 
+  // v = { 10, 10 }
+  // verify result of solver using matrix-vector-multiply (to make sure, the problem is not the 
+  // solver)
 
 
   int dummy = 0;
 }
 
-
 bool testMinSqrDifFixSum(std::string &reportString)
 {
   // Test minimization of the sum of the squares of the differences between adjacent array elements
   // when their sums are given fixed values.
+
+  // not yet complete
+
   std::string testName = "MinSqrDifFixSum";
   bool testResult = true;
 
 
-  std::vector<double> s = { 20, 40, 30, 20 }; // array of desired sums
+  //std::vector<double> s = { 20, 40, 30, 20 }; // array of desired sums
   //std::vector<double> s = { 20, 40, 30, 20, 50 }; // array of desired sums
-  //std::vector<double> s = { 20, 40 }; 
+  std::vector<double> s = { 20, 40 }; 
   int N = (int) s.size() + 1;
   std::vector<double> v(N);
 
