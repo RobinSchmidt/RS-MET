@@ -149,6 +149,17 @@ std::vector<T> rsMinSqrDifFixSum(const std::vector<T>& s)
     d2[i+1] =  0; }
   d2[i] = -2;
 
+
+
+  // experimental - error weighting for even number of datapoints / odd number of sums:
+  if(RAPT::rsIsEven(Nv))
+  {
+    //d2[i] /= 2; d2[0] /= 2;
+    d2[i] = d2[0] = 0; // seems like the error at the ends should not count at all - maybe make
+  }                    // that fix optional - or let the user select error-weights
+
+
+
   // establish right-hand side vector:
   std::vector<T> b(Nm);
   int j = 0;
@@ -188,8 +199,8 @@ bool testMinSqrDifFixSum(std::string &reportString)
 
   //s = { 20 };        
   //v = rsMinSqrDifFixSum(s);     // crashes - treat as special case
-  s = { 20, 30 };    
-  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5 - optimal
+  //s = { 20, 30 };    
+  //v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5 - optimal
   s = { 20, 30, 40 };  
   v = rsMinSqrDifFixSum(s);       // 8.33, 11.66, 18.33, 21.66 - suboptimal?
   s = { 20, 30, 40, 50 }; 
@@ -200,11 +211,18 @@ bool testMinSqrDifFixSum(std::string &reportString)
   v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5 - optimal
   return testResult;
 
+
+
   // maybe when the length of the sum vector s is odd (i.e. length of v is even) we need to do 
   // something special? the computed solution looks suboptimal - calculate N=4 case by hand - see,
   // if the matrix looks different - use v1,v2,v3,v4,w1,w2,w3
   // it seems, the longer the vector, the less strong the suboptimality...maybe it sort of averages
   // out for longer vectors...figure out
+
+  // no - for s = { 20, 30, 40 } the result v = { 8.33, 11.66, 18.33, 21.66 } gives indeed a lower
+  // sum-of-squared-differences than for example v = { 7.5, 12.5, 17.5, 22.5 } - so the math works
+  // out correctly. maybe my minimization criterion is not well suited for even N - maybe i should
+  // give the two outermost squared differences less weight (maybe 1/2)
 
 
 }
