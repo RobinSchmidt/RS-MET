@@ -188,21 +188,24 @@ bool testMinSqrDifFixSum(std::string &reportString)
   bool testResult = true;
 
 
-  //std::vector<double> s = { 20, 30, 40, 50 }; // optimal solution: 7.5, 12.5, 17.5, 22.5, 27.5
-  //std::vector<double> s = { 20, 30, 40, 50, 60 }; // seems to give a suboptimal solution - verify
-  std::vector<double> s = { 20, 30, 40, 50, 60, 70 };
-  //std::vector<double> s = { 20, 40, 30, 20, 50 }; // array of desired sums
-  //std::vector<double> s = { 20, 40 }; 
+  std::vector<double> s;
+
+  //s = { 20 };        // crashes - treat as special case
+  //s = { 20, 30 };    // 7.5, 12.5, 17.5 - optimal
+  //s = { 20, 30, 40 };  // 8.33, 11.66, 18.33, 21.66 - suboptimal?
+  //s = { 20, 30, 40, 50 }; // 7.5, 12.5, 17.5, 22.5, 27.5 - optimal
+  //s = { 20, 30, 40, 50, 60 }; // 8, 12, 18, 22, 28, 32 - suboptimal?
+  s = { 20, 30, 40, 50, 60, 70 }; // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5 - optimal
   int N = (int) s.size() + 1;
   std::vector<double> v(N);
 
   rsMinSqrDifFixSum(s, v);
 
-
   // maybe when the length of the sum vector s is odd (i.e. length of v is even) we need to do 
-  // something special? the computed solution looks suboptimal
-
-
+  // something special? the computed solution looks suboptimal - calculate N=4 case by hand - see,
+  // if the matrix looks different - use v1,v2,v3,v4,w1,w2,w3
+  // it seems, the longer the vector, the less strong the suboptimality...maybe it sort of averages
+  // out for longer vectors...figure out
 
   return testResult;
 }
