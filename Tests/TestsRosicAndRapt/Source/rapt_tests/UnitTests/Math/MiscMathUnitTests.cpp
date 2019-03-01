@@ -117,79 +117,14 @@ bool testGradientBasedOptimization(std::string &reportString)
 }
 
 // for production code later use plain c-arrays..
+// N: length of v, v: computed output values, s: desired sums, w: weights for the squared 
+// differences (optional, if not given, all weights are unity)
 //template<class T>
-//void rsMinSqrDifFixSum(const T* s, int N, T* v)
+//void rsMinSqrDifFixSum(int N, T* v, const T* s, const T* w = nullptr)
 //{
 //
 //}
 
-/*
-// maybe move this also to prototypes:
-// s: array of desired sums between adjacent array elements (length N-1)
-// v: output array (length N)
-template<class T>
-std::vector<T> rsMinSqrDifFixSum(const std::vector<T>& s, bool evenWeightFix = false)
-{
-  int Ns = (int) s.size();  // number of sums
-  int Nv = Ns + 1;          // number of values
-  int Nm = Nv + Ns;         // number of linear equations, matrix size
-  typedef std::vector<T> Vec;
-
-  if(Ns == 1) {
-    Vec v(2);
-    v[0] = v[1] = T(0.5)*s[0];
-    return v;
-    // hmm - but what about the error weights in this special case - oh - there is juts one weight
-    // in this case
-  }
-
-  // establish the diagonals for the matrix:
-  Vec d0(Nm), d1(Nm-1), d2(Nm-2);
-  int i;
-  d0[0] = 2;
-  for(i = 1; i < Nm; i += 2) {
-    d0[i]   = 0;
-    d0[i+1] = 4; }
-  d0[Nm-1] = 2;    // could we use index i here, too?
-  for(i = 0; i < Nm-1; i++)
-    d1[i] = 1;
-  for(i = 0; i < Nm-3; i += 2) {
-    d2[i]   = -2;
-    d2[i+1] =  0; }
-  d2[i] = -2;
-
-  // experimental - error weighting for even number of datapoints / odd number of sums:
-  if(evenWeightFix && RAPT::rsIsEven(Nv))
-  {
-    //d2[i] /= 2; d2[0] /= 2;
-    d2[i] = d2[0] = 0; // seems like the error at the ends should not count at all - maybe make
-  }                    // that fix optional - or let the user select error-weights
-
-  // establish right-hand side vector:
-  std::vector<T> b(Nm);
-  int j = 0;
-  for(i = 0; i <= Nm-2; i += 2) {
-    b[i]   = 0;
-    b[i+1] = s[j];
-    j++;
-  }
-  b[Nm-1] = 0;
-
-  // use temporaries, because things get messed up in the solver:
-  Vec bt = b, l2 = d2, l1 = d1, d = d0, u1 = d1, u2 = d2;
-  Vec x = solvePentaDiagnonalSystem(l2, l1, d, u1, u2, bt);
-
-  // should be equal to b, if the solver is legit:
-  Vec b2 = pentaDiagMatVecMul(d2, d1, d0, d1, d2, x);
-
-  Vec v(Nv);
-  for(i = 0; i < Nv; i++)
-    v[i] = x[2*i];  // does this always work? the last valid index in x should be twice the last 
-                    // valid index in v... try even and odd lengths for v
-
-  return v;
-}
-*/
 
 bool testMinSqrDifFixSum(std::string &reportString)
 {
