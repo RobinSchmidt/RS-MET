@@ -136,7 +136,7 @@ bool testMinSqrDifFixSum(std::string &reportString)
   std::string testName = "MinSqrDifFixSum";
   bool testResult = true;
 
-  std::vector<double> s, v, w;
+  std::vector<double> v, s, w; // values, sums and weights
 
 
 
@@ -146,11 +146,8 @@ bool testMinSqrDifFixSum(std::string &reportString)
   s = { 12, 24, 36, 48 };  
   v = rsMinSqrDifFixSum(s);       // 3, 9, 15, 21, 27 -> d = 6
 
-
   w = { 2, 3, 4, 5 };
   v = rsMinSqrDifFixSum(s, w); 
-
-
 
   s = { 20 };        
   v = rsMinSqrDifFixSum(s);       // 10, 10
@@ -192,6 +189,9 @@ bool testMinSqrDifFixSum(std::string &reportString)
   // todo: make production version of the function that includes weights for the squared 
   // differences, maybe make a version that uses the simple penta-solver and one that uses 
   // rsbandDiagonalSolver  - maybe call the simple one "Fast"
+
+  // to figure out, if the results are really correct, verify a couple of cases for small N 
+  // symbolically in sage
 
   // maybe instead of minimizing the squared differences, it may also make sense to minimize the 
   // squared (numeric) 2nd derivative or a mix of the two or the squared difference of the squared

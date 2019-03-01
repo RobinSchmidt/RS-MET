@@ -131,9 +131,9 @@ std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s,
     // modify main diagonal:
     d0[0]    *= w[0];
     d0[Nm-1] *= w[Ns-1];
-    for(i = 1; i < Ns-1; i++)
+    for(i = 1; i < Ns; i++)
       d0[2*i] *= 0.5*(w[i-1]+w[i]);
-    // this seems wrong...verify..
+    // looks ok for N=5 - test with even and odd N
 
     int dummy = 0;
   }
