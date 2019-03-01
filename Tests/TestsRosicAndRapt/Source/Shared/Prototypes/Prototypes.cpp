@@ -96,22 +96,21 @@ std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s,
   int Nm = Nv + Ns;         // number of linear equations, matrix size
   typedef std::vector<double> Vec;
 
+  // handle special case for just one given sum:
   if(Ns == 1) {
     Vec v(2);
     v[0] = v[1] = 0.5*s[0];
     return v;
-    // hmm - but what about the error weights in this special case - oh - there is juts one weight
-    // in this case
   }
 
-  // establish the diagonals for the matrix:
+  // establish the diagonals for the coefficient matrix:
   Vec d0(Nm), d1(Nm-1), d2(Nm-2);
   int i;
   d0[0] = 2;
   for(i = 1; i < Nm; i += 2) {
     d0[i]   = 0;
     d0[i+1] = 4; }
-  d0[Nm-1] = 2;    // could we use index i here, too?
+  d0[Nm-1] = 2;
   for(i = 0; i < Nm-1; i++)
     d1[i] = 1;
   for(i = 0; i < Nm-3; i += 2) {
@@ -133,20 +132,7 @@ std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s,
     d0[Nm-1] *= w[Ns-1];
     for(i = 1; i < Ns; i++)
       d0[2*i] *= 0.5*(w[i-1]+w[i]);
-    // looks ok for N=5 - test with even and odd N
-
-    int dummy = 0;
   }
-
-
-  /*
-  // experimental - error weighting for even number of datapoints / odd number of sums:
-  if(evenWeightFix && RAPT::rsIsEven(Nv))
-  {
-    //d2[i] /= 2; d2[0] /= 2;
-    d2[i] = d2[0] = 0; // seems like the error at the ends should not count at all - maybe make
-  }                    // that fix optional - or let the user select error-weights
-  */
 
   // establish right-hand side vector:
   Vec b(Nm);
@@ -162,13 +148,13 @@ std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s,
   Vec bt = b, l2 = d2, l1 = d1, d = d0, u1 = d1, u2 = d2;
   Vec x = solvePentaDiagnonalSystem(l2, l1, d, u1, u2, bt);
 
-  // should be equal to b, if the solver is legit:
+  // verification - b2 should be equal to b, if the solver is legit:
   Vec b2 = pentaDiagMatVecMul(d2, d1, d0, d1, d2, x);
 
+  // extract output array v (in x, the outputs are interleaved with the Lagrange multipliers):
   Vec v(Nv);
   for(i = 0; i < Nv; i++)
-    v[i] = x[2*i];  // does this always work? the last valid index in x should be twice the last 
-                    // valid index in v... try even and odd lengths for v
+    v[i] = x[2*i];
 
   return v;
 }
