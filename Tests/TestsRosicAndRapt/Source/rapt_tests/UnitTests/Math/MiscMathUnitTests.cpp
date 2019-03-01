@@ -141,13 +141,21 @@ bool testMinSqrDifFixSum(std::string &reportString)
 
 
   s = { 12, 24, 36 };  
-  v = rsMinSqrDifFixSum(s);       // 4, 8, 16, 20 -> d = 4
+  v = rsMinSqrDifFixSum(s);       // v = 4, 8, 16, 20, d = 4,4,4
 
   s = { 12, 24, 36, 48 };  
-  v = rsMinSqrDifFixSum(s);       // 3, 9, 15, 21, 27 -> d = 6
+  v = rsMinSqrDifFixSum(s);       // v = 3, 9, 15, 21, 27, d = 6,6,6,6
 
   w = { 2, 3, 4, 5 };
   v = rsMinSqrDifFixSum(s, w); 
+
+  s = { 12, 24, 36, 48, 60 };  
+  w = {  2,  3,  4,  5,  6 };
+  v = rsMinSqrDifFixSum(s, w);   
+  // 3.6, 8.4, 15.6, 20.4, 27.6, 32.4 -> d = 4.8, 7.2, 4.8, 7.2, 4.8 -> ?
+  // the result seems wrong - the increasing weights should make the differences between adjacent
+  // elements go down for later values...instead, they alternate - wtf?
+
 
   s = { 20 };        
   v = rsMinSqrDifFixSum(s);       // 10, 10
