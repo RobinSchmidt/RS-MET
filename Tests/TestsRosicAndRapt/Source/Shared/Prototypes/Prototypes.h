@@ -48,6 +48,13 @@ std::vector<double> pentaDiagMatVecMul(
   std::vector<double>& upperDiag1, std::vector<double>& upperDiag2,
   std::vector<double>& input);
 
+/** Minimizes the sum of squared differences between adjacent array elements under the constraint 
+that the sums of adjacent array elements must be equal to given values. The input array s is the 
+length N-1 array of the desired sums, the output array v is the length N data-array, such that
+v[i] + v[i+1] = s[i] and sum_i (v[i+1] - v[i])^2 = min. The boolean evenWeightFix is experimental,
+see code.. */
+std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s, bool evenWeightFix = false);
+
 
 
 /** Prototype for rsResampler::signalValueViaSincAt(). It provides as additional parameters for 

@@ -123,6 +123,7 @@ bool testGradientBasedOptimization(std::string &reportString)
 //
 //}
 
+/*
 // maybe move this also to prototypes:
 // s: array of desired sums between adjacent array elements (length N-1)
 // v: output array (length N)
@@ -133,6 +134,14 @@ std::vector<T> rsMinSqrDifFixSum(const std::vector<T>& s, bool evenWeightFix = f
   int Nv = Ns + 1;          // number of values
   int Nm = Nv + Ns;         // number of linear equations, matrix size
   typedef std::vector<T> Vec;
+
+  if(Ns == 1) {
+    Vec v(2);
+    v[0] = v[1] = T(0.5)*s[0];
+    return v;
+    // hmm - but what about the error weights in this special case - oh - there is juts one weight
+    // in this case
+  }
 
   // establish the diagonals for the matrix:
   Vec d0(Nm), d1(Nm-1), d2(Nm-2);
@@ -180,6 +189,7 @@ std::vector<T> rsMinSqrDifFixSum(const std::vector<T>& s, bool evenWeightFix = f
 
   return v;
 }
+*/
 
 bool testMinSqrDifFixSum(std::string &reportString)
 {
@@ -193,9 +203,17 @@ bool testMinSqrDifFixSum(std::string &reportString)
 
   std::vector<double> s, v;
 
-  //s = { 20 };        
-  //v = rsMinSqrDifFixSum(s);     // crashes - treat as special case
-  //s = { 20, 30 };    
+
+
+  s = { 12, 24, 36 };  
+  v = rsMinSqrDifFixSum(s);       // 4, 8, 16, 20 -> d = 4
+
+  s = { 12, 24, 36, 48 };  
+  v = rsMinSqrDifFixSum(s);       // 3, 9, 15, 21, 27 -> d = 6
+
+  s = { 20 };        
+  v = rsMinSqrDifFixSum(s);       // 10, 10
+  s = { 20, 30 };    
   v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5
   s = { 20, 30, 40 };  
   v = rsMinSqrDifFixSum(s);       // 8.33, 11.66, 18.33, 21.66
@@ -230,6 +248,13 @@ bool testMinSqrDifFixSum(std::string &reportString)
   // frequency-estimation problem, hard constraints are actually appropriate - but maybe for other
   // problems...wait...that makes the whole thing nonlinear - so screw it
 
+  // todo: make production version of the function that includes weights for the squared 
+  // differences, maybe make a version that uses the simple penta-solver and one that uses 
+  // rsbandDiagonalSolver  - maybe call the simple one "Fast"
+
+  // maybe instead of minimizing the squared differences, it may also make sense to minimize the 
+  // squared (numeric) 2nd derivative or a mix of the two or the squared difference of the squared
+  // difference
 
 }
 
