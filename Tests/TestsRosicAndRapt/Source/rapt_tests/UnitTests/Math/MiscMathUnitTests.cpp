@@ -195,9 +195,15 @@ bool testMinSqrDifFixSum(std::string &reportString)
   c = sqrdDifSum(v);
   // v = 3.6, 8.4, 15.6, 20.4, 27.6, 32.4 -> d = 4.8, 7.2, 4.8, 7.2, 4.8 -> ?
   // the result seems wrong - the increasing weights should make the differences between adjacent
-  // elements go down for later values...instead, they alternate - wtf?
-
-
+  // elements go down for later values...instead, they alternate - wtf? ..hmm...or could it be that
+  // the weights are indeed without effect, if the given sums are just linearly increasing?
+  // the same problem with unit weights:
+  v = rsMinSqrDifFixSum(s);
+  t = adjacentSums(v);
+  d = adjacentDifs(v);
+  c = sqrdDifSum(v);
+  // gives the same result indeed...i think i really need to move that over to the experiments 
+  // section and create a sage notebook that obtains some analytic solutions
 
 
   s = { 20 };        
@@ -246,8 +252,9 @@ bool testMinSqrDifFixSum(std::string &reportString)
 
   // maybe instead of minimizing the squared differences, it may also make sense to minimize the 
   // squared (numeric) 2nd derivative or a mix of the two or the squared difference of the squared
-  // difference
-
+  // difference - maybe it's worth to experiment with such more elaborate cost functions - using
+  // the 2nd derivative would (i think) allow zero cost for linearly increasing (or decreasing) 
+  // sums. the same framework/solver can be used, just the matrix would look different
 }
 
 
