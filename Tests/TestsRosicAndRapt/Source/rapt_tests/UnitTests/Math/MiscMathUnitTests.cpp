@@ -125,6 +125,43 @@ bool testGradientBasedOptimization(std::string &reportString)
 //
 //}
 
+// output array contains sums of adjacent elements of input array
+std::vector<double> adjacentSums(const std::vector<double>& v)
+{
+  int N = (int)v.size();
+  std::vector<double> s(N-1);
+  for(int i = 0; i < N-1; i++)
+    s[i] = v[i] + v[i+1];
+  return s;
+}
+
+// output array contains differences of adjacent elements of input array
+std::vector<double> adjacentDifs(const std::vector<double>& v)
+{
+  int N = (int)v.size();
+  std::vector<double> d(N-1);
+  for(int i = 0; i < N-1; i++)
+    d[i] = v[i+1] - v[i];
+  return d;
+}
+
+// (optionally weighted) sum of squared differences
+double sqrdDifSum(
+  const std::vector<double>& v, 
+  const std::vector<double>& w = std::vector<double>() )
+{
+  std::vector<double> d = adjacentDifs(v);
+  double r = 0;
+  if(w.empty()) {
+    for(size_t i = 0; i < d.size(); i++)
+      r += d[i]*d[i];
+    return r;
+  }
+  RAPT::rsAssert(d.size() == w.size());
+  for(size_t i = 0; i < d.size(); i++)
+    r += w[i]*d[i]*d[i];
+  return r;
+}
 
 bool testMinSqrDifFixSum(std::string &reportString)
 {
@@ -137,8 +174,8 @@ bool testMinSqrDifFixSum(std::string &reportString)
   bool testResult = true;
 
   std::vector<double> v, s, w; // values, sums and weights
-
-
+  std::vector<double> t, d;    // adjacent sums and differences for verification
+  double c;                    // cost as computed by cost function
 
   s = { 12, 24, 36 };  
   v = rsMinSqrDifFixSum(s);       // v = 4, 8, 16, 20, d = 4,4,4
@@ -149,12 +186,18 @@ bool testMinSqrDifFixSum(std::string &reportString)
   w = { 2, 3, 4, 5 };
   v = rsMinSqrDifFixSum(s, w); 
 
-  s = { 12, 24, 36, 48, 60 };  
+
+  s = { 12, 24, 36, 48, 60 };
   w = {  2,  3,  4,  5,  6 };
-  v = rsMinSqrDifFixSum(s, w);   
-  // 3.6, 8.4, 15.6, 20.4, 27.6, 32.4 -> d = 4.8, 7.2, 4.8, 7.2, 4.8 -> ?
+  v = rsMinSqrDifFixSum(s, w);
+  t = adjacentSums(v);
+  d = adjacentDifs(v);
+  c = sqrdDifSum(v);
+  // v = 3.6, 8.4, 15.6, 20.4, 27.6, 32.4 -> d = 4.8, 7.2, 4.8, 7.2, 4.8 -> ?
   // the result seems wrong - the increasing weights should make the differences between adjacent
   // elements go down for later values...instead, they alternate - wtf?
+
+
 
 
   s = { 20 };        
