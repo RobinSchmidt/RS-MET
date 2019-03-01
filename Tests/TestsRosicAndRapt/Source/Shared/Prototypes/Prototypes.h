@@ -53,7 +53,10 @@ that the sums of adjacent array elements must be equal to given values. The inpu
 length N-1 array of the desired sums, the output array v is the length N data-array, such that
 v[i] + v[i+1] = s[i] and sum_i (v[i+1] - v[i])^2 = min. The boolean evenWeightFix is experimental,
 see code.. */
-std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s, bool evenWeightFix = false);
+//std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s, bool evenWeightFix = false);
+std::vector<double> rsMinSqrDifFixSum(
+  const std::vector<double>& s, 
+  const std::vector<double>& w = std::vector<double>() );
 
 
 

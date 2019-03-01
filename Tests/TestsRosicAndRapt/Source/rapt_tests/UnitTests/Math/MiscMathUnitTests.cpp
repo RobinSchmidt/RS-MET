@@ -136,7 +136,7 @@ bool testMinSqrDifFixSum(std::string &reportString)
   std::string testName = "MinSqrDifFixSum";
   bool testResult = true;
 
-  std::vector<double> s, v;
+  std::vector<double> s, v, w;
 
 
 
@@ -145,6 +145,12 @@ bool testMinSqrDifFixSum(std::string &reportString)
 
   s = { 12, 24, 36, 48 };  
   v = rsMinSqrDifFixSum(s);       // 3, 9, 15, 21, 27 -> d = 6
+
+
+  w = { 2, 3, 4, 5 };
+  v = rsMinSqrDifFixSum(s, w); 
+
+
 
   s = { 20 };        
   v = rsMinSqrDifFixSum(s);       // 10, 10

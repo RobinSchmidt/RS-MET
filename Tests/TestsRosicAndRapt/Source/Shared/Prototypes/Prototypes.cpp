@@ -88,7 +88,8 @@ std::vector<double> pentaDiagMatVecMul(
   return c;
 }
 
-std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s, bool evenWeightFix)
+std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s, 
+  const std::vector<double>& w)
 {
   int Ns = (int) s.size();  // number of sums
   int Nv = Ns + 1;          // number of values
@@ -118,12 +119,34 @@ std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s, bool evenWei
     d2[i+1] =  0; }
   d2[i] = -2;
 
+  // apply error weights, if desired:
+  if(!w.empty())
+  {
+    rsAssert((int)w.size() == Ns); // weight-vector, if given, must have same size as sum-vector
+
+    // modify outer sub- and superdiagonal:
+    for(i = 0; i < Ns; i++)
+      d2[2*i] *= w[i];
+
+    // modify main diagonal:
+    d0[0]    *= w[0];
+    d0[Nm-1] *= w[Ns-1];
+    for(i = 1; i < Ns-1; i++)
+      d0[2*i] *= 0.5*(w[i-1]+w[i]);
+    // this seems wrong...verify..
+
+    int dummy = 0;
+  }
+
+
+  /*
   // experimental - error weighting for even number of datapoints / odd number of sums:
   if(evenWeightFix && RAPT::rsIsEven(Nv))
   {
     //d2[i] /= 2; d2[0] /= 2;
     d2[i] = d2[0] = 0; // seems like the error at the ends should not count at all - maybe make
   }                    // that fix optional - or let the user select error-weights
+  */
 
   // establish right-hand side vector:
   Vec b(Nm);
