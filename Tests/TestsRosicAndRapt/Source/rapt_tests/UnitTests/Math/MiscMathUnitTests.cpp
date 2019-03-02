@@ -173,6 +173,9 @@ bool testMinSqrDifFixSum(std::string &reportString)
   std::string testName = "MinSqrDifFixSum";
   bool testResult = true;
 
+
+
+
   std::vector<double> v, s, w; // values, sums and weights
   std::vector<double> t, d;    // adjacent sums and differences for verification
   double c;                    // cost as computed by cost function

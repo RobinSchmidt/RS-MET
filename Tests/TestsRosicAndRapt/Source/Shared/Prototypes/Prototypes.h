@@ -35,7 +35,7 @@ array for lowerDiag1 and upperDiag1, even if your matrix is symmetric.
 ..What about lowerDiag2/upperDiag2? are these preserved and may these point to the same vector? 
 It's probably safest to assume that everything may get messed up and all arrays should be 
 distinct. */
-std::vector<double> solvePentaDiagnonalSystem(
+std::vector<double> solvePentaDiagonalSystem(
   std::vector<double>& lowerDiag2, std::vector<double>& lowerDiag1,
   std::vector<double>& mainDiag, 
   std::vector<double>& upperDiag1, std::vector<double>& upperDiag2,

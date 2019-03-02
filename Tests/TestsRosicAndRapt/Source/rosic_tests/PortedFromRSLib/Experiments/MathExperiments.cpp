@@ -212,7 +212,7 @@ void pentaDiagnonalMatrix2()
   Vec D=d, U=u, V=v, L=l, M=m, B=b;
 
   // solve the system by Gaussian elimination (without pivoting) and backsubstitution:
-  Vec x = solvePentaDiagnonalSystem(M, L, D, U, V, B);
+  Vec x = solvePentaDiagonalSystem(M, L, D, U, V, B);
 
   // verify the result by multiplying the original pentadiagonal matrix with the found 
   // solution vector:
@@ -225,6 +225,17 @@ void pentaDiagnonalMatrix2()
   // maybe convert into a regular (non-diagonal) NxN matrix and use the regular Gaussian 
   // elminination solver for comparison - to figure out, if it's worth to implement pivoting for
   // freq-estimation
+
+  int dummy = 0;
+}
+
+
+
+
+
+
+void minSqrdDifsForFixSums()
+{
 
   int dummy = 0;
 }

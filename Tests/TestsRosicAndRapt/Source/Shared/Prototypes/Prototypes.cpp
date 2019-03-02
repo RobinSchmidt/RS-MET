@@ -15,7 +15,7 @@
 
 using namespace RAPT;
 
-std::vector<double> solvePentaDiagnonalSystem(
+std::vector<double> solvePentaDiagonalSystem(
   std::vector<double>& M, std::vector<double>& L,
   std::vector<double>& D,
   std::vector<double>& U, std::vector<double>& V,
@@ -146,7 +146,7 @@ std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s,
 
   // use temporaries, because things get messed up in the solver:
   Vec bt = b, l2 = d2, l1 = d1, d = d0, u1 = d1, u2 = d2;
-  Vec x = solvePentaDiagnonalSystem(l2, l1, d, u1, u2, bt);
+  Vec x = solvePentaDiagonalSystem(l2, l1, d, u1, u2, bt);
 
   // verification - b2 should be equal to b, if the solver is legit:
   Vec b2 = pentaDiagMatVecMul(d2, d1, d0, d1, d2, x);
