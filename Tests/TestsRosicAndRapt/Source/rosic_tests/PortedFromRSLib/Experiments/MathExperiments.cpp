@@ -318,27 +318,54 @@ void minSqrdDifsForFixSums()
 
 
   s = { 20 };        
-  v = rsMinSqrDifFixSum(s);       // v = 10, 10; d = 0
+  v = rsMinSqrDifFixSum(s);       // v = 10, 10
+  d = adjacentDifs(v);            // d =  0
+
   s = { 20, 30 };    
-  v = rsMinSqrDifFixSum(s);       // v = 7.5, 12.5, 17.5; d = 5,5,5
+  v = rsMinSqrDifFixSum(s);       // v = 7.5, 12.5, 17.5
+  d = adjacentDifs(v);            // d = 5,    5
+
   s = { 20, 30, 40 };  
   v = rsMinSqrDifFixSum(s);       // 8.33, 11.66, 18.33, 21.66
+  d = adjacentDifs(v);
+
   s = { 20, 30, 40, 50 }; 
   v = rsMinSqrDifFixSum(s);       // v = 7.5, 12.5, 17.5, 22.5, 27.5; d = 5,5,5,5
+  d = adjacentDifs(v);
+
   s = { 20, 30, 40, 50, 60 }; 
   v = rsMinSqrDifFixSum(s);       // v = 8, 12, 18, 22, 28, 32, d = 4,6,4,6,4
+  d = adjacentDifs(v);
+
   s = { 20, 30, 40, 50, 60, 70 }; 
   v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5
+  d = adjacentDifs(v);
+
   s = { 20, 30, 40, 50, 60, 70, 80 }; 
   v = rsMinSqrDifFixSum(s);       // 7.86, 12.14, 17.86, 22.14, 27.86, 32.14, 37.86, 42.14
+  d = adjacentDifs(v);            // 4.29,  5.71, ..
 
   int dummy = 0;
 
   // Observations:
-  // maybe when the length of the sum vector s is odd (i.e. length of v is even) we need to do 
-  // something special? the computed solution looks suboptimal - calculate N=4 case by hand - see,
-  // if the matrix looks different - use v1,v2,v3,v4,w1,w2,w3
-  // it seems, the longer the vector, the less strong the suboptimality...maybe it sort of averages
+
+  // -When the sums are limearly increasing (like: s = 20, 30, 40, 50, ... ): 
+  //  -when N (length of v) is odd (and length of s is even), we get a constant value for 
+  //   differences between adjacent values
+  //  -when N is even, the differences alternate
+  //  -this alternation seems counterintuitive but gives indeed the smallest sum-of-squares of the
+  //   differences - but it actually seems less deisrable than a constant value
+  //  -it can be fixed, by giving the first and last difference zero weight...but that seems
+  //   a quite dirty thing to do
+
+  // -When s = 12, 24, 36, 48, 60; w = 2, 3, 4, 5, 6, we get the same results with and without
+  //  weights - that's somewhat unexpected, too...figure out...
+
+
+
+  // when the length of the sum vector s is odd (i.e. length of v is even) w, the computed 
+  // solution looks suboptimal - calculate N=4 case by hand - see, if the matrix looks 
+  // different - use v1,v2,v3,v4,w1,w2,w3 it seems, the longer the vector, the less strong the suboptimality...maybe it sort of averages
   // out for longer vectors...figure out
 
   // no - for s = { 20, 30, 40 } the result v = { 8.33, 11.66, 18.33, 21.66 } gives indeed a lower
