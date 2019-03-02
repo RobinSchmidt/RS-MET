@@ -336,6 +336,14 @@ void minSqrdDifsForFixSums()
   s = { 20, 30, 40, 50, 60 }; 
   v = rsMinSqrDifFixSum(s);       // v = 8, 12, 18, 22, 28, 32, d = 4,6,4,6,4
   d = adjacentDifs(v);
+  // with zero weights at the ends:
+  w = { 0, 1, 1, 1, 0 }; 
+  v = rsMinSqrDifFixSum(s, w);    // NaN!!!! 
+  d = adjacentDifs(v);
+  w = { 0.5, 1, 1, 1, 0.5 }; 
+  v = rsMinSqrDifFixSum(s, w);   // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5
+  d = adjacentDifs(v);           // 5,    5,    5,    5,    5,    5
+
 
   s = { 20, 30, 40, 50, 60, 70 }; 
   v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5
@@ -354,9 +362,10 @@ void minSqrdDifsForFixSums()
   //   differences between adjacent values
   //  -when N is even, the differences alternate
   //  -this alternation seems counterintuitive but gives indeed the smallest sum-of-squares of the
-  //   differences - but it actually seems less deisrable than a constant value
-  //  -it can be fixed, by giving the first and last difference zero weight...but that seems
-  //   a quite dirty thing to do
+  //   differences - but it actually seems less desirable than a constant value
+  //  -it can be fixed, by giving the first and last difference a weight of 1/2
+  //  -...maybe we should automatically apply an (additional) weight of 1/2 to the end-values
+  //   when N is even?
 
   // -When s = 12, 24, 36, 48, 60; w = 2, 3, 4, 5, 6, we get the same results with and without
   //  weights - that's somewhat unexpected, too...figure out...
