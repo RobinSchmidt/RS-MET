@@ -286,44 +286,47 @@ void minSqrdDifsForFixSums()
   double c;                    // cost as computed by cost function
 
   s = { 12, 24, 36 };  
-  v = rsMinSqrDifFixSum(s);       // v = 4, 8, 16, 20, d = 4,4,4
+  v = rsMinSqrDifFixSum(s);       // v = 4, 8, 16, 20 
+  d = adjacentDifs(v);            // d = 4, 8, 4
 
   s = { 12, 24, 36, 48 };  
-  v = rsMinSqrDifFixSum(s);       // v = 3, 9, 15, 21, 27, d = 6,6,6,6
-
+  v = rsMinSqrDifFixSum(s);       // v = 3, 9, 15, 21, 27
+  d = adjacentDifs(v);            // d = 6, 6,  6,  6
+  // with weights:
   w = { 2, 3, 4, 5 };
-  v = rsMinSqrDifFixSum(s, w); 
+  v = rsMinSqrDifFixSum(s, w);   // v = 2.57, 9.43, 14.57, 21.43, 26.57
+  d = adjacentDifs(v);           // d = 6.86, 5.14,  6.86,  5.14
 
 
   s = { 12, 24, 36, 48, 60 };
   w = {  2,  3,  4,  5,  6 };
-  v = rsMinSqrDifFixSum(s, w);
+  v = rsMinSqrDifFixSum(s, w);   // 3.6, 8.4, 15.6, 20.4, 27.6, 32.4
+  d = adjacentDifs(v);           // 4.8, 7.2,  4.8,  7.2,  4.8
   t = adjacentSums(v);
-  d = adjacentDifs(v);
   c = sqrdDifSum(v);
   // v = 3.6, 8.4, 15.6, 20.4, 27.6, 32.4 -> d = 4.8, 7.2, 4.8, 7.2, 4.8 -> ?
   // the result seems wrong - the increasing weights should make the differences between adjacent
   // elements go down for later values...instead, they alternate - wtf? ..hmm...or could it be that
   // the weights are indeed without effect, if the given sums are just linearly increasing?
   // the same problem with unit weights:
-  v = rsMinSqrDifFixSum(s);
+  v = rsMinSqrDifFixSum(s);      // 3.6, 8.4, 15.6, 20.4, 27.6, 32.4
+  d = adjacentDifs(v);           // 4.8, 7.2,  4.8,  7.2,  4.8
   t = adjacentSums(v);
-  d = adjacentDifs(v);
   c = sqrdDifSum(v);
   // gives the same result indeed...i think i really need to move that over to the experiments 
   // section and create a sage notebook that obtains some analytic solutions
 
 
   s = { 20 };        
-  v = rsMinSqrDifFixSum(s);       // 10, 10
+  v = rsMinSqrDifFixSum(s);       // v = 10, 10; d = 0
   s = { 20, 30 };    
-  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5
+  v = rsMinSqrDifFixSum(s);       // v = 7.5, 12.5, 17.5; d = 5,5,5
   s = { 20, 30, 40 };  
   v = rsMinSqrDifFixSum(s);       // 8.33, 11.66, 18.33, 21.66
   s = { 20, 30, 40, 50 }; 
-  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5
+  v = rsMinSqrDifFixSum(s);       // v = 7.5, 12.5, 17.5, 22.5, 27.5; d = 5,5,5,5
   s = { 20, 30, 40, 50, 60 }; 
-  v = rsMinSqrDifFixSum(s);       // 8, 12, 18, 22, 28, 32
+  v = rsMinSqrDifFixSum(s);       // v = 8, 12, 18, 22, 28, 32, d = 4,6,4,6,4
   s = { 20, 30, 40, 50, 60, 70 }; 
   v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5
   s = { 20, 30, 40, 50, 60, 70, 80 }; 
