@@ -80,6 +80,10 @@ void pentaDiagnonalMatrix()
   // The algorithm is based on the paper "On Solving Pentadiagonal Linear Systems via 
   // Transformations" by KARAWIA, see here: https://arxiv.org/pdf/1409.4802.pdf
 
+  // this is actually obsolete now - there are apparent errors in the paper and i've given up on
+  // hunting for less apparent ones or bugs in my code and instead derived an algorithm for 
+  // pentadiagonal systems myself - it's implemented in solvePentaDiagonalSystem
+
   static const int N = 10; // we use the 10x10 matrix in section 4 of the paper
   double d[10] = { 1,2,3,-4,5,6,7,-1,1,8 };       // main diagonal
   double a[9]  = { 2,2,1,5,-7,3,-1,4,5 };         // 1st superdiagonal
@@ -229,17 +233,137 @@ void pentaDiagnonalMatrix2()
   int dummy = 0;
 }
 
-
-
-
-
-
+// for production code later use plain c-arrays..
+// N: length of v, v: computed output values, s: desired sums, w: weights for the squared 
+// differences (optional, if not given, all weights are unity)
+//template<class T>
+//void rsMinSqrDifFixSum(int N, T* v, const T* s, const T* w = nullptr)
+//{
+//
+//}
+// output array contains sums of adjacent elements of input array
+std::vector<double> adjacentSums(const std::vector<double>& v)
+{
+  int N = (int)v.size();
+  std::vector<double> s(N-1);
+  for(int i = 0; i < N-1; i++)
+    s[i] = v[i] + v[i+1];
+  return s;
+}
+// output array contains differences of adjacent elements of input array
+std::vector<double> adjacentDifs(const std::vector<double>& v)
+{
+  int N = (int)v.size();
+  std::vector<double> d(N-1);
+  for(int i = 0; i < N-1; i++)
+    d[i] = v[i+1] - v[i];
+  return d;
+}
+// (optionally weighted) sum of squared differences
+double sqrdDifSum(
+  const std::vector<double>& v, 
+  const std::vector<double>& w = std::vector<double>() )
+{
+  std::vector<double> d = adjacentDifs(v);
+  double r = 0;
+  if(w.empty()) {
+    for(size_t i = 0; i < d.size(); i++)
+      r += d[i]*d[i];
+    return r;
+  }
+  RAPT::rsAssert(d.size() == w.size());
+  for(size_t i = 0; i < d.size(); i++)
+    r += w[i]*d[i]*d[i];
+  return r;
+}
 void minSqrdDifsForFixSums()
 {
+  // Test minimization of the sum of the squares of the differences between adjacent array elements
+  // when their sums are given fixed values.
+
+  std::vector<double> v, s, w; // values, sums and weights
+  std::vector<double> t, d;    // adjacent sums and differences for verification
+  double c;                    // cost as computed by cost function
+
+  s = { 12, 24, 36 };  
+  v = rsMinSqrDifFixSum(s);       // v = 4, 8, 16, 20, d = 4,4,4
+
+  s = { 12, 24, 36, 48 };  
+  v = rsMinSqrDifFixSum(s);       // v = 3, 9, 15, 21, 27, d = 6,6,6,6
+
+  w = { 2, 3, 4, 5 };
+  v = rsMinSqrDifFixSum(s, w); 
+
+
+  s = { 12, 24, 36, 48, 60 };
+  w = {  2,  3,  4,  5,  6 };
+  v = rsMinSqrDifFixSum(s, w);
+  t = adjacentSums(v);
+  d = adjacentDifs(v);
+  c = sqrdDifSum(v);
+  // v = 3.6, 8.4, 15.6, 20.4, 27.6, 32.4 -> d = 4.8, 7.2, 4.8, 7.2, 4.8 -> ?
+  // the result seems wrong - the increasing weights should make the differences between adjacent
+  // elements go down for later values...instead, they alternate - wtf? ..hmm...or could it be that
+  // the weights are indeed without effect, if the given sums are just linearly increasing?
+  // the same problem with unit weights:
+  v = rsMinSqrDifFixSum(s);
+  t = adjacentSums(v);
+  d = adjacentDifs(v);
+  c = sqrdDifSum(v);
+  // gives the same result indeed...i think i really need to move that over to the experiments 
+  // section and create a sage notebook that obtains some analytic solutions
+
+
+  s = { 20 };        
+  v = rsMinSqrDifFixSum(s);       // 10, 10
+  s = { 20, 30 };    
+  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5
+  s = { 20, 30, 40 };  
+  v = rsMinSqrDifFixSum(s);       // 8.33, 11.66, 18.33, 21.66
+  s = { 20, 30, 40, 50 }; 
+  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5
+  s = { 20, 30, 40, 50, 60 }; 
+  v = rsMinSqrDifFixSum(s);       // 8, 12, 18, 22, 28, 32
+  s = { 20, 30, 40, 50, 60, 70 }; 
+  v = rsMinSqrDifFixSum(s);       // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5
+  s = { 20, 30, 40, 50, 60, 70, 80 }; 
+  v = rsMinSqrDifFixSum(s);       // 7.86, 12.14, 17.86, 22.14, 27.86, 32.14, 37.86, 42.14
 
   int dummy = 0;
-}
 
+  // Observations:
+  // maybe when the length of the sum vector s is odd (i.e. length of v is even) we need to do 
+  // something special? the computed solution looks suboptimal - calculate N=4 case by hand - see,
+  // if the matrix looks different - use v1,v2,v3,v4,w1,w2,w3
+  // it seems, the longer the vector, the less strong the suboptimality...maybe it sort of averages
+  // out for longer vectors...figure out
+
+  // no - for s = { 20, 30, 40 } the result v = { 8.33, 11.66, 18.33, 21.66 } gives indeed a lower
+  // sum-of-squared-differences than for example v = { 7.5, 12.5, 17.5, 22.5 } - so the math works
+  // out correctly. maybe my minimization criterion is not well suited for even N - maybe i should
+  // give the two outermost squared differences less weight (maybe 1/2)
+
+  // probably the best and most flexible way to deal with this is to give the user the option to 
+  // apply a weight to each squared difference - we will need that anyway for the freq-estimation.
+  // is there a meaningful way to apply weights to the constraints as well? or rather some sort of
+  // slack-variables maybe instead of requiring the hard constraint 
+  // v1 + v2 = s1 -> v1 + v2 - s1 = 0, require k * (v1 + v2 - s1)^2 = min ...but i think, for the 
+  // frequency-estimation problem, hard constraints are actually appropriate - but maybe for other
+  // problems...wait...that makes the whole thing nonlinear - so screw it
+
+  // todo: make production version of the function that includes weights for the squared 
+  // differences, maybe make a version that uses the simple penta-solver and one that uses 
+  // rsbandDiagonalSolver  - maybe call the simple one "Fast"
+
+  // to figure out, if the results are really correct, verify a couple of cases for small N 
+  // symbolically in sage
+
+  // maybe instead of minimizing the squared differences, it may also make sense to minimize the 
+  // squared (numeric) 2nd derivative or a mix of the two or the squared difference of the squared
+  // difference - maybe it's worth to experiment with such more elaborate cost functions - using
+  // the 2nd derivative would (i think) allow zero cost for linearly increasing (or decreasing) 
+  // sums. the same framework/solver can be used, just the matrix would look different
+}
 
 void binomialDistribution()
 {
