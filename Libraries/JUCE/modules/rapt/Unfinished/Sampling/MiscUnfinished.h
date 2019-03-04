@@ -1005,6 +1005,7 @@ void rsRecreateSineWithPhaseCatch(T *x, T *y, int N, T fx, T fy, T fs, T p0, T p
 a recursive moving average box filter for efficient implementation. */
 template<class T>
 T getMaxShortTimeRMS(T* x, int N, int averagingLength);
+// rename to rsMaxShortTimeRMS
 
 
 #endif

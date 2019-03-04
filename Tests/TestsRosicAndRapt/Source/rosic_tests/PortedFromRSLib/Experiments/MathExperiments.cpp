@@ -338,7 +338,7 @@ void minSqrdDifsForFixSums()
   d = adjacentDifs(v);
   // with zero weights at the ends:
   w = { 0, 1, 1, 1, 0 }; 
-  v = rsMinSqrDifFixSum(s, w);    // NaN!!!! 
+  v = rsMinSqrDifFixSum(s, w);    // NaN!!!! maybe div-by zero due to lack of pivot-search
   d = adjacentDifs(v);
   w = { 0.5, 1, 1, 1, 0.5 }; 
   v = rsMinSqrDifFixSum(s, w);   // 7.5, 12.5, 17.5, 22.5, 27.5, 32.5
@@ -370,9 +370,14 @@ void minSqrdDifsForFixSums()
   // -When s = 12, 24, 36, 48, 60; w = 2, 3, 4, 5, 6, we get the same results with and without
   //  weights - that's somewhat unexpected, too...figure out...
 
+  // -may it have something to do with the total sum of weights and/or the total sum of 
+  //  neighbour-sums and/or its relationship to the total sum of values?
+  // -maybe derive an "anti-alternation" filter from that: just obtain the neighbour sums from an
+  //  original array of values and create the output with the algo from that obtained neigbour-sum
+  //  signal
 
 
-  // when the length of the sum vector s is odd (i.e. length of v is even) w, the computed 
+  // when the length of the sum vector s is odd (i.e. length of v is even), the computed 
   // solution looks suboptimal - calculate N=4 case by hand - see, if the matrix looks 
   // different - use v1,v2,v3,v4,w1,w2,w3 it seems, the longer the vector, the less strong the suboptimality...maybe it sort of averages
   // out for longer vectors...figure out
@@ -392,7 +397,7 @@ void minSqrdDifsForFixSums()
 
   // todo: make production version of the function that includes weights for the squared 
   // differences, maybe make a version that uses the simple penta-solver and one that uses 
-  // rsbandDiagonalSolver  - maybe call the simple one "Fast"
+  // rsBandDiagonalSolver  - maybe call the simple one "Fast"
 
   // to figure out, if the results are really correct, verify a couple of cases for small N 
   // symbolically in sage

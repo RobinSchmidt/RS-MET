@@ -21,6 +21,8 @@ void envelopeFollower();
 void instantaneousFrequency();
 void instantaneousPhase();
 
+void maxShortTimeRMS();
+
 void zeroCrossingFinder();
 void zeroCrossingFinder2();
 void zeroCrossingFinder3();

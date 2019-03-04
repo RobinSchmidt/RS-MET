@@ -656,6 +656,13 @@ void instantaneousPhase()
   int dummy = 0;
 }
 
+void maxShortTimeRMS()
+{
+  int N = 1000;
+  std::vector<double> x = createSineWave(N, 1000.0, 48000.0);
+  double maxRms = RAPT::getMaxShortTimeRMS(&x[0], N, 48); // 48 samples = 1 cycle, rms = 1/sqrt(2)
+  int dummy = 0;
+}
 
 // convenience function to make the zero-crossing finding work for plain arrays (as required for
 // plotting)

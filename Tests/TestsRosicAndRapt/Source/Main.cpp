@@ -214,6 +214,7 @@ int main(int argc, char* argv[])
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
+  maxShortTimeRMS();
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();
@@ -239,7 +240,7 @@ int main(int argc, char* argv[])
   //phonoFilterSimulation();
   //serialParallelBlend();
   //averager();
-  ////movingAverage();  // hangs
+  movingAverage();  // hangs
   ////trapezAverager();   // hangs
 
   //gaussianPrototype();
