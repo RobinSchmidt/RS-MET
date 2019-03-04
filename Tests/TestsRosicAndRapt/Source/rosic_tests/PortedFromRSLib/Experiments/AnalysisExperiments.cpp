@@ -658,9 +658,9 @@ void instantaneousPhase()
 
 void maxShortTimeRMS()
 {
-  int N = 1000;
+  int N = 100000;
   std::vector<double> x = createSineWave(N, 1000.0, 48000.0);
-  double maxRms = RAPT::getMaxShortTimeRMS(&x[0], N, 48); // 48 samples = 1 cycle, rms = 1/sqrt(2)
+  double maxRms = RAPT::getMaxShortTimeRMS(&x[0], N, 4800); // 48 samples = 1 cycle, rms = 1/sqrt(2)
   int dummy = 0;
 }
 
