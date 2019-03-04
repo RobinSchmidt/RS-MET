@@ -21,6 +21,8 @@ void sinusoidalAnalysis1();   // a single, static sinusoid
 void sinusoidalAnalysis2();   // two single, static sinusoids
 void sinusoidalAnalysis3();   // a linear frequency sweep
 
+void harmonicAnalysis1();
+
 
 
 

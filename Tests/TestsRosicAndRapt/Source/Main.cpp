@@ -167,7 +167,7 @@ int main(int argc, char* argv[])
   //bandMatrix();                       // under construction
   //pentaDiagnonalMatrix();
   //pentaDiagnonalMatrix2();
-  minSqrdDifsForFixSums();
+//  minSqrdDifsForFixSums();
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();
@@ -214,7 +214,7 @@ int main(int argc, char* argv[])
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
-  maxShortTimeRMS();
+  //maxShortTimeRMS();
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();
@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
   //phonoFilterSimulation();
   //serialParallelBlend();
   //averager();
-  movingAverage();  // hangs
+  //movingAverage();
   ////trapezAverager();   // hangs
 
   //gaussianPrototype();
@@ -329,7 +329,7 @@ int main(int argc, char* argv[])
   // Phase Vocoder:
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
-  spectrogramSine();
+  //spectrogramSine();
   //sineParameterEstimation();
   //plotWindows();   // rename to plotOverlappingWindowSum
   //phaseInterpolation();
@@ -338,6 +338,7 @@ int main(int argc, char* argv[])
   //sinusoidalAnalysis1();
   //sinusoidalAnalysis2();
   //sinusoidalAnalysis3();
+  harmonicAnalysis1();
 
 
   // Physics:

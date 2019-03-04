@@ -1037,6 +1037,19 @@ void sinusoidalAnalysis3()
   // runExperiment()
 }
 
+
+void harmonicAnalysis1()
+{
+  // we try to create a model for a sum of sines using harmonic analysis
+
+
+
+  int dummy = 0;
+}
+
+
+
+
 // make various tests for the sinusoidal analysis of increasing level of difficulty:
 // 1: single sinusoid with stable frequency and amplitude
 //  -check, if the frequency and ampltude is etsimated accurately
