@@ -211,6 +211,10 @@
                 file="Source/Shared/Prototypes/FiniteAutomaton.cpp"/>
           <FILE id="siWyu0" name="FiniteAutomaton.h" compile="0" resource="0"
                 file="Source/Shared/Prototypes/FiniteAutomaton.h"/>
+          <FILE id="zXiwMN" name="HarmonicAnalyzer.cpp" compile="0" resource="0"
+                file="Source/Shared/Prototypes/HarmonicAnalyzer.cpp"/>
+          <FILE id="E7KXOp" name="HarmonicAnalyzer.h" compile="0" resource="0"
+                file="Source/Shared/Prototypes/HarmonicAnalyzer.h"/>
           <FILE id="nOJxxx" name="Ideas.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Ideas.cpp"/>
           <FILE id="vFcTlP" name="Ideas.h" compile="0" resource="0" file="Source/Shared/Prototypes/Ideas.h"/>
           <FILE id="kZGzyT" name="ParticleBouncer.cpp" compile="0" resource="0"

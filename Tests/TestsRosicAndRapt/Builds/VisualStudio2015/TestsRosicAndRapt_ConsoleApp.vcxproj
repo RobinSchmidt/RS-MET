@@ -287,6 +287,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\HarmonicAnalyzer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Ideas.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2352,6 +2355,7 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroPrototype.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Drawing.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\HarmonicAnalyzer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Ideas.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
