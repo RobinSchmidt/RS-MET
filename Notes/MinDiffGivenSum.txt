@@ -81,15 +81,15 @@ at every second index, starting at 0.
 
 //-----------------------------------------------------------------------------
 
-For more felxibility, let's introduce weights w1,..,wM that multiply each 
-squared difference. With theses weights, we can give the squared differences of
+For more flexibility, let's introduce weights w1,..,wM that multiply each 
+squared difference. With these weights, we can give the squared differences of
 different datapoints different amount of influence. With such weights, our 
 objective functions becomes:
 
 minimize:    w1*(v2-v1)^2 + w2*(v3-v2)^2 + w3*(v4-v3)^2 + w4*(v5-v4)^2 = D
 constraints: v1+v2 = s1, v2+v3 = s2, v3+v4 = s3, v4+v5 = s4
 
-where the constraints stay the same as above. the Lagrangian now looks like:
+where the constraints stay the same as above. The Lagrangian now looks like:
 
 L(v1,v2,..vN,l1,l2,..,lM) =
   w1*(v2-v1)^2 + w2*(v3-v2)^2 + w3*(v4-v3)^2 + w4*(v5-v4)^2       ...function to minimize

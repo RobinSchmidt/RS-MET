@@ -1038,10 +1038,32 @@ void sinusoidalAnalysis3()
 }
 
 
+std::vector<double> createModalPluck(int key, double sampleRate, int length)
+{
+  std::vector<double> x(length);
+  rosic::rsModalSynth ms;
+  ms.setSampleRate(sampleRate);
+  ms.setDecay(100.0);           // in ms
+  ms.setDecayByRatio(-100.0);   // in %
+  ms.setAttack(10.0);
+  ms.noteOn(key, 64);
+  double dummy; // unused right channel output
+  for(int n = 0; n < length; n++)
+    ms.getSampleFrameStereo(&x[n], &dummy);
+  return 0.1 * x;  // fix amplitude
+}
+
 void harmonicAnalysis1()
 {
-  // we try to create a model for a sum of sines using harmonic analysis
+  // we create a model for a plucked string sound created by the modal synthesizer
 
+  // input signal parameters:
+  int N   = 8000;
+  int key = 64;
+  double fs = 44100;   // sample rate
+
+  std::vector<double> x = createModalPluck(key, fs, N);
+  plotVector(x);
 
 
   int dummy = 0;
