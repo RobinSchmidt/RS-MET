@@ -3,14 +3,14 @@
 template<class T>
 void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
 {
+  std::vector<T> zeros(numMarkers);    // y values for plotting (all zero)
+  RAPT::rsArray::fillWithZeros(&zeros[0], numMarkers);
   GNUPlotter plt;
   plt.addDataArrays(signalLength, signal);
-
-  // add markers...
-
+  plt.addDataArrays(numMarkers,   markers, &zeros[0]);
+  plt.setGraphStyles("lines", "points");
+  plt.setPixelSize(1000, 300);
   plt.plot();
-
-  //plotVector(cm);
 }
 
 
