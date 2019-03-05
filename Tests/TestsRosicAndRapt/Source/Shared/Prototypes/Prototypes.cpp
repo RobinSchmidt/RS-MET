@@ -12,6 +12,7 @@
 #include "Drawing.cpp"
 
 #include "SinusoidalModeling.cpp"
+#include "HarmonicAnalyzer.cpp"
 
 using namespace RAPT;
 

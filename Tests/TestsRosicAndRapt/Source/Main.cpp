@@ -352,7 +352,7 @@ int main(int argc, char* argv[])
   //sincResamplerPassbandRipple();
   //sincResamplerSumOfTapWeights();
   //timeWarp();
-  //pitchDemodulation();
+  pitchDemodulation();
   //phaseLockedCrossfade();
   //phaseLockedCrossfade2();
   //sineShift();

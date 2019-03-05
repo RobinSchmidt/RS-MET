@@ -47,7 +47,7 @@ public:
 
 protected:
 
-  RAPT::rsPitchFlattener<T, T> flattener;
-  RAPT::rsFourierTransformerRadix2<T> trafo;
+  //RAPT::rsPitchFlattener<T, T> flattener;
+  //RAPT::rsFourierTransformerRadix2<T> trafo;
 
 };
