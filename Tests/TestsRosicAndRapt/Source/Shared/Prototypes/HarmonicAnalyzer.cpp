@@ -13,21 +13,77 @@ void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarke
   plt.plot();
 }
 
+// move to rapt:
+template<class T>
+std::vector<T> rsDifference(const std::vector<T> x)
+{
+  if(x.size() < 2)
+    return std::vector<T>();  // result is empty
+  std::vector<T> d(x.size()-1);
+  for(size_t i = 0; i < d.size(); i++)
+    d[i] = x[i+1] - x[i];
+  return d;
+}
+
+//template<class T>
+//T rsMinValue(T 
+
+template<class T>
+T rsMax(const std::vector<T> x)
+{
+  T max = std::numeric_limits<T>::min(); 
+  // we should instead use -inf for double/float? -> make explicit specilizations
+
+  for(size_t i = 0; i < x.size(); i++) {
+    if(x[i] > max)
+      max = x[i];
+  }
+  return max;
+}
+
 
 template<class T>
 RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
 {
+  RAPT::rsSinusoidalModel<T> mdl;
+
+
   // pre-processing (flatten pitch):
   //RAPT::rsPitchFlattener<T, T> flattener;
   //...
 
   typedef std::vector<T> Vec;
-  Vec cm = findCycleMarks(x, N, fs);
+  Vec cycleMarks = findCycleMarks(x, N, fs);    // cycle marks
+  if(cycleMarks.size() < 2)
+    return mdl;
+  Vec cycleLengths = rsDifference(cycleMarks);  // cycle lengths
+  T maxLength = rsMax(cycleLengths);
+  int targetLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
+
+
 
   // todo: 
-  // -find greatest distance dMax between adjacent cycle marks
-  // -compute targetDistance dTgt = nextPowerOfTwo(dMax)
-  // -create a time-warping map that maps the mesured markers to theri target instants
+  // -create a time-warping map that maps the measured markers to their target instants
+  //  -the very first marker should not be moved...how should we handle the first partial cycle?
+  //   ...zero padding? extrapolation of freq and phase and start at zero amplitude? maybe let
+  //   the user decide?
+  //   -however this will be handled, we should probably not move the first marker..or wait
+  //    ..we should probably scale its position by targetLength / cl[0]
+
+  // create the mapping function for the time instants
+  int mapLength = (int) cycleMarks.size();  // maybe we need +1 to map the N-1 th input-sample?
+  Vec tIn(mapLength), tOut(mapLength);
+  tIn[0]  = tOut[0] = 0;
+  tIn[1]  = cycleMarks[0];
+  tOut[1] = cycleMarks[0] * targetLength / cycleLengths[0];
+  for(int i = 2; i < mapLength; i++) {
+    tIn[i]  = cycleMarks[i-1];
+    tOut[i] = tOut[i-1] + targetLength;
+  }
+  // verify this...actually, we want the tOut values to land on integers 2^k + offset where the 
+  // offset comes from the initial partial cycle
+
+  int dummy = 0;
 
 
   // the distance of the very first marker from the time origin t=0 should probably used for 
@@ -39,7 +95,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   // at first marker (for the fundamental, that phase is zero by construction)
 
   // harmonic data extraction:
-  RAPT::rsSinusoidalModel<T> mdl;
+
   RAPT::rsFourierTransformerRadix2<T> trafo;
 
 
@@ -51,10 +107,10 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
 template<class T>
 std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N, T fs)
 {
-  T fl = 20;       // lower limit for fundamental
+  T fl = 20;       // lower limit for fundamental (maybe let user set this up)
   T fu = 5000;     // upper limit for fundamental
   rsCycleMarkFinder<double> cmf(fs, fl, fu);
-  cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, 2: quintic,  ...
+  cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, 2: quintic, ...
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   std::vector<T> cm = cmf.findCycleMarks(x, N);
   //plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
