@@ -22,35 +22,21 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   //...
 
   typedef std::vector<T> Vec;
-  T fl = 20;       // lower limit for fundamental
-  T fu = 5000;     // upper limit for fundamental
+  Vec cm = findCycleMarks(x, N, fs);
+
+  // todo: 
+  // -find greatest distance dMax between adjacent cycle marks
+  // -compute targetDistance dTgt = nextPowerOfTwo(dMax)
+  // -create a time-warping map that maps the mesured markers to theri target instants
 
 
-  //// from removePitchModulation:
-  //Vec fi(N);       // instantaneous frequency at each sample
-  //rsInstantaneousFundamentalEstimatorD::measureInstantaneousFundamental(x, fi, N, fs, fl, fu);
-  //// Compute desired readout speed for each sample which is given by the ratio of the desired 
-  //// instantaneous frequency and the actual instantaneous frequency of the input signal (re-use the
-  //// f-array for this)
-  //for(int n = 0; n < N; n++)
-  //  f[n] = targetFrequency / f[n];
-
-  // find the cycle marks:
-  rsCycleMarkFinder<double> cmf(fs, fl, fu);
-  //cmf.setFundamentalRange(fl, fu);
-  //cmf.setSampleRate(fs);
-  cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, ...
-  cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
-  Vec cm = cmf.findCycleMarks(x, N);
-
-  plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
-
-
-
-
-
-
-
+  // the distance of the very first marker from the time origin t=0 should probably used for 
+  // determining the start phase - don't assume an additional "ghost" marker at t=0 - instead, let
+  // the sinusoid start at zero amplitude, frequency determined by the distance between 1st and 2nd
+  // marker and phase appropriate to the frequency and time-value of the 1st marker (i.e. if the 
+  // first marker is at 25 and the second is at 125, assume a cycle length of 100 and start phase
+  // of -90° (a quarter period) - for higher harmonics, take into account the phase-measurement
+  // at first marker (for the fundamental, that phase is zero by construction)
 
   // harmonic data extraction:
   RAPT::rsSinusoidalModel<T> mdl;
@@ -59,10 +45,21 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
 
   // post-processing (account for pitch flattenig):
 
-
-
-
   return mdl;
 }
+
+template<class T>
+std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N, T fs)
+{
+  T fl = 20;       // lower limit for fundamental
+  T fu = 5000;     // upper limit for fundamental
+  rsCycleMarkFinder<double> cmf(fs, fl, fu);
+  cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, 2: quintic,  ...
+  cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
+  std::vector<T> cm = cmf.findCycleMarks(x, N);
+  //plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
+  return cm;
+}
+
 
 template class rsHarmonicAnalyzer<double>;

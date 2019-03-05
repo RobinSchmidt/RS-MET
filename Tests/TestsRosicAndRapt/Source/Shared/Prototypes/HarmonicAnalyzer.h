@@ -45,6 +45,10 @@ public:
   sound. */
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate);
 
+
+
+  std::vector<T> findCycleMarks(T* x, int N, T fs);
+
 protected:
 
   //RAPT::rsPitchFlattener<T, T> flattener;
