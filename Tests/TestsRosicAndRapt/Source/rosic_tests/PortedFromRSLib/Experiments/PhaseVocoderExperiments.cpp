@@ -1043,7 +1043,7 @@ std::vector<double> createModalPluck(int key, double sampleRate, int length)
   std::vector<double> x(length);
   rosic::rsModalSynth ms;
   ms.setSampleRate(sampleRate);
-  ms.setAmpSlope(-6);
+  ms.setAmpSlope(-3);
   ms.setDecay(500.0);           // in ms
   ms.setDecayByRatio(-100.0);   // in %
   ms.setAttack(10.0);
@@ -1051,7 +1051,7 @@ std::vector<double> createModalPluck(int key, double sampleRate, int length)
   double dummy; // unused right channel output
   for(int n = 0; n < length; n++)
     ms.getSampleFrameStereo(&x[n], &dummy);
-  return 0.05 * x;  // fix amplitude
+  return 0.1 * x;  // fix amplitude
 }
 
 void harmonicAnalysis1()
@@ -1066,7 +1066,7 @@ void harmonicAnalysis1()
   std::vector<double> x = createModalPluck(key, fs, N);
   //plotVector(x);
 
-  rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
+  //rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
   // todo: test with less high freq rolloff (makes it more difficult)
 
 

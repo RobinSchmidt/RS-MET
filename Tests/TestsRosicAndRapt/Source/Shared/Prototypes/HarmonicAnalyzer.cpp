@@ -1,4 +1,5 @@
 
+
 // move elsewhere...
 template<class T>
 void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
@@ -48,9 +49,9 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   RAPT::rsSinusoidalModel<T> mdl;
 
 
+  //-----------------------------------------------------------------------------------------------
   // pre-processing (flatten pitch):
-  //RAPT::rsPitchFlattener<T, T> flattener;
-  //...
+  // todo: factor out...maybe the function preProcess() should return a bool to indicate success
 
   typedef std::vector<T> Vec;
   Vec cycleMarks = findCycleMarks(x, N, fs);    // cycle marks
@@ -59,18 +60,6 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   Vec cycleLengths = rsDifference(cycleMarks);  // cycle lengths
   T maxLength = rsMax(cycleLengths);
   int targetLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
-
-
-
-  // todo: 
-  // -create a time-warping map that maps the measured markers to their target instants
-  //  -the very first marker should not be moved...how should we handle the first partial cycle?
-  //   ...zero padding? extrapolation of freq and phase and start at zero amplitude? maybe let
-  //   the user decide?
-  //   -however this will be handled, we should probably not move the first marker..or wait
-  //    ..we should probably scale its position by targetLength / cl[0]
-  // -the initial partial cycle should be stretched by the same amount as the first full cycle
-
 
   // create the mapping function for the time instants
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
@@ -91,8 +80,6 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
     tIn[i]  = cycleMarks[i-1];
     tOut[i] = tOut[i-1] + targetLength;
   }
-  // verify this...actually, we want the tOut values to land on integers 2^k + offset where the 
-  // offset comes from the initial partial cycle - maybe we should just round tOut[1]?
 
   // the end time instant is mapped such that the final partial cycle is stretched by the same 
   // amount as the last full cycle:
@@ -102,7 +89,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   tOut[mapLength-1] = round(tOut[mapLength-1]);
 
   Vec test; // for debug
-  // test = rsDifference(tOut);
+  test = rsDifference(tOut);
   // elements should be all equal to targetLength except the first and the last (which should be
   // shorter than that) - ok - looks good
 
@@ -112,18 +99,16 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   Vec t(Ny), w(Ny);                // interpolated time axis and warping map
   RAPT::rsArray::fillWithIndex(&t[0], Ny);
   RAPT::resampleNonUniformLinear(&tOut[0], &tIn[0], mapLength, &t[0], &w[0], Ny);
-
   //test = rsDifference(w); // should be the readout-speed
-
-
-  //void resampleNonUniformLinear(const Tx* xIn, const Ty* yIn, int inLength, 
-  //  const Tx* xOut, Ty* yOut, int outLength);
 
   // do the time-warping:
   double sincLength = 64.0;        // length of sinc-interpolator
   Vec y(Ny);                       // stretched signal
+  rsTimeWarper<T, T>::timeWarpSinc(x, N, &y[0], &w[0], Ny, sincLength);
 
+  // pre-processing done: y contains the pre-processed (pitch-flattened) signal
 
+  //rosic::writeToMonoWaveFile("StretchedModalPluck.wav", &y[0], Ny, (int)fs);
 
 
 
