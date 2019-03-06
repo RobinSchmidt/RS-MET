@@ -73,7 +73,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
 
 
   // create the mapping function for the time instants
-  int mapLength = (int) cycleMarks.size();  // maybe we need +1 to map the N-1 th input-sample?
+  int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
   Vec tIn(mapLength), tOut(mapLength);
 
   // the time-origin is zero for both, original and stretched signal:
@@ -83,19 +83,34 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   // the same amount as the first full cycle (the cycle between 1st and 2nd marker):
   tIn[1]  = cycleMarks[0];
   tOut[1] = cycleMarks[0] * targetLength / cycleLengths[0];
+  tOut[1] = round(tOut[1]);
 
   // all cycles between the initial partial cycle and final partial cycle are stretched to the same 
   // fixed length
-  for(int i = 2; i < mapLength; i++) {
+  for(int i = 2; i < mapLength-1; i++) {
     tIn[i]  = cycleMarks[i-1];
     tOut[i] = tOut[i-1] + targetLength;
   }
   // verify this...actually, we want the tOut values to land on integers 2^k + offset where the 
-  // offset comes from the initial partial cycle
+  // offset comes from the initial partial cycle - maybe we should just round tOut[1]?
 
   // the end time instant is mapped such that the final partial cycle is stretched by the same 
   // amount as the last full cycle:
-  // ...
+  double tailLength = (N-1) - rsLast(cycleMarks);
+  tIn [mapLength-1] = N-1;
+  //tOut[mapLength-1] = tOut[mapLength-2] + targetLength / tailLength; // seems wrong!
+  //tOut[mapLength-1] = tOut[mapLength-2] + tailLength / targetLength; // seems wrong!
+  tOut[mapLength-1] = tOut[mapLength-2] + tailLength * targetLength / rsLast(cycleLengths);
+  tOut[mapLength-1] = round(tOut[mapLength-1]);
+
+
+
+  Vec test = rsDifference(tOut);
+  // elements should be all equal to targetLength except the first and the last (which should be
+  // shorter than that) - ok - looks good
+
+
+
 
   int dummy = 0;
 
