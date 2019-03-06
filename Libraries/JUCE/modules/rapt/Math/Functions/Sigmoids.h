@@ -55,6 +55,16 @@ public:
   /** Special case of softClipHexic(double x, double t) where t = 0.5. */
   static T softClipHexic(T x);
 
+  // maybe try this from here:
+  // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=521377
+  // softer(x) = x / sqrt(1 + x^2)
+  // harder(x) = softer(x + 0.5*x^3)
+  // maybe with a hardness parameter p:
+  // harder(x) = softer(x + p*x^3)
+
+  // approximating tanh with p = 0.1867:
+  // https://www.desmos.com/calculator/j1z4nsm5km
+
 };
 
 //-------------------------------------------------------------------------------------------------

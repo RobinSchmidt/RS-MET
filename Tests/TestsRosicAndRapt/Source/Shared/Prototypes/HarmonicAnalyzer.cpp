@@ -69,13 +69,23 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   //   the user decide?
   //   -however this will be handled, we should probably not move the first marker..or wait
   //    ..we should probably scale its position by targetLength / cl[0]
+  // -the initial partial cycle should be stretched by the same amount as the first full cycle
+
 
   // create the mapping function for the time instants
   int mapLength = (int) cycleMarks.size();  // maybe we need +1 to map the N-1 th input-sample?
   Vec tIn(mapLength), tOut(mapLength);
+
+  // the time-origin is zero for both, original and stretched signal:
   tIn[0]  = tOut[0] = 0;
+
+  // the first marker is mapped to an instant, such that the initial partial cycle is stretched by
+  // the same amount as the first full cycle (the cycle between 1st and 2nd marker):
   tIn[1]  = cycleMarks[0];
   tOut[1] = cycleMarks[0] * targetLength / cycleLengths[0];
+
+  // all cycles between the initial partial cycle and final partial cycle are stretched to the same 
+  // fixed length
   for(int i = 2; i < mapLength; i++) {
     tIn[i]  = cycleMarks[i-1];
     tOut[i] = tOut[i-1] + targetLength;
@@ -83,7 +93,24 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   // verify this...actually, we want the tOut values to land on integers 2^k + offset where the 
   // offset comes from the initial partial cycle
 
+  // the end time instant is mapped such that the final partial cycle is stretched by the same 
+  // amount as the last full cycle:
+  // ...
+
   int dummy = 0;
+
+
+  // todo: maybe factor out the pre- and post-processing into a class:
+  // rsFlatPitchPrePostProcessor
+  //   std::vector<T> preProcessAudio(T* x, int N);
+  //   postProcessModel(rsSinusoidalModel<T>& model);
+  // in between these two calls, we do the harmonic extraction, the class keeps around the warping 
+  // map after pre-processing the audio and uses it again in the post-processing step
+
+
+
+
+
 
 
   // the distance of the very first marker from the time origin t=0 should probably used for 
