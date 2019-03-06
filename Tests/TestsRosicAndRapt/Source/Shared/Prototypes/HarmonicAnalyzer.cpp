@@ -98,16 +98,37 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   // amount as the last full cycle:
   double tailLength = (N-1) - rsLast(cycleMarks);
   tIn [mapLength-1] = N-1;
-  //tOut[mapLength-1] = tOut[mapLength-2] + targetLength / tailLength; // seems wrong!
-  //tOut[mapLength-1] = tOut[mapLength-2] + tailLength / targetLength; // seems wrong!
   tOut[mapLength-1] = tOut[mapLength-2] + tailLength * targetLength / rsLast(cycleLengths);
   tOut[mapLength-1] = round(tOut[mapLength-1]);
 
-
-
-  Vec test = rsDifference(tOut);
+  Vec test; // for debug
+  // test = rsDifference(tOut);
   // elements should be all equal to targetLength except the first and the last (which should be
   // shorter than that) - ok - looks good
+
+  // ok, we have created the time warping map, sampled at the cycle-marks, for applying the 
+  // warping, we need to interpolate it up to sample rate - we use linear interpolation for that:
+  int Ny = (int) rsLast(tOut) + 1; // length of stretched signal and warping map
+  Vec t(Ny), w(Ny);                // interpolated time axis and warping map
+  RAPT::rsArray::fillWithIndex(&t[0], Ny);
+  RAPT::resampleNonUniformLinear(&tOut[0], &tIn[0], mapLength, &t[0], &w[0], Ny);
+
+  //test = rsDifference(w); // should be the readout-speed
+
+
+  //void resampleNonUniformLinear(const Tx* xIn, const Ty* yIn, int inLength, 
+  //  const Tx* xOut, Ty* yOut, int outLength);
+
+  // do the time-warping:
+  double sincLength = 64.0;        // length of sinc-interpolator
+  Vec y(Ny);                       // stretched signal
+
+
+
+
+
+
+
 
 
 

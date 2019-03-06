@@ -520,10 +520,10 @@ class rsTimeWarper
 public:
 
 
-  /** Time warps a signal x of length xN to a signal y of length yN using the time warping map w
+  /** Time warps a signal x of length Nx to a signal y of length Ny using the time warping map w
   which defines for every output sample y[n] a (noninteger) readout time instant in the input
-  signal, such that: y[n] = x[w[n]], n = 0,...,yN-1. So, the length of the warping map w must
-  also be yN. If you pass "true" for the antiAlias parameter, the function will for each output
+  signal, such that: y[n] = x[w[n]], n = 0,...,Ny-1. So, the length of the warping map w must
+  also be Ny. If you pass "true" for the antiAlias parameter, the function will for each output
   sample look at the instantaneous readout speed (which equals the difference of successive
   values in w) and adapt the cutoff frequency of the sinc-interpolator accordingly. That means,
   the sinc-function will be stretched on the time axis by min(1, readSpeed). If
@@ -536,7 +536,7 @@ public:
   Note: if you have a readout-speed for each output sample index n instead of a time-instant
   where to read the input signal, you can convert your values into time-instants using
   rsCumulativeSum. */
-  static void timeWarpSinc(TSig *x, int xN, TSig *y, TPos *w, int yN,
+  static void timeWarpSinc(TSig *x, int Nx, TSig *y, TPos *w, int Ny,
     TPos minSincLength = 64.0, TPos maxLengthScaler = 1.0, bool antiAlias = true);
     // \todo provide a function to compute the nonzero length of the y-signal beforehand
 
