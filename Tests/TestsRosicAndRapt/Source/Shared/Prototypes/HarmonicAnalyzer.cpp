@@ -176,11 +176,25 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   //-----------------------------------------------------------------------------------------------
   // Step 3: - post process data in model to account for the flattening:
 
+  // todo: get rid of these vectors - compute values on the fly inside the loop
+  Vec lw = rsDifference(tOut);  // warped lengths of cycles
+  Vec lu = rsDifference(tIn);   // unwarped lengths of cycles
+  for(m = 0; m < numFrames; m++) {
+    T tw = getTimeStampForFrame(m);         // warped time
+    T tu = getUnWarpedTimeStampForFrame(m); // unwarped time
+    T r  = lw[m] / lu[m];                   // stretching ratio applied to frame m
+    for(int k = 0; k < numHarmonics; k++) {
+      mdl.getDataRef(k, m).time  = tu;
+      mdl.getDataRef(k, m).freq *= r;
+    }
+    int dummy = 0;
+  }
+
+
   // preliminary: just multiply all time-stamps by 1/sampleRate
   for(int hi = 0; hi < numHarmonics; hi++)
     for(int di = 0; di < numDataPoints; di++)
       mdl.getDataRef(hi, di).time /= sampleRate;
-
 
 
 
@@ -236,6 +250,13 @@ T rsHarmonicAnalyzer<T>::getTimeStampForFrame(int m)
 
   return tOut[m] + T(0.5)*(tOut[m+1]-tOut[m]);
 }
+
+template<class T>
+T rsHarmonicAnalyzer<T>::getUnWarpedTimeStampForFrame(int m)
+{
+  return tIn[m] + T(0.5)*(tIn[m+1]-tIn[m]);
+}
+
 
 template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(

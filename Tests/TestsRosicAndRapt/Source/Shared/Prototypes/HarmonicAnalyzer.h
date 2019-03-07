@@ -67,6 +67,12 @@ protected:
   // compute the values before post-processing - but for conceptual clarity of the algorithm, 
   // we just do it for the time being (the effort is neglibilibe anyway)
 
+  T getUnWarpedTimeStampForFrame(int frameIndex);
+  // maybe rename to getUnWarpedSampleIndexForFrame
+
+
+
+
   /** Used internally to fill in the data in the model at the given frame-index based on the 
   current content of our "sig" buffer member variable. The time-stamp of the frame should be passed
   by the caller - frequency, magnitude and phase data are computed from the FFT of the sig 
@@ -85,6 +91,8 @@ protected:
 
   // buffers:
   std::vector<T> tIn, tOut;      // time-warping map (sampled at cycle marks)
+  // maybe rename to "to", "tw" for original and warped
+
   std::vector<T> sig, mag, phs;  // blocks of signal, magnitude and phase
 
 };

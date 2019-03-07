@@ -1072,7 +1072,7 @@ void harmonicAnalysis1()
   rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
-  //plotSineModel(mdl, fs);  // model looks ok
+  plotSineModel(mdl, fs);  // model looks ok
   std::vector<double> y = synthesizeSinusoidal(mdl, fs); 
   //plotVector(y);
   rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
@@ -1086,18 +1086,19 @@ void harmonicAnalysis1()
   // always be the case to some degree due to fade in/out, but we may tweak the algo to get a 
   // closer match
 
+  // post-processing is done now - but there's still a time-shift between original and 
+  // resynthesized - perhaps because model does not start at time zero?
+
   // todo: create a new project/repo where we test the analysis/resynthesis framework on real world
   // sample data (which should not go into the RS-MET repo)
 
 
-  // it does not yet make sense to plot the original against the resynthesized signal because we
-  // have not yet post-processed our model data...
   GNUPlotter plt;
-  //plt.addDataArrays(N, &x[0]);
-  //plt.addDataArrays((int)y.size(), &y[0]);
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays((int)y.size(), &y[0]);
   // maybe make sure that y has the same size as x...maybe wrap this analysis/resynthesis roundtrip
   // into a convenience class
-  //plt.plot();
+  plt.plot();
 
   int dummy = 0;
 }
