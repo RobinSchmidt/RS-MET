@@ -1080,6 +1080,15 @@ void harmonicAnalysis1()
   // the phase in the resynthesized signal is wrong - this is not surprising: we need to swap 1st 
   // and 2nd half of FFT buffers to put time-origin to center of the block
 
+  // ok - this seems to be fixed (but verify, if the buffer shift may be off-by-one)
+
+  // now, the transient still looks different in the resynthesized signal - which will probably
+  // always be the case to some degree due to fade in/out, but we may tweak the algo to get a 
+  // closer match
+
+  // todo: create a new project/repo where we test the analysis/resynthesis framework on real world
+  // sample data (which should not go into the RS-MET repo)
+
 
   int dummy = 0;
 }

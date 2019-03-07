@@ -247,30 +247,35 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   // numDataPoints instead of numFrames and use dataIndex = frameIndex+1 here - the dataPoints
   // at indices 0 and numDataPoints-1 have to be treated separately..
 
-
-  trafo.getRealSignalMagnitudesAndPhases(&sig[0], &mag[0], &phs[0]);
   int K = trafo.getBlockSize();
   int numPartials = K/2; // maybe -1 for not including DC...or maybe just include
                          // DC into the model
 
-  // maybe we should shift the signal buffer by one half to move the time origin to the center
+
+  // we should shift the signal buffer by one half to move the time origin to the center
   // ...yes - at least, if we use the center of the frame for the time-stamp we need to do this
   // because only then it is all consistent...maybe we should have a function 
   // prepareSignalBlockBuffer(int frameIndex)
 
-  for(int k = 0; k < numPartials; k++)
-  {
+  // this is realy bad to do this here (it has an undocumented side-effect on the sig buffer - it 
+  // doesn't matter, because the buffer is not used anymore after calling this function but still).
+  // -> refactor and also optimize by passing a temp-buffer to the function:
+  RAPT::rsArray::circularShift(&sig[0], K, -K/2);
+  // optimize: pass tmpBuffer as workspace to avoid temporary memory allocation
+
+  // for the first and last (partial) cycle that may not be correct...or is it? hmm...yes,
+  // it could be
+  // verify, if we should really shift by -K/2 (or if this ends up off-by-one)
+
+ 
+  trafo.getRealSignalMagnitudesAndPhases(&sig[0], &mag[0], &phs[0]);       // perform FFT
+
+
+  // extract model data from FFT result:
+  for(int k = 0; k < numPartials; k++) {
     T freq = trafo.binIndexToFrequency(k, K, sampleRate);
     mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], phs[k]);
-    // as it is, phs assumes the time origin to be at n = 0 whereas we need it to be at the center
-    // of the sig-buffer, i.e. K/2 (verify this - especially with respect to even/odd buffer 
-    // sizes)
-    // but for the first and last (partial) cycle that may not be correct...or is it? hmm...yes,
-    // it could be
-    // factor 2 for the magnitude is needed because we sum only over positive frequencies
-
   }
-
   int dummy = 0;
 }
 
