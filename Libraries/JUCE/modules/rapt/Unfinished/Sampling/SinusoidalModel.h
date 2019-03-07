@@ -191,8 +191,12 @@ public:
   std::vector<T> getPhaseArray() const;
 
 
-
-
+  /** Returns reference to given datapoint for manipulation (use with care) */
+  rsInstantaneousSineParams<T>& getDataRef(int dataIndex)
+  { 
+    return instParams[dataIndex];
+    // todo: range-check index value
+  }
 
 
   //rsInstantaneousSineParams<T> getInstantaneousParameters() const;
@@ -203,6 +207,8 @@ public:
 protected:
 
   std::vector<rsInstantaneousSineParams<T>> instParams;
+
+  //friend class rsSinusoidalModel<T>; // doesn't compile - why?
 
 };
 
@@ -239,11 +245,11 @@ public:
     // we need to make a deep copy
   }
 
-  /** Sets the data for the given partial- and data-point (aka frame-) index. */
-  void setData(int partialIndex, int frameIndex, T time, T freq, T gain, T phase)
+  /** Sets the data for the given partial- and data-point index. */
+  void setData(int partialIndex, int dataIndex, T time, T freq, T gain, T phase)
   {
     rsAssert(partialIndex >= 0 && partialIndex < (int)partials.size(), "Invalid index");
-    partials[partialIndex].setData(frameIndex, time, freq, gain, phase);
+    partials[partialIndex].setData(dataIndex, time, freq, gain, phase);
   }
 
   /** Initializes the model. Creates the given number of partials where each partial has the given 
@@ -284,9 +290,19 @@ public:
   const rsSinusoidalPartial<T>& getPartial(size_t index) const { return partials[index]; }
   // maybe rename to getConstPartialRef
 
-  /** Returns a non-constant, i.e. modifiable reference to the partial with given index. Use this, 
+  /** Returns a non-constant, i.e. modifiable, reference to the partial with given index. Use this, 
   when you intend to manipulate the data of the partial. */
   rsSinusoidalPartial<T>& getModifiablePartialRef(size_t index) { return partials[index]; }
+  // maybe rename to getPartialRef
+
+  /** Returns a non-constant, i.e. modifiable, reference to a particular datapoint inside a 
+  particular the partial with given index. Use this, when you intend to manipulate the datapoint of
+  the partial. */
+  rsInstantaneousSineParams<T>& getDataRef(int partialIndex, int dataIndex)
+  { 
+    return partials[partialIndex].getDataRef(dataIndex);
+    // todo: range-check index values
+  }
 
 
 

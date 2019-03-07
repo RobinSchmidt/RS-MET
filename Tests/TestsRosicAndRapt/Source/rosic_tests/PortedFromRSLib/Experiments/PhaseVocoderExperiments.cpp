@@ -1073,9 +1073,12 @@ void harmonicAnalysis1()
   analyzer.setSampleRate(fs);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
   //plotSineModel(mdl, fs);  // model looks ok
-  //std::vector<double> y = synthesizeSinusoidal(mdl, fs); // hangs :-O why?!
+  std::vector<double> y = synthesizeSinusoidal(mdl, fs); 
   //plotVector(y);
-  //rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
+  rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
+
+  // the phase in the resynthesized signal is wrong - this is not surprising: we need to swap 1st 
+  // and 2nd half of FFT buffers to put time-origin to center of the block
 
 
   int dummy = 0;

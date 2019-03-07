@@ -124,34 +124,35 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 
   // pre-processing done: y contains the pre-processed (pitch-flattened) signal
 
-  //rosic::writeToMonoWaveFile("StretchedModalPluck.wav", &y[0], Ny, (int)fs);
+  rosic::writeToMonoWaveFile("ModalPluckStretched.wav", &y[0], Ny, (int)sampleRate);
 
   //-----------------------------------------------------------------------------------------------
   // Step 2: - analyze harmonics in flattened signal and write data into sinusoidal model:
 
   // initialize the model (create all datapoints, to filled with actual data later):
-  int numHarmonics = targetLength / 2;     // number of partials
-  int numFrames    = mapLength - 1;        // number of datapoints in each partial
-  mdl.init(numHarmonics, numFrames);
+  int numHarmonics  = targetLength / 2;     // number of partials
+  int numFrames     = mapLength - 1;        // number of datapoints in each partial
+  int numDataPoints = numFrames;            // maybe later use numFrames+2 for fade-in/out
+  mdl.init(numHarmonics, numDataPoints);
 
   // set up the fourier transformer object and block buffers:
-  int M = targetLength;    // block-size (equals FFT size) - maybe use K, and M for numFrames
-  trafo.setBlockSize(M);
-  sig.resize(M); 
-  mag.resize(M); 
-  phs.resize(M);
+  int K = targetLength;    // block-size (equals FFT size)
+  trafo.setBlockSize(K);
+  sig.resize(K); 
+  mag.resize(K); 
+  phs.resize(K);
 
   // the initial partial cycle is pre-padded with zeros:
   //int n;
   int n0 = 0;                          // first sample (from y-array) in current frame
   int m  = 0;                          // frame index
   int L  = (int) tOut[1];              // length of initial partial cycle
-  AR::fillWithZeros(&sig[0], M-L);
-  AR::copyBuffer(&y[n0], &sig[M-L], L);
+  AR::fillWithZeros(&sig[0], K-L);
+  AR::copyBuffer(&y[n0], &sig[K-L], L);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // the inner cycles/frames are taken as is:
-  L = M;                               // length of inner cycles
+  L = K;                               // length of inner cycles
   for(m = 1; m < numFrames-1; m++) {
     n0 = (int) tOut[m];
     AR::copyBuffer(&y[n0], &sig[0], L);
@@ -162,7 +163,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   n0 = (int) tOut[m]; 
   L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);  // maybe +1? check against off-by-1
   AR::copyBuffer(&y[n0], &sig[0], L);
-  AR::fillWithZeros(&sig[L], M-L);
+  AR::fillWithZeros(&sig[L], K-L);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   int dummy = 0;
@@ -174,6 +175,13 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 
   //-----------------------------------------------------------------------------------------------
   // Step 3: - post process data in model to account for the flattening:
+
+  // preliminary: just multiply all time-stamps by 1/sampleRate
+  for(int hi = 0; hi < numHarmonics; hi++)
+    for(int di = 0; di < numDataPoints; di++)
+      mdl.getDataRef(hi, di).time /= sampleRate;
+
+
 
 
 
@@ -253,12 +261,13 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   for(int k = 0; k < numPartials; k++)
   {
     T freq = trafo.binIndexToFrequency(k, K, sampleRate);
-    mdl.setData(k, dataIndex, time, freq, mag[k], phs[k]);
+    mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], phs[k]);
     // as it is, phs assumes the time origin to be at n = 0 whereas we need it to be at the center
     // of the sig-buffer, i.e. K/2 (verify this - especially with respect to even/odd buffer 
     // sizes)
     // but for the first and last (partial) cycle that may not be correct...or is it? hmm...yes,
     // it could be
+    // factor 2 for the magnitude is needed because we sum only over positive frequencies
 
   }
 
