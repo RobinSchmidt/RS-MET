@@ -143,30 +143,27 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 
   // the initial partial cycle is pre-padded with zeros:
   //int n;
-  int L = (int) tOut[1];                 // length of initial partial cycle
+  int m = 0;                           // frame index
+  int L = (int) tOut[1];               // length of initial partial cycle
   AR::fillWithZeros(&sig[0], M-L);
   AR::copyBuffer(&y[0], &sig[M-L], L);
-  fillHarmonicData(mdl, 0, T(0.5)*(tOut[1]-tOut[0]));
-    // maybe make a function getTimeStamp(int i) - it should return T(0.5)*(tOut[i+1]-tOut[i]) 
-    // or maybe just tOut[i], depending on user settings. for this, we need to make the tOut array
-    // a member (which we need anyway for factoring out pre- and post processing steps)
+  fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // the inner cycles/frames are taken as is:
-  L = M;
-  int m;  // frame index
-  for(m = 1; m < numFrames-1; m++) {
-    int frameStart = (int) tOut[m];
+  L = M;                               // length of inner cycles
+  int frameStart;
+  for(m = 1; m < numFrames-1; m++) {   // should that be numFrames-2? shouldn't we get an
+    frameStart = (int) tOut[m];        // access violation in the last iteration?
     AR::copyBuffer(&y[frameStart], &sig[0], L);
-    fillHarmonicData(mdl, m, tOut[m] + T(0.5)*(tOut[m+1]-tOut[m]));
+    fillHarmonicData(mdl, m, getTimeStampForFrame(m));
   }
 
+  // the final partial cycle is post-padded with zeros:
+  frameStart = (int) tOut[m];
+  L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);
+  // ...
 
   int dummy = 0;
-
-
-  // the final partial cycle is post-padded with zeros:
-  // L = ...
-  // ...
 
 
 
@@ -220,6 +217,23 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
   std::vector<T> cm = cmf.findCycleMarks(x, N);
   //plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
   return cm;
+}
+
+template<class T>
+T rsHarmonicAnalyzer<T>::getTimeStampForFrame(int m)
+{
+  // maybe use just tOut[m], depending on a user setting which determines whether the time origin
+  // for each frame should be at start or center of the frame - this setting should then also 
+  // affect, whether or not we shift the signal buffer by half of its length before FFT)
+
+  //return sampleRate * (tOut[m] + T(0.5)*(tOut[m+1]-tOut[m]));
+
+  // hmm...maybe it's not a good idea to include the sampleRate factor at this stage for numerical
+  // reasons - maybe keep the time in samples at this stage - eventually, the model wants its
+  // time stamps in seconds - but we probably should include the sample-rate factor at the very end
+  // of the algo
+
+  return tOut[m] + T(0.5)*(tOut[m+1]-tOut[m]);
 }
 
 template<class T>

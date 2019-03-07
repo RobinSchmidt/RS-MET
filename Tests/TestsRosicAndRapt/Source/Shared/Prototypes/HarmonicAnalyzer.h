@@ -53,17 +53,27 @@ public:
   sound. */
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples);
 
-
 protected:
 
   /** Computes and returns an array of cycle-marks. */
   std::vector<T> findCycleMarks(T* x, int N);
+
+  /** Returns the time instant that should be associated with the frame of given index 
+  (before post-processing). The time stamp will be baed on the content of tOut member array. */
+  T getTimeStampForFrame(int frameIndex);
+  // maybe rename to getWarpedTimeForFrame and have a corresponding getUnWarpedTimeforFrame
+  // function (that uses tIn instead of tOut)...this will actually be used to *replace* the 
+  // original time-stamp data later in the post-processing - so we may not actually need to 
+  // compute the values before post-processing - but for conceptual clarity of the algorithm, 
+  // we just do it for the time being (the effort is neglibilibe anyway)
 
   /** Used internally to fill in the data in the model at the given frame-index based on the 
   current content of our "sig" buffer member variable. The time-stamp of the frame should be passed
   by the caller - frequency, magnitude and phase data are computed from the FFT of the sig 
   buffer. */
   void fillHarmonicData(RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp);
+
+
 
 
   //RAPT::rsPitchFlattener<T, T> flattener;
