@@ -131,7 +131,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 
   // initialize the model (create all datapoints, to filled with actual data later):
   int numHarmonics = targetLength / 2;     // number of partials
-  int numFrames    = mapLength;            // number of datapoints in each partial
+  int numFrames    = mapLength - 1;        // number of datapoints in each partial
   mdl.init(numHarmonics, numFrames);
 
   // set up the fourier transformer object and block buffers:
@@ -143,29 +143,30 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 
   // the initial partial cycle is pre-padded with zeros:
   //int n;
-  int m = 0;                           // frame index
-  int L = (int) tOut[1];               // length of initial partial cycle
+  int n0 = 0;                          // first sample (from y-array) in current frame
+  int m  = 0;                          // frame index
+  int L  = (int) tOut[1];              // length of initial partial cycle
   AR::fillWithZeros(&sig[0], M-L);
   AR::copyBuffer(&y[0], &sig[M-L], L);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // the inner cycles/frames are taken as is:
   L = M;                               // length of inner cycles
-  int frameStart;
-  for(m = 1; m < numFrames-1; m++) {   // should that be numFrames-2? shouldn't we get an
-    frameStart = (int) tOut[m];        // access violation in the last iteration?
-    AR::copyBuffer(&y[frameStart], &sig[0], L);
+  for(m = 1; m < numFrames-1; m++) {
+    n0 = (int) tOut[m];
+    AR::copyBuffer(&y[n0], &sig[0], L);
     fillHarmonicData(mdl, m, getTimeStampForFrame(m));
   }
 
   // the final partial cycle is post-padded with zeros:
-  frameStart = (int) tOut[m];
-  L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);
+  n0 = (int) tOut[m]; 
+  L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);  // maybe +1? check against off-by-1
   // ...
 
   int dummy = 0;
 
 
+  // todo: double-check all index computations against off-by-one errors
 
 
 
