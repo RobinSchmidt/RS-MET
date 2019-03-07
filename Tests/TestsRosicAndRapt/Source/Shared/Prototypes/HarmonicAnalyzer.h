@@ -55,6 +55,12 @@ public:
 
 protected:
 
+  // todo: refactor to use these 3 functions in analyze:
+  void preProcess(T* sampleData, int numSamples);
+  void analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl);
+  void postProcess(RAPT::rsSinusoidalModel<T>& mdl);
+
+
   /** Computes and returns an array of cycle-marks. */
   std::vector<T> findCycleMarks(T* x, int N);
 
@@ -86,6 +92,7 @@ protected:
   RAPT::rsFourierTransformerRadix2<T> trafo;
 
 
+  int blockSize = 0;    // FFT block size
 
   T sampleRate = 1;
   T sincLength = 64.0;  // length of sinc-interpolator for time-warping

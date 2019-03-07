@@ -70,7 +70,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
     return mdl;
   Vec cycleLengths = rsDifference(cycleMarks);  // cycle lengths
   T maxLength = rsMax(cycleLengths);
-  int targetLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength)); // rename to blockSize
+  blockSize = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
 
   // create the mapping function for the time instants
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
@@ -87,21 +87,21 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   // the first marker is mapped to an instant, such that the initial partial cycle is stretched by
   // the same amount as the first full cycle (the cycle between 1st and 2nd marker):
   tIn[1]  = cycleMarks[0];
-  tOut[1] = cycleMarks[0] * targetLength / cycleLengths[0];
+  tOut[1] = cycleMarks[0] * blockSize / cycleLengths[0];
   tOut[1] = round(tOut[1]);
 
   // all cycles between the initial partial cycle and final partial cycle are stretched to the same 
   // fixed length
   for(int i = 2; i < mapLength-1; i++) {
     tIn[i]  = cycleMarks[i-1];
-    tOut[i] = tOut[i-1] + targetLength;
+    tOut[i] = tOut[i-1] + blockSize;
   }
 
   // the end time instant is mapped such that the final partial cycle is stretched by the same 
   // amount as the last full cycle:
   double tailLength = (N-1) - rsLast(cycleMarks);
   tIn [mapLength-1] = N-1;
-  tOut[mapLength-1] = tOut[mapLength-2] + tailLength * targetLength / rsLast(cycleLengths);
+  tOut[mapLength-1] = tOut[mapLength-2] + tailLength * blockSize / rsLast(cycleLengths);
   tOut[mapLength-1] = round(tOut[mapLength-1]);
 
   Vec test; // for debug
@@ -129,13 +129,13 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   // Step 2: - analyze harmonics in flattened signal and write data into sinusoidal model:
 
   // initialize the model (create all datapoints, to filled with actual data later):
-  int numHarmonics  = targetLength / 2;     // number of partials
+  int numHarmonics  = blockSize / 2;        // number of partials
   int numFrames     = mapLength - 1;        // number of datapoints in each partial
   int numDataPoints = numFrames;            // maybe later use numFrames+2 for fade-in/out
   mdl.init(numHarmonics, numDataPoints);
 
   // set up the fourier transformer object and block buffers:
-  int K = targetLength;    // block-size (equals FFT size)
+  int K = blockSize;       // block-size (equals FFT size)
   trafo.setBlockSize(K);
   sig.resize(K); 
   mag.resize(K); 
