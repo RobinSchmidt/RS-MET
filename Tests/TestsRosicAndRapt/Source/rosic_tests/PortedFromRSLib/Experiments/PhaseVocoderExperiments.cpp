@@ -1090,6 +1090,15 @@ void harmonicAnalysis1()
   // sample data (which should not go into the RS-MET repo)
 
 
+  // it does not yet make sense to plot the original against the resynthesized signal because we
+  // have not yet post-processed our model data...
+  GNUPlotter plt;
+  //plt.addDataArrays(N, &x[0]);
+  //plt.addDataArrays((int)y.size(), &y[0]);
+  // maybe make sure that y has the same size as x...maybe wrap this analysis/resynthesis roundtrip
+  // into a convenience class
+  //plt.plot();
+
   int dummy = 0;
 }
 
