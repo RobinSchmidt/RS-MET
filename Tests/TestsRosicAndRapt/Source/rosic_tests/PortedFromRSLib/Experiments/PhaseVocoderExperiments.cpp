@@ -1043,7 +1043,8 @@ std::vector<double> createModalPluck(int key, double sampleRate, int length)
   std::vector<double> x(length);
   rosic::rsModalSynth ms;
   ms.setSampleRate(sampleRate);
-  ms.setAmpSlope(-3);
+  //ms.setAmpSlope(-3);
+  ms.setAmpSlope(-6);
   ms.setDecay(500.0);           // in ms
   ms.setDecayByRatio(-100.0);   // in %
   ms.setAttack(10.0);
@@ -1088,6 +1089,13 @@ void harmonicAnalysis1()
 
   // post-processing is done now - but there's still a time-shift between original and 
   // resynthesized - perhaps because model does not start at time zero?
+
+  // verify, if the resynthesizer avoid generating freqs above fs/2, i.e. if it guards against
+  // aliasing - we have very high frequencies in the transient when the ampSlope is set to -3, with
+  // -6, it looks very good
+
+  // there's also an artifact at the very end of the resynthesized signal...figure out...
+  // we really need to take care of the start and end-sections now
 
   // todo: create a new project/repo where we test the analysis/resynthesis framework on real world
   // sample data (which should not go into the RS-MET repo)

@@ -190,16 +190,10 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
     int dummy = 0;
   }
 
-
-  // preliminary: just multiply all time-stamps by 1/sampleRate
+  // convert time data from samples to seconds (multiply all time-stamps by 1/sampleRate):
   for(int hi = 0; hi < numHarmonics; hi++)
     for(int di = 0; di < numDataPoints; di++)
       mdl.getDataRef(hi, di).time /= sampleRate;
-
-
-
-
-
 
 
 
