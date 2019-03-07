@@ -68,65 +68,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   if(preProcess(x, N) == false)  // do the pre-processing
     return mdl;                  // return empty model if pre-processing has failed
 
-  /*
-  Vec cycleMarks = findCycleMarks(x, N);        // cycle marks
-  if(cycleMarks.size() < 2)
-    return mdl;
-  Vec cycleLengths = rsDifference(cycleMarks);  // cycle lengths
-  T maxLength = rsMax(cycleLengths);
-  blockSize = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
-
-  // create the mapping function for the time instants
-  int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
-
-  tIn.resize( mapLength);
-  tOut.resize(mapLength);
-  //Vec tIn(mapLength), tOut(mapLength);  
-  // maybe these should be members (they are needed for the post-processing step, too - and we want
-  // to factor out functions for pre- and post processing)
-
-  // the time-origin is zero for both, original and stretched signal:
-  tIn[0]  = tOut[0] = 0;
-
-  // the first marker is mapped to an instant, such that the initial partial cycle is stretched by
-  // the same amount as the first full cycle (the cycle between 1st and 2nd marker):
-  tIn[1]  = cycleMarks[0];
-  tOut[1] = cycleMarks[0] * blockSize / cycleLengths[0];
-  tOut[1] = round(tOut[1]);
-
-  // all cycles between the initial partial cycle and final partial cycle are stretched to the same 
-  // fixed length
-  for(int i = 2; i < mapLength-1; i++) {
-    tIn[i]  = cycleMarks[i-1];
-    tOut[i] = tOut[i-1] + blockSize;
-  }
-
-  // the end time instant is mapped such that the final partial cycle is stretched by the same 
-  // amount as the last full cycle:
-  double tailLength = (N-1) - rsLast(cycleMarks);
-  tIn [mapLength-1] = N-1;
-  tOut[mapLength-1] = tOut[mapLength-2] + tailLength * blockSize / rsLast(cycleLengths);
-  tOut[mapLength-1] = round(tOut[mapLength-1]);
-
-  Vec test; // for debug
-  test = rsDifference(tOut);
-  // elements should be all equal to targetLength except the first and the last (which should be
-  // shorter than that) - ok - looks good
-
-  // ok, we have created the time warping map, sampled at the cycle-marks, for applying the 
-  // warping, we need to interpolate it up to sample rate - we use linear interpolation for that:
-  int Ny = (int) rsLast(tOut) + 1; // length of stretched signal and warping map
-  Vec t(Ny), w(Ny);                // interpolated time axis and warping map
-  AR::fillWithIndex(&t[0], Ny);
-  RAPT::resampleNonUniformLinear(&tOut[0], &tIn[0], mapLength, &t[0], &w[0], Ny);
-  //test = rsDifference(w); // should be the readout-speed
-
-  // do the time-warping:
-  y.resize(Ny);
-  rsTimeWarper<T, T>::timeWarpSinc(x, N, &y[0], &w[0], Ny, sincLength);
-  */
-
-  // pre-processing done: y contains the pre-processed (pitch-flattened) signal
+  // pre-processing successfully done - y now contains the pre-processed (pitch-flattened) signal
 
   rosic::writeToMonoWaveFile("ModalPluckStretched.wav", &y[0], (int)y.size(), (int)sampleRate);
 
@@ -244,15 +186,9 @@ bool rsHarmonicAnalyzer<T>::preProcess(T* x, int Nx)
 
   // create the mapping function for the time instants
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
-
   tIn.resize( mapLength);
   tOut.resize(mapLength);
-  //Vec tIn(mapLength), tOut(mapLength);  
-  // maybe these should be members (they are needed for the post-processing step, too - and we want
-  // to factor out functions for pre- and post processing)
-
-  // the time-origin is zero for both, original and stretched signal:
-  tIn[0]  = tOut[0] = 0;
+  tIn[0] = tOut[0] = 0;    // time-origin is zero for both, original and stretched signal
 
   // the first marker is mapped to an instant, such that the initial partial cycle is stretched by
   // the same amount as the first full cycle (the cycle between 1st and 2nd marker):
@@ -274,8 +210,8 @@ bool rsHarmonicAnalyzer<T>::preProcess(T* x, int Nx)
   tOut[mapLength-1] = tOut[mapLength-2] + tailLength * blockSize / rsLast(cycleLengths);
   tOut[mapLength-1] = round(tOut[mapLength-1]);
 
-  Vec test; // for debug
-  test = rsDifference(tOut);
+  //Vec test; // for debug
+  //test = rsDifference(tOut);
   // elements should be all equal to targetLength except the first and the last (which should be
   // shorter than that) - ok - looks good
 
