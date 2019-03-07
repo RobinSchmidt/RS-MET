@@ -43,14 +43,26 @@ T rsMax(const std::vector<T> x)
 }
 
 
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
+rsHarmonicAnalyzer<T>::rsHarmonicAnalyzer()
+{
+  typedef rsFourierTransformerRadix2<T> FT;
+  trafo.setDirection(FT::FORWARD);
+  trafo.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+}
+
 template<class T>
 RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
 {
+  typedef RAPT::rsArray AR;
+
   RAPT::rsSinusoidalModel<T> mdl;
 
 
   //-----------------------------------------------------------------------------------------------
-  // pre-processing (flatten pitch):
+  // Step 1: - pre-processing (flatten pitch):
   // todo: factor out...maybe the function preProcess() should return a bool to indicate success
 
   typedef std::vector<T> Vec;
@@ -63,7 +75,10 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
 
   // create the mapping function for the time instants
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
-  Vec tIn(mapLength), tOut(mapLength);
+
+  Vec tIn(mapLength), tOut(mapLength);  
+  // maybe these should be members (they are needed for the post-processing step, too - and we want
+  // to factor out functions for pre- and post processing)
 
   // the time-origin is zero for both, original and stretched signal:
   tIn[0]  = tOut[0] = 0;
@@ -97,7 +112,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   // warping, we need to interpolate it up to sample rate - we use linear interpolation for that:
   int Ny = (int) rsLast(tOut) + 1; // length of stretched signal and warping map
   Vec t(Ny), w(Ny);                // interpolated time axis and warping map
-  RAPT::rsArray::fillWithIndex(&t[0], Ny);
+  AR::fillWithIndex(&t[0], Ny);
   RAPT::resampleNonUniformLinear(&tOut[0], &tIn[0], mapLength, &t[0], &w[0], Ny);
   //test = rsDifference(w); // should be the readout-speed
 
@@ -110,15 +125,54 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
 
   //rosic::writeToMonoWaveFile("StretchedModalPluck.wav", &y[0], Ny, (int)fs);
 
+  //-----------------------------------------------------------------------------------------------
+  // Step 2: - analyze harmonics in flattened signal and write data into sinusoidal model:
+
+  // initialize the model (create all datapoints, to filled with actual data later):
+  int numHarmonics = targetLength / 2;     // number of partials
+  int numFrames    = mapLength;            // number of datapoints in each partial
+  mdl.init(numHarmonics, numFrames);
+
+  // set up the fourier transformer object and block buffers:
+  int M = targetLength;    // block-size (equals FFT size)
+  trafo.setBlockSize(M);
+  sig.resize(M); 
+  mag.resize(M); 
+  phs.resize(M);
+
+  // the initial partial cycle is pre-padded with zeros:
+  //int n;
+  int L = (int) tOut[1];                 // length of initial partial cycle
+  AR::fillWithZeros(&sig[0], M-L);
+  AR::copyBuffer(&y[0], &sig[M-L], L);
+  fillHarmonicData(mdl, 0, T(0.5)*(tOut[1]-tOut[0]));
+    // maybe make a function getTimeStamp(int i) - it should return T(0.5)*(tOut[i+1]-tOut[i]) 
+    // or maybe just tOut[i], depending on user settings. for this, we need to make the tOut array
+    // a member (which we need anyway for factoring out pre- and post processing steps)
 
 
 
-
-
-
-
-
+  // ...
   int dummy = 0;
+
+
+  // the inner cycles are taken as is:
+  // ...
+
+
+  // the final partial cycle is post-padded with zeros:
+  // ...
+
+
+
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // Step 3: - post process data in model to account for the flattening:
+
+
 
 
   // todo: maybe factor out the pre- and post-processing into a class:
@@ -142,12 +196,10 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   // of -90° (a quarter period) - for higher harmonics, take into account the phase-measurement
   // at first marker (for the fundamental, that phase is zero by construction)
 
-  // harmonic data extraction:
-
-  RAPT::rsFourierTransformerRadix2<T> trafo;
 
 
-  // post-processing (account for pitch flattenig):
+
+
 
   return mdl;
 }
@@ -165,5 +217,12 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N, T fs)
   return cm;
 }
 
+template<class T>
+void rsHarmonicAnalyzer<T>::fillHarmonicData(
+  RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp)
+{
+
+  int dummy = 0;
+}
 
 template class rsHarmonicAnalyzer<double>;

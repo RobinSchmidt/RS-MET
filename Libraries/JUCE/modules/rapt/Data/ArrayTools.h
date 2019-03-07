@@ -131,6 +131,7 @@ public:
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
   template <class T1, class T2>
   static void copyBuffer(const T1 *source, T2 *destination, int length);
+  // rename to copy
 
   // old version:
   /** Copies the data of one array into another one. */

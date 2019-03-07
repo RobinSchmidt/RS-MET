@@ -111,6 +111,17 @@ std::vector<T> rsSinusoidalPartial<T>::getPhaseArray() const
 //=================================================================================================
 
 template<class T>
+void rsSinusoidalModel<T>::init(int numPartials, int numFrames)
+{
+  partials.clear();
+  if(numPartials > 0) {
+    partials.resize(numPartials);
+    for(int i = 0; i < numPartials; i++)
+      partials[i].init(numFrames);
+  }
+}
+
+template<class T>
 T rsSinusoidalModel<T>::getStartTime() const
 {
   if(partials.size() == 0)

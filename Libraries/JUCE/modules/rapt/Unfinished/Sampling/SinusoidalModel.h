@@ -93,6 +93,25 @@ public:
   /** Sets the frequency for the datapoint at index i. */
   void setFrequency(int i, T newFreq) { instParams[i].freq = newFreq; }
 
+  /** Sets the data for the instantaneous parameters for the datapoint with given index. */
+  void setData(int i, T time, T freq, T gain, T phase)
+  {
+    rsAssert(i >= 0 && i < (int)instParams.size(), "Invalid index");
+    instParams[i].time  = time;
+    instParams[i].freq  = freq;
+    instParams[i].gain  = gain;
+    instParams[i].phase = phase;
+  }
+
+  /** Initializes our array of data-points. If you pass a nonzero number, then memory will be 
+  allocated for that number of datapoints. You can then fill in the actual data via setData. */
+  void init(int numDataPoints = 0)
+  {
+    instParams.clear();
+    if(numDataPoints > 0)
+      instParams.resize(numDataPoints);
+  }
+
 
   /** \name Inquiry */
 
@@ -219,6 +238,19 @@ public:
       addPartial(partialsToAdd[i]);
     // we need to make a deep copy
   }
+
+  /** Sets the data for the given partial- and data-point (aka frame-) index. */
+  void setData(int partialIndex, int frameIndex, T time, T freq, T gain, T phase)
+  {
+    rsAssert(partialIndex >= 0 && partialIndex < (int)partials.size(), "Invalid index");
+    partials[partialIndex].setData(frameIndex, time, freq, gain, phase);
+  }
+
+  /** Initializes the model. Creates the given number of partials where each partial has the given 
+  number of (initially empty, i.e. zero-valued) datapoints. This is meant to be used to 
+  pre-allocate memory for the model data to be subsequently filled in by calls to setData. */
+  void init(int numPartials = 0, int numFrames = 0);
+
 
   // maybe have a replacePartial function
 

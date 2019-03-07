@@ -34,6 +34,11 @@ class rsHarmonicAnalyzer
 public:
 
 
+
+  rsHarmonicAnalyzer();
+
+
+
   /** \name Setup */
 
 
@@ -46,12 +51,23 @@ public:
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate);
 
 
-
-  std::vector<T> findCycleMarks(T* x, int N, T fs);
-
 protected:
 
+  /** Computes and returns an array of cycle-marks. */
+  std::vector<T> findCycleMarks(T* x, int N, T fs);
+
+  /** Used internally to fill in the data in the model at the given frame-index based on the 
+  current content of our "sig" buffer member variable. The time-stamp of the frame should be passed
+  by the caller - frequency, magnitude and phase data are computed from the FFT of the sig 
+  buffer. */
+  void fillHarmonicData(RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp);
+
+
   //RAPT::rsPitchFlattener<T, T> flattener;
-  //RAPT::rsFourierTransformerRadix2<T> trafo;
+  RAPT::rsFourierTransformerRadix2<T> trafo;
+
+
+
+  std::vector<T> sig, mag, phs;  // buffers for blocks of signal, magnitude and phase
 
 };
