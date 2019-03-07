@@ -1069,11 +1069,9 @@ void harmonicAnalysis1()
   //rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
   // todo: test with less high freq rolloff (makes it more difficult)
 
-
   rsHarmonicAnalyzer<double> analyzer;
-  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N, fs);
-
-
+  analyzer.setSampleRate(fs);
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
 
   int dummy = 0;
 }

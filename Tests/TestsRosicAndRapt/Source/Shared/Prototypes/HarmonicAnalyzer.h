@@ -42,19 +42,22 @@ public:
   /** \name Setup */
 
 
+  /** Sets up the sample-rate. This determines the values of the frequencies that will be written
+  into the model. */
+  void setSampleRate(T newRate) { sampleRate = newRate; }
 
 
   /** \name Processing */
 
   /** Analyzes the given input sound and returns the sinusoidal model object that models the given 
   sound. */
-  RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples, T sampleRate);
+  RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples);
 
 
 protected:
 
   /** Computes and returns an array of cycle-marks. */
-  std::vector<T> findCycleMarks(T* x, int N, T fs);
+  std::vector<T> findCycleMarks(T* x, int N);
 
   /** Used internally to fill in the data in the model at the given frame-index based on the 
   current content of our "sig" buffer member variable. The time-stamp of the frame should be passed
@@ -68,7 +71,7 @@ protected:
 
 
 
-  T sampleRate = 0;
+  T sampleRate = 1;
 
 
 

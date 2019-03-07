@@ -54,19 +54,18 @@ rsHarmonicAnalyzer<T>::rsHarmonicAnalyzer()
 }
 
 template<class T>
-RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
+RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 {
   typedef RAPT::rsArray AR;
 
   RAPT::rsSinusoidalModel<T> mdl;
-
 
   //-----------------------------------------------------------------------------------------------
   // Step 1: - pre-processing (flatten pitch):
   // todo: factor out...maybe the function preProcess() should return a bool to indicate success
 
   typedef std::vector<T> Vec;
-  Vec cycleMarks = findCycleMarks(x, N, fs);    // cycle marks
+  Vec cycleMarks = findCycleMarks(x, N);        // cycle marks
   if(cycleMarks.size() < 2)
     return mdl;
   Vec cycleLengths = rsDifference(cycleMarks);  // cycle lengths
@@ -156,7 +155,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   for(m = 1; m < numFrames-1; m++) {
     int frameStart = (int) tOut[m];
     AR::copyBuffer(&y[frameStart], &sig[0], L);
-    fillHarmonicData(mdl, m, T(0.5)*(tOut[m]-tOut[m+1]));
+    fillHarmonicData(mdl, m, tOut[m] + T(0.5)*(tOut[m+1]-tOut[m]));
   }
 
 
@@ -209,11 +208,11 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
 }
 
 template<class T>
-std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N, T fs)
+std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
 {
   T fl = 20;       // lower limit for fundamental (maybe let user set this up)
   T fu = 5000;     // upper limit for fundamental
-  rsCycleMarkFinder<double> cmf(fs, fl, fu);
+  rsCycleMarkFinder<double> cmf(sampleRate, fl, fu);
   cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, 2: quintic, ...
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   std::vector<T> cm = cmf.findCycleMarks(x, N);
@@ -223,20 +222,29 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N, T fs)
 
 template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
-  RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp)
+  RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T time)
 {
   trafo.getRealSignalMagnitudesAndPhases(&sig[0], &mag[0], &phs[0]);
   int K = trafo.getBlockSize();
   int numPartials = K/2; // maybe -1 for not including DC...or maybe just include
                          // DC into the model
 
+  // maybe we should shift the signal buffer by one half to move the time origin to the center
+  // ...yes - at least, if we use the center of the frame for the time-stamp we need to do this
+  // because only then it is all consistent...maybe we should have a function 
+  // prepareSignalBlockBuffer(int frameIndex)
+
   for(int k = 0; k < numPartials; k++)
   {
-    //T freq = trafo.binIndexToFrequency(k, K, sampleRate);
+    T freq = trafo.binIndexToFrequency(k, K, sampleRate);
+    mdl.setData(k, frameIndex, time, freq, mag[k], phs[k]);
+    // as it is, phs assumes the time origin to be at n = 0 whereas we need it to be at the center
+    // of the sig-buffer, i.e. K/2 (verify this - especially with respect to even/odd buffer 
+    // sizes)
+    // but for the first and last (partial) cycle that may not be correct...or is it? hmm...yes,
+    // it could be
 
   }
-
-
 
   int dummy = 0;
 }
