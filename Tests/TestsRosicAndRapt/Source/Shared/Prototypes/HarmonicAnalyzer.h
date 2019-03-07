@@ -66,6 +66,16 @@ protected:
   /** Returns length of time-warping map (sampled at cycle marks). */
   int getMapLength() const { return (int) tIn.size(); }
   // rename to getTimeWarpMapLength
+   
+  /** Returns the number of FFT analysis frames. */
+  int getNumFrames() const { return getMapLength()-1; }
+
+  /** Returns the number of FFT bins (including DC - maybe rename to getNumBins) */
+  int getNumHarmonics() const { return blockSize / 2; }
+
+  /** Returns the number of datapoints (per partial) in the sinusoidal model. */
+  int getNumDataPoints() const { return getNumFrames(); }
+  // later: getNumFrames() + 2 for fade in/out
 
   /** Computes and returns an array of cycle-marks. */
   std::vector<T> findCycleMarks(T* x, int N);

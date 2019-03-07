@@ -1097,6 +1097,9 @@ void harmonicAnalysis1()
   // there's also an artifact at the very end of the resynthesized signal...figure out...
   // we really need to take care of the start and end-sections now
 
+  // maybe figure out the phase- and fade-in/out stuff with a simpler signal maybe a simple 
+  // sinusoid or sum of 2
+
   // todo: create a new project/repo where we test the analysis/resynthesis framework on real world
   // sample data (which should not go into the RS-MET repo)
 

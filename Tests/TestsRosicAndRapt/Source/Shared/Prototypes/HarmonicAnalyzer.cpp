@@ -129,13 +129,8 @@ bool rsHarmonicAnalyzer<T>::preProcess(T* x, int Nx)
 template<class T>
 void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 {
-  typedef RAPT::rsArray AR;
-
   // Initialize the model (create all datapoints, to filled with actual data later):
-  int numHarmonics  = blockSize / 2;        // number of partials
-  int numFrames     = getMapLength() - 1;   // number of datapoints in each partial
-  int numDataPoints = numFrames;            // maybe later use numFrames+2 for fade-in/out
-  mdl.init(numHarmonics, numDataPoints);
+  mdl.init(getNumHarmonics(), getNumDataPoints());
 
   // Set up the fourier transformer object and block buffers:
   int K = blockSize;       // block-size (equals FFT size)
@@ -148,13 +143,14 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   int n0 = 0;                          // first sample (from y-array) in current frame
   int m  = 0;                          // frame index
   int L  = (int) tOut[1];              // length of initial partial cycle
+  typedef RAPT::rsArray AR;
   AR::fillWithZeros(&sig[0], K-L);
   AR::copyBuffer(&y[n0], &sig[K-L], L);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // The inner cycles/frames are taken as is:
   L = K;                               // length of inner cycles
-  for(m = 1; m < numFrames-1; m++) {
+  for(m = 1; m < getNumFrames()-1; m++) {
     n0 = (int) tOut[m];
     AR::copyBuffer(&y[n0], &sig[0], L);
     fillHarmonicData(mdl, m, getTimeStampForFrame(m));
@@ -170,6 +166,8 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   // todo: double-check all index computations against off-by-one errors, verify time-indices
   // maybe make some plots
 
+  int dummy = 0;
+
   // the distance of the very first marker from the time origin t=0 should probably used for 
   // determining the start phase - don't assume an additional "ghost" marker at t=0 - instead, let
   // the sinusoid start at zero amplitude, frequency determined by the distance between 1st and 2nd
@@ -182,27 +180,22 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 template<class T>
 void rsHarmonicAnalyzer<T>::postProcess(RAPT::rsSinusoidalModel<T>& mdl)
 {
-  int numHarmonics  = blockSize / 2;        // number of partials
-  int numFrames     = getMapLength() - 1;   // number of datapoints in each partial
-  int numDataPoints = numFrames;            // maybe later use numFrames+2 for fade-in/out
-
   // todo: get rid of these vectors - compute values on the fly inside the loop
   std::vector<T> lw = rsDifference(tOut);  // warped lengths of cycles
   std::vector<T> lu = rsDifference(tIn);   // unwarped lengths of cycles
-  for(int m = 0; m < numFrames; m++) {
+  for(int m = 0; m < getNumFrames(); m++) {
     T tw = getTimeStampForFrame(m);         // warped time
     T tu = getUnWarpedTimeStampForFrame(m); // unwarped time
     T r  = lw[m] / lu[m];                   // stretching ratio applied to frame m
-    for(int k = 0; k < numHarmonics; k++) {
+    for(int k = 0; k < getNumHarmonics(); k++) {
       mdl.getDataRef(k, m).time  = tu;
       mdl.getDataRef(k, m).freq *= r;
     }
-    int dummy = 0;
   }
 
   // convert time data from samples to seconds (multiply all time-stamps by 1/sampleRate):
-  for(int hi = 0; hi < numHarmonics; hi++)
-    for(int di = 0; di < numDataPoints; di++)
+  for(int hi = 0; hi < getNumHarmonics(); hi++)
+    for(int di = 0; di < getNumDataPoints(); di++)
       mdl.getDataRef(hi, di).time /= sampleRate;
 }
 
