@@ -68,6 +68,10 @@ protected:
 
 
 
+  T sampleRate = 0;
+
+
+
   std::vector<T> sig, mag, phs;  // buffers for blocks of signal, magnitude and phase
 
 };

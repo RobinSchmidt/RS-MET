@@ -134,7 +134,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
   mdl.init(numHarmonics, numFrames);
 
   // set up the fourier transformer object and block buffers:
-  int M = targetLength;    // block-size (equals FFT size)
+  int M = targetLength;    // block-size (equals FFT size) - maybe use K, and M for numFrames
   trafo.setBlockSize(M);
   sig.resize(M); 
   mag.resize(M); 
@@ -150,17 +150,21 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N, T fs)
     // or maybe just tOut[i], depending on user settings. for this, we need to make the tOut array
     // a member (which we need anyway for factoring out pre- and post processing steps)
 
+  // the inner cycles/frames are taken as is:
+  L = M;
+  int m;  // frame index
+  for(m = 1; m < numFrames-1; m++) {
+    int frameStart = (int) tOut[m];
+    AR::copyBuffer(&y[frameStart], &sig[0], L);
+    fillHarmonicData(mdl, m, T(0.5)*(tOut[m]-tOut[m+1]));
+  }
 
 
-  // ...
   int dummy = 0;
 
 
-  // the inner cycles are taken as is:
-  // ...
-
-
   // the final partial cycle is post-padded with zeros:
+  // L = ...
   // ...
 
 
@@ -221,6 +225,18 @@ template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
   RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp)
 {
+  trafo.getRealSignalMagnitudesAndPhases(&sig[0], &mag[0], &phs[0]);
+  int K = trafo.getBlockSize();
+  int numPartials = K/2; // maybe -1 for not including DC...or maybe just include
+                         // DC into the model
+
+  for(int k = 0; k < numPartials; k++)
+  {
+    //T freq = trafo.binIndexToFrequency(k, K, sampleRate);
+
+  }
+
+
 
   int dummy = 0;
 }

@@ -56,7 +56,10 @@ public:
   void setNormalizationMode(int newNormalizationMode);
 
 
+  /** \name Inquiry */
 
+  /** Returns the size of FFT blocks. */
+  int getBlockSize() const { return N; }
 
 
   /** \name Transforms */
