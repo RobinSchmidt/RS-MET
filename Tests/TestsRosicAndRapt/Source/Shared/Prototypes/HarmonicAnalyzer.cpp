@@ -147,7 +147,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   int m  = 0;                          // frame index
   int L  = (int) tOut[1];              // length of initial partial cycle
   AR::fillWithZeros(&sig[0], M-L);
-  AR::copyBuffer(&y[0], &sig[M-L], L);
+  AR::copyBuffer(&y[n0], &sig[M-L], L);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // the inner cycles/frames are taken as is:
@@ -161,19 +161,22 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   // the final partial cycle is post-padded with zeros:
   n0 = (int) tOut[m]; 
   L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);  // maybe +1? check against off-by-1
-  // ...
+  AR::copyBuffer(&y[n0], &sig[0], L);
+  AR::fillWithZeros(&sig[L], M-L);
+  fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   int dummy = 0;
 
-
-  // todo: double-check all index computations against off-by-one errors
-
-
-
+  // harmonic analysis done: mdl contains the not-yet-post-processed model data
+  // todo: double-check all index computations against off-by-one errors, verify time-indices
+  // maybe make some plots
 
 
   //-----------------------------------------------------------------------------------------------
   // Step 3: - post process data in model to account for the flattening:
+
+
+
 
 
 
@@ -185,12 +188,6 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   // in between these two calls, we do the harmonic extraction, the class keeps around the warping 
   // map after pre-processing the audio and uses it again in the post-processing step
 
-
-
-
-
-
-
   // the distance of the very first marker from the time origin t=0 should probably used for 
   // determining the start phase - don't assume an additional "ghost" marker at t=0 - instead, let
   // the sinusoid start at zero amplitude, frequency determined by the distance between 1st and 2nd
@@ -198,11 +195,6 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   // first marker is at 25 and the second is at 125, assume a cycle length of 100 and start phase
   // of -90° (a quarter period) - for higher harmonics, take into account the phase-measurement
   // at first marker (for the fundamental, that phase is zero by construction)
-
-
-
-
-
 
   return mdl;
 }
