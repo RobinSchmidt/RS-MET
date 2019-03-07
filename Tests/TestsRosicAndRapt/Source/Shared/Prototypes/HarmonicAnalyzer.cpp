@@ -233,6 +233,13 @@ template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
   RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T time)
 {
+  int dataIndex = frameIndex;
+  // maybe we should use numDataPoints = numFrames+2 for prepending and appending a datapoint with
+  // zero amplitude for fade-in/out (for each partial) - then we should init the model with
+  // numDataPoints instead of numFrames and use dataIndex = frameIndex+1 here - the dataPoints
+  // at indices 0 and numDataPoints-1 have to be treated separately..
+
+
   trafo.getRealSignalMagnitudesAndPhases(&sig[0], &mag[0], &phs[0]);
   int K = trafo.getBlockSize();
   int numPartials = K/2; // maybe -1 for not including DC...or maybe just include
@@ -246,7 +253,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   for(int k = 0; k < numPartials; k++)
   {
     T freq = trafo.binIndexToFrequency(k, K, sampleRate);
-    mdl.setData(k, frameIndex, time, freq, mag[k], phs[k]);
+    mdl.setData(k, dataIndex, time, freq, mag[k], phs[k]);
     // as it is, phs assumes the time origin to be at n = 0 whereas we need it to be at the center
     // of the sig-buffer, i.e. K/2 (verify this - especially with respect to even/odd buffer 
     // sizes)

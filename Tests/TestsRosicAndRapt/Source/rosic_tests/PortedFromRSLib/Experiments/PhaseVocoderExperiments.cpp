@@ -1066,12 +1066,17 @@ void harmonicAnalysis1()
   std::vector<double> x = createModalPluck(key, fs, N);
   //plotVector(x);
 
-  //rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
+  rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
   // todo: test with less high freq rolloff (makes it more difficult)
 
   rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
+  //plotSineModel(mdl, fs);  // model looks ok
+  //std::vector<double> y = synthesizeSinusoidal(mdl, fs); // hangs :-O why?!
+  //plotVector(y);
+  //rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
+
 
   int dummy = 0;
 }
