@@ -56,7 +56,8 @@ public:
 protected:
 
   // todo: refactor to use these 3 functions in analyze:
-  void preProcess(T* sampleData, int numSamples);
+  bool preProcess(T* sampleData, int numSamples);
+
   void analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl);
   void postProcess(RAPT::rsSinusoidalModel<T>& mdl);
 
