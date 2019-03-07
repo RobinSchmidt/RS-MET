@@ -56,70 +56,14 @@ rsHarmonicAnalyzer<T>::rsHarmonicAnalyzer()
 template<class T>
 RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 {
-  typedef RAPT::rsArray AR;
-  typedef std::vector<T> Vec;
+  RAPT::rsSinusoidalModel<T> mdl; // init empty model
+  if(preProcess(x, N) == false)   // pre-process audio (flatten pitch)
+    return mdl;                   // return empty model if pre-processing has failed
+  analyzeHarmonics(mdl);          // create model from pitch-flattened signal (now in member y)
+  postProcess(mdl);               // post process model data to account for flattening
+  return mdl;
 
-  RAPT::rsSinusoidalModel<T> mdl;
-
-  //-----------------------------------------------------------------------------------------------
-  // Step 1: - pre-processing (flatten pitch):
-  // todo: factor out...maybe the function preProcess() should return a bool to indicate success
-
-  if(preProcess(x, N) == false)  // do the pre-processing
-    return mdl;                  // return empty model if pre-processing has failed
-
-  // pre-processing successfully done - y now contains the pre-processed (pitch-flattened) signal
-
-  rosic::writeToMonoWaveFile("ModalPluckStretched.wav", &y[0], (int)y.size(), (int)sampleRate);
-
-  //-----------------------------------------------------------------------------------------------
-  // Step 2: - analyze harmonics in flattened signal and write data into sinusoidal model:
-
-  analyzeHarmonics(mdl);
-
-
-  // initialize the model (create all datapoints, to filled with actual data later):
-  //int mapLength     = (int) tIn.size();     // == tOut.size
-  //int numHarmonics  = blockSize / 2;        // number of partials
-  //int numFrames     = mapLength - 1;        // number of datapoints in each partial
-  //int numDataPoints = numFrames;            // maybe later use numFrames+2 for fade-in/out
-
-
-
-  int dummy = 0;
-
-  // harmonic analysis done: mdl contains the not-yet-post-processed model data
-  // todo: double-check all index computations against off-by-one errors, verify time-indices
-  // maybe make some plots
-
-
-  //-----------------------------------------------------------------------------------------------
-  // Step 3: - post process data in model to account for the flattening:
-
-  postProcess(mdl);
-
-  /*
-  // todo: get rid of these vectors - compute values on the fly inside the loop
-  Vec lw = rsDifference(tOut);  // warped lengths of cycles
-  Vec lu = rsDifference(tIn);   // unwarped lengths of cycles
-  for(int m = 0; m < numFrames; m++) {
-    T tw = getTimeStampForFrame(m);         // warped time
-    T tu = getUnWarpedTimeStampForFrame(m); // unwarped time
-    T r  = lw[m] / lu[m];                   // stretching ratio applied to frame m
-    for(int k = 0; k < numHarmonics; k++) {
-      mdl.getDataRef(k, m).time  = tu;
-      mdl.getDataRef(k, m).freq *= r;
-    }
-    int dummy = 0;
-  }
-
-  // convert time data from samples to seconds (multiply all time-stamps by 1/sampleRate):
-  for(int hi = 0; hi < numHarmonics; hi++)
-    for(int di = 0; di < numDataPoints; di++)
-      mdl.getDataRef(hi, di).time /= sampleRate;
-  */
-
-
+  //rosic::writeToMonoWaveFile("ModalPluckStretched.wav", &y[0], (int)y.size(), (int)sampleRate);
 
   // todo: clean up the model: remove partials that are consistently above the nyquist freq - due 
   // to the stretching, we may get frequencies almost up to the sample-rate (we downshift at most 
@@ -127,25 +71,6 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   // twice the number of frequencies as it should have...(although their amplitudes are really low)
   // ...maybe also introduce an amplitude threshold and remove partials that are consistently below
   // that threshold
-
-
-
-  // todo: maybe factor out the pre- and post-processing into a class:
-  // rsFlatPitchPrePostProcessor
-  //   std::vector<T> preProcessAudio(T* x, int N);
-  //   postProcessModel(rsSinusoidalModel<T>& model);
-  // in between these two calls, we do the harmonic extraction, the class keeps around the warping 
-  // map after pre-processing the audio and uses it again in the post-processing step
-
-  // the distance of the very first marker from the time origin t=0 should probably used for 
-  // determining the start phase - don't assume an additional "ghost" marker at t=0 - instead, let
-  // the sinusoid start at zero amplitude, frequency determined by the distance between 1st and 2nd
-  // marker and phase appropriate to the frequency and time-value of the 1st marker (i.e. if the 
-  // first marker is at 25 and the second is at 125, assume a cycle length of 100 and start phase
-  // of -90° (a quarter period) - for higher harmonics, take into account the phase-measurement
-  // at first marker (for the fundamental, that phase is zero by construction)
-
-  return mdl;
 }
 
 template<class T>
@@ -154,57 +79,50 @@ bool rsHarmonicAnalyzer<T>::preProcess(T* x, int Nx)
   typedef RAPT::rsArray AR;
   typedef std::vector<T> Vec;
 
+  // Find cycle marks and assign FFT blockSize:
   Vec cycleMarks = findCycleMarks(x, Nx);        // cycle marks
   if(cycleMarks.size() < 2)
-    return false;
-
-  Vec cycleLengths = rsDifference(cycleMarks);  // cycle lengths
+    return false;                                // report failure
+  Vec cycleLengths = rsDifference(cycleMarks);   // cycle lengths
   T maxLength = rsMax(cycleLengths);
   blockSize = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
 
-  // create the mapping function for the time instants
+  // Create the mapping function for the time instants of the cycle marks:
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
   tIn.resize( mapLength);
   tOut.resize(mapLength);
   tIn[0] = tOut[0] = 0;    // time-origin is zero for both, original and stretched signal
 
-  // the first marker is mapped to an instant, such that the initial partial cycle is stretched by
+  // The first marker is mapped to an instant, such that the initial partial cycle is stretched by
   // the same amount as the first full cycle (the cycle between 1st and 2nd marker):
   tIn[1]  = cycleMarks[0];
   tOut[1] = cycleMarks[0] * blockSize / cycleLengths[0];
   tOut[1] = round(tOut[1]);
 
-  // all cycles between the initial partial cycle and final partial cycle are stretched to the same 
-  // fixed length
+  // All cycles between the initial partial cycle and final partial cycle are stretched to the same 
+  // fixed length:
   for(int i = 2; i < mapLength-1; i++) {
     tIn[i]  = cycleMarks[i-1];
     tOut[i] = tOut[i-1] + blockSize;
   }
 
-  // the end time instant is mapped such that the final partial cycle is stretched by the same 
+  // The end time instant is mapped such that the final partial cycle is stretched by the same 
   // amount as the last full cycle:
-  double tailLength = (Nx-1) - rsLast(cycleMarks);
+  T tailLength = (Nx-1) - rsLast(cycleMarks);
   tIn [mapLength-1] = Nx-1;
   tOut[mapLength-1] = tOut[mapLength-2] + tailLength * blockSize / rsLast(cycleLengths);
   tOut[mapLength-1] = round(tOut[mapLength-1]);
 
-  //Vec test; // for debug
-  //test = rsDifference(tOut);
-  // elements should be all equal to targetLength except the first and the last (which should be
-  // shorter than that) - ok - looks good
-
-  // ok, we have created the time warping map, sampled at the cycle-marks, for applying the 
-  // warping, we need to interpolate it up to sample rate - we use linear interpolation for that:
+  // We have created the time warping map, sampled at the cycle-marks. For applying the 
+  // warping, we interpolate it up to sample rate via linear interpolation:
   int Ny = (int) rsLast(tOut) + 1; // length of stretched signal and warping map
   Vec t(Ny), w(Ny);                // interpolated time axis and warping map
   AR::fillWithIndex(&t[0], Ny);
   RAPT::resampleNonUniformLinear(&tOut[0], &tIn[0], mapLength, &t[0], &w[0], Ny);
-  //test = rsDifference(w); // should be the readout-speed
 
-  // do the time-warping:
+  // Do the time-warping:
   y.resize(Ny);
   rsTimeWarper<T, T>::timeWarpSinc(x, Nx, &y[0], &w[0], Ny, sincLength);
-
   return true;
 }
 
@@ -212,23 +130,21 @@ template<class T>
 void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 {
   typedef RAPT::rsArray AR;
-  //typedef std::vector<T> Vec;
 
-  // initialize the model (create all datapoints, to filled with actual data later):
-  //int mapLength     = (int) tIn.size();     // == tOut.size
+  // Initialize the model (create all datapoints, to filled with actual data later):
   int numHarmonics  = blockSize / 2;        // number of partials
   int numFrames     = getMapLength() - 1;   // number of datapoints in each partial
   int numDataPoints = numFrames;            // maybe later use numFrames+2 for fade-in/out
   mdl.init(numHarmonics, numDataPoints);
 
-  // set up the fourier transformer object and block buffers:
+  // Set up the fourier transformer object and block buffers:
   int K = blockSize;       // block-size (equals FFT size)
   trafo.setBlockSize(K);
   sig.resize(K); 
   mag.resize(K); 
   phs.resize(K);
 
-  // the initial partial cycle is pre-padded with zeros:
+  // The initial partial cycle is pre-padded with zeros:
   int n0 = 0;                          // first sample (from y-array) in current frame
   int m  = 0;                          // frame index
   int L  = (int) tOut[1];              // length of initial partial cycle
@@ -236,7 +152,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   AR::copyBuffer(&y[n0], &sig[K-L], L);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
-  // the inner cycles/frames are taken as is:
+  // The inner cycles/frames are taken as is:
   L = K;                               // length of inner cycles
   for(m = 1; m < numFrames-1; m++) {
     n0 = (int) tOut[m];
@@ -244,22 +160,31 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
     fillHarmonicData(mdl, m, getTimeStampForFrame(m));
   }
 
-  // the final partial cycle is post-padded with zeros:
+  // The final partial cycle is post-padded with zeros:
   n0 = (int) tOut[m]; 
   L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);  // maybe +1? check against off-by-1
   AR::copyBuffer(&y[n0], &sig[0], L);
   AR::fillWithZeros(&sig[L], K-L);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
+
+  // todo: double-check all index computations against off-by-one errors, verify time-indices
+  // maybe make some plots
+
+  // the distance of the very first marker from the time origin t=0 should probably used for 
+  // determining the start phase - don't assume an additional "ghost" marker at t=0 - instead, let
+  // the sinusoid start at zero amplitude, frequency determined by the distance between 1st and 2nd
+  // marker and phase appropriate to the frequency and time-value of the 1st marker (i.e. if the 
+  // first marker is at 25 and the second is at 125, assume a cycle length of 100 and start phase
+  // of -90° (a quarter period) - for higher harmonics, take into account the phase-measurement
+  // at first marker (for the fundamental, that phase is zero by construction)
 }
 
 template<class T>
 void rsHarmonicAnalyzer<T>::postProcess(RAPT::rsSinusoidalModel<T>& mdl)
 {
-  //int mapLength     = (int) tIn.size();     // == tOut.size
   int numHarmonics  = blockSize / 2;        // number of partials
   int numFrames     = getMapLength() - 1;   // number of datapoints in each partial
   int numDataPoints = numFrames;            // maybe later use numFrames+2 for fade-in/out
-
 
   // todo: get rid of these vectors - compute values on the fly inside the loop
   std::vector<T> lw = rsDifference(tOut);  // warped lengths of cycles
