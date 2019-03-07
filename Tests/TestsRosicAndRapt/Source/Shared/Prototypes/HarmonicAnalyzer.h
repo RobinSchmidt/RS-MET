@@ -73,8 +73,8 @@ protected:
 
   T sampleRate = 1;
 
-
-
-  std::vector<T> sig, mag, phs;  // buffers for blocks of signal, magnitude and phase
+  // buffers:
+  std::vector<T> tIn, tOut;      // time-warping map (sampled at cycle marks)
+  std::vector<T> sig, mag, phs;  // blocks of signal, magnitude and phase
 
 };

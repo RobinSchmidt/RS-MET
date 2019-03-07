@@ -75,7 +75,9 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   // create the mapping function for the time instants
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
 
-  Vec tIn(mapLength), tOut(mapLength);  
+  tIn.resize( mapLength);
+  tOut.resize(mapLength);
+  //Vec tIn(mapLength), tOut(mapLength);  
   // maybe these should be members (they are needed for the post-processing step, too - and we want
   // to factor out functions for pre- and post processing)
 
