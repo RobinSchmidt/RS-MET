@@ -1100,6 +1100,10 @@ void harmonicAnalysis1()
   // todo: create a new project/repo where we test the analysis/resynthesis framework on real world
   // sample data (which should not go into the RS-MET repo)
 
+  // maybe the framework can be used to compress samples - in areas where the partials are well
+  // approximated by interpolated tarjectories, we could reduce the density of datapoints
+  // ...the compression would be lossy, though
+
 
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);

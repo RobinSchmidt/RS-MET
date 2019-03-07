@@ -70,7 +70,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
     return mdl;
   Vec cycleLengths = rsDifference(cycleMarks);  // cycle lengths
   T maxLength = rsMax(cycleLengths);
-  int targetLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
+  int targetLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength)); // rename to blockSize
 
   // create the mapping function for the time instants
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
@@ -118,8 +118,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   //test = rsDifference(w); // should be the readout-speed
 
   // do the time-warping:
-  double sincLength = 64.0;        // length of sinc-interpolator
-  Vec y(Ny);                       // stretched signal
+  y.resize(Ny);
   rsTimeWarper<T, T>::timeWarpSinc(x, N, &y[0], &w[0], Ny, sincLength);
 
   // pre-processing done: y contains the pre-processed (pitch-flattened) signal
@@ -143,7 +142,6 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   phs.resize(K);
 
   // the initial partial cycle is pre-padded with zeros:
-  //int n;
   int n0 = 0;                          // first sample (from y-array) in current frame
   int m  = 0;                          // frame index
   int L  = (int) tOut[1];              // length of initial partial cycle
@@ -194,6 +192,15 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   for(int hi = 0; hi < numHarmonics; hi++)
     for(int di = 0; di < numDataPoints; di++)
       mdl.getDataRef(hi, di).time /= sampleRate;
+
+
+
+  // todo: prune the model: remove partials that are consistently above the nyquist freq - due to
+  // the stretching, we may get frequencies almost up to the sample-rate (we downshift at most by
+  // an octave (with respect to the longest original cycle) - so the model my end up having twice
+  // the number of frequencies as it should have...(although their amplitudes are really low)
+  // ...maybe also introduce an amplitude threshold and remove partials that are consistently below
+  // that threshold
 
 
 

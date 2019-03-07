@@ -88,6 +88,9 @@ protected:
 
 
   T sampleRate = 1;
+  T sincLength = 64.0;  // length of sinc-interpolator for time-warping
+
+  std::vector<T> y;     // pre-processed (time-warped) signal
 
   // buffers:
   std::vector<T> tIn, tOut;      // time-warping map (sampled at cycle marks)
