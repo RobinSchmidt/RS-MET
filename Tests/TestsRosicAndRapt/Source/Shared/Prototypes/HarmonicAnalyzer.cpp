@@ -75,11 +75,16 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   //-----------------------------------------------------------------------------------------------
   // Step 2: - analyze harmonics in flattened signal and write data into sinusoidal model:
 
+  analyzeHarmonics(mdl);
+
+
   // initialize the model (create all datapoints, to filled with actual data later):
   int mapLength     = (int) tIn.size();     // == tOut.size
   int numHarmonics  = blockSize / 2;        // number of partials
   int numFrames     = mapLength - 1;        // number of datapoints in each partial
   int numDataPoints = numFrames;            // maybe later use numFrames+2 for fade-in/out
+
+  /*
   mdl.init(numHarmonics, numDataPoints);
 
   // set up the fourier transformer object and block buffers:
@@ -111,6 +116,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   AR::copyBuffer(&y[n0], &sig[0], L);
   AR::fillWithZeros(&sig[L], K-L);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
+  */
 
   int dummy = 0;
 
@@ -125,7 +131,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   // todo: get rid of these vectors - compute values on the fly inside the loop
   Vec lw = rsDifference(tOut);  // warped lengths of cycles
   Vec lu = rsDifference(tIn);   // unwarped lengths of cycles
-  for(m = 0; m < numFrames; m++) {
+  for(int m = 0; m < numFrames; m++) {
     T tw = getTimeStampForFrame(m);         // warped time
     T tu = getUnWarpedTimeStampForFrame(m); // unwarped time
     T r  = lw[m] / lu[m];                   // stretching ratio applied to frame m
@@ -233,14 +239,50 @@ bool rsHarmonicAnalyzer<T>::preProcess(T* x, int Nx)
 template<class T>
 void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 {
+  typedef RAPT::rsArray AR;
+  //typedef std::vector<T> Vec;
 
+  // initialize the model (create all datapoints, to filled with actual data later):
+  //int mapLength     = (int) tIn.size();     // == tOut.size
+  int numHarmonics  = blockSize / 2;        // number of partials
+  int numFrames     = getMapLength() - 1;   // number of datapoints in each partial
+  int numDataPoints = numFrames;            // maybe later use numFrames+2 for fade-in/out
+  mdl.init(numHarmonics, numDataPoints);
 
+  // set up the fourier transformer object and block buffers:
+  int K = blockSize;       // block-size (equals FFT size)
+  trafo.setBlockSize(K);
+  sig.resize(K); 
+  mag.resize(K); 
+  phs.resize(K);
+
+  // the initial partial cycle is pre-padded with zeros:
+  int n0 = 0;                          // first sample (from y-array) in current frame
+  int m  = 0;                          // frame index
+  int L  = (int) tOut[1];              // length of initial partial cycle
+  AR::fillWithZeros(&sig[0], K-L);
+  AR::copyBuffer(&y[n0], &sig[K-L], L);
+  fillHarmonicData(mdl, m, getTimeStampForFrame(m));
+
+  // the inner cycles/frames are taken as is:
+  L = K;                               // length of inner cycles
+  for(m = 1; m < numFrames-1; m++) {
+    n0 = (int) tOut[m];
+    AR::copyBuffer(&y[n0], &sig[0], L);
+    fillHarmonicData(mdl, m, getTimeStampForFrame(m));
+  }
+
+  // the final partial cycle is post-padded with zeros:
+  n0 = (int) tOut[m]; 
+  L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);  // maybe +1? check against off-by-1
+  AR::copyBuffer(&y[n0], &sig[0], L);
+  AR::fillWithZeros(&sig[L], K-L);
+  fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 }
 
 template<class T>
 void rsHarmonicAnalyzer<T>::postProcess(RAPT::rsSinusoidalModel<T>& mdl)
 {
-
 
 }
 

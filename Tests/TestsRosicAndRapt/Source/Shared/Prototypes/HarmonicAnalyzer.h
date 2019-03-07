@@ -59,8 +59,13 @@ protected:
   bool preProcess(T* sampleData, int numSamples);
 
   void analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl);
+
   void postProcess(RAPT::rsSinusoidalModel<T>& mdl);
 
+
+  /** Returns length of time-warping map (sampled at cycle marks). */
+  int getMapLength() const { return (int) tIn.size(); }
+  // rename to getTimeWarpMapLength
 
   /** Computes and returns an array of cycle-marks. */
   std::vector<T> findCycleMarks(T* x, int N);
