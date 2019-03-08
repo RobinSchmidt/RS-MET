@@ -1069,12 +1069,17 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
   bool writeWaveFiles = true;
   bool plotResults    = true;
 
-  // create input signal:
+  // create input signal (factor out, move to TestInputCreation):
   double key = rsFreqToPitch(f);
   std::vector<double> input(N);  // input signal
   double* x = &input[0];         // pointer to first sample (for convenience)
   if( name == "Sine")       createSineWave(  x, N, f, 0.5, fs, 0.0);
   else if(name == "Cosine") createSineWave(  x, N, f, 0.5, fs, PI/2);
+  else if(name == "TwoSines") {
+    double f2[2] = {   f, 10*f };
+    double a2[2] = { 0.3, 0.3  };
+    createSumOfSines(x, N, 2, fs, f2, a2);
+  }
   else if(name == "Pluck")  createModalPluck(x, N, key, fs);
   else rsError("Unknown sound name");
 
@@ -1106,11 +1111,12 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
   }
 }
 
-void harmonicAnalysis1()
+void harmonicAnalysis1()  // rename to harmonicResynthesis
 {
-  testHarmonicResynthesis("Sine",   500, 44100, 5000);
-  testHarmonicResynthesis("Cosine", 500, 44100, 5000);
-  testHarmonicResynthesis("Pluck",  500, 44100, 5000);
+  testHarmonicResynthesis("Sine",     500, 44100, 5000);
+  testHarmonicResynthesis("Cosine",   500, 44100, 5000);
+  testHarmonicResynthesis("TwoSines", 200, 44100, 5000);
+  testHarmonicResynthesis("Pluck",    500, 44100, 5000);
 
 
   // todo: test with less high freq rolloff (makes it more difficult)
@@ -1122,7 +1128,8 @@ void harmonicAnalysis1()
 
   // -try resynthesizing without DC
 
-  // -try a better sinc-interpolator (longer kernel and/or better window)
+  // -try a better sinc-interpolator (longer kernel and/or better window) ...maybe also try worse
+  //  interpolators to see, if it indeed has to do with the interpolation
 
   // -try different synthesis settings (phase- and amplitude interpolation scheme, etc.)
   //  it's actually quite plausible that the error signal may be due to the interpolation of 
