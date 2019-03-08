@@ -283,8 +283,8 @@ public:
   // decay = baseDecay * exp(cr*decayByRatio  + ck*decayByKey  + cv*decayByVel);
   // these 3 functions compute the coefficients cr, ck, cv (maybe make protected):
   double getTimeCoeffByIndex(int index) const;
-  double getTimeCoeffByKey(int key) const;
-  double getTimeCoeffByVel(int vel) const;
+  double getTimeCoeffByKey(double key) const;
+  double getTimeCoeffByVel(double vel) const;
 
 
   //int getMaxNumModes() const { return maxNumModes; }
@@ -324,7 +324,12 @@ public:
     // use adjustable factor
   }
 
-  void noteOn(int key, int velocity);
+  /** A note-on function where key and vel are passed as floating point numbers because in the 
+  context of experimenting, it may be convenient to allow arbitrary/continuous frequencies. */
+  void noteOn(double key, double velocity);
+
+  /** A regular note-on function, accepting integers for key and vel. */
+  void noteOn(int key, int velocity) { noteOn(double(key), double(velocity)); }
 
   void reset()
   {

@@ -270,15 +270,15 @@ double rsModalSynth::getTimeCoeffByIndex(int i) const
   return cr;
 }
 
-double rsModalSynth::getTimeCoeffByKey(int key) const
+double rsModalSynth::getTimeCoeffByKey(double key) const
 {
-  double ck = (LN2/12.0) * double(key-64); // 64 is the neutral reference key
+  double ck = (LN2/12.0) * (key-64.0); // 64 is the neutral reference key
   return ck;
 }
 
-double rsModalSynth::getTimeCoeffByVel(int vel) const
+double rsModalSynth::getTimeCoeffByVel(double vel) const
 {
-  double cv = (LN2/63.0) * double(vel-64); // 64 is the neutral reference velocity
+  double cv = (LN2/63.0) * (vel-64.0); // 64 is the neutral reference velocity
   return cv;
 }
 // i think, for scaling the attack/decay time-values by key, we should use the scaler
@@ -312,7 +312,7 @@ void rsModalSynth::fillFreqRatios(double* ratios, double *logRatios, int profile
   updateFreqRatios();
 }
 
-void rsModalSynth::noteOn(int key, int vel)
+void rsModalSynth::noteOn(double key, double vel)
 {
   if(vel == 0)
     return; // note off

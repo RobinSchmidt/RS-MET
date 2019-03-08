@@ -1038,9 +1038,10 @@ void sinusoidalAnalysis3()
 }
 
 
-std::vector<double> createModalPluck(int key, double sampleRate, int length)
+
+// move to TestInputCreation:
+void createModalPluck(double* x, int N, double key, double sampleRate)
 {
-  std::vector<double> x(length);
   rosic::rsModalSynth ms;
   ms.setSampleRate(sampleRate);
   //ms.setAmpSlope(-3);
@@ -1048,13 +1049,19 @@ std::vector<double> createModalPluck(int key, double sampleRate, int length)
   ms.setDecay(500.0);           // in ms
   ms.setDecayByRatio(-100.0);   // in %
   ms.setAttack(10.0);
-  ms.noteOn(key, 64); // maybe have a noteOnViaFreq or one that admits float keys
+  ms.noteOn(key, 64.0);
   double dummy; // unused right channel output
-  for(int n = 0; n < length; n++)
+  for(int n = 0; n < N; n++) {
     ms.getSampleFrameStereo(&x[n], &dummy);
-  return 0.5 * x;  // fix amplitude
+    x[n] *= 0.5;  // maybe make the amplitude a parameter
+  }
 }
-
+std::vector<double> createModalPluck(double key, double sampleRate, int length)
+{
+  std::vector<double> x(length);
+  createModalPluck(&x[0], length, key, sampleRate);
+  return x;
+}
 
 void testHarmonicResynthesis(const std::string& name, double f, double fs, int N)
 {
@@ -1063,26 +1070,23 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
   bool plotResults    = true;
 
   // create input signal:
+  double key = rsFreqToPitch(f);
   std::vector<double> input(N);  // input signal
   double* x = &input[0];         // pointer to first sample (for convenience)
-  if( name == "Sine")
-    createSineWave(x, N, f, 0.5, fs, 0.0);
-  else if(name == "Cosine")
-    createSineWave(x, N, f, 0.5, fs, PI/2);
-  else
-    rsError("Unknown sound name");
+  if( name == "Sine")       createSineWave(  x, N, f, 0.5, fs, 0.0);
+  else if(name == "Cosine") createSineWave(  x, N, f, 0.5, fs, PI/2);
+  else if(name == "Pluck")  createModalPluck(x, N, key, fs);
+  else rsError("Unknown sound name");
 
   // analyze, resynthesize and create error signal:
   rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, N);
-  //plotSineModel(mdl, fs);  // model looks ok
+  //plotSineModel(mdl, fs);
   std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
-  std::vector<double> error = output-input;  // error
-  double* y = &output[0];
-  double* e = &error[0];
-  int Ny = (int) output.size();
-  int Ne = (int) error.size();
+  std::vector<double> error = output-input;
+  double* y = &output[0]; int Ny = (int) output.size(); // again, for convenience
+  double* e = &error[0];  int Ne = (int) error.size();  // dito
 
   // write original, resynthesized and error signals to files, if desired:
   std::string name2 = name + std::to_string(f) + "Hz";
@@ -1106,8 +1110,12 @@ void harmonicAnalysis1()
 {
   testHarmonicResynthesis("Sine",   500, 44100, 5000);
   testHarmonicResynthesis("Cosine", 500, 44100, 5000);
+  testHarmonicResynthesis("Pluck",  500, 44100, 5000);
 
 
+
+
+  // old - soon obsolete:
   // we create a model for a plucked string sound created by the modal synthesizer
 
 
@@ -1146,6 +1154,8 @@ void harmonicAnalysis1()
   // -try with saw-wave and two sines (fundamental plus 10*fundamental, for example)
 
   // -try resynthesizing without DC
+
+  // -try a better sinc-interpolator (longer kernel and/or better window)
 
   // -try different synthesis settings (phase- and amplitude interpolation scheme, etc.)
   //  it's actually quite plausible that the error signal may be due to the interpolation of 
