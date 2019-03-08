@@ -42,9 +42,9 @@ void createPulseWave(double *x, int N, double frequency, double dutyCycle, doubl
 
 /** Creates a sine-wave of length N (in samples) with frequency f at and amplitude a, 
 at samplerate fs. */
-void createSineWave(double *x, int N, double f, double a, double fs);
+void createSineWave(double *x, int N, double f, double a, double fs, double p = 0);
 
-std::vector<double> createSineWave(int N, double f, double fs); // convenience function
+std::vector<double> createSineWave(int N, double f, double fs, double a = 1, double p = 0); // convenience function
 
 
 

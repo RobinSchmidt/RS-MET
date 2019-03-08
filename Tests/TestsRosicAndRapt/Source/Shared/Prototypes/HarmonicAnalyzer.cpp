@@ -181,7 +181,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   AR::copyBuffer(&y[n0], &sig[0], L);
   if(L < K)  // is this correct?
     AR::fillWithZeros(&sig[L], K-L);
-  plotVector(sig);  // debug
+  //plotVector(sig);  // debug
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // todo: double-check all index computations against off-by-one errors, verify time-indices
@@ -256,6 +256,7 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
     phase  = params.phase + 2*PI*freq * dt;
     phase  = rsWrapToInterval(phase, -PI, PI);
     mdl.setData(k, i+1, endTime, freq, T(0), phase);
+    //mdl.setData(k, i+1, endTime, freq, params.gain, phase);  // test - nope - may make end artifacts worse
     int dummy = 0;
     // todo: check, if last datapoint is correct - there is an artifact in the resynthesized signal
     // at the end
@@ -348,6 +349,9 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   // for the first and last (partial) cycle that may not be correct...or is it? hmm...yes,
   // it could be
   // verify, if we should really shift by -K/2 (or if this ends up off-by-one)
+  // ...i actually think, it is off by *half* a sample in the case of an even FFT length. consider
+  // K=8: we left-shift the buffer content by 4 samples, but the actual buffer center is at 
+  // 3.5 samples - maybe we should add a compensation phase-shift to the measured phase - try it!
 
  
   trafo.getRealSignalMagnitudesAndPhases(&sig[0], &mag[0], &phs[0]);       // perform FFT

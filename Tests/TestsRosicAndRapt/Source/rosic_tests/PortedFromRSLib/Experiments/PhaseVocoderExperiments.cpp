@@ -1071,13 +1071,12 @@ void harmonicAnalysis1()
 
   // input signal parameters:
   int N   = 8000;
-  int key = 64;
+  int key = 50;
   double fs = 44100;   // sample rate
 
   std::vector<double> x;
-  //x = createModalPluck(key, fs, N);
-
-  x = createSineWave(N, rsPitchToFreq(key), fs); 
+  x = createModalPluck(key, fs, N);
+  //x = createSineWave(N, rsPitchToFreq(key), fs, 1.0, PI/2); 
   //plotVector(x);
 
   //rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
@@ -1096,7 +1095,7 @@ void harmonicAnalysis1()
   //  -this happens with N=8000, key=64, fs=44100 and createSineWave -> fixed
 
   // -try a sine with a non-zero start-phase - see, if we then see similar artifacts at the start
-  //  as we now see at the end
+  //  as we now see at the end - yes, we do
 
   // todo:
 
@@ -1115,7 +1114,8 @@ void harmonicAnalysis1()
   // aliasing - nope, it doesn't (!)
   
   // we have very high frequencies in the transient when the ampSlope is set to -3, with
-  // -6, it looks very good
+  // -6, it looks very good - i think, at -3, it gets the cycle-marks wrong - maybe tweak the
+  // cycle-mark-finder parameters and/or make them available to client code
 
   // maybe figure out the phase- and fade-in/out stuff with a simpler signal maybe a simple 
   // sinusoid or sum of 2

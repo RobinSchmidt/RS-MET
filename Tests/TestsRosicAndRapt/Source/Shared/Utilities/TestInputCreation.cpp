@@ -172,10 +172,10 @@ double sineSum(double p, double *A, double N)
   return y;
 }
 
-void createSineWave(double *x, int N, double f, double a, double fs)
+void createSineWave(double *x, int N, double f, double a, double fs, double p)
 {
   double w = 2*PI*f/fs;
-  double p = 0;            // startphase - make this an optional parameter later
+  //double p = 0;            // startphase - make this an optional parameter later
   for(int n = 0; n < N; n++)
     x[n] = a * sin(w*n+p);
 }
@@ -245,10 +245,10 @@ void createRandomDataXY(double* x, double* y, int N, double dxMin, double dxMax,
   }
 }
 
-std::vector<double> createSineWave(int N, double f, double fs)
+std::vector<double> createSineWave(int N, double f, double fs, double a, double p)
 {
   vector<double> x(N);
-  createSineWave(&x[0], N, f, 1.0, fs);
+  createSineWave(&x[0], N, f, a, fs, p);
   return x;
 }
 

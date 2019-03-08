@@ -25,7 +25,13 @@ The so obtained model models inharmonicity, transient and noise in the input sig
 variations of instantaneous frequencies and amplitudes of the partials - when the envelopes are
 lowpass-filtered before resynthesis, we can resynthesize only the quasi-harmonic part of the sound.
 Time domain subtraction from the original should give a residual containing inharmonic, noisy and 
-transient parts. */
+transient parts. 
+
+\todo: give the user the option to prepend and append some zeros before the analysis to avoid 
+edge-artifacts - this padding, if used, has to be accounted for in the model after analysis is 
+finished. the padding should be at least one cycle long, maybe use two to be on the safe side
+
+*/
 
 template<class T>
 class rsHarmonicAnalyzer
@@ -105,6 +111,9 @@ protected:
 
   /** Returns the number of FFT bins (including DC - maybe rename to getNumBins) */
   int getNumHarmonics() const { return blockSize / 2; }
+  // todo: maybe decide in advance, which harmonics will or will not alias and analyze only those
+  // which won't as an optimization (instead of analyzing them all and then discarding the aliasing 
+  // ones) - in this case, return the actual number of harmonics here
 
   /** Returns the number of datapoints (per partial) in the sinusoidal model. */
   //int getNumDataPoints() const { return getNumFrames(); }
