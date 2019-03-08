@@ -166,8 +166,28 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // todo: double-check all index computations against off-by-one errors, verify time-indices
-  // maybe make some plots
+}
 
+template<class T>
+void rsHarmonicAnalyzer<T>::deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl)
+{
+  // todo: get rid of these vectors - compute values on the fly inside the loop
+  std::vector<T> lw = rsDifference(tOut);  // warped lengths of cycles
+  std::vector<T> lu = rsDifference(tIn);   // unwarped lengths of cycles
+  for(int m = 0; m < getNumFrames(); m++) {
+    T tw = getTimeStampForFrame(m);         // warped time
+    T tu = getUnWarpedTimeStampForFrame(m); // unwarped time
+    T r  = lw[m] / lu[m];                   // stretching ratio applied to frame m
+    for(int k = 0; k < getNumHarmonics(); k++) {
+      mdl.getDataRef(k, m).time  = tu;
+      mdl.getDataRef(k, m).freq *= r;
+    }
+  }
+}
+
+template<class T>
+void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
+{
   /*
   // now we must fill in the data at the very first and very last datapoint index to get a 
   // fade-in/out:
@@ -204,29 +224,6 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   // first marker is at 25 and the second is at 125, assume a cycle length of 100 and start phase
   // of -90° (a quarter period) - for higher harmonics, take into account the phase-measurement
   // at first marker (for the fundamental, that phase is zero by construction)
-}
-
-template<class T>
-void rsHarmonicAnalyzer<T>::deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl)
-{
-  // todo: get rid of these vectors - compute values on the fly inside the loop
-  std::vector<T> lw = rsDifference(tOut);  // warped lengths of cycles
-  std::vector<T> lu = rsDifference(tIn);   // unwarped lengths of cycles
-  for(int m = 0; m < getNumFrames(); m++) {
-    T tw = getTimeStampForFrame(m);         // warped time
-    T tu = getUnWarpedTimeStampForFrame(m); // unwarped time
-    T r  = lw[m] / lu[m];                   // stretching ratio applied to frame m
-    for(int k = 0; k < getNumHarmonics(); k++) {
-      mdl.getDataRef(k, m).time  = tu;
-      mdl.getDataRef(k, m).freq *= r;
-    }
-  }
-}
-
-template<class T>
-void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
-{
-
 }
 
 template<class T>
