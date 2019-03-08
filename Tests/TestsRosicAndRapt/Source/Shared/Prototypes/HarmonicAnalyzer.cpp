@@ -221,8 +221,12 @@ void rsHarmonicAnalyzer<T>::removeAliasing(RAPT::rsSinusoidalModel<T>& mdl)
       break;
   }
 
+  //maxIndexToRetain = 10;  // test
+
   // and remove all partials above the found index:
-  //mdl.removePartialsAbove(maxIndexToRetain);
+  mdl.removePartialsAbove(maxIndexToRetain);
+  // actually leaves one partial too much..
+
   int dummy = 0;
 }
 
@@ -237,7 +241,8 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
   //T endTime = rsLast(tOut);
   T endTime = rsLast(tIn);
   rsInstantaneousSineParams<T> params;
-  for(k = 0; k < getNumHarmonics(); k++) 
+  //for(k = 0; k < getNumHarmonics(); k++) 
+  for(k = 0; k < mdl.getNumPartials(); k++) 
   {
     // fill first datapoint:
     params  = mdl.getPartial(k).getDataPoint(1);  
@@ -273,7 +278,8 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
 template<class T>
 void rsHarmonicAnalyzer<T>::convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl)
 {
-  for(int hi = 0; hi < getNumHarmonics(); hi++)
+  //for(int hi = 0; hi < getNumHarmonics(); hi++)
+  for(int hi = 0; hi < mdl.getNumPartials(); hi++)
     for(int di = 0; di < getNumDataPoints(); di++)
       mdl.getDataRef(hi, di).time /= sampleRate;
 }

@@ -96,6 +96,12 @@ inline void rsRemove(std::vector<T>& v, size_t index)
 }
 
 template<class T>
+inline void rsRemoveRange(std::vector<T>& v, size_t first, size_t last)
+{
+  v.erase(v.begin() + first, v.begin() + last);
+}
+
+template<class T>
 inline size_t rsFind(std::vector<T>& v, T elementToFind)
 {
   for(size_t i = 0; i < v.size(); i++)

@@ -245,9 +245,6 @@ public:
   /** Adds a new partial to the model. */
   void addPartial(const rsSinusoidalPartial<T>& partialToAdd) { partials.push_back(partialToAdd); }
 
-  /** Removes the partial with given index from the model. */
-  void removePartial(size_t index) { rsRemove(partials, index); }
-
   /** Appends multiple partials to the model at once. */
   void addPartials(const std::vector<rsSinusoidalPartial<T>>& partialsToAdd)
   {
@@ -255,6 +252,16 @@ public:
       addPartial(partialsToAdd[i]);
     // we need to make a deep copy
   }
+
+  /** Removes the partial with given index from the model. */
+  void removePartial(size_t index) { rsRemove(partials, index); }
+
+  /** Removes the partials above given index from the model. */
+  void removePartialsAbove(size_t maxIndexToRetain) 
+  { 
+    rsRemoveRange(partials, maxIndexToRetain+1, partials.size()-1); 
+  }
+
 
   /** Sets the data for the given partial- and data-point index. */
   void setData(int partialIndex, int dataIndex, T time, T freq, T gain, T phase)
