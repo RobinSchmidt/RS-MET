@@ -56,11 +56,12 @@ rsHarmonicAnalyzer<T>::rsHarmonicAnalyzer()
 template<class T>
 RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 {
-  RAPT::rsSinusoidalModel<T> mdl; // init empty model
-  if(preProcess(x, N) == false)   // pre-process audio (flatten pitch)
-    return mdl;                   // return empty model if pre-processing has failed
-  analyzeHarmonics(mdl);          // create model from pitch-flattened signal (now in member y)
-  postProcess(mdl);               // post process model data to account for flattening
+  RAPT::rsSinusoidalModel<T> mdl;   // init empty model
+  if(preProcess(x, N) == false)     // pre-process audio (flatten pitch)
+    return mdl;                     // return empty model if pre-processing has failed
+  analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
+  postProcess(mdl);                 // post process model data to account for flattening
+  convertTimeSamplesToSeconds(mdl);
   return mdl;
 
   //rosic::writeToMonoWaveFile("ModalPluckStretched.wav", &y[0], (int)y.size(), (int)sampleRate);
@@ -219,13 +220,15 @@ void rsHarmonicAnalyzer<T>::postProcess(RAPT::rsSinusoidalModel<T>& mdl)
       mdl.getDataRef(k, m).freq *= r;
     }
   }
+}
 
-  // convert time data from samples to seconds (multiply all time-stamps by 1/sampleRate):
+template<class T>
+void rsHarmonicAnalyzer<T>::convertTimeSamplesToSeconds(RAPT::rsSinusoidalModel<T>& mdl)
+{
   for(int hi = 0; hi < getNumHarmonics(); hi++)
     for(int di = 0; di < getNumDataPoints(); di++)
       mdl.getDataRef(hi, di).time /= sampleRate;
 }
-
 
 template<class T>
 std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)

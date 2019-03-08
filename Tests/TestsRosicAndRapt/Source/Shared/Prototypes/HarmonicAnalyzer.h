@@ -57,10 +57,18 @@ protected:
 
   // todo: refactor to use these 3 functions in analyze:
   bool preProcess(T* sampleData, int numSamples);
+    // maybe rename to flattenPitch
 
   void analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl);
 
   void postProcess(RAPT::rsSinusoidalModel<T>& mdl);
+    // maybe rename to deFlattenPitch
+
+  /** During most of your computational steps in the algor, we represent time in units of samples,
+  but ultimately, rsSinusoidalModel want's to have time values in seconds, so this function is used
+  as final step to convert all values. */
+  void convertTimeSamplesToSeconds(RAPT::rsSinusoidalModel<T>& mdl);
+
 
 
   /** Returns length of time-warping map (sampled at cycle marks). */
