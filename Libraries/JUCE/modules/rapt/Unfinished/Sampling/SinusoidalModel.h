@@ -152,7 +152,18 @@ public:
   /** Computes and returns the mean frequency of this partial. */
   T getMeanFreq() const;
 
+  /** Returns the minimum frequency of this partial. */
+  T getMinFreq() const;
 
+  /** Returns the minimum frequency of this partial. */
+  T getMaxFreq() const;
+
+  /** Returns true, when this partial will alias at a given sample-rate. If "allTheTime" is true, 
+  it will return true only if it will alias all the time, i.e. if its minimum frequency is higher
+  than sampleRate/2. If "allTheTime" is false (the default), it will return true, even if the 
+  partial will alias only temporarily, i.e. if its maximum frequency is higher than 
+  sampleRate/2. */
+  bool willAlias(T sampleRate, bool allTheTime = false) const;
 
   /** Returns the number of data points in this partial */
   inline size_t getNumDataPoints() const { return instParams.size(); }

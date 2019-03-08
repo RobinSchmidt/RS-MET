@@ -205,6 +205,12 @@ void rsHarmonicAnalyzer<T>::deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl)
 template<class T>
 void rsHarmonicAnalyzer<T>::removeAliasing(RAPT::rsSinusoidalModel<T>& mdl)
 {
+  // maybe we should have an option to select, if only those partials are removed that are above
+  // sampleRate/2 all the time or also those that exceed the Nyquist limit only temporarily
+  // maybe call the option setAntAliasMode() options: based-on-min-freq, based-on-max-freq
+
+  bool useMaxFreq = true;
+
 
 }
 

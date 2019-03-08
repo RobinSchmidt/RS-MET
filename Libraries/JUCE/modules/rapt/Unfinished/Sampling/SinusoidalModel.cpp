@@ -51,6 +51,35 @@ T rsSinusoidalPartial<T>::getMeanFreq() const
 }
 
 template<class T>
+T rsSinusoidalPartial<T>::getMinFreq() const
+{
+  T minFreq = RS_INF(T);
+  for(size_t i = 0; i < instParams.size(); i++)
+    if(instParams[i].freq < minFreq)
+      minFreq = instParams[i].freq;
+  return minFreq;
+}
+
+template<class T>
+T rsSinusoidalPartial<T>::getMaxFreq() const
+{
+  T maxFreq = -RS_INF(T);
+  for(size_t i = 0; i < instParams.size(); i++)
+    if(instParams[i].freq > maxFreq)
+      maxFreq = instParams[i].freq;
+  return maxFreq;
+}
+
+template<class T>
+bool rsSinusoidalPartial<T>::willAlias(T sampleRate, bool allTheTime) const
+{
+  if(allTheTime == false)
+    return getMaxFreq() > T(0.5) * sampleRate;
+  else
+    return getMinFreq() > T(0.5) * sampleRate;
+}
+
+template<class T>
 void rsSinusoidalPartial<T>::getDataArrays(
   std::vector<T>& t, std::vector<T>& f, std::vector<T>& a, std::vector<T>& p) const
 {
