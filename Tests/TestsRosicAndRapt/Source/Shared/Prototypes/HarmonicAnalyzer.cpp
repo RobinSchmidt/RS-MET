@@ -209,9 +209,21 @@ void rsHarmonicAnalyzer<T>::removeAliasing(RAPT::rsSinusoidalModel<T>& mdl)
   // sampleRate/2 all the time or also those that exceed the Nyquist limit only temporarily
   // maybe call the option setAntAliasMode() options: based-on-min-freq, based-on-max-freq
 
-  bool useMaxFreq = true;
+  bool allTheTime = false;   // make user option
 
+  // Find the index of the partial, above which all higher ones may be removed (todo: use binary 
+  // instead of linear search):
+  int maxIndexToRetain = getNumHarmonics() - 1;
+  while(maxIndexToRetain > 0) {
+    if( mdl.getPartial(maxIndexToRetain).willAlias(sampleRate, allTheTime) )
+      maxIndexToRetain--;
+    else
+      break;
+  }
 
+  // and remove all partials above the found index:
+  //mdl.removePartialsAbove(maxIndexToRetain);
+  int dummy = 0;
 }
 
 template<class T>
