@@ -193,7 +193,8 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
   int k;
   int lastDataIndex = (int) mdl.getPartial(0).getNumDataPoints()-1;
   int i = lastDataIndex-1;  // where we read the freq and phase from
-  T endTime = rsLast(tOut);
+  //T endTime = rsLast(tOut);
+  T endTime = rsLast(tIn);
   rsInstantaneousSineParams<T> params;
   for(k = 0; k < getNumHarmonics(); k++) 
   {
@@ -211,6 +212,7 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
     phase  = params.phase + 2*PI*freq * dt;
     mdl.setData(k, i+1, endTime, freq, T(0), phase);
     int dummy = 0;
+    // todo: wrap phase to -pi..pi
   }
 
   int dummy = 0;
