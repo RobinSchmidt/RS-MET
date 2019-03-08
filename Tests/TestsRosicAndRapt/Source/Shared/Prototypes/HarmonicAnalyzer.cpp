@@ -166,27 +166,32 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   // todo: double-check all index computations against off-by-one errors, verify time-indices
   // maybe make some plots
 
+  /*
   // now we must fill in the data at the very first and very last datapoint index to get a 
   // fade-in/out:
-
-
   int k;
   int lastDataIndex = (int) mdl.getPartial(0).getNumDataPoints()-1;
   int i = lastDataIndex-1;  // where we read the freq and phase from
-  T time = rsLast(tOut);
-  rsInstantaneousSineParams<T> params; 
-  for(k = 0; k < getNumHarmonics(); k++) {
-    params = mdl.getPartial(k).getDataPoint(i);
-
-    T dt    = time - params.time;    
-    // time delta between 2nd-to-last and last datapoint..but it is in samples - we need it in
-    // seconds
-
+  T endTime = rsLast(tOut);
+  rsInstantaneousSineParams<T> params;
+  for(k = 0; k < getNumHarmonics(); k++) 
+  {
+    // fill first datapoint:
+    params  = mdl.getPartial(k).getDataPoint(1);  
+    T dt    = (T(0) - params.time) / sampleRate;  // time delta between 2nd and 1st datapoint
     T freq  = params.freq;
     T phase = params.phase + 2*PI*freq * dt;
-    mdl.setData(k, i+1, time, freq, T(0), phase);
+    mdl.setData(k, 0, T(0), freq, T(0), phase);  
+
+    // fill last datapoint:
+    params = mdl.getPartial(k).getDataPoint(i);
+    dt     = (endTime - params.time) / sampleRate; // time delta between 2nd-to-last and last datapoint
+    freq   = params.freq;
+    phase  = params.phase + 2*PI*freq * dt;
+    mdl.setData(k, i+1, endTime, freq, T(0), phase);
     int dummy = 0;
   }
+  */
 
   int dummy = 0;
 
@@ -263,8 +268,8 @@ template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
   RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T time)
 {
-  //int dataIndex = frameIndex;
-  int dataIndex = frameIndex + 1;
+  int dataIndex = frameIndex;
+  //int dataIndex = frameIndex + 1;
   // maybe we should use numDataPoints = numFrames+2 for prepending and appending a datapoint with
   // zero amplitude for fade-in/out (for each partial) - then we should init the model with
   // numDataPoints instead of numFrames and use dataIndex = frameIndex+1 here - the dataPoints

@@ -1078,6 +1078,14 @@ void harmonicAnalysis1()
   //plotVector(y);
   rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
 
+  // todo: fix ends - required changes:
+  // int getNumDataPoints() const { return getNumFrames(); } // -> return getNumFrames() + 2;
+  // int dataIndex = frameIndex; // -> int dataIndex = frameIndex + 1; in fillHarmonicData
+  // uncomment last section of analyzeHarmonics
+  // loop in postProcess must be adapted - we now have to consider two datapoints more
+
+  // or (simpler): fill in the first and last datapoint after post-processing
+
   // the phase in the resynthesized signal is wrong - this is not surprising: we need to swap 1st 
   // and 2nd half of FFT buffers to put time-origin to center of the block
 
