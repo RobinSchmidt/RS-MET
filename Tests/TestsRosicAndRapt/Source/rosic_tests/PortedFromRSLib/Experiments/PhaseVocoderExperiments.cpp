@@ -1052,18 +1052,8 @@ std::vector<double> createModalPluck(int key, double sampleRate, int length)
   double dummy; // unused right channel output
   for(int n = 0; n < length; n++)
     ms.getSampleFrameStereo(&x[n], &dummy);
-  return 0.1 * x;  // fix amplitude
+  return 0.5 * x;  // fix amplitude
 }
-
-/*
-std::vector<double> createSine(double f, double fs, int length, double a = 1.0)
-{  
-  std::vector<double> x(length);
-
-  createSineWave(&x[0], length, double *f, double a, double fs);
-}
-//void 
-*/
 
 void harmonicAnalysis1()
 {
@@ -1071,31 +1061,40 @@ void harmonicAnalysis1()
 
   // input signal parameters:
   int N   = 8000;
-  int key = 50;
+  int key = 60;
   double fs = 44100;   // sample rate
 
+  // create input:
   std::vector<double> x;
   x = createModalPluck(key, fs, N);
   //x = createSineWave(N, rsPitchToFreq(key), fs, 1.0, PI/2); 
   //plotVector(x);
 
-  //rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
-  // todo: test with less high freq rolloff (makes it more difficult)
 
+  // analyze, resynthesize and create error signal:
   rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
   //plotSineModel(mdl, fs);  // model looks ok
   std::vector<double> y = synthesizeSinusoidal(mdl, fs); 
+  std::vector<double> e = y-x;  // error
   //plotVector(y);
-  //rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
 
+
+
+
+
+  // todo: test with less high freq rolloff (makes it more difficult)
   // -when the first cycle mark ends up at 0, we get an access violation - we don't treat the case,
   //  where there is no initial partial cycle
   //  -this happens with N=8000, key=64, fs=44100 and createSineWave -> fixed
 
   // -try a sine with a non-zero start-phase - see, if we then see similar artifacts at the start
   //  as we now see at the end - yes, we do
+
+  // -try with saw-wave and two sines (fundamental plus 10*fundamental, for example)
+
+  // -try resynthesizing without DC
 
   // todo:
 
@@ -1127,15 +1126,22 @@ void harmonicAnalysis1()
   // approximated by interpolated tarjectories, we could reduce the density of datapoints
   // ...the compression would be lossy, though
 
+  // maybe make sure that y has the same size as x...maybe wrap this analysis/resynthesis roundtrip
+  // into a convenience class
+
+
+  // write results to files:
+  //rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
+  //rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
+  //rosic::writeToMonoWaveFile("ModalPluckError.wav",   &e[0], (int)e.size(), (int)fs);
+
+  //plotVector(e);  // error only
 
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
   plt.addDataArrays((int)y.size(), &y[0]);
-  // maybe make sure that y has the same size as x...maybe wrap this analysis/resynthesis roundtrip
-  // into a convenience class
+  plt.addDataArrays((int)e.size(), &e[0]);
   plt.plot();
-
-  int dummy = 0;
 }
 
 

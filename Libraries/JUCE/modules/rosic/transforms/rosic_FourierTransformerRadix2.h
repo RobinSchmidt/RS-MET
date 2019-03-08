@@ -128,6 +128,12 @@ public:
     return binIndex*sampleRate/fftSize;
   }
 
+  /** Returns the normalized radian frequency "omega" that is associated with a given bin index. */
+  static double binIndexToOmega(int binIndex, int fftSize)
+  {
+    return 2*PI*binIndex/fftSize;
+  }
+
   //===============================================================================================
 
 protected:

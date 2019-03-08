@@ -125,6 +125,11 @@ public:
     return binIndex*sampleRate/fftSize;
   }
 
+  static T binIndexToOmega(int binIndex, int fftSize)
+  {
+    return T(2*PI*binIndex)/fftSize;
+  }
+
   /** Returns the normalization factor to applied after the forward and/or inverse transform, 
   according to the block-size, direction of the transform and normalization mode. */
   static T getNormalizationFactor(int blockSize, int direction, int normalizationMode);

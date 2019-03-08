@@ -349,9 +349,17 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   // for the first and last (partial) cycle that may not be correct...or is it? hmm...yes,
   // it could be
   // verify, if we should really shift by -K/2 (or if this ends up off-by-one)
+
+
   // ...i actually think, it is off by *half* a sample in the case of an even FFT length. consider
   // K=8: we left-shift the buffer content by 4 samples, but the actual buffer center is at 
-  // 3.5 samples - maybe we should add a compensation phase-shift to the measured phase - try it!
+  // 3.5 samples - maybe we should add a compensation phase-shift to the measured phase - try it:
+  //T p1 = trafo.binIndexToOmega(1, K); // omega
+  //p1 *= 0.5;  // shift measured phases by half a sample
+  // hmm...that seems to actually increase the error signal
+
+
+
 
  
   trafo.getRealSignalMagnitudesAndPhases(&sig[0], &mag[0], &phs[0]);       // perform FFT
@@ -360,6 +368,16 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   // extract model data from FFT result:
   for(int k = 0; k < numPartials; k++) {
     T freq = trafo.binIndexToFrequency(k, K, sampleRate);
+
+    //// test - try phase-shift by half a sample:
+    //T p = phs[k];
+    //p += k*p1;
+    //p = rsWrapToInterval(p, -PI, PI);
+    //mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], p);
+    //// hmm...this seems to do more harm than good - test with two sines (f0 and 10*f0, for 
+    //// example)
+
+    // without phase-shift:
     mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], phs[k]);
   }
   int dummy = 0;
