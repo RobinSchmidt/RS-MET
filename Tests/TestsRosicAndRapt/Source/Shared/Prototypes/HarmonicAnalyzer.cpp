@@ -57,11 +57,12 @@ template<class T>
 RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 {
   RAPT::rsSinusoidalModel<T> mdl;   // init empty model
-  if(preProcess(x, N) == false)     // pre-process audio (flatten pitch)
+  if(flattenPitch(x, N) == false)   // pre-process audio (flatten pitch)
     return mdl;                     // return empty model if pre-processing has failed
   analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
-  postProcess(mdl);                 // post process model data to account for flattening
-  convertTimeSamplesToSeconds(mdl);
+  deFlattenPitch(mdl);              // post process model data to account for flattening
+  handleEdges(mdl);
+  convertTimeUnit(mdl);
   return mdl;
 
   //rosic::writeToMonoWaveFile("ModalPluckStretched.wav", &y[0], (int)y.size(), (int)sampleRate);
@@ -75,7 +76,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 }
 
 template<class T>
-bool rsHarmonicAnalyzer<T>::preProcess(T* x, int Nx)
+bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
 {
   typedef RAPT::rsArray AR;
   typedef std::vector<T> Vec;
@@ -206,7 +207,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 }
 
 template<class T>
-void rsHarmonicAnalyzer<T>::postProcess(RAPT::rsSinusoidalModel<T>& mdl)
+void rsHarmonicAnalyzer<T>::deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl)
 {
   // todo: get rid of these vectors - compute values on the fly inside the loop
   std::vector<T> lw = rsDifference(tOut);  // warped lengths of cycles
@@ -223,7 +224,13 @@ void rsHarmonicAnalyzer<T>::postProcess(RAPT::rsSinusoidalModel<T>& mdl)
 }
 
 template<class T>
-void rsHarmonicAnalyzer<T>::convertTimeSamplesToSeconds(RAPT::rsSinusoidalModel<T>& mdl)
+void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
+{
+
+}
+
+template<class T>
+void rsHarmonicAnalyzer<T>::convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl)
 {
   for(int hi = 0; hi < getNumHarmonics(); hi++)
     for(int di = 0; di < getNumDataPoints(); di++)

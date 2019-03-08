@@ -56,18 +56,33 @@ public:
 protected:
 
   // todo: refactor to use these 3 functions in analyze:
-  bool preProcess(T* sampleData, int numSamples);
-    // maybe rename to flattenPitch
 
+  /** The first step in the analysis algo is to pre-process the audio by flattening the pitch, 
+  which is done by this function. The flattened signal will be stored in out member array y and 
+  this function will also fill the member arrays tIn, tOut that contain the time warping map that
+  has been used for flattening (sampled at instants of cycle marks). These arrays will be later 
+  used for post processing the model data to accoutn for the pitch-flattening. The boolean return
+  value informs, if the process was successful (it will fail, if it can't find at least 2 cycle 
+  marks). */
+  bool flattenPitch(T* sampleData, int numSamples);
+
+  /** The second step in the analysis algo is to perform an FFT on each cycle of pitch-flattened
+  signal. Because the pitch is now flat, each cycle has the same length (which was chosen to be
+  a power of two, greater or equal to the length of the longest cycle in the input signal). This
+  fills in the model data with (preliminary) values. */
   void analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl);
 
-  void postProcess(RAPT::rsSinusoidalModel<T>& mdl);
-    // maybe rename to deFlattenPitch
+  /** The third step in the analysis algo is to modify the time and frequency data to account for 
+  the pitch flattening that was done in the first step. */
+  void deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl);
 
-  /** During most of your computational steps in the algor, we represent time in units of samples,
-  but ultimately, rsSinusoidalModel want's to have time values in seconds, so this function is used
+  void handleEdges(RAPT::rsSinusoidalModel<T>& mdl);
+  // not yet implemented
+
+  /** During most of our computational steps in the algo, we represent time in units of samples,
+  but ultimately, rsSinusoidalModel wants to have time values in seconds, so this function is used
   as final step to convert all values. */
-  void convertTimeSamplesToSeconds(RAPT::rsSinusoidalModel<T>& mdl);
+  void convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl);
 
 
 
