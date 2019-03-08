@@ -1086,6 +1086,7 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
   // analyze, resynthesize and create error signal:
   rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
+  analyzer.setSincInterpolationLength(1024);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, N);
   //plotSineModel(mdl, fs);
   std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
@@ -1107,15 +1108,16 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
     plt.addDataArrays(N,  x);
     plt.addDataArrays(Ny, y);
     plt.addDataArrays(Ne, e);
+    //plt.addDataArrays(Ne-2000, &e[1000]);  // middle part of error
     plt.plot();
   }
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis
 {
-  testHarmonicResynthesis("Sine",     500, 44100, 5000);
-  testHarmonicResynthesis("Cosine",   500, 44100, 5000);
-  testHarmonicResynthesis("TwoSines", 200, 44100, 5000);
+  //testHarmonicResynthesis("Sine",     500, 44100, 5000);
+  //testHarmonicResynthesis("Cosine",   500, 44100, 5000);
+  //testHarmonicResynthesis("TwoSines", 200, 44100, 5000);
   testHarmonicResynthesis("Pluck",    500, 44100, 5000);
 
 
@@ -1130,6 +1132,25 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
   // -try a better sinc-interpolator (longer kernel and/or better window) ...maybe also try worse
   //  interpolators to see, if it indeed has to do with the interpolation
+  // -effects of sinc interpolator kernel-length on approximate amplitude of residual for 
+  //  TwoSines200 (1st number is kernel length, 2nd number residual amplitude): 
+  //      8   :  2e-5
+  //     15.5 : 20e-5
+  //     16   :  6e-5
+  //     16.5 :  8e-5
+  //     17   : 15e-5
+  //     20   :  8e-5
+  //     64   :  4e-5
+  //    256   :  1e-5
+  //    512   :  5e-6
+  //   1024   :  2e-6
+  //  there seems to be a general trend of the amplitude being inversely proportional to kernel 
+  //  length but there are weird oscillations
+  //  todo: make an sinc-interpolator test: 
+  //  create noise -> upsample -> downsample -> create difference ...the amplitude of the 
+  //  difference should be as low as possible, try different downsampling factors, try different
+  //  window functions - maybe collect data of error amplitude as function of kernel length and
+  //  plot that
 
   // -try different synthesis settings (phase- and amplitude interpolation scheme, etc.)
   //  it's actually quite plausible that the error signal may be due to the interpolation of 

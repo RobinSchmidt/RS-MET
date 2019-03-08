@@ -54,6 +54,12 @@ public:
 
   //void setRemoveDC(bool shouldBeRemoved);
 
+  /** Sets the length of the sinc interpolator that is used for the pitch flattening. In tests with
+  a sum-of-sines input, it turned out that the amplitude of the residual seems to be roughly 
+  inverserly proportional to that length. But that's only a rough tendency - for example, there's a 
+  huge difference (factor ~3) between 16 and 17 ...more research needed */
+  void setSincInterpolationLength(T newLength) { sincLength = newLength; }
+
 
   /** \name Processing */
 
@@ -156,7 +162,7 @@ protected:
   int blockSize = 0;    // FFT block size
 
   T sampleRate = 1;
-  T sincLength = 64.0;  // length of sinc-interpolator for time-warping
+  T sincLength = 512.0;  // length of sinc-interpolator for time-warping
 
   std::vector<T> y;     // pre-processed (time-warped) signal
 
