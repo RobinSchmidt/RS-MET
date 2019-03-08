@@ -1073,42 +1073,33 @@ void harmonicAnalysis1()
   rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
-  plotSineModel(mdl, fs);  // model looks ok
+  //plotSineModel(mdl, fs);  // model looks ok
   std::vector<double> y = synthesizeSinusoidal(mdl, fs); 
   //plotVector(y);
   rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
 
-  // todo: wrap phase, check artifact at end
+  // todo:
 
-  // todo: fix ends - required changes:
-  // int getNumDataPoints() const { return getNumFrames(); } // -> return getNumFrames() + 2;
-  // int dataIndex = frameIndex; // -> int dataIndex = frameIndex + 1; in fillHarmonicData
-  // uncomment last section of analyzeHarmonics
-  // loop in postProcess must be adapted - we now have to consider two datapoints more
+  // -clean up the model (remove partials above fs/2) - may these be responsible for the 
+  //  artifact at the end?
 
-  // or (simpler): fill in the first and last datapoint after post-processing
+  // -check artifact at end - could it be that the phase at the last datapoints is computed 
+  //  wrong?
+  // -or could it be that we misprepare the analysis buffer for the last frame?
+  // -i think, it is aliasing - cutting it of at the end creates harmonic content above the
+  //  origila nyquist freq - it will probably go away when we remove partials above fs/2
 
-  // done
-
-
-  // the phase in the resynthesized signal is wrong - this is not surprising: we need to swap 1st 
-  // and 2nd half of FFT buffers to put time-origin to center of the block
-
-  // ok - this seems to be fixed (but verify, if the buffer shift may be off-by-one)
+  // verify, if the buffer shift may be off-by-one 
 
   // now, the transient still looks different in the resynthesized signal - which will probably
   // always be the case to some degree due to fade in/out, but we may tweak the algo to get a 
   // closer match
 
-  // post-processing is done now - but there's still a time-shift between original and 
-  // resynthesized - perhaps because model does not start at time zero?
-
   // verify, if the resynthesizer avoid generating freqs above fs/2, i.e. if it guards against
-  // aliasing - we have very high frequencies in the transient when the ampSlope is set to -3, with
+  // aliasing - nope, it doesn't (!)
+  
+  // we have very high frequencies in the transient when the ampSlope is set to -3, with
   // -6, it looks very good
-
-  // there's also an artifact at the very end of the resynthesized signal...figure out...
-  // we really need to take care of the start and end-sections now
 
   // maybe figure out the phase- and fade-in/out stuff with a simpler signal maybe a simple 
   // sinusoid or sum of 2

@@ -61,8 +61,9 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
     return mdl;                     // return empty model if pre-processing has failed
   analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
   deFlattenPitch(mdl);              // post process model data to account for flattening
-  handleEdges(mdl);
-  convertTimeUnit(mdl);
+  removeAliasing(mdl);              // remove freqs above orignal nyquist freq
+  handleEdges(mdl);                 // add fade-in/out datapoints
+  convertTimeUnit(mdl);             // convert from samples to seconds
   return mdl;
 
   //rosic::writeToMonoWaveFile("ModalPluckStretched.wav", &y[0], (int)y.size(), (int)sampleRate);
@@ -148,6 +149,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   typedef RAPT::rsArray AR;
   AR::fillWithZeros(&sig[0], K-L);
   AR::copyBuffer(&y[n0], &sig[K-L], L);
+  //plotVector(sig);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // The inner cycles/frames are taken as is:
@@ -155,14 +157,29 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   for(m = 1; m < getNumFrames()-1; m++) {
     n0 = (int) tOut[m];
     AR::copyBuffer(&y[n0], &sig[0], L);
+
+    //// plot 2nd-to-last (debug):
+    //if(m == getNumFrames()-2)
+    //  plotVector(sig);
+
     fillHarmonicData(mdl, m, getTimeStampForFrame(m));
   }
 
   // The final partial cycle is post-padded with zeros:
   n0 = (int) tOut[m]; 
-  L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);  // maybe +1? check against off-by-1
+  //L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);  // maybe +1? check against off-by-1
+
+  L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]) + 1;
+  // using +1 changes the artifact at the end (makes it a bit smoother)
+  // +1 seems to contain valid data indeed
+
+  //L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]) + 2;
+  // using +2 makes the synthesizer hang in the test - weird! ..ok +2 definitely is an invalid
+  // accesse
+
   AR::copyBuffer(&y[n0], &sig[0], L);
   AR::fillWithZeros(&sig[L], K-L);
+  //plotVector(sig);  // debug
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // todo: double-check all index computations against off-by-one errors, verify time-indices
@@ -186,6 +203,12 @@ void rsHarmonicAnalyzer<T>::deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl)
 }
 
 template<class T>
+void rsHarmonicAnalyzer<T>::removeAliasing(RAPT::rsSinusoidalModel<T>& mdl)
+{
+
+}
+
+template<class T>
 void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
 {
   // now we must fill in the data at the very first and very last datapoint index to get a 
@@ -203,6 +226,7 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
     T dt    = (T(0) - params.time) / sampleRate;  // time delta between 2nd and 1st datapoint
     T freq  = params.freq;
     T phase = params.phase + 2*PI*freq * dt;
+    phase   = rsWrapToInterval(phase, -PI, PI);
     mdl.setData(k, 0, T(0), freq, T(0), phase);  
 
     // fill last datapoint:
@@ -210,9 +234,11 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
     dt     = (endTime - params.time) / sampleRate; // time delta between 2nd-to-last and last datapoint
     freq   = params.freq;
     phase  = params.phase + 2*PI*freq * dt;
+    phase  = rsWrapToInterval(phase, -PI, PI);
     mdl.setData(k, i+1, endTime, freq, T(0), phase);
     int dummy = 0;
-    // todo: wrap phase to -pi..pi
+    // todo: check, if last datapoint is correct - there is an artifact in the resynthesized signal
+    // at the end
   }
 
   int dummy = 0;

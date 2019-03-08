@@ -15,7 +15,13 @@ amplitudes (there's no integration or unwrapping involved here).
 \todo:
 This synthesis algorithm here is conceptually straightforward (and perhaps the most accurate? 
 maybe - verify) but also quite expensive - implement a more efficient synthesis algorithm by 
-generating main-lobes, iFFT, overlap/add as in Xavier Serra's SMS framework */
+generating main-lobes, iFFT, overlap/add as in Xavier Serra's SMS framework 
+
+\todo:
+Maybe include an option to not synthesize partials above the Nyquist frequency ...but what when a
+partial goes above the limit only for a short moment?
+
+*/
 
 template<class T>
 class SinusoidalSynthesizer
