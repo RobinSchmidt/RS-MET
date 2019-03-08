@@ -1048,7 +1048,7 @@ std::vector<double> createModalPluck(int key, double sampleRate, int length)
   ms.setDecay(500.0);           // in ms
   ms.setDecayByRatio(-100.0);   // in %
   ms.setAttack(10.0);
-  ms.noteOn(key, 64);
+  ms.noteOn(key, 64); // maybe have a noteOnViaFreq or one that admits float keys
   double dummy; // unused right channel output
   for(int n = 0; n < length; n++)
     ms.getSampleFrameStereo(&x[n], &dummy);
@@ -1084,15 +1084,13 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
   int Ny = (int) output.size();
   int Ne = (int) error.size();
 
-  //plotVector(y);
-
   // write original, resynthesized and error signals to files, if desired:
+  std::string name2 = name + std::to_string(f) + "Hz";
   if(writeWaveFiles == true) {
-    rosic::writeToMonoWaveFile((name + "Original.wav").c_str(),      x, N,  (int)fs);
-    rosic::writeToMonoWaveFile((name + "Resynthesized.wav").c_str(), y, Ny, (int)fs);
-    rosic::writeToMonoWaveFile((name + "Error.wav").c_str(),         e, Ne, (int)fs);
+    rosic::writeToMonoWaveFile((name2 + "Original.wav").c_str(),      x, N,  (int)fs);
+    rosic::writeToMonoWaveFile((name2 + "Resynthesized.wav").c_str(), y, Ny, (int)fs);
+    rosic::writeToMonoWaveFile((name2 + "Error.wav").c_str(),         e, Ne, (int)fs);
   }
-  // todo: include freq in the file-name
 
   // plot original, resynthesized and error signals, if desired:
   if(plotResults == true) {
@@ -1106,8 +1104,9 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
 
 void harmonicAnalysis1()
 {
+  testHarmonicResynthesis("Sine",   500, 44100, 5000);
+  testHarmonicResynthesis("Cosine", 500, 44100, 5000);
 
-  testHarmonicResynthesis("Sine", 500, 44100, 5000);
 
   // we create a model for a plucked string sound created by the modal synthesizer
 
