@@ -1055,6 +1055,16 @@ std::vector<double> createModalPluck(int key, double sampleRate, int length)
   return 0.1 * x;  // fix amplitude
 }
 
+/*
+std::vector<double> createSine(double f, double fs, int length, double a = 1.0)
+{  
+  std::vector<double> x(length);
+
+  createSineWave(&x[0], length, double *f, double a, double fs);
+}
+//void 
+*/
+
 void harmonicAnalysis1()
 {
   // we create a model for a plucked string sound created by the modal synthesizer
@@ -1064,10 +1074,13 @@ void harmonicAnalysis1()
   int key = 64;
   double fs = 44100;   // sample rate
 
-  std::vector<double> x = createModalPluck(key, fs, N);
+  std::vector<double> x;
+  //x = createModalPluck(key, fs, N);
+
+  x = createSineWave(N, rsPitchToFreq(key), fs); 
   //plotVector(x);
 
-  rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
+  //rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
   // todo: test with less high freq rolloff (makes it more difficult)
 
   rsHarmonicAnalyzer<double> analyzer;
@@ -1076,18 +1089,21 @@ void harmonicAnalysis1()
   //plotSineModel(mdl, fs);  // model looks ok
   std::vector<double> y = synthesizeSinusoidal(mdl, fs); 
   //plotVector(y);
-  rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
+  //rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
+
+  // -when the first cycle mark ends up at 0, we get an access violation - we don't treat the case,
+  //  where there is no initial partial cycle
+  //  -this happens with N=8000, key=64, fs=44100 and createSineWave -> fixed
+
+  // -try a sine with a non-zero start-phase - see, if we then see similar artifacts at the start
+  //  as we now see at the end
 
   // todo:
-
-  // -clean up the model (remove partials above fs/2) - may these be responsible for the 
-  //  artifact at the end?
 
   // -check artifact at end - could it be that the phase at the last datapoints is computed 
   //  wrong?
   // -or could it be that we misprepare the analysis buffer for the last frame?
-  // -i think, it is aliasing - cutting it of at the end creates harmonic content above the
-  //  origila nyquist freq - it will probably go away when we remove partials above fs/2
+
 
   // verify, if the buffer shift may be off-by-one 
 

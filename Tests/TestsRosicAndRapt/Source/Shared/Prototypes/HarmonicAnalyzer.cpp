@@ -148,7 +148,8 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   int L  = (int) tOut[1];              // length of initial partial cycle
   typedef RAPT::rsArray AR;
   AR::fillWithZeros(&sig[0], K-L);
-  AR::copyBuffer(&y[n0], &sig[K-L], L);
+  if(L > 0)
+    AR::copyBuffer(&y[n0], &sig[K-L], L);
   //plotVector(sig);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
@@ -178,8 +179,9 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   // accesse
 
   AR::copyBuffer(&y[n0], &sig[0], L);
-  AR::fillWithZeros(&sig[L], K-L);
-  //plotVector(sig);  // debug
+  if(L < K)  // is this correct?
+    AR::fillWithZeros(&sig[L], K-L);
+  plotVector(sig);  // debug
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // todo: double-check all index computations against off-by-one errors, verify time-indices
