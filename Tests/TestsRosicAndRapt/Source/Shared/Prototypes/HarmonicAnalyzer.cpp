@@ -179,8 +179,8 @@ void rsHarmonicAnalyzer<T>::deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl)
     T tu = getUnWarpedTimeStampForFrame(m); // unwarped time
     T r  = lw[m] / lu[m];                   // stretching ratio applied to frame m
     for(int k = 0; k < getNumHarmonics(); k++) {
-      mdl.getDataRef(k, m).time  = tu;
-      mdl.getDataRef(k, m).freq *= r;
+      mdl.getDataRef(k, m+1).time  = tu;    // m+1 because datapoint-index is frame-index + 1
+      mdl.getDataRef(k, m+1).freq *= r;     // due to initial "fade-in" datapoint at time zero
     }
   }
 }
@@ -188,7 +188,6 @@ void rsHarmonicAnalyzer<T>::deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl)
 template<class T>
 void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
 {
-  /*
   // now we must fill in the data at the very first and very last datapoint index to get a 
   // fade-in/out:
   int k;
@@ -213,7 +212,6 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
     mdl.setData(k, i+1, endTime, freq, T(0), phase);
     int dummy = 0;
   }
-  */
 
   int dummy = 0;
 
@@ -275,8 +273,8 @@ template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
   RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T time)
 {
-  int dataIndex = frameIndex;
-  //int dataIndex = frameIndex + 1;
+  //int dataIndex = frameIndex;
+  int dataIndex = frameIndex + 1;
   // maybe we should use numDataPoints = numFrames+2 for prepending and appending a datapoint with
   // zero amplitude for fade-in/out (for each partial) - then we should init the model with
   // numDataPoints instead of numFrames and use dataIndex = frameIndex+1 here - the dataPoints

@@ -97,8 +97,8 @@ protected:
   int getNumHarmonics() const { return blockSize / 2; }
 
   /** Returns the number of datapoints (per partial) in the sinusoidal model. */
-  int getNumDataPoints() const { return getNumFrames(); }
-  //int getNumDataPoints() const { return getNumFrames() + 2; }
+  //int getNumDataPoints() const { return getNumFrames(); }
+  int getNumDataPoints() const { return getNumFrames() + 2; }
   // later: getNumFrames() + 2 for fade in/out
 
   /** Computes and returns an array of cycle-marks. */
