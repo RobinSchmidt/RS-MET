@@ -1113,43 +1113,10 @@ void harmonicAnalysis1()
   testHarmonicResynthesis("Pluck",  500, 44100, 5000);
 
 
-
-
-  // old - soon obsolete:
-  // we create a model for a plucked string sound created by the modal synthesizer
-
-
-
-  // input signal parameters:
-  int N   = 8000;
-  int key = 60;
-  double fs = 44100;   // sample rate
-
-  // create input:
-  std::vector<double> x;
-  x = createModalPluck(key, fs, N);
-  //x = createSineWave(N, rsPitchToFreq(key), fs, 1.0, PI/2); 
-  //plotVector(x);
-
-
-  // analyze, resynthesize and create error signal:
-  rsHarmonicAnalyzer<double> analyzer;
-  analyzer.setSampleRate(fs);
-  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
-  //plotSineModel(mdl, fs);  // model looks ok
-  std::vector<double> y = synthesizeSinusoidal(mdl, fs); 
-  std::vector<double> e = y-x;  // error
-  //plotVector(y);
-
-
-
   // todo: test with less high freq rolloff (makes it more difficult)
   // -when the first cycle mark ends up at 0, we get an access violation - we don't treat the case,
   //  where there is no initial partial cycle
   //  -this happens with N=8000, key=64, fs=44100 and createSineWave -> fixed
-
-  // -try a sine with a non-zero start-phase - see, if we then see similar artifacts at the start
-  //  as we now see at the end - yes, we do
 
   // -try with saw-wave and two sines (fundamental plus 10*fundamental, for example)
 
@@ -1160,19 +1127,14 @@ void harmonicAnalysis1()
   // -try different synthesis settings (phase- and amplitude interpolation scheme, etc.)
   //  it's actually quite plausible that the error signal may be due to the interpolation of 
   //  the amplitude and/or phase (maybe more so due to amplitude)
+  //  -this would also explain, why the error is larger in the attack-section - the original 
+  //   envelope is farther away from being linear there
 
   // todo:
 
   // -check artifact at end - could it be that the phase at the last datapoints is computed 
   //  wrong?
-  // -or could it be that we misprepare the analysis buffer for the last frame?
 
-
-  // verify, if the buffer shift may be off-by-one 
-
-  // now, the transient still looks different in the resynthesized signal - which will probably
-  // always be the case to some degree due to fade in/out, but we may tweak the algo to get a 
-  // closer match
 
   // verify, if the resynthesizer avoid generating freqs above fs/2, i.e. if it guards against
   // aliasing - nope, it doesn't (!)
@@ -1180,9 +1142,6 @@ void harmonicAnalysis1()
   // we have very high frequencies in the transient when the ampSlope is set to -3, with
   // -6, it looks very good - i think, at -3, it gets the cycle-marks wrong - maybe tweak the
   // cycle-mark-finder parameters and/or make them available to client code
-
-  // maybe figure out the phase- and fade-in/out stuff with a simpler signal maybe a simple 
-  // sinusoid or sum of 2
 
   // todo: create a new project/repo where we test the analysis/resynthesis framework on real world
   // sample data (which should not go into the RS-MET repo)
@@ -1193,25 +1152,6 @@ void harmonicAnalysis1()
 
   // maybe make sure that y has the same size as x...maybe wrap this analysis/resynthesis roundtrip
   // into a convenience class
-
-  // make the switching between various input signals mor convenient - maybe by having a function
-  // harmonicResynth(std::string soundName, double freq, double sampleRate)
-  // and dispatch the input signal generation based on the string (can be Sine, Saw, Pluck, 
-  // Bow, etc.)
-
-
-  // write results to files:
-  //rosic::writeToMonoWaveFile("ModalPluck.wav", &x[0], N, (int)fs);
-  //rosic::writeToMonoWaveFile("ModalPluckResynth.wav", &y[0], (int)y.size(), (int)fs);
-  //rosic::writeToMonoWaveFile("ModalPluckError.wav",   &e[0], (int)e.size(), (int)fs);
-
-  //plotVector(e);  // error only
-
-  GNUPlotter plt;
-  plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays((int)y.size(), &y[0]);
-  plt.addDataArrays((int)e.size(), &e[0]);
-  plt.plot();
 }
 
 
