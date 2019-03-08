@@ -221,13 +221,8 @@ void rsHarmonicAnalyzer<T>::removeAliasing(RAPT::rsSinusoidalModel<T>& mdl)
       break;
   }
 
-  //maxIndexToRetain = 10;  // test
-
-  // and remove all partials above the found index:
+  // ...and remove all partials above the found index:
   mdl.removePartialsAbove(maxIndexToRetain);
-  // actually leaves one partial too much..
-
-  int dummy = 0;
 }
 
 template<class T>

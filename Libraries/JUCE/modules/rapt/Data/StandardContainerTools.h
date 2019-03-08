@@ -95,10 +95,13 @@ inline void rsRemove(std::vector<T>& v, size_t index)
   v.erase(v.begin() + index);
 }
 
+/** Removes the range indexed from first to last, both ends inclusive! Attention: in 
+std::vector::erase, the "last" would be excluded - but that's really counter-intuitive and provokes
+off-by-one bugs, that's why i use a both-ends-inclusive convention. */
 template<class T>
 inline void rsRemoveRange(std::vector<T>& v, size_t first, size_t last)
 {
-  v.erase(v.begin() + first, v.begin() + last);
+  v.erase(v.begin() + first, v.begin() + last + 1);
 }
 
 template<class T>
