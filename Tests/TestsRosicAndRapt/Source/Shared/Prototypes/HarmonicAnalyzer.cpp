@@ -331,8 +331,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   // at indices 0 and numDataPoints-1 have to be treated separately..
 
   int K = trafo.getBlockSize();
-  int numPartials = K/2; // maybe -1 for not including DC...or maybe just include
-                         // DC into the model
+  int numPartials = K/2;
 
 
   // we should shift the signal buffer by one half to move the time origin to the center
@@ -357,6 +356,10 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   //T p1 = trafo.binIndexToOmega(1, K); // omega
   //p1 *= 0.5;  // shift measured phases by half a sample
   // hmm...that seems to actually increase the error signal
+
+  // wait - no - without compensating the half-sample delay, the phase may actually be correct, 
+  // given that we set the time-stamp appropriately to the centter of the block at a half-sample 
+  // position - which is what we do
 
 
 

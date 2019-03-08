@@ -1055,9 +1055,63 @@ std::vector<double> createModalPluck(int key, double sampleRate, int length)
   return 0.5 * x;  // fix amplitude
 }
 
+
+void testHarmonicResynthesis(const std::string& name, double f, double fs, int N)
+{
+  // setup:
+  bool writeWaveFiles = true;
+  bool plotResults    = true;
+
+  // create input signal:
+  std::vector<double> input(N);  // input signal
+  double* x = &input[0];         // pointer to first sample (for convenience)
+  if( name == "Sine")
+    createSineWave(x, N, f, 0.5, fs, 0.0);
+  else if(name == "Cosine")
+    createSineWave(x, N, f, 0.5, fs, PI/2);
+  else
+    rsError("Unknown sound name");
+
+  // analyze, resynthesize and create error signal:
+  rsHarmonicAnalyzer<double> analyzer;
+  analyzer.setSampleRate(fs);
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, N);
+  //plotSineModel(mdl, fs);  // model looks ok
+  std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
+  std::vector<double> error = output-input;  // error
+  double* y = &output[0];
+  double* e = &error[0];
+  int Ny = (int) output.size();
+  int Ne = (int) error.size();
+
+  //plotVector(y);
+
+  // write original, resynthesized and error signals to files, if desired:
+  if(writeWaveFiles == true) {
+    rosic::writeToMonoWaveFile((name + "Original.wav").c_str(),      x, N,  (int)fs);
+    rosic::writeToMonoWaveFile((name + "Resynthesized.wav").c_str(), y, Ny, (int)fs);
+    rosic::writeToMonoWaveFile((name + "Error.wav").c_str(),         e, Ne, (int)fs);
+  }
+  // todo: include freq in the file-name
+
+  // plot original, resynthesized and error signals, if desired:
+  if(plotResults == true) {
+    GNUPlotter plt;
+    plt.addDataArrays(N,  x);
+    plt.addDataArrays(Ny, y);
+    plt.addDataArrays(Ne, e);
+    plt.plot();
+  }
+}
+
 void harmonicAnalysis1()
 {
+
+  testHarmonicResynthesis("Sine", 500, 44100, 5000);
+
   // we create a model for a plucked string sound created by the modal synthesizer
+
+
 
   // input signal parameters:
   int N   = 8000;
@@ -1082,8 +1136,6 @@ void harmonicAnalysis1()
 
 
 
-
-
   // todo: test with less high freq rolloff (makes it more difficult)
   // -when the first cycle mark ends up at 0, we get an access violation - we don't treat the case,
   //  where there is no initial partial cycle
@@ -1095,6 +1147,10 @@ void harmonicAnalysis1()
   // -try with saw-wave and two sines (fundamental plus 10*fundamental, for example)
 
   // -try resynthesizing without DC
+
+  // -try different synthesis settings (phase- and amplitude interpolation scheme, etc.)
+  //  it's actually quite plausible that the error signal may be due to the interpolation of 
+  //  the amplitude and/or phase (maybe more so due to amplitude)
 
   // todo:
 
@@ -1128,6 +1184,11 @@ void harmonicAnalysis1()
 
   // maybe make sure that y has the same size as x...maybe wrap this analysis/resynthesis roundtrip
   // into a convenience class
+
+  // make the switching between various input signals mor convenient - maybe by having a function
+  // harmonicResynth(std::string soundName, double freq, double sampleRate)
+  // and dispatch the input signal generation based on the string (can be Sine, Saw, Pluck, 
+  // Bow, etc.)
 
 
   // write results to files:

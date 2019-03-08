@@ -52,6 +52,8 @@ public:
   into the model. */
   void setSampleRate(T newRate) { sampleRate = newRate; }
 
+  //void setRemoveDC(bool shouldBeRemoved);
+
 
   /** \name Processing */
 
