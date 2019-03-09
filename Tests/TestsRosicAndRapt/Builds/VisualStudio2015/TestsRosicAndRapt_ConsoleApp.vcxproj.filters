@@ -502,9 +502,6 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\HarmonicAnalyzer.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\Ideas.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
@@ -1068,6 +1065,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.cpp">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\HarmonicAnalyzer.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
@@ -2685,9 +2685,6 @@
     <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\HarmonicAnalyzer.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\Ideas.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
@@ -3338,6 +3335,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.h">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\HarmonicAnalyzer.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>

@@ -367,3 +367,5 @@ template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(double *
   int N, double fc, double bw, double fs, int numPasses, double gc);
 template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(double *x, double *y,
   int N, double fc, double bw, double fs, int order, int numPasses, double gc);
+
+template class RAPT::rsHarmonicAnalyzer<double>;

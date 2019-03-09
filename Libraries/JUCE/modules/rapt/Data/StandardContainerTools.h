@@ -188,6 +188,35 @@ inline void rsPadLeft(std::vector<double>& v, size_t amount, T value)
 }
 
 
+template<class T>
+std::vector<T> rsDifference(const std::vector<T> x)
+{
+  if(x.size() < 2)
+    return std::vector<T>();  // result is empty
+  std::vector<T> d(x.size()-1);
+  for(size_t i = 0; i < d.size(); i++)
+    d[i] = x[i+1] - x[i];
+  return d;
+}
+
+//template<class T>
+//T rsMinValue(T 
+
+template<class T>
+T rsMax(const std::vector<T> x)
+{
+  T max = std::numeric_limits<T>::min(); 
+  // we should instead use -inf for double/float? -> make explicit specilizations
+
+  for(size_t i = 0; i < x.size(); i++) {
+    if(x[i] > max)
+      max = x[i];
+  }
+  return max;
+}
+
+
+
 /** Converts C-array to std::vector. */
 template<class T>
 inline std::vector<T> toVector(T* theArray, size_t size) // rename to rsToVector

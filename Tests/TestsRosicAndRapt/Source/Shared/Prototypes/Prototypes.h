@@ -17,7 +17,7 @@
 #include "Drawing.h"
 
 #include "SinusoidalModeling.h"
-#include "HarmonicAnalyzer.h"
+
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant 
 to be used for production code but are useful for a more readable proof-of-concept (because of lack 

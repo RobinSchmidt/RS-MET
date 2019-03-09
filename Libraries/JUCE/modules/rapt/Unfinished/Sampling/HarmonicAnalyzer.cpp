@@ -1,5 +1,5 @@
 
-
+/*
 // move elsewhere...
 template<class T>
 void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
@@ -13,34 +13,8 @@ void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarke
   plt.setPixelSize(1000, 300);
   plt.plot();
 }
+*/
 
-// move to rapt:
-template<class T>
-std::vector<T> rsDifference(const std::vector<T> x)
-{
-  if(x.size() < 2)
-    return std::vector<T>();  // result is empty
-  std::vector<T> d(x.size()-1);
-  for(size_t i = 0; i < d.size(); i++)
-    d[i] = x[i+1] - x[i];
-  return d;
-}
-
-//template<class T>
-//T rsMinValue(T 
-
-template<class T>
-T rsMax(const std::vector<T> x)
-{
-  T max = std::numeric_limits<T>::min(); 
-  // we should instead use -inf for double/float? -> make explicit specilizations
-
-  for(size_t i = 0; i < x.size(); i++) {
-    if(x[i] > max)
-      max = x[i];
-  }
-  return max;
-}
 
 
 //-------------------------------------------------------------------------------------------------
@@ -386,4 +360,4 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int dummy = 0;
 }
 
-template class rsHarmonicAnalyzer<double>;
+//template class rsHarmonicAnalyzer<double>;

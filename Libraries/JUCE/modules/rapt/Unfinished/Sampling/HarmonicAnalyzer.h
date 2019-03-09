@@ -1,6 +1,5 @@
 #pragma once
 
-
 /** A class to create a sinusoidal model for quasi-harmonic signals. The assumed harmonic 
 relationship between the partials allows for a different analysis algorithm that is tailored 
 specifically for harmonic signals and is supposed to give better results than a more general
@@ -39,14 +38,10 @@ class rsHarmonicAnalyzer
 
 public:
 
-
-
   rsHarmonicAnalyzer();
 
 
-
   /** \name Setup */
-
 
   /** Sets up the sample-rate. This determines the values of the frequencies that will be written
   into the model. */
