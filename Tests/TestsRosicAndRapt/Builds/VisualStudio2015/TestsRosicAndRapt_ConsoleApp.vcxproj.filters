@@ -1084,6 +1084,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalSynthesizer.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
@@ -3361,6 +3364,9 @@
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalSynthesizer.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.h">

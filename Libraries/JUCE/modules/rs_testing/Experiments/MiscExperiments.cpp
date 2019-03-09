@@ -73,3 +73,36 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   }
 }
 */
+
+void getPaddedSignals(double* xIn, int Nx, 
+  const RAPT::rsSinusoidalModel<double>& model,
+  const RAPT::SinusoidalSynthesizer<double>& synth,
+  std::vector<double>& x, std::vector<double>& y)
+{
+  typedef std::vector<double> Vec;
+
+  // synthesize y from the model:
+  y = synth.synthesize(model);
+  int nf = model.getStartSampleIndex(synth.getSampleRate()); // # fade-in samples
+
+  size_t n;
+  if(nf < 0) {
+    // obtain a version of x with an appropriate number of zeros prepended
+    nf = -nf;
+    x.resize(Nx+nf);
+    for(n = 0; n < nf; n++)        x[n] = 0;
+    for(n = nf; n < x.size(); n++) x[n] = xIn[n-nf];
+  }
+  else {
+    RAPT::rsPadLeft(y, nf, 0.0);       // prepend zeros to y, if nf > 0
+    x = RAPT::toVector(xIn, Nx);
+  }
+
+  // extend the shorter of both signals with zeros:
+  size_t nx = x.size();
+  size_t ny = y.size();
+  if(nx > ny)
+    RAPT::rsResizeWithInit(y, nx, 0.0);
+  else if(ny > nx)
+    RAPT::rsResizeWithInit(x, ny, 0.0);
+}

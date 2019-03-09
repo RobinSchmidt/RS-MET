@@ -6,8 +6,7 @@
 using namespace std;  // try to get rid
 
 #include "rosic/rosic.h"
-
-
+#include "rs_testing/rs_testing.h"
 
 ///** Plots at most five y-functions against a common x-axis. */
 //void plotData(int N, float *x, float *y1, float *y2 = nullptr, float *y3 = nullptr,
@@ -158,13 +157,13 @@ void plotTwoSineModels(
 plots also the original signal x (of length N) and the synthesis error. */
 void plotSineResynthesisResult(
   const RAPT::rsSinusoidalModel<double>& model,
-  const SinusoidalSynthesizer<double>& synth,
+  const RAPT::SinusoidalSynthesizer<double>& synth,
   double* x, int N);
 // todo: make x and n optional arguments
 
 void plotModelOutputComparison(
   const RAPT::rsSinusoidalModel<double>& model1,
   const RAPT::rsSinusoidalModel<double>& model2,
-  const SinusoidalSynthesizer<double>& synth);
+  const RAPT::SinusoidalSynthesizer<double>& synth);
 
 #endif
