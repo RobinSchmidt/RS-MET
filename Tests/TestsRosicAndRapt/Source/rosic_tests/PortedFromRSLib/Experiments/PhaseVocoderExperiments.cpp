@@ -539,6 +539,7 @@ std::vector<double> synthesizeSinusoidal(
 {
   SinusoidalSynthesizer<double> synth;
   synth.setSampleRate(sampleRate);
+  //synth.setCubicAmplitudeInterpolation(true);
   std::vector<double> x = synth.synthesize(model);
   if(fadeTime > 0.0)
     applyFadeInAndOut( &x[0], (int) x.size(), int (fadeTime*sampleRate));
@@ -1052,7 +1053,7 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
   // analyze, resynthesize and create error signal:
   rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
-  analyzer.setSincInterpolationLength(1024);
+  analyzer.setSincInterpolationLength(512);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, N);
   //plotSineModel(mdl, fs);
   std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
@@ -1092,7 +1093,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //  where there is no initial partial cycle
   //  -this happens with N=8000, key=64, fs=44100 and createSineWave -> fixed
 
-  // -try with saw-wave and two sines (fundamental plus 10*fundamental, for example)
+  // -try with saw-wave, square-wave, etc
 
   // -try resynthesizing without DC
 
@@ -1127,11 +1128,19 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //  the amplitude and/or phase (maybe more so due to amplitude)
   //  -this would also explain, why the error is larger in the attack-section - the original 
   //   envelope is farther away from being linear there
+  //  -nope: for the pluck sound, there's no visible difference between linear and cubic amplitude
+  //   interpolation (at least, in the later section of the sound, around 4000)
+  //   ...this seems reasonable because we see an error signal also for steady (constant amplitude) 
+  //   sine resynthesis - and when the amplitude is flat, both interpolators return the same value
 
   // todo:
 
   // -check artifact at end - could it be that the phase at the last datapoints is computed 
-  //  wrong?
+  //  wrong? ..more likely, it's due to the sudden cutting off in the middle of a cycle, this 
+  //  discontinuity introduces high-freq content which is randomly messed up in resynthesis unless
+  //  we would actuall do an iFFT of the block - only in this case, we can expect the discontinuity
+  //  to be faithfully reconstructed - but with an osc bank, amplitude-interpolation, etc. the step
+  //  gets "randomly" messed up
 
 
   // verify, if the resynthesizer avoid generating freqs above fs/2, i.e. if it guards against
