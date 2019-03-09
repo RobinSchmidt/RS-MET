@@ -1039,29 +1039,7 @@ void sinusoidalAnalysis3()
 
 
 
-// move to TestInputCreation:
-void createModalPluck(double* x, int N, double key, double sampleRate)
-{
-  rosic::rsModalSynth ms;
-  ms.setSampleRate(sampleRate);
-  //ms.setAmpSlope(-3);
-  ms.setAmpSlope(-6);
-  ms.setDecay(500.0);           // in ms
-  ms.setDecayByRatio(-100.0);   // in %
-  ms.setAttack(10.0);
-  ms.noteOn(key, 64.0);
-  double dummy; // unused right channel output
-  for(int n = 0; n < N; n++) {
-    ms.getSampleFrameStereo(&x[n], &dummy);
-    x[n] *= 0.5;  // maybe make the amplitude a parameter
-  }
-}
-std::vector<double> createModalPluck(double key, double sampleRate, int length)
-{
-  std::vector<double> x(length);
-  createModalPluck(&x[0], length, key, sampleRate);
-  return x;
-}
+
 
 void testHarmonicResynthesis(const std::string& name, double f, double fs, int N)
 {

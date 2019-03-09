@@ -95,4 +95,11 @@ double saw(int n, double f, double fs, int maxHarmonic = -1);
 /** @see saw - same stuff for a square wave. */
 double sqr(int n, double f, double fs, int maxHarmonic = -1);
 
+
+void createModalPluck(double* x, int N, double key, double sampleRate);
+
+std::vector<double> createModalPluck(double key, double sampleRate, int length); // convenience function
+
+
+
 #endif
