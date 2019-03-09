@@ -1038,23 +1038,18 @@ void sinusoidalAnalysis3()
   // runExperiment()
 }
 
-
-void testHarmonicResynthesis(const std::string& name, double f, double fs, int N)
+// move function somewhere, where we can see it also from the tests repo - maybe make a new
+// juce module rs_tests (that should include also the plotting stuff, signal generation, etc.):
+void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
+  double fs, bool writeWaveFiles, bool plotResults)
 {
-  // setup (comment out "doStuff = true", if you don't want stuff to be done):
-  bool writeWaveFiles = false, plotResults = false;
-  writeWaveFiles = true;
-  plotResults    = true;
-
-  // create input signal:
-  std::vector<double> input = createNamedSound(name, f, fs, N); 
-  double* x = &input[0];   // pointer to first sample (for convenience)
-
   // analyze, resynthesize and create error signal:
+  double* x = &input[0];   // pointer to first sample (for convenience)
+  int Nx = (int) input.size();
   rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(512);
-  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, N);
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
   //plotSineModel(mdl, fs);
   std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
   std::vector<double> error = output-input;
@@ -1063,21 +1058,32 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
 
   // write original, resynthesized and error signals to files, if desired:
   if(writeWaveFiles == true) {
-    std::string name2 = name + std::to_string(f) + "Hz";
-    rosic::writeToMonoWaveFile((name2 + "Original.wav").c_str(),      x, N,  (int)fs);
-    rosic::writeToMonoWaveFile((name2 + "Resynthesized.wav").c_str(), y, Ny, (int)fs);
-    rosic::writeToMonoWaveFile((name2 + "Error.wav").c_str(),         e, Ne, (int)fs);
+    rosic::writeToMonoWaveFile((name + "Original.wav").c_str(),      x, Nx, (int)fs);
+    rosic::writeToMonoWaveFile((name + "Resynthesized.wav").c_str(), y, Ny, (int)fs);
+    rosic::writeToMonoWaveFile((name + "Error.wav").c_str(),         e, Ne, (int)fs);
   }
 
   // plot original, resynthesized and error signals, if desired:
   if(plotResults == true) {
     GNUPlotter plt;
-    plt.addDataArrays(N,  x);
+    plt.addDataArrays(Nx, x);
     plt.addDataArrays(Ny, y);
     plt.addDataArrays(Ne, e);
     //plt.addDataArrays(Ne-2000, &e[1000]);  // middle part of error
     plt.plot();
   }
+}
+
+void testHarmonicResynthesis(const std::string& name, double f, double fs, int N)
+{
+  // setup (comment out "doStuff = true", if you don't want stuff to be done):
+  bool writeWaveFiles = false, plotResults = false;
+  writeWaveFiles = true;
+  plotResults    = true;
+
+  std::vector<double> input = createNamedSound(name, f, fs, N); 
+  std::string name2 = name + std::to_string(f) + "Hz";
+  testHarmonicResynthesis(name2, input, fs, writeWaveFiles, plotResults);
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis
