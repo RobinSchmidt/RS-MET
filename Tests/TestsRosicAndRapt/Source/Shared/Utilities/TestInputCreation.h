@@ -95,11 +95,21 @@ double saw(int n, double f, double fs, int maxHarmonic = -1);
 /** @see saw - same stuff for a square wave. */
 double sqr(int n, double f, double fs, int maxHarmonic = -1);
 
-
+/** Creates a plucked-string like sound using modal synthesis. */
 void createModalPluck(double* x, int N, double key, double sampleRate);
 
 std::vector<double> createModalPluck(double key, double sampleRate, int length); // convenience function
 
+/** Creates one out of a collection of standard test sounds based on a name with a given frequency
+at a given sampleRate and with a given number of samples. The following sounds are available:
+Sine:       sine wave
+Cosine:     cosine wave
+TwoSines:   sine wave with harmonic at 10x the frequency (with same amplitude)...rename
+ModalPluck: plucked string like sound created by modal synthesis  
 
+ToDo Saw,NaiveSaw, Square,NaiveSquare, Triangle/NaiveTriangle, Pulse40/NaivePulse40, ...
+*/
+std::vector<double> createNamedSound(const std::string& name, double freq, 
+  double sampleRate, int numSamples);
 
 #endif

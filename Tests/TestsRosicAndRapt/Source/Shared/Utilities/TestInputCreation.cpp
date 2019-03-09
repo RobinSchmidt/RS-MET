@@ -348,3 +348,19 @@ std::vector<double> createModalPluck(double key, double sampleRate, int length)
   return x;
 }
 
+std::vector<double> createNamedSound(const std::string& name, double f, double fs, int N)
+{
+  double key = rsFreqToPitch(f);
+  std::vector<double> v(N);  // vector for the signal
+  double* x = &v[0];         // pointer to first sample (for convenience)
+  if( name == "Sine")       createSineWave(  x, N, f, 0.5, fs, 0.0);
+  else if(name == "Cosine") createSineWave(  x, N, f, 0.5, fs, PI/2);
+  else if(name == "TwoSines") {
+    double f2[2] = {   f, 10*f };
+    double a2[2] = { 0.3, 0.3  };
+    createSumOfSines(x, N, 2, fs, f2, a2);
+  }
+  else if(name == "ModalPluck")  createModalPluck(x, N, key, fs);
+  else rsError("Unknown sound name");
+  return v;
+}

@@ -1038,28 +1038,16 @@ void sinusoidalAnalysis3()
 }
 
 
-
-
-
 void testHarmonicResynthesis(const std::string& name, double f, double fs, int N)
 {
-  // setup:
-  bool writeWaveFiles = true;
-  bool plotResults    = true;
+  // setup (comment out "doStuff = true", if you don't want stuff to be done):
+  bool writeWaveFiles = false, plotResults = false;
+  writeWaveFiles = true;
+  plotResults    = true;
 
-  // create input signal (factor out, move to TestInputCreation):
-  double key = rsFreqToPitch(f);
-  std::vector<double> input(N);  // input signal
-  double* x = &input[0];         // pointer to first sample (for convenience)
-  if( name == "Sine")       createSineWave(  x, N, f, 0.5, fs, 0.0);
-  else if(name == "Cosine") createSineWave(  x, N, f, 0.5, fs, PI/2);
-  else if(name == "TwoSines") {
-    double f2[2] = {   f, 10*f };
-    double a2[2] = { 0.3, 0.3  };
-    createSumOfSines(x, N, 2, fs, f2, a2);
-  }
-  else if(name == "Pluck")  createModalPluck(x, N, key, fs);
-  else rsError("Unknown sound name");
+  // create input signal:
+  std::vector<double> input = createNamedSound(name, f, fs, N); 
+  double* x = &input[0];   // pointer to first sample (for convenience)
 
   // analyze, resynthesize and create error signal:
   rsHarmonicAnalyzer<double> analyzer;
@@ -1073,8 +1061,8 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
   double* e = &error[0];  int Ne = (int) error.size();  // dito
 
   // write original, resynthesized and error signals to files, if desired:
-  std::string name2 = name + std::to_string(f) + "Hz";
   if(writeWaveFiles == true) {
+    std::string name2 = name + std::to_string(f) + "Hz";
     rosic::writeToMonoWaveFile((name2 + "Original.wav").c_str(),      x, N,  (int)fs);
     rosic::writeToMonoWaveFile((name2 + "Resynthesized.wav").c_str(), y, Ny, (int)fs);
     rosic::writeToMonoWaveFile((name2 + "Error.wav").c_str(),         e, Ne, (int)fs);
@@ -1093,10 +1081,10 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis
 {
-  //testHarmonicResynthesis("Sine",     500, 44100, 5000);
-  //testHarmonicResynthesis("Cosine",   500, 44100, 5000);
-  //testHarmonicResynthesis("TwoSines", 200, 44100, 5000);
-  testHarmonicResynthesis("Pluck",    500, 44100, 5000);
+  //testHarmonicResynthesis("Sine",       500, 44100, 5000);
+  //testHarmonicResynthesis("Cosine",     500, 44100, 5000);
+  //testHarmonicResynthesis("TwoSines",   200, 44100, 5000);
+  testHarmonicResynthesis("ModalPluck", 500, 44100, 5000);
 
 
   // todo: test with less high freq rolloff (makes it more difficult)
@@ -1124,11 +1112,15 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //   1024   :  2e-6
   //  there seems to be a general trend of the amplitude being inversely proportional to kernel 
   //  length but there are weird oscillations
-  //  todo: make an sinc-interpolator test: 
+  //  todo: make a sinc-interpolator test: 
   //  create noise -> upsample -> downsample -> create difference ...the amplitude of the 
   //  difference should be as low as possible, try different downsampling factors, try different
   //  window functions - maybe collect data of error amplitude as function of kernel length and
   //  plot that
+  //  todo: implement an algorithm that doesn't interpolate to a fixed block-size but instead uses
+  //   a variable block-size and Bluestein FFT. this bypasses interpolation problems, but may 
+  //   introduce other problems due to rounding of cycle-marks (but maybe that's less problematic
+  //   - we'll see)
 
   // -try different synthesis settings (phase- and amplitude interpolation scheme, etc.)
   //  it's actually quite plausible that the error signal may be due to the interpolation of 
