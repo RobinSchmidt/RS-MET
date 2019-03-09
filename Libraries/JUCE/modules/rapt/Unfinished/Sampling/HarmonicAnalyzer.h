@@ -30,6 +30,9 @@ transient parts.
 edge-artifacts - this padding, if used, has to be accounted for in the model after analysis is 
 finished. the padding should be at least one cycle long, maybe use two to be on the safe side
 
+-maybe have an "oversampling" option: let the hop-size be a half or quarter of the block-size
+ -samples amplitudes and phases more densely in time
+
 */
 
 template<class T>
@@ -54,6 +57,11 @@ public:
   inverserly proportional to that length. But that's only a rough tendency - for example, there's a 
   huge difference (factor ~3) between 16 and 17 ...more research needed */
   void setSincInterpolationLength(T newLength) { sincLength = newLength; }
+
+  void removePotentiallyAliasingHarmonics(bool shouldRemove)
+  {
+    antiAlias = shouldRemove;
+  }
 
 
   /** \name Processing */
@@ -155,6 +163,8 @@ protected:
 
 
   int blockSize = 0;    // FFT block size
+
+  bool antiAlias = false;
 
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping

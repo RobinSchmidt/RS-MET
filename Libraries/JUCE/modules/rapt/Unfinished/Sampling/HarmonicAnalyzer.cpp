@@ -35,7 +35,8 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
     return mdl;                     // return empty model if pre-processing has failed
   analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
   deFlattenPitch(mdl);              // post process model data to account for flattening
-  removeAliasing(mdl);              // remove freqs above orignal nyquist freq
+  if(antiAlias)
+    removeAliasing(mdl);            // remove freqs above orignal nyquist freq
   handleEdges(mdl);                 // add fade-in/out datapoints
   convertTimeUnit(mdl);             // convert from samples to seconds
   return mdl;

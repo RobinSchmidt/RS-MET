@@ -38,7 +38,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   if(writeWaveFiles == true) {
     rosic::writeToMonoWaveFile((name + "Original.wav").c_str(),      x, Nx, (int)fs);
     rosic::writeToMonoWaveFile((name + "Resynthesized.wav").c_str(), y, Ny, (int)fs);
-    rosic::writeToMonoWaveFile((name + "Error.wav").c_str(),         e, Ne, (int)fs);
+    rosic::writeToMonoWaveFile((name + "Residual.wav").c_str(),         e, Ne, (int)fs);
   }
  
 
