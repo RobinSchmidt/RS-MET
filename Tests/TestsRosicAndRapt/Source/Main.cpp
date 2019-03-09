@@ -20,6 +20,9 @@
 // passed &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
 // in UnitTests.cpp
 
+// todo: maybe move some of the code into juce module rs_tests (or something) to make it more 
+// convenient to used in the test-repo
+
 int main(int argc, char* argv[])
 {
   // tempoarary throw-away-code:
