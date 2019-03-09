@@ -62,7 +62,10 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
     return false;                                // report failure
   Vec cycleLengths = rsDifference(cycleMarks);   // cycle lengths
   T maxLength = rsMax(cycleLengths);
+  //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
+  //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
   blockSize = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
+   
 
   // Create the mapping function for the time instants of the cycle marks:
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
@@ -120,6 +123,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   int n0 = 0;                          // first sample (from y-array) in current frame
   int m  = 0;                          // frame index
   int L  = (int) tOut[1];              // length of initial partial cycle
+  rsAssert(L >= 0 && L <= K);
   typedef RAPT::rsArray AR;
   AR::fillWithZeros(&sig[0], K-L);
   if(L > 0)
@@ -143,20 +147,14 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   // The final partial cycle is post-padded with zeros:
   n0 = (int) tOut[m]; 
   //L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);  // maybe +1? check against off-by-1
-
   L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]) + 1;
-  // using +1 changes the artifact at the end (makes it a bit smoother)
-  // +1 seems to contain valid data indeed
-
-  //L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]) + 2;
-  // using +2 makes the synthesizer hang in the test - weird! ..ok +2 definitely is an invalid
-  // accesse
-
+  rsAssert(L >= 0 && L <= K);
   AR::copyBuffer(&y[n0], &sig[0], L);
   if(L < K)  // is this correct?
     AR::fillWithZeros(&sig[L], K-L);
   //plotVector(sig);  // debug
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
+
 
   // todo: double-check all index computations against off-by-one errors, verify time-indices
 }

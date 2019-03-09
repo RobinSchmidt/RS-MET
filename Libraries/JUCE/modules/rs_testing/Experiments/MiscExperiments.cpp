@@ -22,9 +22,11 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   // analyze, resynthesize and create error signal:
   double* x = &input[0];   // pointer to first sample (for convenience)
   int Nx = (int) input.size();
+
+
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
-  analyzer.setSincInterpolationLength(512);
+  analyzer.setSincInterpolationLength(64);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
   //plotSineModel(mdl, fs);
   std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
@@ -38,7 +40,11 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     rosic::writeToMonoWaveFile((name + "Resynthesized.wav").c_str(), y, Ny, (int)fs);
     rosic::writeToMonoWaveFile((name + "Error.wav").c_str(),         e, Ne, (int)fs);
   }
+ 
 
+  // temporarily commented - we need to move the plotting code into rs_testing...or maybe RAPT
+  // ...or maybe partially here and there
+  /*
   // plot original, resynthesized and error signals, if desired:
   if(plotResults == true) {
     GNUPlotter plt;
@@ -48,6 +54,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     //plt.addDataArrays(Ne-2000, &e[1000]);  // middle part of error
     plt.plot();
   }
+  */
 }
 
 
