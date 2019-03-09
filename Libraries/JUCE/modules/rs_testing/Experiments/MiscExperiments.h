@@ -1,7 +1,12 @@
 #pragma once
 
-//void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
-//  double fs, bool writeWaveFiles, bool plotResults);
+// convenience function:
+std::vector<double> synthesizeSinusoidal(
+  const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime = 0.0);
+
+
+void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
+  double fs, bool writeWaveFiles, bool plotResults);
 
 /** Convenience function to produce a vector x from the array xIn of length N and a vector y from 
 the model in such a way that they are time aligned even in cases when the lengths dont match by 
@@ -13,3 +18,32 @@ void getPaddedSignals(double* xIn, int Nx,  const RAPT::rsSinusoidalModel<double
   const RAPT::rsSinusoidalSynthesizer<double>& synth, 
   std::vector<double>& x, std::vector<double>& y);
 // actually, we may need this later also to obtain a residual...function should be renamed
+
+
+// move to RAPT::rsArray
+template<class T>
+void applyFadeIn(T* x, int N, int numFadeSamples)
+{
+  int nf = rsMin(numFadeSamples, N);
+  for(int n = 0; n < nf; n++) {
+    T t = T(n) / T(nf);
+    x[n] *= t;
+  }
+}
+
+template<class T>
+void applyFadeOut(T* x, int N, int numFadeSamples)
+{
+  int nf = rsMin(numFadeSamples, N);
+  for(int n = 0; n < nf; n++) {
+    T t = T(n) / T(nf);
+    x[N-n-1] *= t;
+  }
+}
+
+template<class T>
+void applyFadeInAndOut(T* x, int N, int numFadeSamples)
+{
+  applyFadeIn( &x[0], N, numFadeSamples);
+  applyFadeOut(&x[0], N, numFadeSamples);
+}

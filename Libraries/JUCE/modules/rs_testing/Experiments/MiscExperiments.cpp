@@ -1,36 +1,13 @@
 // todo: SinusoidalSynthesizer to RAPT to make it available here
 
-/*
-template<class T>
-void applyFadeIn(T* x, int N, int numFadeSamples)
-{
-  int nf = rsMin(numFadeSamples, N);
-  for(int n = 0; n < nf; n++) {
-    T t = T(n) / T(nf);
-    x[n] *= t;
-  }
-}
-template<class T>
-void applyFadeOut(T* x, int N, int numFadeSamples)
-{
-  int nf = rsMin(numFadeSamples, N);
-  for(int n = 0; n < nf; n++) {
-    T t = T(n) / T(nf);
-    x[N-n-1] *= t;
-  }
-}
-template<class T>
-void applyFadeInAndOut(T* x, int N, int numFadeSamples)
-{
-  applyFadeIn( &x[0], N, numFadeSamples);
-  applyFadeOut(&x[0], N, numFadeSamples);
-}
+using namespace RAPT;
+
 
 // convenience function:
 std::vector<double> synthesizeSinusoidal(
-  const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime = 0.0)
+  const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime)
 {
-  RAPT::SinusoidalSynthesizer<double> synth;
+  RAPT::rsSinusoidalSynthesizer<double> synth;
   synth.setSampleRate(sampleRate);
   //synth.setCubicAmplitudeInterpolation(true);
   std::vector<double> x = synth.synthesize(model);
@@ -72,7 +49,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     plt.plot();
   }
 }
-*/
+
 
 void getPaddedSignals(double* xIn, int Nx, 
   const RAPT::rsSinusoidalModel<double>& model,
