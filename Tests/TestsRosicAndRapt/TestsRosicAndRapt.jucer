@@ -534,6 +534,7 @@
         <MODULEPATH id="rapt" path="../../Libraries/JUCE/modules"/>
         <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>
         <MODULEPATH id="romos" path="../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rs_testing" path="../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraDefs="">
@@ -547,6 +548,7 @@
         <MODULEPATH id="rapt" path="../../Libraries/JUCE/modules"/>
         <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>
         <MODULEPATH id="romos" path="../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rs_testing" path="../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_WINDOWS>
     <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux" extraDefs="DONT_SET_USING_JUCE_NAMESPACE=1&#10;JUCE_DONT_DECLARE_PROJECTINFO=1">
@@ -560,6 +562,7 @@
         <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>
         <MODULEPATH id="romos" path="../../Libraries/JUCE/modules"/>
         <MODULEPATH id="rapt" path="../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rs_testing" path="../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_LINUX>
   </EXPORTFORMATS>
@@ -567,6 +570,7 @@
     <MODULE id="rapt" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="romos" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="rosic" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="rs_testing" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <JUCEOPTIONS/>
   <LIVE_SETTINGS>

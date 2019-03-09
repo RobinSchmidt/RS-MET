@@ -2299,9 +2299,16 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_rapt.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_romos.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_rosic.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_rs_testing.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Misc\Misc.h"/>
@@ -3093,6 +3100,8 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\unfinished\rosic_QuadSource.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosicOld.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>

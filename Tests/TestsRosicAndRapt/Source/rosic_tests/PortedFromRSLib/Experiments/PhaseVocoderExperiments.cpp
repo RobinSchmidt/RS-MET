@@ -507,6 +507,9 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
 }
 
 
+
+
+
 // move to RAPT::rsArray, maybe make cubic versions
 template<class T>
 void applyFadeIn(T* x, int N, int numFadeSamples)
@@ -533,7 +536,7 @@ void applyFadeInAndOut(T* x, int N, int numFadeSamples)
   applyFadeOut(&x[0], N, numFadeSamples);
 }
 
-// convenience function:
+// convenience function - move to rs_testing:
 std::vector<double> synthesizeSinusoidal(
   const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime = 0.0)
 {
@@ -545,6 +548,9 @@ std::vector<double> synthesizeSinusoidal(
     applyFadeInAndOut( &x[0], (int) x.size(), int (fadeTime*sampleRate));
   return x;
 }
+
+
+
 
 void writeTwoSineModelOutputsToFile(
   const char* fileName,
@@ -1038,6 +1044,7 @@ void sinusoidalAnalysis3()
   // runExperiment()
 }
 
+
 // move function somewhere, where we can see it also from the tests repo - maybe make a new
 // juce module rs_tests (that should include also the plotting stuff, signal generation, etc.):
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
@@ -1073,6 +1080,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     plt.plot();
   }
 }
+
 
 void testHarmonicResynthesis(const std::string& name, double f, double fs, int N)
 {

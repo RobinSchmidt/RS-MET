@@ -344,6 +344,12 @@
     <Filter Include="Juce Modules\rosic">
       <UniqueIdentifier>{0624B2DA-7EBA-9F95-A793-0F3B9F53A8DF}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rs_testing\Experiments">
+      <UniqueIdentifier>{8E0EFAA0-7595-EE57-A440-AE3ED92B18CB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rs_testing">
+      <UniqueIdentifier>{81E50E39-AB6B-E717-18AE-A9EFF2D08BBA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules">
       <UniqueIdentifier>{422C46B7-0467-2DB0-BF3C-16DFCAFD69AC}</UniqueIdentifier>
     </Filter>
@@ -2521,6 +2527,12 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
       <Filter>Juce Modules\rosic</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.cpp">
+      <Filter>Juce Modules\rs_testing\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.cpp">
+      <Filter>Juce Modules\rs_testing</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_rapt.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
@@ -2528,6 +2540,9 @@
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_rosic.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\include_rs_testing.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4898,6 +4913,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h">
       <Filter>Juce Modules\rosic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.h">
+      <Filter>Juce Modules\rs_testing\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.h">
+      <Filter>Juce Modules\rs_testing</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
       <Filter>Juce Library Code</Filter>

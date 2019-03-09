@@ -48,9 +48,10 @@
 #define JUCE_USE_DARK_SPLASH_SCREEN 1
 
 //==============================================================================
-#define JUCE_MODULE_AVAILABLE_rapt       1
-#define JUCE_MODULE_AVAILABLE_romos      1
-#define JUCE_MODULE_AVAILABLE_rosic      1
+#define JUCE_MODULE_AVAILABLE_rapt            1
+#define JUCE_MODULE_AVAILABLE_romos           1
+#define JUCE_MODULE_AVAILABLE_rosic           1
+#define JUCE_MODULE_AVAILABLE_rs_testing      1
 
 #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
 //==============================================================================

@@ -29,4 +29,7 @@
 #include <rapt/rapt.h>
 #include <rosic/rosic.h>
 
+#include "Experiments/MiscExperiments.h"
+
+
 #endif // #ifndef RS_TESTING_H_INCLUDED
