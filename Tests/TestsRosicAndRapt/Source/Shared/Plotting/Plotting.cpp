@@ -237,7 +237,7 @@ void plotTwoSineModels(
 }
 
 void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
-  const RAPT::SinusoidalSynthesizer<double>& synth, double* x, int Nx)
+  const RAPT::rsSinusoidalSynthesizer<double>& synth, double* x, int Nx)
 {
   // Synthesize model output and create residual:
   typedef std::vector<double> Vec;
@@ -269,7 +269,7 @@ void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model,
 void plotModelOutputComparison(
   const RAPT::rsSinusoidalModel<double>& model1,
   const RAPT::rsSinusoidalModel<double>& model2,
-  const RAPT::SinusoidalSynthesizer<double>& synth)
+  const RAPT::rsSinusoidalSynthesizer<double>& synth)
 {
   std::vector<double> x = synth.synthesize(model1); // reference signal
   plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());

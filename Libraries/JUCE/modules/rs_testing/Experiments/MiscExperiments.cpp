@@ -76,7 +76,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 
 void getPaddedSignals(double* xIn, int Nx, 
   const RAPT::rsSinusoidalModel<double>& model,
-  const RAPT::SinusoidalSynthesizer<double>& synth,
+  const RAPT::rsSinusoidalSynthesizer<double>& synth,
   std::vector<double>& x, std::vector<double>& y)
 {
   typedef std::vector<double> Vec;

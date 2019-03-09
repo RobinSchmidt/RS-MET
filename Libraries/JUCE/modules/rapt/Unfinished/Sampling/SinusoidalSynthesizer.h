@@ -21,7 +21,7 @@ partial goes above the limit only for a short moment?
 */
 
 template<class T>
-class SinusoidalSynthesizer
+class rsSinusoidalSynthesizer
 {
 
 public:

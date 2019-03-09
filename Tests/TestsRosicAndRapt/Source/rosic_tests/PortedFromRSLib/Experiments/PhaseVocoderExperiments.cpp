@@ -453,7 +453,7 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
 
 
   // create and set up the synth and create time-axis at sample-rate:
-  SinusoidalSynthesizer<double> synth;
+  rsSinusoidalSynthesizer<double> synth;
   synth.setSampleRate(fs);
 
   // synthesize and plot the sound:
@@ -540,7 +540,7 @@ void applyFadeInAndOut(T* x, int N, int numFadeSamples)
 std::vector<double> synthesizeSinusoidal(
   const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime = 0.0)
 {
-  SinusoidalSynthesizer<double> synth;
+  rsSinusoidalSynthesizer<double> synth;
   synth.setSampleRate(sampleRate);
   //synth.setCubicAmplitudeInterpolation(true);
   std::vector<double> x = synth.synthesize(model);
@@ -556,7 +556,7 @@ void writeTwoSineModelOutputsToFile(
   const char* fileName,
   const RAPT::rsSinusoidalModel<double>& model1,
   const RAPT::rsSinusoidalModel<double>& model2,
-  const SinusoidalSynthesizer<double>& synth, bool writeResidualFile = false)
+  const rsSinusoidalSynthesizer<double>& synth, bool writeResidualFile = false)
 {
   // we need some awkwardness here to get two time-aligned outputs...
   std::vector<double> x = synth.synthesize(model1);
@@ -594,7 +594,7 @@ void sinusoidalSynthesis1()
   // create a model, add the partial to it and synthesize the sound:
   RAPT::rsSinusoidalModel<double> model;
   model.addPartial(partial);
-  SinusoidalSynthesizer<double> synth;
+  rsSinusoidalSynthesizer<double> synth;
   synth.setSampleRate(fs);
   synth.setCubicAmplitudeInterpolation(true);
   //synth.setCubicPhaseInterpolation(true);
@@ -755,7 +755,7 @@ void sinusoidalAnalysis1()
   // by deleting the spurious tracks
 
   // create and set up a sinusoidal synthesizer object and plot resynthesis result:
-  SinusoidalSynthesizer<double> synth;
+  rsSinusoidalSynthesizer<double> synth;
   synth.setSampleRate(sampleRate);
   plotSineResynthesisResult(model, synth, &x[0], (int) N);
 
@@ -840,9 +840,9 @@ void sinusoidalAnalysis2()
   // ...try to use the lowest possible values that give a good result
 
   // create and set up a sinusoidal synthesizer object and plot resynthesis result:
-  SinusoidalSynthesizer<double> synth;
+  rsSinusoidalSynthesizer<double> synth;
 
-  typedef SinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
+  typedef rsSinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
   //synth.setPhaseInterpolation(PIM::cubicHermite);
   //synth.setPhaseInterpolation(PIM::quinticHermite);
   synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
@@ -989,8 +989,8 @@ void sinusoidalAnalysis3()
   double freqBias = fa - (f1+f2)/2;
 
   // create and set up a sinusoidal synthesizer object and plot resynthesis result:
-  SinusoidalSynthesizer<double> synth;
-  typedef SinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
+  rsSinusoidalSynthesizer<double> synth;
+  typedef rsSinusoidalSynthesizer<double>::PhaseInterpolationMethod PIM;
   //synth.setPhaseInterpolation(PIM::cubicHermite);
   //synth.setPhaseInterpolation(PIM::quinticHermite);
   synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);

@@ -368,5 +368,5 @@ template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(double *
 template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(double *x, double *y,
   int N, double fc, double bw, double fs, int order, int numPasses, double gc);
 
-template class RAPT::SinusoidalSynthesizer<double>;
+template class RAPT::rsSinusoidalSynthesizer<double>;
 template class RAPT::rsHarmonicAnalyzer<double>;

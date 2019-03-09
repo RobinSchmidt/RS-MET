@@ -157,13 +157,13 @@ void plotTwoSineModels(
 plots also the original signal x (of length N) and the synthesis error. */
 void plotSineResynthesisResult(
   const RAPT::rsSinusoidalModel<double>& model,
-  const RAPT::SinusoidalSynthesizer<double>& synth,
+  const RAPT::rsSinusoidalSynthesizer<double>& synth,
   double* x, int N);
 // todo: make x and n optional arguments
 
 void plotModelOutputComparison(
   const RAPT::rsSinusoidalModel<double>& model1,
   const RAPT::rsSinusoidalModel<double>& model2,
-  const RAPT::SinusoidalSynthesizer<double>& synth);
+  const RAPT::rsSinusoidalSynthesizer<double>& synth);
 
 #endif

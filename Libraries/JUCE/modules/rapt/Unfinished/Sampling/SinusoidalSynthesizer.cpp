@@ -45,7 +45,7 @@ bool arePhasesConsistent(T p1, T p2, T tol = 1.e-13)
 //=================================================================================================
 
 template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& model) const
+std::vector<T> rsSinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& model) const
 {
   int N = model.getLengthInSamples(sampleRate);
   std::vector<T> x(N);
@@ -56,7 +56,7 @@ std::vector<T> SinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>& 
 }
 
 template<class T>
-void SinusoidalSynthesizer<T>::synthesizePartial(
+void rsSinusoidalSynthesizer<T>::synthesizePartial(
   const rsSinusoidalPartial<T>& partial, T* x, int xLength, T timeShift) const 
 {
   // figure out number of samples to produce:
@@ -126,7 +126,7 @@ void SinusoidalSynthesizer<T>::synthesizePartial(
 }
 
 template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedAmplitudes(
+std::vector<T> rsSinusoidalSynthesizer<T>::getInterpolatedAmplitudes(
   const RAPT::rsSinusoidalPartial<T>& partial, 
   const std::vector<T>& td, 
   const std::vector<T>& t) const
@@ -144,7 +144,7 @@ std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedAmplitudes(
 }
 
 template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(
+std::vector<T> rsSinusoidalSynthesizer<T>::getInterpolatedPhases(
   const RAPT::rsSinusoidalPartial<T>& partial, 
   const std::vector<T>& td, 
   const std::vector<T>& t) const
@@ -161,7 +161,7 @@ std::vector<T> SinusoidalSynthesizer<T>::getInterpolatedPhases(
 }
 
 template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::phasesViaTweakedIntegral(
+std::vector<T> rsSinusoidalSynthesizer<T>::phasesViaTweakedIntegral(
   const RAPT::rsSinusoidalPartial<T>& partial,
   const std::vector<T>& td,
   const std::vector<T>& t) const
@@ -183,7 +183,7 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesViaTweakedIntegral(
 }
 
 template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::phasesHermite(
+std::vector<T> rsSinusoidalSynthesizer<T>::phasesHermite(
   const RAPT::rsSinusoidalPartial<T>& partial,
   const std::vector<T>& td,
   const std::vector<T>& t, bool quintic) const
@@ -277,16 +277,12 @@ std::vector<T> SinusoidalSynthesizer<T>::phasesHermite(
 
   return p;
 }
-
 // idea: maybe the frequency interpolation should be done in the log-domain, i.e. interpolate
 // pitches instead of frequencies
 
 
-
-
-
 template<class T>
-std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
+std::vector<T> rsSinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   const std::vector<T>& f, const std::vector<T>& wp) const
 {
   size_t M = t.size();
@@ -305,9 +301,9 @@ std::vector<T> SinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
     T wp2 = RAPT::rsWrapToInterval(wp[m], 0, 2*PI);  // 0..2*pi
     T d   = wp2-wp1;            // -2*pi..2*pi, delta between target phase and integrated frequency
 
-                                // these adjustments here are related to the phase-desync bursts in resynthesized signals (the
-                                // resynthesized phases get temporarily desynchronized from the original phases, leading to
-                                // short sinusodial bursts in the residual) - but commenting them out leads to even more bursts
+    // these adjustments here are related to the phase-desync bursts in resynthesized signals (the
+    // resynthesized phases get temporarily desynchronized from the original phases, leading to
+    // short sinusodial bursts in the residual) - but commenting them out leads to even more bursts
     if(d < 0) d += 2*PI;        // 0..2*PI
     if(d > PI)                  // choose adjustment direction of smaller phase difference
       d -= 2*PI;                // -pi..pi
