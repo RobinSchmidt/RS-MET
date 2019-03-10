@@ -10,27 +10,26 @@ plotting functions wil actually invoke the plotter in this project. */
 
 #include "GNUPlotter.h"
 
-
 template<class T>
 inline void rsPlotVector(std::vector<T> v)
 {
   GNUPlotter plt;
   plt.plotArrays((int) v.size(), &v[0]);
 }
+// 
 
-
-#ifdef RS_PLOTTING
-
-
-
-
-
-#else
-
-// dummy plotting functions to satisfy the compiler when no plotting is desired:
-
-template<class T> inline void rsPlotVector(std::vector<T> v) {}
-
-//inline void rsPlotVector(std::vector<double> v) {}
-
-#endif
+//#ifdef RS_PLOTTING
+//
+//
+//
+//
+//
+//#else
+//
+//// dummy plotting functions to satisfy the compiler when no plotting is desired:
+//
+//template<class T> inline void rsPlotVector(std::vector<T> v) {}
+//
+////inline void rsPlotVector(std::vector<double> v) {}
+//
+//#endif

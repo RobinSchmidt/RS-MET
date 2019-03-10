@@ -45,6 +45,7 @@
 		28C9376E64FDC4E067C87C85 = {isa = PBXBuildFile; fileRef = 330D93D40F00729D8B90250E; };
 		39D0299123E7E54D503F804D = {isa = PBXBuildFile; fileRef = BDB4CD9B02399DD765313B57; };
 		053FBEACAA547B5A705631C6 = {isa = PBXBuildFile; fileRef = 5CAFF2EAAA302FC93948D1FD; };
+		A6E63ADA8FA5819ED1E7DB35 = {isa = PBXBuildFile; fileRef = 9965DD293DD73D93F2EDFD52; };
 		3ECCD1909DEF988AEB6C2C90 = {isa = PBXBuildFile; fileRef = 8D37E6C721666C15CE69DDB4; };
 		C455559C7C514516267679EA = {isa = PBXBuildFile; fileRef = CF7FC9143A4A2707EA76E4C0; };
 		013E17D6F20282FCC1D8B4E6 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -88,6 +89,7 @@
 		886EAC1A040BBFE529EE115C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "include_juce_audio_plugin_client_VST2.cpp"; path = "../../JuceLibraryCode/include_juce_audio_plugin_client_VST2.cpp"; sourceTree = "SOURCE_ROOT"; };
 		8D37E6C721666C15CE69DDB4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "include_romos.cpp"; path = "../../JuceLibraryCode/include_romos.cpp"; sourceTree = "SOURCE_ROOT"; };
 		97E84E8FEA22F6D8DC921F2B = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_devices"; path = "../../../../../Libraries/JUCE/modules/juce_audio_devices"; sourceTree = "SOURCE_ROOT"; };
+		9965DD293DD73D93F2EDFD52 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "include_rapt_templates.cpp"; path = "../../JuceLibraryCode/include_rapt_templates.cpp"; sourceTree = "SOURCE_ROOT"; };
 		A8223F4F94F7467119E6B7D4 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_basics"; path = "../../../../../Libraries/JUCE/modules/juce_audio_basics"; sourceTree = "SOURCE_ROOT"; };
 		B0259FFF2558799510646A07 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_basics.mm"; path = "../../JuceLibraryCode/include_juce_audio_basics.mm"; sourceTree = "SOURCE_ROOT"; };
 		B8AB6DF9EE284FA2320F238F = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -160,6 +162,7 @@
 					330D93D40F00729D8B90250E,
 					BDB4CD9B02399DD765313B57,
 					5CAFF2EAAA302FC93948D1FD,
+					9965DD293DD73D93F2EDFD52,
 					8D37E6C721666C15CE69DDB4,
 					CF7FC9143A4A2707EA76E4C0,
 					0ABDEFD73E2FCA35CF694E23, ); name = "Juce Library Code"; sourceTree = "<group>"; };
@@ -670,6 +673,7 @@
 					28C9376E64FDC4E067C87C85,
 					39D0299123E7E54D503F804D,
 					053FBEACAA547B5A705631C6,
+					A6E63ADA8FA5819ED1E7DB35,
 					3ECCD1909DEF988AEB6C2C90,
 					C455559C7C514516267679EA, ); runOnlyForDeploymentPostprocessing = 0; };
 		02D728FDAE753C18615B25A0 = {isa = PBXNativeTarget; buildConfigurationList = 1D855E213305979C3B5B07D8; buildPhases = (

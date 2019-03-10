@@ -108,6 +108,7 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/include_jura_framework_7d7fac19.o \
   $(JUCE_OBJDIR)/include_jura_processors_5f4e06b0.o \
   $(JUCE_OBJDIR)/include_rapt_c70c3493.o \
+  $(JUCE_OBJDIR)/include_rapt_templates_ceee47cd.o \
   $(JUCE_OBJDIR)/include_romos_2543f2de.o \
   $(JUCE_OBJDIR)/include_rosic_578aca9a.o \
 
@@ -228,6 +229,11 @@ $(JUCE_OBJDIR)/include_jura_processors_5f4e06b0.o: ../../JuceLibraryCode/include
 $(JUCE_OBJDIR)/include_rapt_c70c3493.o: ../../JuceLibraryCode/include_rapt.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_rapt.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/include_rapt_templates_ceee47cd.o: ../../JuceLibraryCode/include_rapt_templates.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling include_rapt_templates.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/include_romos_2543f2de.o: ../../JuceLibraryCode/include_romos.cpp

@@ -2920,6 +2920,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\DebugTools.cpp">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\GNUPlotter.cpp">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Plotting.cpp">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClCompile>
@@ -3065,6 +3068,12 @@
       <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\LibF2C.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\TemplateInstantiations.cpp">
+      <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\TypedFunctions.cpp">
       <Filter>Juce Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\LinearAlgebra\LaPackCPP\XBlas.cpp">
@@ -3250,6 +3259,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.cpp">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\HarmonicAnalyzer.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
@@ -3257,6 +3269,9 @@
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalSynthesizer.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.cpp">
@@ -3290,6 +3305,9 @@
       <Filter>Juce Modules\rapt\Visualization</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\rapt.cpp">
+      <Filter>Juce Modules\rapt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\rapt_templates.cpp">
       <Filter>Juce Modules\rapt</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.cpp">
@@ -4745,6 +4763,9 @@
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_rapt.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\include_rapt_templates.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_romos.cpp">
@@ -7122,6 +7143,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\DebugTools.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\GNUPlotter.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
@@ -7485,6 +7509,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.h">
       <Filter>Juce Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\HarmonicAnalyzer.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
@@ -7492,6 +7519,9 @@
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalSynthesizer.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.h">

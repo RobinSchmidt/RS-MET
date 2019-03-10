@@ -1,5 +1,6 @@
 #include "GNUPlotter.cpp"
 
+/*
 template<class T>
 void rsPlotVector(std::vector<T> v)
 {
@@ -11,7 +12,7 @@ void rsPlotVector(std::vector<T> v)
   plt.plotArrays(N, y);
   delete[] y;
 }
-
+*/
 
 
 /*
