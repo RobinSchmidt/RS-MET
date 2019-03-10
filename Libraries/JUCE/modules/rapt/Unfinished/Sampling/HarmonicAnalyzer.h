@@ -15,16 +15,19 @@ true for the analyzed signal, of course). The algorithm works as follows:
  -analyze each cycle of pitch flattened signal by an FFT
  -the FFT size is equal to the cycle-length -> frequencies don't need to be estimated, they are 
   known in advance
- -only amplitude and phase have to be measured
+ -only amplitude and phase have to be measured (i.e. simply read off from the FFT data)
 -post-process model data (account for pitch flattening):
  -move time instants of datapoints according to the inverse time-warping map
- -modify frequencies according to reciprocal of the slope of time-warping map
+ -modify frequencies according to the applied stretch factors
 
-The so obtained model models inharmonicity, transient and noise in the input signal as fast 
-variations of instantaneous frequencies and amplitudes of the partials - when the envelopes are
-lowpass-filtered before resynthesis, we can resynthesize only the quasi-harmonic part of the sound.
-Time domain subtraction from the original should give a residual containing inharmonic, noisy and 
-transient parts. 
+The so obtained model models any inharmonicity, transients and noise in the input signal as fast 
+variations of instantaneous frequencies and amplitudes of the partials - when the envelopes
+are lowpass-filtered before resynthesis, we can resynthesize only the quasi-harmonic part of the 
+sound. Time domain subtraction from the original should give a residual containing inharmonic, 
+noisy and transient parts. The model also includes a DC component which models - apparently - any
+DC present in the signal, but if the amplitude of the DC varies, it may also model subharmonic
+content. However, subharmonic content may also be partially modeled/encoded by amplitude- and 
+frequency modulation of the harmonics.
 
 \todo: give the user the option to prepend and append some zeros before the analysis to avoid 
 edge-artifacts - this padding, if used, has to be accounted for in the model after analysis is 
@@ -34,7 +37,7 @@ finished. the padding should be at least one cycle long, maybe use two to be on 
  -samples amplitudes and phases more densely in time
 
 -let the user choose to set up the fundamental or to estimate it (the value that is used to tune 
- the bandpass in the cyc-mark finder - maybe when a "fundamental" member is zero, it means, it 
+ the bandpass in the cycle-mark finder - maybe when a "fundamental" member is zero, it means, it 
  should be detected
 
 */
@@ -62,6 +65,13 @@ public:
   huge difference (factor ~3) between 16 and 17 ...more research needed */
   void setSincInterpolationLength(T newLength) { sincLength = newLength; }
 
+  /** This option can be used to remove any harmonics that exceed the Nyquist limit, even if just 
+  temporarily. The analysis may prodcue such frequencies due to the fact that the original audio is 
+  stretched before analysis and the post-processing then shifts all frequencies up. However, if a 
+  (short) cycle gets stretched out a lot, it will not actually contain any high-freq content above 
+  the original Nyquist rate - so when a partial in the model goes above that limit, it will usually
+  have zero amplitude. ...it turned out that this option may sometimes remove valid high-freq 
+  content, so it's off by default ...more research needed....  */
   void removePotentiallyAliasingHarmonics(bool shouldRemove)
   {
     antiAlias = shouldRemove;
@@ -76,13 +86,12 @@ public:
 
 protected:
 
-  // todo: refactor to use these 3 functions in analyze:
 
   /** The first step in the analysis algo is to pre-process the audio by flattening the pitch, 
-  which is done by this function. The flattened signal will be stored in out member array y and 
+  which is done by this function. The flattened signal will be stored in our member array y and 
   this function will also fill the member arrays tIn, tOut that contain the time warping map that
   has been used for flattening (sampled at instants of cycle marks). These arrays will be later 
-  used for post processing the model data to accoutn for the pitch-flattening. The boolean return
+  used for post processing the model data to account for the pitch-flattening. The boolean return
   value informs, if the process was successful (it will fail, if it can't find at least 2 cycle 
   marks). */
   bool flattenPitch(T* sampleData, int numSamples);
@@ -139,7 +148,7 @@ protected:
   std::vector<T> findCycleMarks(T* x, int N);
 
   /** Returns the time instant that should be associated with the frame of given index 
-  (before post-processing). The time stamp will be baed on the content of tOut member array. */
+  (before post-processing). The time stamp will be based on the content of tOut member array. */
   T getTimeStampForFrame(int frameIndex);
   // maybe rename to getWarpedTimeForFrame and have a corresponding getUnWarpedTimeforFrame
   // function (that uses tIn instead of tOut)...this will actually be used to *replace* the 

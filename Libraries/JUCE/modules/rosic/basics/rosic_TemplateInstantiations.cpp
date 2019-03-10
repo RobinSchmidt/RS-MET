@@ -7,7 +7,7 @@
 #include <rapt/Math/LinearAlgebra/LaPackCPP/LaPack.hpp>  // why do we need this?
 #include <rapt/Math/LinearAlgebra/LaPackCPP/LaPack.cpp>
 
-#include <rapt/rapt.cpp>
+#include <rapt/rapt_templates.cpp>
 #include "Float32x4.h"
 
 // todo: move template instantiations from LaPack.cpp (and Blas, etc.) to here - i mean the 

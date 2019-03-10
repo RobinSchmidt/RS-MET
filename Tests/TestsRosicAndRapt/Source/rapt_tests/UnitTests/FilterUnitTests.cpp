@@ -3,6 +3,8 @@
 //#include "../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
 #include "../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
 
+using namespace std;
+
 // maybe move somewhere else for sharing
 bool isCloseTo(complex<float> x, complex<float> y, float tol)
 {

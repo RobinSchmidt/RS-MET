@@ -1,5 +1,6 @@
 #include "AudioPerformanceTests.h"
 using namespace RAPT;
+using namespace std;
 
 void filterSignConventionPerformance()
 {
@@ -117,9 +118,9 @@ void ladderPerformance()
   int n;
 
   // create input and allocate output signals:
-  vector<double> xs = createNoise(numSamples, double(-1), double(+1));
-  vector<double> ys(numSamples);
-  vector<rsFloat64x2> xv(numSamples), yv(numSamples);
+  std::vector<double> xs = createNoise(numSamples, double(-1), double(+1));
+  std::vector<double> ys(numSamples);
+  std::vector<rsFloat64x2> xv(numSamples), yv(numSamples);
   for(n = 0; n < numSamples; n++) 
     xv[n] = xs[n]; 
 

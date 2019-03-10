@@ -13,7 +13,7 @@
 //#include "Prototypes/LindenmayerSystem.h"
 #include "Prototypes/Prototypes.h"
 
-#include "Plotting/Plotting.h"
+//#include "Plotting/Plotting.h"
 
 
 

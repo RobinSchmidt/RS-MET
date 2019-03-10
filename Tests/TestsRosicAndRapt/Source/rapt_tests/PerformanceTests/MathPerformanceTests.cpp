@@ -15,7 +15,7 @@ void fftPerformance()
   size_t numSizes = sizes.size();
   int maxSize = sizes[numSizes-1];
   //std::vector<double> noise = createNoise(maxSize, -1.0, 1.0);
-  std::vector<complex<double>> buf(maxSize);
+  std::vector<std::complex<double>> buf(maxSize);
 
   // define functors to be passed to performance analyzer:
   std::function<void(int)> dft = [&](int N){ rsDFT(&buf[0], N); };
@@ -30,7 +30,7 @@ void fftPerformance()
   // run tests and print report:
   pa.runTests();
   std::string report = pa.getReport();
-  cout << report;
+  std::cout << report;
 
   // maybe plot means with error bars for variances, maybe also plot mins/maxes/medians/modes
 }

@@ -7,7 +7,6 @@ to functions like rsPlotVector() anywhere in RAPT code for debugging purposes wh
 optimized out in cases when they are not needed. In TestsRosicAndRapt.jucer it is defined, so 
 plotting functions wil actually invoke the plotter in this project. */
 
-#ifdef RS_PLOTTING
 
 #include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
 // maybe the GNUPlotter code should sit somewhere inside the rapt directory....
@@ -18,6 +17,13 @@ inline void rsPlotVector(std::vector<T> v)
   GNUPlotter plt;
   plt.plotArrays((int) v.size(), &v[0]);
 }
+
+
+#ifdef RS_PLOTTING
+
+
+
+
 
 #else
 

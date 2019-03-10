@@ -2,10 +2,11 @@
 
 #include "RaptLibraryCode/RaptInstantiations.cpp"
 
-#include "Plotting/GNUPlotter.cpp"
+//#include "Plotting/GNUPlotter.cpp"
+
 #include "Plotting/DSPPlotters.cpp"
 #include "Plotting/Plotting.cpp"
-#include "Plotting/rosic_Plotter.cpp" // get rid
+#include "Plotting/rosic_Plotter.cpp" // obsolete - get rid
 
 #include "Prototypes/Prototypes.cpp"
 #include "Prototypes/FiniteAutomaton.cpp"
@@ -18,6 +19,7 @@
 #include "Utilities/TestInputCreation.cpp"
 #include "Utilities/TestUtilities.cpp"
 
+using namespace std;
 
 #undef min
 

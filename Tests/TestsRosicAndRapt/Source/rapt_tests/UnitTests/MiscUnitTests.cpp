@@ -34,8 +34,8 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   for(n = 0; n < N; n++)
     r &= abs(err[n]) <= tol;
   //plotVector(y);
-  if(r == false)
-    plotVector(err);  // plot error signal, if something goes wrong
+  //if(r == false)
+  //  plotVector(err);  // plot error signal, if something goes wrong
 
   //// plot the modulation signal resulting from analysis/resynthesis roundtrip:
   //std::vector<double> mod = sp.getRoundTripModulation(numFrames);

@@ -1,9 +1,6 @@
 
-
-
-/*
-#ifdef RS_PLOTTING
-#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
+#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.cpp"
+// maybe the GNUPlotter code should sit somewhere inside the rapt directory....
 
 template<class T>
 void rsPlotVector(std::vector<T> v)
@@ -16,6 +13,13 @@ void rsPlotVector(std::vector<T> v)
   plt.plotArrays(N, y);
   delete[] y;
 }
+
+
+
+/*
+#ifdef RS_PLOTTING
+#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
+
 
 
 #else
