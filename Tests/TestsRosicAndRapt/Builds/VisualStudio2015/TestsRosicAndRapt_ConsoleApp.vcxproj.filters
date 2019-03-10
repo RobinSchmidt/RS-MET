@@ -736,6 +736,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\DebugTools.cpp">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\GNUPlotter.cpp">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Plotting.cpp">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClCompile>
@@ -2995,6 +2998,9 @@
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\DebugTools.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\GNUPlotter.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h">

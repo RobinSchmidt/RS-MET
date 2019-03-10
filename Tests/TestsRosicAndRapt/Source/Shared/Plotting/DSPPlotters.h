@@ -1,7 +1,7 @@
 #ifndef DSPPLOTTERS_H
 #define DSPPLOTTERS_H
 
-#include "GNUPlotter.h"
+//#include "GNUPlotter.h"
 //#include "../../../../Libraries/JUCE/modules/rosic/rosic.h"
 #include "../../../Libraries/JUCE/modules/rosic/rosic.h"
 

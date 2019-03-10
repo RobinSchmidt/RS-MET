@@ -1,6 +1,4 @@
-
-#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.cpp"
-// maybe the GNUPlotter code should sit somewhere inside the rapt directory....
+#include "GNUPlotter.cpp"
 
 template<class T>
 void rsPlotVector(std::vector<T> v)

@@ -8,8 +8,8 @@ optimized out in cases when they are not needed. In TestsRosicAndRapt.jucer it i
 plotting functions wil actually invoke the plotter in this project. */
 
 
-#include "../../../Tests/TestsRosicAndRapt/Source/Shared/Plotting/GNUPlotter.h"
-// maybe the GNUPlotter code should sit somewhere inside the rapt directory....
+#include "GNUPlotter.h"
+
 
 template<class T>
 inline void rsPlotVector(std::vector<T> v)

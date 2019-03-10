@@ -511,6 +511,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\DebugTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\GNUPlotter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Plotting.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2465,6 +2468,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Constants.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\DebugTools.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\GNUPlotter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Plotting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h"/>
