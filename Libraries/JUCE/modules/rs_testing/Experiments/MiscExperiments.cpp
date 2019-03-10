@@ -42,7 +42,6 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     rosic::writeToMonoWaveFile((name + "Residual.wav").c_str(),         e, Ne, (int)fs);
   }
  
-  /*
   // temporarily commented - we need to move the plotting code into rs_testing...or maybe RAPT
   // ...or maybe partially here and there
   // plot original, resynthesized and error signals, if desired:
@@ -54,9 +53,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     //plt.addDataArrays(Ne-2000, &e[1000]);  // middle part of error
     plt.plot();
   }
-  */
 }
-
 
 void getPaddedSignals(double* xIn, int Nx, 
   const RAPT::rsSinusoidalModel<double>& model,

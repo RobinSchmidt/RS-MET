@@ -895,6 +895,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\rapt.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\rapt_templates.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2309,6 +2312,7 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_rapt.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_rapt_templates.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_romos.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_rosic.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_rs_testing.cpp"/>

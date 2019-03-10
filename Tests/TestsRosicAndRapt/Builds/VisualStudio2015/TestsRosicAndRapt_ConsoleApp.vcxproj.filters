@@ -1120,6 +1120,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\rapt.cpp">
       <Filter>Juce Modules\rapt</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\rapt_templates.cpp">
+      <Filter>Juce Modules\rapt</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.cpp">
       <Filter>Juce Modules\romos\Algorithms</Filter>
     </ClCompile>
@@ -2537,6 +2540,9 @@
       <Filter>Juce Modules\rs_testing</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_rapt.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\include_rapt_templates.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_romos.cpp">

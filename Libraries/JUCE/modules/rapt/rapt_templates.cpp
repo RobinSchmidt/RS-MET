@@ -1,17 +1,14 @@
-//#ifdef RAPT_H_INCLUDED
-///* When you add this cpp file to your project, you mustn't include it in a file where you've
-//already included any other headers - just put it inside a file on its own, possibly with your config
-//flags preceding it, but don't include anything else. That also includes avoiding any automatic prefix
-//header files that the compiler may be using. */
-//#error "Incorrect use of JUCE cpp file"
-//#endif
-// ...was copy/pasted from juce modules - doesn't apply to rapt due to use of templates
+/** This cpp file includes all templated code of the rapt library. It is included, for example, by 
+rosic/basics/TemplateInstantiations.cpp where the templates get instantiated and compiled as part 
+of the rosic module. The rapt module itself has very little code to compile - those bits that 
+actually are compiled into rapt.obj are in rapt.cpp. You should make sure, that any template 
+instantiation gets compiled onlyinto one compilation unit, otherwise you may get "symbol already 
+defined" linker errors. */
+
+// todo: maybe move this file inot a subdirectory - otherwise the projucer compiles it - apparently
+// it compiles all top-level .cpp files for a module?
 
 #include "rapt.h"
-
-/** This cpp file includes the whole library. You should make sure, that it gets compiled only
-into one compilation unit, otherwise you may get "symbol already defined" linker errors (i
-think) */
 
 #include "Basics/Basics.cpp"
 #include "Data/Data.cpp"
