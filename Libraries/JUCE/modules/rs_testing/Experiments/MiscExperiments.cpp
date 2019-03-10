@@ -28,6 +28,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(64);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
+  mdl.removePartial(0);        // remove DC component
   //plotSineModel(mdl, fs);
   std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
   std::vector<double> error = output-input;

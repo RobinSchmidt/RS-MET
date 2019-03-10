@@ -33,6 +33,10 @@ finished. the padding should be at least one cycle long, maybe use two to be on 
 -maybe have an "oversampling" option: let the hop-size be a half or quarter of the block-size
  -samples amplitudes and phases more densely in time
 
+-let the user choose to set up the fundamental or to estimate it (the value that is used to tune 
+ the bandpass in the cyc-mark finder - maybe when a "fundamental" member is zero, it means, it 
+ should be detected
+
 */
 
 template<class T>
