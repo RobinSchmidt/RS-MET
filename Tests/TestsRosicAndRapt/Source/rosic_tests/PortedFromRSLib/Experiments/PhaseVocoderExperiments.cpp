@@ -1108,6 +1108,12 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // trajectories after interpolating them - i guess, it's an artifact from the interpolation 
   // process. the amp env of the resynthesized signal shows some slight amplitude modulation, too
 
+  // maybe let the function not take a frequency parameter but instead pass the desired frequency 
+  // and maybe other parameters as part of the name - for example TwoSines_Freq1=200_Freq2=2100
+  // make functions getParameter(string soundName, string paramName. this is more flexible. maybe
+  // have reasonable default values, if no parameter is given
+
+
 
   // todo: test with less high freq rolloff (makes it more difficult)
   // -when the first cycle mark ends up at 0, we get an access violation - we don't treat the case,

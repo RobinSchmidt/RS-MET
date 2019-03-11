@@ -281,7 +281,7 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
 
   cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, 2: quintic, ...
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
-  cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
+  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
   std::vector<T> cm = cmf.findCycleMarks(x, N);
   plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
 

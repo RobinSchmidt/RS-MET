@@ -9,7 +9,7 @@ std::vector<double> synthesizeSinusoidal(
 {
   RAPT::rsSinusoidalSynthesizer<double> synth;
   synth.setSampleRate(sampleRate);
-  //synth.setCubicAmplitudeInterpolation(true);
+  synth.setCubicAmplitudeInterpolation(true);
   std::vector<double> x = synth.synthesize(model);
   if(fadeTime > 0.0)
     applyFadeInAndOut( &x[0], (int) x.size(), int (fadeTime*sampleRate));
@@ -49,10 +49,12 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     plt.addDataArrays(Ny, y);
     plt.addDataArrays(Ne, e);
 
-    //plt.addDataArrays(Ne-2000, &e[1000]);  // middle part of error
-    // todo: plot the cycle-marks
+    std::vector<double> marks = analyzer.getOriginalTimeStamps();
+    std::vector<double> zeros(marks.size());    // y values for plotting (all zero)
+    RAPT::rsArray::fillWithZeros(&zeros[0], (int) marks.size());
+    plt.addDataArrays((int) marks.size(), &marks[0], &zeros[0]);
 
-
+    plt.setGraphStyles("lines", "lines", "lines", "points");
     plt.plot();
   }
 }

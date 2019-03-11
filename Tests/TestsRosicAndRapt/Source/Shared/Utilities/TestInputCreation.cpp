@@ -360,6 +360,18 @@ void applyVibrato(double *x, int N, double freq, double sampleRate, double depth
     vib.getSampleFrameStereo(&x[n], &dummy);
 }
 
+// move to rapt
+bool startsWith(const std::string& str, const std::string& pattern)
+{
+  return false; // preliminary
+}
+
+double getParam(const std::string& str, const std::string& paramName, double defaultValue)
+{
+  return defaultValue; // preliminary
+}
+
+
 std::vector<double> createNamedSound(const std::string& name, double f, double fs, int N)
 {
   double key = rsFreqToPitch(f);
@@ -378,6 +390,14 @@ std::vector<double> createNamedSound(const std::string& name, double f, double f
     createSineWave(x, N, x, 0.5, fs);            // overwrite x by freq-modulated sinewave
   }
   else if(name == "ModalPluck")  createModalPluck(x, N, key, fs);
+
+  // under construction - parametrized sound passing their parameters as part of the string:
+  else if(startsWith(name, "TwoSines")) {
+    double f2[2] = { getParam(name, "Freq1", 200), getParam(name, "Freq2", 2000) };
+    double a2[2] = { getParam(name, "Amp1",  1),   getParam(name, "Amp2",  1)    };
+    createSumOfSines(x, N, 2, fs, f2, a2);
+  }
+
   else rsError("Unknown sound name");
   return v;
 }

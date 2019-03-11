@@ -86,6 +86,15 @@ public:
   }
 
 
+
+  /** \name Inquiry */
+
+  std::vector<T> getOriginalTimeStamps() { return tIn; }
+
+
+  std::vector<T> getWarpedTimeStamps() { return tOut; }
+
+
   /** \name Processing */
 
   /** Analyzes the given input sound and returns the sinusoidal model object that models the given 
@@ -180,7 +189,8 @@ protected:
 
 
   //RAPT::rsPitchFlattener<T, T> flattener;
-  RAPT::rsFourierTransformerRadix2<T> trafo;
+  rsFourierTransformerRadix2<T> trafo;
+  //rsCycleMarkFinder<T> cycleMarkFinder;
 
 
   int blockSize = 0;    // FFT block size
@@ -191,6 +201,8 @@ protected:
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping
 
   std::vector<T> y;     // pre-processed (time-warped) signal
+
+
 
   // buffers:
   std::vector<T> tIn, tOut;      // time-warping map (sampled at cycle marks)
