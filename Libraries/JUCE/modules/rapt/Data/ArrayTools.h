@@ -269,9 +269,10 @@ public:
     int aOrder, int numRingOutSamples = 10000);
 
   /** Returns the index of the first value that matches the elementToFind, return -1 when no 
-  matching elemenet is found. */
+  matching element is found. */
   template <class T>
   static inline int findIndexOf(T *buffer, T elementToFind, int length);
+  // rename to firstIndexOf make also a lastIndexOf
 
   /** Returns the index of the maximum absolute value in the buffer. */
   template <class T>

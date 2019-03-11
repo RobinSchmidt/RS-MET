@@ -370,37 +370,41 @@ bool startsWith(const std::string& str, const std::string& pattern)
   return false;
 }
 
+template <class T>
+int firstNonMatchElement(
+  const T *buffer, int bufferLength, const T *elementsToFind, int numElements)
+{
+  for(int i = 0; i < bufferLength; i++)
+    if(!RAPT::rsArray::contains(elementsToFind, numElements, buffer[i]))
+      return i;
+  return -1; // all elements matched any one of the elements to find
+}
+
 double getValue(const std::string& str, const std::string& key, double defaultValue)
 {
+  // find the start of the substring that contains the keyed value:
   std::string ptn = key + "=";
   int index = RAPT::rsFindFirstOccurrenceOf(
     str.c_str(), (int)str.size(), ptn.c_str(), (int) ptn.size());
   if(index == -1)  
-    return defaultValue;   // name not found
+    return defaultValue;   // key was not found
 
-  // extract all numeric digits and '-', '.', 'e' that come after the found index:
+  // figure out position and length of the number substring:
+  char* digits = "0123456789-.e";
+  int numDigits = 13;
+  index += (int) key.size() + 1;          // first character after the '='
+  int length = (int) str.size() - index;  // from index to end of str
+  length = firstNonMatchElement(&str[index], length, digits, numDigits); 
+  if(length == -1)
+    length = (int) str.size() - index;
 
-  //std::string numStr(str.size()+1, '\0'); // should be more than enough
-  //int size = str.size()-
-  char* numStr = new char[str.size()+1];
-  //char* ptr    = &str[0];
-
-  int length = RAPT::rsArray::copyIfMatching(&str[index], numStr, (int) str.size() - index,
-    "0123456789-.e", 13);
-  // nope - that doesn't work - we need to start at the = (not at the F) and end at the last digit
-  // (not the end of the whole string)
-
-
-
+  // extract number substring as c-string and convert to double:
+  char* numStr = new char[length+1];
+  RAPT::rsArray::copyBuffer(&str[index], numStr, length);
+  numStr[length] = '\0';
+  double value = atof(numStr);
   delete[] numStr;
-
-
-
-  //static int copyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
-  //  T *elementsToMatch, int matchLength);
-
-
-  return defaultValue; // preliminary
+  return value;
 }
 
 
