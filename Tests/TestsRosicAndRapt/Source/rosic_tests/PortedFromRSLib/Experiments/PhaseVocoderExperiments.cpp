@@ -1088,7 +1088,7 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
   // setup (comment out "doStuff = true", if you don't want stuff to be done):
   bool writeWaveFiles = false, plotResults = false;
   writeWaveFiles = true;
-  //plotResults    = true;
+  plotResults    = true;
 
   std::vector<double> input = createNamedSound(name, f, fs, N); 
   std::string name2 = name + std::to_string(f) + "Hz";
@@ -1101,9 +1101,11 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //testHarmonicResynthesis("Cosine",     500, 44100, 5000);
   //testHarmonicResynthesis("TwoSines",   200, 44100, 5000);
   //testHarmonicResynthesis("ModalPluck", 500, 44100, 5000);
+  // convert all calls to includ the frequency in the string, the get rid of the frequency 
+  // parameter of the function
 
-
-  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2000",   200, 44100, 5000);
+  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2050_Amp1=0.3_Amp2=0.2", 200, 44100, 5000);
+   // with 200 and 2050 Hz we can clearly see the buzzing artifact
 
   //testHarmonicResynthesis("VibratoSine", 500, 44100, 95000);
   // produces a resiudal that looks like a train of (sort of) triangular spikes, amplitude 

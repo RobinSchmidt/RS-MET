@@ -390,13 +390,11 @@ double getValue(const std::string& str, const std::string& key, double defaultVa
     return defaultValue;   // key was not found
 
   // figure out position and length of the number substring:
-  char* digits = "0123456789-.e";
-  int numDigits = 13;
   index += (int) key.size() + 1;          // first character after the '='
   int length = (int) str.size() - index;  // from index to end of str
-  length = firstNonMatchElement(&str[index], length, digits, numDigits); 
+  length = firstNonMatchElement(&str[index], length, "0123456789-.e", 13); 
   if(length == -1)
-    length = (int) str.size() - index;
+    length = (int) str.size() - index;    // substring goes up to the end
 
   // extract number substring as c-string and convert to double:
   char* numStr = new char[length+1];
