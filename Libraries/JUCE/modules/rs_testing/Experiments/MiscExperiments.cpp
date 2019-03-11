@@ -55,6 +55,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     plt.addDataArrays((int) marks.size(), &marks[0], &zeros[0]);
 
     plt.setGraphStyles("lines", "lines", "lines", "points");
+    plt.setPixelSize(1000, 300);
     plt.plot();
   }
 }

@@ -283,7 +283,7 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
   std::vector<T> cm = cmf.findCycleMarks(x, N);
-  plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
+  //plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
 
 
   // To ensure that initial and final section are really partial cycles (as opposed to a full

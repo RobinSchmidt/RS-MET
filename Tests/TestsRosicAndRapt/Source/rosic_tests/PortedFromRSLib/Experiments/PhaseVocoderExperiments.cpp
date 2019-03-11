@@ -1104,8 +1104,14 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // convert all calls to includ the frequency in the string, the get rid of the frequency 
   // parameter of the function
 
-  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2050_Amp1=0.3_Amp2=0.2", 200, 44100, 5000);
-   // with 200 and 2050 Hz we can clearly see the buzzing artifact
+  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=1950_Amp1=0.3_Amp2=0.2", 200, 44100, 5000);
+  // with 200/2050 Hz we can clearly see the buzzing artifact, the residual looks similar if we
+  // use  200/1950 - there are four sorts of artifacts: upward jumps, upward spikes, downward jumps
+  // and downward spikes that alternate in that order
+  // -> plot the amp, freq and phase trajectories - especially the (interpolated) phase is probably
+  // interesting
+  // maybe also have a look at those partials that whould have zero amplitude - maybe their 
+  // contribution messes up the signal? try to resynthesize without them
 
   //testHarmonicResynthesis("VibratoSine", 500, 44100, 95000);
   // produces a resiudal that looks like a train of (sort of) triangular spikes, amplitude 
