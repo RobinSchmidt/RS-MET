@@ -182,12 +182,13 @@ void createSineWave(double *x, int N, double f, double a, double fs, double p)
 
 void createSineWave(double *x, int N, double *f, double a, double fs)
 {
-  double s   = 2*PI/fs;  // frequency scaler
-  double phi = 0.0;      // instantaneous phase
+  double s   = 2*PI/fs;       // frequency scaler
+  double phi = 0.0;           // instantaneous phase
   for(int n = 0; n < N; n++)
   {
+    double fn = f[n];         // use temporary to allow x and f to be the same array
     x[n] = a * sin(phi);
-    phi += s * f[n];
+    phi += s * fn;
   }
 }
 
@@ -372,8 +373,9 @@ std::vector<double> createNamedSound(const std::string& name, double f, double f
     createSumOfSines(x, N, 2, fs, f2, a2);
   }
   if(name == "VibratoSine") { 
-    createSineWave(x, N, f, 0.5, fs, 0.0); 
-    applyVibrato(x, N, 7.0, fs, 2.0);  // depth is in semitones
+    createSineWave(x, N, 10.0, 0.2*f, fs, 0.0);  // sine LFO: freq: 10 Hz, depth: 0.2 (20% of f)
+    RAPT::rsArray::add(x, f, x, N);              // add the center freq
+    createSineWave(x, N, x, 0.5, fs);            // overwrite x by freq-modulated sinewave
   }
   else if(name == "ModalPluck")  createModalPluck(x, N, key, fs);
   else rsError("Unknown sound name");

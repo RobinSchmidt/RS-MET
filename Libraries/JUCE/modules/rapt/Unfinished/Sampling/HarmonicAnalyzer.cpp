@@ -70,7 +70,7 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
   blockSize = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
-  rsPlotVector(sampleRate/cycleLengths);
+  //rsPlotVector(sampleRate/cycleLengths);
 
 
 
@@ -274,15 +274,16 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
   //                                      // defaults
   //cmf.setRelativeBandpassWidth(0.1);    // 1.0
   //cmf.setBandpassSteepness(5);          // 3
-  //cmf.setFundamentalRange(50., 100.);   // 20-5000 
+  //cmf.setFundamentalRange(500., 1000.);   // 20-5000 
 
 
 
 
   cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, 2: quintic, ...
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
+  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
   std::vector<T> cm = cmf.findCycleMarks(x, N);
-  plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
+  //plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
 
 
   // To ensure that initial and final section are really partial cycles (as opposed to a full

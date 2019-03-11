@@ -40,6 +40,14 @@ finished. the padding should be at least one cycle long, maybe use two to be on 
  the bandpass in the cycle-mark finder - maybe when a "fundamental" member is zero, it means, it 
  should be detected
 
+-make a sample editor module for ToolChain:
+ -let the user choose background: blank (some color according to colorscheme), spectrogram, 
+  phasogram, etc.. and forground: blank, waveform, partial freqs, etc...
+-the user can make edits based on a sinusoidal model of the sound, spectrogram and waveform (and 
+ later maybe more representations - what about a wavelet trafo, for example? or a single big 
+ spectrum for the whole sound)
+-it should be possible to save and load sinusoidal models (devise a file-format)
+
 */
 
 template<class T>
