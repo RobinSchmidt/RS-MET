@@ -39,9 +39,12 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
     removeAliasing(mdl);            // remove freqs above orignal nyquist freq
   handleEdges(mdl);                 // add fade-in/out datapoints
   convertTimeUnit(mdl);             // convert from samples to seconds
-  return mdl;
 
-  //rosic::writeToMonoWaveFile("ModalPluckStretched.wav", &y[0], (int)y.size(), (int)sampleRate);
+  rosic::writeToMonoWaveFile("PitchFlattened.wav", &y[0], (int)y.size(), (int)sampleRate);
+  // move to rapt - rapt is a lower layer than rosic an we are not supposed to call rosic functions
+  // inside rapt functions...maybe rename to rsWavWrite
+
+  return mdl;
 
   // todo: clean up the model: remove partials that are consistently above the nyquist freq - due 
   // to the stretching, we may get frequencies almost up to the sample-rate (we downshift at most 
@@ -59,6 +62,7 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
 
   // Find cycle marks and assign FFT blockSize:
   Vec cycleMarks = findCycleMarks(x, Nx);        // cycle marks
+  //plotSignalWithMarkers(x, Nx, &cycleMarks[0], (int) cycleMarks.size());
   if(cycleMarks.size() < 2)
     return false;                                // report failure
   Vec cycleLengths = rsDifference(cycleMarks);   // cycle lengths
@@ -66,7 +70,11 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
   blockSize = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
-   
+  rsPlotVector(sampleRate/cycleLengths);
+
+
+
+
 
   // Create the mapping function for the time instants of the cycle marks:
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
@@ -260,11 +268,36 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
 {
   T fl = 20;       // lower limit for fundamental (maybe let user set this up)
   T fu = 5000;     // upper limit for fundamental
-  rsCycleMarkFinder<double> cmf(sampleRate, fl, fu);
+
+  rsCycleMarkFinder<double> cmf(sampleRate, fl, fu);  // make member, let use acces its settings
+
+  //                                      // defaults
+  //cmf.setRelativeBandpassWidth(0.1);    // 1.0
+  //cmf.setBandpassSteepness(5);          // 3
+  //cmf.setFundamentalRange(50., 100.);   // 20-5000 
+
+
+
+
   cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, 2: quintic, ...
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   std::vector<T> cm = cmf.findCycleMarks(x, N);
-  //plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
+  plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
+
+
+  // To ensure that initial and final section are really partial cycles (as opposed to a full
+  // cycle plus something extra), we prepend and/or append artificial cycle marks in these cases.
+  // The positions of the artificial marks are set from the length of the first or last cycle
+  // respectively:
+  if(cm.size() >= 2) {
+    T L = cm[1] - cm[0];
+    while(cm[0] > L)
+      rsPrepend(cm, cm[0]-L);
+    L = cm[cm.size()-1] - cm[cm.size()-2];
+    while((N-1) - cm[cm.size()-1] > L)   // really N-1 or just N? well, the last sample index
+      rsAppend(cm, cm[cm.size()-1]+L);   // is actually N-1, so it seems correct
+  }
+
   return cm;
 }
 

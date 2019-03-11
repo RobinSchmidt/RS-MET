@@ -228,11 +228,19 @@ protected:
 /** Data structure to hold the information of a sinusoidal model for a complete sound. This is 
 effectively an array of rsSinusoidalPartial objects. 
 
+todo: maybe allow the time to be represented in samples or seconds - samples may have numerical
+advantages in computations, when the time-stamps are at integers or half-integers - maybe have a
+sampleRate member - if it is zero (or nan or whatever special value), it means that time-stamps 
+are in seconds, otherwise in samples at the given sample rate
+
 todo: currently, the partials are in no particular order - maybe order them somehow (perhaps by 
 start-time and then by frequency - or maybe by amplitude or even a psychoacoustic "importance"
 measure?) . yes - it would be interesting to have a getPartialImportance() function that analyzes
 according to amplitude, masking, etc. - can be used to "simplify" models - but maybe that should be
-done in a dedicated class */
+done in a dedicated class 
+
+
+*/
 
 template<class T>
 class rsSinusoidalModel

@@ -42,8 +42,6 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     rosic::writeToMonoWaveFile((name + "Residual.wav").c_str(),         e, Ne, (int)fs);
   }
  
-  // temporarily commented - we need to move the plotting code into rs_testing...or maybe RAPT
-  // ...or maybe partially here and there
   // plot original, resynthesized and error signals, if desired:
   if(plotResults == true) {
     GNUPlotter plt;

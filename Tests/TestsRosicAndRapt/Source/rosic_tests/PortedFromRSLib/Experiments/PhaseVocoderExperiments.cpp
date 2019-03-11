@@ -1100,7 +1100,12 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //testHarmonicResynthesis("Sine",       500, 44100, 5000);
   //testHarmonicResynthesis("Cosine",     500, 44100, 5000);
   //testHarmonicResynthesis("TwoSines",   200, 44100, 5000);
-  testHarmonicResynthesis("ModalPluck", 500, 44100, 5000);
+  //testHarmonicResynthesis("ModalPluck", 500, 44100, 5000);
+
+  testHarmonicResynthesis("VibratoSine", 500, 44100, 15000);
+    // output signals have an initial section of silence - why? - because the vibrato introduces 
+    // delay -> implement the vibrato sine differently - the initial delay also confuses the
+    // cycle-mark finder
 
 
   // todo: test with less high freq rolloff (makes it more difficult)

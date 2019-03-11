@@ -100,12 +100,17 @@ void createModalPluck(double* x, int N, double key, double sampleRate);
 
 std::vector<double> createModalPluck(double key, double sampleRate, int length); // convenience function
 
+
+void applyVibrato(double *x, int N, double freq, double sampleRate, double depth);
+
+
 /** Creates one out of a collection of standard test sounds based on a name with a given frequency
 at a given sampleRate and with a given number of samples. The following sounds are available:
-Sine:       sine wave
-Cosine:     cosine wave
-TwoSines:   sine wave with harmonic at 10x the frequency (with same amplitude)...rename
-ModalPluck: plucked string like sound created by modal synthesis  
+Sine:        sine wave
+Cosine:      cosine wave
+TwoSines:    sine wave with harmonic at 10x the frequency (with same amplitude)...rename
+ModalPluck:  plucked string like sound created by modal synthesis  
+VibratoSine: sine wave with vibrato of 7Hz, depth: 2 semitones
 
 ToDo Saw,NaiveSaw, Square,NaiveSquare, Triangle/NaiveTriangle, Pulse40/NaivePulse40, ...
 */

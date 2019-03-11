@@ -6,7 +6,7 @@ std::vector<double> synthesizeSinusoidal(
 
 
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
-  double fs, bool writeWaveFiles, bool plotResults);
+  double fs, bool writeWaveFiles = true, bool plotResults = false);
 
 /** Convenience function to produce a vector x from the array xIn of length N and a vector y from 
 the model in such a way that they are time aligned even in cases when the lengths dont match by 

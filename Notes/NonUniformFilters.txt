@@ -1,0 +1,89 @@
+todo: turn the the file into a cpp file and keep the explanations below as comment
+
+This paper:
+
+http://inf.ufrgs.br/~eslgastal/NonUniformFiltering/Gastal_Oliveira_EG2015_Non-Uniform_Filtering.pdf
+
+describes an approach to apply filters to non-uniformly sampled data. Its is based on decomposing
+the filter into a parallel connection of (possibly complex) first order filters via a partial
+fraction expansion of the transfer function:
+     
+              sum_{k=0}^Q B_k z^-k
+  H(z) = --------------------------    Eq. 2
+          1 - sum_{k=1}^P A_k z^-k
+        
+This is Eq. 2 in the paper, but i'm using a different notation. The filter gets as input the
+sequences x[n] which is the input signal and t[n] which are the corresponding time-stamps and 
+it produces and output sequence y[n] at the same time-instants. After performing the partial
+fraction expansion, the filter difference equation becomes:
+ 
+  y[n] = sum_{i=1}^P y_i[n] + sum_{i=1}^{Q-P} c_i x[n-i]    Eq. 6
+ 
+where the first sum runs over the parallel first order sections and the second sum is an 
+additional FIR part that will occur only when the numerator of the transfer function has higher
+order than the denominator. In the case of repeated poles, the partial fraction expansion will 
+also contain products of first order terms. The output of each first order filter can 
+be computed as:
+ 
+  y[n] = a * x[n] + b * y[n-1]
+ 
+to generalize this equation to non-uniformly sampled data, we replace the b by b^dt where 
+dt = t[n] - t[n-1] is the time delta between the current and previous sample:
+ 
+  y[n] = a * x[n] + b^dt * y[n-1]    Eq. 8
+ 
+in uniform filters, this dt is 1 at all times. Unfortunately, this is not enough: the filter fails 
+to have a normalized gain at a given frequency. To compensate for that, the authors propose two  
+different approaches: adding another term to the difference equation or scaling the output. In the 
+first approach, the filter computes:
+ 
+  y[n] = a * x[n] + b^dt * y[n-1] + phi    Eq. 9
+  
+where
+  
+  phi = (R-r1*b) * x[n] - (R-r1*b^dt) * x[n-1]
+  r0  = (b-1)^2/(a*b), 
+  r1  = a / (b-1)
+  R   = (b^dt-1)/(r0*dt)
+  
+In the second approach, the filter computes:
+  
+  y[n] = (a * x[n] + b^dt * y[n-1]) / |s[n]|    Eq. 13
+  
+where the scaling factor is also computed recursively via:
+  
+  s[n] = a * exp(-j*w*n) + b^dt * s[n-1]    Eq. 16
+  
+and is initialized either as 
+  s[0] = a 
+or
+  s[0] = a / (1 - b * exp(j*w))
+  
+The w is in this case the normalized radian frequency at which our filter should have unit gain.
+For higher order filters, the individual first order sections should not be normalized separately.
+Instead, an overall gain is computed as:
+
+S = sum_{i=1}^P s_i + sum_{i=0}^{Q-P} c_i exp(-j*w*i)
+
+where the s_i are the gains of the individual stages. If H(z) contains a pole or order m, the 
+gain...
+  
+  
+  
+maybe for a realtime implementation, it's more convenient to pass x[n] and dt[n] instead of t[n]
+because t[n] may get arbitrarily large. 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+other links:
+http://ljk.imag.fr/membres/Brigitte.Bidegaray/Sources/FB10.pdf
+http://www.wseas.us/e-library/conferences/2007istanbul/papers/557-248.pdf
+http://www.diva-portal.org/smash/get/diva2:23251/fulltext01
+http://webee.technion.ac.il/Sites/People/YoninaEldar/Info/70.pdf

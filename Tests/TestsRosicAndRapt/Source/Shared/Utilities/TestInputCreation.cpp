@@ -348,6 +348,17 @@ std::vector<double> createModalPluck(double key, double sampleRate, int length)
   return x;
 }
 
+void applyVibrato(double *x, int N, double freq, double sampleRate, double depth)
+{
+  rosic::Vibrato vib;
+  vib.setSampleRate(sampleRate);
+  vib.setCycleLength(1/freq);
+  vib.setDepth(depth);
+  double dummy = 0;
+  for(int n = 0; n < N; n++)
+    vib.getSampleFrameStereo(&x[n], &dummy);
+}
+
 std::vector<double> createNamedSound(const std::string& name, double f, double fs, int N)
 {
   double key = rsFreqToPitch(f);
@@ -359,6 +370,10 @@ std::vector<double> createNamedSound(const std::string& name, double f, double f
     double f2[2] = {   f, 10*f };
     double a2[2] = { 0.3, 0.3  };
     createSumOfSines(x, N, 2, fs, f2, a2);
+  }
+  if(name == "VibratoSine") { 
+    createSineWave(x, N, f, 0.5, fs, 0.0); 
+    applyVibrato(x, N, 7.0, fs, 2.0);  // depth is in semitones
   }
   else if(name == "ModalPluck")  createModalPluck(x, N, key, fs);
   else rsError("Unknown sound name");

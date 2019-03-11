@@ -16,20 +16,16 @@ inline void rsPlotVector(std::vector<T> v)
   GNUPlotter plt;
   plt.plotArrays((int) v.size(), &v[0]);
 }
-// 
 
-//#ifdef RS_PLOTTING
-//
-//
-//
-//
-//
-//#else
-//
-//// dummy plotting functions to satisfy the compiler when no plotting is desired:
-//
-//template<class T> inline void rsPlotVector(std::vector<T> v) {}
-//
-////inline void rsPlotVector(std::vector<double> v) {}
-//
-//#endif
+template<class T>
+inline void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
+{
+  std::vector<T> zeros(numMarkers);    // y values for plotting (all zero)
+  RAPT::rsArray::fillWithZeros(&zeros[0], numMarkers);
+  GNUPlotter plt;
+  plt.addDataArrays(signalLength, signal);
+  plt.addDataArrays(numMarkers,   markers, &zeros[0]);
+  plt.setGraphStyles("lines", "points");
+  plt.setPixelSize(1000, 300);
+  plt.plot();
+}
