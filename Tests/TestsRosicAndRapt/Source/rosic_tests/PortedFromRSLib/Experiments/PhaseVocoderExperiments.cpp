@@ -1088,7 +1088,7 @@ void testHarmonicResynthesis(const std::string& name, double f, double fs, int N
   // setup (comment out "doStuff = true", if you don't want stuff to be done):
   bool writeWaveFiles = false, plotResults = false;
   writeWaveFiles = true;
-  plotResults    = true;
+  //plotResults    = true;
 
   std::vector<double> input = createNamedSound(name, f, fs, N); 
   std::string name2 = name + std::to_string(f) + "Hz";
@@ -1102,10 +1102,11 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //testHarmonicResynthesis("TwoSines",   200, 44100, 5000);
   //testHarmonicResynthesis("ModalPluck", 500, 44100, 5000);
 
-  testHarmonicResynthesis("VibratoSine", 500, 44100, 15000);
-    // output signals have an initial section of silence - why? - because the vibrato introduces 
-    // delay -> implement the vibrato sine differently - the initial delay also confuses the
-    // cycle-mark finder
+  testHarmonicResynthesis("VibratoSine", 500, 44100, 95000);
+  // produces a resiudal that looks like a train of (sort of) triangular spikes, amplitude 
+  // modulated by the vibrato frequency - maybe try to use smoothing on the freq- and amp 
+  // trajectories after interpolating them - i guess, it's an artifact from the interpolation 
+  // process. the amp env of the resynthesized signal shows some slight amplitude modulation, too
 
 
   // todo: test with less high freq rolloff (makes it more difficult)

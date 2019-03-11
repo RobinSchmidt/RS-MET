@@ -237,7 +237,12 @@ todo: currently, the partials are in no particular order - maybe order them some
 start-time and then by frequency - or maybe by amplitude or even a psychoacoustic "importance"
 measure?) . yes - it would be interesting to have a getPartialImportance() function that analyzes
 according to amplitude, masking, etc. - can be used to "simplify" models - but maybe that should be
-done in a dedicated class 
+done in a dedicated class. we could also "sparsify" models by downsampling the partials datapoint 
+density - we could remove datapoints whose information is well reconstructed by the interpolation 
+process - we could measure the importance of a datapoint by reconstructing with and without it and
+measure the amplitude and phase difference at the instant of the datapoint in the interpolated
+trajectories - but that will depend on the selected interpolation - maybe a model should also 
+contain data about its prefered interpolation mode
 
 
 */
