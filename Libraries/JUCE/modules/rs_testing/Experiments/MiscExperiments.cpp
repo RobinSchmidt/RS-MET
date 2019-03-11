@@ -7,13 +7,24 @@ using namespace RAPT;
 std::vector<double> synthesizeSinusoidal(
   const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime)
 {
-  RAPT::rsSinusoidalSynthesizer<double> synth;
+  typedef RAPT::rsSinusoidalSynthesizer<double> SS;
+  typedef SS::PhaseInterpolationMethod PIM;
+  SS synth;
   synth.setSampleRate(sampleRate);
   synth.setCubicAmplitudeInterpolation(true);
+  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   std::vector<double> x = synth.synthesize(model);
   if(fadeTime > 0.0)
     applyFadeInAndOut( &x[0], (int) x.size(), int (fadeTime*sampleRate));
   return x;
+}
+
+void plotSineModelPhaseDerivative(const RAPT::rsSinusoidalModel<double>& mdl, double fs)
+{
+  GNUPlotter plt;
+
+
+  int dummy = 0;
 }
 
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
@@ -41,6 +52,15 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     rosic::writeToMonoWaveFile((name + "Resynthesized.wav").c_str(), y, Ny, (int)fs);
     rosic::writeToMonoWaveFile((name + "Residual.wav").c_str(),         e, Ne, (int)fs);
   }
+
+  //// plot model data, if desired....
+  //bool plotModel = true;
+  //if(plotModel == true)
+  //{
+  //  plotSineModelPhaseDerivative(mdl, fs);
+  //}
+
+
  
   // plot original, resynthesized and error signals, if desired:
   if(plotResults == true) {

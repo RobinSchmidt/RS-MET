@@ -66,7 +66,7 @@ void rsSinusoidalSynthesizer<T>::synthesizePartial(
   nEnd   = rsClip(nEnd,   0, xLength);
   int N = nEnd - nStart;  // number of samples to generate
 
-                          // create time axis and interpolate instantaneous amplitude and phase up to sample rate:
+  // create time axis and interpolate instantaneous amplitude and phase up to sample rate:
   std::vector<T> td = partial.getTimeArray();
   td = td + timeShift; // todo: implement vector += scalar operator and use: td += timeShift;
   T Ts = T(1) / sampleRate;  // sampling interval
@@ -74,10 +74,11 @@ void rsSinusoidalSynthesizer<T>::synthesizePartial(
   for(size_t n = 0; n < N; n++)          // fill time-array
     t[n] = (nStart + n) * Ts;
 
-
-
   std::vector<T> a = getInterpolatedAmplitudes(partial, td, t);
   std::vector<T> p = getInterpolatedPhases(    partial, td, t);
+
+  //rsPlotVector(p);
+  //rsPlotVector(rsDifference(p));
 
   // synthesize the sinusoid and add it to what's already there:
   std::vector<T> s(N); // needed here only for plotting, remove for production code
@@ -290,11 +291,11 @@ std::vector<T> rsSinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   RAPT::rsAssert(wp.size() == M);
   std::vector<T> up(M);  // unwrapped phase
 
-                         // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
+  // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
   rsNumericIntegral(&t[0], &f[0], &up[0], (int)M, wp[0]);
   up = 2*PI*up; // convert from "number of cycles passed" to radians
 
-                // incorporate the target phase values into the unwrapped phase:
+  // incorporate the target phase values into the unwrapped phase:
   bool accumulatePhaseDeltas = true; // not accumulating makes no sense, i think
   for(size_t m = 0; m < M; m++) {
     T wp1 = RAPT::rsWrapToInterval(up[m], 0, 2*PI);  // 0..2*pi
@@ -307,7 +308,6 @@ std::vector<T> rsSinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
     if(d < 0) d += 2*PI;        // 0..2*PI
     if(d > PI)                  // choose adjustment direction of smaller phase difference
       d -= 2*PI;                // -pi..pi
-
     up[m] += d;                 // re-adjust final unwrapped phase
     if(accumulatePhaseDeltas)
       for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
@@ -319,6 +319,8 @@ std::vector<T> rsSinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   // and add the integral over t[m-1]..t[m] of the average frequency (f[m-1]+f[m])/2 and choose
   // p[m] + 2*pi*k as unwrapped where k is chosen such that p[m] is closest to value obtained from
   // integration - use this function here as dispatcher between the different algorithms
+
+  //rsPlotVector(up);
 
   return up;
 }

@@ -1113,6 +1113,19 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // interesting
   // maybe also have a look at those partials that whould have zero amplitude - maybe their 
   // contribution messes up the signal? try to resynthesize without them
+  // injecting rsPlotVector(rsDifference(p)); into rsSinusoidalSynthesizer<T>::synthesizePartial 
+  // shows that the difference between adjacen phase values is not a (roughly) constant function as
+  // it should be but shows spikes ...there must be some error in the instantaneous phase 
+  // computation. these spikes seem to occur at the datapoints for the fundametal, for example at 
+  // samples 2535, 2756, .. with 200/2025 - for higher partials, more spikes in between appear
+  // using rsPlotVector(rsDifference(p)); shows that the phase array is not properly unwrapped
+  // hmm..ok - i think, i'm not using unwrapping currently...switching the phase-interpolation 
+  // algo letzts the spikes disappear - phase looks good now, buzz is still there
+  // ...could it be that all the other FFT bins that do not belong to any proper partial sort of
+  // conspire to create that jump at that particular instant? maybe it would help to use 
+  // cycle-marks at zero corssing of the original waveform rather than those of the fundamental?
+  // ...check, how i did it in the matlab code
+
 
   //testHarmonicResynthesis("VibratoSine", 44100, 95000);
   // produces a resiudal that looks like a train of (sort of) triangular spikes, amplitude 
