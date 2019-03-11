@@ -105,17 +105,20 @@ void applyVibrato(double *x, int N, double freq, double sampleRate, double depth
 // depth is in semitones, introduces delay due to delayline
 
 
-/** Creates one out of a collection of standard test sounds based on a name with a given frequency
-at a given sampleRate and with a given number of samples. The following sounds are available:
-Sine:        sine wave
-Cosine:      cosine wave
-TwoSines:    sine wave with harmonic at 10x the frequency (with same amplitude)...rename
-ModalPluck:  plucked string like sound created by modal synthesis  
-VibratoSine: sine wave with vibrato of 10Hz, depth: 20%
+/** Creates one out of a collection of standard test sounds based on a name at a given sampleRate
+and with a given number of samples. You can also specify some parameters of the sound such as its 
+frequency, amplitude, etc. in the string. For example: "Sine_Freq=100_Amp=0.5" creates a 100 Hz 
+sinewave with amplitude of 0.5. What parameters are available depends on the particular sound. 
+The following sounds are available: 
+
+Sine:        sine wave. Freq, Amp
+Cosine:      cosine wave, Freq, Amp
+TwoSines:    two sinewaves, Freq1, Freq2, Amp1, Amp2
+ModalPluck:  plucked string like sound created by modal synthesis, Freq
+VibratoSine: sine wave with vibrato, Freq, Rate, Depth
 
 ToDo Saw,NaiveSaw, Square,NaiveSquare, Triangle/NaiveTriangle, Pulse40/NaivePulse40, ...
 */
-std::vector<double> createNamedSound(const std::string& name, double freq, 
-  double sampleRate, int numSamples);
+std::vector<double> createNamedSound(const std::string& name, double sampleRate, int numSamples);
 
 #endif

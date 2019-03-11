@@ -1083,28 +1083,29 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 */
 
 
-void testHarmonicResynthesis(const std::string& name, double f, double fs, int N)
+void testHarmonicResynthesis(const std::string& name, double fs, int N)
 {
   // setup (comment out "doStuff = true", if you don't want stuff to be done):
   bool writeWaveFiles = false, plotResults = false;
   writeWaveFiles = true;
   plotResults    = true;
 
-  std::vector<double> input = createNamedSound(name, f, fs, N); 
-  std::string name2 = name + std::to_string(f) + "Hz";
-  testHarmonicResynthesis(name2, input, fs, writeWaveFiles, plotResults);
+  std::vector<double> input = createNamedSound(name, fs, N); 
+  //std::string name2 = name + std::to_string(f) + "Hz";
+  testHarmonicResynthesis(name, input, fs, writeWaveFiles, plotResults);
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis
 {
-  //testHarmonicResynthesis("Sine",       500, 44100, 5000);
-  //testHarmonicResynthesis("Cosine",     500, 44100, 5000);
-  //testHarmonicResynthesis("TwoSines",   200, 44100, 5000);
-  //testHarmonicResynthesis("ModalPluck", 500, 44100, 5000);
-  // convert all calls to includ the frequency in the string, the get rid of the frequency 
+  //testHarmonicResynthesis("Sine_Freq=500_Amp=0.5",      44100, 5000);
+  //testHarmonicResynthesis("Cosine_Freq=500_Amp=0.5",    44100, 5000);
+
+  //testHarmonicResynthesis("TwoSines",   44100, 5000);
+  //testHarmonicResynthesis("ModalPluck", 44100, 5000);
+  // convert all calls to include the frequency in the string (done), then get rid of the frequency 
   // parameter of the function
 
-  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=1950_Amp1=0.3_Amp2=0.2", 200, 44100, 5000);
+  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2025_Amp1=0.3_Amp2=0.2", 44100, 5000);
   // with 200/2050 Hz we can clearly see the buzzing artifact, the residual looks similar if we
   // use  200/1950 - there are four sorts of artifacts: upward jumps, upward spikes, downward jumps
   // and downward spikes that alternate in that order
@@ -1113,11 +1114,12 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // maybe also have a look at those partials that whould have zero amplitude - maybe their 
   // contribution messes up the signal? try to resynthesize without them
 
-  //testHarmonicResynthesis("VibratoSine", 500, 44100, 95000);
+  //testHarmonicResynthesis("VibratoSine", 44100, 95000);
   // produces a resiudal that looks like a train of (sort of) triangular spikes, amplitude 
   // modulated by the vibrato frequency - maybe try to use smoothing on the freq- and amp 
   // trajectories after interpolating them - i guess, it's an artifact from the interpolation 
   // process. the amp env of the resynthesized signal shows some slight amplitude modulation, too
+  // actually, the resynthesized signal has also some overtones which shouldn't be there
 
   // maybe let the function not take a frequency parameter but instead pass the desired frequency 
   // and maybe other parameters as part of the name - for example TwoSines_Freq1=200_Freq2=2100

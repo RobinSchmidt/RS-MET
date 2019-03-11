@@ -370,6 +370,7 @@ bool startsWith(const std::string& str, const std::string& pattern)
   return false;
 }
 
+// move to rsArray:
 template <class T>
 int firstNonMatchElement(
   const T *buffer, int bufferLength, const T *elementsToFind, int numElements)
@@ -406,32 +407,36 @@ double getValue(const std::string& str, const std::string& key, double defaultVa
 }
 
 
-std::vector<double> createNamedSound(const std::string& name, double f, double fs, int N)
+std::vector<double> createNamedSound(const std::string& s, double fs, int N)
 {
-  double key = rsFreqToPitch(f);
+
   std::vector<double> v(N);  // vector for the signal
   double* x = &v[0];         // pointer to first sample (for convenience)
-  if( name == "Sine")       createSineWave(  x, N, f, 0.5, fs, 0.0);
-  else if(name == "Cosine") createSineWave(  x, N, f, 0.5, fs, PI/2);
-  else if(name == "TwoSines") {
-    double f2[2] = {   f, 10*f };
-    double a2[2] = { 0.3, 0.3  };
+
+  // maybe always retrieve Freq and Amp and store in local variables for later use..
+
+  if( startsWith(s, "Sine") )       
+    createSineWave(x, N, getValue(s, "Freq", 200), getValue(s, "Amp", 1), fs, 0.0);
+  else if( startsWith(s, "Cosine") ) 
+    createSineWave(x, N, getValue(s, "Freq", 200), getValue(s, "Amp", 1), fs, PI/2);
+  else if(startsWith(s, "TwoSines")) {
+    double f2[2] = { getValue(s, "Freq1", 200), getValue(s, "Freq2", 2000) };
+    double a2[2] = { getValue(s, "Amp1",  1),   getValue(s, "Amp2",  1)    };
     createSumOfSines(x, N, 2, fs, f2, a2);
   }
-  if(name == "VibratoSine") { 
-    createSineWave(x, N, 10.0, 0.2*f, fs, 0.0);  // sine LFO - freq: 10 Hz, depth: 20% of f
-    RAPT::rsArray::add(x, f, x, N);              // add the center freq
-    createSineWave(x, N, x, 0.5, fs);            // overwrite x by freq-modulated sinewave
+  else if(startsWith(s, "VibratoSine")) { 
+    double freq  = getValue(s, "Freq", 200);
+    double rate  = getValue(s, "Rate",  10);
+    double depth = getValue(s, "Depth", 10) * freq * 0.01; // 0.01 because input is in percent
+    createSineWave(x, N, rate, depth, fs, 0.0);            // write sine LFO output into x
+    RAPT::rsArray::add(x, freq, x, N);                     // add the center freq
+    createSineWave(x, N, x, 0.5, fs);                      // overwrite x by vibratoed sinewave
   }
-  else if(name == "ModalPluck")  createModalPluck(x, N, key, fs);
-
-  // under construction - parametrized sound passing their parameters as part of the string:
-  else if(startsWith(name, "TwoSines")) {
-    double f2[2] = { getValue(name, "Freq1", 200), getValue(name, "Freq2", 2000) };
-    double a2[2] = { getValue(name, "Amp1",  1),   getValue(name, "Amp2",  1)    };
-    createSumOfSines(x, N, 2, fs, f2, a2);
+  else if(startsWith(s, "ModalPluck")) {
+    double key = rsFreqToPitch(getValue(s, "Freq", 200));
+    createModalPluck(x, N, key, fs);
   }
-
   else rsError("Unknown sound name");
+
   return v;
 }
