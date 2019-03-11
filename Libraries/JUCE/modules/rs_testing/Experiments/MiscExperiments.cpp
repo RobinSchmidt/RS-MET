@@ -48,7 +48,11 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     plt.addDataArrays(Nx, x);
     plt.addDataArrays(Ny, y);
     plt.addDataArrays(Ne, e);
+
     //plt.addDataArrays(Ne-2000, &e[1000]);  // middle part of error
+    // todo: plot the cycle-marks
+
+
     plt.plot();
   }
 }

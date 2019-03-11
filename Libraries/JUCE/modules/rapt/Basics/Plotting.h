@@ -10,12 +10,22 @@ plotting functions wil actually invoke the plotter in this project. */
 
 #include "GNUPlotter.h"
 
+
+template<class T>
+inline void rsPlotArray(T* x, int N)
+{
+  GNUPlotter plt;
+  plt.plotArrays(N, x);
+}
+
 template<class T>
 inline void rsPlotVector(std::vector<T> v)
 {
-  GNUPlotter plt;
-  plt.plotArrays((int) v.size(), &v[0]);
+  rsPlotArray(&v[0], (int) v.size());
+  //GNUPlotter plt;
+  //plt.plotArrays((int) v.size(), &v[0]);
 }
+
 
 template<class T>
 inline void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)

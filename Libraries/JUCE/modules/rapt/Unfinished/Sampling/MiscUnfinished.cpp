@@ -384,6 +384,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
   T bw = bandPassWidth*f0; // absolute bandwidth
   T *y = new T[N];
   rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, y, N, f0, bw, fs, bandpassSteepness);
+  //rsPlotArray(y, N);
   std::vector<T> z = rsZeroCrossingFinder::upwardCrossings(y, N, precision);
   delete[] y;
   return z;
