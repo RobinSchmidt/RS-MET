@@ -184,7 +184,7 @@ int rsArray::compare(T *a, int na, T *b, int nb)
 }
 
 template <class T>
-bool rsArray::contains(T *buffer, int length, T elementToFind)
+bool rsArray::contains(const T *buffer, int length, T elementToFind)
 {
   for(int i = 0; i < length; i++)
   {
@@ -254,13 +254,13 @@ void rsArray::copyBufferWithLinearInterpolation(T *source, int sourceLength, T *
 }
 
 template <class T>
-int rsArray::copyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
-  T *elementsToMatch, int matchLength)
+int rsArray::copyIfMatching(const T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
+  const T *elementsToMatch, int matchLength)
 {
   int numWritten = 0;
   for(int i = 0; i < sourceAndTargetLength; i++)
   {
-    if(rsContains(elementsToMatch, matchLength, sourceBuffer[i]))
+    if(rsArray::contains(elementsToMatch, matchLength, sourceBuffer[i]))
     {
       targetBuffer[numWritten] = sourceBuffer[i];
       numWritten++;
@@ -270,13 +270,13 @@ int rsArray::copyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTarge
 }
 
 template <class T>
-int rsArray::copyIfNotMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
-  T *elementsToStrip, int stripLength)
+int rsArray::copyIfNotMatching(const T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
+  const T *elementsToStrip, int stripLength)
 {
   int numWritten = 0;
   for(int i = 0; i < sourceAndTargetLength; i++)
   {
-    if(!rsContains(elementsToStrip, stripLength, sourceBuffer[i]))
+    if(!rsArray::contains(elementsToStrip, stripLength, sourceBuffer[i]))
     {
       targetBuffer[numWritten] = sourceBuffer[i];
       numWritten++;

@@ -104,7 +104,7 @@ int rsFindFirstOccurrenceOf(const T *buffer, const int length, const T *patternT
 {
   for(int shift = searchStart; shift <= length-patternLength; shift++)
   {
-    if(rsAreBuffersEqual(&buffer[shift], patternToMatch, patternLength))
+    if(rsArray::areBuffersEqual(&buffer[shift], patternToMatch, patternLength))
       return shift;
   }
   return -1;

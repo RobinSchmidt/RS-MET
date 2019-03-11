@@ -360,14 +360,46 @@ void applyVibrato(double *x, int N, double freq, double sampleRate, double depth
     vib.getSampleFrameStereo(&x[n], &dummy);
 }
 
-// move to rapt
+// maybe move to rapt
 bool startsWith(const std::string& str, const std::string& pattern)
 {
-  return false; // preliminary
+  int index = RAPT::rsFindFirstOccurrenceOf(
+    str.c_str(), (int)str.size(), pattern.c_str(), (int) pattern.size());
+  if(index == 0) 
+    return true;
+  return false;
 }
 
-double getParam(const std::string& str, const std::string& paramName, double defaultValue)
+double getValue(const std::string& str, const std::string& key, double defaultValue)
 {
+  std::string ptn = key + "=";
+  int index = RAPT::rsFindFirstOccurrenceOf(
+    str.c_str(), (int)str.size(), ptn.c_str(), (int) ptn.size());
+  if(index == -1)  
+    return defaultValue;   // name not found
+
+  // extract all numeric digits and '-', '.', 'e' that come after the found index:
+
+  //std::string numStr(str.size()+1, '\0'); // should be more than enough
+  //int size = str.size()-
+  char* numStr = new char[str.size()+1];
+  //char* ptr    = &str[0];
+
+  int length = RAPT::rsArray::copyIfMatching(&str[index], numStr, (int) str.size() - index,
+    "0123456789-.e", 13);
+  // nope - that doesn't work - we need to start at the = (not at the F) and end at the last digit
+  // (not the end of the whole string)
+
+
+
+  delete[] numStr;
+
+
+
+  //static int copyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
+  //  T *elementsToMatch, int matchLength);
+
+
   return defaultValue; // preliminary
 }
 
@@ -393,8 +425,8 @@ std::vector<double> createNamedSound(const std::string& name, double f, double f
 
   // under construction - parametrized sound passing their parameters as part of the string:
   else if(startsWith(name, "TwoSines")) {
-    double f2[2] = { getParam(name, "Freq1", 200), getParam(name, "Freq2", 2000) };
-    double a2[2] = { getParam(name, "Amp1",  1),   getParam(name, "Amp2",  1)    };
+    double f2[2] = { getValue(name, "Freq1", 200), getValue(name, "Freq2", 2000) };
+    double a2[2] = { getValue(name, "Amp1",  1),   getValue(name, "Amp2",  1)    };
     createSumOfSines(x, N, 2, fs, f2, a2);
   }
 

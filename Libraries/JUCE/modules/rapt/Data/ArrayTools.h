@@ -103,7 +103,7 @@ public:
   /** Searches the array for an element (via the '==' operator of type T) and returns true if the
   element was found. */
   template <class T>
-  static bool contains(T *buffer, int length, T elementToFind);
+  static bool contains(const T *buffer, int length, T elementToFind);
 
   /** Convolves an array x (seen as input signal) with another array h (seen as impulse response)
   and stores the result in the array y. The type must define the operators: *, += and a constructor
@@ -148,14 +148,14 @@ public:
   a buffer in place. Just remember that in any case in the extra elements in the targetBuffer are
   garbage. */
   template <class T>
-  static int copyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
-                            T *elementsToMatch, int matchLength);
+  static int copyIfMatching(const T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
+                            const T *elementsToMatch, int matchLength);
 
   /** Similar to rsCopyIfMatching, but here the criterion is to NOT match one of the elements in the
   set of elementsToStrip. */
   template <class T>
-  static int copyIfNotMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
-                                 T *elementsToStrip, int stripLength);
+  static int copyIfNotMatching(const T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
+                               const T *elementsToStrip, int stripLength);
 
   /** Copies the data of one array into another one where the lengths of the source- and target-
   arrays may be different - in this case, the target array will be filled by linearly interpolating

@@ -1102,7 +1102,10 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //testHarmonicResynthesis("TwoSines",   200, 44100, 5000);
   //testHarmonicResynthesis("ModalPluck", 500, 44100, 5000);
 
-  testHarmonicResynthesis("VibratoSine", 500, 44100, 95000);
+
+  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2000",   200, 44100, 5000);
+
+  //testHarmonicResynthesis("VibratoSine", 500, 44100, 95000);
   // produces a resiudal that looks like a train of (sort of) triangular spikes, amplitude 
   // modulated by the vibrato frequency - maybe try to use smoothing on the freq- and amp 
   // trajectories after interpolating them - i guess, it's an artifact from the interpolation 
