@@ -76,12 +76,12 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
 
   std::vector<T> a(M-1);   // average frequencies (optimized code could avoid this array, too)
   for(m = 0; m < M-1; m++) {
-    T dt = t[m+1] - t[m];                 // length of time interval t[m]...t[m+1] "delta-t"
-    a[m] = T(0.5) * (f[m] + f[m+1]);      // "old" average freq in interval t[m]...t[m+1]
-    T q  = p[m] + a[m] * dt * 2*PI;       // computed phase at end of interval
-    T ps = p[m+1];                        // stored phase at end of current interval
-    T qp = findCosistentPhase(p[m+1], q); // q' - adjusted phase 
-    a[m] = (qp-p[m])/(dt*2*PI);           // "new" average freq, consistent with p[m] and p[m+1]
+    T dt = t[m+1] - t[m];                   // length of time interval t[m]...t[m+1] "delta-t"
+    a[m] = T(0.5) * (f[m] + f[m+1]);        // "old" average freq in interval t[m]...t[m+1]
+    T q  = p[m] + a[m] * dt * 2*PI;         // computed phase at end of interval
+    T ps = p[m+1];                          // stored phase at end of current interval
+    T qp = rsFindCosistentPhase(p[m+1], q); // q' - adjusted phase 
+    a[m] = (qp-p[m])/(dt*2*PI);             // "new" average freq, consistent with p[m] and p[m+1]
 
     T dq = q - qp;  // |dq| should be (much) less than pi - otherwise the hopSize is too small for
     // correctly estimating frequencies from phase-differences - maybe return the maximum dp as
@@ -93,8 +93,8 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
     // even worse - check findConsistentPhase - could id have to with range 0..2pi vs. -pi..+pi?
 
     // check, if new a[m] is indeed consistent (for debug):
-    q = p[m] + a[m] * dt * 2*PI;                     // same computation as above - should now give
-    RAPT::rsAssert(arePhasesConsistent(q, p[m+1]));  // a phase q that is consistent with p[m+1]
+    q = p[m] + a[m] * dt * 2*PI;                   // same computation as above - should now give
+    RAPT::rsAssert(rsArePhasesConsistent(q, p[m+1])); // a phase q that is consistent with p[m+1]
   }
 
   // OK - we have our new desired average frequencies for the segments - from these, we now compute

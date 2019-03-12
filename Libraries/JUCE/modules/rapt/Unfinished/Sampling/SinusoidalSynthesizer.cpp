@@ -3,7 +3,7 @@
 
 // useful for freq de-biasing and for phase interpolation in synthesis
 template<class T>
-T findCosistentPhase(T storedPhase, T computedPhase) 
+T rsFindCosistentPhase(T storedPhase, T computedPhase) 
 {
   T p = storedPhase;     // 0..2pi
   T q = computedPhase;   // 0..inf
@@ -26,7 +26,7 @@ T findCosistentPhase(T storedPhase, T computedPhase)
 
 // whoa - this is very tricky - isn't there a simpler way for this?
 template<class T>
-T phaseError(T p1, T p2)
+T rsPhaseError(T p1, T p2)
 {
   p1  = RAPT::rsWrapToInterval(p1, 0, 2*PI);  // 0..2pi  // rename to rsWrapToRange...or just rsWrap
   p2  = RAPT::rsWrapToInterval(p2, 0, 2*PI);  // 0..2pi
@@ -34,10 +34,11 @@ T phaseError(T p1, T p2)
   d   = RAPT::rsWrapToInterval(d,  0, 2*PI);  // 0..2pi
   return d;
 }
+
 template<class T>
-bool arePhasesConsistent(T p1, T p2, T tol = 1.e-13)
+bool rsArePhasesConsistent(T p1, T p2, T tol = 1.e-13)
 {
-  T d = phaseError(p1, p2);
+  T d = rsPhaseError(p1, p2);
   if(d < tol)
     return true;
   if(d-2*PI < tol)
@@ -252,7 +253,7 @@ std::vector<T> rsSinusoidalSynthesizer<T>::phasesHermite(
     // interpolation use the integral over a cubic hermite frequency interpolant
     // make a function, meanFreq(f0, f1, dt, f0p, f1p)
 
-    p1 = findCosistentPhase(p1, p0 + 2*PI*fa*dt) ;
+    p1 = rsFindCosistentPhase(p1, p0 + 2*PI*fa*dt) ;
 
 
     // compute cubic or quintic Hermite coefficients for the current segment:
