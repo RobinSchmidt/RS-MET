@@ -26,6 +26,10 @@ inline T rsAmpToDbWithCheck(T amp, T lowAmplitude)
     return rsAmpToDb(lowAmplitude);
 }
 
+
+template<class T>
+bool rsArePhasesConsistent(T p1, T p2, T tol = 1.e-13);
+
 /** Converts a time-stamp given in beats into seconds acording to a tempo measured in beats per
 minute (bpm). */
 template<class T>
@@ -61,6 +65,15 @@ inline T rsCubicFadeOut(T x)
   return x*x*((2-PI/2)*x+(PI/2-3))+1;
 }
 
+/** Given a tentative unwrapped phase value (in 0..inf), and a wrapped target phase value 
+(in 0..2pi), this function computes a phase that is in the neighbourhood of the tentative value but 
+also a multiple of 2*pi above the targetPhase value, such that it is consistent with the target 
+phase value. The actual returned value will be the one that is closest to the original tentative 
+phase that also satisfies the consistency criterion of being k*2*pi away from targetPhase. */
+template<class T>
+T rsFindCosistentPhase(T targetPhase, T tentativePhase);
+// maybe switch argument order, let the targetPhase be in the range -PI..+PI instead of 0..2pi
+
 /** Converts a frequency in Hz into a MIDI-note value. It can be used also for tunings different 
 than the default the 440 Hz. */
 template<class T>
@@ -68,6 +81,10 @@ inline T rsFreqToPitch(T freq, T masterTuneA4 = T(440))
 {
   return 12.0 * rsLog2(freq / masterTuneA4) + 69.0;
 }
+
+
+template<class T>
+T rsPhaseError(T p1, T p2);
 
 /** Converts a pitch-offset in semitones value into a frequency multiplication factor. */
 template<class T>

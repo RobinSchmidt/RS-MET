@@ -1,6 +1,6 @@
 
 // helper functions (maybe  move into class rsSinusoidalPartial )
-
+/*
 // useful for freq de-biasing and for phase interpolation in synthesis
 template<class T>
 T rsFindCosistentPhase(T storedPhase, T computedPhase) 
@@ -45,6 +45,7 @@ bool rsArePhasesConsistent(T p1, T p2, T tol = 1.e-13)
     return true;
   return false;
 }
+*/
 
 
 //=================================================================================================
