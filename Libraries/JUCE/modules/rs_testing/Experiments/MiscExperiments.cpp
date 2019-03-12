@@ -19,14 +19,6 @@ std::vector<double> synthesizeSinusoidal(
   return x;
 }
 
-void plotSineModelPhaseDerivative(const RAPT::rsSinusoidalModel<double>& mdl, double fs)
-{
-  GNUPlotter plt;
-
-
-  int dummy = 0;
-}
-
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
   double fs, bool writeWaveFiles, bool plotResults)
 {
@@ -38,9 +30,14 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(64);
+  //analyzer.setRefineFrequencies(true);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
   mdl.removePartial(0);        // remove DC component
-  //plotSineModel(mdl, fs);
+
+
+  //mdl.keepOnly({0, 9});  // for test with TwoSines_Freq1=200_Freq2=2025
+  mdl.removePartial(0);    // test: resynthesize without fundamental
+
   std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
   std::vector<double> error = output-input;
   double* y = &output[0]; int Ny = (int) output.size(); // again, for convenience
@@ -53,12 +50,11 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     rosic::writeToMonoWaveFile((name + "Residual.wav").c_str(),         e, Ne, (int)fs);
   }
 
-  //// plot model data, if desired....
-  //bool plotModel = true;
+  // plot model data, if desired....
+  bool plotModel = true;
   //if(plotModel == true)
-  //{
-  //  plotSineModelPhaseDerivative(mdl, fs);
-  //}
+    //plotSineModel(mdl, fs);
+  // 
 
 
  

@@ -215,6 +215,10 @@ void stemPlot(int N, double *x, double *y)
   plt.plot();
 }
 
+
+
+
+
 void plotSinusoidalAnalysisResult(SinusoidalAnalyzer<double>& sa, double* x, int N, double fs)
 {
   SinusoidalModelPlotter<double> plt;

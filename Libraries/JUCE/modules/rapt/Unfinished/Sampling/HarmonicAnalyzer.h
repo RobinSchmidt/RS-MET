@@ -86,6 +86,8 @@ public:
   }
 
 
+  void setRefineFrequencies(bool shouldRefine) { refineFreqs = shouldRefine; }
+
 
   /** \name Inquiry */
 
@@ -195,7 +197,8 @@ protected:
 
   int blockSize = 0;    // FFT block size
 
-  bool antiAlias = false;
+  bool antiAlias   = false;
+  bool refineFreqs = false;
 
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping

@@ -39,6 +39,8 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
     removeAliasing(mdl);            // remove freqs above orignal nyquist freq
   handleEdges(mdl);                 // add fade-in/out datapoints
   convertTimeUnit(mdl);             // convert from samples to seconds
+  if(refineFreqs)
+    mdl.makeFreqsConsistentWithPhases();
 
   rosic::writeToMonoWaveFile("PitchFlattened.wav", &y[0], (int)y.size(), (int)sampleRate);
   // move to rapt - rapt is a lower layer than rosic an we are not supposed to call rosic functions
@@ -272,8 +274,8 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
   rsCycleMarkFinder<double> cmf(sampleRate, fl, fu);  // make member, let use acces its settings
 
   ////                                      // defaults
-  //cmf.setRelativeBandpassWidth(0.1);    // 1.0
-  //cmf.setBandpassSteepness(5);          // 3
+  cmf.setRelativeBandpassWidth(0.5);    // 1.0
+  cmf.setBandpassSteepness(10);          // 3
   //cmf.setFundamentalRange(50., 100.);   // 20-5000 
 
 

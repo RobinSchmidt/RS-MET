@@ -1105,7 +1105,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // convert all calls to include the frequency in the string (done), then get rid of the frequency 
   // parameter of the function
 
-  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2025_Amp1=0.3_Amp2=0.2", 44100, 5000);
+  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2050_Amp1=0.3_Amp2=0.2", 44100, 5000);
   // with 200/2050 Hz we can clearly see the buzzing artifact, the residual looks similar if we
   // use  200/1950 - there are four sorts of artifacts: upward jumps, upward spikes, downward jumps
   // and downward spikes that alternate in that order
@@ -1114,8 +1114,8 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // maybe also have a look at those partials that whould have zero amplitude - maybe their 
   // contribution messes up the signal? try to resynthesize without them
   // injecting rsPlotVector(rsDifference(p)); into rsSinusoidalSynthesizer<T>::synthesizePartial 
-  // shows that the difference between adjacen phase values is not a (roughly) constant function as
-  // it should be but shows spikes ...there must be some error in the instantaneous phase 
+  // shows that the difference between adjacent phase values is not a (roughly) constant function 
+  // as it should be but shows spikes ...there must be some error in the instantaneous phase 
   // computation. these spikes seem to occur at the datapoints for the fundametal, for example at 
   // samples 2535, 2756, .. with 200/2025 - for higher partials, more spikes in between appear
   // using rsPlotVector(rsDifference(p)); shows that the phase array is not properly unwrapped
@@ -1124,7 +1124,31 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // ...could it be that all the other FFT bins that do not belong to any proper partial sort of
   // conspire to create that jump at that particular instant? maybe it would help to use 
   // cycle-marks at zero corssing of the original waveform rather than those of the fundamental?
-  // ...check, how i did it in the matlab code
+  // ...check, how i did it in the matlab code - no - it uses a filtered signal, too - but a much
+  // higher order filter (10 passes of a bidirectional bandpass) :-O - nope - ramping up the 
+  // filter order doesn't help
+  // but i think, the matlab code measures the phase *at* the cycle-marks, not in between (it
+  // doesn't do the shift of the FFT buffer by one half) ...should that matter - i don't know
+  // why but maybe
+  // adding mdl.keepOnly({0, 9}); to testHarmonicResynthesis (after mdl.removePartial(0)) 
+  // removes the buzzing - it seems to be indeed the combined effect of all other overtones'
+  // contributions - the conspire to produce edges - how can we avoid this? maybe obtain datapoints
+  // also midway between the current ones? this would force the resynthesized phase to be in sync
+  // with the original phase at the instants that are currently problematic ...and/or maybe the 
+  // phase-based frequency estimate refinement could help against this?
+  // i think, i know why the buzz occurs: try resynthesizing without the fundamental - it tries
+  // to synthesize segments the 2030Hz component with discontinuities because in the FFT buffer,
+  // the wave is indeed cut off discontinuously - the resynthesis tries to model these 
+  // discontinuities via all other partials - frequency refinement may indeed plausibly break up
+  // the phase-coherence of all theses partials that produces the edge - with readjusted 
+  // frequencies, the model also won't be strictly harmonic anymore - which is a good thing since
+  // the input sound is in fact inharmonic
+  // when Freq2=2100, each block has exactly 10.5 cycles of the inharmonic wave in it and we get 
+  // only discontinuities in the derivative as opposed to outright signal jumps - this all makes
+  // sense now
+
+  // move DSPPlotters to rs_testing module - also some or all of plotting convenience functions
+  // todo: move SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases into rsSineModel
 
 
   //testHarmonicResynthesis("VibratoSine", 44100, 95000);
@@ -1212,6 +1236,8 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
   // maybe make sure that y has the same size as x...maybe wrap this analysis/resynthesis roundtrip
   // into a convenience class
+
+// look at files decompositionSteelGuitar002.m, testHarmonicAnalysis.M
 }
 
 
