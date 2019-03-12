@@ -1,6 +1,4 @@
 
-
-// useful for freq de-biasing and for phase interpolation in synthesis
 template<class T>
 T rsFindCosistentPhase(T storedPhase, T computedPhase) 
 {

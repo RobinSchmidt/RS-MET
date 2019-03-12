@@ -26,7 +26,7 @@ inline T rsAmpToDbWithCheck(T amp, T lowAmplitude)
     return rsAmpToDb(lowAmplitude);
 }
 
-
+/** Returns true, if p1 and p2 are a multiple of 2*pi apart (within some given tolerance). */
 template<class T>
 bool rsArePhasesConsistent(T p1, T p2, T tol = 1.e-13);
 
@@ -65,7 +65,9 @@ inline T rsCubicFadeOut(T x)
   return x*x*((2-PI/2)*x+(PI/2-3))+1;
 }
 
-/** Given a tentative unwrapped phase value (in 0..inf), and a wrapped target phase value 
+/** NOT YET USABLE (buggy)!
+
+Given a tentative unwrapped phase value (in 0..inf), and a wrapped target phase value 
 (in 0..2pi), this function computes a phase that is in the neighbourhood of the tentative value but 
 also a multiple of 2*pi above the targetPhase value, such that it is consistent with the target 
 phase value. The actual returned value will be the one that is closest to the original tentative 
@@ -82,7 +84,8 @@ inline T rsFreqToPitch(T freq, T masterTuneA4 = T(440))
   return 12.0 * rsLog2(freq / masterTuneA4) + 69.0;
 }
 
-
+/** Returns, how far two phase values are apart after wrapping them both into the interval
+0..2pi. The returned value will be in 0..2pi. */
 template<class T>
 T rsPhaseError(T p1, T p2);
 
