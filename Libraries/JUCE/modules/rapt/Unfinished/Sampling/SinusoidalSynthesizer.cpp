@@ -13,11 +13,15 @@ T findCosistentPhase(T storedPhase, T computedPhase)
   while(true) {
     tmp = p + 2*k*PI;
     d   = q - tmp;
-    if(rsAbs(d) < PI)
+    if(rsAbs(d) <= PI + 1.e-13)
       break;
     k  += T(1);
   }
   return tmp;
+  // this may lead to an endless loop when 
+  // storedPhase = 6.2804880025844536, computedPhase = 0.0044408067227543532
+  // -> make unit test - i think, the condition rsAbs(d) < PI is not enough ..maybe
+  // it needs a tolerance? nope: using rsAbs(d) <= PI + 1.e-13 also doesn't work
 }
 
 // whoa - this is very tricky - isn't there a simpler way for this?

@@ -1097,6 +1097,10 @@ void testHarmonicResynthesis(const std::string& name, double fs, int N)
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis
 {
+
+  // todo: fix findCosistentPhase (move it into rsSinousoidalPartial and write unit test)
+  // or better: to AudioFunctions, the re-activate freq-refinement, then add the new algo
+
   //testHarmonicResynthesis("Sine_Freq=500_Amp=0.5",      44100, 5000);
   //testHarmonicResynthesis("Cosine_Freq=500_Amp=0.5",    44100, 5000);
 
