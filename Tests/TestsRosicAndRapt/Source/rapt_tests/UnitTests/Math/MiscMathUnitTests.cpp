@@ -9,6 +9,7 @@ bool testMiscMath()
   testResult &= testRootFinding(              dummy);
   testResult &= testGradientBasedOptimization(dummy);
   testResult &= testMinSqrDifFixSum(          dummy);
+  testResult &= testPhaseUnwrapStuff(         dummy);
 
   //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
   //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
@@ -127,6 +128,21 @@ bool testMinSqrDifFixSum(std::string &reportString)
 
   return testResult;
 }
+
+bool testPhaseUnwrapStuff(std::string &reportString)
+{
+  bool r = true;  // test result
+
+
+
+  // tests various functions that have to do with phase-unwrapping
+
+  // todo: test wrapped interpolation, rsWarpTointerval, unwrap, ...
+
+
+  return r;
+}
+
 
 bool testMultiLayerPerceptronOld(std::string &reportString)
 {
