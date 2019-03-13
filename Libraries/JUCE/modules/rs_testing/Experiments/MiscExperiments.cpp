@@ -36,7 +36,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 
 
   //mdl.keepOnly({0, 9});  // for test with TwoSines_Freq1=200_Freq2=2025
-  mdl.removePartial(0);    // test: resynthesize without fundamental
+  //mdl.removePartial(0);    // test: resynthesize without fundamental
 
   std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
   std::vector<double> error = output-input;
