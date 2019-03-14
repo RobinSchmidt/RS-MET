@@ -82,12 +82,14 @@ identified with some value from within the interval - for example, a range of an
 2*pi - any angle x above 2*pi or below 0 would be identified with some number y = x + 2*k*pi for 
 some suitably chosen k. What this function does, is to take a tentative unwrapped values (in the 
 range -inf...+inf and returns another unwrapped value that is consistent with some target value
-from the base-range - consistent in the sense that is at most (rangeMax-rangeMin)/2 away from the
-passed unwrappedValue. So, it computes a value in the range 
-preliminaryUnwrappedValue +- (rangeMax-rangeMin)/2 that is consistent with the targetWrappedValue
-in the sense of being a multiple of the rangeSize (=rangeMax-rangeMin) away from it. This function
-is useful for finding unwrapped phase values that should be cosistent with some measured 
-phase-value from the base-range (of 0..2pi, say). */
+from the base-range - consistent in the sense that is a multiple of the range-size away from it.
+It is also consistent with the tentative unwrapped value in the sense that is at most 
+(rangeMax-rangeMin)/2 away from that. So, the returned value is in the range 
+preliminaryUnwrappedValue +- (rangeMax-rangeMin)/2 but also a multiple of (rangeMax-rangeMin) away
+from targetWrappedValue. This function is useful for finding unwrapped phase values that should be 
+consistent with some measured phase-value from the base-range (of 0..2pi, say) but should also be 
+in the neighbourhood of some unwapped value that may be the result of integrating/accumulating a 
+frequency over time. */
 template<class T>
 T rsConsistentUnwrappedValue(T preliminaryUnwrappedValue, T targetWrappedValue, 
   T rangeMin, T rangeMax);

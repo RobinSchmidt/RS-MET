@@ -913,6 +913,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.cpp">
       <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Optimization.cpp">
+      <Filter>Juce Modules\rapt\Math\Numerics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.cpp">
       <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClCompile>
@@ -3184,6 +3187,9 @@
       <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.h">
+      <Filter>Juce Modules\rapt\Math\Numerics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Optimization.h">
       <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.h">

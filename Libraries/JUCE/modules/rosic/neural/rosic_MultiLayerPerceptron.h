@@ -21,6 +21,7 @@ namespace rosic
   https://magenta.tensorflow.org/nsynth
   https://magenta.tensorflow.org/datasets/nsynth
   https://arxiv.org/pdf/1704.01279.pdf
+  http://www.hexahedria.com/2015/08/03/composing-music-with-recurrent-neural-networks/
 
 
   */

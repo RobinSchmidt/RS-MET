@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+  //runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
   //bandMatrix();                       // under construction
   //pentaDiagnonalMatrix();
   //pentaDiagnonalMatrix2();
-//  minSqrdDifsForFixSums();
+  minSqrdDifsForFixSums();
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();
