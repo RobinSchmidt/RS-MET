@@ -1083,45 +1083,46 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 */
 
 
+RAPT::rsSinusoidalPartial<double> phaseAlternatingPartial(int numDataPoints, double timeDelta,
+  double freq, double phase1, double phase2)
+{
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  RAPT::rsSinusoidalPartial<double> partial;
+  partial.prependDataPoint(ISP(0.0, freq, 1.0, phase1));
+  int count = 1;
+  double phase;
+  while(count < numDataPoints)
+  {
+    if( RAPT::rsIsOdd(count) )
+      phase = phase2;
+    else
+      phase = phase1;
+    partial.appendDataPoint(ISP(count*timeDelta, freq, 1.0, phase));
+    count++;
+  }
+  return partial;
+}
+
 void phaseFreqConsistency()
 {
   // Tests the phase/frequency consistency algorithm for the sinusoidal model. The partial 
   // frequencies are re-adjusted in a way such that their numeric integral happens to exactly hit
   // the measured phase values.
 
-
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
-
-  double p = PI;
-  p = 0.25*PI;
-  partial.prependDataPoint(ISP(0.0,  1000.0, 1.0, 0.0)); // time, freq, amp, phase
-  partial.appendDataPoint( ISP(0.01, 1000.0, 1.0, p));
-  partial.appendDataPoint( ISP(0.02, 1000.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(0.03, 1000.0, 1.0, p));
-  partial.appendDataPoint( ISP(0.04, 1000.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(0.05, 1000.0, 1.0, p));
-  partial.appendDataPoint( ISP(0.06, 1000.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(0.07, 1000.0, 1.0, p));
-  partial.appendDataPoint( ISP(0.08, 1000.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(0.09, 1000.0, 1.0, p));
-  partial.appendDataPoint( ISP(0.10, 1000.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(0.11, 1000.0, 1.0, p));
-  partial.appendDataPoint( ISP(0.12, 1000.0, 1.0, 0.0));
-  // move inot function - phaseAlternatingPartial(numDataPoints, timeDelta, freq, phase1, phase2)
-
-  double error = partial.getMaxFreqPhaseInconsistency(); // should be pi
-
+  partial = phaseAlternatingPartial(100, 0.01, 1000, 0.0, 0.125*PI);
+  double error = partial.getMaxFreqPhaseInconsistency(); // should be 0.125*pi
   partial.makeFreqsConsistentWithPhases();
-  // ...hangs!
+  error = partial.getMaxFreqPhaseInconsistency();        // should be zero now
 
-  error = partial.getMaxFreqPhaseInconsistency();        // should be zero
-
+  // plot the re-adjusted freq-trajectory:
   std::vector<double> freqs = partial.getFrequencyArray();
   rsPlotVector(freqs);
-
-
-
+  // this looks wrong! the frequency delta between adjacent datapoints increases toward the ends
+  // commenting out rsMinSqrDiffWithGivnSum(&f[0], &sum[0], M); in makeFreqsConsistentWithPhases 
+  // has the effect that the alternation amplitude increases toward the start section
+  // ...could the target-phase computation be wrong? ..
 
   int dummy = 0;
 }
