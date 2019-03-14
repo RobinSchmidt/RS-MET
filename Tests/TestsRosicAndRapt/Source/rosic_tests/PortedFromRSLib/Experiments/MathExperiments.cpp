@@ -276,6 +276,17 @@ double sqrdDifSum(
     r += w[i]*d[i]*d[i];
   return r;
 }
+std::vector<double> valuesWithFixedSums(const std::vector<double>& s, double first)
+{
+  int N = (int)s.size() + 1;
+  std::vector<double> v(N);
+  v[0] = first;
+  for(int i = 1; i < N; i++)
+    v[i] = s[i-1] - v[i-1];
+  return v;
+}
+
+
 void minSqrdDifsForFixSums()
 {
   // Test minimization of the sum of the squares of the differences between adjacent array elements
@@ -352,6 +363,68 @@ void minSqrdDifsForFixSums()
   s = { 20, 30, 40, 50, 60, 70, 80 }; 
   v = rsMinSqrDifFixSum(s);       // 7.86, 12.14, 17.86, 22.14, 27.86, 32.14, 37.86, 42.14
   d = adjacentDifs(v);            // 4.29,  5.71, ..
+
+  s = { 40, 60, 40, 60 };
+  v = rsMinSqrDifFixSum(s);     // 5, 35, 25, 15, 45
+  d = adjacentDifs(v); 
+
+  s = { 40, 60, 40, 60, 40 };
+  v = rsMinSqrDifFixSum(s);     // 0, 40, 20, 20, 40, 0
+  d = adjacentDifs(v); 
+
+  s = { 1010, 990, 1010, 990 };
+  v = rsMinSqrDifFixSum(s);     // 520, 490, 500, 510, 480
+  d = adjacentDifs(v);
+
+  s = { 1010, 990, 1010, 990, 1010 };
+  v = rsMinSqrDifFixSum(s);    // 525, 485, 505, 505, 485, 525
+  d = adjacentDifs(v);
+
+  s = { 1010, 990, 1010, 990, 1010, 990, 1010 };
+  v = rsMinSqrDifFixSum(s);    // 535, 475, 515, 495, 495, 515, 475, 535
+  d = adjacentDifs(v);
+  c = sqrdDifSum(v);
+  //rsPlotVector(d*d);
+
+  v = valuesWithFixedSums(s, 534);
+  d = adjacentDifs(v);
+  c = sqrdDifSum(v);
+  //rsPlotVector(d*d);
+
+  v = valuesWithFixedSums(s, 536);
+  d = adjacentDifs(v);
+  c = sqrdDifSum(v);
+
+  // if the sums alternate, there's tendency for the outer values to become more spread out - 
+  // that's undesirable - does that really minimize the sum of the squared differences? that
+  // seems not really plausible...maybe try to reduce and increase the first value by 1 and 
+  // compute all other values according to that new, fixed first value - see, if the total sum of
+  // squared differences really increases in both cases - yes, it does - so, with respect to the 
+  // first value, we have indeed a minimum - and if the first value is locked in place, then all
+  // others follow due to the constraints
+
+  // maybe we should give higher weights to the differences at the ends to counteract this 
+  // tendency? ..but why should a difference at the ends get more weight than inner differences?
+
+  // or maybe we should treat it as a one-dimensional optimization problem: use as cost function 
+  // the sum of absolute differences...or maybe better: the maximum absolute difference and 
+  // minimize that cost function with respect to the first value - maybe the sum of squared
+  // differences is a bad cost function...maybe use not the squares of the differences but the
+  // 4th power ...or some general even power - higher exponents should give more impact to single
+  // high values of the difference and turn the error function towards minimax - oh - but that 
+  // doesn't result in a linear system of equations - terms like (v2-v1)^4 become
+  // 4*(v2-v1)^3 when taking the partial derivative...hmm...i think, i should do it via nonlinear
+  // minimax optimization
+
+  s = { 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010 };
+  w = {    8,   7,    6,   5,    4,   3,    2,   1,    2,   3,    4,   5,    6,   7,    8 };
+  v = rsMinSqrDifFixSum(s, w);
+  //v = rsMinSqrDifFixSum(s);
+  d = adjacentDifs(v);
+  c = sqrdDifSum(v);
+  rsPlotVector(v);
+  //rsPlotVector(d*d);
+  // it seems to make no difference, if we use weights or not...wtf?
 
   int dummy = 0;
 

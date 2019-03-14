@@ -1111,7 +1111,7 @@ void phaseFreqConsistency()
 
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
-  partial = phaseAlternatingPartial(100, 0.01, 1000, 0.0, 0.125*PI);
+  partial = phaseAlternatingPartial(200, 0.01, 1000, 0.0, 0.2*PI);
   double error = partial.getMaxFreqPhaseInconsistency(); // should be 0.125*pi
   partial.makeFreqsConsistentWithPhases();
   error = partial.getMaxFreqPhaseInconsistency();        // should be zero now
@@ -1122,7 +1122,19 @@ void phaseFreqConsistency()
   // this looks wrong! the frequency delta between adjacent datapoints increases toward the ends
   // commenting out rsMinSqrDiffWithGivnSum(&f[0], &sum[0], M); in makeFreqsConsistentWithPhases 
   // has the effect that the alternation amplitude increases toward the start section
-  // ...could the target-phase computation be wrong? ..
+  // ...could the target-phase computation be wrong? ..hmm..looks ok - actually, it's totally
+  // implausible that the result should be the solution to the least-squares-of-differences
+  // problem...maybe the minimization procedure is still wrong? we need to make more tests with 
+  // that - create examples in sage, solve them analytically and compare with results from the
+  // procedure
+
+  // commenting the phase re-adjustment (if(delta > maxDelta) ...) in rsConsistentUnwrappedValue0
+  // gives different results - still worng but in different ways - we need to re-consider the 
+  // computation of the measurement-consistent target-phase value - i think it is wrong to compute
+  // the preliminaryUnwrappedValue based on the old freq-values - we must use updated freq-values
+  //...but we don't have any available yet...what to do? maybe impose the condition that some 
+  // frequency (maybe somewhere in the middle where the estimates are supposedly better than at the
+  // ends) should stay put...but it's simler to implement to let the first datapoint stay put
 
   int dummy = 0;
 }

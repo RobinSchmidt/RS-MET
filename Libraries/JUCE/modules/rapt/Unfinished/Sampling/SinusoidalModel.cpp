@@ -87,6 +87,8 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
 
 
     a[m] = (qp-p[m])/(dt*2*PI);             // "new" average freq, consistent with p[m] and p[m+1]
+    // ...wait - what if this becomes negative?
+    rsAssert(a[m] > T(0));
 
     T dq = q - qp;  // |dq| should be (much) less than pi - otherwise the hopSize is too small for
     // correctly estimating frequencies from phase-differences - maybe return the maximum dp as
@@ -102,11 +104,14 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
     RAPT::rsAssert(rsArePhasesConsistent(q, p[m+1])); // a phase q that is consistent with p[m+1]
   }
 
+  rsPlotVector(a); 
+
   // OK - we have our new desired average frequencies for the segments - from these, we now compute
   // the new frequencies at the datapoints (we are actually one equation short of determining all 
   // frequencies, so we make the choice that the last two datapoint should have the same frequency
   // as our additional equation/condition):
   f[M-1] = f[M-2] = a[M-2];
+  //f[M-1] = f[M-2] = T(0.5) * (a[M-2] + a[M-3]);  // test
   for(m = M-3; m >= 0; m--)
     f[m] = 2*a[m] - f[m+1];
   // maybe we should have a switch, if we run the loop over the datapoints forward or backward - in
@@ -128,7 +133,7 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
   
   // preliminary:
   std::vector<T> sum = 2.0 * a;
-  //rsMinSqrDiffWithGivnSum(&f[0], &sum[0], M);
+  rsMinSqrDiffWithGivnSum(&f[0], &sum[0], M);
 
   // finally, write the new frequencies into the datapoints of the partial:
   for(m = 0; m < M; m++)

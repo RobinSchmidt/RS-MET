@@ -68,14 +68,16 @@ T rsConsistentUnwrappedValue0(T value, T target, T rangeSize)
   T over     = fmod(value, rangeSize);             // overshoot over an integer number of cycles
   T cycles   = round((value - over) / rangeSize);  // number of full cycles through the range
   T result   = cycles * rangeSize + target;
+
+  // re-adjustement:
   T delta    = value - result;
   T maxDelta = T(0.5)*rangeSize;
   if(delta > maxDelta)
     result += rangeSize;
   else if(delta < -maxDelta)
     result -= rangeSize;
-
   rsAssert(rsAbs(value - result) <= T(0.5)*rangeSize);  // self-check
+
   return result;
 }
 
