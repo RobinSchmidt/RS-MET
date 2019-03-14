@@ -39,6 +39,7 @@ namespace RAPT
 #include "Numerics/RootFinder.h"
 #include "Numerics/NumericCalculus.h"
 #include "Numerics/Interpolation.h"
+#include "Numerics/Optimization.h"
 // todo: Optimizer, CurveFitter, Interpolator, Differentiator, InitialValueSolver, 
 
 }

@@ -88,10 +88,9 @@ public:
   /** Solves a pentadiagonal linear system of equations with given diagonals and right-hand side 
   using a simple algorithm without pivot-search. lowerDiag1 is the one directly below the main 
   diagonal, lowerDiag2 the one below lowerDiag1 - and similarly for upperDiag1/upperDiag2. In the 
-  process of the computations, the right hand side vector is destroyed. the same is true for mainDiag
-  and the two inner sub/superdiagonals lowerDiag1, upperDiag1. Note also that you can't use the same 
-  array for lowerDiag1 and upperDiag1, even if your matrix is symmetric.
-
+  process of the computations, the right hand side vector is destroyed. the same is true for 
+  mainDiag and the two inner sub/superdiagonals lowerDiag1, upperDiag1. Note also that you can't 
+  use the same array for lowerDiag1 and upperDiag1, even if your matrix is symmetric.
   ..What about lowerDiag2/upperDiag2? are these preserved and may these point to the same vector? 
   It's probably safest to assume that everything may get messed up and all arrays should be 
   distinct. */

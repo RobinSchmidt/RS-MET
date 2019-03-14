@@ -10,7 +10,9 @@ weights, we will minimize sum_i w[i] * (v[i+1] - v[i])^2 subject to the (same) c
 v[i] + v[i+1] = s[i] for all i = 0,..,N-2 */
 template<class T>
 void rsMinSqrDifFixSum(T* v, int N, T* s, T* w = nullptr);
-
-
-
-
+// allocates heap-memory - todo: make a version that takes a workspace array as parameter - may be
+// nullptr too in which case the function allocates the workspace itself and cleans it up 
+// afterwards (for more convenient use)
+// maybe rename the function with suffix "Simple" or "Fast" or something to indicate that it uses 
+// the simple prentadiagonal algorithm - and make a version of that function that uses class
+// rsBandDiagonalSolver for better numeric precision
