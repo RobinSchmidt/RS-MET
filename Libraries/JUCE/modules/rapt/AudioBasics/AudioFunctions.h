@@ -76,6 +76,11 @@ template<class T>
 T rsFindCosistentPhase(T targetPhase, T tentativePhase);
 // maybe switch argument order, let the targetPhase be in the range -PI..+PI instead of 0..2pi
 
+
+template<class T>
+T rsFindCosistentUnwrappedValue(T unwrappedValue, T targetWrappedValue, T rangeMin, T rangeMax);
+
+
 /** Converts a frequency in Hz into a MIDI-note value. It can be used also for tunings different 
 than the default the 440 Hz. */
 template<class T>

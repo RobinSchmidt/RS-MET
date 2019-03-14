@@ -50,7 +50,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 
   // todo: clean up the model: remove partials that are consistently above the nyquist freq - due 
   // to the stretching, we may get frequencies almost up to the sample-rate (we downshift at most 
-  // by an octave (with respect to the longest original cycle) - so the model my end up having 
+  // by an octave (with respect to the longest original cycle) - so the model may end up having 
   // twice the number of frequencies as it should have...(although their amplitudes are really low)
   // ...maybe also introduce an amplitude threshold and remove partials that are consistently below
   // that threshold
@@ -145,7 +145,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   // The inner cycles/frames are taken as is:
   L = K;                               // length of inner cycles
   for(m = 1; m < getNumFrames()-1; m++) {
-    n0 = (int) tOut[m];
+    n0 = (int) tOut[m];                   // ...why not round?
     AR::copyBuffer(&y[n0], &sig[0], L);
 
     //// plot 2nd-to-last (debug):
@@ -253,7 +253,8 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
   // marker and phase appropriate to the frequency and time-value of the 1st marker (i.e. if the 
   // first marker is at 25 and the second is at 125, assume a cycle length of 100 and start phase
   // of -90° (a quarter period) - for higher harmonics, take into account the phase-measurement
-  // at first marker (for the fundamental, that phase is zero by construction)
+  // at first marker (for the fundamental, that phase is zero by construction ...but only, if we 
+  // use f0 zero-crossings for the cycle-mark finder...hmmm....
 }
 
 template<class T>
@@ -271,7 +272,7 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
   T fl = 20;       // lower limit for fundamental (maybe let user set this up)
   T fu = 5000;     // upper limit for fundamental
 
-  rsCycleMarkFinder<double> cmf(sampleRate, fl, fu);  // make member, let use acces its settings
+  rsCycleMarkFinder<double> cmf(sampleRate, fl, fu);  // make member, let user access its settings
 
   ////                                      // defaults
   cmf.setRelativeBandpassWidth(0.5);    // 1.0

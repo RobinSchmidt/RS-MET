@@ -80,7 +80,13 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
     a[m] = T(0.5) * (f[m] + f[m+1]);        // "old" average freq in interval t[m]...t[m+1]
     T q  = p[m] + a[m] * dt * 2*PI;         // computed phase at end of interval
     T ps = p[m+1];                          // stored phase at end of current interval
-    T qp = rsFindCosistentPhase(p[m+1], q); // q' - adjusted phase 
+
+
+    T qp = rsFindCosistentUnwrappedValue(q, p[m+1], 0.0, 2*PI);  // new
+    //T qp = rsFindCosistentPhase(p[m+1], q); // q' - adjusted phase ...old
+
+
+
     a[m] = (qp-p[m])/(dt*2*PI);             // "new" average freq, consistent with p[m] and p[m+1]
 
     T dq = q - qp;  // |dq| should be (much) less than pi - otherwise the hopSize is too small for

@@ -29,6 +29,11 @@ DC present in the signal, but if the amplitude of the DC varies, it may also mod
 content. However, subharmonic content may also be partially modeled/encoded by amplitude- and 
 frequency modulation of the harmonics.
 
+todo: adjust the phase of the initial cycle - the analysis computes a phase value at the sample 
+where the window sample happens to fall on - but if that window center is before time 0 in the 1st
+block...wait...the initial datapoint may actually get a time-index < 0 if less than a half-cycle 
+is in the initial section...figure out the initial/final
+
 \todo: give the user the option to prepend and append some zeros before the analysis to avoid 
 edge-artifacts - this padding, if used, has to be accounted for in the model after analysis is 
 finished. the padding should be at least one cycle long, maybe use two to be on the safe side

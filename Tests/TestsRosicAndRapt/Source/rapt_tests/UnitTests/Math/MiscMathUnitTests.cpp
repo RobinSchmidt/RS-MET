@@ -129,9 +129,27 @@ bool testMinSqrDifFixSum(std::string &reportString)
   return testResult;
 }
 
-bool testPhaseUnwrapStuff(std::string &reportString)
+bool testPhaseUnwrapStuff(std::string &reportString)  // rename to testUnwrapping
 {
   bool r = true;  // test result
+
+  // we consider the range -3..+7 with wrap-around - all numbers ineach column from an equivalence
+  // class:
+  // -23 -22 -21 -20 -19 -18 -17 -16 -15 -14    k = -2
+  // -13 -12 -11 -10 -09 -08 -07 -06 -05 -04    k = -1
+  // -03 -02 -01 +00 +01 +02 +03 +04 +05 +07    k =  0 (base range)
+  // +08 +09 +10 +11 +12 +13 +14 +15 +16 +17    k = +1
+  // +18 +19 +20 +21 +22 +23 +24 +25 +26 +27    k = +2
+
+
+  double rangeMin = -3.0;
+  double rangeMax = +7.0;
+
+  double val;
+  val = rsFindCosistentUnwrappedValue(5.0, 5.0, rangeMin, rangeMax); r &= val == 5.0;
+  val = rsFindCosistentUnwrappedValue(4.0, 5.0, rangeMin, rangeMax); r &= val == 5.0;
+  val = rsFindCosistentUnwrappedValue(3.0, 5.0, rangeMin, rangeMax); r &= val == 5.0;
+
 
 
 

@@ -33,6 +33,25 @@ T rsFindCosistentPhase(T target, T value)
   //  T range
 }
 
+template<class T>
+T rsFindCosistentUnwrappedValue(T value, T target, T rangeMin, T rangeMax)
+{
+  T rangeSize = rangeMax - rangeMin;
+  T maxDelta  = T(0.5) * rangeSize;
+  T result    = target;
+  T sign      = value > result ? T(-1) : T(+1);
+  T k         = 0;
+  while(true) {
+    result  = target + sign*k*rangeSize;
+    T delta = result - value;
+    if( rsAbs(delta) <= maxDelta )
+      break;
+    k += T(1);
+  }
+  return result;
+}
+
+
 // whoa - this is very tricky - isn't there a simpler way for this?
 template<class T>
 T rsPhaseError(T p1, T p2)
