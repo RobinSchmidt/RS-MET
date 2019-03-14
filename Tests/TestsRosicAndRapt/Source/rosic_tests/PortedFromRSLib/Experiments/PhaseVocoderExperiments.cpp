@@ -1096,7 +1096,13 @@ void phaseFreqConsistency()
   partial.prependDataPoint(ISP(0.0,  1000.0, 1.0, 0.0)); // time, freq, amp, phase
   partial.appendDataPoint( ISP(0.01, 1000.0, 1.0, PI));
 
-  double error = partial.getMaxFreqPhaseInconsistency();
+  double error = partial.getMaxFreqPhaseInconsistency(); // should be pi
+
+  partial.makeFreqsConsistentWithPhases();
+  // ...hangs!
+
+  error = partial.getMaxFreqPhaseInconsistency();        // should be zero
+
 
 
 
