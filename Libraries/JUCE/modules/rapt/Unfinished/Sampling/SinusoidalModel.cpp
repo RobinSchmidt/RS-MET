@@ -33,17 +33,15 @@ void rsSinusoidalPartial<T>::applyFadeOut(T fadeTime)
 
 
 
+// x: values to be computed, s: desired sum-values (constraints)
 template<class T>
 void rsMinSqrDiffWithGivnSum(T* x, T* s, int N)
 {
-  // x: values to be computed, s: desired sum-values (constraints)
+  T *w = nullptr;
+  rsMinSqrDifFixSum(x, N, s, w);
+  // todo: when N is even (or odd? look at experiment) create a weight-vector with values 
+  // of 1/2 for the first and last value (and 1 everywhere else);
 
-
-  // todo: this is very preliminary, just for proof of concept and uses a standard Gaussian 
-  // elimination algorithm to solve the linear system, which has a complexity of O(N^3). But the 
-  // system is pentadigonal, so an O(N) algorithm is possible...so we need an algorithm for 
-  // pentadiagonal systems in the library - or even better: an algorithm for general band-diagonal
-  // matrices
 
   // this thesis: https://web.stanford.edu/group/SOL/dissertations/bradley-thesis.pdf
   // says that for symmetric, positive definite matrices, scaling to unit diagonal is effective for
@@ -182,6 +180,28 @@ T rsSinusoidalPartial<T>::getMaxFreq() const
     if(instParams[i].freq > maxFreq)
       maxFreq = instParams[i].freq;
   return maxFreq;
+}
+
+template<class T>
+T rsSinusoidalPartial<T>::getMaxFreqPhaseInconsistency() const
+{
+  T maxError = T(0);
+  for(int i = 0; i < (int)instParams.size()-1; i++) {
+    T fl = instParams[i].freq;          // freq at left segment end
+    T fr = instParams[i+1].freq;        // freq at right segment end
+    T fa = T(0.5) * (fl + fr);          // average freq in segment
+    T tl = instParams[i].time;          // time stamp at left segment end
+    T tr = instParams[i+1].time;        // time stamp at right segment end
+    T dt = tr-tl;                       // time delta (i.e. length) of segment
+    T pl = instParams[i].phase;         // phase at left segment end
+    T pr = instParams[i+1].phase;       // phase at right segment end
+    T pc = pl + 2*PI*fa*dt;             // computed phase via freq integration...
+    pc = rsWrapToInterval(pc, -PI, PI); // ...mapped to the base range -pi..pi
+    T pd = rsAbs(pr-pc);                // absolute difference between computed and stored phase
+    if(pd > maxError)
+      maxError = pd;
+  }
+  return maxError;
 }
 
 template<class T>

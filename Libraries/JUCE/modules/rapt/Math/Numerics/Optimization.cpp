@@ -55,7 +55,6 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w)
   rsSolvePentaDiagonalSystem(&l2[0], &l1[0], &d[0], &u1[0], &u2[0], &bt[0], &x[0], Nm);
 
   // extract output array v (in x, the outputs are interleaved with the Lagrange multipliers):
-  Vec v(Nv);
   for(i = 0; i < Nv; i++)
     v[i] = x[2*i];
 }

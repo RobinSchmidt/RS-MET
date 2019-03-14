@@ -1083,6 +1083,27 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 */
 
 
+void phaseFreqConsistency()
+{
+  // Tests the phase/frequency consistency algorithm for the sinusoidal model. The partial 
+  // frequencies are re-adjusted in a way such that their numeric integral happens to exactly hit
+  // the measured phase values.
+
+
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  RAPT::rsSinusoidalPartial<double> partial;
+
+  partial.prependDataPoint(ISP(0.0,  1000.0, 1.0, 0.0)); // time, freq, amp, phase
+  partial.appendDataPoint( ISP(0.01, 1000.0, 1.0, PI));
+
+  double error = partial.getMaxFreqPhaseInconsistency();
+
+
+
+  int dummy = 0;
+}
+
+
 void testHarmonicResynthesis(const std::string& name, double fs, int N)
 {
   // setup (comment out "doStuff = true", if you don't want stuff to be done):

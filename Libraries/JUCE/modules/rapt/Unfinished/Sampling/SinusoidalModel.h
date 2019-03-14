@@ -186,6 +186,9 @@ public:
   /** Returns the minimum frequency of this partial. */
   T getMaxFreq() const;
 
+
+  T getMaxFreqPhaseInconsistency() const;
+
   /** Returns true, when this partial will alias at a given sample-rate. If "allTheTime" is true, 
   it will return true only if it will alias all the time, i.e. if its minimum frequency is higher
   than sampleRate/2. If "allTheTime" is false (the default), it will return true, even if the 

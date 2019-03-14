@@ -30,7 +30,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(64);
-  //analyzer.setRefineFrequencies(true);
+  analyzer.setRefineFrequencies(true);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
   mdl.removePartial(0);        // remove DC component
 
