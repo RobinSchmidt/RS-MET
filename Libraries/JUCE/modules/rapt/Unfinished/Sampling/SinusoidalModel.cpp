@@ -128,7 +128,7 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
   
   // preliminary:
   std::vector<T> sum = 2.0 * a;
-  rsMinSqrDiffWithGivnSum(&f[0], &sum[0], M);
+  //rsMinSqrDiffWithGivnSum(&f[0], &sum[0], M);
 
   // finally, write the new frequencies into the datapoints of the partial:
   for(m = 0; m < M; m++)

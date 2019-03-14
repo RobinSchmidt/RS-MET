@@ -1093,8 +1093,22 @@ void phaseFreqConsistency()
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
 
+  double p = PI;
+  p = 0.25*PI;
   partial.prependDataPoint(ISP(0.0,  1000.0, 1.0, 0.0)); // time, freq, amp, phase
-  partial.appendDataPoint( ISP(0.01, 1000.0, 1.0, PI));
+  partial.appendDataPoint( ISP(0.01, 1000.0, 1.0, p));
+  partial.appendDataPoint( ISP(0.02, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(0.03, 1000.0, 1.0, p));
+  partial.appendDataPoint( ISP(0.04, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(0.05, 1000.0, 1.0, p));
+  partial.appendDataPoint( ISP(0.06, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(0.07, 1000.0, 1.0, p));
+  partial.appendDataPoint( ISP(0.08, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(0.09, 1000.0, 1.0, p));
+  partial.appendDataPoint( ISP(0.10, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(0.11, 1000.0, 1.0, p));
+  partial.appendDataPoint( ISP(0.12, 1000.0, 1.0, 0.0));
+  // move inot function - phaseAlternatingPartial(numDataPoints, timeDelta, freq, phase1, phase2)
 
   double error = partial.getMaxFreqPhaseInconsistency(); // should be pi
 
@@ -1102,6 +1116,9 @@ void phaseFreqConsistency()
   // ...hangs!
 
   error = partial.getMaxFreqPhaseInconsistency();        // should be zero
+
+  std::vector<double> freqs = partial.getFrequencyArray();
+  rsPlotVector(freqs);
 
 
 
