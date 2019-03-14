@@ -1,4 +1,5 @@
 
+/*
 template<class T>
 T rsFindCosistentPhase(T target, T value) 
 {
@@ -32,24 +33,28 @@ T rsFindCosistentPhase(T target, T value)
   // rename to findConsistentUnwrappedValue(T preliminaryUnwrappedValue, T targetWrappedValue, 
   //  T range
 }
+*/
 
 template<class T>
-T rsFindCosistentUnwrappedValue(T value, T target, T rangeMin, T rangeMax)
+T rsConsistentUnwrappedValue(T value, T target, T rangeMin, T rangeMax)
 {
   T rangeSize = rangeMax - rangeMin;
-  T maxDelta  = T(0.5) * rangeSize;
+  T maxDelta  = T(0.5) * rangeSize;  // maybe we should have a safety margin based on eps?
   T result    = target;
   T sign      = value > result ? T(+1) : T(-1);
   T k         = 0;
   while(true) {
     result  = target + sign*k*rangeSize;
     T delta = result - value;
-    if( rsAbs(delta) <= maxDelta )
+    if( rsAbs(delta) <= maxDelta ) 
       break;
     k += T(1);
   }
   return result;
 }
+// can we do something based on fmod? this function has linear complexitity in the size of the 
+// passed value - the larger the value, the longer it takes - bad! ...but is fmod actually of O(1)
+// complexity anyway?
 
 
 // whoa - this is very tricky - isn't there a simpler way for this?

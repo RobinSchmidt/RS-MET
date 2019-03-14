@@ -254,7 +254,9 @@ std::vector<T> rsSinusoidalSynthesizer<T>::phasesHermite(
     // interpolation use the integral over a cubic hermite frequency interpolant
     // make a function, meanFreq(f0, f1, dt, f0p, f1p)
 
-    p1 = rsFindCosistentPhase(p1, p0 + 2*PI*fa*dt) ;
+    //p1 = rsFindCosistentPhase(p1, p0 + 2*PI*fa*dt); // old
+    p1 = rsConsistentUnwrappedValue(p0 + 2*PI*fa*dt, p1, 0.0, 2*PI); // new - needs test
+
 
 
     // compute cubic or quintic Hermite coefficients for the current segment:

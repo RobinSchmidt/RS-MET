@@ -72,13 +72,25 @@ Given a tentative unwrapped phase value (in 0..inf), and a wrapped target phase 
 also a multiple of 2*pi above the targetPhase value, such that it is consistent with the target 
 phase value. The actual returned value will be the one that is closest to the original tentative 
 phase that also satisfies the consistency criterion of being k*2*pi away from targetPhase. */
-template<class T>
-T rsFindCosistentPhase(T targetPhase, T tentativePhase);
+//template<class T>
+//T rsFindCosistentPhase(T targetPhase, T tentativePhase);
 // maybe switch argument order, let the targetPhase be in the range -PI..+PI instead of 0..2pi
 
 
+/** Assume to have some interval of values, where values that fall outside the interval are 
+identified with some value from within the interval - for example, a range of angles from 0 to 
+2*pi - any angle x above 2*pi or below 0 would be identified with some number y = x + 2*k*pi for 
+some suitably chosen k. What this function does, is to take a tentative unwrapped values (in the 
+range -inf...+inf and returns another unwrapped value that is consistent with some target value
+from the base-range - consistent in the sense that is at most (rangeMax-rangeMin)/2 away from the
+passed unwrappedValue. So, it computes a value in the range 
+preliminaryUnwrappedValue +- (rangeMax-rangeMin)/2 that is consistent with the targetWrappedValue
+in the sense of being a multiple of the rangeSize (=rangeMax-rangeMin) away from it. This function
+is useful for finding unwrapped phase values that should be cosistent with some measured 
+phase-value from the base-range (of 0..2pi, say). */
 template<class T>
-T rsFindCosistentUnwrappedValue(T unwrappedValue, T targetWrappedValue, T rangeMin, T rangeMax);
+T rsConsistentUnwrappedValue(T preliminaryUnwrappedValue, T targetWrappedValue, 
+  T rangeMin, T rangeMax);
 
 
 /** Converts a frequency in Hz into a MIDI-note value. It can be used also for tunings different 
