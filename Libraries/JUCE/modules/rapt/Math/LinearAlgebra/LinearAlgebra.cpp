@@ -269,6 +269,38 @@ bool rsLinearAlgebra::rsSolveTridiagonalSystem(T *lower, T *main, T *upper, T *r
 }
 
 template<class T>
+bool rsSolvePentaDiagonalSystem(T* M, T* L, T* D, T* U, T* V, T* B, T *x, int N)
+{
+  // Gaussian elimination without pivot-search - we just always use D[i] as pivot element:
+  int i;
+  T k;
+  for(i = 0; i < N-2; i++) {
+    if(D[i] == T(0)) 
+      return false;          // encountered a zero pivot
+    k = L[i]/D[i];
+    D[i+1] -= k*U[i];
+    B[i+1] -= k*B[i];
+    U[i+1] -= k*V[i];
+    k = M[i]/D[i];
+    L[i+1] -= k*U[i];
+    D[i+2] -= k*V[i];
+    B[i+2] -= k*B[i];
+  }
+  if(D[i] == T(0)) 
+    return false;
+  k = L[i]/D[i];             // a final partial step outside the loop
+  D[i+1] -= k*U[i];
+  B[i+1] -= k*B[i];
+
+  // Gaussian elimination is done - now do the backsubstitution to find the solution vector:
+  x[N-1] =  B[N-1]                  / D[N-1];
+  x[N-2] = (B[N-2] - U[N-2]*x[N-1]) / D[N-2];
+  for(i = N-3; i >= 0; i--)
+    x[i] = (B[i] - U[i]*x[i+1] - V[i]*x[i+2]) / D[i];
+  return true;
+}
+
+template<class T>
 bool rsLinearAlgebra::rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int N)
 {
   // coordinates of v in canonical basis:
