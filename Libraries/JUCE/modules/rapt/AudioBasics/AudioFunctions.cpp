@@ -62,6 +62,23 @@ T rsConsistentUnwrappedValue(T value, T target, T rangeMin, T rangeMax)
 // passed value - the larger the value, the longer it takes - bad! ...but is fmod actually of O(1)
 // complexity anyway?
 
+template<class T>
+T rsConsistentUnwrappedValue0(T value, T target, T rangeSize)
+{
+  T over     = fmod(value, rangeSize);             // overshoot over an integer number of cycles
+  T cycles   = round((value - over) / rangeSize);  // number of full cycles through the range
+  T result   = cycles * rangeSize + target;
+  T delta    = value - result;
+  T maxDelta = T(0.5)*rangeSize;
+  if(delta > maxDelta)
+    result += rangeSize;
+  else if(delta < -maxDelta)
+    result -= rangeSize;
+
+  rsAssert(rsAbs(value - result) <= T(0.5)*rangeSize);  // self-check
+  return result;
+}
+
 
 // whoa - this is very tricky - isn't there a simpler way for this?
 template<class T>

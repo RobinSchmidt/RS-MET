@@ -198,6 +198,33 @@ bool testPhaseUnwrapStuff(std::string &reportString)  // rename to testUnwrappin
   val = rsConsistentUnwrappedValue(21.0, 5.0, rangeMin, rangeMax); r &= val == 25.0;
   // ...and so on...
 
+
+  // now, we consider the range 0..5 and use the function that supposes a zero lower limit
+
+  // 00 01 02 03 04 05    k = 0 (base range)
+  // 05 06 07 08 09 10    k = 1
+  // 10 11 12 13 14 15    k = 2
+  // 15 16 17 18 19 20    k = 3
+
+  rangeMax = 5.0;
+  val = rsConsistentUnwrappedValue0( 0.0, 2.0, rangeMax); r &= val ==  2.0;
+  val = rsConsistentUnwrappedValue0( 1.0, 2.0, rangeMax); r &= val ==  2.0;
+  val = rsConsistentUnwrappedValue0( 2.0, 2.0, rangeMax); r &= val ==  2.0;
+  val = rsConsistentUnwrappedValue0( 3.0, 2.0, rangeMax); r &= val ==  2.0;
+  val = rsConsistentUnwrappedValue0( 4.0, 2.0, rangeMax); r &= val ==  2.0;
+
+  val = rsConsistentUnwrappedValue0( 5.0, 2.0, rangeMax); r &= val ==  7.0;
+  val = rsConsistentUnwrappedValue0( 6.0, 2.0, rangeMax); r &= val ==  7.0;
+  val = rsConsistentUnwrappedValue0( 7.0, 2.0, rangeMax); r &= val ==  7.0;
+  val = rsConsistentUnwrappedValue0( 8.0, 2.0, rangeMax); r &= val ==  7.0;
+  val = rsConsistentUnwrappedValue0( 9.0, 2.0, rangeMax); r &= val ==  7.0;
+
+  val = rsConsistentUnwrappedValue0(10.0, 2.0, rangeMax); r &= val == 12.0;
+  val = rsConsistentUnwrappedValue0(11.0, 2.0, rangeMax); r &= val == 12.0;
+  val = rsConsistentUnwrappedValue0(12.0, 2.0, rangeMax); r &= val == 12.0;
+  val = rsConsistentUnwrappedValue0(13.0, 2.0, rangeMax); r &= val == 12.0;
+  val = rsConsistentUnwrappedValue0(14.0, 2.0, rangeMax); r &= val == 12.0;
+
   // maybe try with a range of not exactly representable numbers such as -pi..pi
 
   // tests various functions that have to do with phase-unwrapping

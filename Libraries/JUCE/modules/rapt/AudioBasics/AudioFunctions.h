@@ -94,6 +94,9 @@ template<class T>
 T rsConsistentUnwrappedValue(T preliminaryUnwrappedValue, T targetWrappedValue, 
   T rangeMin, T rangeMax);
 
+/** ..as above but supposes rangeMin to be zero. Uses a different algorithm based on fmod */
+template<class T>
+T rsConsistentUnwrappedValue0(T preliminaryUnwrappedValue, T targetWrappedValue, T rangeSize);
 
 /** Converts a frequency in Hz into a MIDI-note value. It can be used also for tunings different 
 than the default the 440 Hz. */

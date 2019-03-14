@@ -80,7 +80,8 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
     T ps = p[m+1];                          // stored phase at end of current interval
 
 
-    T qp = rsConsistentUnwrappedValue(q, p[m+1], 0.0, 2*PI);  // q' - adjusted phase new
+    T qp = rsConsistentUnwrappedValue(q, p[m+1], 0.0, 2*PI);  // q' - adjusted phase new - delete
+    qp = rsConsistentUnwrappedValue0(q, p[m+1], 2*PI);        // q' - newer
     //T qp = rsFindCosistentPhase(p[m+1], q); // q' - adjusted phase ...old
 
 
