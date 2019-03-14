@@ -39,7 +39,7 @@ T rsFindCosistentUnwrappedValue(T value, T target, T rangeMin, T rangeMax)
   T rangeSize = rangeMax - rangeMin;
   T maxDelta  = T(0.5) * rangeSize;
   T result    = target;
-  T sign      = value > result ? T(-1) : T(+1);
+  T sign      = value > result ? T(+1) : T(-1);
   T k         = 0;
   while(true) {
     result  = target + sign*k*rangeSize;
