@@ -285,8 +285,6 @@ std::vector<double> valuesWithFixedSums(const std::vector<double>& s, double fir
     v[i] = s[i-1] - v[i-1];
   return v;
 }
-
-
 void minSqrdDifsForFixSums()
 {
   // Test minimization of the sum of the squares of the differences between adjacent array elements
@@ -498,6 +496,16 @@ void minSqrdDifsForFixSums()
   // sums. the same framework/solver can be used, just the matrix would look different
 }
 
+double sqrdCurvSum(
+  const std::vector<double>& v)
+{
+  double c = 0;
+  for(size_t i = 1; i < v.size()-1; i++) {
+    double d = 2*v[i] - v[i-1] - v[i+1];
+    c += d*d;
+  }
+  return c;
+}
 void minSqrdCurvForFixSums()
 {
   // this is similar to minSqrdDifsForFixSums but uses a cost function that minimizes the squared
@@ -507,14 +515,34 @@ void minSqrdCurvForFixSums()
   std::vector<double> v, s, w; // values, sums and weights
   double c;                    // cost as computed by cost function
 
-  s = { 1010, 990, 1010, 990, 1010 };
+  std::vector<double> u;
+
+  //s = { 1010, 990, 1010, 990, 1010 };
+  //v = rsMinSqrCrvFixSum(s);
+  //rsPlotVector(v);
+
+  //s = { 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010 };
+  s = { 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990 };
   v = rsMinSqrCrvFixSum(s);
+  u = rsMinSqrDifFixSum(s);
+  rsPlotVectors(u, v);
+  // minimizing both cost functions gives the exact same result...at least in this case
+
+  c = sqrdCurvSum(v);
+
+  int dummy = 0;
 
 
+  // maybe we should include an error term for the difference between first and last datapoint - 
+  // that may work at least in case of odd N (then the function is odd and the ends are far apart
+  // which would get a penalty).
+
+  // todo: compute actual values of the new error function - verify that we are actually at a 
+  // minimum by perturbing the first value (which determines the values of all others) and 
+  // compute the error for a small upward and downward perturbation from the found minimum
 
 
 }
-
 
 
 void binomialDistribution()

@@ -26,6 +26,16 @@ inline void rsPlotVector(std::vector<T> v)
   //plt.plotArrays((int) v.size(), &v[0]);
 }
 
+template<class T>
+inline void rsPlotVectors(std::vector<T> u, std::vector<T> v)
+{
+  // make a function that can take more vectors...maybe a vector of vectors?
+  GNUPlotter plt;
+  plt.addDataArrays((int) u.size(), &u[0]);
+  plt.addDataArrays((int) v.size(), &v[0]);
+  plt.plot();
+}
+
 
 template<class T>
 inline void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
