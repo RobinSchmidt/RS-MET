@@ -380,20 +380,32 @@ void minSqrdDifsForFixSums()
   v = rsMinSqrDifFixSum(s);    // 525, 485, 505, 505, 485, 525
   d = adjacentDifs(v);
 
+  s = { 1010, 990, 1010, 990, 1010, 990 };
+  v = rsMinSqrDifFixSum(s);    // 530, 480, 510, 500, 490, 520, 470
+  d = adjacentDifs(v);
+
+
   s = { 1010, 990, 1010, 990, 1010, 990, 1010 };
   v = rsMinSqrDifFixSum(s);    // 535, 475, 515, 495, 495, 515, 475, 535
   d = adjacentDifs(v);
   c = sqrdDifSum(v);
-  //rsPlotVector(d*d);
+  rsPlotVector(v);
+  //rsPlotVector(d);
 
-  v = valuesWithFixedSums(s, 534);
+  //v = valuesWithFixedSums(s, 534);  // lowering a value < 535 for the first element increases
+  v = valuesWithFixedSums(s, 530);  // sum-of squares as well as max-abs-difference
   d = adjacentDifs(v);
   c = sqrdDifSum(v);
-  //rsPlotVector(d*d);
+  rsPlotVector(v);
+  //rsPlotVector(d);
 
-  v = valuesWithFixedSums(s, 536);
+  //v = valuesWithFixedSums(s, 536);   // increaing it has the same effec, but then the max-abs-dif
+  v = valuesWithFixedSums(s, 540);  // occurs at the other end of the value array
   d = adjacentDifs(v);
   c = sqrdDifSum(v);
+  rsPlotVector(v);
+  //rsPlotVector(d);
+
 
   // if the sums alternate, there's tendency for the outer values to become more spread out - 
   // that's undesirable - does that really minimize the sum of the squared differences? that
@@ -417,14 +429,18 @@ void minSqrdDifsForFixSums()
   // minimax optimization
 
   s = { 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010 };
-  w = {    8,   7,    6,   5,    4,   3,    2,   1,    2,   3,    4,   5,    6,   7,    8 };
+  //w = {    8,   7,    6,   5,    4,   3,    2,   1,    2,   3,    4,   5,    6,   7,    8 };
+  w = {   64,  49,   36,  25,   16,   9,    4,   1,    4,   9,   16,  25,   36,  49,   64 };
   v = rsMinSqrDifFixSum(s, w);
   //v = rsMinSqrDifFixSum(s);
   d = adjacentDifs(v);
   c = sqrdDifSum(v);
   rsPlotVector(v);
   //rsPlotVector(d*d);
-  // it seems to make no difference, if we use weights or not...wtf?
+  // it seems to make no difference, if we use weights or not...wtf? oh - it seems like this is 
+  // true only, if the weight function is symmetrical - maybe in that case, lowering the error at 
+  // one end would increase the error at the other in just the right way that the overall cost 
+  // remains constant
 
   int dummy = 0;
 
