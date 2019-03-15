@@ -168,17 +168,10 @@ std::vector<double> rsMinSqrCrvFixSum(const std::vector<double>& s, const std::v
   // todo: catch special cases when Nm is small
 
 
+  // create solver object and populate the coefficient matrix:
   rsBandDiagonalSolver<double> solver(Nm, 4, 4);
-  Vec x(Nm), b(Nm);
-
-  // populate the coefficient matrix:
-  int i;
   solver.initMatrixWithZeros();
-
-
-  // code below produces compiler error: 
-  // BandDiagonalSolver.cpp(90): error C2653: 'LaPackCPP': is not a class or namespace name
-  //solver.setDiagonalElement(0, 0, 0);  // test - this already triggers the error
+  int i;
 
   // main diagonal:
   solver.setDiagonalElement(  0,    0,  2);
@@ -211,9 +204,19 @@ std::vector<double> rsMinSqrCrvFixSum(const std::vector<double>& s, const std::v
     solver.setDiagonalElement(-4, i, 2);
   }
 
+  // establish right-hand side vector:
+  Vec b(Nm);
+  int j = 0;
+  for(i = 0; i <= Nm-2; i += 2) {
+    b[i]   = 0;
+    b[i+1] = s[j];
+    j++;
+  }
+  b[Nm-1] = 0;
 
-
-
+  // solve the system of equations:
+  Vec x(Nm);
+  solver.solve(&x[0], &b[0], 1);
 
   // extract output array v (in x, the outputs are interleaved with the Lagrange multipliers):
   Vec v(Nv);
