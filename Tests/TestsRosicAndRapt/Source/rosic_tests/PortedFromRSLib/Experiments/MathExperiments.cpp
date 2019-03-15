@@ -498,6 +498,25 @@ void minSqrdDifsForFixSums()
   // sums. the same framework/solver can be used, just the matrix would look different
 }
 
+void minSqrdCurvForFixSums()
+{
+  // this is similar to minSqrdDifsForFixSums but uses a cost function that minimizes the squared
+  // deviations from a straight line, i.e. some sort of curvature or numeric approximation of the 
+  // second derivative
+
+  std::vector<double> v, s, w; // values, sums and weights
+  double c;                    // cost as computed by cost function
+
+  s = { 1010, 990, 1010, 990, 1010 };
+  v = rsMinSqrCrvFixSum(s);
+
+
+
+
+}
+
+
+
 void binomialDistribution()
 {
   int    n = 20;                       // number of coin tosses

@@ -61,6 +61,10 @@ std::vector<double> rsMinSqrDifFixSum(
   const std::vector<double>& s, 
   const std::vector<double>& w = std::vector<double>() );
 
+std::vector<double> rsMinSqrCrvFixSum(
+  const std::vector<double>& s, 
+  const std::vector<double>& w = std::vector<double>() );
+
 
 
 /** Prototype for rsResampler::signalValueViaSincAt(). It provides as additional parameters for 

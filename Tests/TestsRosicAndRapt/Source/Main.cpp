@@ -170,7 +170,8 @@ int main(int argc, char* argv[])
   //bandMatrix();                       // under construction
   //pentaDiagnonalMatrix();
   //pentaDiagnonalMatrix2();
-  minSqrdDifsForFixSums();
+  //minSqrdDifsForFixSums();
+  minSqrdCurvForFixSums();
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();

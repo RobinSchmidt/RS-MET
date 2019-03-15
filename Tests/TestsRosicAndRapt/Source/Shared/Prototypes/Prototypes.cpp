@@ -155,9 +155,30 @@ std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s,
   Vec v(Nv);
   for(i = 0; i < Nv; i++)
     v[i] = x[2*i];
-
   return v;
 }
+
+std::vector<double> rsMinSqrCrvFixSum(const std::vector<double>& s, const std::vector<double>& w)
+{
+  int Ns = (int) s.size();  // number of sums
+  int Nv = Ns + 1;          // number of values
+  int Nm = Nv + Ns;         // number of linear equations, matrix size
+  typedef std::vector<double> Vec;
+
+
+  rsBandDiagonalSolver<double> solver(Nm, 4, 4);
+  Vec x(Nm), b(Nm);
+  // more to do...
+
+
+  // extract output array v (in x, the outputs are interleaved with the Lagrange multipliers):
+  int i;
+  Vec v(Nv);
+  for(i = 0; i < Nv; i++)
+    v[i] = x[2*i];
+  return v;
+}
+
 
 double signalValueViaSincAt(double *x, int N, double t, double sincLength, double stretch,
   //FunctionPointer3DoublesToDouble windowFunction, 

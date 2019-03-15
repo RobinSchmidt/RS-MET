@@ -7,7 +7,10 @@
 void bandMatrix();
 void pentaDiagnonalMatrix();
 void pentaDiagnonalMatrix2();
+
 void minSqrdDifsForFixSums();
+void minSqrdCurvForFixSums();
+
 void binomialDistribution();
 void sineParameters();
 void bandLimitedStep();
