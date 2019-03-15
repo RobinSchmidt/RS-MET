@@ -4,8 +4,11 @@
 // these instantiations and compilations should take place in the rosic compilation unit rosic.obj 
 // and not additionally in rapt.obj and/or Shared.obj (the latter is relevant only for the test 
 // project)
+
+namespace RAPT {
 #include <rapt/Math/LinearAlgebra/LaPackCPP/LaPack.hpp>  // why do we need this?
 #include <rapt/Math/LinearAlgebra/LaPackCPP/LaPack.cpp>
+} // shoule we really wrap this into the rapt namespace here?
 
 #include <rapt/rapt_templates.cpp>
 #include "Float32x4.h"

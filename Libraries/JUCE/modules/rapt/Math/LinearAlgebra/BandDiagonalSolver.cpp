@@ -1,3 +1,5 @@
+#include "LaPackCPP/LaPack.hpp"
+
 // setup:
 
 template<class T>

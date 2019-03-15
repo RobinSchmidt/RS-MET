@@ -173,7 +173,13 @@ std::vector<double> rsMinSqrCrvFixSum(const std::vector<double>& s, const std::v
 
   // populate the coefficient matrix:
   int i;
-  //solver.initMatrixWithZeros();
+  solver.initMatrixWithZeros();
+
+
+
+  // code below produces compiler error: 
+  // BandDiagonalSolver.cpp(90): error C2653: 'LaPackCPP': is not a class or namespace name
+  solver.setDiagonalElement(0, 0, 0);  // test - this already triggers the error
 
   /*
   // main diagonal:

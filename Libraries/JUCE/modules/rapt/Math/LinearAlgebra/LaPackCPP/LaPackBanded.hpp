@@ -1501,7 +1501,9 @@ SMALL: On entry, the underflow threshold as computed by DLAMCH. On exit, if LOG1
 LARGE: On entry, the overflow threshold as computed by DLAMCH. On exit, if LOG10(LARGE) is 
        sufficiently large, the square root of LARGE, otherwise unchanged.  */
 template<class T>
-int labad(T *small, T *large);
+int labad(T *smalll, T *large);
+// "smalll" with triple-l because some stupid include file #defines small as macro screwing up
+// the compilation within rapt/rosic
 
 //-------------------------------------------------------------------------------------------------
 
