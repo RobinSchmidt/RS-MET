@@ -41,6 +41,13 @@ public:
   of rows and columns of the matrix, the others are self-explanatory */
   void setSystemSize(int matrixSize, int numSubDiagonals, int numSuperDiagonals);
 
+  /** Initializes all matrix elements with zeros. */
+  //void initMatrixWithZeros()
+  //{
+  //  for(size_t i = 0; i < A.size(); i++)
+  //    A[i] = T(0);
+  //}
+
   /** Sets one of the values in one of the diagonals. The diagIndex indicates which diagonal is 
   meant where 0 is the main diagonal, -1 is the first subdiagonal, +1 the first superdiagonal, 
   -2 the second subdiagonal and so on. Within each diagonal, the elemIndex counts from the 

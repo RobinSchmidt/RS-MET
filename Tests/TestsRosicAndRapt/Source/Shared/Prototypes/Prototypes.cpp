@@ -165,14 +165,35 @@ std::vector<double> rsMinSqrCrvFixSum(const std::vector<double>& s, const std::v
   int Nm = Nv + Ns;         // number of linear equations, matrix size
   typedef std::vector<double> Vec;
 
+  // todo: catch special cases when Nm is small
+
 
   rsBandDiagonalSolver<double> solver(Nm, 4, 4);
   Vec x(Nm), b(Nm);
-  // more to do...
+
+  // populate the coefficient matrix:
+  int i;
+  //solver.initMatrixWithZeros();
+
+  /*
+  // main diagonal:
+  solver.setDiagonalElement(  0,    0,  2);
+  solver.setDiagonalElement(  0,    2, 10);
+  for(i = 4; i < Nm-3; i += 2)
+    solver.setDiagonalElement(0, i,    12);
+  solver.setDiagonalElement(  0, Nm-3, 10);
+  solver.setDiagonalElement(  0, Nm-1,  2);
+
+  // first upper and lower diagonals (all ones):
+  for(i = 0; i < Nm-1; i++) {
+    solver.setDiagonalElement(+1, i, 1);  // upper
+    solver.setDiagonalElement(-1, i, 1);  // lower
+  }
+  */
+
 
 
   // extract output array v (in x, the outputs are interleaved with the Lagrange multipliers):
-  int i;
   Vec v(Nv);
   for(i = 0; i < Nv; i++)
     v[i] = x[2*i];
