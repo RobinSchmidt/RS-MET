@@ -176,12 +176,10 @@ std::vector<double> rsMinSqrCrvFixSum(const std::vector<double>& s, const std::v
   solver.initMatrixWithZeros();
 
 
-
   // code below produces compiler error: 
   // BandDiagonalSolver.cpp(90): error C2653: 'LaPackCPP': is not a class or namespace name
-  solver.setDiagonalElement(0, 0, 0);  // test - this already triggers the error
+  //solver.setDiagonalElement(0, 0, 0);  // test - this already triggers the error
 
-  /*
   // main diagonal:
   solver.setDiagonalElement(  0,    0,  2);
   solver.setDiagonalElement(  0,    2, 10);
@@ -195,7 +193,25 @@ std::vector<double> rsMinSqrCrvFixSum(const std::vector<double>& s, const std::v
     solver.setDiagonalElement(+1, i, 1);  // upper
     solver.setDiagonalElement(-1, i, 1);  // lower
   }
-  */
+
+  // second upper and lower diagonals: -4,0,-8,0,-8,...,-8,0,-8,0,-4
+  solver.setDiagonalElement(  +2,    0, -4);
+  solver.setDiagonalElement(  -2,    0, -4);
+  for(i = 2; i < Nm-3; i += 2) {
+    solver.setDiagonalElement(+2,    i, -8);
+    solver.setDiagonalElement(-2,    i, -8);
+  }
+  solver.setDiagonalElement(  +2, Nm-3, -4);
+  solver.setDiagonalElement(  -2, Nm-3, -4);
+
+  // third upper and lower diagonals are all zeros and 3rd upper and lower diagonals are filled
+  // with 2,0,2,0,2,0,...,0,2:
+  for(i = 0; i < Nm-4; i += 2) {
+    solver.setDiagonalElement(+4, i, 2);
+    solver.setDiagonalElement(-4, i, 2);
+  }
+
+
 
 
 
