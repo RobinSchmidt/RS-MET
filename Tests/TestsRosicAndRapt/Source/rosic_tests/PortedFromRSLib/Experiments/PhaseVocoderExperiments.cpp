@@ -1112,8 +1112,11 @@ void phaseFreqConsistency()
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
   partial = phaseAlternatingPartial(200, 0.01, 1000, 0.0, 0.2*PI);
-  double error = partial.getMaxFreqPhaseInconsistency(); // should be 0.125*pi
-  partial.makeFreqsConsistentWithPhases();
+  double error = partial.getMaxFreqPhaseInconsistency(); // should be 0.2*pi
+
+  RAPT::rsSinusoidalProcessor<double>::makeFreqsConsistentWithPhases(partial);
+  //partial.makeFreqsConsistentWithPhases();
+
   error = partial.getMaxFreqPhaseInconsistency();        // should be zero now
 
   // plot the re-adjusted freq-trajectory:
@@ -1146,6 +1149,8 @@ void phaseFreqConsistency()
   // -take the numeric derivative of the unwrapped phase
   // -use frequency reassigment, if that makes sense
   // -use longer windows and parabolic interpolation also in the case of rsHarmonicAnalyzer
+  // -maybe a combination of two or more approaches is best? like 
+  //  parabolic interpolation -> numeric derivative -> consistency enforcement
 
   int dummy = 0;
 }

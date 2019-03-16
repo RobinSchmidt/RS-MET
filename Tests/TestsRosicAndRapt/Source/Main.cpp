@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
   //pentaDiagnonalMatrix();
   //pentaDiagnonalMatrix2();
   //minSqrdDifsForFixSums();
-  minSqrdCurvForFixSums();
+//  minSqrdCurvForFixSums();
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();

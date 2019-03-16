@@ -33,26 +33,13 @@ void rsSinusoidalPartial<T>::applyFadeOut(T fadeTime)
 
 
 
-// x: values to be computed, s: desired sum-values (constraints)
-template<class T>
-void rsMinSqrDiffWithGivnSum(T* x, T* s, int N)
-{
-  T *w = nullptr;
-  rsMinSqrDifFixSum(x, N, s, w);
-  // todo: when N is even (or odd? look at experiment) create a weight-vector with values 
-  // of 1/2 for the first and last value (and 1 everywhere else);
 
 
-  // this thesis: https://web.stanford.edu/group/SOL/dissertations/bradley-thesis.pdf
-  // says that for symmetric, positive definite matrices, scaling to unit diagonal is effective for
-  // making the problem better conditioned
 
 
-  // maybe this is suitable:
-  // https://www.boost.org/doc/libs/1_69_0/libs/numeric/ublas/doc/index.html
 
-  // https://www.boost.org/doc/libs/1_69_0/libs/numeric/ublas/doc/banded.html
-}
+
+/*
 
 template<class T>
 void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
@@ -143,6 +130,9 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
   // theory bug? the implementation seems good..the assert doesn't trigger - or maybe the hopsize
   // is indeed too small and we get an adjustment by more than pi?
 }
+
+*/
+
 
 
 
@@ -292,12 +282,17 @@ void rsSinusoidalModel<T>::init(int numPartials, int numFrames)
   }
 }
 
+
 template<class T>
 void rsSinusoidalModel<T>::makeFreqsConsistentWithPhases()
 {
   for(auto p : partials)
-    p.makeFreqsConsistentWithPhases();
+  {
+    rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(p);
+    //p.makeFreqsConsistentWithPhases();
+  }
 }
+
 
 template<class T>
 T rsSinusoidalModel<T>::getStartTime() const

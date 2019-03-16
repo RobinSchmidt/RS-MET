@@ -121,7 +121,7 @@ public:
   respect to the original signal, leading to sinusoidal bursts in the resiudal - which are clearly 
   undesirable. Such desync bursts would occur whenever the accumulated frequency bias crosses a 
   multiple of pi (i think - verify). */
-  void makeFreqsConsistentWithPhases();
+  //void makeFreqsConsistentWithPhases();
   // or maybe call it deBiasFreqEstimates ...or maybe the name should somehow reflect, that the 
   // frequencies are modified, because we could also make it consistent by adjusting the phases - 
   // which is no good idea (it is, in fact, actually exactly what the synthesizer does in case of
@@ -333,6 +333,7 @@ public:
   /** Calls the function of the same name for each partial. See comment in rsSinusoidalPartial for
   details what it does. */
   void makeFreqsConsistentWithPhases();
+  // move to rsSinusoidalProcessor
 
 
   /** \name Inquiry */

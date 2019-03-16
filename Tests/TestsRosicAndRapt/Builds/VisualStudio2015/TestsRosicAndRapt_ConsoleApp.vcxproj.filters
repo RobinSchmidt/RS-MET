@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="TestsRosicAndRapt\Source\Misc">
@@ -1089,6 +1090,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalProcessor.cpp">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalSynthesizer.cpp">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
@@ -1411,6 +1415,9 @@
       <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\pstats.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\tailscrap.m">
       <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\test_real.c">
@@ -3380,6 +3387,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalProcessor.h">
+      <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalSynthesizer.h">
       <Filter>Juce Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
@@ -5035,7 +5045,6 @@
     <None Include="..\..\..\..\Libraries\JUCE\modules\rosic\ToDo.txt">
       <Filter>Juce Modules\rosic</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc">

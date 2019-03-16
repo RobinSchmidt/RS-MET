@@ -439,8 +439,10 @@ void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
   if(forceFreqPhaseConsistency)
     for(int i = 0; i < model.getNumPartials(); i++)
     {
+      rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(model.getModifiablePartialRef(i));
+
       //makeFreqsConsistentWithPhases(model.getModifiablePartialRef(i));
-      model.getModifiablePartialRef(i).makeFreqsConsistentWithPhases();
+      //model.getModifiablePartialRef(i).makeFreqsConsistentWithPhases();
       // todo: have a function model.makeFreqsConsistentWithPhases(); that wraps this loop over
       // the partals
     }
