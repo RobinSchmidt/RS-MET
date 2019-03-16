@@ -483,7 +483,8 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   std::vector<double> pd = partial.getPhaseArray();
   std::vector<double> fd = partial.getFrequencyArray();
   int M = (int) pd.size();
-  pd = synth.unwrapPhase(td, fd, pd);
+  pd = rsSinusoidalProcessor<double>::unwrapPhase(td, fd, pd);
+  //pd = synth.unwrapPhase(td, fd, pd);
   //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
 
   std::vector<double> dp = (0.5/PI) * (pc-pq); 

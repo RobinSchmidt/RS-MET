@@ -178,7 +178,10 @@ std::vector<T> rsSinusoidalSynthesizer<T>::phasesViaTweakedIntegral(
   std::vector<T> p(N);     // p: interpolated phase values
   std::vector<T> fd  = partial.getFrequencyArray();
   std::vector<T> wpd = partial.getPhaseArray();       // rename to pd
-  std::vector<T> upd = unwrapPhase(td, fd, wpd);
+  //std::vector<T> upd = unwrapPhase(td, fd, wpd);
+  std::vector<T> upd = rsSinusoidalProcessor<T>::unwrapPhase(td, fd, wpd);
+
+  
 
   bool cubicPhase = true; // was user parameter - but linear phase interpolation makes no sense
   if(cubicPhase) 
@@ -290,6 +293,7 @@ std::vector<T> rsSinusoidalSynthesizer<T>::phasesHermite(
 // pitches instead of frequencies
 
 
+/*
 template<class T>
 std::vector<T> rsSinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
   const std::vector<T>& f, const std::vector<T>& wp) const
@@ -332,6 +336,8 @@ std::vector<T> rsSinusoidalSynthesizer<T>::unwrapPhase(const std::vector<T>& t,
 
   return up;
 }
+*/
+
 
 // template instantiation:
 //template class SinusoidalSynthesizer<double>;

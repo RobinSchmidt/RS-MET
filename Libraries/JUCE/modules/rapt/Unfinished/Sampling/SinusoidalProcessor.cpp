@@ -1,4 +1,49 @@
 
+template<class T>
+std::vector<T> rsSinusoidalProcessor<T>::unwrapPhase(const std::vector<T>& t,
+  const std::vector<T>& f, const std::vector<T>& wp)
+{
+  size_t M = t.size();
+  RAPT::rsAssert(f.size()  == M);
+  RAPT::rsAssert(wp.size() == M);
+  std::vector<T> up(M);  // unwrapped phase
+
+  // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
+  rsNumericIntegral(&t[0], &f[0], &up[0], (int)M, wp[0]);
+  up = 2*PI*up; // convert from "number of cycles passed" to radians
+
+  // incorporate the target phase values into the unwrapped phase:
+  bool accumulatePhaseDeltas = true; // not accumulating makes no sense, i think
+  for(size_t m = 0; m < M; m++) {
+    T wp1 = RAPT::rsWrapToInterval(up[m], 0, 2*PI);  // 0..2*pi
+    T wp2 = RAPT::rsWrapToInterval(wp[m], 0, 2*PI);  // 0..2*pi
+    T d   = wp2-wp1;            // -2*pi..2*pi, delta between target phase and integrated frequency
+
+    // these adjustments here are related to the phase-desync bursts in resynthesized signals (the
+    // resynthesized phases get temporarily desynchronized from the original phases, leading to
+    // short sinusodial bursts in the residual) - but commenting them out leads to even more bursts
+    if(d < 0) d += 2*PI;        // 0..2*PI
+    if(d > PI)                  // choose adjustment direction of smaller phase difference
+      d -= 2*PI;                // -pi..pi
+    up[m] += d;                 // re-adjust final unwrapped phase
+    if(accumulatePhaseDeltas)
+      for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
+        up[k] += d;
+  }
+  // maybe provide an alternative implementation that uses the measured (unwrapped) phases y and 
+  // the measured instantaneous frequencies as y'' in a Hermite interpolation scheme (this is how
+  // it's described in the literature). to unwrap the phase of datapoint m, take the phase of m-1
+  // and add the integral over t[m-1]..t[m] of the average frequency (f[m-1]+f[m])/2 and choose
+  // p[m] + 2*pi*k as unwrapped where k is chosen such that p[m] is closest to value obtained from
+  // integration - use this function here as dispatcher between the different algorithms
+
+  //rsPlotVector(up);
+
+  return up;
+}
+
+
+
 
 // x: values to be computed, s: desired sum-values (constraints)
 template<class T>
@@ -13,15 +58,7 @@ void rsMinSqrDiffWithGivnSum(T* x, T* s, int N)
   // this thesis: https://web.stanford.edu/group/SOL/dissertations/bradley-thesis.pdf
   // says that for symmetric, positive definite matrices, scaling to unit diagonal is effective for
   // making the problem better conditioned
-
-
-  // maybe this is suitable:
-  // https://www.boost.org/doc/libs/1_69_0/libs/numeric/ublas/doc/index.html
-
-  // https://www.boost.org/doc/libs/1_69_0/libs/numeric/ublas/doc/banded.html
 }
-
-
 template<class T>
 void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial<T>& partial)
 {
@@ -46,14 +83,8 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
     a[m] = T(0.5) * (f[m] + f[m+1]);        // "old" average freq in interval t[m]...t[m+1]
     T q  = p[m] + a[m] * dt * 2*PI;         // computed phase at end of interval
     T ps = p[m+1];                          // stored phase at end of current interval
-
-
-    T qp = rsConsistentUnwrappedValue(q, p[m+1], 0.0, 2*PI);  // q' - adjusted phase new - delete
-    qp = rsConsistentUnwrappedValue0(q, p[m+1], 2*PI);        // q' - newer
-    //T qp = rsFindCosistentPhase(p[m+1], q); // q' - adjusted phase ...old
-
-
-
+    //T qp = rsConsistentUnwrappedValue(q, p[m+1], 0.0, 2*PI);  // q' - adjusted phase new - delete
+    T qp = rsConsistentUnwrappedValue0(q, p[m+1], 2*PI);        // q' - adjusted phase
     a[m] = (qp-p[m])/(dt*2*PI);             // "new" average freq, consistent with p[m] and p[m+1]
     // ...wait - what if this becomes negative?
     rsAssert(a[m] > T(0));

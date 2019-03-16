@@ -534,6 +534,7 @@ void minSqrdCurvForFixSums()
   RAPT::rsArray::fillWithRandomValues(&s[0], (int) s.size(), 10.0, 20.0, 0);
   v = rsMinSqrCrvFixSum(s);
   u = rsMinSqrDifFixSum(s);
+  c = sqrdCurvSum(v);
   rsPlotVectors(u, v, u-v);
   // they are not exactly the same, but very similar and their difference shows a clear alternating 
   // pattern
