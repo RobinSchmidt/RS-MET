@@ -1184,6 +1184,9 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // parameter of the function
 
   testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2050_Amp1=0.3_Amp2=0.2", 44100, 5000);
+  // hits assert because the zero freq partial has some nonzero phase values - how they do arise
+  // during analysis? does the FFT produce them? yes - assert was commented
+
   // with 200/2050 Hz we can clearly see the buzzing artifact, the residual looks similar if we
   // use  200/1950 - there are four sorts of artifacts: upward jumps, upward spikes, downward jumps
   // and downward spikes that alternate in that order
@@ -1225,8 +1228,6 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // only discontinuities in the derivative as opposed to outright signal jumps - this all makes
   // sense now
 
-  // move DSPPlotters to rs_testing module - also some or all of plotting convenience functions
-  // todo: move SinusoidalAnalyzer<T>::makeFreqsConsistentWithPhases into rsSineModel
 
 
   //testHarmonicResynthesis("VibratoSine", 44100, 95000);

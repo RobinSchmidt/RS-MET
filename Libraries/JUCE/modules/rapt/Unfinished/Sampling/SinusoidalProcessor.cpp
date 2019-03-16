@@ -81,11 +81,11 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
     a[m] = T(0.5) * (f[m] + f[m+1]);        // "old" average freq in interval t[m]...t[m+1]
     T q  = p[m] + a[m] * dt * 2*PI;         // computed phase at end of interval
     T ps = p[m+1];                          // stored phase at end of current interval
-    //T qp = rsConsistentUnwrappedValue(q, p[m+1], 0.0, 2*PI);  // q' - adjusted phase new - delete
     T qp = rsConsistentUnwrappedValue0(q, p[m+1], 2*PI);        // q' - adjusted phase
     a[m] = (qp-p[m])/(dt*2*PI);             // "new" average freq, consistent with p[m] and p[m+1]
+
     // ...wait - what if this becomes negative?
-    rsAssert(a[m] > T(0));
+    //rsAssert(a[m] >= T(0));
 
     T dq = q - qp;  // |dq| should be (much) less than pi - otherwise the hopSize is too small for
     // correctly estimating frequencies from phase-differences - maybe return the maximum dp as

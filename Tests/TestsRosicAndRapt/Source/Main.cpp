@@ -342,7 +342,7 @@ int main(int argc, char* argv[])
   //sinusoidalAnalysis1();
   //sinusoidalAnalysis2();
   //sinusoidalAnalysis3();
-  phaseFreqConsistency();
+  //phaseFreqConsistency();
   harmonicAnalysis1();
 
 
