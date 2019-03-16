@@ -1136,6 +1136,17 @@ void phaseFreqConsistency()
   // frequency (maybe somewhere in the middle where the estimates are supposedly better than at the
   // ends) should stay put...but it's simler to implement to let the first datapoint stay put
 
+  // maybe enforcing the freq-data to be consistent with the phase-data is not sucha good idea, 
+  // after all? essentially, it removes the original freq-data and the new freq data is redundant
+  // with the phase data - the phase data could actually be thrown away, since we now can 
+  // reconstruct it by numerical integration of the freq - that means, we have actually destroyed
+  // data that could be potentially meaningful ...hmmm
+
+  // try different approaches to freq-refinement: 
+  // -take the numeric derivative of the unwrapped phase
+  // -use frequency reassigment, if that makes sense
+  // -use longer windows and parabolic interpolation also in the case of rsHarmonicAnalyzer
+
   int dummy = 0;
 }
 
