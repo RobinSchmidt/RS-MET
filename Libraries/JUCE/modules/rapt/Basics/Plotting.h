@@ -26,15 +26,36 @@ inline void rsPlotVector(std::vector<T> v)
   //plt.plotArrays((int) v.size(), &v[0]);
 }
 
+/** Plots a bunch of vectors. */
 template<class T>
-inline void rsPlotVectors(std::vector<T> u, std::vector<T> v)
+inline void rsPlotVectors(
+  std::vector<T> v1, 
+  std::vector<T> v2 = std::vector<T>(),
+  std::vector<T> v3 = std::vector<T>(),
+  std::vector<T> v4 = std::vector<T>(),
+  std::vector<T> v5 = std::vector<T>()  )
 {
   // make a function that can take more vectors...maybe a vector of vectors?
   GNUPlotter plt;
-  plt.addDataArrays((int) u.size(), &u[0]);
-  plt.addDataArrays((int) v.size(), &v[0]);
+  if(v1.size() > 0) plt.addDataArrays((int) v1.size(), &v1[0]);
+  if(v2.size() > 0) plt.addDataArrays((int) v2.size(), &v2[0]);
+  if(v3.size() > 0) plt.addDataArrays((int) v3.size(), &v3[0]);
+  if(v4.size() > 0) plt.addDataArrays((int) v4.size(), &v4[0]);
+  if(v5.size() > 0) plt.addDataArrays((int) v5.size(), &v5[0]);
   plt.plot();
 }
+
+
+/** Plots a whole bunch of vectors which are themselves put together into a vector of vectors. */
+//template<class T>
+//inline void rsPlotVectors(std::vector<std::vector<T>> v)
+//{
+//  GNUPlotter plt;
+//  for(size_t i = 0; i < v.size; i++)
+//    plt.addDataArrays((int) v[i].size(), &v[i][0]);
+//  plt.plot;
+//}
+
 
 
 template<class T>

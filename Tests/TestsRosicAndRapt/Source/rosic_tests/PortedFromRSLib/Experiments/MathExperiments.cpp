@@ -514,7 +514,6 @@ void minSqrdCurvForFixSums()
 
   std::vector<double> v, s, w; // values, sums and weights
   double c;                    // cost as computed by cost function
-
   std::vector<double> u;
 
   //s = { 1010, 990, 1010, 990, 1010 };
@@ -525,13 +524,20 @@ void minSqrdCurvForFixSums()
   s = { 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990, 1010, 990 };
   v = rsMinSqrCrvFixSum(s);
   u = rsMinSqrDifFixSum(s);
-  rsPlotVectors(u, v);
+
+  //rsPlotVectors(u, v);
   // minimizing both cost functions gives the exact same result...at least in this case
+  //c = sqrdCurvSum(v);
 
-  c = sqrdCurvSum(v);
-
+  // try a sequence of random sums - see if in this case also both error functions produce the same
+  // result:
+  RAPT::rsArray::fillWithRandomValues(&s[0], (int) s.size(), 10.0, 20.0, 0);
+  v = rsMinSqrCrvFixSum(s);
+  u = rsMinSqrDifFixSum(s);
+  rsPlotVectors(u, v, u-v);
+  // they are not exactly the same, but very similar and their difference shows a clear alternating 
+  // pattern
   int dummy = 0;
-
 
   // maybe we should include an error term for the difference between first and last datapoint - 
   // that may work at least in case of odd N (then the function is odd and the ends are far apart
@@ -540,8 +546,6 @@ void minSqrdCurvForFixSums()
   // todo: compute actual values of the new error function - verify that we are actually at a 
   // minimum by perturbing the first value (which determines the values of all others) and 
   // compute the error for a small upward and downward perturbation from the found minimum
-
-
 }
 
 
