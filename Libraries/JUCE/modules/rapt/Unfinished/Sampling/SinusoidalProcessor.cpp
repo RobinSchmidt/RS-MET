@@ -43,8 +43,6 @@ std::vector<T> rsSinusoidalProcessor<T>::unwrapPhase(const std::vector<T>& t,
 }
 
 
-
-
 // x: values to be computed, s: desired sum-values (constraints)
 template<class T>
 void rsMinSqrDiffWithGivnSum(T* x, T* s, int N)
@@ -141,4 +139,26 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
   // this actually increases the freq-estimate bias in sinusoidalAnalysis2 - do i have a 
   // theory bug? the implementation seems good..the assert doesn't trigger - or maybe the hopsize
   // is indeed too small and we get an adjustment by more than pi?
+}
+
+template<class T>
+void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalPartial<T>& partial)
+{
+  // retrieve original data:
+  typedef std::vector<T> Vec;
+  Vec t = partial.getTimeArray();
+  Vec f = partial.getFrequencyArray();
+  Vec p = partial.getPhaseArray();
+  int M = (int) t.size();
+
+  // unwrap phase and differentiate numerically:
+  Vec pu = unwrapPhase(t, f, p);
+  Vec fr(M);                                      // vector for refined frequencies
+  rsNumericDerivative(&t[0], &pu[0], &fr[0], M);  // derivative of unwrapped phase gives omega
+  fr = T(1/2*PI) * fr;                            // convert from omega to Hertz
+  //rsPlotVectors(f, fr);
+  
+  // write refined frequencies back into partial:
+  for(int m = 0; m < M; m++)
+    partial.setFrequency(m, fr[m]);
 }
