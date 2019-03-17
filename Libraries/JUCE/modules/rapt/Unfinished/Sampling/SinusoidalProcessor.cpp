@@ -101,7 +101,7 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
     RAPT::rsAssert(rsArePhasesConsistent(q, p[m+1])); // a phase q that is consistent with p[m+1]
   }
 
-  rsPlotVector(a); 
+  //rsPlotVector(a); 
 
   // OK - we have our new desired average frequencies for the segments - from these, we now compute
   // the new frequencies at the datapoints (we are actually one equation short of determining all 
@@ -155,10 +155,17 @@ void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalPartial
   Vec pu = unwrapPhase(t, f, p);
   Vec fr(M);                                      // vector for refined frequencies
   rsNumericDerivative(&t[0], &pu[0], &fr[0], M);  // derivative of unwrapped phase gives omega
-  fr = T(1/2*PI) * fr;                            // convert from omega to Hertz
+  fr = T(1/(2*PI)) * fr;                          // convert from omega to Hertz
   //rsPlotVectors(f, fr);
   
   // write refined frequencies back into partial:
   for(int m = 0; m < M; m++)
     partial.setFrequency(m, fr[m]);
+}
+
+template<class T>
+void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalModel<T>& mdl)
+{
+  for(size_t i = 0; i < mdl.getNumPartials(); i++)
+    refineFreqsViaPhaseDerivative(mdl.getModifiablePartialRef(i));
 }

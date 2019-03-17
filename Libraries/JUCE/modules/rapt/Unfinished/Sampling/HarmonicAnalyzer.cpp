@@ -39,12 +39,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
     removeAliasing(mdl);            // remove freqs above orignal nyquist freq
   handleEdges(mdl);                 // add fade-in/out datapoints
   convertTimeUnit(mdl);             // convert from samples to seconds
-
-  // factor out - there should be function that dispatches between vairous options
-  if(refineFreqs)
-  {
-    mdl.makeFreqsConsistentWithPhases();
-  }
+  refineFrequencies(mdl);           // refines freq estimates, if desired
 
   rosic::writeToMonoWaveFile("PitchFlattened.wav", &y[0], (int)y.size(), (int)sampleRate);
   // move to rapt - rapt is a lower layer than rosic an we are not supposed to call rosic functions
@@ -268,6 +263,16 @@ void rsHarmonicAnalyzer<T>::convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl)
   for(int hi = 0; hi < mdl.getNumPartials(); hi++)
     for(int di = 0; di < getNumDataPoints(); di++)
       mdl.getDataRef(hi, di).time /= sampleRate;
+}
+
+template<class T>
+void rsHarmonicAnalyzer<T>::refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl)
+{
+  if(freqsByPhaseDerivative)
+    rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(mdl);
+
+  if(freqsPhaseConsistent)
+    mdl.makeFreqsConsistentWithPhases(); // use rsSinusoidalProcessor
 }
 
 template<class T>

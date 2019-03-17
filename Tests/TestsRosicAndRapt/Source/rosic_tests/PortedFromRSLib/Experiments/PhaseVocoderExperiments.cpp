@@ -1187,6 +1187,16 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // hits assert because the zero freq partial has some nonzero phase values - how they do arise
   // during analysis? does the FFT produce them? yes - assert was commented
 
+  // if we refine the estimated freqs by phase derivatives with(Freq1=200_Freq2=2050): 
+  // -the fundamental gets a bit wiggly around 200Hz 
+  //  -the edges get worse (134.25..224 with or without ends-extrapolation of numeric derivative)
+  // -the 2050Hz frequency gets estimated quite well indeed 
+  // -all the other partial estimates (which have zero amplitude) get their estimated 
+  //  frequencies also shifted up by 50Hz 
+  // -and the "corrected" DC component actually doesn't stay at DC 
+  //  -todo: fix the phase at zero for the DC component
+
+
   // with 200/2050 Hz we can clearly see the buzzing artifact, the residual looks similar if we
   // use  200/1950 - there are four sorts of artifacts: upward jumps, upward spikes, downward jumps
   // and downward spikes that alternate in that order
@@ -1211,12 +1221,14 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // but i think, the matlab code measures the phase *at* the cycle-marks, not in between (it
   // doesn't do the shift of the FFT buffer by one half) ...should that matter - i don't know
   // why but maybe
+
   // adding mdl.keepOnly({0, 9}); to testHarmonicResynthesis (after mdl.removePartial(0)) 
   // removes the buzzing - it seems to be indeed the combined effect of all other overtones'
   // contributions - the conspire to produce edges - how can we avoid this? maybe obtain datapoints
   // also midway between the current ones? this would force the resynthesized phase to be in sync
   // with the original phase at the instants that are currently problematic ...and/or maybe the 
   // phase-based frequency estimate refinement could help against this?
+
   // i think, i know why the buzz occurs: try resynthesizing without the fundamental - it tries
   // to synthesize segments the 2030Hz component with discontinuities because in the FFT buffer,
   // the wave is indeed cut off discontinuously - the resynthesis tries to model these 
@@ -1224,6 +1236,22 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // the phase-coherence of all theses partials that produces the edge - with readjusted 
   // frequencies, the model also won't be strictly harmonic anymore - which is a good thing since
   // the input sound is in fact inharmonic
+
+  // ...but no - the buzz seems to be indeed due to the combined contribution of all partials that
+  // are supposed to be zero, not due to the frequency estimation error of the inharmonic partial 
+  // - because refining freq-estimates or not makes not much difference with regard to the buzz, 
+  // but removing all other overtones (with near zero amplitude) does make a difference
+
+  // i think, the best thing to try next is indeed to use blocks with 2 or 4 cycles, windowing, 
+  // parabolic freq-estimation and (maybe) magnitude thresholding...maybe the number of cycles
+  // pre block can be an integer user parameter (powers of two, but maybe that constraint can be
+  // relaxed later)...and maybe use the dolph-chebychev window  - it's optimal for that purpose..
+  // ...or maybe not? maybe sidelobe-rolloff is actually desirable in this application? i think so,
+  // because it will lower the analyzed amplitudes of non-existing partials far from the actual
+  // partial - try my new windows with given sidelobe rolloff - 
+
+  //
+
   // when Freq2=2100, each block has exactly 10.5 cycles of the inharmonic wave in it and we get 
   // only discontinuities in the derivative as opposed to outright signal jumps - this all makes
   // sense now

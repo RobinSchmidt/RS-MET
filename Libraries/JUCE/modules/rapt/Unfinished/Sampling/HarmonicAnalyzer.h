@@ -91,7 +91,15 @@ public:
   }
 
 
-  void setRefineFrequencies(bool shouldRefine) { refineFreqs = shouldRefine; }
+  void setFreqsByPhaseDerivative(bool shouldRefine) 
+  { 
+    freqsByPhaseDerivative = shouldRefine; 
+  }
+
+  void setFreqPhaseConsistency(bool shouldBeConsistent)
+  {
+    freqsPhaseConsistent = shouldBeConsistent;
+  }
 
 
   /** \name Inquiry */
@@ -148,6 +156,8 @@ protected:
   as final step to convert all values. */
   void convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl);
 
+  /** Refines the frequency estimates in the model, if the respective options are set to true. */
+  void refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl);
 
 
   /** Returns length of time-warping map (sampled at cycle marks). */
@@ -203,7 +213,10 @@ protected:
   int blockSize = 0;    // FFT block size
 
   bool antiAlias   = false;
-  bool refineFreqs = false;
+
+  //bool freqReAssignment = false;
+  bool freqsByPhaseDerivative = false;
+  bool freqsPhaseConsistent = false;
 
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping

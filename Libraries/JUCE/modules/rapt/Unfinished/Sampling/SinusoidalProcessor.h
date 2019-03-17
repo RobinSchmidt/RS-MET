@@ -61,6 +61,8 @@ public:
 
   static void refineFreqsViaPhaseDerivative(rsSinusoidalPartial<T>& partial);
 
+  static void refineFreqsViaPhaseDerivative(rsSinusoidalModel<T>& model);
+
 
 
   // virtual void processModelData

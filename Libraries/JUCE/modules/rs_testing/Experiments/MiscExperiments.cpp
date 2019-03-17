@@ -31,7 +31,8 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(64);
 
-  analyzer.setRefineFrequencies(true);
+  //analyzer.setFreqsByPhaseDerivative(true);
+  //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
 
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
