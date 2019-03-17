@@ -349,15 +349,22 @@ protected:
     // deprecated
 
   /** \name Data */
-  T fs;                         /**< sample rate */
-  T fMin;                       /**< minimum expected fundamental */
-  T fMax;                       /**< maximum expected fundamental */
-  T correlationLength   = 1.0;
+  T fs;                  /**< sample rate */
+  T fMin;                /**< minimum expected fundamental */
+  T fMax;                /**< maximum expected fundamental */
+  T fundamental = T(0);  /**< if set 0, object will try to auto-detect */ 
+  int algo = 0;          /**< algorithm to use */
+
+  // parameters for the zero-crossing algo:
+  //T bandPassFreq = T(0);         /**< if set 0, object will try to auto-detect */ 
+  T bandPassWidth = 1.0;
+  int bandpassSteepness = 3;
+  int precision = 3;
+
+  // parameters for correlation based algo:
+  T correlationLength   = 1.0;   /**< in number of cycles */
   T correlationHighpass = 0.0;
-  T bandPassWidth       = 1.0;
-  int    algo = 0;              /**< algorithm to use */
-  int    precision = 3;
-  int    bandpassSteepness   = 3;
+
 
 
   /** We assume that left and right are preliminary estimates for the starting times of two 
