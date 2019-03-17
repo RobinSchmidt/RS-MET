@@ -384,7 +384,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
   T bw = bandPassWidth*f0; // absolute bandwidth
   T *y = new T[N];
   rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, y, N, f0, bw, fs, bandpassSteepness);
-  //rsPlotArray(y, N);
+  //rsPlotArrays(N, x, y); // plot original an bandpassed signals
   std::vector<T> z = rsZeroCrossingFinder::upwardCrossings(y, N, precision);
   delete[] y;
   return z;
@@ -1425,7 +1425,7 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
   T *y = new T[L];                      // chunk from input signal
   int ns = rsMin(rsMax(0, n-L/2), N-L); // start of the chunk
   rsArray::copySection(x, N, y, ns, L);
-  //rsCopySection(x, N, y, ns, L);
+  //rsPlotArray(y, L);
 
   // measure frequency:
   T r;  // reliability

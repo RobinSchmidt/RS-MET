@@ -1188,7 +1188,14 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // -let's figure out, if the resynthesized signal gets out-of-phase with respect to the orginal 
   //  at higher partials, wehn they are not exactly located at a harmonic
   //  ->resynthesize only the high-freq component and compare to original high-freq component
-  // -doesn't find correct cycle-marks - places them at the high-freq component when
+  // -doesn't find correct cycle-marks - resynthesized signal is garbage
+  //  -> plot the intermediate (bandpassed) signal in the cycleFinder
+
+  // estimateFundamentalAt in rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros fails - it
+  // thinks, the fundamental is at 1 kHz ...the autocorrelation sequence has this strong wiggle
+  // so, it finds a local maximum at the first position where we allow a local maximum to be (as
+  // determined by the max-fundamental setting) - this is a really pathological case - maybe we
+  // need to set the fundamental manually in this case
 
 
   testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2050_Amp1=0.3_Amp2=0.2", 44100, 5000);

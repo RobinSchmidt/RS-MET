@@ -19,6 +19,15 @@ inline void rsPlotArray(T* x, int N)
 }
 
 template<class T>
+inline void rsPlotArrays(int N, T* a1, T* a2 = nullptr, T* a3 = nullptr, T* a4 = nullptr,
+  T* a5 = nullptr)
+{
+  GNUPlotter plt;
+  plt.plotArrays(N, a1, a2, a3, a4, a5);
+}
+// maybe allow for more than 5
+
+template<class T>
 inline void rsPlotVector(std::vector<T> v)
 {
   rsPlotArray(&v[0], (int) v.size());

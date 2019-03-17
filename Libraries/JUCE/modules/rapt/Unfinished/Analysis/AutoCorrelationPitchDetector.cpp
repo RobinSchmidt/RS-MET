@@ -119,6 +119,7 @@ T rsAutoCorrelationPitchDetector<T>::estimateFundamental(T *x, int L, T fs, T fM
   // Get autocorrelation sequence r:
   T *r = new T[L];
   rsAutoCorrelationFFT(x, L, r);
+  //rsPlotArray(r, L);
 
   // find index in autocorrelation function where a peak with maximum value occurs:
   int startIndex  = rsMax(1, (int) (fs/fMax));

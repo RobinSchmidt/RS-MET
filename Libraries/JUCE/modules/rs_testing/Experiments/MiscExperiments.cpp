@@ -26,19 +26,24 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   double* x = &input[0];   // pointer to first sample (for convenience)
   int Nx = (int) input.size();
 
-
+  // create and set up harmonic analyzer object:
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(64);
-  analyzer.getCycleFinder().setFundamentalRange(50, 1000);
-
   //analyzer.setFreqsByPhaseDerivative(true);
   //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
 
+  // set up settings of the embedded cycle-mark finder:
+  rsCycleMarkFinder<double>& cmf = analyzer.getCycleFinder();
+                                        // defaults:
+  cmf.setRelativeBandpassWidth(0.5);    // 1.0
+  cmf.setBandpassSteepness(5);          // 3
+  cmf.setFundamentalRange(50., 1000.);  // 20, 5000 
+
+  // let the analyzer analyze the sound - obtains a sinusoidal model:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
   mdl.removePartial(0);        // remove DC component
-
 
   //mdl.keepOnly({0, 9});  // for test with TwoSines_Freq1=200_Freq2=2025
   //mdl.removePartial(0);    // test: resynthesize without fundamental
