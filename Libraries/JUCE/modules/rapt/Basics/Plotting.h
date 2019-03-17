@@ -65,10 +65,8 @@ inline void rsPlotVectors(
 //  plt.plot;
 //}
 
-
-
 template<class T>
-inline void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
+inline void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
 {
   std::vector<T> zeros(numMarkers);    // y values for plotting (all zero)
   RAPT::rsArray::fillWithZeros(&zeros[0], numMarkers);

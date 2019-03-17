@@ -342,6 +342,10 @@ public:
 
 protected:
 
+  /** Returns either the fixed fundamental freq as set up in our member "fundamental" or - if that
+  member is set to zero - tries to estimate a fundamental from the given signal. */
+  T getFundamental(T* x, int N);
+
   /** Refines a given vector of initial estimates of the cycle-marks given in cm by correlating
   successive (estimated) cycles and placing the new cycle border at the instant of maximum
   correlation. */

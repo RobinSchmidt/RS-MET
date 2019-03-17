@@ -377,7 +377,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
 {
   // Get initial estimate of fundamental by using an autocorrelation based algorithm at the center
   // of the input signal:
-  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
+  T f0 = getFundamental(x, N);
   // here, we have a mutual dependency between rsInstantaneousFundamentalEstimator and
   // rsCycleMarkFinder - maybe break up by dragging estimateFundamentalAt out of the class
 
@@ -396,9 +396,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
   // select a sample index n in the middle and estimate frequency there:
   //int nCenter = N/2;
   int nCenter = rsZeroCrossingFinder::closestUpwardCrossing(x, N, N/2);
-
-  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(
-    x, N, nCenter, fs, fMin, fMax);
+  T f0 = getFundamental(x, N);
   T p = fs/f0; // curent period estimate (currently at nCenter)
 
   // create temporary signal to work with:
@@ -470,10 +468,24 @@ template<class T>
 std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
 {
   std::vector<T> z = findCycleMarksByFundamentalZeros(x, N); // initial estimates
-  T f0 = rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(x, N, N/2, fs, fMin, fMax);
+  T f0 = getFundamental(x, N);
   refineCycleMarksByCorrelation(x, N, z, f0);
   return z;
 }
+
+template<class T>
+T rsCycleMarkFinder<T>::getFundamental(T* x, int N)
+{
+  if(fundamental != T(0))
+    return fundamental;
+  else
+  {
+    int nCenter = rsZeroCrossingFinder::closestUpwardCrossing(x, N, N/2);
+    return rsInstantaneousFundamentalEstimator<T>::
+      estimateFundamentalAt(x, N, nCenter, fs, fMin, fMax);
+  }
+}
+
 
 // introspection:
 

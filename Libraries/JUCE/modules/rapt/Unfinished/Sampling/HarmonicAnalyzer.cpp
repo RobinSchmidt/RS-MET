@@ -297,7 +297,7 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
 
 
   std::vector<T> cm = cycleFinder.findCycleMarks(x, N);
-  plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
+  rsPlotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
 
 
   // To ensure that initial and final section are really partial cycles (as opposed to a full

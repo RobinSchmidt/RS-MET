@@ -40,6 +40,8 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   cmf.setRelativeBandpassWidth(0.5);    // 1.0
   cmf.setBandpassSteepness(5);          // 3
   cmf.setFundamentalRange(50., 1000.);  // 20, 5000 
+  cmf.setAlgorithm(cmf.F0_ZERO_CROSSINGS);
+  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
 
   // let the analyzer analyze the sound - obtains a sinusoidal model:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
