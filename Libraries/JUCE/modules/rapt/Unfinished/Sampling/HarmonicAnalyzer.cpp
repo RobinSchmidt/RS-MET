@@ -20,7 +20,7 @@ void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarke
 //-------------------------------------------------------------------------------------------------
 
 template<class T>
-rsHarmonicAnalyzer<T>::rsHarmonicAnalyzer()
+rsHarmonicAnalyzer<T>::rsHarmonicAnalyzer() : cycleFinder(sampleRate)
 {
   typedef rsFourierTransformerRadix2<T> FT;
   trafo.setDirection(FT::FORWARD);
@@ -278,9 +278,9 @@ void rsHarmonicAnalyzer<T>::refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl)
 template<class T>
 std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
 {
+  /*
   T fl = 20;       // lower limit for fundamental (maybe let user set this up)
   T fu = 5000;     // upper limit for fundamental
-
   rsCycleMarkFinder<double> cmf(sampleRate, fl, fu);  // make member, let user access its settings
 
   ////                                      // defaults
@@ -288,14 +288,16 @@ std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
   cmf.setBandpassSteepness(10);          // 3
   //cmf.setFundamentalRange(50., 100.);   // 20-5000 
 
-
-
-
   cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, 2: quintic, ...
   cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
   std::vector<T> cm = cmf.findCycleMarks(x, N);
   //plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
+  */
+
+
+  std::vector<T> cm = cycleFinder.findCycleMarks(x, N);
+  plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
 
 
   // To ensure that initial and final section are really partial cycles (as opposed to a full

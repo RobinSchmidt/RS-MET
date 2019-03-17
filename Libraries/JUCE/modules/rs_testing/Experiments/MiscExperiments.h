@@ -5,6 +5,13 @@ std::vector<double> synthesizeSinusoidal(
   const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime = 0.0);
 
 
+
+/** ...
+If plotResults is true, the function will plot the original, resyntheiszed and residual signals 
+along with markres at the cycle-marks. The analysis datapoints are always in the middle between two
+cycle-marks
+todo: maybe also optionally plot the model..maybe use thickness and/or color of the lines to 
+indicate the amplitude of the partials */
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
   double fs, bool writeWaveFiles = true, bool plotResults = false);
 

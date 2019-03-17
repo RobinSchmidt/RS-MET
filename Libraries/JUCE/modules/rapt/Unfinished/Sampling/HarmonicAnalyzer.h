@@ -68,7 +68,11 @@ public:
 
   /** Sets up the sample-rate. This determines the values of the frequencies that will be written
   into the model. */
-  void setSampleRate(T newRate) { sampleRate = newRate; }
+  void setSampleRate(T newRate) 
+  { 
+    sampleRate = newRate; 
+    cycleFinder.setSampleRate(sampleRate);
+  }
 
   //void setRemoveDC(bool shouldBeRemoved);
 
@@ -106,8 +110,11 @@ public:
 
   std::vector<T> getOriginalTimeStamps() { return tIn; }
 
-
   std::vector<T> getWarpedTimeStamps() { return tOut; }
+
+  /** Returns a reference to the embedded rsCycleMarkFinder object that is used to find the 
+  cycle-marks for the time-warping, to give client code access to its settings. */
+  rsCycleMarkFinder<T>& getCycleFinder() { return cycleFinder; }
 
 
   /** \name Processing */
@@ -207,7 +214,7 @@ protected:
 
   //RAPT::rsPitchFlattener<T, T> flattener;
   rsFourierTransformerRadix2<T> trafo;
-  //rsCycleMarkFinder<T> cycleMarkFinder;
+  rsCycleMarkFinder<T> cycleFinder;
 
 
   int blockSize = 0;    // FFT block size

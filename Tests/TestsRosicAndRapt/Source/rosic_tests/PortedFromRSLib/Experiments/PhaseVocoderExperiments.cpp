@@ -1183,6 +1183,14 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // convert all calls to include the frequency in the string (done), then get rid of the frequency 
   // parameter of the function
 
+
+  testHarmonicResynthesis("TwoSines_Freq1=100_Freq2=10020_Amp1=0.5_Amp2=0.1", 44100, 5000);
+  // -let's figure out, if the resynthesized signal gets out-of-phase with respect to the orginal 
+  //  at higher partials, wehn they are not exactly located at a harmonic
+  //  ->resynthesize only the high-freq component and compare to original high-freq component
+  // -doesn't find correct cycle-marks - places them at the high-freq component when
+
+
   testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2050_Amp1=0.3_Amp2=0.2", 44100, 5000);
   // hits assert because the zero freq partial has some nonzero phase values - how they do arise
   // during analysis? does the FFT produce them? yes - assert was commented
